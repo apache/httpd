@@ -256,9 +256,6 @@ struct ap_filter_rec_t {
 
     /** Protocol flags for this filter */
     unsigned int proto_flags;
-
-    /** Save Ranges header if this filter unsets it */
-    const char* range;
 };
 
 /**

@@ -100,6 +100,10 @@ typedef struct {
     mod_filter_chain *chain;
 } mod_filter_cfg;
 
+typedef struct {
+    const char* range ;
+} mod_filter_ctx ;
+
 
 static void filter_trace(apr_pool_t *pool, int debug, const char *fname,
                          apr_bucket_brigade *bb)
@@ -164,6 +168,8 @@ static int filter_lookup(ap_filter_t *f, ap_filter_rec_t *filter)
     request_rec *r = f->r;
     harness_ctx *ctx = f->ctx;
     provider_ctx *pctx;
+    mod_filter_ctx *rctx = ap_get_module_config(r->request_config,
+                                                &filter_module);
 
     /* Check registered providers in order */
     for (provider = filter->providers; provider; provider = provider->next) {
@@ -307,8 +313,10 @@ static int filter_lookup(ap_filter_t *f, ap_filter_rec_t *filter)
             if (proto_flags & AP_FILTER_PROTO_NO_BYTERANGE) {
                 apr_table_unset(r->headers_out, "Accept-Ranges");
             }
-            else if (filter->range) {
-                apr_table_setn(r->headers_in, "Range", filter->range);
+            else if (rctx && rctx->range) {
+                /* restore range header we saved earlier */
+                apr_table_setn(r->headers_in, "Range", rctx->range);
+                rctx->range = NULL;
             }
 #endif
             for (pctx = ctx->init_ctx; pctx; pctx = pctx->next) {
@@ -709,6 +717,8 @@ static void filter_insert(request_rec *r)
                                                &filter_module);
 #ifndef NO_PROTOCOL
     int ranges = 1;
+    mod_filter_ctx *ctx = apr_pcalloc(r->pool, sizeof(mod_filter_ctx));
+    ap_set_module_config(r->request_config, &filter_module, ctx);
 #endif
 
     for (p = cfg->chain; p; p = p->next) {
@@ -718,7 +728,7 @@ static void filter_insert(request_rec *r)
         if (ranges && (filter->proto_flags
                        & (AP_FILTER_PROTO_NO_BYTERANGE
                           | AP_FILTER_PROTO_CHANGE_LENGTH))) {
-            filter->range = apr_table_get(r->headers_in, "Range");
+            ctx->range = apr_table_get(r->headers_in, "Range");
             apr_table_unset(r->headers_in, "Range");
             ranges = 0;
         }
