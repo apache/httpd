@@ -53,10 +53,16 @@ Documentation that needs writing:
     * Need a document explaining mod_rewrite/"UseCanonicalName off" based
       virtualhosting.  (If it exists already I can't find it easily.)
       => It still doesn't exists but I've already assembled the relevant
-         information and config snippets. We just have to write a vhost-xxx.html
-         document out of it. -- rse
+         information and config snippets. We just have to write a
+         vhost-xxx.html document out of it. -- rse
 
 Available Patches:
+
+    * Ken's patch to set *ERROR_NOTES by default in ap_log_rerror()
+      Avoids special-casing the setting everywhere, and allows sensitive
+      error_log-only messages to be kept out of *ERROR_NOTES.
+	Message-ID: <35F68AD7.FDBF22AC@Golux.Com>
+	Status: Ken +1
 
     * Patches for the DSO/mod_perl problem (see below for description):
 
