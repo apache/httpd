@@ -86,6 +86,7 @@ AP_HOOK_STRUCT(
 	    AP_HOOK_LINK(type_checker)
 	    AP_HOOK_LINK(access_checker)
 	    AP_HOOK_LINK(auth_checker)
+	    AP_HOOK_LINK(insert_filter)
 )
 
 AP_IMPLEMENT_HOOK_RUN_FIRST(int,translate_name,
@@ -100,6 +101,7 @@ AP_IMPLEMENT_HOOK_RUN_ALL(int,access_checker,
                           (request_rec *r),(r),OK,DECLINED)
 AP_IMPLEMENT_HOOK_RUN_FIRST(int,auth_checker,
                             (request_rec *r),(r),DECLINED)
+AP_IMPLEMENT_HOOK_VOID(insert_filter, (request_rec *r), (r))
 
 /*****************************************************************
  *
@@ -1246,6 +1248,15 @@ static void process_request_internal(request_rec *r)
         ap_die(access_status, r);
         return;
     }
+
+    /* The new insert_filter stage makes sense here IMHO.  We are sure that
+     * we are going to run the request now, so we may as well insert filters
+     * if any are available.  Since the goal of this phase is to allow all
+     * modules to insert a filter if they want to, this filter returns
+     * void.  I just can't see any way that this filter can reasonably
+     * fail, either your modules inserts something or it doesn't.  rbb
+     */
+    ap_run_insert_filter(r);
 
     if ((access_status = ap_invoke_handler(r)) != 0) {
         ap_die(access_status, r);
