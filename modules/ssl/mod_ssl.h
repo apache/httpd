@@ -587,16 +587,15 @@ const char  *ssl_cmd_SSLProtocol(cmd_parms *, void *, const char *);
 const char  *ssl_cmd_SSLOptions(cmd_parms *, void *, const char *);
 const char  *ssl_cmd_SSLRequireSSL(cmd_parms *, void *);
 const char  *ssl_cmd_SSLRequire(cmd_parms *, void *, const char *);
-#ifdef SSL_EXPERIMENTAL_PROXY
-const char  *ssl_cmd_SSLProxyProtocol(cmd_parms *, char *, const char *);
-const char  *ssl_cmd_SSLProxyCipherSuite(cmd_parms *, char *, char *);
-const char  *ssl_cmd_SSLProxyVerify(cmd_parms *, char *, int);
-const char  *ssl_cmd_SSLProxyVerifyDepth(cmd_parms *, char *, char *);
-const char  *ssl_cmd_SSLProxyCACertificatePath(cmd_parms *, char *, char *);
-const char  *ssl_cmd_SSLProxyCACertificateFile(cmd_parms *, char *, char *);
-const char  *ssl_cmd_SSLProxyMachineCertificatePath(cmd_parms *, char *, char *);
-const char  *ssl_cmd_SSLProxyMachineCertificateFile(cmd_parms *, char *, char *);
-#endif
+
+const char  *ssl_cmd_SSLProxyProtocol(cmd_parms *, void *, const char *);
+const char  *ssl_cmd_SSLProxyCipherSuite(cmd_parms *, void *, const char *);
+const char  *ssl_cmd_SSLProxyVerify(cmd_parms *, void *, int);
+const char  *ssl_cmd_SSLProxyVerifyDepth(cmd_parms *, void *, const char *);
+const char  *ssl_cmd_SSLProxyCACertificatePath(cmd_parms *, void *, const char *);
+const char  *ssl_cmd_SSLProxyCACertificateFile(cmd_parms *, void *, const char *);
+const char  *ssl_cmd_SSLProxyMachineCertificatePath(cmd_parms *, void *, const char *);
+const char  *ssl_cmd_SSLProxyMachineCertificateFile(cmd_parms *, void *, const char *);
 
 /*  module initialization  */
 int          ssl_init_Module(apr_pool_t *, apr_pool_t *, apr_pool_t *, server_rec *);

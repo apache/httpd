@@ -151,7 +151,6 @@ static const command_rec ssl_config_cmds[] = {
                 "Enable or disable various SSL protocols"
                 "(`[+-][SSLv2|SSLv3|TLSv1] ...' - see manual)")
 
-#ifdef SSL_EXPERIMENTAL_PROXY
     /* 
      * Proxy configuration for remote SSL connections
      */
@@ -179,7 +178,6 @@ static const command_rec ssl_config_cmds[] = {
     SSL_CMD_SRV(ProxyMachineCertificatePath, TAKE1,
                "SSL Proxy: directory containing client certificates "
                "(`/path/to/dir' - contains PEM encoded certificates)")
-#endif
 
     /*
      * Per-directory context configuration directives
