@@ -2,6 +2,9 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) mod_ssl/mod_status: Re-enable support for output of SSL session
+     cache information in server-status page.  [Joe Orton]
+
   *) mod_ssl: Remove the shmht session cache, shmcb should be used
      instead.  [Joe Orton]
 

@@ -474,10 +474,9 @@ void ssl_scache_shmcb_expire(server_rec *s)
     return;
 }
 
-void ssl_scache_shmcb_status(server_rec *s, apr_pool_t *p,
-                            void (*func) (char *, void *), void *arg)
+void ssl_scache_shmcb_status(request_rec *r, int flags, apr_pool_t *p)
 {
-    SSLModConfigRec *mc = myModConfig(s);
+    SSLModConfigRec *mc = myModConfig(r->server);
     SHMCBHeader *header;
     SHMCBQueue queue;
     SHMCBCache cache;
@@ -487,8 +486,7 @@ void ssl_scache_shmcb_status(server_rec *s, apr_pool_t *p,
     double expiry_total;
     time_t average_expiry, now, max_expiry, min_expiry, idxexpiry;
 
-    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, 
-                 "inside ssl_scache_shmcb_status");
+    ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, "inside shmcb_status");
 
     /* Get the header structure. */
     shmcb_get_header(mc->tSessionCacheDataTable, &header);
@@ -502,7 +500,7 @@ void ssl_scache_shmcb_status(server_rec *s, apr_pool_t *p,
     now = time(NULL);
     for (loop = 0; loop <= header->division_mask; loop++) {
         if (shmcb_get_division(header, &queue, &cache, loop)) {
-            shmcb_expire_division(s, &queue, &cache);
+            shmcb_expire_division(r->server, &queue, &cache);
             total += shmcb_get_safe_uint(queue.pos_count);
             cache_total += shmcb_get_safe_uint(cache.pos_count);
             if (shmcb_get_safe_uint(queue.pos_count) > 0) {
@@ -523,40 +521,39 @@ void ssl_scache_shmcb_status(server_rec *s, apr_pool_t *p,
     }
     index_pct = (100 * total) / (header->index_num * (header->division_mask + 1));
     cache_pct = (100 * cache_total) / (header->cache_data_size * (header->division_mask + 1));
-    func(apr_psprintf(p, "cache type: <b>SHMCB</b>, shared memory: <b>%d</b> "
-                     "bytes, current sessions: <b>%d</b><br>",
-                     mc->nSessionCacheDataSize, total), arg);
-    func(apr_psprintf(p, "sub-caches: <b>%d</b>, indexes per sub-cache: "
-                     "<b>%d</b><br>", (int) header->division_mask + 1,
-                     (int) header->index_num), arg);
+    ap_rprintf(r, "cache type: <b>SHMCB</b>, shared memory: <b>%d</b> "
+               "bytes, current sessions: <b>%d</b><br>",
+               mc->nSessionCacheDataSize, total);
+    ap_rprintf(r, "sub-caches: <b>%d</b>, indexes per sub-cache: "
+               "<b>%d</b><br>", (int) header->division_mask + 1,
+               (int) header->index_num);
     if (non_empty_divisions != 0) {
         average_expiry = (time_t)(expiry_total / (double)non_empty_divisions);
-        func(apr_psprintf(p, "time left on oldest entries' SSL sessions: "), arg);
+        ap_rprintf(r, "time left on oldest entries' SSL sessions: ");
         if (now < average_expiry)
-            func(apr_psprintf(p, "avg: <b>%d</b> seconds, (range: %d...%d)<br>",
-                            (int)(average_expiry - now), (int) (min_expiry - now),
-                            (int)(max_expiry - now)), arg);
+            ap_rprintf(r, "avg: <b>%d</b> seconds, (range: %d...%d)<br>",
+                       (int)(average_expiry - now), (int) (min_expiry - now),
+                       (int)(max_expiry - now));
         else
-            func(apr_psprintf(p, "expiry threshold: <b>Calculation Error!</b>" 
-                             "<br>"), arg);
-
+            ap_rprintf(r, "expiry threshold: <b>Calculation Error!</b>" 
+                       "<br>");
+        
     }
-    func(apr_psprintf(p, "index usage: <b>%d%%</b>, cache usage: <b>%d%%</b>"
-                     "<br>", index_pct, cache_pct), arg);
-    func(apr_psprintf(p, "total sessions stored since starting: <b>%lu</b><br>",
-                     header->num_stores), arg);
-    func(apr_psprintf(p,"total sessions expired since starting: <b>%lu</b><br>",
-                     header->num_expiries), arg);
-    func(apr_psprintf(p, "total (pre-expiry) sessions scrolled out of the "
-                     "cache: <b>%lu</b><br>", header->num_scrolled), arg);
-    func(apr_psprintf(p, "total retrieves since starting: <b>%lu</b> hit, "
-                     "<b>%lu</b> miss<br>", header->num_retrieves_hit,
-                     header->num_retrieves_miss), arg);
-    func(apr_psprintf(p, "total removes since starting: <b>%lu</b> hit, "
-                     "<b>%lu</b> miss<br>", header->num_removes_hit,
-                     header->num_removes_miss), arg);
-    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, 
-                 "leaving shmcb_status");
+    ap_rprintf(r, "index usage: <b>%d%%</b>, cache usage: <b>%d%%</b>"
+               "<br>", index_pct, cache_pct);
+    ap_rprintf(r, "total sessions stored since starting: <b>%lu</b><br>",
+               header->num_stores);
+    ap_rprintf(r, "total sessions expired since starting: <b>%lu</b><br>",
+               header->num_expiries);
+    ap_rprintf(r, "total (pre-expiry) sessions scrolled out of the "
+               "cache: <b>%lu</b><br>", header->num_scrolled);
+    ap_rprintf(r, "total retrieves since starting: <b>%lu</b> hit, "
+               "<b>%lu</b> miss<br>", header->num_retrieves_hit,
+               header->num_retrieves_miss);
+    ap_rprintf(r, "total removes since starting: <b>%lu</b> hit, "
+               "<b>%lu</b> miss<br>", header->num_removes_hit,
+               header->num_removes_miss);
+    ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, "leaving shmcb_status");
     return;
 }
 
