@@ -888,7 +888,8 @@ API_EXPORT(int) ap_call_exec(request_rec *r, child_info *pinfo, char *argv0, cha
         }
 
         if (CreateProcess(NULL, pCommand, NULL, NULL, TRUE, 0, pEnvBlock,
-                          NULL, &si, &pi)) {
+                          ap_make_dirstr_parent(r->pool, r->filename),
+                          &si, &pi)) {
             pid = pi.dwProcessId;
             /*
              * We must close the handles to the new process and its main thread
