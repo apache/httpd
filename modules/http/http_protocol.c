@@ -648,45 +648,19 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b, ap_input_mode
 
     /* readbytes == 0 is "read a single line". otherwise, read a block. */
     if (*readbytes) {
+        apr_off_t total;
 
         /* ### the code below, which moves bytes from one brigade to the
            ### other is probably bogus. presuming the next filter down was
            ### working properly, it should not have returned more than
-           ### READBYTES bytes, and we wouldn't have to do any work. further,
-           ### we could probably just use brigade_partition() in here.
+           ### READBYTES bytes, and we wouldn't have to do any work.
         */
 
-        while (!APR_BRIGADE_EMPTY(ctx->b)) {
-            const char *ignore;
-
-            e = APR_BRIGADE_FIRST(ctx->b);
-            if ((rv = apr_bucket_read(e, &ignore, &len, mode)) != APR_SUCCESS) {
-                /* probably APR_IS_EAGAIN(rv); socket state isn't correct;
-                 * remove log once we get this squared away */
-                ap_log_error(APLOG_MARK, APLOG_ERR, rv, f->c->base_server, 
-                             "apr_bucket_read");
-                return rv;
-            }
-
-            if (len) {
-                /* note: this can sometimes insert empty buckets into the
-                 * brigade, or the data might come in a few characters at
-                 * a time - don't assume that one call to apr_bucket_read()
-                 * will return the full string.
-                 */
-                if (*readbytes < len) {
-                    apr_bucket_split(e, *readbytes);
-                    *readbytes = 0;
-                }
-                else {
-                    *readbytes -= len;
-                }
-                APR_BUCKET_REMOVE(e);
-                APR_BRIGADE_INSERT_TAIL(b, e);
-                break; /* once we've gotten some data, deliver it to caller */
-            }
-            apr_bucket_delete(e);
-        }
+        apr_brigade_partition(ctx->b, *readbytes, &e, APR_NONBLOCK_READ);
+        APR_BRIGADE_CONCAT(b, ctx->b);
+        ctx->b = apr_brigade_split(b, e);
+        apr_brigade_length(b, 1, &total);
+        *readbytes -= total;
 
         /* ### this is a hack. it is saying, "if we have read everything
            ### that was requested, then we are at the end of the request."
@@ -2426,12 +2400,12 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_byterange_filter(
         /* these calls to apr_brigade_partition() should theoretically
          * never fail because of the above call to apr_brigade_length(),
          * but what the heck, we'll check for an error anyway */
-        if ((rv = apr_brigade_partition(bb, range_start, &ec)) != APR_SUCCESS) {
+        if ((rv = apr_brigade_partition(bb, range_start, &ec, APR_BLOCK_READ)) != APR_SUCCESS) {
             ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
                           PARTITION_ERR_FMT, range_start, clength);
             continue;
         }
-        if ((rv = apr_brigade_partition(bb, range_end+1, &e2)) != APR_SUCCESS) {
+        if ((rv = apr_brigade_partition(bb, range_end+1, &e2, APR_BLOCK_READ)) != APR_SUCCESS) {
             ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
                           PARTITION_ERR_FMT, range_end+1, clength);
             continue;
