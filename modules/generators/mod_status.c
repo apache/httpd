@@ -469,20 +469,20 @@ static int status_handler(request_rec *r)
 	ap_rputs("\"<B><code>.</code></B>\" Open slot with no current process<P>\n", r);
 	ap_rputs("<P>\n", r);
 	if (!ap_extended_status) {
-	    int j = 0;
-            int k;
+	    int j;
+            int k = 0;
 	    ap_rputs("PID Key: <br>\n", r);
 	    ap_rputs("<PRE>\n", r);
 	    for (i = 0; i < HARD_SERVER_LIMIT; ++i) {
-                for (k = 0; k < HARD_THREAD_LIMIT; ++k) {
+                for (j = 0; j < HARD_THREAD_LIMIT; ++j) {
                     int indx = (i * HARD_THREAD_LIMIT) + j;
 
 		    if (stat_buffer[indx] != '.') {
 		        ap_rprintf(r, "   %d in state: %c ", pid_buffer[i],
 		        stat_buffer[indx]);
-		        if (++j >= 3) {
+		        if (++k >= 3) {
 		    	    ap_rputs("\n", r);
-			    j = 0;
+			    k = 0;
 		        } else
 		    	    ap_rputs(",", r);
 		    }
