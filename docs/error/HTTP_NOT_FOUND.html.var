@@ -325,3 +325,29 @@ Body:----------sv--
 
 <!--#include virtual="include/bottom.html" -->
 ----------sv--
+
+Content-language: tr
+Content-type: text/html; charset=ISO-8859-9
+Body:----------tr--
+<!--#set var="CONTENT_LANGUAGE" value="tr"
+--><!--#set var="CHARACTER_ENCODING" value="ISO-8859-9"
+--><!--#set var="TITLE" value="Object not found!"
+--><!--#include virtual="include/top.html" -->
+
+    Talep etti&#287;iniz URL, sunucu üzerinde bulunmuyor.
+
+  <!--#if expr="$HTTP_REFERER" -->
+
+    <a href="<!--#echo encoding="url" var="HTTP_REFERER" -->">Referans sayfa</a>
+    üzerindeki ba&#287;lant&#305; güncel de&#287;il.
+    Lütfen <a href="<!--#echo encoding="url" var="HTTP_REFERER" -->">referans sayfa</a>'n&#305;n
+    yazar&#305;n&#305; konuyla ilgili bilgilendirin.
+
+  <!--#else -->
+
+    URL'i kendiniz elle girdiyseniz, yaz&#305;m&#305;n&#305;z&#305; denetleyip tekrar deneyin.
+
+  <!--#endif -->
+
+<!--#include virtual="include/bottom.html" -->
+----------tr--

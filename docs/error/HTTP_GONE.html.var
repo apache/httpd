@@ -313,3 +313,31 @@ Body:----------sv--
 
 <!--#include virtual="include/bottom.html" -->
 ----------sv--
+
+Content-language: tr
+Content-type: text/html; charset=ISO-8859-9
+Body:----------tr--
+<!--#set var="CONTENT_LANGUAGE" value="tr"
+--><!--#set var="CHARACTER_ENCODING" value="ISO-8859-9"
+--><!--#set var="TITLE" value="Resource is no longer available!"
+--><!--#include virtual="include/top.html" -->
+
+    Talep etti&#287;iniz URL bu sunucu üzerinde bar&#305;nd&#305;r&#305;lm&#305;yor
+    ve herhangi bir yöneltme de mevcut de&#287;il.  
+
+  <!--#if expr="$HTTP_REFERER" -->
+  
+    Lütfen
+    <a href="<!--#echo encoding="url" var="HTTP_REFERER" -->">referans sayfan&#305;n</a>
+    yazar&#305;na, bu ba&#287;lant&#305;n&#305;n güncel
+    olmad&#305;&#287;&#305;n&#305; bildirin.
+   
+  <!--#else -->
+  
+    Yabanc&#305; bir sayfadan bu ba&#287;lant&#305;y&#305; izlediyseniz,
+    lütfen sözkonusu sayfan&#305;n yazar&#305; ile ileti&#351;ime geçin.
+   
+  <!--#endif -->
+  
+<!--#include virtual="include/bottom.html" --> 
+----------tr--

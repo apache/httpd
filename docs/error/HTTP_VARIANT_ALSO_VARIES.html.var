@@ -163,3 +163,17 @@ Body:----------sv--
 
 <!--#include virtual="include/bottom.html" -->
 ----------sv--
+
+Content-language: tr
+Content-type: text/html; charset=ISO-8859-9
+Body:----------tr--
+<!--#set var="CONTENT_LANGUAGE" value="tr"
+--><!--#set var="CHARACTER_ENCODING" value="ISO-8859-9"
+--><!--#set var="TITLE" value="Variant also varies!"
+--><!--#include virtual="include/top.html" -->
+
+    Talep edilen eleman&#305;n bir de&#287;i&#351;keninin kendisi zaten payla&#351;&#305;l&#305;r bir kaynak.
+    Eri&#351;im mümkün de&#287;il.
+
+<!--#include virtual="include/bottom.html" -->
+----------tr--

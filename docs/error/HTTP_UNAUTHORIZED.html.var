@@ -249,3 +249,23 @@ Body:----------sv--
 
 <!--#include virtual="include/bottom.html" -->
 ----------sv--
+
+Content-language: tr
+Content-type: text/html; charset=ISO-8859-9
+Body:----------tr--
+<!--#set var="CONTENT_LANGUAGE" value="tr"
+--><!--#set var="CHARACTER_ENCODING" value="ISO-8859-9"
+--><!--#set var="TITLE" value="Authentication required!"
+--><!--#include virtual="include/top.html" -->
+
+    Sunucu bu dokümana eri&#351;im izninizi do&#287;rulayamad&#305;.
+    Ya kimli&#287;iniz do&#287;rulanamad&#305; (örne&#287;in hatal&#305; parola girdiniz),
+    ya da gezgininiz bu i&#351;lemi yerine getiremiyor.
+
+  <!--#include virtual="include/spacer.html" -->
+
+    E?er bu dokümana eri&#351;me izniniz varsa, lütfen kimli&#287;inizi
+    ve parolan&#305;z&#305; kontrol edip, tekrar deneyin.
+
+<!--#include virtual="include/bottom.html" -->
+----------tr--
