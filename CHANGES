@@ -1,5 +1,8 @@
 Changes with Apache 2.0.45
 
+  *) Fix potential memory leaks in mod_deflate on malformed data.  PR 16046.
+     [Justin Erenkrantz]
+
   *) Rewrite ap_xml_parse_input to use bucket brigades.  PR 16134.
      [Justin Erenkrantz]
 

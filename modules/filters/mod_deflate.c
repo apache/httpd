@@ -603,6 +603,7 @@ static apr_status_t deflate_in_filter(ap_filter_t *f,
 
         if (zRC != Z_OK) {
             f->ctx = NULL;
+            inflateEnd(&ctx->stream);
             ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                           "unable to init Zlib: "
                           "inflateInit2 returned %d: URL %s",
@@ -622,6 +623,8 @@ static apr_status_t deflate_in_filter(ap_filter_t *f,
         rv = ap_get_brigade(f->next, ctx->bb, mode, block, readbytes);
 
         if (rv != APR_SUCCESS) {
+            /* What about APR_EAGAIN errors? */
+            inflateEnd(&ctx->stream);
             return rv;
         }
 
@@ -631,6 +634,7 @@ static apr_status_t deflate_in_filter(ap_filter_t *f,
 
             /* If we actually see the EOS, that means we screwed up! */
             if (APR_BUCKET_IS_EOS(bkt)) {
+                inflateEnd(&ctx->stream);
                 return APR_EGENERAL;
             }
 
@@ -638,6 +642,7 @@ static apr_status_t deflate_in_filter(ap_filter_t *f,
                 apr_bucket *tmp_heap;
                 zRC = inflate(&(ctx->stream), Z_SYNC_FLUSH);
                 if (zRC != Z_OK) {
+                    inflateEnd(&ctx->stream);
                     return APR_EGENERAL;
                 }
 
@@ -685,6 +690,7 @@ static apr_status_t deflate_in_filter(ap_filter_t *f,
                 }
 
                 if (zRC != Z_OK) {
+                    inflateEnd(&ctx->stream);
                     return APR_EGENERAL;
                 }
             }
@@ -709,17 +715,20 @@ static apr_status_t deflate_in_filter(ap_filter_t *f,
                     unsigned long compCRC, compLen;
                     compCRC = getLong(ctx->stream.next_in);
                     if (ctx->crc != compCRC) {
+                        inflateEnd(&ctx->stream);
                         return APR_EGENERAL;
                     }
                     ctx->stream.next_in += 4;
                     compLen = getLong(ctx->stream.next_in);
                     if (ctx->stream.total_out != compLen) {
+                        inflateEnd(&ctx->stream);
                         return APR_EGENERAL;
                     }
                 }
                 else {
                     /* FIXME: We need to grab the 8 verification bytes
                      * from the wire! */
+                    inflateEnd(&ctx->stream);
                     return APR_EGENERAL;
                 }
 
