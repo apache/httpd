@@ -101,6 +101,11 @@
 #define RAW_ASCII_CHAR(ch)  (ch)
 #endif /*CHARSET_EBCDIC*/
 
+module MODULE_VAR_EXPORT includes_module;
+
+/* just need some arbitrary non-NULL pointer which can't also be a request_rec */
+#define NESTED_INCLUDE_MAGIC	(&includes_module)
+
 /* ------------------------ Environment function -------------------------- */
 
 static void add_include_vars(request_rec *r, char *timefmt)
@@ -680,6 +685,9 @@ static int handle_include(FILE *in, request_rec *r, const char *error, int noexe
                 }
             }
 
+	    /* see the Kludge in send_parsed_file for why */
+	    set_module_config(rr->request_config, &includes_module, r);
+
 #ifdef CHARSET_EBCDIC
             bsetflag(rr->connection->client, B_EBCDIC2ASCII, 0);
 #endif
@@ -694,8 +702,11 @@ static int handle_include(FILE *in, request_rec *r, const char *error, int noexe
                 rputs(error, r);
             }
 
-            if (rr != NULL) {
-                destroy_sub_req(rr);
+	    /* destroy the sub request if it's not a nested include */
+            if (rr != NULL
+		&& get_module_config(rr->request_config, &includes_module)
+		    != NESTED_INCLUDE_MAGIC) {
+		destroy_sub_req(rr);
             }
         }
         else if (!strcmp(tag, "done")) {
@@ -2236,6 +2247,7 @@ static int send_parsed_file(request_rec *r)
     enum xbithack *state =
     (enum xbithack *) get_module_config(r->per_dir_config, &includes_module);
     int errstatus;
+    request_rec *parent;
 
     if (!(allow_options(r) & OPT_INCLUDES)) {
         return DECLINED;
@@ -2279,16 +2291,22 @@ static int send_parsed_file(request_rec *r)
         return OK;
     }
 
-    if (r->main) {
+    if ((parent = get_module_config(r->request_config, &includes_module))) {
 	/* Kludge --- for nested includes, we want to keep the subprocess
-	 * environment of the base document (for compatibility).  This is only
-	 * necessary when there has been an internal redirect somewhere along
-	 * the way.  When that happens the original environment has been
-	 * renamed REDIRECT_foobar for each foobar.
-         */
-        r->subprocess_env = copy_table(r->pool, r->main->subprocess_env);
+	 * environment of the base document (for compatibility); that means
+	 * torquing our own last_modified date as well so that the
+	 * LAST_MODIFIED variable gets reset to the proper value if the
+	 * nested document resets <!--#config timefmt-->.
+	 * We also insist that the memory for this subrequest not be
+	 * destroyed, that's dealt with in handle_include().
+	 */
+	r->subprocess_env = parent->subprocess_env;
+	pool_join(parent->pool, r->pool);
+	r->finfo.st_mtime = parent->finfo.st_mtime;
     }
     else {
+	/* we're not a nested include, so we create an initial
+	 * environment */
         add_common_vars(r);
         add_cgi_vars(r);
         add_include_vars(r, DEFAULT_TIME_FORMAT);
@@ -2301,6 +2319,12 @@ static int send_parsed_file(request_rec *r)
 #endif
 
     send_parsed_content(f, r);
+
+    if (parent) {
+	/* signify that the sub request should not be killed */
+	set_module_config(r->request_config, &includes_module,
+	    NESTED_INCLUDE_MAGIC);
+    }
 
     kill_timeout(r);
     return OK;
@@ -2349,7 +2373,7 @@ static handler_rec includes_handlers[] =
     {NULL}
 };
 
-module includes_module =
+module MODULE_VAR_EXPORT includes_module =
 {
     STANDARD_MODULE_STUFF,
     NULL,                       /* initializer */
