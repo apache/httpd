@@ -1,5 +1,8 @@
 Changes with Apache 1.3b4
 
+  *) WIN32: set_file_slot() didn't detect absolute paths. [Ben Laurie]
+     PR#1511
+
   *) WIN32: mod_status display header didn't match fields. [Ben Laurie]
 
   *) The pthread_mutex_* functions return an error code, and don't

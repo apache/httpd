@@ -877,7 +877,7 @@ const char *set_file_slot(cmd_parms *cmd, char *struct_ptr, char *arg)
        so the server can be moved or mirrored with less pain.  */
     char *p;
     int offset = (int) cmd->info;
-    if (*arg == '/')
+    if (os_is_path_absolute(arg))
 	p = pstrdup(cmd->pool, arg);
     else
 	p = make_full_path(cmd->pool, server_root, arg);
