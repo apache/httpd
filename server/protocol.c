@@ -590,6 +590,11 @@ request_rec *ap_read_request(conn_rec *conn)
                      ? r->server->keep_alive_timeout * APR_USEC_PER_SEC
                      : r->server->timeout * APR_USEC_PER_SEC));
                      
+    ap_add_output_filter("BYTERANGE", NULL, r, r->connection);
+    ap_add_output_filter("CONTENT_LENGTH", NULL, r, r->connection);
+    ap_add_output_filter("HTTP_HEADER", NULL, r, r->connection);
+       
+         
     /* Get the request... */
     if (!read_request_line(r)) {
         if (r->status == HTTP_REQUEST_URI_TOO_LARGE) {
