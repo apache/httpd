@@ -1274,7 +1274,7 @@ static const char *guess_domain(apr_pool_t *p, const char *uri,
      * dummy uri - this is the only way to specify that the protection
      * space only covers a single uri.
      */
-    if (dir[0] != '/') {
+    if (!ap_os_is_path_absolute(p, dir)) {
         /* This doesn't work for Amaya (ok, it's of arguable validity in
          * the first place), so just return the file name instead
         return "http://0.0.0.0/";

@@ -2,6 +2,9 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) Fix mod_auth_digest not to use local paths for the domain parameter
+     on non-unix systems. PR 16937.  [André Malo]
+
   *) Let suexec send a message to stderr, if it failed or its policy
      was violated. This message appears in the error log and allows
      for easier debugging. PR 5381, 7638, 8255, 10773.  [André Malo]
