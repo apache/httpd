@@ -461,7 +461,7 @@ _install:
 	if not exist "$(INSTDIR)\conf\ssl.conf" \
             copy "$(INSTDIR)\conf\ssl.default.conf" "$(INSTDIR)\conf\ssl.conf"
 	awk -f <<script.awk "support\dbmmanage.in" >"$(INSTDIR)\bin\dbmmanage.pl"
-    { if ( $$0 ~ /^BEGIN { @AnyDBM_File::/ ) {
+    { if ( $$0 ~ /^BEGIN \{ @AnyDBM_File::/ ) {
           sub( /ISA = qw\(.*\)/, "ISA = qw(SDBM_File)" ); 
       }
       if ( $$0 !~ /^#!@perlbin@/ )
