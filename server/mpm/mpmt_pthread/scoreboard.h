@@ -57,7 +57,7 @@
 
 #ifndef APACHE_SCOREBOARD_H
 #define APACHE_SCOREBOARD_H
-#include "pthread.h"
+#include <pthread.h>
 #ifdef __cplusplus
 extern "C" {
 #endif
