@@ -811,12 +811,17 @@ than the user that starts the server.
 filename. It is comparable to the <A
 HREF="#directory">&lt;Directory&gt;</A> directive and
 <A HREF="#location">&lt;Location&gt;</A> directives. It
-should be matched with a &lt;/Files&gt; directive. Directives that
-apply to the filename given should be listed
-within. <CODE>&lt;Files&gt;</CODE> sections are processed in the
+should be matched with a &lt;/Files&gt; directive.  The
+directives given within this section will be applied to any
+object with a basename (last component of filename) matching
+the specified filename.
+<CODE>&lt;Files&gt;</CODE> sections are processed in the
 order they appear in the configuration file, after the
 &lt;Directory&gt; sections and <CODE>.htaccess</CODE> files are
-read, but before &lt;Location&gt; sections.</P>
+read, but before &lt;Location&gt; sections.  Note that
+&lt;Files&gt; can be nested inside &lt;Directory&gt;
+sections to restrict the portion of the filesystem they
+apply to.</P>
 
 <P>The <EM>filename</EM> argument should include a filename, or a
 wild-card string, where `?' matches any single character, and `*' matches any
@@ -837,9 +842,7 @@ HREF="#directory"><CODE>&lt;Directory&gt;</CODE></A> and <A
 HREF="#location"><CODE>&lt;Location&gt;</CODE></A> sections,
 <CODE>&lt;Files&gt;</CODE> sections can be used inside .htaccess
 files. This allows users to control access to their own files, at a
-file-by-file level. When used in an .htaccess file, if the
-<EM>filename</EM> does not begin with a <CODE>/</CODE> character,
-the directory being applied will be prefixed automatically.
+file-by-file level.
 
 <P>
 
