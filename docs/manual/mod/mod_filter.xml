@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
-<!-- $Revision: 1.9 $ -->
+<!-- $Revision: 1.10 $ -->
 
 <!--
  Copyright 2004 The Apache Software Foundation
@@ -99,14 +99,15 @@
     <dl>
     <dt>Declare Filters</dt>
     <dd>The <directive module="mod_filter">FilterDeclare</directive> directive
-    declares a filter, assigning it a namen.</dd>
+    declares a filter, assigning it a name and filter type.  Required
+    only if the filter is not the default type AP_FTYPE_RESOURCE.</dd>
 
     <dt>Register Providers</dt>
     <dd>The <directive module="mod_filter">FilterProvider</directive>
     directive registers a provider with a filter. The filter may have
     been registered with <directive module="mod_filter"
     >FilterDeclare</directive>; if not, FilterProvider will implicitly
-    declare it with the default level AP_FTYPE_RESOURCE. The provider
+    declare it with the default type AP_FTYPE_RESOURCE. The provider
     must have been
     registered with <code>ap_register_output_filter</code> by some module.
     The remaining arguments to <directive module="mod_filter"
