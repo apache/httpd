@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:						-*-text-*-
-Last modified at [$Date: 2002/01/02 08:13:33 $]
+Last modified at [$Date: 2002/01/02 08:14:47 $]
 
 Release:
 
@@ -45,7 +45,6 @@ RELEASE SHOWSTOPPERS:
 
     * Test suite failures:
       o perchild doesn't even build
-      o both worker and prefork are failing some of the 'chunked' subtests
       o worker is also failing some of the 'cgi' subtests
       (see <URL:http://Source-Zone.Org/Apache/regression/>):
 
