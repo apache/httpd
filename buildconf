@@ -181,19 +181,4 @@ echo rebuilding configure
 rm -f config.cache
 ${AUTOCONF:-autoconf} 2>&1 | grep -v "$cross_compile_warning"
 
-echo rebuilding rpm spec file
-( VMMN=`echo MODULE_MAGIC_NUMBER_MAJOR | cpp -include \`pwd\`/include/ap_mmn.h | grep -e '^[0-9]'`
-  REVISION=`echo AP_SERVER_MAJORVERSION.AP_SERVER_MINORVERSION.AP_SERVER_PATCHLEVEL | cpp -include \`pwd\`/include/ap_release.h | tr -d "\" " | grep -e '^[0-9.\-]'`
-  VERSION=`echo $REVISION | cut -d- -s -f1`
-  RELEASE=`echo $REVISION | cut -d- -s -f2`
-  if [ "x$VERSION" = "x" ]; then
-    VERSION=$REVISION
-    RELEASE=1
-  fi
-  cat ./build/rpm/httpd.spec.in | \
-  sed -e "s/APACHE_VERSION/$VERSION/" \
-      -e "s/APACHE_RELEASE/$RELEASE/" \
-      -e "s/APACHE_MMN/$VMMN/" \
-  > httpd.spec )
-
 exit 0
