@@ -84,27 +84,10 @@ PATCHES TO BACKPORT FROM 2.1
 
        +1: stoddard
 
-    *) Start keeping track of the amount of time taken to
-       process a request again. Results in the 'Req' field in
-       mod_status no longer being bogus.
-       http://svn.apache.org/viewcvs.cgi?rev=149550&view=rev
-       +1: jim, stas, geoff
-
-    *) LimitRequestFieldSize directive: Remove upper limit on the request
-       field size.
-       http://svn.apache.org/viewcvs.cgi?rev=149269&view=rev
-       +1: stoddard, jerenkrantz, jim
-
     *) util_ldap: Add the directive LDAPConnectionTimeout to control
        the socket timeout value when binding to an LDAP server
        svn rev 126565
        +1: bnicholes
-
-    *) mod_ssl: fail quickly if SSL connection is aborted rather than
-       making many doomed ap_pass_brigade calls
-       http://svn.apache.org/viewcvs?view=rev&rev=125166
-       PR: 32699
-       +1: jorton, jerenkrantz, jim
 
     *) mod_ssl: fix to access mod_ssl-specific X509_STORE_CTX userdata
        using the proper accessor function; matters only in some
@@ -150,20 +133,6 @@ PATCHES TO BACKPORT FROM 2.1
                 prevents other packages from being installed correctly, or
                 it leads to stupid situations like the sunfreeware packaged
                 subversion client depending on httpd. This mess must end.
-
-    *) Add charset to the painfully old example CGI scripts.
-       [These should really be replaced with proper encoding of the output.]
-       svn rev 111580
-       +1: fielding, erikabele, jerenkrantz
-
-    *) conf: Remove AddDefaultCharset from the default configuration because
-       setting a site-wide default does more harm than good. PR 23421.
-       svn rev 111581
-       +1: fielding, erikabele, jerenkrantz
-
-    *) mpm/winnt/child.c: thread_num is long, aught to use %ld not %d for logs
-       svn rev 106653
-       +1: wrowe, nd, trawick
 
     *) several changes to improve logging of connection-oriented errors, including
        ap_log_cerror() API (needs minor bump in addition to changes below)
