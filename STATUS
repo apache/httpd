@@ -1,10 +1,10 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2002/06/13 21:16:32 $]
+Last modified at [$Date: 2002/06/13 21:30:15 $]
 
 Release:
 
     2.0.38  : in development.
-    2.0.37  : tagged June 11, 2002.
+    2.0.37  : rolled June 11, 2002.  not released.
     2.0.36  : released May 6, 2002 as GA.
     2.0.35  : released April 5, 2002 as GA.
     2.0.34  : tagged March 26, 2002.
@@ -49,10 +49,7 @@ on related projects:
 CURRENT RELEASE NOTES:
 
     2.0.38: Cliff plans on tagging TONIGHT (6/13/02).  Let's get this thing
-            wrapped up (again).  Just a few last-minute tussles over the
-            500 vs. 501 thing and whether we're REALLY done with the
-            if (!r->header_only) thing (Cliff thinks we're not), and that
-            should be it.
+            wrapped up (again).
 
 RELEASE SHOWSTOPPERS:
 
