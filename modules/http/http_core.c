@@ -3145,10 +3145,10 @@ static void core_register_filter(request_rec *r)
 
     for (i = 0; i < conf->filters->nelts; i++) {
         char *foobar = items[i];
-        ap_add_filter(foobar, r);
+        ap_add_filter(foobar, NULL, r);
     }
 
-    ap_add_filter("CORE", r);
+    ap_add_filter("CORE", NULL, r);
 }
 
 static void register_hooks(void)

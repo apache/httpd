@@ -99,7 +99,7 @@ API_EXPORT(void) ap_register_filter(const char *name,
     apr_register_cleanup(FILTER_POOL, NULL, filter_cleanup, apr_null_cleanup);
 }
 
-API_EXPORT(void) ap_add_filter(const char *name, request_rec *r)
+API_EXPORT(void) ap_add_filter(const char *name, void *ctx, request_rec *r)
 {
     ap_filter_rec_t *frec = registered_filters;
 
@@ -108,7 +108,7 @@ API_EXPORT(void) ap_add_filter(const char *name, request_rec *r)
             ap_filter_t *f = apr_pcalloc(r->pool, sizeof(*f));
 
             f->frec = frec;
-            f->ctx = NULL;
+            f->ctx = ctx;
             f->r = r;
 
             if (INSERT_BEFORE(f, r->filters)) {
