@@ -186,7 +186,7 @@
     sbindir:       ${prefix}/sbin
     libdir:        ${prefix}/lib
     libexecdir:    ${prefix}/lib/apache
-    mandir:        ${prefix}/man
+    mandir:        ${prefix}/share/man
     sysconfdir:    /etc/httpd
     datadir:       /usr/local/httpd
     installbuilddir: ${datadir}/build
@@ -196,10 +196,10 @@
     manualdir:     ${datadir}/manual
     cgidir:        ${datadir}/cgi-bin
     includedir:    ${prefix}/include/apache
-    localstatedir: /var
-    runtimedir:    ${localstatedir}/run
-    logfiledir:    ${localstatedir}/log/httpd
-    proxycachedir: ${localstatedir}/cache/httpd
+    localstatedir: /var/lib/httpd
+    runtimedir:    /var/run
+    logfiledir:    /var/log/httpd
+    proxycachedir: /var/cache/httpd
 </Layout>
 
 #   BSD/OS layout
