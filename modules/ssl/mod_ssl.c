@@ -313,7 +313,7 @@ int ssl_engine_disable(conn_rec *c)
 
     SSLConnRec *sslconn;
 
-    if (!sc->enabled) {
+    if (sc->enabled == SSL_ENABLED_FALSE) {
         return 0;
     }
 
@@ -396,7 +396,7 @@ static const char *ssl_hook_http_method(const request_rec *r)
 {
     SSLSrvConfigRec *sc = mySrvConfig(r->server);
 
-    if (sc->enabled == FALSE) {
+    if (sc->enabled == SSL_ENABLED_FALSE) {
         return NULL;
     }
 
@@ -407,7 +407,7 @@ static apr_port_t ssl_hook_default_port(const request_rec *r)
 {
     SSLSrvConfigRec *sc = mySrvConfig(r->server);
 
-    if (sc->enabled == FALSE) {
+    if (sc->enabled == SSL_ENABLED_FALSE) {
         return 0;
     }
 
@@ -422,7 +422,7 @@ static int ssl_hook_pre_connection(conn_rec *c, void *csd)
     /*
      * Immediately stop processing if SSL is disabled for this connection
      */
-    if (!(sc && (sc->enabled == TRUE ||
+    if (!(sc && (sc->enabled == SSL_ENABLED_TRUE ||
                  (sslconn && sslconn->is_proxy))))
     {
         return DECLINED;
@@ -457,7 +457,7 @@ static void ssl_hook_Insert_Filter(request_rec *r)
 {
     SSLSrvConfigRec *sc = mySrvConfig(r->server);
 
-    if (sc->enabled == UNSET) {
+    if (sc->enabled == SSL_ENABLED_OPTIONAL) {
         ap_add_output_filter("UPGRADE_FILTER", NULL, r, r->connection);
     }
 }
