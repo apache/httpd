@@ -548,6 +548,8 @@ AP_DECLARE(int) ap_directory_walk(request_rec *r)
         if (r->path_info)
             r->path_info = ap_make_full_path(r->pool, r->filename, 
                                                       r->path_info);
+        else
+            r->path_info = r->filename;
         rv = apr_filepath_root((const char **)&r->filename,
                                (const char **)&r->path_info,
                                APR_FILEPATH_TRUENAME, r->pool);
@@ -1396,7 +1398,7 @@ AP_DECLARE(request_rec *) ap_sub_req_lookup_dirent(const apr_finfo_t *dirent,
      * perhaps we also tag that symlinks were tested and/or found for 
      * r->filename.
      */
-    rnew->per_dir_config = r->per_dir_default;
+    rnew->per_dir_config = r->server->lookup_defaults;
 
     if ((dirent->valid & APR_FINFO_MIN) != APR_FINFO_MIN) {
         /*
@@ -1427,8 +1429,8 @@ AP_DECLARE(request_rec *) ap_sub_req_lookup_dirent(const apr_finfo_t *dirent,
         /*
          * Resolve this symlink.  We should tie this back to dir_walk's cache
          */
-        if (!(res = resolve_symlink(rnew->filename, &rnew->finfo, 
-                                    ap_allow_options(rnew), rnew->pool)) {
+        if ((res = resolve_symlink(rnew->filename, &rnew->finfo, 
+                              ap_allow_options(rnew), rnew->pool)) != OK) {
             rnew->status = res;
             return rnew;
         }
@@ -1439,9 +1441,9 @@ AP_DECLARE(request_rec *) ap_sub_req_lookup_dirent(const apr_finfo_t *dirent,
          * the buffer by one character instead of a complete copy.
          */
         rnew->filename = apr_pstrcat(rnew->pool, rnew->filename, "/", NULL);
-        rnew->uri = ap_make_full_path(rnew->pool, rnew->uri, "/", NULL);
+        rnew->uri = apr_pstrcat(rnew->pool, rnew->uri, "/", NULL);
         if (r->canonical_filename == r->filename)
-            r->canonical_filename = r->filename;
+            rnew->canonical_filename = rnew->filename;
     }
 
     ap_parse_uri(rnew, rnew->uri);    /* fill in parsed_uri values */
