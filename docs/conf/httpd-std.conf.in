@@ -703,8 +703,8 @@ ServerSignature On
     # this.  Despite the name similarity, the following Add* directives have
     # nothing to do with the FancyIndexing customization directives above.
     #
-    AddEncoding x-compress Z
-    AddEncoding x-gzip gz tgz
+    #AddEncoding x-compress Z
+    #AddEncoding x-gzip gz tgz
 
     #
     # DefaultLanguage and AddLanguage allows you to specify the language of 
