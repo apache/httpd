@@ -314,7 +314,7 @@ static apr_status_t initialize_secret(server_rec *s)
 
     if (status != APR_SUCCESS) {
         char buf[120];
-        ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_CRIT, 0, s,
+        ap_log_error(APLOG_MARK, APLOG_CRIT, status, s,
                      "Digest: error generating secret: %s", 
                      apr_strerror(status, buf, sizeof(buf)));
         return status;
