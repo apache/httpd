@@ -749,10 +749,6 @@ CORE_EXPORT(void) ap_parse_uri(request_rec *r, const char *uri)
 
 	    for (x = r->uri; (x = strchr(x, '\\')) != NULL; )
 		*x = '/';
-#ifndef WIN32   /* for OS/2 only: */
-	    /* Fix OS/2 HPFS filename case problem. */
-	    ap_str_tolower(r->uri);
-#endif
 	}
 #endif  /* OS2 || WIN32 */
     }

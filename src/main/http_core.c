@@ -1409,10 +1409,6 @@ static const char *dirsection(cmd_parms *cmd, void *dummy, const char *arg)
     *endp = '\0';
 
     cmd->path = ap_getword_conf(cmd->pool, &arg);
-#ifdef OS2
-    /* Fix OS/2 HPFS filename case problem. */
-    cmd->path = strlwr(cmd->path);
-#endif    
     cmd->override = OR_ALL|ACCESS_CONF;
 
     if (thiscmd->cmd_data) { /* <DirectoryMatch> */
