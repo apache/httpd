@@ -789,7 +789,9 @@ int ssl_engine_disable(conn_rec *c)
 
 static int ssl_is_https(conn_rec *c)
 {
-    return isSecureConn (c->base_server, c);
+    secsocket_data *csd_data = (secsocket_data*)ap_get_module_config(c->conn_config, &nwssl_module);
+
+    return isSecureConn (c->base_server, c) || (csd_data && csd_data->is_secure);
 }
 
 /* This function must remain safe to use for a non-SSL connection. */
@@ -836,6 +838,12 @@ char *ssl_var_lookup(apr_pool_t *p, server_rec *s, conn_rec *c, request_rec *r, 
                 result = apr_table_get(r->headers_in, "Proxy-Connection");
             else if (strcEQ(var, "HTTP_ACCEPT"))
                 result = apr_table_get(r->headers_in, "Accept");
+            else if (strcEQ(var, "HTTPS")) {
+                if (isSecure(r) || isSecureUpgraded(r))
+                    result = "on";
+                else
+                    result = "off";
+            }
             else if (strlen(var) > 5 && strcEQn(var, "HTTP:", 5))
                 /* all other headers from which we are still not know about */
                 result = apr_table_get(r->headers_in, var+5);
@@ -908,12 +916,6 @@ char *ssl_var_lookup(apr_pool_t *p, server_rec *s, conn_rec *c, request_rec *r, 
 			result = NULL;
         else if (strcEQ(var, "REMOTE_ADDR"))
             result = c->remote_ip;
-        else if (strcEQ(var, "HTTPS")) {
-			if (isSecureConn (s, c))
-                result = "on";
-            else
-                result = "off";
-        }
     }
 
     /*
