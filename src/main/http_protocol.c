@@ -1692,14 +1692,21 @@ void send_error_response (request_rec *r, int recursive_error)
     }
 
     if (!r->assbackwards) {
+	table *tmp = r->headers_out;
   
 	/* For all HTTP/1.x responses for which we generate the message,
 	 * we need to avoid inheriting the "normal status" header fields
 	 * that may have been set by the request handler before the
-	 * error or redirect.
+	 * error or redirect, except for Location on external redirects.
 	 */
 	r->headers_out = r->err_headers_out;
-	r->err_headers_out = NULL;
+	r->err_headers_out = tmp;
+	clear_table(r->err_headers_out);
+
+	if (location && *location
+	             && (is_HTTP_REDIRECT(status) || status == HTTP_CREATED))
+	    table_set(r->headers_out, "Location", location);
+
 	r->content_language = NULL;
 	r->content_languages = NULL;
 	r->content_encoding = NULL;

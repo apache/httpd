@@ -552,6 +552,11 @@ table *copy_table (pool *p, const table *t) {
     return copy_array (p, t);
 }
 
+void clear_table (table *t)
+{
+    t->nelts = 0;
+}
+
 array_header *table_elts (table *t) { return t; }
 
 char *table_get (const table *t, const char *key)

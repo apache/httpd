@@ -144,6 +144,7 @@ typedef struct {
 
 table *make_table (pool *p, int nelts);
 table *copy_table (pool *p, const table *);     
+void clear_table (table *);     
 char *table_get (const table *, const char *);
 void table_set (table *, const char *name, const char *val);
 void table_merge (table *, const char *name, const char *more_val);
