@@ -2,7 +2,7 @@
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
 <modulesynopsis metafile="mod_negotiation.xml.meta">
-<!-- English revision: 1.12 -->
+<!-- English revision: 1.13 -->
 
 <name>mod_negotiation</name>
 <description><a href="../content-negotiation.html">コンテントネゴシエーション</a>
@@ -134,6 +134,11 @@
     そのファイル名を直接指定したときと同じものが割り当てられます。
     それからクライアントの要求に一番合うものを選び、
     そのドキュメントを返します。</p>
+
+    <p>ファイルを選択する際に、関連するコンテントネゴシエーションの
+    メタ情報を持たないファイルについて、判定を行うかどうかを
+    <directive module="mod_mime">MultiViewsMatch</directive>
+    ディレクティブで設定します。</p>
 </section>
 
 <directivesynopsis>
@@ -247,8 +252,7 @@
     の言語が決定できないときか、<directive
     module="mod_negotiation">ForceLanguagePriority</directive> ディレクティブが
     <code>None</code> 以外のときにのみ効果があることに注意してください。
-    HTTP/1.1 リクエストが正しく実装されている場合には、
-    このディレクティブは無効になります。</p>
+    一般的には、サーバ側ではなくクライアント側で好みの言語を決定します。</p>
 </usage>
 <seealso><directive module="mod_mime">AddLanguage</directive></seealso>
 </directivesynopsis>

@@ -2,7 +2,7 @@
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
 <modulesynopsis metafile="mod_include.xml.meta">
-<!-- English revision: 1.23 -->
+<!-- English revision: 1.26 -->
 
 <name>mod_include</name>
 <description>サーバがパースする html ドキュメント (Server Side Includes)</description>
@@ -117,9 +117,18 @@
       <p>次のコマンドは解析の様々な側面を制御します。属性は次の通りです。</p>
 
       <dl>
+      <dt><code>echomsg</code> (<em>Apache 2.1 以降</em>)</dt>
+      <dd>指定される値は、<code><code><a href="#element.echo">echo</a></code>
+      要素が未定義の変数をエコーしようとした際に、
+      クライアントに送られるメッセージになります。
+      <directive module="mod_include">SSIUndefinedEcho</directive> 
+      ディレクティブを上書きします。</dd>
+
       <dt><code>errmsg</code></dt>
       <dd>この値が、ドキュメントの解析中にエラーが発生した時に
-      クライアントに送信されるメッセージになります。</dd>
+      クライアントに送信されるメッセージになります。
+      <directive module="mod_include">SSIErrorMsg</directive>
+      ディレクティブを上書きします。</dd>
 
       <dt><code>sizefmt</code></dt>
       <dd>この値は、ファイルのサイズを表示する際に使用する
@@ -453,15 +462,18 @@
       <dd><var>string</var> が空でない場合に真です</dd>
 
       <dt><code><var>string1</var> = <var>string2</var><br />
+      <var>string1</var> == <var>string2</var></code><br />
       <var>string1</var> != <var>string2</var></code></dt>
 
       <dd><p><var>string1</var> と <var>string2</var> を比較します。
       <var>string2</var> が <code>/<var>string</var>/</code>
       という形式であれば、正規表現として比較されます。正規表現は
       <a href="http://www.pcre.org">PCRE</a> エンジンで実装されていて、
-      <a href="http://www.perl.com">perl 5</a> と同じ構文を使用します。</p>
+      <a href="http://www.perl.com">perl 5</a> と同じ構文を使用します。
+      <code>==</code> は単に <code>=</code> の別名で、まったく同じ動作を
+      します。</p>
 
-      <p>正のマッチング (<code>=</code>) の場合は、
+      <p>正のマッチング (<code>=</code> または <code>==</code>) の場合は、
       正規表現でグループ分けされたパーツをキャプチャすることができます。
       キャプチャされた部分は特殊変数 <code>$1</code> .. <code>$9</code>
       に格納されます。</p>
@@ -511,6 +523,11 @@
       &lt;!--#if expr="($a = test1) &amp;&amp; ($b = test2)" --&gt;
     </example>
 
+    <p>真偽値オペレータ <code>&amp;&amp;</code> と <code>||</code>
+    は同じ優先度です。
+    これらのオペレータで一方により強い優先度をつけたい場合には、
+    括弧を使う必要があります。</p>
+
     <p>変数やオペレータとして認識されないものはすべて文字列として
     扱われます。文字列は引用符で囲むこともできます: <code>'string'</code>
     のように。引用符で囲まれていない文字列には空白 (スペースとタブ)
@@ -530,6 +547,29 @@
       >string1</var>&nbsp;&nbsp;&nbsp;&nbsp;<var>string2</var></code>
       になります。</p>
     </example>
+
+    <note><title>真偽値表現の最適化</title>
+      <p>式がもっと複雑になり、処理の速度低下が顕著になった場合は、
+      評価ルールに従って最適化してみると良いでしょう。</p>
+      <ul>
+      <li>評価は左から右に向かって行われます。</li>
+      <li>二値真偽値オペレータ (<code>&amp;&amp;</code> と <code>||</code>)
+          は、出来る限り短絡評価されます。つまり結果として上記のルールは、
+          <module>mod_include</module> が左の評価式を評価します。
+          左側で結果を十分決定できる場合は、評価はそこで停止します。
+          そうでない場合は右側を評価して、左と右の両方から結果を計算します。</li>
+      <li>短絡評価は評価の対象に正規表現が含まれる場合、オフになります。
+          後方参照する変数 (<code>$1</code> .. <code>$9</code>) 
+          を埋めるために、実際に評価する必要があるからです。</li>
+      </ul>
+      <p>特定の式がどのように扱われるかを知りたい場合は、
+      <code>-DDEBUG_INCLUDE</code> コンパイラオプションを付けて
+      <module>mod_include</module> をリコンパイルすると良いでしょう。
+      これにより、全てのパースされた式に対して、字句解析情報、
+      パースツリーと、
+      それがどのようにクライアントに送られた出力まで評価されたかを
+      挿入します。</p>
+    </note>
 </section>
 
 <directivesynopsis>
@@ -559,7 +599,8 @@
 <syntax>SSIUndefinedEcho <var>string</var></syntax>
 <default>SSIUndefinedEcho &quot;(none)&quot;</default>
 <contextlist><context>server config</context><context>virtual host</context>
-</contextlist>
+<context>directory</context><context>.htaccess</context></contextlist>
+<override>All</override>
 <compatibility>2.0.34 以降で利用可能</compatibility>
 
 <usage>
