@@ -172,6 +172,12 @@ every configuration function as __stdcall.
 #define NO_SLACK
 #include <stddef.h>
 
+/* MSVC asserts that strtol "errno is set to ERANGE 
+ * if overflow or underflow occurs"
+ * Ergo we can use the library strtol safely.
+ */
+#define ap_strtol strtol
+
 #define NO_OTHER_CHILD
 #define NO_RELIABLE_PIPED_LOGS
 

@@ -119,10 +119,6 @@ SOURCE=.\ap_slack.c
 
 SOURCE=.\ap_snprintf.c
 # End Source File
-# Begin Source File
-
-SOURCE=.\ap_strtol.c
-# End Source File
 # End Group
 # Begin Group "Header Files"
 
