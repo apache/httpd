@@ -617,7 +617,7 @@ do
             file="$apc_optarg"
             case $file in
                 src/modules/* ) ;;
-                *)  echo "configure:Error: Module source already has to stay below src/modules/ to be activated" 1>&2
+                *)  echo "configure:Error: Module source already has to be below src/modules/ to be activated" 1>&2
                     exit 1
                     ;;
             esac

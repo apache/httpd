@@ -238,14 +238,15 @@
      to automatically include a simple third-party module to the Apache build
      process.
  
-     Use the --activate-module=FILE option to on-the-fly add an entry for an
-     existing module source file in the configuration file. FILE has to be a
-     valid path under src/modules/ of the Apache source tree, i.e. it already
-     has to be copied to this location before.  The module is automatically
-     enabled. Use this option to automatically include a complex third-party
-     module to the Apache build process where, for instance a module like
-     mod_perl or mod_php3 consisting of more than one file which are created by
-     a third-party configuration scheme.
+     Use the --activate-module=FILE option to add an entry for an existing
+     module source file into the configuration file on-the-fly. FILE has to be
+     a valid path beginning with "src/modules/", and the file has to have been
+     copied to this location in the Apache source tree before running
+     configure.  The module is automatically enabled. Use this option to
+     automatically include a complex third-party module to the Apache build
+     process where, for instance a module like mod_perl or mod_php3 consisting
+     of more than one file which are created by a third-party configuration
+     scheme.
  
      Use the --enable-module=NAME and --disable-module=NAME options to enable
      or disable a particular already distributed module from the Apache

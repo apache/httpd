@@ -1,5 +1,8 @@
 Changes with Apache 1.3.5
 
+  *) Make documentation and error messages of APACI's --activate-module=FILE 
+     option more clear. [Jan Wolter <janc@wwnet.net>] PR#3995
+
   *) Fix the gcc version check (for enabling the `inline' facility) to 
      really support all future gcc versions >= 2.7 until we know more.
      [John Tobey <jtobey@banta-im.com>] PR#3983
