@@ -1237,14 +1237,9 @@ int ssl_callback_SSLVerify(int ok, X509_STORE_CTX *ctx)
         verify = dc->nVerifyClient;
     else
         verify = sc->nVerifyClient;
-    if (   (   errnum == X509_V_ERR_DEPTH_ZERO_SELF_SIGNED_CERT
-            || errnum == X509_V_ERR_SELF_SIGNED_CERT_IN_CHAIN
-            || errnum == X509_V_ERR_UNABLE_TO_GET_ISSUER_CERT_LOCALLY
-#if SSL_LIBRARY_VERSION >= 0x00905000
-            || errnum == X509_V_ERR_CERT_UNTRUSTED
-#endif
-            || errnum == X509_V_ERR_UNABLE_TO_VERIFY_LEAF_SIGNATURE  )
-        && verify == SSL_CVERIFY_OPTIONAL_NO_CA                       ) {
+    if (ssl_verify_error_is_optional(errnum) &&
+        verify == SSL_CVERIFY_OPTIONAL_NO_CA)
+    {
         ssl_log(s, SSL_LOG_TRACE,
                 "Certificate Verification: Verifiable Issuer is configured as "
                 "optional, therefore we're accepting the certificate");
