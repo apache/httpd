@@ -39,4 +39,9 @@ meta information</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#S
     <code>DOCUMENT_ROOT/somedir/.web/index.html.meta</code> and
     will use its contents to generate additional MIME header
     information.</p>
+
+    <p>Example:</p>
+
+    <blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>MetaSuffix .meta</code></td></tr></table></blockquote>
+
 <hr/></blockquote><h3 align="center">Apache HTTP Server Version 2.0</h3><a href="./"><img src="../images/index.gif" alt="Index"/></a><a href="../"><img src="../images/home.gif" alt="Home"/></a></body></html>
