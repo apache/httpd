@@ -82,6 +82,9 @@
 #include "http_core.h"
 #include "http_request.h"  /* for ap_hook_translate_name */
 
+#ifdef HAVE_STRINGS_H
+#include <strings.h>
+#endif
 
 module AP_MODULE_DECLARE_DATA vhost_alias_module;
 

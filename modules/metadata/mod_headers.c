@@ -107,6 +107,10 @@
 #include "http_config.h"
 #include "http_request.h"
 
+#ifdef HAVE_STRINGS_H
+#include <strings.h>
+#endif
+
 typedef enum {
     hdr_add = 'a',              /* add header (could mean multiple hdrs) */
     hdr_set = 's',              /* set (replace old value) */
