@@ -90,6 +90,9 @@
  * enough that we can read the whole thing without worrying too much about
  * the overhead.
  */
+#ifdef NO_THREADS
+#define HARD_SERVER_LIMIT 256
+#endif
 #ifndef HARD_SERVER_LIMIT
 #define HARD_SERVER_LIMIT 8 
 #endif
@@ -101,10 +104,16 @@
  * enough that we can read the whole thing without worrying too much about
  * the overhead.
  */
+#ifdef NO_THREADS
+#define HARD_THREAD_LIMIT 1
+#endif
 #ifndef HARD_THREAD_LIMIT
 #define HARD_THREAD_LIMIT 64 
 #endif
 
+#ifdef NO_THREADS
+#define DEFAULT_THREADS_PER_CHILD 1
+#endif
 #ifndef DEFAULT_THREADS_PER_CHILD
 #define DEFAULT_THREADS_PER_CHILD 50
 #endif

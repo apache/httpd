@@ -1052,6 +1052,7 @@ static void child_main(int child_num_arg)
 	/* We are creating threads right now */
 	(void) ap_update_child_status(my_child_num, i, SERVER_STARTING, 
 				      (request_rec *) NULL);
+#ifndef NO_THREADS
 	if (pthread_create(&thread, &thread_attr, worker_thread, my_info)) {
 	    ap_log_error(APLOG_MARK, APLOG_ALERT, server_conf,
 			 "pthread_create: unable to create worker thread");
@@ -1061,6 +1062,11 @@ static void child_main(int child_num_arg)
             sleep(10);
 	    clean_child_exit(APEXIT_CHILDFATAL);
 	}
+#else
+	worker_thread(my_info);
+	/* The SIGTERM shouldn't let us reach this point, but just in case... */
+	clean_child_exit(APEXIT_OK);
+#endif
 
 	/* We let each thread update it's own scoreboard entry.  This is done
 	 * because it let's us deal with tid better.
@@ -1125,9 +1131,7 @@ static int make_child(server_rec *s, int slot, time_t now) /* ZZZ */
 
         RAISE_SIGSTOP(MAKE_CHILD);
 
-	/* XXX - For an unthreaded server, a signal handler will be necessary
         signal(SIGTERM, just_die);
-	*/
         child_main(slot);
 
 	return 0;
