@@ -31,12 +31,6 @@ Available Patches:
       lines of code to detect and handle shellcmd.  COMMAND.COM is used
       to exec the script on Win95, CMD.EXE on NT.
 
-    * [PATCH] PR #2355 and very minor security hole fix 
-      Message-ID: <19980717183717.A16507@raleigh.ibm.com>
-      With this patch, Apache uses ap_sub_req_lookup_file to get the 
-      filename specified in a "file=" parameter (for example, in an 
-      flastmod or fsize call).
-
     * "[PATCH] Link DSO modules against possible libraries from $(LIBS)"
       Message-ID: <19980711133804.A2439@engelschall.com>
       In the configuration process we already determine the variable LDFLAGS
