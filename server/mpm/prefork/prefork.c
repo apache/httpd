@@ -476,7 +476,7 @@ static void set_signals(void)
 
 static int requests_this_child;
 static int num_listensocks = 0;
-static ap_listen_rec *listensocks;
+
 
 int ap_graceful_stop_signalled(void)
 {
@@ -489,21 +489,16 @@ static void child_main(int child_num_arg)
 {
     apr_pool_t *ptrans;
     apr_allocator_t *allocator;
-    conn_rec *current_conn;
-    apr_status_t status = APR_EINIT;
+    apr_status_t status;
     int i;
     ap_listen_rec *lr;
-    int curr_pollfd, last_pollfd = 0;
-    apr_pollfd_t *pollset;
-    int offset;
-    void *csd;
+    apr_pollset_t *pollset;
     ap_sb_handle_t *sbh;
-    apr_status_t rv;
     apr_bucket_alloc_t *bucket_alloc;
+    int last_poll_idx = 0;
 
     my_child_num = child_num_arg;
     ap_my_pid = getpid();
-    csd = NULL;
     requests_this_child = 0;
 
     ap_fatal_signal_child_setup(ap_server_conf);
@@ -521,9 +516,9 @@ static void child_main(int child_num_arg)
 
     /* needs to be done before we switch UIDs so we have permissions */
     ap_reopen_scoreboard(pchild, NULL, 0);
-    rv = apr_proc_mutex_child_init(&accept_mutex, ap_lock_fname, pchild);
-    if (rv != APR_SUCCESS) {
-        ap_log_error(APLOG_MARK, APLOG_EMERG, rv, ap_server_conf,
+    status = apr_proc_mutex_child_init(&accept_mutex, ap_lock_fname, pchild);
+    if (status != APR_SUCCESS) {
+        ap_log_error(APLOG_MARK, APLOG_EMERG, status, ap_server_conf,
                      "Couldn't initialize cross-process lock in child");
         clean_child_exit(APEXIT_CHILDFATAL);
     }
@@ -539,29 +534,30 @@ static void child_main(int child_num_arg)
     (void) ap_update_child_status(sbh, SERVER_READY, (request_rec *) NULL);
 
     /* Set up the pollfd array */
-    listensocks = apr_pcalloc(pchild,
-                            sizeof(*listensocks) * (num_listensocks));
-    for (lr = ap_listeners, i = 0; i < num_listensocks; lr = lr->next, i++) {
-        listensocks[i].accept_func = lr->accept_func;
-        listensocks[i].sd = lr->sd;
-    }
+    /* ### check the status */
+    (void) apr_pollset_create(&pollset, num_listensocks, pchild, 0);
 
-    pollset = apr_palloc(pchild, sizeof(*pollset) * num_listensocks);
-    pollset[0].p = pchild;
-    for (i = 0; i < num_listensocks; i++) {
-        pollset[i].desc.s = listensocks[i].sd;
-        pollset[i].desc_type = APR_POLL_SOCKET;
-        pollset[i].reqevents = APR_POLLIN;
+    for (lr = ap_listeners, i = num_listensocks; i--; lr = lr->next) {
+        apr_pollfd_t pfd = { 0 };
+
+        pfd.desc_type = APR_POLL_SOCKET;
+        pfd.desc.s = lr->sd;
+        pfd.reqevents = APR_POLLIN;
+        pfd.client_data = lr;
+
+        /* ### check the status */
+        (void) apr_pollset_add(pollset, &pfd);
     }
 
     bucket_alloc = apr_bucket_alloc_create(pchild);
 
     while (!die_now) {
+        conn_rec *current_conn;
+        void *csd;
+
 	/*
 	 * (Re)initialize this child to a pre-connection state.
 	 */
-
-	current_conn = NULL;
 
 	apr_pool_clear(ptrans);
 
@@ -580,17 +576,19 @@ static void child_main(int child_num_arg)
 	SAFE_ACCEPT(accept_mutex_on());
 
         if (num_listensocks == 1) {
-            offset = 0;
+            /* There is only one listener record, so refer to that one. */
+            lr = ap_listeners;
         }
         else {
             /* multiple listening sockets - need to poll */
 	    for (;;) {
-                apr_status_t ret;
-                apr_int32_t n;
+                apr_int32_t numdesc;
+                const apr_pollfd_t *pdesc;
 
-                ret = apr_poll(pollset, num_listensocks, &n, -1);
-                if (ret != APR_SUCCESS) {
-                    if (APR_STATUS_IS_EINTR(ret)) {
+                /* timeout == -1 == wait forever */
+                status = apr_pollset_poll(pollset, -1, &numdesc, &pdesc);
+                if (status != APR_SUCCESS) {
+                    if (APR_STATUS_IS_EINTR(status)) {
                         if (one_process && shutdown_pending) {
                             return;
                         }
@@ -602,34 +600,41 @@ static void child_main(int child_num_arg)
     	             * on Linux 2.0.x we seem to end up with EFAULT
     	             * occasionally, and we'd loop forever due to it.
     	             */
-    	            ap_log_error(APLOG_MARK, APLOG_ERR, ret, ap_server_conf,
-                             "apr_poll: (listen)");
+    	            ap_log_error(APLOG_MARK, APLOG_ERR, status,
+                                 ap_server_conf, "apr_poll: (listen)");
     	            clean_child_exit(1);
                 }
-                /* find a listener */
-                curr_pollfd = last_pollfd;
-                do {
-                    curr_pollfd++;
-                    if (curr_pollfd >= num_listensocks) {
-                        curr_pollfd = 0;
-                    }
-                    /* XXX: Should we check for POLLERR? */
-                    if (pollset[curr_pollfd].rtnevents & APR_POLLIN) {
-                        last_pollfd = curr_pollfd;
-                        offset = curr_pollfd;
-                        goto got_fd;
-                    }
-                } while (curr_pollfd != last_pollfd);
 
-                continue;
+                /* We can always use pdesc[0], but sockets at position N
+                 * could end up completely starved of attention in a very
+                 * busy server. Therefore, we round-robin across the
+                 * returned set of descriptors. While it is possible that
+                 * the returned set of descriptors might flip around and
+                 * continue to starve some sockets, we happen to know the
+                 * internal pollset implementation retains ordering
+                 * stability of the sockets. Thus, the round-robin should
+                 * ensure that a socket will eventually be serviced.
+                 */
+                if (last_poll_idx >= numdesc)
+                    last_poll_idx = 0;
+
+                /* Grab a listener record from the client_data of the poll
+                 * descriptor, and advance our saved index to round-robin
+                 * the next fetch.
+                 *
+                 * ### hmm... this descriptor might have POLLERR rather
+                 * ### than POLLIN
+                 */
+                lr = pdesc[last_poll_idx++].client_data;
+                goto got_fd;
             }
         }
     got_fd:
 	/* if we accept() something we don't want to die, so we have to
 	 * defer the exit
 	 */
-        status = listensocks[offset].accept_func(&csd,
-                                                 &listensocks[offset], ptrans);
+        status = lr->accept_func(&csd, lr, ptrans);
+
         SAFE_ACCEPT(accept_mutex_off());      /* unlock after "accept" */
 
         if (status == APR_EGENERAL) {
