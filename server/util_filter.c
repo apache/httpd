@@ -121,16 +121,17 @@ AP_DECLARE(void) ap_register_output_filter(const char *name,
     register_filter(name, f, ftype, &registered_output_filters);
 }
 
-AP_DECLARE(void) ap_add_input_filter(const char *name, void *ctx, 
-                                     request_rec *r, conn_rec *c)
+static void add_any_filter(const char *name, void *ctx, 
+                                      request_rec *r, conn_rec *c, 
+                                      ap_filter_rec_t *frec,
+                                      ap_filter_t **r_filters,
+                                      ap_filter_t **c_filters)
 {
-    ap_filter_rec_t *frec = registered_input_filters;
-
     for (; frec != NULL; frec = frec->next) {
         if (!strcasecmp(name, frec->name)) {
             apr_pool_t *p = r ? r->pool : c->pool;
             ap_filter_t *f = apr_pcalloc(p, sizeof(*f));
-            ap_filter_t **outf = r ? &r->input_filters : &c->input_filters;
+            ap_filter_t **outf = r ? r_filters : c_filters;
 
             f->frec = frec;
             f->ctx = ctx;
@@ -157,6 +158,20 @@ AP_DECLARE(void) ap_add_input_filter(const char *name, void *ctx,
                  "an unknown input filter was not added: %s", name);
 }
 
+AP_DECLARE(void) ap_add_input_filter(const char *name, void *ctx,
+                                                request_rec *r, conn_rec *c)
+{
+    add_any_filter(name, ctx, r, c, registered_input_filters,
+            r ? &r->input_filters : NULL, &c->input_filters);
+}
+
+AP_DECLARE(void) ap_add_output_filter(const char *name, void *ctx,
+                                                request_rec *r, conn_rec *c)
+{
+    add_any_filter(name, ctx, r, c, registered_output_filters,
+            r ? &r->output_filters : NULL, &c->output_filters);
+}
+
 AP_DECLARE(void) ap_remove_output_filter(ap_filter_t *f)
 {
     ap_filter_t *curr;
@@ -180,42 +195,6 @@ AP_DECLARE(void) ap_remove_output_filter(ap_filter_t *f)
         }
     }
     curr->next = f->next;
-}
-
-AP_DECLARE(void) ap_add_output_filter(const char *name, void *ctx, 
-                                      request_rec *r, conn_rec *c)
-{
-    ap_filter_rec_t *frec = registered_output_filters;
-
-    for (; frec != NULL; frec = frec->next) {
-        if (!strcasecmp(name, frec->name)) {
-            apr_pool_t *p = r ? r->pool : c->pool;
-            ap_filter_t *f = apr_pcalloc(p, sizeof(*f));
-            ap_filter_t **outf = r ? &r->output_filters : &c->output_filters;
-
-            f->frec = frec;
-            f->ctx = ctx;
-            f->r = r;
-            f->c = c;
-
-            if (INSERT_BEFORE(f, *outf)) {
-                f->next = *outf;
-                *outf = f;
-            }
-            else {
-                ap_filter_t *fscan = *outf;
-                while (!INSERT_BEFORE(f, fscan->next))
-                    fscan = fscan->next;
-                f->next = fscan->next;
-                fscan->next = f;
-            }
-
-            return;
-        }
-    }
-
-    ap_log_error(APLOG_MARK, APLOG_ERR|APLOG_NOERRNO, 0, NULL,
-                 "an unknown output filter was not added: %s", name);
 }
 
 /* 
