@@ -77,7 +77,7 @@
  * Activate it with "CheckSpelling On"
  */
 
-module speling_module;
+MODULE_VAR_EXPORT module speling_module;
 
 /* We use the "unconventional" mod_userdir approach here. And heck,
  * here it's just one int!
