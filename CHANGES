@@ -1,5 +1,9 @@
 Changes with Apache 2.0.46
 
+  *) Add code to buildconf that produces an httpd.spec file from
+     httpd.spec.in, using build/get-version.sh from APR.
+     [Graham Leggett]
+
   *) Fixed a segfault when multiple ProxyBlock directives were used.
      PR: 19023 [Sami Tikka <sami.tikka@f-secure.com>]
 
