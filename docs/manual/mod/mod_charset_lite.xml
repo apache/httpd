@@ -1,4 +1,5 @@
 <?xml version="1.0"?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.xsl"?>
 <modulesynopsis>
 
@@ -86,8 +87,8 @@
     as a valid character set name by the character set support in
     APR. Generally, this means that it must be supported by
     iconv.</p>
-    Example: 
-<example>
+    
+<example><title>example</title>
     &lt;Directory "/export/home/trawick/apacheinst/htdocs/convert"&gt;<br />
     CharsetSourceEnc  UTF-16BE<br />
     CharsetDefault    ISO8859-1<br />
@@ -117,8 +118,8 @@
     as a valid character set name by the character set support in
     APR. Generally, this means that it must be supported by
     iconv.</p>
-    Example: 
-<example>
+
+<example><title>Example</title>
     &lt;Directory "/export/home/trawick/apacheinst/htdocs/convert"&gt;<br />
     CharsetSourceEnc  UTF-16BE<br />
     CharsetDefault    ISO8859-1<br />
@@ -131,8 +132,8 @@
 <name>CharsetOptions</name>
 <description>Configures charset tranlation behavior</description>
 <syntax>CharsetOptions <em>option</em> [<em>option</em>] ...</syntax>
-<default>CharsetOptions <em>DebugLevel=0</em> 
-<em>NoImplicitAdd</em></default>
+<default>CharsetOptions DebugLevel=0 
+NoImplicitAdd</default>
 <contextlist><context>server config</context>
 <context>virtual host</context><context>directory</context>
 <context>.htaccess</context>
