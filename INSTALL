@@ -287,6 +287,7 @@
      HTTP response
       (-) mod_headers ...... Arbitrary HTTP response headers (configured)
       (-) mod_cern_meta .... Arbitrary HTTP response headers (CERN-style files)
+      (-) mod_expires ...... Expires HTTP responses 
       (+) mod_asis ......... Raw HTTP responses 
      Scripting
       (+) mod_include ...... Server Side Includes (SSI) support
@@ -303,8 +304,8 @@
      Miscellaneous
       (+) mod_imap ......... Server-side Image Map support
       (-) mod_proxy ........ Caching Proxy Module (HTTP, HTTPS, FTP)
-     Experimental
       (-) mod_so ........... Dynamic Shared Object (DSO) bootstrapping
+     Experimental
       (-) mod_mmap_static .. Caching of frequently served pages via mmap()
      Development
       (-) mod_example ...... Apache API demonstration (developers only)
