@@ -503,7 +503,14 @@ static void sig_coredump(int sig)
 {
     apr_filepath_set(ap_coredump_dir, pconf);
     apr_signal(sig, SIG_DFL);
-    if (ap_my_pid == parent_pid) {
+    /* linuxthreads issue calling getpid() here:
+     *   This comparison won't match if the crashing thread is
+     *   some module's thread that runs in the parent process.
+     *   The fallout, which is limited to linuxthreads:
+     *   The special log message won't be written when such a
+     *   thread in the parent causes the parent to crash.
+     */
+    if (getpid() == parent_pid) {
         ap_log_error(APLOG_MARK, APLOG_NOTICE,
                      0, ap_server_conf,
                      "seg fault or similar nasty error detected "

@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/02/10 12:09:56 $]
+Last modified at [$Date: 2004/02/10 14:53:27 $]
 
 Release:
 
@@ -171,13 +171,6 @@ PATCHES TO BACKPORT FROM 2.1
         server/mpm/winnt/mpm_winnt.h r1.44
         server/mpm/winnt/child.c r1.21
       +1: trawick
-
-    * mod_cgid: Restart the cgid daemon if it crashes.  PR 19849
-        modules/generators/mod_cgid.c r1.152, r1.161
-        server/mpm_common.c r1.111
-        PREREQ: ap_mpm_query(mpm-state) support in Unix MPMs
-        jerenkrantz asks: What does mpm_common.c r1.111 have to do with this?
-        +1: trawick, stoddard, jerenkrantz
 
     * piped log programs respawning after Apache is stopped. PR 24805
       bogus "piped log program '(null)' failed" messages during
