@@ -1,5 +1,5 @@
 Apache HTTP Server 2.1 Documentation Status File.
-Last modified: $Date: 2003/07/11 19:36:01 $
+Last modified: $Date: 2003/07/12 04:56:57 $
 
 For more information on how to contribute to the Apache Documentation
 Project, please see http://httpd.apache.org/docs-project/
@@ -130,6 +130,8 @@ Documentation improvements
 
 * Summarize all the implemented drafts/standards with short explanations
   within a document. (PR 16938)
+
+  - I've begun working on this --jsl
 
 * Provide example solutions for the mapping of encodings, especially
   for .gz etc. (also in regard to our default configuration)
