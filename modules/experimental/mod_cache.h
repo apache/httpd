@@ -60,8 +60,6 @@
 #include "ap_hooks.h"
 #include "httpd.h"
 
-typedef struct cache_funcs cache_funcs;
-
 AP_DECLARE_HOOK(int,serve_cache,(request_rec *r));
 AP_DECLARE_HOOK(int,store_cache,(request_rec *r, ap_bucket_brigade *bb, void **cf));
 
