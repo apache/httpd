@@ -58,6 +58,8 @@
 #ifndef UNIXD_H
 #define UNIXD_H
 
+#include "httpd.h"
+
 /* common stuff that unix MPMs will want */
 
 typedef struct {
@@ -72,6 +74,28 @@ int unixd_setup_child(void);
 void unixd_pre_config(void);
 const char *unixd_set_user(cmd_parms *cmd, void *dummy, char *arg);
 const char *unixd_set_group(cmd_parms *cmd, void *dummy, char *arg);
+
+/* Information on signals for the various platforms */
+
+#if defined(NSIG)
+#define NumSIG NSIG
+#elif defined(_NSIG)
+#define NumSIG _NSIG
+#elif defined(__NSIG)
+#define NumSIG __NSIG
+#else
+#define NumSIG 32   /* for 1998's unixes, this is still a good assumption */
+#endif
+
+#ifdef SYS_SIGLIST /* platform has sys_siglist[] */
+#define INIT_SIGLIST()  /* nothing */
+#else /* platform has no sys_siglist[], define our own */
+#define NEED_AP_SYS_SIGLIST
+extern const char *ap_sys_siglist[NumSIG];
+#define SYS_SIGLIST ap_sys_siglist
+void unixd_siglist_init(void);
+#define INIT_SIGLIST() unixd_siglist_init();
+#endif /* platform has sys_siglist[] */
 
 #define UNIX_DAEMON_COMMANDS	\
 { "User", unixd_set_user, NULL, RSRC_CONF, TAKE1, \
