@@ -1013,7 +1013,7 @@ void send_http_header(request_rec *r)
     
     if (r->content_languages && r->content_languages->nelts) {
 	int i;
-	bputs("Content-Langauge: ", fd);
+	bputs("Content-Language: ", fd);
 	for (i = 0; i < r->content_languages->nelts; ++i) {
 	    char *lang = ((char**)(r->content_languages->elts))[i];
 	    bvputs(fd, i ? ", " : "", lang, NULL);
