@@ -206,13 +206,11 @@ int ssl_init_Module(apr_pool_t *p, apr_pool_t *plog,
         sc->vhost_id = ssl_util_vhostid(p, s);
         sc->vhost_id_len = strlen(sc->vhost_id);
 
-#if 0
        /* If sc->enabled is UNSET, then SSL is optional on this vhost  */
         /* Fix up stuff that may not have been set */
-        if (sc->enabled == UNSET) {
-            sc->enabled = FALSE;
+        if (sc->enabled == SSL_ENABLED_UNSET) {
+            sc->enabled = SSL_ENABLED_FALSE;
         }
-#endif
         if (sc->proxy_enabled == UNSET) {
             sc->proxy_enabled = FALSE;
         }
@@ -960,10 +958,9 @@ void ssl_init_ConfigureServer(server_rec *s,
                               apr_pool_t *ptemp,
                               SSLSrvConfigRec *sc)
 {
-    /* A bit of a hack, but initialize the server if SSL is optional or
-     * not.
+    /* Initialize the server if SSL is enabled or optional.
      */
-    if (sc->enabled) {
+    if ((sc->enabled == SSL_ENABLED_TRUE) || (sc->enabled == SSL_ENABLED_OPTIONAL)) {
         ap_log_error(APLOG_MARK, APLOG_INFO, 0, s,
                      "Configuring server for SSL protocol");
         ssl_init_server_ctx(s, p, ptemp, sc);
@@ -991,7 +988,7 @@ void ssl_init_CheckServers(server_rec *base_server, apr_pool_t *p)
     for (s = base_server; s; s = s->next) {
         sc = mySrvConfig(s);
 
-        if ((sc->enabled == TRUE) && (s->port == DEFAULT_HTTP_PORT)) {
+        if ((sc->enabled == SSL_ENABLED_TRUE) && (s->port == DEFAULT_HTTP_PORT)) {
             ap_log_error(APLOG_MARK, APLOG_WARNING, 0,
                          base_server,
                          "Init: (%s) You configured HTTPS(%d) "
@@ -1000,7 +997,7 @@ void ssl_init_CheckServers(server_rec *base_server, apr_pool_t *p)
                          DEFAULT_HTTPS_PORT, DEFAULT_HTTP_PORT);
         }
 
-        if (!sc->enabled && (s->port == DEFAULT_HTTPS_PORT)) {
+        if ((sc->enabled == SSL_ENABLED_FALSE) && (s->port == DEFAULT_HTTPS_PORT)) {
             ap_log_error(APLOG_MARK, APLOG_WARNING, 0,
                          base_server,
                          "Init: (%s) You configured HTTP(%d) "
@@ -1021,7 +1018,7 @@ void ssl_init_CheckServers(server_rec *base_server, apr_pool_t *p)
     for (s = base_server; s; s = s->next) {
         sc = mySrvConfig(s);
 
-        if (!(sc->enabled && s->addrs)) {
+        if (!((sc->enabled == SSL_ENABLED_TRUE) && s->addrs)) {
             continue;
         }
 
