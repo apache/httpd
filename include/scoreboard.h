@@ -197,10 +197,6 @@ typedef struct {
 } status_table_entry;
 
 #define SCOREBOARD_SIZE		sizeof(scoreboard)
-#ifdef TPF
-#define SCOREBOARD_NAME		"SCOREBRD"
-#define SCOREBOARD_FRAMES		SCOREBOARD_SIZE/4095 + 1
-#endif
 
 AP_DECLARE(int) ap_exists_scoreboard_image(void);
 AP_DECLARE_NONSTD(void) ap_create_scoreboard(apr_pool_t *p, ap_scoreboard_e t);
