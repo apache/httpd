@@ -1,6 +1,7 @@
 <?xml version='1.0' encoding='iso-2022-jp' ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.ja.xsl"?>
+<!-- English Revision: 1.25 -->
 
 <!--
  Copyright 2002-2004 The Apache Software Foundation
@@ -19,7 +20,6 @@
 -->
 
 <manualpage metafile="install.xml.meta">
-<!-- English Revision: 1.22 (outdated: 1.25) -->
 
   <title>コンパイルとインストール</title>
 
@@ -138,7 +138,7 @@
       この目的によく用いられます。NTP ソフトウェアや公開 NTP 
       サーバに関する詳細は、Usenet ニュースグループ <a
       href="news:comp.protocols.time.ntp">comp.protocols.time.ntp</a> や <a
-      href="http://www.eecis.udel.edu/~ntp/">NTP ホームページ</a> をご覧下さい。</dd>
+      href="http://www.ntp.org">NTP ホームページ</a> をご覧下さい。</dd>
 
       <dt><a href="http://www.perl.org/">Perl 5</a>
       [オプション]</dt>
