@@ -1396,9 +1396,10 @@ AP_DECLARE(char *) ap_strcasestr(const char *s1, const char *s2);
  * @param bigstring The input string
  * @param prefix The prefix to strip away
  * @return A pointer relative to bigstring after prefix
- * deffunc char *ap_stripprefix(const char *bigstring, const char *prefix);
+ * deffunc const char *ap_stripprefix(const char *bigstring, const char *prefix);
  */
-AP_DECLARE(char *) ap_stripprefix(const char *bigstring, const char *prefix);
+AP_DECLARE(const char *) ap_stripprefix(const char *bigstring,
+                                        const char *prefix);
 
 /**
  * Decode a base64 encoded string into memory allocated out of a pool
