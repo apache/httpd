@@ -275,6 +275,11 @@ AP_DECLARE(void) ap_close_piped_log(piped_log *pl);
  */
 #define ap_piped_log_write_fd(pl)	((pl)->fds[1])
 
+AP_DECLARE_HOOK(void, error_log, (const char *file, int line, int level,
+                       apr_status_t status, const server_rec *s,
+                       const request_rec *r, apr_pool_t *pool,
+                       const char *errstr))
+
 #ifdef __cplusplus
 }
 #endif
