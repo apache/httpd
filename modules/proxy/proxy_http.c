@@ -191,7 +191,7 @@ apr_status_t ap_proxy_http_determine_connection(apr_pool_t *p, request_rec *r,
                                                 conn_rec *c,
                                                 proxy_server_conf *conf,
                                                 apr_uri_components *uri,
-                                                char *url,
+                                                char **url,
                                                 const char *proxyname,
                                                 apr_port_t proxyport,
                                                 char *server_portstr) {
@@ -203,9 +203,9 @@ apr_status_t ap_proxy_http_determine_connection(apr_pool_t *p, request_rec *r,
      */
 
     /* we break the URL into host, port, uri */
-    if (APR_SUCCESS != apr_uri_parse_components(p, url, uri)) {
+    if (APR_SUCCESS != apr_uri_parse_components(p, *url, uri)) {
         return ap_proxyerror(r, HTTP_BAD_REQUEST,
-                             apr_pstrcat(p,"URI cannot be parsed: ", url,
+                             apr_pstrcat(p,"URI cannot be parsed: ", *url,
                                          NULL));
     }
     if (!uri->port) {
@@ -213,7 +213,7 @@ apr_status_t ap_proxy_http_determine_connection(apr_pool_t *p, request_rec *r,
     }
 
     ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r->server,
-                 "proxy: HTTP connecting %s to %s:%d", url, uri->hostname,
+                 "proxy: HTTP connecting %s to %s:%d", *url, uri->hostname,
                  uri->port);
 
     /* do a DNS lookup for the destination host */
@@ -235,10 +235,10 @@ apr_status_t ap_proxy_http_determine_connection(apr_pool_t *p, request_rec *r,
         p_conn->name = apr_pstrdup(c->pool, uri->hostname);
         p_conn->port = uri->port;
         p_conn->addr = uri_addr;
-        url = apr_pstrcat(p, uri->path, uri->query ? "?" : "",
-                          uri->query ? uri->query : "",
-                          uri->fragment ? "#" : "",
-                          uri->fragment ? uri->fragment : "", NULL);
+        *url = apr_pstrcat(p, uri->path, uri->query ? "?" : "",
+                           uri->query ? uri->query : "",
+                           uri->fragment ? "#" : "",
+                           uri->fragment ? uri->fragment : "", NULL);
     }
 
     if (err != APR_SUCCESS) {
@@ -915,8 +915,8 @@ int ap_proxy_http_handler(request_rec *r, proxy_server_conf *conf,
     }
 
     /* Step One: Determine Who To Connect To */
-    status = ap_proxy_http_determine_connection(p, r, p_conn, c, conf, uri, url,
-                                                proxyname, proxyport,
+    status = ap_proxy_http_determine_connection(p, r, p_conn, c, conf, uri,
+                                                &url, proxyname, proxyport,
                                                 server_portstr);
     if ( status != OK ) {
         return status;
