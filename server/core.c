@@ -350,8 +350,8 @@ static void *merge_core_server_configs(apr_pool_t *p, void *basev, void *virtv)
     core_server_config *virt = (core_server_config *)virtv;
     core_server_config *conf;
 
-    conf = (core_server_config *)apr_pcalloc(p, sizeof(core_server_config));
-    *conf = *virt;
+    conf = (core_server_config *)apr_palloc(p, sizeof(core_server_config));
+    memcpy(conf. virt, sizeof(core_server_config));
     if (!conf->access_name) {
         conf->access_name = base->access_name;
     }
@@ -2720,11 +2720,15 @@ static int default_handler(request_rec *r)
     if (r->method_number == M_PUT) {
         return HTTP_METHOD_NOT_ALLOWED;
     }
-    if (r->finfo.filetype == 0 || (r->path_info && *r->path_info)) {
+    if (r->finfo.filetype == 0) {
 	ap_log_rerror(APLOG_MARK, APLOG_ERR|APLOG_NOERRNO, 0, r,
-		      "File does not exist: %s",r->path_info ?
-		      apr_pstrcat(r->pool, r->filename, r->path_info, NULL)
-		      : r->filename);
+		      "File does not exist: %s", r->filename);
+	return HTTP_NOT_FOUND;
+    }
+    if (r->path_info && *r->path_info) {
+	ap_log_rerror(APLOG_MARK, APLOG_ERR|APLOG_NOERRNO, 0, r,
+		      "File does not exist: %s",
+		      apr_pstrcat(r->pool, r->filename, r->path_info, NULL));
 	return HTTP_NOT_FOUND;
     }
     
