@@ -14,18 +14,24 @@
 <!--#include virtual="header.html" -->
   <H1 ALIGN="CENTER">Module mod_charset_lite</H1>
 
-  <P>
-  This module is contained in the <CODE>mod_charset_lite.c</CODE> file, with
-  Apache 2.0 and later. It provides the ability to specify character set
-  translation, or recoding, by directory or location or virtual server.  It
-  is not compiled into the server by default.  <CODE>mod_charset_lite</CODE>
-  requires that Apache is compiled with APACHE_XLATE defined.
-  </P>
+<p>This module provides the ability to specify character set
+  translation or recoding.</p>
 
-  <P>
-  This module provides a small subset of configuration mechanisms
-  implemented by Russian Apache and its associated <CODE>mod_charset</CODE>.
-  </P>
+<P><A
+HREF="module-dict.html#Status"
+REL="Help"
+><STRONG>Status:</STRONG></A> Experimental
+<BR>
+<A
+HREF="module-dict.html#SourceFile"
+REL="Help"
+><STRONG>Source File:</STRONG></A> mod_charset_lite.c
+<BR>
+<A
+HREF="module-dict.html#ModuleIdentifier"
+REL="Help"
+><STRONG>Module Identifier:</STRONG></A> charset_lite_module
+</P>
 
   <H2>Summary</H2>
   <P>
@@ -48,6 +54,14 @@
   is needed in order for any translation to take place.
   </P>
 
+  <p>This module will only work if <code>APACHE_XLATE</code> is defined
+  at compile time.</p>
+
+  <P>
+  This module provides a small subset of configuration mechanisms
+  implemented by Russian Apache and its associated <CODE>mod_charset</CODE>.
+  </P>
+
   <H2>Directives</H2>
   <UL>
    <LI><A HREF="#charsetsourceenc">CharsetSourceEnc</A>
@@ -55,6 +69,39 @@
    <LI><A HREF="#charsetoptions">CharsetOptions</A>
    </LI>
   </UL>
+
+ <H2>Common Problems</H2>
+
+  <H3>Invalid character set names</H3>
+
+  <P>
+  The character set name parameters of CharsetSourceEnc and CharsetDefault
+  must be acceptable to the translation mechanism used by APR on the system
+  where mod_charset_lite is deployed.  These character set names are not 
+  standardized and are usually not the same as the corresponding values used 
+  in http headers.  Currently, APR can only use iconv(3), so you can easily
+  test your character set names using the iconv(1) program, as follows:
+  </P>
+
+  <PRE>
+  iconv -f charsetsourceenc-value -t charsetdefault-value
+  </PRE>
+
+  <H3>Mismatch between character set of content and translation rules</H3>
+
+  <P>
+  If the translation rules don't make sense for the content, translation
+  can fail in various ways, including:
+  </P>
+
+  <SL>
+  <LI>
+  The translation mechanism may return a bad return code, and the connection
+  will be aborted.
+  <LI>
+  The translation mechanism may silently place special characters (e.g., question
+  marks) in the output buffer when it cannot translate the input buffer.
+  </SL>
 
   <HR>
 
@@ -90,10 +137,6 @@
    REL="Help"
   ><STRONG>Module:</STRONG></A> mod_charset_lite
   <BR>
-  <A
-   HREF="directive-dict.html#Compatibility"
-   REL="Help"
-  ><STRONG>Compatibility:</STRONG></A> Only available in Apache 2.0 or later
 
   <P>
   The <CODE>CharsetSourceEnc</CODE> directive specifies the source charset
@@ -118,6 +161,8 @@
   The character set names in this example work with the iconv
   translation support in Solaris 8.
   <P>
+
+<hr>
 
   <H2><A NAME="charsetdefault">CharsetDefault</A></H2>
   <P>
@@ -151,10 +196,6 @@
    REL="Help"
   ><STRONG>Module:</STRONG></A> mod_charset_lite
   <BR>
-  <A
-   HREF="directive-dict.html#Compatibility"
-   REL="Help"
-  ><STRONG>Compatibility:</STRONG></A> Only available in Apache 2.0 or later
 
   <P>
   The <CODE>CharsetDefault</CODE> directive specifies the charset that
@@ -177,6 +218,8 @@
   </PRE>
 
   <P>
+
+<hr>
 
   <H2><A NAME="charsetoptions">CharsetOptions</A></H2>
   <P>
@@ -210,10 +253,6 @@
    REL="Help"
   ><STRONG>Module:</STRONG></A> mod_charset_lite
   <BR>
-  <A
-   HREF="directive-dict.html#Compatibility"
-   REL="Help"
-  ><STRONG>Compatibility:</STRONG></A> Only available in Apache 2.0 or later
 
   <P>
   The <CODE>CharsetOptions</CODE> directive configures certain behaviors 
@@ -239,39 +278,7 @@
   </DL>
   </P>
 
-  <H2>Common Problems</H2>
-
-  <H3>Invalid character set names</H3>
-
-  <P>
-  The character set name parameters of CharsetSourceEnc and CharsetDefault
-  must be acceptable to the translation mechanism used by APR on the system
-  where mod_charset_lite is deployed.  These character set names are not 
-  standardized and are usually not the same as the corresponding values used 
-  in http headers.  Currently, APR can only use iconv(3), so you can easily
-  test your character set names using the iconv(1) program, as follows:
-  </P>
-
-  <PRE>
-  iconv -f charsetsourceenc-value -t charsetdefault-value
-  </PRE>
-
-  <H3>Mismatch between character set of content and translation rules</H3>
-
-  <P>
-  If the translation rules don't make sense for the content, translation
-  can fail in various ways, including:
-  </P>
-
-  <SL>
-  <LI>
-  The translation mechanism may return a bad return code, and the connection
-  will be aborted.
-  <LI>
-  The translation mechanism may silently place special characters (e.g., question
-  marks) in the output buffer when it cannot translate the input buffer.
-  </SL>
-
+ 
 <!--#include virtual="footer.html" -->
  </BODY>
 </HTML>
