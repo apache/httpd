@@ -58,6 +58,8 @@
 
 #ifdef WIN32
 #include "../os/win32/os.h"
+#else
+#include "os.h"
 #endif
 
 #if !defined(QNX) && !defined(MPE) && !defined(WIN32)
