@@ -44,7 +44,7 @@
 
 #include <ctype.h>
 
-#ifndef MPE
+#if !defined(MPE) && !defined(BEOS) 
 #include <arpa/inet.h>
 #endif
 
