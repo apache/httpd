@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/03/08 17:40:34 $]
+Last modified at [$Date: 2004/03/08 19:57:29 $]
 
 Release:
 
@@ -71,6 +71,21 @@ PATCHES TO BACKPORT FROM 2.1
   [ please place file names and revisions from HEAD here, so it is easy to
     identify exactly what the proposed changes are! ]
 
+    *) Provide TLS/SSL upgrade functionality in mod_ssl allowing an unsecure
+       connection to be upgraded to a secure connection upon request by the
+       client.  The full patch file is available at http://www.apache.org/~bnicholes/
+       as well as a test version of wget. This functionality is mainly used by
+       IPP clients today.
+          modules/ssl/mod_ssl.c: r1.75, r1.97
+          modules/ssl/mod_ssl.h: r1.123
+          modules/ssl/ssl_engine_config.c: r1.71, r1.90
+          modules/ssl/ssl_engine_init.c: r1.107, r1.126
+          modules/ssl/ssl_engine_io.c: r1.102
+          modules/ssl/ssl_engine_kernel.c: r1.83, r1.105
+          modules/ssl/ssl_util.c: r1.36
+	  modules/ssl/ssl_private.h: r1.2
+       +1: bnicholes
+    
     *) core, protocol: Remove compile-time length limit on request strings. Length is
        now enforced solely with the LimitRequestLine config directive.
       http://cvs.apache.org/viewcvs.cgi/httpd-2.0/server/core.c?r1=1.263&r2=1.264
