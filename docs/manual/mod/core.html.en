@@ -2331,7 +2331,7 @@ a resource</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
 </table>
     <p>This directive selects which authenticated users can access
-    a directory. The allowed syntaxes are:</p>
+    a resource. The allowed syntaxes are:</p>
 
     <dl>
       <dt><code>Require user <var>userid</var> [<var>userid</var>]
@@ -2354,7 +2354,7 @@ a resource</td></tr>
 
     <div class="example"><p><code>
        AuthType Basic<br />
-       AuthName "Restricted Directory"<br />
+       AuthName "Restricted Resource"<br />
        AuthUserFile /web/users<br />
        AuthGroupFile /web/groups<br />
        Require group admin

@@ -2461,8 +2461,8 @@ Ressource zugreifen können</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Modul:</a></th><td>core</td></tr>
 </table>
-    <p>Die Direktive wählt aus, welche authentisierten Benutzer auf ein
-    Verzeichnis zugreifen dürfen. Folgende Syntax ist erlaubt:</p>
+    <p>Die Direktive wählt aus, welche authentisierten Benutzer auf eine
+    Ressource zugreifen dürfen. Folgende Syntax ist erlaubt:</p>
 
     <dl>
       <dt><code>Require user <var>User-ID</var> [<var>User-ID</var>]
@@ -2489,7 +2489,7 @@ Ressource zugreifen können</td></tr>
 
     <div class="example"><p><code>
        AuthType Basic<br />
-       AuthName "geschütztes Verzeichnis"<br />
+       AuthName "Geschützte Ressource"<br />
        AuthUserFile /web/users<br />
        AuthGroupFile /web/groups<br />
        Require group admin

@@ -2432,8 +2432,8 @@ Ressource zugreifen k&ouml;nnen</description>
 <override>AuthConfig</override>
 
 <usage>
-    <p>Die Direktive w&auml;hlt aus, welche authentisierten Benutzer auf ein
-    Verzeichnis zugreifen d&uuml;rfen. Folgende Syntax ist erlaubt:</p>
+    <p>Die Direktive w&auml;hlt aus, welche authentisierten Benutzer auf eine
+    Ressource zugreifen d&uuml;rfen. Folgende Syntax ist erlaubt:</p>
 
     <dl>
       <dt><code>Require user <var>User-ID</var> [<var>User-ID</var>]
@@ -2461,7 +2461,7 @@ Ressource zugreifen k&ouml;nnen</description>
 
     <example>
        AuthType Basic<br />
-       AuthName "gesch&uuml;tztes Verzeichnis"<br />
+       AuthName "Gesch&uuml;tzte Ressource"<br />
        AuthUserFile /web/users<br />
        AuthGroupFile /web/groups<br />
        Require group admin
