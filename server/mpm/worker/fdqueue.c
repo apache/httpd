@@ -149,8 +149,8 @@ apr_status_t ap_queue_info_set_idle(fd_queue_info_t *queue_info,
     /* Atomically increment the count of idle workers */
     for (;;) {
         prev_idlers = queue_info->idlers;
-        if (apr_atomic_cas(&(queue_info->idlers), prev_idlers + 1, prev_idlers)
-            == prev_idlers) {
+        if (apr_atomic_cas32(&(queue_info->idlers), prev_idlers + 1,
+                             prev_idlers) == prev_idlers) {
             break;
         }
     }
@@ -189,11 +189,21 @@ apr_status_t ap_queue_info_wait_for_idler(fd_queue_info_t *queue_info,
         if (rv != APR_SUCCESS) {
             return rv;
         }
-        /* Re-check the idle worker count: one of the workers might
-         * have incremented the count since we last checked it a
-         * few lines above.  If it's still zero now that we're in
-         * the mutex-protected region, it's safe to block on the
-         * condition variable.
+        /* Re-check the idle worker count to guard against a
+         * race condition.  Now that we're in the mutex-protected
+         * region, one of two things may have happened:
+         *   - If the idle worker count is still zero, the
+         *     workers are all still busy, so it's safe to
+         *     block on a condition variable.
+         *   - If the idle worker count is nonzero, then a
+         *     worker has become idle since the first check
+         *     of queue_info->idlers above.  It's possible
+         *     that the worker has also signaled the condition
+         *     variable--and if so, the listener missed it
+         *     because it wasn't yet blocked on the condition
+         *     variable.  But if the idle worker count is
+         *     now nonzero, it's safe for this function to
+         *     return immediately.
          */
         if (queue_info->idlers == 0) {
             rv = apr_thread_cond_wait(queue_info->wait_for_idler,
@@ -214,13 +224,7 @@ apr_status_t ap_queue_info_wait_for_idler(fd_queue_info_t *queue_info,
     }
 
     /* Atomically decrement the idle worker count */
-    for (;;) {
-        apr_uint32_t prev_idlers = queue_info->idlers;
-        if (apr_atomic_cas(&(queue_info->idlers), prev_idlers - 1, prev_idlers)
-            == prev_idlers) {
-            break;
-        }
-    }
+    apr_atomic_dec32(&(queue_info->idlers));
 
     /* Atomically pop a pool from the recycled list */
     for (;;) {
