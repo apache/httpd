@@ -2,6 +2,9 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) mod_ext_filter: Fix a problem building argument lists which 
+     occasionally caused exec to fail.  PR 15491.  [Jeff Trawick]
+
   *) Add mod_dav_lock - a generic subset of the DAV locking implementation.
      [Justin Erenkrantz]
 
