@@ -774,8 +774,8 @@ void reinit_scoreboard (pool *p)
 #endif
     if (scoreboard_fd == -1)
     {
-	fprintf (stderr, "Cannot open scoreboard file:\n");
 	perror (scoreboard_fname);
+	fprintf (stderr, "Cannot open scoreboard file:\n");
 	exit (1);
     }
 
@@ -800,8 +800,8 @@ void reopen_scoreboard (pool *p)
 #endif
     if (scoreboard_fd == -1)
     {
-	fprintf (stderr, "Cannot open scoreboard file:\n");
 	perror (scoreboard_fname);
+	fprintf (stderr, "Cannot open scoreboard file:\n");
 	exit (1);
     }
 #else
@@ -1192,22 +1192,22 @@ void detach()
     if((x = fork()) > 0)
         exit(0);
     else if(x == -1) {
-        fprintf(stderr,"httpd: unable to fork new process\n");
         perror("fork");
+        fprintf(stderr,"httpd: unable to fork new process\n");
         exit(1);
     }
 #endif
 #ifndef NO_SETSID
     if((pgrp=setsid()) == -1) {
-        fprintf(stderr,"httpd: setsid failed\n");
         perror("setsid");
+        fprintf(stderr,"httpd: setsid failed\n");
         exit(1);
     }
 #else
 #if defined(NEXT)
     if(setpgrp(0,getpid()) == -1 || (pgrp = getpgrp(0)) == -1) {
-        fprintf(stderr,"httpd: setpgrp or getpgrp failed\n");
         perror("setpgrp");
+        fprintf(stderr,"httpd: setpgrp or getpgrp failed\n");
         exit(1);
     }
 #else
@@ -1216,8 +1216,8 @@ void detach()
     pgrp=-getpid();
 #else
     if((pgrp=setpgrp(getpid(),0)) == -1) {
-        fprintf(stderr,"httpd: setpgrp failed\n");
         perror("setpgrp");
+        fprintf(stderr,"httpd: setpgrp failed\n");
         exit(1);
     }
 #endif    
@@ -1570,8 +1570,10 @@ static void sock_disable_nagle (int s)
     int just_say_no = 1;
 
     if (setsockopt(s, IPPROTO_TCP, TCP_NODELAY, (char*)&just_say_no,
-                   sizeof(int)) < 0)
+                   sizeof(int)) < 0) {
+	perror ("setsockopt(TCP_NODELAY)");
 	fprintf(stderr, "httpd: could not set socket option TCP_NODELAY\n");
+    }
 }
 #else
 #define sock_disable_nagle(s) /* NOOP */
@@ -1932,10 +1934,10 @@ make_sock(pool *pconf, const struct sockaddr_in *server)
 #endif
     if(bind(s, (struct sockaddr *)server,sizeof(struct sockaddr_in)) == -1)
     {
+        perror("bind");
 #ifdef MPE
         if (ntohs(server->sin_port) < 1024) GETUSERMODE();
 #endif
-        perror("bind");
 	if (server->sin_addr.s_addr != htonl(INADDR_ANY))
 	    fprintf(stderr,"httpd: could not bind to address %s port %d\n",
 		    inet_ntoa(server->sin_addr), ntohs(server->sin_port));

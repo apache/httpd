@@ -687,6 +687,7 @@ void config_log_child (void *cmd)
 #else
     execl (SHELL_PATH, SHELL_PATH, "-c", (char *)cmd, NULL);
 #endif
+    perror ("exec");
     fprintf (stderr, "Exec of shell for logging failed!!!\n");
     exit (1);
 }
@@ -699,10 +700,9 @@ config_log_state *open_config_log (server_rec *s, pool *p,
     if (*cls->fname == '|') {
         FILE *dummy;
         
-        spawn_child(p, config_log_child, (void *)(cls->fname+1),
-                    kill_after_timeout, &dummy, NULL);
-
-        if (dummy == NULL) {
+        if (!spawn_child (p, config_log_child, (void *)(cls->fname+1),
+                    kill_after_timeout, &dummy, NULL)) {
+	    perror ("spawn_child");
             fprintf (stderr, "Couldn't fork child for TransferLog process\n");
             exit (1);
         }
@@ -712,9 +712,9 @@ config_log_state *open_config_log (server_rec *s, pool *p,
     else {
         char *fname = server_root_relative (p, cls->fname);
         if((cls->log_fd = popenf(p, fname, xfer_flags, xfer_mode)) < 0) {
+            perror("open");
             fprintf (stderr,
                      "httpd: could not open transfer log file %s.\n", fname);
-            perror("open");
             exit(1);
         }
     }

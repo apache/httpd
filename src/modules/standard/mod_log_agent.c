@@ -111,6 +111,8 @@ void agent_log_child (void *cmd)
 #else    
     execl (SHELL_PATH, SHELL_PATH, "-c", (char *)cmd, NULL);
 #endif    
+    perror ("exec");
+    fprintf (stderr, "Exec of shell for logging failed!!!\n");
     exit (1);
 }
 
@@ -126,10 +128,9 @@ void open_agent_log (server_rec *s, pool *p)
     if (*cls->fname == '|') {
 	FILE *dummy;
 	
-	spawn_child(p, agent_log_child, (void *)(cls->fname+1),
-		    kill_after_timeout, &dummy, NULL);
-
-	if (dummy == NULL) {
+	if (!spawn_child (p, agent_log_child, (void *)(cls->fname+1),
+		    kill_after_timeout, &dummy, NULL)) {
+	    perror ("spawn_child");
 	    fprintf (stderr, "Couldn't fork child for AgentLog process\n");
 	    exit (1);
 	}
@@ -138,8 +139,8 @@ void open_agent_log (server_rec *s, pool *p)
     }
     else if(*cls->fname != '\0') {
       if((cls->agent_fd = popenf(p, fname, xfer_flags, xfer_mode)) < 0) {
-        fprintf(stderr,"httpd: could not open agent log file %s.\n", fname);
         perror("open");
+        fprintf(stderr,"httpd: could not open agent log file %s.\n", fname);
         exit(1);
       }
     }

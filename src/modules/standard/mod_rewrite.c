@@ -2250,9 +2250,9 @@ static void open_rewritelog(server_rec *s, pool *p)
     fname = server_root_relative(p, conf->rewritelogfile);
     
     if (*conf->rewritelogfile == '|') {
-        spawn_child(p, rewritelog_child, (void *)(conf->rewritelogfile+1),
-                    kill_after_timeout, &fp, NULL);
-        if (fp == NULL) {
+        if (!spawn_child (p, rewritelog_child, (void *)(conf->rewritelogfile+1),
+                    kill_after_timeout, &fp, NULL)) {
+	    perror ("spawn_child");
             fprintf (stderr, "mod_rewrite: could not fork child for RewriteLog process\n");
             exit (1);
         }
@@ -2260,8 +2260,8 @@ static void open_rewritelog(server_rec *s, pool *p)
     }
     else if (*conf->rewritelogfile != '\0') {
         if ((conf->rewritelogfp = popenf(p, fname, rewritelog_flags, rewritelog_mode)) < 0) {
-            fprintf(stderr, "mod_rewrite: could not open RewriteLog file %s.\n", fname);
             perror("open");
+            fprintf(stderr, "mod_rewrite: could not open RewriteLog file %s.\n", fname);
             exit(1);
         }
     }
@@ -2405,6 +2405,7 @@ static void run_rewritemap_programs(server_rec *s, pool *p)
         fpout = NULL;
         rc = spawn_child(p, rewritemap_program_child, (void *)map->datafile, kill_after_timeout, &fpin, &fpout);
         if (rc == 0 || fpin == NULL || fpout == NULL) {
+	    perror ("spawn_child");
             fprintf (stderr, "mod_rewrite: could not fork child for RewriteMap process\n");
             exit (1);
         }
@@ -3216,6 +3217,7 @@ static void fd_lock(int fd)
 #endif
 
     if (rc < 0) {
+	perror ("flock");
         fprintf(stderr, "Error getting lock. Exiting!");
         exit(1);
     }
@@ -3240,6 +3242,7 @@ static void fd_unlock(int fd)
 #endif 
 
     if (rc < 0) {
+	perror ("flock");
         fprintf(stderr, "Error freeing lock. Exiting!");
         exit(1);
     }

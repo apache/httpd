@@ -92,19 +92,18 @@ void open_error_log(server_rec *s, pool *p)
     if (*s->error_fname == '|') {
       FILE *dummy;
 
-      spawn_child(p, error_log_child, (void *)(s->error_fname+1),
-                    kill_after_timeout, &dummy, NULL);
-
-        if (dummy == NULL) {
-            fprintf (stderr, "Couldn't fork child for ErrorLog process\n");
-            exit (1);
+      if (!spawn_child (p, error_log_child, (void *)(s->error_fname+1),
+                    kill_after_timeout, &dummy, NULL)) {
+	perror ("spawn_child");
+	fprintf (stderr, "Couldn't fork child for ErrorLog process\n");
+	exit (1);
       }
 
       s->error_log = dummy;
     } else {
         if(!(s->error_log = pfopen(p, fname, "a"))) {
-            fprintf(stderr,"httpd: could not open error log file %s.\n", fname);
             perror("fopen");
+            fprintf(stderr,"httpd: could not open error log file %s.\n", fname);
             exit(1);
       }
     }

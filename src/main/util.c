@@ -1129,8 +1129,8 @@ struct in_addr get_local_addr(int sd) {
 
     len = sizeof(struct sockaddr);
     if(getsockname(sd,&addr,&len) < 0) {
-        fprintf (stderr, "Can't get local host address!\n");
 	perror ("getsockname");
+        fprintf (stderr, "Can't get local host address!\n");
 	exit(1);
     }
          

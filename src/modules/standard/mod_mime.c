@@ -193,9 +193,9 @@ void init_mime (server_rec *s, pool *p)
     types_confname = server_root_relative (p, types_confname);
 
     if(!(f = fopen(types_confname,"r"))) {
+        perror("fopen");
         fprintf(stderr,"httpd: could not open mime types file %s\n",
                 types_confname);
-        perror("fopen");
         exit(1);
     }
 

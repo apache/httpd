@@ -791,22 +791,28 @@ void kill_cleanups_for_fd(pool *p,int fd)
 int popenf(pool *a, const char *name, int flg, int mode)
 {
   int fd;
+  int save_errno;
 
   block_alarms();
   fd = open(name, flg, mode);
+  save_errno = errno;
   if (fd >= 0) note_cleanups_for_fd (a, fd);
   unblock_alarms();
+  errno = save_errno;
   return fd;
 }
 
 int pclosef(pool *a, int fd)
 {
   int res;
+  int save_errno;
   
   block_alarms();
   res = close(fd);
+  save_errno = errno;
   kill_cleanup(a, (void *)fd, fd_cleanup);
   unblock_alarms();
+  errno = save_errno;
   return res;
 }
 
@@ -927,24 +933,30 @@ int spawn_child_err (pool *p, void (*func)(void *), void *data,
   int in_fds[2];
   int out_fds[2];
   int err_fds[2];
+  int save_errno;
 
   block_alarms();
   
   if (pipe_in && pipe (in_fds) < 0)
   {
+      save_errno = errno;
       unblock_alarms();
+      errno = save_errno;
       return 0;
   }
   
   if (pipe_out && pipe (out_fds) < 0) {
+    save_errno = errno;
     if (pipe_in) {
       close (in_fds[0]); close (in_fds[1]);
     }
     unblock_alarms();
+    errno = save_errno;
     return 0;
   }
 
   if (pipe_err && pipe (err_fds) < 0) {
+    save_errno = errno;
     if (pipe_in) {
       close (in_fds[0]); close (in_fds[1]);
     }
@@ -952,10 +964,12 @@ int spawn_child_err (pool *p, void (*func)(void *), void *data,
       close (out_fds[0]); close (out_fds[1]);
     }
     unblock_alarms();
+    errno = save_errno;
     return 0;
   }
 
   if ((pid = fork()) < 0) {
+    save_errno = errno;
     if (pipe_in) {
       close (in_fds[0]); close (in_fds[1]);
     }
@@ -966,6 +980,7 @@ int spawn_child_err (pool *p, void (*func)(void *), void *data,
       close (err_fds[0]); close (err_fds[1]);
     }
     unblock_alarms();
+    errno = save_errno;
     return 0;
   }
 

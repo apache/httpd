@@ -759,9 +759,9 @@ void process_resource_config(server_rec *s, char *fname, pool *p, pool *ptemp)
     parms.override = (RSRC_CONF|OR_ALL)&~(OR_AUTHCFG|OR_LIMIT);
     
     if(!(cfg = fopen(fname, "r"))) {
+        perror("fopen");
         fprintf(stderr,"httpd: could not open document config file %s\n",
                 fname);
-        perror("fopen");
         exit(1);
     } 
 
@@ -931,8 +931,10 @@ server_rec *init_virtual_host (pool *p, const char *hostname,
     getrlimit ( RLIMIT_NOFILE, &limits );
     if ( limits.rlim_cur < limits.rlim_max ) {
       limits.rlim_cur += 2;
-      if ( setrlimit ( RLIMIT_NOFILE, &limits ) < 0 )
+      if ( setrlimit ( RLIMIT_NOFILE, &limits ) < 0 ) {
+	perror ("setrlimit(RLIMIT_NOFILE)");
 	fprintf (stderr, "Cannot exceed hard limit for open files");
+      }
     }
 #endif
 
