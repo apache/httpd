@@ -1477,7 +1477,8 @@ static server_rec *find_virtual_server (struct in_addr server_ip,
 		sar->host_addr.s_addr == server_ip.s_addr) &&
 		(sar->host_port == 0 || sar->host_port == port)) {
 		return virt;
-	    } else if ( sar->host_addr.s_addr == DEFAULT_VHOST_ADDR ) {
+	    } else if ( sar->host_addr.s_addr == DEFAULT_VHOST_ADDR
+		&& (sar->host_port == 0 || sar->host_port == port)) {
 		/* this is so that you can build a server that is the
 		    "default" for any interface which isn't explicitly
 		    specified.  So that you can implement "deny anything

@@ -1,5 +1,7 @@
 Changes with Apache 1.2b10
 
+  *) <VirtualHost _default_:portnum> didn't work properly.  [Dean Gaudet]
+
   *) Added prototype for mktemp() for SUNOS4 [Marc Slemko]
 
   *) In mod_proxy.c, check return values for proxy_host2addr() when reading
