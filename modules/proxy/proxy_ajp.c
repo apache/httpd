@@ -116,8 +116,8 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
     char *buff;
     apr_uint16_t size;
     const char *tenc;
-    int havebody=1;
-    int isok=1;
+    int havebody = 1;
+    int isok = 1;
     apr_off_t bb_len;
 
     /*
@@ -125,7 +125,7 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
      */
 
     /* send request headers */
-    status = ajp_send_header(conn->sock, r);
+    status = ajp_send_header(conn->sock, r, uri);
     if (status != APR_SUCCESS) {
         conn->close++;
         ap_log_error(APLOG_MARK, APLOG_ERR, status, r->server,
@@ -341,7 +341,7 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
 }
 
 /*
- * This handles http:// URLs, and other URLs using a remote proxy over http
+ * This handles ajp:// URLs, and other URLs using a remote proxy over http
  * If proxyhost is NULL, then contact the server directly, otherwise
  * go via the proxy.
  * Note that if a proxy is used, then URLs other than http: can be accessed,

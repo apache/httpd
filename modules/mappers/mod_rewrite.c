@@ -558,6 +558,19 @@ static unsigned is_absolute_uri(char *uri)
     }
 
     switch (*uri++) {
+    case 'a':
+    case 'A':
+        if (!strncasecmp(uri, "jp://", 5)) {        /* ajp://    */
+          return 6;
+        }
+
+    case 'b':
+    case 'B':
+        if (!strncasecmp(uri, "alancer://", 10)) {   /* balancer:// */
+          return 11;
+        }
+        break;
+
     case 'f':
     case 'F':
         if (!strncasecmp(uri, "tp://", 5)) {        /* ftp://    */

@@ -384,9 +384,11 @@ apr_status_t ajp_ilink_receive(apr_socket_t *sock, ajp_msg_t *msg);
  * Build the ajp header message and send it
  * @param sock      backend socket
  * @param r         current request
+ * @uri uri         requested uri
  * @return          APR_SUCCESS or error
  */
-apr_status_t ajp_send_header(apr_socket_t *sock, request_rec  *r);
+apr_status_t ajp_send_header(apr_socket_t *sock, request_rec *r,
+                             apr_uri_t *uri);
 
 /**
  * Read the ajp message and return the type of the message.
