@@ -1,5 +1,5 @@
 Apache HTTP Server 2.0 Documentation Status File.
-Last modified: $Date: 2002/09/03 19:11:27 $
+Last modified: $Date: 2002/09/05 10:21:51 $
 
 If you are interested in helping accomplish some of the tasks on this
 list or otherwise improving the documentation, please join the
@@ -79,9 +79,6 @@ New User documentation
   - I think this should be a priority.  A rewrite of /sections.html would
     be a good place to start.  That document is too technical and 
     insufficiently verbose for the average user.
-
-* public_html - tutorial covering what is involved in helping users set
-  up web serving out of their home directory.
 
 Documentation improvements
 ==========================
