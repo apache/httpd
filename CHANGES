@@ -1,5 +1,9 @@
 Changes with Apache 2.0.41
 
+  *) Fix bug where environment or command line arguments containing 
+     non-ASCII-7 characters would cause the Win32 child process creation
+     to fail.  PR 11854  [William Rowe]
+
   *) Bug #11213.. make module loading error messages more informative 
      [Ian Darwin <Ian779@darwinsys.com>]
 
