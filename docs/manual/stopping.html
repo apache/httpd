@@ -23,7 +23,7 @@
     <p>You will notice many <code>httpd</code> executables running
     on your system, but you should not send signals to any of them
     except the parent, whose pid is in the <a
-    href="mod/core.html#pidfile">PidFile</a>. That is to say you
+    href="mod/mpm_common.html#pidfile">PidFile</a>. That is to say you
     shouldn't ever need to send signals to any process except the
     parent. There are three signals that you can send the parent:
     <code>TERM</code>, <code>HUP</code>, and <code>USR1</code>,
@@ -46,7 +46,7 @@
     </blockquote>
     Modify those examples to match your <a
     href="mod/core.html#serverroot">ServerRoot</a> and <a
-    href="mod/core.html#pidfile">PidFile</a> settings. 
+    href="mod/mpm_common.html#pidfile">PidFile</a> settings. 
 
     <p>A shell script called <a
     href="programs/apachectl.html">apachectl</a> is provided which
