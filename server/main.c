@@ -536,7 +536,7 @@ int main(int argc, const char * const argv[])
     }
 
     /* bad cmdline option?  then we die */
-    if (rv != APR_EOF) {
+    if (rv != APR_EOF || opt->ind < opt->argc) {
         usage(process);
     }
 
