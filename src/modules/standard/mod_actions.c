@@ -78,6 +78,10 @@
 
 typedef struct {
     table *action_types;	/* Added with Action... */
+    char *get;			/* Added with Script GET */
+    char *post;			/* Added with Script POST */
+    char *put;			/* Added with Script PUT */
+    char *delete;		/* Added with Script DELETE */
 } action_dir_config;
 
 module action_module;
@@ -88,6 +92,10 @@ void *create_action_dir_config (pool *p, char *dummy)
       (action_dir_config *) palloc (p, sizeof(action_dir_config));
 
     new->action_types = make_table (p, 4);
+    new->get = NULL;
+    new->post = NULL;
+    new->put = NULL;
+    new->delete = NULL;
     
     return new;
 }
@@ -102,6 +110,11 @@ void *merge_action_dir_configs (pool *p, void *basev, void *addv)
     new->action_types = overlay_tables (p, add->action_types,
 					  base->action_types);
 
+    new->get = add->get ? add->get : base->get;
+    new->post = add->post ? add->post : base->post;
+    new->put = add->put ? add->put : base->put;
+    new->delete = add->delete ? add->delete : base->delete;
+
     return new;
 }
 
@@ -111,9 +124,28 @@ char *add_action(cmd_parms *cmd, action_dir_config *m, char *type, char *script)
     return NULL;
 }
 
+char *set_script (cmd_parms *cmd, action_dir_config *m, char *method,
+		  char *script)
+{
+    if (!strcmp(method, "GET"))
+        m->get = pstrdup(cmd->pool, script);
+    else if (!strcmp(method, "POST"))
+        m->post = pstrdup(cmd->pool, script);
+    else if (!strcmp(method, "PUT"))
+        m->put = pstrdup(cmd->pool, script);
+    else if (!strcmp(method, "DELETE"))
+        m->delete = pstrdup(cmd->pool, script);
+    else
+        return "Unknown method type for Script";
+
+    return NULL;
+}
+
 command_rec action_cmds[] = {
 { "Action", add_action, NULL, OR_FILEINFO, TAKE2, 
     "a media type followed by a script name" },
+{ "Script", set_script, NULL, ACCESS_CONF|RSRC_CONF, TAKE2,
+    "a method followed by a script name" },
 { NULL }
 };
 
@@ -121,20 +153,37 @@ int action_handler (request_rec *r)
 {
     action_dir_config *conf =
       (action_dir_config *)get_module_config(r->per_dir_config,&action_module);
-    char *action = r->handler ? r->handler : r->content_type;
-    char *t;
+    char *t, *action = r->handler ? r->handler : r->content_type;
+    char *script = NULL;
 
-    if (!action ||
-	!(t = table_get(conf->action_types, action)))
-      return DECLINED;
+    /* First, check for the method-handling scripts */
+    if ((r->method_number == M_GET) && r->args && conf->get)
+        script = conf->get;
+    else if ((r->method_number == M_POST) && conf->post)
+        script = conf->post;
+    else if ((r->method_number == M_PUT) && conf->put)
+        script = conf->put;
+    else if ((r->method_number == M_DELETE) && conf->delete)
+        script = conf->delete;
 
-    if (r->finfo.st_mode == 0) {
-      log_reason("File does not exist", r->filename, r);
-      return NOT_FOUND;
+    /* Check for looping, which can happen if the CGI script isn't */
+    if (script && r->prev && r->prev->prev)
+        return DECLINED;
+
+    /* Second, check for actions (which override the method scripts) */
+    if (action && (t = table_get(conf->action_types, action))) {
+        script = t;
+	if (r->finfo.st_mode == 0) {
+	    log_reason("File does not exist", r->filename, r);
+	    return NOT_FOUND;
+	}
     }
+  
+    if (script == NULL)
+        return DECLINED;
 
-    internal_redirect_handler(pstrcat(r->pool, t, escape_uri(r->pool, r->uri),
-				      r->args ? "?" : NULL, r->args, NULL), r);
+    internal_redirect_handler(pstrcat(r->pool, script, escape_uri(r->pool,
+			r->uri), r->args ? "?" : NULL, r->args, NULL), r);
     return OK;
 }
 
