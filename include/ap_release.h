@@ -56,6 +56,8 @@
  * University of Illinois, Urbana-Champaign.
  */
 
+#ifndef AP_RELEASE_H
+#define AP_RELEASE_H
 
 #define AP_SERVER_BASEVENDOR "Apache Software Foundation"
 #define AP_SERVER_BASEPRODUCT "Apache"
@@ -69,3 +71,4 @@
  */
 #define APACHE_RELEASE 20000009
 
+#endif
