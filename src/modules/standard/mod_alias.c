@@ -300,7 +300,7 @@ static char *try_alias_list(request_rec *r, array_header *aliases, int doesc, in
 	int l;
 
 	if (p->regexp) {
-	    if (!regexec(p->regexp, r->uri, p->regexp->re_nsub + 1, regm, 0)) {
+	    if (!ap_regexec(p->regexp, r->uri, p->regexp->re_nsub + 1, regm, 0)) {
 		if (p->real) {
 		    found = ap_pregsub(r->pool, p->real, r->uri,
 				    p->regexp->re_nsub + 1, regm);

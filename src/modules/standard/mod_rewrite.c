@@ -1799,7 +1799,7 @@ static int apply_rewrite_rule(request_rec *r, rewriterule_entry *p,
         rewritelog(r, 3, "[per-dir %s] applying pattern '%s' to uri '%s'",
                    perdir, p->pattern, uri);
     }
-    rc = (regexec(regexp, uri, regexp->re_nsub+1, regmatch, 0) == 0);
+    rc = (ap_regexec(regexp, uri, regexp->re_nsub+1, regmatch, 0) == 0);
     if (! (( rc && !(p->flags & RULEFLAG_NOTMATCH)) ||
            (!rc &&  (p->flags & RULEFLAG_NOTMATCH))   ) ) {
         return 0;
@@ -2268,8 +2268,8 @@ static int apply_rewrite_cond(request_rec *r, rewritecond_entry *p,
     }
     else {
         /* it is really a regexp pattern, so apply it */
-        rc = (regexec(p->regexp, input,
-                      p->regexp->re_nsub+1, regmatch,0) == 0);
+        rc = (ap_regexec(p->regexp, input,
+                         p->regexp->re_nsub+1, regmatch,0) == 0);
 
         /* if it isn't a negated pattern and really matched
            we update the passed-through regex subst info structure */

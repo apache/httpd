@@ -249,6 +249,7 @@ ap_pvsprintf
 ap_rationalize_mtime
 ap_read_config
 ap_read_request
+ap_regexec
 ap_register_cleanup
 ap_register_other_child
 ap_remove_module

@@ -370,7 +370,7 @@ static int directory_walk(request_rec *r)
 
             this_conf = NULL;
             if (entry_core->r) {
-                if (!regexec(entry_core->r, r->filename, 0, NULL, 0))
+                if (!ap_regexec(entry_core->r, r->filename, 0, NULL, 0))
                     this_conf = entry_config;
             }
             else if (entry_core->d_is_fnmatch) {
@@ -536,7 +536,7 @@ static int directory_walk(request_rec *r)
                      ap_get_module_config(entry_config, &core_module);
 
         if (entry_core->r) {
-            if (!regexec(entry_core->r, test_dirname, 0, NULL, REG_NOTEOL)) {
+            if (!ap_regexec(entry_core->r, test_dirname, 0, NULL, REG_NOTEOL)) {
                 per_dir_defaults =
                     ap_merge_per_dir_configs(r->pool, per_dir_defaults,
                                           entry_config);
@@ -612,7 +612,7 @@ static int location_walk(request_rec *r)
 	this_conf = NULL;
 
 	if (entry_core->r) {
-	    if (!regexec(entry_core->r, r->uri, 0, NULL, 0))
+	    if (!ap_regexec(entry_core->r, r->uri, 0, NULL, 0))
 		this_conf = entry_config;
 	}
 	else if (entry_core->d_is_fnmatch) {
@@ -673,7 +673,7 @@ static int file_walk(request_rec *r)
             this_conf = NULL;
 
             if (entry_core->r) {
-                if (!regexec(entry_core->r, test_file, 0, NULL, 0))
+                if (!ap_regexec(entry_core->r, test_file, 0, NULL, 0))
                     this_conf = entry_config;
             }
             else if (entry_core->d_is_fnmatch) {

@@ -968,8 +968,10 @@ API_EXPORT(char *) ap_uuencode(pool *p, char *string);
 void os2pathname(char *path);
 #endif
 
+API_EXPORT(int)    ap_regexec(const regex_t *preg, const char *string,
+                              size_t nmatch, regmatch_t pmatch[], int eflags);
 API_EXPORT(char *) ap_pregsub(pool *p, const char *input, const char *source,
-			   size_t nmatch, regmatch_t pmatch[]);
+                              size_t nmatch, regmatch_t pmatch[]);
 
 API_EXPORT(void) ap_content_type_tolower(char *);
 API_EXPORT(void) ap_str_tolower(char *);

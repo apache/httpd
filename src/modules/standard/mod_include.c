@@ -1187,7 +1187,7 @@ static int re_check(request_rec *r, char *string, char *rexp)
                     "unable to compile pattern \"%s\"", rexp);
         return -1;
     }
-    regex_error = regexec(compiled, string, 0, (regmatch_t *) NULL, 0);
+    regex_error = ap_regexec(compiled, string, 0, (regmatch_t *) NULL, 0);
     ap_pregfree(r->pool, compiled);
     return (!regex_error);
 }

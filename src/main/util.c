@@ -281,9 +281,21 @@ API_EXPORT(int) ap_is_matchexp(const char *str)
     return 0;
 }
 
+/* 
+ * Apache stub function for the regex libraries regexec() to make sure the
+ * whole regex(3) API is available through the Apache (exported) namespace.
+ * This is especially important for the DSO situations of modules.
+ * DO NOT MAKE A MACRO OUT OF THIS FUNCTION!
+ */
+API_EXPORT(int) ap_regexec(const regex_t *preg, const char *string,
+                           size_t nmatch, regmatch_t pmatch[], int eflags)
+{
+    return regexec(preg, string, nmatch, pmatch, eflags);
+}
+
 /* This function substitutes for $0-$9, filling in regular expression
  * submatches. Pass it the same nmatch and pmatch arguments that you
- * passed regexec(). pmatch should not be greater than the maximum number
+ * passed ap_regexec(). pmatch should not be greater than the maximum number
  * of subexpressions - i.e. one more than the re_nsub member of regex_t.
  *
  * input should be the string with the $-expressions, source should be the

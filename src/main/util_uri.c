@@ -306,11 +306,11 @@ API_EXPORT(int) ap_parse_uri_components(pool *p, const char *uri, uri_components
     memset (uptr, '\0', sizeof(*uptr));
     uptr->is_initialized = 1;
 
-    ret = regexec(&re_uri, uri, re_uri.re_nsub + 1, match, 0);
+    ret = ap_regexec(&re_uri, uri, re_uri.re_nsub + 1, match, 0);
 
     if (ret != 0) {
 	ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, NULL,
-                    "regexec() could not parse uri (\"%s\")",
+                    "ap_regexec() could not parse uri (\"%s\")",
 		    uri);
 
 	return HTTP_BAD_REQUEST;
@@ -336,10 +336,10 @@ API_EXPORT(int) ap_parse_uri_components(pool *p, const char *uri, uri_components
 
     if (uptr->hostinfo) {
 	/* Parse the hostinfo part to extract user, password, host, and port */
-	ret = regexec(&re_hostpart, uptr->hostinfo, re_hostpart.re_nsub + 1, match, 0);
+	ret = ap_regexec(&re_hostpart, uptr->hostinfo, re_hostpart.re_nsub + 1, match, 0);
 	if (ret != 0) {
 	    ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, NULL,
-                    "regexec() could not parse (\"%s\") as host part",
+                    "ap_regexec() could not parse (\"%s\") as host part",
 		    uptr->hostinfo);
 
 	    return HTTP_BAD_REQUEST;

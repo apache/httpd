@@ -217,12 +217,13 @@
  * 19990320.1           - add ap_vrprintf()
  * 19990320.2           - add cmd_parms.context, ap_set_config_vectors, 
  *                        export ap_add_file_conf
+ * 19990521             - add ap_regexec()
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503133UL /* "AP13" */
 
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
-#define MODULE_MAGIC_NUMBER_MAJOR 19990320
+#define MODULE_MAGIC_NUMBER_MAJOR 19990521
 #endif
 #define MODULE_MAGIC_NUMBER_MINOR 2                     /* 0...n */
 #define MODULE_MAGIC_NUMBER MODULE_MAGIC_NUMBER_MAJOR	/* backward compat */
