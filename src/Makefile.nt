@@ -1,0 +1,12 @@
+# Makefile for NT
+# Note that this doesn't quite work... apache.exe doesn't depend on proxy.lib
+# or regex.lib. Nor can it, without some messing about - the debug and release
+# versions need different dependencies, and that isn't an option.
+# One way that occurs to me to solve the problem is to have the proxy and
+# regex makes delete the appropriate apache.exe. Tacky, but it'll work!
+# Ben, 5 July 97
+
+_debug:
+    cd modules\proxy & set CFG=proxy - Win32 Debug& nmake -f proxy.mak
+    cd regex & set CFG=regex - Win32 Debug& nmake -f regex.mak
+	set CFG=apache - Win32 Debug& nmake -f apache.mak
