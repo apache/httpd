@@ -115,6 +115,8 @@ _install:
 	copy Apache$(SHORT)\Apache.exe $(INSTDIR)
 	copy Core$(SHORT)\ApacheCore.dll $(INSTDIR)
 	copy lib\apr\$(LONG)\aprlib.dll $(INSTDIR)
+        copy lib\expat-lite\XMLParse$(SHORT)\xmlparse.dll $(INSTDIR)
+        copy lib\expat-lite\XMLTok$(SHORT)\xmltok.dll $(INSTDIR)
         copy os\win32\ApacheModuleStatus$(SHORT)\ApacheModuleStatus.dll $(INSTDIR)\modules
 #       copy os\win32\ApacheModuleInfo$(SHORT)\ApacheModuleInfo.dll $(INSTDIR)\modules
 	copy os\win32\ApacheModuleAuthAnon$(SHORT)\ApacheModuleAuthAnon.dll $(INSTDIR)\modules
