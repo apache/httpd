@@ -392,7 +392,12 @@ proxy_send_fb(BUFF *f, request_rec *r, BUFF *f2, struct cache_req *c)
     conn_rec *con = r->connection;
     
     total_bytes_sent = 0;
-    soft_timeout("proxy send body", r);
+
+    /* Since we are reading from one buffer and writing to another,
+     * it is unsafe to do a soft_timeout here, at least until the proxy
+     * has its own timeout handler which can set both buffers to EOUT.
+     */
+    hard_timeout("proxy send body", r);
 
     while (!con->aborted) {
 	n = bread(f, buf, IOBUFSIZE);
