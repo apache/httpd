@@ -137,9 +137,9 @@ BOOL ssl_config_global_isfixed(SSLModConfigRec *mc)
 
 static void modssl_ctx_init(modssl_ctx_t *mctx)
 {
-    mctx->sc                  = NULL;
+    mctx->sc                  = NULL; /* set during module init */
 
-    mctx->ssl_ctx             = NULL;
+    mctx->ssl_ctx             = NULL; /* set during module init */
 
     mctx->pks                 = NULL;
     mctx->pkp                 = NULL;
@@ -153,7 +153,7 @@ static void modssl_ctx_init(modssl_ctx_t *mctx)
 
     mctx->crl_path            = NULL;
     mctx->crl_file            = NULL;
-    mctx->crl                 = NULL;
+    mctx->crl                 = NULL; /* set during module init */
 
     mctx->auth.ca_cert_path   = NULL;
     mctx->auth.ca_cert_file   = NULL;
@@ -177,6 +177,8 @@ static void modssl_ctx_init_server(SSLSrvConfigRec *sc,
 
     memset((void*)mctx->pks->key_files, 0, sizeof(mctx->pks->key_files));
 
+    /* certs/keys are set during module init */
+
     memset(mctx->pks->certs, 0, sizeof(mctx->pks->certs));
 
     memset(mctx->pks->keys, 0, sizeof(mctx->pks->keys));
@@ -191,10 +193,10 @@ void *ssl_config_server_create(apr_pool_t *p, server_rec *s)
 
     sc->mc                     = ssl_config_global_create(s);
     sc->enabled                = UNSET;
-    sc->vhost_id               = NULL;
-    sc->vhost_id_len           = 0;
+    sc->vhost_id               = NULL;  /* set during module init */
+    sc->vhost_id_len           = 0;     /* set during module init */
     sc->log_file_name          = NULL;
-    sc->log_file               = NULL;
+    sc->log_file               = NULL;  /* set during module init */
     sc->log_level              = SSL_LOG_NONE;
     sc->session_cache_timeout  = UNSET;
 
@@ -213,11 +215,6 @@ static void modssl_ctx_cfg_merge(modssl_ctx_t *base,
                                  modssl_ctx_t *add,
                                  modssl_ctx_t *mrg)
 {
-    cfgMerge(ssl_ctx, NULL);
-
-    cfgMerge(pks, NULL);
-    cfgMerge(pkp, NULL);
-
     cfgMerge(protocol, SSL_PROTOCOL_ALL);
 
     cfgMerge(pphrase_dialog_type, SSL_PPTYPE_UNSET);
@@ -227,7 +224,6 @@ static void modssl_ctx_cfg_merge(modssl_ctx_t *base,
 
     cfgMerge(crl_path, NULL);
     cfgMerge(crl_file, NULL);
-    cfgMerge(crl, NULL);
 
     cfgMergeString(auth.ca_cert_path);
     cfgMergeString(auth.ca_cert_file);
@@ -247,8 +243,6 @@ static void modssl_ctx_cfg_merge_server(modssl_ctx_t *base,
     for (i = 0; i < SSL_AIDX_MAX; i++) {
         cfgMergeString(pks->cert_files[i]);
         cfgMergeString(pks->key_files[i]);
-        cfgMerge(pks->certs[i], NULL);
-        cfgMerge(pks->keys[i], NULL);
     }
 }
 
@@ -265,9 +259,7 @@ void *ssl_config_server_merge(apr_pool_t *p, void *basev, void *addv)
 
     cfgMerge(mc, NULL);
     cfgMergeBool(enabled);
-    cfgMergeString(vhost_id);
     cfgMergeString(log_file_name);
-    cfgMerge(log_file, NULL);
     cfgMerge(log_level, SSL_LOG_NONE);
     cfgMergeInt(session_cache_timeout);
 
