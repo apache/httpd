@@ -41,8 +41,8 @@ RSC=rc.exe
 # PROP Intermediate_Dir ".\ApacheR"
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
-# ADD BASE CPP /nologo /MD /W3 /GX /O2 /I "./include" /I "./os/win32" /I "./srclib/apr/include" /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "SHARED_MODULE" /YX /FD /c
-# ADD CPP /nologo /MD /W3 /GX /O2 /I "./include" /I "./os/win32" /I "./srclib/apr/include" /D "NDEBUG" /D "WIN32" /D "_CONSOLE" /FD /c
+# ADD BASE CPP /nologo /MD /W3 /GX /O2 /I "./include" /I "./os/win32" /I "./srclib/apr/include" /I "./srclib/apr-util/include" /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "SHARED_MODULE" /YX /FD /c
+# ADD CPP /nologo /MD /W3 /GX /O2 /I "./include" /I "./os/win32" /I "./srclib/apr/include" /I "./srclib/apr-util/include" /D "NDEBUG" /D "WIN32" /D "_CONSOLE" /FD /c
 # SUBTRACT CPP /YX
 # ADD BASE RSC /l 0x809 /d "NDEBUG"
 # ADD RSC /l 0x809 /d "NDEBUG"
@@ -66,8 +66,8 @@ LINK32=link.exe
 # PROP Intermediate_Dir ".\ApacheD"
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
-# ADD BASE CPP /nologo /MDd /W3 /GX /ZI /Od /I "./include" /I "./os/win32" /I "./srclib/apr/include" /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /YX /FD /c
-# ADD CPP /nologo /MDd /W3 /GX /ZI /Od /I "./include" /I "./os/win32" /I "./srclib/apr/include" /D "_DEBUG" /D "WIN32" /D "_CONSOLE" /FD /c
+# ADD BASE CPP /nologo /MDd /W3 /GX /ZI /Od /I "./include" /I "./os/win32" /I "./srclib/apr/include" /I "./srclib/apr-util/include" /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /YX /FD /c
+# ADD CPP /nologo /MDd /W3 /GX /ZI /Od /I "./include" /I "./os/win32" /I "./srclib/apr/include" /I "./srclib/apr-util/include" /D "_DEBUG" /D "WIN32" /D "_CONSOLE" /FD /c
 # SUBTRACT CPP /YX
 # ADD BASE RSC /l 0x809 /d "_DEBUG"
 # ADD RSC /l 0x809 /d "_DEBUG"
