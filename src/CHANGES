@@ -1,5 +1,7 @@
 Changes with Apache 1.2b3:
 
+  *) Fix find_string() NULL pointer dereference. [Howard Fear]
+
   *) Add set_flag_slot() at the request of Dirk and others.
      [Dirk vanGulik]
 

@@ -141,13 +141,11 @@ int find_string(FILE *in,char *str, request_rec *r, int printing) {
                 return 0;
         }
         else {
-            if(r) {
-                if(p) {
-                    for(x=0;x<p;x++) {
-                        if (printing) rputc(str[x],r);
-                    }
+            if (printing) {
+                for(x=0;x<p;x++) {
+                    rputc(str[x],r);
                 }
-                if (printing) rputc(c,r);
+                rputc(c,r);
             }
             p=0;
         }
@@ -1590,7 +1588,7 @@ void send_parsed_content(FILE *f, request_rec *r)
                     log_printf(r->server,"httpd: exec used but not allowed in %s",
                             r->filename);
                     if (printing) rputs(error, r);
-                    ret = find_string(f,ENDING_SEQUENCE,NULL,printing);
+                    ret = find_string(f,ENDING_SEQUENCE,r,0);
                 } else 
                     ret=handle_exec(f, r, error);
             } else if(!strcmp(directive,"config"))
@@ -1612,7 +1610,7 @@ void send_parsed_content(FILE *f, request_rec *r)
                         "httpd: unknown directive %s in parsed doc %s",
                         directive,r->filename);
                 if (printing) rputs(error, r);
-                ret=find_string(f,ENDING_SEQUENCE,NULL,printing);
+                ret=find_string(f,ENDING_SEQUENCE,r,0);
             }
             if(ret) {
                 log_printf(r->server,"httpd: premature EOF in parsed file %s",
