@@ -2231,7 +2231,6 @@ static void winnt_child_init(apr_pool_t *pchild, struct server_rec *ap_server_co
         ap_my_generation = atoi(getenv("AP_MY_GENERATION"));
 
         apr_lock_child_init(&start_mutex, signal_name_prefix, pconf);
-        DebugBreak();
     }
     else {
         /* Single process mode - this lock doesn't even need to exist */
