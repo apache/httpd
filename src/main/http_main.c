@@ -274,11 +274,10 @@ void accept_mutex_off()
 /*
  * More machine-dependant networking gooo... on some systems,
  * you've got to be *really* sure that all the packets are acknowledged
- * before closing the connection.  Actually, it shouldn't hurt anyplace,
- * but this is a late bugfix, so be conservative...
+ * before closing the connection.
  */
 
-#ifdef NEED_LINGER
+#ifndef NO_LINGCLOSE
 static void lingering_close (int sd, server_rec *server_conf)
 {
     int dummybuf[512];
@@ -1322,13 +1321,14 @@ void child_main(int child_num_arg)
 		       bytes_in_pool (ptrans), r->the_request);
 #endif		
 	bflush(conn_io);
-#ifdef NEED_LINGER 
+
+#ifdef NO_LINGCLOSE
+	bclose(conn_io);	/* slam it shut */
+#else
 	if (r)
 	    lingering_close (conn_io->fd, r->server);
 	else
 	    close (conn_io->fd);
-#else	
-	bclose(conn_io);
 #endif	
     }    
 }

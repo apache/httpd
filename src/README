@@ -213,6 +213,9 @@ of these #defines.
       NO_SETSID:
       NO_USE_SIGACTION:
        Do not use the sigaction() call, even if we have it.
+      NO_LINGCLOSE:
+       Do not use Apache's soft, "lingering" close feature to
+       terminate connections.
 --
 
   MISC #DEFINES:
