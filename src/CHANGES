@@ -1,7 +1,10 @@
 Changes with Apache 1.3b4
 
+  *) WIN32: avoid overflows during file canonicalisations.
+     [malcolm@mgdev.demon.co.uk] #PR1378
+
   *) WIN32: set_file_slot() didn't detect absolute paths. [Ben Laurie]
-     PR#1511
+     PR#1511, 1508
 
   *) WIN32: mod_status display header didn't match fields. [Ben Laurie]
 
@@ -23,6 +26,7 @@ Changes with Apache 1.3b4
      [Ben Hyde] PR#1387
 
   *) WIN32: Only lowercase the part of the path that is real. [Ben Laurie]
+     PR#1505
 
   *) Fix problems with timeouts in inetd mode and -X mode.  [Dean Gaudet]
 

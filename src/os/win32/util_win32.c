@@ -7,7 +7,7 @@
 
 static void sub_canonical_filename(char *szCanon, const char *szFile)
 {
-    char buf[_MAX_PATH];
+    char buf[HUGE_STRING_LEN];
     int n;
     char *szFilePart;
     WIN32_FIND_DATA d;
@@ -56,7 +56,7 @@ static void sub_canonical_filename(char *szCanon, const char *szFile)
 
 API_EXPORT(char *) os_canonical_filename(pool *pPool, const char *szFile)
 {
-    char buf[_MAX_PATH];
+    char buf[HUGE_STRING_LEN];
 
     sub_canonical_filename(buf, szFile);
     return pstrdup(pPool, buf);
