@@ -36,15 +36,31 @@
     idle server threads, which stand ready to serve incoming
     requests. In this way, clients do not need to wait for a new
     threads or processes to be created before their requests can be
-    served. Apache assesses the total number of idle threads in all
-    processes, and forks or kills processes to keep this number within
-    the boundaries specified by <a href="../mod/mpm_common.html#minsparethreads" class="directive"><code class="directive">MinSpareThreads</code></a> and <a href="../mod/mpm_common.html#maxsparethreads" class="directive"><code class="directive">MaxSpareThreads</code></a>. Since this
+    served. The number of processes that will initially launched is
+    set by the <a href="../mod/mpm_common.html#startservers" class="directive"><code class="directive">StartServers</code></a>
+    directive. Then during operation, Apache assesses the total number
+    of idle threads in all processes, and forks or kills processes to
+    keep this number within the boundaries specified by <a href="../mod/mpm_common.html#minsparethreads" class="directive"><code class="directive">MinSpareThreads</code></a> and <a href="../mod/mpm_common.html#maxsparethreads" class="directive"><code class="directive">MaxSpareThreads</code></a>. Since this
     process is very self-regulating, it is rarely necessary to modify
     these directives from their default values. The maximum number of
-    clients that may be served simultaneously is determined by
-    multiplying the maximum number of server processes that will be
-    created (<a href="../mod/mpm_common.html#maxclients" class="directive"><code class="directive">MaxClients</code></a>) by
-    the number of threads created in each process (<a href="../mod/mpm_common.html#threadsperchild" class="directive"><code class="directive">ThreadsPerChild</code></a>).</p>
+    clients that may be served simultaneously (i.e., the maximum total
+    number of threads in all processes) is determined by the
+    <a href="../mod/mpm_common.html#maxclients" class="directive"><code class="directive">MaxClients</code></a> directive,
+    while the maximum number of processes that can be launched is set
+    by the <a href="../mod/mpm_common.html#serverlimit" class="directive"><code class="directive">ServerLimit</code></a>
+    directive.  <a href="../mod/mpm_common.html#serverlimit" class="directive"><code class="directive">ServerLimit</code></a>
+    multiplied by <a href="../mod/mpm_common.html#threadsperchild" class="directive"><code class="directive">ThreadsPerChild</code></a> must be greater
+    than or equal to <a href="../mod/mpm_common.html#maxclients" class="directive"><code class="directive">MaxClients</code></a></p>
+
+    <p>A typical configuration of the process-thread controls in
+    the <code><a href="../mod/worker.html">worker</a></code> MPM could look as follows:</p>
+
+<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code><pre>StartServers         2
+MaxClients         150
+MinSpareThreads     25
+MaxSpareThreads     75
+ThreadsPerChild     25
+ServerLimit         16</pre></code></td></tr></table></blockquote>
 
     <p>While the parent process is usually started as root under Unix
     in order to bind to port 80, the child processes and threads are
