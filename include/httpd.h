@@ -517,11 +517,11 @@ struct ap_method_list_t {
 #define DIR_MAGIC_TYPE "httpd/unix-directory"
 
 /* Just in case your linefeed isn't the one the other end is expecting. */
-#ifndef AP_CHARSET_EBCDIC
+#if !APR_CHARSET_EBCDIC
 #define LF 10
 #define CR 13
 #define CRLF "\015\012"
-#else /* AP_CHARSET_EBCDIC */
+#else /* APR_CHARSET_EBCDIC */
 /* For platforms using the EBCDIC charset, the transition ASCII->EBCDIC is done
  * in the buff package (bread/bputs/bwrite).  Everywhere else, we use
  * "native EBCDIC" CR and NL characters. These are therefore
@@ -531,7 +531,7 @@ struct ap_method_list_t {
 #define CR '\r'
 #define LF '\n'
 #define CRLF "\r\n"
-#endif /* AP_CHARSET_EBCDIC */                                   
+#endif /* APR_CHARSET_EBCDIC */                                   
 
 /* Possible values for request_rec.read_body (set by handling module):
  *    REQUEST_NO_BODY          Send 413 error if message has any body

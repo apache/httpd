@@ -69,11 +69,11 @@
 #define SIZEFMT_BYTES 0
 #define SIZEFMT_KMG 1
 #define TMP_BUF_SIZE 1024
-#ifdef AP_CHARSET_EBCDIC
+#if APR_CHARSET_EBCDIC
 #define RAW_ASCII_CHAR(ch)  apr_xlate_conv_byte(ap_hdrs_from_ascii, (unsigned char)ch)
-#else /*AP_CHARSET_EBCDIC*/
+#else /*APR_CHARSET_EBCDIC*/
 #define RAW_ASCII_CHAR(ch)  (ch)
-#endif /*AP_CHARSET_EBCDIC*/
+#endif /*APR_CHARSET_EBCDIC*/
 
 module AP_MODULE_DECLARE_DATA includes_module;
 

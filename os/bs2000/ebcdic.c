@@ -56,8 +56,8 @@
  * University of Illinois, Urbana-Champaign.
  */
 
-#ifdef AP_CHARSET_EBCDIC
 #include "ap_config.h"
+#if APR_CHARSET_EBCDIC
 #include "ebcdic.h"
 /*
 	   Initial Port for  Apache-1.3 by <Martin.Kraemer@Mch.SNI.De>
@@ -249,4 +249,4 @@ ascii2ebcdic(unsigned char *dest, const unsigned char *srce, size_t count)
 		*dest++ = os_toebcdic[*srce++];
 	}
 }
-#endif /*AP_CHARSET_EBCDIC*/
+#endif /*APR_CHARSET_EBCDIC*/
