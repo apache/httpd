@@ -62,8 +62,8 @@ install_targets = install-modules
 
 install-modules:
 	@shared='$(shared)'; \
-	static='$(static)'; \
-	has_mod_so=`echo $$static|sed 's/^.*mod_so.*$$/has_mod_so/'`; \
+	builtin='$(BUILTIN_LIBS)'; \
+	has_mod_so=`echo $$builtin|sed 's/^.*mod_so.*$$/has_mod_so/'`; \
 	if [ "x$$has_mod_so" = "xhas_mod_so" ]; then \
 		$(MKINSTALLDIRS) $(libexecdir); \
 		for i in $$shared; do \
