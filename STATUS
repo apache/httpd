@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/09/20 22:17:35 $]
+Last modified at [$Date: 2004/09/21 00:33:16 $]
 
 Release:
 
@@ -77,7 +77,7 @@ PATCHES TO BACKPORT FROM 2.1
     *) Fix Satisfy merging regression in 2.0.51.
        http://cvs.apache.org/viewcvs.cgi/httpd-2.0/server/core.c?r1=1.285&r2=1.286    
        PR: 31315
-       +1: jorton, nd, pquerna
+       +1: jorton, nd, pquerna, geoff
 
     *) Fix the global mutex crash when the global mutex is never allocated
        due to disabled/empty caches.
@@ -111,7 +111,7 @@ PATCHES TO BACKPORT FROM 2.1
        Previously this would segfault or simply not match as expected,
        depending on the platform.
          modules/mappers/mod_rewrite.c: r1.260
-       +1: trawick
+       +1: trawick geoff
 
     *) mod_headers: Support {...}s tag for SSL variable lookup.
        http://www.apache.org/~jorton/mod_headers-2.0-ssl.diff
