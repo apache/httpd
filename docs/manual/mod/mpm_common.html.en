@@ -714,7 +714,7 @@ per child process</td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>MPM</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td><code class="module"><a href="../mod/leader.html">leader</a></code>, <code class="module"><a href="../mod/mpm_winnt.html">mpm_winnt</a></code>, <code class="module"><a href="../mod/perchild.html">perchild</a></code>, <code class="module"><a href="../mod/threadpool.html">threadpool</a></code>, <code class="module"><a href="../mod/worker.html">worker</a></code></td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available for mpm_winnt in Apache 2.0.41
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available for <code class="module"><a href="../mod/mpm_winnt.html">mpm_winnt</a></code> in Apache 2.0.41
 and later</td></tr>
 </table>
     <p>This directive sets the maximum configured value for <code class="directive"><a href="#threadsperchild">ThreadsPerChild</a></code> for the lifetime

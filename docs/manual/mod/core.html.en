@@ -99,7 +99,7 @@ available</td></tr>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td><compatibility>Available in Apache 2.0.30 and later</compatibility></td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in Apache 2.0.30 and later</td></tr>
 </table>
 
     <p>This directive controls whether requests that contain trailing
@@ -237,7 +237,7 @@ response without an explicit character set</td></tr>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td><compatibility>Available in Apache 2.0.33 and later</compatibility></td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in Apache 2.0.33 and later</td></tr>
 </table>
     <p>This directive activates a particular output <a href="../filter.html">filter</a> for a request depending on the
     response MIME-type.</p>
@@ -454,7 +454,7 @@ scripts</td></tr>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td><compatibility>NetWare only</compatibility></td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>NetWare only</td></tr>
 </table>
     <p>This directive is used to control how Apache finds the
     interpreter used to run CGI scripts. For example, setting
@@ -800,7 +800,7 @@ Location</a></li>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td><compatibility>Available in version 2.0.44 and later</compatibility></td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in version 2.0.44 and later</td></tr>
 </table>
     <p>This directive controls whether <code>httpd</code> may use the sendfile
     support from the kernel to transmit file contents to the client.
@@ -853,8 +853,8 @@ in case of an error</td></tr>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td><compatibility>Quoting syntax for text messages is different in Apache
-2.0</compatibility></td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Quoting syntax for text messages is different in Apache
+2.0</td></tr>
 </table>
     <p>In the event of a problem or error, Apache can be configured
     to do one of four things,</p>
@@ -1113,7 +1113,7 @@ MIME content-type</td></tr>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td><compatibility>Moved to the core in Apache 2.0</compatibility></td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Moved to the core in Apache 2.0</td></tr>
 </table>
     <p>When placed into an <code>.htaccess</code> file or a
     <code class="directive"><a href="#directory">&lt;Directory&gt;</a></code>, or
@@ -1333,7 +1333,7 @@ the server configuration files</td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td><compatibility>Wildcard matching available in 2.0.41 and later</compatibility></td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Wildcard matching available in 2.0.41 and later</td></tr>
 </table>
     <p>This directive allows inclusion of other configuration files
     from within the server configuration files.</p>
@@ -2405,9 +2405,9 @@ scripts</td></tr>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td><compatibility>Win32 only<br />
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Win32 only<br />
 option <code>Registry-Strict</code> is available in Apache 2.0 and
-later</compatibility></td></tr>
+later</td></tr>
 </table>
     <p>This directive is used to control how Apache finds the
     interpreter used to run CGI scripts. The default technique is to
@@ -2481,9 +2481,9 @@ itself</td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td><compatibility>In version 2.0, this
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>In version 2.0, this
      directive supersedes the functionality of the <code class="directive">Port</code>
-     directive from version 1.3.</compatibility></td></tr>
+     directive from version 1.3.</td></tr>
 </table>
     <p>The <code class="directive">ServerName</code> directive sets the hostname and
     port that the server uses to identify itself.  This is used when
@@ -2682,7 +2682,7 @@ handler</td></tr>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td><compatibility>Moved into the core in Apache 2.0</compatibility></td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Moved into the core in Apache 2.0</td></tr>
 </table>
     <p>When placed into an <code>.htaccess</code> file or a
     <code class="directive"><a href="#directory">&lt;Directory&gt;</a></code> or
