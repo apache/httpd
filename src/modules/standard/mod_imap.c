@@ -269,7 +269,7 @@ int is_closer(double point[2], double coords[MAXVERTS][2], double *closest)
 
 double get_x_coord(char *args) 
 {
-  char *endptr = NULL;
+  char *endptr;           /* we want it non-null */
   double x_coord = -1;    /* -1 is returned if no coordinate is given */
 
   if (args == NULL)
@@ -288,7 +288,7 @@ double get_x_coord(char *args)
 
 double get_y_coord(char *args) 
 {
-  char *endptr = NULL;
+  char *endptr;        /* we want it non-null */
   char *start_of_y = NULL;
   double y_coord = -1;    /* -1 is returned on error */
 
@@ -659,10 +659,16 @@ int imap_handler(request_rec *r)
     } /* blank lines and comments are ignored if we aren't printing a menu */
 
 
-    if (sscanf(input, "%s %s %n", directive, value, &chars_read) != 2) {
+    if (sscanf(input, "%s %s", directive, value) != 2) {
       continue;                           /* make sure we read two fields */
     }
-    string_pos += chars_read;
+    /* Now skip what we just read */
+    while (!(isspace(*string_pos)))	/* past directive */
+	string_pos++;
+    while (isspace(*string_pos))	/* and whitespace */
+	string_pos++;
+    while (!(isspace(*string_pos)))	/* and value... have to watch it */
+	string_pos++;			/* can have punctuation and stuff */
     
     if ( ! strncasecmp(directive, "base", 4 ) ) {       /* base, base_uri */
       imap_url(r, NULL, value, base);
@@ -686,9 +692,15 @@ int imap_handler(request_rec *r)
 
     vertex = 0;
     while ( vertex < MAXVERTS &&  
-	   sscanf(string_pos, "%lf,%lf %n", &pointarray[vertex][X], 
-		  &pointarray[vertex][Y], &chars_read)   == 2) {
-      string_pos += chars_read;
+	   sscanf(string_pos, "%lf,%lf", &pointarray[vertex][X], 
+		  &pointarray[vertex][Y])   == 2) {
+      while(isspace(*string_pos))	/* past whitespace */
+	string_pos++;
+      while(isdigit(*string_pos))	/* and the 1st number */
+	string_pos++;
+      string_pos++;			/* skip the ',' */
+      while(isdigit(*string_pos))	/* 2nd number */
+	string_pos++;
       vertex++;
     }                /* so long as there are more vertices to read, and
 			we have room, read them in.  We start where we left
