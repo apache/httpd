@@ -68,8 +68,8 @@ install-htdocs:
 	@echo Installing HTML documents
 	@test -d $(htdocsdir) || $(MKINSTALLDIRS) $(htdocsdir)
 	@test -d $(htdocs-srcdir) && (cd $(htdocs-srcdir) && cp -rp * $(htdocsdir))
-	@test -d $(htdocsdir)/manual || $(MKINSTALLDIRS) $(htdocsdir)/manual
-	@test -d docs/manual && (cd docs/manual && cp -rp * $(htdocsdir)/manual)
+	@test -d $(prefix)/manual || $(MKINSTALLDIRS) $(prefix)/manual
+	@test -d docs/manual && (cd docs/manual && cp -rp * $(prefix)/manual)
 	@(cd $(htdocsdir) && find . -name "CVS" -print | xargs rm -rf {} \;)
 
 install-error:
