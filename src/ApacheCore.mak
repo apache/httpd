@@ -1993,7 +1993,6 @@ DEP_CPP_MOD_M=\
 	".\include\http_config.h"\
 	".\include\httpd.h"\
 	".\include\util_uri.h"\
-	".\modules\standard\mod_mime.h"\
 	".\os\win32\os.h"\
 	".\os\win32\readdir.h"\
 	{$(INCLUDE)}"sys\stat.h"\
@@ -2020,9 +2019,11 @@ DEP_CPP_MOD_M=\
 	".\include\http_config.h"\
 	".\include\httpd.h"\
 	".\include\util_uri.h"\
-	".\modules\standard\mod_mime.h"\
 	".\os\win32\os.h"\
 	".\os\win32\readdir.h"\
+	
+NODEP_CPP_MOD_M=\
+	".\modules\standard\mod_mime.h"\
 	
 
 "$(INTDIR)\mod_mime.obj"	"$(INTDIR)\mod_mime.sbr" : $(SOURCE) $(DEP_CPP_MOD_M)\
