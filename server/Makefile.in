@@ -31,7 +31,8 @@ test_char.h: gen_test_char
 
 util.lo: test_char.h
 
-EXPORT_DIRS = $(top_srcdir)/include $(top_srcdir)/os/$(OS_DIR) $(APR_INCLUDEDIR) $(APU_INCLUDEDIR) $(top_srcdir)/modules/http
+EXPORT_DIRS = $(top_srcdir)/include $(top_srcdir)/os/$(OS_DIR) $(top_srcdir)/modules/http
+EXPORT_DIRS_APR = $(APR_INCLUDEDIR) $(APU_INCLUDEDIR)
 
 # If export_files is a dependency here, but we remove it during this stage,
 # when exports.c is generated, make will not detect that export_files is no
@@ -57,6 +58,10 @@ export_files:
 	rm -f $$tmp && touch $$tmp; \
 	for dir in $(EXPORT_DIRS); do \
 	    ls $$dir/*.h >> $$tmp; \
+	done; \
+	for dir in $(EXPORT_DIRS_APR); do \
+	    ls $$dir/ap[ru].h >> $$tmp; \
+	    ls $$dir/ap[ru]_*.h >> $$tmp; \
 	done; \
 	sort -u $$tmp > $@; \
 	rm -f $$tmp
