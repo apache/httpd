@@ -196,7 +196,11 @@ static void make_cookie(request_rec *r)
 
     if (cls->expires) {
         struct tm *tms;
-        time_t when = r->request_time + cls->expires;
+        time_t when;
+
+        when = cls->expires;
+        if ((dcfg->style == CT_UNSET) || (dcfg->style == CT_NETSCAPE)) {
+            when += r->request_time;
 
 #ifndef MILLENIAL_COOKIES
         /*
@@ -208,18 +212,27 @@ static void make_cookie(request_rec *r)
         if (when > 946684799)
             when = 946684799;
 #endif
+        }
         tms = gmtime(&when);
 
         /* Cookie with date; as strftime '%a, %d-%h-%y %H:%M:%S GMT' */
-        new_cookie = ap_psprintf(r->pool,
-                                 "%s=%s; "
-                                 "path=/; "
-                                 "expires=%s, %.2d-%s-%.2d %.2d:%.2d:%.2d GMT",
-                                 dcfg->cookie_name, cookiebuf,
-                                 ap_day_snames[tms->tm_wday],
-                                 tms->tm_mday, ap_month_snames[tms->tm_mon],
-                                 tms->tm_year % 100,
-                                 tms->tm_hour, tms->tm_min, tms->tm_sec);
+        new_cookie = ap_psprintf(r->pool, "%s=%s; path=/",
+                                 dcfg->cookie_name, cookiebuf);
+        if ((dcfg->style == CT_UNSET) || (dcfg->style == CT_NETSCAPE)) {
+            new_cookie = ap_psprintf(r->pool, "%s; "
+                                     "expires=%s, %.2d-%s-%.2d "
+                                     "%.2d:%.2d:%.2d GMT",
+                                     new_cookie,
+                                     ap_day_snames[tms->tm_wday],
+                                     tms->tm_mday,
+                                     ap_month_snames[tms->tm_mon],
+                                     tms->tm_year % 100,
+                                     tms->tm_hour, tms->tm_min, tms->tm_sec);
+        }
+        else {
+            new_cookie = ap_psprintf(r->pool, "%s; max-age=%d",
+                                     new_cookie, (int) when);
+        }
     }
     else {
 	new_cookie = ap_psprintf(r->pool, "%s=%s; path=/",
@@ -229,8 +242,13 @@ static void make_cookie(request_rec *r)
         new_cookie = ap_psprintf(r->pool, "%s; domain=%s",
                                  new_cookie, dcfg->cookie_domain);
     }
+    if (dcfg->style == CT_COOKIE2) {
+        new_cookie = ap_pstrcat(r->pool, new_cookie, "; version=1", NULL);
+    }
 
-    ap_table_setn(r->headers_out, "Set-Cookie", new_cookie);
+    ap_table_setn(r->headers_out,
+                  (dcfg->style == CT_COOKIE2 ? "Set-Cookie2" : "Set-Cookie"),
+                  new_cookie);
     ap_table_setn(r->notes, "cookie", ap_pstrdup(r->pool, cookiebuf));   /* log first time */
     return;
 }
@@ -246,7 +264,10 @@ static int spot_cookie(request_rec *r)
         return DECLINED;
     }
 
-    if ((cookie = ap_table_get(r->headers_in, "Cookie")))
+    if ((cookie = ap_table_get(r->headers_in,
+                               (dcfg->style == CT_COOKIE2
+                                ? "Cookie2"
+                                : "Cookie"))))
         if ((value = strstr(cookie, dcfg->cookie_name))) {
             char *cookiebuf, *cookieend;
 
@@ -410,10 +431,12 @@ static const char *set_cookie_style(cmd_parms *cmd, void *mconfig, char *name)
     if (strcasecmp(name, "Netscape") == 0) {
         dcfg->style = CT_NETSCAPE;
     }
-    else if (strcasecmp(name, "Cookie") == 0) {
+    else if ((strcasecmp(name, "Cookie") == 0)
+             || (strcasecmp(name, "RFC2109") == 0)) {
         dcfg->style = CT_COOKIE;
     }
-    else if (strcasecmp(name, "Cookie2") == 0) {
+    else if ((strcasecmp(name, "Cookie2") == 0)
+             || (strcasecmp(name, "RFC2965") == 0)) {
         dcfg->style = CT_COOKIE2;
     }
     else {
