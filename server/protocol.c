@@ -929,9 +929,9 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_content_length_filter(ap_filter_t *f,
                         break;
                     }
                 }
-                else  { 
-                    ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, "ap_content_length_filter: "
-                                  "apr_bucket_read() failed");
+                else if (rv != APR_EOF) {
+                    ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, 
+                        "ap_content_length_filter: apr_bucket_read() failed");
                     return rv;
                 }
             }
