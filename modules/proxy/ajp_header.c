@@ -452,7 +452,7 @@ static apr_status_t ajp_unmarshal_response(ajp_msg_t *msg,
 {
     apr_uint16_t status;
     apr_status_t rc;
-    char *ptr;
+    const char *ptr;
     apr_uint16_t  num_headers;
     int i;
 
