@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="EUC-KR" ?>
-<!DOCTYPE quickreference SYSTEM "../style/modulesynopsis.dtd"
-  [ <!ENTITY allmodules SYSTEM "allmodules.xml.ko"> ]
->
+<!DOCTYPE quickreference SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ko.xsl"?>
-<!-- English Revision: 1.10 -->
+<!-- English Revision: 1.11 -->
 
 <!--
  Copyright 2004 The Apache Software Foundation
@@ -54,6 +52,4 @@
       <tr><th>X</th><td>Experimental</td></tr>
     </table>
   </legend>
-
-  &allmodules;
 </quickreference>
