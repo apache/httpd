@@ -1381,7 +1381,7 @@ static void spmt_os2_pre_config(apr_pool_t *pconf, apr_pool_t *plog, apr_pool_t 
     apr_cpystrn(ap_coredump_dir, ap_server_root, sizeof(ap_coredump_dir));
 }
 
-static void spmt_os2_hooks(void)
+static void spmt_os2_hooks(apr_pool_t *p)
 {
     INIT_SIGLIST();
     /* TODO: set one_process properly */ one_process = 0;
