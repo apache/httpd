@@ -98,6 +98,12 @@ To map <code>.foo</code> and <code>.bar</code> to <code>application/foo</code>
 it added one automatically if the .asis file contained a Location header.
 0.8.14 requires a Status header. <p>
 
+  <P>
+  <LI>Apache versions before 1.2b1 will ignore the last line of configuration
+  files if the last line does not have a trailing newline. This affects
+  configuration files (httpd.conf, access.conf and srm.conf), and
+  htpasswd and htgroup files.
+ 
 </OL>
 
 More to come when we notice them....
