@@ -22,8 +22,6 @@
 <a href="./ja/urlmapping.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="./ko/urlmapping.html" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<div class="outofdate">이 문서는 최신판 번역이 아닙니다.
-            최근에 변경된 내용은 영어 문서를 참고하세요.</div>
 
     <p>이 문서는 요청의 URL을 가지고 아파치가 어떻게 서비스할 
     파일의 파일시스템상 위치를 찾는지 설명한다.</p>
@@ -41,7 +39,7 @@
 <div class="section">
 <h2><a name="related" id="related">관련된 모듈과 지시어들</a></h2>
 
-<table class="related"><tr><th>관련된 모듈</th><th>관련된 지시어</th></tr><tr><td><ul><li><code class="module"><a href="./mod/mod_alias.html">mod_alias</a></code></li><li><code class="module"><a href="./mod/mod_proxy.html">mod_proxy</a></code></li><li><code class="module"><a href="./mod/mod_rewrite.html">mod_rewrite</a></code></li><li><code class="module"><a href="./mod/mod_userdir.html">mod_userdir</a></code></li><li><code class="module"><a href="./mod/mod_speling.html">mod_speling</a></code></li><li><code class="module"><a href="./mod/mod_vhost_alias.html">mod_vhost_alias</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/mod_alias.html#alias">Alias</a></code></li><li><code class="directive"><a href="./mod/mod_alias.html#aliasmatch">AliasMatch</a></code></li><li><code class="directive"><a href="./mod/mod_speling.html#checkspelling">CheckSpelling</a></code></li><li><code class="directive"><a href="./mod/core.html#documentroot">DocumentRoot</a></code></li><li><code class="directive"><a href="./mod/core.html#errordocument">ErrorDocument</a></code></li><li><code class="directive"><a href="./mod/core.html#options">Options</a></code></li><li><code class="directive"><a href="./mod/mod_proxy.html#proxypass">ProxyPass</a></code></li><li><code class="directive"><a href="./mod/mod_proxy.html#proxypassreverse">ProxyPassReverse</a></code></li><li><code class="directive"><a href="./mod/mod_alias.html#redirect">Redirect</a></code></li><li><code class="directive"><a href="./mod/mod_alias.html#redirectmatch">RedirectMatch</a></code></li><li><code class="directive"><a href="./mod/mod_rewrite.html#rewritecond">RewriteCond</a></code></li><li><code class="directive"><a href="./mod/mod_rewrite.html#rewritematch">RewriteMatch</a></code></li><li><code class="directive"><a href="./mod/mod_alias.html#scriptalias">ScriptAlias</a></code></li><li><code class="directive"><a href="./mod/mod_alias.html#scriptaliasmatch">ScriptAliasMatch</a></code></li><li><code class="directive"><a href="./mod/mod_userdir.html#userdir">UserDir</a></code></li></ul></td></tr></table>
+<table class="related"><tr><th>관련된 모듈</th><th>관련된 지시어</th></tr><tr><td><ul><li><code class="module"><a href="./mod/mod_alias.html">mod_alias</a></code></li><li><code class="module"><a href="./mod/mod_proxy.html">mod_proxy</a></code></li><li><code class="module"><a href="./mod/mod_rewrite.html">mod_rewrite</a></code></li><li><code class="module"><a href="./mod/mod_userdir.html">mod_userdir</a></code></li><li><code class="module"><a href="./mod/mod_speling.html">mod_speling</a></code></li><li><code class="module"><a href="./mod/mod_vhost_alias.html">mod_vhost_alias</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/mod_alias.html#alias">Alias</a></code></li><li><code class="directive"><a href="./mod/mod_alias.html#aliasmatch">AliasMatch</a></code></li><li><code class="directive"><a href="./mod/mod_speling.html#checkspelling">CheckSpelling</a></code></li><li><code class="directive"><a href="./mod/core.html#documentroot">DocumentRoot</a></code></li><li><code class="directive"><a href="./mod/core.html#errordocument">ErrorDocument</a></code></li><li><code class="directive"><a href="./mod/core.html#options">Options</a></code></li><li><code class="directive"><a href="./mod/mod_proxy.html#proxypass">ProxyPass</a></code></li><li><code class="directive"><a href="./mod/mod_proxy.html#proxypassreverse">ProxyPassReverse</a></code></li><li><code class="directive"><a href="./mod/mod_proxy.html#proxypassreversecookiedomain">ProxyPassReverseCookieDomain</a></code></li><li><code class="directive"><a href="./mod/mod_proxy.html#proxypassreversecookiepath">ProxyPassReverseCookiePath</a></code></li><li><code class="directive"><a href="./mod/mod_alias.html#redirect">Redirect</a></code></li><li><code class="directive"><a href="./mod/mod_alias.html#redirectmatch">RedirectMatch</a></code></li><li><code class="directive"><a href="./mod/mod_rewrite.html#rewritecond">RewriteCond</a></code></li><li><code class="directive"><a href="./mod/mod_rewrite.html#rewritematch">RewriteMatch</a></code></li><li><code class="directive"><a href="./mod/mod_alias.html#scriptalias">ScriptAlias</a></code></li><li><code class="directive"><a href="./mod/mod_alias.html#scriptaliasmatch">ScriptAliasMatch</a></code></li><li><code class="directive"><a href="./mod/mod_userdir.html#userdir">UserDir</a></code></li></ul></td></tr></table>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="documentroot" id="documentroot">DocumentRoot</a></h2>
@@ -182,10 +180,14 @@ ProxyPassReverse /foo/ http://internal.example.com/bar/
 적절한 문서를 가져오도록 설정하며, <code class="directive"><a href="./mod/mod_proxy.html#proxypassreverse">ProxyPassReverse</a></code> 지시어는
 <code>internal.example.com</code>이 보내는 리다이렉션을 재작성하여
 리다이렉션이 현재 서버의 적절한 디렉토리를 가리키도록 한다.
-그러나 문서 안에 있는 링크는 재작성하지 않음을 주의하라.
+또, <code class="directive"><a href="./mod/mod_proxy.html#proxypassreversecookiedomain">ProxyPassReverseCookieDomain</a></code>과
+<code class="directive"><a href="./mod/mod_proxy.html#proxypassreversecookiedomain">ProxyPassReverseCookieDomain</a></code>은
+같은 방법으로 원래 서버가 보낸 쿠키를 재작성한다.</p>
+<p>그러나 문서 안에 있는 링크는 재작성하지 않음을 주의하라.
 <code>internal.example.com</code>에 대한 절대링크는 클라이언트가
 프록시서버가 아니라 <code>internal.example.com</code>으로 직접
-요청하게 한다.</p>
+요청하게 한다. 제삼자가 만든 <a href="http://apache.webthing.com/mod_proxy_html/">mod_proxy_html</a>
+모듈을 사용하여 HTML과 XHTML에 있는 링크를 재작성할 수 있다.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="rewrite" id="rewrite">재작성 엔진 (Rewriting Engine)</a></h2>

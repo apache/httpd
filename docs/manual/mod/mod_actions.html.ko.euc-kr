@@ -47,7 +47,7 @@
 <h3>참고</h3>
 <ul class="seealso">
 <li><code class="module"><a href="../mod/mod_cgi.html">mod_cgi</a></code></li>
-<li><a href="../howto/cgi.html">CGI로 동적 내용</a></li>
+<li><a href="../howto/cgi.html">CGI로 동적 페이지 생성</a></li>
 <li><a href="../handler.html">아파치에서 핸들러 사용</a></li>
 </ul></div>
 

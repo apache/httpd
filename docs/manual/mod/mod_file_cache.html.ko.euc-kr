@@ -33,24 +33,27 @@
 
     <div class="warning">
       이 모듈은 조심해서 사용해야 한다. <code class="module"><a href="../mod/mod_file_cache.html">mod_file_cache</a></code>를
-사용하여 사이트를 망치기 쉬우므로 이 문제를 꼼꼼히 읽어라.
+      사용하여 사이트를 엉망으로 만들기 쉽기때문에 이 문서를
+      꼼꼼히 읽길 바란다.
     </div>
 
-    <p>거의 변하지 않고 자주 요청되는 파일을 <em>캐쉬</em>에 저장하여
-서버 부하를 줄일 수 있다. <code class="module"><a href="../mod/mod_file_cache.html">mod_file_cache</a></code>는
-두가지 방식으로 자주 요청되는 <em>정적</em> 파일을 캐쉬에 저장한다.
-설정 지시어를 통해 <code class="module"><a href="../mod/mod_file_cache.html">mod_file_cache</a></code>가 파일을
-열고(open) <code>mmap()</code>할지 파일을 미리 열고
-<em>파일 핸들러</em>를 저장할지 결정한다. 두 방식 모두
-파일을 서비스하기위한 작업의 일부를 ((특히 파일 입출력) 파일 요청때마다
-하는 대신 서버가 시작할때 하여 서버 부하를 감소한다.</p>
+    <p>거의 변하지 않고 자주 요청되는 파일을 <em>캐쉬</em>에
+    저장하여 서버 부하를 줄일 수 있다. <code class="module"><a href="../mod/mod_file_cache.html">mod_file_cache</a></code>는
+    자주 요청되는 <em>정적</em> 파일을 두가지 방식으로 캐쉬에
+    저장한다. 설정 지시어를 사용하여 <code class="module"><a href="../mod/mod_file_cache.html">mod_file_cache</a></code>가
+    파일을 열고(open) <code>mmap()</code>할지 아니면 파일을
+    열고 <em>파일 핸들</em>을 저장할지 결정한다. 두 방식 모두
+    파일을 서비스하기위해 필요한 작업의 일부를 (특히 파일 입출력
+    작업) 파일을 요청할 때마다 매번 하는 대신 서버가 시작할때
+    한번만 하여 서버 부하가 감소한다.</p>
 
-    <p>주의: 이 방법은 CGI 프로그램이나 특별한 내용핸들러를 통해 서비스하는
-파일의 속도를 향상할 수 없다. 이 방법은 보통 아파치 core 내용핸들러가
-서비스하는 일반파일에만 적용된다.</p>
+    <p>주의: 이 방법은 CGI 프로그램이나 특별한 내용핸들러를
+    통해 서비스하는 파일의 서비스 속도를 높일 수 없다. 이 방법은
+    보통 아파치 core 내용핸들러가 서비스하는 일반파일에만
+    적용된다.</p>
 
-    <p>이 모듈은 아파치 1.3의 <code>mod_mmap_static</code> 모듈의
-영향을 많이 받은 확장이다.</p>
+    <p>이 모듈은 아파치 1.3에 있는 <code>mod_mmap_static</code>
+    모듈의 기능을 확장한 결과다.</p>
 </div>
 <div id="quickview"><h3 class="directives">지시어들</h3>
 <ul id="toc">
@@ -65,71 +68,64 @@
 <div class="section">
 <h2><a name="using" id="using">mod_file_cache 사용하기</a></h2>
 
-    <p><code class="module"><a href="../mod/mod_file_cache.html">mod_file_cache</a></code>는 주서버 설정에서
-<code class="directive"><a href="#mmapfile">MMapFile</a></code>과 <code class="directive"><a href="#cachefile">CacheFile</a></code> 지시어를 통해 설정한 정적 파일들을
-캐쉬에 저장한다.</p>
+    <p><code class="module"><a href="../mod/mod_file_cache.html">mod_file_cache</a></code>는 주서버 설정에서 <code class="directive"><a href="#mmapfile">MMapFile</a></code>과 <code class="directive"><a href="#cachefile">CacheFile</a></code> 지시어를 사용하여
+    설정한 정적 파일들을 캐쉬에 저장한다.</p>
 
     <p>모든 플래폼이 두 지시어를 모두 지원하는 것은 아니다.
-예를 들어, 윈도우즈용 아파치는 현재 <code class="directive"><a href="#mmapstatic">MMapStatic</a></code> 지시어를
-지원하지 않지만, AIX 같은 다른 플래폼은 둘 모두 지원한다.
-지원하지않는 지시어를 사용할 경우 서버 오류 로그에 오류문을
-남긴다. 지원하지않는 지시어를 사용해도 서버는 시작하지만
-파일을 캐쉬에 저장하지 않는다. 두 지시어를 모두 지원하는 플래폼을
-사용한다면 어떤 방식이 더 좋은지 실험해볼 수 있다.</p>
+    예를 들어, 윈도우즈용 아파치는 현재 <code class="directive"><a href="#mmapstatic">MMapStatic</a></code> 지시어를
+    지원하지 않지만, AIX 같은 다른 플래폼은 둘 모두를 지원한다.
+    지원하지않는 지시어를 사용할 경우 서버 오류 로그에 오류문을
+    남긴다. 지원하지않는 지시어를 사용해도 서버는 동작하지만
+    파일을 캐쉬에 저장하지 않는다. 두 지시어를 모두 지원하는
+    플래폼을 사용한다면 어떤 방식이 더 좋은지 실험해보라.</p>
 
     <h3>MMapFile 지시어</h3>
 
-      <p><code class="module"><a href="../mod/mod_file_cache.html">mod_file_cache</a></code>의
-<code class="directive"><a href="#mmapfile">MMapFile</a></code> 지시어는
-설정한 정적인 파일들을 <code>mmap()</code> 시스템호출을 사용하여
-메모리에 대응한다. 많은 최근 유닉스류 운영체제에 이 시스템호출이
-있지만, 없는 운영체제도 있다. 또, <code>mmap()</code>할 수 있는
-파일 크기와 개수를 시스템이 제한할 수 있으므로 실험해보는 것이
-좋다.</p>
+      <p><code class="module"><a href="../mod/mod_file_cache.html">mod_file_cache</a></code>의 <code class="directive"><a href="#mmapfile">MMapFile</a></code> 지시어는
+      설정한 정적 파일들을 <code>mmap()</code> 시스템호출을
+      사용하여 메모리에 대응한다. 최신 유닉스류 운영체제라면
+      보통 이 시스템호출이 있지만, 없는 운영체제도 있다. 또,
+      <code>mmap()</code>할 수 있는 파일 크기와 개수를 시스템이
+      제한할 수 있으므로 미리 실험해보는 것이 좋다.</p>
 
-      <p>서버가 시작할때와 재시작할때만 <code>mmap()</code>을
-한다. 그래서 파일시스템에서 해당 파일중 하나라도 변경된 경우
-서버를 재시작<em>해야</em> 한다 (<a href="../stopping.html">Stopping and Restarting</a> 문서 참고).
-다시 강조하면: 서버를 재시작하지않고 파일을 수정하면
-요청 서비스가 완전히 이상할 수 있다. 이전 파일을 지우고(unlink)
-새로 파일을 만들어서 파일을 수정해야 한다. <code>rdist</code>나
-<code>mv</code>와 같이 많은 도구가 이런 식으로 동작한다.
-매번 추가로 불필요한 <code>stat()</code> 검사가 필요하고
-입출력 감소의 의도에 반하므로 이 모듈은 파일 변화를 신경쓰지않는다.</p>
+      <p>서버는 시작할때와 재시작할때만 <code>mmap()</code>한다.
+      그래서 파일시스템에서 해당 파일중 하나라도 변경되면 서버를
+      재시작<em>해야</em> 한다 (<a href="../stopping.html">중단과
+      재시작</a> 문서 참고). 다시 말해서 파일이 변경되었는데
+      서버를 재시작하지 않으면 완전히 이상하게 요청을 서비스할지도
+      모른다. 이전 파일을 지우고(unlink) 그 자리에 새로운 파일을
+      만들는 방식으로 파일을 수정해야 한다. <code>rdist</code>나
+      <code>mv</code>와 같은 대다수의 도구가 이런 방식으로 동작한다.
+      매번 추가로 불필요한 <code>stat()</code> 검사가 필요하고
+      입출력 감소라는 원래 의도에 반하기때문에 이 모듈은 파일의
+      변화를 무시한다.</p>
     
 
     <h3>CacheFile 지시어</h3>
 
-      <p><code class="module"><a href="../mod/mod_file_cache.html">mod_file_cache</a></code>의
-<code class="directive"><a href="#cachefile">CacheFile</a></code> 지시어는
-설정 지시어에 열거한
-파일(과 파일들)의 <em>핸들(handle)</em> 혹은
-<em>파일 기술자(file descriptor)</em>를 열고(open) 캐쉬에 저장한다.
-파일을 요청하면 서버는 캐쉬에서 핸들을 찾아서 소켓 API
-<code>sendfile()</code>에 (윈도우즈에서는 <code>TransmitFile()</code>)
-넘긴다.</p>
+      <p><code class="module"><a href="../mod/mod_file_cache.html">mod_file_cache</a></code>의 <code class="directive"><a href="#cachefile">CacheFile</a></code> 지시어는
+      설정 지시어에 열거한 파일(과 파일들)을 열어서 파일의
+      <em>핸들(handle)</em> 혹은 <em>파일 기술자(file descriptor)</em>를
+      캐쉬에 저장한다. 파일을 요청하면 서버는 캐쉬에서 핸들을
+      찾아서 소켓 API <code>sendfile()</code>에 (윈도우즈에서는
+      <code>TransmitFile()</code>) 넘긴다.</p>
 
       
 
-      <p>서버가 시작할때와 재시작할때만 이런 파일핸들 캐쉬를
-만든다. ...
-This file handle caching is done once at server start or
-      restart, only. So whenever one of the cached files changes on
-      the filesystem you <em>have</em> to restart the server (see the
-      <a href="../stopping.html">Stopping and Restarting</a>
-      documentation). To reiterate that point: if the files are
-      modified <em>in place</em> without restarting the server you
-      may end up serving requests that are completely bogus. You
-      should update files by unlinking the old copy and putting a new
-      copy in place. Most tools such as <code>rdist</code> and
-      <code>mv</code> do this.</p>
+      <p>서버는 시작할때와 재시작할때만 파일 핸들을 캐쉬한다.
+      그래서 파일시스템에서 캐쉬한 파일중 하나라도 변경되면
+      서버를 재시작<em>해야</em> 한다 (<a href="../stopping.html">중단과 재시작</a> 문서 참고).
+      다시 말해서 파일이 변경되었는데 서버를 재시작하지 않으면
+      완전히 이상하게 요청을 서비스할지도 모른다. 이전 파일을
+      지우고(unlink) 그 자리에 새로운 파일을 만드는 방식으로
+      파일을 수정해야 한다. <code>rdist</code>나 <code>mv</code>와
+      같은 대다수의 도구가 이런 방식으로 동작한다.</p>
     
 
     <div class="note"><h3>주의</h3>
-      <p>디렉토리의 모든 파일을 재귀적으로 캐쉬에 저장하는
-지시어를 요구하지 마라. 대신 이렇게 해봐라...
-<code class="directive"><a href="../mod/core.html#include">Include</a></code> 지시어를 참고하고
-다음과 같은 명령을 실행하라:</p>
+      <p>디렉토리의 모든 파일을 재귀적으로 캐쉬에 저장하는 지시어는
+      없다. 대신 다음과 같이 해보라... <code class="directive"><a href="../mod/core.html#include">Include</a></code> 지시어를 참고하여 다음과
+      같은 명령어를 실행한다:</p>
 
       <div class="example"><p><code>
         find /www/htdocs -type f -print \<br />
@@ -140,29 +136,27 @@ This file handle caching is done once at server start or
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="CacheFile" id="CacheFile">CacheFile</a> <a name="cachefile" id="cachefile">지시어</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">설명:</a></th><td>Cache a list of file handles at startup time</td></tr>
+<tr><th><a href="directive-dict.html#Description">설명:</a></th><td>시작시 여러 파일 핸들을 캐쉬한다</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">문법:</a></th><td><code>CacheFile <var>file-path</var> [<var>file-path</var>] ...</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">사용장소:</a></th><td>주서버설정</td></tr>
 <tr><th><a href="directive-dict.html#Status">상태:</a></th><td>Experimental</td></tr>
 <tr><th><a href="directive-dict.html#Module">모듈:</a></th><td>mod_file_cache</td></tr>
 </table>
-    <p>The <code class="directive">CacheFile</code> directive opens handles to
-    one or more files (given as whitespace separated arguments) and
-    places these handles into the cache at server startup
-    time. Handles to cached files are automatically closed on a server
-    shutdown.  When the files have changed on the filesystem, the
-    server should be restarted to to re-cache them.</p>
+    <p><code class="directive">CacheFile</code> 지시어는 서버가 시작할때
+    여러 파일을 열고(open) 파일들의 핸들을 캐쉬에 저장한다.
+    서버 종료시 자동으로 캐쉬한 파일의 핸들을 닫는다(close).
+    파일시스템에서 파일이 변경되면 파일을 다시 캐쉬하기위해
+    서버를 재시작해야 한다.</p>
 
-    <p>Be careful with the <var>file-path</var> arguments: They have
-    to literally match the filesystem path Apache's URL-to-filename
-    translation handlers create. We cannot compare inodes or other
-    stuff to match paths through symbolic links <em>etc.</em>
-    because that again would cost extra <code>stat()</code> system
-    calls which is not acceptable. This module may or may not work
-    with filenames rewritten by <code class="module"><a href="../mod/mod_alias.html">mod_alias</a></code> or
-    <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>.</p>
+    <p><var>file-path</var> 아규먼트를 조심해라. 아규먼트는
+    아파치의 URL-파일명 변환 핸들러가 만든 파일시스템 경로와
+    정확히 일치해야 한다. 한번 더 불필요한 <code>stat()</code>
+    시스템호출이 필요하기때문에 inode나 심볼링크 <em>등</em>을
+    경로를 지정할 수 없다. 이 모듈은 <code class="module"><a href="../mod/mod_alias.html">mod_alias</a></code>나
+    <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>로 재작성한 파일명을 다룰 수
+    있기도 없기도 하다.</p>
 
-    <div class="example"><h3>Example</h3><p><code>
+    <div class="example"><h3>예제</h3><p><code>
       CacheFile /usr/local/apache/htdocs/index.html
     </code></p></div>
 
@@ -170,29 +164,28 @@ This file handle caching is done once at server start or
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="MMapFile" id="MMapFile">MMapFile</a> <a name="mmapfile" id="mmapfile">지시어</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">설명:</a></th><td>Map a list of files into memory at startup time</td></tr>
+<tr><th><a href="directive-dict.html#Description">설명:</a></th><td>시작시 여러 파일을 메모리에 대응한다</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">문법:</a></th><td><code>MMapFile <var>file-path</var> [<var>file-path</var>] ...</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">사용장소:</a></th><td>주서버설정</td></tr>
 <tr><th><a href="directive-dict.html#Status">상태:</a></th><td>Experimental</td></tr>
 <tr><th><a href="directive-dict.html#Module">모듈:</a></th><td>mod_file_cache</td></tr>
 </table>
-    <p>The <code class="directive">MMapFile</code> directive maps one or more files
-    (given as whitespace separated arguments) into memory at server
-    startup time. They are automatically unmapped on a server
-    shutdown. When the files have changed on the filesystem at
-    least a <code>HUP</code> or <code>USR1</code> signal should be send to
-    the server to re-<code>mmap()</code> them.</p>
+    <p><code class="directive">MMapFile</code> 지시어는 서버가 시작할때
+    (공백으로 구분한 아규먼트로 지정한) 여러 파일을 메모리에
+    대응한다(map). 서버 종료시 자동으로 대응을 푼다(unmap).
+    파일시스템에서 파일이 변경되면 파일들을 다시
+    <code>mmap()</code>하기위해 최소한 서버에 <code>HUP</code>이나
+    <code>USR1</code> 시그널을 보내야 한다.</p>
 
-    <p>Be careful with the <var>file-path</var> arguments: They have
-    to literally match the filesystem path Apache's URL-to-filename
-    translation handlers create. We cannot compare inodes or other
-    stuff to match paths through symbolic links <em>etc.</em>
-    because that again would cost extra <code>stat()</code> system
-    calls which is not acceptable. This module may or may not work
-    with filenames rewritten by <code class="module"><a href="../mod/mod_alias.html">mod_alias</a></code> or
-    <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>.</p>
+    <p><var>file-path</var> 아규먼트를 조심해라. 아규먼트는
+    아파치의 URL-파일명 변환 핸들러가 만든 파일시스템 경로와
+    정확히 일치해야 한다. 한번 더 불필요한 <code>stat()</code>
+    시스템호출이 필요하기때문에 inode나 심볼링크 <em>등</em>을
+    경로를 지정할 수 없다. 이 모듈은 <code class="module"><a href="../mod/mod_alias.html">mod_alias</a></code>나
+    <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>로 재작성한 파일명을 다룰 수
+    있기도 없기도 하다.</p>
 
-    <div class="example"><h3>Example</h3><p><code>
+    <div class="example"><h3>예제</h3><p><code>
       MMapFile /usr/local/apache/htdocs/index.html
     </code></p></div>
 

@@ -21,8 +21,6 @@
 <p><span>가능한 언어: </span><a href="../en/misc/relevant_standards.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../ko/misc/relevant_standards.html" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<div class="outofdate">이 문서는 최신판 번역이 아닙니다.
-            최근에 변경된 내용은 영어 문서를 참고하세요.</div>
 
     <p>이 문서에는 간단한 설명과 함께 아파치 웹서버가 따르는
     모든 관련 표준을 열거한다.</p>
@@ -114,7 +112,7 @@
       HTML)는 플래폼과 무관한 하이퍼텍스트 문서를 위한 간단한
       마크업 언어이다. HTML 문서는 SGML 문서이기도 하다.</dd>
 
-      <dt><a href="http://www.w3.org/TR/xhtml11/">XHTML™ 1.1 -
+      <dt><a href="http://www.w3.org/TR/xhtml11/">XHTML 1.1 -
       모듈기반 XHTML</a>
       (<a href="http://www.w3.org/2001/04/REC-xhtml-modularization-20010410-errata">정오표</a>)
       </dt>
@@ -123,7 +121,7 @@
       플레임워크와 모듈들을 기반으로 새로운 XHTML document type을
       정의한다.</dd>
 
-      <dt><a href="http://www.w3.org/TR/xhtml1">XHTML™ 1.0
+      <dt><a href="http://www.w3.org/TR/xhtml1">XHTML 1.0
       확장 하이퍼텍스트 마크업 언어 (Extensible HyperText Markup
       Language) (Second Edition)</a>
       (<a href="http://www.w3.org/2002/08/REC-xhtml1-20020801-errata">정오표</a>)

@@ -65,7 +65,7 @@
 <category id="howto"><title>How-To / 투토리얼</title>
     <page href="howto/auth.html">인증, 권한부여,
     접근제어</page>
-    <page href="howto/cgi.html">CGI: 동적 내용 생성</page>
+    <page href="howto/cgi.html">CGI: 동적 페이지 생성</page>
     <page href="howto/htaccess.html">.htaccess 파일</page>
     <page href="howto/ssi.html">Server Side Includes (SSI)</page>
     <page href="howto/public_html.html">사용자별 웹디렉토리
