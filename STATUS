@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/05/15 00:58:55 $]
+Last modified at [$Date: 2003/05/15 06:30:53 $]
 
 Release:
 
@@ -238,11 +238,6 @@ PATCHES TO PORT FROM 2.1
       guess.  PR 16908.  [Andrew Gapon <agapon@telcordia.com>]
       modules/metadata/mod_mime_magic.c: r1.61
       +1: jerenkrantz
-
-    * --enable-mods-shared=most and kin are currently broken. Port the
-      simple fix from modules/mappers/config9.m4: r1.988.2.97?
-      +1: aaron, jerenkrantz, thommay
-
 
     * htpasswd: add a delete flag.
       support/htpasswd.c: r1.70
