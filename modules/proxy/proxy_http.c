@@ -432,7 +432,7 @@ apr_status_t ap_proxy_http_create_connection(apr_pool_t *p, request_rec *r,
                      "proxy: connection complete");
 
         /* set up the connection filters */
-        ap_proxy_pre_http_connection(*origin, NULL);
+        ap_proxy_pre_http_connection(*origin);
     }
     return OK;
 }

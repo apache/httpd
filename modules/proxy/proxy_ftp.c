@@ -774,7 +774,7 @@ int ap_proxy_ftp_handler(request_rec *r, proxy_server_conf *conf,
      */
 
     /* set up the connection filters */
-    ap_proxy_pre_http_connection(origin, NULL);
+    ap_proxy_pre_http_connection(origin);
 
     /* possible results: */
     /*   120 Service ready in nnn minutes. */
@@ -1558,7 +1558,7 @@ int ap_proxy_ftp_handler(request_rec *r, proxy_server_conf *conf,
     }
 
     /* set up the connection filters */
-    ap_proxy_pre_http_connection(remote, NULL);
+    ap_proxy_pre_http_connection(remote);
 
 
     /*
