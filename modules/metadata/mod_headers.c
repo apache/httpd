@@ -386,12 +386,7 @@ static const char *header_inout_cmd(hdr_inout inout, cmd_parms *cmd,
         break;
     }
 
-    if (cmd->path) {
-        new = (header_entry *) apr_array_push(fixup);
-    }
-    else {
-        new = (header_entry *) apr_array_push(fixup);
-    }
+    new = (header_entry *) apr_array_push(fixup);
 
     if (!strcasecmp(action, "set"))
         new->action = hdr_set;
