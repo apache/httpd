@@ -17,6 +17,10 @@ if [ "x$found_dbm" = "x" ]; then
 		    DBM_LIB="-ldbm"
 		elif ./helpers/TestCompile lib ndbm dbm_open; then
 		    DBM_LIB="-lndbm"
+		elif ./helpers/TestCompile lib db1 dbm_open; then
+		    # For Red Hat 7
+		    DBM_LIB="-ldb1"
+		    CFLAGS="$CFLAGS -I/usr/include/db1"
 		fi
 		if [ "x$DBM_LIB" != "x" ]; then
 		    LIBS="$LIBS $DBM_LIB"
