@@ -4,23 +4,43 @@
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-      --><title>Apache の起動 - Apache HTTP サーバ</title><link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" /><link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" /><link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link href="./images/favicon.ico" rel="shortcut icon" /></head><body id="manual-page"><div id="page-header"><p class="menu"><a href="./mod/">モジュール</a> | <a href="./mod/directives.html">ディレクティブ</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">用語</a> | <a href="./sitemap.html">サイトマップ</a></p><p class="apache">Apache HTTP サーバ バージョン 2.0</p><img alt="" src="./images/feather.gif" /></div><div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="./images/left.gif" /></a></div><div id="path"><a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP サーバ</a> &gt; <a href="http://httpd.apache.org/docs-project/">ドキュメンテーション</a> &gt; <a href="./">バージョン 2.0</a></div><div id="page-content"><div id="preamble"><h1>Apache の起動</h1>
-    <p>Windows 上では、Apache は通常は
-    Windows NT ではサービスとして、Windows 95 
-    ではコンソールアプリケーションとして実行されます。
+      -->
+<title>Apache の起動 - Apache HTTP サーバ</title>
+<link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
+<link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
+<link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
+<link href="./images/favicon.ico" rel="shortcut icon" /></head>
+<body id="manual-page"><div id="page-header">
+<p class="menu"><a href="./mod/">モジュール</a> | <a href="./mod/directives.html">ディレクティブ</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">用語</a> | <a href="./sitemap.html">サイトマップ</a></p>
+<p class="apache">Apache HTTP サーバ バージョン 2.1</p>
+<img alt="" src="./images/feather.gif" /></div>
+<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="./images/left.gif" /></a></div>
+<div id="path">
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP サーバ</a> &gt; <a href="http://httpd.apache.org/docs-project/">ドキュメンテーション</a> &gt; <a href="./">バージョン 2.1</a></div><div id="page-content"><div id="preamble"><h1>Apache の起動</h1>
+    <p>Windows 上では、Apache は通常は
+    Windows NT ではサービスとして、Windows 95 
+    ではコンソールアプリケーションとして実行されます。
     詳細に関しては、「<a href="platform/windows.html#run">
     Windows で Apache を実行する</a>」をご覧下さい。</p>
 
     <p>Unixでは、<a href="programs/httpd.html">httpd</a> 
     プログラムが、バックグラウンドで常にリクエスト処理を行う
     デーモンとして実行されます。この文書ではどのように
-    <code>httpd</code> を起動するかについて記述しています。</p>
-</div><div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#startup">Apache の起動方法</a></li><li><img alt="" src="./images/down.gif" /> <a href="#errors">起動時のエラー</a></li><li><img alt="" src="./images/down.gif" /> <a href="#boot">ブート時の起動</a></li><li><img alt="" src="./images/down.gif" /> <a href="#info">追加情報</a></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div><div class="section"><h2><a name="startup" id="startup">Apache の起動方法</a></h2>
+    <code>httpd</code> を起動するかについて記述しています。</p>
+</div>
+<div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#startup">Apache の起動方法</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#errors">起動時のエラー</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#boot">ブート時の起動</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#info">追加情報</a></li>
+</ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="startup" id="startup">Apache の起動方法</a></h2>
 
     <p>もし、設定ファイル中で指定されている
     <code class="directive"><a href="./mod/mpm_common.html#listen">Listen</a></code>
     がデフォルトの 80 (もしくは 1024 以下の他のポート)
-    である場合は、Apache を起動するためには root
+    である場合は、Apache を起動するためには root
     権限が必要になりますが、
     これはこの特権ポートにバインドするためです。
     起動して、一度ログファイルを開くといった準備のための
@@ -47,14 +67,16 @@
     といった簡単なコマンドで、
     デーモンプロセスを制御するのに使えます。</p>
 
-    <p>スタートアップが万事上手くいったら、サーバはターミナルから
+    <p>スタートアップが万事上手くいったら、サーバはターミナルから
     切り離されて、コマンドプロンプトが即座に戻ってくるでしょう。
     これはサーバが起動している状態を示しています。
     その後はブラウザでサーバに接続して、
     <code class="directive"><a href="./mod/core.html#documentroot">DocumentRoot</a></code>
     ディレクトリのテストページやそこからリンクされている
     ローカルのドキュメントを見ることができるでしょう。</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div><div class="section"><h2><a name="errors" id="errors">起動時のエラー</a></h2>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="errors" id="errors">起動時のエラー</a></h2>
 
     <p>Apache は、起動時に致命的な問題に遭遇すると、
     終了する前に、コンソールか
@@ -70,12 +92,14 @@
 
       <li>同じポートに既にバインドされている Apache
       がもう一つあるときや他のウェブサーバが存在している時に、
-      サーバを開始しようとした。</li>
+      サーバを開始しようとした。</li>
     </ul>
 
     <p>より多くの問題解決の方策の説明は、
     Apache <a href="faq/">FAQ</a> をご覧下さい。</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div><div class="section"><h2><a name="boot" id="boot">ブート時の起動</a></h2>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="boot" id="boot">ブート時の起動</a></h2>
 
     <p>システムがリブートした後でも
     サーバが実行され続けるようにしたい場合は、
@@ -89,15 +113,21 @@
     <code>apachectl</code> スクリプトは通常は、 init 
     スクリプトとして直接リンクできるように設計されていますが、
     念のためシステムの要求に合致していることを確認してください。</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div><div class="section"><h2><a name="info" id="info">追加情報</a></h2>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="info" id="info">追加情報</a></h2>
 
     <p><a href="programs/httpd.html">httpd</a> や
     <a href="programs/apachectl.html">apachectl</a>
     、サーバに含まれていたその他補助プログラムの、
     コマンドラインオプションに関する追加情報は、
-    <a href="programs/">サーバと補助プログラム</a>ページに
+    <a href="programs/">サーバと補助プログラム</a>ページに
     記載されています。
     Apache 配布に含まれている全<a href="mod/">モジュール</a>、
     それによって提供される<a href="mod/directives.html">ディレクティブ</a>
     のドキュメントもあります。</p>
-</div></div><div id="footer"><p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p><p class="menu"><a href="./mod/">モジュール</a> | <a href="./mod/directives.html">ディレクティブ</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">用語</a> | <a href="./sitemap.html">サイトマップ</a></p></div></body></html>
+</div></div>
+<div id="footer">
+<p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p>
+<p class="menu"><a href="./mod/">モジュール</a> | <a href="./mod/directives.html">ディレクティブ</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">用語</a> | <a href="./sitemap.html">サイトマップ</a></p></div>
+</body></html>
