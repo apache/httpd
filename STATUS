@@ -1,5 +1,5 @@
 APACHE 1.3 STATUS:						-*-text-*-
-  Last modified at [$Date: 2002/05/15 14:15:28 $]
+  Last modified at [$Date: 2002/05/15 14:20:27 $]
 
 Release:
 
@@ -84,10 +84,6 @@ Available Patches (Most likely, will be ported to 2.0 as appropriate):
      <jwbaker@acm.org> to more fully close some segfault potential.
         Message-ID: <Pine.LNX.4.21.0102102350060.6815-200000@desktop>
         Status:  Jim +1 (for 1.3.19), Martin +0
-
-    * Patch from "C. Bottelier" <c.bottelier@quicknet.nl> to run
-	Apache without daemonizing the parent process. PR#7040
-	Status: fanf +1 (except it needs docs)
 
     * Andrew Ford's patch (1999/12/05) to add absolute times to mod_expires
 	Message-ID: <m3wvqtcoqx.fsf@icarus.demon.co.uk>
