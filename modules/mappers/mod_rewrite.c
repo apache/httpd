@@ -1416,6 +1416,7 @@ static char *lookup_map_program(request_rec *r, apr_file_t *fpin,
         }
     }
 
+    /* buf is not zero terminated, so be careful! */
     if (i == 4 && strncasecmp(buf, "NULL", 4) == 0) {
         return NULL;
     }
