@@ -249,7 +249,6 @@ static int alias_match(const char *uri, const char *alias_fakename)
     const char *end_fakename = alias_fakename + strlen(alias_fakename);
     const char *aliasp = alias_fakename, *urip = uri;
     const char *end_uri = uri + strlen(uri);
-    unsigned char uric, aliasc;
 
     while (aliasp < end_fakename && urip < end_uri) {
         if (*aliasp == '/') {
