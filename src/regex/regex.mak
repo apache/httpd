@@ -33,20 +33,14 @@ INTDIR=.\LibR
 OutDir=.\LibR
 # End Custom Macros
 
-!IF "$(RECURSE)" == "0" 
-
 ALL : "$(OUTDIR)\regex.lib"
 
-!ELSE 
-
-ALL : "$(OUTDIR)\regex.lib"
-
-!ENDIF 
 
 CLEAN :
 	-@erase "$(INTDIR)\regcomp.obj"
 	-@erase "$(INTDIR)\regerror.obj"
 	-@erase "$(INTDIR)\regex.idb"
+	-@erase "$(INTDIR)\regex.pdb"
 	-@erase "$(INTDIR)\regexec.obj"
 	-@erase "$(INTDIR)\regfree.obj"
 	-@erase "$(OUTDIR)\regex.lib"
@@ -54,43 +48,40 @@ CLEAN :
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
-RSC=rc.exe
 CPP=cl.exe
-CPP_PROJ=/nologo /MD /W3 /O2 /I "..\include" /D "WIN32" /D "NDEBUG" /D\
- "_WINDOWS" /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\regex" /FD /c 
-CPP_OBJS=.\LibR/
-CPP_SBRS=.
+CPP_PROJ=/nologo /MD /W3 /Zi /O2 /I "..\include" /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\regex" /FD /c 
 
-.c{$(CPP_OBJS)}.obj::
+.c{$(INTDIR)}.obj::
    $(CPP) @<<
    $(CPP_PROJ) $< 
 <<
 
-.cpp{$(CPP_OBJS)}.obj::
+.cpp{$(INTDIR)}.obj::
    $(CPP) @<<
    $(CPP_PROJ) $< 
 <<
 
-.cxx{$(CPP_OBJS)}.obj::
+.cxx{$(INTDIR)}.obj::
    $(CPP) @<<
    $(CPP_PROJ) $< 
 <<
 
-.c{$(CPP_SBRS)}.sbr::
+.c{$(INTDIR)}.sbr::
    $(CPP) @<<
    $(CPP_PROJ) $< 
 <<
 
-.cpp{$(CPP_SBRS)}.sbr::
+.cpp{$(INTDIR)}.sbr::
    $(CPP) @<<
    $(CPP_PROJ) $< 
 <<
 
-.cxx{$(CPP_SBRS)}.sbr::
+.cxx{$(INTDIR)}.sbr::
    $(CPP) @<<
    $(CPP_PROJ) $< 
 <<
 
+RSC=rc.exe
 BSC32=bscmake.exe
 BSC32_FLAGS=/nologo /o"$(OUTDIR)\regex.bsc" 
 BSC32_SBRS= \
@@ -116,15 +107,8 @@ INTDIR=.\LibD
 OutDir=.\LibD
 # End Custom Macros
 
-!IF "$(RECURSE)" == "0" 
-
 ALL : "$(OUTDIR)\regex.lib"
 
-!ELSE 
-
-ALL : "$(OUTDIR)\regex.lib"
-
-!ENDIF 
 
 CLEAN :
 	-@erase "$(INTDIR)\regcomp.obj"
@@ -138,43 +122,40 @@ CLEAN :
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
-RSC=rc.exe
 CPP=cl.exe
-CPP_PROJ=/nologo /MDd /W3 /GX /Zi /Od /I "..\include" /D "WIN32" /D "_DEBUG" /D\
- "_WINDOWS" /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\regex" /FD /c 
-CPP_OBJS=.\LibD/
-CPP_SBRS=.
+CPP_PROJ=/nologo /MDd /W3 /GX /Zi /Od /I "..\include" /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\regex" /FD /c 
 
-.c{$(CPP_OBJS)}.obj::
+.c{$(INTDIR)}.obj::
    $(CPP) @<<
    $(CPP_PROJ) $< 
 <<
 
-.cpp{$(CPP_OBJS)}.obj::
+.cpp{$(INTDIR)}.obj::
    $(CPP) @<<
    $(CPP_PROJ) $< 
 <<
 
-.cxx{$(CPP_OBJS)}.obj::
+.cxx{$(INTDIR)}.obj::
    $(CPP) @<<
    $(CPP_PROJ) $< 
 <<
 
-.c{$(CPP_SBRS)}.sbr::
+.c{$(INTDIR)}.sbr::
    $(CPP) @<<
    $(CPP_PROJ) $< 
 <<
 
-.cpp{$(CPP_SBRS)}.sbr::
+.cpp{$(INTDIR)}.sbr::
    $(CPP) @<<
    $(CPP_PROJ) $< 
 <<
 
-.cxx{$(CPP_SBRS)}.sbr::
+.cxx{$(INTDIR)}.sbr::
    $(CPP) @<<
    $(CPP_PROJ) $< 
 <<
 
+RSC=rc.exe
 BSC32=bscmake.exe
 BSC32_FLAGS=/nologo /o"$(OUTDIR)\regex.bsc" 
 BSC32_SBRS= \
@@ -195,52 +176,34 @@ LIB32_OBJS= \
 !ENDIF 
 
 
+!IF "$(NO_EXTERNAL_DEPS)" != "1"
+!IF EXISTS("regex.dep")
+!INCLUDE "regex.dep"
+!ELSE 
+!MESSAGE Warning: cannot find "regex.dep"
+!ENDIF 
+!ENDIF 
+
+
 !IF "$(CFG)" == "regex - Win32 Release" || "$(CFG)" == "regex - Win32 Debug"
 SOURCE=.\regcomp.c
-DEP_CPP_REGCO=\
-	"..\include\ap_ctype.h"\
-	"..\include\hsregex.h"\
-	".\cclass.h"\
-	".\cname.h"\
-	".\regcomp.ih"\
-	".\regex2.h"\
-	".\utils.h"\
-	
 
-"$(INTDIR)\regcomp.obj" : $(SOURCE) $(DEP_CPP_REGCO) "$(INTDIR)"
+"$(INTDIR)\regcomp.obj" : $(SOURCE) "$(INTDIR)"
 
 
 SOURCE=.\regerror.c
-DEP_CPP_REGER=\
-	"..\include\hsregex.h"\
-	".\regerror.ih"\
-	".\utils.h"\
-	
 
-"$(INTDIR)\regerror.obj" : $(SOURCE) $(DEP_CPP_REGER) "$(INTDIR)"
+"$(INTDIR)\regerror.obj" : $(SOURCE) "$(INTDIR)"
 
 
 SOURCE=.\regexec.c
-DEP_CPP_REGEX=\
-	"..\include\ap_ctype.h"\
-	"..\include\hsregex.h"\
-	".\engine.c"\
-	".\engine.ih"\
-	".\regex2.h"\
-	".\utils.h"\
-	
 
-"$(INTDIR)\regexec.obj" : $(SOURCE) $(DEP_CPP_REGEX) "$(INTDIR)"
+"$(INTDIR)\regexec.obj" : $(SOURCE) "$(INTDIR)"
 
 
 SOURCE=.\regfree.c
-DEP_CPP_REGFR=\
-	"..\include\hsregex.h"\
-	".\regex2.h"\
-	".\utils.h"\
-	
 
-"$(INTDIR)\regfree.obj" : $(SOURCE) $(DEP_CPP_REGFR) "$(INTDIR)"
+"$(INTDIR)\regfree.obj" : $(SOURCE) "$(INTDIR)"
 
 
 

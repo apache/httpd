@@ -1,12 +1,10 @@
 # Microsoft Developer Studio Generated NMAKE File, Based on gen_uri_delims.dsp
 !IF "$(CFG)" == ""
 CFG=gen_uri_delims - Win32 Debug
-!MESSAGE No configuration specified. Defaulting to gen_uri_delims - Win32\
- Debug.
+!MESSAGE No configuration specified. Defaulting to gen_uri_delims - Win32 Debug.
 !ENDIF 
 
-!IF "$(CFG)" != "gen_uri_delims - Win32 Release" && "$(CFG)" !=\
- "gen_uri_delims - Win32 Debug"
+!IF "$(CFG)" != "gen_uri_delims - Win32 Release" && "$(CFG)" != "gen_uri_delims - Win32 Debug"
 !MESSAGE Invalid configuration "$(CFG)" specified.
 !MESSAGE You can specify a configuration when running NMAKE
 !MESSAGE by defining the macro CFG on the command line. For example:
@@ -15,10 +13,8 @@ CFG=gen_uri_delims - Win32 Debug
 !MESSAGE 
 !MESSAGE Possible choices for configuration are:
 !MESSAGE 
-!MESSAGE "gen_uri_delims - Win32 Release" (based on\
- "Win32 (x86) Console Application")
-!MESSAGE "gen_uri_delims - Win32 Debug" (based on\
- "Win32 (x86) Console Application")
+!MESSAGE "gen_uri_delims - Win32 Release" (based on "Win32 (x86) Console Application")
+!MESSAGE "gen_uri_delims - Win32 Debug" (based on "Win32 (x86) Console Application")
 !MESSAGE 
 !ERROR An invalid configuration is specified.
 !ENDIF 
@@ -37,15 +33,8 @@ INTDIR=.\Release
 OutDir=.
 # End Custom Macros
 
-!IF "$(RECURSE)" == "0" 
-
 ALL : "$(OUTDIR)\gen_uri_delims.exe"
 
-!ELSE 
-
-ALL : "$(OUTDIR)\gen_uri_delims.exe"
-
-!ENDIF 
 
 CLEAN :
 	-@erase "$(INTDIR)\gen_uri_delims.idb"
@@ -56,37 +45,34 @@ CLEAN :
     if not exist "$(INTDIR)/$(NULL)" mkdir "$(INTDIR)"
 
 CPP=cl.exe
-CPP_PROJ=/nologo /MD /W3 /O2 /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS"\
- /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\gen_uri_delims" /FD /c 
-CPP_OBJS=.\Release/
-CPP_SBRS=.
+CPP_PROJ=/nologo /MD /W3 /O2 /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\gen_uri_delims" /FD /c 
 
-.c{$(CPP_OBJS)}.obj::
+.c{$(INTDIR)}.obj::
    $(CPP) @<<
    $(CPP_PROJ) $< 
 <<
 
-.cpp{$(CPP_OBJS)}.obj::
+.cpp{$(INTDIR)}.obj::
    $(CPP) @<<
    $(CPP_PROJ) $< 
 <<
 
-.cxx{$(CPP_OBJS)}.obj::
+.cxx{$(INTDIR)}.obj::
    $(CPP) @<<
    $(CPP_PROJ) $< 
 <<
 
-.c{$(CPP_SBRS)}.sbr::
+.c{$(INTDIR)}.sbr::
    $(CPP) @<<
    $(CPP_PROJ) $< 
 <<
 
-.cpp{$(CPP_SBRS)}.sbr::
+.cpp{$(INTDIR)}.sbr::
    $(CPP) @<<
    $(CPP_PROJ) $< 
 <<
 
-.cxx{$(CPP_SBRS)}.sbr::
+.cxx{$(INTDIR)}.sbr::
    $(CPP) @<<
    $(CPP_PROJ) $< 
 <<
@@ -97,9 +83,7 @@ BSC32_FLAGS=/nologo /o"$(OUTDIR)\gen_uri_delims.bsc"
 BSC32_SBRS= \
 	
 LINK32=link.exe
-LINK32_FLAGS=/nologo /subsystem:console /incremental:no\
- /pdb:"$(OUTDIR)\Release\gen_uri_delims.pdb" /machine:I386\
- /out:"$(OUTDIR)\gen_uri_delims.exe" 
+LINK32_FLAGS=/nologo /subsystem:console /incremental:no /pdb:"$(OUTDIR)\Release\gen_uri_delims.pdb" /machine:I386 /out:"$(OUTDIR)\gen_uri_delims.exe" 
 LINK32_OBJS= \
 	"$(INTDIR)\gen_uri_delims.obj"
 
@@ -108,7 +92,7 @@ LINK32_OBJS= \
   $(LINK32_FLAGS) $(LINK32_OBJS)
 <<
 
-SOURCE=$(InputPath)
+SOURCE="$(InputPath)"
 PostBuild_Desc=Create uri_delims.h
 DS_POSTBUILD_DEP=$(INTDIR)\postbld.dep
 
@@ -130,15 +114,8 @@ INTDIR=.\Debug
 OutDir=.
 # End Custom Macros
 
-!IF "$(RECURSE)" == "0" 
-
 ALL : "$(OUTDIR)\gen_uri_delims.exe"
 
-!ELSE 
-
-ALL : "$(OUTDIR)\gen_uri_delims.exe"
-
-!ENDIF 
 
 CLEAN :
 	-@erase "$(INTDIR)\gen_uri_delims.idb"
@@ -150,37 +127,34 @@ CLEAN :
     if not exist "$(INTDIR)/$(NULL)" mkdir "$(INTDIR)"
 
 CPP=cl.exe
-CPP_PROJ=/nologo /MDd /W3 /GX /Zi /Od /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D\
- "_MBCS" /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\gen_uri_delims" /FD /c 
-CPP_OBJS=.\Debug/
-CPP_SBRS=.
+CPP_PROJ=/nologo /MDd /W3 /GX /Zi /Od /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\gen_uri_delims" /FD /c 
 
-.c{$(CPP_OBJS)}.obj::
+.c{$(INTDIR)}.obj::
    $(CPP) @<<
    $(CPP_PROJ) $< 
 <<
 
-.cpp{$(CPP_OBJS)}.obj::
+.cpp{$(INTDIR)}.obj::
    $(CPP) @<<
    $(CPP_PROJ) $< 
 <<
 
-.cxx{$(CPP_OBJS)}.obj::
+.cxx{$(INTDIR)}.obj::
    $(CPP) @<<
    $(CPP_PROJ) $< 
 <<
 
-.c{$(CPP_SBRS)}.sbr::
+.c{$(INTDIR)}.sbr::
    $(CPP) @<<
    $(CPP_PROJ) $< 
 <<
 
-.cpp{$(CPP_SBRS)}.sbr::
+.cpp{$(INTDIR)}.sbr::
    $(CPP) @<<
    $(CPP_PROJ) $< 
 <<
 
-.cxx{$(CPP_SBRS)}.sbr::
+.cxx{$(INTDIR)}.sbr::
    $(CPP) @<<
    $(CPP_PROJ) $< 
 <<
@@ -191,9 +165,7 @@ BSC32_FLAGS=/nologo /o"$(OUTDIR)\gen_uri_delims.bsc"
 BSC32_SBRS= \
 	
 LINK32=link.exe
-LINK32_FLAGS=/nologo /subsystem:console /incremental:no\
- /pdb:"$(OUTDIR)\Debug\gen_uri_delims.pdb" /debug /machine:I386\
- /out:"$(OUTDIR)\gen_uri_delims.exe" 
+LINK32_FLAGS=/nologo /subsystem:console /incremental:no /pdb:"$(OUTDIR)\Debug\gen_uri_delims.pdb" /debug /machine:I386 /out:"$(OUTDIR)\gen_uri_delims.exe" 
 LINK32_OBJS= \
 	"$(INTDIR)\gen_uri_delims.obj"
 
@@ -202,7 +174,7 @@ LINK32_OBJS= \
   $(LINK32_FLAGS) $(LINK32_OBJS)
 <<
 
-SOURCE=$(InputPath)
+SOURCE="$(InputPath)"
 PostBuild_Desc=Create uri_delims.h
 DS_POSTBUILD_DEP=$(INTDIR)\postbld.dep
 
@@ -219,8 +191,16 @@ $(DS_POSTBUILD_DEP) : "$(OUTDIR)\gen_uri_delims.exe"
 !ENDIF 
 
 
-!IF "$(CFG)" == "gen_uri_delims - Win32 Release" || "$(CFG)" ==\
- "gen_uri_delims - Win32 Debug"
+!IF "$(NO_EXTERNAL_DEPS)" != "1"
+!IF EXISTS("gen_uri_delims.dep")
+!INCLUDE "gen_uri_delims.dep"
+!ELSE 
+!MESSAGE Warning: cannot find "gen_uri_delims.dep"
+!ENDIF 
+!ENDIF 
+
+
+!IF "$(CFG)" == "gen_uri_delims - Win32 Release" || "$(CFG)" == "gen_uri_delims - Win32 Debug"
 SOURCE=.\gen_uri_delims.c
 
 "$(INTDIR)\gen_uri_delims.obj" : $(SOURCE) "$(INTDIR)"

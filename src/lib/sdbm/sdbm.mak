@@ -33,19 +33,13 @@ INTDIR=.\LibR
 OutDir=.\LibR
 # End Custom Macros
 
-!IF "$(RECURSE)" == "0" 
-
 ALL : "$(OUTDIR)\sdbm.lib"
 
-!ELSE 
-
-ALL : "$(OUTDIR)\sdbm.lib"
-
-!ENDIF 
 
 CLEAN :
 	-@erase "$(INTDIR)\sdbm.idb"
 	-@erase "$(INTDIR)\sdbm.obj"
+	-@erase "$(INTDIR)\sdbm.pdb"
 	-@erase "$(INTDIR)\sdbm_hash.obj"
 	-@erase "$(INTDIR)\sdbm_lock.obj"
 	-@erase "$(INTDIR)\sdbm_pair.obj"
@@ -54,43 +48,40 @@ CLEAN :
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
-RSC=rc.exe
 CPP=cl.exe
-CPP_PROJ=/nologo /MD /W3 /O2 /I "..\..\include" /I "..\..\os\win32" /D "WIN32"\
- /D "NDEBUG" /D "_WINDOWS" /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\sdbm" /FD /c 
-CPP_OBJS=.\LibR/
-CPP_SBRS=.
+CPP_PROJ=/nologo /MD /W3 /Zi /O2 /I "..\..\include" /I "..\..\os\win32" /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\sdbm" /FD /c 
 
-.c{$(CPP_OBJS)}.obj::
+.c{$(INTDIR)}.obj::
    $(CPP) @<<
    $(CPP_PROJ) $< 
 <<
 
-.cpp{$(CPP_OBJS)}.obj::
+.cpp{$(INTDIR)}.obj::
    $(CPP) @<<
    $(CPP_PROJ) $< 
 <<
 
-.cxx{$(CPP_OBJS)}.obj::
+.cxx{$(INTDIR)}.obj::
    $(CPP) @<<
    $(CPP_PROJ) $< 
 <<
 
-.c{$(CPP_SBRS)}.sbr::
+.c{$(INTDIR)}.sbr::
    $(CPP) @<<
    $(CPP_PROJ) $< 
 <<
 
-.cpp{$(CPP_SBRS)}.sbr::
+.cpp{$(INTDIR)}.sbr::
    $(CPP) @<<
    $(CPP_PROJ) $< 
 <<
 
-.cxx{$(CPP_SBRS)}.sbr::
+.cxx{$(INTDIR)}.sbr::
    $(CPP) @<<
    $(CPP_PROJ) $< 
 <<
 
+RSC=rc.exe
 BSC32=bscmake.exe
 BSC32_FLAGS=/nologo /o"$(OUTDIR)\sdbm.bsc" 
 BSC32_SBRS= \
@@ -116,15 +107,8 @@ INTDIR=.\LibD
 OutDir=.\LibD
 # End Custom Macros
 
-!IF "$(RECURSE)" == "0" 
-
 ALL : "$(OUTDIR)\sdbm.lib"
 
-!ELSE 
-
-ALL : "$(OUTDIR)\sdbm.lib"
-
-!ENDIF 
 
 CLEAN :
 	-@erase "$(INTDIR)\sdbm.idb"
@@ -138,44 +122,40 @@ CLEAN :
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
-RSC=rc.exe
 CPP=cl.exe
-CPP_PROJ=/nologo /MDd /W3 /GX /Zi /Od /I "..\..\include" /I "..\..\os\win32" /D\
- "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "SHARED_MODULE" /Fo"$(INTDIR)\\"\
- /Fd"$(INTDIR)\sdbm" /FD /c 
-CPP_OBJS=.\LibD/
-CPP_SBRS=.
+CPP_PROJ=/nologo /MDd /W3 /GX /Zi /Od /I "..\..\include" /I "..\..\os\win32" /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "SHARED_MODULE" /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\sdbm" /FD /c 
 
-.c{$(CPP_OBJS)}.obj::
+.c{$(INTDIR)}.obj::
    $(CPP) @<<
    $(CPP_PROJ) $< 
 <<
 
-.cpp{$(CPP_OBJS)}.obj::
+.cpp{$(INTDIR)}.obj::
    $(CPP) @<<
    $(CPP_PROJ) $< 
 <<
 
-.cxx{$(CPP_OBJS)}.obj::
+.cxx{$(INTDIR)}.obj::
    $(CPP) @<<
    $(CPP_PROJ) $< 
 <<
 
-.c{$(CPP_SBRS)}.sbr::
+.c{$(INTDIR)}.sbr::
    $(CPP) @<<
    $(CPP_PROJ) $< 
 <<
 
-.cpp{$(CPP_SBRS)}.sbr::
+.cpp{$(INTDIR)}.sbr::
    $(CPP) @<<
    $(CPP_PROJ) $< 
 <<
 
-.cxx{$(CPP_SBRS)}.sbr::
+.cxx{$(INTDIR)}.sbr::
    $(CPP) @<<
    $(CPP_PROJ) $< 
 <<
 
+RSC=rc.exe
 BSC32=bscmake.exe
 BSC32_FLAGS=/nologo /o"$(OUTDIR)\sdbm.bsc" 
 BSC32_SBRS= \
@@ -196,48 +176,34 @@ LIB32_OBJS= \
 !ENDIF 
 
 
+!IF "$(NO_EXTERNAL_DEPS)" != "1"
+!IF EXISTS("sdbm.dep")
+!INCLUDE "sdbm.dep"
+!ELSE 
+!MESSAGE Warning: cannot find "sdbm.dep"
+!ENDIF 
+!ENDIF 
+
+
 !IF "$(CFG)" == "sdbm - Win32 Release" || "$(CFG)" == "sdbm - Win32 Debug"
 SOURCE=.\sdbm.c
-DEP_CPP_SDBM_=\
-	".\sdbm.h"\
-	".\sdbm_pair.h"\
-	".\sdbm_tune.h"\
-	
 
-"$(INTDIR)\sdbm.obj" : $(SOURCE) $(DEP_CPP_SDBM_) "$(INTDIR)"
+"$(INTDIR)\sdbm.obj" : $(SOURCE) "$(INTDIR)"
 
 
 SOURCE=.\sdbm_hash.c
-DEP_CPP_SDBM_H=\
-	".\sdbm.h"\
-	
 
-"$(INTDIR)\sdbm_hash.obj" : $(SOURCE) $(DEP_CPP_SDBM_H) "$(INTDIR)"
+"$(INTDIR)\sdbm_hash.obj" : $(SOURCE) "$(INTDIR)"
 
 
 SOURCE=.\sdbm_lock.c
-DEP_CPP_SDBM_L=\
-	"..\..\include\ap_config.h"\
-	"..\..\include\ap_ctype.h"\
-	"..\..\include\ap_mmn.h"\
-	"..\..\include\hsregex.h"\
-	"..\..\os\win32\os.h"\
-	
-NODEP_CPP_SDBM_L=\
-	"..\..\include\ap_config_auto.h"\
-	
 
-"$(INTDIR)\sdbm_lock.obj" : $(SOURCE) $(DEP_CPP_SDBM_L) "$(INTDIR)"
+"$(INTDIR)\sdbm_lock.obj" : $(SOURCE) "$(INTDIR)"
 
 
 SOURCE=.\sdbm_pair.c
-DEP_CPP_SDBM_P=\
-	".\sdbm.h"\
-	".\sdbm_pair.h"\
-	".\sdbm_tune.h"\
-	
 
-"$(INTDIR)\sdbm_pair.obj" : $(SOURCE) $(DEP_CPP_SDBM_P) "$(INTDIR)"
+"$(INTDIR)\sdbm_pair.obj" : $(SOURCE) "$(INTDIR)"
 
 
 

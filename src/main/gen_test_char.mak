@@ -4,8 +4,7 @@ CFG=gen_test_char - Win32 Debug
 !MESSAGE No configuration specified. Defaulting to gen_test_char - Win32 Debug.
 !ENDIF 
 
-!IF "$(CFG)" != "gen_test_char - Win32 Release" && "$(CFG)" !=\
- "gen_test_char - Win32 Debug"
+!IF "$(CFG)" != "gen_test_char - Win32 Release" && "$(CFG)" != "gen_test_char - Win32 Debug"
 !MESSAGE Invalid configuration "$(CFG)" specified.
 !MESSAGE You can specify a configuration when running NMAKE
 !MESSAGE by defining the macro CFG on the command line. For example:
@@ -14,10 +13,8 @@ CFG=gen_test_char - Win32 Debug
 !MESSAGE 
 !MESSAGE Possible choices for configuration are:
 !MESSAGE 
-!MESSAGE "gen_test_char - Win32 Release" (based on\
- "Win32 (x86) Console Application")
-!MESSAGE "gen_test_char - Win32 Debug" (based on\
- "Win32 (x86) Console Application")
+!MESSAGE "gen_test_char - Win32 Release" (based on "Win32 (x86) Console Application")
+!MESSAGE "gen_test_char - Win32 Debug" (based on "Win32 (x86) Console Application")
 !MESSAGE 
 !ERROR An invalid configuration is specified.
 !ENDIF 
@@ -36,15 +33,8 @@ INTDIR=.\Release
 OutDir=.
 # End Custom Macros
 
-!IF "$(RECURSE)" == "0" 
-
 ALL : "$(OUTDIR)\gen_test_char.exe"
 
-!ELSE 
-
-ALL : "$(OUTDIR)\gen_test_char.exe"
-
-!ENDIF 
 
 CLEAN :
 	-@erase "$(INTDIR)\gen_test_char.idb"
@@ -55,38 +45,34 @@ CLEAN :
     if not exist "$(INTDIR)/$(NULL)" mkdir "$(INTDIR)"
 
 CPP=cl.exe
-CPP_PROJ=/nologo /MD /W3 /O2 /I "..\include" /I "..\os\win32" /D "WIN32" /D\
- "NDEBUG" /D "_CONSOLE" /D "_MBCS" /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\gen_test_char"\
- /FD /c 
-CPP_OBJS=.\Release/
-CPP_SBRS=.
+CPP_PROJ=/nologo /MD /W3 /O2 /I "..\include" /I "..\os\win32" /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\gen_test_char" /FD /c 
 
-.c{$(CPP_OBJS)}.obj::
+.c{$(INTDIR)}.obj::
    $(CPP) @<<
    $(CPP_PROJ) $< 
 <<
 
-.cpp{$(CPP_OBJS)}.obj::
+.cpp{$(INTDIR)}.obj::
    $(CPP) @<<
    $(CPP_PROJ) $< 
 <<
 
-.cxx{$(CPP_OBJS)}.obj::
+.cxx{$(INTDIR)}.obj::
    $(CPP) @<<
    $(CPP_PROJ) $< 
 <<
 
-.c{$(CPP_SBRS)}.sbr::
+.c{$(INTDIR)}.sbr::
    $(CPP) @<<
    $(CPP_PROJ) $< 
 <<
 
-.cpp{$(CPP_SBRS)}.sbr::
+.cpp{$(INTDIR)}.sbr::
    $(CPP) @<<
    $(CPP_PROJ) $< 
 <<
 
-.cxx{$(CPP_SBRS)}.sbr::
+.cxx{$(INTDIR)}.sbr::
    $(CPP) @<<
    $(CPP_PROJ) $< 
 <<
@@ -97,9 +83,7 @@ BSC32_FLAGS=/nologo /o"$(OUTDIR)\gen_test_char.bsc"
 BSC32_SBRS= \
 	
 LINK32=link.exe
-LINK32_FLAGS=/nologo /subsystem:console /incremental:no\
- /pdb:"$(OUTDIR)\Release\gen_test_char.pdb" /machine:I386\
- /out:"$(OUTDIR)\gen_test_char.exe" 
+LINK32_FLAGS=/nologo /subsystem:console /incremental:no /pdb:"$(OUTDIR)\Release\gen_test_char.pdb" /machine:I386 /out:"$(OUTDIR)\gen_test_char.exe" 
 LINK32_OBJS= \
 	"$(INTDIR)\gen_test_char.obj"
 
@@ -108,7 +92,7 @@ LINK32_OBJS= \
   $(LINK32_FLAGS) $(LINK32_OBJS)
 <<
 
-SOURCE=$(InputPath)
+SOURCE="$(InputPath)"
 PostBuild_Desc=Create test_char.h
 DS_POSTBUILD_DEP=$(INTDIR)\postbld.dep
 
@@ -130,15 +114,8 @@ INTDIR=.\Debug
 OutDir=.
 # End Custom Macros
 
-!IF "$(RECURSE)" == "0" 
-
 ALL : "$(OUTDIR)\gen_test_char.exe"
 
-!ELSE 
-
-ALL : "$(OUTDIR)\gen_test_char.exe"
-
-!ENDIF 
 
 CLEAN :
 	-@erase "$(INTDIR)\gen_test_char.idb"
@@ -150,38 +127,34 @@ CLEAN :
     if not exist "$(INTDIR)/$(NULL)" mkdir "$(INTDIR)"
 
 CPP=cl.exe
-CPP_PROJ=/nologo /MDd /W3 /GX /Zi /Od /I "..\include" /I "..\os\win32" /D\
- "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /Fo"$(INTDIR)\\"\
- /Fd"$(INTDIR)\gen_test_char" /FD /c 
-CPP_OBJS=.\Debug/
-CPP_SBRS=.
+CPP_PROJ=/nologo /MDd /W3 /GX /Zi /Od /I "..\include" /I "..\os\win32" /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\gen_test_char" /FD /c 
 
-.c{$(CPP_OBJS)}.obj::
+.c{$(INTDIR)}.obj::
    $(CPP) @<<
    $(CPP_PROJ) $< 
 <<
 
-.cpp{$(CPP_OBJS)}.obj::
+.cpp{$(INTDIR)}.obj::
    $(CPP) @<<
    $(CPP_PROJ) $< 
 <<
 
-.cxx{$(CPP_OBJS)}.obj::
+.cxx{$(INTDIR)}.obj::
    $(CPP) @<<
    $(CPP_PROJ) $< 
 <<
 
-.c{$(CPP_SBRS)}.sbr::
+.c{$(INTDIR)}.sbr::
    $(CPP) @<<
    $(CPP_PROJ) $< 
 <<
 
-.cpp{$(CPP_SBRS)}.sbr::
+.cpp{$(INTDIR)}.sbr::
    $(CPP) @<<
    $(CPP_PROJ) $< 
 <<
 
-.cxx{$(CPP_SBRS)}.sbr::
+.cxx{$(INTDIR)}.sbr::
    $(CPP) @<<
    $(CPP_PROJ) $< 
 <<
@@ -192,9 +165,7 @@ BSC32_FLAGS=/nologo /o"$(OUTDIR)\gen_test_char.bsc"
 BSC32_SBRS= \
 	
 LINK32=link.exe
-LINK32_FLAGS=/nologo /subsystem:console /incremental:no\
- /pdb:"$(OUTDIR)\Debug\gen_test_char.pdb" /debug /machine:I386\
- /out:"$(OUTDIR)\gen_test_char.exe" 
+LINK32_FLAGS=/nologo /subsystem:console /incremental:no /pdb:"$(OUTDIR)\Debug\gen_test_char.pdb" /debug /machine:I386 /out:"$(OUTDIR)\gen_test_char.exe" 
 LINK32_OBJS= \
 	"$(INTDIR)\gen_test_char.obj"
 
@@ -203,7 +174,7 @@ LINK32_OBJS= \
   $(LINK32_FLAGS) $(LINK32_OBJS)
 <<
 
-SOURCE=$(InputPath)
+SOURCE="$(InputPath)"
 PostBuild_Desc=Create test_char.h
 DS_POSTBUILD_DEP=$(INTDIR)\postbld.dep
 
@@ -220,29 +191,19 @@ $(DS_POSTBUILD_DEP) : "$(OUTDIR)\gen_test_char.exe"
 !ENDIF 
 
 
-!IF "$(CFG)" == "gen_test_char - Win32 Release" || "$(CFG)" ==\
- "gen_test_char - Win32 Debug"
-SOURCE=.\gen_test_char.c
-DEP_CPP_GEN_T=\
-	"..\include\ap.h"\
-	"..\include\ap_alloc.h"\
-	"..\include\ap_config.h"\
-	"..\include\ap_ctype.h"\
-	"..\include\ap_ebcdic.h"\
-	"..\include\ap_mmn.h"\
-	"..\include\buff.h"\
-	"..\include\hsregex.h"\
-	"..\include\httpd.h"\
-	"..\include\util_uri.h"\
-	"..\os\win32\os.h"\
-	"..\os\win32\readdir.h"\
-	
-NODEP_CPP_GEN_T=\
-	"..\include\ap_config_auto.h"\
-	"..\include\sfio.h"\
-	
+!IF "$(NO_EXTERNAL_DEPS)" != "1"
+!IF EXISTS("gen_test_char.dep")
+!INCLUDE "gen_test_char.dep"
+!ELSE 
+!MESSAGE Warning: cannot find "gen_test_char.dep"
+!ENDIF 
+!ENDIF 
 
-"$(INTDIR)\gen_test_char.obj" : $(SOURCE) $(DEP_CPP_GEN_T) "$(INTDIR)"
+
+!IF "$(CFG)" == "gen_test_char - Win32 Release" || "$(CFG)" == "gen_test_char - Win32 Debug"
+SOURCE=.\gen_test_char.c
+
+"$(INTDIR)\gen_test_char.obj" : $(SOURCE) "$(INTDIR)"
 
 
 

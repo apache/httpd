@@ -1,12 +1,10 @@
 # Microsoft Developer Studio Generated NMAKE File, Based on mod_unique_id.dsp
 !IF "$(CFG)" == ""
 CFG=mod_unique_id - Win32 Release
-!MESSAGE No configuration specified. Defaulting to mod_unique_id - Win32\
- Release.
+!MESSAGE No configuration specified. Defaulting to mod_unique_id - Win32 Release.
 !ENDIF 
 
-!IF "$(CFG)" != "mod_unique_id - Win32 Release" && "$(CFG)" !=\
- "mod_unique_id - Win32 Debug"
+!IF "$(CFG)" != "mod_unique_id - Win32 Release" && "$(CFG)" != "mod_unique_id - Win32 Debug"
 !MESSAGE Invalid configuration "$(CFG)" specified.
 !MESSAGE You can specify a configuration when running NMAKE
 !MESSAGE by defining the macro CFG on the command line. For example:
@@ -15,10 +13,8 @@ CFG=mod_unique_id - Win32 Release
 !MESSAGE 
 !MESSAGE Possible choices for configuration are:
 !MESSAGE 
-!MESSAGE "mod_unique_id - Win32 Release" (based on\
- "Win32 (x86) Dynamic-Link Library")
-!MESSAGE "mod_unique_id - Win32 Debug" (based on\
- "Win32 (x86) Dynamic-Link Library")
+!MESSAGE "mod_unique_id - Win32 Release" (based on "Win32 (x86) Dynamic-Link Library")
+!MESSAGE "mod_unique_id - Win32 Debug" (based on "Win32 (x86) Dynamic-Link Library")
 !MESSAGE 
 !ERROR An invalid configuration is specified.
 !ENDIF 
@@ -52,49 +48,46 @@ CLEAN :"ApacheCore - Win32 ReleaseCLEAN"
 !ELSE 
 CLEAN :
 !ENDIF 
-	-@erase "$(INTDIR)\mod_unique_id.idb"
 	-@erase "$(INTDIR)\mod_unique_id.obj"
+	-@erase "$(INTDIR)\mod_unique_id_src.idb"
+	-@erase "$(INTDIR)\mod_unique_id_src.pdb"
 	-@erase "$(OUTDIR)\mod_unique_id.exp"
 	-@erase "$(OUTDIR)\mod_unique_id.lib"
-	-@erase "$(OUTDIR)\mod_unique_id.map"
+	-@erase "$(OUTDIR)\mod_unique_id.pdb"
 	-@erase "$(OUTDIR)\mod_unique_id.so"
 
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
 CPP=cl.exe
-CPP_PROJ=/nologo /MD /W3 /O2 /I "..\..\include" /I "..\..\os\win32" /D "NDEBUG"\
- /D "WIN32" /D "_WINDOWS" /D "SHARED_MODULE" /Fo"$(INTDIR)\\"\
- /Fd"$(INTDIR)\mod_unique_id" /FD /c 
-CPP_OBJS=.\Release/
-CPP_SBRS=.
+CPP_PROJ=/nologo /MD /W3 /Zi /O2 /I "..\..\include" /I "..\..\os\win32" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "SHARED_MODULE" /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\mod_unique_id_src" /FD /c 
 
-.c{$(CPP_OBJS)}.obj::
+.c{$(INTDIR)}.obj::
    $(CPP) @<<
    $(CPP_PROJ) $< 
 <<
 
-.cpp{$(CPP_OBJS)}.obj::
+.cpp{$(INTDIR)}.obj::
    $(CPP) @<<
    $(CPP_PROJ) $< 
 <<
 
-.cxx{$(CPP_OBJS)}.obj::
+.cxx{$(INTDIR)}.obj::
    $(CPP) @<<
    $(CPP_PROJ) $< 
 <<
 
-.c{$(CPP_SBRS)}.sbr::
+.c{$(INTDIR)}.sbr::
    $(CPP) @<<
    $(CPP_PROJ) $< 
 <<
 
-.cpp{$(CPP_SBRS)}.sbr::
+.cpp{$(INTDIR)}.sbr::
    $(CPP) @<<
    $(CPP_PROJ) $< 
 <<
 
-.cxx{$(CPP_SBRS)}.sbr::
+.cxx{$(INTDIR)}.sbr::
    $(CPP) @<<
    $(CPP_PROJ) $< 
 <<
@@ -107,11 +100,7 @@ BSC32_FLAGS=/nologo /o"$(OUTDIR)\mod_unique_id.bsc"
 BSC32_SBRS= \
 	
 LINK32=link.exe
-LINK32_FLAGS=kernel32.lib ws2_32.lib /nologo /subsystem:windows /dll\
- /incremental:no /pdb:"$(OUTDIR)\mod_unique_id.pdb"\
- /map:"$(INTDIR)\mod_unique_id.map" /machine:I386\
- /out:"$(OUTDIR)\mod_unique_id.so" /implib:"$(OUTDIR)\mod_unique_id.lib"\
- /base:@"BaseAddr.ref",mod_unique_id 
+LINK32_FLAGS=kernel32.lib ws2_32.lib /nologo /subsystem:windows /dll /incremental:no /pdb:"$(OUTDIR)\mod_unique_id.pdb" /debug /machine:I386 /out:"$(OUTDIR)\mod_unique_id.so" /implib:"$(OUTDIR)\mod_unique_id.lib" /base:@"BaseAddr.ref",mod_unique_id /opt:ref 
 LINK32_OBJS= \
 	"$(INTDIR)\mod_unique_id.obj" \
 	"..\..\Release\ApacheCore.lib"
@@ -144,11 +133,11 @@ CLEAN :"ApacheCore - Win32 DebugCLEAN"
 !ELSE 
 CLEAN :
 !ENDIF 
-	-@erase "$(INTDIR)\mod_unique_id.idb"
 	-@erase "$(INTDIR)\mod_unique_id.obj"
+	-@erase "$(INTDIR)\mod_unique_id_src.idb"
+	-@erase "$(INTDIR)\mod_unique_id_src.pdb"
 	-@erase "$(OUTDIR)\mod_unique_id.exp"
 	-@erase "$(OUTDIR)\mod_unique_id.lib"
-	-@erase "$(OUTDIR)\mod_unique_id.map"
 	-@erase "$(OUTDIR)\mod_unique_id.pdb"
 	-@erase "$(OUTDIR)\mod_unique_id.so"
 
@@ -156,38 +145,34 @@ CLEAN :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
 CPP=cl.exe
-CPP_PROJ=/nologo /MDd /W3 /GX /Zi /Od /I "..\..\include" /I "..\..\os\win32" /D\
- "_DEBUG" /D "WIN32" /D "_WINDOWS" /D "SHARED_MODULE" /Fo"$(INTDIR)\\"\
- /Fd"$(INTDIR)\mod_unique_id" /FD /c 
-CPP_OBJS=.\Debug/
-CPP_SBRS=.
+CPP_PROJ=/nologo /MDd /W3 /GX /Zi /Od /I "..\..\include" /I "..\..\os\win32" /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /D "SHARED_MODULE" /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\mod_unique_id_src" /FD /c 
 
-.c{$(CPP_OBJS)}.obj::
+.c{$(INTDIR)}.obj::
    $(CPP) @<<
    $(CPP_PROJ) $< 
 <<
 
-.cpp{$(CPP_OBJS)}.obj::
+.cpp{$(INTDIR)}.obj::
    $(CPP) @<<
    $(CPP_PROJ) $< 
 <<
 
-.cxx{$(CPP_OBJS)}.obj::
+.cxx{$(INTDIR)}.obj::
    $(CPP) @<<
    $(CPP_PROJ) $< 
 <<
 
-.c{$(CPP_SBRS)}.sbr::
+.c{$(INTDIR)}.sbr::
    $(CPP) @<<
    $(CPP_PROJ) $< 
 <<
 
-.cpp{$(CPP_SBRS)}.sbr::
+.cpp{$(INTDIR)}.sbr::
    $(CPP) @<<
    $(CPP_PROJ) $< 
 <<
 
-.cxx{$(CPP_SBRS)}.sbr::
+.cxx{$(INTDIR)}.sbr::
    $(CPP) @<<
    $(CPP_PROJ) $< 
 <<
@@ -200,11 +185,7 @@ BSC32_FLAGS=/nologo /o"$(OUTDIR)\mod_unique_id.bsc"
 BSC32_SBRS= \
 	
 LINK32=link.exe
-LINK32_FLAGS=kernel32.lib ws2_32.lib /nologo /subsystem:windows /dll\
- /incremental:no /pdb:"$(OUTDIR)\mod_unique_id.pdb"\
- /map:"$(INTDIR)\mod_unique_id.map" /debug /machine:I386\
- /out:"$(OUTDIR)\mod_unique_id.so" /implib:"$(OUTDIR)\mod_unique_id.lib"\
- /base:@"BaseAddr.ref",mod_unique_id 
+LINK32_FLAGS=kernel32.lib ws2_32.lib /nologo /subsystem:windows /dll /incremental:no /pdb:"$(OUTDIR)\mod_unique_id.pdb" /debug /machine:I386 /out:"$(OUTDIR)\mod_unique_id.so" /implib:"$(OUTDIR)\mod_unique_id.lib" /base:@"BaseAddr.ref",mod_unique_id 
 LINK32_OBJS= \
 	"$(INTDIR)\mod_unique_id.obj" \
 	"..\..\Debug\ApacheCore.lib"
@@ -217,21 +198,27 @@ LINK32_OBJS= \
 !ENDIF 
 
 
-!IF "$(CFG)" == "mod_unique_id - Win32 Release" || "$(CFG)" ==\
- "mod_unique_id - Win32 Debug"
+!IF "$(NO_EXTERNAL_DEPS)" != "1"
+!IF EXISTS("mod_unique_id.dep")
+!INCLUDE "mod_unique_id.dep"
+!ELSE 
+!MESSAGE Warning: cannot find "mod_unique_id.dep"
+!ENDIF 
+!ENDIF 
+
+
+!IF "$(CFG)" == "mod_unique_id - Win32 Release" || "$(CFG)" == "mod_unique_id - Win32 Debug"
 
 !IF  "$(CFG)" == "mod_unique_id - Win32 Release"
 
 "ApacheCore - Win32 Release" : 
    cd "..\../..\src"
-   $(MAKE) /$(MAKEFLAGS) /F ".\ApacheCore.mak" CFG="ApacheCore - Win32 Release"\
- 
+   $(MAKE) /$(MAKEFLAGS) /F ".\ApacheCore.mak" CFG="ApacheCore - Win32 Release" 
    cd ".\os\win32"
 
 "ApacheCore - Win32 ReleaseCLEAN" : 
    cd "..\../..\src"
-   $(MAKE) /$(MAKEFLAGS) CLEAN /F ".\ApacheCore.mak"\
- CFG="ApacheCore - Win32 Release" RECURSE=1 
+   $(MAKE) /$(MAKEFLAGS) /F ".\ApacheCore.mak" CFG="ApacheCore - Win32 Release" RECURSE=1 CLEAN 
    cd ".\os\win32"
 
 !ELSEIF  "$(CFG)" == "mod_unique_id - Win32 Debug"
@@ -243,36 +230,14 @@ LINK32_OBJS= \
 
 "ApacheCore - Win32 DebugCLEAN" : 
    cd "..\../..\src"
-   $(MAKE) /$(MAKEFLAGS) CLEAN /F ".\ApacheCore.mak"\
- CFG="ApacheCore - Win32 Debug" RECURSE=1 
+   $(MAKE) /$(MAKEFLAGS) /F ".\ApacheCore.mak" CFG="ApacheCore - Win32 Debug" RECURSE=1 CLEAN 
    cd ".\os\win32"
 
 !ENDIF 
 
 SOURCE=..\..\modules\standard\mod_unique_id.c
-DEP_CPP_MOD_U=\
-	"..\..\include\ap.h"\
-	"..\..\include\ap_alloc.h"\
-	"..\..\include\ap_config.h"\
-	"..\..\include\ap_ctype.h"\
-	"..\..\include\ap_ebcdic.h"\
-	"..\..\include\ap_mmn.h"\
-	"..\..\include\buff.h"\
-	"..\..\include\hsregex.h"\
-	"..\..\include\http_config.h"\
-	"..\..\include\http_log.h"\
-	"..\..\include\httpd.h"\
-	"..\..\include\multithread.h"\
-	"..\..\include\util_uri.h"\
-	".\os.h"\
-	".\readdir.h"\
-	
-NODEP_CPP_MOD_U=\
-	"..\..\include\ap_config_auto.h"\
-	"..\..\include\sfio.h"\
-	
 
-"$(INTDIR)\mod_unique_id.obj" : $(SOURCE) $(DEP_CPP_MOD_U) "$(INTDIR)"
+"$(INTDIR)\mod_unique_id.obj" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 

@@ -48,47 +48,45 @@ CLEAN :"ApacheCore - Win32 ReleaseCLEAN"
 !ELSE 
 CLEAN :
 !ENDIF 
-	-@erase "$(INTDIR)\Apache.idb"
 	-@erase "$(INTDIR)\apache.res"
+	-@erase "$(INTDIR)\Apache_src.idb"
+	-@erase "$(INTDIR)\Apache_src.pdb"
 	-@erase "$(INTDIR)\main_win32.obj"
 	-@erase "$(OUTDIR)\Apache.exe"
-	-@erase "$(OUTDIR)\Apache.map"
+	-@erase "$(OUTDIR)\Apache.pdb"
 
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
 CPP=cl.exe
-CPP_PROJ=/nologo /MD /W3 /O2 /D "WIN32" /D "NDEBUG" /D "_CONSOLE"\
- /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\Apache" /FD /c 
-CPP_OBJS=.\Release/
-CPP_SBRS=.
+CPP_PROJ=/nologo /MD /W3 /Zi /O2 /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\Apache_src" /FD /c 
 
-.c{$(CPP_OBJS)}.obj::
+.c{$(INTDIR)}.obj::
    $(CPP) @<<
    $(CPP_PROJ) $< 
 <<
 
-.cpp{$(CPP_OBJS)}.obj::
+.cpp{$(INTDIR)}.obj::
    $(CPP) @<<
    $(CPP_PROJ) $< 
 <<
 
-.cxx{$(CPP_OBJS)}.obj::
+.cxx{$(INTDIR)}.obj::
    $(CPP) @<<
    $(CPP_PROJ) $< 
 <<
 
-.c{$(CPP_SBRS)}.sbr::
+.c{$(INTDIR)}.sbr::
    $(CPP) @<<
    $(CPP_PROJ) $< 
 <<
 
-.cpp{$(CPP_SBRS)}.sbr::
+.cpp{$(INTDIR)}.sbr::
    $(CPP) @<<
    $(CPP_PROJ) $< 
 <<
 
-.cxx{$(CPP_SBRS)}.sbr::
+.cxx{$(INTDIR)}.sbr::
    $(CPP) @<<
    $(CPP_PROJ) $< 
 <<
@@ -100,12 +98,10 @@ BSC32_FLAGS=/nologo /o"$(OUTDIR)\Apache.bsc"
 BSC32_SBRS= \
 	
 LINK32=link.exe
-LINK32_FLAGS=/nologo /subsystem:console /incremental:no\
- /pdb:"$(OUTDIR)\Apache.pdb" /map:"$(INTDIR)\Apache.map" /machine:I386\
- /out:"$(OUTDIR)\Apache.exe" 
+LINK32_FLAGS=/nologo /subsystem:console /incremental:no /pdb:"$(OUTDIR)\Apache.pdb" /debug /machine:I386 /out:"$(OUTDIR)\Apache.exe" /opt:ref 
 LINK32_OBJS= \
-	"$(INTDIR)\apache.res" \
 	"$(INTDIR)\main_win32.obj" \
+	"$(INTDIR)\apache.res" \
 	"$(OUTDIR)\ApacheCore.lib"
 
 "$(OUTDIR)\Apache.exe" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
@@ -136,48 +132,45 @@ CLEAN :"ApacheCore - Win32 DebugCLEAN"
 !ELSE 
 CLEAN :
 !ENDIF 
-	-@erase "$(INTDIR)\Apache.idb"
 	-@erase "$(INTDIR)\apache.res"
+	-@erase "$(INTDIR)\Apache_src.idb"
+	-@erase "$(INTDIR)\Apache_src.pdb"
 	-@erase "$(INTDIR)\main_win32.obj"
 	-@erase "$(OUTDIR)\Apache.exe"
-	-@erase "$(OUTDIR)\Apache.map"
 	-@erase "$(OUTDIR)\Apache.pdb"
 
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
 CPP=cl.exe
-CPP_PROJ=/nologo /MDd /W3 /GX /Zi /Od /D "WIN32" /D "_DEBUG" /D "_CONSOLE"\
- /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\Apache" /FD /c 
-CPP_OBJS=.\Debug/
-CPP_SBRS=.
+CPP_PROJ=/nologo /MDd /W3 /GX /Zi /Od /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\Apache_src" /FD /c 
 
-.c{$(CPP_OBJS)}.obj::
+.c{$(INTDIR)}.obj::
    $(CPP) @<<
    $(CPP_PROJ) $< 
 <<
 
-.cpp{$(CPP_OBJS)}.obj::
+.cpp{$(INTDIR)}.obj::
    $(CPP) @<<
    $(CPP_PROJ) $< 
 <<
 
-.cxx{$(CPP_OBJS)}.obj::
+.cxx{$(INTDIR)}.obj::
    $(CPP) @<<
    $(CPP_PROJ) $< 
 <<
 
-.c{$(CPP_SBRS)}.sbr::
+.c{$(INTDIR)}.sbr::
    $(CPP) @<<
    $(CPP_PROJ) $< 
 <<
 
-.cpp{$(CPP_SBRS)}.sbr::
+.cpp{$(INTDIR)}.sbr::
    $(CPP) @<<
    $(CPP_PROJ) $< 
 <<
 
-.cxx{$(CPP_SBRS)}.sbr::
+.cxx{$(INTDIR)}.sbr::
    $(CPP) @<<
    $(CPP_PROJ) $< 
 <<
@@ -189,12 +182,10 @@ BSC32_FLAGS=/nologo /o"$(OUTDIR)\Apache.bsc"
 BSC32_SBRS= \
 	
 LINK32=link.exe
-LINK32_FLAGS=/nologo /subsystem:console /incremental:no\
- /pdb:"$(OUTDIR)\Apache.pdb" /map:"$(INTDIR)\Apache.map" /debug /machine:I386\
- /out:"$(OUTDIR)\Apache.exe" 
+LINK32_FLAGS=/nologo /subsystem:console /incremental:no /pdb:"$(OUTDIR)\Apache.pdb" /debug /machine:I386 /out:"$(OUTDIR)\Apache.exe" 
 LINK32_OBJS= \
-	"$(INTDIR)\apache.res" \
 	"$(INTDIR)\main_win32.obj" \
+	"$(INTDIR)\apache.res" \
 	"$(OUTDIR)\ApacheCore.lib"
 
 "$(OUTDIR)\Apache.exe" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
@@ -205,23 +196,29 @@ LINK32_OBJS= \
 !ENDIF 
 
 
+!IF "$(NO_EXTERNAL_DEPS)" != "1"
+!IF EXISTS("Apache.dep")
+!INCLUDE "Apache.dep"
+!ELSE 
+!MESSAGE Warning: cannot find "Apache.dep"
+!ENDIF 
+!ENDIF 
+
+
 !IF "$(CFG)" == "Apache - Win32 Release" || "$(CFG)" == "Apache - Win32 Debug"
 SOURCE=.\os\win32\apache.rc
-DEP_RSC_APACH=\
-	".\os\win32\apache.ico"\
-	
 
 !IF  "$(CFG)" == "Apache - Win32 Release"
 
 
-"$(INTDIR)\apache.res" : $(SOURCE) $(DEP_RSC_APACH) "$(INTDIR)"
+"$(INTDIR)\apache.res" : $(SOURCE) "$(INTDIR)"
 	$(RSC) /l 0x809 /fo"$(INTDIR)\apache.res" /i "os\win32" /d "NDEBUG" $(SOURCE)
 
 
 !ELSEIF  "$(CFG)" == "Apache - Win32 Debug"
 
 
-"$(INTDIR)\apache.res" : $(SOURCE) $(DEP_RSC_APACH) "$(INTDIR)"
+"$(INTDIR)\apache.res" : $(SOURCE) "$(INTDIR)"
 	$(RSC) /l 0x809 /fo"$(INTDIR)\apache.res" /i "os\win32" /d "_DEBUG" $(SOURCE)
 
 
@@ -231,14 +228,12 @@ DEP_RSC_APACH=\
 
 "ApacheCore - Win32 Release" : 
    cd "."
-   $(MAKE) /$(MAKEFLAGS) /F ".\ApacheCore.mak" CFG="ApacheCore - Win32 Release"\
- 
+   $(MAKE) /$(MAKEFLAGS) /F ".\ApacheCore.mak" CFG="ApacheCore - Win32 Release" 
    cd "."
 
 "ApacheCore - Win32 ReleaseCLEAN" : 
    cd "."
-   $(MAKE) /$(MAKEFLAGS) CLEAN /F ".\ApacheCore.mak"\
- CFG="ApacheCore - Win32 Release" RECURSE=1 
+   $(MAKE) /$(MAKEFLAGS) /F ".\ApacheCore.mak" CFG="ApacheCore - Win32 Release" RECURSE=1 CLEAN 
    cd "."
 
 !ELSEIF  "$(CFG)" == "Apache - Win32 Debug"
@@ -250,8 +245,7 @@ DEP_RSC_APACH=\
 
 "ApacheCore - Win32 DebugCLEAN" : 
    cd "."
-   $(MAKE) /$(MAKEFLAGS) CLEAN /F ".\ApacheCore.mak"\
- CFG="ApacheCore - Win32 Debug" RECURSE=1 
+   $(MAKE) /$(MAKEFLAGS) /F ".\ApacheCore.mak" CFG="ApacheCore - Win32 Debug" RECURSE=1 CLEAN 
    cd "."
 
 !ENDIF 
