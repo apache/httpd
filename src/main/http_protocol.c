@@ -909,7 +909,7 @@ char *make_allow(request_rec *r)
 {
     int allowed = r->allowed;
 
-    return 2 + pstrcat(r->pool, (allowed & (1 << M_GET)) ? ", GET" : "",
+    return 2 + pstrcat(r->pool, (allowed & (1 << M_GET)) ? ", GET, HEAD" : "",
 		       (allowed & (1 << M_POST)) ? ", POST" : "",
 		       (allowed & (1 << M_PUT)) ? ", PUT" : "",
 		       (allowed & (1 << M_DELETE)) ? ", DELETE" : "",
