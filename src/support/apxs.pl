@@ -118,6 +118,7 @@ my @opt_L = ();
 my @opt_l = ();
 my @opt_W = ();
 my @opt_S = ();
+my $opt_e = 0;
 my $opt_i = 0;
 my $opt_a = 0;
 my $opt_A = 0;
@@ -195,15 +196,16 @@ sub usage {
     print STDERR "               [-I <incdir>] [-L <libdir>] [-l <libname>] [-Wc,<flags>]\n";
     print STDERR "               [-Wl,<flags>] <files> ...\n";
     print STDERR "       apxs -i [-S <var>=<val>] [-a] [-A] [-n <modname>] <dsofile> ...\n";
+    print STDERR "       apxs -e [-S <var>=<val>] [-a] [-A] [-n <modname>] <dsofile> ...\n";
     exit(1);
 }
 
 #   option handling
 my $rc;
-($rc, @ARGV) = &Getopts("qn:gco:I+D+L+l+W+S+iaA", @ARGV);
+($rc, @ARGV) = &Getopts("qn:gco:I+D+L+l+W+S+eiaA", @ARGV);
 &usage if ($rc == 0);
 &usage if ($#ARGV == -1 and not $opt_g);
-&usage if (not $opt_q and not ($opt_g and $opt_n) and not $opt_i and not $opt_c);
+&usage if (not $opt_q and not ($opt_g and $opt_n) and not $opt_i and not $opt_c and not $opt_e);
 
 #   argument handling
 my @args = @ARGV;
@@ -396,12 +398,12 @@ if ($opt_c) {
     &execute_cmds(@cmds);
 
     #   allow one-step compilation and installation
-    if ($opt_i) {
+    if ($opt_i or $opt_e) {
         @args = ( $dso_file );
     }
 }
 
-if ($opt_i) {
+if ($opt_i or $opt_e) {
     ##
     ##  SHARED OBJECT INSTALLATION
     ##
@@ -419,8 +421,10 @@ if ($opt_i) {
         }
         my $t = $f;
         $t =~ s|^.+/([^/]+)$|$1|;
-        push(@cmds, "cp $f $CFG_LIBEXECDIR/$t");
-        push(@cmds, "chmod 755 $CFG_LIBEXECDIR/$t");
+        if ($opt_i) {
+	    push(@cmds, "cp $f $CFG_LIBEXECDIR/$t");
+	    push(@cmds, "chmod 755 $CFG_LIBEXECDIR/$t");
+        }
 
         #   determine module symbolname and filename
         my $filename = '';

@@ -111,6 +111,22 @@ apxs \- APache eXtenSion tool
 .B \-A
 ]
 .IR dsofile " ..."
+
+.B apxs
+.B \-e
+[
+.BI \-S " name=value
+]
+[
+.BI \-n " modname"
+]
+[
+.B \-a
+]
+[
+.B \-A
+]
+.IR dsofile " ..."
 .PP
 .SH DESCRIPTION
 .B apxs
@@ -306,7 +322,7 @@ This option passes
 as additional flags to the linker command.
 Use this to add local linker-specific options.
 .PP
-DSO installation options:
+DSO installation and configuration options:
 .TP 12
 .B \-i
 This indicates the installation operation and installs one or more
@@ -331,6 +347,17 @@ but the created
 directive is
 prefixed with a hash sign (#), i.e. the module is
 just prepared for later activation but initially disabled. 
+.TP 12
+.B \-e
+This indicates the editing operation, which can be used with the
+.B \-a
+and
+.B \-A
+options similarly to the
+.B \-i
+operation to edit Apache's
+.B httpd.conf
+configuration file without attempting to install the module.
 .PD
 .SH EXAMPLES
 Assume you have an Apache module named mod_foo.c available which should extend
