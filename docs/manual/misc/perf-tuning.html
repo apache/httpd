@@ -209,12 +209,12 @@ consider tuning these settings.  Use the <CODE>mod_status</CODE> output
 as a guide.
 
 <P>Related to process creation is process death induced by the
-<CODE>MaxRequestsPerChild</CODE> setting.  By default this is 30, which
-is probably far too low unless your server is using a module such as
-<CODE>mod_perl</CODE> which causes children to have bloated memory
-images.  If your server is serving mostly static pages then consider
-raising this value to something like 10000.  The code is robust enough
-that this shouldn't be a problem.
+<CODE>MaxRequestsPerChild</CODE> setting.  By default this is 0, which
+means that there is no limit to the number of requests handled
+per child. If your configuration currently has this set to some
+very low number, such as 30, you may want to bump this up significantly.
+If you are running SunOS or an old version of Solaris, limit this
+to 10000 or so because of memory leaks.
 
 <P>When keep-alives are in use, children will be kept busy
 doing nothing waiting for more requests on the already open

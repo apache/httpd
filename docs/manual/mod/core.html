@@ -1998,6 +1998,10 @@ number of processes when the server load reduces.
 
 <P>This directive has no effect on Win32.
 
+<P><STRONG>NOTE:</STRONG> For <EM>KeepAlive</EM> requests, only the first
+request is counted towards this limit. In effect, it changes the
+behavior to limit the number of <EM>connections</EM> per child.
+
 <P><HR>
 
 <H2><A NAME="maxspareservers">MaxSpareServers directive</A></H2>
