@@ -1,5 +1,8 @@
 Changes with Apache 1.3b1
 
+  *) PORT: Support for Atari MINT.
+     [Jan Paul Schmidt <Jan.P.Schmidt@mni.fh-giessen.de>]
+
   *) When booting, apache will now detach itself from stdin, stdout,
      and stderr.  stderr will not be detached until after the config
      files have been read so you will be able to see initial error

@@ -67,7 +67,19 @@
 #endif
 
 /* Define one of these according to your system. */
-#if defined(MPE)
+#if defined(MINT)
+typedef int rlim_t;
+#define HAVE_SYS_RESOURCE_H
+#define JMP_BUF sigjmp_buf
+#define NO_LONG_DOUBLE
+#define USE_FLOCK_SERIALIZED_ACCEPT
+#define _BSD_SOURCE
+#define EAGAIN EACCESS
+int initgroups (char *, int);     
+char *crypt (const char *pw, const char *salt);
+int gethostname (char *name, int namelen);
+
+#elif defined(MPE)
 #include <sys/times.h>
 #define NO_SETSID
 #define NO_KILLPG

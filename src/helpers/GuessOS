@@ -56,6 +56,9 @@ fi
 # Now we simply scan though... In most cases, the SYSTEM info is enough
 #
 case "${SYSTEM}:${RELEASE}:${VERSION}:${MACHINE}" in
+    MiNT:*)
+        echo "m68k-atari-mint"; exit 0
+	;;
     A/UX:*)
 	echo "m68k-apple-aux3"; exit 0
 	;;

@@ -117,6 +117,10 @@
 #endif
 
 
+#ifdef MINT
+long _stksize = 32768;
+#endif
+
 #ifdef __EMX__
     /* Add MMAP style functionality to OS/2 */
 #ifdef HAVE_MMAP
@@ -3808,11 +3812,7 @@ void child_sub_main(int child_num, int srv,
 		    int csd, int dupped_csd,
 		    int requests_this_child, pool *pchild)
 {
-#if defined(UW)
-    size_t clen;
-#else
-    int clen;
-#endif
+    NET_SIZE_T clen;
     struct sockaddr sa_server;
     struct sockaddr sa_client;
 

@@ -163,6 +163,12 @@ SHELL="/bin/sh"
 OSDIR="os/unix"
 
 case "$PLAT" in
+    *mint)
+        OS="MiNT"
+        CFLAGS="-DMINT"
+        LIBS="$LIBS -lportlib -lsocket"
+        DEF_WANTHSREGEX=yes
+        ;;
     *MPE/iX*)
         OS='MPE/iX'
 	CFLAGS="$CFLAGS -DMPE -D_POSIX_SOURCE -D_SOCKET_SOURCE"
