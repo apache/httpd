@@ -49,14 +49,14 @@ BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
 LINK32=link.exe
-# ADD BASE LINK32 kernel32.lib advapi32.lib wsock32.lib ws2_32.lib /nologo /subsystem:console /map /machine:I386
-# ADD LINK32 kernel32.lib advapi32.lib wsock32.lib ws2_32.lib /nologo /subsystem:console /map /debug /debugtype:both /machine:I386 /pdbtype:sept
+# ADD BASE LINK32 kernel32.lib advapi32.lib wsock32.lib ws2_32.lib /nologo /subsystem:console /machine:I386
+# ADD LINK32 kernel32.lib advapi32.lib wsock32.lib ws2_32.lib /nologo /subsystem:console /debug /debugtype:both /machine:I386 /pdbtype:sept
 # Begin Custom Build - Extracting .dbg symbols from $(InputPath)
 InputPath=.\Release\htdigest.so
 SOURCE="$(InputPath)"
 
 ".\Release\htdigest.dbr" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	rebase -q -b 0x00400000 -x ".\Release" $(InputPath)
+	rebase -q -p -b 0x00400000 -x ".\Release" $(InputPath)
 	echo rebased > ".\Release\htdigest.dbr"
 
 # End Custom Build
@@ -82,8 +82,8 @@ BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
 LINK32=link.exe
-# ADD BASE LINK32 kernel32.lib advapi32.lib wsock32.lib ws2_32.lib /nologo /subsystem:console /incremental:no /map /debug /machine:I386
-# ADD LINK32 kernel32.lib advapi32.lib wsock32.lib ws2_32.lib /nologo /subsystem:console /incremental:no /map /debug /machine:I386
+# ADD BASE LINK32 kernel32.lib advapi32.lib wsock32.lib ws2_32.lib /nologo /subsystem:console /incremental:no /debug /machine:I386
+# ADD LINK32 kernel32.lib advapi32.lib wsock32.lib ws2_32.lib /nologo /subsystem:console /incremental:no /debug /machine:I386
 
 !ENDIF 
 
