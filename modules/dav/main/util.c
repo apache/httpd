@@ -404,6 +404,7 @@ DAV_DECLARE(dav_xmlns_info *) dav_xmlns_create(apr_pool_t *pool)
 {
     dav_xmlns_info *xi = apr_pcalloc(pool, sizeof(*xi));
 
+    xi->pool = pool;
     xi->uri_prefix = apr_hash_make(pool);
     xi->prefix_uri = apr_hash_make(pool);
 
