@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="iso-2022-jp"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
-<!-- English Revision: 105989 (outdated: 106803) -->
+<!-- English Revision: 106803 -->
 
 <!--
  Copyright 2002-2004 The Apache Software Foundation
@@ -50,7 +50,7 @@
     その子プロセスが一つずつリクエストを処理します。それぞれの子プロセスは、
     生存期間中に複数のリクエストを扱うことができます。
     この議論では子プロセス間では一切データを共有しないことにします。
-    以後、この子プロセスのことを httpd プロセスと呼びます。</p>
+    以後、この子プロセスのことを <dfn>httpd プロセス</dfn> と呼びます。</p>
 
     <p>あなたのウェブサイトにはあなたが管理するいくつかのマシンがあるとします。
     それらをまとめてクラスタと呼ぶことにします。それぞれのマシンは複数の

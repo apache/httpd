@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='iso-2022-jp' ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
-<!-- English Revision: 105989 (outdated: 106803) -->
+<!-- English Revision: 106803 -->
 
 <!--
  Copyright 2002-2004 The Apache Software Foundation
@@ -390,12 +390,12 @@
 
       <p>suexec を使っているかどうかを調べためには <code>apachectl
       -V</code> を実行して、<code>SUEXEC_BIN</code> の場所を調べてください。
-      Apache がそこに suexec のバイナリを発見した場合は、suexec が
+      Apache がそこに <program>suexec</program> のバイナリを発見した場合は、suexec が
       使用されます。</p>
 
       <p>suexec を完全に理解していない限り、使うべきではありません。
       suexec を無効にするには、<code>SUEXEC_BIN</code> から指されている
-      <code>suexec</code> バイナリを削除 (か名前を変更) するだけです。
+      <program>suexec</program> バイナリを削除 (か名前を変更) するだけです。
       <a href="../suexec.html">suexec</a> を読んだ後で、まだそれを
       使いたいのであれば、<code>suexec -V</code> を実行して suexec の
       ログファイルの位置を調べ、そのログファイルを使ってポリシー違反を

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="iso-2022-jp"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
-<!-- English Revision: 105989 (outdated: 106803) -->
+<!-- English Revision: 106803 -->
 
 <!--
  Copyright 2004 The Apache Software Foundation
@@ -127,7 +127,7 @@
       指定できます。
 
       <note type="warning"><title>セキュリティ:</title>
-      <p>プログラムを使う場合、そのプログラムは httpd を起動したユーザで
+      <p>プログラムを使う場合、そのプログラムは <program>httpd</program> を起動したユーザで
       実行されます。つまり、サーバが root で実行された場合は root で
       実行されるということです。プログラムが安全であるか、より権限の少ない
       ユーザに切り替えるようになっていることを確かめてください。</p>

@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='iso-2022-jp' ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
-<!-- English Revision: 105989 (outdated: 106803) -->
+<!-- English Revision: 106803 -->
 
 <!--
  Copyright 2003-2004 The Apache Software Foundation
@@ -113,8 +113,7 @@
     <code>/usr/local/apache/passwd</code>
     などに置いた方が良いでしょう。</p>
 
-    <p>ファイルを作るためには、Apache 付属の <a
-    href="../programs/htpasswd.html">htpasswd</a> 
+    <p>ファイルを作るためには、Apache 付属の <program>htpasswd</program> 
     を使います。このコマンドは Apache をどこにインストールしようとも、
     インストールディレクトリの <code>bin</code> 
     ディレクトリ以下に置かれます。ファイルを作るには、次のように
@@ -124,7 +123,7 @@
       htpasswd -c /usr/local/apache/passwd/passwords rbowen
     </example>
 
-    <p><code>htpasswd</code> は、パスワードを要求し、その後
+    <p><program>htpasswd</program> は、パスワードを要求し、その後
     確認のためにもう一度入力するように要求してきます。</p>
 
     <example>
@@ -134,7 +133,7 @@
       Adding password for user rbowen
     </example>
 
-    <p>もし <code>htpasswd</code> がパスの中に入っていない場合は、
+    <p>もし <program>htpasswd</program> がパスの中に入っていない場合は、
     もちろん、実行するためにプログラムまでのフルパスを
     タイプする必要があります。私のサーバであれば、
     <code>/usr/local/apache/bin/htpasswd</code>
@@ -195,7 +194,7 @@
     クライアントは再びパスワードを尋ねる必要があります。</p>
 
     <p><directive module="mod_authn_file">AuthUserFile</directive>
-    ディレクティブは <code>htpasswd</code> で作った
+    ディレクティブは <program>htpasswd</program> で作った
     パスワードファイルへのパスを設定します。
     ユーザ数が多い場合は、リクエスト毎のユーザの認証のための
     プレーンテキストの探索が非常に遅くなることがあります。
@@ -203,8 +202,7 @@
     保管することもできます。
     <module>mod_authn_dbm</module> モジュールが
     <directive module="mod_authn_dbm">AuthDBMUserFile</directive>
-    ディレクティブを提供します。これらのファイルは <a
-    href="../programs/dbmmanage.html">dbmmanage</a>
+    ディレクティブを提供します。これらのファイルは <program >dbmmanage</program>
     プログラムで作成したり操作したりできます。
     <a href="http://modules.apache.org/">Apache 
     モジュールデータベース</a>中にあるサードパーティー製の

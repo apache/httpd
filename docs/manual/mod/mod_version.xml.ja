@@ -62,7 +62,7 @@
 <override>All</override>
 
 <usage>
-    <p><directive type="section">IfVersion</directive> は httpd のバージョン
+    <p><directive type="section">IfVersion</directive> は <program>httpd</program> のバージョン
     が基準を満たしたときにのみ実行させたいディレクティブを囲みます。
     通常の (数値) 比較のときは <var>version</var> 引数は
     <code><var>major</var>[.<var>minor</var>[.<var>patch</var>]]</code> という

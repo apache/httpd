@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="iso-2022-jp"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
-<!-- English Revision: 105989 (outdated: 106803) -->
+<!-- English Revision: 106803 -->
 
 <!--
  Copyright 2002-2004 The Apache Software Foundation
@@ -30,8 +30,7 @@
 
 
 <summary>
-    <p>このモジュールと <a
-    href="../programs/suexec.html">suexec サポートプログラム</a>
+    <p>このモジュールと <program>suexec</program> サポートプログラム
     により、CGI スクリプトが指定されたユーザとグループで
     実行されるようにできます。</p>
 </summary>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="iso-2022-jp"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
-<!-- English Revision: 105989 (outdated: 106803) -->
+<!-- English Revision: 106803 -->
 
 <!--
  Copyright 2002-2004 The Apache Software Foundation
@@ -30,7 +30,7 @@
 <summary>
     <p>このモジュールにより CGI スクリプトと SSI
     ページに適用される環境変数を制御することができるようになります。
-    環境変数は httpd プロセスを起動したシェルから渡されます。また、
+    環境変数は <program>httpd</program> プロセスを起動したシェルから渡されます。また、
     設定ファイルで環境変数を設定したり、削除したりすることができます。
     </p>
 </summary>
@@ -48,7 +48,7 @@
 
 <usage>
 
-    <p>httpd プロセスを起動したシェルの環境から CGI スクリプトと
+    <p><program>httpd</program> プロセスを起動したシェルの環境から CGI スクリプトと
     SSI ページに渡す環境変数を一つ以上指定します。</p>
 
     <example><title>例</title>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="iso-2022-jp"?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.ja.xsl"?>
-<!-- English Revision: 105989 (outdated: 106803) -->
+<!-- English Revision: 106803 -->
 
 <!--
  Copyright 2002-2004 The Apache Software Foundation
@@ -34,17 +34,17 @@
     これらのプラットホームでの使用方法をご覧下さい。</p>
 </summary>
 
-<seealso><a href="programs/httpd.html">httpd</a></seealso>
-<seealso><a href="programs/apachectl.html">apachectl</a></seealso>
+<seealso><program>httpd</program></seealso>
+<seealso><program>apachectl</program></seealso>
 
 <section id="introduction"><title>イントロダクション</title>
 
     <p>Apache を停止したり再起動したりするためには、実行されている
-    <code>httpd</code> プロセスにシグナルを送る必要があります。
+    <program>httpd</program> プロセスにシグナルを送る必要があります。
     シグナルを送るには二つの方法があります。
     一つ目はプロセスに直接シグナルを送る unix の <code>kill</code>
     コマンドを使用する方法です。
-    システムを見ればたくさんの <code>httpd</code> が
+    システムを見ればたくさんの <program>httpd</program> が
     実行されているのに気が付くでしょうが、シグナルを送るのは
     親プロセスだけで、それ以外の個々のプロセスには
     シグナルを送らないで下さい。その親プロセスの pid は
@@ -62,17 +62,15 @@
 
 <example>kill -TERM `cat /usr/local/apache2/logs/httpd.pid`</example>
 
-    <p><code>httpd</code> プロセスにシグナルを送る 2 番目の方法は
+    <p><program>httpd</program> プロセスにシグナルを送る 2 番目の方法は
     <code>-k</code> というコマンドライン引数を使用することです。
     下で説明されているように、<code>stop</code>, <code>restart</code>, 
     <code>graceful</code> を指定できます。
-    これらは <a href="programs/httpd.html">httpd</a> の引数ですが、
-    制御用のスクリプト <a href="programs/apachectl.html">apachectl</a> を
-    使うことをお薦めします。<a
-    href="programs/apachectl.html">apachectl</a> はそれらの引数をそのまま
-    <code>httpd</code> に渡します。</p>
+    これらは <program>httpd</program> の引数ですが、
+    制御用のスクリプト <program>apachectl</program> はそれらの引数をそのまま
+    <program>httpd</program> に渡します。</p>
 
-    <p><code>httpd</code> にシグナルを送った後、
+    <p><program>httpd</program> にシグナルを送った後、
     実行状況を次のコマンドで読むことができます:</p>
 
 <example>tail -f /usr/local/apache2/logs/error_log</example>
@@ -165,13 +163,13 @@
     -- サーバは listen するポートにバインドできないかもしれません。
     再起動する前に、設定ファイルの構文を <code>-t</code>
     コマンドライン引数
-    (<a href="programs/httpd.html">httpd</a> をご覧下さい)
+    (<program>httpd</program> をご覧下さい)
     を使って検証することができます。
     設定ファイルの意味的な内容を構文と同様に検証したい場合は、
-    非 root ユーザで <code>httpd</code> を起動しようとすればわかります。
+    非 root ユーザで <program>httpd</program> を起動しようとすればわかります。
     もしエラーがなければ、ソケットやログを開こうとして
     root でないため
-    (もしくは実行中の <code>httpd</code>
+    (もしくは実行中の <program>httpd</program>
     が既に必要なポートにバインドしているため)
     に失敗するでしょう。
     これ以外の理由で起動に失敗したのであれば、

@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='iso-2022-jp' ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.ja.xsl"?>
-<!-- English Revision: 105989 (outdated: 106803) -->
+<!-- English Revision: 106803 -->
 
 <!--
  Copyright 2002-2004 The Apache Software Foundation
@@ -143,18 +143,17 @@
 
       <dt><a href="http://www.perl.org/">Perl 5</a>
       [オプション]</dt>
-      <dd>提供されているスクリプト幾つか、例えば <a
-      href="programs/apxs.html">apxs</a> や <a
-      href="programs/dbmmanage.html">dbmmanage</a> は
+      <dd>提供されているスクリプト幾つか、例えば <program>apxs</program> や
+      <program>dbmmanage</program> は
       Perl で書かれているので、Perl 
       5 インタプリタが必要になります (5.003 以降)。
-      "configure"スクリプトでこのようなインタプリタが見つからなくても、
+      <program>configure</program> スクリプトでこのようなインタプリタが見つからなくても、
       別に不具合はありません。もちろん、Apache 
       2.0 のコンパイルとインストールはできます。
       これらのサポートスクリプトが使えなくなるだけです。
       Perl インタプリタを複数インストールしている場合 (ベンダーの Perl
       4 と自分で入れた Perl 5 がある場合など) は、
-      --with-perl オプション (下記参照) を使って ./configure
+      --with-perl オプション (下記参照) を使って <program>configure</program>
       が適切なものを確実に選ぶようにすると良いでしょう。</dd>
     </dl>
 </section>
@@ -210,7 +209,7 @@ $ tar xvf httpd-2_1_<em>NN</em>.tar
     個人的な要求に合うように Apache
     ソースツリーを設定することです。
     これは配布ディレクトリのルートディレクトリにある、
-    <code><a href="programs/configure.html">configure</a></code>
+    <program>configure</program>
     スクリプトで行ないます。
      (Apache ソースツリーの CVS
     版をダウンロードした開発者は、次のステップに進む前に
@@ -221,7 +220,7 @@ $ tar xvf httpd-2_1_<em>NN</em>.tar
 
     <p>デフォルトオプションを使ってソースツリーを全て設定する
     のであれば、単純に <code>./configure</code> とタイプしてください。
-    デフォルトオプションを変更できるように、<code>configure</code>
+    デフォルトオプションを変更できるように、<program>configure</program>
     には様々な変数やコマンドラインオプションが用意されています。</p>
 
     <p>最も重要なオプションは、Apache がこの後でインストールされる位置
@@ -248,13 +247,13 @@ $ tar xvf httpd-2_1_<em>NN</em>.tar
     同様に、<code>--disable-<var>module</var></code> オプションで
     Base モジュールを無効化することもできます。
     これらのオプションを使っているときに、もし指定したモジュールが存在しなくても
-    <code>configure</code> は警告を上げることなく、単純にオプションを
+    <program>configure</program> は警告を上げることなく、単純にオプションを
     無視することに気をつけてください。</p>
 
-    <p>上記に加えて、<code>configure</code> スクリプトに、
+    <p>上記に加えて、<program>configure</program> スクリプトに、
     コンパイラ、ライブラリ、ヘッダファイルの位置を追加情報として渡す
     必要がある場合があります。このような場合には、環境変数あるいは
-    コマンドラインオプションで <code>configure</code> に渡します。
+    コマンドラインオプションで <program>configure</program> に渡します。
     詳細に関しては <a 
     href="programs/configure.html">configure マニュアルページ</a>
     をご覧ください。</p>
@@ -273,11 +272,11 @@ $ tar xvf httpd-2_1_<em>NN</em>.tar
        --enable-speling=shared
 </example>
 
-    <p><code>configure</code> を実行したら、システムの機能を
+    <p><program>configure</program> を実行したら、システムの機能を
     テストしたり、後でサーバをコンパイルするために必要な Makefile
     を生成したりするのに数分間かかるでしょう。</p>
 
-    <p>個々の <code>configure</code> オプションの詳細に関しては
+    <p>個々の <program>configure</program> オプションの詳細に関しては
     <a href="programs/configure.html">configure マニュアルページ</a>
     をご覧ください。</p>
 </section>
@@ -355,10 +354,10 @@ $ tar xvf httpd-2_1_<em>NN</em>.tar
     (例えば 2.0.55 から 2.0.57 へ) は、もっと簡単です。
     <code>make install</code> を実行しても今あるドキュメント、
     ログファイル、設定ファイルは上書きされません。
-    さらに、マイナーバージョン間では <code>configure</code> オプション、
+    さらに、マイナーバージョン間では <program>configure</program> オプション、
     実行時の設定、モジュール API に不整合が起こらないように、
     開発者は最大限の努力をしています。
-    大抵の場合、同一の <code>configure</code> コマンドライン、
+    大抵の場合、同一の <program>configure</program> コマンドライン、
     同一の設定ファイル、モジュール全てが正常に動作するはずです。
     (2.0.41 以降ではそのようになっています。それ以前のバージョンには
     不整合が存在します。)</p>
@@ -366,7 +365,7 @@ $ tar xvf httpd-2_1_<em>NN</em>.tar
     <p>前回のインストール時のソースツリーが残されているのであれば、
     アップグレードはさらに簡単です。古いソースツリーのルートに存在する
     <code>config.nice</code> ファイルには、前回ソースツリーを設定した時の
-    <code>configure</code> コマンドラインが入っています。
+    <program>configure</program> コマンドラインが入っています。
     次のバージョンにアップグレードする場合は、<code>config.nice</code>
     ファイルを新しいバージョンのソースツリーにコピーし、
     それを編集し必要な変更を行なって、次のように実行します。</p>

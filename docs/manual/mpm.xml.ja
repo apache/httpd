@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='iso-2022-jp' ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.ja.xsl"?>
-<!-- English Revision: 105989 (outdated: 106803) -->
+<!-- English Revision: 106803 -->
 
 <!--
  Copyright 2002-2004 The Apache Software Foundation
@@ -93,7 +93,7 @@ Apache HTTP サーバでどのように使用されるかについて解説しています。</p>
     Apache は、MPM が設定中に選択されて Apache 内部に組み込まれた場合の方が
     常により良いパフォーマンスを発揮します。</p>
 
-    <p>望みの MPM を実際に選ぶためには、./configure スクリプトで
+    <p>望みの MPM を実際に選ぶためには、<program>configure</program> スクリプトで
     --with-mpm= <em>NAME</em> 引数を用いてください。
     <em>NAME</em> は望みの MPM の名前です。</p>
 

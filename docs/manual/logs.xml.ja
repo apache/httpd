@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="iso-2022-jp"?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.ja.xsl"?>
-<!-- English Revision: 105989 (outdated: 106803) -->
+<!-- English Revision: 106803 -->
 
 <!--
  Copyright 2002-2004 The Apache Software Foundation
@@ -209,7 +209,7 @@
 	<code>On</code> の場合は、サーバはホスト名を調べて、
 	IP アドレスが書かれているところに記録します。しかし、この設定は
 	サーバをかなり遅くするので、あまりお勧めできません。
-	そうではなく、<a href="programs/logresolve.html">logresolve</a> の
+	そうではなく、<program>logresolve</program> の
 	ようなログの後処理を行なうプログラムでホスト名を調べるのが良いでしょう。
 	ここに報告される IP アドレスは必ずしもユーザが使っているマシンの
 	ものであるとは限りません。ユーザとサーバの間にプロキシサーバが
@@ -456,8 +456,8 @@
     ですから、プログラムを簡単で安全に保つことが非常に重要です。</p>
 
     <p>パイプ経由のログの重要な利用法は、サーバの再起動なしでログの交替を
-    することです。Apache HTTP サーバにはこのための  <a
-    href="programs/rotatelogs.html">rotatelogs</a> と呼ばれる簡単な
+    することです。Apache HTTP サーバにはこのための  <program
+    >rotatelogs</program> と呼ばれる簡単な
     プログラムが付属しています。たとえば、24 時間毎にログを交替させるには、
     以下のものを使うことができます:</p>
 
