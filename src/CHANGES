@@ -1,5 +1,15 @@
 Changes with Apache 1.3.3
 
+  *) Added a complete implementation of the Expect header field as
+     specified in rev-05 of HTTP/1.1.  Disabled the 100 Continue
+     response when we already know the final status, which is mighty
+     useful for PUT responses that result in 302 or 401. [Roy Fielding]
+
+  *) Remove extra trailing whitespace from the getline results as part
+     of the protocol processing, which is extra nice because it works
+     between continuation lines, is almost no cost in the normal case
+     of no extra whitespace, and saves memory. [Roy Fielding]
+
   *) Added new HTTP status codes and default response bodies from the
      revised HTTP/1.1 (307, 416, 417), WebDAV (102, 207, 422, 423), and 
      HTTP Extension Framework (510) specifications.  Did not add the

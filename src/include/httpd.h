@@ -752,6 +752,13 @@ struct request_rec {
  * that way, a sub request's list can (temporarily) point to a parent's list
  */
     const struct htaccess_result *htaccess;
+
+/* Things placed at the end of the record to avoid breaking binary
+ * compatibility.  It would be nice to remember to reorder the entire
+ * record to improve 64bit alignment the next time we need to break
+ * binary compatibility for some other reason.
+ */
+    unsigned expecting_100;     /* is client waiting for a 100 response? */
 };
 
 

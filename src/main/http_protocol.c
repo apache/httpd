@@ -551,6 +551,17 @@ static int getline(char *s, int n, BUFF *in, int fold)
         total += retval;        /* and how long s has become               */
 
         if (*pos == '\n') {     /* Did we get a full line of input?        */
+            /*
+             * Trim any extra trailing spaces or tabs except for the first
+             * space or tab at the beginning of a blank string.  This makes
+             * it much easier to check field values for exact matches, and
+             * saves memory as well.  Terminate string at end of line.
+             */
+            while (pos > (s + 1) && (*(pos - 1) == ' ' || *(pos - 1) == '\t')) {
+                --pos;          /* trim extra trailing spaces or tabs      */
+                --total;        /* but not one at the beginning of line    */
+                ++n;
+            }
             *pos = '\0';
             --total;
             ++n;
@@ -767,8 +778,6 @@ static void get_mime_headers(request_rec *r)
         while (*value == ' ' || *value == '\t')
             ++value;            /* Skip to start of value   */
 
-        /* XXX: should strip trailing whitespace as well */
-
 	ap_table_addn(tmp_headers, copy, value);
     }
 
@@ -778,8 +787,9 @@ static void get_mime_headers(request_rec *r)
 request_rec *ap_read_request(conn_rec *conn)
 {
     request_rec *r;
-    int access_status;
     pool *p;
+    const char *expect;
+    int access_status;
 
     p = ap_make_sub_pool(conn->pool);
     r = ap_pcalloc(p, sizeof(request_rec));
@@ -846,6 +856,23 @@ request_rec *ap_read_request(conn_rec *conn)
     }
     else {
         ap_kill_timeout(r);
+
+        if (r->header_only) {
+            /*
+             * Client asked for headers only with HTTP/0.9, which doesn't send
+             * headers! Have to dink things just to make sure the error message
+             * comes through...
+             */
+            ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r,
+                          "client sent invalid HTTP/0.9 request: HEAD %s",
+                          r->uri);
+            r->header_only = 0;
+            r->status = HTTP_BAD_REQUEST;
+            ap_send_error_response(r, 0);
+            ap_bflush(r->connection->client);
+            ap_log_transaction(r);
+            return r;
+        }
     }
 
     r->status = HTTP_OK;                         /* Until further notice. */
@@ -859,6 +886,49 @@ request_rec *ap_read_request(conn_rec *conn)
     r->per_dir_config = r->server->lookup_defaults;
 
     conn->keptalive = 0;        /* We now have a request to play with */
+
+    if ((!r->hostname && (r->proto_num >= HTTP_VERSION(1,1))) ||
+        ((r->proto_num == HTTP_VERSION(1,1)) &&
+         !ap_table_get(r->headers_in, "Host"))) {
+        /*
+         * Client sent us an HTTP/1.1 or later request without telling us the
+         * hostname, either with a full URL or a Host: header. We therefore
+         * need to (as per the 1.1 spec) send an error.  As a special case,
+         * HTTP/1.1 mentions twice (S9, S14.23) that a request MUST contain
+         * a Host: header, and the server MUST respond with 400 if it doesn't.
+         */
+        r->status = HTTP_BAD_REQUEST;
+        ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r,
+                      "client sent HTTP/1.1 request without hostname "
+                      "(see RFC2068 section 9, and 14.23): %s", r->uri);
+        ap_send_error_response(r, 0);
+        ap_bflush(r->connection->client);
+        ap_log_transaction(r);
+        return r;
+    }
+    if (((expect = ap_table_get(r->headers_in, "Expect")) != NULL) &&
+        (expect[0] != '\0')) {
+        /*
+         * The Expect header field was added to HTTP/1.1 after RFC 2068
+         * as a means to signal when a 100 response is desired and,
+         * unfortunately, to signal a poor man's mandatory extension that
+         * the server must understand or return 417 Expectation Failed.
+         */
+        if (strcasecmp(expect, "100-continue") == 0) {
+            r->expecting_100 = 1;
+        }
+        else {
+            r->status = HTTP_EXPECTATION_FAILED;
+            ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_INFO, r,
+                          "client sent an unrecognized expectation value of "
+                          "Expect: %s", expect);
+            ap_send_error_response(r, 0);
+            ap_bflush(r->connection->client);
+            (void) ap_discard_request_body(r);
+            ap_log_transaction(r);
+            return r;
+        }
+    }
 
     if ((access_status = ap_run_post_read_request(r))) {
         ap_die(access_status, r);
@@ -895,6 +965,7 @@ void ap_set_sub_req_protocol(request_rec *rnew, const request_rec *r)
     rnew->err_headers_out = ap_make_table(rnew->pool, 5);
     rnew->notes           = ap_make_table(rnew->pool, 5);
 
+    rnew->expecting_100   = r->expecting_100;
     rnew->read_length     = r->read_length;
     rnew->read_body       = REQUEST_NO_BODY;
 
@@ -1457,7 +1528,7 @@ API_EXPORT(int) ap_should_client_block(request_rec *r)
     if (r->read_length || (!r->read_chunked && (r->remaining <= 0)))
         return 0;
 
-    if (r->proto_num >= HTTP_VERSION(1,1)) {
+    if (r->expecting_100 && r->proto_num >= HTTP_VERSION(1,1)) {
         /* sending 100 Continue interim response */
         ap_bvputs(r->connection->client,
                SERVER_PROTOCOL, " ", status_lines[0], "\015\012\015\012",
@@ -1668,6 +1739,11 @@ API_EXPORT(int) ap_discard_request_body(request_rec *r)
 
     if ((rv = ap_setup_client_block(r, REQUEST_CHUNKED_PASS)))
         return rv;
+
+    /* If we are discarding the request body, then we must already know
+     * the final status code, therefore disable the sending of 100 continue.
+     */
+    r->expecting_100 = 0;
 
     if (ap_should_client_block(r)) {
         char dumpbuf[HUGE_STRING_LEN];
@@ -2266,22 +2342,26 @@ void ap_send_error_response(request_rec *r, int recursive_error)
 	    break;
 	case HTTP_RANGE_NOT_SATISFIABLE:
 	    ap_bputs("None of the range-specifier values in the Range\n"
-                     "request-header field overlap the current extent\n"
-                     "of the selected resource.\n", fd);
+	             "request-header field overlap the current extent\n"
+	             "of the selected resource.\n", fd);
 	    break;
 	case HTTP_EXPECTATION_FAILED:
-	    ap_bputs("The expectation given in the Expect request-header\n"
-                     "field could not be met by this server.\n", fd);
+	    ap_bvputs(fd, "The expectation given in the Expect request-header"
+	              "\nfield could not be met by this server.<P>\n"
+	              "The client sent<PRE>\n    Expect: ",
+	              ap_table_get(r->headers_in, "Expect"), "\n</PRE>\n"
+	              "but we only allow the 100-continue expectation.\n",
+	              NULL);
 	    break;
 	case HTTP_UNPROCESSABLE_ENTITY:
-            ap_bputs("The server understands the media type of the\n"
-                     "request entity, but was unable to process the\n"
-                     "contained instructions.\n", fd);
+	    ap_bputs("The server understands the media type of the\n"
+	             "request entity, but was unable to process the\n"
+	             "contained instructions.\n", fd);
 	    break;
 	case HTTP_LOCKED:
 	    ap_bputs("The requested resource is currently locked.\n"
-                     "The lock must be released or proper identification\n"
-                     "given before the method can be applied.\n", fd);
+	             "The lock must be released or proper identification\n"
+	             "given before the method can be applied.\n", fd);
 	    break;
 	case HTTP_SERVICE_UNAVAILABLE:
 	    ap_bputs("The server is temporarily unable to service your\n"
