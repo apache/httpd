@@ -1,14 +1,10 @@
   1.3 STATUS:
-  Last modified at [$Date: 2001/02/16 14:36:36 $]
+  Last modified at [$Date: 2001/02/16 17:31:24 $]
 
 Release:
 
     1.3.18-dev: Target t/r date Feb 18, 2001, rel date Feb 20.
-            Jim offers to t/r. We have one ShowStopper and
-	    one Proposed Patch that we should close and consider,
-	    respectively. We should not rush to add the
-	    Proposed Patch, however. Shipping 1.3.18 w/o it
-	    is a distinct possibility.
+            Jim offers to t/r. We have 2 ShowStoppers.
     1.3.17: Tagged and rolled late Jan 26, 2001
             announced Jan 29, 2001.
     1.3.16: Tagged and Rolled Jan 20, 2001.
@@ -40,9 +36,21 @@ Release:
 
 RELEASE SHOWSTOPPERS:
 
-    Martin observed a core dump because a ipaddr_chain struct contains
-    a NULL-"server" pointer when being dereferenced by invoking "httpd -S".
-    See Message-ID: <20010213231854.A20932@deejai2.mch.fsc.net>
+    * Martin observed a core dump because a ipaddr_chain struct contains
+      a NULL-"server" pointer when being dereferenced by invoking "httpd -S".
+      See Message-ID: <20010213231854.A20932@deejai2.mch.fsc.net>
+      Status: Others attempting to duplicate
+
+    * Segfault potential when forming a URI string from a
+      uri_components structure, if the structure lacks a scheme.
+      There are 3 proposed patches, one of which must be folded
+      into 1.3.18. The 1st two, which are quick-and-dirty can be
+      seen at <Pine.LNX.4.31.0102081643540.160-200000@heat.dci>.
+      The last is a rewrite of ap_unparse_uri_components(), which
+      is <Pine.LNX.4.21.0102102350060.6815-200000@desktop>.
+      Status:  Fix#1: Jim +1
+               Fix#2:
+               Fix#3:
 
 RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
 
@@ -55,13 +63,6 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
       set headers too (needed by mod_auth_digest)
         Message-ID: <199907080712.JAA28269@chill.innovation.ch>
         Status:
-
-PROPOSED PATCHES:
-
-    * Rewrite of ap_unparse_uri_components() and fix of
-      ap_default_port_for_scheme().
-      Message-ID: <Pine.LNX.4.21.0102102350060.6815-200000@desktop>
-      Status: 
 
 Documentation that needs writing:
 
