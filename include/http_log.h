@@ -119,7 +119,7 @@ extern "C" {
  * Note: Client generated text streams sent back to the client MUST 
  * be escaped to prevent CSS attacks.
  */
-#define APLOG_TOCLIENT          (APLOG_LEVELMASK + 2)
+#define APLOG_TOCLIENT          ((APLOG_LEVELMASK + 1) * 2)
 
 /* normal but significant condition on startup, usually printed to stderr */
 #define APLOG_STARTUP           ((APLOG_LEVELMASK + 1) * 4) 
