@@ -65,7 +65,7 @@
 #include "http_protocol.h"
 #include "http_log.h"
 
-// temp
+/* temp */
 #include <assert.h>
 
 AP_DECLARE_DATA module tls_module;
@@ -111,7 +111,7 @@ static const char *tls_cert_file(cmd_parms *cmd, void *dummy, const char *arg)
 						    &tls_module);
     pConfig->szCertificateFile = arg;
 
-    // temp
+    /* temp */
     pConfig->szKeyFile=pConfig->szCertificateFile;
 
     return NULL;
@@ -173,11 +173,11 @@ static apr_status_t churn_output(TLSFilterCtx *pCtx)
 	}
     } while(done);
     
-    // XXX: check for errors
+    /* XXX: check for errors */
     if(pbbOutput) {
 	apr_bucket *pbkt;
 
-	// XXX: it may be possible to not always flush
+	/* XXX: it may be possible to not always flush */
 	pbkt=apr_bucket_flush_create();
 	APR_BRIGADE_INSERT_TAIL(pbbOutput,pbkt);
 	ap_pass_brigade(pCtx->pOutputFilter->next,pbbOutput);
@@ -206,12 +206,12 @@ static apr_status_t churn(TLSFilterCtx *pCtx,apr_read_type_e eReadType,apr_size_
 	apr_status_t ret;
 
 	if(APR_BUCKET_IS_EOS(pbktIn)) {
-	    // XXX: why can't I reuse pbktIn???
-	    // Write eof!
+	    /* XXX: why can't I reuse pbktIn??? */
+	    /* Write eof! */
 	    break;
 	}
 
-	// read filter
+	/* read filter */
 	ret=apr_bucket_read(pbktIn,&data,&len,eReadType);
 
 	APR_BUCKET_REMOVE(pbktIn);
@@ -220,7 +220,7 @@ static apr_status_t churn(TLSFilterCtx *pCtx,apr_read_type_e eReadType,apr_size_
 	    ret=APR_EOF;
 
 	if(len == 0) {
-	    // Lazy frickin browsers just reset instead of shutting down.
+	    /* Lazy frickin browsers just reset instead of shutting down. */
 	    if(ret == APR_EOF || ret == APR_ECONNRESET)
 		if(APR_BRIGADE_EMPTY(pCtx->pbbPendingInput))
 		    return APR_EOF;
@@ -243,7 +243,7 @@ static apr_status_t churn(TLSFilterCtx *pCtx,apr_read_type_e eReadType,apr_size_
 
 	assert(len > 0);
 
-	// write SSL
+	/* write SSL */
 	SSLStateMachine_read_inject(pCtx->pStateMachine,data,len);
 
 	n=SSLStateMachine_read_extract(pCtx->pStateMachine,buf,sizeof buf);
@@ -252,16 +252,18 @@ static apr_status_t churn(TLSFilterCtx *pCtx,apr_read_type_e eReadType,apr_size_
 	    char *pbuf;
 
 	    pbuf=apr_pmemdup(pCtx->pInputFilter->c->pool,buf,n);
-	    // XXX: should we use a heap bucket instead? Or a transient (in
-	    // which case we need a separate brigade for each bucket)?
+	    /* XXX: should we use a heap bucket instead? Or a transient (in
+	     * which case we need a separate brigade for each bucket)?
+	     */
 	    pbktOut=apr_bucket_pool_create(pbuf,n,pCtx->pInputFilter->c->pool);
 	    APR_BRIGADE_INSERT_TAIL(pCtx->pbbPendingInput,pbktOut);
 
-	    // Once we've read something, we can move to non-blocking mode (if
-	    // we weren't already).
+	    /* Once we've read something, we can move to non-blocking mode (if
+	     * we weren't already).
+	     */
 	    eReadType=APR_NONBLOCK_READ;
 
-	    // XXX: deal with EOF!
+	    /* XXX: deal with EOF! */
 	    /*	} else if(n == 0) {
 	    apr_bucket *pbktEOS=apr_bucket_create_eos();
 	    APR_BRIGADE_INSERT_TAIL(pbbInput,pbktEOS);*/
@@ -288,10 +290,10 @@ static apr_status_t tls_out_filter(ap_filter_t *f,apr_bucket_brigade *pbbIn)
 	apr_status_t ret;
 
 	if(APR_BUCKET_IS_EOS(pbktIn)) {
-	    // XXX: demote to debug
+	    /* XXX: demote to debug */
 	    ap_log_error(APLOG_MARK,APLOG_ERR,0,NULL,"Got EOS on output");
 	    SSLStateMachine_write_close(pCtx->pStateMachine);
-	    // XXX: dubious - does this always terminate? Does it return the right thing?
+	    /* XXX: dubious - does this always terminate? Does it return the right thing? */
 	    for( ; ; ) {
 		ret=churn_output(pCtx);
 		if(ret != APR_SUCCESS)
@@ -307,20 +309,20 @@ static apr_status_t tls_out_filter(ap_filter_t *f,apr_bucket_brigade *pbbIn)
 	}
 
 	if(APR_BUCKET_IS_FLUSH(pbktIn)) {
-	    // assume that churn will flush (or already has) if there's output
+	    /* assume that churn will flush (or already has) if there's output */
 	    ret=churn(pCtx,APR_NONBLOCK_READ,&zero);
 	    if(ret != APR_SUCCESS)
 		return ret;
 	    continue;
 	}
 
-	// read filter
+	/* read filter */
 	apr_bucket_read(pbktIn,&data,&len,APR_BLOCK_READ);
 
-	// write SSL
+	/* write SSL */
 	SSLStateMachine_write_inject(pCtx->pStateMachine,data,len);
 
-	// churn the state machine
+	/* churn the state machine */
 	ret=churn_output(pCtx);
 	if(ret != APR_SUCCESS)
 	    return ret;
@@ -337,15 +339,15 @@ static apr_status_t tls_in_filter(ap_filter_t *f,apr_bucket_brigade *pbbOut,
       APR_NONBLOCK_READ;
     apr_status_t ret;
 
-    // XXX: we don't currently support peek
+    /* XXX: we don't currently support peek */
     assert(eMode != AP_MODE_PEEK);
 
-    // churn the state machine
+    /* churn the state machine */
     ret=churn(pCtx,eReadType,readbytes);
     if(ret != APR_SUCCESS)
 	return ret;
 
-    // XXX: shame that APR_BRIGADE_FOREACH doesn't work here
+    /* XXX: shame that APR_BRIGADE_FOREACH doesn't work here */
     while(!APR_BRIGADE_EMPTY(pCtx->pbbPendingInput)) {
 	apr_bucket *pbktIn=APR_BRIGADE_FIRST(pCtx->pbbPendingInput);
 	APR_BUCKET_REMOVE(pbktIn);
