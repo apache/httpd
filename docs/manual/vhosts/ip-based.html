@@ -36,13 +36,22 @@ single daemon which supports all the virtual hosts.
 <p>
 Use multiple daemons when:
 <ul>
-<li>The different virtual hosts need very different httpd configurations, such
-   as different values for: <A HREF="../mod/core.html#servertype">ServerType</A>,
-   <A HREF="../mod/core.html#user">User</A>,
-   <A HREF="../mod/core.html#group">Group</A>,
-   <A HREF="../mod/mod_mime.html#typesconfig">TypesConfig</A> or
-   <A HREF="../mod/core.html#serverroot">ServerRoot</A>.
-<li>The machine does not process a very high request rate.
+<li>There are security partitioning issues, such as company1 does not want
+    anyone at company2 to be able to read their data except via the web.
+    In this case you would need two daemons, each running with different
+    <A HREF="../mod/core.html#user">User</A>,
+    <A HREF="../mod/core.html#group">Group</A>,
+    <A HREF="../mod/core.html#listen">Listen</A>, and
+    <A HREF="../mod/core.html#serverroot">ServerRoot</A> settings.
+<li>You can afford the memory and
+    <a href="../misc/descriptors.html">file descriptor requirements</a> of
+    listening to every IP alias on the machine.  It's only possible to
+    <A HREF="../mod/core.html#listen">Listen</A>
+    to the "wildcard" address, or to specific addresses.  So if you have
+    a need to listen to a specific address for whatever reason, then you
+    will need to listen to all specific addresses.  (Although one httpd
+    could listen to N-1 of the addresses, and another could listen to
+    the remaining address.)
 </ul>
 Use a single daemon when:
 <ul>
@@ -61,7 +70,7 @@ e.g.
     Listen www.smallco.com:80
 </pre>
 It is recommended that you use an IP address instead of a hostname
-(see <A HREF="../dns-caveats.html">DNS page</A>).
+(see <A HREF="../dns-caveats.html">DNS caveats</A>).
 
 <h2>Setting up a single daemon with virtual hosts</h2>
 For this case, a single httpd will service requests for the main server
@@ -95,7 +104,7 @@ e.g.
 </pre>
 
 It is recommended that you use an IP address instead of a hostname
-(see <A HREF="../dns-caveats.html">DNS page</A>).
+(see <A HREF="../dns-caveats.html">DNS caveats</A>).
 
 <P>
 
@@ -114,7 +123,7 @@ in the VirtualHost directive, with the exception of
 <A HREF="../mod/core.html#namevirtualhost">NameVirtualHost</A>.
 <P>
 <A HREF="../mod/core.html#user">User</A> and
-<A HREF="../mod/core.html#group">Group</A> maybe used inside a VirtualHost
+<A HREF="../mod/core.html#group">Group</A> may be used inside a VirtualHost
 directive if the <A HREF="../suexec.html">suEXEC wrapper</A> is used.
 <P>
 

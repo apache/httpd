@@ -21,7 +21,7 @@
 
 <h2>Name-based vs. IP-based virtual hosts</h2>
 
-<p>While the approach with IP-based virtual hosts works still very well,
+<p>While the approach with IP-based virtual hosts works very well,
 it is not the most elegant solution, because a dedicated IP address
 is needed for every virtual host and it is hard to implement on some
 machines. The <code>HTTP/1.1</code> protocol contains a method for the
@@ -55,7 +55,7 @@ code similar to the following:</p>
 <p>The notable difference between IP-based and name-based virtual host
 configuration is the
 <A HREF="../mod/core.html#namevirtualhost"><code>NameVirtualHost</code></A>
-directive which specifies any IP address that should be used as a target for
+directive which specifies an IP address that should be used as a target for
 name-based virtual hosts.
 
 <p>Of course, any additional directives can (and should) be placed
