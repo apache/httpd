@@ -388,6 +388,9 @@ static apr_status_t worker_stack_term(worker_stack *stack)
     if ((rv = apr_thread_mutex_lock(stack->mutex)) != APR_SUCCESS) {
         return rv;
     }
+    if (stack->terminated) {
+        return apr_thread_mutex_unlock(stack->mutex);
+    }
     stack->terminated = 1;
     while (stack->nelts) {
         worker_wakeup_info *wakeup = stack->stack[--stack->nelts];
@@ -571,6 +574,16 @@ static void ap_start_restart(int graceful)
 }
 
 static void sig_term(int sig)
+{
+    if (ap_my_pid == parent_pid) {
+        ap_start_shutdown();
+    }
+    else {
+        signal_threads(ST_GRACEFUL);
+    }
+}
+
+static void child_sig_term(int sig)
 {
     ap_start_shutdown();
 }
@@ -940,7 +953,9 @@ static void *worker_thread(apr_thread_t *thd, void * dummy)
                 apr_pool_clear(ptrans);
                 requests_this_child--;
             }
-            if (ap_mpm_pod_check(pod) == APR_SUCCESS) { /* selected as idle? */
+            if ((ap_mpm_pod_check(pod) == APR_SUCCESS) ||
+                (ap_my_generation !=
+                 ap_scoreboard_image->global->running_generation)) {
                 signal_threads(ST_GRACEFUL);
                 break;
             }
@@ -959,6 +974,8 @@ static void *worker_thread(apr_thread_t *thd, void * dummy)
 
     dying = 1;
     ap_scoreboard_image->parent[process_slot].quiescing = 1;
+
+    worker_stack_term(idle_worker_stack);
 
     ap_update_child_status_from_indexes(process_slot, thread_slot,
         (dying) ? SERVER_DEAD : SERVER_GRACEFUL, (request_rec *) NULL);
@@ -1224,46 +1241,8 @@ static void child_main(int child_num_arg)
          * (e.g., for MaxRequestsPerChild) it will send us SIGTERM
          */
         unblock_signal(SIGTERM);
-        apr_signal(SIGTERM, dummy_signal_handler);
-#if 0
-        /* Watch for any messages from the parent over the POD */
-        while (1) {
-            rv = ap_mpm_pod_check(pod);
-            if (rv == AP_NORESTART) {
-                /* see if termination was triggered while we slept */
-                switch(terminate_mode) {
-                case ST_GRACEFUL:
-                    rv = AP_GRACEFUL;
-                    break;
-                case ST_UNGRACEFUL:
-                    rv = AP_RESTART;
-                    break;
-                }
-            }
-            if (rv == AP_GRACEFUL || rv == AP_RESTART) {
-                /* make sure the start thread has finished; 
-                 * signal_threads() and join_workers depend on that
-                 */
-                join_start_thread(start_thread_id);
-                signal_threads(rv == AP_GRACEFUL ? ST_GRACEFUL : ST_UNGRACEFUL);
-                break;
-            }
-        }
-
-        if (rv == AP_GRACEFUL) {
-            /* A terminating signal was received. Now join each of the
-             * workers to clean them up.
-             *   If the worker already exited, then the join frees
-             *   their resources and returns.
-             *   If the worker hasn't exited, then this blocks until
-             *   they have (then cleans up).
-             */
-            join_workers(threads);
-        }
-#else
         join_start_thread(start_thread_id);
         join_workers(threads);
-#endif /* 0 */
     }
 
     free(threads);
@@ -1675,7 +1654,9 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
          * (By "gracefully" we don't mean graceful in the same sense as 
          * "apachectl graceful" where we allow old connections to finish.)
          */
-        ap_mpm_pod_killpg(pod, ap_daemons_limit);
+	if (unixd_killpg(getpgrp(), SIGTERM) < 0) {
+	    ap_log_error(APLOG_MARK, APLOG_WARNING, errno, ap_server_conf, "killpg SIGTERM");
+	}
         ap_reclaim_child_processes(1);                /* Start with SIGTERM */
 
         if (!child_fatal) {
