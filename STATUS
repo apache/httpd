@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/11/10 12:04:50 $]
+Last modified at [$Date: 2004/11/10 13:11:39 $]
 
 Release:
 
@@ -80,19 +80,19 @@ PATCHES TO BACKPORT FROM 2.1
        cache for authorization purposes only rather than authentication.  
        PR #31898
         http://www.apache.org/~bnicholes/apache_2.0_getuserdn.patch
-       +1:bnicholes, wrowe
+       +1:bnicholes, wrowe, jim
        
     *) mod_authnz_ldap: Added the directive "Requires ldap-attribute" that
        allows the module to only authorize a user if the attribute value
        specified matches the value of the user object. PR 31913
          modules/aaa/mod_authnz_ldap.c: r1.7
 	 docs/manual/mod/mod_authnz_ldap.xml: r1.3
-       +1: bnicholes, wrowe
+       +1: bnicholes, wrowe, jim
 
     *) mod_ssl: Fix an possible NULL pointer dereference in some configs.
        http://nagoya.apache.org/bugzilla/showattachment.cgi?attach_id=13182
        PR: 31848
-       +1: jorton, wrowe
+       +1: jorton, wrowe, jim
 
     *) Allow for the use of --with-module=foo:bar where the ./modules/foo
        directory is a local addition to the ./modules directory.
@@ -117,7 +117,7 @@ PATCHES TO BACKPORT FROM 2.1
        library handles special characters.
          http://issues.apache.org/bugzilla/showattachment.cgi?attach_id=12919
        PR 24437
-       +1: minfrin, wrowe
+       +1: minfrin, wrowe, jim
 
     *) Fix ap_save_brigade's handling of ENOTIMPL setaside functions.
          http://cvs.apache.org/viewcvs.cgi/httpd-2.0/server/util_filter.c?r1=1.100&r2=1.102
@@ -192,7 +192,7 @@ PATCHES TO BACKPORT FROM 2.1
        directive. PR 28553.
          modules/mappers/mod_actions.c: r1.32, r1.34
        jerenkrantz: Icky side-effect of the *t == '0' check.
-       +1: nd, jerenkrantz, wrowe
+       +1: nd, jerenkrantz, wrowe, jim
 
     *) mod_log_config: Cleanup log_header_out function to allow multiple headers
        like Set-Cookie to be logged properly. PR 27787 (2.0 + 1.3)
