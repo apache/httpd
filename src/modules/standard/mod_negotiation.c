@@ -185,6 +185,7 @@ typedef struct {
     pool *pool;
     request_rec *r;
     char *dir_name;
+    int accept_q;	/* Do any of the Accept: headers have a q-value ? */
     
     array_header *accepts;	/* accept_recs */
     array_header *accept_encodings;	/* accept_recs */
@@ -342,7 +343,10 @@ negotiation_state *parse_accept_headers (request_rec *r)
 {
     negotiation_state *new =
         (negotiation_state *)pcalloc (r->pool, sizeof (negotiation_state));
+    accept_rec *elts;
     table *hdrs = r->headers_in;
+    
+    int i;
 
     new->pool = r->pool;
     new->r = r;
@@ -354,6 +358,16 @@ negotiation_state *parse_accept_headers (request_rec *r)
     new->accept_langs =
       do_header_line (r->pool, table_get (hdrs, "Accept-language"));
     new->avail_vars = make_array (r->pool, 40, sizeof (var_rec));
+
+    /* Now we check for q-values. If they're all 1.0, we assume the
+     * client is "broken", and we are allowed to fiddle with the
+     * values later. Otherwise, we leave them alone.
+     */
+    
+    elts = (accept_rec *)new->accepts->elts;
+
+    for (i = 0; i < new->accepts->nelts; ++i)
+	if (elts[i].quality < 1.0) new->accept_q = 1;
 
     return new;
 }
@@ -944,17 +958,27 @@ var_rec *best_match(negotiation_state *neg)
 	for (j = 0; j < neg->avail_vars->nelts; ++j) {
 	    
 	    var_rec *variant = &avail_recs[j];
-	    float q = type->quality * variant->quality;
-		
+	    float q, quality = type->quality;
+
 	    /* If we've already rejected this variant, don't waste time */
 	    
-	    if (q == 0.0) continue;	
+	    if (variant->quality == 0.0) continue;	
 	    
 	    /* If media types don't match, forget it.
 	     * (This includes the level check).
 	     */
 	    
 	    if (!mime_match(type, variant)) continue;
+
+	    /* If we are allowed to mess with the q-values,
+	     * make wildcards very low, so we have a low chance
+	     * of ending up with them if there's something better.
+	     */
+	    
+	    if (!neg->accept_q && variant->mime_stars == 1) quality = 0.01;
+	    if (!neg->accept_q && variant->mime_stars == 2) quality = 0.02;
+
+	    q = quality * variant->quality;
 
 	    /* Check maxbytes */
 		
