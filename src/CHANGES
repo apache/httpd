@@ -1,5 +1,9 @@
 Changes with Apache 1.3.13
 
+  *) Convert Win32 build files (.dsp) to MSVC 6.0 format, and add perl
+     scripts cvstodsp5.pl and dsp5tocvs.pl for portability to version 5.0.
+     [William Rowe]
+
   *) Fix mod_expires to merge its settings for Cache-Control into any
      existing value for the field.  It was unconditionally setting it,
      wiping out anything from, say, a 'Header Append Cache-Control'.
