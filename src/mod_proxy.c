@@ -1630,7 +1630,7 @@ cache_update(struct cache_req *c, array_header *resp_hdrs,
     int i, j;
     struct hdr_entry *expire, *dates, *lmods, *clen;
     time_t expc, date, lmod, now;
-    char buff[37];
+    char buff[46];
     void *sconf = r->server->module_config;
     proxy_server_conf *conf =
         (proxy_server_conf *)get_module_config(sconf, &proxy_module);
@@ -1663,17 +1663,16 @@ cache_update(struct cache_req *c, array_header *resp_hdrs,
 
 /*
  * what responses should we not cache?
- * bad expires header, 302 status, 4xx or 5xx statuses, or
+ * Unknown status responses and those known to be uncacheable
  * 304 response when we have no valid cache file, or
  * 200 response from HTTP/1.0 and up without a Last-Modified header, or
  * HEAD requests, or
  * requests with an Authorization header, or
  * protocol requests nocache (e.g. ftp with user/password)
  */
-    j = r->status / 100;
-    if ((expire != NULL && expc == -1) || r->status == 302 ||
+    if ((r->status != 200 && r->status != 301 && r->status != 304) ||
+	(expire != NULL && expc == -1) ||
 	(r->status == 304 && c->fp == NULL) ||
-	j == 4 || j == 5 ||
 	(r->status == 200 && lmods == NULL &&
 	                     strncmp(protocol, "HTTP/1.", 7) == 0) ||
 	r->header_only ||
@@ -2499,6 +2498,7 @@ http_handler(request_rec *r, struct cache_req *c, char *url,
     for (i=0; i < reqhdrs_arr->nelts; i++)
     {
 	if (reqhdrs[i].key == NULL || reqhdrs[i].val == NULL) continue;
+	if (!strcasecmp(reqhdrs[i].key, "Connection")) continue;
 	bvputs(f, reqhdrs[i].key, ": ", reqhdrs[i].val, "\015\012", NULL);
     }
 
@@ -2601,7 +2601,7 @@ http_handler(request_rec *r, struct cache_req *c, char *url,
 
 /* write status line */
     if (!r->assbackwards)
-	rprintf(r, "%s %s\015\012", outprotocol, r->status_line);
+	rprintf(r, "HTTP/1.0 %s\015\012", r->status_line);
     if (cache != NULL)
 	if (bvputs(cache, outprotocol, " ", r->status_line, "\015\012", NULL)
 	    == -1)
