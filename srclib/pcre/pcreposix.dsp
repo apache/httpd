@@ -41,7 +41,7 @@ RSC=rc.exe
 # PROP Intermediate_Dir "LibR"
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MD /W3 /O2 /D "_WIN32" /D "NDEBUG" /D "_WINDOWS" /D "STATIC" /FD /c
-# ADD CPP /nologo /MD /W3 /Zi /O2 /D "_WIN32" /D "NDEBUG" /D "_WINDOWS" /D "STATIC" /Fd"LibR/pcreposix_src" /FD /c
+# ADD CPP /nologo /MD /W3 /Zi /O2 /I "..\..\include" /D "_WIN32" /D "NDEBUG" /D "_WINDOWS" /D "STATIC" /Fd"LibR/pcreposix_src" /FD /c
 # ADD BASE RSC /l 0x409
 # ADD RSC /l 0x409
 BSC32=bscmake.exe
@@ -64,7 +64,7 @@ LIB32=link.exe -lib
 # PROP Intermediate_Dir "LibD"
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MDd /W3 /GX /Zi /Od /D "_WIN32" /D "_DEBUG" /D "_WINDOWS" /D "STATIC" /FD /c
-# ADD CPP /nologo /MDd /W3 /GX /Zi /Od /D "_WIN32" /D "_DEBUG" /D "_WINDOWS" /D "STATIC" /Fd"LibD/pcreposix_src" /FD /c
+# ADD CPP /nologo /MDd /W3 /GX /Zi /Od /I "..\..\include" /D "_WIN32" /D "_DEBUG" /D "_WINDOWS" /D "STATIC" /Fd"LibD/pcreposix_src" /FD /c
 # ADD BASE RSC /l 0x409
 # ADD RSC /l 0x409
 BSC32=bscmake.exe
@@ -97,22 +97,22 @@ SOURCE=.\config.hw
 
 !IF  "$(CFG)" == "pcreposix - Win32 Release"
 
-# Begin Custom Build - Creating pcre config.h from config.hw 
+# Begin Custom Build - Creating pcre config.h from config.hw
 InputPath=.\config.hw
 
 ".\config.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
 	type .\config.hw > .\config.h
-	
+
 # End Custom Build
 
 !ELSEIF  "$(CFG)" == "pcreposix - Win32 Debug"
 
-# Begin Custom Build - Creating pcre config.h from config.hw 
+# Begin Custom Build - Creating pcre config.h from config.hw
 InputPath=.\config.hw
 
 ".\config.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
 	type .\config.hw > .\config.h
-	
+
 # End Custom Build
 
 !ENDIF 
@@ -124,22 +124,22 @@ SOURCE=.\pcre.hw
 
 !IF  "$(CFG)" == "pcreposix - Win32 Release"
 
-# Begin Custom Build - Creating pcre.h from pcre.hw 
+# Begin Custom Build - Creating pcre.h from pcre.hw
 InputPath=.\pcre.hw
 
 ".\pcre.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
 	type .\pcre.hw > .\pcre.h
-	
+
 # End Custom Build
 
 !ELSEIF  "$(CFG)" == "pcreposix - Win32 Debug"
 
-# Begin Custom Build - Creating pcre.h from pcre.hw 
+# Begin Custom Build - Creating pcre.h from pcre.hw
 InputPath=.\pcre.hw
 
 ".\pcre.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
 	type .\pcre.hw > .\pcre.h
-	
+
 # End Custom Build
 
 !ENDIF 
@@ -147,7 +147,7 @@ InputPath=.\pcre.hw
 # End Source File
 # Begin Source File
 
-SOURCE=.\pcreposix.h
+SOURCE=..\..\include\pcreposix.h
 # End Source File
 # End Group
 # End Target
