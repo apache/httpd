@@ -98,10 +98,6 @@ Changes with Apache 2.1.0-dev
   *) Allow mod_dav to do weak entity comparison functions.
      [Justin Erenkrantz]
 
-  *) mod_negotiation: Introduce "prefer-language" environment variable,
-     which allows to influence the negotiation process on request basis
-     to prefer a certain language.  [André Malo]
-
   *) Move RFC 1413 ident requests from core to new module mod_ident.
      [André Malo]
 
@@ -137,6 +133,10 @@ Changes with Apache 2.1.0-dev
    Apache 2.0.xx tree as documented, and except as noted, below.]
 
 Changes with Apache 2.0.46
+
+  *) mod_negotiation: Introduce "prefer-language" environment variable,
+     which allows to influence the negotiation process on request basis
+     to prefer a certain language.  [André Malo]
 
   *) Fix for mod_dav.  Call the 'can_be_activity' callback, if provided,
      when a MKACTIVITY request comes in.
