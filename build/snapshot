@@ -1,5 +1,0 @@
-#! /bin/sh
-
-test -n "$1" && ARG="DISTNAME='$1'"
-
-${MAKE:-make} $ARG -f build/build.mk snapshot
