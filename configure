@@ -824,42 +824,8 @@ if [ ".$confadjust" = .1 ]; then
     if [ ".`id | grep root`" = . ]; then
         conf_port="8080"
     fi
-    username="$LOGNAME"
-    if [ ".$username" = . ]; then
-        username="$USER"
-        if [ ".$username" = . ]; then
-            username="`whoami 2>/dev/null | sed -e 's/\n$//'`"
-            if [ ".$username" = . ]; then
-                username="`who am i 2>/dev/null | cut '-d ' -f1`"
-                if [ ".$username" = . ]; then
-                    username="unknown"
-                fi
-            fi
-        fi
-    fi
-    hostname="`uname -n | sed -e 's/\n$//'`"
-    if [ ".$hostname" = . ]; then
-        hostname="`hostname | sed -e 's/\n$//'`"
-        if [ ".$hostname" = . ]; then
-            hostname="hostname"
-        fi
-    fi
-    hostname="`echo $hostname | sed -e 's/\..*//'`"
-    domainname="";
-    if [ -f /etc/resolv.conf ]; then
-        domainname="`egrep '^[ 	]*domain' /etc/resolv.conf | head -1 |\
-                     sed -e 's/.*domain//' -e 's/^[ 	]*//' \
-                         -e 's/^ *//' -e 's/^	*//' \
-                         -e 's/^\.//' -e 's/^/./'`"
-        if [ ".$domainname" = . ]; then
-            domainname="`egrep '^[ 	]*search' /etc/resolv.conf | head -1 |\
-                         sed -e 's/.*search//' -e 's/^[ 	]*//' \
-                             -e 's/^ *//' -e 's/^	*//' \
-                             -e 's/ .*//' -e 's/^\.//' -e 's/^/./'`"
-        fi
-    fi
-    conf_serveradmin="$username@$hostname$domainname"
-    conf_servername="$hostname$domainname"
+    conf_serveradmin="`$aux/buildinfo.sh -n %u@%h%d`"
+    conf_servername="`$aux/buildinfo.sh -n %h%d`"
 fi
  
 ##

@@ -1,5 +1,12 @@
 Changes with Apache 1.3.2
 
+  *) Replace the inlined information grabbing stuff for the configuration
+     adjustment feature (no --without-confadjust) with calls to a new helper
+     script `buildinfo.sh' which is both more flexible and already proofed to
+     be more robust against platform differences. This mainly fixes the
+     recently occured ``sed: command garbled: ...'' problems.
+     [Ralf S. Engelschall] PR#2776, PR#2848
+
   *) Make ab.c again pass ``gcc -Wall -Wshadow -Wpointer-arith -Wcast-align
      -Wmissing-prototypes -Wmissing-declarations -Wnested-externs -Winline''
      without complains after we recently added the POST feature.
