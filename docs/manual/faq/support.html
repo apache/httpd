@@ -43,13 +43,13 @@
     the server error log.  Sometimes this is enough for you to diagnose
     &amp; fix the problem yourself (such as file permissions or the like).
     The default location of the error log is
-    <SAMP>/usr/local/apache/logs/error_log</SAMP>, but see the
+    <SAMP>/usr/local/apache2/logs/error_log</SAMP>, but see the
     <A HREF="../mod/core.html#errorlog"><SAMP>ErrorLog</SAMP></A>
     directive in your config files for the location on your server.
     </P>
    </LI>
    <LI><STRONG>Check the
-    <A HREF="http://httpd.apache.org/docs/misc/FAQ.html">FAQ</A>!</STRONG>
+    <A HREF="http://httpd.apache.org/docs-2.0/">FAQ</A>!</STRONG>
     <P>
     The latest version of the Apache Frequently-Asked Questions list can
     always be found at the main Apache web site.
@@ -70,20 +70,32 @@
     in the database.
     </P>
    </LI>
-   <LI><STRONG>Ask in the <SAMP>comp.infosystems.www.servers.unix</SAMP>
-    or <SAMP>comp.infosystems.www.servers.ms-windows</SAMP> USENET
-    newsgroup (as appropriate for the platform you use).</STRONG>
-    <P>
-    A lot of common problems never make it to the bug database because
-    there's already high Q&amp;A traffic about them in the
-    <A HREF="news:comp.infosystems.www.servers.unix"
-    ><SAMP>comp.infosystems.www.servers.unix</SAMP></A>
-    newsgroup.  Many Apache users, and some of the developers, can be
-    found roaming its virtual halls, so it is suggested that you seek
-    wisdom there.  The chances are good that you'll get a faster answer
-    there than from the bug database, even if you <EM>don't</EM> see
-    your question already posted.
-    </P>
+   <LI><STRONG><a name="user-support">Ask in a user support forum</a></STRONG>
+    <P>Apache has an active community of users who are willing to 
+    share their knowledge.  Participating in this community is
+    usually the best and fastest way to get answers to your
+    questions and problems.</P>
+    <P>USENET newsgroups:</P>
+<ul>
+ <li>comp.infosystems.www.servers.unix
+ [<a href="news:comp.infosystems.www.servers.unix">nntp</a>]
+ [<a href="http://groups.google.com/groups?group=comp.infosystems.www.servers.unix">google</a>]
+</li>
+ <li>comp.infosystems.www.servers.ms-windows
+ [<a href="news:comp.infosystems.www.servers.ms-windows">nntp</a>]
+ [<a href="http://groups.google.com/groups?group=comp.infosystems.www.servers.ms-windows">google</a>]
+</li>
+ <li>comp.infosystems.www.authoring.cgi
+ [<a href="news:comp.infosystems.www.authoring.cgi">news</a>]
+ [<a href="http://groups.google.com/groups?group=comp.infosystems.www.authoring.cgi">google</a>]
+</li>
+</ul>
+
+    <p>Mailing Lists:</p>
+<ul>
+<li><a href="http://groups.yahoo.com/group/apache-server"
+>apache-server@yahoogroups.com</a></li>
+</ul>
    </LI>
    <LI><STRONG>If all else fails, report the problem in the bug
     database</STRONG>
@@ -115,25 +127,16 @@
   </OL>
   <HR>
 
- <H3><A NAME="support">Whom do I contact for support?</A></H3>
-  <P>
-  There is no official support for Apache. None of the developers want to
-  be swamped by a flood of trivial questions that can be resolved elsewhere.
-  Bug reports and suggestions should be sent <EM>via</EM>
-  <A HREF="http://www.apache.org/bug_report.html">the bug report page</A>.
-  Other questions should be directed to the
-  <A HREF="news:comp.infosystems.www.servers.unix"
-  >comp.infosystems.www.servers.unix</A> or <A HREF=
-  "news:comp.infosystems.www.servers.ms-windows"
-  >comp.infosystems.www.servers.ms-windows</A>
-  newsgroup (as appropriate for the platform you use), where some of the 
-  Apache team lurk, in the company of many other httpd gurus who 
-  should be able to help.
-  </P>
-  <P>
-  Commercial support for Apache is, however, available from a number
-  of third parties.
-  </P>
+ <H3><A NAME="support">Whom do I contact for support?</A></H3> 
+
+ <P>With several million users and fewer than forty volunteer
+ developers, we cannot provide personal support for Apache.  For free
+ support, we suggest participating in a <a href="#user-support">user
+ forum</a>.</p>
+
+ <p>Professional, commercial support for Apache is available from 
+  <a href="http://www.apache.org/info/support.cgi">a number of
+  companies</a>.</p>
 
 <!--#if expr="!$ONEPAGE" -->
 
