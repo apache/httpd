@@ -210,6 +210,8 @@ apr_status_t ap_proxy_null_filter(ap_filter_t *f, apr_bucket_brigade *bb);
 int ap_proxy_ftp_canon(request_rec *r, char *url);
 int ap_proxy_ftp_handler(request_rec *r, char *url);
 apr_status_t ap_proxy_send_dir_filter(ap_filter_t *f, apr_bucket_brigade *bb);
+apr_status_t ap_proxy_string_read(conn_rec *c, apr_bucket_brigade *bb, char *buff, size_t bufflen);
+
 
 /* proxy_http.c */
 
