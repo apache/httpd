@@ -75,6 +75,32 @@ PATCHES TO BACKPORT FROM 2.1
   [ please place file names and revisions from HEAD here, so it is easy to
     identify exactly what the proposed changes are! ]
 
+    *) mod_include: fix an off-by-one which truncates the last character
+       off an N*64 character variable expansion (in some cases).
+       http://issues.apache.org/bugzilla/attachment.cgi?id=14025
+       PR: 32985
+       +1: jorton
+
+    *) mod_ssl: fail quickly if SSL connection is aborted rather than
+       making many doomed ap_pass_brigade calls
+       http://svn.apache.org/viewcvs?view=rev&rev=125166
+       PR: 32699
+       +1: jorton
+
+    *) mod_ssl: fix to access mod_ssl-specific X509_STORE_CTX userdata
+       using the proper accessor function; matters only in some
+       pathological cases with OpenSSL global variables not getting
+       reset during reloads but is fatal in such cases.
+       http://svn.apache.org/viewcvs?view=rev&rev=111241
+       PR: 32529
+       +1: jorton
+
+    *) core: fix bucket-splitting logic for platforms with
+       sizeof(apr_off_t)>sizeof(apr_size_t)
+       http://www.apache.org/~jorton/ap_splitlfs.diff
+       PR: 28898
+       +1: jorton
+
     *) modules/config5.m4 & docs/manual/programs/configure.xml:
        --with-module can now take more than one module to be statically
        linked:
@@ -106,6 +132,7 @@ PATCHES TO BACKPORT FROM 2.1
        http://svn.apache.org/~minfrin/httpd-2.0.53-rpm.diff
        svn rev 122711
        +1: minfrin
+       -0: jorton: users could rely on it working as-is; make it conditional?
 
     *) Add charset to the painfully old example CGI scripts.
        [These should really be replaced with proper encoding of the output.]
