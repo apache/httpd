@@ -1,5 +1,8 @@
 Changes with Apache 1.3b7
 
+  *) WIN32: Make Win32 work again after the /dev/null DoS fix.
+     [Ben Laurie]
+
   *) WIN32: Check for buffer overflows in ap_os_canonical_filename.
      [Ben Laurie]
 

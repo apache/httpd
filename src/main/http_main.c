@@ -5253,10 +5253,10 @@ int REALMAIN(int argc, char *argv[])
 	    break;
 #endif /* WIN32 */
 	case 'd':
-	    ap_cpystrn(ap_server_root, optarg, sizeof(ap_server_root));
+	    ap_cpystrn(ap_server_root, ap_os_canonical_filename(pconf, optarg), sizeof(ap_server_root));
 	    break;
 	case 'f':
-	    ap_cpystrn(ap_server_confname, optarg, sizeof(ap_server_confname));
+	    ap_cpystrn(ap_server_confname, ap_os_canonical_filename(pconf, optarg), sizeof(ap_server_confname));
 	    break;
 	case 'v':
 	    printf("Server version: %s\n", ap_get_server_version());
