@@ -103,42 +103,6 @@
 /*
  * +-------------------------------------------------------+
  * |                                                       |
- * |                  Debugging Macros
- * |                                                       |
- * +-------------------------------------------------------+
- */
-
-#ifdef DEBUG_INCLUDE
-
-#define MAX_DEBUG_SIZE MAX_STRING_LEN
-
-#define LOG_COND_STATUS(ctx, f, bb, text)                                   \
-do {                                                                        \
-    char *cond_txt = apr_pstrcat((ctx)->dpool, "**** ", (text),             \
-        " conditional_status=\"", ((ctx)->flags & SSI_FLAG_COND_TRUE)?"1":"0", \
-        "\"\n", NULL);                                                      \
-    APR_BRIGADE_INSERT_TAIL((bb), apr_bucket_heap_create(cond_txt,          \
-                            strlen(cond_txt), NULL, (f)->c->bucket_alloc)); \
-} while(0)
-
-#define DUMP_PARSE_EXPR_DEBUG(buf, f, bb)                                   \
-do {                                                                        \
-    APR_BRIGADE_INSERT_TAIL((bb), apr_bucket_heap_create((buf),             \
-                            strlen((buf)), NULL, (f)->c->bucket_alloc));    \
-} while(0)
-
-#else
-
-#define MAX_DEBUG_SIZE 10
-#define LOG_COND_STATUS(ctx, f, bb, text)
-#define DUMP_PARSE_EXPR_DEBUG(buf, f, bb)
-
-#endif
-
-
-/*
- * +-------------------------------------------------------+
- * |                                                       |
  * |                 Types and Structures
  * |                                                       |
  * +-------------------------------------------------------+
@@ -151,17 +115,46 @@ typedef struct result_item {
     const char *string;
 } result_item_t;
 
+/* conditional expression parser stuff */
+typedef enum {
+    TOKEN_STRING,
+    TOKEN_RE,
+    TOKEN_AND,
+    TOKEN_OR,
+    TOKEN_NOT,
+    TOKEN_EQ,
+    TOKEN_NE,
+    TOKEN_RBRACE,
+    TOKEN_LBRACE,
+    TOKEN_GROUP,
+    TOKEN_GE,
+    TOKEN_LE,
+    TOKEN_GT,
+    TOKEN_LT
+} token_type_t;
+
+typedef struct {
+    token_type_t  type;
+    const char   *value;
+#ifdef DEBUG_INCLUDE
+    const char   *s;
+#endif
+} token_t;
+
+typedef struct parse_node {
+    struct parse_node *parent;
+    struct parse_node *left;
+    struct parse_node *right;
+    token_t token;
+    int value;
+    int done;
+} parse_node_t;
+
 typedef enum {
     XBITHACK_OFF,
     XBITHACK_ON,
     XBITHACK_FULL
 } xbithack_t;
-
-typedef struct {
-    unsigned int T[256];
-    unsigned int x;
-    apr_size_t pattern_len;
-} bndm_t;
 
 typedef struct {
     const char *default_error_msg;
@@ -215,6 +208,12 @@ typedef struct {
     regmatch_t  match[MAX_NMATCH];
 } backref_t;
 
+typedef struct {
+    unsigned int T[256];
+    unsigned int x;
+    apr_size_t pattern_len;
+} bndm_t;
+
 struct ssi_internal_ctx {
     parse_state_t state;
     int           seen_eos;
@@ -237,7 +236,82 @@ struct ssi_internal_ctx {
     arg_item_t   *argv;          /* all arguments */
 
     backref_t    *re;            /* NULL if there wasn't a regex yet */
+
+#ifdef DEBUG_INCLUDE
+    struct {
+        ap_filter_t *f;
+        apr_bucket_brigade *bb;
+    } debug;
+#endif
 };
+
+
+/*
+ * +-------------------------------------------------------+
+ * |                                                       |
+ * |                  Debugging Utilities
+ * |                                                       |
+ * +-------------------------------------------------------+
+ */
+
+#ifdef DEBUG_INCLUDE
+static void debug_printf(include_ctx_t *ctx, const char *fmt, ...)
+{
+    va_list ap;
+    char *debug__str;
+
+    va_start(ap, fmt);
+    debug__str = apr_pvsprintf(ctx->pool, fmt, ap);
+    va_end(ap);
+
+    APR_BRIGADE_INSERT_TAIL(ctx->intern->debug.bb, apr_bucket_pool_create(
+                            debug__str, strlen(debug__str), ctx->pool,
+                            ctx->intern->debug.f->c->bucket_alloc));
+}
+
+#define DEBUG_INIT(ctx, filter, brigade) do { \
+    (ctx)->intern->debug.f = filter;          \
+    (ctx)->intern->debug.bb = brigade;        \
+} while(0)
+
+#define DEBUG_PRINTF(arg) debug_printf arg
+
+#define TYPE_TOKEN(token, ttype) do { \
+    (token)->type = ttype;            \
+    (token)->s = #ttype;              \
+} while(0)
+
+#define DEBUG_DUMP_TOKEN(ctx, token) do {                                     \
+    token_t *d__t = (token);                                                  \
+                                                                              \
+    if (d__t->type == TOKEN_STRING || d__t->type == TOKEN_RE) {               \
+        DEBUG_PRINTF(((ctx), "     Token: %s (%s)\n", d__t->s, d__t->value)); \
+    }                                                                         \
+    else {                                                                    \
+        DEBUG_PRINTF((ctx, "     Token: %s\n", d__t->s));                     \
+    }                                                                         \
+} while(0)
+
+#define DEBUG_DUMP_UNMATCHED(ctx, unmatched) do {                       \
+    if (unmatched) {                                                    \
+        DEBUG_PRINTF(((ctx), "     Umatched %c\n", (char)(unmatched))); \
+    }                                                                   \
+} while(0)
+
+#define DEBUG_DUMP_COND(ctx, text)                                 \
+    DEBUG_PRINTF(((ctx), "**** %s cond status=\"%c\"\n", (text),   \
+                  ((ctx)->flags & SSI_FLAG_COND_TRUE) ? '1' : '0'))
+
+#else /* DEBUG_INCLUDE */
+
+#define TYPE_TOKEN(token, ttype) (token)->type = ttype
+#define DEBUG_INIT(ctx, f, bb)
+#define DEBUG_PRINTF(arg)
+#define DEBUG_DUMP_TOKEN(ctx, token)
+#define DEBUG_DUMP_UNMATCHED(ctx, unmatched)
+#define DEBUG_DUMP_COND(ctx, text)
+
+#endif /* !DEBUG_INCLUDE */
 
 
 /*
@@ -725,7 +799,8 @@ static char *ap_ssi_parse_string(include_ctx_t *ctx, const char *in, char *out,
  * +-------------------------------------------------------+
  */
 
-static APR_INLINE int re_check(include_ctx_t *ctx, char *string, char *rexp)
+static APR_INLINE int re_check(include_ctx_t *ctx, const char *string,
+                               const char *rexp)
 {
     regex_t *compiled;
     backref_t *re = ctx->intern->re;
@@ -742,8 +817,8 @@ static APR_INLINE int re_check(include_ctx_t *ctx, char *string, char *rexp)
         re = ctx->intern->re = apr_palloc(ctx->pool, sizeof(*re));
     }
 
-    re->source = string;
-    re->rexp = rexp;
+    re->source = apr_pstrdup(ctx->pool, string);
+    re->rexp = apr_pstrdup(ctx->pool, rexp);
     re->nsub = compiled->re_nsub;
     rc = !ap_regexec(compiled, string, MAX_NMATCH, re->match, 0);
 
@@ -751,332 +826,309 @@ static APR_INLINE int re_check(include_ctx_t *ctx, char *string, char *rexp)
     return rc;
 }
 
-enum token_type {
-    token_string, token_re,
-    token_and, token_or, token_not, token_eq, token_ne,
-    token_rbrace, token_lbrace, token_group,
-    token_ge, token_le, token_gt, token_lt
-};
-struct token {
-    enum token_type type;
-    char* value;
-};
-
-static const char *get_ptoken(request_rec *r, const char *string, 
-                              struct token *token, int *unmatched)
+static int get_ptoken(apr_pool_t *pool, const char **parse, token_t *token)
 {
-    char ch;
-    int next = 0;
-    char qs = 0;
-    int tkn_fnd = 0;
+    const char *p;
+    apr_size_t shift;
+    int unmatched;
 
     token->value = NULL;
 
-    /* Skip leading white space */
-    if (string == (char *) NULL) {
-        return (char *) NULL;
-    }
-    while ((ch = *string++)) {
-        if (!apr_isspace(ch)) {
-            break;
-        }
-    }
-    if (ch == '\0') {
-        return (char *) NULL;
+    if (!*parse) {
+        return 0;
     }
 
-    token->type = token_string; /* the default type */
-    switch (ch) {
+    /* Skip leading white space */
+    while (apr_isspace(**parse)) {
+        ++*parse;
+    }
+
+    if (!**parse) {
+        *parse = NULL;
+        return 0;
+    }
+
+    TYPE_TOKEN(token, TOKEN_STRING); /* the default type */
+    p = *parse;
+    unmatched = 0;
+
+    switch (*(*parse)++) {
     case '(':
-        token->type = token_lbrace;
-        return (string);
+        TYPE_TOKEN(token, TOKEN_LBRACE);
+        return 0;
     case ')':
-        token->type = token_rbrace;
-        return (string);
+        TYPE_TOKEN(token, TOKEN_RBRACE);
+        return 0;
     case '=':
-        token->type = token_eq;
-        return (string);
+        TYPE_TOKEN(token, TOKEN_EQ);
+        return 0;
     case '!':
-        if (*string == '=') {
-            token->type = token_ne;
-            return (string + 1);
+        if (**parse == '=') {
+            TYPE_TOKEN(token, TOKEN_NE);
+            ++*parse;
+            return 0;
         }
-        else {
-            token->type = token_not;
-            return (string);
-        }
+        TYPE_TOKEN(token, TOKEN_NOT);
+        return 0;
     case '\'':
-        /* already token->type == token_string */
-        qs = '\'';
+        unmatched = '\'';
         break;
     case '/':
-        token->type = token_re;
-        qs = '/';
+        TYPE_TOKEN(token, TOKEN_RE);
+        unmatched = '/';
         break;
     case '|':
-        if (*string == '|') {
-            token->type = token_or;
-            return (string + 1);
+        if (**parse == '|') {
+            TYPE_TOKEN(token, TOKEN_OR);
+            ++*parse;
+            return 0;
         }
         break;
     case '&':
-        if (*string == '&') {
-            token->type = token_and;
-            return (string + 1);
+        if (**parse == '&') {
+            TYPE_TOKEN(token, TOKEN_AND);
+            ++*parse;
+            return 0;
         }
         break;
     case '>':
-        if (*string == '=') {
-            token->type = token_ge;
-            return (string + 1);
+        if (**parse == '=') {
+            TYPE_TOKEN(token, TOKEN_GE);
+            ++*parse;
+            return 0;
         }
-        else {
-            token->type = token_gt;
-            return (string);
-        }
+        TYPE_TOKEN(token, TOKEN_GT);
+        return 0;
     case '<':
-        if (*string == '=') {
-            token->type = token_le;
-            return (string + 1);
+        if (**parse == '=') {
+            TYPE_TOKEN(token, TOKEN_LE);
+            ++*parse;
+            return 0;
         }
-        else {
-            token->type = token_lt;
-            return (string);
-        }
-    default:
-        /* already token->type == token_string */
-        break;
-    }
-    /* We should only be here if we are in a string */
-    token->value = apr_palloc(r->pool, strlen(string) + 2); /* 2 for ch plus
-                                                               trailing null */
-    if (!qs) {
-        token->value[next++] = ch;
+        TYPE_TOKEN(token, TOKEN_LT);
+        return 0;
     }
 
-    /* 
-     * I used the ++string throughout this section so that string
-     * ends up pointing to the next token and I can just return it
+    /*
+     * It's a string or regex token
      */
-    for (ch = *string; ((ch != '\0') && (!tkn_fnd)); ch = *++string) {
-        if (ch == '\\') {
-            if ((ch = *++string) == '\0') {
-                tkn_fnd = 1;
+    token->value = unmatched ? *parse : p;
+
+    /* Now search for the next token, which finishes this string */
+    shift = 0;
+    p = *parse;
+    for (; **parse; p = ++*parse) {
+        if (**parse == '\\') {
+            if (!*(++*parse)) {
+                p = *parse;
+                break;
             }
-            else {
-                token->value[next++] = ch;
-            }
+
+            ++shift;
         }
         else {
-            if (!qs) {
-                if (apr_isspace(ch)) {
-                    tkn_fnd = 1;
+            if (unmatched) {
+                if (**parse == unmatched) {
+                    unmatched = 0;
+                    ++*parse;
+                    break;
                 }
-                else {
-                    switch (ch) {
-                    case '(':
-                    case ')':
-                    case '=':
-                    case '!':
-                    case '<':
-                    case '>':
-                        tkn_fnd = 1;
-                        break;
-                    case '|':
-                        if (*(string + 1) == '|') {
-                            tkn_fnd = 1;
-                        }
-                        break;
-                    case '&':
-                        if (*(string + 1) == '&') {
-                            tkn_fnd = 1;
-                        }
-                        break;
-                    }
-                    if (!tkn_fnd) {
-                        token->value[next++] = ch;
-                    }
-                }
+            } else if (apr_isspace(**parse)) {
+                break;
             }
             else {
-                if (ch == qs) {
-                    qs = 0;
-                    tkn_fnd = 1;
-                    string++;
+                int found = 0;
+
+                switch (**parse) {
+                case '(':
+                case ')':
+                case '=':
+                case '!':
+                case '<':
+                case '>':
+                    ++found;
+                    break;
+
+                case '|':
+                case '&':
+                    if ((*parse)[1] == **parse) {
+                        ++found;
+                    }
+                    break;
                 }
-                else {
-                    token->value[next++] = ch;
+
+                if (found) {
+                    break;
                 }
             }
         }
-        if (tkn_fnd) {
-            break;
+    }
+
+    if (unmatched) {
+        token->value = apr_pstrdup(pool, "");
+    }
+    else {
+        apr_size_t len = p - token->value - shift;
+        char *c = apr_palloc(pool, len + 1);
+
+        p = token->value;
+        token->value = c;
+
+        while (shift--) {
+            const char *e = ap_strchr_c(p, '\\');
+
+            memcpy(c, p, e-p);
+            c   += e-p;
+            *c++ = *++e;
+            len -= e-p;
+            p    = e+1;
         }
+
+        if (len) {
+            memcpy(c, p, len);
+        }
+        c[len] = '\0';
     }
 
-    /* If qs is still set, we have an unmatched quote */
-    if (qs) {
-        *unmatched = 1;
-        next = 0;
-    }
-    token->value[next] = '\0';
-
-    return (string);
+    return unmatched;
 }
 
-
-/* there is an implicit assumption here that expr is at most MAX_STRING_LEN-1
- * characters long...
- */
-static int parse_expr(request_rec *r, include_ctx_t *ctx, const char *expr,
-                      int *was_error, int *was_unmatched, char *debug)
+static int parse_expr(include_ctx_t *ctx, const char *expr, int *was_error)
 {
-    struct parse_node {
-        struct parse_node *left, *right, *parent;
-        struct token token;
-        int value, done;
-    } *root, *current, *new;
-    const char *parse;
-    char* buffer;
-    int retval = 0;
-    apr_size_t debug_pos = 0;
+    parse_node_t *new, *root = NULL, *current = NULL;
+    request_rec *r = ctx->intern->r;
+    const char* buffer;
+    const char *parse = expr;
+    int retval = 0, was_unmatched = 0;
+    
+    *was_error = 0;
 
-    debug[debug_pos] = '\0';
-    *was_error       = 0;
-    *was_unmatched   = 0;
-    if ((parse = expr) == (char *) NULL) {
-        return (0);
+    if (!parse) {
+        return 0;
     }
-    root = current = (struct parse_node *) NULL;
 
     /* Create Parse Tree */
     while (1) {
-        new = (struct parse_node *) apr_palloc(r->pool,
-                                           sizeof(struct parse_node));
-        new->parent = new->left = new->right = (struct parse_node *) NULL;
+        new = apr_palloc(ctx->dpool, sizeof(*new));
+        new->parent = new->left = new->right = NULL;
         new->done = 0;
-        if ((parse = get_ptoken(r, parse, &new->token, was_unmatched)) == 
-            (char *) NULL) {
+
+        was_unmatched = get_ptoken(ctx->dpool, &parse, &new->token);
+        if (!parse) {
             break;
         }
+
+        DEBUG_DUMP_UNMATCHED(ctx, was_unmatched);
+        DEBUG_DUMP_TOKEN(ctx, &new->token);
+
         switch (new->token.type) {
-
-        case token_string:
-#ifdef DEBUG_INCLUDE
-            debug_pos += sprintf (&debug[debug_pos], 
-                                  "     Token: string (%s)\n", 
-                                  new->token.value);
-#endif
-            if (current == (struct parse_node *) NULL) {
+        case TOKEN_STRING:
+            if (!current) {
                 root = current = new;
                 break;
             }
+
             switch (current->token.type) {
-            case token_string:
-                current->token.value = apr_pstrcat(r->pool,
-                                                   current->token.value,
-                                                   current->token.value[0] ? " " : "",
-                                                   new->token.value,
-                                                   NULL);
-                                                   
+            case TOKEN_STRING:
+                current->token.value =
+                    apr_pstrcat(ctx->dpool, current->token.value,
+                                *current->token.value ? " " : "",
+                                new->token.value, NULL);
                 break;
-            case token_eq:
-            case token_ne:
-            case token_and:
-            case token_or:
-            case token_lbrace:
-            case token_not:
-            case token_ge:
-            case token_gt:
-            case token_le:
-            case token_lt:
+
+            case TOKEN_EQ:
+            case TOKEN_NE:
+            case TOKEN_AND:
+            case TOKEN_OR:
+            case TOKEN_LBRACE:
+            case TOKEN_NOT:
+            case TOKEN_GE:
+            case TOKEN_GT:
+            case TOKEN_LE:
+            case TOKEN_LT:
                 new->parent = current;
                 current = current->right = new;
                 break;
+
             default:
                 ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
-                            "Invalid expression \"%s\" in file %s",
-                            expr, r->filename);
+                              "Invalid expression \"%s\" in file %s",
+                              expr, r->filename);
                 *was_error = 1;
                 return retval;
             }
             break;
 
-        case token_re:
-#ifdef DEBUG_INCLUDE
-            debug_pos += sprintf (&debug[debug_pos], 
-                                  "     Token: regex (%s)\n", 
-                                  new->token.value);
-#endif
-            if (current == (struct parse_node *) NULL) {
+        case TOKEN_RE:
+            if (!current) {
                 root = current = new;
                 break;
             }
+
             switch (current->token.type) {
-            case token_eq:
-            case token_ne:
-            case token_and:
-            case token_or:
-            case token_lbrace:
-            case token_not:
+            case TOKEN_EQ:
+            case TOKEN_NE:
+            case TOKEN_AND:
+            case TOKEN_OR:
+            case TOKEN_LBRACE:
+            case TOKEN_NOT:
                 new->parent = current;
                 current = current->right = new;
                 break;
+
             default:
                 ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
-                            "Invalid expression \"%s\" in file %s",
-                            expr, r->filename);
+                              "Invalid expression \"%s\" in file %s",
+                              expr, r->filename);
                 *was_error = 1;
                 return retval;
             }
             break;
 
-        case token_and:
-        case token_or:
-#ifdef DEBUG_INCLUDE
-            memcpy (&debug[debug_pos], "     Token: and/or\n",
-                    sizeof ("     Token: and/or\n"));
-            debug_pos += sizeof ("     Token: and/or\n");
-#endif
-            if (current == (struct parse_node *) NULL) {
+        case TOKEN_AND:
+        case TOKEN_OR:
+            if (!current) {
                 ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
-                            "Invalid expression \"%s\" in file %s",
-                            expr, r->filename);
+                              "Invalid expression \"%s\" in file %s",
+                              expr, r->filename);
                 *was_error = 1;
                 return retval;
             }
             /* Percolate upwards */
-            while (current != (struct parse_node *) NULL) {
+            while (current) {
                 switch (current->token.type) {
-                case token_string:
-                case token_re:
-                case token_group:
-                case token_not:
-                case token_eq:
-                case token_ne:
-                case token_and:
-                case token_or:
-                case token_ge:
-                case token_gt:
-                case token_le:
-                case token_lt:
+                case TOKEN_STRING:
+                case TOKEN_RE:
+                case TOKEN_GROUP:
+                case TOKEN_NOT:
+                case TOKEN_EQ:
+                case TOKEN_NE:
+                case TOKEN_AND:
+                case TOKEN_OR:
+                case TOKEN_GE:
+                case TOKEN_GT:
+                case TOKEN_LE:
+                case TOKEN_LT:
                     current = current->parent;
                     continue;
-                case token_lbrace:
+
+                case TOKEN_LBRACE:
                     break;
+
                 default:
                     ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
-                                "Invalid expression \"%s\" in file %s",
-                                expr, r->filename);
+                                  "Invalid expression \"%s\" in file %s",
+                                  expr, r->filename);
                     *was_error = 1;
                     return retval;
                 }
                 break;
             }
-            if (current == (struct parse_node *) NULL) {
+
+            if (!current) {
                 new->left = root;
                 new->left->parent = new;
-                new->parent = (struct parse_node *) NULL;
+                new->parent = NULL;
                 root = new;
             }
             else {
@@ -1087,30 +1139,26 @@ static int parse_expr(request_rec *r, include_ctx_t *ctx, const char *expr,
             current = new;
             break;
 
-        case token_not:
-#ifdef DEBUG_INCLUDE
-            memcpy(&debug[debug_pos], "     Token: not\n",
-                    sizeof("     Token: not\n"));
-            debug_pos += sizeof("     Token: not\n");
-#endif
-            if (current == (struct parse_node *) NULL) {
+        case TOKEN_NOT:
+            if (!current) {
                 root = current = new;
                 break;
             }
             /* Percolate upwards */
-            if (current != (struct parse_node *) NULL) {
+            if (current) {
                 switch (current->token.type) {
-                case token_not:
-                case token_eq:
-                case token_ne:
-                case token_and:
-                case token_or:
-                case token_lbrace:
-                case token_ge:
-                case token_gt:
-                case token_le:
-                case token_lt:
+                case TOKEN_NOT:
+                case TOKEN_EQ:
+                case TOKEN_NE:
+                case TOKEN_AND:
+                case TOKEN_OR:
+                case TOKEN_LBRACE:
+                case TOKEN_GE:
+                case TOKEN_GT:
+                case TOKEN_LE:
+                case TOKEN_LT:
                     break;
+
                 default:
                     ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                                   "Invalid expression \"%s\" in file %s",
@@ -1119,10 +1167,11 @@ static int parse_expr(request_rec *r, include_ctx_t *ctx, const char *expr,
                     return retval;
                 }
             }
-            if (current == (struct parse_node *) NULL) {
+
+            if (!current) {
                 new->left = root;
                 new->left->parent = new;
-                new->parent = (struct parse_node *) NULL;
+                new->parent = NULL;
                 root = new;
             }
             else {
@@ -1133,18 +1182,13 @@ static int parse_expr(request_rec *r, include_ctx_t *ctx, const char *expr,
             current = new;
             break;
 
-        case token_eq:
-        case token_ne:
-        case token_ge:
-        case token_gt:
-        case token_le:
-        case token_lt:
-#ifdef DEBUG_INCLUDE
-            memcpy(&debug[debug_pos], "     Token: eq/ne/ge/gt/le/lt\n",
-                    sizeof("     Token: eq/ne/ge/gt/le/lt\n"));
-            debug_pos += sizeof("     Token: eq/ne/ge/gt/le/lt\n");
-#endif
-            if (current == (struct parse_node *) NULL) {
+        case TOKEN_EQ:
+        case TOKEN_NE:
+        case TOKEN_GE:
+        case TOKEN_GT:
+        case TOKEN_LE:
+        case TOKEN_LT:
+            if (!current) {
                 ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                               "Invalid expression \"%s\" in file %s",
                               expr, r->filename);
@@ -1152,37 +1196,33 @@ static int parse_expr(request_rec *r, include_ctx_t *ctx, const char *expr,
                 return retval;
             }
             /* Percolate upwards */
-            while (current != (struct parse_node *) NULL) {
+            while (current) {
                 switch (current->token.type) {
-                case token_string:
-                case token_re:
-                case token_group:
+                case TOKEN_STRING:
+                case TOKEN_RE:
+                case TOKEN_GROUP:
                     current = current->parent;
                     continue;
-                case token_lbrace:
-                case token_and:
-                case token_or:
+
+                case TOKEN_LBRACE:
+                case TOKEN_AND:
+                case TOKEN_OR:
                     break;
-                case token_not:
-                case token_eq:
-                case token_ne:
-                case token_ge:
-                case token_gt:
-                case token_le:
-                case token_lt:
+
                 default:
                     ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
-                                "Invalid expression \"%s\" in file %s",
-                                expr, r->filename);
+                                  "Invalid expression \"%s\" in file %s",
+                                  expr, r->filename);
                     *was_error = 1;
                     return retval;
                 }
                 break;
             }
-            if (current == (struct parse_node *) NULL) {
+
+            if (!current) {
                 new->left = root;
                 new->left->parent = new;
-                new->parent = (struct parse_node *) NULL;
+                new->parent = NULL;
                 root = new;
             }
             else {
@@ -1193,67 +1233,56 @@ static int parse_expr(request_rec *r, include_ctx_t *ctx, const char *expr,
             current = new;
             break;
 
-        case token_rbrace:
-#ifdef DEBUG_INCLUDE
-            memcpy (&debug[debug_pos], "     Token: rbrace\n",
-                    sizeof ("     Token: rbrace\n"));
-            debug_pos += sizeof ("     Token: rbrace\n");
-#endif
-            while (current != (struct parse_node *) NULL) {
-                if (current->token.type == token_lbrace) {
-                    current->token.type = token_group;
+        case TOKEN_RBRACE:
+            while (current) {
+                if (current->token.type == TOKEN_LBRACE) {
+                    TYPE_TOKEN(&current->token, TOKEN_GROUP);
                     break;
                 }
                 current = current->parent;
             }
-            if (current == (struct parse_node *) NULL) {
+            if (!current) {
                 ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
-                            "Unmatched ')' in \"%s\" in file %s",
-                            expr, r->filename);
+                              "Unmatched ')' in \"%s\" in file %s",
+                              expr, r->filename);
                 *was_error = 1;
                 return retval;
             }
             break;
 
-        case token_lbrace:
-#ifdef DEBUG_INCLUDE
-            memcpy (&debug[debug_pos], "     Token: lbrace\n",
-                    sizeof ("     Token: lbrace\n"));
-            debug_pos += sizeof ("     Token: lbrace\n");
-#endif
-            if (current == (struct parse_node *) NULL) {
+        case TOKEN_LBRACE:
+            if (!current) {
                 root = current = new;
                 break;
             }
             /* Percolate upwards */
-            if (current != (struct parse_node *) NULL) {
+            if (current) {
                 switch (current->token.type) {
-                case token_not:
-                case token_eq:
-                case token_ne:
-                case token_and:
-                case token_or:
-                case token_lbrace:
-                case token_ge:
-                case token_gt:
-                case token_le:
-                case token_lt:
+                case TOKEN_NOT:
+                case TOKEN_EQ:
+                case TOKEN_NE:
+                case TOKEN_AND:
+                case TOKEN_OR:
+                case TOKEN_LBRACE:
+                case TOKEN_GE:
+                case TOKEN_GT:
+                case TOKEN_LE:
+                case TOKEN_LT:
                     break;
-                case token_string:
-                case token_re:
-                case token_group:
+
                 default:
                     ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
-                                "Invalid expression \"%s\" in file %s",
-                                expr, r->filename);
+                                  "Invalid expression \"%s\" in file %s",
+                                  expr, r->filename);
                     *was_error = 1;
                     return retval;
                 }
             }
-            if (current == (struct parse_node *) NULL) {
+
+            if (!current) {
                 new->left = root;
                 new->left->parent = new;
-                new->parent = (struct parse_node *) NULL;
+                new->parent = NULL;
                 root = new;
             }
             else {
@@ -1263,6 +1292,7 @@ static int parse_expr(request_rec *r, include_ctx_t *ctx, const char *expr,
             }
             current = new;
             break;
+
         default:
             break;
         }
@@ -1270,38 +1300,32 @@ static int parse_expr(request_rec *r, include_ctx_t *ctx, const char *expr,
 
     /* Evaluate Parse Tree */
     current = root;
-    while (current != (struct parse_node *) NULL) {
+    while (current) {
         switch (current->token.type) {
-        case token_string:
-#ifdef DEBUG_INCLUDE
-            memcpy (&debug[debug_pos], "     Evaluate string\n",
-                    sizeof ("     Evaluate string\n"));
-            debug_pos += sizeof ("     Evaluate string\n");
-#endif
-            buffer = ap_ssi_parse_string(ctx, current->token.value, NULL, 
-                                         MAX_STRING_LEN, 0);
+        case TOKEN_STRING:
+            DEBUG_PRINTF((ctx, "     Evaluate %s\n", current->token.s));
+
+            buffer = ap_ssi_parse_string(ctx, current->token.value, NULL, 0,
+                                         SSI_EXPAND_DROP_NAME);
+
             current->token.value = buffer;
-            current->value = (current->token.value[0] != '\0');
+            current->value = !!*current->token.value;
             current->done = 1;
             current = current->parent;
             break;
 
-        case token_re:
+        case TOKEN_RE:
             ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                           "No operator before regex of expr \"%s\" in file %s",
                           expr, r->filename);
             *was_error = 1;
             return retval;
 
-        case token_and:
-        case token_or:
-#ifdef DEBUG_INCLUDE
-            memcpy(&debug[debug_pos], "     Evaluate and/or\n",
-                    sizeof("     Evaluate and/or\n"));
-            debug_pos += sizeof("     Evaluate and/or\n");
-#endif
-            if (current->left  == (struct parse_node *) NULL ||
-                current->right == (struct parse_node *) NULL) {
+        case TOKEN_AND:
+        case TOKEN_OR:
+            DEBUG_PRINTF((ctx, "     Evaluate %s\n", current->token.s));
+
+            if (!current->left || !current->right) {
                 ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                               "Invalid expression \"%s\" in file %s",
                               expr, r->filename);
@@ -1310,14 +1334,16 @@ static int parse_expr(request_rec *r, include_ctx_t *ctx, const char *expr,
             }
             if (!current->left->done) {
                 switch (current->left->token.type) {
-                case token_string:
-                    buffer = ap_ssi_parse_string(ctx, current->left->token.value,
-                                                 NULL, MAX_STRING_LEN, 0);
+                case TOKEN_STRING:
+                    buffer = ap_ssi_parse_string(ctx,
+                                                 current->left->token.value,
+                                                 NULL, 0, SSI_EXPAND_DROP_NAME);
+
                     current->left->token.value = buffer;
-                    current->left->value = 
-                                       (current->left->token.value[0] != '\0');
+                    current->left->value = !!*current->left->token.value;
                     current->left->done = 1;
                     break;
+
                 default:
                     current = current->left;
                     continue;
@@ -1325,51 +1351,49 @@ static int parse_expr(request_rec *r, include_ctx_t *ctx, const char *expr,
             }
             if (!current->right->done) {
                 switch (current->right->token.type) {
-                case token_string:
-                    buffer = ap_ssi_parse_string(ctx, current->right->token.value,
-                                                 NULL, MAX_STRING_LEN, 0);
+                case TOKEN_STRING:
+                    buffer = ap_ssi_parse_string(ctx,
+                                                 current->right->token.value,
+                                                 NULL, 0, SSI_EXPAND_DROP_NAME);
+
                     current->right->token.value = buffer;
-                    current->right->value = 
-                                      (current->right->token.value[0] != '\0');
+                    current->right->value = !!*current->right->token.value;
                     current->right->done = 1;
                     break;
+
                 default:
                     current = current->right;
                     continue;
                 }
             }
-#ifdef DEBUG_INCLUDE
-            debug_pos += sprintf (&debug[debug_pos], "     Left: %c\n",
-                                  current->left->value ? '1' : '0');
-            debug_pos += sprintf (&debug[debug_pos], "     Right: %c\n",
-                                  current->right->value ? '1' : '0');
-#endif
-            if (current->token.type == token_and) {
+
+            DEBUG_PRINTF((ctx, "     Left: %c\n", current->left->value
+                                                                  ? '1' : '0'));
+            DEBUG_PRINTF((ctx, "     Right: %c\n", current->right->value
+                                                                  ? '1' : '0'));
+
+            if (current->token.type == TOKEN_AND) {
                 current->value = current->left->value && current->right->value;
             }
             else {
                 current->value = current->left->value || current->right->value;
             }
-#ifdef DEBUG_INCLUDE
-            debug_pos += sprintf (&debug[debug_pos], "     Returning %c\n",
-                                  current->value ? '1' : '0');
-#endif
+
+            DEBUG_PRINTF((ctx, "     Returning %c\n", current->value
+                                                                  ? '1' : '0'));
+
             current->done = 1;
             current = current->parent;
             break;
 
-        case token_eq:
-        case token_ne:
-#ifdef DEBUG_INCLUDE
-            memcpy (&debug[debug_pos], "     Evaluate eq/ne\n",
-                    sizeof ("     Evaluate eq/ne\n"));
-            debug_pos += sizeof ("     Evaluate eq/ne\n");
-#endif
-            if ((current->left == (struct parse_node *) NULL) ||
-                (current->right == (struct parse_node *) NULL) ||
-                (current->left->token.type != token_string) ||
-                ((current->right->token.type != token_string) &&
-                 (current->right->token.type != token_re))) {
+        case TOKEN_EQ:
+        case TOKEN_NE:
+            DEBUG_PRINTF((ctx, "     Evaluate %s\n", current->token.s));
+
+            if (!current->left || !current->right ||
+                current->left->token.type != TOKEN_STRING ||
+                (current->right->token.type != TOKEN_STRING &&
+                 current->right->token.type != TOKEN_RE)) {
                 ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                             "Invalid expression \"%s\" in file %s",
                             expr, r->filename);
@@ -1377,102 +1401,97 @@ static int parse_expr(request_rec *r, include_ctx_t *ctx, const char *expr,
                 return retval;
             }
             buffer = ap_ssi_parse_string(ctx, current->left->token.value,
-                                         NULL, MAX_STRING_LEN, 0);
+                                         NULL, 0, SSI_EXPAND_DROP_NAME);
+
             current->left->token.value = buffer;
             buffer = ap_ssi_parse_string(ctx, current->right->token.value,
-                                         NULL, MAX_STRING_LEN, 0);
+                                         NULL, 0, SSI_EXPAND_DROP_NAME);
+
             current->right->token.value = buffer;
-            if (current->right->token.type == token_re) {
-#ifdef DEBUG_INCLUDE
-                debug_pos += sprintf (&debug[debug_pos],
-                                      "     Re Compare (%s) with /%s/\n",
-                                      current->left->token.value,
-                                      current->right->token.value);
-#endif
-                current->value =
-                    re_check(ctx, current->left->token.value,
-                             current->right->token.value);
+
+            if (current->right->token.type == TOKEN_RE) {
+                DEBUG_PRINTF((ctx, "     Re Compare (%s) with /%s/\n",
+                              current->left->token.value,
+                              current->right->token.value));
+
+                current->value = re_check(ctx, current->left->token.value,
+                                          current->right->token.value);
             }
             else {
-#ifdef DEBUG_INCLUDE
-                debug_pos += sprintf (&debug[debug_pos],
-                                      "     Compare (%s) with (%s)\n",
-                                      current->left->token.value,
-                                      current->right->token.value);
-#endif
-                current->value =
-                    (strcmp(current->left->token.value,
-                            current->right->token.value) == 0);
+                DEBUG_PRINTF((ctx, "     Compare (%s) with (%s)\n",
+                              current->left->token.value,
+                              current->right->token.value));
+
+                current->value = !strcmp(current->left->token.value,
+                                         current->right->token.value);
             }
-            if (current->token.type == token_ne) {
+
+            if (current->token.type == TOKEN_NE) {
                 current->value = !current->value;
             }
-#ifdef DEBUG_INCLUDE
-            debug_pos += sprintf (&debug[debug_pos], "     Returning %c\n",
-                                  current->value ? '1' : '0');
-#endif
+
+            DEBUG_PRINTF((ctx, "     Returning %c\n", current->value
+                                                                  ? '1' : '0'));
+
             current->done = 1;
             current = current->parent;
             break;
-        case token_ge:
-        case token_gt:
-        case token_le:
-        case token_lt:
-#ifdef DEBUG_INCLUDE
-            memcpy (&debug[debug_pos], "     Evaluate ge/gt/le/lt\n",
-                    sizeof ("     Evaluate ge/gt/le/lt\n"));
-            debug_pos += sizeof ("     Evaluate ge/gt/le/lt\n");
-#endif
-            if ((current->left == (struct parse_node *) NULL) ||
-                (current->right == (struct parse_node *) NULL) ||
-                (current->left->token.type != token_string) ||
-                (current->right->token.type != token_string)) {
+
+        case TOKEN_GE:
+        case TOKEN_GT:
+        case TOKEN_LE:
+        case TOKEN_LT:
+            DEBUG_PRINTF((ctx, "     Evaluate %s\n", current->token.s));
+
+            if (!current->left || !current->right ||
+                current->left->token.type != TOKEN_STRING ||
+                current->right->token.type != TOKEN_STRING) {
                 ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
-                            "Invalid expression \"%s\" in file %s",
-                            expr, r->filename);
+                              "Invalid expression \"%s\" in file %s",
+                              expr, r->filename);
                 *was_error = 1;
                 return retval;
             }
             buffer = ap_ssi_parse_string(ctx, current->left->token.value, NULL,
-                                         MAX_STRING_LEN, 0);
+                                         0, SSI_EXPAND_DROP_NAME);
+
             current->left->token.value = buffer;
             buffer = ap_ssi_parse_string(ctx, current->right->token.value, NULL,
-                                         MAX_STRING_LEN, 0);
+                                         0, SSI_EXPAND_DROP_NAME);
             current->right->token.value = buffer;
-#ifdef DEBUG_INCLUDE
-            debug_pos += sprintf (&debug[debug_pos],
-                                  "     Compare (%s) with (%s)\n",
-                                  current->left->token.value,
-                                  current->right->token.value);
-#endif
-            current->value =
-                strcmp(current->left->token.value,
-                       current->right->token.value);
-            if (current->token.type == token_ge) {
+
+            DEBUG_PRINTF((ctx, "     Compare (%s) with (%s)\n",
+                          current->left->token.value,
+                          current->right->token.value));
+
+            current->value = strcmp(current->left->token.value,
+                                    current->right->token.value);
+
+            if (current->token.type == TOKEN_GE) {
                 current->value = current->value >= 0;
             }
-            else if (current->token.type == token_gt) {
+            else if (current->token.type == TOKEN_GT) {
                 current->value = current->value > 0;
             }
-            else if (current->token.type == token_le) {
+            else if (current->token.type == TOKEN_LE) {
                 current->value = current->value <= 0;
             }
-            else if (current->token.type == token_lt) {
+            else if (current->token.type == TOKEN_LT) {
                 current->value = current->value < 0;
             }
             else {
                 current->value = 0;     /* Don't return -1 if unknown token */
             }
-#ifdef DEBUG_INCLUDE
-            debug_pos += sprintf (&debug[debug_pos], "     Returning %c\n",
-                                  current->value ? '1' : '0');
-#endif
+
+            DEBUG_PRINTF((ctx, "     Returning %c\n", current->value
+                                                                  ? '1' : '0'));
+
             current->done = 1;
             current = current->parent;
             break;
 
-        case token_not:
-            if (current->right != (struct parse_node *) NULL) {
+        case TOKEN_NOT:
+            if (current->right) {
                 if (!current->right->done) {
                     current = current->right;
                     continue;
@@ -1482,16 +1501,16 @@ static int parse_expr(request_rec *r, include_ctx_t *ctx, const char *expr,
             else {
                 current->value = 0;
             }
-#ifdef DEBUG_INCLUDE
-            debug_pos += sprintf (&debug[debug_pos], "     Evaluate !: %c\n",
-                                  current->value ? '1' : '0');
-#endif
+
+            DEBUG_PRINTF((ctx, "     Evaluate %s: %c\n", current->token.s,
+                                                   current->value ? '1' : '0'));
+
             current->done = 1;
             current = current->parent;
             break;
 
-        case token_group:
-            if (current->right != (struct parse_node *) NULL) {
+        case TOKEN_GROUP:
+            if (current->right) {
                 if (!current->right->done) {
                     current = current->right;
                     continue;
@@ -1501,38 +1520,37 @@ static int parse_expr(request_rec *r, include_ctx_t *ctx, const char *expr,
             else {
                 current->value = 1;
             }
-#ifdef DEBUG_INCLUDE
-            debug_pos += sprintf (&debug[debug_pos], "     Evaluate (): %c\n",
-                                  current->value ? '1' : '0');
-#endif
+
+            DEBUG_PRINTF((ctx, "     Evaluate %s: %c\n", current->token.s,
+                                                   current->value ? '1' : '0'));
+
             current->done = 1;
             current = current->parent;
             break;
 
-        case token_lbrace:
+        case TOKEN_LBRACE:
             ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
-                        "Unmatched '(' in \"%s\" in file %s",
-                        expr, r->filename);
+                          "Unmatched '(' in \"%s\" in file %s",
+                          expr, r->filename);
             *was_error = 1;
             return retval;
 
-        case token_rbrace:
+        case TOKEN_RBRACE:
             ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
-                        "Unmatched ')' in \"%s\" in file %s",
-                        expr, r->filename);
+                          "Unmatched ')' in \"%s\" in file %s",
+                          expr, r->filename);
             *was_error = 1;
             return retval;
 
         default:
             ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
-                          "bad token type");
+                          "bad token type (internal parser error)");
             *was_error = 1;
             return retval;
         }
     }
 
-    retval = (root == (struct parse_node *) NULL) ? 0 : root->value;
-    return (retval);
+    return (root ? root->value : 0);
 }
 
 
@@ -2181,9 +2199,8 @@ static apr_status_t handle_if(include_ctx_t *ctx, ap_filter_t *f,
 {
     char *tag = NULL;
     char *expr = NULL;
-    char debug_buf[MAX_DEBUG_SIZE];
     request_rec *r = f->r;
-    int expr_ret, was_error, was_unmatched;
+    int expr_ret, was_error;
 
     if (ctx->argc != 1) {
         ap_log_rerror(APLOG_MARK,
@@ -2220,27 +2237,15 @@ static apr_status_t handle_if(include_ctx_t *ctx, ap_filter_t *f,
         SSI_CREATE_ERROR_BUCKET(ctx, f, bb);
         return APR_SUCCESS;
     }
-#ifdef DEBUG_INCLUDE
-    do {
-        apr_size_t d_len = 0;
-        d_len = sprintf(debug_buf, "**** if expr=\"%s\"\n", expr);
-        APR_BRIGADE_INSERT_TAIL(bb, apr_bucket_heap_create(debug_buf, d_len,
-                                NULL, f->c->bucket_alloc));
 
-    } while (0);
-#endif
+    DEBUG_PRINTF((ctx, "****    if expr=\"%s\"\n", expr));
 
-    expr_ret = parse_expr(r, ctx, expr, &was_error, &was_unmatched, debug_buf);
+    expr_ret = parse_expr(ctx, expr, &was_error);
 
     if (was_error) {
         SSI_CREATE_ERROR_BUCKET(ctx, f, bb);
         return APR_SUCCESS;
     }
-
-    if (was_unmatched) {
-        DUMP_PARSE_EXPR_DEBUG("\nUnmatched '\n", f, bb);
-    }
-    DUMP_PARSE_EXPR_DEBUG(debug_buf, f, bb);
 
     if (expr_ret) {
         ctx->flags |= (SSI_FLAG_PRINTING | SSI_FLAG_COND_TRUE);
@@ -2249,7 +2254,8 @@ static apr_status_t handle_if(include_ctx_t *ctx, ap_filter_t *f,
         ctx->flags &= SSI_FLAG_CLEAR_PRINT_COND;
     }
 
-    LOG_COND_STATUS(ctx, f, bb, "   if");
+    DEBUG_DUMP_COND(ctx, "   if");
+
     ctx->if_nesting_level = 0;
 
     return APR_SUCCESS;
@@ -2264,8 +2270,7 @@ static apr_status_t handle_elif(include_ctx_t *ctx, ap_filter_t *f,
     char *tag = NULL;
     char *expr = NULL;
     request_rec *r = f->r;
-    char debug_buf[MAX_DEBUG_SIZE];
-    int expr_ret, was_error, was_unmatched;
+    int expr_ret, was_error;
 
     if (ctx->argc != 1) {
         ap_log_rerror(APLOG_MARK,
@@ -2300,33 +2305,21 @@ static apr_status_t handle_elif(include_ctx_t *ctx, ap_filter_t *f,
         SSI_CREATE_ERROR_BUCKET(ctx, f, bb);
         return APR_SUCCESS;
     }
-#ifdef DEBUG_INCLUDE
-    do {
-        apr_size_t d_len = 0;
-        d_len = sprintf(debug_buf, "**** elif expr=\"%s\"\n", expr);
-        APR_BRIGADE_INSERT_TAIL(bb, apr_bucket_heap_create(debug_buf, d_len,
-                                NULL, f->c->bucket_alloc));
-    } while (0);
-#endif
 
-    LOG_COND_STATUS(ctx, f, bb, " elif");
+    DEBUG_PRINTF((ctx, "****  elif expr=\"%s\"\n", expr));
+    DEBUG_DUMP_COND(ctx, " elif");
 
     if (ctx->flags & SSI_FLAG_COND_TRUE) {
         ctx->flags &= SSI_FLAG_CLEAR_PRINTING;
         return APR_SUCCESS;
     }
 
-    expr_ret = parse_expr(r, ctx, expr, &was_error, &was_unmatched, debug_buf);
+    expr_ret = parse_expr(ctx, expr, &was_error);
 
     if (was_error) {
         SSI_CREATE_ERROR_BUCKET(ctx, f, bb);
         return APR_SUCCESS;
     }
-
-    if (was_unmatched) {
-        DUMP_PARSE_EXPR_DEBUG("\nUnmatched '\n", f, bb);
-    }
-    DUMP_PARSE_EXPR_DEBUG(debug_buf, f, bb);
 
     if (expr_ret) {
         ctx->flags |= (SSI_FLAG_PRINTING | SSI_FLAG_COND_TRUE);
@@ -2335,7 +2328,7 @@ static apr_status_t handle_elif(include_ctx_t *ctx, ap_filter_t *f,
         ctx->flags &= SSI_FLAG_CLEAR_PRINT_COND;
     }
 
-    LOG_COND_STATUS(ctx, f, bb, " elif");
+    DEBUG_DUMP_COND(ctx, " elif");
 
     return APR_SUCCESS;
 }
@@ -2367,7 +2360,7 @@ static apr_status_t handle_else(include_ctx_t *ctx, ap_filter_t *f,
         return APR_SUCCESS;
     }
 
-    LOG_COND_STATUS(ctx, f, bb, " else");
+    DEBUG_DUMP_COND(ctx, " else");
             
     if (ctx->flags & SSI_FLAG_COND_TRUE) {
         ctx->flags &= SSI_FLAG_CLEAR_PRINTING;
@@ -2404,7 +2397,8 @@ static apr_status_t handle_endif(include_ctx_t *ctx, ap_filter_t *f,
         return APR_SUCCESS;
     }
 
-    LOG_COND_STATUS(ctx, f, bb, "endif");
+    DEBUG_DUMP_COND(ctx, "endif");
+
     ctx->flags |= (SSI_FLAG_PRINTING | SSI_FLAG_COND_TRUE);
 
     return APR_SUCCESS;
@@ -3534,6 +3528,7 @@ static apr_status_t send_parsed_content(ap_filter_t *f, apr_bucket_brigade *bb)
                                            intern->directive_len);
 
                 if (handle_func) {
+                    DEBUG_INIT(ctx, f, pass_bb);
                     rv = handle_func(ctx, f, pass_bb);
                     if (!APR_STATUS_IS_SUCCESS(rv)) {
                         apr_brigade_destroy(pass_bb);
