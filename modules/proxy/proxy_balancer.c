@@ -146,11 +146,14 @@ static proxy_runtime_worker *find_best_worker(proxy_balancer *balancer,
 
     /* First try to see if we have available candidate */
     for (i = 0; i < balancer->workers->nelts; i++) {
-        /* If the worker is not error state
-         * or not in disabled mode
+        /* See if the retry timeout is ellapsed
+         * for the workers flagged as IN_ERROR
          */
-
-        /* TODO: read the scoreboard status */
+        if (!PROXY_WORKER_IS_USABLE(worker->w))
+            ap_proxy_retry_worker("BALANCER", worker->w, r->server)
+        /* If the worker is not in error state
+         * or not disabled.
+         */
         if (PROXY_WORKER_IS_USABLE(worker->w)) {
             if (!candidate)
                 candidate = worker;
