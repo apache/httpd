@@ -72,7 +72,7 @@ echo "Installing binary distribution for platform @os@"
 echo "into directory $SR ..."
 lmkdir $SR 755
 lmkdir $SR/proxy 750
-lmkdir $SR/logs 750
+lmkdir $SR/logs 755
 lcopy bindist/man $SR/man 755 644
 if [ -d bindist/modules ]
 then
