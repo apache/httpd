@@ -55,7 +55,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 aprlib.lib ap.lib pcreposix.lib pcre.lib kernel32.lib advapi32.lib ws2_32.lib mswsock.lib /nologo /subsystem:windows /dll /map /machine:I386 /libpath:"lib\apr\Release" /libpath:"regex\release" /libpath:"ap\Release" /base:@"os\win32\BaseAddr.ref",ApacheCore
-# ADD LINK32 aprlib.lib ap.lib pcreposix.lib pcre.lib kernel32.lib advapi32.lib ws2_32.lib mswsock.lib /nologo /subsystem:windows /dll /map /machine:I386 /libpath:"lib\apr\Release" /libpath:"lib\pcre\release" /libpath:"ap\Release" /base:@"os\win32\BaseAddr.ref",ApacheCore
+# ADD LINK32 aprlib.lib ap.lib pcre.lib pcreposix.lib kernel32.lib advapi32.lib ws2_32.lib mswsock.lib /nologo /subsystem:windows /dll /map /machine:I386 /libpath:"lib\apr\Release" /libpath:"lib\pcre\LibR" /libpath:"ap\Release" /base:@"os\win32\BaseAddr.ref",ApacheCore
 
 !ELSEIF  "$(CFG)" == "ApacheCore - Win32 Debug"
 
@@ -82,7 +82,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 aprlib.lib regex.lib ap.lib pcreposix.lib pcre.lib kernel32.lib advapi32.lib ws2_32.lib mswsock.lib /nologo /subsystem:windows /dll /map /debug /machine:I386 /libpath:"lib\apr\debug" /libpath:"regex\debug" /libpath:"ap\Debug" /base:@"os\win32\BaseAddr.ref",ApacheCore
-# ADD LINK32 aprlib.lib ap.lib kernel32.lib advapi32.lib ws2_32.lib mswsock.lib /nologo /subsystem:windows /dll /map /debug /machine:I386 /libpath:"lib\apr\debug" /libpath:"lib\pcre\debug" /libpath:"ap\Debug" /base:@"os\win32\BaseAddr.ref",ApacheCore
+# ADD LINK32 aprlib.lib ap.lib pcre.lib pcreposix.lib kernel32.lib advapi32.lib ws2_32.lib mswsock.lib /nologo /subsystem:windows /dll /map /debug /machine:I386 /libpath:"lib\apr\debug" /libpath:"lib\pcre\LibD" /libpath:"ap\Debug" /base:@"os\win32\BaseAddr.ref",ApacheCore
 
 !ENDIF 
 
