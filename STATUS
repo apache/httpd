@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/03/25 02:32:52 $]
+Last modified at [$Date: 2004/03/25 02:35:40 $]
 
 Release:
 
@@ -146,6 +146,7 @@ PATCHES TO BACKPORT FROM 2.1
                when the right atomic operations are available/
                implemented?  (Due to under-the-covers mutex
                operations when the dummy atomics are used?)
+      -0: stoddard (at least until the performance implications are clarified)
 
     * Rewrite how proxy sends its request to allow input bodies to 
       morph the request bodies.  Previously, if an input filter
