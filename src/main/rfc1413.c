@@ -93,7 +93,7 @@ extern char *inet_ntoa();
 /* rough limit on the amount of data we accept. */
 #define RFC1413_MAXDATA 1000
 
-#define RFC1413_TIMEOUT	60
+#define RFC1413_TIMEOUT	30
 #define	ANY_PORT	0		/* Any old port will do */
 #define FROM_UNKNOWN  "unknown"
 

@@ -1,5 +1,8 @@
 Changes with Apache 1.2b8
 
+  *) Reduced IdentityCheck timeout to 30 seconds, as per RFC 1413 minimum.
+     [Ken Coar]
+
   *) Fixed problem with ErrorDocument not working for virtual hosts
      due to one of the performance changes in 1.2b7. [Dean Gaudet]
 
