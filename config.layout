@@ -21,6 +21,7 @@
     datadir:       $prefix
     iconsdir:      $datadir/icons
     htdocsdir:     $datadir/htdocs
+    manualdir:     $datadir/manual
     cgidir:        $datadir/cgi-bin
     includedir:    $prefix/include
     localstatedir: $prefix
@@ -42,6 +43,7 @@
     datadir:       $prefix/share+
     iconsdir:      $datadir/icons
     htdocsdir:     $datadir/htdocs
+    manualdir:     $datadir/manual
     cgidir:        $datadir/cgi-bin
     includedir:    $prefix/include+
     localstatedir: $prefix/var+
@@ -142,6 +144,7 @@
     datadir:       $prefix/share
     iconsdir:      $datadir/icons
     htdocsdir:     $datadir/htdocs
+    manualdir:     $datadir/manual
     cgidir:        $datadir/cgi-bin
     includedir:    $prefix/include
     localstatedir: /var$prefix
@@ -162,6 +165,7 @@
     datadir:       $prefix
     iconsdir:      $datadir/icons
     htdocsdir:     $datadir/htdocs
+    manualdir:     $datadir/manual
     cgidir:        $datadir/cgi-bin
     includedir:    $prefix/include
     localstatedir: $prefix
@@ -182,6 +186,7 @@
     datadir:       /usr/local/httpd
     iconsdir:      $datadir/icons
     htdocsdir:     $datadir/htdocs
+    manualdir:     $datadir/manual
     cgidir:        $datadir/cgi-bin
     includedir:    $prefix/include/apache
     localstatedir: /var
@@ -202,6 +207,7 @@
     datadir:       $prefix
     iconsdir:      $datadir/icons
     htdocsdir:     $datadir/htdocs
+    manualdir:     $datadir/manual
     cgidir:        $datadir/cgi-bin
     includedir:    $exec_prefix/include/apache
     localstatedir: /var
@@ -222,6 +228,7 @@
     datadir:       /var/apache
     iconsdir:      $datadir/icons
     htdocsdir:     $datadir/htdocs
+    manualdir:     $datadir/manual
     cgidir:        $datadir/cgi-bin
     includedir:    $exec_prefix/include
     localstatedir: $prefix
@@ -242,6 +249,7 @@
     datadir:       $prefix
     iconsdir:      $prefix/icons
     htdocsdir:     $prefix/htdocs
+    manualdir:     $prefix/manual
     cgidir:        $prefix/cgi-bin
     includedir:    $exec_prefix/lib/apache/include
     localstatedir: $prefix

@@ -120,6 +120,7 @@ sysconfdir      = @sysconfdir@
 datadir         = @datadir@
 iconsdir        = @iconsdir@
 htdocsdir       = @htdocsdir@
+manualdir       = @manualdir@
 cgidir          = @cgidir@
 includedir      = @includedir@
 localstatedir   = @localstatedir@
@@ -270,6 +271,7 @@ install-mktree:
 	$(MKDIR) $(root)$(mandir)/man8
 	$(MKDIR) $(root)$(sysconfdir)
 	$(MKDIR) $(root)$(htdocsdir)
+	$(MKDIR) $(root)$(manualdir)
 	$(MKDIR) $(root)$(iconsdir)
 	$(MKDIR) $(root)$(cgidir)
 	$(MKDIR) $(root)$(includedir)
@@ -459,13 +461,20 @@ install-data:
 		echo "[PRESERVING EXISTING DATA SUBDIR: $(root)$(htdocsdir)/]"; \
 	else \
 		echo "Copying tree $(TOP)/htdocs/ -> $(root)$(htdocsdir)/"; \
-		(cd $(TOP)/htdocs/ && $(TAR) $(TAROPT) - *) |\
+		(cd $(TOP)/htdocs/ && $(TAR) $(TAROPT) - index* apache_pb.* ) |\
 		(cd $(root)$(htdocsdir)/ && $(TAR) -xf -); \
 		find $(root)$(htdocsdir)/ -type d -exec chmod a+rx {} \; ; \
-		find $(root)$(htdocsdir)/ -type f -exec chmod a+r {} \; ; \
+		find $(root)$(htdocsdir)/ -type f -print | xargs chmod a+r ; \
+	fi
+	-@if [ -d $(TOP)/htdocs/manual ]; then \
+		echo "Copying tree $(TOP)/htdocs/manual -> $(root)/$(manualdir)/"; \
+		(cd $(TOP)/htdocs/manual/ && $(TAR) $(TAROPT) - *) |\
+		(cd $(root)$(manualdir)/ && $(TAR) -xf -); \
+		find $(root)$(manualdir)/ -type d -exec chmod a+rx {} \; ; \
+		find $(root)$(manualdir)/ -type f -print | xargs chmod a+r ; \
 	fi
 	-@if [ -f $(root)$(cgidir)/printenv ]; then \
-		echo "[PRESERVING EXISTING DATA SUBDIR: $(root)$(cgidir)/]"; \
+		echo "[PRESERVING EXISTING CGI SUBDIR: $(root)$(cgidir)/]"; \
 	else \
 		for script in printenv test-cgi; do \
 			cat $(TOP)/cgi-bin/$${script} |\
@@ -504,6 +513,7 @@ install-config:
 		 cat $(TOP)/conf/$${conf}-dist ) |\
 		 sed -e '/# LoadModule/r $(TOP)/$(SRC)/.apaci.install.conf' \
 			-e 's;@@ServerRoot@@/htdocs;$(htdocsdir);' \
+			-e 's;@@ServerRoot@@/manual;$(manualdir);' \
 			-e 's;@@ServerRoot@@/icons;$(iconsdir);' \
 			-e 's;@@ServerRoot@@/cgi-bin;$(cgidir);' \
 			-e 's;@@ServerRoot@@/proxy;$(proxycachedir);' \

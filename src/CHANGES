@@ -1,5 +1,16 @@
 Changes with Apache 1.3.21
 
+  *) Parallel to a change in Apache-2.0, the manual directory was
+     moved out of the DocumentRoot tree to simplify the separation
+     of private content&configuration from server's on-line
+     documentation. An "Alias /manual/ ..." projects the manual/
+     directory (which resides now side-by-side with the icons/
+     directory) into the logical DocumentRoot. Note that a request
+     to http://server/manual (without the trailing slash) will now
+     behave different than before (it used to redirect to
+     http://server/manual/ but no longer does).
+     [Martin Kraemer]
+     
   *) Fixed ap_os_canonical_filename() so that it wouldn't try to
      canonicalize an invalid file name.  Also fixed 
      ap_os_is_path_absolute() so that it wouldn't recognize names

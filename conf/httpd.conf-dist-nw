@@ -480,6 +480,19 @@ ServerSignature On
         Allow from all
     </Directory>
 
+    # This Alias will project the on-line documentation tree into your
+    # logical DocumentRoot. Comment it if you don't want to provide access
+    # to the on-line docu for some reason.
+    #
+    Alias /manual/ "sys:/apache/manual/"
+
+    <Directory "sys:/apache/manual">
+        Options Indexes FollowSymlinks MultiViews
+        AllowOverride None
+        Order allow,deny
+        Allow from all
+    </Directory>
+
     #
     # ScriptAlias: This controls which directories contain server scripts.
     # ScriptAliases are essentially the same as Aliases, except that

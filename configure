@@ -426,7 +426,8 @@ do
             echo " --sysconfdir=DIR       install configuration files in DIR"
             echo " --datadir=DIR          install read-only data files in DIR"
             echo " --iconsdir=DIR         install read-only icon files in DIR"
-            echo " --htdocsdir=DIR        install read-only document files in DIR"
+            echo " --htdocsdir=DIR        install read-only welcome pages in DIR"
+            echo " --manualdir=DIR        install read-only on-line documentation in DIR"
             echo " --cgidir=DIR           install read-only cgi files in DIR"
             echo " --includedir=DIR       install includes files in DIR"
             echo " --localstatedir=DIR    install modifiable data files in DIR"
@@ -499,8 +500,9 @@ do
             OOIFS="$IFS"  # most likely not needed: jmj
             IFS="$DIFS"   # ditto
             for var in prefix exec_prefix bindir sbindir libexecdir mandir \
-                       sysconfdir datadir iconsdir htdocsdir cgidir includedir \
-                       localstatedir runtimedir logfiledir proxycachedir; do
+                       sysconfdir datadir iconsdir htdocsdir manualdir cgidir \
+                       includedir localstatedir runtimedir logfiledir \
+                       proxycachedir; do
                 eval "val=\"\$$var\""
                 case $val in
                     *+ )
@@ -672,6 +674,10 @@ do
         --htdocsdir=*) 
             htdocsdir="$apc_optarg" 
             autosuffix_htdocsdir=no
+            ;;
+        --manualdir=*) 
+            manualdir="$apc_optarg" 
+            autosuffix_manualdir=no
             ;;
         --cgidir=*) 
             cgidir="$apc_optarg" 
@@ -1099,14 +1105,14 @@ fi
 
 ##
 ##  expand path variables and make sure
-##  they do not end with a backslash
+##  they do not end in a backslash
 ##
 OIFS="$IFS"
 IFS="$DIFS"
 for var in prefix exec_prefix bindir sbindir libexecdir mandir \
-           sysconfdir datadir iconsdir htdocsdir cgidir includedir \
-           localstatedir runtimedir logfiledir proxycachedir \
-           suexec_docroot suexec_logexec ; do
+           sysconfdir datadir iconsdir htdocsdir manualdir cgidir \
+           includedir localstatedir runtimedir logfiledir \
+           proxycachedir suexec_docroot suexec_logexec ; do
     eval "val=\"\$$var\"";
     val=`echo $val | sed -e 's:\(.\)/*$:\1:'`
     eval "$var=\"$val\""
@@ -1231,6 +1237,7 @@ if [ "x$show_layout" = "x1" ]; then
     echo "              datadir: $datadir" 
     echo "             iconsdir: $iconsdir" 
     echo "            htdocsdir: $htdocsdir" 
+    echo "            manualdir: $manualdir" 
     echo "               cgidir: $cgidir" 
     echo "           includedir: $includedir" 
     echo "        localstatedir: $localstatedir" 
@@ -1302,6 +1309,7 @@ sed <Makefile.tmpl >$mkf \
 -e "s%@datadir@%$datadir%g" \
 -e "s%@iconsdir@%$iconsdir%g" \
 -e "s%@htdocsdir@%$htdocsdir%g" \
+-e "s%@manualdir@%$manualdir%g" \
 -e "s%@cgidir@%$cgidir%g" \
 -e "s%@localstatedir@%$localstatedir%g" \
 -e "s%@includedir@%$includedir%g" \
