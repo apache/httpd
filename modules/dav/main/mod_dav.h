@@ -69,16 +69,12 @@ extern "C" {
 #include <limits.h>     /* for INT_MAX */
 
 
-#define DAV_VERSION		"1.0.1"
+#define DAV_VERSION		AP_SERVER_BASEREVISION
 
 #define DAV_XML_HEADER		"<?xml version=\"1.0\" encoding=\"utf-8\"?>"
 #define DAV_XML_CONTENT_TYPE	"text/xml; charset=\"utf-8\""
 
 #define DAV_READ_BLOCKSIZE	2048	/* used for reading input blocks */
-
-#ifdef WIN32
-typedef int ssize_t;
-#endif /* WIN32 */
 
 #define DAV_RESPONSE_BODY_1	"<!DOCTYPE HTML PUBLIC \"-//IETF//DTD HTML 2.0//EN\">\n<HTML><HEAD>\n<TITLE>"
 #define DAV_RESPONSE_BODY_2	"</TITLE>\n</HEAD><BODY>\n<H1>"
@@ -303,21 +299,21 @@ typedef struct dav_locktoken dav_locktoken;
 /* buffer for reuse; can grow to accomodate needed size */
 typedef struct
 {
-    size_t alloc_len;	/* how much has been allocated */
-    size_t cur_len;	/* how much is currently being used */
-    char *buf;		/* buffer contents */
+    ap_size_t alloc_len;	/* how much has been allocated */
+    ap_size_t cur_len;		/* how much is currently being used */
+    char *buf;			/* buffer contents */
 } dav_buffer;
 #define DAV_BUFFER_MINSIZE	256	/* minimum size for buffer */
 #define DAV_BUFFER_PAD		64	/* amount of pad when growing */
 
 /* set the cur_len to the given size and ensure space is available */
-void dav_set_bufsize(ap_pool_t *p, dav_buffer *pbuf, size_t size);
+void dav_set_bufsize(ap_pool_t *p, dav_buffer *pbuf, ap_size_t size);
 
 /* initialize a buffer and copy the specified (null-term'd) string into it */
 void dav_buffer_init(ap_pool_t *p, dav_buffer *pbuf, const char *str);
 
 /* check that the buffer can accomodate <extra_needed> more bytes */
-void dav_check_bufsize(ap_pool_t *p, dav_buffer *pbuf, size_t extra_needed);
+void dav_check_bufsize(ap_pool_t *p, dav_buffer *pbuf, ap_size_t extra_needed);
 
 /* append a string to the end of the buffer, adjust length */
 void dav_buffer_append(ap_pool_t *p, dav_buffer *pbuf, const char *str);
@@ -327,7 +323,7 @@ void dav_buffer_place(ap_pool_t *p, dav_buffer *pbuf, const char *str);
 
 /* place some memory on the end of a buffer; do NOT adjust length */
 void dav_buffer_place_mem(ap_pool_t *p, dav_buffer *pbuf, const void *mem,
-                          size_t amt, size_t pad);
+                          ap_size_t amt, ap_size_t pad);
 
 
 /* --------------------------------------------------------------------
@@ -601,7 +597,7 @@ typedef struct dav_if_state_list
 typedef struct dav_if_header
 {
     const char *uri;
-    size_t uri_len;
+    ap_size_t uri_len;
     struct dav_if_state_list *state;
     struct dav_if_header *next;
 
@@ -799,7 +795,7 @@ typedef struct dav_db dav_db;
 typedef struct
 {
     char *dptr;
-    size_t dsize;
+    ap_size_t dsize;
 } dav_datum;
 
 /* hook functions to enable pluggable databases */
@@ -1459,7 +1455,7 @@ struct dav_hooks_repository
     ** on each call, until the EOF condition is met.
     */
     dav_error * (*read_stream)(dav_stream *stream,
-			       void *buf, size_t *bufsize);
+			       void *buf, ap_size_t *bufsize);
 
     /*
     ** Write data to the stream.
@@ -1467,7 +1463,7 @@ struct dav_hooks_repository
     ** All of the bytes must be written, or an error should be returned.
     */
     dav_error * (*write_stream)(dav_stream *stream,
-				const void *buf, size_t bufsize);
+				const void *buf, ap_size_t bufsize);
 
     /*
     ** Seek to an absolute position in the stream. This is used to support
@@ -1683,7 +1679,7 @@ struct dav_hooks_vsn
 ap_table_t *dav_get_dir_params(const request_rec *r);
 
 /* fetch the "LimitXMLRequestBody" in force for this resource */
-size_t dav_get_limit_xml_body(const request_rec *r);
+ap_size_t dav_get_limit_xml_body(const request_rec *r);
 
 typedef struct {
     int propid;				/* live property ID */
