@@ -873,3 +873,10 @@ int ap_slack (int fd, int line);
  */
 API_EXPORT(void) log_assert(const char *szExp,const char *szFile,int nLine);
 #define ap_assert(exp) (void)( (exp) || (log_assert(#exp, __FILE__, __LINE__), 0) )
+
+/* The optimized timeout code only works if we're not MULTITHREAD and we're
+ * also not using a scoreboard file
+ */
+#if !defined (MULTITHREAD) && (defined (HAVE_MMAP) || defined (HAVE_SHMGET))
+#define OPTIMIZE_TIMEOUTS
+#endif

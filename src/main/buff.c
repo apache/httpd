@@ -474,7 +474,7 @@ API_EXPORT(void) bhalfduplex (BUFF *fb)
     fd_set fds;
     struct timeval tv;
 
-    if (fb->incnt > 0) {
+    if (fb->incnt > 0 || fb->outcnt == 0) {
 	return;
     }
     /* test for a block */

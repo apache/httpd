@@ -238,6 +238,11 @@ pool *pconf;			/* Pool for config stuff */
 pool *ptrans;			/* Pool for per-transaction stuff */
 
 int APACHE_TLS my_pid;		/* it seems silly to call getpid all the time */
+#ifndef MULTITHREAD
+static int my_child_num;
+#endif
+
+static scoreboard *scoreboard_image = NULL;
 
 /* small utility macros to make things easier to read */
 
@@ -787,7 +792,16 @@ set_callback_and_alarm(void (*fn)(int), int x)
     if(x) {
 	alarm_fn = fn;
     }
+#ifndef OPTIMIZE_TIMEOUTS
     old = alarm(x);
+#else
+    /* Just note the timeout in our scoreboard, no need to call the system.
+     * We also note that the virtual time has gone forward.
+     */
+    old = scoreboard_image->servers[my_child_num].timeout_len;
+    scoreboard_image->servers[my_child_num].timeout_len = x;
+    ++scoreboard_image->servers[my_child_num].cur_vtime;
+#endif
 #endif
     return(old);
 }
@@ -1045,7 +1059,6 @@ static void lingering_close (request_rec *r)
  */
 #undef HAVE_MMAP
 #define HAVE_MMAP 1
-static scoreboard *scoreboard_image = NULL;
 
 void reinit_scoreboard (pool *p)
 {
@@ -1066,7 +1079,6 @@ API_EXPORT(void) sync_scoreboard_image ()
 
 #else /* MULTITHREAD */
 #if defined(HAVE_MMAP)
-static scoreboard *scoreboard_image=NULL;
 
 static void setup_shared_mem(void)
 {
@@ -1191,7 +1203,6 @@ static void setup_shared_mem(void)
 }
 
 #elif defined(HAVE_SHMGET)
-static scoreboard *scoreboard_image=NULL;
 static key_t shmkey = IPC_PRIVATE;
 static int shmid = -1;
 
@@ -1288,9 +1299,7 @@ static void setup_shared_mem(void)
 }
 
 #else
-#define SCOREBOARD_FILE
 static scoreboard _scoreboard_image;
-static scoreboard *scoreboard_image=&_scoreboard_image;
 static int scoreboard_fd;
 
 /* XXX: things are seriously screwed if we ever have to do a partial
@@ -1342,6 +1351,7 @@ void reinit_scoreboard (pool *p)
     memset(scoreboard_image, 0, SCOREBOARD_SIZE);
     scoreboard_image->global.exit_generation=exit_gen;
 #else
+    scoreboard_image=&_scoreboard_image;
     scoreboard_fname = server_root_relative (p, scoreboard_fname);
 
     scoreboard_fd = popenf(p, scoreboard_fname, O_CREAT|O_BINARY|O_RDWR, 0644);
@@ -1428,10 +1438,7 @@ API_EXPORT(int) exists_scoreboard_image (void)
 static inline void put_scoreboard_info(int child_num,
     short_score *new_score_rec)
 { 
-#ifndef SCOREBOARD_FILE
-    memcpy(&scoreboard_image->servers[child_num], new_score_rec,
-	   sizeof(short_score));
-#else 
+#ifdef SCOREBOARD_FILE
     lseek(scoreboard_fd, (long)child_num * sizeof(short_score), 0);
     force_write(scoreboard_fd, new_score_rec, sizeof(short_score));
 #endif
@@ -1440,48 +1447,53 @@ static inline void put_scoreboard_info(int child_num,
 int update_child_status (int child_num, int status, request_rec *r)
 {
     int old_status;
-    short_score new_score_rec;
+    short_score *ss;
 
     if (child_num < 0)
 	return -1;
     
     sync_scoreboard_image();
-    new_score_rec = scoreboard_image->servers[child_num];
-    old_status = new_score_rec.status;
-    new_score_rec.x.pid = my_pid;
-    new_score_rec.status = status;
+    ss = &scoreboard_image->servers[child_num];
+    old_status = ss->status;
+    ss->x.pid = my_pid;
+    ss->status = status;
+    ++ss->cur_vtime;
 
 #if defined(STATUS)
-    new_score_rec.last_used=time(NULL);
+#ifdef OPTIMIZE_TIMEOUTS
+    ss->last_used = ss->last_rtime;	/* close enough */
+#else
+    ss->last_used=time(NULL);
+#endif
     if (status == SERVER_READY || status == SERVER_DEAD) {
 	/*
 	 * Reset individual counters
 	 */
 	if (status == SERVER_DEAD) {
-	    new_score_rec.my_access_count = 0L;
-	    new_score_rec.my_bytes_served = 0L;
+	    ss->my_access_count = 0L;
+	    ss->my_bytes_served = 0L;
 	}
-	new_score_rec.conn_count = (unsigned short)0;
-	new_score_rec.conn_bytes = (unsigned long)0;
+	ss->conn_count = (unsigned short)0;
+	ss->conn_bytes = (unsigned long)0;
     }
     if (r) {
 	int slot_size;
 	conn_rec *c = r->connection;
-	slot_size = sizeof(new_score_rec.client) - 1;
-	strncpy(new_score_rec.client, get_remote_host(c, r->per_dir_config,
+	slot_size = sizeof(ss->client) - 1;
+	strncpy(ss->client, get_remote_host(c, r->per_dir_config,
 	 REMOTE_NOLOOKUP), slot_size);
-	new_score_rec.client[slot_size] = '\0';
-	slot_size = sizeof(new_score_rec.request) - 1;
-	strncpy(new_score_rec.request, (r->the_request ? r->the_request :
+	ss->client[slot_size] = '\0';
+	slot_size = sizeof(ss->request) - 1;
+	strncpy(ss->request, (r->the_request ? r->the_request :
 	 "NULL"), slot_size);
-	new_score_rec.request[slot_size] = '\0';
-	slot_size = sizeof(new_score_rec.vhost) - 1;
-	strncpy(new_score_rec.vhost,r->server->server_hostname, slot_size);
-	new_score_rec.vhost[slot_size] = '\0';
+	ss->request[slot_size] = '\0';
+	slot_size = sizeof(ss->vhost) - 1;
+	strncpy(ss->vhost,r->server->server_hostname, slot_size);
+	ss->vhost[slot_size] = '\0';
     }
 #endif
 
-    put_scoreboard_info(child_num, &new_score_rec);
+    put_scoreboard_info(child_num, ss);
 
     return old_status;
 }
@@ -1504,7 +1516,7 @@ API_EXPORT(short_score) get_scoreboard_info(int i)
 #if defined(STATUS)
 void time_process_request (int child_num, int status)
 {
-    short_score new_score_rec;
+    short_score *ss;
 #if defined(NO_GETTIMEOFDAY)
     struct tms tms_blk;
 #endif
@@ -1513,56 +1525,55 @@ void time_process_request (int child_num, int status)
 	return ;
     
     sync_scoreboard_image();
-    new_score_rec = scoreboard_image->servers[child_num];
+    ss = &scoreboard_image->servers[child_num];
 
     if (status == START_PREQUEST) {
 #if defined(NO_GETTIMEOFDAY)
-	if ((new_score_rec.start_time = times(&tms_blk)) == -1)
-	    new_score_rec.start_time = (clock_t)0;
+	if ((ss->start_time = times(&tms_blk)) == -1)
+	    ss->start_time = (clock_t)0;
 #else
-	if (gettimeofday(&new_score_rec.start_time, (struct timezone *)0) < 0)
-	    new_score_rec.start_time.tv_sec =
-	    new_score_rec.start_time.tv_usec = 0L;
+	if (gettimeofday(&ss->start_time, (struct timezone *)0) < 0)
+	    ss->start_time.tv_sec =
+	    ss->start_time.tv_usec = 0L;
 #endif
     }
     else if (status == STOP_PREQUEST) {
 #if defined(NO_GETTIMEOFDAY)
-	if ((new_score_rec.stop_time = times(&tms_blk)) == -1)
-	    new_score_rec.stop_time = new_score_rec.start_time = (clock_t)0;
+	if ((ss->stop_time = times(&tms_blk)) == -1)
+	    ss->stop_time = ss->start_time = (clock_t)0;
 #else
-	if (gettimeofday(&new_score_rec.stop_time, (struct timezone *)0) < 0)
-	    new_score_rec.stop_time.tv_sec =
-	    new_score_rec.stop_time.tv_usec =
-	    new_score_rec.start_time.tv_sec =
-	    new_score_rec.start_time.tv_usec = 0L;
+	if (gettimeofday(&ss->stop_time, (struct timezone *)0) < 0)
+	    ss->stop_time.tv_sec =
+	    ss->stop_time.tv_usec =
+	    ss->start_time.tv_sec =
+	    ss->start_time.tv_usec = 0L;
 #endif
 
     }
 
-    put_scoreboard_info(child_num, &new_score_rec);
-
+    put_scoreboard_info(child_num, ss);
 }
 
 static void increment_counts (int child_num, request_rec *r)
 {
     long int bs=0;
-    short_score new_score_rec;
+    short_score *ss;
 
     sync_scoreboard_image();
-    new_score_rec = scoreboard_image->servers[child_num];
+    ss = &scoreboard_image->servers[child_num];
 
     if (r->sent_bodyct)
         bgetopt(r->connection->client, BO_BYTECT, &bs);
 
-    times(&new_score_rec.times);
-    new_score_rec.access_count ++;
-    new_score_rec.my_access_count ++;
-    new_score_rec.conn_count ++;
-    new_score_rec.bytes_served += (unsigned long)bs;
-    new_score_rec.my_bytes_served += (unsigned long)bs;
-    new_score_rec.conn_bytes += (unsigned long)bs;
+    times(&ss->times);
+    ss->access_count ++;
+    ss->my_access_count ++;
+    ss->conn_count ++;
+    ss->bytes_served += (unsigned long)bs;
+    ss->my_bytes_served += (unsigned long)bs;
+    ss->conn_bytes += (unsigned long)bs;
 
-    put_scoreboard_info(child_num, &new_score_rec); 
+    put_scoreboard_info(child_num, ss); 
 }
 #endif
 
@@ -2556,7 +2567,6 @@ static int srv;
 static int csd;
 static int dupped_csd;
 static int requests_this_child;
-static int child_num;
 static fd_set main_fds;
 
 void child_main(int child_num_arg)
@@ -2569,7 +2579,7 @@ void child_main(int child_num_arg)
     my_pid = getpid();
     csd = -1;
     dupped_csd = -1;
-    child_num = child_num_arg;
+    my_child_num = child_num_arg;
     requests_this_child = 0;
 
     /* needs to be done before we switch UIDs so we have permissions */
@@ -2595,7 +2605,7 @@ void child_main(int child_num_arg)
 
     child_init_modules(pconf, server_conf);
 
-    (void)update_child_status(child_num, SERVER_READY, (request_rec*)NULL);
+    (void)update_child_status(my_child_num, SERVER_READY, (request_rec*)NULL);
 
     /*
      * Setup the jump buffers so that we can return here after
@@ -2623,7 +2633,7 @@ void child_main(int child_num_arg)
          * (Re)initialize this child to a pre-connection state.
          */
 
-        alarm(0);		/* Cancel any outstanding alarms. */
+	kill_timeout(0);	/* Cancel any outstanding alarms. */
         timeout_req = NULL;	/* No request in progress */
 	current_conn = NULL;
     
@@ -2639,7 +2649,7 @@ void child_main(int child_num_arg)
 	    child_exit_modules(pconf, server_conf);
 	}
 
-	(void)update_child_status(child_num, SERVER_READY, (request_rec*)NULL);
+	(void)update_child_status(my_child_num, SERVER_READY, (request_rec*)NULL);
 
         /*
          * Wait for an acceptable connection to arrive.
@@ -2733,7 +2743,7 @@ void child_main(int child_num_arg)
 
 	sock_disable_nagle(csd);
 
-	(void)update_child_status(child_num, SERVER_BUSY_READ,
+	(void)update_child_status(my_child_num, SERVER_BUSY_READ,
 	                          (request_rec*)NULL);
 
 	conn_io = bcreate(ptrans, B_RDWR | B_SOCKET);
@@ -2761,7 +2771,7 @@ void child_main(int child_num_arg)
 	current_conn = new_connection (ptrans, server_conf, conn_io,
 				       (struct sockaddr_in *)&sa_client,
 				       (struct sockaddr_in *)&sa_server,
-				       child_num);
+				       my_child_num);
 
         /*
          * Read and process each request found on our connection
@@ -2774,19 +2784,19 @@ void child_main(int child_num_arg)
 	     * signal (SIGUSR1, SIG_IGN);
 	     */
 
-            (void)update_child_status(child_num, SERVER_BUSY_WRITE, r);
+            (void)update_child_status(my_child_num, SERVER_BUSY_WRITE, r);
 
             process_request(r);
 
 #if defined(STATUS)
-            increment_counts(child_num, r);
+            increment_counts(my_child_num, r);
 #endif
 
             if (!current_conn->keepalive || current_conn->aborted) 
                 break;
 
             destroy_pool(r->pool);
-            (void)update_child_status(child_num, SERVER_BUSY_KEEPALIVE,
+            (void)update_child_status(my_child_num, SERVER_BUSY_KEEPALIVE,
                                       (request_rec*)NULL);
 
             sync_scoreboard_image();
@@ -2933,6 +2943,10 @@ static void perform_idle_server_maintenance (void)
     int free_head;
     int *free_ptr;
     int free_length;
+    short_score *ss;
+#ifdef OPTIMIZE_TIMEOUTS
+    time_t now = time(0);
+#endif
 
     /* initialize the free_list */
     free_head = -1;
@@ -2944,7 +2958,8 @@ static void perform_idle_server_maintenance (void)
 
     sync_scoreboard_image ();
     for (i = 0; i < daemons_limit; ++i) {
-	switch (scoreboard_image->servers[i].status) {
+	ss = &scoreboard_image->servers[i];
+	switch (ss->status) {
 	case SERVER_READY:
 	    ++idle_count;
 	    /* always kill the highest numbered child if we have to...
@@ -2964,6 +2979,21 @@ static void perform_idle_server_maintenance (void)
 	    }
 	    break;
 	}
+#ifdef OPTIMIZE_TIMEOUTS
+	if (ss->status != SERVER_DEAD && ss->timeout_len) {
+	    /* if it's a live server, with a live timeout then start checking
+	     * its timeout */
+	    if (ss->cur_vtime != ss->last_vtime) {
+		/* it has made progress, so update its last_rtime, last_vtime */
+		ss->last_rtime = now;
+		ss->last_vtime = ss->cur_vtime;
+	    } else if (ss->last_rtime + ss->timeout_len < now) {
+		/* no progress, and the timeout length has been exceeded */
+		ss->timeout_len = 0;
+		kill (ss->x.pid, SIGALRM);
+	    }
+	}
+#endif
     }
     if (idle_count > daemons_max_free) {
 	/* kill off one child... we use SIGUSR1 because that'll cause it to

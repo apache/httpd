@@ -75,12 +75,33 @@
 #define SERVER_BUSY_DNS 7       /* Looking up a hostname */
 #define SERVER_GRACEFUL 8	/* server is gracefully finishing request */
 
+/* A "virtual time" is simply a counter that indicates that a child is
+ * making progress.  The parent checks up on each child, and when they have
+ * made progress it resets the last_rtime element.  But when the child hasn't
+ * made progress in a time that's roughly timeout_len seconds long, it is
+ * sent a SIGALRM.
+ *
+ * vtime is an optimization that is used only when the scoreboard is in
+ * shared memory (it's not easy/feasible to do it in a scoreboard file).
+ * The essential observation is that timeouts rarely occur, the vast majority
+ * of hits finish before any timeout happens.  So it really sucks to have to
+ * ask the operating system to set up and destroy alarms many times during
+ * a request.
+ */
+typedef unsigned vtime_t;
+
 typedef struct {
     union {
 	pid_t pid;		/* if it's not DEAD then this is the pid */
 	int free_list;		/* otherwise this is scratch space */
     } x;
-    int status;
+#ifdef OPTIMIZE_TIMEOUTS
+    vtime_t last_vtime;		/* the last vtime the parent has seen */
+    time_t last_rtime;		/* time(0) of the last change */
+    vtime_t cur_vtime;		/* the child's current vtime */
+    unsigned short timeout_len;	/* length of the timeout */
+#endif
+    signed char status;
 #if defined(STATUS)
     unsigned long access_count;
     unsigned long bytes_served;
