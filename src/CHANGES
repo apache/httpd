@@ -1,5 +1,9 @@
 Changes with Apache 1.3b6
 
+  *) Fix bug with mod_mime_magic causing certain files, including files
+     of length 0, to result in no response from the server.
+     [Dean Gaudet]
+
   *) The Configure script now generates src/include/ap_config.h which
      contains the set of defines used when Apache is compiled on a platform.
      This file can then be included by external modules before including

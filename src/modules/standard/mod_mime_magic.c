@@ -844,7 +844,7 @@ static int magic_process(request_rec *r)
     switch ((result = fsmagic(r, r->filename))) {
     case DONE:
 	magic_rsl_putchar(r, '\n');
-	return result;
+	return OK;
     case OK:
 	break;
     default:
