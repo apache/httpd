@@ -97,10 +97,6 @@ SOURCE=.\mod_proxy.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\proxy_cache.c
-# End Source File
-# Begin Source File
-
 SOURCE=.\proxy_connect.c
 # End Source File
 # Begin Source File
