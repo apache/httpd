@@ -2518,12 +2518,10 @@ static int parse_expr(request_rec *r, include_ctx_t *ctx, const char *expr,
 /*-------------------------------------------------------------------------*/
 #ifdef DEBUG_INCLUDE
 
-/* XXX overlaying the static string pointed to by cond_txt isn't cool */
-
 #define MAX_DEBUG_SIZE MAX_STRING_LEN
 #define LOG_COND_STATUS(cntx, t_buck, h_ptr, ins_head, tag_text)           \
 {                                                                          \
-    char *cond_txt = "**** X     conditional_status=\"0\"\n";              \
+    char cond_txt[] = "**** X     conditional_status=\"0\"\n";             \
                                                                            \
     if (cntx->flags & FLAG_COND_TRUE) {                                    \
         cond_txt[31] = '1';                                                \
