@@ -104,7 +104,7 @@ static void CaseFilterInInsertFilter(request_rec *r)
 
 static apr_status_t CaseFilterInFilter(ap_filter_t *f,
 				       apr_bucket_brigade *pbbOut,
-				       ap_input_mode_t eMode,apr_size_t *nBytes)
+				       ap_input_mode_t eMode,apr_off_t *nBytes)
 {
     CaseFilterInContext *pCtx=f->ctx;
     apr_status_t ret;

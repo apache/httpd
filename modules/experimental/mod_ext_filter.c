@@ -749,7 +749,7 @@ static apr_status_t ef_output_filter(ap_filter_t *f, apr_bucket_brigade *bb)
 
 #if 0
 static int ef_input_filter(ap_filter_t *f, apr_bucket_brigade *bb, 
-                           ap_input_mode_t mode, apr_size_t *readbytes)
+                           ap_input_mode_t mode, apr_off_t *readbytes)
 {
     apr_status_t rv;
     apr_bucket *b;
