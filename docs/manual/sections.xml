@@ -65,7 +65,7 @@ enclosed directives will be ignored.</p>
 
 <p>The <directive type="section" module="core">IfDefine</directive> directive
 encloses directives that will only be applied if an appropriate
-parameter is defined on the <code>httpd</code> command line.  For example,
+parameter is defined on the <program>httpd</program> command line.  For example,
 with the following configuration, all requests will be redirected
 to another site only if the server is started using
 <code>httpd -DClosedForNow</code>:</p>

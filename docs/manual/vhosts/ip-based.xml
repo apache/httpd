@@ -43,8 +43,8 @@
 <section id="howto"><title>How to set up Apache</title>
 
     <p>There are two ways of configuring apache to support multiple
-    hosts. Either by running a separate httpd daemon for each
-    hostname, or by running a single daemon which supports all the
+    hosts. Either by running a separate <program>httpd</program> daemon for
+    each hostname, or by running a single daemon which supports all the
     virtual hosts.</p>
 
     <p>Use multiple daemons when:</p>
@@ -67,7 +67,7 @@
       address, or to specific addresses. So if you have a need to
       listen to a specific address for whatever reason, then you
       will need to listen to all specific addresses. (Although one
-      httpd could listen to N-1 of the addresses, and another could
+      <program>httpd</program> could listen to N-1 of the addresses, and another could
       listen to the remaining address.)</li>
     </ul>
 
@@ -86,8 +86,8 @@
 
 <section id="multiple"><title>Setting up multiple daemons</title>
 
-    <p>Create a separate httpd installation for each virtual host. For
-    each installation, use the <directive
+    <p>Create a separate <program>httpd</program> installation for each
+    virtual host. For each installation, use the <directive
     module="mpm_common">Listen</directive> directive in the
     configuration file to select which IP address (or virtual host)
     that daemon services. e.g.</p>

@@ -60,7 +60,7 @@
     <p>The default value of the <code>Listen</code> field for
     main_server is 80. The main_server has no default
     <code>ServerPath</code>, or <code>ServerAlias</code>. The
-    default <code>ServerName</code> is deduced from the servers IP
+    default <code>ServerName</code> is deduced from the server's IP
     address.</p>
 
     <p>The main_server Listen directive has two functions.  One
@@ -213,8 +213,8 @@
     vhost definition.</p>
 
     <p>If the main_server has no <code>ServerName</code> at this
-    point, then the hostname of the machine that httpd is running
-    on is used instead. We will call the <em>main_server address
+    point, then the hostname of the machine that <program>httpd</program>
+    is running on is used instead. We will call the <em>main_server address
     set</em> those IP addresses returned by a DNS lookup on the
     <code>ServerName</code> of the main_server.</p>
 

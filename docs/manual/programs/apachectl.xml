@@ -28,21 +28,21 @@
      <p><code>apachectl</code> is a front end to the Apache HyperText
      Transfer Protocol (HTTP) server.  It is designed to help the
      administrator control the functioning of the Apache
-     <a href="httpd.html">httpd</a> daemon.</p>
+     <program>httpd</program> daemon.</p>
 
      <p>The <code>apachectl</code> script can operate in two modes.
-     First, it can act as a simple front-end to the <code>httpd</code>
+     First, it can act as a simple front-end to the <program>httpd</program>
      command that simply sets any necessary environment variables and
-     then invokes <code>httpd</code>, passing through any command line
+     then invokes <program>httpd</program>, passing through any command line
      arguments.  Second, <code>apachectl</code> can act as a SysV init
      script, taking simple one-word arguments like <code>start</code>,
      <code>restart</code>, and <code>stop</code>, and translating them
-     into appropriate signals to <code>httpd</code>.</p>
+     into appropriate signals to <program>httpd</program>.</p>
 
      <p>If your Apache installation uses non-standard paths, you will
      need to edit the <code>apachectl</code> script to set the
-     appropriate paths to the <code>httpd</code> binary.  You can also
-     specify any necessary <code>httpd</code> command line arguments.
+     appropriate paths to the <program>httpd</program> binary.  You can also
+     specify any necessary <program>httpd</program> command line arguments.
      See the comments in the script for details.</p>
 
      <p>The <code>apachectl</code> script returns a 0 exit value on
@@ -53,12 +53,12 @@
 <seealso><a href="../stopping.html">Stopping Apache</a></seealso>
 <seealso><a href="../configuring.html">Configuration Files</a></seealso>
 <seealso><a href="../platform/">Platform Docs</a></seealso>
-<seealso><a href="httpd.html">httpd</a></seealso>
+<seealso><program>httpd</program></seealso>
 
 <section id="synopsis"><title>Synopsis</title>
 
 <p>When acting in pass-through mode, <code>apachectl</code> can take
-all the arguments available for the <a href="httpd.html">httpd</a>
+all the arguments available for the <program>httpd</program>
 binary.</p>
 
 <p><code><strong>apachectl</strong> [ <var>httpd-argument</var> ]</code></p>
@@ -73,24 +73,24 @@ one-word commands, defined below.</p>
 <section id="options"><title>Options</title>
 
 <p>Only the SysV init-style options are defined here.  Other arguments
-are defined on the <a href="httpd.html">httpd</a> manual page.</p>
+are defined on the <program>httpd</program> manual page.</p>
 
 <dl>
 
 <dt><code>start</code></dt>
 
-<dd>Start the Apache <code>httpd</code> daemon.  Gives an error if it
+<dd>Start the Apache <program>httpd</program> daemon.  Gives an error if it
 is already running.  This is equivalent to <code>apachectl -k
 start</code>.</dd>
 
 <dt><code>stop</code></dt>
 
-<dd>Stops the Apache <code>httpd</code> daemon.  This is equivalent to
+<dd>Stops the Apache <program>httpd</program> daemon.  This is equivalent to
 <code>apachectl -k stop</code>.</dd>
 
 <dt><code>restart</code></dt>
 
-<dd>Restarts the Apache <code>httpd</code> daemon.  If the daemon is
+<dd>Restarts the Apache <program>httpd</program> daemon.  If the daemon is
 not running, it is started.  This command automatically checks the
 configuration files as in <code>configtest</code> before initiating
 the restart to make sure the daemon doesn't die.  This is equivalent
@@ -113,7 +113,7 @@ currently being served is omitted.</dd>
 
 <dt><code>graceful</code></dt>
 
-<dd>Gracefully restarts the Apache <code>httpd</code> daemon.  If the
+<dd>Gracefully restarts the Apache <program>httpd</program> daemon.  If the
 daemon is not running, it is started.  This differs from a normal
 restart in that currently open connections are not aborted.  A side
 effect is that old log files will not be closed immediately.  This

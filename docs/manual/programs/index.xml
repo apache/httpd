@@ -32,51 +32,51 @@
 <section id="index"><title>Index</title>
 
     <dl>
-      <dt><a href="httpd.html">httpd</a></dt>
+      <dt><program>httpd</program></dt>
 
       <dd>Apache hypertext transfer protocol server</dd>
 
-      <dt><a href="apachectl.html">apachectl</a></dt>
+      <dt><program>apachectl</program></dt>
 
       <dd>Apache HTTP server control interface</dd>
 
-      <dt><a href="ab.html">ab</a></dt>
+      <dt><program>ab</program></dt>
 
       <dd>Apache HTTP server benchmarking tool</dd>
 
-      <dt><a href="apxs.html">apxs</a></dt>
+      <dt><program>apxs</program></dt>
 
       <dd>APache eXtenSion tool</dd>
 
-      <dt><a href="configure.html">configure</a></dt>
+      <dt><program>configure</program></dt>
 
       <dd>Configure the source tree</dd>
 
-      <dt><a href="dbmmanage.html">dbmmanage</a></dt>
+      <dt><program>dbmmanage</program></dt>
 
       <dd>Create and update user authentication files in DBM format
       for basic authentication</dd>
 
-      <dt><a href="htdigest.html">htdigest</a></dt>
+      <dt><program>htdigest</program></dt>
 
       <dd>Create and update user authentication files for digest
       authentication</dd>
 
-      <dt><a href="htpasswd.html">htpasswd</a></dt>
+      <dt><program>htpasswd</program></dt>
 
       <dd>Create and update user authentication files for basic
       authentication</dd>
 
-      <dt><a href="logresolve.html">logresolve</a></dt>
+      <dt><program>logresolve</program></dt>
 
       <dd>Resolve hostnames for IP-addresses in Apache
       logfiles</dd>
 
-      <dt><a href="rotatelogs.html">rotatelogs</a></dt>
+      <dt><program>rotatelogs</program></dt>
 
       <dd>Rotate Apache logs without having to kill the server</dd>
 
-      <dt><a href="suexec.html">suexec</a></dt>
+      <dt><program>suexec</program></dt>
 
       <dd>Switch User For Exec</dd>
 

@@ -266,9 +266,9 @@ author.</p>
 <section id="refused"><title>Why do I get ``Connection Refused'' messages when trying to access my freshly
 installed Apache+mod_ssl server via HTTPS?</title>
 <p>There can be various reasons. Some of the common mistakes is that people
-    start Apache with just ``<code>apachectl start</code>'' (or
-    ``<code>httpd</code>'') instead of ``<code>apachectl startssl</code>'' (or
-    ``<code>httpd -DSSL</code>''. Or you're configuration is not correct. At
+    start Apache with just <code>apachectl start</code> (or
+    <program>httpd</program>) instead of <code>apachectl startssl</code> (or
+    <code>httpd -DSSL</code>. Or you're configuration is not correct. At
     least make sure that your <directive module="mpm_common">Listen</directive>
     directives match your <directive type="section" module="core">VirtualHost</directive>
     directives. And if all fails, please do yourself a favor and start over with the
@@ -910,8 +910,8 @@ server" What's the reason?</title>
         First look inside the F.A.Q. (this text), perhaps your problem is such
         popular that it was already answered a lot of times in the past.
     </dd>
-    <dt>Postings from the modssl-users Support Mailing List <a 
-        href="http://www.modssl.org/support/"
+    <dt>Postings from the modssl-users Support Mailing List
+        <a href="http://www.modssl.org/support/"
         >http://www.modssl.org/support/</a></dt>
     <dd>Second search for your problem in one of the existing archives of the
         modssl-users mailing list. Perhaps your problem popped up at least once for
@@ -952,17 +952,17 @@ server" What's the reason?</title>
     <dl>
     <dt>Apache and OpenSSL version information</dt>
     <dd>The Apache version can be determined
-        by running ``<code>httpd -v</code>''. The OpenSSL version can be
-        determined by running ``<code>openssl version</code>''. Alternatively when
-        you have Lynx installed you can run the command ``<code>lynx -mime_header
-        http://localhost/ | grep Server</code>'' to determine all information in a
+        by running <code>httpd -v</code>. The OpenSSL version can be
+        determined by running <code>openssl version</code>. Alternatively when
+        you have Lynx installed you can run the command <code>lynx -mime_header
+        http://localhost/ | grep Server</code> to determine all information in a
         single step.
     </dd>
 
     <dt>The details on how you built and installed Apache+mod_ssl+OpenSSL</dt>
     <dd>For this you can provide a logfile of your terminal session which shows
         the configuration and install steps. Alternatively you can at least
-        provide the <code>configure</code> command line you used.
+        provide the <program>configure</program> command line you used.
     </dd>
 
     <dt>In case of core dumps please include a Backtrace</dt>
@@ -1007,7 +1007,7 @@ server" What's the reason?</title>
         most "current" kernels do not allow a process to dump core after it has
         done a <code>setuid()</code> (unless it does an <code>exec()</code>) for
         security reasons (there can be privileged information left over in
-        memory). Additionally you can run ``<code>/path/to/httpd -X</code>''
+        memory). Additionally you can run <code>/path/to/httpd -X</code>
         manually to force Apache to not fork.
     </li>
 

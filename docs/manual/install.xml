@@ -148,18 +148,17 @@
 
       <dt><a href="http://www.perl.org/">Perl 5</a>
       [OPTIONAL]</dt>
-      <dd>For some of the support scripts like <a
-      href="programs/apxs.html">apxs</a> or <a
-      href="programs/dbmmanage.html">dbmmanage</a> (which are
+      <dd>For some of the support scripts like <program>
+      apxs</program> or <program>dbmmanage</program> (which are
       written in Perl) the Perl 5 interpreter is required (versions
       5.003 or newer are sufficient). If no such interpreter is found by
-      the `<code>configure</code>' script there is no harm. Of course, you
+      the <program>configure</program> script there is no harm. Of course, you
       still can build and install Apache 2.0. Only those support scripts
       cannot be used. If you have multiple Perl interpreters
       installed (perhaps a Perl 4 from the vendor and a Perl 5 from
       your own), then it is recommended to use the <code>--with-perl</code>
       option (see below) to make sure the correct one is selected
-      by <code>./configure</code>.</dd>
+      by <program>configure</program>.</dd>
     </dl>
 </section>
 
@@ -206,8 +205,7 @@ $ tar xvf httpd-2_0_<em>NN</em>.tar
 
     <p>The next step is to configure the Apache source tree for your
     particular platform and personal requirements. This is done using
-    the script <code><a
-    href="programs/configure.html">configure</a></code> included in
+    the script <program>configure</program> included in
     the root directory of the distribution. (Developers downloading
     the CVS version of the Apache source tree will need to have
     <code>autoconf</code> and <code>libtool</code> installed and will
@@ -216,7 +214,7 @@ $ tar xvf httpd-2_0_<em>NN</em>.tar
 
     <p>To configure the source tree using all the default options,
     simply type <code>./configure</code>. To change the default
-    options, <code>configure</code> accepts a variety of variables
+    options, <program>configure</program> accepts a variety of variables
     and command line options.</p>
 
     <p>The most important option is the location <code>--prefix</code>
@@ -241,16 +239,16 @@ $ tar xvf httpd-2_0_<em>NN</em>.tar
     <code>--enable-<var>module</var>=shared</code>.  Similarly, you can
     disable Base modules with the
     <code>--disable-<var>module</var></code> option.  Be careful when
-    using these options, since <code>configure</code> cannot warn you
+    using these options, since <program>configure</program> cannot warn you
     if the module you specify does not exist; it will simply ignore the
     option.</p>
 
     <p>In addition, it is sometimes necessary to provide the
-    <code>configure</code> script with extra information about the
+    <program>configure</program> script with extra information about the
     location of your compiler, libraries, or header files.  This is
     done by passing either environment variables or command line
-    options to <code>configure</code>.  For more information, see the
-    <a href="programs/configure.html">configure manual page</a>.</p>
+    options to <program>configure</program>.  For more information, see the
+    <program>configure</program> manual page.</p>
 
     <p>For a short impression of what possibilities you have, here
     is a typical example which compiles Apache for the installation
@@ -266,14 +264,12 @@ $ tar xvf httpd-2_0_<em>NN</em>.tar
        --enable-speling=shared
 </example>
 
-    <p>When <code>configure</code> is run it will take several minutes to
+    <p>When <program>configure</program> is run it will take several minutes to
     test for the availability of features on your system and build
     Makefiles which will later be used to compile the server.</p>
 
-    <p>Details on all the different <code>configure</code> options are
-    available on the <a href="programs/configure.html">configure 
-    manual page</a>.</p> 
-
+    <p>Details on all the different <program>configure</program> options are
+    available on the <program>configure</program> manual page.</p>
 </section>
 
 <section id="compile"><title>Build</title>
@@ -349,9 +345,9 @@ $ tar xvf httpd-2_0_<em>NN</em>.tar
     process will not overwrite any of your existing documents, log
     files, or configuration files.  In addition, the developers make
     every effort to avoid incompatible changes in the
-    <code>configure</code> options, run-time configuration, or the
+    <program>configure</program> options, run-time configuration, or the
     module API between minor versions.  In most cases you should be able to
-    use an identical <code>configure</code> command line, an identical
+    use an identical <program>configure</program> command line, an identical
     configuration file, and all of your modules should continue to
     work.  (This is only valid for versions after 2.0.41; earlier
     versions have incompatible changes.)</p>
@@ -359,7 +355,7 @@ $ tar xvf httpd-2_0_<em>NN</em>.tar
     <p>If you kept the source tree from your last installation,
     upgrading is even easier.  The file <code>config.nice</code> in
     the root of the old source tree contains the exact
-    <code>configure</code> command line that you used to configure the
+    <program>configure</program> command line that you used to configure the
     source tree.  Then to upgrade from one version to the next, you
     need only copy the <code>config.nice</code> file to the source
     tree of the new version, edit it to make any desired changes, and

@@ -210,7 +210,7 @@ requests</description>
 
     <p>Special note: Use of this directive in <directive module="core"
     type="section">VirtualHost</directive> is no longer supported. To
-    configure your server for <a href="mod_suexec.html">suexec</a> use
+    configure your server for <program>suexec</program> use
     <directive module="mod_suexec">SuexecUserGroup</directive>.</p>
 
     <note><title>Note</title>
@@ -257,9 +257,8 @@ of the daemon</description>
     href="../misc/security_tips.html#serverroot">security</a>.</p>
 
     <note><title>Note</title>
-      <p>As of Apache 2 it is recommended to use only the <a
-      href="../programs/apachectl.html">apachectl</a> script for
-      (re-)starting or stopping the server.</p>
+      <p>As of Apache 2 it is recommended to use only the <program>
+      apachectl</program> script for (re-)starting or stopping the server.</p>
     </note>
 </usage>
 </directivesynopsis>
@@ -319,15 +318,15 @@ listens to</description>
       Listen [fe80::a00:20ff:fea7:ccea]:80
     </example>
 
-    <note type="warning"><title>Error condition</title>
-      Multiple <code>Listen</code> directives for the same ip address and
-      port will result in an 'Address already in use' error message.
+    <note><title>Error condition</title>
+      Multiple <directive>Listen</directive> directives for the same ip
+      address and port will result in an <code>Address already in use</code>
+      error message.
     </note>
-
 </usage>
 <seealso><a href="../dns-caveats.html">DNS Issues</a></seealso>
 <seealso><a href="../bind.html">Setting which addresses and ports Apache
-uses</a></seealso>
+    uses</a></seealso>
 </directivesynopsis>
 
 <directivesynopsis>
@@ -897,7 +896,7 @@ requests</description>
 
     <p>Special note: Use of this directive in <directive module="core"
     type="section">VirtualHost</directive> is no longer supported. To
-    configure your server for <a href="../suexec.html">suexec</a> use
+    configure your server for <program>suexec</program> use
     <directive module="mod_suexec">SuexecUserGroup</directive>.</p>
 
     <note><title>Note</title>

@@ -33,16 +33,16 @@
     Apache on those platforms.</p>
 </summary>
 
-<seealso><a href="programs/httpd.html">httpd</a></seealso>
-<seealso><a href="programs/apachectl.html">apachectl</a></seealso>
+<seealso><program>httpd</program></seealso>
+<seealso><program>apachectl</program></seealso>
 
 <section id="introduction"><title>Introduction</title>
 
     <p>In order to stop or restart Apache, you must send a signal to
-    the running <code>httpd</code> processes.  There are two ways to
+    the running <program>httpd</program> processes.  There are two ways to
     send the signals.  First, you can use the unix <code>kill</code>
-    command to directly send signals to the processes.  You will
-    notice many <code>httpd</code> executables running on your system,
+    command to directly send signals to the processes. You will
+    notice many <program>httpd</program> executables running on your system,
     but you should not send signals to any of them except the parent,
     whose pid is in the <directive
     module="mpm_common">PidFile</directive>. That is to say you
@@ -58,16 +58,15 @@
 
 <example>kill -TERM `cat /usr/local/apache2/logs/httpd.pid`</example>
 
-    <p>The second method of signaling the <code>httpd</code> processes
+    <p>The second method of signaling the <program>httpd</program> processes
     is to use the <code>-k</code> command line options: <code>stop</code>,
     <code>restart</code>, and <code>graceful</code>,
-    as described below.  These are arguments to the <a
-    href="programs/httpd.html">httpd</a> binary, but we recommend that
-    you send them using the <a
-    href="programs/apachectl.html">apachectl</a> control script, which
-    will pass them through to <code>httpd</code>.</p>
+    as described below.  These are arguments to the <program>
+    httpd</program> binary, but we recommend that
+    you send them using the <program>apachectl</program> control script, which
+    will pass them through to <program>httpd</program>.</p>
 
-    <p>After you have signaled <code>httpd</code>, you can read about
+    <p>After you have signaled <program>httpd</program>, you can read about
     its progress by issuing:</p>
 
 <example>tail -f /usr/local/apache2/logs/error_log</example>
@@ -153,15 +152,14 @@
     attempt to restart the server -- it will not be able to bind to
     its listening ports. Before doing a restart, you can check the
     syntax of the configuration files with the <code>-t</code>
-    command line argument (see <a
-    href="programs/httpd.html">httpd</a>). This still will not
+    command line argument (see <program>httpd</program>). This still will not
     guarantee that the server will restart correctly. To check the
     semantics of the configuration files as well as the syntax, you
-    can try starting <code>httpd</code> as a non-root user. If there are no
-    errors it will attempt to open its sockets and logs and fail
-    because it's not root (or because the currently running <code>httpd</code>
-    already has those ports bound). If it fails for any other
-    reason then it's probably a config file error and the error
+    can try starting <program>httpd</program> as a non-root user. If there
+    are no errors it will attempt to open its sockets and logs and fail
+    because it's not root (or because the currently running
+    <program>httpd</program> already has those ports bound). If it fails
+    for any other reason then it's probably a config file error and the error
     should be fixed before issuing the graceful restart.</note>
 </section>
 

@@ -33,7 +33,7 @@
     directive from <module>mod_so</module>.</p>
 
     <p>So to use this extension mechanism your platform has to support the DSO
-    feature and your Apache <code>httpd</code> binary has to be built with the
+    feature and your Apache <program>httpd</program> binary has to be built with the
     <module>mod_so</module> module. The <code>apxs</code> tool automatically
     complains if this is not the case. You can check this yourself by manually
     running the command</p>
@@ -76,8 +76,8 @@
     <module>mod_so</module> or perhaps even read the
     <code>src/modules/standard/mod_so.c</code> source file.</p>
 </summary>
-<seealso><a href="apachectl.html">apachectl</a></seealso>
-<seealso><a href="httpd.html">httpd</a></seealso>
+<seealso><program>apachectl</program></seealso>
+<seealso><program>httpd</program></seealso>
 
 <section id="synopsis"><title>Synopsis</title>
     <p><code><strong>apxs</strong> -<strong>g</strong>

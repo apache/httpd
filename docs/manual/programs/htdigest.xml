@@ -32,11 +32,11 @@
 
     <p>This manual page only lists the command line arguments. For details of
     the directives necessary to configure digest authentication in
-    <a href="httpd.html">httpd</a> see the Apache manual, which is part
+    <program>httpd</program> see the Apache manual, which is part
     of the Apache distribution or can be found at
     <a href="http://httpd.apache.org/">http://httpd.apache.org/</a>.</p>
 </summary>
-<seealso><a href="httpd.html">httpd</a></seealso>
+<seealso><program>httpd</program></seealso>
 <seealso><module>mod_auth_digest</module></seealso>
 
 <section id="synopsis"><title>Synopsis</title>

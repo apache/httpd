@@ -133,7 +133,7 @@ passwords for authentication</description>
     problem.</p>
 
     <p>A perl script called
-    <a href="../programs/dbmmanage.html">dbmmanage</a> is included with
+    <program>dbmmanage</program> is included with
     Apache. This program can be used to create and update DBM
     format password files for use with this module.</p>
 </usage>

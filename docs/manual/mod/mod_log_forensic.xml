@@ -58,7 +58,7 @@
 <seealso><module>mod_log_config</module></seealso>
 
 <section id="formats"><title>Forensic Log Format</title>
-    <p>Each request is logged two times. The first time <em>before</em> it's
+    <p>Each request is logged two times. The first time is <em>before</em> it's
     processed further (that is, after receiving the headers). The second log
     entry is written <em>after</em> the request processing at the same time
     where normal logging occurs.</p>
@@ -79,7 +79,7 @@
         Firefox/0.8|Accept:image/png, <var>etc...</var>
     </example>
 
-    <p>The plus character at the beginning indicates that this is first log
+    <p>The plus character at the beginning indicates that this is the first log
     line of this request. The second line just contains a minus character and
     the ID again:</p>
 
@@ -136,9 +136,9 @@
 
       <note type="warning"><title>Security:</title>
       <p>If a program is used, then it will be run as the user who
-      started httpd. This will be root if the server was started by root;
-      be sure that the program is secure or switches to a less privileged
-      user.</p>
+      started <program>httpd</program>. This will be root if the server was
+      started by root; be sure that the program is secure or switches to a
+      less privileged user.</p>
       </note>
 
       <note><title>Note</title>
