@@ -1077,41 +1077,6 @@ if [ "x$using_shlib" = "x1" ] ; then
 fi
 
 ####################################################################
-## Some OS-related stuff for the DSO mechanism:
-## Finding the vendor DSO functions
-##
-if [ "x$using_shlib" = "x1" ] ; then
-    DL_LIB=""
-    case $PLAT in
-        *-ibm-aix* )
-            DL_LIB="-lld"
-            ;;
-        *-hp-hpux*)
-            if ./helpers/TestCompile func shl_load; then
-                :
-            else
-                if ./helpers/TestCompile lib dld; then
-                    DL_LIB="-ldld"
-                fi
-            fi
-            ;;
-        * )
-            if ./helpers/TestCompile func dlopen; then
-                :
-            else
-                if ./helpers/TestCompile lib dl; then
-                    DL_LIB="-ldl"
-                fi
-            fi
-            ;;
-    esac
-    if [ ".$DL_LIB" != . ]; then
-        LIBS="$LIBS $DL_LIB"
-        echo " + using $DL_LIB for vendor DSO support"
-    fi
-fi
-
-####################################################################
 ## Now we do some OS specific adjustments... for some OSs, we need
 ## to adjust CFLAGS and/or OPTIM depending on which compiler we
 ## are going to use. This is easy, since this can be gleamed from
@@ -1202,38 +1167,6 @@ case "$PLAT" in
 	fi
 	;;
 esac
-
-####################################################################
-## Now check for existance of non-standard system header files
-## and start generation of the ap_config_auto.h header
-##
-AP_CONFIG_AUTO_H="include/ap_config_auto.h"
-echo "/*" >$AP_CONFIG_AUTO_H
-echo " *  ap_config_auto.h -- Automatically determined configuration stuff" >>$AP_CONFIG_AUTO_H
-echo " *  THIS FILE WAS AUTOMATICALLY GENERATED - DO NOT EDIT!" >>$AP_CONFIG_AUTO_H
-echo " */" >>$AP_CONFIG_AUTO_H
-echo "" >>$AP_CONFIG_AUTO_H
-echo "#ifndef AP_CONFIG_AUTO_H" >>$AP_CONFIG_AUTO_H
-echo "#define AP_CONFIG_AUTO_H" >>$AP_CONFIG_AUTO_H
-
-echo " + checking for system header files"
-CHECK_FOR_HEADERS="dlfcn.h dl.h bstring.h crypt.h unistd.h sys/resource.h sys/select.h sys/processor.h"
-for header in $CHECK_FOR_HEADERS; do
-    echo "" >>$AP_CONFIG_AUTO_H
-    echo "/* check: #include <$header> */" >>$AP_CONFIG_AUTO_H
-    name="`echo $header | sed -e 's:/:_:g' -e 's:\.:_:g' | tr '[a-z]' '[A-Z]'`"
-    if ./helpers/TestCompile header $header; then
-        eval "HAVE_${name}=1"
-        echo "#ifndef HAVE_${name}" >>$AP_CONFIG_AUTO_H
-        echo "#define HAVE_${name} 1" >>$AP_CONFIG_AUTO_H
-        echo "#endif" >>$AP_CONFIG_AUTO_H
-    else
-        eval "HAVE_${name}=0"
-        echo "#ifdef HAVE_${name}" >>$AP_CONFIG_AUTO_H
-        echo "#undef HAVE_${name}" >>$AP_CONFIG_AUTO_H
-        echo "#endif" >>$AP_CONFIG_AUTO_H
-    fi
-done
 
 # SOCKS4 support:
 # We assume that if they are using SOCKS4, then they've
@@ -1643,25 +1576,88 @@ else
 fi
 
 ####################################################################
-## Continue building Makefile.config.
+## Continue building Makefile.config. Fill in all entries except
+## for $LIBS at this point. This implies that anything below
+## can only alter $LIBS
 ##
 echo "CFLAGS1=$CFLAGS">> Makefile.config
 echo "OSDIR=\$(SRCDIR)/$OSDIR">> Makefile.config
 echo "INCDIR=\$(SRCDIR)/include" >>Makefile.config
 echo "INCLUDES0=-I\$(OSDIR) -I\$(INCDIR)">> Makefile.config
 echo "INCLUDES1=$INCLUDES">> Makefile.config
-echo "LIBS1=$LIBS">> Makefile.config
 echo "LDFLAGS1=$LDFLAGS">> Makefile.config
 echo "MFLAGS_STATIC=$MFLAGS_STATIC">> Makefile.config
 echo "REGLIB=$REGLIB">> Makefile.config
 echo "RANLIB=$RANLIB">> Makefile.config
 echo "SHELL=$SHELL">> Makefile.config
-echo "##" >> Makefile.config
-echo "##  (End of automatically generated section)">> Makefile.config
-echo "##" >> Makefile.config
-echo "" >> Makefile.config
 
 ####################################################################
+## Some OS-related stuff for the DSO mechanism:
+## Finding the vendor DSO functions
+##
+if [ "x$using_shlib" = "x1" ] ; then
+    DL_LIB=""
+    case $PLAT in
+        *-ibm-aix* )
+            DL_LIB="-lld"
+            ;;
+        *-hp-hpux*)
+            if ./helpers/TestCompile func shl_load; then
+                :
+            else
+                if ./helpers/TestCompile lib dld; then
+                    DL_LIB="-ldld"
+                fi
+            fi
+            ;;
+        * )
+            if ./helpers/TestCompile func dlopen; then
+                :
+            else
+                if ./helpers/TestCompile lib dl; then
+                    DL_LIB="-ldl"
+                fi
+            fi
+            ;;
+    esac
+    if [ ".$DL_LIB" != . ]; then
+        LIBS="$LIBS $DL_LIB"
+        echo " + using $DL_LIB for vendor DSO support"
+    fi
+fi
+
+####################################################################
+## Now check for existance of non-standard system header files
+## and start generation of the ap_config_auto.h header
+##
+AP_CONFIG_AUTO_H="include/ap_config_auto.h"
+echo "/*" >$AP_CONFIG_AUTO_H
+echo " *  ap_config_auto.h -- Automatically determined configuration stuff" >>$AP_CONFIG_AUTO_H
+echo " *  THIS FILE WAS AUTOMATICALLY GENERATED - DO NOT EDIT!" >>$AP_CONFIG_AUTO_H
+echo " */" >>$AP_CONFIG_AUTO_H
+echo "" >>$AP_CONFIG_AUTO_H
+echo "#ifndef AP_CONFIG_AUTO_H" >>$AP_CONFIG_AUTO_H
+echo "#define AP_CONFIG_AUTO_H" >>$AP_CONFIG_AUTO_H
+
+echo " + checking for system header files"
+CHECK_FOR_HEADERS="dlfcn.h dl.h bstring.h crypt.h unistd.h sys/resource.h sys/select.h sys/processor.h"
+for header in $CHECK_FOR_HEADERS; do
+    echo "" >>$AP_CONFIG_AUTO_H
+    echo "/* check: #include <$header> */" >>$AP_CONFIG_AUTO_H
+    name="`echo $header | sed -e 's:/:_:g' -e 's:\.:_:g' | tr '[a-z]' '[A-Z]'`"
+    if ./helpers/TestCompile header $header; then
+        eval "HAVE_${name}=1"
+        echo "#ifndef HAVE_${name}" >>$AP_CONFIG_AUTO_H
+        echo "#define HAVE_${name} 1" >>$AP_CONFIG_AUTO_H
+        echo "#endif" >>$AP_CONFIG_AUTO_H
+    else
+        eval "HAVE_${name}=0"
+        echo "#ifdef HAVE_${name}" >>$AP_CONFIG_AUTO_H
+        echo "#undef HAVE_${name}" >>$AP_CONFIG_AUTO_H
+        echo "#endif" >>$AP_CONFIG_AUTO_H
+    fi
+done
+
 ## Finish building ap_config_auto.h
 ##
 ## We pick out all -D's from CFLAGS and insert them as defines into
@@ -1683,6 +1679,15 @@ awk >>$AP_CONFIG_AUTO_H <$tmpconfig '
 # finish header file
 echo "" >>$AP_CONFIG_AUTO_H
 echo "#endif /* AP_CONFIG_AUTO_H */" >>$AP_CONFIG_AUTO_H
+
+####################################################################
+## Finish creating the Makefile.config file
+##
+echo "LIBS1=$LIBS">> Makefile.config
+echo "##" >> Makefile.config
+echo "##  (End of automatically generated section)">> Makefile.config
+echo "##" >> Makefile.config
+echo "" >> Makefile.config
 
 ####################################################################
 ## Use TestCompile to see if $(CC) is ANSI and as a "final" sanity
