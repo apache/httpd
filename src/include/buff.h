@@ -68,6 +68,8 @@
 #define B_ERROR (48)
 /* Use chunked writing */
 #define B_CHUNK (64)
+/* bflush() if a read would block */
+#define B_SAFEREAD (128)
 
 typedef struct buff_struct BUFF;
 
@@ -120,7 +122,6 @@ extern int bputs(const char *x, BUFF *fb);
 extern int bvputs(BUFF *fb, ...);
 extern int bprintf(BUFF *fb,const char *fmt,...);
 extern int vbprintf(BUFF *fb,const char *fmt,va_list vlist);
-extern int btestread(BUFF *fb);
 
 /* Internal routines */
 extern int bflsbuf(int c, BUFF *fb);

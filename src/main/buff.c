@@ -175,18 +175,64 @@ bgetopt(BUFF *fb, int optname, void *optval)
 }
 
 /*
- * Set a flag on (1) or off (0). Currently, these flags work
- * as a function of the bcwrite() function, so we make sure to
- * flush before setting them one way or the other; otherwise
- * writes could end up with the wrong flag.
+ * Set a flag on (1) or off (0).
  */
 int bsetflag(BUFF *fb, int flag, int value)
 {
-    bflush(fb);
+    if( flag & B_CHUNK ) {
+	/*
+	 * This shouldn't be true for much longer -djg
+	 * Currently, these flags work
+	 * as a function of the bcwrite() function, so we make sure to
+	 * flush before setting them one way or the other; otherwise
+	 * writes could end up with the wrong flag.
+	 */
+	bflush(fb);
+    }
     if (value) fb->flags |= flag;
     else fb->flags &= ~flag;
     return value;
 }
+
+
+/*
+ * This is called instead of read() everywhere in here.  It implements
+ * the B_SAFEREAD functionality -- which is to force a flush() if a read()
+ * would block.  It also deals with the EINTR errno result from read().
+ * return code is like read() except EINTR is eliminated.
+ */
+static int
+saferead( BUFF *fb, void *buf, int nbyte )
+{
+    int rv;
+
+    if( fb->flags & B_SAFEREAD ) {
+	fd_set fds;
+	struct timeval tv;
+
+	/* test for a block */
+	do {
+	    FD_ZERO( &fds );
+	    FD_SET( fb->fd_in, &fds );
+	    tv.tv_sec = 0;
+	    tv.tv_usec = 0;
+#ifdef HPUX
+	    rv = select( fb->fd_in + 1, (int *)&fds, NULL, NULL, &tv );
+#else
+	    rv = select( fb->fd_in + 1, &fds, NULL, NULL, &tv );
+#endif
+	} while( rv < 0 && errno == EINTR );
+	/* treat any error as if it would block as well */
+	if( rv != 1 ) {
+	    bflush(fb);
+	}
+    }
+    do {
+	rv = read( fb->fd_in, buf, nbyte );
+    } while ( rv == -1 && errno == EINTR );
+    return( rv );
+}
+
 
 /*
  * Read up to nbyte bytes into buf.
@@ -204,8 +250,7 @@ bread(BUFF *fb, void *buf, int nbyte)
     if (!(fb->flags & B_RD))
     {
 /* Unbuffered reading */
-	do i = read(fb->fd_in, buf, nbyte);
-	while (i == -1 && errno == EINTR);
+	i = saferead( fb, buf, nbyte );
 	if (i == -1 && errno != EAGAIN) doerror(fb, B_RD);
 	return i;
     }
@@ -233,8 +278,7 @@ bread(BUFF *fb, void *buf, int nbyte)
     if (nbyte >= fb->bufsiz)
     {
 /* read directly into buffer */
-	do i = read(fb->fd_in, buf, nbyte);
-	while (i == -1 && errno == EINTR);
+	i = saferead( fb, buf, nbyte );
 	if (i == -1)
 	{
 	    if (nrd == 0)
@@ -248,8 +292,7 @@ bread(BUFF *fb, void *buf, int nbyte)
     {
 /* read into hold buffer, then memcpy */
 	fb->inptr = fb->inbase;
-	do i = read(fb->fd_in, fb->inptr, fb->bufsiz);
-	while (i == -1 && errno == EINTR);
+	i = saferead( fb, fb->inptr, fb->bufsiz );
 	if (i == -1)
 	{
 	    if (nrd == 0)
@@ -310,8 +353,7 @@ bgets(char *buff, int n, BUFF *fb)
 	    fb->inptr = fb->inbase;
 	    fb->incnt = 0;
 	    if (fb->flags & B_EOF) break;
-	    do i = read(fb->fd_in, fb->inptr, fb->bufsiz);
-	    while (i == -1 && errno == EINTR);
+	    i = saferead( fb, fb->inptr, fb->bufsiz );
 	    if (i == -1)
 	    {
 		buff[ct] = '\0';
@@ -381,9 +423,7 @@ int blookc(char *buff, BUFF *fb)
         if (fb->flags & B_EOF)
             return 0;
 
-        do {
-            i = read(fb->fd_in, fb->inptr, fb->bufsiz);
-        } while (i == -1 && errno == EINTR);
+	i = saferead( fb, fb->inptr, fb->bufsiz );
 
         if (i == -1) {
             if (errno != EAGAIN)
@@ -399,37 +439,6 @@ int blookc(char *buff, BUFF *fb)
 
     *buff = fb->inptr[0];
     return 1;
-}
-
-/*
- * Tests if there is data to be read.  Returns 0 if there is data,
- * -1 otherwise.
- */
-int
-btestread(BUFF *fb)
-{
-    fd_set fds;
-    struct timeval tv;
-    int rv;
-
-    /* the simple case, we've already got data in the buffer */
-    if( fb->incnt ) {
-	return( 0 );
-    }
-
-    /* otherwise see if the descriptor would block if we try to read it */
-    do {
-	FD_ZERO( &fds );
-	FD_SET( fb->fd_in, &fds );
-	tv.tv_sec = 0;
-	tv.tv_usec = 0;
-#ifdef HPUX
-	rv = select( fb->fd_in + 1, (int *)&fds, NULL, NULL, &tv );
-#else
-	rv = select( fb->fd_in + 1, &fds, NULL, NULL, &tv );
-#endif
-    } while( rv < 0 && errno == EINTR );
-    return( rv == 1 ? 0 : -1 );
 }
 
 /*
@@ -464,8 +473,7 @@ bskiplf(BUFF *fb)
 	fb->inptr = fb->inbase;
 	fb->incnt = 0;
 	if (fb->flags & B_EOF) return 0;
-	do i = read(fb->fd_in, fb->inptr, fb->bufsiz);
-	while (i == -1 && errno == EINTR);
+	i = saferead( fb, fb->inptr, fb->bufsiz );
 	if (i == 0) fb->flags |= B_EOF;
 	if (i == -1 && errno != EAGAIN) doerror(fb, B_RD);
 	if (i == 0 || i == -1) return i;

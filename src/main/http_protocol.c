@@ -520,11 +520,26 @@ int read_request_line (request_rec *r)
     
     /* Read past empty lines until we get a real request line,
      * a read error, the connection closes (EOF), or we timeout.
+     *
+     * We skip empty lines because browsers have to tack a CRLF on to the end
+     * of POSTs to support old CERN webservers.  But note that we may not
+     * have flushed any previous response completely to the client yet.
+     * We delay the flush as long as possible so that we can improve
+     * performance for clients that are pipelining requests.  If a request
+     * is pipelined then we won't block during the (implicit) read() below.
+     * If the requests aren't pipelined, then the client is still waiting
+     * for the final buffer flush from us, and we will block in the implicit
+     * read().  B_SAFEREAD ensures that the BUFF layer flushes if it will
+     * have to block during a read.
      */
+    bsetflag( conn->client, B_SAFEREAD, 1 );
     while ((len = getline(l, HUGE_STRING_LEN, conn->client, 0)) <= 0) {
-        if ((len < 0) || bgetflag(conn->client, B_EOF))
+        if ((len < 0) || bgetflag(conn->client, B_EOF)) {
+	    bsetflag( conn->client, B_SAFEREAD, 0 );
             return 0;
+	}
     }
+    bsetflag( conn->client, B_SAFEREAD, 0 );
     if (len == (HUGE_STRING_LEN - 1))
         return 0;               /* Should be a 414 error status instead */
 

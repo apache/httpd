@@ -1675,10 +1675,6 @@ void child_main(int child_num_arg)
         if (r) increment_counts(child_num,r,1);
 #endif
 	while (r && current_conn->keepalive) {
-	    /* If there's no request waiting for us to read then flush the
-	     * socket.  This is to avoid tickling a bug in older Netscape
-	     * clients. */
-	    if( btestread(conn_io) == -1 ) bflush(conn_io);
 	    destroy_pool(r->pool);
 	    (void)update_child_status (child_num, SERVER_BUSY_KEEPALIVE,
 	     (request_rec*)NULL);
@@ -2153,7 +2149,6 @@ main(int argc, char *argv[])
 	if (r) process_request (r); /* else premature EOF (ignore) */
 
         while (r && conn->keepalive) {
-	    if( btestread(cio) == -1 ) bflush(cio);
 	    destroy_pool(r->pool);
             r = read_request (conn);
             if (r) process_request (r);

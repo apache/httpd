@@ -1,6 +1,11 @@
-Changes with Apache 1.2b6
+Changes with Apache 1.2b7
 
   *) Continue persistent connection after 304 response. [Dean Gaudet]
+
+  *) Improved buffered output to the client by delaying the flush decision
+     until the BUFF code is actually about to read the next request.
+     This fixes a problem introduced in 1.2b5 with clients that send
+     an extra CRLF after a POST request. [Dean Gaudet]
 
 Changes with Apache 1.2b6
 
