@@ -561,6 +561,7 @@ static void accept_and_queue_connections(void * dummy)
             ap_log_error(APLOG_MARK, APLOG_INFO|APLOG_WIN32ERROR, server_conf, "select failed with errno %d", h_errno);
             count_select_errors++;
             if (count_select_errors > MAX_SELECT_ERRORS) {
+                workers_may_exit = 1;      
                 ap_log_error(APLOG_MARK, APLOG_ERR|APLOG_WIN32ERROR, server_conf,
                              "Too many errors in select loop. Child process exiting.");
                 break;
@@ -662,6 +663,7 @@ static PCOMP_CONTEXT winnt_get_connection(PCOMP_CONTEXT context)
             ap_log_error(APLOG_MARK, APLOG_INFO|APLOG_WIN32ERROR, server_conf, "select failed with errno %d", h_errno);
             count_select_errors++;
             if (count_select_errors > MAX_SELECT_ERRORS) {
+                workers_may_exit = 1;      
                 ap_log_error(APLOG_MARK, APLOG_ERR|APLOG_WIN32ERROR, server_conf,
                              "Too many errors in select loop. Child process exiting.");
                 break;
