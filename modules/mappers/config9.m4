@@ -34,6 +34,13 @@ case "x$enable_so" in
         ;;
 esac
 
+dnl mod_so can only be built statically. If the user wants modules to
+dnl be built as DSOs by default (eg. ./configure --enable-mods-shared=most)
+dnl then we must override the default here.
+if test "x$enable_so" = "xyes"; then
+    enable_so="static"
+fi
+
 if test "$sharedobjs" = "yes"; then
     if test $ac_cv_define_APR_HAS_DSO = "no"; then
         AC_MSG_ERROR([shared objects have been requested but cannot be built since mod_so cannot be built])
