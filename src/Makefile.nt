@@ -138,6 +138,10 @@ cleanr:
 	 set CFG=regex - Win32 Release
 	 nmake /nologo -f regex.mak clean
 	cd ..
+	cd ap
+	 set CFG=ap - Win32 Release
+	 nmake /nologo -f ap.mak clean
+	cd ..
 	 set CFG=ApacheCore - Win32 Release
 	 nmake /nologo -f ApacheCore.mak clean
 	 set CFG=Apache - Win32 Release
@@ -173,6 +177,10 @@ cleand:
 	cd regex
 	 set CFG=regex - Win32 Debug
 	 nmake /nologo -f regex.mak clean
+	cd ..
+	cd ap
+	 set CFG=ap - Win32 Debug
+	 nmake /nologo -f ap.mak clean
 	cd ..
 	 set CFG=ApacheCore - Win32 Debug
 	 nmake /nologo -f ApacheCore.mak clean
