@@ -751,8 +751,7 @@ AddLanguage es .es
 AddLanguage sv .sv
 AddLanguage cz .cz
 AddLanguage ru .ru
-AddLanguage tw .tw
-AddLanguage zh-tw .tw
+AddLanguage zh-TW .zh-tw
 AddLanguage hr .hr
 
 #
