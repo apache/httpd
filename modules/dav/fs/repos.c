@@ -184,7 +184,7 @@ static const dav_liveprop_spec dav_fs_props[] =
         DAV_FS_URI_MYPROPS,
         "executable",
         DAV_PROPID_FS_executable,
-        0       /* handled special in dav_fs_is_writeable */
+        0       /* handled special in dav_fs_is_writable */
     },
 
     { 0 }	/* sentinel */
@@ -1730,7 +1730,7 @@ static dav_prop_insert dav_fs_insert_prop(const dav_resource *resource,
     ** exist. Just bail for this case.
     **
     ** Even though we state that the FS properties are not defined, the
-    ** client cannot store dead values -- we deny that thru the is_writeable
+    ** client cannot store dead values -- we deny that thru the is_writable
     ** hook function.
     */
     if (!resource->exists)
@@ -1815,12 +1815,12 @@ static dav_prop_insert dav_fs_insert_prop(const dav_resource *resource,
     return which;
 }
 
-static int dav_fs_is_writeable(const dav_resource *resource, int propid)
+static int dav_fs_is_writable(const dav_resource *resource, int propid)
 {
     const dav_liveprop_spec *info;
 
 #ifndef WIN32
-    /* this property is not usable (writeable) on the Win32 platform */
+    /* this property is not usable (writable) on the Win32 platform */
     if (propid == DAV_PROPID_FS_executable && !resource->collection)
 	return 1;
 #endif
@@ -1968,7 +1968,7 @@ static dav_error *dav_fs_patch_rollback(dav_resource *resource,
 static const dav_hooks_liveprop dav_hooks_liveprop_fs =
 {
     dav_fs_insert_prop,
-    dav_fs_is_writeable,
+    dav_fs_is_writable,
     dav_fs_namespace_uris,
     dav_fs_patch_validate,
     dav_fs_patch_exec,

@@ -199,7 +199,7 @@ DAV_DECLARE(dav_error*) dav_push_error(apr_pool_t *p, int status, int error_id,
 /* Prop DB errors */
 #define DAV_ERR_PROP_BAD_MAJOR		200	/* major version was wrong */
 #define DAV_ERR_PROP_READONLY		201	/* prop is read-only */
-#define DAV_ERR_PROP_NO_DATABASE	202	/* writeable db not avail */
+#define DAV_ERR_PROP_NO_DATABASE	202	/* writable db not avail */
 #define DAV_ERR_PROP_NOT_FOUND		203	/* prop not found */
 #define DAV_ERR_PROP_BAD_LOCKDB		204	/* could not open lockdb */
 #define DAV_ERR_PROP_OPENING		205	/* problem opening propdb */
@@ -696,14 +696,14 @@ struct dav_hooks_liveprop
 				   ap_text_header *phdr);
 
     /*
-    ** Determine whether a given property is writeable.
+    ** Determine whether a given property is writable.
     **
     ** ### we may want a different semantic. i.e. maybe it should be
     ** ### "can we write <value> into this property?"
     **
     ** Returns 1 if the live property can be written, 0 if read-only.
     */
-    int (*is_writeable)(const dav_resource *resource, int propid);
+    int (*is_writable)(const dav_resource *resource, int propid);
 
     /*
     ** This member defines the set of namespace URIs that the provider
@@ -785,7 +785,7 @@ typedef struct {
 
     int propid;         /* provider-local property ID */
 
-    int is_writable;    /* is the property writeable? */
+    int is_writable;    /* is the property writable? */
 
 } dav_liveprop_spec;
 
