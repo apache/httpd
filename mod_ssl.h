@@ -510,6 +510,8 @@ typedef struct {
     modssl_pk_server_t *pks;
     modssl_pk_proxy_t  *pkp;
 
+    ssl_proto_t  protocol;
+
     /* config for handling encrypted keys */
     ssl_pphrase_t pphrase_dialog_type;
     const char   *pphrase_dialog_path;
@@ -520,8 +522,6 @@ typedef struct {
     const char  *crl_path;
     const char  *crl_file;
     X509_STORE  *crl;
-
-    ssl_proto_t  protocol;
 
     modssl_auth_ctx_t auth;
 } modssl_ctx_t;
