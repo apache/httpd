@@ -16,7 +16,7 @@ error=no
 if [ $# -ne 1 -a $# -ne 2 ]; then
     error=yes
 fi
-if [ $# -eq 2 -a "$1" != "-n" ]; then
+if [ $# -eq 2 -a "x$1" != "x-n" ]; then
     error=yes
 fi
 if [ "$error" = "yes" ]; then
