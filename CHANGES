@@ -1,5 +1,8 @@
 Changes with Apache 2.0.33-dev
 
+  *) Fix ap_directory_merge() to correctly merge configs when there is
+     no <Directory /> block.  [Justin Erenkrantz, William Rowe]
+
   *) Remove spurious debug messsages that are normal under HTTP
      keep-alive logic.  [Jeff Trawick, Justin Erenkrantz]
 

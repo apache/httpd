@@ -712,9 +712,10 @@ AP_DECLARE(int) ap_directory_walk(request_rec *r)
             char *delim;
             int temp_slash=0;
         
-            /* We have no trailing slash, but we sure would appreciate one...
+            /* We have no trailing slash, but we sure would appreciate one.
+             * However, we don't want to append a / our first time through.
              */
-            if (sec_idx && r->filename[filename_len-1] != '/') {
+            if ((seg > startseg) && r->filename[filename_len-1] != '/') {
                 r->filename[filename_len++] = '/';
                 r->filename[filename_len] = 0;
                 temp_slash=1;
