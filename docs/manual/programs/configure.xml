@@ -266,24 +266,22 @@
         <code>--enable-<var>foo</var></code> even if <var>foo</var> doesn't
         exist, so you need to type carefully.
       </note>
-        
     </section>
 
-    <section id="modules"><title>Enable or disable discrete modules</title>
+    <!-- to do: add better enable-module descriptions and recommendations -->
+    <section id="enabledmodules"><title>Modules enabled by default</title>
       <p>Some modules are compiled by default and have to be disabled
-        explicitly while other modules have to be enabled explicitly or by
-        using the keywords <code>most</code> or <code>all</code> (see
-        <code>--enable-mods-shared</code> below for further explanation) to be
-        available. Therefore use the options below.</p>
-
+        explicitly. Use the following options to remove discrete modules from
+        the compilation process.</p>
+        
       <dl>
         <dt><code>--disable-actions</code></dt>
         <dd>Disable action triggering on requests, which is provided by
           <module>mod_actions</module>.</dd>
 
         <dt><code>--disable-alias</code></dt>
-        <dd>Disable the mapping of requests to different parts of the filesystem,
-          which is provided by <module>mod_alias</module>.</dd>
+        <dd>Disable the mapping of requests to different parts of the
+          filesystem, which is provided by <module>mod_alias</module>.</dd>
 
         <dt><code>--disable-asis</code></dt>
         <dd>Disable support for as-is filetypes, which is provided by
@@ -291,7 +289,9 @@
 
         <dt><code>--disable-auth</code></dt>
         <dd>Disable user-based access control provided  by
-          <module>mod_auth</module>.</dd>
+          <module>mod_auth</module>. This module provides for HTTP Basic
+          Authentication, where the usernames and passwords are stored in
+          plain text files.</dd>
 
         <dt><code>--disable-autoindex</code></dt>
         <dd>Disable the directory listing functionality provided by
@@ -302,15 +302,15 @@
           <module>mod_access</module>.</dd>
 
         <dt><code>--disable-cgi</code></dt>
-        <dd><module>mod_cgi</module>, which provides support for CGI scripts, is
-          enabled by default when using a non-threaded MPM. Use this option to
-          disable CGI support.</dd>
-
+        <dd><module>mod_cgi</module>, which provides support for CGI scripts,
+          is enabled by default when using a non-threaded MPM. Use this
+          option to disable CGI support.</dd>
+         
         <dt><code>--disable-cgid</code></dt>
         <dd>When using the threaded MPMs <module>worker</module> or
           <module>perchild</module> support for CGI scripts is provided by
-          <module>mod_cgid</module> by default. To disable CGI support use this
-          option.</dd>
+          <module>mod_cgid</module> by default. To disable CGI support use
+          this option.</dd>
 
         <dt><code>--disable-charset-lite</code></dt>
         <dd>Disable character set translation provided by
@@ -328,12 +328,13 @@
         <!-- configure mentions enable-http, but disable-http would make much
         more sense -->
         <dt><code>--disable-http</code></dt>
-        <dd>Disable the HTTP protocol handling. The <code>http</code> module is
-          a basic one, enabling the server to function as an HTTP server. It is
-          only useful to disable it if you want to use another protocol module
-          instead. <strong>Don't disable this module unless you are really sure
-            what you are doing.</strong><br/>
-          Note: This module will always be linked statically.</dd> 
+          <dd>Disable the HTTP protocol handling. The <code>http</code>
+            module is a basic one, enabling the server to function as an
+            HTTP server. It is only useful to disable it if you want to use
+            another protocol module instead. <strong>Don't disable this
+            module unless you are really sure what you are doing.</strong>
+            <br/>
+            Note: This module will always be linked statically.</dd> 
 
         <dt><code>--disable-imap</code></dt>
         <dd>Disable support for server based imagemaps, which provided by
@@ -345,62 +346,66 @@
 
         <dt><code>--disable-log-config</code></dt>
         <dd>Disable the logging configuration provided by
-          <module>mod_log_config</module>.</dd>
+          <module>mod_log_config</module>. You won't be able to log requests
+          to the server without this module.</dd>
 
         <dt><code>--disable-mime</code></dt>
-        <dd>Disable the mapping of file-extensions to MIME, which is provided by
-          <module>mod_mime</module>.</dd>
+        <dd><module>mod_mime</module> associates the requested filename's
+          extensions with the file's behavior and content (mime-type,
+          language, character set and encoding). Disabling the mapping of
+          file-extensions to MIME is normally not recommended.</dd>
 
         <dt><code>--disable-negotiation</code></dt>
         <dd>Disable content negotiation provided by
           <module>mod_negotiation</module>.</dd>
 
         <dt><code>--disable-setenvif</code></dt>
-        <dd>Disable support for basing environment variables on headers, which
-          is provided by <module>mod_setenvif</module>.</dd>
+        <dd>Disable support for basing environment variables on headers,
+          which is provided by <module>mod_setenvif</module>.</dd>
 
         <dt><code>--disable-status</code></dt>
         <dd>Enable the process/thread monitoring, which is provided by
           <module>mod_status</module>.</dd>
 
         <dt><code>--disable-userdir</code></dt>
-        <dd>Disable the mapping of requests to user-specific directories, which
-          is provided by <module>mod_userdir</module>.</dd>
+        <dd>Disable the mapping of requests to user-specific directories,
+          which is provided by <module>mod_userdir</module>.</dd>
+      </dl>
+    </section>
 
+    <section id="disabledmodules"><title>Modules, disabled by default</title>
+      <p>Some modules are compiled by default and have to be enabled
+        explicitly or by using the keywords <code>most</code> or
+        <code>all</code> (see <code>--enable-mods-shared</code> below for
+        further explanation) to be available. Therefore use the options
+        below.</p>
+
+      <dl>
         <dt><code>--enable-auth-anon</code></dt>
         <dd>Enable anonymous user access provided by
           <module>mod_auth_anon</module>.</dd>
 
         <dt><code>--enable-auth-dbm</code></dt>
-        <dd>Enable support for DBM-based access databases provided by
-          <module>mod_auth_dbm</module>.</dd>
+        <dd><module>mod_auth_dbm</module> provides for HTTP Basic
+          Authentication, where the usernames and passwords are stored in DBM
+          type database files. Use this option to enable the module.</dd>
 
         <dt><code>--enable-auth-digest</code></dt>
         <dd>Enable RFC2617 Digest authentication provided by
-          <module>mod_auth_digest</module>.</dd>
+          <module>mod_auth_digest</module>. This module uses plain text files
+          to store the credentials.</dd>
 
         <dt><code>--enable-auth-ldap</code></dt>
         <dd>Enable LDAP based authentication provided by
           <module>mod_auth_ldap</module>.</dd>
-
-        <!-- module doc needed -->
-        <dt><code>--enable-bucketeer</code></dt>
-        <dd>Enable manipulation filter the manipulation filter for buckets,
-          which is provided by <code>mod_bucketeer</code>.</dd>
           
         <dt><code>--enable-cache</code></dt>
         <dd>Enable dynamic file caching provided by
-          <module>mod_cache</module>.</dd>
-
-        <!-- module doc needed -->
-        <dt><code>--enable-case-filter</code></dt>
-        <dd>Enable the example uppercase conversion output filter support of
-          <code>mod_case_filter</code>.</dd>
-
-        <!-- module doc needed -->
-        <dt><code>--enable-case-filter-in</code></dt>
-        <dd>Enable the example uppercase conversion input filter support of
-          <code>mod_case_filter_in</code>.</dd>
+          <module>mod_cache</module>. This experimental module may be
+          interesting for servers with high load or caching proxy servers. At
+          least one storage management module (e.g.
+          <module>mod_disk_cache</module> or <module>mod_mem_cache</module>)
+          is also necessary.</dd>
 
         <dt><code>--enable-cern-meta</code></dt>
         <dd>Enable the CERN-type meta files support provided by
@@ -434,14 +439,6 @@
         <dt><code>--enable-disk-cache</code></dt>
         <dd>Enable disk caching provided by
           <module>mod_disk_cache</module>.</dd>
-
-        <dt><code>--enable-echo</code></dt>
-        <dd>Enable the ECHO server provided by
-          <module>mod_echo</module>.</dd>
-
-        <dt><code>--enable-example</code></dt>
-        <dd>Enable the example and demo module
-          <module>mod_example</module>.</dd>
 
         <dt><code>--enable-expires</code></dt>
         <dd>Enable Expires header control provided by
@@ -482,26 +479,6 @@
         <dt><code>--enable-isapi</code></dt>
         <dd>Enable the isapi extension support provided by
           <module>mod_isapi</module>.</dd>
-
-        <!-- module doc needed -->
-        <dt><code>--enable-optional-fn-export</code></dt>
-        <dd>Enable the example for an optional function exporter, which is
-          provided by <code>mod_optional_fn_export</code>.</dd> 
-
-        <!-- module doc needed -->
-        <dt><code>--enable-optional-fn-import</code></dt>
-        <dd>Enable the example for an optional function importer, which is
-          provided by <code>mod_optional_fn_import</code>.</dd>
-
-        <!-- module doc needed -->
-        <dt><code>--enable-optional-hook-export</code></dt>
-        <dd>Enable the example for an optional hook exporter, which is provided
-          by <code>mod_optional_hook_export</code>.</dd>
-
-        <!-- module doc needed -->
-        <dt><code>--enable-optional-hook-import</code></dt>
-        <dd>Enable the example optional hook importer, which is provided by
-          <code>mod_optional_hook_import</code>.</dd>
 
         <dt><code>--enable-proxy</code></dt>
         <dd>Enable the proxy/gateway functionality provided by
@@ -555,6 +532,69 @@
         <dd>Enable user-session tracking provided by
           <module>mod_usertrack</module>.</dd>
 
+        <dt><code>--enable-vhost-alias</code></dt>
+        <dd>Enable mass virtual hosting provided by
+          <module>mod_vhost_alias</module>.</dd>
+      </dl>
+    </section>
+
+    <section id="developermodules"><title>Modules for developers</title>
+      <p>The following modules are useful only for developers and testing
+        purposes and are disabled by default. Use the following options to
+        enable them. If you are not sure whether you need one of these
+        modules, omit them.</p>
+
+      <dl>
+        <!-- module doc needed -->
+        <dt><code>--enable-bucketeer</code></dt>
+        <dd>Enable the manipulation filter for buckets, which is provided by
+          <code>mod_bucketeer</code>.</dd>
+
+        <!-- module doc needed -->
+        <dt><code>--enable-case-filter</code></dt>
+        <dd>Enable the example uppercase conversion output filter support of
+          <code>mod_case_filter</code>.</dd>
+
+        <!-- module doc needed -->
+        <dt><code>--enable-case-filter-in</code></dt>
+        <dd>Enable the example uppercase conversion input filter support of
+          <code>mod_case_filter_in</code>.</dd>
+
+        <dt><code>--enable-echo</code></dt>
+        <dd>Enable the ECHO server provided by
+          <module>mod_echo</module>.</dd>
+
+        <dt><code>--enable-example</code></dt>
+        <dd>Enable the example and demo module
+          <module>mod_example</module>.</dd>
+
+        <!-- module doc needed -->
+        <dt><code>--enable-optional-fn-export</code></dt>
+        <dd>Enable the example for an optional function exporter, which is
+          provided by <code>mod_optional_fn_export</code>.</dd> 
+
+        <!-- module doc needed -->
+        <dt><code>--enable-optional-fn-import</code></dt>
+        <dd>Enable the example for an optional function importer, which is
+          provided by <code>mod_optional_fn_import</code>.</dd>
+
+        <!-- module doc needed -->
+        <dt><code>--enable-optional-hook-export</code></dt>
+        <dd>Enable the example for an optional hook exporter, which is provided
+          by <code>mod_optional_hook_export</code>.</dd>
+
+        <!-- module doc needed -->
+        <dt><code>--enable-optional-hook-import</code></dt>
+        <dd>Enable the example optional hook importer, which is provided by
+          <code>mod_optional_hook_import</code>.</dd>
+      </dl>
+    </section>
+
+    <section id="modules"><title>MPMs and third-party modules</title>
+      <p>To add the necessary Multi Processing Module and additional third-party
+        modules use the following options:</p>
+
+      <dl>
         <dt><code>--with-module=<var>module-type</var>:<var>module-file</var>
           </code></dt>
         <dd><p>Add a third-party module to the list of statically linked
@@ -562,25 +602,26 @@
             will be searched in the <code>modules/<var>module-type</var></code>
             subdirectory of your Apache HTTP server source tree so it has to be
             placed there before. If it is not found here 
-            <code>configure</code> is considering <var>module-file</var> to be a
+            <code>configure</code> is considering <var>module-file</var> to be
             an absolute file path and tries to copy the source file into the
             <var>module-type</var> subdirectory.</p>
           <p>This option is useful to add small external modules consisting of
-            one source file. For bigger modules you should read the vendor's
-            documentation.</p>
+            one source file. For more complex modules you should read the
+            vendor's documentation.</p>
           <note><title>Note</title>
-            If you want to build a DSO module instead of a statically linked use
-            <a href="apxs.html">apxs</a>.</note>
+            If you want to build a DSO module instead of a statically linked
+            use <a href="apxs.html">apxs</a>.</note>
         </dd>
 
         <dt><code>--with-mpm=MPM</code></dt>
         <dd>Choose the process model for your server. You have to select
-          exactly one <a href="mpm.html">Multi-Processing Module</a>. Otherwise
-          the <a href="mpm.html#defaults">default MPM</a> for your operating
-          system will be taken. Possible MPMs are <module>beos</module>,
-          <module>leader</module>, <module>mpmt_os2</module>,
-          <module>perchild</module>, <module>prefork</module>,
-          <module>threadpool</module> and <module>worker</module>.</dd>
+          exactly one <a href="../mpm.html">Multi-Processing Module</a>.
+          Otherwise the <a href="../mpm.html#defaults">default MPM</a> for
+          your operating system will be taken. Possible MPMs are
+          <module>beos</module>, <module>leader</module>,
+          <module>mpmt_os2</module>, <module>perchild</module>,
+          <module>prefork</module>, <module>threadpool</module> and
+          <module>worker</module>.</dd>
       </dl>
     </section>
 
@@ -621,17 +662,14 @@
         <dt><code>--enable-v4-mapped</code></dt>
         <dd>Allow IPv6 sockets to handle IPv4 connections.</dd>
 
-        <dt><code>--enable-vhost-alias</code></dt>
-        <dd>Enable mass virtual hosting provided by
-          <module>mod_vhost_alias</module>.</dd>
-
         <dt><code>--with-port=<var>PORT</var></code></dt>
         <dd>This defines the port on which <code>httpd</code> will listen. This
           port number is used when generating the configuration file
           <code>httpd.conf</code>. The default is 80.</dd>
 
         <dt><code>--with-program-name</code></dt>
-        <dd>Define an alternative executable name.</dd>
+        <dd>Define an alternative executable name. The default is
+          <code>httpd</code>.</dd>
       </dl>
     </section>
   </section>
@@ -692,6 +730,43 @@
           (e.g., when <module>mod_deflate</module> is enabled). You can set the
           directory path to the compression library instead.</dd>
       </dl>
+
+      <p>Several features of the Apache HTTP Server, including
+        <module>mod_authn_dbm</module> and <module>mod_rewrite</module>'s DBM
+        <directive module="mod_rewrite">RewriteMap</directive> use simple
+        key/value databases for quick lookups of information. SDBM is included
+        in the APU, so this database is always available. If you would like to
+        use other database types, use the following options to enable
+        them:</p>
+        
+      <dl>
+        <dt><code>--with-gdbm[=<var>path</var>]</code></dt>
+        <dd>If no <var>path</var> is specified, <code>configure</code> will
+          search for the include files and libraries of a GNU DBM
+          installation in the usual search paths. An explicit
+          <var>path</var> will cause <code>configure</code> to look in
+          <code><var>path</var>/lib</code> and
+          <code><var>path</var>/include</code> for the relevant files.
+          Finally, the <var>path</var> may specify specific include and
+          library paths separated by a colon.</dd>
+          
+        <dt><code>--with-ndbm[=<var>path</var>]</code></dt>
+        <dd>Like <code>--with-gdbm</code>, bur searches for a New DBM
+          installation.</dd>
+        
+        <dt><code>--with-berkeley-db[=<var>path</var>]</code></dt>
+        <dd>Like <code>--with-gdbm</code>, but searches for a Berkeley DB
+          installation.</dd>
+      </dl>
+
+      <note><title>Note</title>
+        <p>The DBM options are provided by the APU and passed through to its
+          configuration script. They are useless when using an already
+          installed APU defined by <code>--with-apr-util</code>.</p>
+        <p>You may use more then one DBM implementation together with your
+          HTTP server. The appropriated DBM type will be configured within
+          the runtime configuration at each time.</p>
+      </note>
     </section>
   </section>
   
