@@ -10,7 +10,7 @@
   are intended to be brief notes, and you should be able to find
   more information in either the <a href="new_features_2_0.html">New Features</a> document, or in
   the <code>src/CHANGES</code> file.</p>
-</div><div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#compile-time">Compile-Time Configuration Changes</a></li><li><img alt="" src="./images/down.gif" /> <a href="#run-time">Run-Time Configuration Changes</a></li><li><img alt="" src="./images/down.gif" /> <a href="#misc">Misc Changes</a></li><li><img alt="" src="./images/down.gif" /> <a href="#third-party">Third Party Modules</a></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div><div class="section"><h2><a name="compile-time" id="compile-time">Compile-Time Configuration Changes</a></h2>
+</div><div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#compile-time">Compile-Time Configuration Changes</a></li><li><img alt="" src="./images/down.gif" /> <a href="#run-time">Run-Time Configuration Changes</a></li><li><img alt="" src="./images/down.gif" /> <a href="#misc">Misc Changes</a></li><li><img alt="" src="./images/down.gif" /> <a href="#third-party">Third Party Modules</a></li></ul><h3>See also</h3><ul class="seealso"><li><a href="new_features_2_0.html">New Features in 2.0</a></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div><div class="section"><h2><a name="compile-time" id="compile-time">Compile-Time Configuration Changes</a></h2>
     
 
     <ul>
@@ -31,31 +31,30 @@
       <li>Many directives that were in the core server in Apache
       1.3 are now in the MPMs. If you wish the behavior of the
       server to be as similar as possible to the behavior of Apache
-      1.3, you should select the <a href="mod/prefork.html">prefork</a> MPM. Other MPMs will have
-      different directives to control process creation and request
+      1.3, you should select the <code class="module"><a href="./mod/prefork.html">prefork</a></code> MPM. Other MPMs
+      will have different directives to control process creation and request
       processing.</li>
 
       <li>The <a href="mod/mod_proxy.html">proxy module</a> has been
       revamped to bring it up to HTTP/1.1.  Among the important changes,
-      proxy access control is now placed inside a &lt;Proxy&gt; block
-      rather than a &lt;Directory proxy:&gt; block.</li>
+      proxy access control is now placed inside a <code class="directive"><a href="./mod/mod_proxy.html#proxy">&lt;Proxy&gt;</a></code> block rather than a
+      <code>&lt;Directory proxy:&gt;</code> block.</li>
 
-      <li>The handling of PATH_INFO (trailing path information after
-      the true filename) has changed for some modules.  Modules
+      <li>The handling of <code>PATH_INFO</code> (trailing path information
+      after the true filename) has changed for some modules.  Modules
       that were previously implemented as a handler but are now
       implemented as a filter may no longer accept requests with
-      PATH_INFO.  Filters such as <a href="mod/mod_include.html">INCLUDES</a> are implemented on top
+      <code>PATH_INFO</code>.  Filters such as <a href="mod/mod_include.html">INCLUDES</a> are implemented on top
       of the core handler, and therefore reject requests with
-      PATH_INFO.  You can use the <code class="directive"><a href="./mod/core.html#acceptpathinfo">AcceptPathInfo</a></code> directive to
-      force the core handler to accept requests with PATH_INFO and
-      thereby restore the ability to use PATH_INFO in server-side
-      includes.</li>
+      <code>PATH_INFO</code>.  You can use the <code class="directive"><a href="./mod/core.html#acceptpathinfo">AcceptPathInfo</a></code> directive to
+      force the core handler to accept requests with <code>PATH_INFO</code>
+      and thereby restore the ability to use <code>PATH_INFO</code> in
+      server-side includes.</li>
 
       <li>The <code class="directive"><a href="./mod/mod_negotiation.html#cachenegotiateddocs">CacheNegotiatedDocs</a></code>
       directive now takes the argument <code>on</code> or
-      <code>off</code>. Existing instances of
-      <code>CacheNegotiatedDocs</code> should be replaced with
-      <code>CacheNegotiatedDocs on</code>.</li>
+      <code>off</code>. Existing instances of <code class="directive">CacheNegotiatedDocs</code> should be
+      replaced with <code>CacheNegotiatedDocs on</code>.</li>
 
       <li>
         The <code class="directive"><a href="./mod/core.html#errordocument">ErrorDocument</a></code>
@@ -85,11 +84,10 @@
       making use of the default values of these directives without
       including them in the configuration files, you may need to
       add <code>Include conf/access.conf</code> and <code>Include
-      conf/srm.conf</code> to your httpd.conf. In order to assure
-      that Apache reads the configuration files in the same order
-      as was implied by the older directives, the
-      <code>Include</code> directives should be placed at the end
-      of httpd.conf, with the one for <code>srm.conf</code>
+      conf/srm.conf</code> to your <code>httpd.conf</code>. In order to
+      assure that Apache reads the configuration files in the same order
+      as was implied by the older directives, the <code class="directive"><a href="./mod/core.html#include">Include</a></code> directives should be placed at the end
+      of <code>httpd.conf</code>, with the one for <code>srm.conf</code>
       preceding the one for <code>access.conf</code>.</li>
 
       <li>The <code>BindAddress</code> and <code>Port</code>
@@ -111,10 +109,10 @@
       selection of MPM. There is currently no MPM designed to be
       launched by inetd.</li>
 
-      <li>The mod_log_agent and mod_log_referer modules which
-      provided the <code>AgentLog</code>, <code>RefererLog</code>
-      and <code>RefererIgnore</code> directives have been removed.
-      Agent and referer logs are still available using the
+      <li>The <code>mod_log_agent</code> and <code>mod_log_referer</code>
+      modules which provided the <code>AgentLog</code>,
+      <code>RefererLog</code> and <code>RefererIgnore</code> directives have
+      been removed. Agent and referer logs are still available using the
       <code class="directive"><a href="./mod/mod_log_config.html#customlog">CustomLog</a></code>
       directive of <code class="module"><a href="./mod/mod_log_config.html">mod_log_config</a></code>.</li>
 
