@@ -1,5 +1,7 @@
 Changes with Apache 2.0.29-dev
 
+  *) Fix a problem with IPv6 vhosts.  PR #8118  [Jeff Trawick]
+
   *) Optimization for the BNDM string-search function in
      mod_include.  [Brian Pane]
 

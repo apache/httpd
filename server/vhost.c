@@ -615,9 +615,11 @@ AP_DECLARE(void) ap_fini_vhost_config(apr_pool_t *p, server_rec *main_s)
         has_default_vhost_addr = 0;
         for (sar = s->addrs; sar; sar = sar->next) {
             ipaddr_chain *ic;
+            char inaddr_any[16] = {0}; /* big enough to handle IPv4 or IPv6 */
 
-            if (sar->host_addr->sa.sin.sin_addr.s_addr == DEFAULT_VHOST_ADDR
-                || sar->host_addr->sa.sin.sin_addr.s_addr == INADDR_ANY) {
+            if ((sar->host_addr->family == AF_INET &&
+                 sar->host_addr->sa.sin.sin_addr.s_addr == DEFAULT_VHOST_ADDR)
+                || !memcmp(sar->host_addr->ipaddr_ptr, inaddr_any, sar->host_addr->ipaddr_len)) {
                 ic = find_default_server(sar->host_port);
                 if (!ic || !add_name_vhost_config(p, main_s, s, sar, ic)) {
                     if (ic && ic->sar->host_port != 0) {
