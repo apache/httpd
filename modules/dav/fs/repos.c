@@ -154,8 +154,12 @@ enum {
 
 /*
 ** The single property that we define (in the DAV_FS_URI_MYPROPS namespace)
+** XXX this property is not usable (readable/writable) on all platforms
+** Need an abstract way to determine this.
 */
+#ifdef UNIX
 #define DAV_PROPID_FS_executable        1
+#endif
 
 static const dav_liveprop_spec dav_fs_props[] =
 {
@@ -183,14 +187,14 @@ static const dav_liveprop_spec dav_fs_props[] =
         DAV_PROPID_getlastmodified,
         0
     },
-
+#ifdef DAV_PROPID_FS_executable
     {
         DAV_FS_URI_MYPROPS,
         "executable",
         DAV_PROPID_FS_executable,
         0       /* handled special in dav_fs_is_writable */
     },
-
+#endif
     { 0 }	/* sentinel */
 };
 
@@ -1853,7 +1857,7 @@ static dav_prop_insert dav_fs_insert_prop(const dav_resource *resource,
                         buf);
 	value = buf;
 	break;
-
+#ifdef DAV_PROPID_FS_executable
     case DAV_PROPID_FS_executable:
 	/* our property, but not defined on collection resources */
 	if (resource->collection)
@@ -1869,7 +1873,7 @@ static dav_prop_insert dav_fs_insert_prop(const dav_resource *resource,
 	else
 	    value = "F";
 	break;
-
+#endif
     default:
         /* ### what the heck was this property? */
 	return DAV_PROP_INSERT_NOTDEF;
@@ -1904,13 +1908,12 @@ static dav_prop_insert dav_fs_insert_prop(const dav_resource *resource,
     return what;
 }
 
+#ifdef DAV_PROPID_FS_executable
+
 static int dav_fs_is_writable(const dav_resource *resource, int propid)
 {
     const dav_liveprop_spec *info;
 
-    /* XXX this property is not usable (writable) on all platforms
-     * Need an abstract way to determine this.
-     */
     if (propid == DAV_PROPID_FS_executable && !resource->collection)
 	return 1;
 
@@ -2053,7 +2056,6 @@ static dav_error *dav_fs_patch_rollback(const dav_resource *resource,
     return NULL;
 }
 
-
 static const dav_hooks_liveprop dav_hooks_liveprop_fs =
 {
     dav_fs_insert_prop,
@@ -2064,6 +2066,8 @@ static const dav_hooks_liveprop dav_hooks_liveprop_fs =
     dav_fs_patch_commit,
     dav_fs_patch_rollback
 };
+
+#endif /* DAV_PROPID_FS_executable */
 
 static const dav_provider dav_fs_provider =
 {
@@ -2076,11 +2080,10 @@ static const dav_provider dav_fs_provider =
 
 void dav_fs_gather_propsets(apr_array_header_t *uris)
 {
-    /* XXX: Need an abstract way to determine this on a per-filesystem basis
-     * This may change by uri (!) (think OSX HFS + unix mounts).
-     */
+#ifdef DAV_PROPID_FS_executable
     *(const char **)apr_array_push(uris) =
         "<http://apache.org/dav/propset/fs/1>";
+#endif
 }
 
 int dav_fs_find_liveprop(const dav_resource *resource,
@@ -2118,8 +2121,10 @@ void dav_fs_insert_all_liveprops(request_rec *r, const dav_resource *resource,
 			      what, phdr);
     (void) dav_fs_insert_prop(resource, DAV_PROPID_getetag,
 			      what, phdr);
+#ifdef DAV_PROPID_FS_executable
     (void) dav_fs_insert_prop(resource, DAV_PROPID_FS_executable,
 			      what, phdr);
+#endif
 
     /* ### we know the others aren't defined as liveprops */
 }
