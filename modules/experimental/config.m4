@@ -52,8 +52,11 @@ APACHE_MODULE(deflate, Deflate transfer encoding support, , , no, [
     ap_save_includes=$INCLUDE
     ap_save_ldflags=$LDFLAGS
     ap_save_libs=$LIBS
+    ap_save_cppflags=$CPPFLAGS
     if test "$ap_zlib_base" != "/usr"; then
-      APR_ADDTO(CPPFLAGS, [-I${ap_zlib_base}/include])
+      APR_ADDTO(INCLUDES, [-I${ap_zlib_base}/include])
+      dnl put in CPPFLAGS temporarily so that AC_TRY_LINK below will work
+      CPPFLAGS="$CPPFLAGS -I${ap_zlib_base}/include"
       APR_ADDTO(LDFLAGS, [-L${ap_zlib_base}/lib])
       if test "x$ap_platform_runtime_link_flag" != "x"; then
          APR_ADDTO(LDFLAGS, [$ap_platform_runtime_link_flag${ap_zlib_Base}/lib])
@@ -69,6 +72,7 @@ APACHE_MODULE(deflate, Deflate transfer encoding support, , , no, [
      INCLUDES=$ap_save_includes
      LDFLAGS=$ap_save_ldflags
      LIBS=$ap_save_libs])
+    CPPFLAGS=$ap_save_cppflags
   fi
 ])
 
