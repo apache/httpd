@@ -1,5 +1,5 @@
   1.3 STATUS:
-  Last modified at [$Date: 2000/12/22 17:58:30 $]
+  Last modified at [$Date: 2000/12/22 21:43:15 $]
 
 Release:
 
@@ -35,11 +35,6 @@ RELEASE SHOWSTOPPERS:
       Message-ID: <007401c06544$a0b48320$92c0b0d0@roweclan.net>
       Status: See most recently revised patch:
         <009601c06b11$82e6e540$92c0b0d0@roweclan.net>
-
-    * Current CVS is hosed for Linux 2.x systems using SysV sem.
-      serialized accepts.
-      Status: Patch available
-      <Pine.LNX.4.30.0012221626590.10948-100000@rossini.schumann.cx>
 
 RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
 
