@@ -478,7 +478,7 @@ static content_type *analyze_ct(request_rec *r, char *s)
 
     while (cp != NULL && *cp != '\0') {
 	if (attribute == NULL) {
-	    if (is_token((int) *cp) > 0) {
+	    if (is_token(*cp) > 0) {
 		cp++;
 		continue;
 	    }
@@ -522,7 +522,7 @@ static content_type *analyze_ct(request_rec *r, char *s)
 	    }
 	    if (quoted > 0) {
 		while (quoted && *cp != '\0') {
-		    if (is_qtext((int) *cp) > 0) {
+		    if (is_qtext(*cp) > 0) {
 			cp++;
 		    }
 		    else if (is_quoted_pair(cp) > 0) {
@@ -549,7 +549,7 @@ static content_type *analyze_ct(request_rec *r, char *s)
 	    }
 	    else {
 		while (1) {
-		    if (is_token((int) *cp) > 0) {
+		    if (is_token(*cp) > 0) {
 			cp++;
 		    }
 		    else if (*cp == '\0' || *cp == ';') {
