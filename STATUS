@@ -16,7 +16,7 @@ Current Modes:
 
 Plan:
 
-    Let's shoot for release of 1.3b4 on January 31, 1998.
+    Let's shoot for release of 1.3b5.
     Concern: Should we hold off on any new code changes
      in order to try to get 1.3.0 out the door asap? Once
      that's done, we can split off 2.0 from the present CVS
@@ -160,6 +160,13 @@ Available Patches:
 	<Pine.LNX.3.95dg3.971121113953.29532D-100000@twinlark.arctic.org>
 	Status: Dean +1, Martin +1, Alexei -1 (shared lib concerns)
 
+    * Ralf's variant of Jay Soffian <jay@cimedia.com>'s patch to add
+      case-translations to mod_rewrite in order to provide the last missing
+      part for virtual host support without <VirtualHost>
+      ``mod_rewrite/1631: support for case conversion added to mod_rewrite''
+      <199802081319.OAA20902@en1.engelschall.com>
+      Status: Ralf +1
+
 Concepts:
 
    * Jim's [CONCEPT] platform.h header file. Instead of lumping
@@ -230,10 +237,10 @@ Open issues:
     * Provide consistant prefixes; suggestions:
 
       Apache provided general functions (e.g., ap_cpystrn)
-	ap_xxx: Ken +1, Brian +1
+	ap_xxx: Ken +1, Brian +1, Ralf +1
 
       Public API functions (e.g., palloc)
-	apapi_xxx: Ken +1, Brian +1
+	apapi_xxx: Ken +1, Brian +1, Ralf +1
 	appublic_xxx:
 	appub_xxx:
 
@@ -242,13 +249,14 @@ Open issues:
 	apprivate_xxx:
 	appri_xxx: Brian +1
 	httpd_xxx: Ken +1
+	apint_xxx: Ralf +1 (int = internal)
 
     * Ken's [POLL] apachen/patches directory
       Shall we experiment with allowing patches to be distributed for
       voting through cvs, by creating a directory under the source tree
       and putting them there?  Please vote.
 	<34B8EE39.43F32BE0@Golux.Com>
-	Status: Ken +1, Randy 0, Dean 0, Jim +1, Paul 0, Martin +1
+	Status: Ken +1, Randy 0, Dean 0, Jim +1, Paul 0, Martin +1, Ralf 0
 
     * Paul would like to see a 'gdbm' option because he uses
       it a lot. Dean notes that 'gdbm' include 'db' support
@@ -264,7 +272,7 @@ Open issues:
       it's httpd, under Win32 it's apache. Maybe rename it
       to apache-httpd?
 	apache-httpd: Ken +1
-        leave it apache: Brian +1
+        leave it apache: Brian +1, Ralf +1
 
     * Maybe a http_paths.h file? See
 	<Pine.BSF.3.95q.971209222046.25627D-100000@valis.worldgate.com>
