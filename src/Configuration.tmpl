@@ -1,4 +1,4 @@
-# $Id: Configuration.tmpl,v 1.43 1996/10/01 11:00:42 ben Exp $
+# $Id: Configuration.tmpl,v 1.44 1996/10/09 17:36:18 chuck Exp $
 # Config file for the Apache httpd.
 
 # Configuration.tmpl is the template for Configuration. Configuration should
@@ -55,7 +55,7 @@ RANLIB=ranlib
 # These are used to let Configure know that we want certain
 # functions. The format is: Rule RULE=value
 #
-# At present, only the following RULES are known: WANTHSREGEX, SOCKS,
+# At present, only the following RULES are known: WANTHSREGEX, SOCKS4,
 # STATUS, BADMMAP and IRIXNIS.
 #
 # For all Rules, if set to "yes", then Configure knows we want that
@@ -63,8 +63,8 @@ RANLIB=ranlib
 # then Configure makes a "best guess"; if set to anything else, or not
 # present, then nothing is done.
 #
-# SOCKS:
-#  If SOCKS is set to 'yes', be sure that you add the sock library
+# SOCKS4:
+#  If SOCKS4 is set to 'yes', be sure that you add the sock library
 #  location to EXTRA_LIBS, otherwise Configure will assume
 #  "-L/usr/local/lib -lsocks"
 #
@@ -81,7 +81,7 @@ RANLIB=ranlib
 #
 
 Rule STATUS=yes
-Rule SOCKS=no
+Rule SOCKS4=no
 Rule IRIXNIS=no
 
 # The following rules should be set automatically by Configure. However, if

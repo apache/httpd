@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: Configure,v 1.25 1996/10/08 06:26:30 brian Exp $
+# $Id: Configure,v 1.26 1996/10/09 17:36:18 chuck Exp $
 trap 'rm $tmpfile; exit' 0 1 2 3 15
 
 # Apache configuration script, first cut --- rst.
@@ -111,7 +111,7 @@ awk >>Makefile <$tmpfile '\
 #
 RULE_WANTHSREGEX=`./CutRule WANTHSREGEX $file`
 RULE_STATUS=`./CutRule STATUS $file`
-RULE_SOCKS=`./CutRule SOCKS $file`
+RULE_SOCKS4=`./CutRule SOCKS4 $file`
 RULE_BADMMAP=`./CutRule BADMMAP $file`
 RULE_IRIXNIS=`./CutRule IRIXNIS $file`
 
@@ -366,12 +366,12 @@ if [ "$RULE_BADMMAP" = "yes" ]; then
 fi
 
 #
-# Now SOCKS.
-#  NOTE: We assume that if they are using SOCKS, then they've
+# Now SOCKS4.
+#  NOTE: We assume that if they are using SOCKS4, then they've
 #   adjusted EXTRA_LIBS and/or EXTRA_LFLAGS as required,
 #   otherwise we assume "-L/usr/local/lib -lsocks"
 #
-if [ "$RULE_SOCKS" = "yes" ]; then
+if [ "$RULE_SOCKS4" = "yes" ]; then
     # Set flag and check Makefile for -lsocks line
     CFLAGS="$CFLAGS -Dconnect=Rconnect -Dselect=Rselect"
     CFLAGS="$CFLAGS -Dgethostbyname=Rgethostbyname"

@@ -1,4 +1,4 @@
-$Id: CHANGES,v 1.69 1996/10/09 15:23:09 mjc Exp $
+$Id: CHANGES,v 1.70 1996/10/09 17:36:15 chuck Exp $
 
 Changes with Apache 1.2b1:
 
@@ -91,7 +91,7 @@ Changes with Apache 1.2b1:
       POSIX/regex...
       
   *) Changes to mod_proxy since 1.1beta:
-      tested w/SOCKS proxy for http
+      tested w/SOCKS4 proxy for http
       fixed IP address formation in host2addr()
       fixed SIGALRM on big cache cleanup
       fixed temp files #tmp not removed
