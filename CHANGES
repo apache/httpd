@@ -1,5 +1,10 @@
 Changes with Apache 2.0.34-dev
 
+  *) Fix a hang condition with graceful restart and prefork MPM
+     in the situation where MaxClients is very high but
+     much fewer servers are actually started at the time of the
+     restart.  [Jeff Trawick]
+
   *) Small performance fixes for mod_include [Brian Pane]
 
   *) Performance improvement for the error logger [Brian Pane]

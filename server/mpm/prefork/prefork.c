@@ -675,14 +675,19 @@ static void child_main(int child_num_arg)
             ap_lingering_close(current_conn);
         }
         
-        /* Check the pod after processing a connection so that we'll go away
-         * if a graceful restart occurred while we were processing the 
-         * connection.  Otherwise, we won't wake up until a real connection 
-         * comes in and we'll use the wrong config to process it and we may
-         * block in the wrong syscall (because the new generation is using a
-         * different accept mutex) and in general it is goofy.
+        /* Check the pod and the generation number after processing a
+         * connection so that we'll go away if a graceful restart occurred
+         * while we were processing the connection or we are the lucky
+         * idle server process that gets to die.
          */
-        if (!ap_mpm_pod_check(pod)) {
+        if (ap_mpm_pod_check(pod) == APR_SUCCESS) { /* selected as idle? */
+            die_now = 1;
+        }
+        else if (ap_my_generation !=
+                 ap_scoreboard_image->global->running_generation) { /* restart? */
+            /* yeah, this could be non-graceful restart, in which case the
+             * parent will kill us soon enough, but why bother checking?
+             */
             die_now = 1;
         }
         ap_sync_scoreboard_image();
