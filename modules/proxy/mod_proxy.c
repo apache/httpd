@@ -251,7 +251,7 @@ static int proxy_needsdomain(request_rec *r, const char *url, const char *domain
     apr_table_set(r->headers_out, "Location", nuri);
     ap_log_rerror(APLOG_MARK, APLOG_INFO|APLOG_NOERRNO, 0, r,
 		"Domain missing: %s sent to %s%s%s", r->uri,
-		ap_uri_unparse_components(r->pool, &r->parsed_uri,
+		apr_uri_unparse_components(r->pool, &r->parsed_uri,
 		      UNP_OMITUSERINFO),
 		ref ? " from " : "", ref ? ref : "");
 

@@ -252,7 +252,7 @@ int ap_proxy_http_handler(request_rec *r, proxy_server_conf *conf,
      */
 
     /* we break the URL into host, port, uri */
-    if (HTTP_OK != ap_uri_parse_components(p, url, &uri)) {
+    if (HTTP_OK != apr_uri_parse_components(p, url, &uri)) {
 	return ap_proxyerror(r, HTTP_BAD_REQUEST,
 			     apr_pstrcat(p,"URI cannot be parsed: ", url, NULL));
     }

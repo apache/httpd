@@ -510,12 +510,12 @@ static int ftp_unauthorized (request_rec *r, int log_it)
     if (log_it)
 	ap_log_rerror(APLOG_MARK, APLOG_INFO|APLOG_NOERRNO, 0, r,
 		      "proxy: missing or failed auth to %s",
-		      ap_uri_unparse_components(r->pool,
+		      apr_uri_unparse_components(r->pool,
 		      &r->parsed_uri, UNP_OMITPATHINFO));
 
     apr_table_setn(r->err_headers_out, "WWW-Authenticate",
                   apr_pstrcat(r->pool, "Basic realm=\"",
-		  ap_uri_unparse_components(r->pool, &r->parsed_uri,
+		  apr_uri_unparse_components(r->pool, &r->parsed_uri,
 		    UNP_OMITPASSWORD|UNP_OMITPATHINFO),
 		    "\"", NULL));
 
