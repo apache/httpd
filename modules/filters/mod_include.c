@@ -335,14 +335,26 @@ static void debug_dump_tree(include_ctx_t *ctx, parse_node_t *root)
             current = current->parent;
             continue;
 
-        case TOKEN_AND:
-        case TOKEN_OR:
-        case TOKEN_EQ:
-        case TOKEN_NE:
-        case TOKEN_GE:
-        case TOKEN_LE:
-        case TOKEN_GT:
-        case TOKEN_LT:
+        case TOKEN_NOT:
+        case TOKEN_GROUP:
+        case TOKEN_RBRACE:
+        case TOKEN_LBRACE:
+            if (!current->dump_done) {
+                debug_printf(ctx, "%s%s\n", is, current->token.s);
+                is = apr_pstrcat(ctx->dpool, is, "    ", NULL);
+                current->dump_done = 1;
+            }
+
+            DUMP__CHILD(ctx, is, current, right)
+
+            if (!current->right || current->right->dump_done) {
+                is = apr_pstrmemdup(ctx->dpool, is, strlen(is) - 4);
+                if (current->right) current->right->dump_done = 0;
+                current = current->parent;
+            }
+            continue;
+
+        default:
             if (!current->dump_done) {
                 debug_printf(ctx, "%s%s\n", is, current->token.s);
                 is = apr_pstrcat(ctx->dpool, is, "    ", NULL);
@@ -357,40 +369,6 @@ static void debug_dump_tree(include_ctx_t *ctx, parse_node_t *root)
 
                 is = apr_pstrmemdup(ctx->dpool, is, strlen(is) - 4);
                 if (current->left) current->left->dump_done = 0;
-                if (current->right) current->right->dump_done = 0;
-                current = current->parent;
-            }
-            continue;
-
-        case TOKEN_NOT:
-        case TOKEN_GROUP:
-            if (!current->dump_done) {
-                debug_printf(ctx, "%s%s\n", is, current->token.s);
-                is = apr_pstrcat(ctx->dpool, is, "    ", NULL);
-                current->dump_done = 1;
-            }
-
-            DUMP__CHILD(ctx, is, current, right)
-
-            if (!current->right || current->right->dump_done) {
-                is = apr_pstrmemdup(ctx->dpool, is, strlen(is) - 4);
-                if (current->right) current->right->dump_done = 0;
-                current = current->parent;
-            }
-            continue;
-
-        case TOKEN_RBRACE:
-        case TOKEN_LBRACE:
-            if (!current->dump_done) {
-                debug_printf(ctx, "%sunmatched %s\n", is, current->token.s);
-                is = apr_pstrcat(ctx->dpool, is, "    ", NULL);
-                current->dump_done = 1;
-            }
-
-            DUMP__CHILD(ctx, is, current, right)
-
-            if (!current->right || current->right->dump_done) {
-                is = apr_pstrmemdup(ctx->dpool, is, strlen(is) - 4);
                 if (current->right) current->right->dump_done = 0;
                 current = current->parent;
             }
@@ -422,10 +400,10 @@ static void debug_dump_tree(include_ctx_t *ctx, parse_node_t *root)
     token_t *d__t = (token);                                                  \
                                                                               \
     if (d__t->type == TOKEN_STRING || d__t->type == TOKEN_RE) {               \
-        DEBUG_PRINTF(((ctx), "     Token: %s (%s)\n", d__t->s, d__t->value)); \
+        DEBUG_PRINTF(((ctx), "     Found: %s (%s)\n", d__t->s, d__t->value)); \
     }                                                                         \
     else {                                                                    \
-        DEBUG_PRINTF((ctx, "     Token: %s\n", d__t->s));                     \
+        DEBUG_PRINTF((ctx, "     Found: %s\n", d__t->s));                     \
     }                                                                         \
 } while(0)
 
