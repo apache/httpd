@@ -1,5 +1,8 @@
 Changes with Apache 2.0.25-dev
 
+  *) Fixed all the #if APR_HAS_SHARED_MEMORY checks within the LDAP
+     module code to follow APR. [Graham Leggett]
+
   *) Fixed LDAP cleanup on graceful restarts. LDAP connections are now
      cleaned up when the connection pool pool is cleaned up.
      [Graham Leggett]
@@ -7,6 +10,7 @@ Changes with Apache 2.0.25-dev
   *) Fix a minor issue with Jeff Trawick's mod_include
      patch. Without this patch, the code will just allocate
      more bytes in get_combined_directive than are needed.
+     [Paul Reder]
 
   *) Added the LDAP authentication module mod_auth_ldap.
      [Dave Carrigan <dave@rudedog.org>, Graham Leggett]

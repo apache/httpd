@@ -114,7 +114,7 @@ static const int primes[] =
 
 void util_ald_free(const void *ptr)
 {
-#ifdef APU_HAS_LDAP_SHARED_CACHE
+#if APR_HAS_SHARED_MEMORY
     if (util_ldap_shm) {
         apr_shm_free(util_ldap_shm, (void *)ptr);
     } else {
@@ -127,7 +127,7 @@ void util_ald_free(const void *ptr)
 
 void *util_ald_alloc(int size)
 {
-#ifdef APU_HAS_LDAP_SHARED_CACHE
+#if APR_HAS_SHARED_MEMORY
     if (util_ldap_shm) {
         return (void *)apr_shm_malloc(util_ldap_shm, size);
     } else {
@@ -140,7 +140,7 @@ void *util_ald_alloc(int size)
 
 const char *util_ald_strdup(const char *s)
 {
-#ifdef APU_HAS_LDAP_SHARED_CACHE
+#if APR_HAS_SHARED_MEMORY
     if (util_ldap_shm) {
         char *buf = apr_shm_malloc(util_ldap_shm, strlen(s)+1);
         if (buf) {

@@ -217,7 +217,7 @@ apr_status_t util_ldap_cache_module_kill(void *data);
 
 apr_status_t util_ldap_cache_module_kill(void *data)
 {
-#ifdef APU_HAS_LDAP_SHARED_CACHE
+#if APR_HAS_SHARED_MEMORY
     if (util_ldap_shm != NULL) {
         apr_status_t result = apr_shm_destroy(util_ldap_shm);
         util_ldap_shm = NULL;
@@ -232,7 +232,7 @@ apr_status_t util_ldap_cache_init(apr_pool_t *pool, apr_size_t reqsize)
     apr_status_t result = APR_SUCCESS;
     apr_pool_cleanup_register(pool, NULL, util_ldap_cache_module_kill, apr_pool_cleanup_null);
 
-#ifdef APU_HAS_LDAP_SHARED_CACHE
+#if APR_HAS_SHARED_MEMORY
     result = apr_shm_init(&util_ldap_shm, reqsize, "/tmp/ldap_cache", pool);
 #endif
     util_ldap_cache = util_ald_create_cache(50,
