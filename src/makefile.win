@@ -87,7 +87,6 @@ _build:
 	 $(MAKE) $(MAKEOPT) -f gen_uri_delims.mak CFG="gen_uri_delims - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f gen_test_char.mak CFG="gen_test_char - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	cd ..
-	 -del $(LONG)\buildmark.obj
 	 $(MAKE) $(MAKEOPT) -f ApacheCore.mak CFG="ApacheCore - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f Apache.mak CFG="Apache - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	cd os\win32
