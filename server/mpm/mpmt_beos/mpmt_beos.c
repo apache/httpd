@@ -1213,7 +1213,6 @@ static void mpmt_beos_pre_config(ap_context_t *pconf, ap_context_t *plog, ap_con
     ap_daemons_limit = HARD_SERVER_LIMIT;
     ap_threads_per_child = DEFAULT_THREADS_PER_CHILD;
     ap_pid_fname = DEFAULT_PIDLOG;
-    ap_scoreboard_fname = DEFAULT_SCOREBOARD;
     ap_max_requests_per_child = DEFAULT_MAX_REQUESTS_PER_CHILD;
     ap_mpmt_beos_set_maintain_connection_status(1);
 
