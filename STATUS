@@ -317,6 +317,7 @@ Open issues:
             ..._module:+1: Roy [status quo] 
             ap_xxx:    +1:
             apm_xxx:   +1: Ralf, Jim
+	    ap_mod_xxx:+1: Dean
 
         Notes: 
             - Ralf: My opinion for my decisions are the following ones: 
@@ -363,6 +364,25 @@ Open issues:
               apapi_vformatter is making me puke.  So many extra
               characters, so much wasted screen width, and
               keystrokes.
+
+	      Furthermore, nobody has explained just what happens when
+	      functions which are "part of the API", such as palloc
+	      suddenly get moved to libap and are no longer "part of
+	      the API".  Calling it apapi_palloc is foolish.  The name
+	      "ap_palloc" has two prefixes for those not paying attention,
+	      the first "ap_" protects apache's namespace.  The next,
+	      "p" indicates it is a pool function.  Similarly we would
+	      have "ap_table_get".  There's no need to waste space with
+	      "apapi_table_get", the "api" part is just redundant.
+
+	      If folks can't figure out what is in the api and what
+	      isn't THEN IT'S IS A DOCUMENTATION PROBLEM.  It's not
+	      a code problem.  They have to look in header files or
+	      other docs anyhow to learn how to use a function, so why
+	      should they repeatedly type apapi ?
+
+	      ap_ is a name space protection mechanism, it is not a
+	      documentation mechanism.
 
             - Randy: I agree with Dean 100%. The work created to
               keep this straight far outweighs any gain this
