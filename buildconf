@@ -91,7 +91,7 @@ autoheader
 files="Makefile `find ap lib main modules regex os -name Makefile.am | sed 's#\.am##' | tr '\n' ' '`"
 
 # suppress stupid automake warning
-automake --add-missing --include-deps $automake_flags $files 2>&1 | grep -v \$APACHE_OUTPUT_FILES >&2
+automake --add-missing $automake_flags $files 2>&1 | grep -v \$APACHE_OUTPUT_FILES >&2
 
 
 mv configure configure.old 2>/dev/null
