@@ -10,7 +10,7 @@ _debug:
     cd modules\proxy & set CFG=proxy - Win32 Debug& nmake -f proxy.mak
     cd regex & set CFG=regex - Win32 Debug& nmake -f regex.mak
 	cd . & set CFG=ApacheCore - Win32 Debug& nmake -f ApacheCore.mak
-	cd . & set CFG=ApacheLaunch - Win32 Debug& nmake -f ApacheLaunch.mak
+	cd . & set CFG=Apache - Win32 Debug& nmake -f Apache.mak
 	cd nt & set CFG=ApacheModuleStatus - Win32 Debug& nmake -f ApacheModuleStatus.mak
 #	cd nt & set CFG=ApacheModuleInfo - Win32 Debug& nmake -f ApacheModuleInfo.mak
 	cd nt & set CFG=ApacheModuleAuthAnon - Win32 Debug& nmake -f ApacheModuleAuthAnon.mak
@@ -23,13 +23,14 @@ _debug:
 
 installd: _debug
 	-mkdir \Apache
-	copy LaunchD\ApacheLaunch.exe \Apache
+	-mkdir \Apache\modules
+	copy ApacheD\Apache.exe \Apache
 	copy CoreD\ApacheCore.dll \Apache
-	copy nt\ApacheModuleStatusD\ApacheModuleStatus.dll \Apache
-#	copy nt\ApacheModuleInfoD\ApacheModuleInfo.dll \Apache
-	copy nt\ApacheModuleAuthAnonD\ApacheModuleAuthAnon.dll \Apache
-	copy nt\ApacheModuleDigestD\ApacheModuleDigest.dll \Apache
-	copy nt\ApacheModuleCERNMetaD\ApacheModuleCERNMeta.dll \Apache
-	copy nt\ApacheModuleExpiresD\ApacheModuleExpires.dll \Apache
-	copy nt\ApacheModuleHeadersD\ApacheModuleHeaders.dll \Apache
-	copy nt\ApacheModuleUserTrackD\ApacheModuleUserTrack.dll \Apache
+	copy nt\ApacheModuleStatusD\ApacheModuleStatus.dll \Apache\modules
+#	copy nt\ApacheModuleInfoD\ApacheModuleInfo.dll \Apache\modules
+	copy nt\ApacheModuleAuthAnonD\ApacheModuleAuthAnon.dll \Apache\modules
+	copy nt\ApacheModuleDigestD\ApacheModuleDigest.dll \Apache\modules
+	copy nt\ApacheModuleCERNMetaD\ApacheModuleCERNMeta.dll \Apache\modules
+	copy nt\ApacheModuleExpiresD\ApacheModuleExpires.dll \Apache\modules
+	copy nt\ApacheModuleHeadersD\ApacheModuleHeaders.dll \Apache\modules
+	copy nt\ApacheModuleUserTrackD\ApacheModuleUserTrack.dll \Apache\moduleS

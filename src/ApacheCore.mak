@@ -85,7 +85,7 @@ CLEAN :
 	-@erase "$(INTDIR)\mod_mime.obj"
 	-@erase "$(INTDIR)\mod_negotiation.obj"
 	-@erase "$(INTDIR)\mod_userdir.obj"
-	-@erase "$(INTDIR)\modules_dll.obj"
+	-@erase "$(INTDIR)\modules.obj"
 	-@erase "$(INTDIR)\multithread.obj"
 	-@erase "$(INTDIR)\readdir.obj"
 	-@erase "$(INTDIR)\rfc1413.obj"
@@ -159,7 +159,7 @@ LINK32_OBJS= \
 	"$(INTDIR)\mod_mime.obj" \
 	"$(INTDIR)\mod_negotiation.obj" \
 	"$(INTDIR)\mod_userdir.obj" \
-	"$(INTDIR)\modules_dll.obj" \
+	"$(INTDIR)\modules.obj" \
 	"$(INTDIR)\multithread.obj" \
 	"$(INTDIR)\readdir.obj" \
 	"$(INTDIR)\rfc1413.obj" \
@@ -251,8 +251,8 @@ CLEAN :
 	-@erase "$(INTDIR)\mod_negotiation.sbr"
 	-@erase "$(INTDIR)\mod_userdir.obj"
 	-@erase "$(INTDIR)\mod_userdir.sbr"
-	-@erase "$(INTDIR)\modules_dll.obj"
-	-@erase "$(INTDIR)\modules_dll.sbr"
+	-@erase "$(INTDIR)\modules.obj"
+	-@erase "$(INTDIR)\modules.sbr"
 	-@erase "$(INTDIR)\multithread.obj"
 	-@erase "$(INTDIR)\multithread.sbr"
 	-@erase "$(INTDIR)\readdir.obj"
@@ -329,7 +329,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\mod_mime.sbr" \
 	"$(INTDIR)\mod_negotiation.sbr" \
 	"$(INTDIR)\mod_userdir.sbr" \
-	"$(INTDIR)\modules_dll.sbr" \
+	"$(INTDIR)\modules.sbr" \
 	"$(INTDIR)\multithread.sbr" \
 	"$(INTDIR)\readdir.sbr" \
 	"$(INTDIR)\rfc1413.sbr" \
@@ -386,7 +386,7 @@ LINK32_OBJS= \
 	"$(INTDIR)\mod_mime.obj" \
 	"$(INTDIR)\mod_negotiation.obj" \
 	"$(INTDIR)\mod_userdir.obj" \
-	"$(INTDIR)\modules_dll.obj" \
+	"$(INTDIR)\modules.obj" \
 	"$(INTDIR)\multithread.obj" \
 	"$(INTDIR)\readdir.obj" \
 	"$(INTDIR)\rfc1413.obj" \
@@ -1119,7 +1119,7 @@ NODEP_CPP_HTTP_B=\
 ################################################################################
 # Begin Source File
 
-SOURCE=.\nt\modules_dll.c
+SOURCE=.\nt\modules.c
 DEP_CPP_MODUL=\
 	".\alloc.h"\
 	".\buff.h"\
@@ -1138,7 +1138,7 @@ NODEP_CPP_MODUL=\
 !IF  "$(CFG)" == "ApacheCore - Win32 Release"
 
 
-"$(INTDIR)\modules_dll.obj" : $(SOURCE) $(DEP_CPP_MODUL) "$(INTDIR)"
+"$(INTDIR)\modules.obj" : $(SOURCE) $(DEP_CPP_MODUL) "$(INTDIR)"
    $(CPP) $(CPP_PROJ) $(SOURCE)
 
 
@@ -1149,10 +1149,10 @@ BuildCmds= \
 	$(CPP) $(CPP_PROJ) $(SOURCE) \
 	
 
-"$(INTDIR)\modules_dll.obj" : $(SOURCE) $(DEP_CPP_MODUL) "$(INTDIR)"
+"$(INTDIR)\modules.obj" : $(SOURCE) $(DEP_CPP_MODUL) "$(INTDIR)"
    $(BuildCmds)
 
-"$(INTDIR)\modules_dll.sbr" : $(SOURCE) $(DEP_CPP_MODUL) "$(INTDIR)"
+"$(INTDIR)\modules.sbr" : $(SOURCE) $(DEP_CPP_MODUL) "$(INTDIR)"
    $(BuildCmds)
 
 !ENDIF 
