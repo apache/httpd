@@ -56,9 +56,6 @@ Changes with Apache 2.1.0-dev
      a newline now cause a lookup failure. PR 14453.
      [Cedric Gavage <cedric.gavage@unixtech.be>, André Malo]
 
-  *) Install config.nice into the build/ directory to make
-     minor version upgrades easier. [Joshua Slive]
-
   *) mod_rewrite: Allow piped rewrite logs to be relative to ServerRoot.
      [André Malo]
 
@@ -237,6 +234,9 @@ Changes with Apache 2.1.0-dev
    Apache 2.0.xx tree as documented, and except as noted, below.]
 
 Changes with Apache 2.0.48
+
+  *) Install config.nice into the build/ directory to make
+     minor version upgrades easier. [Joshua Slive]
 
   *) mod_rewrite: Ignore RewriteRules in .htaccess files if the directory
      containing the .htaccess file is requested without a trailing slash.
