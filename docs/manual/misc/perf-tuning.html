@@ -69,6 +69,8 @@
          <a
         href="../mod/core.html#hostnamelookups">HostnameLookups</a><br />
          <a
+        href="../mod/core.html#enablemmap">EnableMMAP</a><br />
+         <a
         href="../mod/core.html#keepalivetimeout">KeepAliveTimeout</a><br />
          <a
         href="../mod/prefork.html#maxspareservers">MaxSpareServers</a><br />
@@ -280,6 +282,35 @@ DirectoryIndex index.cgi index.pl index.shtml index.html
     <code>MultiViews</code>, as the necessary information can be
     determined by reading this single file, rather than having to
     scan the directory for files.</p>
+
+    <h4>Memory-mapping</h4>
+
+    <p>In situations where Apache 2.0 needs to look at the contents
+    of a file being delivered--for example, when doing server-side-include
+    processing--it normally memory-maps the file if the OS supports
+    some form of mmap(2).
+    </p>
+
+    <p>On some platforms, this memory-mapping improves performance.
+    However, there are cases where memory-mapping can hurt the performance
+    or even the stability of the httpd:</p>
+
+    <ul>
+      <li>On some operating systems, mmap does not scale as well as
+      read(2) when the number of CPUs increases.  On multiprocessor
+      Solaris servers, for example, Apache 2.0 sometimes delivers
+      server-parsed files faster when mmap is disabled.</li>
+
+      <li>If you memory-map a file located on an NFS-mounted filesystem
+      and a process on another NFS client machine deletes or truncates
+      the file, your process may get a bus error the next time it tries
+      to access the mapped file content.</li>
+    </ul>
+
+    <p>For installations where either of these factors applies, you
+    should use <code>EnableMMAP off</code> to disable the memory-mapping
+    of delivered files.  (Note: This directive can be overridden on
+    a per-directory basis.)</p>
 
     <h4>Process Creation</h4>
 
