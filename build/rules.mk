@@ -102,11 +102,10 @@ depend: depend-recursive
 clean: clean-recursive
 distclean: distclean-recursive
 extraclean: extraclean-recursive
-
-install: all-recursive local-install
+install: install-recursive
 shared-build: shared-build-recursive
 
-all-recursive depend-recursive:
+all-recursive install-recursive depend-recursive:
 	@otarget=`echo $@|sed s/-recursive//`; \
 	list='$(SUBDIRS)'; \
 	for i in $$list; do \
@@ -255,7 +254,7 @@ SHLIB_SUFFIX = so
 #
 include $(builddir)/.deps
 
-.PHONY: all all-recursive local-all $(PHONY_TARGETS) \
+.PHONY: all all-recursive install-recursive local-all $(PHONY_TARGETS) \
 	shared-build shared-build-recursive local-shared-build \
 	depend depend-recursive local-depend x-local-depend \
 	clean clean-recursive local-clean x-local-clean \
