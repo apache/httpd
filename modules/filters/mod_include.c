@@ -3052,14 +3052,6 @@ static apr_status_t includes_filter(ap_filter_t *f, apr_bucket_brigade *b)
         ctx->bytes_parsed = 0;
     }
 
-    /* Assure the platform supports Group protections */
-    if ((*conf->xbithack == xbithack_full)
-        && (r->finfo.valid & APR_FINFO_GPROT)
-        && (r->finfo.protection & APR_GEXECUTE)) {
-        ap_update_mtime(r, r->finfo.mtime);
-        ap_set_last_modified(r);
-    }
-
     if ((parent = ap_get_module_config(r->request_config, &include_module))) {
         /* Kludge --- for nested includes, we want to keep the subprocess
          * environment of the base document (for compatibility); that means
@@ -3100,9 +3092,20 @@ static apr_status_t includes_filter(ap_filter_t *f, apr_bucket_brigade *b)
      * a program which may change the Last-Modified header or make the 
      * content completely dynamic.  Therefore, we can't support these
      * headers.
+     * Exception: XBitHack full means we *should* set the Last-Modified field.
      */
     apr_table_unset(f->r->headers_out, "ETag");
-    apr_table_unset(f->r->headers_out, "Last-Modified");
+
+    /* Assure the platform supports Group protections */
+    if ((*conf->xbithack == xbithack_full)
+        && (r->finfo.valid & APR_FINFO_GPROT)
+        && (r->finfo.protection & APR_GEXECUTE)) {
+        ap_update_mtime(r, r->finfo.mtime);
+        ap_set_last_modified(r);
+    }
+    else {
+        apr_table_unset(f->r->headers_out, "Last-Modified");
+    }
 
     return send_parsed_content(&b, r, f);
 }
@@ -3172,7 +3175,7 @@ static int xbithack_handler(request_rec *r)
     /* OS/2 dosen't currently support the xbithack. This is being worked on. */
     return DECLINED;
 #else
-    enum xbithack *state;
+    include_dir_config *conf;
  
     if (ap_strcmp_match(r->handler, "text/html")) {
         return DECLINED;
@@ -3181,10 +3184,10 @@ static int xbithack_handler(request_rec *r)
         return DECLINED;
     }
  
-    state = (enum xbithack *) ap_get_module_config(r->per_dir_config,
+    conf = (include_dir_config *) ap_get_module_config(r->per_dir_config,
                                                 &include_module);
  
-    if (*state == xbithack_off) {
+    if (*conf->xbithack == xbithack_off) {
         return DECLINED;
     }
     /* We always return declined, because the default handler will actually
