@@ -204,16 +204,16 @@ static void memcache_cache_free(void*a)
  */
 static long memcache_lru_algorithm(long queue_clock, void *a) 
 {
-	cache_object_t *obj = (cache_object_t *)a;
+    cache_object_t *obj = (cache_object_t *)a;
     mem_cache_object_t *mobj = obj->vobj;
-	if (mobj->priority == 0)
+    if (mobj->priority == 0)
         mobj->priority = ((long)(queue_clock + mobj->total_refs));
 
     /*	
      * a 'proper' LRU function would just be
      *  mobj->priority = mobj->total_refs; 
      */
-	return -1*mobj->priority;
+    return -1*mobj->priority;
 }
 
 static long memcache_gdsf_algorithm(long queue_clock, void *a) 
@@ -221,10 +221,10 @@ static long memcache_gdsf_algorithm(long queue_clock, void *a)
     cache_object_t *obj = (cache_object_t *)a;
     mem_cache_object_t *mobj = obj->vobj;
 
-	if (mobj->priority == 0)
+    if (mobj->priority == 0)
         mobj->priority = queue_clock + (long)(mobj->total_refs*1000 / mobj->m_len);
 
-	return -1*mobj->priority;
+    return -1*mobj->priority;
 }
 
 static void cleanup_cache_object(cache_object_t *obj)
