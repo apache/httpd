@@ -67,6 +67,10 @@ extern "C" {
 #include "apr.h"
 #include "ap_buckets.h"
 
+/**
+ * @package Apache filter library
+ */
+
 /*
  * FILTER CHAIN
  *
@@ -160,13 +164,33 @@ typedef enum {
  * the state directly with the request. A callback should not change any of
  * the other fields.
  */
+/**
+ * The internal representation of a filter chain.  Each request has a list
+ * of these structures which are called in turn to filter the data.  Sub
+ * requests get an exact copy of the main requests filter chain.
+ */
 struct ap_filter_t {
+    /** The current filter function in the chain.  The prototype is:
+     * <PRE>  
+     * apr_status_t (*ap_filter_func)(ap_filter_t *f, ap_bucket_brigade *b);
+     * </PRE>
+     */
     ap_filter_func filter_func;
 
+    /** A place to store any data associated with the current filter */
     ap_bucket_brigade *ctx;
 
+    /** The type of filter, either CONTENT or CONNECTION.  A CONTENT filter
+     *  modifies the data based on information found in the content.  A
+     *  CONNECTION filter modifies the data based on the type of connection.
+     */
     ap_filter_type ftype;
+    /** The next filter in the chain */
     ap_filter_t *next;
+    /** The request_rec associated with the current filter.  If a sub-request
+     *  adds filters, then the sub-request is the request associated with the
+     * filter.
+     */
     request_rec *r;
 };
 
@@ -180,6 +204,16 @@ struct ap_filter_t {
  * current request.  I would just rather it didn't take out the whole child
  * process.  
  */
+/**
+ * Pass the current bucket brigade down to the next filter on the filter
+ * stack.  The filter should return the number of bytes written by the
+ * next filter.  If the bottom-most filter doesn't write to the next work,
+ * then AP_NOBODY_WROTE is returned.
+ * @param filter The next filter in the chain
+ * @param bucket The current bucket brigade
+ * @return The number of bytes written
+ * @deffunc int ap_pass_brigade(ap_filter_t *filter, ap_bucket_brigade *bucket)
+ */
 API_EXPORT(int) ap_pass_brigade(ap_filter_t *filter, ap_bucket_brigade *bucket);
 
 /*
@@ -190,6 +224,14 @@ API_EXPORT(int) ap_pass_brigade(ap_filter_t *filter, ap_bucket_brigade *bucket);
  * chain by using ap_add_filter() and simply specifying the name.
  *
  * The filter's callback and type should be passed.
+ */
+/**
+ * Register a filter for later use.  This allows modules to name their filter
+ * functions for later addition to a specific request
+ * @param name The name to attach to the filter function
+ * @param filter_func The filter function to name
+ * @param The type of filter function, either CONTENT or CONNECTION
+ * @deffunc void ap_register_filter(const char *name, ap_filter_func filter_func, ap_filter_type ftype)
  */
 API_EXPORT(void) ap_register_filter(const char *name,
                                     ap_filter_func filter_func,
@@ -210,6 +252,14 @@ API_EXPORT(void) ap_register_filter(const char *name,
  * To re-iterate that last comment.  This function is building a FIFO
  * list of filters.  Take note of that when adding your filter to the chain.
  */
+/**
+ * Add a filter to the current request.  Filters are added in a FIFO manner.
+ * The first filter added will be the first filter called.
+ * @param name The name of the filter to add
+ * @param ctx Any filter specific data to associate with the filter
+ * @param r The request to add this filter for.
+ * @deffunc void ap_add_filter(const char *name, void *ctx, request_rec *r)
+ */
 API_EXPORT(void) ap_add_filter(const char *name, void *ctx, request_rec *r);
 
 /* The next two filters are for abstraction purposes only.  They could be
@@ -223,9 +273,28 @@ API_EXPORT(void) ap_add_filter(const char *name, void *ctx, request_rec *r);
  * when you add more it will be tacked onto the end of that brigade.  When
  * you retrieve data, if you pass in a bucket brigade to the get function,
  * it will append the current brigade onto the one that you are retrieving.
- */ 
+ */
+/**
+ * Get data that was saved aside for the current filter from an earlier call
+ * @param f The current filter
+ * @param b The bucket brigade to append to the data that was saved earlier.
+ *          This should be the brigade that was most recently passed to the
+ *          filter
+ * @return A single bucket brigade containing all of the data that was set 
+ *         aside from a previous call to ap_save_data_to_filter and the data
+ *         that was most recently passed to this filter.
+ * @deffunc ap_bucket_brigade *ap_get_saved_data(ap_filter_t *f, ap_bucket_brigade **b)
+ */
 API_EXPORT(ap_bucket_brigade *) ap_get_saved_data(ap_filter_t *f, 
                                                   ap_bucket_brigade **b);
+
+/**
+ * Save a bucket brigade to a filter.  This is used to save portions of the
+ * data off to the side for consumption later
+ * @param f The current filter
+ * @param b The bucket brigade to save aside
+ * @deffunc void ap_save_data_to_filter(ap_filter_t *f, ap_bucket_brigade **b)
+ */
 API_EXPORT(void) ap_save_data_to_filter(ap_filter_t *f, ap_bucket_brigade **b);    
 
 #ifdef __cplusplus
