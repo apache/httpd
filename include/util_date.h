@@ -76,7 +76,7 @@ extern "C" {
 
 API_EXPORT(int) ap_checkmask(const char *data, const char *mask);
 API_EXPORT(time_t) ap_tm2sec(const struct tm *t);
-API_EXPORT(time_t) ap_parseHTTPdate(const char *date, time_t * retval);
+API_EXPORT(time_t) ap_parseHTTPdate(const char *date);
 
 #ifdef __cplusplus
 }
