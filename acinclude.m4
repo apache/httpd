@@ -250,12 +250,12 @@ AC_DEFUN(APACHE_MODPATH_ADD,[
 
   if test -z "$module_standalone"; then
     if test -z "$2"; then
-      libname="libapachemod_$1.la"
+      libname="mod_$1.la"
       BUILTIN_LIBS="$BUILTIN_LIBS $modpath_current/$libname"
       modpath_static="$modpath_static $libname"
       cat >>$modpath_current/modules.mk<<EOF
 $libname: $objects
-	\$(LINK) $objects
+	\$(MOD_LINK) $objects
 EOF
     else
       apache_need_shared=yes

@@ -70,8 +70,9 @@ LT_CXX_COMPILE = $(LIBTOOL) --mode=compile $(CXX_COMPILE) -c $< && touch $@
 
 # Link-related commands
 
-LINK    = $(LIBTOOL) --mode=link $(COMPILE) $(LTFLAGS) $(LDFLAGS) -o $@
-SH_LINK = $(SH_LIBTOOL) --mode=link $(COMPILE) $(LTFLAGS) $(LDFLAGS) -o $@
+LINK     = $(LIBTOOL) --mode=link $(COMPILE) $(LTFLAGS) $(LDFLAGS) -o $@
+SH_LINK  = $(SH_LIBTOOL) --mode=link $(COMPILE) $(LTFLAGS) $(LDFLAGS) -o $@
+MOD_LINK = $(LIBTOOL) --mode=link $(COMPILE) -module $(LTFLAGS) $(LDFLAGS) -o $@
 
 # Cross compile commands
 
