@@ -1,5 +1,8 @@
 Changes with Apache 1.3.4
 
+  *) SECURITY: Eliminate DoS attack when a bad URI path contains what
+     looks like a printf format escape.  [Marc Slemko, Studenten Net Twente]
+
   *) Fix in mod_autoindex: for files where the last modified time stamp was
      unavailable, an empty string was printed which was 2 bytes short.
      The size and description columns were therefore not aligned correctly.

@@ -105,6 +105,15 @@ extern "C" {
 #define APLOG_MARK	__FILE__,__LINE__
 
 void ap_open_logs (server_rec *, pool *p);
+
+/* The two primary logging functions, ap_log_error and ap_log_rerror,
+ * use a printf style format string to build the log message.  It is
+ * VERY IMPORTANT that you not include any raw data from the network,
+ * such as the request-URI or request header fields, within the format
+ * string.  Doing so makes the server vulnerable to a denial-of-service
+ * attack and other messy behavior.  Instead, use a simple format string
+ * like "%s", followed by the string containing the untrusted data.
+ */
 API_EXPORT(void) ap_log_error(const char *file, int line, int level,
 			     const server_rec *s, const char *fmt, ...)
 			    __attribute__((format(printf,5,6)));
