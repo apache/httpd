@@ -878,13 +878,17 @@ static void * APR_THREAD_FUNC worker_thread(apr_thread_t *thd, void * dummy)
         }
 
         ap_update_child_status_from_indexes(process_slot, thread_slot, SERVER_READY, NULL);
+worker_pop:
+        if (workers_may_exit) {
+            break;
+        }
         rv = ap_queue_pop(worker_queue, &csd, &ptrans);
 
         if (rv != APR_SUCCESS) {
             /* We get APR_EOF during a graceful shutdown once all the connections
              * accepted by this server process have been handled.
              */
-            if (rv == APR_EOF) {
+            if (APR_STATUS_IS_EOF(rv)) {
                 break;
             }
             /* We get APR_EINTR whenever ap_queue_pop() has been interrupted
@@ -898,7 +902,11 @@ static void * APR_THREAD_FUNC worker_thread(apr_thread_t *thd, void * dummy)
              * may have already been cleaned up.  Don't log the "error" if
              * workers_may_exit is set.
              */
-            if (rv != APR_EINTR && !workers_may_exit) {
+            else if (APR_STATUS_IS_EINTR(rv)) {
+                goto worker_pop;
+            }
+            /* We got some other error. */
+            else if (!workers_may_exit) {
                 ap_log_error(APLOG_MARK, APLOG_CRIT, rv, ap_server_conf,
                              "ap_queue_pop failed");
             }
