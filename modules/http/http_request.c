@@ -227,139 +227,6 @@ AP_DECLARE(void) ap_die(int type, request_rec *r)
     ap_send_error_response(r, recursive_error);
 }
 
-static void decl_die(int status, char *phase, request_rec *r)
-{
-    if (status == DECLINED) {
-        ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_CRIT, 0, r,
-                    "configuration error:  couldn't %s: %s", phase, r->uri);
-        ap_die(HTTP_INTERNAL_SERVER_ERROR, r);
-    }
-    else
-        ap_die(status, r);
-}
-
-static void process_request_internal(request_rec *r)
-{
-    int access_status;
-
-    /* Ignore embedded %2F's in path for proxy requests */
-    if (!r->proxyreq && r->parsed_uri.path) {
-	access_status = ap_unescape_url(r->parsed_uri.path);
-	if (access_status) {
-	    ap_die(access_status, r);
-	    return;
-	}
-    }
-
-    ap_getparents(r->uri);     /* OK --- shrinking transformations... */
-
-    if ((access_status = ap_location_walk(r))) {
-        ap_die(access_status, r);
-        return;
-    }
-
-    if ((access_status = ap_run_translate_name(r))) {
-        decl_die(access_status, "translate", r);
-        return;
-    }
-
-    if ((access_status = ap_run_map_to_storage(r))) {
-        /* This request wasn't in storage (e.g. TRACE) */
-        if (access_status == DONE)
-	    ap_finalize_request_protocol(r);
-	else
-            ap_die(access_status, r);
-        return;
-    }
-
-    if ((access_status = ap_location_walk(r))) {
-        ap_die(access_status, r);
-        return;
-    }
-
-    if ((access_status = ap_run_header_parser(r))) {
-        ap_die(access_status, r);
-        return;
-    }
-
-    switch (ap_satisfies(r)) {
-    case SATISFY_ALL:
-    case SATISFY_NOSPEC:
-        if ((access_status = ap_run_access_checker(r)) != 0) {
-            decl_die(access_status, "check access", r);
-            return;
-        }
-        if (ap_some_auth_required(r)) {
-            if (((access_status = ap_run_check_user_id(r)) != 0) || !ap_auth_type(r)) {
-                decl_die(access_status, ap_auth_type(r)
-		    ? "check user.  No user file?"
-		    : "perform authentication. AuthType not set!", r);
-                return;
-            }
-            if (((access_status = ap_run_auth_checker(r)) != 0) || !ap_auth_type(r)) {
-                decl_die(access_status, ap_auth_type(r)
-		    ? "check access.  No groups file?"
-		    : "perform authentication. AuthType not set!", r);
-                return;
-            }
-        }
-        break;
-    case SATISFY_ANY:
-        if (((access_status = ap_run_access_checker(r)) != 0) || !ap_auth_type(r)) {
-            if (!ap_some_auth_required(r)) {
-                decl_die(access_status, ap_auth_type(r)
-		    ? "check access"
-		    : "perform authentication. AuthType not set!", r);
-                return;
-            }
-            if (((access_status = ap_run_check_user_id(r)) != 0) || !ap_auth_type(r)) {
-                decl_die(access_status, ap_auth_type(r)
-		    ? "check user.  No user file?"
-		    : "perform authentication. AuthType not set!", r);
-                return;
-            }
-            if (((access_status = ap_run_auth_checker(r)) != 0) || !ap_auth_type(r)) {
-                decl_die(access_status, ap_auth_type(r)
-		    ? "check access.  No groups file?"
-		    : "perform authentication. AuthType not set!", r);
-                return;
-            }
-        }
-        break;
-    }
-
-    if (! (r->proxyreq 
-	   && r->parsed_uri.scheme != NULL
-	   && strcmp(r->parsed_uri.scheme, "http") == 0) ) {
-	if ((access_status = ap_run_type_checker(r)) != 0) {
-	    decl_die(access_status, "find types", r);
-	    return;
-	}
-    }
-
-    if ((access_status = ap_run_fixups(r)) != 0) {
-        ap_die(access_status, r);
-        return;
-    }
-
-    /* The new insert_filter stage makes sense here IMHO.  We are sure that
-     * we are going to run the request now, so we may as well insert filters
-     * if any are available.  Since the goal of this phase is to allow all
-     * modules to insert a filter if they want to, this filter returns
-     * void.  I just can't see any way that this filter can reasonably
-     * fail, either your modules inserts something or it doesn't.  rbb
-     */
-    ap_run_insert_filter(r);
-
-    if ((access_status = ap_invoke_handler(r)) != 0) {
-        ap_die(access_status, r);
-        return;
-    }
-
-    /* Take care of little things that need to happen when we're done */
-    ap_finalize_request_protocol(r);
-}
-
 static void check_pipeline_flush(request_rec *r)
 {
     /* ### if would be nice if we could PEEK without a brigade. that would
@@ -417,7 +284,13 @@ void ap_process_request(request_rec *r)
         ap_finalize_request_protocol(r);
     }
     else if (access_status == DECLINED) {
-        process_request_internal(r);
+         access_status = ap_process_request_internal(r);
+         if (access_status == OK) {
+             ap_finalize_request_protocol(r);
+         }
+         else {
+             ap_die(access_status, r);
+         }
     }
     else {
         ap_die(access_status, r);
@@ -566,7 +439,13 @@ AP_DECLARE(void) ap_internal_fast_redirect(request_rec *rr, request_rec *r)
 AP_DECLARE(void) ap_internal_redirect(const char *new_uri, request_rec *r)
 {
     request_rec *new = internal_internal_redirect(new_uri, r);
-    process_request_internal(new);
+    int access_status = ap_process_request_internal(new);
+    if (access_status == OK) {
+        ap_finalize_request_protocol(r);
+    }
+    else {
+        ap_die(access_status, r);
+    }
 }
 
 /* This function is designed for things like actions or CGI scripts, when
@@ -575,10 +454,17 @@ AP_DECLARE(void) ap_internal_redirect(const char *new_uri, request_rec *r)
  */
 AP_DECLARE(void) ap_internal_redirect_handler(const char *new_uri, request_rec *r)
 {
+    int access_status;
     request_rec *new = internal_internal_redirect(new_uri, r);
     if (r->handler)
         new->content_type = r->content_type;
-    process_request_internal(new);
+    access_status = ap_process_request_internal(new);
+    if (access_status == OK) {
+        ap_finalize_request_protocol(r);
+    }
+    else {
+        ap_die(access_status, r);
+    }
 }
 
 AP_DECLARE(void) ap_allow_methods(request_rec *r, int reset, ...) 
