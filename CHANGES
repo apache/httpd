@@ -2,6 +2,9 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) Fix memory leak in handling of request bodies during reverse
+     proxy operations.  PR 24991. [Larry Toppi <larry.toppi citrix.com>]
+
   *) Clean up httpd -V output: Instead of displaying the MPM source
      directory, display the MPM name and some MPM properties.
      [Geoffrey Young <geoff apache.org>]

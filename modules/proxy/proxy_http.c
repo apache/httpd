@@ -687,7 +687,8 @@ apr_status_t ap_proxy_http_request(apr_pool_t *p, request_rec *r,
             }
 
             /* We can't pass this EOS to the output_filters. */
-            APR_BUCKET_REMOVE(APR_BRIGADE_LAST(input_brigade));
+            e = APR_BRIGADE_LAST(input_brigade);
+            apr_bucket_delete(e);
         }
 
         if (send_chunks) {
