@@ -81,41 +81,23 @@
 
 #define PLATFORM "Win32"
 
-/*
- * This file in included in all Apache source code. It contains definitions
- * of facilities available on _this_ operating system (HAVE_* macros),
- * and prototypes of OS specific functions defined in os.c
- */
-
-/* temporarily replace crypt */
-/* char *crypt(const char *pw, const char *salt); */
-#define crypt(buf,salt)	    (buf)
+#define APACHE_MPM_DIR  "modules/mpm/winnt" /* generated on unix */
 
 /* Although DIR_TYPE is dirent (see nt/readdir.h) we need direct.h for
    chdir() */
 #include <direct.h>
 
-#define STATUS
-#ifndef STRICT
-#define STRICT
-#endif
 #define CASE_BLIND_FILESYSTEM
 #define NO_WRITEV
-#define NO_USE_SIGACTION
-/* #undef HAVE_TIMES */
-#define USE_LONGJMP
 #define HAVE_CANONICAL_FILENAME
 #define HAVE_DRIVE_LETTERS
 #define HAVE_UNC_PATHS
-#define HAVE_SENDFILE
 
 typedef int uid_t;
 typedef int gid_t;
 typedef int pid_t;
 typedef int mode_t;
 typedef char * caddr_t;
-
-#define HAVE_MEMMOVE
 
 #define S_ISLNK(m) (0)
 #define S_ISREG(m) ((m & _S_IFREG) == _S_IFREG)
@@ -129,9 +111,6 @@ typedef char * caddr_t;
 #define JMP_BUF jmp_buf
 #define O_CREAT _O_CREAT
 #define O_RDWR _O_RDWR
-/* Seems Windows is not a subgenius */
-#define NO_SLACK
-#define APACHE_MPM_DIR  "modules/mpm/winnt" /* generated on unix */
 
 #include <stddef.h>
 
@@ -150,10 +129,6 @@ API_EXPORT(char *) ap_os_canonical_filename(apr_pool_t *p, const char *file);
 API_EXPORT(char *) ap_os_case_canonical_filename(apr_pool_t *pPool, const char *szFile);
 API_EXPORT(char *) ap_os_systemcase_filename(apr_pool_t *pPool, const char *szFile);
 API_EXPORT(int) ap_os_is_filename_valid(const char *file);
-
-#define ap_os_dso_error()   ""	/* for now */
-/* Other ap_os_ routines not used by this platform */
-#define ap_os_kill(pid, sig)                kill(pid, sig)
 
 typedef void thread;
 typedef void event;
