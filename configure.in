@@ -202,7 +202,7 @@ case $host in
       APR_SETVAR(APACHE_MPM, [beos])
       APR_SETVAR(SINGLE_LISTEN_UNSERIALIZED_ACCEPT, [1])
       ;;
-  *os2_emx*)
+  *os2-emx*)
       APR_SETVAR(APACHE_MPM, [mpmt_os2])
       APR_SETVAR(SINGLE_LISTEN_UNSERIALIZED_ACCEPT, [1])
       ;;

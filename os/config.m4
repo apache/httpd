@@ -5,7 +5,7 @@ case $host in
   OS="beos"
   OS_DIR=$OS
   ;;
-*pc-os2_emx*)
+*pc-os2-emx*)
   OS="os2"
   OS_DIR=$OS
   ;;
