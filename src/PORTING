@@ -345,8 +345,8 @@ Conclusion:
 The above hints, and a good understanding of your OS and Apache, will
 go a LONG way in helping you get Apache built and running on your
 OS. If you have a port, PLEASE send Email to 'Apache@Apache.Org',
-or log a suggestion report at <http://www.apache.org/bugdb.cgi>,
-with the patches so that we may add them to the official version.
+or log a suggestion report at <http://bugs.apache.org/>, with
+the patches so that we may add them to the official version.
 If you hit a rough spot in the porting process, you can also try
 sending Email to that address as well and, if you are lucky, someone
 will respond. Another good source is the 'comp.infosystems.www.servers.unix'

@@ -103,8 +103,8 @@
   If during compilation you get a warning about a missing 'regex.h', set
   WANTHSREGEX=yes in the 'Configuration', and let The Apache Group know you
   needed to do this for your OS by filling out a problem report form at
-  http://www.apache.org/bugdb.cgi, or by sending a mail message to
-  apache-bugs@apache.org.  Include the output of the command "uname -a".
+  http://bugs.apache.org/, or by sending a mail message to
+  apache-bugs@apache.org. Include the output of the command "uname -a".
 
   Installation
   ------------
