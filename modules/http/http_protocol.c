@@ -822,6 +822,20 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b,
             }
         }
 
+        /* If we don't have a request entity indicated by the headers, EOS.
+         * (BODY_NONE is a valid intermediate state due to trailers,
+         *  but it isn't a valid starting state.)
+         *
+         * RFC 2616 Section 4.4 note 5 states that connection-close
+         * is invalid for a request entity - request bodies must be
+         * denoted by C-L or T-E: chunked.
+         */
+        if (ctx->state == BODY_NONE) {
+            e = apr_bucket_eos_create(f->r->connection->bucket_alloc);
+            APR_BRIGADE_INSERT_TAIL(b, e);
+            return APR_SUCCESS;
+        }
+
         /* Since we're about to read data, send 100-Continue if needed.
          * Only valid on chunked and C-L bodies where the C-L is > 0. */
         if ((ctx->state == BODY_CHUNK || 
