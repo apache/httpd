@@ -104,7 +104,7 @@ typedef struct {
 
 } dbm_auth_config_rec;
 
-static void *create_dbm_auth_dir_config(ap_context_t *p, char *d)
+static void *create_dbm_auth_dir_config(ap_pool_t *p, char *d)
 {
     dbm_auth_config_rec *sec
     = (dbm_auth_config_rec *) ap_pcalloc(p, sizeof(dbm_auth_config_rec));

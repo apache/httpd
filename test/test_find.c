@@ -41,7 +41,7 @@ API_EXPORT(void) ap_log_error(const char *file, int line, int level,
 
 int main (void)
 {
-    ap_context_t *p;
+    ap_pool_t *p;
     char line[512];
     char tok[512];
 

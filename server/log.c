@@ -159,7 +159,7 @@ static const TRANS priorities[] = {
     {NULL,	-1},
 };
 
-static int log_child(ap_context_t *p, const char *progname,
+static int log_child(ap_pool_t *p, const char *progname,
                      ap_file_t **fpin)
 {
     /* Child process code for 'ErrorLog "|..."';
@@ -200,7 +200,7 @@ static int log_child(ap_context_t *p, const char *progname,
     return(rc);
 }
 
-static void open_error_log(server_rec *s, ap_context_t *p)
+static void open_error_log(server_rec *s, ap_pool_t *p)
 {
     const char *fname;
     int rc;
@@ -255,7 +255,7 @@ static void open_error_log(server_rec *s, ap_context_t *p)
     }
 }
 
-void ap_open_logs(server_rec *s_main, ap_context_t *p)
+void ap_open_logs(server_rec *s_main, ap_pool_t *p)
 {
     ap_status_t rc = APR_SUCCESS;
     server_rec *virt, *q;
@@ -472,7 +472,7 @@ API_EXPORT(void) ap_log_rerror(const char *file, int line, int level,
     va_end(args);
 }
 
-void ap_log_pid(ap_context_t *p, const char *fname)
+void ap_log_pid(ap_pool_t *p, const char *fname)
 {
     ap_file_t *pid_file = NULL;
     ap_finfo_t finfo;
@@ -678,7 +678,7 @@ static ap_status_t piped_log_cleanup_for_exec(void *data)
     return APR_SUCCESS;
 }
 
-API_EXPORT(piped_log *) ap_open_piped_log(ap_context_t *p, const char *program)
+API_EXPORT(piped_log *) ap_open_piped_log(ap_pool_t *p, const char *program)
 {
     piped_log *pl;
 
@@ -713,7 +713,7 @@ static ap_status_t piped_log_cleanup(void *data)
     return APR_SUCCESS;
 }
 
-API_EXPORT(piped_log *) ap_open_piped_log(ap_context_t *p, const char *program)
+API_EXPORT(piped_log *) ap_open_piped_log(ap_pool_t *p, const char *program)
 {
     piped_log *pl;
     ap_file_t *dummy = NULL;

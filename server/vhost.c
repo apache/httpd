@@ -150,7 +150,7 @@ static server_addr_rec **name_vhost_list_tail;
 
 
 /* called at the beginning of the config */
-void ap_init_vhost_config(ap_context_t *p)
+void ap_init_vhost_config(ap_pool_t *p)
 {
     memset(iphash_table, 0, sizeof(iphash_table));
     default_list = NULL;
@@ -166,7 +166,7 @@ void ap_init_vhost_config(ap_context_t *p)
  * *paddr is the variable used to keep track of **paddr between calls
  * port is the default port to assume
  */
-static const char *get_addresses(ap_context_t *p, char *w, server_addr_rec ***paddr,
+static const char *get_addresses(ap_pool_t *p, char *w, server_addr_rec ***paddr,
 			    unsigned port)
 {
     struct hostent *hep;
@@ -243,7 +243,7 @@ static const char *get_addresses(ap_context_t *p, char *w, server_addr_rec ***pa
 
 
 /* parse the <VirtualHost> addresses */
-const char *ap_parse_vhost_addrs(ap_context_t *p, const char *hostname, server_rec *s)
+const char *ap_parse_vhost_addrs(ap_pool_t *p, const char *hostname, server_rec *s)
 {
     server_addr_rec **addrs;
     const char *err;
@@ -348,7 +348,7 @@ static ap_inline unsigned hash_inaddr(unsigned key)
 
 
 
-static ipaddr_chain *new_ipaddr_chain(ap_context_t *p,
+static ipaddr_chain *new_ipaddr_chain(ap_pool_t *p,
 				    server_rec *s, server_addr_rec *sar)
 {
     ipaddr_chain *new;
@@ -362,7 +362,7 @@ static ipaddr_chain *new_ipaddr_chain(ap_context_t *p,
 }
 
 
-static name_chain *new_name_chain(ap_context_t *p, server_rec *s, server_addr_rec *sar)
+static name_chain *new_name_chain(ap_pool_t *p, server_rec *s, server_addr_rec *sar)
 {
     name_chain *new;
 
@@ -469,7 +469,7 @@ static void dump_vhost_config(ap_file_t *f)
 }
 
 /* compile the tables and such we need to do the run-time vhost lookups */
-void ap_fini_vhost_config(ap_context_t *p, server_rec *main_s)
+void ap_fini_vhost_config(ap_pool_t *p, server_rec *main_s)
 {
     server_addr_rec *sar;
     int has_default_vhost_addr;

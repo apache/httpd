@@ -97,7 +97,7 @@ static const command_rec dir_cmds[] =
     {NULL}
 };
 
-static void *create_dir_config(ap_context_t *p, char *dummy)
+static void *create_dir_config(ap_pool_t *p, char *dummy)
 {
     dir_config_rec *new =
     (dir_config_rec *) ap_pcalloc(p, sizeof(dir_config_rec));
@@ -106,7 +106,7 @@ static void *create_dir_config(ap_context_t *p, char *dummy)
     return (void *) new;
 }
 
-static void *merge_dir_configs(ap_context_t *p, void *basev, void *addv)
+static void *merge_dir_configs(ap_pool_t *p, void *basev, void *addv)
 {
     dir_config_rec *new = (dir_config_rec *) ap_pcalloc(p, sizeof(dir_config_rec));
     dir_config_rec *base = (dir_config_rec *) basev;

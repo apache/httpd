@@ -148,7 +148,7 @@ typedef struct {
 
 module MODULE_VAR_EXPORT setenvif_module;
 
-static void *create_setenvif_config(ap_context_t *p, server_rec *dummy)
+static void *create_setenvif_config(ap_pool_t *p, server_rec *dummy)
 {
     sei_cfg_rec *new = (sei_cfg_rec *) ap_palloc(p, sizeof(sei_cfg_rec));
 
@@ -156,7 +156,7 @@ static void *create_setenvif_config(ap_context_t *p, server_rec *dummy)
     return (void *) new;
 }
 
-static void *merge_setenvif_config(ap_context_t *p, void *basev, void *overridesv)
+static void *merge_setenvif_config(ap_pool_t *p, void *basev, void *overridesv)
 {
     sei_cfg_rec *a = ap_pcalloc(p, sizeof(sei_cfg_rec));
     sei_cfg_rec *base = basev, *overrides = overridesv;

@@ -568,7 +568,7 @@ static const command_rec autoindex_cmds[] =
     {NULL}
 };
 
-static void *create_autoindex_config(ap_context_t *p, char *dummy)
+static void *create_autoindex_config(ap_pool_t *p, char *dummy)
 {
     autoindex_config_rec *new =
     (autoindex_config_rec *) ap_pcalloc(p, sizeof(autoindex_config_rec));
@@ -591,7 +591,7 @@ static void *create_autoindex_config(ap_context_t *p, char *dummy)
     return (void *) new;
 }
 
-static void *merge_autoindex_configs(ap_context_t *p, void *basev, void *addv)
+static void *merge_autoindex_configs(ap_pool_t *p, void *basev, void *addv)
 {
     autoindex_config_rec *new;
     autoindex_config_rec *base = (autoindex_config_rec *) basev;
@@ -1283,12 +1283,12 @@ static void output_directories(struct ent **ar, int n,
     char *name = r->uri;
     char *tp;
     int static_columns = (autoindex_opts & SUPPRESS_COLSORT);
-    ap_context_t *scratch;
+    ap_pool_t *scratch;
     int name_width;
     char *name_scratch;
     char *pad_scratch;
 
-    ap_create_context(&scratch, r->pool);
+    ap_create_pool(&scratch, r->pool);
     if (name[0] == '\0') {
 	name = "/";
     }

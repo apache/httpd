@@ -119,7 +119,7 @@ typedef struct userdir_config {
  * explicit) disablement, and the replacement string for all others.
  */
 
-static void *create_userdir_config(ap_context_t *p, server_rec *s)
+static void *create_userdir_config(ap_pool_t *p, server_rec *s)
 {
     userdir_config
     * newcfg = (userdir_config *) ap_pcalloc(p, sizeof(userdir_config));

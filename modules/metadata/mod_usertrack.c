@@ -191,7 +191,7 @@ static int spot_cookie(request_rec *r)
     return OK;                  /* We set our cookie */
 }
 
-static void *make_cookie_log_state(ap_context_t *p, server_rec *s)
+static void *make_cookie_log_state(ap_pool_t *p, server_rec *s)
 {
     cookie_log_state *cls =
     (cookie_log_state *) ap_palloc(p, sizeof(cookie_log_state));
@@ -201,7 +201,7 @@ static void *make_cookie_log_state(ap_context_t *p, server_rec *s)
     return (void *) cls;
 }
 
-static void *make_cookie_dir(ap_context_t *p, char *d)
+static void *make_cookie_dir(ap_pool_t *p, char *d)
 {
     cookie_dir_rec *dcfg;
 

@@ -110,7 +110,7 @@
  * the http_conf_globals.
  */
 
-static void *create_core_dir_config(ap_context_t *a, char *dir)
+static void *create_core_dir_config(ap_pool_t *a, char *dir)
 {
     core_dir_config *conf;
 
@@ -153,7 +153,7 @@ static void *create_core_dir_config(ap_context_t *a, char *dir)
     return (void *)conf;
 }
 
-static void *merge_core_dir_configs(ap_context_t *a, void *basev, void *newv)
+static void *merge_core_dir_configs(ap_pool_t *a, void *basev, void *newv)
 {
     core_dir_config *base = (core_dir_config *)basev;
     core_dir_config *new = (core_dir_config *)newv;
@@ -272,7 +272,7 @@ static void *merge_core_dir_configs(ap_context_t *a, void *basev, void *newv)
     return (void*)conf;
 }
 
-static void *create_core_server_config(ap_context_t *a, server_rec *s)
+static void *create_core_server_config(ap_pool_t *a, server_rec *s)
 {
     core_server_config *conf;
     int is_virtual = s->is_virtual;
@@ -289,7 +289,7 @@ static void *create_core_server_config(ap_context_t *a, server_rec *s)
     return (void *)conf;
 }
 
-static void *merge_core_server_configs(ap_context_t *p, void *basev, void *virtv)
+static void *merge_core_server_configs(ap_pool_t *p, void *basev, void *virtv)
 {
     core_server_config *base = (core_server_config *)basev;
     core_server_config *virt = (core_server_config *)virtv;
@@ -397,7 +397,7 @@ static int reorder_sorter(const void *va, const void *vb)
     return a->orig_index - b->orig_index;
 }
 
-void ap_core_reorder_directories(ap_context_t *p, server_rec *s)
+void ap_core_reorder_directories(ap_pool_t *p, server_rec *s)
 {
     core_server_config *sconf;
     ap_array_header_t *sec;
@@ -405,7 +405,7 @@ void ap_core_reorder_directories(ap_context_t *p, server_rec *s)
     int nelts;
     void **elts;
     int i;
-    ap_context_t *tmp;
+    ap_pool_t *tmp;
 
     sconf = ap_get_module_config(s->module_config, &core_module);
     sec = sconf->sec;
@@ -413,7 +413,7 @@ void ap_core_reorder_directories(ap_context_t *p, server_rec *s)
     elts = (void **)sec->elts;
 
     /* we have to allocate tmp space to do a stable sort */
-    ap_create_context(&tmp, p);
+    ap_create_pool(&tmp, p);
     sortbin = ap_palloc(tmp, sec->nelts * sizeof(*sortbin));
     for (i = 0; i < nelts; ++i) {
 	sortbin[i].orig_index = i;
@@ -712,7 +712,7 @@ API_EXPORT(unsigned) ap_get_server_port(const request_rec *r)
     return port;
 }
 
-API_EXPORT(char *) ap_construct_url(ap_context_t *p, const char *uri,
+API_EXPORT(char *) ap_construct_url(ap_pool_t *p, const char *uri,
 				    request_rec *r)
 {
     unsigned port = ap_get_server_port(r);
@@ -733,7 +733,7 @@ API_EXPORT(unsigned long) ap_get_limit_req_body(const request_rec *r)
 }
 
 #ifdef WIN32
-static char* get_interpreter_from_win32_registry(ap_context_t *p, const char* ext) 
+static char* get_interpreter_from_win32_registry(ap_pool_t *p, const char* ext) 
 {
     char extension_path[] = "SOFTWARE\\Classes\\";
     char executable_path[] = "\\SHELL\\OPEN\\COMMAND";
@@ -1723,7 +1723,7 @@ static const char *virtualhost_section(cmd_parms *cmd, void *dummy, char *arg)
     server_rec *main_server = cmd->server, *s;
     const char *errmsg;
     char *endp = strrchr(arg, '>');
-    ap_context_t *p = cmd->pool;
+    ap_pool_t *p = cmd->pool;
     const char *old_end_token;
 
     const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
@@ -2646,7 +2646,7 @@ static const handler_rec core_handlers[] = {
 { NULL, NULL }
 };
 
-static void core_open_logs(ap_context_t *pconf, ap_context_t *plog, ap_context_t *ptemp, server_rec *s)
+static void core_open_logs(ap_pool_t *pconf, ap_pool_t *plog, ap_pool_t *ptemp, server_rec *s)
 {
     ap_open_logs(s, pconf);
 }

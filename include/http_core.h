@@ -131,7 +131,7 @@ API_EXPORT(const char *) ap_get_remote_logname(request_rec *r);
 /* Used for constructing self-referencing URLs, and things like SERVER_PORT,
  * and SERVER_NAME.
  */
-API_EXPORT(char *) ap_construct_url(ap_context_t *p, const char *uri, request_rec *r);
+API_EXPORT(char *) ap_construct_url(ap_pool_t *p, const char *uri, request_rec *r);
 API_EXPORT(const char *) ap_get_server_name(request_rec *r);
 API_EXPORT(unsigned) ap_get_server_port(const request_rec *r);
 API_EXPORT(unsigned long) ap_get_limit_req_body(const request_rec *r);
@@ -295,7 +295,7 @@ typedef struct {
 } core_server_config;
 
 /* for http_config.c */
-void ap_core_reorder_directories(ap_context_t *, server_rec *);
+void ap_core_reorder_directories(ap_pool_t *, server_rec *);
 
 /* for mod_perl */
 CORE_EXPORT(void) ap_add_per_dir_conf (server_rec *s, void *dir_config);

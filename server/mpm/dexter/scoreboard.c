@@ -139,7 +139,7 @@ caddr_t get_shared_heap(const char *Name)
     return BaseAddress;
 }
 
-static void setup_shared_mem(ap_context_t *p)
+static void setup_shared_mem(ap_pool_t *p)
 {
     caddr_t m;
 
@@ -162,7 +162,7 @@ static void setup_shared_mem(ap_context_t *p)
     ap_scoreboard_image = (scoreboard *) m;
 }
 
-API_EXPORT(void) reopen_scoreboard(ap_context_t *p)
+API_EXPORT(void) reopen_scoreboard(ap_pool_t *p)
 {
     caddr_t m;
     int rc;
@@ -215,7 +215,7 @@ static void cleanup_shared_mem(void *d)
     shm_unlink(ap_scoreboard_fname);
 }
 
-static void setup_shared_mem(ap_context_t *p)
+static void setup_shared_mem(ap_pool_t *p)
 {
     char buf[512];
     caddr_t m;
@@ -249,13 +249,13 @@ static void setup_shared_mem(ap_context_t *p)
     ap_scoreboard_image = (scoreboard *) m;
 }
 
-API_EXPORT(void) reopen_scoreboard(ap_context_t *p)
+API_EXPORT(void) reopen_scoreboard(ap_pool_t *p)
 {
 }
 
 #elif defined(USE_MMAP_SCOREBOARD)
 
-static void setup_shared_mem(ap_context_t *p)
+static void setup_shared_mem(ap_pool_t *p)
 {
     caddr_t m;
 
@@ -333,7 +333,7 @@ static void setup_shared_mem(ap_context_t *p)
     ap_scoreboard_image = (scoreboard *) m;
 }
 
-API_EXPORT(void) reopen_scoreboard(ap_context_t *p)
+API_EXPORT(void) reopen_scoreboard(ap_pool_t *p)
 {
 }
 
@@ -341,7 +341,7 @@ API_EXPORT(void) reopen_scoreboard(ap_context_t *p)
 static key_t shmkey = IPC_PRIVATE;
 static int shmid = -1;
 
-static void setup_shared_mem(ap_context_t *p)
+static void setup_shared_mem(ap_pool_t *p)
 {
     struct shmid_ds shmbuf;
     const server_rec * server_conf = ap_get_server_conf();
@@ -427,14 +427,14 @@ static void setup_shared_mem(ap_context_t *p)
 #endif
 }
 
-API_EXPORT(void) reopen_scoreboard(ap_context_t *p)
+API_EXPORT(void) reopen_scoreboard(ap_pool_t *p)
 {
 }
 
 #endif
 
 /* Called by parent process */
-void reinit_scoreboard(ap_context_t *p)
+void reinit_scoreboard(ap_pool_t *p)
 {
     if (ap_scoreboard_image == NULL) {
 	setup_shared_mem(p);
@@ -491,7 +491,7 @@ const char *ap_get_connection_status(long conn_id, const char *key)
     return NULL;
 }
 
-ap_array_header_t *ap_get_connections(ap_context_t *p)
+ap_array_header_t *ap_get_connections(ap_pool_t *p)
 {
     int i;
     ap_array_header_t *connection_list;
@@ -510,7 +510,7 @@ ap_array_header_t *ap_get_connections(ap_context_t *p)
     return connection_list;
 }
 
-ap_array_header_t *ap_get_connection_keys(ap_context_t *p, long conn_id)
+ap_array_header_t *ap_get_connection_keys(ap_pool_t *p, long conn_id)
 {
     int i = 0;
     status_table_entry *ss;
@@ -562,7 +562,7 @@ void ap_update_connection_status(long conn_id, const char *key,
     return;
 }
 
-ap_array_header_t *ap_get_status_table(ap_context_t *p)
+ap_array_header_t *ap_get_status_table(ap_pool_t *p)
 {
     int i, j;
     ap_array_header_t *server_status;

@@ -732,10 +732,10 @@ static int file_walk(request_rec *r)
 
 static request_rec *make_sub_request(const request_rec *r)
 {
-    ap_context_t *rrp;
+    ap_pool_t *rrp;
     request_rec *rr;
     
-    ap_create_context(&rrp, r->pool);
+    ap_create_pool(&rrp, r->pool);
     rr = ap_pcalloc(rrp, sizeof(request_rec));
     rr->pool = rrp;
     return rr;
@@ -1259,7 +1259,7 @@ void ap_process_request(request_rec *r)
     ap_run_log_transaction(r);
 }
 
-static ap_table_t *rename_original_env(ap_context_t *p, ap_table_t *t)
+static ap_table_t *rename_original_env(ap_pool_t *p, ap_table_t *t)
 {
     ap_array_header_t *env_arr = ap_table_elts(t);
     ap_table_entry_t *elts = (ap_table_entry_t *) env_arr->elts;

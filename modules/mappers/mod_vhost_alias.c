@@ -102,7 +102,7 @@ typedef struct mva_sconf_t {
     mva_mode_e cgi_root_mode;
 } mva_sconf_t;
 
-static void *mva_create_server_config(ap_context_t *p, server_rec *s)
+static void *mva_create_server_config(ap_pool_t *p, server_rec *s)
 {
     mva_sconf_t *conf;
 
@@ -114,7 +114,7 @@ static void *mva_create_server_config(ap_context_t *p, server_rec *s)
     return conf;
 }
 
-static void *mva_merge_server_config(ap_context_t *p, void *parentv, void *childv)
+static void *mva_merge_server_config(ap_pool_t *p, void *parentv, void *childv)
 {
     mva_sconf_t *parent = (mva_sconf_t *) parentv;
     mva_sconf_t *child = (mva_sconf_t *) childv;

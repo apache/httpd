@@ -99,7 +99,7 @@
  * are handled in create_argv.
  *
  */
-static char **create_argv(ap_context_t *p, char *path, char *user, char *group,
+static char **create_argv(ap_pool_t *p, char *path, char *user, char *group,
 			  char *av0, const char *args)
 {
     int x, numwords;
@@ -142,7 +142,7 @@ static char **create_argv(ap_context_t *p, char *path, char *user, char *group,
 }
 #endif /* defined(OS2) || defined(WIN32) */
 
-static char *http2env(ap_context_t *a, char *w)
+static char *http2env(ap_pool_t *a, char *w)
 {
     char *res = ap_pstrcat(a, "HTTP_", w, NULL);
     char *cp = res;
@@ -159,7 +159,7 @@ static char *http2env(ap_context_t *a, char *w)
     return res;
 }
 
-API_EXPORT(char **) ap_create_environment(ap_context_t *p, ap_table_t *t)
+API_EXPORT(char **) ap_create_environment(ap_pool_t *p, ap_table_t *t)
 {
     ap_array_header_t *env_arr = ap_table_elts(t);
     ap_table_entry_t *elts = (ap_table_entry_t *) env_arr->elts;
@@ -667,7 +667,7 @@ API_EXPORT(void) ap_send_size(ap_ssize_t size, request_rec *r)
 }
 
 #if defined(OS2) || defined(WIN32)
-static char **create_argv_cmd(ap_context_t *p, char *av0, const char *args, char *path)
+static char **create_argv_cmd(ap_pool_t *p, char *av0, const char *args, char *path)
 {
     register int x, n;
     char **av;

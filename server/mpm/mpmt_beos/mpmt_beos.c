@@ -97,8 +97,8 @@ static int num_listenfds = 0;
 static struct pollfd *listenfds;
 ap_lock_t *accept_mutex = NULL;
 
-static ap_context_t *pconf;		/* Pool for config stuff */
-static ap_context_t *pchild;		/* Pool for httpd child stuff */
+static ap_pool_t *pconf;		/* Pool for config stuff */
+static ap_pool_t *pchild;		/* Pool for httpd child stuff */
 
 static int my_pid; /* Linux getpid() doesn't work except in main thread. Use
                       this instead */
@@ -112,7 +112,7 @@ typedef struct {
     int pid;
     thread_id tid;
     int sd;
-    ap_context_t *tpool; /* "pthread" would be confusing */
+    ap_pool_t *tpool; /* "pthread" would be confusing */
 } proc_info;
 
 #define SERVER_DEAD 0
@@ -630,7 +630,7 @@ int ap_graceful_stop_signalled(void)
  * Child process main loop.
  */
 
-static void process_socket(ap_context_t *p, ap_socket_t *sock, int my_child_num, int my_thread_num)
+static void process_socket(ap_pool_t *p, ap_socket_t *sock, int my_child_num, int my_thread_num)
 {
     BUFF *conn_io;
     conn_rec *current_conn;
@@ -668,10 +668,10 @@ static int32 worker_thread(void * dummy)
     proc_info * ti = dummy;
     int process_slot = ti->pid;
     int thread_slot = ti->tid;
-    ap_context_t *tpool = ti->tpool;
+    ap_pool_t *tpool = ti->tpool;
     struct sockaddr sa_client;
     ap_socket_t *csd = NULL;
-    ap_context_t *ptrans;		/* Pool for per-transaction stuff */
+    ap_pool_t *ptrans;		/* Pool for per-transaction stuff */
     ap_socket_t *sd = NULL;
     int srv;
     int curr_pollfd, last_pollfd = 0;
@@ -684,7 +684,7 @@ static int32 worker_thread(void * dummy)
     sigfillset(&sig_mask);
     sigprocmask(SIG_BLOCK, &sig_mask, NULL);
 
-    ap_create_context(&ptrans, tpool);
+    ap_create_pool(&ptrans, tpool);
 
     ap_lock(worker_thread_count_mutex);
     worker_thread_count++;
@@ -778,7 +778,7 @@ static int32 child_main(void * data)
     ap_status_t rv;
         
     my_pid = getpid();
-    ap_create_context(&pchild, pconf);
+    ap_create_pool(&pchild, pconf);
 
     if (beosd_setup_child()) {
 	clean_child_exit(APEXIT_CHILDFATAL);
@@ -822,7 +822,7 @@ static int32 child_main(void * data)
         my_info->pid = my_child_num;
         my_info->tid = i;
         my_info->sd = 0;
-        ap_create_context(&my_info->tpool, pchild);
+        ap_create_pool(&my_info->tpool, pchild);
 	
         /* We are creating threads right now */
 
@@ -1038,7 +1038,7 @@ static void server_main_loop(int remaining_children_to_start)
     }
 }
 
-int ap_mpm_run(ap_context_t *_pconf, ap_context_t *plog, server_rec *s)
+int ap_mpm_run(ap_pool_t *_pconf, ap_pool_t *plog, server_rec *s)
 {
     int remaining_children_to_start;
     ap_status_t rv;
@@ -1180,7 +1180,7 @@ int ap_mpm_run(ap_context_t *_pconf, ap_context_t *plog, server_rec *s)
     return 0;
 }
 
-static void mpmt_beos_pre_config(ap_context_t *pconf, ap_context_t *plog, ap_context_t *ptemp)
+static void mpmt_beos_pre_config(ap_pool_t *pconf, ap_pool_t *plog, ap_pool_t *ptemp)
 {
     static int restart_num = 0;
 

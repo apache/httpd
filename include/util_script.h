@@ -71,7 +71,7 @@ extern "C" {
 #endif
 #endif
 
-API_EXPORT(char **) ap_create_environment(ap_context_t *p, ap_table_t *t);
+API_EXPORT(char **) ap_create_environment(ap_pool_t *p, ap_table_t *t);
 API_EXPORT(int) ap_find_path_info(const char *uri, const char *path_info);
 API_EXPORT(void) ap_add_cgi_vars(request_rec *r);
 API_EXPORT(void) ap_add_common_vars(request_rec *r);

@@ -130,9 +130,9 @@ void __stdcall service_main_fn(DWORD argc, LPTSTR *argv)
     char **new, *server_root, *tmp;
     char *server_confname = SERVER_CONFIG_FILE;
     ap_array_header_t *cmdtbl;
-    ap_context_t *pwincmd;
+    ap_pool_t *pwincmd;
 
-    ap_create_context(&pwincmd, NULL);
+    ap_create_pool(&pwincmd, NULL);
     if (pwincmd == NULL) {
         exit(0);
     }

@@ -85,7 +85,7 @@ typedef struct auth_config_struct {
     int auth_authoritative;
 } auth_config_rec;
 
-static void *create_auth_dir_config(ap_context_t *p, char *d)
+static void *create_auth_dir_config(ap_pool_t *p, char *d)
 {
     auth_config_rec *sec =
     (auth_config_rec *) ap_pcalloc(p, sizeof(auth_config_rec));
@@ -147,11 +147,11 @@ static char *get_pw(request_rec *r, char *user, char *auth_pwfile)
     return NULL;
 }
 
-static ap_table_t *groups_for_user(ap_context_t *p, char *user, char *grpfile)
+static ap_table_t *groups_for_user(ap_pool_t *p, char *user, char *grpfile)
 {
     configfile_t *f;
     ap_table_t *grps = ap_make_table(p, 15);
-    ap_context_t *sp;
+    ap_pool_t *sp;
     char l[MAX_STRING_LEN];
     const char *group_name, *ll, *w;
     ap_status_t status;
@@ -162,7 +162,7 @@ static ap_table_t *groups_for_user(ap_context_t *p, char *user, char *grpfile)
 	return NULL;
     }
 
-    ap_create_context(&sp, p);
+    ap_create_pool(&sp, p);
 
     while (!(ap_cfg_getline(l, MAX_STRING_LEN, f))) {
 	if ((l[0] == '#') || (!l[0]))

@@ -68,10 +68,10 @@
 #include "scoreboard.h"
 
 scoreboard *ap_scoreboard_image = NULL;
-extern ap_context_t * pconf;
+extern ap_pool_t * pconf;
 static int maintain_connection_status = 1;
 
-void reinit_scoreboard(ap_context_t *p)
+void reinit_scoreboard(ap_pool_t *p)
 {
     ap_assert(!ap_scoreboard_image);
     ap_scoreboard_image = (scoreboard *) malloc(SCOREBOARD_SIZE);
@@ -161,7 +161,7 @@ const char *ap_get_connection_status(long conn_id, const char *key)
     return NULL;
 }
 
-ap_array_header_t *ap_get_connections(ap_context_t *p)
+ap_array_header_t *ap_get_connections(ap_pool_t *p)
 {
     int i;
     ap_array_header_t *connection_list;
@@ -177,7 +177,7 @@ ap_array_header_t *ap_get_connections(ap_context_t *p)
     return connection_list;
 }
 
-ap_array_header_t *ap_get_connection_keys(ap_context_t *p, long conn_id)
+ap_array_header_t *ap_get_connection_keys(ap_pool_t *p, long conn_id)
 {
     int i = 0;
     status_table_entry *ss;
@@ -197,7 +197,7 @@ ap_array_header_t *ap_get_connection_keys(ap_context_t *p, long conn_id)
     return key_list;
 }
 
-ap_array_header_t *ap_get_status_table(ap_context_t *p)
+ap_array_header_t *ap_get_status_table(ap_pool_t *p)
 {
     int i, j;
     ap_array_header_t *server_status;

@@ -126,7 +126,7 @@ typedef struct {
     char *imap_base;
 } imap_conf_rec;
 
-static void *create_imap_dir_config(ap_context_t *p, char *dummy)
+static void *create_imap_dir_config(ap_pool_t *p, char *dummy)
 {
     imap_conf_rec *icr =
     (imap_conf_rec *) ap_palloc(p, sizeof(imap_conf_rec));
@@ -138,7 +138,7 @@ static void *create_imap_dir_config(ap_context_t *p, char *dummy)
     return icr;
 }
 
-static void *merge_imap_dir_configs(ap_context_t *p, void *basev, void *addv)
+static void *merge_imap_dir_configs(ap_pool_t *p, void *basev, void *addv)
 {
     imap_conf_rec *new = (imap_conf_rec *) ap_pcalloc(p, sizeof(imap_conf_rec));
     imap_conf_rec *base = (imap_conf_rec *) basev;

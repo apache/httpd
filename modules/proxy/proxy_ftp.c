@@ -119,7 +119,7 @@ static int ftp_check_string(const char *x)
 int ap_proxy_ftp_canon(request_rec *r, char *url)
 {
     char *user, *password, *host, *path, *parms, *strp, sport[7];
-    ap_context_t *p = r->pool;
+    ap_pool_t *p = r->pool;
     const char *err;
     int port;
 
@@ -461,7 +461,7 @@ int ap_proxy_ftp_handler(request_rec *r, cache_req *c, char *url)
     ap_table_t *resp_hdrs;
     BUFF *f;
     BUFF *data = NULL;
-    ap_context_t *p = r->pool;
+    ap_pool_t *p = r->pool;
     int one = 1;
     const long int zero = 0L;
     NET_SIZE_T clen;

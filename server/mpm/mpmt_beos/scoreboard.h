@@ -67,11 +67,11 @@ extern "C" {
 #include "mpm_default.h"	/* For HARD_.*_LIMIT */
 
 API_EXPORT(int) ap_exists_scoreboard_image(void);
-void reinit_scoareboard(ap_context_t *p);
+void reinit_scoareboard(ap_pool_t *p);
 void cleanup_scoreboard(void);
 void ap_mpmt_beos_set_maintain_connection_status(int flag);
 void ap_mpmt_beos_force_reset_connection_status(long conn_id);
-void reinit_scoreboard(ap_context_t *p);
+void reinit_scoreboard(ap_pool_t *p);
 void update_scoreboard_global(void);
 API_EXPORT(int) find_child_by_pid(int pid);
 int ap_update_child_status(int child_num, int thread_num, int status, request_rec *r);

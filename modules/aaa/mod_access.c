@@ -107,7 +107,7 @@ typedef struct {
 
 module MODULE_VAR_EXPORT access_module;
 
-static void *create_access_dir_config(ap_context_t *p, char *dummy)
+static void *create_access_dir_config(ap_pool_t *p, char *dummy)
 {
     access_dir_conf *conf =
     (access_dir_conf *) ap_pcalloc(p, sizeof(access_dir_conf));

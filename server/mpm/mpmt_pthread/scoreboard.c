@@ -94,7 +94,7 @@ static ap_status_t cleanup_shared_mem(void *d)
     ap_shm_destroy(scoreboard_shm);
 }
 
-static void setup_shared_mem(ap_context_t *p)
+static void setup_shared_mem(ap_pool_t *p)
 {
     char buf[512];
     const char *fname;
@@ -119,13 +119,13 @@ static void setup_shared_mem(ap_context_t *p)
     ap_scoreboard_image->global.running_generation = 0;
 }
 
-void reopen_scoreboard(ap_context_t *p)
+void reopen_scoreboard(ap_pool_t *p)
 {
 }
 #endif   /* APR_SHARED_MEM */
 
 /* Called by parent process */
-void reinit_scoreboard(ap_context_t *p)
+void reinit_scoreboard(ap_pool_t *p)
 {
     int running_gen = 0;
     if (ap_scoreboard_image)
@@ -331,7 +331,7 @@ const char *ap_get_connection_status(long conn_id, const char *key)
     return NULL;
 }
 
-ap_array_header_t *ap_get_connections(ap_context_t *p)
+ap_array_header_t *ap_get_connections(ap_pool_t *p)
 {
     int i;
     ap_array_header_t *connection_list;
@@ -351,7 +351,7 @@ ap_array_header_t *ap_get_connections(ap_context_t *p)
     return connection_list;
 }
 
-ap_array_header_t *ap_get_connection_keys(ap_context_t *p, long conn_id)
+ap_array_header_t *ap_get_connection_keys(ap_pool_t *p, long conn_id)
 {
     int i = 0;
     status_table_entry *ss;
@@ -401,7 +401,7 @@ void ap_update_connection_status(long conn_id, const char *key,
     return;
 }
 
-ap_array_header_t *ap_get_status_table(ap_context_t *p)
+ap_array_header_t *ap_get_status_table(ap_pool_t *p)
 {
     int i, j;
     ap_array_header_t *server_status;

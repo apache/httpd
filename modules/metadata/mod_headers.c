@@ -129,7 +129,7 @@ typedef struct {
 
 module MODULE_VAR_EXPORT headers_module;
 
-static void *create_headers_config(ap_context_t *p, server_rec *s)
+static void *create_headers_config(ap_pool_t *p, server_rec *s)
 {
     headers_conf *a =
     (headers_conf *) ap_pcalloc(p, sizeof(headers_conf));
@@ -138,12 +138,12 @@ static void *create_headers_config(ap_context_t *p, server_rec *s)
     return a;
 }
 
-static void *create_headers_dir_config(ap_context_t *p, char *d)
+static void *create_headers_dir_config(ap_pool_t *p, char *d)
 {
     return (headers_conf *) create_headers_config(p, NULL);
 }
 
-static void *merge_headers_config(ap_context_t *p, void *basev, void *overridesv)
+static void *merge_headers_config(ap_pool_t *p, void *basev, void *overridesv)
 {
     headers_conf *a =
     (headers_conf *) ap_pcalloc(p, sizeof(headers_conf));

@@ -212,7 +212,7 @@ int execvp(const char *file, char *const argv[])
 
 
 
-int ap_tpf_spawn_child(ap_context_t *p, int (*func) (void *, child_info *),
+int ap_tpf_spawn_child(ap_pool_t *p, int (*func) (void *, child_info *),
                        void *data, enum kill_conditions kill_how,
                        int *pipe_in, int *pipe_out, int *pipe_err,
                        int out_fds[], int in_fds[], int err_fds[])
@@ -396,7 +396,7 @@ int os_check_server(char *server) {
     return 0;
 }
 
-void os_note_additional_cleanups(ap_context_t *p, int sd) {
+void os_note_additional_cleanups(ap_pool_t *p, int sd) {
     char sockfilename[50];
     /* write the socket to file so that TPF socket device driver will close socket in case
        we happen to abend. */

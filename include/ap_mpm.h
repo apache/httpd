@@ -85,7 +85,7 @@
     However the MPM may choose to terminate processes when the user
     requests a non-graceful restart/stop.  When this occurs, the MPM kills
     all threads with extreme prejudice, and destroys the pchild pool.
-    User cleanups registered in the pchild ap_context_t will be invoked at
+    User cleanups registered in the pchild ap_pool_t will be invoked at
     this point.  (This can pose some complications, the user cleanups
     are asynchronous behaviour not unlike longjmp/signal... but if the
     admin is asking for a non-graceful shutdown, how much effort should
@@ -103,7 +103,7 @@
 
 /* run until a restart/shutdown is indicated, return 1 for shutdown
    0 otherwise */
-API_EXPORT(int) ap_mpm_run(ap_context_t *pconf, ap_context_t *plog, server_rec *server_conf);
+API_EXPORT(int) ap_mpm_run(ap_pool_t *pconf, ap_pool_t *plog, server_rec *server_conf);
 
 /* predicate indicating if a graceful stop has been requested ...
    used by the connection loop */
@@ -128,7 +128,7 @@ void ap_start_restart(int graceful);
 /* 
  * ap_signal_parent() - used to send a signal to the parent process.
  */
-void ap_signal_parent(ap_context_t *p, const char* signal, const char* server_root);
+void ap_signal_parent(ap_pool_t *p, const char* signal, const char* server_root);
 
 #ifdef HAS_OTHER_CHILD
 /*

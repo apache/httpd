@@ -95,7 +95,7 @@ typedef struct {
 
 module action_module;
 
-static void *create_action_dir_config(ap_context_t *p, char *dummy)
+static void *create_action_dir_config(ap_pool_t *p, char *dummy)
 {
     action_dir_config *new =
     (action_dir_config *) ap_palloc(p, sizeof(action_dir_config));
@@ -106,7 +106,7 @@ static void *create_action_dir_config(ap_context_t *p, char *dummy)
     return new;
 }
 
-static void *merge_action_dir_configs(ap_context_t *p, void *basev, void *addv)
+static void *merge_action_dir_configs(ap_pool_t *p, void *basev, void *addv)
 {
     action_dir_config *base = (action_dir_config *) basev;
     action_dir_config *add = (action_dir_config *) addv;

@@ -72,7 +72,7 @@ static int ap_listenbacklog;
 static int send_buffer_size;
 
 /* TODO: make_sock is just begging and screaming for APR abstraction */
-static ap_status_t make_sock(ap_context_t *p, ap_listen_rec *server)
+static ap_status_t make_sock(ap_pool_t *p, ap_listen_rec *server)
 {
     ap_socket_t *s = server->sd;
     int one = 1;
@@ -202,7 +202,7 @@ static void alloc_listener(process_rec *process, char *addr, unsigned int port)
 
 int ap_listen_open(process_rec *process, unsigned port)
 {
-    ap_context_t *pconf = process->pconf;
+    ap_pool_t *pconf = process->pconf;
     ap_listen_rec *lr;
     ap_listen_rec *next;
     int num_open;

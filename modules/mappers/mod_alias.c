@@ -88,7 +88,7 @@ typedef struct {
 
 module MODULE_VAR_EXPORT alias_module;
 
-static void *create_alias_config(ap_context_t *p, server_rec *s)
+static void *create_alias_config(ap_pool_t *p, server_rec *s)
 {
     alias_server_conf *a =
     (alias_server_conf *) ap_pcalloc(p, sizeof(alias_server_conf));
@@ -98,7 +98,7 @@ static void *create_alias_config(ap_context_t *p, server_rec *s)
     return a;
 }
 
-static void *create_alias_dir_config(ap_context_t *p, char *d)
+static void *create_alias_dir_config(ap_pool_t *p, char *d)
 {
     alias_dir_conf *a =
     (alias_dir_conf *) ap_pcalloc(p, sizeof(alias_dir_conf));
@@ -106,7 +106,7 @@ static void *create_alias_dir_config(ap_context_t *p, char *d)
     return a;
 }
 
-static void *merge_alias_config(ap_context_t *p, void *basev, void *overridesv)
+static void *merge_alias_config(ap_pool_t *p, void *basev, void *overridesv)
 {
     alias_server_conf *a =
     (alias_server_conf *) ap_pcalloc(p, sizeof(alias_server_conf));
@@ -117,7 +117,7 @@ static void *merge_alias_config(ap_context_t *p, void *basev, void *overridesv)
     return a;
 }
 
-static void *merge_alias_dir_config(ap_context_t *p, void *basev, void *overridesv)
+static void *merge_alias_dir_config(ap_pool_t *p, void *basev, void *overridesv)
 {
     alias_dir_conf *a =
     (alias_dir_conf *) ap_pcalloc(p, sizeof(alias_dir_conf));

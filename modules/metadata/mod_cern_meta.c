@@ -176,7 +176,7 @@ typedef struct {
     char *metafiles;
 } cern_meta_dir_config;
 
-static void *create_cern_meta_dir_config(ap_context_t *p, char *dummy)
+static void *create_cern_meta_dir_config(ap_pool_t *p, char *dummy)
 {
     cern_meta_dir_config *new =
     (cern_meta_dir_config *) ap_palloc(p, sizeof(cern_meta_dir_config));
@@ -188,7 +188,7 @@ static void *create_cern_meta_dir_config(ap_context_t *p, char *dummy)
     return new;
 }
 
-static void *merge_cern_meta_dir_configs(ap_context_t *p, void *basev, void *addv)
+static void *merge_cern_meta_dir_configs(ap_pool_t *p, void *basev, void *addv)
 {
     cern_meta_dir_config *base = (cern_meta_dir_config *) basev;
     cern_meta_dir_config *add = (cern_meta_dir_config *) addv;

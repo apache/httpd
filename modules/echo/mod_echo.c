@@ -69,7 +69,7 @@ typedef struct
     int bEnabled;
     } EchoConfig;
 
-static void *create_echo_server_config(ap_context_t *p,server_rec *s)
+static void *create_echo_server_config(ap_pool_t *p,server_rec *s)
     {
     EchoConfig *pConfig=ap_pcalloc(p,sizeof *pConfig);
 

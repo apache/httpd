@@ -234,7 +234,7 @@ static int proxy_fixup(request_rec *r)
     return OK;		/* otherwise; we've done the best we can */
 }
 
-static void proxy_init(server_rec *r, ap_context_t *p)
+static void proxy_init(server_rec *r, ap_pool_t *p)
 {
     ap_proxy_garbage_init(r, p);
 }
@@ -405,7 +405,7 @@ static int proxy_handler(request_rec *r)
 /* Setup configurable data */
 
 static void *
-     create_proxy_config(ap_context_t *p, server_rec *s)
+     create_proxy_config(ap_pool_t *p, server_rec *s)
 {
     proxy_server_conf *ps = ap_pcalloc(p, sizeof(proxy_server_conf));
 
