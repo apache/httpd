@@ -141,6 +141,15 @@
 # endif /* _DEBUG */
 #endif /* MULTITHREAD */
 
+/* This next function is never used. It is here to ensure that if we
+ * make all the modules into shared libraries that core httpd still
+ * includes the full Apache API. Without this function the objects in
+ * main/util_script.c would not be linked into a minimal httpd.
+ */
+static void force_library_loading(void) {
+    add_cgi_vars(NULL,NULL);
+}
+
 #include "explain.h"
 
 #if !defined(max)
