@@ -119,6 +119,8 @@ case "${SYSTEM}:${RELEASE}:${VERSION}:${MACHINE}" in
 	;;
 
     Linux:[2-9].*)
+        # This handles linux 2.2 and above (2.4, ...)
+	# Don't worry if you don't really have a Linux-2.2
 	echo "${MACHINE}-whatever-linux22"; exit 0
 	;;
 
