@@ -2,6 +2,9 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) Fixed cache-removal order in mod_mem_cache.
+     [Jean-Jacques Clar, Cliff Woolley]
+
   *) Add fatal exception hook for use by debug modules.  The hook is only
      available if the --enable-exception-hook configure parm is used.
      [Jeff Trawick]
