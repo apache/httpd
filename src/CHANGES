@@ -1,5 +1,8 @@
 Changes with Apache 1.3b4
 
+  *) Fix memory corruption caused by allocating auth usernames in the
+     wrong pool.  [Dean Gaudet] PR#1500
+
   *) Fix an off-by-1, and an unterminated string error in
      mod_mime_magic.  [Dean Gaudet]
 
