@@ -31,7 +31,7 @@
   <!--#include virtual="header.html" -->
   <H1 ALIGN="CENTER">Apache Server Frequently Asked Questions</H1>
   <P>
-  $Revision: 1.5 $ ($Date: 2000/04/18 17:52:31 $)
+  $Revision: 1.6 $ ($Date: 2000/08/04 11:44:17 $)
   </P>
   <P>
   The latest version of this FAQ is always available from the main
@@ -594,14 +594,18 @@
        Explorer, but show up as source or trigger a save window
        with Netscape?</STRONG></A> 
    <P>
-   Internet Explorer is ignoring the mime-type you have configured for
-   the file and guessing the file type based on the filename
-   extension.  IE does this for any file which the web server marks as
-   application/octet-stream or text/plain.  Netscape, on the other
-   hand, properly follows the directions of the web server and treats
-   the file as text/plain (displays it in the browser window as-is) or
-   application/octet-stream (pops up a download window).
+   Internet Explorer (IE) and Netscape handle mime type detection in different
+   ways, and therefore will display the document differently.  In particular,
+   IE sometimes relies on the file extension to determine the mime type.  This
+   can happen when the server specifies a mime type of
+   <CODE>application/octet-stream</CODE> or <CODE>text/plain</CODE>.
+   (Unfortunately, this behavior makes it impossible to properly send plain
+   text in some situations unless the file extension is <CODE>txt</CODE>.)
+   There are more details available on IE's mime type detection behavior in an
+   <A HREF="http://msdn.microsoft.com/workshop/networking/moniker/overview/appendix_a.asp">MSDN
+   article</A>.
    </P>
+
    <P>
    In order to make all browsers work correctly, you should assure
    that Apache sends the correct mime type for the file.  This is
