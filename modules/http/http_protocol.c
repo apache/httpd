@@ -2588,7 +2588,7 @@ AP_DECLARE(char *) ap_make_etag(request_rec *r, int force_weak)
      * be modified again later in the second, and the validation
      * would be incorrect.
      */
-    if ((apr_time_sec(r->request_time) - apr_time_sec(r->mtime) > 1) &&
+    if ((r->request_time - r->mtime > (1 * APR_USEC_PER_SEC)) &&
         !force_weak) {
         weak = NULL;
         weak_len = 0;
