@@ -1531,6 +1531,12 @@ static int reap_other_child(int pid, ap_wait_t status)
  * We begin with routines which deal with the file itself... 
  */
 
+/* volatile just in case */
+static int volatile shutdown_pending;
+static int volatile restart_pending;
+static int volatile is_graceful;
+static int volatile generation;
+
 #ifdef MULTITHREAD
 /*
  * In the multithreaded mode, have multiple threads - not multiple
@@ -1542,8 +1548,14 @@ static int reap_other_child(int pid, ap_wait_t status)
 static void reinit_scoreboard(pool *p)
 {
     ap_assert(!ap_scoreboard_image);
-    ap_scoreboard_image = (scoreboard *) malloc(SCOREBOARD_SIZE);
-    memset(ap_scoreboard_image, 0, SCOREBOARD_SIZE);
+    if (is_graceful) {
+        int i;
+        for (i = 0; i < HARD_SERVER_LIMIT; i++)
+            ap_scoreboard_image->servers[i].vhostrec = NULL;
+    } else {
+        ap_scoreboard_image = (scoreboard *) malloc(SCOREBOARD_SIZE);
+        memset(ap_scoreboard_image, 0, SCOREBOARD_SIZE);
+    }
 }
 
 void cleanup_scoreboard(void)
@@ -1950,32 +1962,41 @@ void reopen_scoreboard(pool *p)
 /* Called by parent process */
 static void reinit_scoreboard(pool *p)
 {
-    int exit_gen = 0;
-    if (ap_scoreboard_image)
-	exit_gen = ap_scoreboard_image->global.exit_generation;
+    if (is_graceful && ap_scoreboard_image) {
+        int i;
+        for (i = 0; i < HARD_SERVER_LIMIT; i++)
+            ap_scoreboard_image->servers[i].vhostrec = NULL;
+#ifdef SCOREBOARD_FILE
+            force_write(scoreboard_fd, ap_scoreboard_image, sizeof(*ap_scoreboard_image));
+#endif
+    } else {
+        int exit_gen = 0;
+        if (ap_scoreboard_image)
+            exit_gen = ap_scoreboard_image->global.exit_generation;
 
 #ifndef SCOREBOARD_FILE
-    if (ap_scoreboard_image == NULL) {
-	setup_shared_mem(p);
-    }
-    memset(ap_scoreboard_image, 0, SCOREBOARD_SIZE);
-    ap_scoreboard_image->global.exit_generation = exit_gen;
+        if (ap_scoreboard_image == NULL) {
+            setup_shared_mem(p);
+        }
+        memset(ap_scoreboard_image, 0, SCOREBOARD_SIZE);
+        ap_scoreboard_image->global.exit_generation = exit_gen;
 #else
-    ap_scoreboard_image = &_scoreboard_image;
-    ap_scoreboard_fname = ap_server_root_relative(p, ap_scoreboard_fname);
+        ap_scoreboard_image = &_scoreboard_image;
+        ap_scoreboard_fname = ap_server_root_relative(p, ap_scoreboard_fname);
 
-    scoreboard_fd = ap_popenf(p, ap_scoreboard_fname, O_CREAT | O_BINARY | O_RDWR, 0644);
-    if (scoreboard_fd == -1) {
-	perror(ap_scoreboard_fname);
-	fprintf(stderr, "Cannot open scoreboard file:\n");
-	exit(APEXIT_INIT);
-    }
-    ap_register_cleanup(p, NULL, cleanup_scoreboard_file, ap_null_cleanup);
+        scoreboard_fd = ap_popenf(p, ap_scoreboard_fname, O_CREAT | O_BINARY | O_RDWR, 0644);
+        if (scoreboard_fd == -1) {
+            perror(ap_scoreboard_fname);
+            fprintf(stderr, "Cannot open scoreboard file:\n");
+            exit(APEXIT_INIT);
+        }
+        ap_register_cleanup(p, NULL, cleanup_scoreboard_file, ap_null_cleanup);
 
-    memset((char *) ap_scoreboard_image, 0, sizeof(*ap_scoreboard_image));
-    ap_scoreboard_image->global.exit_generation = exit_gen;
-    force_write(scoreboard_fd, ap_scoreboard_image, sizeof(*ap_scoreboard_image));
+        memset((char *) ap_scoreboard_image, 0, sizeof(*ap_scoreboard_image));
+        ap_scoreboard_image->global.exit_generation = exit_gen;
+        force_write(scoreboard_fd, ap_scoreboard_image, sizeof(*ap_scoreboard_image));
 #endif
+    }
 }
 
 /* Routines called to deal with the scoreboard image
@@ -2550,12 +2571,6 @@ static void usr1_handler(int sig)
     }
     deferred_die = 1;
 }
-
-/* volatile just in case */
-static int volatile shutdown_pending;
-static int volatile restart_pending;
-static int volatile is_graceful;
-static int volatile generation;
 
 #ifdef WIN32
 /*
@@ -4247,9 +4262,7 @@ static void standalone_main(int argc, char **argv)
 	ap_init_modules(pconf, server_conf);
 	version_locked++;	/* no more changes to server_version */
 	SAFE_ACCEPT(accept_mutex_init(pconf));
-	if (!is_graceful) {
-	    reinit_scoreboard(pconf);
-	}
+	reinit_scoreboard(pconf);
 #ifdef SCOREBOARD_FILE
 	else {
 	    ap_scoreboard_fname = ap_server_root_relative(pconf, ap_scoreboard_fname);
