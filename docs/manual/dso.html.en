@@ -13,7 +13,7 @@
 >
 <!--#include virtual="header.html" -->
 
-<H1>
+<H1 align="center">
 Dynamic Shared Object (DSO) Support
 </H1>
 
@@ -54,18 +54,20 @@ behind their use.</p>
 
 <H2><a name="implementation">Implementation</a></H2>
 
-<P>The DSO support for loading individual Apache modules is based on a module
-named <A HREF="mod/mod_so.html"><CODE>mod_so.c</CODE></A> which must be
-statically compiled into the Apache core. It is the only module besides
-<CODE>core.c</CODE> which cannot be put into a DSO itself.
-Practically all other distributed Apache modules then can
-then be placed into a DSO by individually enabling the DSO build for them via
-<CODE>configure</CODE>'s <CODE>--enable-<i>module</i>=shared</CODE> option 
-(see top-level <CODE>INSTALL</CODE> file).  After a module is compiled into
-a DSO named <CODE>mod_foo.so</CODE> you can use <A
+<P>The DSO support for loading individual Apache modules is based on a
+module named <A HREF="mod/mod_so.html"><CODE>mod_so.c</CODE></A> which
+must be statically compiled into the Apache core. It is the only
+module besides <CODE>core.c</CODE> which cannot be put into a DSO
+itself.  Practically all other distributed Apache modules then can
+then be placed into a DSO by individually enabling the DSO build for
+them via <CODE>configure</CODE>'s
+<CODE>--enable-<i>module</i>=shared</CODE> option as disucussed in the
+<a href="install.html">install documentation</a>.  After a module is
+compiled into a DSO named <CODE>mod_foo.so</CODE> you can use <A
 HREF="mod/mod_so.html"><CODE>mod_so</CODE></A>'s <A
-HREF="mod/mod_so.html#loadmodule"><CODE>LoadModule</CODE></A> command in your
-<CODE>httpd.conf</CODE> file to load this module at server startup or restart.
+HREF="mod/mod_so.html#loadmodule"><CODE>LoadModule</CODE></A> command
+in your <CODE>httpd.conf</CODE> file to load this module at server
+startup or restart.
 
 <P>To simplify this creation of DSO files for Apache modules
 (especially for third-party modules) a new support program named <a
