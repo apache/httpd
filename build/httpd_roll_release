@@ -55,7 +55,6 @@ rm -f STATUS
 echo >> $LOG_NAME
 echo "Removing files that we don't distribute" >> $LOG_NAME
 find . -name ".cvsignore" -exec rm {} \; >> $LOG_NAME 
-find . -type d -name "test" | xargs rm -rf >> $LOG_NAME
 find . -type d -name "CVS" | xargs rm -rf >> $LOG_NAME
 
 # expand SSI directives in the manual
