@@ -2171,7 +2171,7 @@ static void check_first_conn_error(const request_rec *r, const char *operation,
 API_EXPORT(long) ap_send_fd(ap_file_t *fd, request_rec *r)
 {
     long len = r->finfo.size;
-#ifdef HAVE_SENDFILE
+#if APR_HAS_SENDFILE
     if (!r->chunked) {
 	ap_status_t rv;
         ap_bsetopt(r->connection->client, BO_TIMEOUT,
