@@ -132,5 +132,5 @@ _install:
 
 _installdll:
  	cd os\win32\installer\installdll
-	 $(MAKE) $(MAKEOPT) -f install.makCFG="install - Win32 $(LONG)" 
+	 $(MAKE) $(MAKEOPT) -f install.mak CFG="install - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	cd ..\..\..
