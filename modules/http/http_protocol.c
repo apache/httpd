@@ -1000,32 +1000,39 @@ apr_status_t http_filter(ap_filter_t *f, ap_bucket_brigade *b, apr_ssize_t lengt
         }
     }
 
-    if (f->c->remain > 0) {
-        const char *ignore;
-
+    if (f->c->remain) {
         e = AP_BRIGADE_FIRST(b);
         while (e != AP_BRIGADE_SENTINEL(b)) {
-            ap_bucket_read(e, &ignore, &len, 0);
-            if (f->c->remain < len) {
-                break;
+            const char *ignore;
+
+            if ((rv = ap_bucket_read(e, &ignore, &len, 0)) != APR_SUCCESS) {
+                /* probably APR_IS_EAGAIN(rv); socket state isn't correct;
+                 * remove log once we get this squared away */
+                ap_log_error(APLOG_MARK, APLOG_ERR, rv, f->c->base_server, 
+                             "ap_bucket_read");
+                return rv;
             }
-            f->c->remain -= len;
+
+            if (len) {
+                if (f->c->remain < len) {
+                    ap_bucket_split(e, f->c->remain);
+                    f->c->remain = 0;
+                }
+                else {
+                    f->c->remain -= len;
+                }
+                bb = ap_brigade_split(b, AP_BUCKET_NEXT(e));
+                ctx->b = bb;
+                break; /* once we've gotten some data, deliver it to caller */
+            }
             e = AP_BUCKET_NEXT(e);
         }
-        if (e != AP_BRIGADE_SENTINEL(b)) {
-            if (f->c->remain < len) {
-                ap_bucket_split(e, f->c->remain);
-                f->c->remain = 0;
-            }
-            bb = ap_brigade_split(b, AP_BUCKET_NEXT(e));
-            ctx->b = bb;
-        }
-        else {
+        if (e == AP_BRIGADE_SENTINEL(b)) {
             ctx->b = NULL;
         }
         if (f->c->remain == 0) {
             ap_bucket *eos = ap_bucket_create_eos();
-
+                
             AP_BRIGADE_INSERT_TAIL(b, eos);
         }
         return APR_SUCCESS;
