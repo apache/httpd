@@ -200,7 +200,7 @@ static inline int buff_read (BUFF *fb, void *buf, int nbyte)
 {
     int rv;
 
-#ifdef WIN32
+#if defined (WIN32)
     if (fb->flags & B_SOCKET) {
 	rv = recvwithtimeout( fb->fd_in, buf, nbyte, 0 );
 	if (rv == SOCKET_ERROR)
@@ -218,7 +218,7 @@ static inline int buff_write (BUFF *fb, const void *buf, int nbyte)
 {
     int rv;
 
-#ifdef WIN32
+#if defined(WIN32)
     if (fb->flags & B_SOCKET) {
 	rv = sendwithtimeout( fb->fd, buf, nbyte, 0);
 	if (rv == SOCKET_ERROR)
@@ -226,8 +226,10 @@ static inline int buff_write (BUFF *fb, const void *buf, int nbyte)
     }
     else
 	rv = write( fb->fd, buf, nbyte );
+#elif defined (B_SFIO)
+    i = sfwrite(fb->sf_out, buf, nbyte);
 #else
-    rv = write( fb->fd, buf, nbyte );
+    rv = write(fb->fd, buf, nbyte);
 #endif /* WIN32 */
     return rv;
 }
@@ -278,6 +280,15 @@ bcreate(pool *p, int flags)
 
     fb->fd = -1;
     fb->fd_in = -1;
+
+#ifdef B_SFIO
+    fb->sf_in  = NULL;
+    fb->sf_out = NULL;
+    fb->sf_in  = sfnew(fb->sf_in, NIL(Void_t*),
+		       (size_t)SF_UNBOUND, 0, SF_READ); 
+    fb->sf_out = sfnew(fb->sf_out, NIL(Void_t*), 
+		       (size_t)SF_UNBOUND, 1, SF_WRITE);
+#endif
 
     return fb;
 }
@@ -426,15 +437,26 @@ int bsetflag(BUFF *fb, int flag, int value)
     return value;
 }
 
-
 /*
  * This is called instead of read() everywhere in here.  It implements
  * the B_SAFEREAD functionality -- which is to force a flush() if a read()
  * would block.  It also deals with the EINTR errno result from read().
  * return code is like read() except EINTR is eliminated.
  */
+
+
+#if !defined (B_SFIO) || defined (WIN32)
+#define saferead saferead_guts
+#else
 static int
-saferead( BUFF *fb, void *buf, int nbyte )
+saferead(BUFF *fb, char *buf, int nbyte)
+{
+    return sfread(fb->sf_in, buf, nbyte);
+}
+#endif
+
+static int
+saferead_guts(BUFF *fb, void *buf, int nbyte)
 {
     int rv;
 
@@ -461,6 +483,41 @@ saferead( BUFF *fb, void *buf, int nbyte )
     return( rv );
 }
 
+#ifdef B_SFIO
+int bsfio_read(Sfio_t *f, char *buf, int nbyte, apache_sfio *disc)
+{
+    int rv;
+    BUFF *fb = disc->buff;
+    
+    rv = saferead_guts(fb, buf, nbyte);
+
+    buf[rv] = '\0';
+    f->next = 0;
+
+    return(rv);
+}
+
+int bsfio_write(Sfio_t *f, char *buf, int nbyte, apache_sfio *disc)
+{
+    return write(disc->buff->fd, buf, nbyte);
+}
+
+Sfdisc_t *bsfio_new(pool *p, BUFF *b)
+{
+    apache_sfio*   disc;
+    
+    if(!(disc = (apache_sfio*)palloc(p, sizeof(apache_sfio))) )
+	return (Sfdisc_t *)disc;
+
+    disc->disc.readf   = (Sfread_f)bsfio_read; 
+    disc->disc.writef  = (Sfwrite_f)bsfio_write;
+    disc->disc.seekf   = (Sfseek_f)NULL;
+    disc->disc.exceptf = (Sfexcept_f)NULL;
+    disc->buff = b;
+
+    return (Sfdisc_t *)disc;
+}
+#endif
 
 /*
  * Read up to nbyte bytes into buf.
@@ -1069,6 +1126,11 @@ bclose(BUFF *fb)
     fb->flags |= B_EOF | B_EOUT;
     fb->fd = -1;
     fb->fd_in = -1;
+
+#ifdef B_SFIO
+    sfclose(fb->sf_in);
+    sfclose(fb->sf_out);
+#endif  
 
     if (rc1 != 0) return rc1;
     else if (rc2 != 0) return rc2;

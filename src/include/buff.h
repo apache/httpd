@@ -50,6 +50,10 @@
  *
  */
 
+#ifdef B_SFIO
+#include "sfio.h"
+#endif
+
 #include <stdarg.h>
 
 /* Reading is buffered */
@@ -96,7 +100,21 @@ struct buff_struct
 /* could also put pointers to the basic I/O routines here */
     int fd;                /* the file descriptor */
     int fd_in;             /* input file descriptor, if different */
+
+#ifdef B_SFIO
+    Sfio_t   *sf_in;
+    Sfio_t   *sf_out;
+#endif
 };
+
+#ifdef B_SFIO
+typedef struct {
+    Sfdisc_t disc;
+    BUFF *buff;
+} apache_sfio;
+
+extern Sfdisc_t *bsfio_new(pool *p, BUFF *b);
+#endif
 
 /* Options to bset/getopt */
 #define BO_BYTECT (1)

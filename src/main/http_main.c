@@ -2172,6 +2172,17 @@ void child_main(int child_num_arg)
 	                          (request_rec*)NULL);
 
 	conn_io = bcreate(ptrans, B_RDWR | B_SOCKET);
+
+#ifdef B_SFIO
+	(void)sfdisc(conn_io->sf_in, SF_POPDISC);
+	sfdisc(conn_io->sf_in, bsfio_new(conn_io->pool, conn_io));
+	sfsetbuf(conn_io->sf_in, NULL, 0);
+
+	(void)sfdisc(conn_io->sf_out, SF_POPDISC);
+	sfdisc(conn_io->sf_out, bsfio_new(conn_io->pool, conn_io));
+	sfsetbuf(conn_io->sf_out, NULL, 0);
+#endif
+	
 	dupped_csd = csd;
 #if defined(NEED_DUPPED_CSD)
 	if ((dupped_csd = dup(csd)) < 0) {
@@ -2314,6 +2325,9 @@ int make_child(server_rec *server_conf, int child_num)
 /*****************************************************************
  * Executive routines.
  */
+
+#ifndef STANDALONE_MAIN
+#define STANDALONE_MAIN standalone_main
 
 void standalone_main(int argc, char **argv)
 {
@@ -2512,6 +2526,10 @@ void standalone_main(int argc, char **argv)
     } while (restart_pending);
 
 } /* standalone_main */
+#else
+/* prototype */
+void STANDALONE_MAIN(int argc, char **argv);
+#endif /* STANDALONE_MAIN */
 
 extern char *optarg;
 extern int optind;
@@ -2585,7 +2603,7 @@ main(int argc, char *argv[])
     
     if(standalone) {
         clear_pool (pconf);	/* standalone_main rereads... */
-        standalone_main(argc, argv);
+        STANDALONE_MAIN(argc, argv);
     }
     else {
         conn_rec *conn;
