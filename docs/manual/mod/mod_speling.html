@@ -14,16 +14,31 @@
 <!--#include virtual="header.html" -->
   <H1 ALIGN="CENTER">Module mod_speling</H1>
   <P>
-  This module is contained in the <CODE>mod_speling.c</CODE> file,
-  and is <STRONG>not</STRONG> compiled in by default.
-  It attempts to correct misspellings of
-  URLs that users might have entered, by ignoring capitalization
-  and by allowing up to one misspelling.<BR>
-  This catches the majority of misspelled requests. An automatic
-  "spelling corrected" redirection is returned if only one matching
-  document was found, and a list of matches is returned if more than
-  one document with a sufficiently similar name is found.
-  </P>
+  This module attempts to correct misspellings of URLs that users
+  might have entered, by ignoring capitalization and by allowing up to
+  one misspelling.</P>
+
+<P><A
+HREF="module-dict.html#Status"
+REL="Help"
+><STRONG>Status:</STRONG></A> Extension
+<BR>
+<A
+HREF="module-dict.html#SourceFile"
+REL="Help"
+><STRONG>Source File:</STRONG></A> mod_speling.c
+<BR>
+<A
+HREF="module-dict.html#ModuleIdentifier"
+REL="Help"
+><STRONG>Module Identifier:</STRONG></A> speling_module
+<BR>
+<A
+HREF="module-dict.html#Compatibility"
+REL="Help"
+><STRONG>Compatibility:</STRONG></A> Available in Apache 1.3 and later.  Available as an External module in Apache 1.1 and later.
+</P>
+
 
   <H2>Summary</H2>
   <P>
@@ -52,12 +67,12 @@
 
   <H2>Directives</H2>
 
-  <MENU>
+  <UL>
   <LI><A HREF="#checkspelling">CheckSpelling</A>
-  </MENU>
+  </UL>
 
   <HR> <!-- the HR is part of the directive description -->
-  <H2><A NAME="checkspelling">CheckSpelling</A></H2>
+  <H2><A NAME="checkspelling">CheckSpelling</A> directive</H2>
   <!--%plaintext &lt;?INDEX {\tt CheckSpelling} directive&gt; -->
   <A
    HREF="directive-dict.html#Syntax"

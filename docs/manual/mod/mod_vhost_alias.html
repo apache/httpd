@@ -22,11 +22,50 @@
 <H1 ALIGN="CENTER">Module mod_vhost_alias</H1>
 
 <P>
-This module is contained in the <CODE>mod_vhost_alias.c</CODE> file
-and is not compiled in by default. It provides support for
-<A HREF="../vhosts/mass.html">dynamically configured mass virtual
+This module provides support for <A
+HREF="../vhosts/mass.html">dynamically configured mass virtual
 hosting</A>.
 </P>
+
+<P><A
+HREF="module-dict.html#Status"
+REL="Help"
+><STRONG>Status:</STRONG></A> Extension
+<BR>
+<A
+HREF="module-dict.html#SourceFile"
+REL="Help"
+><STRONG>Source File:</STRONG></A> mod_vhost_alias.c
+<BR>
+<A
+HREF="module-dict.html#ModuleIdentifier"
+REL="Help"
+><STRONG>Module Identifier:</STRONG></A> vhost_alias_module
+<BR>
+<A
+HREF="module-dict.html#Compatibility"
+REL="Help"
+><STRONG>Compatibility:</STRONG></A> Available in Apache 1.3.7 and later.
+</P>
+
+<h2>Summary</h2>
+
+<p>This module creates dynamically configured virtual hosts, by
+allowing the IP address and/or the <code>Host:</code> header of the
+HTTP request to be used as part of the pathname to determine what
+files to serve.  This allows for easy use of a huge number of virtual
+hosts with similar configurations.</p>
+
+<H2>Directives</H2>
+<UL>
+  <LI><A HREF="#virtualdocumentroot">VirtualDocumentRoot</A>
+  <LI><A HREF="#virtualdocumentrootip">VirtualDocumentRootIP</A>
+  <LI><A HREF="#virtualscriptalias">VirtualScriptAlias</A>
+  <LI><A HREF="#virtualscriptaliasip">VirtualScriptAliasIP</A>
+</UL>
+
+<p>See also: <a href="core.html#usecanonicalname">UseCanonicalName</a>.</p>
+
 
 <H2>Directory Name Interpolation</H2>
 
@@ -156,14 +195,6 @@ this module.
 
 <HR>
 
-<H2>Directives</H2>
-<UL>
-  <LI><A HREF="#virtualdocumentroot">VirtualDocumentRoot</A>
-  <LI><A HREF="#virtualdocumentrootip">VirtualDocumentRootIP</A>
-  <LI><A HREF="#virtualscriptalias">VirtualScriptAlias</A>
-  <LI><A HREF="#virtualscriptaliasip">VirtualScriptAliasIP</A>
-</UL>
-<HR>
 
 <H2><A NAME="virtualdocumentroot">VirtualDocumentRoot directive</A></H2>
 <P>

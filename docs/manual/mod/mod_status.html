@@ -15,16 +15,40 @@
 <!--#include virtual="header.html" -->
 <H1 ALIGN="CENTER">Module mod_status</H1>
 
-The Status Module is only available in Apache 1.1 and later.<P>
+<p>This module provides information on server activity and
+performance.</p>
 
-<H2>Function</H2>
+<P><A
+HREF="module-dict.html#Status"
+REL="Help"
+><STRONG>Status:</STRONG></A> Base
+<BR>
+<A
+HREF="module-dict.html#SourceFile"
+REL="Help"
+><STRONG>Source File:</STRONG></A> mod_status.c
+<BR>
+<A
+HREF="module-dict.html#ModuleIdentifier"
+REL="Help"
+><STRONG>Module Identifier:</STRONG></A> status_module
+<BR>
+<A
+HREF="module-dict.html#Compatibility"
+REL="Help"
+><STRONG>Compatibility:</STRONG></A> Available in Apache 1.1 and later.
+</P>
 
-The Status module allows a server administrator to find out how well
+
+<H2>Summary</H2>
+
+<p>The Status module allows a server administrator to find out how well
 their server is performing.  A HTML page is presented that gives
 the current server statistics in an easily readable form.  If required
 this page can be made to automatically refresh (given a compatible
 browser).  Another page gives a simple machine-readable list of the current
-server state.
+server state.</p>
+
 <P>
 The details given are:
 <UL>
@@ -47,43 +71,12 @@ A compile-time option must be used to display the details marked "(*)" as
 the instrumentation required for obtaining these statistics does not
 exist within standard Apache.
 
-<H2><A NAME="extendedstatus">ExtendedStatus directive</A></H2>
-<!--%plaintext &lt;?INDEX {\tt ExtendedStatus} directive&gt; -->
-<A
- HREF="directive-dict.html#Syntax"
- REL="Help"
-><STRONG>Syntax:</STRONG></A> ExtendedStatus <EM>On|Off</EM><BR>
-<A
- HREF="directive-dict.html#Default"
- REL="Help"
-><STRONG>Default:</STRONG></A> <CODE>ExtendedStatus Off</CODE><BR>
-<A
- HREF="directive-dict.html#Context"
- REL="Help"
-><STRONG>Context:</STRONG></A> server config <BR>
-<A
- HREF="directive-dict.html#Status"
- REL="Help"
-><STRONG>Status:</STRONG></A> Base<BR>
- <A
-  HREF="directive-dict.html#Module"
-  REL="Help"
-  ><STRONG>Module:</STRONG></A> mod_status<BR>
-<A
- HREF="directive-dict.html#Compatibility"
- REL="Help"
-><STRONG>Compatibility:</STRONG></A> ExtendedStatus is only available
- in Apache 1.3.2 and later.
+<h2>Directives</h2>
 
-<P>
-This directive controls whether the server keeps track of extended
-status information for each request. This is only useful if the status module
-is enabled on the server.
-</P>
-<P>
-This setting applies to the entire server, and cannot be enabled or
-disabled on a virtualhost-by-virtualhost basis.
-</P>
+<ul>
+<li><a href="#extendedstatus">ExtendedStatus</a></li>
+</ul>
+
 
 <H2>Enabling Status Support</H2>
 
@@ -126,6 +119,47 @@ directory of Apache, <CODE>log_server_status</CODE>.
   security-related ramifications for your site.
  </STRONG>
 </BLOCKQUOTE>
+
+<hr>
+
+<H2><A NAME="extendedstatus">ExtendedStatus directive</A></H2>
+<!--%plaintext &lt;?INDEX {\tt ExtendedStatus} directive&gt; -->
+<A
+ HREF="directive-dict.html#Syntax"
+ REL="Help"
+><STRONG>Syntax:</STRONG></A> ExtendedStatus <EM>On|Off</EM><BR>
+<A
+ HREF="directive-dict.html#Default"
+ REL="Help"
+><STRONG>Default:</STRONG></A> <CODE>ExtendedStatus Off</CODE><BR>
+<A
+ HREF="directive-dict.html#Context"
+ REL="Help"
+><STRONG>Context:</STRONG></A> server config <BR>
+<A
+ HREF="directive-dict.html#Status"
+ REL="Help"
+><STRONG>Status:</STRONG></A> Base<BR>
+ <A
+  HREF="directive-dict.html#Module"
+  REL="Help"
+  ><STRONG>Module:</STRONG></A> mod_status<BR>
+<A
+ HREF="directive-dict.html#Compatibility"
+ REL="Help"
+><STRONG>Compatibility:</STRONG></A> ExtendedStatus is only available
+ in Apache 1.3.2 and later.
+
+<P>
+This directive controls whether the server keeps track of extended
+status information for each request. This is only useful if the status module
+is enabled on the server.
+</P>
+<P>
+This setting applies to the entire server, and cannot be enabled or
+disabled on a virtualhost-by-virtualhost basis.
+</P>
+
 <!--#include virtual="footer.html" -->
 </BODY>
 </HTML>
