@@ -97,46 +97,20 @@ href="../mod/mod_log_config.html#formats">Custom Log Formats</a> for
 more about customizing your log files.)</p>
 
 <p>When you wish to split your log file into its component parts (one
-file per virtual host) you can use a program like the following to
-accomplish this:</p>
+file per virtual host) you can use the program <code><a
+href="../programs/other.html">split-logfile</a></code> to accomplish
+this. You'll find this program in the <code>support</code> directory
+of the Apache disribution.</p>
 
-<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><pre>
-#!/usr/bin/perl
-# Filename: split_log
-# Usage: split_log multiple_vhost_log
-# Creates one log file per virtual host
+<p>Run this program with the command:</p>
 
-use strict;
-my $file = $ARGV[0]; # Name of the log file
-my %fh; # File handles
-
-# Read the log file, one line at a time
-open LOG, $file;
-foreach my $line (&lt;LOG&gt;) {
-    $line =~ s/^(.*?) //;
-
-    # Do we already have a file handle for this vhost?
-    unless ($fh{$1})    {
-        my $handle;
-        open ($handle, '&gt;' , $1 . '_split');
-        $fh{$1} = $handle;
-    }
-
-    # Write out the log entry
-    select ($fh{$1});
-    print $line;
-}
-close LOG;
-
-# Close all the open file handles
-foreach my $h ( keys %fh ) {
-    close $h;
-}
-</pre></td></tr></table></blockquote>
+<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee">
+<code>split-logfile &lt; /logs/multiple_vhost_log</code>
+</td></tr></table></blockquote>
 
 <p>This program, when run with the name of your vhost log file, will
 generate one file for each virtual host that appears in your log file.
-Each file will be called <code>hostname_split</code>.</p>
+Each file will be called <code>hostname.log</code>.</p>
 
     <!--#include virtual="footer.html" -->
   </body>
