@@ -139,7 +139,7 @@ static void mod_info_html_cmd_string(request_rec *r, const char *string,
     while (*s) {
         if (*s == '<') {
 	    if (close) {
-                ap_rputs("&lt;/,", r);
+                ap_rputs("&lt;/", r);
 	    } else {
                 ap_rputs("&lt;", r);
 	    }
