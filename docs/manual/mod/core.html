@@ -51,6 +51,7 @@ always available.
 <li><A HREF="#rlimitmem">RLimitMEM</A>
 <li><A HREF="#rlimitnproc">RLimitNPROC</A>
 <li><A HREF="#satisfy">Satisfy</A>
+<li><A HREF="#scoreboardfile">ScoreBoardFile</A>
 <li><A HREF="#sendbuffersize">SendBufferSize</A>
 <li><A HREF="#serveradmin">ServerAdmin</A>
 <li><A HREF="#serveralias">ServerAlias</A>
@@ -877,7 +878,12 @@ The PidFile is only used in <A HREF="#servertype">standalone</A> mode.<p>
 It is often useful to be able to send the server a signal, so that it closes
 and then reopens its <A HREF="#errorlog">ErrorLog</A> and TransferLog, and
 re-reads its configuration files. This is done by sending a SIGHUP (kill -1)
-signal to the process id listed in the PidFile.<p><hr>
+signal to the process id listed in the PidFile.<p>
+
+The PidFile is subject to the same warnings about log file placement and
+<a href="../misc/security_tips.html">security</a>.
+
+<p><hr>
 
 <A name="port"><h2>Port directive</h2></A>
 <!--%plaintext &lt;?INDEX {\tt Port} directive&gt; -->
@@ -1038,6 +1044,28 @@ See also <A HREF="#rlimitmem">RLimitMEM</A> or <A HREF="#rlimitcpu">RLimitCPU</A
 
 Access policy if both allow and require used. The parameter can be either
 <em>'all'</em> or <em>'any'</em>.
+
+<p><hr>
+
+<A name="scoreboardfile"><h2>ScoreBoardFile directive</h2></A>
+<!--%plaintext &lt;?INDEX {\tt ScoreBoardFile} directive&gt; -->
+<strong>Syntax:</strong> ScoreBoardFile <em>filename</em><br>
+<strong>Default:</strong> <code>ScoreBoardFile logs/apache_status</code><br>
+<strong>Context:</strong> server config<br>
+<strong>Status:</strong> core<p>
+
+The ScoreBoardFile directive is required on some architectures to place
+a file that the server will use to communicate between its children and
+the parent.  The easiest way to find out if your architecture requires
+a scoreboard file is to run Apache and see if it creates the file named
+by the directive.  If your architecture requires it then you must ensure
+that this file is not used at the same time by more than one invocation
+of Apache.<p>
+
+If you have to use a ScoreBoardFile then you may see improved speed by
+placing it on a RAM disk.  But be careful that you heed the same warnings
+about log file placement and
+<a href="../misc/security_tips.html">security</a>.
 
 <p><hr>
 
