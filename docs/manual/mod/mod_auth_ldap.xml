@@ -1,0 +1,818 @@
+<?xml version="1.0"?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
+<modulesynopsis>
+
+<name>mod_auth_ldap</name>
+<description>Allows an LDAP directory to be used to store the database
+for HTTP Basic authentication.</description>
+<status>experimental</status>
+<sourcefile>mod_auth_ldap.c</sourcefile>
+<identifier>auth_ldap_module</identifier>
+
+<summary>
+    <p><module>mod_auth_ldap</module> supports the following features:</p>
+
+    <ul>
+      <li>Known to support the <a
+      href="http://www.openldap.org/">OpenLDAP SDK</a> (both 1.x
+      and 2.x), and the <a
+      href="http://www.iplanet.com/downloads/developer/">iPlanet
+      (Netscape)</a> SDK.</li>
+
+      <li>Complex authorization policies can be implemented by
+      representing the policy with LDAP filters.</li>
+
+      <li>Support for Microsoft FrontPage allows FrontPage users to
+      control access to their webs, while retaining LDAP for user
+      authentication.</li>
+
+      <li>Uses extensive caching of LDAP operations via <a
+      href="mod_ldap.html">mod_ldap</a>.</li>
+
+      <li>Support for LDAP over SSL (requires the Netscape SDK) or
+      TLS (requires the OpenLDAP 2.x SDK).</li>
+    </ul>
+</summary>
+
+<section id="contents"><title>Contents</title>
+
+    <ul>
+      <li>
+        <a href="#operation">Operation</a> 
+
+        <ul>
+          <li><a href="#authenphase">The Authentication
+          Phase</a></li>
+
+          <li><a href="#authorphase">The Authorization
+          Phase</a></li>
+        </ul>
+      </li>
+
+      <li>
+        <a href="#requiredirectives">The require Directives</a> 
+
+        <ul>
+          <li><a href="#reqvaliduser">require valid-user</a></li>
+
+          <li><a href="#requser">require user</a></li>
+
+          <li><a href="#reqgroup">require group</a></li>
+
+          <li><a href="#reqdn">require dn</a></li>
+        </ul>
+      </li>
+
+      <li><a href="#examples">Examples</a></li>
+
+      <li><a href="#usingtls">Using TLS</a></li>
+
+      <li><a href="#usingssl">Using SSL</a></li>
+
+      <li>
+        <a href="#frontpage">Using Microsoft FrontPage with
+        <module>mod_auth_ldap</module></a> 
+
+        <ul>
+          <li><a href="#howitworks">How It Works</a></li>
+
+          <li><a href="#fpcaveats">Caveats</a></li>
+        </ul>
+      </li>
+    </ul>
+</section>
+
+<section id="operation"><title>Operation</title>
+
+    <p>There are two phases in granting access to a user. The first
+    phase is authentication, in which <module>mod_auth_ldap</module>
+    verifies that the user's credentials are valid. This also called
+    the <em>search/bind</em> phase. The second phase is
+    authorization, in which <module>mod_auth_ldap</module> determines
+    if the authenticated user is allowed access to the resource in
+    question. This is also known as the <em>compare</em>
+    phase.</p>
+
+<section id="authenphase"><title>The Authentication
+    Phase</title>
+
+    <p>During the authentication phase, <module>mod_auth_ldap</module>
+    searches for an entry in the directory that matches the username
+    that the HTTP client passes. If a single unique match is found,
+    then <module>mod_auth_ldap</module> attempts to bind to the
+    directory server using the DN of the entry plus the password
+    provided by the HTTP client. Because it does a search, then a
+    bind, it is often referred to as the search/bind phase. Here are
+    the steps taken during the search/bind phase.</p>
+
+    <ol>
+      <li>Generate a search filter by combining the attribute and
+      filter provided in the <directive module="mod_auth_ldap"
+      >AuthLDAPURL</directive> directive with
+      the username passed by the HTTP client.</li>
+
+      <li>Search the directory using the generated filter. If the
+      search does not return exactly one entry, deny or decline
+      access.</li>
+
+      <li>Fetch the distinguished name of the entry retrieved from
+      the search and attempt to bind to the LDAP server using the
+      DN and the password passed by the HTTP client. If the bind is
+      unsuccessful, deny or decline access.</li>
+    </ol>
+
+    <p>The following directives are used during the search/bind
+    phase</p>
+
+    <table>
+      <tr>
+        <td><directive module="mod_auth_ldap">AuthLDAPURL</directive></td>
+
+        <td>Specifies the LDAP server, the
+        base DN, the attribute to use in the search, as well as the
+        extra search filter to use.</td>
+      </tr>
+
+      <tr>
+        <td><directive module="mod_auth_ldap">AuthLDAPBindDN</directive></td>
+
+        <td>An optional DN to bind with
+        during the search phase.</td>
+      </tr>
+
+      <tr>
+        <td><directive
+        module="mod_auth_ldap">AuthLDAPBindPassword</directive></td>
+
+        <td>An optional password to bind
+        with during the search phase.</td>
+      </tr>
+    </table>
+</section>
+
+<section id="authorphase"><title>The Authorization
+    Phase</title>
+
+    <p>During the authorization phase, <module>mod_auth_ldap</module>
+    attempts to determine if the user is authorized to access the
+    resource.  Many of these checks require
+    <module>mod_auth_ldap</module> to do a compare operation on the
+    LDAP server. This is why this phase is often referred to as the
+    compare phase. <module>mod_auth_ldap</module> accepts the
+    following <directive module="core">Require</directive>
+    directives to determine if the credentials are acceptable:</p>
+
+    <ul>
+      <li>Grant access if there is a <a href="#requser"><code>require
+      valid-user</code></a> directive.</li>
+
+      <li>Grant access if there is a <a
+      href="#reqgroup"><code>require user</code></a> directive, and the
+      username in the directive matches the username passed by the
+      client.</li>
+
+      <li>Grant access if there is a <a href="#reqdn"><code>require
+      dn</code></a> directive, and the DN in the directive matches
+      the DN fetched from the LDAP directory.</li>
+
+      <li>Grant access if there is a <a
+      href="#reqgroup"><code>require group</code></a> directive, and
+      the DN fetched from the LDAP directory (or the username
+      passed by the client) occurs in the LDAP group.</li>
+
+      <li>otherwise, deny or decline access</li>
+    </ul>
+
+    <p><module>mod_auth_ldap</module> uses the following directives during the
+    compare phase:</p>
+
+    <table>
+      <tr>
+        <td><directive module="mod_auth_ldap">AuthLDAPURL</directive> </td>
+
+        <td>The attribute specified in the
+        URL is used in compare operations for the <code>require
+        user</code> operation.</td>
+      </tr>
+
+      <tr>
+        <td><directive
+        module="mod_auth_ldap">AuthLDAPCompareDNOnServer</directive></td>
+
+        <td>Determines the behavior of the
+        <code>require dn</code> directive.</td>
+      </tr>
+
+      <tr>
+        <td><directive
+        module="mod_auth_ldap">AuthLDAPGroupAttribute</directive></td>
+
+        <td>Determines the attribute to
+        use for comparisons in the <code>require group</code>
+        directive.</td>
+      </tr>
+
+      <tr>
+        <td><directive
+        module="mod_auth_ldap">AuthLDAPGroupAttributeIsDN</directive></td>
+
+        <td>Specifies whether to use the
+        user DN or the username when doing comparisons for the
+        <code>require group</code> directive.</td>
+      </tr>
+    </table>
+</section>
+</section>
+
+<section id="requiredirectives"><title>The require Directives</title>
+
+    <p>Apache's <directive module="core">Require</directive>
+    directives are used during the authorization phase to ensure that
+    a user is allowed to access a resource.</p>
+
+<section id="reqvaliduser"><title>require
+    valid-user</title>
+
+    <p>If this directive exists, <module>mod_auth_ldap</module> grants
+    access to any user that has successfully authenticated during the
+    search/bind phase.</p>
+</section>
+
+<section id="requser"><title>require user</title>
+
+    <p>The <code>require user</code> directive specifies what
+    usernames can access the resource. Once
+    <module>mod_auth_ldap</module> has retrieved a unique DN from the
+    directory, it does an LDAP compare operation using the username
+    specified in the <code>require user</code> to see if that username
+    is part of the just-fetched LDAP entry.  Multiple users can be
+    granted access by putting multiple usernames on the line,
+    separated with spaces. If a username has a space in it, then it
+    must be the only user on the line. In this case, multiple users
+    can be granted access by using multiple <code>require user</code>
+    directives, with one user per line. For example, with a <directive
+    module="mod_auth_ldap">AuthLDAPURL</directive> of
+    <code>ldap://ldap/o=Airius?cn</code> (i.e., <code>cn</code> is
+    used for searches), the following require directives could be used
+    to restrict access:</p>
+<example>
+require user Barbara Jenson<br />
+require user Fred User<br />
+require user Joe Manager<br />
+</example>
+
+    <p>Because of the way that <module>mod_auth_ldap</module> handles this
+    directive, Barbara Jenson could sign on as <em>Barbara
+    Jenson</em>, <em>Babs Jenson</em> or any other <code>cn</code> that
+    she has in her LDAP entry. Only the single <code>require
+    user</code> line is needed to support all values of the attribute
+    in the user's entry.</p>
+
+    <p>If the <code>uid</code> attribute was used instead of the
+    <code>cn</code> attribute in the URL above, the above three lines
+    could be condensed to</p>
+<example>require user bjenson fuser jmanager</example>
+</section>
+
+<section id="reqgroup"><title>require group</title>
+
+    <p>This directive specifies an LDAP group whose members are
+    allowed access. It takes the distinguished name of the LDAP
+    group. For example, assume that the following entry existed in
+    the LDAP directory:</p>
+<example>
+dn: cn=Administrators, o=Airius<br />
+objectClass: groupOfUniqueNames<br />
+uniqueMember: cn=Barbara Jenson, o=Airius<br />
+uniqueMember: cn=Fred User, o=Airius<br />
+</example>
+
+    <p>The following directive would grant access to both Fred and
+    Barbara:</p>
+<example>require group cn=Administrators, o=Airius</example>
+
+    <p>Behavior of this directive is modified by the <directive
+    module="mod_auth_ldap">AuthLDAPGroupAttribute</directive> and
+    <directive
+    module="mod_auth_ldap">AuthLDAPGroupAttributeIsDN</directive>
+    directives.</p>
+</section>
+
+<section id="reqdn"><title>require dn</title>
+
+    <p>The <code>require dn</code> directive allows the administrator
+    to grant access based on distinguished names. It specifies a DN
+    that must match for access to be granted. If the distinguished
+    name that was retrieved from the directory server matches the
+    distinguished name in the <code>require dn</code>, then
+    authorization is granted.</p>
+
+    <p>The following directive would grant access to a specific
+    DN:</p>
+<example>require dn cn=Barbara Jenson, o=Airius</example>
+
+    <p>Behavior of this directive is modified by the <directive
+    module="mod_auth_ldap">AuthLDAPCompareDNOnServer</directive>
+    directive.</p>
+</section>
+</section>
+
+<section id="examples"><title>Examples</title>
+
+    <ul>
+      <li>
+        Grant access to anyone who exists in the LDAP directory,
+        using their UID for searches. 
+<example>
+AuthLDAPURL ldap://ldap1.airius.com:389/ou=People, o=Airius?uid?sub?(objectClass=*)<br />
+require valid-user
+</example>
+      </li>
+
+      <li>
+        The next example is the same as above; but with the fields
+        that have useful defaults omitted. Also, note the use of a
+        redundant LDAP server. 
+<example>AuthLDAPURL ldap://ldap1.airius.com ldap2.airius.com/ou=People, o=Airius<br />
+require valid-user
+</example>
+      </li>
+
+      <li>
+        The next example is similar to the previous one, but is
+        uses the common name instead of the UID. Note that this
+        could be problematical if multiple people in the directory
+        share the same <code>cn</code>, because a search on <code>cn</code>
+        <strong>must</strong> return exactly one entry. That's why
+        this approach is not recommended: it's a better idea to
+        choose an attribute that is guaranteed unique in your
+        directory, such as <code>uid</code>. 
+<example>
+AuthLDAPURL ldap://ldap.airius.com/ou=People, o=Airius?cn<br />
+require valid-user
+</example>
+      </li>
+
+      <li>
+        Grant access to anybody in the Administrators group. The
+        users must authenticate using their UID. 
+<example>
+AuthLDAPURL ldap://ldap.airius.com/o=Airius?uid<br />
+require group cn=Administrators, o=Airius
+</example>
+      </li>
+
+      <li>
+        The next example assumes that everyone at Airius who
+        carries an alphanumeric pager will have an LDAP attribute
+        of <code>qpagePagerID</code>. The example will grant access
+        only to people (authenticated via their UID) who have
+        alphanumeric pagers: 
+<example>
+AuthLDAPURL ldap://ldap.airius.com/o=Airius?uid??(qpagePagerID=*)<br />
+require valid-user
+</example>
+      </li>
+
+      <li>
+        <p>The next example demonstrates the power of using filters
+        to accomplish complicated administrative requirements.
+        Without filters, it would have been necessary to create a
+        new LDAP group and ensure that the group's members remain
+        synchronized with the pager users. This becomes trivial
+        with filters. The goal is to grant access to anyone who has
+        a filter, plus grant access to Joe Manager, who doesn't
+        have a pager, but does need to access the same
+        resource:</p>
+<example>
+AuthLDAPURL ldap://ldap.airius.com/o=Airius?uid??(|(qpagePagerID=*)(uid=jmanager))<br />
+require valid-user
+</example>
+
+        <p>This last may look confusing at first, so it helps to
+        evaluate what the search filter will look like based on who
+        connects, as shown below. The text in blue is the part that
+        is filled in using the attribute specified in the URL. The
+        text in red is the part that is filled in using the filter
+        specified in the URL. The text in green is filled in using
+        the information that is retrieved from the HTTP client. If
+        Fred User connects as <code>fuser</code>, the filter would look
+        like</p>
+
+        <example>(&amp;<font
+        color="red">(|(qpagePagerID=*)(uid=jmanager))</font>(<font
+        color="blue">uid</font>=<font
+        color="green">fuser</font>))</example>
+
+        <p>The above search will only succeed if <em>fuser</em> has a
+        pager. When Joe Manager connects as <em>jmanager</em>, the
+        filter looks like</p>
+
+        <example>(&amp;<font
+        color="red">(|(qpagePagerID=*)(uid=jmanager))</font>(<font
+        color="blue">uid</font>=<font
+        color="green">jmanager</font>))</example>
+
+        <p>The above search will succeed whether <em>jmanager</em>
+        has a pager or not.</p>
+      </li>
+    </ul>
+</section>
+
+<section id="usingtls"><title>Using TLS</title>
+
+    <p>To use TLS, simply set the <directive
+    module="mod_auth_ldap">AuthLDAPStartTLS</directive> to on.
+    Nothing else needs to be done (other than ensure that your LDAP
+    server is configured for TLS).</p>
+</section>
+
+<section id="usingssl"><title>Using SSL</title>
+
+    <p>If <module>mod_auth_ldap</module> is linked against the
+    Netscape/iPlanet LDAP SDK, it will not talk to any SSL server
+    unless that server has a certificate signed by a known Certificate
+    Authority. As part of the configuration
+    <module>mod_auth_ldap</module> needs to be told where it can find
+    a database containing the known CAs. This database is in the same
+    format as Netscape Communicator's <code>cert7.db</code>
+    database. The easiest way to get this file is to start up a fresh
+    copy of Netscape, and grab the resulting
+    <code>$HOME/.netscape/cert7.db</code> file.</p>
+
+    <p>To specify a secure LDAP server, use <em>ldaps://</em> in the
+    <directive module="mod_auth_ldap">AuthLDAPURL</directive>
+    directive, instead of <em>ldap://</em>.</p>
+</section>
+
+<section id="frontpage"><title>Using Microsoft
+    FrontPage with mod_auth_ldap</title>
+
+    <p>Normally, FrontPage uses FrontPage-web-specific user/group
+    files (i.e., the <module>mod_auth</module> module) to handle all
+    authentication. Unfortunately, it is not possible to just
+    change to LDAP authentication by adding the proper directives,
+    because it will break the <em>Permissions</em> forms in
+    the FrontPage client, which attempt to modify the standard
+    text-based authorization files.</p>
+
+    <p>Once a FrontPage web has been created, adding LDAP
+    authentication to it is a matter of adding the following
+    directives to <em>every</em> <code>.htaccess</code> file
+    that gets created in the web</p>
+<example><pre>
+AuthLDAPURL            the url
+AuthLDAPAuthoritative  off
+AuthLDAPFrontPageHack  on
+</pre></example>
+
+    <p><directive
+    module="mod_auth_ldap">AuthLDAPAuthoritative</directive> must be
+    off to allow <module>mod_auth_ldap</module> to decline group
+    authentication so that Apache will fall back to file
+    authentication for checking group membership. This allows the
+    FrontPage-managed group file to be used.</p>
+
+<section id="howitworks"><title>How It Works</title>
+
+    <p>FrontPage restricts access to a web by adding the <code>require
+    valid-user</code> directive to the <code>.htaccess</code>
+    files. If <directive
+    module="mod_auth_ldap">AuthLDAPFrontPageHack</directive> is not
+    on, the <code>require valid-user</code> directive will succeed for
+    any user who is valid <em>as far as LDAP is
+    concerned</em>. This means that anybody who has an entry in
+    the LDAP directory is considered a valid user, whereas FrontPage
+    considers only those people in the local user file to be
+    valid. The purpose of the hack is to force Apache to consult the
+    local user file (which is managed by FrontPage) - instead of LDAP
+    - when handling the <code>require valid-user</code> directive.</p>
+
+    <p>Once directives have been added as specified above,
+    FrontPage users will be able to perform all management
+    operations from the FrontPage client.</p>
+</section>
+
+<section id="fpcaveats"><title>Caveats</title>
+
+    <ul>
+      <li>When choosing the LDAP URL, the attribute to use for
+      authentication should be something that will also be valid
+      for putting into a <module>mod_auth</module> user file. The user ID is
+      ideal for this.</li>
+
+      <li>When adding users via FrontPage, FrontPage administrators
+      should choose usernames that already exist in the LDAP
+      directory (for obvious reasons). Also, the password that the
+      administrator enters into the form is ignored, since Apache
+      will actually be authenticating against the password in the
+      LDAP database, and not against the password in the local user
+      file. This could cause confusion for web administrators.</li>
+
+      <li>Apache must be compiled with <module>mod_auth</module> in order to
+      use FrontPage support. This is because Apache will still use
+      the <module>mod_auth</module> group file for determine the extent of a
+      user's access to the FrontPage web.</li>
+
+      <li>The directives must be put in the <code>.htaccess</code>
+      files. Attempting to put them inside <directive module="core"
+      type="section">Location</directive> or <directive module="core"
+      type="section">Directory</directive> directives won't work. This
+      is because <module>mod_auth_ldap</module> has to be able to grab
+      the <directive module="mod_auth">AuthUserFile</directive>
+      directive that is found in FrontPage <code>.htaccess</code>
+      files so that it knows where to look for the valid user list. If
+      the <module>mod_auth_ldap</module> directives aren't in the same
+      <code>.htaccess</code> file as the FrontPage directives, then
+      the hack won't work, because <module>mod_auth_ldap</module> will
+      never get a chance to process the <code>.htaccess</code> file,
+      and won't be able to find the FrontPage-managed user file.</li>
+    </ul>
+</section>
+</section>
+
+<directivesynopsis>
+<name>AuthLDAPAuthoritative</name>
+<syntax>AuthLDAPAuthoritative on|off</syntax>
+<default>AuthLDAPAuthoritative on</default>
+<contextlist><context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>AuthConfig</override>
+
+<usage>
+    <p>Set to <code>off</code> if this module should let other
+    authentication modules attempt to authenticate the user, should
+    authentication with this module fail. Control is only passed on
+    to lower modules if there is no DN or rule that matches the
+    supplied user name (as passed by the client).</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>AuthLDAPBindDN</name>
+<syntax>AuthLDAPBindDN <em>distinguished-name</em></syntax>
+<contextlist><context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>AuthConfig</override>
+
+<usage>
+    <p>An optional DN used to bind to the server when searching for
+    entries. If not provided, <module>mod_auth_ldap</module> will use
+    an anonymous bind.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>AuthLDAPBindPassword</name>
+<syntax>AuthLDAPBindPassword <em>password</em></syntax>
+<contextlist><context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>AuthConfig</override>
+
+<usage>
+    <p>A bind password to use in conjunction with the bind DN. Note
+    that the bind password is probably sensitive data, and should be
+    properly protected. You should only use the <directive
+    module="mod_auth_ldap">AuthLDAPBindDN</directive> and <directive
+    module="mod_auth_ldap">AuthLDAPBindPassword</directive> if you
+    absolutely need them to search the directory.</p> 
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>AuthLDAPCompareDNOnServer</name>
+<syntax>AuthLDAPCompareDNOnServer on|off</syntax>
+<default>AuthLDAPCompareDNOnServer on</default>
+<contextlist><context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>AuthConfig</override>
+
+<usage>
+    <p>When set, <module>mod_auth_ldap</module> will use the LDAP
+    server to compare the DNs. This is the only foolproof way to
+    compare DNs.  <module>mod_auth_ldap</module> will search the
+    directory for the DN specified with the <a
+    href="#reqdn"><code>require dn</code></a> directive, then,
+    retrieve the DN and compare it with the DN retrieved from the user
+    entry. If this directive is not set,
+    <module>mod_auth_ldap</module> simply does a string comparison. It
+    is possible to get false negatives with this approach, but it is
+    much faster. Note the <module>mod_ldap</module> cache can speed up
+    DN comparison in most situations.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>AuthLDAPDereferenceAliases</name>
+<syntax>AuthLDAPDereferenceAliases never|searching|finding|always</syntax>
+<default>AuthLDAPDereferenceAliases Always</default>
+<contextlist><context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>AuthConfig</override>
+
+<usage>
+    <p>This directive specifies when <module>mod_auth_ldap</module> will
+    de-reference aliases during LDAP operations. The default is
+    <code>always</code>.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>AuthLDAPEnabled directive</name>
+<syntax> AuthLDAPEnabled on|off</syntax>
+<default>AuthLDAPEnabled on</default>
+<contextlist><context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>AuthConfig</override>
+
+<usage>
+    <p>Set to <code>off</code> to disable
+    <module>mod_auth_ldap</module> in certain directories. This is
+    useful if you have <module>mod_auth_ldap</module> enabled at or
+    near the top of your tree, but want to disable it completely in
+    certain locations.</p> 
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>AuthLDAPFrontPageHack</name>
+<syntax>AuthLDAPFrontPageHack on|off</syntax>
+<default>AuthLDAPFronPageHack off</default>
+<contextlist><context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>AuthConfig</override>
+
+<usage>
+    <p>See the section on <a href="#frontpage">using Microsoft
+    FrontPage</a> with <module>mod_auth_ldap</module>.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>AuthLDAPGroupAttribute</name>
+<syntax>AuthLDAPGroupAttribute <em>attribute</em></syntax>
+<contextlist><context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>AuthConfig</override>
+
+<usage>
+    <p>This directive specifies which LDAP attributes are used to
+    check for group membership. Multiple attributes can be used by
+    specifying this directive multiple times. If not specified,
+    then <module>mod_auth_ldap</module> uses the <code>member</code> and
+    <code>uniquemember</code> attributes.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>AuthLDAPGroupAttributeIsDN</name>
+<syntax>AuthLDAPGroupAttributeIsDN on|off</syntax>
+<default>AuthLDAPGroupAttributeIsDN on</default>
+<contextlist><context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>AuthConfig</override>
+
+<usage>
+    <p>When set <code>on</code>, this directive says to use the
+    distinguished name of the client username when checking for group
+    membership.  Otherwise, the username will be used. For example,
+    assume that the client sent the username <code>bjenson</code>,
+    which corresponds to the LDAP DN <code>cn=Babs Jenson,
+    o=Airius</code>. If this directive is set,
+    <module>mod_auth_ldap</module> will check if the group has
+    <code>cn=Babs Jenson, o=Airius</code> as a member. If this
+    directive is not set, then <module>mod_auth_ldap</module> will
+    check if the group has <code>bjenson</code> as a member.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>AuthLDAPRemoteUserIsDN</name>
+<syntax>AuthLDAPRemoteUserIsDN on|off</syntax>
+<default>AuthLDAPUserIsDN off</default>
+<contextlist><context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>AuthConfig</override>
+
+<usage>
+    <p>If this directive is set to on, the value of the
+    <code>REMOTE_USER</code> environment variable will be set to the full
+    distinguished name of the authenticated user, rather than just
+    the username that was passed by the client. It is turned off by
+    default.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>AuthLDAPStartTLS directive</name>
+<syntax>AuthLDAPStartTLS on|off</syntax>
+<default>AuthLDAPStartTLS off</default>
+<contextlist><context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>AuthConfig</override>
+
+<usage>
+    <p>If this directive is set to <code>on</code>,
+    <module>mod_auth_ldap</module> will start a secure TLS session
+    after connecting to the LDAP server. This requires your LDAP
+    server to support TLS.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>AuthLDAPUrl</name>
+<syntax>AuthLDAPUrl <em>url</em></syntax>
+<contextlist><context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>AuthConfig</override>
+
+<usage>
+    <p>An RFC 2255 URL which specifies the LDAP search parameters
+    to use. The syntax of the URL is</p>
+<example>ldap://host:port/basedn?attribute?scope?filter</example>
+
+<dl>
+<dt>ldap</dt>
+
+        <dd>For regular ldap, use the
+        string <code>ldap</code>. For secure LDAP, use <code>ldaps</code>
+        instead. Secure LDAP is only available if Apache was linked
+        to an LDAP library with SSL support.</dd>
+
+<dt>host:port</dt>
+
+        <dd>
+          <p>The name/port of the ldap server (defaults to
+          <code>localhost:389</code> for <code>ldap</code>, and
+          <code>localhost:636</code> for <code>ldaps</code>). To
+          specify multiple, redundant LDAP servers, just list all
+          servers, separated by spaces. <module>mod_auth_ldap</module>
+          will try connecting to each server in turn, until it makes a
+          successful connection.</p>
+
+          <p>Once a connection has been made to a server, that
+          connection remains active for the life of the
+          <code>httpd</code> process, or until the LDAP server goes
+          down.</p>
+
+          <p>If the LDAP server goes down and breaks an existing
+          connection, <module>mod_auth_ldap</module> will attempt to
+          re-connect, starting with the primary server, and trying
+          each redundant server in turn. Note that this is different
+          than a true round-robin search.</p>
+        </dd>
+
+<dt>basedn</dt>
+
+        <dd>The DN of the branch of the
+        directory where all searches should start from. At the very
+        least, this must be the top of your directory tree, but
+        could also specify a subtree in the directory.</dd>
+
+<dt>attribute</dt>
+
+        <dd>The attribute to search for.
+        Although RFC 2255 allows a comma-separated list of
+        attributes, only the first attribute will be used, no
+        matter how many are provided. If no attributes are
+        provided, the default is to use <code>uid</code>. It's a good
+        idea to choose an attribute that will be unique across all
+        entries in the subtree you will be using.</dd>
+
+<dt>scope</dt>
+
+        <dd>The scope of the search. Can be either <code>one</code> or
+        <code>sub</code>. Note that a scope of <code>base</code> is
+        also supported by RFC 2255, but is not supported by this
+        module. If the scope is not provided, or if <code>base</code> scope
+        is specified, the default is to use a scope of
+        <code>sub</code>.</dd>
+
+<dt>filter</dt>
+
+        <dd>A valid LDAP search filter. If
+        not provided, defaults to <code>(objectClass=*)</code>, which
+        will search for all objects in the tree. Filters are
+        limited to approximately 8000 characters (the definition of
+        <code>MAX_STRING_LEN</code> in the Apache source code). This
+        should be than sufficient for any application.</dd>
+</dl>
+
+    <p>When doing searches, the attribute, filter and username passed
+    by the HTTP client are combined to create a search filter that
+    looks like
+    <code>(&amp;(<em>filter</em>)(<em>attribute</em>=<em>username</em>))</code>.</p>
+
+    <p>For example, consider an URL of
+    <code>ldap://ldap.airius.com/o=Airius?cn?sub?(posixid=*)</code>. When
+    a client attempts to connect using a username of <code>Babs
+    Jenson</code>, the resulting search filter will be
+    <code>(&amp;(posixid=*)(cn=Babs Jenson))</code>.</p>
+
+    <p>See above for examples of <directive
+    module="mod_auth_ldap">AuthLDAPURL</directive> URLs.</p>
+</usage>
+</directivesynopsis>
+
+</modulesynopsis>
