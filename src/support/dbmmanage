@@ -134,7 +134,7 @@ sub getpass {
 
     my($c,$pwd);
     print STDERR $prompt;
-    while ($c = getc(STDIN) and $c ne "\n" and $c ne "\r") {
+    while (($c = getc(STDIN)) ne '' and $c ne "\n" and $c ne "\r") {
 	$pwd .= $c;
     }
 

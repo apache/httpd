@@ -1,5 +1,9 @@
 Changes with Apache 1.3b7
 
+  *) Fix support script `dbmmanage': It was unable to handle some sort
+     of passwords, especially passwords with "0" chars.
+     [Ralf S. Engelschall] PR#2242
+
   *) WIN32: Clicking on "Last Modified" in a fancy index caused a crash. Fixed.
      [Ben Laurie] PR#2238
 
