@@ -1404,7 +1404,7 @@ int ap_mpm_run(pool *_pconf, pool *plog, server_rec *s)
     }
 
     if (is_graceful) {
-	int i, bytes_to_write;
+	int i;
         char char_of_death = '!';
 
 	ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_NOTICE, server_conf,
@@ -1420,17 +1420,12 @@ int ap_mpm_run(pool *_pconf, pool *plog, server_rec *s)
 	    } 
 	}
 	/* give the children the signal to die */
-        /* XXX - This while loop logic should be made into a utility function */
-        bytes_to_write = num_daemons;
-        while (bytes_to_write > 0) {
-            i = write(pipe_of_death[1], &char_of_death, bytes_to_write);
-            if (i == -1) {
+        for (i = 0; i < num_daemons;) {
+            if (write(pipe_of_death[1], &char_of_death, 1) == -1) {
                 if (errno == EINTR) continue;
-                ap_log_error(APLOG_MARK, APLOG_ERR, server_conf,
-                             "write pipe_of_death");
-                break;
+                ap_log_error(APLOG_MARK, APLOG_WARNING, server_conf, "write pipe_of_death");
             }
-            bytes_to_write -= i;
+            i++;
         }
     }
     else {
