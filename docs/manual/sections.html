@@ -12,9 +12,10 @@
  ALINK="#FF0000"
 >
 <!--#include virtual="header.html" -->
+
 <H1 ALIGN="CENTER">How Directory, Location and Files sections work</H1>
 
-The sections <A
+<p>The sections <A
 HREF="mod/core.html#directory"><CODE>&lt;Directory&gt;</CODE></A>, <A
 HREF="mod/core.html#location"><CODE>&lt;Location&gt;</CODE></A> and <A
 HREF="mod/core.html#files"><CODE>&lt;Files&gt;</CODE></A> can contain
@@ -23,31 +24,31 @@ respectively. Also htaccess files can be used inside a directory to
 apply directives to that directory. This document explains how these
 different sections differ and how they relate to each other when
 Apache decides which directives apply for a particular directory or
-request URL.
+request URL.</p>
 
 <H2>Directives allowed in the sections</H2>
 
-Everything that is syntactically allowed in
+<p>Everything that is syntactically allowed in
 <CODE>&lt;Directory&gt;</CODE> is also allowed in
 <CODE>&lt;Location&gt;</CODE> (except a sub-<CODE>&lt;Files&gt;</CODE>
-section).  Semantically however some things, and the most
-notable are <CODE>AllowOverride</CODE> and the two options
+section).  Semantically, however some things, most
+notably <CODE>AllowOverride</CODE> and the two options
 <CODE>FollowSymLinks</CODE> and <CODE>SymLinksIfOwnerMatch</CODE>,
 make no sense in <CODE>&lt;Location&gt;</CODE>,
 <CODE>&lt;LocationMatch&gt;</CODE> or <CODE>&lt;DirectoryMatch&gt;</CODE>.
 The same for <CODE>&lt;Files&gt;</CODE> -- syntactically everything
-is fine, but semantically some things are different.
+is fine, but semantically some things are different.</p>
 
 <H2>How the sections are merged</H2>
 
-The order of merging is:
+<p>The order of merging is:</p>
 
 <OL>
 
 <LI>
 
  <CODE>&lt;Directory&gt;</CODE> (except regular expressions) and
- .htaccess done simultaneously (with .htaccess overriding
+ .htaccess done simultaneously (with .htaccess, if allowed, overriding
  <CODE>&lt;Directory&gt;</CODE>)
 
 </LI>
@@ -68,7 +69,7 @@ The order of merging is:
 
 </OL>
 
-Apart from <CODE>&lt;Directory&gt;</CODE>, each group is processed in
+<p>Apart from <CODE>&lt;Directory&gt;</CODE>, each group is processed in
 the order that they appear in the configuration
 files. <CODE>&lt;Directory&gt;</CODE> (group 1 above) is processed in
 the order shortest directory component to longest. If multiple
@@ -77,22 +78,18 @@ they they are processed in the configuration file order.  The
 configuration files are read in the order httpd.conf, srm.conf and
 access.conf. Configurations included via the <CODE>Include</CODE>
 directive will be treated as if they were inside the including file
-at the location of the <CODE>Include</CODE> directive.
+at the location of the <CODE>Include</CODE> directive.</p>
 
-<P>
-
-Sections inside <CODE>&lt;VirtualHost&gt;</CODE> sections are applied
+<p>Sections inside <CODE>&lt;VirtualHost&gt;</CODE> sections are applied
 <EM>after</EM> the corresponding sections outside the virtual host
 definition. This allows virtual hosts to override the main server
-configuration. (Note: this only works correctly from 1.2.2 and 1.3a2
-onwards. Before those releases sections inside virtual hosts were
-applied <EM>before</EM> the main server).
+configuration.</p>
+
+<p>Later sections override earlier ones.</p>
 
 <H2>Notes about using sections</H2>
 
-The general guidelines are:
-
-<P>
+<p>The general guidelines are:</p>
 
 <UL>
 <LI>
@@ -107,7 +104,7 @@ The general guidelines are:
 </LI>
 </UL>
 
-But a notable exception is:
+<p>But a notable exception is:</p>
 
 <UL>
 <LI>
@@ -119,18 +116,16 @@ But a notable exception is:
 </LI>
 </UL>
 
-<P>
-Note about .htaccess parsing:
-</P>
+<p>Note about .htaccess parsing:</p>
+
 <UL>
 <LI>
     Modifying .htaccess parsing during Location doesn't do
     anything because .htaccess parsing has already occurred.
 </UL>
 
-<P>
-<CODE>&lt;Location&gt;</CODE> and symbolic links:
-</P>
+<p><CODE>&lt;Location&gt;</CODE> and symbolic links:</p>
+
 <UL>
 <LI>
     It is not possible to use "<CODE>Options FollowSymLinks</CODE>"
@@ -142,18 +137,15 @@ Note about .htaccess parsing:
     <CODE>&lt;Directory&gt;</CODE> section (or a <CODE>.htaccess</CODE> file).
 </UL>
 
-<P>
-<CODE>&lt;Files&gt;</CODE> and <CODE>Options</CODE>:
-</P>
+<p><CODE>&lt;Files&gt;</CODE> and <CODE>Options</CODE>:</p>
+
 <UL>
 <LI>
     Apache won't check for it, but using an <CODE>Options</CODE>
     directive inside a <CODE>&lt;Files&gt;</CODE> section has no effect.
 </UL>
 
-<P>
-Another note:
-</P>
+<p>Another note:</p>
 
 <UL>
 <LI>
@@ -167,4 +159,5 @@ Another note:
 </UL>
 
 <!--#include virtual="footer.html" -->
-</BODY></HTML>
+</BODY>
+</HTML>
