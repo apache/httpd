@@ -1772,27 +1772,30 @@ static int proxy_status_hook(request_rec *r, int flags)
 
 static void child_init(apr_pool_t *p, server_rec *s)
 {
-    void *sconf = s->module_config;
-    proxy_server_conf *conf = (proxy_server_conf *)
-        ap_get_module_config(sconf, &proxy_module);
-    proxy_worker *worker;
-    int i;
     
-    /* Initialize worker's shared scoreboard data */ 
-    worker = (proxy_worker *)conf->workers->elts;
-    for (i = 0; i < conf->workers->nelts; i++) {
-        ap_proxy_initialize_worker_share(conf, worker);
-        ap_proxy_initialize_worker(worker, s);
-        worker++;
-    }
-    /* Initialize forward worker if defined */
-    if (conf->forward) {
-        ap_proxy_initialize_worker_share(conf, conf->forward);
-        ap_proxy_initialize_worker(conf->forward, s);
-        /* Do not disable worker in case of errors */
-        conf->forward->s->status |= PROXY_WORKER_IGNORE_ERRORS;
-    }
+    while (s) {
+        void *sconf = s->module_config;
+        proxy_server_conf *conf;
+        proxy_worker *worker;
+        int i;
 
+        conf = (proxy_server_conf *)ap_get_module_config(sconf, &proxy_module);
+        /* Initialize worker's shared scoreboard data */ 
+        worker = (proxy_worker *)conf->workers->elts;
+        for (i = 0; i < conf->workers->nelts; i++) {
+            ap_proxy_initialize_worker_share(conf, worker);
+            ap_proxy_initialize_worker(worker, s);
+            worker++;
+        }
+        /* Initialize forward worker if defined */
+        if (conf->forward) {
+            ap_proxy_initialize_worker_share(conf, conf->forward);
+            ap_proxy_initialize_worker(conf->forward, s);
+            /* Do not disable worker in case of errors */
+            conf->forward->s->status |= PROXY_WORKER_IGNORE_ERRORS;
+        }
+        s = s->next;
+    }
 }
 
 /*
