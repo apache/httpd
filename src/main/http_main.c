@@ -3575,28 +3575,23 @@ static int AMCSocketInitialize(void)
 	return (s_iInitCount);
 
     /* s_iInitCount == 0. Do the initailization */
-#ifdef NETWARE
     iVersionRequested = MAKEWORD(2, 0);
-#else
-    iVersionRequested = MAKEWORD(1, 1);
-#endif
     err = WSAStartup((WORD) iVersionRequested, &wsaData);
     if (err) {
+        printf("WSAStartup failed with error %d\n", err);
 	s_iInitCount = -1;
 	return (s_iInitCount);
     }
-#ifdef WIN32
-    if (LOBYTE(wsaData.wVersion) != 1 ||
-	HIBYTE(wsaData.wVersion) != 1) {
+
+    if (LOBYTE(wsaData.wVersion) != 2 ||
+	HIBYTE(wsaData.wVersion) != 0) {
+        printf("Apache requires Winsock 2. Please see the Apache FAQ for more information.\n");
 	s_iInitCount = -2;
 	WSACleanup();
 	return (s_iInitCount);
     }
-#endif
-
     s_iInitCount++;
     return (s_iInitCount);
-
 }
 
 
