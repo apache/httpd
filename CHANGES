@@ -1,5 +1,11 @@
 Changes with Apache 2.0.47
 
+  *) mod_cgid: Eliminate a double-close of a socket.  This resolves
+     various operational problems in a threaded MPM, since on the
+     second attempt to close the socket, the same descriptor was
+     often already in use by another thread for another purpose.
+     [Jeff Trawick]
+
   *) mod_negotiation: Introduce "prefer-language" environment variable,
      which allows to influence the negotiation process on request basis
      to prefer a certain language.  [André Malo]
