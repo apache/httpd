@@ -242,15 +242,17 @@ static int usage(void)
 	".\n");
     fprintf(stderr, " -d  Force CRYPT encryption of the password"
 #if (!(defined(WIN32) || defined(TPF)))
-	" (default)"
+	    " (default)"
 #endif
-	".\n");
+	    ".\n");
     fprintf(stderr, " -p  Force NO encryption of the password.\n");
     fprintf(stderr, " -s  Force SHA encryption of the password.\n");
-    fprintf(stderr, " -b  Use the password from the command line rather ");
-    fprintf(stderr, "than prompting for it.\n");
-    fprintf(stderr, "On Windows and TPF systems the '-m' flag is used by default.\n");
-    fprintf(stderr, "On all other systems, the '-p' will propably not work.\n");
+    fprintf(stderr, " -b  Use the password from the command line rather "
+	    "than prompting for it.\n");
+    fprintf(stderr,
+	    "On Windows and TPF systems the '-m' flag is used by default.\n");
+    fprintf(stderr,
+	    "On all other systems, the '-p' flag will probably not work.\n");
     return ERR_SYNTAX;
 }
 
