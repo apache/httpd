@@ -498,6 +498,9 @@ void ap_log_pid(pool *p, char *fname)
     struct stat finfo;
     static pid_t saved_pid = -1;
     pid_t mypid;
+#ifndef WIN32
+    mode_t u;
+#endif
 
     if (!fname) 
 	return;
@@ -519,12 +522,19 @@ void ap_log_pid(pool *p, char *fname)
 		   );
     }
 
+#ifndef WIN32
+    u = umask(022);
+    (void) umask(u | 022);
+#endif
     if(!(pid_file = fopen(fname, "w"))) {
 	perror("fopen");
         fprintf(stderr, "%s: could not log pid to file %s\n",
 		ap_server_argv0, fname);
         exit(1);
     }
+#ifndef WIN32
+    (void) umask(u);
+#endif
     fprintf(pid_file, "%ld\n", (long)mypid);
     fclose(pid_file);
     saved_pid = mypid;
