@@ -2,6 +2,10 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) fix "Expected </Foo>> but saw </Foo>" errors in nested,
+     argumentless containers.
+     ["Philippe M. Chiasson" <gozer cpan.org>]
+
   *) mod_isapi: GetServerVariable returned improperly terminated header 
      fields given "ALL_HTTP" or "ALL_RAW".  PR 20656.
      [Jesse Pelton <jsp pkc.com>]
