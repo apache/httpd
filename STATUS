@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:						-*-text-*-
-Last modified at [$Date: 2002/02/06 18:32:03 $]
+Last modified at [$Date: 2002/02/06 18:39:50 $]
 
 Release:
 
@@ -47,10 +47,10 @@ RELEASE SHOWSTOPPERS:
                       Linux 2.2 & 2.4, HPUX
         Broken on: Win32 [no error logging within service, other bugs]
         for beta
-            +1 : Aaron, Jim
+            +1 : Aaron
             +0 : Lars, Justin, trawick
             -0 : OtherBill
-            -1 : BillS, Ian, gregames, BrianP
+            -1 : BillS, Ian, gregames, BrianP, Jim
         bumps since original tag:
             * mod-dir patch
             * scoreboard x2 : 1 to fix gracefull restarts
