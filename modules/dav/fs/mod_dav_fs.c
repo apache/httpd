@@ -64,7 +64,7 @@ typedef struct {
 
 } dav_fs_server_conf;
 
-extern module MODULE_VAR_EXPORT dav_fs_module;
+extern module MODULE_DECLARE_DATA dav_fs_module;
 
 const char *dav_get_lockdb_path(const request_rec *r)
 {
@@ -130,7 +130,7 @@ static void register_hooks(void)
     dav_fs_register(NULL /* ### pconf */);
 }
 
-module MODULE_VAR_EXPORT dav_fs_module =
+module MODULE_DECLARE_DATA dav_fs_module =
 {
     STANDARD20_MODULE_STUFF,
     NULL,			/* dir config creater */

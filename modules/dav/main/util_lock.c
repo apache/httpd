@@ -388,8 +388,9 @@ dav_error * dav_add_lock(request_rec *r, const dav_resource *resource,
 ** dav_lock_query:  Opens the lock database. Returns a linked list of
 **    dav_lock structures for all direct locks on path.
 */
-dav_error * dav_lock_query(dav_lockdb *lockdb, const dav_resource *resource,
-			   dav_lock **locks)
+DAV_DECLARE(dav_error*) dav_lock_query(dav_lockdb *lockdb, 
+                                       const dav_resource *resource,
+                                       dav_lock **locks)
 {
     /* If no lock database, return empty result */
     if (lockdb == NULL) {

@@ -105,6 +105,26 @@ extern "C" {
 
 #define DAV_INFINITY	INT_MAX	/* for the Depth: header */
 
+/* Create a set of DAV_DECLARE(type), DAV_DECLARE_NONSTD(type) and 
+ * DAV_DECLARE_DATA with appropriate export and import tags for the platform
+ */
+#if !defined(WIN32)
+#define DAV_DECLARE(type)            type
+#define DAV_DECLARE_NONSTD(type)     type
+#define DAV_DECLARE_DATA
+#elif defined(DAV_DECLARE_STATIC)
+#define DAV_DECLARE(type)            type __stdcall
+#define DAV_DECLARE_NONSTD(type)     type
+#define DAV_DECLARE_DATA
+#elif defined(DAV_DECLARE_EXPORT)
+#define DAV_DECLARE(type)            __declspec(dllexport) type __stdcall
+#define DAV_DECLARE_NONSTD(type)     __declspec(dllexport) type
+#define DAV_DECLARE_DATA             __declspec(dllexport)
+#else
+#define DAV_DECLARE(type)            __declspec(dllimport) type __stdcall
+#define DAV_DECLARE_NONSTD(type)     __declspec(dllimport) type
+#define DAV_DECLARE_DATA             __declspec(dllimport)
+#endif
 
 /* --------------------------------------------------------------------
 **
@@ -146,7 +166,8 @@ typedef struct dav_error {
 ** Create a new error structure. save_errno will be filled with the current
 ** errno value.
 */
-dav_error *dav_new_error(apr_pool_t *p, int status, int error_id, const char *desc);
+DAV_DECLARE(dav_error*) dav_new_error(apr_pool_t *p, int status, 
+                                      int error_id, const char *desc);
 
 /*
 ** Push a new error description onto the stack of errors.
@@ -161,8 +182,8 @@ dav_error *dav_new_error(apr_pool_t *p, int status, int error_id, const char *de
 ** <error_id> can specify a new error_id since the topmost description has
 ** changed.
 */
-dav_error *dav_push_error(apr_pool_t *p, int status, int error_id, const char *desc,
-			  dav_error *prev);
+DAV_DECLARE(dav_error*) dav_push_error(apr_pool_t *p, int status, int error_id,
+                                       const char *desc, dav_error *prev);
 
 
 /* error ID values... */
@@ -339,23 +360,29 @@ typedef struct
 #define DAV_BUFFER_PAD		64	/* amount of pad when growing */
 
 /* set the cur_len to the given size and ensure space is available */
-void dav_set_bufsize(apr_pool_t *p, dav_buffer *pbuf, apr_size_t size);
+DAV_DECLARE(void) dav_set_bufsize(apr_pool_t *p, dav_buffer *pbuf, 
+                                  apr_size_t size);
 
 /* initialize a buffer and copy the specified (null-term'd) string into it */
-void dav_buffer_init(apr_pool_t *p, dav_buffer *pbuf, const char *str);
+DAV_DECLARE(void) dav_buffer_init(apr_pool_t *p, dav_buffer *pbuf, 
+                                  const char *str);
 
 /* check that the buffer can accomodate <extra_needed> more bytes */
-void dav_check_bufsize(apr_pool_t *p, dav_buffer *pbuf, apr_size_t extra_needed);
+DAV_DECLARE(void) dav_check_bufsize(apr_pool_t *p, dav_buffer *pbuf, 
+                                    apr_size_t extra_needed);
 
 /* append a string to the end of the buffer, adjust length */
-void dav_buffer_append(apr_pool_t *p, dav_buffer *pbuf, const char *str);
+DAV_DECLARE(void) dav_buffer_append(apr_pool_t *p, dav_buffer *pbuf, 
+                                    const char *str);
 
 /* place a string on the end of the buffer, do NOT adjust length */
-void dav_buffer_place(apr_pool_t *p, dav_buffer *pbuf, const char *str);
+DAV_DECLARE(void) dav_buffer_place(apr_pool_t *p, dav_buffer *pbuf, 
+                                   const char *str);
 
 /* place some memory on the end of a buffer; do NOT adjust length */
-void dav_buffer_place_mem(apr_pool_t *p, dav_buffer *pbuf, const void *mem,
-                          apr_size_t amt, apr_size_t pad);
+DAV_DECLARE(void) dav_buffer_place_mem(apr_pool_t *p, dav_buffer *pbuf, 
+                                       const void *mem, apr_size_t amt, 
+                                       apr_size_t pad);
 
 
 /* --------------------------------------------------------------------
@@ -432,14 +459,14 @@ typedef struct {
 
 } dav_provider;
 
-AP_DECLARE_HOOK(void, gather_propsets, (apr_array_header_t *uris))
-AP_DECLARE_HOOK(int, find_liveprop, (request_rec *r,
-                                     const char *ns_uri, const char *name,
-                                     const dav_hooks_liveprop **hooks))
-AP_DECLARE_HOOK(void, insert_all_liveprops, (request_rec *r,
-                                             const dav_resource *resource,
-                                             int insvalue,
-                                             ap_text_header *phdr))
+AP_DECLARE_EXTERNAL_HOOK(DAV, void, gather_propsets, 
+                         (apr_array_header_t *uris))
+AP_DECLARE_EXTERNAL_HOOK(DAV, int, find_liveprop,
+                         (request_rec *r, const char *ns_uri, const char *name,
+                          const dav_hooks_liveprop **hooks))
+AP_DECLARE_EXTERNAL_HOOK(DAV, void, insert_all_liveprops, 
+                         (request_rec *r, const dav_resource *resource,
+                          int insvalue, ap_text_header *phdr))
 
 /* ### make this internal to mod_dav.c ? */
 #define DAV_KEY_RESOURCE        "dav-resource"
@@ -448,12 +475,13 @@ const dav_hooks_locks *dav_get_lock_hooks(request_rec *r);
 const dav_hooks_propdb *dav_get_propdb_hooks(request_rec *r);
 const dav_hooks_vsn *dav_get_vsn_hooks(request_rec *r);
 
-void dav_register_provider(apr_pool_t *p, const char *name,
-                           const dav_provider *hooks);
+DAV_DECLARE(void) dav_register_provider(apr_pool_t *p, const char *name,
+                                        const dav_provider *hooks);
 const dav_provider * dav_lookup_provider(const char *name);
 
-void dav_register_liveprop_namespace(apr_pool_t *pool, const char *uri);
-int dav_get_liveprop_ns_index(const char *uri);
+DAV_DECLARE(void) dav_register_liveprop_namespace(apr_pool_t *pool, 
+                                                  const char *uri);
+DAV_DECLARE(int) dav_get_liveprop_ns_index(const char *uri);
 int dav_get_liveprop_ns_count(void);
 void dav_add_all_liveprop_xmlns(apr_pool_t *p, ap_text_header *phdr);
 
@@ -865,8 +893,9 @@ dav_error * dav_notify_created(request_rec *r,
 			       int resource_state,
 			       int depth);
 
-dav_error * dav_lock_query(dav_lockdb *lockdb, const dav_resource *resource,
-			   dav_lock **locks);
+DAV_DECLARE(dav_error*) dav_lock_query(dav_lockdb *lockdb, 
+                                       const dav_resource *resource,
+                                       dav_lock **locks);
 
 dav_error * dav_validate_request(request_rec *r, dav_resource *resource,
 				 int depth, dav_locktoken *locktoken,
@@ -1248,8 +1277,8 @@ typedef struct dav_walker_ctx
 
 } dav_walker_ctx;
 
-void dav_add_response(dav_walker_ctx *ctx, const char *href, int status,
-		      dav_get_props_result *propstats);
+DAV_DECLARE(void) dav_add_response(dav_walker_ctx *ctx, const char *href, 
+                               int status, dav_get_props_result *propstats);
 
 
 /* --------------------------------------------------------------------
