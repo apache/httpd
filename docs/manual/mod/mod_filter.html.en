@@ -24,7 +24,7 @@
 <p><span>Available Languages: </span><a href="../en/mod/mod_filter.html" title="English">&nbsp;en&nbsp;</a></p>
 </div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Context-sensitive smart filter configuration module</td></tr>
-<tr><th><a href="module-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="module-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">Module Identifier:</a></th><td>filter_module</td></tr>
 <tr><th><a href="module-dict.html#SourceFile">Source File:</a></th><td>mod_filter.c</td></tr>
 <tr><th><a href="module-dict.html#Compatibility">Compatibility:</a></th><td>Version 2.1 and higher</td></tr></table>
@@ -231,7 +231,8 @@
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Configure the filter chain</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>FilterChain [+=-@!]<var>filter-name</var> <var>...</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Override">Override:</a></th><td>Options</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_filter</td></tr>
 </table>
     <p>This configures an actual filter chain, from declared filters.
@@ -267,7 +268,8 @@
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>FilterDeclare <var>filter-name</var> [req|resp|env]=<var>dispatch</var>
     <var>[type]</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Override">Override:</a></th><td>Options</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_filter</td></tr>
 </table>
     <p>This directive declares an output filter together with a
@@ -299,7 +301,8 @@
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>FilterProtocol <var>filter-name</var> [<var>provider-name</var>]
     <var>proto-flags</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Override">Override:</a></th><td>Options</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_filter</td></tr>
 </table>
     <p>This directs <code class="module"><a href="../mod/mod_filter.html">mod_filter</a></code> to deal with ensuring the
@@ -347,7 +350,8 @@
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>FilterProvider <var>filter-name</var> <var>provider-name</var>
     <var>match</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Override">Override:</a></th><td>Options</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_filter</td></tr>
 </table>
     <p>This directive registers a <em>provider</em> for the smart filter.
@@ -392,8 +396,8 @@
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Get debug/diagnostic information from
     mod_filter</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>FilterTrace <var>filter-name</var> <var>level</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_filter</td></tr>
 </table>
     <p>This directive generates debug information from
