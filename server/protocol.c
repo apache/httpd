@@ -245,6 +245,14 @@ AP_DECLARE(apr_status_t) ap_rgetline(char **s, apr_size_t n,
             return rv;
         }
 
+        if (len == 0) {
+            /* no use attempting a zero-byte alloc (hurts when
+             * using --with-efence --enable-pool-debug) or
+             * doing any of the other logic either
+             */
+            continue;
+        }
+        
         /* Would this overrun our buffer?  If so, we'll die. */
         if (n < bytes_handled + len) {
             apr_brigade_destroy(b); 
