@@ -1,5 +1,12 @@
 Changes with Apache 1.3.1
-  
+
+  *) PORT: Apache is not 8-bit clean in many settings, a problem we're
+     aware of and intend to fix properly.  But a temporary workaround
+     which should work for many folks is to tell the C compiler to use
+     "unsigned char"s.  For gcc this means adding -funsigned-char.
+     -funsigned-char is the default now for Linux 2.x and FreeBSD
+     2 and 3.  [Dean Gaudet] PR#800, 2282, 2553
+
   *) The "handler not found" error was issued in cases where the handler
      really did exist, but was just declining to serve the request.
      [John Van Essen <jve@gamers.org>] PR#2529

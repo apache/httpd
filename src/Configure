@@ -432,7 +432,7 @@ case "$PLAT" in
     *-linux2)
 	DEF_WANTHSREGEX=yes
 	OS='Linux'
-	CFLAGS="$CFLAGS -DLINUX=2"
+	CFLAGS="$CFLAGS -DLINUX=2 -funsigned-char"
 	LIBS="$LIBS -lm"
 	;;
     *-linux1)
