@@ -697,7 +697,7 @@ static int unserialize_table( cache_header_tbl_t *ctbl,
     int i;
 
     for (i = 0; i < num_headers; ++i) {
-        apr_table_setn(t, ctbl[i].hdr, ctbl[i].val);
+        apr_table_addn(t, ctbl[i].hdr, ctbl[i].val);
     } 
 
     return APR_SUCCESS;
