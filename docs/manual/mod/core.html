@@ -260,7 +260,7 @@ designation will be added to the identity string, as shown below:
  </DT>
  <DD>Server sends: <SAMP>Server-Version: Apache/1.3.0</SAMP>
  </DD>
- <DT><CODE>AddVersionPlatform On</CODE>
+ <DT><CODE>AddVersionPlatform On</CODE> (or not specified)
  </DT>
  <DD>Server sends: <SAMP>Server-Version: Apache/1.3.0 (UNIX)</SAMP>
  </DD>
@@ -270,7 +270,7 @@ This setting applies to the entire server, and cannot be enabled or
 disabled on a virtualhost-by-virtualhost basis.
 </P>
 <P>
-By default, this information is <EM>not</EM> included in the server
+By default, this information <EM>is</EM> included in the server
 identity string.
 </P>
 <HR>
