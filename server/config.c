@@ -915,6 +915,7 @@ static const char * ap_build_config_sub(ap_pool_t *p, ap_pool_t *temp_pool,
             (*current) = ap_add_node(curr_parent, *current, newdir, 1);
         }
 	else if (*curr_parent == NULL) {
+            parms->err_directive = newdir;
 	    return ap_pstrcat(p, cmd_name,
 			      " without matching <", cmd_name + 2,
 			      " section", NULL);
