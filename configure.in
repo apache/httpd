@@ -273,9 +273,9 @@ case $host in
     *aix*)
         # for 32-bit builds, increase MAXDATA to allow lots of threads
         if test x$OBJECT_MODE != x64; then
-            OS_SPECIFIC_VARS="set LDR_CNTRL=\"MAXDATA=0x80000000\" ; export LDR_CNTRL ;"
+            OS_SPECIFIC_VARS="LDR_CNTRL=\"MAXDATA=0x80000000\" ; export LDR_CNTRL ;"
         fi
-        OS_SPECIFIC_VARS="$OS_SPECIFIC_VARS set AIXTHREAD_SCOPE=S ; export AIXTHREAD_SCOPE"
+        OS_SPECIFIC_VARS="$OS_SPECIFIC_VARS AIXTHREAD_SCOPE=S ; export AIXTHREAD_SCOPE"
         ;;
     *os390*)
         OS_SPECIFIC_VARS="export _CEE_RUNOPTS=\"STACK(,,ANY)\" ; export _EDC_ADD_ERRNO2=1"
