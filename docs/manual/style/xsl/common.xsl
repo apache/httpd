@@ -32,7 +32,8 @@
 <!-- Injected variables:                                                  -->
 <!--   $is-chm          - (boolean) target is for CHM generation or not   -->
 <!--   $is-zip          - (boolean) target is for ZIP generation or not   -->
-<!--   $messages        - (node-set) localized common text snippets       -->
+<!--   $message         - (node-set) localized common text snippets       -->
+<!--   $doclang         - (string) document language                      -->
 <!--   $output-encoding - (string) MIME charset name of the output        -->
 <!--                      encoding                                        -->
 
@@ -120,7 +121,7 @@
         </xsl:choose>
 
         <xsl:text> </xsl:text>
-        <xsl:value-of select="$messages/message[@name='apachetitle']"/>
+        <xsl:value-of select="normalize-space($message[@id='apachetitle'])"/>
     </title>&lf;
 
     <!-- chm files get a slightly different stylesheet -->
@@ -169,7 +170,8 @@
     <xsl:call-template name="super-menu" />&lf;
 
     <p class="apache">
-        <xsl:value-of select="$messages/message[@name='apachehttpserver']"/>
+        <xsl:value-of select="normalize-space($message
+                                              [@id='apachehttpserver'])"/>
     </p>&lf;
 
     <img src="{$path}/images/feather.gif" alt="" />
@@ -196,7 +198,7 @@
         <xsl:if test="$ext-target">
             <xsl:attribute name="target">_blank</xsl:attribute>
         </xsl:if>
-        <xsl:value-of select="$messages/message[@name='apache']" />
+        <xsl:value-of select="$message[@id='apache']" />
     </a>
 
     <xsl:text> &gt; </xsl:text>
@@ -205,7 +207,7 @@
         <xsl:if test="$ext-target">
             <xsl:attribute name="target">_blank</xsl:attribute>
         </xsl:if>
-        <xsl:value-of select="$messages/message[@name='http-server']" />
+        <xsl:value-of select="$message[@id='http-server']" />
     </a>
 
     <xsl:text> &gt; </xsl:text>
@@ -214,14 +216,14 @@
         <xsl:if test="$ext-target">
             <xsl:attribute name="target">_blank</xsl:attribute>
         </xsl:if>
-        <xsl:value-of select="$messages/message[@name='documentation']" />
+        <xsl:value-of select="$message[@id='documentation']" />
     </a>
 
     <xsl:if test="not(../indexpage)">
     <xsl:text> &gt; </xsl:text>
 
     <a href="{$path}/{$index-file}">
-        <xsl:value-of select="$messages/message[@name='version']"/>
+        <xsl:value-of select="$message[@id='version']"/>
     </a>
     </xsl:if>
 
@@ -229,7 +231,7 @@
     <xsl:text> &gt; </xsl:text>
 
     <a href="./{$index-file}">
-        <xsl:value-of select="$messages/message[@name='modules']"/>
+        <xsl:value-of select="$message[@id='modules']"/>
     </a>
     </xsl:if>
 
@@ -252,10 +254,10 @@
 <!-- out of date                                                          -->
 <!-- ==================================================================== -->
 <xsl:template name="outofdate">
-<xsl:if test="$metafile/variants/variant[.=$messages/@lang]/@outdated = 'yes'">
+<xsl:if test="$metafile/variants/variant[.=$doclang]/@outdated = 'yes'">
     &lf;
     <div class="outofdate">
-        <xsl:value-of select="$messages/message[@name='outofdate']"/>
+        <xsl:value-of select="$message[@id='outofdate']"/>
     </div>
 </xsl:if>
 </xsl:template>
@@ -273,7 +275,7 @@
     <p class="apache">
         <xsl:text>Copyright 1999-2004 The Apache Software </xsl:text>
         <xsl:text>Foundation.</xsl:text><br />
-        <xsl:value-of select="$messages/message[@name='licensed']"/>
+        <xsl:value-of select="$message[@id='licensed']"/>
         <xsl:text> </xsl:text>
 
         <a href="http://www.apache.org/licenses/LICENSE-2.0">
@@ -302,7 +304,7 @@
 <div class="{$position}lang">&lf;
     <p>
         <span>
-            <xsl:value-of select="$messages/message[@name='langavail']" />
+            <xsl:value-of select="$message[@id='langavail']" />
             <xsl:text>: </xsl:text>
         </span>
 
@@ -316,7 +318,7 @@
                             select="concat($path, '/', ., $metafile/path)" />
                     </xsl:attribute>
                 </xsl:if>
-                <xsl:if test="$messages/@lang != .">
+                <xsl:if test="$doclang != .">
                     <xsl:attribute name="hreflang">
                         <xsl:value-of select="." />
                     </xsl:attribute>
@@ -325,8 +327,10 @@
                 <xsl:attribute name="title">
                     <xsl:choose>
                     <xsl:when test=". != 'fr'"> <!-- no language file avail. -->
-                        <xsl:value-of select="document(concat('../lang/', ., '.xml'))
-                                              /messages/@langname" />
+                        <xsl:value-of select="document(concat('../lang/', .,
+                                                       '.xml'))
+                                              /language/messages/message
+                                              [@id='nativename']" />
                     </xsl:when>
                     <xsl:otherwise>
                         <xsl:text>Fran&#231;ais</xsl:text>
@@ -488,31 +492,31 @@
 <xsl:template name="super-menu">
 <p class="menu">
     <a href="{$path}/mod/{$index-file}">
-        <xsl:value-of select="$messages/message[@name='modules']" />
+        <xsl:value-of select="$message[@id='modules']" />
     </a>
 
     <xsl:text> | </xsl:text>
 
     <a href="{$path}/mod/directives.html">
-        <xsl:value-of select="$messages/message[@name='directives']" />
+        <xsl:value-of select="$message[@id='directives']" />
     </a>
 
     <xsl:text> | </xsl:text>
 
     <a href="{$path}/faq/{$index-file}">
-        <xsl:value-of select="$messages/message[@name='faq']" />
+        <xsl:value-of select="$message[@id='faq']" />
     </a>
 
     <xsl:text> | </xsl:text>
 
     <a href="{$path}/glossary.html">
-        <xsl:value-of select="$messages/message[@name='glossary']" />
+        <xsl:value-of select="$message[@id='glossary']" />
     </a>
 
     <xsl:text> | </xsl:text>
 
     <a href="{$path}/sitemap.html">
-        <xsl:value-of select="$messages/message[@name='sitemap']" />
+        <xsl:value-of select="$message[@id='sitemap']" />
     </a>
 </p>
 </xsl:template>
@@ -699,10 +703,10 @@
 <table class="related">
 <tr>
     <th>
-        <xsl:value-of select="$messages/message[@name='relatedmodules']" />
+        <xsl:value-of select="$message[@id='relatedmodules']" />
     </th>
     <th>
-        <xsl:value-of select="$messages/message[@name='relateddirectives']" />
+        <xsl:value-of select="$message[@id='relateddirectives']" />
     </th>
 </tr>
 <tr>
@@ -870,7 +874,7 @@
 <span class="transnote">
     <xsl:text>(</xsl:text>
     <em>
-        <xsl:value-of select="$messages/message[@name='transnote']" />
+        <xsl:value-of select="$message[@id='transnote']" />
     </em>
     <xsl:text> </xsl:text>
     <xsl:apply-templates />
@@ -911,7 +915,7 @@
 <xsl:message terminate="yes">
     <xsl:text>Unknown element: </xsl:text>
     <xsl:value-of select="local-name()" />&lf;
-    <xsl:text>Please fix style/xsl/common.xsl!</xsl:text>
+    <xsl:text>Is the document valid (try `build validate-xml`)?</xsl:text>
 </xsl:message>
 </xsl:template>
 <xsl:template match="@*">

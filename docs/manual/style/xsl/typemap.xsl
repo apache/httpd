@@ -31,8 +31,8 @@
 />
 
 <!-- create nodeset for referencing later                                 -->
-<xsl:variable name="design" select="document('')/xsl:stylesheet
-                                    /xsl:template[@name='designations']/item" />
+<xsl:variable name="design" select="document('util/designations.xml')
+                                    /items/item" />
 
 <!-- Constants used for case translation -->
 <xsl:variable name="lowercase" select="'abcdefghijklmnopqrstuvwxyz'" />
@@ -61,7 +61,6 @@ The XSLT-Stylesheet won't work without modification.
 
 <xsl:text>URI: </xsl:text>
 <xsl:value-of select="/metafile/basename" />
-<xsl:text>.html</xsl:text>
 <xsl:value-of select="$design[translate(@lang, $uppercase, $lowercase)
                               = $lang]" />&lf;
 
@@ -76,20 +75,5 @@ The XSLT-Stylesheet won't work without modification.
 <xsl:if test="position() != last()">&lf;</xsl:if>
 </xsl:template>
 <!-- /variant -->
-
-<!-- ==================================================================== -->
-<!-- do NOT call this template, it's referenced automagically via         -->
-<!-- document() function and acts as simple data container.               -->
-<!-- ==================================================================== -->
-<xsl:template name="designations">
-<item lang="de"    charset="ISO-8859-1" >.de</item>
-<item lang="en"    charset="ISO-8859-1" >.en</item>
-<item lang="es"    charset="ISO-8859-1" >.es</item>
-<item lang="fr"    charset="ISO-8859-1" >.fr</item>
-<item lang="ja"    charset="ISO-2022-JP">.ja.jis</item>
-<item lang="ko"    charset="EUC-KR"     >.ko.euc-kr</item>
-<item lang="ru"    charset="KOI8-R"     >.ru.koi8-r</item>
-<item lang="zh-CN" charset="GB2312"     >.zh-cn.gb2312</item>
-</xsl:template>
 
 </xsl:stylesheet>
