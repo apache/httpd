@@ -68,4 +68,4 @@
 extern char ap_coredump_dir[MAX_STRING_LEN];
 extern server_rec *ap_server_conf;
 
-#endif /* APACHE_MPM_DEXTER_H */
+#endif /* APACHE_MPM_SPMT_OS2_H */
