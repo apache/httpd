@@ -1,5 +1,9 @@
 Changes with Apache 2.0.44
 
+  *) mod_cache: Don't cache response header fields designated
+     as hop-by-hop headers in HTTP/1.1 (RFC 2616 Section 13.5.1).
+     [Estrade Matthieu <estrade-m@ifrance.com>, Brian Pane]
+
   *) mod_cgid: Handle environment variables containing newlines.
      PR 14550  [Piotr Czejkowski <apache@czarny.eu.org>, Jeff
      Trawick]

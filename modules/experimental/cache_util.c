@@ -469,3 +469,25 @@ CACHE_DECLARE(char *)generate_name(apr_pool_t *p, int dirlevels, int dirlength, 
     cache_hash(name, hashfile, dirlevels, dirlength);
     return apr_pstrdup(p, hashfile);
 }
+
+/* Create a new table consisting of those elements from a request_rec's
+ * headers_out that are allowed to be stored in a cache.
+ */
+CACHE_DECLARE(apr_table_t *)ap_cache_cacheable_hdrs_out(request_rec *r)
+{
+    /* Make a copy of the response headers, and remove from
+     * the copy any hop-by-hop headers, as defined in Section
+     * 13.5.1 of RFC 2616
+     */
+    apr_table_t *headers_out;
+    headers_out = apr_table_copy(r->pool, r->headers_out);
+    apr_table_unset(headers_out, "Connection");
+    apr_table_unset(headers_out, "Keep-Alive");
+    apr_table_unset(headers_out, "Proxy-Authenticate");
+    apr_table_unset(headers_out, "Proxy-Authorization");
+    apr_table_unset(headers_out, "TE");
+    apr_table_unset(headers_out, "Trailers");
+    apr_table_unset(headers_out, "Transfer-Encoding");
+    apr_table_unset(headers_out, "Upgrade");
+    return headers_out;
+}
