@@ -73,5 +73,5 @@
   <modulefile>prefork.xml.de</modulefile>
   <modulefile>threadpool.xml</modulefile>
   <modulefile>mpm_winnt.xml.de</modulefile>
-  <modulefile>worker.xml</modulefile>
+  <modulefile>worker.xml.de</modulefile>
 </modulefilelist>

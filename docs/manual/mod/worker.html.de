@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="de" xml:lang="de"><head><!--
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+              This file is generated from xml source: DO NOT EDIT
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+      -->
+<title>worker - Apache HTTP Server</title>
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
+<link href="../images/favicon.ico" rel="shortcut icon" /></head>
+<body>
+<div id="page-header">
+<p class="menu"><a href="../mod/">Module</a> | <a href="../mod/directives.html">Direktiven</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossar</a> | <a href="../sitemap.html">Seitenindex</a></p>
+<p class="apache">Apache HTTP Server Version 2.1</p>
+<img alt="" src="../images/feather.gif" /></div>
+<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<div id="path">
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP-Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Dokumentation</a> &gt; <a href="../">Version 2.1</a> &gt; <a href="./">Module</a></div>
+<div id="page-content">
+<div id="preamble"><h1>Apache-MPM worker</h1>
+<table class="module"><tr><th><a href="module-dict.html#Description">Beschreibung:</a></th><td>Multi-Processing-Modul, das einen Hybrid-Webserver mit
+  Multi-Thread und Multi-Prozess-Unterstützung implementiert</td></tr>
+<tr><th><a href="module-dict.html#Status">Status:</a></th><td>MPM</td></tr>
+<tr><th><a href="module-dict.html#ModuleIdentifier">Modulbezeichner:</a></th><td>mpm_worker_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">Quelltext-Datei:</a></th><td>worker.c</td></tr></table>
+<h3>Zusammenfassung</h3>
+
+    <p>Dieses Multi-Processing-Modul (MPM) implementiert einen Hybrid-Server
+    mit Multi-Thread und Multi-Prozess-Unterstützung. Durch die Verwendung
+    von Threads für die Bedienung von Anfragen ist er in der Lage,
+    eine große Anzahl von Anfragen mit weniger Systemressourcen als
+    ein Prozess-basierter Server zu bedienen. Er behält jedoch viel von
+    der Stabilität eines Prozess-basierten Servers bei, indem er
+    mehrere Prozesse verfügbar hält, jeden mit etlichen Threads.</p>
+
+    <p>Die wichtigsten Direktiven zur Steuerung des MPMs sind <code class="directive"><a href="../mod/mpm_common.html#threadsperchild">ThreadsPerChild</a></code>, welche die Anzahl
+    der Threads beeinflusst, die von jedem Kindprozess verwendet werden, und
+    <code class="directive"><a href="../mod/mpm_common.html#maxclients">MaxClients</a></code>, welche die
+    maximale Gesamtzahl an Threads regelt, die gestartet werden
+    können.</p>
+</div>
+<div id="quickview"><h3 class="directives">Direktiven</h3>
+<ul id="toc">
+<li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#acceptmutex">AcceptMutex</a></li>
+<li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#coredumpdirectory">CoreDumpDirectory</a></li>
+<li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#group">Group</a></li>
+<li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#listen">Listen</a></li>
+<li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#listenbacklog">ListenBacklog</a></li>
+<li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#lockfile">LockFile</a></li>
+<li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#maxclients">MaxClients</a></li>
+<li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#maxmemfree">MaxMemFree</a></li>
+<li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#maxrequestsperchild">MaxRequestsPerChild</a></li>
+<li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#maxsparethreads">MaxSpareThreads</a></li>
+<li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#minsparethreads">MinSpareThreads</a></li>
+<li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#pidfile">PidFile</a></li>
+<li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#scoreboardfile">ScoreBoardFile</a></li>
+<li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#sendbuffersize">SendBufferSize</a></li>
+<li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#serverlimit">ServerLimit</a></li>
+<li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#startservers">StartServers</a></li>
+<li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#threadlimit">ThreadLimit</a></li>
+<li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#threadsperchild">ThreadsPerChild</a></li>
+<li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#user">User</a></li>
+</ul>
+<h3>Themen</h3>
+<ul id="topics">
+<li><img alt="" src="../images/down.gif" /> <a href="#how-it-works">Arbeitsweise</a></li>
+</ul><h3>Siehe auch</h3>
+<ul class="seealso">
+<li><a href="../bind.html">Bestimmen der vom Apache verwendeten Adressen
+  und Ports</a></li>
+</ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="how-it-works" id="how-it-works">Arbeitsweise</a></h2>
+    <p>Jeder Prozess besitzt eine feste Anzahl von Threads. Um die Last
+    zu bewältigen, passt sich der Server an, indem er die
+    Anzahl der Prozesse erhöht oder verringert.</p>
+
+    <p>Ein einzelner Steuerprozess ist für den Start der
+    Kindprozesse verantwortlich. Jeder Kindprozess erstellt eine
+    feste Anzahl von Threads, wie durch die <code class="directive"><a href="../mod/mpm_common.html#threadsperchild">ThreadsPerChild</a></code>-Direktive
+    angegeben. Der einzelne Thread lauscht dann auf Verbindungen und
+    bedient sie, sobald sie eintreffen.</p>
+
+    <p>Der Apache versucht immer, einen Vorrat von <dfn>freien</dfn> oder
+    unbeschäftigten Threads zu verwalten, die zur Bedienung
+    hereinkommender Anfragen bereit stehen. Auf diese Weise brauchen
+    Clients nicht auf die Erstellung eines neuen Threads oder Prozesses
+    zu warten, bevor ihre Anfrage bedient werden kann. Die Anzahl der
+    Prozesse, die anfangs gestartet wird, wird mit der Direktive
+    <code class="directive"><a href="../mod/mpm_common.html#startservers">StartServers</a></code> festgelegt.
+    Dann, während des Betriebes, berechnet der Apache die Gesamtzahl
+    der unbeschäftigten Threads und forkt oder beendet Prozesse, um diese
+    Anzahl innerhalb der durch <code class="directive"><a href="../mod/mpm_common.html#minsparethreads">MinSpareThreads</a></code> und <code class="directive"><a href="../mod/mpm_common.html#maxsparethreads">MaxSpareThreads</a></code> angegebenen Grenzen
+    zu halten. Da dieser Prozess sehr selbstregulierend ist, ist es nur selten
+    notwendig, die Voreinstellung dieser Direktiven zu ändern. Die
+    maximale Anzahl Clients, die gleichzeitig bedient werden kann (d.h.
+    die maximale Gesamtzahl der Threads in allen Prozessen), wird mit der
+    Direktive <code class="directive"><a href="../mod/mpm_common.html#maxclients">MaxClients</a></code>
+    festgelegt, während die maximale Anzahl Prozesse, die gestartet
+    werden kann, von der Direktive <code class="directive"><a href="../mod/mpm_common.html#serverlimit">ServerLimit</a></code> bestimmt wird. <code class="directive"><a href="../mod/mpm_common.html#serverlimit">ServerLimit</a></code> multipliziert mit <code class="directive"><a href="../mod/mpm_common.html#threadsperchild">ThreadsPerChild</a></code> muss größer
+    oder gleich <code class="directive"><a href="../mod/mpm_common.html#maxclients">MaxClients</a></code>
+    sein.</p>
+
+    <p>Eine typische Konfiguration der Prozess-Thread-Steuerung für
+    das MPM <code class="module"><a href="../mod/worker.html">worker</a></code> könnte wie folgt aussehen:</p>
+
+    <div class="example"><p><code>
+      StartServers         2<br />
+      MaxClients         150<br />
+      MinSpareThreads     25<br />
+      MaxSpareThreads     75<br />
+      ThreadsPerChild     25<br />
+      ServerLimit         16
+    </code></p></div>
+
+    <p>Während der Elternprozess unter Unix normalerweise als
+    <code>root</code> gestartet wird, um sich an Port 80 binden zu können,
+    werden die Kindprozesse und Threads unter einem weniger privilegierten
+    Benutzer gestartet. Die Direktiven <code class="directive"><a href="../mod/mpm_common.html#user">User</a></code> und <code class="directive"><a href="../mod/mpm_common.html#group">Group</a></code> werden dazu verwendet, die
+    Privilegien der Apache-Kindprozesse festzulegen. Die Kindprozesse
+    müssen in der Lage sein, alle Inhalte zu lesen, die sie ausliefern
+    sollen, sollten darüber hinaus jedoch so wenig wie möglich Rechte
+    besitzen. Zusätzlich, solange nicht <a href="../suexec.html">suexec</a> verwendet wird, legen diese
+    Direktiven auch die Privilegien fest, die von CGI-Skripts
+    geerbt werden.</p>
+
+    <p><code class="directive"><a href="../mod/mpm_common.html#maxrequestsperchild">MaxRequestsPerChild</a></code>
+    bestimmt, wie häufig der Server Prozesse erneuert, indem er alte
+    beendet und neue startet.</p>
+</div>
+</div>
+<div id="footer">
+<p class="apache">Gepflegt durch das <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p>
+<p class="menu"><a href="../mod/">Module</a> | <a href="../mod/directives.html">Direktiven</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossar</a> | <a href="../sitemap.html">Seitenindex</a></p></div>
+</body></html>
