@@ -22,6 +22,10 @@
 <a href="../es/programs/" title="Español">&nbsp;es&nbsp;</a> |
 <a href="../ko/programs/" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
+<div class="outofdate">Esta traducción podría estar
+            obsoleta. Consulte la versión en inglés de la
+            documentación para comprobar si se han producido cambios
+            recientemente.</div>
 
     <p>Esta página contiene toda la documentación sobre los programas
     ejecutables incluidos en el servidor Apache.</p>

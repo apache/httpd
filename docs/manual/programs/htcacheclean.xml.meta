@@ -1,13 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 
 <metafile>
-  <basename>index</basename>
+  <basename>htcacheclean</basename>
   <path>/programs/</path>
   <relpath>..</relpath>
 
   <variants>
     <variant>en</variant>
-    <variant outdated="yes">es</variant>
-    <variant outdated="yes">ko</variant>
   </variants>
 </metafile>
