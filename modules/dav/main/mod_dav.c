@@ -2716,7 +2716,6 @@ static int dav_method_vsn_control(request_rec *r)
     const dav_hooks_vsn *vsn_hooks = DAV_GET_HOOKS_VSN(r);
     dav_error *err;
     ap_xml_doc *doc;
-    ap_xml_elem *child;
     const char *target = NULL;
     int result;
 
@@ -2739,6 +2738,9 @@ static int dav_method_vsn_control(request_rec *r)
     /* note: doc == NULL if no request body */
 
     if (doc != NULL) {
+        const ap_xml_elem *child;
+        apr_size_t tsize;
+
         if (!dav_validate_root(doc, "version-control")) {
 	    ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0, r,
 		          "The request body does not contain "
@@ -2762,8 +2764,9 @@ static int dav_method_vsn_control(request_rec *r)
         }
 
         /* get version URI */
-        ap_xml_to_text(r->pool, child, AP_XML_X2T_INNER, NULL, NULL, &target, NULL);
-        if (strlen(target) == 0) {
+        ap_xml_to_text(r->pool, child, AP_XML_X2T_INNER, NULL, NULL,
+                       &target, &tsize);
+        if (tsize == 0) {
 	    ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0, r,
 		          "An \"href\" element does not contain a URI.");
 	    return HTTP_BAD_REQUEST;
@@ -3146,7 +3149,7 @@ static int dav_method_set_target(request_rec *r)
     ap_xml_elem *child;
     int depth;
     int result;
-    int tsize;
+    apr_size_t tsize;
     dav_error *err;
     dav_set_target_walker_ctx ctx = { { 0 } };
     dav_response *multi_status;
@@ -3206,7 +3209,8 @@ static int dav_method_set_target(request_rec *r)
     }
 
     /* get the target value (a label or a version URI */
-    ap_xml_to_text(r->pool, child, AP_XML_X2T_INNER, NULL, NULL, &ctx.target, &tsize);
+    ap_xml_to_text(r->pool, child, AP_XML_X2T_INNER, NULL, NULL,
+                   &ctx.target, &tsize);
     if (tsize == 0) {
 	ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0, r,
 		      "A \"label-name\" or \"href\" element does not contain "
@@ -3326,7 +3330,7 @@ static int dav_method_label(request_rec *r)
     ap_xml_elem *child;
     int depth;
     int result;
-    int tsize;
+    apr_size_t tsize;
     dav_error *err;
     dav_label_walker_ctx ctx = { { 0 } };
     dav_response *multi_status;
@@ -3389,7 +3393,8 @@ static int dav_method_label(request_rec *r)
 	return HTTP_BAD_REQUEST;
     }
 
-    ap_xml_to_text(r->pool, child, AP_XML_X2T_INNER, NULL, NULL, &ctx.label, &tsize);
+    ap_xml_to_text(r->pool, child, AP_XML_X2T_INNER, NULL, NULL,
+                   &ctx.label, &tsize);
     if (tsize == 0) {
 	ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0, r,
 		      "A \"label-name\" element does not contain "
