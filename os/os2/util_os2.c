@@ -98,7 +98,7 @@ char *ap_os_error_message(int err)
 
 
 
-int (*os2_select)( int *, int, int, int, long ) = NULL;
+static int (*os2_select)( int *, int, int, int, long ) = NULL;
 static HMODULE hSO32DLL;
 
 int ap_select(int nfds, fd_set *readfds, fd_set *writefds, fd_set *exceptfds, struct timeval *timeout)
