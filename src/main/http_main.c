@@ -5285,7 +5285,9 @@ int REALMAIN(int argc, char *argv[])
     }
 
     server_conf = ap_read_config(pconf, ptrans, ap_server_confname);
-    ap_log_pid(pconf, ap_pid_fname);
+    if (!child) {
+	ap_log_pid(pconf, ap_pid_fname);
+    }
     ap_init_modules(pconf, server_conf);
     ap_suexec_enabled = init_suexec();
     ap_set_version();
