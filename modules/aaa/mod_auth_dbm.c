@@ -133,7 +133,7 @@ static const char *set_dbm_slot(cmd_parms *cmd, void *offset,
                                 const char *f, const char *t)
 {
     if (!t || strcmp(t, "dbm"))
-	return DECLINE_CMD;
+        return DECLINE_CMD;
 
     return ap_set_file_slot(cmd, offset, f);
 }
@@ -217,9 +217,9 @@ static char *get_dbm_pw(request_rec *r,
 #endif
 
     if (d.dptr) {
-	pw = apr_palloc(r->pool, d.dsize + 1);
-	strncpy(pw, d.dptr, d.dsize);
-	pw[d.dsize] = '\0';	/* Terminate the string */
+        pw = apr_palloc(r->pool, d.dsize + 1);
+        strncpy(pw, d.dptr, d.dsize);
+        pw[d.dsize] = '\0'; /* Terminate the string */
     }
 
     dbm_close(f);
@@ -244,13 +244,13 @@ static char *get_dbm_grp(request_rec *r, char *user, char *auth_dbmgrpfile, char
     char *grp_colon2;
 
     if (grp_data == NULL)
-	return NULL;
+        return NULL;
 
     if ((grp_colon = strchr(grp_data, ':')) != NULL) {
-	grp_colon2 = strchr(++grp_colon, ':');
-	if (grp_colon2)
-	    *grp_colon2 = '\0';
-	return grp_colon;
+        grp_colon2 = strchr(++grp_colon, ':');
+        if (grp_colon2)
+            *grp_colon2 = '\0';
+        return grp_colon;
     }
     return grp_data;
 }
@@ -265,32 +265,32 @@ static int dbm_authenticate_basic_user(request_rec *r)
     int res;
 
     if ((res = ap_get_basic_auth_pw(r, &sent_pw)))
-	return res;
+        return res;
 
     if (!conf->auth_dbmpwfile)
-	return DECLINED;
+        return DECLINED;
 
     if (!(real_pw = get_dbm_pw(r, r->user, conf->auth_dbmpwfile,conf->auth_dbmtype))) {
-	if (!(conf->auth_dbmauthoritative))
-	    return DECLINED;
-	ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
-		    "DBM user %s not found: %s", r->user, r->filename);
-	ap_note_basic_auth_failure(r);
-	return HTTP_UNAUTHORIZED;
+        if (!(conf->auth_dbmauthoritative))
+            return DECLINED;
+        ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
+                    "DBM user %s not found: %s", r->user, r->filename);
+        ap_note_basic_auth_failure(r);
+        return HTTP_UNAUTHORIZED;
     }
     /* Password is up to first : if exists */
     colon_pw = strchr(real_pw, ':');
     if (colon_pw) {
-	*colon_pw = '\0';
+        *colon_pw = '\0';
     }
     invalid_pw = apr_password_validate(sent_pw, real_pw);
     if (invalid_pw != APR_SUCCESS) {
-	ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
-		      "DBM user %s: authentication failure for \"%s\": "
+        ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
+                      "DBM user %s: authentication failure for \"%s\": "
                       "Password Mismatch",
-		      r->user, r->uri);
-	ap_note_basic_auth_failure(r);
-	return HTTP_UNAUTHORIZED;
+                      r->user, r->uri);
+        ap_note_basic_auth_failure(r);
+        return HTTP_UNAUTHORIZED;
     }
     return OK;
 }
@@ -312,47 +312,47 @@ static int dbm_check_auth(request_rec *r)
     char *w;
 
     if (!conf->auth_dbmgrpfile)
-	return DECLINED;
+        return DECLINED;
     if (!reqs_arr)
-	return DECLINED;
+        return DECLINED;
 
     for (x = 0; x < reqs_arr->nelts; x++) {
 
-	if (!(reqs[x].method_mask & (AP_METHOD_BIT << m)))
-	    continue;
+        if (!(reqs[x].method_mask & (AP_METHOD_BIT << m)))
+            continue;
 
-	t = reqs[x].requirement;
-	w = ap_getword_white(r->pool, &t);
+        t = reqs[x].requirement;
+        w = ap_getword_white(r->pool, &t);
 
-	if (!strcmp(w, "group") && conf->auth_dbmgrpfile) {
-	    const char *orig_groups, *groups;
-	    char *v;
+        if (!strcmp(w, "group") && conf->auth_dbmgrpfile) {
+            const char *orig_groups, *groups;
+            char *v;
 
         if (!(groups = get_dbm_grp(r, user, conf->auth_dbmgrpfile,conf->auth_dbmtype))) {
-		if (!(conf->auth_dbmauthoritative))
-		    return DECLINED;
-		ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
-			    "user %s not in DBM group file %s: %s",
-			    user, conf->auth_dbmgrpfile, r->filename);
-		ap_note_basic_auth_failure(r);
-		return HTTP_UNAUTHORIZED;
-	    }
-	    orig_groups = groups;
-	    while (t[0]) {
-		w = ap_getword_white(r->pool, &t);
-		groups = orig_groups;
-		while (groups[0]) {
-		    v = ap_getword(r->pool, &groups, ',');
-		    if (!strcmp(v, w))
-			return OK;
-		}
-	    }
-	    ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
-			"user %s not in right group: %s",
-			user, r->filename);
-	    ap_note_basic_auth_failure(r);
-	    return HTTP_UNAUTHORIZED;
-	}
+                if (!(conf->auth_dbmauthoritative))
+                    return DECLINED;
+                ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
+                            "user %s not in DBM group file %s: %s",
+                            user, conf->auth_dbmgrpfile, r->filename);
+                ap_note_basic_auth_failure(r);
+                return HTTP_UNAUTHORIZED;
+            }
+            orig_groups = groups;
+            while (t[0]) {
+                w = ap_getword_white(r->pool, &t);
+                groups = orig_groups;
+                while (groups[0]) {
+                    v = ap_getword(r->pool, &groups, ',');
+                    if (!strcmp(v, w))
+                        return OK;
+                }
+            }
+            ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
+                        "user %s not in right group: %s",
+                        user, r->filename);
+            ap_note_basic_auth_failure(r);
+            return HTTP_UNAUTHORIZED;
+        }
     }
 
     return DECLINED;
@@ -368,10 +368,10 @@ static void register_hooks(apr_pool_t *p)
 module AP_MODULE_DECLARE_DATA auth_dbm_module =
 {
     STANDARD20_MODULE_STUFF,
-    create_dbm_auth_dir_config,	/* dir config creater */
-    NULL,			/* dir merger --- default is to override */
-    NULL,			/* server config */
-    NULL,			/* merge server config */
-    dbm_auth_cmds,		/* command apr_table_t */
+    create_dbm_auth_dir_config, /* dir config creater */
+    NULL,                       /* dir merger --- default is to override */
+    NULL,                       /* server config */
+    NULL,                       /* merge server config */
+    dbm_auth_cmds,              /* command apr_table_t */
     register_hooks              /* register hooks */
 };
