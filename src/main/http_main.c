@@ -1303,6 +1303,7 @@ void set_signals()
 {
 #ifndef NO_USE_SIGACTION
     struct sigaction sa;
+    memset(&sa,0,sizeof sa);
 
     if (!one_process) {
 	sa.sa_handler = (void (*)())seg_fault;
@@ -1314,7 +1315,6 @@ void set_signals()
     }
     /* USE WITH EXTREME CAUTION. Graceful restarts are known to break */
     /*  problems will be dealt with in a future release */
-    memset(&sa,0,sizeof sa);
     sa.sa_handler=(void (*)())sig_term;
     if(sigaction(SIGTERM,&sa,NULL) < 0)
 	log_unixerr("sigaction(SIGTERM)", NULL, NULL, server_conf);
