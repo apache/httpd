@@ -449,22 +449,22 @@ void *create_msql_auth_dir_config (pool *p, char *d)
     return sec;
 }
 
-char *set_passwd_flag (cmd_parms *cmd, msql_auth_config_rec *sec, int arg) {
+const char *set_passwd_flag (cmd_parms *cmd, msql_auth_config_rec *sec, int arg) {
     sec->auth_msql_nopasswd=arg;
     return NULL;
 }
 
-char *set_authoritative_flag (cmd_parms *cmd, msql_auth_config_rec *sec, int arg) {
+const char *set_authoritative_flag (cmd_parms *cmd, msql_auth_config_rec *sec, int arg) {
     sec->auth_msql_authoritative=arg;
     return NULL;
 }
 
-char *set_crypted_password_flag (cmd_parms *cmd, msql_auth_config_rec *sec , int arg) {
+const char *set_crypted_password_flag (cmd_parms *cmd, msql_auth_config_rec *sec , int arg) {
     sec->auth_msql_encrypted = arg;
     return NULL;
 }
 
-char *msql_set_string_slot (cmd_parms *cmd, char *struct_ptr, char *arg) {
+const char *msql_set_string_slot (cmd_parms *cmd, char *struct_ptr, char *arg) {
     int offset = (int)cmd->info;
     *(char **)(struct_ptr + offset) = pstrdup (cmd->pool, arg);
     return NULL;
@@ -865,7 +865,7 @@ int msql_check_auth (request_rec *r) {
     require_line *reqs = reqs_arr ? (require_line *)reqs_arr->elts : NULL;
 
     register int x;
-    char *t, *w;
+    const char *t, *w;
     msql_errstr[0]='\0';
 
     /* If we are not configured, ignore */
