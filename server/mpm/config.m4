@@ -40,24 +40,6 @@ MPM_LIB=$MPM_DIR/lib${MPM_NAME}.la
 APACHE_SUBST(MPM_NAME)
 MODLIST="$MODLIST mpm_${MPM_NAME}"
 
-dnl All the unix MPMs use shared memory; save a little duplication
-AC_DEFUN(APACHE_MPM_CHECK_SHMEM, [
-    AC_CHECK_FUNCS(shmget mmap)
-    
-    AC_MSG_CHECKING(which shared memory mechanism to use)
-    if test "$ac_cv_func_shmget" = "yes" ; then
-        AC_DEFINE(USE_SHMGET_SCOREBOARD,,
-            [Define if MPMs should use shmget to implement their shared memory])
-        AC_MSG_RESULT(shmget)
-    elif test "$ac_cv_func_mmap" = "yes" ; then
-        AC_DEFINE(USE_MMAP_SCOREBOARD,,
-            [Define if MPMs should use mmap to implement their shared memory])
-        AC_MSG_RESULT(mmap)
-    else
-        AC_MSG_ERROR(No known shared memory system)
-    fi
-])
-
 dnl Check for pthreads and attempt to support it
 AC_DEFUN(APACHE_MPM_PTHREAD, [
   if test "$pthreads_working" != "yes"; then

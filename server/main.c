@@ -93,17 +93,11 @@ static void show_compile_settings(void)
 #ifdef HAVE_SHMGET
     printf(" -D HAVE_SHMGET\n");
 #endif
-#ifdef USE_MMAP_SCOREBOARD
-    printf(" -D USE_MMAP_SCOREBOARD\n");
+#ifdef USE_FILE_BASED_SCOREBOARD
+    printf(" -D USE_FILE_BASED_SCOREBOARD\n");
 #endif
-#ifdef USE_SHMGET_SCOREBOARD
-    printf(" -D USE_SHMGET_SCOREBOARD\n");
-#endif
-#ifdef USE_OS2_SCOREBOARD
-    printf(" -D USE_OS2_SCOREBOARD\n");
-#endif
-#ifdef USE_POSIX_SCOREBOARD
-    printf(" -D USE_POSIX_SCOREBOARD\n");
+#ifdef USE_MEM_BASED_SCOREBOARD
+    printf(" -D USE_MEM_BASED_SCOREBOARD\n");
 #endif
 #ifdef USE_MMAP_FILES
     printf(" -D USE_MMAP_FILES\n");

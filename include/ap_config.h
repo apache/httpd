@@ -249,6 +249,12 @@ extern int strncasecmp(const char *, const char *, unsigned);
 #undef USE_MMAP_FILES
 #endif
 
+#if APR_FILE_BASED_SHM
+#define USE_FILE_BASED_SCOREBOARD
+#else
+#define USE_MEM_BASED_SCOREBOARD
+#endif
+
 #if defined(CHARSET_EBCDIC) && !defined(APACHE_XLATE)
 #define APACHE_XLATE
 #endif
