@@ -220,6 +220,11 @@ int set_keepalive(request_rec *r)
 	(!find_token(r->pool, conn, "close")) &&
 	((ka_sent = find_token(r->pool, conn, "keep-alive")) ||
 	 r->proto_num >= 1001)) {
+	/*
+	 * The (r->chunked = 1) in the above expression is a side-effect
+	 * that sets the output to chunked encoding if it is not already
+	 * length-delimited.  It is not a bug, though it is annoying.
+	 */
 	char header[26];
 	int left = r->server->keep_alive - r->connection->keepalives;
 	
