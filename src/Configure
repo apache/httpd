@@ -590,20 +590,27 @@ echo "MOD_CFLAGS=\$(INCLUDES2) \$(AUX_CFLAGS)">> modules/Makefile
 
 awk >> modules/Makefile < $tmpfile '\
    BEGIN {printf "MODULES="} \
-   ($3 ~ /modules\//) {split ($3, pp, "/"); printf "%s ", pp[2]} \
+   ($3 ~ /modules\//) {split ($3, pp, "/"); printf "%s.build ", pp[2]} \
    END {printf "\n"}'
+
+awk >> modules/Makefile < $tmpfile '\
+   BEGIN {printf "CLEANERS="} \
+   ($3 ~ /modules\//) {split ($3, pp, "/"); printf "%s.clean ", pp[2]} \
+   END {printf "\n"}'
+
 cat << EOF >> modules/Makefile
 
-default:
-	(for dir in \$(MODULES); do \\
-		cd \$\$dir; \\
-		\$(MAKE) CC=\$(CC) AUX_CFLAGS='\$(MOD_CFLAGS)' RANLIB='\$(RANLIB)'; \\
-		cd ..; \\
-	done)
+default: \$(MODULES)
+	@echo "done building module subdirectories"
 
-clean:	
-	(for dir in \$(MODULES); do \\
-		cd \$\$dir; \$(MAKE) clean; \\
-		cd ..; \\
-	done)
+clean: \$(CLEANERS)
+	@echo "done cleaning module subdirectories"
+
+.SUFFIXES: .build .clean
+
+\$(MODULES):
+	(cd \$*; \$(MAKE) CC=\$(CC) AUX_CFLAGS='\$(MOD_CFLAGS)' RANLIB='\$(RANLIB)')
+
+\$(CLEANERS):
+	(cd \$*; \$(MAKE) clean)
 EOF
