@@ -58,39 +58,55 @@
 #include "ap_mmn.h"		/* MODULE_MAGIC_NUMBER_ */
 #include "apr_lib.h"		/* apr_isfoo() macros */
 
-/* Implemented flags for dynamic library bindings.
- *
- *   API_EXPORT(type)        for functions bound in the apache core, except:
- *   API_EXPORT_NONSTD(type) for functions with var args (only as ...)
- *   API_VAR_EXPORT          for data residing in the core
- *   MODULE_VAR_EXPORT       is a hack that will need to go away
+/* Create a set of AP_DECLARE(type), AP_DECLARE_NONSTD(type) and 
+ * AP_DECLARE_DATA with appropriate export and import tags for the platform
  */
-
 #if !defined(WIN32)
-#define API_EXPORT(type)        type
-#define API_EXPORT_NONSTD(type) type
-#define API_VAR_EXPORT
-#define MODULE_EXPORT(type)     type
-#define MODULE_VAR_EXPORT
-#elif defined(API_STATIC)
-#define API_EXPORT(type)        type __stdcall
-#define API_EXPORT_NONSTD(type) type
-#define API_VAR_EXPORT
-#define MODULE_EXPORT(type)     type __stdcall
-#define MODULE_VAR_EXPORT
-#elif defined(API_EXPORT_SYMBOLS)
-#define API_EXPORT(type)        __declspec(dllexport) type __stdcall
-#define API_EXPORT_NONSTD(type) __declspec(dllexport) type
-#define API_VAR_EXPORT		__declspec(dllexport)
-#define MODULE_EXPORT(type)     __declspec(dllexport) type __stdcall
-#define MODULE_VAR_EXPORT       __declspec(dllexport)
+#define AP_DECLARE(type)            type
+#define AP_DECLARE_NONSTD(type)     type
+#define AP_DECLARE_DATA
+#elif defined(AP_DECLARE_STATIC)
+#define AP_DECLARE(type)            type __stdcall
+#define AP_DECLARE_NONSTD(type)     type
+#define AP_DECLARE_DATA
+#elif defined(AP_DECLARE_EXPORT)
+#define AP_DECLARE(type)            __declspec(dllexport) type __stdcall
+#define AP_DECLARE_NONSTD(type)     __declspec(dllexport) type
+#define AP_DECLARE_DATA             __declspec(dllexport)
 #else
-#define API_EXPORT(type)        __declspec(dllimport) type __stdcall
-#define API_EXPORT_NONSTD(type) __declspec(dllimport) type
-#define API_VAR_EXPORT		__declspec(dllimport)
-#define MODULE_EXPORT(type)     __declspec(dllexport) type __stdcall
-#define MODULE_VAR_EXPORT       __declspec(dllexport)
+#define AP_DECLARE(type)            __declspec(dllimport) type __stdcall
+#define AP_DECLARE_NONSTD(type)     __declspec(dllimport) type
+#define AP_DECLARE_DATA             __declspec(dllimport)
 #endif
+
+/* setup compat like aliases for authors
+ */
+#define API_EXPORT(t)        AP_DECLARE(t)
+#define API_EXPORT_NONSTD(t) AP_DECLARE_NONSTD(t)
+#define API_VAR_EXPORT       AP_DECLARE_DATA
+
+/* Play a little game.  Unless MODULE_DECLARE_STATIC 
+ * is defined, MODULE_DECLARE_* macros are always exported
+ */
+/* Create a set of MODULE_DECLARE(type), MODULE_DECLARE_NONSTD(type) and 
+ * MODULE_DECLARE_DATA with appropriate export and import tags for the platform
+ */
+#if !defined(WIN32)
+#define MODULE_DECLARE(type)            type
+#define MODULE_DECLARE_NONSTD(type)     type
+#define MODULE_DECLARE_DATA
+#elif defined(MODULE_DECLARE_STATIC)
+#define MODULE_DECLARE(type)            type __stdcall
+#define MODULE_DECLARE_NONSTD(type)     type
+#define MODULE_DECLARE_DATA
+#else
+#define MODULE_DECLARE_EXPORT
+#define MODULE_DECLARE(type)            __declspec(dllexport) type __stdcall
+#define MODULE_DECLARE_NONSTD(type)     __declspec(dllexport) type
+#define MODULE_DECLARE_DATA             __declspec(dllexport)
+#endif
+
+#define MODULE_VAR_EXPORT    MODULE_DECLARE_DATA
 
 #ifdef WIN32
 #include "os.h"
