@@ -129,13 +129,12 @@ inline int ap_os_is_path_absolute(const char *file)
 {
     char *s = strchr (file, ':');
     
-    if (s)
-    {
-        if (strncmp(s, "://", 3)) 
+    if (s) {
+        if (strncmp(s, "://", 3) != 0)
+	    /* XXX: we assume that everything before the : is letters */
             return 1;
     }
-    else
-    {
+    else {
         if (file[0] == '/')
             return 1;
     }
