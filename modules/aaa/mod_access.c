@@ -129,7 +129,7 @@ static void *create_access_dir_config(ap_pool_t *p, char *dummy)
     return (void *) conf;
 }
 
-static const char *order(cmd_parms *cmd, void *dv, char *arg)
+static const char *order(cmd_parms *cmd, void *dv, const char *arg)
 {
     access_dir_conf *d = (access_dir_conf *) dv;
     int i, o;
@@ -157,11 +157,13 @@ static int is_ip(const char *host)
     return (*host == '\0');
 }
 
-static const char *allow_cmd(cmd_parms *cmd, void *dv, char *from, char *where)
+static const char *allow_cmd(cmd_parms *cmd, void *dv, const char *from, 
+                             const char *where_c)
 {
     access_dir_conf *d = (access_dir_conf *) dv;
     allowdeny *a;
     char *s;
+    char *where = ap_pstrdup(cmd->pool, where_c);
 
     if (strcasecmp(from, "from"))
 	return "allow and deny must be followed by 'from'";
@@ -273,12 +275,12 @@ static char its_an_allow;
 
 static const command_rec access_cmds[] =
 {
-    {"order", order, NULL, OR_LIMIT, TAKE1,
-     "'allow,deny', 'deny,allow', or 'mutual-failure'"},
-    {"allow", allow_cmd, &its_an_allow, OR_LIMIT, ITERATE2,
-     "'from' followed by hostnames or IP-address wildcards"},
-    {"deny", allow_cmd, NULL, OR_LIMIT, ITERATE2,
-     "'from' followed by hostnames or IP-address wildcards"},
+    AP_INIT_TAKE1("order", order, NULL, OR_LIMIT,
+                  "'allow,deny', 'deny,allow', or 'mutual-failure'"),
+    AP_INIT_ITERATE2("allow", allow_cmd, &its_an_allow, OR_LIMIT,
+                     "'from' followed by hostnames or IP-address wildcards"),
+    AP_INIT_ITERATE2("deny", allow_cmd, NULL, OR_LIMIT,
+                     "'from' followed by hostnames or IP-address wildcards"),
     {NULL}
 };
 
