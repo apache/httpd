@@ -119,7 +119,7 @@ Setting the AuthDBMAuthoritative directive explicitly to <b>'off'</b> allows for
 So if a userID appears in the database of more than one module; or if a valid require directive applies to more than one module; then the first module will verify the credentials; and no access is passed on; regardless of the AuthAuthoritative setting.
 <p>
 A common use for this is in conjection with one of the basic auth modules; such
-as <a href="mod_auth.c"><code>mod_auth.c</code></a>. Whereas this DBM module supplies the bulk of the user credential checking; a few (administrator) related accesses fall through to a lower level with a well protected .htpasswd file.
+as <a href="mod_auth.html"><code>mod_auth.c</code></a>. Whereas this DBM module supplies the bulk of the user credential checking; a few (administrator) related accesses fall through to a lower level with a well protected .htpasswd file.
 <p>
 <b>Default:</b> By default; control is not passed on; and an unkown userID or rule will result in an Authorization Required reply. Not setting it thus keeps the system secure; and forces an NSCA compliant behaviour.
 <p>

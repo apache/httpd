@@ -85,7 +85,7 @@ See also <A HREF="core.html#authname">AuthName</A>,
 Setting the AuthAuthoritative directive explicitly to <b>'off'</b>
 allows for both authentification and authorization to be passed on to
 lower level modules (as defined in the <code>Configuration</code> and
-<code>modules.c</code> file if there is <b>no userID</b> or
+<code>modules.c</code> files) if there is <b>no userID</b> or
 <b>rule</b> matching the supplied userID. If there is a userID and/or
 rule specified; the usual password and access checks will be applied
 and a failure will give an Authorization Required reply.
