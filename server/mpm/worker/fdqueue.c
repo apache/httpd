@@ -58,6 +58,114 @@
 
 #include "fdqueue.h"
 
+struct fd_queue_info_t {
+    int idlers;
+    apr_thread_mutex_t *idlers_mutex;
+    apr_thread_cond_t *wait_for_idler;
+    int terminated;
+};
+
+static apr_status_t queue_info_cleanup(void *data_)
+{
+    fd_queue_info_t *qi = data_;
+    apr_thread_cond_destroy(qi->wait_for_idler);
+    apr_thread_mutex_destroy(qi->idlers_mutex);
+    return APR_SUCCESS;
+}
+
+apr_status_t ap_queue_info_create(fd_queue_info_t **queue_info,
+                                  apr_pool_t *pool)
+{
+    apr_status_t rv;
+    fd_queue_info_t *qi;
+
+    qi = apr_palloc(pool, sizeof(*qi));
+    memset(qi, 0, sizeof(*qi));
+
+    rv = apr_thread_mutex_create(&qi->idlers_mutex, APR_THREAD_MUTEX_DEFAULT,
+                                 pool);
+    if (rv != APR_SUCCESS) {
+        return rv;
+    }
+    rv = apr_thread_cond_create(&qi->wait_for_idler, pool);
+    if (rv != APR_SUCCESS) {
+        return rv;
+    }
+    apr_pool_cleanup_register(pool, qi, queue_info_cleanup,
+                              apr_pool_cleanup_null);
+
+    *queue_info = qi;
+
+    return APR_SUCCESS;
+}
+
+apr_status_t ap_queue_info_set_idle(fd_queue_info_t *queue_info)
+{
+    apr_status_t rv;
+    rv = apr_thread_mutex_lock(queue_info->idlers_mutex);
+    if (rv != APR_SUCCESS) {
+        return rv;
+    }
+    AP_DEBUG_ASSERT(queue_info->idlers >= 0);
+    if (queue_info->idlers++ == 0) {
+        /* Only signal if we had no idlers before. */
+        apr_thread_cond_signal(queue_info->wait_for_idler);
+    }
+    rv = apr_thread_mutex_unlock(queue_info->idlers_mutex);
+    if (rv != APR_SUCCESS) {
+        return rv;
+    }
+    return APR_SUCCESS;
+}
+
+apr_status_t ap_queue_info_wait_for_idler(fd_queue_info_t *queue_info)
+{
+    apr_status_t rv;
+    rv = apr_thread_mutex_lock(queue_info->idlers_mutex);
+    if (rv != APR_SUCCESS) {
+        return rv;
+    }
+    AP_DEBUG_ASSERT(queue_info->idlers >= 0);
+    while ((queue_info->idlers == 0) && (!queue_info->terminated)) {
+        rv = apr_thread_cond_wait(queue_info->wait_for_idler,
+                                  queue_info->idlers_mutex);
+        if (rv != APR_SUCCESS) {
+            rv = apr_thread_mutex_unlock(queue_info->idlers_mutex);
+            if (rv != APR_SUCCESS) {
+                return rv;
+            }
+            return rv;
+        }
+    }
+    queue_info->idlers--; /* Oh, and idler? Let's take 'em! */
+    rv = apr_thread_mutex_unlock(queue_info->idlers_mutex);
+    if (rv != APR_SUCCESS) {
+        return rv;
+    }
+    else if (queue_info->terminated) {
+        return APR_EOF;
+    }
+    else {
+        return APR_SUCCESS;
+    }
+}
+
+apr_status_t ap_queue_info_term(fd_queue_info_t *queue_info)
+{
+    apr_status_t rv;
+    rv = apr_thread_mutex_lock(queue_info->idlers_mutex);
+    if (rv != APR_SUCCESS) {
+        return rv;
+    }
+    queue_info->terminated = 1;
+    apr_thread_cond_broadcast(queue_info->wait_for_idler);
+    rv = apr_thread_mutex_unlock(queue_info->idlers_mutex);
+    if (rv != APR_SUCCESS) {
+        return rv;
+    }
+    return APR_SUCCESS;
+}
+
 /**
  * Detects when the fd_queue_t is full. This utility function is expected
  * to be called from within critical sections, and is not threadsafe.

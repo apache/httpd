@@ -173,6 +173,7 @@ static int requests_this_child;
 static int num_listensocks = 0;
 static int resource_shortage = 0;
 static fd_queue_t *worker_queue;
+static fd_queue_info_t *worker_queue_info;
 
 /* The structure used to pass unique initialization info to each thread */
 typedef struct {
@@ -299,6 +300,7 @@ static void signal_threads(int mode)
     if (mode == ST_UNGRACEFUL) {
         workers_may_exit = 1;
         ap_queue_interrupt_all(worker_queue);
+        ap_queue_info_term(worker_queue_info);
     }
 }
 
@@ -693,6 +695,20 @@ static void *listener_thread(apr_thread_t *thd, void * dummy)
         }
         if (listener_may_exit) break;
 
+        rv = ap_queue_info_wait_for_idler(worker_queue_info);
+        if (APR_STATUS_IS_EOF(rv)) {
+            break; /* we've been signaled to die now */
+        }
+        else if (rv != APR_SUCCESS) {
+            ap_log_error(APLOG_MARK, APLOG_EMERG, rv, ap_server_conf,
+                         "apr_queue_info_wait failed. Attempting to shutdown "
+                         "process gracefully.");
+            signal_threads(ST_GRACEFUL);
+            break;
+        }
+        /* We've already decremented the idle worker count inside
+         * ap_queue_info_wait_for_idler. */
+
         if ((rv = SAFE_ACCEPT(apr_proc_mutex_lock(accept_mutex)))
             != APR_SUCCESS) {
             int level = APLOG_EMERG;
@@ -851,6 +867,15 @@ static void * APR_THREAD_FUNC worker_thread(apr_thread_t *thd, void * dummy)
     bucket_alloc = apr_bucket_alloc_create(apr_thread_pool_get(thd));
 
     while (!workers_may_exit) {
+        rv = ap_queue_info_set_idle(worker_queue_info);
+        if (rv != APR_SUCCESS) {
+            ap_log_error(APLOG_MARK, APLOG_EMERG, rv, ap_server_conf,
+                         "ap_queue_info_set_idle failed. Attempting to "
+                         "shutdown process gracefully.");
+            signal_threads(ST_GRACEFUL);
+            break;
+        }
+
         ap_update_child_status_from_indexes(process_slot, thread_slot, SERVER_READY, NULL);
         rv = ap_queue_pop(worker_queue, &csd, &ptrans, last_ptrans);
         last_ptrans = NULL;
@@ -958,6 +983,13 @@ static void * APR_THREAD_FUNC start_threads(apr_thread_t *thd, void *dummy)
     if (rv != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_ALERT, rv, ap_server_conf,
                      "ap_queue_init() failed");
+        clean_child_exit(APEXIT_CHILDFATAL);
+    }
+
+    rv = ap_queue_info_create(&worker_queue_info, pchild);
+    if (rv != APR_SUCCESS) {
+        ap_log_error(APLOG_MARK, APLOG_ALERT, rv, ap_server_conf,
+                     "ap_queue_info_create() failed");
         clean_child_exit(APEXIT_CHILDFATAL);
     }
 

@@ -71,6 +71,14 @@
 #endif
 #include <apr_errno.h>
 
+typedef struct fd_queue_info_t fd_queue_info_t;
+
+apr_status_t ap_queue_info_create(fd_queue_info_t **queue_info,
+                                  apr_pool_t *pool);
+apr_status_t ap_queue_info_set_idle(fd_queue_info_t *queue_info);
+apr_status_t ap_queue_info_wait_for_idler(fd_queue_info_t *queue_info);
+apr_status_t ap_queue_info_term(fd_queue_info_t *queue_info);
+
 struct fd_queue_elem_t {
     apr_socket_t      *sd;
     apr_pool_t        *p;
