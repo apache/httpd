@@ -4,6 +4,10 @@ Changes with Apache 1.3a2
      a vhost, put the main server's first and the vhost's second.  Otherwise
      the vhost can't override the main server.  [Dean Gaudet] PR#717
 
+  *) The <Directory> code would merge and re-merge the same section after
+     a match was found, possibly causing problems with some modules.
+     [Dean Gaudet]
+
   *) ip-based vhosts are stored and queried using a hashing function, which
      has been shown to improve performance on servers with many ip-vhosts.
      Some other changes had to be made to accomodate this:
