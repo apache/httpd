@@ -108,6 +108,9 @@ array_header *requires (request_rec *);
 
 #ifdef CORE_PRIVATE
 
+#ifdef NEED_SYS_RESOURCE_H
+ #include <sys/resource.h>
+#endif
 /*
  * Core is also unlike other modules in being implemented in more than
  * one file... so, data structures are declared here, even though most of
@@ -156,10 +159,10 @@ typedef struct {
 #ifdef RLIMIT_CPU
     struct rlimit *limit_cpu;
 #endif
-#if defined(RLIMIT_DATA) || defined(RLIMIT_VMEM)
+#if defined (RLIMIT_DATA) || defined (RLIMIT_VMEM)
     struct rlimit *limit_mem;
 #endif
-#ifdef RLIMIT_NPROC    
+#ifdef RLIMIT_NPROC
     struct rlimit *limit_nproc;
 #endif
 

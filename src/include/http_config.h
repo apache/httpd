@@ -123,6 +123,7 @@ typedef struct {
     char *path;			/* If configuring for a directory,
 				 * pathname of that directory.
 				 */
+    command_rec *cmd;		/* configuration command */
 } cmd_parms;
 
 /* This structure records the existence of handlers in a module... */

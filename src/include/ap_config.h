@@ -217,6 +217,7 @@ typedef int pid_t;
 #define HAVE_SYS_SELECT_H
 #define USE_FCNTL_SERIALIZED_ACCEPT
 #define HAVE_MMAP
+#define NEED_SYS_RESOURCE_H
 #define SecureWare
 
 /* Although SCO 5 defines these in <strings.h> (note the "s") they don't have

@@ -839,119 +839,71 @@ char *set_max_requests (cmd_parms *cmd, void *dummy, char *arg) {
     return NULL;
 }
 
+static void set_rlimit(cmd_parms *cmd, struct rlimit *limit, char *arg)
+{
+    char *str;
+    /* If your platform doesn't define rlim_t then typedef it in conf.h */
+    rlim_t cur = 0;
+    rlim_t max = 0;
+
+    if ((str = getword_conf(cmd->pool, &arg)))
+	if (!strcasecmp(str, "max"))
+	    cur = limit->rlim_max;
+	else
+	    cur = atol(str);
+    else {
+	log_printf(cmd->server, "Invalid parameters for %s", cmd->cmd->name);
+	return;
+    }
+    
+    if ((str = getword_conf(cmd->pool, &arg)))
+	max = atol(str);
+
+    /* if we aren't running as root, cannot increase max */
+    if (geteuid()) {
+	limit->rlim_cur = cur;
+	if (max)
+	    log_printf(cmd->server, "Must be uid 0 to raise maximum %s",
+		      cmd->cmd->name);
+    }
+    else {
+	if (cur)
+	    limit->rlim_cur = cur;
+	if (max)
+	    limit->rlim_max = max;
+    }
+}
+
+static char *no_set_limit (cmd_parms *cmd, core_dir_config *conf, char *arg)
+{
+    log_printf(cmd->server, "%s not supported on this platform",
+	       cmd->cmd->name);
+    return NULL;
+}
+
+#ifdef RLIMIT_CPU
 char *set_limit_cpu (cmd_parms *cmd, core_dir_config *conf, char *arg)
 {
-#ifdef RLIMIT_CPU
-    char *str;
-    quad_t cur = 0;
-    quad_t max = 0;
-
-    if ((str = getword_conf(cmd->pool, &arg)))
-	if (!strcasecmp(str, "max"))
-	    cur = conf->limit_cpu->rlim_max;
-	else
-	    cur = atol(str);
-    else {
-	log_error("Invalid parameters for RLimitCPU", cmd->server);
-	return NULL;
-    }
-    
-    if ((str = getword_conf(cmd->pool, &arg)))
-	max = atol(str);
-
-    /* if we aren't running as root, cannot increase max */
-    if (geteuid()) {
-	conf->limit_cpu->rlim_cur = cur;
-	if (max)
-	    log_error("Must be uid 0 to raise maximum RLIMIT_CPU", cmd->server);
-    }
-    else {
-	if (cur)
-	    conf->limit_cpu->rlim_cur = cur;
-	if (max)
-	    conf->limit_cpu->rlim_max = max;
-    }
-#else
-    log_error("RLimitCPU not supported on this platform", cmd->server);
-#endif
+    set_rlimit(cmd,conf->limit_cpu,arg);
     return NULL;
 }
+#endif
 
+#if defined (RLIMIT_DATA) || defined (RLIMIT_VMEM)
 char *set_limit_mem (cmd_parms *cmd, core_dir_config *conf, char *arg)
 {
-#if defined (RLIMIT_DATA) || defined (RLIMIT_VMEM)
-    char *str;
-    quad_t cur = 0;
-    quad_t max = 0;
-
-    if ((str = getword_conf(cmd->pool, &arg)))
-	if (!strcasecmp(str, "max"))
-	    cur = conf->limit_mem->rlim_max;
-	else
-	    cur = atol(str);
-    else {
-	log_error("Invalid parameters for RLimitMEM", cmd->server);
-	return NULL;
-    }
-    
-    if ((str = getword_conf(cmd->pool, &arg)))
-	max = atol(str);
-
-    /* if we aren't running as root, cannot increase max */
-    if (geteuid()) {
-	conf->limit_mem->rlim_cur = cur;
-	if (max)
-	    log_error("Must be uid 0 to change maximum RLIMIT_MEM", cmd->server);
-    }
-    else {
-	if (cur)
-	    conf->limit_mem->rlim_cur = cur;
-	if (max)
-	    conf->limit_mem->rlim_max = max;
-    }
-#else
-    log_error("RLimitMEM not supported on this platform", cmd->server);
-#endif
+    set_rlimit(cmd,conf->limit_mem,arg);
     return NULL;
 }
+#endif
 
+#ifdef RLIMIT_NPROC
 char *set_limit_nproc (cmd_parms *cmd, core_dir_config *conf, char *arg)
 {
-#ifdef RLIMIT_NPROC
-    char *str;
-    quad_t cur = 0;
-    quad_t max = 0;
-
-    if ((str = getword_conf(cmd->pool, &arg)))
-	if (!strcasecmp(str, "max"))
-	    cur = conf->limit_nproc->rlim_max;
-	else
-	    cur = atol(str);
-    else {
-	log_error("Invalid parameters for RLimitNPROC", cmd->server);
-	return NULL;
-    }
-    
-    if ((str = getword_conf(cmd->pool, &arg)))
-	max = atol(str);
-
-    /* if we aren't running as root, cannot increase max */
-    if (geteuid()) {
-	conf->limit_nproc->rlim_cur = cur;
-	if (max)
-	    log_error("Must be uid 0 to raise maximum RLIMIT_NPROC", cmd->server);
-    }
-    else {
-	if (cur)
-	    conf->limit_nproc->rlim_cur = cur;
-	if (max)
-	    conf->limit_nproc->rlim_max = max;
-    }
-#else
-    log_error("RLimitNPROC not supported on this platform", cmd->server);
-#endif
+    set_rlimit(cmd,conf->limit_nproc,arg);
     return NULL;
 }
+#endif
 
 char *set_bind_address (cmd_parms *cmd, void *dummy, char *arg) {
     bind_address.s_addr = get_virthost_addr (arg, NULL);
@@ -1064,11 +1016,26 @@ command_rec core_cmds[] = {
 { "ServersSafetyLimit", set_server_limit, NULL, RSRC_CONF, TAKE1, NULL },
 { "MaxClients", set_server_limit, NULL, RSRC_CONF, TAKE1, NULL },
 { "MaxRequestsPerChild", set_max_requests, NULL, RSRC_CONF, TAKE1, NULL },
-{ "RLimitCPU", set_limit_cpu, (void*)XtOffsetOf(core_dir_config, limit_cpu),
+{ "RLimitCPU",
+#ifdef RMLIMIT_CPU
+ set_limit_cpu, (void*)XtOffsetOf(core_dir_config, limit_cpu),
+#else
+ no_set_limit, NULL,
+#endif
       OR_ALL, RAW_ARGS, "soft/hard limits for max CPU usage in seconds" },
-{ "RLimitMEM", set_limit_mem, (void*)XtOffsetOf(core_dir_config, limit_mem),
+{ "RLimitMEM",
+#if defined (RLIMIT_DATA) || defined (RLIMIT_VMEM)
+ set_limit_mem, (void*)XtOffsetOf(core_dir_config, limit_mem),
+#else
+ no_set_limit, NULL,
+#endif
       OR_ALL, RAW_ARGS, "soft/hard limits for max memory usage per process" },
-{ "RLimitNPROC", set_limit_nproc, (void*)XtOffsetOf(core_dir_config, limit_nproc),
+{ "RLimitNPROC",
+#ifdef RLIMIT_NPROC
+ set_limit_nproc, (void*)XtOffsetOf(core_dir_config, limit_nproc),
+#else
+ no_set_limit, NULL,
+#endif
       OR_ALL, RAW_ARGS, "soft/hard limits for max number of processes per uid" },
 { "BindAddress", set_bind_address, NULL, RSRC_CONF, TAKE1,
   "'*', a numeric IP address, or the name of a host with a unique IP address"},

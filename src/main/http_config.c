@@ -395,6 +395,7 @@ char *invoke_cmd(command_rec *cmd, cmd_parms *parms, void *mconfig, char *args)
         return pstrcat (parms->pool, cmd->name, " not allowed here", NULL);
     
     parms->info = cmd->cmd_data;
+    parms->cmd = cmd;
     
     switch (cmd->args_how) {
     case RAW_ARGS:
