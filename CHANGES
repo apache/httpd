@@ -1,5 +1,7 @@
 Changes with Apache 2.0.34-dev
 
+  *) Performance improvement for the error logger [Brian Pane]
+
   *) Change configure so that Solaris 8 and above have 
      SINGLE_LISTEN_UNSERIALIZED_ACCEPT defined by default.
      according to sun people solaris 8+ doesn't have a thundering
