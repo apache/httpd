@@ -1827,7 +1827,6 @@ module AP_MODULE_DECLARE_DATA mpm_perchild_module = {
     perchild_create_config,	/* create per-server config structure */
     NULL,			/* merge per-server config structures */
     perchild_cmds,		/* command apr_table_t */
-    NULL,			/* handlers */
     perchild_hooks 		/* register_hooks */
 };
 
