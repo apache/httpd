@@ -1,5 +1,5 @@
 Apache 2.0 STATUS:
-Last modified at [$Date: 1999/11/17 21:39:16 $]
+Last modified at [$Date: 1999/11/19 18:59:48 $]
 
 Release:
 
@@ -59,13 +59,6 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
     * Go throught the Bug DB and research the bugs marked "suspended".  People
       were told these would be considered for inclusion in Apache 2.0, it 
       would be nice to actually do so.
-
-    * Win32: Redirect stderr to the error log. This is tougher than it appears
-      because Apache for Windows now uses native file I/O libraries rather than
-      the CRT library.  No problem redirecting native I/O STDERR to the error log. 
-      However, we need to replace all the fprintf(stderr...) calls with something 
-      that will write to the native stderr handle instead of the CRT stderr handle.
-      Bleh.
 
     * Win32: Migrate the MPM over to use APR thread/process calls. This would eliminate
 	some code in the Win32 branch that essentially duplicates what is in APR.
