@@ -815,7 +815,7 @@ static int include_cgi(char *s, request_rec *r, ap_filter_t *next,
     if ((rr->path_info && rr->path_info[0]) || rr->args) {
         return -1;
     }
-    if (rr->finfo.filetype == 0) {
+    if (rr->finfo.filetype != APR_REG) {
         return -1;
     }
 
