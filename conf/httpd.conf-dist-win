@@ -143,7 +143,7 @@ ThreadsPerChild 50
 
 #
 # Listen: Allows you to bind Apache to specific IP addresses and/or
-# ports, in addition to the default. See also the <VirtualHost>
+# ports, instead of the default. See also the <VirtualHost>
 # directive.
 #
 #Listen 3000
