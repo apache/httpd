@@ -101,9 +101,7 @@ struct buff_struct
     int fd;                /* the file descriptor */
     int fd_in;             /* input file descriptor, if different */
 
-     /* transport handle, can be used to store things such as an RPC binding h\
-\
-andle */
+     /* transport handle, for RPC binding handle or some such */
      void *t_handle;
 
 #ifdef B_SFIO
