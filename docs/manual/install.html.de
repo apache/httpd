@@ -150,7 +150,7 @@
       die auf dem Network Time Protocol (NTP) basieren. Nähere
       Informationen über NTP Software und öffentliche Zeitserver
       finden Sie in der Usenet Newsgroup <a href="news:comp.protocols.time.ntp">comp.protocols.time.ntp</a>
-      und auf der <a href="http://www.eecis.udel.edu/~ntp/">NTP
+      und auf der <a href="http://www.ntp.org">NTP
       Homepage</a>.</dd>
 
       <dt><a href="http://www.perl.org/">Perl 5</a>
