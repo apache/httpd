@@ -112,94 +112,166 @@ allowed_port(proxy_server_conf *conf, int port)
 
 
 int ap_proxy_connect_handler(request_rec *r, char *url,
-			  const char *proxyhost, int proxyport)
+			  const char *proxyname, int proxyport)
 {
-    const char *host;
-    char *p;
-    int port;
+    apr_pool_t *p = r->pool;
     apr_socket_t *sock;
     char buffer[HUGE_STRING_LEN];
-    int nbytes, i;
+    int nbytes, i, err;
 
     apr_socket_t *client_sock = NULL;
     apr_pollfd_t *pollfd;
     apr_int32_t pollcnt;
     apr_int16_t pollevent;
-    
+    apr_sockaddr_t *uri_addr, *connect_addr;
+
+    uri_components uri;
+    const char *connectname;
+    int connectport = 0;
+
     void *sconf = r->server->module_config;
     proxy_server_conf *conf =
     (proxy_server_conf *) ap_get_module_config(sconf, &proxy_module);
-    struct noproxy_entry *npent = (struct noproxy_entry *) conf->noproxies->elts;
 
-    /* Break the URL into host:port pairs */
-    host = url;
-    p = strchr(url, ':');
-    if (p == NULL)
-	port = DEFAULT_HTTPS_PORT;
-    else {
-	port = atoi(p + 1);
-	*p = '\0';
+
+    /*
+     * Step One: Determine Who To Connect To
+     *
+     * Break up the URL to determine the host to connect to
+     */
+
+    /* we break the URL into host, port, uri */
+    if (HTTP_OK != ap_parse_uri_components(p, url, &uri)) {
+	return ap_proxyerror(r, HTTP_BAD_REQUEST,
+			     apr_pstrcat(p, "URI cannot be parsed: ", url, NULL));
     }
 
-/* check if ProxyBlock directive on this host */
-/* XXX FIXME */
-/*    destaddr.s_addr = ap_inet_addr(host); */
-    for (i = 0; i < conf->noproxies->nelts; i++) {
-	if ((npent[i].name != NULL && ap_strstr_c(host, npent[i].name) != NULL)
-/*	    || destaddr.s_addr == npent[i].addr.s_addr */
-	    || npent[i].name[0] == '*')
-	    return ap_proxyerror(r, HTTP_FORBIDDEN,
-		 "Connect to remote machine blocked");
+    ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r->server,
+		 "proxy: CONNECT connecting %s to %s:%d", url, uri.hostname, uri.port);
+
+    /* do a DNS lookup for the destination host */
+    err = apr_sockaddr_info_get(&uri_addr, uri.hostname, APR_UNSPEC, uri.port, 0, p);
+
+    /* are we connecting directly, or via a proxy? */
+    if (proxyname) {
+	connectname = proxyname;
+	connectport = proxyport;
+        ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, NULL,
+            "CONNECT to remote proxy %s on port %d", proxyname, proxyport);
+        err = apr_sockaddr_info_get(&connect_addr, proxyname, APR_UNSPEC, proxyport, 0, p);
+    }
+    else {
+	connectname = uri.hostname;
+	connectport = uri.port;
+	connect_addr = uri_addr;
+        ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, NULL,
+            "CONNECT to %s on port %d", connectname, connectport);
+    }
+
+    /* check if ProxyBlock directive on this host */
+    if (OK != ap_proxy_checkproxyblock(r, conf, uri_addr)) {
+	return ap_proxyerror(r, HTTP_FORBIDDEN,
+			     "Connect to remote machine blocked");
     }
 
     /* Check if it is an allowed port */
     if (conf->allowed_connect_ports->nelts == 0) {
 	/* Default setting if not overridden by AllowCONNECT */
-	switch (port) {
+	switch (uri.port) {
 	    case DEFAULT_HTTPS_PORT:
 	    case DEFAULT_SNEWS_PORT:
 		break;
 	    default:
 		return HTTP_FORBIDDEN;
 	}
-    } else if(!allowed_port(conf, port))
+    } else if(!allowed_port(conf, uri.port))
 	return HTTP_FORBIDDEN;
 
-    if (proxyhost) {
-        ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, NULL,
-            "CONNECT to remote proxy %s on port %d", proxyhost, proxyport);
-    }
-    else {
-        ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, NULL,
-            "CONNECT to %s on port %d", host, port);
+
+    /*
+     * Step Two: Make the Connection
+     *
+     * We have determined who to connect to. Now make the connection.
+     */
+
+    /* get all the possible IP addresses for the destname and loop through them
+     * until we get a successful connection
+     */
+    if (APR_SUCCESS != err) {
+	return ap_proxyerror(r, HTTP_BAD_GATEWAY, apr_pstrcat(p,
+                             "DNS lookup failure for: ",
+                             connectname, NULL));
     }
 
+    /* create a new socket */
     if ((apr_socket_create(&sock, APR_INET, SOCK_STREAM, r->pool)) != APR_SUCCESS) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
             "proxy: error creating socket");
         return HTTP_INTERNAL_SERVER_ERROR;
     }
 
-    if (ap_proxy_doconnect(sock, (char *)(proxyhost ? proxyhost : host),
-      proxyport ? proxyport : port, r) != APR_SUCCESS) {
-        apr_socket_close(sock);
-        return ap_proxyerror(r, HTTP_INTERNAL_SERVER_ERROR,
-            apr_pstrcat(r->pool, "Could not connect to remote machine:<br>",
-            proxyhost, NULL));
+	/*
+	 * At this point we have a list of one or more IP addresses of
+	 * the machine to connect to. If configured, reorder this
+	 * list so that the "best candidate" is first try. "best
+	 * candidate" could mean the least loaded server, the fastest
+	 * responding server, whatever.
+         *
+         * For now we do nothing, ie we get DNS round robin.
+	 * XXX FIXME
+	 */
+
+
+    /* try each IP address until we connect successfully */
+    {
+	int failed = 1;
+	while (connect_addr) {
+
+	    /* make the connection out of the socket */
+	    err = apr_connect(sock, connect_addr);
+
+	    /* if an error occurred, loop round and try again */
+            if (err != APR_SUCCESS) {
+		ap_log_error(APLOG_MARK, APLOG_ERR, err, r->server,
+			     "proxy: attempt to connect to %pI (%s) failed", connect_addr, connectname);
+		connect_addr = connect_addr->next;
+		continue;
+            }
+
+	    /* if we get here, all is well */
+	    failed = 0;
+	    break;
+	}
+
+	/* handle a permanent error from the above loop */
+	if (failed) {
+	    if (proxyname) {
+		return DECLINED;
+	    }
+	    else {
+		return HTTP_BAD_GATEWAY;
+	    }
+	}
     }
+
+
+    /*
+     * Step Three: Send the Request
+     *
+     * Send the HTTP/1.1 CONNECT request to the remote server
+     */
 
     /* If we are connecting through a remote proxy, we need to pass
      * the CONNECT request on to it.
      */
     if (proxyport) {
-	/* FIXME: We should not be calling write() directly, but we currently
-	 * have no alternative.  Error checking ignored.  Also, we force
+	/* FIXME: Error checking ignored.  Also, we force
 	 * a HTTP/1.0 request to keep things simple.
 	 */
         ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, NULL,
              "Sending the CONNECT request to the remote proxy");
         nbytes = apr_snprintf(buffer, sizeof(buffer),
-             "CONNECT %s HTTP/1.0" CRLF, r->uri);
+             "CONNECT %s HTTP/1.1" CRLF, r->uri);
         apr_send(sock, buffer, &nbytes);
         nbytes = apr_snprintf(buffer, sizeof(buffer),
              "Proxy-agent: %s" CRLF CRLF, ap_get_server_version());
@@ -212,6 +284,13 @@ int ap_proxy_connect_handler(request_rec *r, char *url,
         ap_rvputs(r, "Proxy-agent: ", ap_get_server_version(), CRLF CRLF, NULL);
         ap_rflush(r);
     }
+
+
+    /*
+     * Step Four: Handle Data Transfer
+     *
+     * Handle two way transfer of data over the socket (this is a tunnel).
+     */
 
     if(apr_poll_setup(&pollfd, 2, r->pool) != APR_SUCCESS)
     {
@@ -296,6 +375,13 @@ int ap_proxy_connect_handler(request_rec *r, char *url,
         else
             break;
     }
+
+
+    /*
+     * Step Five: Clean Up
+     *
+     * Close the socket and clean up
+     */
 
     apr_socket_close(sock);
 

@@ -187,7 +187,7 @@ int ap_proxy_http_handler(request_rec *r, char *url,
     apr_sockaddr_t *connect_addr;
     char server_portstr[32];
     apr_socket_t *sock;
-    int i, j, len, backasswards, close=0, failed=0, new=0;
+    int i, len, backasswards, close=0, failed=0, new=0;
     apr_status_t err;
     apr_array_header_t *headers_in_array;
     apr_table_entry_t *headers_in;
@@ -249,31 +249,9 @@ int ap_proxy_http_handler(request_rec *r, char *url,
     }
 
     /* check if ProxyBlock directive on this host */
-    /* XXX FIXME: conf->noproxies->elts is part of an opaque structure */
-    for (j = 0; j < conf->noproxies->nelts; j++) {
-        struct noproxy_entry *npent = (struct noproxy_entry *) conf->noproxies->elts;
-	struct apr_sockaddr_t *conf_addr = npent[j].addr;
-	if ((npent[j].name && ap_strstr_c(uri.hostname, npent[j].name))
-            || npent[j].name[0] == '*') {
-	    return ap_proxyerror(r, HTTP_FORBIDDEN,
-				 "Connect to remote machine blocked (by name)");
-	}
-	while (conf_addr) {
-	    while (uri_addr) {
-		char *conf_ip;
-		char *uri_ip;
-		apr_sockaddr_ip_get(&conf_ip, conf_addr);
-		apr_sockaddr_ip_get(&uri_ip, uri_addr);
-/*		ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r->server,
-			     "Testing %s and %s", conf_ip, uri_ip); */
-		if (!apr_strnatcasecmp(conf_ip, uri_ip)) {
-		    return ap_proxyerror(r, HTTP_FORBIDDEN,
-					 "Connect to remote machine blocked (by IP address)");
-		}
-		uri_addr = uri_addr->next;
-	    }
-	    conf_addr = conf_addr->next;
-	}
+    if (OK != ap_proxy_checkproxyblock(r, conf, uri_addr)) {
+	return ap_proxyerror(r, HTTP_FORBIDDEN,
+			     "Connect to remote machine blocked");
     }
 
 
