@@ -756,7 +756,7 @@ AP_DECLARE(apr_port_t) ap_get_server_port(const request_rec *r)
 
     if (d->use_canonical_name == USE_CANONICAL_NAME_OFF
 	|| d->use_canonical_name == USE_CANONICAL_NAME_DNS) {
-        if (r->hostname) {
+        if (r->connection && r->connection->client_socket) {
             apr_sockaddr_t *localsa;
 
             apr_socket_addr_get(&localsa, APR_LOCAL, r->connection->client_socket);
@@ -1633,15 +1633,15 @@ static const char *server_hostname_port(cmd_parms *cmd, void *dummy, const char 
                                                     portstr - arg);
         portstr++;
         port = atoi(portstr);
+        if (port <= 0 || port >= 65536) { /* 65536 == 1<<16 */
+            return apr_pstrcat(cmd->temp_pool, "The port number \"", arg, 
+			  "\" is outside the appropriate range "
+			  "(i.e., 1..65535).", NULL);
+        }
     }
     else {
         cmd->server->server_hostname = apr_pstrdup(cmd->pool, arg);
-        port = 80;
-    }
-    if (port <= 0 || port >= 65536) { /* 65536 == 1<<16 */
-	return apr_pstrcat(cmd->temp_pool, "The port number \"", arg, 
-			  "\" is outside the appropriate range "
-			  "(i.e., 1..65535).", NULL);
+        port = 0;
     }
     cmd->server->port = port;
     return NULL;

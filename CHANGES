@@ -1,5 +1,12 @@
 Changes with Apache 2.0.28-dev
 
+  *) When no port is given in a "ServerName host" directive, the
+     server_rec->port is now set to zero, not 80. That allows for
+     run-time deduction of the correct server port (depending on
+     SSL/plain, and depending also on the current setting of
+     UseCanonicalName). This change makes redirections
+     work, even with https:// connections. [Martin Kraemer]
+
   *) Add a '%{note-name}e' argument to mod-headers, which works in
      the same way as mod_log_confg.  [Ian Holsman]
 
