@@ -820,7 +820,7 @@ static const char *mod_auth_ldap_parse_url(cmd_parms *cmd,
 
       /* "ldaps" indicates secure ldap connections desired
       */
-    if (strnicmp(url, "ldaps", 5) == 0)
+    if (strncasecmp(url, "ldaps", 5) == 0)
     {
         sec->secure = 1;
         sec->port = urld->lud_port? urld->lud_port : LDAPS_PORT;
