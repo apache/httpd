@@ -47,11 +47,13 @@ than one multi-processing module (MPM).
 <p><A
  HREF="directive-dict.html#Syntax"
  REL="Help"
-><STRONG>Syntax:</STRONG></A><BR>
+><STRONG>Syntax:</STRONG></A>
+    <CODE>ConnectionStatus</CODE> {<CODE>on,off</CODE>}<BR>
 <A
  HREF="directive-dict.html#Default"
  REL="Help"
-><STRONG>Default:</STRONG></A><BR>
+><STRONG>Default:</STRONG></A>
+    <CODE>ConnectionStatus on</CODE><BR>
 <A
  HREF="directive-dict.html#Context"
  REL="Help"
@@ -66,7 +68,7 @@ than one multi-processing module (MPM).
 ><STRONG>Module:</STRONG></A> dexter, perchild</p>
 
 <p>Whether or not to maintain status information on current 
-connections</p>
+connections.  If this is off then mod_status will not work properly.</p>
 
 <p><hr></p>
 
@@ -423,7 +425,7 @@ behavior to limit the number of <EM>connections</EM> per child.
 <A
  HREF="directive-dict.html#Default"
  REL="Help"
-><STRONG>Default:</STRONG></A> <CODE>MaxSpareThreads ??</CODE><BR>
+><STRONG>Default:</STRONG></A> <CODE>MaxSpareThreads 10 (Dexter or Perchild) or 500 (Mpmt_pthread) </CODE><BR>
 <A
  HREF="directive-dict.html#Context"
  REL="Help"
@@ -437,7 +439,13 @@ behavior to limit the number of <EM>connections</EM> per child.
  REL="Help"
 ><STRONG>Module:</STRONG></A> dexter, mpmt_pthread, perchild</p>
 
-<P>Maximum number of idle threads.</p>
+<P>Maximum number of idle threads.  Different MPMs deal with this directive
+differently.  Dexter and Perchild monitor the number of idle threads on a
+per-child basis.  If there are too many idle threads in that child, the server
+will begin to kill threads within that child.</P>
+<P>Mpmt_pthread deals with idle threads on a server-wide basis.  If there are 
+too many idle threads in the server then child processes are killed 
+until the number of idle threads is less than this number.</p>
 
 <p>See also <A HREF="#minsparethreads">MinSpareThreads</A> and
 <A HREF="#startservers">StartServers</A>.
@@ -453,7 +461,7 @@ behavior to limit the number of <EM>connections</EM> per child.
 <A
  HREF="directive-dict.html#Default"
  REL="Help"
-><STRONG>Default:</STRONG></A> <CODE>MinSpareServers ???</CODE><BR>
+><STRONG>Default:</STRONG></A> <CODE>MaxSpareThreads 5 (Dexter or Perchild) or 250 (Mpmt_pthread) </CODE><BR>
 <A
  HREF="directive-dict.html#Context"
  REL="Help"
@@ -467,7 +475,14 @@ behavior to limit the number of <EM>connections</EM> per child.
  REL="Help"
 ><STRONG>Module:</STRONG></A> dexter, mpmt_pthread, perchild</p>
 
-<p>Minimum number of idle threads to handle request spikes.
+<P>Minimum number of idle threads to handle request spikes.  Different MPMs 
+deal with this directive differently.  Dexter and Perchild monitor the number 
+of idle threads on a per-child basis.  If there aren't enough idle threads in 
+that child, the server will begin to create new threads within that child.  
+</P>
+<P>Mpmt_pthread deals with idle threads on a server-wide basis.  If there 
+aren't enough idle threads in the server then child processes are created 
+until the number of idle threads is greater than number.</p>
 
 See also <A HREF="#maxsparethreads">MaxSpareThreads</A> and
 <A HREF="#startservers">StartServers</A>.<P><HR>
@@ -477,11 +492,11 @@ See also <A HREF="#maxsparethreads">MaxSpareThreads</A> and
 <p><A
  HREF="directive-dict.html#Syntax"
  REL="Help"
-><STRONG>Syntax:</STRONG></A><BR>
+><STRONG>Syntax:</STRONG></A> NumServers <EM>number</EM><BR>
 <A
  HREF="directive-dict.html#Default"
  REL="Help"
-><STRONG>Default:</STRONG></A><BR>
+><STRONG>Default:</STRONG></A> <CODE>NumServers 2</CODE><BR>
 <A
  HREF="directive-dict.html#Context"
  REL="Help"
@@ -495,7 +510,9 @@ See also <A HREF="#maxsparethreads">MaxSpareThreads</A> and
  REL="Help"
 ><STRONG>Module:</STRONG></A> dexter, perchild</p>
 
-<p>Number of children alive at the same time.</p>
+<p>Number of children alive at the same time.  MPMs that use this directive
+do not dynamically create new child processes so this number should be
+large enough to handle the requests for the entire site.</p>
 
 <p><hr></p>
 
@@ -607,11 +624,11 @@ on the load, there is usually little reason to adjust this parameter.</P>
 <p><A
  HREF="directive-dict.html#Syntax"
  REL="Help"
-><STRONG>Syntax:</STRONG></A><BR>
+><STRONG>Syntax:</STRONG></A> StartThreads <EM>number</EM><BR>
 <A
  HREF="directive-dict.html#Default"
  REL="Help"
-><STRONG>Default:</STRONG></A><BR>
+><STRONG>Default:</STRONG></A> <CODE>StartThreads 5</CODE><BR>
 <A
  HREF="directive-dict.html#Context"
  REL="Help"
@@ -625,7 +642,9 @@ on the load, there is usually little reason to adjust this parameter.</P>
  REL="Help"
 ><STRONG>Module:</STRONG></A> dexter, perchild</p>
 
-<p>Number of threads each child creates.</p>
+<p>Number of threads each child creates on startup.  As the number of threads
+is dynamically controlled depending on the load, there is usually little 
+reason to adjust this parameter.</p>
 
 <p><hr></p>
 
@@ -652,7 +671,12 @@ on the load, there is usually little reason to adjust this parameter.</P>
 ><STRONG>Module:</STRONG></A> mpmt_pthread, mpm_winnt</p>
 
 <P>This directive sets the number of threads created by each child
-process.</p>
+process.  The child creates these threads at startup and never creates
+more.  if using an MPM like mpmt_winnt, where there is only one child process,
+this number should be high enough to handle the entire load of the server.
+If using an MPM like mpmt_pthread, where there are multiple child processes,
+the total number of threads should be high enough to handle the common load
+on the server.</p>
 
 <p><hr>
 
