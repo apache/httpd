@@ -52,7 +52,7 @@
 <div class="directive-section"><h2><a name="AuthDBMGroupFile" id="AuthDBMGroupFile">AuthDBMGroupFile</a> <a name="authdbmgroupfile" id="authdbmgroupfile">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Sets the name of the database file containing the list
-of user groups for authentication</td></tr>
+of user groups for authorization</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>AuthDBMGroupFile <var>file-path</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>directory, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>AuthConfig</td></tr>
@@ -61,7 +61,7 @@ of user groups for authentication</td></tr>
 </table>
     <p>The <code class="directive">AuthDBMGroupFile</code> directive sets the
     name of a DBM file containing the list of user groups for user
-    authentication.  <var>File-path</var> is the absolute path to the
+    authorization.  <var>File-path</var> is the absolute path to the
     group file.</p>
 
     <p>The group file is keyed on the username. The value for a
@@ -101,7 +101,7 @@ of user groups for authentication</td></tr>
     <p>The password section contains the encrypted
     password as before. This is followed by a colon and the comma
     separated list of groups. Other data may optionally be left in the
-    DBM file after another colon; it is ignored by the authentication
+    DBM file after another colon; it is ignored by the authorization
     module. This is what www.telescope.org uses for its combined
     password and group database.</p>
 

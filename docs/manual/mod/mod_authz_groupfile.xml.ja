@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="iso-2022-jp"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
+<!-- English Revision: 111474 -->
 
 <!--
  Copyright 2002-2004 The Apache Software Foundation
@@ -19,7 +20,6 @@
 -->
 
 <modulesynopsis metafile="mod_authz_groupfile.xml.meta">
-<!-- English Revision: 105989 -->
 
 <name>mod_authz_groupfile</name>
 <description>プレーンテキストファイルを用いたグループ承認</description>
