@@ -1,5 +1,9 @@
 Changes with Apache 2.0.37
 
+  *) Fix the binary build install script so that the build logic
+     created by "apxs -g" will work when the user has a binary
+     build.  [Jeff Trawick]
+
   *) Allow instdso.sh to work with full paths to the shared module.
      [Justin Erenkrantz]
 
