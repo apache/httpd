@@ -487,7 +487,7 @@ int ap_proxy_http_handler(request_rec *r, ap_cache_el *c, char *url,
 		proxy_completion pc;
 		pc.content_length = content_length;
 		pc.cache_completion = conf->cache_completion;
-		ap_proxy_send_fb(&pc, f, r, c);
+		ap_proxy_send_fb(&pc, sock, r, c);
     }
 
     ap_bclose(f);

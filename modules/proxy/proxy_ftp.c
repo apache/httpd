@@ -1205,7 +1205,7 @@ int ap_proxy_ftp_handler(request_rec *r, ap_cache_el *c, char *url)
 /* send body */
     if (!r->header_only) {
 	if (parms[0] != 'd') {
-	    ap_proxy_send_fb(NULL, data, r, c);
+	    ap_proxy_send_fb(NULL, dsock, r, c);
 	} else
 	    send_dir(data, r, c, cwd);
 

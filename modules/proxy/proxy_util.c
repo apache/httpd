@@ -490,7 +490,7 @@ apr_table_t *ap_proxy_read_headers(request_rec *r, char *buffer, int size, BUFF 
     return resp_hdrs;
 }
 
-long int ap_proxy_send_fb(proxy_completion *completion, BUFF *f, request_rec *r, ap_cache_el *c)
+long int ap_proxy_send_fb(proxy_completion *completion, apr_socket_t *f, request_rec *r, ap_cache_el *c)
 {
     int  ok;
     char buf[IOBUFSIZE];
@@ -505,12 +505,14 @@ long int ap_proxy_send_fb(proxy_completion *completion, BUFF *f, request_rec *r,
     total_bytes_rcvd = 0;
     if (c) ap_cache_el_data(c, &cachefp);
 
+#if 0
 #ifdef CHARSET_EBCDIC
     /* The cache copy is ASCII, not EBCDIC, even for text/html) */
     ap_bsetflag(f, B_ASCII2EBCDIC|B_EBCDIC2ASCII, 0);
     if (c != NULL && c->fp != NULL)
 		ap_bsetflag(c->fp, B_ASCII2EBCDIC|B_EBCDIC2ASCII, 0);
     ap_bsetflag(con->client, B_ASCII2EBCDIC|B_EBCDIC2ASCII, 0);
+#endif
 #endif
 
     /* Since we are reading from one buffer and writing to another,
@@ -542,7 +544,8 @@ long int ap_proxy_send_fb(proxy_completion *completion, BUFF *f, request_rec *r,
      */
     for (ok = 1; ok; cntr = 0) {
 	/* Read block from server */
-	if (ap_bread(f, buf, IOBUFSIZE, &cntr) != APR_SUCCESS && !cntr)
+        cntr = IOBUFSIZE;
+	if (apr_recv(f, buf, &cntr) != APR_SUCCESS && !cntr)
         {
             if (c != NULL) {
                 ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
@@ -570,7 +573,8 @@ long int ap_proxy_send_fb(proxy_completion *completion, BUFF *f, request_rec *r,
 
 	/* Write the block to the client, detect aborted transfers */
         while (!con->aborted && in_buffer > 0) {
-            if (ap_bwrite(con->client, &buf[o], in_buffer, &cntr) != APR_SUCCESS) {
+            cntr = in_buffer;
+            if (apr_send(con->client_socket, &buf[o], &cntr) != APR_SUCCESS) {
                 if (completion) {
                     /* when a send failure occurs, we need to decide
                      * whether to continue loading and caching the
@@ -591,8 +595,11 @@ long int ap_proxy_send_fb(proxy_completion *completion, BUFF *f, request_rec *r,
         } /* while client alive and more data to send */
     } /* loop and ap_bread while "ok" */
 
+/* Remove this stuff, because flushing a socket doesn't make a lot of sense
+ * currently.
     if (!con->aborted)
 	ap_bflush(con->client);
+*/
 
     return total_bytes_rcvd;
 }
@@ -607,19 +614,23 @@ long int ap_proxy_send_fb(proxy_completion *completion, BUFF *f, request_rec *r,
 void ap_proxy_send_headers(request_rec *r, const char *respline, apr_table_t *t)
 {
 	int i;
-	BUFF *fp = r->connection->client;
+	apr_socket_t *fp = r->connection->client_socket;
 	apr_table_entry_t *elts = (apr_table_entry_t *) apr_table_elts(t)->elts;
 
-	ap_bvputs(fp, respline, CRLF, NULL);
+	char *temp = apr_pstrcat(r->pool, respline, CRLF, NULL);
+	apr_size_t len = strlen(temp);
+	apr_send(fp, temp, &len);
 
 	for (i = 0; i < ap_table_elts(t)->nelts; ++i) {
             if (elts[i].key != NULL) {
-                ap_bvputs(fp, elts[i].key, ": ", elts[i].val, CRLF, NULL);
+                temp = apr_pstrcat(r->pool, elts[i].key, ": ", elts[i].val, CRLF, NULL);
+                apr_send(fp, temp, &len);
                 apr_table_addn(r->headers_out, elts[i].key, elts[i].val);
             }
 	}
 
-	ap_bputs(CRLF, fp);
+        len = 2;
+	apr_send(fp, CRLF, &len);
 }
 
 
@@ -1133,9 +1144,9 @@ int ap_proxy_doconnect(apr_socket_t *sock, char *host, apr_uint32_t port, reques
         if (!apr_isdigit(host[i]) && host[i] != '.')
             break;
 
-    apr_set_remote_port(sock, port);
+    apr_set_port(sock, APR_REMOTE, port);
     if (host[i] == '\0') {
-        apr_set_remote_ipaddr(sock, host);
+        apr_set_ipaddr(sock, APR_REMOTE, host);
         host = NULL;
     }
     for(;;)
@@ -1171,8 +1182,9 @@ int ap_proxy_send_hdr_line(void *p, const char *key, const char *value)
 unsigned ap_proxy_bputs2(const char *data, apr_socket_t *client, ap_cache_el *cache)
 {
     unsigned len = strlen(data);
-    apr_send(client, data, &len);
     apr_file_t *cachefp = NULL;
+
+    apr_send(client, data, &len);
 
     if (ap_cache_el_data(cache, &cachefp) == APR_SUCCESS)
 	apr_puts(data, cachefp);
@@ -1227,19 +1239,23 @@ static struct per_thread_data *get_per_thread_data(void)
 int ap_proxy_cache_send(request_rec *r, ap_cache_el *c)
 {
     apr_file_t *cachefp = NULL;
-    BUFF *fp = r->connection->client;
+    apr_socket_t *fp = r->connection->client_socket;
     char buffer[500];
+    apr_size_t len;
     
     ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, NULL,
                  "Sending cache file for %s", c->name);
     if(ap_cache_el_data(c, &cachefp) != APR_SUCCESS)
         return HTTP_INTERNAL_SERVER_ERROR;
     /* send the response */
-    if(apr_fgets(buffer, sizeof(buffer), cachefp))
-        ap_bvputs(fp, buffer, NULL);
+    if(apr_fgets(buffer, sizeof(buffer), cachefp)) {
+        len = strlen(buffer);
+        apr_send(fp, buffer, &len);
+    }
     /* send headers */
     ap_cache_el_header_walk(c, ap_proxy_send_hdr_line, r, NULL);
-    ap_bputs(CRLF, fp);
+    len = 2;
+    apr_send(fp, CRLF, &len);
     /* send data */
     /* XXX I changed the ap_proxy_send_fb call to use fp instead of cachefp.
      *     this compiles cleanly, but it is probably the completely wrong
