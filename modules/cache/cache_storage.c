@@ -105,7 +105,7 @@ static int set_cookie_doo_doo(void *v, const char *key, const char *val)
     return 1;
 }
 
-static void accept_headers(cache_handle_t *h, request_rec *r)
+CACHE_DECLARE(void) ap_cache_accept_headers(cache_handle_t *h, request_rec *r)
 {
     apr_table_t *cookie_table;
     const char *v;
@@ -272,7 +272,7 @@ int cache_select_url(request_rec *r, char *url)
             }
 
             /* Okay, this response looks okay.  Merge in our stuff and go. */
-            accept_headers(h, r);
+            ap_cache_accept_headers(h, r);
 
             cache->handle = h;
             return OK;
