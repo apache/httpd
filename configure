@@ -117,15 +117,16 @@ fi
 PERL=no-perl-on-this-system
 OIFS="$IFS" IFS=':'
 for dir in $PATH; do
-    OIFS="$IFS" IFS="$DIFS"
+    OIFS2="$IFS" IFS="$DIFS"
     for exe in perl5 perl miniperl; do
         if test -f "$dir/$exe"; then
             if test -x "$dir/$exe"; then
                 PERL="$dir/$exe"
+                break 2
             fi
         fi
     done
-    IFS="$OIFS"
+    IFS="$OIFS2"
 done
 IFS="$OIFS"
 PERL="`echo $PERL | sed -e 's://:/:'`"
@@ -181,6 +182,7 @@ for rule in `grep '^Rule' $src/Configuration.tmpl`; do
     rulelist="$rulelist:$name=$arg"
 done
 IFS="$OIFS"
+rules=`echo $rules | sed -e 's/^://'`
 
 #   determine modules
 rm -f $src/Configuration.apaci 2>/dev/null
@@ -211,6 +213,7 @@ for module in `egrep '^[# ]*(Add|Shared)Module' $src/Configuration.tmpl`; do
     fi
 done
 IFS="$OIFS"
+modules=`echo $modules | sed -e 's/^://'`
 
 #   backward compatibility from old src/Configuration.tmpl
 #   parameter names to the canonical Autoconf-style shell
@@ -231,7 +234,7 @@ IFS="$OIFS"
 ##
 
 apc_prev=""
-OIFS="$IFS" IFS="$DIFS"
+OIFS1="$IFS" IFS="$DIFS"
 for apc_option
 do
     #   if previous option needs an argument, assign it.
@@ -267,7 +270,7 @@ do
             echo "" >> Makefile
             echo "GNUTRIPLE=\`$src/helpers/GuessOS | awk '{ printf(\"%s\",\$\$1); }' | sed -e 's:/:-:g'\`" >> Makefile
             echo "" >> Makefile
-            echo "all build install clean distclean:" >> Makefile
+            echo "all build install install-quiet clean distclean:" >> Makefile
             echo "	@\$(MAKE) -f Makefile.\$(GNUTRIPLE) \$(MFLAGS) \$@" >> Makefile
             echo "" >> Makefile
             #   set shadow paths
@@ -390,12 +393,12 @@ do
             file="$apc_optarg"
             case $file in
                 *.c ) ;;
-                  * ) echo "configure:Error: Module source $file is not a C source file";
+                  * ) echo "configure:Error: Module source $file is not a C source file" 1>&2
                       exit 1 
                       ;;
             esac
             if [ ! -f $file ]; then
-                echo "configure:Error: Module source $file not found"
+                echo "configure:Error: Module source $file not found" 1>&2
                 exit 1
             fi
             modfilec=`echo $file | sed -e 's;^.*/;;'`
@@ -424,7 +427,7 @@ do
             file="$apc_optarg"
             case $file in
                 src/modules/* ) ;;
-                *)  echo "configure:Error: Module source already has to stay below src/modules/ to be activated" 
+                *)  echo "configure:Error: Module source already has to stay below src/modules/ to be activated" 1>&2
                     exit 1
                     ;;
             esac
@@ -459,7 +462,7 @@ do
                     apc_optarg_real=`echo "$apc_optarg" | tr "a-z" "A-Z"`
                     eval "exists=\$rule_${apc_optarg}" 
                     if [ ".$exists" = . ]; then
-                        echo "configure:Error: No such rule named '${apc_optarg_real}'"
+                        echo "configure:Error: No such rule named '${apc_optarg_real}'" 1>&2
                         exit 1
                     fi
                     eval "rule_${apc_optarg}=yes"
@@ -468,14 +471,14 @@ do
                     case $apc_optarg in
                        all ) 
                            OIFS="$IFS" IFS=':'
-                           for module in `echo "$modules" | sed -e 's/^://'`; do
+                           for module in $modules; do
                                eval "module_${module}=yes" 
                            done
                            IFS="$OIFS"
                            ;;
                        most ) 
                            OIFS="$IFS" IFS=':'
-                           for module in `echo "$modules" | sed -e 's/^://'`; do
+                           for module in $modules; do
                                eval "module_${module}=yes" 
                            done
                            IFS="$OIFS"
@@ -489,7 +492,7 @@ do
                        * ) 
                            eval "exists=\$module_${apc_optarg}" 
                            if [ ".$exists" = . ]; then
-                               echo "configure:Error: No such module named '${apc_optarg}'"
+                               echo "configure:Error: No such module named '${apc_optarg}'" 1>&2
                                exit 1
                            fi
                            eval "module_${apc_optarg}=yes" 
@@ -500,7 +503,7 @@ do
                     case $apc_optarg in
                        max ) 
                            OIFS="$IFS" IFS=':'
-                           for module in `echo "$modules" | sed -e 's/^://'`; do
+                           for module in $modules; do
                                eval "shared_${module}=yes" 
                            done
                            IFS="$OIFS"
@@ -508,7 +511,7 @@ do
                            ;;
                        remain ) 
                            OIFS="$IFS" IFS=':'
-                           for module in `echo "$modules" | sed -e 's/^://'`; do
+                           for module in $modules; do
                                eval "add=\$module_${module}" 
                                if [ ".$add" = .no ]; then
                                    eval "module_${module}=yes" 
@@ -521,7 +524,7 @@ do
                        * ) 
                            eval "exists=\$module_${apc_optarg}" 
                            if [ ".$exists" = . ]; then
-                               echo "configure:Error: No such module named '${apc_optarg}'"
+                               echo "configure:Error: No such module named '${apc_optarg}'" 1>&2
                                exit 1
                            fi
                            eval "shared_${apc_optarg}=yes" 
@@ -530,7 +533,7 @@ do
                     ;;
                 suexec ) 
                     if [ ".`id | grep root`" = . ]; then
-                        echo "configure:Error: suEXEC support needs root priviledges for installation"
+                        echo "configure:Error: suEXEC support needs root priviledges for installation" 1>&2
                         exit 1
                     fi
                     suexec=1
@@ -550,7 +553,7 @@ do
                     apc_optarg_real=`echo "$apc_optarg" | tr "a-z" "A-Z"`
                     eval "exists=\$rule_${apc_optarg}" 
                     if [ ".$exists" = . ]; then
-                        echo "configure:Error: No such rule named '${apc_optarg_real}'"
+                        echo "configure:Error: No such rule named '${apc_optarg_real}'" 1>&2
                         exit 1
                     fi
                     eval "rule_${apc_optarg}=no"
@@ -559,7 +562,7 @@ do
                     case $apc_optarg in
                        all ) 
                            OIFS="$IFS" IFS=':'
-                           for module in `echo "$modules" | sed -e 's/^://'`; do
+                           for module in $modules; do
                                eval "module_${module}=no" 
                            done
                            IFS="$OIFS"
@@ -567,7 +570,7 @@ do
                        * ) 
                            eval "exists=\$module_${apc_optarg}" 
                            if [ ".$exists" = . ]; then
-                               echo "configure:Error: No such module named '${apc_optarg}'"
+                               echo "configure:Error: No such module named '${apc_optarg}'" 1>&2
                                exit 1
                            fi
                            eval "module_${apc_optarg}=no" 
@@ -578,7 +581,7 @@ do
                     case $apc_optarg in
                        all ) 
                            OIFS="$IFS" IFS=':'
-                           for module in `echo "$modules" | sed -e 's/^://'`; do
+                           for module in $modules; do
                                eval "shared_${module}=no" 
                            done
                            IFS="$OIFS"
@@ -586,7 +589,7 @@ do
                        * ) 
                            eval "exists=\$module_${apc_optarg}" 
                            if [ ".$exists" = . ]; then
-                               echo "configure:Error: No such module named '${apc_optarg}'"
+                               echo "configure:Error: No such module named '${apc_optarg}'" 1>&2
                                exit 1
                            fi
                            eval "shared_${apc_optarg}=no" 
@@ -608,12 +611,12 @@ do
             suexec_userdir="$apc_optarg"
             ;;
         * )
-            echo "configure:Error: invalid option '$apc_option'"
+            echo "configure:Error: invalid option '$apc_option'" 1>&2
             exit 1
             ;;
     esac
 done
-IFS="$OIFS"
+IFS="$OIFS1"
 if [ ".$apc_prev" != . ]; then
     echo "configure:Error: missing argument to --`echo $apc_prev | sed 's/_/-/g'`" 1>&2
     exit 1
@@ -804,7 +807,7 @@ IFS="$OIFS"
 
 #   generate rule directives 
 OIFS="$IFS" IFS=':'
-for rule in `echo "$rules" | sed -e 's/^://'`; do
+for rule in $rules; do
     name="`echo $rule | tr "a-z" "A-Z"`"
     eval "val=\$rule_$rule"
     echo "s%^\\(Rule $name=\\).*%\\1$val%g" >>sedsubst
@@ -817,7 +820,7 @@ IFS="$OIFS"
 #   consistency checks for shared object support
 some_shares=0
 OIFS="$IFS" IFS=':'
-for module in `echo "$modules" | sed -e 's/^://'`; do
+for module in $modules; do
     eval "share=\$shared_$module"
     if [ $share = yes ]; then
         some_shares=1
@@ -832,15 +835,15 @@ if [ $some_shares = 1 ]; then
         fi
     fi
 fi
-if [ ".$shared_so" = yes ]; then
+if [ ".$shared_so" = .yes ]; then
     shared_so=no
-    echo "++ Module mod_so cannot be made a shared object"
+    echo "configure:Error: Module mod_so cannot be made a DSO itself" 1>&2
     exit 1
 fi
 
 #   generate module directives
 OIFS="$IFS" IFS=':'
-for module in `echo "$modules" | sed -e 's/^://'`; do
+for module in $modules; do
     eval "add=\$module_$module"
     if [ $add = yes ]; then
         echo "s%^.*\\(AddModule.*$module\\..*\\)%\\1%g" >>sedsubst

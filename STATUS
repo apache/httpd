@@ -65,6 +65,7 @@ Committed Code Changes:
     * Ralf's enhanced "make install" carefulness for mime.types+magic files
     * Ralf's paranoia-fixes for the IFS-handling in `configure'
     * Fix for the DEBUG_CGI (#ifdef'ed) situation in mod_cgi.c, PR#2114
+    * Ralf's various bugfixes and cleanups for the configure script
 
 Available Patches:
 

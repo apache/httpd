@@ -1,5 +1,14 @@
 Changes with Apache 1.3b7
 
+  *) Various bugfixes and cleanups for the APACI configure script:
+     o fix IFS handling for _nested_ situation
+     o fix Perl interpreter search: take first one found instead of last one
+     o fix DSO consistency check
+     o print error messages to stderr instead of stdout
+     o add install-quiet for --shadow situation to Makefile stub
+     o reduce complexity by avoiding sed-hacks for rule and module list loops
+     [Ralf S. Engelschall]
+
   *) Fix DEBUG_CGI situation in mod_cgi.c [David MacKenzie] PR#2114
 
   *) Make sure the input field separator (IFS) shell variable is explicitly
