@@ -137,8 +137,7 @@ API_EXPORT(int) ap_sendwithtimeout(int sock, const char *buf, int len, int flags
     int rv;
     int retry;
 
-    if (!(tv.tv_sec = ap_check_alarm()))
-	return (send(sock, buf, len, flags));
+    tv.tv_sec = ap_check_alarm();
 
     rv = ioctlsocket(sock, FIONBIO, (u_long*)&iostate);
     iostate = 0;
@@ -204,8 +203,7 @@ API_EXPORT(int) ap_recvwithtimeout(int sock, char *buf, int len, int flags)
     int rv;
     int retry;
 
-    if (!(tv.tv_sec = ap_check_alarm()))
-	return (recv(sock, buf, len, flags));
+    tv.tv_sec = ap_check_alarm();
 
     rv = ioctlsocket(sock, FIONBIO, (u_long*)&iostate);
     iostate = 0;

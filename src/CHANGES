@@ -1,5 +1,10 @@
 Changes with Apache 1.3.24
-
+  *) Win32: Work around a bug in Windows XP that caused data
+     corruption on writes to the network. The WinXP bug
+     is tickled by the combined use of WSADuplicateSocket 
+     and blocking send() calls.
+     [Bill Stoddard, Bill Rowe, Allan Edwards, Szabolcs Szakacsits]
+     
   *) Add 'IgnoreCase' keyword to the IndexOptions directive;
      if active, upper- and lower-case letters are insignificant
      in ordering.  In other words, all A* and a* files will be
