@@ -1,5 +1,5 @@
 APACHE 1.3 STATUS:						-*-text-*-
-  Last modified at [$Date: 2003/05/22 14:37:28 $]
+  Last modified at [$Date: 2003/05/22 14:46:25 $]
 
 Release:
 
@@ -55,6 +55,11 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
       Gnats #10246 (Add ProxyConnAllow directive)
         +0: Martin (or rather -.5, see dev@ Message
 	            <20020529215048.A56015@deejai2.mch.fsc.net>)
+
+    * don't hold accept mutex while running 3rd-party code
+      See message <3EBBC05B.8010100@attglobal.net> and following
+      thread
+        +1: trawick, Jim
 
     * htpasswd.c and htdigest.c use tmpnam()... consider using
       mkstemp() when available.
