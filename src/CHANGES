@@ -22,6 +22,7 @@ Changes with Apache 1.3b7
      second by making sure the "avoid-bristling-suffix" /apache is not
      appended to sysconfdir, datadir, localstatedir and includedir when
      --compat is used. [Ralf S. Engelschall, Lars Eilebrecht]
+
   *) NeXT required strdup() in support/logresolve.c
      [Francisco Tomei <fatomei@sandburg.unm.edu>] PR#2082
 
