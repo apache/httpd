@@ -2,6 +2,11 @@ Changes with Apache 2.1.3
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) --with-module can now take more than one module to be statically
+     linked: --with-module=<modtype>:<modfile>,<modtype>:<modfile>,...
+     If the <modtype>-subdirectory doesn't exist it will be created and
+     populated with a standard Makefile.in.  [Erik Abele]
+
   *) Remove some compiler warnings within the LDAP modules [Graham Leggett]
 
   *) Add a build script to create a solaris package. [Graham Leggett]
