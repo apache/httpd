@@ -941,7 +941,7 @@ static int large_write (BUFF *fb, const void *buf, int nbyte)
     if (fb->flags & B_CHUNK) {
 	end_chunk(fb);
     }
-    vec[0].iov_base = fb->outbase;
+    vec[0].iov_base = (void *)fb->outbase;
     vec[0].iov_len = fb->outcnt;
     if (fb->flags & B_CHUNK) {
 	vec[1].iov_base = chunksize;
