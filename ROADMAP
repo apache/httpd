@@ -1,6 +1,6 @@
 APACHE 2.x ROADMAP:
 
-Last modified at [$Date: 2002/10/01 15:26:20 $]
+Last modified at [$Date: 2002/10/01 15:44:35 $]
 
 DEFERRRED FOR APACHE 2.1
 
@@ -93,6 +93,8 @@ MAKING APACHE REPOSITORY-AGNOSTIC
       Need to preserve a 'filename'-like string for mime-by-name
       sorts of operations.  But this only needs to be the name itself
       and not a full path.
+
+      Justin: Can we leverage the path info, or do we not trust the user?
     
     * The translate_name hook goes away
 
@@ -174,3 +176,14 @@ MAKING APACHE REPOSITORY-AGNOSTIC
       need to be converted to use these mechanisms so that their
       functions will work on logical repositories rather than just
       filesystems.
+
+    * How do we handle CGI scripts?  Especially when the resource may
+      not be backed by a file?  Ideally, we should be able to come up
+      with some mechanism to allow CGIs to work in a
+      repository-independent manner.
+
+      - Writing the virtual data as a file and then executing it?
+      - Can a shell be executed in a streamy manner?  (Portably?)
+      - Have an 'execute_resource' hook/func that allows the
+        repository to choose its manner - be it exec() or whatever.
+        - Won't this approach lead to duplication of code?  Helper fns?
