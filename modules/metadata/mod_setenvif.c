@@ -208,7 +208,7 @@ static const char *add_setenvif_core(cmd_parms *cmd, void *mconfig,
     char *var;
     int i;
     int beenhere = 0;
-    unsigned icase;
+    int icase;
 
     /*
      * Determine from our context into which record to put the entry.
