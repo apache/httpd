@@ -6,10 +6,12 @@ extern "C" {
 #endif
 
 /* === regex2.h === */
+#ifndef API_EXPORT
 #ifdef WIN32
 #define API_EXPORT(type)    __declspec(dllexport) type __stdcall
 #else
 #define API_EXPORT(type)    type
+#endif
 #endif
 
 typedef off_t regoff_t;
