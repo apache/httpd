@@ -365,12 +365,12 @@ static apr_status_t deflate_out_filter(ap_filter_t *f,
         }
         apr_table_setn(r->headers_out, "Vary", "Accept-Encoding");
         apr_table_unset(r->headers_out, "Content-Length");
+
+        /* initialize deflate output buffer */
+        ctx->stream.next_out = ctx->buffer;
+        ctx->stream.avail_out = c->bufferSize;
     }
     
-    /* initialize deflate output buffer */
-    ctx->stream.next_out = ctx->buffer;
-    ctx->stream.avail_out = c->bufferSize;
-
     APR_BRIGADE_FOREACH(e, bb) {
         const char *data;
         apr_bucket *b;
@@ -713,13 +713,13 @@ static apr_status_t deflate_in_filter(ap_filter_t *f,
                 }
 
                 inflateEnd(&ctx->stream);
-                apr_brigade_cleanup(ctx->bb);
     
                 eos = apr_bucket_eos_create(f->c->bucket_alloc);
                 APR_BRIGADE_INSERT_TAIL(ctx->proc_bb, eos); 
                 break;
             }
         }
+        apr_brigade_cleanup(ctx->bb);
     }
 
     if (!APR_BRIGADE_EMPTY(ctx->proc_bb)) {
@@ -732,8 +732,6 @@ static apr_status_t deflate_in_filter(ap_filter_t *f,
         APR_BRIGADE_CONCAT(bb, ctx->proc_bb);
         APR_BRIGADE_CONCAT(ctx->proc_bb, newbb);
     }
-
-    
 
     return APR_SUCCESS;
 }
