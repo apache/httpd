@@ -2720,11 +2720,13 @@ static void free_proc_chain(struct process_chain *procs)
      * whatever it was we're cleaning up now.  This may involve killing
      * some of them off...
      */
-    struct timeval tv;
     struct process_chain *p;
     int need_timeout = 0;
-    int timeout_interval;
     int status;
+#if !defined(WIN32) && !defined(NETWARE)
+    int timeout_interval;
+    struct timeval tv;
+#endif
 
     if (procs == NULL)
 	return;			/* No work.  Whew! */
@@ -2841,5 +2843,5 @@ static void free_proc_chain(struct process_chain *procs)
 	if (p->kill_how != kill_never)
 	    waitpid(p->pid, &status, 0);
     }
-#endif /* WIN32 */
+#endif /* !WIN32 && !NETWARE*/
 }
