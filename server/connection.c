@@ -217,48 +217,6 @@ AP_CORE_DECLARE(void) ap_process_connection(conn_rec *c)
 
 }
 
-int ap_pre_http_connection(conn_rec *c)
-{
-    ap_add_input_filter("HTTP_IN", NULL, NULL, c);
-    ap_add_input_filter("CORE_IN", NULL, NULL, c);
-    ap_add_output_filter("CORE", NULL, NULL, c);
-    return OK;
-}
-
-AP_CORE_DECLARE_NONSTD(int) ap_process_http_connection(conn_rec *c)
-{
-    request_rec *r;
-
-    /*
-     * Read and process each request found on our connection
-     * until no requests are left or we decide to close.
-     */
-
-    ap_update_child_status(AP_CHILD_THREAD_FROM_ID(c->id), SERVER_BUSY_READ, NULL);
-    while ((r = ap_read_request(c)) != NULL) {
-
-	/* process the request if it was read without error */
-
-        ap_update_child_status(AP_CHILD_THREAD_FROM_ID(c->id), SERVER_BUSY_WRITE, NULL); 
-	if (r->status == HTTP_OK)
-	    ap_process_request(r);
-
-        if (ap_extended_status)
-            ap_increment_counts(AP_CHILD_THREAD_FROM_ID(c->id), r);
-
-	if (!c->keepalive || c->aborted)
-	    break;
-
-        ap_update_child_status(AP_CHILD_THREAD_FROM_ID(c->id), SERVER_BUSY_KEEPALIVE, NULL);
-	apr_pool_destroy(r->pool);
-
-	if (ap_graceful_stop_signalled())
-            break;
-    }
-
-    return OK;
-}
-
 /* Clearly some of this stuff doesn't belong in a generalised connection
    structure, but for now...
 */

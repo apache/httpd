@@ -86,21 +86,6 @@ conn_rec *ap_new_connection(apr_pool_t *p, server_rec *server,
  */
 AP_CORE_DECLARE(void) ap_process_connection(conn_rec *);
 
-/**
- * The http pre-protocol handler.  This makes sets up Apache to serve http
- * requests
- * @param c The connection on which the request is read
- * @return OK or DECLINED
- */
-int ap_pre_http_connection(conn_rec *);
-
-/**
- * The http protocol handler.  This makes Apache serve http requests
- * @param c The connection on which the request is read
- * @return OK or DECLINED
- */
-AP_CORE_DECLARE_NONSTD(int) ap_process_http_connection(conn_rec *);
-
 AP_CORE_DECLARE(void) ap_flush_conn(conn_rec *c);
 
 /**
