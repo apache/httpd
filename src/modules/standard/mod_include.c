@@ -91,7 +91,7 @@
 #define STARTING_SEQUENCE "<!--#"
 #define ENDING_SEQUENCE "-->"
 #define DEFAULT_ERROR_MSG "[an error occurred while processing this directive]"
-#define DEFAULT_TIME_FORMAT "%A, %d-%b-%y %T %Z"
+#define DEFAULT_TIME_FORMAT "%A, %d-%b-%y %H:%M:%S %Z"
 #define SIZEFMT_BYTES 0
 #define SIZEFMT_KMG 1
 
