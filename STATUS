@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:						-*-text-*-
-Last modified at [$Date: 2001/01/21 22:14:13 $]
+Last modified at [$Date: 2001/01/24 02:23:18 $]
 
 Release:
 
@@ -93,6 +93,9 @@ RELEASE SHOWSTOPPERS:
             In the Apache-2.0 repository, this directory had a config.m4
             file that allowed people to add external modules by
             specifying --with-module on the configure line.
+
+    * ap_vrprintf() needs to handle more than 4K
+        Status: Greg volunteers
 
 RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
 
@@ -191,6 +194,8 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
       added multiple times during the config process. The -export-dynamic
       should probably move into build/special.mk (the make file used for
       building Apache modules).
+
+    * shift stuff to mod_core.h
 
 PRs that have been suspended forever waiting for someone to
 put them into 'the next release':
