@@ -41,7 +41,7 @@ RSC=rc.exe
 # PROP Intermediate_Dir "LibR"
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MD /W3 /GX /O2 /I ".\include" /I ".\srclib\apr\include" /I ".\os\win32" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "AP_DECLARE_EXPORT" /FD /c
-# ADD CPP /nologo /MD /W3 /GX /O2 /I ".\include" /I ".\srclib\apr\include" /I ".\srclib\apr-util" /I ".\srclib\sdbm" /I ".\os\win32" /I ".\server\mpm\winnt" /I ".\srclib\expat-lite" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "AP_DECLARE_EXPORT" /FD /c
+# ADD CPP /nologo /MD /W3 /GX /O2 /I ".\include" /I ".\srclib\apr\include" /I ".\srclib\apr-util\include" /I ".\srclib\sdbm" /I ".\os\win32" /I ".\server\mpm\winnt" /I ".\srclib\expat-lite" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "AP_DECLARE_EXPORT" /FD /c
 # ADD BASE RSC /l 0x409
 # ADD RSC /l 0x409
 BSC32=bscmake.exe
@@ -65,7 +65,7 @@ LIB32=link.exe -lib
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MDd /W3 /GX /ZI /Od /I ".\include" /I ".\srclib\apr\include" /I ".\os\win32" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "AP_DECLARE_EXPORT" /FD /c
-# ADD CPP /nologo /MDd /W3 /GX /ZI /Od /I ".\include" /I ".\srclib\apr\include" /I ".\srclib\apr-util" /I ".\srclib\sdbm" /I ".\os\win32" /I ".\server\mpm\winnt" /I ".\srclib\expat-lite" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "AP_DECLARE_EXPORT" /FD /c
+# ADD CPP /nologo /MDd /W3 /GX /ZI /Od /I ".\include" /I ".\srclib\apr\include" /I ".\srclib\apr-util\include" /I ".\srclib\sdbm" /I ".\os\win32" /I ".\server\mpm\winnt" /I ".\srclib\expat-lite" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "AP_DECLARE_EXPORT" /FD /c
 # ADD BASE RSC /l 0x409
 # ADD RSC /l 0x409
 BSC32=bscmake.exe
@@ -99,7 +99,7 @@ SOURCE=.\ApacheCore.def
 # End Source File
 # Begin Source File
 
-SOURCE=.\buildmark.c
+SOURCE=.\server\buildmark.c
 # End Source File
 # Begin Source File
 
@@ -119,12 +119,12 @@ SOURCE=.\os\win32\os.h
 # PROP Default_Filter ""
 # Begin Source File
 
-SOURCE=.\srclib\apr-util\apu_private.hw
+SOURCE=".\srclib\apr-util\apu_private.hw"
 
 !IF  "$(CFG)" == "ApacheCore - Win32 Release"
 
 # Begin Custom Build
-InputPath=.\srclib\apr-util\apu_private.hw
+InputPath=".\srclib\apr-util\apu_private.hw"
 
 ".\srclib\apr-util\apu_private.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
 	copy .\srclib\apr-util\apu_private.hw .\srclib\apr-util\apu_private.h >nul 
@@ -135,7 +135,7 @@ InputPath=.\srclib\apr-util\apu_private.hw
 !ELSEIF  "$(CFG)" == "ApacheCore - Win32 Debug"
 
 # Begin Custom Build
-InputPath=.\srclib\apr-util\apu_private.hw
+InputPath=".\srclib\apr-util\apu_private.hw"
 
 ".\srclib\apr-util\apu_private.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
 	copy .\srclib\apr-util\apu_private.hw .\srclib\apr-util\apu_private.h >nul 
@@ -213,90 +213,6 @@ SOURCE=.\server\test_char.h
 SOURCE=.\server\uri_delims.h
 # End Source File
 # End Group
-# Begin Group "ap_buckets"
-
-# PROP Default_Filter ""
-# Begin Source File
-
-SOURCE=.\ap\ap_buckets.c
-# End Source File
-# Begin Source File
-
-SOURCE=.\include\ap_buckets.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\ap\ap_buckets_eos.c
-# End Source File
-# Begin Source File
-
-SOURCE=.\ap\ap_buckets_file.c
-# End Source File
-# Begin Source File
-
-SOURCE=.\ap\ap_buckets_flush.c
-# End Source File
-# Begin Source File
-
-SOURCE=.\ap\ap_buckets_heap.c
-# End Source File
-# Begin Source File
-
-SOURCE=.\ap\ap_buckets_pipe.c
-# End Source File
-# Begin Source File
-
-SOURCE=.\ap\ap_buckets_pool.c
-# End Source File
-# Begin Source File
-
-SOURCE=.\ap\ap_buckets_refcount.c
-# End Source File
-# Begin Source File
-
-SOURCE=.\ap\ap_buckets_simple.c
-# End Source File
-# Begin Source File
-
-SOURCE=.\ap\ap_buckets_socket.c
-# End Source File
-# End Group
-# Begin Group "ap_general"
-
-# PROP Default_Filter ""
-# Begin Source File
-
-SOURCE=.\ap\ap_base64.c
-# End Source File
-# Begin Source File
-
-SOURCE=.\include\ap_base64.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\ap\ap_hooks.c
-# End Source File
-# Begin Source File
-
-SOURCE=.\include\ap_hooks.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\include\ap_ring.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\ap\ap_sha1.c
-# End Source File
-# Begin Source File
-
-SOURCE=.\include\ap_sha1.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\srclib\apr-util\apu_dbm.c
-# End Source File
-# End Group
 # Begin Group "httpd"
 
 # PROP Default_Filter ""
@@ -354,15 +270,15 @@ SOURCE=.\include\http_request.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\server\http_vhost.c
-# End Source File
-# Begin Source File
-
 SOURCE=.\include\http_vhost.h
 # End Source File
 # Begin Source File
 
 SOURCE=.\include\httpd.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\server\vhost.c
 # End Source File
 # End Group
 # Begin Group "modules"
