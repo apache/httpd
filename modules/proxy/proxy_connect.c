@@ -210,10 +210,12 @@ int ap_proxy_connect_handler(request_rec *r, cache_req *c, char *url,
 	j++;
     }
     if (i == -1) {
+        char buf[120];
 	ap_pclosesocket(r->pool, sock);
 	return ap_proxyerror(r, HTTP_INTERNAL_SERVER_ERROR, ap_pstrcat(r->pool,
 					"Could not connect to remote machine:<br>",
-					strerror(errno), NULL));
+					ap_strerror(errno, buf, sizeof(buf)), 
+                                        NULL));
     }
 
     /* If we are connecting through a remote proxy, we need to pass

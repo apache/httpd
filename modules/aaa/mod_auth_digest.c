@@ -302,9 +302,10 @@ static void initialize_secret(server_rec *s)
     status = ap_generate_random_bytes(secret, sizeof(secret));
 
     if(!(status == APR_SUCCESS)) {
+        char buf[120];
 	ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_CRIT, 0, s,
 		     "Digest: error generating secret: %s", 
-		     /*ap_strerror(status)*/ "need ap_strerror here");
+		     ap_strerror(status, buf, sizeof(buf)));
 	exit(1);
     }
 

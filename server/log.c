@@ -590,17 +590,19 @@ static int piped_log_spawn(piped_log *pl)
     int rc;
     ap_procattr_t *procattr;
     ap_proc_t procnew;
+    ap_status_t status;
 
 #ifdef SIGHUP
     ap_signal(SIGHUP, SIG_IGN);
 #endif
-    if ((ap_createprocattr_init(&procattr, pl->p)         != APR_SUCCESS) ||
-        (ap_setprocattr_childin(procattr, ap_piped_log_read_fd(pl), 
-                                ap_piped_log_write_fd(pl)) != APR_SUCCESS)) {
+    if (((status = ap_createprocattr_init(&procattr, pl->p)) != APR_SUCCESS) ||
+        ((status = ap_setprocattr_childin(procattr, ap_piped_log_read_fd(pl), 
+                                ap_piped_log_write_fd(pl)))  != APR_SUCCESS)) {
+        char buf[120];
         /* Something bad happened, give up and go away. */
 	ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL,
-	    "piped_log_spawn: unable to exec '%s': %s",
-	    pl->program, strerror (errno));
+	    "piped_log_spawn: unable to setup child process '%s': %s",
+	    pl->program, ap_strerror(status, buf, sizeof(buf)));
         rc = -1;
     }
     else {
@@ -630,6 +632,7 @@ static int piped_log_spawn(piped_log *pl)
 static void piped_log_maintenance(int reason, void *data, ap_wait_t status)
 {
     piped_log *pl = data;
+    ap_status_t stats;
 
     switch (reason) {
     case APR_OC_REASON_DEATH:
@@ -647,12 +650,13 @@ static void piped_log_maintenance(int reason, void *data, ap_wait_t status)
 	    /* during a restart */
 	    break;
 	}
-	if (piped_log_spawn(pl) != APR_SUCCESS) {
+	if ((stats = piped_log_spawn(pl)) != APR_SUCCESS) {
 	    /* what can we do?  This could be the error log we're having
 	     * problems opening up... */
+            char buf[120];
 	    ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL,
 		"piped_log_maintenance: unable to respawn '%s': %s",
-		pl->program, strerror(errno));
+		pl->program, ap_strerror(stats, buf, sizeof(buf)));
 	}
 	break;
     

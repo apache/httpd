@@ -293,9 +293,10 @@ int ap_proxy_http_handler(request_rec *r, cache_req *c, char *url,
 	if (proxyhost != NULL)
 	    return DECLINED;	/* try again another way */
 	else
+            char buf[120];
 	    return ap_proxyerror(r, HTTP_BAD_GATEWAY, ap_pstrcat(r->pool,
 				"Could not connect to remote machine: ",
-				strerror(errno), NULL));
+				ap_strerror(errno, buf, sizeof(buf)), NULL));
     }
 
     clear_connection(r->pool, r->headers_in);	/* Strip connection-based headers */

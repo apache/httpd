@@ -118,9 +118,10 @@ void unixd_detach(void)
 
     /* close out the standard file descriptors */
     if (freopen("/dev/null", "r", stdin) == NULL) {
+        char buf[120];
 	ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
                      "%s: unable to replace stdin with /dev/null: %s",
-		ap_server_argv0, strerror(errno));
+		ap_server_argv0, ap_strerror(errno, buf, sizeof(buf)));
 	/* continue anyhow -- note we can't close out descriptor 0 because we
 	 * have nothing to replace it with, and if we didn't have a descriptor
 	 * 0 the next file would be created with that value ... leading to
@@ -128,9 +129,10 @@ void unixd_detach(void)
 	 */
     }
     if (freopen("/dev/null", "w", stdout) == NULL) {
+        char buf[120];
 	ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
                      "%s: unable to replace stdout with /dev/null: %s",
-		     ap_server_argv0, strerror(errno));
+		     ap_server_argv0, ap_strerror(errno, buf, sizeof(buf)));
     }
     /* stderr is a tricky one, we really want it to be the error_log,
      * but we haven't opened that yet.  So leave it alone for now and it'll

@@ -104,7 +104,6 @@ strdup \
 strcasecmp \
 strncasecmp \
 strstr \
-strerror \
 initgroups \
 waitpid \
 memmove \
