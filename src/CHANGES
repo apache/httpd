@@ -1,5 +1,8 @@
 Changes with Apache 1.3b4
 
+  *) WIN32: mod_speling is now available on the Win32 platform.
+     [Marc Slemko]
+
   *) For clarity the following compile time definition was changed:
 
         SAFE_UNSERIALIZED_ACCEPT  ->   SINGLE_LISTEN_UNSERIALIZED_ACCEPT
