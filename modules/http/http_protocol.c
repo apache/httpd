@@ -2487,7 +2487,7 @@ AP_DECLARE(ap_method_list_t *) ap_make_method_list(apr_pool_t *p, int nelts)
 
     ml = (ap_method_list_t *) apr_palloc(p, sizeof(ap_method_list_t));
     ml->method_mask = 0;
-    ml->method_list = apr_array_make(p, sizeof(char *), nelts);
+    ml->method_list = apr_array_make(p, nelts, sizeof(char *));
     return ml;
 }
 
