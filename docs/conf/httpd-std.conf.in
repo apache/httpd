@@ -732,39 +732,39 @@ IndexIgnore .??* *~ *# HEADER* README* RCS CVS *,v *,t
 # specifier. There is 'work in progress' to fix this and get
 # the reference data for rfc1766 cleaned up.
 #
-# Danish (da) - Dutch (nl) - English (en) - Estonian (et)
-# French (fr) - German (de) - Greek-Modern (el)
-# Italian (it) - Norwegian (no) - Norwegian Nynorsk (nn) - Korean (ko) 
-# Portugese (pt) - Luxembourgeois* (ltz)
-# Spanish (es) - Swedish (sv) - Catalan (ca) - Czech(cs)
-# Polish (pl) - Brazilian Portuguese (pt-br) - Japanese (ja)
-# Russian (ru) - Croatian (hr)
+# Catalan (ca) - Croatian (hr) - Czech (cs) - Danish (da) - Dutch (nl)
+# English (en) - Estonian (et) - French (fr) - German (de)
+# Greek-Modern (el) - Hebrew (he) - Italian (it) - Japanese (ja)
+# Korean (ko) - Luxembourgeois* (ltz) - Norwegian Nynorsk (nn)
+# Norwegian (no) - Polish (pl) - Portugese (pt)
+# Brazilian Portuguese (pt-BR) - Russian (ru) - Swedish (sv)
+# Simplified Chinese (zh-CN) - Spanish (es) - Traditional Chinese (zh-TW)
 #
+AddLanguage ca .ca
+AddLanguage cs .cz .cs
 AddLanguage da .dk
-AddLanguage nl .nl
 AddLanguage en .en
+AddLanguage es .es
 AddLanguage et .et
 AddLanguage fr .fr
 AddLanguage de .de
 AddLanguage he .he
+AddLanguage hr .hr
 AddLanguage el .el
 AddLanguage it .it
 AddLanguage ja .ja
-AddLanguage pl .po
 AddLanguage ko .ko
-AddLanguage pt .pt
+AddLanguage ltz .ltz
+AddLanguage nl .nl
 AddLanguage nn .nn
 AddLanguage no .no
-AddLanguage pt-br .pt-br
-AddLanguage ltz .ltz
-AddLanguage ca .ca
-AddLanguage es .es
+AddLanguage pl .po
+AddLanguage pt .pt
+AddLanguage pt-BR .pt-br
 AddLanguage sv .sv
-AddLanguage cs .cz .cs
 AddLanguage ru .ru
 AddLanguage zh-CN .zh-cn
 AddLanguage zh-TW .zh-tw
-AddLanguage hr .hr
 
 #
 # LanguagePriority allows you to give precedence to some languages
@@ -773,7 +773,7 @@ AddLanguage hr .hr
 # Just list the languages in decreasing order of preference. We have
 # more or less alphabetized them here. You probably want to change this.
 #
-LanguagePriority en da nl et fr de el it ja ko no pl pt pt-br ltz ca es sv tw
+LanguagePriority en ca cs da es et fr de he hr el it ja ko ltz nl nn no pl pt pt-BR sv ru zh-CN zh-TW
 
 #
 # ForceLanguagePriority allows you to serve a result page rather than
