@@ -1,5 +1,14 @@
 Changes with Apache 1.3.7
 
+  *) PORT: Add initial support for Mac OS (versions 10.0 and
+     greater). Use Mac OS X Server layout for now. Clean up dyld code
+     in unix/os.c, and don't install the dyld error handlers, which
+     are no longer needed in Mac OS. [Wilfredo Sanchez]
+
+  *) Rename Rhapsody layout to "Mac OS X Server". Change install
+     locations to appropriate ones for user-built (as opposed to
+     system) installs. [Wilfredo Sanchez]
+
   *) Modify mod_autoindex's handling of AddDescription so that the
      behaviour matches the documentation.  [Ken Coar] PR#1898, 3072.
 
