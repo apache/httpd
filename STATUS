@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2002/05/30 05:09:24 $]
+Last modified at [$Date: 2002/05/30 05:54:43 $]
 
 Release:
 
@@ -319,6 +319,10 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
         the ESC key, with a nice message) if the server died a bad 
         death (non-zero exit code) in console mode.
         Resolution: bring forward same ugly hacks from 1.3.13-.20
+        This is not so simple.  Any exit() from APR or other libraries
+        can't be caught unless we add some sort of apr_exit(rv) with
+        registered apr_atexit() fn's that have the return code as an
+        argument to the registered fn.
 
     * Port of mod_ssl to Apache 2.0:
 
@@ -901,7 +905,3 @@ Available Patches:
    * Dan Rench's <drench@xnet.com> patch to add allow the errmsg and timefmt 
      of SSI's to be modified in the config file.  Patch is available in 
      PR6193
-
-Open issues:
-
-   * Which MPMs will be included with Apache 2.0?
