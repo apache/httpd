@@ -432,7 +432,10 @@ static void dump_a_vhost(FILE *f, ipaddr_chain *ic)
 	buf[len-1] = '*';
     }
     if (ic->names == NULL) {
-	fprintf(f, "%-22s %s (%s:%u)\n", buf, ic->server->server_hostname,
+	if (ic->server == NULL)
+	    fprintf(f, "%-22s WARNING: No <VirtualHost> defined for this NameVirtualHost!\n", buf);
+	else
+	    fprintf(f, "%-22s %s (%s:%u)\n", buf, ic->server->server_hostname,
 		ic->server->defn_name, ic->server->defn_line_number);
 	return;
     }
