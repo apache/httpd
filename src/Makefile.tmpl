@@ -64,8 +64,8 @@ subdirs:
 	@for i in $(SUBDIRS); do \
 		echo "===> $(SDP)$$i"; \
 		case ".$(OS)" in \
-		  .OS390 | .TPF) ( cd $$i && $(MAKE) SDP='$(SDP)' ) || exit 1;; \
-		              *) ( cd $$i && $(MAKE) $(MFLAGS_STATIC) SDP='$(SDP)' CC='$(CC)' AUX_CFLAGS='$(CFLAGS)' RANLIB='$(RANLIB)') || exit 1;; \
+		  .OS390 | .TPF) ( cd $$i && $(MAKE) SDP='$(SDP)' OPTIM='$(OPTIM)') || exit 1;; \
+		              *) ( cd $$i && $(MAKE) $(MFLAGS_STATIC) SDP='$(SDP)' CC='$(CC)' AUX_CFLAGS='$(CFLAGS)' RANLIB='$(RANLIB)' OPTIM='$(OPTIM)') || exit 1;; \
 		esac; \
 		echo "<=== $(SDP)$$i"; \
 	done
@@ -74,14 +74,14 @@ support: support-dir
 
 support-dir:
 	@echo "===> $(SDP)support"; \
-	cd support; $(MAKE) $(MFLAGS_STATIC) SDP='$(SDP)' CC='$(CC)' AUX_CFLAGS='$(CFLAGS)' RANLIB='$(RANLIB)' || exit 1; \
+	cd support; $(MAKE) $(MFLAGS_STATIC) SDP='$(SDP)' CC='$(CC)' AUX_CFLAGS='$(CFLAGS)' RANLIB='$(RANLIB)' OPTIM='$(OPTIM)' || exit 1; \
 	echo "<=== $(SDP)support"
 
 clean:
 	-rm -f $(TARGET) lib$(TARGET).* *.o
 	@for i in $(SUBDIRS); do \
 		echo "===> $(SDP)$$i"; \
-		( cd $$i && $(MAKE) $(MFLAGS_STATIC) SDP='$(SDP)' $@ ) || exit 1; \
+		( cd $$i && $(MAKE) $(MFLAGS_STATIC) SDP='$(SDP)' OPTIM='$(OPTIM)' $@ ) || exit 1; \
 		echo "<=== $(SDP)$$i"; \
 	done
 
@@ -116,7 +116,7 @@ depend:
 		> Makefile.tmpl \
 	    && rm Makefile.new
 	for i in $(SUBDIRS); do \
-	    ( cd $$i && $(MAKE) CC='$(CC)' AUX_CFLAGS='$(CFLAGS)' RANLIB='$(RANLIB)' depend ) || exit 1; \
+	    ( cd $$i && $(MAKE) CC='$(CC)' AUX_CFLAGS='$(CFLAGS)' RANLIB='$(RANLIB)' OPTIM='$(OPTIM)' depend ) || exit 1; \
 	done
 
 #Dependencies
