@@ -91,8 +91,8 @@ static const char *set_worker_param(apr_pool_t *p,
 
     int ival;
     if (!strcasecmp(key, "loadfactor")) {
-        /* Worker load factor. Used with BalancerMamber
-         * It is a number between 1 and 100 in percents.
+        /* Normalized load factor. Used with BalancerMamber,
+         * it is a number between 1 and 100.
          */
         worker->lbfactor = atoi(val);
         if (worker->lbfactor < 1 || worker->lbfactor > 100)

@@ -27,7 +27,6 @@ static int init_balancer_members(proxy_server_conf *conf, server_rec *s,
                                  proxy_balancer *balancer)
 {
     int i;
-    int median, ffactor = 0;
     proxy_worker *workers;    
 
     workers = (proxy_worker *)balancer->workers->elts;
@@ -39,41 +38,10 @@ static int init_balancer_members(proxy_server_conf *conf, server_rec *s,
     }
 
     workers = (proxy_worker *)balancer->workers->elts;
-    /* Recalculate lbfactors */
     for (i = 0; i < balancer->workers->nelts; i++) {
         /* Set to the original configuration */
-        workers[i].s->lbfactor = workers[i].lbfactor;
-        ffactor += workers[i].s->lbfactor;
-    }
-    if (ffactor < 100) {
-        int z = 0;
-        for (i = 0; i < balancer->workers->nelts; i++) {
-            if (workers[i].s->lbfactor == 0) 
-                ++z;
-        }
-        if (z) {
-            median = (100 - ffactor) / z;
-            for (i = 0; i < balancer->workers->nelts; i++) {
-                if (workers[i].s->lbfactor == 0) 
-                    workers[i].s->lbfactor = median;
-            }
-        }
-        else {
-            median = (100 - ffactor) / balancer->workers->nelts;
-            for (i = 0; i < balancer->workers->nelts; i++)
-                workers[i].s->lbfactor += median;
-        }
-    }
-    else if (ffactor > 100) {
-        median = (ffactor - 100) / balancer->workers->nelts;
-        for (i = 0; i < balancer->workers->nelts; i++) {
-            if (workers[i].s->lbfactor > median)
-                workers[i].s->lbfactor -= median;
-        }
-    } 
-    for (i = 0; i < balancer->workers->nelts; i++) {
-        /* Update the status entires */
-        workers[i].s->lbstatus = workers[i].s->lbfactor;
+        workers[i].s->lbstatus = workers[i].s->lbfactor =
+          (workers[i].lbfactor ? workers[i].lbfactor : 1);
     }
     return 0;
 }
@@ -196,7 +164,7 @@ static proxy_worker *find_session_route(proxy_balancer *balancer,
  * The idea behind this scheduler is the following:
  *
  * lbfactor is "how much we expect this worker to work", or "the worker's
- * work quota".
+ * normalized work quota".
  *
  * lbstatus is "how urgent this worker has to work to fulfill its quota
  * of work".
@@ -214,37 +182,29 @@ static proxy_worker *find_session_route(proxy_balancer *balancer,
  *
  * worker     a    b    c    d
  * lbfactor  25   25   25   25
- * lbstatus   0    0    0    0
  *
  * And b gets disabled, the following schedule is produced:
  *
- * lbstatus -50    0   25   25
- * lbstatus -25    0  -25   50
- * lbstatus   0    0    0    0
- * (repeat)
+ *    a c d a c d a c d ...
  *
- * That is it schedules: a c d a c d a c d ...
+ * Note that the above lbfactor setting is the *exact* same as:
  *
- * The following asymmetric configuration works as one would expect:
+ * worker     a    b    c    d
+ * lbfactor   1    1    1    1
  *
- * worker     a    b
- * lbfactor  70   30
+ * Asymmetric configurations work as one would expect. For
+ * example:
  *
- * lbstatus -30   30
- * lbstatus  40  -40
- * lbstatus  10  -10
- * lbstatus -20   20
- * lbstatus -50   50
- * lbstatus  20  -20
- * lbstatus -10   10
- * lbstatus -40   40
- * lbstatus  30  -30
- * lbasatus   0    0
- * (repeat)
+ * worker     a    b    c    d
+ * lbfactor   1    1    1    2
  *
- * That is after 10 schedules, the schedule repeats and 7 a are selected
- * with 3 b interspersed.
-*/
+ * would have a, b and c all handling about the same
+ * amount of load with d handling twice what a or b
+ * or c handles individually. So we could see:
+ *
+ *   b a d c d a c d b d ...
+ *
+ */
 static proxy_worker *find_best_worker(proxy_balancer *balancer,
                                       request_rec *r)
 {
@@ -461,51 +421,23 @@ static int proxy_balancer_post_request(proxy_worker *worker,
     return OK;
 } 
 
-static void recalc_factors(proxy_balancer *balancer,
-                           proxy_worker *fixed)
+static void recalc_factors(proxy_balancer *balancer)
 {
     int i;
-    int median, ffactor = 0;
     proxy_worker *workers;    
 
 
     /* Recalculate lbfactors */
     workers = (proxy_worker *)balancer->workers->elts;
     /* Special case if there is only one worker it's
-     * load factor will always be 100
+     * load factor will always be 1
      */
     if (balancer->workers->nelts == 1) {
-        workers->s->lbstatus = workers->s->lbfactor = 100;
+        workers->s->lbstatus = workers->s->lbfactor = 1;
         return;
     }
     for (i = 0; i < balancer->workers->nelts; i++) {
-        if (workers[i].s->lbfactor > 100)
-            workers[i].s->lbfactor = 100;
-        ffactor += workers[i].s->lbfactor;
-    }
-    if (ffactor < 100) {
-        median = (100 - ffactor) / (balancer->workers->nelts - 1);
-        for (i = 0; i < balancer->workers->nelts; i++) {
-            if (&(workers[i]) != fixed)
-                workers[i].s->lbfactor += median;
-        }
-    }
-    else if (fixed->s->lbfactor < 100) {
-        median = (ffactor - 100) / (balancer->workers->nelts - 1);
-        for (i = 0; i < balancer->workers->nelts; i++) {
-            if (workers[i].s->lbfactor > median &&
-                &(workers[i]) != fixed)
-                workers[i].s->lbfactor -= median;
-        }
-    } 
-    else {
-        median = (ffactor - 100) / balancer->workers->nelts;
-        for (i = 0; i < balancer->workers->nelts; i++) {
-            workers[i].s->lbfactor -= median;
-        }
-    } 
-    for (i = 0; i < balancer->workers->nelts; i++) {
-        /* Update the status entires */
+        /* Update the status entries */
         workers[i].s->lbstatus = workers[i].s->lbfactor;
     }
 }
@@ -595,10 +527,10 @@ static int balancer_handler(request_rec *r)
         const char *val;
         if ((val = apr_table_get(params, "lf"))) {
             int ival = atoi(val);
-            if (ival > 1) {
+            if (ival >= 1 && ival <= 100) {
                 wsel->s->lbfactor = ival;
                 if (bsel)
-                    recalc_factors(bsel, wsel);
+                    recalc_factors(bsel);
             }
         }
         if ((val = apr_table_get(params, "wr"))) {
