@@ -98,7 +98,7 @@
 #endif
 #ifdef WIN32
 #include "../os/win32/getopt.h"
-#else
+#elif !defined(BEOS)
 #include <netinet/tcp.h>
 #endif
 
@@ -1947,7 +1947,7 @@ static void set_group_privs(void)
       name = ent->pw_name;
     } else name = user_name;
 
-#ifndef __EMX__ 
+#ifndef __EMX__
     /* OS/2 dosen't support groups. */
 
     /* Reset `groups' attributes. */
@@ -2307,10 +2307,13 @@ static int make_sock(pool *p, const struct sockaddr_in *server)
         exit(1);
     }
     one = 1;
+#ifndef BEOS
+/* BeOS does not support SO_KEEPALIVE */
     if (setsockopt(s, SOL_SOCKET,SO_KEEPALIVE,(char *)&one,sizeof(int)) < 0) {
         log_unixerr("setsockopt", "(SO_KEEPALIVE)", NULL, server_conf);
         exit(1);
     }
+#endif
 #endif
 
     sock_disable_nagle(s);
@@ -2335,6 +2338,7 @@ static int make_sock(pool *p, const struct sockaddr_in *server)
      *
      * If no size is specified, use the kernel default.
      */
+#ifndef BEOS	/* BeOS does not support SO_SNDBUF */
     if (server_conf->send_buffer_size) {
         if (setsockopt(s, SOL_SOCKET, SO_SNDBUF,
               (char *)&server_conf->send_buffer_size, sizeof(int)) < 0) {
@@ -2344,6 +2348,7 @@ static int make_sock(pool *p, const struct sockaddr_in *server)
 	    /* not a fatal error */
 	}
     }
+#endif
 
 #ifdef MPE
 /* MPE requires CAP=PM and GETPRIVMODE to bind to ports less than 1024 */

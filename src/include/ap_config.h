@@ -605,6 +605,20 @@ typedef int rlim_t;
 #define NEED_STRNCASECMP
 #define NEED_STRDUP
 
+#elif defined(BEOS)
+#include <stddef.h>
+
+#define JMP_BUF sigjmp_buf
+#define NO_WRITEV
+#define NO_KILLPG
+#define NEED_INITGROUPS
+
+/* BeOS doesn't have a couple signals... redefine to close ones*/
+#define SIGBUS SIGSEGV
+#define SIGURG SIGPIPE
+
+#define isascii(c)	(!((c) & ~0177))
+
 #elif defined(WIN32)     
 /* Put your NT stuff here - Ambarish */
 
@@ -756,9 +770,9 @@ API_EXPORT(int) ap_vsnprintf(char *buf, size_t len, const char *format,
 #include <netinet/in.h>
 #include <netdb.h>
 #include <sys/ioctl.h>
-#ifndef MPE
+#if !defined(MPE) && !defined(BEOS)
 #include <arpa/inet.h>  /* for inet_ntoa */
-#endif /* ndef MPE */
+#endif
 #include <sys/wait.h>
 #include <pwd.h>
 #include <grp.h>

@@ -480,6 +480,11 @@ case "$PLAT" in
 	MAKE="make"
 	DEF_WANTHSREGEX=yes
 	;;
+    *-BeOS*)
+	OS='BeOS';
+	CFLAGS="$CFLAGS -DBEOS"
+	DEF_WANTHSREGEX=yes
+	;;
     *) # default: Catch systems we don't know about
     	echo Sorry, but we cannot grok \"$PLAT\"
 	echo uname -m
