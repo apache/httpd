@@ -84,7 +84,7 @@ method.</description>
     <var>cgi-script</var> when a file is requested using the method of
     <var>method</var>. The <var>cgi-script</var> is the URL-path to a
     resource that has been designated as a CGI script using <directive
-    module="mod_alias">ScriptAliase</directive> or <directive
+    module="mod_alias">ScriptAlias</directive> or <directive
     module="mod_mime">AddHandler</directive>.  The URL and
     file path of the requested document is sent using the standard CGI
     PATH_INFO and PATH_TRANSLATED environment variables.</p>
