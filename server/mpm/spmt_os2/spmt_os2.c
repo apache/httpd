@@ -132,6 +132,11 @@ static struct thread_globals **ppthread_globals = NULL;
 
 #define THREAD_GLOBAL(gvar) ((*ppthread_globals)->gvar)
 
+struct thread_control_t {
+    apr_wait_t thread_retval;
+    char deferred_die;
+    ap_generation_t generation;	/* generation of this thread */
+} thread_control[HARD_THREAD_LIMIT];
 
 /* a clean exit from a child with proper cleanup */
 static void clean_child_exit(int code)
@@ -140,7 +145,8 @@ static void clean_child_exit(int code)
         apr_destroy_pool(THREAD_GLOBAL(pchild));
     }
 
-    ap_scoreboard_image->servers[0][THREAD_GLOBAL(thread_num)].thread_retval = code;
+    thread_control[THREAD_GLOBAL(thread_num)].deferred_die = 0;
+    thread_control[THREAD_GLOBAL(thread_num)].thread_retval = code;
     _endthread();
 }
 
@@ -257,7 +263,7 @@ static int wait_or_timeout(apr_wait_t *status)
     if (ret == 0) {
         int thread_num = find_thread_by_tid(tid);
         ap_assert( thread_num > 0 );
-        *status = ap_scoreboard_image->servers[0][thread_num].thread_retval;
+        *status = thread_control[thread_num].thread_retval;
 	return tid;
     }
     
@@ -428,7 +434,7 @@ static void usr1_handler(int sig)
     if (THREAD_GLOBAL(usr1_just_die)) {
 	just_die(sig);
     }
-    ap_scoreboard_image->servers[0][THREAD_GLOBAL(thread_num)].deferred_die = 1;
+    thread_control[THREAD_GLOBAL(thread_num)].deferred_die = 1;
 }
 
 /* volatile just in case */
@@ -568,15 +574,15 @@ static void set_signals(void)
 AP_DECLARE(void) ap_child_terminate(request_rec *r)
 {
     r->connection->keepalive = 0;
-    ap_scoreboard_image->servers[0][THREAD_GLOBAL(thread_num)].deferred_die = 1;
+    thread_control[THREAD_GLOBAL(thread_num)].deferred_die = 1;
 }
 
 
 
 int ap_graceful_stop_signalled(void)
 {
-    if (ap_scoreboard_image->servers[0][THREAD_GLOBAL(thread_num)].deferred_die ||
-	ap_scoreboard_image->global.running_generation != ap_scoreboard_image->servers[0][THREAD_GLOBAL(thread_num)].generation) {
+    if (thread_control[THREAD_GLOBAL(thread_num)].deferred_die ||
+	ap_scoreboard_image->global.running_generation != thread_control[THREAD_GLOBAL(thread_num)].generation) {
 	return 1;
     }
     return 0;
@@ -587,8 +593,8 @@ int ap_graceful_stop_signalled(void)
 int ap_stop_signalled(void)
 {
     if (shutdown_pending || restart_pending ||
-        ap_scoreboard_image->servers[0][THREAD_GLOBAL(thread_num)].deferred_die ||
-	ap_scoreboard_image->global.running_generation != ap_scoreboard_image->servers[0][THREAD_GLOBAL(thread_num)].generation) {
+        thread_control[THREAD_GLOBAL(thread_num)].deferred_die ||
+	ap_scoreboard_image->global.running_generation != thread_control[THREAD_GLOBAL(thread_num)].generation) {
 	return 1;
     }
     return 0;
@@ -872,6 +878,7 @@ static int make_child(server_rec *s, int slot)
     }
 
     ap_scoreboard_image->servers[0][slot].tid = tid;
+    thread_control[THREAD_GLOBAL(thread_num)].generation = ap_scoreboard_image->global.running_generation;
     return 0;
 }
 
@@ -966,7 +973,7 @@ static void perform_idle_server_maintenance(void)
 	 * shut down gracefully, in case it happened to pick up a request
 	 * while we were counting
 	 */
-	ap_scoreboard_image->servers[0][to_kill].deferred_die = 1;
+	thread_control[to_kill].deferred_die = 1;
 	idle_spawn_rate = 1;
     }
     else if (idle_count < ap_daemons_min_free) {
@@ -1035,7 +1042,8 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
     SAFE_ACCEPT(accept_mutex_init(pconf));
 
     if (!is_graceful) {
-	ap_create_scoreboard(pconf, SB_NOT_SHARED);
+        ap_create_scoreboard(pconf, SB_NOT_SHARED);
+        memset(thread_control, 0, sizeof(thread_control));
     }
 
     set_signals();
@@ -1218,7 +1226,7 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
 
         /* kill off the idle ones */
         for (i = 0; i < ap_daemons_limit; ++i) {
-            ap_scoreboard_image->servers[0][i].deferred_die = 1;
+            thread_control[i].deferred_die = 1;
         }
 
 	/* This is mostly for debugging... so that we know what is still

@@ -173,11 +173,6 @@ typedef struct {
 #ifndef OPTIMIZE_TIMEOUTS
     time_t last_used;
 #endif
-#ifdef SPMT_OS2_MPM
-    apr_wait_t thread_retval;
-    char deferred_die;
-    ap_generation_t generation;	/* generation of this thread */
-#endif
     char client[32];		/* Keep 'em small... */
     char request[64];		/* We just want an idea... */
     server_rec *vhostrec;	/* What virtual host is being accessed? */
