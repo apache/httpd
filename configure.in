@@ -183,11 +183,11 @@ AC_ARG_WITH(suexec-docroot,
 
 AC_ARG_WITH(suexec-uidmin,
 [  --with-suexec-uidmin    Minimal allowed UID],[
-  AC_DEFINE_UNQUOTED(AP_UID_MIN, "$withval", [Minimal allowed UID] ) ] )
+  AC_DEFINE_UNQUOTED(AP_UID_MIN, $withval, [Minimum allowed UID] ) ] )
 
 AC_ARG_WITH(suexec-gidmin,
 [  --with-suexec-gidmin    Minimal allowed GID],[
-  AC_DEFINE_UNQUOTED(AP_GID_MIN, "$withval", [Minimal allowed GID] ) ] )
+  AC_DEFINE_UNQUOTED(AP_GID_MIN, $withval, [Minimum allowed GID] ) ] )
 
 AC_ARG_WITH(suexec-logfile,
 [  --with-suexec-logfile   Set the logfile],[
@@ -196,6 +196,10 @@ AC_ARG_WITH(suexec-logfile,
 AC_ARG_WITH(suexec-safepath,
 [  --with-suexec-safepath  Set the safepath],[
   AC_DEFINE_UNQUOTED(AP_SAFE_PATH, "$withval", [safe shell path for SuExec] ) ] )
+
+AC_ARG_WITH(suexec-umask,
+[  --with-suexec-umask     umask for suexec'd process],[
+  AC_DEFINE_UNQUOTED(AP_SUEXEC_UMASK, 0$withval, [umask for suexec'd process] ) ] )
 
 dnl AP_LIB_DIRS specifies the additional libs from srclib/ that we need
 dnl AP_LIBS specifies the actual libraries. note we have some required libs.

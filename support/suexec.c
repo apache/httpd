@@ -301,11 +301,11 @@ int main(int argc, char *argv[])
 #ifdef AP_LOG_EXEC
         fprintf(stderr, " -D AP_LOG_EXEC=\"%s\"\n", AP_LOG_EXEC);
 #endif
-#ifdef SAFE_PATH
-        fprintf(stderr, " -D SAFE_PATH=\"%s\"\n", SAFE_PATH);
+#ifdef AP_SAFE_PATH
+        fprintf(stderr, " -D AP_SAFE_PATH=\"%s\"\n", AP_SAFE_PATH);
 #endif
-#ifdef SUEXEC_UMASK
-        fprintf(stderr, " -D SUEXEC_UMASK=%03o\n", SUEXEC_UMASK);
+#ifdef AP_SUEXEC_UMASK
+        fprintf(stderr, " -D AP_SUEXEC_UMASK=%03o\n", AP_SUEXEC_UMASK);
 #endif
 #ifdef AP_UID_MIN
         fprintf(stderr, " -D AP_UID_MID=%d\n", AP_UID_MIN);
@@ -580,6 +580,16 @@ int main(int argc, char *argv[])
 	exit(121);
     }
 
+#ifdef AP_SUEXEC_UMASK
+    /*
+     * umask() uses inverse logic; bits are CLEAR for allowed access.
+     */
+    if ((~AP_SUEXEC_UMASK) & 0022) {
+        log_err("notice: AP_SUEXEC_UMASK of %03o allows "
+                "write permission to group and/or other\n", AP_SUEXEC_UMASK);
+    }
+    umask(AP_SUEXEC_UMASK);
+#endif /* AP_SUEXEC_UMASK */
     clean_env();
 
     /* 
