@@ -10,3 +10,4 @@ Makefile
 Debug
 Release
 *.plg
+*.rc 

@@ -5,3 +5,4 @@ Makefile
 modules.mk
 Debug
 Release
+*.rc 
