@@ -2,7 +2,7 @@
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
 <manualpage metafile="cgi.xml.meta">
-<!-- English revision: 1.5 -->
+<!-- English revision: 1.6 -->
   <parentdocument href="./">How-To / チュートリアル</parentdocument>
 
   <title>Apache Tutorial: CGI による動的コンテンツ</title>
