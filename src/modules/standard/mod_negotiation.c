@@ -1062,7 +1062,7 @@ void set_language_quality(negotiation_state *neg, var_rec *variant)
 
     }
     else if (naccept) {
-	/* Variant has one (or more) langauges, and we have one (or more)
+	/* Variant has one (or more) languages, and we have one (or more)
 	 * language ranges on the Accept-Language header. Look for
 	 * the best match. We do this by going through each language
 	 * on the variant description looking for a match on the
