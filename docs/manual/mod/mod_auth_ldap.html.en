@@ -6,7 +6,8 @@
                       </span></td><td>Allows an LDAP directory to be used to store the database
 for HTTP Basic authentication.</td></tr><tr><td nowrap="nowrap"><a href="module-dict.html#Status" class="help">Status:
                       </a></td><td>experimental</td></tr><tr><td nowrap="nowrap"><a href="module-dict.html#ModuleIdentifier" class="help">Module&nbsp;Identifier:
-                        </a></td><td>auth_ldap_module</td></tr></table></td></tr></table><h2>Summary</h2>
+                        </a></td><td>auth_ldap_module</td></tr><tr><td align="left" valign="top"><a href="module-dict.html#Compatibility" class="help">Compatibility:
+                        </a></td><td><compatibility>Available in version 2.0.41 and later</compatibility></td></tr></table></td></tr></table><h2>Summary</h2>
     <p><code><a href="../mod/mod_auth_ldap.html">mod_auth_ldap</a></code> supports the following features:</p>
 
     <ul>
@@ -26,7 +27,7 @@ for HTTP Basic authentication.</td></tr><tr><td nowrap="nowrap"><a href="module-
       <li>Support for LDAP over SSL (requires the Netscape SDK) or
       TLS (requires the OpenLDAP 2.x SDK).</li>
     </ul>
-<h2>Directives</h2><ul><li><a href="#authldapauthoritative">AuthLDAPAuthoritative</a></li><li><a href="#authldapbinddn">AuthLDAPBindDN</a></li><li><a href="#authldapbindpassword">AuthLDAPBindPassword</a></li><li><a href="#authldapcomparednonserver">AuthLDAPCompareDNOnServer</a></li><li><a href="#authldapdereferencealiases">AuthLDAPDereferenceAliases</a></li><li><a href="#authldapenabled">AuthLDAPEnabled</a></li><li><a href="#authldapfrontpagehack">AuthLDAPFrontPageHack</a></li><li><a href="#authldapgroupattribute">AuthLDAPGroupAttribute</a></li><li><a href="#authldapgroupattributeisdn">AuthLDAPGroupAttributeIsDN</a></li><li><a href="#authldapremoteuserisdn">AuthLDAPRemoteUserIsDN</a></li><li><a href="#authldapstarttls directive">AuthLDAPStartTLS directive</a></li><li><a href="#authldapurl">AuthLDAPUrl</a></li></ul><h2><a name="contents">Contents</a></h2>
+<h2>Directives</h2><ul><li><a href="#authldapauthoritative">AuthLDAPAuthoritative</a></li><li><a href="#authldapbinddn">AuthLDAPBindDN</a></li><li><a href="#authldapbindpassword">AuthLDAPBindPassword</a></li><li><a href="#authldapcomparednonserver">AuthLDAPCompareDNOnServer</a></li><li><a href="#authldapdereferencealiases">AuthLDAPDereferenceAliases</a></li><li><a href="#authldapenabled">AuthLDAPEnabled</a></li><li><a href="#authldapfrontpagehack">AuthLDAPFrontPageHack</a></li><li><a href="#authldapgroupattribute">AuthLDAPGroupAttribute</a></li><li><a href="#authldapgroupattributeisdn">AuthLDAPGroupAttributeIsDN</a></li><li><a href="#authldapremoteuserisdn">AuthLDAPRemoteUserIsDN</a></li><li><a href="#authldapstarttls directive">AuthLDAPStartTLS directive</a></li><li><a href="#authldapurl">AuthLDAPUrl</a></li></ul><p><strong>See also </strong></p><ul><li><code><a href="../mod/mod_ldap.html">mod_ldap</a></code></li></ul><h2><a name="contents">Contents</a></h2>
 
     <ul>
       <li>

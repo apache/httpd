@@ -1,0 +1,206 @@
+<html><head><META http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><!--
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+              This file is generated from xml source: DO NOT EDIT
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+      --><title>mod_ldap - Apache HTTP Server</title><link href="../style/manual.css" type="text/css" rel="stylesheet"></head><body><blockquote><div align="center"><img src="../images/sub.gif" alt="[APACHE DOCUMENTATION]"><h3>Apache HTTP Server Version 2.0</h3></div><h1 align="center">Apache Module mod_ldap</h1><table cellspacing="1" cellpadding="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap" valign="top"><span class="help">Description:
+                      </span></td><td>LDAP connection pooling and result caching
+services for use by other LDAP modules</td></tr><tr><td nowrap="nowrap"><a href="module-dict.html#Status" class="help">Status:
+                      </a></td><td>experimental</td></tr><tr><td nowrap="nowrap"><a href="module-dict.html#ModuleIdentifier" class="help">Module&nbsp;Identifier:
+                        </a></td><td>ldap_module</td></tr><tr><td align="left" valign="top"><a href="module-dict.html#Compatibility" class="help">Compatibility:
+                        </a></td><td><compatibility>Available in version 2.0.41 and later</compatibility></td></tr></table></td></tr></table><h2>Summary</h2>
+    <p>This module was created to improve the performance of
+    websites relying on backend connections to LDAP servers. In
+    addition to the functions provided by the standard LDAP
+    libraries, this module adds an LDAP connection pool and an LDAP
+    shared memory cache.</p>
+
+    <p>To enable this module, LDAP support must be compiled into
+    apr-util. This is achieved by adding the <code>--with-ldap</code>
+    flag to the <code>./configure</code> script when building
+    Apache.</p>
+<h2>Directives</h2><ul><li><a href="#ldapcacheentries">LDAPCacheEntries</a></li><li><a href="#ldapcachettl">LDAPCacheTTL</a></li><li><a href="#ldapcertdbpath">LDAPCertDBPath</a></li><li><a href="#ldapopcacheentries">LDAPOpCacheEntries</a></li><li><a href="#ldapopcachettl">LDAPOpCacheTTL</a></li><li><a href="#ldapsharedcachesize">LDAPSharedCacheSize</a></li></ul><h2><a name="exampleconfig">Example Configuration</a></h2>
+
+<p>The following is an example configuration that uses
+<code><a href="../mod/mod_ldap.html">mod_ldap</a></code> to increase the performance of HTTP Basic
+authentication provided by <code><a href="../mod/mod_auth_ldap.html">mod_auth_ldap</a></code>.</p>
+
+<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>
+<pre>
+# Enable the LDAP connection pool and shared memory cache. Enable the
+# LDAP cache status handler. Requires that mod_ldap and mod_auth_ldap
+# be loaded. Change the "yourdomain.example.com" to match your domain.
+
+    LDAPSharedCacheSize 200000
+    LDAPCacheEntries 1024
+    LDAPCacheTTL 600
+    LDAPOpCacheEntries 1024
+    LDAPOpCacheTTL 600
+
+    &lt;Location /ldap-status&gt;
+        SetHandler ldap-status
+        Order deny,allow
+        Deny from all
+        Allow from yourdomain.example.com
+        AuthLDAPEnabled on
+        AuthLDAPURL ldap://127.0.0.1/dc=example,dc=com?uid?one
+        AuthLDAPAuthoritative on
+        require valid-user
+    &lt;/Location&gt;
+</pre></code></td></tr></table></blockquote>
+<h2><a name="pool">LDAP Connection Pool</a></h2>
+
+    <p>LDAP connections are pooled from request to request. This
+    allows the LDAP server to remain connected and bound ready for
+    the next request, without the need to unbind/connect/rebind.
+    The performance advantages are similar to the effect of HTTP
+    keepalives.</p>
+
+    <p>On a busy server it is possible that many requests will try
+    and access the same LDAP server connection simultaneously.
+    Where an LDAP connection is in use, Apache will create a new
+    connection alongside the original one. This ensures that the
+    connection pool does not become a bottleneck.</p>
+
+    <p>There is no need to manually enable connection pooling in
+    the Apache configuration. Any module using this module for
+    access to LDAP services will share the connection pool.</p>
+<h2><a name="cache">LDAP Cache</a></h2>
+
+    <p>For improved performance, <code><a href="../mod/mod_ldap.html">mod_ldap</a></code> uses an aggressive
+    caching strategy to minimize the number of times that the LDAP
+    server must be contacted. Caching can easily double or triple
+    the throughput of Apache when it is serving pages protected
+    with mod_auth_ldap. In addition, the load on the LDAP server
+    will be significantly decreased.</p>
+
+    <p><code><a href="../mod/mod_ldap.html">mod_ldap</a></code> supports two types of LDAP caching during the
+    search/bind phase with a <em>search/bind cache</em> and
+    during the compare phase with two <em>operation
+    caches</em>. Each LDAP URL that is used by the server has
+    its own set of these three caches.</p>
+
+<h3><a name="search-bind">The Search/Bind Cache</a></h3>
+
+        <p>The process of doing a search and then a bind is the
+        most time-consuming aspect of LDAP operation, especially if
+        the directory is large. The search/bind cache is used to
+        cache all searches that resulted in successful binds.
+        Negative results (i.e., unsuccessful searches, or searches
+        that did not result in a successful bind) are not cached.
+        The rationale behind this decision is that connections with
+        invalid credentials are only a tiny percentage of the total
+        number of connections, so by not caching invalid
+        credentials, the size of the cache is reduced.</p>
+
+        <p><code><a href="../mod/mod_ldap.html">mod_ldap</a></code> stores the username, the DN
+        retrieved, the password used to bind, and the time of the bind
+        in the cache. Whenever a new connection is initiated with the
+        same username, <code><a href="../mod/mod_ldap.html">mod_ldap</a></code> compares the password
+        of the new connection with the password in the cache. If the
+        passwords match, and if the cached entry is not too old,
+        <code><a href="../mod/mod_ldap.html">mod_ldap</a></code> bypasses the search/bind phase.</p>
+
+        <p>The search and bind cache is controlled with the <a href="#ldapcacheentries" class="directive"><code class="directive">LDAPCacheEntries</code></a> and <a href="#ldapcachettl" class="directive"><code class="directive">LDAPCacheTTL</code></a> directives.</p>
+
+
+<h3><a name="opcaches">Operation Caches</a></h3>
+
+        <p>During attribute and distinguished name comparison
+        functions, <code><a href="../mod/mod_ldap.html">mod_ldap</a></code> uses two operation caches
+        to cache the compare operations. The first compare cache is
+        used to cache the results of compares done to test for LDAP
+        group membership. The second compare cache is used to cache
+        the results of comparisons done between distinguished
+        names.</p>
+
+        <p>The behavior of both of these caches is controlled with
+        the <a href="#ldapopcacheentries" class="directive"><code class="directive">LDAPOpCacheEntries</code></a>
+        and <a href="#ldapopcachettl" class="directive"><code class="directive">LDAPOpCacheTTL</code></a>
+        directives.</p>
+
+
+<h3><a name="monitoring">Monitoring the Cache</a></h3>
+
+        <p><code><a href="../mod/mod_ldap.html">mod_ldap</a></code> has a content handler that allows
+        administrators to monitor the cache performance. The name of
+        the content handler is <code>ldap-status</code>, so the
+        following directives could be used to access the
+        <code><a href="../mod/mod_ldap.html">mod_ldap</a></code> cache information:</p>
+<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code><pre>
+&lt;Location /server/cache-info &gt;
+ SetHandler ldap-status
+&lt;/Location&gt;
+</pre></code></td></tr></table></blockquote>
+
+        <p>By fetching the URL
+        <code>http://servername/cache-info</code>, the administrator
+        can get a status report of every cache that is used by
+        <code><a href="../mod/mod_ldap.html">mod_ldap</a></code> cache. Note that if Apache does not
+        support shared memory, then each <code>httpd</code> instance has its
+        own cache, so reloading the URL will result in different
+        information each time, depending on which <code>httpd</code>
+        instance processes the request.</p>
+
+<hr><h2><a name="LDAPCacheEntries">LDAPCacheEntries</a> <a name="ldapcacheentries">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
+                  </strong></td><td></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">Syntax:
+                  </a></td><td>LDAPCacheEntries <em>number</em></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Default" class="help">Default: 
+                    </a></td><td><code>LDAPCacheEntries 1024</code></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">Context:
+                  </a></td><td>server config</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Status" class="help">Status:
+                  </a></td><td>experimental</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Module" class="help">Module:
+                  </a></td><td>mod_ldap</td></tr></table></td></tr></table>
+    <p>Specifies the maximum size of the primary LDAP cache. This
+    cache contains successful search/binds. Set it to 0 to turn off
+    search/bind caching. The default size is 1024 cached
+    searches.</p>
+<hr><h2><a name="LDAPCacheTTL">LDAPCacheTTL</a> <a name="ldapcachettl">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
+                  </strong></td><td></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">Syntax:
+                  </a></td><td>LDAPCacheTTL <em>seconds</em></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Default" class="help">Default: 
+                    </a></td><td><code>LDAPCacheTTL 600</code></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">Context:
+                  </a></td><td>server config</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Status" class="help">Status:
+                  </a></td><td>experimental</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Module" class="help">Module:
+                  </a></td><td>mod_ldap</td></tr></table></td></tr></table>
+    <p>Specifies the time (in seconds) that an item in the
+    search/bind cache remains valid. The default is 600 seconds (10
+    minutes).</p>
+<hr><h2><a name="LDAPCertDBPath">LDAPCertDBPath</a> <a name="ldapcertdbpath">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
+                  </strong></td><td></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">Syntax:
+                  </a></td><td>LDAPCertDBPath <em>directory-path</em></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">Context:
+                  </a></td><td>server config</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Status" class="help">Status:
+                  </a></td><td>experimental</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Module" class="help">Module:
+                  </a></td><td>mod_ldap</td></tr></table></td></tr></table>
+    <p>This directive is only valid if Apache has been linked
+    against the Netscape/iPlanet Directory SDK.</p>
+
+    <p>It specifies in which directory <code><a href="../mod/mod_ldap.html">mod_ldap</a></code>
+    should look for the certificate authorities database for SSL
+    support. There should be a file named <code>cert7.db</code> in that
+    directory.</p>
+<hr><h2><a name="LDAPOpCacheEntries">LDAPOpCacheEntries</a> <a name="ldapopcacheentries">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
+                  </strong></td><td></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">Syntax:
+                  </a></td><td>LDAPOpCacheEntries <em>number</em></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Default" class="help">Default: 
+                    </a></td><td><code>LDAPOpCacheEntries 1024</code></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">Context:
+                  </a></td><td>server config</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Status" class="help">Status:
+                  </a></td><td>experimental</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Module" class="help">Module:
+                  </a></td><td>mod_ldap</td></tr></table></td></tr></table>
+    <p>This specifies the number of entries <code><a href="../mod/mod_ldap.html">mod_ldap</a></code>
+    will use to cache LDAP compare operations. The default is 1024
+    entries.  Setting it to 0 disables operation caching.</p>
+<hr><h2><a name="LDAPOpCacheTTL">LDAPOpCacheTTL</a> <a name="ldapopcachettl">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
+                  </strong></td><td></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">Syntax:
+                  </a></td><td>LDAPOpCacheTTL <em>seconds</em></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Default" class="help">Default: 
+                    </a></td><td><code>LDAPOpCacheTTL 600</code></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">Context:
+                  </a></td><td>server config</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Status" class="help">Status:
+                  </a></td><td>experimental</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Module" class="help">Module:
+                  </a></td><td>mod_ldap</td></tr></table></td></tr></table>
+    <p>Specifies the time (in seconds) that entries in the
+    operation cache remain valid. The default is 600 seconds.</p>
+<hr><h2><a name="LDAPSharedCacheSize">LDAPSharedCacheSize</a> <a name="ldapsharedcachesize">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
+                  </strong></td><td></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">Syntax:
+                  </a></td><td>LDAPSharedCacheSize <em>bytes</em></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Default" class="help">Default: 
+                    </a></td><td><code>LDAPSharedCacheSize 102400</code></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">Context:
+                  </a></td><td>server config</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Status" class="help">Status:
+                  </a></td><td>experimental</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Module" class="help">Module:
+                  </a></td><td>mod_ldap</td></tr></table></td></tr></table>
+    <p>Specifies the number of bytes to specify for the shared
+    memory cache. The default is 100kb.</p>
+<hr></blockquote><h3 align="center">Apache HTTP Server Version 2.0</h3><a href="./"><img src="../images/index.gif" alt="Index"></a><a href="../"><img src="../images/home.gif" alt="Home"></a></body></html>
