@@ -295,9 +295,7 @@ section of this document.
 Here's where we begin the fun. If you use Apache 1.2 or prefer to configure
 Apache 1.3 with the "<CODE>src/Configure</CODE>" script you have to edit
 the suEXEC header file and install the binary in its proper location
-manually. This procedure is described in an
-<A HREF="suexec_1_2.html">extra document</A>.
-The following sections describe the configuration and installation
+manually. The following sections describe the configuration and installation
 for Apache 1.3 with the AutoConf-style interface (APACI).
 </P>
 

@@ -255,7 +255,7 @@ There are two ways you can run Apache:
 
       So the "process"-management directives are different:
       <P><A
-         HREF="mod/core.html#maxrequestsperchild">MaxRequestsPerChild</A>
+         HREF="../mod/mpm_common.html#maxrequestsperchild">MaxRequestsPerChild</A>
          - Like the Unix directive, this controls how many requests a
            process will serve before exiting. However, unlike Unix, a
            process serves all the requests at once, not just one, so if
@@ -267,7 +267,7 @@ There are two ways you can run Apache:
            new child process is started. If you have modified httpd.conf,
            the new child may not start or you may receive unexpected results.
 	   </STRONG>
-      <P><A HREF="mod/core.html#threadsperchild">ThreadsPerChild</A> -
+      <P><A HREF="../mod/mpm_common.html#threadsperchild">ThreadsPerChild</A> -
          This directive is new, and tells the server how many threads it
          should use. This is the maximum number of connections the server
          can handle at once; be sure and set this number high enough for
@@ -282,18 +282,18 @@ There are two ways you can run Apache:
       without recompiling the server. If Apache is compiled normally, it
       will install a number of optional modules in the
       <CODE>\Apache\modules</CODE> directory. To activate these, or other
-      modules, the new <A HREF="mod/mod_so.html#loadmodule">LoadModule</A>
+      modules, the new <A HREF="../mod/mod_so.html#loadmodule">LoadModule</A>
       directive must be used. For example, to active the status module,
       use the following (in addition to the status-activating directives
       in <CODE>access.conf</CODE>):</P>
 <PRE>
     LoadModule status_module modules/ApacheModuleStatus.dll
 </PRE>
-      <P>Information on <A HREF="mod/mod_so.html#creating">creating loadable
+      <P>Information on <A HREF="../mod/mod_so.html#creating">creating loadable
          modules</A> is also available.</P>
   <LI><P>Apache can also load ISAPI Extensions (<EM>i.e.</EM>, Internet Server
          Applications), such as those used by Microsoft's IIS, and other
-         Windows servers. <A HREF="mod/mod_isapi.html">More information
+         Windows servers. <A HREF="../mod/mod_isapi.html">More information
          is available.</A>  Note that Apache <EMP>CANNOT</EMP> load ISAPI
 		 Filters.
 </UL>
