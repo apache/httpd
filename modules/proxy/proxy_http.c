@@ -204,7 +204,7 @@ PROXY_DECLARE (int) ap_proxy_http_handler(request_rec *r, proxy_server_conf *con
     apr_table_entry_t *headers_in;
     char buffer[HUGE_STRING_LEN];
     char *buf;
-    conn_rec *origin;
+    conn_rec *origin = NULL;
     uri_components uri;
     proxy_conn_rec *backend;
 
