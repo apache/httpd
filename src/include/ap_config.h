@@ -910,9 +910,10 @@ typedef int rlim_t;
 #define S_IEXEC S_IXUSR
 
 #elif defined(BONE)
+#undef PLATFORM
+#define PLATFORM "BeOS BONE"
 #define NO_KILLPG
 #define NEED_INITGROUPS
-#define PF_INET AF_INET
 #define S_IEXEC S_IXUSR
 
 #elif defined(_CX_SX)
