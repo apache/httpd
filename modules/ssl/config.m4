@@ -77,7 +77,7 @@ ssl_util_ssl.lo dnl
 ssl_util_table.lo dnl
 "
 dnl #  hook module into the Autoconf mechanism (--enable-ssl option)
-APACHE_MODULE(ssl, [SSL/TLS support (mod_ssl)], [$ssl_objs \$(EXTRA_LIBS)], , no, [
+APACHE_MODULE(ssl, [SSL/TLS support (mod_ssl)], $ssl_objs, , no, [
     APACHE_CHECK_SSL_TOOLKIT
 ])
 
