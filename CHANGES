@@ -1,4 +1,8 @@
 Changes with Apache 2.0.31-dev
+
+  *) Fix a problem in the parsing of the <Proxy foo> directive.
+     [Jeff Trawick]
+
   *) rewrite of mod_ssl input filter for better performance and less
      memory usage [Doug MacEachern]
 
