@@ -222,6 +222,7 @@ FILES_nlm_exports = \
 	ldap_module \
 	util_ldap_connection_find \
 	util_ldap_connection_close \
+	util_ldap_connection_destroy \
 	util_ldap_cache_checkuserid \
 	util_ldap_cache_compare \
 	util_ldap_cache_comparedn \
