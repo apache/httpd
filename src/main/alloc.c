@@ -1858,6 +1858,9 @@ static int fd_magic_cleanup(void *fdv)
 
 API_EXPORT(void) ap_note_cleanups_for_fd_ex(pool *p, int fd, int domagic)
 {
+#if defined(NETWARE)
+    domagic = 0; /* skip magic for NetWare, at least for now */
+#endif
     ap_register_cleanup_ex(p, (void *) (long) fd, fd_cleanup, fd_cleanup,
                            domagic ? fd_magic_cleanup : NULL);
 }
@@ -1974,6 +1977,9 @@ static int file_magic_cleanup(void *fpv)
 
 API_EXPORT(void) ap_note_cleanups_for_file_ex(pool *p, FILE *fp, int domagic)
 {
+#if defined(NETWARE)
+    domagic = 0; /* skip magic for NetWare, at least for now */
+#endif
     ap_register_cleanup_ex(p, (void *) fp, file_cleanup, file_child_cleanup,
                            domagic ? file_magic_cleanup : NULL);
 }
