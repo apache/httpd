@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:						-*-text-*-
-Last modified at [$Date: 2002/02/03 19:19:13 $]
+Last modified at [$Date: 2002/02/03 22:28:16 $]
 
 Release:
 
@@ -45,7 +45,7 @@ RELEASE SHOWSTOPPERS:
         running on Daedalus since  02-Feb-2002 7:58 PST (need 3 days)
         Compiles on : AIX, Solaris, FreeBSD 3.5, Win32, Linux 2.4
         for beta
-            +1 : Justin, Ian, Jeff Trawick, BillS
+            +1 : Justin, Ian, Jeff Trawick, BillS, BrianP
             +0 : 
             -1 :
         bumps since original tag:
@@ -76,6 +76,8 @@ RELEASE SHOWSTOPPERS:
           the default SetOutputFilter default or merge is borked.
           Unless it's the code that permits 'null' merges, per module.
           Still, it's probably in SetOutputFilter's behavior.
+        * BrianP notes: directory_walk's handling of trailing slashes
+          appears to be the cause: http://www.apachelabs.org/apache-mbox/200112.mbox/%3c3C1CF721.1090300@pacbell.net%3e
 
     * Test suite failures:
       o worker is also failing some of the 'cgi' subtests
@@ -106,7 +108,7 @@ RELEASE SHOWSTOPPERS:
         Justin says: "Is this really a showstopper?  This has been here
                       forever.  What's wrong?  Does this have to do with
                       autoconf or m4?"
-        Not a showstopper: Justin
+        Not a showstopper: Justin, BrianP
 
     * Convert all instances of the old apr_lock_t type to the new
       types (once they are fully supported in APR).
@@ -115,6 +117,7 @@ RELEASE SHOWSTOPPERS:
                 LOCKALL and CROSS_PROCESS are not yet complete on all
                 platforms, and should only be used in MPMs like worker
                 with limited OS exposure.
+        BrianP asks: "Is this really a showstopper?"
 
     * A binbuild installation picks up the right libraries when
       running apachectl because we set the appropriate environment
@@ -145,7 +148,7 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
                   a 0 status on startup failure, whether it spawns
                   or not, before doing any work.  A script will
                   incorrectly think it successfully daemonised."
-        Showstopper: Ken
+        Showstopper: Ken, BrianP
         Not a showstopper: trawick, stoddard, Jim, Justin, Aaron
 
     * The Add...Filter and Set...Filter directives do not allow the
@@ -189,7 +192,7 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
         Message-ID: <20020111115006.K1529@clove.org>
        Vote: Is a non-portable perchild going to hold up a GA release?
         Yes: Ken
-         No: Aaron, Justin, trawick, stoddard, Jim, Ian
+         No: Aaron, Justin, trawick, stoddard, Jim, Ian, BrianP
 
     * Recent changes to ap_rgetline may have broken EBCDIC boxes.
         Message-ID: <20020122072605.GF28051@ebuilt.com>
