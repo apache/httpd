@@ -84,7 +84,7 @@ HeaderName HEADER
 # IndexIgnore is a set of filenames which directory indexing should ignore
 # Format: IndexIgnore name1 name2...
 
-IndexIgnore */.??* *~ *# */HEADER* */README* */RCS
+IndexIgnore .??* *~ *# HEADER* README* RCS
 
 # AccessFileName: The name of the file to look for in each directory
 # for access control information.
