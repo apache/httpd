@@ -112,6 +112,7 @@ echo "buildconf: setting up APR"
 cd lib/apr
 
 mv configure configure.old 2>/dev/null
+autoheader
 autoconf
 if cmp configure.old configure > /dev/null 2>&1; then
     echo "buildconf: keeping configure"
