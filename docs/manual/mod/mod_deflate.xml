@@ -22,16 +22,14 @@
 <section><title>Enabling Compression</title>
 
     <p>Compression is implemented by the <code>DEFLATE</code>
-    <a href="../filter.html">filter</a>.  The following directive
+    <a href="../filter.html">filter</a>. The following directive
     will enable compression for documents in the container where it
     is placed:</p>
-    <strong>
-    <p>Most popular browsers can not handle compression of all content
+    <p><strong>Most popular browsers can not handle compression of all content
         so you may want to set the 'gzip-only-text/html' note to 1 to only 
-        allow html files to be compressed (see below)</p>
-    <p>if you set this to anything but '1' it will be ignored, so you can do
-       negative matches</p>
-    </strong>
+        allow html files to be compressed (see below).</strong></p>
+    <p><strong>If you set this to anything but '1' it will be ignored, so you can do
+       negative matches.</strong></p>
 
 <example>SetEnv gzip-only-text/html 1<br />
 SetOutputFilter DEFLATE
@@ -52,12 +50,13 @@ SetOutputFilter DEFLATE
 <name>DeflateFilterNote</name>
 <description>Places the compression ratio in a note for logging</description>
 <syntax>DeflateFilterNote <em>notename</em></syntax>
-<contextlist><context>server config</context></contextlist>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
 
 <usage>
     <p>The <directive>DeflateFilterNote</directive> directive
     specifies that a note about compression ratios should be attached
-    to the request.  The name of the note is the value specified for
+    to the request. The name of the note is the value specified for
     the directive.</p>
 </usage>
 </directivesynopsis>
@@ -67,7 +66,8 @@ SetOutputFilter DEFLATE
 <description>Fragment size to be compressed at one time by zlib</description>
 <syntax>DeflateBufferSize <em>value</em></syntax>
 <default>DeflateBufferSize 8096</default>
-<contextlist><context>server config</context></contextlist>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
 
 <usage>
     <p>The <directive>DeflateBufferSize</directive> directive specifies
@@ -81,7 +81,8 @@ SetOutputFilter DEFLATE
 <description>Zlib compression window size</description>
 <syntax>DeflateWindowSize <em>value</em></syntax>
 <default>DeflateWindowSize 15</default>
-<contextlist><context>server config</context></contextlist>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
 
 <usage>
     <p>The <directive>DeflateWindowSize</directive> directive specifies the
@@ -94,7 +95,8 @@ SetOutputFilter DEFLATE
 <description>How much memory should be used by zlib for compression</description>
 <syntax>DeflateMemLevel <em>value</em></syntax>
 <default>DeflateMemLevel 9</default>
-<contextlist><context>server config</context></contextlist>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
 
 <usage>
     <p>The <directive>DeflateMemLevel</directive> directive specifies
