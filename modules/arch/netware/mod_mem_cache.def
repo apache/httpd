@@ -1,5 +1,3 @@
-IMPORT  cache_hook_create_entity
-IMPORT  cache_hook_open_entity
-IMPORT  cache_hook_remove_url
+IMPORT  @mod_cache.imp
 EXPORT  mem_cache_module
 

@@ -1,6 +1,5 @@
 EXPORT  cache_module
-EXPORT  cache_hook_create_entity
-EXPORT  cache_hook_open_entity
-EXPORT  cache_hook_remove_url
+EXPORT  @mod_cache.imp
+
 
 
