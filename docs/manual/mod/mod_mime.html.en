@@ -26,7 +26,7 @@
     content.  The directives <a href="#addhandler" class="directive"><code class="directive">AddHandler</code></a>, <a href="#addoutputfilter" class="directive"><code class="directive">AddOutputFilter</code></a>, and <a href="#addinputfilter" class="directive"><code class="directive">AddInputFilter</code></a> control the modules
     or scripts that serve the document.  The <a href="#multiviewsmatch" class="directive"><code class="directive">MultiviewsMatch</code></a> directive allows
     <code><a href="mod_negotiation.html">mod_negotiation</a></code> to consider these file extensions
-    to included when testing Multiviews matches.</p>
+    to be included when testing Multiviews matches.</p>
 
     <p>While <code><a href="mod_mime.html">mod_mime</a></code> associates meta-information
     with filename extensions, the <code><a href="core.html">core</a></code> server
@@ -230,8 +230,8 @@ Content-Type: text/plain; charset=ISO-8859-2
 
 <hr/><h2><a name="AddHandler">AddHandler</a> <a name="addhandler">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: </strong></td><td>Maps the filename extensions
 to the specified handler</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td>AddHandler
-    <em>handler-name extension</em> [<em>extension</em>] ...</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config, virtual host, directory, .htaccess</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Override" class="help">Override:</a></td><td>FileInfo</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Base</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_mime</td></tr><tr><td nowrap="nowrap" align="left" valign="top"><a href="directive-dict.html#Compatibility" class="help">Compatibility:</a></td><td/></tr></table></td></tr></table>
-<p>Files having the named <em>extension</em> will be served by the
+    <em>handler-name extension</em> [<em>extension</em>] ...</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config, virtual host, directory, .htaccess</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Override" class="help">Override:</a></td><td>FileInfo</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Base</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_mime</td></tr></table></td></tr></table>
+<p>Files having the name <em>extension</em> will be served by the
 specified <a href="../handler.html">handler-name</a>.  This mapping is
 added to any already in force, overriding any mappings that already
 exist for the same <em>extension</em>. For example, to activate CGI
@@ -581,8 +581,8 @@ extensions</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax"
     files in the <code>/foo/</code> directory and any beneath it,
     causing the files to be treated as being of the <a href="core.html#defaulttype">default type</a>.</p>
 
-    <blockquote><table><tr><td bgcolor="#e0e5f5"><strong>Note:</strong><code><a href="RemoveType.html">RemoveType</a></code> directives
-    are processed <em>after</em> any <code><a href="AddType.html">AddType</a></code>
+    <blockquote><table><tr><td bgcolor="#e0e5f5"><strong>Note:</strong><code class="directive">RemoveType</code> directives
+    are processed <em>after</em> any <code class="directive">AddType</code>
     directives, so it is possible they may undo the effects of the
     latter if both occur within the same directory
     configuration.</td></tr></table></blockquote>
