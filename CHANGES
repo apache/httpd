@@ -1,5 +1,8 @@
 Changes with Apache 2.0.26-dev
 
+  *) Some style changes to the code that does ProxyErrorOverride. Fixed
+     config merge behaviour. [Graham Leggett]
+
   *) Allow support programs to be compiled against a static version
      of libapr.  This allows the smaller support programs to be 
      relocated.  [Aaron Bannert <aaron@clove.org>]
