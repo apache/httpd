@@ -278,6 +278,11 @@ static int check_user_access(request_rec *r)
          * owner of the document.
          */
 	if (strcmp(w, "file-owner") == 0) {
+#if defined(WIN32)
+            ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERROR, r,
+                          "'Require file-user' not supported on Windows");
+            return HTTP_UNAUTHORIZED;
+#else
             struct passwd *pwent;
             ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_DEBUG, r,
                           "checking for 'owner' access for file '%s'",
@@ -305,8 +310,14 @@ static int check_user_access(request_rec *r)
                     return HTTP_UNAUTHORIZED;
                 }
             }
+#endif
         }
 	if (strcmp(w, "file-group") == 0) {
+#if defined(WIN32)
+            ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERROR, r,
+                          "'Require file-group' not supported on Windows");
+            return HTTP_UNAUTHORIZED;
+#else
             struct group *grent;
             if (sec->auth_grpfile == NULL) {
                 ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_WARNING, r,
@@ -349,6 +360,7 @@ static int check_user_access(request_rec *r)
                     return HTTP_UNAUTHORIZED;
                 }
             }
+#endif
         }
 	if (strcmp(w, "user") == 0) {
 	    while (t[0] != '\0') {

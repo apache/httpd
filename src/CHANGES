@@ -8,7 +8,8 @@ Changes with Apache 1.3.21
      username (from the appropriate AuthUserFile database) matches
      the username of the UID that owns the document (and equivalent
      checking for file GID and user's membership in AuthGroupFile).
-     See the mod_auth documentation for examples. [Ken Coar]
+     See the mod_auth documentation for examples.  (Not supported
+     on Windows.)  [Ken Coar]
 
   *) Addition of the AcceptMutex runtime directive. The accept mutex
      method is now runtime controllable. The suite of available methods
