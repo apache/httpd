@@ -183,6 +183,9 @@ FILES_nlm_libs = \
 FILES_nlm_modules = \
 	aprlib \
 	libc \
+	ldapsdk \
+	ldapssl \
+	ldapx \
 	$(EOLIST)
 
 #
