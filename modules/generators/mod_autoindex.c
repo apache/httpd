@@ -1579,7 +1579,7 @@ static int index_directory(request_rec *r,
      * linked list and then arrayificate them so qsort can use them. 
      */
     head = NULL;
-    while (ap_readdir(d)) {
+    while (ap_readdir(d) == APR_SUCCESS) {
         char *d_name;
         ap_get_dir_filename(&d_name, d);
 	p = make_autoindex_entry(d_name, autoindex_opts,
