@@ -96,6 +96,7 @@ Committed Code Changes:
     * Ralf's new ApacheBench support program (src/support/ab.c)
     * Ken's change HIDE default to "yes", always include hide.h
     * Ralf's major Configure cleanup
+    * Ralf's additional manual pages for the support programs
 
 Available Patches:
 

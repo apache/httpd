@@ -1,5 +1,11 @@
 Changes with Apache 1.3b6
 
+  *) Add five new and fresh manpages for the support programs: dbmmanage.1,
+     suexec.8, htdigest.1, rotatelogs.8 and logresolve.8.  Now all up-to-date
+     and per default compiled support programs have manual pages - just to
+     document our stuff a little bit more and to be able to do really
+     Unix-like installations ;-) [Ralf S. Engelschall]
+
   *) Major cleanups to the Configure script to make it and its generated
      Makefiles again readable and maintainable: add SRCDIR option, removed
      INCLUDES_DEPTH[0-2] kludge, cleanup of TARGET option, cleanup of

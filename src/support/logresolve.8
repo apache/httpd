@@ -1,5 +1,5 @@
-.TH htpasswd 1 "February 1997"
-.\" Copyright (c) 1997-1998 The Apache Group. All rights reserved.
+.TH logresolve 8 "March 1998"
+.\" Copyright (c) 1998 The Apache Group. All rights reserved.
 .\"
 .\" Redistribution and use in source and binary forms, with or without
 .\" modification, are permitted provided that the following conditions
@@ -20,8 +20,7 @@
 .\"
 .\" 4. The names "Apache Server" and "Apache Group" must not be used to
 .\"    endorse or promote products derived from this software without
-.\"    prior written permission. For written permission, please contact
-.\"    apache@apache.org.
+.\"    prior written permission.
 .\"
 .\" 5. Redistributions of any form whatsoever must retain the following
 .\"    acknowledgment:
@@ -49,46 +48,36 @@
 .\" For more information on the Apache Group and the Apache HTTP server
 .\" project, please see <http://www.apache.org/>.
 .SH NAME
-htpasswd \- Create and update user authentication files
+logresolve \- resolve hostnames for IP-adresses in Apache logfiles
 .SH SYNOPSIS
-.B htpasswd 
+.B logresolve
 [
+.BI \-s " filename"
+] [
 .B \-c
-] 
-.I passwdfile
-.I username
-.SH DESCRIPTION
-.B htpasswd
-is used to create and update the flat-files used to store
-usernames and password for basic authentication of HTTP users.
-Resources available from the
-.B httpd
-Apache web server can be restricted to just the users listed
-in the files created by 
-.B htpasswd.
-This program can only be used
-when the usernames are stored in a flat-file. To use a
-DBM database see 
-\fBdbmmanage\fP.
+] < 
+.I access_log
+>
+.I access_log.new
 .PP
-This manual page only lists the command line arguments. For details of
-the directives necessary to configure user authentication in 
-.B httpd 
-see
-the Apache manual, which is part of the Apache distribution or can be
-found at http://www.apache.org/.
+.SH DESCRIPTION
+.B logresolve
+is a post-processing program to resolve IP-adresses in Apache's access
+logfiles.  To minimize impact on your nameserver, logresolve has its very own
+internal hash-table cache. This means that each IP number will only be looked
+up the first time it is found in the log file.
 .SH OPTIONS
-.IP \-c 
-Create the \fIpasswdfile\fP. If \fIpasswdfile\fP already exists, it
-is deleted first. 
-.IP \fB\fIpasswdfile\fP
-Name of the file to contain the user name and password. If \-c
-is given, this file is created if it does not already exist,
-or deleted and recreated if it does exist. 
-.IP \fB\fIusername\fP
-The username to create or update in \fBpasswdfile\fP. If
-\fIusername\fP does not exist is this file, an entry is added. If it
-does exist, the password is changed.
+.TP 12
+.BI \-s " filename"
+Specifies a filename to record statistics.
+.TP 12
+.B \-c 
+This causes 
+.B logresolve 
+to apply some DNS checks: after finding the hostname from the IP address, it
+looks up the IP addresses for the hostname and checks that one of these
+matches the original address.
+.PD
 .SH SEE ALSO
 .BR httpd(8)
 .
