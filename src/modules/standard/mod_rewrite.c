@@ -1859,7 +1859,7 @@ static int apply_rewrite_rule(request_rec *r, rewriterule_entry *p,
                 /*  One condition is false, but another can be
                  *  still true, so we have to continue...
                  */
-	        ap_table_unset(r->notes, VARY_KEY_THIS);
+                ap_table_unset(r->notes, VARY_KEY_THIS);
                 continue;
             }
             else {
@@ -1885,11 +1885,11 @@ static int apply_rewrite_rule(request_rec *r, rewriterule_entry *p,
                 break;
             }
         }
-	vary = ap_table_get(r->notes, VARY_KEY_THIS);
-	if (vary != NULL) {
-	    ap_table_merge(r->notes, VARY_KEY, vary);
-	    ap_table_unset(r->notes, VARY_KEY_THIS);
-	}
+        vary = ap_table_get(r->notes, VARY_KEY_THIS);
+        if (vary != NULL) {
+            ap_table_merge(r->notes, VARY_KEY, vary);
+            ap_table_unset(r->notes, VARY_KEY_THIS);
+        }
     }
     /*  if any condition fails the complete rule fails  */
     if (failed) {
@@ -1905,7 +1905,7 @@ static int apply_rewrite_rule(request_rec *r, rewriterule_entry *p,
      */
     if ((vary = ap_table_get(r->notes, VARY_KEY)) != NULL) {
         ap_table_merge(r->headers_out, "Vary", vary);
-	ap_table_unset(r->notes, VARY_KEY);
+        ap_table_unset(r->notes, VARY_KEY);
     }
 
     /*
@@ -2513,7 +2513,7 @@ static void expand_backref_inbuffer(pool *p, char *buf, int nbuf,
 
     /* now apply the pregsub() function */
     ap_cpystrn(buf, ap_pregsub(p, buf, bri->source,
-                         bri->nsub+1, bri->regmatch), nbuf);
+                               bri->nsub+0, bri->regmatch), nbuf);
 
     if (c != '$') {
         /* restore the original $N backrefs */
@@ -3640,7 +3640,7 @@ static char *lookup_variable(request_rec *r, char *var)
     }
     else if (strcasecmp(var, "API_VERSION") == 0) { /* non-standard */
         ap_snprintf(resultbuf, sizeof(resultbuf), "%d:%d",
-		    MODULE_MAGIC_NUMBER_MAJOR, MODULE_MAGIC_NUMBER_MINOR);
+                    MODULE_MAGIC_NUMBER_MAJOR, MODULE_MAGIC_NUMBER_MINOR);
         result = resultbuf;
     }
 
@@ -3792,7 +3792,7 @@ static char *lookup_header(request_rec *r, const char *name)
             continue;
         }
         if (strcasecmp(hdrs[i].key, name) == 0) {
-	    ap_table_merge(r->notes, VARY_KEY_THIS, name);
+            ap_table_merge(r->notes, VARY_KEY_THIS, name);
             return hdrs[i].val;
         }
     }
