@@ -1,4 +1,4 @@
-Changes with Apache 2.0.23
+Changes with Apache 2.0.23-dev
 
   *) Add a single listener/multiple worker MPM.  This MPM is
      definately not fully correct, but it allows us to solve many
