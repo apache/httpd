@@ -2996,7 +2996,7 @@ static int default_handler(request_rec *r)
     }
 
     bb = apr_brigade_create(r->pool);
-    e = apr_bucket_file_create(fd, 0, r->finfo.size);
+    e = apr_bucket_file_create(fd, 0, r->finfo.size, r->pool);
 
     APR_BRIGADE_INSERT_HEAD(bb, e);
     e = apr_bucket_eos_create();
