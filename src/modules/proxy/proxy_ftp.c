@@ -933,7 +933,11 @@ int ap_proxy_ftp_handler(request_rec *r, struct cache_req *c, char *url)
 		len = 0;
 	    }
 	    else if (i == 213) { /* Size command ok */
-	        size = resp;
+		for (j = 0; j < resplen && isdigit(resp[j]); j++)
+			;
+		resp[j] = '\0';
+		if (resp[0] != '\0')
+		    size = ap_pstrdup(p, resp);
 	    }
 	}
     }
