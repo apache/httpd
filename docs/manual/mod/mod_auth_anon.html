@@ -1,39 +1,50 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-
-<html xmlns="http://www.w3.org/1999/xhtml">
-  <head>
-    <meta name="generator" content="HTML Tidy, see www.w3.org" />
-
-    <title>Apache module mod_auth_anon.c</title>
-  </head>
-  <!-- Background white, links blue (unvisited), navy (visited), red (active) -->
-
-  <body bgcolor="#FFFFFF" text="#000000" link="#0000FF"
-  vlink="#000080" alink="#FF0000">
-    <!--#include virtual="header.html" -->
-
-    <h1 align="CENTER">Module mod_auth_anon</h1>
-    This module allows "anonymous" user access to authenticated
-    areas. 
-
-    <p><a href="module-dict.html#Status"
-    rel="Help"><strong>Status:</strong></a> Extension<br />
-     <a href="module-dict.html#SourceFile"
-    rel="Help"><strong>Source File:</strong></a>
-    mod_auth_anon.c<br />
-     <a href="module-dict.html#ModuleIdentifier"
-    rel="Help"><strong>Module Identifier:</strong></a>
-    auth_anon_module</p>
-
-    <h2>Summary</h2>
-
-    <p>This module does access control in a manner similar to
+<html>
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<!--
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+     This file is generated from xml source: DO NOT EDIT
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+-->
+<title>mod_auth_anon - Apache HTTP Server</title>
+<link href="../style/manual.css" type="text/css" rel="stylesheet">
+</head>
+<body>
+<blockquote>
+<div align="center">
+<img alt="[APACHE DOCUMENTATION]" src="../images/sub.gif"><h3>Apache HTTP Server Version 2.0</h3>
+</div>
+<h1 align="center">Apache Module mod_auth_anon</h1>
+<table cellspacing="1" cellpadding="0" bgcolor="#cccccc">
+<tr>
+<td>
+<table bgcolor="#ffffff">
+<tr>
+<td><span class="help">Description:</span></td><td>
+<description>Allows "anonymous" user access to authenticated
+    areas</description>
+</td>
+</tr>
+<tr>
+<td><a href="module-dict.html#Status" class="help">Status:</a></td><td>Extension</td>
+</tr>
+<tr>
+<td><a href="module-dict.html#ModuleIdentifier" class="help">Module&nbsp;Identifier:</a></td><td>auth_anon_module</td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+<h2>Summary</h2>
+<summary>
+    
+<p>This module does access control in a manner similar to
     anonymous-ftp sites; <em>i.e.</em> have a 'magic' user id
     'anonymous' and the email address as a password. These email
     addresses can be logged.</p>
 
-    <p>Combined with other (database) access control methods, this
+    
+<p>Combined with other (database) access control methods, this
     allows for effective user tracking and customization according
     to a user profile while still keeping the site open for
     'unregistered' users. One advantage of using Auth-based user
@@ -41,237 +52,388 @@
     pre/postfixes, it is completely browser independent and it
     allows users to share URLs.</p>
 
-    <h2><a id="Directives" name="Directives">Directives</a></h2>
+</summary>
+<h2>Directives</h2>
+<ul>
+<li>
+<a href="#anonymous">Anonymous</a>
+</li>
+<li>
+<a href="#anonymous_authoritative">Anonymous_Authoritative</a>
+</li>
+<li>
+<a href="#anonymous_logemail">Anonymous_LogEmail</a>
+</li>
+<li>
+<a href="#anonymous_mustgiveemail">Anonymous_MustGiveEmail</a>
+</li>
+<li>
+<a href="#anonymous_nouserid">Anonymous_NoUserID</a>
+</li>
+<li>
+<a href="#anonymousverifyemail">AnonymousVerifyEmail</a>
+</li>
+</ul>
+<h2>Example</h2>
 
-    <ul>
-      <li><a href="#anonymous">Anonymous</a></li>
-
-      <li><a href="#Authoritative">Anonymous_Authoritative</a></li>
-
-      <li><a href="#LogEmail">Anonymous_LogEmail</a></li>
-
-      <li><a href="#MustGiveEmail">Anonymous_MustGiveEmail</a></li>
-
-      <li><a href="#NoUserID">Anonymous_NoUserID</a></li>
-
-      <li><a href="#VerifyEmail">Anonymous_VerifyEmail</a></li>
-    </ul>
-
-    <h2><a id="Example" name="Example">Example</a></h2>
-    The example below (when combined with the Auth directives of a
+    
+<p>The example below (when combined with the Auth directives of a
     htpasswd-file based (or GDM, mSQL <em>etc.</em>) base access
     control system allows users in as 'guests' with the following
-    properties: 
+    properties:</p>
 
-    <ul>
-      <li>It insists that the user enters a userId.
+    
+<ul>
+      
+<li>It insists that the user enters a userId.
       (<code>Anonymous_NoUserId</code>)</li>
 
-      <li>It insists that the user enters a password.
+      
+<li>It insists that the user enters a password.
       (<code>Anonymous_MustGiveEmail</code>)</li>
 
-      <li>The password entered must be a valid email address, ie.
+      
+<li>The password entered must be a valid email address, ie.
       contain at least one '@' and a '.'.
       (<code>Anonymous_VerifyEmail</code>)</li>
 
-      <li>The userID must be one of <code>anonymous guest www test
+      
+<li>The userID must be one of <code>anonymous guest www test
       welcome</code> and comparison is <strong>not</strong> case
       sensitive.</li>
 
-      <li>And the Email addresses entered in the passwd field are
+      
+<li>And the Email addresses entered in the passwd field are
       logged to the error log file
       (<code>Anonymous_LogEmail</code>)</li>
-    </ul>
+    
+</ul>
 
-    <p>Excerpt of access.conf:</p>
+    
+<p>Excerpt of httpd.conf:</p>
 
-    <blockquote>
-      <code>Anonymous_NoUserId off<br />
-       Anonymous_MustGiveEmail on<br />
-       Anonymous_VerifyEmail on<br />
-       Anonymous_LogEmail on<br />
-       Anonymous anonymous guest www test welcome</code> 
 
-      <p><code>AuthName "Use 'anonymous' &amp; Email address for
-      guest entry"<br />
-       AuthType basic</code></p>
+<blockquote>
+<table cellpadding="10">
+<tr>
+<td bgcolor="#eeeeee"><code>
+       Anonymous_NoUserId off<br>
+       Anonymous_MustGiveEmail on<br>
+       Anonymous_VerifyEmail on<br>
+       Anonymous_LogEmail on<br>
+       Anonymous anonymous guest www test welcome<br>
 
-      <p><code># An
-      AuthUserFile/AuthDBUserFile/AuthDBMUserFile<br />
-       # directive must be specified, or use<br />
-       # Anonymous_Authoritative for public access.<br />
-       # In the .htaccess for the public directory, add:<br />
-       &lt;Files *&gt;<br />
-       Order Deny,Allow<br />
-       Allow from all<br />
-      </code></p>
+<br>
+      AuthName "Use 'anonymous' &amp; Email address for
+      guest entry"<br>
+      AuthType basic<br>
 
-      <p><code>Require valid-user<br />
-       &lt;/Files&gt;<br />
-      </code></p>
-    </blockquote>
-    <hr />
+<br>
+       # An
+      AuthUserFile/AuthDBUserFile/AuthDBMUserFile<br>
+       # directive must be specified, or use<br>
+       # Anonymous_Authoritative for public access.<br>
+       # In the .htaccess for the public directory, add:<br>
+       &lt;Files *&gt;<br>
+       Order Deny,Allow<br>
+       Allow from all<br>
 
-    <h2><a id="anonymous" name="anonymous">Anonymous
-    directive</a></h2>
-    <!--%plaintext &lt;?INDEX {\tt Anonymous} directive&gt; -->
-    <a href="directive-dict.html#Syntax"
-    rel="Help"><strong>Syntax:</strong></a> Anonymous <em>user</em>
-    [<em>user</em>] ...<br />
-     <a href="directive-dict.html#Default"
-    rel="Help"><strong>Default:</strong></a> none<br />
-     <a href="directive-dict.html#Context"
-    rel="Help"><strong>Context:</strong></a> directory,
-    .htaccess<br />
-     <a href="directive-dict.html#Override"
-    rel="Help"><strong>Override:</strong></a> AuthConfig<br />
-     <a href="directive-dict.html#Status"
-    rel="Help"><strong>Status:</strong></a> Extension<br />
-     <a href="directive-dict.html#Module"
-    rel="Help"><strong>Module:</strong></a> mod_auth_anon 
+<br>
+       Require valid-user<br>
+       &lt;/Files&gt;<br>
 
-    <p>A list of one or more 'magic' userIDs which are allowed
+</code></td>
+</tr>
+</table>
+</blockquote>
+
+<hr>
+<h2>
+<a name="Anonymous">Anonymous</a> <a name="anonymous">Directive</a>
+</h2>
+<table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc">
+<tr>
+<td>
+<table width="100%" bgcolor="#ffffff">
+<tr>
+<td><strong>Description: </strong></td><td>Specifies userIDs that areallowed access without
+password verification</td>
+</tr>
+<tr>
+<td><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td>
+<syntax>Anonymous <em>user</em> [<em>user</em>] ...</syntax>
+</td>
+</tr>
+<tr>
+<td><a href="directive-dict.html#Context" class="help">Context:</a></td><td>directory, .htaccess</td>
+</tr>
+<tr>
+<td><a href="directive-dict.html#Override" class="help">Override:</a></td><td>AuthConfig</td>
+</tr>
+<tr>
+<td><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Extension</td>
+</tr>
+<tr>
+<td><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_auth_anon</td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+<usage>
+    
+<p>A list of one or more 'magic' userIDs which are allowed
     access without password verification. The userIDs are space
     separated. It is possible to use the ' and " quotes to allow a
     space in a userID as well as the \ escape character.</p>
 
-    <p>Please note that the comparison is
-    <strong>case-IN-sensitive</strong>.<br />
+    
+<p>Please note that the comparison is
+    <strong>case-IN-sensitive</strong>.<br>
      I strongly suggest that the magic username
     '<code>anonymous</code>' is always one of the allowed
     userIDs.</p>
 
-    <p>Example:<br />
-     <code>Anonymous anonymous "Not Registered" 'I don\'t
-    know'</code></p>
+    
+<p>Example:</p>
 
-    <p>This would allow the user to enter without password
+<blockquote>
+<table cellpadding="10">
+<tr>
+<td bgcolor="#eeeeee"><code>Anonymous anonymous "Not Registered" 'I don\'t know'</code></td>
+</tr>
+</table>
+</blockquote>
+
+    
+<p>This would allow the user to enter without password
     verification by using the userId's 'anonymous',
     'AnonyMous','Not Registered' and 'I Don't Know'.</p>
-    <hr />
 
-    <h2><a id="Authoritative"
-    name="Authoritative">Anonymous_Authoritative directive</a></h2>
-    <a href="directive-dict.html#Syntax"
-    rel="Help"><strong>Syntax:</strong></a> Anonymous_Authoritative
-    on|off<br />
-     <a href="directive-dict.html#Default"
-    rel="Help"><strong>Default:</strong></a>
-    <code>Anonymous_Authoritative off</code><br />
-     <a href="directive-dict.html#Context"
-    rel="Help"><strong>Context:</strong></a> directory,
-    .htaccess<br />
-     <a href="directive-dict.html#Override"
-    rel="Help"><strong>Override:</strong></a> AuthConfig<br />
-     <a href="directive-dict.html#Status"
-    rel="Help"><strong>Status:</strong></a> Extension<br />
-     <a href="directive-dict.html#Module"
-    rel="Help"><strong>Module:</strong></a> mod_auth_anon 
+</usage>
+<hr>
+<h2>
+<a name="Anonymous_Authoritative">Anonymous_Authoritative</a> <a name="anonymous_authoritative">Directive</a>
+</h2>
+<table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc">
+<tr>
+<td>
+<table width="100%" bgcolor="#ffffff">
+<tr>
+<td><strong>Description: </strong></td><td>Configures if authorization will fall-through
+to other methods</td>
+</tr>
+<tr>
+<td><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td>
+<syntax>Anonymous_Authoritative on|off</syntax>
+</td>
+</tr>
+<tr>
+<td><a href="directive-dict.html#Default" class="help">Default:</a></td><td><code>Anonymous_Authoritative off</code></td>
+</tr>
+<tr>
+<td><a href="directive-dict.html#Context" class="help">Context:</a></td><td>directory, .htaccess</td>
+</tr>
+<tr>
+<td><a href="directive-dict.html#Override" class="help">Override:</a></td><td>AuthConfig</td>
+</tr>
+<tr>
+<td><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Extension</td>
+</tr>
+<tr>
+<td><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_auth_anon</td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+<usage>
+    
+<p>When set 'on', there is no fall-through to other authorization
+    methods. So if a userID does not match the values specified in the
+    <code class="directive"><a href="#anonymous" class="directive">Anonymous</a></code> directive,
+    access is denied.</p>
 
-    <p>When set 'on', there is no fall-through to other
-    authorization methods. So if a userID does not match the values
-    specified in the <code>Anonymous</code> directive, access is
-    denied.</p>
-
-    <p>Be sure you know what you are doing when you decide to
+    
+<p>Be sure you know what you are doing when you decide to
     switch it on. And remember that it is the linking order of the
     modules (in the Configuration / Make file) which details the
     order in which the Authorization modules are queried.</p>
-    <hr />
 
-    <h2><a id="LogEmail" name="LogEmail">Anonymous_LogEmail
-    directive</a></h2>
-    <a href="directive-dict.html#Syntax"
-    rel="Help"><strong>Syntax:</strong></a> Anonymous_LogEmail
-    on|off<br />
-     <a href="directive-dict.html#Default"
-    rel="Help"><strong>Default:</strong></a>
-    <code>Anonymous_LogEmail on</code><br />
-     <a href="directive-dict.html#Context"
-    rel="Help"><strong>Context:</strong></a> directory,
-    .htaccess<br />
-     <a href="directive-dict.html#Override"
-    rel="Help"><strong>Override:</strong></a> AuthConfig<br />
-     <a href="directive-dict.html#Status"
-    rel="Help"><strong>Status:</strong></a> Extension<br />
-     <a href="directive-dict.html#Module"
-    rel="Help"><strong>Module:</strong></a> mod_auth_anon 
+</usage>
+<hr>
+<h2>
+<a name="Anonymous_LogEmail">Anonymous_LogEmail</a> <a name="anonymous_logemail">Directive</a>
+</h2>
+<table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc">
+<tr>
+<td>
+<table width="100%" bgcolor="#ffffff">
+<tr>
+<td><strong>Description: </strong></td><td>Sets whether the password entered will be logged in the
+error log</td>
+</tr>
+<tr>
+<td><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td>
+<syntax>Anonymous_LogEmail on|off</syntax>
+</td>
+</tr>
+<tr>
+<td><a href="directive-dict.html#Default" class="help">Default:</a></td><td><code>Anonymous_LogEmail on</code></td>
+</tr>
+<tr>
+<td><a href="directive-dict.html#Context" class="help">Context:</a></td><td>directory, .htaccess</td>
+</tr>
+<tr>
+<td><a href="directive-dict.html#Override" class="help">Override:</a></td><td>AuthConfig</td>
+</tr>
+<tr>
+<td><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Extension</td>
+</tr>
+<tr>
+<td><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_auth_anon</td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+<usage>
+    
+<p>When set <code>on</code>, the default, the 'password' entered
+    (which hopefully contains a sensible email address) is logged in
+    the error log.</p>
 
-    <p>When set 'on', the default, the 'password' entered (which
-    hopefully contains a sensible email address) is logged in the
-    error log.</p>
-    <hr />
-
-    <h2><a id="MustGiveEmail"
-    name="MustGiveEmail">Anonymous_MustGiveEmail directive</a></h2>
-    <!--%plaintext &lt;?INDEX {\tt Anonymous_MustGiveEmail} directive&gt; -->
-    <a href="directive-dict.html#Syntax"
-    rel="Help"><strong>Syntax:</strong></a> Anonymous_MustGiveEmail
-    on|off<br />
-     <a href="directive-dict.html#Default"
-    rel="Help"><strong>Default:</strong></a>
-    <code>Anonymous_MustGiveEmail on</code><br />
-     <a href="directive-dict.html#Context"
-    rel="Help"><strong>Context:</strong></a> directory,
-    .htaccess<br />
-     <a href="directive-dict.html#Override"
-    rel="Help"><strong>Override:</strong></a> AuthConfig<br />
-     <a href="directive-dict.html#Status"
-    rel="Help"><strong>Status:</strong></a> Extension<br />
-     <a href="directive-dict.html#Module"
-    rel="Help"><strong>Module:</strong></a> mod_auth_anon 
-
-    <p>Specifies whether the user must specify an email address as
+</usage>
+<hr>
+<h2>
+<a name="Anonymous_MustGiveEmail">Anonymous_MustGiveEmail</a> <a name="anonymous_mustgiveemail">Directive</a>
+</h2>
+<table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc">
+<tr>
+<td>
+<table width="100%" bgcolor="#ffffff">
+<tr>
+<td><strong>Description: </strong></td><td>Specifies whether blank passwords are allowed</td>
+</tr>
+<tr>
+<td><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td>
+<syntax>Anonymous_MustGiveEmail on|off</syntax>
+</td>
+</tr>
+<tr>
+<td><a href="directive-dict.html#Default" class="help">Default:</a></td><td><code>Anonymous_MustGiveEmail on</code></td>
+</tr>
+<tr>
+<td><a href="directive-dict.html#Context" class="help">Context:</a></td><td>directory, .htaccess</td>
+</tr>
+<tr>
+<td><a href="directive-dict.html#Override" class="help">Override:</a></td><td>AuthConfig</td>
+</tr>
+<tr>
+<td><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Extension</td>
+</tr>
+<tr>
+<td><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_auth_anon</td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+<usage>
+    
+<p>Specifies whether the user must specify an email address as
     the password. This prohibits blank passwords.</p>
-    <hr />
 
-    <h2><a id="NoUserID" name="NoUserID">Anonymous_NoUserID
-    directive</a></h2>
-    <a href="directive-dict.html#Syntax"
-    rel="Help"><strong>Syntax:</strong></a> Anonymous_NoUserID
-    on|off<br />
-     <a href="directive-dict.html#Default"
-    rel="Help"><strong>Default:</strong></a>
-    <code>Anonymous_NoUserID off</code><br />
-     <a href="directive-dict.html#Context"
-    rel="Help"><strong>Context:</strong></a> directory,
-    .htaccess<br />
-     <a href="directive-dict.html#Override"
-    rel="Help"><strong>Override:</strong></a> AuthConfig<br />
-     <a href="directive-dict.html#Status"
-    rel="Help"><strong>Status:</strong></a> Extension<br />
-     <a href="directive-dict.html#Module"
-    rel="Help"><strong>Module:</strong></a> mod_auth_anon 
+</usage>
+<hr>
+<h2>
+<a name="Anonymous_NoUserID">Anonymous_NoUserID</a> <a name="anonymous_nouserid">Directive</a>
+</h2>
+<table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc">
+<tr>
+<td>
+<table width="100%" bgcolor="#ffffff">
+<tr>
+<td><strong>Description: </strong></td><td>Sets whether the userID field may be empty</td>
+</tr>
+<tr>
+<td><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td>
+<syntax>Anonymous_NoUserID on|off</syntax>
+</td>
+</tr>
+<tr>
+<td><a href="directive-dict.html#Default" class="help">Default:</a></td><td><code>Anonymous_NoUserID off</code></td>
+</tr>
+<tr>
+<td><a href="directive-dict.html#Context" class="help">Context:</a></td><td>directory, .htaccess</td>
+</tr>
+<tr>
+<td><a href="directive-dict.html#Override" class="help">Override:</a></td><td>AuthConfig</td>
+</tr>
+<tr>
+<td><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Extension</td>
+</tr>
+<tr>
+<td><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_auth_anon</td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+<usage>
+    
+<p>When set <code>on</code>, users can leave the userID (and
+    perhaps the password field) empty. This can be very convenient for
+    MS-Explorer users who can just hit return or click directly on the
+    OK button; which seems a natural reaction.</p>
 
-    <p>When set 'on', users can leave the userID (and perhaps the
-    password field) empty. This can be very convenient for
-    MS-Explorer users who can just hit return or click directly on
-    the OK button; which seems a natural reaction.</p>
-    <hr />
+</usage>
+<hr>
+<h2>
+<a name="AnonymousVerifyEmail">AnonymousVerifyEmail</a> <a name="anonymousverifyemail">Directive</a>
+</h2>
+<table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc">
+<tr>
+<td>
+<table width="100%" bgcolor="#ffffff">
+<tr>
+<td><strong>Description: </strong></td><td>Sets whether to check the password field for a correctly
+formatted email address</td>
+</tr>
+<tr>
+<td><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td>
+<syntax>Anonymous_VerifyEmail on|off</syntax>
+</td>
+</tr>
+<tr>
+<td><a href="directive-dict.html#Default" class="help">Default:</a></td><td><code>Anonymous_VerifyEmail off</code></td>
+</tr>
+<tr>
+<td><a href="directive-dict.html#Context" class="help">Context:</a></td><td>directory, .htaccess</td>
+</tr>
+<tr>
+<td><a href="directive-dict.html#Override" class="help">Override:</a></td><td>AuthConfig</td>
+</tr>
+<tr>
+<td><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Extension</td>
+</tr>
+<tr>
+<td><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_auth_anon</td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+<usage>
+    
+<p>When set <code>on</code> the 'password' entered is checked for
+    at least one '@' and a '.' to encourage users to enter valid email
+    addresses (see the above <code class="directive"><a href="#auth_logemail" class="directive">Auth_LogEmail</a></code>).</p>
 
-    <h2><a id="VerifyEmail"
-    name="VerifyEmail">Anonymous_VerifyEmail directive</a></h2>
-    <a href="directive-dict.html#Syntax"
-    rel="Help"><strong>Syntax:</strong></a> Anonymous_VerifyEmail
-    on|off<br />
-     <a href="directive-dict.html#Default"
-    rel="Help"><strong>Default:</strong></a>
-    <code>Anonymous_VerifyEmail off</code><br />
-     <a href="directive-dict.html#Context"
-    rel="Help"><strong>Context:</strong></a> directory,
-    .htaccess<br />
-     <a href="directive-dict.html#Override"
-    rel="Help"><strong>Override:</strong></a> AuthConfig<br />
-     <a href="directive-dict.html#Status"
-    rel="Help"><strong>Status:</strong></a> Extension<br />
-     <a href="directive-dict.html#Module"
-    rel="Help"><strong>Module:</strong></a> mod_auth_anon 
-
-    <p>When set 'on' the 'password' entered is checked for at least
-    one '@' and a '.' to encourage users to enter valid email
-    addresses (see the above <code>Auth_LogEmail</code>). 
-    <!--#include virtual="footer.html" -->
-    </p>
-  </body>
+</usage>
+<hr>
+<h3 align="center">Apache HTTP Server Version 2.0</h3>
+<a href="./"><img alt="Index" src="../images/index.gif"></a><a href="../"><img alt="Home" src="../images/home.gif"></a>
+</blockquote>
+</body>
 </html>
-
