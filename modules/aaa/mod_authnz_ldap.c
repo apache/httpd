@@ -207,19 +207,47 @@ static void authn_ldap_build_filter(char *filtbuf,
      * LDAP filter metachars are escaped.
      */
     filtbuf_end = filtbuf + FILTER_LENGTH - 1;
+#if APR_HAS_MICROSOFT_LDAPSDK
+    for (p = user, q=filtbuf + strlen(filtbuf);
+         *p && q < filtbuf_end; ) {
+        if (strchr("*()\\", *p) != NULL) {
+            if ( q + 3 >= filtbuf_end)
+              break;  /* Don't write part of escape sequence if we can't write all of it */
+            *q++ = '\\';
+            switch ( *p++ )
+            {
+              case '*':
+                *q++ = '2';
+                *q++ = 'a';
+                break;
+              case '(':
+                *q++ = '2';
+                *q++ = '8';
+                break;
+              case ')':
+                *q++ = '2';
+                *q++ = '9';
+                break;
+              case '\\':
+                *q++ = '5';
+                *q++ = 'c';
+                break;
+		        }
+        }
+        else
+            *q++ = *p++;
+    }
+#else
     for (p = user, q=filtbuf + strlen(filtbuf);
          *p && q < filtbuf_end; *q++ = *p++) {
-#if APR_HAS_MICROSOFT_LDAPSDK
-        /* Note: The Microsoft SDK escapes for us, so is not necessary */
-#else
         if (strchr("*()\\", *p) != NULL) {
             *q++ = '\\';
             if (q >= filtbuf_end) {
-                break;
+              break;
             }
         }
-#endif
     }
+#endif
     *q = '\0';
 
     /* 
