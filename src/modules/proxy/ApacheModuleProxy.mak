@@ -79,10 +79,9 @@ BSC32_SBRS= \
 	
 LINK32=link.exe
 LINK32_FLAGS=..\..\CoreR\ApacheCore.lib kernel32.lib user32.lib gdi32.lib\
- winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib\
- uuid.lib odbc32.lib odbccp32.lib wsock32.lib /nologo /subsystem:windows /dll\
- /incremental:no /pdb:"$(OUTDIR)\ApacheModuleProxy.pdb" /machine:I386\
- /out:"$(OUTDIR)\ApacheModuleProxy.dll"\
+ winspool.lib comdlg32.lib advapi32.lib shell32.lib wsock32.lib /nologo\
+ /subsystem:windows /dll /incremental:no /pdb:"$(OUTDIR)\ApacheModuleProxy.pdb"\
+ /machine:I386 /out:"$(OUTDIR)\ApacheModuleProxy.dll"\
  /implib:"$(OUTDIR)\ApacheModuleProxy.lib" 
 LINK32_OBJS= \
 	"$(INTDIR)\mod_proxy.obj" \
@@ -133,7 +132,7 @@ CLEAN :
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
-CPP_PROJ=/nologo /MDd /W3 /Gm /GX /Zi /Od /I "..\..\main" /I "..\..\regex" /D\
+CPP_PROJ=/nologo /MDd /W4 /Gm /GX /Zi /Od /I "..\..\main" /I "..\..\regex" /D\
  "WIN32" /D "_DEBUG" /D "_WINDOWS" /Fp"$(INTDIR)\ApacheModuleProxy.pch" /YX\
  /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
 CPP_OBJS=.\Debug/
@@ -145,10 +144,9 @@ BSC32_SBRS= \
 	
 LINK32=link.exe
 LINK32_FLAGS=..\..\CoreD\ApacheCore.lib kernel32.lib user32.lib gdi32.lib\
- winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib\
- uuid.lib odbc32.lib odbccp32.lib wsock32.lib /nologo /subsystem:windows /dll\
- /incremental:yes /pdb:"$(OUTDIR)\ApacheModuleProxy.pdb" /debug /machine:I386\
- /out:"$(OUTDIR)\ApacheModuleProxy.dll"\
+ winspool.lib comdlg32.lib advapi32.lib shell32.lib wsock32.lib /nologo\
+ /subsystem:windows /dll /incremental:yes /pdb:"$(OUTDIR)\ApacheModuleProxy.pdb"\
+ /debug /machine:I386 /out:"$(OUTDIR)\ApacheModuleProxy.dll"\
  /implib:"$(OUTDIR)\ApacheModuleProxy.lib" 
 LINK32_OBJS= \
 	"$(INTDIR)\mod_proxy.obj" \
@@ -211,6 +209,7 @@ DEP_CPP_MOD_P=\
 	"..\..\main\http_log.h"\
 	"..\..\main\http_protocol.h"\
 	"..\..\main\httpd.h"\
+	"..\..\os\win32\os.h"\
 	"..\..\os\win32\readdir.h"\
 	"..\..\regex\regex.h"\
 	".\mod_proxy.h"\
@@ -230,9 +229,16 @@ DEP_CPP_MOD_P=\
 	"..\..\main\http_log.h"\
 	"..\..\main\http_protocol.h"\
 	"..\..\main\httpd.h"\
+	"..\..\os\win32\os.h"\
 	"..\..\os\win32\readdir.h"\
 	"..\..\regex\regex.h"\
 	".\mod_proxy.h"\
+	{$(INCLUDE)}"sys\stat.h"\
+	{$(INCLUDE)}"sys\types.h"\
+	
+NODEP_CPP_MOD_P=\
+	"..\..\main\os.h"\
+	"..\..\main\sfio.h"\
 	
 
 "$(INTDIR)\mod_proxy.obj" : $(SOURCE) $(DEP_CPP_MOD_P) "$(INTDIR)"
@@ -257,6 +263,7 @@ DEP_CPP_PROXY=\
 	"..\..\main\md5.h"\
 	"..\..\main\multithread.h"\
 	"..\..\main\util_date.h"\
+	"..\..\os\win32\os.h"\
 	"..\..\os\win32\readdir.h"\
 	"..\..\regex\regex.h"\
 	".\mod_proxy.h"\
@@ -280,9 +287,17 @@ DEP_CPP_PROXY=\
 	"..\..\main\md5.h"\
 	"..\..\main\multithread.h"\
 	"..\..\main\util_date.h"\
+	"..\..\os\win32\os.h"\
 	"..\..\os\win32\readdir.h"\
 	"..\..\regex\regex.h"\
 	".\mod_proxy.h"\
+	{$(INCLUDE)}"sys\stat.h"\
+	{$(INCLUDE)}"sys\types.h"\
+	{$(INCLUDE)}"sys\utime.h"\
+	
+NODEP_CPP_PROXY=\
+	"..\..\main\os.h"\
+	"..\..\main\sfio.h"\
 	
 
 "$(INTDIR)\proxy_cache.obj" : $(SOURCE) $(DEP_CPP_PROXY) "$(INTDIR)"
@@ -304,6 +319,7 @@ DEP_CPP_PROXY_=\
 	"..\..\main\http_main.h"\
 	"..\..\main\http_protocol.h"\
 	"..\..\main\httpd.h"\
+	"..\..\os\win32\os.h"\
 	"..\..\os\win32\readdir.h"\
 	"..\..\regex\regex.h"\
 	".\mod_proxy.h"\
@@ -324,9 +340,16 @@ DEP_CPP_PROXY_=\
 	"..\..\main\http_main.h"\
 	"..\..\main\http_protocol.h"\
 	"..\..\main\httpd.h"\
+	"..\..\os\win32\os.h"\
 	"..\..\os\win32\readdir.h"\
 	"..\..\regex\regex.h"\
 	".\mod_proxy.h"\
+	{$(INCLUDE)}"sys\stat.h"\
+	{$(INCLUDE)}"sys\types.h"\
+	
+NODEP_CPP_PROXY_=\
+	"..\..\main\os.h"\
+	"..\..\main\sfio.h"\
 	
 
 "$(INTDIR)\proxy_connect.obj" : $(SOURCE) $(DEP_CPP_PROXY_) "$(INTDIR)"
@@ -347,6 +370,7 @@ DEP_CPP_PROXY_F=\
 	"..\..\main\http_main.h"\
 	"..\..\main\http_protocol.h"\
 	"..\..\main\httpd.h"\
+	"..\..\os\win32\os.h"\
 	"..\..\os\win32\readdir.h"\
 	"..\..\regex\regex.h"\
 	"..\standard\mod_mime.h"\
@@ -367,10 +391,17 @@ DEP_CPP_PROXY_F=\
 	"..\..\main\http_main.h"\
 	"..\..\main\http_protocol.h"\
 	"..\..\main\httpd.h"\
+	"..\..\os\win32\os.h"\
 	"..\..\os\win32\readdir.h"\
 	"..\..\regex\regex.h"\
 	"..\standard\mod_mime.h"\
 	".\mod_proxy.h"\
+	{$(INCLUDE)}"sys\stat.h"\
+	{$(INCLUDE)}"sys\types.h"\
+	
+NODEP_CPP_PROXY_F=\
+	"..\..\main\os.h"\
+	"..\..\main\sfio.h"\
 	
 
 "$(INTDIR)\proxy_ftp.obj" : $(SOURCE) $(DEP_CPP_PROXY_F) "$(INTDIR)"
@@ -393,6 +424,7 @@ DEP_CPP_PROXY_H=\
 	"..\..\main\http_protocol.h"\
 	"..\..\main\httpd.h"\
 	"..\..\main\util_date.h"\
+	"..\..\os\win32\os.h"\
 	"..\..\os\win32\readdir.h"\
 	"..\..\regex\regex.h"\
 	".\mod_proxy.h"\
@@ -414,9 +446,16 @@ DEP_CPP_PROXY_H=\
 	"..\..\main\http_protocol.h"\
 	"..\..\main\httpd.h"\
 	"..\..\main\util_date.h"\
+	"..\..\os\win32\os.h"\
 	"..\..\os\win32\readdir.h"\
 	"..\..\regex\regex.h"\
 	".\mod_proxy.h"\
+	{$(INCLUDE)}"sys\stat.h"\
+	{$(INCLUDE)}"sys\types.h"\
+	
+NODEP_CPP_PROXY_H=\
+	"..\..\main\os.h"\
+	"..\..\main\sfio.h"\
 	
 
 "$(INTDIR)\proxy_http.obj" : $(SOURCE) $(DEP_CPP_PROXY_H) "$(INTDIR)"
@@ -440,6 +479,7 @@ DEP_CPP_PROXY_U=\
 	"..\..\main\httpd.h"\
 	"..\..\main\md5.h"\
 	"..\..\main\multithread.h"\
+	"..\..\os\win32\os.h"\
 	"..\..\os\win32\readdir.h"\
 	"..\..\regex\regex.h"\
 	".\mod_proxy.h"\
@@ -462,9 +502,16 @@ DEP_CPP_PROXY_U=\
 	"..\..\main\httpd.h"\
 	"..\..\main\md5.h"\
 	"..\..\main\multithread.h"\
+	"..\..\os\win32\os.h"\
 	"..\..\os\win32\readdir.h"\
 	"..\..\regex\regex.h"\
 	".\mod_proxy.h"\
+	{$(INCLUDE)}"sys\stat.h"\
+	{$(INCLUDE)}"sys\types.h"\
+	
+NODEP_CPP_PROXY_U=\
+	"..\..\main\os.h"\
+	"..\..\main\sfio.h"\
 	
 
 "$(INTDIR)\proxy_util.obj" : $(SOURCE) $(DEP_CPP_PROXY_U) "$(INTDIR)"
