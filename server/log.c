@@ -394,7 +394,7 @@ static void log_error_core(const char *file, int line, int level,
 
     if ((level & APLOG_STARTUP) != APLOG_STARTUP) {
         len += apr_snprintf(errstr + len, MAX_STRING_LEN - len,
-	        "[%s] ", priorities[level & APLOG_LEVELMASK].t_name);
+	        "[%s] ", priorities[level_and_mask].t_name);
     }
 #ifndef TPF
     if (file && level_and_mask == APLOG_DEBUG) {
