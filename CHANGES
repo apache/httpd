@@ -1,5 +1,9 @@
 Changes with Apache 2.0.26-dev
 
+  *) Fix a seg fault in mod_include.  When we are generating an
+     internal redirect, we must set r->uri to "", not a bogus
+     string, and not NULL.  [Ryan Bloom]
+
   *) Optimized location_walk, so subrequests, redirects and second passes
      now reuse previous section merges on a <Location > by <Location >
      basis, until we mismatch with the original location_walk. 
