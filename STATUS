@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/10/03 16:47:56 $]
+Last modified at [$Date: 2004/10/04 16:15:54 $]
 
 Release:
 
@@ -79,13 +79,13 @@ PATCHES TO BACKPORT FROM 2.1
        is causing a potential problem with the LDAP shared memory cache.
          modules/ldap/util_ldap.c: 1.14
        PR 31431
-       +1: minfrin
+       +1: minfrin, bnicholes
 
     *) mod_ldap: prevent the possiblity of an infinite loop in the LDAP
        statistics display.
          modules/ldap/util_ldap_cache_mgr.c: 1.11
        PR 29216
-       +1: minfrin
+       +1: minfrin, bnicholes
 
     *) apxs: fix handling of -Wc/-Wl and "-o mod_foo.so".
          http://cvs.apache.org/viewcvs.cgi/httpd-2.0/support/apxs.in?r1=1.62&r2=1.64
