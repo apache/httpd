@@ -1,6 +1,6 @@
 APACHE 2.x ROADMAP:
 
-Last modified at [$Date: 2002/10/01 15:44:35 $]
+Last modified at [$Date: 2002/10/01 16:51:10 $]
 
 DEFERRRED FOR APACHE 2.1
 
@@ -94,7 +94,25 @@ MAKING APACHE REPOSITORY-AGNOSTIC
       sorts of operations.  But this only needs to be the name itself
       and not a full path.
 
-      Justin: Can we leverage the path info, or do we not trust the user?
+      Justin: Can we leverage the path info, or do we not trust the
+              user?
+
+      gstein: well, it isn't the "path info", but the actual URI of
+              the resource. And of course we trust the user... that is
+              the resource they requested.
+              
+              dav_resource->uri is the field you want. path_info might
+              still exist, but that portion might be related to the
+              CGI concept of "path translated" or some other further
+              resolution.
+              
+              To continue, I would suggest that "path translated" and
+              having *any* path info is Badness. It means that you did
+              not fully resolve a resource for the given URI. The
+              "abs_path" in a URI identifies a resource, and that
+              should get fully resolved. None of this "resolve to
+              <here> and then we have a magical second resolution
+              (inside the CGI script)" or somesuch.
     
     * The translate_name hook goes away
 
@@ -187,3 +205,14 @@ MAKING APACHE REPOSITORY-AGNOSTIC
       - Have an 'execute_resource' hook/func that allows the
         repository to choose its manner - be it exec() or whatever.
         - Won't this approach lead to duplication of code?  Helper fns?
+
+      gstein: PHP, Perl, and Python scripts are nominally executed by
+              a filter inserted by mod_php/perl/python. I'd suggest
+              that shell/batch scripts are similar.
+
+              But to ask further: what if it is an executable
+              *program* rather than just a script? Do we yank that out
+              of the repository, drop it onto the filesystem, and run
+              it? eeewwwww...
+              
+              I'll vote -0.9 for CGIs as a filter. Keep 'em handlers.
