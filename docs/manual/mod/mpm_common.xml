@@ -251,6 +251,24 @@ to serve requests</description>
 </directivesynopsis>
 
 <directivesynopsis>
+<name>MaxMemFree</name>
+<description>Maximum amount of memory that the main allocator is allowed
+to hold without calling free()</description>
+<syntax>MaxMemFree <em>number</em></syntax>
+<contextlist><context>server config</context></contextlist>
+<modulelist><module>worker</module><module>prefork</module>
+<module>mpm_netware</module>
+</modulelist>
+
+<usage>
+    <p>The <directive>MaxMemFree</directive> directive sets the 
+    maximum number of free Kbytes that the main allocator is allowed
+    to hold without calling free().  When not set, or when set to
+    zero, the threshold will be set to unlimited.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
 <name>MaxRequestsPerChild</name>
 <description>Limit on the number of requests that an individual child server
 will handle during its life</description>
