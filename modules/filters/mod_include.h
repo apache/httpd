@@ -131,6 +131,10 @@
  *                  the buckets containing parts of the ssi tag and headers.
  */
 typedef enum {PRE_HEAD, PARSE_HEAD, PARSE_DIRECTIVE, PARSE_TAG, PARSE_TAIL, PARSED} states;
+
+/** forward referenced as it needs to be held on the context */
+typedef struct bndm_t bndm_t;
+
 typedef struct include_filter_ctx {
     states       state;
     long         flags;    /* See the FLAG_XXXXX definitions. */
@@ -161,6 +165,11 @@ typedef struct include_filter_ctx {
     apr_pool_t   *pool;
 
     apr_bucket_brigade *ssi_tag_brigade;
+    bndm_t       *start_seq_pat;
+    char         *start_seq;
+    int          start_seq_len;
+    char         *end_seq;
+
 } include_ctx_t;
 
 /* These flags are used to set flag bits. */

@@ -41,6 +41,8 @@
       <li><a href="#xbithack">XBitHack</a></li>
       <li><a href="#ssierrormsg">SSIErrorMsg</a></li>
       <li><a href="#ssitimeformat">SSITimeFormat</a></li>
+      <li><a href="#ssistarttag">SSIStartTag</a></li>
+      <li><a href="#ssiendtag">SSIEndTag</a></li>
     </ul>
 
     <p>See also: <a href="core.html#options">Options</a>, <a
@@ -585,7 +587,47 @@
     <p>This directive changes the format in which date strings are displayed 
     in note variables</p>
     <hr />
+    <h2><a id="ssistarttag" name="ssistarttag">SSIStartTag</a>
+    directive</h2>
+    <!--%plaintext &lt;?INDEX {\tt SSIStartTag} directive&gt; -->
+    <a href="directive-dict.html#Syntax"
+        rel="Help"><strong>Syntax:</strong></a> SSIStartTag
+    tag<br />
+     <a href="directive-dict.html#Default"
+    rel="Help"><strong>Default:</strong></a> <code>SSIStartTag
+    &quot;&lt;--!&quot;</code><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Context:</strong></a> server config, virtual
+    host<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>Status:</strong></a> Base<br />
+     <a href="directive-dict.html#Module"
+    rel="Help"><strong>Module:</strong></a> mod_include 
 
+    <p>This directive changes the string that mod_include looks for 
+    to mark a include command to process</p>
+    <p>you may want to use this option if have 2 servers parsing the output of a file
+    each processing different comnmands (possibly at different times)</p>
+    <hr />
+    <h2><a id="ssiendtag" name="ssiendtag">SSIEndTag</a>
+    directive</h2>
+    <!--%plaintext &lt;?INDEX {\tt SSIEndTag} directive&gt; -->
+    <a href="directive-dict.html#Syntax"
+        rel="Help"><strong>Syntax:</strong></a> SSIEndTag
+    tag<br />
+     <a href="directive-dict.html#Default"
+    rel="Help"><strong>Default:</strong></a> <code>SSIEndTag
+    &quot;--&gt;&quot;</code><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Context:</strong></a> server config, virtual
+    host<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>Status:</strong></a> Base<br />
+     <a href="directive-dict.html#Module"
+    rel="Help"><strong>Module:</strong></a> mod_include 
+
+    <p>This directive changes the string that mod_include looks for 
+    to mark the end of a include command</p>
 
     <p><!--#include virtual="footer.html" -->
     </p>
