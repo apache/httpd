@@ -217,7 +217,7 @@ AP_DECLARE(apr_status_t) ap_rgetline_core(char **s, apr_size_t n,
     char *pos, *last_char = *s;
     int do_alloc = (*s == NULL), saw_eos = 0;
 
-    b = apr_brigade_create(r->pool);
+    b = apr_brigade_create(r->pool, r->connection->bucket_alloc);
     rv = ap_get_brigade(r->input_filters, b, AP_MODE_GETLINE,
                         APR_BLOCK_READ, 0);
 
@@ -405,7 +405,7 @@ AP_DECLARE(apr_status_t) ap_rgetline_core(char **s, apr_size_t n,
         char c;
 
         /* Create a brigade for this filter read. */
-        bb = apr_brigade_create(r->pool);
+        bb = apr_brigade_create(r->pool, r->connection->bucket_alloc);
 
         /* We only care about the first byte. */
         rv = ap_get_brigade(r->input_filters, bb, AP_MODE_SPECULATIVE,
@@ -984,11 +984,12 @@ void ap_set_sub_req_protocol(request_rec *rnew, const request_rec *r)
 
 static void end_output_stream(request_rec *r)
 {
+    conn_rec *c = r->connection;
     apr_bucket_brigade *bb;
     apr_bucket *b;
 
-    bb = apr_brigade_create(r->pool);
-    b = apr_bucket_eos_create();
+    bb = apr_brigade_create(r->pool, c->bucket_alloc);
+    b = apr_bucket_eos_create(c->bucket_alloc);
     APR_BRIGADE_INSERT_TAIL(bb, b);
     ap_pass_brigade(r->output_filters, bb);
 }
@@ -1269,12 +1270,13 @@ AP_DECLARE(apr_status_t) ap_send_fd(apr_file_t *fd, request_rec *r,
                                     apr_off_t offset, apr_size_t len,
                                     apr_size_t *nbytes)
 {
+    conn_rec *c = r->connection;
     apr_bucket_brigade *bb = NULL;
     apr_bucket *b;
     apr_status_t rv;
 
-    bb = apr_brigade_create(r->pool);
-    b = apr_bucket_file_create(fd, offset, len, r->pool);
+    bb = apr_brigade_create(r->pool, c->bucket_alloc);
+    b = apr_bucket_file_create(fd, offset, len, r->pool, c->bucket_alloc);
     APR_BRIGADE_INSERT_TAIL(bb, b);
 
     rv = ap_pass_brigade(r->output_filters, bb);
@@ -1293,11 +1295,12 @@ AP_DECLARE(apr_status_t) ap_send_fd(apr_file_t *fd, request_rec *r,
 AP_DECLARE(size_t) ap_send_mmap(apr_mmap_t *mm, request_rec *r, size_t offset,
                                 size_t length)
 {
+    conn_rec *c = r->connection;
     apr_bucket_brigade *bb = NULL;
     apr_bucket *b;
 
-    bb = apr_brigade_create(r->pool);
-    b = apr_bucket_mmap_create(mm, offset, length);
+    bb = apr_brigade_create(r->pool, c->bucket_alloc);
+    b = apr_bucket_mmap_create(mm, offset, length, c->bucket_alloc);
     APR_BRIGADE_INSERT_TAIL(bb, b);
     ap_pass_brigade(r->output_filters, bb);
 
@@ -1332,6 +1335,7 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_old_write_filter(
 static apr_status_t buffer_output(request_rec *r,
                                   const char *str, apr_size_t len)
 {
+    conn_rec *c = r->connection;
     ap_filter_t *f;
     old_write_filter_ctx *ctx;
 
@@ -1359,8 +1363,8 @@ static apr_status_t buffer_output(request_rec *r,
      * deliver the content through the normal filter chain
      */
     if (f != r->output_filters) {
-        apr_bucket_brigade *bb = apr_brigade_create(r->pool);
-        apr_bucket *b = apr_bucket_transient_create(str, len);
+        apr_bucket_brigade *bb = apr_brigade_create(r->pool, c->bucket_alloc);
+        apr_bucket *b = apr_bucket_transient_create(str, len, c->bucket_alloc);
         APR_BRIGADE_INSERT_TAIL(bb, b);
 
         return ap_pass_brigade(r->output_filters, bb);
@@ -1370,7 +1374,7 @@ static apr_status_t buffer_output(request_rec *r,
     ctx = r->output_filters->ctx;
 
     if (ctx->bb == NULL) {
-        ctx->bb = apr_brigade_create(r->pool);
+        ctx->bb = apr_brigade_create(r->pool, c->bucket_alloc);
     }
 
     return ap_fwrite(f->next, ctx->bb, str, len);
@@ -1525,11 +1529,12 @@ AP_DECLARE_NONSTD(int) ap_rvputs(request_rec *r, ...)
 
 AP_DECLARE(int) ap_rflush(request_rec *r)
 {
+    conn_rec *c = r->connection;
     apr_bucket_brigade *bb;
     apr_bucket *b;
 
-    bb = apr_brigade_create(r->pool);
-    b = apr_bucket_flush_create();
+    bb = apr_brigade_create(r->pool, c->bucket_alloc);
+    b = apr_bucket_flush_create(c->bucket_alloc);
     APR_BRIGADE_INSERT_TAIL(bb, b);
     if (ap_pass_brigade(r->output_filters, bb) != APR_SUCCESS)
         return -1;

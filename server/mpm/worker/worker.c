@@ -575,7 +575,7 @@ int ap_graceful_stop_signalled(void)
  */
 
 static void process_socket(apr_pool_t *p, apr_socket_t *sock, int my_child_num,
-                           int my_thread_num)
+                           int my_thread_num, apr_bucket_alloc_t *bucket_alloc)
 {
     conn_rec *current_conn;
     long conn_id = ID_FROM_CHILD_THREAD(my_child_num, my_thread_num);
@@ -595,7 +595,8 @@ static void process_socket(apr_pool_t *p, apr_socket_t *sock, int my_child_num,
         return;
     }
 
-    current_conn = ap_run_create_connection(p, ap_server_conf, sock, conn_id, sbh);
+    current_conn = ap_run_create_connection(p, ap_server_conf, sock,
+                                            conn_id, sbh, bucket_alloc);
     if (current_conn) {
         ap_process_connection(current_conn, sock);
         ap_lingering_close(current_conn);
@@ -834,6 +835,7 @@ static void * APR_THREAD_FUNC worker_thread(apr_thread_t *thd, void * dummy)
     int process_slot = ti->pid;
     int thread_slot = ti->tid;
     apr_socket_t *csd = NULL;
+    apr_bucket_alloc_t *bucket_alloc;
     apr_pool_t *last_ptrans = NULL;
     apr_pool_t *ptrans;                /* Pool for per-transaction stuff */
     apr_status_t rv;
@@ -841,6 +843,9 @@ static void * APR_THREAD_FUNC worker_thread(apr_thread_t *thd, void * dummy)
     free(ti);
 
     ap_update_child_status_from_indexes(process_slot, thread_slot, SERVER_STARTING, NULL);
+
+    bucket_alloc = apr_bucket_alloc_create(apr_thread_pool_get(thd));
+
     while (!workers_may_exit) {
         ap_update_child_status_from_indexes(process_slot, thread_slot, SERVER_READY, NULL);
         rv = ap_queue_pop(worker_queue, &csd, &ptrans, last_ptrans);
@@ -870,7 +875,7 @@ static void * APR_THREAD_FUNC worker_thread(apr_thread_t *thd, void * dummy)
             }
             continue;
         }
-        process_socket(ptrans, csd, process_slot, thread_slot);
+        process_socket(ptrans, csd, process_slot, thread_slot, bucket_alloc);
         requests_this_child--; /* FIXME: should be synchronized - aaron */
         apr_pool_clear(ptrans);
         last_ptrans = ptrans;
@@ -878,6 +883,8 @@ static void * APR_THREAD_FUNC worker_thread(apr_thread_t *thd, void * dummy)
 
     ap_update_child_status_from_indexes(process_slot, thread_slot,
         (dying) ? SERVER_DEAD : SERVER_GRACEFUL, (request_rec *) NULL);
+
+    apr_bucket_alloc_destroy(bucket_alloc);
 
     apr_thread_exit(thd, APR_SUCCESS);
     return NULL;

@@ -1052,6 +1052,7 @@ static void worker_main(long thread_num)
 {
     static int requests_this_child = 0;
     PCOMP_CONTEXT context = NULL;
+    apr_bucket_alloc_t *bucket_alloc;
     apr_os_sock_info_t sockinfo;
     ap_sb_handle_t *sbh;
 
@@ -1075,6 +1076,9 @@ static void worker_main(long thread_num)
             break;
         }
 
+        /* XXX: where does this go? */
+        bucket_alloc = apr_bucket_alloc_create(context->ptrans);
+
         /* Have we hit MaxRequestPerChild connections? */
         if (ap_max_requests_per_child) {
             requests_this_child++;
@@ -1092,8 +1096,9 @@ static void worker_main(long thread_num)
         apr_os_sock_make(&context->sock, &sockinfo, context->ptrans);
 
         ap_create_sb_handle(&sbh, context->ptrans, 0, thread_num);
-        c = ap_run_create_connection(context->ptrans, ap_server_conf, context->sock,
-                                     thread_num, sbh);
+        c = ap_run_create_connection(context->ptrans, ap_server_conf,
+                                     context->sock, thread_num, sbh,
+                                     bucket_alloc);
 
         if (c) {
             ap_process_connection(c, context->sock);

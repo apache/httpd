@@ -55,7 +55,6 @@
 #include "http_protocol.h"
 #include "apr_buckets.h"
 #include "apr_strings.h"
-#include <stdlib.h>
 #if APR_HAVE_STRINGS_H
 #include <strings.h>
 #endif
@@ -73,10 +72,7 @@ AP_DECLARE(apr_bucket *) ap_bucket_error_make(apr_bucket *b, int error,
 {
     ap_bucket_error *h;
 
-    h = malloc(sizeof(*h));
-    if (h == NULL) {
-        return NULL;
-    }
+    h = apr_bucket_alloc(sizeof(*h), b->list);
     h->status = error;
     h->data = (buf) ? apr_pstrdup(p, buf) : NULL;
 
@@ -87,19 +83,21 @@ AP_DECLARE(apr_bucket *) ap_bucket_error_make(apr_bucket *b, int error,
     return b;
 }
 
-AP_DECLARE(apr_bucket *) ap_bucket_error_create(int error, 
-		const char *buf, apr_pool_t *p)
+AP_DECLARE(apr_bucket *) ap_bucket_error_create(int error, const char *buf,
+                                                apr_pool_t *p,
+                                                apr_bucket_alloc_t *list)
 {
-    apr_bucket *b = (apr_bucket *)malloc(sizeof(*b));
+    apr_bucket *b = apr_bucket_alloc(sizeof(*b), list);
 
     APR_BUCKET_INIT(b);
-    b->free = free;
+    b->free = apr_bucket_free;
+    b->list = list;
     return ap_bucket_error_make(b, error, buf, p);
 }
 
 AP_DECLARE_DATA const apr_bucket_type_t ap_bucket_type_error = {
     "ERROR", 5,
-    free,
+    apr_bucket_free,
     error_read,
     apr_bucket_setaside_notimpl,
     apr_bucket_split_notimpl,

@@ -739,11 +739,12 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b,
     }
 
     if (!ctx->remaining) {
+        conn_rec *c = f->r->connection;
         switch (ctx->state) {
         case BODY_NONE:
             break;
         case BODY_LENGTH:
-            e = apr_bucket_eos_create();
+            e = apr_bucket_eos_create(c->bucket_alloc);
             APR_BRIGADE_INSERT_TAIL(b, e);
             return APR_SUCCESS;
         case BODY_CHUNK:
@@ -766,7 +767,7 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b,
 
                 if (!ctx->remaining) {
                     /* Handle trailers by calling get_mime_headers again! */
-                    e = apr_bucket_eos_create();
+                    e = apr_bucket_eos_create(c->bucket_alloc);
                     APR_BRIGADE_INSERT_TAIL(b, e);
                     return APR_SUCCESS;
                 }
@@ -1164,7 +1165,7 @@ AP_DECLARE_NONSTD(int) ap_send_http_trace(request_rec *r)
 
     /* Now we recreate the request, and echo it back */
 
-    b = apr_brigade_create(r->pool);
+    b = apr_brigade_create(r->pool, r->connection->bucket_alloc);
     apr_brigade_putstrs(b, NULL, NULL, r->the_request, CRLF, NULL);
     h.pool = r->pool;
     h.bb = b;
@@ -1290,6 +1291,7 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_http_header_filter(ap_filter_t *f,
 {
     int i;
     request_rec *r = f->r;
+    conn_rec *c = r->connection;
     const char *clheader;
     const char *protocol;
     apr_bucket *e;
@@ -1416,7 +1418,7 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_http_header_filter(ap_filter_t *f,
         apr_table_unset(r->headers_out, "Content-Length");
     }
 
-    b2 = apr_brigade_create(r->pool);
+    b2 = apr_brigade_create(r->pool, c->bucket_alloc);
     basic_http_header(r, b2, protocol);
 
     h.pool = r->pool;
@@ -1575,6 +1577,7 @@ AP_DECLARE(int) ap_should_client_block(request_rec *r)
     }
 
     if (r->expecting_100 && r->proto_num >= HTTP_VERSION(1,1)) {
+        conn_rec *c = r->connection;
         char *tmp;
         apr_bucket *e;
         apr_bucket_brigade *bb;
@@ -1582,10 +1585,10 @@ AP_DECLARE(int) ap_should_client_block(request_rec *r)
         /* sending 100 Continue interim response */
         tmp = apr_pstrcat(r->pool, AP_SERVER_PROTOCOL, " ", status_lines[0],
                           CRLF CRLF, NULL);
-        bb = apr_brigade_create(r->pool);
-        e = apr_bucket_pool_create(tmp, strlen(tmp), r->pool);
+        bb = apr_brigade_create(r->pool, c->bucket_alloc);
+        e = apr_bucket_pool_create(tmp, strlen(tmp), r->pool, c->bucket_alloc);
         APR_BRIGADE_INSERT_HEAD(bb, e);
-        e = apr_bucket_flush_create();
+        e = apr_bucket_flush_create(c->bucket_alloc);
         APR_BRIGADE_INSERT_TAIL(bb, e);
 
         ap_pass_brigade(r->connection->output_filters, bb);
@@ -2585,6 +2588,7 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_byterange_filter(ap_filter_t *f,
 {
 #define MIN_LENGTH(len1, len2) ((len1 > len2) ? len2 : len1)
     request_rec *r = f->r;
+    conn_rec *c = r->connection;
     byterange_ctx *ctx = f->ctx;
     apr_bucket *e;
     apr_bucket_brigade *bsend;
@@ -2602,11 +2606,11 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_byterange_filter(ap_filter_t *f,
 
         if (num_ranges == -1) {
             ap_remove_output_filter(f);
-            bsend = apr_brigade_create(r->pool);
+            bsend = apr_brigade_create(r->pool, c->bucket_alloc);
             e = ap_bucket_error_create(HTTP_RANGE_NOT_SATISFIABLE, NULL, 
-                                       r->pool);
+                                       r->pool, c->bucket_alloc);
             APR_BRIGADE_INSERT_TAIL(bsend, e);
-            e = apr_bucket_eos_create();
+            e = apr_bucket_eos_create(c->bucket_alloc);
             APR_BRIGADE_INSERT_TAIL(bsend, e);
             return ap_pass_brigade(f->next, bsend);
         }
@@ -2627,7 +2631,7 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_byterange_filter(ap_filter_t *f,
         }
 
         /* create a brigade in case we never call ap_save_brigade() */
-        ctx->bb = apr_brigade_create(r->pool);
+        ctx->bb = apr_brigade_create(r->pool, c->bucket_alloc);
     }
 
     /* We can't actually deal with byte-ranges until we have the whole brigade
@@ -2664,7 +2668,7 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_byterange_filter(ap_filter_t *f,
     clength = (apr_off_t)bb_length;
 
     /* this brigade holds what we will be sending */
-    bsend = apr_brigade_create(r->pool);
+    bsend = apr_brigade_create(r->pool, c->bucket_alloc);
 
     while ((current = ap_getword(r->pool, &r->range, ','))
            && (rv = parse_byterange(current, clength, &range_start,
@@ -2695,14 +2699,15 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_byterange_filter(ap_filter_t *f,
         if (ctx->num_ranges > 1) {
             char *ts;
 
-            e = apr_bucket_pool_create(bound_head,
-                                      strlen(bound_head), r->pool);
+            e = apr_bucket_pool_create(bound_head, strlen(bound_head),
+                                       r->pool, c->bucket_alloc);
             APR_BRIGADE_INSERT_TAIL(bsend, e);
 
             ts = apr_psprintf(r->pool, BYTERANGE_FMT CRLF CRLF,
                               range_start, range_end, clength);
             ap_xlate_proto_to_ascii(ts, strlen(ts));
-            e = apr_bucket_pool_create(ts, strlen(ts), r->pool);
+            e = apr_bucket_pool_create(ts, strlen(ts), r->pool,
+                                       c->bucket_alloc);
             APR_BRIGADE_INSERT_TAIL(bsend, e);
         }
 
@@ -2739,11 +2744,11 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_byterange_filter(ap_filter_t *f,
         /* add the final boundary */
         end = apr_pstrcat(r->pool, CRLF "--", r->boundary, "--" CRLF, NULL);
         ap_xlate_proto_to_ascii(end, strlen(end));
-        e = apr_bucket_pool_create(end, strlen(end), r->pool);
+        e = apr_bucket_pool_create(end, strlen(end), r->pool, c->bucket_alloc);
         APR_BRIGADE_INSERT_TAIL(bsend, e);
     }
 
-    e = apr_bucket_eos_create();
+    e = apr_bucket_eos_create(c->bucket_alloc);
     APR_BRIGADE_INSERT_TAIL(bsend, e);
 
     /* we're done with the original content */

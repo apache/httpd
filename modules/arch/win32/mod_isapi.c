@@ -646,16 +646,17 @@ BOOL WINAPI WriteClient (HCONN ConnID, LPVOID Buffer, LPDWORD lpdwBytes,
                          DWORD dwReserved)
 {
     request_rec *r = ((isapi_cid *)ConnID)->r;
+    conn_rec *c = r->connection;
     apr_bucket_brigade *bb;
     apr_bucket *b;
 
     if (dwReserved == HSE_IO_SYNC)
         ; /* XXX: Fake it */
 
-    bb = apr_brigade_create(r->pool);
-    b = apr_bucket_transient_create(Buffer, *lpdwBytes);
+    bb = apr_brigade_create(r->pool, c->bucket_alloc);
+    b = apr_bucket_transient_create(Buffer, *lpdwBytes, c->bucket_alloc);
     APR_BRIGADE_INSERT_TAIL(bb, b);
-    b = apr_bucket_flush_create();
+    b = apr_bucket_flush_create(c->bucket_alloc);
     APR_BRIGADE_INSERT_TAIL(bb, b);
     ap_pass_brigade(r->output_filters, bb);
 
@@ -739,6 +740,7 @@ BOOL WINAPI ServerSupportFunction(HCONN hConn, DWORD dwHSERequest,
 {
     isapi_cid *cid = (isapi_cid *)hConn;
     request_rec *r = cid->r;
+    conn_rec *c = r->connection;
     request_rec *subreq;
 
     switch (dwHSERequest) {
@@ -792,11 +794,11 @@ BOOL WINAPI ServerSupportFunction(HCONN hConn, DWORD dwHSERequest,
         else if ((apr_size_t)ate < headlen) {
             apr_bucket_brigade *bb;
             apr_bucket *b;
-            bb = apr_brigade_create(cid->r->pool);
+            bb = apr_brigade_create(cid->r->pool, c->bucket_alloc);
 	    b = apr_bucket_transient_create((char*) lpdwDataType + ate, 
-                                           headlen - ate);
+                                           headlen - ate, c->bucket_alloc);
 	    APR_BRIGADE_INSERT_TAIL(bb, b);
-            b = apr_bucket_flush_create();
+            b = apr_bucket_flush_create(c->bucket_alloc);
 	    APR_BRIGADE_INSERT_TAIL(bb, b);
 	    ap_pass_brigade(cid->r->output_filters, bb);
         }
@@ -897,7 +899,7 @@ BOOL WINAPI ServerSupportFunction(HCONN hConn, DWORD dwHSERequest,
         }
         
         /* apr_dupfile_oshandle (&fd, tf->hFile, r->pool); */
-        bb = apr_brigade_create(r->pool);
+        bb = apr_brigade_create(r->pool, c->bucket_alloc);
 
         if (tf->dwFlags & HSE_IO_SEND_HEADERS) 
         {
@@ -923,27 +925,29 @@ BOOL WINAPI ServerSupportFunction(HCONN hConn, DWORD dwHSERequest,
             if ((apr_size_t)ate < tf->HeadLength)
             {
                 b = apr_bucket_transient_create((char*)tf->pHead + ate, 
-                                                tf->HeadLength - ate);
+                                                tf->HeadLength - ate,
+                                                c->bucket_alloc);
                 APR_BRIGADE_INSERT_TAIL(bb, b);
             }
         }
         else if (tf->pHead && tf->HeadLength) {
             b = apr_bucket_transient_create((char*)tf->pHead, 
-                                            tf->HeadLength);
+                                            tf->HeadLength,
+                                            c->bucket_alloc);
             APR_BRIGADE_INSERT_TAIL(bb, b);
         }
 
         b = apr_bucket_file_create(fd, tf->Offset, 
-                                   tf->BytesToWrite, r->pool);
+                                   tf->BytesToWrite, r->pool, c->bucket_alloc);
         APR_BRIGADE_INSERT_TAIL(bb, b);
         
         if (tf->pTail && tf->TailLength) {
             b = apr_bucket_transient_create((char*)tf->pTail, 
-                                            tf->TailLength);
+                                            tf->TailLength, c->bucket_alloc);
             APR_BRIGADE_INSERT_TAIL(bb, b);
         }
         
-        b = apr_bucket_flush_create();
+        b = apr_bucket_flush_create(c->bucket_alloc);
         APR_BRIGADE_INSERT_TAIL(bb, b);
         ap_pass_brigade(r->output_filters, bb);
 
@@ -1095,11 +1099,12 @@ BOOL WINAPI ServerSupportFunction(HCONN hConn, DWORD dwHSERequest,
         else if ((apr_size_t)ate < shi->cchHeader) {
             apr_bucket_brigade *bb;
             apr_bucket *b;
-            bb = apr_brigade_create(cid->r->pool);
+            bb = apr_brigade_create(cid->r->pool, c->bucket_alloc);
 	    b = apr_bucket_transient_create(shi->pszHeader + ate, 
-                                            shi->cchHeader - ate);
+                                            shi->cchHeader - ate,
+                                            c->bucket_alloc);
 	    APR_BRIGADE_INSERT_TAIL(bb, b);
-            b = apr_bucket_flush_create();
+            b = apr_bucket_flush_create(c->bucket_alloc);
 	    APR_BRIGADE_INSERT_TAIL(bb, b);
 	    ap_pass_brigade(cid->r->output_filters, bb);
         }

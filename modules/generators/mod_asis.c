@@ -72,6 +72,7 @@
 
 static int asis_handler(request_rec *r)
 {
+    conn_rec *c = r->connection;
     apr_file_t *f = NULL;
     apr_status_t rv;
     const char *location;
@@ -130,7 +131,7 @@ static int asis_handler(request_rec *r)
             return HTTP_INTERNAL_SERVER_ERROR;
         }
 
-        bb = apr_brigade_create(r->pool);
+        bb = apr_brigade_create(r->pool, c->bucket_alloc);
 #if APR_HAS_LARGE_FILES
         if (r->finfo.size - pos > AP_MAX_SENDFILE) {
             /* APR_HAS_LARGE_FILES issue; must split into mutiple buckets, 
@@ -138,7 +139,8 @@ static int asis_handler(request_rec *r)
              * in case the brigade code/filters attempt to read it directly.
              */
             apr_off_t fsize = r->finfo.size - pos;
-            b = apr_bucket_file_create(f, pos, AP_MAX_SENDFILE, r->pool);
+            b = apr_bucket_file_create(f, pos, AP_MAX_SENDFILE,
+                                       r->pool, c->bucket_alloc);
             while (fsize > AP_MAX_SENDFILE) {
                 APR_BRIGADE_INSERT_TAIL(bb, b);
                 apr_bucket_copy(b, &b);
@@ -149,9 +151,10 @@ static int asis_handler(request_rec *r)
         }
         else
 #endif
-        b = apr_bucket_file_create(f, pos, (apr_size_t) (r->finfo.size - pos), r->pool);
+        b = apr_bucket_file_create(f, pos, (apr_size_t) (r->finfo.size - pos),
+                                   r->pool, c->bucket_alloc);
         APR_BRIGADE_INSERT_TAIL(bb, b);
-        b = apr_bucket_eos_create();
+        b = apr_bucket_eos_create(c->bucket_alloc);
         APR_BRIGADE_INSERT_TAIL(bb, b);
         rv = ap_pass_brigade(r->output_filters, bb);
         if (rv != APR_SUCCESS) {

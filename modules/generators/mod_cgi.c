@@ -702,14 +702,15 @@ static int cgi_handler(request_rec *r)
 
     /* Handle script return... */
     if (script_in && !nph) {
+        conn_rec *c = r->connection;
 	const char *location;
 	char sbuf[MAX_STRING_LEN];
 	int ret;
 
-        bb = apr_brigade_create(r->pool);
-        b = apr_bucket_pipe_create(script_in);
+        bb = apr_brigade_create(r->pool, c->bucket_alloc);
+        b = apr_bucket_pipe_create(script_in, c->bucket_alloc);
         APR_BRIGADE_INSERT_TAIL(bb, b);
-        b = apr_bucket_eos_create();
+        b = apr_bucket_eos_create(c->bucket_alloc);
         APR_BRIGADE_INSERT_TAIL(bb, b);
 
 	if ((ret = ap_scan_script_header_err_brigade(r, bb, sbuf))) {
@@ -755,6 +756,7 @@ static int cgi_handler(request_rec *r)
     }
 
     if (script_in && nph) {
+        conn_rec *c = r->connection;
         struct ap_filter_t *cur;
         
         /* get rid of all filters up through protocol...  since we
@@ -768,10 +770,10 @@ static int cgi_handler(request_rec *r)
         }
         r->output_filters = r->proto_output_filters = cur;
 
-        bb = apr_brigade_create(r->pool);
-	b = apr_bucket_pipe_create(script_in);
+        bb = apr_brigade_create(r->pool, c->bucket_alloc);
+	b = apr_bucket_pipe_create(script_in, c->bucket_alloc);
 	APR_BRIGADE_INSERT_TAIL(bb, b);
-	b = apr_bucket_eos_create();
+	b = apr_bucket_eos_create(c->bucket_alloc);
 	APR_BRIGADE_INSERT_TAIL(bb, b);
         ap_pass_brigade(r->output_filters, bb);
     }
@@ -825,6 +827,7 @@ static int include_cgi(char *s, request_rec *r, ap_filter_t *next,
     if (ap_is_HTTP_REDIRECT(rr_status)) {
         apr_size_t len_loc;
         const char *location = apr_table_get(rr->headers_out, "Location");
+        conn_rec *c = r->connection;
 
         location = ap_escape_html(rr->pool, location);
         len_loc = strlen(location);
@@ -834,15 +837,20 @@ static int include_cgi(char *s, request_rec *r, ap_filter_t *next,
          * and a single pool bucket */
 
         tmp_buck = apr_bucket_immortal_create("<A HREF=\"",
-                                              sizeof("<A HREF=\"") - 1);
+                                              sizeof("<A HREF=\"") - 1,
+                                              c->bucket_alloc);
         APR_BUCKET_INSERT_BEFORE(head_ptr, tmp_buck);
-        tmp2_buck = apr_bucket_heap_create(location, len_loc, 1);
+        tmp2_buck = apr_bucket_heap_create(location, len_loc, NULL,
+                                           c->bucket_alloc);
         APR_BUCKET_INSERT_BEFORE(head_ptr, tmp2_buck);
-        tmp2_buck = apr_bucket_immortal_create("\">", sizeof("\">") - 1);
+        tmp2_buck = apr_bucket_immortal_create("\">", sizeof("\">") - 1,
+                                               c->bucket_alloc);
         APR_BUCKET_INSERT_BEFORE(head_ptr, tmp2_buck);
-        tmp2_buck = apr_bucket_heap_create(location, len_loc, 1);
+        tmp2_buck = apr_bucket_heap_create(location, len_loc, NULL,
+                                           c->bucket_alloc);
         APR_BUCKET_INSERT_BEFORE(head_ptr, tmp2_buck);
-        tmp2_buck = apr_bucket_immortal_create("</A>", sizeof("</A>") - 1);
+        tmp2_buck = apr_bucket_immortal_create("</A>", sizeof("</A>") - 1,
+                                               c->bucket_alloc);
         APR_BUCKET_INSERT_BEFORE(head_ptr, tmp2_buck);
 
         if (*inserted_head == NULL) {
@@ -890,8 +898,8 @@ static int include_cmd(include_ctx_t *ctx, apr_bucket_brigade **bb,
         return HTTP_INTERNAL_SERVER_ERROR;
     }
 
-    bcgi = apr_brigade_create(r->pool);
-    b = apr_bucket_pipe_create(script_in);
+    bcgi = apr_brigade_create(r->pool, f->c->bucket_alloc);
+    b = apr_bucket_pipe_create(script_in, f->c->bucket_alloc);
     APR_BRIGADE_INSERT_TAIL(bcgi, b);
     ap_pass_brigade(f->next, bcgi);
 

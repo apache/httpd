@@ -1,5 +1,10 @@
 Changes with Apache 2.0.35
 
+  *) Change bucket brigades API to allow a "bucket allocator" to be
+     passed in at certain points.  This allows us to implement freelists
+     so that we can stop using malloc/free so frequently.
+     [Cliff Woolley, Brian Pane]
+
   *) Add support for macro expansion within the variable names in
      <!--#echo--> and <!--#set--> directives [Brian Pane]
 

@@ -527,6 +527,7 @@ static void child_main(int child_num_arg)
     void *csd;
     ap_sb_handle_t *sbh;
     apr_status_t rv;
+    apr_bucket_alloc_t *bucket_alloc;
 
     my_child_num = child_num_arg;
     ap_my_pid = getpid();
@@ -575,6 +576,8 @@ static void child_main(int child_num_arg)
     apr_poll_setup(&pollset, num_listensocks, pchild);
     for (i = 0; i < num_listensocks; i++)
         apr_poll_socket_add(pollset, listensocks[i].sd, APR_POLLIN);
+
+    bucket_alloc = apr_bucket_alloc_create(pchild);
 
     while (!die_now) {
 	/*
@@ -667,7 +670,7 @@ static void child_main(int child_num_arg)
 	 * socket options, file descriptors, and read/write buffers.
 	 */
 
-	current_conn = ap_run_create_connection(ptrans, ap_server_conf, csd, my_child_num, sbh);
+	current_conn = ap_run_create_connection(ptrans, ap_server_conf, csd, my_child_num, sbh, bucket_alloc);
         if (current_conn) {
             ap_process_connection(current_conn, csd);
             ap_lingering_close(current_conn);

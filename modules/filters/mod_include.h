@@ -189,7 +189,8 @@ typedef struct include_filter_ctx {
 {                                                                 \
     /* XXX: it'd probably be nice to use a pool bucket here */    \
     t_buck = apr_bucket_heap_create(cntx->error_str,              \
-                             strlen(cntx->error_str), 1);         \
+                                    strlen(cntx->error_str),      \
+                                    NULL, h_ptr->list);           \
     APR_BUCKET_INSERT_BEFORE(h_ptr, t_buck);                      \
                                                                   \
     if (ins_head == NULL) {                                       \
@@ -208,7 +209,7 @@ if ((APR_BRIGADE_EMPTY((cntxt)->ssi_tag_brigade)) &&                  \
                                                                       \
     tag_plus = apr_brigade_split((brgd), (cntxt)->head_start_bucket); \
     if ((cntxt)->output_flush) {                                      \
-        APR_BRIGADE_INSERT_TAIL((brgd), apr_bucket_flush_create());   \
+        APR_BRIGADE_INSERT_TAIL((brgd), apr_bucket_flush_create((brgd)->bucket_alloc));   \
     }                                                                 \
     (rc) = ap_pass_brigade((next), (brgd));                           \
     (cntxt)->bytes_parsed = 0;                                        \

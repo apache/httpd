@@ -3122,6 +3122,7 @@ static int core_override_type(request_rec *r)
 
 static int default_handler(request_rec *r)
 {
+    conn_rec *c = r->connection;
     apr_bucket_brigade *bb;
     apr_bucket *e;
     core_dir_config *d;
@@ -3215,7 +3216,7 @@ static int default_handler(request_rec *r)
                        ap_md5digest(r->pool, fd));
     }
 
-    bb = apr_brigade_create(r->pool);
+    bb = apr_brigade_create(r->pool, c->bucket_alloc);
 #if APR_HAS_LARGE_FILES
     if (r->finfo.size > AP_MAX_SENDFILE) {
         /* APR_HAS_LARGE_FILES issue; must split into mutiple buckets,
@@ -3223,7 +3224,8 @@ static int default_handler(request_rec *r)
          * in case the brigade code/filters attempt to read it directly.
          */
         apr_off_t fsize = r->finfo.size;
-        e = apr_bucket_file_create(fd, 0, AP_MAX_SENDFILE, r->pool);
+        e = apr_bucket_file_create(fd, 0, AP_MAX_SENDFILE, r->pool,
+                                   c->bucket_alloc);
         while (fsize > AP_MAX_SENDFILE) {
             apr_bucket *ce;
             apr_bucket_copy(e, &ce);
@@ -3235,10 +3237,11 @@ static int default_handler(request_rec *r)
     }
     else
 #endif
-        e = apr_bucket_file_create(fd, 0, (apr_size_t)r->finfo.size, r->pool);
+        e = apr_bucket_file_create(fd, 0, (apr_size_t)r->finfo.size,
+                                   r->pool, c->bucket_alloc);
 
     APR_BRIGADE_INSERT_TAIL(bb, e);
-    e = apr_bucket_eos_create();
+    e = apr_bucket_eos_create(c->bucket_alloc);
     APR_BRIGADE_INSERT_TAIL(bb, e);
 
     return ap_pass_brigade(r->output_filters, bb);
@@ -3320,10 +3323,10 @@ static int core_input_filter(ap_filter_t *f, apr_bucket_brigade *b,
     if (!ctx)
     {
         ctx = apr_pcalloc(f->c->pool, sizeof(*ctx));
-        ctx->b = apr_brigade_create(f->c->pool);
+        ctx->b = apr_brigade_create(f->c->pool, f->c->bucket_alloc);
 
         /* seed the brigade with the client socket. */
-        e = apr_bucket_socket_create(net->client_socket);
+        e = apr_bucket_socket_create(net->client_socket, f->c->bucket_alloc);
         APR_BRIGADE_INSERT_TAIL(ctx->b, e);
         net->in_ctx = ctx;
     }
@@ -3410,7 +3413,7 @@ static int core_input_filter(ap_filter_t *f, apr_bucket_brigade *b,
          * so tack on an EOS too. */
         /* We have read until the brigade was empty, so we know that we
          * must be EOS. */
-        e = apr_bucket_eos_create();
+        e = apr_bucket_eos_create(f->c->bucket_alloc);
         APR_BRIGADE_INSERT_TAIL(b, e);
         return APR_SUCCESS;
     }
@@ -3444,7 +3447,7 @@ static int core_input_filter(ap_filter_t *f, apr_bucket_brigade *b,
             apr_bucket_delete(e);
 
             if (mode == AP_MODE_READBYTES) {
-                e = apr_bucket_eos_create();
+                e = apr_bucket_eos_create(f->c->bucket_alloc);
                 APR_BRIGADE_INSERT_TAIL(b, e);
             }
             return APR_SUCCESS;
@@ -3618,7 +3621,8 @@ static apr_status_t core_output_filter(ap_filter_t *f, apr_bucket_brigade *b)
                                 b = bb;
                             }
                             else {
-                                temp_brig = apr_brigade_create(f->c->pool);
+                                temp_brig = apr_brigade_create(f->c->pool,
+                                                           f->c->bucket_alloc);
                             }
 
                             temp = APR_BRIGADE_FIRST(b);
@@ -3722,7 +3726,8 @@ static apr_status_t core_output_filter(ap_filter_t *f, apr_bucket_brigade *b)
                  * after the request_pool is cleared.
                  */
                 if (ctx->b == NULL) {
-                    ctx->b = apr_brigade_create(net->c->pool);
+                    ctx->b = apr_brigade_create(net->c->pool,
+                                                net->c->bucket_alloc);
                 }
 
                 APR_BRIGADE_FOREACH(bucket, b) {
@@ -3925,7 +3930,7 @@ static int core_create_req(request_rec *r)
         req_cfg->bb = main_req_cfg->bb;
     }
     else {
-        req_cfg->bb = apr_brigade_create(r->pool);
+        req_cfg->bb = apr_brigade_create(r->pool, r->connection->bucket_alloc);
         if (!r->prev) {
             ap_add_input_filter_handle(ap_net_time_filter_handle,
                                        NULL, r, r->connection);
@@ -3948,7 +3953,8 @@ static int core_create_proxy_req(request_rec *r, request_rec *pr)
 }
 
 static conn_rec *core_create_conn(apr_pool_t *ptrans, server_rec *server,
-                                  apr_socket_t *csd, long id, void *sbh)
+                                  apr_socket_t *csd, long id, void *sbh,
+                                  apr_bucket_alloc_t *alloc)
 {
     apr_status_t rv;
     conn_rec *c = (conn_rec *) apr_pcalloc(ptrans, sizeof(conn_rec));
@@ -3984,6 +3990,8 @@ static conn_rec *core_create_conn(apr_pool_t *ptrans, server_rec *server,
     c->base_server = server;
 
     c->id = id;
+    c->bucket_alloc = alloc;
+
     return c;
 }
 

@@ -57,6 +57,7 @@
 
 #include "apr_hooks.h"
 #include "apr_network_io.h"
+#include "apr_buckets.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -114,7 +115,8 @@ AP_DECLARE(void) ap_lingering_close(conn_rec *c);
  * @return An allocated connection record or NULL.
  */
 AP_DECLARE_HOOK(conn_rec *, create_connection,
-                (apr_pool_t *p, server_rec *server, apr_socket_t *csd, long conn_id, void *sbh))
+                (apr_pool_t *p, server_rec *server, apr_socket_t *csd,
+                 long conn_id, void *sbh, apr_bucket_alloc_t *alloc))
    
 /**
  * This hook gives protocol modules an opportunity to set everything up

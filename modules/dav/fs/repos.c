@@ -59,6 +59,7 @@
 #include "apr.h"
 #include "apr_file_io.h"
 #include "apr_strings.h"
+#include "apr_buckets.h"
 
 #if APR_HAVE_STDIO_H
 #include <stdio.h>              /* for sprintf() */
@@ -995,15 +996,15 @@ static dav_error * dav_fs_deliver(const dav_resource *resource,
                              "File permissions deny server access.");
     }
 
-    bb = apr_brigade_create(pool);
+    bb = apr_brigade_create(pool, output->c->bucket_alloc);
 
     /* ### this does not handle large files. but this is test code anyway */
     bkt = apr_bucket_file_create(fd, 0,
                                  (apr_size_t)resource->info->finfo.size,
-                                 pool);
+                                 pool, output->c->bucket_alloc);
     APR_BRIGADE_INSERT_TAIL(bb, bkt);
 
-    bkt = apr_bucket_eos_create();
+    bkt = apr_bucket_eos_create(output->c->bucket_alloc);
     APR_BRIGADE_INSERT_TAIL(bb, bkt);
 
     if ((status = ap_pass_brigade(output, bb)) != APR_SUCCESS) {

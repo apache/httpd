@@ -547,7 +547,7 @@ AP_DECLARE(apr_status_t) ap_save_brigade(ap_filter_t *f,
      * create an empty bucket brigade so that we can concat.
      */
     if (!(*saveto)) {
-        *saveto = apr_brigade_create(p);
+        *saveto = apr_brigade_create(p, f->c->bucket_alloc);
     }
     
     APR_RING_FOREACH(e, &(*b)->list, apr_bucket, link) {
@@ -575,7 +575,7 @@ AP_DECLARE(apr_status_t) ap_fflush(ap_filter_t *f, apr_bucket_brigade *bb)
 {
     apr_bucket *b;
 
-    b = apr_bucket_flush_create();
+    b = apr_bucket_flush_create(f->c->bucket_alloc);
     APR_BRIGADE_INSERT_TAIL(bb, b);
     return ap_pass_brigade(f, bb);
 }

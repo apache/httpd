@@ -400,6 +400,7 @@ static void worker_main(void *vpArg)
     long conn_id;
     conn_rec *current_conn;
     apr_pool_t *pconn;
+    apr_bucket_alloc_t *bucket_alloc;
     worker_args_t *worker_args;
     HQUEUE workq;
     PID owner;
@@ -430,14 +431,18 @@ static void worker_main(void *vpArg)
     while (rc = DosReadQueue(workq, &rd, &len, (PPVOID)&worker_args, 0, DCWW_WAIT, &priority, NULLHANDLE),
            rc == 0 && rd.ulData != WORKTYPE_EXIT) {
         pconn = worker_args->pconn;
+        bucket_alloc = apr_bucket_alloc_create(pconn);
         ap_create_sb_handle(&sbh, pconn, child_slot, thread_slot);
-        current_conn = ap_run_create_connection(pconn, ap_server_conf, worker_args->conn_sd, conn_id, sbh);
+        current_conn = ap_run_create_connection(pconn, ap_server_conf,
+                                                worker_args->conn_sd, conn_id,
+                                                sbh, bucket_alloc);
 
         if (current_conn) {
             ap_process_connection(current_conn, worker_args->conn_sd);
             ap_lingering_close(current_conn);
         }
 
+        apr_bucket_alloc_destroy(bucket_alloc);
         apr_pool_destroy(pconn);
         ap_update_child_status_from_indexes(child_slot, thread_slot, 
                                             SERVER_READY, NULL);

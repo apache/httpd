@@ -666,12 +666,14 @@ AP_DECLARE(apr_bucket *) ap_bucket_error_make(apr_bucket *b, int error,
  * Create a bucket referring to an HTTP error.
  * @param error The HTTP error code to put in the bucket. 
  * @param buf An optional error string to put in the bucket.
- * @param p A pool to allocate out of.
+ * @param p A pool to allocate the error string out of.
+ * @param list The bucket allocator from which to allocate the bucket
  * @return The new bucket, or NULL if allocation failed
- * @deffunc apr_bucket *ap_bucket_error_create(int error, const char *buf, apr_pool_t *p)
+ * @deffunc apr_bucket *ap_bucket_error_create(int error, const char *buf, apr_pool_t *p, apr_bucket_alloc_t *list)
  */
-AP_DECLARE(apr_bucket *) ap_bucket_error_create(int error,
-                const char *buf, apr_pool_t *p);
+AP_DECLARE(apr_bucket *) ap_bucket_error_create(int error, const char *buf,
+                                                apr_pool_t *p,
+                                                apr_bucket_alloc_t *list);
 
 AP_DECLARE_NONSTD(apr_status_t) ap_byterange_filter(ap_filter_t *f, apr_bucket_brigade *b);
 AP_DECLARE_NONSTD(apr_status_t) ap_http_header_filter(ap_filter_t *f, apr_bucket_brigade *b);

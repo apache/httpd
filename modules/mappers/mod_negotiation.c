@@ -2813,6 +2813,7 @@ static int handle_map_file(request_rec *r)
 
     if (best->body)
     {
+        conn_rec *c = r->connection;
         apr_bucket_brigade *bb;
         apr_bucket *e;
 
@@ -2840,11 +2841,12 @@ static int handle_map_file(request_rec *r)
             return res;
         }
 
-        bb = apr_brigade_create(r->pool);
+        bb = apr_brigade_create(r->pool, c->bucket_alloc);
         e = apr_bucket_file_create(map, best->body, 
-                                   (apr_size_t)best->bytes, r->pool);
+                                   (apr_size_t)best->bytes, r->pool,
+                                   c->bucket_alloc);
         APR_BRIGADE_INSERT_TAIL(bb, e);
-        e = apr_bucket_eos_create();
+        e = apr_bucket_eos_create(c->bucket_alloc);
         APR_BRIGADE_INSERT_TAIL(bb, e);
 
         return ap_pass_brigade(r->output_filters, bb);

@@ -347,7 +347,8 @@ static int find_code_page(request_rec *r)
          * of it.
          */
         input_ctx = apr_pcalloc(r->pool, sizeof(charset_filter_ctx_t));
-        input_ctx->bb = apr_brigade_create(r->pool);
+        input_ctx->bb = apr_brigade_create(r->pool,
+                                           r->connection->bucket_alloc);
         input_ctx->tmp = apr_palloc(r->pool, INPUT_XLATE_BUF_SIZE);
         input_ctx->dc = dc;
         reqinfo->input_ctx = input_ctx;
@@ -443,13 +444,15 @@ static void xlate_insert_filter(request_rec *r)
  */
 static apr_status_t send_downstream(ap_filter_t *f, const char *tmp, apr_size_t len)
 {
+    request_rec *r = f->r;
+    conn_rec *c = r->connection;
     apr_bucket_brigade *bb;
     apr_bucket *b;
     charset_filter_ctx_t *ctx = f->ctx;
     apr_status_t rv;
 
-    bb = apr_brigade_create(f->r->pool);
-    b = apr_bucket_transient_create(tmp, len);
+    bb = apr_brigade_create(r->pool, c->bucket_alloc);
+    b = apr_bucket_transient_create(tmp, len, c->bucket_alloc);
     APR_BRIGADE_INSERT_TAIL(bb, b);
     rv = ap_pass_brigade(f->next, bb);
     if (rv != APR_SUCCESS) {
@@ -460,13 +463,15 @@ static apr_status_t send_downstream(ap_filter_t *f, const char *tmp, apr_size_t 
 
 static apr_status_t send_eos(ap_filter_t *f)
 {
+    request_rec *r = f->r;
+    conn_rec *c = r->connection;
     apr_bucket_brigade *bb;
     apr_bucket *b;
     charset_filter_ctx_t *ctx = f->ctx;
     apr_status_t rv;
 
-    bb = apr_brigade_create(f->r->pool);
-    b = apr_bucket_eos_create();
+    bb = apr_brigade_create(r->pool, c->bucket_alloc);
+    b = apr_bucket_eos_create(c->bucket_alloc);
     APR_BRIGADE_INSERT_TAIL(bb, b);
     rv = ap_pass_brigade(f->next, bb);
     if (rv != APR_SUCCESS) {
@@ -1053,7 +1058,8 @@ static int xlate_in_filter(ap_filter_t *f, apr_bucket_brigade *bb,
             apr_bucket *e;
 
             e = apr_bucket_heap_create(ctx->tmp, 
-                                      INPUT_XLATE_BUF_SIZE - buffer_size, 1);
+                                       INPUT_XLATE_BUF_SIZE - buffer_size,
+                                       NULL, f->r->connection->bucket_alloc);
             /* make sure we insert at the head, because there may be
              * an eos bucket already there, and the eos bucket should 
              * come after the data

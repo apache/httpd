@@ -144,6 +144,7 @@ static apr_status_t chunk_filter(ap_filter_t *f, apr_bucket_brigade *b)
 {
 #define ASCII_CRLF  "\015\012"
 #define ASCII_ZERO  "\060"
+    conn_rec *c = f->r->connection;
     apr_bucket_brigade *more;
     apr_bucket *e;
     apr_status_t rv;
@@ -214,14 +215,15 @@ static apr_status_t chunk_filter(ap_filter_t *f, apr_bucket_brigade *b)
             hdr_len = apr_snprintf(chunk_hdr, sizeof(chunk_hdr),
                                    "%qx" CRLF, (apr_uint64_t)bytes);
             ap_xlate_proto_to_ascii(chunk_hdr, hdr_len);
-            e = apr_bucket_transient_create(chunk_hdr, hdr_len);
+            e = apr_bucket_transient_create(chunk_hdr, hdr_len,
+                                            c->bucket_alloc);
             APR_BRIGADE_INSERT_HEAD(b, e);
 
             /*
              * Insert the end-of-chunk CRLF before an EOS or
              * FLUSH bucket, or appended to the brigade
              */
-            e = apr_bucket_immortal_create(ASCII_CRLF, 2);
+            e = apr_bucket_immortal_create(ASCII_CRLF, 2, c->bucket_alloc);
             if (eos != NULL) {
                 APR_BUCKET_INSERT_BEFORE(eos, e);
             }
@@ -248,7 +250,9 @@ static apr_status_t chunk_filter(ap_filter_t *f, apr_bucket_brigade *b)
          */
         if (eos != NULL) {
             /* XXX: (2) trailers ... does not yet exist */
-            e = apr_bucket_immortal_create(ASCII_ZERO ASCII_CRLF /* <trailers> */ ASCII_CRLF, 5);
+            e = apr_bucket_immortal_create(ASCII_ZERO ASCII_CRLF
+                                           /* <trailers> */
+                                           ASCII_CRLF, 5, c->bucket_alloc);
             APR_BUCKET_INSERT_BEFORE(eos, e);
         }
 
