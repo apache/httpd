@@ -97,6 +97,8 @@ Committed Code Changes:
     * Ken's change HIDE default to "yes", always include hide.h
     * Ralf's major Configure cleanup
     * Ralf's additional manual pages for the support programs
+    * Ben Hyde's Configure check for unknown command switch
+    * Martin's fix for src/helpers/fp2rp
 
 Available Patches:
 

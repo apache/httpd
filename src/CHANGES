@@ -1,4 +1,7 @@
 Changes with Apache 1.3b6
+
+  *) Fix a bug in the src/helpers/fp2rp script and make it a little bit
+     faster [Martin Kraemer]
   
   *) Make Configure die when you give it an unknown command switch.
      [Ben Hyde]
