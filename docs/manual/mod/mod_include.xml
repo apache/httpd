@@ -59,9 +59,9 @@ documents.</description>
     <code>text/x-server-parsed-html3</code> (and the resulting
     output will have the mime type <code>text/html</code>).</p>
 
-    <p>For more information, see our <a
+    <seealso>For more information, see our <a
     href="../howto/ssi.html">Tutorial on Server Side
-    Includes</a>.</p>
+    Includes</a>.</seealso>
 </section>
 
 <section id="basic">
@@ -114,11 +114,12 @@ documents.</description>
       <dt><strong><a id="echo" name="echo">echo</a></strong></dt>
 
       <dd>
-        This command prints one of the <a href="#includevars">include
-        variables</a>, defined
-        below. If the variable is unset, it is printed as
-        <code>(none)</code>. Any dates printed are subject to the
-        currently configured <code>timefmt</code>. Attributes: 
+        <p>This command prints one of the <a href="#includevars">include
+        variables</a>, defined below. If the variable is unset, it
+        is printed as <code>(none)</code>. Any dates printed are
+        subject to the currently configured <code>timefmt</code>.</p>
+
+        <p>Attributes:</p> 
 
         <dl>
           <dt><strong>var</strong></dt>
@@ -154,8 +155,8 @@ documents.</description>
 
       <dd>
         The exec command executes a given shell command or CGI
-        script. The IncludesNOEXEC <a
-        href="core.html#options">Option</a> disables this command
+        script. The IncludesNOEXEC <directive
+        module="core">Option</directive> disables this command
         completely. The valid attributes are: 
 
         <dl>
@@ -169,9 +170,8 @@ documents.</description>
             invoked as a CGI script, even if the server would not
             normally recognize it as such. However, the directory
             containing the script must be enabled for CGI scripts
-            (with <a
-            href="mod_alias.html#scriptalias">ScriptAlias</a> or
-            the ExecCGI <a href="core.html#options">Option</a>). 
+            (with <directive module="mod_alias">ScriptAlias</directive>
+            or the ExecCGI <directive module="core">Option</directive>). 
 
             <p>The CGI script is given the PATH_INFO and query
             string (QUERY_STRING) of the original request from the
@@ -182,7 +182,7 @@ documents.</description>
 
             <p>For example:</p>
 
-  <code>&lt;!--#exec cgi="/cgi-bin/example.cgi" --&gt;</code>
+  <example>&lt;!--#exec cgi="/cgi-bin/example.cgi" --&gt;</example>
 
             <p>If the script returns a Location: header instead of
             output, then this will be translated into an HTML
@@ -196,7 +196,10 @@ documents.</description>
             cgi</code>, but can be done with <code>include
             virtual</code>, as shown here:</p>
 
-  <code>&lt;!--#include virtual="/cgi-bin/example.cgi?argument=value" --&gt;</code>
+  <example>
+  &lt;!--#include virtual="/cgi-bin/example.cgi?argument=value" --&gt;
+  </example>
+
           </dd>
 
           <dt><strong>cmd</strong></dt>
@@ -222,7 +225,9 @@ documents.</description>
           non-suexec configuration on unix, it will not produce the
           desired result under Win32, or when running suexec:</p>
 
-   <code>&lt;!--#exec cmd="perl /path/to/perlscript arg1 arg2" --&gt;</code>
+   <example>
+   &lt;!--#exec cmd="perl /path/to/perlscript arg1 arg2" --&gt;
+   </example>
 
           </dd>
         </dl>
@@ -306,7 +311,9 @@ documents.</description>
            in the parsed file. You may include a query string in a CGI
            url:</p>
      
-     <code>&lt;!--#include virtual="/cgi-bin/example.cgi?argument=value" --&gt;</code>
+     <example>
+     &lt;!--#include virtual="/cgi-bin/example.cgi?argument=value" --&gt;
+     </example>
            
            <p><code>include virtual</code> should be used in preference
            to <code>exec cgi</code> to include the output of CGI
@@ -326,7 +333,9 @@ documents.</description>
 
       <p>For example:</p>
 
-      <p><code>&lt;!--#printenv --&gt;</code></p>
+      <example>
+      &lt;!--#printenv --&gt;
+      </example>
 
       <p>The <strong>printenv</strong> element is available only in
       Apache 1.2 and above.</p>
@@ -345,9 +354,11 @@ documents.</description>
 
           <dd>The value to give a variable.</dd>
         </dl>
-        <p>
-        For example: <code>&lt;!--#set var="category" value="help"
-        --&gt;</code></p>
+        <p>For example:</p>
+        
+        <example>
+        &lt;!--#set var="category" value="help" --&gt;
+        </example>
 
       <p>The <strong>set</strong> element is available only in
       Apache 1.2 and above.</p>
@@ -401,18 +412,19 @@ documents.</description>
     as the arguments to conditional operators. You can insert a
     literal dollar sign into the string using backslash
     quoting:</p>
-<pre>
+<example>
     &lt;!--#if expr="$a = \$test" --&gt;
-</pre>
+</example>
 
     <p>If a variable reference needs to be substituted in the
     middle of a character sequence that might otherwise be
     considered a valid identifier in its own right, it can be
     disambiguated by enclosing the reference in braces,
     <em>a la</em> shell substitution:</p>
-<pre>
+
+<example>
     &lt;!--#set var="Zed" value="${REMOTE_HOST}_${REQUEST_METHOD}" --&gt;
-</pre>
+</example>
 
     <p>This will result in the <samp>Zed</samp> variable being set
     to "<samp>X_Y</samp>" if <samp>REMOTE_HOST</samp> is
@@ -422,15 +434,16 @@ documents.</description>
     <p>EXAMPLE: the below example will print "in foo" if the
     DOCUMENT_URI is /foo/file.html, "in bar" if it is
     /bar/file.html and "in neither" otherwise:</p>
-<pre>
-    &lt;!--#if expr="\"$DOCUMENT_URI\" = \"/foo/file.html\"" --&gt;
-    in foo
-    &lt;!--#elif expr="\"$DOCUMENT_URI\" = \"/bar/file.html\"" --&gt;
-    in bar
-    &lt;!--#else --&gt;
-    in neither
+
+<example>
+    &lt;!--#if expr="\"$DOCUMENT_URI\" = \"/foo/file.html\"" --&gt;<br />
+    in foo<br />
+    &lt;!--#elif expr="\"$DOCUMENT_URI\" = \"/bar/file.html\"" --&gt;<br />
+    in bar<br />
+    &lt;!--#else --&gt;<br />
+    in neither<br />
     &lt;!--#endif --&gt;
-</pre>
+</example>
 </section>
 
 <section>
@@ -438,12 +451,13 @@ documents.</description>
 
     These are available in Apache 1.2 and above. The basic flow
     control elements are: 
-<pre>
-    &lt;!--#if expr="<em>test_condition</em>" --&gt;
-    &lt;!--#elif expr="<em>test_condition</em>" --&gt;
-    &lt;!--#else --&gt;
+
+<example>
+    &lt;!--#if expr="<em>test_condition</em>" --&gt;<br />
+    &lt;!--#elif expr="<em>test_condition</em>" --&gt;<br />
+    &lt;!--#else --&gt;<br />
     &lt;!--#endif --&gt;
-</pre>
+</example>
 
     <p>The <strong><code>if</code></strong> element works like an
     if statement in a programming language. The test condition is
@@ -503,10 +517,11 @@ documents.</description>
     <p>"<em>=</em>" and "<em>!=</em>" bind more tightly than
     "<em>&amp;&amp;</em>" and "<em>||</em>". "<em>!</em>" binds
     most tightly. Thus, the following are equivalent:</p>
-<pre>
-    &lt;!--#if expr="$a = test1 &amp;&amp; $b = test2" --&gt;
+
+<example>
+    &lt;!--#if expr="$a = test1 &amp;&amp; $b = test2" --&gt;<br />
     &lt;!--#if expr="($a = test1) &amp;&amp; ($b = test2)" --&gt;
-</pre>
+</example>
 
     <p>Anything that's not recognized as a variable or an operator
     is treated as a string. Strings can also be quoted:
@@ -514,10 +529,11 @@ documents.</description>
     (blanks and tabs) because it is used to separate tokens such as
     variables. If multiple strings are found in a row, they are
     concatenated using blanks. So,</p>
-<pre>
-     <em>string1    string2</em>  results in <em>string1 string2</em>
-    <em>'string1    string2'</em> results in <em>string1    string2</em>
-</pre>
+
+<example>
+    <pre><em>string1    string2</em>  results in <em>string1 string2</em></pre>
+    <pre><em>'string1    string2'</em> results in <em>string1    string2</em></pre>
+</example>
 
 </section>
 
@@ -532,12 +548,11 @@ documents.</description>
 
     <p>Files processed for server-side includes no longer accept
     requests with PATH_INFO (trailing pathname information) by
-    default.  You can use the <a
-    href="core.html#AcceptPathInfo">AcceptPathInfo</a> directive to
+    default.  You can use the <directive
+    module="code">AcceptPathInfo</directive> directive to
     configure the server to accept requests with PATH_INFO.</p>
 
 </section>
-
 
 <directivesynopsis>
 <name>SSIEndTag</name>
@@ -680,11 +695,11 @@ bit set</description>
         this bit allows clients and proxies to cache the result of
         the request. 
 
-        <p><strong>Note:</strong> you would not want to use the full
+        <note><strong>Note:</strong> you would not want to use the full
         option, unless you assure the group-execute bit is unset for
         every SSI script which might <code>#include</code> a CGI 
         or otherwise produces different output on each hit (or could 
-        potentially change on subsequent requests).</p>
+        potentially change on subsequent requests).</note>
       </dd>
     </dl>
 
