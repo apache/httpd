@@ -1,4 +1,14 @@
 Changes with Apache 2.0a9
+  *) Make mod_include use a hash table to associate directive tags with
+     functions.  This allows modules to implement their own SSI tags easily.
+     The idea is simple enough, a module can insert it's own tag and function
+     combination into a hash table provided by mod_include.  While mod_include
+     parses an SSI file, when it encounters a tag in the file, it does a
+     hash lookup to find the function that implements that tag, and passes
+     all of the relevant data to the function.  That function is then
+     responsible for processing the tag and handing the remaining data back
+     to mod_include for further processing.
+     [Paul J. Reder <rederpj@raleigh.ibm.com>]
 
   *) Get rid of ap_new_apr_connection().  ap_new_connection() now has 
      fewer parameters: the local and remote socket addresses were removed

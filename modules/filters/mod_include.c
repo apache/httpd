@@ -67,6 +67,7 @@
 #include "apr.h"
 #include "apr_strings.h"
 #include "apr_thread_proc.h"
+#include "apr_hash.h"
 
 #define CORE_PRIVATE
 
@@ -92,6 +93,9 @@
 #include <pwd.h>
 #endif
 #include "util_ebcdic.h"
+
+
+static apr_hash_t *include_hash;
 
 /* ------------------------ Environment function -------------------------- */
 
@@ -180,7 +184,7 @@ static ap_bucket *find_start_sequence(ap_bucket *dptr, include_ctx_t *ctx,
                     apr_size_t  start_index;
 
                     /* We want to split the bucket at the '<'. */
-                    ctx->state            = PARSE_TAG;
+                    ctx->state            = PARSE_DIRECTIVE;
                     ctx->tag_length       = 0;
                     ctx->parse_pos        = 0;
                     ctx->tag_start_bucket = dptr;
@@ -250,7 +254,7 @@ static ap_bucket *find_end_sequence(ap_bucket *dptr, include_ctx_t *ctx, ap_buck
         }
         while (c - buf != len) {
             if (*c == str[ctx->parse_pos]) {
-                if (ctx->state == PARSE_TAG) {
+                if (ctx->state != PARSE_TAIL) {
                     ctx->state             = PARSE_TAIL;
                     ctx->tail_start_bucket = dptr;
                     ctx->tail_start_index  = c - buf;
@@ -258,17 +262,27 @@ static ap_bucket *find_end_sequence(ap_bucket *dptr, include_ctx_t *ctx, ap_buck
                 ctx->parse_pos++;
             }
             else {
-                if (ctx->state == PARSE_TAG) {
+                if (ctx->state == PARSE_DIRECTIVE) {
                     if (ctx->tag_length == 0) {
                         if (!apr_isspace(*c)) {
                             ctx->tag_start_bucket = dptr;
                             ctx->tag_start_index  = c - buf;
                             ctx->tag_length       = 1;
+                            ctx->directive_length = 1;
                         }
                     }
                     else {
+                        if (!apr_isspace(*c)) {
+                            ctx->directive_length++;
+                        }
+                        else {
+                            ctx->state = PARSE_TAG;
+                        }
                         ctx->tag_length++;
                     }
+                }
+                else if (ctx->state == PARSE_TAG) {
+                    ctx->tag_length++;
                 }
                 else {
                     if (str[ctx->parse_pos] == '\0') {
@@ -294,16 +308,24 @@ static ap_bucket *find_end_sequence(ap_bucket *dptr, include_ctx_t *ctx, ap_buck
                          ctx->tag_length += ctx->parse_pos;
 
                          if (*c == str[0]) {
-                             ctx->parse_pos         = 1;
                              ctx->state             = PARSE_TAIL;
                              ctx->tail_start_bucket = dptr;
                              ctx->tail_start_index  = c - buf;
+                             ctx->tag_length       += ctx->parse_pos;
+                             ctx->parse_pos         = 1;
                          }
                          else {
-                             ctx->parse_pos         = 0;
-                             ctx->state             = PARSE_TAG;
+                             if (ctx->tag_length > ctx->directive_length) {
+                                 ctx->state = PARSE_TAG;
+                             }
+                             else {
+                                 ctx->state = PARSE_DIRECTIVE;
+                                 ctx->directive_length += ctx->parse_pos;
+                             }
                              ctx->tail_start_bucket = NULL;
                              ctx->tail_start_index  = 0;
+                             ctx->tag_length       += ctx->parse_pos;
+                             ctx->parse_pos         = 0;
                          }
                     }
                 }
@@ -557,50 +579,6 @@ static void get_tag_and_value(include_ctx_t *ctx, char **tag,
     return;
 }
 
-static char *get_directive(include_ctx_t *ctx, dir_token_id *fnd_token)
-{
-    char *c = ctx->curr_tag_pos;
-    char *dest;
-    int len = 0;
-
-    SKIP_TAG_WHITESPACE(c);
-
-    dest = c;
-    /* now get directive */
-    while ((*c != '\0') && (!apr_isspace(*c))) {
-        *c = apr_tolower(*c);
-        c++;
-        len++;
-    }
-    
-    *c++ = '\0';
-    ctx->curr_tag_pos = c;
-
-    *fnd_token = TOK_UNKNOWN;
-    switch (len) {
-    case 2: if      (!strcmp(dest, "if"))       *fnd_token = TOK_IF;
-            break;
-    case 3: if      (!strcmp(dest, "set"))      *fnd_token = TOK_SET;
-            break;
-    case 4: if      (!strcmp(dest, "else"))     *fnd_token = TOK_ELSE;
-            else if (!strcmp(dest, "elif"))     *fnd_token = TOK_ELIF;
-            else if (!strcmp(dest, "exec"))     *fnd_token = TOK_EXEC;
-            else if (!strcmp(dest, "echo"))     *fnd_token = TOK_ECHO;
-            break;
-    case 5: if      (!strcmp(dest, "endif"))    *fnd_token = TOK_ENDIF;
-            else if (!strcmp(dest, "fsize"))    *fnd_token = TOK_FSIZE;
-            break;
-    case 6: if      (!strcmp(dest, "config"))   *fnd_token = TOK_CONFIG;
-            break;
-    case 7: if      (!strcmp(dest, "include"))  *fnd_token = TOK_INCLUDE;
-            break;
-    case 8: if      (!strcmp(dest, "flastmod")) *fnd_token = TOK_FLASTMOD;
-            else if (!strcmp(dest, "printenv")) *fnd_token = TOK_PRINTENV;
-            break;
-    }
-
-    return (dest);
-}
 
 /*
  * Do variable substitution on strings
@@ -2688,7 +2666,7 @@ static void send_parsed_content(ap_bucket_brigade **bb, request_rec *r,
             }
 
             /* Adjust the current bucket position based on what was found... */
-            if ((tmp_dptr != NULL) && (ctx->state == PARSE_TAG)) {
+            if ((tmp_dptr != NULL) && (ctx->state == PARSE_DIRECTIVE)) {
                 if (ctx->tag_start_bucket != NULL) {
                     dptr = ctx->tag_start_bucket;
                 }
@@ -2702,7 +2680,9 @@ static void send_parsed_content(ap_bucket_brigade **bb, request_rec *r,
         }
 
         /* State to check for the ENDING_SEQUENCE. */
-        if (((ctx->state == PARSE_TAG) || (ctx->state == PARSE_TAIL)) &&
+        if (((ctx->state == PARSE_DIRECTIVE) ||
+             (ctx->state == PARSE_TAG)       ||
+             (ctx->state == PARSE_TAIL))       &&
             (dptr != AP_BRIGADE_SENTINEL(*bb))) {
             tmp_dptr = find_end_sequence(dptr, ctx, *bb);
 
@@ -2729,9 +2709,10 @@ static void send_parsed_content(ap_bucket_brigade **bb, request_rec *r,
         /* State to processed the directive... */
         if (ctx->state == PARSED) {
             ap_bucket    *content_head = NULL, *tmp_bkt;
+            apr_size_t    tmp_i;
             char          tmp_buf[TMP_BUF_SIZE];
-            char         *directive_str = NULL;
-            dir_token_id  directive_token;
+            int (*handle_func)(include_ctx_t *, ap_bucket_brigade **, request_rec *,
+                           ap_filter_t *, ap_bucket *, ap_bucket **);
 
             /* By now the full tag (all buckets) should either be set aside into
              *  ssi_tag_brigade or contained within the current bb. All tag
@@ -2783,55 +2764,26 @@ static void send_parsed_content(ap_bucket_brigade **bb, request_rec *r,
              *  the contents of a single bucket!
              */
 
-            /* pjr - This is about to change to be a generic function
-             *       call from a hash table lookup. All functions need
-             *       to have the same parms...
+            /* Retrieve the handler function to be called for this directive from the
+             *  functions registered in the hash table.
+             * Need to lower case the directive for proper matching. Also need to have
+             *  it NULL terminated (and include the NULL in the length) for proper
+             *  hash matching.
              */
-            directive_str = get_directive(ctx, &directive_token);
+            for (tmp_i = 0; tmp_i < ctx->directive_length; tmp_i++) {
+                ctx->combined_tag[tmp_i] = apr_tolower(ctx->combined_tag[tmp_i]);
+            }
+            ctx->combined_tag[ctx->directive_length] = '\0';
+            ctx->curr_tag_pos = &ctx->combined_tag[ctx->directive_length+1];
 
-            switch (directive_token) {
-            case TOK_IF:
-                ret = handle_if(ctx, bb, r, f, dptr, &content_head);
-                break;
-            case TOK_ELSE:
-                ret = handle_else(ctx, bb, r, f, dptr, &content_head);
-                break;
-            case TOK_ELIF:
-                ret = handle_elif(ctx, bb, r, f, dptr, &content_head);
-                break;
-            case TOK_ENDIF:
-                ret = handle_endif(ctx, bb, r, f, dptr, &content_head);
-                break;
-            case TOK_EXEC:
-                ret = handle_exec(ctx, bb, r, f, dptr, &content_head);
-                break;
-            case TOK_INCLUDE:
-                ret = handle_include(ctx, bb, r, f, dptr, &content_head);
-                break;
-            case TOK_SET:
-                ret = handle_set(ctx, bb, r, f, dptr, &content_head);
-                break;
-            case TOK_ECHO:
-                ret = handle_echo(ctx, bb, r, f, dptr, &content_head);
-                break;
-            case TOK_FSIZE:
-                ret = handle_fsize(ctx, bb, r, f, dptr, &content_head);
-                break;
-            case TOK_CONFIG:
-                ret = handle_config(ctx, bb, r, f, dptr, &content_head);
-                break;
-            case TOK_FLASTMOD:
-                ret = handle_flastmod(ctx, bb, r, f, dptr, &content_head);
-                break;
-            case TOK_PRINTENV:
-                ret = handle_printenv(ctx, bb, r, f, dptr, &content_head);
-                break;
-
-            case TOK_UNKNOWN:
-            default:
+            handle_func = apr_hash_get(include_hash, ctx->combined_tag, ctx->directive_length+1);
+            if (handle_func != NULL) {
+                ret = (*handle_func)(ctx, bb, r, f, dptr, &content_head);
+            }
+            else {
                 ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
                               "unknown directive \"%s\" in parsed doc %s",
-                              directive_str, r->filename);
+                              ctx->combined_tag, r->filename);
                 CREATE_ERROR_BUCKET(ctx, tmp_bkt, dptr, content_head);
             }
 
@@ -2888,6 +2840,7 @@ static void send_parsed_content(ap_bucket_brigade **bb, request_rec *r,
             ctx->tail_start_index  = 0;
             ctx->curr_tag_pos      = NULL;
             ctx->tag_length        = 0;
+            ctx->directive_length  = 0;
 
             if (!AP_BRIGADE_EMPTY(ctx->ssi_tag_brigade)) {
                 while (!AP_BRIGADE_EMPTY(ctx->ssi_tag_brigade)) {
@@ -3075,6 +3028,33 @@ static int includes_filter(ap_filter_t *f, ap_bucket_brigade *b)
     return OK;
 }
 
+void ap_register_include_handler(char *tag, handler func)
+{
+    apr_hash_set(include_hash, tag, strlen(tag) + 1, func);
+}
+
+static void include_post_config(apr_pool_t *p, apr_pool_t *plog,
+                                apr_pool_t *ptemp, server_rec *s)
+{
+    include_hash = apr_make_hash(p);
+
+    ap_register_include_handler("if", handle_if);
+    ap_register_include_handler("set", handle_set);
+    ap_register_include_handler("else", handle_else);
+    ap_register_include_handler("elif", handle_elif);
+    ap_register_include_handler("exec", handle_exec);
+    ap_register_include_handler("echo", handle_echo);
+    ap_register_include_handler("endif", handle_endif);
+    ap_register_include_handler("fsize", handle_fsize);
+    ap_register_include_handler("config", handle_config);
+    ap_register_include_handler("include", handle_include);
+    ap_register_include_handler("flastmod", handle_flastmod);
+    ap_register_include_handler("printenv", handle_printenv);
+}
+
+/*
+ * Module definition and configuration data structs...
+ */
 static const command_rec includes_cmds[] =
 {
     AP_INIT_TAKE1("XBitHack", set_xbithack, NULL, OR_OPTIONS, 
@@ -3084,6 +3064,7 @@ static const command_rec includes_cmds[] =
 
 static void register_hooks(void)
 {
+    ap_hook_post_config(include_post_config, NULL, NULL, AP_HOOK_REALLY_FIRST);
     ap_register_output_filter("INCLUDES", includes_filter, AP_FTYPE_CONTENT);
 }
 

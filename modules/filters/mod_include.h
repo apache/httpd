@@ -139,7 +139,7 @@ module AP_MODULE_DECLARE_DATA includes_module;
  * ssi_tag_brigade: The temporary brigade used by this filter to set aside
  *                  the buckets containing parts of the ssi tag and headers.
  */
-typedef enum {PRE_HEAD, PARSE_HEAD, PARSE_TAG, PARSE_TAIL, PARSED} states;
+typedef enum {PRE_HEAD, PARSE_HEAD, PARSE_DIRECTIVE, PARSE_TAG, PARSE_TAIL, PARSED} states;
 typedef struct include_filter_ctx {
     states       state;
     long         flags;    /* See the FLAG_XXXXX definitions. */
@@ -157,6 +157,7 @@ typedef struct include_filter_ctx {
 
     char        *combined_tag;
     char        *curr_tag_pos;
+    apr_size_t   directive_length;
     apr_size_t   tag_length;
 
     apr_size_t   error_length;
@@ -176,10 +177,6 @@ typedef struct include_filter_ctx {
 #define FLAG_SIZE_ABBREV      0xFFFFFFFB  /* Reset SIZE_IN_BYTES bit.    */
 #define FLAG_CLEAR_PRINT_COND 0xFFFFFFFC  /* Reset PRINTING and COND_TRUE*/
 #define FLAG_CLEAR_PRINTING   0xFFFFFFFE  /* Reset just PRINTING bit.    */
-
-typedef enum {TOK_UNKNOWN, TOK_IF, TOK_SET, TOK_ECHO, TOK_ELIF, TOK_ELSE,
-              TOK_EXEC, TOK_PERL, TOK_ENDIF, TOK_FSIZE, TOK_CONFIG,
-              TOK_INCLUDE, TOK_FLASTMOD, TOK_PRINTENV} dir_token_id;
 
 #define CREATE_ERROR_BUCKET(cntx, t_buck, h_ptr, ins_head)        \
 {                                                                 \
@@ -202,5 +199,11 @@ if ((AP_BRIGADE_EMPTY(cntxt->ssi_tag_brigade)) &&                \
     ap_pass_brigade(f->next, brgd);                              \
     brgd = tag_plus;                                             \
 }
+
+typedef int (*handler)(include_ctx_t *ctx, ap_bucket_brigade **bb, 
+                       request_rec *r, ap_filter_t *f, ap_bucket *head_ptr, 
+                       ap_bucket **inserted_head);
+
+void ap_register_include_handler(char *tag, handler func);
 
 #endif /* MOD_INCLUDE */
