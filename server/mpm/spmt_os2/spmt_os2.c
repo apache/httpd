@@ -677,7 +677,7 @@ static void thread_main(void *thread_num_arg)
 	 * We now have a connection, so set it up with the appropriate
 	 * socket options, file descriptors, and read/write buffers.
 	 */
-	current_conn = ap_run_create_connection(ptrans, csd,
+	current_conn = ap_run_create_connection(ptrans, ap_server_conf, csd,
                                          THREAD_GLOBAL(thread_num));
 
         if (current_conn) {

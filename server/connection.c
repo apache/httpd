@@ -82,8 +82,8 @@ APR_HOOK_STRUCT(
 AP_IMPLEMENT_HOOK_RUN_ALL(int,pre_connection,(conn_rec *c),(c),OK,DECLINED)
 AP_IMPLEMENT_HOOK_RUN_FIRST(int,process_connection,(conn_rec *c),(c),DECLINED)
 AP_IMPLEMENT_HOOK_RUN_FIRST(conn_rec *,create_connection,
-                     (apr_pool_t *p, apr_socket_t *csd, int conn_id),
-                     (p, csd, conn_id), NULL)
+                     (apr_pool_t *p, server_rec *server, apr_socket_t *csd, int conn_id),
+                     (p, server, csd, conn_id), NULL)
 
 /*
  * More machine-dependent networking gooo... on some systems,

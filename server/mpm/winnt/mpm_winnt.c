@@ -893,7 +893,7 @@ static void worker_main(int thread_num)
         /* ### is this correct?  Shouldn't be inheritable (at this point) */
         apr_os_sock_make(&context->sock, &sockinfo, context->ptrans);
 
-        c = ap_run_create_connection(context->ptrans, context->sock,
+        c = ap_run_create_connection(context->ptrans, ap_server_conf, context->sock,
                               thread_num);
 
         if (c) {

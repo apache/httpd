@@ -3276,8 +3276,8 @@ static int core_create_proxy_req(request_rec *r, request_rec *pr)
     return core_create_req(pr);
 }
 
-static conn_rec *core_create_conn(apr_pool_t *ptrans, apr_socket_t *csd,
-                                  int conn_id)
+static conn_rec *core_create_conn(apr_pool_t *ptrans, server_rec *server,
+                                  apr_socket_t *csd, int conn_id)
 {
     core_net_rec *net = apr_palloc(ptrans, sizeof(*net));
     apr_status_t rv;
@@ -3303,7 +3303,7 @@ static conn_rec *core_create_conn(apr_pool_t *ptrans, apr_socket_t *csd,
     net->c->pool = ptrans;
     if ((rv = apr_socket_addr_get(&net->c->local_addr, APR_LOCAL, csd))
         != APR_SUCCESS) {
-        ap_log_error(APLOG_MARK, APLOG_INFO, rv, ap_server_conf,
+        ap_log_error(APLOG_MARK, APLOG_INFO, rv, server,
                      "apr_socket_addr_get(APR_LOCAL)");
         apr_socket_close(csd);
         return NULL;
@@ -3311,13 +3311,13 @@ static conn_rec *core_create_conn(apr_pool_t *ptrans, apr_socket_t *csd,
     apr_sockaddr_ip_get(&net->c->local_ip, net->c->local_addr);
     if ((rv = apr_socket_addr_get(&net->c->remote_addr, APR_REMOTE, csd))
         != APR_SUCCESS) {
-        ap_log_error(APLOG_MARK, APLOG_INFO, rv, ap_server_conf,
+        ap_log_error(APLOG_MARK, APLOG_INFO, rv, server,
                      "apr_socket_addr_get(APR_REMOTE)");
         apr_socket_close(csd);
         return NULL;
     }
     apr_sockaddr_ip_get(&net->c->remote_ip, net->c->remote_addr);
-    net->c->base_server = ap_server_conf;
+    net->c->base_server = server;
     net->client_socket = csd;
  
     net->c->id = conn_id;
