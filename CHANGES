@@ -1,5 +1,9 @@
 Changes with Apache 2.0.34-dev
 
+  *) mod_dav's APIs for REPORT response handling was changed so that
+     providers can generate the content directly into the output filter
+     stack, rather than buffering the response into memory. [Greg Stein]
+
   *) Fix a hang condition with graceful restart and prefork MPM
      in the situation where MaxClients is very high but
      much fewer servers are actually started at the time of the
