@@ -161,7 +161,7 @@ int ssl_rand_seed(server_rec *s, apr_pool_t *p, ssl_rsctx_t nCtx, char *prefix)
                  * seed in an 1KB extract of the current scoreboard
                  */
                 if (ap_scoreboard_image != NULL) {
-                    n = ssl_rand_choosenum(0, sizeof(scoreboard)-1024-1);
+                    n = ssl_rand_choosenum(0,ap_calc_scoreboard_size()-1024-1);
                     RAND_seed(((unsigned char *)ap_scoreboard_image)+n, 1024);
                     nDone += 1024;
                 }
