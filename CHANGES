@@ -2,6 +2,9 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) Unix MPMs: Stop dropping connections when the file descriptor
+     is at least FD_SETSIZE.  [Jeff Trawick]
+
   *) Add core version query function (ap_get_server_revision) and
      accompanying ap_version_t structure (minor MMN bump).
      [André Malo]
