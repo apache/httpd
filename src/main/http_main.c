@@ -6617,9 +6617,14 @@ int REALMAIN(int argc, char *argv[])
     char *signal_to_send = NULL;
 
     /* Service application under WinNT */
-    if (isWindowsNT() && isProcessService()) {
-        service_main(master_main, argc, argv);
-        clean_parent_exit(0);
+    if (isWindowsNT()) 
+    {
+        if (((argc == 1) && isProcessService()) 
+            || ((argc == 2) && !strcmp(argv[1], "--ntservice")))
+        {
+            service_main(master_main, argc, argv);
+            clean_parent_exit(0);
+        }
     }
 #endif
 
