@@ -68,7 +68,7 @@ typedef struct _trans {
 
 void open_logs (server_rec *, pool *p);
 API_EXPORT(void) aplog_error(const char *file, int line, int level,
-			     const request_rec *r, const char *fmt, ...);
+			     const server_rec *s, const char *fmt, ...);
 API_EXPORT(void) error_log2stderr (server_rec *);     
 
 void log_pid (pool *p, char *fname);

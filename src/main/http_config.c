@@ -1081,6 +1081,8 @@ server_rec *init_virtual_host (pool *p, const char *hostname,
     s->keep_alive = -1;
     s->keep_alive_max = -1;
     s->error_log = main_server->error_log;
+    s->loglevel = main_server->loglevel;
+    
     /* start the list of addreses */
     addrs = &s->addrs;
     while( hostname[0] ) {
@@ -1201,6 +1203,7 @@ server_rec *init_server_config(pool *p)
     s->server_hostname = NULL; 
     s->error_fname = DEFAULT_ERRORLOG;
     s->error_log = stderr;
+    s->loglevel = DEFAULT_LOGLEVEL;
     s->srm_confname = RESOURCE_CONFIG_FILE;
     s->access_confname = ACCESS_CONFIG_FILE;
     s->timeout = DEFAULT_TIMEOUT;

@@ -130,8 +130,6 @@ void *create_core_dir_config (pool *a, char *dir)
     conf->limit_nproc = NULL;
 #endif
 
-    conf->loglevel = DEFAULT_LOGLEVEL;
-    
     conf->sec = make_array (a, 2, sizeof(void *));
 
     return (void *)conf;
@@ -1374,27 +1372,27 @@ const char *include_config (cmd_parms *cmd, void *dummy, char *name)
     return NULL;
 }
 
-const char *set_loglevel (cmd_parms *cmd, core_dir_config *conf, const char *arg) 
+const char *set_loglevel (cmd_parms *cmd, void *dummy, const char *arg) 
 {
    char *str;
     
    if ((str = getword_conf(cmd->pool, &arg))) {
        if (!strcasecmp(str, "emerg"))
-	   conf->loglevel = APLOG_EMERG;
+	   cmd->server->loglevel = APLOG_EMERG;
        else if (!strcasecmp(str, "alert"))
-	   conf->loglevel = APLOG_ALERT;
+	   cmd->server->loglevel = APLOG_ALERT;
        else if (!strcasecmp(str, "crit"))
-	   conf->loglevel = APLOG_CRIT;
+	   cmd->server->loglevel = APLOG_CRIT;
        else if (!strcasecmp(str, "error"))
-	   conf->loglevel = APLOG_ERR;
+	   cmd->server->loglevel = APLOG_ERR;
        else if (!strcasecmp(str, "warn"))
-	   conf->loglevel = APLOG_WARNING;
+	   cmd->server->loglevel = APLOG_WARNING;
        else if (!strcasecmp(str, "notice"))
-	   conf->loglevel = APLOG_NOTICE;
+	   cmd->server->loglevel = APLOG_NOTICE;
        else if (!strcasecmp(str, "info"))
-	   conf->loglevel = APLOG_INFO;
+	   cmd->server->loglevel = APLOG_INFO;
        else if (!strcasecmp(str, "debug"))
-	   conf->loglevel = APLOG_DEBUG;
+	   cmd->server->loglevel = APLOG_DEBUG;
    }
    else
        return "LogLevel requires level keyword";
@@ -1528,7 +1526,7 @@ command_rec core_cmds[] = {
 { "ListenBacklog", set_listenbacklog, NULL, RSRC_CONF, TAKE1, "maximum length of the queue of pending connections, as used by listen(2)" },
 { "CoreDumpDirectory", set_coredumpdir, NULL, RSRC_CONF, TAKE1, "The location of the directory Apache changes to before dumping core" },
 { "Include", include_config, NULL, RSRC_CONF, TAKE1, "config file to be included" },
-{ "LogLevel", set_loglevel, (void*)XtOffsetOf(core_dir_config, loglevel), OR_ALL, TAKE1, "set level of verbosity in error logging" },
+{ "LogLevel", set_loglevel, NULL, RSRC_CONF, TAKE1, "set level of verbosity in error logging" },
 { NULL },
 };
 

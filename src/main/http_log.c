@@ -65,6 +65,8 @@
 #include "http_log.h"
 
 #include <stdarg.h>
+
+#ifdef USE_SYSLOG
 #include <syslog.h>
 
 static TRANS facilities[] = {
@@ -94,6 +96,7 @@ static TRANS facilities[] = {
     {"local7",	LOG_LOCAL7},
     {NULL,		-1},
 };
+#endif
 
 static TRANS priorities[] = {
     {"emerg",	APLOG_EMERG},
@@ -151,6 +154,7 @@ void open_error_log (server_rec *s, pool *p)
 
 	s->error_log = dummy;
     }
+#ifdef USE_SYSLOG
     else if (!strncasecmp(s->error_fname, "syslog", 6)) {
 	if ((fname = strchr(s->error_fname, ':'))) {
 	    fname++;
@@ -167,6 +171,7 @@ void open_error_log (server_rec *s, pool *p)
 
 	s->error_log = NULL;
     }
+#endif
     else {
 	fname = server_root_relative (p, s->error_fname);
         if(!(s->error_log = pfopen(p, fname, "a"))) {
@@ -204,63 +209,55 @@ API_EXPORT(void) error_log2stderr (server_rec *s) {
 }
 
 API_EXPORT(void) aplog_error (const char *file, int line, int level,
-			      const request_rec *r, const char *fmt, ...)
+			      const server_rec *s, const char *fmt, ...)
 {
-    core_dir_config *conf;
     va_list args;
     char errstr[MAX_STRING_LEN];
     static TRANS *pname = priorities;
     
 
-    if (r != NULL) { /* backward compatibilty for historic logging functions */
-	conf = get_module_config(r->per_dir_config, &core_module);
+    if (level > s->loglevel)
+	return;
 
-	if (level > conf->loglevel)
-	    return;
-
-	switch (conf->loglevel) {
-	case APLOG_DEBUG:
-	    ap_snprintf(errstr, sizeof(errstr), "[%s] %d: %s: %s: %d: ",
-			pname[level].t_name, errno, strerror(errno), file, line);
-	    break;
-	case APLOG_EMERG:
-	case APLOG_CRIT:
-	case APLOG_ALERT:
-	    ap_snprintf(errstr, sizeof(errstr), "[%s] %d: %s: ",
-			pname[level].t_name, errno, strerror(errno));
-	    break;
-	case APLOG_INFO:
-	case APLOG_ERR:
-	case APLOG_WARNING:
-	case APLOG_NOTICE:
-	    ap_snprintf(errstr, sizeof(errstr), "[%s]", pname[level].t_name);
-	    break;
-	}
+    switch (s->loglevel) {
+    case APLOG_DEBUG:
+	ap_snprintf(errstr, sizeof(errstr), "[%s] %d: %s: %s: %d: ",
+		    pname[level].t_name, errno, strerror(errno), file, line);
+	break;
+    case APLOG_EMERG:
+    case APLOG_CRIT:
+    case APLOG_ALERT:
+	ap_snprintf(errstr, sizeof(errstr), "[%s] %d: %s: ",
+		    pname[level].t_name, errno, strerror(errno));
+	break;
+    case APLOG_INFO:
+    case APLOG_ERR:
+    case APLOG_WARNING:
+    case APLOG_NOTICE:
+	ap_snprintf(errstr, sizeof(errstr), "[%s] ", pname[level].t_name);
+	break;
     }
-    else
-	ap_snprintf(errstr, sizeof(errstr), "[%s]", pname[level].t_name);
 	
     va_start(args, fmt);
 
     /* NULL if we are logging to syslog */
-    if (r->server->error_log) {
-	fprintf(r->server->error_log, "[%s] %s", get_time(), errstr);
-	vfprintf(r->server->error_log, fmt, args);
-	fflush(r->server->error_log);
+    if (s->error_log) {
+	fprintf(s->error_log, "[%s] %s", get_time(), errstr);
+	vfprintf(s->error_log, fmt, args);
+	fflush(s->error_log);
     }
-#ifdef NOTYET
+#ifdef USE_SYSLOG
     else {
-	if (errstr)
-	    syslog(level, "%s", errstr);
-
-	vsyslog(level, fmt, args);
+	vsprintf(errstr + strlen(errstr), fmt, args);
+	syslog(level, "%s", errstr);
     }
 #endif
     
     va_end(args);
 }
 
-void log_pid (pool *p, char *pid_fname) {
+void log_pid (pool *p, char *pid_fname)
+{
     FILE *pid_file;
 
     if (!pid_fname) return;
@@ -276,49 +273,33 @@ void log_pid (pool *p, char *pid_fname) {
 
 API_EXPORT(void) log_error (const char *err, server_rec *s)
 {
-    fprintf(s->error_log, "[%s] %s\n",get_time(),err);
-    fflush(s->error_log);
+    aplog_error(APLOG_MARK, APLOG_ERR, s, err);
 }
 
 API_EXPORT(void) log_unixerr (const char *routine, const char *file,
 			      const char *msg, server_rec *s)
 {
-    const char *p, *q;
-    FILE *err=s ? s->error_log : stderr;
-
-    p = strerror(errno);
-    q = get_time();
-
-    if (file != NULL)
-	fprintf(err, "[%s] %s: %s: %s\n", q, routine, file, p);
-    else
-	fprintf(err, "[%s] %s: %s\n", q, routine, p);
-    if (msg != NULL) fprintf(s->error_log, "[%s] - %s\n", q, msg);
-
-    fflush(err);
+    aplog_error(file, 0, APLOG_ERR, s, msg);
 }
 
 API_EXPORT(void) log_printf (const server_rec *s, const char *fmt, ...)
 {
+    char buf[MAX_STRING_LEN];
     va_list args;
     
-    fprintf(s->error_log, "[%s] ", get_time());
     va_start(args, fmt);
-    vfprintf(s->error_log, fmt, args);
+    vsprintf(buf, fmt, args);
+    aplog_error(APLOG_MARK, APLOG_ERR, s, buf);
     va_end(args);
-
-    fputc('\n', s->error_log);
-    fflush(s->error_log);
 }
 
 API_EXPORT(void) log_reason (const char *reason, const char *file, request_rec *r) 
 {
-    fprintf(r->server->error_log,
-	    "[%s] access to %s failed for %s, reason: %s\n",
-	    get_time(), file,
-	    get_remote_host(r->connection, r->per_dir_config, REMOTE_NAME),
-	    reason);
-    fflush(r->server->error_log);
+    aplog_error(APLOG_MARK, APLOG_ERR, r->server,
+		"access to %s failed for %s, reason: %s\n",
+		file,
+		get_remote_host(r->connection, r->per_dir_config, REMOTE_NAME),
+		reason);
 }
 
 API_EXPORT(void) log_assert (const char *szExp, const char *szFile, int nLine)

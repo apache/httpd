@@ -723,7 +723,8 @@ struct server_rec {
   
     char *error_fname;
     FILE *error_log;
-  
+    int loglevel;
+    
     /* Module-specific configuration for server, and defaults... */
 
     int is_virtual;             /* true if this is the virtual server */
