@@ -420,6 +420,11 @@ static int apply_rewrite_cond(request_rec *r, rewritecond_entry *p,
                               char *perdir, backrefinfo *briRR,
                               backrefinfo *briRC);
 
+static void do_expand(request_rec *r, char *input, char *buffer, int nbuf,
+		       backrefinfo *briRR, backrefinfo *briRC);
+static void do_expand_env(request_rec *r, char *env[],
+			  backrefinfo *briRR, backrefinfo *briRC);
+
     /* URI transformation function */
 static void  splitout_queryargs(request_rec *r, int qsappend);
 static void  fully_qualify_uri(request_rec *r);

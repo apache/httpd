@@ -1745,7 +1745,6 @@ static int apply_rewrite_rule(request_rec *r, rewriterule_entry *p,
     char *output;
     const char *vary;
     char newuri[MAX_STRING_LEN];
-    char env[MAX_STRING_LEN];
     regex_t *regexp;
     regmatch_t regmatch[MAX_NMATCH];
     backrefinfo *briRR = NULL;
@@ -1913,20 +1912,7 @@ static int apply_rewrite_rule(request_rec *r, rewriterule_entry *p,
      *  (`RewriteRule <pat> - [E=...]')
      */
     if (strcmp(output, "-") == 0) {
-        for (i = 0; p->env[i] != NULL; i++) {
-            /*  1. take the string  */
-            ap_cpystrn(env, p->env[i], sizeof(env));
-            /*  2. expand $N (i.e. backrefs to RewriteRule pattern)  */
-            expand_backref_inbuffer(r->pool, env, sizeof(env), briRR, '$');
-            /*  3. expand %N (i.e. backrefs to latest RewriteCond pattern)  */
-            expand_backref_inbuffer(r->pool, env, sizeof(env), briRC, '%');
-            /*  4. expand %{...} (i.e. variables) */
-            expand_variables_inbuffer(r, env, sizeof(env));
-            /*  5. expand ${...} (RewriteMap lookups)  */
-            expand_map_lookups(r, env, sizeof(env));
-            /*  and add the variable to Apache's structures  */
-            add_env_variable(r, env);
-        }
+	do_expand_env(r, p->env, briRR, briRC);
         if (p->forced_mimetype != NULL) {
             if (perdir == NULL) {
                 /* In the per-server context we can force the MIME-type
@@ -1961,17 +1947,7 @@ static int apply_rewrite_rule(request_rec *r, rewriterule_entry *p,
      *  that there is something to replace, so we create the
      *  substitution URL string in `newuri'.
      */
-    /*  1. take the output string  */
-    ap_cpystrn(newuri, output, sizeof(newuri));
-    /*  2. expand $N (i.e. backrefs to RewriteRule pattern)  */
-    expand_backref_inbuffer(r->pool, newuri, sizeof(newuri), briRR, '$');
-    /*  3. expand %N (i.e. backrefs to latest RewriteCond pattern)  */
-    expand_backref_inbuffer(r->pool, newuri, sizeof(newuri), briRC, '%');
-    /*  4. expand %{...} (i.e. variables) */
-    expand_variables_inbuffer(r, newuri, sizeof(newuri));
-    /*  5. expand ${...} (RewriteMap lookups)  */
-    expand_map_lookups(r, newuri, sizeof(newuri));
-    /*  and log the result... */
+    do_expand(r, output, newuri, sizeof(newuri), briRR, briRC);
     if (perdir == NULL) {
         rewritelog(r, 2, "rewrite %s -> %s", uri, newuri);
     }
@@ -1983,20 +1959,7 @@ static int apply_rewrite_rule(request_rec *r, rewriterule_entry *p,
      *  Additionally do expansion for the environment variable
      *  strings (`RewriteRule .. .. [E=<string>]').
      */
-    for (i = 0; p->env[i] != NULL; i++) {
-        /*  1. take the string  */
-        ap_cpystrn(env, p->env[i], sizeof(env));
-        /*  2. expand $N (i.e. backrefs to RewriteRule pattern)  */
-        expand_backref_inbuffer(r->pool, env, sizeof(env), briRR, '$');
-        /*  3. expand %N (i.e. backrefs to latest RewriteCond pattern)  */
-        expand_backref_inbuffer(r->pool, env, sizeof(env), briRC, '%');
-        /*  4. expand %{...} (i.e. variables) */
-        expand_variables_inbuffer(r, env, sizeof(env));
-        /*  5. expand ${...} (RewriteMap lookups)  */
-        expand_map_lookups(r, env, sizeof(env));
-        /*  and add the variable to Apache's structures  */
-        add_env_variable(r, env);
-    }
+    do_expand_env(r, p->env, briRR, briRC);
 
     /*
      *  Now replace API's knowledge of the current URI:
@@ -2163,16 +2126,7 @@ static int apply_rewrite_cond(request_rec *r, rewritecond_entry *p,
      *   Construct the string we match against
      */
 
-    /*  1. take the string  */
-    ap_cpystrn(input, p->input, sizeof(input));
-    /*  2. expand $N (i.e. backrefs to RewriteRule pattern)  */
-    expand_backref_inbuffer(r->pool, input, sizeof(input), briRR, '$');
-    /*  3. expand %N (i.e. backrefs to latest RewriteCond pattern)  */
-    expand_backref_inbuffer(r->pool, input, sizeof(input), briRC, '%');
-    /*  4. expand %{...} (i.e. variables) */
-    expand_variables_inbuffer(r, input, sizeof(input));
-    /*  5. expand ${...} (RewriteMap lookups)  */
-    expand_map_lookups(r, input, sizeof(input));
+    do_expand(r, p->input, input, sizeof(input), briRR, briRC);
 
     /*
      *   Apply the patterns
@@ -2313,6 +2267,49 @@ static int apply_rewrite_cond(request_rec *r, rewritecond_entry *p,
 ** |                                                       |
 ** +-------------------------------------------------------+
 */
+
+
+/*
+**
+**  perform all the expansions on the input string
+**  leaving the result in the supplied buffer
+**
+*/
+
+static void do_expand(request_rec *r, char *input, char *buffer, int nbuf,
+		       backrefinfo *briRR, backrefinfo *briRC)
+{
+    /*  1. take the string  */
+    ap_cpystrn(buffer, input, nbuf);
+    /*  2. expand $N (i.e. backrefs to RewriteRule pattern)  */
+    expand_backref_inbuffer(r->pool, buffer, nbuf, briRR, '$');
+    /*  3. expand %N (i.e. backrefs to latest RewriteCond pattern)  */
+    expand_backref_inbuffer(r->pool, buffer, nbuf, briRC, '%');
+    /*  4. expand %{...} (i.e. variables) */
+    expand_variables_inbuffer(r, buffer, nbuf);
+    /*  5. expand ${...} (RewriteMap lookups)  */
+    expand_map_lookups(r, buffer, nbuf);
+}
+
+
+/*
+**
+**  perform all the expansions on the environment variables
+**
+*/
+
+static void do_expand_env(request_rec *r, char *env[],
+			  backrefinfo *briRR, backrefinfo *briRC)
+{
+    int i;
+    char buf[MAX_STRING_LEN];
+
+    for (i = 0; env[i] != NULL; i++) {
+	do_expand(r, env[i], buf, sizeof(buf), briRR, briRC);
+	add_env_variable(r, buf);
+    }
+}
+
 
 /*
 **
