@@ -57,6 +57,7 @@
 
 #include "apr.h"
 #include "apr_hooks.h"
+#include "apr_optional_hooks.h"
 
 /**
  * @file ap_config.h
@@ -228,6 +229,27 @@
 #define AP_IMPLEMENT_HOOK_RUN_FIRST(ret,name,args_decl,args_use,decline) \
 	APR_IMPLEMENT_EXTERNAL_HOOK_RUN_FIRST(ap,AP,ret,name,args_decl, \
                                               args_use,decline)
+
+/* Note that the other optional hook implementations are straightforward but
+ * have not yet been needed
+ */
+
+/**
+ * Implement an optional hook. This is exactly the same as a standard hook
+ * implementation, except the hook is optional.
+ * @see AP_IMPLEMENT_HOOK_RUN_ALL
+ */
+#define AP_IMPLEMENT_OPTIONAL_HOOK_RUN_ALL(ret,name,args_decl,args_use,ok, \
+					   decline) \
+	APR_IMPLEMENT_OPTIONAL_HOOK_RUN_ALL(ap,AP,ret,name,args_decl, \
+                                            args_use,ok,decline)
+
+/**
+ * Hook an optional hook. Unlike static hooks, this uses a macro instead of a
+ * function
+ */
+#define AP_OPTIONAL_HOOK(name,fn,pre,succ,order) \
+        APR_OPTIONAL_HOOK(ap,name,fn,pre,succ,order)
 
 #include "os.h"
 #ifndef WIN32
