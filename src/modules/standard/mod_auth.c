@@ -102,7 +102,7 @@ command_rec auth_cmds[] = {
   (void*)XtOffsetOf(auth_config_rec,auth_pwfile), OR_AUTHCFG, TAKE12, NULL },
 { "AuthGroupFile", set_auth_slot,
   (void*)XtOffsetOf(auth_config_rec,auth_grpfile), OR_AUTHCFG, TAKE12, NULL },
-{ "Auth_MSQL_Authoritative", set_flag_slot,
+{ "AuthAuthoritative", set_flag_slot,
   (void*)XtOffsetOf(auth_config_rec,auth_authoritative), 
     OR_AUTHCFG, FLAG, 
    "Set to 'no' to allow access control to be passed along to lower modules if the UserID is not known to this module" },
