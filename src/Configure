@@ -321,6 +321,13 @@ case "$PLAT" in
 	RULE_SHARED_CORE=no
 	DEF_SHARED_CORE=no
 	;;
+    ia64-ibm-aix*)
+       OS='IBM AIX IA64'
+       CFLAGS="$CFLAGS -DAIXIA64 -U__STR__"
+       LDFLAGS="$LDFLAGS -lm"
+       RULE_SHARED_CORE=no
+       DEF_SHARED_CORE=no
+       ;;
     *-ibm-aix*)
 	OS='IBM AIX'
 	CFLAGS="$CFLAGS -DAIX=1 -U__STR__"
@@ -1278,6 +1285,18 @@ if [ "x$using_shlib" = "x1" ] ; then
 	    LDFLAGS_SHLIB_EXPORT="-Wl,-E -Wl,-B,deferred -Wl,+s"
 	    SHLIB_SUFFIX_NAME=sl
 	    ;;
+       ia64-ibm-aix*)
+           case $CC in
+               */gcc|gcc ) CFLAGS_SHLIB="-fpic" ;;
+               */cc|cc   ) CFLAGS_SHLIB="" ;;
+           esac
+           LDFLAGS_SHLIB=" -L /usr/lib/ia64l32 -G "
+           LDFLAGS_MOD_SHLIB="$LDFLAGS_SHLIB -bI:@libexecdir@/httpd.exp -lc"
+           LDFLAGS_SHLIB="$LDFLAGS_SHLIB -Bexport:\`echo \$@|sed -e 's:\.so\$\$:.exp:'\`"
+           LDFLAGS_SHLIB="$LDFLAGS_SHLIB -lc"
+           LDFLAGS_SHLIB_EXPORT="-Wl,-Bexport:\$(SRCDIR)/support/httpd.exp"
+           SHLIB_EXPORT_FILES=yes
+           ;;
 	*-ibm-aix*)
 	    case $CC in
 		*/gcc|gcc ) CFLAGS_SHLIB="-fpic" ;;
@@ -1458,6 +1477,13 @@ case "$OS" in
 	    ;;
 	esac
 	;;
+    'IBM AIX IA64')
+       case $CC in
+           */cc|cc )
+               CFLAGS="$CFLAGS -qnogenpcomp -qnousepcomp"
+           ;;
+       esac
+       ;;
 esac
 
 ####################################################################
@@ -2039,6 +2065,9 @@ echo "RANLIB=$RANLIB" >>Makefile.config
 if [ "x$using_shlib" = "x1" ] ; then
     DL_LIB=""
     case $PLAT in
+       ia64-ibm-aix* )
+           DL_LIB="-ldl"
+           ;;
 	*-ibm-aix* )
 	    DL_LIB="-lld"
 	    ;;
