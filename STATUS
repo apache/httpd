@@ -1,5 +1,5 @@
 Apache 2.0 STATUS:
-Last modified at [$Date: 2000/04/04 21:39:34 $]
+Last modified at [$Date: 2000/04/04 22:28:49 $]
 
 Release:
 
@@ -38,7 +38,15 @@ RELEASE SHOWSTOPPERS:
     * Win32: Enable the Windows MPM to honor max_requests_per_child
         Status: Bill will fix this.
 
-    * Win32: Fix Win9* specific code in the winnt MPM
+    * Win32: Get Apache working on Windows 95/98. The following work
+	(at least) needs to be done:
+	- winnt MPM: Fix 95/98 code paths in the winnt MPM. There is some NT
+	specific code that is still not in NT only code paths
+	- APR sendfile uses TransmitFile which is not available on
+	95/98.
+	- ap_stat uses GetFileAttributeEx which is not available on
+	95/98
+
 	Status:
 
     * Win32: Test access logging with multiple threads. Will the 
