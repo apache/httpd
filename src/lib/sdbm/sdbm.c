@@ -23,6 +23,9 @@
 #else
 #include <unistd.h>	/* for lseek() */
 #endif
+#ifdef NETWARE
+#include <nwsemaph.h>
+#endif
 
 
 /*
@@ -56,6 +59,9 @@ static long masks[] = {
 };
 
 datum nullitem = {NULL, 0};
+#ifdef NETWARE
+extern LONG locking_sem;
+#endif
 
 DBM *
 sdbm_open(file, flags, mode)
@@ -83,6 +89,10 @@ register int mode;
 	dirname = strcat(strcpy(dirname, file), DIRFEXT);
 	pagname = strcpy(dirname + strlen(dirname) + 1, file);
 	pagname = strcat(pagname, PAGFEXT);
+
+#ifdef NETWARE
+	locking_sem = OpenLocalSemaphore (1);
+#endif
 
 	db = sdbm_prep(dirname, pagname, flags, mode);
 	free((char *) dirname);
@@ -120,7 +130,7 @@ int mode;
  * open the files in sequence, and stat the dirfile.
  * If we fail anywhere, undo everything, return NULL.
  */
-#if defined(OS2) || defined(MSDOS) || defined(WIN32)
+#if defined(OS2) || defined(MSDOS) || defined(WIN32) || defined(NETWARE)
 	flags |= O_BINARY;
 #endif
 	if ((db->pagf = open(pagname, flags, mode)) > -1) {
@@ -166,6 +176,9 @@ register DBM *db;
 		(void) sdbm_fd_unlock(db->pagf);
 		(void) close(db->pagf);
 		free((char *) db);
+#ifdef NETWARE
+		CloseLocalSemaphore (locking_sem);
+#endif
 	}
 }
 

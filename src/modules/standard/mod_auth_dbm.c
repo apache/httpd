@@ -75,7 +75,7 @@
 #include "http_core.h"
 #include "http_log.h"
 #include "http_protocol.h"
-#if defined(WIN32)
+#if (defined(WIN32) || defined(NETWARE))
 #include <sdbm.h>
 #define dbm_open sdbm_open
 #define dbm_fetch sdbm_fetch
