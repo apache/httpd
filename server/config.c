@@ -626,26 +626,6 @@ AP_DECLARE(module *) ap_find_linked_module(const char *name)
     return NULL;
 }
 
-/* Add a named module.  Returns 1 if module found, 0 otherwise.  */
-AP_DECLARE(int) ap_add_named_module(const char *name, apr_pool_t *p)
-{
-    module *modp;
-    int i = 0;
-
-    for (modp = ap_loaded_modules[i]; modp; modp = ap_loaded_modules[++i]) {
-        if (strcmp(modp->name, name) == 0) {
-            /* Only add modules that are not already enabled.  */
-            if (modp->next == NULL) {
-                ap_add_module(modp, p);
-            }
-
-            return 1;
-        }
-    }
-
-    return 0;
-}
-
 /*****************************************************************
  *
  * Resource, access, and .htaccess config files now parsed by a common
