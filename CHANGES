@@ -1,4 +1,6 @@
 Changes with Apache 2.0.41
+  *) mod_disk_cache works much better. This module should still
+     be considered experimental. [Eric Prud'hommeaux]
 
   *) Performance improvement for keepalive requests: when setting
      aside a small file for potential concatenation with the next
