@@ -22,7 +22,7 @@ while read LINE
 do
     if [ "x`echo $LINE | egrep  '^[:space:]*apr_'`" != "x" ]; then
         newline=`echo "$LINE" |\
-            sed -e 's%^\(.*\)%void *ap_hack_\1 = \1\;%'`
+            sed -e 's%^\(.*\)%const void *ap_hack_\1 = \1\;%'`
         echo $newline
     fi
 done
