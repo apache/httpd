@@ -3,7 +3,7 @@ typedef struct SSLStateMachine SSLStateMachine;
 void SSLStateMachine_init(void);
 SSLStateMachine *SSLStateMachine_new(const char *szCertificateFile,
 				     const char *szKeyFile);
-void SSLStateMachine_destroy(SSLStateMachine *pMachine);
+void SSLStateMachine_free(SSLStateMachine *pMachine);
 void SSLStateMachine_read_inject(SSLStateMachine *pMachine,
 				 const unsigned char *aucBuf,int nBuf);
 int SSLStateMachine_read_extract(SSLStateMachine *pMachine,
