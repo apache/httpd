@@ -318,13 +318,25 @@
         <xsl:for-each select="$metafile/variants/variant">
         <xsl:sort select="." />
 
-            <a href="{$path}/{.}{$metafile/path}{$metafile/basename}.html">
+            <a hreflang="{.}"
+                   href="{$path}/{.}{$metafile/path}{$metafile/basename}.html">
                 <xsl:if test="$metafile/basename = 'index'">
                     <xsl:attribute name="href">
                         <xsl:value-of
                             select="concat($path, '/', ., $metafile/path)" />
                     </xsl:attribute>
                 </xsl:if>
+                <xsl:attribute name="title">
+                    <xsl:choose>
+                    <xsl:when test=". != 'fr'"> <!-- no language file avail. -->
+                        <xsl:value-of select="document(concat('../lang/', ., '.xml'))
+                                              /messages/@langname" />
+                    </xsl:when>
+                    <xsl:otherwise>
+                        <xsl:text>Fran&#231;ais</xsl:text>
+                    </xsl:otherwise>
+                    </xsl:choose>
+                </xsl:attribute>
 
                 &nbsp;
                 <xsl:value-of select="." />
