@@ -1079,8 +1079,13 @@ static void timeout(int sig)
 		log_req = log_req->prev;
 	}
 
-	if (!current_conn->keptalive)
+	if (!current_conn->keptalive) {
+	    /* in some cases we come here before setting the time */
+	    if (log_req->request_time == 0) {
+	      log_req->request_time = time(0);
+	    }
 	    ap_log_transaction(log_req);
+	}
 
 	ap_bsetflag(save_req->connection->client, B_EOUT, 1);
 	ap_bclose(save_req->connection->client);
