@@ -1,5 +1,8 @@
 Changes with Apache 1.3.5
 
+  *) PORT: AIX does not require the SHARED_CODE "hack"
+     [Ryan Bloom <rbb@raleigh.ibm.com>]
+
   *) Set-Cookie headers were being doubled up for some CGIs by the O(n^2)
      avoidance code added in 1.3.3.
      [Dean Gaudet, Jeff Lewis <lewis@stanford.edu>] PR#3872

@@ -1,5 +1,5 @@
   1.3 STATUS:
-  Last modified at [$Date: 1999/03/15 16:05:11 $]
+  Last modified at [$Date: 1999/03/16 00:26:54 $]
 
 Release:
 
@@ -47,11 +47,6 @@ Documentation that needs writing:
       TCN additions and when the RVSA algorithm is used.
 
 Available Patches:
-
-    * Ryan Bloom's [PATCH: AIX compiling bugs.] to remove SHARED_CORE
-      for AIX
-        Message-ID: <Pine.A41.4.05.9903150759290.11872-100000@webdev7.raleigh.ibm.com>
-	Status: Jim +1
 
     * Fred's [PATCH: srm.conf and access.conf refer to httpd.conf
         Message-ID: <199901192353.PAA15190@scv4.apple.com>
