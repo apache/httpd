@@ -1037,7 +1037,7 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
     while (!restart_pending && !shutdown_pending) {
 	int child_slot;
         apr_exit_why_e exitwhy;
-	int status;
+	int status, processed_status;
         /* this is a memory leak, but I'll fix it later. */
 	apr_proc_t pid;
 
@@ -1048,7 +1048,8 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
 	 * extra child
 	 */
 	if (pid.pid != -1) {
-            if (ap_process_child_status(&pid, exitwhy, status) == APEXIT_CHILDFATAL) {
+            processed_status = ap_process_child_status(&pid, exitwhy, status);
+            if (processed_status == APEXIT_CHILDFATAL) {
                 return 1;
             }
 
@@ -1058,7 +1059,13 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
 	    if (child_slot >= 0) {
 		(void) ap_update_child_status_from_indexes(child_slot, 0, SERVER_DEAD,
                                                            (request_rec *) NULL);
-		if (remaining_children_to_start
+                if (processed_status == APEXIT_CHILDSICK) {
+                    /* child detected a resource shortage (E[NM]FILE, ENOBUFS, etc)
+                     * cut the fork rate to the minimum 
+                     */
+                    idle_spawn_rate = 1; 
+                }
+                else if (remaining_children_to_start
 		    && child_slot < ap_daemons_limit) {
 		    /* we're still doing a 1-for-1 replacement of dead
 			* children with new children

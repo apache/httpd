@@ -237,15 +237,23 @@ int ap_process_child_status(apr_proc_t *pid, apr_exit_why_e why, int status)
      * we should simply bail out.  The caller needs to
      * check for bad rc from us and exit, running any
      * appropriate cleanups.
+     *
+     * If the child died due to a resource shortage, 
+     * the parent should limit the rate of forking
      */
-    if ((APR_PROC_CHECK_EXIT(why)) &&
-        (status == APEXIT_CHILDFATAL)) {
-        ap_log_error(APLOG_MARK, APLOG_ALERT|APLOG_NOERRNO, 0, ap_server_conf,
-                     "Child %" APR_OS_PROC_T_FMT
-                     " returned a Fatal error..." APR_EOL_STR
-                     "Apache is exiting!",
-                     pid->pid);
-        return APEXIT_CHILDFATAL;
+    if (APR_PROC_CHECK_EXIT(why)) {
+        if (status == APEXIT_CHILDSICK) {
+            return status;
+        }
+        if (status == APEXIT_CHILDFATAL) {
+            ap_log_error(APLOG_MARK, APLOG_ALERT|APLOG_NOERRNO, 0, ap_server_conf,
+                         "Child %" APR_OS_PROC_T_FMT
+                         " returned a Fatal error..." APR_EOL_STR
+                         "Apache is exiting!",
+                         pid->pid);
+            return APEXIT_CHILDFATAL;
+        }
+        return 0;
     }
 
     if (APR_PROC_CHECK_SIGNALED(why)) {

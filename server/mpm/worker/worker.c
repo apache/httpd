@@ -169,6 +169,7 @@ static int dying = 0;
 static int workers_may_exit = 0;
 static int requests_this_child;
 static int num_listensocks = 0;
+static int resource_shortage = 0;
 static fd_queue_t *worker_queue;
 
 /* The structure used to pass unique initialization info to each thread */
@@ -675,6 +676,8 @@ static void *listener_thread(apr_thread_t *thd, void * dummy)
             rv = lr->accept_func(&csd, lr, ptrans);
 
             if (rv == APR_EGENERAL) {
+                /* E[NM]FILE, ENOMEM, etc */
+                resource_shortage = 1;
                 signal_workers();
             }
             if ((rv = SAFE_ACCEPT(apr_proc_mutex_unlock(accept_mutex)))
@@ -965,7 +968,7 @@ static void child_main(int child_num_arg)
 
     free(threads);
 
-    clean_child_exit(0);
+    clean_child_exit(resource_shortage ? APEXIT_CHILDSICK : 0);
 }
 
 static int make_child(server_rec *s, int slot) 
@@ -1198,7 +1201,7 @@ static void server_main_loop(int remaining_children_to_start)
 {
     int child_slot;
     apr_exit_why_e exitwhy;
-    int status;
+    int status, processed_status;
     apr_proc_t pid;
     int i;
 
@@ -1206,8 +1209,8 @@ static void server_main_loop(int remaining_children_to_start)
         ap_wait_or_timeout(&exitwhy, &status, &pid, pconf);
         
         if (pid.pid != -1) {
-            if (ap_process_child_status(&pid, exitwhy, 
-                                        status) == APEXIT_CHILDFATAL) {
+            processed_status = ap_process_child_status(&pid, exitwhy, status);
+            if (processed_status == APEXIT_CHILDFATAL) {
                 shutdown_pending = 1;
                 child_fatal = 1;
                 return;
@@ -1221,7 +1224,11 @@ static void server_main_loop(int remaining_children_to_start)
                 
                 ap_scoreboard_image->parent[child_slot].pid = 0;
                 ap_scoreboard_image->parent[child_slot].quiescing = 0;
-                if (remaining_children_to_start
+                if (processed_status == APEXIT_CHILDSICK) {
+                    /* resource shortage, minimize the fork rate */
+                    idle_spawn_rate = 1;
+                }
+                else if (remaining_children_to_start
                     && child_slot < ap_daemons_limit) {
                     /* we're still doing a 1-for-1 replacement of dead
                      * children with new children

@@ -339,6 +339,12 @@ extern "C" {
 #define APEXIT_INIT		0x2
 /**  The child died during its init sequence */
 #define APEXIT_CHILDINIT	0x3
+/**  
+ *   The child exited due to a resource shortage.
+ *   The parent should limit the rate of forking until
+ *   the situation is resolved.
+ */
+#define APEXIT_CHILDSICK        0x7
 /** 
  *     A fatal error, resulting in the whole server aborting.
  *     If a child exits with this error, the parent process
