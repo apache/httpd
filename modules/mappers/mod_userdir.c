@@ -340,7 +340,7 @@ static int translate_userdir(request_rec *r)
          * used, for example, to run a CGI script for the user.
          */
         if (filename && (!*userdirs 
-                      || ((rv = apr_stat(&statbuf, filename, APR_FINFO_NORM,
+                      || ((rv = apr_stat(&statbuf, filename, APR_FINFO_MIN,
                                          r->pool)) == APR_SUCCESS
                                              || rv == APR_INCOMPLETE))) {
             r->filename = apr_pstrcat(r->pool, filename, dname, NULL);

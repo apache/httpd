@@ -978,7 +978,7 @@ AP_DECLARE(request_rec *) ap_sub_req_lookup_file(const char *new_file,
         ap_parse_uri(rnew, rnew->uri);    /* fill in parsed_uri values */
 
         if (((rv = apr_stat(&rnew->finfo, rnew->filename,
-                           APR_FINFO_MIN, rnew->pool)) != APR_SUCCESS)
+                            APR_FINFO_MIN, rnew->pool)) != APR_SUCCESS)
                                                  && (rv != APR_INCOMPLETE)) {
             rnew->finfo.filetype = 0;
         }
