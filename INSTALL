@@ -83,7 +83,7 @@
            - FreeBSD   - Solaris       - AIX          - Mac OS
            - OpenBSD   - IRIX          - SCO          - OpenStep/Mach
            - NetBSD    - HPUX          - ReliantUNIX
-           - BSDI      - Digital Unix  
+           - BSDI      - Digital Unix  - DGUX
 
         o Entirely unsupported platforms are:
            - Ultrix
