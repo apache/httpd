@@ -189,7 +189,7 @@ petición y la respuesta <a href="#http">HTTP</a> que se
 envía antes del contenido propiamente dicho, y que contiene
 meta-información describiendo el contenido.</dd>
 
-<dt><a name=".htaccess">.htaccess</a></dt> <dd>Un <a href="#configurationfile">fichero de configuración</a> que se
+<dt><a name="htaccess">.htaccess</a></dt> <dd>Un <a href="#configurationfile">fichero de configuración</a> que se
 pone dentro de la estructura de directorios del sitio web y aplica <a href="#directive">directivas</a> de configuración al directorio
 en el que está y a sus subdirectorios. A pesar de su nombre, este
 fichero puede contener cualquier tipo de directivas, no solo
