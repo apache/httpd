@@ -443,10 +443,15 @@ API_EXPORT(const char *) ap_get_server_built(void);
 
 /* ----------------------- HTTP Status Codes  ------------------------- */
 
-#define RESPONSE_CODES 38
+/* The size of the static array in http_protocol.c for storing
+ * all of the potential response status-lines (a sparse table).
+ * A future version should dynamically generate the table at startup.
+ */
+#define RESPONSE_CODES 54
 
 #define HTTP_CONTINUE                      100
 #define HTTP_SWITCHING_PROTOCOLS           101
+#define HTTP_PROCESSING                    102
 #define HTTP_OK                            200
 #define HTTP_CREATED                       201
 #define HTTP_ACCEPTED                      202
@@ -454,12 +459,14 @@ API_EXPORT(const char *) ap_get_server_built(void);
 #define HTTP_NO_CONTENT                    204
 #define HTTP_RESET_CONTENT                 205
 #define HTTP_PARTIAL_CONTENT               206
+#define HTTP_MULTI_STATUS                  207
 #define HTTP_MULTIPLE_CHOICES              300
 #define HTTP_MOVED_PERMANENTLY             301
 #define HTTP_MOVED_TEMPORARILY             302
 #define HTTP_SEE_OTHER                     303
 #define HTTP_NOT_MODIFIED                  304
 #define HTTP_USE_PROXY                     305
+#define HTTP_TEMPORARY_REDIRECT            307
 #define HTTP_BAD_REQUEST                   400
 #define HTTP_UNAUTHORIZED                  401
 #define HTTP_PAYMENT_REQUIRED              402
@@ -476,6 +483,10 @@ API_EXPORT(const char *) ap_get_server_built(void);
 #define HTTP_REQUEST_ENTITY_TOO_LARGE      413
 #define HTTP_REQUEST_URI_TOO_LARGE         414
 #define HTTP_UNSUPPORTED_MEDIA_TYPE        415
+#define HTTP_RANGE_NOT_SATISFIABLE         416
+#define HTTP_EXPECTATION_FAILED            417
+#define HTTP_UNPROCESSABLE_ENTITY          422
+#define HTTP_LOCKED                        423
 #define HTTP_INTERNAL_SERVER_ERROR         500
 #define HTTP_NOT_IMPLEMENTED               501
 #define HTTP_BAD_GATEWAY                   502
@@ -483,6 +494,7 @@ API_EXPORT(const char *) ap_get_server_built(void);
 #define HTTP_GATEWAY_TIME_OUT              504
 #define HTTP_VERSION_NOT_SUPPORTED         505
 #define HTTP_VARIANT_ALSO_VARIES           506
+#define HTTP_NOT_EXTENDED                  510
 
 #define DOCUMENT_FOLLOWS    HTTP_OK
 #define PARTIAL_CONTENT     HTTP_PARTIAL_CONTENT

@@ -988,7 +988,8 @@ API_EXPORT(int) ap_get_basic_auth_pw(request_rec *r, const char **pw)
 static char *status_lines[] = {
     "100 Continue",
     "101 Switching Protocols",
-#define LEVEL_200  2
+    "102 Processing",
+#define LEVEL_200  3
     "200 OK",
     "201 Created",
     "202 Accepted",
@@ -996,14 +997,17 @@ static char *status_lines[] = {
     "204 No Content",
     "205 Reset Content",
     "206 Partial Content",
-#define LEVEL_300  9
+    "207 Multi-Status",
+#define LEVEL_300 11
     "300 Multiple Choices",
     "301 Moved Permanently",
-    "302 Moved Temporarily",
+    "302 Found",
     "303 See Other",
     "304 Not Modified",
     "305 Use Proxy",
-#define LEVEL_400 15
+    "306 unused",
+    "307 Temporary Redirect",
+#define LEVEL_400 19
     "400 Bad Request",
     "401 Authorization Required",
     "402 Payment Required",
@@ -1020,14 +1024,26 @@ static char *status_lines[] = {
     "413 Request Entity Too Large",
     "414 Request-URI Too Large",
     "415 Unsupported Media Type",
-#define LEVEL_500 31
+    "416 Requested Range Not Satisfiable",
+    "417 Expectation Failed",
+    "418 unused",
+    "419 unused",
+    "420 unused",
+    "421 unused",
+    "422 Unprocessable Entity",
+    "423 Locked",
+#define LEVEL_500 43
     "500 Internal Server Error",
     "501 Method Not Implemented",
     "502 Bad Gateway",
     "503 Service Temporarily Unavailable",
     "504 Gateway Time-out",
     "505 HTTP Version Not Supported",
-    "506 Variant Also Varies"
+    "506 Variant Also Negotiates"
+    "507 unused",
+    "508 unused",
+    "509 unused",
+    "510 Not Extended",
 };
 
 /* The index is found by its offset from the x00 code of each level.
@@ -2128,8 +2144,9 @@ void ap_send_error_response(request_rec *r, int recursive_error)
                   NULL);
 
 	switch (status) {
-	case REDIRECT:
-	case MOVED:
+	case HTTP_MOVED_PERMANENTLY:
+	case HTTP_MOVED_TEMPORARILY:
+	case HTTP_TEMPORARY_REDIRECT:
 	    ap_bvputs(fd, "The document has moved <A HREF=\"",
 		      ap_escape_html(r->pool, location), "\">here</A>.<P>\n",
 		      NULL);
@@ -2237,35 +2254,57 @@ void ap_send_error_response(request_rec *r, int recursive_error)
 		      "the request exceeds the capacity limit.\n", NULL);
 	    break;
 	case HTTP_REQUEST_URI_TOO_LARGE:
-	    ap_bputs("The requested URL's length exceeds the capacity\n", fd);
-	    ap_bputs("limit for this server.<P>\n", fd);
+	    ap_bputs("The requested URL's length exceeds the capacity\n"
+	             "limit for this server.<P>\n", fd);
 	    if ((error_notes = ap_table_get(r->notes, "error-notes")) != NULL) {
 		ap_bvputs(fd, error_notes, "<P>\n", NULL);
 	    }
 	    break;
 	case HTTP_UNSUPPORTED_MEDIA_TYPE:
-	    ap_bputs("The supplied request data is not in a format\n", fd);
-	    ap_bputs("acceptable for processing by this resource.\n", fd);
+	    ap_bputs("The supplied request data is not in a format\n"
+	             "acceptable for processing by this resource.\n", fd);
+	    break;
+	case HTTP_RANGE_NOT_SATISFIABLE:
+	    ap_bputs("None of the range-specifier values in the Range\n"
+                     "request-header field overlap the current extent\n"
+                     "of the selected resource.\n", fd);
+	    break;
+	case HTTP_EXPECTATION_FAILED:
+	    ap_bputs("The expectation given in the Expect request-header\n"
+                     "field could not be met by this server.\n", fd);
+	    break;
+	case HTTP_UNPROCESSABLE_ENTITY:
+            ap_bputs("The server understands the media type of the\n"
+                     "request entity, but was unable to process the\n"
+                     "contained instructions.\n", fd);
+	    break;
+	case HTTP_LOCKED:
+	    ap_bputs("The requested resource is currently locked.\n"
+                     "The lock must be released or proper identification\n"
+                     "given before the method can be applied.\n", fd);
 	    break;
 	case HTTP_SERVICE_UNAVAILABLE:
-	    ap_bputs("The server is temporarily unable to service your\n", fd);
-	    ap_bputs("request due to maintenance downtime or capacity\n", fd);
-	    ap_bputs("problems. Please try again later.\n", fd);
+	    ap_bputs("The server is temporarily unable to service your\n"
+	             "request due to maintenance downtime or capacity\n"
+	             "problems. Please try again later.\n", fd);
 	    break;
 	case HTTP_GATEWAY_TIME_OUT:
-	    ap_bputs("The proxy server did not receive a timely response\n",
-		     fd);
-	    ap_bputs("from the upstream server.<P>\n", fd);
+	    ap_bputs("The proxy server did not receive a timely response\n"
+	             "from the upstream server.\n", fd);
+	    break;
+	case HTTP_NOT_EXTENDED:
+	    ap_bputs("A mandatory extension policy in the request is not\n"
+                     "accepted by the server for this resource.\n", fd);
 	    break;
 	default:            /* HTTP_INTERNAL_SERVER_ERROR */
-	    ap_bputs("The server encountered an internal error or\n", fd);
-	    ap_bputs("misconfiguration and was unable to complete\n", fd);
-	    ap_bputs("your request.<P>\n", fd);
-	    ap_bputs("Please contact the server administrator,\n ", fd);
-	    ap_bputs(ap_escape_html(r->pool, r->server->server_admin), fd);
-	    ap_bputs(" and inform them of the time the error occurred,\n", fd);
-	    ap_bputs("and anything you might have done that may have\n", fd);
-	    ap_bputs("caused the error.<P>\n", fd);
+	    ap_bvputs(fd, "The server encountered an internal error or\n"
+	             "misconfiguration and was unable to complete\n"
+	             "your request.<P>\n"
+	             "Please contact the server administrator,\n ",
+	             ap_escape_html(r->pool, r->server->server_admin),
+	             " and inform them of the time the error occurred,\n"
+	             "and anything you might have done that may have\n"
+	             "caused the error.<P>\n", NULL);
 	    if ((error_notes = ap_table_get(r->notes, "error-notes")) != NULL) {
 		ap_bvputs(fd, error_notes, "<P>\n", NULL);
 	    }

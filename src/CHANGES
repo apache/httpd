@@ -1,5 +1,12 @@
 Changes with Apache 1.3.3
 
+  *) Added new HTTP status codes and default response bodies from the
+     revised HTTP/1.1 (307, 416, 417), WebDAV (102, 207, 422, 423), and 
+     HTTP Extension Framework (510) specifications.  Did not add the
+     WebDAV 424 and 425 codes because they are bogus.  We don't use any
+     of these codes yet, but they are now available to 3rd-party modules.
+     [Roy Fielding]
+
   *) Fix a possible race condition between timed-out requests and the
      ap_bhalfduplex select that might result in an infinite loop on
      platforms that do not validate the descriptor. [Roy Fielding]
