@@ -156,7 +156,7 @@ const char *add_redirect_internal(cmd_parms *cmd, alias_dir_conf *dirconf,
     server_rec *s = cmd->server;
     alias_server_conf *serverconf =
         (alias_server_conf *)get_module_config(s->module_config,&alias_module);
-    int status = (int)cmd->info;
+    int status = (int)(long)cmd->info;
     regex_t *r = NULL;
     char *f = arg2;
     char *url = arg3;

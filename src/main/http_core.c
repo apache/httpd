@@ -853,7 +853,7 @@ const char *set_server_string_slot (cmd_parms *cmd, void *dummy, char *arg)
 {
     /* This one's pretty generic... */
   
-    int offset = (int)cmd->info;
+    int offset = (int)(long)cmd->info;
     char *struct_ptr = (char *)cmd->server;
     
     *(char **)(struct_ptr + offset) = pstrdup (cmd->pool, arg);

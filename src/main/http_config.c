@@ -786,7 +786,7 @@ API_EXPORT_NONSTD(const char *) set_string_slot (cmd_parms *cmd,
 {
     /* This one's pretty generic... */
   
-    int offset = (int)cmd->info; 
+    int offset = (int)(long)cmd->info; 
     *(char **)(struct_ptr + offset) = pstrdup (cmd->pool, arg);
     return NULL;
 }
@@ -796,7 +796,7 @@ API_EXPORT_NONSTD(const char *) set_flag_slot (cmd_parms *cmd,
 {
     /* This one's pretty generic too... */
   
-    int offset = (int)cmd->info; 
+    int offset = (int)(long)cmd->info; 
     *(int *)(struct_ptr + offset) = arg ? 1 : 0;
     return NULL;
 }

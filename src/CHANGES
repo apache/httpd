@@ -1,4 +1,8 @@
 Changes with Apache 1.3a2
+  
+  *) PORT: Various tweaks to eliminate pointer-int casting warnings on 64-bit
+     cpus like the alpha.  Apache still stores ints in pointers, but that's
+     the relatively safe direction.  [Dean Gaudet] PR#344
 
   *) PORT: QNX mmap() support for faster/more reliable scoreboard handling.
      [Igor N Kovalenko <infoh@mail.wplus.net>] PR#683

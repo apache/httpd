@@ -2400,7 +2400,11 @@ static void rewritelog(request_rec *r, int level, const char *text, ...)
     else
         ap_snprintf(redir, sizeof(redir), "/redir#%d", i);
 
-    ap_snprintf(str3, sizeof(str3), "%s %s [%s/sid#%x][rid#%x/%s%s] (%d) %s\n", str1, current_logtime(r), r->server->server_hostname, (unsigned int)(r->server), (unsigned int)r, type, redir, level, str2);
+    ap_snprintf(str3, sizeof(str3),
+	"%s %s [%s/sid#%lx][rid#%lx/%s%s] (%d) %s\n", str1,
+	current_logtime(r), r->server->server_hostname,
+	(unsigned long)(r->server), (unsigned long)r,
+	type, redir, level, str2);
 
     fd_lock(conf->rewritelogfp);
     write(conf->rewritelogfp, str3, strlen(str3));

@@ -818,15 +818,15 @@ API_EXPORT(void) cleanup_for_exec(void)
  * generic cleanup interface.
  */
 
-static void fd_cleanup (void *fdv) { close ((int)fdv); }
+static void fd_cleanup (void *fdv) { close ((int)(long)fdv); }
 
 API_EXPORT(void) note_cleanups_for_fd (pool *p, int fd) {
-  register_cleanup (p, (void *)fd, fd_cleanup, fd_cleanup);
+  register_cleanup (p, (void *)(long)fd, fd_cleanup, fd_cleanup);
 }
 
 API_EXPORT(void) kill_cleanups_for_fd(pool *p,int fd)
     {
-    kill_cleanup(p,(void *)fd,fd_cleanup);
+    kill_cleanup(p,(void *)(long)fd,fd_cleanup);
     }
 
 API_EXPORT(int) popenf(pool *a, const char *name, int flg, int mode)
@@ -854,7 +854,7 @@ API_EXPORT(int) pclosef(pool *a, int fd)
   block_alarms();
   res = close(fd);
   save_errno = errno;
-  kill_cleanup(a, (void *)fd, fd_cleanup);
+  kill_cleanup(a, (void *)(long)fd, fd_cleanup);
   unblock_alarms();
   errno = save_errno;
   return res;
@@ -973,16 +973,16 @@ static void socket_cleanup (void *fdv)
 {
     int rv;
     
-    rv = closesocket((int)fdv);
+    rv = closesocket((int)(long)fdv);
 }
 
 API_EXPORT(void) note_cleanups_for_socket (pool *p, int fd) {
-  register_cleanup (p, (void *)fd, socket_cleanup, socket_cleanup);
+  register_cleanup (p, (void *)(long)fd, socket_cleanup, socket_cleanup);
 }
 
 API_EXPORT(void) kill_cleanups_for_socket(pool *p,int sock)
 {
-    kill_cleanup(p,(void *)sock,socket_cleanup);
+    kill_cleanup(p,(void *)(long)sock,socket_cleanup);
 }
 
 API_EXPORT(int) pclosesocket(pool *a, int sock)
@@ -996,7 +996,7 @@ API_EXPORT(int) pclosesocket(pool *a, int sock)
   errno = WSAGetLastError() - WSABASEERR;
 #endif /* WIN32 */
   save_errno = errno;
-  kill_cleanup(a, (void *)sock, socket_cleanup);
+  kill_cleanup(a, (void *)(long)sock, socket_cleanup);
   unblock_alarms();
   errno = save_errno;
   return res;

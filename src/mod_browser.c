@@ -98,7 +98,7 @@ const char *add_browser(cmd_parms *cmd, void *dummy, char *name,
       get_module_config (cmd->server->module_config, &browser_module);
     browser_entry *new, *entries = (browser_entry *)sconf->browsers->elts;
     char *var;
-    int i, cflags = (int)cmd->info;
+    int i, cflags = (int)(long)cmd->info;
 
     /* First, try to merge into an existing entry */
 

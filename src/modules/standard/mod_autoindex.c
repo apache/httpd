@@ -224,7 +224,7 @@ static const char *add_readme(cmd_parms *cmd, void *d, char *name)
 
 static const char *add_opts_int(cmd_parms *cmd, void *d, int opts)
 {
-    push_item(((autoindex_config_rec *)d)->opts_list, (char*)opts, NULL,
+    push_item(((autoindex_config_rec *)d)->opts_list, (char*)(long)opts, NULL,
               cmd->path, NULL);
     return NULL;
 }
@@ -468,7 +468,7 @@ static int find_opts(autoindex_config_rec *d, request_rec *r) {
         struct item *p = &items[i];
         
         if (!strcmp_match(path, p->apply_path))
-            return (int)p->type;
+            return (int)(long)p->type;
     }
     return 0;
 }
