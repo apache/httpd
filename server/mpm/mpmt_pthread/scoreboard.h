@@ -63,12 +63,19 @@ extern "C" {
 #endif
 
 #ifdef HAVE_SYS_TIMES_H
+#include <sys/time.h>
 #include <sys/times.h>
 #elif defined(TPF)
 #include <time.h>
 #endif
 
 #include "mpm_default.h"	/* For HARD_.*_LIMIT */
+
+/* The optimized timeout code only works if we're not using a scoreboard file
+ */
+#if (defined (USE_MMAP_SCOREBOARD) || defined (USE_SHMGET_SCOREBOARD))
+#define OPTIMIZE_TIMEOUTS
+#endif
 
 /* Scoreboard info on a process is, for now, kept very brief --- 
  * just status value and pid (the latter so that the caretaker process

@@ -65,6 +65,7 @@
 extern "C" {
 #endif
 
+#ifdef CORE_PRIVATE
 conn_rec *ap_new_connection(ap_context_t *p, server_rec *server, BUFF *inout,
 			    const struct sockaddr_in *remaddr,
 			    const struct sockaddr_in *saddr, long id);
@@ -72,6 +73,7 @@ conn_rec *ap_new_apr_connection(ap_context_t *p, server_rec *server, BUFF *inout
 			    const ap_socket_t *conn_socket, long id);
 CORE_EXPORT(void) ap_process_connection(conn_rec *);
 int ap_process_http_connection(conn_rec *);
+#endif
 
   /* Hooks */
 DECLARE_HOOK(void,pre_connection,(conn_rec *))

@@ -94,11 +94,6 @@ extern "C" {
 #endif
 
 #define APLOG_NOERRNO		(APLOG_LEVELMASK + 1)
-#ifdef WIN32
-/* Set to indicate that error msg should come from Win32's GetLastError(),
- * not errno. */
-#define APLOG_WIN32ERROR	((APLOG_LEVELMASK+1) * 2)
-#endif
 
 /* normal but significant condition on startup, usually printed to stderr */
 #define APLOG_STARTUP           ((APLOG_LEVELMASK + 1) * 4) 
@@ -143,24 +138,19 @@ API_EXPORT(void) ap_log_reason(const char *reason, const char *fname,
 
 typedef struct piped_log {
     ap_context_t *p;
+    ap_file_t *fds[2];
+    /* XXX - an #ifdef that needs to be eliminated from public view. Shouldn't
+     * be hard */
 #ifdef HAVE_RELIABLE_PIPED_LOGS
     char *program;
     ap_proc_t *pid;
-    ap_file_t *fds[2];
-#else
-    ap_file_t *write_f;
 #endif
 } piped_log;
 
 API_EXPORT(piped_log *) ap_open_piped_log (ap_context_t *p, const char *program);
 API_EXPORT(void) ap_close_piped_log (piped_log *);
-#ifdef HAVE_RELIABLE_PIPED_LOGS
 #define ap_piped_log_read_fd(pl)	((pl)->fds[0])
 #define ap_piped_log_write_fd(pl)	((pl)->fds[1])
-#else
-#define ap_piped_log_read_fd(pl)	(-1)
-#define ap_piped_log_write_fd(pl)	((pl)->write_f)
-#endif
 
 #ifdef __cplusplus
 }

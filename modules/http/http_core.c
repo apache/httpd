@@ -69,6 +69,7 @@
 #include "util_md5.h"
 #include "apr_fnmatch.h"
 #include "http_connection.h"
+#include "ap_config.h"
 
 /* Allow Apache to use ap_mmap */
 #ifdef USE_MMAP_FILES

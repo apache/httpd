@@ -57,6 +57,7 @@
  
 #define CORE_PRIVATE 
  
+#include "ap_config.h"
 #include "apr_portable.h"
 #include "httpd.h" 
 #include "http_main.h" 

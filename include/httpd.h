@@ -66,14 +66,24 @@ extern "C" {
  * httpd.h: header for simple (ha! not anymore) http daemon
  */
 
+/* XXX - We need to push more stuff to other .h files, or even .c files, to
+ * make this file smaller
+ */
+
+
 /* Headers in which EVERYONE has an interest... */
 
-#include "ap_config.h"
 #include "apr_general.h"
 #include "apr_lib.h"
 #include "apr_time.h"
+#include "apr_network_io.h"
 #include "buff.h"
 #include "ap.h"
+#include "ap_mmn.h"
+
+#include <netinet/in.h>
+
+#ifdef CORE_PRIVATE
 
 /* ----------------------------- config dir ------------------------------ */
 
@@ -94,6 +104,14 @@ extern "C" {
 #define HTTPD_ROOT "/usr/local/apache"
 #endif
 #endif /* HTTPD_ROOT */
+
+/* 
+ * --------- You shouldn't have to edit anything below this line ----------
+ *
+ * Any modifications to any defaults not defined above should be done in the 
+ * respective config. file. 
+ *
+ */
 
 /* Default location of documents.  Can be overridden by the DocumentRoot
  * directive.
@@ -120,31 +138,7 @@ extern "C" {
 #define TARGET "httpd"
 #endif
 
-/* 
- * --------- You shouldn't have to edit anything below this line ----------
- *
- * Any modifications to any defaults not defined above should be done in the 
- * respective config. file. 
- *
- */
-
-
-/* -- Internal representation for a HTTP protocol number, e.g., HTTP/1.1 -- */
-
-#define HTTP_VERSION(major,minor) (1000*(major)+(minor))
-#define HTTP_VERSION_MAJOR(number) ((number)/1000)
-#define HTTP_VERSION_MINOR(number) ((number)%1000)
-
-
-/* -------------- Port number for server running standalone --------------- */
-
-#define DEFAULT_HTTP_PORT	80
-#define DEFAULT_HTTPS_PORT	443
-#define ap_is_default_port(port,r)	((port) == ap_default_port(r))
-#define ap_http_method(r)	ap_run_http_method(r)
-#define ap_default_port(r)	ap_run_default_port(r)
-
-/* --------- Default user name and group name running standalone ---------- */
+/* --------- Default user name and group name ----------------------------- */
 /* --- These may be specified as numbers by placing a # before a number --- */
 
 #ifndef DEFAULT_USER
@@ -171,32 +165,6 @@ extern "C" {
 #endif
 #endif /* DEFAULT_ERRORLOG */
 
-#ifndef DEFAULT_PIDLOG
-#define DEFAULT_PIDLOG "logs/httpd.pid"
-#endif
-#ifndef DEFAULT_SCOREBOARD
-#define DEFAULT_SCOREBOARD "logs/apache_runtime_status"
-#endif
-#ifndef DEFAULT_LOCKFILE
-#define DEFAULT_LOCKFILE "logs/accept.lock"
-#endif
-
-/* Define this to be what your HTML directory content files are called */
-#ifndef DEFAULT_INDEX
-#define DEFAULT_INDEX "index.html"
-#endif
-
-/* Define this to 1 if you want fancy indexing, 0 otherwise */
-#ifndef DEFAULT_INDEXING
-#define DEFAULT_INDEXING 0
-#endif
-
-/* Define this to be what type you'd like returned for files with unknown */
-/* suffixes.  MUST be all lower case. */
-#ifndef DEFAULT_CONTENT_TYPE
-#define DEFAULT_CONTENT_TYPE "text/plain"
-#endif
-
 /* Define this to be what your per-directory security files are called */
 #ifndef DEFAULT_ACCESS_FNAME
 #ifdef OS2
@@ -217,11 +185,6 @@ extern "C" {
 #define RESOURCE_CONFIG_FILE "conf/srm.conf"
 #endif
 
-/* The name of the MIME types file */
-#ifndef TYPES_CONFIG_FILE
-#define TYPES_CONFIG_FILE "conf/mime.types"
-#endif
-
 /* The name of the access file */
 #ifndef ACCESS_CONFIG_FILE
 #define ACCESS_CONFIG_FILE "conf/access.conf"
@@ -231,34 +194,16 @@ extern "C" {
 #ifndef DEFAULT_RFC1413
 #define DEFAULT_RFC1413 0
 #endif
-/* The default directory in user's home dir */
-#ifndef DEFAULT_USER_DIR
-#define DEFAULT_USER_DIR "public_html"
-#endif
 
 /* The default path for CGI scripts if none is currently set */
 #ifndef DEFAULT_PATH
 #define DEFAULT_PATH "/bin:/usr/bin:/usr/ucb:/usr/bsd:/usr/local/bin"
 #endif
 
-/* The path to the shell interpreter, for parsed docs */
-#ifndef SHELL_PATH
-#if defined(OS2) || defined(WIN32)
-/* Set default for OS/2 and Windows file system */
-#define SHELL_PATH "CMD.EXE"
-#else
-#define SHELL_PATH "/bin/sh"
-#endif
-#endif /* SHELL_PATH */
-
 /* The path to the suExec wrapper, can be overridden in Configuration */
 #ifndef SUEXEC_BIN
 #define SUEXEC_BIN  HTTPD_ROOT "/sbin/suexec"
 #endif
-
-/* The default string lengths */
-#define MAX_STRING_LEN HUGE_STRING_LEN
-#define HUGE_STRING_LEN 8192
 
 /* The timeout for waiting for messages */
 #ifndef DEFAULT_TIMEOUT
@@ -273,58 +218,6 @@ extern "C" {
 /* The number of requests to entertain per connection */
 #ifndef DEFAULT_KEEPALIVE
 #define DEFAULT_KEEPALIVE 100
-#endif
-
-/* The size of the server's internal read-write buffers */
-#define IOBUFSIZE 8192
-
-/*
- * Special Apache error codes. These are basically used
- *  in http_main.c so we can keep track of various errors.
- *
- *   APEXIT_OK:
- *     A normal exit
- *   APEXIT_INIT:
- *     A fatal error arising during the server's init sequence
- *   APEXIT_CHILDINIT:
- *     The child died during it's init sequence
- *   APEXIT_CHILDFATAL:
- *     A fatal error, resulting in the whole server aborting.
- *     If a child exits with this error, the parent process
- *     considers this a server-wide fatal error and aborts.
- *                 
- */
-#define APEXIT_OK		0x0
-#define APEXIT_INIT		0x2
-#define APEXIT_CHILDINIT	0x3
-#define APEXIT_CHILDFATAL	0xf
-
-/*
- * (Unix, OS/2 only)
- * Interval, in microseconds, between scoreboard maintenance.  During
- * each scoreboard maintenance cycle the parent decides if it needs to
- * spawn a new child (to meet MinSpareServers requirements), or kill off
- * a child (to meet MaxSpareServers requirements).  It will only spawn or
- * kill one child per cycle.  Setting this too low will chew cpu.  The
- * default is probably sufficient for everyone.  But some people may want
- * to raise this on servers which aren't dedicated to httpd and where they
- * don't like the httpd waking up each second to see what's going on.
- */
-#ifndef SCOREBOARD_MAINTENANCE_INTERVAL
-#define SCOREBOARD_MAINTENANCE_INTERVAL 1000000
-#endif
-
-/* Number of requests to try to handle in a single process.  If <= 0,
- * the children don't die off.  That's the default here, since I'm still
- * interested in finding and stanching leaks.
- */
-
-#ifndef DEFAULT_MAX_REQUESTS_PER_CHILD
-#define DEFAULT_MAX_REQUESTS_PER_CHILD 10000
-#endif
-
-#ifndef DEFAULT_EXCESS_REQUESTS_PER_CHILD
-#define DEFAULT_EXCESS_REQUESTS_PER_CHILD 0
 #endif
 
 /* The maximum length of the queue of pending connections, as defined
@@ -379,8 +272,95 @@ extern "C" {
  * Example: "Apache/1.1.0 MrWidget/0.1-alpha" 
  */
 
-#define SERVER_BASEVERSION "Apache/2.0-dev"       /* SEE COMMENTS ABOVE */
-#define SERVER_VERSION  SERVER_BASEVERSION
+/* Define this to 1 if you want fancy indexing, 0 otherwise */
+#ifndef DEFAULT_INDEXING
+#define DEFAULT_INDEXING 0
+#endif
+#endif /* CORE_PRIVATE */
+
+#define AP_SERVER_BASEVERSION "Apache/2.0-dev"       /* SEE COMMENTS ABOVE */
+#define AP_SERVER_VERSION  AP_SERVER_BASEVERSION
+
+#define AP_SERVER_PROTOCOL "HTTP/1.1"
+
+
+/* ------------------ stuff that modules are allowed to look at ----------- */
+
+/* Define this to be what your HTML directory content files are called */
+#ifndef AP_DEFAULT_INDEX
+#define AP_DEFAULT_INDEX "index.html"
+#endif
+
+
+/* Define this to be what type you'd like returned for files with unknown */
+/* suffixes.  MUST be all lower case. */
+#ifndef DEFAULT_CONTENT_TYPE
+#define DEFAULT_CONTENT_TYPE "text/plain"
+#endif
+
+/* The name of the MIME types file */
+#ifndef AP_TYPES_CONFIG_FILE
+#define AP_TYPES_CONFIG_FILE "conf/mime.types"
+#endif
+
+/*
+ * Define the HTML doctype strings centrally.
+ */
+#define DOCTYPE_HTML_2_0  "<!DOCTYPE HTML PUBLIC \"-//IETF//" \
+                          "DTD HTML 2.0//EN\">\n"
+#define DOCTYPE_HTML_3_2  "<!DOCTYPE HTML PUBLIC \"-//W3C//" \
+                          "DTD HTML 3.2 Final//EN\">\n"
+#define DOCTYPE_HTML_4_0S "<!DOCTYPE HTML PUBLIC \"-//W3C//" \
+                          "DTD HTML 4.0//EN\"\n" \
+                          "\"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+#define DOCTYPE_HTML_4_0T "<!DOCTYPE HTML PUBLIC \"-//W3C//" \
+                          "DTD HTML 4.0 Transitional//EN\"\n" \
+                          "\"http://www.w3.org/TR/REC-html40/loose.dtd\">\n"
+#define DOCTYPE_HTML_4_0F "<!DOCTYPE HTML PUBLIC \"-//W3C//" \
+                          "DTD HTML 4.0 Frameset//EN\"\n" \
+                          "\"http://www.w3.org/TR/REC-html40/frameset.dtd\">\n"
+
+/* -- Internal representation for a HTTP protocol number, e.g., HTTP/1.1 -- */
+
+#define HTTP_VERSION(major,minor) (1000*(major)+(minor))
+#define HTTP_VERSION_MAJOR(number) ((number)/1000)
+#define HTTP_VERSION_MINOR(number) ((number)%1000)
+
+/* -------------- Port number for server running standalone --------------- */
+
+#define DEFAULT_HTTP_PORT	80
+#define DEFAULT_HTTPS_PORT	443
+#define ap_is_default_port(port,r)	((port) == ap_default_port(r))
+#define ap_http_method(r)	ap_run_http_method(r)
+#define ap_default_port(r)	ap_run_default_port(r)
+
+/* The default string lengths */
+#define MAX_STRING_LEN HUGE_STRING_LEN
+#define HUGE_STRING_LEN 8192
+
+/* The size of the server's internal read-write buffers */
+#define IOBUFSIZE 8192
+
+/*
+ * Special Apache error codes. These are basically used
+ *  in http_main.c so we can keep track of various errors.
+ *
+ *   APEXIT_OK:
+ *     A normal exit
+ *   APEXIT_INIT:
+ *     A fatal error arising during the server's init sequence
+ *   APEXIT_CHILDINIT:
+ *     The child died during it's init sequence
+ *   APEXIT_CHILDFATAL:
+ *     A fatal error, resulting in the whole server aborting.
+ *     If a child exits with this error, the parent process
+ *     considers this a server-wide fatal error and aborts.
+ *                 
+ */
+#define APEXIT_OK		0x0
+#define APEXIT_INIT		0x2
+#define APEXIT_CHILDINIT	0x3
+#define APEXIT_CHILDFATAL	0xf
 
 /* TODO: re-implement the server token/version stuff -- it's part of http_core
  * it should be possible to do without touching http_main at all. (or else
@@ -407,11 +387,6 @@ API_EXPORT(const char *) ap_get_server_built(void);
  * For example, Apache 1.4.2 would be '10402100', 2.5b7 would be '20500007'.
  */
 #define APACHE_RELEASE 10309100
-
-#define SERVER_PROTOCOL "HTTP/1.1"
-#ifndef SERVER_SUPPORT
-#define SERVER_SUPPORT "http://www.apache.org/"
-#endif
 
 #define DECLINED -1		/* Module declines to handle */
 #define DONE -2			/* Module has served the response completely 
@@ -539,47 +514,10 @@ API_EXPORT(const char *) ap_get_server_built(void);
 #define CGI_MAGIC_TYPE "application/x-httpd-cgi"
 #define INCLUDES_MAGIC_TYPE "text/x-server-parsed-html"
 #define INCLUDES_MAGIC_TYPE3 "text/x-server-parsed-html3"
-#ifdef CHARSET_EBCDIC
-#define ASCIITEXT_MAGIC_TYPE_PREFIX "text/x-ascii-" /* Text files whose content-type starts with this are passed thru unconverted */
-#endif /*CHARSET_EBCDIC*/
-#define MAP_FILE_MAGIC_TYPE "application/x-type-map"
-#define ASIS_MAGIC_TYPE "httpd/send-as-is"
 #define DIR_MAGIC_TYPE "httpd/unix-directory"
-#define STATUS_MAGIC_TYPE "application/x-httpd-status"
 
-/*
- * Define the HTML doctype strings centrally.
- */
-#define DOCTYPE_HTML_2_0  "<!DOCTYPE HTML PUBLIC \"-//IETF//" \
-                          "DTD HTML 2.0//EN\">\n"
-#define DOCTYPE_HTML_3_2  "<!DOCTYPE HTML PUBLIC \"-//W3C//" \
-                          "DTD HTML 3.2 Final//EN\">\n"
-#define DOCTYPE_HTML_4_0S "<!DOCTYPE HTML PUBLIC \"-//W3C//" \
-                          "DTD HTML 4.0//EN\"\n" \
-                          "\"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
-#define DOCTYPE_HTML_4_0T "<!DOCTYPE HTML PUBLIC \"-//W3C//" \
-                          "DTD HTML 4.0 Transitional//EN\"\n" \
-                          "\"http://www.w3.org/TR/REC-html40/loose.dtd\">\n"
-#define DOCTYPE_HTML_4_0F "<!DOCTYPE HTML PUBLIC \"-//W3C//" \
-                          "DTD HTML 4.0 Frameset//EN\"\n" \
-                          "\"http://www.w3.org/TR/REC-html40/frameset.dtd\">\n"
-
-/* Just in case your linefeed isn't the one the other end is expecting. */
-#ifndef CHARSET_EBCDIC
 #define LF 10
 #define CR 13
-#else /* CHARSET_EBCDIC */
-#include "ebcdic.h"
-/* OSD_POSIX uses the EBCDIC charset. The transition ASCII->EBCDIC is done in
- * the buff package (bread/bputs/bwrite), so everywhere else, we use
- * "native EBCDIC" CR and NL characters. These are therefore defined as
- * '\r' and '\n'.
- * NB: this is not the whole truth - sometimes \015 and \012 are contained
- * in literal (EBCDIC!) strings, so these are not converted but passed.
- */
-#define CR '\r'
-#define LF '\n'
-#endif /* CHARSET_EBCDIC */
 
 /* Possible values for request_rec.read_body (set by handling module):
  *    REQUEST_NO_BODY          Send 413 error if message has any body
@@ -848,7 +786,7 @@ struct conn_rec {
 typedef struct server_addr_rec server_addr_rec;
 struct server_addr_rec {
     server_addr_rec *next;
-    struct in_addr host_addr;	/* The bound address, for this server */
+    ap_in_addr host_addr;	/* The bound address, for this server */
     unsigned short host_port;	/* The bound port, for this server */
     char *virthost;		/* The name given in <VirtualHost> */
 };
@@ -909,9 +847,51 @@ struct server_rec {
     int limit_req_fields;    /* limit on number of request header fields  */
 };
 
-
-/* Prototypes for utilities... util.c.
+/* stuff marked API_EXPORT is part of the API, and intended for use
+ * by modules
  */
+#ifndef API_EXPORT
+#define API_EXPORT(type)    type
+#endif
+
+/* Stuff marked API_EXPORT_NONSTD is part of the API, and intended for
+ * use by modules.  The difference between API_EXPORT and
+ * API_EXPORT_NONSTD is that the latter is required for any functions
+ * which use varargs or are used via indirect function call.  This
+ * is to accomodate the two calling conventions in windows dlls.
+ */
+#ifndef API_EXPORT_NONSTD
+#define API_EXPORT_NONSTD(type)    type
+#endif
+
+#ifndef MODULE_VAR_EXPORT
+#define MODULE_VAR_EXPORT
+#endif
+#ifndef API_VAR_EXPORT
+#define API_VAR_EXPORT
+#endif
+
+/* modules should not used functions marked CORE_EXPORT
+ * or CORE_EXPORT_NONSTD */
+#ifndef CORE_EXPORT
+#define CORE_EXPORT	API_EXPORT
+#endif
+#ifndef CORE_EXPORT_NONSTD
+#define CORE_EXPORT_NONSTD	API_EXPORT_NONSTD
+#endif
+
+/* On Mac OS X Server, symbols that conflict with loaded dylibs
+ * (eg. System framework) need to be declared as private symbols with
+ * __private_extern__.
+ * For other systems, make that a no-op.
+ */
+#ifndef ap_private_extern
+#if (defined(MAC_OS) || defined(MAC_OS_X_SERVER)) && defined(__DYNAMIC__)
+#define ap_private_extern __private_extern__
+#else
+#define ap_private_extern
+#endif
+#endif
 
 /* Time */
 
@@ -966,9 +946,11 @@ API_EXPORT(char *) ap_pbase64encode(ap_context_t *p, char *string);
 API_EXPORT(char *) ap_uudecode(ap_context_t *p, const char *bufcoded);
 API_EXPORT(char *) ap_uuencode(ap_context_t *p, char *string); 
 
-#ifdef OS2
-void os2pathname(char *path);
-char *ap_double_quotes(ap_context_t *p, char *str);
+/* Regexes */
+#ifdef AP_USE_HSREGEX
+#include "hsregex.h"
+#else
+#include <regex.h>
 #endif
 
 API_EXPORT(regex_t *) ap_pregcomp(ap_context_t *p, const char *pattern,
@@ -1017,10 +999,6 @@ API_EXPORT(int) ap_cfg_getc(configfile_t *cfp);
 /* Detach from open configfile_t, calling the close handler */
 API_EXPORT(int) ap_cfg_closefile(configfile_t *cfp);
 
-#ifdef NEED_STRERROR
-char *strerror(int err);
-#endif
-
 /* Misc system hackery */
 
 API_EXPORT(uid_t) ap_uname2id(const char *name);
@@ -1030,24 +1008,6 @@ API_EXPORT(void) ap_chdir_file(const char *file);
 API_EXPORT(int) ap_get_max_daemons(void);
 API_EXPORT(const server_rec *) ap_get_server_conf(void);
 
-#ifndef HAVE_CANONICAL_FILENAME
-/*
- *  We can't define these in os.h because of dependence on ap_context_t pointer.
- */
-#define ap_os_canonical_filename(p,f)  (f)
-#define ap_os_case_canonical_filename(p,f)  (f)
-#define ap_os_systemcase_filename(p,f)  (f)
-#else
-API_EXPORT(char *) ap_os_canonical_filename(ap_context_t *p, const char *file);
-#ifdef WIN32
-API_EXPORT(char *) ap_os_case_canonical_filename(ap_context_t *pPool, const char *szFile);
-API_EXPORT(char *) ap_os_systemcase_filename(ap_context_t *pPool, const char *szFile);
-#else
-#define ap_os_case_canonical_filename(p,f) ap_os_canonical_filename(p,f)
-#define ap_os_systemcase_filename(p,f) ap_os_canonical_filename(p,f)
-#endif
-#endif
-
 #ifdef _OSD_POSIX
 extern const char *os_set_account(ap_context_t *p, const char *account);
 extern int os_init_job_environment(server_rec *s, const char *user_name, int one_process);
@@ -1055,43 +1015,6 @@ extern int os_init_job_environment(server_rec *s, const char *user_name, int one
 
 char *ap_get_local_host(ap_context_t *);
 unsigned long ap_get_virthost_addr(char *hostname, unsigned short *port);
-
-extern API_VAR_EXPORT time_t ap_restart_time;
-
-/*
- * Apache tries to keep all of its long term filehandles (such as log files,
- * and sockets) above this number.  This is to workaround problems in many
- * third party libraries that are compiled with a small FD_SETSIZE.  There
- * should be no reason to lower this, because it's only advisory.  If a file
- * can't be allocated above this number then it will remain in the "slack"
- * area.
- *
- * Only the low slack line is used by default.  If HIGH_SLACK_LINE is defined
- * then an attempt is also made to keep all non-FILE * files above the high
- * slack line.  This is to work around a Solaris C library limitation, where it
- * uses an unsigned char to store the file descriptor.
- */
-#ifndef LOW_SLACK_LINE
-#define LOW_SLACK_LINE	15
-#endif
-/* #define HIGH_SLACK_LINE      255 */
-
-#if 0
-/*  Moved to APR now.*/
-/*
- * The ap_slack() function takes a fd, and tries to move it above the indicated
- * line.  It returns an fd which may or may not have moved above the line, and
- * never fails.  If the high line was requested and it fails it will also try
- * the low line.
- */
-#ifdef NO_SLACK
-#define ap_slack(fd,line)   (fd)
-#else
-APRFile ap_slack(APRFile fd, int line);
-#define AP_SLACK_LOW	1
-#define AP_SLACK_HIGH	2
-#endif
-#endif
 
 API_EXPORT(char *) ap_escape_quotes(ap_context_t *p, const char *instr);
 
@@ -1101,14 +1024,6 @@ API_EXPORT(char *) ap_escape_quotes(ap_context_t *p, const char *instr);
 API_EXPORT(void) ap_log_assert(const char *szExp, const char *szFile, int nLine)
 			    __attribute__((noreturn));
 #define ap_assert(exp) ((exp) ? (void)0 : ap_log_assert(#exp,__FILE__,__LINE__))
-
-/* The optimized timeout code only works if we're not MULTITHREAD and we're
- * also not using a scoreboard file
- */
-#if !defined (MULTITHREAD) && \
-    (defined (USE_MMAP_SCOREBOARD) || defined (USE_SHMGET_SCOREBOARD))
-#define OPTIMIZE_TIMEOUTS
-#endif
 
 /* A set of flags which indicate places where the server should raise(SIGSTOP).
  * This is useful for debugging, because you can then attach to that process

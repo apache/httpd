@@ -63,6 +63,7 @@
 #include "util_uri.h" 
 #include "apr_getopt.h"
 #include "ap_mpm.h"
+#include "ap_config.h"
 
 const char *ap_server_argv0;
 
@@ -72,6 +73,7 @@ ap_array_header_t *ap_server_pre_read_config;
 ap_array_header_t *ap_server_post_read_config;
 ap_array_header_t *ap_server_config_defines;
 
+/* XXX - We should be able to grab the per-MPM settings here too */
 static void show_compile_settings(void)
 {
     printf("Server version: %s\n", ap_get_server_version());

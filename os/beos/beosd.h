@@ -60,6 +60,16 @@
 
 /* common stuff that beos MPMs will want */
 
+/* Default user name and group name. These may be specified as numbers by
+ * placing a # before a number */
+
+#ifndef DEFAULT_USER
+#define DEFAULT_USER "#-1"
+#endif
+#ifndef DEFAULT_GROUP
+#define DEFAULT_GROUP "#-1"
+#endif
+
 typedef struct {
     char *user_name;
     uid_t user_id;
