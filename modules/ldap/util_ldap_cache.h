@@ -174,6 +174,7 @@ unsigned long util_ald_hash_string(int nstr, ...);
 void util_ald_cache_purge(util_ald_cache_t *cache);
 util_url_node_t *util_ald_create_caches(util_ldap_state_t *s, const char *url);
 util_ald_cache_t *util_ald_create_cache(util_ldap_state_t *st,
+                                long cache_size,
                                 unsigned long (*hashfunc)(void *), 
                                 int (*comparefunc)(void *, void *),
                                 void * (*copyfunc)(util_ald_cache_t *cache, void *),

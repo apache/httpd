@@ -428,6 +428,7 @@ apr_status_t util_ldap_cache_init(apr_pool_t *pool, util_ldap_state_t *st)
 
     st->util_ldap_cache =
         util_ald_create_cache(st,
+                              st->search_cache_size,
                               util_ldap_url_node_hash,
                               util_ldap_url_node_compare,
                               util_ldap_url_node_copy,

@@ -179,7 +179,7 @@ void util_ald_cache_purge(util_ald_cache_t *cache)
 
     if (!cache)
         return;
-  
+
     cache->last_purge = apr_time_now();
     cache->npurged = 0;
     cache->numpurges++;
@@ -222,18 +222,21 @@ util_url_node_t *util_ald_create_caches(util_ldap_state_t *st, const char *url)
 
     /* create the three caches */
     search_cache = util_ald_create_cache(st,
+                      st->search_cache_size,
                       util_ldap_search_node_hash,
                       util_ldap_search_node_compare,
                       util_ldap_search_node_copy,
                       util_ldap_search_node_free,
                       util_ldap_search_node_display);
     compare_cache = util_ald_create_cache(st,
+                      st->compare_cache_size,
                       util_ldap_compare_node_hash,
                       util_ldap_compare_node_compare,
                       util_ldap_compare_node_copy,
                       util_ldap_compare_node_free,
                       util_ldap_compare_node_display);
     dn_compare_cache = util_ald_create_cache(st,
+                      st->compare_cache_size,
                       util_ldap_dn_compare_node_hash,
                       util_ldap_dn_compare_node_compare,
                       util_ldap_dn_compare_node_copy,
@@ -261,6 +264,7 @@ util_url_node_t *util_ald_create_caches(util_ldap_state_t *st, const char *url)
 
 
 util_ald_cache_t *util_ald_create_cache(util_ldap_state_t *st,
+                                long cache_size,
                                 unsigned long (*hashfunc)(void *), 
                                 int (*comparefunc)(void *, void *),
                                 void * (*copyfunc)(util_ald_cache_t *cache, void *),
@@ -270,7 +274,7 @@ util_ald_cache_t *util_ald_create_cache(util_ldap_state_t *st,
     util_ald_cache_t *cache;
     unsigned long i;
 
-    if (st->search_cache_size <= 0)
+    if (cache_size <= 0)
         return NULL;
 
 #if APR_HAS_SHARED_MEMORY
@@ -291,9 +295,9 @@ util_ald_cache_t *util_ald_create_cache(util_ldap_state_t *st,
     cache->rmm_addr = st->cache_rmm;
     cache->shm_addr = st->cache_shm;
 #endif
-    cache->maxentries = st->search_cache_size;
+    cache->maxentries = cache_size;
     cache->numentries = 0;
-    cache->size = st->search_cache_size / 3;
+    cache->size = cache_size / 3;
     if (cache->size < 64) cache->size = 64;
         for (i = 0; primes[i] && primes[i] < cache->size; ++i) ;
             cache->size = primes[i]? primes[i] : primes[i-1];
@@ -526,7 +530,7 @@ char *util_ald_cache_display_stats(request_rec *r, util_ald_cache_t *cache, char
              buf);
     }
 
-    buf = apr_psprintf(p, "%s<td align='right'>%.2g</td>\n</tr>", buf, cache->avg_purgetime);
+    buf = apr_psprintf(p, "%s<td align='right'>%.2gms</td>\n</tr>", buf, cache->avg_purgetime);
 
     return buf;
 }
