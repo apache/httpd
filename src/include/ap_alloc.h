@@ -51,7 +51,7 @@
  *
  */
 
-/* $Id: ap_alloc.h,v 1.10 1996/08/20 11:50:38 paul Exp $ */
+/* $Id: ap_alloc.h,v 1.11 1996/10/06 17:29:55 ben Exp $ */
 
 /*
  * Resource allocation routines...
@@ -113,16 +113,17 @@ typedef struct {
 
 array_header *make_array (pool *p, int nelts, int elt_size);
 void *push_array (array_header *);
-void array_cat (array_header *dst, array_header *src);
-array_header *append_arrays (pool *, array_header *, array_header *);
+void array_cat (array_header *dst, const array_header *src);
+array_header *append_arrays (pool *, const array_header *,
+			     const array_header *);
 
 /* copy_array copies the *entire* array.  copy_array_hdr just copies
  * the header, and arranges for the elements to be copied if (and only
  * if) the code subsequently does a push or arraycat.
  */
      
-array_header *copy_array (pool *p, array_header *src);
-array_header *copy_array_hdr (pool *p, array_header *src);
+array_header *copy_array (pool *p, const array_header *src);
+array_header *copy_array_hdr (pool *p, const array_header *src);
 			   
 
 /* Tables.  Implemented alist style, for now, though we try to keep
@@ -144,14 +145,14 @@ typedef struct {
 } table_entry;
 
 table *make_table (pool *p, int nelts);
-table *copy_table (pool *p, table *);     
-char *table_get (table *, char *);
+table *copy_table (pool *p, const table *);     
+char *table_get (const table *, const char *);
 void table_set (table *, const char *name, const char *val);
-void table_merge (table *, char *name, char *more_val);
-void table_unset (table *, char *key);
-void table_add (table *, char *name, char *val);
+void table_merge (table *, const char *name, const char *more_val);
+void table_unset (table *, const char *key);
+void table_add (table *, const char *name, const char *val);
 
-table *overlay_tables (pool *p, table *overlay, table *base);     
+table *overlay_tables (pool *p, const table *overlay, const table *base);     
 
 array_header *table_elts (table *);     
 

@@ -50,7 +50,7 @@
  *
  */
 
-/* $Id: alloc.c,v 1.14 1996/10/01 19:19:14 brian Exp $ */
+/* $Id: alloc.c,v 1.15 1996/10/06 17:29:55 ben Exp $ */
 
 
 /*
@@ -472,7 +472,7 @@ void *push_array (array_header *arr)
   return arr->elts + (arr->elt_size * (arr->nelts - 1));
 }
 
-void array_cat (array_header *dst, array_header *src)
+void array_cat (array_header *dst, const array_header *src)
 {
   int elt_size = dst->elt_size;
   
@@ -496,7 +496,7 @@ void array_cat (array_header *dst, array_header *src)
   dst->nelts += src->nelts;
 }
 
-array_header *copy_array (pool *p, array_header *arr)
+array_header *copy_array (pool *p, const array_header *arr)
 {
   array_header *res = make_array (p, arr->nalloc, arr->elt_size);
 
@@ -512,7 +512,7 @@ array_header *copy_array (pool *p, array_header *arr)
  * overhead of the full copy only where it is really needed.
  */
 
-array_header *copy_array_hdr (pool *p, array_header *arr)
+array_header *copy_array_hdr (pool *p, const array_header *arr)
 {
   array_header *res = (array_header *)palloc(p, sizeof(array_header));
 
@@ -529,7 +529,8 @@ array_header *copy_array_hdr (pool *p, array_header *arr)
 /* The above is used here to avoid consing multiple new array bodies... */
 
 array_header *append_arrays (pool *p,
-			     array_header *first, array_header *second)
+			     const array_header *first,
+			     const array_header *second)
 {
   array_header *res = copy_array_hdr (p, first);
 
@@ -547,13 +548,13 @@ table *make_table (pool *p, int nelts) {
     return make_array (p, nelts, sizeof (table_entry));
 }
 
-table *copy_table (pool *p, table *t) {
+table *copy_table (pool *p, const table *t) {
     return copy_array (p, t);
 }
 
 array_header *table_elts (table *t) { return t; }
 
-char *table_get (table *t, char *key)
+char *table_get (const table *t, const char *key)
 {
     table_entry *elts = (table_entry *)t->elts;
     int i;
@@ -583,7 +584,7 @@ void table_set (table *t, const char *key, const char *val)
     elts->val = pstrdup (t->pool, val);
 }
 
-void table_unset( table *t, char *key ) 
+void table_unset( table *t, const char *key ) 
 {
     table_entry *elts = (table_entry *)t->elts;
     int i;   
@@ -611,7 +612,7 @@ void table_unset( table *t, char *key )
         }
 }     
 
-void table_merge (table *t, char *key, char *val)
+void table_merge (table *t, const char *key, const char *val)
 {
     table_entry *elts = (table_entry *)t->elts;
     int i;
@@ -627,7 +628,7 @@ void table_merge (table *t, char *key, char *val)
     elts->val = pstrdup (t->pool, val);
 }
 
-void table_add (table *t, char *key, char *val)
+void table_add (table *t, const char *key, const char *val)
 {
     table_entry *elts = (table_entry *)t->elts;
 
@@ -636,7 +637,7 @@ void table_add (table *t, char *key, char *val)
     elts->val = pstrdup (t->pool, val);
 }
 
-table* overlay_tables (pool *p, table *overlay, table *base)
+table* overlay_tables (pool *p, const table *overlay, const table *base)
 {
     return append_arrays (p, overlay, base);
 }
