@@ -75,6 +75,7 @@
 #include "mpm_common.h"
 #include "scoreboard.h"
 
+
 typedef HANDLE thread;
 #ifdef CONTAINING_RECORD
 #undef CONTAINING_RECORD
@@ -114,6 +115,9 @@ static unsigned int g_num_completion_contexts = 0;
 static HANDLE ThreadDispatchIOCP = NULL;
 
 /* Definitions of WINNT MPM specific config globals */
+static server_rec *server_conf;
+static apr_pool_t *pconf;
+static apr_pool_t *pchild = NULL;
 static int workers_may_exit = 0;
 static int shutdown_in_progress = 0;
 static unsigned int g_blocked_threads = 0;
@@ -122,24 +126,15 @@ static char *ap_pid_fname = NULL;
 int ap_threads_per_child = 0;
 
 static int max_requests_per_child = 0;
-static HANDLE shutdown_event;	/* used to signal shutdown to parent */
-static HANDLE restart_event;	/* used to signal a restart to parent */
-
-#define MAX_SIGNAL_NAME 30  /* Long enough for apPID_shutdown, where PID is an int */
-char signal_name_prefix[MAX_SIGNAL_NAME];
-char signal_restart_name[MAX_SIGNAL_NAME]; 
-char signal_shutdown_name[MAX_SIGNAL_NAME];
+static HANDLE shutdown_event;	/* used to signal the parent to shutdown */
+static HANDLE restart_event;	/* used to signal the parent to restart */
+static HANDLE exit_event;       /* used by parent to signal the child to exit */
+static HANDLE maintenance_event;
 
 static struct fd_set listenfds;
-static int num_listenfds = 0;
 static SOCKET listenmaxfd = INVALID_SOCKET;
 
-static apr_pool_t *pconf;		/* Pool for config stuff */
-static apr_pool_t *pchild = NULL;
-
 static char ap_coredump_dir[MAX_STRING_LEN];
-
-static server_rec *server_conf;
 
 static int one_process = 0;
 static char const* signal_arg;
@@ -149,8 +144,7 @@ OSVERSIONINFO osver; /* VER_PLATFORM_WIN32_NT */
 int ap_max_requests_per_child=0;
 int ap_daemons_to_start=0;
 
-static HANDLE exit_event;
-static HANDLE maintenance_event;
+
 apr_lock_t *start_mutex;
 DWORD my_pid;
 DWORD parent_pid;
@@ -183,17 +177,6 @@ FARPROC ap_load_dll_func(ap_dlltoken_e fnLib, char* fnName, int ordinal)
     else
         return GetProcAddress(lateDllHandle[fnLib], fnName);
 }
-
-static apr_status_t socket_cleanup(void *sock)
-{
-    apr_socket_t *thesocket = sock;
-    SOCKET sd;
-    if (apr_os_sock_get(&sd, thesocket) == APR_SUCCESS) {
-        closesocket(sd);
-    }
-    return APR_SUCCESS;
-}
-
 
 /* To share the semaphores with other processes, we need a NULL ACL
  * Code from MS KB Q106387
@@ -301,6 +284,23 @@ static DWORD wait_for_many_objects(DWORD nCount, CONST HANDLE *lpHandles,
  * On entry, type gives the event to signal. 0 means shutdown, 1 means 
  * graceful restart.
  */
+/*
+ * Initialise the signal names, in the global variables signal_name_prefix, 
+ * signal_restart_name and signal_shutdown_name.
+ */
+#define MAX_SIGNAL_NAME 30  /* Long enough for apPID_shutdown, where PID is an int */
+char signal_name_prefix[MAX_SIGNAL_NAME];
+char signal_restart_name[MAX_SIGNAL_NAME]; 
+char signal_shutdown_name[MAX_SIGNAL_NAME];
+void setup_signal_names(char *prefix)
+{
+    apr_snprintf(signal_name_prefix, sizeof(signal_name_prefix), prefix);    
+    apr_snprintf(signal_shutdown_name, sizeof(signal_shutdown_name), 
+	"%s_shutdown", signal_name_prefix);    
+    apr_snprintf(signal_restart_name, sizeof(signal_restart_name), 
+	"%s_restart", signal_name_prefix);    
+}
+
 void signal_parent(int type)
 {
     HANDLE e;
@@ -358,19 +358,6 @@ AP_DECLARE(void) ap_start_restart(int gracefully)
     signal_parent(1);
 }
 
-/*
- * Initialise the signal names, in the global variables signal_name_prefix, 
- * signal_restart_name and signal_shutdown_name.
- */
-
-void setup_signal_names(char *prefix)
-{
-    apr_snprintf(signal_name_prefix, sizeof(signal_name_prefix), prefix);    
-    apr_snprintf(signal_shutdown_name, sizeof(signal_shutdown_name), 
-	"%s_shutdown", signal_name_prefix);    
-    apr_snprintf(signal_restart_name, sizeof(signal_restart_name), 
-	"%s_restart", signal_name_prefix);    
-}
 
 /*
  * find_ready_listener()
@@ -454,19 +441,27 @@ static int get_listeners_from_parent(server_rec *s)
 }
 
 
-/*
- * Definition of jobs, shared by main and worker threads.
+/* Windows 9x specific code...
+ * Accept processing for on Windows 95/98 uses a producer/consumer queue 
+ * model. A single thread accepts connections and queues the accepted socket 
+ * to the accept queue for consumption by a pool of worker threads.
+ *
+ * win9x_accept()
+ *    The accept threads runs this function, which accepts connections off 
+ *    the network and calls add_job() to queue jobs to the accept_queue.
+ * add_job()/remove_job()
+ *    Add or remove an accepted socket from the list of sockets 
+ *    connected to clients. allowed_globals.jobmutex protects
+ *    against multiple concurrent access to the linked list of jobs.
+ * win9x_get_connection()
+ *    Calls remove_job() to pull a job from the accept queue. All the worker 
+ *    threads block on remove_job.
  */
 
 typedef struct joblist_s {
     struct joblist_s *next;
     int sock;
 } joblist;
-
-/*
- * Globals common to main and worker threads. This structure is not
- * used by the parent process.
- */
 
 typedef struct globals_s {
     HANDLE jobsemaphore;
@@ -476,27 +471,9 @@ typedef struct globals_s {
     int jobcount;
 } globals;
 
-globals allowed_globals =
-{NULL, NULL, NULL, NULL, 0};
+globals allowed_globals = {NULL, NULL, NULL, NULL, 0};
 #define MAX_SELECT_ERRORS 100
 
-
-/* Windows 9x specific code...
- * Accept processing for on Windows 95/98 uses a producer/consumer queue 
- * model. A single thread accepts connections and queues the accepted socket 
- * to the accept queue for consumption by a pool of worker threads.
- *
- * win9x_get_connection()
- *    Calls remove_job() to pull a job from the accept queue. All the worker 
- *    threads block on remove_job.
- * win9x_accept()
- *    The accept threads runs this function, which accepts connections off 
- *    the network and calls add_job() to queue jobs to the accept_queue.
- * add_job()/remove_job()
- *    Add or remove an accepted socket from the list of sockets 
- *    connected to clients. allowed_globals.jobmutex protects
- *    against multiple concurrent access to the linked list of jobs.
- */
 static void add_job(int sock)
 {
     joblist *new_job;
@@ -681,7 +658,20 @@ static PCOMP_CONTEXT win9x_get_connection(PCOMP_CONTEXT context)
         return context;
     }
 }
-
+/* Windows NT/2000 specific code...
+ * Accept processing for on Windows NT uses a producer/consumer queue 
+ * model. An accept thread accepts connections off the network then issues
+ * PostQueuedCompletionStatus() to awake a thread blocked on the ThreadDispatch 
+ * IOCompletionPort.
+ *
+ * winnt_accept()
+ *    One or more accept threads run in this function, each of which accepts 
+ *    connections off the network and calls PostQueuedCompletionStatus() to
+ *    queue an io completion packet to the ThreadDispatch IOCompletionPort.
+ * winnt_get_connection()
+ *    Worker threads block on the ThreadDispatch IOCompletionPort awaiting 
+ *    connections to service.
+ */
 static void winnt_accept(void *listen_socket) 
 {
     PCOMP_CONTEXT pCompContext;
