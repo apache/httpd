@@ -1020,13 +1020,12 @@ static int cgid_handler(request_rec *r)
     char *argv0, *dbuf = NULL; 
     apr_bucket_brigade *bb;
     apr_bucket *b;
-    char argsbuffer[HUGE_STRING_LEN]; 
     cgid_server_conf *conf;
     int is_included;
+    int seen_eos, child_stopped_reading;
     int sd;
     char **env; 
     apr_file_t *tempsock;
-    apr_size_t nbytes;
 
     if (strcmp(r->handler,CGI_MAGIC_TYPE) && strcmp(r->handler,"cgi-script"))
         return DECLINED;
@@ -1103,9 +1102,6 @@ static int cgid_handler(request_rec *r)
      */
     apr_os_file_put(&tempsock, &sd, 0, r->pool);
 
-    if ((retval = ap_setup_client_block(r, REQUEST_CHUNKED_ERROR))) 
-        return retval; 
-     
     if ((argv0 = strrchr(r->filename, '/')) != NULL) 
         argv0++; 
     else 
@@ -1114,38 +1110,77 @@ static int cgid_handler(request_rec *r)
     /* Transfer any put/post args, CERN style... 
      * Note that we already ignore SIGPIPE in the core server. 
      */ 
+    bb = apr_brigade_create(r->pool, r->connection->bucket_alloc);
+    seen_eos = 0;
+    child_stopped_reading = 0;
+    if (conf->logname) {
+        dbuf = apr_palloc(r->pool, conf->bufbytes + 1);
+        dbpos = 0;
+    }
+    do {
+        apr_bucket *bucket;
+        apr_status_t rv;
 
-    if (ap_should_client_block(r)) { 
-        int dbsize, len_read; 
+        rv = ap_get_brigade(r->input_filters, bb, AP_MODE_READBYTES,
+                            APR_BLOCK_READ, HUGE_STRING_LEN);
+       
+        if (rv != APR_SUCCESS) {
+            return rv;
+        }
+ 
+        APR_BRIGADE_FOREACH(bucket, bb) {
+            const char *data;
+            apr_size_t len;
 
-        if (conf->logname) { 
-            dbuf = apr_pcalloc(r->pool, conf->bufbytes + 1); 
-            dbpos = 0; 
-        } 
+            if (APR_BUCKET_IS_EOS(bucket)) {
+                seen_eos = 1;
+                break;
+            }
 
-        while ((len_read = 
-                ap_get_client_block(r, argsbuffer, HUGE_STRING_LEN)) > 0) { 
-            if (conf->logname) { 
-                if ((dbpos + len_read) > conf->bufbytes) { 
-                    dbsize = conf->bufbytes - dbpos; 
-                } 
-                else { 
-                    dbsize = len_read; 
-                } 
-                memcpy(dbuf + dbpos, argsbuffer, dbsize); 
-                dbpos += dbsize; 
+            /* We can't do much with this. */
+            if (APR_BUCKET_IS_FLUSH(bucket)) {
+                continue;
+            }
+
+            /* If the child stopped, we still must read to EOS. */
+            if (child_stopped_reading) {
+                continue;
             } 
-            nbytes = len_read;
-            apr_file_write(tempsock, argsbuffer, &nbytes);
-            if (nbytes < len_read) { 
-                /* silly script stopped reading, soak up remaining message */ 
-                while (ap_get_client_block(r, argsbuffer, HUGE_STRING_LEN) > 0) { 
-                    /* dump it */ 
-                } 
-                break; 
-            } 
-        } 
-    } 
+
+            /* read */
+            apr_bucket_read(bucket, &data, &len, APR_BLOCK_READ);
+            
+            if (conf->logname && dbpos < conf->bufbytes) {
+                int cursize;
+
+                if ((dbpos + len) > conf->bufbytes) {
+                    cursize = conf->bufbytes - dbpos;
+                }
+                else {
+                    cursize = len;
+                }
+                memcpy(dbuf + dbpos, data, cursize);
+                dbpos += cursize;
+            }
+
+            /* Keep writing data to the child until done or too much time
+             * elapses with no progress or an error occurs.
+             */
+            rv = apr_file_write_full(tempsock, data, len, NULL);
+
+            if (rv != APR_SUCCESS) {
+                /* silly script stopped reading, soak up remaining message */
+                child_stopped_reading = 1;
+            }
+        }
+        apr_brigade_cleanup(bb);
+    }
+    while (!seen_eos);
+ 
+    if (conf->logname) {
+        dbuf[dbpos] = '\0';
+    }
+
     /* we're done writing, or maybe we didn't write at all;
      * force EOF on child's stdin so that the cgi detects end (or
      * absence) of data
