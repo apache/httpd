@@ -412,11 +412,12 @@ AC_DEFUN(APACHE_RUN_SUBDIR_CONFIG_NOW, [
   echo "configuring package in $1 now"
   ac_popdir=`pwd`
   ac_abs_srcdir=`(cd $srcdir/$1 && pwd)`
+  apache_config_subdirs="$1"
   cd $1
 
 changequote(, )dnl
       # A "../" for each directory in /$config_subdirs.
-      ac_dots=`echo $config_subdirs|sed -e 's%^\./%%' -e 's%[^/]$%&/%' -e 's%[^/]*/%../%g'`
+      ac_dots=`echo $apache_config_subdirs|sed -e 's%^\./%%' -e 's%[^/]$%&/%' -e 's%[^/]*/%../%g'`
 changequote([, ])dnl
 
   # Make the cache file name correct relative to the subdirectory.
