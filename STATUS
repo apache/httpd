@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:						-*-text-*-
-Last modified at [$Date: 2001/01/26 17:54:03 $]
+Last modified at [$Date: 2001/02/06 20:47:07 $]
 
 Release:
 
@@ -103,9 +103,6 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
     * Combine log_child and piped_log_spawn. Clean up http_log.c.
       Common logging API.
 
-    * Create unified scoreboard API and implementation shared across
-      the MPMs 
-
     * Document mod_file_cache.
 
     * OS/2: Get loadable modules working again. Requires shared core support
@@ -138,10 +135,6 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
       system call and replacing it with a generic error code)
 
     * Win32: Implement reliable piped logs on Windows
-          
-    * The connection status table is not very efficient. Also, very few stats
-      are exported to the connection status table (easy to fix), and mod_status
-      is ugly.
 
     * Mass vhosting version of suEXEC.
 
