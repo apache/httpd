@@ -1276,8 +1276,8 @@ static int find_file(request_rec *r, const char *directive, const char *tag,
 
             if (rr->status == HTTP_OK && rr->finfo.protection != 0) {
                 to_send = rr->filename;
-                if (rv = apr_stat(finfo, to_send, APR_FINFO_GPROT 
-                                | APR_FINFO_MIN, rr->pool) != APR_SUCCESS
+                if ((rv = apr_stat(finfo, to_send, APR_FINFO_GPROT 
+                                | APR_FINFO_MIN, rr->pool)) != APR_SUCCESS
                                                      && rv != APR_INCOMPLETE) {
                     error_fmt = "unable to get information about \"%s\" "
                         "in parsed file %s";
