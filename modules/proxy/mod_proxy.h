@@ -116,6 +116,10 @@ struct noproxy_entry {
     struct apr_sockaddr_t *addr;
 };
 
+typedef struct proxy_balancer  proxy_balancer;
+typedef struct proxy_worker    proxy_worker;
+typedef struct proxy_conn_pool proxy_conn_pool;
+
 typedef struct {
     apr_array_header_t *proxies;
     apr_array_header_t *sec_proxy;
@@ -126,6 +130,7 @@ typedef struct {
     apr_array_header_t *allowed_connect_ports;
     apr_array_header_t *workers;
     apr_array_header_t *balancers;
+    proxy_worker       *forward;    /* forward proxy worker */
     const char *domain;     /* domain name to use in absence of a domain name in the request */
     int req;                /* true if proxy requests are enabled */
     char req_set;
@@ -179,9 +184,6 @@ typedef struct {
     apr_pool_t *pool;           /* Pool used for allocating this struct */
 } proxy_server_conf;
 
-typedef struct proxy_balancer  proxy_balancer;
-typedef struct proxy_worker    proxy_worker;
-typedef struct proxy_conn_pool proxy_conn_pool;
 
 typedef struct {
     const char *p;            /* The path */
