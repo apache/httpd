@@ -563,43 +563,6 @@ request_rec *make_sub_request (const request_rec *r)
     return rr;
 }
 
-request_rec *sub_req_lookup_simple (const char *new_file, const request_rec *r)
-{
-    /* This handles the simple case, common to ..._lookup_uri and _file,
-     * of looking up another file in the same directory.
-     */
-    request_rec *rnew = make_sub_request (r);
-    pool *rnewp = rnew->pool;
-    int res;
-    
-    char *udir = make_dirstr(rnewp, r->uri, count_dirs(r->uri));
-    char *fdir = make_dirstr(rnewp, r->filename, count_dirs(r->filename));
-
-    *rnew = *r;			/* Copy per_dir config, etc. */
-    rnew->pool = rnewp;
-    rnew->uri = make_full_path (rnewp, udir, new_file);
-    rnew->filename = make_full_path (rnewp, fdir, new_file);
-    set_sub_req_protocol (rnew, r);
-	
-    rnew->finfo.st_mode = 0;
-    
-    if ((res = check_symlinks (rnew->filename, allow_options (rnew))))
-    {
-        rnew->status = res;
-    }
-
-    if (rnew->finfo.st_mode == 0 && stat (rnew->filename, &rnew->finfo) < 0)
-        rnew->finfo.st_mode = 0;
-
-    if ((rnew->status == HTTP_OK) && (res = find_types (rnew)))
-        rnew->status = res;
-    
-    if ((rnew->status == HTTP_OK) && (res = run_fixups (rnew)))
-        rnew->status = res;
-    
-    return rnew;
-}
-
 
 request_rec *sub_req_lookup_uri (const char *new_file, const request_rec *r)
 {
@@ -681,32 +644,66 @@ request_rec *sub_req_lookup_file (const char *new_file, const request_rec *r)
     request_rec *rnew;
     int res;
     char *fdir;
-    
-    /* Check for a special case... if there are no '/' characters in new_file
-     * at all, then we are looking at a relative lookup in the same directory.
-     * That means we don't have to redo any access checks.
-     */
-
-    if (strchr (new_file, '/') == NULL) 
-        return sub_req_lookup_simple (new_file, r);
 
     rnew = make_sub_request (r);
-    fdir = make_dirstr (rnew->pool, r->filename, count_dirs (r->filename));
     rnew->request_time = r->request_time;
     rnew->connection = r->connection; /* For now... */
     rnew->server = r->server;
     rnew->request_config = create_request_config (rnew->pool);
     rnew->htaccess = r->htaccess; /* copy htaccess cache */
-    rnew->per_dir_config = r->server->lookup_defaults;
     set_sub_req_protocol (rnew, r);
-	
-    rnew->uri = "INTERNALLY GENERATED file-relative req";
-    rnew->filename = ((new_file[0] == '/') ?
-		      pstrdup(rnew->pool,new_file) :
-		      make_full_path (rnew->pool, fdir, new_file));
-	
-    if ((res = directory_walk (rnew))
-	|| (res = file_walk (rnew))
+    fdir = make_dirstr (rnew->pool, r->filename, count_dirs (r->filename));
+
+    /* Check for a special case... if there are no '/' characters in new_file
+     * at all, then we are looking at a relative lookup in the same directory.
+     * That means we won't have to redo directory_walk, and we may not
+     * even have to redo access checks.
+     */
+
+    if (strchr (new_file, '/') == NULL) {
+	char *udir = make_dirstr(rnew->pool, r->uri, count_dirs(r->uri));
+
+	rnew->uri = make_full_path (rnew->pool, udir, new_file);
+	rnew->filename = make_full_path (rnew->pool, fdir, new_file);
+	if (stat (rnew->filename, &rnew->finfo) < 0) {
+	    rnew->finfo.st_mode = 0;
+	}
+
+	rnew->per_dir_config = r->per_dir_config;
+
+	if ((res = check_symlinks (rnew->filename, allow_options (rnew)))) {
+	    log_reason ("Symbolic link not allowed", rnew->filename, rnew);
+	    rnew->status = res;
+	    return rnew;
+	}
+	/* do a file_walk, if it doesn't change the per_dir_config then
+	 * we know that we don't have to redo all the access checks */
+	if ((res = file_walk (rnew))) {
+	    rnew->status = res;
+	    return rnew;
+	}
+	if (rnew->per_dir_config == r->per_dir_config) {
+	    if ((res = find_types (rnew)) || (res = run_fixups (rnew))) {
+		rnew->status = res;
+	    }
+	    return rnew;
+	}
+    } else {
+	/* XXX: this should be set properly like it is in the same-dir case
+	 * but it's actually sometimes to impossible to do it... because the
+	 * file may not have a uri associated with it -djg */
+	rnew->uri = "INTERNALLY GENERATED file-relative req";
+	rnew->filename = ((new_file[0] == '/') ?
+			pstrdup(rnew->pool,new_file) :
+			make_full_path (rnew->pool, fdir, new_file));
+	rnew->per_dir_config = r->server->lookup_defaults;
+	res = directory_walk (rnew);
+	if (!res) {
+	    res = file_walk (rnew);
+	}
+    }
+
+    if (res
         || ((satisfies(rnew)==SATISFY_ALL || satisfies(rnew)==SATISFY_NOSPEC)?
 	    ((res = check_access (rnew))
 	     || (some_auth_required (rnew) &&

@@ -1,5 +1,9 @@
 Changes with Apache 1.2b8
 
+  *) The addition of <Location> and <File> directives made the
+     sub_req_lookup_simple() function bogus, so we now handle
+     the special cases directly.  [Dean Gaudet]
+
   *) We now try to log where the server is dumping core when a fatal
      signal is received.  [Ken Coar]
 
