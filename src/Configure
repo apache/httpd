@@ -271,7 +271,13 @@ case "$PLAT" in
 	CFLAGS="$CFLAGS -DSUNOS4 -DUSEBCOPY"
 	DEF_WANTHSREGEX=yes
 	;;
-    *-unixware)
+    *-unixware1)
+	DEF_WANTHSREGEX=yes
+	OS='Unixware'
+	CFLAGS="$CFLAGS -DSVR4"
+        LIBS="$LIBS -lsocket -lnsl -lcrypt"
+        ;;
+    *-unixware2)
 	DEF_WANTHSREGEX=yes
 	OS='Unixware'
 	CFLAGS="$CFLAGS -DSVR4"
