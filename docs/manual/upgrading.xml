@@ -56,7 +56,8 @@ Apache 2.0</a></seealso>
       that were previously implemented as a handler but are now
       implemented as a filter may no longer accept requests with
       <code>PATH_INFO</code>.  Filters such as <a
-      href="mod/mod_include.html">INCLUDES</a> are implemented on top
+      href="mod/mod_include.html">INCLUDES</a> or <a
+      href="http://www.php.net/">PHP</a> are implemented on top
       of the core handler, and therefore reject requests with
       <code>PATH_INFO</code>.  You can use the <directive
       module="core">AcceptPathInfo</directive> directive to
