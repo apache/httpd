@@ -11,6 +11,10 @@ else
 fi
 
 case "$host" in
+  *-ibm-aix*)
+    # AIX wants the symbols resolved, but doesn't like .la files ... ;(
+    dav_fs_objects="$dav_fs_objects ../main/mod_dav.lo ../main/props.lo ../main/util.lo ../main/util_lock.lo ../main/liveprop.lo ../main/providers.lo ../main/std_liveprop.lo"
+    ;;
   *os2*)
     # OS/2 DLLs must resolve all symbols at build time
     # and we need some from main DAV module
