@@ -790,7 +790,8 @@ static void *worker_thread(apr_thread_t *thd, void * dummy)
     worker_thread_count--;
     apr_thread_mutex_unlock(worker_thread_count_mutex);
 
-    apr_thread_exit(thd, APR_SUCCESS);
+    rv = APR_SUCCESS;
+    apr_thread_exit(thd, &rv);
     return NULL;
 }
 
@@ -879,7 +880,8 @@ static void *start_threads(apr_thread_t *thd, void *dummy)
      *  "life_status" is almost right, but it's in the worker's structure, and 
      *  the name could be clearer.   gla
      */
-    apr_thread_exit(thd, APR_SUCCESS);
+    rv = APR_SUCCESS;
+    apr_thread_exit(thd, &rv);
     return NULL;
 }
 
