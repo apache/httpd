@@ -84,6 +84,21 @@
  * which might require it to be cleaned up; they * are, however,
  * implemented in http_main.c).
  *
+ * NOTE!  It's not "fair" for a hard_timeout to be in scope through calls
+ * across modules.  Your module code really has no idea what other modules may
+ * be present in the server, and they may not take too kindly to having a
+ * longjmp() happen -- it could result in corrupted state.  Heck they may not
+ * even take to kindly to a soft_timeout()... because it can cause EINTR to
+ * happen on pretty much any syscall, and unless all the libraries and modules
+ * in use are known to deal well with EINTR it could cause corruption as well.
+ * But things are likely to do much better with a soft_timeout in scope than a
+ * hard_timeout.
+ * 
+ * A module MAY NOT use a hard_timeout() across * sub_req_lookup_xxx()
+ * functions, or across run_sub_request() functions.  A module SHOULD NOT use a
+ * soft_timeout() in either of these cases, but sometimes there's just no
+ * choice.
+ *
  * kill_timeout() will disarm either variety of timeout.
  *
  * reset_timeout() resets the timeout in progress.
