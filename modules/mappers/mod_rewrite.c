@@ -225,6 +225,13 @@
 #define RIGHT_CURLY '}'
 
 /*
+ * expansion result items on the stack to save some cycles
+ *
+ * (5 == about 2 variables like "foo%{var}bar%{var}baz")
+ */
+#define SMALL_EXPANSION 5
+
+/*
  * check that a subrequest won't cause infinite recursion
  *
  * either not in a subrequest, or in a subrequest
@@ -1922,6 +1929,8 @@ static char *do_expand(request_rec *r, char *input,
                        backrefinfo *briRR, backrefinfo *briRC)
 {
     result_list *result, *current;
+    result_list sresult[SMALL_EXPANSION];
+    unsigned spc = 0;
     apr_size_t span, inputlen, outlen;
     char *p, *c;
 
@@ -1934,7 +1943,7 @@ static char *do_expand(request_rec *r, char *input,
     }
 
     /* well, actually something to do */
-    result = current = apr_palloc(r->pool, sizeof(result_list));
+    result = current = &(sresult[spc++]);
 
     p = input + span;
     current->next = NULL;
@@ -1946,7 +1955,9 @@ static char *do_expand(request_rec *r, char *input,
     do {
         /* prepare next entry */
         if (current->len) {
-            current->next = apr_palloc(r->pool, sizeof(result_list));
+            current->next = (spc < SMALL_EXPANSION)
+                            ? &(sresult[spc++])
+                            : apr_palloc(r->pool, sizeof(result_list));
             current = current->next;
             current->next = NULL;
             current->len = 0;
@@ -2074,7 +2085,9 @@ static char *do_expand(request_rec *r, char *input,
         /* check the remainder */
         if (*p && (span = strcspn(p, "\\$%")) > 0) {
             if (current->len) {
-                current->next = apr_palloc(r->pool, sizeof(result_list));
+                current->next = (spc < SMALL_EXPANSION)
+                                ? &(sresult[spc++])
+                                : apr_palloc(r->pool, sizeof(result_list));
                 current = current->next;
                 current->next = NULL;
             }
