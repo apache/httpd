@@ -116,6 +116,9 @@ typedef struct {
     ap_filter_t         *next;
 } exec_info;
 
+/* Read and discard the data in the brigade produced by a CGI script */
+static void discard_script_output(apr_bucket_brigade *bb);
+
 /* KLUDGE --- for back-combatibility, we don't have to check ExecCGI
  * in ScriptAliased directories, which means we need to know if this
  * request came through ScriptAlias or not... so the Alias module
@@ -268,6 +271,11 @@ static int log_script(request_rec *r, cgi_server_conf * conf, int ret,
     const apr_table_entry_t *hdrs = (const apr_table_entry_t *) hdrs_arr->elts;
     char argsbuffer[HUGE_STRING_LEN];
     apr_file_t *f = NULL;
+    apr_bucket *e;
+    const char *buf;
+    apr_size_t len;
+    apr_status_t rv;
+    int first;
     int i;
     apr_finfo_t finfo;
     char time_str[APR_CTIME_LEN];
@@ -280,12 +288,7 @@ static int log_script(request_rec *r, cgi_server_conf * conf, int ret,
          (apr_file_open(&f, conf->logname,
                   APR_APPEND|APR_WRITE|APR_CREATE, APR_OS_DEFAULT, r->pool) != APR_SUCCESS)) {
 	/* Soak up script output */
-#if LATER
-	while (apr_file_gets(argsbuffer, HUGE_STRING_LEN,
-	                     script_in) == APR_SUCCESS)
-	    continue;
-#endif /* LATER */
-
+        discard_script_output(bb);
         log_script_err(r, script_err);
 	return ret;
     }
@@ -321,16 +324,22 @@ static int log_script(request_rec *r, cgi_server_conf * conf, int ret,
     if (sbuf && *sbuf)
 	apr_file_printf(f, "%s\n", sbuf);
 
-#if LATER
-    if (apr_file_gets(argsbuffer, HUGE_STRING_LEN, script_in) == APR_SUCCESS) {
-	apr_file_puts("%stdout\n", f);
-	apr_file_puts(argsbuffer, f);
-	while (apr_file_gets(argsbuffer, HUGE_STRING_LEN,
-	                     script_in) == APR_SUCCESS)
-	    apr_file_puts(argsbuffer, f);
+    first = 1;
+    APR_BRIGADE_FOREACH(e, bb) {
+        if (APR_BUCKET_IS_EOS(e)) {
+            break;
+        }
+        rv = apr_bucket_read(e, &buf, &len, APR_BLOCK_READ);
+        if (!APR_STATUS_IS_SUCCESS(rv) || (len == 0)) {
+            break;
+        }
+        if (first) {
+            apr_file_puts("%stdout\n", f);
+            first = 0;
+        }
+        apr_file_write(f, buf, &len);
 	apr_file_puts("\n", f);
     }
-#endif /* LATER */
 
     if (apr_file_gets(argsbuffer, HUGE_STRING_LEN, script_err) == APR_SUCCESS) {
 	apr_file_puts("%stderr\n", f);
@@ -553,6 +562,9 @@ static void discard_script_output(apr_bucket_brigade *bb)
     apr_size_t len;
     apr_status_t rv;
     APR_BRIGADE_FOREACH(e, bb) {
+        if (APR_BUCKET_IS_EOS(e)) {
+            break;
+        }
         rv = apr_bucket_read(e, &buf, &len, APR_BLOCK_READ);
         if (!APR_STATUS_IS_SUCCESS(rv)) {
             break;
