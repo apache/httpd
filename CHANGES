@@ -1,5 +1,13 @@
 Changes with Apache 2.0.43
 
+  *) Make sure the contents of the WWW-Authenticate header is
+     passed on a 4xx error by proxy. Previously all headers
+     were dropped, resulting in the browser being unable to
+     authenticate. [Dr Richard Reiner <rreiner@fscinternet.com>,
+     Richard Danielli <rdanielli@fscinternet.com>, Graham Wiseman
+     <gwiseman@fscinternet.com>, David Henderson
+     <dhenderson@fscinternet.com>]
+
   *) Make mod_cache's CacheMaxStreamingBuffer directive work
      properly for virtual hosts that override server-wide mod_cache
      setttings.  [Matthieu Estrade <estrade-m@ifrance.com>]
