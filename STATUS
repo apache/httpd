@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:						-*-text-*-
-Last modified at [$Date: 2001/06/26 11:59:50 $]
+Last modified at [$Date: 2001/06/27 21:14:15 $]
 
 Release:
 
@@ -101,50 +101,6 @@ DAEDALUS 2.0 PROBLEMS:
 RELEASE SHOWSTOPPERS:
 
     WARNING: ALWAYS check srclib/apr/STATUS and srclib/apr-util/STATUS
-
-    * File handle caching in mod_file_cache is broken in the multi
-      threaded MPMs. The original intent of caching file handles 
-      was that these handles would ONLY be used in an apr_sendfile()
-      call.  With recent optimizations added to core_output_filter
-      to pipeline output byte streams, we actually read bytes from
-      these cached file handles into buffers. The problem is that
-      while it is okay for multiple threads to share a file handle
-      for use on a sendfile call (because the filepointer is not used, 
-      in sendfile) it is NOT okay for threads to share a file handle
-      for reads or writes (because the filepointer is used in reads
-      and writes).  This may also be broken on a few quirky platforms
-      whose sendfile() actually uses the file pointer.  Jeff was looking
-      into that.
-
-      Potential Solutions:
-      1. We either need to ensure that a cached file handle is only
-         used on a sendfile call (Bill prefers this solution. I think.).
-      2. Cliff Woolley has some ideas about a custom bucket type
-         that would recognise when an apr_file_t is cached (thus shared
-         across threads) and do the right thing to ensure that the
-         filepointer does not get trashed.  The idea here is that the
-         "cacheable" file bucket would never allow its file handle to be
-         read by any method OTHER than sendfile.  Attempts to do otherwise
-         would result in the file being re-opened for sync io into the
-         request pool, and the new file handle would get put into a regular
-         file bucket which would then be read.  This method thus incorporates
-         the spirit of solution #1 while having a fall-back protection
-         scheme.  Note that mod_file_cache can still attempt to
-         be discriminatory and DECLINE requests that it believes will
-         result in an apr_bucket_read() call; this solution just allows
-         it to not worry TOO much about missing some cases.  Note that
-         no locking is involved, and in the worst case (ie, when the cached
-         file bucket is read) we are no worse off performance-wise than
-         if we'd just DECLINED in the first place.  Patch forthcoming.
-      3. You can share a file handle across threads in Windows if you
-         open the file for OVERLAPPED io. A file opened for overlapped
-         io does not have a file pointer; each thread must manage
-         tracking its location in the file explicity. This is a cool
-         feature IMHO.  APR would need to be expanded to handle 
-         reading and writing to files opened for overlapped io 
-         (specifically to manage a per-thread file pointer and handle
-         async io events internal to APR). This doesn't fix the problem
-         under *ix though. 
 
     * There is a bug in how we sort some hooks, at least the pre-config
       hook.  The first time we call the hooks, they are in the correct 
@@ -285,12 +241,18 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
       more generic to support other encryption libraries.
 
     * Performance & Debug: Eliminate most (and perhaps all) of the 
-      malloc/calloc/frees in the bucket brigade code.  Need some 
+      malloc/free calls in the bucket brigade code.  Need some 
       light weight memory management functions that allow freeing 
       memory (putting it back into a memory pool) when it is no 
       longer needed. Enabling simple debugging features like guard
       bands, double free detection, etc. would be cool but certainly
       not a hard requirement.
+        Status: Cliff, David, et al have discussed using the blocks SMS
+	        for this.  First step is to s/malloc/apr_sms_malloc/g, etc.
+		We could then have a thread-private SMS that is pointed
+		to by the conn_rec's or something so that all calls to
+		the bucket create functions can pass in that SMS.  No locks
+		required.  Should be fast... 
 
     * Eliminate unnecessary creation of pipes in mod_cgid
 
