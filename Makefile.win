@@ -19,6 +19,22 @@
 # so the server root should be given in forward slashes (quoted),
 # preferably with the drive designation!
 
+!IF !EXIST("srclib\apr")
+!MESSAGE Please check out or download and unpack the Apache Portability Runtime
+!MESSAGE sources (apr and apr-util) into your $(INSTDIR)\srclib directory.
+!MESSAGE Apache cannot build without these libraries!
+!MESSAGE 
+!ERROR Need $(INSTDIR)\srclib\apr
+!ENDIF
+
+!IF !EXIST("srclib\apr-util")
+!MESSAGE Please check out or download and unpack the Apache Portability Runtime
+!MESSAGE sources (apr and apr-util) into your $(INSTDIR)\srclib directory.
+!MESSAGE Apache cannot build without these libraries!
+!MESSAGE 
+!ERROR Need $(INSTDIR)\srclib\apr-util
+!ENDIF
+
 !IF "$(INSTDIR)" == ""
 INSTDIR=\Apache2
 !MESSAGE Using default install directory $(INSTDIR)
