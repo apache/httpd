@@ -305,7 +305,7 @@ saferead( BUFF *fb, void *buf, int nbyte )
 	    FD_SET( fb->fd_in, &fds );
 	    tv.tv_sec = 0;
 	    tv.tv_usec = 0;
-#ifdef HPUX
+#ifdef SELECT_NEEDS_CAST
 	    rv = select( fb->fd_in + 1, (int *)&fds, NULL, NULL, &tv );
 #else
 	    rv = select( fb->fd_in + 1, &fds, NULL, NULL, &tv );

@@ -110,6 +110,18 @@ int gethostname(char *name, int namelen);
 #define HAVE_CRYPT_H
 #define NO_LONG_DOUBLE
 
+#elif defined(HIUX)
+#define HAVE_SYS_RESOURCE_H
+#undef HAS_GMTOFF
+#define NO_KILLPG
+#undef NO_SETSID
+#ifndef _HIUX_SOURCE
+#define _HIUX_SOURCE
+#endif
+#define JMP_BUF sigjmp_buf
+#define HAVE_SHMGET
+#define SELECT_NEEDS_CAST
+
 #elif defined(HPUX) || defined(HPUX10)
 #define HAVE_SYS_RESOURCE_H
 #undef HAVE_GMTOFF
@@ -118,12 +130,11 @@ int gethostname(char *name, int namelen);
 #ifndef _HPUX_SOURCE
 #define _HPUX_SOURCE
 #endif
-#ifndef HPUX10
-#define getwd(d) getcwd(d,MAX_STRING_LEN)
-#endif
 #define JMP_BUF sigjmp_buf
 #define HAVE_SHMGET
 #ifndef HPUX10
+#define SELECT_NEEDS_CAST
+#define getwd(d) getcwd(d,MAX_STRING_LEN)
 typedef int rlim_t;
 #endif
 
@@ -283,10 +294,10 @@ extern int listen(), bind(), socket(), getsockname();
 extern int accept(), gethostname(), connect(), lstat();
 extern int select(), killpg(), shutdown();
 extern int initgroups(), setsockopt();
-extern char *shmat(int, char *, int);
-extern int  shmctl(int, int, struct shmid_ds *);
-extern int  shmget(key_t, int, int);
-extern char *sbrk(int);
+extern char *shmat();
+extern int  shmctl();
+extern int  shmget();
+extern char *sbrk();
 extern char *crypt();
 extern char *getwd();
 #include <sys/time.h>

@@ -66,6 +66,10 @@ case "${SYSTEM}:${RELEASE}:${VERSION}:${MACHINE}" in
 	echo "${MACHINE}-dg-dgux"; exit 0
 	;;
 
+    HI-UX:*)
+	echo "${MACHINE}-hi-hiux"; exit 0
+	;;
+
     HP-UX:*)
 	HPUXVER=`echo ${RELEASE}|sed -e 's/[^.]*.[0B]*//'`
 	case "$HPUXVER" in

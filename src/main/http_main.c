@@ -359,7 +359,7 @@ static void lingering_close (request_rec *r)
         fds_read   = fds;
         fds_err    = fds;
     
-#ifdef HPUX
+#ifdef SELECT_NEEDS_CAST
         select_rv = select(sd + 1, (int*)&fds_read, NULL, (int*)&fds_err, &tv);
 #else
         select_rv = select(sd + 1, &fds_read, NULL, &fds_err, &tv);
@@ -1598,7 +1598,7 @@ void child_main(int child_num_arg)
 
 	    for (;;) {
 		memcpy(&fds, &listenfds, sizeof(fd_set));
-#ifdef HPUX
+#ifdef SELECT_NEEDS_CAST
 		csd = select(listenmaxfd+1, (int*)&fds, NULL, NULL, NULL);
 #else
                 csd = select(listenmaxfd+1, &fds, NULL, NULL, NULL);
@@ -1629,7 +1629,7 @@ void child_main(int child_num_arg)
 	    do {
                 FD_ZERO(&fds);
                 FD_SET(sd,&fds);
-#ifdef HPUX
+#ifdef SELECT_NEEDS_CAST
 		csd = select(sd+1, (int*)&fds, NULL, NULL, NULL);
 #else
 		csd = select(sd+1, &fds, NULL, NULL, NULL);
