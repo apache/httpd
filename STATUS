@@ -1,5 +1,5 @@
   1.3 STATUS:
-  Last modified at [$Date: 1999/12/10 12:22:41 $]
+  Last modified at [$Date: 1999/12/13 13:52:53 $]
 
 Release:
 
@@ -136,10 +136,11 @@ Available Patches:
 	Status: Bill +1 (on concept), Lars +1 (on concept)
 
     * Jun-ichiro itojun Hagino's [PATCH] IPv6 enable patch
-      ftp://ftp.kame.net/pub/kame/misc/apache-134-v6-19990118.diff.gz
-        Message-ID: <18586.916662926@coconut.itojun.org>
+      ftp://ftp.kame.net/pub/kame/misc/apache-139-v6-19991013a.diff.gz
+	Message-ID: <18586.916662926@coconut.itojun.org>,
+		    <24384.944888872@coconut.itojun.org>
         Status: Lars +1 (on concept), Dirkx +1 (tested),
-	        Martin +1 (on concept; the patch may need a little cleanup)
+		Martin +1 (on concept)
 
     * Jim Patterson's patch to make mod_info work on Win32
         Message-ID: PR#1442
