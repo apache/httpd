@@ -478,6 +478,22 @@ static void ssl_init_session_cache_ctx(server_rec *s,
     SSL_CTX_sess_set_remove_cb(ctx, ssl_callback_DelSessionCacheEntry);
 }
 
+static void ssl_init_ctx_callbacks(server_rec *s,
+                                   apr_pool_t *p,
+                                   apr_pool_t *ptemp,
+                                   SSLSrvConfigRec *sc)
+{
+    SSL_CTX *ctx = sc->pSSLCtx;
+
+    SSL_CTX_set_tmp_rsa_callback(ctx, ssl_callback_TmpRSA);
+    SSL_CTX_set_tmp_dh_callback(ctx,  ssl_callback_TmpDH);
+
+    if (sc->nLogLevel >= SSL_LOG_INFO) {
+        /* this callback only logs if SSLLogLevel >= info */
+        SSL_CTX_set_info_callback(ctx, ssl_callback_LogTracingState);
+    }
+}
+
 static void ssl_init_verify(server_rec *s,
                             apr_pool_t *p,
                             apr_pool_t *ptemp,
@@ -855,13 +871,13 @@ void ssl_init_ConfigureServer(server_rec *s,
                               apr_pool_t *ptemp,
                               SSLSrvConfigRec *sc)
 {
-    SSL_CTX *ctx;
-
     ssl_init_check_server(s, p, ptemp, sc);
 
-    ctx = ssl_init_ctx(s, p, ptemp, sc);
+    ssl_init_ctx(s, p, ptemp, sc);
 
     ssl_init_session_cache_ctx(s, p, ptemp, sc);
+
+    ssl_init_ctx_callbacks(s, p, ptemp, sc);
 
     ssl_init_verify(s, p, ptemp, sc);
 
@@ -870,14 +886,6 @@ void ssl_init_ConfigureServer(server_rec *s,
     ssl_init_crl(s, p, ptemp, sc);
 
     ssl_init_cert_chain(s, p, ptemp, sc);
-
-    SSL_CTX_set_tmp_rsa_callback(ctx, ssl_callback_TmpRSA);
-    SSL_CTX_set_tmp_dh_callback(ctx,  ssl_callback_TmpDH);
-
-    if (sc->nLogLevel >= SSL_LOG_INFO) {
-        /* this callback only logs if SSLLogLevel >= info */
-        SSL_CTX_set_info_callback(ctx, ssl_callback_LogTracingState);
-    }
 
     ssl_init_server_certs(s, p, ptemp, sc);
 }
