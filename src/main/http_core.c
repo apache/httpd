@@ -2597,7 +2597,7 @@ static const char *set_listener(cmd_parms *cmd, void *dummy, char *ips)
 {
     listen_rec *new;
     char *ports, *endptr;
-    unsigned short port;
+    long port;
     
     const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
     if (err != NULL) {
@@ -2627,10 +2627,10 @@ static const char *set_listener(cmd_parms *cmd, void *dummy, char *ips)
 	new->local_addr.sin_addr.s_addr = ap_get_virthost_addr(ips, NULL);
     }
     port = ap_strtol(ports, &endptr, 10);
-    if (errno || (endptr && *endptr) || !port) {
-	return "Missing or non-numeric port";
+    if (errno || (endptr && *endptr) || port < 1 || port > 65535) {
+	return "Missing, invalid, or non-numeric port";
     }
-    new->local_addr.sin_port = htons(port);
+    new->local_addr.sin_port = htons((unsigned short)port);
     new->fd = -1;
     new->used = 0;
     new->next = ap_listeners;
