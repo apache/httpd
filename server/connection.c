@@ -130,6 +130,17 @@ static void sock_enable_linger(int s)
 #define sock_enable_linger(s)	/* NOOP */
 #endif /* USE_SO_LINGER */
 
+AP_CORE_DECLARE(void) ap_flush_conn(conn_rec *c)
+{
+    ap_bucket_brigade *bb;
+    ap_bucket *b;
+
+    bb = ap_brigade_create(c->pool);
+    b = ap_bucket_create_flush();
+    AP_BRIGADE_INSERT_TAIL(bb, b);
+    ap_pass_brigade(c->output_filters, bb);
+}
+
 /* we now proceed to read from the client until we get EOF, or until
  * MAX_SECS_TO_LINGER has passed.  the reasons for doing this are
  * documented in a draft:
@@ -150,7 +161,8 @@ void ap_lingering_close(conn_rec *c)
     int timeout;
 
 #ifdef NO_LINGCLOSE
-    ap_bclose(c->client);	/* just close it */
+    ap_flush_conn(c);	/* just close it */
+    apr_close_socket(c->client_socket);
     return;
 #endif
 
@@ -159,24 +171,22 @@ void ap_lingering_close(conn_rec *c)
      * client has ACKed our FIN and/or has stopped sending us data.
      */
 
-    if (c->aborted || !(c->client)) {
-	ap_bclose(c->client);
+    if (c->aborted) {
+        ap_flush_conn(c);
+        apr_close_socket(c->client_socket);
         return;
     }
 
     /* Send any leftover data to the client, but never try to again */
 
-    if (ap_bflush(c->client) != APR_SUCCESS) {
-        ap_bclose(c->client);
-        return;
-    }
+    ap_flush_conn(c);
 
     /* Shut down the socket for write, which will send a FIN
      * to the peer.
      */
     
     if (apr_shutdown(c->client_socket, 1) != APR_SUCCESS || c->aborted) {
-        ap_bclose(c->client);
+        apr_close_socket(c->client_socket);
         return;
     }
 
@@ -200,7 +210,7 @@ void ap_lingering_close(conn_rec *c)
         timeout = (MAX_SECS_TO_LINGER - timeout) * APR_USEC_PER_SEC;
     }
 
-    ap_bclose(c->client);
+    apr_close_socket(c->client_socket);
 }
 
 AP_CORE_DECLARE(void) ap_process_connection(conn_rec *c)
