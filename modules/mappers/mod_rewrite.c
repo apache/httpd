@@ -161,6 +161,7 @@
 
 /* remembered mime-type for [T=...] */
 #define REWRITE_FORCED_MIMETYPE_NOTEVAR "rewrite-forced-mimetype"
+#define REWRITE_FORCED_HANDLER_NOTEVAR  "rewrite-forced-handler"
 
 #define ENVVAR_SCRIPT_URL "SCRIPT_URL"
 #define REDIRECT_ENVVAR_SCRIPT_URL "REDIRECT_" ENVVAR_SCRIPT_URL
@@ -305,7 +306,8 @@ typedef struct {
     char      *output;               /* the Substitution string               */
     int        flags;                /* Flags which control the substitution  */
     char      *forced_mimetype;      /* forced MIME type of substitution      */
-    int        forced_responsecode;  /* forced HTTP redirect response status  */
+    char      *forced_handler;       /* forced content handler of subst.      */
+    int        forced_responsecode;  /* forced HTTP response status           */
     data_item *env;                  /* added environment variables           */
     data_item *cookie;               /* added cookies                         */
     int        skip;                 /* number of next rules to skip          */
@@ -3154,6 +3156,13 @@ static const char *cmd_rewriterule_setflag(apr_pool_t *p, void *_cfg,
         }
         break;
 
+    case 'h':
+    case 'H':
+        if (!*key || !strcasecmp(key, "andler")) {         /* handler */
+            cfg->forced_handler = val;
+        }
+        break;
+
     case 'l':
     case 'L':
         if (!*key || !strcasecmp(key, "ast")) {            /* last */
@@ -3287,6 +3296,7 @@ static const char *cmd_rewriterule(cmd_parms *cmd, void *in_dconf,
 
     /* arg3: optional flags field */
     newrule->forced_mimetype     = NULL;
+    newrule->forced_handler      = NULL;
     newrule->forced_responsecode = HTTP_MOVED_TEMPORARILY;
     newrule->flags  = RULEFLAG_NONE;
     newrule->env = NULL;
@@ -3494,6 +3504,41 @@ static int apply_rewrite_cond(rewritecond_entry *p, rewrite_ctx *ctx)
     return rc;
 }
 
+/* check for forced type and handler */
+static APR_INLINE void force_type_handler(rewriterule_entry *p,
+                                          rewrite_ctx *ctx)
+{
+    char *expanded;
+
+    if (p->forced_mimetype) {
+        expanded = do_expand(p->forced_mimetype, ctx);
+
+        if (*expanded) {
+            ap_str_tolower(expanded);
+
+            rewritelog((ctx->r, 2, ctx->perdir, "remember %s to have MIME-type "
+                        "'%s'", ctx->r->filename, expanded));
+
+            apr_table_setn(ctx->r->notes, REWRITE_FORCED_MIMETYPE_NOTEVAR,
+                           expanded);
+        }
+    }
+
+    if (p->forced_handler) {
+        expanded = do_expand(p->forced_handler, ctx);
+
+        if (*expanded) {
+            ap_str_tolower(expanded);
+
+            rewritelog((ctx->r, 2, ctx->perdir, "remember %s to have "
+                        "Content-handler '%s'", ctx->r->filename, expanded));
+
+            apr_table_setn(ctx->r->notes, REWRITE_FORCED_HANDLER_NOTEVAR,
+                           expanded);
+        }
+    }
+}
+
 /*
  * Apply a single RewriteRule
  */
@@ -3616,18 +3661,7 @@ static int apply_rewrite_rule(rewriterule_entry *p, rewrite_ctx *ctx)
 
     /* non-substitution rules ('RewriteRule <pat> -') end here. */
     if (p->flags & RULEFLAG_NOSUB) {
-        if (p->forced_mimetype) {
-            char *type = do_expand(p->forced_mimetype, ctx);
-
-            if (*type) {
-                ap_str_tolower(type);
-
-                rewritelog((r, 2, ctx->perdir, "remember %s to have MIME-type "
-                            "'%s'", r->filename, type));
-
-                apr_table_setn(r->notes, REWRITE_FORCED_MIMETYPE_NOTEVAR, type);
-            }
-        }
+        force_type_handler(p, ctx);
 
         if (p->flags & RULEFLAG_STATUS) {
             rewritelog((r, 2, ctx->perdir, "forcing responsecode %d for %s",
@@ -3709,18 +3743,7 @@ static int apply_rewrite_rule(rewriterule_entry *p, rewrite_ctx *ctx)
     }
 
     /* Finally remember the forced mime-type */
-    if (p->forced_mimetype) {
-        char *type = do_expand(p->forced_mimetype, ctx);
-
-        if (*type) {
-            ap_str_tolower(type);
-
-            rewritelog((r, 2, ctx->perdir, "remember %s to have MIME-type '%s'",
-                        r->filename, type));
-
-            apr_table_setn(r->notes, REWRITE_FORCED_MIMETYPE_NOTEVAR, type);
-        }
-    }
+    force_type_handler(p, ctx);
 
     /* Puuhhhhhhhh... WHAT COMPLICATED STUFF ;_)
      * But now we're done for this particular rule.
@@ -4529,23 +4552,31 @@ static int hook_fixup(request_rec *r)
 
 /*
  * MIME-type hook
- * [T=...] in server-context
+ * [T=...,H=...] execution
  */
 static int hook_mimetype(request_rec *r)
 {
     const char *t;
 
+    /* type */
     t = apr_table_get(r->notes, REWRITE_FORCED_MIMETYPE_NOTEVAR);
-
     if (t && *t) {
         rewritelog((r, 1, NULL, "force filename %s to have MIME-type '%s'",
                     r->filename, t));
 
         ap_set_content_type(r, t);
-        return OK;
     }
 
-    return DECLINED;
+    /* handler */
+    t = apr_table_get(r->notes, REWRITE_FORCED_HANDLER_NOTEVAR);
+    if (t && *t) {
+        rewritelog((r, 1, NULL, "force filename %s to have the "
+                    "Content-handler '%s'", r->filename, t));
+
+        r->handler = t;
+    }
+
+    return OK;
 }
 
 /* check whether redirect limit is reached */
