@@ -237,7 +237,7 @@ static int file_cache_read_mydata(apr_file_t *fd, cache_info *info,
     if ((temp = strchr(&urlbuff[0], '\n')) != NULL) /* trim off new line character */
         *temp = '\0';      /* overlay it with the null terminator */
 
-    if (!apr_date_checkmask(urlbuff, "&&&&&&&&&&&&&&&& &&&&&&&&&&&&&&&& &&&&&&&&&&&&&&&&")) {
+    if (!apr_date_checkmask(urlbuff, "&&&&&&&&&&&&&&&& &&&&&&&&&&&&&&&& &&&&&&&&&&&&&&&& &&&&&&&&&&&&&&&& &&&&&&&&&&&&&&&&")) {
         return APR_EGENERAL;
     }
 
@@ -246,6 +246,10 @@ static int file_cache_read_mydata(apr_file_t *fd, cache_info *info,
     info->expire = ap_cache_hex2usec(urlbuff + offset);
     offset += (sizeof(info->expire)*2) + 1;
     dobj->version = ap_cache_hex2usec(urlbuff + offset);
+    offset += (sizeof(info->expire)*2) + 1;
+    info->request_time = ap_cache_hex2usec(urlbuff + offset);
+    offset += (sizeof(info->expire)*2) + 1;
+    info->response_time = ap_cache_hex2usec(urlbuff + offset);
     
     /* check that we have the same URL */
     rv = apr_file_gets(&urlbuff[0], urllen, fd);
@@ -276,6 +280,8 @@ static int file_cache_write_mydata(apr_file_t *fd , cache_handle_t *h, request_r
     char	dateHexS[sizeof(apr_time_t) * 2 + 1];
     char	expireHexS[sizeof(apr_time_t) * 2 + 1];
     char	verHexS[sizeof(apr_time_t) * 2 + 1];
+    char	requestHexS[sizeof(apr_time_t) * 2 + 1];
+    char	responseHexS[sizeof(apr_time_t) * 2 + 1];
     cache_info *info = &(h->cache_obj->info);
     disk_cache_object_t *dobj = (disk_cache_object_t *) h->cache_obj->vobj;
     
@@ -287,7 +293,9 @@ static int file_cache_write_mydata(apr_file_t *fd , cache_handle_t *h, request_r
     ap_cache_usec2hex(info->date, dateHexS);
     ap_cache_usec2hex(info->expire, expireHexS);
     ap_cache_usec2hex(dobj->version++, verHexS);
-    buf = apr_pstrcat(r->pool, dateHexS, " ", expireHexS, " ", verHexS, "\n", NULL);
+    ap_cache_usec2hex(info->request_time, requestHexS);
+    ap_cache_usec2hex(info->response_time, responseHexS);
+    buf = apr_pstrcat(r->pool, dateHexS, " ", expireHexS, " ", verHexS, " ", requestHexS, " ", responseHexS, "\n", NULL);
     amt = strlen(buf);
     rc = apr_file_write(fd, buf, &amt);
     if (rc != APR_SUCCESS) {
@@ -448,6 +456,7 @@ static apr_status_t read_headers(cache_handle_t *h, request_rec *r)
     char urlbuff[1034];
     int urllen = sizeof(urlbuff);
     disk_cache_object_t *dobj = (disk_cache_object_t *) h->cache_obj->vobj;
+    apr_table_t * tmp;
 
     /* This case should not happen... */
     if (!dobj->fd || !dobj->hfd) {
@@ -486,6 +495,17 @@ static apr_status_t read_headers(cache_handle_t *h, request_rec *r)
 
     r->status_line = apr_pstrdup(r->pool, urlbuff);            /* Save status line into request rec  */
 
+    h->req_hdrs = apr_table_make(r->pool, 20);
+    
+    /*
+     * Call routine to read the header lines/status line 
+     */
+    tmp = r->err_headers_out;
+    r->err_headers_out = h->req_hdrs;
+    rv = apr_file_gets(&urlbuff[0], urllen, dobj->hfd);           /* Read status  */
+    ap_scan_script_header_err(r, dobj->hfd, NULL);
+    r->err_headers_out = tmp;
+ 
     apr_file_close(dobj->hfd);
 
     ap_log_error(APLOG_MARK, APLOG_INFO, 0, r->server,
@@ -585,6 +605,24 @@ static apr_status_t write_headers(cache_handle_t *h, request_rec *r, cache_info 
         buf = apr_pstrcat(r->pool, CRLF, NULL);
         amt = strlen(buf);
         apr_file_write(hfd, buf, &amt);
+
+	/* Parse the vary header and dump those fields from the headers_in. */
+	/* Make call to the same thing cache_select_url calls to crack Vary. */
+	/* @@@ Some day, not today. */
+        if (r->headers_in) {
+            int i;
+            apr_table_entry_t *elts = (apr_table_entry_t *) apr_table_elts(r->headers_in)->elts;
+            for (i = 0; i < apr_table_elts(r->headers_in)->nelts; ++i) {
+                if (elts[i].key != NULL) {
+                    buf = apr_pstrcat(r->pool, elts[i].key, ": ",  elts[i].val, CRLF, NULL);
+                    amt = strlen(buf);
+                    apr_file_write(hfd, buf, &amt);
+                }
+            }
+            buf = apr_pstrcat(r->pool, CRLF, NULL);
+            amt = strlen(buf);
+            apr_file_write(hfd, buf, &amt);
+        }
         apr_file_close(hfd); /* flush and close */
     }
     else {

@@ -118,7 +118,7 @@ static int cache_url_handler(request_rec *r, int lookup)
                      "cache: URL exceeds length threshold: %s", url);
         return DECLINED;
     }
-    /* DECLINE urls ending in / */
+    /* DECLINE urls ending in / ??? EGP: why? */
     if (url[urllen-1] == '/') {
         return DECLINED;
     }
@@ -244,6 +244,7 @@ static int cache_url_handler(request_rec *r, int lookup)
             return OK;
         }
         else {
+	    r->err_headers_out = apr_table_make(r->pool, 3);
             /* stale data available */
             if (lookup) {
                 return DECLINED;
