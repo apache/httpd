@@ -180,7 +180,7 @@
 
 </section>
 
-<section id=""><title>Compatibility with Older Browsers</title>
+<section id="compat"><title>Compatibility with Older Browsers</title>
 
     <p>As mentioned earlier, there are some clients
     who do not send the required data for the name-based virtual
