@@ -227,6 +227,7 @@ AP_DECLARE(int) ap_meets_conditions(request_rec *r);
 AP_DECLARE(apr_status_t) ap_send_fd(apr_file_t *fd, request_rec *r, apr_off_t offset, 
                                    apr_size_t length, apr_size_t *nbytes);
 
+#if APR_HAS_MMAP
 /**
  * Send an MMAP'ed file to the client
  * @param mm The MMAP'ed file to send
@@ -238,6 +239,7 @@ AP_DECLARE(apr_status_t) ap_send_fd(apr_file_t *fd, request_rec *r, apr_off_t of
  */
 AP_DECLARE(size_t) ap_send_mmap(apr_mmap_t *mm, request_rec *r, size_t offset,
                              size_t length);
+#endif
 
 /**
  * Create a new method list with the specified number of preallocated
