@@ -1,5 +1,5 @@
   1.3 STATUS:
-  Last modified at [$Date: 1999/01/14 17:13:37 $]
+  Last modified at [$Date: 1999/01/14 17:21:39 $]
 
 Release:
 
@@ -59,7 +59,8 @@ Available Patches:
         Message-ID: PR#2838
         Status: Jim +0 (as is, the patch requires rework since it needs
 	  to be aware of NO_GETTIMEOFDAY and NO_TIMES as well as
-	  implement a times() alternative).
+	  implement a times() alternative. Not only that, but with
+	  extended_status, we calculate this anyway).
 
     * Ronald Tschalär's ap_uuencode() bugfix
         Message-ID: PR#3411
