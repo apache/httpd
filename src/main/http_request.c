@@ -561,10 +561,16 @@ int file_walk(request_rec *r)
     void *per_dir_defaults = r->per_dir_config;
     void **file = (void **) conf->sec->elts;
     int len, num_files = conf->sec->nelts;
-    char *test_file = pstrdup(r->pool, r->filename);
+    char *test_file;
 
-    /* Collapse multiple slashes */
-    no2slash(test_file);
+    /* get the basename */
+    test_file = strrchr(r->filename, '/');
+    if (test_file == NULL) {
+	test_file = r->filename;
+    }
+    else {
+	++test_file;
+    }
 
     /* Go through the file entries, and check for matches. */
 
@@ -598,10 +604,9 @@ int file_walk(request_rec *r)
                     this_conf = entry_config;
                 }
             }
-            else if (!strncmp(test_file, entry_file, len) &&
-                     (entry_file[len - 1] == '/' ||
-                      test_file[len] == '/' || test_file[len] == '\0'))
+            else if (!strcmp(test_file, entry_file)) {
                 this_conf = entry_config;
+	    }
 
             if (this_conf)
                 per_dir_defaults = merge_per_dir_configs(r->pool,

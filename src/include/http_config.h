@@ -80,7 +80,7 @@ enum cmd_how {
 };
 
 typedef struct command_struct {
-    char *name;			/* Name of this command */
+    const char *name;		/* Name of this command */
     const char *(*func) ();	/* Function invoked */
     void *cmd_data;		/* Extra data, for functions which
 				 * implement multiple commands...
@@ -90,7 +90,7 @@ typedef struct command_struct {
 				 */
     enum cmd_how args_how;	/* What the command expects as arguments */
 
-    char *errmsg;		/* 'usage' message, in case of syntax errors */
+    const char *errmsg;		/* 'usage' message, in case of syntax errors */
 } command_rec;
 
 /* The allowed locations for a configuration directive are the union of
@@ -156,6 +156,7 @@ typedef struct {
 				 * or being called in a dir context (path != NULL).
 				 */
     const command_rec *cmd;	/* configuration command */
+    const char *end_token;	/* end token required to end a nested section */
 } cmd_parms;
 
 /* This structure records the existence of handlers in a module... */

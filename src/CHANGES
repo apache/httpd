@@ -1,5 +1,19 @@
 Changes with Apache 1.3b6
 
+  *) Previously Apache would permit </Files> to end <FilesMatch> (and
+     similary for Location and Directory), now this is diagnosed as an
+     error.  Improve error messages for mismatched sections (<Files>,
+     <FilesMatch>, <Directory>, <DirectoryMatch>, ...).  [Dean Gaudet]
+
+  *) <Files> is not permitted within <Location> (because of the
+     semantic ordering).  [Dean Gaudet] PR#379
+
+  *) <Files> with wildcards was broken by the change in wildcard
+     semantics (* does not match /).  To fix this, <Files> now
+     apply only to the basename of the request filename.  This
+     fixes some other inconsistencies in <Files> semantics
+     (such as <Files a*b> not working).  [Dean Gaudet] PR#1817
+
   *) Removed bogus "dist.tar" target from Makefile.tmpl and make sure
      backup files are removed on "clean" target [Ralf S. Engelschall]
      
