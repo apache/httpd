@@ -1101,10 +1101,6 @@ AP_DECLARE(void) ap_finalize_request_protocol(request_rec *r)
 {
     (void) ap_discard_request_body(r);
 
-    while (r->next) {
-        r = r->next;
-    }
-
     /* tell the filter chain there is no more content coming */
     if (!r->eos_sent) {
         end_output_stream(r);
