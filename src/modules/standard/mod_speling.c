@@ -17,7 +17,7 @@
  * 3. All advertising materials mentioning features or use of this
  *    software must display the following acknowledgment:
  *    "This product includes software developed by the Apache Group
- *    for use in the Apache HTTP server project (http://www.apache.org/)."
+ *    for use in the Apache HTTP server project (http://httpd.apache.org/)."
  *
  * 4. The names "Apache Server" and "Apache Group" must not be used to
  *    endorse or promote products derived from this software without
@@ -31,7 +31,7 @@
  * 6. Redistributions of any form whatsoever must retain the following
  *    acknowledgment:
  *    "This product includes software developed by the Apache Group
- *    for use in the Apache HTTP server project (http://www.apache.org/)."
+ *    for use in the Apache HTTP server project (http://httpd.apache.org/)."
  *
  * THIS SOFTWARE IS PROVIDED BY THE APACHE GROUP ``AS IS'' AND ANY
  * EXPRESSED OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
