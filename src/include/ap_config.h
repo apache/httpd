@@ -95,7 +95,9 @@ stat() properly */
  * means.  In particular it's missing inline and the __attribute__
  * stuff.  So we hack around it.  PR#1613. -djg
  */
-#if !defined(__GNUC__) || __GNUC__ < 2 || __GNUC_MINOR__ < 7 || defined(NEXT)
+#if !defined(__GNUC__) || __GNUC__ < 2 || \
+    (__GNUC__ == 2 && __GNUC_MINOR__ < 7) ||\
+    defined(NEXT)
 #define ap_inline
 #define __attribute__(__x)
 #define ENUM_BITFIELD(e,n,w)  signed int n : w
