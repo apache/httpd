@@ -1547,7 +1547,7 @@ subrequests</td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in Apache 2.1 and later</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in Apache 2.0.47 and later</td></tr>
 </table>
     <p>An internal redirect happens, for example, when using the <code class="directive"><a href="../mod/mod_actions.html#action">Action</a></code> directive, which internally
     redirects the original request to a CGI script. A subrequest is Apache's

@@ -1499,7 +1499,7 @@ subrequests</description>
 <default>LimitInternalRecursion 10</default>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
-<compatibility>Available in Apache 2.1 and later</compatibility>
+<compatibility>Available in Apache 2.0.47 and later</compatibility>
 
 <usage>
     <p>An internal redirect happens, for example, when using the <directive
