@@ -510,7 +510,7 @@ static apr_status_t run_cgi_child(apr_file_t **script_out,
 
 static apr_status_t default_build_command(const char **cmd, const char ***argv,
                                           request_rec *r, apr_pool_t *p,
-                                          int replace_cmd)
+                                          int replace_cmd, apr_cmdtype_e * type)
 {
     int numwords, x, idx;
     char *w;
@@ -638,14 +638,6 @@ static int cgi_handler(request_rec *r)
 
     ap_add_common_vars(r);
 
-    /* build the command line */
-    if ((rv = cgi_build_command(&command, &argv, r, p, 1)) != APR_SUCCESS) {
-	ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
-		      "don't know how to spawn child process: %s", 
-                      r->filename);
-	return HTTP_INTERNAL_SERVER_ERROR;
-    }
-
     e_info.cmd_type  = APR_PROGRAM;
     e_info.in_pipe   = APR_CHILD_BLOCK;
     e_info.out_pipe  = APR_CHILD_BLOCK;
@@ -654,6 +646,15 @@ static int cgi_handler(request_rec *r)
     e_info.bb        = NULL;
     e_info.ctx       = NULL;
     e_info.next      = NULL;
+
+    /* build the command line */
+    if ((rv = cgi_build_command(&command, &argv, r, p, 1, &e_info.cmd_type)) 
+            != APR_SUCCESS) {
+	ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
+		      "don't know how to spawn child process: %s", 
+                      r->filename);
+	return HTTP_INTERNAL_SERVER_ERROR;
+    }
 
     /* run the script in its own process */
     if ((rv = run_cgi_child(&script_out, &script_in, &script_err,
@@ -886,13 +887,6 @@ static int include_cmd(include_ctx_t *ctx, apr_bucket_brigade **bb,
     apr_bucket *b;
     apr_status_t rv;
 
-    if ((rv = cgi_build_command(&command, &argv, r, r->pool, 0)) != APR_SUCCESS) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
-                      "don't know how to spawn cmd child process: %s", 
-                      r->filename);
-        return HTTP_INTERNAL_SERVER_ERROR;
-    }
-
     e_info.cmd_type  = APR_SHELLCMD;
     e_info.in_pipe   = APR_NO_PIPE;
     e_info.out_pipe  = APR_FULL_BLOCK;
@@ -901,6 +895,14 @@ static int include_cmd(include_ctx_t *ctx, apr_bucket_brigade **bb,
     e_info.bb        = bb;
     e_info.ctx       = ctx;
     e_info.next      = f->next;
+
+    if ((rv = cgi_build_command(&command, &argv, r, r->pool, 0, &e_info.cmd_type)) 
+            != APR_SUCCESS) {
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
+                      "don't know how to spawn cmd child process: %s", 
+                      r->filename);
+        return HTTP_INTERNAL_SERVER_ERROR;
+    }
 
     /* run the script in its own process */
     if ((rv = run_cgi_child(&script_out, &script_in, &script_err,
