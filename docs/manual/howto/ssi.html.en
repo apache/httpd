@@ -488,7 +488,7 @@
 
     <p>The structure of this conditional construct is:</p>
 <pre>
-        &lt;!--#if expr="test_condition" --&gt;
+    &lt;!--#if expr="test_condition" --&gt;
     &lt;!--#elif expr="test_condition" --&gt;
     &lt;!--#else --&gt;
     &lt;!--#endif --&gt;
