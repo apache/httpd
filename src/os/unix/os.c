@@ -114,7 +114,7 @@ void *ap_os_dso_load(const char *path)
 #if defined(NSLINKMODULE_OPTION_NONE)
     handle = NSLinkModule(image, path, NSLINKMODULE_OPTION_NONE);
 #else
-    handle = NSLinkModule(image, path, TRUE);
+    handle = NSLinkModule(image, path, FALSE);
 #endif
     NSDestroyObjectFileImage(image);
     return handle;
