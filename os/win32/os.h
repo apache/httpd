@@ -117,27 +117,6 @@ typedef int pid_t;
 typedef int mode_t;
 typedef char * caddr_t;
 
-/*
-Define export types. API_EXPORT_NONSTD is a nasty hack to avoid having to declare
-every configuration function as __stdcall.
-*/
-
-#if defined(API_EXPORT_SYMBOLS)
-#define API_VAR_EXPORT		__declspec(dllexport)
-#define API_EXPORT(type)        __declspec(dllexport) type __stdcall
-#define API_EXPORT_NONSTD(type) __declspec(dllexport) type
-#elif defined(API_STATIC)
-#define API_VAR_EXPORT		
-#define API_EXPORT(type)        type __stdcall
-#define API_EXPORT_NONSTD(type) type
-#else
-#define API_VAR_EXPORT		__declspec(dllimport)
-#define API_EXPORT(type)        __declspec(dllimport) type __stdcall
-#define API_EXPORT_NONSTD(type) __declspec(dllimport) type
-#endif
-
-#define MODULE_VAR_EXPORT   __declspec(dllexport)
-
 #define HAVE_MEMMOVE
 #define HAVE_STRCASECMP
 #define HAVE_STRNCASECMP
@@ -155,7 +134,6 @@ every configuration function as __stdcall.
 #ifndef S_ISDIR
 #define S_ISDIR(m) (((m) & S_IFDIR) == S_IFDIR)
 #endif
-
 
 #define STDIN_FILENO  0
 #define STDOUT_FILENO 1

@@ -73,7 +73,7 @@
 scoreboard *ap_scoreboard_image = NULL;
 new_scoreboard *ap_new_scoreboard_image = NULL;
 static int maintain_connection_status = 1;
-API_VAR_EXPORT char *ap_scoreboard_fname;
+API_EXPORT_VAR char *ap_scoreboard_fname;
 /*****************************************************************
  *
  * Dealing with the scoreboard... a lot of these variables are global

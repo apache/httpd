@@ -126,7 +126,7 @@ static char tspecial[] = {
     '\0'
 };
 
-module MODULE_VAR_EXPORT mime_module;
+module MODULE_EXPORT_VAR mime_module;
 
 static void *create_mime_dir_config(ap_pool_t *p, char *dummy)
 {
@@ -741,7 +741,7 @@ static void register_hooks(void)
     ap_hook_post_config(mime_post_config,NULL,NULL,AP_HOOK_MIDDLE);
 }
 
-module MODULE_VAR_EXPORT mime_module = {
+module MODULE_EXPORT_VAR mime_module = {
     STANDARD20_MODULE_STUFF,
     create_mime_dir_config,	/* create per-directory config structure */
     merge_mime_dir_configs,	/* merge per-directory config structures */

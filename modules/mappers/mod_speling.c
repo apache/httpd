@@ -87,7 +87,7 @@
  * Activate it with "CheckSpelling On"
  */
 
-MODULE_VAR_EXPORT module speling_module;
+MODULE_EXPORT_VAR module speling_module;
 
 typedef struct {
     int enabled;
@@ -554,7 +554,7 @@ static void register_hooks(void)
     ap_hook_fixups(check_speling,NULL,NULL,AP_HOOK_LAST);
 }
 
-module MODULE_VAR_EXPORT speling_module =
+module MODULE_EXPORT_VAR speling_module =
 {
     STANDARD20_MODULE_STUFF,
     create_mconfig_for_directory,  /* create per-dir config */

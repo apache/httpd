@@ -210,7 +210,7 @@ static const command_rec anon_auth_cmds[] =
     {NULL}
 };
 
-module MODULE_VAR_EXPORT auth_anon_module;
+module MODULE_EXPORT_VAR auth_anon_module;
 
 static int anon_authenticate_basic_user(request_rec *r)
 {
@@ -295,7 +295,7 @@ static void register_hooks(void)
     ap_hook_auth_checker(check_anon_access,NULL,NULL,AP_HOOK_MIDDLE);
 }
 
-module MODULE_VAR_EXPORT auth_anon_module =
+module MODULE_EXPORT_VAR auth_anon_module =
 {
     STANDARD20_MODULE_STUFF,
     create_anon_auth_dir_config,/* dir config creater */

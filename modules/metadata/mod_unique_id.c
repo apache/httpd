@@ -400,7 +400,7 @@ static void register_hooks(void)
     ap_hook_post_read_request(gen_unique_id, NULL, NULL, AP_HOOK_MIDDLE); 
 }
 
-module MODULE_VAR_EXPORT unique_id_module = {
+module MODULE_EXPORT_VAR unique_id_module = {
     STANDARD20_MODULE_STUFF,
     NULL,                       /* dir config creater */
     NULL,                       /* dir merger --- default is to override */

@@ -146,7 +146,7 @@ typedef struct {
     ap_array_header_t *conditionals;
 } sei_cfg_rec;
 
-module MODULE_VAR_EXPORT setenvif_module;
+module MODULE_EXPORT_VAR setenvif_module;
 
 static void *create_setenvif_config(ap_pool_t *p, server_rec *dummy)
 {
@@ -407,7 +407,7 @@ static void register_hooks(void)
     ap_hook_post_read_request(match_headers,NULL,NULL,AP_HOOK_MIDDLE);
 }
 
-module MODULE_VAR_EXPORT setenvif_module =
+module MODULE_EXPORT_VAR setenvif_module =
 {
     STANDARD20_MODULE_STUFF,
     NULL,                       /* dir config creater */

@@ -122,8 +122,8 @@ API_EXPORT(int) ap_graceful_stop_signalled(void);
  * child to force an exit) and so do an exit anyway.
  */
 
-void ap_start_shutdown(void);
-void ap_start_restart(int graceful);
+API_EXPORT(void) ap_start_shutdown(void);
+API_EXPORT(void) ap_start_restart(int graceful);
 
 /* 
  * ap_signal_parent() - used to send a signal to the parent process.

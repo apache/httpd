@@ -61,6 +61,7 @@
 #define  CORE_PRIVATE 
 
 #include "main_win32.h"
+#include "ap_config.h"
 #include "httpd.h"
 #include "http_conf_globals.h"
 #include "http_log.h"
@@ -70,8 +71,8 @@
 #include "..\..\modules\mpm\winnt\winnt.h"
 
 typedef void (CALLBACK *ap_completion_t)();
-API_VAR_IMPORT ap_completion_t ap_mpm_init_complete;
-API_VAR_IMPORT char *ap_server_argv0;
+API_EXPORT_VAR ap_completion_t ap_mpm_init_complete;
+API_EXPORT_VAR char *ap_server_argv0;
 
 static struct
 {

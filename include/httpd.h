@@ -73,6 +73,7 @@ extern "C" {
 
 
 /* Headers in which EVERYONE has an interest... */
+#include "ap_config.h"
 #include "os.h"
 #include "apr_general.h"
 #include "apr_lib.h"
@@ -889,11 +890,11 @@ struct server_rec {
 #define API_EXPORT_NONSTD(type)    type
 #endif
 
-#ifndef MODULE_VAR_EXPORT
-#define MODULE_VAR_EXPORT
+#ifndef MODULE_EXPORT_VAR
+#define MODULE_EXPORT_VAR
 #endif
-#ifndef API_VAR_EXPORT
-#define API_VAR_EXPORT
+#ifndef API_EXPORT_VAR
+#define API_EXPORT_VAR
 #endif
 
 /* modules should not used functions marked CORE_EXPORT

@@ -55,19 +55,44 @@
 #ifndef AP_AC_CONFIG_H
 #define AP_AC_CONFIG_H
 
+#include "ap_mmn.h"		/* MODULE_MAGIC_NUMBER_ */
+
+/* Implemented flags for dynamic library bindings.
+ *
+ *   API_EXPORT(type)        for functions bound in the apache core, except:
+ *   API_EXPORT_NONSTD(type) for functions with var args (only as ...)
+ *   API_EXPORT_VAR          for data residing in the core
+ *   MODULE_EXPORT_VAR       is a hack that will need to go away
+ */
+
+#if !defined(WIN32) || defined(API_STATIC)
+#define API_EXPORT(type)        type __stdcall
+#define API_EXPORT_NONSTD(type) type
+#define API_EXPORT_VAR
+#define MODULE_EXPORT_VAR
+#elif defined(API_EXPORT_SYMBOLS)
+#define API_EXPORT(type)        __declspec(dllexport) type __stdcall
+#define API_EXPORT_NONSTD(type) __declspec(dllexport) type
+#define API_EXPORT_VAR		__declspec(dllexport)
+#define MODULE_EXPORT_VAR       __declspec(dllexport)
+#else
+#define API_EXPORT(type)        __declspec(dllimport) type __stdcall
+#define API_EXPORT_NONSTD(type) __declspec(dllimport) type
+#define API_EXPORT_VAR		__declspec(dllimport)
+#define MODULE_EXPORT_VAR       __declspec(dllexport)
+#endif
+
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-#include "ap_mmn.h"		/* MODULE_MAGIC_NUMBER_ */
-
 #ifdef WIN32
-#include "../os/win32/os.h"
+#include "os.h"
 #else
 #include "ap_config_auto.h"
 #include "ap_config_path.h"
 #include "os.h"
-#endif /* WIN32 */
+#endif /* !WIN32 */
 #include "apr.h"
 #ifdef STDC_HEADERS
 #include <stdlib.h>

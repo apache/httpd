@@ -68,7 +68,7 @@
 
 #define STATUS_MAGIC_TYPE "application/x-httpd-status"
 
-module MODULE_VAR_EXPORT status_module;
+module MODULE_EXPORT_VAR status_module;
 
 static int print_status_value(void *data, const char *key, const char *val)
 {
@@ -127,7 +127,7 @@ static const handler_rec status_handlers[] =
     {NULL}
 };
 
-module MODULE_VAR_EXPORT status_module =
+module MODULE_EXPORT_VAR status_module =
 {
     STANDARD20_MODULE_STUFF,
     NULL,			/* create per-dir config */

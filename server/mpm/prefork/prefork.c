@@ -172,7 +172,7 @@ int tpf_child = 0;
 char tpf_server_name[INETD_SERVNAME_LENGTH+1];
 #endif /* TPF */
 
-API_VAR_EXPORT scoreboard *ap_scoreboard_image = NULL;
+API_EXPORT_VAR scoreboard *ap_scoreboard_image = NULL;
 static new_scoreboard *ap_new_scoreboard_image = NULL;
 
 #ifdef GPROF
@@ -2434,7 +2434,7 @@ LISTEN_COMMANDS
 { NULL }
 };
 
-module MODULE_VAR_EXPORT mpm_prefork_module = {
+module MODULE_EXPORT_VAR mpm_prefork_module = {
     MPM20_MODULE_STUFF,
     prefork_pre_config,         /* run hook before the configuration is read */
     NULL,			/* create per-directory config structure */

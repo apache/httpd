@@ -216,7 +216,7 @@ typedef struct {
 #define ACTIVE_OFF      0
 #define ACTIVE_DONTCARE 2
 
-module MODULE_VAR_EXPORT expires_module;
+module MODULE_EXPORT_VAR expires_module;
 
 static void *create_dir_expires_config(ap_pool_t *p, char *dummy)
 {
@@ -497,7 +497,7 @@ static void register_hooks(void)
     ap_hook_fixups(add_expires,NULL,NULL,AP_HOOK_MIDDLE);
 }
 
-module MODULE_VAR_EXPORT expires_module =
+module MODULE_EXPORT_VAR expires_module =
 {
     STANDARD20_MODULE_STUFF,
     create_dir_expires_config,  /* dir config creater */

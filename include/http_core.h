@@ -176,7 +176,7 @@ API_EXPORT(file_type_e) ap_get_win32_interpreter(const request_rec *, char **);
 
 char *ap_response_code_string (request_rec *r, int error_index);
 
-extern API_VAR_EXPORT module core_module;
+extern API_EXPORT_VAR module core_module;
 
 /* Per-directory configuration */
 

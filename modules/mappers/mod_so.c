@@ -127,13 +127,14 @@
 
 
 #define CORE_PRIVATE
+#include "ap_config.h"
 #include "httpd.h"
 #include "http_config.h"
 #include "http_log.h"
 #include "ap_config.h"
 #include "apr_dso.h"
 
-module MODULE_VAR_EXPORT so_module;
+module MODULE_EXPORT_VAR so_module;
 
 
 /*
@@ -369,7 +370,7 @@ static const command_rec so_cmds[] = {
     { NULL }
 };
 
-module MODULE_VAR_EXPORT so_module = {
+module MODULE_EXPORT_VAR so_module = {
    STANDARD20_MODULE_STUFF,
    NULL,			    /* create per-dir config */
    NULL,			    /* merge per-dir config */

@@ -168,7 +168,7 @@
 #define DEFAULT_METASUFFIX	".meta"
 #define DEFAULT_METAFILES	0
 
-module MODULE_VAR_EXPORT cern_meta_module;
+module MODULE_EXPORT_VAR cern_meta_module;
 
 typedef struct {
     char *metadir;
@@ -381,7 +381,7 @@ static void register_hooks(void)
 {
     ap_hook_fixups(add_cern_meta_data,NULL,NULL,AP_HOOK_MIDDLE);
 }
-module MODULE_VAR_EXPORT cern_meta_module =
+module MODULE_EXPORT_VAR cern_meta_module =
 {
     STANDARD20_MODULE_STUFF,
     create_cern_meta_dir_config,/* dir config creater */
