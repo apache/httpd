@@ -319,7 +319,7 @@ sections is also syntactically allowed in
 <code class="directive"><a href="./mod/core.html#locationmatch">&lt;LocationMatch&gt;</a></code>,
 <code class="directive"><a href="./mod/mod_proxy.html#proxy">&lt;Proxy&gt;</a></code>,
 and <code class="directive"><a href="./mod/mod_proxy.html#proxymatch">&lt;ProxyMatch&gt;</a></code>
-sections.  There are some exceptions, however.</p>
+sections.  There are some exceptions, however:</p>
 
 <ul>
 <li>The <code class="directive"><a href="./mod/core.html#allowoverride">AllowOverride</a></code> directive
@@ -347,8 +347,9 @@ are interpreted, it is important to understand how this works.</p>
 
     <ol>
       <li> <code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code> (except regular expressions)
-      and .htaccess done simultaneously (with .htaccess, if allowed,
-      overriding <code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code>)</li>
+      and <code>.htaccess</code> done simultaneously (with
+      <code>.htaccess</code>, if allowed, overriding
+      <code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code>)</li>
 
       <li><code class="directive"><a href="./mod/core.html#directorymatch">&lt;DirectoryMatch&gt;</a></code>
       (and <code>&lt;Directory ~&gt;</code>)</li>
