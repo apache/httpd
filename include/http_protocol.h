@@ -443,7 +443,7 @@ AP_DECLARE(int) ap_setup_client_block(request_rec *r, int read_policy);
 
 /**
  * Determine if the client has sent any data.  This also sends a 
- * 100 Continue resposne to HTTP/1.1 clients, so modules should not be called
+ * 100 Continue response to HTTP/1.1 clients, so modules should not be called
  * until the module is ready to read content.
  * @warning Never call this function more than once.
  * @param r The current request
