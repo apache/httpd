@@ -150,26 +150,32 @@ static void *merge_charset_dir_conf(apr_pool_t *p, void *basev, void *overridesv
 
 /* CharsetSourceEnc charset
  */
-static const char *add_charset_source(cmd_parms *cmd, charset_dir_t *dc, 
-                                      char *name)
+static const char *add_charset_source(cmd_parms *cmd, void *in_dc,
+                                      const char *name)
 {
+    charset_dir_t *dc = in_dc;
+
     dc->charset_source = name;
     return NULL;
 }
 
 /* CharsetDefault charset
  */
-static const char *add_charset_default(cmd_parms *cmd, charset_dir_t *dc, 
-                                        char *name)
+static const char *add_charset_default(cmd_parms *cmd, void *in_dc, 
+                                       const char *name)
 {
+    charset_dir_t *dc = in_dc;
+
     dc->charset_default = name;
     return NULL;
 }
 
 /* CharsetDefault charset
  */
-static const char *add_charset_debug(cmd_parms *cmd, charset_dir_t *dc, int arg)
+static const char *add_charset_debug(cmd_parms *cmd, void *in_dc, int arg)
 {
+    charset_dir_t *dc = in_dc;
+
     if (arg) {
         dc->debug = DEBUG;
     }
@@ -564,30 +570,21 @@ static int xlate_filter(ap_filter_t *f, ap_bucket_brigade *bb)
 
 static const command_rec cmds[] =
 {
-    {
-        "CharsetSourceEnc",
-        add_charset_source,
-        NULL,
-        OR_FILEINFO,
-        TAKE1,
-        "source (html,cgi,ssi) file charset"
-    },
-    {
-        "CharsetDefault", 
-        add_charset_default,
-        NULL,
-        OR_FILEINFO, 
-        TAKE1,
-        "name of default charset"
-    },
-    {
-        "CharsetDebug",
-        add_charset_debug,
-        NULL,
-        OR_FILEINFO,
-        FLAG,
-        "mod_charset_lite debug flag"
-    },
+    AP_INIT_TAKE1("CharsetSourceEnc",
+                  add_charset_source,
+                  NULL,
+                  OR_FILEINFO,
+                  "source (html,cgi,ssi) file charset"),
+    AP_INIT_TAKE1("CharsetDefault", 
+                  add_charset_default,
+                  NULL,
+                  OR_FILEINFO, 
+                  "name of default charset"),
+    AP_INIT_FLAG("CharsetDebug",
+                 add_charset_debug,
+                 NULL,
+                 OR_FILEINFO,
+                 "mod_charset_lite debug flag"),
     {NULL}
 };
 
