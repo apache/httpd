@@ -50,7 +50,7 @@
  *
  */
 
-char **create_argv(pool *p, char *av0, const char *args);
+char **create_argv(request_rec *r, char *av0, ...);
 #ifdef __EMX__
 char **create_argv_cmd(pool *p, char *av0, const char *args, char *path);
 #endif

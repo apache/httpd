@@ -72,24 +72,40 @@
 #define MALFORMED_MESSAGE "malformed header from script. Bad header="
 #define MALFORMED_HEADER_LENGTH_TO_SHOW 30
 
-char **create_argv(pool *p, char *av0, const char *args) {
-    register int x,n;
+char **create_argv(request_rec *r, char *av0, ...)
+{
+    int idx, slots;
     char **av;
-    char *w;
+    char *t, *arg;
+    va_list args;
 
-    for(x=0,n=2;args[x];x++)
-        if(args[x] == '+') ++n;
-
-    av = (char **)palloc(p, (n+1)*sizeof(char *));
+    if ((av = (char **)palloc(r->pool, ARG_MAX)) == NULL)
+	log_unixerr("malloc", NULL, "failed to allocate memory for arg list", r->server);
+    
     av[0] = av0;
-
-    for(x=1;x<n;x++) {
-        w = getword_nulls(p, &args, '+');
-        unescape_url(w);
-	av[x] = escape_shell_cmd(p, w);
-        av[x] = w;
+    idx = 1;
+    
+    va_start(args, av0);
+    while ((arg = va_arg(args, char *)) != NULL) {
+	if ((t = strtok(arg, "+")) == NULL)
+	    break;
+	
+	unescape_url(t);
+	av[idx] = escape_shell_cmd(r->pool, t);
+	av[idx] = t;
+	idx++;
+	
+	while ((t = strtok(NULL, "+")) != NULL) {
+	    unescape_url(t);
+	    av[idx] = escape_shell_cmd(r->pool, t);
+	    av[idx] = t;
+	    idx++;
+	}
+	va_end(args);
     }
-    av[n] = NULL;
+    va_end(args);
+
+    av[idx] = NULL;
     return av;
 }
 
@@ -480,7 +496,7 @@ void call_exec (request_rec *r, char *argv0, char **env, int shellcmd)
 	    execv("CMD.EXE", create_argv_cmd(r->pool, argv0, r->args, r->filename));
 	}
 	else
-	    execv(r->filename, create_argv(r->pool, argv0, r->args));
+	    execv(r->filename, create_argv(r, argv0, r->args, NULL));
     }
 #else
     if ( suexec_enabled &&
@@ -517,10 +533,12 @@ void call_exec (request_rec *r, char *argv0, char **env, int shellcmd)
 
   	else if((!r->args) || (!r->args[0]) || (ind(r->args,'=') >= 0))
 	    execle(SUEXEC_BIN, SUEXEC_BIN, execuser, gr->gr_name, argv0, NULL, env);
-  
-  	else
-	    execle(SUEXEC_BIN, SUEXEC_BIN, execuser, gr->gr_name,
-  		   create_argv(r->pool, argv0, r->args), NULL, env);
+
+  	else {
+	    execve(SUEXEC_BIN,
+		   create_argv(r, SUEXEC_BIN, execuser, gr->gr_name, argv0, r->args, NULL),
+		   env);
+	}
     }
     else {
 	if (shellcmd) 
@@ -530,7 +548,7 @@ void call_exec (request_rec *r, char *argv0, char **env, int shellcmd)
 	    execle(r->filename, argv0, NULL, env);
 
 	else
-	    execve(r->filename, create_argv(r->pool, argv0, r->args), env);
+	    execve(r->filename, create_argv(r, argv0, r->args, NULL), env);
     }
 #endif
 }
