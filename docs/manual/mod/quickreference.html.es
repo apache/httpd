@@ -373,7 +373,7 @@ the client does not express a preference</td></tr>
 operations</td></tr>
 <tr class="odd"><td><a href="mod_ldap.html#ldapopcachettl">LDAPOpCacheTTL <var>seconds</var></a></td><td> 600 </td><td>s</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Time that entries in the operation cache remain
 valid</td></tr>
-<tr><td><a href="mod_ldap.html#ldapsharedcachefile">LDAPSharedCacheFile <var>directory-path/filename</var></a></td><td></td><td>s</td><td>X</td></tr><tr><td class="descr" colspan="4">Sets the shared memory chache file</td></tr>
+<tr><td><a href="mod_ldap.html#ldapsharedcachefile">LDAPSharedCacheFile <var>directory-path/filename</var></a></td><td></td><td>s</td><td>X</td></tr><tr><td class="descr" colspan="4">Sets the shared memory cache file</td></tr>
 <tr class="odd"><td><a href="mod_ldap.html#ldapsharedcachesize">LDAPSharedCacheSize <var>bytes</var></a></td><td> 102400 </td><td>s</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Size in bytes of the shared-memory cache</td></tr>
 <tr><td><a href="mod_ldap.html#ldaptrustedca">LDAPTrustedCA <var>directory-path/filename</var></a></td><td></td><td>s</td><td>X</td></tr><tr><td class="descr" colspan="4">Sets the file containing the trusted Certificate Authority certificate or database</td></tr>
 <tr class="odd"><td><a href="mod_ldap.html#ldaptrustedcatype">LDAPTrustedCAType <var>type</var></a></td><td></td><td>s</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Specifies the type of the Certificate Authority file</td></tr>
