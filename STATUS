@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/08/19 12:30:49 $]
+Last modified at [$Date: 2003/08/19 14:59:21 $]
 
 Release:
 
@@ -318,7 +318,8 @@ PATCHES TO PORT FROM 2.1
 
     * Fix mod_deflate not to search somewhere in the memory for the "gzip"
       token and to skip token parameters. PR 21523.
-        modules/filters/mod_deflate.c: r1.37
+      Don't compress if there was *any* non-identity endoding applied before.
+        modules/filters/mod_deflate.c: r1.37, r1.38
       +1: nd
 
 CURRENT RELEASE NOTES:
