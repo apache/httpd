@@ -141,7 +141,7 @@ typedef enum {
  * config directive
  */
 typedef struct {
-    const char* (*func)();
+    const char* (*func)(request_rec *r,char *arg);
     char *arg;
 } format_tag;
 
