@@ -98,8 +98,6 @@ typedef struct mem_cache_object {
     cache_header_tbl_t *header_out;
     cache_header_tbl_t *subprocess_env;
     cache_header_tbl_t *notes;
-    apr_size_t cleanup;
-    apr_size_t refcount;
     apr_size_t m_len;
     void *m;
     apr_os_file_t fd;
@@ -201,11 +199,11 @@ static apr_status_t decrement_refcount(void *arg)
     if (sconf->lock) {
         apr_thread_mutex_lock(sconf->lock);
     }
-    mobj->refcount--;
+    obj->refcount--;
     /* If the object is marked for cleanup and the refcount
      * has dropped to zero, cleanup the object
      */
-    if ((mobj->cleanup) && (!mobj->refcount)) {
+    if ((obj->cleanup) && (!obj->refcount)) {
         cleanup_cache_object(obj);
     }
     if (sconf->lock) {
@@ -232,8 +230,8 @@ static apr_status_t cleanup_cache_mem(void *sconfv)
         apr_hash_this(hi, NULL, NULL, (void **)&obj);
         if (obj) {
             mobj = (mem_cache_object_t *) obj->vobj;
-            if (mobj->refcount) {
-                mobj->cleanup = 1;
+            if (obj->refcount) {
+                obj->cleanup = 1;
             }
             else {
                 cleanup_cache_object(obj);
@@ -358,8 +356,8 @@ static int create_entity(cache_handle_t *h, request_rec *r,
          * a partially completed (aborted) cache update.
          */
         obj->complete = 0;
-        mobj->refcount = 1;
-        mobj->cleanup = 1;
+        obj->refcount = 1;
+        obj->cleanup = 1;
         apr_pool_cleanup_register(r->pool, obj, decrement_refcount, 
                                   apr_pool_cleanup_null);
     }
@@ -404,7 +402,7 @@ static int open_entity(cache_handle_t *h, request_rec *r, const char *type, cons
     if (obj) {
         mem_cache_object_t *mobj = (mem_cache_object_t *) obj->vobj;
         if (obj->complete) {
-            mobj->refcount++;
+            obj->refcount++;
             apr_pool_cleanup_register(r->pool, obj, decrement_refcount, apr_pool_cleanup_null);
         }
         else {
@@ -445,8 +443,8 @@ static int remove_entity(cache_handle_t *h)
         apr_hash_set(sconf->cacheht, obj->key, strlen(obj->key), NULL);
         sconf->object_cnt--;
         sconf->cache_size -= mobj->m_len;
-        if (mobj->refcount) {
-            mobj->cleanup = 1;
+        if (obj->refcount) {
+            obj->cleanup = 1;
         }
         else {
             cleanup_cache_object(obj);
@@ -542,8 +540,8 @@ static int remove_url(const char *type, const char *key)
         apr_hash_set(sconf->cacheht, key, APR_HASH_KEY_STRING, NULL);
         sconf->object_cnt--;
         sconf->cache_size -= mobj->m_len;
-        if (mobj->refcount) {
-            mobj->cleanup = 1;
+        if (obj->refcount) {
+            obj->cleanup = 1;
         }
         else {
             cleanup_cache_object(obj);
@@ -659,7 +657,8 @@ static apr_status_t write_headers(cache_handle_t *h, request_rec *r, cache_info 
 static apr_status_t write_body(cache_handle_t *h, request_rec *r, apr_bucket_brigade *b) 
 {
     apr_status_t rv;
-    mem_cache_object_t *mobj = (mem_cache_object_t*) h->cache_obj->vobj;
+    cache_object_t *obj = h->cache_obj;
+    mem_cache_object_t *mobj = (mem_cache_object_t*) obj->vobj;
     apr_read_type_e eblock = APR_BLOCK_READ;
     apr_bucket *e;
     char *cur;
@@ -701,8 +700,8 @@ static apr_status_t write_body(cache_handle_t *h, request_rec *r, apr_bucket_bri
             apr_file_unset_inherit(tmpfile);
             apr_os_file_get(&(mobj->fd), tmpfile);
 
-            mobj->cleanup = 0;
-            mobj->refcount--;    /* Count should be 0 now */
+            obj->cleanup = 0;
+            obj->refcount--;    /* Count should be 0 now */
             apr_pool_cleanup_kill(r->pool, h->cache_obj, decrement_refcount);
 
             /* Open for business */
@@ -731,8 +730,8 @@ static apr_status_t write_body(cache_handle_t *h, request_rec *r, apr_bucket_bri
         apr_size_t len;
 
         if (APR_BUCKET_IS_EOS(e)) {
-            mobj->cleanup = 0;
-            mobj->refcount--;    /* Count should be 0 now */
+            obj->cleanup = 0;
+            obj->refcount--;    /* Count should be 0 now */
             apr_pool_cleanup_kill(r->pool, h->cache_obj, decrement_refcount);
 
             /* Open for business */
