@@ -1,5 +1,8 @@
 Changes with Apache 1.3.1
 
+  *) 'apachectl status' failed on some systems.
+     [Steve VanDevender <stevev@darkwing.uoregon.edu>, Lars Eilebrecht] PR#2613
+
   *) Add new flags for ap_unparse_uri_components() to make it generate
      the scheme://sitepart string only, or to omit the query string.
      [Martin Kraemer]
