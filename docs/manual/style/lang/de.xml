@@ -11,9 +11,14 @@
  <!-- Used for the moduleindex -->
  <message name="corefeatures">Kernfunktionen und Multi-Processing-Module</message>
  <message name="othermodules">Andere Module</message>
+ <message name="obsoletemodules">Veraltete Module</message>
 
- <!-- Title for modulesynopsis -->
- <message name="apachemodule">Apache-Module</message>
+ <!-- Used for the modulesynopsis and sitemap -->
+ <message name="obsoleteapachemodule">Veraltetes Apache-Modul</message>
+ <message name="apachemodule">Apache-Modul</message>
+ <message name="apachecore">Apache-Kernfunktionen</message>
+ <message name="apachempmcommon">Allgemeine Direktiven der Apache-MPMs</message>
+ <message name="apachempm">Apache-MPM</message>
 
  <!-- Used in description box for modulesynopsis -->
  <message name="description">Beschreibung</message>
@@ -35,6 +40,12 @@
  <message name="override">AllowOverride</message>
  <message name="status">Status</message>
  <message name="module">Modul</message>
+
+ <!-- Used in directive context lists -->
+ <message name="serverconfig">Serverkonfiguration</message>
+ <message name="virtualhost">Virtual Host</message>
+ <message name="directory">Verzeichnis</message>
+ <message name="htaccess">.htaccess</message>
 
  <!-- Used for directive lists -->
  <message name="directives">Direktiven</message>
