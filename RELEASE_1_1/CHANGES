@@ -1,0 +1,85 @@
+New features with this release, as extensions of the Apache functionality
+(see also more detailed CHANGES file) in the source directory. For more
+information, see http://www.apache.org/docs/1.1/
+
+In addition to a number of bug fixes and internal performance
+enhancements, Apache 1.1 has the following specific new user
+features:
+
+  *) Caching Proxy Server
+       Apache can now act as an HTTP proxy server, allowing clients
+       behind firewalls to use the server to access the outside world. In
+       addition, it can cache documents it proxies, speeding up access to
+       frequently requested documents.
+
+  *) Filetype-based Script "Actions"
+       You can now run CGI scripts whenever a file of a certion type is
+       requested. Makes it much easier to execute scripts that process
+       files.
+
+  *) Support for Keep-Alive Persistent Connections
+       Apache now has (optional) support for persistent connections, as
+       defined by the HTTP/1.1 draft. This protocol, supported by a
+       number of current HTTP servers and browsers (including Netscape
+       Navigator 2.0) has been shown to increase speed of document
+       transfer by up to 50% in certain cases.
+
+  *) Customizable CGI Environment Variables (not in this release)
+       New PassEnv and SetEnv directives allow you to modify the
+       environment variables passed to CGI scripts
+
+  *) CERN Metafile Support
+       Now emulates the CERN httpd's support for metafiles containing
+       additional HTTP headers to be supplied with a document.
+
+  *) Redirect Now Usable in .htaccess Files
+       The Redirect directive can now be used in .htaccess files when the
+       FileInfo directive has been set on. This allows users to redirect
+       parts of their directories without requiring CGI scripts
+
+  *) Improved UserDir Directive (not in this release)
+       Now supports the ability to point user's files (as specificed by
+       URLs beginning with the "~" character) at directories other than
+       those specified by the Unix password file.
+
+  *) Minimal DNS Now Runtime Option
+       New HostnameLookups server configuration directive can be used to
+       turn On or  Off DNS lookups. This supercedes the -DMINIMAL_DNS
+       compile-time configuration option.
+
+  *) Listen to Multiple Addresses and Ports
+       Using the new Listen directive, Apache can listen to more than one
+       port and IP address, using the same configuration set.
+
+  *) Anonymous HTTP Logins
+       New options allow you to allow, using Basic HTTP Authentication,
+       anonymous logins, like those of FTP. This allows you to collect
+       email addresses of people accessing your site.
+
+  *) File Owner Avialable to Included CGI Scripts
+       Server-side includes that call CGI scripts will now set a
+       USER_NAME environment variable that contains the owner of the file
+       which included it.
+
+  *) Improved Icons
+       Thanks to Kevin Hughes, Apache's nifty color GIF icons for
+       directory listings have been updated. In addition, the Powered by
+       Apache (apache_pb.gif) logo has been included.
+
+  *) Log Rotation
+	New support utility to allow log rotation without shutting down the
+	server. See support/rotatelogs.c.
+
+NEW AUTHENTICATION MODULES:
+
+Note: These modules are not compiled into the server by default, as
+they require special support on the host system. They must be enabled
+specifically in the Configuration file.
+
+  *) Support for Unix DB Authentication - mod_db.c
+       In addition to DBM support, Apache now contains optional support
+       for Berkeley DB databases.
+
+  *) mSQL Database Authentication - mod_auth_msql.html
+       Support for the use of mSQL databases for user authentication via
+       HTTP is now supported.
