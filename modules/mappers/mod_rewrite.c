@@ -1179,9 +1179,9 @@ static int hook_uri2file(request_rec *r)
 
     if (rulestatus) {
         unsigned skip;
+        apr_size_t flen = strlen(r->filename);
 
-        if (strlen(r->filename) > 6 &&
-            strncmp(r->filename, "proxy:", 6) == 0) {
+        if (flen > 6 && strncmp(r->filename, "proxy:", 6) == 0) {
             /* it should be go on as an internal proxy request */
 
             /* check if the proxy module is enabled, so
@@ -1249,18 +1249,15 @@ static int hook_uri2file(request_rec *r)
             rewritelog(r, 1, "redirect to %s [REDIRECT/%d]", r->filename, n);
             return n;
         }
-        else if (strlen(r->filename) > 10 &&
-                 strncmp(r->filename, "forbidden:", 10) == 0) {
+        else if (flen > 10 && strncmp(r->filename, "forbidden:", 10) == 0) {
             /* This URLs is forced to be forbidden for the requester */
             return HTTP_FORBIDDEN;
         }
-        else if (strlen(r->filename) > 5 &&
-                 strncmp(r->filename, "gone:", 5) == 0) {
+        else if (flen > 5 && strncmp(r->filename, "gone:", 5) == 0) {
             /* This URLs is forced to be gone */
             return HTTP_GONE;
         }
-        else if (strlen(r->filename) > 12 &&
-                 strncmp(r->filename, "passthrough:", 12) == 0) {
+        else if (flen > 12 && strncmp(r->filename, "passthrough:", 12) == 0) {
             /*
              * Hack because of underpowered API: passing the current
              * rewritten filename through to other URL-to-filename handlers
@@ -1451,9 +1448,9 @@ static int hook_fixup(request_rec *r)
     rulestatus = apply_rewrite_list(r, dconf->rewriterules, dconf->directory);
     if (rulestatus) {
         unsigned skip;
+        l = strlen(r->filename);
 
-        if (strlen(r->filename) > 6 &&
-            strncmp(r->filename, "proxy:", 6) == 0) {
+        if (l > 6 && strncmp(r->filename, "proxy:", 6) == 0) {
             /* it should go on as an internal proxy request */
 
             /* make sure the QUERY_STRING and
@@ -1557,13 +1554,11 @@ static int hook_fixup(request_rec *r)
                        dconf->directory, r->filename, n);
             return n;
         }
-        else if (strlen(r->filename) > 10 &&
-                 strncmp(r->filename, "forbidden:", 10) == 0) {
+        else if (l > 10 && strncmp(r->filename, "forbidden:", 10) == 0) {
             /* This URL is forced to be forbidden for the requester */
             return HTTP_FORBIDDEN;
         }
-        else if (strlen(r->filename) > 5 &&
-                 strncmp(r->filename, "gone:", 5) == 0) {
+        else if (l > 5 && strncmp(r->filename, "gone:", 5) == 0) {
             /* This URL is forced to be gone */
             return HTTP_GONE;
         }
@@ -1574,8 +1569,7 @@ static int hook_fixup(request_rec *r)
              * context we just ignore it. It is only useful
              * in per-server context
              */
-            if (strlen(r->filename) > 12 &&
-                strncmp(r->filename, "passthrough:", 12) == 0) {
+            if (l > 12 && strncmp(r->filename, "passthrough:", 12) == 0) {
                 r->filename = apr_pstrdup(r->pool, r->filename+12);
             }
 
