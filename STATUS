@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/07/12 13:01:55 $]
+Last modified at [$Date: 2003/07/12 13:26:41 $]
 
 Release:
 
@@ -70,7 +70,8 @@ PATCHES TO PORT FROM 2.1
       server/protocol.c: r1.133
       http://cvs.apache.org/viewcvs.cgi/httpd-2.0/server/protocol.c.diff?r1=1.132&r2=1.133
       +1: rederpj, nd (though I think it's actually a bad request, being lenient
-          is probably the best here).
+          is probably the best here), trawick (prefer style changes in
+          r1.135 to be committed at same time)
 
     * ap_get_mime_headers(): eliminate the temporary table used to
       combine duplicate headers (performance enhancement)
@@ -178,7 +179,7 @@ PATCHES TO PORT FROM 2.1
       cases are always blocking. PR: 19242
       Submitted by: David Deaves <David.Deaves@dd.id.au>, William Rowe
       modules/ssl/ssl_engine_io.c r1.106, r1.107 (fixed minor breakage)
-      +1: wrowe, jerenkrantz
+      +1: wrowe, jerenkrantz, trawick
 
     * mod_rewrite: Let LA-U look aheads in directory context work with r->uri
       and not r->filename. (related to) PR 8394.  (2.0 + 1.3)
@@ -236,6 +237,14 @@ PATCHES TO PORT FROM 2.1
     * ab: catch out of memory (reasoning report ID 29)
         support/ab.c: r1.125
       +1: nd, erikabele
+       0: trawick, who is not about to stand in anybody's way on this,
+          but has two comments nonetheless:
+          a) with no abort function specified for the pools, this is just
+             one of many possible failures
+          b) my guess is that a heap shortage encountered by ab is
+             much more likely to be caused by an ab bug instead of by a
+             user setup error (ulimit) or system resource shortage...
+             is an error message better than a coredump in that case?
 
 CURRENT RELEASE NOTES:
 
