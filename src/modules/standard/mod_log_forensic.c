@@ -251,7 +251,7 @@ static const char *set_forensic_log(cmd_parms *cmd,  void *dummy,  char *fn)
 static const command_rec forensic_log_cmds[] =
 {
     { "ForensicLog",  set_forensic_log,  NULL,  RSRC_CONF,  TAKE1,
-      "the filename of the forensic log (default is logs/forensic_log" },
+      "the filename of the forensic log" },
     { NULL }
 };
 
