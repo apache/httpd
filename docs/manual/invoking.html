@@ -9,26 +9,26 @@
 <h1>Starting Apache</h1>
 
 <h2>Invoking Apache</h2>
-The <code>httpd</code> program is either invoked by the Internet 
-daemon <code>inetd</code> each time a connection to the HTTP service is made,
-or alternatively it may run as a daemon which executes continuously, handling
-requests. Whatever method is chosen, the
-<A HREF="core.html#servertype">ServerType</A> directive must be set
-to tell the server how it is to run.
+The <code>httpd</code> program is usually run as a daemon which executes
+continuously, handling requests.  It is possible to invoke Apache by
+the Internet daemon <code>inetd</code> each time a connection to the HTTP 
+service is made (use the 
+<A HREF="mod/core.html#servertype">ServerType</A> directive)
+but this is not recommended.  
 
 <h2>Command line options</h2>
 The following options are recognised on the httpd command line:
 <dl>
 <dt><code>-d</code> <em>serverroot</em>
 <dd>Set the initial value for the
-<A HREF="core.html#serverroot">ServerRoot</A> variable to
+<A HREF="mod/core.html#serverroot">ServerRoot</A> variable to
 <em>serverroot</em>. This can be overridden by the ServerRoot command in the
 configuration file. The default is <code>/usr/local/etc/httpd</code>.
 
 <dt><code>-f</code> <em>config</em>
 <dd>Execute the commands in the file <em>config</em> on startup. If
 <em>config</em> does not begin with a <code>/</code>, then it is taken to be a
-path relative to the <A HREF="core.html#serverroot">ServerRoot</A>. The
+path relative to the <A HREF="mod/core.html#serverroot">ServerRoot</A>. The
 default is <code>conf/httpd.conf</code>.
 
 <dt><code>-X</code>
@@ -39,6 +39,13 @@ use this mode to provide ordinary web service.
 <dt><code>-v</code>
 <dd>Print the version of httpd, and then exit.
 
+<dt><code>-h</code>
+<dd>Give a list of directives together with expected arguments and
+places where the directive is valid
+
+<dt><code>-l</code>
+<dd>Give a list of all modules compiled into the server
+
 <dt><code>-?</code>
 <dd>Print a list of the httpd options, and then exit.
 </dl>
@@ -47,7 +54,7 @@ use this mode to provide ordinary web service.
 The server will read three files for configuration directives. Any directive
 may appear in any of these files. The the names of these files are taken
 to be relative to the server root; this is set by the
-<A HREF="core.html#serverroot">ServerRoot</A> directive, or the
+<A HREF="mod/core.html#serverroot">ServerRoot</A> directive, or the
 <code>-d</code> command line flag.
 
 Conventionally, the files are:
@@ -59,12 +66,12 @@ The filename may be overridden with the <code>-f</code> command line flag.
 <dt><code>conf/srm.conf</code>
 <dd>Contains directives that control the specification of documents that
 the server can provide to clients. The filename may be overridden with
-the <A HREF="core.html#resourceconfig">ResourceConfig</A> directive.
+the <A HREF="mod/core.html#resourceconfig">ResourceConfig</A> directive.
 
 <dt><code>conf/acces.conf</code>
 <dd>Contains directives that control access to documents.
 The filename may be overridden with the
-<A HREF="core.html#accessconfig">AccessConfig</A> directive.
+<A HREF="mod/core.html#accessconfig">AccessConfig</A> directive.
 </dl>
 However, these conventions need not be adhered to.
 <p>
@@ -76,7 +83,7 @@ and is <code>conf/mime.types</code> by default.
 <h3>pid file</h3>
 On daemon startup, it saves the process id of the parent httpd process to
 the file <code>logs/httpd.pid</code>. This filename can be changed with the
-<A HREF="core.html#pidfile">PidFile</A> directive. The process-id is for
+<A HREF="mod/core.html#pidfile">PidFile</A> directive. The process-id is for
 use by the administrator in restarting and terminating the daemon;
 A HUP signal causes the daemon to re-read its configuration files and
 a TERM signal causes it to die gracefully.
@@ -87,14 +94,14 @@ kill the children httpd processes.
 <h3>Error log</h3>
 The server will log error messages to a log file, <code>logs/error_log</code>
 by default. The filename can be set using the
-<A HREF="core.html#errorlog">ErrorLog</A> directive; different error logs can
-be set for different <A HREF="core.html#virtualhost">virtual hosts</A>.
+<A HREF="mod/core.html#errorlog">ErrorLog</A> directive; different error logs can
+be set for different <A HREF="mod/core.html#virtualhost">virtual hosts</A>.
 
 <h3>Transfer log</h3>
 The server will typically log each request to a transfer file,
 <code>logs/access_log</code> by default. The filename can be set using a
-<A HREF="mod_log_common.html#transferlog">TransferLog</A> directive; different
-transfer logs can be set for different <A HREF="core.html#virtualhost">virtual
+<A HREF="mod/mod_log_common.html#transferlog">TransferLog</A> directive; different
+transfer logs can be set for different <A HREF="mod/core.html#virtualhost">virtual
 hosts</A>.
 
 <!--#include virtual="footer.html" -->
