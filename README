@@ -170,10 +170,6 @@
 
  o Cleanup ssl_engine_io.c !!
  o Port all remaining code (code inside #if 0...#endif blocks)
- o Enable the use of ssl_var_lookup (and other ssl_var_* functionalities).
- o Whether to unregister and how to unregister?
-   ssl_var_unregister();
-   ssl_ext_unregister();
  o Do we need SSL_set_read_ahead()?
  o Enable use of MM, SHMCB and SHMHT.
  o Enable SSL extensions (ssl_engine_ext.c)
