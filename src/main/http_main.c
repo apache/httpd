@@ -1088,7 +1088,7 @@ static void usage(char *bin)
     fprintf(stderr, "  -k uninstall | -u: uninstall an Apache service\n");
 #endif
 
-#ifdef NETWARE
+#if defined(NETWARE)
     clean_parent_exit(0);
 #else
     exit(1);
@@ -6568,8 +6568,6 @@ die_now:
     }
 
     ap_destroy_mutex(start_mutex);
-
-    service_set_status(SERVICE_STOPPED);
     return (0);
 }
 #endif
@@ -6686,7 +6684,11 @@ int REALMAIN(int argc, char *argv[])
             || ((argc == 2) && !strcmp(argv[1], "--ntservice")))
         {
             service_main(apache_main, argc, argv);
-            clean_parent_exit(0);
+            /* this was the end of the service control thread... 
+             * cleanups already ran when second thread of apache_main
+             * terminated, so simply...
+             */
+            exit(0);
         }
     }
 

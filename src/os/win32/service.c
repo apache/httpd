@@ -127,7 +127,21 @@ void hold_console_open_on_error(void)
     CONSOLE_SCREEN_BUFFER_INFO coninfo;
     INPUT_RECORD in;
     char count[16];
-    
+
+#ifdef WIN32
+    /* The service parent cannot just 'pop' out of the main thread,
+     * as it is about to try to do...
+     * We must end this thread properly so the service control
+     * thread exits gracefully.  atexit()s registered in the running
+     * apache_main thread _should_ have already been handled, so now
+     * we can exit this thread and allow the service thread to exit.
+     */
+    if (isWindowsNT() && isProcessService() && globdat.connected) {
+        service_set_status(SERVICE_STOPPED);
+        ExitThread(0);
+    }
+#endif
+
     if (!real_exit_code)
         return;
     hConIn = GetStdHandle(STD_INPUT_HANDLE);
@@ -411,6 +425,9 @@ int service95_main(int (*main_fn)(int, char **), int argc, char **argv,
     return (globdat.exit_status);
 }
 
+static HANDLE eventlog_pipewrite = NULL;
+static HANDLE eventlog_thread = NULL;
+
 int service_main(int (*main_fn)(int, char **), int argc, char **argv )
 {
     SERVICE_TABLE_ENTRY dispatchTable[] =
@@ -435,17 +452,20 @@ int service_main(int (*main_fn)(int, char **), int argc, char **argv )
     {
         /* This is a genuine failure of the SCM. */
         ap_log_error(APLOG_MARK, APLOG_ERR|APLOG_WIN32ERROR, NULL,
-        "Error starting service control dispatcher");
-        return(globdat.exit_status);
+                     "Error starting service control dispatcher");
     }
-    else
-    {
-        return(globdat.exit_status);
-    }
-}
 
-static HANDLE eventlog_pipewrite = NULL;
-static HANDLE eventlog_thread = NULL;
+    globdat.connected = 0;
+
+    if (eventlog_pipewrite)
+    {
+        CloseHandle(eventlog_pipewrite);
+        WaitForSingleObject(eventlog_thread, 10000);
+        eventlog_pipewrite = NULL;
+    }
+
+    return(globdat.exit_status);
+}
 
 long __stdcall service_stderr_thread(LPVOID hPipe)
 {
@@ -521,22 +541,6 @@ long __stdcall service_stderr_thread(LPVOID hPipe)
     CloseHandle(eventlog_thread);
     eventlog_thread = NULL;
     return 0;
-}
-
-static void service_main_fn_terminate(void)
-{
-    ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_INFO, NULL,
-                 "The service manager thread is terminating.");
-
-    if (eventlog_pipewrite)
-    {
-        CloseHandle(eventlog_pipewrite);
-        WaitForSingleObject(eventlog_thread, 10000);
-        eventlog_pipewrite = NULL;
-        eventlog_pipewrite = NULL;
-    }
-
-    ReportStatusToSCMgr(SERVICE_STOPPED, NO_ERROR, 0);
 }
 
 void __stdcall service_main_fn(DWORD argc, LPTSTR *argv)
@@ -640,8 +644,6 @@ void __stdcall service_main_fn(DWORD argc, LPTSTR *argv)
         fl = _fdopen(STDOUT_FILENO, "wcb");
         memcpy(stdout, fl, sizeof(FILE));
     }
-
-    atexit(service_main_fn_terminate);
 
     /* Grab it or lose it */
     globdat.name = argv[0];
@@ -781,7 +783,6 @@ VOID WINAPI service_ctrl(DWORD dwCtrlCode)
                          "Service Stop/Shutdown signaled, shutting down server.");
             ReportStatusToSCMgr(SERVICE_STOP_PENDING, NO_ERROR, 15000);
             ap_start_shutdown();
-            // ReportStatusToSCMgr(SERVICE_STOPPED, NO_ERROR, 0);
             break;
 
         case SERVICE_APACHE_RESTART:
