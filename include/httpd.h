@@ -949,7 +949,7 @@ API_EXPORT(char *) ap_uudecode(ap_context_t *p, const char *bufcoded);
 API_EXPORT(char *) ap_uuencode(ap_context_t *p, char *string); 
 
 /* Regexes */
-#ifdef AP_USE_HSREGEX
+#ifdef USE_HSREGEX
 #include "hsregex.h"
 #else
 #include <regex.h>
