@@ -2,6 +2,10 @@ Changes with Apache 2.1.3
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) Significantly simplify the load balancer scheduling algorithm
+     for the proxy BalancerMember weighting. loadfactors (lbfactors)
+     are now normalized with respect to each other. [Jim Jagielski]
+
   *) mod_dumpio: Added to the available module suite. Placed in
      the (new) debug module subdirectory. mod_bucketeer moved to
      that directory as well. [Jim Jagielski]
