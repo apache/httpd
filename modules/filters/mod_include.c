@@ -609,10 +609,15 @@ static apr_bucket *find_end_sequence(apr_bucket *dptr, include_ctx_t *ctx,
                 if (ctx->state == PARSE_DIRECTIVE) {
                     if (ctx->tag_length == 0) {
                         if (!apr_isspace(*c)) {
+                            const char *tmp = c;
                             ctx->tag_start_bucket = dptr;
                             ctx->tag_start_index  = c - buf;
-                            ctx->tag_length       = 1;
-                            ctx->directive_length = 1;
+                            do {
+                                c++;
+                            } while ((c < buf + len) && !apr_isspace(*c) &&
+                                     *c != *str);
+                            ctx->tag_length = ctx->directive_length = c - tmp;
+                            continue;
                         }
                     }
                     else {
