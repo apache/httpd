@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/12/11 09:46:39 $]
+Last modified at [$Date: 2003/12/12 17:20:45 $]
 
 Release:
 
@@ -73,6 +73,16 @@ RELEASE SHOWSTOPPERS:
 PATCHES TO BACKPORT FROM 2.1
   [ please place file names and revisions from HEAD here, so it is easy to
     identify exactly what the proposed changes are! ]
+
+    * Add a hook (insert_error_filter) to allow filters to re-insert
+      themselves during processing of error responses. Enable mod_expires
+      to use the new hook to include Expires headers in valid error
+      responses. This addresses an RFC violation.
+      PR: 19794, 24884, and 25123.
+      http://cvs.apache.org/viewcvs.cgi/httpd-2.0/include/http_protocol.h?r1=1.84&r2=1.85
+      http://cvs.apache.org/viewcvs.cgi/httpd-2.0/modules/http/http_protocol.c?r1=1.473&r2=1.474
+      http://cvs.apache.org/viewcvs.cgi/httpd-2.0/modules/metadata/mod_expires.c?r1=1.48&r2=1.49
+      +1: rederpj
 
     * mod_dav: Return a WWW-Auth header for MOVE/COPY requests where
       the destination resource gives a 401.
@@ -171,7 +181,7 @@ PATCHES TO BACKPORT FROM 2.1
 
     * Backport wildcard ExpiresByType patch
       modules/metadata/mod_expires.c r1.45
-      +1: ken, stoddard
+      +1: ken, stoddard, rederpj
 
     * mod_cgid: Restart the cgid daemon if it crashes.  PR 19849
         modules/generators/mod_cgid.c 1.152
@@ -342,7 +352,7 @@ PATCHES TO BACKPORT FROM 2.1
     * Fix mod_mem_cache removal ordering bug.
         modules/experimental/mod_mem_cache.c r1.97,1.99
         modules/experimental/cache_cache.c r1.5
-      +1: jwoolley, bnicholes
+      +1: jwoolley, bnicholes, rederpj
 
     * Fix a long delay with CGI requests and keepalive connections on
       AIX.
