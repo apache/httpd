@@ -62,3 +62,7 @@ apache-bugs@apache.org indicating you needed to do this for your OS.
 Include the output of the command "uname -a".
  
 
+--------------------------------------------------------------------
+
+Now that you have compiled Apache, go back to the README file in the
+top-level directory of this distribution to continue the installation.
