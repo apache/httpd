@@ -6,5 +6,5 @@ Makefile
 *.lo
 *.slo
 *.so
-*.dll
-*.def
+Debug
+Release
