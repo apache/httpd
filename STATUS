@@ -75,6 +75,20 @@ PATCHES TO BACKPORT FROM 2.1
   [ please place file names and revisions from HEAD here, so it is easy to
     identify exactly what the proposed changes are! ]
 
+    *) modules/config5.m4 & docs/manual/programs/configure.xml:
+       --with-module can now take more than one module to be statically
+       linked:
+         --with-module=<modtype>:<modfile>,<modtype>:<modfile>,...
+       If the <modtype>-subdirectory doesn't exist it will be created and
+       populated with a standard Makefile.in
+       svn rev 124600
+       +1: erikabele
+
+    *) modules/config5.m4: for a static module, use a filename with a
+       lib prefix, see also rev 102381 of acinclude.m4
+       svn rev 124599
+       +1: erikabele
+
     *) win32: Handle PATH_INFO as opaque byte-wise data for cgi invocation,
               as handled for other variables originally fixed in bug 9223.
               PR: 32730 Submitted by: Richard Donkin <rd9 donkin.org>
