@@ -1390,7 +1390,11 @@ static int sub_garbage_coll(request_rec *r,array_header *files,
     struct stat buf;
     int fd,i;
     DIR *dir;
+#if defined(NEXT)
+    struct DIR_TYPE *ent;
+#else
     struct dirent *ent;
+#endif
     struct gc_ent *fent;
     int nfiles=0;
 
