@@ -282,6 +282,7 @@ struct ap_filter_t {
  * Get the current bucket brigade from the next filter on the filter
  * stack.  The filter returns an apr_status_t value.  If the bottom-most 
  * filter doesn't read from the network, then ::AP_NOBODY_READ is returned.
+ * The bucket brigade will be empty when there is nothing left to get.
  * @param filter The next filter in the chain
  * @param bucket The current bucket brigade
  * @param mode   The way in which the data should be read
