@@ -33,10 +33,15 @@
 <target description="- builds German HTML files" name="de">
     <html.generic lang="de"/>
 </target>
-<target description="- builds the German zipped download package" name="zip-de">
+<target unless="-off.de.done" depends="metafiles" name="-off-de">
+    <dependencies.offline dir="_off" style="zip" lang="de"/>
+    <offline.generic dir="_off" style="zip" lang="de"/>
+    <property value="yes" name="-off.de.done"/>
+</target>
+<target description="- builds the German zipped download package" depends="-off-de" name="zip-de">
     <zip.generic lang="de"/>
 </target>
-<target description="- builds the German Konqueror Web Archive" name="war-de">
+<target description="- builds the German Konqueror Web Archive" depends="-off-de" name="war-de">
     <war.generic lang="de"/>
 </target>
 <target description="- builds the German CHM file" name="chm-de">
@@ -52,10 +57,15 @@
     <html.generic lang="en"/>
     <runtarget target="man-en"/>
 </target>
-<target description="- builds the English zipped download package" name="zip-en">
+<target unless="-off.en.done" depends="metafiles" name="-off-en">
+    <dependencies.offline dir="_off" style="zip" lang="en"/>
+    <offline.generic dir="_off" style="zip" lang="en"/>
+    <property value="yes" name="-off.en.done"/>
+</target>
+<target description="- builds the English zipped download package" depends="-off-en" name="zip-en">
     <zip.generic lang="en"/>
 </target>
-<target description="- builds the English Konqueror Web Archive" name="war-en">
+<target description="- builds the English Konqueror Web Archive" depends="-off-en" name="war-en">
     <war.generic lang="en"/>
 </target>
 <target description="- builds the English CHM file" name="chm-en">
@@ -76,10 +86,15 @@
 <target description="- builds Spanish HTML files" name="es">
     <html.generic lang="es"/>
 </target>
-<target description="- builds the Spanish zipped download package" name="zip-es">
+<target unless="-off.es.done" depends="metafiles" name="-off-es">
+    <dependencies.offline dir="_off" style="zip" lang="es"/>
+    <offline.generic dir="_off" style="zip" lang="es"/>
+    <property value="yes" name="-off.es.done"/>
+</target>
+<target description="- builds the Spanish zipped download package" depends="-off-es" name="zip-es">
     <zip.generic lang="es"/>
 </target>
-<target description="- builds the Spanish Konqueror Web Archive" name="war-es">
+<target description="- builds the Spanish Konqueror Web Archive" depends="-off-es" name="war-es">
     <war.generic lang="es"/>
 </target>
 <target description="- builds the Spanish CHM file" name="chm-es">
@@ -94,10 +109,15 @@
 <target description="- builds Japanese HTML files" name="ja">
     <html.generic lang="ja"/>
 </target>
-<target description="- builds the Japanese zipped download package" name="zip-ja">
+<target unless="-off.ja.done" depends="metafiles" name="-off-ja">
+    <dependencies.offline dir="_off" style="zip" lang="ja"/>
+    <offline.generic dir="_off" style="zip" lang="ja"/>
+    <property value="yes" name="-off.ja.done"/>
+</target>
+<target description="- builds the Japanese zipped download package" depends="-off-ja" name="zip-ja">
     <zip.generic lang="ja"/>
 </target>
-<target description="- builds the Japanese Konqueror Web Archive" name="war-ja">
+<target description="- builds the Japanese Konqueror Web Archive" depends="-off-ja" name="war-ja">
     <war.generic lang="ja"/>
 </target>
 <target description="- builds the Japanese CHM file" name="chm-ja">
@@ -112,10 +132,15 @@
 <target description="- builds Korean HTML files" name="ko">
     <html.generic lang="ko"/>
 </target>
-<target description="- builds the Korean zipped download package" name="zip-ko">
+<target unless="-off.ko.done" depends="metafiles" name="-off-ko">
+    <dependencies.offline dir="_off" style="zip" lang="ko"/>
+    <offline.generic dir="_off" style="zip" lang="ko"/>
+    <property value="yes" name="-off.ko.done"/>
+</target>
+<target description="- builds the Korean zipped download package" depends="-off-ko" name="zip-ko">
     <zip.generic lang="ko"/>
 </target>
-<target description="- builds the Korean Konqueror Web Archive" name="war-ko">
+<target description="- builds the Korean Konqueror Web Archive" depends="-off-ko" name="war-ko">
     <war.generic lang="ko"/>
 </target>
 <target description="- builds the Korean CHM file" name="chm-ko">
@@ -130,10 +155,15 @@
 <target description="- builds Russian HTML files" name="ru">
     <html.generic lang="ru"/>
 </target>
-<target description="- builds the Russian zipped download package" name="zip-ru">
+<target unless="-off.ru.done" depends="metafiles" name="-off-ru">
+    <dependencies.offline dir="_off" style="zip" lang="ru"/>
+    <offline.generic dir="_off" style="zip" lang="ru"/>
+    <property value="yes" name="-off.ru.done"/>
+</target>
+<target description="- builds the Russian zipped download package" depends="-off-ru" name="zip-ru">
     <zip.generic lang="ru"/>
 </target>
-<target description="- builds the Russian Konqueror Web Archive" name="war-ru">
+<target description="- builds the Russian Konqueror Web Archive" depends="-off-ru" name="war-ru">
     <war.generic lang="ru"/>
 </target>
 
