@@ -2,6 +2,9 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) Fix a compile failure with recent OpenSSL and picky compilers
+     (e.g., OpenSSL 0.9.7a and xlc_r on AIX).  [Jeff Trawick]
+
   *) Fix a build problem with passing unsupported --enable-layout
      args to apr and apr-util.  This broke binbuild.sh as well as
      user-specified layout parameters.  PR 18649 [Justin Erenkrantz,
