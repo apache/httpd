@@ -180,21 +180,21 @@
 #undef VERSION
 
 #if APR_HAS_MMAP
-#define USE_MMAP_FILES 1
+#define AP_USE_MMAP_FILES 1
 #else
-#undef USE_MMAP_FILES
+#undef AP_USE_MMAP_FILES
 #endif
 
 #if APR_FILE_BASED_SHM
-#define USE_FILE_BASED_SCOREBOARD
+#define AP_USE_FILE_BASED_SCOREBOARD
 #else
-#define USE_MEM_BASED_SCOREBOARD
+#define AP_USE_MEM_BASED_SCOREBOARD
 #endif
 
 /* If APR has OTHER_CHILD logic, use reliable piped logs.
  */
 #if (APR_HAS_OTHER_CHILD)
-#define HAVE_RELIABLE_PIPED_LOGS TRUE
+#define AP_HAVE_RELIABLE_PIPED_LOGS TRUE
 #endif
 
 #if defined(CHARSET_EBCDIC) && !defined(APACHE_XLATE)

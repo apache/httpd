@@ -229,7 +229,7 @@ struct piped_log {
     apr_file_t *fds[2];
     /* XXX - an #ifdef that needs to be eliminated from public view. Shouldn't
      * be hard */
-#ifdef HAVE_RELIABLE_PIPED_LOGS
+#ifdef AP_HAVE_RELIABLE_PIPED_LOGS
     /** The name of the program the logging process is running */
     char *program;
     /** The pid of the logging process */

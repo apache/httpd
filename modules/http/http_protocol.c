@@ -2667,7 +2667,7 @@ AP_DECLARE(apr_status_t) ap_send_fd(apr_file_t *fd, request_rec *r, apr_off_t of
 } 
 #endif
 
-#ifdef USE_MMAP_FILES
+#ifdef AP_USE_MMAP_FILES
 
 /* The code writes MMAP_SEGMENT_SIZE bytes at a time.  This is due to Apache's
  * timeout model, which is a timeout per-write rather than a time for the
@@ -2700,7 +2700,7 @@ AP_DECLARE(size_t) ap_send_mmap(apr_mmap_t *mm, request_rec *r, size_t offset,
 
     return mm->size; /* XXX - change API to report apr_status_t? */
 }
-#endif /* USE_MMAP_FILES */
+#endif /* AP_USE_MMAP_FILES */
 
 AP_DECLARE(int) ap_rputc(int c, request_rec *r)
 {

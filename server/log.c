@@ -553,7 +553,7 @@ AP_DECLARE(void) ap_log_assert(const char *szExp, const char *szFile, int nLine)
 
 /* piped log support */
 
-#ifdef HAVE_RELIABLE_PIPED_LOGS
+#ifdef AP_HAVE_RELIABLE_PIPED_LOGS
 /* forward declaration */
 static void piped_log_maintenance(int reason, void *data, apr_wait_t status);
 
