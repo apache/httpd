@@ -155,8 +155,10 @@ APR_DECLARE_EXTERNAL_HOOK(ap,AP,ret,name,args)
 APR_IMPLEMENT_EXTERNAL_HOOK_BASE(ap,AP,name)
 
 /**
- * Implement an Apache core hook that has no return code, and therefore 
- * runs all of the registered functions.
+ * Implement an Apache core hook that has no return code, and
+ * therefore runs all of the registered functions. The implementation
+ * is called ap_run_<I>name</I>.
+ *
  * @param name The name of the hook
  * @param args_decl The declaration of the arguments for the hook, for example
  * "(int x,void *y)"
@@ -164,7 +166,7 @@ APR_IMPLEMENT_EXTERNAL_HOOK_BASE(ap,AP,name)
  * "(x,y)"
  * @tip If IMPLEMENTing a hook that is not linked into the Apache core,
  * (e.g. within a dso) see APR_IMPLEMENT_EXTERNAL_HOOK_VOID.
- * @deffunc void AP_IMPLEMENT_HOOK_VOID(name, args_decl, args_use)
+ * @deffunc AP_IMPLEMENT_HOOK_VOID(name, args_decl, args_use)
  */
 #define AP_IMPLEMENT_HOOK_VOID(name,args_decl,args_use) \
 APR_IMPLEMENT_EXTERNAL_HOOK_VOID(ap,AP,name,args_decl,args_use)
@@ -174,33 +176,42 @@ APR_IMPLEMENT_EXTERNAL_HOOK_VOID(ap,AP,name,args_decl,args_use)
  * returns something other than ok or decline. That return value is
  * then returned from the hook runner. If the hooks run to completion,
  * then ok is returned. Note that if no hook runs it would probably be
- * more correct to return decline, but this currently does not do so.
+ * more correct to return decline, but this currently does not do
+ * so. The implementation is called ap_run_<I>name</I>.
  *
  * @param ret The return type of the hook (and the hook runner)
  * @param name The name of the hook
- * @param args_decl The declaration of the arguments for the hook
- * @param args_used The names for the arguments for the hook
+ * @param args_decl The declaration of the arguments for the hook, for example
+ * "(int x,void *y)"
+ * @param args_use The arguments for the hook as used in a call, for example
+ * "(x,y)"
  * @param ok The "ok" return value
- * @param decline The "decline" return value.
+ * @param decline The "decline" return value
+ * @return ok, decline or an error.
  * @tip If IMPLEMENTing a hook that is not linked into the Apache core,
  * (e.g. within a dso) see APR_IMPLEMENT_EXTERNAL_HOOK_RUN_ALL.
- * @deffunc ret AP_IMPLEMENT_HOOK_RUN_ALL(ret, name, args_decl, args_use, ok, decline) */
+ * @deffunc AP_IMPLEMENT_HOOK_RUN_ALL(ret, name, args_decl, args_use, ok, decline)
+ */
 #define AP_IMPLEMENT_HOOK_RUN_ALL(ret,name,args_decl,args_use,ok,decline) \
 APR_IMPLEMENT_EXTERNAL_HOOK_RUN_ALL(ap,AP,ret,name,args_decl,args_use,ok,decline)
 
 /**
  * Implement a hook that runs until the first function that returns
  * something other than decline. If all functions return decline, the
- * hook runner returns decline.
+ * hook runner returns decline. The implementation is called
+ * ap_run_<I>name</I>.
  *
  * @param ret The return type of the hook (and the hook runner)
  * @param name The name of the hook
- * @param args_decl The declaration of the arguments for the hook
- * @param args_used The names for the arguments for the hook
- * @param decline The "decline" return value.
+ * @param args_decl The declaration of the arguments for the hook, for example
+ * "(int x,void *y)"
+ * @param args_use The arguments for the hook as used in a call, for example
+ * "(x,y)"
+ * @param decline The "decline" return value
+ * @return decline or an error.
  * @tip If IMPLEMENTing a hook that is not linked into the Apache core
  * (e.g. within a dso) see APR_IMPLEMENT_EXTERNAL_HOOK_RUN_FIRST.
- * @deffunc ret AP_IMPLEMENT_HOOK_RUN_FIRST(ret, name, args_decl, args_use, decline)
+ * @deffunc AP_IMPLEMENT_HOOK_RUN_FIRST(ret, name, args_decl, args_use, decline)
  */
 #define AP_IMPLEMENT_HOOK_RUN_FIRST(ret,name,args_decl,args_use,decline) \
 APR_IMPLEMENT_EXTERNAL_HOOK_RUN_FIRST(ap,AP,ret,name,args_decl,args_use,decline)
