@@ -117,7 +117,7 @@ typedef struct {
 } mod_filter_ctx ;
 
 
-static void filter_trace(apr_pool_t *pool, int debug, const char *fname,
+static void filter_trace(conn_rec *c, int debug, const char *fname,
                          apr_bucket_brigade *bb)
 {
     apr_bucket *b;
@@ -126,12 +126,12 @@ static void filter_trace(apr_pool_t *pool, int debug, const char *fname,
     case 0:        /* normal, operational use */
         return;
     case 1:        /* mod_diagnostics level */
-        ap_log_perror(APLOG_MARK, APLOG_NOTICE, 0, pool, fname);
+        ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, c, fname);
         for (b = APR_BRIGADE_FIRST(bb);
              b != APR_BRIGADE_SENTINEL(bb);
              b = APR_BUCKET_NEXT(b)) {
 
-            ap_log_perror(APLOG_MARK, APLOG_NOTICE, 0, pool,
+            ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, c,
                           "%s: type: %s, length: %" APR_SIZE_T_FMT,
                           fname, b->type->name ? b->type->name : "(unknown)",
                           b->length);
@@ -152,7 +152,7 @@ static int filter_init(ap_filter_t *f)
         if (p->frec->filter_init_func) {
             f->ctx = NULL;
             if ((err = p->frec->filter_init_func(f)) != OK) {
-                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, f->r,
+                ap_log_cerror(APLOG_MARK, APLOG_ERR, 0, f->c,
                               "filter_init for %s failed", p->frec->name);
                 return err;   /* if anyone errors out here, so do we */
             }
@@ -358,7 +358,7 @@ static apr_status_t filter_harness(ap_filter_t *f, apr_bucket_brigade *bb)
         return ap_pass_brigade(f->next, bb);
     }
 
-    filter_trace(f->c->pool, filter->debug, f->frec->name, bb);
+    filter_trace(f->c, filter->debug, f->frec->name, bb);
 
     /* look up a handler function if we haven't already set it */
     if (!ctx->func) {
