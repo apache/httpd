@@ -87,9 +87,9 @@ void ssl_var_register(void)
     return;
 }
 
+/* This function must remain safe to use for a non-SSL connection. */
 char *ssl_var_lookup(apr_pool_t *p, server_rec *s, conn_rec *c, request_rec *r, char *var)
 {
-    SSLConnRec *sslconn;
     SSLModConfigRec *mc = myModConfig(s);
     char *result;
     BOOL resdup;
@@ -169,17 +169,18 @@ char *ssl_var_lookup(apr_pool_t *p, server_rec *s, conn_rec *c, request_rec *r, 
      * Connection stuff
      */
     if (result == NULL && c != NULL) {
-        sslconn = myConnConfig(c);
+        SSLConnRec *sslconn = myConnConfig(c);
         if (strcEQ(var, "REMOTE_ADDR"))
             result = c->remote_ip;
         else if (strcEQ(var, "REMOTE_USER"))
             result = r->user;
         else if (strcEQ(var, "AUTH_TYPE"))
             result = r->ap_auth_type;
-        else if (strlen(var) > 4 && strcEQn(var, "SSL_", 4))
+        else if (strlen(var) > 4 && strcEQn(var, "SSL_", 4) 
+                 && sslconn && sslconn->ssl)
             result = ssl_var_lookup_ssl(p, c, var+4);
         else if (strcEQ(var, "HTTPS")) {
-            if (sslconn->ssl != NULL)
+            if (sslconn && sslconn->ssl)
                 result = "on";
             else
                 result = "off";
@@ -684,9 +685,7 @@ static const char *ssl_var_log_handler_x(request_rec *r, char *a)
     SSLConnRec *sslconn = myConnConfig(r->connection);
     char *result;
 
-    result = NULL;
-    if (sslconn && sslconn->ssl)
-        result = ssl_var_lookup(r->pool, r->server, r->connection, r, a);
+    result = ssl_var_lookup(r->pool, r->server, r->connection, r, a);
     if (result != NULL && result[0] == NUL)
         result = NULL;
     return result;
