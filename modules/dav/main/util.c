@@ -1184,12 +1184,13 @@ static dav_error * dav_validate_resource_state(apr_pool_t *p,
 }
 
 /* dav_validate_walker:  Walker callback function to validate resource state */
-static dav_error * dav_validate_walker(dav_walker_ctx *ctx, int calltype)
+static dav_error * dav_validate_walker(dav_walk_resource *wres, int calltype)
 {
+    dav_walker_ctx *ctx = wres->walk_ctx;
     dav_error *err;
 
-    if ((err = dav_validate_resource_state(ctx->pool, ctx->resource,
-					   ctx->lockdb,
+    if ((err = dav_validate_resource_state(ctx->w.pool, wres->resource,
+					   ctx->w.lockdb,
 					   ctx->if_header, ctx->flags,
 					   &ctx->work_buf, ctx->r)) == NULL) {
 	/* There was no error, so just bug out. */
@@ -1201,14 +1202,14 @@ static dav_error * dav_validate_walker(dav_walker_ctx *ctx, int calltype)
     ** then just return error (not a multistatus).
     */
     if (ap_is_HTTP_SERVER_ERROR(err->status)
-        || (*ctx->resource->hooks->is_same_resource)(ctx->resource,
-                                                     ctx->root)) {
+        || (*wres->resource->hooks->is_same_resource)(wres->resource,
+                                                      ctx->w.root)) {
 	/* ### maybe push a higher-level description? */
 	return err;
     }
 
     /* associate the error with the current URI */
-    dav_add_response(ctx, ctx->uri.buf, err->status, NULL);
+    dav_add_response(wres, err->status, NULL);
 
     return NULL;
 }
@@ -1312,23 +1313,22 @@ dav_error * dav_validate_request(request_rec *r, dav_resource *resource,
 
     /* (1) Validate the specified resource, at the specified depth */
     if (resource->exists && depth > 0) {
-	dav_walker_ctx ctx = { 0 };
+        dav_walker_ctx ctx = { { 0 } };
 
-	ctx.walk_type = DAV_WALKTYPE_ALL;
-	ctx.postfix = 0;
-	ctx.func = dav_validate_walker;
-	ctx.pool = r->pool;
+	ctx.w.walk_type = DAV_WALKTYPE_NORMAL;
+	ctx.w.func = dav_validate_walker;
+        ctx.w.walk_ctx = &ctx;
+	ctx.w.pool = r->pool;
+        ctx.w.root = resource;
+
 	ctx.if_header = if_header;
 	ctx.r = r;
         ctx.flags = flags;
-        ctx.resource = resource;
 
 	if (lockdb != NULL) {
-	    ctx.lockdb = lockdb;
-	    ctx.walk_type |= DAV_WALKTYPE_LOCKNULL;
+	    ctx.w.lockdb = lockdb;
+	    ctx.w.walk_type |= DAV_WALKTYPE_LOCKNULL;
 	}
-
-	dav_buffer_init(r->pool, &ctx.uri, resource->uri);
 
 	err = (*repos_hooks->walk)(&ctx, DAV_INFINITY);
 	if (err == NULL) {

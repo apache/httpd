@@ -282,24 +282,26 @@ dav_error * dav_lock_parse_lockinfo(request_rec *r,
 */
 
 /* dav_lock_walker:  Walker callback function to record indirect locks */
-static dav_error * dav_lock_walker(dav_walker_ctx *ctx, int calltype)
+static dav_error * dav_lock_walker(dav_walk_resource *wres, int calltype)
 {
+    dav_walker_ctx *ctx = wres->walk_ctx;
     dav_error *err;
 
     /* We don't want to set indirects on the target */
-    if ((*ctx->resource->hooks->is_same_resource)(ctx->resource, ctx->root))
+    if ((*wres->resource->hooks->is_same_resource)(wres->resource,
+                                                   ctx->w.root))
 	return NULL;
 
-    if ((err = (*ctx->lockdb->hooks->append_locks)(ctx->lockdb, ctx->resource,
-						   1,
-						   ctx->lock)) != NULL) {
+    if ((err = (*ctx->w.lockdb->hooks->append_locks)(ctx->w.lockdb,
+                                                     wres->resource, 1,
+                                                     ctx->lock)) != NULL) {
 	if (ap_is_HTTP_SERVER_ERROR(err->status)) {
 	    /* ### add a higher-level description? */
 	    return err;
 	}
 
 	/* add to the multistatus response */
-	dav_add_response(ctx, ctx->resource->uri, err->status, NULL);
+	dav_add_response(wres, err->status, NULL);
 
 	/*
 	** ### actually, this is probably wrong: we want to fail the whole
@@ -353,18 +355,17 @@ dav_error * dav_add_lock(request_rec *r, const dav_resource *resource,
 
     if (depth > 0) {
 	/* Walk existing collection and set indirect locks */
-	dav_walker_ctx ctx = { 0 };
+        dav_walker_ctx ctx = { { 0 } };
 
-	ctx.walk_type = DAV_WALKTYPE_ALL | DAV_WALKTYPE_AUTH;
-	ctx.postfix = 0;
-	ctx.func = dav_lock_walker;
-	ctx.pool = r->pool;
+	ctx.w.walk_type = DAV_WALKTYPE_ALL | DAV_WALKTYPE_AUTH;
+	ctx.w.func = dav_lock_walker;
+        ctx.w.walk_ctx = &ctx;
+	ctx.w.pool = r->pool;
+        ctx.w.root = resource;
+	ctx.w.lockdb = lockdb;
+
 	ctx.r = r;
-        ctx.resource = resource;
-	ctx.lockdb = lockdb;
 	ctx.lock = lock;
-
-	dav_buffer_init(r->pool, &ctx.uri, resource->uri);
 
 	err = (*resource->hooks->walk)(&ctx, DAV_INFINITY);
 	if (err != NULL) {
@@ -405,12 +406,14 @@ DAV_DECLARE(dav_error*) dav_lock_query(dav_lockdb *lockdb,
 }
 
 /* dav_unlock_walker:  Walker callback function to remove indirect locks */
-static dav_error * dav_unlock_walker(dav_walker_ctx *ctx, int calltype)
+static dav_error * dav_unlock_walker(dav_walk_resource *wres, int calltype)
 {
+    dav_walker_ctx *ctx = wres->walk_ctx;
     dav_error *err;
 
-    if ((err = (*ctx->lockdb->hooks->remove_lock)(ctx->lockdb, ctx->resource,
-						  ctx->locktoken)) != NULL) {
+    if ((err = (*ctx->w.lockdb->hooks->remove_lock)(ctx->w.lockdb,
+                                                    wres->resource,
+                                                    ctx->locktoken)) != NULL) {
 	/* ### should we stop or return a multistatus? looks like STOP */
 	/* ### add a higher-level description? */
 	return err;
@@ -552,18 +555,17 @@ int dav_unlock(request_rec *r, const dav_resource *resource,
     }
 
     if (lock_resource->collection) {
-	dav_walker_ctx ctx = { 0 };
+        dav_walker_ctx ctx = { { 0 } };
 
-	ctx.walk_type = DAV_WALKTYPE_ALL | DAV_WALKTYPE_LOCKNULL;
-	ctx.postfix = 0;
-	ctx.func = dav_unlock_walker;
-	ctx.pool = r->pool;
-        ctx.resource = lock_resource;
+	ctx.w.walk_type = DAV_WALKTYPE_NORMAL | DAV_WALKTYPE_LOCKNULL;
+	ctx.w.func = dav_unlock_walker;
+        ctx.w.walk_ctx = &ctx;
+	ctx.w.pool = r->pool;
+        ctx.w.root = lock_resource;
+	ctx.w.lockdb = lockdb;
+
 	ctx.r = r;
-	ctx.lockdb = lockdb;
 	ctx.locktoken = locktoken;
-
-	dav_buffer_init(r->pool, &ctx.uri, lock_resource->uri);
 
 	err = (*repos_hooks->walk)(&ctx, DAV_INFINITY);
 
@@ -579,17 +581,20 @@ int dav_unlock(request_rec *r, const dav_resource *resource,
 }
 
 /* dav_inherit_walker:  Walker callback function to inherit locks */
-static dav_error * dav_inherit_walker(dav_walker_ctx *ctx, int calltype)
+static dav_error * dav_inherit_walker(dav_walk_resource *wres, int calltype)
 {
+    dav_walker_ctx *ctx = wres->walk_ctx;
+
     if (ctx->skip_root
-	&& (*ctx->resource->hooks->is_same_resource)(ctx->resource,
-						     ctx->root)) {
+	&& (*wres->resource->hooks->is_same_resource)(wres->resource,
+                                                      ctx->w.root)) {
 	return NULL;
     }
 
     /* ### maybe add a higher-level desc */
-    return (*ctx->lockdb->hooks->append_locks)(ctx->lockdb, ctx->resource, 1,
-					       ctx->lock);
+    return (*ctx->w.lockdb->hooks->append_locks)(ctx->w.lockdb,
+                                                 wres->resource, 1,
+                                                 ctx->lock);
 }
 
 /*
@@ -607,7 +612,7 @@ static dav_error * dav_inherit_locks(request_rec *r, dav_lockdb *lockdb,
     dav_lock *locks;
     dav_lock *scan;
     dav_lock *prev;
-    dav_walker_ctx ctx = { 0 };
+    dav_walker_ctx ctx = { { 0 } };
     const dav_hooks_repository *repos_hooks = resource->hooks;
 
     if (use_parent) {
@@ -661,17 +666,16 @@ static dav_error * dav_inherit_locks(request_rec *r, dav_lockdb *lockdb,
 
     /* <locks> has all our new locks.  Walk down and propagate them. */
 
-    ctx.walk_type = DAV_WALKTYPE_ALL | DAV_WALKTYPE_LOCKNULL;
-    ctx.postfix = 0;
-    ctx.func = dav_inherit_walker;
-    ctx.pool = r->pool;
-    ctx.resource = resource;
+    ctx.w.walk_type = DAV_WALKTYPE_NORMAL | DAV_WALKTYPE_LOCKNULL;
+    ctx.w.func = dav_inherit_walker;
+    ctx.w.walk_ctx = &ctx;
+    ctx.w.pool = r->pool;
+    ctx.w.root = resource;
+    ctx.w.lockdb = lockdb;
+
     ctx.r = r;
-    ctx.lockdb = lockdb;
     ctx.lock = locks;
     ctx.skip_root = !use_parent;
-
-    dav_buffer_init(r->pool, &ctx.uri, resource->uri);
 
     return (*repos_hooks->walk)(&ctx, DAV_INFINITY);
 }
