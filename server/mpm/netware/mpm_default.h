@@ -113,10 +113,32 @@
 #define DEFAULT_THREADS_PER_CHILD 50
 #endif
 
-/* File used for accept locking, when we use a file */
-#ifndef DEFAULT_LOCKFILE
-#define DEFAULT_LOCKFILE "logs/accept.lock"
+/* Number of threads to spawn off by default --- also, if fewer than
+ * this free when the caretaker checks, it will spawn more.
+ */
+#ifndef DEFAULT_START_THREADS
+#define DEFAULT_START_THREADS DEFAULT_THREADS_PER_CHILD
 #endif
+
+/* Maximum number of *free* threads --- more than this, and
+ * they will die off.
+ */
+
+#ifndef DEFAULT_MAX_FREE_THREADS
+#define DEFAULT_MAX_FREE_THREADS 100
+#endif
+
+/* Minimum --- fewer than this, and more will be created */
+
+#ifndef DEFAULT_MIN_FREE_THREADS
+#define DEFAULT_MIN_FREE_THREADS 10
+#endif
+
+/* File used for accept locking, when we use a file */
+/*#ifndef DEFAULT_LOCKFILE
+  #define DEFAULT_LOCKFILE "logs/accept.lock"
+  #endif
+*/
 
 /* Scoreboard file, if there is one */
 #ifndef DEFAULT_SCOREBOARD
@@ -124,22 +146,23 @@
 #endif
 
 /* Where the main/parent process's pid is logged */
-#ifndef DEFAULT_PIDLOG
-#define DEFAULT_PIDLOG "logs/httpd.pid"
-#endif
+/*#ifndef DEFAULT_PIDLOG
+  #define DEFAULT_PIDLOG "logs/httpd.pid"
+  #endif
+*/
 
 /*
  * Interval, in microseconds, between scoreboard maintenance.
  */
 #ifndef SCOREBOARD_MAINTENANCE_INTERVAL
-#define SCOREBOARD_MAINTENANCE_INTERVAL 1000000
+#define SCOREBOARD_MAINTENANCE_INTERVAL 15000
 #endif
 
 /* Number of requests to try to handle in a single process.  If <= 0,
  * the children don't die off.
  */
 #ifndef DEFAULT_MAX_REQUESTS_PER_CHILD
-#define DEFAULT_MAX_REQUESTS_PER_CHILD 10000
+#define DEFAULT_MAX_REQUESTS_PER_CHILD 0
 #endif
 
 #endif /* AP_MPM_DEFAULT_H */
