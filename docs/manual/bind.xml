@@ -37,10 +37,12 @@
     Virtual Host feature which determines how Apache responds to 
     different IP addresses, hostnames and ports.</p>
 
-    <p>The <code>Listen</code> directive tells the server to accept
+    <p>The <directive module="mpm_common">Listen</directive>
+    directive tells the server to accept
     incoming requests only on the specified port or
     address-and-port combinations. If only a port number is
-    specified in the <code>Listen</code> directive, the server
+    specified in the <directive module="mpm_common">Listen</directive>
+    directive, the server
     listens to the given port on all interfaces. If an IP address
     is given as well as a port, the server will listen on the given
     port and interface. Multiple Listen directives may be used to
@@ -120,24 +122,20 @@
 
     <p>Listen does not implement Virtual Hosts. It only tells the
     main server what addresses and ports to listen to. If no
-    &lt;VirtualHost&gt; directives are used, the server will behave
+    <directive module="core" type="section">VirtualHost</directive>
+    directives are used, the server will behave
     the same for all accepted requests. However,
-    &lt;VirtualHost&gt; can be used to specify a different behavior
+    <directive module="core" type="section">VirtualHost</directive>
+    can be used to specify a different behavior
     for one or more of the addresses and ports. To implement a
     VirtualHost, the server must first be told to listen to the
-    address and port to be used. Then a &lt;VirtualHost&gt; section
+    address and port to be used. Then a
+    <directive module="core" type="section">VirtualHost</directive> section
     should be created for a specified address and port to set the
     behavior of this virtual host. Note that if the
-    &lt;VirtualHost&gt; is set for an address and port that the
+    <directive module="core" type="section">VirtualHost</directive>
+    is set for an address and port that the
     server is not listening to, it cannot be accessed.</p>
   </section>
 </manualpage>
-
-
-
-
-
-
-
-
 
