@@ -22,14 +22,14 @@ document with mime type <CODE>httpd/send-as-is</CODE> will be processed by
 this module.
 <!--%plaintext &lt;?INDEX {\tt httpd/send-as-is} mime type&gt; -->
 
-<h2>Purpose</h2>
+<H2>Purpose</H2>
 To allow file types to be defined such that Apache sends them without
 adding HTTP headers.<P>
 
 This can be used to send any kind of data from the server, including redirects
 and other special HTTP responses, without requiring a cgi-script or an nph
 script.
-<h2>Usage</h2>
+<H2>Usage</H2>
 In the server configuration file, define a new mime type called
 <CODE>httpd/send-as-is</CODE> e.g.
 <BLOCKQUOTE><CODE>AddType httpd/send-as-is asis</CODE></BLOCKQUOTE>

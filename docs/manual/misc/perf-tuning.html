@@ -8,7 +8,7 @@
 
 <P>Author: Dean Gaudet
 
-<h3>Introduction</h3>
+<H3>Introduction</H3>
 <P>Apache is a general webserver, which is designed to be correct first, and
 fast second.  Even so, it's performance is quite satisfactory.  Most
 sites have less than 10Mbits of outgoing bandwidth, which Apache can
@@ -37,7 +37,7 @@ to Apache on NT.  Apache on NT has not been tuned for performance yet,
 in fact it probably performs very poorly because NT performance requires
 a different programming model.
 
-<h3>Hardware and Operating System Issues</h3>
+<H3>Hardware and Operating System Issues</H3>
 
 <P>The single biggest hardware issue affecting webserver performance
 is RAM.  A webserver should never ever have to swap, swapping increases
@@ -57,9 +57,9 @@ HTTP serving completely breaks many of the assumptions built into Unix
 kernels up through 1994 and even 1995.  Good choices include
 recent FreeBSD, and Linux.
 
-<h3>Run-Time Configuration Issues</h3>
+<H3>Run-Time Configuration Issues</H3>
 
-<h4>HostnameLookups</h4>
+<H4>HostnameLookups</H4>
 <P>Prior to Apache 1.3, <CODE>HostnameLookups</CODE> defaulted to On.
 This adds latency
 to every request because it requires a DNS lookup to complete before
@@ -88,7 +88,7 @@ But even still, if you just need DNS names
 in some CGIs you could consider doing the
 <CODE>gethostbyname</CODE> call in the specific CGIs that need it.
 
-<h4>FollowSymLinks and SymLinksIfOwnerMatch</h4>
+<H4>FollowSymLinks and SymLinksIfOwnerMatch</H4>
 <P>Wherever in your URL-space you do not have an
 <CODE>Options FollowSymLinks</CODE>, or you do have an
 <CODE>Options SymLinksIfOwnerMatch</CODE> Apache will have to
@@ -126,7 +126,7 @@ document root.  For highest performance, and no symlink protection,
 set <CODE>FollowSymLinks</CODE> everywhere, and never set
 <CODE>SymLinksIfOwnerMatch</CODE>.
 
-<h4>AllowOverride</h4>
+<H4>AllowOverride</H4>
 
 <P>Wherever in your URL-space you allow overrides (typically
 <CODE>.htaccess</CODE> files) Apache will attempt to open
@@ -146,7 +146,7 @@ The solutions are similar to the previous case of <CODE>Options
 FollowSymLinks</CODE>.  For highest performance use
 <CODE>AllowOverride None</CODE> everywhere in your filesystem.
 
-<h4>Negotiation</h4>
+<H4>Negotiation</H4>
 
 <P>If at all possible, avoid content-negotiation if you're really
 interested in every last ounce of performance.  In practice the
@@ -166,7 +166,7 @@ DirectoryIndex index.cgi index.pl index.shtml index.html
 
 where you list the most common choice first.
 
-<h4>Process Creation</h4>
+<H4>Process Creation</H4>
 
 <P>Prior to Apache 1.3 the <CODE>MinSpareServers</CODE>,
 <CODE>MaxSpareServers</CODE>, and <CODE>StartServers</CODE> settings
@@ -218,9 +218,9 @@ In no event should you raise this above about 60 seconds, as
 <A HREF="http://www.research.digital.com/wrl/techreports/abstracts/95.4.html">
 most of the benefits are lost</A>.
 
-<h3>Compile-Time Configuration Issues</h3>
+<H3>Compile-Time Configuration Issues</H3>
 
-<h4>mod_status and Rule STATUS=yes</h4>
+<H4>mod_status and Rule STATUS=yes</H4>
 
 <P>If you include <CODE>mod_status</CODE>
 and you also set <CODE>Rule STATUS=yes</CODE> when building
@@ -231,7 +231,7 @@ on your operating system), and (pre-1.3) several extra calls to
 contains timing indications.  For highest performance, set <CODE>Rule
 STATUS=no</CODE>.
 
-<h4>accept Serialization - multiple sockets</h4>
+<H4>accept Serialization - multiple sockets</H4>
 
 <P>This discusses a shortcoming in the Unix socket API.
 Suppose your
@@ -390,7 +390,7 @@ low because highly parallel web servers are not the norm.
 <P>Ideally you should run servers without multiple <CODE>Listen</CODE>
 statements if you want the highest performance.  But read on.
 
-<h4>accept Serialization - single socket</h4>
+<H4>accept Serialization - single socket</H4>
 
 <P>The above is fine and dandy for multiple socket servers, but what
 about single socket servers?  In theory they shouldn't experience
@@ -418,7 +418,7 @@ and only an issue on LANs.  If you want to override the single socket
 serialization you can define <CODE>SINGLE_LISTEN_UNSERIALIZED_ACCEPT</CODE>
 and then single-socket servers will not serialize at all.
 
-<h4>Lingering Close</h4>
+<H4>Lingering Close</H4>
 
 <P>As discussed in
 <A HREF="ftp://ds.internic.net/internet-drafts/draft-ietf-http-connection-00.txt">draft-ietf-http-connection-00.txt</A> section 8,
@@ -484,7 +484,7 @@ is an absolute necessity (and
 pipelined connections are faster</A>, so you
 want to support them).
 
-<h4>Scoreboard File</h4>
+<H4>Scoreboard File</H4>
 
 <P>Apache's parent and children communicate with each other through
 something called the scoreboard.  Ideally this should be implemented
@@ -506,7 +506,7 @@ shared memory until version 1.2 of Apache.  This oversight resulted
 in really poor and unreliable behaviour of earlier versions of Apache
 on Linux.
 
-<h4><CODE>DYNAMIC_MODULE_LIMIT</CODE></h4>
+<H4><CODE>DYNAMIC_MODULE_LIMIT</CODE></H4>
 
 <P>If you have no intention of using dynamically loaded modules
 (you probably don't if you're reading this and tuning your
@@ -515,7 +515,7 @@ server for every last ounce of performance) then you should add
 This will save RAM that's allocated only for supporting dynamically
 loaded modules.
 
-<h3>Appendix: Detailed Analysis of a Trace</h3>
+<H3>Appendix: Detailed Analysis of a Trace</H3>
 
 Here is a system call trace of Apache 1.3 running on Linux.  The run-time
 configuration file is essentially the default plus:
@@ -780,7 +780,7 @@ munmap(0x400e3000, 6144)                = 0
 That's 19 system calls, of which 4 remain relatively easy to remove,
 but don't seem worth the effort.
 
-<h3>Appendix: The Pre-Forking Model</h3>
+<H3>Appendix: The Pre-Forking Model</H3>
 
 <P>Apache (on Unix) is a <EM>pre-forking</EM> model server.  The
 <EM>parent</EM> process is responsible only for forking <EM>child</EM>

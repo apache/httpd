@@ -13,12 +13,12 @@
  ALINK="#FF0000"
 >
 <!--#include virtual="header.html" -->
-<h1 ALIGN="CENTER">Virtual Host Support</H1>
+<H1 ALIGN="CENTER">Virtual Host Support</H1>
 
 <STRONG>See Also:</STRONG>
 <A HREF="host.html">Non-IP based virtual hosts</A>
 
-<h2>What are virtual hosts?</h2>
+<H2>What are virtual hosts?</H2>
 This is the ability of a single machine to be a web server for multiple
 domains. For example, an Internet service provider might have a machine
 called <CODE>www.serve.com</CODE> which provides Web space for several
@@ -51,14 +51,14 @@ and baygroup's home page would would have the URL
 http://www.baygroup.org/
 </BLOCKQUOTE>
 
-<h2>System requirements</h2>
+<H2>System requirements</H2>
 Due to limitations in the HTTP/1.0 protocol, the web server <STRONG>must have a
 different IP address for each virtual host</STRONG>. This can be achieved
 by the machine having several physical network connections, or by use
 of a <A HREF="../misc/vif-info.html">virtual interface</A> on some operating
 systems.
 
-<h2>How to set up Apache</h2>
+<H2>How to set up Apache</H2>
 There are two ways of configuring apache to support multiple hosts.
 Either by running a separate httpd daemon for each hostname, or by running a
 single daemon which supports all the virtual hosts.
@@ -80,7 +80,7 @@ Use a single daemon when:
    loss in running separate daemons may be significant.
 </UL>
 
-<h2>Setting up multiple daemons</h2>
+<H2>Setting up multiple daemons</H2>
 Create a separate httpd installation for each virtual host.
 For each installation, use the
 <A HREF="mod/core.html#bindaddress">BindAddress</A> directive in the configuration
@@ -89,7 +89,7 @@ e.g.
 <BLOCKQUOTE><CODE>BindAddress www.smallco.com</CODE></BLOCKQUOTE>
 This hostname can also be given as an IP address.
 
-<h2>Setting up a single daemon</h2>
+<H2>Setting up a single daemon</H2>
 For this case, a single httpd will service requests for all the virtual hosts.
 The <A HREF="mod/core.html#virtualhost">VirtualHost</A> directive in the
  configuration file is used to set the values of

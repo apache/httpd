@@ -12,14 +12,14 @@
  ALINK="#FF0000"
 >
 <!--#include virtual="header.html" -->
-<h1 ALIGN="CENTER">Apache name-based Virtual Host Support</H1>
+<H1 ALIGN="CENTER">Apache name-based Virtual Host Support</H1>
 
 <STRONG>See Also:</STRONG>
 <A HREF="ip-based.html">IP-based Virtual Host Support</A>
 
 <HR>
 
-<h2>Name-based vs. IP-based virtual hosts</h2>
+<H2>Name-based vs. IP-based virtual hosts</H2>
 
 <P>While the approach with IP-based virtual hosts works very well,
 it is not the most elegant solution, because a dedicated IP address
@@ -37,7 +37,7 @@ protocol. The latest versions of most browsers do, but there are still
 old browsers in use who do not. This can cause problems, although a possible
 solution is addressed below.</P>
 
-<h2>Using non-IP Virtual Hosts</h2>
+<H2>Using non-IP Virtual Hosts</H2>
 
 <P>Using the new virtual hosts is quite easy, and superficially looks
 like the old method. You simply add to one of the Apache configuration
@@ -89,7 +89,7 @@ familiar with typing "www" or "www.foobar" then you will need to add
 server to know what domain the client uses for their name resolution
 because the client doesn't provide that information in the request.</P>
 
-<h2>Compatibility with Older Browsers</h2>
+<H2>Compatibility with Older Browsers</H2>
 
 <P>As mentioned earlier, there are still some clients in use who
 do not send the required data for the name-based virtual hosts to work
