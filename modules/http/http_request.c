@@ -442,6 +442,10 @@ AP_DECLARE(void) ap_internal_fast_redirect(request_rec *rr, request_rec *r)
         ap_add_output_filter_handle(ap_subreq_core_filter_handle,
                                     NULL, r, r->connection);
     }
+    else if (r->output_filters->frec == ap_subreq_core_filter_handle) {
+        ap_remove_output_filter(r->output_filters);
+        r->output_filters = r->output_filters->next;
+    }
 }
 
 AP_DECLARE(void) ap_internal_redirect(const char *new_uri, request_rec *r)
