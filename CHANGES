@@ -2,6 +2,12 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) Log the client IP address when an error occurs disabling nagle on a
+     connection, but log at a severity of debug since this error 
+     generally means that the connection was dropped before data was
+     sent.  Log the client IP address when reporting errors in the core
+     output filter.  [Jeff Trawick]
+
   *) Add ap_log_cerror() for logging messages associated with particular
      client connections.  [Jeff Trawick]
 
