@@ -85,13 +85,14 @@ SetOutputFilter DEFLATE
 
 <directivesynopsis>
 <name>DeflateMemLevel</name>
-<description>Amount of memory available to zlib for compression</description>
+<description>How much memory should be used by zlib for compression</description>
 <syntax>DeflateMemLevel <em>value</em></syntax>
 <contextlist><context>server config</context></contextlist>
 
 <usage>
     <p>The <directive>DeflateMemLevel</directive> directive specifies
-    the amount of memory in bytes available to zlib for compression.</p>
+    how much memory should be used by zlib for compression
+    (a value between 1 and 9).</p>
 </usage>
 </directivesynopsis>
 
