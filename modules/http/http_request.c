@@ -299,11 +299,11 @@ static apr_table_t *rename_original_env(apr_pool_t *p, apr_table_t *t)
 }
 
 static request_rec *internal_internal_redirect(const char *new_uri,
-					       request_rec *r) {
+                                               request_rec *r) {
     int access_status;
     ap_filter_t *f;
     request_rec *new = (request_rec *) apr_pcalloc(r->pool,
-						   sizeof(request_rec));
+                                                   sizeof(request_rec));
 
     new->connection = r->connection;
     new->server     = r->server;
@@ -356,7 +356,7 @@ static request_rec *internal_internal_redirect(const char *new_uri,
 
     new->htaccess        = r->htaccess;
     new->no_cache        = r->no_cache;
-    new->expecting_100	 = r->expecting_100;
+    new->expecting_100   = r->expecting_100;
     new->no_local_copy   = r->no_local_copy;
     new->read_length     = r->read_length;     /* We can only read it once */
     new->vlist_validator = r->vlist_validator;
@@ -386,7 +386,7 @@ static request_rec *internal_internal_redirect(const char *new_uri,
     ap_add_input_filter("HTTP_IN", NULL, new, new->connection);
 
     apr_table_setn(new->subprocess_env, "REDIRECT_STATUS",
-	apr_itoa(r->pool, r->status));
+                   apr_itoa(r->pool, r->status));
 
     /*
      * XXX: hmm.  This is because mod_setenvif and mod_unique_id really need
@@ -516,12 +516,12 @@ AP_DECLARE(void) ap_allow_methods(request_rec *r, int reset, ...)
      * well-known methods but any extensions as well.
      */
     if (reset) {
-	ap_clear_method_list(r->allowed_methods);
+        ap_clear_method_list(r->allowed_methods);
     }
 
     va_start(methods, reset);
     while ((method = va_arg(methods, const char *)) != NULL) {
-	ap_method_list_add(r->allowed_methods, method);
+        ap_method_list_add(r->allowed_methods, method);
     }
 }
 
