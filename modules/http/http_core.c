@@ -262,7 +262,6 @@ static apr_port_t http_port(const request_rec *r)
 
 static int ap_pre_http_connection(conn_rec *c)
 {
-    ap_add_input_filter("HTTP_IN", NULL, NULL, c);
     ap_add_input_filter("CORE_IN", NULL, NULL, c);
     ap_add_output_filter("CORE", NULL, NULL, c);
     return OK;
@@ -302,6 +301,15 @@ static int ap_process_http_connection(conn_rec *c)
     return OK;
 }
 
+static int ap_http_create_req(request_rec *r)
+{
+    if (!r->main)
+    {
+        ap_add_input_filter("HTTP_IN", NULL, r, r->connection);
+    }
+    return OK;
+}
+
 static void ap_http_insert_filter(request_rec *r)
 {
     if (!r->main) {
@@ -320,10 +328,10 @@ static void register_hooks(apr_pool_t *p)
     ap_hook_map_to_storage(ap_send_http_trace,NULL,NULL,APR_HOOK_MIDDLE);
     ap_hook_http_method(http_method,NULL,NULL,APR_HOOK_REALLY_LAST);
     ap_hook_default_port(http_port,NULL,NULL,APR_HOOK_REALLY_LAST);
+    ap_hook_create_request(ap_http_create_req, NULL, NULL, APR_HOOK_MIDDLE);
 
     ap_hook_insert_filter(ap_http_insert_filter, NULL, NULL, APR_HOOK_REALLY_LAST);
     ap_register_input_filter("HTTP_IN", ap_http_filter, AP_FTYPE_CONNECTION);
-    ap_register_input_filter("DECHUNK", ap_dechunk_filter, AP_FTYPE_TRANSCODE);
     ap_register_output_filter("HTTP_HEADER", ap_http_header_filter, 
                               AP_FTYPE_HTTP_HEADER);
     ap_register_output_filter("CHUNK", chunk_filter, AP_FTYPE_TRANSCODE);

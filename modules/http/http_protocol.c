@@ -481,265 +481,117 @@ AP_DECLARE(const char *) ap_method_name_of(int methnum)
     return AP_HTTP_METHODS[methnum];
 }
 
-struct dechunk_ctx {
-    apr_size_t chunk_size;
-    apr_size_t bytes_delivered;
-    enum {
-        WANT_HDR /* must have value zero */,
-        WANT_BODY,
-        WANT_TRL
-    } state;
-};
-
 static long get_chunk_size(char *);
 
-apr_status_t ap_dechunk_filter(ap_filter_t *f, apr_bucket_brigade *bb,
-                               ap_input_mode_t mode, apr_off_t *readbytes)
-{
-    apr_status_t rv;
-    struct dechunk_ctx *ctx = f->ctx;
-    apr_bucket *b;
-    const char *buf;
-    apr_size_t len;
-
-    if (!ctx) {
-        f->ctx = ctx = apr_pcalloc(f->r->pool, sizeof(struct dechunk_ctx));
-    }
-
-    do {
-        if (ctx->chunk_size == ctx->bytes_delivered) {
-            /* Time to read another chunk header or trailer...  ap_http_filter() is 
-             * the next filter in line and it knows how to return a brigade with 
-             * one line.
-             */
-            char line[30];
-            
-            if ((rv = ap_getline(line, sizeof(line), f->r,
-                                 0 /* readline */)) < 0) {
-                return rv;
-            }
-            switch(ctx->state) {
-            case WANT_HDR:
-                ctx->chunk_size = get_chunk_size(line);
-                ctx->bytes_delivered = 0;
-                if (ctx->chunk_size == 0) {
-                    ctx->state = WANT_TRL;
-                }
-                else {
-                    ctx->state = WANT_BODY;
-                }
-                break;
-            case WANT_TRL:
-                /* XXX sanity check end chunk here */
-                if (strlen(line)) {
-                    /* bad trailer */
-                }
-                if (ctx->chunk_size == 0) { /* we just finished the last chunk? */
-                    /* ### woah... ap_http_filter() is doing this, too */
-                    /* append eos bucket and get out */
-                    b = apr_bucket_eos_create();
-                    APR_BRIGADE_INSERT_TAIL(bb, b);
-                    return APR_SUCCESS;
-                }
-                ctx->state = WANT_HDR;
-                break;
-            default:
-                ap_assert(ctx->state == WANT_HDR || ctx->state == WANT_TRL);
-            }
-        }
-    } while (ctx->state != WANT_BODY);
-
-    if (ctx->state == WANT_BODY) {
-        /* Tell ap_http_filter() how many bytes to deliver. */
-        apr_off_t chunk_bytes = ctx->chunk_size - ctx->bytes_delivered;
-
-        if ((rv = ap_get_brigade(f->next, bb, mode,
-                                 &chunk_bytes)) != APR_SUCCESS) {
-            return rv;
-        }
-
-        /* Walk through the body, accounting for bytes, and removing an eos
-         * bucket if ap_http_filter() delivered the entire chunk.
-         *
-         * ### this shouldn't be necessary. 1) ap_http_filter shouldn't be
-         * ### adding EOS buckets. 2) it shouldn't return more bytes than
-         * ### we requested, therefore the total len can be found with a
-         * ### simple call to apr_brigade_length(). no further munging
-         * ### would be needed.
-         */
-        b = APR_BRIGADE_FIRST(bb);
-        while (b != APR_BRIGADE_SENTINEL(bb) && !APR_BUCKET_IS_EOS(b)) {
-            apr_bucket_read(b, &buf, &len, mode);
-            AP_DEBUG_ASSERT(len <= ctx->chunk_size - ctx->bytes_delivered);
-            ctx->bytes_delivered += len;
-            b = APR_BUCKET_NEXT(b);
-        }
-        if (ctx->bytes_delivered == ctx->chunk_size) {
-            AP_DEBUG_ASSERT(APR_BUCKET_IS_EOS(b));
-            apr_bucket_delete(b);
-            ctx->state = WANT_TRL;
-        }
-    }
-
-    return APR_SUCCESS;
-}
-
 typedef struct http_filter_ctx {
-    apr_bucket_brigade *b;
+    int status;
+    apr_size_t remaining;
+    enum {
+        BODY_NONE   /* must have value of zero */,
+        BODY_LENGTH,
+        BODY_CHUNK
+    } state;
 } http_ctx_t;
 
+/* Hi, I'm the main input filter for HTTP requests. 
+ * I handle chunked and content-length bodies. */
 apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b, ap_input_mode_t mode, apr_off_t *readbytes)
 {
     apr_bucket *e;
-    char *buff;
-    apr_size_t len;
-    char *pos;
     http_ctx_t *ctx = f->ctx;
     apr_status_t rv;
 
     if (!ctx) {
-        f->ctx = ctx = apr_pcalloc(f->c->pool, sizeof(*ctx));
-        ctx->b = apr_brigade_create(f->c->pool);
+        f->ctx = ctx = apr_pcalloc(f->r->pool, sizeof(*ctx));
+        ctx->status = f->r->status;
     }
 
-    if (mode == AP_MODE_PEEK) {
-        apr_bucket *e;
-        const char *str;
-        apr_size_t length;
+    /* Basically, we have to stay out of the way until server/protocol.c
+     * says it is okay - which it does by setting r->status to OK. */
+    if (f->r->status != ctx->status)
+    {
+        int old_status;
+        /* Allow us to be reentrant! */
+        old_status = ctx->status;
+        ctx->status = f->r->status;
 
-        /* The purpose of this loop is to ignore any CRLF (or LF) at the end
-         * of a request.  Many browsers send extra lines at the end of POST
-         * requests.  We use the PEEK method to determine if there is more
-         * data on the socket, so that we know if we should delay sending the
-         * end of one request until we have served the second request in a
-         * pipelined situation.  We don't want to actually delay sending a
-         * response if the server finds a CRLF (or LF), becuause that doesn't
-         * mean that there is another request, just a blank line.
-         */
-        while (1) {
-            if (APR_BRIGADE_EMPTY(ctx->b)) {
-                e = NULL;
-            }
-            else {
-                e = APR_BRIGADE_FIRST(ctx->b);
-            }
-            if (!e || apr_bucket_read(e, &str, &length, APR_NONBLOCK_READ) != APR_SUCCESS) {
-                return APR_EOF;
-            }
-            else {
-                const char *c = str;
-                while (c < str + length) {
-                    if (*c == APR_ASCII_LF)
-                        c++;
-                    else if (*c == APR_ASCII_CR && *(c + 1) == APR_ASCII_LF)
-                        c += 2;
-                    else return APR_SUCCESS;
-                }
-                apr_bucket_delete(e);
-            }
-        }
-    }
+        if (old_status == HTTP_REQUEST_TIME_OUT && f->r->status == HTTP_OK)
+        {
+            const char *tenc, *lenp;
+            tenc = apr_table_get(f->r->headers_in, "Transfer-Encoding");
+            lenp = apr_table_get(f->r->headers_in, "Content-Length");
 
-    if (APR_BRIGADE_EMPTY(ctx->b)) {
-        if ((rv = ap_get_brigade(f->next, ctx->b, mode, readbytes)) != APR_SUCCESS) {
-            return rv;
-        }
-    }
-
-    /* If readbytes is -1, we want to just read everything until the end
-     * of the brigade, which in this case means the end of the socket.  To
-     * do this, we loop through the entire brigade, until the socket is
-     * exhausted, at which point, it will automagically remove itself from
-     * the brigade.
-     */
-    if (*readbytes == -1) {
-        apr_bucket *e;
-        apr_off_t total;
-        APR_BRIGADE_FOREACH(e, ctx->b) {
-            const char *str;
-            apr_size_t len;
-            apr_bucket_read(e, &str, &len, APR_BLOCK_READ);
-        }
-        APR_BRIGADE_CONCAT(b, ctx->b);
-        apr_brigade_length(b, 1, &total);
-        *readbytes = total;
-        e = apr_bucket_eos_create();
-        APR_BRIGADE_INSERT_TAIL(b, e);
-        return APR_SUCCESS;
-    }
-    /* readbytes == 0 is "read a single line". otherwise, read a block. */
-    if (*readbytes) {
-        apr_off_t total;
-
-        /* ### the code below, which moves bytes from one brigade to the
-           ### other is probably bogus. presuming the next filter down was
-           ### working properly, it should not have returned more than
-           ### READBYTES bytes, and we wouldn't have to do any work.
-        */
-
-        APR_BRIGADE_NORMALIZE(ctx->b);
-        if (APR_BRIGADE_EMPTY(ctx->b)) {
-            if ((rv = ap_get_brigade(f->next, ctx->b, mode, readbytes)) != APR_SUCCESS) {
-                return rv;
-            }
-        }
+            if (tenc) {
+                if (!strcasecmp(tenc, "chunked")) {
+                    char line[30];
             
-        apr_brigade_partition(ctx->b, *readbytes, &e);
-        APR_BRIGADE_CONCAT(b, ctx->b);
-        if (e != APR_BRIGADE_SENTINEL(ctx->b)) {
-            apr_bucket_brigade *temp;
+                    if ((rv = ap_getline(line, sizeof(line), f->r, 0)) < 0) {
+                        return rv;
+                    }
+                    ctx->state = BODY_CHUNK;
+                    ctx->remaining = get_chunk_size(line);
+                }
+            }
+            else if (lenp) {
+                const char *pos = lenp;
 
-            temp = apr_brigade_split(b, e);
-
-            /* ### darn. gotta ensure the split brigade is in the proper pool.
-               ### this is a band-aid solution; we shouldn't even be doing
-               ### all of this brigade munging (per the comment above).
-               ### until then, this will get the right lifetimes. */
-            APR_BRIGADE_CONCAT(ctx->b, temp);
-        }
-        else {
-            if (!APR_BRIGADE_EMPTY(ctx->b)) {
-                ctx->b = NULL; /*XXX*/
+                while (apr_isdigit(*pos) || apr_isspace(*pos))
+                    ++pos;
+                if (*pos == '\0') {
+                    ctx->state = BODY_LENGTH;
+                    ctx->remaining = atol(lenp);
+                }
             }
         }
-        apr_brigade_length(b, 1, &total);
-        *readbytes -= total;
-
-        /* ### this is a hack. it is saying, "if we have read everything
-           ### that was requested, then we are at the end of the request."
-           ### it presumes that the next filter up will *only* call us
-           ### with readbytes set to the Content-Length of the request.
-           ### that may not always be true, and this code is *definitely*
-           ### too presumptive of the caller's intent. the point is: this
-           ### filter is not the guy that is parsing the headers or the
-           ### chunks to determine where the end of the request is, so we
-           ### shouldn't be monkeying with EOS buckets.
-        */
-        if (*readbytes == 0) {
-            apr_bucket *eos = apr_bucket_eos_create();
-                
-            APR_BRIGADE_INSERT_TAIL(b, eos);
-        }
-        return APR_SUCCESS;
     }
 
-    /* we are reading a single line, e.g. the HTTP headers */
-    while (!APR_BRIGADE_EMPTY(ctx->b)) {
-        e = APR_BRIGADE_FIRST(ctx->b);
-        if ((rv = apr_bucket_read(e, (const char **)&buff, &len, mode)) != APR_SUCCESS) {
-            return rv;
-        }
-
-        pos = memchr(buff, APR_ASCII_LF, len);
-        if (pos != NULL) {
-            apr_bucket_split(e, pos - buff + 1);
-            APR_BUCKET_REMOVE(e);
+    if (!ctx->remaining)
+    {
+        switch (ctx->state)
+        {
+        case BODY_NONE:
+            break;
+        case BODY_LENGTH:
+            e = apr_bucket_eos_create();
             APR_BRIGADE_INSERT_TAIL(b, e);
             return APR_SUCCESS;
+        case BODY_CHUNK:
+            {
+                char line[30];
+        
+                ctx->state = BODY_NONE;
+
+                /* We need to read the CRLF after the chunk.  */
+                if ((rv = ap_getline(line, sizeof(line), f->r, 0)) < 0) {
+                    return rv;
+                }
+
+                /* Read the real chunk line. */
+                if ((rv = ap_getline(line, sizeof(line), f->r, 0)) < 0) {
+                    return rv;
+                }
+                ctx->state = BODY_CHUNK;
+                ctx->remaining = get_chunk_size(line);
+
+                if (!ctx->remaining)
+                {
+                    e = apr_bucket_eos_create();
+                    APR_BRIGADE_INSERT_TAIL(b, e);
+                    return APR_SUCCESS;
+                }
+            }
+            break;
         }
-        APR_BUCKET_REMOVE(e);
-        APR_BRIGADE_INSERT_TAIL(b, e);
     }
+
+    rv = ap_get_brigade(f->next, b, mode, readbytes);
+
+    if (rv != APR_SUCCESS)
+        return rv;
+
+    if (ctx->state != BODY_NONE)
+        ctx->remaining -= *readbytes;
+
     return APR_SUCCESS;
 }
 
@@ -1406,7 +1258,6 @@ AP_DECLARE(int) ap_setup_client_block(request_rec *r, int read_policy)
         }
 
         r->read_chunked = 1;
-        ap_add_input_filter("DECHUNK", NULL, r, r->connection);
     }
     else if (lenp) {
         const char *pos = lenp;

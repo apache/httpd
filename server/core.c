@@ -2747,23 +2747,145 @@ static int default_handler(request_rec *r)
     return ap_pass_brigade(r->output_filters, bb);
 }
 
+typedef struct core_filter_ctx {
+    apr_bucket_brigade *b;
+} core_ctx_t;
+
 static int core_input_filter(ap_filter_t *f, apr_bucket_brigade *b, ap_input_mode_t mode, apr_off_t *readbytes)
 {
     apr_bucket *e;
+    apr_status_t rv;
+    core_ctx_t *ctx = f->ctx;
+    char *buff, *pos;
+    apr_size_t len;
 
-    if (!f->ctx) {    /* If we haven't passed up the socket yet... */
-        f->ctx = (void *)1;
+    if (!ctx)
+    {
+        f->ctx = ctx = apr_pcalloc(f->c->pool, sizeof(*ctx));
+        ctx->b = apr_brigade_create(f->c->pool);
+
+        /* seed the brigade with the client socket. */
         e = apr_bucket_socket_create(f->c->client_socket);
+        APR_BRIGADE_INSERT_TAIL(ctx->b, e);
+    }
+
+    if (mode == AP_MODE_PEEK) {
+        apr_bucket *e;
+        const char *str, *c;
+        apr_size_t length;
+
+        /* The purpose of this loop is to ignore any CRLF (or LF) at the end
+         * of a request.  Many browsers send extra lines at the end of POST
+         * requests.  We use the PEEK method to determine if there is more
+         * data on the socket, so that we know if we should delay sending the
+         * end of one request until we have served the second request in a
+         * pipelined situation.  We don't want to actually delay sending a
+         * response if the server finds a CRLF (or LF), becuause that doesn't
+         * mean that there is another request, just a blank line.
+         */
+        while (1) {
+
+            if (APR_BRIGADE_EMPTY(ctx->b))
+                return APR_EOF;
+
+            e = APR_BRIGADE_FIRST(ctx->b);
+
+            rv = apr_bucket_read(e, &str, &length, APR_NONBLOCK_READ);
+
+            if (rv != APR_SUCCESS)
+                return rv;
+
+            c = str;
+            while (c < str + length) {
+                if (*c == APR_ASCII_LF)
+                    c++;
+                else if (*c == APR_ASCII_CR && *(c + 1) == APR_ASCII_LF)
+                    c += 2;
+                else 
+                    return APR_SUCCESS;
+            }
+            /* If we reach here, we were a bucket just full of CRLFs, so
+             * just toss the bucket. */
+            /* FIXME: Is this the right thing to do in the core? */
+            apr_bucket_delete(e);
+        }
+    }
+
+    /* If readbytes is -1, we want to just read everything until the end
+     * of the brigade, which in this case means the end of the socket.  To
+     * do this, we loop through the entire brigade, until the socket is
+     * exhausted, at which point, it will automagically remove itself from
+     * the brigade.
+     */
+    if (*readbytes == -1) {
+        apr_bucket *e;
+        apr_off_t total;
+        const char *str;
+        apr_size_t len;
+        APR_BRIGADE_FOREACH(e, ctx->b) {
+            /* We don't care about these values.  We just want to force the
+             * lower level to just read it. */
+            apr_bucket_read(e, &str, &len, APR_BLOCK_READ);
+        }
+        APR_BRIGADE_CONCAT(b, ctx->b);
+
+        /* Force a recompute of the length */
+        apr_brigade_length(b, 1, &total);
+        *readbytes = total;
+        /* We have read until the brigade was empty, so we know that we 
+         * must be EOS. */
+        e = apr_bucket_eos_create();
         APR_BRIGADE_INSERT_TAIL(b, e);
         return APR_SUCCESS;
     }
-    else {            
-        /* Either some code lost track of the socket
-         * bucket or we already found out that the
-         * client closed.
-         */
-        return APR_EOF;
+    /* readbytes == 0 is "read a single line". otherwise, read a block. */
+    if (*readbytes) {
+        apr_off_t total;
+        apr_bucket *e;
+        apr_bucket_brigade *newbb;
+
+        newbb = NULL;
+
+        apr_brigade_partition(ctx->b, *readbytes, &e);
+        /* Must do split before CONCAT */
+        if (e != APR_BRIGADE_SENTINEL(ctx->b)) {
+            newbb = apr_brigade_split(ctx->b, e);
+        }
+        APR_BRIGADE_CONCAT(b, ctx->b);
+
+        /* FIXME: Is this really needed?  Due to pointer use in sentinels,
+         * I think so. */
+        if (newbb)
+            APR_BRIGADE_CONCAT(ctx->b, newbb);
+
+        apr_brigade_length(b, 1, &total);
+        *readbytes = total;
+
+        return APR_SUCCESS;
     }
+
+    /* we are reading a single LF line, e.g. the HTTP headers */
+    while (!APR_BRIGADE_EMPTY(ctx->b)) {
+        e = APR_BRIGADE_FIRST(ctx->b);
+        if ((rv = apr_bucket_read(e, (const char **)&buff, &len, 
+                                  mode)) != APR_SUCCESS) {
+            return rv;
+        }
+
+        pos = memchr(buff, APR_ASCII_LF, len);
+        /* We found a match. */
+        if (pos != NULL) {
+            apr_bucket_split(e, pos - buff + 1);
+            APR_BUCKET_REMOVE(e);
+            APR_BRIGADE_INSERT_TAIL(b, e);
+            return APR_SUCCESS;
+        }
+        APR_BUCKET_REMOVE(e);
+        APR_BRIGADE_INSERT_TAIL(b, e);
+        *readbytes += len;
+    }
+
+    return APR_SUCCESS;
 }
 
 /* Default filter.  This filter should almost always be used.  Its only job

@@ -205,7 +205,6 @@ AP_CORE_DECLARE(int) ap_getline(char *s, int n, request_rec *r, int fold)
     int total = 0;
     int looking_ahead = 0;
     apr_size_t length;
-    conn_rec *c = r->connection;
     core_request_config *req_cfg;
     apr_bucket_brigade *b;
     apr_bucket *e;
@@ -219,7 +218,7 @@ AP_CORE_DECLARE(int) ap_getline(char *s, int n, request_rec *r, int fold)
     while (1) {
         if (APR_BRIGADE_EMPTY(b)) {
             apr_off_t zero = 0;
-            if ((retval = ap_get_brigade(c->input_filters, b,
+            if ((retval = ap_get_brigade(r->input_filters, b,
                                          AP_MODE_BLOCKING,
                                          &zero /* readline */)) != APR_SUCCESS ||
                 APR_BRIGADE_EMPTY(b)) {
@@ -562,6 +561,9 @@ request_rec *ap_read_request(conn_rec *conn)
     r->notes           = apr_table_make(r->pool, 5);
 
     r->request_config  = ap_create_request_config(r->pool);
+    /* Must be set before we run create request hook */
+    r->output_filters  = conn->output_filters;
+    r->input_filters   = conn->input_filters;
     ap_run_create_request(r);
     r->per_dir_config  = r->server->lookup_defaults;
 
@@ -572,8 +574,6 @@ request_rec *ap_read_request(conn_rec *conn)
 
     r->status          = HTTP_REQUEST_TIME_OUT;  /* Until we get a request */
     r->the_request     = NULL;
-    r->output_filters  = conn->output_filters;
-    r->input_filters   = conn->input_filters;
 
     apr_setsocketopt(conn->client_socket, APR_SO_TIMEOUT, 
                      (int)(keptalive
