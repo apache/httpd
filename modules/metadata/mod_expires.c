@@ -359,9 +359,9 @@ static const char *set_expiresbytype(cmd_parms *cmd, void *in_dir_config,
 {
     expires_dir_config *dir_config = in_dir_config;
     char *response, *real_code;
-    char *check;
+    const char *check;
 
-    check = strrchr(mime, '/');
+    check = ap_strrchr_c(mime, '/');
     if ((strlen(++check) == 1) && (*check == '*')) {
         dir_config->wildcards = 1;
     }
