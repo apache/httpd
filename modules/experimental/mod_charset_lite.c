@@ -66,10 +66,6 @@
  * !!!This is an extremely cheap ripoff of mod_charset.c from Russian Apache!!!
  */
 
-#ifdef HAVE_STDIO_H
-#include <stdio.h>
-#endif
-
 #include "httpd.h"
 #include "http_config.h"
 #include "http_core.h"
@@ -360,12 +356,15 @@ static void xlate_register_filter(request_rec *r)
  * translation mechanics:
  *   we don't handle characters that straddle more than two buckets; an error
  *   will be generated
+ *
+ *   we don't signal an error if we get EOS but we're in the middle of an input
+ *   character
  */
 
 /* send_downstream() is passed the translated data; it puts it in a single-
  * bucket brigade and passes the brigade to the next filter
  */
-static int send_downstream(ap_filter_t *f, const char *tmp, apr_ssize_t len)
+static apr_status_t send_downstream(ap_filter_t *f, const char *tmp, apr_ssize_t len)
 {
     ap_bucket_brigade *bb;
 
@@ -374,13 +373,13 @@ static int send_downstream(ap_filter_t *f, const char *tmp, apr_ssize_t len)
     return ap_pass_brigade(f->next, bb);
 }
 
-static void send_eos(ap_filter_t *f)
+static apr_status_t send_eos(ap_filter_t *f)
 {
     ap_bucket_brigade *bb;
 
     bb = ap_brigade_create(f->r->pool);
     ap_brigade_append_buckets(bb, ap_bucket_create_eos());
-    ap_pass_brigade(f->next, bb);
+    return ap_pass_brigade(f->next, bb);
 }
 
 static void remove_and_destroy(ap_bucket_brigade *bb, ap_bucket *b)
@@ -440,8 +439,7 @@ static apr_status_t finish_partial_char(ap_filter_t *f,
         ctx->saved = 0;
     }
 
-    /* huh?  we can catch errors here... */
-    return APR_SUCCESS;
+    return rv;
 }
 
 /* xlate_filter() handles arbirary conversions from one charset to another...
@@ -449,7 +447,7 @@ static apr_status_t finish_partial_char(ap_filter_t *f,
  * where the filter's context data is set up... the context data gives us
  * the translation handle
  */
-static int xlate_filter(ap_filter_t *f, ap_bucket_brigade *bb)
+static apr_status_t xlate_filter(ap_filter_t *f, ap_bucket_brigade *bb)
 {
     charset_req_t *reqinfo = ap_get_module_config(f->r->request_config,
                                                   &charset_lite_module);
@@ -462,8 +460,6 @@ static int xlate_filter(ap_filter_t *f, ap_bucket_brigade *bb)
     char tmp[XLATE_BUF_SIZE];
     apr_ssize_t space_avail;
     int done;
-    int bytes_sent_downstream = 0;
-    int written;
     apr_status_t rv = APR_SUCCESS;
 
     if (debug) {
@@ -522,7 +518,7 @@ static int xlate_filter(ap_filter_t *f, ap_bucket_brigade *bb)
                  * convert it until we look at the next bucket.
                  */
                 set_aside_partial_char(f, cur_str, cur_len);
-                rv = 0;
+                rv = APR_SUCCESS;
                 cur_len = 0;
             }
         }
@@ -530,21 +526,19 @@ static int xlate_filter(ap_filter_t *f, ap_bucket_brigade *bb)
         if (rv != APR_SUCCESS) {
             /* bad input byte; we can't continue */
             done = 1;
+            ap_log_error(APLOG_MARK, APLOG_DEBUG, rv, f->r->server,
+                         "xlate_filter() - apr_xlate_conv_buffer() failed"); 
         }
 
         if (space_avail < XLATE_MIN_BUFF_LEFT) {
             /* It is time to flush, as there is not enough space left in the
              * current output buffer to bother with converting more data.
              */
-            /* TODO: handle errors from this operation */
-            written = send_downstream(f, tmp, sizeof(tmp) - space_avail);
+            rv = send_downstream(f, tmp, sizeof(tmp) - space_avail);
+            if (rv == APR_SUCCESS) {
+                done = 1;
+            }
             
-            /* The filters (or ap_r* routines) upstream apparently want 
-             * to know how many bytes were written, not how many of their 
-             * bytes were accepted.
-             */
-            bytes_sent_downstream += written;
-
             /* tmp is now empty */
             space_avail = sizeof(tmp);
         }
@@ -552,12 +546,12 @@ static int xlate_filter(ap_filter_t *f, ap_bucket_brigade *bb)
 
     if (rv == APR_SUCCESS) {
         if (space_avail < sizeof(tmp)) { /* gotta write out what we converted */
-            written = send_downstream(f, tmp, sizeof(tmp) - space_avail);
-            bytes_sent_downstream += written;
+            rv = send_downstream(f, tmp, sizeof(tmp) - space_avail);
         }
-        
+    }
+    if (rv == APR_SUCCESS) {
         if (cur_len == AP_END_OF_BRIGADE) {
-            send_eos(f);
+            rv = send_eos(f);
         }
     }
     else {
@@ -565,7 +559,7 @@ static int xlate_filter(ap_filter_t *f, ap_bucket_brigade *bb)
                       "xlate_filter() - returning error");
     }
 
-    return bytes_sent_downstream;
+    return rv;
 }
 
 static const command_rec cmds[] =
@@ -608,6 +602,6 @@ module charset_lite_module =
     NULL,
     cmds,
     NULL,
-   charset_register_hooks,
+    charset_register_hooks,
 };
 

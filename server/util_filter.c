@@ -152,7 +152,7 @@ API_EXPORT(void) ap_add_filter(const char *name, void *ctx, request_rec *r)
  * the current filter.  At that point, we can just call the first filter in
  * the stack, or r->filters.
  */
-API_EXPORT(int) ap_pass_brigade(ap_filter_t *next, ap_bucket_brigade *bb)
+API_EXPORT(apr_status_t) ap_pass_brigade(ap_filter_t *next, ap_bucket_brigade *bb)
 {
     if (next) {
         return next->filter_func(next, bb);
