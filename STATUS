@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:						-*-text-*-
-Last modified at [$Date: 2002/02/06 18:39:50 $]
+Last modified at [$Date: 2002/02/06 19:42:12 $]
 
 Release:
 
@@ -40,7 +40,7 @@ on related projects:
     * docs/STATUS
 
 
-RELEASE SHOWSTOPPERS:
+BETA RELEASE SHOWSTOPPERS:
     * 31 BETA STATUS:
         running on Daedalus since  02-Feb-2002 7:58 PST (need 3 days)
         Compiles on : AIX 4.3, Solaris, FreeBSD 3.4 & 4.5, Win32, 
@@ -136,16 +136,7 @@ RELEASE SHOWSTOPPERS:
           Unless it's the code that permits 'null' merges, per module.
           Still, it's probably in SetOutputFilter's behavior.
         * BrianP notes: directory_walk's handling of trailing slashes
-          appears to be the cause: http://www.apachelabs.org/apache-mbox/200112.mbox/%3c3C1CF721.1090300@pacbell.net%3e
-
-    * Test suite failures:
-      o worker is also failing some of the 'cgi' subtests
-      (see <URL:http://Source-Zone.Org/Apache/regression/>):
-        Justin says: "Worker should be fine and passes httpd-test here.
-                      If you can provide evidence that it can be reproduced
-                      outside of httpd-test, then it's a showstopper.  I
-                      think it's a perl or a httpd-test problem."
-        Not a showstopper: Justin
+          appears to be the cause: http://apachelabs.org/apache-mbox/200112.mbox/%3c3C1CF721.1090300@pacbell.net%3e
 
     * If any request gets to the core handler, without a flag that this 
       r->filename was tested by dir/file_walk, we need to 500 at the very 
@@ -169,7 +160,18 @@ RELEASE SHOWSTOPPERS:
         IanH says: "If we don't do it before we go live we will have 2
                     different API's to support in APR"
 
-    * A binbuild installation picks up the right libraries when
+FINAL RELEASE SHOWSTOPPERS:
+
+    * [Ken] Test suite failures:
+      o worker is also failing some of the 'cgi' subtests
+      (see <URL:http://Source-Zone.Org/Apache/regression/>):
+        Justin says: "Worker should be fine and passes httpd-test here.
+                      If you can provide evidence that it can be reproduced
+                      outside of httpd-test, then it's a showstopper.  I
+                      think it's a perl or a httpd-test problem."
+        Not a showstopper: Justin
+
+    * [Ken] A binbuild installation picks up the right libraries when
       running apachectl because we set the appropriate environment
       variable, but ab, htpasswd, etc. don't know how to pick up apr,
       apr-util, etc.
@@ -220,7 +222,7 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
       indicated?
         Message-ID: <20020129210006.B23512@Lithium.MeepZor.Com>
 
-      +1:  
+      +1:  Ken
       -1:  Justin, Ian
         
     * If the parent process dies, should the remaining child processes
@@ -250,8 +252,9 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
       on dev@apr:
         Message-ID: <20020111115006.K1529@clove.org>
        Vote: Is a non-portable perchild going to hold up a GA release?
-        Yes: Ken
-         No: Aaron, Justin, trawick, stoddard, Jim, Ian, BrianP, gregames
+        Yes: 
+         No: Aaron, Justin, trawick, stoddard, Jim, Ian, BrianP, gregames,
+             Ken
 
     * Recent changes to ap_rgetline may have broken EBCDIC boxes.
         Message-ID: <20020122072605.GF28051@ebuilt.com>
@@ -274,12 +277,10 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
       routine, which will do single-byte reads until it finds the end
       of the header, at which point it constructs a pipe-bucket (buffered)
       to read from.
-
       Proposed solution in:
         Message-ID: <3C36ADAF.60601@cnet.com>
 
     * Try to get libtool inter-library dependency code working on AIX.
-
         Message-ID: <cm3n10lx555.fsf@rdu163-40-092.nc.rr.com>
 
       Justin says: If we get it working on AIX, we can enable this
@@ -308,9 +309,8 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
       lost.  This might be an APR issue with how it deals with
       the child_init hook (i.e. the fcntl lock needs to be resynced).
       More examination and analysis is required.
-      Status: This has also been reported on Cygwin.  
-
-      Message-ID: <3C2CC514.8EF3BED1@wapme-systems.de> (cygnus)
+        Status: This has also been reported on Cygwin.  
+        Message-ID: <3C2CC514.8EF3BED1@wapme-systems.de> (cygnus)
 
       Justin says: So, FreeBSD-CURRENT and Cywin have the same 
                    problem.  Yum.  If another platform has this
@@ -349,14 +349,14 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
       Reasons include sole-function servers that need to die if
       an external dependency (e.g., a database) fails, et cetera.
       Perhaps something in the (ever more abused) scoreboard?
-	rbb:  I don't believe the scoreboard is the correct mechanism
-	for this.  We already have a pipe that goes between parent
-	and child for graceful shutdown events, along with an API that
-	can be used to send a message down that pipe.  In threaded MPMs,
-	it is easy enough to make that one pipe be used for graceful
-	and graceless events, and it is also easy to open that pipe
-	to both parent and child for writing.  Then we just need to figure
-	out how to do graceless on non-threaded MPMs.
+	rbb: I don't believe the scoreboard is the correct mechanism
+	     for this.  We already have a pipe that goes between parent
+	     and child for graceful shutdown events, along with an API that
+	     can be used to send a message down that pipe.  In threaded MPMs,
+	     it is easy enough to make that one pipe be used for graceful
+	     and graceless events, and it is also easy to open that pipe
+	     to both parent and child for writing.  Then we just need to
+             figure out how to do graceless on non-threaded MPMs.
 
     * revamp the input filter behavior, per discussions since
       February (and especially at the hackathon last
@@ -367,7 +367,7 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
       f->next (ap_getline will always read "top of input stack"). Also 
       fix the bug where request body content will end up closing the
       connection (buggering up persistent conns).
-      Status: Justin is working on this as fast as he can.
+        Status: Justin is working on this as fast as he can.
               The core input filters, HTTP-related filters, mod_ssl,
               mod_proxy, and ap_[r]getline are switched to the new logic.  
 
@@ -453,6 +453,8 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
                   have something to look at/compare with.
 
     * Eliminate unnecessary creation of pipes in mod_cgid
+        Status: Ken asks, didn't Jeff fix this when he fixed the queue
+                overrun?
 
     * the autoconf setup should be fixed to default to using the 
       "Apache" layout from config.layout, and each variable settable
@@ -481,10 +483,10 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
     * Mass vhosting version of suEXEC.
 
     * All DBMs suffer from confusion in support/dbmmanage (perl script) since 
-        the dbmmanage employs the first-matched dbm format.  This is not
-        necessarily the library that Apache was built with.  Aught to
-        rewrite dbmmanage upon installation to bin/ with the proper library 
-        for predictable mod_auth_dbm administration.
+      the dbmmanage employs the first-matched dbm format.  This is not
+      necessarily the library that Apache was built with.  Aught to
+      rewrite dbmmanage upon installation to bin/ with the proper library 
+      for predictable mod_auth_dbm administration.
         Questions; htdbm exists, time to kill dbmmanage, or does it remain
                    useful as a perl dbm management example?  If we keep it,
                    do we address the issue above?
@@ -500,8 +502,8 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
                     a userlist via dbm, which has to remain readable between
                     builds/machines, etc.  The use-multiple database schema
                     for apr-util would let us do this with just apr, though."
-		Ian says:  "multi-dbm is in, but it still has ndbm support hardcoded
-		            is this still required? isn't ndbm supported via gdbm?"
+	Ian says:  "multi-dbm is in, but it still has ndbm support hardcoded
+	            is this still required? isn't ndbm supported via gdbm?"
 
 
     * Integrate mod_dav.
