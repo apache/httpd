@@ -740,7 +740,7 @@ static void get_mime_headers(request_rec *r)
 	/* XXX: RFC2068 defines only SP and HT as whitespace, this test is
 	 * wrong... and so are many others probably.
 	 */
-        while (isspace(*value))
+        while (ap_isspace(*value))
             ++value;            /* Skip to start of value   */
 
 	/* XXX: should strip trailing whitespace as well */
@@ -1380,7 +1380,7 @@ API_EXPORT(int) ap_setup_client_block(request_rec *r, int read_policy)
     else if (lenp) {
         const char *pos = lenp;
 
-        while (isdigit(*pos) || isspace(*pos))
+        while (ap_isdigit(*pos) || ap_isspace(*pos))
             ++pos;
         if (*pos != '\0') {
             ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r->server,
@@ -2071,11 +2071,11 @@ void ap_send_error_response(request_rec *r, int recursive_error)
          */
         if (r->status_line != NULL
             && strlen(r->status_line) > 4       /* long enough */
-            && isdigit(r->status_line[0])
-            && isdigit(r->status_line[1])
-            && isdigit(r->status_line[2])
-            && isspace(r->status_line[3])
-            && isalnum(r->status_line[4])) {
+            && ap_isdigit(r->status_line[0])
+            && ap_isdigit(r->status_line[1])
+            && ap_isdigit(r->status_line[2])
+            && ap_isspace(r->status_line[3])
+            && ap_isalnum(r->status_line[4])) {
             title = r->status_line;
         }
 

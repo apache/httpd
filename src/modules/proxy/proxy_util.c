@@ -75,18 +75,18 @@ int ap_proxy_hex2c(const char *x)
 
 #ifndef CHARSET_EBCDIC
     ch = x[0];
-    if (isdigit(ch))
+    if (ap_isdigit(ch))
 	i = ch - '0';
-    else if (isupper(ch))
+    else if (ap_isupper(ch))
 	i = ch - ('A' - 10);
     else
 	i = ch - ('a' - 10);
     i <<= 4;
 
     ch = x[1];
-    if (isdigit(ch))
+    if (ap_isdigit(ch))
 	i += ch - '0';
-    else if (isupper(ch))
+    else if (ap_isupper(ch))
 	i += ch - ('A' - 10);
     else
 	i += ch - ('a' - 10);
@@ -188,7 +188,7 @@ char *
 	    }
 	}
 /* recode it, if necessary */
-	if (!isalnum(ch) && !strchr(allowed, ch)) {
+	if (!ap_isalnum(ch) && !strchr(allowed, ch)) {
 	    ap_proxy_c2hex(ch, &y[j]);
 	    j += 2;
 	}
@@ -259,7 +259,7 @@ char *
 	*(strp++) = '\0';
 
 	for (i = 0; strp[i] != '\0'; i++)
-	    if (!isdigit(strp[i]))
+	    if (!ap_isdigit(strp[i]))
 		break;
 
 	if (i == 0 || strp[i] != '\0')
@@ -273,7 +273,7 @@ char *
 	return "Missing host in URL";
 /* check hostname syntax */
     for (i = 0; host[i] != '\0'; i++)
-	if (!isdigit(host[i]) && host[i] != '.')
+	if (!ap_isdigit(host[i]) && host[i] != '.')
 	    break;
     /* must be an IP address */
 #ifdef WIN32
@@ -607,12 +607,12 @@ int ap_proxy_liststr(const char *list, const char *val)
 	    i = p - list;
 	    do
 		p++;
-	    while (isspace(*p));
+	    while (ap_isspace(*p));
 	}
 	else
 	    i = strlen(list);
 
-	while (i > 0 && isspace(list[i - 1]))
+	while (i > 0 && ap_isspace(list[i - 1]))
 	    i--;
 	if (i == len && strncasecmp(list, val, len) == 0)
 	    return 1;
@@ -735,9 +735,9 @@ int ap_proxy_hex2sec(const char *x)
     for (i = 0, j = 0; i < 8; i++) {
 	ch = x[i];
 	j <<= 4;
-	if (isdigit(ch))
+	if (ap_isdigit(ch))
 	    j |= ch - '0';
-	else if (isupper(ch))
+	else if (ap_isupper(ch))
 	    j |= ch - ('A' - 10);
 	else
 	    j |= ch - ('a' - 10);
@@ -803,7 +803,7 @@ const char *
     static APACHE_TLS char *charpbuf[2];
 
     for (i = 0; host[i] != '\0'; i++)
-	if (!isdigit(host[i]) && host[i] != '.')
+	if (!ap_isdigit(host[i]) && host[i] != '.')
 	    break;
 
     if (host[i] != '\0') {
@@ -883,7 +883,7 @@ int ap_proxy_is_ipaddr(struct dirconn_entry *This, pool *p)
 	if (*addr == '/' && quads > 0)	/* netmask starts here. */
 	    break;
 
-	if (!isdigit(*addr))
+	if (!ap_isdigit(*addr))
 	    return 0;		/* no digit at start of quad */
 
 	ip_addr[quads] = strtol(addr, &tmp, 0);
@@ -905,7 +905,7 @@ int ap_proxy_is_ipaddr(struct dirconn_entry *This, pool *p)
     for (This->addr.s_addr = 0, i = 0; i < quads; ++i)
 	This->addr.s_addr |= htonl(ip_addr[i] << (24 - 8 * i));
 
-    if (addr[0] == '/' && isdigit(addr[1])) {	/* net mask follows: */
+    if (addr[0] == '/' && ap_isdigit(addr[1])) {	/* net mask follows: */
 	char *tmp;
 
 	++addr;
@@ -1048,7 +1048,7 @@ int ap_proxy_is_domainname(struct dirconn_entry *This, pool *p)
 	return 0;
 
     /* rfc1035 says DNS names must consist of "[-a-zA-Z0-9]" and '.' */
-    for (i = 0; isalnum(addr[i]) || addr[i] == '-' || addr[i] == '.'; ++i)
+    for (i = 0; ap_isalnum(addr[i]) || addr[i] == '-' || addr[i] == '.'; ++i)
 	continue;
 
 #if 0
@@ -1102,7 +1102,7 @@ int ap_proxy_is_hostname(struct dirconn_entry *This, pool *p)
 	return 0;
 
     /* rfc1035 says DNS names must consist of "[-a-zA-Z0-9]" and '.' */
-    for (i = 0; isalnum(addr[i]) || addr[i] == '-' || addr[i] == '.'; ++i);
+    for (i = 0; ap_isalnum(addr[i]) || addr[i] == '-' || addr[i] == '.'; ++i);
 
 #if 0
     if (addr[i] == ':') {

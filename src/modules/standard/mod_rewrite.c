@@ -850,7 +850,7 @@ static const char *cmd_rewriterule_setflag(pool *p, rewriterule_entry *cfg,
             else if (strcasecmp(val, "seeother") == 0) {
                 status = HTTP_SEE_OTHER;
             }
-            else if (isdigit(*val)) {
+            else if (ap_isdigit(*val)) {
                 status = atoi(val);
             }
             if (!is_HTTP_REDIRECT(status)) {
@@ -2931,7 +2931,7 @@ static char *rewrite_mapfunc_toupper(request_rec *r, char *key)
 
     for (cp = value = ap_pstrdup(r->pool, key); cp != NULL && *cp != '\0';
          cp++) {
-        *cp = toupper(*cp);
+        *cp = ap_toupper(*cp);
     }
     return value;
 }
@@ -2942,7 +2942,7 @@ static char *rewrite_mapfunc_tolower(request_rec *r, char *key)
 
     for (cp = value = ap_pstrdup(r->pool, key); cp != NULL && *cp != '\0';
          cp++) {
-        *cp = tolower(*cp);
+        *cp = ap_tolower(*cp);
     }
     return value;
 }

@@ -309,7 +309,7 @@ otilde\365oslash\370ugrave\371uacute\372yacute\375"     /* 6 */
 
         /* is it numeric ? */
         if (s[1] == '#') {
-            for (j = 2, val = 0; j < i && isdigit(s[j]); j++) {
+            for (j = 2, val = 0; j < i && ap_isdigit(s[j]); j++) {
                 val = val * 10 + s[j] - '0';
             }
             s += i;
@@ -362,7 +362,7 @@ static char *get_tag(pool *p, FILE *in, char *tag, int tagbuf_len, int dodecode)
 
     do {                        /* skip whitespace */
         GET_CHAR(in, c, NULL, p);
-    } while (isspace(c));
+    } while (ap_isspace(c));
 
     /* tags can't start with - */
     if (c == '-') {
@@ -370,7 +370,7 @@ static char *get_tag(pool *p, FILE *in, char *tag, int tagbuf_len, int dodecode)
         if (c == '-') {
             do {
                 GET_CHAR(in, c, NULL, p);
-            } while (isspace(c));
+            } while (ap_isspace(c));
             if (c == '>') {
                 ap_cpystrn(tag, "done", tagbuf_len);
                 return tag;
@@ -385,17 +385,17 @@ static char *get_tag(pool *p, FILE *in, char *tag, int tagbuf_len, int dodecode)
             *t = '\0';
             return NULL;
         }
-        if (c == '=' || isspace(c)) {
+        if (c == '=' || ap_isspace(c)) {
             break;
         }
-        *(t++) = tolower(c);
+        *(t++) = ap_tolower(c);
         GET_CHAR(in, c, NULL, p);
     }
 
     *t++ = '\0';
     tag_val = t;
 
-    while (isspace(c)) {
+    while (ap_isspace(c)) {
         GET_CHAR(in, c, NULL, p);       /* space before = */
     }
     if (c != '=') {
@@ -405,7 +405,7 @@ static char *get_tag(pool *p, FILE *in, char *tag, int tagbuf_len, int dodecode)
 
     do {
         GET_CHAR(in, c, NULL, p);       /* space after = */
-    } while (isspace(c));
+    } while (ap_isspace(c));
 
     /* we should allow a 'name' as a value */
 
@@ -450,7 +450,7 @@ static int get_directive(FILE *in, char *dest, size_t len, pool *p)
     /* skip initial whitespace */
     while (1) {
         GET_CHAR(in, c, 1, p);
-        if (!isspace(c)) {
+        if (!ap_isspace(c)) {
             break;
         }
     }
@@ -459,9 +459,9 @@ static int get_directive(FILE *in, char *dest, size_t len, pool *p)
 	if (d - dest == len) {
 	    return 1;
 	}
-        *d++ = tolower(c);
+        *d++ = ap_tolower(c);
         GET_CHAR(in, c, 1, p);
-        if (isspace(c)) {
+        if (ap_isspace(c)) {
             break;
         }
     }
@@ -524,7 +524,7 @@ static void parse_string(request_rec *r, const char *in, char *out,
 		}
 		else {
 		    start_of_var_name = in;
-		    while (isalnum(*in) || *in == '_') {
+		    while (ap_isalnum(*in) || *in == '_') {
 			++in;
 		    }
 		    end_of_var_name = in;
@@ -1152,7 +1152,7 @@ static const char *get_ptoken(request_rec *r, const char *string, struct token *
         return (char *) NULL;
     }
     while ((ch = *string++)) {
-        if (!isspace(ch)) {
+        if (!ap_isspace(ch)) {
             break;
         }
     }
@@ -1241,7 +1241,7 @@ static const char *get_ptoken(request_rec *r, const char *string, struct token *
             continue;
         }
         if (!qs) {
-            if (isspace(ch)) {
+            if (ap_isspace(ch)) {
                 goto TOKEN_DONE;
             }
             switch (ch) {

@@ -257,7 +257,7 @@ static int scan_meta_file(request_rec *r, FILE *f)
 	}
 
 	*l++ = '\0';
-	while (*l && isspace(*l))
+	while (*l && ap_isspace(*l))
 	    ++l;
 
 	if (!strcasecmp(w, "Content-type")) {
@@ -265,7 +265,7 @@ static int scan_meta_file(request_rec *r, FILE *f)
 	    /* Nuke trailing whitespace */
 
 	    char *endp = l + strlen(l) - 1;
-	    while (endp > l && isspace(*endp))
+	    while (endp > l && ap_isspace(*endp))
 		*endp-- = '\0';
 
 	    tmp = ap_pstrdup(r->pool, l);

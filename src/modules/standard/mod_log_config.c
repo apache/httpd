@@ -584,7 +584,7 @@ static char *parse_log_item(pool *p, log_format_item *it, const char **sa)
         case '8':
         case '9':
             i = *s - '0';
-            while (isdigit(*++s)) {
+            while (ap_isdigit(*++s)) {
                 i = i * 10 + (*s) - '0';
             }
             if (!it->conditions) {

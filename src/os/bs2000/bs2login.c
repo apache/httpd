@@ -118,7 +118,7 @@ int os_init_job_environment(server_rec *server, const char *user_name)
     ap_snprintf(lcl_data.username, sizeof lcl_data.username,
 		"%s", user_name);
     for (cp = lcl_data.username; *cp; ++cp) {
-	*cp = toupper(*cp);
+	*cp = ap_toupper(*cp);
     }
 
     if (bs2000_authfile == NULL) {

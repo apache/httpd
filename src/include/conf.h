@@ -301,7 +301,6 @@ typedef int rlim_t;
 #define NO_SETSID
 #define NEED_STRDUP
 #define HAVE_SYSLOG 1
-#define tolower(c) (isupper(c) ? tolower(c) : c)
 
 #elif defined(NEXT)
 typedef unsigned short mode_t;
@@ -777,8 +776,6 @@ typedef int rlim_t;
 #define NO_KILLPG
 #define NEED_INITGROUPS
 
-#define isascii(c)	(!((c) & ~0177))
-
 #elif defined(WIN32)
 
 /* All windows stuff is now in os/win32/os.h */
@@ -883,7 +880,7 @@ typedef int rlim_t;
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <ctype.h>
+#include "apctype.h"
 #if !defined(MPE) && !defined(WIN32)
 #include <sys/file.h>
 #endif

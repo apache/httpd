@@ -43,7 +43,7 @@ static BOOL sub_canonical_filename(char *szCanon, unsigned nCanon, const char *s
 	ap_assert(strlen(buf) < nCanon);
         strcpy(szCanon, buf);
 	if(szCanon[0] != '\\') { /* a \ at the start means it is UNC, otherwise it is x: */
-	    ap_assert(isalpha(szCanon[0]));
+	    ap_assert(ap_isalpha(szCanon[0]));
 	    ap_assert(szCanon[1] == ':');
 	    szCanon[2] = '/';
 	}
@@ -130,7 +130,7 @@ API_EXPORT(char *) ap_os_canonical_filename(pool *pPool, const char *szFile)
 
     sub_canonical_filename(buf, sizeof buf, b2);
 
-    buf[0]=tolower(buf[0]);
+    buf[0]=ap_tolower(buf[0]);
 
     ap_assert(strlen(buf)+nSlashes < sizeof buf);
     while(nSlashes--)

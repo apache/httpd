@@ -197,7 +197,7 @@ static int get_digest_rec(request_rec *r, digest_header_rec * response)
 	    break;
 
 	case D_VALUE:
-	    if (isalnum(auth_line[0])) {
+	    if (ap_isalnum(auth_line[0])) {
 		value[vv] = auth_line[0];
 		vv++;
 	    }
@@ -225,7 +225,7 @@ static int get_digest_rec(request_rec *r, digest_header_rec * response)
 	    break;
 
 	case D_KEY:
-	    if (isalnum(auth_line[0])) {
+	    if (ap_isalnum(auth_line[0])) {
 		key[vk] = auth_line[0];
 		vk++;
 	    }

@@ -199,7 +199,7 @@ static const command_rec mime_cmds[] =
  * equivalent to 27 in ASCII, and makes it work in EBCDIC.
  */
 #define MIME_HASHSIZE ('z'-'a'+2)
-#define hash(i) (isalpha(i) ? (tolower(i)) - 'a' : (MIME_HASHSIZE-1))
+#define hash(i) (ap_isalpha(i) ? (ap_tolower(i)) - 'a' : (MIME_HASHSIZE-1))
 
 static table *hash_buckets[MIME_HASHSIZE];
 

@@ -145,9 +145,9 @@ static void clear_connection(pool *p, table *headers)
 
     while (*next) {
 	name = next;
-	while (*next && !isspace(*next) && (*next != ','))
+	while (*next && !ap_isspace(*next) && (*next != ','))
 	    ++next;
-	while (*next && (isspace(*next) || (*next == ','))) {
+	while (*next && (ap_isspace(*next) || (*next == ','))) {
 	    *next = '\0';
 	    ++next;
 	}
@@ -219,7 +219,7 @@ int ap_proxy_http_handler(request_rec *r, struct cache_req *c, char *url,
     strp2 = strchr(desthost, ':');
     if (strp2 != NULL) {
 	*(strp2++) = '\0';
-	if (isdigit(*strp2)) {
+	if (ap_isdigit(*strp2)) {
 	    destport = atoi(strp2);
 	    destportstr = strp2;
 	}

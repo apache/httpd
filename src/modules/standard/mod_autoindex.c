@@ -696,7 +696,7 @@ static char *find_title(request_rec *r)
 	}
 	titlebuf[n] = '\0';
 	for (x = 0, p = 0; titlebuf[x]; x++) {
-	    if (toupper(titlebuf[x]) == find[p]) {
+	    if (ap_toupper(titlebuf[x]) == find[p]) {
 		if (!find[++p]) {
 		    if ((p = ap_ind(&titlebuf[++x], '<')) != -1) {
 			titlebuf[x + p] = '\0';
@@ -747,8 +747,8 @@ static struct ent *make_autoindex_entry(char *name, int autoindex_opts,
     p->alt = NULL;
     p->desc = NULL;
     p->lm = -1;
-    p->key = toupper(keyid);
-    p->ascending = (toupper(direction) == D_ASCENDING);
+    p->key = ap_toupper(keyid);
+    p->ascending = (ap_toupper(direction) == D_ASCENDING);
 
     if (autoindex_opts & FANCY_INDEXING) {
 	request_rec *rr = ap_sub_req_lookup_file(name, r);

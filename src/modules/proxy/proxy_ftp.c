@@ -195,8 +195,8 @@ static int ftp_getrc(BUFF *f)
     if (len == -1)
 	return -1;
 /* check format */
-    if (len < 5 || !isdigit(linebuff[0]) || !isdigit(linebuff[1]) ||
-	!isdigit(linebuff[2]) || (linebuff[3] != ' ' && linebuff[3] != '-'))
+    if (len < 5 || !ap_isdigit(linebuff[0]) || !ap_isdigit(linebuff[1]) ||
+	!ap_isdigit(linebuff[2]) || (linebuff[3] != ' ' && linebuff[3] != '-'))
 	status = 0;
     else
 	status = 100 * linebuff[0] + 10 * linebuff[1] + linebuff[2] - 111 * '0';
@@ -236,8 +236,8 @@ static int ftp_getrc_msg(BUFF *f, char *msgbuf, int msglen)
     len = ap_bgets(linebuff, sizeof linebuff, f);
     if (len == -1)
 	return -1;
-    if (len < 5 || !isdigit(linebuff[0]) || !isdigit(linebuff[1]) ||
-	!isdigit(linebuff[2]) || (linebuff[3] != ' ' && linebuff[3] != '-'))
+    if (len < 5 || !ap_isdigit(linebuff[0]) || !ap_isdigit(linebuff[1]) ||
+	!ap_isdigit(linebuff[2]) || (linebuff[3] != ' ' && linebuff[3] != '-'))
 	status = 0;
     else
 	status = 100 * linebuff[0] + 10 * linebuff[1] + linebuff[2] - 111 * '0';
@@ -376,8 +376,8 @@ static long int send_dir(BUFF *f, request_rec *r, BUFF *f2, struct cache_req *c,
 	    ap_cpystrn(buf, buf2, sizeof(buf));
 	    n = strlen(buf);
 	}
-	else if (buf[0] == 'd' || buf[0] == '-' || buf[0] == 'l' || isdigit(buf[0])) {
-	    if (isdigit(buf[0])) {	/* handle DOS dir */
+	else if (buf[0] == 'd' || buf[0] == '-' || buf[0] == 'l' || ap_isdigit(buf[0])) {
+	    if (ap_isdigit(buf[0])) {	/* handle DOS dir */
 		searchptr = strchr(buf, '<');
 		if (searchptr != NULL)
 		    *searchptr = '[';
@@ -543,7 +543,7 @@ int ap_proxy_ftp_handler(request_rec *r, struct cache_req *c, char *url)
     strp = strchr(host, ':');
     if (strp != NULL) {
 	*(strp++) = '\0';
-	if (isdigit(*strp))
+	if (ap_isdigit(*strp))
 	    port = atoi(strp);
     }
 
@@ -933,7 +933,7 @@ int ap_proxy_ftp_handler(request_rec *r, struct cache_req *c, char *url)
 		len = 0;
 	    }
 	    else if (i == 213) { /* Size command ok */
-		for (j = 0; j < resplen && isdigit(resp[j]); j++)
+		for (j = 0; j < resplen && ap_isdigit(resp[j]); j++)
 			;
 		resp[j] = '\0';
 		if (resp[0] != '\0')

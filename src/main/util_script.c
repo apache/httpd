@@ -139,11 +139,11 @@ static char *http2env(pool *a, char *w)
     char *cp = res;
 
     while (*++cp) {
-	if (!isalnum(*cp) && *cp != '_') {
+	if (!ap_isalnum(*cp) && *cp != '_') {
 	    *cp = '_';
 	}
 	else {
-	    *cp = toupper(*cp);
+	    *cp = ap_toupper(*cp);
 	}
     }
 
@@ -172,11 +172,11 @@ API_EXPORT(char **) ap_create_environment(pool *p, table *t)
 	}
 	env[j] = ap_pstrcat(p, elts[i].key, "=", elts[i].val, NULL);
 	whack = env[j];
-	if (isdigit(*whack)) {
+	if (ap_isdigit(*whack)) {
 	    *whack++ = '_';
 	}
 	while (*whack != '=') {
-	    if (!isalnum(*whack) && *whack != '_') {
+	    if (!ap_isalnum(*whack) && *whack != '_') {
 		*whack = '_';
 	    }
 	    ++whack;
@@ -332,15 +332,15 @@ static char *original_uri(request_rec *r)
 
     first = r->the_request;	/* use the request-line */
 
-    while (*first && !isspace(*first)) {
+    while (*first && !ap_isspace(*first)) {
 	++first;		/* skip over the method */
     }
-    while (isspace(*first)) {
+    while (ap_isspace(*first)) {
 	++first;		/*   and the space(s)   */
     }
 
     last = first;
-    while (*last && !isspace(*last)) {
+    while (*last && !ap_isspace(*last)) {
 	++last;			/* end at next whitespace */
     }
 
@@ -492,7 +492,7 @@ static int scan_script_header_err_core(request_rec *r, char *buffer,
 	}
 
 	*l++ = '\0';
-	while (*l && isspace(*l)) {
+	while (*l && ap_isspace(*l)) {
 	    ++l;
 	}
 
@@ -502,7 +502,7 @@ static int scan_script_header_err_core(request_rec *r, char *buffer,
 	    /* Nuke trailing whitespace */
 
 	    char *endp = l + strlen(l) - 1;
-	    while (endp > l && isspace(*endp)) {
+	    while (endp > l && ap_isspace(*endp)) {
 		*endp-- = '\0';
 	    }
 

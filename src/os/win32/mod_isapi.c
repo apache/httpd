@@ -459,7 +459,7 @@ BOOL WINAPI ServerSupportFunction (HCONN hConn, DWORD dwHSERequest,
 	    }
 
 	    *value++ = '\0';
-	    while (*value && isspace(*value)) ++value;
+	    while (*value && ap_isspace(*value)) ++value;
 
 	    /* Check all the special-case headers. Similar to what
 	     * scan_script_header() does (see that function for
@@ -471,7 +471,7 @@ BOOL WINAPI ServerSupportFunction (HCONN hConn, DWORD dwHSERequest,
 		/* Nuke trailing whitespace */
 		
 		char *endp = value + strlen(value) - 1;
-		while (endp > value && isspace(*endp)) *endp-- = '\0';
+		while (endp > value && ap_isspace(*endp)) *endp-- = '\0';
             
 		tmp = ap_pstrdup (r->pool, value);
 		ap_str_tolower(tmp);

@@ -346,8 +346,8 @@ static const char *get_entry(pool *p, accept_rec *result, const char *accept_lin
 
         /* Look for 'var = value' --- and make sure the var is in lcase. */
 
-        for (cp = parm; (*cp && !isspace(*cp) && *cp != '='); ++cp) {
-            *cp = tolower(*cp);
+        for (cp = parm; (*cp && !ap_isspace(*cp) && *cp != '='); ++cp) {
+            *cp = ap_tolower(*cp);
         }
 
         if (!*cp) {
@@ -355,7 +355,7 @@ static const char *get_entry(pool *p, accept_rec *result, const char *accept_lin
         }
 
         *cp++ = '\0';           /* Delimit var */
-        while (*cp && (isspace(*cp) || *cp == '=')) {
+        while (*cp && (ap_isspace(*cp) || *cp == '=')) {
             ++cp;
         }
 
@@ -366,7 +366,7 @@ static const char *get_entry(pool *p, accept_rec *result, const char *accept_lin
                  end++);
         }
         else {
-            for (end = cp; (*end && !isspace(*end)); end++);
+            for (end = cp; (*end && !ap_isspace(*end)); end++);
         }
         if (*end) {
             *end = '\0';        /* strip ending quote or return */
@@ -583,7 +583,7 @@ static enum header_state get_header_line(char *buffer, int len, FILE *map)
 
     /* If blank, just return it --- this ends information on this variant */
 
-    for (cp = buffer; (*cp && isspace(*cp)); ++cp) {
+    for (cp = buffer; (*cp && ap_isspace(*cp)); ++cp) {
         continue;
     }
 
@@ -604,13 +604,13 @@ static enum header_state get_header_line(char *buffer, int len, FILE *map)
                 continue;
             }
         }
-        else if (isspace(c)) {
+        else if (ap_isspace(c)) {
             /* Leading whitespace.  POSSIBLE continuation line
              * Also, possibly blank --- if so, we ungetc() the final newline
              * so that we will pick up the blank line the next time 'round.
              */
 
-            while (c != EOF && c != '\n' && isspace(c)) {
+            while (c != EOF && c != '\n' && ap_isspace(c)) {
                 c = getc(map);
             }
 
@@ -677,7 +677,7 @@ static char *lcase_header_name_return_body(char *header, request_rec *r)
     char *cp = header;
 
     for ( ; *cp && *cp != ':' ; ++cp) {
-        *cp = tolower(*cp);
+        *cp = ap_tolower(*cp);
     }
 
     if (!*cp) {
@@ -688,7 +688,7 @@ static char *lcase_header_name_return_body(char *header, request_rec *r)
 
     do {
         ++cp;
-    } while (*cp && isspace(*cp));
+    } while (*cp && ap_isspace(*cp));
 
     if (!*cp) {
         ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r->server,

@@ -138,7 +138,7 @@ static const char *order(cmd_parms *cmd, void *dv, char *arg)
 
 static int is_ip(const char *host)
 {
-    while ((*host == '.') || isdigit(*host))
+    while ((*host == '.') || ap_isdigit(*host))
 	host++;
     return (*host == '\0');
 }
@@ -204,7 +204,7 @@ static const char *allow_cmd(cmd_parms *cmd, void *dv, char *from, char *where)
 	a->x.ip.mask = mask;
 
     }
-    else if (isdigit(*where) && is_ip(where)) {
+    else if (ap_isdigit(*where) && is_ip(where)) {
 	/* legacy syntax for ip addrs: a.b.c. ==> a.b.c.0/24 for example */
 	int shift;
 	char *t;
@@ -218,11 +218,11 @@ static const char *allow_cmd(cmd_parms *cmd, void *dv, char *from, char *where)
 	shift = 24;
 	while (*s) {
 	    t = s;
-	    if (!isdigit(*t)) {
+	    if (!ap_isdigit(*t)) {
 		a->type = T_FAIL;
 		return "invalid ip address";
 	    }
-	    while (isdigit(*t)) {
+	    while (ap_isdigit(*t)) {
 		++t;
 	    }
 	    if (*t == '.') {

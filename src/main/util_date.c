@@ -97,15 +97,15 @@ API_EXPORT(int) ap_checkmask(const char *data, const char *mask)
 	    return 1;
 
 	case '@':
-	    if (!isupper(d))
+	    if (!ap_isupper(d))
 		return 0;
 	    break;
 	case '$':
-	    if (!islower(d))
+	    if (!ap_islower(d))
 		return 0;
 	    break;
 	case '#':
-	    if (!isdigit(d))
+	    if (!ap_isdigit(d))
 		return 0;
 	    break;
 	case '&':
@@ -113,7 +113,7 @@ API_EXPORT(int) ap_checkmask(const char *data, const char *mask)
 		return 0;
 	    break;
 	case '~':
-	    if ((d != ' ') && !isdigit(d))
+	    if ((d != ' ') && !ap_isdigit(d))
 		return 0;
 	    break;
 	default:
@@ -231,7 +231,7 @@ API_EXPORT(time_t) ap_parseHTTPdate(const char *date)
     if (!date)
 	return BAD_DATE;
 
-    while (*date && isspace(*date))	/* Find first non-whitespace char */
+    while (*date && ap_isspace(*date))	/* Find first non-whitespace char */
 	++date;
 
     if (*date == '\0')

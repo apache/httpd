@@ -257,7 +257,7 @@ static const char *set_cookie_exp(cmd_parms *parms, void *dummy, const char *arg
     char *word;
 
     /* The simple case first - all numbers (we assume) */
-    if (isdigit(arg[0]) && isdigit(arg[strlen(arg) - 1])) {
+    if (ap_isdigit(arg[0]) && ap_isdigit(arg[strlen(arg) - 1])) {
         cls->expires = atol(arg);
         return NULL;
     }
@@ -276,7 +276,7 @@ static const char *set_cookie_exp(cmd_parms *parms, void *dummy, const char *arg
     /* {<num> <type>}* */
     while (word[0]) {
         /* <num> */
-	if (isdigit(word[0]))
+	if (ap_isdigit(word[0]))
             num = atoi(word);
         else
             return "bad expires code, numeric value expected.";

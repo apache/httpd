@@ -263,7 +263,7 @@ static double get_x_coord(const char *args)
         return (-1);            /* in case we aren't passed anything */
     }
 
-    while (*args && !isdigit(*args) && *args != ',') {
+    while (*args && !ap_isdigit(*args) && *args != ',') {
         args++;                 /* jump to the first digit, but not past
                                    a comma or end */
     }
@@ -295,7 +295,7 @@ static double get_y_coord(const char *args)
         start_of_y++;           /* start looking at the character after
                                    the comma */
 
-        while (*start_of_y && !isdigit(*start_of_y)) {
+        while (*start_of_y && !ap_isdigit(*start_of_y)) {
             start_of_y++;       /* jump to the first digit, but not
                                    past the end */
 	}
@@ -326,7 +326,7 @@ static void read_quoted(char **string, char **quoted_part)
     /* assume there's no quoted part */
     *quoted_part = NULL;
 
-    while (isspace(*strp)) {
+    while (ap_isspace(*strp)) {
         strp++;               	/* go along string until non-whitespace */
     }
 
@@ -385,7 +385,7 @@ static char *imap_url(request_rec *r, const char *base, const char *value)
     }
 
     string_pos_const = value;
-    while (isalpha(*string_pos_const)) {
+    while (ap_isalpha(*string_pos_const)) {
 	string_pos_const++;           /* go along the URL from the map
                                          until a non-letter */
     }
@@ -746,17 +746,17 @@ static int imap_handler(request_rec *r)
                sscanf(string_pos, "%lf%*[, ]%lf",
                       &pointarray[vertex][X], &pointarray[vertex][Y]) == 2) {
             /* Now skip what we just read... we can't use ANSIism %n */
-            while (isspace(*string_pos)) {      /* past whitespace */
+            while (ap_isspace(*string_pos)) {      /* past whitespace */
                 string_pos++;
 	    }
-            while (isdigit(*string_pos)) {      /* and the 1st number */
+            while (ap_isdigit(*string_pos)) {      /* and the 1st number */
                 string_pos++;
 	    }
             string_pos++;       /* skip the ',' */
-            while (isspace(*string_pos)) {      /* past any more whitespace */
+            while (ap_isspace(*string_pos)) {      /* past any more whitespace */
                 string_pos++;
 	    }
-            while (isdigit(*string_pos)) {      /* 2nd number */
+            while (ap_isdigit(*string_pos)) {      /* 2nd number */
                 string_pos++;
 	    }
             vertex++;

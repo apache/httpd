@@ -999,7 +999,7 @@ int ch;
 {
 	static char pbuf[10];
 
-	if (isprint(ch) || ch == ' ')
+	if (ap_isprint(ch) || ch == ' ')
 		sprintf(pbuf, "%c", ch);
 	else
 		sprintf(pbuf, "\\%o", ch);
