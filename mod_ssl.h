@@ -100,6 +100,8 @@
 #if APR_HAVE_SYS_TIME_H
 #include <sys/time.h>
 #endif
+/* XXX: these better go away */
+#include <assert.h>
 
 /* OpenSSL headers */
 #include <openssl/ssl.h>
