@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/03/02 18:22:08 $]
+Last modified at [$Date: 2003/03/05 16:42:02 $]
 
 Release:
 
@@ -192,6 +192,11 @@ PATCHES TO PORT FROM 2.1
     * Unescape the supplied wildcard pattern in mod_autoindex. Otherwise
       the pattern will not always match as desired. PR 12596.
       modules/generators/mod_autoindex.c: r1.119
+      +1: nd
+
+    * Restore the ability of htdigest.exe to create files that contain
+      more than one user. PR 12910.
+      support/htdigest.c: r1.35
       +1: nd
 
 CURRENT RELEASE NOTES:
