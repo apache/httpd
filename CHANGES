@@ -1,3 +1,8 @@
+Changes with Apache 2.0.28-dev
+
+  *) Introduce an Apache mod_ssl initial configuration template 
+     (ssl.conf, generated from ssl-std.conf).  [Ralf S. Engelschall]
+
 Changes with Apache 2.0.27
 
   *) Fixed a memory leak in the getline parsing code that could
