@@ -640,8 +640,8 @@ void proxy_hash(const char *it, char *val, int ndepth, int nlength)
 	val[i + nlength] = '/';
 	i += nlength + 1;
     }
-    memcpy(&val[i], &tmp[k], 22 - k);
-    val[i + 22 - k] = '\0';
+    memcpy(&val[i], &tmp[k], 26 - k);
+    val[i + 26 - k] = '\0';
 }
 
 #else
