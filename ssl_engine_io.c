@@ -1213,7 +1213,7 @@ static apr_status_t ssl_io_filter_Upgrade(ap_filter_t *f,
 
     token_string = apr_pstrdup(r->pool,connection);
     token = apr_strtok(token_string,",",&token_state);
-    while (token && strcmp(token,"Upgrade")) {
+    while (token && strcasecmp(token,"Upgrade")) {
         apr_strtok(NULL,",",&token_state);
     }
     /* "Connection: Upgrade" header not found, don't do Upgrade */
