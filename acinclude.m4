@@ -461,7 +461,7 @@ if test "x$ap_ssltk_base" = "x"; then
   ap_ssltk_libdir=""
   for p in $ap_ssltk_base/lib /usr/local/openssl/lib \
            /usr/local/ssl/lib /usr/local/lib /usr/lib /lib /usr/lib64; do
-    if test -f "$p/libssl.a" -o -f "$p/libssl.so"; then
+    if test -f "$p/libssl.a" -o -f "$p/libssl.so" -o -f "$p/libssl.dylib"; then
       ap_ssltk_libdir="$p"
       break
     fi
