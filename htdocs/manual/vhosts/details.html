@@ -214,10 +214,10 @@ one or more vhost structures. This list contains the vhosts in the same
 order as the <CODE>VirtualHost</CODE> directives appear in the config
 file.
 
-<P>The first vhost on this list (the first vhost that appears after the
-corresponding <CODE>NameVirtualHost</CODE> directive in the config file)
-has the highest priority and catches any request to an unknown 
-server name or a request without a <CODE>Host:</CODE> header.
+<P>The first vhost on this list (the first vhost in the config file with
+the specified IP address) has the highest priority and catches any request
+to an unknown server name or a request without a <CODE>Host:</CODE>
+header.
 
 <P>If the client provided a <CODE>Host:</CODE> header the list is
 searched for a matching vhost and the first hit on a <CODE>ServerName</CODE>
