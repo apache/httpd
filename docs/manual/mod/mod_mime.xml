@@ -44,7 +44,7 @@
     or scripts that serve the document.  The <directive
     module="mod_mime">MultiviewsMatch</directive> directive allows
     <module>mod_negotiation</module> to consider these file extensions
-    to included when testing Multiviews matches.</p>
+    to be included when testing Multiviews matches.</p>
 
     <p>While <module>mod_mime</module> associates meta-information
     with filename extensions, the <module>core</module> server
@@ -322,10 +322,9 @@ to the specified handler</description>
 <context>.htaccess</context>
 </contextlist>
 <override>FileInfo</override>
-<compatibility></compatibility>
 
 <usage>
-<p>Files having the named <em>extension</em> will be served by the
+<p>Files having the name <em>extension</em> will be served by the
 specified <a href="../handler.html">handler-name</a>.  This mapping is
 added to any already in force, overriding any mappings that already
 exist for the same <em>extension</em>. For example, to activate CGI
@@ -883,8 +882,8 @@ extensions</description>
     causing the files to be treated as being of the <a
     href="core.html#defaulttype">default type</a>.</p>
 
-    <note><strong>Note:</strong><module>RemoveType</module> directives
-    are processed <em>after</em> any <module>AddType</module>
+    <note><strong>Note:</strong><directive>RemoveType</directive> directives
+    are processed <em>after</em> any <directive>AddType</directive>
     directives, so it is possible they may undo the effects of the
     latter if both occur within the same directory
     configuration.</note>
