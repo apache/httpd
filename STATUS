@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/02/22 12:49:19 $]
+Last modified at [$Date: 2003/02/22 14:35:37 $]
 
 Release:
 
@@ -172,6 +172,11 @@ PATCHES TO PORT FROM 2.1
       (PR 9072)
       support/apxs.in: r1.52, r1.53
       +1: nd, jerenkrantz, trawick
+
+    * Add a hint about handling of IPv4-mapped addresses to the output
+      of httpd -V.
+      server/main.c r1.144
+      +1: trawick
 
 CURRENT RELEASE NOTES:
 
