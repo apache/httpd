@@ -51,6 +51,9 @@ docs::
 	mkdir -p ./docs/api
 	srclib/apr/build/scandoc -isrclib/apr/build/default.pl -p./docs/api/ ./include/*.h
 
+dox::
+	$(HOME)/software/unpacked/doxygen-1.2.5/bin/doxygen docs/doxygen.conf
+
 install-htdocs:
 	@echo Installing HTML documents
 	@test -d $(htdocsdir) || $(MKINSTALLDIRS) $(htdocsdir)

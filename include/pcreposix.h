@@ -4,6 +4,11 @@
 
 /* Copyright (c) 1997-2000 University of Cambridge */
 
+/**
+ * @file include/pcreposix.h
+ * @brief PCRE definitions
+ */
+
 #ifndef _PCREPOSIX_H
 #define _PCREPOSIX_H
 
@@ -23,15 +28,21 @@ extern "C" {
 
 /* Options defined by POSIX. */
 
+  /** Ignore case */
 #define REG_ICASE     0x01
+  /** Don't match newlines with wildcards */
 #define REG_NEWLINE   0x02
+  /** Don't match BOL */
 #define REG_NOTBOL    0x04
+  /** Don't match EOL */
 #define REG_NOTEOL    0x08
 
 /* These are not used by PCRE, but by defining them we make it easier
 to slot PCRE into existing programs that make POSIX calls. */
 
+  /** UNUSED! */
 #define REG_EXTENDED  0
+  /** UNUSED! */
 #define REG_NOSUB     0
 
 /* Error values. Not all these are relevant or used by the wrapper. */
