@@ -1037,6 +1037,11 @@ API_EXPORT(int) ap_call_exec(request_rec *r, child_info *pinfo, char *argv0,
              * Build the command string to pass to CreateProcess. 
              */
             quoted_filename = ap_pstrcat(r->pool, "\"", r->filename, "\"", NULL);
+            for (i = 0; quoted_filename[i]; ++i) {
+                if (quoted_filename[i] == '/')
+                    quoted_filename[i] = '\\';
+            }
+
             if (interpreter && *interpreter) {
                 pCommand = ap_pstrcat(r->pool, interpreter, " ", 
                                       quoted_filename, " ", arguments, NULL);
@@ -1049,6 +1054,12 @@ API_EXPORT(int) ap_call_exec(request_rec *r, child_info *pinfo, char *argv0,
             char *shellcmd = getenv("COMSPEC");
             if (!shellcmd)
                 shellcmd = SHELL_PATH;
+            
+            quoted_filename = ap_pstrcat(r->pool, "\"", argv0, "\"", NULL);
+            for (i = 0; quoted_filename[i]; ++i)
+                if (quoted_filename[i] == '/')
+                    quoted_filename[i] = '\\';
+
             pCommand = ap_pstrcat(r->pool, shellcmd, " /C ", argv0, NULL);
         }
 
