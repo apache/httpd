@@ -766,7 +766,7 @@ static void child_main(int child_num_arg)
 		    break;
 		default:
 		    ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, ap_server_conf,
-			"select/accept error (%u)", stat);
+			"select/accept error (%d)", stat);
 		    clean_child_exit(APEXIT_CHILDFATAL);
 #else
 		default:
