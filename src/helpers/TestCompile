@@ -49,10 +49,15 @@ trap 'rm -f Makefile dummy dummy.exe testfunc.c testfunc testfunc.exe; exit $exs
 cd ./helpers
 
 #
-# Handle "verbose", "silent" and "runit" flags
+# Handle "verbose", "silent" and "runit" flags. Allow for them
+# to be set via the environment
 #
-: ${VERBOSE:=no}
-RUNIT="no"
+if [ "x$VERBOSE" = "x" ]; then
+    VERBOSE="no"
+fi
+if [ "x$TCRUNIT" = "x" ]; then
+    TCRUNIT="no";
+fi
 case "$1" in
     "-v")
         VERBOSE="yes"
@@ -63,7 +68,7 @@ case "$1" in
 	shift
 	;;
     "-r")
-        RUNIT="yes"
+        TCRUNIT="yes"
 	shift
 	;;
 esac
@@ -211,7 +216,7 @@ eval "${MAKE-make} ${TARGET} $ERRDIR >&2"
 # have PrintPath just search this directory.
 
 if ./PrintPath -s -p`pwd` $TARGET ; then
-    if [ "x$RUNIT" = "xyes" ]; then
+    if [ "x$TCRUNIT" = "xyes" ]; then
 	`pwd`/$TARGET
     fi
     exstat=0
