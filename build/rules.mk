@@ -84,10 +84,10 @@ INSTALL_PROGRAM = $(INSTALL) -m 755
 DEFS = -I. -I$(srcdir) -I$(top_srcdir)/modules/mpm/$(MPM_NAME)
 
 # Suffixes
-	
+
 CXX_SUFFIX = cpp
 SHLIB_SUFFIX = so
-	
+
 .SUFFIXES:
 .SUFFIXES: .S .c .$(CXX_SUFFIX) .lo .o .s .y .l .slo
 
