@@ -35,12 +35,19 @@ BEGIN {
   }
 
   while ((getline < rel_h) > 0) {
-    if (match ($0, /^#define AP_SERVER_BASEREVISION "[^"]+"/)) {
-      ver = substr($0, RSTART + 32, RLENGTH - 33);
+    if (match ($0, /^#define AP_SERVER_MAJORVERSION "[^"]+"/)) {
+      ver_major = substr($3, 2, length($3) - 2);
+    }
+    else if (match ($0, /^#define AP_SERVER_MINORVERSION "[^"]+"/)) {
+      ver_minor = substr($3, 2, length($3) - 2);
+    }
+    else if (match ($0, /^#define AP_SERVER_PATCHLEVEL "[^"]+"/)) {
+      ver_patch = substr($3, 2, length($3) - 2);       
     }
   }
 
-  verc = ver;
+  ver = ver_major "." ver_minor "." ver_patch;
+  verc = ver_major "," ver_minor "," ver_patch;   
   gsub(/\./, ",", verc);
   if (build) {
     sub(/-.*/, "", verc)
