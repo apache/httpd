@@ -77,6 +77,9 @@ Committed Code Changes:
 
 Available Patches:
 
+    * Marc's [PATCH] don't log bogus errno when file doesn't exist
+        <Pine.BSF.3.95.980110232826.3955E-100000@alive.znep.com>
+
     * Dean's [PATCH] OSF/1 serialized accept
 	<Pine.LNX.3.95dg3.980110002610.7757A-100000@twinlark.arctic.org>
 	Status: Dean +1
