@@ -1187,7 +1187,7 @@ static int is_only_below(const char *path)
         return 0;
 #endif
 #ifdef NETWARE
-    if (strchr(path, ':'))
+    if (ap_strchr_c(path, ':'))
         return 0;
 #endif
     if (path[0] == '/') {
