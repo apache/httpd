@@ -332,6 +332,14 @@
 
 
   <!--                                                            -->
+  <!--    directivesynopsis/compatibility                         -->
+  <!--                                                            -->
+  <xsl:template match="directivesynopsis/compatibility">
+    <xsl:apply-templates />
+  </xsl:template>
+
+
+  <!--                                                            -->
   <!--    Directivesynopsis                                       -->
   <!--                                                            -->
   <xsl:template match="directivesynopsis">
