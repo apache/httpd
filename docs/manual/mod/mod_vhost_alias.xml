@@ -21,17 +21,17 @@ hosting</description>
 
 </summary>
     <seealso><directive
-    module="core">UseCanonicalName</directive>.</seealso>
+    module="core">UseCanonicalName</directive></seealso>
     <seealso><a href="../vhosts/mass.html">Dynamically configured mass 
 virtual hosting</a></seealso>
 
-<section>
+<section id="interpol">
     <title>Directory Name Interpolation</title>
 
     <p>All the directives in this module interpolate a string into
     a pathname. The interpolated string (henceforth called the
-    "name") may be either the server name (see the <a
-    href="core.html#usecanonicalname"><code>UseCanonicalName</code></a>
+    "name") may be either the server name (see the <directive
+    module="core">UseCanonicalName</directive>
     directive for details on how this is determined) or the IP
     address of the virtual host on the server in dotted-quad
     format. The interpolation is controlled by specifiers inspired
@@ -89,16 +89,16 @@ virtual hosting</a></seealso>
 
 </section>
 
-<section>
+<section id="examples">
     <title>Examples</title>
 
     <p>For simple name-based virtual hosts you might use the
     following directives in your server configuration file:</p>
 
-<example>
-    UseCanonicalName    Off<br />
-    VirtualDocumentRoot /usr/local/apache/vhosts/%0
-</example>
+    <example>
+      UseCanonicalName    Off<br />
+      VirtualDocumentRoot /usr/local/apache/vhosts/%0
+    </example>
 
     <p>A request for
     <code>http://www.example.com/directory/file.html</code> will be
@@ -111,15 +111,15 @@ virtual hosting</a></seealso>
     <code>vhosts</code> directory. To do this you might use the
     following in your configuration file:</p>
 
-<example>
-    UseCanonicalName    Off<br />
-    VirtualDocumentRoot /usr/local/apache/vhosts/%3+/%2.1/%2.2/%2.3/%2
-</example>
+    <example>
+      UseCanonicalName    Off<br />
+      VirtualDocumentRoot /usr/local/apache/vhosts/%3+/%2.1/%2.2/%2.3/%2
+    </example>
 
     <p>A request for
-    <code>http://www.example.isp.com/directory/file.html</code>
+    <code>http://www.domain.example.com/directory/file.html</code>
     will be satisfied by the file
-    <code>/usr/local/apache/vhosts/isp.com/e/x/a/example/directory/file.html</code>.</p>
+    <code>/usr/local/apache/vhosts/example.com/d/o/m/domain/directory/file.html</code>.</p>
 
     <p>A more even spread of files can be achieved by hashing from the
     end of the name, for example: </p>
@@ -129,7 +129,7 @@ virtual hosting</a></seealso>
 </example>
 
     <p>The example request would come from
-    <code>/usr/local/apache/vhosts/isp.com/e/l/p/example/directory/file.html</code>.</p>
+    <code>/usr/local/apache/vhosts/example.com/n/i/a/domain/directory/file.html</code>.</p>
 
     <p>Alternatively you might use: </p>
 
@@ -138,24 +138,24 @@ virtual hosting</a></seealso>
 </example>
 
     <p>The example request would come from
-    <code>/usr/local/apache/vhosts/isp.com/e/x/a/mple/directory/file.html</code>.</p>
+    <code>/usr/local/apache/vhosts/example.com/d/o/m/ain/directory/file.html</code>.</p>
 
     <p>For IP-based virtual hosting you might use the following in
     your configuration file:</p>
 
-<example>
-    UseCanonicalName DNS<br />
-    VirtualDocumentRootIP   /usr/local/apache/vhosts/%1/%2/%3/%4/docs<br />
-    VirtualScriptAliasIP    /usr/local/apache/vhosts/%1/%2/%3/%4/cgi-bin
-</example>
+    <example>
+      UseCanonicalName DNS<br />
+      VirtualDocumentRootIP /usr/local/apache/vhosts/%1/%2/%3/%4/docs<br />
+      VirtualScriptAliasIP  /usr/local/apache/vhosts/%1/%2/%3/%4/cgi-bin
+    </example>
 
     <p>A request for
-    <code>http://www.example.isp.com/directory/file.html</code>
+    <code>http://www.domain.example.com/directory/file.html</code>
     would be satisfied by the file
     <code>/usr/local/apache/vhosts/10/20/30/40/docs/directory/file.html</code>
-    if the IP address of <code>www.example.com</code> were
+    if the IP address of <code>www.domain.example.com</code> were
     10.20.30.40. A request for
-    <code>http://www.example.isp.com/cgi-bin/script.pl</code> would
+    <code>http://www.domain.example.com/cgi-bin/script.pl</code> would
     be satisfied by executing the program
     <code>/usr/local/apache/vhosts/10/20/30/40/cgi-bin/script.pl</code>.</p>
 
@@ -169,9 +169,9 @@ virtual hosting</a></seealso>
 </example>
 
     <p>A request for
-    <code>http://www.example.isp.com/directory/file.html</code>
+    <code>http://www.domain.example.com/directory/file.html</code>
     will be satisfied by the file
-    <code>/usr/local/apache/vhosts/example.isp/directory/file.html</code>.</p>
+    <code>/usr/local/apache/vhosts/domain.example/directory/file.html</code>.</p>
      
     <p>The <directive module="mod_log_config">LogFormat</directive>
     directives <code>%V</code> and <code>%A</code> are useful
@@ -182,8 +182,8 @@ virtual hosting</a></seealso>
 <name>VirtualDocumentRoot</name>
 <description>Dynamically configure the location of the document root
 for a given virtual host</description>
-<syntax>VirtualDocumentRoot <em>interpolated-directory</em></syntax>
-<default>none</default>
+<syntax>VirtualDocumentRoot <em>interpolated-directory</em>|none</syntax>
+<default>VirtualDocumentRoot none</default>
 <contextlist>
 <context>server config</context>
 <context>virtual host</context>
@@ -191,16 +191,16 @@ for a given virtual host</description>
 
 <usage>
 
-    <p>The <code>VirtualDocumentRoot</code> directive allows you to
+    <p>The <directive>VirtualDocumentRoot</directive> directive allows you to
     determine where Apache will find your documents based on the
     value of the server name. The result of expanding
     <em>interpolated-directory</em> is used as the root of the
     document tree in a similar manner to the <directive
     module="core">DocumentRoot</directive> directive's argument. 
     If <em>interpolated-directory</em> is <code>none</code> then
-    <code>VirtaulDocumentRoot</code> is turned off. This directive 
-    cannot be used in the same context as
-    <directive>VirtualDocumentRootIP</directive>.</p>
+    <directive>VirtualDocumentRoot</directive> is turned off. This directive 
+    cannot be used in the same context as <directive
+    module="mod_vhost_alias">VirtualDocumentRootIP</directive>.</p>
 
 </usage>
 </directivesynopsis>
@@ -209,8 +209,8 @@ for a given virtual host</description>
 <name>VirtualDocumentRootIP</name>
 <description>Dynamically configure the location of the document root
 for a given virtual host</description>
-<syntax>VirtualDocumentRootIP <em>interpolated-directory</em></syntax>
-<default>none</default>
+<syntax>VirtualDocumentRootIP <em>interpolated-directory</em>|none</syntax>
+<default>VirtualDocumentRootIP none</default>
 <contextlist>
 <context>server config</context>
 <context>virtual host</context>
@@ -218,10 +218,11 @@ for a given virtual host</description>
 
 <usage>
 
-<p>The <code>VirtualDocumentRootIP</code> directive is like the
-    <directive>VirtualDocumentRoot</directive>
+<p>The <directive>VirtualDocumentRootIP</directive> directive is like the
+    <directive module="mod_vhost_alias">VirtualDocumentRoot</directive>
     directive, except that it uses the IP address of the server end
-    of the connection instead of the server name.</p>
+    of the connection for directory interpolation instead of the server
+    name.</p>
 </usage>
 </directivesynopsis>
 
@@ -229,8 +230,8 @@ for a given virtual host</description>
 <name>VirtualScriptAlias</name>
 <description>Dynamically configure the location of the CGI directory for
 a given virtual host</description>
-<syntax>VirtualScriptAlias <em>interpolated-directory</em></syntax>
-<default>none</default>
+<syntax>VirtualScriptAlias <em>interpolated-directory</em>|none</syntax>
+<default>VirtualScriptAlias none</default>
 <contextlist>
 <context>server config</context>
 <context>virtual host</context>
@@ -238,11 +239,11 @@ a given virtual host</description>
 
 <usage>
 
-    <p>The <code>VirtualScriptAlias</code> directive allows you to
+    <p>The <directive>VirtualScriptAlias</directive> directive allows you to
     determine where Apache will find CGI scripts in a similar
-    manner to <directive>VirtualDocumentRoot</directive>
-    does for other documents. It matches requests for URIs starting
-    <code>/cgi-bin/</code>, much like <directive
+    manner to <directive module="mod_vhost_alias"
+    >VirtualDocumentRoot</directive> does for other documents. It matches
+    requests for URIs starting <code>/cgi-bin/</code>, much like <directive
     module="mod_alias">ScriptAlias</directive>
     <code>/cgi-bin/</code> would.</p>
 
@@ -253,8 +254,8 @@ a given virtual host</description>
 <name>VirtualScriptAliasIP</name>
 <description>Dynamically configure the location of the cgi directory for
 a given virtual host</description>
-<syntax>VirtualScriptAliasIP <em>interpolated-directory</em></syntax>
-<default>none</default>
+<syntax>VirtualScriptAliasIP <em>interpolated-directory</em>|none</syntax>
+<default>VirtualScriptAliasIP none</default>
 <contextlist>
 <context>server config</context>
 <context>virtual host</context>
@@ -262,11 +263,11 @@ a given virtual host</description>
 
 <usage>
 
-    <p>The <code>VirtualScriptAliasIP</code> directive is like the
-    <a
-    href="#virtualscriptalias"><code>VirtualScriptAlias</code></a>
+    <p>The <directive>VirtualScriptAliasIP</directive> directive is like the
+    <directive module="mod_vhost_alias">VirtualScriptAlias</directive>
     directive, except that it uses the IP address of the server end
-    of the connection instead of the server name.</p>
+    of the connection for directory interpolation instead of the server
+    name.</p>
 
     </usage>
 
