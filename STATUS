@@ -93,6 +93,14 @@ PATCHES TO BACKPORT FROM TRUNK:
     identify exactly what the proposed changes are! ]
   [ please append new backports at the end of this list not the top. ]
 
+    *) dummy_connection tweak: directly use the address of the first
+       listener rather than extracting through getnameinfo(), and log
+       the address for better diagnostics in error cases.
+       http://svn.apache.org/viewcvs.cgi?rev=102869&view=rev
+       http://svn.apache.org/viewcvs.cgi?rev=105264&view=rev
+       rediffed for 2.0 as: http://www.apache.org/~jorton/ap_dummy.diff
+       +1: jorton
+
     *) mod_ssl: Set r->user from SSLUsername earlier so that it's
        actually useful.
        http://svn.apache.org/viewcvs.cgi?rev=153280&view=rev
