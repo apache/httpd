@@ -1,5 +1,8 @@
 Changes with Apache 2.0.40
 
+  *) Fix proxy so that it is possible to access ftp: URLs via a proxy
+     chain. [Peter Van Biesen <peter.vanbiesen@vlafo.be>]
+
   *) mod-defalte now checks to make sure that 'gzip-only-text/html' is
      set to 1, so we can exclude things from the general case with
      browsermatch. [Ian Holsman, Andre Schild <A.Schild@aarboard.ch>]
