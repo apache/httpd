@@ -512,50 +512,46 @@ int main(int argc, const char * const argv[])
                         "might just not work on this platform.\n");
     }
 #endif
-    if (! mask & APHTP_NOFILE) {
+    if (!(mask & APHTP_NOFILE)) {
         /*
          * Only do the file checks if we're supposed to frob it.
          *
          * Verify that the file exists if -c was omitted.  We give a special
          * message if it doesn't.
          */
-        if ((! mask & APHTP_NEWFILE) && (! exists(pwfilename, pool))) {
+        if (!(mask & APHTP_NEWFILE) && !exists(pwfilename, pool)) {
             apr_file_printf(errfile,
                     "%s: cannot modify file %s; use '-c' to create it\n",
                     argv[0], pwfilename);
-            perror("apr_file_open");
             exit(ERR_FILEPERM);
         }
         /*
          * Verify that we can read the existing file in the case of an update
          * to it (rather than creation of a new one).
          */
-        if ((! mask & APHTP_NEWFILE) && (! readable(pool, pwfilename))) {
+        if (!(mask & APHTP_NEWFILE) && !readable(pool, pwfilename)) {
             apr_file_printf(errfile, "%s: cannot open file %s for read "
                             "access\n", argv[0], pwfilename);
-            perror("apr_file_open");
             exit(ERR_FILEPERM);
         }
         /*
          * Now check to see if we can preserve an existing file in case
          * of password verification errors on a -c operation.
          */
-        if ((mask & APHTP_NEWFILE) && exists(pwfilename, pool) && 
-            (! readable(pool, pwfilename))) {
+        if ((mask & APHTP_NEWFILE) && exists(pwfilename, pool)
+                && !readable(pool, pwfilename)) {
             apr_file_printf(errfile, "%s: cannot open file %s for read access\n"
                     "%s: existing auth data would be lost on "
                     "password mismatch",
                     argv[0], pwfilename, argv[0]);
-            perror("apr_file_open");
             exit(ERR_FILEPERM);
         }
         /*
          * Now verify that the file is writable!
          */
-        if (! writable(pool, pwfilename)) {
+        if (!writable(pool, pwfilename)) {
             apr_file_printf(errfile, "%s: cannot open file %s for write "
                             "access\n", argv[0], pwfilename);
-            perror("apr_file_open");
             exit(ERR_FILEPERM);
         }
     }
@@ -594,7 +590,7 @@ int main(int argc, const char * const argv[])
      */
     if (apr_file_open(&fpw, pwfilename, APR_READ, APR_OS_DEFAULT, 
                       pool) == APR_SUCCESS) {
-        while (! (apr_file_gets(line, sizeof(line), fpw))) {
+        while (apr_file_gets(line, sizeof(line), fpw) == APR_SUCCESS) {
             char *colon;
 
             if ((line[0] == '#') || (line[0] == '\0')) {
