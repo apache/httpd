@@ -1,5 +1,9 @@
 Changes with Apache 1.3b7
 
+  *) Workaround braindead AWK's when generating ap_config.h: The split() and
+     substr() functions cannot be nested under vendor AWK from Solaris 2.6.
+     [Ralf S. Engelschall] PR#2139
+
   *) Various bugfixes and cleanups for the APACI configure script:
      o fix IFS handling for _nested_ situation
      o fix Perl interpreter search: take first one found instead of last one
