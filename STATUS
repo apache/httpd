@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2002/06/23 02:52:13 $]
+Last modified at [$Date: 2002/06/27 20:56:13 $]
 
 Release:
 
@@ -869,7 +869,8 @@ Binaries (2.0.39):
  FreeBSD 4.1                   no      Ryan Bloom
  hppa2.0w-hp-hpux11.00         yes     Cliff Woolley
  i386-pc-solaris2.8            yes     Aaron Bannert
- i386-unknown-freebsd4.5       no      Aaron Bannert
+ i386-unknown-freebsd4.5       no
+ i386-unknown-freebsd4.6       yes     Aaron Bannert
  i686-pc-linux-gnu             yes     Aaron Bannert
  i686-pc-linux-gnu-rh70        yes     Aaron Bannert
  ia64-hp-hpux11.20             yes     Cliff Woolley
