@@ -2,7 +2,7 @@
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.ja.xsl"?>
 <manualpage metafile="server-wide.xml.meta">
-<!-- English revision: 1.1 -->
+<!-- English revision: 1.3 -->
 
   <title>サーバ全体の設定</title>
 

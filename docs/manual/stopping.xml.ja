@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="iso-2022-jp"?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.ja.xsl"?>
-<!-- English revision: 1.6 -->
+<!-- English revision: 1.9 -->
 <manualpage metafile="stopping.xml.meta">
 
   <title>停止と再起動</title>
@@ -11,7 +11,7 @@
     Apache の停止と再起動について扱っています。
     Windows NT, 2000, XP ユーザは<a
     href="platform/windows.html#winsvc">サービスとして
-    Apache を実行する</a>を、Windows 9x, MEユーザは<a
+    Apache を実行する</a>で、Windows 9x, MEユーザは<a
     href="platform/windows.html#wincons">コンソールアプリケーションとして
     Apache を実行する</a>で、
     これらのプラットホームでの使用方法をご覧下さい。</p>
@@ -35,9 +35,9 @@
     に書かれています。これはつまり、親以外のプロセスに
     シグナルを送る必要すらない、ということです。
     親プロセスに送ることができる 3 種類のシグナルがあります:
-    <a href="#term"><code>TERM</code></a>,
-    <a href="#hup"><code>HUP</code></a>, 
-    <a href="#usr1"><code>USR1</code></a>
+    <code><a href="#term">TERM</a></code>,
+    <code><a href="#hup">HUP</a></code>, 
+    <code><a href="#graceful">USR1</a></code>
     です。これらの説明については続きをご覧下さい。</p>
 
     <p>親プロセスにシグナルを送るには、

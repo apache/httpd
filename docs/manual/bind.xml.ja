@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="iso-2022-jp" ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.ja.xsl"?>
-<!-- English revision: 1.4 -->
+<!-- English revision: 1.7 -->
 
 <manualpage metafile="bind.xml.meta">
 
@@ -23,7 +23,7 @@
         <module>mpm_common</module>
       </modulelist>
       <directivelist>
-        <directive module="core">VirtualHost</directive>
+        <directive module="core" type="section">VirtualHost</directive>
         <directive module="mpm_common">Listen</directive>
       </directivelist>
     </related>

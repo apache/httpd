@@ -2,7 +2,7 @@
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.ja.xsl"?>
 <manualpage metafile="install.xml.meta">
-<!-- English revision: 1.16 -->
+<!-- English revision: 1.18 -->
 
   <title>コンパイルとインストール</title>
 
