@@ -1,0 +1,8 @@
+#!/bin/sh
+# Helper script for Configure - cut a rule from Configuration.
+# note that there is a tab and a space in the character groups.
+# Map to lowercase to make tests easier
+
+egrep "^[	 ]*Rule[	 ]+$1[	 ]*=" $2 | \
+awk 'BEGIN {FS="="}{print $2}' | \
+sed 's/[	 ]//g' | tr "A-Z" "a-z"
