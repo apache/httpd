@@ -72,7 +72,6 @@
  */
 
 #include "conf.h"
-#include "ap.h"
 #include <sys/param.h>
 #include <sys/stat.h>
 #include <sys/types.h>
@@ -206,7 +205,7 @@ static void clean_env(void)
 
 
     if ((cleanenv = (char **) calloc(AP_ENVBUF, sizeof(char *))) == NULL) {
-	log_err("failed to malloc memory for environment\n");
+	log_err("failed to malloc env mem\n");
 	exit(120);
     }
 
@@ -259,40 +258,7 @@ int main(int argc, char *argv[])
      */
     prog = argv[0];
     if (argc < 4) {
-        char msgbuf[2048];
-	int i;
-	int clen;
-	static char *omsg = " {buffer overflow}";
-	int olen = strlen(omsg);
-
-	ap_snprintf(msgbuf, sizeof(msgbuf), "too few (%d) arguments:", argc);
-	clen = strlen(msgbuf);
-	for (i = 0; i < argc; i++) {
-	    int alen = strlen(argv[i]) + 4;
-	    int rlen = sizeof(msgbuf) - clen - 1;
-	    int oflow = (alen > rlen);
-
-	    alen = oflow ? rlen : alen;
-	    if (rlen > 1) {
-	        msgbuf[clen++] = ' ';
-		alen--;
-	    }
-	    if (rlen > 2) {
-	        msgbuf[clen++] = '[';
-		alen--;
-	    }
-	    ap_cpystrn(&msgbuf[clen], argv[i], alen);
-	    if (oflow) {
-	        ap_cpystrn(&msgbuf[sizeof(msgbuf) - olen - 1], omsg, olen + 1);
-		break;
-	    }
-	    else {
-	        clen += alen - 2;
-		msgbuf[clen++] = ']';
-		msgbuf[clen] = '\0';
-	    }
-	}
-	log_err("%s\n", msgbuf);
+	log_err("too few arguments\n");
 	exit(101);
     }
     target_uname = argv[1];
@@ -317,12 +283,12 @@ int main(int argc, char *argv[])
 #ifdef _OSD_POSIX
     /* User name comparisons are case insensitive on BS2000/OSD */
     if (strcasecmp(HTTPD_USER, pw->pw_name)) {
-	log_err("user mismatch (%s instead of %s)\n", pw->pw_name, HTTPD_USER);
+	log_err("user mismatch (%s)\n", pw->pw_name);
 	exit(103);
     }
 #else  /*_OSD_POSIX*/
     if (strcmp(HTTPD_USER, pw->pw_name)) {
-	log_err("user mismatch (%s instead of %s)\n", pw->pw_name, HTTPD_USER);
+	log_err("user mismatch (%s)\n", pw->pw_name);
 	exit(103);
     }
 #endif /*_OSD_POSIX*/
@@ -384,7 +350,7 @@ int main(int argc, char *argv[])
      * Log the transaction here to be sure we have an open log 
      * before we setuid().
      */
-    log_err("uid: (%s/%s) gid: (%s/%s) cmd: %s\n",
+    log_err("uid: (%s/%s) gid: (%s/%s) %s\n",
 	    target_uname, actual_uname,
 	    target_gname, actual_gname,
 	    cmd);
