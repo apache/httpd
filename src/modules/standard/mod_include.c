@@ -107,6 +107,11 @@ void add_include_vars(request_rec *r, char *timefmt)
         table_set (e, "DOCUMENT_NAME", ++t);
     else
         table_set (e, "DOCUMENT_NAME", r->uri);
+    if (r->args) {
+        unescape_url (r->args);
+	  table_set (e, "QUERY_STRING_UNESCAPED",
+		   escape_shell_cmd (r->pool, r->args));
+    }
 }
 
 #define GET_CHAR(f,c,r) \
@@ -837,6 +842,7 @@ int send_parsed_file(request_rec *r)
 	r->finfo.st_mtime= r->main->finfo.st_mtime;
     } else { 
 	add_common_vars (r);
+	add_cgi_vars(r);
 	add_include_vars (r, DEFAULT_TIME_FORMAT);
     }
     

@@ -58,6 +58,7 @@
 #include "http_log.h"
 #include "http_protocol.h"
 #include "http_core.h"		/* For document_root.  Sigh... */
+#include "http_request.h"       /* for sub_req_lookup_uri() */
 #include "util_script.h"
 
 /*
@@ -181,6 +182,57 @@ void add_common_vars(request_rec *r)
     if (r->prev) {
         if (r->prev->args) table_set(e,"REDIRECT_QUERY_STRING", r->prev->args);
 	if (r->prev->uri) table_set (e, "REDIRECT_URL", r->prev->uri);
+    }
+}
+
+
+void add_cgi_vars(request_rec *r)
+{
+    table *e = r->subprocess_env;
+
+    table_set (e, "GATEWAY_INTERFACE","CGI/1.1");
+    table_set (e, "SERVER_PROTOCOL", r->protocol);
+    table_set (e, "REQUEST_METHOD", r->method);
+    table_set (e, "QUERY_STRING", r->args ? r->args : "");
+    
+    /* Note that the code below special-cases scripts run from includes,
+     * because it "knows" that the sub_request has been hacked to have the
+     * args and path_info of the original request, and not any that may have
+     * come with the script URI in the include command.  Ugh.
+     */
+    
+    if (!r->path_info || !*r->path_info || !strcmp (r->protocol, "INCLUDED")) {
+        table_set (e, "SCRIPT_NAME", r->uri);
+    } else {
+        int path_info_start = strlen (r->uri) - strlen (r->path_info);
+	
+	r->uri[path_info_start] = '\0';
+	table_set (e, "SCRIPT_NAME", r->uri);
+	r->uri[path_info_start] = '/';
+    }
+	
+    if (r->path_info && r->path_info[0]) {
+	/*
+ 	 * To get PATH_TRANSLATED, treat PATH_INFO as a URI path.
+	 * Need to re-escape it for this, since the entire URI was
+	 * un-escaped before we determined where the PATH_INFO began.
+ 	 */
+	request_rec *pa_req = sub_req_lookup_uri(
+				    escape_uri(r->pool, r->path_info), r);
+      
+        table_set (e, "PATH_INFO", r->path_info);
+
+	/* Don't bother destroying pa_req --- it's only created in
+	 * child processes which are about to jettison their address
+	 * space anyway.  BTW, we concatenate filename and path_info
+	 * from the sub_request to be compatible in case the PATH_INFO
+	 * is pointing to an object which doesn't exist.
+	 */
+	
+	if (pa_req->filename)
+	    table_set (e, "PATH_TRANSLATED",
+		       pstrcat (r->pool, pa_req->filename, pa_req->path_info,
+				NULL));
     }
 }
 
