@@ -53,6 +53,11 @@ domain add this code to your <code>access.conf</code> configuration file
 <p>
 You can now access server statistics by using a Web browser to access the
 page <code>http://your.server.name/server-status</code>
+<p>
+Note that mod_status will only work when you are running Apache in 
+<A HREF="core.html#servertype">standalone</A> mode and not 
+<A HREF="core.html#servertype">inetd</A> mode.
+
 <h3>Automatic Updates</h3>
 You can get the status page to update itself automatically if you have
 a browser that supports "refresh".  Access the page
