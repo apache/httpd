@@ -829,7 +829,7 @@ void child_main(apr_pool_t *pconf)
      * Create the worker thread dispatch IOCompletionPort
      * on Windows NT/2000
      */
-    if (osver.dwPlatformId != VER_PLATFORM_WIN32_WINDOWS) {
+    if (use_acceptex) {
         /* Create the worker thread dispatch IOCP */
         ThreadDispatchIOCP = CreateIoCompletionPort(INVALID_HANDLE_VALUE,
                                                     NULL,
