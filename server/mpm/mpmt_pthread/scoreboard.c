@@ -22,38 +22,6 @@ API_VAR_IMPORT char *ap_scoreboard_fname;
  * We begin with routines which deal with the file itself... 
  */
 
-#ifdef MULTITHREAD
-/*
- * In the multithreaded mode, have multiple threads - not multiple
- * processes that need to talk to each other. Just use a simple
- * malloc. But let the routines that follow, think that you have
- * shared memory (so they use memcpy etc.)
- */
-
-void reinit_scoreboard(ap_context_t *p)
-{
-    ap_assert(!ap_scoreboard_image);
-    ap_scoreboard_image = (scoreboard *) malloc(SCOREBOARD_SIZE);
-    if (ap_scoreboard_image == NULL) {
-        ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
-                     "Ouch! Out of memory reiniting scoreboard!");
-    }
-    memset(ap_scoreboard_image, 0, SCOREBOARD_SIZE);
-}
-
-void cleanup_scoreboard(void)
-{
-    ap_assert(ap_scoreboard_image);
-    free(ap_scoreboard_image);
-    ap_scoreboard_image = NULL;
-}
-
-API_EXPORT(void) ap_sync_scoreboard_image(void)
-{
-}
-
-
-#else /* MULTITHREAD */
 #if APR_HAS_SHARED_MEMORY
 #include "apr_shmem.h"
 
@@ -122,8 +90,6 @@ void reinit_scoreboard(ap_context_t *p)
 ap_inline void ap_sync_scoreboard_image(void)
 {
 }
-
-#endif /* MULTITHREAD */
 
 API_EXPORT(int) ap_exists_scoreboard_image(void)
 {
