@@ -1,5 +1,8 @@
 Changes with Apache 2.0.44
 
+  *) Fixed a memory leak in mod_deflate with dynamic content.
+     PR 14321  [Ken Franken <kfranken@decisionmark.com>]
+
   *) Add --[enable|disable]-v4-mapped configure option to control
      whether or not Apache expects to handle IPv4 connections
      on IPv6 listening sockets.  Either setting will work on 
