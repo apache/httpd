@@ -77,4 +77,27 @@ int ap_execve(const char *, const char *argv[], const char *envp[]);
 #endif
 #endif /* WIN32 */
 
+/* apapi_vformatter() is a generic printf-style formatting routine
+ * with some extensions.
+ *
+ * The write_func() is called when there is data available to be
+ * output.  write_func() should return 0 when it wishes apapi_vformatter
+ * to continue, and non-zero otherwise.  apapi_vformatter will stop
+ * immediately and return -1 when a non-zero return from
+ * write_func().
+ *
+ * If write_func() always returns 0 then apapi_vformatter will return
+ * the number of characters written.
+ */
+
+API_EXPORT(int) apapi_vformatter(
+    int (*write_func)(void *write_data, const char *outp, size_t len),
+    void *write_data, const char *fmt, va_list ap);
+
+/* These are snprintf implementations based on apapi_vformatter(). */
+API_EXPORT(int) ap_snprintf(char *buf, size_t len, const char *format,...)
+			    __attribute__((format(printf,3,4)));
+API_EXPORT(int) ap_vsnprintf(char *buf, size_t len, const char *format,
+			     va_list ap);
+
 #endif	/* !APACHE_AP_H */

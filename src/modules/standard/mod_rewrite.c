@@ -999,7 +999,7 @@ static int hook_uri2file(request_rec *r)
         thisport = "";
     else {
         ap_snprintf(buf, sizeof(buf), ":%u", r->server->port);
-        thisport = pstrdup(r->pool, buf);
+        thisport = buf;
     }
     thisurl = table_get(r->subprocess_env, ENVVAR_SCRIPT_URL);
 
@@ -2246,7 +2246,6 @@ static void reduce_uri(request_rec *r)
 static void fully_qualify_uri(request_rec *r)
 {
     int i;
-    char newuri[MAX_STRING_LEN];
     char port[32];
 
     i = strlen(r->filename);
@@ -2261,15 +2260,13 @@ static void fully_qualify_uri(request_rec *r)
             ap_snprintf(port, sizeof(port), ":%u", r->server->port);
 
         if (r->filename[0] == '/')
-            ap_snprintf(newuri, sizeof(newuri), "%s://%s%s%s",
+            r->filename = psprintf(r->pool, "%s://%s%s%s",
                         http_method(r), r->server->server_hostname,
                         port, r->filename);
         else
-            ap_snprintf(newuri, sizeof(newuri), "%s://%s%s/%s",
+            r->filename = psprintf(r->pool, "%s://%s%s/%s",
                         http_method(r), r->server->server_hostname,
                         port, r->filename);
-
-        r->filename = pstrdup(r->pool, newuri);
     }
     return;
 }

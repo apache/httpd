@@ -242,7 +242,6 @@ static char *check_code(pool *p, const char *code, char **real_code)
     int modifier = 0;
     int num = 0;
     int factor = 0;
-    char foo[MAX_STRING_LEN];
 
     /* 0.0.4 compatibility?
      */
@@ -333,8 +332,7 @@ static char *check_code(pool *p, const char *code, char **real_code)
         word = getword_conf(p, &code);
     };
 
-    ap_snprintf(foo, sizeof(foo), "%c%d", base, modifier);
-    *real_code = pstrdup(p, foo);
+    *real_code = psprintf(p, "%c%d", base, modifier);
 
     return NULL;
 }

@@ -1,5 +1,13 @@
 Changes with Apache 1.3b6
 
+  *) API: ap_snprintf() code mutated into apapi_vformatter(), which is
+     a generic printf-style routine that can call arbitrary output
+     routines.  Use this to replace http_bprintf.c.  Add new routines
+     psprintf(), pvsprintf() which allocate the exact amount of memory
+     required for a string from a pool.  Use psprintf() to clean up
+     various bits of code which used ap_snprintf()/pstrdup().
+     [Dean Gaudet]
+
   *) SIGXCPU and SIGXFSZ are now reset to SIG_DFL at boot-time.  This
      is necessary on at least Solaris where the /etc/rc?.d scripts
      are run with these signals ignored, and "SIG_IGN" settings are

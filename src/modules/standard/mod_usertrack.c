@@ -131,9 +131,9 @@ static void make_cookie(request_rec *r)
     struct timeval tv;
     struct timezone tz = {0, 0};
 #endif
-    /* 1024 == hardcoded constants */
-    char new_cookie[1024];
+    /* 1024 == hardcoded constant */
     char cookiebuf[1024];
+    char *new_cookie;
     char *dot;
     const char *rname = get_remote_host(r->connection, r->per_dir_config,
 					REMOTE_NAME);
@@ -148,7 +148,7 @@ static void make_cookie(request_rec *r)
 
     mpe_times = times(&mpe_tms);
 
-    ap_snprintf(cookiebuf, 1024, "%s%d%ld%ld", rname, (int) getpid(),
+    ap_snprintf(cookiebuf, sizeof(cookiebuf), "%s%d%ld%ld", rname, (int) getpid(),
                 (long) r->request_time, (long) mpe_tms.tms_utime);
 #elif defined(WIN32)
     /*
@@ -157,13 +157,13 @@ static void make_cookie(request_rec *r)
      * was started. It should be relatively unique.
      */
 
-    ap_snprintf(cookiebuf, 1024, "%s%d%ld%ld", rname, (int) getpid(),
+    ap_snprintf(cookiebuf, sizeof(cookiebuf), "%s%d%ld%ld", rname, (int) getpid(),
                 (long) r->request_time, (long) GetTickCount());
 
 #else
     gettimeofday(&tv, &tz);
 
-    ap_snprintf(cookiebuf, 1024, "%s%d%ld%d", rname, (int) getpid(),
+    ap_snprintf(cookiebuf, sizeof(cookiebuf), "%s%d%ld%d", rname, (int) getpid(),
                 (long) tv.tv_sec, (int) tv.tv_usec / 1000);
 #endif
 
@@ -184,7 +184,7 @@ static void make_cookie(request_rec *r)
         tms = gmtime(&when);
 
         /* Cookie with date; as strftime '%a, %d-%h-%y %H:%M:%S GMT' */
-        ap_snprintf(new_cookie, 1024,
+        new_cookie = psprintf(r->pool,
                 "%s%s; path=/; expires=%s, %.2d-%s-%.2d %.2d:%.2d:%.2d GMT",
                     COOKIE_NAME, cookiebuf, day_snames[tms->tm_wday],
                     tms->tm_mday, month_snames[tms->tm_mon],
@@ -192,9 +192,9 @@ static void make_cookie(request_rec *r)
                     tms->tm_hour, tms->tm_min, tms->tm_sec);
     }
     else
-        ap_snprintf(new_cookie, 1024, "%s%s; path=/", COOKIE_NAME, cookiebuf);
+	new_cookie = psprintf(r->pool, "%s%s; path=/", COOKIE_NAME, cookiebuf);
 
-    table_setn(r->headers_out, "Set-Cookie", pstrdup(r->pool, new_cookie));
+    table_setn(r->headers_out, "Set-Cookie", new_cookie);
     table_setn(r->notes, "cookie", pstrdup(r->pool, cookiebuf));   /* log first time */
     return;
 }

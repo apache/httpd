@@ -130,10 +130,8 @@ static void add_include_vars(request_rec *r, char *timefmt)
         table_setn(e, "USER_NAME", pstrdup(r->pool, pw->pw_name));
     }
     else {
-        char uid[16];
-        ap_snprintf(uid, sizeof(uid), "user#%lu",
-                    (unsigned long) r->finfo.st_uid);
-        table_setn(e, "USER_NAME", pstrdup(r->pool, uid));
+        table_setn(e, "USER_NAME", psprintf(r->pool, "user#%lu",
+                    (unsigned long) r->finfo.st_uid));
     }
 #endif /* ndef WIN32 */
 

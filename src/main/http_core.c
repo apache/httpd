@@ -614,7 +614,6 @@ API_EXPORT(char *) construct_url(pool *p, const char *uri, const request_rec *r)
 {
     unsigned port;
     const char *host;
-    char portnum[22];
     core_dir_config *d =
       (core_dir_config *)get_module_config(r->per_dir_config, &core_module);
 
@@ -635,8 +634,7 @@ API_EXPORT(char *) construct_url(pool *p, const char *uri, const request_rec *r)
     if (is_default_port(port, r)) {
 	return pstrcat(p, http_method(r), "://", host, uri, NULL);
     }
-    ap_snprintf(portnum, sizeof(portnum), "%u", port);
-    return pstrcat(p, http_method(r), "://", host, ":", portnum, uri, NULL);
+    return psprintf(p, "%s://%s:%u%s", http_method(r), host, port, uri);
 }
 
 /*****************************************************************
@@ -921,16 +919,11 @@ static const char *endlimit_section (cmd_parms *cmd, void *dummy, void *dummy2)
  */
 static const char *missing_endsection (cmd_parms *cmd, int nest)
 {
-    char rply[100];
-
     if (nest < 2)
-	ap_snprintf(rply, sizeof rply, "Missing %s directive at end-of-file",
+	return psprintf(cmd->pool, "Missing %s directive at end-of-file",
 		    cmd->end_token);
-    else
-	ap_snprintf(rply, sizeof rply, "%d missing %s directives at end-of-file",
+    return psprintf(cmd->pool, "%d missing %s directives at end-of-file",
 		    nest, cmd->end_token);
-
-    return pstrdup(cmd->pool, rply);
 }
 
 /* We use this in <DirectoryMatch> and <FilesMatch>, to ensure that 

@@ -54,9 +54,7 @@
  * <panos@alumni.cs.colorado.edu> for xinetd.
  */
 
-#include "conf.h"
-
-#ifndef HAVE_SNPRINTF
+#include "httpd.h"
 
 #include <stdio.h>
 #include <ctype.h>
@@ -264,17 +262,6 @@ typedef int bool_int;
  */
 #define NUM_BUF_SIZE		512
 
-
-/*
- * Descriptor for buffer area
- */
-struct buf_area {
-    char *buf_end;
-    char *nextb;		/* pointer to next byte to read/write   */
-};
-
-typedef struct buf_area buffy;
-
 /*
  * The INS_CHAR macro inserts a character in the buffer and writes
  * the buffer back to disk if necessary
@@ -285,13 +272,16 @@ typedef struct buf_area buffy;
  *
  * NOTE: Evaluation of the c argument should not have any side-effects
  */
-#define INS_CHAR( c, sp, bep, cc )	\
-	    {				\
-		if ( sp < bep )		\
-		{			\
-		    *sp++ = c ;		\
-		    cc++ ;		\
-		}			\
+#define INS_CHAR(c, sp, bep, cc)				\
+	    {							\
+		if (sp == bep) {				\
+		    if (write_func(write_data, staging_buf, 	\
+			sizeof(staging_buf)) != 0)		\
+			return -1;				\
+		    sp = staging_buf; 				\
+		} 						\
+		*sp++ = (c);					\
+		cc++; 						\
 	    }
 
 #define NUM( c )			( c - '0' )
@@ -521,8 +511,9 @@ static char *conv_p2(register u_wide_int num, register int nbits,
 /*
  * Do format conversion placing the output in buffer
  */
-static int format_converter(register buffy *odp, const char *fmt,
-			    va_list ap)
+API_EXPORT(int) apapi_vformatter(
+    int (*write_func)(void *, const char *, size_t),
+    void *write_data, const char *fmt, va_list ap)
 {
     register char *sp;
     register char *bep;
@@ -548,6 +539,8 @@ static int format_converter(register buffy *odp, const char *fmt,
     char num_buf[NUM_BUF_SIZE];
     char char_buf[2];		/* for printing %% and %<unknown> */
 
+    char staging_buf[MAX_STRING_LEN];
+
     /*
      * Flag variables
      */
@@ -559,8 +552,8 @@ static int format_converter(register buffy *odp, const char *fmt,
     boolean_e adjust_width;
     bool_int is_negative;
 
-    sp = odp->nextb;
-    bep = odp->buf_end;
+    sp = staging_buf;
+    bep = sp + sizeof(staging_buf);
 
     while (*fmt) {
 	if (*fmt != '%') {
@@ -890,31 +883,33 @@ static int format_converter(register buffy *odp, const char *fmt,
 	}
 	fmt++;
     }
-    odp->nextb = sp;
-    return (cc);
+    if (sp > staging_buf) {
+	if (write_func(write_data, staging_buf, sp - staging_buf) != 0) {
+	    return -1;
+	}
+    }
+    return cc;
 }
 
 
-/*
- * This is the general purpose conversion function.
- */
-static void strx_printv(int *ccp, char *buf, size_t len, const char *format,
-			va_list ap)
+struct snprintf_write_data {
+    char *strp;
+    char *end_buf;
+};
+
+static int snprintf_write(void *vdata, const char *inp, size_t len)
 {
-    buffy od;
-    int cc;
+    struct snprintf_write_data *wd;
+    size_t amt;
 
-    /* save 1 byte for nul terminator, we assume len > 0 */
-    od.buf_end = &buf[len - 1];
-    od.nextb = buf;
-
-    /*
-     * Do the conversion
-     */
-    cc = format_converter(&od, format, ap);
-    *(od.nextb) = '\0';
-    if (ccp)
-	*ccp = cc;
+    wd = vdata;
+    amt = wd->end_buf - wd->strp;
+    if (len > amt) {
+	len = amt;
+    }
+    memcpy(wd->strp, inp, len);
+    wd->strp += len;
+    return 0;
 }
 
 
@@ -922,12 +917,17 @@ API_EXPORT(int) ap_snprintf(char *buf, size_t len, const char *format,...)
 {
     int cc;
     va_list ap;
+    struct snprintf_write_data wd;
 
     if (len == 0)
 	return 0;
 
+    /* save one byte for nul terminator */
+    wd.strp = buf;
+    wd.end_buf = buf + len - 1;
     va_start(ap, format);
-    strx_printv(&cc, buf, len, format, ap);
+    cc = apapi_vformatter(snprintf_write, &wd, format, ap);
+    *wd.strp = '\0';
     va_end(ap);
     return (cc);
 }
@@ -937,12 +937,15 @@ API_EXPORT(int) ap_vsnprintf(char *buf, size_t len, const char *format,
 			     va_list ap)
 {
     int cc;
+    struct snprintf_write_data wd;
 
     if (len == 0)
 	return 0;
 
-    strx_printv(&cc, buf, len, format, ap);
+    /* save one byte for nul terminator */
+    wd.strp = buf;
+    wd.end_buf = buf + len - 1;
+    cc = apapi_vformatter(snprintf_write, &wd, format, ap);
+    *wd.strp = '\0';
     return (cc);
 }
-
-#endif /* HAVE_SNPRINTF */

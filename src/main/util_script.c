@@ -183,7 +183,7 @@ API_EXPORT(void) add_common_vars(request_rec *r)
     server_rec *s = r->server;
     conn_rec *c = r->connection;
     const char *rem_logname;
-    char port[40], *env_path;
+    char *env_path;
 #ifdef WIN32
     char *env_temp;
 #endif
@@ -240,8 +240,7 @@ API_EXPORT(void) add_common_vars(request_rec *r)
     table_setn(e, "PATH", env_path);
     table_setn(e, "SERVER_SOFTWARE", apapi_get_server_version());
     table_setn(e, "SERVER_NAME", get_server_name(r));
-    ap_snprintf(port, sizeof(port), "%u", get_server_port(r));
-    table_setn(e, "SERVER_PORT", pstrdup(r->pool,port));
+    table_setn(e, "SERVER_PORT", psprintf(r->pool, "%u", get_server_port(r)));
     host = get_remote_host(c, r->per_dir_config, REMOTE_HOST);
     if (host) {
 	table_setn(e, "REMOTE_HOST", host);
@@ -251,8 +250,7 @@ API_EXPORT(void) add_common_vars(request_rec *r)
     table_setn(e, "SERVER_ADMIN", s->server_admin);	/* Apache */
     table_setn(e, "SCRIPT_FILENAME", r->filename);	/* Apache */
 
-    ap_snprintf(port, sizeof(port), "%d", ntohs(c->remote_addr.sin_port));
-    table_setn(e, "REMOTE_PORT", pstrdup(r->pool, port)); /* Apache */
+    table_setn(e, "REMOTE_PORT", psprintf(r->pool, "%d", ntohs(c->remote_addr.sin_port)));
 
     if (c->user)
 	table_setn(e, "REMOTE_USER", c->user);
@@ -542,22 +540,19 @@ API_EXPORT(int) scan_script_header_err_buff(request_rec *r, BUFF *fb,
 
 API_EXPORT(void) send_size(size_t size, request_rec *r)
 {
-    char ss[20];
-
     /* XXX: this -1 thing is a gross hack */
     if (size == (size_t)-1)
-	strcpy(ss, "    -");
+	rputs("    -", r);
     else if (!size)
-	strcpy(ss, "   0k");
+	rputs("   0k", r);
     else if (size < 1024)
-	strcpy(ss, "   1k");
+	rputs("   1k", r);
     else if (size < 1048576)
-	ap_snprintf(ss, sizeof(ss), "%4dk", (size + 512) / 1024);
+	rprintf(r, "%4dk", (size + 512) / 1024);
     else if (size < 103809024)
-	ap_snprintf(ss, sizeof(ss), "%4.1fM", size / 1048576.0);
+	rprintf(r, "%4.1fM", size / 1048576.0);
     else
-	ap_snprintf(ss, sizeof(ss), "%4dM", (size + 524288) / 1048576);
-    rputs(ss, r);
+	rprintf(r, "%4dM", (size + 524288) / 1048576);
 }
 
 #if defined(__EMX__) || defined(WIN32)

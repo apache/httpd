@@ -11,7 +11,7 @@ LDFLAGS=$(LDFLAGS1) $(EXTRA_LDFLAGS)
 LIB=  libmain.a
 
 OBJS= alloc.o buff.o \
-      http_bprintf.o http_config.o http_core.o http_log.o \
+      http_config.o http_core.o http_log.o \
       http_main.o http_protocol.o http_request.o http_vhost.o \
       util.o util_date.o util_script.o util_uri.o util_md5.o \
       md5c.o rfc1413.o fnmatch.o
@@ -28,10 +28,6 @@ $(LIB): $(OBJS)
 
 clean:
 	rm -f *.o $(LIB) uri_delims.h gen_uri_delims test_char.h gen_test_char
-
-# Work around broken compilers
-http_bprintf.o: http_bprintf.c
-	$(CC) -c $(INCLUDES) $(CFLAGS) $(BROKEN_BPRINTF_FLAGS) http_bprintf.c
 
 uri_delims.h: gen_uri_delims
 	./gen_uri_delims >uri_delims.h
@@ -76,10 +72,6 @@ gen_test_char.o: gen_test_char.c $(INCDIR)/httpd.h $(INCDIR)/conf.h \
  $(INCDIR)/alloc.h $(INCDIR)/buff.h $(INCDIR)/ap.h \
  $(INCDIR)/util_uri.h
 gen_uri_delims.o: gen_uri_delims.c
-http_bprintf.o: http_bprintf.c $(INCDIR)/httpd.h $(INCDIR)/conf.h \
- ../os/unix/os.h $(INCDIR)/hide.h $(INCDIR)/hsregex.h \
- $(INCDIR)/alloc.h $(INCDIR)/buff.h $(INCDIR)/ap.h \
- $(INCDIR)/util_uri.h
 http_config.o: http_config.c $(INCDIR)/httpd.h $(INCDIR)/conf.h \
  ../os/unix/os.h $(INCDIR)/hide.h $(INCDIR)/hsregex.h \
  $(INCDIR)/alloc.h $(INCDIR)/buff.h $(INCDIR)/ap.h \

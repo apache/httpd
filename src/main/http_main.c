@@ -337,11 +337,9 @@ static void __attribute__((noreturn)) clean_child_exit(int code)
 #if defined(USE_FCNTL_SERIALIZED_ACCEPT) || defined(USE_FLOCK_SERIALIZED_ACCEPT)
 static void expand_lock_fname(pool *p)
 {
-    char buf[20];
-
     /* XXXX possibly bogus cast */
-    ap_snprintf(buf, sizeof(buf), ".%lu", (unsigned long)getpid());
-    lock_fname = pstrcat(p, server_root_relative(p, lock_fname), buf, NULL);
+    lock_fname = psprintf(p, "%s.%lu",
+	server_root_relative(p, lock_fname), (unsigned long)getpid());
 }
 #endif
 
@@ -816,7 +814,6 @@ static APACHE_TLS int volatile alarm_pending = 0;
 
 static void timeout(int sig)
 {				/* Also called on SIGPIPE */
-    char errstr[MAX_STRING_LEN];
     void *dirconf;
 
     signal(SIGPIPE, SIG_IGN);	/* Block SIGPIPE */
@@ -836,21 +833,22 @@ static void timeout(int sig)
 	dirconf = timeout_req->per_dir_config;
     else
 	dirconf = current_conn->server->lookup_defaults;
-    if (sig == SIGPIPE) {
-	ap_snprintf(errstr, sizeof(errstr),
-		    "%s client stopped connection before %s completed",
-		    get_remote_host(current_conn, dirconf, REMOTE_NAME),
-		    timeout_name ? timeout_name : "request");
+    if (!current_conn->keptalive) {
+	if (sig == SIGPIPE) {
+	    aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_WARNING,
+			current_conn->server,
+			"%s client stopped connection before %s completed",
+			get_remote_host(current_conn, dirconf, REMOTE_NAME),
+			timeout_name ? timeout_name : "request");
+	}
+	else {
+	    aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_WARNING,
+			current_conn->server,
+			"%s timed out for %s",
+			timeout_name ? timeout_name : "request",
+			get_remote_host(current_conn, dirconf, REMOTE_NAME));
+	}
     }
-    else {
-	ap_snprintf(errstr, sizeof(errstr), "%s timed out for %s",
-		    timeout_name ? timeout_name : "request",
-		    get_remote_host(current_conn, dirconf, REMOTE_NAME));
-    }
-
-    if (!current_conn->keptalive)
-	aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_WARNING,
-		    current_conn->server, errstr);
 
     if (timeout_req) {
 	/* Someone has asked for this transaction to just be aborted

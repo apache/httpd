@@ -1205,7 +1205,6 @@ static request_rec *internal_internal_redirect(const char *new_uri, request_rec 
 {
     int access_status;
     request_rec *new = (request_rec *) pcalloc(r->pool, sizeof(request_rec));
-    char t[256];                /* Long enough... */
 
     new->connection = r->connection;
     new->server     = r->server;
@@ -1252,8 +1251,8 @@ static request_rec *internal_internal_redirect(const char *new_uri, request_rec 
     new->no_local_copy   = r->no_local_copy;
     new->read_length     = r->read_length;     /* We can only read it once */
 
-    ap_snprintf(t, sizeof(t), "%d", r->status);
-    table_setn(new->subprocess_env, "REDIRECT_STATUS", pstrdup(r->pool, t));
+    table_setn(new->subprocess_env, "REDIRECT_STATUS",
+	psprintf(r->pool, "%d", r->status));
 
     /*
      * XXX: hmm.  This is because mod_setenvif and mod_unique_id really need

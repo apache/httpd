@@ -130,18 +130,15 @@ API_EXPORT(char *) ht_time(pool *p, time_t t, const char *fmt, int gmt)
 
 API_EXPORT(char *) gm_timestr_822(pool *p, time_t sec)
 {
-    char ts[50];
     struct tm *tms;
 
     tms = gmtime(&sec);
 
     /* RFC date format; as strftime '%a, %d %b %Y %T GMT' */
-    ap_snprintf(ts, sizeof(ts),
+    return psprintf(p,
 		"%s, %.2d %s %d %.2d:%.2d:%.2d GMT", day_snames[tms->tm_wday],
 		tms->tm_mday, month_snames[tms->tm_mon], tms->tm_year + 1900,
 		tms->tm_hour, tms->tm_min, tms->tm_sec);
-
-    return pstrdup(p, ts);
 }
 
 /* What a pain in the ass. */
@@ -1086,14 +1083,10 @@ API_EXPORT(int) unescape_url(char *url)
 API_EXPORT(char *) construct_server(pool *p, const char *hostname,
 				    unsigned port, const request_rec *r)
 {
-    char portnum[22];
-    /* Long enough, even if port > 16 bits for some reason */
-
     if (is_default_port(port, r))
 	return pstrdup(p, hostname);
     else {
-	ap_snprintf(portnum, sizeof(portnum), "%u", port);
-	return pstrcat(p, hostname, ":", portnum, NULL);
+	return psprintf(p, "%s:%u", hostname, port);
     }
 }
 

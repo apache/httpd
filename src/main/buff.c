@@ -1444,3 +1444,27 @@ API_EXPORT(void) bonerror(BUFF *fb, void (*error) (BUFF *, int, void *),
     fb->error = error;
     fb->error_data = data;
 }
+
+static int bprintf_write(void *vdata, const char *inp, size_t len)
+{
+    if (bwrite(vdata, inp, len) != len) {
+	return -1;
+    }
+    return 0;
+}
+
+API_EXPORT_NONSTD(int) bprintf(BUFF *fb, const char *fmt, ...)
+{
+    va_list ap;
+    int res;
+
+    va_start(ap, fmt);
+    res = apapi_vformatter(bprintf_write, fb, fmt, ap);
+    va_end(ap);
+    return res;
+}
+
+API_EXPORT(int) vbprintf(BUFF *fb, const char *fmt, va_list ap)
+{
+    return apapi_vformatter(bprintf_write, fb, fmt, ap);
+}

@@ -251,9 +251,7 @@ typedef struct {
 
 static char *format_integer(pool *p, int i)
 {
-    char dummy[40];
-    ap_snprintf(dummy, sizeof(dummy), "%d", i);
-    return pstrdup(p, dummy);
+    return psprintf(p, "%d", i);
 }
 
 static char *pfmt(pool *p, int i)
@@ -333,10 +331,8 @@ static char *log_bytes_sent(request_rec *r, char *a)
     }
     else {
         long int bs;
-        char dummy[40];
         bgetopt(r->connection->client, BO_BYTECT, &bs);
-        ap_snprintf(dummy, sizeof(dummy), "%ld", bs);
-        return pstrdup(r->pool, dummy);
+	return psprintf(r->pool, "%ld", bs);
     }
 }
 
@@ -394,11 +390,7 @@ static char *log_request_time(request_rec *r, char *a)
 
 static char *log_request_duration(request_rec *r, char *a)
 {
-    char duration[22];          /* Long enough for 2^64 */
-
-    ap_snprintf(duration, sizeof(duration), "%ld",
-                time(NULL) - r->request_time);
-    return pstrdup(r->pool, duration);
+    return psprintf(r->pool, "%ld", time(NULL) - r->request_time);
 }
 
 /* These next two routines use the canonical name:port so that log
@@ -411,17 +403,12 @@ static char *log_virtual_host(request_rec *r, char *a)
 
 static char *log_server_port(request_rec *r, char *a)
 {
-    char portnum[22];
-
-    ap_snprintf(portnum, sizeof(portnum), "%u", r->server->port);
-    return pstrdup(r->pool, portnum);
+    return psprintf(r->pool, "%u", r->server->port);
 }
 
 static char *log_child_pid(request_rec *r, char *a)
 {
-    char pidnum[22];
-    ap_snprintf(pidnum, sizeof(pidnum), "%ld", (long) getpid());
-    return pstrdup(r->pool, pidnum);
+    return psprintf(r->pool, "%ld", (long) getpid());
 }
 
 /*****************************************************************

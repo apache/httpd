@@ -118,7 +118,6 @@ static int internal_byterange(int, long *, request_rec *, char **, long *,
 API_EXPORT(int) set_byterange(request_rec *r)
 {
     char *range, *if_range, *match;
-    char ts[MAX_STRING_LEN];
     long range_start, range_end;
 
     if (!r->clength || r->assbackwards)
@@ -163,25 +162,23 @@ API_EXPORT(int) set_byterange(request_rec *r)
 
         r->byterange = 1;
 
-        ap_snprintf(ts, sizeof(ts), "bytes %ld-%ld/%ld",
-                    range_start, range_end, r->clength);
-        table_setn(r->headers_out, "Content-Range", pstrdup(r->pool, ts));
-        ap_snprintf(ts, sizeof(ts), "%ld", range_end - range_start + 1);
-        table_setn(r->headers_out, "Content-Length", pstrdup(r->pool, ts));
+        table_setn(r->headers_out, "Content-Range",
+	    psprintf(r->pool, "bytes %ld-%ld/%ld",
+		range_start, range_end, r->clength));
+        table_setn(r->headers_out, "Content-Length",
+	    psprintf(r->pool, "%ld", range_end - range_start + 1));
     }
     else {
         /* a multiple range */
-        char boundary[33];      /* Long enough */
         char *r_range = pstrdup(r->pool, range + 6);
         long tlength = 0;
 
         r->byterange = 2;
-        ap_snprintf(boundary, sizeof(boundary), "%lx%lx",
-                    r->request_time, (long) getpid());
-        r->boundary = pstrdup(r->pool, boundary);
+        r->boundary = psprintf(r->pool, "%lx%lx",
+				r->request_time, (long) getpid());
         while (internal_byterange(0, &tlength, r, &r_range, NULL, NULL));
-        ap_snprintf(ts, sizeof(ts), "%ld", tlength);
-        table_setn(r->headers_out, "Content-Length", pstrdup(r->pool, ts));
+        table_setn(r->headers_out, "Content-Length",
+	    psprintf(r->pool, "%ld", tlength));
     }
 
     r->status = PARTIAL_CONTENT;
@@ -254,13 +251,8 @@ static int internal_byterange(int realreq, long *tlength, request_rec *r,
 
 API_EXPORT(int) set_content_length(request_rec *r, long clength)
 {
-    char ts[MAX_STRING_LEN];
-
     r->clength = clength;
-
-    ap_snprintf(ts, sizeof(ts), "%ld", clength);
-    table_setn(r->headers_out, "Content-Length", pstrdup(r->pool, ts));
-
+    table_setn(r->headers_out, "Content-Length", psprintf(r->pool, "%ld", clength));
     return 0;
 }
 
@@ -317,7 +309,6 @@ API_EXPORT(int) set_keepalive(request_rec *r)
         ((ka_sent = find_token(r->pool, conn, "keep-alive")) ||
          (r->proto_num >= HTTP_VERSION(1,1)))
        ) {
-        char header[256];
         int left = r->server->keep_alive_max - r->connection->keepalives;
 
         r->connection->keepalive = 1;
@@ -326,12 +317,13 @@ API_EXPORT(int) set_keepalive(request_rec *r)
         /* If they sent a Keep-Alive token, send one back */
         if (ka_sent) {
             if (r->server->keep_alive_max)
-                ap_snprintf(header, sizeof(header), "timeout=%d, max=%d",
-                            r->server->keep_alive_timeout, left);
+		table_setn(r->headers_out, "Keep-Alive",
+		    psprintf(r->pool, "timeout=%d, max=%d",
+                            r->server->keep_alive_timeout, left));
             else
-                ap_snprintf(header, sizeof(header), "timeout=%d",
-                            r->server->keep_alive_timeout);
-            table_setn(r->headers_out, "Keep-Alive", pstrdup(r->pool, header));
+		table_setn(r->headers_out, "Keep-Alive",
+		    psprintf(r->pool, "timeout=%d",
+                            r->server->keep_alive_timeout));
             table_mergen(r->headers_out, "Connection", "Keep-Alive");
         }
 
@@ -475,7 +467,8 @@ API_EXPORT(int) meets_conditions(request_rec *r)
  */
 API_EXPORT(void) set_etag(request_rec *r)
 {
-    char *etag, weak_etag[MAX_STRING_LEN];
+    char *etag;
+    char *weak;
 
     /*
      * Make an ETag header out of various pieces of information. We use
@@ -489,20 +482,22 @@ API_EXPORT(void) set_etag(request_rec *r)
      * be modified again later in the second, and the validation
      * would be incorrect.
      */
+    
+    weak = (r->request_time - r->mtime > 1) ? "" : "W/";
 
     if (r->finfo.st_mode != 0) {
-        ap_snprintf(weak_etag, sizeof(weak_etag), "W/\"%lx-%lx-%lx\"",
+	etag = psprintf(r->pool,
+		    "%s\"%lx-%lx-%lx\"", weak,
                     (unsigned long) r->finfo.st_ino,
                     (unsigned long) r->finfo.st_size,
                     (unsigned long) r->mtime);
     }
     else {
-        ap_snprintf(weak_etag, sizeof(weak_etag), "W/\"%lx\"",
+        etag = psprintf(r->pool, "%s\"%lx\"", weak,
                     (unsigned long) r->mtime);
     }
 
-    etag = weak_etag + ((r->request_time - r->mtime > 1) ? 2 : 0);
-    table_setn(r->headers_out, "ETag", pstrdup(r->pool, etag));
+    table_setn(r->headers_out, "ETag", etag);
 }
 
 /*
@@ -860,13 +855,10 @@ API_EXPORT(void) note_basic_auth_failure(request_rec *r)
 
 API_EXPORT(void) note_digest_auth_failure(request_rec *r)
 {
-    char nonce[256];
-
-    ap_snprintf(nonce, sizeof(nonce), "%lu", r->request_time);
     table_setn(r->err_headers_out,
-              r->proxyreq ? "Proxy-Authenticate" : "WWW-Authenticate",
-              pstrcat(r->pool, "Digest realm=\"", auth_name(r),
-                      "\", nonce=\"", nonce, "\"", NULL));
+	    r->proxyreq ? "Proxy-Authenticate" : "WWW-Authenticate",
+	    psprintf(r->pool, "Digest realm=\"%s\", nonce=\"%lu\"",
+		auth_name(r), r->request_time));
 }
 
 API_EXPORT(int) get_basic_auth_pw(request_rec *r, char **pw)

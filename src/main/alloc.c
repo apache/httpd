@@ -198,7 +198,7 @@ static ap_inline void debug_verify_filled(const char *ptr,
 static union block_hdr *malloc_block(int size)
 {
     union block_hdr *blok =
-    (union block_hdr *) malloc(size + sizeof(union block_hdr));
+	(union block_hdr *) malloc(size + sizeof(union block_hdr));
 
     if (blok == NULL) {
 	fprintf(stderr, "Ouch!  malloc failed in malloc_block()\n");
@@ -456,10 +456,8 @@ API_EXPORT(void) clear_pool(struct pool *a)
     block_alarms();
 
     (void) acquire_mutex(alloc_mutex);
-    {
     while (a->sub_pools)
 	destroy_pool(a->sub_pools);
-    }
     (void) release_mutex(alloc_mutex);
     /* Don't hold the mutex during cleanups. */
     run_cleanups(a->cleanups);
@@ -495,7 +493,6 @@ API_EXPORT(void) destroy_pool(pool *a)
     clear_pool(a);
 
     (void) acquire_mutex(alloc_mutex);
-    {
     if (a->parent) {
 	if (a->parent->sub_pools == a)
 	    a->parent->sub_pools = a->sub_next;
@@ -503,7 +500,6 @@ API_EXPORT(void) destroy_pool(pool *a)
 	    a->sub_prev->sub_next = a->sub_next;
 	if (a->sub_next)
 	    a->sub_next->sub_prev = a->sub_prev;
-    }
     }
     (void) release_mutex(alloc_mutex);
 
@@ -775,6 +771,117 @@ char *pstrcat(pool *a,...)
     return res;
 }
 
+/* XXX */
+#ifdef ALLOC_USE_MALLOC
+#error "psprintf does not support ALLOC_USE_MALLOC yet..."
+#endif
+
+/* psprintf is implemented by writing directly into the current
+ * block of the pool, starting right at first_avail.  If there's
+ * insufficient room, then a new block is allocated and the earlier
+ * output is copied over.  The new block isn't linked into the pool
+ * until all the output is done.
+ */
+
+struct psprintf_data {
+    pool *p;
+    union block_hdr *blok;
+    char *strp;
+    int got_a_new_block;
+};
+
+static int psprintf_write(void *vdata, const char *inp, size_t len)
+{
+    struct psprintf_data *ps;
+    union block_hdr *blok;
+    union block_hdr *nblok;
+    size_t cur_len;
+    char *strp;
+
+    ps = vdata;
+
+    /* does it fit in the current block? */
+    blok = ps->blok;
+    strp = ps->strp;
+    if (strp + len + 1 < blok->h.endp) {
+	memcpy(strp, inp, len);
+	ps->strp = strp + len;
+	return 0;
+    }
+
+    cur_len = strp - blok->h.first_avail;
+
+    /* must try another blok */
+    block_alarms();
+    (void) acquire_mutex(alloc_mutex);
+    nblok = new_block((cur_len + len)*2);
+    (void) release_mutex(alloc_mutex);
+    unblock_alarms();
+    strp = nblok->h.first_avail;
+    memcpy(strp, blok->h.first_avail, cur_len);
+    strp += cur_len;
+    memcpy(strp, inp, len);
+    strp += len;
+    ps->strp = strp;
+
+    /* did we allocate the current blok? if so free it up */
+    if (ps->got_a_new_block) {
+	debug_fill(blok->h.first_avail, blok->h.endp - blok->h.first_avail);
+	block_alarms();
+	(void) acquire_mutex(alloc_mutex);
+	blok->h.next = block_freelist;
+	block_freelist = blok;
+	(void) release_mutex(alloc_mutex);
+	unblock_alarms();
+    }
+    ps->blok = nblok;
+    ps->got_a_new_block = 1;
+    return 0;
+}
+
+API_EXPORT(char *) pvsprintf(pool *p, const char *fmt, va_list ap)
+{
+    struct psprintf_data ps;
+    char *strp;
+    int size;
+
+    ps.p = p;
+    ps.blok = p->last;
+    ps.strp = ps.blok->h.first_avail;
+    ps.got_a_new_block = 0;
+
+    apapi_vformatter(psprintf_write, &ps, fmt, ap);
+
+    strp = ps.strp;
+    *strp++ = '\0';
+
+    size = strp - ps.blok->h.first_avail;
+    size = (1 + ((size - 1) / CLICK_SZ)) * CLICK_SZ;
+    strp = ps.blok->h.first_avail;	/* save away result pointer */
+    ps.blok->h.first_avail += size;
+
+    /* have to link the block in if it's a new one */
+    if (ps.got_a_new_block) {
+	p->last->h.next = ps.blok;
+	p->last = ps.blok;
+#ifdef POOL_DEBUG
+	ps.blok->h.owning_pool = p;
+#endif
+    }
+
+    return strp;
+}
+
+API_EXPORT_NONSTD(char *) psprintf(pool *p, const char *fmt, ...)
+{
+    va_list ap;
+    char *res;
+
+    va_start(ap, fmt);
+    res = pvsprintf(p, fmt, ap);
+    va_end(ap);
+    return res;
+}
 
 /*****************************************************************
  *
