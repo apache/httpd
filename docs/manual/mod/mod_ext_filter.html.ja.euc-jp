@@ -280,7 +280,7 @@
       <dt><code>PreservesContentLength</code></dt>
 
       <dd><code>PreservesContentLength</code> キーワードはフィルタが
-      content length <span class="transnote">(<em /> コンテントの長さ)</span>
+      content length <span class="transnote">(<em>訳注:</em> コンテントの長さ)</span>
       を変更しないということを指定します。ほとんどのフィルタは
       content length を変更するため、これはデフォルトではありません。
       フィルタが長さを変えないときは、このキーワードを指定すると
@@ -342,7 +342,7 @@
       <dt><code>LogStderr | NoLogStderr</code></dt>
 
       <dd><code>LogStderr</code> キーワードは外部フィルタプログラムにより
-      標準エラー <span class="transnote">(<em /> stderr)</span> に書かれたメッセージを
+      標準エラー <span class="transnote">(<em>訳注:</em> stderr)</span> に書かれたメッセージを
       Apache のエラーログに保存するようにします。<code>NoLogStderr</code> は
       逆に保存しないようにします。</dd>
     </dl>

@@ -32,7 +32,7 @@
 
     <p><code>mod_dumpio</code> を使うと、Apache が受け取ったすべての入力と
     Apache により送られたすべての出力との、両方もしくはどちらか一方を、
-    エラーログファイルにログ収集 (ダンプ <span class="transnote">(<em /> dump)</span>) 
+    エラーログファイルにログ収集 <span class="transnote">(<em>訳注:</em> ダンプ dump)</span>
     できます。</p>
 
     <p>データのロギングは、SSL 復号化の直後 (入力) と SSL
