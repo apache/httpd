@@ -13,7 +13,7 @@
   The basic goal is to provide the following commonly known and expected
   procedure for out-of-the-box building and installing a package like Apache:
 
-    $ gunzip <apache-1.3.X.tar.gz | tar xvf -
+    $ gunzip <apache_1.3.X.tar.gz | tar xvf -
     $ ./configure --prefix=PREFIX [...]
     $ make
     $ make install
@@ -224,7 +224,7 @@
     [optionally you now have the chance to prepare or add more 
      third-party modules to the Apache source tree]
 
-    $ cd ../apache-1.3.X
+    $ cd ../apache_1.3.X
     $ ./configure --prefix=/path/to/apache \
                   --activate-module=src/modules/perl/libperl.a \
                   [--enable-shared=perl]
@@ -242,17 +242,17 @@
 
     $ gunzip <apache_1.3.X.tar.gz | tar xvf -
     $ gunzip <php-3.0.tar.gz | tar xvf -
-    $ cd apache-1.3.X
+    $ cd apache_1.3.X
     $ ./configure --prefix=/path/to/apache
     $ cd ../php-3.0
-    $ ./configure --with-apache=../apache-1.3.X
+    $ ./configure --with-apache=../apache_1.3.X
     $ make
     $ make install
 
     [optionally you now have the chance to prepare or add more 
      third-party modules to the Apache source tree]
 
-    $ cd ../apache-1.3.X
+    $ cd ../apache_1.3.X
     $ ./configure --prefix=/path/to/apache \
                   --activate-module=src/modules/php3/libphp3.a
     $ make 
@@ -262,17 +262,17 @@
 
     $ gunzip <apache_1.3.X.tar.gz | tar xvf -
     $ gunzip <php-3.0.tar.gz | tar xvf -
-    $ cd apache-1.3.X
+    $ cd apache_1.3.X
     $ ./configure --prefix=/path/to/apache
     $ cd ../php-3.0
-    $ ./configure --with-shared-apache=../apache-1.3.X
+    $ ./configure --with-shared-apache=../apache_1.3.X
     $ make
     $ make install
 
     [optionally you now have the chance to prepare or add more 
      third-party modules to the Apache source tree]
 
-    $ cd ../apache-1.3.X
+    $ cd ../apache_1.3.X
     $ ./configure --prefix=/path/to/apache \
                   --activate-module=src/modules/php3/libphp3.a \
                   --enable-shared=php3
