@@ -211,6 +211,7 @@ build for your OS.
 
      USE_LONGJMP:
       use the longjmp() call instead of siglongjmp()
+      (as well as setjmp() instead of sigsetjmp())
 
 --
 

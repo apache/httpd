@@ -436,7 +436,7 @@ int sig;
     }
     
     if (!current_conn) {
-#if defined(NEXT) || defined(USE_LONGJMP)
+#if defined(USE_LONGJMP)
 	longjmp(jmpbuffer,1);
 #else
 	siglongjmp(jmpbuffer,1);
@@ -477,7 +477,7 @@ int sig;
 	bclose(timeout_req->connection->client);
     
 	if (!standalone) exit(0);
-#if defined(NEXT) || defined(USE_LONGJMP)
+#if defined(USE_LONGJMP)
 	longjmp(jmpbuffer,1);
 #else
 	siglongjmp(jmpbuffer,1);
@@ -1139,7 +1139,7 @@ static int wait_or_timeout(int *status)
 static JMP_BUF wait_timeout_buf;
 
 static void longjmp_out_of_alarm (int sig) {
-#if defined(NEXT) || defined(USE_LONGJMP)
+#if defined(USE_LONGJMP)
     longjmp (wait_timeout_buf, 1);
 #else
     siglongjmp (wait_timeout_buf, 1);
@@ -1153,7 +1153,7 @@ int wait_or_timeout (int *status)
     static int ntimes;
 #endif
 
-#if defined(NEXT)
+#if defined(USE_LONGJMP)
     if (setjmp(wait_timeout_buf) != 0) {
 #else 
     if (sigsetjmp(wait_timeout_buf, 1) != 0) {
@@ -1338,7 +1338,7 @@ void restart() {
     signal (SIGALRM, SIG_IGN);
     alarm (0);
     is_graceful=0;
-#if defined(NEXT)  || defined(USE_LONGJMP)
+#if defined(USE_LONGJMP)
     longjmp(restart_buffer,1);
 #else
     siglongjmp(restart_buffer,1);
@@ -1350,7 +1350,7 @@ void graceful_restart()
     scoreboard_image->global.exit_generation=generation;
     is_graceful=1;
     update_scoreboard_global();
-#if defined(NEXT) || defined(USE_LONGJMP)
+#if defined(USE_LONGJMP)
     longjmp(restart_buffer,1);
 #else
     siglongjmp(restart_buffer,1);
@@ -1622,7 +1622,7 @@ void child_main(int child_num_arg)
      * Setup the jump buffers so that we can return here after
      * a signal or a timeout (yeah, I know, same thing).
      */
-#ifdef NEXT
+#if defined(USE_LONGJMP)
     setjmp(jmpbuffer);
 #else
     sigsetjmp(jmpbuffer,1);
@@ -2006,7 +2006,7 @@ void standalone_main(int argc, char **argv)
     
     if (!one_process) detach(); 
     
-#ifdef NEXT
+#if defined(USE_LONGJMP)
     setjmp(restart_buffer);
 #else
     sigsetjmp(restart_buffer,1);
@@ -2131,7 +2131,7 @@ void standalone_main(int argc, char **argv)
 
 	/*
 	if(scoreboard_image->global.please_exit && !count_live_servers())
-#if defined(NEXT)  || defined(USE_LONGJMP)
+#if defined(USE_LONGJMP)
 	    longjmp(restart_buffer,1);
 #else
 	    siglongjmp(restart_buffer,1);

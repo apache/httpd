@@ -246,6 +246,7 @@ typedef u_long  n_long;
 #define waitpid(a,b,c) wait4((a) == -1 ? 0 : (a),(union wait *)(b),c,NULL)
 typedef int pid_t;
 #define JMP_BUF jmp_buf
+#define USE_LONGJMP
 #define NO_USE_SIGACTION
 
 #elif defined(LINUX)
@@ -455,15 +456,17 @@ typedef int rlim_t;
 #define JMP_BUF sigjmp_buf
 #undef NO_KILLPG
 #define NO_SETSID
-#define HAS_GMTOFF
+#define HAVE_GMTOFF
 #ifndef __MACHTEN_PPC__
 #ifndef __MACHTEN_68K__
 #define __MACHTEN_68K__
 #endif
 #define FLOCK_SERIALIZED_ACCEPT
 #define NO_USE_SIGACTION
+#define USE_LONGJMP
 #undef NEED_STRDUP
 #else
+#define HAVE_SHMGET
 #define FCNTL_SERIALIZED_ACCEPT
 #endif
 

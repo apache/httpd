@@ -389,8 +389,13 @@ case "$PLAT" in
 	DEF_WANTHSREGEX=yes
 	;;
     *powerpc-tenon-machten*)
-    	OS='MachTen'
-	LFLAGS="$LFLAGS -Xlstack=131072 -Xldelcsect"
+	OS='MachTen PPC'
+	LFLAGS="$LFLAGS -Xlstack=0x14000 -Xldelcsect"
+	;;
+    *-machten*)
+	OS='MachTen 68K'
+	LFLAGS="$LFLAGS -stack 0x14000"
+	DEF_WANTHSREGEX=yes
 	;;
     *convex-v11*)
 	OS='CONVEXOS11'
