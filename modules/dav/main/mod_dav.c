@@ -2049,7 +2049,8 @@ static int dav_method_propfind(request_rec *r)
        404. Note that <response> elements will override these ns0,
        ns1, etc, but NOT within the <response> scope for the
        badprops. */
-    dav_begin_multistatus(ctx.bb, r, HTTP_MULTI_STATUS, doc->namespaces);
+    dav_begin_multistatus(ctx.bb, r, HTTP_MULTI_STATUS,
+                          doc ? doc->namespaces : NULL);
 
     /* Have the provider walk the resource. */
     err = (*resource->hooks->walk)(&ctx.w, depth, &multi_status);
