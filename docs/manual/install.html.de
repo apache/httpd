@@ -402,7 +402,7 @@
     stehen in verschiedenen Modulen bereit. Während des
     Konfigurationsprozesses müssen Sie auswählen, welche Module
     für die Verwendung mit Ihrem Server kompiliert werden sollen. Eine
-    <a href="mod/index-bytype.html">Liste von Modulen</a> ist in dieser
+    <a href="mod/">Liste von Modulen</a> ist in dieser
     Dokumentation enthalten. Module mit dem <a href="mod/module-dict.html#Status">Status</a> "Base"
     sind standardmäßig enthalten und müssen ausdrücklich
     deaktiviert werden (z.B. <code class="module"><a href="./mod/mod_userdir.html">mod_userdir</a></code>), wenn Sie sie
