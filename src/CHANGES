@@ -1,3 +1,6 @@
+  *) Move Configuration to Configuration.tmpl for CVS development. Make CVS
+     ignore Configuration, Makefile and modules.c. [Ben Laurie]
+
 Changes with Apache 1.1b0
 
   *) Use mmap() to allocated shared memory for the scoreboard on
