@@ -2012,7 +2012,7 @@ API_EXPORT(long) ap_send_fd_length(ap_file_t *fd, request_rec *r, long length)
     char buf[IOBUFSIZE];
     long total_bytes_sent = 0;
     register int w, o;
-    int n;
+    ap_ssize_t n;
     ap_status_t status;
 
     if (length == 0)

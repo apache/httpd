@@ -887,7 +887,8 @@ static int ignore_entry(autoindex_config_rec *d, char *path)
 static void do_emit_plain(request_rec *r, ap_file_t *f)
 {
     char buf[IOBUFSIZE + 1];
-    int i, n, c, ch;
+    int i, c, ch;
+    ap_ssize_t n;
     ap_status_t stat;
 
     ap_rputs("<PRE>\n", r);
@@ -1080,7 +1081,8 @@ static char *find_title(request_rec *r)
 {
     char titlebuf[MAX_STRING_LEN], *find = "<TITLE>";
     ap_file_t *thefile = NULL;
-    int x, y, n, p;
+    int x, y, p;
+    ap_ssize_t n;
 
     if (r->status != HTTP_OK) {
 	return NULL;
