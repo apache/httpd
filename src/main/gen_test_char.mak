@@ -92,20 +92,6 @@ LINK32_OBJS= \
   $(LINK32_FLAGS) $(LINK32_OBJS)
 <<
 
-SOURCE="$(InputPath)"
-PostBuild_Desc=Create test_char.h
-DS_POSTBUILD_DEP=$(INTDIR)\postbld.dep
-
-ALL : $(DS_POSTBUILD_DEP)
-
-# Begin Custom Macros
-OutDir=.
-# End Custom Macros
-
-$(DS_POSTBUILD_DEP) : "$(OUTDIR)\gen_test_char.exe"
-   .\gen_test_char > test_char.h
-	echo Helper for Post-build step > "$(DS_POSTBUILD_DEP)"
-
 !ELSEIF  "$(CFG)" == "gen_test_char - Win32 Debug"
 
 OUTDIR=.
@@ -173,20 +159,6 @@ LINK32_OBJS= \
     $(LINK32) @<<
   $(LINK32_FLAGS) $(LINK32_OBJS)
 <<
-
-SOURCE="$(InputPath)"
-PostBuild_Desc=Create test_char.h
-DS_POSTBUILD_DEP=$(INTDIR)\postbld.dep
-
-ALL : $(DS_POSTBUILD_DEP)
-
-# Begin Custom Macros
-OutDir=.
-# End Custom Macros
-
-$(DS_POSTBUILD_DEP) : "$(OUTDIR)\gen_test_char.exe"
-   .\gen_test_char > test_char.h
-	echo Helper for Post-build step > "$(DS_POSTBUILD_DEP)"
 
 !ENDIF 
 

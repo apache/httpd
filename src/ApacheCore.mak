@@ -206,11 +206,11 @@ OutDir=.\Debug
 
 !IF "$(RECURSE)" == "0" 
 
-ALL : "$(OUTDIR)\ApacheCore.dll"
+ALL : ".\main\uri_delims.h" ".\main\test_char.h" "$(OUTDIR)\ApacheCore.dll"
 
 !ELSE 
 
-ALL : "Win9xConHook - Win32 Debug" "regex - Win32 Debug" "gen_uri_delims - Win32 Debug" "gen_test_char - Win32 Debug" "ApacheOS - Win32 Debug" "ap - Win32 Debug" "$(OUTDIR)\ApacheCore.dll"
+ALL : "Win9xConHook - Win32 Debug" "regex - Win32 Debug" "gen_uri_delims - Win32 Debug" "gen_test_char - Win32 Debug" "ApacheOS - Win32 Debug" "ap - Win32 Debug" ".\main\uri_delims.h" ".\main\test_char.h" "$(OUTDIR)\ApacheCore.dll"
 
 !ENDIF 
 
@@ -265,6 +265,8 @@ CLEAN :
 	-@erase "$(OUTDIR)\ApacheCore.exp"
 	-@erase "$(OUTDIR)\ApacheCore.lib"
 	-@erase "$(OUTDIR)\ApacheCore.pdb"
+	-@erase ".\main\test_char.h"
+	-@erase ".\main\uri_delims.h"
 
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
@@ -586,7 +588,7 @@ SOURCE=.\os\win32\service.c
 
 SOURCE=.\main\util.c
 
-"$(INTDIR)\util.obj" : $(SOURCE) "$(INTDIR)"
+"$(INTDIR)\util.obj" : $(SOURCE) "$(INTDIR)" ".\main\test_char.h"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
@@ -610,7 +612,7 @@ SOURCE=.\main\util_script.c
 
 SOURCE=.\main\util_uri.c
 
-"$(INTDIR)\util_uri.obj" : $(SOURCE) "$(INTDIR)"
+"$(INTDIR)\util_uri.obj" : $(SOURCE) "$(INTDIR)" ".\main\uri_delims.h"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
@@ -619,6 +621,58 @@ SOURCE=.\os\win32\util_win32.c
 "$(INTDIR)\util_win32.obj" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
+
+SOURCE=.\main\gen_test_char.exe
+
+!IF  "$(CFG)" == "ApacheCore - Win32 Release"
+
+InputPath=.\main\gen_test_char.exe
+
+".\main\test_char.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	<<tempfile.bat 
+	@echo off 
+	.\main\gen_test_char.exe >.\main\test_char.h
+<< 
+	
+
+!ELSEIF  "$(CFG)" == "ApacheCore - Win32 Debug"
+
+InputPath=.\main\gen_test_char.exe
+
+".\main\test_char.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	<<tempfile.bat 
+	@echo off 
+	.\main\gen_test_char.exe >.\main\test_char.h
+<< 
+	
+
+!ENDIF 
+
+SOURCE=.\main\gen_uri_delims.exe
+
+!IF  "$(CFG)" == "ApacheCore - Win32 Release"
+
+InputPath=.\main\gen_uri_delims.exe
+
+".\main\uri_delims.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	<<tempfile.bat 
+	@echo off 
+	.\main\gen_uri_delims.exe >.\main\uri_delims.h
+<< 
+	
+
+!ELSEIF  "$(CFG)" == "ApacheCore - Win32 Debug"
+
+InputPath=.\main\gen_uri_delims.exe
+
+".\main\uri_delims.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	<<tempfile.bat 
+	@echo off 
+	.\main\gen_uri_delims.exe >.\main\uri_delims.h
+<< 
+	
+
+!ENDIF 
 
 !IF  "$(CFG)" == "ApacheCore - Win32 Release"
 

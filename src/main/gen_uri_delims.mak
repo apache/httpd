@@ -92,20 +92,6 @@ LINK32_OBJS= \
   $(LINK32_FLAGS) $(LINK32_OBJS)
 <<
 
-SOURCE="$(InputPath)"
-PostBuild_Desc=Create uri_delims.h
-DS_POSTBUILD_DEP=$(INTDIR)\postbld.dep
-
-ALL : $(DS_POSTBUILD_DEP)
-
-# Begin Custom Macros
-OutDir=.
-# End Custom Macros
-
-$(DS_POSTBUILD_DEP) : "$(OUTDIR)\gen_uri_delims.exe"
-   .\gen_uri_delims > uri_delims.h
-	echo Helper for Post-build step > "$(DS_POSTBUILD_DEP)"
-
 !ELSEIF  "$(CFG)" == "gen_uri_delims - Win32 Debug"
 
 OUTDIR=.
@@ -173,20 +159,6 @@ LINK32_OBJS= \
     $(LINK32) @<<
   $(LINK32_FLAGS) $(LINK32_OBJS)
 <<
-
-SOURCE="$(InputPath)"
-PostBuild_Desc=Create uri_delims.h
-DS_POSTBUILD_DEP=$(INTDIR)\postbld.dep
-
-ALL : $(DS_POSTBUILD_DEP)
-
-# Begin Custom Macros
-OutDir=.
-# End Custom Macros
-
-$(DS_POSTBUILD_DEP) : "$(OUTDIR)\gen_uri_delims.exe"
-   .\gen_uri_delims > uri_delims.h
-	echo Helper for Post-build step > "$(DS_POSTBUILD_DEP)"
 
 !ENDIF 
 
