@@ -192,6 +192,7 @@ typedef struct {
     apr_socket_t *sock;     /* Connection socket */
     apr_uint32_t flags;     /* Conection flags */
     int          close;     /* Close 'this' connection */
+    int          close_on_recycle; /* Close the connection when returning to pool */
     proxy_worker *worker;   /* Connection pool this connection belogns to */
     void         *data;     /* per scheme connection data */
 } proxy_conn_rec;
@@ -364,7 +365,7 @@ PROXY_DECLARE(int) ap_proxy_acquire_connection(const char *proxy_function, proxy
 PROXY_DECLARE(int) ap_proxy_release_connection(const char *proxy_function, proxy_conn_rec *conn, server_rec *s);
 PROXY_DECLARE(apr_status_t) ap_proxy_close_connection(proxy_conn_rec *conn);
 PROXY_DECLARE(int) ap_proxy_connect_backend(const char *proxy_function, proxy_conn_rec *conn, proxy_worker *worker, server_rec *s);
-PROXY_DECLARE(int) ap_proxy_connection_create(const char *proxy_function, proxy_conn_rec *conn, conn_rec *c, server_rec *s);
+PROXY_DECLARE(int) ap_proxy_connection_create(const char *proxy_function, proxy_conn_rec *conn, int close_on_recycle, conn_rec *c, server_rec *s);
 
 /* For proxy_util */
 extern module PROXY_DECLARE_DATA proxy_module;
