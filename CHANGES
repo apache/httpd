@@ -1,5 +1,12 @@
 Changes with Apache 2.0.24-dev
 
+  *) The Unix MPMs other than perchild now allow child server 
+     processes to use the accept mutex when starting as root and 
+     using SysV sems for the accept mutex.  Previously, this 
+     combination would lead to fatal errors in the child server 
+     processes.  perchild can't use SysV sems because of security
+     issues.  [Jeff Trawick, Greg Ames]
+
   *) Added Win32 revision stamp resources to all http binaries
      (including modules/ and support/ tools.)  PR7322  [William Rowe]
 

@@ -593,7 +593,12 @@ AP_DECLARE(const char *) ap_mpm_set_accept_lock_mech(cmd_parms *cmd,
         ap_accept_lock_mech = APR_LOCK_FCNTL;
     }
 #endif
-#if APR_HAS_SYSVSEM_SERIALIZE
+    /* perchild can't use SysV sems because the permissions on the accept
+     * mutex can't be set to allow all processes to use the mutex and
+     * at the same time keep all users from being able to dink with the
+     * mutex
+     */
+#if APR_HAS_SYSVSEM_SERIALIZE && !defined(PERCHILD_MPM)
     else if (!strcasecmp(arg, "sysvsem")) {
         ap_accept_lock_mech = APR_LOCK_SYSVSEM;
     }
@@ -605,14 +610,14 @@ AP_DECLARE(const char *) ap_mpm_set_accept_lock_mech(cmd_parms *cmd,
 #endif
     else {
         return apr_pstrcat(cmd->pool, arg, " is an invalid mutex mechanism; valid "
-                           "ones for this platform are: default"
+                           "ones for this platform and MPM are: default"
 #if APR_HAS_FLOCK_SERIALIZE
                            ", flock"
 #endif
 #if APR_HAS_FCNTL_SERIALIZE
                            ", fcntl"
 #endif
-#if APR_HAS_SYSVSEM_SERIALIZE
+#if APR_HAS_SYSVSEM_SERIALIZE && !defined(PERCHILD_MPM)
                            ", sysvsem"
 #endif
 #if APR_HAS_PROC_PTHREAD_SERIALIZE
