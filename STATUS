@@ -1,13 +1,10 @@
   1.3 STATUS:
-  Last modified at [$Date: 2001/01/18 11:29:29 $]
+  Last modified at [$Date: 2001/01/18 11:30:40 $]
 
 Release:
 
     1.3.15-dev: Jim offers to be RM.
-            Status: We are in code-freeze. Only code patches
-            for the show-stopper(s) should be commited.
-            We need to vote on the proposed patch for the
-            single showstopper.
+            Status: We are in code-freeze and ready to roll.
     1.3.14: Tagged & Rolled Oct 10, 2000.  Released and
             announced Oct 13, 2000. 
     1.3.13: Not released. Pulled in the "first minutes" due to
