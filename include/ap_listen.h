@@ -71,7 +71,7 @@ struct ap_listen_rec {
 ap_listen_rec *ap_listeners;
 
 void ap_listen_pre_config(void);
-int ap_listen_open(ap_context_t *pconf, unsigned port);
+int ap_listen_open(process_rec *process, unsigned port);
 const char *ap_set_listenbacklog(cmd_parms *cmd, void *dummy, char *arg);
 const char *ap_set_listener(cmd_parms *cmd, void *dummy, char *ips);
 const char *ap_set_send_buffer_size(cmd_parms *cmd, void *dummy, char *arg);

@@ -293,12 +293,12 @@ API_EXPORT_NONSTD(int)        main(int argc, char *argv[])
 
     g_pHookPool=pglobal;
 
+    ap_setup_prelinked_modules(process);
+
     ap_create_context(&pcommands, pglobal);
     ap_server_pre_read_config  = ap_make_array(pcommands, 1, sizeof(char *));
     ap_server_post_read_config = ap_make_array(pcommands, 1, sizeof(char *));
     ap_server_config_defines   = ap_make_array(pcommands, 1, sizeof(char *));
-
-    ap_setup_prelinked_modules();
 
     while ((c = getopt(argc, argv, "C:c:d:f:vVlLth")) != -1) {
         char **new;

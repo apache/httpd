@@ -323,7 +323,7 @@ void ap_single_module_configure(ap_context_t *p, server_rec *s, module *m);
 
 /* For http_main.c... */
 
-void ap_setup_prelinked_modules(void);
+void ap_setup_prelinked_modules(process_rec *process);
 void ap_show_directives(void);
 void ap_show_modules(void);
 server_rec *ap_read_config(process_rec *process, ap_context_t *temp_pool, const char *config_name);

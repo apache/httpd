@@ -526,7 +526,7 @@ API_EXPORT(void) ap_remove_loaded_module(module *mod)
     *m = NULL;
 }
 
-void ap_setup_prelinked_modules()
+void ap_setup_prelinked_modules(process_rec *process)
 {
     module **m;
     module **m2;
@@ -541,7 +541,7 @@ void ap_setup_prelinked_modules()
     /* 
      *  Initialise list of loaded modules
      */
-    ap_loaded_modules = (module **)malloc(
+    ap_loaded_modules = (module **)ap_palloc(process->pool,
         sizeof(module *)*(total_modules+DYNAMIC_MODULE_LIMIT+1));
     if (ap_loaded_modules == NULL) {
 	fprintf(stderr, "Ouch!  Out of memory in ap_setup_prelinked_modules()!\n");

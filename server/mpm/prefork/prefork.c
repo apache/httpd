@@ -2535,7 +2535,7 @@ static int setup_listeners(ap_context_t *p, server_rec *s)
     ap_listen_rec *lr;
     int sockdes;
 
-    if (ap_listen_open(p, s->port)) {
+    if (ap_listen_open(s->process, s->port)) {
 	ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ALERT, s,
 		    "no listening sockets available, shutting down");
 	return -1;
