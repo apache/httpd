@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/01/30 18:07:17 $]
+Last modified at [$Date: 2003/01/31 02:17:29 $]
 
 Release:
 
@@ -76,12 +76,6 @@ PATCHES TO PORT FROM 2.1
       documentation.
       modules/mappers/mod_negotiation.c r1.110
       +1: nd
-
-    * Satisfy Any without an AuthType doesn't run type_checker and fixups
-      in 2.x or causes a weird 500 in 1.3.x. (PR 9076)
-      Please vote for 1.3 series, too. The patch is the essentially the same.
-      server/request.c r1.124
-      +1: nd, jerenkrantz, trawick
 
     * Fix If header handling to ignore non-mod_dav locks. (PR 16452)
       modules/dav/main/util.c: r1.44
