@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/03/25 02:35:40 $]
+Last modified at [$Date: 2004/03/25 02:40:17 $]
 
 Release:
 
@@ -656,10 +656,6 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
 
     * Combine log_child and piped_log_spawn. Clean up http_log.c.
       Common logging API.
-
-    * Win32: Migrate the MPM over to use APR thread/process calls. This
-      would eliminate some code in the Win32 branch that essentially
-      duplicates what is in APR.
 
     * There are still a number of places in the code where we are
       losing error status (i.e. throwing away the error returned by a
