@@ -1,5 +1,5 @@
 Apache 2.0 STATUS:
-Last modified at [$Date: 2000/06/10 17:21:46 $]
+Last modified at [$Date: 2000/06/11 22:35:20 $]
 
 Release:
 
@@ -24,11 +24,16 @@ RELEASE SHOWSTOPPERS:
       NOTE: When this is implemented, it would be really nice if the
             default cgi module on Unix with a threaded MPM is the cgid
             module.  This should be override-able of course.
-          Status: Jim Jagielski is looking into this.
+        Status: Jim Jagielski is looking into this.
 
       - Fix up ./configure to properly detect the various dynamic load
           libraries/flags on the different platforms (current, we default
           to -ldl which is wrong).
+        Status:
+
+      - reduce number of configuration items, which in turn reduces the
+          amount of stuff in ap_config_auto.h.in
+        Status: Ryan +1 (working on it), Greg +1
 
     * suEXEC doesn't work
         Status: Manoj has posted an patch to fix this.
@@ -122,10 +127,6 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
 
     * Win32: Implement reliable piped logs on Windows
         Status: 
-
-    * Switch to autoconf, et al. for configuration.
-        Status: Manoj has placed an initial version into the 2.0
-        repository. Todos include:
           
     * Use APR to get rid of more platform dependancies.
         Status: Ryan Bloom <rbb@covalenet.net> is working on this.
@@ -162,6 +163,12 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
 
     * Go through ap_config.h and namespace-protect the symbols (e.g. USE_*).
       Some symbols can/should move to mpm_common.h where possible.
+
+    * Explore use of a post-config hook for the code in http_main.c which
+      calls ap_fixup_virutal_hosts(), ap_fini_vhost_config(), and
+      ap_sort_hooks()  [to reduce the logic in main()]
+
+    * read the config tree just once, and process N times (as necessary)
 
 Other bugs that need fixing:
 
