@@ -1,0 +1,93 @@
+
+# To compile the (experimental) SSL support into 'ab' use 
+# something like:
+#
+# SSLLOC=/usr/local
+# CFLAGS=-DUSE_SSL $(OPTIM) $(CFLAGS1) $(EXTRA_CFLAGS)
+# LIBS=-L$(SSLLOC)/lib -lssl -lcrypto -lm -lap -los $(EXTRA_LIBS) $(LIBS1)
+# INCLUDES=-I$(SSLLOC)/include $(INCLUDES1) $(INCLUDES0) $(EXTRA_INCLUDES)
+
+CFLAGS=$(OPTIM) $(CFLAGS1) $(EXTRA_CFLAGS)
+LIBS=-lm -lap -los $(EXTRA_LIBS) $(LIBS1)
+INCLUDES=$(INCLUDES1) $(INCLUDES0) $(EXTRA_INCLUDES)
+LDFLAGS=$(LDFLAGS1) $(EXTRA_LDFLAGS) -L$(OSDIR) -L$(SRCDIR)/ap
+
+TARGETS=htpasswd htdigest rotatelogs logresolve ab apxs checkgid
+
+OBJS=htpasswd.o htdigest.o rotatelogs.o logresolve.o ab.o checkgid.o
+
+.c.o: 
+	$(CC) -c $(INCLUDES) $(CFLAGS) $<
+
+all: $(TARGETS)
+
+htpasswd: htpasswd.o
+	$(CC) $(CFLAGS) -o htpasswd $(LDFLAGS) htpasswd.o $(LIBS)
+
+htdigest: htdigest.o
+	$(CC) $(CFLAGS) -o htdigest $(LDFLAGS) htdigest.o $(LIBS)
+
+rotatelogs: rotatelogs.o
+	$(CC) $(CFLAGS) -o rotatelogs $(LDFLAGS) rotatelogs.o $(LIBS)
+
+logresolve: logresolve.o
+	$(CC) $(CFLAGS) -o logresolve $(LDFLAGS) logresolve.o $(LIBS)
+
+ab: ab.o
+	$(CC) $(CFLAGS) -o ab $(LDFLAGS) ab.o $(LIBS)
+
+checkgid: checkgid.o
+	$(CC) $(CFLAGS) -o checkgid $(LDFLAGS) checkgid.o $(LIBS)
+
+apxs: apxs.pl Makefile
+	sed <apxs.pl >apxs \
+	    -e 's%@TARGET@%$(TARGET)%g' \
+	    -e 's%@CC@%$(CC)%g' \
+	    -e 's%@CFLAGS@%$(CFLAGS)%g' \
+	    -e 's%@CFLAGS_SHLIB@%$(CFLAGS_SHLIB)%g' \
+	    -e 's%@LD_SHLIB@%$(LD_SHLIB)%g' \
+	    -e 's%@LDFLAGS_MOD_SHLIB@%$(LDFLAGS_MOD_SHLIB)%g' \
+	    -e 's%@LIBS_SHLIB@%$(LIBS_SHLIB)%g' && chmod a+x apxs
+
+suexec: suexec.o
+	$(CC) $(CFLAGS) -o suexec $(LDFLAGS) suexec.o $(LIBS)
+
+clean:
+	rm -f $(TARGETS) *.o
+
+distclean: clean
+	-rm -f Makefile
+
+# We really don't expect end users to use this rule.  It works only with
+# gcc, and rebuilds Makefile.tmpl.  You have to re-run Configure after
+# using it.
+depend:
+	cp Makefile.tmpl Makefile.tmpl.bak \
+	    && sed -ne '1,/^# DO NOT REMOVE/p' Makefile.tmpl > Makefile.new \
+	    && gcc -MM $(INCLUDES) $(CFLAGS) *.c >> Makefile.new \
+	    && sed -e '1,$$s: $(INCDIR)/: $$(INCDIR)/:g' \
+	           -e '1,$$s: $(OSDIR)/: $$(OSDIR)/:g' Makefile.new \
+		> Makefile.tmpl \
+	    && rm Makefile.new
+
+#Dependencies
+
+$(OBJS): Makefile
+
+# DO NOT REMOVE
+ab.o: ab.c $(INCDIR)/ap_config.h $(INCDIR)/ap_config_auto.h \
+ $(OSDIR)/os.h $(INCDIR)/ap_ctype.h $(INCDIR)/hsregex.h
+htdigest.o: htdigest.c $(INCDIR)/ap_config.h \
+ $(INCDIR)/ap_config_auto.h $(OSDIR)/os.h $(INCDIR)/ap_ctype.h \
+ $(INCDIR)/hsregex.h $(INCDIR)/ap_md5.h
+htpasswd.o: htpasswd.c $(INCDIR)/ap_config.h \
+ $(INCDIR)/ap_config_auto.h $(OSDIR)/os.h $(INCDIR)/ap_ctype.h \
+ $(INCDIR)/hsregex.h
+logresolve.o: logresolve.c $(INCDIR)/ap_config.h \
+ $(INCDIR)/ap_config_auto.h $(OSDIR)/os.h $(INCDIR)/ap_ctype.h \
+ $(INCDIR)/hsregex.h
+rotatelogs.o: rotatelogs.c $(INCDIR)/ap_config.h \
+ $(INCDIR)/ap_config_auto.h $(OSDIR)/os.h $(INCDIR)/ap_ctype.h \
+ $(INCDIR)/hsregex.h
+suexec.o: suexec.c $(INCDIR)/ap_config.h $(INCDIR)/ap_config_auto.h \
+ $(OSDIR)/os.h $(INCDIR)/ap_ctype.h $(INCDIR)/hsregex.h suexec.h
