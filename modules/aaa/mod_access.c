@@ -370,15 +370,15 @@ static int check_dir_access(request_rec *r)
     int ret = OK;
 
     if (a->order[method] == ALLOW_THEN_DENY) {
-	ret = FORBIDDEN;
+	ret = HTTP_FORBIDDEN;
 	if (find_allowdeny(r, a->allows, method))
 	    ret = OK;
 	if (find_allowdeny(r, a->denys, method))
-	    ret = FORBIDDEN;
+	    ret = HTTP_FORBIDDEN;
     }
     else if (a->order[method] == DENY_THEN_ALLOW) {
 	if (find_allowdeny(r, a->denys, method))
-	    ret = FORBIDDEN;
+	    ret = HTTP_FORBIDDEN;
 	if (find_allowdeny(r, a->allows, method))
 	    ret = OK;
     }
@@ -387,10 +387,10 @@ static int check_dir_access(request_rec *r)
 	    && !find_allowdeny(r, a->denys, method))
 	    ret = OK;
 	else
-	    ret = FORBIDDEN;
+	    ret = HTTP_FORBIDDEN;
     }
 
-    if (ret == FORBIDDEN
+    if (ret == HTTP_FORBIDDEN
 	&& (ap_satisfies(r) != SATISFY_ANY || !ap_some_auth_required(r))) {
 	ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
 		  "client denied by server configuration: %s",

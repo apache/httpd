@@ -318,8 +318,9 @@ typedef struct module_struct {
      * check_user_id --- get and validate user id from the HTTP request
      * auth_checker --- see if the user (from check_user_id) is OK *here*.
      *                  If all of *these* decline, the request is rejected
-     *                  (as a SERVER_ERROR, since the module which was
-     *                  supposed to handle this was configured wrong).
+     *                  (as a HTTP_INTERNAL_SERVER_ERROR, since the module
+     *                  which was suppsoed to handle this was configured
+     *                  wrong).
      * type_checker --- Determine MIME type of the requested entity;
      *                  sets content_type, _encoding and _language fields.
      */

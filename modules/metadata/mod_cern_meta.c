@@ -261,7 +261,7 @@ static int scan_meta_file(request_rec *r, ap_file_t *f)
 	if (!(l = strchr(w, ':'))) {
  	    ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
 			"malformed header in meta file: %s", r->filename);
-	    return SERVER_ERROR;
+	    return HTTP_INTERNAL_SERVER_ERROR;
 	}
 
 	*l++ = '\0';
@@ -365,7 +365,7 @@ static int add_cern_meta_data(request_rec *r)
 	}
 	ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
 	      "meta file permissions deny server access: %s", metafilename);
-	return FORBIDDEN;
+	return HTTP_FORBIDDEN;
     };
 
     /* read the headers in */

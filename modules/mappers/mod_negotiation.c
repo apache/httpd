@@ -811,7 +811,7 @@ static int read_type_map(negotiation_state *neg, request_rec *rr)
             const char *body;
 
             if (body1 == NULL) {
-                return SERVER_ERROR;
+                return HTTP_INTERNAL_SERVER_ERROR;
             }
 
             strip_paren_comments(body1);
@@ -2297,7 +2297,7 @@ static void store_variant_list(request_rec *r, negotiation_state *neg)
 
 /* Called if we got a "Choice" response from the variant selection algorithm.
  * It checks the result of the chosen variant to see if it
- * is itself negotiated (if so, return error VARIANT_ALSO_VARIES).
+ * is itself negotiated (if so, return error HTTP_VARIANT_ALSO_VARIES).
  * Otherwise, add the appropriate headers to the current response.
  */
 
@@ -2343,12 +2343,12 @@ static int setup_choice_response(request_rec *r, negotiation_state *neg,
      * lead to cases in which a change in the set of variants or the
      * negotiation algorithm of the nontransparent resource is never
      * propagated up to a HTTP/1.1 cache which interprets Vary.  To be
-     * completely on the safe side we should return VARIANT_ALSO_VARIES
+     * completely on the safe side we should return HTTP_VARIANT_ALSO_VARIES
      * for this type of recursive negotiation too.
      */
     if (neg->is_transparent &&
         ap_table_get(sub_req->err_headers_out, "TCN")) {
-        return VARIANT_ALSO_VARIES;
+        return HTTP_VARIANT_ALSO_VARIES;
     }
 
     /* This catches the error that a transparent type map recursively
@@ -2375,7 +2375,7 @@ static int setup_choice_response(request_rec *r, negotiation_state *neg,
      * variant list validators.
      */
     if (sub_req->handler && strcmp(sub_req->handler, "type-map") == 0) {
-        return VARIANT_ALSO_VARIES;
+        return HTTP_VARIANT_ALSO_VARIES;
     }
 
     /* This adds an appropriate Variant-Vary header if the subrequest
@@ -2470,7 +2470,7 @@ static int do_negotiation(request_rec *r, negotiation_state *neg,
      */
 
     if (alg_result == alg_list) {
-        /* send a list response or NOT_ACCEPTABLE error response  */
+        /* send a list response or HTTP_NOT_ACCEPTABLE error response  */
 
         neg->send_alternates = 1; /* always include Alternates header */
         set_neg_headers(r, neg, alg_result); 
@@ -2490,13 +2490,13 @@ static int do_negotiation(request_rec *r, negotiation_state *neg,
              * responses (they certainly won't if they conform to the
              * HTTP/1.0 specification).
              */
-            return MULTIPLE_CHOICES;
+            return HTTP_MULTIPLE_CHOICES;
         }
         
         if (!*bestp) {
             ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
                           "no acceptable variant: %s", r->filename);
-            return NOT_ACCEPTABLE;
+            return HTTP_NOT_ACCEPTABLE;
         }
     }
 
@@ -2632,7 +2632,7 @@ static int handle_multi(request_rec *r)
     /* BLECH --- don't multi-resolve non-ordinary files */
 
     if (sub_req->finfo.filetype != APR_REG) {
-        res = NOT_FOUND;
+        res = HTTP_NOT_FOUND;
         goto return_from_multi;
     }
 

@@ -309,7 +309,7 @@ static int db_authenticate_basic_user(request_rec *r)
 	ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
 		    "DB user %s not found: %s", r->user, r->filename);
 	ap_note_basic_auth_failure(r);
-	return AUTH_REQUIRED;
+	return HTTP_UNAUTHORIZED;
     }
     /* Password is up to first : if exists */
     colon_pw = strchr(real_pw, ':');
@@ -325,7 +325,7 @@ static int db_authenticate_basic_user(request_rec *r)
                       "Password Mismatch",
 		      r->user, r->uri);
 	ap_note_basic_auth_failure(r);
-	return AUTH_REQUIRED;
+	return HTTP_UNAUTHORIZED;
     }
     return OK;
 }
@@ -371,7 +371,7 @@ static int db_check_auth(request_rec *r)
 			      "user %s not in DB group file %s: %s",
 			      user, sec->auth_dbgrpfile, r->filename);
 		ap_note_basic_auth_failure(r);
-		return AUTH_REQUIRED;
+		return HTTP_UNAUTHORIZED;
 	    }
 	    orig_groups = groups;
 	    while (t[0]) {
@@ -386,7 +386,7 @@ static int db_check_auth(request_rec *r)
 	    ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
 			  "user %s not in right group: %s", user, r->filename);
 	    ap_note_basic_auth_failure(r);
-	    return AUTH_REQUIRED;
+	    return HTTP_UNAUTHORIZED;
 	}
     }
 

@@ -446,25 +446,6 @@ API_EXPORT(const char *) ap_get_server_built(void);
 #define HTTP_INSUFFICIENT_STORAGE          507
 #define HTTP_NOT_EXTENDED                  510
 
-#define DOCUMENT_FOLLOWS    HTTP_OK
-#define PARTIAL_CONTENT     HTTP_PARTIAL_CONTENT
-#define MULTIPLE_CHOICES    HTTP_MULTIPLE_CHOICES
-#define MOVED               HTTP_MOVED_PERMANENTLY
-#define REDIRECT            HTTP_MOVED_TEMPORARILY
-#define USE_LOCAL_COPY      HTTP_NOT_MODIFIED
-#define BAD_REQUEST         HTTP_BAD_REQUEST
-#define AUTH_REQUIRED       HTTP_UNAUTHORIZED
-#define FORBIDDEN           HTTP_FORBIDDEN
-#define NOT_FOUND           HTTP_NOT_FOUND
-#define METHOD_NOT_ALLOWED  HTTP_METHOD_NOT_ALLOWED
-#define NOT_ACCEPTABLE      HTTP_NOT_ACCEPTABLE
-#define LENGTH_REQUIRED     HTTP_LENGTH_REQUIRED
-#define PRECONDITION_FAILED HTTP_PRECONDITION_FAILED
-#define SERVER_ERROR        HTTP_INTERNAL_SERVER_ERROR
-#define NOT_IMPLEMENTED     HTTP_NOT_IMPLEMENTED
-#define BAD_GATEWAY         HTTP_BAD_GATEWAY
-#define VARIANT_ALSO_VARIES HTTP_VARIANT_ALSO_VARIES
-
 #define ap_is_HTTP_INFO(x)         (((x) >= 100)&&((x) < 200))
 #define ap_is_HTTP_SUCCESS(x)      (((x) >= 200)&&((x) < 300))
 #define ap_is_HTTP_REDIRECT(x)     (((x) >= 300)&&((x) < 400))
@@ -649,7 +630,7 @@ struct request_rec {
 	handler like this the handler should set r->allowed to the list
 	of methods that it is willing to handle.  This bitvector is used
 	to construct the "Allow:" header required for OPTIONS requests,
-	and METHOD_NOT_ALLOWED and NOT_IMPLEMENTED status codes.
+	and HTTP_METHOD_NOT_ALLOWED and HTTP_NOT_IMPLEMENTED status codes.
 
 	Since the default_handler deals with OPTIONS, all modules can
 	usually decline to deal with OPTIONS.  TRACE is always allowed,
@@ -657,7 +638,7 @@ struct request_rec {
 
 	Since the default_handler will always handle a GET, a
 	module which does *not* implement GET should probably return
-	METHOD_NOT_ALLOWED.  Unfortunately this means that a Script GET
+	HTTP_METHOD_NOT_ALLOWED.  Unfortunately this means that a Script GET
 	handler can't be installed by mod_actions.
     */
     int allowed;		/* Allowed methods - for 405, OPTIONS, etc */

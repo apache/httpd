@@ -263,7 +263,7 @@ static int anon_authenticate_basic_user(request_rec *r)
 	    ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, APR_SUCCESS, r,
 			"Anonymous: Authoritative, Passwd <%s> not accepted",
 			sent_pw ? sent_pw : "\'none\'");
-	    return AUTH_REQUIRED;
+	    return HTTP_UNAUTHORIZED;
 	}
 	/* Drop out the bottom to return DECLINED */
     }

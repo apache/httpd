@@ -155,7 +155,7 @@
 **         all hooks are run, independend of result
 **
 **  o  at the last stage, the core module always
-**       - says "BAD_REQUEST" if r->filename does not begin with "/"
+**       - says "HTTP_BAD_REQUEST" if r->filename does not begin with "/"
 **       - prefix URL with document_root or replaced server_root
 **         with document_root and sets r->filename
 **       - always return a "OK" independed if the file really exists
@@ -1142,7 +1142,7 @@ static int hook_uri2file(request_rec *r)
                 ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
                              "attempt to make remote request from mod_rewrite "
                              "without proxy enabled: %s", r->filename);
-                return FORBIDDEN;
+                return HTTP_FORBIDDEN;
             }
 
             /* make sure the QUERY_STRING and
@@ -1210,7 +1210,7 @@ static int hook_uri2file(request_rec *r)
                 r->status = HTTP_OK; /* make Apache kernel happy */
             }
             else {
-                n = REDIRECT;
+                n = HTTP_MOVED_TEMPORARILY;
             }
 
             /* now do the redirection */
@@ -1221,7 +1221,7 @@ static int hook_uri2file(request_rec *r)
         else if (strlen(r->filename) > 10 &&
                  strncmp(r->filename, "forbidden:", 10) == 0) {
             /* This URLs is forced to be forbidden for the requester */
-            return FORBIDDEN;
+            return HTTP_FORBIDDEN;
         }
         else if (strlen(r->filename) > 5 &&
                  strncmp(r->filename, "gone:", 5) == 0) {
@@ -1252,7 +1252,7 @@ static int hook_uri2file(request_rec *r)
 
             /* the filename has to start with a slash! */
             if (r->filename[0] != '/') {
-                return BAD_REQUEST;
+                return HTTP_BAD_REQUEST;
             }
 
             /* if there is no valid prefix, we have
@@ -1386,7 +1386,7 @@ static int hook_fixup(request_rec *r)
                      "Options FollowSymLinks or SymLinksIfOwnerMatch is off "
                      "which implies that RewriteRule directive is forbidden: "
                      "%s", r->filename);
-        return FORBIDDEN;
+        return HTTP_FORBIDDEN;
     }
     else {
         /* FollowSymLinks is given, but the user can
@@ -1503,7 +1503,7 @@ static int hook_fixup(request_rec *r)
                 r->status = HTTP_OK; /* make Apache kernel happy */
             }
             else {
-                n = REDIRECT;
+                n = HTTP_MOVED_TEMPORARILY;
             }
 
             /* now do the redirection */
@@ -1515,7 +1515,7 @@ static int hook_fixup(request_rec *r)
         else if (strlen(r->filename) > 10 &&
                  strncmp(r->filename, "forbidden:", 10) == 0) {
             /* This URL is forced to be forbidden for the requester */
-            return FORBIDDEN;
+            return HTTP_FORBIDDEN;
         }
         else if (strlen(r->filename) > 5 &&
                  strncmp(r->filename, "gone:", 5) == 0) {
@@ -1536,7 +1536,7 @@ static int hook_fixup(request_rec *r)
 
             /* the filename has to start with a slash! */
             if (r->filename[0] != '/') {
-                return BAD_REQUEST;
+                return HTTP_BAD_REQUEST;
             }
 
             /* Check for deadlooping:

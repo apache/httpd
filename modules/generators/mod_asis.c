@@ -79,14 +79,14 @@ static int asis_handler(request_rec *r)
     if (r->finfo.protection == 0) {
 	ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
 		    "File does not exist: %s", r->filename);
-	return NOT_FOUND;
+	return HTTP_NOT_FOUND;
     }
 
     if ((status = ap_open(&f, r->filename, APR_READ, 
                 APR_OS_DEFAULT, r->pool)) != APR_SUCCESS) {
 	ap_log_rerror(APLOG_MARK, APLOG_ERR, status, r,
 		    "file permissions deny server access: %s", r->filename);
-	return FORBIDDEN;
+	return HTTP_FORBIDDEN;
     }
 
     ap_scan_script_header_err(r, f, NULL);

@@ -2609,7 +2609,7 @@ AP_INIT_TAKE12("RLimitNPROC", no_set_limit, NULL,
  * Core handlers for various phases of server operation...
  */
 
-API_EXPORT_NONSTD(int) ap_core_translate(request_rec *r)
+API_EXPORT(int) ap_core_translate(request_rec *r)
 {
     void *sconf = r->server->module_config;
     core_server_config *conf = ap_get_module_config(sconf, &core_module);
@@ -2620,7 +2620,7 @@ API_EXPORT_NONSTD(int) ap_core_translate(request_rec *r)
     if ((r->uri[0] != '/') && strcmp(r->uri, "*")) {
 	ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
 		     "Invalid URI in request %s", r->the_request);
-	return BAD_REQUEST;
+	return HTTP_BAD_REQUEST;
     }
     
     if (r->server->path 
@@ -2684,13 +2684,13 @@ static int default_handler(request_rec *r)
     if (r->method_number == M_INVALID) {
 	ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
 		    "Invalid method in request %s", r->the_request);
-	return NOT_IMPLEMENTED;
+	return HTTP_NOT_IMPLEMENTED;
     }
     if (r->method_number == M_OPTIONS) {
         return ap_send_http_options(r);
     }
     if (r->method_number == M_PUT) {
-        return METHOD_NOT_ALLOWED;
+        return HTTP_METHOD_NOT_ALLOWED;
     }
     if (r->finfo.protection == 0 || (r->path_info && *r->path_info)) {
 	ap_log_rerror(APLOG_MARK, APLOG_ERR|APLOG_NOERRNO, 0, r,
@@ -2700,13 +2700,13 @@ static int default_handler(request_rec *r)
 	return HTTP_NOT_FOUND;
     }
     if (r->method_number != M_GET) {
-        return METHOD_NOT_ALLOWED;
+        return HTTP_METHOD_NOT_ALLOWED;
     }
 	
     if ((status = ap_open(&fd, r->filename, APR_READ | APR_BINARY, 0, r->pool)) != APR_SUCCESS) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, status, r,
 		     "file permissions deny server access: %s", r->filename);
-        return FORBIDDEN;
+        return HTTP_FORBIDDEN;
     }
     ap_update_mtime(r, r->finfo.mtime);
     ap_set_last_modified(r);
