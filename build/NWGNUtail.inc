@@ -192,8 +192,6 @@ ifeq "$(words $(strip $(TARGET_nlm)))" "1"
 $(TARGET_nlm) : $(FILES_nlm_objs) $(FILES_nlm_libs) $(OBJDIR)\$(NLM_NAME)_link.opt
 	@echo Linking $@
 	$(LINK) @$(OBJDIR)\$(NLM_NAME)_link.opt
-        
-#	$(CHK) $(OBJDIR)\cc.opt $(DEL) $(OBJDIR)\cc.opt
 
 # This will force the link option file to be rebuilt if we change the
 # corresponding makefile
@@ -264,6 +262,9 @@ endif
 ifneq "$(NLM_FLAGS)" ""
 	@echo -flags $(NLM_FLAGS) >> $@
 endif
+ifneq "$(strip $(XLFLAGS))" ""
+	@echo $(XLFLAGS) >> $@
+endif
 ifneq "$(strip $(FILES_nlm_objs))" ""
 	@echo $(foreach objfile,$(strip $(FILES_nlm_objs)),$(subst /,\,$(objfile))) >> $@
 endif
@@ -285,9 +286,6 @@ ifneq "$(FILES_nlm_Ximports)" ""
 endif
 ifneq "$(FILES_nlm_exports)" ""
 	@echo Export $(foreach export,$(subst $(SPACE),$(COMMA),$(strip $(FILES_nlm_exports))),$(subst /,\,$(export))) >> $(OBJDIR)\$(NLM_NAME)_link.def
-endif
-ifneq "$(strip $(XLFLAGS))" ""
-	@echo $(XLFLAGS) >> $(OBJDIR)\$(NLM_NAME)_link.def
 endif
 
 # if APACHE_UNIPROC is defined, don't include XDCData

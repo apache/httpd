@@ -52,7 +52,6 @@ XDEFINES	+= \
 # These flags will be added to the link.opt file
 #
 XLFLAGS		+= \
-			XDCData $(NWOS)\apache.xdc \
 			$(EOLIST)
 
 #
