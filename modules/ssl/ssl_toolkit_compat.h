@@ -46,7 +46,9 @@
 #define MODSSL_BIO_CB_ARG_TYPE const char
 #define MODSSL_CRYPTO_CB_ARG_TYPE const char
 
-#define modssl_X509_verify_cert(c) X509_verify_cert(c)
+#define modssl_X509_verify_cert X509_verify_cert
+
+#define modssl_PEM_read_bio_X509 PEM_read_bio_X509
 
 #define modssl_set_cipher_list SSL_set_cipher_list
 
@@ -65,6 +67,9 @@
 #define MODSSL_CRYPTO_CB_ARG_TYPE char
 
 #define modssl_X509_verify_cert(c) X509_verify_cert(c, NULL)
+
+#define modssl_PEM_read_bio_X509(b, x, cb, arg) \
+   PEM_read_bio_X509(b, x, cb)
 
 /* XXX: add configure check */
 #ifndef HAVE_SSL_SET_STATE
