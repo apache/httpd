@@ -1607,7 +1607,7 @@ void child_main(int child_num_arg)
                     clen = sizeof(sa_client);
                     csd  = accept(sd, &sa_client, &clen);
                 } while (csd < 0 && errno == EINTR);
-                if (csd < 0) break;
+                if (csd > 0) break;
 		log_unixerr("accept", "(client socket)", NULL, server_conf);
 	    }
 	}
