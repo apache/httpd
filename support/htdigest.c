@@ -50,10 +50,6 @@
  * individuals on behalf of the Apache Software Foundation.  For more
  * information on the Apache Software Foundation, please see
  * <http://www.apache.org/>.
- *
- * Portions of this software are based upon public domain software
- * originally written at the National Center for Supercomputing Applications,
- * University of Illinois, Urbana-Champaign.
  */
 
 /******************************************************************************
@@ -70,16 +66,23 @@
 
 #include "apr_lib.h"
 #include "apr_md5.h"
-#include "apr_portable.h"
-#if defined(MPE) || defined(QNX) || defined(WIN32) || defined(__TANDEM) || defined(BEOS)
-#include <signal.h>
-#else
+
+#ifdef HAVE_SYS_TYPES_H
+ #include <sys/types.h>
+#endif
+
+#ifdef HAVE_SYS_SIGNAL_H
 #include <sys/signal.h>
 #endif
 
+#ifdef HAVE_SIGNAL_H
+#include <signal.h>
+#endif
+
+#include <stdlib.h>
+
 #ifdef WIN32
 #include <conio.h>
-#define unlink _unlink
 #endif
 
 #ifdef CHARSET_EBCDIC
@@ -93,6 +96,7 @@
 #define MAX_STRING_LEN 256
 
 char *tn;
+ap_pool_t *cntxt;
 
 static void getword(char *word, char *line, char stop)
 {
@@ -109,61 +113,66 @@ static void getword(char *word, char *line, char stop)
     while ((line[y++] = line[x++]));
 }
 
-static int getline(char *s, int n, FILE *f)
+static int getline(char *s, int n, ap_file_t *f)
 {
     register int i = 0;
+    char ch;
 
     while (1) {
-	s[i] = (char) fgetc(f);
+	ap_getc(&ch, f);
+            s[i] = ch;
 
 	if (s[i] == CR)
-	    s[i] = fgetc(f);
+	    ap_getc(&ch, f);
+            s[i] = ch;
 
 	if ((s[i] == 0x4) || (s[i] == LF) || (i == (n - 1))) {
 	    s[i] = '\0';
-	    return (feof(f) ? 1 : 0);
+            if (ap_eof(f) == APR_EOF) {
+                return 1;
+            }
+            return 0;
 	}
 	++i;
     }
 }
 
-static void putline(FILE *f, char *l)
+static void putline(ap_file_t *f, char *l)
 {
     int x;
 
     for (x = 0; l[x]; x++)
-	fputc(l[x], f);
-    fputc('\n', f);
+	ap_putc(l[x], f);
+    ap_putc('\n', f);
 }
 
 
-static void add_password(char *user, char *realm, FILE *f)
+static void add_password(char *user, char *realm, ap_file_t *f)
 {
     char *pw;
     ap_md5_ctx_t context;
-    unsigned char digest[MD5_DIGESTSIZE];
+    unsigned char digest[16];
     char string[MAX_STRING_LEN];
     char pwin[MAX_STRING_LEN];
     char pwv[MAX_STRING_LEN];
     unsigned int i;
-    size_t bufsize;
+    size_t len = sizeof(pwin);
 
-    bufsize = sizeof(pwin);
-    if (ap_getpass("New password: ", pwin, &bufsize) != 0) {
+    if (ap_getpass("New password: ", pwin, &len) != APR_SUCCESS) {
 	fprintf(stderr, "password too long");
 	exit(5);
     }
-    bufsize = sizeof(pwv);
-    ap_getpass("Re-type new password: ", pwv, &bufsize);
+    len = sizeof(pwin);
+    ap_getpass("Re-type new password: ", pwv, &len);
     if (strcmp(pwin, pwv) != 0) {
 	fprintf(stderr, "They don't match, sorry.\n");
 	if (tn) {
-	    unlink(tn);
+	    ap_remove_file(tn, cntxt);
 	}
 	exit(1);
     }
     pw = pwin;
-    fprintf(f, "%s:%s:", user, realm);
+    ap_fprintf(f, "%s:%s:", user, realm);
 
     /* Do MD5 stuff */
     sprintf(string, "%s:%s:%s", user, realm, pw);
@@ -172,10 +181,10 @@ static void add_password(char *user, char *realm, FILE *f)
     ap_MD5Update(&context, (unsigned char *) string, strlen(string));
     ap_MD5Final(digest, &context);
 
-    for (i = 0; i < MD5_DIGESTSIZE; i++)
-	fprintf(f, "%02x", digest[i]);
+    for (i = 0; i < 16; i++)
+	ap_fprintf(f, "%02x", digest[i]);
 
-    fprintf(f, "\n");
+    ap_fprintf(f, "\n");
 }
 
 static void usage(void)
@@ -189,13 +198,13 @@ static void interrupted(void)
 {
     fprintf(stderr, "Interrupted.\n");
     if (tn)
-	unlink(tn);
+	ap_remove_file(tn, cntxt);
     exit(1);
 }
 
 int main(int argc, char *argv[])
 {
-    FILE *tfp, *f;
+    ap_file_t *tfp, *f;
     char user[MAX_STRING_LEN];
     char realm[MAX_STRING_LEN];
     char line[MAX_STRING_LEN];
@@ -204,33 +213,35 @@ int main(int argc, char *argv[])
     char x[MAX_STRING_LEN];
     char command[MAX_STRING_LEN];
     int found;
+    
+    ap_create_pool(&cntxt, NULL);
 
     tn = NULL;
-    signal(SIGINT, (void (*)(int)) interrupted);
+    ap_signal(SIGINT, (void (*)(int)) interrupted);
     if (argc == 5) {
 	if (strcmp(argv[1], "-c"))
 	    usage();
-	if (!(tfp = fopen(argv[2], "w"))) {
+	if (ap_open(&tfp, argv[2], APR_WRITE | APR_CREATE, -1, cntxt) != APR_SUCCESS) {
 	    fprintf(stderr, "Could not open passwd file %s for writing.\n",
 		    argv[2]);
-	    perror("fopen");
+	    perror("ap_open");
 	    exit(1);
 	}
 	printf("Adding password for %s in realm %s.\n", argv[4], argv[3]);
 	add_password(argv[4], argv[3], tfp);
-	fclose(tfp);
+	ap_close(tfp);
 	exit(0);
     }
     else if (argc != 4)
 	usage();
 
     tn = tmpnam(NULL);
-    if (!(tfp = fopen(tn, "w"))) {
+    if (ap_open(&tfp, tn, APR_WRITE | APR_CREATE, -1, cntxt)!= APR_SUCCESS) {
 	fprintf(stderr, "Could not open temp file.\n");
 	exit(1);
     }
 
-    if (!(f = fopen(argv[1], "r"))) {
+    if (ap_open(&f, argv[1], APR_READ, -1, cntxt) != APR_SUCCESS) {
 	fprintf(stderr,
 		"Could not open passwd file %s for reading.\n", argv[1]);
 	fprintf(stderr, "Use -c option to create new one.\n");
@@ -262,14 +273,14 @@ int main(int argc, char *argv[])
 	printf("Adding user %s in realm %s\n", user, realm);
 	add_password(user, realm, tfp);
     }
-    fclose(f);
-    fclose(tfp);
+    ap_close(f);
+    ap_close(tfp);
 #if defined(OS2) || defined(WIN32)
     sprintf(command, "copy \"%s\" \"%s\"", tn, argv[1]);
 #else
     sprintf(command, "cp %s %s", tn, argv[1]);
 #endif
     system(command);
-    unlink(tn);
+    ap_remove_file(tn, cntxt);
     return 0;
 }
