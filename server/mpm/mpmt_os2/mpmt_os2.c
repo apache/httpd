@@ -572,6 +572,13 @@ static const char *set_max_spare_threads(cmd_parms *cmd, void *dummy,
 
 
 
+static const char *ignore_cmd(cmd_parms *cmd, void *dummy, const char *arg)
+{
+    return NULL;
+}
+
+
+
 static const command_rec mpmt_os2_cmds[] = {
 LISTEN_COMMANDS,
 AP_INIT_TAKE1( "StartServers", set_daemons_to_start, NULL, RSRC_CONF, 
@@ -580,6 +587,12 @@ AP_INIT_TAKE1("MinSpareThreads", set_min_spare_threads, NULL, RSRC_CONF,
   "Minimum number of idle children, to handle request spikes"),
 AP_INIT_TAKE1("MaxSpareThreads", set_max_spare_threads, NULL, RSRC_CONF,
   "Maximum number of idle children"),
+AP_INIT_TAKE1("User", ignore_cmd, NULL, RSRC_CONF,
+  "Not applicable on this platform"),
+AP_INIT_TAKE1("Group", ignore_cmd, NULL, RSRC_CONF,
+  "Not applicable on this platform"),
+AP_INIT_TAKE1("ScoreBoardFile", ignore_cmd, NULL, RSRC_CONF, \
+  "Not applicable on this platform"),
 { NULL }
 };
 
