@@ -71,7 +71,7 @@ support: support-dir
 
 support-dir:
 	@echo "===> $(SDP)support"; \
-	cd support; $(MAKE) $(MFLAGS_STATIC) SDP='$(SDP)' CC='$(CC)' AUX_CFLAGS='$(CFLAGS)' RANLIB='$(RANLIB)'; \
+	cd support; $(MAKE) $(MFLAGS_STATIC) SDP='$(SDP)' CC='$(CC)' AUX_CFLAGS='$(CFLAGS)' RANLIB='$(RANLIB)' || exit 1; \
 	echo "<=== $(SDP)support"
 
 clean:
