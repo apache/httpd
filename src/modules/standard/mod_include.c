@@ -1265,7 +1265,7 @@ static const char *get_ptoken(request_rec *r, const char *string, struct token *
     }
     /* We should only be here if we are in a string */
     if (!qs) {
-        token->value[next++] = ch;
+        --string;
     }
 
     /* 
