@@ -1561,9 +1561,6 @@ PROXY_DECLARE (int) ap_proxy_ftp_handler(request_rec *r, proxy_server_conf *conf
     /* send response */
     r->sent_bodyct = 1;
 
-    /* read till EOF */
-    c->remain = -1;
-
     if (parms[0] == 'd') {
 	/* insert directory filter */
 	ap_add_output_filter("PROXY_SEND_DIR", NULL, r, r->connection);
@@ -1576,7 +1573,7 @@ PROXY_DECLARE (int) ap_proxy_ftp_handler(request_rec *r, proxy_server_conf *conf
 		     "proxy: FTP: start body send");
 
 	/* read the body, pass it to the output filters */
-	while (ap_get_brigade(remote->input_filters, bb, AP_MODE_BLOCKING) == APR_SUCCESS) {
+	while (ap_get_brigade(remote->input_filters, bb, AP_MODE_BLOCKING, -1) == APR_SUCCESS) {
 	    if (APR_BUCKET_IS_EOS(APR_BRIGADE_LAST(bb))) {
 		e = apr_bucket_flush_create();
 		APR_BRIGADE_INSERT_TAIL(bb, e);
