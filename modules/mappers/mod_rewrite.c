@@ -2963,7 +2963,6 @@ static char *lookup_map_program(request_rec *r, ap_file_t *fpin,
     ap_size_t nbytes;
 
 #ifndef NO_WRITEV
-    ap_iovec_t *iov;
     struct iovec iova[2];
     ap_size_t niov;
 #endif
@@ -2990,9 +2989,8 @@ static char *lookup_map_program(request_rec *r, ap_file_t *fpin,
     iova[1].iov_base = "\n";
     iova[1].iov_len = 1;
 
-    ap_make_iov(&iov, iova, r->pool);
     niov = 2;
-    ap_writev(fpin, iov, niov, &nbytes);
+    ap_writev(fpin, iova, niov, &nbytes);
 #endif
 
     /* read in the response value */
