@@ -779,19 +779,19 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
             /* handle Via header in response */
             if (conf->viaopt != via_off && conf->viaopt != via_block) {
                 /* create a "Via:" response header entry and merge it */
-                ap_table_mergen(r->headers_out, "Via",
-                                (conf->viaopt == via_full)
-                                ? apr_psprintf(p, "%d.%d %s%s (%s)",
-                                               HTTP_VERSION_MAJOR(r->proto_num),
-                                               HTTP_VERSION_MINOR(r->proto_num),
-                                               ap_get_server_name(r),
-                                               server_portstr,
-                                               AP_SERVER_BASEVERSION)
-                                : apr_psprintf(p, "%d.%d %s%s",
-                                               HTTP_VERSION_MAJOR(r->proto_num),
-                                               HTTP_VERSION_MINOR(r->proto_num),
-                                               ap_get_server_name(r),
-                                               server_portstr)
+                apr_table_mergen(r->headers_out, "Via",
+                                 (conf->viaopt == via_full)
+                                     ? apr_psprintf(p, "%d.%d %s%s (%s)",
+                                           HTTP_VERSION_MAJOR(r->proto_num),
+                                           HTTP_VERSION_MINOR(r->proto_num),
+                                           ap_get_server_name(r),
+                                           server_portstr,
+                                           AP_SERVER_BASEVERSION)
+                                     : apr_psprintf(p, "%d.%d %s%s",
+                                           HTTP_VERSION_MAJOR(r->proto_num),
+                                           HTTP_VERSION_MINOR(r->proto_num),
+                                           ap_get_server_name(r),
+                                           server_portstr)
                 );
             }
 
@@ -1050,7 +1050,7 @@ int ap_proxy_http_handler(request_rec *r, proxy_server_conf *conf,
     }
     /* create space for state information */
     if (!backend) {
-        backend = ap_pcalloc(c->pool, sizeof(proxy_conn_rec));
+        backend = apr_pcalloc(c->pool, sizeof(proxy_conn_rec));
         backend->connection = NULL;
         backend->hostname = NULL;
         backend->port = 0;

@@ -83,7 +83,6 @@
 
 #include "apr_hooks.h"
 #include "apr.h"
-#include "apr_compat.h"
 #include "apr_lib.h"
 #include "apr_strings.h"
 #include "apr_buckets.h"
