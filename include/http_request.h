@@ -132,7 +132,7 @@ AP_DECLARE(request_rec *) ap_sub_req_lookup_file(const char *new_file,
  * The file info passed must include the name, and must have the same relative
  * directory as the current request.
  */
-AP_DECLARE(request_rec *) ap_sub_req_lookup_dirent(apr_finfo_t *finfo,
+AP_DECLARE(request_rec *) ap_sub_req_lookup_dirent(const apr_finfo_t *finfo,
                                               const request_rec *r,
                                               ap_filter_t *next_filter);
 /**
