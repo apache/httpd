@@ -51,7 +51,6 @@ static int cache_url_handler(request_rec *r, int lookup)
     const char *pragma, *auth;
     apr_uri_t uri;
     char *url;
-    apr_size_t urllen;
     char *path;
     cache_provider_list *providers;
     cache_info *info;

@@ -17,6 +17,7 @@
 #include "mod_cache.h"
 #include "cache_pqueue.h"
 #include "cache_cache.h"
+#include "ap_provider.h"
 #include "ap_mpm.h"
 #include "apr_thread_mutex.h"
 #if APR_HAVE_UNISTD_H
