@@ -107,6 +107,8 @@ typedef struct {
     char *arg;
 } format_tag;
 
+/* 'Magic' condition_var value to run action in post_read_request */
+static const char* condition_early = "early";
 /*
  * There is one "header_entry" per Header/RequestHeader config directive
  */
@@ -428,15 +430,20 @@ static APR_INLINE const char *header_inout_cmd(cmd_parms *cmd,
 
     /* Handle the envclause on Header */
     if (envclause != NULL) {
-        if (strncasecmp(envclause, "env=", 4) != 0) {
-            return "error: envclause should be in the form env=envar";
+        if (strcasecmp(envclause, "early") == 0) {
+            condition_var = condition_early;
         }
-        if ((envclause[4] == '\0')
-            || ((envclause[4] == '!') && (envclause[5] == '\0'))) {
-            return "error: missing environment variable name. "
-                "envclause should be in the form env=envar ";
+        else {
+            if (strncasecmp(envclause, "env=", 4) != 0) {
+                return "error: envclause should be in the form env=envar";
+            }
+            if ((envclause[4] == '\0')
+                || ((envclause[4] == '!') && (envclause[5] == '\0'))) {
+                return "error: missing environment variable name. "
+                    "envclause should be in the form env=envar ";
+            }
+            condition_var = envclause + 4;
         }
-        condition_var = envclause + 4;
     }
     
     if ((colon = ap_strchr_c(hdr, ':'))) {
@@ -518,16 +525,24 @@ static int echo_header(echo_do *v, const char *key, const char *val)
 }
 
 static void do_headers_fixup(request_rec *r, apr_table_t *headers,
-                             apr_array_header_t *fixup)
+                             apr_array_header_t *fixup, int early)
 {
     int i;
 
     for (i = 0; i < fixup->nelts; ++i) {
         header_entry *hdr = &((header_entry *) (fixup->elts))[i];
+        const char *envar = hdr->condition_var;
 
+	/* ignore early headers in late calls */
+        if (!early && (envar == condition_early)) {
+            continue;
+        }
+	/* ignore late headers in early calls */
+        else if (early && (envar != condition_early)) {
+            continue;
+        }
         /* Have any conditional envar-controlled Header processing to do? */
-        if (hdr->condition_var) {
-            const char *envar = hdr->condition_var;
+        else if (envar && !early) {
             if (*envar != '!') {
                 if (apr_table_get(r->subprocess_env, envar) == NULL)
                     continue;
@@ -597,8 +612,8 @@ static apr_status_t ap_headers_output_filter(ap_filter_t *f,
                  "headers: ap_headers_output_filter()");
 
     /* do the fixup */
-    do_headers_fixup(f->r, f->r->err_headers_out, dirconf->fixup_err);
-    do_headers_fixup(f->r, f->r->headers_out, dirconf->fixup_out);
+    do_headers_fixup(f->r, f->r->err_headers_out, dirconf->fixup_err, 0);
+    do_headers_fixup(f->r, f->r->headers_out, dirconf->fixup_out, 0);
 
     /* remove ourselves from the filter chain */
     ap_remove_output_filter(f);
@@ -625,7 +640,7 @@ static apr_status_t ap_headers_error_filter(ap_filter_t *f,
      * Add any header fields defined by "Header always" to r->err_headers_out.
      * Server-wide first, then per-directory to allow overriding.
      */
-    do_headers_fixup(f->r, f->r->err_headers_out, dirconf->fixup_err);
+    do_headers_fixup(f->r, f->r->err_headers_out, dirconf->fixup_err, 0);
 
     /*
      * We've done our bit; remove ourself from the filter chain so there's
@@ -646,7 +661,25 @@ static apr_status_t ap_headers_fixup(request_rec *r)
 
     /* do the fixup */
     if (dirconf->fixup_in->nelts) {
-        do_headers_fixup(r, r->headers_in, dirconf->fixup_in);
+        do_headers_fixup(r, r->headers_in, dirconf->fixup_in, 0);
+    }
+
+    return DECLINED;
+}
+static apr_status_t ap_headers_early(request_rec *r)
+{
+    headers_conf *dirconf = ap_get_module_config(r->per_dir_config,
+                                                 &headers_module);
+
+    /* do the fixup */
+    if (dirconf->fixup_in->nelts) {
+        do_headers_fixup(r, r->headers_in, dirconf->fixup_in, 1);
+    }
+    if (dirconf->fixup_err->nelts) {
+        do_headers_fixup(r, r->err_headers_out, dirconf->fixup_err, 1);
+    }
+    if (dirconf->fixup_out->nelts) {
+        do_headers_fixup(r, r->headers_out, dirconf->fixup_out, 1);
     }
 
     return DECLINED;
@@ -699,6 +732,7 @@ static void register_hooks(apr_pool_t *p)
     ap_hook_insert_error_filter(ap_headers_insert_error_filter,
                                 NULL, NULL, APR_HOOK_LAST);
     ap_hook_fixups(ap_headers_fixup, NULL, NULL, APR_HOOK_LAST);
+    ap_hook_post_read_request(ap_headers_early, NULL, NULL, APR_HOOK_FIRST);
 }
 
 module AP_MODULE_DECLARE_DATA headers_module =

@@ -2,6 +2,10 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) mod_headers: implement "Early" processing option in post_read_request
+     to enable Header and RequestHeader directives to be used to set up
+     testcases for pre-fixups request phases [Nick Kew]
+
   *) mod_dir: the trailing-slash behaviour is now configurable using the
      DirectorySlash directive.  [André Malo]
 
