@@ -118,6 +118,7 @@ install-include:
 	@cp -p $(srcdir)/server/mpm/$(MPM_NAME)/*.h $(includedir)
 	@cp -p $(srcdir)/modules/dav/main/mod_dav.h $(includedir)
 	@cp -p $(srcdir)/modules/filters/mod_include.h $(includedir)
+	@cp -p $(srcdir)/modules/http/mod_core.h $(includedir)
 	@cp -p $(srcdir)/modules/ssl/*.h $(includedir)
 	@cp -p $(srcdir)/srclib/pcre/*.h $(includedir)
 	@cp -p $(srcdir)/srclib/apr/include/*.h $(includedir)
