@@ -274,6 +274,30 @@
     proxycachedir: ${prefix}/proxy
 </Layout>
 
+# FreeBSD Layout
+<Layout FreeBSD>
+  prefix:        /usr/local
+  exec_prefix:   ${prefix}
+  bindir:        ${exec_prefix}/bin
+  sbindir:       ${exec_prefix}/sbin
+  libdir:        ${exec_prefix}/lib
+  libexecdir:    ${exec_prefix}/libexec/apache2
+  mandir:        ${prefix}/man
+  sysconfdir:    ${prefix}/etc/apache2
+  datadir:       ${prefix}/www
+  installbuilddir: ${prefix}/share/apache2/build
+  errordir:      ${datadir}/error
+  iconsdir:      ${datadir}/icons
+  htdocsdir:     ${datadir}/data
+  manualdir:     ${prefix}/share/doc/apache2
+  cgidir:        ${datadir}/cgi-bin
+  includedir:    ${prefix}/include/apache2
+  localstatedir: /var
+  runtimedir:    ${localstatedir}/run
+  logfiledir:    ${localstatedir}/log
+  proxycachedir: ${datadir}/proxy
+</Layout>
+
 # Debian layout
 <Layout Debian>
     prefix:        
