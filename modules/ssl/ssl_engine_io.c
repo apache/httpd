@@ -502,7 +502,7 @@ static int ssl_io_hook_read(SSL *ssl, char *buf, int len)
              * Log SSL errors
              */
             conn_rec *c = (conn_rec *)SSL_get_app_data(ssl);
-            ssl_log(c->base_server, SSL_LOG_ERROR,
+            ap_log_error(APLOG_MARK, APLOG_ERR|APLOG_NOERRNO, 0, c->base_server,
                     "SSL error on reading data");
             ssl_log_ssl_error(APLOG_MARK, APLOG_ERR, c->base_server);
         }
@@ -535,7 +535,7 @@ static int ssl_io_hook_write(SSL *ssl, unsigned char *buf, int len)
              * Log SSL errors
              */
             conn_rec *c = (conn_rec *)SSL_get_app_data(ssl);
-            ssl_log(c->base_server, SSL_LOG_ERROR,
+            ap_log_error(APLOG_MARK, APLOG_ERR|APLOG_NOERRNO, 0, c->base_server,
                     "SSL error on writing data");
             ssl_log_ssl_error(APLOG_MARK, APLOG_ERR, c->base_server);
         }
@@ -567,7 +567,7 @@ static apr_status_t ssl_filter_write(ap_filter_t *f,
             reason = "likely due to failed renegotiation";
         }
 
-        ssl_log(c->base_server, SSL_LOG_ERROR,
+        ap_log_error(APLOG_MARK, APLOG_ERR|APLOG_NOERRNO, 0, c->base_server,
                 "failed to write %d of %d bytes (%s)",
                 n > 0 ? len - n : len, len, reason);
 
@@ -765,9 +765,10 @@ static apr_status_t ssl_io_filter_error(ap_filter_t *f,
     switch (status) {
       case HTTP_BAD_REQUEST:
             /* log the situation */
-            ssl_log(f->c->base_server, SSL_LOG_ERROR,
-                    "SSL handshake failed: HTTP spoken on HTTPS port; "
-                    "trying to send HTML error page");
+            ap_log_error(APLOG_MARK, APLOG_ERR|APLOG_NOERRNO, 0,
+                         f->c->base_server,
+                         "SSL handshake failed: HTTP spoken on HTTPS port; "
+                         "trying to send HTML error page");
             ssl_log_ssl_error(APLOG_MARK, APLOG_ERR, f->c->base_server);
 
             /* fake the request line */
@@ -959,7 +960,7 @@ static void ssl_io_data_dump(server_rec *srvr,
     rows = (len / DUMP_WIDTH);
     if ((rows * DUMP_WIDTH) < len)
         rows++;
-    ssl_log(srvr, SSL_LOG_DEBUG|SSL_NO_TIMESTAMP|SSL_NO_LEVELID,
+    ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, srvr,
             "+-------------------------------------------------------------------------+");
     for(i = 0 ; i< rows; i++) {
         apr_snprintf(tmp, sizeof(tmp), "| %04x: ", i * DUMP_WIDTH);
@@ -984,12 +985,13 @@ static void ssl_io_data_dump(server_rec *srvr,
             }
         }
         apr_cpystrn(buf+strlen(buf), " |", sizeof(buf)-strlen(buf));
-        ssl_log(srvr, SSL_LOG_DEBUG|SSL_NO_TIMESTAMP|SSL_NO_LEVELID, "%s", buf);
+        ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, srvr,
+                     "%s", buf);
     }
     if (trunc > 0)
-        ssl_log(srvr, SSL_LOG_DEBUG|SSL_NO_TIMESTAMP|SSL_NO_LEVELID,
-                "| %04x - <SPACES/NULS>", len + trunc);
-    ssl_log(srvr, SSL_LOG_DEBUG|SSL_NO_TIMESTAMP|SSL_NO_LEVELID,
+        ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, srvr,
+                "| %04ld - <SPACES/NULS>", len + trunc);
+    ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, srvr,
             "+-------------------------------------------------------------------------+");
     return;
 }
@@ -1011,8 +1013,8 @@ long ssl_io_data_cb(BIO *bio, int cmd,
     if (   cmd == (BIO_CB_WRITE|BIO_CB_RETURN)
         || cmd == (BIO_CB_READ |BIO_CB_RETURN) ) {
         if (rc >= 0) {
-            ssl_log(s, SSL_LOG_DEBUG,
-                    "%s: %s %ld/%d bytes %s BIO#%08X [mem: %08lX] %s",
+            ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, s,
+                    "%s: %s %ld/%d bytes %s BIO#%p [mem: %p] %s",
                     SSL_LIBRARY_NAME,
                     (cmd == (BIO_CB_WRITE|BIO_CB_RETURN) ? "write" : "read"),
                     rc, argi, (cmd == (BIO_CB_WRITE|BIO_CB_RETURN) ? "to" : "from"),
@@ -1022,8 +1024,8 @@ long ssl_io_data_cb(BIO *bio, int cmd,
                 ssl_io_data_dump(s, argp, rc);
         }
         else {
-            ssl_log(s, SSL_LOG_DEBUG,
-                    "%s: I/O error, %d bytes expected to %s on BIO#%08X [mem: %08lX]",
+            ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, s,
+                    "%s: I/O error, %d bytes expected to %s on BIO#%p [mem: %p]",
                     SSL_LIBRARY_NAME, argi,
                     (cmd == (BIO_CB_WRITE|BIO_CB_RETURN) ? "write" : "read"),
                     bio, argp);
