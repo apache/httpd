@@ -1,0 +1,18 @@
+CFLAGS=$(OPTIM) $(CFLAGS1) $(EXTRA_CFLAGS)
+LIBS=$(EXTRA_LIBS) $(LIBS1)
+INCLUDES=$(INCLUDES1) $(EXTRA_INCLUDES)
+LFLAGS=$(LFLAGS1) $(EXTRA_LFLAGS)
+INCDIR=../../core
+
+OBJS=	os.o
+
+all:	$(OBJS)
+
+.c.o:
+	$(CC) -c $(INCLUDES) $(CFLAGS) $(SPACER) $<
+
+clean:
+	rm -f $(OBJS)
+
+# DO NOT REMOVE
+os.o:	os.c
