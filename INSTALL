@@ -88,10 +88,8 @@
 
         If your system is not on these lists but has the dlopen-style
         interface, you either have to provide the appropriate compiler
-        and linker flags (see CFLAGS_SHLIB, LDFLAGS_SHLIB and
-        LDFLAGS_SHLIB_EXPORT below) manually or at least make sure a
-        Perl 5 interpreter is installed from which Apache can guess
-        the options.
+        and linker flags manually or at least make sure a Perl 5
+        interpreter is installed from which Apache can guess the options.
 
 
      If you are building from a copy of the CVS repository, rather
