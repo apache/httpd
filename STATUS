@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/01/20 23:02:46 $]
+Last modified at [$Date: 2003/01/21 00:41:57 $]
 
 Release:
 
@@ -73,12 +73,6 @@ PATCHES TO PORT FROM 2.1
       +1: stoddard, striker, jim
       -1: brianp (we need a more robust solution than what's in 2.1 right now),
           jerenkrantz (should be fixed, but I don't have time to do this)
-
-    * Use different ulimit commands in apachectl on Tru64 and AIX.
-      On both platforms, there are situations where problems with the
-      default command won't be found at configure time.  The changes
-      are r1.6 and r1.7 of support/config.m4.
-      +1: trawick, jerenkrantz, gregames
 
     * Insure that ap_get_mime_headers passes a null terminated string
       to ap_escape_html if ap_rgetline exits abnormally (e.g. header too long).

@@ -1,5 +1,11 @@
 Changes with Apache 2.0.45
 
+  *) Fix the ulimit command used by apachectl on Tru64.  PR 13609.
+     [Joseph Senulis <Joseph.Senulis@dnr.state.wi.us>, Jeff Trawick]
+
+  *) Change the ulimit command used by apachectl on AIX so that it
+     works in all locales.  [Jeff Trawick]
+
   *) mod_ext_filter: Fix a problem building argument lists which 
      occasionally caused exec to fail.  PR 15491.  [Jeff Trawick]
 
