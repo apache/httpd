@@ -43,7 +43,6 @@
 #include <sys/types.h>
 
 #include <ctype.h>
-#include <string.h>
 
 #ifndef MPE
 #include <arpa/inet.h>

@@ -10,12 +10,10 @@
 #define BUFSIZE		65536
 #define MAX_PATH	1024
 
-#include <stdio.h>
-#include <stdlib.h>
+#include "conf.h"
 #include <time.h>
 #include <errno.h>
 #include <fcntl.h>
-#include <unistd.h>
 
 int main (int argc, char **argv)
 {

@@ -71,20 +71,12 @@
  *
  */
 
-
+#include "conf.h"
 #include <sys/param.h>
 #include <sys/stat.h>
 #include <sys/types.h>
 
-#include <errno.h>
-#include <grp.h>
-#include <pwd.h>
 #include <stdarg.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <time.h>
-#include <unistd.h>
 
 #include "suexec.h"
 
@@ -98,7 +90,7 @@
  ***********************************************************************
  */
 
-#if defined(QNX) || defined(_OSD_POSIX) || defined(MPE) || defined(SCO) || defined(BEOS)
+#if defined(NEED_INITGROUPS)
 int initgroups(const char *name, gid_t basegid)
 {
 /* QNX and MPE do not appear to support supplementary groups. */

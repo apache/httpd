@@ -90,10 +90,7 @@
 #define BSD_COMP
 
 #include "conf.h"
-#include <string.h>
-#include <errno.h>
 #include <fcntl.h>
-#include <unistd.h>
 #include <sys/time.h>
 
 /* ------------------- DEFINITIONS -------------------------- */

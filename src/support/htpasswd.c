@@ -10,13 +10,9 @@
  * Rob McCool
  */
 
+#include "conf.h"
 #include <sys/types.h>
-#include <stdio.h>
-#include <string.h>
 #include <signal.h>
-#include <stdlib.h>
-#include <time.h>
-#include <unistd.h>
 
 #ifndef CHARSET_EBCDIC
 #define LF 10

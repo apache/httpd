@@ -10,17 +10,13 @@
  * by Alexei Kosut, based on htpasswd.c, by Rob McCool
  */
 
+#include "conf.h"
 #include <sys/types.h>
-#include <stdio.h>
-#include <string.h>
 #ifdef MPE
 #include <signal.h>
 #else
 #include <sys/signal.h>
 #endif
-#include <stdlib.h>
-#include <time.h>
-#include <unistd.h>
 
 /* This is probably the easiest way to do it */
 #include "../main/md5c.c"
