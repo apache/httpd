@@ -391,7 +391,7 @@ static int display_info(request_rec *r)
                         MODULE_MAGIC_NUMBER_MAJOR, MODULE_MAGIC_NUMBER_MINOR);
             ap_rprintf(r, "<dt><strong>Hostname/port:</strong> "
                         "<tt>%s:%u</tt></dt>\n",
-                        serv->server_hostname, serv->port);
+                        ap_get_server_name(r), ap_get_server_port(r));
             ap_rprintf(r, "<dt><strong>Timeouts:</strong> "
                         "<tt>connection: %d &nbsp;&nbsp; "
                         "keep-alive: %d</tt></dt>",
