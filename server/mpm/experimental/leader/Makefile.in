@@ -1,5 +1,5 @@
 
 LTLIBRARY_NAME    = libleader.la
-LTLIBRARY_SOURCES = leader.c
+LTLIBRARY_SOURCES = leader.c pod.c
 
 include $(top_srcdir)/build/ltlib.mk

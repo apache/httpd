@@ -103,6 +103,7 @@
 #include "http_connection.h"
 #include "ap_mpm.h"
 #include "mpm_common.h"
+#include "pod.h"
 #include "ap_listen.h"
 #include "scoreboard.h" 
 #include "mpm_default.h"
@@ -337,7 +338,6 @@ static apr_status_t worker_stack_awaken_next(worker_stack *stack)
 static worker_stack *idle_worker_stack;
 
 #define ST_INIT              0
-#define ST_RESTART           0
 #define ST_GRACEFUL          1
 #define ST_UNGRACEFUL        2
 
@@ -1171,33 +1171,24 @@ static void child_main(int child_num_arg)
                 /* see if termination was triggered while we slept */
                 switch(terminate_mode) {
                 case ST_GRACEFUL:
-                    rv = ST_GRACEFUL;
+                    rv = AP_GRACEFUL;
                     break;
                 case ST_UNGRACEFUL:
-                    rv = ST_RESTART;
+                    rv = AP_RESTART;
                     break;
                 }
             }
-            if (rv == ST_GRACEFUL || rv == ST_RESTART) {
-                /* make sure the start thread has finished; 
-                 * signal_threads() and join_workers depend on that
-                 */
-                join_start_thread(start_thread_id);
-                signal_threads(rv == ST_GRACEFUL ? ST_GRACEFUL : ST_UNGRACEFUL);
-                break;
-            }
         }
 
-        if (rv == ST_GRACEFUL) {
-            /* A terminating signal was received. Now join each of the
-             * workers to clean them up.
-             *   If the worker already exited, then the join frees
-             *   their resources and returns.
-             *   If the worker hasn't exited, then this blocks until
-             *   they have (then cleans up).
-             */
-            join_workers(threads);
-        }
+        signal_threads(ST_GRACEFUL);
+        /* A terminating signal was received. Now join each of the
+         * workers to clean them up.
+         *   If the worker already exited, then the join frees
+         *   their resources and returns.
+         *   If the worker hasn't exited, then this blocks until
+         *   they have (then cleans up).
+         */
+        join_workers(threads);
     }
 
     free(threads);
@@ -1379,7 +1370,7 @@ static void perform_idle_server_maintenance(void)
 
     if (idle_thread_count > max_spare_threads) {
         /* Kill off one child */
-        ap_mpm_pod_signal(pod);
+        ap_mpm_pod_signal(pod, TRUE);
         idle_spawn_rate = 1;
     }
     else if (idle_thread_count < min_spare_threads) {
@@ -1609,7 +1600,7 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
          * (By "gracefully" we don't mean graceful in the same sense as 
          * "apachectl graceful" where we allow old connections to finish.)
          */
-        ap_mpm_pod_killpg(pod, ap_daemons_limit);
+        ap_mpm_pod_killpg(pod, ap_daemons_limit, FALSE);
         ap_reclaim_child_processes(1);                /* Start with SIGTERM */
 
         if (!child_fatal) {
@@ -1647,7 +1638,7 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
         ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_NOTICE, 0, ap_server_conf,
                      AP_SIG_GRACEFUL_STRING " received.  Doing graceful restart");
         /* wake up the children...time to die.  But we'll have more soon */
-        ap_mpm_pod_killpg(pod, ap_daemons_limit);
+        ap_mpm_pod_killpg(pod, ap_daemons_limit, TRUE);
     
 
         /* This is mostly for debugging... so that we know what is still
@@ -1660,7 +1651,7 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
          * and a SIGHUP, we may as well use the same signal, because some user
          * pthreads are stealing signals from us left and right.
          */
-        ap_mpm_pod_killpg(pod, ap_daemons_limit);
+        ap_mpm_pod_killpg(pod, ap_daemons_limit, FALSE);
 
         ap_reclaim_child_processes(1);                /* Start with SIGTERM */
         ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_NOTICE, 0, ap_server_conf,
