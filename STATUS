@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/05/21 23:20:48 $]
+Last modified at [$Date: 2004/05/21 23:39:41 $]
 
 Release:
 
@@ -84,16 +84,6 @@ PATCHES TO BACKPORT FROM 2.1
        modules/experimental/util_ldap_cache.c r1.16
        PR 26686 [Jari Ahonen <jah@progress.com>]
        +1: jim, trawick, bnicholes
-
-    *) Quotes cannot be used around require group and require dn
-       directives, update the documentation to reflect this. Also add
-       quotes around the dn and group within debug messages, to make it
-       more obvious why authentication is failing if quotes are used in
-       error.
-       docs/manual/mod/mod_auth_ldap.xml r1.18
-       modules/experimental/mod_auth_ldap.c r1.27
-       PR 19304
-       +1: minfrin, jim, trawick, bnicholes
 
     *) Fix handling of IPv6 numeric strings in mod_proxy.
          modules/proxy/proxy_ftp.c r1.141, r1.142
