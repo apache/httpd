@@ -1,5 +1,10 @@
 Changes with Apache 1.3.1
 
+  *) Minor display fix for "install" target of top-level Makefile:
+     the displayed installation command was incorrect although the
+     executed command was correct. Now they are in sync.
+     [Ralf S. Engelschall] PR#2402
+
   *) Correct initialization of variable `allowed_globals' in http_main.c
      [Justin Bradford <justin@ukans.edu>] PR#2400
 
