@@ -943,11 +943,13 @@ static int hook_uri2file(request_rec *r)
     void *sconf;
     rewrite_server_conf *conf;
     char *var;
-    char *thisserver, *thisport, *thisurl;
+    const char *thisserver;
+    char *thisport, *thisurl;
     char buf[512];
     char docroot[512];
     char *cp, *cp2;
     struct stat finfo;
+    unsigned int port;
     int n;
     int l;
 
@@ -998,12 +1000,12 @@ static int hook_uri2file(request_rec *r)
      */
 
     /* add the canonical URI of this URL */
-    thisserver = (char *) ap_get_server_name(r);
-    thisport = (char *) ap_get_server_port(r);
-    if (is_default_port((int) thisport, r))
+    thisserver = ap_get_server_name(r);
+    port = ap_get_server_port(r);
+    if (is_default_port(port, r))
         thisport = "";
     else {
-        ap_snprintf(buf, sizeof(buf), ":%u", thisport);
+        ap_snprintf(buf, sizeof(buf), ":%u", port);
         thisport = buf;
     }
     thisurl = ap_table_get(r->subprocess_env, ENVVAR_SCRIPT_URL);
@@ -2249,8 +2251,10 @@ static void reduce_uri(request_rec *r)
 static void fully_qualify_uri(request_rec *r)
 {
     int i;
-    char port[32];
+    char buf[32];
+    const char *thisserver;
     char *thisport;
+    int port;
 
     i = strlen(r->filename);
     if (!(   (i > 7 && strncasecmp(r->filename, "http://", 7)   == 0)
@@ -2258,20 +2262,23 @@ static void fully_qualify_uri(request_rec *r)
           || (i > 9 && strncasecmp(r->filename, "gopher://", 9) == 0)
           || (i > 6 && strncasecmp(r->filename, "ftp://", 6)    == 0))) {
           
-        thisport = (char *) ap_get_server_port(r);
-        if (is_default_port((int) thisport,r))
-            port[0] = '\0';
-        else
-            ap_snprintf(port, sizeof(port), ":%u", thisport);
+        thisserver = ap_get_server_name(r);
+        port = ap_get_server_port(r);
+        if (is_default_port(port,r))
+            thisport = "";
+        else {
+            ap_snprintf(buf, sizeof(buf), ":%u", port);
+            thisport = buf;
+        }
 
         if (r->filename[0] == '/')
             r->filename = ap_psprintf(r->pool, "%s://%s%s%s",
-                        http_method(r), ap_get_server_name(r),
-                        port, r->filename);
+                        http_method(r), thisserver,
+                        thisport, r->filename);
         else
             r->filename = ap_psprintf(r->pool, "%s://%s%s/%s",
-                        http_method(r), ap_get_server_name(r),
-                        port, r->filename);
+                        http_method(r), thisserver,
+                        thisport, r->filename);
     }
     return;
 }
