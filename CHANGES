@@ -6,11 +6,6 @@ Changes with Apache 2.1.0-dev
      on some platforms when mod_so was enabled by default, breaking 
      DSOs on AIX.  PR 19012  [Jeff Trawick]
 
-  *) Enable ap_sock_disable_nagle for Windows. This along with the  
-     addition of  APR_TCP_NODELAY_INHERITED to apr.hw will cause Nagle 
-     to be disabled for Windows.
-     [Allan Edwards]
-
   *) ssl_toolkit_compat.h and code fixes to build clean on SSLC.
      [William Rowe, Madhusudan Mathihalli]
 
@@ -162,6 +157,10 @@ Changes with Apache 2.1.0-dev
    Apache 2.0.xx tree as documented, and except as noted, below.]
 
 Changes with Apache 2.0.46
+
+  *) Enable ap_sock_disable_nagle for Windows. This along with the  
+     addition of  APR_TCP_NODELAY_INHERITED to apr.hw will cause Nagle 
+     to be disabled for Windows. [Allan Edwards]
 
   *) Fix a build problem with passing unsupported --enable-layout
      args to apr and apr-util.  This broke binbuild.sh as well as
