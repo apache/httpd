@@ -1914,7 +1914,7 @@ command_rec util_ldap_cmds[] = {
                   "  KEY_DER       - Client cert key file in DER format "
                   "  KEY_BASE64    - Client cert key file in Base64 format "),
 
-    AP_INIT_TAKE23("LDAPTrustedClientCert", util_ldap_set_trusted_client_cert, NULL, OR_ALL,
+    AP_INIT_TAKE23("LDAPTrustedClientCert", util_ldap_set_trusted_client_cert, NULL, RSRC_CONF,
                   "Specifies a file containing a client certificate or private "
                   "key, or the ID of the certificate to usethe type of the Certificate Authority file.  "
                  "The following types are supported:  "
@@ -1929,7 +1929,7 @@ command_rec util_ldap_cmds[] = {
                  "  KEY_DER       - Client cert key file in DER format "
                  "  KEY_BASE64    - Client cert key file in Base64 format "),
 
-    AP_INIT_TAKE1("LDAPTrustedMode", util_ldap_set_trusted_mode, NULL, OR_ALL,
+    AP_INIT_TAKE1("LDAPTrustedMode", util_ldap_set_trusted_mode, NULL, RSRC_CONF,
                   "Specifies the type of security that should be applied to "
                   "an LDAP connection. The types supported are: "
                   "   NONE - no encryption enabled "
