@@ -60,6 +60,16 @@ Available Patches:
       See: http://www.engelschall.com/sw/apache/ [substconfparam]
       Status (for 1.3.1-dev): Ralf +1
 
+    * Ralf's "command line option to do a config syntax check only":
+      This patch adds a -t option to httpd which forces Apache to parse and
+      check its configuration files but exit immediately after this step.  It
+      is useful for checking the syntax of the config files before doing a
+      restart of a running server, especially from within cron jobs. There you
+      must avoid a server going down just because of recently introduced
+      syntax error in one of the config files.
+      See: http://www.engelschall.com/sw/apache/ [configcheckoption]
+      Status (for 1.3.1-dev): Ralf +1
+
 In progress:
  
     * Ken's IndexFormat enhancement to mod_autoindex to allow
