@@ -1,3 +1,5 @@
+*.lo
+.deps
 Makefile
 rotatelogs
 htpasswd
