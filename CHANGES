@@ -1,5 +1,9 @@
 Changes with Apache 2.0.25-dev
 
+  *) Fix a security problem in mod_include which would allow
+     an SSI document to be passed to the client unparsed.
+     [Cliff Woolley, Brian Pane, William Rowe]
+
   *) Introduce the map_to_storage hook, which allows modules to bypass
      the directory_walk and file_walk for non-file requests.  TRACE
      shortcut moved to http_protocol.c as APR_HOOK_MIDDLE, and the
