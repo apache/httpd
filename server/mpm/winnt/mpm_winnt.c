@@ -1164,14 +1164,17 @@ static void worker_main(int thread_num)
 
         c = ap_new_connection(context->ptrans, server_conf, context->sock,
                               thread_num);
-
-        ap_process_connection(c);
-
-
-        apr_getsocketopt(context->sock, APR_SO_DISCONNECTED, &disconnected);
-        if (!disconnected) {
+        if (c) {
+            ap_process_connection(c);
+            apr_getsocketopt(context->sock, APR_SO_DISCONNECTED, &disconnected);
+            if (!disconnected) {
+                context->accept_socket = INVALID_SOCKET;
+                ap_lingering_close(c);
+            }
+        }
+        else {
+            /* ap_new_connection closes the socket on failure */
             context->accept_socket = INVALID_SOCKET;
-            ap_lingering_close(c);
         }
     }
 
