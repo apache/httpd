@@ -3633,7 +3633,7 @@ static apr_status_t core_output_filter(ap_filter_t *f, apr_bucket_brigade *b)
                 hdtr.trailers = vec_trailers;
             }
 #if APR_HAS_SENDFILE
-            if (!c->keepalive) {
+            if (!c->keepalive && APR_BUCKET_IS_EOS(last_e)) {
                 /* Prepare the socket to be reused */
                 flags |= APR_SENDFILE_DISCONNECT_SOCKET;
             }
