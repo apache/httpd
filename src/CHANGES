@@ -1,5 +1,12 @@
 Changes with Apache 1.3.1
 
+  *) The APACI libexecdir was not extended with an "apache/" subdir
+     if the installation prefix doesn't already contain "apache". Although
+     it is useful because the DSO files are totally Apache-specific. Now
+     libexecdir is treated the same way sysconfdir, datadir, localstatedir
+     and includedir are already treated.
+     [Charles Levert <charles@comm.polymtl.ca>] PR#2551
+
   *) The <Limit> parsing routine was incorrectly treating methods in
      a case-insensitive way.  [Ken Coar]
 

@@ -751,7 +751,7 @@ for var in prefix exec_prefix bindir sbindir \
     val=`echo $val | sed -e 's:/*$::'`
     eval "$var=\"$val\""
     case $var in
-       sysconfdir|datadir|localstatedir|includedir ) 
+       libexecdir|sysconfdir|datadir|localstatedir|includedir ) 
            eval "val=\$$var"
            case $val in
                *apache | *apache* ) ;;
