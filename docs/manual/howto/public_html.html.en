@@ -1,0 +1,108 @@
+<html><head><META http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><!--
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+              This file is generated from xml source: DO NOT EDIT
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+      --><title>Per-user web directories - Apache HTTP Server</title><link href="../style/manual.css" type="text/css" rel="stylesheet"></head><body><blockquote><div align="center"><img src="../images/sub.gif" alt="[APACHE DOCUMENTATION]"><h3>Apache HTTP Server Version 2.0</h3></div><h1 align="center">Per-user web directories</h1>
+<p>On systems with multiple users, each user can be permitted to have a
+    web site in their home directory using the <a href="../mod/mod_userdir.html#userdir" class="directive"><code class="directive">UserDir</code></a> directive. Visitors
+    to a URL <code>http://example.com/~username/</code> will get content
+    out of the home directory of the user "<code>username</code>", out of
+    the subdirectory specified by the <a href="../mod/mod_userdir.html#userdir" class="directive"><code class="directive">UserDir</code></a> directive.</p>
+
+<ul><li><a href="#related">Per-user web directories</a></li><li><a href="#userdir">Setting the file path with <a href="../mod/mod_userdir.html#userdir" class="directive"><code class="directive">UserDir</code></a></a></li><li><a href="#enable">Restricting what users are permitted to use this 
+    feature</a></li><li><a href="#cgi">Enabling a cgi directory for each user</a></li><li><a href="#htaccess">Allowing users to alter configuration</a></li></ul><hr><h2><a name="related">Per-user web directories</a></h2>
+    
+    <table border="1"><tr><td valign="top"><strong>Related Modules</strong><br><br><code><a href="../mod/mod_userdir.html">mod_userdir</a></code><br></td><td valign="top"><strong>Related Directives</strong><br><br><a href="../mod/mod_userdir.html#userdir" class="directive"><code class="directive">UserDir</code></a><br><a href="../mod/core.html#directorymatch" class="directive"><code class="directive">DirectoryMatch</code></a><br><a href="../mod/core.html#allowoverride" class="directive"><code class="directive">AllowOverride</code></a><br></td></tr></table>
+    <h2><a name="userdir">Setting the file path with <a href="../mod/mod_userdir.html#userdir" class="directive"><code class="directive">UserDir</code></a></a></h2>
+    
+
+    <p>The <a href="../mod/mod_userdir.html#userdir" class="directive"><code class="directive">UserDir</code></a>
+    directive specifies a directory out of which per-user
+    content is loaded. This directive may take several different forms.</p>
+
+    <p>If a path is given which does not start with a leading slash, it is
+    assumed to be a directory path relative to the home directory of the
+    specified user. Given this configuration:</p>
+
+    <blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>
+      UserDir public_html
+    </code></td></tr></table></blockquote>
+
+    <p>the URL <code>http://example.com/~rbowen/file.html</code> will be
+    translated to the file path
+    <code>/home/rbowen/public_html/file.html</code></p>
+
+    <p>If a path is given starting with a slash, a directory path will be
+    constructed using that path, plus the username specified. Given this
+    configuration:</p>
+
+    <blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>
+      UserDir /var/html
+    </code></td></tr></table></blockquote>
+
+    <p>the URL <code>http://example.com/~rbowen/file.html</code> will be
+    translated to the file path <code>/var/html/rbowen/file.html</code></p>
+
+    <p>If a path is provided which contains an asterisk (*), a path is used
+    in which the asterisk is replaced with the username. Given this
+    configuration:</p>
+
+    <blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>
+      UserDir /var/www/*/docs
+    </code></td></tr></table></blockquote>
+
+    <p>the URL <code>http://example.com/~rbowen/file.html</code> will be
+    translated to the file path
+    <code>/var/www/rbowen/docs/file.html</code></p>
+
+  <h2><a name="enable">Restricting what users are permitted to use this 
+    feature</a></h2>
+    
+
+    <p>Using the syntax show in the UserDir documentation, you can restrict
+    what users are permitted to use this functionality:</p>
+
+    <blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>
+      UserDir enabled<br>
+      UserDir disabled root jro fish
+    </code></td></tr></table></blockquote>
+
+    <p>The configuration above will enable the feature for all users
+    except for those listed in the <code>disabled</code> statement.
+    You can, likewise, disable the feature for all but a few users by
+    using a configuration like the following:</p>
+
+    <blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>
+      UserDir disabled<br>
+      UserDir enabled rbowen krietz
+    </code></td></tr></table></blockquote>
+
+    <p>See <a href="../mod/userdir.html#userdir" class="directive"><code class="directive">UserDir</code></a>
+    documentation for additional examples.</p>
+
+  <h2><a name="cgi">Enabling a cgi directory for each user</a></h2>
+  
+
+   <p>In order to give each user their own cgi-bin directory, you can use
+    a <a href="../mod/core.html#directorymatch" class="directive"><code class="directive">DirectoryMatch</code></a>
+    directive to make a particular subdirectory of a user's home directory
+    cgi-enabled.</p>
+
+    <blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>
+      &lt;DirectoryMatch /home/*/cgi-bin/&gt;<br>
+       Options +ExecCGI<br>
+       SetHandler cgi-script<br>
+       &lt;/DirectoryMatch&gt;
+    </code></td></tr></table></blockquote>
+
+    <h2><a name="htaccess">Allowing users to alter configuration</a></h2>
+    
+
+    <p>If you want to allows users to modify the server configuration in
+    their web space, they will need to use <code>.htaccess</code> files to
+    make these changed. Ensure that you have set <a href="../mod/core.html#allowoverride" class="directive"><code class="directive">AllowOverride</code></a> to a
+    value sufficient for the directives that you want to permit the users
+    to modify. See the <a href="htaccess.html">.htaccess tutorial</a> for
+    additional details on how this works.</p>
+
+  <hr></blockquote><h3 align="center">Apache HTTP Server Version 2.0</h3><a href="./"><img src="../images/index.gif" alt="Index"></a><a href="../"><img src="../images/home.gif" alt="Home"></a></body></html>

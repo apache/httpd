@@ -1,0 +1,136 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
+<manualpage>
+<relativepath href=".."/>
+
+  <title>Per-user web directories</title>
+
+<summary>
+<p>On systems with multiple users, each user can be permitted to have a
+    web site in their home directory using the <directive 
+    module="mod_userdir">UserDir</directive> directive. Visitors
+    to a URL <code>http://example.com/~username/</code> will get content
+    out of the home directory of the user "<code>username</code>", out of
+    the subdirectory specified by the <directive
+    module="mod_userdir">UserDir</directive> directive.</p>
+
+</summary>
+
+  <section id="related">
+    <title>Per-user web directories</title>
+    <related>
+      <modulelist>
+        <module>mod_userdir</module>
+      </modulelist>
+      <directivelist>
+        <directive module="mod_userdir">UserDir</directive>
+        <directive module="core">DirectoryMatch</directive>
+        <directive module="core">AllowOverride</directive>
+      </directivelist>
+    </related>
+    </section>
+
+    <section id="userdir">
+    <title>Setting the file path with <directive
+    module="mod_userdir">UserDir</directive></title>
+
+    <p>The <directive module="mod_userdir">UserDir</directive>
+    directive specifies a directory out of which per-user
+    content is loaded. This directive may take several different forms.</p>
+
+    <p>If a path is given which does not start with a leading slash, it is
+    assumed to be a directory path relative to the home directory of the
+    specified user. Given this configuration:</p>
+
+    <example>
+      UserDir public_html
+    </example>
+
+    <p>the URL <code>http://example.com/~rbowen/file.html</code> will be
+    translated to the file path
+    <code>/home/rbowen/public_html/file.html</code></p>
+
+    <p>If a path is given starting with a slash, a directory path will be
+    constructed using that path, plus the username specified. Given this
+    configuration:</p>
+
+    <example>
+      UserDir /var/html
+    </example>
+
+    <p>the URL <code>http://example.com/~rbowen/file.html</code> will be
+    translated to the file path <code>/var/html/rbowen/file.html</code></p>
+
+    <p>If a path is provided which contains an asterisk (*), a path is used
+    in which the asterisk is replaced with the username. Given this
+    configuration:</p>
+
+    <example>
+      UserDir /var/www/*/docs
+    </example>
+
+    <p>the URL <code>http://example.com/~rbowen/file.html</code> will be
+    translated to the file path
+    <code>/var/www/rbowen/docs/file.html</code></p>
+
+  </section>
+
+  <section id="enable">
+    <title>Restricting what users are permitted to use this 
+    feature</title>
+
+    <p>Using the syntax show in the UserDir documentation, you can restrict
+    what users are permitted to use this functionality:</p>
+
+    <example>
+      UserDir enabled<br />
+      UserDir disabled root jro fish
+    </example>
+
+    <p>The configuration above will enable the feature for all users
+    except for those listed in the <code>disabled</code> statement.
+    You can, likewise, disable the feature for all but a few users by
+    using a configuration like the following:</p>
+
+    <example>
+      UserDir disabled<br />
+      UserDir enabled rbowen krietz
+    </example>
+
+    <p>See <directive module="userdir">UserDir</directive>
+    documentation for additional examples.</p>
+
+  </section>
+
+  <section id="cgi">
+  <title>Enabling a cgi directory for each user</title>
+
+   <p>In order to give each user their own cgi-bin directory, you can use
+    a <directive module="core">DirectoryMatch</directive>
+    directive to make a particular subdirectory of a user's home directory
+    cgi-enabled.</p>
+
+    <example>
+      &lt;DirectoryMatch /home/*/cgi-bin/&gt;<br />
+       Options +ExecCGI<br />
+       SetHandler cgi-script<br />
+       &lt;/DirectoryMatch&gt;
+    </example>
+
+    </section>
+
+    <section id="htaccess">
+    <title>Allowing users to alter configuration</title>
+
+    <p>If you want to allows users to modify the server configuration in
+    their web space, they will need to use <code>.htaccess</code> files to
+    make these changed. Ensure that you have set <directive
+    module="core">AllowOverride</directive> to a
+    value sufficient for the directives that you want to permit the users
+    to modify. See the <a href="htaccess.html">.htaccess tutorial</a> for
+    additional details on how this works.</p>
+
+  </section>
+
+</manualpage>
