@@ -106,7 +106,7 @@ SOURCE=..\..\build\win32\win32ver.awk
 InputPath=..\..\build\win32\win32ver.awk
 
 ".\mod_ext_filter.rc" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	awk -f ../../build/win32/win32ver.awk mod_ext_filter  "ext_filter_module for Apache" ../../include/ap_release.h > .\mod_ext_filter.rc
+	awk -f ../../build/win32/win32ver.awk mod_ext_filter.so "ext_filter_module for Apache" ../../include/ap_release.h > .\mod_ext_filter.rc
 
 # End Custom Build
 
@@ -117,7 +117,7 @@ InputPath=..\..\build\win32\win32ver.awk
 InputPath=..\..\build\win32\win32ver.awk
 
 ".\mod_ext_filter.rc" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	awk -f ../../build/win32/win32ver.awk mod_ext_filter  "ext_filter_module for Apache" ../../include/ap_release.h > .\mod_ext_filter.rc
+	awk -f ../../build/win32/win32ver.awk mod_ext_filter.so "ext_filter_module for Apache" ../../include/ap_release.h > .\mod_ext_filter.rc
 
 # End Custom Build
 

@@ -106,7 +106,7 @@ SOURCE=..\..\build\win32\win32ver.awk
 InputPath=..\..\build\win32\win32ver.awk
 
 ".\mod_asis.rc" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	awk -f ../../build/win32/win32ver.awk mod_asis  "asis_module for Apache" ../../include/ap_release.h > .\mod_asis.rc
+	awk -f ../../build/win32/win32ver.awk mod_asis.so "asis_module for Apache" ../../include/ap_release.h > .\mod_asis.rc
 
 # End Custom Build
 
@@ -117,7 +117,7 @@ InputPath=..\..\build\win32\win32ver.awk
 InputPath=..\..\build\win32\win32ver.awk
 
 ".\mod_asis.rc" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	awk -f ../../build/win32/win32ver.awk mod_asis  "asis_module for Apache" ../../include/ap_release.h > .\mod_asis.rc
+	awk -f ../../build/win32/win32ver.awk mod_asis.so "asis_module for Apache" ../../include/ap_release.h > .\mod_asis.rc
 
 # End Custom Build
 

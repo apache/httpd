@@ -106,7 +106,7 @@ SOURCE=..\..\build\win32\win32ver.awk
 InputPath=..\..\build\win32\win32ver.awk
 
 ".\mod_alias.rc" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	awk -f ../../build/win32/win32ver.awk mod_alias  "alias_module for Apache" ../../include/ap_release.h > .\mod_alias.rc
+	awk -f ../../build/win32/win32ver.awk mod_alias.so "alias_module for Apache" ../../include/ap_release.h > .\mod_alias.rc
 
 # End Custom Build
 
@@ -117,7 +117,7 @@ InputPath=..\..\build\win32\win32ver.awk
 InputPath=..\..\build\win32\win32ver.awk
 
 ".\mod_alias.rc" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	awk -f ../../build/win32/win32ver.awk mod_alias  "alias_module for Apache" ../../include/ap_release.h > .\mod_alias.rc
+	awk -f ../../build/win32/win32ver.awk mod_alias.so "alias_module for Apache" ../../include/ap_release.h > .\mod_alias.rc
 
 # End Custom Build
 
