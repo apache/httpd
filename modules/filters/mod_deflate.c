@@ -234,6 +234,7 @@ static apr_status_t deflate_out_filter(ap_filter_t *f,
 
         /* only work on main request/no subrequests */
         if (r->main) {
+            ap_remove_output_filter(f);
             return ap_pass_brigade(f->next, bb);
         }
 
@@ -241,6 +242,7 @@ static apr_status_t deflate_out_filter(ap_filter_t *f,
          * (with browsermatch) for them
          */
         if (apr_table_get(r->subprocess_env, "no-gzip")) {
+            ap_remove_output_filter(f);
             return ap_pass_brigade(f->next, bb);
         }
 
@@ -251,12 +253,14 @@ static apr_status_t deflate_out_filter(ap_filter_t *f,
         if ((r->content_type == NULL
              || strncmp(r->content_type, "text/html", 9))
             && apr_table_get(r->subprocess_env, "gzip-only-text/html")) {
+            ap_remove_output_filter(f);
             return ap_pass_brigade(f->next, bb);
         }
 
         /* if they don't have the line, then they can't play */
         accepts = apr_table_get(r->headers_in, "Accept-Encoding");
         if (accepts == NULL) {
+            ap_remove_output_filter(f);
             return ap_pass_brigade(f->next, bb);
         }
 
@@ -269,6 +273,7 @@ static apr_status_t deflate_out_filter(ap_filter_t *f,
 
         /* No acceptable token found. */
         if (token == NULL || token[0] == '\0') {
+            ap_remove_output_filter(f);
             return ap_pass_brigade(f->next, bb);
         }
 
