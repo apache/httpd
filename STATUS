@@ -1,5 +1,5 @@
 Apache 2.0 STATUS:
-Last modified at [$Date: 2000/04/10 22:26:32 $]
+Last modified at [$Date: 2000/04/11 16:35:27 $]
 
 Release:
 
@@ -23,7 +23,7 @@ RELEASE SHOWSTOPPERS:
 	see <Pine.LNX.4.21.0004101511380.7822-100000@twinlark.arctic.org>
 
     * Fix lingering close
-        Status:
+        see <Pine.LNX.4.21.0004110902390.10177-100000@twinlark.arctic.org>
 
     * MPMs should have responsibility for closing sockets and
         registering the socket cleanup. Stop registering multiple
