@@ -171,11 +171,11 @@ static char *get_dbm_pw(request_rec *r, char *user, char *auth_dbmpwfile)
 
 #ifdef WIN32 /* XXX: Same bad symbol here - need feature macro */
     if (!(retval = dbm_open(&f, auth_dbmpwfile, O_RDONLY, 0664, r->pool))) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, errno, r,
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, retval, r,
 		    "could not open sdbm auth file: %s", auth_dbmpwfile);
 #else
     if (!(f = dbm_open(auth_dbmpwfile, O_RDONLY, 0664))) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, retval, r,
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, errno, r,
 		    "could not open dbm auth file: %s", auth_dbmpwfile);
 #endif
 	return NULL;
