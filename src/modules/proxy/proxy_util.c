@@ -465,8 +465,8 @@ table *ap_proxy_read_headers(request_rec *r, char *buffer, int size, BUFF *f)
             }
 
             ap_log_error(APLOG_MARK, APLOG_WARNING | APLOG_NOERRNO, r->server,
-                         "proxy: Ignoring duplicate HTTP header "
-                         "returned by %s (%s)", r->uri, r->method);
+                         "proxy: Ignoring duplicate HTTP status line "
+                         "returned by buggy server %s (%s)", r->uri, r->method);
             continue;
         }
 
