@@ -1,5 +1,8 @@
 Changes with Apache 1.2.2
 
+  *) Bugfix for case where multiple <Directory>s match and all are applied.
+     [Dean Gaudet]
+
   *) Fixed an infinite loop in mod_imap for references above the server root
      [Dean Gaudet] PR#748
 

@@ -344,7 +344,7 @@ int directory_walk (request_rec *r)
         core_dir_config *core_dir =
 	  (core_dir_config *)get_module_config(per_dir_defaults, &core_module);
 	int overrides_here;
-        void *this_conf = NULL, *htaccess_conf = NULL;
+        void *this_conf, *htaccess_conf = NULL;
 	char *this_dir = make_dirstr (r->pool, test_filename, i);
 	int j;
       
@@ -373,6 +373,7 @@ int directory_walk (request_rec *r)
 	      (core_dir_config *)get_module_config(entry_config, &core_module);
 	    entry_dir = entry_core->d;
 	
+	    this_conf = NULL;
 	    if (entry_core->r) {
 		if (!regexec(entry_core->r, this_dir, 0, NULL,
 			     (j == num_sec) ? 0 : REG_NOTEOL)) {
