@@ -28,9 +28,9 @@
      specify any necessary <code>httpd</code> command line arugments.
      See the comments in the script for details.</p>
 
-     The <code>apachectl</code> script returns a 0 exit value on
+     <p>The <code>apachectl</code> script returns a 0 exit value on
      success, and &gt;0 if an error occurs.  For more details, view
-     the comments in the script.
+     the comments in the script.</p>
 </summary>
 <seealso><a href="../invoking.html">Starting Apache</a></seealso>
 <seealso><a href="../stopping.html">Stopping Apache</a></seealso>
