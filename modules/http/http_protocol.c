@@ -1176,7 +1176,6 @@ request_rec *ap_read_request(conn_rec *conn)
 
 #ifdef APACHE_XLATE
     r->rrx = apr_pcalloc(p, sizeof(struct ap_rr_xlate));
-    ap_set_content_xlate(r, 1, ap_locale_to_ascii);
     ap_set_content_xlate(r, 0, ap_locale_from_ascii);
 #endif /*APACHE_XLATE*/
 
