@@ -1558,6 +1558,9 @@ static int index_directory(request_rec *r,
     }
 
     r->content_type = "text/html";
+#if APR_HAS_UNICODE_FS 
+    r->content_type = "text/html;charset=utf-8";
+#endif
 
     ap_send_http_header(r);
 
