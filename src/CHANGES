@@ -1,5 +1,8 @@
 Changes with Apache 1.3.3
 
+  *) OS/2: The new header tests get things right, need to update
+     ap_config.h.  [Brian Havard]
+
   *) The Perl %ENV hash will now be setup by default when using the
      mod_include `perl' command [Doug MacEachern]
 
