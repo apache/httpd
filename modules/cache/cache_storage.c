@@ -256,16 +256,26 @@ int cache_select_url(request_rec *r, char *url)
                 const char *etag, *lastmod;
 
                 /* Make response into a conditional */
+                cache->stale_headers = apr_table_copy(r->pool,
+                                                      r->headers_in);
 
-                /* FIXME: What if the request is already conditional? */
+                /* We can only revalidate with our own conditionals: remove the
+                 * conditions from the original request.
+                 */
+                apr_table_unset(r->headers_in, "If-Match");
+                apr_table_unset(r->headers_in, "If-Modified-Since");
+                apr_table_unset(r->headers_in, "If-None-Match");
+                apr_table_unset(r->headers_in, "If-Range");
+                apr_table_unset(r->headers_in, "If-Unmodified-Since");
+
                 etag = apr_table_get(h->resp_hdrs, "ETag");
                 lastmod = apr_table_get(h->resp_hdrs, "Last-Modified");
 
                 if (etag || lastmod) {
-                    /* If we have a cached etag and/or Last-Modified */
+                    /* If we have a cached etag and/or Last-Modified add in
+                     * our own conditionals.
+                     */
 
-                    cache->stale_headers = apr_table_copy(r->pool,
-                                                          r->headers_in);
                     if (etag) {
                         apr_table_set(r->headers_in, "If-None-Match", etag);
                     }
