@@ -110,11 +110,11 @@ static int ftp_check_string(const char *x)
 	    ch = ap_proxy_hex2c(&x[i + 1]);
 	    i += 2;
 	}
-#ifndef CHARSET_EBCDIC
+#ifndef AP_CHARSET_EBCDIC
         if (ch == '\015' || ch == '\012' || (ch & 0x80))
-#else /*CHARSET_EBCDIC*/
+#else /*AP_CHARSET_EBCDIC*/
         if (ch == '\r' || ch == '\n' || (os_toascii[ch] & 0x80))
-#endif /*CHARSET_EBCDIC*/
+#endif /*AP_CHARSET_EBCDIC*/
         return 0;
     }
     return 1;
@@ -602,9 +602,9 @@ int ap_proxy_ftp_handler(request_rec *r, ap_cache_el *c, char *url)
     ap_bpush_socket(f, sock);
 /* shouldn't we implement telnet control options here? */
 
-#ifdef CHARSET_EBCDIC
+#ifdef AP_CHARSET_EBCDIC
     ap_bsetflag(f, B_ASCII2EBCDIC|B_EBCDIC2ASCII, 1);
-#endif /*CHARSET_EBCDIC*/
+#endif /*AP_CHARSET_EBCDIC*/
 
 /* possible results: */
     /* 120 Service ready in nnn minutes. */

@@ -66,6 +66,7 @@ AC_DEFUN(APACHE_GEN_CONFIG_VARS,[
   APACHE_SUBST(sysconfdir)
   APACHE_SUBST(progname)
   APACHE_SUBST(prefix)
+  APACHE_SUBST(AWK)
   APACHE_SUBST(CC)
   APACHE_SUBST(CFLAGS)
   APACHE_SUBST(CPPFLAGS)
@@ -216,7 +217,7 @@ int main(void) {
   ac_cv_ebcdic="no"
 ])])
   if test "$ac_cv_ebcdic" = "yes"; then
-    AC_DEFINE(CHARSET_EBCDIC,, [Define if system uses EBCDIC])
+    AC_DEFINE(AP_CHARSET_EBCDIC,, [Define if system uses EBCDIC])
   fi
 ])
 

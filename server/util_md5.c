@@ -105,7 +105,7 @@ AP_DECLARE(char *) ap_md5_binary(apr_pool_t *p, const unsigned char *buf, int le
      */
 
     apr_MD5Init(&my_md5);
-#ifdef CHARSET_EBCDIC
+#ifdef AP_CHARSET_EBCDIC
     apr_MD5SetXlate(&my_md5, ap_hdrs_to_ascii);
 #endif
     apr_MD5Update(&my_md5, buf, (unsigned int)length);

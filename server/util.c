@@ -1495,11 +1495,11 @@ static char x2c(const char *what)
 {
     register char digit;
 
-#ifndef CHARSET_EBCDIC
+#ifndef AP_CHARSET_EBCDIC
     digit = ((what[0] >= 'A') ? ((what[0] & 0xdf) - 'A') + 10 : (what[0] - '0'));
     digit *= 16;
     digit += (what[1] >= 'A' ? ((what[1] & 0xdf) - 'A') + 10 : (what[1] - '0'));
-#else /*CHARSET_EBCDIC*/
+#else /*AP_CHARSET_EBCDIC*/
     char xstr[5];
     xstr[0]='0';
     xstr[1]='x';
@@ -1507,7 +1507,7 @@ static char x2c(const char *what)
     xstr[3]=what[1];
     xstr[4]='\0';
     digit = apr_xlate_conv_byte(ap_hdrs_from_ascii, 0xFF & strtol(xstr, NULL, 16));
-#endif /*CHARSET_EBCDIC*/
+#endif /*AP_CHARSET_EBCDIC*/
     return (digit);
 }
 
@@ -1583,9 +1583,9 @@ static const char c2x_table[] = "0123456789abcdef";
 
 static apr_inline unsigned char *c2x(unsigned what, unsigned char *where)
 {
-#ifdef CHARSET_EBCDIC
+#ifdef AP_CHARSET_EBCDIC
     what = apr_xlate_conv_byte(ap_hdrs_to_ascii, (unsigned char)what);
-#endif /*CHARSET_EBCDIC*/
+#endif /*AP_CHARSET_EBCDIC*/
     *where++ = '%';
     *where++ = c2x_table[what >> 4];
     *where++ = c2x_table[what & 0xf];

@@ -56,6 +56,7 @@
 #define AP_LISTEN_H
 
 #include "apr_network_io.h"
+#include "httpd.h"
 #include "http_config.h"
 
 /**
@@ -114,7 +115,10 @@ void ap_listen_pre_config(void);
  * Prefork or SPMT_OS2 MPMs.
  */ 
 int ap_setup_listeners(server_rec *s);
-#else
+#endif
+/* Split into two #if's to make the exports scripts easier.
+ */
+#if defined(WIN32) || defined(SPMT_OS2_MPM)
 /**
  * Create and open a socket on the specified port.  This includes listening
  * and binding the socket.

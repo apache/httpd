@@ -462,7 +462,7 @@ AP_DECLARE(int) ap_scan_script_header_err_core(request_rec *r, char *buffer,
 
 	/* if we see a bogus header don't ignore it. Shout and scream */
 
-#ifdef CHARSET_EBCDIC
+#ifdef AP_CHARSET_EBCDIC
 	    /* Chances are that we received an ASCII header text instead of
 	     * the expected EBCDIC header lines. Try to auto-detect:
 	     */
@@ -487,7 +487,7 @@ AP_DECLARE(int) ap_scan_script_header_err_core(request_rec *r, char *buffer,
                                       w, &inbytes_left, w, &outbytes_left);
 	    }
 	}
-#endif /*CHARSET_EBCDIC*/
+#endif /*AP_CHARSET_EBCDIC*/
 	if (!(l = strchr(w, ':'))) {
 	    char malformed[(sizeof MALFORMED_MESSAGE) + 1
 			   + MALFORMED_HEADER_LENGTH_TO_SHOW];

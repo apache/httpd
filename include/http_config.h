@@ -447,6 +447,7 @@ struct module_struct {
 				NULL, \
 				MODULE_MAGIC_COOKIE
 
+#if AP_RBB_HACK
 /**
  * Generic accessors for other modules to get at their own module-specific
  * data
@@ -457,6 +458,8 @@ struct module_struct {
  * @deffunc void *ap_get_module_config(void *conf_vector, module *m)
  */
 AP_DECLARE(void *) ap_get_module_config(void *conf_vector, module *m);
+#endif
+#if AP_RBB_HACK
 /**
  * Generic accessors for other modules to set at their own module-specific
  * data
@@ -467,6 +470,7 @@ AP_DECLARE(void *) ap_get_module_config(void *conf_vector, module *m);
  * @deffunc void ap_set_module_config(void *conf_vector, module *m, void *val)
  */
 AP_DECLARE(void) ap_set_module_config(void *conf_vector, module *m, void *val);
+#endif
 
 #define ap_get_module_config(v,m)	\
     (((void **)(v))[(m)->module_index])

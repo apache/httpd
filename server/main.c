@@ -156,8 +156,8 @@ static void show_compile_settings(void)
 	printf(" -D PIPE_BUF=%ld\n",(long)PIPE_BUF);
 #endif
 #endif
-#ifdef CHARSET_EBCDIC
-    printf(" -D CHARSET_EBCDIC\n");
+#ifdef AP_CHARSET_EBCDIC
+    printf(" -D AP_CHARSET_EBCDIC\n");
 #endif
 #ifdef APACHE_XLATE
     printf(" -D APACHE_XLATE\n");
@@ -308,7 +308,7 @@ int main(int argc, const char * const argv[])
     pconf = process->pconf;
     ap_server_argv0 = process->short_name;
 
-#ifdef CHARSET_EBCDIC
+#ifdef AP_CHARSET_EBCDIC
     if (ap_init_ebcdic(pglobal) != APR_SUCCESS) {
         destroy_and_exit_process(process, 1);
     }

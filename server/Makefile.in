@@ -1,8 +1,9 @@
 
-CLEANFILES = gen_test_char gen_uri_delims test_char.h uri_delims.h
+CLEANFILES = gen_test_char gen_uri_delims test_char.h uri_delims.h apache.exports
 
 SUBDIRS = mpm
 
+TARGET_EXPORTS    = apache.exports
 LTLIBRARY_NAME    = libmain.la
 LTLIBRARY_SOURCES = \
     uri_delims.h test_char.h \
@@ -31,7 +32,21 @@ test_char.h: gen_test_char
 util_uri.lo: uri_delims.h
 util.lo: test_char.h
 
-EXPORT_FILES = ../srclib/apr/apr.exports ../srclib/apr-util/aprutil.exports
+EXPORT_FILES = ../srclib/apr/apr.exports ../srclib/apr-util/aprutil.exports apache.exports
 
-exports.c: $(EXPORT_FILES)
-	(cat $(EXPORT_FILES) | ../build/buildexports.sh ../srclib) > $@
+delete-exports:
+	@if test -f $(TARGET_EXPORTS); then \
+		    headers="`find include/*.h -newer $(TARGET_EXPORTS)`" ; \
+		    if test -n "$$headers"; then \
+		        echo Found newer headers. Will rebuild $(TARGET_EXPORTS). ; \
+		        echo $(RM) -f $(TARGET_EXPORTS) ; \
+		        $(RM) -f $(TARGET_EXPORTS) ; \
+		    fi \
+	fi
+
+
+$(TARGET_EXPORTS):
+	$(AWK) -f $(top_srcdir)/srclib/apr/helpers/make_export.awk $(top_srcdir)/include/*.h > $@ ; \
+
+exports.c: delete-exports $(EXPORT_FILES)
+	(cat $(EXPORT_FILES) | ../build/buildexports.sh ..) > $@
