@@ -50,13 +50,13 @@ do
   shift
 done
 
-if [ ! -f $apr_config -a ! -f $apr_config/configure.in ]; then
+if [ ! -f "$apr_config" -a ! -f "$apr_config/configure.in" ]; then
   echo "The apr source directory / apr-1-config could not be found"
   echo "Usage: buildpkg [--with-apr=[dir|file]] [--with-apr-util=[dir|file]]"
   exit 1
 fi
 
-if [ ! -f $apu_config -a ! -f $apu_config/configure.in ]; then
+if [ ! -f "$apu_config" -a ! -f "$apu_config/configure.in" ]; then
   echo "The apu source directory / apu-1-config could not be found"
   echo "Usage: buildpkg [--with-apr=[dir|file]] [--with-apr-util=[dir|file]]"
   exit 1
