@@ -270,16 +270,18 @@
     string, a string containing format specifiers or a combination
     of both. The following format specifiers are supported in
     <em>value</em>:</p>
-<pre>
-%t: The time the request was received in Universal Coordinated Time
-    since the epoch (Jan. 1, 1970) measured in microseconds. The
-    value is preceded by "t=".
-%D:     The time from when the request was received to the time the
-        headers are sent on the wire. This is a measure of the
-    duration of the request. The value is preceded by "D=".
-%{NOTE-NAME}e: The value of the note 'NOTE-NAME' (set via 
-    mod_include's set SSI command)
-</pre>
+<table>
+<tr><td>%t: </td> <td>The time the request was received in Universal
+Coordinated Time since the epoch (Jan. 1, 1970) measured in
+microseconds. The value is preceded by "t=".</td></tr>
+
+<tr><td>%D: </td> <td>The time from when the request was received to
+the time the headers are sent on the wire. This is a measure of the
+duration of the request. The value is preceded by "D=".</td></tr>
+
+<tr><td>%{FOOBAR}e: The contents of the <a href="../env.html">environment
+variable</a> FOOBAR.</td></tr>
+</table>
 
     <p>When the <code>Header</code> directive is used with the
     <code>add</code>, <code>append</code>, or <code>set</code>
