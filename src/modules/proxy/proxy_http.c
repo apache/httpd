@@ -143,7 +143,7 @@ proxy_http_handler(request_rec *r, struct cache_req *c, char *url,
 {
     char *p;
     const char *err, *desthost;
-    int i, j, sock, len;
+    int i, j, sock, len, backasswards;
     array_header *reqhdrs_arr, *resp_hdrs;
     table_entry *reqhdrs;
     struct sockaddr_in server;
@@ -151,7 +151,7 @@ proxy_http_handler(request_rec *r, struct cache_req *c, char *url,
     struct hostent server_hp;
     BUFF *f, *cache;
     struct hdr_entry *hdr;
-    char buffer[HUGE_STRING_LEN], inprotocol[9], outprotocol[9];
+    char buffer[HUGE_STRING_LEN];
     pool *pool=r->pool;
     const long int zero=0L;
     int destport = 0;
@@ -308,7 +308,7 @@ proxy_http_handler(request_rec *r, struct cache_req *c, char *url,
 	return proxyerror(r, "Error reading from remote server");
     }
 
-/* Is it an HTTP/1 response? */
+/* Is it an HTTP/1 response?  This is buggy if we ever see an HTTP/1.10 */
     if (checkmask(buffer,  "HTTP/#.# ###*"))
     {
 /* If not an HTTP/1 messsage or if the status line was > 8192 bytes */
@@ -318,12 +318,9 @@ proxy_http_handler(request_rec *r, struct cache_req *c, char *url,
 	    kill_timeout(r);
 	    return BAD_GATEWAY;
 	}
+	backasswards = 0;
 	buffer[--len] = '\0';
-	memcpy(inprotocol, buffer, 8);
-	inprotocol[8] = '\0';
 
-/* we use the same protocol on output as on input */
-	strcpy(outprotocol, inprotocol);
 	buffer[12] = '\0';
 	r->status = atoi(&buffer[9]);
 	buffer[12] = ' ';
@@ -334,11 +331,13 @@ proxy_http_handler(request_rec *r, struct cache_req *c, char *url,
 /* Also, take care with headers with multiple occurences. */
 
 	resp_hdrs = proxy_read_headers(pool, buffer, HUGE_STRING_LEN, f);
-    } else
+
+	clear_connection((table *)resp_hdrs);  /* Strip Connection hdrs */
+    }
+    else
     {
 /* an http/0.9 response */
-	strcpy(inprotocol, "HTTP/0.9");
-	strcpy(outprotocol, "HTTP/1.0");
+	backasswards = 1;
 	r->status = 200;
 	r->status_line = "200 OK";
 
@@ -372,7 +371,7 @@ proxy_http_handler(request_rec *r, struct cache_req *c, char *url,
 	    nocache = 1; 
     }
 
-    i = proxy_cache_update(c, resp_hdrs, inprotocol, nocache);
+    i = proxy_cache_update(c, resp_hdrs, !backasswards, nocache);
     if (i != DECLINED)
     {
 	bclose(f);
@@ -387,8 +386,7 @@ proxy_http_handler(request_rec *r, struct cache_req *c, char *url,
     if (!r->assbackwards)
         rvputs(r, "HTTP/1.0 ", r->status_line, "\015\012", NULL);
     if (cache != NULL)
-	if (bvputs(cache, outprotocol, " ", r->status_line, "\015\012", NULL)
-	    == -1)
+	if (bvputs(cache, "HTTP/1.0 ", r->status_line, "\015\012", NULL) == -1)
 	    cache = proxy_cache_error(c);
 
 /* send headers */
@@ -411,7 +409,7 @@ proxy_http_handler(request_rec *r, struct cache_req *c, char *url,
     bsetopt(r->connection->client, BO_BYTECT, &zero);
     r->sent_bodyct = 1;
 /* Is it an HTTP/0.9 respose? If so, send the extra data */
-    if (strcmp(inprotocol, "HTTP/0.9") == 0)
+    if (backasswards)
     {
 	bwrite(r->connection->client, buffer, len);
 	if (cache != NULL)

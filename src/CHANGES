@@ -417,7 +417,12 @@ Changes with Apache 1.3a1
   *) PORT: Added Windows NT support
      [Ben Laurie and Ambarish Malpani <ambarish@valicert.com>]
 
-Changes with Apache 1.2.2
+Changes with Apache 1.2.3
+
+  *) Force proxy to always respond as HTTP/1.0, which it was failing to
+     do for errors and cached responses.  [Roy Fielding]
+
+Changes with Apache 1.2.2 [not released]
 
   *) Fixed another long-standing bug in sub_req_lookup_file where it would
      happily skip past access checks on subdirectories looked up with relative

@@ -621,7 +621,7 @@ proxy_cache_check(request_rec *r, char *url, struct cache_conf *conf,
  */
 int
 proxy_cache_update(struct cache_req *c, array_header *resp_hdrs,
-	     const char *protocol, int nocache)
+                   const int is_HTTP1, int nocache)
 {
     request_rec *r=c->req;
     char *p;
@@ -672,8 +672,7 @@ proxy_cache_update(struct cache_req *c, array_header *resp_hdrs,
     if ((r->status != 200 && r->status != 301 && r->status != 304) ||
 	(expire != NULL && expc == BAD_DATE) ||
 	(r->status == 304 && c->fp == NULL) ||
-	(r->status == 200 && lmods == NULL &&
-	                     strncmp(protocol, "HTTP/1.", 7) == 0) ||
+	(r->status == 200 && lmods == NULL && is_HTTP1) ||
 	r->header_only ||
 	table_get(r->headers_in, "Authorization") != NULL ||
 	nocache)

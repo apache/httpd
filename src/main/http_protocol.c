@@ -1090,9 +1090,16 @@ void basic_http_header (request_rec *r)
     if (!r->status_line)
         r->status_line = status_lines[index_of_response(r->status)];
 
-    if (r->proto_num == 1000
-	&& table_get(r->subprocess_env,"force-response-1.0"))
+    /* mod_proxy is only HTTP/1.0, so avoid sending HTTP/1.1 error response;
+     * kluge around broken browsers when indicated by force-response-1.0
+     */
+    if (r->proxyreq
+	|| (r->proto_num == 1000
+	    && table_get(r->subprocess_env,"force-response-1.0"))) {
+
 	protocol = "HTTP/1.0";
+	r->connection->keepalive = -1;
+    }
     else
 	protocol = SERVER_PROTOCOL;
 

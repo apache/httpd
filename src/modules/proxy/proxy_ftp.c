@@ -936,7 +936,7 @@ proxy_ftp_handler(request_rec *r, struct cache_req *c, char *url)
             nocache = 1;
     }
 
-    i = proxy_cache_update(c, resp_hdrs, "FTP", nocache);
+    i = proxy_cache_update(c, resp_hdrs, 0, nocache);
 
     if (i != DECLINED)
     {
