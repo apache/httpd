@@ -67,8 +67,18 @@
     
 
     <div class="example"><h3>Example</h3><p><code>
-      DavLockDB logs/DavLock
+      DavLockDB var/DavLock
     </code></p></div>
+
+    <p>The directory containing the lock database file must be
+    writable by the <code class="directive"><a href="../mod/mpm_common.html#user">User</a></code>
+    and <code class="directive"><a href="../mod/mpm_common.html#group">Group</a></code> under which
+    Apache is running.  For security reasons, you should create a
+    directory for this purpose rather than changing the permissions on
+    an existing directory.  In the above example, Apache will create
+    files in the <code>var/</code> directory under the <code class="directive"><a href="../mod/core.html#serverroot">ServerRoot</a></code> with the base filename
+    <code>DavLock</code> and extension name chosen by the server.</p>
+
 
 </div>
 </div>
