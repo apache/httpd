@@ -1,4 +1,7 @@
 Changes with Apache 2.0.33-dev
+  *) Add reference counting to mod_mem_cache cache objects to
+     better manage removing objects from the cache.
+     [Bill Stoddard]
 
   *) Change the verbage on the ScoreBoardFile in our default configs.
      Also change the default to be commented out (unspecified) so we

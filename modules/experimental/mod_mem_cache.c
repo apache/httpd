@@ -99,6 +99,8 @@ typedef struct mem_cache_object {
     cache_header_tbl_t *header_out;
     cache_header_tbl_t *subprocess_env;
     cache_header_tbl_t *notes;
+    apr_size_t cleanup;
+    apr_size_t refcount;
     apr_size_t m_len;
     void *m;
 } mem_cache_object_t;
@@ -125,36 +127,6 @@ static int read_body(cache_handle_t *h, apr_pool_t *p, apr_bucket_brigade *bb);
 static void cleanup_cache_object(cache_object_t *obj)
 {
     mem_cache_object_t *mobj = obj->vobj;
-
-    /* The cache object has been removed from the cache. Now clean
-     * it up, freeing any storage, closing file descriptors, etc.
-     */
-    /* XXX - 
-     * The action of freeing a cache entry is asynchronous with the rest of 
-     * the operation of the cache. Frees can be driven by garbage collection,
-     * the result of some command or an HTTP request.  It is okay to remove 
-     * an entry from the cache at anytime but we need a mechanism to keep 
-     * us from cleaning up the cache entry out from under other threads 
-     * that may still be referencing it.
-     * 
-     * Bill thinks that we need a special purpose reference counted 
-     * bucket (or three).  When an entry is removed from the cache, the
-     * bucket for that entry is marked for cleanup. A bucket marked for 
-     * cleanup is freed by the last routine referencing the bucket,
-     * either during brigade destroy or this routine.
-     */
-
-    /* 
-     * Ref count decrementing and checking needs to be atomic
-
-       obj->ref_count--;
-       if (obj->ref_count) {
-           defer_cleanup (let the brigade cleanup free the bucket)
-       }
-       else {
-           free the bucket
-       }
-    */
 
     /* Cleanup the cache_object_t */
     if (obj->key) {
@@ -185,10 +157,30 @@ static void cleanup_cache_object(cache_object_t *obj)
     }
     free(mobj);
 }
+static apr_status_t decrement_refcount(void *arg) 
+{
+    cache_object_t *obj = (cache_object_t *) arg;
+    mem_cache_object_t *mobj = (mem_cache_object_t*) obj->vobj;
 
+    if (sconf->lock) {
+        apr_thread_mutex_lock(sconf->lock);
+    }
+    mobj->refcount--;
+    /* If the object is marked for cleanup and the refcount
+     * has dropped to zero, cleanup the object
+     */
+    if ((mobj->cleanup) && (!mobj->refcount)) {
+        cleanup_cache_object(obj);
+    }
+    if (sconf->lock) {
+        apr_thread_mutex_unlock(sconf->lock);
+    }
+    return APR_SUCCESS;
+}
 static apr_status_t cleanup_cache_mem(void *sconfv)
 {
     cache_object_t *obj;
+    mem_cache_object_t *mobj;
     apr_hash_index_t *hi;
     mem_cache_conf *co = (mem_cache_conf*) sconfv;
 
@@ -197,11 +189,23 @@ static apr_status_t cleanup_cache_mem(void *sconfv)
     }
 
     /* Iterate over the frag hash table and clean up each entry */
-    /* XXX need to lock the hash */
+    if (sconf->lock) {
+        apr_thread_mutex_lock(sconf->lock);
+    }
     for (hi = apr_hash_first(NULL, co->cacheht); hi; hi=apr_hash_next(hi)) {
         apr_hash_this(hi, NULL, NULL, (void **)&obj);
-        if (obj)
-            cleanup_cache_object(obj);
+        if (obj) {
+            mobj = (mem_cache_object_t *) obj->vobj;
+            if (mobj->refcount) {
+                mobj->cleanup = 1;
+            }
+            else {
+                cleanup_cache_object(obj);
+            }
+        }
+    }
+    if (sconf->lock) {
+        apr_thread_mutex_unlock(sconf->lock);
     }
     return APR_SUCCESS;
 }
@@ -270,6 +274,8 @@ static int create_entity(cache_handle_t *h, request_rec *r,
     obj->vobj = mobj;    /* Reference the mem_cache_object_t out of 
                           * cache_object_t 
                           */
+    mobj->refcount = 0;
+    mobj->cleanup = 0;
     mobj->m_len = len;    /* Duplicates info in cache_object_t info */
 
 
@@ -322,9 +328,15 @@ static int open_entity(cache_handle_t *h, request_rec *r, const char *type, cons
     if (sconf->lock) {
         apr_thread_mutex_lock(sconf->lock);
     }
-    obj = (cache_object_t *) apr_hash_get(sconf->cacheht, 
-                                          key, 
+    obj = (cache_object_t *) apr_hash_get(sconf->cacheht, key, 
                                           APR_HASH_KEY_STRING);
+    
+    if (obj) {
+        mem_cache_object_t *mobj = (mem_cache_object_t *) obj->vobj;
+        mobj->refcount++;
+        apr_pool_cleanup_register(r->pool, obj, decrement_refcount, apr_pool_cleanup_null);
+    }
+
     if (sconf->lock) {
         apr_thread_mutex_unlock(sconf->lock);
     }
@@ -346,19 +358,22 @@ static int open_entity(cache_handle_t *h, request_rec *r, const char *type, cons
 
 static int remove_entity(cache_handle_t *h) 
 {
-    cache_object_t *obj ;
+    cache_object_t *obj = h->cache_obj;
 
     if (sconf->lock) {
         apr_thread_mutex_lock(sconf->lock);
     }
-    /* 
-     * RACE .. some one might have just deleted this object .. so test
-     * if it is still around
-     */
-    if (h->cache_obj) {
-        obj = h->cache_obj;
+    obj = (cache_object_t *) apr_hash_get(sconf->cacheht, obj->key,
+                                          APR_HASH_KEY_STRING);
+    if (obj) {
+        mem_cache_object_t *mobj = (mem_cache_object_t *) obj->vobj;
         apr_hash_set(sconf->cacheht, obj->key, strlen(obj->key), NULL);
-        cleanup_cache_object(obj);
+        if (mobj->refcount) {
+            mobj->cleanup = 1;
+        }
+        else {
+            cleanup_cache_object(obj);
+        }
         h->cache_obj = NULL;
     }
     if (sconf->lock) {
@@ -447,16 +462,20 @@ static int remove_url(const char *type, const char *key)
     if (sconf->lock) {
         apr_thread_mutex_lock(sconf->lock);
     }
-    obj = (cache_object_t *) apr_hash_get(sconf->cacheht, 
-                                          key, 
+    obj = (cache_object_t *) apr_hash_get(sconf->cacheht, key, 
                                           APR_HASH_KEY_STRING);
     if (obj) {
+        mem_cache_object_t *mobj = (mem_cache_object_t *) obj->vobj;
         apr_hash_set(sconf->cacheht, key, APR_HASH_KEY_STRING, NULL);
-        cleanup_cache_object(obj);
+        if (mobj->refcount) {
+            mobj->cleanup = 1;
+        }
+        else {
+            cleanup_cache_object(obj);
+        }
     }
     if (sconf->lock) {
         apr_thread_mutex_unlock(sconf->lock);
-
     }
 
     if (!obj) {
