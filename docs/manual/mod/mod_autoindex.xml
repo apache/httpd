@@ -759,7 +759,7 @@ indexing</description>
 
       <dt><a name="indexoptions.xhtml"
                id="indexoptions.xhtml">XHTML</a>
-      (<em>Apache 2.1.0 and later</em>)</dt>
+      (<em>Apache 2.0.49 and later</em>)</dt>
 
       <dd>The <code>XHTML</code> keyword forces <module>mod_autoindex</module>
       to emit XHTML 1.0 code instead of HTML 3.2.</dd>
