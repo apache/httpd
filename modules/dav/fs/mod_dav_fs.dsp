@@ -52,14 +52,14 @@ BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
 LINK32=link.exe
-# ADD BASE LINK32 kernel32.lib ws2_32.lib mswsock.lib /nologo /subsystem:windows /dll /map /machine:I386 /out:"Release/mod_dav_fs.so" /base:@..\..\..\os\win32\BaseAddr.ref,mod_dav_fs.so
-# ADD LINK32 kernel32.lib ws2_32.lib mswsock.lib /nologo /subsystem:windows /dll /incremental:no /map /debug /debugtype:both /machine:I386 /out:"Release/mod_dav_fs.so" /pdbtype:sept /base:@..\..\..\os\win32\BaseAddr.ref,mod_dav_fs.so
+# ADD BASE LINK32 kernel32.lib ws2_32.lib mswsock.lib /nologo /subsystem:windows /dll /machine:I386 /out:"Release/mod_dav_fs.so" /base:@..\..\..\os\win32\BaseAddr.ref,mod_dav_fs.so
+# ADD LINK32 kernel32.lib ws2_32.lib mswsock.lib /nologo /subsystem:windows /dll /incremental:no /debug /debugtype:both /machine:I386 /out:"Release/mod_dav_fs.so" /pdbtype:sept /base:@..\..\..\os\win32\BaseAddr.ref,mod_dav_fs.so
 # Begin Custom Build - Extracting .dbg symbols from $(InputPath)
 InputPath=.\Release\mod_dav_fs.so
 SOURCE="$(InputPath)"
 
 ".\Release\mod_dav_fs.dbr" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	rebase -q -i "../../../os/win32/BaseAddr.ref" -x ".\Release" $(InputPath)
+	rebase -q -p -i "../../../os/win32/BaseAddr.ref" -x ".\Release" $(InputPath)
 	echo rebased > ".\Release\mod_dav_fs.dbr"
 
 # End Custom Build
@@ -87,8 +87,8 @@ BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
 LINK32=link.exe
-# ADD BASE LINK32 kernel32.lib ws2_32.lib mswsock.lib /nologo /subsystem:windows /dll /incremental:no /map /debug /machine:I386 /out:"Debug/mod_dav_fs.so" /base:@..\..\..\os\win32\BaseAddr.ref,mod_dav_fs.so
-# ADD LINK32 kernel32.lib ws2_32.lib mswsock.lib /nologo /subsystem:windows /dll /incremental:no /map /debug /machine:I386 /out:"Debug/mod_dav_fs.so" /base:@..\..\..\os\win32\BaseAddr.ref,mod_dav_fs.so
+# ADD BASE LINK32 kernel32.lib ws2_32.lib mswsock.lib /nologo /subsystem:windows /dll /incremental:no /debug /machine:I386 /out:"Debug/mod_dav_fs.so" /base:@..\..\..\os\win32\BaseAddr.ref,mod_dav_fs.so
+# ADD LINK32 kernel32.lib ws2_32.lib mswsock.lib /nologo /subsystem:windows /dll /incremental:no /debug /machine:I386 /out:"Debug/mod_dav_fs.so" /base:@..\..\..\os\win32\BaseAddr.ref,mod_dav_fs.so
 
 !ENDIF 
 
