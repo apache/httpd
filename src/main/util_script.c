@@ -1052,7 +1052,16 @@ API_EXPORT(int) ap_call_exec(request_rec *r, child_info *pinfo, char *argv0,
              */ 
             CloseHandle(pi.hProcess);
             CloseHandle(pi.hThread);
-        }
+        } else {
+	    if (is_script) {
+		/* since we are doing magic to find what we are executing
+		 * if running a script, log what we think we should have
+		 * executed
+		 */
+		ap_log_rerror(APLOG_MARK, APLOG_ERR|APLOG_WIN32ERROR, r,
+			     "could not run script interpreter: %s", pCommand);
+	    }
+	}
 #if 0
 	if ((!r->args) || (!r->args[0]) || strchr(r->args, '=')) {
 	    if (is_exe || is_binary) {
