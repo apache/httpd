@@ -17,6 +17,14 @@ WIN32 1.3 FINAL RELEASE SHOWSTOPPERS:
 	for buffer overflow, someone should rewrite or verify
 	they're safe
 
+	* SSI: mod_include has had "cmd" disabled pending rewrite to use
+	new Win32 spawning.
+
+	* CGI: chdir() needs to be reinstated for CGI.
+
+	* Child process: eliminate spawn_child() and spawn_child_err() which
+	are unsafe.
+
 Documentation that needs writing:
 
     * Documentation for:
