@@ -50,7 +50,7 @@
  *
  */
 
-/* $Id: http_config.c,v 1.21 1996/08/20 11:50:42 paul Exp $ */
+/* $Id: http_config.c,v 1.22 1996/08/24 14:36:13 ben Exp $ */
 
 /*
  * http_config.c: once was auxillary functions for reading httpd's config
@@ -468,7 +468,7 @@ char *invoke_cmd(command_rec *cmd, cmd_parms *parms, void *mconfig, char *args)
 
 	w = getword_conf (parms->pool, &args);
 
-	if (*w == '\0' || ((!strcasecmp(w, "on")) && (!strcasecmp (w, "off"))))
+	if (*w == '\0' || (strcasecmp(w, "on") && strcasecmp (w, "off")))
 	    return pstrcat (parms->pool, cmd->name, " must be On or Off",
 			    NULL);
 

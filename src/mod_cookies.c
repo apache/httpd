@@ -50,7 +50,7 @@
  *
  */
 
-/* $Id: mod_cookies.c,v 1.12 1996/08/20 11:51:04 paul Exp $ */
+/* $Id: mod_cookies.c,v 1.13 1996/08/24 14:36:14 ben Exp $ */
 
 /* User Tracking Module
  *
@@ -219,6 +219,7 @@ void *make_cookie_dir (pool *p, char *d) {
 
 char *set_cookie_disable (cmd_parms *cmd, int *c, int arg)
 {
+fprintf(stderr,"%p\n",c);
     *c = !arg;
     return NULL;
 }
