@@ -114,9 +114,6 @@ Package=<5>
 Package=<4>
 {{{
     Begin Project Dependency
-    Project_Dep_Name aprutil
-    End Project Dependency
-    Begin Project Dependency
     Project_Dep_Name libapr
     End Project Dependency
 }}}
@@ -229,6 +226,27 @@ Package=<4>
     End Project Dependency
     Begin Project Dependency
     Project_Dep_Name gen_uri_delims
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "Apache"=".\Apache.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name libapr
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libaprutil
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libhttpd
     End Project Dependency
 }}}
 
@@ -502,24 +520,6 @@ Package=<4>
 ###############################################################################
 
 Project: "mod_usertrack"=".\modules\metadata\mod_usertrack.dsp" - Package Owner=<4>
-
-Package=<5>
-{{{
-}}}
-
-Package=<4>
-{{{
-    Begin Project Dependency
-    Project_Dep_Name libapr
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name libhttpd
-    End Project Dependency
-}}}
-
-###############################################################################
-
-Project: "Apache"=".\Apache.dsp" - Package Owner=<4>
 
 Package=<5>
 {{{
