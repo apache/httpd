@@ -295,7 +295,7 @@ static ap_status_t run_cgi_child(BUFF **script_out, BUFF **script_in, BUFF **scr
 {
     char **env;
     ap_procattr_t *procattr;
-    ap_proc_t *procnew;
+    ap_proc_t procnew;
     ap_status_t rc = APR_SUCCESS;
     ap_file_t *file = NULL;
     ap_iol *iol;
@@ -349,10 +349,10 @@ static ap_status_t run_cgi_child(BUFF **script_out, BUFF **script_in, BUFF **scr
                         "couldn't create child process: %d: %s", rc, r->filename);
         }
         else {
-            ap_note_subprocess(p, procnew, kill_after_timeout);
+            ap_note_subprocess(p, &procnew, kill_after_timeout);
 
             /* Fill in BUFF structure for parents pipe to child's stdout */
-            ap_get_childout(&file, procnew);
+            file = procnew.stdout;
             iol = ap_create_file_iol(file);
             if (!iol)
                 return APR_EBADF;
@@ -361,7 +361,7 @@ static ap_status_t run_cgi_child(BUFF **script_out, BUFF **script_in, BUFF **scr
             ap_bsetopt(*script_in, BO_TIMEOUT, &r->server->timeout);
 
             /* Fill in BUFF structure for parents pipe to child's stdin */
-            ap_get_childin(&file, procnew);
+            file = procnew.stdin;
             iol = ap_create_file_iol(file);
             if (!iol)
                 return APR_EBADF;
@@ -370,7 +370,7 @@ static ap_status_t run_cgi_child(BUFF **script_out, BUFF **script_in, BUFF **scr
             ap_bsetopt(*script_out, BO_TIMEOUT, &r->server->timeout);
 
             /* Fill in BUFF structure for parents pipe to child's stderr */
-            ap_get_childerr(&file, procnew);
+            file = procnew.stderr;
             iol = ap_create_file_iol(file);
             if (!iol)
                 return APR_EBADF;

@@ -180,7 +180,7 @@ ap_proc_t *ap_wait_or_timeout(ap_wait_t *status, ap_pool_t *p)
 {
     struct timeval tv;
     ap_status_t rv;
-    ap_proc_t *ret = NULL;
+    ap_proc_t *ret;
 
     ++wait_or_timeout_counter;
     if (wait_or_timeout_counter == INTERVAL_OF_WRITABLE_PROBES) {
@@ -189,7 +189,7 @@ ap_proc_t *ap_wait_or_timeout(ap_wait_t *status, ap_pool_t *p)
         ap_probe_writable_fds();
 #endif
     }
-    rv = ap_wait_all_procs(&ret, status, APR_NOWAIT, p);
+    rv = ap_wait_all_procs(ret, status, APR_NOWAIT, p);
     if (ap_canonical_error(rv) == APR_EINTR) {
         return NULL;
     }
