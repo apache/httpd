@@ -1428,7 +1428,7 @@ int ap_parse_htaccess(void **result, request_rec *r, int override,
 
         if (status == APR_SUCCESS) {
 	    const char *errmsg;
-	    ap_directive_t *conftree;
+	    ap_directive_t *conftree = NULL;
 
             dc = ap_create_per_dir_config(r->pool);
 
