@@ -96,6 +96,7 @@ clean :: $(SUBDIRS)
 	$(CHK) *.map $(DEL) *.map
 	$(CHK) *.d $(DEL) *.d
 	$(CHK) *.tmp $(DEL) *.tmp
+	$(CHK) xc.bat $(DEL) xc.bat
 	-$(DELTREE) $(OBJDIR) 2> NUL
 
 $(OBJDIR) ::
