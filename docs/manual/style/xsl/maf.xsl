@@ -41,7 +41,7 @@
              xmlns:NC="http://home.netscape.com/NC-rdf#"
              xmlns:RDF="http://www.w3.org/1999/02/22-rdf-syntax-ns#">&lf;
   <RDF:Description RDF:about="urn:root">&lf;
-    <MAF:originalurl RDF:resource="http://httpd.apache.org/docs-2.1/{$lang}/" />&lf;
+    <MAF:originalurl RDF:resource="" />&lf;
     <MAF:title RDF:resource="{title}" />&lf;
     <xsl:if test="$date">
         <MAF:archivetime RDF:resource="{$date}" />&lf;
