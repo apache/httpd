@@ -1,5 +1,5 @@
 #!/usr/local/bin/perl
-# $Id: dbmmanage,v 1.3 1996/08/20 13:25:03 paul Exp $
+# $Id: dbmmanage,v 1.4 1996/10/08 07:00:37 brian Exp $
 
 # ====================================================================
 # Copyright (c) 1995 The Apache Group.  All rights reserved.
@@ -70,13 +70,16 @@ if (scalar(@ARGV) < 2) {
 	exit;
 }
 
-# ugly - this should be changed to be random.
-$salt="XX";
 $file=$ARGV[0];
 $command=$ARGV[1];
 $key=$ARGV[2];
 $value=$ARGV[3];
 $group=$ARGV[4];
+
+# create a random salt
+@range=('0'..'9','a'..'z','A'..'Z');
+srand($$|time);
+$salt=$range[rand(int($#range)+1)] . $range[rand(int($#range)+1)];
 
 if ($command eq "add") {
         dbmopen(%DB, $file, 0664) || die "Error: $!\n";
