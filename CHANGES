@@ -1,5 +1,14 @@
 Changes with Apache 2.0.44
 
+  *) This fixes a problem where the underlying cache code
+     indicated that there was one more element on the cache
+     than there actually was. This happened since element 0
+     exists but is not used. This code allocates the correct
+     number of useable elements and reports the number of
+     actually used elements. The previous code only allowed
+     MCacheMaxObjectCount-1 objects to be stored in the
+     cache. [Paul J. Reder]
+
   *) mod_setenvif: Add SERVER_ADDR special keyword to allow
      envariable setting according to the server IP address
      which received the request.  [Ken Coar]
