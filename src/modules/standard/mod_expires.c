@@ -352,9 +352,10 @@ const char *set_expiresdefault (cmd_parms *cmd, expires_dir_config *dir_config, 
 } 
 
 command_rec expires_cmds[] = {
-{ "ExpiresActive", set_expiresactive, NULL, DIR_CMD_PERMS, FLAG, NULL},
+{ "ExpiresActive", set_expiresactive, NULL, DIR_CMD_PERMS, FLAG,
+    "Limited to 'on' or 'off'"},
 { "ExpiresBytype", set_expiresbytype, NULL, DIR_CMD_PERMS, TAKE2,
-    "a mime type followed by an expiry date code"},
+    "a MIME type followed by an expiry date code"},
 { "ExpiresDefault", set_expiresdefault, NULL, DIR_CMD_PERMS, TAKE1,
     "an expiry date code"},
 { NULL }

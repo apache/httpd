@@ -178,8 +178,8 @@ const char *anon_set_string_slots (cmd_parms *cmd,
 }
 
 command_rec anon_auth_cmds[] = {
-{ "Anonymous", anon_set_string_slots,
-    NULL,OR_AUTHCFG, ITERATE, NULL },
+{ "Anonymous", anon_set_string_slots, NULL,OR_AUTHCFG, ITERATE,
+	"a space-separated list of user IDs" },
 { "Anonymous_MustGiveEmail", anon_set_passwd_flag, NULL, OR_AUTHCFG, FLAG, 
 	"Limited to 'on' or 'off'" },
 { "Anonymous_NoUserId", anon_set_userid_flag, NULL, OR_AUTHCFG, FLAG, 

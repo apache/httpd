@@ -142,10 +142,10 @@ int do_cache_negotiated_docs (server_rec *s)
 }
 
 command_rec negotiation_cmds[] = {
-{ "CacheNegotiatedDocs", cache_negotiated_docs, NULL, RSRC_CONF, RAW_ARGS,
-    NULL },
+{ "CacheNegotiatedDocs", cache_negotiated_docs, NULL, RSRC_CONF, NO_ARGS,
+    "no arguments (either present or absent)" },
 { "LanguagePriority", set_language_priority, NULL, OR_FILEINFO, ITERATE,
-    NULL },
+    "space-delimited list of MIME language abbreviations" },
 { NULL }
 };
 

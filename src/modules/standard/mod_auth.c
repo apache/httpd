@@ -99,9 +99,11 @@ const char *set_auth_slot (cmd_parms *cmd, void *offset, char *f, char *t)
 
 command_rec auth_cmds[] = {
 { "AuthUserFile", set_auth_slot,
-  (void*)XtOffsetOf(auth_config_rec,auth_pwfile), OR_AUTHCFG, TAKE12, NULL },
+  (void*)XtOffsetOf(auth_config_rec,auth_pwfile), OR_AUTHCFG, TAKE12, 
+  "text file containing user IDs and passwords" },
 { "AuthGroupFile", set_auth_slot,
-  (void*)XtOffsetOf(auth_config_rec,auth_grpfile), OR_AUTHCFG, TAKE12, NULL },
+  (void*)XtOffsetOf(auth_config_rec,auth_grpfile), OR_AUTHCFG, TAKE12,
+  "text file containing group names and member user IDs" },
 { "AuthAuthoritative", set_flag_slot,
   (void*)XtOffsetOf(auth_config_rec,auth_authoritative), 
     OR_AUTHCFG, FLAG, 

@@ -238,13 +238,15 @@ command_rec dir_cmds[] = {
     "Descriptive text followed by one or more filenames" },
 { "HeaderName", add_header, NULL, DIR_CMD_PERMS, TAKE1, "a filename" },
 { "ReadmeName", add_readme, NULL, DIR_CMD_PERMS, TAKE1, "a filename" },
-{ "FancyIndexing", fancy_indexing, NULL, DIR_CMD_PERMS, FLAG, NULL },
+{ "FancyIndexing", fancy_indexing, NULL, DIR_CMD_PERMS, FLAG,
+    "Limited to 'on' or 'off' (superseded by IndexOptions FancyIndexing)" },
 { "DefaultIcon", set_string_slot,
     (void*)XtOffsetOf(dir_config_rec, default_icon),
     DIR_CMD_PERMS, TAKE1, "an icon URL"},
 { "DirectoryIndex", set_string_slot,
     (void*)XtOffsetOf(dir_config_rec, index_names),
-    DIR_CMD_PERMS, RAW_ARGS, NULL },
+    DIR_CMD_PERMS, RAW_ARGS,
+    "a list of file names" },
 { NULL }
 };
 
