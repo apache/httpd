@@ -61,7 +61,7 @@
 **  |_| |_| |_|\___/ \__,_|___|_|  \___| \_/\_/ |_|  |_|\__\___|
 **                       |_____|
 **
-**  URL Rewriting Module, Version 3.0.2 (26-Mar-1997)
+**  URL Rewriting Module, Version 3.0.3 (08-Apr-1997)
 **
 **  This module uses a rule-based rewriting engine (based on a
 **  regular-expression parser) to rewrite requested URLs on the fly. 
@@ -878,14 +878,14 @@ static int hook_uri2file(request_rec *r)
     /* add the canonical URI of this URL */
     thisserver = r->server->server_hostname;
 #ifdef APACHE_SSL
-    if (((!r->connection->client->ssl) && (r->server->port == 80)) ||
+    if (((!r->connection->client->ssl) && (r->server->port == DEFAULT_PORT)) ||
          ((r->connection->client->ssl) && (r->server->port == 443)))
 #else
-    if (r->server->port == 80)
+    if (r->server->port == DEFAULT_PORT)
 #endif 
         thisport = "";
     else {
-        ap_snprintf(buf, sizeof(buf), ":%d", r->server->port);
+        ap_snprintf(buf, sizeof(buf), ":%u", r->server->port);
         thisport = pstrdup(r->pool, buf);
     }
     thisurl = table_get(r->subprocess_env, ENVVAR_SCRIPT_URL);
@@ -1618,14 +1618,14 @@ static int apply_rewrite_rule(request_rec *r, rewriterule_entry *p, char *perdir
                     strncmp(r->filename, "ftp://", 6) == 0)    ) {
 
 #ifdef APACHE_SSL
-                if ((!r->connection->client->ssl && r->server->port == 80) ||
+                if ((!r->connection->client->ssl && r->server->port == DEFAULT_PORT) ||
                     ( r->connection->client->ssl && r->server->port == 443)  )
 #else
-                if (r->server->port == 80)
+                if (r->server->port == DEFAULT_PORT)
 #endif
                     port[0] = '\0';
                 else 
-                    ap_snprintf(port, sizeof(port), ":%d", r->server->port);
+                    ap_snprintf(port, sizeof(port), ":%u", r->server->port);
                 if (r->filename[0] == '/')
 #ifdef APACHE_SSL
                     ap_snprintf(newuri, sizeof(newuri), "%s://%s%s%s", http_method(r), r->server->server_hostname, port, r->filename);
@@ -1806,7 +1806,7 @@ static void splitout_queryargs(request_rec *r)
 static void reduce_uri(request_rec *r)
 {
     char *cp;
-    short port;
+    unsigned short port;
     char *portp;
     char *hostp;
     char *url;
@@ -1860,7 +1860,7 @@ static void reduce_uri(request_rec *r)
             EOS_PARANOIA(host);
             *cp = '/';
             /* set port */
-            port = 80;
+            port = DEFAULT_PORT;
             /* set remaining url */
             url = cp;
         }
@@ -1869,7 +1869,7 @@ static void reduce_uri(request_rec *r)
             strncpy(host, hostp, sizeof(host)-1);
             EOS_PARANOIA(host);
             /* set port */
-            port = 80;
+            port = DEFAULT_PORT;
             /* set remaining url */
             url = "/";
         }
@@ -2579,7 +2579,7 @@ static char *lookup_variable(request_rec *r, char *var)
         result = r->server->server_hostname;
     }
     else if (strcasecmp(var, "SERVER_PORT") == 0) {
-        ap_snprintf(resultbuf, sizeof(resultbuf), "%d", r->server->port);
+        ap_snprintf(resultbuf, sizeof(resultbuf), "%u", r->server->port);
         result = resultbuf;
     }
     else if (strcasecmp(var, "SERVER_PROTOCOL") == 0) {
@@ -3057,7 +3057,7 @@ static int is_this_our_host(request_rec *r, char *testhost)
             char *server_hostname     used on compare to r->hostname
             inet_ntoa(r->connection->local_addr.sin_addr)
                                       used on compare to r->hostname
-            short port                for redirects
+            unsigned short port       for redirects
             char *path                name of ServerPath
             int pathlen               len of ServerPath
             char *names               Wildcarded names for ServerAlias servers 
