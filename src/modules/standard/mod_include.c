@@ -606,8 +606,10 @@ int include_cmd_child (void *arg)
     int child_pid = 0;
 #ifdef DEBUG_INCLUDE_CMD    
     FILE *dbg = fopen ("/dev/tty", "w");
-#endif    
+#endif
+#ifndef WIN32
     char err_string [MAX_STRING_LEN];
+#endif
 
 #ifdef DEBUG_INCLUDE_CMD    
 #ifdef __EMX__
@@ -1861,12 +1863,12 @@ int send_shtml_file (request_rec *r)
 
 int xbithack_handler (request_rec *r)
 {
-    enum xbithack *state;
-	
 #if defined(__EMX__) || defined(WIN32)
     /* OS/2 dosen't currently support the xbithack. This is being worked on. */
     return DECLINED;
 #else
+    enum xbithack *state;
+	
     if (!(r->finfo.st_mode & S_IXUSR)) return DECLINED;
 
     state = (enum xbithack *)get_module_config(r->per_dir_config,

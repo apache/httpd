@@ -181,7 +181,7 @@ int pointinrect(double point[2], double coords[MAXVERTS][2])
 
 int pointincircle(double point[2], double coords[MAXVERTS][2])
 {
-    int radius1, radius2;
+    double radius1, radius2;
 
     radius1 = ((coords[0][Y] - coords[1][Y]) * (coords[0][Y] - coords[1][Y]))
 	+ ((coords[0][X] - coords[1][X]) * (coords[0][X] - coords[1][X]));

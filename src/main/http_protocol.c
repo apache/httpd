@@ -505,7 +505,7 @@ void parse_uri (request_rec *r, const char *uri)
 
 #if defined(__EMX__) || defined(WIN32)
     /* Variable for OS/2 fix below. */
-    int loop;
+    size_t loop;
 #endif
 
 /* A proxy request contains a ':' early on, but not as first character */

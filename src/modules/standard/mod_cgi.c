@@ -291,7 +291,9 @@ static int cgi_child (void *child_stuff)
 #endif
     
     char **env;
+#ifndef WIN32
     char err_string[HUGE_STRING_LEN];
+#endif
     
 #ifdef DEBUG_CGI    
     fprintf (dbg, "Attempting to exec %s as %sCGI child (argv0 = %s)\n",
