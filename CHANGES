@@ -1,5 +1,8 @@
 Changes with Apache 2.0.50
 
+  *) mod_ssl: Fix a potential segfault in the 'shmcb' session cache for
+     small cache sizes.  PR 27751.  [Geoff Thorpe <geoff geoffthorpe.net>]
+
   *) Remove 2Gb log file size restriction on some 32-bit platforms.
      PR 13511.  [Joe Orton]
 

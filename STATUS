@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/06/01 15:30:15 $]
+Last modified at [$Date: 2004/06/01 20:27:10 $]
 
 Release:
 
@@ -95,10 +95,6 @@ PATCHES TO BACKPORT FROM 2.1
        instead of db3. Fixed complaints about unpackaged files.
        build/rpm/httpd.spec.in: r1.5
        +1: minfrin, nd
-
-    *) mod_ssl: Fix potential SEGV in 'shmcb' session cache.
-       modules/ssl/ssl_scache_shmcb.c: r1.26
-       +1: madhum, jorton, trawick
 
     *) mod_cgi: Handle stderr output during script execution
        http://cvs.apache.org/viewcvs.cgi/httpd-2.0/modules/generators/mod_cgi.c?r1=1.160&r2=1.163
