@@ -881,11 +881,9 @@ control block using the following example:<P>
 
 <PRE>
 &lt;Directory proxy:*&gt;
-&lt;Limit GET PUT POST DELETE CONNECT OPTIONS&gt;
 order deny,allow
 deny from [machines you'd like *not* to allow by IP address or name]
 allow from [machines you'd like to allow by IP address or name]
-&lt;/Limit&gt;
 &lt;/Directory&gt;
 </PRE><P>
 
