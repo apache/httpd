@@ -106,18 +106,6 @@ PATCHES TO BACKPORT FROM 2.1
        PR: 31848
        +1: jorton, wrowe, jim
 
-    *) Allow for the use of --with-module=foo:bar where the ./modules/foo
-       directory is a local addition to the ./modules directory.
-       Assumes, of course, that the required files are in ./modules/foo,
-       but makes it easier to statically build "external" modules by
-       simply adding them to ./modules.
-         modules/config5.m4: 1.4
-       +1: jim, jerenkrantz, erikabele
-       +0: wrowe
-           (would rather see --with-module-lib=foo --enable-bar=shared syntax to
-            support multiple libs, module modules.  Might need to pass the
-            --with-module-lib=foo to ./buildconf instead.)
-
     *) several changes to improve logging of connection-oriented errors, including
        ap_log_cerror() API (needs minor bump in addition to changes below)
          http://cvs.apache.org/viewcvs.cgi/httpd-2.0/server/core.c?r1=1.289&r2=1.291
