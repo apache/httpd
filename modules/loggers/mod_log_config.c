@@ -145,6 +145,7 @@
  * %...{format}t:  The time, in the form given by format, which should
  *                 be in strftime(3) format.
  * %...T:  the time taken to serve the request, in seconds.
+ * %...D:  the time taken to serve the request, in micro seconds.
  * %...u:  remote user (from auth; may be bogus if return status (%s) is 401)
  * %...U:  the URL path requested.
  * %...v:  the configured name of the server (i.e. which virtual host?)
@@ -490,6 +491,11 @@ static const char *log_request_duration(request_rec *r, char *a)
                                              / APR_USEC_PER_SEC);
 }
 
+static const char *log_request_duration_microseconds(request_rec *r, char *a)
+{
+    return apr_psprintf(r->pool, "%ld", (apr_time_now() - r->request_time));
+}
+
 /* These next two routines use the canonical name:port so that log
  * parsers don't need to duplicate all the vhost parsing crud.
  */
@@ -616,6 +622,9 @@ static struct log_item_list {
     },
     {
         'C', log_cookie, 0
+    },
+    {
+        'D', log_request_duration_microseconds, 1
     },
     {
         '\0'

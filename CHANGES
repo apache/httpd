@@ -1,4 +1,6 @@
 Changes with Apache 2.0b1
+  *) Add new LogFormat directive, %D, to log time it takes to serve a
+     request in microseconds. [Bill Stoddard]
 
   *) Change AddInputFilter and AddOutputFilter to SetInputFilter and
      SetOutputFilter.  This corresponds nicely with the other Set 
