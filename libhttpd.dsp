@@ -481,15 +481,15 @@ SOURCE=.\include\ap_listen.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\include\ap_mpm.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\os\win32\ap_regkey.c
 # End Source File
 # Begin Source File
 
 SOURCE=.\include\ap_regkey.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\include\ap_mpm.h
 # End Source File
 # Begin Source File
 
@@ -579,10 +579,6 @@ SOURCE=.\server\mpm\winnt\nt_eventlog.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\server\mpm\winnt\service.c
-# End Source File
-# Begin Source File
-
 SOURCE=.\server\provider.c
 # End Source File
 # Begin Source File
@@ -592,6 +588,10 @@ SOURCE=.\server\scoreboard.c
 # Begin Source File
 
 SOURCE=.\include\scoreboard.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\server\mpm\winnt\service.c
 # End Source File
 # End Group
 # Begin Source File
