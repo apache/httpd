@@ -65,6 +65,13 @@
 
 #define MPM_NAME "Worker"
 
+#define AP_MPM_WANT_SET_PIDFILE
+#define AP_MPM_WANT_SET_SCOREBOARD
+#define AP_MPM_WANT_SET_LOCKFILE
+#define AP_MPM_WANT_SET_MAX_REQUESTS
+#define AP_MPM_WANT_SET_COREDUMPDIR
+#define AP_MPM_WANT_SET_ACCEPT_LOCK_MECH
+
 #define AP_MPM_NEEDS_RECLAIM_CHILD_PROCESSES 1
 #define MPM_SYNC_CHILD_TABLE() (ap_sync_scoreboard_image())
 #define MPM_CHILD_PID(i) (ap_scoreboard_image->parent[i].pid)

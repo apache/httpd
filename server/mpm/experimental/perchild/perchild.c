@@ -116,9 +116,8 @@ static int min_spare_threads = 0;
 static int max_spare_threads = 0;
 static int max_threads = 0;
 static int max_requests_per_child = 0;
-static const char *ap_pid_fname=NULL;
-static int num_daemons=0;
-static int curr_child_num=0;
+static int num_daemons = 0;
+static int curr_child_num = 0;
 static int workers_may_exit = 0;
 static int requests_this_child;
 static int num_listenfds = 0;
@@ -160,8 +159,6 @@ struct ap_ctable    ap_child_table[HARD_SERVER_LIMIT];
  */
 int ap_max_daemons_limit = -1;
 int ap_threads_per_child = HARD_THREAD_LIMIT;
-
-char ap_coredump_dir[MAX_STRING_LEN];
 
 module AP_MODULE_DECLARE_DATA mpm_perchild_module;
 
@@ -214,9 +211,7 @@ static apr_lock_t *idle_thread_count_mutex;
 #else
 #define SAFE_ACCEPT(stmt) (stmt)
 static apr_lock_t *process_accept_mutex;
-static apr_lockmech_e_np accept_lock_mech = APR_LOCK_DEFAULT;
 #endif /* NO_SERIALIZED_ACCEPT */
-static const char *lock_fname;
 static apr_lock_t *thread_accept_mutex;
 
 AP_DECLARE(apr_status_t) ap_mpm_query(int query_code, int *result)
@@ -890,8 +885,8 @@ static void child_main(int child_num_arg)
 
     /*stuff to do before we switch id's, so we have permissions.*/
 
-    rv = SAFE_ACCEPT(apr_lock_child_init(&process_accept_mutex, lock_fname,
-                                        pchild));
+    rv = SAFE_ACCEPT(apr_lock_child_init(&process_accept_mutex, ap_lock_fname,
+					 pchild));
     if (rv != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_EMERG, rv, ap_server_conf,
                      "Couldn't initialize cross-process lock in child");
@@ -1198,12 +1193,12 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
     ap_log_pid(pconf, ap_pid_fname);
 
     /* Initialize cross-process accept lock */
-    lock_fname = apr_psprintf(_pconf, "%s.%u",
-                             ap_server_root_relative(_pconf, lock_fname),
+    ap_lock_fname = apr_psprintf(_pconf, "%s.%u",
+                             ap_server_root_relative(_pconf, ap_lock_fname),
                              my_pid);
     rv = SAFE_ACCEPT(apr_lock_create_np(&process_accept_mutex, APR_MUTEX,
                                         APR_CROSS_PROCESS, accept_lock_mech,
-                                        lock_fname, _pconf));
+                                        ap_lock_fname, _pconf));
     if (rv != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_EMERG, rv, s,
                      "Couldn't create cross-process lock");
@@ -1355,7 +1350,7 @@ static void perchild_pre_config(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *pte
     max_threads = HARD_THREAD_LIMIT;
     ap_pid_fname = DEFAULT_PIDLOG;
     ap_scoreboard_fname = DEFAULT_SCOREBOARD;
-    lock_fname = DEFAULT_LOCKFILE;
+    ap_lock_fname = DEFAULT_LOCKFILE;
     max_requests_per_child = DEFAULT_MAX_REQUESTS_PER_CHILD;
     curr_child_num = 0;
 
@@ -1384,7 +1379,7 @@ static int pass_request(request_rec *r)
                                                  &mpm_perchild_module);
     char *foo;
     apr_size_t len;
-    int zero = 0;
+    apr_off_t zero = 0;
 
     apr_pool_userdata_get((void **)&foo, "PERCHILD_BUFFER", r->connection->pool);
     len = strlen(foo);
@@ -1518,7 +1513,7 @@ static int perchild_post_read(request_rec *r)
     return OK;
 }
 
-static apr_status_t perchild_buffer(ap_filter_t *f, apr_bucket_brigade *b, ap_input_mode_t mode, apr_size_t *readbytes)
+static apr_status_t perchild_buffer(ap_filter_t *f, apr_bucket_brigade *b, ap_input_mode_t mode, apr_off_t *readbytes)
 {
     apr_bucket *e;
     apr_status_t rv;
@@ -1573,41 +1568,6 @@ static void perchild_hooks(apr_pool_t *p)
     ap_register_input_filter("PERCHILD_BUFFER", perchild_buffer, AP_FTYPE_CONTENT);
 }
 
-static const char *set_pidfile(cmd_parms *cmd, void *dummy, const char *arg) 
-{
-    const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
-    if (err != NULL) {
-        return err;
-    }
-
-    if (cmd->server->is_virtual) {
-	return "PidFile directive not allowed in <VirtualHost>";
-    }
-    ap_pid_fname = arg;
-    return NULL;
-}
-
-static const char *set_scoreboard(cmd_parms *cmd, void *dummy, const char *arg)
-{
-    const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
-    if (err != NULL) {
-        return err;
-    }
-
-    ap_scoreboard_fname = arg;
-    return NULL;
-}
-
-static const char *set_lockfile(cmd_parms *cmd, void *dummy, const char *arg) 
-{
-    const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
-    if (err != NULL) {
-        return err;
-    }
-
-    lock_fname = arg;
-    return NULL;
-}
 static const char *set_num_daemons (cmd_parms *cmd, void *dummy, const char *arg) 
 {
     const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
@@ -1721,38 +1681,6 @@ static const char *set_max_threads(cmd_parms *cmd, void *dummy, const char *arg)
     return NULL;
 }
 
-static const char *set_max_requests(cmd_parms *cmd, void *dummy, const char *arg) 
-{
-    const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
-    if (err != NULL) {
-        return err;
-    }
-
-    max_requests_per_child = atoi(arg);
-
-    return NULL;
-}
-
-static const char *set_coredumpdir (cmd_parms *cmd, void *dummy,
-				    const char *arg) 
-{
-    apr_finfo_t finfo;
-    const char *fname;
-    const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
-    if (err != NULL) {
-        return err;
-    }
-
-    fname = ap_server_root_relative(cmd->pool, arg);
-    if ((apr_stat(&finfo, fname, APR_FINFO_TYPE, cmd->pool) != APR_SUCCESS) 
-        || (finfo.filetype != APR_DIR)) {
-	return apr_pstrcat(cmd->pool, "CoreDumpDirectory ", fname, 
-			  " does not exist or is not a directory", NULL);
-    }
-    apr_cpystrn(ap_coredump_dir, fname, sizeof(ap_coredump_dir));
-    return NULL;
-}
-
 static const char *set_child_per_uid(cmd_parms *cmd, void *dummy, const char *u,
                                      const char *g, const char *num)
 {
@@ -1802,65 +1730,9 @@ static const char *assign_childuid(cmd_parms *cmd, void *dummy, const char *uid,
     return NULL;
 }
 
-static const char *set_accept_lock_mech(cmd_parms *cmd, void *dummy, const char *arg)
-{
-    const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
-    if (err != NULL) {
-        return err;
-    }
-
-    if (!strcasecmp(arg, "default")) {
-        accept_lock_mech = APR_LOCK_DEFAULT;
-    }
-#if APR_HAS_FLOCK_SERIALIZE
-    else if (!strcasecmp(arg, "flock")) {
-        accept_lock_mech = APR_LOCK_FLOCK;
-    }
-#endif
-#if APR_HAS_FCNTL_SERIALIZE
-    else if (!strcasecmp(arg, "fcntl")) {
-        accept_lock_mech = APR_LOCK_FCNTL;
-    }
-#endif
-#if APR_HAS_SYSVSEM_SERIALIZE
-    else if (!strcasecmp(arg, "sysvsem")) {
-        accept_lock_mech = APR_LOCK_SYSVSEM;
-    }
-#endif
-#if APR_HAS_PROC_PTHREAD_SERIALIZE
-    else if (!strcasecmp(arg, "proc_pthread")) {
-        accept_lock_mech = APR_LOCK_PROC_PTHREAD;
-    }
-#endif
-    else {
-        return apr_pstrcat(cmd->pool, arg, " is an invalid mutex mechanism; valid "
-                           "ones for this platform are: default"
-#if APR_HAS_FLOCK_SERIALIZE
-                           ", flock"
-#endif
-#if APR_HAS_FCNTL_SERIALIZE
-                           ", fcntl"
-#endif
-#if APR_HAS_SYSVSEM_SERIALIZE
-                           ", sysvsem"
-#endif
-#if APR_HAS_PROC_PTHREAD_SERIALIZE
-                           ", proc_pthread"
-#endif
-                           , NULL);
-    }
-    return NULL;
-}
-
 static const command_rec perchild_cmds[] = {
 UNIX_DAEMON_COMMANDS
 LISTEN_COMMANDS
-AP_INIT_TAKE1("PidFile", set_pidfile, NULL, RSRC_CONF,
-              "A file for logging the server process ID"),
-AP_INIT_TAKE1("ScoreBoardFile", set_scoreboard, NULL, RSRC_CONF,
-              "A file for Apache to maintain runtime process management information"),
-AP_INIT_TAKE1("LockFile", set_lockfile, NULL, RSRC_CONF,
-              "The lockfile used when Apache needs to lock the accept() call"),
 AP_INIT_TAKE1("NumServers", set_num_daemons, NULL, RSRC_CONF,
               "Number of children alive at the same time"),
 AP_INIT_TAKE1("StartThreads", set_threads_to_start, NULL, RSRC_CONF,
@@ -1871,16 +1743,10 @@ AP_INIT_TAKE1("MaxSpareThreads", set_max_spare_threads, NULL, RSRC_CONF,
               "Maximum number of idle threads per child"),
 AP_INIT_TAKE1("MaxThreadsPerChild", set_max_threads, NULL, RSRC_CONF,
               "Maximum number of threads per child"),
-AP_INIT_TAKE1("MaxRequestsPerChild", set_max_requests, NULL, RSRC_CONF,
-              "Maximum number of requests a particular child serves before dying."),
-AP_INIT_TAKE1("CoreDumpDirectory", set_coredumpdir, NULL, RSRC_CONF,
-              "The location of the directory Apache changes to before dumping core"),
 AP_INIT_TAKE3("ChildperUserID", set_child_per_uid, NULL, RSRC_CONF,
               "Specify a User and Group for a specific child process."),
 AP_INIT_TAKE2("AssignUserID", assign_childuid, NULL, RSRC_CONF,
               "Tie a virtual host to a specific child process."),
-AP_INIT_TAKE1("AcceptMutex", set_accept_lock_mech, NULL, RSRC_CONF,
-              "The system mutex implementation to use for the accept mutex"),
 { NULL }
 };
 

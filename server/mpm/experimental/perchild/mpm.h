@@ -67,6 +67,13 @@
 
 #define MPM_NAME "Perchild"
 
+#define AP_MPM_WANT_SET_PIDFILE
+#define AP_MPM_WANT_SET_SCOREBOARD
+#define AP_MPM_WANT_SET_LOCKFILE
+#define AP_MPM_WANT_SET_MAX_REQUESTS
+#define AP_MPM_WANT_SET_COREDUMPDIR
+#define AP_MPM_WANT_SET_ACCEPT_LOCK_MECH
+
 #define AP_MPM_NEEDS_RECLAIM_CHILD_PROCESSES 1
 #define MPM_SYNC_CHILD_TABLE()
 #define MPM_CHILD_PID(i) (ap_child_table[i].pid)
@@ -86,6 +93,5 @@ extern int ap_threads_per_child;
 extern int ap_max_daemons_limit;
 extern ap_ctable ap_child_table[HARD_SERVER_LIMIT];
 extern server_rec *ap_server_conf;
-extern char ap_coredump_dir[MAX_STRING_LEN];
 
 #endif /* APACHE_MPM_PERCHILD_H */

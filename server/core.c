@@ -85,7 +85,8 @@
 #include "util_filter.h"
 #include "util_ebcdic.h"
 #include "mpm.h"
-
+#include "mpm_common.h"
+#include "scoreboard.h"
 #include "mod_core.h"
 
 
@@ -2841,6 +2842,36 @@ AP_INIT_ITERATE("SetOutputFilter", add_filter, NULL, ACCESS_CONF,
    "filters to be run"),
 AP_INIT_ITERATE("SetInputFilter", add_input_filter, NULL, ACCESS_CONF,
    "filters to be run on the request body"),
+
+/*
+ * These are default configuration directives that mpms can/should
+ * pay attention to. If an mpm wishes to use these, they should
+ * #defined them in mpm.h.
+ */
+#ifdef AP_MPM_WANT_SET_PIDFILE
+AP_INIT_TAKE1("PidFile",  ap_mpm_set_pidfile, NULL, RSRC_CONF, \
+	      "A file for logging the server process ID"),
+#endif
+#ifdef AP_MPM_WANT_SET_SCOREBOARD
+AP_INIT_TAKE1("ScoreBoardFile", ap_mpm_set_scoreboard, NULL, RSRC_CONF, \
+	      "A file for Apache to maintain runtime process management information"),
+#endif
+#ifdef AP_MPM_WANT_SET_LOCKFILE
+AP_INIT_TAKE1("LockFile",  ap_mpm_set_lockfile, NULL, RSRC_CONF, \
+	      "The lockfile used when Apache needs to lock the accept() call"),
+#endif
+#ifdef AP_MPM_WANT_SET_MAX_REQUESTS
+AP_INIT_TAKE1("MaxRequestsPerChild", ap_mpm_set_max_requests, NULL, RSRC_CONF,\
+	      "Maximum number of requests a particular child serves before dying."),
+#endif
+#ifdef AP_MPM_WANT_SET_COREDUMPDIR
+AP_INIT_TAKE1("CoreDumpDirectory", ap_mpm_set_coredumpdir, NULL, RSRC_CONF, \
+	      "The location of the directory Apache changes to before dumping core"),
+#endif
+#ifdef AP_MPM_WANT_SET_ACCEPT_LOCK_MECH
+AP_INIT_TAKE1("AcceptMutex", ap_mpm_set_accept_lock_mech, NULL, RSRC_CONF, \
+	      "The system mutex implementation to use for the accept mutex"),
+#endif
 { NULL }
 };
 

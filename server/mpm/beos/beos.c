@@ -92,8 +92,6 @@ extern int _kset_fd_limit_(int num);
  */
 
 int ap_threads_per_child=HARD_THREAD_LIMIT;         /* Worker threads per child */
-static int ap_max_requests_per_child=0;
-static const char *ap_pid_fname=NULL;
 static int ap_threads_to_start=0;
 static int min_spare_threads=0;
 static int max_spare_threads=0;
@@ -126,7 +124,6 @@ static void check_restart(void *data);
  */
 int ap_max_child_assigned = -1;
 int ap_max_threads_limit = -1;
-char ap_coredump_dir[MAX_STRING_LEN];
 
 static apr_socket_t *udp_sock;
 static apr_sockaddr_t *udp_sa;
@@ -984,32 +981,6 @@ static void beos_hooks(apr_pool_t *p)
     ap_hook_pre_config(beos_pre_config, NULL, NULL, APR_HOOK_MIDDLE); 
 }
 
-
-static const char *set_pidfile(cmd_parms *cmd, void *dummy, const char *arg) 
-{
-    const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
-    if (err != NULL) {
-        return err;
-    }
-
-    if (cmd->server->is_virtual) {
-	return "PidFile directive not allowed in <VirtualHost>";
-    }
-    ap_pid_fname = arg;
-    return NULL;
-}
-
-static const char *set_scoreboard(cmd_parms *cmd, void *dummy, const char *arg) 
-{
-    const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
-    if (err != NULL) {
-        return err;
-    }
-
-    ap_scoreboard_fname = arg;
-    return NULL;
-}
-
 static const char *set_daemons_to_start(cmd_parms *cmd, void *dummy, const char *arg) 
 {
     const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
@@ -1107,43 +1078,8 @@ static const char *set_threads_per_child (cmd_parms *cmd, void *dummy, const cha
     return NULL;
 }
 
-static const char *set_max_requests(cmd_parms *cmd, void *dummy, const char *arg) 
-{
-    const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
-    if (err != NULL) {
-        return err;
-    }
-
-    ap_max_requests_per_child = atoi(arg);
-
-    return NULL;
-}
-
-static const char *set_coredumpdir (cmd_parms *cmd, void *dummy, const char *arg) 
-{
-    apr_finfo_t finfo;
-    const char *fname;
-    const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
-    if (err != NULL) {
-        return err;
-    }
-
-    fname = ap_server_root_relative(cmd->pool, arg);
-    if ((apr_stat(&finfo, fname, APR_FINFO_TYPE, cmd->pool) != APR_SUCCESS) 
-        || (finfo.filetype != APR_DIR)) {
-	return apr_pstrcat(cmd->pool, "CoreDumpDirectory ", fname, 
-			  " does not exist or is not a directory", NULL);
-    }
-    apr_cpystrn(ap_coredump_dir, fname, sizeof(ap_coredump_dir));
-    return NULL;
-}
-
 static const command_rec beos_cmds[] = {
 LISTEN_COMMANDS
-AP_INIT_TAKE1( "PidFile", set_pidfile, NULL, RSRC_CONF,
-    "A file for logging the server process ID"),
-AP_INIT_TAKE1( "ScoreBoardFile", set_scoreboard, NULL, RSRC_CONF,
-    "A file for Apache to maintain runtime process management information"),
 AP_INIT_TAKE1( "StartServers", set_daemons_to_start, NULL, RSRC_CONF,
   "Number of child processes launched at server startup"),
 AP_INIT_TAKE1( "MinSpareThreads", set_min_spare_threads, NULL, RSRC_CONF,
@@ -1154,10 +1090,6 @@ AP_INIT_TAKE1( "MaxClients", set_server_limit, NULL, RSRC_CONF,
   "Maximum number of children alive at the same time" ),
 AP_INIT_TAKE1( "ThreadsPerChild", set_threads_per_child, NULL, RSRC_CONF, 
   "Number of threads each child creates" ),
-AP_INIT_TAKE1( "MaxRequestsPerChild", set_max_requests, NULL, RSRC_CONF,
-  "Maximum number of requests a particular child serves before dying." ),
-AP_INIT_TAKE1( "CoreDumpDirectory", set_coredumpdir, NULL, RSRC_CONF, 
-  "The location of the directory Apache changes to before dumping core" ),
 { NULL }
 };
 

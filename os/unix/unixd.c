@@ -63,6 +63,7 @@
 #include "http_main.h"
 #include "http_log.h"
 #include "unixd.h"
+#include "apr_lock.h"
 #include "mpm_common.h"
 #include "os.h"
 #include "ap_mpm.h"

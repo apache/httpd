@@ -68,6 +68,13 @@
 
 #define MPM_NAME "WinNT"
 
+#define AP_MPM_WANT_SET_PIDFILE
+#define AP_MPM_WANT_SET_SCOREBOARD
+#define AP_MPM_WANT_SET_LOCKFILE
+#define AP_MPM_WANT_SET_MAX_REQUESTS
+#define AP_MPM_WANT_SET_COREDUMPDIR
+#define AP_MPM_WANT_SET_ACCEPT_LOCK_MECH
+
 extern int ap_threads_per_child;
 
 #endif /* APACHE_MPM_H */

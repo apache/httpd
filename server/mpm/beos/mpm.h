@@ -68,10 +68,13 @@
 #define MPM_CHILD_PID(i) (ap_scoreboard_image->servers[0][i].tid)
 #define MPM_NOTE_CHILD_KILLED(i) (MPM_CHILD_PID(i) = 0)
 
-extern int ap_max_child_assigned;
+#define AP_MPM_WANT_SET_PIDFILE
+#define AP_MPM_WANT_SET_SCOREBOARD
+#define AP_MPM_WANT_SET_MAX_REQUESTS
+#define AP_MPM_WANT_SET_COREDUMPDIR
 
+extern int ap_max_child_assigned;
 extern server_rec *ap_server_conf;
-extern char ap_coredump_dir[MAX_STRING_LEN];
 extern int ap_threads_per_child;
 
 #endif /* APACHE_MPM_BEOS_H */

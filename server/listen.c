@@ -58,6 +58,7 @@
 
 #include "apr_network_io.h"
 #include "apr_strings.h"
+#include "apr_lock.h"
 
 #define APR_WANT_STRFUNC
 #include "apr_want.h"
@@ -70,7 +71,6 @@
 #include "http_log.h"
 #include "mpm.h"
 #include "mpm_common.h"
-
 
 ap_listen_rec *ap_listeners;
 #if APR_HAVE_IPV6

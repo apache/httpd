@@ -1,5 +1,10 @@
 Changes with Apache 2.0.24-dev
 
+  *) Begin to sanitize the MPM configuration directives.  Now, all
+     MPMs use the same functions for all common MPM directives.  This
+     should make it easier to catch all bugs in these directives once.
+     [Cody Sherr <csherr@covalent.net>]
+
   *) Close a major resource leak.  Everytime we had issued a
      graceful restart, we leaked a socket descriptor.
      [Ryan Bloom]

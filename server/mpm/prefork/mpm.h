@@ -68,6 +68,13 @@
 
 #define MPM_NAME "Prefork"
 
+#define AP_MPM_WANT_SET_PIDFILE
+#define AP_MPM_WANT_SET_SCOREBOARD
+#define AP_MPM_WANT_SET_LOCKFILE
+#define AP_MPM_WANT_SET_MAX_REQUESTS
+#define AP_MPM_WANT_SET_COREDUMPDIR
+#define AP_MPM_WANT_SET_ACCEPT_LOCK_MECH
+
 #define AP_MPM_USES_POD 1
 #define AP_MPM_NEEDS_RECLAIM_CHILD_PROCESSES 1
 #define MPM_SYNC_CHILD_TABLE() (ap_sync_scoreboard_image())
@@ -77,5 +84,4 @@
 extern int ap_threads_per_child;
 extern int ap_max_daemons_limit;
 extern server_rec *ap_server_conf;
-extern char ap_coredump_dir[MAX_STRING_LEN];
 #endif /* APACHE_MPM_PREFORK_H */
