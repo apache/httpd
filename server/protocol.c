@@ -705,6 +705,7 @@ AP_DECLARE(void) ap_get_mime_headers_core(request_rec *r, apr_bucket_brigade *bb
     char *value;
     apr_size_t len;
     int fields_read = 0;
+    char *tmp_field;
 
     /*
      * Read header lines until we get the empty separator line, a read error,
@@ -787,9 +788,25 @@ AP_DECLARE(void) ap_get_mime_headers_core(request_rec *r, apr_bucket_brigade *bb
                 }
 
                 *value = '\0';
-                ++value;
+                tmp_field = value;  /*Used to trim the whitespace between key */
+                ++value;            /*     token and seperator*/
                 while (*value == ' ' || *value == '\t') {
                     ++value;            /* Skip to start of value   */
+                }
+
+                /* This check is to avoid any invalid memory reference while
+                 *   traversing backwards in the key. To avoid a case where
+                 *   the header starts with ':' (or with just some white
+                 *   space and the ':') followed by the value
+		         */
+                if(tmp_field > last_field) {
+                    --tmp_field;
+                    while ((tmp_field > last_field) &&
+                           (*tmp_field == ' ' || *tmp_field == '\t')) {
+                        --tmp_field;   /* Removing LWS between key and ':' */
+                    }
+                    ++tmp_field;
+                    *tmp_field = '\0';
                 }
 
                 apr_table_addn(r->headers_in, last_field, value);
