@@ -214,7 +214,7 @@ API_EXPORT(time_t) ap_tm2sec(const struct tm * t)
  * but many changes since then.
  *
  */
-API_EXPORT(time_t) ap_parseHTTPdate(const char *date, time_t * retval)
+API_EXPORT(time_t) ap_parseHTTPdate(const char *date)
 {
     struct tm ds;
     int mint, mon;
@@ -228,7 +228,7 @@ API_EXPORT(time_t) ap_parseHTTPdate(const char *date, time_t * retval)
 	('S' << 16) | ('e' << 8) | 'p', ('O' << 16) | ('c' << 8) | 't',
 	('N' << 16) | ('o' << 8) | 'v', ('D' << 16) | ('e' << 8) | 'c'};
 
-    if (!date)                  /* ZZZ return AP_FAILURE on all errors. */
+    if (!date)
 	return BAD_DATE;
 
     while (*date && ap_isspace(*date))	/* Find first non-whitespace char */
@@ -317,7 +317,5 @@ API_EXPORT(time_t) ap_parseHTTPdate(const char *date, time_t * retval)
 
     ds.tm_mon = mon;
 
-    /* ZZZ return AP_SUCCESS.  use AP Implode time func for this. */
-    *retval = ap_tm2sec(&ds);
-    return 1;
+    return ap_tm2sec(&ds);
 }

@@ -428,12 +428,10 @@ API_EXPORT(int) ap_meets_conditions(request_rec *r)
          */
         if_unmodified = ap_table_get(r->headers_in, "If-Unmodified-Since");
         if (if_unmodified != NULL) {
-	    /* ZZZ we are changing time funcs to AP time thread funcs.
-	       and we need to check return values of ap_parseHTTPdate. */
-            time_t ius ;
-	    if (ap_parseHTTPdate(if_unmodified, &ius) == 1
-		&& (mtime > ius)) {
-	        return HTTP_PRECONDITION_FAILED;
+            time_t ius = ap_parseHTTPdate(if_unmodified);
+
+            if ((ius != BAD_DATE) && (mtime > ius)) {
+                return HTTP_PRECONDITION_FAILED;
             }
         }
     }
@@ -483,12 +481,9 @@ API_EXPORT(int) ap_meets_conditions(request_rec *r)
     else if ((r->method_number == M_GET)
              && ((if_modified_since =
                   ap_table_get(r->headers_in, "If-Modified-Since")) != NULL)) {
-        time_t ims;
-	if (ap_parseHTTPdate(if_modified_since, &ims) != 1) {
-	    ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_WARNING,
-			 r->server, "bogus if-modified-since-header");
-	}
-        else if ((ims >= mtime) && (ims <= r->request_time)) {
+        time_t ims = ap_parseHTTPdate(if_modified_since);
+
+        if ((ims >= mtime) && (ims <= r->request_time)) {
             return HTTP_NOT_MODIFIED;
         }
     }
