@@ -405,14 +405,6 @@ SOURCE=.\server\error_bucket.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\server\rfc1413.c
-# End Source File
-# Begin Source File
-
-SOURCE=.\include\rfc1413.h
-# End Source File
-# Begin Source File
-
 SOURCE=.\server\util.c
 # End Source File
 # Begin Source File

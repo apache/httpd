@@ -63,3 +63,4 @@ mod_authz_user       0x6FAF0000    0x00010000
 mod_logio            0x6FAE0000    0x00010000
 util_ldap            0x6FAD0000    0x00010000
 mod_auth_ldap        0x6FAC0000    0x00010000
+mod_ident            0x6FAB0000    0x00010000

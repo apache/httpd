@@ -1209,6 +1209,27 @@ Package=<4>
 
 ###############################################################################
 
+Project: "mod_ident"=".\modules\metadata\mod_ident.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name libapr
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libaprutil
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libhttpd
+    End Project Dependency
+}}}
+
+###############################################################################
+
 Project: "mod_imap"=".\modules\mappers\mod_imap.dsp" - Package Owner=<4>
 
 Package=<5>
