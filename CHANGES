@@ -1,5 +1,10 @@
 Changes with Apache 2.0b1
 
+  *) Stop returning copies of filenames from both apr_file_t and
+     apr_dir_t.  We pstrdup the filenames that we store in the
+     actual structures, so we don't need to pstrdup the strings again.
+     [Ryan Bloom]
+
   *) mod_cgi: Fix some problems where the wrong error value was being
      traced.  [Jeff Trawick]
 

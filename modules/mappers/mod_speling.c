@@ -236,7 +236,8 @@ static int sort_by_quality(const void *left, const void *rite)
 static int check_speling(request_rec *r)
 {
     spconfig *cfg;
-    char *good, *bad, *postgood, *url, *fname;
+    char *good, *bad, *postgood, *url;
+    const char *fname;
     int filoc, dotloc, urlen, pglen;
     apr_array_header_t *candidates = NULL;
     apr_dir_t          *dir;
@@ -309,10 +310,6 @@ static int check_speling(request_rec *r)
         dotloc = strlen(bad);
     }
 
-    /* NOTE: apr_get_dir_filename() fills fname with a apr_palloc()ed copy
-     * of the found directory name already. We don't need to copy it.
-     * @@@: Copying *ALL* found file names is wasted energy (and memory)!
-     */
     while (apr_readdir(dir) == APR_SUCCESS &&
 	   apr_get_dir_filename(&fname, dir) == APR_SUCCESS) {
         sp_reason q;
@@ -335,7 +332,7 @@ static int check_speling(request_rec *r)
             misspelled_file *sp_new;
 
 	    sp_new = (misspelled_file *) apr_push_array(candidates);
-            sp_new->name = fname;
+            sp_new->name = apr_pstrdup(r->pool, fname);
             sp_new->quality = SP_MISCAPITALIZED;
         }
 
@@ -347,7 +344,7 @@ static int check_speling(request_rec *r)
             misspelled_file *sp_new;
 
 	    sp_new = (misspelled_file *) apr_push_array(candidates);
-            sp_new->name = fname;
+            sp_new->name = apr_pstrdup(r->pool, fname);
             sp_new->quality = q;
         }
 
@@ -393,7 +390,7 @@ static int check_speling(request_rec *r)
                 misspelled_file *sp_new;
 
 		sp_new = (misspelled_file *) apr_push_array(candidates);
-                sp_new->name = fname;
+                sp_new->name = apr_pstrdup(r->pool, fname);
                 sp_new->quality = SP_VERYDIFFERENT;
             }
 #endif

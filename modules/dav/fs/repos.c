@@ -1357,7 +1357,7 @@ static dav_error * dav_fs_walker(dav_fs_walker_context *fsctx, int depth)
 	return dav_new_error(pool, HTTP_NOT_FOUND, 0, NULL);
     }
     while ((apr_readdir(dirp)) == APR_SUCCESS) {
-	char *name;
+	const char *name;
 	apr_size_t len;
 
 	apr_get_dir_filename(&name, dirp);

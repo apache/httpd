@@ -1622,7 +1622,7 @@ static int index_directory(request_rec *r,
      */
     head = NULL;
     while (apr_readdir(d) == APR_SUCCESS) {
-        char *d_name;
+        const char *d_name;
         apr_get_dir_filename(&d_name, d);
 	p = make_autoindex_entry(d_name, autoindex_opts,
 				 autoindex_conf, r, keyid, direction);

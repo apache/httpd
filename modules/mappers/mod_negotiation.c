@@ -938,7 +938,7 @@ static int read_types_multi(negotiation_state *neg)
 
     while (apr_readdir(dirp) == APR_SUCCESS) {
         request_rec *sub_req;
-        char *d_name;
+        const char *d_name;
 
         apr_get_dir_filename(&d_name, dirp);
         /* Do we have a match? */
