@@ -671,6 +671,7 @@ ServerSignature On
     # Portugese (pt) - Luxembourgeois* (ltz)
     # Spanish (es) - Swedish (sv) - Catalan (ca) - Czech(cz)
     # Polish (pl) - Brazilian Portuguese (pt-br) - Japanese (ja)
+    # Russian (ru)
     #
     AddLanguage da .dk
     AddLanguage nl .nl
@@ -694,6 +695,15 @@ ServerSignature On
     AddLanguage es .es
     AddLanguage sv .se
     AddLanguage cz .cz
+    AddLanguage ru .ru
+    AddCharset CP-1251      .cp-1251
+    AddCharset CP-866       .cp-866
+    AddCharset ISO-8859-5   .iso-ru
+    AddCharset KOI8-R       .koi8-r
+    AddCharset UTF-16       .ucs2
+#   AddCharset UCS-2        .ucs2
+    AddCharset UCS-4        .ucs4
+    AddCharset UTF-8        .utf8
 
     # LanguagePriority allows you to give precedence to some languages
     # in case of a tie during content negotiation.
@@ -702,7 +712,7 @@ ServerSignature On
     # more or less alphabetized them here. You probably want to change this.
     #
     <IfModule mod_negotiation.c>
-        LanguagePriority en da nl et fr de el it ja kr no pl pt pt-br ltz ca es sv
+        LanguagePriority en da nl et fr de el it ja kr no pl pt pt-br ru ltz ca es sv
     </IfModule>
 
     #
