@@ -21,8 +21,6 @@
 <p><span>Available Languages: </span><a href="../en/howto/htaccess.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../ja/howto/htaccess.html" title="Japanese">&nbsp;ja&nbsp;</a></p>
 </div>
-<div class="outofdate">This translation may be out of date. Check the
- English version for recent changes.</div>
 
 <p><code>.htaccess</code> ファイルはディレクトリ毎に設定を変更する方法を
 提供します。</p>
@@ -62,9 +60,11 @@
       </code></p></div>
     </div>
 
-    <p>これらのファイルに書くことのできるディレクティブは <code class="directive"><a href="../mod/core.html#allowoverride">AllowOverride</a></code> ディレクティブにより決まります。
+    <p>一般に、<code>.htaccess</code> ファイルの構文は
+    <a href="../configuring.html#syntax">主設定ファイル</a>
+    と同じです。これらのファイルに書くことのできるディレクティブは <code class="directive"><a href="../mod/core.html#allowoverride">AllowOverride</a></code> ディレクティブにより決まります。
     このディレクティブは、<code>.htaccess</code> ファイルに
-    書かれたディレクティブの中で、、
+    書かれたディレクティブの中で、、
     どのディレクティブが適用されるかをカテゴリー単位で指定します。
     <code>.htaccess</code> に書くことのできるディレクティブであれば、
     説明文書には「上書き」という項目があり、.htaccess に書くことができるように
@@ -104,7 +104,7 @@
     ありません。ユーザ認証の設定はサーバ主設定ファイルに書くことができ、
     実際、その方がより良い設定方法です。</p>
 
-    <p><code>.htaccess</code> ファイルはコンテンツ提供者がディレクトリ毎の
+    <p><code>.htaccess</code> ファイルはコンテンツ提供者がディレクトリ毎の
     設定を行ないたいけれど、サーバシステムの root アクセス権限を持っていない
     という場合にのみ使うべきものです。サーバ管理者が頻繁に設定変更を行ないたくは
     ない、というときには個々のユーザが <code>.htaccess</code> ファイルを使って
@@ -139,8 +139,8 @@
       /www/htdocs/example/.htaccess
     </code></p></div>
 
-    <p>ですから、そのディレクトリのそれぞれのファイルへのアクセスに対して、
-    上の例のファイルがまったく存在しないときでも、追加のファイルシステムの
+    <p>ですから、そのディレクトリのそれぞれのファイルへのアクセスに対して、
+    上の例のファイルがまったく存在しないときでも、追加のファイルシステムの
     アクセスが行なわれることになります。(これは、<code>.htaccess</code> が
     <code>/</code> に対して有効になっているときの場合で、普通はそうなって
     いないことに注意してください。)</p>
@@ -233,8 +233,8 @@
 <h2><a name="auth" id="auth">認証の例</a></h2>
 
     <p>もし認証の方法を知るためにこの部分に直接来たのであれば、次のことを
-    知っておくことが重要です。よくある誤解に、パスワード認証を行なうためには
-    <code>.htaccess</code> ファイルを使う必要がある、というものがあります。
+    知っておくことが重要です。よくある誤解に、パスワード認証を行なうためには
+    <code>.htaccess</code> ファイルを使う必要がある、というものがあります。
     これは正しくありません。主サーバ設定ファイルの <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code> セクションに
     認証用のディレクティブを書く方が推奨される方法で、<code>.htaccess</code>
     ファイルは主サーバ設定ファイルを変更できないときにのみ使用すべきです。
@@ -278,7 +278,7 @@
 
     <p>これらのディレクティブが有効になるためには、
     <code>AllowOverride Options</code> と <code>AllowOverride
-    FileInfo</code> が有効になっている必要があることに注意してください。</p>
+    FileInfo</code> が有効になっている必要があることに注意してください。</p>
 
     <p>よりまとまった SSI の説明は <a href="ssi.html">SSI チュートリアル</a>を
     参照してください。</p>
@@ -327,7 +327,7 @@
     ときは、Apache のエラーログを調べてください。<code>.htaccess</code> ファイルで
     使用されたディレクティブが許可されていない、ということを知らせている
     可能性が高いです。または、構文の間違いがあることを述べているかもしれません。
-    その場合にはまずそれを修正する必要があります。</p>
+    その場合にはまずそれを修正する必要があります。</p>
 
 </div></div>
 <div class="bottomlang">

@@ -21,8 +21,6 @@
 <p><span>Available Languages: </span><a href="../en/howto/public_html.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../ja/howto/public_html.html" title="Japanese">&nbsp;ja&nbsp;</a></p>
 </div>
-<div class="outofdate">This translation may be out of date. Check the
- English version for recent changes.</div>
 
 <p>複数のユーザのいるシステムでは、<code class="directive"><a href="../mod/mod_userdir.html#userdir">UserDir</a></code> ディレクティブを使って
     各ユーザがホームディレクトリにウェブサイトを構築できるように設定することが
@@ -117,10 +115,19 @@
     することができます。</p>
 
     <div class="example"><p><code>
-      &lt;Directory /home/*/cgi-bin/&gt;<br />
+      &lt;Directory /home/*/public_html/cgi-bin/&gt;<br />
        Options ExecCGI<br />
        SetHandler cgi-script<br />
        &lt;/Directory&gt;
+    </code></p></div>
+
+    <p>そして、<code>UserDir</code> が
+    <code>public_html</code> に設定されていると仮定すると、
+    そのディレクトリの CGI プログラム <code>example.cgi</code>
+    は以下の様に呼び出されることができます:</p>
+
+    <div class="example"><p><code>
+    http://example.com/~rbowen/cgi-bin/example.cgi
     </code></p></div>
 
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -128,12 +135,12 @@
 <h2><a name="htaccess" id="htaccess">ユーザによる設定変更を許可</a></h2>
     
 
-    <p>ユーザに彼らのウェブ空間でのサーバの設定の変更を許可する場合、
+    <p>ユーザに彼らのウェブ空間でのサーバの設定の変更を許可する場合、
     ユーザは <code>.htaccess</code> ファイルを使って設定を変更する必要があります。
     <code class="directive"><a href="../mod/core.html#allowoverride">AllowOverride</a></code> の値を
     ユーザが変更することを許可したいディレクティブに対して十分なものに
     設定していることを確認してください。この機能がどのようにして動作しているか
-    の詳細は <a href="htaccess.html">.htaccess チュートリアル</a> を読んで
+    の詳細は <a href="htaccess.html">.htaccess チュートリアル</a> を読んで
     ください。</p>
 
   </div></div>
