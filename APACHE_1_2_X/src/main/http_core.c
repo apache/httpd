@@ -1019,10 +1019,11 @@ const char *set_max_free_servers (cmd_parms *cmd, void *dummy, char *arg) {
 const char *set_server_limit (cmd_parms *cmd, void *dummy, char *arg) {
     daemons_limit = atoi (arg);
     if (daemons_limit > HARD_SERVER_LIMIT) {
-       fprintf(stderr, "WARNING: Compile-time limit of %d servers\n",
-        HARD_SERVER_LIMIT);
-       fprintf(stderr, " Adjusting as required (to increase, please read\n");
-       fprintf(stderr, " the documentation)\n");
+       fprintf(stderr, "WARNING: MaxClients of %d exceeds compile time limit "
+           "of %d servers,\n", daemons_limit, HARD_SERVER_LIMIT);
+       fprintf(stderr, " lowering MaxClients to %d.  To increase, please "
+           "see the\n", HARD_SERVER_LIMIT);
+       fprintf(stderr, " HARD_SERVER_LIMIT define in src/httpd.h.\n");
        daemons_limit = HARD_SERVER_LIMIT;
     } else if (daemons_limit < 1) {
 	fprintf (stderr, "WARNING: Require MaxClients > 0, setting to 1\n");
