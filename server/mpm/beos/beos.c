@@ -91,12 +91,12 @@ extern int _kset_fd_limit_(int num);
  * Actual definitions of config globals
  */
 
-int ap_threads_per_child=HARD_THREAD_LIMIT;         /* Worker threads per child */
 static int ap_threads_to_start=0;
+static int ap_max_requests_per_thread = 0;
 static int min_spare_threads=0;
 static int max_spare_threads=0;
 static int ap_thread_limit=0;
-static int num_listening_sockets = 0; /* set by open_listeners in ap_mpm_run */
+static int num_listening_sockets = 0;
 static apr_socket_t ** listening_sockets;
 apr_lock_t *accept_mutex = NULL;
 
@@ -332,7 +332,7 @@ static int32 worker_thread(void * dummy)
     int srv , n;
     int curr_pollfd = 0, last_pollfd = 0;
     sigset_t sig_mask;
-    int requests_this_child = ap_max_requests_per_child;
+    int requests_this_child = ap_max_requests_per_thread;
     apr_pollfd_t *pollset;
     /* each worker thread is in control of its own destiny...*/
     int this_worker_should_exit = 0; 
@@ -363,7 +363,7 @@ static int32 worker_thread(void * dummy)
            If it is, you probably need more threads...
          */
 
-        this_worker_should_exit |= (ap_max_requests_per_child != 0) && (requests_this_child <= 0);
+        this_worker_should_exit |= (ap_max_requests_per_thread != 0) && (requests_this_child <= 0);
         
         if (this_worker_should_exit) break;
 
@@ -456,6 +456,9 @@ static int32 worker_thread(void * dummy)
     }
 
     ap_update_child_status(0, child_slot, SERVER_DEAD, (request_rec*)NULL);
+
+ap_log_error(APLOG_MARK, APLOG_NOTICE | APLOG_NOERRNO, 0, NULL,
+             "worker_thread %ld exiting", find_thread(NULL));
     
     apr_lock_acquire(worker_thread_count_mutex);
     worker_thread_count--;
@@ -686,7 +689,7 @@ AP_DECLARE(apr_status_t) ap_mpm_query(int query_code, int *result)
             *result = HARD_THREAD_LIMIT;
             return APR_SUCCESS;
         case AP_MPMQ_MAX_THREADS:
-            *result = ap_threads_per_child;
+            *result = HARD_THREAD_LIMIT;
             return APR_SUCCESS;
         case AP_MPMQ_MIN_SPARE_DAEMONS:
             *result = 0;
@@ -701,10 +704,10 @@ AP_DECLARE(apr_status_t) ap_mpm_query(int query_code, int *result)
             *result = min_spare_threads;
             return APR_SUCCESS;
         case AP_MPMQ_MAX_REQUESTS_DAEMON:
-            *result = ap_max_requests_per_child;
+            *result = ap_max_requests_per_thread;
             return APR_SUCCESS;
         case AP_MPMQ_MAX_DAEMONS:
-            *result = ap_thread_limit;
+            *result = HARD_SERVER_LIMIT;
             return APR_SUCCESS;
     }
     return APR_ENOTIMPL;
@@ -791,16 +794,17 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
      * Startup/shutdown... 
      */
     
-    if (!is_graceful)
+    if (!is_graceful) {
+        /* setup the scoreboard shared memory */
         ap_run_pre_mpm(pconf, SB_SHARED);
 
-    if (!is_graceful) {
         for (i = 0; i < HARD_SERVER_LIMIT; i++) {
             ap_scoreboard_image->parent[i].pid = 0;
             for (j = 0;j < HARD_THREAD_LIMIT; j++)
                 ap_scoreboard_image->servers[i][j].tid = 0;
         }
     }
+
     if (HARD_SERVER_LIMIT == 1)
         ap_scoreboard_image->parent[0].pid = getpid();
 
@@ -974,11 +978,9 @@ static void beos_pre_config(apr_pool_t *pconf, apr_pool_t *plog, apr_pool_t *pte
     min_spare_threads = DEFAULT_MIN_FREE_THREADS;
     max_spare_threads = DEFAULT_MAX_FREE_THREADS;
     ap_thread_limit = HARD_THREAD_LIMIT;
-    ap_threads_per_child = DEFAULT_THREADS_PER_CHILD;
     ap_pid_fname = DEFAULT_PIDLOG;
+    ap_max_requests_per_thread = DEFAULT_MAX_REQUESTS_PER_THREAD;
     ap_scoreboard_fname = DEFAULT_SCOREBOARD;
-    if (!one_process) 
-        ap_max_requests_per_child = DEFAULT_MAX_REQUESTS_PER_CHILD;
 
     apr_cpystrn(ap_coredump_dir, ap_server_root, sizeof(ap_coredump_dir));
 }
@@ -990,7 +992,7 @@ static void beos_hooks(apr_pool_t *p)
     ap_hook_pre_config(beos_pre_config, NULL, NULL, APR_HOOK_MIDDLE); 
 }
 
-static const char *set_daemons_to_start(cmd_parms *cmd, void *dummy, const char *arg) 
+static const char *set_threads_to_start(cmd_parms *cmd, void *dummy, const char *arg) 
 {
     const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
     if (err != NULL) {
@@ -998,6 +1000,11 @@ static const char *set_daemons_to_start(cmd_parms *cmd, void *dummy, const char 
     }
 
     ap_threads_to_start = atoi(arg);
+    if (ap_threads_to_start < 0) {
+        ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL,
+                     "StartThreads set to a value less than 0, reset to 1");
+        ap_threads_to_start = 1;
+    }
     return NULL;
 }
 
@@ -1033,7 +1040,7 @@ static const char *set_max_spare_threads(cmd_parms *cmd, void *dummy, const char
     return NULL;
 }
 
-static const char *set_server_limit (cmd_parms *cmd, void *dummy, const char *arg) 
+static const char *set_threads_limit (cmd_parms *cmd, void *dummy, const char *arg) 
 {
     const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
     if (err != NULL) {
@@ -1041,65 +1048,56 @@ static const char *set_server_limit (cmd_parms *cmd, void *dummy, const char *ar
     }
 
     ap_thread_limit = atoi(arg);
-    if (ap_thread_limit > HARD_SERVER_LIMIT) {
+    if (ap_thread_limit > HARD_THREAD_LIMIT) {
        ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
                     "WARNING: MaxClients of %d exceeds compile time limit "
-                    "of %d servers,", ap_thread_limit, HARD_SERVER_LIMIT);
+                    "of %d servers,", ap_thread_limit, HARD_THREAD_LIMIT);
        ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
                     " lowering MaxClients to %d.  To increase, please "
-                    "see the", HARD_SERVER_LIMIT);
+                    "see the", HARD_THREAD_LIMIT);
        ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
-                    " HARD_SERVER_LIMIT define in src/include/httpd.h.");
-       ap_thread_limit = HARD_SERVER_LIMIT;
+                    " HARD_THREAD_LIMIT define in server/mpm/beos/mpm_default.h.");
+       ap_thread_limit = HARD_THREAD_LIMIT;
     } 
     else if (ap_thread_limit < 1) {
         ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
-                     "WARNING: Require MaxClients > 0, setting to 1");
-        ap_thread_limit = 1;
+                     "WARNING: Require MaxClients > 0, setting to %d", HARD_THREAD_LIMIT);
+        ap_thread_limit = HARD_THREAD_LIMIT;
     }
     return NULL;
 }
 
-static const char *set_threads_per_child (cmd_parms *cmd, void *dummy, const char *arg) 
+static const char *set_requests_per_thread (cmd_parms *cmd, void *dummy, const char *arg)
 {
     const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
     if (err != NULL) {
         return err;
     }
 
-    ap_threads_per_child = atoi(arg);
-    if (ap_threads_per_child > HARD_THREAD_LIMIT) {
-        ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
-                     "WARNING: ThreadsPerChild of %d exceeds compile time"
-                     "limit of %d threads,", ap_threads_per_child,
-                     HARD_THREAD_LIMIT);
-        ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
-                     " lowering ThreadsPerChild to %d. To increase, please"
-                     "see the", HARD_THREAD_LIMIT);
-        ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
-                     " HARD_THREAD_LIMIT define in %s", AP_MPM_HARD_LIMITS_FILE);
+    ap_max_requests_per_thread = atoi(arg);
+    if (ap_max_requests_per_thread < 0) {
+        ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL,
+                     "WARNING: MaxRequestsPerThread was set below 0"
+                     "reset to 0, but this may not be what you want.");
+        ap_max_requests_per_thread = 0;
     }
-    else if (ap_threads_per_child < 1) {
-	ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
-                     "WARNING: Require ThreadsPerChild > 0, setting to 1");
-	ap_threads_per_child = 1;
-    }
+
     return NULL;
 }
 
 static const command_rec beos_cmds[] = {
 BEOS_DAEMON_COMMANDS,
 LISTEN_COMMANDS,
-AP_INIT_TAKE1( "StartServers", set_daemons_to_start, NULL, RSRC_CONF,
-  "Number of child processes launched at server startup"),
+AP_INIT_TAKE1( "StartThreads", set_threads_to_start, NULL, RSRC_CONF,
+  "Number of threads to launch at server startup"),
 AP_INIT_TAKE1( "MinSpareThreads", set_min_spare_threads, NULL, RSRC_CONF,
   "Minimum number of idle children, to handle request spikes"),
 AP_INIT_TAKE1( "MaxSpareThreads", set_max_spare_threads, NULL, RSRC_CONF,
   "Maximum number of idle children" ),
-AP_INIT_TAKE1( "MaxClients", set_server_limit, NULL, RSRC_CONF, 
-  "Maximum number of children alive at the same time" ),
-AP_INIT_TAKE1( "ThreadsPerChild", set_threads_per_child, NULL, RSRC_CONF, 
-  "Number of threads each child creates" ),
+AP_INIT_TAKE1( "MaxClients", set_threads_limit, NULL, RSRC_CONF, 
+  "Maximum number of children alive at the same time (max threads)" ),
+AP_INIT_TAKE1( "RequestsPerThread", set_requests_per_thread, NULL, RSRC_CONF,
+  "Maximum number of requests served by a thread" ),
 { NULL }
 };
 
