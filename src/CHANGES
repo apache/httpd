@@ -1,5 +1,8 @@
 Changes with Apache 1.3b6
 
+  *) PORT: Clean up undefined signals on some platforms (SCO, BeOS).
+     [Dean Gaudet]
+
   *) After a SIGHUP the listening sockets in the parent weren't
      properly marked for closure on fork().
      [Jürgen Keil <jk@tools.de>] PR#2000

@@ -391,13 +391,11 @@ typedef int rlim_t;
 #undef NO_SETSID
 #define NEED_INITGROUPS
 #define NO_WRITEV
-#define SIGURG SIGUSR1		/* but note, this signal will be sent to a process group if enabled (for OOB data). It is not currently enabled. */
 #include <sys/time.h>
 #define HAVE_SYSLOG 1
 
 #elif defined(SCO5)
 
-#define SIGURG SIGUSR1
 #define HAVE_SYS_SELECT_H 1
 #define USE_FCNTL_SERIALIZED_ACCEPT
 #define HAVE_MMAP 1
@@ -682,7 +680,6 @@ typedef int rlim_t;
 #undef NO_SETSID
 #define HAVE_SHMGET 1
 #define USE_SHMGET_SCOREBOARD
-#define SIGURG SIGUSR1
 #define USE_FCNTL_SERIALIZED_ACCEPT
 #define HAVE_SYSLOG 1
 
@@ -718,10 +715,6 @@ typedef int rlim_t;
 #define NO_WRITEV
 #define NO_KILLPG
 #define NEED_INITGROUPS
-
-/* BeOS doesn't have a couple signals... redefine to close ones */
-#define SIGBUS SIGSEGV
-#define SIGURG SIGPIPE
 
 #define isascii(c)	(!((c) & ~0177))
 
