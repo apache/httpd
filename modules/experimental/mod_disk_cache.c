@@ -370,6 +370,7 @@ static int open_entity(cache_handle_t *h, request_rec *r, const char *type, cons
     cache_object_t *obj;
     cache_info *info;
     disk_cache_object_t *dobj;
+    int flags;
 
     h->cache_obj = NULL;
 
@@ -393,14 +394,19 @@ static int open_entity(cache_handle_t *h, request_rec *r, const char *type, cons
                           conf->cache_root, key);
 
     /* Open the data file */
-    rc = apr_file_open(&fd, data, APR_READ|APR_BINARY, 0, r->pool);
+    flags = APR_READ|APR_BINARY;
+#ifdef APR_SENDFILE_ENABLED
+    flags |= APR_SENDFILE_ENABLED;
+#endif
+    rc = apr_file_open(&fd, data, flags, 0, r->pool);
     if (rc != APR_SUCCESS) {
         /* XXX: Log message */
         return DECLINED;
     }
 
     /* Open the headers file */
-    rc = apr_file_open(&hfd, headers, APR_READ|APR_BINARY, 0, r->pool);
+    flags = APR_READ|APR_BINARY|APR_BUFFERED;
+    rc = apr_file_open(&hfd, headers, flags, 0, r->pool);
     if (rc != APR_SUCCESS) {
         /* XXX: Log message */
         return DECLINED;
