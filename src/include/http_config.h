@@ -308,6 +308,8 @@ API_EXPORT(char *) ap_server_root_relative(pool *p, char *fname);
 
 API_EXPORT(void) ap_add_module(module *m);
 API_EXPORT(void) ap_remove_module(module *m);
+API_EXPORT(void) ap_add_loaded_module(module *mod);
+API_EXPORT(void) ap_remove_loaded_module(module *mod);
 API_EXPORT(int) ap_add_named_module(const char *name);
 API_EXPORT(void) ap_clear_module_list(void);
 API_EXPORT(const char *) ap_find_module_name(module *m);
@@ -322,6 +324,7 @@ extern API_VAR_EXPORT module *top_module;
 
 extern module *ap_prelinked_modules[];
 extern module *ap_preloaded_modules[];
+extern module **ap_loaded_modules;
 
 /* For http_main.c... */
 

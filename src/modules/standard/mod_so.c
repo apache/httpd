@@ -170,7 +170,7 @@ static void unload_module(moduleinfo *modi)
         return;
 
     /* remove the module pointer from the core structure */
-    ap_remove_module(modi->modp);
+    ap_remove_loaded_module(modi->modp);
 
     /* unload the module space itself */
     ap_os_dso_unload((ap_os_dso_handle_t)modi->modp->dynamic_load_handle);
@@ -251,7 +251,7 @@ static const char *load_module(cmd_parms *cmd, void *dummy,
     /* 
      * Add this module to the Apache core structures
      */
-    ap_add_module(modp);
+    ap_add_loaded_module(modp);
 
     /* 
      * Register a cleanup in the config pool (normally pconf). When

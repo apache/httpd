@@ -11,13 +11,6 @@ Release:
 
 FINAL RELEASE SHOWSTOPPERS:
 
-    * Ralf's "[PATCH] Fix module execution order for DSO situation (take 2)":
-      This is the final patch for 1.3b7 to make sure the module execution
-      order is correct even when the DSO mechanism is used. This is mainly
-      achieved by fixing the AddModule command.
-      See: http://www.engelschall.com/sw/apache/ [dsoexecorder]
-      Status: Ralf +1, Brian +1, Jim +1
-
     * Someone other than Dean has to do a security/correctness review on
       psprintf(), bprintf(), and ap_snprintf().  In particular these routines
       do lots of fun pointer manipulations and such and possibly have overflow

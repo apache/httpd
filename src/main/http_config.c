@@ -94,11 +94,12 @@ DEF_Explain
  */
 static int total_modules = 0;
 /* dynamic_modules is the number of modules that have been added
- * after the pre-linked ones have been set up. It shouldn't be larger
+ * after the pre-loaded ones have been set up. It shouldn't be larger
  * than DYNAMIC_MODULE_LIMIT.
  */
 static int dynamic_modules = 0;
 API_VAR_EXPORT module *top_module = NULL;
+API_VAR_EXPORT module **ap_loaded_modules;
 
 typedef int (*handler_func) (request_rec *);
 typedef void *(*dir_maker_func) (pool *, char *);
@@ -620,20 +621,84 @@ API_EXPORT(void) ap_remove_module(module *m)
     dynamic_modules--;
 }
 
+API_EXPORT(void) ap_add_loaded_module(module *mod)
+{
+    module **m;
+
+    /* 
+     *  Add module pointer to top of chained module list 
+     */
+    ap_add_module(mod);
+
+    /* 
+     *  And module pointer to list of loaded modules 
+     *
+     *  Notes: 1. ap_add_module() would already complain if no more space
+     *            exists for adding a dynamically loaded module
+     *         2. ap_add_module() accepts double-inclusion, so we have
+     *            to accept this, too.
+     */
+    for (m = ap_loaded_modules; *m != NULL; m++)
+        ;
+    *m++ = mod;
+    *m = NULL;
+}
+
+API_EXPORT(void) ap_remove_loaded_module(module *mod)
+{
+    module **m;
+    module **m2;
+    int done;
+
+    /* 
+     *  Remove module pointer from chained module list 
+     */
+    ap_remove_module(mod);
+
+    /* 
+     *  Remove module pointer from list of loaded modules
+     *
+     *  Note: 1. We cannot determine if the module was successfully
+     *           removed by ap_remove_module().
+     *        2. We have not to complain explicity when the module
+     *           is not found because ap_remove_module() did it
+     *           for us already.
+     */
+    for (m = m2 = ap_loaded_modules, done = 0; *m2 != NULL; m2++) {
+        if (*m2 == mod && done == 0)
+            done = 1;
+        else
+            *m++ = *m2;
+    }
+    *m = NULL;
+}
 
 void ap_setup_prelinked_modules()
 {
     module **m;
+    module **m2;
 
-    /* First, set all module indices, and init total_modules.  */
+    /*
+     *  Initialise total_modules variable and module indices
+     */
     total_modules = 0;
-    for (m = ap_preloaded_modules; *m; ++m, ++total_modules) {
-	(*m)->module_index = total_modules;
-    }
+    for (m = ap_preloaded_modules; *m != NULL; m++)
+        (*m)->module_index = total_modules++;
 
-    for (m = ap_prelinked_modules; *m; ++m) {
-	ap_add_module(*m);
-    }
+    /* 
+     *  Initialise list of loaded modules
+     */
+    ap_loaded_modules = (module **)malloc(
+        sizeof(module *)*(total_modules+DYNAMIC_MODULE_LIMIT+1));
+    for (m = ap_preloaded_modules, m2 = ap_loaded_modules; *m != NULL; )
+        *m2++ = *m++;
+    *m2 = NULL;
+
+    /*
+     *   Initialize chain of linked (=activate) modules
+     */
+    for (m = ap_prelinked_modules; *m != NULL; m++)
+        ap_add_module(*m);
 }
 
 API_EXPORT(const char *) ap_find_module_name(module *m)
@@ -658,7 +723,7 @@ API_EXPORT(int) ap_add_named_module(const char *name)
     module *modp;
     int i = 0;
 
-    for (modp = ap_preloaded_modules[i]; modp; modp = ap_preloaded_modules[++i]) {
+    for (modp = ap_loaded_modules[i]; modp; modp = ap_loaded_modules[++i]) {
 	if (strcmp(modp->name, name) == 0) {
 	    /* Only add modules that are not already enabled.  */
 	    if (modp->next == NULL) {
@@ -1519,12 +1584,12 @@ void ap_show_directives()
     const command_rec *pc;
     int n;
 
-    for (n = 0; ap_preloaded_modules[n]; ++n)
-	for (pc = ap_preloaded_modules[n]->cmds; pc && pc->name; ++pc) {
-	    printf("%s (%s)\n", pc->name, ap_preloaded_modules[n]->name);
+    for (n = 0; ap_loaded_modules[n]; ++n)
+	for (pc = ap_loaded_modules[n]->cmds; pc && pc->name; ++pc) {
+	    printf("%s (%s)\n", pc->name, ap_loaded_modules[n]->name);
 	    if (pc->errmsg)
 		printf("\t%s\n", pc->errmsg);
-	    show_overrides(pc, ap_preloaded_modules[n]);
+	    show_overrides(pc, ap_loaded_modules[n]);
 	}
 }
 
@@ -1534,6 +1599,6 @@ void ap_show_modules()
     int n;
 
     printf("Compiled-in modules:\n");
-    for (n = 0; ap_preloaded_modules[n]; ++n)
-	printf("  %s\n", ap_preloaded_modules[n]->name);
+    for (n = 0; ap_loaded_modules[n]; ++n)
+	printf("  %s\n", ap_loaded_modules[n]->name);
 }

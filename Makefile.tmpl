@@ -124,19 +124,6 @@ distclean-support = @distclean_support@
 #   forwarding arguments
 MFWD = root=$(root)
 
-#   list of shared objects which have to _ALWAYS_ be enabled
-#   per default in the config file because of the directives used
-#   in these default files.
-so_mods_in_conf = \
-config_log_module|\
-mime_module|\
-negotiation_module|\
-autoindex_module|\
-dir_module|\
-userdir_module|\
-access_module|\
-setenvif_module
-
 ## ==================================================================
 ##                              Targets
 ## ==================================================================
@@ -258,12 +245,19 @@ install-programs:
 			echo "$(INSTALL_SCRIPT) $(TOP)/$(SRC)/$${mod} $(root)$(libexecdir)/$${file}"; \
 			$(INSTALL_SCRIPT) $(TOP)/$(SRC)/$${mod} $(root)$(libexecdir)/$${file}; \
 			name=`$(TOP)/$(AUX)/fmn.sh $(TOP)/$(SRC)/$${mod}`; \
-			prefix="#"; case $${name} in $(so_mods_in_conf) ) prefix="" ;; esac; \
-			echo dummy | awk '{ printf("%sLoadModule %-18s %s\n", \
-			prefix, modname, modpath); }' \
-			prefix="$${prefix}" modname="$${name}" \
-			modpath="$(libexecdir_relative)$${file}" >>$(SRC)/.apaci.install.conf; \
+			echo dummy | awk '{ printf("LoadModule %-18s %s\n", modname, modpath); }' \
+			modname="$${name}" modpath="$(libexecdir_relative)$${file}" >>$(SRC)/.apaci.install.conf; \
 		done; \
+		echo "" >>$(SRC)/.apaci.install.conf; \
+		echo "#  Reconstruction of the complete module list from all available modules" >>$(SRC)/.apaci.install.conf; \
+		echo "#  (static and shared ones) to achieve correct module execution order." >>$(SRC)/.apaci.install.conf; \
+		echo "#  [WHENEVER YOU CHANGE THE LOADMODULE SECTION ABOVE UPDATE THIS, TOO]" >>$(SRC)/.apaci.install.conf; \
+		echo "ClearModuleList" >>$(SRC)/.apaci.install.conf; \
+		egrep "^[ 	]*(Add|Shared)Module" $(SRC)/Configuration.apaci |\
+		sed	-e 's:SharedModule:AddModule:' \
+			-e 's:modules/[^/]*/::' \
+			-e 's:[ 	]lib: mod_:' \
+			-e 's:\.[soa]*$$:.c:' >>$(SRC)/.apaci.install.conf; \
 	fi
 	@echo "<=== [programs]"
 

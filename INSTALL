@@ -237,20 +237,10 @@
                  module because there are variants like `--enable-shared=all'
                  which should not imply `--enable-module=all'.  
 
-         Note 2: The --enable-shared option only implies the preparation of
-                 LoadModule commands in the httpd.conf file for the "make
-                 install" procedure. But these LoadModule lines are per
-                 default out-commented. So, --enable-shared does not imply the
-                 automatic use of the module. The only exception are modules
-                 which have to be enabled because of their usage in the
-                 provided sample configuration. To actually use DSO-based
-                 modules you have to uncomment the corresponding LoadModule
-                 lines in PREFIX/etc/httpd.conf after "make install".
-
-         Note 3: Per default the DSO mechanism is globally disabled, i.e. no
+         Note 2: Per default the DSO mechanism is globally disabled, i.e. no
                  modules are build as shared objects.
 
-         Note 4: The usage of any --enable-shared option automatically implies
+         Note 3: The usage of any --enable-shared option automatically implies
                  a --enable-module=so option because the bootstrapping module
                  mod_so is always needed for DSO support.
 

@@ -1,4 +1,27 @@
 Changes with Apache 1.3b7
+  
+  *) Make sure the module execution order is correct even when some modules
+     are loaded under runtime (`LoadModule') via the DSO mechanism:
+     1. The list of loaded modules is now a dynamically allocated one
+        and not the original statically list from modules.c
+     2. The loaded modules are now correctly setup by LoadModule for
+        later use by the AddModule command.
+     3. When the DSO mechanism for modules is used APACI's `install'
+        target now enables all created `LoadModule' lines per default because
+        this is both already expected by the user _and_ needed to avoid
+        confusion with the next point and reduces the Makefile.tmpl complexity
+     4. When the DSO mechanism for modules is used, APACI's `install'
+        target now additionally makes sure the module list is reconstructed
+        via a complete `ClearModuleList+AddModule...' entry.
+     5. The support tool `apxs' now also makes sure an AddModule command
+        is added in addition to the LoadModule command.
+     6. The modules.c generation was extended to now contain two
+        comments to make sure no one is confused by the confusing terminology
+        of loading/linking (we use load=link+load & link=activate instead of
+        the obvious load=activate & link=link :-( )
+     This way now there is no longer a difference under execution time between
+     statically and dynamically linked modules.
+     [Ralf S. Engelschall]
 
   *) Fix the generated mod_xxx.c from "apxs -g -f xxx" after the
      Big Symbol Renaming. [Ralf S. Engelschall]

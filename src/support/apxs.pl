@@ -369,8 +369,9 @@ if ($opt_i) {
     ##
 
     #   determine installation commands
-    #   and corresponding LoadModule directives
+    #   and corresponding LoadModule/AddModule directives
     my @lmd = ();
+    my @amd = ();
     my @cmds = ();
     my $f;
     foreach $f (@args) {
@@ -383,7 +384,8 @@ if ($opt_i) {
         push(@cmds, "cp $f $CFG_LIBEXECDIR/$t");
         push(@cmds, "chmod 755 $CFG_LIBEXECDIR/$t");
 
-        #   determine module name
+        #   determine module symbolname and filename
+        my $filename = '';
         if ($name eq 'unknown') {
             $name = '';
             my $base = $f;
@@ -394,11 +396,15 @@ if ($opt_i) {
                 close(FP);
                 if ($content =~ m|.*module\s+(?:MODULE_VAR_EXPORT\s+)?([a-zA-Z0-9_]+)_module\s*=\s*.*|s) {
                     $name = "$1";
+                    $filename = "$base.c";
+                    $filename =~ s|^[^/]+/||;
                 }
             }
             if ($name eq '') {
                 if ($base =~ m|.*mod_([a-zA-Z0-9_]+)\..+|) {
                     $name = "$1";
+                    $filename = $base;
+                    $filename =~ s|^[^/]+/||;
                 }
             }
             if ($name eq '') {
@@ -407,16 +413,20 @@ if ($opt_i) {
                 exit(1);
             }
         }
+        if ($filename eq '') {
+            $filename = "mod_${name}.c";
+        }
         my $dir = $CFG_LIBEXECDIR;
         $dir =~ s|^$CFG_PREFIX/?||;
         $dir =~ s|(.)$|$1/|;
         push(@lmd, sprintf("LoadModule %-18s %s", "${name}_module", "$dir$t"));
+        push(@amd, sprintf("AddModule %s", $filename));
     }
 
     #   execute the commands
     &execute_cmds(@cmds);
 
-    #   activate module via LoadModule directive
+    #   activate module via LoadModule/AddModule directive
     if ($opt_a or $opt_A) {
         if (not -f "$CFG_SYSCONFDIR/httpd.conf") {
             print "apxs:Error: Config file $CFG_SYSCONFDIR/httpd.conf not found\n";
@@ -444,6 +454,15 @@ if ($opt_i) {
                  $lmd =~ m|LoadModule\s+(.+?)_module.*|;
                  my $what = $opt_A ? "preparing" : "activating";
                  print STDERR "[$what module `$1' in $CFG_SYSCONFDIR/httpd.conf]\n";
+            }
+        }
+        my $amd;
+        foreach $amd (@amd) {
+            if ($content !~ m|\n#?\s*$amd|) {
+                 my $c = '';
+                 $c = '#' if ($opt_A);
+                 $content =~ s|^(.*\n#?\s*AddModule\s+[^\n]+\n)|$1$c$amd\n|sg;
+                 $update = 1;
             }
         }
         if ($update) {
