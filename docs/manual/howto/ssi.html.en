@@ -160,9 +160,7 @@
     the following directives:</p>
 <pre>
         AddType text/html .shtml
-        &lt;FilesMatch "\.shtml(\..+)?$"&gt;
-          SetOutputFilter INCLUDES
-        &lt;/FilesMatch&gt;
+	AddOutputFilter INCLUDES .shtml
 </pre>
 
     <p>One disadvantage to this approach is that if you wanted to

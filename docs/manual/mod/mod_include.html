@@ -55,21 +55,8 @@
 
     <blockquote>
       <code>AddType text/html .shtml<br />
-       &lt;FilesMatch "\.shtml(\..+)?$"&gt;<br />
-       &nbsp;&nbsp;SetOutputFilter INCLUDES<br />
-       &lt;/FilesMatch&gt;</code>
+            AddOutputFilter INCLUDES .shtml</code>
     </blockquote>
-
-    <p>Be careful to properly scope the INCLUDES filter to process
-    only the correct files. The filter is <strong>not</strong>
-    restricted to processing only HTML files. So, for example, if
-    the INCLUDES filter is activated using a
-    <code>&lt;Directory&gt;</code> section and that directory
-    includes GIF files, mod_include will process the GIF files.
-    This can have two adverse consequences: 1. there will be extra
-    overhead in serving these files, and 2. these files could
-    become corrupted if they happen to contain something that looks
-    like an SSI element.</p>
 
     <p>The following directive must be given for the directories
     containing the shtml files (typically in a
