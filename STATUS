@@ -1,5 +1,5 @@
 Apache 2.0 STATUS:
-Last modified at [$Date: 2000/05/15 19:20:07 $]
+Last modified at [$Date: 2000/05/19 23:13:30 $]
 
 Release:
 
@@ -61,11 +61,6 @@ RELEASE SHOWSTOPPERS:
 RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
     * Build scripts do not recognise AIX 4.2.1 pthreads, so the
       pthread MPMs will not build.
-
-    * the top-level configure.in appears to use $USE_MAINTAINER_MODE = yes
-	to set -Wall/etc. flags, and the APR configure.in appears to use
-	--with-debug.  both seem like more of a hardwired pain compaired
-	to the pre-2.0 method of setting EXTRA_CFLAGS.
 
     * Win32: Reuse accept socket after transmitfile/close
 	This is not a bug, but would be nice to get this feature in 

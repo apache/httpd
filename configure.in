@@ -136,11 +136,14 @@ if test "$ac_cv_func_select_arg1" != "int" \
         [Define if arguments to select() aren't what we expect])
 fi
 
-dnl ## Checking command-line options
-test -n "$GCC" && test "$USE_MAINTAINER_MODE" = "yes" && \
-    EXTRA_CFLAGS="$EXTRA_CFLAGS -g -Wall -Wmissing-prototypes -Wstrict-prototypes -Wmissing-declarations"
-test -n "$GCC" && test "$USE_MAINTAINER_MODE" = "y2" && \
-    EXTRA_CFLAGS="$EXTRA_CFLAGS -g -Wall -Werror -Wmissing-declarations"
+AC_ARG_WITH(optim,[  --with-optim="FLAGS"      compiler optimisation flags],
+        [OPTIM="$withval"])
+
+AC_ARG_WITH(debug,[  --with-debug            Turn on debugging and compile time warnings],
+        [if test "$GCC" = "yes"; then CFLAGS="$CFLAGS -g -Wall"; else CFLAGS="$CFLAGS -g"; fi])
+
+AC_ARG_WITH(maintainer-mode,[  --with-maintainer-mode   Turn on debugging and compile time warnings],
+        [if test "$GCC" = "yes"; then CFLAGS="$CFLAGS -g -Wall -Wmissing-prototypes -Wstrict-prototypes -Wmissing-declarations"; else CFLAGS="$CFLAGS -g"; fi])
 
 APACHE_ENABLE_LAYOUT
 APACHE_ENABLE_MODULES
