@@ -14,7 +14,7 @@
   <!--#include virtual="header.html" -->
   <H1 ALIGN="CENTER">Apache Server Frequently Asked Questions</H1>
   <P>
-  $Revision: 1.120 $ ($Date: 1998/06/07 01:33:52 $)
+  $Revision: 1.121 $ ($Date: 1998/06/24 07:18:48 $)
   </P>
   <P>
   The latest version of this FAQ is always available from the main
@@ -1244,9 +1244,9 @@
   As of Apache 1.3, CGI scripts are essentially not buffered.  Every time
   your script does a "flush" to output data, that data gets relayed on to
   the client.  Some scripting languages, for example Perl, have their own
-  buffering for output - this can be disabled by setting the <CODE>$!</CODE>
+  buffering for output - this can be disabled by setting the <CODE>$|</CODE>
   special variable to 1.  Of course this does increase the overall number
-  of packets being transmitted, which can result in a sense of slowness by 
+  of packets being transmitted, which can result in a sense of slowness for 
   the end user.
   </P>
   <P>Prior to 1.3, you needed to use "nph-" scripts to accomplish non-buffering.
