@@ -1,0 +1,40 @@
+<?xml version="1.0"?>
+<?xml-stylesheet type="text/xsl" href="../style/manual.xsl"?>
+<modulesynopsis>
+
+<name>mod_suexec</name>
+<status>Extension</status>
+<identifier>suexec_module</identifier>
+<sourcefile>mod_suexec.c</sourcefile>
+<compatibility>Available in Apache 2.0 and later</compatibility>
+
+<description>This module allows CGI scripts to run as a specified user
+and Group.</description>
+
+<summary>
+    <p>This module allows CGI scripts to run as a specified user
+    and Group.</p>
+</summary>
+
+
+<directivesynopsis>
+
+<name>SuexecUserGroup</name>
+<syntax>SuexecUserGroup <em>User Group</em></syntax>
+<default>None</default>
+<contextlist><context>server config</context>
+<context>virtual host</context></contextlist>
+<compatibility>SuexecUserGroup is only available in 2.0 and
+later.</compatibility>
+
+<usage>
+    <p>The <code>SuexecUserGroup</code> directive allows you to
+    specify a user and group for CGI programs to run as. Non-CGI
+    requests are still processes with the user specified in the
+    User directive. This directive replaces using the User and
+    Group directives inside of VirtualHosts.</p>
+</usage>
+
+</directivesynopsis>
+</modulesynopsis>
+
