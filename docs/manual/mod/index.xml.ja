@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="iso-2022-jp"?>
 <!DOCTYPE moduleindex SYSTEM "../style/modulesynopsis.dtd"
-  [ <!ENTITY sitemap SYSTEM "../sitemap.xml.ja"> ]
+  [ <!ENTITY allmodules SYSTEM "allmodules.xml.ja"> ]
 >
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
 <!-- English revision: 1.4.2.1 -->
@@ -19,5 +19,5 @@
   <seealso><a href="quickreference.html">ディレクティブクイックリファレンス</a>
   </seealso>
 
-  &sitemap;
+  &allmodules;
 </moduleindex>

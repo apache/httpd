@@ -1,4 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sitemap SYSTEM "./style/sitemap.dtd"  
+  [ <!ENTITY allmodules SYSTEM "./mod/allmodules.xml"> ]
+>
 <?xml-stylesheet type="text/xsl" href="./style/manual.en.xsl"?>
 
 <sitemap>
@@ -123,74 +126,7 @@ Server on HPUX</page>
 <page href="mod/">Module index</page>
 <page href="mod/directives.html">Directive index</page>
 <page href="mod/quickreference.html">Directive Quick-Reference</page>
-<modulefilelist>
-  <modulefile>core.xml</modulefile>
-  <modulefile>mod_actions.xml</modulefile>
-  <modulefile>mod_alias.xml</modulefile>
-  <modulefile>mod_asis.xml</modulefile>
-  <modulefile>mod_access.xml</modulefile>
-  <modulefile>mod_auth.xml</modulefile>
-  <modulefile>mod_auth_anon.xml</modulefile>
-  <modulefile>mod_auth_dbm.xml</modulefile>
-  <modulefile>mod_auth_digest.xml</modulefile>
-  <modulefile>mod_auth_ldap.xml</modulefile>
-  <modulefile>mod_autoindex.xml</modulefile>
-  <modulefile>mod_cache.xml</modulefile>
-  <modulefile>mod_cern_meta.xml</modulefile>
-  <modulefile>mod_cgi.xml</modulefile>
-  <modulefile>mod_cgid.xml</modulefile>
-  <modulefile>mod_charset_lite.xml</modulefile>
-  <modulefile>mod_dav.xml</modulefile>
-  <modulefile>mod_dav_fs.xml</modulefile>
-  <modulefile>mod_deflate.xml</modulefile>
-  <modulefile>mod_dir.xml</modulefile>
-  <modulefile>mod_disk_cache.xml</modulefile>
-  <modulefile>mod_echo.xml</modulefile>
-  <modulefile>mod_env.xml</modulefile>
-  <modulefile>mod_example.xml</modulefile>
-  <modulefile>mod_expires.xml</modulefile>
-  <modulefile>mod_ext_filter.xml</modulefile>
-  <modulefile>mod_file_cache.xml</modulefile>
-  <modulefile>mod_headers.xml</modulefile>
-  <modulefile>mod_imap.xml</modulefile>
-  <modulefile>mod_include.xml</modulefile>
-  <modulefile>mod_info.xml</modulefile>
-  <modulefile>mod_isapi.xml</modulefile>
-  <modulefile>mod_ldap.xml</modulefile>
-  <modulefile>mod_log_config.xml</modulefile>
-  <modulefile>mod_logio.xml</modulefile>
-  <modulefile>mod_mem_cache.xml</modulefile>
-  <modulefile>mod_mime.xml</modulefile>
-  <modulefile>mod_mime_magic.xml</modulefile>
-  <modulefile>mod_negotiation.xml</modulefile>
-  <modulefile>mod_nw_ssl.xml</modulefile>
-  <modulefile>mod_proxy.xml</modulefile>
-  <modulefile>mod_proxy_connect.xml</modulefile>
-  <modulefile>mod_proxy_ftp.xml</modulefile>
-  <modulefile>mod_proxy_http.xml</modulefile>
-  <modulefile>mod_rewrite.xml</modulefile>
-  <modulefile>mod_setenvif.xml</modulefile>
-  <modulefile>mod_so.xml</modulefile>
-  <modulefile>mod_ssl.xml</modulefile>
-  <modulefile>mod_speling.xml</modulefile>
-  <modulefile>mod_status.xml</modulefile>
-  <modulefile>mod_suexec.xml</modulefile>
-  <modulefile>mod_unique_id.xml</modulefile>
-  <modulefile>mod_userdir.xml</modulefile>
-  <modulefile>mod_usertrack.xml</modulefile>
-  <modulefile>mod_vhost_alias.xml</modulefile>
-
-  <modulefile>mpm_common.xml</modulefile>
-  <modulefile>beos.xml</modulefile>
-  <modulefile>mpm_netware.xml</modulefile>
-  <modulefile>mpm_winnt.xml</modulefile>
-  <modulefile>mpmt_os2.xml</modulefile>
-  <modulefile>perchild.xml</modulefile>
-  <modulefile>prefork.xml</modulefile>
-  <modulefile>worker.xml</modulefile>
-  <modulefile>leader.xml</modulefile>
-  <modulefile>threadpool.xml</modulefile>
-</modulefilelist>
+&allmodules;
 </category>
 
 <category id="developer">

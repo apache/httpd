@@ -10,7 +10,7 @@
 <!--***************************************************-->
 
 <!DOCTYPE directiveindex SYSTEM "../style/modulesynopsis.dtd"
-  [ <!ENTITY sitemap SYSTEM "../sitemap.xml"> ]
+  [ <!ENTITY allmodules SYSTEM "allmodules.xml.ru"> ]
 >
 <?xml-stylesheet type="text/xsl" href="../style/manual.ru.xsl"?>
 
@@ -31,5 +31,5 @@
     </p>
   </summary>
 
-  &sitemap;
+  &allmodules;
 </directiveindex>

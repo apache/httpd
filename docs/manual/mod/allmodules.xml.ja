@@ -1,22 +1,15 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 
 <modulefilelist>
   <modulefile>core.xml</modulefile>
   <modulefile>mod_actions.xml.ja</modulefile>
   <modulefile>mod_alias.xml.ja</modulefile>
   <modulefile>mod_asis.xml.ja</modulefile>
-  <modulefile>mod_auth_basic.xml.ja</modulefile>
+  <modulefile>mod_access.xml.ja</modulefile>
+  <modulefile>mod_auth.xml.ja</modulefile>
+  <modulefile>mod_auth_anon.xml</modulefile>
+  <modulefile>mod_auth_dbm.xml</modulefile>
   <modulefile>mod_auth_digest.xml</modulefile>
-  <modulefile>mod_authn_anon.xml</modulefile>
-  <modulefile>mod_authn_dbm.xml</modulefile>
-  <modulefile>mod_authn_file.xml.ja</modulefile>
-  <modulefile>mod_authn_default.xml</modulefile>
-  <modulefile>mod_authz_dbm.xml</modulefile>
-  <modulefile>mod_authz_default.xml</modulefile>
-  <modulefile>mod_authz_groupfile.xml</modulefile>
-  <modulefile>mod_authz_host.xml.ja</modulefile>
-  <modulefile>mod_authz_owner.xml</modulefile>
-  <modulefile>mod_authz_user.xml</modulefile>
   <modulefile>mod_auth_ldap.xml</modulefile>
   <modulefile>mod_autoindex.xml.ja</modulefile>
   <modulefile>mod_cache.xml</modulefile>
@@ -36,7 +29,6 @@
   <modulefile>mod_ext_filter.xml</modulefile>
   <modulefile>mod_file_cache.xml</modulefile>
   <modulefile>mod_headers.xml</modulefile>
-  <modulefile>mod_ident.xml</modulefile>
   <modulefile>mod_imap.xml</modulefile>
   <modulefile>mod_include.xml</modulefile>
   <modulefile>mod_info.xml.ja</modulefile>
@@ -48,7 +40,6 @@
   <modulefile>mod_mime.xml</modulefile>
   <modulefile>mod_mime_magic.xml</modulefile>
   <modulefile>mod_negotiation.xml.ja</modulefile>
-  <modulefile>mod_nw_ssl.xml</modulefile>
   <modulefile>mod_proxy.xml</modulefile>
   <modulefile>mod_proxy_connect.xml</modulefile>
   <modulefile>mod_proxy_ftp.xml</modulefile>

@@ -10,7 +10,7 @@
 <!--***************************************************-->
 
 <!DOCTYPE quickreference SYSTEM "../style/modulesynopsis.dtd"
-  [ <!ENTITY sitemap SYSTEM "../sitemap.xml"> ]
+  [ <!ENTITY allmodules SYSTEM "allmodules.xml.ru"> ]
 >
 <?xml-stylesheet type="text/xsl" href="../style/manual.ru.xsl"?>
 
@@ -50,5 +50,5 @@
     </table>
   </legend>
 
-  &sitemap;
+  &allmodules;
 </quickreference>
