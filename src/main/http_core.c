@@ -506,7 +506,7 @@ const char *set_override (cmd_parms *cmd, core_dir_config *d, const char *l)
 
 const char *set_options (cmd_parms *cmd, core_dir_config *d, const char *l)
 {
-    char opt;
+    unsigned char opt;
     int first = 1;
     char action;
 
@@ -1145,7 +1145,7 @@ const char *set_listener(cmd_parms *cmd, void *dummy, char *ips)
 {
     listen_rec *new;
     char *ports;
-    unsigned port;
+    unsigned short port;
 
     if (cmd->server->is_virtual) return "Listen not allowed in <VirtualHost>";
     ports=strchr(ips, ':');
