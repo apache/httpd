@@ -27,7 +27,8 @@
     main server communicates with this daemon using a unix domain
     socket.</p>
 
-    <p>This module is used by default whenever a multi-threaded MPM
+    <p>This module is used by default instead of
+    <module>mod_cgi</module> whenever a multi-threaded MPM
     is selected during the compilation process. At the user level,
     this module is identical in configuration and operation to
     <module>mod_cgi</module>. The only exception is the
