@@ -1,3 +1,5 @@
+Changes with Apache 1.3.27
+
 Changes with Apache 1.3.26
 
   *) Potential NULL referencing fixed in the CGI module. It had
