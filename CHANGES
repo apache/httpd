@@ -1,5 +1,13 @@
 Changes with Apache 2.0.45
 
+  *) Updated mod_ldap and mod_auth_ldap to support the Novell LDAP SDK SSL
+     and standardized the LDAP SSL support across the various LDAP SDKs.  
+     Isolated the SSL functionality to mod_ldap rather than speading it 
+     across mod_auth_ldap and mod_ldap.  Also added LDAPTrustedCA
+     and LDAPTrustedCAType directives to mod_ldap to allow for a more 
+     common method of specifying the SSL certificate.
+     [Dave Ward, Brad Nicholes]
+
   *) Fixed mod_ssl's SSLCertificateChain initialization to no longer 
      skip the first cert of the chain by default.  This misbehavior 
      was introduced in 2.0.34.  PR 14560  [Madhusudan Mathihalli]
