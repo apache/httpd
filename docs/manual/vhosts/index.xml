@@ -17,8 +17,9 @@
     href="ip-based.html">IP-based</a>," meaning that you have a
     different IP address for every web site, or "<a
     href="name-based.html">name-based</a>," meaning that you have
-    multiple names running on a single IP address. The fact that they
-    are running on the same server is not apparent to the end user.</p>
+    multiple names running on each IP address. The fact that they
+    are running on the same physical server is not apparent to the 
+    end user.</p>
 
     <p>Apache was one of the first servers to support IP-based
     virtual hosts right out of the box. Versions 1.1 and later of
@@ -39,8 +40,8 @@
 <section id="support"><title>Virtual Host Support</title>
 
     <ul>
-      <li><a href="name-based.html">Name-based Virtual Hosts</a> (One IP
-      address, multiple web sites)</li>
+      <li><a href="name-based.html">Name-based Virtual Hosts</a> (More
+      than one web site per IP address)</li>
       <li><a href="ip-based.html">IP-based Virtual Hosts</a> (An IP
       address for each web site)</li>
       <li><a href="examples.html">Virtual Host examples for common
