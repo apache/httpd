@@ -899,28 +899,63 @@ static void ap_ssi_get_tag_and_value(include_ctx_t *ctx, char **tag,
     return;
 }
 
+/* initial buffer size for power-of-two allocator in ap_ssi_parse_string */
+#define PARSE_STRING_INITIAL_SIZE 64
 
 /*
  * Do variable substitution on strings
+ * (Note: If out==NULL, this function allocs a buffer for the resulting
+ * string from r->pool.  The return value is the parsed string)
  */
-static void ap_ssi_parse_string(request_rec *r, include_ctx_t *ctx, 
-                                const char *in, char *out,
-                                size_t length, int leave_name)
+static char *ap_ssi_parse_string(request_rec *r, include_ctx_t *ctx, 
+                                 const char *in, char *out,
+                                 apr_size_t length, int leave_name)
 {
     char ch;
-    char *next = out;
+    char *next;
     char *end_out;
+    apr_size_t out_size;
+
+    /* allocate an output buffer if needed */
+    if (!out) {
+        out_size = PARSE_STRING_INITIAL_SIZE;
+        if (out_size > length) {
+            out_size = length;
+        }
+        out = apr_palloc(r->pool, out_size);
+    }
+    else {
+        out_size = length;
+    }
 
     /* leave room for nul terminator */
-    end_out = out + length - 1;
+    end_out = out + out_size - 1;
 
+    next = out;
     while ((ch = *in++) != '\0') {
         switch (ch) {
         case '\\':
             if (next == end_out) {
-                /* truncated */
-                *next = '\0';
-                return;
+                if (out_size < length) {
+                    /* double the buffer size */
+                    apr_size_t new_out_size = out_size * 2;
+                    apr_size_t current_length = next - out;
+                    char *new_out;
+                    if (new_out_size > length) {
+                        new_out_size = length;
+                    }
+                    new_out = apr_palloc(r->pool, new_out_size);
+                    memcpy(new_out, out, current_length);
+                    out = new_out;
+                    out_size = new_out_size;
+                    end_out = out + out_size - 1;
+                    next = out + current_length;
+                }
+                else {
+                    /* truncated */
+                    *next = '\0';
+                    return out;
+                }
             }
             if (*in == '$') {
                 *next++ = *in++;
@@ -948,7 +983,7 @@ static void ap_ssi_parse_string(request_rec *r, include_ctx_t *ctx,
                                       0, r, "Missing '}' on variable \"%s\"",
                                       expansion);
                         *next = '\0';
-                        return;
+                        return out;
                     }
                     temp_end = in;
                     end_of_var_name = (char *)temp_end;
@@ -988,6 +1023,24 @@ static void ap_ssi_parse_string(request_rec *r, include_ctx_t *ctx,
                      * copied */
                     l = 1;
                 }
+                if ((next + l > end_out) && (out_size < length)) {
+                    /* increase the buffer size to accommodate l more chars */
+                    apr_size_t new_out_size = out_size;
+                    apr_size_t current_length = next - out;
+                    char *new_out;
+                    do {
+                        new_out_size *= 2;
+                    } while (new_out_size < current_length + l);
+                    if (new_out_size > length) {
+                        new_out_size = length;
+                    }
+                    new_out = apr_palloc(r->pool, new_out_size);
+                    memcpy(new_out, out, current_length);
+                    out = new_out;
+                    out_size = new_out_size;
+                    end_out = out + out_size - 1;
+                    next = out + current_length;
+                }
                 l = ((int)l > end_out - next) ? (end_out - next) : l;
                 memcpy(next, expansion, l);
                 next += l;
@@ -995,16 +1048,33 @@ static void ap_ssi_parse_string(request_rec *r, include_ctx_t *ctx,
             }
         default:
             if (next == end_out) {
-                /* truncated */
-                *next = '\0';
-                return;
+                if (out_size < length) {
+                    /* double the buffer size */
+                    apr_size_t new_out_size = out_size * 2;
+                    apr_size_t current_length = next - out;
+                    char *new_out;
+                    if (new_out_size > length) {
+                        new_out_size = length;
+                    }
+                    new_out = apr_palloc(r->pool, new_out_size);
+                    memcpy(new_out, out, current_length);
+                    out = new_out;
+                    out_size = new_out_size;
+                    end_out = out + out_size - 1;
+                    next = out + current_length;
+                }
+                else {
+                    /* truncated */
+                    *next = '\0';
+                    return out;
+                }
             }
             *next++ = ch;
             break;
         }
     }
     *next = '\0';
-    return;
+    return out;
 }
 
 /* --------------------------- Action handlers ---------------------------- */
@@ -1056,7 +1126,7 @@ static int handle_include(include_ctx_t *ctx, apr_bucket_brigade **bb,
     char *tag     = NULL;
     char *tag_val = NULL;
     apr_bucket  *tmp_buck;
-    char parsed_string[MAX_STRING_LEN];
+    char *parsed_string;
     int loglevel = APLOG_ERR;
 
     *inserted_head = NULL;
@@ -1075,8 +1145,8 @@ static int handle_include(include_ctx_t *ctx, apr_bucket_brigade **bb,
                 request_rec *rr = NULL;
                 char *error_fmt = NULL;
 
-                ap_ssi_parse_string(r, ctx, tag_val, parsed_string, 
-                                    sizeof(parsed_string), 0);
+                parsed_string = ap_ssi_parse_string(r, ctx, tag_val, NULL, 
+                                                    MAX_STRING_LEN, 0);
                 if (tag[0] == 'f') {
                     /* XXX: Port to apr_filepath_merge
                      * be safe; only files in this directory or below allowed 
@@ -1283,7 +1353,7 @@ static int handle_config(include_ctx_t *ctx, apr_bucket_brigade **bb,
 {
     char *tag     = NULL;
     char *tag_val = NULL;
-    char parsed_string[MAX_STRING_LEN];
+    char *parsed_string;
     apr_table_t *env = r->subprocess_env;
 
     *inserted_head = NULL;
@@ -1325,8 +1395,8 @@ static int handle_config(include_ctx_t *ctx, apr_bucket_brigade **bb,
                                ctx->time_str, 0));
             }
             else if (!strcmp(tag, "sizefmt")) {
-                ap_ssi_parse_string(r, ctx, tag_val, parsed_string, 
-                                    sizeof(parsed_string), 0);
+                parsed_string = ap_ssi_parse_string(r, ctx, tag_val, NULL, 
+                                                    MAX_STRING_LEN, 0);
                 decodehtml(parsed_string);
                 if (!strcmp(parsed_string, "bytes")) {
                     ctx->flags |= FLAG_SIZE_IN_BYTES;
@@ -1435,7 +1505,7 @@ static int handle_fsize(include_ctx_t *ctx, apr_bucket_brigade **bb,
     apr_finfo_t  finfo;
     apr_size_t  s_len;
     apr_bucket   *tmp_buck;
-    char parsed_string[MAX_STRING_LEN];
+    char *parsed_string;
 
     *inserted_head = NULL;
     if (ctx->flags & FLAG_PRINTING) {
@@ -1450,8 +1520,8 @@ static int handle_fsize(include_ctx_t *ctx, apr_bucket_brigade **bb,
                 }
             }
             else {
-                ap_ssi_parse_string(r, ctx, tag_val, parsed_string, 
-                                    sizeof(parsed_string), 0);
+                parsed_string = ap_ssi_parse_string(r, ctx, tag_val, NULL, 
+                                                    MAX_STRING_LEN, 0);
                 if (!find_file(r, "fsize", tag, parsed_string, &finfo)) {
                     /* XXX: if we *know* we're going to have to copy the
                      * thing off of the stack anyway, why not palloc buff
@@ -1506,7 +1576,7 @@ static int handle_flastmod(include_ctx_t *ctx, apr_bucket_brigade **bb,
     apr_finfo_t  finfo;
     apr_size_t  t_len;
     apr_bucket   *tmp_buck;
-    char parsed_string[MAX_STRING_LEN];
+    char *parsed_string;
 
     *inserted_head = NULL;
     if (ctx->flags & FLAG_PRINTING) {
@@ -1521,8 +1591,8 @@ static int handle_flastmod(include_ctx_t *ctx, apr_bucket_brigade **bb,
                 }
             }
             else {
-                ap_ssi_parse_string(r, ctx, tag_val, parsed_string, 
-                                    sizeof(parsed_string), 0);
+                parsed_string = ap_ssi_parse_string(r, ctx, tag_val, NULL, 
+                                                    MAX_STRING_LEN, 0);
                 if (!find_file(r, "flastmod", tag, parsed_string, &finfo)) {
                     char *t_val;
 
@@ -1760,7 +1830,7 @@ static int parse_expr(request_rec *r, include_ctx_t *ctx, const char *expr,
         int value, done;
     } *root, *current, *new;
     const char *parse;
-    char buffer[MAX_STRING_LEN];
+    char* buffer;
     apr_pool_t *expr_pool;
     int retval = 0;
     apr_size_t debug_pos = 0;
@@ -2109,8 +2179,8 @@ static int parse_expr(request_rec *r, include_ctx_t *ctx, const char *expr,
                     sizeof ("     Evaluate string\n"));
             debug_pos += sizeof ("     Evaluate string\n");
 #endif
-            ap_ssi_parse_string(r, ctx, current->token.value, buffer, 
-                                sizeof(buffer), 0);
+            buffer = ap_ssi_parse_string(r, ctx, current->token.value, NULL, 
+                                         MAX_STRING_LEN, 0);
             apr_cpystrn(current->token.value, buffer, 
                         sizeof(current->token.value));
             current->value = (current->token.value[0] != '\0');
@@ -2648,7 +2718,7 @@ static int handle_set(include_ctx_t *ctx, apr_bucket_brigade **bb,
     char *tag_val = NULL;
     char *var     = NULL;
     apr_bucket *tmp_buck;
-    char parsed_string[MAX_STRING_LEN];
+    char *parsed_string;
 
     *inserted_head = NULL;
     if (ctx->flags & FLAG_PRINTING) {
@@ -2672,8 +2742,8 @@ static int handle_set(include_ctx_t *ctx, apr_bucket_brigade **bb,
                                         *inserted_head);
                     return (-1);
                 }
-                ap_ssi_parse_string(r, ctx, tag_val, parsed_string, 
-                                    sizeof(parsed_string), 0);
+                parsed_string = ap_ssi_parse_string(r, ctx, tag_val, NULL, 
+                                                    MAX_STRING_LEN, 0);
                 apr_table_setn(r->subprocess_env, apr_pstrdup(r->pool, var),
                                apr_pstrdup(r->pool, parsed_string));
             }

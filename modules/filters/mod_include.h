@@ -220,11 +220,11 @@ APR_DECLARE_OPTIONAL_FN(void, ap_ssi_get_tag_and_value, (include_ctx_t *ctx,
                                                          char **tag,
                                                          char **tag_val,
                                                          int dodecode));
-APR_DECLARE_OPTIONAL_FN(void, ap_ssi_parse_string, (request_rec *r,
+APR_DECLARE_OPTIONAL_FN(char*, ap_ssi_parse_string, (request_rec *r,
                                                     include_ctx_t *ctx,
                                                     const char *in,
                                                     char *out,
-                                                    size_t length,
+                                                    apr_size_t length,
                                                     int leave_name));
 APR_DECLARE_OPTIONAL_FN(void, ap_register_include_handler, 
                         (char *tag, include_handler_fn_t *func));
