@@ -292,10 +292,10 @@ static void debug_printf(include_ctx_t *ctx, const char *fmt, ...)
     }                                                                         \
 } while(0)
 
-#define DEBUG_DUMP_UNMATCHED(ctx, unmatched) do {                       \
-    if (unmatched) {                                                    \
-        DEBUG_PRINTF(((ctx), "     Umatched %c\n", (char)(unmatched))); \
-    }                                                                   \
+#define DEBUG_DUMP_UNMATCHED(ctx, unmatched) do {                        \
+    if (unmatched) {                                                     \
+        DEBUG_PRINTF(((ctx), "     Unmatched %c\n", (char)(unmatched))); \
+    }                                                                    \
 } while(0)
 
 #define DEBUG_DUMP_COND(ctx, text)                                 \
