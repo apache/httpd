@@ -880,6 +880,7 @@ static int magic_process(request_rec *r)
      * try looking at the first HOWMANY bytes
      */
     if ((nbytes = read(fd, (char *) buf, sizeof(buf) - 1)) == -1) {
+        (void) ap_pclosef(r->pool, fd);
 	ap_log_rerror(APLOG_MARK, APLOG_ERR, r,
 		    MODNAME ": read failed: %s", r->filename);
 	return HTTP_INTERNAL_SERVER_ERROR;
