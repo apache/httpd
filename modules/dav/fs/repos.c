@@ -444,10 +444,7 @@ static dav_error * dav_fs_copymove_state(
     dst = ap_pstrcat(p, dst, "/", dst_file, NULL);
 
     /* copy/move the file now */
-#if 0
-    /* ### need st_dev from APR */
-
-    if (is_move && src_finfo.st_dev == dst_state_finfo.st_dev) {
+    if (is_move && src_finfo.device == dst_state_finfo.device) {
 	/* simple rename is possible since it is on the same device */
 	if (rename(src, dst) != 0) {
 	    /* ### use something besides 500? */
@@ -456,7 +453,6 @@ static dav_error * dav_fs_copymove_state(
 	}
     }
     else
-#endif
     {
 	/* gotta copy (and delete) */
 	return dav_fs_copymove_file(is_move, p, src, dst, pbuf);
@@ -1093,37 +1089,33 @@ static dav_error * dav_fs_move_resource(
     }
 #endif
 
-#if 0
-    /* ### we need st_dev in ap_finfo_t */
-
     /* determine whether a simple rename will work.
      * Assume source exists, else we wouldn't get called.
      */
-    if (dstinfo->finfo.st_mode != 0) {
-        /* ### APR does not expose the st_dev concept! */
-	if (dstinfo->finfo.st_dev == srcinfo->finfo.st_dev) {
+    if (dstinfo->finfo.protection != 0) {
+	if (dstinfo->finfo.device == srcinfo->finfo.device) {
 	    /* target exists and is on the same device. */
 	    can_rename = 1;
 	}
     }
     else {
 	const char *dirpath;
-	struct stat finfo;
+	ap_finfo_t finfo;
 
 	/* destination does not exist, but the parent directory should,
 	 * so try it
 	 */
 	dirpath = ap_make_dirstr_parent(dstinfo->pool, dstinfo->pathname);
-	if (stat(dirpath, &finfo) == 0
-	    && finfo.st_dev == srcinfo->finfo.st_dev) {
+	if (ap_stat(&finfo, dirpath, dstinfo->pool) == 0
+	    && finfo.device == srcinfo->finfo.device) {
 	    can_rename = 1;
 	}
     }
-#endif
 
-    /* if we can't simply renamed, then do it the hard way... */
+    /* if we can't simply rename, then do it the hard way... */
     if (!can_rename) {
-        if ((err = dav_fs_copymove_resource(1, src, dst, DAV_INFINITY, response)) == NULL) {
+        if ((err = dav_fs_copymove_resource(1, src, dst, DAV_INFINITY,
+                                            response)) == NULL) {
             /* update resource states */
             dst->exists = 1;
             dst->collection = src->collection;
@@ -1887,11 +1879,13 @@ static dav_error *dav_fs_patch_validate(const dav_resource *resource,
     }
 
     cdata = elem->first_cdata.first;
-    f_cdata = elem->last_child == NULL
-	? NULL
-	: elem->last_child->following_cdata.first;
 
-    /* DBG3("name=%s  cdata=%s  f_cdata=%s",elem->name,cdata ? cdata->text : "[null]",f_cdata ? f_cdata->text : "[null]"); */
+    /* ### hmm. this isn't actually looking at all the possible text items */
+    f_cdata = elem->first_child == NULL
+	? NULL
+	: elem->first_child->following_cdata.first;
+
+    DBG3("name=%s  cdata=%s  f_cdata=%s",elem->name,cdata ? cdata->text : "[null]",f_cdata ? f_cdata->text : "[null]");
 
     if (cdata == NULL) {
 	if (f_cdata == NULL) {
@@ -1923,7 +1917,7 @@ static dav_error *dav_fs_patch_validate(const dav_resource *resource,
   too_long:
     return dav_new_error(resource->info->pool, HTTP_CONFLICT, 0,
 			 "The 'executable' property expects a single "
-			 "character, valued 'T' or 'F'. The value submitted"
+			 "character, valued 'T' or 'F'. The value submitted "
 			 "has too many characters.");
 
 }
@@ -1941,6 +1935,7 @@ static dav_error *dav_fs_patch_exec(dav_resource *resource,
     /* assert: prop == executable. operation == SET. */
 
     /* don't do anything if there is no change. no rollback info either. */
+    DBG2("new value=%d  (old=%d)", value, old_value);
     if (value == old_value)
 	return NULL;
 
@@ -1948,15 +1943,12 @@ static dav_error *dav_fs_patch_exec(dav_resource *resource,
     if (value)
 	perms |= APR_UEXECUTE;
 
-#if 0
-    /* ### crap... APR does not have a chmod() ... skip for now. */
-    if (chmod(resource->info->pathname, mode) == -1) {
+    if (ap_setfileperms(resource->info->pathname, perms) != APR_SUCCESS) {
 	return dav_new_error(resource->info->pool,
 			     HTTP_INTERNAL_SERVER_ERROR, 0,
 			     "Could not set the executable flag of the "
 			     "target resource.");
     }
-#endif
 
     /* update the resource and set up the rollback context */
     resource->info->finfo.protection = perms;
@@ -1987,15 +1979,12 @@ static dav_error *dav_fs_patch_rollback(dav_resource *resource,
     if (value)
 	perms |= APR_UEXECUTE;
 
-#if 0
-    /* ### crap... APR does not have a chmod() ... skip for now. */
-    if (chmod(resource->info->pathname, mode) == -1) {
+    if (ap_setfileperms(resource->info->pathname, perms) != APR_SUCCESS) {
 	return dav_new_error(resource->info->pool,
 			     HTTP_INTERNAL_SERVER_ERROR, 0,
 			     "After a failure occurred, the resource's "
 			     "executable flag could not be restored.");
     }
-#endif
 
     /* restore the resource's state */
     resource->info->finfo.protection = perms;
