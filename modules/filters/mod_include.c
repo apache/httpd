@@ -1123,7 +1123,8 @@ static int parse_expr(include_ctx_t *ctx, const char *expr, int *was_error)
     const char* buffer;
     const char *parse = expr;
     int retval = 0, was_unmatched = 0;
-    
+    unsigned regex = 0;
+
     *was_error = 0;
 
     if (!parse) {
@@ -1196,6 +1197,7 @@ static int parse_expr(include_ctx_t *ctx, const char *expr, int *was_error)
             case TOKEN_NOT:
                 new->parent = current;
                 current = current->right = new;
+                ++regex;
                 break;
 
             default:
@@ -1438,39 +1440,54 @@ static int parse_expr(include_ctx_t *ctx, const char *expr, int *was_error)
                     continue;
                 }
             }
-            if (!current->right->done) {
-                switch (current->right->token.type) {
-                case TOKEN_STRING:
-                    buffer = ap_ssi_parse_string(ctx,
-                                                 current->right->token.value,
-                                                 NULL, 0, SSI_EXPAND_DROP_NAME);
 
-                    current->right->token.value = buffer;
-                    current->right->value = !!*current->right->token.value;
-                    current->right->done = 1;
-                    break;
-
-                default:
-                    current = current->right;
-                    continue;
-                }
-            }
-
-            DEBUG_PRINTF((ctx, "     Left: %c\n", current->left->value
+            /* short circuit evaluation */
+            if (!current->right->done && !regex &&
+                ((current->token.type == TOKEN_AND && !current->left->value) ||
+                (current->token.type == TOKEN_OR && current->left->value))) {
+                DEBUG_PRINTF((ctx, "     Left: %c\n", current->left->value
                                                                   ? '1' : '0'));
-            DEBUG_PRINTF((ctx, "     Right: %c\n", current->right->value
-                                                                  ? '1' : '0'));
+                DEBUG_PRINTF((ctx, "     Right: short circuited\n"));
 
-            if (current->token.type == TOKEN_AND) {
-                current->value = current->left->value && current->right->value;
+                current->value = current->left->value;
             }
             else {
-                current->value = current->left->value || current->right->value;
+                if (!current->right->done) {
+                    switch (current->right->token.type) {
+                    case TOKEN_STRING:
+                        buffer = ap_ssi_parse_string(ctx,
+                                                     current->right->token.value,
+                                                     NULL, 0,
+                                                     SSI_EXPAND_DROP_NAME);
+
+                        current->right->token.value = buffer;
+                        current->right->value = !!*current->right->token.value;
+                        current->right->done = 1;
+                        break;
+
+                    default:
+                        current = current->right;
+                        continue;
+                    }
+                }
+
+                DEBUG_PRINTF((ctx, "     Left: %c\n", current->left->value
+                                                                  ? '1' : '0'));
+                DEBUG_PRINTF((ctx, "     Right: %c\n", current->right->value
+                                                                  ? '1' : '0'));
+
+                if (current->token.type == TOKEN_AND) {
+                    current->value = current->left->value &&
+                                     current->right->value;
+                }
+                else {
+                    current->value = current->left->value ||
+                                     current->right->value;
+                }
             }
 
             DEBUG_PRINTF((ctx, "     Returning %c\n", current->value
                                                                   ? '1' : '0'));
-
             current->done = 1;
             current = current->parent;
             break;
@@ -1505,6 +1522,7 @@ static int parse_expr(include_ctx_t *ctx, const char *expr, int *was_error)
 
                 current->value = re_check(ctx, current->left->token.value,
                                           current->right->token.value);
+                --regex;
             }
             else {
                 DEBUG_PRINTF((ctx, "     Compare (%s) with (%s)\n",
