@@ -37,7 +37,7 @@ JUNKLINT=possible pointer alignment|null effect
 
 all lib:	purge $(OBJPRODN)
 	rm -f libregex.a
-	ar crv libregex.a $(OBJPRODN)
+	ar cr libregex.a $(OBJPRODN)
 	$(RANLIB) libregex.a
 
 default:	r

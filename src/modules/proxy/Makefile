@@ -75,7 +75,7 @@ force:
 	rm -f $(LIB)
 
 $(LIB):	$(OBJS)
-	ar crv $@ $(OBJS)
+	ar cr $@ $(OBJS)
 	$(RANLIB) $@
 
 clean:

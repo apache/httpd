@@ -22,7 +22,7 @@ all: $(LIB)
 
 $(LIB): $(OBJS)
 	rm -f $@
-	ar crv $@ $(OBJS)
+	ar cr $@ $(OBJS)
 	$(RANLIB) $@
 
 clean:
