@@ -368,7 +368,9 @@ static int proxy_ajp_handler(request_rec *r, proxy_worker *worker,
      * of the connection when the socket was opened.
      */
     apr_pool_t *p = r->connection->pool;
+#if 0
     conn_rec *c = r->connection;
+#endif
     apr_uri_t *uri = apr_palloc(r->connection->pool, sizeof(*uri));
 
     
