@@ -67,7 +67,7 @@ how they are used by the Apache HTTP Server.</p>
       <li>The server can be better customized for the needs of the
       particular site. For example, sites that need a great deal of
       scalability can choose to use a threaded MPM like 
-      <code class="module"><a href="./mod/worker.html">worker</a></code>, while sites requiring
+      <code class="module"><a href="./mod/worker.html">worker</a></code> or <code class="module"><a href="./mod/event.html">event</a></code>, while sites requiring
       stability or compatibility with older software can use a
       <code class="module"><a href="./mod/prefork.html">prefork</a></code>. In addition,
       special features like serving different hosts under different
