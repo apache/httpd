@@ -1,5 +1,8 @@
 Changes with Apache 2.0.44
 
+  *) Fix some problems in the perchild MPM.  
+     [Jonas Eriksson <jonas@webkonsulterna.com>]
+
   *) Change the CacheRoot processing to check for a required
      value at config time. This saves a lot of wasted processing
      if the mod_disk_cache module is loaded but no CacheRoot
