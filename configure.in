@@ -23,7 +23,7 @@ sinclude(acinclude.m4)
 
 dnl Generate ./config.nice for reproducing runs of configure
 dnl
-APACHE_CONFIG_NICE(config.nice)
+APR_CONFIG_NICE(config.nice)
 
 test "$exec_prefix" = "NONE" && exec_prefix='${prefix}'
 test "$prefix" = "NONE" && prefix='/usr/local'
