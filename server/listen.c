@@ -287,6 +287,10 @@ int ap_listen_open(process_rec *process, apr_port_t port)
 		++num_open;
 		lr->active = 1;
 	    }
+            else {
+                /* fatal error */
+                return -1;
+            }
 	}
     }
 

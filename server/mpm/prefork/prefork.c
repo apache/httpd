@@ -663,14 +663,12 @@ static void child_main(int child_num_arg)
 		}
 		first_lr=lr;
 		do {
-                    if (lr->active) {
-                        apr_os_sock_get(&sockdes, lr->sd);
-		        if (FD_ISSET(sockdes, &main_fds))
-			    goto got_listener;
-                        lr = lr->next;
-                        if (!lr)
-                            lr = ap_listeners;
-                    }
+                    apr_os_sock_get(&sockdes, lr->sd);
+                    if (FD_ISSET(sockdes, &main_fds))
+                        goto got_listener;
+                    lr = lr->next;
+                    if (!lr)
+                        lr = ap_listeners;
 		}
 		while (lr != first_lr);
 		/* FIXME: if we get here, something bad has happened, and we're
@@ -1090,12 +1088,10 @@ static int setup_listeners(server_rec *s)
     listenmaxfd = -1;
     FD_ZERO(&listenfds);
     for (lr = ap_listeners; lr; lr = lr->next) {
-        if (lr->active) {
-            apr_os_sock_get(&sockdes, lr->sd);
-            FD_SET(sockdes, &listenfds);
-            if (sockdes > listenmaxfd) {
-                listenmaxfd = sockdes;
-            }
+        apr_os_sock_get(&sockdes, lr->sd);
+        FD_SET(sockdes, &listenfds);
+        if (sockdes > listenmaxfd) {
+            listenmaxfd = sockdes;
         }
     }
     return 0;
