@@ -58,7 +58,7 @@
 #for more functionality see the HTTPD::UserAdmin module:
 # http://www.perl.com/CPAN/modules/by-module/HTTPD/HTTPD-Tools-x.xx.tar.gz
 #
-# usage: dbmmanage <DBMfile> <command> <key> <value>
+# usage: dbmmanage <DBMfile> <command> <user> <password> <groups> <comment>
 
 package dbmmanage;
 #                               -ldb    -lndbm    -lgdbm    -lsdbm
@@ -67,7 +67,7 @@ use strict;
 use Fcntl;
 use AnyDBM_File ();
 
-my($file,$command,$key,$crypted_pwd) = @ARGV;
+my($file,$command,$key,$crypted_pwd,$groups,$comment) = @ARGV;
 
 usage() unless $file and $command and defined &{$dbmc::{$command}};
 
@@ -97,17 +97,33 @@ untie %DB;
 
 sub usage {
     my $cmds = join "|", sort keys %dbmc::;
-    die "usage: $0 filename [$cmds] [username]\n";
+    die <<SYNTAX;
+Usage: dbmmanage dbname command [username [pw [group[,group] [comment]]]]
+
+    where command is one of: $cmds
+
+    pw of . for update retains the old password
+    pw of - (or blank) for update prompts for the password
+
+    groups or comment of . (or blank) for update retains old values
+    groups or comment of - for update clears the existing value
+    groups or comment of - for add or adduser is an empty value
+SYNTAX
 }
 
 my $x;
 sub genseed {
     my $psf;
-    for (qw(-xlwwa -le)) { 
-	`ps $_ 2>/dev/null`;
-	$psf = $_, last unless $?;
+    if ($Is_Win32) {
+	srand (time ^ $$ or time ^ ($$ + ($$ << 15)));
     }
-    srand (time ^ $$ ^ unpack("%L*", `ps $psf | gzip -f`));
+    else {
+        for (qw(-xlwwa -le)) { 
+	    `ps $_ 2>/dev/null`;
+            $psf = $_, last unless $?;
+        }
+        srand (time ^ $$ ^ unpack("%L*", `ps $psf | gzip -f`));
+    }
     @range = (qw(. /), '0'..'9','a'..'z','A'..'Z');
     $x = int scalar @range;
 }
@@ -146,7 +162,15 @@ sub getpass {
 
 sub dbmc::update {
     die "Sorry, user `$key' doesn't exist!\n" unless $DB{$key};
-    dbmc->adduser;
+    $crypted_pwd = (split /:/, $DB{$key}, 4)[0] if $crypted_pwd eq '.';
+    $groups = (split /:/, $DB{$key}, 4)[1] if !$groups || $groups eq '.';
+    $comment = (split /:/, $DB{$key}, 4)[2] if !$comment || $comment eq '.';
+    if (!$crypted_pwd || $crypted_pwd eq '-') {
+        dbmc->adduser;
+    }
+    else {
+        dbmc->add;
+    }
 }
 
 sub dbmc::add {
@@ -154,6 +178,10 @@ sub dbmc::add {
     unless($is_update) {
 	die "Sorry, user `$key' already exists!\n" if $DB{$key};
     }
+    $groups = '' if $groups eq '-';
+    $comment = '' if $comment eq '-';
+    $groups .= ":" . $comment if $comment;
+    $crypted_pwd .= ":" . $groups if $groups;
     $DB{$key} = $crypted_pwd;
     my $action = $is_update ? "updated" : "added";
     print "User $key $action with password encrypted to $DB{$key}\n";
@@ -177,13 +205,13 @@ sub dbmc::view {
 
 sub dbmc::check {
     die "Sorry, user `$key' doesn't exist!\n" unless $DB{$key};
-    my $chkpass = (split /:/, $DB{$key})[0];
+    my $chkpass = (split /:/, $DB{$key},4)[0];
     print crypt(getpass(), $chkpass) eq $chkpass ? "password ok\n" : "password mismatch\n";
 }
 
 sub dbmc::import {
     while(defined($_ = <STDIN>) and chomp) {
-	($key,$crypted_pwd) = split /:/, $_, 2;
+	($key,$crypted_pwd,$groups,$comment) = split /:/, $_, 4;
 	dbmc->add;
     }
 }

@@ -1,5 +1,13 @@
 Changes with Apache 1.3.13
 
+  *) Overhaul of dbmmanage to allow a groups arg (as in Apache 1.2)
+     as well as a comment arg to the add, adduser and update cmds.
+     update allows the user to clear or preserve pw/groups/comment.
+     Fixed a bug in dbmmanage that prevented the check option from 
+     parsing a password followed by :group... text.  Corrected the
+     seed calcualation for Win32 systems, and added -lsdbm support.
+     [William Rowe]
+
   *) Radical surgery to improve mod_isapi support under Win32.
      Includes a number of newer ServerSupportFunction calls, support
      for ReadClient (in order to retrieve POSTs greater than 48KB),
