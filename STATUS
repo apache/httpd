@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/06/10 23:31:30 $]
+Last modified at [$Date: 2004/06/11 01:24:55 $]
 
 Release:
 
@@ -75,7 +75,7 @@ PATCHES TO BACKPORT FROM 2.1
     *) util_ldap: allow relative paths for LDAPTrustedCA to be resolved
        against ServerRoot PR#26602
        modules/experimental/util_ldap.c r1.31
-       +1: bnicholes, minfrin
+       +1: bnicholes, minfrin, trawick
        
     *) mod_ssl: Remove some unused functions (after CAN-2004-0488 fix is applied)
        http://cvs.apache.org/viewcvs.cgi/httpd-2.0/modules/ssl/ssl_util.c?r1=1.46&r2=1.47
@@ -218,7 +218,7 @@ PATCHES TO BACKPORT FROM 2.1
        PR: 14726
          include/http_core.h: r1.81
          server/core.c: r1.266
-       +1: nd
+       +1: nd, trawick
 
     *) Provide TLS/SSL upgrade functionality in mod_ssl allowing an unsecure
        connection to be upgraded to a secure connection upon request by the
@@ -368,7 +368,7 @@ PATCHES TO BACKPORT FROM 2.1
 
     * Use the httpready accept filter
         server/listen.c: r1.96
-      +1:
+      +1: trawick
 
 CURRENT RELEASE NOTES:
 
