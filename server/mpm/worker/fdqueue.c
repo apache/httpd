@@ -81,9 +81,9 @@ static apr_status_t ap_queue_destroy(void *data)
     /* Ignore errors here, we can't do anything about them anyway.
      * XXX: We should at least try to signal an error here, it is
      * indicative of a programmer error. -aaron */
-    pthread_cond_destroy(&queue->not_empty);
-    pthread_cond_destroy(&queue->not_full);
-    pthread_mutex_destroy(&queue->one_big_mutex);
+    apr_thread_cond_destroy(queue->not_empty);
+    apr_thread_cond_destroy(queue->not_full);
+    apr_thread_mutex_destroy(queue->one_big_mutex);
 
     return FD_QUEUE_SUCCESS;
 }
@@ -95,11 +95,13 @@ int ap_queue_init(fd_queue_t *queue, int queue_capacity, apr_pool_t *a)
 {
     int i;
 
-    if (pthread_mutex_init(&queue->one_big_mutex, NULL) != 0)
+    /* FIXME: APRize these return values. */
+    if (apr_thread_mutex_create(&queue->one_big_mutex,
+                              APR_THREAD_MUTEX_DEFAULT, a) != APR_SUCCESS)
         return FD_QUEUE_FAILURE;
-    if (pthread_cond_init(&queue->not_empty, NULL) != 0)
+    if (apr_thread_cond_create(&queue->not_empty, a) != APR_SUCCESS)
         return FD_QUEUE_FAILURE;
-    if (pthread_cond_init(&queue->not_full, NULL) != 0)
+    if (apr_thread_cond_create(&queue->not_full, a) != APR_SUCCESS)
         return FD_QUEUE_FAILURE;
 
     queue->tail = 0;
@@ -124,21 +126,21 @@ int ap_queue_push(fd_queue_t *queue, apr_socket_t *sd, apr_pool_t *p)
 {
     fd_queue_elem_t *elem;
 
-    if (pthread_mutex_lock(&queue->one_big_mutex) != 0) {
+    if (apr_thread_mutex_lock(queue->one_big_mutex) != APR_SUCCESS) {
         return FD_QUEUE_FAILURE;
     }
 
     while (ap_queue_full(queue)) {
-        pthread_cond_wait(&queue->not_full, &queue->one_big_mutex);
+        apr_thread_cond_wait(queue->not_full, queue->one_big_mutex);
     }
 
     elem = &queue->data[queue->tail++];
     elem->sd = sd;
     elem->p = p;
 
-    pthread_cond_signal(&queue->not_empty);
+    apr_thread_cond_signal(queue->not_empty);
 
-    if (pthread_mutex_unlock(&queue->one_big_mutex) != 0) {
+    if (apr_thread_mutex_unlock(queue->one_big_mutex) != APR_SUCCESS) {
         return FD_QUEUE_FAILURE;
     }
 
@@ -155,16 +157,16 @@ apr_status_t ap_queue_pop(fd_queue_t *queue, apr_socket_t **sd, apr_pool_t **p)
 {
     fd_queue_elem_t *elem;
 
-    if (pthread_mutex_lock(&queue->one_big_mutex) != 0) {
+    if (apr_thread_mutex_lock(queue->one_big_mutex) != APR_SUCCESS) {
         return FD_QUEUE_FAILURE;
     }
 
     /* Keep waiting until we wake up and find that the queue is not empty. */
     if (ap_queue_empty(queue)) {
-        pthread_cond_wait(&queue->not_empty, &queue->one_big_mutex);
+        apr_thread_cond_wait(queue->not_empty, queue->one_big_mutex);
         /* If we wake up and it's still empty, then we were interrupted */
         if (ap_queue_empty(queue)) {
-            if (pthread_mutex_unlock(&queue->one_big_mutex) != 0) {
+            if (apr_thread_mutex_unlock(queue->one_big_mutex) != APR_SUCCESS) {
                 return FD_QUEUE_FAILURE;
             }
             return FD_QUEUE_EINTR;
@@ -179,10 +181,10 @@ apr_status_t ap_queue_pop(fd_queue_t *queue, apr_socket_t **sd, apr_pool_t **p)
 
     /* signal not_full if we were full before this pop */
     if (queue->tail == queue->bounds - 1) {
-        pthread_cond_signal(&queue->not_full);
+        apr_thread_cond_signal(queue->not_full);
     }
 
-    if (pthread_mutex_unlock(&queue->one_big_mutex) != 0) {
+    if (apr_thread_mutex_unlock(queue->one_big_mutex) != APR_SUCCESS) {
         return FD_QUEUE_FAILURE;
     }
 
@@ -191,14 +193,14 @@ apr_status_t ap_queue_pop(fd_queue_t *queue, apr_socket_t **sd, apr_pool_t **p)
 
 apr_status_t ap_queue_interrupt_all(fd_queue_t *queue)
 {
-    if (pthread_mutex_lock(&queue->one_big_mutex) != 0) {
+    if (apr_thread_mutex_lock(queue->one_big_mutex) != APR_SUCCESS) {
         return FD_QUEUE_FAILURE;
     }
-    pthread_cond_broadcast(&queue->not_empty);
+    apr_thread_cond_broadcast(queue->not_empty);
     /* We shouldn't have multiple threads sitting in not_full, but
      * broadcast just in case. */
-    pthread_cond_broadcast(&queue->not_full);
-    if (pthread_mutex_unlock(&queue->one_big_mutex) != 0) {
+    apr_thread_cond_broadcast(queue->not_full);
+    if (apr_thread_mutex_unlock(queue->one_big_mutex) != APR_SUCCESS) {
         return FD_QUEUE_FAILURE;
     }
     return FD_QUEUE_SUCCESS;
