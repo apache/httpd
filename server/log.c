@@ -527,7 +527,8 @@ void ap_log_pid(ap_pool_t *p, const char *fname)
     u = umask(022);
     (void) umask(u | 022);
 #endif
-    if(ap_open(&pid_file, fname, APR_WRITE | APR_CREATE, APR_OS_DEFAULT, p) != APR_SUCCESS) {
+    if (ap_open(&pid_file, fname, APR_WRITE | APR_CREATE | APR_TRUNCATE,
+                APR_OS_DEFAULT, p) != APR_SUCCESS) {
 	perror("fopen");
         ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
                      "%s: could not log pid to file %s",
