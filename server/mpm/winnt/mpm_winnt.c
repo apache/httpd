@@ -745,7 +745,6 @@ static int create_and_queue_completion_context(ap_context_t *p, ap_listen_rec *l
 
     context->accept_socket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
     ap_create_context(&context->ptrans, p);
-//    context->ptrans = ap_make_sub_pool(p);
     context->conn_io =  ap_bcreate(context->ptrans, B_RDWR);
     context->recv_buf = context->conn_io->inbase;
     context->recv_buf_size = context->conn_io->bufsiz - 2*PADDED_ADDR_SIZE;
@@ -829,7 +828,7 @@ static PCOMP_CONTEXT winnt_get_connection(PCOMP_CONTEXT context)
     ap_unlock(allowed_globals.jobmutex);
 
     context->conn_io->incnt = BytesRead;
-/*
+
     GetAcceptExSockaddrs(context->conn_io->inbase, 
                          context->conn_io->bufsiz - 2*PADDED_ADDR_SIZE,
                          PADDED_ADDR_SIZE,
@@ -839,7 +838,6 @@ static PCOMP_CONTEXT winnt_get_connection(PCOMP_CONTEXT context)
                          &context->sa_client,
                          &context->sa_client_len);
 
-*/
     return context;
 /*
     CloseHandle(context->Overlapped.hEvent);
@@ -1095,11 +1093,11 @@ static void worker_main()
             child_handles[i] = create_thread((void (*)(void *)) child_main, (void *) i);
         }
 
-        /* Create an AcceptEx context for each listener and queue it to the 
-         * AcceptEx completion port
+        /* Create 3 AcceptEx contexts for each listener then queue them to the 
+         * AcceptEx completion port.
          */
         for (lr = ap_listeners; lr != NULL; lr = lr->next) {
-            for(i=0; i<1; i++) {
+            for(i=0; i<2; i++) {
                 if (create_and_queue_completion_context(pconf, lr) == -1) {
                     /* log error and exit */
                 }
