@@ -4,11 +4,28 @@
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-      --><title>mod_dav_fs - Apache HTTP Server</title><link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" /><link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" /><link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link href="../images/favicon.ico" rel="shortcut icon" /></head><body><div id="page-header"><p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p><p class="apache">Apache HTTP Server Version 2.0</p><img alt="" src="../images/feather.gif" /></div><div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div><div id="path"><a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentation</a> &gt; <a href="../">Version 2.0</a> &gt; <a href="./">Modules</a></div><div id="page-content"><div id="preamble"><h1>Apache Module mod_dav_fs</h1><table class="module"><tr><th><a href="module-dict.html#Description">Description:
-                  </a></th><td>filesystem provider for <code class="module"><a href="../mod/mod_dav.html">mod_dav</a></code></td></tr><tr><th><a href="module-dict.html#Status">Status:
-                  </a></th><td>Extension</td></tr><tr><th><a href="module-dict.html#ModuleIdentifier">Module Identifier:
-                  </a></th><td>dav_fs_module</td></tr><tr><th><a href="module-dict.html#SourceFile">Source File:
-                  </a></th><td>mod_dav_fs.c</td></tr></table><h3>Summary</h3>
+      -->
+<title>mod_dav_fs - Apache HTTP Server</title>
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
+<link href="../images/favicon.ico" rel="shortcut icon" /></head>
+<body>
+<div id="page-header">
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p>
+<p class="apache">Apache HTTP Server Version 2.0</p>
+<img alt="" src="../images/feather.gif" /></div>
+<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<div id="path">
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentation</a> &gt; <a href="../">Version 2.0</a> &gt; <a href="./">Modules</a></div>
+<div id="page-content">
+<div id="preamble"><h1>Apache Module mod_dav_fs</h1>
+<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>filesystem provider for <code class="module"><a href="../mod/mod_dav.html">mod_dav</a></code></td></tr>
+<tr><th><a href="module-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="module-dict.html#ModuleIdentifier">Module Identifier:</a></th><td>dav_fs_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">Source File:</a></th><td>mod_dav_fs.c</td></tr></table>
+<h3>Summary</h3>
+
     <p>This module <em>requires</em> the service of <code class="module"><a href="../mod/mod_dav.html">mod_dav</a></code>. It acts as a support module for <code class="module"><a href="../mod/mod_dav.html">mod_dav</a></code> and provides access to resources located in the
     server's file system. The formal name of this provider is
     <code>filesystem</code>. <code class="module"><a href="../mod/mod_dav.html">mod_dav</a></code> backend providers
@@ -22,13 +39,25 @@
     <p>Since <code>filesystem</code> is the default provider for
     <code class="module"><a href="../mod/mod_dav.html">mod_dav</a></code>, you may simply use the value
     <code>On</code> instead.</p>
-</div><div id="quickview"><h3 class="directives">Directives</h3><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#davlockdb">DavLockDB</a></li>
-</ul><h3>See also</h3><ul class="seealso"><li><code class="module"><a href="../mod/mod_dav.html">mod_dav</a></code></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="DavLockDB" id="DavLockDB">DavLockDB</a> <a name="davlockdb" id="davlockdb">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
-              </a></th><td>Location of the DAV lock database</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td><code>DavLockDB <var>file-path</var></code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
-              </a></th><td>server config, virtual host</td></tr><tr><th><a href="directive-dict.html#Status">Status:
-              </a></th><td>Extension</td></tr><tr><th><a href="directive-dict.html#Module">Module:
-              </a></th><td>mod_dav_fs</td></tr></table>
+</div>
+<div id="quickview"><h3 class="directives">Directives</h3>
+<ul id="toc">
+<li><img alt="" src="../images/down.gif" /> <a href="#davlockdb">DavLockDB</a></li>
+</ul>
+<h3>See also</h3>
+<ul class="seealso">
+<li><code class="module"><a href="../mod/mod_dav.html">mod_dav</a></code></li>
+</ul></div>
+
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="DavLockDB" id="DavLockDB">DavLockDB</a> <a name="davlockdb" id="davlockdb">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Location of the DAV lock database</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>DavLockDB <var>file-path</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_dav_fs</td></tr>
+</table>
     <p>Use the <code class="directive">DavLockDB</code> directive to specify
     the full path to the lock database, excluding an extension. If
     the path is not absolute, it will be taken relative to <code class="directive"><a href="../mod/core.html#serverroot">ServerRoot</a></code>. The implementation of
@@ -40,4 +69,10 @@
     <div class="example"><h3>Example</h3><p><code>
       DavLockDB logs/DavLock
     </code></p></div>
-</div></div><div id="footer"><p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p><p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div></body></html>
+
+</div>
+</div>
+<div id="footer">
+<p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div>
+</body></html>

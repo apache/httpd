@@ -4,11 +4,28 @@
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-      --><title>mod_file_cache - Apache HTTP Server</title><link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" /><link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" /><link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link href="../images/favicon.ico" rel="shortcut icon" /></head><body><div id="page-header"><p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p><p class="apache">Apache HTTP Server Version 2.0</p><img alt="" src="../images/feather.gif" /></div><div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div><div id="path"><a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentation</a> &gt; <a href="../">Version 2.0</a> &gt; <a href="./">Modules</a></div><div id="page-content"><div id="preamble"><h1>Apache Module mod_file_cache</h1><table class="module"><tr><th><a href="module-dict.html#Description">Description:
-                  </a></th><td>Caches a static list of files in memory</td></tr><tr><th><a href="module-dict.html#Status">Status:
-                  </a></th><td>Experimental</td></tr><tr><th><a href="module-dict.html#ModuleIdentifier">Module Identifier:
-                  </a></th><td>file_cache_module</td></tr><tr><th><a href="module-dict.html#SourceFile">Source File:
-                  </a></th><td>mod_file_cache.c</td></tr></table><h3>Summary</h3>
+      -->
+<title>mod_file_cache - Apache HTTP Server</title>
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
+<link href="../images/favicon.ico" rel="shortcut icon" /></head>
+<body>
+<div id="page-header">
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p>
+<p class="apache">Apache HTTP Server Version 2.0</p>
+<img alt="" src="../images/feather.gif" /></div>
+<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<div id="path">
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentation</a> &gt; <a href="../">Version 2.0</a> &gt; <a href="./">Modules</a></div>
+<div id="page-content">
+<div id="preamble"><h1>Apache Module mod_file_cache</h1>
+<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Caches a static list of files in memory</td></tr>
+<tr><th><a href="module-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
+<tr><th><a href="module-dict.html#ModuleIdentifier">Module Identifier:</a></th><td>file_cache_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">Source File:</a></th><td>mod_file_cache.c</td></tr></table>
+<h3>Summary</h3>
+
 
     <div class="warning">
       This module should be used with care. You can easily create a broken
@@ -34,9 +51,19 @@
 
     <p>This module is an extension of and borrows heavily from the
     <code>mod_mmap_static</code> module in Apache 1.3.</p>
-</div><div id="quickview"><h3 class="directives">Directives</h3><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#cachefile">CacheFile</a></li>
+</div>
+<div id="quickview"><h3 class="directives">Directives</h3>
+<ul id="toc">
+<li><img alt="" src="../images/down.gif" /> <a href="#cachefile">CacheFile</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#mmapfile">MMapFile</a></li>
-</ul><h3>Topics</h3><ul id="topics"><li><img alt="" src="../images/down.gif" /> <a href="#using">Using mod_file_cache</a></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="section"><h2><a name="using" id="using">Using mod_file_cache</a></h2>
+</ul>
+<h3>Topics</h3>
+<ul id="topics">
+<li><img alt="" src="../images/down.gif" /> <a href="#using">Using mod_file_cache</a></li>
+</ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="using" id="using">Using mod_file_cache</a></h2>
 
     <p><code class="module"><a href="../mod/mod_file_cache.html">mod_file_cache</a></code> caches a list of statically
     configured files via <code class="directive"><a href="#mmapfile">MMapFile</a></code> or <code class="directive"><a href="#cachefile">CacheFile</a></code> directives in the main server configuration.</p>
@@ -110,12 +137,16 @@
         | sed -e 's/.*/mmapfile &amp;/' &gt; /www/conf/mmap.conf
       </code></p></div>
     </div>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="CacheFile" id="CacheFile">CacheFile</a> <a name="cachefile" id="cachefile">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
-              </a></th><td>Cache a list of file handles at startup time</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td><code>CacheFile <var>file-path</var> [<var>file-path</var>] ...</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
-              </a></th><td>server config</td></tr><tr><th><a href="directive-dict.html#Status">Status:
-              </a></th><td>Experimental</td></tr><tr><th><a href="directive-dict.html#Module">Module:
-              </a></th><td>mod_file_cache</td></tr></table>
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="CacheFile" id="CacheFile">CacheFile</a> <a name="cachefile" id="cachefile">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Cache a list of file handles at startup time</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>CacheFile <var>file-path</var> [<var>file-path</var>] ...</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_file_cache</td></tr>
+</table>
     <p>The <code class="directive">CacheFile</code> directive opens handles to
     one or more files (given as whitespace separated arguments) and
     places these handles into the cache at server startup
@@ -135,12 +166,17 @@
     <div class="example"><h3>Example</h3><p><code>
       CacheFile /usr/local/apache/htdocs/index.html
     </code></p></div>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="MMapFile" id="MMapFile">MMapFile</a> <a name="mmapfile" id="mmapfile">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
-              </a></th><td>Map a list of files into memory at startup time</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td><code>MMapFile <var>file-path</var> [<var>file-path</var>] ...</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
-              </a></th><td>server config</td></tr><tr><th><a href="directive-dict.html#Status">Status:
-              </a></th><td>Experimental</td></tr><tr><th><a href="directive-dict.html#Module">Module:
-              </a></th><td>mod_file_cache</td></tr></table>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="MMapFile" id="MMapFile">MMapFile</a> <a name="mmapfile" id="mmapfile">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Map a list of files into memory at startup time</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>MMapFile <var>file-path</var> [<var>file-path</var>] ...</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_file_cache</td></tr>
+</table>
     <p>The <code class="directive">MMapFile</code> directive maps one or more files
     (given as whitespace separated arguments) into memory at server
     startup time. They are automatically unmapped on a server
@@ -160,4 +196,10 @@
     <div class="example"><h3>Example</h3><p><code>
       MMapFile /usr/local/apache/htdocs/index.html
     </code></p></div>
-</div></div><div id="footer"><p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p><p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div></body></html>
+
+</div>
+</div>
+<div id="footer">
+<p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div>
+</body></html>

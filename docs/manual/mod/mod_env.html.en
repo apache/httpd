@@ -4,28 +4,57 @@
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-      --><title>mod_env - Apache HTTP Server</title><link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" /><link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" /><link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link href="../images/favicon.ico" rel="shortcut icon" /></head><body><div id="page-header"><p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p><p class="apache">Apache HTTP Server Version 2.0</p><img alt="" src="../images/feather.gif" /></div><div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div><div id="path"><a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentation</a> &gt; <a href="../">Version 2.0</a> &gt; <a href="./">Modules</a></div><div id="page-content"><div id="preamble"><h1>Apache Module mod_env</h1><table class="module"><tr><th><a href="module-dict.html#Description">Description:
-                  </a></th><td>Modifies the environment which is passed to CGI scripts and
-SSI pages</td></tr><tr><th><a href="module-dict.html#Status">Status:
-                  </a></th><td>Base</td></tr><tr><th><a href="module-dict.html#ModuleIdentifier">Module Identifier:
-                  </a></th><td>env_module</td></tr><tr><th><a href="module-dict.html#SourceFile">Source File:
-                  </a></th><td>mod_env.c</td></tr></table><h3>Summary</h3>
+      -->
+<title>mod_env - Apache HTTP Server</title>
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
+<link href="../images/favicon.ico" rel="shortcut icon" /></head>
+<body>
+<div id="page-header">
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p>
+<p class="apache">Apache HTTP Server Version 2.0</p>
+<img alt="" src="../images/feather.gif" /></div>
+<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<div id="path">
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentation</a> &gt; <a href="../">Version 2.0</a> &gt; <a href="./">Modules</a></div>
+<div id="page-content">
+<div id="preamble"><h1>Apache Module mod_env</h1>
+<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Modifies the environment which is passed to CGI scripts and
+SSI pages</td></tr>
+<tr><th><a href="module-dict.html#Status">Status:</a></th><td>Base</td></tr>
+<tr><th><a href="module-dict.html#ModuleIdentifier">Module Identifier:</a></th><td>env_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">Source File:</a></th><td>mod_env.c</td></tr></table>
+<h3>Summary</h3>
+
     <p>This module allows for control of the environment that will
     be provided to CGI scripts and SSI pages. Environment variables
     may be passed from the shell which invoked the httpd process.
     Alternatively, environment variables may be set or unset within
     the configuration process.</p>
-</div><div id="quickview"><h3 class="directives">Directives</h3><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#passenv">PassEnv</a></li>
+</div>
+<div id="quickview"><h3 class="directives">Directives</h3>
+<ul id="toc">
+<li><img alt="" src="../images/down.gif" /> <a href="#passenv">PassEnv</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#setenv">SetEnv</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#unsetenv">UnsetEnv</a></li>
-</ul><h3>See also</h3><ul class="seealso"><li><a href="../env.html">Environment Variables</a></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="PassEnv" id="PassEnv">PassEnv</a> <a name="passenv" id="passenv">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
-              </a></th><td>Passes environment variables from the shell</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td><code>PassEnv <var>env-variable</var> [<var>env-variable</var>]
-...</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
-              </a></th><td>server config, virtual host, directory, .htaccess</td></tr><tr><th><a href="directive-dict.html#Override">Override:
-              </a></th><td>FileInfo</td></tr><tr><th><a href="directive-dict.html#Status">Status:
-              </a></th><td>Base</td></tr><tr><th><a href="directive-dict.html#Module">Module:
-              </a></th><td>mod_env</td></tr></table>
+</ul>
+<h3>See also</h3>
+<ul class="seealso">
+<li><a href="../env.html">Environment Variables</a></li>
+</ul></div>
+
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="PassEnv" id="PassEnv">PassEnv</a> <a name="passenv" id="passenv">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Passes environment variables from the shell</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>PassEnv <var>env-variable</var> [<var>env-variable</var>]
+...</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Override:</a></th><td>FileInfo</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_env</td></tr>
+</table>
     <p>Specifies one or more environment variables to pass to CGI
     scripts and SSI pages from the environment of the shell which
     invoked the httpd process.</p>
@@ -33,31 +62,47 @@ SSI pages</td></tr><tr><th><a href="module-dict.html#Status">Status:
     <div class="example"><h3>Example</h3><p><code>
       PassEnv LD_LIBRARY_PATH
     </code></p></div>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="SetEnv" id="SetEnv">SetEnv</a> <a name="setenv" id="setenv">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
-              </a></th><td>Sets environment variables</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td><code>SetEnv <var>env-variable</var> <var>value</var></code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
-              </a></th><td>server config, virtual host, directory, .htaccess</td></tr><tr><th><a href="directive-dict.html#Override">Override:
-              </a></th><td>FileInfo</td></tr><tr><th><a href="directive-dict.html#Status">Status:
-              </a></th><td>Base</td></tr><tr><th><a href="directive-dict.html#Module">Module:
-              </a></th><td>mod_env</td></tr></table>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="SetEnv" id="SetEnv">SetEnv</a> <a name="setenv" id="setenv">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Sets environment variables</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SetEnv <var>env-variable</var> <var>value</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Override:</a></th><td>FileInfo</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_env</td></tr>
+</table>
     <p>Sets an environment variable, which is then passed on to CGI
     scripts and SSI pages.</p>
 
     <div class="example"><h3>Example</h3><p><code>
       SetEnv SPECIAL_PATH /foo/bin
     </code></p></div>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="UnsetEnv" id="UnsetEnv">UnsetEnv</a> <a name="unsetenv" id="unsetenv">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
-              </a></th><td>Removes variables from the environment</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td><code>UnsetEnv <var>env-variable</var> [<var>env-variable</var>]
-...</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
-              </a></th><td>server config, virtual host, directory, .htaccess</td></tr><tr><th><a href="directive-dict.html#Override">Override:
-              </a></th><td>FileInfo</td></tr><tr><th><a href="directive-dict.html#Status">Status:
-              </a></th><td>Base</td></tr><tr><th><a href="directive-dict.html#Module">Module:
-              </a></th><td>mod_env</td></tr></table>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="UnsetEnv" id="UnsetEnv">UnsetEnv</a> <a name="unsetenv" id="unsetenv">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Removes variables from the environment</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>UnsetEnv <var>env-variable</var> [<var>env-variable</var>]
+...</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Override:</a></th><td>FileInfo</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_env</td></tr>
+</table>
     <p>Removes one or more environment variables from those passed
     on to CGI scripts and SSI pages.</p>
 
     <div class="example"><h3>Example</h3><p><code>
       UnsetEnv LD_LIBRARY_PATH
     </code></p></div>
-</div></div><div id="footer"><p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p><p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div></body></html>
+
+</div>
+</div>
+<div id="footer">
+<p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div>
+</body></html>

@@ -4,20 +4,48 @@
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-      --><title>mod_headers - Apache HTTP Server</title><link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" /><link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" /><link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link href="../images/favicon.ico" rel="shortcut icon" /></head><body><div id="page-header"><p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p><p class="apache">Apache HTTP Server Version 2.0</p><img alt="" src="../images/feather.gif" /></div><div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div><div id="path"><a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentation</a> &gt; <a href="../">Version 2.0</a> &gt; <a href="./">Modules</a></div><div id="page-content"><div id="preamble"><h1>Apache Module mod_headers</h1><table class="module"><tr><th><a href="module-dict.html#Description">Description:
-                  </a></th><td>Customization of HTTP request and response
-headers</td></tr><tr><th><a href="module-dict.html#Status">Status:
-                  </a></th><td>Extension</td></tr><tr><th><a href="module-dict.html#ModuleIdentifier">Module Identifier:
-                  </a></th><td>headers_module</td></tr><tr><th><a href="module-dict.html#SourceFile">Source File:
-                  </a></th><td>mod_headers.c</td></tr><tr><th><a href="module-dict.html#Compatibility">Compatibility:
-                  </a></th><td><code class="directive"><a href="#requestheader">RequestHeader</a></code>
-is available only in Apache 2.0</td></tr></table><h3>Summary</h3>
+      -->
+<title>mod_headers - Apache HTTP Server</title>
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
+<link href="../images/favicon.ico" rel="shortcut icon" /></head>
+<body>
+<div id="page-header">
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p>
+<p class="apache">Apache HTTP Server Version 2.0</p>
+<img alt="" src="../images/feather.gif" /></div>
+<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<div id="path">
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentation</a> &gt; <a href="../">Version 2.0</a> &gt; <a href="./">Modules</a></div>
+<div id="page-content">
+<div id="preamble"><h1>Apache Module mod_headers</h1>
+<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Customization of HTTP request and response
+headers</td></tr>
+<tr><th><a href="module-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="module-dict.html#ModuleIdentifier">Module Identifier:</a></th><td>headers_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">Source File:</a></th><td>mod_headers.c</td></tr>
+<tr><th><a href="module-dict.html#Compatibility">Compatibility:</a></th><td><code class="directive"><a href="#requestheader">RequestHeader</a></code>
+is available only in Apache 2.0</td></tr></table>
+<h3>Summary</h3>
+
     <p>This module provides directives to control and modify HTTP
     request and response headers. Headers can be merged, replaced
     or removed.</p>
-</div><div id="quickview"><h3 class="directives">Directives</h3><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#header">Header</a></li>
+</div>
+<div id="quickview"><h3 class="directives">Directives</h3>
+<ul id="toc">
+<li><img alt="" src="../images/down.gif" /> <a href="#header">Header</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#requestheader">RequestHeader</a></li>
-</ul><h3>Topics</h3><ul id="topics"><li><img alt="" src="../images/down.gif" /> <a href="#order">Order of Processing</a></li><li><img alt="" src="../images/down.gif" /> <a href="#examples">Examples</a></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="section"><h2><a name="order" id="order">Order of Processing</a></h2>
+</ul>
+<h3>Topics</h3>
+<ul id="topics">
+<li><img alt="" src="../images/down.gif" /> <a href="#order">Order of Processing</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#examples">Examples</a></li>
+</ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="order" id="order">Order of Processing</a></h2>
 
     <p>The directives provided by <code class="module"><a href="../mod/mod_headers.html">mod_headers</a></code> can occur
     almost anywhere within the server configuration. They are valid in the
@@ -48,7 +76,9 @@ is available only in Apache 2.0</td></tr></table><h3>Summary</h3>
 
     <p>This way round, the <code>MirrorID</code> header is not set. If
     reversed, the MirrorID header is set to "mirror 12".</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="section"><h2><a name="examples" id="examples">Examples</a></h2>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="examples" id="examples">Examples</a></h2>
 
     <ol>
       <li>
@@ -114,14 +144,18 @@ is available only in Apache 2.0</td></tr></table><h3>Summary</h3>
        </code></p></div>
       </li>
     </ol>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="Header" id="Header">Header</a> <a name="header" id="header">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
-              </a></th><td>Configure HTTP response headers</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td><code>Header set|append|add|unset|echo  <var>header</var>
-[<var>value</var> [env=[!]<var>variable</var>]]</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
-              </a></th><td>server config, virtual host, directory, .htaccess</td></tr><tr><th><a href="directive-dict.html#Override">Override:
-              </a></th><td>FileInfo</td></tr><tr><th><a href="directive-dict.html#Status">Status:
-              </a></th><td>Extension</td></tr><tr><th><a href="directive-dict.html#Module">Module:
-              </a></th><td>mod_headers</td></tr></table>
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="Header" id="Header">Header</a> <a name="header" id="header">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Configure HTTP response headers</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>Header set|append|add|unset|echo  <var>header</var>
+[<var>value</var> [env=[!]<var>variable</var>]]</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Override:</a></th><td>FileInfo</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_headers</td></tr>
+</table>
     <p>This directive can replace, merge or remove HTTP response
     headers. The header is modified just after the content handler
     and output filters are run, allowing outgoing headers to be
@@ -199,14 +233,19 @@ is available only in Apache 2.0</td></tr></table><h3>Summary</h3>
     before the response is sent to the network. These means that it is
     possible to set and/or override most headers, except for those headers
     added by the header filter.</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="RequestHeader" id="RequestHeader">RequestHeader</a> <a name="requestheader" id="requestheader">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
-              </a></th><td>Configure HTTP request headers</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td><code>RequestHeader set|append|add|unset <var>header</var>
-[<var>value</var>]</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
-              </a></th><td>server config, virtual host, directory, .htaccess</td></tr><tr><th><a href="directive-dict.html#Override">Override:
-              </a></th><td>FileInfo</td></tr><tr><th><a href="directive-dict.html#Status">Status:
-              </a></th><td>Extension</td></tr><tr><th><a href="directive-dict.html#Module">Module:
-              </a></th><td>mod_headers</td></tr></table>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="RequestHeader" id="RequestHeader">RequestHeader</a> <a name="requestheader" id="requestheader">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Configure HTTP request headers</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>RequestHeader set|append|add|unset <var>header</var>
+[<var>value</var>]</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Override:</a></th><td>FileInfo</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_headers</td></tr>
+</table>
     <p>This directive can replace, merge or remove HTTP request
     headers. The header is modified just before the content handler
     is run, allowing incoming headers to be modified. The action it
@@ -248,4 +287,10 @@ is available only in Apache 2.0</td></tr></table><h3>Summary</h3>
     just before the request is run by its handler in the fixup phase.
     This should allow headers generated by the browser, or by Apache
     input filters to be overridden or modified.</p>
-</div></div><div id="footer"><p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p><p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div></body></html>
+
+</div>
+</div>
+<div id="footer">
+<p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div>
+</body></html>

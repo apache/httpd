@@ -4,12 +4,29 @@
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-      --><title>mod_dir - Apache HTTP Server</title><link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" /><link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" /><link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link href="../images/favicon.ico" rel="shortcut icon" /></head><body><div id="page-header"><p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p><p class="apache">Apache HTTP Server Version 2.0</p><img alt="" src="../images/feather.gif" /></div><div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div><div id="path"><a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentation</a> &gt; <a href="../">Version 2.0</a> &gt; <a href="./">Modules</a></div><div id="page-content"><div id="preamble"><h1>Apache Module mod_dir</h1><table class="module"><tr><th><a href="module-dict.html#Description">Description:
-                  </a></th><td>Provides for "trailing slash" redirects and
-    serving directory index files</td></tr><tr><th><a href="module-dict.html#Status">Status:
-                  </a></th><td>Base</td></tr><tr><th><a href="module-dict.html#ModuleIdentifier">Module Identifier:
-                  </a></th><td>dir_module</td></tr><tr><th><a href="module-dict.html#SourceFile">Source File:
-                  </a></th><td>mod_dir.c</td></tr></table><h3>Summary</h3>
+      -->
+<title>mod_dir - Apache HTTP Server</title>
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
+<link href="../images/favicon.ico" rel="shortcut icon" /></head>
+<body>
+<div id="page-header">
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p>
+<p class="apache">Apache HTTP Server Version 2.0</p>
+<img alt="" src="../images/feather.gif" /></div>
+<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<div id="path">
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentation</a> &gt; <a href="../">Version 2.0</a> &gt; <a href="./">Modules</a></div>
+<div id="page-content">
+<div id="preamble"><h1>Apache Module mod_dir</h1>
+<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Provides for "trailing slash" redirects and
+    serving directory index files</td></tr>
+<tr><th><a href="module-dict.html#Status">Status:</a></th><td>Base</td></tr>
+<tr><th><a href="module-dict.html#ModuleIdentifier">Module Identifier:</a></th><td>dir_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">Source File:</a></th><td>mod_dir.c</td></tr></table>
+<h3>Summary</h3>
+
     <p>The index of a directory can come from one of two sources:</p>
 
     <ul>
@@ -31,17 +48,26 @@
     <code>dirname</code> is a directory. Directories require a
     trailing slash, so <code class="module"><a href="../mod/mod_dir.html">mod_dir</a></code> issues a redirect to
     <code>http://servername/foo/dirname/</code>.</p>
-</div><div id="quickview"><h3 class="directives">Directives</h3><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#directoryindex">DirectoryIndex</a></li>
-</ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="DirectoryIndex" id="DirectoryIndex">DirectoryIndex</a> <a name="directoryindex" id="directoryindex">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
-              </a></th><td>List of resources to look for when the client requests
-a directory</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td><code>DirectoryIndex
-    <var>local-url</var> [<var>local-url</var>] ...</code></td></tr><tr><th><a href="directive-dict.html#Default">Default: 
-              </a></th><td><code>DirectoryIndex index.html</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
-              </a></th><td>server config, virtual host, directory, .htaccess</td></tr><tr><th><a href="directive-dict.html#Override">Override:
-              </a></th><td>Indexes</td></tr><tr><th><a href="directive-dict.html#Status">Status:
-              </a></th><td>Base</td></tr><tr><th><a href="directive-dict.html#Module">Module:
-              </a></th><td>mod_dir</td></tr></table>
+</div>
+<div id="quickview"><h3 class="directives">Directives</h3>
+<ul id="toc">
+<li><img alt="" src="../images/down.gif" /> <a href="#directoryindex">DirectoryIndex</a></li>
+</ul>
+</div>
+
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="DirectoryIndex" id="DirectoryIndex">DirectoryIndex</a> <a name="directoryindex" id="directoryindex">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>List of resources to look for when the client requests
+a directory</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>DirectoryIndex
+    <var>local-url</var> [<var>local-url</var>] ...</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>DirectoryIndex index.html</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Override:</a></th><td>Indexes</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_dir</td></tr>
+</table>
     <p>The <code class="directive">DirectoryIndex</code> directive sets the
     list of resources to look for, when the client requests an index
     of the directory by specifying a / at the end of the a directory
@@ -71,4 +97,10 @@ a directory</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
     <p>would cause the CGI script <code>/cgi-bin/index.pl</code> to be
     executed if neither <code>index.html</code> or <code>index.txt</code>
     existed in a directory.</p>
-</div></div><div id="footer"><p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p><p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div></body></html>
+
+</div>
+</div>
+<div id="footer">
+<p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div>
+</body></html>

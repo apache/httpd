@@ -4,14 +4,40 @@
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-      --><title>Terms Used to Describe Directives - Apache HTTP Server</title><link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" /><link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" /><link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link href="../images/favicon.ico" rel="shortcut icon" /></head><body id="manual-page"><div id="page-header"><p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p><p class="apache">Apache HTTP Server Version 2.0</p><img alt="" src="../images/feather.gif" /></div><div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div><div id="path"><a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentation</a> &gt; <a href="../">Version 2.0</a></div><div id="page-content"><div id="preamble"><h1>Terms Used to Describe Directives</h1>
+      -->
+<title>Terms Used to Describe Directives - Apache HTTP Server</title>
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
+<link href="../images/favicon.ico" rel="shortcut icon" /></head>
+<body id="manual-page"><div id="page-header">
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p>
+<p class="apache">Apache HTTP Server Version 2.0</p>
+<img alt="" src="../images/feather.gif" /></div>
+<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<div id="path">
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentation</a> &gt; <a href="../">Version 2.0</a></div><div id="page-content"><div id="preamble"><h1>Terms Used to Describe Directives</h1>
     <p>This document describes the terms that are used to describe
     each Apache <a href="directives.html">configuration
     directive</a>.</p>
-</div><div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#Description">Description</a></li><li><img alt="" src="../images/down.gif" /> <a href="#Syntax">Syntax</a></li><li><img alt="" src="../images/down.gif" /> <a href="#Default">Default</a></li><li><img alt="" src="../images/down.gif" /> <a href="#Context">Context</a></li><li><img alt="" src="../images/down.gif" /> <a href="#Override">Override</a></li><li><img alt="" src="../images/down.gif" /> <a href="#Status">Status</a></li><li><img alt="" src="../images/down.gif" /> <a href="#Module">Module</a></li><li><img alt="" src="../images/down.gif" /> <a href="#Compatibility">Compatibility</a></li></ul><h3>See also</h3><ul class="seealso"><li><a href="../configuring.html">Configuration files</a></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="section"><h2><a name="Description" id="Description">Description</a></h2>
+</div>
+<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#Description">Description</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#Syntax">Syntax</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#Default">Default</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#Context">Context</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#Override">Override</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#Status">Status</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#Module">Module</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#Compatibility">Compatibility</a></li>
+</ul><h3>See also</h3><ul class="seealso"><li><a href="../configuring.html">Configuration files</a></li></ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="Description" id="Description">Description</a></h2>
 
 <p>A brief description of the purpose of the directive.</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="section"><h2><a name="Syntax" id="Syntax">Syntax</a></h2>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="Syntax" id="Syntax">Syntax</a></h2>
 
     <p>This indicates the format of the directive as it would
     appear in a configuration file. This syntax is extremely
@@ -97,7 +123,9 @@
       environment variable. See the <a href="../env.html">environment variable documentation</a> for
       more details.</dd>
     </dl>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="section"><h2><a name="Default" id="Default">Default</a></h2>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="Default" id="Default">Default</a></h2>
 
     <p>If the directive has a default value (<em>i.e.</em>, if you
     omit it from your configuration entirely, the Apache Web server
@@ -106,7 +134,9 @@
     should say "<em>None</em>". Note that the default listed here
     is not necessarily the same as the value the directive takes in
     the default httpd.conf distributed with the server.</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="section"><h2><a name="Context" id="Context">Context</a></h2>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="Context" id="Context">Context</a></h2>
 
     <p>This indicates where in the server's configuration files the
     directive is legal. It's a comma-separated list of one or more
@@ -163,7 +193,9 @@
     files, but not within any <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code> or
     <code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code>
     containers.</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="section"><h2><a name="Override" id="Override">Override</a></h2>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="Override" id="Override">Override</a></h2>
 
     <p>This directive attribute indicates which configuration
     override must be active in order for the directive to be
@@ -178,7 +210,9 @@
     <code class="directive"><a href="../mod/core.html#allowoverride">AllowOverride</a></code> directives at
     lower levels. The documentation for that directive also lists the
     possible override names available.</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="section"><h2><a name="Status" id="Status">Status</a></h2>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="Status" id="Status">Status</a></h2>
 
     <p>This indicates how tightly bound into the Apache Web server
     the directive is; in other words, you may need to recompile the
@@ -228,14 +262,22 @@
       directive and its module to see if it remarks on the
       availability.</dd>
     </dl>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="section"><h2><a name="Module" id="Module">Module</a></h2>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="Module" id="Module">Module</a></h2>
 
     <p>This quite simply lists the name of the source module which
     defines the directive.</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="section"><h2><a name="Compatibility" id="Compatibility">Compatibility</a></h2>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="Compatibility" id="Compatibility">Compatibility</a></h2>
 
     <p>If the directive wasn't part of the original Apache version
     2 distribution, the version in which it was introduced should
     be listed here.  In addition, if the directive is available
     only on certain platforms, it will be noted here.</p>
-</div></div><div id="footer"><p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p><p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div></body></html>
+</div></div>
+<div id="footer">
+<p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div>
+</body></html>

@@ -4,27 +4,66 @@
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-      --><title>mod_include - Apache HTTP Server</title><link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" /><link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" /><link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link href="../images/favicon.ico" rel="shortcut icon" /></head><body><div id="page-header"><p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p><p class="apache">Apache HTTP Server Version 2.0</p><img alt="" src="../images/feather.gif" /></div><div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div><div id="path"><a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentation</a> &gt; <a href="../">Version 2.0</a> &gt; <a href="./">Modules</a></div><div id="page-content"><div id="preamble"><h1>Apache Module mod_include</h1><table class="module"><tr><th><a href="module-dict.html#Description">Description:
-                  </a></th><td>Server-parsed html documents (Server Side Includes)</td></tr><tr><th><a href="module-dict.html#Status">Status:
-                  </a></th><td>Base</td></tr><tr><th><a href="module-dict.html#ModuleIdentifier">Module Identifier:
-                  </a></th><td>include_module</td></tr><tr><th><a href="module-dict.html#SourceFile">Source File:
-                  </a></th><td>mod_include.c</td></tr><tr><th><a href="module-dict.html#Compatibility">Compatibility:
-                  </a></th><td>Implemented as an output filter since Apache
-2.0</td></tr></table><h3>Summary</h3>
+      -->
+<title>mod_include - Apache HTTP Server</title>
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
+<link href="../images/favicon.ico" rel="shortcut icon" /></head>
+<body>
+<div id="page-header">
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p>
+<p class="apache">Apache HTTP Server Version 2.0</p>
+<img alt="" src="../images/feather.gif" /></div>
+<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<div id="path">
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentation</a> &gt; <a href="../">Version 2.0</a> &gt; <a href="./">Modules</a></div>
+<div id="page-content">
+<div id="preamble"><h1>Apache Module mod_include</h1>
+<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Server-parsed html documents (Server Side Includes)</td></tr>
+<tr><th><a href="module-dict.html#Status">Status:</a></th><td>Base</td></tr>
+<tr><th><a href="module-dict.html#ModuleIdentifier">Module Identifier:</a></th><td>include_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">Source File:</a></th><td>mod_include.c</td></tr>
+<tr><th><a href="module-dict.html#Compatibility">Compatibility:</a></th><td>Implemented as an output filter since Apache
+2.0</td></tr></table>
+<h3>Summary</h3>
+
     <p>This module provides a filter which will process files
     before they are sent to the client. The processing is
     controlled by specially formatted SGML comments, referred to as
     <dfn>elements</dfn>. These elements allow conditional text, the
     inclusion of other files or programs, as well as the setting and
     printing of environment variables.</p>
-</div><div id="quickview"><h3 class="directives">Directives</h3><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#ssiendtag">SSIEndTag</a></li>
+</div>
+<div id="quickview"><h3 class="directives">Directives</h3>
+<ul id="toc">
+<li><img alt="" src="../images/down.gif" /> <a href="#ssiendtag">SSIEndTag</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#ssierrormsg">SSIErrorMsg</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#ssistarttag">SSIStartTag</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#ssitimeformat">SSITimeFormat</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#ssiundefinedecho">SSIUndefinedEcho</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#xbithack">XBitHack</a></li>
-</ul><h3>Topics</h3><ul id="topics"><li><img alt="" src="../images/down.gif" /> <a href="#enabling">Enabling Server-Side Includes</a></li><li><img alt="" src="../images/down.gif" /> <a href="#pathinfo">PATH_INFO with Server Side Includes</a></li><li><img alt="" src="../images/down.gif" /> <a href="#elements">Basic Elements</a></li><li><img alt="" src="../images/down.gif" /> <a href="#includevars">Include Variables</a></li><li><img alt="" src="../images/down.gif" /> <a href="#substitution">Variable Substitution</a></li><li><img alt="" src="../images/down.gif" /> <a href="#flowctrl">Flow Control Elements</a></li></ul><h3>See also</h3><ul class="seealso"><li><code class="directive"><a href="../mod/core.html#options">Options</a></code></li><li><code class="directive"><a href="../mod/core.html#acceptpathinfo">AcceptPathInfo</a></code></li><li><a href="../misc/custom_errordocs.html">International Customized
-Server Error Messages</a></li><li><a href="../filter.html">Filters</a></li><li><a href="../howto/ssi.html">SSI Tutorial</a></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="section"><h2><a name="enabling" id="enabling">Enabling Server-Side Includes</a></h2>
+</ul>
+<h3>Topics</h3>
+<ul id="topics">
+<li><img alt="" src="../images/down.gif" /> <a href="#enabling">Enabling Server-Side Includes</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#pathinfo">PATH_INFO with Server Side Includes</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#elements">Basic Elements</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#includevars">Include Variables</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#substitution">Variable Substitution</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#flowctrl">Flow Control Elements</a></li>
+</ul><h3>See also</h3>
+<ul class="seealso">
+<li><code class="directive"><a href="../mod/core.html#options">Options</a></code></li>
+<li><code class="directive"><a href="../mod/core.html#acceptpathinfo">AcceptPathInfo</a></code></li>
+<li><a href="../misc/custom_errordocs.html">International Customized
+Server Error Messages</a></li>
+<li><a href="../filter.html">Filters</a></li>
+<li><a href="../howto/ssi.html">SSI Tutorial</a></li>
+</ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="enabling" id="enabling">Enabling Server-Side Includes</a></h2>
     
 
     <p>Server Side Includes are implemented by the
@@ -59,14 +98,18 @@ Server Error Messages</a></li><li><a href="../filter.html">Filters</a></li><li><
     output will have the mime type <code>text/html</code>).</p>
 
     <p>For more information, see our <a href="../howto/ssi.html">Tutorial on Server Side Includes</a>.</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="section"><h2><a name="pathinfo" id="pathinfo">PATH_INFO with Server Side Includes</a></h2>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="pathinfo" id="pathinfo">PATH_INFO with Server Side Includes</a></h2>
     
 
     <p>Files processed for server-side includes no longer accept
     requests with <code>PATH_INFO</code> (trailing pathname information)
     by default.  You can use the <code class="directive"><a href="../mod/core.html#acceptpathinfo">AcceptPathInfo</a></code> directive to
     configure the server to accept requests with <code>PATH_INFO</code>.</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="section"><h2><a name="elements" id="elements">Basic Elements</a></h2>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="elements" id="elements">Basic Elements</a></h2>
     <p>The document is parsed as an HTML document, with special
     commands embedded as SGML comments. A command has the syntax: </p>
 
@@ -341,7 +384,9 @@ Server Error Messages</a></li><li><a href="../filter.html">Filters</a></li><li><
         &lt;!--#set var="category" value="help" --&gt;
       </code></p></div>
      
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="section"><h2><a name="includevars" id="includevars">Include Variables</a></h2>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="includevars" id="includevars">Include Variables</a></h2>
     
 
     <p>In addition to the variables in the standard CGI environment,
@@ -375,7 +420,9 @@ Server Error Messages</a></li><li><a href="../filter.html">Filters</a></li><li><
       usage (special characters like <code>&amp;</code> etc. are
       preceded by backslashes).</dd>
     </dl>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="section"><h2><a name="substitution" id="substitution">Variable Substitution</a></h2>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="substitution" id="substitution">Variable Substitution</a></h2>
 
     <p>Variable substitution is done within quoted strings in most
     cases where they may reasonably occur as an argument to an SSI
@@ -424,7 +471,9 @@ Server Error Messages</a></li><li><a href="../filter.html">Filters</a></li><li><
       </span>
       &lt;!--#endif --&gt;
     </code></p></div>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="section"><h2><a name="flowctrl" id="flowctrl">Flow Control Elements</a></h2>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="flowctrl" id="flowctrl">Flow Control Elements</a></h2>
     
 
     <p>The basic flow control elements are:</p>
@@ -527,14 +576,18 @@ Server Error Messages</a></li><li><a href="../filter.html">Filters</a></li><li><
       and<br />
       <br />
       <code>'<var>string1</var>    <var>string2</var>'</code> results in <code><var>string1</var>    <var>string2</var></code>.</p></div>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="SSIEndTag" id="SSIEndTag">SSIEndTag</a> <a name="ssiendtag" id="ssiendtag">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
-              </a></th><td>String that ends an include element</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td><code>SSIEndTag <var>tag</var></code></td></tr><tr><th><a href="directive-dict.html#Default">Default: 
-              </a></th><td><code>SSIEndTag "--&gt;"</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
-              </a></th><td>server config, virtual host</td></tr><tr><th><a href="directive-dict.html#Status">Status:
-              </a></th><td>Base</td></tr><tr><th><a href="directive-dict.html#Module">Module:
-              </a></th><td>mod_include</td></tr><tr><th><a href="directive-dict.html#Compatibility">Compatibility:
-              </a></th><td>Available in version 2.0.30 and later.</td></tr></table>
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="SSIEndTag" id="SSIEndTag">SSIEndTag</a> <a name="ssiendtag" id="ssiendtag">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>String that ends an include element</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSIEndTag <var>tag</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>SSIEndTag "--&gt;"</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_include</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in version 2.0.30 and later.</td></tr>
+</table>
     <p>This directive changes the string that <code class="module"><a href="../mod/mod_include.html">mod_include</a></code>
     looks for to mark the end of an include element.</p>
 
@@ -542,17 +595,26 @@ Server Error Messages</a></li><li><a href="../filter.html">Filters</a></li><li><
       SSIEndTag "%&gt;"
     </code></p></div>
 
-<h3>See also</h3><ul><li><code class="directive"><a href="#ssistarttag">SSIStartTag</a></code></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="SSIErrorMsg" id="SSIErrorMsg">SSIErrorMsg</a> <a name="ssierrormsg" id="ssierrormsg">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
-              </a></th><td>Error message displayed when there is an SSI
-error</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td><code>SSIErrorMsg <var>message</var></code></td></tr><tr><th><a href="directive-dict.html#Default">Default: 
-              </a></th><td><code>SSIErrorMsg "[an error occurred while processing this
-directive]"</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
-              </a></th><td>server config, virtual host, directory, .htaccess</td></tr><tr><th><a href="directive-dict.html#Override">Override:
-              </a></th><td>All</td></tr><tr><th><a href="directive-dict.html#Status">Status:
-              </a></th><td>Base</td></tr><tr><th><a href="directive-dict.html#Module">Module:
-              </a></th><td>mod_include</td></tr><tr><th><a href="directive-dict.html#Compatibility">Compatibility:
-              </a></th><td>Available in version 2.0.30 and later.</td></tr></table>
+
+<h3>See also</h3>
+<ul>
+<li><code class="directive"><a href="#ssistarttag">SSIStartTag</a></code></li>
+</ul>
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="SSIErrorMsg" id="SSIErrorMsg">SSIErrorMsg</a> <a name="ssierrormsg" id="ssierrormsg">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Error message displayed when there is an SSI
+error</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSIErrorMsg <var>message</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>SSIErrorMsg "[an error occurred while processing this
+directive]"</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Override:</a></th><td>All</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_include</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in version 2.0.30 and later.</td></tr>
+</table>
     <p>The <code class="directive">SSIErrorMsg</code> directive changes the error
     message displayed when <code class="module"><a href="../mod/mod_include.html">mod_include</a></code> encounters an
     error. For production servers you may consider changing the default
@@ -565,14 +627,19 @@ directive]"</code></td></tr><tr><th><a href="directive-dict.html#Context">Contex
     <div class="example"><h3>Example</h3><p><code>
       SSIErrorMsg "&lt;!-- Error --&gt;"
     </code></p></div>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="SSIStartTag" id="SSIStartTag">SSIStartTag</a> <a name="ssistarttag" id="ssistarttag">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
-              </a></th><td>String that starts an include element</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td><code>SSIStartTag <var>tag</var></code></td></tr><tr><th><a href="directive-dict.html#Default">Default: 
-              </a></th><td><code>SSIStartTag "&lt;!--"</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
-              </a></th><td>server config, virtual host</td></tr><tr><th><a href="directive-dict.html#Status">Status:
-              </a></th><td>Base</td></tr><tr><th><a href="directive-dict.html#Module">Module:
-              </a></th><td>mod_include</td></tr><tr><th><a href="directive-dict.html#Compatibility">Compatibility:
-              </a></th><td>Available in version 2.0.30 and later.</td></tr></table>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="SSIStartTag" id="SSIStartTag">SSIStartTag</a> <a name="ssistarttag" id="ssistarttag">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>String that starts an include element</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSIStartTag <var>tag</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>SSIStartTag "&lt;!--"</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_include</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in version 2.0.30 and later.</td></tr>
+</table>
     <p>This directive changes the string that <code class="module"><a href="../mod/mod_include.html">mod_include</a></code>
     looks for to mark an include element to process.</p>
 
@@ -592,16 +659,25 @@ directive]"</code></td></tr><tr><th><a href="directive-dict.html#Context">Contex
     <div class="example"><h3>SSI directives with alternate start and end tags</h3><p><code>
       &lt;%#printenv %&gt;
     </code></p></div>
-<h3>See also</h3><ul><li><code class="directive"><a href="#ssiendtag">SSIEndTag</a></code></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="SSITimeFormat" id="SSITimeFormat">SSITimeFormat</a> <a name="ssitimeformat" id="ssitimeformat">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
-              </a></th><td>Configures the format in which date strings are
-displayed</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td><code>SSITimeFormat <var>formatstring</var></code></td></tr><tr><th><a href="directive-dict.html#Default">Default: 
-              </a></th><td><code>SSITimeFormat "%A, %d-%b-%Y %H:%M:%S %Z"</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
-              </a></th><td>server config, virtual host, directory, .htaccess</td></tr><tr><th><a href="directive-dict.html#Override">Override:
-              </a></th><td>All</td></tr><tr><th><a href="directive-dict.html#Status">Status:
-              </a></th><td>Base</td></tr><tr><th><a href="directive-dict.html#Module">Module:
-              </a></th><td>mod_include</td></tr><tr><th><a href="directive-dict.html#Compatibility">Compatibility:
-              </a></th><td>Available in version 2.0.30 and later.</td></tr></table>
+
+<h3>See also</h3>
+<ul>
+<li><code class="directive"><a href="#ssiendtag">SSIEndTag</a></code></li>
+</ul>
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="SSITimeFormat" id="SSITimeFormat">SSITimeFormat</a> <a name="ssitimeformat" id="ssitimeformat">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Configures the format in which date strings are
+displayed</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSITimeFormat <var>formatstring</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>SSITimeFormat "%A, %d-%b-%Y %H:%M:%S %Z"</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Override:</a></th><td>All</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_include</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in version 2.0.30 and later.</td></tr>
+</table>
 <p>This directive changes the format in which date strings are displayed 
     when echoing <code>DATE</code> environment variables. The
     <var>formatstring</var> is as in <code>strftime(3)</code> from the
@@ -616,29 +692,39 @@ displayed</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
 
     <p>The above directive would cause times to be displayed in the
     format "22:26, June 14, 2002".</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="SSIUndefinedEcho" id="SSIUndefinedEcho">SSIUndefinedEcho</a> <a name="ssiundefinedecho" id="ssiundefinedecho">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
-              </a></th><td>String displayed when an unset variable is echoed</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td><code>SSIUndefinedEcho <var>string</var></code></td></tr><tr><th><a href="directive-dict.html#Default">Default: 
-              </a></th><td><code>SSIUndefinedEcho "(none)"</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
-              </a></th><td>server config, virtual host</td></tr><tr><th><a href="directive-dict.html#Status">Status:
-              </a></th><td>Base</td></tr><tr><th><a href="directive-dict.html#Module">Module:
-              </a></th><td>mod_include</td></tr><tr><th><a href="directive-dict.html#Compatibility">Compatibility:
-              </a></th><td>Available in version 2.0.34 and later.</td></tr></table>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="SSIUndefinedEcho" id="SSIUndefinedEcho">SSIUndefinedEcho</a> <a name="ssiundefinedecho" id="ssiundefinedecho">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>String displayed when an unset variable is echoed</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSIUndefinedEcho <var>string</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>SSIUndefinedEcho "(none)"</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_include</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in version 2.0.34 and later.</td></tr>
+</table>
     <p>This directive changes the string that <code class="module"><a href="../mod/mod_include.html">mod_include</a></code>
     displays when a variable is not set and "echoed".</p>
 
     <div class="example"><h3>Example</h3><p><code>
       SSIUndefinedEcho "&lt;!-- undef --&gt;"
     </code></p></div>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="XBitHack" id="XBitHack">XBitHack</a> <a name="xbithack" id="xbithack">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
-              </a></th><td>Parse SSI directives in files with the execute bit
-set</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td><code>XBitHack on|off|full</code></td></tr><tr><th><a href="directive-dict.html#Default">Default: 
-              </a></th><td><code>XBitHack off</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
-              </a></th><td>server config, virtual host, directory, .htaccess</td></tr><tr><th><a href="directive-dict.html#Override">Override:
-              </a></th><td>Options</td></tr><tr><th><a href="directive-dict.html#Status">Status:
-              </a></th><td>Base</td></tr><tr><th><a href="directive-dict.html#Module">Module:
-              </a></th><td>mod_include</td></tr></table>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="XBitHack" id="XBitHack">XBitHack</a> <a name="xbithack" id="xbithack">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Parse SSI directives in files with the execute bit
+set</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>XBitHack on|off|full</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>XBitHack off</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Override:</a></th><td>Options</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_include</td></tr>
+</table>
     <p>The <code class="directive">XBitHack</code> directive controls the parsing
     of ordinary html documents. This directive only affects files associated
     with the MIME type <code>text/html</code>. <code class="directive">XBitHack</code> can take on the following values:</p>
@@ -667,4 +753,10 @@ set</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
       </dd>
     </dl>
 
-    </div></div><div id="footer"><p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p><p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div></body></html>
+    
+</div>
+</div>
+<div id="footer">
+<p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div>
+</body></html>
