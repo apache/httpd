@@ -1692,6 +1692,11 @@ static long get_chunk_size(char *b)
     long chunksize = 0;
     size_t chunkbits = sizeof(long) * 8;
 
+    /* Skip leading zeros */
+    while (*b == '0') {
+        ++b;
+    }
+
     while (apr_isxdigit(*b) && (chunkbits > 0)) {
         int xvalue = 0;
 
