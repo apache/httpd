@@ -1060,9 +1060,9 @@ static const char *util_ldap_set_cert_auth(cmd_parms *cmd, void *dummy, const ch
     if (st->cert_auth_file && 
         ((rv = apr_stat (&finfo, st->cert_auth_file, APR_FINFO_MIN, cmd->pool)) != APR_SUCCESS))
     {
-        ap_log_error(APLOG_MARK, APLOG_ERR, 0, cmd->server, 
-                     "LDAP: Could not open SSL trusted certificate authority file - %s error: %d", 
-                     st->cert_auth_file == NULL ? file : st->cert_auth_file, rv);
+        ap_log_error(APLOG_MARK, APLOG_ERR, rv, cmd->server, 
+                     "LDAP: Could not open SSL trusted certificate authority file - %s", 
+                     st->cert_auth_file == NULL ? file : st->cert_auth_file);
         return "Invalid file path";
     }
 
