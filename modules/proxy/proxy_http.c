@@ -1115,6 +1115,7 @@ int ap_proxy_http_handler(request_rec *r, proxy_worker *worker,
     int status;
     char server_portstr[32];
     char *scheme;
+    char *ch;
     const char *proxy_function;
     const char *u;
     proxy_conn_rec *backend = NULL;
@@ -1145,7 +1146,11 @@ int ap_proxy_http_handler(request_rec *r, proxy_worker *worker,
         return HTTP_BAD_REQUEST;
     scheme = apr_pstrndup(c->pool, url, u - url);
     /* scheme is lowercase */
-    apr_tolower(scheme);
+    ch = scheme;
+    while (*ch) {
+        *ch = apr_tolower(*ch);
+        ++ch;
+    }
     /* is it for us? */
     if (strcmp(scheme, "https") == 0) {
         if (!ap_proxy_ssl_enable(NULL)) {
