@@ -2549,5 +2549,6 @@ module mime_magic_module = {
     magic_find_ct,   /* type_checker */
     NULL,            /* fixups */
     NULL,            /* logger */
+    NULL,            /* header parser */
     NULL	     /* child_init */
 };
