@@ -248,6 +248,7 @@ int cache_select_url(request_rec *r, char *url)
             /* Is our cached response fresh enough? */
             fresh = ap_cache_check_freshness(h, r);
             if (!fresh) {
+                list->provider->remove_entity(h);
                 return DECLINED;
             }
 
