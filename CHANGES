@@ -67,6 +67,10 @@ Changes with Apache 2.1.0-dev
 
 Changes with Apache 2.0.45
 
+  *) Fixed piped access logs on Win32 by disabling OTHER_CHILD
+     support by default in APR.  More development is required
+     to deploy OTHER_CHILD on Win32.  [William Rowe]
+
   *) Use saner default config values for suexec. PR 15713.
      [Thom May <thom@planetarytramp.net>]
 
