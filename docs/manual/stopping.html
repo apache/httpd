@@ -25,13 +25,13 @@ be described in a moment.
 
 <p>To send a signal to the parent you should issue a command such as:
 <blockquote><pre>
-    kill -TERM `cat /usr/local/etc/httpd/logs/httpd.pid`
+    kill -TERM `cat /usr/local/apache/logs/httpd.pid`
 </pre></blockquote>
 
 You can read about its progress by issuing:
 
 <blockquote><pre>
-    tail -f /usr/local/etc/httpd/logs/error_log
+    tail -f /usr/local/apache/logs/error_log
 </pre></blockquote>
 
 Modify those examples to match your

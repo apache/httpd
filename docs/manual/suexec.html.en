@@ -326,14 +326,14 @@ match your local Apache installation.
       *             transactions and errors logged for auditing and
       *             debugging purposes.
       */
-     #define LOG_EXEC "/usr/local/etc/httpd/logs/cgi.log" /* Need me? */
+     #define LOG_EXEC "/usr/local/apache/logs/cgi.log" /* Need me? */
 
      /*
       * DOC_ROOT -- Define as the DocumentRoot set for Apache.  This
       *             will be the only hierarchy (aside from UserDirs)
       *             that can be used for suEXEC behavior.
       */
-     #define DOC_ROOT "/usr/local/etc/httpd/htdocs"
+     #define DOC_ROOT "/usr/local/apache/htdocs"
 
      /*
       * SAFE_PATH -- Define a safe PATH environment to pass to CGI executables.
@@ -360,7 +360,7 @@ location.
 <EM>From src/httpd.h</EM>
 <PRE>
      /* The path to the suEXEC wrapper */
-     #define SUEXEC_BIN "/usr/local/etc/httpd/sbin/suexec"
+     #define SUEXEC_BIN "/usr/local/apache/sbin/suexec"
 </PRE>
 </P>
 
@@ -378,7 +378,7 @@ exercise above to the defined location for <STRONG>SUEXEC_BIN</STRONG>.
 </P>
 
 <P ALIGN="LEFT">
-<STRONG><CODE>cp suexec /usr/local/etc/httpd/sbin/suexec [ENTER]</CODE></STRONG>
+<STRONG><CODE>cp suexec /usr/local/apache/sbin/suexec [ENTER]</CODE></STRONG>
 </P>
 
 <P ALIGN="LEFT">
@@ -389,8 +389,8 @@ user shell, do so now and execute the following commands.
 </P>
 
 <P ALIGN="LEFT">
-<STRONG><CODE>chown root /usr/local/etc/httpd/sbin/suexec [ENTER]</CODE></STRONG><BR>
-<STRONG><CODE>chmod 4711 /usr/local/etc/httpd/sbin/suexec [ENTER]</CODE></STRONG>
+<STRONG><CODE>chown root /usr/local/apache/sbin/suexec [ENTER]</CODE></STRONG><BR>
+<STRONG><CODE>chmod 4711 /usr/local/apache/sbin/suexec [ENTER]</CODE></STRONG>
 </P>
 
 <P ALIGN="CENTER">

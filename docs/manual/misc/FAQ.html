@@ -15,7 +15,7 @@
   <!--#include virtual="header.html" -->
   <H1 ALIGN="CENTER">Apache Server Frequently Asked Questions</H1>
   <P>
-  $Revision: 1.90 $ ($Date: 1997/10/21 01:10:27 $)
+  $Revision: 1.91 $ ($Date: 1997/10/25 22:35:10 $)
   </P>
   <P>
   The latest version of this FAQ is always available from the main
@@ -457,7 +457,7 @@
     the server error log.  Sometimes this is enough for you to diagnose
     &amp; fix the problem yourself (such as file permissions or the like).
     The default location of the error log is
-    <SAMP>/usr/local/etc/httpd/logs/error_log</SAMP>, but see the
+    <SAMP>/usr/local/apache/logs/error_log</SAMP>, but see the
     <A
      HREF="../mod/core.html#errorlog"
     ><SAMP>ErrorLog</SAMP></A>
@@ -1731,7 +1731,7 @@
     <BR>
     AuthType Basic
     <BR>
-    AuthUserFile /usr/local/etc/httpd/conf/htpasswd.users
+    AuthUserFile /usr/local/apache/conf/htpasswd.users
     <BR>
     AuthName special directory
     <BR>
