@@ -1,0 +1,92 @@
+New features with this release, as extensions of the Apache functionality
+(see also more detailed CHANGES file) in the source directory.
+
+*) API for server extensions --- see src/API.html for an overview.  Most
+   server functionality (including includes, CGI, and most forms of access
+   control) are actually implemented as API-conformant modules.
+
+   The API is not yet quite stable (see src/TODO for some possible
+   changes), but anything done now will be easily adapted for future
+   versions --- after all, we have more modules to adapt than you do.
+
+*) <VirtualHost> is more general --- just about any srm.conf or
+   httpd.conf command can go in a <Virtualhost> section, with the
+   following specific exceptions: ServerType, UserId, GroupId,
+   StartServers, MaxRequestsPerChild, BindAddress, PidFile,
+   TypesConfig, ServerRoot.  
+
+*) Support for content negotiation of languages through MultiViews
+   (*.fr, *.de, *.en suffixes), via the new AddLanguage and LanguagePriority
+   commands (code written by Francois Guillaume).
+
+*) Significant internal cleanups and rearrangements.  The two externally
+   visible consequences of this are that just about all of the unchecked
+   fixed limits are gone, and that the server is somewhat pickier about
+   config file syntax (noting and complaining about extraneous command
+   arguments or other stuff at the end of command lines).
+
+*) XBITHACK is a run-time option, and can be selectively enabled per
+   directory --- the -DXBITHACK compile-time option just changes the
+   default.  The command which configures it is "XBitHack", which is
+   allowed everywhere "Options" is; this takes an argument ---
+   "XBitHack Off" turns it off; "XBitHack On" gets you the NCSA
+   -DXBITHACK behavior; and "XBitHack Full" gets you the Apache GXBIT
+   stuff on top of that.  (-DXBITHACK makes "Full" the default;
+   otherwise, it defaults "Off").
+
+*) TransferLog can specify a program which gets the log entries piped to it,
+   a la 'TransferLog "| /var/www/my-perl-script -arg valu"' --- this should
+   give the same SIGTERM/pause/SIGKILL treatment to the logging process on
+   server restarts that a CGI script gets on an aborted request.  NB the
+   server is counting on the logging process to work, and will probably hang
+   or worse if it dies.
+
+We also have a few experimental modules which indicate directions for
+a future release (NB these experimental, meaning they haven't been
+tested as much as the rest of the code here; also, they are not in
+final form yet, and what appears as supported may not be quite what
+you see now, though it will support at least the same functionality):
+
+*) Configurable logging module --- this is a replacement for the
+   standard plane-jane Common Log Format code, which supports a
+   LogFormat directive which allows you to control the formatting of
+   entries in the TransferLog, and add some new items if you like (in
+   particular, Referer and User-Agent).
+
+*) The optional dld module is a proof-of-concept piece of code which 
+   loads other modules into the server as it is configuring itself (the
+   first time only --- for now, rereading the config files cannot
+   affect the state of loaded modules), using the GNU dynamic linking
+   library, DLD.  It isn't compiled into the server by default, since
+   not everyone has DLD, but it works when I try it.  (Famous last
+   words). 
+
+   This module defines two commands:
+
+     LoadModule module_sym filename
+     LoadFile filename filename filename...
+     
+   LoadModule tells the server to link in the file "filename", and add
+   the module structure named "module_sym" to the list of active
+   modules (this is the "foo_module" in "module foo_module = {..." at
+   the bottom of all the mod_*.c files).
+
+   LoadFile links with additional object files or libraries which may
+   be required for some module to work.  Filenames are taken relative
+   to ServerRoot unless they begin with '/'.  Note that for some
+   reason, "LoadFile /lib/libc.a" seems to be required for just about
+   everything.
+
+   NB that DLD needs to read the symbol table out of the server binary
+   when starting up; these commands will fail if the server can't find
+   its own binary when it starts up, or if that binary is stripped.
+
+   Sample usage:
+
+     LoadModule ai_backcompat_module modules/mod_ai_backcompat.o
+     LoadFile /lib/libc.a
+
+   (assuming mod_ai_backcompat.o is in fact in the 'modules'
+   subdirectory of ServerRoot).
+
+
