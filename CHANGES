@@ -1,6 +1,6 @@
 Changes with Apache 2.0.41
 
-  *) Add image/x-icon to mime.types PR 10993.
+  *) Add image/x-icon to httpd.conf PR 10993.
      [Ian Holsman, Peter Bieringer <pb@bieringer.de>]
 
   *) Fix FileETags none operation.  PR 12207.
