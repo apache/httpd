@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/04/05 23:19:23 $]
+Last modified at [$Date: 2003/04/05 23:55:39 $]
 
 Release:
 
@@ -78,13 +78,19 @@ PATCHES TO PORT FROM 2.1
       server/request.c r1.123
       server/util.c r1.135
       +1: coar, nd
+      -0: wrowe
           nd: since it's inherited carefully (namely: not) and has to
               be explicitely turned on, I see no harm with that patch.
               (needs docs anyway!)
-          wrowe: two open questions, one about dconf v.s. sconf and
-                 the other about proxied requests containing %2f,
-                 posted to the dev@ list with Message-ID
-                 <5.2.0.9.2.20030319124411.01f9c6e8@pop3.rowe-clan.net>
+          wrowe: no veto here.  But I am now 100% convinced that it 
+                 is altogether wrong to be rejecting any codes within 
+                 the supposedly 'generic' ap_unparse_uri - and that the
+                 rejection of %2f should occur elsewhere.
+                 So in spirit I accept a more extreme version of coar's
+                 patch, where a 'pure' _unparse_uri becomes the default.
+                 But protection must be placed in dir_walk and some
+                 consideration given to how this changes <Location >
+                 block evaluation.
 
     * Rewrite how proxy sends its request to allow input bodies to 
       morph the request bodies.  Previously, if an input filter
@@ -170,7 +176,7 @@ PATCHES TO PORT FROM 2.1
     * Keep the same SSLMutex for the lifetime of the parent process
       (instead of having children using different mutexes and failing
       to lock the session cache across restarts.)
-      modules/ssl/ssl_engine_mutex.c r1.21, r1.22
+      New patch forthcoming - JimJag's changes make the merge ugly.
       +1: wrowe
 
     * Fix the SSLMutex config parser so that all 'mechanisms' can take
@@ -179,7 +185,7 @@ PATCHES TO PORT FROM 2.1
       cross-platform default:logs/ssl_mutex to be used everywhere.  Also
       eliminates the '.pid' suffix so that the name given is the name.
       Allows Win32 and other non-unicies to use named locks.
-      modules/ssl/ssl_engine_config.c r1.74, r1.75
+      New patch forthcoming - JimJag's changes make the merge ugly.
       +1: wrowe
 
     * mod_ssl compile failure (or maybe warning, depending on
