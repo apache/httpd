@@ -769,6 +769,7 @@ API_EXPORT(void) unblock_alarms()
     --alarms_blocked;
     if (alarms_blocked == 0) {
 	if (exit_after_unblock) {
+	    exit_after_unblock = 0;
 	    child_exit_modules(pconf, server_conf);
 	    destroy_pool(pconf);
 	    exit(0);
@@ -1911,26 +1912,46 @@ static int wait_or_timeout(int *status)
 }
 
 
-void bus_error(int sig)
+/* handle all varieties of core dumping signals */
+void sig_coredump(int sig)
 {
     char emsg[256];
+    const char *s;
+
+    /* Must protect against a nested signal, otherwise we could end up in
+     * an infinite loop.
+     */
+    signal(SIGSEGV, SIG_DFL);
+#ifdef SIGBUS
+    signal(SIGBUS, SIG_DFL);
+#endif
+#ifdef SIGABORT
+    signal(SIGABORT, SIG_DFL);
+#endif
+#ifdef SIGABRT
+    signal(SIGABRT, SIG_DFL);
+#endif
+
+    s = "SIGSEGV";
+#ifdef SIGBUS
+    if (sig == SIGBUS) {
+	s = "SIGBUS";
+    }
+#endif
+#ifdef SIGABORT
+    if (sig == SIGABORT) {
+	s = "SIGABORT";
+    }
+#endif
+#ifdef SIGABRT
+    if (sig == SIGABRT) {
+	s = "SIGABRT";
+    }
+#endif
 
     ap_snprintf(emsg, sizeof(emsg),
-		"httpd: caught SIGBUS, attempting to dump core in %s",
-		coredump_dir);
-    aplog_error(APLOG_MARK, APLOG_INFO, server_conf, emsg);
-    chdir(coredump_dir);
-    abort();
-    exit(1);
-}
-
-void seg_fault(int sig)
-{
-    char emsg[256];
-
-    ap_snprintf(emsg, sizeof(emsg),
-		"httpd: caught SIGSEGV, attempting to dump core in %s",
-		coredump_dir);
+		"httpd: caught %s, attempting to dump core in %s",
+		s, coredump_dir);
     aplog_error(APLOG_MARK, APLOG_INFO, server_conf, emsg);
     chdir(coredump_dir);
     abort();
@@ -1997,12 +2018,21 @@ void set_signals(void)
     sa.sa_flags = 0;
 
     if (!one_process) {
-	sa.sa_handler = seg_fault;
+	sa.sa_handler = sig_coredump;
 	if (sigaction(SIGSEGV, &sa, NULL) < 0)
 	    aplog_error(APLOG_MARK, APLOG_WARNING, server_conf, "sigaction(SIGSEGV)");
-	sa.sa_handler = bus_error;
+#ifdef SIGBUS
 	if (sigaction(SIGBUS, &sa, NULL) < 0)
 	    aplog_error(APLOG_MARK, APLOG_WARNING, server_conf, "sigaction(SIGBUS)");
+#endif
+#ifdef SIGABORT
+	if (sigaction(SIGABORT, &sa, NULL) < 0)
+	    aplog_error(APLOG_MARK, APLOG_WARNING, server_conf, "sigaction(SIGABORT)");
+#endif
+#ifdef SIGABRT
+	if (sigaction(SIGABRT, &sa, NULL) < 0)
+	    aplog_error(APLOG_MARK, APLOG_WARNING, server_conf, "sigaction(SIGABRT)");
+#endif
     }
     sa.sa_handler = sig_term;
     if (sigaction(SIGTERM, &sa, NULL) < 0)
@@ -2018,10 +2048,16 @@ void set_signals(void)
 	aplog_error(APLOG_MARK, APLOG_WARNING, server_conf, "sigaction(SIGUSR1)");
 #else
     if (!one_process) {
-	signal(SIGSEGV, seg_fault);
+	signal(SIGSEGV, sig_coredump);
 #ifdef SIGBUS
-	signal(SIGBUS, bus_error);
+	signal(SIGBUS, sig_coredump);
 #endif /* SIGBUS */
+#ifdef SIGABORT
+	signal(SIGABORT, sig_coredump);
+#endif /* SIGABORT */
+#ifdef SIGABRT
+	signal(SIGABRT, sig_coredump);
+#endif /* SIGABRT */
     }
 
     signal(SIGTERM, sig_term);

@@ -127,6 +127,7 @@ void chk_on_blk_list(union block_hdr *blok, union block_hdr *free_blk)
     while (free_blk) {
 	if (free_blk == blok) {
 	    fprintf(stderr, "Ouch!  Freeing free block\n");
+	    abort();
 	    exit(1);
 	}
 	free_blk = free_blk->h.next;
