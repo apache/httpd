@@ -55,8 +55,8 @@ BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
 LINK32=link.exe
-# ADD BASE LINK32 ApacheCore.lib aprlib.lib kernel32.lib /nologo /base:@BaseAddr.ref,mod_auth_anon /subsystem:windows /dll /map /machine:I386 /libpath:"..\..\CoreR" /libpath:"..\..\lib\apr\Release"
-# ADD LINK32 ApacheCore.lib aprlib.lib kernel32.lib /nologo /base:@BaseAddr.ref,mod_auth_anon /subsystem:windows /dll /map /machine:I386 /libpath:"..\..\CoreR" /libpath:"..\..\lib\apr\Release"
+# ADD BASE LINK32 ApacheCore.lib aprlib.lib kernel32.lib /nologo /subsystem:windows /dll /map /machine:I386 /libpath:"..\..\CoreR" /libpath:"..\..\lib\apr\Release" /base:@BaseAddr.ref,mod_auth_anon
+# ADD LINK32 ApacheCore.lib aprlib.lib kernel32.lib /nologo /subsystem:windows /dll /map /machine:I386 /libpath:"..\..\CoreR" /libpath:"..\..\lib\apr\Release" /base:@BaseAddr.ref,mod_auth_anon
 
 !ELSEIF  "$(CFG)" == "ApacheModuleAuthAnon - Win32 Debug"
 
@@ -82,8 +82,9 @@ BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
 LINK32=link.exe
-# ADD BASE LINK32 ApacheCore.lib aprlib.lib kernel32.lib /nologo /base:@BaseAddr.ref,mod_auth_anon /subsystem:windows /dll /map /debug /machine:I386 /libpath:"..\..\CoreD" /libpath:"..\..\lib\apr\Debug"
-# ADD LINK32 ApacheCore.lib aprlib.lib kernel32.lib /nologo /base:@BaseAddr.ref,mod_auth_anon /subsystem:windows /dll /map /debug /machine:I386 /libpath:"..\..\CoreD" /libpath:"..\..\lib\apr\Debug"
+# ADD BASE LINK32 ApacheCore.lib aprlib.lib kernel32.lib /nologo /subsystem:windows /dll /map /debug /machine:I386 /libpath:"..\..\CoreD" /libpath:"..\..\lib\apr\Debug" /base:@BaseAddr.ref,mod_auth_anon
+# ADD LINK32 ApacheCore.lib aprlib.lib kernel32.lib /nologo /subsystem:windows /dll /debug /machine:I386 /libpath:"..\..\CoreD" /libpath:"..\..\lib\apr\Debug" /base:@BaseAddr.ref,mod_auth_anon
+# SUBTRACT LINK32 /incremental:no /map
 
 !ENDIF 
 
@@ -91,25 +92,9 @@ LINK32=link.exe
 
 # Name "ApacheModuleAuthAnon - Win32 Release"
 # Name "ApacheModuleAuthAnon - Win32 Debug"
-# Begin Group "Source Files"
-
-# PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;hpj;bat;for;f90"
 # Begin Source File
 
 SOURCE=..\..\modules\standard\mod_auth_anon.c
 # End Source File
-# End Group
-# Begin Group "Header Files"
-
-# PROP Default_Filter "h;hpp;hxx;hm;inl;fi;fd"
-# Begin Source File
-
-SOURCE=.\readdir.h
-# End Source File
-# End Group
-# Begin Group "Resource Files"
-
-# PROP Default_Filter "ico;cur;bmp;dlg;rc2;rct;bin;cnt;rtf;gif;jpg;jpeg;jpe"
-# End Group
 # End Target
 # End Project
