@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2002/02/08 17:15:01 $]
+Last modified at [$Date: 2002/02/08 18:00:58 $]
 
 Release:
 
@@ -50,6 +50,18 @@ CURRENT RELEASE NOTES:
         note so here.  If a majority agree that Win32 is not required for
         a beta, Justin will roll .32 ASAP.  (And, if you agree with the
         fact that Win32 is a showstopper, please note that here too.)
+
+        trawick: not a showstopper IMO; unmaintained platforms
+                 shouldn't hold up the availability of a beta for the
+                 users of maintained platforms; maybe "unmaintained"
+                 seems drastic, but it seems to me that we are limited to
+                 narrow windows of opportunity in which (a) the server
+                 is truly stable and (b) a number of people are
+                 confident that the server is truly stable; if a
+                 particular platform can't reach stability during
+                 that window then tough, and we'll hope that the
+                 maintainers will get things resolved before the next
+                 release
 
     * Proposed BETA possibilities
       31 + fixes for all resolved problems and call it 32 (instead of HEAD)
