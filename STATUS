@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/08/18 02:52:14 $]
+Last modified at [$Date: 2004/08/18 11:24:19 $]
 
 Release:
 
@@ -82,6 +82,11 @@ PATCHES TO BACKPORT FROM 2.1
        http://cvs.apache.org/viewcvs.cgi/httpd-2.0/modules/ssl/ssl_scache_shmcb.c?r1=1.23&r2=1.24
        PR: 21335
        +1: jorton, minfrin, nd
+
+    *) apachectl: Fix a problem finding envvars if sbindir != bindir.
+       PR 30723.  [Friedrich Haubensak <hsk imb-jena.de>]
+         http://cvs.apache.org/viewcvs.cgi/httpd-2.0/support/apachectl.in?r1=1.22&r2=1.23
+       +1: trawick
 
     *) Proposal: Several folks want to aggressively backport changes
        from mod_cache, mod_mem_cache and mod_file_cache from Apache
