@@ -498,7 +498,7 @@ static void winnt_accept(void *lr_)
     PCOMP_CONTEXT context = NULL;
     DWORD BytesRead;
     SOCKET nlsd;
-    int rv;
+    int rv, err_count = 0;
 
     apr_os_sock_get(&nlsd, lr->sd);
 
@@ -538,15 +538,38 @@ static void winnt_accept(void *lr_)
             rv = apr_get_netos_error();
             if ((rv == APR_FROM_OS_ERROR(WSAEINVAL)) ||
                 (rv == APR_FROM_OS_ERROR(WSAENOTSOCK))) {
-                /* Hack alert. Occasionally, TransmitFile will not recycle the 
-                 * accept socket (usually when the client disconnects early). 
-                 * Get a new socket and try the call again.
+                /* Hack alert, we can get here because: 
+                 * 1) Occasionally, TransmitFile will not recycle the accept socket 
+                 *    (usually when the client disconnects early). 
+                 * 2) There is VPN or Firewall software installed with buggy AcceptEx implementation
+                 * 3) The webserver is using a dynamic address and it has changed
                  */
+                Sleep(0);
+                if (++err_count > 1000) { 
+                    apr_int32_t disconnected;
+
+                    /* abitrary socket call to test if the Listening socket is still valid */
+                    apr_status_t listen_rv =  apr_socket_opt_get(lr->sd, APR_SO_DISCONNECTED, &disconnected);
+
+                    if (listen_rv == APR_SUCCESS) {
+                        ap_log_error(APLOG_MARK,APLOG_ERR, listen_rv, ap_server_conf,
+                                     "AcceptEx error: If this occurs constantly and NO requests are being served "
+                                     "try using the WindowsSocketsWorkaround directive set to 'on'.");
+                        err_count = 0;
+                    }
+                    else {
+                        ap_log_error(APLOG_MARK,APLOG_ERR, listen_rv, ap_server_conf,
+                                     "The Listening socket is no longer valid. Dynamic address changed?");
+                        break;
+                    }
+                }
+
                 closesocket(context->accept_socket);
                 context->accept_socket = INVALID_SOCKET;
                 ap_log_error(APLOG_MARK, APLOG_DEBUG, rv, ap_server_conf,
-                       "winnt_accept: AcceptEx failed due to early client "
-                       "disconnect. Reallocate the accept socket and try again.");
+                       "winnt_accept: AcceptEx failed, either early client disconnect, "
+                       "dynamic address renewal, or incompatible VPN or Firewall software.");
+          
                 continue;
             }
             else if ((rv != APR_FROM_OS_ERROR(ERROR_IO_PENDING)) &&
@@ -558,6 +581,7 @@ static void winnt_accept(void *lr_)
                 Sleep(100);
                 continue;
             }
+            err_count = 0;  
 
             /* Wait for pending i/o. 
              * Wake up once per second to check for shutdown .
@@ -701,7 +725,7 @@ static void worker_main(long thread_num)
         ap_update_child_status_from_indexes(0, thread_num, SERVER_READY, NULL);
 
         /* Grab a connection off the network */
-        if (osver.dwPlatformId == VER_PLATFORM_WIN32_WINDOWS) {
+        if (osver.dwPlatformId == VER_PLATFORM_WIN32_WINDOWS || windows_sockets_workaround == 1) {
             context = win9x_get_connection(context);
         }
         else {
@@ -769,7 +793,7 @@ static void cleanup_thread(HANDLE *handles, int *thread_cnt, int thread_to_clean
 static void create_listener_thread()
 {
     int tid;
-    if (osver.dwPlatformId == VER_PLATFORM_WIN32_WINDOWS) {
+    if (osver.dwPlatformId == VER_PLATFORM_WIN32_WINDOWS || windows_sockets_workaround == 1) {
         _beginthreadex(NULL, 0, (LPTHREAD_START_ROUTINE) win9x_accept,
                        NULL, 0, &tid);
     } else {
@@ -840,7 +864,7 @@ void child_main(apr_pool_t *pconf)
      * Create the worker thread dispatch IOCompletionPort
      * on Windows NT/2000
      */
-    if (osver.dwPlatformId != VER_PLATFORM_WIN32_WINDOWS) {
+    if (osver.dwPlatformId != VER_PLATFORM_WIN32_WINDOWS && windows_sockets_workaround != 1) {
         /* Create the worker thread dispatch IOCP */
         ThreadDispatchIOCP = CreateIoCompletionPort(INVALID_HANDLE_VALUE,
                                                     NULL,
@@ -1007,7 +1031,7 @@ void child_main(apr_pool_t *pconf)
     }
 
     /* Shutdown the worker threads */
-    if (osver.dwPlatformId == VER_PLATFORM_WIN32_WINDOWS) {
+    if (osver.dwPlatformId == VER_PLATFORM_WIN32_WINDOWS || windows_sockets_workaround == 1) {
         for (i = 0; i < threads_created; i++) {
             add_job(INVALID_SOCKET);
         }
@@ -1065,7 +1089,7 @@ void child_main(apr_pool_t *pconf)
 
     CloseHandle(allowed_globals.jobsemaphore);
     apr_thread_mutex_destroy(allowed_globals.jobmutex);
-    if (osver.dwPlatformId != VER_PLATFORM_WIN32_WINDOWS) {
+    if (osver.dwPlatformId != VER_PLATFORM_WIN32_WINDOWS && windows_sockets_workaround != 1) {
     	apr_thread_mutex_destroy(qlock);
         CloseHandle(qwait_event);
     }

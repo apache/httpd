@@ -101,6 +101,7 @@ void mpm_nt_eventlog_stderr_flush(void);
 
 /* From winnt.c: */
 
+extern int windows_sockets_workaround;
 extern OSVERSIONINFO osver;
 extern void clean_child_exit(int);
 
