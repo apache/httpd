@@ -58,7 +58,6 @@ for HTTP Basic authentication.</td></tr>
 </div>
 <div id="quickview"><h3 class="directives">Directives</h3>
 <ul id="toc">
-<li><img alt="" src="../images/down.gif" /> <a href="#authldapauthoritative">AuthLDAPAuthoritative</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#authldapbinddn">AuthLDAPBindDN</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#authldapbindpassword">AuthLDAPBindPassword</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#authldapcharsetconfig">AuthLDAPCharsetConfig</a></li>
@@ -68,6 +67,7 @@ for HTTP Basic authentication.</td></tr>
 <li><img alt="" src="../images/down.gif" /> <a href="#authldapgroupattributeisdn">AuthLDAPGroupAttributeIsDN</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#authldapremoteuserisdn">AuthLDAPRemoteUserIsDN</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#authldapurl">AuthLDAPUrl</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#authzldapauthoritative">AuthzLDAPAuthoritative</a></li>
 </ul>
 <h3>Topics</h3>
 <ul id="topics">
@@ -260,21 +260,21 @@ for HTTP Basic authentication.</td></tr>
 
         <td>The attribute specified in the
         URL is used in compare operations for the <code>require
-        user</code> operation.</td>
+        ldap-user</code> operation.</td>
       </tr>
 
       <tr>
         <td><code class="directive"><a href="#authldapcomparednonserver">AuthLDAPCompareDNOnServer</a></code></td>
 
         <td>Determines the behavior of the
-        <code>require dn</code> directive.</td>
+        <code>require ldap-dn</code> directive.</td>
       </tr>
 
       <tr>
         <td><code class="directive"><a href="#authldapgroupattribute">AuthLDAPGroupAttribute</a></code></td>
 
         <td>Determines the attribute to
-        use for comparisons in the <code>require group</code>
+        use for comparisons in the <code>require ldap-group</code>
         directive.</td>
       </tr>
 
@@ -283,7 +283,7 @@ for HTTP Basic authentication.</td></tr>
 
         <td>Specifies whether to use the
         user DN or the username when doing comparisons for the
-        <code>require group</code> directive.</td>
+        <code>require ldap-group</code> directive.</td>
       </tr>
     </table>
 
@@ -304,7 +304,7 @@ for HTTP Basic authentication.</td></tr>
     access to any user that has successfully authenticated during the
     search/bind phase.  Requires that <code class="module"><a href="../mod/mod_authz_user.html">mod_authz_user</a></code> be 
     loaded and that the 
-    <code class="directive"><a href="#authldapauthoritative">AuthLDAPAuthoritative</a></code>
+    <code class="directive"><a href="#authzldapauthoritative">AuthzLDAPAuthoritative</a></code>
     directive be set to off.</p>
 
 
@@ -513,12 +513,12 @@ require valid-user
     that gets created in the web</p>
 <div class="example"><pre>
 AuthLDAPURL            "the url"
-AuthLDAPAuthoritative  off
+AuthzLDAPAuthoritative off
 AuthGroupFile <em>mygroupfile</em>
 require group <em>mygroupfile</em>
 </pre></div>
 
-    <p><code class="directive"><a href="#authldapauthoritative">AuthLDAPAuthoritative</a></code> 
+    <p><code class="directive"><a href="#authzldapauthoritative">AuthzLDAPAuthoritative</a></code> 
     must be off to allow <code class="module"><a href="../mod/mod_authnz_ldap.html">mod_authnz_ldap</a></code> to decline group
     authentication so that Apache will fall back to file
     authentication for checking group membership. This allows the
@@ -578,25 +578,6 @@ require group <em>mygroupfile</em>
       never get a chance to process the <code>.htaccess</code> file,
       and won't be able to find the FrontPage-managed user file.</li>
     </ul>
-
-</div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AuthLDAPAuthoritative" id="AuthLDAPAuthoritative">AuthLDAPAuthoritative</a> <a name="authldapauthoritative" id="authldapauthoritative">Directive</a></h2>
-<table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Prevent other authentication modules from
-authenticating the user if this one fails</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>AuthLDAPAuthoritative on|off</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>AuthLDAPAuthoritative on</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>directory, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">Override:</a></th><td>AuthConfig</td></tr>
-<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
-<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_authnz_ldap</td></tr>
-</table>
-    <p>Set to <code>off</code> if this module should let other
-    authentication modules attempt to authenticate the user, should
-    authentication with this module fail. Control is only passed on
-    to lower modules if there is no DN or rule that matches the
-    supplied user name (as passed by the client).</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -848,6 +829,25 @@ environment variable</td></tr>
     <code>(&amp;(posixid=*)(cn=Babs Jenson))</code>.</p>
 
     <p>See above for examples of <code class="directive"><a href="#authldapurl">AuthLDAPURL</a></code> URLs.</p>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="AuthzLDAPAuthoritative" id="AuthzLDAPAuthoritative">AuthzLDAPAuthoritative</a> <a name="authzldapauthoritative" id="authzldapauthoritative">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Prevent other authentication modules from
+authenticating the user if this one fails</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>AuthzLDAPAuthoritative on|off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>AuthzLDAPAuthoritative on</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Override:</a></th><td>AuthConfig</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_authnz_ldap</td></tr>
+</table>
+    <p>Set to <code>off</code> if this module should let other
+    authentication modules attempt to authenticate the user, should
+    authentication with this module fail. Control is only passed on
+    to lower modules if there is no DN or rule that matches the
+    supplied user name (as passed by the client).</p>
 
 </div>
 </div>

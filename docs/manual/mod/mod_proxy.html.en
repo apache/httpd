@@ -35,14 +35,16 @@
     </div>
 
     <p>This module implements a proxy/gateway for Apache. It implements
-    proxying capability for <code>FTP</code>, <code>CONNECT</code> (for SSL),
+    proxying capability for <code>AJP13</code> (Apache JServe Protocol
+    version 1.3), <code>FTP</code>, <code>CONNECT</code> (for SSL),
     <code>HTTP/0.9</code>, <code>HTTP/1.0</code>, and <code>HTTP/1.1</code>.
     The module can be configured to connect to other proxy modules for these
     and other protocols.</p>
 
     <p>Apache's proxy features are divided into several modules in
     addition to <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code>:
-    <code class="module"><a href="../mod/mod_proxy_http.html">mod_proxy_http</a></code>, <code class="module"><a href="../mod/mod_proxy_ftp.html">mod_proxy_ftp</a></code>
+    <code class="module"><a href="../mod/mod_proxy_http.html">mod_proxy_http</a></code>, <code class="module"><a href="../mod/mod_proxy_ftp.html">mod_proxy_ftp</a></code>,
+    <code class="module"><a href="../mod/mod_proxy_ajp.html">mod_proxy_ajp</a></code>, <code class="module"><a href="../mod/mod_proxy_balancer.html">mod_proxy_balancer</a></code>,
     and <code class="module"><a href="../mod/mod_proxy_connect.html">mod_proxy_connect</a></code>.  Thus, if you want to use
     one or more of the particular proxy functions, load
     <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> <em>and</em> the appropriate module(s)
@@ -448,7 +450,7 @@ directly</td></tr>
     (sometimes used in the netmask form <code>255.255.0.0</code>)</dd>
     <dt><code>192.168.112.0/21</code></dt>
     <dd>the subnet <code>192.168.112.0/21</code> with a netmask of 21
-    valid bits (also used in the form 255.255.248.0)</dd>
+    valid bits (also used in the form <code>255.255.248.0</code>)</dd>
     </dl>
 
     <p>As a degenerate case, a <em>SubNet</em> with 32 valid bits is the
@@ -651,7 +653,8 @@ proxied</td></tr>
 </table>
     <p>This directive is useful for reverse-proxy setups, where you want to 
     have a common look and feel on the error pages seen by the end user. 
-    This also allows for included files (via mod_include's SSI) to get
+    This also allows for included files (via
+    <code class="module"><a href="../mod/mod_include.html">mod_include</a></code>'s SSI) to get
     the error code and act accordingly (default behavior would display
     the error page of the proxied server, turning this on shows the SSI
     Error message).</p>
@@ -752,7 +755,7 @@ through</td></tr>
 
     <div class="note"><h3>Note</h3>
       <p>Order is important. you need to put the exclusions <em>before</em> the
-      general proxypass directive.</p>
+      general <code class="directive">ProxyPass</code> directive.</p>
     </div>
 
     <p>When used inside a <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code> section, the first argument is omitted and the local
@@ -800,8 +803,8 @@ proxied server</td></tr>
 
     <div class="example"><p><code>
       ProxyPass         /mirror/foo/ http://backend.example.com/<br />
-      ProxyPassReverse  /mirror/foo/ http://backend.example.com/
-      ProxyPassReverseCookieDomain  backend.example.com  public.example.com
+      ProxyPassReverse  /mirror/foo/ http://backend.example.com/<br />
+      ProxyPassReverseCookieDomain  backend.example.com  public.example.com<br />
       ProxyPassReverseCookiePath  /  /mirror/foo/
     </code></p></div>
 
@@ -871,7 +874,7 @@ request</td></tr>
 </table>
     <p>When enabled, this option will pass the Host: line from the incoming
     request to the proxied host, instead of the hostname specified in the
-    proxypass line.</p>
+    <code class="directive">ProxyPass</code> line.</p>
 
     <p>This option should normally be turned <code>Off</code>. It is mostly 
     useful in special configurations like proxied mass name-based virtual
@@ -1011,7 +1014,7 @@ header for proxied requests</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy</td></tr>
 </table>
     <p>This directive controls the use of the <code>Via:</code> HTTP
-    header by the proxy. Its intended use is to control the flow of of
+    header by the proxy. Its intended use is to control the flow of
     proxy requests along a chain of proxy servers.  See <a href="http://www.ietf.org/rfc/rfc2616.txt">RFC 2616</a> (HTTP/1.1), section
     14.45 for an explanation of <code>Via:</code> header lines.</p>
 
