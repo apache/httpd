@@ -110,7 +110,14 @@
     </div> <!-- /page-header -->
 
     <div class="up">
-      <a href="./"><img src="{$path}/images/left.gif" alt="&lt;-" title="&lt;-" /></a>
+      <xsl:choose>
+        <xsl:when test="parentdocument">
+          <a href="{parentdocument/@href}"><img src="{$path}/images/left.gif" alt="&lt;-" title="&lt;-" /></a>
+        </xsl:when>
+        <xsl:otherwise>
+          <a href="./"><img src="{$path}/images/left.gif" alt="&lt;-" title="&lt;-" /></a>
+        </xsl:otherwise>
+      </xsl:choose>
     </div>
 
     <div id="path">
@@ -136,7 +143,12 @@
               <xsl:value-of select="$messages/message[@name='modules']"/>
             </a>
           </xsl:if>
-
+          <xsl:if test="parentdocument">
+            <xsl:text> &gt; </xsl:text>
+            <a href="{parentdocument/@href}">
+              <xsl:value-of select="parentdocument"/>
+            </a>
+          </xsl:if>
     </div> <!-- /path -->
   </xsl:template>
   <!-- /top -->
