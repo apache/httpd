@@ -118,6 +118,9 @@ module AP_MODULE_DECLARE_DATA ext_filter_module;
 static const server_rec *main_server;
 
 static apr_status_t ef_output_filter(ap_filter_t *, apr_bucket_brigade *);
+static apr_status_t ef_input_filter(ap_filter_t *, apr_bucket_brigade *, 
+                                    ap_input_mode_t, apr_read_type_e, 
+                                    apr_off_t);
 
 #define DBGLVL_SHOWOPTIONS         1
 #define DBGLVL_ERRORCHECK          2
@@ -352,12 +355,10 @@ static const char *define_filter(cmd_parms *cmd, void *dummy, const char *args)
         /* XXX need a way to ensure uniqueness among all filters */
         ap_register_output_filter(filter->name, ef_output_filter, NULL, filter->ftype);
     }
-#if 0              /* no input filters yet */
     else if (filter->mode == INPUT_FILTER) {
         /* XXX need a way to ensure uniqueness among all filters */
-        ap_register_input_filter(filter->name, ef_input_filter, NULL, AP_FTYPE_RESOURCE);
+        ap_register_input_filter(filter->name, ef_input_filter, NULL, filter->ftype);
     }
-#endif
     else {
         ap_assert(1 != 1); /* we set the field wrong somehow */
     }
@@ -603,17 +604,25 @@ static apr_status_t init_filter_instance(ap_filter_t *f)
     ctx->p = f->r->pool;
     if (ctx->filter->intype &&
         ctx->filter->intype != INTYPE_ALL) {
-        if (!f->r->content_type) {
-            ctx->noop = 1;
+        const char *ctypes;
+
+        if (ctx->filter->mode == INPUT_FILTER) {
+            ctypes = apr_table_get(f->r->headers_in, "Content-Type");
         }
         else {
-            const char *ctypes = f->r->content_type;
+            ctypes = f->r->content_type;
+        }
+
+        if (ctypes) {
             const char *ctype = ap_getword(f->r->pool, &ctypes, ';');
 
             if (strcasecmp(ctx->filter->intype, ctype)) {
                 /* wrong IMT for us; don't mess with the output */
                 ctx->noop = 1;
             }
+        } 
+        else {
+            ctx->noop = 1;
         }
     }
     if (ctx->filter->enable_env &&
@@ -657,10 +666,11 @@ static apr_status_t init_filter_instance(ap_filter_t *f)
 
 /* drain_available_output(): 
  *
- * if any data is available from the filter, read it and pass it
- * to the next filter
+ * if any data is available from the filter, read it and append it
+ * to the the bucket brigade
  */
-static apr_status_t drain_available_output(ap_filter_t *f)
+static apr_status_t drain_available_output(ap_filter_t *f,
+                                           apr_bucket_brigade *bb)
 {
     request_rec *r = f->r;
     conn_rec *c = r->connection;
@@ -669,7 +679,6 @@ static apr_status_t drain_available_output(ap_filter_t *f)
     apr_size_t len;
     char buf[4096];
     apr_status_t rv;
-    apr_bucket_brigade *bb;
     apr_bucket *b;
 
     while (1) {
@@ -686,14 +695,9 @@ static apr_status_t drain_available_output(ap_filter_t *f)
         if (rv != APR_SUCCESS) {
             return rv;
         }
-        bb = apr_brigade_create(r->pool, c->bucket_alloc);
-        b = apr_bucket_transient_create(buf, len, c->bucket_alloc);
+        b = apr_bucket_heap_create(buf, len, NULL, c->bucket_alloc);
         APR_BRIGADE_INSERT_TAIL(bb, b);
-        if ((rv = ap_pass_brigade(f->next, bb)) != APR_SUCCESS) {
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
-                          "ap_pass_brigade()");
-            return rv;
-        }
+        return APR_SUCCESS;
     }
     /* we should never get here; if we do, a bogus error message would be
      * the least of our problems 
@@ -702,7 +706,7 @@ static apr_status_t drain_available_output(ap_filter_t *f)
 }
 
 static apr_status_t pass_data_to_filter(ap_filter_t *f, const char *data, 
-                                        apr_size_t len)
+                                        apr_size_t len, apr_bucket_brigade *bb)
 {
     ef_ctx_t *ctx = f->ctx;
     ef_dir_t *dc = ctx->dc;
@@ -727,7 +731,7 @@ static apr_status_t pass_data_to_filter(ap_filter_t *f, const char *data,
              * to read data from the child process and pass it down to the
              * next filter!
              */
-            rv = drain_available_output(f);
+            rv = drain_available_output(f, bb);
             if (APR_STATUS_IS_EAGAIN(rv)) {
 #if APR_FILES_AS_SOCKETS
                 int num_events;
@@ -761,7 +765,13 @@ static apr_status_t pass_data_to_filter(ap_filter_t *f, const char *data,
     return rv;
 }
 
-static apr_status_t ef_output_filter(ap_filter_t *f, apr_bucket_brigade *bb)
+/* ef_unified_filter: 
+ *
+ * runs the bucket brigade bb through the filter and puts the result into 
+ * bb, dropping the previous content of bb (the input)
+ */
+
+static int ef_unified_filter(ap_filter_t *f, apr_bucket_brigade *bb)
 {
     request_rec *r = f->r;
     conn_rec *c = r->connection;
@@ -773,18 +783,10 @@ static apr_status_t ef_output_filter(ap_filter_t *f, apr_bucket_brigade *bb)
     apr_status_t rv;
     char buf[4096];
     apr_bucket *eos = NULL;
+    apr_bucket_brigade *bb_tmp;
 
-    if (!ctx) {
-        if ((rv = init_filter_instance(f)) != APR_SUCCESS) {
-            return rv;
-        }
-        ctx = f->ctx;
-    }
-    if (ctx->noop) {
-        ap_remove_output_filter(f);
-        return ap_pass_brigade(f->next, bb);
-    }
     dc = ctx->dc;
+    bb_tmp = apr_brigade_create(r->pool, c->bucket_alloc);
 
     APR_BRIGADE_FOREACH(b, bb) {
 
@@ -801,17 +803,16 @@ static apr_status_t ef_output_filter(ap_filter_t *f, apr_bucket_brigade *bb)
 
         /* Good cast, we just tested len isn't negative */
         if (len > 0 &&
-            (rv = pass_data_to_filter(f, data, (apr_size_t)len)) 
+            (rv = pass_data_to_filter(f, data, (apr_size_t)len, bb_tmp))
                 != APR_SUCCESS) {
             return rv;
         }
     }
 
-    apr_brigade_destroy(bb);
-
-    /* XXX What we *really* need to do once we've hit eos is create a pipe bucket
-     * from the child output pipe and pass down the pipe bucket + eos.
-     */
+    apr_brigade_cleanup(bb);
+    APR_BRIGADE_CONCAT(bb, bb_tmp);
+    apr_brigade_destroy(bb_tmp);
+    
     if (eos) {
         /* close the child's stdin to signal that no more data is coming;
          * that will cause the child to finish generating output
@@ -853,14 +854,8 @@ static apr_status_t ef_output_filter(ap_filter_t *f, apr_bucket_brigade *bb)
         }
         
         if (rv == APR_SUCCESS) {
-            bb = apr_brigade_create(r->pool, c->bucket_alloc);
-            b = apr_bucket_transient_create(buf, len, c->bucket_alloc);
+            b = apr_bucket_heap_create(buf, len, NULL, c->bucket_alloc);
             APR_BRIGADE_INSERT_TAIL(bb, b);
-            if ((rv = ap_pass_brigade(f->next, bb)) != APR_SUCCESS) {
-                ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
-                              "ap_pass_brigade(filtered buffer) failed");
-                return rv;
-            }
         }
     } while (rv == APR_SUCCESS);
 
@@ -869,55 +864,70 @@ static apr_status_t ef_output_filter(ap_filter_t *f, apr_bucket_brigade *bb)
     }
 
     if (eos) {
-        /* pass down eos */
-        bb = apr_brigade_create(r->pool, c->bucket_alloc);
         b = apr_bucket_eos_create(c->bucket_alloc);
         APR_BRIGADE_INSERT_TAIL(bb, b);
-        if ((rv = ap_pass_brigade(f->next, bb)) != APR_SUCCESS) {
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
-                          "ap_pass_brigade(eos) failed");
-            return rv;
-        }
     }
 
     return APR_SUCCESS;
 }
 
-#if 0
+static apr_status_t ef_output_filter(ap_filter_t *f, apr_bucket_brigade *bb)
+{
+    request_rec *r = f->r;
+    ef_ctx_t *ctx = f->ctx;
+    apr_status_t rv;
+
+    if (!ctx) {
+        if ((rv = init_filter_instance(f)) != APR_SUCCESS) {
+            return rv;
+        }
+        ctx = f->ctx;
+    }
+    if (ctx->noop) {
+        ap_remove_output_filter(f);
+        return ap_pass_brigade(f->next, bb);
+    }
+
+    rv = ef_unified_filter(f, bb);
+    if (rv != APR_SUCCESS) { 
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
+                      "ef_unified_filter() failed");
+    }
+
+    if ((rv = ap_pass_brigade(f->next, bb)) != APR_SUCCESS) {
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
+                      "ap_pass_brigade() failed");
+    }
+    return rv;
+}
+
 static int ef_input_filter(ap_filter_t *f, apr_bucket_brigade *bb, 
                            ap_input_mode_t mode, apr_read_type_e block,
                            apr_off_t readbytes)
 {
+    ef_ctx_t *ctx = f->ctx;
     apr_status_t rv;
-    apr_bucket *b;
-    char *buf;
-    apr_ssize_t len;
-    char *zero;
+
+    if (!ctx) {
+        if ((rv = init_filter_instance(f)) != APR_SUCCESS) {
+            return rv;
+        }
+        ctx = f->ctx;
+    }
+
+    if (ctx->noop) {
+        ap_remove_input_filter(f);
+        return ap_get_brigade(f->next, bb, mode, block, readbytes);
+    }
 
     rv = ap_get_brigade(f->next, bb, mode, block, readbytes);
     if (rv != APR_SUCCESS) {
         return rv;
     }
 
-    APR_BRIGADE_FOREACH(b, bb) {
-        if (!APR_BUCKET_IS_EOS(b)) {
-            if ((rv = apr_bucket_read(b, (const char **)&buf, &len, APR_BLOCK_READ)) != APR_SUCCESS) {
-                ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, f->r, "apr_bucket_read() failed");
-                return rv;
-            }
-            ap_log_error(APLOG_MARK, APLOG_ERR, 0, NULL, "apr_bucket_read -> %d bytes",
-                         len);
-            while ((zero = memchr(buf, '0', len))) {
-                *zero = 'a';
-            }
-        }
-        else
-            ap_log_error(APLOG_MARK, APLOG_ERR, 0, NULL, "got eos bucket");
-    }
-
+    rv = ef_unified_filter(f, bb);
     return rv;
 }
-#endif
 
 module AP_MODULE_DECLARE_DATA ext_filter_module =
 {
