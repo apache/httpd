@@ -73,7 +73,7 @@ case "$1" in
 	    TARGET='dummy'
 	else
 	    TARGET='testfunc'
-	    echo "void main(void) { $3(); }" > testfunc.c
+	    echo "int main(void) { $3(); return(0); }" > testfunc.c
 	fi
 	;;
     "sanity")
@@ -97,8 +97,9 @@ case "$1" in
 	fi
 	TARGET='testfunc'
 	cat <<EOF >testfunc.c
-void main(void) {
+int main(void) {
     $2();
+    return(0)
 }
 EOF
 	;;
@@ -115,7 +116,9 @@ EOF
 	TARGET='testfunc'
 	cat <<EOF >testfunc.c
 #include <$2>
-void main(void) { }
+int main(void) {
+    return(0);
+}
 EOF
 	;;
     *)
