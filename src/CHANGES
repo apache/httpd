@@ -9,10 +9,8 @@ Changes with Apache 1.3b4
      structures.  Specifically, module authors should be using table_elts()
      to get access to an array_header * for the table. [Dean Gaudet]
 
-  *) Rename new_connection() to ap__new_connection() to avoid namespace
-     collision with LDAP library routines.  The "ap__" prefix means
-     it's a private non-API interface, as opposed to "ap_".
-     [Ken Coar, Rasmus Lerdorf]
+  *) Renamed new_connection() to avoid namespace collision with LDAP
+     library routines.  [Ken Coar, Rasmus Lerdorf]
 
   *) WIN32: mod_speling is now available on the Win32 platform.
      [Marc Slemko]
