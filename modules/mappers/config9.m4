@@ -17,11 +17,16 @@ APACHE_MODULE(rewrite, regex URL translation, , , most, [
   APR_ADDTO(CFLAGS,-DNO_DBM_REWRITEMAP)
 ])
 
-if test "$sharedobjs" = "yes"; then
-    APACHE_MODULE(so, DSO capability, , , static)
-else
-    APACHE_MODULE(so, DSO capability, , , no)
-fi
+ap_old_cppflags=$CPPFLAGS
+CPPFLAGS="$CPPFLAGS -I$APR_SOURCE_DIR/include"
+AC_TRY_COMPILE([#include <apr.h>], 
+[#if !APR_HAS_DSO
+#error You need APR DSO support to use mod_so. 
+#endif],ap_enable_so="static",ap_enable_so="no")
+CPPFLAGS=$ap_old_cppflags
+
+APACHE_MODULE(so, DSO capability, , , $ap_enable_so)
+
 dnl ### why save the cache?
 AC_CACHE_SAVE
 
