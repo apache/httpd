@@ -3095,7 +3095,7 @@ static int core_override_type(request_rec *r)
     /* Check for overrides with ForceType / SetHandler
      */
     if (conf->mime_type && strcmp(conf->mime_type, "none"))
-        ap_rset_content_type((char*) conf->mime_type, r);
+        ap_set_content_type(r, (char*) conf->mime_type);
 
     if (conf->handler && strcmp(conf->handler, "none"))
         r->handler = conf->handler;

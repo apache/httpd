@@ -569,7 +569,7 @@ AP_DECLARE(int) ap_scan_script_header_err_core(request_rec *r, char *buffer,
 
 	    tmp = apr_pstrdup(r->pool, l);
 	    ap_content_type_tolower(tmp);
-	    ap_rset_content_type(tmp, r);
+	    ap_set_content_type(r, tmp);
 	}
 	/*
 	 * If the script returned a specific status, that's what
