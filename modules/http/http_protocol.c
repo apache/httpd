@@ -969,6 +969,10 @@ apr_status_t ap_http_filter(ap_filter_t *f, ap_bucket_brigade *b, ap_input_mode_
         const char *str;
         apr_size_t length;
 
+        if (AP_BRIGADE_EMPTY(ctx->b)) {
+            return APR_EOF;
+        }
+
         e = AP_BRIGADE_FIRST(ctx->b);
         while (e->length == 0) {
             AP_BUCKET_REMOVE(e);
