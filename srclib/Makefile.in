@@ -1,4 +1,0 @@
-
-SUBDIRS = apr $(AP_LIB_DIRS) apr-util pcre
-
-include $(top_srcdir)/build/rules.mk

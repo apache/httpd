@@ -1,5 +1,0 @@
-
-LTLIBRARY_NAME    = libthreaded.la
-LTLIBRARY_SOURCES = threaded.c
-
-include $(top_srcdir)/build/ltlib.mk

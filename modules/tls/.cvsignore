@@ -1,6 +1,0 @@
-.libs
-.deps
-Makefile
-modules.mk
-*.lo
-*.la
