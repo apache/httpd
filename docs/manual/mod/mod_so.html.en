@@ -145,7 +145,7 @@ Windows</td></tr></table>
 
     <p>For example:</p>
 
-    <div class="example"><p><code>LoadFile libexex/libxmlparse.so</code></p></div>
+    <div class="example"><p><code>LoadFile libexec/libxmlparse.so</code></p></div>
 
 
 </div>

@@ -121,7 +121,7 @@ Windows</compatibility>
 
     <p>For example:</p>
 
-    <example>LoadFile libexex/libxmlparse.so</example>
+    <example>LoadFile libexec/libxmlparse.so</example>
 
 </usage>
 </directivesynopsis>
