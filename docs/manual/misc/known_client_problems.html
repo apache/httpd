@@ -68,7 +68,7 @@ support keepalive when it is used on 301 or 302 (redirect)
 responses.  Unfortunately Apache's <CODE>nokeepalive</CODE> code
 prior to 1.2.2 would not work with HTTP/1.1 clients.  You must apply
 <A
-HREF="http://www.apache.org/dist/patches/apply_to_1.2.1/msie_4_0b2_fixes.patch"
+HREF="http://www.apache.org/dist/httpd/patches/apply_to_1.2.1/msie_4_0b2_fixes.patch"
 >this patch</A> to version 1.2.1.  Then add this to your config:
 <BLOCKQUOTE><CODE>
 BrowserMatch "MSIE 4\.0b2;" nokeepalive
@@ -127,7 +127,7 @@ BrowserMatch "MSIE 4\.0b2;" downgrade-1.0 force-response-1.0
 </CODE></BLOCKQUOTE>
 This workaround is available in 1.2.2, and in a
 <A
-HREF="http://www.apache.org/dist/patches/apply_to_1.2.1/msie_4_0b2_fixes.patch"
+HREF="http://www.apache.org/dist/httpd/patches/apply_to_1.2.1/msie_4_0b2_fixes.patch"
 >patch</A> against 1.2.1.
 
 <H3><A NAME="257th-byte">Boundary problems with header parsing</A></H3>
