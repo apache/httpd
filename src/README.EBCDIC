@@ -47,6 +47,19 @@ decisions of the port to this machine.
   code are an exception: they are not converted to ASCII a second
   time.
 
+* By examining the call hierarchy for the BUFF management routines,
+  I added an "ebcdic/ascii conversion layer" which would be crossed
+  on every puts/write/get/gets, and a conversion flag which allowed
+  switching of the conversions on-the-fly. So it is now possible to
+  read the header lines of a CGI-script output in EBCDIC format, and
+  then find out that the remainder of the script's output is in
+  ASCII (like in the output of a WWW Counter program). Likewise, the
+  server always generates its header lines in EBCDIC (and with ASCII
+  conversion enabled) and determines, based on the type of document
+  being served, whether the document body (except for the chunking
+  information, of course) is in ASCII already or is converted from
+  EBCDIC.
+
 * For Text documents (MIME types text/plain, text/html etc.), an
   implicit translation to ASCII can be used, or (if the users prefer
   to store some documents in raw ASCII form for faster serving) can
@@ -81,47 +94,56 @@ What works:
     - means: doesn't work for some reason
     ? means: compiled-in, but untested
 
-  http_core.c           +
-  mod_access.c          +
-  mod_actions.c         ?
-  mod_alias.c           +
-  mod_asis.c            ?
-  mod_auth.c            +
-  mod_auth_anon.c       +
-  mod_auth_db.c         - / no libdb
-  mod_auth_dbm.c        - / no libdbm
-  mod_autoindex.c       +
-  mod_cern_meta.c       ?
-  mod_cgi.c             +
-  mod_digest.c          - / MD5 not ported yet
-  mod_dir.c             +
-  mod_dld.c             - / no shared libs
-  mod_env.c             +
-  mod_example.c         - / not tried yet
-  mod_expires.c         +
-  mod_headers.c         +
-  mod_imap.c            +
-  mod_include.c         +
-  mod_info.c            + / some flaws
-  mod_log_agent.c       +
-  mod_log_config.c      +
-  mod_log_referer.c     +
-  mod_mime.c            +
-  mod_mime_magic.c      - / not tried yet
-  mod_negotiation.c     +
-  mod_proxy.c           - / no protocol conversion implemented yet
-  mod_rewrite.c         ? / untested
-  mod_setenvif.c        +
-  mod_so.c              - no shared libs
-  mod_speling.c         +
-  mod_status.c          +
-  mod_unique_id.c       +
-  mod_userdir.c         +
-  mod_usertrack.c       ?
+  http_core.c       +
+  mod_access.c      +
+  mod_actions.c     ?
+  mod_alias.c       +
+  mod_asis.c        ?
+  mod_auth.c        +
+  mod_auth_anon.c   +
+  mod_auth_db.c     ? with own libdb.a
+  mod_auth_dbm.c    ? with own libdb.a
+  mod_autoindex.c   +
+  mod_cern_meta.c   ?
+  mod_cgi.c         +
+  mod_digest.c      - / MD5 not ported yet
+  mod_dir.c         +
+  mod_dld.c         - / no shared libs
+  mod_env.c         +
+  mod_example.c     - / not tried yet
+  mod_expires.c     +
+  mod_headers.c     +
+  mod_imap.c        +
+  mod_include.c     +
+  mod_info.c        +
+  mod_log_agent.c   +
+  mod_log_config.c  +
+  mod_log_referer.c +
+  mod_mime.c        +
+  mod_mime_magic.c  - / not tried yet
+  mod_negotiation.c +
+  mod_proxy.c       ? / works, cache still needs some work
+  mod_rewrite.c     ? / untested
+  mod_setenvif.c    +
+  mod_speling.c     +
+  mod_status.c      +
+  mod_unique_id.c   +
+  mod_userdir.c     +
+  mod_usertrack.c   ? / untested
+
+Additional (third-party) modules:                    See:
+  mod_jserv.c       - / JAVA still being ported  http://java.apache.org/
+  mod_php.c         - / not ported yet           http://www.php.net/
+  mod_put.c         ? / untested                 http://hpwww.ec-lyon.fr/~vincent/apache/mod_put.html
+  mod_session.c     ? / untested                 ftp://hachiman.vidya.com/pub/apache/mod_session.tar.gz
+  mod_so.c          - / no shared libs
 
 
-What doesn't work yet:
--   no DBM or DB authentication (library missing)
--   no MD5 hash or digest (not ported yet)
+Notes:
+    To use the mod_auth_db functionality, you will need a working libdb.a.
+On the system where I did the port none was available, so I ported the
+standard db-1.85.14 with little problems. Note however that you will need
+a working perl5 as well if you want to use Apache's dbmmanage script to
+maintain db user databases.
 
-			    Martin Kraemer, 25-Jan-1998
+			    Martin Kraemer, 20-Feb-1998

@@ -165,7 +165,17 @@ Windows version of Apache may not be perform as well as on the Unix
 systems for which Apache was originally written, the ability to run on
 Windows gives Apache the ability to run on a large number of web
 servers it was not previously able to.
-
+</LI>
+<LI><STRONG><A HREF="ebcdic.html">Port to EBCDIC mainframe machine running BS2000/OSD</A></STRONG><BR>
+As a premiere, this version of Apache comes with a beta version of a port
+to a mainframe machine which uses the EBCDIC character set as its native
+codeset (It is the SIEMENS NIXDORF family of mainframes running the
+BS2000/OSD operating system on a IBM/390 compatible processor
+This mainframe OS nowadays features a SVR4-like POSIX subsystem).<BR>
+Provisions to convert between EBCDIC documents and the ASCII encoded
+HTTP protocol have been integrated into Apache, and most of
+the provided Apache modules have been ported to this platform.
+</LI>
 <LI><STRONG><A HREF="mod/mod_alias.html">Regular Expression support for
 <SAMP>Alias</SAMP> and <SAMP>Redirect</SAMP></A></STRONG>
 <BR>
