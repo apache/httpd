@@ -365,7 +365,7 @@ static const char *multiviews_match(cmd_parms *cmd, void *m_,
     }
     else if (strcasecmp(include, "NegotiatedOnly") == 0) {
         if (m->multimatch && (m->multimatch & ~MULTIMATCH_NEGOTIATED)) {
-            return "Any is incompatible with NegotiatedOnly, "
+            return "NegotiatedOnly is incompatible with Any, "
                    "Filters and Handlers";
         }
         m->multimatch |= MULTIMATCH_NEGOTIATED;
@@ -385,7 +385,7 @@ static const char *multiviews_match(cmd_parms *cmd, void *m_,
         m->multimatch |= MULTIMATCH_HANDLERS;
     }
     else {
-        return "Unrecognized option";
+        return apr_psprintf(cmd->pool, "Unrecognized option '%s'", include);
     }
 
     return NULL;
