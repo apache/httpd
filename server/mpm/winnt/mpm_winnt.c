@@ -168,7 +168,7 @@ AP_DECLARE(PCOMP_CONTEXT) mpm_get_completion_context(void)
         }
         pCompContext = (PCOMP_CONTEXT) apr_pcalloc(pchild, sizeof(COMP_CONTEXT));
 
-        pCompContext->Overlapped.hEvent = CreateEvent(NULL, TRUE, FALSE, NULL); 
+        pCompContext->Overlapped.hEvent = CreateEvent(NULL, FALSE, FALSE, NULL); 
         if (pCompContext->Overlapped.hEvent == NULL) {
             /* Hopefully this is a temporary condition ... */
             ap_log_error(APLOG_MARK,APLOG_WARNING, apr_get_os_error(), ap_server_conf,

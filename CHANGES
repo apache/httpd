@@ -1,4 +1,9 @@
 Changes with Apache 2.0.30-dev
+  *) Win32: The async AcceptEx() event should be autoreset upon
+     successful completion of a wait (WaitForSingleObject). This
+     eliminates a number of spurious
+     setsockopt(SO_UPDATE_ACCEPT_CONTEXT) failed." messages.
+     [Bill Stoddard]
 
   *) Move any load library path environment variables out of 
      apachectl and into a separate environment variable file which
