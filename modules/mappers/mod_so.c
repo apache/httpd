@@ -186,8 +186,9 @@ static apr_status_t unload_module(void *data)
 
     /* unload the module space itself */
     if ((status = apr_dso_unload(modi->modp->dynamic_load_handle)) != APR_SUCCESS) {
-        ap_log_error(APLOG_MARK, APLOG_WARNING|APLOG_NOERRNO, 0, NULL,
-		     "dso unload failure");
+        ap_log_perror(APLOG_MARK, APLOG_WARNING|APLOG_NOERRNO, 0, 
+                      APR_GET_POOL(modi->modp->dynamic_load_handle),
+		      "dso unload failure");
         return status;
     }
 
@@ -263,7 +264,7 @@ static const char *load_module(cmd_parms *cmd, void *dummy,
 			  apr_dso_error(modhandle, my_error, sizeof(my_error)),
 			  NULL);
     }
-    ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, NULL,
+    ap_log_perror(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, cmd->pool,
 		 "loaded module %s", modname);
 
     /*
@@ -347,7 +348,7 @@ static const char *load_file(cmd_parms *cmd, void *dummy, const char *filename)
 
 static const char *load_file(cmd_parms *cmd, void *dummy, const char *filename)
 {
-    ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
+    ap_log_perror(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, cmd->pool, 
                  "WARNING: LoadFile not supported on this platform");
     return NULL;
 }
@@ -355,7 +356,7 @@ static const char *load_file(cmd_parms *cmd, void *dummy, const char *filename)
 static const char *load_module(cmd_parms *cmd, void *dummy, 
 	                       const char *modname, const char *filename)
 {
-    ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
+    ap_log_perror(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, cmd->pool, 
                  "WARNING: LoadModule not supported on this platform");
     return NULL;
 }
