@@ -9,7 +9,7 @@ TARGETS=htpasswd htdigest rotatelogs logresolve ab apxs
 OBJS=htpasswd.o htdigest.o rotatelogs.o logresolve.o ab.o
 
 .c.o: 
-	$(CC) -c $(CFLAGS) $(INCLUDES) $<
+	$(CC) -c $(INCLUDES) $(CFLAGS) $<
 
 all: $(TARGETS)
 
