@@ -1,5 +1,9 @@
 Changes with Apache 1.3.5
 
+  *) Remove the hard-wire of TAR=tar (we now check for gtar and gnutar first)
+     and check to see if the tar we wind up with supports '-h'.
+     [Jim Jagielski] PR#3671
+
   *) A consistant and conservative style for all shell scripts has been
      implemented. Basically, all shell string tests use the traditional
      hack of 'if [ "x$var" != "x" ]' or 'if [ "x$var" = "xstring" ]'
