@@ -195,6 +195,11 @@ configuring the <A
 HREF="mod/core.html#allowoverride"><CODE>AllowOverride</CODE></A>
 directive in the main configuration files.
 
+<p>For more information on <code>.htaccess</code> files, see Ken
+Coar's tutorial on <a
+href="http://apache-server.com/tutorials/ATusing-htaccess.html">Using
+.htaccess Files with Apache</a>.</p>
+
 <!--#include virtual="footer.html" -->
 </BODY>
 </HTML>
