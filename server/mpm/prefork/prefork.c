@@ -321,12 +321,16 @@ static void accept_mutex_off(void)
 #include "apr_shmem.h"
 
 static apr_shmem_t *scoreboard_shm = NULL;
+static apr_shmem_t *status_shm = NULL;
 
 static apr_status_t cleanup_shared_mem(void *d)
 {
     apr_shm_free(scoreboard_shm, ap_scoreboard_image);
+    apr_shm_free(status_shm, ap_new_scoreboard_image);
     ap_scoreboard_image = NULL;
+    ap_new_scoreboard_image = NULL;
     apr_shm_destroy(scoreboard_shm);
+    apr_shm_destroy(status_shm);
     return APR_SUCCESS;
 }
 
@@ -336,20 +340,27 @@ static void setup_shared_mem(apr_pool_t *p)
     const char *fname;
 
     fname = ap_server_root_relative(p, ap_scoreboard_fname);
-    if (apr_shm_init(&scoreboard_shm, SCOREBOARD_SIZE + NEW_SCOREBOARD_SIZE + 80, fname, p) != APR_SUCCESS) {
+    if (apr_shm_init(&scoreboard_shm, SCOREBOARD_SIZE, fname, p) != APR_SUCCESS) {
 	apr_snprintf(buf, sizeof(buf), "%s: could not open(create) scoreboard",
 		    ap_server_argv0);
 	perror(buf);
 	exit(APEXIT_INIT);
     }
     ap_scoreboard_image = apr_shm_malloc(scoreboard_shm, SCOREBOARD_SIZE); 
-    ap_new_scoreboard_image = apr_shm_malloc(scoreboard_shm, NEW_SCOREBOARD_SIZE); 
-    if (ap_scoreboard_image == NULL) {
+    if (apr_shm_init(&status_shm, NEW_SCOREBOARD_SIZE, fname, p) != APR_SUCCESS) {
+	apr_snprintf(buf, sizeof(buf), "%s: could not open(create) scoreboard",
+		    ap_server_argv0);
+	perror(buf);
+	exit(APEXIT_INIT);
+    }
+    ap_new_scoreboard_image = apr_shm_malloc(status_shm, NEW_SCOREBOARD_SIZE); 
+    if (ap_scoreboard_image == NULL || ap_new_scoreboard_image == NULL) {
 	apr_snprintf(buf, sizeof(buf), "%s: cannot allocate scoreboard",
 		    ap_server_argv0);
 	perror(buf);
-	apr_shm_destroy(scoreboard_shm);
-	exit(APEXIT_INIT);
+        apr_shm_destroy(scoreboard_shm);
+        apr_shm_destroy(status_shm);
+        exit(APEXIT_INIT);
     }
     apr_register_cleanup(p, NULL, cleanup_shared_mem, apr_null_cleanup);
     ap_scoreboard_image->global.running_generation = 0;
