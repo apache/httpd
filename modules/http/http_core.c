@@ -3293,9 +3293,6 @@ static int core_input_filter(ap_filter_t *f, ap_bucket_brigade *b)
  * is to send the headers if they haven't already been sent, and then send
  * the actual data.
  */
-typedef struct CORE_OUTPUT_FILTER_CTX {
-    ap_bucket_brigade *b;
-} core_output_filter_ctx_t;
 #define MAX_IOVEC_TO_WRITE 16
 static int core_output_filter(ap_filter_t *f, ap_bucket_brigade *b)
 {
@@ -3304,7 +3301,6 @@ static int core_output_filter(ap_filter_t *f, ap_bucket_brigade *b)
     apr_ssize_t bytes_sent = 0, nbytes = 0;
     ap_bucket *e;
     conn_rec *c = f->c;
-    core_output_filter_ctx_t *ctx = f->ctx;
 
     apr_ssize_t nvec = 0;
     apr_ssize_t nvec_trailers= 0;
@@ -3315,14 +3311,11 @@ static int core_output_filter(ap_filter_t *f, ap_bucket_brigade *b)
     apr_ssize_t flen = 0;
     apr_off_t foffset = 0;
 
-    if (ctx == NULL) {
-        f->ctx = ctx = apr_pcalloc(c->pool, sizeof(core_output_filter_ctx_t));
-    }
     /* If we have a saved brigade, concatenate the new brigade to it */
-    if (ctx->b) {
-        AP_BRIGADE_CONCAT(ctx->b, b);
-        b = ctx->b;
-        ctx->b = NULL;
+    if (c->client_data) {
+        AP_BRIGADE_CONCAT(c->client_data, b);
+        b = c->client_data;
+        c->client_data = NULL;
     }
 
     /* Hijack any bytes in BUFF and prepend it to the brigade. */
@@ -3379,7 +3372,7 @@ static int core_output_filter(ap_filter_t *f, ap_bucket_brigade *b)
          * buffer the brigade or send the brigade out on the network
          */
         if (!fd && (!more) && (nbytes < MIN_SIZE_TO_WRITE) && (e->type != AP_BUCKET_EOS)) {
-            ap_save_brigade(f, &ctx->b, &b);
+            ap_save_brigade(f, &c->client_data, &b);
             return APR_SUCCESS;
         }
         if (fd) {
