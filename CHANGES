@@ -387,7 +387,7 @@ Changes with Apache 2.0.50
   *) Regression from 1.3: At startup, suexec now will be checked for
      availability, the setuid bit and user root. The works only if
      httpd is compiled with the shipped APR version (0.9.5).
-     [André Malo]
+     PR 28287.  [André Malo]
 
   *) Unix MPMs: Stop dropping connections when the file descriptor
      is at least FD_SETSIZE.  [Jeff Trawick]
