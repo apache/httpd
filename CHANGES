@@ -9,11 +9,6 @@ Changes with Apache 2.1.0-dev
      contains '='.  PR 13914  [Ville Skyttä <ville.skytta@iki.fi>,
      Jeff Trawick]
 
-  *) Replace APU_HAS_LDAPSSL_CLIENT_INIT with APU_HAS_LDAP_NETSCAPE_SSL
-     as set by apr-util in util_ldap.c. This should allow mod_ldap
-     to work with the Netscape/Mozilla LDAP library. [Øyvin Sømme
-     <somme@oslo.westerngeco.slb.com>, Graham Leggett]
-
   *) Reorder the definitions for mod_ldap and mod_auth_ldap within
      config.m4 to make sure the parent mod_ldap is defined first.
      This ensures that mod_ldap comes before mod_auth_ldap in the
@@ -25,6 +20,15 @@ Changes with Apache 2.1.0-dev
    Apache 2.0.xx tree as documented, and except as noted, below.]
 
 Changes with Apache 2.0.44
+
+  *) Replace APU_HAS_LDAPSSL_CLIENT_INIT with APU_HAS_LDAP_NETSCAPE_SSL
+     as set by apr-util in util_ldap.c. This should allow mod_ldap
+     to work with the Netscape/Mozilla LDAP library. [Øyvin Sømme
+     <somme@oslo.westerngeco.slb.com>, Graham Leggett]
+
+  *) Fix critical bug in new --enable-v4-mapped configure option
+     implementation which broke IPv4 listening sockets on some
+     systems.  [hiroyuki hanai <hanai@imgsrc.co.jp>]
 
   *) mod_setenvif: Fix BrowserMatchNoCase support for non-regex
      patterns [André Malo <nd@perlig.de>]
