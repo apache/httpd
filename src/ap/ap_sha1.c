@@ -55,7 +55,7 @@
  *
  * The only exported function:
  *
- * 	 ap_sha1_base64(char *clear, int len, char *out);
+ * 	 ap_sha1_base64(const char *clear, int len, char *out);
  *
  * provides a means to SHA1 crypt/encode a plaintext password in
  * a way which makes password files compatible with those commonly
@@ -140,19 +140,19 @@ typedef unsigned long LONG;     /* a 32-bit quantity */
 #define SHA_DIGESTSIZE          20
  
 typedef struct {
-   LONG digest[5];             /* message digest */
-   LONG count_lo, count_hi;    /* 64-bit bit count */
-   LONG data[16];              /* SHA data buffer */
-   int local;                  /* unprocessed amount in data */
-   } SHA_INFO;
+    LONG digest[5];             /* message digest */
+    LONG count_lo, count_hi;    /* 64-bit bit count */
+    LONG data[16];              /* SHA data buffer */
+    int local;                  /* unprocessed amount in data */
+} SHA_INFO;
 
-void sha_init(SHA_INFO *);
-void sha_update(SHA_INFO *, BYTE *, int);
-void sha_final(SHA_INFO *);
-void sha_raw_swap(SHA_INFO *);
-void output64chunk(unsigned char, unsigned char, unsigned char,
-                   int, unsigned char **);
-void encode_mime64(unsigned char *, unsigned char *, int);
+static void sha_init(SHA_INFO *);
+static void sha_update(SHA_INFO *, const BYTE *, int);
+static void sha_final(SHA_INFO *);
+static void sha_raw_swap(SHA_INFO *);
+static void output64chunk(unsigned char, unsigned char, unsigned char,
+			  int, unsigned char **);
+static void encode_mime64(unsigned char *, unsigned char *, int);
 void sha1_base64(char *, int, char *);
 
 /* do SHA transformation */
@@ -217,14 +217,15 @@ static void sha_transform(SHA_INFO *sha_info)
 }
 
 union endianTest {
-  long Long;
-  char Char[sizeof(long)];
+    long Long;
+    char Char[sizeof(long)];
 };
 
-char isLittleEndian() {
-  static union endianTest u;
-  u.Long = 1;
-  return(u.Char[0]==1);
+static char isLittleEndian(void)
+{
+    static union endianTest u;
+    u.Long = 1;
+    return (u.Char[0] == 1);
 }
 
 /* change endianness of data */
@@ -236,25 +237,25 @@ static void maybe_byte_reverse(LONG *buffer, int count)
     BYTE ct[4], *cp;
 
     if (isLittleEndian()) {    /* do the swap only if it is little endian */
-      count /= sizeof(LONG);
-      cp = (BYTE *) buffer;
-      for (i = 0; i < count; ++i) {
-	  ct[0] = cp[0];
-	  ct[1] = cp[1];
-	  ct[2] = cp[2];
-	  ct[3] = cp[3];
-	  cp[0] = ct[3];
-	  cp[1] = ct[2];
-	  cp[2] = ct[1];
-	  cp[3] = ct[0];
-	  cp += sizeof(LONG);
-      }
+	count /= sizeof(LONG);
+	cp = (BYTE *) buffer;
+	for (i = 0; i < count; ++i) {
+	    ct[0] = cp[0];
+	    ct[1] = cp[1];
+	    ct[2] = cp[2];
+	    ct[3] = cp[3];
+	    cp[0] = ct[3];
+	    cp[1] = ct[2];
+	    cp[2] = ct[1];
+	    cp[3] = ct[0];
+	    cp += sizeof(LONG);
+	}
     }
 }
 
 /* initialize the SHA digest */
 
-void sha_init(SHA_INFO *sha_info)
+static void sha_init(SHA_INFO *sha_info)
 {
     sha_info->digest[0] = 0x67452301L;
     sha_info->digest[1] = 0xefcdab89L;
@@ -268,7 +269,7 @@ void sha_init(SHA_INFO *sha_info)
 
 /* update the SHA digest */
 
-void sha_update(SHA_INFO *sha_info, BYTE *buffer, int count)
+static void sha_update(SHA_INFO *sha_info, const BYTE *buffer, int count)
 {
     int i;
 
@@ -289,7 +290,8 @@ void sha_update(SHA_INFO *sha_info, BYTE *buffer, int count)
 	if (sha_info->local == SHA_BLOCKSIZE) {
 	    maybe_byte_reverse(sha_info->data, SHA_BLOCKSIZE);
 	    sha_transform(sha_info);
-	} else {
+	}
+	else {
 	    return;
 	}
     }
@@ -306,7 +308,7 @@ void sha_update(SHA_INFO *sha_info, BYTE *buffer, int count)
 
 /* finish computing the SHA digest */
 
-void sha_final(SHA_INFO *sha_info)
+static void sha_final(SHA_INFO *sha_info)
 {
     int count;
     LONG lo_bit_count, hi_bit_count;
@@ -320,15 +322,15 @@ void sha_final(SHA_INFO *sha_info)
 	maybe_byte_reverse(sha_info->data, SHA_BLOCKSIZE);
 	sha_transform(sha_info);
 	memset((BYTE *) sha_info->data, 0, SHA_BLOCKSIZE - 8);
-    } else {
+    }
+    else {
 	memset(((BYTE *) sha_info->data) + count, 0,
-	    SHA_BLOCKSIZE - 8 - count);
+	       SHA_BLOCKSIZE - 8 - count);
     }
     maybe_byte_reverse(sha_info->data, SHA_BLOCKSIZE);
     sha_info->data[14] = hi_bit_count;
     sha_info->data[15] = lo_bit_count;
     sha_transform(sha_info);
-
 }
 
 /*
@@ -337,52 +339,56 @@ void sha_final(SHA_INFO *sha_info)
    through with arrays of longs.
 */
 
-void sha_raw_swap(SHA_INFO *sha_info) {
-  int i;
+static void sha_raw_swap(SHA_INFO *sha_info)
+{
+    int i;
 
-  for (i=0; i<5; ++i)
-     maybe_byte_reverse((LONG *) &sha_info->digest[i], 4);
+    for (i = 0; i < 5; ++i) {
+	maybe_byte_reverse((LONG *) &sha_info->digest[i], 4);
+    }
 }
 
 static char basis_64[] =
   "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 
-void output64chunk(unsigned char c1, unsigned char c2, unsigned char c3,
-                   int pads, unsigned char **outfile) {
+static void output64chunk(unsigned char c1, unsigned char c2, unsigned char c3,
+			  int pads, unsigned char **outfile)
+{
+    *(*outfile)++ = basis_64[c1>>2];
 
-  *(*outfile)++ = basis_64[c1>>2];
-
-  *(*outfile)++ = basis_64[((c1 & 0x3)<< 4) | ((c2 & 0xF0) >> 4)];
-  if (pads == 2) {
-    *(*outfile)++ = '=';
-    *(*outfile)++ = '=';
-  } else if (pads) {
-    *(*outfile)++ =  basis_64[((c2 & 0xF) << 2) | ((c3 & 0xC0) >>6)];
-    *(*outfile)++ = '=';
-  } else {
-    *(*outfile)++ = basis_64[((c2 & 0xF) << 2) | ((c3 & 0xC0) >>6)];
-    *(*outfile)++ = basis_64[c3 & 0x3F];
-  }
+    *(*outfile)++ = basis_64[((c1 & 0x3)<< 4) | ((c2 & 0xF0) >> 4)];
+    if (pads == 2) {
+	*(*outfile)++ = '=';
+	*(*outfile)++ = '=';
+    }
+    else if (pads) {
+	*(*outfile)++ =  basis_64[((c2 & 0xF) << 2) | ((c3 & 0xC0) >>6)];
+	*(*outfile)++ = '=';
+    }
+    else {
+	*(*outfile)++ = basis_64[((c2 & 0xF) << 2) | ((c3 & 0xC0) >>6)];
+	*(*outfile)++ = basis_64[c3 & 0x3F];
+    }
 }
 
-void encode_mime64(unsigned char *in, unsigned char *out, int length) {
-  int diff, ct=0;
+static void encode_mime64(unsigned char *in, unsigned char *out, int length)
+{
+    int diff, ct = 0;
 
-  while ( (diff= length - ct) ) {
-    if ( diff >= 3 ) {
-      diff = 3;
-      output64chunk(in[ct], in[ct+1], in[ct+2], 0, &out);
+    while ((diff = length - ct)) {
+	if ( diff >= 3 ) {
+	    diff = 3;
+	    output64chunk(in[ct], in[ct+1], in[ct+2], 0, &out);
+	}
+	else if (diff == 2) {
+	    output64chunk(in[ct], in[ct+1], 0, 1, &out);
+	}
+	else if (diff == 1) {
+	    output64chunk(in[ct], 0, 0, 2, &out);
+	}
+	ct += diff;
     }
-    else if ( diff == 2 ) {
-      output64chunk(in[ct], in[ct+1], 0, 1, &out);
-    }
-    else if ( diff == 1 ) {
-      output64chunk(in[ct], 0, 0, 2, &out);
-    }
-    ct += diff;
-  }
-
-  *out++ = 0;
+    *out++ = 0;
 }
 
 /* {SHA} is the prefix used for base64 encoded sha1 in
@@ -390,22 +396,25 @@ void encode_mime64(unsigned char *in, unsigned char *out, int length) {
  */
 const char *sha1_id = "{SHA}";
 
-API_EXPORT(void) ap_sha1_base64(char *clear, int len, char *out)  {
-  SHA_INFO context;
+API_EXPORT(void) ap_sha1_base64(const char *clear, int len, char *out)
+{
+    SHA_INFO context;
 
-  if (!strncmp(clear,sha1_id,strlen(sha1_id)))
-	clear+=strlen(sha1_id);
+    if (!strncmp(clear, sha1_id, strlen(sha1_id))) {
+	clear += strlen(sha1_id);
+    }
 
-  sha_init(&context);
-  sha_update(&context, clear, len);
-  sha_final(&context);
-  
-  sha_raw_swap(&context);
+    sha_init(&context);
+    sha_update(&context, clear, len);
+    sha_final(&context);
 
-  /* private marker. */
-  strcpy(out,sha1_id);
+    sha_raw_swap(&context);
 
-  /* SHA1 hash is always 20 chars */
-  encode_mime64((char *)context.digest, out+strlen(sha1_id), 20);
-  /* output of MIME Base 64 encoded SHA1 is always 28 characters + strlen(sha1_id) */
+    /* private marker. */
+    strcpy(out, sha1_id);
+
+    /* SHA1 hash is always 20 chars */
+    encode_mime64((char *)context.digest, out+strlen(sha1_id), 20);
+    /* output of MIME Base 64 encoded SHA1 is always
+     * 28 characters + strlen(sha1_id) */
 }

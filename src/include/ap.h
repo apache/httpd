@@ -159,6 +159,7 @@ API_EXPORT(int) ap_snprintf(char *buf, size_t len, const char *format,...)
 			    __attribute__((format(printf,3,4)));
 API_EXPORT(int) ap_vsnprintf(char *buf, size_t len, const char *format,
 			     va_list ap);
+API_EXPORT(char *) ap_validate_password(const char *passwd, const char *hash);
 
 #ifdef __cplusplus
 }

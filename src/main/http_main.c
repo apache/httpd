@@ -6643,6 +6643,17 @@ int main(int argc, char *argv[], char *envp[])
 #endif /* def OS2 */
 #endif /* ndef SHARED_CORE_BOOTSTRAP */
 
+#ifndef SHARED_CORE_BOOTSTRAP
+/*
+ * Force ap_validate_password() into the image so that modules like
+ * mod_auth can use it even if they're dynamically loaded.
+ */
+const void suck_in_ap_validate_password(void)
+{
+    ap_validate_password("a", "b");
+}
+#endif
+
 /* force Expat to be linked into the server executable */
 #if defined(USE_EXPAT) && !defined(SHARED_CORE_BOOTSTRAP)
 #include "xmlparse.h"

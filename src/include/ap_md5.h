@@ -114,7 +114,6 @@ API_EXPORT(void) ap_MD5Encode(const unsigned char *password,
 			      const unsigned char *salt,
 			      char *result, size_t nbytes);
 API_EXPORT(void) ap_to64(char *s, unsigned long v, int n);
-API_EXPORT(char *) ap_validate_password(const char *passwd, const char *hash);
 
 #ifdef __cplusplus
 }
