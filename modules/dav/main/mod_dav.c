@@ -354,9 +354,6 @@ static int dav_error_response(request_rec *r, int status, const char *body)
 
     ap_set_content_type(r, "text/html");
 
-    /* since we're returning DONE, ensure the request body is consumed. */
-    (void) ap_discard_request_body(r);
-
     /* begin the response now... */
     ap_rvputs(r,
               DAV_RESPONSE_BODY_1,
@@ -390,9 +387,6 @@ static int dav_error_response_tag(request_rec *r,
     r->status_line = ap_get_status_line(err->status);
 
     ap_set_content_type(r, DAV_XML_CONTENT_TYPE);
-
-    /* since we're returning DONE, ensure the request body is consumed. */
-    (void) ap_discard_request_body(r);
 
     ap_rputs(DAV_XML_HEADER DEBUG_CR
              "<D:error xmlns:D=\"DAV:\"", r);
@@ -594,9 +588,6 @@ static int dav_handle_err(request_rec *r, dav_error *err,
 
         return err->status;
     }
-
-    /* since we're returning DONE, ensure the request body is consumed. */
-    (void) ap_discard_request_body(r);
 
     /* send the multistatus and tell Apache the request/response is DONE. */
     dav_send_multistatus(r, err->status, response, NULL);
