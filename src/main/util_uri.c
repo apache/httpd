@@ -413,8 +413,8 @@ void util_uri_init(void)
     }
 
     /* This is a sub-RE which will break down the hostinfo part,
-	* i.e., user, password, hostname and port.
-	* $          12       3       4       5 6    */
+     * i.e., user, password, hostname and port.
+     * $          12       3       4       5 6    */
     re_str    = "^(([^:]*):(.*)?@)?([^@:]*)(:(.*))?$";
     /*             ^^user^ :pw      ^host^   port */
     if ((ret = regcomp(&re_hostpart, re_str, REG_EXTENDED|REG_ICASE)) != 0) {
