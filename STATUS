@@ -1,9 +1,9 @@
 APACHE 1.3 STATUS:						-*-text-*-
-  Last modified at [$Date: 2004/04/19 18:53:57 $]
+  Last modified at [$Date: 2004/05/07 14:39:45 $]
 
 Release:
 
-   1.3.31-dev: In development. Plan to T&R week of April 19.
+   1.3.31: Tagged May 7, 2004.
    1.3.30: Tagged April 9, 2004. Not released.
    1.3.29: Tagged October 24, 2003. Announced Oct 29, 2003.
    1.3.28: Tagged July 16, 2003. Announced ??
@@ -46,11 +46,6 @@ Release:
     2.0  : Available for general use, see httpd-2.0 repository
 
 RELEASE SHOWSTOPPERS:
-
-   * mod_digest/nonce issue.
-      Message-Id: <166C36F2-8D5D-11D8-97C2-000393D76AB8@jaguNET.com>
-      Patches: Already committed to CVS for ease of review and test.
-               Developers should review these!!
 
 RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
 
