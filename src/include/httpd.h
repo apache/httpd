@@ -801,6 +801,7 @@ struct listen_rec {
 
 /* Time */
 extern MODULE_VAR_EXPORT const char month_snames[12][4];
+extern MODULE_VAR_EXPORT const char day_snames[7][4];
 
 API_EXPORT(struct tm *) get_gmtoff(int *tz);
 API_EXPORT(char *) get_time(void);

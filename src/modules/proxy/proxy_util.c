@@ -275,13 +275,8 @@ char *
     return NULL;
 }
 
-static const char *lwday[7] =
+static const char * const lwday[7] =
 {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};
-static const char *wday[7] =
-{"Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"};
-static const char *months[12] =
-{"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov",
- "Dec"};
 
 /*
  * If the date is a valid RFC 850 date or asctime() date, then it
@@ -326,7 +321,7 @@ char *
 		   &min, &sec, &year) != 7)
 	    return x;
 	for (wk = 0; wk < 7; wk++)
-	    if (strcmp(week, wday[wk]) == 0)
+	    if (strcmp(week, day_snames[wk]) == 0)
 		break;
 	if (wk == 7)
 	    return x;
@@ -334,15 +329,15 @@ char *
 
 /* check date */
     for (mon = 0; mon < 12; mon++)
-	if (strcmp(month, months[mon]) == 0)
+	if (strcmp(month, month_snames[mon]) == 0)
 	    break;
     if (mon == 12)
 	return x;
 
     if (strlen(x) < 30)
 	x = palloc(p, 30);
-    ap_snprintf(x, 30, "%s, %.2d %s %d %.2d:%.2d:%.2d GMT", wday[wk], mday,
-		months[mon], year, hour, min, sec);
+    ap_snprintf(x, 30, "%s, %.2d %s %d %.2d:%.2d:%.2d GMT", day_snames[wk], mday,
+		month_snames[mon], year, hour, min, sec);
     return x;
 }
 

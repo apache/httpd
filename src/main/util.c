@@ -79,6 +79,10 @@ const char month_snames[12][4] =
 {
     "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
 };
+const char day_snames[7][4] =
+{
+    "Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"
+};
 
 API_EXPORT(char *) get_time()
 {
@@ -106,8 +110,6 @@ API_EXPORT(char *) ht_time(pool *p, time_t t, const char *fmt, int gmt)
 
 API_EXPORT(char *) gm_timestr_822(pool *p, time_t sec)
 {
-    static const char *const days[7] =
-    {"Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"};
     char ts[50];
     struct tm *tms;
 
@@ -115,7 +117,7 @@ API_EXPORT(char *) gm_timestr_822(pool *p, time_t sec)
 
     /* RFC date format; as strftime '%a, %d %b %Y %T GMT' */
     ap_snprintf(ts, sizeof(ts),
-		"%s, %.2d %s %d %.2d:%.2d:%.2d GMT", days[tms->tm_wday],
+		"%s, %.2d %s %d %.2d:%.2d:%.2d GMT", day_snames[tms->tm_wday],
 		tms->tm_mday, month_snames[tms->tm_mon], tms->tm_year + 1900,
 		tms->tm_hour, tms->tm_min, tms->tm_sec);
 

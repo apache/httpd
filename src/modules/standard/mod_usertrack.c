@@ -109,10 +109,6 @@ typedef struct {
     time_t expires;
 }      cookie_log_state;
 
-static const char month_names[12][4] = {
-    "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
-};
-
 /* Define this to allow post-2000 cookies. Cookies use two-digit dates,
  * so it might be dicey. (Netscape does it correctly, but others may not)
  */
@@ -172,8 +168,6 @@ static void make_cookie(request_rec *r)
 #endif
 
     if (cls->expires) {
-        static const char *const days[7] =
-        {"Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"};
         struct tm *tms;
         time_t when = r->request_time + cls->expires;
 
@@ -192,8 +186,8 @@ static void make_cookie(request_rec *r)
         /* Cookie with date; as strftime '%a, %d-%h-%y %H:%M:%S GMT' */
         ap_snprintf(new_cookie, 1024,
                 "%s%s; path=/; expires=%s, %.2d-%s-%.2d %.2d:%.2d:%.2d GMT",
-                    COOKIE_NAME, cookiebuf, days[tms->tm_wday],
-                    tms->tm_mday, month_names[tms->tm_mon],
+                    COOKIE_NAME, cookiebuf, day_snames[tms->tm_wday],
+                    tms->tm_mday, month_snames[tms->tm_mon],
 		    tms->tm_year % 100,
                     tms->tm_hour, tms->tm_min, tms->tm_sec);
     }
