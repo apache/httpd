@@ -66,11 +66,11 @@
 #include "ap_mpm.h"
 #include "ap_config.h"
 #include "ap_listen.h"
-#include "multithread.h"
 #include "../os/win32/getopt.h"
 #include "mpm_default.h"
 #include "../os/win32/iol_socket.h"
 #include "winnt.h"
+
 
 /*
  * Definitions of WINNT MPM specific config globals

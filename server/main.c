@@ -233,8 +233,12 @@ static void usage(char *bin)
 }
 
 pool *g_pHookPool;
-
+#ifdef WIN32
+__declspec(dllexport)
+     int apache_main(int argc, char *argv[])
+#else
 int main(int argc, char **argv)
+#endif
 {
     int c;
     int configtestonly = 0;

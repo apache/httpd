@@ -1075,6 +1075,7 @@ typedef int rlim_t;
 
 #else /* WIN32 */
 #include <winsock2.h>
+#include <mswsock.h> /* AcceptEx, et. al. TODO: move into OS specific file (os.h? apr?) */
 #include <malloc.h>
 #include <io.h>
 #include <fcntl.h>
