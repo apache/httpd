@@ -181,20 +181,26 @@ static int get_digest_rec(request_rec *r, digest_header_rec * response)
 
     /* There's probably a better way to do this, but for the time being... 
      *
-     * Right now the parsing is very 'slack'. Actual rules from RFC 2069 are:
+     * Right now the parsing is very 'slack'. Actual rules from RFC 2617 are:
      *
-     * Authorization     = "Authorization" ":" "Digest" digest-response
+     * Authorization     = "Digest" digest-response
      * digest-response   = 1#( username | realm | nonce | digest-uri |
-     * 				response | [ digest ] | [ algorithm ] |
-     *                    	opaque )
+     * 				response | [ cnonce ] | [ algorithm ] |
+     *                    	[opaque] | [message-qop] | [nonce-count] |
+     *				[auth-param] )			(see note 4)
      * username           = "username" "=" username-value
      *   username-value   = quoted-string
      * digest-uri         = "uri" "=" digest-uri-value
-     *   digest-uri-value = request-uri         ; As specified by HTTP/1.1
+     *   digest-uri-value = request-uri         
+     * message-qop      = "qop" "=" qop-value
+     *   qop-options       = "qop" "=" <"> 1#qop-value <">      (see note 3)
+     *   qop-value         = "auth" | "auth-int" | token
+     * cnonce           = "cnonce" "=" cnonce-value
+     *    cnonce-value     = nonce-value
+     * nonce-count      = "nc" "=" nc-value
+     *    nc-value         = 8LHEX
      * response           = "response" "=" response-digest
-     * digest             = "digest" "=" entity-digest
      *   response-digest  = <"> *LHEX <">
-     *   entity-digest    = <"> *LHEX <">
      *     LHEX           = "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" |
      *                      "8" | "9" | "a" | "b" | "c" | "d" | "e" | "f"
      * 
@@ -219,6 +225,13 @@ static int get_digest_rec(request_rec *r, digest_header_rec * response)
      *       Authorization: Digest username="dirkx", realm="DAV", nonce="1031662894",
      *       uri=/mary,+dirkx,+peter+and+mary.ics, response="99a6275793be28c31a5b6e4467fa4c79",
      *       algorithm=MD5
+     *
+     * Note3: Taken from section 3.2.1 - as this is not actually defined in section 3.2.2 
+     *       which deals with the Authorization Request Header.
+     *
+     * Note4: The 'comma separated' list concept is refered to in the RFC
+     *       but whitespace eating and other such things are assumed to be
+     *       as per MIME/RFC2068 spec.
      */
 
 #define D_KEY 0
