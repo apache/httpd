@@ -115,6 +115,8 @@ int ap_pre_http_connection(conn_rec *);
  */
 int ap_process_http_connection(conn_rec *);
 
+AP_CORE_DECLARE(void) ap_flush_conn(conn_rec *c);
+
 /**
  * This function is responsible for the following cases:
  * <PRE>
