@@ -1805,13 +1805,9 @@ static int compute_header_len(apr_size_t *length, const char *fieldname,
     return 1;
 }
 
-AP_DECLARE(void) ap_basic_http_header(request_rec *r, char *buf)
+static void basic_http_header_check(request_rec *r, 
+                                    const char **protocol)
 {
-    char *protocol;
-    char *date = NULL;
-    char *tmp;
-    header_struct h;
-
     if (r->assbackwards)
         return;
 
@@ -1825,12 +1821,22 @@ AP_DECLARE(void) ap_basic_http_header(request_rec *r, char *buf)
         || (r->proto_num == HTTP_VERSION(1,0)
             && apr_table_get(r->subprocess_env, "force-response-1.0"))) {
 
-        protocol = "HTTP/1.0";
+        *protocol = "HTTP/1.0";
         r->connection->keepalive = -1;
     }
     else {
-        protocol = AP_SERVER_PROTOCOL;
+        *protocol = AP_SERVER_PROTOCOL;
     }
+}
+
+static void basic_http_header(request_rec *r, char *buf, const char *protocol)
+{
+    char *date = NULL;
+    char *tmp;
+    header_struct h;
+
+    if (r->assbackwards)
+        return;
 
     /* Output the HTTP/1.x Status-Line and the Date and Server fields */
 
@@ -1849,6 +1855,14 @@ AP_DECLARE(void) ap_basic_http_header(request_rec *r, char *buf)
 
     apr_table_unset(r->headers_out, "Date");        /* Avoid bogosity */
     apr_table_unset(r->headers_out, "Server");
+}
+
+AP_DECLARE(void) ap_basic_http_header(request_rec *r, char *buf)
+{
+    const char *protocol;
+
+    basic_http_header_check(r, &protocol);
+    basic_http_header(r, buf, protocol);
 }
 
 /* Navigator versions 2.x, 3.x and 4.0 betas up to and including 4.0b2
@@ -2434,6 +2448,7 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_http_header_filter(ap_filter_t *f, apr_b
     char *date = NULL;
     request_rec *r = f->r;
     char *buff, *buff_start;
+    const char *protocol;
     apr_bucket *e;
     apr_bucket_brigade *b2;
     apr_size_t len = 0;
@@ -2485,14 +2500,7 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_http_header_filter(ap_filter_t *f, apr_b
      * and the basic http headers don't overflow this buffer.
      */
     len += strlen(ap_get_server_version()) + 100;
-    buff_start = buff = apr_pcalloc(r->pool, len);
-    ap_basic_http_header(r, buff);
-    buff += strlen(buff);
-
-    h.r = r;
-    h.buf = buff;
-
-
+    basic_http_header_check(r, &protocol);
     ap_set_keepalive(r);
 
     if (r->chunked) {
@@ -2567,6 +2575,13 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_http_header_filter(ap_filter_t *f, apr_b
                  (void *) &len, r->headers_out, NULL);
     }
     
+    buff_start = buff = apr_pcalloc(r->pool, len);
+    basic_http_header(r, buff, protocol);
+    buff += strlen(buff);
+
+    h.r = r;
+    h.buf = buff;
+
     if (r->status == HTTP_NOT_MODIFIED) {
         apr_table_do((int (*)(void *, const char *, const char *)) form_header_field,
                     (void *) &h, r->headers_out,
