@@ -854,12 +854,13 @@ static void check_hostalias(request_rec *r)
      *   names we'll match have ports associated with them
      */
     const char *host = r->hostname;
-    unsigned port = ntohs(r->connection->local_addr.sin_port);
+    unsigned port;
     server_rec *s;
     server_rec *last_s;
     name_chain *src;
 
     last_s = NULL;
+    apr_get_local_port(&port, r->connection->client_socket);
 
     /* Recall that the name_chain is a list of server_addr_recs, some of
      * whose ports may not match.  Also each server may appear more than
@@ -913,9 +914,9 @@ static void check_serverpath(request_rec *r)
     server_rec *s;
     server_rec *last_s;
     name_chain *src;
-    /* use AP func here. */
-    unsigned port = ntohs(r->connection->local_addr.sin_port);
-
+    unsigned port;
+    apr_get_local_port(&port, r->connection->client_socket);
+   
     /*
      * This is in conjunction with the ServerPath code in http_core, so we
      * get the right host attached to a non- Host-sending request.
