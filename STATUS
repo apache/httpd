@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:						-*-text-*-
-Last modified at [$Date: 2002/01/08 23:42:11 $]
+Last modified at [$Date: 2002/01/10 05:37:06 $]
 
 Release:
 
@@ -102,6 +102,25 @@ RELEASE SHOWSTOPPERS:
       to be able to return an error code.
 
 RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
+    * Add a Logging Directive to exclude logging based on mime type.
+        see http://mbox.apachelabs.org/apache-mbox/200201.mbox/%3cELEDJONBOPPAEGANDEEIEENCCAAA.joshua@slive.ca%3e for discussion.
+
+        -1: Joshua Silve, WRowe, Lars 
+        +1: Ian (surprise)
+       
+        Lars Says:
+            But is matching on mime-types really a required feature?
+            IMHO most people are happy with the current conditional logging
+            feature, e.g., matching on REQUEST_URI.
+
+            I tend to be -1 on your patch Ian, because the directive is too
+            specific. We either need a more generic one or just stick with
+            the current (or an enhanced) conditional logging functionality. 
+
+        Ian Says:
+            Large Sites/Sites with other heavy CPU loads need a 'cheap'
+            way to exclude 90% of all log lines (eg images)
+            Regex Matching takes ~5-10 times longer than a simple hash get.
 
     * Try to get libtool inter-library dependency code working on AIX.
 
