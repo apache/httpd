@@ -1,5 +1,11 @@
 Changes with Apache 2.0.44
 
+  *) Reorder the definitions for mod_ldap and mod_auth_ldap within
+     config.m4 to make sure the parent mod_ldap is defined first.
+     This ensures that mod_ldap comes before mod_auth_ldap in the
+     httpd.conf file, which is necessary for mod_auth_ldap to load.
+     [Graham Leggett]
+
   *) Fix critical bug in new --enable-v4-mapped configure option
      implementation which broke IPv4 listening sockets on some
      systems.  [hiroyuki hanai <hanai@imgsrc.co.jp>]
@@ -16,6 +22,7 @@ Changes with Apache 2.0.44
      the else path (using the default expiration) if date is
      equal to lastmod. [rx@armstrike.com (Sergey), Paul J. Reder]
 
+>>>>>>> 1.989
   *) Use AP_DECLARE in the debug versions of ap_strXXX in case the
      default calling convention is not the same as the one used by
      AP_DECLARE.  [Juan Rivera <Juan.Rivera@citrix.com>]
