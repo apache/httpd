@@ -38,8 +38,8 @@
     schaffen, die der vieler anderer Open Source Projekte ähnlich
     sieht.</p>
 
-    <p>Wenn Sie von einer Unterversion auf die nächste aktualisieren (z.B. von
-    2.0.50 auf 2.0.51), springen Sie bitte zum Abschnitt <a href="#upgrading">Upgrade</a>.</p>
+    <p>Wenn Sie von einer Unterversion auf die nächste aktualisieren (z.B.
+    von 2.0.50 auf 2.0.51), springen Sie bitte zum Abschnitt <a href="#upgrading">Upgrade</a>.</p>
 </div>
 <div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#overview">Überblick für die Ungeduldigen</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#requirements">Anforderungen</a></li>
