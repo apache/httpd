@@ -1,4 +1,4 @@
-/* ====================================================================
+ ====================================================================
  * The Apache Software License, Version 1.1
  *
  * Copyright (c) 2000-2001 The Apache Software Foundation.  All rights
@@ -76,11 +76,5 @@
 #define AP_SERVER_BASEREVISION "2.0.13-dev"
 #define AP_SERVER_BASEVERSION AP_SERVER_BASEPRODUCT "/" AP_SERVER_BASEREVISION
 #define AP_SERVER_VERSION  AP_SERVER_BASEVERSION
-
-/* Numeric release version identifier: MMNNFFRBB: major minor fix final beta
- * Always increases along the same track as the source branch.
- * For example, Apache 1.4.2 would be '10402100', 2.5b7 would be '20500007'.
- */
-#define APACHE_RELEASE 20000013
 
 #endif
