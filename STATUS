@@ -1,5 +1,5 @@
   1.3 STATUS:
-  Last modified at [$Date: 2000/01/14 09:15:16 $]
+  Last modified at [$Date: 2000/01/14 18:47:52 $]
 
 Release:
 
@@ -24,27 +24,6 @@ Release:
     2.0  : In pre-alpha development, see apache-2.0 repository
 
 RELEASE SHOWSTOPPERS:
-
-    * HPUX binary build failure due to the fact that it is building
-      libstandard.a and adding .so objects to the libstandard.a starting
-      with mod_vhost_alias.so.
-        Message-ID: <001a01bee548$d0e30ee0$0502a8c0@covalent.net>
-	Status: Randy committed a temporary fix
-	UPDATE: Keith Wannamaker reports that Ralf's patch to
-	fix PR4974 has broken this again. Please see:
-	  <NDBBKAGGKAPKFAECGCAGIEJACAAA.krw@raleigh.ibm.com>
-	UPDATE: Ryan suggested that SHLIB_SUFFIX_NAME=sl be backed
-	 out. Jim has done this. However, there is still debate
-	 on the correct fix. At present, this seems to fix the
-	 symptom, but not the full problem, which is inherent
-	 in how the shared "functionality" was coded. Other
-	 suggested patches break other platforms. So it
-	 is entirely possible that this fix is the one we
-	 will ship with.
-        UPDATE: Brian posted a patch which implements SHMOD_SUFFIX_NAME.
-         This has been reported to work on OS/2 and HPUX.
-         <200001130122.MAA32461@silk.apana.org.au>
-         Ryan +1
 
     * HPUX build failure without -Ae provided to HPUX compiler as a CFLAG.
       The error message states this flag is required for "long long" types
