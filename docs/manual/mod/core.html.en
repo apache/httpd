@@ -245,7 +245,7 @@ named file-system directory and sub-directories</td></tr><tr><td nowrap="nowrap"
     Unix shell-style matching. In a wild-card string, `?' matches any
     single character, and `*' matches any sequences of characters.
     You may also use `[]' character ranges. None of the wildcards
-    match a `/' character, so <code>&lt;Dircectory
+    match a `/' character, so <code>&lt;Directory
     /*/public_html&gt;</code> will not match
     <code>/home/user/public_html</code>, but <code>&lt;Directory
     /home/*/public_html&gt;</code> will match. Example:</p>
@@ -254,6 +254,14 @@ named file-system directory and sub-directories</td></tr><tr><td nowrap="nowrap"
 &nbsp;&nbsp;Options Indexes FollowSymLinks<br>
    &lt;/Directory&gt;<br>
 </code></td></tr></table></blockquote>
+
+<blockquote><table><tr><td bgcolor="#e0e5f5">
+<p>Be careful with the <em>directory-path</em> arguments: They have
+to literally match the filesystem path which Apache uses to access the
+files. Directives applied to a particular &lt;Directory&gt; will not
+apply to files accessed from that same directory via a different path,
+such as via different symbolic links.</p>
+</td></tr></table></blockquote>
 
     <p>Extended regular
     expressions can also be used, with the addition of the
