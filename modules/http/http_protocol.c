@@ -949,7 +949,6 @@ apr_status_t http_filter(ap_filter_t *f, ap_bucket_brigade *b)
 static int getline(char *s, int n, conn_rec *c, int fold)
 {
     char *pos = s;
-    const char *toss;
     const char *temp;
     int retval;
     int total = 0;
@@ -978,7 +977,6 @@ static int getline(char *s, int n, conn_rec *c, int fold)
         }
         retval = e->read(e, &temp, &length, 0);
 
-        /* retval == APR_SUCCESS on SUCCESS */
         if (retval != APR_SUCCESS) {
             total = ((length < 0) && (total == 0)) ? -1 : total;
             break;
@@ -993,8 +991,7 @@ static int getline(char *s, int n, conn_rec *c, int fold)
             /* input line was larger than the caller's buffer */
             AP_BUCKET_REMOVE(e);
             ap_bucket_destroy(e);
-            total = -1;  /* ??? is this right ? */
-            break;
+            return -1;
         }
         
 /**** XXX
@@ -1040,7 +1037,7 @@ static int getline(char *s, int n, conn_rec *c, int fold)
         else {
             pos++;              /* bump past end of incomplete line      */
         }
-	}
+    }
     return total;
 }
 
@@ -1123,7 +1120,7 @@ static int read_request_line(request_rec *r)
     ap_bsetflag(conn->client, B_SAFEREAD, 1); 
     ap_bflush(conn->client);
     while ((len = getline(l, sizeof(l), conn, 0)) <= 0) {
-        if ((len < 0) || 1 /* ap_bgetflag(conn->client, B_EOF) */ ) {
+        if (len < 0) {             /* includes EOF */
 	    ap_bsetflag(conn->client, B_SAFEREAD, 0);
 	    /* this is a hack to make sure that request time is set,
 	     * it's not perfect, but it's better than nothing 
