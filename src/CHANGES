@@ -1,5 +1,8 @@
 Changes with Apache 1.3.10
 
+  *) Fixed `quad integer' (aka `long long') handling in ap_snprintf.c
+     [Ralf S. Engelschall]
+
   *) Fixed error handling in dbmmanage script.
      [Andrew McRae <andrew@liquid.com>] PR#4973
 
