@@ -18,6 +18,25 @@ information.
 <P>See Also: <A HREF="compat_notes.html">Compatibility notes</A></P>
 <HR>
 
+<H2>Version 1.2 (all)</H2>
+
+<OL>
+    <LI>On some architectectures if your configuration uses multiple
+    <a href="../mod/core#listen">Listen</a> directives then it is possible
+    that the server will starve one of the sockets while serving hits on
+    another.  The work-around is to add
+    <code>-DUSE_FLOCK_SERIALIZED_ACCEPT</code> to the
+    <code>EXTRA_CFLAGS</code> line in your Configuration and rebuild.
+    (If you encounter problems with that, you can also try
+    <code>-DUSE_FCNTL_SERIALIZED_ACCEPT</code>.)
+    This affects any architecture that doesn't use one of the
+    <code>USE_xxxxx_SERIALIZED_ACCEPT</code> definitions, see the
+    source file <code>conf.h</code> for your architecture.
+    <p>This will be tracked as
+    <a href="http://www.apache.org/bugdb.cgi/full/467">PR#467</a>.
+    </LI>
+</OL>
+
 <H2>Version 1.2b8</H2>
 
 There are several known bugs in 1.2b8.  See the
