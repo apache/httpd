@@ -22,7 +22,6 @@ Changes with Apache 2.0.44
      the else path (using the default expiration) if date is
      equal to lastmod. [rx@armstrike.com (Sergey), Paul J. Reder]
 
->>>>>>> 1.989
   *) Use AP_DECLARE in the debug versions of ap_strXXX in case the
      default calling convention is not the same as the one used by
      AP_DECLARE.  [Juan Rivera <Juan.Rivera@citrix.com>]
