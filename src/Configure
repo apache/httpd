@@ -825,7 +825,7 @@ fi
 #    contain modules we want to build from both AddModule and Module
 #    lines
 
-echo " + Adding selected modules"
+echo " + adding selected modules"
 
 MODFILES=`awk <$tmpfile '$1 == "AddModule" { printf "%s ", $2 }'`
 MODDIRS=`awk < $tmpfile '
