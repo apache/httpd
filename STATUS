@@ -1,5 +1,5 @@
   1.3 STATUS:
-  Last modified at [$Date: 1999/06/06 13:20:09 $]
+  Last modified at [$Date: 1999/06/06 13:45:50 $]
 
 Release:
 
@@ -245,6 +245,10 @@ Needs patch:
       See <Pine.LNX.3.96dg4.990107093844.14158A-100000@twinlark.arctic.org>
 
 Open issues:
+
+    * there are still some PRs about inetd mode
+      Should we deprecate "ServerType inetd" if the next release is 1.4.0?
+        +1: Lars
 
     * general/3787: SERVER_PORT is always 80 if client comes to any port
       => needs review by the protocol guys, I think.
