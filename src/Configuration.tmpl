@@ -75,6 +75,14 @@ LFLAGS=
 # -lndbm is commonly required for DBM auth, if that is configured in.
 EXTRA_LIBS=
 
+# Apache requires a POSIX regex implementation. Some/most platforms provide
+# this capability, but for those that don't, Apache provides, simply for
+# convenience, a regex implementation. The regex code is NOT official
+# Apache code and the Apache team does not support or guarantee the code.
+# If you want to use the supplied regex package, uncomment the following
+# line (or set it equal to the regex lib on your system)
+#REGLIBS=regex/libregex.a
+
 # Default to using ranlib on libraries (for regex). Set this to something else
 # if ranlib kills your system (usually by setting it again in the OS specific
 # section below)
