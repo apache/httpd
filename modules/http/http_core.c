@@ -2929,8 +2929,7 @@ static apr_status_t chunk_filter(ap_filter_t *f, ap_bucket_brigade *b)
 
 	AP_BRIGADE_FOREACH(e, b) {
 	    if (e->type == AP_BUCKET_EOS) {
-		/* assume it is the last one in the brigade */
-                /* ### can we chop off the stuff after the EOS? */
+		/* there shouldn't be anything after the eos */
 		eos = e;
 		break;
 	    }
@@ -2974,7 +2973,7 @@ static apr_status_t chunk_filter(ap_filter_t *f, ap_bucket_brigade *b)
              * Insert the chunk header, specifying the number of bytes in
              * the chunk.
              */
-            /* ### might be nice to have APR_OFF_T_FMT_HEX */
+            /* XXX might be nice to have APR_OFF_T_FMT_HEX */
             hdr_len = apr_snprintf(chunk_hdr, sizeof(chunk_hdr),
                                    "%qx" CRLF, (apr_uint64_t)bytes);
             e = ap_bucket_create_transient(chunk_hdr, hdr_len);
@@ -3002,11 +3001,12 @@ static apr_status_t chunk_filter(ap_filter_t *f, ap_bucket_brigade *b)
          *
          * If there is no EOS bucket, then do nothing.
          *
-         * ### it would be nice to combine this with the end-of-chunk marker
-         * ### above, but this is a bit more straight-forward for now.
+         * XXX: it would be nice to combine this with the end-of-chunk
+         * marker above, but this is a bit more straight-forward for
+         * now.
          */
         if (eos != NULL) {
-            /* ### (2) trailers ... does not yet exist */
+            /* XXX: (2) trailers ... does not yet exist */
             e = ap_bucket_create_immortal("0" CRLF /* <trailers> */ CRLF, 5);
             AP_BUCKET_INSERT_BEFORE(eos, e);
         }
