@@ -50,7 +50,7 @@
  *
  */
 
-/* $Id: http_request.c,v 1.16 1996/10/08 20:43:31 brian Exp $ */
+/* $Id: http_request.c,v 1.17 1996/10/16 17:29:22 ben Exp $ */
 
 /*
  * http_request.c: functions to get and process requests
@@ -598,6 +598,7 @@ request_rec *sub_req_lookup_uri (char *new_file, request_rec *r)
      */
     
     if ((res = directory_walk (rnew))
+	|| (res = location_walk (rnew))
 	|| (res = file_walk (rnew))
 	|| (!some_auth_required (rnew) ? 0 :
 	     ((res = check_user_id (rnew)) || (res = check_auth (rnew))))
@@ -641,6 +642,7 @@ request_rec *sub_req_lookup_file (char *new_file, request_rec *r)
 		      make_full_path (rnew->pool, fdir, new_file));
 	
     if ((res = directory_walk (rnew))
+	|| (res = location_walk (rnew))
 	|| (res = file_walk (rnew))
 	|| (res = check_access (rnew))
 	|| (!some_auth_required (rnew) ? 0 :
