@@ -122,7 +122,7 @@
 #include <signal.h>
 
 #include <netware.h>
-#include <nks\netware.h>
+#include <nks/netware.h>
 #include <library.h>
 
 #define WORKER_DEAD         SERVER_DEAD
