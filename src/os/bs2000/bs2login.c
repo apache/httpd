@@ -76,7 +76,7 @@ const char *os_set_authfile(pool *p, const char *name)
     if (stat(filename, &stbuf) != 0) {
 	return ap_pstrcat(p, "Unable to access bs2000 auth file ",
 		       filename, NULL);
-	exit(1);
+	exit(APEXIT_CHILDFATAL);
     }
 
     /* auth file must be owned by root, and not readable/writable by everyone else */
@@ -126,14 +126,14 @@ int os_init_job_environment(server_rec *server, const char *user_name)
 		     "Use the 'BS2000AuthFile <passwdfile>' directive to specify "
 		     "an authorization file for User %s",
 		     user_name);
-	exit(1);
+	exit(APEXIT_CHILDFATAL);
     }
 
     if ((pwfile = fopen(bs2000_authfile, "r")) == NULL) {
 	ap_log_error(APLOG_MARK, APLOG_ALERT, server,
 		     "Unable to open bs2000 auth file %s for User %s",
 		     bs2000_authfile, user_name);
-	exit(1);
+	exit(APEXIT_CHILDFATAL);
     }
 
     if (fgets(lcl_data.password, sizeof lcl_data.password, pwfile) == NULL
@@ -141,7 +141,7 @@ int os_init_job_environment(server_rec *server, const char *user_name)
 	ap_log_error(APLOG_MARK, APLOG_ALERT|APLOG_NOERRNO, server,
 		     "Unable ro read BS2000 auth file %s",
 		     bs2000_authfile);
-	exit(1);
+	exit(APEXIT_CHILDFATAL);
     }
 
     fclose(pwfile);
@@ -156,7 +156,7 @@ int os_init_job_environment(server_rec *server, const char *user_name)
     if(_checkuser(&chk_usr) != 0) {
 	ap_log_error(APLOG_MARK, APLOG_ALERT, server,
 		     "_checkuser: BS2000 auth failed for user %s", chk_usr.username);
-	exit(1);
+	exit(APEXIT_CHILDFATAL);
     }
 
     inittask.username = chk_usr.username;
@@ -170,7 +170,7 @@ int os_init_job_environment(server_rec *server, const char *user_name)
 	ap_log_error(APLOG_MARK, APLOG_ALERT, server,
 		     "_rini: BS2000 auth failed for user %s",
 		     inittask.username);
-	exit(1);
+	exit(APEXIT_CHILDFATAL);
     }
 
     /*ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, server,
