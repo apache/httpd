@@ -1030,11 +1030,9 @@ request_rec *ap_read_request(conn_rec *conn)
 
 #ifdef APACHE_XLATE
     r->rrx = ap_pcalloc(p, sizeof(struct ap_rr_xlate));
-    r->rrx->to_net = ap_locale_to_ascii;
-    r->rrx->from_net = ap_locale_from_ascii;
-    ap_bsetopt(r->connection->client, BO_WXLATE, &ap_hdrs_to_ascii);
-    ap_bsetopt(r->connection->client, BO_RXLATE, &ap_hdrs_from_ascii);
-#endif
+    ap_set_content_xlate(r, 1, ap_locale_to_ascii);
+    ap_set_content_xlate(r, 0, ap_locale_from_ascii);
+#endif /*APACHE_XLATE*/
 
     ap_bsetopt(conn->client, BO_TIMEOUT,
                conn->keptalive
