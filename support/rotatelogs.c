@@ -72,8 +72,9 @@
 #include <errno.h>
 #include <fcntl.h>
 #include <stdio.h>
+#include <stdlib.h>
 
-int main (int argc, char **argv)
+int main (int argc, char *argv[])
 {
     char buf[BUFSIZE], buf2[MAX_PATH];
     time_t tLogEnd = 0;

@@ -130,44 +130,4 @@ void ap_start_restart(int graceful);
  */
 void ap_signal_parent(ap_pool_t *p, const char* signal, const char* server_root);
 
-#ifdef HAS_OTHER_CHILD
-/*
- * register an other_child -- a child which the main loop keeps track of
- * and knows it is different than the rest of the scoreboard.
- *
- * pid is the pid of the child.
- *
- * maintenance is a function that is invoked with a reason, the data
- * pointer passed here, and when appropriate a status result from waitpid().
- *
- * write_fd is an fd that is probed for writing by select() if it is ever
- * unwritable, then maintenance is invoked with reason OC_REASON_UNWRITABLE.
- * This is useful for log pipe children, to know when they've blocked.  To
- * disable this feature, use -1 for write_fd.
- */
-API_EXPORT(void) ap_register_other_child(int pid,
-       void (*maintenance) (int reason, void *data, ap_wait_t status), void *data,
-				      int write_fd);
-#define OC_REASON_DEATH		0	/* child has died, caller must call
-					 * unregister still */
-#define OC_REASON_UNWRITABLE	1	/* write_fd is unwritable */
-#define OC_REASON_RESTART	2	/* a restart is occuring, perform
-					 * any necessary cleanup (including
-					 * sending a special signal to child)
-					 */
-#define OC_REASON_UNREGISTER	3	/* unregister has been called, do
-					 * whatever is necessary (including
-					 * kill the child) */
-#define OC_REASON_LOST		4	/* somehow the child exited without
-					 * us knowing ... buggy os? */
-
-/*
- * unregister an other_child.  Note that the data pointer is used here, and
- * is assumed to be unique per other_child.  This is because the pid and
- * write_fd are possibly killed off separately.
- */
-API_EXPORT(void) ap_unregister_other_child(void *data);
-
-#endif
-
 #endif
