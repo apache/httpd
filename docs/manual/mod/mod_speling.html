@@ -70,7 +70,13 @@
   <A
    HREF="directive-dict.html#Context"
    REL="Help"
-  ><STRONG>Context:</STRONG></A> server config, virtual host<BR>
+  ><STRONG>Context:</STRONG></A> server config, virtual host,
+   directory, .htaccess<BR>
+  <A
+   HREF="directive-dict.html#Override"
+   REL="Help" 
+  ><STRONG>Override:</STRONG></A> Options
+  <BR>
   <A
    HREF="directive-dict.html#Status"
    REL="Help"
@@ -85,20 +91,29 @@
   ><STRONG>Compatibility:</STRONG></A> CheckSpelling was available as a
   separately
   available module for Apache 1.1, but was limited to miscapitalizations.
-  As of Apache 1.3, it is part of the Apache distribution<!-- or:
-  available as a separate module-->.<P>
-
+  As of Apache 1.3, it is part of the Apache distribution.  Prior to
+  Apache 1.3.2, the <SAMP>CheckSpelling</SAMP> directive was only available
+  in the "server" and "virtual host" contexts.
+  <P>
   This directive enables or disables the spelling module. When enabled,
   keep in mind that
+  </P>
   <UL>
-  <LI>the directory scan which is necessary for the spelling
-      correction will have an impact on the server's performance
-      when many spelling corrections have to be performed at the same time.
-  <LI>the document trees should not contain sensitive files which could
-      be matched inadvertently, by a spelling "correction".
-  <LI>the module is unable to correct misspelled user names
-      (as in <CODE>http://my.host/~apahce/</CODE>), just file names or
-      directory names.
+   <LI>the directory scan which is necessary for the spelling
+       correction will have an impact on the server's performance
+       when many spelling corrections have to be performed at the same time.
+   </LI>
+   <LI>the document trees should not contain sensitive files which could
+       be matched inadvertently by a spelling "correction".
+   </LI>
+   <LI>the module is unable to correct misspelled user names
+       (as in <CODE>http://my.host/~apahce/</CODE>), just file names or
+       directory names.
+   </LI>
+   <LI>spelling corrections apply strictly to existing files, so a request for
+       the <SAMP>&lt;Location /status&gt;</SAMP> may get incorrectly treated
+       as the negotiated file "<SAMP>/stats.html</SAMP>".
+   </LI>
   </UL>
 
 <!--#include virtual="footer.html" -->
