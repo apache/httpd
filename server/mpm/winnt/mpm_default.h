@@ -111,9 +111,7 @@
  * enough that we can read the whole thing without worrying too much about
  * the overhead.
  */
-#ifndef HARD_SERVER_LIMIT
-#define HARD_SERVER_LIMIT 8 
-#endif
+#define HARD_SERVER_LIMIT 1
 
 /* Where the main/parent process's pid is logged */
 #ifndef DEFAULT_PIDLOG
