@@ -585,7 +585,7 @@ static const command_rec autoindex_cmds[] =
     AP_INIT_RAW_ARGS("FancyIndexing", ap_set_deprecated, NULL, OR_ALL,
                  "The FancyIndexing directive is no longer supported.  Use IndexOptions FancyIndexing."),
     AP_INIT_TAKE1("DefaultIcon", ap_set_string_slot,
-                  (void *) APR_XtOffsetOf(autoindex_config_rec, default_icon),
+                  (void *)APR_OFFSETOF(autoindex_config_rec, default_icon),
                   DIR_CMD_PERMS, "an icon URL"),
     {NULL}
 };

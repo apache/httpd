@@ -207,23 +207,23 @@ static const char *isapi_cmd_cachefile(cmd_parms *cmd, void *dummy,
 
 static const command_rec isapi_cmds[] = {
     AP_INIT_TAKE1("ISAPIReadAheadBuffer", ap_set_int_slot,
-        (void *) APR_XtOffsetOf(isapi_dir_conf, read_ahead_buflen), 
+        (void *)APR_OFFSETOF(isapi_dir_conf, read_ahead_buflen), 
         OR_FILEINFO, "Maximum client request body to initially pass to the"
                      " ISAPI handler (default: 48192)"),
     AP_INIT_FLAG("ISAPILogNotSupported", ap_set_int_slot,
-        (void *) APR_XtOffsetOf(isapi_dir_conf, log_unsupported), 
+        (void *)APR_OFFSETOF(isapi_dir_conf, log_unsupported), 
         OR_FILEINFO, "Log requests not supported by the ISAPI server"
                      " on or off (default: off)"),
     AP_INIT_FLAG("ISAPIAppendLogToErrors", ap_set_flag_slot,
-        (void *) APR_XtOffsetOf(isapi_dir_conf, log_to_errlog), 
+        (void *)APR_OFFSETOF(isapi_dir_conf, log_to_errlog), 
         OR_FILEINFO, "Send all Append Log requests to the error log"
                      " on or off (default: off)"),
     AP_INIT_FLAG("ISAPIAppendLogToQuery", ap_set_flag_slot,
-        (void *) APR_XtOffsetOf(isapi_dir_conf, log_to_query), 
+        (void *)APR_OFFSETOF(isapi_dir_conf, log_to_query), 
         OR_FILEINFO, "Append Log requests are concatinated to the query args"
                      " on or off (default: on)"),
     AP_INIT_FLAG("ISAPIFakeAsync", ap_set_flag_slot,
-        (void *) APR_XtOffsetOf(isapi_dir_conf, fake_async), 
+        (void *)APR_OFFSETOF(isapi_dir_conf, fake_async), 
         OR_FILEINFO, "Fake Asynchronous support for isapi callbacks"
                      " on or off [Experimental] (default: off)"),
     AP_INIT_ITERATE("ISAPICacheFile", isapi_cmd_cachefile, NULL, 
