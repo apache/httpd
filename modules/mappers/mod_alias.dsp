@@ -53,16 +53,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib /nologo /subsystem:windows /dll /machine:I386 /out:"Release/mod_alias.so" /base:@..\..\os\win32\BaseAddr.ref,mod_alias.so
-# ADD LINK32 kernel32.lib /nologo /subsystem:windows /dll /incremental:no /debug /debugtype:both /machine:I386 /out:"Release/mod_alias.so" /pdbtype:sept /base:@..\..\os\win32\BaseAddr.ref,mod_alias.so
-# Begin Custom Build - Extracting .dbg symbols from $(InputPath)
-InputPath=.\Release\mod_alias.so
-SOURCE="$(InputPath)"
-
-".\Release\mod_alias.dbr" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	rebase -q -p -i "../../os/win32/BaseAddr.ref" -x ".\Release" $(InputPath)
-	echo rebased > ".\Release\mod_alias.dbr"
-
-# End Custom Build
+# ADD LINK32 kernel32.lib /nologo /subsystem:windows /dll /incremental:no /debug /machine:I386 /out:"Release/mod_alias.so" /base:@..\..\os\win32\BaseAddr.ref,mod_alias.so /opt:ref
 
 !ELSEIF  "$(CFG)" == "mod_alias - Win32 Debug"
 
