@@ -256,8 +256,8 @@ static int status_handler(request_rec *r)
 #endif
     int short_report = 0;
     int no_table_report = 0;
-    worker_score ws_record;
-    process_score ps_record;
+    worker_score *ws_record;
+    process_score *ps_record;
     char *stat_buffer;
     pid_t *pid_buffer;
     clock_t tu, ts, tcu, tcs;
@@ -329,14 +329,14 @@ static int status_handler(request_rec *r)
         for (j = 0; j < thread_limit; ++j) {
             int indx = (i * thread_limit) + j;
 
-            ws_record = ap_scoreboard_image->servers[i][j];
-            ps_record = ap_scoreboard_image->parent[i];
-            res = ws_record.status;
+            ws_record = ap_get_scoreboard_worker(i, j);
+            ps_record = ap_get_scoreboard_process(i);
+            res = ws_record->status;
             stat_buffer[indx] = status_flags[res];
 
-            if (!ps_record.quiescing
-                && ps_record.generation == ap_my_generation
-                && ps_record.pid) {
+            if (!ps_record->quiescing
+                && ps_record->generation == ap_my_generation
+                && ps_record->pid) {
                 if (res == SERVER_READY)
                     ready++;
                 else if (res != SERVER_DEAD && res != SERVER_IDLE_KILL)
@@ -347,15 +347,15 @@ static int status_handler(request_rec *r)
              * processes?  should they be counted or not?  GLA
              */
             if (ap_extended_status) {
-                lres = ws_record.access_count;
-                bytes = ws_record.bytes_served;
+                lres = ws_record->access_count;
+                bytes = ws_record->bytes_served;
 
                 if (lres != 0 || (res != SERVER_READY && res != SERVER_DEAD)) {
 #ifdef HAVE_TIMES
-                    tu += ws_record.times.tms_utime;
-                    ts += ws_record.times.tms_stime;
-                    tcu += ws_record.times.tms_cutime;
-                    tcs += ws_record.times.tms_cstime;
+                    tu += ws_record->times.tms_utime;
+                    ts += ws_record->times.tms_stime;
+                    tcu += ws_record->times.tms_cutime;
+                    tcs += ws_record->times.tms_cstime;
 #endif /* HAVE_TIMES */
 
                     count += lres;
@@ -369,7 +369,7 @@ static int status_handler(request_rec *r)
             }
         }
 
-        pid_buffer[i] = ps_record.pid;
+        pid_buffer[i] = ps_record->pid;
     }
 
     /* up_time in seconds */
@@ -547,46 +547,47 @@ static int status_handler(request_rec *r)
 
         for (i = 0; i < server_limit; ++i) {
             for (j = 0; j < thread_limit; ++j) {
-                ws_record = ap_scoreboard_image->servers[i][j];
+                ws_record = ap_get_scoreboard_worker(i, j);
 
-                if (ws_record.access_count == 0 &&
-                    (ws_record.status == SERVER_READY ||
-                     ws_record.status == SERVER_DEAD)) {
+                if (ws_record->access_count == 0 &&
+                    (ws_record->status == SERVER_READY ||
+                     ws_record->status == SERVER_DEAD)) {
                     continue;
                 }
 
-                ps_record = ap_scoreboard_image->parent[i];
+                ps_record = ap_get_scoreboard_process(i);
 
-                if (ws_record.start_time == 0L)
+                if (ws_record->start_time == 0L)
                     req_time = 0L;
                 else
                     req_time = (long)
-                        ((ws_record.stop_time - ws_record.start_time) / 1000);
+                        ((ws_record->stop_time - 
+                          ws_record->start_time) / 1000);
                 if (req_time < 0L)
                     req_time = 0L;
 
-                lres = ws_record.access_count;
-                my_lres = ws_record.my_access_count;
-                conn_lres = ws_record.conn_count;
-                bytes = ws_record.bytes_served;
-                my_bytes = ws_record.my_bytes_served;
-                conn_bytes = ws_record.conn_bytes;
+                lres = ws_record->access_count;
+                my_lres = ws_record->my_access_count;
+                conn_lres = ws_record->conn_count;
+                bytes = ws_record->bytes_served;
+                my_bytes = ws_record->my_bytes_served;
+                conn_bytes = ws_record->conn_bytes;
 
                 if (no_table_report) {
-                    if (ws_record.status == SERVER_DEAD)
+                    if (ws_record->status == SERVER_DEAD)
                         ap_rprintf(r,
                                    "<b>Server %d-%d</b> (-): %d|%lu|%lu [",
-                                   i, (int)ps_record.generation,
+                                   i, (int)ps_record->generation,
                                    (int)conn_lres, my_lres, lres);
                     else
                         ap_rprintf(r,
                                    "<b>Server %d-%d</b> (%"
                                    APR_PID_T_FMT "): %d|%lu|%lu [",
-                                   i, (int) ps_record.generation,
-                                   ps_record.pid,
+                                   i, (int) ps_record->generation,
+                                   ps_record->pid,
                                    (int)conn_lres, my_lres, lres);
                     
-                    switch (ws_record.status) {
+                    switch (ws_record->status) {
                     case SERVER_READY:
                         ap_rputs("Ready", r);
                         break;
@@ -631,12 +632,12 @@ static int status_handler(request_rec *r)
 #endif
                                "\n %ld %ld (",
 #ifdef HAVE_TIMES
-                               ws_record.times.tms_utime / tick,
-                               ws_record.times.tms_stime / tick,
-                               ws_record.times.tms_cutime / tick,
-                               ws_record.times.tms_cstime / tick,
+                               ws_record->times.tms_utime / tick,
+                               ws_record->times.tms_stime / tick,
+                               ws_record->times.tms_cutime / tick,
+                               ws_record->times.tms_cstime / tick,
 #endif
-                               (long)((nowtime - ws_record.last_used) /
+                               (long)((nowtime - ws_record->last_used) /
                                       APR_USEC_PER_SEC),
                                (long) req_time);
 
@@ -649,28 +650,28 @@ static int status_handler(request_rec *r)
                     ap_rprintf(r,
                                " <i>%s {%s}</i> <b>[%s]</b><br />\n\n",
                                ap_escape_html(r->pool,
-                                              ws_record.client),
+                                              ws_record->client),
                                ap_escape_html(r->pool,
-                                              ws_record.request),
+                                              ws_record->request),
                                ap_escape_html(r->pool,
-                                              ws_record.vhost));
+                                              ws_record->vhost));
                 }
                 else { /* !no_table_report */
-                    if (ws_record.status == SERVER_DEAD)
+                    if (ws_record->status == SERVER_DEAD)
                         ap_rprintf(r,
                                    "<tr><td><b>%d-%d</b></td><td>-</td><td>%d/%lu/%lu",
-                                   i, (int)ps_record.generation,
+                                   i, (int)ps_record->generation,
                                    (int)conn_lres, my_lres, lres);
                     else
                         ap_rprintf(r,
                                    "<tr><td><b>%d-%d</b></td><td>%"
                                    APR_PID_T_FMT
                                    "</td><td>%d/%lu/%lu",
-                                   i, (int)ps_record.generation,
-                                   ps_record.pid, (int)conn_lres,
+                                   i, (int)ps_record->generation,
+                                   ps_record->pid, (int)conn_lres,
                                    my_lres, lres);
                     
-                    switch (ws_record.status) {
+                    switch (ws_record->status) {
                     case SERVER_READY:
                         ap_rputs("</td><td>_", r);
                         break;
@@ -716,12 +717,12 @@ static int status_handler(request_rec *r)
 #endif
                                "<td>%ld</td><td>%ld",
 #ifdef HAVE_TIMES
-                               (ws_record.times.tms_utime +
-                                ws_record.times.tms_stime +
-                                ws_record.times.tms_cutime +
-                                ws_record.times.tms_cstime) / tick,
+                               (ws_record->times.tms_utime +
+                                ws_record->times.tms_stime +
+                                ws_record->times.tms_cutime +
+                                ws_record->times.tms_cstime) / tick,
 #endif
-                               (long)((nowtime - ws_record.last_used) /
+                               (long)((nowtime - ws_record->last_used) /
                                       APR_USEC_PER_SEC),
                                (long)req_time);
                     
@@ -729,18 +730,18 @@ static int status_handler(request_rec *r)
                                (float)conn_bytes / KBYTE, (float) my_bytes / MBYTE,
                                (float)bytes / MBYTE);
                     
-                    if (ws_record.status == SERVER_BUSY_READ)
+                    if (ws_record->status == SERVER_BUSY_READ)
                         ap_rprintf(r,
                                    "</td><td>?</td><td nowrap>?</td><td nowrap>..reading.. </td></tr>\n\n");
                     else
                         ap_rprintf(r,
                                    "</td><td>%s</td><td nowrap>%s</td><td nowrap>%s</td></tr>\n\n",
                                    ap_escape_html(r->pool,
-                                                  ws_record.client),
+                                                  ws_record->client),
                                    ap_escape_html(r->pool,
-                                                  ws_record.vhost),
+                                                  ws_record->vhost),
                                    ap_escape_html(r->pool,
-                                                  ws_record.request));
+                                                  ws_record->request));
                 } /* no_table_report */
             } /* for (j...) */
         } /* for (i...) */

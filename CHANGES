@@ -1,5 +1,9 @@
 Changes with Apache 2.0.36
 
+  *) Change mod_status to use scoreboard accessor functions so it can
+     be used in any MPM without having to be recompiled.
+     [Ryan Morgan <rmorgan@covalent.net>]
+
   *) Fix parsing of some AP_DECLARE_DATA declarations so that the filter
      handle declarations are recognized.  This fixes problems loading 
      mod_autoindex on some platforms.  [Brian Havard]
