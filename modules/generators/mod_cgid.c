@@ -242,7 +242,9 @@ static void cgid_maint(int reason, void *data, apr_wait_t status)
             apr_proc_other_child_unregister(data);
             break;
         case APR_OC_REASON_UNREGISTER:
-            apr_pool_destroy(pcgi);
+            /* we get here when pcgi is cleaned up; pcgi gets cleaned
+             * up when pconf gets cleaned up
+             */
             kill(*sd, SIGHUP);
             break;
     }
