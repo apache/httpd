@@ -145,7 +145,7 @@ ap_xlate_t *ap_checkconv(struct request_rec *r)
 	    /* translate EBCDIC to ASCII */
 	    convert_to_ascii = 1;
     }
-    /* Turn off conversion if it's a text document */
+    /* Turn off conversion if it's not a text document */
     if (!convert_to_ascii) {
         ap_set_content_xlate(r, 1, zero);
     }
