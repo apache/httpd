@@ -1285,7 +1285,7 @@ const char *ssl_cmd_SSLProxyVerify(cmd_parms *cmd,
     ssl_verify_t mode;
     const char *err;
 
-    if ((err = ssl_cmd_verify_parse(cmd, arg, &id))) {
+    if ((err = ssl_cmd_verify_parse(cmd, arg, &mode))) {
         return err;
     }
 
