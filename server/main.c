@@ -102,15 +102,12 @@ static void show_compile_settings(void)
 #ifdef HAVE_SHMGET
     printf(" -D HAVE_SHMGET\n");
 #endif
-#ifdef AP_USE_FILE_BASED_SCOREBOARD
-    printf(" -D AP_USE_FILE_BASED_SCOREBOARD\n");
+#if APR_FILE_BASED_SHM
+    printf(" -D APR_FILE_BASED_SHM\n");
 #endif
-#ifdef AP_USE_MEM_BASED_SCOREBOARD
-    printf(" -D AP_USE_MEM_BASED_SCOREBOARD\n");
-#endif
-#ifdef APR_HAS_MMAP
+#if APR_HAS_MMAP
     printf(" -D APR_HAS_MMAP\n");
-#endif /*APR_HAS_MMAP*/
+#endif
 #ifdef NO_WRITEV
     printf(" -D NO_WRITEV\n");
 #endif
