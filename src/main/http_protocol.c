@@ -661,7 +661,11 @@ static int read_request_line(request_rec *r)
         ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r->server,
                     "request failed for %s, reason: URI too long",
             ap_get_remote_host(r->connection, r->per_dir_config, REMOTE_NAME));
-        r->status = HTTP_REQUEST_URI_TOO_LARGE;
+	/* hack to deal with the HTTP_REQUEST_TIME_OUT setting up above: */
+	if (r->status == HTTP_REQUEST_TIME_OUT)
+	  r->status = HTTP_OK;
+	r->request_time = time(NULL);
+	ap_die (HTTP_REQUEST_URI_TOO_LARGE, r);
         return 0;
     }
 
@@ -720,9 +724,16 @@ static void get_mime_headers(request_rec *r)
     while ((len = getline(field, MAX_STRING_LEN, c->client, 1)) > 0) {
         char *copy = ap_palloc(r->pool, len + 1);
         memcpy(copy, field, len + 1);
-
-        if (!(value = strchr(copy, ':')))      /* Find the colon separator */
-            continue;           /* or should puke 400 here */
+	
+	if (!(value = strchr(copy, ':'))) {     /* Find the colon separator */
+	  /* if there's none, this request is screwed up.
+	   * a hack to deal with how we set HTTP_REQUEST_TIME_OUT earlier.*/
+	  if (r->status == HTTP_REQUEST_TIME_OUT)
+	    r->status = HTTP_OK;
+	  
+	  ap_die (HTTP_BAD_REQUEST, r);
+	  return;
+	}
 
         *value = '\0';
         ++value;
@@ -730,6 +741,16 @@ static void get_mime_headers(request_rec *r)
             ++value;            /* Skip to start of value   */
 
         ap_table_mergen(r->headers_in, copy, value);
+
+	/* the header was too long; at the least we should skip extra data */
+	if (len >= MAX_STRING_LEN - 1) { 
+	  char junk[MAX_STRING_LEN];     
+	  while ((len = getline(junk, MAX_STRING_LEN, c->client, 1))
+		 >= MAX_STRING_LEN - 1)   /* soak up the extra data */
+	    ;
+	  if (len == 0) /* time to exit the larger loop as well */
+	    break;
+	}
     }
 }
 
@@ -767,6 +788,7 @@ request_rec *ap_read_request(conn_rec *conn)
     r->read_body       = REQUEST_NO_BODY;
 
     r->status          = HTTP_REQUEST_TIME_OUT;  /* Until we get a request */
+    r->the_request     = NULL;
 
     /* Get the request... */
 
@@ -776,11 +798,22 @@ request_rec *ap_read_request(conn_rec *conn)
     ap_keepalive_timeout("read request line", r);
     if (!read_request_line(r)) {
         ap_kill_timeout(r);
+	if (r->status != HTTP_REQUEST_TIME_OUT)  /* we must have had an error.*/
+	    ap_log_transaction(r);
         return NULL;
     }
     if (!r->assbackwards) {
         ap_hard_timeout("read request headers", r);
         get_mime_headers(r);
+        if (r->status != HTTP_REQUEST_TIME_OUT) {/* we must have had an error.*/
+	    ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r->server,
+		         "request failed for %s: error reading the headers",
+		         ap_get_remote_host(r->connection, r->per_dir_config, 
+					    REMOTE_NAME));
+	    ap_log_transaction(r);
+	    return NULL;
+	}
+
     }
     ap_kill_timeout(r);
 
@@ -798,6 +831,8 @@ request_rec *ap_read_request(conn_rec *conn)
 
     if ((access_status = ap_run_post_read_request(r))) {
         ap_die(access_status, r);
+	ap_log_transaction(r);
+
         return NULL;
     }
 
@@ -1985,7 +2020,7 @@ void ap_send_error_response(request_rec *r, int recursive_error)
          * redirect URL. We don't really want to output this URL
          * as a text message, so first check the custom response
          * string to ensure that it is a text-string (using the
-         * same test used in die(), i.e. does it start with a ").
+         * same test used in ap_die(), i.e. does it start with a ").
          * If it doesn't, we've got a recursive error, so find
          * the original error and output that as well.
          */

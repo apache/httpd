@@ -1,5 +1,8 @@
 Changes with Apache 1.3b7
 
+  *) A fix for protocol issues surrounding 400, 408, and
+     414 responses. [Ed Korthof]
+
   *) Ignore MaxRequestsPerChild on WIN32. [Brian Behlendorf]
 
   *) Fix discrepancy in proxy_ftp.c which was causing failures when 
