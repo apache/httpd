@@ -84,6 +84,10 @@ features:
        "Gone" or "See Other" HTTP status. For NCSA-compatibility,
        RedirectTemp and RedirectPermanent are also implemented.
 
+  *) Graceful Restarts
+       Apache can re-read the config files and re-open log files without
+       terminating transactions in progress.
+
   *) Simplified Compilation
        The process of configuring Apache for compilation has been
        simplified.
