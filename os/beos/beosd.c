@@ -56,6 +56,7 @@
  * University of Illinois, Urbana-Champaign.
  */
 
+#include <unistd.h>
 #include "httpd.h"
 #include "http_config.h"
 #include "http_main.h"
