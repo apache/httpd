@@ -1,5 +1,5 @@
 Apache 2.0 STATUS:
-Last modified at [$Date: 2000/07/28 18:16:47 $]
+Last modified at [$Date: 2000/07/30 12:27:03 $]
 
 Release:
 
@@ -55,6 +55,9 @@ RELEASE SHOWSTOPPERS:
 
     * Modify mod_cgi and mod_cgid to deal with directories.  This allows
       a lot of directives to be removed from the core.
+
+    * Graceful restart doesn't work for dexter, mpmt_pthread, and
+      probably the other Unix MPMs as well
 
 RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
     * Combine log_child and piped_log_spawn. Clean up http_log.c.
