@@ -123,7 +123,7 @@
 #include "apr_lib.h"
 
 #if APR_HAVE_STDIO_H
-#include <stdio.h>              /* for EOF */
+#include <stdio.h>		/* for EOF */
 #endif
 #if APR_HAVE_STDLIB_H
 #include <stdlib.h>
@@ -161,22 +161,22 @@
 struct connection {
     apr_socket_t *aprsock;
     int state;
-    int read;        		/* amount of bytes read */
-    int bread;        		/* amount of body read */
-    int length;        		/* Content-Length value used for keep-alive */
-    char cbuff[CBUFFSIZE];      /* a buffer to store server response header */
-    int cbx;        		/* offset in cbuffer */
-    int keepalive;        	/* non-zero if a keep-alive request */
-    int gotheader;        	/* non-zero if we have the entire header in
-        			 * cbuff */
+    int read;			/* amount of bytes read */
+    int bread;			/* amount of body read */
+    int length;			/* Content-Length value used for keep-alive */
+    char cbuff[CBUFFSIZE];	/* a buffer to store server response header */
+    int cbx;			/* offset in cbuffer */
+    int keepalive;		/* non-zero if a keep-alive request */
+    int gotheader;		/* non-zero if we have the entire header in
+				 * cbuff */
     apr_time_t start, connect, done;
     int socknum;
 };
 
 struct data {
-    int read;        		/* number of bytes read */
-    int ctime;        		/* time in ms to connect */
-    int time;        		/* time in ms for connection */
+    int read;			/* number of bytes read */
+    int ctime;			/* time in ms to connect */
+    int time;			/* time in ms for connection */
 };
 
 #define ap_min(a,b) ((a)<(b))?(a):(b)
@@ -184,40 +184,40 @@ struct data {
 
 /* --------------------- GLOBALS ---------------------------- */
 
-int verbosity = 0;        	/* no verbosity by default */
-int posting = 0;        	/* GET by default */
-int requests = 1;        	/* Number of requests to make */
-int concurrency = 1;        /* Number of multiple requests to make */
-int tlimit = 0;        		/* time limit in cs */
-int keepalive = 0;        	/* try and do keepalive connections */
-char servername[1024];      /* name that server reports */
-char *hostname;             /* host name from URL */
-char *host_field;               /* value of "Host:" header field */
-char path[1024];        	/* path name */
-char postfile[1024];        /* name of file containing post data */
-char *postdata;        		/* *buffer containing data from postfile */
-apr_size_t postlen = 0;    /* length of data to be POSTed */
-char content_type[1024];    /* content type to put in POST header */
-char cookie[1024],        	/* optional cookie line */
-     auth[1024],        	/* optional (basic/uuencoded)
-                             * authentification */
-     hdrs[4096];        	/* optional arbitrary headers */
-apr_port_t port;       		/* port number */
-apr_time_t aprtimeout = 30 * APR_USEC_PER_SEC; /* timeout value */
+int verbosity = 0;		/* no verbosity by default */
+int posting = 0;		/* GET by default */
+int requests = 1;		/* Number of requests to make */
+int concurrency = 1;		/* Number of multiple requests to make */
+int tlimit = 0;			/* time limit in cs */
+int keepalive = 0;		/* try and do keepalive connections */
+char servername[1024];		/* name that server reports */
+char *hostname;			/* host name from URL */
+char *host_field;		/* value of "Host:" header field */
+char path[1024];		/* path name */
+char postfile[1024];		/* name of file containing post data */
+char *postdata;			/* *buffer containing data from postfile */
+apr_size_t postlen = 0;		/* length of data to be POSTed */
+char content_type[1024];	/* content type to put in POST header */
+char cookie[1024],		/* optional cookie line */
+     auth[1024],		/* optional (basic/uuencoded)
+				 * authentification */
+     hdrs[4096];		/* optional arbitrary headers */
+apr_port_t port;		/* port number */
+apr_time_t aprtimeout = 30 * APR_USEC_PER_SEC;	/* timeout value */
 
-int use_html = 0;        	/* use html in the report */
+int use_html = 0;		/* use html in the report */
 const char *tablestring;
 const char *trstring;
 const char *tdstring;
 
-int doclen = 0;        		/* the length the document should be */
-int totalread = 0;        	/* total number of bytes read */
-int totalbread = 0;        	/* totoal amount of entity body read */
-int totalposted = 0;        	/* total number of bytes posted, inc. headers */
-int done = 0;        		/* number of requests we have done */
-int doneka = 0;        		/* number of keep alive connections done */
+int doclen = 0;			/* the length the document should be */
+int totalread = 0;		/* total number of bytes read */
+int totalbread = 0;		/* totoal amount of entity body read */
+int totalposted = 0;		/* total number of bytes posted, inc. headers */
+int done = 0;			/* number of requests we have done */
+int doneka = 0;			/* number of keep alive connections done */
 int started = 0;		/* number of requests started, so no excess */
-int good = 0, bad = 0;        	/* number of good and bad requests */
+int good = 0, bad = 0;		/* number of good and bad requests */
 
 /* store error cases */
 int err_length = 0, err_conn = 0, err_except = 0;
@@ -232,8 +232,8 @@ apr_size_t reqlen;
 /* one global throw-away buffer to read stuff into */
 char buffer[8192];
 
-struct connection *con;        	/* connection array */
-struct data *stats;        	/* date for each request */
+struct connection *con;		/* connection array */
+struct data *stats;		/* date for each request */
 apr_pool_t *cntxt;
 
 apr_pollfd_t *readbits;
@@ -259,8 +259,8 @@ static void apr_err(char *s, apr_status_t rv)
     char buf[120];
 
     fprintf(stderr,
-            "%s: %s (%d)\n", 
-            s, apr_strerror(rv, buf, sizeof buf), rv);
+	    "%s: %s (%d)\n",
+	    s, apr_strerror(rv, buf, sizeof buf), rv);
     exit(rv);
 }
 
@@ -269,20 +269,27 @@ static void apr_err(char *s, apr_status_t rv)
 /* write out request to a connection - assumes we can write
    (small) request out in one go into our new socket buffer  */
 
-static void write_request(struct connection *c)
+static void write_request(struct connection * c)
 {
     apr_size_t len = reqlen;
     c->connect = apr_time_now();
     apr_setsocketopt(c->aprsock, APR_SO_TIMEOUT, aprtimeout);
-    if (apr_send(c->aprsock, request, &reqlen) != APR_SUCCESS ||
-        reqlen != len) {
-        printf("Send request failed!\n");
+    if (apr_send(c->aprsock, request, &len) != APR_SUCCESS ||
+	reqlen != len) {
+	printf("Send request failed!\n");
+	close_connection(c);
+	return;
     }
     if (posting) {
-        apr_send(c->aprsock, postdata, &postlen);
-        totalposted += (reqlen + postlen);
+	len = postlen;
+	if (apr_send(c->aprsock, postdata, &len) != APR_SUCCESS ||
+	    reqlen != len) {
+	    printf("Send post request failed!\n");
+	    close_connection(c);
+	    return;
+	}
+	totalposted += postlen + reqlen;
     }
-
     c->state = STATE_READ;
     apr_poll_socket_add(readbits, c->aprsock, APR_POLLIN);
 }
@@ -308,59 +315,59 @@ static void output_results(void)
     printf("\n");
     printf("Concurrency Level:      %d\n", concurrency);
     printf("Time taken for tests:   %d.%03d seconds\n",
-           timetaken / 1000, timetaken % 1000);
+	   timetaken / 1000, timetaken % 1000);
     printf("Complete requests:      %d\n", done);
     printf("Failed requests:        %d\n", bad);
     if (bad)
-        printf("   (Connect: %d, Length: %d, Exceptions: %d)\n",
-               err_conn, err_length, err_except);
+	printf("   (Connect: %d, Length: %d, Exceptions: %d)\n",
+	       err_conn, err_length, err_except);
     if (err_response)
-        printf("Non-2xx responses:      %d\n", err_response);
+	printf("Non-2xx responses:      %d\n", err_response);
     if (keepalive)
-        printf("Keep-Alive requests:    %d\n", doneka);
+	printf("Keep-Alive requests:    %d\n", doneka);
     printf("Total transferred:      %d bytes\n", totalread);
     if (posting)
-        printf("Total POSTed:           %d\n", totalposted);
+	printf("Total POSTed:           %d\n", totalposted);
     printf("HTML transferred:       %d bytes\n", totalbread);
 
     /* avoid divide by zero */
     if (timetaken) {
-        printf("Requests per second:    %.2f\n", 1000 * (float) (done) / timetaken);
-        printf("Transfer rate:          %.2f kb/s received\n",
-               (float) (totalread) / timetaken);
-        if (posting>0) {
-            printf("                        %.2f kb/s sent\n",
-                  (float) (totalposted) / timetaken);
-            printf("                        %.2f kb/s total\n",
-                  (float) (totalread + totalposted) / timetaken);
-        }
+	printf("Requests per second:    %.2f\n", 1000 * (float) (done) / timetaken);
+	printf("Transfer rate:          %.2f kb/s received\n",
+	       (float) (totalread) / timetaken);
+	if (posting > 0) {
+	    printf("                        %.2f kb/s sent\n",
+		   (float) (totalposted) / timetaken);
+	    printf("                        %.2f kb/s total\n",
+		   (float) (totalread + totalposted) / timetaken);
+	}
     }
 
     {
-        /* work out connection times */
-        int i;
-        int totalcon = 0, total = 0;
-        int mincon = 9999999, mintot = 999999;
-        int maxcon = 0, maxtot = 0;
+	/* work out connection times */
+	int i;
+	int totalcon = 0, total = 0;
+	int mincon = 9999999, mintot = 999999;
+	int maxcon = 0, maxtot = 0;
 
-        for (i = 0; i < requests; i++) {
-            struct data s = stats[i];
-            mincon = ap_min(mincon, s.ctime);
-            mintot = ap_min(mintot, s.time);
-            maxcon = ap_max(maxcon, s.ctime);
-            maxtot = ap_max(maxtot, s.time);
-            totalcon += s.ctime;
-            total += s.time;
-        }
-        if (requests > 0) { /* avoid division by zero (if 0 requests) */
-            printf("\nConnnection Times (ms)\n");
-            printf("              min   avg   max\n");
-            printf("Connect:    %5d %5d %5d\n", mincon, totalcon / requests, maxcon);
-            printf("Processing: %5d %5d %5d\n",
-                   mintot - mincon, (total / requests) - (totalcon / requests),
-                   maxtot - maxcon);
-            printf("Total:      %5d %5d %5d\n", mintot, total / requests, maxtot);
-        }
+	for (i = 0; i < requests; i++) {
+	    struct data s = stats[i];
+	    mincon = ap_min(mincon, s.ctime);
+	    mintot = ap_min(mintot, s.time);
+	    maxcon = ap_max(maxcon, s.ctime);
+	    maxtot = ap_max(maxtot, s.time);
+	    totalcon += s.ctime;
+	    total += s.time;
+	}
+	if (requests > 0) {	/* avoid division by zero (if 0 requests) */
+	    printf("\nConnnection Times (ms)\n");
+	    printf("              min   avg   max\n");
+	    printf("Connect:    %5d %5d %5d\n", mincon, totalcon / requests, maxcon);
+	    printf("Processing: %5d %5d %5d\n",
+		mintot - mincon, (total / requests) - (totalcon / requests),
+		   maxtot - maxcon);
+	    printf("Total:      %5d %5d %5d\n", mintot, total / requests, maxtot);
+	}
     }
 }
 
@@ -377,114 +384,114 @@ static void output_html_results(void)
 
     printf("\n\n<table %s>\n", tablestring);
     printf("<tr %s><th colspan=2 %s>Server Software:</th>"
-           "<td colspan=2 %s>%s</td></tr>\n",
-           trstring, tdstring, tdstring, servername);
+	   "<td colspan=2 %s>%s</td></tr>\n",
+	   trstring, tdstring, tdstring, servername);
     printf("<tr %s><th colspan=2 %s>Server Hostname:</th>"
-           "<td colspan=2 %s>%s</td></tr>\n",
-           trstring, tdstring, tdstring, hostname);
+	   "<td colspan=2 %s>%s</td></tr>\n",
+	   trstring, tdstring, tdstring, hostname);
     printf("<tr %s><th colspan=2 %s>Server Port:</th>"
-           "<td colspan=2 %s>%hd</td></tr>\n",
-           trstring, tdstring, tdstring, port);
+	   "<td colspan=2 %s>%hd</td></tr>\n",
+	   trstring, tdstring, tdstring, port);
     printf("<tr %s><th colspan=2 %s>Document Path:</th>"
-           "<td colspan=2 %s>%s</td></tr>\n",
-           trstring, tdstring, tdstring, path);
+	   "<td colspan=2 %s>%s</td></tr>\n",
+	   trstring, tdstring, tdstring, path);
     printf("<tr %s><th colspan=2 %s>Document Length:</th>"
-           "<td colspan=2 %s>%d bytes</td></tr>\n",
-           trstring, tdstring, tdstring, doclen);
+	   "<td colspan=2 %s>%d bytes</td></tr>\n",
+	   trstring, tdstring, tdstring, doclen);
     printf("<tr %s><th colspan=2 %s>Concurrency Level:</th>"
-           "<td colspan=2 %s>%d</td></tr>\n",
-           trstring, tdstring, tdstring, concurrency);
+	   "<td colspan=2 %s>%d</td></tr>\n",
+	   trstring, tdstring, tdstring, concurrency);
     printf("<tr %s><th colspan=2 %s>Time taken for tests:</th>"
-           "<td colspan=2 %s>%d.%03d seconds</td></tr>\n",
-           trstring, tdstring, tdstring, timetaken / 1000, timetaken % 1000);
+	   "<td colspan=2 %s>%d.%03d seconds</td></tr>\n",
+	   trstring, tdstring, tdstring, timetaken / 1000, timetaken % 1000);
     printf("<tr %s><th colspan=2 %s>Complete requests:</th>"
-           "<td colspan=2 %s>%d</td></tr>\n",
-           trstring, tdstring, tdstring, done);
+	   "<td colspan=2 %s>%d</td></tr>\n",
+	   trstring, tdstring, tdstring, done);
     printf("<tr %s><th colspan=2 %s>Failed requests:</th>"
-           "<td colspan=2 %s>%d</td></tr>\n",
-           trstring, tdstring, tdstring, bad);
+	   "<td colspan=2 %s>%d</td></tr>\n",
+	   trstring, tdstring, tdstring, bad);
     if (bad)
-        printf("<tr %s><td colspan=4 %s >   (Connect: %d, Length: %d, Exceptions: %d)</td></tr>\n",
-               trstring, tdstring, err_conn, err_length, err_except);
+	printf("<tr %s><td colspan=4 %s >   (Connect: %d, Length: %d, Exceptions: %d)</td></tr>\n",
+	       trstring, tdstring, err_conn, err_length, err_except);
     if (err_response)
-        printf("<tr %s><th colspan=2 %s>Non-2xx responses:</th>"
-               "<td colspan=2 %s>%d</td></tr>\n",
-               trstring, tdstring, tdstring, err_response);
+	printf("<tr %s><th colspan=2 %s>Non-2xx responses:</th>"
+	       "<td colspan=2 %s>%d</td></tr>\n",
+	       trstring, tdstring, tdstring, err_response);
     if (keepalive)
-        printf("<tr %s><th colspan=2 %s>Keep-Alive requests:</th>"
-               "<td colspan=2 %s>%d</td></tr>\n",
-               trstring, tdstring, tdstring, doneka);
+	printf("<tr %s><th colspan=2 %s>Keep-Alive requests:</th>"
+	       "<td colspan=2 %s>%d</td></tr>\n",
+	       trstring, tdstring, tdstring, doneka);
     printf("<tr %s><th colspan=2 %s>Total transferred:</th>"
-           "<td colspan=2 %s>%d bytes</td></tr>\n",
-           trstring, tdstring, tdstring, totalread);
-    if (posting>0)
-        printf("<tr %s><th colspan=2 %s>Total POSTed:</th>"
-               "<td colspan=2 %s>%d</td></tr>\n",
-               trstring, tdstring, tdstring, totalposted);
+	   "<td colspan=2 %s>%d bytes</td></tr>\n",
+	   trstring, tdstring, tdstring, totalread);
+    if (posting > 0)
+	printf("<tr %s><th colspan=2 %s>Total POSTed:</th>"
+	       "<td colspan=2 %s>%d</td></tr>\n",
+	       trstring, tdstring, tdstring, totalposted);
     printf("<tr %s><th colspan=2 %s>HTML transferred:</th>"
-           "<td colspan=2 %s>%d bytes</td></tr>\n",
-           trstring, tdstring, tdstring, totalbread);
+	   "<td colspan=2 %s>%d bytes</td></tr>\n",
+	   trstring, tdstring, tdstring, totalbread);
 
     /* avoid divide by zero */
     if (timetaken) {
-        printf("<tr %s><th colspan=2 %s>Requests per second:</th>"
-               "<td colspan=2 %s>%.2f</td></tr>\n",
-           trstring, tdstring, tdstring, 1000 * (float) (done) / timetaken);
-        printf("<tr %s><th colspan=2 %s>Transfer rate:</th>"
-               "<td colspan=2 %s>%.2f kb/s received</td></tr>\n",
-             trstring, tdstring, tdstring, (float) (totalread) / timetaken);
-        if (posting>0) {
-            printf("<tr %s><td colspan=2 %s>&nbsp;</td>"
-        	   "<td colspan=2 %s>%.2f kb/s sent</td></tr>\n",
-        	   trstring, tdstring, tdstring,
-        	   (float) (totalposted) / timetaken);
-            printf("<tr %s><td colspan=2 %s>&nbsp;</td>"
-        	   "<td colspan=2 %s>%.2f kb/s total</td></tr>\n",
-        	   trstring, tdstring, tdstring,
-        	   (float) (totalread + totalposted) / timetaken);
-        }
+	printf("<tr %s><th colspan=2 %s>Requests per second:</th>"
+	       "<td colspan=2 %s>%.2f</td></tr>\n",
+	   trstring, tdstring, tdstring, 1000 * (float) (done) / timetaken);
+	printf("<tr %s><th colspan=2 %s>Transfer rate:</th>"
+	       "<td colspan=2 %s>%.2f kb/s received</td></tr>\n",
+	     trstring, tdstring, tdstring, (float) (totalread) / timetaken);
+	if (posting > 0) {
+	    printf("<tr %s><td colspan=2 %s>&nbsp;</td>"
+		   "<td colspan=2 %s>%.2f kb/s sent</td></tr>\n",
+		   trstring, tdstring, tdstring,
+		   (float) (totalposted) / timetaken);
+	    printf("<tr %s><td colspan=2 %s>&nbsp;</td>"
+		   "<td colspan=2 %s>%.2f kb/s total</td></tr>\n",
+		   trstring, tdstring, tdstring,
+		   (float) (totalread + totalposted) / timetaken);
+	}
     }
 
     {
-        /* work out connection times */
-        int i;
-        int totalcon = 0, total = 0;
-        int mincon = 9999999, mintot = 999999;
-        int maxcon = 0, maxtot = 0;
+	/* work out connection times */
+	int i;
+	int totalcon = 0, total = 0;
+	int mincon = 9999999, mintot = 999999;
+	int maxcon = 0, maxtot = 0;
 
-        for (i = 0; i < requests; i++) {
-            struct data s = stats[i];
-            mincon = ap_min(mincon, s.ctime);
-            mintot = ap_min(mintot, s.time);
-            maxcon = ap_max(maxcon, s.ctime);
-            maxtot = ap_max(maxtot, s.time);
-            totalcon += s.ctime;
-            total += s.time;
-        }
+	for (i = 0; i < requests; i++) {
+	    struct data s = stats[i];
+	    mincon = ap_min(mincon, s.ctime);
+	    mintot = ap_min(mintot, s.time);
+	    maxcon = ap_max(maxcon, s.ctime);
+	    maxtot = ap_max(maxtot, s.time);
+	    totalcon += s.ctime;
+	    total += s.time;
+	}
 
-        if (requests > 0) { /* avoid division by zero (if 0 requests) */
-            printf("<tr %s><th %s colspan=4>Connnection Times (ms)</th></tr>\n",
-        	   trstring, tdstring);
-            printf("<tr %s><th %s>&nbsp;</th> <th %s>min</th>   <th %s>avg</th>   <th %s>max</th></tr>\n",
-        	   trstring, tdstring, tdstring, tdstring, tdstring);
-            printf("<tr %s><th %s>Connect:</th>"
-        	   "<td %s>%5d</td>"
-        	   "<td %s>%5d</td>"
-        	   "<td %s>%5d</td></tr>\n",
-        	   trstring, tdstring, tdstring, mincon, tdstring, totalcon / requests, tdstring, maxcon);
-            printf("<tr %s><th %s>Processing:</th>"
-        	   "<td %s>%5d</td>"
-        	   "<td %s>%5d</td>"
-        	   "<td %s>%5d</td></tr>\n",
-        	   trstring, tdstring, tdstring, mintot - mincon, tdstring,
-        	   (total / requests) - (totalcon / requests), tdstring, maxtot - maxcon);
-            printf("<tr %s><th %s>Total:</th>"
-        	   "<td %s>%5d</td>"
-        	   "<td %s>%5d</td>"
-        	   "<td %s>%5d</td></tr>\n",
-        	   trstring, tdstring, tdstring, mintot, tdstring, total / requests, tdstring, maxtot);
-        }
-        printf("</table>\n");
+	if (requests > 0) {	/* avoid division by zero (if 0 requests) */
+	    printf("<tr %s><th %s colspan=4>Connnection Times (ms)</th></tr>\n",
+		   trstring, tdstring);
+	    printf("<tr %s><th %s>&nbsp;</th> <th %s>min</th>   <th %s>avg</th>   <th %s>max</th></tr>\n",
+		   trstring, tdstring, tdstring, tdstring, tdstring);
+	    printf("<tr %s><th %s>Connect:</th>"
+		   "<td %s>%5d</td>"
+		   "<td %s>%5d</td>"
+		   "<td %s>%5d</td></tr>\n",
+		   trstring, tdstring, tdstring, mincon, tdstring, totalcon / requests, tdstring, maxcon);
+	    printf("<tr %s><th %s>Processing:</th>"
+		   "<td %s>%5d</td>"
+		   "<td %s>%5d</td>"
+		   "<td %s>%5d</td></tr>\n",
+		   trstring, tdstring, tdstring, mintot - mincon, tdstring,
+		   (total / requests) - (totalcon / requests), tdstring, maxtot - maxcon);
+	    printf("<tr %s><th %s>Total:</th>"
+		   "<td %s>%5d</td>"
+		   "<td %s>%5d</td>"
+		   "<td %s>%5d</td></tr>\n",
+		   trstring, tdstring, tdstring, mintot, tdstring, total / requests, tdstring, maxtot);
+	}
+	printf("</table>\n");
     }
 }
 
@@ -492,12 +499,13 @@ static void output_html_results(void)
 
 /* start asnchronous non-blocking connection */
 
-static void start_connect(struct connection *c)
+static void start_connect(struct connection * c)
 {
     apr_status_t rv;
     apr_sockaddr_t *destsa;
 
-    if(!(started < requests)) return;
+    if (!(started < requests))
+	return;
 
     c->read = 0;
     c->bread = 0;
@@ -506,37 +514,37 @@ static void start_connect(struct connection *c)
     c->gotheader = 0;
 
     if ((rv = apr_sockaddr_info_get(&destsa, hostname, APR_UNSPEC, port, 0, cntxt))
-         != APR_SUCCESS) {
-        char buf[120];
+	!= APR_SUCCESS) {
+	char buf[120];
 
-        apr_snprintf(buf, sizeof(buf), 
-                     "apr_sockaddr_info_get() for %s", hostname);
-        apr_err(buf, rv);
+	apr_snprintf(buf, sizeof(buf),
+		     "apr_sockaddr_info_get() for %s", hostname);
+	apr_err(buf, rv);
     }
-    if ((rv = apr_socket_create(&c->aprsock, destsa->sa.sin.sin_family, 
-                                SOCK_STREAM, cntxt)) != APR_SUCCESS) {
-        apr_err("socket", rv);
+    if ((rv = apr_socket_create(&c->aprsock, destsa->sa.sin.sin_family,
+				SOCK_STREAM, cntxt)) != APR_SUCCESS) {
+	apr_err("socket", rv);
     }
     c->start = apr_time_now();
     if ((rv = apr_connect(c->aprsock, destsa)) != APR_SUCCESS) {
-        if (APR_STATUS_IS_EINPROGRESS(rv)) {
-            c->state = STATE_CONNECTING;
-            apr_poll_socket_add(readbits, c->aprsock, APR_POLLOUT);
-            return;
-        }
-        else {
-            apr_poll_socket_remove(readbits, c->aprsock);
-            apr_socket_close(c->aprsock);
-            err_conn++;
-            if (bad++ > 10) {
-                fprintf(stderr,
-                        "\nTest aborted after 10 failures\n\n");
-                apr_err("apr_connect()", rv);
-            }
-            c->state = STATE_UNCONNECTED;
-            start_connect(c);
-            return;
-        }
+	if (APR_STATUS_IS_EINPROGRESS(rv)) {
+	    c->state = STATE_CONNECTING;
+	    apr_poll_socket_add(readbits, c->aprsock, APR_POLLOUT);
+	    return;
+	}
+	else {
+	    apr_poll_socket_remove(readbits, c->aprsock);
+	    apr_socket_close(c->aprsock);
+	    err_conn++;
+	    if (bad++ > 10) {
+		fprintf(stderr,
+			"\nTest aborted after 10 failures\n\n");
+		apr_err("apr_connect()", rv);
+	    }
+	    c->state = STATE_UNCONNECTED;
+	    start_connect(c);
+	    return;
+	}
     }
 
     /* connected first time */
@@ -548,36 +556,37 @@ static void start_connect(struct connection *c)
 
 /* close down connection and save stats */
 
-static void close_connection(struct connection *c)
+static void close_connection(struct connection * c)
 {
     if (c->read == 0 && c->keepalive) {
-        /* server has legitimately shut down an idle keep alive request */
-        if (good) good--;	/* connection never happened */
+	/* server has legitimately shut down an idle keep alive request */
+	if (good)
+	    good--;		/* connection never happened */
     }
     else {
-        if (good == 1) {
-            /* first time here */
-            doclen = c->bread;
-        }
-        else if (c->bread != doclen) {
-            bad ++;
-            err_length++;
-        }
-        /* save out time */
-        if (done < requests) {
-            struct data s;
-            c->done = apr_time_now();
-            s.read  = c->read;
-            s.ctime = (c->connect - c->start) / 1000;
-            s.time  = (c->done - c->start) / 1000;
-            stats[done++] = s;
-        }
+	if (good == 1) {
+	    /* first time here */
+	    doclen = c->bread;
+	}
+	else if (c->bread != doclen) {
+	    bad++;
+	    err_length++;
+	}
+	/* save out time */
+	if (done < requests) {
+	    struct data s;
+	    c->done = apr_time_now();
+	    s.read = c->read;
+	    s.ctime = (c->connect - c->start) / 1000;
+	    s.time = (c->done - c->start) / 1000;
+	    stats[done++] = s;
+	}
     }
 
     apr_poll_socket_remove(readbits, c->aprsock);
     apr_socket_close(c->aprsock);
     c->state = STATE_UNCONNECTED;
-    
+
     /* connect again */
     start_connect(c);
     return;
@@ -587,163 +596,167 @@ static void close_connection(struct connection *c)
 
 /* read data from connection */
 
-static void read_connection(struct connection *c)
+static void read_connection(struct connection * c)
 {
     apr_size_t r;
     apr_status_t status;
     char *part;
-    char respcode[4];        	/* 3 digits and null */
+    char respcode[4];		/* 3 digits and null */
 
     r = sizeof(buffer);
     apr_setsocketopt(c->aprsock, APR_SO_TIMEOUT, aprtimeout);
     status = apr_recv(c->aprsock, buffer, &r);
     if (r == 0 || (status != APR_SUCCESS && !APR_STATUS_IS_EAGAIN(status))) {
-        good++;
-        close_connection(c);
-        return;
+	good++;
+	close_connection(c);
+	return;
     }
 
     if (APR_STATUS_IS_EAGAIN(status))
-        return;
+	return;
 
     c->read += r;
     totalread += r;
 
     if (!c->gotheader) {
-        char *s;
-        int l = 4;
-        int space = CBUFFSIZE - c->cbx - 1;  /* -1 to allow for 0 terminator */
-        int tocopy = (space < r) ? space : r;
+	char *s;
+	int l = 4;
+	int space = CBUFFSIZE - c->cbx - 1;	/* -1 to allow for 0
+						 * terminator */
+	int tocopy = (space < r) ? space : r;
 #ifdef NOT_ASCII
-        apr_size_t inbytes_left = space, outbytes_left = space;
+	apr_size_t inbytes_left = space, outbytes_left = space;
 
-        status = apr_xlate_conv_buffer(from_ascii, buffer, &inbytes_left,
-                                       c->cbuff + c->cbx, &outbytes_left);
-        if (status || inbytes_left || outbytes_left) {
-            fprintf(stderr, "only simple translation is supported (%d/%u/%u)\n",
-                    status, inbytes_left, outbytes_left);
-            exit(1);
-        }
+	status = apr_xlate_conv_buffer(from_ascii, buffer, &inbytes_left,
+				       c->cbuff + c->cbx, &outbytes_left);
+	if (status || inbytes_left || outbytes_left) {
+	    fprintf(stderr, "only simple translation is supported (%d/%u/%u)\n",
+		    status, inbytes_left, outbytes_left);
+	    exit(1);
+	}
 #else
-        memcpy(c->cbuff + c->cbx, buffer, space);
-#endif /*NOT_ASCII */
-        c->cbx += tocopy;
-        space -= tocopy;
-        c->cbuff[c->cbx] = 0;  /* terminate for benefit of strstr */
-        if (verbosity >= 4) {
-            printf("LOG: header received:\n%s\n", c->cbuff);
-        }
-        s = strstr(c->cbuff, "\r\n\r\n");
-            /* this next line is so that we talk to NCSA 1.5 which blatantly 
-             * breaks the http specifaction 
-             */
-        if (!s) {
-            s = strstr(c->cbuff, "\n\n");
-            l = 2;
-        }
+	memcpy(c->cbuff + c->cbx, buffer, space);
+#endif				/* NOT_ASCII */
+	c->cbx += tocopy;
+	space -= tocopy;
+	c->cbuff[c->cbx] = 0;	/* terminate for benefit of strstr */
+	if (verbosity >= 4) {
+	    printf("LOG: header received:\n%s\n", c->cbuff);
+	}
+	s = strstr(c->cbuff, "\r\n\r\n");
+	/*
+	 * this next line is so that we talk to NCSA 1.5 which blatantly
+	 * breaks the http specifaction
+	 */
+	if (!s) {
+	    s = strstr(c->cbuff, "\n\n");
+	    l = 2;
+	}
 
-        if (!s) {
-            /* read rest next time */
-            if (space) {
-               return;
-            }
-            else {
-                /* header is in invalid or too big - close connection */
-                apr_poll_socket_remove(readbits, c->aprsock);
-                apr_socket_close(c->aprsock);
-                err_response++;
-                if (bad++ > 10) {
-                    err("\nTest aborted after 10 failures\n\n");
-                }
-                start_connect(c);
-            }
-        }
-        else {
-            /* have full header */
-            if (!good) {
-               /* this is first time, extract some interesting info */
-               char *p, *q;
-               p = strstr(c->cbuff, "Server:");
-               q = servername;
-               if (p) {
-                   p += 8;
-                   while (*p > 32)
-                       *q++ = *p++;
-               }
-               *q = 0;
-            }
+	if (!s) {
+	    /* read rest next time */
+	    if (space) {
+		return;
+	    }
+	    else {
+		/* header is in invalid or too big - close connection */
+		apr_poll_socket_remove(readbits, c->aprsock);
+		apr_socket_close(c->aprsock);
+		err_response++;
+		if (bad++ > 10) {
+		    err("\nTest aborted after 10 failures\n\n");
+		}
+		start_connect(c);
+	    }
+	}
+	else {
+	    /* have full header */
+	    if (!good) {
+		/* this is first time, extract some interesting info */
+		char *p, *q;
+		p = strstr(c->cbuff, "Server:");
+		q = servername;
+		if (p) {
+		    p += 8;
+		    while (*p > 32)
+			*q++ = *p++;
+		}
+		*q = 0;
+	    }
 
-            /* XXX: this parsing isn't even remotely HTTP compliant...
-             * but in the interest of speed it doesn't totally have to be,
-             * it just needs to be extended to handle whatever servers
-             * folks want to test against. -djg */
+	    /*
+	     * XXX: this parsing isn't even remotely HTTP compliant... but in
+	     * the interest of speed it doesn't totally have to be, it just
+	     * needs to be extended to handle whatever servers folks want to
+	     * test against. -djg
+	     */
 
-            /* check response code */
-            part = strstr(c->cbuff, "HTTP");   /* really HTTP/1.x_ */
-            strncpy(respcode, (part + strlen("HTTP/1.x_")), 3);
-            respcode[3] = '\0';
-            if (respcode[0] != '2') {
-               err_response++;
-               if (verbosity >= 2)
-                   printf("WARNING: Response code not 2xx (%s)\n", respcode);
-            }
-            else if (verbosity >= 3) {
-               printf("LOG: Response code = %s\n", respcode);
-            }
+	    /* check response code */
+	    part = strstr(c->cbuff, "HTTP");	/* really HTTP/1.x_ */
+	    strncpy(respcode, (part + strlen("HTTP/1.x_")), 3);
+	    respcode[3] = '\0';
+	    if (respcode[0] != '2') {
+		err_response++;
+		if (verbosity >= 2)
+		    printf("WARNING: Response code not 2xx (%s)\n", respcode);
+	    }
+	    else if (verbosity >= 3) {
+		printf("LOG: Response code = %s\n", respcode);
+	    }
 
-            c->gotheader = 1;
-            *s = 0;            /* terminate at end of header */
-            if (keepalive &&
-               (strstr(c->cbuff, "Keep-Alive")
-               || strstr(c->cbuff, "keep-alive"))) {  /* for benefit of MSIIS */
-               char *cl;
-               cl = strstr(c->cbuff, "Content-Length:");
-               /* handle NCSA, which sends Content-length: */
-               if (!cl)
-                   cl = strstr(c->cbuff, "Content-length:");
-               if (cl) {
-                   c->keepalive = 1;
-                   c->length = atoi(cl + 16);
-               }
-            }
-            c->bread += c->cbx - (s + l - c->cbuff) + r - tocopy;
-            totalbread += c->bread;
-        }
+	    c->gotheader = 1;
+	    *s = 0;		/* terminate at end of header */
+	    if (keepalive &&
+		(strstr(c->cbuff, "Keep-Alive")
+		 || strstr(c->cbuff, "keep-alive"))) {	/* for benefit of MSIIS */
+		char *cl;
+		cl = strstr(c->cbuff, "Content-Length:");
+		/* handle NCSA, which sends Content-length: */
+		if (!cl)
+		    cl = strstr(c->cbuff, "Content-length:");
+		if (cl) {
+		    c->keepalive = 1;
+		    c->length = atoi(cl + 16);
+		}
+	    }
+	    c->bread += c->cbx - (s + l - c->cbuff) + r - tocopy;
+	    totalbread += c->bread;
+	}
     }
     else {
-        /* outside header, everything we have read is entity body */
-        c->bread += r;
-        totalbread += r;
+	/* outside header, everything we have read is entity body */
+	c->bread += r;
+	totalbread += r;
     }
 
     if (c->keepalive && (c->bread >= c->length)) {
-        /* finished a keep-alive connection */
-        good++;
-        doneka++;
-        /* save out time */
-        if (good == 1) {
-            /* first time here */
-            doclen = c->bread;
-        }
-        else if (c->bread != doclen) {
-            bad++;
-            err_length++;
-        }
-        if (done < requests) {
-            struct data s;
-           c->done = apr_time_now();
-            s.read = c->read;
-           s.ctime = (c->connect - c->start) / 1000;
-           s.time = (c->done - c->start) / 1000;
-            stats[done++] = s;
-        }
-        c->keepalive = 0;
-        c->length = 0;
-        c->gotheader = 0;
-        c->cbx = 0;
-        c->read = c->bread = 0;
-        write_request(c);
-        c->start = c->connect; /* zero connect time with keep-alive */
+	/* finished a keep-alive connection */
+	good++;
+	doneka++;
+	/* save out time */
+	if (good == 1) {
+	    /* first time here */
+	    doclen = c->bread;
+	}
+	else if (c->bread != doclen) {
+	    bad++;
+	    err_length++;
+	}
+	if (done < requests) {
+	    struct data s;
+	    c->done = apr_time_now();
+	    s.read = c->read;
+	    s.ctime = (c->connect - c->start) / 1000;
+	    s.time = (c->done - c->start) / 1000;
+	    stats[done++] = s;
+	}
+	c->keepalive = 0;
+	c->length = 0;
+	c->gotheader = 0;
+	c->cbx = 0;
+	c->read = c->bread = 0;
+	write_request(c);
+	c->start = c->connect;	/* zero connect time with keep-alive */
     }
 }
 
@@ -762,8 +775,8 @@ static void test(void)
 #endif
 
     if (!use_html) {
-        printf("Benchmarking %s (be patient)...", hostname);
-        fflush(stdout);
+	printf("Benchmarking %s (be patient)...", hostname);
+	fflush(stdout);
     }
 
     now = apr_time_now();
@@ -776,125 +789,128 @@ static void test(void)
 
     /* setup request */
     if (!posting) {
-        sprintf(request, "%s %s HTTP/1.0\r\n"
-        	"User-Agent: ApacheBench/%s\r\n"
-        	"%s" "%s" "%s"
-        	"Host: %s\r\n"
-        	"Accept: */*\r\n"
-        	"%s" "\r\n",
-        	(posting == 0) ? "GET" : "HEAD",
-        	path,
-        	AB_VERSION,
-        	keepalive ? "Connection: Keep-Alive\r\n" : "",
-        	cookie, auth, host_field, hdrs);
+	sprintf(request, "%s %s HTTP/1.0\r\n"
+		"User-Agent: ApacheBench/%s\r\n"
+		"%s" "%s" "%s"
+		"Host: %s\r\n"
+		"Accept: */*\r\n"
+		"%s" "\r\n",
+		(posting == 0) ? "GET" : "HEAD",
+		path,
+		AB_VERSION,
+		keepalive ? "Connection: Keep-Alive\r\n" : "",
+		cookie, auth, host_field, hdrs);
     }
     else {
-        sprintf(request, "POST %s HTTP/1.0\r\n"
-        	"User-Agent: ApacheBench/%s\r\n"
-        	"%s" "%s" "%s"
-        	"Host: %s\r\n"
-        	"Accept: */*\r\n"
-        	"Content-length: %" APR_SIZE_T_FMT "\r\n"
-        	"Content-type: %s\r\n"
-        	"%s"
-        	"\r\n",
-        	path,
-        	AB_VERSION,
-        	keepalive ? "Connection: Keep-Alive\r\n" : "",
-        	cookie, auth,
-        	host_field, postlen,
-        	(content_type[0]) ? content_type : "text/plain", hdrs);
+	sprintf(request, "POST %s HTTP/1.0\r\n"
+		"User-Agent: ApacheBench/%s\r\n"
+		"%s" "%s" "%s"
+		"Host: %s\r\n"
+		"Accept: */*\r\n"
+		"Content-length: %" APR_SIZE_T_FMT "\r\n"
+		"Content-type: %s\r\n"
+		"%s"
+		"\r\n",
+		path,
+		AB_VERSION,
+		keepalive ? "Connection: Keep-Alive\r\n" : "",
+		cookie, auth,
+		host_field, postlen,
+		(content_type[0]) ? content_type : "text/plain", hdrs);
     }
 
     if (verbosity >= 2)
-        printf("INFO: POST header == \n---\n%s\n---\n", request);
+	printf("INFO: POST header == \n---\n%s\n---\n", request);
 
     reqlen = strlen(request);
 
 #ifdef NOT_ASCII
     inbytes_left = outbytes_left = reqlen;
     status = apr_xlate_conv_buffer(to_ascii, request, &inbytes_left,
-                                   request, &outbytes_left);
+				   request, &outbytes_left);
     if (status || inbytes_left || outbytes_left) {
-        fprintf(stderr, "only simple translation is supported (%d/%u/%u)\n",
-                status, inbytes_left, outbytes_left);
-        exit(1);
+	fprintf(stderr, "only simple translation is supported (%d/%u/%u)\n",
+		status, inbytes_left, outbytes_left);
+	exit(1);
     }
-#endif /*NOT_ASCII*/
+#endif				/* NOT_ASCII */
 
     /* ok - lets start */
     start = apr_time_now();
 
     /* initialise lots of requests */
     for (i = 0; i < concurrency; i++) {
-        con[i].socknum = i;
-        start_connect(&con[i]);
+	con[i].socknum = i;
+	start_connect(&con[i]);
     }
 
     while (done < requests) {
-        apr_int32_t n;
-        apr_int32_t timed;
+	apr_int32_t n;
+	apr_int32_t timed;
 
-        /* check for time limit expiry */
-        now = apr_time_now();
-        timed = (now - start) / APR_USEC_PER_SEC;
-        if (tlimit && timed > (tlimit * 1000)) {
-            requests = done;   /* so stats are correct */
-        }
+	/* check for time limit expiry */
+	now = apr_time_now();
+	timed = (now - start) / APR_USEC_PER_SEC;
+	if (tlimit && timed > (tlimit * 1000)) {
+	    requests = done;	/* so stats are correct */
+	}
 
-        n = concurrency;
-        status = apr_poll(readbits, &n, aprtimeout);
-        if (status != APR_SUCCESS)
-            apr_err("apr_poll", status);
+	n = concurrency;
+	status = apr_poll(readbits, &n, aprtimeout);
+	if (status != APR_SUCCESS)
+	    apr_err("apr_poll", status);
 
-        if (!n) {
-            err("\nServer timed out\n\n");
-        }
+	if (!n) {
+	    err("\nServer timed out\n\n");
+	}
 
-        for (i = 0; i < concurrency; i++) {
-            /* If the connection isn't connected how can we check it?
-             */
-            if (con[i].state == STATE_UNCONNECTED)
-                continue;
-                               
-            apr_poll_revents_get(&rv, con[i].aprsock, readbits);
-            /* Notes: APR_POLLHUP is set after FIN is received on some
-             *        systems, so treat that like APR_POLLIN so that we try
-             *        to read again.
-             *
-             *        Some systems return APR_POLLERR with APR_POLLHUP.  We
-             *        need to call read_connection() for APR_POLLHUP, so 
-             *        check for APR_POLLHUP first so that a closed connection 
-             *        isn't treated like an I/O error.  If it is, we never
-             *        figure out that the connection is done and we loop
-             *        here endlessly calling apr_poll().
-             */
-            if ((rv & APR_POLLIN) || (rv & APR_POLLPRI) || (rv & APR_POLLHUP))
-                read_connection(&con[i]);
-            if ((rv & APR_POLLERR) || (rv & APR_POLLNVAL)) {
-               bad++;
-               err_except++;
-               start_connect(&con[i]);
-               continue;
-            }
-            if (rv & APR_POLLOUT)
-                write_request(&con[i]);
+	for (i = 0; i < concurrency; i++) {
+	    /*
+	     * If the connection isn't connected how can we check it?
+	     */
+	    if (con[i].state == STATE_UNCONNECTED)
+		continue;
 
-            /* When using a select based poll every time we check the bits
-             * are reset. In 1.3's ab we copied the FD_SET's each time through,
-             * but here we're going to check the state and if the connection
-             * is in STATE_READ or STATE_CONNECTING we'll add the socket back
-             * in as APR_POLLIN.
-             */
-            if (con[i].state == STATE_READ || con[i].state == STATE_CONNECTING)
-                apr_poll_socket_add(readbits, con[i].aprsock, APR_POLLIN);
-            
-        }
+	    apr_poll_revents_get(&rv, con[i].aprsock, readbits);
+	    /*
+	     * Notes: APR_POLLHUP is set after FIN is received on some
+	     * systems, so treat that like APR_POLLIN so that we try to read
+	     * again.
+	     * 
+	     * Some systems return APR_POLLERR with APR_POLLHUP.  We need to
+	     * call read_connection() for APR_POLLHUP, so check for
+	     * APR_POLLHUP first so that a closed connection isn't treated
+	     * like an I/O error.  If it is, we never figure out that the
+	     * connection is done and we loop here endlessly calling
+	     * apr_poll().
+	     */
+	    if ((rv & APR_POLLIN) || (rv & APR_POLLPRI) || (rv & APR_POLLHUP))
+		read_connection(&con[i]);
+	    if ((rv & APR_POLLERR) || (rv & APR_POLLNVAL)) {
+		bad++;
+		err_except++;
+		start_connect(&con[i]);
+		continue;
+	    }
+	    if (rv & APR_POLLOUT)
+		write_request(&con[i]);
+
+	    /*
+	     * When using a select based poll every time we check the bits
+	     * are reset. In 1.3's ab we copied the FD_SET's each time
+	     * through, but here we're going to check the state and if the
+	     * connection is in STATE_READ or STATE_CONNECTING we'll add the
+	     * socket back in as APR_POLLIN.
+	     */
+	    if (con[i].state == STATE_READ || con[i].state == STATE_CONNECTING)
+		apr_poll_socket_add(readbits, con[i].aprsock, APR_POLLIN);
+
+	}
     }
     if (use_html)
-        output_html_results();
+	output_html_results();
     else
-        output_results();
+	output_results();
 }
 
 /* ------------------------------------------------------- */
@@ -903,17 +919,17 @@ static void test(void)
 static void copyright(void)
 {
     if (!use_html) {
-        printf("This is ApacheBench, Version %s\n", AB_VERSION " <$Revision: 1.57 $> apache-2.0");
-        printf("Copyright (c) 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/\n");
-        printf("Copyright (c) 1998-2001 The Apache Software Foundation, http://www.apache.org/\n");
-        printf("\n");
+	printf("This is ApacheBench, Version %s\n", AB_VERSION " <$Revision: 1.58 $> apache-2.0");
+	printf("Copyright (c) 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/\n");
+	printf("Copyright (c) 1998-2001 The Apache Software Foundation, http://www.apache.org/\n");
+	printf("\n");
     }
     else {
-        printf("<p>\n");
-        printf(" This is ApacheBench, Version %s <i>&lt;%s&gt;</i> apache-2.0<br>\n", AB_VERSION, "$Revision: 1.57 $");
-        printf(" Copyright (c) 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/<br>\n");
-        printf(" Copyright (c) 1998-2001 The Apache Software Foundation, http://www.apache.org/<br>\n");
-        printf("</p>\n<p>\n");
+	printf("<p>\n");
+	printf(" This is ApacheBench, Version %s <i>&lt;%s&gt;</i> apache-2.0<br>\n", AB_VERSION, "$Revision: 1.58 $");
+	printf(" Copyright (c) 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/<br>\n");
+	printf(" Copyright (c) 1998-2001 The Apache Software Foundation, http://www.apache.org/<br>\n");
+	printf("</p>\n<p>\n");
     }
 }
 
@@ -958,26 +974,26 @@ static int parse_url(char *url)
     apr_status_t rv;
 
     if (strlen(url) > 7 && strncmp(url, "http://", 7) == 0)
-        url += 7;
+	url += 7;
     if ((cp = strchr(url, '/')) == NULL)
-        return 1;
+	return 1;
     h = apr_palloc(cntxt, cp - url + 1);
     memcpy(h, url, cp - url);
     h[cp - url] = '\0';
     rv = apr_parse_addr_port(&hostname, &scope_id, &port, h, cntxt);
     if (rv != APR_SUCCESS || !hostname || scope_id) {
-        return 1;
+	return 1;
     }
     strcpy(path, cp);
     *cp = '\0';
-    if (*url == '[') { /* IPv6 numeric address string */
-        host_field = apr_psprintf(cntxt, "[%s]", hostname);
+    if (*url == '[') {		/* IPv6 numeric address string */
+	host_field = apr_psprintf(cntxt, "[%s]", hostname);
     }
     else {
-        host_field = hostname;
+	host_field = hostname;
     }
-    if (port == 0) { /* no port specified */
-        port = 80;
+    if (port == 0) {		/* no port specified */
+	port = 80;
     }
     return 0;
 }
@@ -997,30 +1013,30 @@ static int open_postfile(const char *pfile)
 
     rv = apr_file_open(&postfd, pfile, APR_READ, mode, cntxt);
     if (rv != APR_SUCCESS) {
-        printf("Invalid postfile name (%s): %s\n", pfile,
-               apr_strerror(rv, errmsg, sizeof errmsg));
-        return rv;
+	printf("Invalid postfile name (%s): %s\n", pfile,
+	       apr_strerror(rv, errmsg, sizeof errmsg));
+	return rv;
     }
 
     apr_file_info_get(&finfo, APR_FINFO_NORM, postfd);
     postlen = finfo.size;
-    postdata = (char *)malloc(postlen);
+    postdata = (char *) malloc(postlen);
     if (!postdata) {
-        printf("Can\'t alloc postfile buffer\n");
-        return APR_ENOMEM;
+	printf("Can\'t alloc postfile buffer\n");
+	return APR_ENOMEM;
     }
     length = postlen;
     rv = apr_file_read(postfd, postdata, &length);
     if (rv != APR_SUCCESS) {
-        printf("error reading postfile: %s\n",
-               apr_strerror(rv, errmsg, sizeof errmsg));
-        return rv;
+	printf("error reading postfile: %s\n",
+	       apr_strerror(rv, errmsg, sizeof errmsg));
+	return rv;
     }
     if (length != postlen) {
-        printf("error reading postfile: read only %" 
-               APR_SIZE_T_FMT " bytes",
-               length);
-        return APR_EINVAL;
+	printf("error reading postfile: read only %"
+	       APR_SIZE_T_FMT " bytes",
+	       length);
+	return APR_EINVAL;
     }
     apr_file_close(postfd);
     return 0;
@@ -1034,7 +1050,7 @@ static void terminate(void)
 /* ------------------------------------------------------- */
 
 /* sort out command-line args and call test */
-int main(int argc, const char * const argv[])
+int main(int argc, const char *const argv[])
 {
     int r, l;
     char tmp[1024];
@@ -1058,97 +1074,99 @@ int main(int argc, const char * const argv[])
 #ifdef NOT_ASCII
     status = apr_xlate_open(&to_ascii, "ISO8859-1", APR_DEFAULT_CHARSET, cntxt);
     if (status) {
-        fprintf(stderr, "apr_xlate_open(to ASCII)->%d\n", status);
-        exit(1);
+	fprintf(stderr, "apr_xlate_open(to ASCII)->%d\n", status);
+	exit(1);
     }
     status = apr_xlate_open(&from_ascii, APR_DEFAULT_CHARSET, "ISO8859-1", cntxt);
     if (status) {
-        fprintf(stderr, "apr_xlate_open(from ASCII)->%d\n", status);
-        exit(1);
+	fprintf(stderr, "apr_xlate_open(from ASCII)->%d\n", status);
+	exit(1);
     }
     status = apr_base64init_ebcdic(to_ascii, from_ascii);
     if (status) {
-        fprintf(stderr, "apr_base64init_ebcdic()->%d\n", status);
-        exit(1);
+	fprintf(stderr, "apr_base64init_ebcdic()->%d\n", status);
+	exit(1);
     }
 #endif
 
     apr_getopt_init(&opt, cntxt, argc, argv);
     while ((status = apr_getopt(opt, "n:c:t:T:p:v:kVhwix:y:z:C:H:P:A:", &c, &optarg)) == APR_SUCCESS) {
-        switch (c) {
-        case 'n':
-            requests = atoi(optarg);
-            if (!requests) {
-               err("Invalid number of requests\n");
-            }
-            break;
-        case 'k':
-            keepalive = 1;
-            break;
-        case 'c':
-            concurrency = atoi(optarg);
-            break;
-        case 'i':
-            if (posting == 1)
-                err("Cannot mix POST and HEAD\n");
-            posting = -1;
-            break;
-        case 'p':
-            if (posting != 0)
-                err("Cannot mix POST and HEAD\n");
+	switch (c) {
+	case 'n':
+	    requests = atoi(optarg);
+	    if (!requests) {
+		err("Invalid number of requests\n");
+	    }
+	    break;
+	case 'k':
+	    keepalive = 1;
+	    break;
+	case 'c':
+	    concurrency = atoi(optarg);
+	    break;
+	case 'i':
+	    if (posting == 1)
+		err("Cannot mix POST and HEAD\n");
+	    posting = -1;
+	    break;
+	case 'p':
+	    if (posting != 0)
+		err("Cannot mix POST and HEAD\n");
 
-            if (0 == (r = open_postfile(optarg))) {
-               posting = 1;
-            }
-            else if (postdata) {
-               exit(r);
-            }
-            break;
-        case 'v':
-            verbosity = atoi(optarg);
-            break;
-        case 't':
-            tlimit = atoi(optarg);
-            requests = MAX_REQUESTS;  /* need to size data array on something */
-            break;
-        case 'T':
-            strcpy(content_type, optarg);
-            break;
-        case 'C':
-            strncat(cookie, "Cookie: ", sizeof(cookie));
-            strncat(cookie, optarg, sizeof(cookie));
-            strncat(cookie, "\r\n", sizeof(cookie));
-            break;
-        case 'A':
-            /* assume username passwd already to be in colon separated form. 
-             * Ready to be uu-encoded.
-             */
-            while(apr_isspace(*optarg))
-                optarg++;
-            l=apr_base64_encode(tmp, optarg, strlen(optarg));
-            tmp[l]='\0';
- 
-            strncat(auth, "Authorization: Basic ", sizeof(auth));
-            strncat(auth, tmp, sizeof(auth));
-            strncat(auth, "\r\n", sizeof(auth));
-            break;
-        case 'P':
-            /*
+	    if (0 == (r = open_postfile(optarg))) {
+		posting = 1;
+	    }
+	    else if (postdata) {
+		exit(r);
+	    }
+	    break;
+	case 'v':
+	    verbosity = atoi(optarg);
+	    break;
+	case 't':
+	    tlimit = atoi(optarg);
+	    requests = MAX_REQUESTS;	/* need to size data array on
+					 * something */
+	    break;
+	case 'T':
+	    strcpy(content_type, optarg);
+	    break;
+	case 'C':
+	    strncat(cookie, "Cookie: ", sizeof(cookie));
+	    strncat(cookie, optarg, sizeof(cookie));
+	    strncat(cookie, "\r\n", sizeof(cookie));
+	    break;
+	case 'A':
+	    /*
+	     * assume username passwd already to be in colon separated form.
+	     * Ready to be uu-encoded.
+	     */
+	    while (apr_isspace(*optarg))
+		optarg++;
+	    l = apr_base64_encode(tmp, optarg, strlen(optarg));
+	    tmp[l] = '\0';
+
+	    strncat(auth, "Authorization: Basic ", sizeof(auth));
+	    strncat(auth, tmp, sizeof(auth));
+	    strncat(auth, "\r\n", sizeof(auth));
+	    break;
+	case 'P':
+	    /*
              * assume username passwd already to be in colon separated form.
              */
-            while(apr_isspace(*optarg))
-                optarg++;
-            l=apr_base64_encode(tmp, optarg, strlen(optarg));
-            tmp[l]='\0';
- 
-            strncat(auth, "Proxy-Authorization: Basic ", sizeof(auth));
-            strncat(auth, tmp, sizeof(auth));
-            strncat(auth, "\r\n", sizeof(auth));
-            break;
-        case 'H':
-            strncat(hdrs, optarg, sizeof(hdrs));
-            strncat(hdrs, "\r\n", sizeof(hdrs));
-            break;
+	    while (apr_isspace(*optarg))
+		optarg++;
+	    l = apr_base64_encode(tmp, optarg, strlen(optarg));
+	    tmp[l] = '\0';
+
+	    strncat(auth, "Proxy-Authorization: Basic ", sizeof(auth));
+	    strncat(auth, tmp, sizeof(auth));
+	    strncat(auth, "\r\n", sizeof(auth));
+	    break;
+	case 'H':
+	    strncat(hdrs, optarg, sizeof(hdrs));
+	    strncat(hdrs, "\r\n", sizeof(hdrs));
+	    break;
 	case 'w':
 	    use_html = 1;
 	    break;
@@ -1174,17 +1192,17 @@ int main(int argc, const char * const argv[])
 	case 'V':
 	    copyright();
 	    return 0;
-        }
+	}
     }
 
     if (opt->ind != argc - 1) {
-        fprintf(stderr, "%s: wrong number of arguments\n", argv[0]);
-        usage(argv[0]);
+	fprintf(stderr, "%s: wrong number of arguments\n", argv[0]);
+	usage(argv[0]);
     }
 
     if (parse_url(apr_pstrdup(cntxt, opt->argv[opt->ind++]))) {
-        fprintf(stderr, "%s: invalid URL\n", argv[0]);
-        usage(argv[0]);
+	fprintf(stderr, "%s: invalid URL\n", argv[0]);
+	usage(argv[0]);
     }
 
     copyright();
