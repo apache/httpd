@@ -201,7 +201,7 @@
     プレーンテキストの探索が非常に遅くなることがあります。
     Apache ではユーザ情報を高速なデータベースファイルに
     保管することもできます。
-    <module>mod_auth_dbm</module> モジュールが
+    <module>mod_authn_dbm</module> モジュールが
     <directive module="mod_authn_dbm">AuthDBMUserFile</directive>
     ディレクティブを提供します。これらのファイルは <a
     href="../programs/dbmmanage.html">dbmmanage</a>
@@ -380,8 +380,8 @@
 
 <section id="moreinformation"><title>追加情報</title>
     <p>これら全てがどのように動作するかについて
-    もっと多くの情報が書かれている <module>mod_auth</module> と
-    <module>mod_access</module>
+    もっと多くの情報が書かれている <module>mod_auth_basic</module> と
+    <module>mod_authz_host</module>
     の文書も読むとよいでしょう。</p>
 </section>
 
