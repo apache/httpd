@@ -1274,19 +1274,16 @@ static void CleanNullACL( void *sa ) {
 
 static int master_main(server_rec *s, HANDLE shutdown_event, HANDLE restart_event)
 {
-    int remaining_children_to_start;
-
-    int child_num = 0;
+    int remaining_children_to_start = ap_daemons_to_start;
+    int i;
     int rv, cld;
+    int child_num = 0;
+    int restart_pending = 0;
+    int shutdown_pending = 0;
+    int current_live_processes = 0; /* number of child process we know about */
+
     HANDLE process_handles[MAX_PROCESSES];
     HANDLE process_kill_events[MAX_PROCESSES];
-    int current_live_processes = 0; /* number of child process we know about */
-    int processes_to_create = 0;    /* number of child processes to create */
-    pool *pparent = NULL;  /* pool for the parent process. Cleaned on each restart */
-
-    restart_pending = shutdown_pending = 0;
-
-    remaining_children_to_start = ap_daemons_to_start;
 
     /* Create child process 
      * Should only be one in this version of Apache for WIN32 
@@ -1309,23 +1306,20 @@ static int master_main(server_rec *s, HANDLE shutdown_event, HANDLE restart_even
     process_handles[current_live_processes+1] = restart_event;
     rv = WaitForMultipleObjects(current_live_processes+2, (HANDLE *)process_handles, 
                                 FALSE, INFINITE);
+    cld = rv - WAIT_OBJECT_0;
     if (rv == WAIT_FAILED) {
         /* Something serious is wrong */
         ap_log_error(APLOG_MARK,APLOG_CRIT|APLOG_WIN32ERROR, server_conf,
                      "master_main: : WaitForMultipeObjects on process handles and apache-signal -- doing shutdown");
         shutdown_pending = 1;
-        break;
     }
-    if (rv == WAIT_TIMEOUT) {
+    else if (rv == WAIT_TIMEOUT) {
         /* Hey, this cannot happen */
         ap_log_error(APLOG_MARK, APLOG_ERR, s,
                      "master_main: WaitForMultipeObjects with INFINITE wait exited with WAIT_TIMEOUT");
         shutdown_pending = 1;
     }
-    
-    cld = rv - WAIT_OBJECT_0;
-//        APD4("main process: wait finished, cld=%d handle %d (max=%d)", cld, process_handles[cld], current_live_processes);
-    if (cld == current_live_processes) {
+    else if (cld == current_live_processes) {
         /* shutdown_event signalled */
         shutdown_pending = 1;
         ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_INFO, s, 
@@ -1341,8 +1335,8 @@ static int master_main(server_rec *s, HANDLE shutdown_event, HANDLE restart_even
                 ap_log_error(APLOG_MARK,APLOG_ERR|APLOG_WIN32ERROR, server_conf,
                              "master_main: SetEvent for child process in slot #%d failed", i);
         }
-        break;
-    } else if (cld == current_live_processes+1) {
+    } 
+    else if (cld == current_live_processes+1) {
         /* restart_event signalled */
         int children_to_kill = current_live_processes;
         restart_pending = 1;
@@ -1352,40 +1346,41 @@ static int master_main(server_rec *s, HANDLE shutdown_event, HANDLE restart_even
             ap_log_error(APLOG_MARK, APLOG_ERR|APLOG_WIN32ERROR, s,
                          "master_main: ResetEvent(restart_event) failed.");
         }
-        /* Signal each child process to die */
+        /* Signal each child process to die 
+         * We are making a big assumption here that the child process, once signaled,
+         * will REALLY go away. Since this is a restart, we do not want to hold the 
+         * new child process up waiting for the old child to die. Remove the old 
+         * child out of the process_handles table and hope for the best...
+         */
         for (i = 0; i < children_to_kill; i++) {
-//                APD3("master_main: signalling child #%d handle %d to die", i, process_handles[i]);
+            /* APD3("master_main: signalling child #%d handle %d to die", i, process_handles[i]); */
             if (SetEvent(process_kill_events[i]) == 0)
                 ap_log_error(APLOG_MARK, APLOG_ERR|APLOG_WIN32ERROR, s,
                              "master_main: SetEvent for child process in slot #%d failed", i);
-            /* Remove the process (and event) from the process table */
             cleanup_process(process_handles, process_kill_events, i, &current_live_processes);
         }
-        processes_to_create = ap_daemons_to_start;
-    } else {
+    } 
+    else {
         /* A child process must have exited because of MaxRequestPerChild being hit
          * or a fatal error condition (seg fault, etc.). Remove the dead process 
          * from the process_handles and process_kill_events table and create a new
          * child process.
          * TODO: Consider restarting the child immediately without looping through http_main
-         * This will become necesasary if we ever support multiple children.
-         * One option, create a parent thread which waits on child death and restarts it.
+         * and without rereading the configuration. Will need this if we ever support multiple 
+         * children. One option, create a parent thread which waits on child death and restarts it.
          */
+        restart_pending = 1;
         ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_INFO, server_conf, 
                      "master_main: Child processed exited (due to MaxRequestsPerChild?). Restarting the child process.");
         ap_assert(cld < current_live_processes);
         cleanup_process(process_handles, process_kill_events, cld, &current_live_processes);
-//            APD2("main_process: child in slot %d died", rv);
-        remaining_children_to_start = 1;
-        continue;
+        /* APD2("main_process: child in slot %d died", rv); */
+        /* restart_child(process_hancles, process_kill_events, cld, &current_live_processes); */
     }
 
-    /* If we dropped out of the loop we definitly want to die completely. We need to
-     * make sure we wait for all the child process to exit first.
-     */
 die_now:
     if (shutdown_pending) {
-        tmstart = time(NULL);
+        int tmstart = time(NULL);
         while (current_live_processes && ((tmstart+60) > time(NULL))) {
             rv = WaitForMultipleObjects(current_live_processes, (HANDLE *)process_handles, FALSE, 2000);
             if (rv == WAIT_TIMEOUT)
@@ -1402,17 +1397,10 @@ die_now:
                          "forcing termination of child #%d (handle %d)", i, process_handles[i]);
             TerminateProcess((HANDLE) process_handles[i], 1);
         }
-
+        return (0); /* Tell the caller we are shutting down */
     }
 
-    CloseHandle(restart_event);
-    CloseHandle(shutdown_event);
-
-    if (pparent) {
-	ap_destroy_pool(pparent);
-    }
-
-    return (0);
+    return (1); /* Tell the call we want a restart */
 }
 
 /* 
@@ -1438,7 +1426,7 @@ static void winnt_pre_config(pool *pconf, pool *plog, pool *ptemp)
     }
 
     ap_listen_pre_config();
-    ap_daemons_to_start = DEFAULT_NUM_DAEMON
+    ap_daemons_to_start = DEFAULT_NUM_DAEMON;
     ap_threads_per_child = DEFAULT_START_THREAD;
     mpm_pid_fname = DEFAULT_PIDLOG;
     max_requests_per_child = DEFAULT_MAX_REQUESTS_PER_CHILD;
@@ -1460,7 +1448,6 @@ API_EXPORT(int) ap_mpm_run(pool *_pconf, pool *plog, server_rec *s )
     int child_num;
     char* exit_event_name;
 
-//    char signal_prefix_string[100];
     int i;
     time_t tmstart;
     HANDLE shutdown_event;	/* used to signal shutdown to parent */
@@ -1541,10 +1528,14 @@ API_EXPORT(int) ap_mpm_run(pool *_pconf, pool *plog, server_rec *s )
                              pidfile, (long)getpid());
             ap_destroy_mutex(start_mutex);
 
+            CloseHandle(restart_event);
+            CloseHandle(shutdown_event);
+
             /* service_set_status(SERVICE_STOPPED); */
         }
-
-    return !restart;
+        return !restart;
+    }
+    return (0);
 }
 
 static void winnt_hooks(void)
@@ -1565,7 +1556,7 @@ static void winnt_hooks(void)
     ap_hook_http_method(xxx,NULL,NULL,HOOK_REALLY_LAST);
     ap_hook_default_port(xxx,NULL,NULL,HOOK_REALLY_LAST);
 
-    /* FIXME: I suspect we can eliminate the need for these - Ben */
+    // FIXME: I suspect we can eliminate the need for these - Ben
     ap_hook_type_checker(xxx,NULL,NULL,HOOK_REALLY_LAST);
 */
 }
