@@ -2037,7 +2037,7 @@ char *ap_get_local_host(pool *a)
     if (gethostname(str, sizeof(str) - 1) != 0) {
 #endif /* BeOS */
 	ap_log_error(APLOG_MARK, APLOG_WARNING, NULL,
-	             "%s: gethostname() failed to detemine ServerName\n",
+	             "%s: gethostname() failed to determine ServerName\n",
                      ap_server_argv0);
 	server_hostname = ap_pstrdup(a, "127.0.0.1");
     }
