@@ -181,6 +181,21 @@ _install:
 	copy support\$(LONG)\logresolve.exe "$(INSTDIR)\bin"
 	copy support\$(LONG)\rotatelogs.exe "$(INSTDIR)\bin"
         copy docs\cgi-examples\printenv "$(INSTDIR)\cgi-bin\printenv.pl"
+	-awk -f <<script.awk "docs\cgi-examples\printenv" "$(INSTDIR)\cgi-bin\printenv.pl"
+    BEGIN { 
+        srcfl = ARGV[1];
+        dstfl = ARGV[2];
+        if ( "perl -e \"print $$^X;\"" | getline perlroot ) {
+            gsub( /\\/, "/", perlroot );
+            print "#!" perlroot > dstfl;
+            getline < srcfl;
+        }
+        while ( ( getline < srcfl ) > 0 ) {
+            print $$0 > dstfl;
+        }
+    }
+<<
+        copy docs\cgi-examples\test-cgi.bat "$(INSTDIR)\cgi-bin"
         xcopy docs\docroot "$(INSTDIR)\htdocs" /d < <<
 A
 <<
@@ -220,7 +235,8 @@ A
         copy docs\conf\mime.types "$(INSTDIR)\conf\mime.types.default"
         if not exist "$(INSTDIR)\conf\mime.types" \
             copy "$(INSTDIR)\conf\mime.types.default" "$(INSTDIR)\conf\mime.types"
-	awk -f <<script.awk "docs\conf\httpd-win.conf" "$(INSTDIR)\conf\httpd.default.conf" "$(INSTDIR)"
+	copy docs\conf\httpd-win.conf "$(INSTDIR)\conf\httpd.default.conf"
+	-awk -f <<script.awk "docs\conf\httpd-win.conf" "$(INSTDIR)\conf\httpd.default.conf" "$(INSTDIR)"
     BEGIN { 
         srcfl = ARGV[1];
         dstfl = ARGV[2];
