@@ -126,6 +126,14 @@ NLM_DESCRIPTION	= Apache Web Server $(VERSION_STR)
 # NLM_NAME Thread will be used.
 #
 NLM_THREAD_NAME	= Apache
+
+#
+# This is used by the '-screenname' directive.  If left blank,
+# 'Apache for NetWare' Thread will be used.
+#
+NLM_SCREEN_NAME = Apache for NetWare
+
+
 #
 # If this is specified, it will override VERSION value in 
 # $(AP_WORK)\build\NWGNUenvironment.inc

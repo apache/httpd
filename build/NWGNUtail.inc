@@ -21,7 +21,7 @@ NLM_THREAD_NAME = $(NLM_NAME) Thread
 endif
 
 ifndef NLM_SCREEN_NAME
-NLM_SCREEN_NAME = Apache for NetWare
+NLM_SCREEN_NAME = DEFAULT
 endif
 
 #
