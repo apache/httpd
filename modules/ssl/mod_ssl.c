@@ -210,12 +210,6 @@ static void ssl_hook_pre_config(
     ssl_ext_register(pconf);
 }
 
-static int ssl_hook_post_read_request(request_rec *r)
-{
-    /* ssl_hook_ReadReq() */
-    return DECLINED;
-}
-
 static int ssl_hook_pre_connection(conn_rec *c)
 {
     SSLSrvConfigRec *sc = mySrvConfig(c->base_server);
@@ -436,24 +430,6 @@ int ssl_hook_process_connection(SSLFilterRec *pRec)
     return APR_SUCCESS;
 }
 
-static void ssl_hook_open_logs(apr_pool_t *p, apr_pool_t *plog,
-        apr_pool_t *ptemp, server_rec *s)
-{
-    return;
-}
-
-static int ssl_hook_quick_handler (request_rec *r)
-{
-    /* ssl_hook_Auth() */
-    return DECLINED;
-}
-
-static int ssl_hook_fixer_upper (request_rec *r)
-{
-    /* ssl_hook_UserCheck */
-    return DECLINED;
-}
-
 static const char *ssl_hook_http_method (const request_rec *r)
 {
     SSLSrvConfigRec *sc = mySrvConfig(r->server);
@@ -473,12 +449,6 @@ static apr_port_t ssl_hook_default_port (const request_rec *r)
     return 443;
 }
 
-static int ssl_hook_insert_filter (request_rec *r)
-{
-    /* ssl_hook_ReadReq() */
-    return DECLINED;
-}
-
 /*
  *  the module registration phase
  */
@@ -486,32 +456,20 @@ static int ssl_hook_insert_filter (request_rec *r)
 static void ssl_register_hooks(apr_pool_t *p)
 {
     ssl_io_filter_register(p);
+
     ap_hook_pre_connection(ssl_hook_pre_connection,NULL,NULL, APR_HOOK_MIDDLE);
     ap_hook_post_config   (ssl_init_Module,        NULL,NULL, APR_HOOK_MIDDLE);
     ap_hook_http_method   (ssl_hook_http_method,   NULL,NULL, APR_HOOK_MIDDLE);
     ap_hook_default_port  (ssl_hook_default_port,  NULL,NULL, APR_HOOK_MIDDLE);
     ap_hook_handler       (ssl_hook_Handler,       NULL,NULL, APR_HOOK_MIDDLE);
     ap_hook_pre_config    (ssl_hook_pre_config,    NULL,NULL, APR_HOOK_MIDDLE);
-#if 0 /* XXX - Work in progress */
     ap_hook_child_init    (ssl_init_Child,         NULL,NULL, APR_HOOK_MIDDLE);
-    ap_hook_process_connection (ssl_hook_process_connection, 
-                                                   NULL,NULL, APR_HOOK_MIDDLE);
-    ap_hook_post_read_request  (ssl_hook_post_read_request, 
-                                                   NULL,NULL, APR_HOOK_MIDDLE);
-#endif
     ap_hook_translate_name(ssl_hook_Translate,     NULL,NULL, APR_HOOK_MIDDLE);
     ap_hook_check_user_id (ssl_hook_UserCheck,     NULL,NULL, APR_HOOK_MIDDLE);
     ap_hook_fixups        (ssl_hook_Fixup,         NULL,NULL, APR_HOOK_MIDDLE);
     ap_hook_access_checker(ssl_hook_Access,        NULL,NULL, APR_HOOK_MIDDLE);
     ap_hook_auth_checker  (ssl_hook_Auth,          NULL,NULL, APR_HOOK_MIDDLE);
-#if 0 /* XXX - Work in progress */
-    ap_hook_open_logs     (ssl_hook_open_logs,     NULL,NULL, APR_HOOK_MIDDLE);
-    ap_hook_quick_handler (ssl_hook_quick_handler, NULL,NULL, APR_HOOK_MIDDLE);
-    ap_hook_log_transaction(ssl_hook_fixer_upper,  NULL,NULL, APR_HOOK_MIDDLE);
-    ap_hook_create_request(ssl_hook_fixer_upper,   NULL,NULL, APR_HOOK_MIDDLE);
-    ap_hook_type_checker  (ssl_hook_fixer_upper,   NULL,NULL, APR_HOOK_MIDDLE);
-    ap_hook_insert_filter (ssl_hook_insert_filter, NULL,NULL, APR_HOOK_MIDDLE);
-#endif
+
     ssl_var_register();
     ssl_io_register();
 }
