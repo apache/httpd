@@ -13,7 +13,7 @@ to provide the cryptography engine.</p>
 
 <p>Further details, discussion, and examples are provided in the
 <a href="../ssl/">SSL documentation</a>.</p>
-<h2>Directives</h2><ul><li><a href="#sslcacertificatefile">SSLCACertificateFile</a></li><li><a href="#sslcacertificatepath">SSLCACertificatePath</a></li><li><a href="#sslcarevocationfile">SSLCARevocationFile</a></li><li><a href="#sslcarevocationpath">SSLCARevocationPath</a></li><li><a href="#sslcertificatechainfile">SSLCertificateChainFile</a></li><li><a href="#sslcertificatefile">SSLCertificateFile</a></li><li><a href="#sslcertificatekeyfile">SSLCertificateKeyFile</a></li><li><a href="#sslciphersuite">SSLCipherSuite</a></li><li><a href="#sslengine">SSLEngine</a></li><li><a href="#sslmutex">SSLMutex</a></li><li><a href="#ssloptions">SSLOptions</a></li><li><a href="#sslpassphrasedialog">SSLPassPhraseDialog</a></li><li><a href="#sslprotocol">SSLProtocol</a></li><li><a href="#sslrandomseed">SSLRandomSeed</a></li><li><a href="#sslrequire">SSLRequire</a></li><li><a href="#sslrequiressl">SSLRequireSSL</a></li><li><a href="#sslsessioncache">SSLSessionCache</a></li><li><a href="#sslsessioncachetimeout">SSLSessionCacheTimeout</a></li><li><a href="#sslverifyclient">SSLVerifyClient</a></li><li><a href="#sslverifydepth">SSLVerifyDepth</a></li></ul><h2>Environment Variables</h2>
+<h2>Directives</h2><ul><li><a href="#sslcacertificatefile">SSLCACertificateFile</a></li><li><a href="#sslcacertificatepath">SSLCACertificatePath</a></li><li><a href="#sslcarevocationfile">SSLCARevocationFile</a></li><li><a href="#sslcarevocationpath">SSLCARevocationPath</a></li><li><a href="#sslcertificatechainfile">SSLCertificateChainFile</a></li><li><a href="#sslcertificatefile">SSLCertificateFile</a></li><li><a href="#sslcertificatekeyfile">SSLCertificateKeyFile</a></li><li><a href="#sslciphersuite">SSLCipherSuite</a></li><li><a href="#sslengine">SSLEngine</a></li><li><a href="#sslmutex">SSLMutex</a></li><li><a href="#ssloptions">SSLOptions</a></li><li><a href="#sslpassphrasedialog">SSLPassPhraseDialog</a></li><li><a href="#sslprotocol">SSLProtocol</a></li><li><a href="#sslproxycacertificatefile">SSLProxyCACertificateFile</a></li><li><a href="#sslproxycacertificatepath">SSLProxyCACertificatePath</a></li><li><a href="#sslproxycarevocationfile">SSLProxyCARevocationFile</a></li><li><a href="#sslproxycarevocationpath">SSLProxyCARevocationPath</a></li><li><a href="#sslproxyciphersuite">SSLProxyCipherSuite</a></li><li><a href="#sslproxyengine">SSLProxyEngine</a></li><li><a href="#sslproxymachinecertificatefile">SSLProxyMachineCertificateFile</a></li><li><a href="#sslproxymachinecertificatepath">SSLProxyMachineCertificatePath</a></li><li><a href="#sslproxyprotocol">SSLProxyProtocol</a></li><li><a href="#sslproxyverify">SSLProxyVerify</a></li><li><a href="#sslproxyverifydepth">SSLProxyVerifyDepth</a></li><li><a href="#sslrandomseed">SSLRandomSeed</a></li><li><a href="#sslrequire">SSLRequire</a></li><li><a href="#sslrequiressl">SSLRequireSSL</a></li><li><a href="#sslsessioncache">SSLSessionCache</a></li><li><a href="#sslsessioncachetimeout">SSLSessionCacheTimeout</a></li><li><a href="#sslverifyclient">SSLVerifyClient</a></li><li><a href="#sslverifydepth">SSLVerifyDepth</a></li></ul><h2>Environment Variables</h2>
 
 <p>This module provides a lot of SSL information as additional environment
 variables to the SSI and CGI namespace. The generated variables are listed in
@@ -73,9 +73,9 @@ compatibility variables.</p>
 </td></tr></table>
 <h2>Custom Log Formats</h2>
 
-<p>When <code><a href="mod_ssl.html">mod_ssl</a></code> is built into Apache or at least
+<p>When <code><a href="../mod/mod_ssl.html">mod_ssl</a></code> is built into Apache or at least
 loaded (under DSO situation) additional functions exist for the <a href="../mod_log_config.html#formats">Custom Log Format</a> of 
-<code><a href="mod_log_config.html">mod_log_config</a></code>. First there is an
+<code><a href="../mod/mod_log_config.html">mod_log_config</a></code>. First there is an
 additional ``<code>%{</code><em>varname</em><code>}x</code>''
 eXtension format function which can be used to expand any variables
 provided by any module, especially those provided by mod_ssl which can
@@ -142,7 +142,7 @@ hash filenames. So usually you have not only to place the CRL files there.
 Additionally you have to create symbolic links named
 <em>hash-value</em><code>.rN</code>. And you should always make sure this directory
 contains the appropriate symbolic links. Use the <code>Makefile</code> which
-comes with <code><a href="mod_ssl.html">mod_ssl</a></code> to accomplish this task.</p>
+comes with <code><a href="../mod/mod_ssl.html">mod_ssl</a></code> to accomplish this task.</p>
 <blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><p align="center"><strong>Example</strong></p><code>
 SSLCARevocationPath /usr/local/apache/conf/ssl.crl/
 </code></td></tr></table></blockquote>
@@ -366,7 +366,7 @@ SSLCipherSuite RSA:!EXP:!NULL:+HIGH:+MEDIUM:-LOW
 <hr/><h2><a name="SSLEngine">SSLEngine</a> <a name="sslengine">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: </strong></td><td>SSL Engine Operation Switch</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td>SSLEngine on|off</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Default" class="help">Default:</a></td><td><code>SSLEngine off</code></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config, virtual host</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Extension</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_ssl</td></tr></table></td></tr></table>
 <p>
 This directive toggles the usage of the SSL/TLS Protocol Engine. This
-is usually used inside a <a href="core.html#virtualhost" class="directive"><code class="directive">&lt;VirtualHost&gt;</code></a> section to enable SSL/TLS for a
+is usually used inside a <a href="../mod/core.html#virtualhost" class="directive"><code class="directive">&lt;VirtualHost&gt;</code></a> section to enable SSL/TLS for a
 particular virtual host. By default the SSL/TLS Protocol Engine is
 disabled for both the main server and all configured virtual hosts.</p>
 <blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><p align="center"><strong>Example</strong></p><code>
@@ -596,6 +596,172 @@ The available (case-insensitive) <em>protocol</em>s are:</p>
 <blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><p align="center"><strong>Example</strong></p><code>
 #   enable SSLv3 and TLSv1, but not SSLv2<br>
 SSLProtocol all -SSLv2
+</code></td></tr></table></blockquote>
+<hr/><h2><a name="SSLProxyCACertificateFile">SSLProxyCACertificateFile</a> <a name="sslproxycacertificatefile">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: </strong></td><td>File of concatenated PEM-encoded CA Certificates 
+for Remote Server Auth</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td>SSLProxyCACertificateFile <em>file-path</em></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config, virtual host</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Extension</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_ssl</td></tr></table></td></tr></table>
+<p>
+This directive sets the <em>all-in-one</em> file where you can assemble the
+Certificates of Certification Authorities (CA) whose <em>remote servers</em> you deal
+with. These are used for Remote Server Authentication. Such a file is simply the
+concatenation of the various PEM-encoded Certificate files, in order of
+preference. This can be used alternatively and/or additionally to 
+<a href="#sslproxycacertificatepath" class="directive"><code class="directive">SSLProxyCACertificatePath</code></a>.</p>
+<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><p align="center"><strong>Example</strong></p><code>
+SSLProxyCACertificateFile /usr/local/apache/conf/ssl.crt/ca-bundle-remote-server.crt
+</code></td></tr></table></blockquote>
+<hr/><h2><a name="SSLProxyCACertificatePath">SSLProxyCACertificatePath</a> <a name="sslproxycacertificatepath">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: </strong></td><td>Directory of PEM-encoded CA Certificates for 
+Remote Server Auth</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td>SSLProxyCACertificatePath <em>directory-path</em></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config, virtual host</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Extension</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_ssl</td></tr></table></td></tr></table>
+<p>
+This directive sets the directory where you keep the Certificates of
+Certification Authorities (CAs) whose remote servers you deal with. These are used to
+verify the remote server certificate on Remote Server Authentication.</p>
+<p>
+The files in this directory have to be PEM-encoded and are accessed through
+hash filenames. So usually you can't just place the Certificate files
+there: you also have to create symbolic links named
+<em>hash-value</em><code>.N</code>. And you should always make sure this directory
+contains the appropriate symbolic links. Use the <code>Makefile</code> which
+comes with mod_ssl to accomplish this task.</p>
+<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><p align="center"><strong>Example</strong></p><code>
+SSLProxyCACertificatePath /usr/local/apache/conf/ssl.crt/
+</code></td></tr></table></blockquote>
+<hr/><h2><a name="SSLProxyCARevocationFile">SSLProxyCARevocationFile</a> <a name="sslproxycarevocationfile">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: </strong></td><td>File of concatenated PEM-encoded CA CRLs for 
+Remote Server Auth</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td>SSLProxyCARevocationFile <em>file-path</em></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config, virtual host</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Extension</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_ssl</td></tr></table></td></tr></table>
+<p>
+This directive sets the <em>all-in-one</em> file where you can
+assemble the Certificate Revocation Lists (CRL) of Certification
+Authorities (CA) whose <em>remote servers</em> you deal with. These are used
+for Remote Server Authentication.  Such a file is simply the concatenation of
+the various PEM-encoded CRL files, in order of preference. This can be
+used alternatively and/or additionally to <a href="#sslproxycarevocationpath" class="directive"><code class="directive">SSLProxyCARevocationPath</code></a>.</p>
+<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><p align="center"><strong>Example</strong></p><code>
+SSLProxyCARevocationFile /usr/local/apache/conf/ssl.crl/ca-bundle-remote-server.crl
+</code></td></tr></table></blockquote>
+<hr/><h2><a name="SSLProxyCARevocationPath">SSLProxyCARevocationPath</a> <a name="sslproxycarevocationpath">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: </strong></td><td>Directory of PEM-encoded CA CRLs for 
+Remote Server Auth</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td>SSLProxyCARevocationPath <em>directory-path</em></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config, virtual host</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Extension</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_ssl</td></tr></table></td></tr></table>
+<p>
+This directive sets the directory where you keep the Certificate Revocation
+Lists (CRL) of Certification Authorities (CAs) whose remote servers you deal with.
+These are used to revoke the remote server certificate on Remote Server Authentication.</p>
+<p>
+The files in this directory have to be PEM-encoded and are accessed through
+hash filenames. So usually you have not only to place the CRL files there.
+Additionally you have to create symbolic links named
+<em>hash-value</em><code>.rN</code>. And you should always make sure this directory
+contains the appropriate symbolic links. Use the <code>Makefile</code> which
+comes with <code><a href="../mod/mod_ssl.html">mod_ssl</a></code> to accomplish this task.</p>
+<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><p align="center"><strong>Example</strong></p><code>
+SSLProxyCARevocationPath /usr/local/apache/conf/ssl.crl/
+</code></td></tr></table></blockquote>
+<hr/><h2><a name="SSLProxyCipherSuite">SSLProxyCipherSuite</a> <a name="sslproxyciphersuite">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: </strong></td><td>Cipher Suite available for negotiation in SSL 
+proxy handshake</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td>SSLProxyCipherSuite <em>cipher-spec</em></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Default" class="help">Default:</a></td><td><code>SSLProxyCipherSuite ALL:!ADH:RC4+RSA:+HIGH:+MEDIUM:+LOW:+SSLv2:+EXP</code></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config, virtual host, directory, .htaccess</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Override" class="help">Override:</a></td><td>AuthConfig</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Extension</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_ssl</td></tr></table></td></tr></table>
+<p>Equivalent to <code>SSLCipherSuite</code>, but for the proxy connection.
+Please refer to <a href="#sslciphersuite" class="directive"><code class="directive">SSLCipherSuite</code></a>
+for additional information.</p>
+<hr/><h2><a name="SSLProxyEngine">SSLProxyEngine</a> <a name="sslproxyengine">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: </strong></td><td>SSL Proxy Engine Operation Switch</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td>SSLProxyEngine on|off</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Default" class="help">Default:</a></td><td><code>SSLProxyEngine off</code></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config, virtual host</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Extension</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_ssl</td></tr></table></td></tr></table>
+<p>
+This directive toggles the usage of the SSL/TLS Protocol Engine for proxy. This
+is usually used inside a <a href="../mod/core.html#virtualhost" class="directive"><code class="directive">&lt;VirtualHost&gt;</code></a> section to enable SSL/TLS for proxy
+usage in a particular virtual host. By default the SSL/TLS Protocol Engine is
+disabled for proxy image both for the main server and all configured virtual hosts.</p>
+<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><p align="center"><strong>Example</strong></p><code>
+&lt;VirtualHost _default_:443&gt;<br>
+SSLProxyEngine on<br>
+...<br>
+&lt;/VirtualHost&gt;
+</code></td></tr></table></blockquote>
+<hr/><h2><a name="SSLProxyMachineCertificateFile">SSLProxyMachineCertificateFile</a> <a name="sslproxymachinecertificatefile">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: </strong></td><td>File of concatenated PEM-encoded CA certificates for proxy server client certificates</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td>SSLProxyMachineCertificateFile <em>filename</em></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Default" class="help">Default:</a></td><td><code>None</code></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Override" class="help">Override:</a></td><td>Not applicable</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Extension</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_ssl</td></tr></table></td></tr></table>
+<p>
+This directive sets the directory where you keep the certificates of
+Certification Authorities (CAs) whose proxy client certificates are used for
+authentication of the proxy server to remote servers.
+</p>
+<p>
+This referenced file is simply the concatenation of the various PEM-encoded
+certificate files, in order of preference. Use this directive alternatively
+or additionally to <code>SSLProxyMachineCertificatePath</code>.
+</p>
+<p>
+Example:</p>
+<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>
+SSLProxyMachineCertificatePath /usr/local/apache/conf/ssl.crt/
+</code></td></tr></table></blockquote> 
+<hr/><h2><a name="SSLProxyMachineCertificatePath">SSLProxyMachineCertificatePath</a> <a name="sslproxymachinecertificatepath">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: </strong></td><td>Directory of PEM-encoded CA certificates for proxy server client certificates</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td>SSLProxyMachineCertificatePath <em>directory</em></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Default" class="help">Default:</a></td><td><code>None</code></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Override" class="help">Override:</a></td><td>Not applicable</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Extension</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_ssl</td></tr></table></td></tr></table>
+<p>
+This directive sets the directory where you keep the certificates of
+Certification Authorities (CAs) whose proxy client certificates are used for
+authentication of the proxy server to remote servers.
+</p>
+<p>The files in this directory must be PEM-encoded and are accessed through
+hash filenames. Additionally, you must create symbolic links named
+<code><em>hash-value</em>.N</code>. And you should always make sure this
+directory contains the appropriate symbolic links. Use the Makefile which
+comes with mod_ssl to accomplish this task.
+</p>
+<p>
+Example:</p>
+<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>
+SSLProxyMachineCertificatePath /usr/local/apache/conf/ssl.crt/
+</code></td></tr></table></blockquote> 
+<hr/><h2><a name="SSLProxyProtocol">SSLProxyProtocol</a> <a name="sslproxyprotocol">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: </strong></td><td>Configure usable SSL protocol flavors for proxy usage</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td>SSLProxyProtocol [+|-]<em>protocol</em> ...</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Default" class="help">Default:</a></td><td><code>SSLProxyProtocol all</code></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config, virtual host</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Override" class="help">Override:</a></td><td>Options</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Extension</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_ssl</td></tr></table></td></tr></table>
+
+<p>
+This directive can be used to control the SSL protocol flavors mod_ssl should
+use when establishing its server environment for proxy . It will only connect
+to servers using one of the provided protocols.</p>
+<p>Please refer to <a href="#sslprotocol" class="directive"><code class="directive">SSLProtocol</code></a>
+for additional information.
+</p>
+<hr/><h2><a name="SSLProxyVerify">SSLProxyVerify</a> <a name="sslproxyverify">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: </strong></td><td>Type of remote server Certificate verification</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td>SSLProxyVerify <em>level</em></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Default" class="help">Default:</a></td><td><code>SSLProxyVerify none</code></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config, virtual host, directory, .htaccess</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Override" class="help">Override:</a></td><td>AuthConfig</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Extension</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_ssl</td></tr></table></td></tr></table>
+<p>
+This directive sets the Certificate verification level for the remote server
+Authentication. Notice that this directive can be used both in per-server and
+per-directory context. In per-server context it applies to the remote server
+authentication process used in the standard SSL handshake when a connection is
+established. In per-directory context it forces a SSL renegotation with the
+reconfigured remote server verification level after the HTTP request was read but
+before the HTTP response is sent.</p>
+<p>
+The following levels are available for <em>level</em>:</p>
+<ul>
+<li><strong>none</strong>:
+     no remote server Certificate is required at all</li>
+<li><strong>optional</strong>:
+     the remote server <em>may</em> present a valid Certificate</li>
+<li><strong>require</strong>:
+     the remote server <em>has to</em> present a valid Certificate</li>
+<li><strong>optional_no_ca</strong>:
+     the remote server may present a valid Certificate<br>
+     but it need not to be (successfully) verifiable.</li>
+</ul>
+<p>In practice only levels <strong>none</strong> and
+<strong>require</strong> are really interesting, because level
+<strong>optional</strong> doesn't work with all servers and level
+<strong>optional_no_ca</strong> is actually against the idea of
+authentication (but can be used to establish SSL test pages, etc.)</p>
+<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><p align="center"><strong>Example</strong></p><code>
+SSLProxyVerify require
+</code></td></tr></table></blockquote>
+<hr/><h2><a name="SSLProxyVerifyDepth">SSLProxyVerifyDepth</a> <a name="sslproxyverifydepth">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: </strong></td><td>Maximum depth of CA Certificates in Remote Server
+Certificate verification</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td>SSLVerifyDepth <em>number</em></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Default" class="help">Default:</a></td><td><code>SSLVerifyDepth 1</code></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config, virtual host, directory, .htaccess</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Override" class="help">Override:</a></td><td>AuthConfig</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Extension</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_ssl</td></tr></table></td></tr></table>
+<p>
+This directive sets how deeply mod_ssl should verify before deciding that the
+remote server does not have a valid certificate. Notice that this directive can be
+used both in per-server and per-directory context. In per-server context it
+applies to the client authentication process used in the standard SSL
+handshake when a connection is established. In per-directory context it forces
+a SSL renegotation with the reconfigured remote server verification depth after the
+HTTP request was read but before the HTTP response is sent.</p>
+<p>
+The depth actually is the maximum number of intermediate certificate issuers,
+i.e. the number of CA certificates which are max allowed to be followed while
+verifying the remote server certificate. A depth of 0 means that self-signed
+remote server certificates are accepted only, the default depth of 1 means
+the remote server certificate can be self-signed or has to be signed by a CA
+which is directly known to the server (i.e. the CA's certificate is under
+<a href="#sslproxycacertificatepath" class="directive"><code class="directive">SSLProxyCACertificatePath</code></a>), etc.</p>
+<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><p align="center"><strong>Example</strong></p><code>
+SSLProxyVerifyDepth 10
 </code></td></tr></table></blockquote>
 <hr/><h2><a name="SSLRandomSeed">SSLRandomSeed</a> <a name="sslrandomseed">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: </strong></td><td>Pseudo Random Number Generator (PRNG) seeding 
 source</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td>SSLRandomSeed <em>context</em> <em>source</em> 
