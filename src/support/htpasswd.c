@@ -170,6 +170,10 @@ static int mkrecord(char *user, char *record, size_t rlen, char *passwd,
 	pw = passwd;
     }
     else {
+#ifdef TPF
+        fprintf(stderr, "Invalid entry. The -b option is required on TPF.\n");
+        return usage();
+#else
 	if (ap_getpass("New password: ", pwin, sizeof(pwin)) != 0) {
 	    ap_snprintf(record, (rlen - 1), "password too long (>%d)",
 			sizeof(pwin) - 1);
@@ -182,6 +186,7 @@ static int mkrecord(char *user, char *record, size_t rlen, char *passwd,
 	}
 	pw = pwin;
         memset(pwv, '\0', sizeof(pwin));
+#endif /* TPF */
     }
     switch (alg) {
 
@@ -436,6 +441,11 @@ int main(int argc, char *argv[])
 	alg = ALG_APMD5;
 	fprintf(stderr, "Automatically using MD5 format on Windows.\n");
     }
+#elif defined(TPF)
+    if (alg == ALG_CRYPT) {
+        alg = ALG_APMD5;
+        fprintf(stderr, "Automatically using MD5 format.\n");
+     }
 #endif
 
 #if (!(defined(WIN32) || defined(TPF)))
