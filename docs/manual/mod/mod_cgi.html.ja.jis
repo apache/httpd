@@ -10,21 +10,19 @@
                   </a></th><td>cgi_module</td></tr><tr><th><a href="module-dict.html#SourceFile">ソースファイル:
                   </a></th><td>mod_cgi.c</td></tr></table><h3>概要</h3>
     
-    
-    
 
     <p>Mime タイプが <code>application/x-httpd-cgi</code> 
     であるか、ハンドラ <code>cgi-script</code> (Apache 1.1 以降)
     が指定されているファイルは CGI スクリプトとして扱われ、
     サーバにより実行され、その出力がクライアントに返されます。
     ファイルは、<code class="directive"><a href="../mod/mod_mime.html#addtype">AddType</a></code>
-    ディレクティブに指定された 拡張子を名前に含むか、
+    ディレクティブに指定された 拡張子を名前に含むか、
     <code class="directive"><a href="../mod/mod_alias.html#scriptalias">ScriptAlias</a></code>
     ディレクトリに存在することによりこのタイプになります。</p>
 
     <p>サーバが CGI スクリプトを実行するときには、
     <code>DOCUMENT_ROOT</code>
-    と呼ばれる変数を環境に追加します。この変数は
+    と呼ばれる変数を環境に追加します。この変数は
     <code class="directive"><a href="../mod/core.html#documentroot">DocumentRoot</a></code>
     の値を保持します。</p>
 
@@ -32,13 +30,13 @@
     <a href="../howto/cgi.html">CGI による動的コンテンツ</a>
     を参照してください。</p>
 
-    <p>Unix でマルチスレッドの MPM を使っている場合は、このモジュールの
+    <p>Unix でマルチスレッドの MPM を使っている場合は、このモジュールの
     代わりに <code class="module"><a href="../mod/mod_cgid.html">mod_cgid</a></code> を使う必要があります。
     ユーザレベルではこの二つのモジュールは本質的には同一です。</p>
 </div><div id="quickview"><h3 class="directives">ディレクティブ</h3><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#scriptlog">ScriptLog</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#scriptlogbuffer">ScriptLogBuffer</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#scriptloglength">ScriptLogLength</a></li>
-</ul><h3>トピック</h3><ul id="topics"><li><img alt="" src="../images/down.gif" /> CGI 環境変数</li><li><img alt="" src="../images/down.gif" /> <a href="#cgi_debug">CGI のデバッグ</a></li></ul><h3>参照</h3><ul class="seealso"><li><code class="directive"><a href="../mod/core.html#options">Options</a></code></li><li><code class="directive"><a href="../mod/mod_alias.html#scriptalias">ScriptAlias</a></code></li><li><code class="directive"><a href="../mod/mod_mime.html#addhandler">AddHandler</a></code></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="section"><h2>CGI 環境変数</h2>
+</ul><h3>トピック</h3><ul id="topics"><li><img alt="" src="../images/down.gif" /> <a href="#env">CGI 環境変数</a></li><li><img alt="" src="../images/down.gif" /> <a href="#cgi-debug">CGI のデバッグ</a></li></ul><h3>参照</h3><ul class="seealso"><li><code class="directive"><a href="../mod/core.html#acceptpathinfo">AcceptPathInfo</a></code></li><li><code class="directive"><a href="../mod/core.html#options">Options</a></code></li><li><code class="directive"><a href="../mod/mod_alias.html#scriptalias">ScriptAlias</a></code></li><li><code class="directive"><a href="../mod/mod_mime.html#addhandler">AddHandler</a></code></li><li><a href="../suexec.html">CGI プログラムを別のユーザ ID で実行する</a></li><li><a href="http://hoohoo.ncsa.uiuc.edu/cgi/">CGI 規格書</a></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="section"><h2><a name="env" id="env">CGI 環境変数</a></h2>
     <p>サーバは <a href="http://hoohoo.ncsa.uiuc.edu/cgi/">CGI
     規格</a> で決められている CGI
     環境変数を設定します。以下のものは、条件付きで設定されます。</p>
@@ -47,12 +45,15 @@
       <dt>PATH_INFO</dt>
 
       <dd>これは <code class="directive"><a href="../mod/core.html#acceptpathinfo">AcceptPathInfo</a></code> ディレクティブが明示的に <code>off</code>
-      に設定されている場合は設定されません。デフォルトの、AcceptPathInfo が
-      指定されていないときの振る舞いでは、mod_cgi はパス情報
-      (URI のスクリプトのファイル名の後に続く /more/path/info) を
+      に設定されている場合は設定されません。デフォルトの、
+      <code class="directive">AcceptPathInfo</code> が
+      指定されていないときの振る舞いでは、<code class="module"><a href="../mod/mod_cgi.html">mod_cgi</a></code> はパス情報
+      (URI のスクリプトのファイル名の後に続く <code>/more/path/info</code>) を
       受け付けますが、コアはサーバはパス情報のあるリクエストに
-      対して 404 NOT FOUND エラーを返します。AcceptPathInfo ディレクティブを
-      省略すると、mod_cgi へのリクエストに対して <code>on</code> を
+      対して 404 NOT FOUND エラーを返します。<code class="directive">AcceptPathInfo</code>
+      ディレクティブを
+      省略すると、<code class="module"><a href="../mod/mod_cgi.html">mod_cgi</a></code> へのリクエストに対して
+      <code>On</code> を
       設定したのと同じ効果になります。</dd>
 
       <dt>REMOTE_HOST</dt>
@@ -77,65 +78,72 @@
       <dd>CGI
       スクリプトに認証が必要なときにのみ設定されます。</dd>
     </dl>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="section"><h2><a name="cgi_debug" id="cgi_debug">CGI のデバッグ</a></h2>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="section"><h2><a name="cgi-debug" id="cgi-debug">CGI のデバッグ</a></h2>
     <p>CGI スクリプトのデバッグは、正しく動作していないスクリプトの出力
     (標準出力とエラー)
     を調べることができないために、難しい状態が続いていました。
     これらの Apache 1.2 以降にある
     ディレクティブはより詳細なエラーのログ収集を提供します。</p>
 
-<h3>CGI ログファイルの書式</h3>
-    <p>設定されているときには、CGI エラーログは適切に動作しないすべての
-    CGI をログ収集します。それぞれの正しく動作しない CGI
-    スクリプトは 複数の行にわたる情報がログ収集されます。最初の
-    2 行は常に以下の書式です:</p>
-<div class="example"><p><code>
-  %% [<em>time</em>] <em>request-line</em><br />
-  %% <em>HTTP-status</em> <em>CGI-script-filename</em>
-</code></p></div>
-    <p>エラーが、CGI スクリプトが実行できないというものである場合は、
-    ログファイルはさらにもう 2 行書かれます:</p>
-<div class="example"><p><code>
-  %%error<br />
-  <em>error-message</em>
-</code></p></div>
-    <p>そうではなく、エラーが正しくないヘッダ情報を返す結果である場合
-    (スクリプトのバグであることがよくあります)、
-    以下の情報がログ収集されます:</p>
-<div class="example"><p><code>
-  %request<br />
-  <em>受け取ったすべての HTTP リクエストヘッダ</em><br />
-  <em>(もしあれば) POST や PUT の中身</em><br />
-  %response<br />
-  <em>CGI スクリプトにより出力されたすべてのヘッダ</em><br />
-  %stdout<br />
-  <em>CGI 標準出力</em><br />
-  %stderr<br />
-  <em>CGI 標準エラー</em><br />
-</code></p></div>
+    <h3>CGI ログファイルの書式</h3>
+	<p>設定されているときには、CGI エラーログは適切に動作しないすべての
+	CGI をログ収集します。それぞれの正しく動作しない CGI
+	スクリプトは 複数の行にわたる情報がログ収集されます。最初の
+	2 行は常に以下の書式です:</p>
+
+      <div class="example"><p><code>
+        %% [<var>time</var>] <var>request-line</var><br />
+        %% <var>HTTP-status</var> <var>CGI-script-filename</var>
+      </code></p></div>
+
+      <p>エラーが、CGI スクリプトが実行できないというものである場合は、
+      ログファイルはさらにもう 2 行書かれます:</p>
+
+      <div class="example"><p><code>
+        %%error<br />
+        <var>error-message</var>
+      </code></p></div>
+
+      <p>そうではなく、エラーが正しくないヘッダ情報を返す結果である場合
+      (スクリプトのバグであることがよくあります)、
+      以下の情報がログ収集されます:</p>
+
+    <div class="example"><p><code>
+      %request<br />
+      <var>受け取ったすべての HTTP リクエストヘッダ</var><br />
+      <var>(もしあれば) POST や PUT の中身</var><br />
+      %response<br />
+      <var>CGI スクリプトにより出力されたすべてのヘッダ</var><br />
+      %stdout<br />
+      <var>CGI 標準出力</var><br />
+      %stderr<br />
+      <var>CGI 標準エラー</var><br />
+    </code></p></div>
+
     <p>(スクリプトが標準出力や標準エラーに何も出力しなかった場合は、
     %stdout や %stderr はありません)。</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="ScriptLog" id="ScriptLog">ScriptLog</a> <a name="scriptlog" id="scriptlog">ディレクティブ</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">説明: 
               </a></th><td>CGI スクリプトのエラーログファイルの場所</td></tr><tr><th><a href="directive-dict.html#Syntax">構文:
-              </a></th><td><code>ScriptLog <em>file-path</em></code></td></tr><tr><th><a href="directive-dict.html#Context">コンテキスト:
+              </a></th><td><code>ScriptLog <var>file-path</var></code></td></tr><tr><th><a href="directive-dict.html#Context">コンテキスト:
               </a></th><td>サーバ設定ファイル, バーチャルホスト</td></tr><tr><th><a href="directive-dict.html#Status">ステータス:
               </a></th><td>Base</td></tr><tr><th><a href="directive-dict.html#Module">モジュール:
               </a></th><td><code class="module"><a href="../mod/mod_cgi.html">mod_cgi</a></code>, <code class="module"><a href="../mod/mod_cgid.html">mod_cgid</a></code></td></tr></table>
     <p><code class="directive">ScriptLog</code> ディレクティブは CGI スクリプトの
-    エラーログファイルを設定します。ScriptLog が設定されていないときは、
+    エラーログファイルを設定します。<code class="directive">ScriptLog</code> が
+    設定されていないときは、
     エラーログは作成されません。設定されているときは、CGI
     のエラーはすべて引数として与えられているファイル名にログされます。
     相対パスで指定されているときは、
-    <code>ServerRoot</code>からの相対パスとして扱われます。</p>
+    <code class="directive"><a href="../mod/core.html#serverroot">ServerRoot</a></code>からの相対パスとして
+    扱われます。</p>
 
     <div class="example"><h3>例</h3><p><code>
-    ScriptLog logs/cgi_log
+      ScriptLog logs/cgi_log
     </code></p></div>
 
     <p>このログは子プロセスが実行されているユーザとしてオープンされます。
-    すなわち、<code class="directive"><a href="../mod/mpm_commmon.html#user">User</a></code> ディレクティブ
-    で指定された
+    <em>すなわち</em>、<code class="directive"><a href="../mod/mpm_commmon.html#user">User</a></code> ディレクティブで指定された
     ユーザです。これは、スクリプトログが書かれるディレクトリがそのユーザで
     書き込み可能か、スクリプトファイルが手動で作成され、そのユーザで
     書き込み可能になっている必要があるということです。スクリプトログを
@@ -163,7 +171,7 @@
     </p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="ScriptLogLength" id="ScriptLogLength">ScriptLogLength</a> <a name="scriptloglength" id="scriptloglength">ディレクティブ</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">説明: 
               </a></th><td>CGI スクリプトのログファイルの大きさの上限</td></tr><tr><th><a href="directive-dict.html#Syntax">構文:
-              </a></th><td><code>ScriptLogLength <em>bytes</em></code></td></tr><tr><th><a href="directive-dict.html#Default">デフォルト: 
+              </a></th><td><code>ScriptLogLength <var>bytes</var></code></td></tr><tr><th><a href="directive-dict.html#Default">デフォルト: 
               </a></th><td><code>ScriptLogLength 10385760</code></td></tr><tr><th><a href="directive-dict.html#Context">コンテキスト:
               </a></th><td>サーバ設定ファイル, バーチャルホスト</td></tr><tr><th><a href="directive-dict.html#Status">ステータス:
               </a></th><td>Base</td></tr><tr><th><a href="directive-dict.html#Module">モジュール:
