@@ -1,5 +1,8 @@
 Changes with Apache 2.0.27-dev
 
+  *) Fix a segfault in the core input filter when the client socket
+     gets disconnected unexpectedly.  [Cliff Woolley]
+
   *) Fix the reporting for child processes that die.  This removes
      all of the non-portable W* macros from Apache. 
      [Jeff Trawick and Ryan Bloom]
