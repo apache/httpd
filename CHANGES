@@ -11,6 +11,12 @@ Changes with Apache 2.0.45
      Jeff Trawick]
 
 Changes with Apache 2.0.44
+  *) Rename CacheMaxStreamingBuffer to MCacheMaxStreamingBuffer. Move
+     implementation of MCacheMaxStreamingBuffer from mod_cache to
+     mod_mem_cache. MCacheMaxStreamingBuffer now defaults to the
+     lesser of 100,000 bytes or MCacheMaxCacheObjectSize. This should 
+     eliminate the need for explicitly coding MCacheMaxStreamingBuffer
+     in most configurations. [Bill Stoddard]
 
   *) Replace APU_HAS_LDAPSSL_CLIENT_INIT with APU_HAS_LDAP_NETSCAPE_SSL
      as set by apr-util in util_ldap.c. This should allow mod_ldap
