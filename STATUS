@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/02/29 14:13:16 $]
+Last modified at [$Date: 2004/02/29 14:53:00 $]
 
 Release:
 
@@ -183,15 +183,6 @@ PATCHES TO BACKPORT FROM 2.1
       +0: wrowe {Pending research into how to get AC to use -lsockets et. al.,
                  shows breakage on Solaris which can't -lcrypto -lssl without
                  the extra pkgconfig/openssl.pc Libs: * foo }
-
-    * PREREQ for another fix (stranded piped logger processes) - 
-      ap_mpm_query(AP_MPMQ_MPM_STATE)
-      No updates are available at present for the BeOS or OS/2 MPMs,
-      but that is not a showstopper for the other changes.
-        server/mpm/winnt/mpm_winnt.c r1.303, r1.306
-        server/mpm/winnt/mpm_winnt.h r1.44
-        server/mpm/winnt/child.c r1.21
-      +1: trawick, stoddard, ake
 
     * piped log programs respawning after Apache is stopped. PR 24805
       bogus "piped log program '(null)' failed" messages during

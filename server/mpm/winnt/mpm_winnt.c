@@ -64,6 +64,7 @@ int use_acceptex = 1;
 static int thread_limit = DEFAULT_THREAD_LIMIT;
 static int first_thread_limit = 0;
 static int changed_limit_at_restart;
+int winnt_mpm_state = AP_MPMQ_STARTING;
 
 /* ap_my_generation are used by the scoreboard code */
 ap_generation_t volatile ap_my_generation=0;
@@ -885,6 +886,7 @@ static int master_main(server_rec *s, HANDLE shutdown_event, HANDLE restart_even
     ap_scoreboard_image->parent[0].pid = child_pid;
 
     /* Wait for shutdown or restart events or for child death */
+    winnt_mpm_state = AP_MPMQ_RUNNING;
     rv = WaitForMultipleObjects(NUM_WAIT_HANDLES, (HANDLE *) event_handles, FALSE, INFINITE);
     cld = rv - WAIT_OBJECT_0;
     if (rv == WAIT_FAILED) {
@@ -964,6 +966,7 @@ die_now:
     if (shutdown_pending) 
     {
         int timeout = 30000;  /* Timeout is milliseconds */
+        winnt_mpm_state = AP_MPMQ_STOPPING;
 
         /* This shutdown is only marginally graceful. We will give the 
          * child a bit of time to exit gracefully. If the time expires,
@@ -995,7 +998,7 @@ die_now:
         }
         return 0;  /* Tell the caller we do not want to restart */
     }
-
+    winnt_mpm_state = AP_MPMQ_STARTING;
     return 1;      /* Tell the caller we want a restart */
 }
 
@@ -1047,6 +1050,9 @@ AP_DECLARE(apr_status_t) ap_mpm_query(int query_code, int *result)
             return APR_SUCCESS;
         case AP_MPMQ_MAX_DAEMONS:
             *result = 0;
+            return APR_SUCCESS;
+        case AP_MPMQ_MPM_STATE:
+            *result = winnt_mpm_state;
             return APR_SUCCESS;
     }
     return APR_ENOTIMPL;
