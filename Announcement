@@ -1,62 +1,86 @@
-Apache 1.3beta6 Released
-------------------------
 
-The Apache Group is pleased to announce the release of the 1.3b6 version
-of Apache, the latest beta release of the Apache web server.
+ Apache 1.3 Beta 6 Released
+ ==========================
 
-Apache 1.3 offers numerous enhancements, improvements and performance
-boosts over the 1.2 code base. The most visible and noteworthy addition
-is the ability to run Apache under Windows 95 and NT (known as the
-``Win32'' port). 
+ The Apache Group is pleased to announce the release of the 1.3b6 version
+ of Apache, the latest beta release of the Apache HTTP server. 1.3b6 is
+ a release candidate for Apache 1.3.0; This version is stable under UNIX
+ but remains beta-level under Win32. No new features are expected between
+ 1.3b6 and 1.3.0, so please give this version a good thrashing in order
+ to provide as much feedback as possible to the Apache Group before the
+ release of 1.3.0.
 
-Apache 1.3b6 under both Win32 and UNIX has undergone extensive testing, and is
-much improved over the previous 1.3b5 release.  We feel confident that the
-Win32 port is ready for a wider audience, and with that in mind, we are
-providing pre-compiled executables for the Win32 platform, as well as a true
-Win32 environment Installer (InstallShield). This is, however, still a beta
-release and there are known issues that will be fixed before the final 1.3
-release. The UNIX side is already stable now.
+ Apache has been the most popular web server on the Internet since April of
+ 1996. The Web Server Survey by Netcraft (http://www.netcraft.co.uk/Survey/)
+ found that more web servers were using Apache than any other software. Apache
+ and its derivatives are run on over 50% of all web domains on the Internet.
 
-As a premiere, this version of Apache comes with the new Apache Autoconf-style
-Interface (APACI) for out-of-the-box building and installing the complete
-Apache package. Actually APACI provides the commonly known and expected
-"configure" interface to the old Apache source configuration scripts. It is
-able to batch-control any existing Apache configuration options (usually
-specified manually in src/Configuration) and provides some additional features
-like on-the-fly adding third-party modules to the build process or configuring
-and installing the suEXEC mechanism.
+ The Apache project has been organized in an attempt to answer some of the
+ concerns regarding active development of a public domain HTTP server for
+ Unix. The goal of this project is to provide an open-source, secure,
+ efficient and extensible server which provides HTTP services in sync with the
+ current HTTP standards. For more information about the Apache project check
+ out http://www.apache.org/.
 
-Additionally this Apache version the first time provides greatly improved
-support for loading Apache modules through dynamic shared object (DSO) files
-under runtime through the improved mod_so. Apache currently supports this
-feature under Linux, FreeBSD, Solaris, SunOS, IRIX, OSF1 and UnixWare.
-Actually all distributed Apache modules now can be build and installed as
-shared objects by individually enabling DSO for them via APACI's
---enable-shared option. For building third-party modules outside the Apache
-source tree a new support tool named `apxs' is provided which hides the
-platform-dependend DSO-build mechanism and automates the installation and
-activation of those DSO files.
+ To grab the latest Apache distribution, check out
+     http://www.apache.org/dist/
+ and the huge list of available "International Mirror Sites" at
+     http://www.apache.org/mirrors/
 
-Finally, this version of Apache attempts to protect against namespace
-collisions by prefacing ``external'' functions, including API functions,
-with the ap_ prefix. If you have or use an external module, the module
-will need to be updated and/or recompiled in order to use the new
-function names.
+ For a detailed list of changes please read the CHANGES file in the
+ distribution and the "New Features with Apache 1.3" document at
+ http://www.apache.org/docs/new_features_1_3.html.  For your convenience here
+ is a short summary of all major changes between Apache 1.2 and 1.3 (changes
+ which are new with version 1.3b6 are tagged '+'):
 
-Please be sure to read the CHANGES file and the "New Features with Apache
-1.3" document (at http://www.apache.org/docs/new_features_1_3.html).
-This is particularly important if you are using non-IP based virtual hosts.
-
-Apache has been the most popular web server on the Internet since April
-of 1996. The September 1997 WWW server site survey by Netcraft (see:
-http://www.netcraft.co.uk/Survey/) found that more web servers were
-using Apache than any other software. Apache and its derivatives are run
-on over 50% of all web domains on the Internet.
-
-The Apache project has been organized in an attempt to answer some of
-the concerns regarding active development of a public domain HTTP server
-for UNIX. The goal of this project is to provide a secure, efficient and
-extensible server which provides HTTP services in sync with the current
-HTTP standards.
-
-For more information, please check out http://www.apache.org/
+   - Ported to Windows 95/NT
+       http://www.apache.org/dist/apache-1.3b6/htdocs/manual/windows
+       http://www.apache.org/dist/apache-1.3b6/README.NT
+   - Ported to BS2000/OSD, a mainframe OS with EBCDIC charset 
+       http://www.apache.org/dist/apache-1.3b6/src/README.EBCDIC
+   + Apache Autoconf-style Interface (APACI) for out-of-the-box installation
+       http://www.apache.org/dist/apache-1.3b6/README.configure
+       http://www.apache.org/dist/apache-1.3b6/INSTALL
+   + Dynamic Shared Object (DSO) support for all major Unix platforms 
+       http://www.apache.org/dist/apache-1.3b6/src/README.DSO
+   + APache eXtenSion (APXS) tool for building third-party modules as DSO
+       http://www.apache.org/dist/apache-1.3b6/src/README.DSO
+       http://www.apache.org/dist/apache-1.3b6/src/support/
+   + Additional support tools: apachectl, ab (ApacheBench), dbmmanage
+       http://www.apache.org/dist/apache-1.3b6/src/support/
+   + Enhanced configuration support: Include and Line-Continuation
+       http://www.apache.org/dist/apache-1.3b6/htdocs/manual/new_features_1.3
+   - New `Magic' MIME-typing module for content type guessing 
+       http://www.apache.org/dist/apache-1.3b6/htdocs/manual/mod/mod_mime_magic
+   - Regular Expression support for Alias and Redirect directives
+       http://www.apache.org/dist/apache-1.3b6/htdocs/manual/mod/mod_alias
+   + Overhauled and enhanced URL Rewriting Engine
+       http://www.apache.org/dist/apache-1.3b6/htdocs/manual/mod/mod_rewrite
+   - Spell-checking module for on-the-fly URL corrections
+       http://www.apache.org/dist/apache-1.3b6/htdocs/manual/mod/mod_speling
+   - Additional access control via CIDR and Netmasks
+       http://www.apache.org/dist/apache-1.3b6/htdocs/manual/mod/mod_access
+   - Improved HTTP/1.1-style Virtual Host support
+       http://www.apache.org/dist/apache-1.3b6/htdocs/manual/vhost/index
+   - Less Buffering of CGI Script Output (makes nph- obsolete)
+       http://www.apache.org/dist/apache-1.3b6/htdocs/manual/new_features_1.3
+   + Various Proxy Enhancements (NoProxy, ProxyDomain, ProxyPassReverse)
+       http://www.apache.org/dist/apache-1.3b6/htdocs/manual/mod/mod_proxy
+   - Various internal performance improvements
+       http://www.apache.org/dist/apache-1.3b6/htdocs/manual/new_features_1.3
+   - Various fixes to the hostname DNS lookup handling
+       http://www.apache.org/dist/apache-1.3b6/htdocs/mod/core#hostnamelookups
+   - Various Directory Indexing enhancements
+       http://www.apache.org/dist/apache-1.3b6/htdocs/manual/mod/mod_autoindex
+   - Various Logging enhancements (Reliable Piped Logs, Named Log Formats)
+       http://www.apache.org/dist/apache-1.3b6/htdocs/manual/mod/core
+       http://www.apache.org/dist/apache-1.3b6/htdocs/manual/mod/mod_log_custom
+   - Unique Identifiers
+       http://www.apache.org/dist/apache-1.3b6/htdocs/manual/mod/mod_unique_id
+   - Source tree reorganization
+       http://www.apache.org/dist/apache-1.3b6/htdocs/manual/sourcereorg
+   + Big Symbol Renaming to avoid symbol clashes with third-party code
+       http://www.apache.org/dist/apache-1.3b6/htdocs/manual/sourcereorg
+   - API Additions
+       http://www.apache.org/dist/apache-1.3b6/htdocs/manual/new_features_1.3
+  
