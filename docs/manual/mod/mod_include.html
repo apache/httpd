@@ -509,8 +509,8 @@
 
       <dt>on</dt>
 
-      <dd>Any file that has the user-execute bit set will be
-      treated as a server-parsed html document.</dd>
+      <dd>Any text/html file that has the user-execute bit set will 
+      be treated as a server-parsed html document.</dd>
 
       <dt>full</dt>
 
@@ -522,10 +522,11 @@
         this bit allows clients and proxies to cache the result of
         the request. 
 
-        <p><strong>Note:</strong> you would not want to use this,
-        for example, when you <code>#include</code> a CGI that
-        produces different output on each hit (or potentially
-        depends on the hit).</p>
+        <p><strong>Note:</strong> you would not want to use the full
+        option, unless you assure the group-execute bit is unset for
+        every SSI script which might <code>#include</code> a CGI 
+        or otherwise produces different output on each hit (or could 
+        potentially change on subsequent requests).</p>
       </dd>
     </dl>
 
