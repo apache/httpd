@@ -50,8 +50,6 @@
  *
  */
 
-/* $Id: http_log.c,v 1.8 1996/10/20 18:03:31 ben Exp $ */
-
 /*
  * http_log.c: Dealing with the logs and errors
  * 

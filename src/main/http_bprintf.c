@@ -12,8 +12,6 @@
  * History:
  * 18 May 1996 Initial revision [Ben Laurie]
  *
- * $Id: http_bprintf.c,v 1.6 1996/08/20 11:50:41 paul Exp $
- *
  */
 
 #include <assert.h>

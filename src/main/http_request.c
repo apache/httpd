@@ -50,8 +50,6 @@
  *
  */
 
-/* $Id: http_request.c,v 1.25 1996/10/22 18:45:34 brian Exp $ */
-
 /*
  * http_request.c: functions to get and process requests
  * 

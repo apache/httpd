@@ -50,8 +50,6 @@
  *
  */
 
-/* $Id: http_config.c,v 1.28 1996/11/03 20:29:38 brian Exp $ */
-
 /*
  * http_config.c: once was auxillary functions for reading httpd's config
  * file and converting filenames into a namespace

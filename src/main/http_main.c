@@ -50,8 +50,6 @@
  *
  */
 
-/* $Id: http_main.c,v 1.81 1996/11/03 20:29:40 brian Exp $ */
-
 /*
  * httpd.c: simple http daemon for answering WWW file requests
  *
