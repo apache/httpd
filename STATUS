@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/04/05 22:01:28 $]
+Last modified at [$Date: 2003/04/05 23:19:23 $]
 
 Release:
 
@@ -183,18 +183,23 @@ PATCHES TO PORT FROM 2.1
       +1: wrowe
 
     * mod_ssl compile failure (or maybe warning, depending on
+      compiler) with SSLC 2.3 and later.
+      See MessageID: <5.2.0.9.2.20030405165151.01f1fe48@pop3.rowe-clan.net>
+      for a complete patch rollup of this and the two following patches.
+      +1: wrowe
+
+    * mod_ssl compile failure (or maybe warning, depending on
       compiler) with 0.9.7a and later
       modules/ssl/mod_ssl.h r1.129
       modules/ssl/ssl_engine_kernel.c r1.88
-      (See if it still compiles with your setup before you vote :) I
       tried with 0.9.7a on AIX and 0.9.5a on Linux.)
-      +1: trawick
+      +1: trawick, wrowe (including the other patches above)
 
     * Fix warnings on AIX for missing str[n]casecmp prototypes
       modules/aaa/mod_authn_default r1.6
       modules/ssl/mod_ssl.h r1.130
       modules/experimenal/mod_auth_ldap.c r1.15
-      +1: trawick
+      +1: trawick, wrowe
 
 CURRENT RELEASE NOTES:
 
