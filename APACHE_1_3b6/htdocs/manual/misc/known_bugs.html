@@ -1,0 +1,300 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+<TITLE>Apache HTTP Server Project</TITLE>
+</HEAD>
+
+<!-- Background white, links blue (unvisited), navy (visited), red (active) -->
+<BODY
+ BGCOLOR="#FFFFFF"
+ TEXT="#000000"
+ LINK="#0000FF"
+ VLINK="#000080"
+ ALINK="#FF0000"
+>
+<!--#include virtual="header.html" -->
+<H1 ALIGN="CENTER">Known Bugs in Apache</H1>
+
+The most up-to-date resource for bug tracking and information is the
+<A HREF="http://bugs.apache.org/index">Apache bug database</A>.
+Significant bugs at release time will also be noted there.
+If you are running a 1.2 beta release or version 1.1.3 or earlier
+and think you have found a bug, please upgrade to 1.2. Many bugs
+in early versions have been fixed in 1.2.  It is also appreciated
+if you could check the latest 1.3 beta releases, or at least review
+the <A HREF="http://www.apache.org/dist/CHANGES">CHANGES</A> file
+for it and ensure that your problem has not already been corrected.
+
+<P>This document is not a complete list of known bugs, but simply
+a list of some of the more common ones.  <FONT COLOR="red">Be sure
+to check the bug database before assuming that if it isn't listed
+here it isn't reported or fixed.</FONT>
+
+<P>See Also: <A HREF="compat_notes.html">Compatibility notes</A>,
+and <A HREF="known_client_problems.html">our list of known client problems.</A></P>
+<HR>
+
+<H2>Apache 1.3b5 Bugs</H2>
+
+<ol>
+<li>Certain mod_rewrite configurations do not work correctly.  Apply
+    <a href="http://www.apache.org/dist/patches/apply_to_1.3b5/PR1847.patch">this
+    patch</a> to fix the problem.  See
+    <a href="http://bugs.apache.org/index/full/1847">PR#1847</a> for more details.
+<li>Using multiple arguments to UserDir does not work correctly.  Apply
+    <a href="http://www.apache.org/dist/patches/apply_to_1.3b5/PR1850.patch">this
+    patch</a> to fix the problem.  See
+    <a href="http://bugs.apache.org/index/full/1850">PR#1850</a> for more details.
+<li>absoluteURI parsing is broken, so the proxy won't work.   Apply
+    <a href="http://www.apache.org/dist/patches/apply_to_1.3b5/PR1889.patch">this
+    patch</a> to fix the problem.  See
+    <a href="http://bugs.apache.org/index/full/1889">PR#1889</a> for more details
+<LI><STRONG>Win32 only</STRONG> Use of #! at the start of a CGI script file
+    does not work unless the interpreter filename includes the
+    extension (e.g. use <SAMP>#!c:/bin/perl.exe</SAMP> instead of
+    <SAMP>#!c:/bin/perl</SAMP>).
+<LI><STRONG>NT only</STRONG> When installed as a service, Apache expects
+    to find its ServerRoot at \Apache on the system disk. See 
+    <A HREF="http://bugs.apache.org/index/full/1489">PR#1489</A>.
+<LI><STRONG>Win32 only</STRONG> The <CODE>Alias</CODE> directive does not
+    work if the target is a root directory, e.g. D:/. See 
+    <A HREF="http://bugs.apache.org/index/full/1558">PR#1558</A>.
+<LI><STRONG>Win32 only</STRONG> Repeated concurrent requests to a CGI
+    program can cause Apache to lock-up. See 
+    <A HREF="http://bugs.apache.org/index/full/1129">PR#1129</A> and
+    <A HREF="http://bugs.apache.org/index/full/1607">PR#1607</A>.
+
+</ol>
+
+<H2>Apache 1.3b3 Bugs</H2>
+
+<OL>
+<LI>The error_log may contain "(0)Unknown error: mmap_handler:
+    mmap failed" errors.  Ignore them, it is a logic error and does not
+    indicate any problem.  This will be corrected in a later beta.
+<LI>Servers operating in inetd mode will not properly implement timeouts.
+    (Neither do servers operating with the -X command line switch for
+    debugging.)
+    This will be corrected in a later beta.  A workaround for now is
+    to edit <CODE>src/main/httpd.h</CODE> and remove the definition
+    of <CODE>OPTIMIZE_TIMEOUTS</CODE> near the bottom.
+<LI><STRONG>Win32 only:</STRONG> Building from source may fail because the buildmark.obj
+    file does not exist. Edit <CODE>Makefile.nt</CODE> and replace the
+    line <CODE>del CoreR\buildmark.obj</CODE> with <CODE>-del
+    CoreR\buildmark.obj</CODE> (and similarly for <CODE>del
+    CoreD\buildmark.obj</CODE>). See 
+    <A HREF="http://bugs.apache.org/index/full/1473">PR#1473</A>.
+<LI><STRONG>Solaris 2.6</STRONG> users may have troubles compiling the server with
+    gcc.  As is frequently the case with gcc compilation troubles, this
+    is the result of an improperly built gcc.  The gcc for solaris 2.6
+    found at <A HREF="http://www.sunfreeware.com/">www.sunfreeware.com</A> 
+    is now built with the release version of solaris 2.6.  The release version
+    of solaris 2.6 changed a few header files enough that the beta-built
+    gcc won't work with it.  There are two workarounds mentioned in
+    <A HREF="http://bugs.apache.org/index/full/1336">PR#1336</A>.
+    <STRONG>This is not an Apache bug, and no code will be changed to deal with
+    it.</STRONG>
+<LI><STRONG>NT only</STRONG> When installed as a service, Apache expects
+    to find its ServerRoot at \Apache on the system disk. See 
+    <A HREF="http://bugs.apache.org/index/full/1489">PR#1489</A>.
+<LI><STRONG>Win32 only</STRONG> The <CODE>Alias</CODE> directive does not
+    work if the target is a root directory, e.g. D:/. See 
+    <A HREF="http://bugs.apache.org/index/full/1558">PR#1558</A>.
+<LI><STRONG>Win32 only</STRONG> Repeated concurrent requests to a CGI
+    program can cause Apache to lock-up. See 
+    <A HREF="http://bugs.apache.org/index/full/1129">PR#1129</A> and
+    <A HREF="http://bugs.apache.org/index/full/1607">PR#1607</A>.
+<LI><STRONG>Win32 only</STRONG> Apache requires the file 
+    <CODE>MSVCRT.DLL</CODE> to run. This is a Microsoft
+    redistributable file required for all C programs compiled by
+    MSVC++. Many other programs will require it, so it is already
+    installed on most systems. If Apache will not start because this
+    file is missing you can download it from <A
+    HREF="ftp://ftp.microsoft.com/Softlib/MSLFILES/msvcrt.exe">
+    ftp://ftp.microsoft.com/Softlib/MSLFILES/msvcrt.exe</A>. See <A
+    HREF="http://bugs.apache.org/index/full/1736">PR#1736</A>.
+</OL>
+
+<H2>Apache 1.3b2 Bugs</H2>
+
+<H3>Win32 only</H3>
+<OL>
+<LI>CGI scripts that are called with information appended to the script
+    name that does <STRONG>not</STRONG> have an "<CODE>=</CODE>" in it
+    do not work. 
+    See <A HREF="http://bugs.apache.org/index/full/1030">PR#1030</A>
+<LI>Passwords stored in htpasswd files need to be stored in plain text,
+    since we do not yet have a <CODE>crypt()</CODE> under Win32.
+<LI>On Windows 95, <CODE>DirectoryIndex</CODE> does not work.
+    See <A HREF="http://bugs.apache.org/index/full/1266">PR#1266</A>
+<LI>On some versions of Windows 95, CGI scripts fail and paths given
+    with "#!" must contains \ instead of /.
+<LI>When a CGI starts with "#!" to indicate an interpreter there must
+    be no space between the #! and the path.
+    See <A HREF="http://bugs.apache.org/index/full/1101">PR#1101</A>
+<LI>If the CGI program cannot be run Apache logs a "premature end-of-headers"
+    error instead of an error about running the program.
+    See <A HREF="http://bugs.apache.org/index/full/1257">PR#1257</A>
+</OL>
+<H3>Unix only</H3>
+<OL>
+<LI>The USE_FLOCK_SERIALIZED_ACCEPT define is completely broken and does
+    not work at all.  It has been this way since birth.  A fix is pending.
+</OL>
+<HR>
+<H2>Apache 1.3a1 Bugs</H2>
+
+<OL>
+  <LI>The <CODE><A HREF="../mod/core.html#listen">Listen</A></CODE>
+      directive does not work when running under Windows.
+  <LI>For some reason, <A HREF="../mod/mod_isapi.html">mod_isapi</A>
+      does not work (with Windows) when compiled using the
+      <CODE>Release</CODE> setting; it will crash the server whenever you
+      access an ISA DLL. It works fine when the server is compiled with
+      <CODE>Debug</CODE>.
+</OL>
+      
+<H2>Apache 1.2 Bugs</H2>
+<H3>Bugs still present in 1.2.4</H3>
+<OL>
+    <LI><A name="listenbug">On some architectures</A>
+    if your configuration uses multiple
+    <A HREF="../mod/core.html#listen">Listen</A> directives then it is possible
+    that the server will starve one of the sockets while serving hits on
+    another.  The work-around is to add
+    <CODE>-DUSE_FLOCK_SERIALIZED_ACCEPT</CODE> to the
+    <CODE>EXTRA_CFLAGS</CODE> line in your Configuration and rebuild.
+    (If you encounter problems with that, you can also try
+    <CODE>-DUSE_FCNTL_SERIALIZED_ACCEPT</CODE>.)
+    This affects any architecture that doesn't use one of the
+    <CODE>USE_xxxxx_SERIALIZED_ACCEPT</CODE> definitions, see the
+    source file <CODE>conf.h</CODE> for your architecture.
+    This is being tracked as
+    <A HREF="http://bugs.apache.org/index/full/467">PR#467</A>.
+    <P>To resolve this problem, we are adding one of the above settings
+    to the default settings for platforms as we discover which is 
+    appropriate for them.  <STRONG>New as of 1.3b3:</STRONG> the server will
+    issue a warning when your architecture/config are subject to
+    this bug.  The fixes and such are described in the PORTING
+    file.  We are closing out this bug.
+    </LI><P>
+
+    <LI>
+    The PATH_INFO part of a request URI cannot include the sequence
+    <CODE>%2f</CODE>. This will be tracked as
+    <A HREF="http://bugs.apache.org/index/full/543">PR#543</A>.
+    </LI><P>
+
+    <LI>Users of early 1.2 betas reported problems with many
+    connections stuck in the FIN_WAIT_2 state due to server
+    timeouts. Several changes were made during the beta testing of 1.2
+    to reduce this problem as much as possible, although you may still
+    see sockets in FIN_WAIT_2 state due to network or operating system
+    issues outside the control of Apache. See our <A
+    HREF="fin_wait_2.html">FIN_WAIT_2</A> page for more details.
+
+    <P>SunOS4 has a kernel bug in the allocation of memory for the mbuf table.
+    When it fills up, the result is a Panic the next time any routine tries
+    to set something in an imaginary mbuf beyond the range of the table.
+    Due to buggy browser behavior and the lack of a FIN_WAIT_2 timeout
+    on SunOS4, "KeepAlive Off" is necessary to avoid filling up the mbuf
+    table on busy sites.
+    </LI><P>
+
+    <LI>
+    Compiling on Solaris 2 with SunSoft's C compiler gives the warning
+    <CODE>"mod_include.c", line 1123: warning: end-of-loop code not
+    reached</CODE>. This is a bogus warning and can be ignored.
+    See <A HREF="http://bugs.apache.org/index/full/681">PR#681</A>.
+    </LI><P>
+
+    <LI>If compilation fails complaining about "unknown symbol __inet_ntoa()"
+    then you have probably installed version 8 of bind. You will need to
+    explicitly link with the bind library by adding <CODE>-lbind</CODE>
+    to <CODE>EXTRA_LDFLAGS</CODE> in <CODE>Configuration</CODE>. See
+    <A HREF="http://bugs.apache.org/index/full/616">PR#616</A>
+    and the
+    <A HREF="FAQ.html#bind8.1">Apache FAQ</A>.  This is not a bug
+    in Apache.
+    </LI><P>
+
+    <LI>The message "<CODE>created shared memory segment #730499</CODE>"
+    in error_log is not an error and should be ignored. See
+    <A HREF="http://bugs.apache.org/index/full/696">PR#696</A>.
+    </LI><P>
+</OL>
+
+<H3>Fixed in 1.2.4:</H3>
+<OL>
+    <LI>
+    On Solaris 2.x the server will stop running after receiving a
+    SIGHUP.  Four workarounds exist (choose one):<P>
+    <UL>
+	<LI>Recommended: upgrade to 1.2.4.
+	<LI>If you are running Apache 1.2.1, retrieve 
+	<A HREF="http://www.apache.org/dist/patches/apply_to_1.2.1/solaris_hup.patch">this patch</A>.
+	<CODE>cd</CODE> to your <CODE>apache_1.2.1</CODE> directory, and
+	type <CODE>patch -s -p1 &lt; /path/to/patchfile</CODE>.  Then rebuild
+	Apache.<P>
+	<LI>Use SIGUSR1 instead of SIGHUP, see <A HREF="../stopping.html">
+	Stopping and Restarting Apache</A> for more details.<P>
+	<LI>Add <CODE>-DNO_SLACK</CODE> to
+	<CODE>EXTRA_CFLAGS</CODE> in
+	your <CODE>Configuration</CODE> file, re-run <CODE>Configure</CODE>
+	and rebuild your server.  This disables the
+	<A HREF="descriptors.html">descriptor slack workaround</A>
+    </UL><P>
+    This problem was tracked as
+    <A HREF="http://bugs.apache.org/index/full/832">PR#832</A>.
+    </LI><P>
+
+    <LI>(Exists in 1.2.0 and in 1.2.1 after either of the
+    <CODE>NO_SLACK</CODE> or patch provided by the previous bug are applied.)
+    Solaris 2.5.1 (and probably other versions of Solaris) appear to have
+    a race condition completely unrelated to all the others.  It is possible
+    during a SIGHUP that the server will fail to start because it will not
+    be able to re-open its sockets.  To our knowledge this has only shown
+    up during testing when we pummel the server with as many SIGHUP requests
+    per second as we can.  This appears unrelated to the similar sounding bug
+    described in <A HREF="http://bugs.apache.org/index/full/832">PR#832</A>.
+</OL>
+<P>
+
+<H3>Fixed in 1.2.1</H3>
+<OL>
+    <LI><A HREF="descriptors.html"><STRONG>Workaround added</STRONG></A>
+    There appears to be a problem on BSDI 2.1 with large numbers of
+    virtual hosts. This appears similar to a file-descriptor limit
+    but BSDI should not have this problem. This will be tracked as
+    <A HREF="http://bugs.apache.org/index/full/611">PR#611</A>.
+    See also the <A HREF="FAQ.html#fdlim">Apache FAQ</A>.
+    </LI><P>
+
+    <LI><A HREF="descriptors.html"><STRONG>Workaround added.</STRONG></A>
+    Solaris 2 has problems with large numbers of virtual hosts. This is
+    because of an operating system limit of 256 file pointers, not due
+    to Apache.   See also the <A HREF="FAQ.html#fdlim">Apache FAQ</A>.
+    </LI><P>
+
+    <LI>
+    <A name="cnegbug">Apache's</A> <A HREF="../content-negotiation.html">Content
+    Negotiation</A> should pick the smallest variant if there
+    are several that are equally acceptable. A bug in 1.2 means it no
+    longer does this unless all the variants have character sets.
+    This <A HREF="http://www.apache.org/dist/contrib/patches/1.2/conneg-bug.patch">patch</A>
+    fixes this problem. It also fixes the problem which makes Apache
+    pick the last equally acceptable variant instead of the first.
+    This will be tracked as
+    <A HREF="http://bugs.apache.org/index/full/94">PR#94</A>.
+    </LI><P>
+
+    <LI><P>Compilation fails on SCO3 when using gcc instead of cc, complaining
+    with "<CODE>gcc: noinline: No such file or directory</CODE>". Fix
+    is given in <A HREF="http://bugs.apache.org/index/full/695">PR#695</A>.
+    </LI>
+</OL>
+
+<!--#include virtual="footer.html" -->
+</BODY>
+</HTML>
+
