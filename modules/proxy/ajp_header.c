@@ -211,7 +211,7 @@ static apr_status_t ajp_marshal_into_msgb(ajp_msg_t    *msg,
     apr_byte_t is_ssl;
     char *remote_host;
     char *uri;
-    const char *session_route;
+    const char *session_route, *envvar;
     const apr_array_header_t *arr = apr_table_elts(r->subprocess_env);
     const apr_table_entry_t *elts = (const apr_table_entry_t *)arr->elts;
 
@@ -345,10 +345,16 @@ static apr_status_t ajp_marshal_into_msgb(ajp_msg_t    *msg,
             return APR_EGENERAL;
         }
     }
-/* XXXX ignored for the moment
-    if (s->ssl_cert_len) {
+/* XXX: Is the subprocess_env a right place?
+ * <Location /examples>
+ *   ProxyPass ajp://remote:8009/servlets-examples 
+ *   SetEnv SSL_SESSION_ID CUSTOM_SSL_SESSION_ID
+ * </Location>
+ */
+    if ((envvar = apr_table_get(r->subprocess_env,
+                                AJP13_SSL_CLIENT_CERT_INDICATOR))) {
         if (ajp_msg_append_uint8(msg, SC_A_SSL_CERT) ||
-            ajp_msg_append_string(msg, s->ssl_cert)) {
+            ajp_msg_append_string(msg, envvar)) {
             ap_log_error(APLOG_MARK, APLOG_ERR, 0, r->server,
                    "Error ajp_marshal_into_msgb - "
                    "Error appending the SSL certificates");
@@ -356,25 +362,27 @@ static apr_status_t ajp_marshal_into_msgb(ajp_msg_t    *msg,
         }
     }
 
-    if (s->ssl_cipher) {
+    if ((envvar = apr_table_get(r->subprocess_env,
+                                AJP13_SSL_CIPHER_INDICATOR))) {
         if (ajp_msg_append_uint8(msg, SC_A_SSL_CIPHER) ||
-            ajp_msg_append_string(msg, s->ssl_cipher)) {
+            ajp_msg_append_string(msg, envvar)) {
             ap_log_error(APLOG_MARK, APLOG_ERR, 0, r->server,
                    "Error ajp_marshal_into_msgb - "
                    "Error appending the SSL ciphers");
             return APR_EGENERAL;
         }
     }
-    if (s->ssl_session) {
+
+    if ((envvar = apr_table_get(r->subprocess_env,
+                                AJP13_SSL_SESSION_INDICATOR))) {
         if (ajp_msg_append_uint8(msg, SC_A_SSL_SESSION) ||
-            ajp_msg_append_string(msg, s->ssl_session)) {
+            ajp_msg_append_string(msg, envvar)) {
             ap_log_error(APLOG_MARK, APLOG_ERR, 0, r->server,
                    "Error ajp_marshal_into_msgb - "
                    "Error appending the SSL session");
             return APR_EGENERAL;
         }
     }
- */
 
     /*
      * ssl_key_size is required by Servlet 2.3 API
