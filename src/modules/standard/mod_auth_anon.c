@@ -166,19 +166,20 @@ int anon_authenticate_basic_user (request_rec *r)
     
 int check_anon_access (request_rec *r) {
 
+#ifdef notyet
     conn_rec *c = r->connection;
     anon_auth_config_rec *sec =
       (anon_auth_config_rec *)get_module_config (r->per_dir_config,
 						&anon_auth_module);
 	
-/*
     if (!sec->auth_anon) return DECLINED;
 
     if ( strcasecmp(r->connection->user,sec->auth_anon ))
      	return DECLINED;
 
    return OK;
-*/
+#endif
+
    return DECLINED;
 }
  
