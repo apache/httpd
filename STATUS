@@ -74,6 +74,11 @@ RELEASE SHOWSTOPPERS:
 PATCHES TO BACKPORT FROM 2.1
   [ please place file names and revisions from HEAD here, so it is easy to
     identify exactly what the proposed changes are! ]
+    
+    *) util_ldap: Add the directive LDAPConnectionTimeout to control
+       the socket timeout value when binding to an LDAP server
+       svn rev 126565
+       +1: bnicholes
 
     *) mod_ssl: fail quickly if SSL connection is aborted rather than
        making many doomed ap_pass_brigade calls
