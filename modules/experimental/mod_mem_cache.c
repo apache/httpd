@@ -1008,7 +1008,7 @@ static int mem_cache_post_config(apr_pool_t *p, apr_pool_t *plog,
                      "MCacheMaxObjectSize must be greater than MCacheMinObjectSize");
         return DONE;
     }
-    if (sconf->max_cache_object_size >= sconf->max_cache_size) {
+    if (sconf->max_cache_object_size >= sconf->max_cache_size*1000) {
         ap_log_error(APLOG_MARK, APLOG_CRIT, 0, s,
                      "MCacheSize must be greater than MCacheMaxObjectSize");
         return DONE;
