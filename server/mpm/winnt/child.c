@@ -525,7 +525,8 @@ static void winnt_accept(void *lr_)
                        "disconnect. Reallocate the accept socket and try again.");
                 continue;
             }
-            else if (rv != APR_FROM_OS_ERROR(ERROR_IO_PENDING)) {
+            else if ((rv != APR_FROM_OS_ERROR(ERROR_IO_PENDING)
+                     (rv != APR_FROM_OS_ERROR(WSA_IO_PENDING)) {
                 ap_log_error(APLOG_MARK,APLOG_ERR, rv, ap_server_conf,
                              "winnt_accept: AcceptEx failed. Attempting to recover.");
                 closesocket(context->accept_socket);
