@@ -1,12 +1,12 @@
-<html xmlns="http://www.w3.org/TR/xhtml1/strict"><head><!-- 
-          XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-                This file is generated from xml source: DO NOT EDIT
-          XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-        --><title>Apache's Handler Use- Apache HTTP Server</title><link href="./style/manual.css" type="text/css" rel="stylesheet"/></head><body><blockquote><div align="center"><img src="./images/sub.gif" alt="[APACHE DOCUMENTATION]"/><h3>Apache HTTP Server Version 2.0</h3></div><h1 align="center">Apache's Handler Use</h1>
+<html xmlns="http://www.w3.org/TR/xhtml1/strict"><head><!--
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+              This file is generated from xml source: DO NOT EDIT
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+      --><title>Apache's Handler Use - Apache HTTP Server</title><link href="./style/manual.css" type="text/css" rel="stylesheet"/></head><body><blockquote><div align="center"><img src="./images/sub.gif" alt="[APACHE DOCUMENTATION]"/><h3>Apache HTTP Server Version 2.0</h3></div><h1 align="center">Apache's Handler Use</h1>
     <p>This document describes the use of Apache's Handlers.</p>
   <ul><li><a href="#definition">What is a Handler</a></li><li><a href="#examples">Examples</a><ul><li><a href="#example1">Modifying static content using a CGI script</a></li><li><a href="#example2">Files with HTTP headers</a></li></ul></li><li><a href="#programmer">Programmer's Note</a></li></ul><hr/><h2><a name="definition">What is a Handler</a></h2>
     
-    <table border="1"><tr><td valign="top"><strong>Related Modules</strong><br/><br/><code><a href="./mod/mod_actions.html">mod_actions</a></code>, <br/><code><a href="./mod/mod_asis.html">mod_asis</a></code>, <br/><code><a href="./mod/mod_cgi.html">mod_cgi</a></code>, <br/><code><a href="./mod/mod_imap.html">mod_imap</a></code>, <br/><code><a href="./mod/mod_info.html">mod_info</a></code>, <br/><code><a href="./mod/mod_mime.html">mod_mime</a></code>, <br/><code><a href="./mod/mod_negotiation.html">mod_negotiation</a></code>, <br/><code><a href="./mod/mod_status.html">mod_status</a></code><br/></td><td valign="top"><strong>Related Directives</strong><br/><br/><a href="./mod/mod_actions.html#action" class="directive"><code class="directive">Action</code></a><br/><a href="./mod/mod_mime.html#addhandler" class="directive"><code class="directive">AddHandler</code></a><br/><a href="./mod/mod_mime.html#removehandler" class="directive"><code class="directive">RemoveHandler</code></a><br/><a href="./mod/mod_mime.html#sethandler" class="directive"><code class="directive">SetHandler</code></a><br/></td></tr></table>
+    <table border="1"><tr><td valign="top"><strong>Related Modules</strong><br/><br/><code><a href="./mod/mod_actions.html">mod_actions</a></code><br/><code><a href="./mod/mod_asis.html">mod_asis</a></code><br/><code><a href="./mod/mod_cgi.html">mod_cgi</a></code><br/><code><a href="./mod/mod_imap.html">mod_imap</a></code><br/><code><a href="./mod/mod_info.html">mod_info</a></code><br/><code><a href="./mod/mod_mime.html">mod_mime</a></code><br/><code><a href="./mod/mod_negotiation.html">mod_negotiation</a></code><br/><code><a href="./mod/mod_status.html">mod_status</a></code><br/></td><td valign="top"><strong>Related Directives</strong><br/><br/><a href="./mod/mod_actions.html#action" class="directive"><code class="directive">Action</code></a><br/><a href="./mod/mod_mime.html#addhandler" class="directive"><code class="directive">AddHandler</code></a><br/><a href="./mod/mod_mime.html#removehandler" class="directive"><code class="directive">RemoveHandler</code></a><br/><a href="./mod/mod_mime.html#sethandler" class="directive"><code class="directive">SetHandler</code></a><br/></td></tr></table>
     
 
     <p>A "handler" is an internal Apache representation of the
@@ -108,4 +108,4 @@
     type. While it is not necessary, the naming convention for
     handlers is to use a dash-separated word, with no slashes, so
     as to not invade the media type name-space.</p>
-  </blockquote><h3 align="center">Apache HTTP Server Version 2.0</h3><a href="./"><img src="./images/index.gif" alt="Index"/></a><a href="./"><img src="./images/home.gif" alt="Home"/></a></body></html>
+  <hr/></blockquote><h3 align="center">Apache HTTP Server Version 2.0</h3><a href="./"><img src="./images/index.gif" alt="Index"/></a><a href="./"><img src="./images/home.gif" alt="Home"/></a></body></html>

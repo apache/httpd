@@ -1,9 +1,8 @@
-<html xmlns="http://www.w3.org/TR/xhtml1/strict"><head><!-- 
-          XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-                This file is generated from xml source: DO NOT EDIT
-          XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-        --><title>Configuration Files- Apache HTTP Server</title><link href="./style/manual.css" type="text/css" rel="stylesheet"/></head><body><blockquote><div align="center"><img src="./images/sub.gif" alt="[APACHE DOCUMENTATION]"/><h3>Apache HTTP Server Version 2.0</h3></div><h1 align="center">Apache Module
-          Configuration Files</h1>
+<html xmlns="http://www.w3.org/TR/xhtml1/strict"><head><!--
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+              This file is generated from xml source: DO NOT EDIT
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+      --><title>Configuration Files - Apache HTTP Server</title><link href="./style/manual.css" type="text/css" rel="stylesheet"/></head><body><blockquote><div align="center"><img src="./images/sub.gif" alt="[APACHE DOCUMENTATION]"/><h3>Apache HTTP Server Version 2.0</h3></div><h1 align="center">Configuration Files</h1>
 <p>This document describes the files used to configure the Apache
 HTTP server.</p>
 <ul><li><a href="#main">Main Configuration Files</a></li><li><a href="#syntax">Syntax of the Configuration Files</a></li><li><a href="#modules">Modules</a></li><li><a href="#scope">Scope of Directives</a></li><li><a href="#htaccess">.htaccess Files</a></li></ul><hr/><h2><a name="main">Main Configuration Files</a></h2>
@@ -57,7 +56,7 @@ HTTP server.</p>
   <h2><a name="modules">Modules</a></h2>
     
 
-    <table border="1"><tr><td valign="top"><strong>Related Modules</strong><br/><br/><code><a href="./mod/mod_so.html">mod_so</a></code><br/></td><td valign="top"><strong>Related Directives</strong><br/><br/><a href="./mod/core.html#addmodule" class="directive"><code class="directive">AddModule</code></a><br/><a href="./mod/core.html#clearmodulelist" class="directive"><code class="directive">ClearModuleList</code></a><br/><a href="./mod/core.html#ifmodule" class="directive"><code class="directive">&lt;IfModule&gt;</code></a><br/><a href="./mod/mod_so.html#loadmodule" class="directive"><code class="directive">LoadModule</code></a><br/></td></tr></table>
+    <table border="1"><tr><td valign="top"><strong>Related Modules</strong><br/><br/><code><a href="./mod/mod_so.html">mod_so</a></code><br/></td><td valign="top"><strong>Related Directives</strong><br/><br/><a href="./mod/core.html#ifmodule" class="directive"><code class="directive">&lt;IfModule&gt;</code></a><br/><a href="./mod/mod_so.html#loadmodule" class="directive"><code class="directive">LoadModule</code></a><br/></td></tr></table>
 
     <p>Apache is a modular server. This implies that only the most
     basic functionality is included in the core server. Extended
@@ -128,4 +127,4 @@ HTTP server.</p>
     <p>For more information on <code>.htaccess</code> files, see
     Ken Coar's tutorial on <a href="http://apache-server.com/tutorials/ATusing-htaccess.html">
     Using .htaccess Files with Apache</a>.</p>
-  </blockquote><h3 align="center">Apache HTTP Server Version 2.0</h3><a href="./"><img src="./images/index.gif" alt="Index"/></a><a href="./"><img src="./images/home.gif" alt="Home"/></a></body></html>
+  <hr/></blockquote><h3 align="center">Apache HTTP Server Version 2.0</h3><a href="./"><img src="./images/index.gif" alt="Index"/></a><a href="./"><img src="./images/home.gif" alt="Home"/></a></body></html>

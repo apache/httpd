@@ -1,8 +1,11 @@
-<html xmlns="http://www.w3.org/TR/xhtml1/strict"><head><!-- 
-          XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-                This file is generated from xml source: DO NOT EDIT
-          XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-        --><title>mod_cgi- Apache HTTP Server</title><link href="../style/manual.css" type="text/css" rel="stylesheet"/></head><body><blockquote><div align="center"><img src="../images/sub.gif" alt="[APACHE DOCUMENTATION]"/><h3>Apache HTTP Server Version 2.0</h3></div><h1 align="center">Apache Module mod_cgi</h1><table cellspacing="1" cellpadding="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap" valign="top"><span class="help">Description:</span></td><td>Execution of CGI scripts</td></tr><tr><td nowrap="nowrap"><a href="module-dict.html#Status" class="help">Status:</a></td><td>Base</td></tr><tr><td nowrap="nowrap"><a href="module-dict.html#ModuleIdentifier" class="help">Module&nbsp;Identifier:</a></td><td>cgi_module</td></tr></table></td></tr></table><h2>Summary</h2>
+<html xmlns="http://www.w3.org/TR/xhtml1/strict"><head><!--
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+              This file is generated from xml source: DO NOT EDIT
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+      --><title>mod_cgi - Apache HTTP Server</title><link href="../style/manual.css" type="text/css" rel="stylesheet"/></head><body><blockquote><div align="center"><img src="../images/sub.gif" alt="[APACHE DOCUMENTATION]"/><h3>Apache HTTP Server Version 2.0</h3></div><h1 align="center">Apache Module mod_cgi</h1><table cellspacing="1" cellpadding="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap" valign="top"><span class="help">Description:
+                      </span></td><td>Execution of CGI scripts</td></tr><tr><td nowrap="nowrap"><a href="module-dict.html#Status" class="help">Status:
+                      </a></td><td>Base</td></tr><tr><td nowrap="nowrap"><a href="module-dict.html#ModuleIdentifier" class="help">Module&nbsp;Identifier:
+                        </a></td><td>cgi_module</td></tr></table></td></tr></table><h2>Summary</h2>
     
     
     
@@ -13,14 +16,14 @@
     as a CGI script, and run by the server, with its output being
     returned to the client. Files acquire this type either by
     having a name containing an extension defined by the 
-    <a href="mod_mime.html#addtype" class="directive"><code class="directive">AddType</code></a> directive, or by being
-    in a <a href="mod_alias.html#scriptalias" class="directive"><code class="directive">ScriptAlias</code></a>
+    <a href="../mod/mod_mime.html#addtype" class="directive"><code class="directive">AddType</code></a> directive, or by being
+    in a <a href="../mod/mod_alias.html#scriptalias" class="directive"><code class="directive">ScriptAlias</code></a>
     directory.</p>
 
     <p>When the server invokes a CGI script, it will add a variable
     called <code>DOCUMENT_ROOT</code> to the environment. This
     variable will contain the value of the
-    <a href="core.html#documentroot" class="directive"><code class="directive">DocumentRoot</code></a> configuration
+    <a href="../mod/core.html#documentroot" class="directive"><code class="directive">DocumentRoot</code></a> configuration
     variable.</p>
 
     <p>For an introduction to using CGI scripts with Apache, see
@@ -28,10 +31,10 @@
     With CGI</a>.</p>
 
     <p>When using a multi-threaded MPM under unix, the module 
-    <code><a href="mod_cgid.html">mod_cgid</a></code> should be used in place of
+    <code><a href="../mod/mod_cgid.html">mod_cgid</a></code> should be used in place of
     this module. At the user level, the two modules are essentially
     identical.</p>
-<h2>Directives</h2><ul><li><a href="#scriptlog">ScriptLog</a></li><li><a href="#scriptlogbuffer">ScriptLogBuffer</a></li><li><a href="#scriptloglength">ScriptLogLength</a></li></ul><p><strong>See also </strong></p><ul><li><a href="core.html#options" class="directive"><code class="directive">Options</code></a></li><li><a href="mod_alias.html#scriptalias" class="directive"><code class="directive">ScriptAlias</code></a></li><li><a href="mod_mime.html#addhandler" class="directive"><code class="directive">AddHandler</code></a></li></ul><h2>CGI Environment variables</h2>
+<h2>Directives</h2><ul><li><a href="#scriptlog">ScriptLog</a></li><li><a href="#scriptlogbuffer">ScriptLogBuffer</a></li><li><a href="#scriptloglength">ScriptLogLength</a></li></ul><p><strong>See also </strong></p><ul><li><a href="../mod/core.html#options" class="directive"><code class="directive">Options</code></a></li><li><a href="../mod/mod_alias.html#scriptalias" class="directive"><code class="directive">ScriptAlias</code></a></li><li><a href="../mod/mod_mime.html#addhandler" class="directive"><code class="directive">AddHandler</code></a></li></ul><h2>CGI Environment variables</h2>
     <p>The server will set the CGI environment variables as described
     in the <a href="http://hoohoo.ncsa.uiuc.edu/cgi/">CGI
     specification</a>, with the following provisions:</p>
@@ -39,7 +42,7 @@
     <dl>
       <dt>PATH_INFO</dt>
 
-      <dd>This will not be available if the <a href="core.html#acceptpathinfo" class="directive"><code class="directive">AcceptPathInfo</code></a> directive is explicitly set to
+      <dd>This will not be available if the <a href="../mod/core.html#acceptpathinfo" class="directive"><code class="directive">AcceptPathInfo</code></a> directive is explicitly set to
       <code>off</code>.  The default behavior, if AcceptPathInfo is
       not given, is that mod_cgi will accept path info (trailing
       /more/path/info following the script filename in the URI), while
@@ -50,13 +53,13 @@
 
       <dt>REMOTE_HOST</dt>
 
-      <dd>This will only be set if <a href="core.html#hostnamelookups" class="directive"><code class="directive">HostnameLookups</code></a> is set to <code>on</code> (it
+      <dd>This will only be set if <a href="../mod/core.html#hostnamelookups" class="directive"><code class="directive">HostnameLookups</code></a> is set to <code>on</code> (it
       is off by default), and if a reverse DNS lookup of the accessing
       host's address indeed finds a host name.</dd>
 
       <dt>REMOTE_IDENT</dt>
 
-      <dd>This will only be set if <a href="core.html#identitycheck" class="directive"><code class="directive">IdentityCheck</code></a> is set to
+      <dd>This will only be set if <a href="../mod/core.html#identitycheck" class="directive"><code class="directive">IdentityCheck</code></a> is set to
       <code>on</code> and the accessing host supports the ident
       protocol. Note that the contents of this variable cannot be
       relied upon because it can easily be faked, and if there is a
@@ -107,7 +110,12 @@
     <p>(The %stdout and %stderr parts may be missing if the script did
     not output anything on standard output or standard error). </p>
 
-<hr/><h2><a name="ScriptLog">ScriptLog</a> <a name="scriptlog">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: </strong></td><td>Location of the CGI script error logfile</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td>ScriptLog <em>file-path</em></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Base</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Module" class="help">Module:</a></td><td><code><a href="mod_cgi.html">mod_cgi</a></code>, <code><a href="mod_cgid.html">mod_cgid</a></code></td></tr></table></td></tr></table>
+<hr/><h2><a name="ScriptLog">ScriptLog</a> <a name="scriptlog">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
+                  </strong></td><td>Location of the CGI script error logfile</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">Syntax:
+                  </a></td><td>ScriptLog <em>file-path</em></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">Context:
+                  </a></td><td>server config</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Status" class="help">Status:
+                  </a></td><td>Base</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Module" class="help">Module:
+                  </a></td><td><code><a href="../mod/mod_cgi.html">mod_cgi</a></code>, <code><a href="../mod/mod_cgid.html">mod_cgid</a></code></td></tr></table></td></tr></table>
     <p>The <code class="directive">ScriptLog</code> directive sets the CGI
     script error logfile. If no ScriptLog is given, no error log is
     created. If given, any CGI errors are logged into the filename
@@ -119,7 +127,7 @@
     </code></td></tr></table></blockquote>
 
     <p>This log will be opened as the user the child processes run
-    as, ie. the user specified in the main <a href="mpm_common.html#user" class="directive"><code class="directive">User</code></a> directive. This means that
+    as, ie. the user specified in the main <a href="../mod/mpm_common.html#user" class="directive"><code class="directive">User</code></a> directive. This means that
     either the directory the script log is in needs to be writable
     by that user or the file needs to be manually created and set
     to be writable by that user. If you place the script log in
@@ -132,14 +140,26 @@
     continuously on running servers. It is not optimized for speed
     or efficiency, and may have security problems if used in a
     manner other than that for which it was designed.</p>
-<hr/><h2><a name="ScriptLogBuffer">ScriptLogBuffer</a> <a name="scriptlogbuffer">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: </strong></td><td>Maximum amount of PUT or POST requests that will be recorded
-in the scriptlog</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td>ScriptLogBuffer <em>bytes</em></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Default" class="help">Default:</a></td><td><code>ScriptLogBuffer 1024</code></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Base</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Module" class="help">Module:</a></td><td><code><a href="mod_cgi.html">mod_cgi</a></code>, <code><a href="mod_cgid.html">mod_cgid</a></code></td></tr></table></td></tr></table>
+<hr/><h2><a name="ScriptLogBuffer">ScriptLogBuffer</a> <a name="scriptlogbuffer">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
+                  </strong></td><td>Maximum amount of PUT or POST requests that will be recorded
+in the scriptlog</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">Syntax:
+                  </a></td><td>ScriptLogBuffer <em>bytes</em></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Default" class="help">Default: 
+                    </a></td><td><code>ScriptLogBuffer 1024</code></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">Context:
+                  </a></td><td>server config</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Status" class="help">Status:
+                  </a></td><td>Base</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Module" class="help">Module:
+                  </a></td><td><code><a href="../mod/mod_cgi.html">mod_cgi</a></code>, <code><a href="../mod/mod_cgid.html">mod_cgid</a></code></td></tr></table></td></tr></table>
     <p>The size of any PUT or POST entity body that is logged to
     the file is limited, to prevent the log file growing too big
     too quickly if large bodies are being received. By default, up
     to 1024 bytes are logged, but this can be changed with this
     directive.</p>
-<hr/><h2><a name="ScriptLogLength">ScriptLogLength</a> <a name="scriptloglength">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: </strong></td><td>Size limit of the CGI script logfile</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td>ScriptLogLength <em>bytes</em></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Default" class="help">Default:</a></td><td><code>ScriptLogLength 10385760</code></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Base</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Module" class="help">Module:</a></td><td><code><a href="mod_cgi.html">mod_cgi</a></code>, <code><a href="mod_cgid.html">mod_cgid</a></code></td></tr></table></td></tr></table>
+<hr/><h2><a name="ScriptLogLength">ScriptLogLength</a> <a name="scriptloglength">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
+                  </strong></td><td>Size limit of the CGI script logfile</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">Syntax:
+                  </a></td><td>ScriptLogLength <em>bytes</em></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Default" class="help">Default: 
+                    </a></td><td><code>ScriptLogLength 10385760</code></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">Context:
+                  </a></td><td>server config</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Status" class="help">Status:
+                  </a></td><td>Base</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Module" class="help">Module:
+                  </a></td><td><code><a href="../mod/mod_cgi.html">mod_cgi</a></code>, <code><a href="../mod/mod_cgid.html">mod_cgid</a></code></td></tr></table></td></tr></table>
     <p><code class="directive">ScriptLogLength</code> can be used to limit the
     size of the CGI script logfile. Since the logfile logs a lot of
     information per CGI error (all request headers, all script output)

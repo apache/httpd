@@ -1,8 +1,8 @@
-<html xmlns="http://www.w3.org/TR/xhtml1/strict"><head><!-- 
-          XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-                This file is generated from xml source: DO NOT EDIT
-          XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-        --><title>Log Files- Apache HTTP Server</title><link href="./style/manual.css" type="text/css" rel="stylesheet"/></head><body><blockquote><div align="center"><img src="./images/sub.gif" alt="[APACHE DOCUMENTATION]"/><h3>Apache HTTP Server Version 2.0</h3></div><h1 align="center">Log Files</h1>
+<html xmlns="http://www.w3.org/TR/xhtml1/strict"><head><!--
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+              This file is generated from xml source: DO NOT EDIT
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+      --><title>Log Files - Apache HTTP Server</title><link href="./style/manual.css" type="text/css" rel="stylesheet"/></head><body><blockquote><div align="center"><img src="./images/sub.gif" alt="[APACHE DOCUMENTATION]"/><h3>Apache HTTP Server Version 2.0</h3></div><h1 align="center">Log Files</h1>
     <p>In order to effectively manage a web server, it is necessary
     to get feedback about the activity and performance of the
     server as well as any problems that may be occuring. The Apache
@@ -93,7 +93,7 @@
   <h2><a name="accesslog">Access Log</a></h2>
     
     
-    <table border="1"><tr><td valign="top"><strong>Related Modules</strong><br/><br/><code><a href="./mod/mod_log_config.html">mod_log_config</a></code>, <br/><code><a href="./mod/mod_setenvif.html">mod_setenvif</a></code><br/></td><td valign="top"><strong>Related Directives</strong><br/><br/><a href="./mod/mod_log_config.html#customlog" class="directive"><code class="directive">CustomLog</code></a><br/><a href="./mod/mod_log_config.html#logformat" class="directive"><code class="directive">LogFormat</code></a><br/><a href="./mod/mod_setenvif.html#setenvif" class="directive"><code class="directive">SetEnvIf</code></a><br/></td></tr></table>
+    <table border="1"><tr><td valign="top"><strong>Related Modules</strong><br/><br/><code><a href="./mod/mod_log_config.html">mod_log_config</a></code><br/><code><a href="./mod/mod_setenvif.html">mod_setenvif</a></code><br/></td><td valign="top"><strong>Related Directives</strong><br/><br/><a href="./mod/mod_log_config.html#customlog" class="directive"><code class="directive">CustomLog</code></a><br/><a href="./mod/mod_log_config.html#logformat" class="directive"><code class="directive">LogFormat</code></a><br/><a href="./mod/mod_setenvif.html#setenvif" class="directive"><code class="directive">SetEnvIf</code></a><br/></td></tr></table>
     
     <p>The server access log records all requests processed by the
     server. The location and content of the access log are
@@ -522,7 +522,7 @@
   <h2><a name="other">Other Log Files</a></h2>
     
     
-    <table border="1"><tr><td valign="top"><strong>Related Modules</strong><br/><br/><code><a href="./mod/mod_cgi.html">mod_cgi</a></code>, <br/><code><a href="./mod/mod_rewrite.html">mod_rewrite</a></code><br/></td><td valign="top"><strong>Related Directives</strong><br/><br/><a href="./mod/core.html#pidfile" class="directive"><code class="directive">PidFile</code></a><br/><a href="./mod/mod_rewrite.html#rewritelog" class="directive"><code class="directive">RewriteLog</code></a><br/><a href="./mod/mod_rewrite.html#rewriteloglevel" class="directive"><code class="directive">RewriteLogLevel</code></a><br/><a href="./mod/mod_cgi.html#scriptlog" class="directive"><code class="directive">ScriptLog</code></a><br/><a href="./mod/mod_cgi.html#scriptloglength" class="directive"><code class="directive">ScriptLogLength</code></a><br/><a href="./mod/mod_cgi.html#scriptbuffer" class="directive"><code class="directive">ScriptBuffer</code></a><br/></td></tr></table>
+    <table border="1"><tr><td valign="top"><strong>Related Modules</strong><br/><br/><code><a href="./mod/mod_cgi.html">mod_cgi</a></code><br/><code><a href="./mod/mod_rewrite.html">mod_rewrite</a></code><br/></td><td valign="top"><strong>Related Directives</strong><br/><br/><a href="./mod/core.html#pidfile" class="directive"><code class="directive">PidFile</code></a><br/><a href="./mod/mod_rewrite.html#rewritelog" class="directive"><code class="directive">RewriteLog</code></a><br/><a href="./mod/mod_rewrite.html#rewriteloglevel" class="directive"><code class="directive">RewriteLogLevel</code></a><br/><a href="./mod/mod_cgi.html#scriptlog" class="directive"><code class="directive">ScriptLog</code></a><br/><a href="./mod/mod_cgi.html#scriptloglength" class="directive"><code class="directive">ScriptLogLength</code></a><br/><a href="./mod/mod_cgi.html#scriptbuffer" class="directive"><code class="directive">ScriptBuffer</code></a><br/></td></tr></table>
     
     <h3><a name="pidfile">PID File</a></h3>
       
@@ -563,4 +563,4 @@
       rewriteloglevel" class="directive"><code class="directive">
       RewriteLogLevel</code></a> directive.</p>
     
-  </blockquote><hr/><h3 align="center">Apache HTTP Server Version 2.0</h3><a href="./"><img src="./images/index.gif" alt="Index"/></a><a href="./"><img src="./images/home.gif" alt="Home"/></a></body></html>
+  <hr/></blockquote><h3 align="center">Apache HTTP Server Version 2.0</h3><a href="./"><img src="./images/index.gif" alt="Index"/></a><a href="./"><img src="./images/home.gif" alt="Home"/></a></body></html>

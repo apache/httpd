@@ -1,9 +1,12 @@
-<html xmlns="http://www.w3.org/TR/xhtml1/strict"><head><!-- 
-          XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-                This file is generated from xml source: DO NOT EDIT
-          XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-        --><title>mod_asis- Apache HTTP Server</title><link href="../style/manual.css" type="text/css" rel="stylesheet"/></head><body><blockquote><div align="center"><img src="../images/sub.gif" alt="[APACHE DOCUMENTATION]"/><h3>Apache HTTP Server Version 2.0</h3></div><h1 align="center">Apache Module mod_asis</h1><table cellspacing="1" cellpadding="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap" valign="top"><span class="help">Description:</span></td><td>Sends files that contain their own
-HTTP headers</td></tr><tr><td nowrap="nowrap"><a href="module-dict.html#Status" class="help">Status:</a></td><td>Base</td></tr><tr><td nowrap="nowrap"><a href="module-dict.html#ModuleIdentifier" class="help">Module&nbsp;Identifier:</a></td><td>asis_module</td></tr></table></td></tr></table><h2>Summary</h2>
+<html xmlns="http://www.w3.org/TR/xhtml1/strict"><head><!--
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+              This file is generated from xml source: DO NOT EDIT
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+      --><title>mod_asis - Apache HTTP Server</title><link href="../style/manual.css" type="text/css" rel="stylesheet"/></head><body><blockquote><div align="center"><img src="../images/sub.gif" alt="[APACHE DOCUMENTATION]"/><h3>Apache HTTP Server Version 2.0</h3></div><h1 align="center">Apache Module mod_asis</h1><table cellspacing="1" cellpadding="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap" valign="top"><span class="help">Description:
+                      </span></td><td>Sends files that contain their own
+HTTP headers</td></tr><tr><td nowrap="nowrap"><a href="module-dict.html#Status" class="help">Status:
+                      </a></td><td>Base</td></tr><tr><td nowrap="nowrap"><a href="module-dict.html#ModuleIdentifier" class="help">Module&nbsp;Identifier:
+                        </a></td><td>asis_module</td></tr></table></td></tr></table><h2>Summary</h2>
     <p>This module provides the handler <code>send-as-is</code>
     which causes Apache to send the document without adding most of
     the usual HTTP headers.</p>
@@ -14,7 +17,7 @@ HTTP headers</td></tr><tr><td nowrap="nowrap"><a href="module-dict.html#Status" 
 
     <p>For historical reasons, this module will also process any
     file with the mime type <code>httpd/send-as-is</code>.</p>
-<h2>Directives</h2><p>This module provides no directives.</p><p><strong>See also </strong></p><ul><li><code><a href="mod_headers.html">mod_headers</a></code></li><li><code><a href="mod_cern_meta.html">mod_cern_meta</a></code></li></ul><h2>Usage</h2>
+<h2>Directives</h2><p>This module provides no directives.</p><p><strong>See also </strong></p><ul><li><code><a href="../mod/mod_headers.html">mod_headers</a></code></li><li><code><a href="../mod/mod_cern_meta.html">mod_cern_meta</a></code></li></ul><h2>Usage</h2>
 
     <p>In the server configuration file, associate files with the
     <code>send-as-is</code> handler <em>e.g.</em></p>

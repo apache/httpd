@@ -1,9 +1,12 @@
-<html xmlns="http://www.w3.org/TR/xhtml1/strict"><head><!-- 
-          XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-                This file is generated from xml source: DO NOT EDIT
-          XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-        --><title>worker- Apache HTTP Server</title><link href="../style/manual.css" type="text/css" rel="stylesheet"/></head><body><blockquote><div align="center"><img src="../images/sub.gif" alt="[APACHE DOCUMENTATION]"/><h3>Apache HTTP Server Version 2.0</h3></div><h1 align="center">Apache Module worker</h1><table cellspacing="1" cellpadding="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap" valign="top"><span class="help">Description:</span></td><td>Multi-Processing Module implementing a hybrid
-    multi-threaded multi-process web server</td></tr><tr><td nowrap="nowrap"><a href="module-dict.html#Status" class="help">Status:</a></td><td>MPM</td></tr><tr><td nowrap="nowrap"><a href="module-dict.html#ModuleIdentifier" class="help">Module&nbsp;Identifier:</a></td><td>mpm_worker_module</td></tr></table></td></tr></table><h2>Summary</h2>
+<html xmlns="http://www.w3.org/TR/xhtml1/strict"><head><!--
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+              This file is generated from xml source: DO NOT EDIT
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+      --><title>worker - Apache HTTP Server</title><link href="../style/manual.css" type="text/css" rel="stylesheet"/></head><body><blockquote><div align="center"><img src="../images/sub.gif" alt="[APACHE DOCUMENTATION]"/><h3>Apache HTTP Server Version 2.0</h3></div><h1 align="center">Apache Module worker</h1><table cellspacing="1" cellpadding="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap" valign="top"><span class="help">Description:
+                      </span></td><td>Multi-Processing Module implementing a hybrid
+    multi-threaded multi-process web server</td></tr><tr><td nowrap="nowrap"><a href="module-dict.html#Status" class="help">Status:
+                      </a></td><td>MPM</td></tr><tr><td nowrap="nowrap"><a href="module-dict.html#ModuleIdentifier" class="help">Module&nbsp;Identifier:
+                        </a></td><td>mpm_worker_module</td></tr></table></td></tr></table><h2>Summary</h2>
     <p>This Multi-Processing Module (MPM) implements a hybrid
     multi-process multi-threaded server.  By using threads to serve
     requests, it is able to serve a large number of requests with
@@ -12,8 +15,8 @@
     keeping multiple processes available, each with many threads.</p>
 
     <p>The most important directives used to control this MPM are
-    <a href="mpm_common.html#threadsperchild" class="directive"><code class="directive">ThreadsPerChild</code></a> and
-    <a href="mpm_common.html#maxclients" class="directive"><code class="directive">MaxClients</code></a>.  By multiplying
+    <a href="../mod/mpm_common.html#threadsperchild" class="directive"><code class="directive">ThreadsPerChild</code></a> and
+    <a href="../mod/mpm_common.html#maxclients" class="directive"><code class="directive">MaxClients</code></a>.  By multiplying
     together the value of these directives you define the total number
     of simultaneous connections that the server can handle.</p>
 
@@ -25,7 +28,7 @@
 
     <p>A single control process is responsible for launching child
     processes. Each child process creates a fixed number of threads as
-    specified in the <a href="mpm_common.html#threadsperchild" class="directive"><code class="directive">ThreadsPerChild</code></a> directive. The
+    specified in the <a href="../mod/mpm_common.html#threadsperchild" class="directive"><code class="directive">ThreadsPerChild</code></a> directive. The
     individual threads then listen for connections and serve them when
     they arrive.</p>
 
@@ -35,17 +38,17 @@
     threads or processes to be created before their requests can be
     served. Apache assesses the total number of idle threads in all
     processes, and forks or kills processes to keep this number within
-    the boundaries specified by <a href="mpm_common.html#minsparethreads" class="directive"><code class="directive">MinSpareThreads</code></a> and <a href="mpm_common.html#maxsparethreads" class="directive"><code class="directive">MaxSpareThreads</code></a>. Since this
+    the boundaries specified by <a href="../mod/mpm_common.html#minsparethreads" class="directive"><code class="directive">MinSpareThreads</code></a> and <a href="../mod/mpm_common.html#maxsparethreads" class="directive"><code class="directive">MaxSpareThreads</code></a>. Since this
     process is very self-regulating, it is rarely necessary to modify
     these directives from their default values. The maximum number of
     clients that may be served simultaneously is determined by
     multiplying the maximum number of server processes that will be
-    created (<a href="mpm_common.html#maxclients" class="directive"><code class="directive">MaxClients</code></a>) by
-    the number of threads created in each process (<a href="mpm_common.html#threadsperchild" class="directive"><code class="directive">ThreadsPerChild</code></a>).</p>
+    created (<a href="../mod/mpm_common.html#maxclients" class="directive"><code class="directive">MaxClients</code></a>) by
+    the number of threads created in each process (<a href="../mod/mpm_common.html#threadsperchild" class="directive"><code class="directive">ThreadsPerChild</code></a>).</p>
 
     <p>While the parent process is usually started as root under Unix
     in order to bind to port 80, the child processes and threads are
-    launched by Apache as a less-privileged user. The <a href="mpm_common.html#user" class="directive"><code class="directive">User</code></a> and <a href="mpm_common.html#group" class="directive"><code class="directive">Group</code></a> directives are used to set
+    launched by Apache as a less-privileged user. The <a href="../mod/mpm_common.html#user" class="directive"><code class="directive">User</code></a> and <a href="../mod/mpm_common.html#group" class="directive"><code class="directive">Group</code></a> directives are used to set
     the privileges of the Apache child processes. The child processes
     must be able to read all the content that will be served, but
     should have as few privileges beyond that as possible. In
@@ -53,7 +56,7 @@
     these directives also set the privileges which will be inherited
     by CGI scripts.</p>
 
-    <p><a href="mpm_common.html#maxrequestsperchild" class="directive"><code class="directive">MaxRequestsPerChild</code></a>
+    <p><a href="../mod/mpm_common.html#maxrequestsperchild" class="directive"><code class="directive">MaxRequestsPerChild</code></a>
     controls how frequently the server recycles processes by killing
     old ones and launching new ones.</p>
 <hr/></blockquote><h3 align="center">Apache HTTP Server Version 2.0</h3><a href="./"><img src="../images/index.gif" alt="Index"/></a><a href="../"><img src="../images/home.gif" alt="Home"/></a></body></html>
