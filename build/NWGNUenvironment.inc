@@ -278,7 +278,6 @@ XMLLIB		= $(XML)/$(OBJDIR)/xmllib.lib
 #
 # Additional general defines
 #
-VERSION		= 2,0,0
 
 EnvironmentDefined = 1
 endif # ifndef EnvironmentDefined
