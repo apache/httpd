@@ -228,12 +228,11 @@ void *ap_dummy_mutex = &ap_dummy_mutex;
  * Actual definitions of config globals... here because this is
  * for the most part the only code that acts on 'em.  (Hmmm... mod_main.c?)
  */
- 
 #ifdef NETWARE
-int ap_thread_count = 0;
 BOOL ap_main_finished = FALSE;
 unsigned int ap_thread_stack_size = 65536;
 #endif
+int ap_thread_count = 0;
 API_VAR_EXPORT int ap_standalone=0;
 int ap_configtestonly=0;
 int ap_docrootcheck=1;
@@ -5553,10 +5552,20 @@ void add_job(int sock)
     ap_release_mutex(allowed_globals.jobmutex);
 }
 
-int remove_job(void)
+int remove_job(int csd)
 {
+    static reported = 0;
+    static active_threads = 0;
     joblist *job;
     int sock;
+
+    /* Decline decrementing active_threads count on the first call
+     * to remove_job.  csd == -1 implies that this is the thread's
+     * first call to remove_job.
+     */
+    if (csd != -1) {
+        active_threads--;
+    }
 
 #ifdef UNGRACEFUL_RESTART
     HANDLE hObjects[2];
@@ -5587,14 +5596,24 @@ int remove_job(void)
 	ap_release_mutex(allowed_globals.jobmutex);
 	return (-1);
     }
+
     job = allowed_globals.jobhead;
     ap_assert(job);
     allowed_globals.jobhead = job->next;
     if (allowed_globals.jobhead == NULL)
 	allowed_globals.jobtail = NULL;
+
     ap_release_mutex(allowed_globals.jobmutex);
     sock = job->sock;
     free(job);
+
+    active_threads++;
+    if (!reported && (active_threads == ap_threads_per_child)) {
+        reported = 1;
+        ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, server_conf,
+                     "server reached ThreadsPerChild setting, consider"
+                     " raising the ThreadsPerChild setting");
+    }
     return (sock);
 }
 
@@ -5635,11 +5654,9 @@ static void child_sub_main(int child_num)
         tsd = (TSD*) Thread_Data_Area;
         ThreadSwitchWithDelay();
     }
-
     init_name_space();
-    ap_thread_count++;
 #endif
-
+    ap_thread_count++;
     ptrans = ap_make_sub_pool(pconf);
 
     (void) ap_update_child_status(child_num, SERVER_READY, (request_rec *) NULL);
@@ -5682,10 +5699,10 @@ static void child_sub_main(int child_num)
 	/* Get job from the job list. This will block until a job is ready.
 	 * If -1 is returned then the main thread wants us to exit.
 	 */
-	csd = remove_job();
+	csd = remove_job(csd);
 	if (csd == -1)
 	    break;		/* time to exit */
-		    
+
 	requests_this_child++;
 
 	ap_note_cleanups_for_socket(ptrans, csd);
@@ -5777,9 +5794,7 @@ static void child_sub_main(int child_num)
     ap_destroy_pool(ptrans);
     (void) ap_update_child_status(child_num, SERVER_DEAD, NULL);
     
-#ifdef NETWARE
     ap_thread_count--;
-#endif
 }
 
 

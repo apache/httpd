@@ -1,4 +1,8 @@
 Changes with Apache 1.3.23
+  *) Win32: Emit error message when the server bumps up against the
+     ThreadsPerChild configuration limit. This will be useful for 
+     admins to detect when their server is running out of threads
+     to handle requests. [Bill Stoddard]
 
   *) Test all directories listed with the UserDir directive for validity.
      Also resolves the Win32/Netware bug of unparsable quoted paths.
