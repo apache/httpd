@@ -60,6 +60,7 @@
 
 #include "ap_hooks.h"
 #include "apr_portable.h"
+#include "apr_mmap.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -140,7 +141,7 @@ API_EXPORT(long) ap_send_fd_length(ap_file_t *fd, request_rec *r, long length);
 API_EXPORT(long) ap_send_fb(BUFF *f, request_rec *r);
 API_EXPORT(long) ap_send_fb_length(BUFF *f, request_rec *r, long length);
 
-API_EXPORT(size_t) ap_send_mmap(void *mm, request_rec *r, size_t offset,
+API_EXPORT(size_t) ap_send_mmap(ap_mmap_t *mm, request_rec *r, size_t offset,
                              size_t length);
 
 /* Hmmm... could macrofy these for now, and maybe forever, though the

@@ -2170,14 +2170,15 @@ API_EXPORT(long) ap_send_fb_length(BUFF *fb, request_rec *r, long length)
 #endif
 
 /* send data from an in-memory buffer */
-API_EXPORT(size_t) ap_send_mmap(void *mm, request_rec *r, size_t offset,
+API_EXPORT(size_t) ap_send_mmap(ap_mmap_t *mm, request_rec *r, size_t offset,
                              size_t length)
 {
     size_t total_bytes_sent = 0;
     int n;
     ap_ssize_t w;
     ap_status_t rv;
-
+    char *addr;
+    
     if (length == 0)
         return 0;
 
@@ -2192,7 +2193,8 @@ API_EXPORT(size_t) ap_send_mmap(void *mm, request_rec *r, size_t offset,
         }
 
         while (n && !r->connection->aborted) {
-            rv = ap_bwrite(r->connection->client, (char *) mm + offset, n, &w);
+            ap_mmap_offset((void**)&addr, mm, offset);
+            rv = ap_bwrite(r->connection->client, addr, n, &w);
             if (w > 0) {
                 total_bytes_sent += w;
                 n -= w;

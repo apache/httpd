@@ -70,8 +70,9 @@
 #include "fnmatch.h"
 #include "http_connection.h"
 
+/* Allow Apache to use ap_mmap */
 #ifdef USE_MMAP_FILES
-#include <sys/mman.h>
+#include "apr_mmap.h"
 
 /* mmap support for static files based on ideas from John Heidemann's
  * patch against 1.0.5.  See
@@ -83,16 +84,16 @@
  * the benefit for small files.  It shouldn't be set lower than 1.
  */
 #ifndef MMAP_THRESHOLD
-#ifdef SUNOS4
-#define MMAP_THRESHOLD		(8*1024)
-#else
-#define MMAP_THRESHOLD		1
-#endif
-#endif
-#endif
+  #ifdef SUNOS4
+  #define MMAP_THRESHOLD		(8*1024)
+  #else
+  #define MMAP_THRESHOLD		1
+  #endif /* SUNOS4 */
+#endif /* MMAP_THRESHOLD */
 #ifndef MMAP_LIMIT
 #define MMAP_LIMIT              (4*1024*1024)
 #endif
+#endif /* USE_MMAP_FILES */
 
 /* Server core module... This module provides support for really basic
  * server operations, including options and commands which control the
@@ -2440,25 +2441,6 @@ static int core_translate(request_rec *r)
 
 static int do_nothing(request_rec *r) { return OK; }
 
-#ifdef USE_MMAP_FILES
-struct mmap_rec {
-    void *mm;
-    size_t length;
-};
-
-static ap_status_t mmap_cleanup(void *mmv)
-{
-    struct mmap_rec *mmd = mmv;
-
-    if (munmap(mmd->mm, mmd->length) == -1) {
-        ap_log_error(APLOG_MARK, APLOG_ERR, errno, NULL,
-                     "Failed to munmap memory of length %ld at 0x%lx",
-                     (long) mmd->length, (long) mmd->mm);
-    }
-    return APR_SUCCESS;
-}
-#endif
-
 /*
  * Default handler for MIME types without other handlers.  Only GET
  * and OPTIONS at this point... anyone who wants to write a generic
@@ -2476,7 +2458,7 @@ static int default_handler(request_rec *r)
     ap_os_file_t fd_os;
     ap_status_t status;
 #ifdef USE_MMAP_FILES
-    caddr_t mm;
+    ap_mmap_t *mm = NULL;
 #endif
 #ifdef CHARSET_EBCDIC
     /* To make serving of "raw ASCII text" files easy (they serve faster
@@ -2544,18 +2526,17 @@ static int default_handler(request_rec *r)
 	&& (!r->header_only || (d->content_md5 & 1))) {
 	/* we need to protect ourselves in case we die while we've got the
  	 * file mmapped */
-	mm = mmap(NULL, r->finfo.st_size, PROT_READ, MAP_PRIVATE,
-		  fd_os, 0);
-	if (mm == (caddr_t)-1) {
+    if (ap_mmap_create(&mm, fd, 0, r->finfo.st_size, r->pool) != APR_SUCCESS){
 	    ap_log_rerror(APLOG_MARK, APLOG_CRIT, errno, r,
 			 "default_handler: mmap failed: %s", r->filename);
+	    mm = NULL;
 	}
     }
     else {
-	mm = (caddr_t)-1;
+	mm = NULL;
     }
 
-    if (mm == (caddr_t)-1) {
+    if (mm == NULL) {
 #endif
 
 #ifdef CHARSET_EBCDIC
@@ -2597,18 +2578,14 @@ static int default_handler(request_rec *r)
 #ifdef USE_MMAP_FILES
     }
     else {
-	struct mmap_rec *mmd;
-
-	mmd = ap_palloc(r->pool, sizeof(*mmd));
-	mmd->mm = mm;
-	mmd->length = r->finfo.st_size;
-	ap_register_cleanup(r->pool, (void *)mmd, mmap_cleanup, mmap_cleanup);
+	char *addr;
+    ap_mmap_offset((void**)&addr, mm ,0);
 
 	if (d->content_md5 & 1) {
 	    AP_MD5_CTX context;
 	    
 	    ap_MD5Init(&context);
-	    ap_MD5Update(&context, (void *)mm, (unsigned int)r->finfo.st_size);
+	    ap_MD5Update(&context, addr, (unsigned int)r->finfo.st_size);
 	    ap_table_setn(r->headers_out, "Content-MD5",
 			  ap_md5contextTo64(r->pool, &context));
 	}
