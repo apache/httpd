@@ -1,5 +1,8 @@
 Changes with Apache 2.0.46
 
+  *) Fixed a segfault when multiple ProxyBlock directives were used.
+     PR: 19023 [Sami Tikka <sami.tikka@f-secure.com>]
+
   *) SECURITY [CAN-2003-0134] OS2: Fix a Denial of Service vulnerability 
      identified and reported by Robert Howard <rihoward@rawbw.com> that 
      where device names faulted the running OS2 worker process.
