@@ -1,5 +1,8 @@
 Changes with Apache 1.3.5
 
+  *) Reorganised FAQ document.
+     [Joshua Slive <slive@finance.commerce.ubc.ca>]
+
   *) src/support/: The ApacheBench benchmark program was overhauled by
      David N. Welton: you can now have it generate an HTML TABLE, presumably
      for integration into other HTML sources. David updated the ab man page
