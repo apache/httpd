@@ -47,7 +47,7 @@ RSC=rc.exe
 # ADD BASE MTL /nologo /D "NDEBUG" /mktyplib203 /win32
 # ADD MTL /nologo /D "NDEBUG" /mktyplib203 /win32
 # ADD BASE RSC /l 0x409 /d "NDEBUG"
-# ADD RSC /l 0x409 /d "NDEBUG"
+# ADD RSC /l 0x409 /i ".\\" /d "NDEBUG"
 BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
@@ -73,7 +73,7 @@ LINK32=link.exe
 # ADD BASE MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD BASE RSC /l 0x409 /d "_DEBUG"
-# ADD RSC /l 0x409 /d "_DEBUG"
+# ADD RSC /l 0x409 /i ".\\" /d "_DEBUG"
 BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
@@ -87,6 +87,45 @@ LINK32=link.exe
 
 # Name "ApacheMonitor - Win32 Release"
 # Name "ApacheMonitor - Win32 Debug"
+# Begin Group "Generated Files"
+
+# PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=.\ApacheMonitorVer.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\build\win32\win32ver.awk
+
+!IF  "$(CFG)" == "ApacheMonitor - Win32 Release"
+
+# PROP Ignore_Default_Tool 1
+USERDEP__WIN32="..\..\include\ap_release.h"	
+# Begin Custom Build - Creating Version Resource
+InputPath=..\..\build\win32\win32ver.awk
+
+".\ApacheMonitorVer.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	awk -f ../../build/win32/win32ver.awk ApacheMonitor  "Apache HTTP Server Monitor" ../../include/ap_release.h > ApacheMonitorVer.h
+
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "ApacheMonitor - Win32 Debug"
+
+# PROP Ignore_Default_Tool 1
+USERDEP__WIN32="..\..\include\ap_release.h"	
+# Begin Custom Build - Creating Version Resource
+InputPath=..\..\build\win32\win32ver.awk
+
+".\ApacheMonitorVer.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	awk -f ../../build/win32/win32ver.awk ApacheMonitor  "Apache HTTP Server Monitor" ../../include/ap_release.h > ApacheMonitorVer.h
+
+# End Custom Build
+
+!ENDIF 
+
+# End Source File
+# End Group
 # Begin Group "Resource Files"
 
 # PROP Default_Filter "ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe"
@@ -121,36 +160,6 @@ SOURCE=.\srun.bmp
 # Begin Source File
 
 SOURCE=.\sstop.bmp
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\build\win32\win32ver.awk
-
-!IF  "$(CFG)" == "ApacheMonitor - Win32 Release"
-
-# PROP Ignore_Default_Tool 1
-# Begin Custom Build - Creating Version Resource
-InputPath=..\..\build\win32\win32ver.awk
-
-".\ApacheMonitor.rc" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	type ApacheMonitor.rc.in > ApacheMonitor.rc
-	awk -f ../../build/win32/win32ver.awk ApacheMonitor  "Apache HTTP Server Monitor" ../../include/ap_release.h >> .\ApacheMonitor.rc
-
-# End Custom Build
-
-!ELSEIF  "$(CFG)" == "ApacheMonitor - Win32 Debug"
-
-# Begin Custom Build - Creating Version Resource
-InputPath=..\..\build\win32\win32ver.awk
-
-".\ApacheMonitor.rc" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	type ApacheMonitor.rc.in > ApacheMonitor.rc
-	awk -f ../../build/win32/win32ver.awk ApacheMonitor  "Apache HTTP Server Monitor" ../../include/ap_release.h >> .\ApacheMonitor.rc
-
-# End Custom Build
-
-!ENDIF 
-
 # End Source File
 # End Group
 # Begin Source File
