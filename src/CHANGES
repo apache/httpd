@@ -27,6 +27,10 @@ Changes with Apache 1.3.13
      David Whitmarsh <david.whitmarsh@dial.pipex.com> 
      PR: 1462, 2216, 3645
   
+  *) Changed Apache for NetWare build to link with XDC data which
+     marks the NLMs as being able to run on any processor.
+     [Mike Gardiner <mgardiner@novell.com>]
+
   *) Ported expat-lite to NetWare and integrated project files into the
      ApacheNW.mcp. [Mike Gardiner <mgardiner@novell.com>]
   
@@ -70,7 +74,7 @@ Changes with Apache 1.3.13
   *) Added mod_tls (SSL/TLS) module for NetWare SSL/TLS support.
      [Mike Gardiner <mgardiner@novell.com>]
 
-  *) Updated httpd.conf-dist.nw with <IfModule> directives around
+  *) Updated httpd.conf-dist-nw with <IfModule> directives around
      standard DSO modules. [Mike Gardiner <mgardiner@novell.com>]
     
   *) Correct mod_proxy Win32 garbage collection bug (clean failing
