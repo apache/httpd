@@ -556,16 +556,16 @@ AP_DECLARE(void) ap_log_rerror(const char *file, int line, int level,
     log_error_core(file, line, level, status, r->server, r, NULL, fmt, args);
 
     /*
-     * IF the error level is 'warning' or more severe,
+     * IF APLOG_TOCLIENT is set,
+     * AND the error level is 'warning' or more severe,
      * AND there isn't already error text associated with this request,
      * THEN make the message text available to ErrorDocument and
-     * other error processors.  This can be disabled by stuffing
-     * something, even an empty string, into the "error-notes" cell
-     * before calling this routine.
+     * other error processors.
      */
     va_end(args);
     va_start(args,fmt);
-    if (((level & APLOG_LEVELMASK) <= APLOG_WARNING)
+    if ((level & APLOG_TOCLIENT)
+        && ((level & APLOG_LEVELMASK) <= APLOG_WARNING)
         && (apr_table_get(r->notes, "error-notes") == NULL)) {
         apr_table_setn(r->notes, "error-notes",
                        ap_escape_html(r->pool, apr_pvsprintf(r->pool, fmt,
