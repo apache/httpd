@@ -650,8 +650,9 @@ static void check_hostalias (request_rec *r) {
   r->hostname = host;
 
   for (s = r->server->next; s; s = s->next) {
-    const char *names = s->names;
-    
+    const char *names;
+    server_addr_rec *sar;
+
     if ((!strcasecmp(host, s->server_hostname)) && (port == s->port)) {
       r->server = r->connection->server = s;
       if (r->hostlen && !strncmp(r->uri, "http://", 7)) {
@@ -660,17 +661,30 @@ static void check_hostalias (request_rec *r) {
       }
     }
 
-    if (!names) continue;
-
-    while (*names) {
-      char *name = getword_conf (r->pool, &names);
-
-      if ((is_matchexp(name) && !strcasecmp_match(host, name)) ||
-	  (!strcasecmp(host, name))) {
+    /* search all the names from <VirtualHost> directive */
+    for( sar = s->addrs; sar; sar = sar->next ) {
+      if( !strcasecmp( sar->virthost, host ) ) {
 	r->server = r->connection->server = s;
-	if (r->hostlen && !strncmp(r->uri, "http://", 7)) {
+	if( r->hostlen && !strncmp( r->uri, "http://", 7) ) {
 	  r->uri += r->hostlen;
 	  r->proxyreq = 0;
+	}
+      }
+    }
+
+    /* search all the aliases from ServerAlias directive */
+    names = s->names;
+    if( names ) {
+      while (*names) {
+	char *name = getword_conf (r->pool, &names);
+
+	if ((is_matchexp(name) && !strcasecmp_match(host, name)) ||
+	    (!strcasecmp(host, name))) {
+	  r->server = r->connection->server = s;
+	  if (r->hostlen && !strncmp(r->uri, "http://", 7)) {
+	    r->uri += r->hostlen;
+	    r->proxyreq = 0;
+	  }
 	}
       }
     }

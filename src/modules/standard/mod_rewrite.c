@@ -61,7 +61,7 @@
 **  |_| |_| |_|\___/ \__,_|___|_|  \___| \_/\_/ |_|  |_|\__\___|
 **                       |_____|
 **
-**  URL Rewriting Module, Version 3.0.0 (01-02-1997)
+**  URL Rewriting Module, Version 3.0.0 (06-Mar-1997)
 **
 **  This module uses a rule-based rewriting engine (based on a
 **  regular-expression parser) to rewrite requested URLs on the fly. 
@@ -98,8 +98,6 @@
 #include <time.h>
 #include <signal.h>
 #include <errno.h>
-#include <pwd.h>
-#include <grp.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <netinet/in.h>
@@ -135,7 +133,7 @@
 **  o  Runtime logic of a request is as following:
 **
 **       while(request or subrequest) {
-**           foreach(stage #1...#8) {
+**           foreach(stage #1...#9) {
 **               foreach(module) { (**)
 **                   try to run hook
 **               }
@@ -149,12 +147,12 @@
 **
 **  o  there are two different types of result checking and 
 **     continue processing:
-**     for hook #1,#3,#4,#5,#7:
+**     for hook #1,#4,#5,#6,#8:
 **         hook run loop stops on first modules which gives
 **         back a result != DECLINED, i.e. it usually returns OK
 **         which says "OK, module has handled this _stage_" and for #1
 **         this have not to mean "Ok, the filename is now valid".
-**     for hook #2,#6,#8:
+**     for hook #2,#3,#7,#9:
 **         all hooks are run, independend of result
 **
 **  o  at the last stage, the core module allways 
@@ -205,18 +203,19 @@ module rewrite_module = {
    config_server_merge,         /* merge  per-server config structures */
    command_table,               /* table of config file commands */
 
-   handler_table,               /* [#7] table of MIME-typed-dispatched request action handlers */
+   handler_table,               /* [#8] table of MIME-typed-dispatched request action handlers */
 
    hook_uri2file,               /* [#1] URI to filename translation */
 
-   NULL,                        /* [#3] check_user_id: get and validate user id from the HTTP request */
-   NULL,                        /* [#4] check_auth:    check if the user is ok _here_ */
+   NULL,                        /* [#4] check_user_id: get and validate user id from the HTTP request */
+   NULL,                        /* [#5] check_auth:    check if the user is ok _here_ */
    NULL,                        /* [#2] check_access:  check access by host address, etc. */
 
-   hook_mimetype,               /* [#5] determine MIME type */
+   hook_mimetype,               /* [#6] determine MIME type */
 
-   hook_fixup,                  /* [#6] pre-run fixups */
-   NULL                         /* [#8] log a transaction */
+   hook_fixup,                  /* [#7] pre-run fixups */
+   NULL,                        /* [#9] log a transaction */
+   NULL                         /* [#3] header parser */
 };
 
     /* the cache */
@@ -226,7 +225,7 @@ cache *cachep;
 static int proxy_available;
 
     /* the txt mapfile parsing stuff */
-#define MAPFILE_PATTERN "^([^ ]+) +([^ ]+).*$"
+#define MAPFILE_PATTERN "^([^ \t]+)[ \t]+([^ \t]+).*$"
 #define MAPFILE_OUTPUT "$1,$2"
 static regex_t   *lookup_map_txtfile_regexp = NULL;
 static regmatch_t lookup_map_txtfile_regmatch[10];
@@ -1123,9 +1122,9 @@ static int hook_fixup(request_rec *r)
      *  only do something under runtime if the engine is really enabled,
      *  for this directory, else return immediately!
      */
-    if (!(allow_options(r) & OPT_SYM_LINKS)) {
+    if (!(allow_options(r) & (OPT_SYM_LINKS | OPT_SYM_OWNER))) {
         /* FollowSymLinks is mandatory! */
-        log_reason("Options FollowSymLinks is off which implies that RewriteRule directive is forbidden", r->filename, r);
+        log_reason("Options FollowSymLinks or SymLinksIfOwnerMatch is off which implies that RewriteRule directive is forbidden", r->filename, r);
         return FORBIDDEN;
     }
     else {
@@ -3028,6 +3027,7 @@ static int is_this_our_host(request_rec *r, char *testhost)
     const char *names;
     char *name;
     int i, j;
+    server_addr_rec *sar;
 
     /* we can check:
        r->
@@ -3042,13 +3042,7 @@ static int is_this_our_host(request_rec *r, char *testhost)
             char *path                name of ServerPath
             int pathlen               len of ServerPath
             char *names               Wildcarded names for ServerAlias servers 
-       under 1.1:
-       r->server->
-            struct in_addr host_addr  The bound address, for this server 
-            short host_port           The bound port, for this server 
-            char *virthost            The name given in <VirtualHost> 
-       under 1.2:
-       r->server->addrs->next...
+       r->server->addrs->
             struct in_addr host_addr  The bound address, for this server
             short host_port           The bound port, for this server 
             char *virthost            The name given in <VirtualHost> 
@@ -3081,6 +3075,12 @@ static int is_this_our_host(request_rec *r, char *testhost)
     }
     else if (r->server->is_virtual) {
         /* virtual servers */
+
+        /* check for the names supplied in the VirtualHost directive */
+        for(sar = r->server->addrs; sar != NULL; sar = sar->next) {
+            if(strcasecmp(sar->virthost, testhost) == 0)
+                return YES;
+        }
 
         /* check for the virtual-server aliases */
         if (r->server->names != NULL && r->server->names[0] != '\0') {
