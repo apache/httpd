@@ -337,3 +337,38 @@ WIN32 1.3 FINAL RELEASE SHOWSTOPPERS:
     * SECURITY: numerous uses of strcpy and strcat have potential
 	for buffer overflow, someone should rewrite or verify
 	they're safe
+
+Proposed announcement for -testers mailing list:
+
+    The Apache Group would like to expand the audience that is available
+    for testing during the development cycles.  In particular, the stable
+    release (1.2 currently) receives less testing by the developers
+    because the developers are generally running the development release
+    (1.3 currently).  To aid this we have created two mailing lists:
+    stable-testers and current-testers.
+
+    Volunteers willing to test drive versions of the stable branch of
+    the Apache HTTP Server should send a message to majordomo@apache.org
+    containing the words:
+
+	subscribe stable-testers
+
+    Volunteers willing to test drive versions of the current development
+    branch of the Apache HTTP Server should send a message to
+    majordomo@apache.org containing the words:
+
+	subscribe current-testers
+
+    These forums will be predominantly one-way: when the Apache Group has
+    a new release ready, they will let the appropriate list know about it
+    first, and then it is *expected* that people will pull it down from
+    the Apache web site and give it a spin.  If you see a problem, and
+    have done your due diligence to make sure it isn't a configuration
+    error, and it's definitely a difference in behavior from the last
+    public release in the series, then please post here about it.
+
+    Thanks!
+
+    Dean intends to post this on friday, around noon PST.
+
+    Status: Dean +1
