@@ -49,6 +49,7 @@
 #include "apr_strings.h"
 #include "apr_uri.h"
 #include "apr_date.h"
+#include "apr_strmatch.h"
 #include "apr_fnmatch.h"
 #define APR_WANT_STRFUNC
 #include "apr_want.h"
@@ -158,6 +159,14 @@ typedef struct {
       bad_body
     } badopt;                   /* how to deal with bad headers */
     char badopt_set;
+/* putting new stuff on the end maximises binary back-compatibility.
+ * the strmatch_patterns are really a const just to have a
+ * case-independent strstr.
+ */
+    apr_array_header_t* cookie_paths ;
+    apr_array_header_t* cookie_domains ;
+    const apr_strmatch_pattern* cookie_path_str ;
+    const apr_strmatch_pattern* cookie_domain_str ;
 
 } proxy_server_conf;
 
@@ -229,7 +238,6 @@ PROXY_DECLARE(char *)ap_proxy_canonenc(apr_pool_t *p, const char *x, int len, en
 PROXY_DECLARE(char *)ap_proxy_canon_netloc(apr_pool_t *p, char **const urlp, char **userp,
 			 char **passwordp, char **hostp, apr_port_t *port);
 PROXY_DECLARE(const char *)ap_proxy_date_canon(apr_pool_t *p, const char *x);
-PROXY_DECLARE(apr_table_t *)ap_proxy_read_headers(request_rec *r, request_rec *rp, char *buffer, int size, conn_rec *c);
 PROXY_DECLARE(int) ap_proxy_liststr(const char *list, const char *val);
 PROXY_DECLARE(char *)ap_proxy_removestr(apr_pool_t *pool, const char *list, const char *val);
 PROXY_DECLARE(int) ap_proxy_hex2sec(const char *x);
