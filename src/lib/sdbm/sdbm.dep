@@ -16,6 +16,7 @@
 	"..\..\include\ap_mmn.h"\
 	"..\..\include\hsregex.h"\
 	"..\..\os\win32\os.h"\
+	".\sdbm_tune.h"\
 	
 
 .\sdbm_pair.c : \
