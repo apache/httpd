@@ -1837,6 +1837,7 @@ char *ap_get_local_host(apr_pool_t *a)
     else 
     {
         str[sizeof(str) - 1] = '\0';
+        /* TODO: Screaming for APR-ization */
         if ((!(p = gethostbyname(str))) 
             || (!(server_hostname = find_fqdn(a, p)))) {
             /* Recovery - return the default servername by IP: */
