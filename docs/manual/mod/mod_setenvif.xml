@@ -9,7 +9,6 @@ on characteristics of the request</description>
 <status>Base</status>
 <sourcefile>mod_setenvif.c</sourcefile>
 <identifier>setenvif_module</identifier>
-<compatibility>Available in Apache 1.3 and later</compatibility>
 
 
 <summary>
@@ -37,62 +36,29 @@ on characteristics of the request</description>
 <name>BrowserMatch</name>
 <description>Sets environment variables conditional on HTTP User-Agent
 </description>
-<syntax>BrowserMatch <em>regex env-variable</em>[=<em>value</em>]
-[<em>env-variable</em>[=<em>value</em>]] ...</syntax>
+<syntax>BrowserMatch <em>regex [!]env-variable</em>[=<em>value</em>]
+[[!]<em>env-variable</em>[=<em>value</em>]] ...</syntax>
 <contextlist><context>server config</context>
 <context>virtual host</context><context>directory</context>
 <context>.htaccess</context></contextlist>
 <override>FileInfo</override>
-<compatibility>Apache 1.2 and
-    above (in Apache 1.2 this directive was found in the
-    now-obsolete mod_browser module)</compatibility>
 
 <usage>
-    <p>The <directive>BrowserMatch</directive> directive defines
-    environment variables based on the <code>User-Agent</code> HTTP
-    request header field.  The first argument should be a POSIX.2
-    extended regular expression (similar to an
-    <code>egrep</code>-style regex). The rest of the arguments give
-    the names of variables to set, and optionally values to which they
-    should be set. These take the form of</p>
+  <p>The <directive>BrowserMatch</directive> is a special cases of the
+  <directive module="mod_setenvif">SetEnvIf</directive> directive that
+  sets environment variables conditional on the
+  <code>User-Agent</code> HTTP request header.  The following two
+  lines have the same effect:</p>
+<example>
+   BrowserMatchNoCase Robot is_a_robot<br /> 
+   SetEnvIfNoCase User-Agent Robot is_a_robot<br /> 
+</example>
 
-    <ol>
-      <li><code><em>varname</em></code>, or</li>
-
-      <li><code>!<em>varname</em></code>, or</li>
-
-      <li><code><em>varname</em>=<em>value</em></code></li>
-    </ol>
-
-    <p>In the first form, the value will be set to "1". The second
-    will remove the given variable if already defined, and the
-    third will set the variable to the value given by
-    <code><em>value</em></code>. If a <code>User-Agent</code>
-    string matches more than one entry, they will be merged.
-    Entries are processed in the order in which they appear, and
-    later entries can override earlier ones.</p>
-
-    <p>For example:</p>
+    <p>Some additional examples:</p>
 <example>
     BrowserMatch ^Mozilla forms jpeg=yes browser=netscape<br />
     BrowserMatch "^Mozilla/[2-3]" tables agif frames javascript<br />
     BrowserMatch MSIE !javascript<br />
-</example>
- 
-    <p>Note that the regular expression string is
-    <strong>case-sensitive</strong>. For case-INsensitive matching,
-    see the <directive
-    module="mod_setenvif">BrowserMatchNoCase</directive>
-    directive.</p>
-
-    <p>The <directive>BrowserMatch</directive> and
-    <directive>BrowserMatchNoCase</directive> directives are special cases of
-    the <directive module="mod_setenvif">SetEnvIf</directive> and <directive
-    module="mod_setenvif">SetEnvIfNoCase</directive>
-    directives. The following two lines have the same effect:</p>
-<example>
-   BrowserMatchNoCase Robot is_a_robot<br />
-   SetEnvIfNoCase User-Agent Robot is_a_robot<br />
 </example>
 </usage>
 </directivesynopsis>
@@ -101,8 +67,8 @@ on characteristics of the request</description>
 <name>BrowserMatchNoCase</name>
 <description>Sets environment variables conditional on User-Agent without
 respect to case</description>
-<syntax>BrowserMatchNoCase  <em>regex env-variable</em>[=<em>value</em>]
-    [<em>env-variable</em>[=<em>value</em>]] ...</syntax>
+<syntax>BrowserMatchNoCase  <em>regex [!]env-variable</em>[=<em>value</em>]
+    [[!]<em>env-variable</em>[=<em>value</em>]] ...</syntax>
 <contextlist><context>server config</context>
 <context>virtual host</context><context>directory</context>
 <context>.htaccess</context></contextlist>
@@ -140,24 +106,28 @@ respect to case</description>
 <description>Sets environment variables based on attributes of the request
 </description>
 <syntax>SetEnvIf <em>attribute
-    regex env-variable</em>[=<em>value</em>]
-    [<em>env-variable</em>[=<em>value</em>]] ...</syntax>
+    regex [!]env-variable</em>[=<em>value</em>]
+    [[!]<em>env-variable</em>[=<em>value</em>]] ...</syntax>
 <contextlist><context>server config</context>
 <context>virtual host</context><context>directory</context>
 <context>.htaccess</context></contextlist>
 <override>FileInfo</override>
-<compatibility>Apache 1.3 and
-    above; the Request_Protocol keyword and environment-variable
-    matching are only available with 1.3.7 and later</compatibility>
 
 <usage>
-    <p>The <directive>SetEnvIf</directive> directive defines environment
-    variables based on attributes of the request. These attributes
-    can be the values of various HTTP request header fields (see <a
-    href="http://www.rfc-editor.org/rfc/rfc2616.txt">RFC2616</a>
-    for more information about these), or of other aspects of the
-    request, including the following:</p>
+    <p>The <directive>SetEnvIf</directive> directive defines
+    environment variables based on attributes of the request. The
+    <em>attribute</em> specified in the first argument can be one of three
+    things:</p>
 
+<ol>
+<li>An HTTP request header field (see <a
+    href="http://www.rfc-editor.org/rfc/rfc2616.txt">RFC2616</a>
+    for more information about these); for example: <code>Host</code>,
+    <code>User-Agent</code>, <code>Referer</code>, and 
+    <code>Accept-Language</code>.  A regular expression may be
+    used to specify a set of request headers.</li>
+
+<li>One of the following aspects of the request:
     <ul>
       <li><code>Remote_Host</code> - the hostname (if available) of
       the client making the request</li>
@@ -176,34 +146,46 @@ respect to case</description>
       the protocol with which the request was made (<em>e.g.</em>,
       "HTTP/0.9", "HTTP/1.1", <em>etc.</em>)</li>
 
-      <li><code>Request_URI</code> - the portion of the URL
-      following the scheme and host portion</li>
+      <li><code>Request_URI</code> - the resource requested on the HTTP
+       request line -- generally the portion of the URL
+      following the scheme and host portion without the query string</li>
     </ul>
+</li>
 
-    <p>Some of the more commonly used request header field names
-    include <code>Host</code>, <code>User-Agent</code>, and
-    <code>Referer</code>.</p>
+<li>The name of an environment variable in the list of those
+associated with the request. This allows
+<directive>SetEnvIf</directive> directives to test against the result
+of prior matches. Only those environment variables defined by earlier
+<code>SetEnvIf[NoCase]</code> directives are available for testing in
+this manner. 'Earlier' means that they were defined at a broader scope
+(such as server-wide) or previously in the current directive's scope.
+Environment variables will be considered only if there was no match
+among request characteristics and a regular expression was not
+used for the <em>attribute</em>.</li>
+</ol>
 
-    <p>If the <em>attribute</em> name doesn't match any of the
-    special keywords, nor any of the request's header field names,
-    it is tested as the name of an environment variable in the list
-    of those associated with the request. This allows
-    <directive>SetEnvIf</directive> directives to test against the result of
-    prior matches.</p>
+<p>The second argument (<em>regex</em>) is a <a
+href="http://www.pcre.org/">Perl compatible regular expression</a>.
+This is similar to a POSIX.2 egrep-style regular expression.
+If the <em>regex</em> matches against the <em>attribute</em>,
+then the remainder of the arguments are evaluated.</p>
 
-<note>
-      <strong>Only those environment variables defined by earlier
-      <code>SetEnvIf[NoCase]</code> directives are available for
-      testing in this manner. 'Earlier' means that they were
-      defined at a broader scope (such as server-wide) or
-      previously in the current directive's scope.</strong>
-</note>
+<p>The rest of the arguments give the names of variables to set, and
+optionally values to which they should be set. These take the form
+of</p>
 
-    <p><em>attribute</em> may be a regular expression when used to
-    match a request header. If <em>attribute</em> is a regular
-    expression and it doesn't match any of the request's header
-    names, then <em>attribute</em> is not tested against the
-    request's environment variable list.</p>
+    <ol>
+      <li><code><em>varname</em></code>, or</li>
+
+      <li><code>!<em>varname</em></code>, or</li>
+
+      <li><code><em>varname</em>=<em>value</em></code></li>
+    </ol>
+
+    <p>In the first form, the value will be set to "1". The second
+    will remove the given variable if already defined, and the
+    third will set the variable to the literal value given by
+    <code><em>value</em></code>.</p>
 
 <example>
 <title>Example:</title>
@@ -235,8 +217,9 @@ respect to case</description>
 <name>SetEnvIfNoCase</name>
 <description>Sets environment variables based on attributes of the request
 without respect to case</description>
-<syntax>SetEnvIfNoCase <em>attribute regex env-variable</em>[=<em>value</em>]
-    [<em>env-variable</em>[=<em>value</em>]] ...</syntax>
+<syntax>SetEnvIfNoCase <em>attribute regex 
+        [!]env-variable</em>[=<em>value</em>]
+    [[!]<em>env-variable</em>[=<em>value</em>]] ...</syntax>
 <contextlist><context>server config</context>
 <context>virtual host</context><context>directory</context>
 <context>.htaccess</context></contextlist>
