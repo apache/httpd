@@ -19,7 +19,7 @@ vlink="#000080" alink="#ff0000">
      <strong>rotatelogs </strong>is a simple program for use in  conjunction  with
      Apache's piped logfile feature, which can be used like this:
 
-     CustomLog "|bin/rotatelogs /path/to/logs/logfile 86400" combined
+     CustomLog "|bin/rotatelogs /var/logs/logfile 86400" common
 
      This creates the files /path/to/logs/logfile.nnnn where nnnn
      is  the  system time at which the log nominally starts (this
