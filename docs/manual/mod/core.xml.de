@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.de.xsl"?>
-<!-- English Revision: 1.91 -->
+<!-- English Revision: 1.92 -->
 
 <!--
  Copyright 2003-2004 The Apache Software Foundation
@@ -2650,7 +2650,7 @@ Die Option <code>Registry-Strict</code> ist verf&uuml;gbar seit Apache
       #!C:/Perl/bin/perl.exe
     </example>
 
-    <p>oder, wenn perl im Pfad (Umgebungsvariable <code>PATH</code>) liegt,
+    <p>oder, wenn <code>perl</code> im Pfad (Umgebungsvariable <code>PATH</code>) liegt,
       einfach:</p>
 
     <example>
