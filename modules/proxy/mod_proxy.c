@@ -82,7 +82,8 @@ static unsigned char hex2c(const char* p) {
         (w)->io_buffer_size_set   = (c)->io_buffer_size_set;    \
     } while (0)
 
-static const char *set_worker_param(proxy_worker *worker,
+static const char *set_worker_param(apr_pool_t *p,
+                                    proxy_worker *worker,
                                     const char *key,
                                     const char *val)
 {
@@ -160,20 +161,27 @@ static const char *set_worker_param(proxy_worker *worker,
             return "KeepAlive must be On|Off";
         worker->keepalive_set = 1;
     }    
+    else if (!strcasecmp(key, "route")) {
+        worker->route = apr_pstrdup(p, val);
+    }
+    else if (!strcasecmp(key, "redirect")) {
+        worker->redirect = apr_pstrdup(p, val);
+    }
     else {
         return "unknown parameter";
     }
     return NULL;
 }
 
-static const char *set_balancer_param(proxy_balancer *balancer,
+static const char *set_balancer_param(apr_pool_t *p,
+                                      proxy_balancer *balancer,
                                       const char *key,
                                       const char *val)
 {
 
     int ival;
     if (!strcasecmp(key, "stickysession")) {
-        balancer->sticky = val;
+        balancer->sticky = apr_pstrdup(p, val);
     }
     else if (!strcasecmp(key, "nofailover")) {
         if (!strcasecmp(val, "on"))
@@ -186,7 +194,7 @@ static const char *set_balancer_param(proxy_balancer *balancer,
     else if (!strcasecmp(key, "timeout")) {
         ival = atoi(val);
         if (ival < 1)
-            return "timeout must be al least one second";
+            return "timeout must be at least one second";
         balancer->timeout = apr_time_from_sec(ival);
     }
     else {
@@ -886,7 +894,8 @@ static const char *
                 return apr_pstrcat(cmd->temp_pool, "ProxyPass ", err, NULL);
         }        
         for (i = 0; i < arr->nelts; i++) {
-            const char *err = set_balancer_param(balancer, elts[i].key, elts[i].val);
+            const char *err = set_balancer_param(cmd->pool, balancer, elts[i].key,
+                                                 elts[i].val);
             if (err)
                 return apr_pstrcat(cmd->temp_pool, "ProxyPass ", err, NULL);
         }
@@ -901,7 +910,8 @@ static const char *
         PROXY_COPY_CONF_PARAMS(worker, conf);
 
         for (i = 0; i < arr->nelts; i++) {
-            const char *err = set_worker_param(worker, elts[i].key, elts[i].val);
+            const char *err = set_worker_param(cmd->pool, worker, elts[i].key,
+                                               elts[i].val);
             if (err)
                 return apr_pstrcat(cmd->temp_pool, "ProxyPass ", err, NULL);
         }
@@ -1275,7 +1285,8 @@ static const char *add_member(cmd_parms *cmd, void *dummy, const char *arg)
     arr = apr_table_elts(params);
     elts = (const apr_table_entry_t *)arr->elts;
     for (i = 0; i < arr->nelts; i++) {
-        const char *err = set_worker_param(worker, elts[i].key, elts[i].val);
+        const char *err = set_worker_param(cmd->pool, worker, elts[i].key,
+                                           elts[i].val);
         if (err)
             return apr_pstrcat(cmd->temp_pool, "BalancerMember ", err, NULL);
     }
