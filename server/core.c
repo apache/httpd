@@ -2780,6 +2780,9 @@ static int core_input_filter(ap_filter_t *f, apr_bucket_brigade *b, ap_input_mod
         APR_BRIGADE_INSERT_TAIL(ctx->b, e);
     }
 
+    /* ### This is bad. */
+    APR_BRIGADE_NORMALIZE(ctx->b);
+
     /* ### AP_MODE_PEEK is a horrific name for this mode because we also
      * eat any CRLFs that we see.  That's not the obvious intention of
      * this mode.  Determine whether anyone actually uses this or not. */
