@@ -1,5 +1,10 @@
 Changes with Apache 2.0.23-dev
 
+  *) Add a handler to mod_includes.c.  This handler is designed to
+     implement the XbitHack directive.  This can't be done with a
+     fixup, because we need to check the content-type, which is
+     only available in the handler phase.  [Ryan Bloom]
+
   *) Make the includes filter check return codes from filters lower in
      the filter chain.  If a lower level filter returns an error, then
      the request needs to stop immediately.  This allows mod_include to

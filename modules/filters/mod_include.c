@@ -2816,12 +2816,42 @@ static const command_rec includes_cmds[] =
     {NULL}
 };
 
+static int xbithack_handler(request_rec *r)
+{
+#if defined(OS2) || defined(WIN32) || defined(NETWARE)
+    /* OS/2 dosen't currently support the xbithack. This is being worked on. */
+    return DECLINED;
+#else
+    enum xbithack *state;
+ 
+    if (ap_strcmp_match(r->handler, "text/html")) {
+        return DECLINED;
+    }
+    if (!(r->finfo.protection & APR_UEXECUTE)) {
+        return DECLINED;
+    }
+ 
+    state = (enum xbithack *) ap_get_module_config(r->per_dir_config,
+                                                &include_module);
+ 
+    if (*state == xbithack_off) {
+        return DECLINED;
+    }
+    /* We always return declined, because the default handler will actually
+     * serve the file.  All we have to do is add the filter.
+     */
+    ap_add_output_filter("INCLUDES", NULL, r, r->connection);
+    return DECLINED;
+#endif
+}
+
 static void register_hooks(apr_pool_t *p)
 {
     APR_REGISTER_OPTIONAL_FN(ap_ssi_get_tag_and_value);
     APR_REGISTER_OPTIONAL_FN(ap_ssi_parse_string);
     APR_REGISTER_OPTIONAL_FN(ap_register_include_handler);
     ap_hook_post_config(include_post_config, NULL, NULL, APR_HOOK_REALLY_FIRST);
+    ap_hook_handler(xbithack_handler, NULL, NULL, APR_HOOK_MIDDLE);
     ap_register_output_filter("INCLUDES", includes_filter, AP_FTYPE_CONTENT);
 }
 
