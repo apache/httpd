@@ -4,7 +4,7 @@ AC_PREREQ(2.13)
 AC_INIT(acinclude.m4)
 
 AC_CONFIG_HEADER(include/ap_config_auto.h)
-AC_CONFIG_AUX_DIR(.)
+AC_CONFIG_AUX_DIR(srclib/apr/build)
  
 dnl ## This is the central place where Apache's version should be kept.
 dnl AM_INIT_AUTOMAKE(apache, 2.0-dev)
@@ -20,6 +20,7 @@ test "$prefix" = "NONE" && prefix='/usr/local'
 dnl Absolute source/build directory
 abs_srcdir=`(cd $srcdir && pwd)`
 abs_builddir=`pwd`
+aprbuild=$abs_srcdir/srclib/apr/build
 
 MKDIR=$abs_srcdir/srclib/apr/build/mkdir.sh
 
@@ -155,7 +156,7 @@ AM_PROG_LIBTOOL
 APACHE_LIBTOOL_SILENT
 
 if test "$apache_need_shared" = "yes"; then
-  $SHELL $srcdir/ltconfig --output=shlibtool --disable-static --srcdir=$srcdir --cache-file=./config.cache $srcdir/ltmain.sh
+  $SHELL $aprbuild/ltconfig --output=shlibtool --disable-static --srcdir=$aprbuild --cache-file=./config.cache $aprbuild/ltmain.sh
   case $PLATFORM in
     *os390)
       CFLAGS="$CFLAGS -Wc,DLL,EXPORTALL"
