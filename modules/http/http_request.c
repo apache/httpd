@@ -1463,6 +1463,7 @@ API_EXPORT(void) ap_allow_methods(request_rec *r, int reset, ...) {
 	 */
 	if (mnum == M_INVALID) {
 	    int i;
+	    int found;
 	    char **xmethods;
 
 	    if (r->allowed_xmethods == NULL) {
@@ -1473,13 +1474,17 @@ API_EXPORT(void) ap_allow_methods(request_rec *r, int reset, ...) {
 	     * Don't add it to the array if it's already listed.
 	     */
 	    xmethods = (char **) r->allowed_xmethods->elts;
+	    found = 0;
 	    for (i = 0; i < r->allowed_xmethods->nelts; ++i) {
 		if (strcmp(method, xmethods[i]) == 0) {
-		    return;
+		    found++;
+		    break;
 		}
 	    }
-	    xmethod = (const char **) apr_push_array(r->allowed_xmethods);
-	    *xmethod = method;
+	    if (!found) {
+		xmethod = (const char **) apr_push_array(r->allowed_xmethods);
+		*xmethod = method;
+	    }
 	}
     }
 }
