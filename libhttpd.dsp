@@ -52,14 +52,14 @@ BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
 LINK32=link.exe
-# ADD BASE LINK32 kernel32.lib user32.lib advapi32.lib ws2_32.lib mswsock.lib /nologo /subsystem:windows /dll /map /machine:I386
-# ADD LINK32 kernel32.lib user32.lib advapi32.lib ws2_32.lib mswsock.lib "Release\buildmark.obj" /nologo /subsystem:windows /dll /map /debug /debugtype:both /machine:I386 /pdbtype:sept /base:@"os\win32\BaseAddr.ref",libhttpd.dll
+# ADD BASE LINK32 kernel32.lib user32.lib advapi32.lib ws2_32.lib mswsock.lib /nologo /subsystem:windows /dll /machine:I386
+# ADD LINK32 kernel32.lib user32.lib advapi32.lib ws2_32.lib mswsock.lib "Release\buildmark.obj" /nologo /subsystem:windows /dll /debug /debugtype:both /machine:I386 /pdbtype:sept /base:@"os\win32\BaseAddr.ref",libhttpd.dll
 # Begin Custom Build - Extracting .dbg symbols from $(InputPath)
 InputPath=.\Release\libhttpd.dll
 SOURCE="$(InputPath)"
 
 ".\Release\libhttpd.dbr" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	rebase -q -i "./os/win32/BaseAddr.ref" -x ".\Release" $(InputPath)
+	rebase -q -p -i "./os/win32/BaseAddr.ref" -x ".\Release" $(InputPath)
 	echo rebased > ".\Release\libhttpd.dbr"
 
 # End Custom Build
@@ -92,8 +92,8 @@ BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
 LINK32=link.exe
-# ADD BASE LINK32 kernel32.lib user32.lib advapi32.lib ws2_32.lib mswsock.lib /nologo /subsystem:windows /dll /incremental:no /map /debug /machine:I386
-# ADD LINK32 kernel32.lib user32.lib advapi32.lib ws2_32.lib mswsock.lib "Debug\buildmark.obj" /nologo /subsystem:windows /dll /incremental:no /map /debug /machine:I386 /base:@"os\win32\BaseAddr.ref",libhttpd.dll
+# ADD BASE LINK32 kernel32.lib user32.lib advapi32.lib ws2_32.lib mswsock.lib /nologo /subsystem:windows /dll /incremental:no /debug /machine:I386
+# ADD LINK32 kernel32.lib user32.lib advapi32.lib ws2_32.lib mswsock.lib "Debug\buildmark.obj" /nologo /subsystem:windows /dll /incremental:no /debug /machine:I386 /base:@"os\win32\BaseAddr.ref",libhttpd.dll
 # Begin Special Build Tool
 SOURCE="$(InputPath)"
 PreLink_Desc=Compiling buildmark

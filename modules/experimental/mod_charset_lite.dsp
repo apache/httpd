@@ -52,14 +52,14 @@ BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
 LINK32=link.exe
-# ADD BASE LINK32 kernel32.lib /nologo /subsystem:windows /dll /map /machine:I386
-# ADD LINK32 kernel32.lib /nologo /subsystem:windows /dll /incremental:no /map /debug /debugtype:both /machine:I386 /out:"Release/mod_charset_lite.so" /pdbtype:sept /base:@..\..\os\win32\BaseAddr.ref,mod_charset_lite.so
+# ADD BASE LINK32 kernel32.lib /nologo /subsystem:windows /dll /machine:I386
+# ADD LINK32 kernel32.lib /nologo /subsystem:windows /dll /incremental:no /debug /debugtype:both /machine:I386 /out:"Release/mod_charset_lite.so" /pdbtype:sept /base:@..\..\os\win32\BaseAddr.ref,mod_charset_lite.so
 # Begin Custom Build - Extracting .dbg symbols from $(InputPath)
 InputPath=.\Release\mod_charset_lite.so
 SOURCE="$(InputPath)"
 
 ".\Release\mod_charset_lite.dbr" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	rebase -q -i "../../os/win32/BaseAddr.ref" -x ".\Release" $(InputPath)
+	rebase -q -p -i "../../os/win32/BaseAddr.ref" -x ".\Release" $(InputPath)
 	echo rebased > ".\Release\mod_charset_lite.dbr"
 
 # End Custom Build
@@ -87,8 +87,8 @@ BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
 LINK32=link.exe
-# ADD BASE LINK32 kernel32.lib /nologo /subsystem:windows /dll /incremental:no /map /debug /machine:I386
-# ADD LINK32 kernel32.lib /nologo /subsystem:windows /dll /incremental:no /map /debug /machine:I386 /out:"Debug/mod_charset_lite.so" /base:@..\..\os\win32\BaseAddr.ref,mod_charset_lite.so
+# ADD BASE LINK32 kernel32.lib /nologo /subsystem:windows /dll /incremental:no /debug /machine:I386
+# ADD LINK32 kernel32.lib /nologo /subsystem:windows /dll /incremental:no /debug /machine:I386 /out:"Debug/mod_charset_lite.so" /base:@..\..\os\win32\BaseAddr.ref,mod_charset_lite.so
 
 !ENDIF 
 
