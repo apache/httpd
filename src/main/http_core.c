@@ -75,15 +75,15 @@
  * <http://www.isi.edu/~johnh/SOFTWARE/APACHE/index.html>.
  */
 
-/* Files have to be at least this big before they're mmap()d.  This is to
- * deal with systems where the expense of doing an mmap() and an munmap()
- * outweighs the benefit for small files.
+/* Files have to be at least this big before they're mmap()d.  This is to deal
+ * with systems where the expense of doing an mmap() and an munmap() outweighs
+ * the benefit for small files.  It shouldn't be set lower than 1.
  */
 #ifndef MMAP_THRESHOLD
 #ifdef SUNOS4
 #define MMAP_THRESHOLD		(8*1024)
 #else
-#define MMAP_THRESHOLD		0
+#define MMAP_THRESHOLD		1
 #endif
 #endif
 #endif
