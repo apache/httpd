@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/08/04 19:31:58 $]
+Last modified at [$Date: 2004/08/04 19:57:29 $]
 
 Release:
 
@@ -94,15 +94,19 @@ PATCHES TO BACKPORT FROM 2.1
          modules/experimental/util_ldap.c: 1.36
        +1: minfrin (this requires the apr-util LDAP overhaul to be ported to
                     apr-util v0.9 first)
+       -0: jerenkrantz
+           jerenkrantz: I don't think we can change the APR 0.9 interfaces.
+                        They are supposed to be set in stone.
 
     *) Add load balancer support to the scoreboard in preparation for
        load balancing support in mod_proxy.
          include/scoreboard.h: 1.52
          server/scoreboard.c: 1.75
        +1: minfrin
-       -0: nd
+       -0: nd, jerenkrantz
            nd: -0 as in "it should be considered as a 2.1 feature".
               If the modified structures are public (are they?), I'm just -1.
+           jerenkrantz: Sounds like a good 2.1 feature...
 
     *) mod_cgi: Added API call and overload of detached field in cgi_exec_info_t 
        structure to support loading in current or new address space for CGIs.
@@ -116,11 +120,11 @@ PATCHES TO BACKPORT FROM 2.1
     *) mod_dir: Backport DirectorySlash directive to work around problems
        with <Location>-SetHandler combinations and trailing slash redirects.
          modules/mappers/mod_dir.c: r1.48
-       +1: nd
+       +1: nd, jerenkrantz
 
     *) mod_dir: Allow proxied DirectoryIndexes. PR 14648, 15112, 29961
          modules/mappers/mod_dir.c: r1.44
-       +1: nd
+       +1: nd, jerenkrantz
 
     *) mod_ssl: Remove some unused functions (after CAN-2004-0488 fix is applied)
        http://cvs.apache.org/viewcvs.cgi/httpd-2.0/modules/ssl/ssl_util.c?r1=1.46&r2=1.47
@@ -406,7 +410,7 @@ PATCHES TO BACKPORT FROM 2.1
 
     * Use the httpready accept filter
         server/listen.c: r1.96
-      +1: trawick, pquerna
+      +1: trawick, pquerna, jerenkrantz
 
     * Work around RedHat bug 82359 (openssl requires pkg-config):
         http://bugzilla.redhat.com/bugzilla/show_bug.cgi?id=82369
