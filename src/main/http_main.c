@@ -50,7 +50,7 @@
  *
  */
 
-/* $Id: http_main.c,v 1.64 1996/09/06 18:36:08 jim Exp $ */
+/* $Id: http_main.c,v 1.65 1996/09/08 17:14:58 ben Exp $ */
 
 /*
  * httpd.c: simple http daemon for answering WWW file requests
@@ -935,20 +935,6 @@ void reclaim_child_processes ()
     }
 }
 
-/* Finally, this routine is used by the caretaker process to wait for
- * a while...
- */
-
-static JMP_BUF wait_timeout_buf;
-
-static void longjmp_out_of_alarm (int sig) {
-#if defined(NEXT) || defined(USE_LONGJMP)
-    longjmp (wait_timeout_buf, 1);
-#else
-    siglongjmp (wait_timeout_buf, 1);
-#endif
-}
-
 #ifdef BROKEN_WAIT
 /*
 Some systems appear to fail to deliver dead children to wait() at times.
@@ -967,6 +953,20 @@ void reap_children()
 	    }
     }
 #endif
+
+/* Finally, this routine is used by the caretaker process to wait for
+ * a while...
+ */
+
+static JMP_BUF wait_timeout_buf;
+
+static void longjmp_out_of_alarm (int sig) {
+#if defined(NEXT) || defined(USE_LONGJMP)
+    longjmp (wait_timeout_buf, 1);
+#else
+    siglongjmp (wait_timeout_buf, 1);
+#endif
+}
 
 int wait_or_timeout (int *status)
 {
