@@ -1,5 +1,8 @@
 Changes with Apache 2.0.26-dev
 
+  *) Switch proc_pthread AcceptMutex configuration directive to pthread to 
+     be consistent with 1.3.  [Justin Erenkrantz]
+
   *) Cache apr_explode_localtime() value for 15 seconds.
      [Brian Pane <bpane@pacbell.net>]
 
