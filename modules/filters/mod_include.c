@@ -144,28 +144,29 @@ do {                                                                        \
  * +-------------------------------------------------------+
  */
 
-enum xbithack {
-    xbithack_off, xbithack_on, xbithack_full
-};
+typedef enum {
+    XBITHACK_OFF,
+    XBITHACK_ON,
+    XBITHACK_FULL
+} xbithack_t;
 
 typedef struct {
     unsigned int T[256];
     unsigned int x;
+    apr_size_t pattern_len;
 } bndm_t;
 
 typedef struct {
-    char *default_error_msg;
-    char *default_time_fmt;
-    enum xbithack *xbithack;
+    const char *default_error_msg;
+    const char *default_time_fmt;
+    xbithack_t  xbithack;
 } include_dir_config;
 
 typedef struct {
-    char *default_start_tag;
-    char *default_end_tag;
-    int  start_tag_len;
-    bndm_t start_seq_pat;
-    char *undefinedEcho;
-    int  undefinedEchoLen;
+    const char *default_start_tag;
+    const char *default_end_tag;
+    const char *undefined_echo;
+    apr_size_t  undefined_echo_len;
 } include_server_config;
 
 /* main parser states */
@@ -195,7 +196,7 @@ typedef struct arg_item {
     char             *name;
     apr_size_t        name_len;
     char             *value;
-    apr_size_t       value_len;
+    apr_size_t        value_len;
 } arg_item_t;
 
 struct ssi_internal_ctx {
@@ -203,7 +204,7 @@ struct ssi_internal_ctx {
     int           seen_eos;
     int           error;
     char          quote;         /* quote character value (or \0) */
-    apr_size_t    parse_pos;   /* parse position of partial matches */
+    apr_size_t    parse_pos;     /* parse position of partial matches */
     apr_size_t    bytes_read;
 
     apr_bucket_brigade *tmp_bb;
@@ -211,7 +212,6 @@ struct ssi_internal_ctx {
     request_rec  *r;
     const char   *start_seq;
     bndm_t       *start_seq_pat;
-    apr_size_t    start_seq_len;
     const char   *end_seq;
     apr_size_t    end_seq_len;
     char         *directive;     /* name of the current directive */
@@ -258,9 +258,9 @@ static const char lazy_eval_sentinel;
 #define DEFAULT_UNDEFINED_ECHO "(none)"
 
 #ifdef XBITHACK
-#define DEFAULT_XBITHACK xbithack_full
+#define DEFAULT_XBITHACK XBITHACK_FULL
 #else
-#define DEFAULT_XBITHACK xbithack_off
+#define DEFAULT_XBITHACK XBITHACK_OFF
 #endif
 
 
@@ -373,7 +373,7 @@ otilde\365oslash\370ugrave\371uacute\372yacute\375"     /* 6 */
     *p = '\0';
 }
 
-static void add_include_vars(request_rec *r, char *timefmt)
+static void add_include_vars(request_rec *r, const char *timefmt)
 {
     apr_table_t *e = r->subprocess_env;
     char *t;
@@ -1797,9 +1797,12 @@ static apr_status_t handle_echo(include_ctx_t *ctx, ap_filter_t *f,
                     include_server_config *sconf= 
                         ap_get_module_config(r->server->module_config,
                                              &include_module);
-                    tmp_buck = apr_bucket_pool_create(sconf->undefinedEcho, 
-                                                      sconf->undefinedEchoLen,
-                                                      r->pool, c->bucket_alloc);
+                    tmp_buck = apr_bucket_pool_create(apr_pstrmemdup(ctx->pool,
+                                                      sconf->undefined_echo, 
+                                                      sconf->undefined_echo_len),
+                                                      sconf->undefined_echo_len,
+                                                      ctx->pool,
+                                                      c->bucket_alloc);
                 }
                 APR_BRIGADE_INSERT_TAIL(bb, tmp_buck);
             }
@@ -2343,23 +2346,26 @@ static apr_status_t handle_printenv(include_ctx_t *ctx, ap_filter_t *f,
  */
    
 /* Precompile the bndm_t data structure. */
-static void bndm_compile(bndm_t *t, const char *n, apr_size_t nl)
+static bndm_t *bndm_compile(apr_pool_t *pool, const char *n, apr_size_t nl)
 {
     unsigned int x;
     const char *ne = n + nl;
+    bndm_t *t = apr_palloc(pool, sizeof(*t));
 
     memset(t->T, 0, sizeof(unsigned int) * 256);
-    
-    for (x = 1; n < ne; x <<= 1)
+    t->pattern_len = nl;
+
+    for (x = 1; n < ne; x <<= 1) {
         t->T[(unsigned char) *n++] |= x;
+    }
 
     t->x = x - 1;
+
+    return t;
 }
 
 /* Implements the BNDM search algorithm (as described above).
  *
- * n  - the pattern to search for
- * nl - length of the pattern to search for
  * h  - the string to look in
  * hl - length of the string to look for
  * t  - precompiled bndm structure against the pattern 
@@ -2367,17 +2373,18 @@ static void bndm_compile(bndm_t *t, const char *n, apr_size_t nl)
  * Returns the count of character that is the first match or hl if no
  * match is found.
  */
-static apr_size_t bndm(const char *n, apr_size_t nl, const char *h, 
-                       apr_size_t hl, bndm_t *t)
+static apr_size_t bndm(bndm_t *t, const char *h, apr_size_t hl)
 {
     const char *skip;
     const char *he, *p, *pi;
     unsigned int *T, x, d;
+    apr_size_t nl;
 
     he = h + hl;
 
     T = t->T;
     x = t->x;
+    nl = t->pattern_len;
 
     pi = h - 1; /* pi: p initial */
     p = pi + nl; /* compare window right to left. point to the first char */
@@ -2391,10 +2398,12 @@ static apr_size_t bndm(const char *n, apr_size_t nl, const char *h,
                 break;
             }
             if ((d & 1)) {
-                if (p != pi)
+                if (p != pi) {
                     skip = p;
-                else
+                }
+                else {
                     return p - h + 1;
+                }
             }
             d >>= 1;
         } while (d);
@@ -2414,7 +2423,7 @@ static apr_size_t find_start_sequence(include_ctx_t *ctx, const char *data,
                                       apr_size_t len)
 {
     struct ssi_internal_ctx *intern = ctx->intern;
-    apr_size_t slen = intern->start_seq_len;
+    apr_size_t slen = intern->start_seq_pat->pattern_len;
     apr_size_t index;
     const char *p, *ep;
 
@@ -2425,8 +2434,7 @@ static apr_size_t find_start_sequence(include_ctx_t *ctx, const char *data,
         /* try fast bndm search over the buffer
          * (hopefully the whole start sequence can be found in this buffer)
          */
-        index = bndm(intern->start_seq, intern->start_seq_len, data, len,
-                     intern->start_seq_pat);
+        index = bndm(intern->start_seq_pat, data, len);
 
         /* wow, found it. ready. */
         if (index < len) {
@@ -2491,7 +2499,7 @@ static apr_size_t find_partial_start_sequence(include_ctx_t *ctx,
 {
     struct ssi_internal_ctx *intern = ctx->intern;
     apr_size_t pos, spos = 0;
-    apr_size_t slen = intern->start_seq_len;
+    apr_size_t slen = intern->start_seq_pat->pattern_len;
     const char *p, *ep;
 
     pos = intern->parse_pos;
@@ -3122,7 +3130,7 @@ static apr_status_t send_parsed_content(ap_filter_t *f, apr_bucket_brigade *bb)
             if (index < len) {
                 /* now delete the start_seq stuff from the remaining bucket */
                 if (PARSE_DIRECTIVE == intern->state) { /* full match */
-                    apr_bucket_split(newb, intern->start_seq_len);
+                    apr_bucket_split(newb, intern->start_seq_pat->pattern_len);
                     ctx->flush_now = 1; /* pass pre-tag stuff */
                 }
 
@@ -3383,21 +3391,20 @@ static apr_status_t send_parsed_content(ap_filter_t *f, apr_bucket_brigade *bb)
 
 static int includes_setup(ap_filter_t *f)
 {
-    include_dir_config *conf = 
-               (include_dir_config *)ap_get_module_config(f->r->per_dir_config,
-                                                          &include_module);
+    include_dir_config *conf = ap_get_module_config(f->r->per_dir_config,
+                                                    &include_module);
 
     /* When our xbithack value isn't set to full or our platform isn't
      * providing group-level protection bits or our group-level bits do not
      * have group-execite on, we will set the no_local_copy value to 1 so
      * that we will not send 304s.
      */
-    if ((*conf->xbithack != xbithack_full)
+    if ((conf->xbithack != XBITHACK_FULL)
         || !(f->r->finfo.valid & APR_FINFO_GPROT)
         || !(f->r->finfo.protection & APR_GEXECUTE)) {
         f->r->no_local_copy = 1;
     }
-    
+
     return OK;
 }
 
@@ -3406,12 +3413,11 @@ static apr_status_t includes_filter(ap_filter_t *f, apr_bucket_brigade *b)
     request_rec *r = f->r;
     include_ctx_t *ctx = f->ctx;
     request_rec *parent;
-    include_dir_config *conf = 
-                   (include_dir_config *)ap_get_module_config(r->per_dir_config,
-                                                              &include_module);
+    include_dir_config *conf = ap_get_module_config(r->per_dir_config,
+                                                    &include_module);
 
     include_server_config *sconf= ap_get_module_config(r->server->module_config,
-                                                              &include_module);
+                                                       &include_module);
 
     if (!(ap_allow_options(r) & OPT_INCLUDES)) {
         return ap_pass_brigade(f->next, b);
@@ -3425,9 +3431,6 @@ static apr_status_t includes_filter(ap_filter_t *f, apr_bucket_brigade *b)
         ctx->intern = intern = apr_palloc(r->pool, sizeof(*ctx->intern));
         ctx->pool = r->pool;
         apr_pool_create(&ctx->dpool, ctx->pool);
-
-        /* configuration data */
-        intern->end_seq_len = strlen(sconf->default_end_tag);
 
         /* runtime data */
         intern->tmp_bb = apr_brigade_create(ctx->pool, f->c->bucket_alloc);
@@ -3445,10 +3448,11 @@ static apr_status_t includes_filter(ap_filter_t *f, apr_bucket_brigade *b)
 
         ctx->error_str = conf->default_error_msg;
         ctx->time_str = conf->default_time_fmt;
-        intern->start_seq_pat = &sconf->start_seq_pat;
         intern->start_seq  = sconf->default_start_tag;
-        intern->start_seq_len = sconf->start_tag_len;
+        intern->start_seq_pat = bndm_compile(ctx->pool, intern->start_seq,
+                                             strlen(intern->start_seq));
         intern->end_seq = sconf->default_end_tag;
+        intern->end_seq_len = strlen(intern->end_seq);
     }
 
     if ((parent = ap_get_module_config(r->request_config, &include_module))) {
@@ -3488,7 +3492,7 @@ static apr_status_t includes_filter(ap_filter_t *f, apr_bucket_brigade *b)
     apr_table_unset(f->r->headers_out, "ETag");
 
     /* Assure the platform supports Group protections */
-    if ((*conf->xbithack == xbithack_full)
+    if ((conf->xbithack == XBITHACK_FULL)
         && (r->finfo.valid & APR_FINFO_GPROT)
         && (r->finfo.protection & APR_GEXECUTE)) {
         ap_update_mtime(r, r->finfo.mtime);
@@ -3515,8 +3519,7 @@ static int include_fixup(request_rec *r)
 {
     include_dir_config *conf;
  
-    conf = (include_dir_config *) ap_get_module_config(r->per_dir_config,
-                                                &include_module);
+    conf = ap_get_module_config(r->per_dir_config, &include_module);
  
     if (r->handler && (strcmp(r->handler, "server-parsed") == 0)) 
     {
@@ -3533,7 +3536,7 @@ static int include_fixup(request_rec *r)
     }
 #else
     {
-        if (*conf->xbithack == xbithack_off) {
+        if (conf->xbithack == XBITHACK_OFF) {
             return DECLINED;
         }
 
@@ -3565,43 +3568,40 @@ static int include_fixup(request_rec *r)
 
 static void *create_includes_dir_config(apr_pool_t *p, char *dummy)
 {
-    include_dir_config *result =
-        (include_dir_config *)apr_palloc(p, sizeof(include_dir_config));
-    enum xbithack *xbh = (enum xbithack *) apr_palloc(p, sizeof(enum xbithack));
-    *xbh = DEFAULT_XBITHACK;
+    include_dir_config *result = apr_palloc(p, sizeof(include_dir_config));
+
     result->default_error_msg = DEFAULT_ERROR_MSG;
-    result->default_time_fmt = DEFAULT_TIME_FORMAT;
-    result->xbithack = xbh;
+    result->default_time_fmt  = DEFAULT_TIME_FORMAT;
+    result->xbithack          = DEFAULT_XBITHACK;
+
     return result;
 }
 
-static void *create_includes_server_config(apr_pool_t*p, server_rec *server)
+static void *create_includes_server_config(apr_pool_t *p, server_rec *server)
 {
-    include_server_config *result =
-        (include_server_config *)apr_palloc(p, sizeof(include_server_config));
-    result->default_end_tag = DEFAULT_END_SEQUENCE;
-    result->default_start_tag = DEFAULT_START_SEQUENCE;
-    result->start_tag_len = sizeof(DEFAULT_START_SEQUENCE)-1;
-    /* compile the pattern used by find_start_sequence */
-    bndm_compile(&result->start_seq_pat, result->default_start_tag, 
-                 result->start_tag_len); 
+    include_server_config *result;
 
-    result->undefinedEcho = apr_pstrdup(p,"(none)");
-    result->undefinedEchoLen = strlen( result->undefinedEcho);
+    result = apr_palloc(p, sizeof(include_server_config));
+    result->default_end_tag    = DEFAULT_END_SEQUENCE;
+    result->default_start_tag  = DEFAULT_START_SEQUENCE;
+    result->undefined_echo     = DEFAULT_UNDEFINED_ECHO;
+    result->undefined_echo_len = sizeof(DEFAULT_UNDEFINED_ECHO) - 1;
+
     return result; 
 }
-static const char *set_xbithack(cmd_parms *cmd, void *xbp, const char *arg)
+
+static const char *set_xbithack(cmd_parms *cmd, void *mconfig, const char *arg)
 {
-    include_dir_config *conf = (include_dir_config *)xbp;
+    include_dir_config *conf = mconfig;
 
     if (!strcasecmp(arg, "off")) {
-        *conf->xbithack = xbithack_off;
+        conf->xbithack = XBITHACK_OFF;
     }
     else if (!strcasecmp(arg, "on")) {
-        *conf->xbithack = xbithack_on;
+        conf->xbithack = XBITHACK_ON;
     }
     else if (!strcasecmp(arg, "full")) {
-        *conf->xbithack = xbithack_full;
+        conf->xbithack = XBITHACK_FULL;
     }
     else {
         return "XBitHack must be set to Off, On, or Full";
@@ -3610,17 +3610,11 @@ static const char *set_xbithack(cmd_parms *cmd, void *xbp, const char *arg)
     return NULL;
 }
 
-static const char *set_default_error_msg(cmd_parms *cmd, void *mconfig, const char *msg)
-{
-    include_dir_config *conf = (include_dir_config *)mconfig;
-    conf->default_error_msg = apr_pstrdup(cmd->pool, msg);
-    return NULL;
-}
-
-static const char *set_default_start_tag(cmd_parms *cmd, void *mconfig, const char *msg)
+static const char *set_default_start_tag(cmd_parms *cmd, void *mconfig,
+                                         const char *tag)
 {
     include_server_config *conf;
-    const char *p = msg;
+    const char *p = tag;
 
     /* be consistent. (See below in set_default_end_tag) */
     while (*p) {
@@ -3631,28 +3625,16 @@ static const char *set_default_start_tag(cmd_parms *cmd, void *mconfig, const ch
     }
 
     conf= ap_get_module_config(cmd->server->module_config , &include_module);
-    conf->default_start_tag = apr_pstrdup(cmd->pool, msg);
-    conf->start_tag_len = strlen(conf->default_start_tag );
-    bndm_compile(&conf->start_seq_pat, conf->default_start_tag, 
-                 conf->start_tag_len); 
-
-    return NULL;
-}
-static const char *set_undefined_echo(cmd_parms *cmd, void *mconfig, const char *msg)
-{
-    include_server_config *conf;
-    conf = ap_get_module_config(cmd->server->module_config, &include_module);
-    conf->undefinedEcho = apr_pstrdup(cmd->pool, msg);
-    conf->undefinedEchoLen = strlen(msg);
+    conf->default_start_tag = tag;
 
     return NULL;
 }
 
-
-static const char *set_default_end_tag(cmd_parms *cmd, void *mconfig, const char *msg)
+static const char *set_default_end_tag(cmd_parms *cmd, void *mconfig,
+                                       const char *tag)
 {
     include_server_config *conf;
-    const char *p = msg;
+    const char *p = tag;
 
     /* sanity check. The parser may fail otherwise */
     while (*p) {
@@ -3663,15 +3645,38 @@ static const char *set_default_end_tag(cmd_parms *cmd, void *mconfig, const char
     }
 
     conf= ap_get_module_config(cmd->server->module_config , &include_module);
-    conf->default_end_tag = apr_pstrdup(cmd->pool, msg);
+    conf->default_end_tag = tag;
 
     return NULL;
 }
 
-static const char *set_default_time_fmt(cmd_parms *cmd, void *mconfig, const char *fmt)
+static const char *set_undefined_echo(cmd_parms *cmd, void *mconfig,
+                                      const char *msg)
 {
-    include_dir_config *conf = (include_dir_config *)mconfig;
-    conf->default_time_fmt = apr_pstrdup(cmd->pool, fmt);
+    include_server_config *conf;
+
+    conf = ap_get_module_config(cmd->server->module_config, &include_module);
+    conf->undefined_echo = msg;
+    conf->undefined_echo_len = strlen(msg);
+
+    return NULL;
+}
+
+static const char *set_default_error_msg(cmd_parms *cmd, void *mconfig,
+                                         const char *msg)
+{
+    include_dir_config *conf = mconfig;
+    conf->default_error_msg = msg;
+
+    return NULL;
+}
+
+static const char *set_default_time_fmt(cmd_parms *cmd, void *mconfig,
+                                        const char *fmt)
+{
+    include_dir_config *conf = mconfig;
+    conf->default_time_fmt = fmt;
+
     return NULL;
 }
 
