@@ -1,4 +1,8 @@
 MODULE  CLIB.NLM
 MODULE  WS2_32.NLM
 IMPORT  KillMe
-EXPORT	@apachecore.imp
+IMPORT  kMutexAlloc
+IMPORT  kMutexFree
+IMPORT  kMutexLock
+IMPORT  kMutexUnlock
+EXPORT  @apachecore.imp

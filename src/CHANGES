@@ -1,4 +1,5 @@
 Changes with Apache 1.3.13
+
   *) Fix Win32 bug when pathname length exactly equals MAX_PATH. 
      This bug caused directory index to be displayed rather than
      returning an error. [Allan Edwards <ake@raleigh.ibm.com>]
@@ -6,6 +7,52 @@ Changes with Apache 1.3.13
   *) Correct mod_proxy Win95 dynamic link __declspec(thread) bug.
      David Whitmarsh <david.whitmarsh@dial.pipex.com> 
      PR: 1462, 2216, 3645
+  
+  *) Ported expat-lite to NetWare and integrated project files into the
+     ApacheNW.mcp. [Mike Gardiner <mgardiner@novell.com>]
+  
+  *) Switched thread storage data mechanism on NetWare to use updated
+     system calls. [Mike Gardiner <mgardiner@novell.com>]
+ 
+  *) Fixed problem with multilanguage support that prevented Apache on
+     NetWare from displaying the correct language page.
+     [Mike Gardiner <mgardiner@novell.com>]
+  
+  *) Fixed memory leaks on NetWare port.  When unloading Apache with
+     the developer option turned on NetWare would spew messages
+     complaining about unreleased resources.
+     [Mike Gardiner <mgardiner@novell.com>]   
+  
+  *) Fixed a problem that prevented Apache on NetWare from shutting down
+     correctly when loading multiple instances in individual address
+     spaces. [Mike Gardiner <mgardiner@novell.com>]
+
+  *) Changed threading primitives to use faster more scalable calls.
+     [Mike Gardiner <mgardiner@novell.com>]
+  
+  *) Added -s option for NetWare port to allow Apache to run without a
+     screen. [Mike Gardiner <mgardiner@novell.com>]
+  
+  *) Added code for NetWare port to display the listening ports and loaded
+     DSO modules to the console screen.
+     [Mike Gardiner <mgardiner@novell.com>]
+  
+  *) Removed ugly NetWare specific code from the modules and added libpre.c
+     and libprews.c instead.  These files implement the NLM startup code
+     for shared NLMs (DSOs).  The result of using these files is less
+     obtrusive code, faster load times, and a smaller executable size.
+     libprews.c contains WSAStartup and WSACleanup WinSock calls needed for
+     initialization and termination of DSO modules.
+     [Mike Gardiner <mgardiner@novell.com>]
+  
+  *) Moved htpasswd and htdigest projects files for NetWare into the main
+     ApacheNW.mcp project file. [Mike Gardiner <mgardiner@novell.com>]
+ 
+  *) Added mod_tls (SSL/TLS) module for NetWare SSL/TLS support.
+     [Mike Gardiner <mgardiner@novell.com>]
+
+  *) Updated httpd.conf-dist.nw with <IfModule> directives around
+     standard DSO modules. [Mike Gardiner <mgardiner@novell.com>]
     
   *) Correct mod_proxy Win32 garbage collection bug (clean failing
      due to stat() against directory).
