@@ -65,6 +65,8 @@ case "$PLAT" in
         ;;
     *-os2_emx)
         ;;
+    *-beos*)
+        ;;
     *)
         LIBS="$LIBS -ldl"
         ;;
