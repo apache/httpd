@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/01/12 22:49:34 $]
+Last modified at [$Date: 2004/01/13 00:16:24 $]
 
 Release:
 
@@ -306,6 +306,11 @@ PATCHES TO BACKPORT FROM 2.1
     * Make REMOTE_PORT available to mod_rewrite (2.0 + 1.3)
       PR 25772.
         modules/mappers/mod_rewrite.c: r1.239
+      +1: nd
+
+    * Don't let mod_usertrack overwrite other cookies. (2.0 + 1.3)
+      PR 26002.
+        modules/metadata/mod_usertrack.c: 1.44
       +1: nd
 
 CURRENT RELEASE NOTES:
