@@ -19,7 +19,7 @@
 .el .ne 3
 .IP "\\$1" \\$2
 ..
-.TH "LOGRESOLVE" 8 "2003-04-29" "Apache HTTP Server" "logresolve"
+.TH "LOGRESOLVE" 8 "2004-01-06" "Apache HTTP Server" "logresolve"
 
 .SH NAME
 logresolve \- Resolve IP-addresses to hostnames in Apache log files
@@ -41,7 +41,6 @@ Takes an Apache log file on standard input\&. The IP addresses must be the first
 
 .SH "OPTIONS"
  
-.RS
  
 .TP
 -s \fIfilename\fR
@@ -49,5 +48,4 @@ Specifies a filename to record statistics\&.
 .TP
 -c
 This causes logresolve to apply some DNS checks: after finding the hostname from the IP address, it looks up the IP addresses for the hostname and checks that one of these matches the original address\&.  
-.RE
  

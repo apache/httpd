@@ -19,7 +19,7 @@
 .el .ne 3
 .IP "\\$1" \\$2
 ..
-.TH "APXS" 8 "2003-04-29" "Apache HTTP Server" "apxs"
+.TH "APXS" 8 "2004-01-06" "Apache HTTP Server" "apxs"
 
 .SH NAME
 apxs \- APache eXtenSion tool
@@ -84,45 +84,36 @@ For more details about DSO support in Apache read the documentation of mod_so or
 
 .SH "OPTIONS"
  
-.Sh "COMMON OPTIONS"
+.SS "Common Options"
  
-.RS
  
 .TP
 -n \fImodname\fR
 This explicitly sets the module name for the -i (install) and -g (template generation) option\&. Use this to explicitly specify the module name\&. For option -g this is required, for option -i the apxs tool tries to determine the name from the source or (as a fallback) at least by guessing it from the filename\&.  
-.RE
   
-.Sh "QUERY OPTIONS"
+.SS "Query Options"
  
-.RS
  
 .TP
 -q
 Performs a query for apxs's knowledge about certain settings\&. The \fIquery\fR parameters can be one or more of the following strings: CC, CFLAGS, CFLAGS_SHLIB, INCLUDEDIR, LD_SHLIB, LDFLAGS_SHLIB, LIBEXECDIR, LIBS_SHLIB, SBINDIR, SYSCONFDIR, TARGET\&. .PP Use this for manually determining settings\&. For instance use .nf INC=-I`apxs -q INCLUDEDIR` .fi .PP inside your own Makefiles if you need manual access to Apache's C header files\&.  
-.RE
   
-.Sh "CONFIGURATION OPTIONS"
+.SS "Configuration Options"
  
-.RS
  
 .TP
 -S \fIname\fR=\fIvalue\fR
 This option changes the apxs settings described above\&.  
-.RE
   
-.Sh "TEMPLATE GENERATION OPTIONS"
+.SS "Template Generation Options"
  
-.RS
  
 .TP
 -g
 This generates a subdirectory \fIname\fR (see option -n) and there two files: A sample module source file named mod_\fIname\fR\&.c which can be used as a template for creating your own modules or as a quick start for playing with the apxs mechanism\&. And a corresponding Makefile for even easier build and installing of this module\&.  
-.RE
   
-.Sh "DSO COMPILATION OPTIONS"
+.SS "DSO Compilation Options"
  
-.RS
  
 .TP
 -c
@@ -148,11 +139,9 @@ This option passes \fIcompiler-flags\fR as additional flags to the compiler comm
 .TP
 -Wl,\fIlinker-flags\fR
 This option passes \fIlinker-flags\fR as additional flags to the linker command\&. Use this to add local linker-specific options\&.  
-.RE
   
-.Sh "DSO INSTALLATION AND CONFIGURATION OPTIONS"
+.SS "DSO Installation and Configuration Options"
   
-.RS
  
 .TP
 -i
@@ -166,7 +155,6 @@ Same as option -a but the created LoadModule directive is prefixed with a hash s
 .TP
 -e
 This indicates the editing operation, which can be used with the -a and -A options similarly to the -i operation to edit Apache's httpd\&.conf configuration file without attempting to install the module\&.  
-.RE
   
 .SH "EXAMPLES"
  
