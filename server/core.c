@@ -3266,14 +3266,16 @@ static int core_input_filter(ap_filter_t *f, apr_bucket_brigade *b,
         }
     }
 
-    /* If readbytes is -1, we want to just read everything until the end
-     * of the brigade, which in this case means the end of the socket.  To
-     * do this, we loop through the entire brigade, until the socket is
-     * exhausted, at which point, it will automagically remove itself from
-     * the brigade.
-     * ### No one in their right mind should be calling this with -1.
-     *     This is just an all-around bad idea.  We may be better off by 
-     *     just closing the socket.  Determine whether anyone uses this.
+    /* If mode is EXHAUSTIVE, we want to just read everything until the end
+     * of the brigade, which in this case means the end of the socket.
+     * To do this, we attach the brigade that has currently been setaside to
+     * the brigade that was passed down, and send that brigade back.
+     * 
+     * NOTE:  This is VERY dangerous to use, and should only be done with
+     * extreme caution.  However, the Perchild MPM needs this feature
+     * if it is ever going to work correctly again.  With this, the Perchild
+     * MPM can easily request the socket and all data that has been read,
+     * which means that it can pass it to the correct child process.
      */
     if (mode == AP_MODE_EXHAUSTIVE) {
         apr_bucket *e;
