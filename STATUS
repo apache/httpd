@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/07/30 10:49:12 $]
+Last modified at [$Date: 2003/07/30 14:11:16 $]
 
 Release:
 
@@ -273,7 +273,7 @@ PATCHES TO PORT FROM 2.1
       potentially destabilizing and may take some iterations in
       2.1-dev before it is ready for prime time.
         support/ab.c: r1.128
-      +1: trawick
+      +1: trawick, stoddard
 
     * mod_rewrite: more or less cosmetic fix. If a .htaccess in DocumentRoot
       configures:
@@ -289,7 +289,7 @@ PATCHES TO PORT FROM 2.1
     * mod_rewrite: don't exit(1) if the logfile could not be opened. Return
       internal server error instead to shutdown cleanly.
         modules/mappers/mod_rewrite.c: r1.191
-      +1: nd, trawick
+      +1: nd, trawick, stoddard
 
     * Install config.nice to make minor version upgrades easier.
         Makefile.in: r1.136
