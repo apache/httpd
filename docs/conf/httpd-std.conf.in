@@ -448,7 +448,9 @@ HostnameLookups Off
 # EnableMMAP: Control whether memory-mapping is used to deliver
 # files (assuming that the underlying OS supports it).
 # The default is on; turn this off if you serve from NFS-mounted 
-# filesystems.
+# filesystems.  On some systems, turning it off (regardless of
+# filesystem) can improve performance; for details, please see
+# http://httpd.apache.org/docs-2.0/mod/core.html#enablemmap
 #
 # EnableMMAP off
 
