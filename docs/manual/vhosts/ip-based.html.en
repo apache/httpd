@@ -61,9 +61,9 @@
     configuration file to select which IP address (or virtual host)
     that daemon services. e.g.</p>
 
-<div class="example"><pre>
+    <div class="example"><p><code>
     Listen www.smallco.com:80
-</pre></div>
+    </code></p></div>
 
     <p>It is recommended that you use an IP address instead of a
     hostname (see <a href="../dns-caveats.html">DNS caveats</a>).</p>
@@ -78,23 +78,23 @@
     configuration directives to different values for each virtual
     host. e.g.</p>
 
-<div class="example"><pre>
-    &lt;VirtualHost www.smallco.com&gt;
-    ServerAdmin webmaster@mail.smallco.com
-    DocumentRoot /groups/smallco/www
-    ServerName www.smallco.com
-    ErrorLog /groups/smallco/logs/error_log
-    TransferLog /groups/smallco/logs/access_log
+    <div class="example"><p><code>
+    &lt;VirtualHost www.smallco.com&gt;<br />
+    ServerAdmin webmaster@mail.smallco.com<br />
+    DocumentRoot /groups/smallco/www<br />
+    ServerName www.smallco.com<br />
+    ErrorLog /groups/smallco/logs/error_log<br />
+    TransferLog /groups/smallco/logs/access_log<br />
+    &lt;/VirtualHost&gt;<br />
+		<br />
+    &lt;VirtualHost www.baygroup.org&gt;<br />
+    ServerAdmin webmaster@mail.baygroup.org<br />
+    DocumentRoot /groups/baygroup/www<br />
+    ServerName www.baygroup.org<br />
+    ErrorLog /groups/baygroup/logs/error_log<br />
+    TransferLog /groups/baygroup/logs/access_log<br />
     &lt;/VirtualHost&gt;
-
-    &lt;VirtualHost www.baygroup.org&gt;
-    ServerAdmin webmaster@mail.baygroup.org
-    DocumentRoot /groups/baygroup/www
-    ServerName www.baygroup.org
-    ErrorLog /groups/baygroup/logs/error_log
-    TransferLog /groups/baygroup/logs/access_log
-    &lt;/VirtualHost&gt;
-</pre></div>
+		</code></p></div>
 
     <p>It is recommended that you use an IP address instead of a
     hostname (see <a href="../dns-caveats.html">DNS caveats</a>).</p>
