@@ -90,7 +90,7 @@ int ap_url_cache_handler(request_rec *r)
     apr_status_t rv;
     const char *cc_in;
     apr_pool_t *p = r->pool;
-    apr_uri_components uri = r->parsed_uri;
+    apr_uri_t uri = r->parsed_uri;
     char *url = r->unparsed_uri;
     char *path = uri.path;
     const char *types;
@@ -341,7 +341,7 @@ int ap_cache_in_filter(ap_filter_t *f, apr_bucket_brigade *in);
 int ap_cache_in_filter(ap_filter_t *f, apr_bucket_brigade *in)
 {
     request_rec *r = f->r;
-    apr_uri_components uri = r->parsed_uri;
+    apr_uri_t uri = r->parsed_uri;
     char *url = r->unparsed_uri;
     apr_pool_t *p = r->pool;
     apr_bucket *e;
