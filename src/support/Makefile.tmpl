@@ -12,9 +12,9 @@ LIBS=-lm -lap -los $(EXTRA_LIBS) $(LIBS1)
 INCLUDES=$(INCLUDES1) $(INCLUDES0) $(EXTRA_INCLUDES)
 LDFLAGS=$(LDFLAGS1) $(EXTRA_LDFLAGS) -L$(OSDIR) -L$(SRCDIR)/ap
 
-TARGETS=htpasswd htdigest rotatelogs logresolve ab apxs
+TARGETS=htpasswd htdigest rotatelogs logresolve ab apxs checkgid
 
-OBJS=htpasswd.o htdigest.o rotatelogs.o logresolve.o ab.o
+OBJS=htpasswd.o htdigest.o rotatelogs.o logresolve.o ab.o checkgid.o
 
 .c.o: 
 	$(CC) -c $(INCLUDES) $(CFLAGS) $<
@@ -35,6 +35,9 @@ logresolve: logresolve.o
 
 ab: ab.o
 	$(CC) $(CFLAGS) -o ab $(LDFLAGS) ab.o $(LIBS)
+
+checkgid: checkgid.o
+	$(CC) $(CFLAGS) -o checkgid $(LDFLAGS) checkgid.o $(LIBS)
 
 apxs: apxs.pl
 	sed <apxs.pl >apxs \
