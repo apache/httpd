@@ -78,11 +78,20 @@ static int make_sock(const struct sockaddr_in *server)
     else
 	ap_snprintf(addr, sizeof(addr), "port %d", ntohs(server->sin_port));
 
+#ifdef WIN32
+    s = WSASocket(AF_INET, SOCK_STREAM, IPPROTO_TCP, NULL, 0, WSA_FLAG_OVERLAPPED);
+    if (s == INVALID_SOCKET) {
+	ap_log_error(APLOG_MARK, APLOG_CRIT, NULL,
+                     "make_sock: failed to get a socket for %s", addr);
+	return -1;
+    }
+#else
     if ((s = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP)) == -1) {
 	ap_log_error(APLOG_MARK, APLOG_CRIT, NULL,
 		    "make_sock: failed to get a socket for %s", addr);
 	return -1;
     }
+#endif
 
 #ifdef SO_REUSEADDR
     if (setsockopt(s, SOL_SOCKET, SO_REUSEADDR, (char *) &one, sizeof(int)) < 0) {
