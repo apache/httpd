@@ -325,13 +325,17 @@ AP_DECLARE(void) ap_signal_parent(ap_signal_parent_e type)
  *
  *   ready event [signal the parent immediately, then close]
  *   exit event  [save to poll later]
+ *   start mutex [signal from the parent to begin accept()]
  *   scoreboard shm handle [to recreate the ap_scoreboard]
  */
-void get_handles_from_parent(server_rec *s, apr_shm_t *scoreboard_shm)
+void get_handles_from_parent(server_rec *s, HANDLE *child_exit_event,
+                             apr_proc_mutex_t **child_start_mutex,
+                             apr_shm_t **scoreboard_shm)
 {
     HANDLE pipe;
     HANDLE hScore;
     HANDLE ready_event;
+    HANDLE os_start;
     DWORD BytesRead;
     void *sb_shared;
     apr_status_t rv;
@@ -348,11 +352,26 @@ void get_handles_from_parent(server_rec *s, apr_shm_t *scoreboard_shm)
     SetEvent(ready_event);
     CloseHandle(ready_event);
 
-    if (!ReadFile(pipe, &exit_event, sizeof(HANDLE),
+    if (!ReadFile(pipe, child_exit_event, sizeof(HANDLE),
                   &BytesRead, (LPOVERLAPPED) NULL)
         || (BytesRead != sizeof(HANDLE))) {
         ap_log_error(APLOG_MARK, APLOG_CRIT, apr_get_os_error(), ap_server_conf,
                      "Child %d: Unable to retrieve the exit event from the parent", my_pid);
+        exit(APEXIT_CHILDINIT);
+    }
+
+    if (!ReadFile(pipe, &os_start, sizeof(os_start),
+                  &BytesRead, (LPOVERLAPPED) NULL)
+        || (BytesRead != sizeof(os_start))) {
+        ap_log_error(APLOG_MARK, APLOG_CRIT, apr_get_os_error(), ap_server_conf,
+                     "Child %d: Unable to retrieve the start_mutex from the parent", my_pid);
+        exit(APEXIT_CHILDINIT);
+    }
+    *child_start_mutex = NULL;
+    if ((rv = apr_os_proc_mutex_put(child_start_mutex, &os_start, s->process->pool))
+            != APR_SUCCESS) {
+        ap_log_error(APLOG_MARK, APLOG_CRIT, rv, ap_server_conf,
+                     "Child %d: Unable to access the start_mutex from the parent", my_pid);
         exit(APEXIT_CHILDINIT);
     }
 
@@ -363,16 +382,16 @@ void get_handles_from_parent(server_rec *s, apr_shm_t *scoreboard_shm)
                      "Child %d: Unable to retrieve the scoreboard from the parent", my_pid);
         exit(APEXIT_CHILDINIT);
     }
-
-    if ((rv = apr_os_shm_put(&ap_scoreboard_shm, &hScore, s->process->pool)) 
+    *scoreboard_shm = NULL;
+    if ((rv = apr_os_shm_put(scoreboard_shm, &hScore, s->process->pool)) 
             != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_CRIT, rv, ap_server_conf,
                      "Child %d: Unable to access the scoreboard from the parent", my_pid);
         exit(APEXIT_CHILDINIT);
     }
 
-    rv = ap_reopen_scoreboard(s->process->pool, &ap_scoreboard_shm, 1);
-    if (rv || !(sb_shared = apr_shm_baseaddr_get(ap_scoreboard_shm))) {
+    rv = ap_reopen_scoreboard(s->process->pool, scoreboard_shm, 1);
+    if (rv || !(sb_shared = apr_shm_baseaddr_get(*scoreboard_shm))) {
 	ap_log_error(APLOG_MARK, APLOG_CRIT, rv, NULL, 
                      "Child %d: Unable to reopen the scoreboard from the parent", my_pid);
         exit(APEXIT_CHILDINIT);
@@ -390,13 +409,16 @@ void get_handles_from_parent(server_rec *s, apr_shm_t *scoreboard_shm)
 static int send_handles_to_child(apr_pool_t *p, 
                                  HANDLE child_ready_event,
                                  HANDLE child_exit_event, 
+                                 apr_proc_mutex_t *child_start_mutex,
+                                 apr_shm_t *scoreboard_shm,
                                  HANDLE hProcess, 
                                  apr_file_t *child_in)
 {
     apr_status_t rv;
-    HANDLE hScore;
-    HANDLE hDup;
     HANDLE hCurrentProcess = GetCurrentProcess();
+    HANDLE hDup;
+    HANDLE os_start;
+    HANDLE hScore;
     DWORD BytesWritten;
 
     if (!DuplicateHandle(hCurrentProcess, child_ready_event, hProcess, &hDup,
@@ -423,7 +445,24 @@ static int send_handles_to_child(apr_pool_t *p,
                      "Parent: Unable to send the exit event handle to the child");
         return -1;
     }
-    if ((rv = apr_os_shm_get(&hScore, ap_scoreboard_shm)) != APR_SUCCESS) {
+    if ((rv = apr_os_proc_mutex_get(&os_start, child_start_mutex)) != APR_SUCCESS) {
+        ap_log_error(APLOG_MARK, APLOG_CRIT, rv, ap_server_conf,
+                     "Parent: Unable to retrieve the start mutex for the child");
+        return -1;
+    }
+    if (!DuplicateHandle(hCurrentProcess, os_start, hProcess, &hDup,
+                         SYNCHRONIZE, FALSE, 0)) {
+        ap_log_error(APLOG_MARK, APLOG_CRIT, apr_get_os_error(), ap_server_conf,
+                     "Parent: Unable to duplicate the start mutex to the child");
+        return -1;
+    }
+    if ((rv = apr_file_write_full(child_in, &hDup, sizeof(hDup), &BytesWritten))
+            != APR_SUCCESS) {
+        ap_log_error(APLOG_MARK, APLOG_CRIT, rv, ap_server_conf,
+                     "Parent: Unable to send the start mutex to the child");
+        return -1;
+    }
+    if ((rv = apr_os_shm_get(&hScore, scoreboard_shm)) != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_CRIT, rv, ap_server_conf,
                      "Parent: Unable to retrieve the scoreboard handle for the child");
         return -1;
@@ -717,6 +756,7 @@ static int create_process(apr_pool_t *p, HANDLE *child_proc, HANDLE *child_exit_
                  "Parent: Created child process %d", new_child.pid);
 
     if (send_handles_to_child(ptemp, waitlist[waitlist_ready], hExitEvent,
+                              start_mutex, ap_scoreboard_shm,
                               new_child.hproc, new_child.in)) {
         /*
          * This error is fatal, mop up the child and move on
@@ -1437,12 +1477,11 @@ static int winnt_post_config(apr_pool_t *pconf, apr_pool_t *plog, apr_pool_t *pt
                 mpm_start_console_handler();
             }
 
-            /* Create the start mutex, apPID, where PID is the parent Apache process ID.
-             * Ths start mutex is used during a restart to prevent more than one 
-             * child process from entering the accept loop at once.
+            /* Create the start mutex, as an unnamed object for security.
+             * Ths start mutex is used during a restart to prevent more than 
+             * one child process from entering the accept loop at once.
              */
-            rv =  apr_proc_mutex_create(&start_mutex, 
-                                        signal_name_prefix,
+            rv =  apr_proc_mutex_create(&start_mutex, NULL,
                                         APR_LOCK_DEFAULT,
                                         ap_server_conf->process->pool);
             if (rv != APR_SUCCESS) {
@@ -1501,28 +1540,27 @@ static void winnt_child_init(apr_pool_t *pchild, struct server_rec *s)
     /* This is a child process, not in single process mode */
     if (!one_process) {
         /* Set up events and the scoreboard */
-        get_handles_from_parent(s, ap_scoreboard_shm);
+        get_handles_from_parent(s, &exit_event, &start_mutex, 
+                                &ap_scoreboard_shm);
 
         /* Set up the listeners */
         get_listeners_from_parent(s);
 
         ap_my_generation = ap_scoreboard_image->global->running_generation;
-        rv = apr_proc_mutex_child_init(&start_mutex, signal_name_prefix, 
-                                       s->process->pool);
     }
     else {
         /* Single process mode - this lock doesn't even need to exist */
         rv = apr_proc_mutex_create(&start_mutex, signal_name_prefix, 
                                    APR_LOCK_DEFAULT, s->process->pool);
+        if (rv != APR_SUCCESS) {
+            ap_log_error(APLOG_MARK,APLOG_ERR, rv, ap_server_conf,
+                         "%s child %d: Unable to init the start_mutex.",
+                         service_name, my_pid);
+            exit(APEXIT_CHILDINIT);
+        }
         
         /* Borrow the shutdown_even as our _child_ loop exit event */
         exit_event = shutdown_event;
-    }
-    if (rv != APR_SUCCESS) {
-        ap_log_error(APLOG_MARK,APLOG_ERR, rv, ap_server_conf,
-                     "%s child %d: Unable to init the start_mutex.",
-                     service_name, my_pid);
-        exit(APEXIT_CHILDINIT);
     }
 }
 
