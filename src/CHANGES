@@ -1,5 +1,8 @@
 Changes with Apache 1.3.10
 
+  *) Fixed parsing of TAKE13-based configuration directives.
+     [Steffen Roller <sr@daa.de>] PR#5550
+
   *) rename the lookup() function to hashTableLookup() (in expat-lite)
      to prevent name clashes with modules / third-party software.
      [Ralf S. Engelschall, Greg Stein]

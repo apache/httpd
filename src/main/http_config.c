@@ -881,7 +881,7 @@ static const char *invoke_cmd(const command_rec *cmd, cmd_parms *parms,
 	w2 = *args ? ap_getword_conf(parms->pool, &args) : NULL;
 	w3 = *args ? ap_getword_conf(parms->pool, &args) : NULL;
 
-	if (*w == '\0' || (*w2 && !w3) || *args != 0)
+	if (*w == '\0' || (w2 && *w2 && !w3) || *args != 0)
 	    return ap_pstrcat(parms->pool, cmd->name,
 			    " takes one or three arguments",
 			    cmd->errmsg ? ", " : NULL, cmd->errmsg, NULL);
