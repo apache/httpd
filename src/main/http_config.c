@@ -1229,10 +1229,7 @@ int ap_parse_htaccess(void **result, request_rec *r, int override,
 	filename = ap_make_full_path(r->pool, d, w);
 	f = ap_pcfg_openfile(r->pool, filename);
     }
-    if (!access_name[0]) {
-	dc = NULL;
-    }
-    else if (f) {
+    if (f) {
 	dc = ap_create_per_dir_config(r->pool);
 
 	parms.config_file = f;
@@ -1250,7 +1247,7 @@ int ap_parse_htaccess(void **result, request_rec *r, int override,
 	*result = dc;
     }
     else {
-	if (errno == ENOENT || errno == ENOTDIR)
+	if (errno == ENOENT || errno == ENOTDIR || (!access_name[0]))
 	    dc = NULL;
 	else {
 	    ap_log_rerror(APLOG_MARK, APLOG_CRIT, r,
