@@ -949,6 +949,7 @@ API_EXPORT(char *) ap_make_full_path(ap_context_t *a, const char *dir, const cha
 API_EXPORT(int) ap_is_matchexp(const char *str);
 API_EXPORT(int) ap_strcmp_match(const char *str, const char *exp);
 API_EXPORT(int) ap_strcasecmp_match(const char *str, const char *exp);
+API_EXPORT(char *) ap_strcasestr(const char *s1, const char *s2);
 API_EXPORT(char *) ap_pbase64decode(ap_context_t *p, const char *bufcoded);
 API_EXPORT(char *) ap_pbase64encode(ap_context_t *p, char *string); 
 API_EXPORT(char *) ap_uudecode(ap_context_t *p, const char *bufcoded);
