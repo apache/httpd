@@ -843,7 +843,8 @@ static const char *execute_now(char *cmd_line, const char *args, cmd_parms *parm
 static const char * ap_build_config_sub(apr_pool_t *p, apr_pool_t *temp_pool,
 					const char *l, cmd_parms *parms,
 					ap_directive_t **current,
-					ap_directive_t **curr_parent)
+					ap_directive_t **curr_parent,
+                                        ap_directive_t **conftree)
 {
     const char *args;
     char *cmd_name;
@@ -894,6 +895,12 @@ static const char * ap_build_config_sub(apr_pool_t *p, apr_pool_t *temp_pool,
                 }
             }
             if (*current) {
+                if (!*conftree) {
+                    /* Before walking *current to the end of the list,
+                     * set the head to *current.
+                     */
+                    *conftree = *current;
+                }
                 while ((*current)->next != NULL) {
                     (*current) = (*current)->next;
                     (*current)->parent = (*curr_parent);
@@ -959,7 +966,7 @@ const char * ap_build_cont_config(apr_pool_t *p, apr_pool_t *temp_pool,
             break;
         } 
         retval = ap_build_config_sub(p, temp_pool, l, parms, current, 
-                                     curr_parent);
+                                     curr_parent, &conftree);
         if (retval != NULL)
             return retval;
         if (conftree == NULL && curr_parent != NULL) { 
@@ -1060,7 +1067,7 @@ API_EXPORT(const char *) ap_build_config(cmd_parms *parms,
     while (!(ap_cfg_getline(l, MAX_STRING_LEN, parms->config_file))) {
 
 	errmsg = ap_build_config_sub(p, temp_pool, l, parms,
-				     &current, &curr_parent);
+				     &current, &curr_parent, conftree);
 	if (errmsg != NULL)
 	    return errmsg;
 
