@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
-<!-- $Revision: 1.18.2.8 $ -->
+<!-- $Revision: 1.18.2.9 $ -->
 
 <!--
  Copyright 2002-2004 The Apache Software Foundation
@@ -145,7 +145,8 @@ Server Error Messages</a></seealso>
       <dt><code>errmsg</code></dt>
       <dd>The value is a message that is sent back to the
       client if an error occurs while parsing the
-      document.</dd>
+      document. This overrides any <directive
+      module="mod_include">SSIErrorMsg</directive> directives.</dd>
 
       <dt><code>sizefmt</code></dt>
       <dd>The value sets the format to be used which displaying
@@ -554,6 +555,10 @@ Server Error Messages</a></seealso>
       &lt;!--#if expr="$a = test1 &amp;&amp; $b = test2" --&gt;<br />
       &lt;!--#if expr="($a = test1) &amp;&amp; ($b = test2)" --&gt;
     </example>
+
+    <p>The boolean operators <code>&amp;&amp;</code> and <code>||</code>
+    share the same priority. So if you want to bind such an operator more
+    tightly, you should use parentheses.</p>
 
     <p>Anything that's not recognized as a variable or an operator
     is treated as a string. Strings can also be quoted:
