@@ -62,28 +62,6 @@ DATA STRUCTURES
  a smaller version inside XFig by specifing a magnification on the Export
  panel.
 
-EXPERIMENTAL CODE
-
- Experimental code is always encapsulated as following:
-
-   | #ifdef SSL_EXPERIMENTAL_xxxx
-   | ...
-   | #endif
-
- This way it is only compiled in when this define is enabled with
- the APACI --enable-rule=SSL_EXPERIMENTAL option and as long as the
- C pre-processor variable SSL_EXPERIMENTAL_xxxx_IGNORE is _NOT_
- defined (via CFLAGS). Or in other words: SSL_EXPERIMENTAL enables all
- SSL_EXPERIMENTAL_xxxx variables, except if SSL_EXPERIMENTAL_xxxx_IGNORE
- is already defined. Currently the following features are experimental:
-
-   o SSL_EXPERIMENTAL_ENGINE
-     The ability to support the new forthcoming OpenSSL ENGINE stuff.
-     Until this development branch of OpenSSL is merged into the main
-     stream, you have to use openssl-engine-0.9.x.tar.gz for this.
-     mod_ssl automatically recognizes this OpenSSL variant and then can
-     activate external crypto devices through SSLCryptoDevice directive.
-
 INCOMPATIBILITIES
 
  The following intentional incompatibilities exist between mod_ssl 2.x
