@@ -135,40 +135,22 @@ extern module MODULE_VAR_EXPORT dav_module;
 /* copy a module's providers into our per-directory configuration state */
 static void dav_copy_providers(ap_pool_t *p, const char *name, dav_dir_conf *conf)
 {
+    extern const dav_dyn_module dav_dyn_module_default;
+
     const dav_dyn_module *mod;
     const dav_dyn_provider *provider;
-    dav_dyn_hooks hooks;
-    void *ctx;
+    dav_dyn_hooks *ddh;
 
-    mod = dav_find_module(name);
-    /* ### if NULL? need to error out somehow... */
+    /* ### just hard-code this stuff for now */
 
-    /* Set hooks for any providers in the module */
-    ctx = dav_prepare_scan(p, mod);
-    if (ctx == NULL) {
-	/* ### how to signal an error? */
-	return;
-    }
+    /* mod = dav_find_module(name); */
+    mod = &dav_dyn_module_default;
 
-    while (!dav_scan_providers(ctx, &provider, &hooks)) {
+    provider = mod->providers;
 
-	switch (provider->type) {
-
-	case DAV_DYN_TYPE_LIVEPROP:
-	{
-	    dav_dyn_hooks *ddh = ap_palloc(p, sizeof(*ddh));
-
-	    *ddh = hooks;
-	    ddh->next = conf->liveprop;
-	    conf->liveprop = ddh;
-	    break;
-	}
-
-	default:
-	    /* ### need to error out somehow... */
-	    break;
-	}
-    }
+    ddh = ap_pcalloc(p, sizeof(*ddh));
+    ddh->hooks = provider->hooks;
+    conf->liveprop = ddh;
 }
 
 static void dav_init_handler(ap_pool_t *p, ap_pool_t *plog, ap_pool_t *ptemp,
@@ -177,8 +159,6 @@ static void dav_init_handler(ap_pool_t *p, ap_pool_t *plog, ap_pool_t *ptemp,
     /* DBG0("dav_init_handler"); */
 
     ap_add_version_component(p, "DAV/" DAV_VERSION);
-
-    dav_process_builtin_modules(p);
 }
 
 static void *dav_create_server_config(ap_pool_t *p, server_rec *s)
