@@ -50,7 +50,7 @@
  *
  */
 
-/* $Id: util.c,v 1.23 1996/10/13 13:35:30 ben Exp $ */
+/* $Id: util.c,v 1.24 1996/10/18 19:22:11 ben Exp $ */
 
 /*
  * str.c: string utility things
@@ -449,7 +449,7 @@ char *getword_nulls(pool* atrans, char **line, char stop) {
  * all honored
  */
 
-static char *substring_conf (pool *p, char *start, int len, char quote)
+static char *substring_conf (pool *p, const char *start, int len, char quote)
 {
     char *result = palloc (p, len + 2);
     char *resp = result;
