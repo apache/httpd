@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.en.xsl"?>
-<!-- $Revision: 1.15 $ -->
+<!-- $Revision: 1.16 $ -->
 
 <!--
  Copyright 2002-2004 The Apache Software Foundation
@@ -32,12 +32,6 @@ on each concept is provided in the links.</p>
 <section id="definitions"><title>Definitions</title>
 
 <dl>
-<dt><a name="authentication">Authentication</a></dt> <dd>The positive
-identification of a network entity such as a server, a client, or a
-user.<br /> See: <a
-href="howto/auth.html">Authentication, Authorization, and Access
-Control</a></dd>
-
 <dt><a name="accesscontrol">Access Control</a></dt>
 <dd>The restriction of access to network realms. In an Apache context
     usually the restriction of access to certain <em>URLs</em>.<br />
@@ -57,6 +51,12 @@ href="#dso">DSO</a>s) and helps install them in the Apache Web
 server.<br /> See: <a
 href="programs/apxs.html">Manual Page: apxs</a></dd>
 
+<dt><a name="authentication">Authentication</a></dt>
+<dd>The positive identification of a network entity such as a server, a
+client, or a user.<br /> See: <a
+href="howto/auth.html">Authentication, Authorization, and Access
+Control</a></dd>
+
 <dt><a name="certificate">Certificate</a></dt>
 <dd>A data record used for authenticating network entities such
     as a server or a client. A certificate contains X.509 information pieces
@@ -65,13 +65,6 @@ href="programs/apxs.html">Manual Page: apxs</a></dd>
     issuer), plus the owner's <a href="#publickey">public key</a> and the
     signature made by the CA. Network entities verify these signatures
     using CA certificates.<br />
-See: <a href="ssl/">SSL/TLS Encryption</a></dd>
-
-<dt><a name="certificationauthority">Certification Authority</a> <a
-name="ca">(CA)</a></dt> <dd>A trusted third party whose purpose is to
-sign certificates for network entities it has authenticated using
-secure means. Other network entities can check the signature to verify
-that a CA has authenticated the bearer of a certificate.<br />
 See: <a href="ssl/">SSL/TLS Encryption</a></dd>
 
 <dt><a name="certificatsigningrequest">Certificate Signing Request</a>
@@ -83,6 +76,12 @@ with the <a href="#privatekey">Private Key</a> of their CA
 certificate.<br />
 See: <a href="ssl/">SSL/TLS Encryption</a></dd>
 
+<dt><a name="certificationauthority">Certification Authority</a> <a
+name="ca">(CA)</a></dt> <dd>A trusted third party whose purpose is to
+sign certificates for network entities it has authenticated using
+secure means. Other network entities can check the signature to verify
+that a CA has authenticated the bearer of a certificate.<br />
+See: <a href="ssl/">SSL/TLS Encryption</a></dd>
 
 <dt><a name="cipher">Cipher</a></dt> <dd>An algorithm or system for
 data encryption. Examples are DES, IDEA, RC4, etc.<br />
@@ -111,9 +110,9 @@ See: <a href="howto/cgi.html">Dynamic Content with CGI</a></dd>
 that control the configuration of Apache.<br />
 See: <a href="configuring.html">Configuration Files</a></dd>
 
-<dt><a name="connect">CONNECT</a></dt> <dd>An HTTP <a
-href="#method">method</a> for proxying raw data channels over HTTP. It
-can be used to encapsulate other protocols, such as the SSL
+<dt><a name="connect">CONNECT</a></dt>
+<dd>An HTTP <a href="#method">method</a> for proxying raw data channels
+over HTTP. It can be used to encapsulate other protocols, such as the SSL
 protocol.</dd>
 
 <dt><a name="context">Context</a></dt> <dd>An area in the <a
@@ -160,8 +159,9 @@ See: <a href="env.html">Environment Variables in Apache</a></dd>
     force.<br />
 See: <a href="ssl/">SSL/TLS Encryption</a></dd>
 
-<dt><a name="filter">Filter</a></dt> <dd>A process that is applied to
-data that is sent or received by the server.  Input filters process
+<dt><a name="filter">Filter</a></dt>
+<dd>A process that is applied to data that is sent or received by the
+server.  Input filters process
 data sent by the client to the server, while output filters process
 documents on the server before they are sent to the client.  For
 example, the <code>INCLUDES</code> output filter processes documents
@@ -175,9 +175,9 @@ resolve to an IP address. For example, <code>www</code> is a hostname,
 <code>example.com</code> is a domain name, and
 <code>www.example.com</code> is a fully-qualified domain name.</dd>
 
-<dt><a name="handler">Handler</a></dt> <dd>An internal Apache
-representation of the action to be performed when a file is
-called. Generally, files have implicit handlers, based on the file
+<dt><a name="handler">Handler</a></dt>
+<dd>An internal Apache representation of the action to be performed when
+a file is called. Generally, files have implicit handlers, based on the file
 type. Normally, all files are simply served by the server, but certain
 file types are "handled" separately.  For example, the
 <code>cgi-script</code> handler designates files to be processed as <a
@@ -204,9 +204,10 @@ but it may be moved using run-time or compile-time configuration.<br />
 See: <a href="configuring.html">Configuration Files</a></dd>
 
 <dt><a name="hypertexttransferprotocol">HyperText Transfer
-Protocol</a> <a name="http">(HTTP)</a></dt> <dd>The standard
-transmission protocol used on the World Wide Web.  Apache implements
-version 1.1 of the protocol, referred to as HTTP/1.1 and defined by <a
+Protocol</a> <a name="http">(HTTP)</a></dt>
+<dd>The standard transmission protocol used on the World Wide Web.
+Apache implements version 1.1 of the protocol, referred to as HTTP/1.1
+and defined by <a
 href="http://ietf.org/rfc/rfc2616.txt">RFC 2616</a>.</dd>
 
 <dt><a name="https">HTTPS</a></dt>
@@ -264,9 +265,10 @@ with the new version of Apache.
 <dd>The Open Source toolkit for SSL/TLS<br />
     see <a href="http://www.openssl.org/">http://www.openssl.org/</a></dd>
 
-<dt><a name="passphrase">Pass Phrase</a></dt> <dd>The word or phrase
-that protects private key files.  It prevents unauthorized users from
-encrypting them. Usually it's just the secret encryption/decryption
+<dt><a name="passphrase">Pass Phrase</a></dt>
+<dd>The word or phrase that protects private key files.
+It prevents unauthorized users from encrypting them. Usually it's just
+the secret encryption/decryption
 key used for <a name="cipher">Ciphers</a>.<br /> See: <a
 href="ssl/">SSL/TLS Encryption</a></dd>
 
@@ -346,14 +348,16 @@ utility.  Apache distributions are stored in compressed tar archives
 or using pkzip.</dd>
 
 <dt><a name="transportlayersecurity">Transport Layer Security</a> <a
-name="tls">(TLS)</a></dt> <dd>The successor protocol to SSL, created
+name="tls">(TLS)</a></dt>
+<dd>The successor protocol to SSL, created
 by the Internet Engineering Task Force (IETF) for general
 communication authentication and encryption over TCP/IP networks. TLS
 version 1 and is nearly identical with SSL version 3.<br />
 See: <a href="ssl/">SSL/TLS Encryption</a></dd>
 
 <dt><a name="uniformresourcelocator">Uniform Resource Locator</a> <a
-name="url">(URL)</a></dt> <dd>The name/address of a resource on the
+name="url">(URL)</a></dt>
+<dd>The name/address of a resource on the
 Internet.  This is the common informal term for what is formally
 called a <a href="#uniformresourceidentifier">Uniform Resource
 Identifier</a>.  URLs are usually made up of a scheme, like
@@ -362,25 +366,26 @@ URL for this page is
 <code>http://httpd.apache.org/docs-2.1/glossary.html</code>.</dd>
 
 <dt><a name="uniformresourceidentifier">Uniform Resource Identifier</a> <a
-name="URI">(URI)</a></dt> <dd>A compact string of characters for
+name="URI">(URI)</a></dt>
+<dd>A compact string of characters for
 identifying an abstract or physical resource.  It is formally defined
 by <a href="http://www.ietf.org/rfc/rfc2396.txt">RFC 2396</a>.
 URIs used on the world-wide web are commonly referred to
 as <a href="#url">URLs</a>.</dd>
 
-<dt><a name="virtualhosting">Virtual Hosting</a></dt> <dd>Serving
-multiple websites using a single instance of Apache.  <em>IP virtual
-hosting</em> differentiates between websites based on their IP
+<dt><a name="virtualhosting">Virtual Hosting</a></dt>
+<dd>Serving multiple websites using a single instance of Apache.
+<em>IP virtual hosting</em> differentiates between websites based on their IP
 address, while <em>name-based virtual hosting</em> uses only the name
 of the host and can therefore host many sites on the same IP
 address.<br /> See: <a href="vhosts/">Apache Virtual Host
 documentation</a></dd>
 
-<dt><a name="x.509">X.509</a></dt> <dd>An authentication certificate
-scheme recommended by the International Telecommunication Union
-(ITU-T) which is used for SSL/TLS authentication.<br /> See: <a
+<dt><a name="x.509">X.509</a></dt>
+<dd>An authentication certificate scheme recommended by the International
+Telecommunication Union (ITU-T) which is used for SSL/TLS
+authentication.<br /> See: <a
 href="ssl/">SSL/TLS Encryption</a></dd>
-
 </dl>
 </section>
 </manualpage>
