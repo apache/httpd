@@ -157,11 +157,17 @@ static apr_status_t make_sock(apr_pool_t *p, ap_listen_rec *server)
 	return stat;
     }
 
+#ifdef APR_HAS_SO_ACCEPTFILTER
+#ifndef ACCEPT_FILTER_NAME
+#define ACCEPT_FILTER_NAME "dataready"
+#endif
+    apr_socket_accept_filter(s, ACCEPT_FILTER_NAME, "");
+#endif
+
     server->sd = s;
     server->active = 1;
     return APR_SUCCESS;
 }
-
 
 static apr_status_t close_listeners_on_exec(void *v)
 {
