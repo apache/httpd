@@ -15,7 +15,7 @@
   <!--#include virtual="header.html" -->
   <H1 ALIGN="CENTER">Apache Server Frequently Asked Questions</H1>
   <P>
-  $Revision: 1.63.2.8 $ ($Date: 1997/07/05 17:30:58 $)
+  $Revision: 1.63.2.9 $ ($Date: 1997/07/09 10:15:42 $)
   </P>
   <P>
   The latest version of this FAQ is always available from the main
@@ -85,7 +85,7 @@
    <LI><A HREF="#why">Why was Apache created?</A>
    </LI>
    <LI><A HREF="#relate">How does The Apache Group's work relate to
-    other servers?</A> 
+    other servers?</A>
    </LI>
    <LI><A HREF="#name">Why the name &quot;Apache&quot;?</A>
    </LI>
@@ -116,7 +116,7 @@
    </LI>
    <LI><A HREF="#premature-script-headers">What does it mean when my
         CGIs fail with &quot;<SAMP>Premature end of script
-        headers</SAMP>&quot;?</A> 
+        headers</SAMP>&quot;?</A>
    </LI>
    <LI><A HREF="#ssi-part-i">How do I enable SSI (parsed HTML)?</A>
    </LI>
@@ -147,7 +147,7 @@
    </LI>
    <LI><A HREF="#cookies1">Why does Apache send a cookie on every response?</A>
    </LI>
-   <LI><A HREF="#cookies2">Why don't my cookies work, I even compiled in 
+   <LI><A HREF="#cookies2">Why don't my cookies work, I even compiled in
     <SAMP>mod_cookies</SAMP>?</A>
    </LI>
    <LI><A HREF="#jdk1-and-http1.1">Why do my Java app[let]s give me plain text
@@ -191,7 +191,7 @@
    <LI><A HREF="#addlog">How do I add browsers and referrers to my
     logs?</A>
    </LI>
-   <LI><A HREF="#bind8.1">Why do I get an error about an undefined 
+   <LI><A HREF="#bind8.1">Why do I get an error about an undefined
     reference to &quot;<SAMP>__inet_ntoa</SAMP>&quot; or other
     <SAMP>__inet_*</SAMP> symbols?</A>
    </LI>
@@ -227,8 +227,6 @@
 <HR>
 
   <H2>The Answers</H2>
-  <P>
-  </P>
   <H3>
    Background
   </H3>
@@ -259,7 +257,7 @@
   <P>
   To address the concerns of a group of WWW providers and part-time httpd
   programmers that httpd didn't behave as they wanted it to behave.
-  Apache is an entirely volunteer effort, completely funded by its 
+  Apache is an entirely volunteer effort, completely funded by its
   members, not by commercial sales.
   </P>
   <HR>
@@ -293,7 +291,7 @@
   For an independent assessment, see
   <A
    HREF="http://webcompare.iworld.com/compare/chart.html"
-  >Web Compare</A>'s 
+  >Web Compare</A>'s
   comparison chart.
   </P>
   <P>
@@ -419,10 +417,10 @@
     <P>
     Apache tries to be helpful when it encounters a problem.  In many
     cases, it will provide some details by writing one or messages to
-    the server error log.  Sometimes this is enough for you to diagnose 
+    the server error log.  Sometimes this is enough for you to diagnose
     &amp; fix the problem yourself (such as file permissions or the like).
-    The default location of the error log is 
-    <SAMP>/usr/local/etc/httpd/logs/error_log</SAMP>, but see the 
+    The default location of the error log is
+    <SAMP>/usr/local/etc/httpd/logs/error_log</SAMP>, but see the
     <A
      HREF="../mod/core.html#errorlog"
     ><SAMP>ErrorLog</SAMP></A>
@@ -512,7 +510,7 @@
   NCSA httpd 1.4 and NCSA httpd 1.5.
   </P>
   <P>
-  NCSA httpd appears to be moving toward adding experimental features 
+  NCSA httpd appears to be moving toward adding experimental features
   which are not generally required at the moment. Some of the experiments
   will succeed while others will inevitably be dropped. The Apache
   philosophy is to add what's needed as and when it is needed.
@@ -579,7 +577,7 @@
  <LI><A NAME="premature-script-headers">
       <STRONG>What does it mean when my CGIs fail with
       &quot;<SAMP>Premature end of script headers</SAMP>&quot;?</STRONG>
-     </A> 
+     </A>
   <P>
   It means just what it says: the server was expecting a complete set of
   HTTP headers (one or more followed by a blank line), and didn't get
@@ -596,7 +594,7 @@
   <P>
   The second most common cause of this (aside from people not
   outputting the required headers at all) is a result of an interaction
-  with Perl's output buffering.  To make Perl flush its buffers 
+  with Perl's output buffering.  To make Perl flush its buffers
   after each output statement, insert the following statements around
   the <CODE>print</CODE> or <CODE>write</CODE> statements that send your
   HTTP headers:
@@ -617,7 +615,7 @@
   </DL>
   </P>
   <P>
-  This is generally only necessary when you are calling external 
+  This is generally only necessary when you are calling external
   programs from your script that send output to stdout, or if there will
   be a long delay between the time the headers are sent and the actual
   content starts being emitted.  To maximise performance, you should
@@ -627,7 +625,7 @@
   </P>
   <P>
   If your script isn't written in Perl, do the equivalent thing for
-  whatever language you <EM>are</EM> using (<EM>e.g.</EM>, for C, call 
+  whatever language you <EM>are</EM> using (<EM>e.g.</EM>, for C, call
   <CODE>fflush()</CODE> after writing the headers).
   </P>
   <HR>
@@ -639,7 +637,7 @@
   SSI (an acronym for Server-Side Include) directives allow static HTML
   documents to be enhanced at run-time (<EM>e.g.</EM>, when delivered to
   a client by Apache).  The format of SSI directives is covered
-  in the <A HREF="../mod/mod_include.html">mod_include manual</A>; 
+  in the <A HREF="../mod/mod_include.html">mod_include manual</A>;
   suffice it to say that Apache supports not only SSI but
   xSSI (eXtended SSI) directives.
   </P>
@@ -766,7 +764,7 @@
    HREF="../mod/mod_proxy.html"
   >proxy module</A>.
   If compiled
-  in, this will make Apache act as a caching-proxy server.  
+  in, this will make Apache act as a caching-proxy server.
   </P>
   <HR>
  </LI>
@@ -776,7 +774,7 @@
   <P>
   &quot;Multiviews&quot; is the general name given to the Apache
   server's ability to provide language-specific document variants in
-  response to a request.  This is documented quite thoroughly in the 
+  response to a request.  This is documented quite thoroughly in the
   <A
    HREF="../content-negotiation.html"
    REL="Help"
@@ -795,23 +793,23 @@
       virtual hosts?</STRONG>
      </A>
   <P>
-  You are probably running into resource limitations in your 
-  operating system.  The most common limitation is the 
-  <EM>per</EM>-process limit on <STRONG>file descriptors</STRONG>, 
-  which is almost always the cause of problems seen when adding 
-  virtual hosts.  Apache often does not give an intuitive error 
-  message because it is normally some library routine (such as 
-  <CODE>gethostbyname()</CODE>) which needs file descriptors and 
-  doesn't complain intelligibly when it can't get them.  
+  You are probably running into resource limitations in your
+  operating system.  The most common limitation is the
+  <EM>per</EM>-process limit on <STRONG>file descriptors</STRONG>,
+  which is almost always the cause of problems seen when adding
+  virtual hosts.  Apache often does not give an intuitive error
+  message because it is normally some library routine (such as
+  <CODE>gethostbyname()</CODE>) which needs file descriptors and
+  doesn't complain intelligibly when it can't get them.
   </P>
   <P>
   Each log file requires a file descriptor, which means that if you are
   using separate access and error logs for each virtual host, each
-  virtual host needs two file descriptors.  Each 
+  virtual host needs two file descriptors.  Each
   <A
    HREF="../mod/core.html#listen"
   ><SAMP>Listen</SAMP></A>
-  directive also needs a file descriptor.  
+  directive also needs a file descriptor.
   </P>
   <P>
   Typical values for &lt;<EM>n</EM>&gt; that we've seen are in
@@ -830,17 +828,17 @@
        <A
         HREF="../mod/core.html#listen"
        ><SAMP>Listen</SAMP></A>
-       directives.  If there are no other servers running on the machine 
+       directives.  If there are no other servers running on the machine
        on the same port then you normally don't
        need any Listen directives at all.  By default Apache listens to
        all addresses on port 80.
    </LI>
-   <LI>Reduce the number of log files.  You can use 
+   <LI>Reduce the number of log files.  You can use
        <A
         HREF="../mod/mod_log_config.html"
        ><SAMP>mod_log_config</SAMP></A>
        to log all requests to a single log file while including the name
-       of the virtual host in the log file.  You can then write a 
+       of the virtual host in the log file.  You can then write a
        script to split the logfile into separate files later if
        necessary.
    </LI>
@@ -879,7 +877,7 @@
      </A>
   <P>
   On FreeBSD 2.2 and older <SAMP>FD_SETSIZE</SAMP>, which limits the
-  number of open 
+  number of open
   files on the system, is limited to 256. This can restrict the number of
   virtual hosts you can use; especially if they all use different log
   files. Increasing this limit (and recompiling Apache) is not enough,
@@ -974,7 +972,7 @@
   <P>
   You need to use it with a URL in the form
   &quot;<SAMP>/foo/bar</SAMP>&quot; and not one with a method and
-  hostname such as &quot;<SAMP>http://host/foo/bar</SAMP>&quot;.  See the 
+  hostname such as &quot;<SAMP>http://host/foo/bar</SAMP>&quot;.  See the
   <A
    HREF="../mod/core.html#errordocument"
   ><SAMP>ErrorDocument</SAMP></A>
@@ -1002,7 +1000,7 @@
      </A>
   <P>
   Apache does <EM>not</EM> send automatically send a cookie on every
-  response, unless you have re-compiled it with the 
+  response, unless you have re-compiled it with the
   <A
    HREF="../mod/mod_cookies.html"
   ><SAMP>mod_cookies</SAMP></A>
@@ -1011,11 +1009,11 @@
   This module may help track users, and uses cookies to do this. If
   you are not using the data generated by <SAMP>mod_cookies</SAMP>, do
   not compile it into Apache. Note that in 1.2 this module was renamed
-  to the more correct name 
+  to the more correct name
   <A
    HREF="../mod/mod_usertrack.html"
   ><SAMP>mod_usertrack</SAMP></A>,
-  and cookies 
+  and cookies
   have to be specifically enabled with the
   <A
     HREF="../mod/mod_usertrack.html#cookietracking"
@@ -1080,7 +1078,9 @@
   </P>
   <P>
   <DL>
-   <DD><CODE>BrowserMatch Java1.0 force-response-1.0</CODE>
+   <DD><CODE>BrowserMatch Java1.0 force-response-1.0
+    <BR>
+    BrowserMatch JDK/1.0 force-response-1.0</CODE>
    </DD>
   </DL>
   </P>
@@ -1130,7 +1130,7 @@
  <LI><A NAME="nodelay">
       <STRONG>Why am I getting &quot;<SAMP>httpd: could not set socket
       option TCP_NODELAY</SAMP>&quot; in my error log?</STRONG>
-     </A> 
+     </A>
   <P>
   This message almost always indicates that the client disconnected
   before Apache reached the point of calling <CODE>setsockopt()</CODE>
@@ -1142,7 +1142,7 @@
  <LI><A NAME="peerreset">
       <STRONG>Why am I getting &quot;<SAMP>connection reset by
       peer</SAMP>&quot; in my error log?</STRONG>
-     </A> 
+     </A>
   <P>
   This is a normal message and nothing about which to be alarmed.  It simply
   means that the client cancelled the connection before it had been
@@ -1224,7 +1224,7 @@
   <P>
   <UL>
    <LI>Remove the definition of <CODE>struct iovec</CODE> from your C
-    library includes.  It is located in <CODE>/usr/include/sys/uio.h</CODE>.  
+    library includes.  It is located in <CODE>/usr/include/sys/uio.h</CODE>.
     <STRONG>Or,</STRONG>
    </LI>
    <LI>Add  <CODE>-DNO_WRITEV</CODE> to the <CODE>EXTRA_CFLAGS</CODE>
@@ -1243,9 +1243,9 @@
   In Apache version 1.2, the error log message
   about dumped core includes the directory where the dump file should be
   located.  However, many Unixes do not allow a process that has
-  called <CODE>setuid()</CODE> to dump core for security reasons; 
-  the typical Apache setup has the server started as root to bind to 
-  port 80, after which it changes UIDs to a non-privileged user to 
+  called <CODE>setuid()</CODE> to dump core for security reasons;
+  the typical Apache setup has the server started as root to bind to
+  port 80, after which it changes UIDs to a non-privileged user to
   serve requests.
   </P>
   <P>
@@ -1320,8 +1320,8 @@
   encryption technology.  If Apache included SSL in the base package,
   its distribution would involve all sorts of legal and bureaucratic
   issues, and it would no longer be freely available.  Also, some of
-  the technology required to talk to current clients using SSL is 
-  patented by <A HREF="http://www.rsa.com/">RSA Data Security</A>, 
+  the technology required to talk to current clients using SSL is
+  patented by <A HREF="http://www.rsa.com/">RSA Data Security</A>,
   who restricts its use without a license.
   </P>
   <P>
@@ -1342,7 +1342,7 @@
   <HR>
  </LI>
  <LI><A NAME="HPUX-core">
-       <STRONG>Why do I get core dumps under HPUX using HP's ANSI 
+       <STRONG>Why do I get core dumps under HPUX using HP's ANSI
                C compiler?</STRONG>
       </A>
   <P>
@@ -1419,7 +1419,7 @@
     the operating system.
    </LI>
    <LI><STRONG>Your operating system or compiler may be out of
-    revision.</STRONG> 
+    revision.</STRONG>
     <BR>
     Software vendors (including those that develop operating systems)
     issue new releases for a reason; sometimes to add functionality, but
@@ -1484,26 +1484,26 @@
   <HR>
  </LI>
  <LI><A NAME="bind8.1">
-      <STRONG>Why do I get an error about an undefined reference to 
+      <STRONG>Why do I get an error about an undefined reference to
       &quot;<SAMP>__inet_ntoa</SAMP>&quot; or other
       <SAMP>__inet_*</SAMP> symbols?</STRONG>
      </A>
   <P>
   If you have installed <A HREF="http://www.isc.org/bind.html">BIND-8</A>
   then this is normally due to a conflict between your include files
-  and your libraries.  BIND-8 installs its include files and libraries 
+  and your libraries.  BIND-8 installs its include files and libraries
   <CODE>/usr/local/include/</CODE> and <CODE>/usr/local/lib/</CODE>, while
   the resolver that comes with your system is probably installed in
   <CODE>/usr/include/</CODE> and <CODE>/usr/lib/</CODE>.  If
   your system uses the header files in <CODE>/usr/local/include/</CODE>
   before those in <CODE>/usr/include/</CODE> but you do not use the new
-  resolver library, then the two versions will conflict.  
+  resolver library, then the two versions will conflict.
   </P>
   <P>
   To resolve this, you can either make sure you use the include files
   and libraries that came with your system or make sure to use the
   new include files and libraries.  Adding <CODE>-lbind</CODE> to the
-  <CODE>EXTRA_LDFLAGS</CODE> line in your <SAMP>Configuration</SAMP> 
+  <CODE>EXTRA_LDFLAGS</CODE> line in your <SAMP>Configuration</SAMP>
   file, then re-running <SAMP>Configure</SAMP>, should resolve the
   problem.  (Apache versions 1.2.* and earlier use
   <CODE>EXTRA_LFLAGS</CODE> instead.)
@@ -1527,35 +1527,35 @@
   <HR>
  </LI>
  <LI><A NAME="set-servername">
-      <STRONG>Why does accessing directories only work when I include 
+      <STRONG>Why does accessing directories only work when I include
       the trailing "/"
       (<EM>e.g.</EM>,&nbsp;<SAMP>http://foo.domain.com/~user/</SAMP>)
-      but not when I omit it 
+      but not when I omit it
       (<EM>e.g.</EM>,&nbsp;<SAMP>http://foo.domain.com/~user</SAMP>)?</STRONG>
      </A>
   <P>
   When you access a directory without a trailing "/", Apache needs
   to send what is called a redirect to the client to tell it to
   add the trailing slash.  If it did not do so, relative URLs would
-  not work properly.  When it sends the redirect, it needs to know 
+  not work properly.  When it sends the redirect, it needs to know
   the name of the server so that it can include it in the redirect.
   There are two ways for Apache to find this out; either it can guess,
   or you can tell it.  If your DNS is configured correctly, it can
   normally guess without any problems.  If it is not, however, then
-  you need to tell it.  
+  you need to tell it.
   </P>
   <P>
-  Add a <A HREF="../mod/core.html#servername">ServerName</A> directive 
+  Add a <A HREF="../mod/core.html#servername">ServerName</A> directive
   to the config file to tell it what the domain name of the server is.
   </P>
   <HR>
  </LI>
  <LI><A NAME="user-authentication">
-      <STRONG>How do I set up Apache to require a username and 
+      <STRONG>How do I set up Apache to require a username and
       password to access certain documents?</STRONG>
      </A>
   <P>
-  There are several ways to do this; some of the more popular 
+  There are several ways to do this; some of the more popular
   ones are to use the <A HREF="../mod/mod_auth.html">mod_auth</A>,
   <A HREF="../mod/mod_auth_db.html">mod_auth_db</A>, or
   <A HREF="../mod/mod_auth_dbm.html">mod_auth_dbm</A> modules.
@@ -1569,7 +1569,7 @@
   <A
    HREF="http://www.apacheweek.com/features/userauth"
   ><CITE>Using User Authentication</CITE></A>
-  or 
+  or
   <A
    HREF="http://www.apacheweek.com/features/dbmauth"
   ><CITE>DBM User Authentication</CITE></A>.
@@ -1577,7 +1577,7 @@
   <HR>
  </LI>
  <LI><A NAME="remote-auth-only">
-      <STRONG>How do I set up Apache to allow access to certain 
+      <STRONG>How do I set up Apache to allow access to certain
       documents only if a site is either a local site <EM>or</EM>
       the user supplies a password and username?</STRONG>
      </A>
@@ -1749,7 +1749,7 @@
   the database, rather than a fast internal device.  The
   <SAMP>libmsql</SAMP>, the mSQL FAQ, and the <SAMP>mod_auth_msql</SAMP>
   documentation warn you about this.  If you have to use different
-  hosts, check out the <SAMP>mod_auth_msql</SAMP> code for 
+  hosts, check out the <SAMP>mod_auth_msql</SAMP> code for
   some compile time flags which might - or might not - suit you.
   </P>
   <HR>
