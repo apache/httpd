@@ -566,6 +566,11 @@ every configuration function as __stdcall.
 
 #define API_EXPORT(type)    __declspec(dllexport) type __stdcall
 #define API_EXPORT_NONSTD(type)    __declspec(dllexport) type
+#ifdef IS_MODULE
+# define API_VAR_EXPORT		__declspec(dllimport)
+#else
+# define API_VAR_EXPORT		__declspec(dllexport)
+#endif
 #define MODULE_VAR_EXPORT   __declspec(dllexport)
 
 #define strcasecmp(s1, s2) stricmp(s1, s2)

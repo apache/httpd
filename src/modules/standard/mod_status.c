@@ -87,6 +87,8 @@
  * 21.5.96  Additional Status codes (DNS and LOGGING only enabled if
              extended STATUS is enabled) [George Burgyan/Jim J.]  */
 
+#define IS_MODULE
+
 #include "httpd.h"
 #include "http_config.h"
 #include "http_core.h"

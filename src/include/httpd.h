@@ -757,7 +757,7 @@ API_EXPORT(void) chdir_file(const char *file);
 char *get_local_host(pool *);
 unsigned long get_virthost_addr (const char *hostname, unsigned short *port);
 
-extern MODULE_VAR_EXPORT time_t restart_time;
+extern API_VAR_EXPORT time_t restart_time;
 
 /*
  * Apache tries to keep all of its long term filehandles (such as log files,
