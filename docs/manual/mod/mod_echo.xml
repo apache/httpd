@@ -12,9 +12,9 @@ modules</description>
 <compatibility>Available in Apache 2.0 and later</compatibility>
 
 <summary>
-    This module provides an example protocol module to illustrate the
+    <p>This module provides an example protocol module to illustrate the
     concept. It provides a simple echo server. Telnet to it and type
-    stuff, and it will echo it.
+    stuff, and it will echo it.</p>
 </summary>
 
 <directivesynopsis>
