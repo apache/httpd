@@ -673,24 +673,24 @@
       directives.</p>
 
       <p>The directive <code class="directive"><a href="../mod/mpm_common.html#acceptmutex">AcceptMutex</a></code> can be used to
-      change the selected mutuex implimentation at run-time.</p>
+      change the selected mutex implementation at run-time.</p>
 
       <dl>
-        <dt><code>USE_FLOCK_SERIALIZED_ACCEPT</code></dt>
+        <dt><code>AcceptMutex flock</code></dt>
 
         <dd>
           <p>This method uses the <code>flock(2)</code> system call to
           lock a lock file (located by the <code class="directive"><a href="../mod/mpm_common.html#lockfile">LockFile</a></code> directive).</p>
         </dd>
 
-        <dt><code>USE_FCNTL_SERIALIZED_ACCEPT</code></dt>
+        <dt><code>AcceptMutex fcntl</code></dt>
 
         <dd>
           <p>This method uses the <code>fcntl(2)</code> system call to
           lock a lock file (located by the <code class="directive"><a href="../mod/mpm_common.html#lockfile">LockFile</a></code> directive).</p>
         </dd>
 
-        <dt><code>USE_SYSVSEM_SERIALIZED_ACCEPT</code></dt>
+        <dt><code>AcceptMutex sysvsem</code></dt>
 
         <dd>
           <p>(1.3 or later) This method uses SysV-style semaphores to
@@ -707,24 +707,7 @@
           on most IRIX boxes).</p>
         </dd>
 
-        <dt><code>USE_USLOCK_SERIALIZED_ACCEPT</code></dt>
-
-        <dd>
-          <p>(1.3 or later) This method is only available on IRIX, and
-          uses <code>usconfig(2)</code> to create a mutex. While this
-          method avoids the hassles of SysV-style semaphores, it is not
-          the default for IRIX. This is because on single processor
-          IRIX boxes (5.3 or 6.2) the uslock code is two orders of
-          magnitude slower than the SysV-semaphore code. On
-          multi-processor IRIX boxes the uslock code is an order of
-          magnitude faster than the SysV-semaphore code. Kind of a
-          messed up situation. So if you're using a multiprocessor IRIX
-          box then you should rebuild your webserver with
-          <code>-DUSE_USLOCK_SERIALIZED_ACCEPT</code> on the
-          <code>EXTRA_CFLAGS</code>.</p>
-        </dd>
-
-        <dt><code>USE_PTHREAD_SERIALIZED_ACCEPT</code></dt>
+        <dt><code>AcceptMutex pthread</code></dt>
 
         <dd>
           <p>(1.3 or later) This method uses POSIX mutexes and should
@@ -735,11 +718,21 @@
           hanging and not responding. Static content only servers may
           work just fine.</p>
         </dd>
+
+        <dt><code>AcceptMutex posixsem</code></dt>
+
+        <dd>
+          <p>(2.0 or later)  This method uses POSIX semaphores.  The
+          semaphore ownership is not recovered if a thread in the process
+          holding the mutex segfaults, resulting in a hang of the web
+          server.</p>
+        </dd>
+
       </dl>
 
       <p>If your system has another method of serialization which
       isn't in the above list then it may be worthwhile adding code
-      for it (and submitting a patch back to Apache).</p>
+      for it to APR.</p>
 
       <p>Another solution that has been considered but never
       implemented is to partially serialize the loop -- that is, let
