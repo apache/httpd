@@ -334,9 +334,6 @@ static int status_handler(request_rec *r)
         }
     }
 
-    if (r->header_only)
-        return 0;
-
     for (i = 0; i < server_limit; ++i) {
         ps_record = ap_get_scoreboard_process(i);
         for (j = 0; j < thread_limit; ++j) {
