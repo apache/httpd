@@ -261,7 +261,7 @@ static void open_error_log(server_rec *s, ap_context_t *p)
 	fname = ap_server_root_relative(p, s->error_fname);
 	/*  Change to AP funcs. */
         if (ap_open(&s->error_log, fname, APR_BUFFERED | APR_APPEND | 
-                    APR_READ | APR_WRITE, APR_OS_DEFAULT, p) != APR_SUCCESS) {
+                    APR_READ | APR_WRITE | APR_CREATE, APR_OS_DEFAULT, p) != APR_SUCCESS) {
             perror("fopen");
             fprintf(stderr, "%s: could not open error log file %s.\n",
 		    ap_server_argv0, fname);
@@ -554,7 +554,7 @@ void ap_log_pid(ap_context_t *p, const char *fname)
 			       );
     }
 
-    if(ap_open(&pid_file, fname, APR_WRITE | APR_BUFFERED, APR_OS_DEFAULT, p) != APR_SUCCESS) {
+    if(ap_open(&pid_file, fname, APR_WRITE | APR_BUFFERED | APR_CREATE, APR_OS_DEFAULT, p) != APR_SUCCESS) {
 	perror("fopen");
         fprintf(stderr, "%s: could not log pid to file %s\n",
 		ap_server_argv0, fname);
