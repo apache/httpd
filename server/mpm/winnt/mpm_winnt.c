@@ -818,15 +818,15 @@ static void drain_acceptex_complport(HANDLE hComplPort, BOOLEAN bCleanUp)
         if (!rc) {
             rc = apr_get_os_error();
             if (rc == APR_FROM_OS_ERROR(ERROR_OPERATION_ABORTED)) {
-                ap_log_error(APLOG_MARK, APLOG_INFO, APR_SUCCESS, server_conf,
-                             "Child %d: - Draining an ABORTED packet off "
+                ap_log_error(APLOG_MARK, APLOG_DEBUG, APR_SUCCESS, server_conf,
+                             "Child %d: Draining an ABORTED packet off "
                              "the AcceptEx completion port.", my_pid);
                 continue;
             }
             break;
         }
         ap_log_error(APLOG_MARK, APLOG_INFO, APR_SUCCESS, server_conf,
-                     "Child %d: - Draining and discarding an active connection "
+                     "Child %d: Draining and discarding an active connection "
                      "off the AcceptEx completion port.", my_pid);
         context = (PCOMP_CONTEXT) pol;
         if (context && bCleanUp) {
@@ -958,9 +958,9 @@ static apr_inline apr_status_t reset_acceptex_context(PCOMP_CONTEXT context)
 
             rc = apr_get_netos_error();
             if (rc != APR_FROM_OS_ERROR(ERROR_IO_PENDING)) {
-                ap_log_error(APLOG_MARK, APLOG_INFO, rc, server_conf,
+                ap_log_error(APLOG_MARK, APLOG_DEBUG, rc, server_conf,
                              "reset_acceptex_context: AcceptEx failed for "
-                             "listening socket: %d and accept socket: %d", 
+                             "listening socket: %d and accept socket: %d. Getting a new accept socket.", 
                              nsd, context->accept_socket);
                 closesocket(context->accept_socket);
                 context->accept_socket = INVALID_SOCKET;
@@ -1023,7 +1023,7 @@ static PCOMP_CONTEXT winnt_get_connection(PCOMP_CONTEXT context)
                  * we see this now and not during AcceptEx(). Reset the
                  * AcceptEx context and continue...
                  */
-                ap_log_error(APLOG_MARK,APLOG_INFO, rc, server_conf,
+                ap_log_error(APLOG_MARK,APLOG_DEBUG, rc, server_conf,
                              "Child %d: - GetQueuedCompletionStatus() failed", 
                              my_pid);
                 /* Reset the completion context */
@@ -1046,7 +1046,7 @@ static PCOMP_CONTEXT winnt_get_connection(PCOMP_CONTEXT context)
                 /* Sometimes we catch ERROR_OPERATION_ABORTED completion packets
                  * from the old child process (during a restart). Ignore them.
                  */
-                ap_log_error(APLOG_MARK,APLOG_INFO, rc, server_conf,
+                ap_log_error(APLOG_MARK,APLOG_DEBUG, rc, server_conf,
                              "Child %d: - Draining ERROR_OPERATION_ABORTED packet off "
                              "the completion port.", my_pid);
             }
@@ -1159,7 +1159,7 @@ static void worker_main(int child_num)
         }
     }
 
-    ap_log_error(APLOG_MARK, APLOG_INFO, APR_SUCCESS, server_conf,
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, APR_SUCCESS, server_conf,
                  "Child %d: Thread exiting.", my_pid);
 #if 0
 
@@ -1623,7 +1623,7 @@ static int create_process(apr_pool_t *p, HANDLE *handles, HANDLE *events, int *p
                          "Parent: Unable to write duplicated socket %d to the child.", lr->sd );
             return -1;
         }
-        ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_INFO, APR_SUCCESS, server_conf,
+        ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_DEBUG, APR_SUCCESS, server_conf,
                      "Parent: BytesWritten = %d WSAProtocolInfo = %x20", BytesWritten, *lpWSAProtocolInfo);
     }
     if (osver.dwPlatformId != VER_PLATFORM_WIN32_WINDOWS) {
@@ -1703,7 +1703,7 @@ static int master_main(server_rec *s, HANDLE shutdown_event, HANDLE restart_even
         shutdown_pending = 1;
         printf("shutdown event signaled\n");
         ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_INFO, APR_SUCCESS, s, 
-                     "master_main: Shutdown event signaled -- doing server shutdown.");
+                     "Parent: SHUTDOWN EVENT SIGNALED -- Shutting down the server.");
         if (ResetEvent(shutdown_event) == 0) {
             ap_log_error(APLOG_MARK, APLOG_ERR, apr_get_os_error(), s,
                          "ResetEvent(shutdown_event)");
@@ -1715,7 +1715,7 @@ static int master_main(server_rec *s, HANDLE shutdown_event, HANDLE restart_even
         int children_to_kill = current_live_processes;
         restart_pending = 1;
         ap_log_error(APLOG_MARK, APLOG_INFO, APR_SUCCESS, s, 
-                     "master_main: Restart event signaled. Doing a graceful restart.");
+                     "Parent: RESTART EVENT SIGNALED -- Restarting the server.");
         if (ResetEvent(restart_event) == 0) {
             ap_log_error(APLOG_MARK, APLOG_ERR, apr_get_os_error(), s,
                          "master_main: ResetEvent(restart_event) failed.");
@@ -1746,7 +1746,7 @@ static int master_main(server_rec *s, HANDLE shutdown_event, HANDLE restart_even
          */
         restart_pending = 1;
         ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_INFO, APR_SUCCESS, server_conf, 
-                     "master_main: Child process failed. Restarting the child process.");
+                     "Parent: CHILD PROCESS FAILED -- Restarting the child process.");
         ap_assert(cld < current_live_processes);
         cleanup_process(process_handles, process_kill_events, cld, &current_live_processes);
         /* APD2("main_process: child in slot %d died", rv); */
@@ -1784,7 +1784,7 @@ die_now:
         }
         for (i = 0; i < current_live_processes; i++) {
             ap_log_error(APLOG_MARK,APLOG_ERR|APLOG_NOERRNO, APR_SUCCESS, server_conf,
-                         "forcing termination of child #%d (handle %d)", i, process_handles[i]);
+                         "Parent: Forcing termination of child #%d (handle %d)", i, process_handles[i]);
             TerminateProcess((HANDLE) process_handles[i], 1);
         }
         return 0;  /* Tell the caller we do not want to restart */
