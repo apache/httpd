@@ -961,6 +961,13 @@ static void winnt_accept(void *listen_socket)
             WaitForSingleObject(pCompContext->Overlapped.hEvent, INFINITE);
         }
 
+        /* ### There is a race condition here.  The mainline may hit 
+         * WSATerminate before this thread reawakens.  Look First.
+         */
+        if (shutdown_in_progress) {
+            break;
+        }
+
         /* Inherit the listen socket settings. Required for 
          * shutdown() to work 
          */
