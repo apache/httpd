@@ -1867,6 +1867,9 @@ AP_DECLARE(int) ap_run_sub_req(request_rec *r)
     }
     if (retval != OK) {
         retval = ap_invoke_handler(r);
+        if (retval == DONE) {
+            retval = OK;
+        }
     }
     ap_finalize_sub_req_protocol(r);
     return retval;
