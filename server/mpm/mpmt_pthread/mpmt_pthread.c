@@ -898,7 +898,7 @@ static void perform_idle_server_maintenance(void)
 	        ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_INFO, 0, ap_server_conf,
 			     "server seems busy, (you may need "
 			     "to increase StartServers, ThreadsPerChild "
-                             "or Min/MaxSparetThreads), "
+                             "or Min/MaxSpareThreads), "
 			     "spawning %d children, there are around %d idle "
                              "threads, and %d total children", idle_spawn_rate,
 			     idle_thread_count, total_non_dead);
