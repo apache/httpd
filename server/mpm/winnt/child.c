@@ -185,6 +185,8 @@ AP_DECLARE(PCOMP_CONTEXT) mpm_get_completion_context(void)
                  * Multiple failures in the next two steps will cause the pchild pool
                  * to 'leak' storage. I don't think this is worth fixing...
                  */
+                apr_allocator_t *allocator;
+
                 context = (PCOMP_CONTEXT) apr_pcalloc(pchild, sizeof(COMP_CONTEXT));
   
                 context->Overlapped.hEvent = CreateEvent(NULL, TRUE, FALSE, NULL);
@@ -196,14 +198,17 @@ AP_DECLARE(PCOMP_CONTEXT) mpm_get_completion_context(void)
                 }
  
                 /* Create the tranaction pool */
-                if ((rv = apr_pool_create(&context->ptrans, pchild)) != APR_SUCCESS) {
+                apr_allocator_create(&allocator);
+                apr_allocator_max_free_set(allocator, ap_max_mem_free);
+                rv = apr_pool_create_ex(&context->ptrans, pchild, NULL, allocator);
+                if (rv != APR_SUCCESS) {
                     ap_log_error(APLOG_MARK,APLOG_WARNING, rv, ap_server_conf,
                                  "mpm_get_completion_context: Failed to create the transaction pool.");
                     CloseHandle(context->Overlapped.hEvent);
                     return NULL;
                 }
-                apr_pool_tag(context->ptrans, "ptrans");
- 
+                apr_pool_tag(context->ptrans, "transaction");
+                apr_allocator_owner_set(allocator, context->ptrans);
                 context->accept_socket = INVALID_SOCKET;
                 context->ba = apr_bucket_alloc_create(pchild);
                 apr_atomic_inc(&num_completion_contexts); 
@@ -437,9 +442,12 @@ static PCOMP_CONTEXT win9x_get_connection(PCOMP_CONTEXT context)
 
     if (context == NULL) {
         /* allocate the completion context and the transaction pool */
+        apr_allocator_t *allocator;
         context = apr_pcalloc(pchild, sizeof(COMP_CONTEXT));
-        apr_pool_create(&context->ptrans, pchild);
-        apr_pool_tag(context->ptrans, "ptrans");
+        apr_allocator_create(&allocator);
+        apr_allocator_max_free_set(allocator, ap_max_mem_free);
+        apr_pool_create_ex(&context->ptrans, pchild, NULL, allocator);
+        apr_pool_tag(context->ptrans, "transaction");
         context->ba = apr_bucket_alloc_create(pchild);
     }
     

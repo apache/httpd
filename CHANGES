@@ -1,4 +1,7 @@
 Changes with Apache 2.0.49
+  *) Win32 MPM: Implement MaxMemFree to enable setting an upper
+     limit on the amount of storage used by the bucket brigades
+     in each server thread. [Bill Stoddard]
 
   *) Modified the cache code to be header-location agnostic. Also
      fixed a number of other cache code bugs related to PR 15852.

@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/12/10 23:01:00 $]
+Last modified at [$Date: 2003/12/11 02:02:08 $]
 
 Release:
 
@@ -88,14 +88,6 @@ PATCHES TO BACKPORT FROM 2.1
     * prefork: Fix slow graceful restarts on some platforms.
       http://cvs.apache.org/viewcvs/httpd-2.0/server/mpm/prefork/prefork.c.diff?r1=1.279&r2=1.280
       +1: jorton, trawick
-
-    * Make Win32 MPM honor MaxMemFree for transaction pools
-      server/mpm/winnt/child.c: r1.17
-      server/mpm/winnt/mpm.h: r1.14
-      +1: stoddard
-      +1 (concept): trawick (looks reasonable when compared with worker)
-      +1 (concept): jwoolley (same reason.  though why is ptrans no longer
-                              a child pool of pchild?)
 
     * parsed_uri.port is only valid iff parsed_uri.port_str != NULL.
       Old code simply checked if it was non-zero, not if it
@@ -345,7 +337,7 @@ PATCHES TO BACKPORT FROM 2.1
     * Fix a long delay with CGI requests and keepalive connections on
       AIX.
         modules/generators/mod_cgid.c r1.159
-      +1: trawick
+      +1: trawick, stoddard
 
     * mod_status hook
         configure.in r1.254
