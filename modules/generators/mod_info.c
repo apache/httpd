@@ -321,7 +321,7 @@ static int show_server_settings(request_rec *r)
     server_rec *serv = r->server;
     int max_daemons, forked, threaded;
 
-    ap_rputs("<a name=\"server\"<h2>Server Settings</h2></a>", r);
+    ap_rputs("<h2><a name=\"server\">Server Settings</a></h2>", r);
     ap_rprintf(r,
                "<dl><dt><strong>Server Version:</strong> "
                "<font size=\"+1\"><tt>%s</tt></font></dt>\n",
@@ -363,7 +363,8 @@ static int show_server_settings(request_rec *r)
                "<dt><strong>Config File:</strong> "
                "<tt>%s</tt></dt>\n", ap_conftree->filename);
 
-    ap_rputs("<dt><strong>Server Built With:</strong>\n<tt>\n<pre>", r);
+    ap_rputs("<dt><strong>Server Built With:</strong>\n"
+             "<tt style=\"white-space: pre;\">\n", r);
 
     /* TODO: Not all of these are getting set like they do in main.c. 
      *       Missing some headers? 
@@ -509,7 +510,7 @@ static int show_server_settings(request_rec *r)
 #ifdef SERVER_CONFIG_FILE
     ap_rputs(" -D SERVER_CONFIG_FILE=\"" SERVER_CONFIG_FILE "\"\n", r);
 #endif
-    ap_rputs("</pre></tt></dt>\n", r);
+    ap_rputs("</tt></dt>\n", r);
     ap_rputs("</dl><hr />", r);
     return 0;
 }
@@ -545,7 +546,7 @@ static int dump_a_hook(request_rec *r, hook_get_t hook_get)
 static int show_hooks_settings(request_rec *r)
 {
     int i;
-    ap_rputs("<a name=\"hooks\"><h2>Active Hooks</h2></a>\n<dl>", r);
+    ap_rputs("<h2><a name=\"hooks\">Active Hooks</a></h2>\n<dl>", r);
 
     for (i = 0; request_hooks[i].name; i++) {
         ap_rprintf(r, "<dt><strong>%s:</strong>\n <br /><tt>\n",
@@ -577,7 +578,10 @@ static int display_info(request_rec *r)
     ap_set_content_type(r, "text/html");
 
     ap_rputs(DOCTYPE_XHTML_1_0T
-             "<html>\n <head>\n  <title>Server Information</title>\n </head>\n",
+             "<html xmlns=\"http://www.w3.org/1999/xhtml\">\n"
+             "<head>\n"
+             "  <title>Server Information</title>\n"
+             "</head>\n",
              r);
     ap_rputs("<body><h1 style=\"text-align: center\">"
              "Apache Server Information</h1>\n", r);
