@@ -708,13 +708,13 @@ static apr_status_t ssl_io_input_read(bio_filter_in_ctx_t *ctx,
                     break; /* non fatal error */
                 }
             }
-            if (ssl_err == SSL_ERROR_SYSCALL) {
+            else if (ssl_err == SSL_ERROR_SYSCALL) {
                 conn_rec *c = (conn_rec *)SSL_get_app_data(ctx->frec->pssl);
                 ap_log_error(APLOG_MARK, APLOG_ERR, ctx->rc, c->base_server,
                             "SSL filter error reading data");
                 break;
             }
-            else if (ssl_err == SSL_ERROR_SSL) {
+            else /* if (ssl_err == SSL_ERROR_SSL) */ {
                 /*
                  * Log SSL errors and any unexpected conditions.
                  */
