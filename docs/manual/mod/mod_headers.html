@@ -15,21 +15,38 @@
 <!--#include virtual="header.html" -->
 <H1 ALIGN="CENTER">Module mod_headers</H1>
 
-The optional headers module allows for the customization of HTTP
-response headers. Headers can be merged, replaced or removed. The
-directives described in this document are only available if Apache is
-compiled with <STRONG>mod_headers.c</STRONG>.
+<p>This module provides for the customization of HTTP
+response headers.</p>
 
-<HR>
+<P><A
+HREF="module-dict.html#Status"
+REL="Help"
+><STRONG>Status:</STRONG></A> Extension
+<BR>
+<A
+HREF="module-dict.html#SourceFile"
+REL="Help"
+><STRONG>Source File:</STRONG></A> mod_headers.c
+<BR>
+<A
+HREF="module-dict.html#ModuleIdentifier"
+REL="Help"
+><STRONG>Module Identifier:</STRONG></A> headers_module
+</P>
 
-<H2>Directive</H2>
+<h2>Summary</h2>
+
+This module provides a directive to control the sending of HTTP
+headers.  Headers can be merged, replaced or removed. 
+
+<H2>Directives</H2>
 <UL>
 <LI><A HREF="#header">Header</A>
 </UL>
 
 <HR>
 
-<H2><A NAME="header">Header</A></H2>
+<H2><A NAME="header">Header</A> directive</H2>
 <A
  HREF="directive-dict.html#Syntax"
  REL="Help"
@@ -51,7 +68,7 @@ compiled with <STRONG>mod_headers.c</STRONG>.
 <A
  HREF="directive-dict.html#Status"
  REL="Help"
-><STRONG>Status:</STRONG></A> optional<BR>
+><STRONG>Status:</STRONG></A> Extension<BR>
 <A
  HREF="directive-dict.html#Module"
  REL="Help"

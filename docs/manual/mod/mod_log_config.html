@@ -15,12 +15,31 @@
 <!--#include virtual="header.html" -->
 <H1 ALIGN="CENTER">Module mod_log_config</H1>
 <P>
-This module is contained in the <CODE>mod_log_config.c</CODE> file,
-and is compiled in by default in Apache 1.2. mod_log_config replaces
-mod_log_common in Apache 1.2. Prior to version 1.2, mod_log_config was
-an optional module. It provides for logging of the requests made to
+This module provides for logging of the requests made to
 the server, using the Common Log Format or a user-specified format.
 </P>
+
+<P><A
+HREF="module-dict.html#Status"
+REL="Help"
+><STRONG>Status:</STRONG></A> Base
+<BR>
+<A
+HREF="module-dict.html#SourceFile"
+REL="Help"
+><STRONG>Source File:</STRONG></A> mod_log_config.c
+<BR>
+<A
+HREF="module-dict.html#ModuleIdentifier"
+REL="Help"
+><STRONG>Module Identifier:</STRONG></A> config_log_module
+<BR>
+<A
+HREF="module-dict.html#compatibility"
+REL="Help"
+><STRONG>Compatibility:</STRONG></A> Was an extension module prior to Apache 1.2.
+</P>
+
 
 <H2>Summary</H2>
 <P>
@@ -31,6 +50,16 @@ The <CODE>TransferLog</CODE> and <CODE>CustomLog</CODE> directives can
 be used multiple times in each server to cause each request to be
 logged to multiple files.
 </P>
+
+<H2>Directives</H2>
+
+<UL>
+<LI><A HREF="#cookielog">CookieLog</A>
+<LI><A HREF="#customlog">CustomLog</A>
+<LI><A HREF="#customlog-conditional">CustomLog (conditional)</A>
+<LI><A HREF="#logformat">LogFormat</A>
+<LI><A HREF="#transferlog">TransferLog</A>
+</UL>
 
 <H3>Compatibility notes</H3>
 
@@ -213,19 +242,11 @@ document for details on why your security could be compromised if the
 directory where logfiles are stored is writable by anyone other than
 the user that starts the server.
 <P>
-<H2>Directives</H2>
 
-<UL>
-<LI><A HREF="#cookielog">CookieLog</A>
-<LI><A HREF="#customlog">CustomLog</A>
-<LI><A HREF="#customlog-conditional">CustomLog (conditional)</A>
-<LI><A HREF="#logformat">LogFormat</A>
-<LI><A HREF="#transferlog">TransferLog</A>
-</UL>
 <HR>
 
 
-<H2><A NAME="cookielog">CookieLog</A></H2>
+<H2><A NAME="cookielog">CookieLog</A> directive</H2>
 <!--%plaintext &lt;?INDEX {\tt CookieLog} directive&gt; -->
 <A
  HREF="directive-dict.html#Syntax"
@@ -252,7 +273,7 @@ only for compatibility with
 <P>
 
 <HR>
-<H2><A NAME="customlog">CustomLog</A></H2>
+<H2><A NAME="customlog">CustomLog</A> directive</H2>
 <A
  HREF="directive-dict.html#Syntax"
  REL="Help"
@@ -303,7 +324,7 @@ directive.
 </P>
 
 <HR>
-<H2><A NAME="customlog-conditional">CustomLog (conditional)</A></H2>
+<H2><A NAME="customlog-conditional">CustomLog (conditional)</A> directive</H2>
 <A
  HREF="directive-dict.html#Syntax"
  REL="Help"
@@ -353,7 +374,7 @@ can use:
 </PRE>
 
 <HR>
-<H2><A NAME="logformat">LogFormat</A></H2>
+<H2><A NAME="logformat">LogFormat</A> directive</H2>
 <!--%plaintext &lt;?INDEX {\tt LogFormat} directive&gt; -->
 <A
  HREF="directive-dict.html#Syntax"
@@ -407,7 +428,7 @@ it doesn't actually apply the format and make it the default.
 
 <HR>
 
-<H2><A NAME="transferlog">TransferLog</A></H2>
+<H2><A NAME="transferlog">TransferLog</A> directive</H2>
 <!--%plaintext &lt;?INDEX {\tt TransferLog} directive&gt; -->
 <A
  HREF="directive-dict.html#Syntax"
