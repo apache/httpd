@@ -378,12 +378,12 @@ int main(int argc, const char * const argv[])
     if (rv != APR_EOF) { 
         usage(process);
     }
-// C:\apache2\bin\apache.exe: illegal option -- q
+
     /* 'extra' argument ignored?  then we die */
     if (opt->ind < opt->argc) {
         ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL,
-                     "Unused argument %s\n",
-                     opt->argv[opt->ind]);
+                     "%s: Unused argument -- %s\n",
+                     apr_filename_of_pathname(argv[0]), opt->argv[opt->ind]);
         usage(process);
     }
 
