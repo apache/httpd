@@ -100,7 +100,7 @@
 
       <dt><strong>mod_dav</strong></dt>
 
-      <dd>Nouveau module dans Apache 2.0. Ce module met en oeuvre
+      <dd>Nouveau module dans Apache 2.0. Ce module met en &oelig;uvre
       la sp&eacute;cification "HTTP Distributed Authoring and
       Versioning (DAV)" permettant de distribuer et maintenir le
       contenu d'un site web.</dd>
