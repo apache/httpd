@@ -51,7 +51,7 @@
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="AuthGroupFile" id="AuthGroupFile">AuthGroupFile</a> <a name="authgroupfile" id="authgroupfile">ディレクティブ</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">説明:</a></th><td>認証に使用するユーザグループの一覧が格納されている、
+<tr><th><a href="directive-dict.html#Description">説明:</a></th><td>証認に使用するユーザグループの一覧が格納されている、
 テキストファイルの名前を設定する</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>AuthGroupFile <var>file-path</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>ディレクトリ, .htaccess</td></tr>
@@ -60,7 +60,7 @@
 <tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_authz_groupfile</td></tr>
 </table>
     <p><code class="directive">AuthGroupFile</code> ディレクティブは、
-    認証に使用するユーザグループの一覧が格納されている、
+    証認に使用するユーザグループの一覧が格納されている、
     テキストファイルの名前を設定します。
     <var>file-path</var> はグループファイルへのパスです。
     絶対パスでなければ、
