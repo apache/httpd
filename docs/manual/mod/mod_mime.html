@@ -581,10 +581,10 @@ Content-Type: text/plain; charset=ISO-8859-2
     <hr />
 
     <h2><a id="multiviewsmatch"
-    name="multiviewsmatch">multiviewsmatch</a> directive</h2>
+    name="multiviewsmatch">MultiviewsMatch</a> directive</h2>
     <a href="directive-dict.html#Syntax"
     rel="Help"><strong>Syntax:</strong></a> MultiviewsMatch
-    <em>[NegotiatedOnly] [Handlers] [Filters] [All]</em><br />
+    <em>[NegotiatedOnly] [Handlers] [Filters] [Any]</em><br />
      <a href="directive-dict.html#Context"
     rel="Help"><strong>Context:</strong></a> server config, virtual
     host, directory, .htaccess<br />
@@ -616,9 +616,9 @@ Content-Type: text/plain; charset=ISO-8859-2
     file will be served, e.g. in deciding between index.html.cgi of 500
     characters and index.html.pl of 1000 bytes, the .cgi file would win
     in this example.  Users of .asis files might prefer to use the
-    Handler option, if .asis files are associated with the asis-handler.<p>
+    Handler option, if .asis files are associated with the asis-handler.</p>
 
-    <p>You may finally allow All extensions to match, even if mod_mime 
+    <p>You may finally allow Any extensions to match, even if mod_mime 
     doesn't recognize the extension.  This was the behavior in Apache 1.3,
     and can cause unpredicatable results, such as serving .old or .bak
     files the webmaster never expected to be served.</p>
