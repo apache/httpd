@@ -534,7 +534,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "xmlparse"=".\os\win32\xmlparse.dsp" - Package Owner=<4>
+Project: "xmlparse"=".\lib\expat-lite\xmlparse.dsp" - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -549,7 +549,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "xmltok"=".\os\win32\xmltok.dsp" - Package Owner=<4>
+Project: "xmltok"=".\lib\expat-lite\xmltok.dsp" - Package Owner=<4>
 
 Package=<5>
 {{{

@@ -7,3 +7,8 @@ Makefile
 *.so
 *.dll
 *.def
+*.plg
+XMLParseD
+XMLParseR
+XMLTokD
+XMLTokR
