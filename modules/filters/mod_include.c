@@ -672,27 +672,39 @@ static int include_cgi(char *s, request_rec *r, ap_filter_t *next)
 /* ensure that path is relative, and does not contain ".." elements
  * ensentially ensure that it does not match the regex:
  * (^/|(^|/)\.\.(/|$))
- * XXX: this needs os abstraction... consider c:..\foo in win32
+ * XXX: Needs to become apr_is_path_relative() test
  */
 static int is_only_below(const char *path)
 {
 #ifdef HAVE_DRIVE_LETTERS
-    if (path[1] == ':')
+    if (path[1] == ':') 
+	return 0;
+#endif
+#ifdef NETWARE
+    if (strchr(path, ':')
 	return 0;
 #endif
     if (path[0] == '/') {
 	return 0;
     }
-    if (path[0] == '.' && path[1] == '.'
-	&& (path[2] == '\0' || path[2] == '/')) {
-	return 0;
-    }
     while (*path) {
-	if (*path == '/' && path[1] == '.' && path[2] == '.'
-	    && (path[3] == '\0' || path[3] == '/')) {
-	    return 0;
-	}
-	++path;
+        int dots = 0;
+        while (path[dots] == '.')
+            ++dots;
+#if defined(WIN32) 
+        /* If the name is canonical this is redundant
+         * but in security, redundancy is worthwhile.
+         * Does OS2 belong here (accepts ... for ..)?
+         */
+        if (dots > 1 && (!path[dots] || path[dots] == '/'))
+            return 0;
+#else
+        if (dots == 2 && (!path[dots] || path[dots] == '/'))
+            return 0;
+#endif
+        path += dots;
+        while (*path && *(path++) != '/')
+            ++path;
     }
     return 1;
 }
