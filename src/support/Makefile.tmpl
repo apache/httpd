@@ -15,18 +15,18 @@ TARGETS=htpasswd htdigest rotatelogs logresolve
 
 all: $(TARGETS)
 
-htpasswd: htpasswd.c
-	$(CC) $(CFLAGS) htpasswd.c -o htpasswd $(LIBS)
+htpasswd: htpasswd.o
+	$(CC) $(CFLAGS) htpasswd.o -o htpasswd $(LIBS)
 
-htdigest: htdigest.c
-	$(CC) $(CFLAGS) htdigest.c -o htdigest $(LIBS)
+htdigest: htdigest.o
+	$(CC) $(CFLAGS) htdigest.o -o htdigest $(LIBS)
 
-rotatelogs: rotatelogs.c
-	$(CC) $(INCLUDES) $(CFLAGS) rotatelogs.c -o rotatelogs
+rotatelogs: rotatelogs.o
+	$(CC) $(INCLUDES) $(CFLAGS) rotatelogs.o -o rotatelogs
 
-logresolve: logresolve.c
-	$(CC) $(INCLUDES) $(CFLAGS) logresolve.c -o logresolve $(LIBS)
+logresolve: logresolve.o
+	$(CC) $(INCLUDES) $(CFLAGS) logresolve.o -o logresolve $(LIBS)
 
 clean:
-	rm -f $(TARGETS)
+	rm -f $(TARGETS) *.o
 
