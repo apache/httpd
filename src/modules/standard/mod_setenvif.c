@@ -145,7 +145,16 @@ typedef struct {
 
 module MODULE_VAR_EXPORT setenvif_module;
 
-static void *create_setenvif_config(pool *p, server_rec *dummy)
+/*
+ * These routines, the create- and merge-config functions, are called
+ * for both the server-wide and the per-directory contexts.  This is
+ * because the different definitions are used at different times; the
+ * server-wide ones are used in the post-read-request phase, and the
+ * per-directory ones are used during the header-parse phase (after
+ * the URI has been mapped to a file and we have anything from the
+ * .htaccess file and <Directory> and <Files> containers).
+ */
+static void *create_setenvif_config(pool *p, char *dummy)
 {
     sei_cfg_rec *new = (sei_cfg_rec *) ap_palloc(p, sizeof(sei_cfg_rec));
 
@@ -163,24 +172,36 @@ static void *merge_setenvif_config(pool *p, void *basev, void *overridesv)
     return a;
 }
 
-/* any non-NULL magic constant will do... used to indicate if REG_ICASE should
+/*
+ * any non-NULL magic constant will do... used to indicate if REG_ICASE should
  * be used
  */
 #define ICASE_MAGIC	((void *)(&setenvif_module))
+#define SEI_MAGIC_HEIRLOOM "setenvif-phase-flag"
 
 static const char *add_setenvif_core(cmd_parms *cmd, void *mconfig,
 				     char *fname, const char *args)
 {
     char *regex;
     const char *feature;
-    sei_cfg_rec *sconf = ap_get_module_config(cmd->server->module_config,
-					      &setenvif_module);
-    sei_entry *new, *entries = (sei_entry *) sconf->conditionals->elts;
+    sei_cfg_rec *sconf;
+    sei_entry *new;
+    sei_entry *entries;
     char *var;
     int i;
     int beenhere = 0;
     unsigned icase;
 
+    /*
+     * Determine from our context into which record to put the entry.
+     * cmd->path == NULL means we're in server-wide context; otherwise,
+     * we're dealing with a per-directory setting.
+     */
+    sconf = (cmd->path != NULL)
+	? (sei_cfg_rec *) mconfig
+	: (sei_cfg_rec *) ap_get_module_config(cmd->server->module_config,
+					       &setenvif_module);
+    entries = (sei_entry *) sconf->conditionals->elts;
     /* get regex */
     regex = ap_getword_conf(cmd->pool, &args);
     if (!*regex) {
@@ -202,7 +223,7 @@ static const char *add_setenvif_core(cmd_parms *cmd, void *mconfig,
 	}
     }
 
-    /* if the last entry has an idential headername and regex then
+    /* if the last entry has an identical headername and regex then
      * merge with it
      */
     i = sconf->conditionals->nelts - 1;
@@ -307,19 +328,27 @@ static const char *add_browser(cmd_parms *cmd, void *mconfig, const char *args)
 static const command_rec setenvif_module_cmds[] =
 {
     { "SetEnvIf", add_setenvif, NULL,
-      RSRC_CONF, RAW_ARGS, "A header-name, regex and a list of variables." },
+      OR_FILEINFO, RAW_ARGS, "A header-name, regex and a list of variables." },
     { "SetEnvIfNoCase", add_setenvif, ICASE_MAGIC,
-      RSRC_CONF, RAW_ARGS, "a header-name, regex and a list of variables." },
+      OR_FILEINFO, RAW_ARGS, "a header-name, regex and a list of variables." },
     { "BrowserMatch", add_browser, NULL,
-      RSRC_CONF, RAW_ARGS, "A browser regex and a list of variables." },
+      OR_FILEINFO, RAW_ARGS, "A browser regex and a list of variables." },
     { "BrowserMatchNoCase", add_browser, ICASE_MAGIC,
-      RSRC_CONF, RAW_ARGS, "A browser regex and a list of variables." },
+      OR_FILEINFO, RAW_ARGS, "A browser regex and a list of variables." },
     { NULL },
 };
 
+/*
+ * This routine gets called at two different points in request processing:
+ * once before the URI has been translated (during the post-read-request
+ * phase) and once after (during the header-parse phase).  We use different
+ * config records for the two different calls to reduce overhead (by not
+ * re-doing the server-wide settings during directory processing), and
+ * signal which call it is by having the earlier one pass a flag to the
+ * later one.
+ */
 static int match_headers(request_rec *r)
 {
-    server_rec *s = r->server;
     sei_cfg_rec *sconf;
     sei_entry *entries;
     table_entry *elts;
@@ -327,8 +356,15 @@ static int match_headers(request_rec *r)
     int i, j;
     char *last_name;
 
-    sconf = (sei_cfg_rec *) ap_get_module_config(s->module_config,
-						 &setenvif_module);
+    if (ap_table_get(r->notes, SEI_MAGIC_HEIRLOOM) == NULL) {
+	ap_table_set(r->notes, SEI_MAGIC_HEIRLOOM, "post-read done");
+	sconf  = (sei_cfg_rec *) ap_get_module_config(r->server->module_config,
+						      &setenvif_module);
+    }
+    else {
+	sconf = (sei_cfg_rec *) ap_get_module_config(r->per_dir_config,
+						     &setenvif_module);
+    }
     entries = (sei_entry *) sconf->conditionals->elts;
     last_name = NULL;
     val = NULL;
@@ -403,8 +439,8 @@ module MODULE_VAR_EXPORT setenvif_module =
 {
     STANDARD_MODULE_STUFF,
     NULL,                       /* initializer */
-    NULL,                       /* dir config creater */
-    NULL,                       /* dir merger --- default is to override */
+    create_setenvif_config,     /* dir config creater */
+    merge_setenvif_config,      /* dir merger --- default is to override */
     create_setenvif_config,     /* server config */
     merge_setenvif_config,      /* merge server configs */
     setenvif_module_cmds,       /* command table */
@@ -416,7 +452,7 @@ module MODULE_VAR_EXPORT setenvif_module =
     NULL,                       /* type_checker */
     NULL,                       /* fixups */
     NULL,                       /* logger */
-    NULL,                       /* input header parse */
+    match_headers,              /* input header parse */
     NULL,                       /* child (process) initialization */
     NULL,                       /* child (process) rundown */
     match_headers               /* post_read_request */

@@ -1,5 +1,9 @@
 Changes with Apache 1.3.13
 
+  *) Expand mod_setenvif so its directives can be used in <Files> and
+     <Directory> containers, and in .htaccess files when FileInfo
+     overriding is allowed.  PR#3000 [Ken Coar]
+
   *) Fix Win32 bug when pathname length exactly equals MAX_PATH. 
      This bug caused directory index to be displayed rather than
      returning an error. [Allan Edwards <ake@raleigh.ibm.com>]
