@@ -284,7 +284,7 @@ pid_t pgrp;
  * Continue through and you'll be fine.).
  */
 
-int one_process = 0;
+static int one_process = 0;
 
 /* set if timeouts are to be handled by the children and not by the parent.
  * i.e. child_timeouts = !standalone || one_process.

@@ -1000,7 +1000,7 @@ API_EXPORT_NONSTD(const char *) set_file_slot(cmd_parms *cmd, char *struct_ptr, 
  * Reading whole config files...
  */
 
-cmd_parms default_parms =
+static cmd_parms default_parms =
 {NULL, 0, -1, NULL, NULL, NULL, NULL, NULL, NULL};
 
 API_EXPORT(char *) server_root_relative(pool *p, char *file)

@@ -159,9 +159,9 @@ union block_hdr {
     } h;
 };
 
-union block_hdr *block_freelist = NULL;
-mutex *alloc_mutex = NULL;
-mutex *spawn_mutex = NULL;
+static union block_hdr *block_freelist = NULL;
+static mutex *alloc_mutex = NULL;
+static mutex *spawn_mutex = NULL;
 #ifdef POOL_DEBUG
 static char *known_stack_point;
 static int stack_direction;

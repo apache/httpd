@@ -353,7 +353,7 @@ static const char *load_module(cmd_parms *cmd, void *dummy,
 
 #endif /* NO_DLOPEN */
 
-command_rec so_cmds[] = {
+static command_rec so_cmds[] = {
     { "LoadModule", load_module, NULL, RSRC_CONF, TAKE2,
       "a module name, and the name of a shared object file to load it from"},
     { "LoadFile", load_file, NULL, RSRC_CONF, ITERATE,

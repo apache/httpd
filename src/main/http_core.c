@@ -1815,7 +1815,7 @@ static const char *set_authname(cmd_parms *cmd, void *mconfig, char *word1)
  * The AllowOverride of Fileinfo allows webmasters to turn it off
  */
 
-command_rec core_cmds[] = {
+static command_rec core_cmds[] = {
 
 /* Old access config file commands */
 
@@ -2144,7 +2144,7 @@ int default_handler (request_rec *r)
     return OK;
 }
 
-handler_rec core_handlers[] = {
+static handler_rec core_handlers[] = {
 { "*/*", default_handler },
 { NULL }
 };
