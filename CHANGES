@@ -1,6 +1,8 @@
-Changes with Apache 2.1.0-dev
+Changes with Apache 2.1.2-dev
 
   [Remove entries to the current 2.0 section below, when backported]
+
+Changes with Apache 2.1.1
 
   *) mod_proxy_http: Stream content better - always flush buffered data to
      the client before blocking waiting for new data.  PR 19954.
