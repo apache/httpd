@@ -1,5 +1,7 @@
 Changes with Apache 2.0.48
 
+  *) Update mime.types to include latest IANA and W3C types.  [Roy Fielding]
+
   *) mod_ext_filter: Set additional environment variables for use by
      the external filter.  PR 20944.  [Andrew Ho, Jeff Trawick]
 
