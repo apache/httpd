@@ -5607,7 +5607,12 @@ int remove_job(int csd)
     sock = job->sock;
     free(job);
 
-    active_threads++;
+    /* If sock == -1 then the thread is about to exit so 
+     * don't count it as active.
+     */
+    if (sock != -1)
+        active_threads++;
+
     if (!reported && (active_threads == ap_threads_per_child)) {
         reported = 1;
         ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, server_conf,
