@@ -68,6 +68,7 @@ Committed Code Changes:
     * Ralf's Config File Line Continuation
     * Ralf's Reanimation of DBM support for RewriteMap in mod_rewrite
     * Ralf's fix for the `<VirtualHost> w/o mod_rewrite' situation. PR#1790
+    * Mark's fix for ProxyPass/ProxyRequests interaction broken by uri stuff
 
 Available Patches:
 
@@ -75,12 +76,6 @@ Available Patches:
 	<Pine.LNX.3.95dg3.971121113953.29532D-100000@twinlark.arctic.org>
 	Status: Dean +1, Martin +0 (duplicates /server-info?server),
 		Alexei -1 (shared lib concerns)
-
-    * Mark Cox's [PATCH] Fix for broken ProxyPass/ProxyRequest
-        <Pine.LNX.3.96.980303132830.27987D-100000@ecstasy.localnet>
-        not commited immediately since it's involved with the new uri
-        stuff that I've not been closely following
-        Status: Mark +1
 
 Concepts:
 
