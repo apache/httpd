@@ -1001,35 +1001,18 @@ fi
 echo "INCLUDES2=$INCLUDES2">> modules/Makefile
 echo "MOD_CFLAGS=\$(INCLUDES2) \$(AUX_CFLAGS)">> modules/Makefile
 
-CLEANERS=""
-for i in $MODDIRS ; do
-	CLEANERS="$CLEANERS${i}_clean "
-done
-
 cat << EOF >> modules/Makefile
 MODULES=$MODDIRS
-CLEANERS=$CLEANERS
 
-default: \$(MODULES)
-	@echo "Done building module subdirectories"
+default: all
 
-clean: \$(CLEANERS)
-	@echo "Done cleaning module subdirectories"
-
-\$(MODULES): ForceMe
-	(cd \$@; \$(MAKE) CC='\$(CC)' AUX_CFLAGS='\$(MOD_CFLAGS)' RANLIB='\$(RANLIB)')
-
-ForceMe:
+all clean :: 
+	for i in \$(MODULES); do \\
+	 (cd \$\$i; \\
+	  \$(MAKE) CC='\$(CC)' AUX_CFLAGS='\$(MOD_CFLAGS)' RANLIB='\$(RANLIB)' \$@);\\
+	done
 
 EOF
-
-(
-for i in $MODDIRS ; do
-	echo "${i}_clean:"
-	echo "	(cd ${i}; \$(MAKE) clean)"
-	echo ""
-done
-) >> modules/Makefile
 
 for moddir in $AUTODIRS ; do
 	echo "Creating Makefile in $moddir"
