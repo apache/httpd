@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/11/05 17:28:45 $]
+Last modified at [$Date: 2004/11/05 18:56:43 $]
 
 Release:
 
@@ -74,7 +74,7 @@ RELEASE SHOWSTOPPERS:
     *) mod_rewrite: Regression since 2.0.52 in QUERY_STRING handling
        for [P] rules.
        http://cvs.apache.org/viewcvs.cgi/httpd-2.0/modules/mappers/mod_rewrite.c?r1=1.262&r2=1.263
-       +1: jorton
+       +1: jorton, nd
 
 PATCHES TO BACKPORT FROM 2.1
   [ please place file names and revisions from HEAD here, so it is easy to
@@ -82,7 +82,7 @@ PATCHES TO BACKPORT FROM 2.1
 
     *) SECURITY: CAN-2004-0942 Fix for memory consumption DoS.
        http://cvs.apache.org/viewcvs.cgi/httpd-2.0/server/protocol.c?r1=1.158&r2=1.159
-       +1: stoddard, jorton
+       +1: stoddard, jorton, nd
 
     *) util_ldap: Add the util_ldap_cache_getuserdn() API to allow 
        non-LDAP authentication modules the ability to use the util_ldap 
