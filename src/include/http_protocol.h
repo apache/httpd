@@ -50,8 +50,6 @@
  *
  */
 
-/* $Id: http_protocol.h,v 1.9 1996/10/08 21:46:59 brian Exp $ */
-
 /*
  * Prototypes for routines which either talk directly back to the user,
  * or control the ones that eventually do.
@@ -93,8 +91,6 @@ void send_error_response (request_rec *r, int recursive_error);
 int set_content_length (request_rec *r, long length);
 int set_keepalive (request_rec *r);
 int set_last_modified (request_rec *r, time_t mtime);
-
-void add_env_var (array_header *env, char *header_name, char *val);
 
 /* Other ways to send stuff at the client.  All of these keep track
  * of bytes_sent automatically.  This indirection is intended to make
