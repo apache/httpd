@@ -2,6 +2,10 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) Add core version query function (ap_get_server_revision) and
+     accompanying ap_version_t structure (minor MMN bump).
+     [André Malo]
+
   *) mod_rewrite: EOLs sent by external rewritemaps are now consumed
      as whole. That way, on systems with more than one EOL character
      rewritemap programs no longer need to switch stdout to binary
