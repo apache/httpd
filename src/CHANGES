@@ -1,7 +1,7 @@
 Changes with Apache 1.3.1
 
   *) mod_log_config wouldn't let vhosts use log formats defined in the
-     main server.  [Christof Damian <damian@mediaconsult.com>]
+     main server.  [Christof Damian <damian@mediaconsult.com>] PR#2090
 
   *) mod_usertrack was corrupting the client hostname.  As part of the
      fix, the cookie values were slightly extended to include the
