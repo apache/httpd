@@ -370,6 +370,11 @@ static void sig_coredump(int sig)
  * Connection structures and accounting...
  */
 
+static void just_die(int sig)
+{
+    clean_child_exit(0);
+}
+
 static void please_die_gracefully(int sig)
 {
     /* clean_child_exit(0); */
@@ -574,7 +579,6 @@ static void child_main(int child_num_arg)
     (void) ap_update_child_status(AP_CHILD_THREAD_FROM_ID(my_child_num), SERVER_READY, (request_rec *) NULL);
 
     apr_signal(SIGHUP, please_die_gracefully);
-    apr_signal(SIGTERM, please_die_gracefully);
 
     ap_sync_scoreboard_image();
     while (!I_AM_TO_SHUTDOWN()) {
@@ -583,6 +587,7 @@ static void child_main(int child_num_arg)
 	 * we can exit cleanly.
 	 */
 	apr_signal(SIGWINCH, please_die_gracefully);
+        apr_signal(SIGTERM, just_die);
 
 	/*
 	 * (Re)initialize this child to a pre-connection state.
@@ -662,6 +667,7 @@ static void child_main(int child_num_arg)
 	    /* if we accept() something we don't want to die, so we have to
 	     * defer the exit
 	     */
+            apr_signal(SIGTERM, please_die_gracefully);
 	    for (;;) {
                 ap_sync_scoreboard_image();
 		if (I_AM_TO_SHUTDOWN()) {
@@ -839,7 +845,7 @@ static int make_child(server_rec *s, int slot)
 #ifdef SIGQUIT
 	apr_signal(SIGQUIT, SIG_DFL);
 #endif
-	apr_signal(SIGTERM, please_die_gracefully);
+	apr_signal(SIGTERM, just_die);
         ap_scoreboard_image->servers[slot][0].life_status = SB_WORKING;
 	child_main(slot);
     }
@@ -890,7 +896,7 @@ static int make_child(server_rec *s, int slot)
 	 */
 	apr_signal(SIGHUP, please_die_gracefully);
 	apr_signal(SIGWINCH, please_die_gracefully);
-	apr_signal(SIGTERM, please_die_gracefully);
+	apr_signal(SIGTERM, just_die);
         ap_scoreboard_image->servers[slot][0].life_status = SB_WORKING;
 	child_main(slot);
     }
