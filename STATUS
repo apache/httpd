@@ -15,16 +15,19 @@ Release:
 RELEASE SHOWSTOPPERS:
 
     * Paul's [PATCH] Win32 device files
-      Message-ID: <Pine.LNX.4.00.9812021631410.21697-100000@ecstasy.localnet>
-              and <000401be2225$861f11b0$bf4d2509@wolfpad.raleigh.ibm.com>
-      Status: Someone who knows the current status of this thing should apply
-              it now, since the rest of us can't test it otherwise.
+        Message-ID: <Pine.LNX.4.00.9812021631410.21697-100000@ecstasy.localnet>
+                and <000401be2225$861f11b0$bf4d2509@wolfpad.raleigh.ibm.com>
+        Status: Someone who knows the current status of this thing should
+                apply it now, since the rest of us can't test it otherwise.
       
     * nmake compilation broken on Win95
       Paul Ausbeck says the problem is that the distribution uses
       %PARAM% type arguments in nmake invokations.
-      Message-ID: <36684B1D.5A47@alumni.cse.ucsc.edu>
-      Status: patch needed since we can't test above without it
+        Message-ID: <36684B1D.5A47@alumni.cse.ucsc.edu>
+        Status: patch needed since we can't test above without it
+
+    * long pathnames with many components and no AllowOverride None
+        Status: Marc is looking at it
 
 RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
 
@@ -84,6 +87,10 @@ Documentation that needs writing:
          vhost-xxx.html document out of it. -- rse
 
 Available Patches:
+
+    * PR#2575 problem with ap_assert macro
+        Message-ID: <36717557.21E4C4E3@jrc.it>
+        Status: 
 
     * Ralf's [PATCH] Cleanup command line options
         Message-ID: <19981206195422.A10001@engelschall.com>
