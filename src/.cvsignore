@@ -13,6 +13,7 @@ Configuration.apaci
 CoreD
 CoreR
 httpd
+libhttpd.*
 Makefile
 Makefile.config
 modules.c
