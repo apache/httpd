@@ -1,5 +1,9 @@
 Changes with Apache 1.3
   
+  *) Add a ListenBacklog directive to control the backlog parameter
+     passed to listen().  Also change the default to 511 from 512.
+     [Marc Slemko]
+
   *) API: A new handler response DONE which informs apache that the
      request has been handled and it can finish off quickly, similar to
      how it handles errors. [Rob Hartill]
