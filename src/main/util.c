@@ -69,6 +69,7 @@
 #if defined(DEBUG)||defined(DEBUG_CFG_LINES)
 #include "http_log.h"
 #endif
+#include <stdio.h>
 
 const char month_snames[12][4] =
 {
