@@ -115,6 +115,9 @@
  *              no good at all !
  *	   0.3  Added 'Auth_MSQL_nopasswd' option
  *	   0.4  Cleaned out the error messages mess.
+ *	   0.6  Inconsistency with gid/grp in comment/token/source
+ *  	 	Make sure you really use 'Auth_MSQLgrp_field' as
+ *		indicated above.
  */
 
 #include "httpd.h"
@@ -184,8 +187,8 @@ command_rec msql_auth_cmds[] = {
     (void*)XtOffsetOf(msql_auth_config_rec, auth_msql_uname_field),
     OR_AUTHCFG, TAKE1, "The UserID field name must be set to something" },
 
-{ "Auth_MSQLgid_field", msql_set_string_slot,
-    (void*)XtOffsetOf(msql_auth_config_rec, auth_msql_nopasswd),
+{ "Auth_MSQLgrp_field", msql_set_string_slot,
+    (void*)XtOffsetOf(msql_auth_config_rec, auth_msql_grp_field),
     OR_AUTHCFG, TAKE1, 
 	"GID field name must be set to something if you want to use groups" },
 
@@ -219,7 +222,7 @@ char *do_msql_query(request_rec *r, char *query, msql_auth_config_rec *sec) {
 
 	/* force fast access over /dev/msql */
 	if ((host) && (!(strcasecmp(host,"localhost"))))
-		*host='\0';
+		*host=NULL;
 
     	if ((sock=msqlConnect(host)) == -1) {
 		sprintf (msql_errstr,
