@@ -1,5 +1,13 @@
 Changes with Apache 1.3b1
 
+  *) Yet another vhost revamp.  Add the NameVirtualHost directive which
+     explicitly lists the ip:port pairs that are to be used for name-vhosts.
+     From a given ip:port, regardless what the Host: header is, you can
+     only reach the vhosts defined on that ip:port.  The precedence of
+     vhosts was reversed to match other precedences in the config --
+     the earlier vhosts override the later vhosts.  All vhost matching was
+     moved into http_vhost.[ch].  [Dean Gaudet]
+
   *) ap_inline can be used to force inlining.  GNUC __attribute__() can
      be used for whatever reason is appropriate (i.e. format() warnings
      for printf style functions).  Both are enabled only with

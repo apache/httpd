@@ -63,6 +63,18 @@ document, or in the <code>src/CHANGES</code> file.
 <h3>Run-Time Configuration Changes</h3>
 
 <ul>
+  <li>Folks using HTTP/1.1-style virtual hosting will need to list the
+    ip:port pairs that are supposed to have HTTP/1.1-style virtual hosting
+    via the (undocumented) <a href="mod/core.html#namevirtualhost"><code>
+    NameVirtualHost</code></a> directive.  Previously this support was
+    given implicitly on the "main server address".  Now it has to be
+    explicitly listed so as to avoid many problems that users had.
+
+  <li>The precedence of virtual hosts has been reversed (applies mainly to
+    vhosts using HTTP/1.1 Host: headers, and the
+    <a href="mod/core.html#serverpath">ServerPath</a> directive).  Now
+    the earlier vhosts in the file have precedence over the later vhosts.
+
   <li><code>HostnameLookups</code> defaults to Off.
 
   <li>The undocumented

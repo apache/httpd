@@ -310,6 +310,15 @@ Allows additional information to be listed along with a specified module.
     files.  So you will see errors in the config file.  This should make
     it easier to start Apache via rsh or crontab.
 
+<li><strong>Improved HTTP/1.1-style Virtual Hosts</strong><br>
+    The new (undocumented) <a href="mod/core.html#namevirtualhost"><code>
+    NameVirtualHost</code></a> directive is used to list ip address:port
+    pairs on which HTTP/1.1-style virtual hosting occurs.  This is
+    vhosting based on the <code>Host:</code> header from the client.
+    Previously this address was implicitly the same as the "main address"
+    of the machine, and this caused no end of problems for users, and
+    was not powerful enough.
+
 <li><strong>API Additions</strong><br>
     
     For all those module writers and code hackers:
