@@ -1,5 +1,9 @@
 Changes with Apache 2.0.43
 
+  *) Fix a mutex problem in mod_ssl session cache support which
+     could lead to an infinite loop.  PR 12705  
+     [amund.elstad@ergo.no (Amund Elstad), Jeff Trawick]
+
   *) Allow POST requests and CGI scripts to work when DAV is enabled
      on the location.  [Ryan Bloom]
 
