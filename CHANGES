@@ -33,10 +33,6 @@ Changes with Apache 2.1.0-dev
   *) mod_log_config: Add the ability to log the id of the thread 
      processing the request via new %P formats.  [Jeff Trawick]
 
-  *) Fix a problem that caused httpd to linked with incorrect flags
-     on some platforms when mod_so was enabled by default, breaking 
-     DSOs on AIX.  PR 19012  [Jeff Trawick]
-
   *) ssl_toolkit_compat.h and code fixes to build clean on SSLC.
      [William Rowe, Madhusudan Mathihalli]
 
@@ -171,6 +167,10 @@ Changes with Apache 2.1.0-dev
    Apache 2.0.xx tree as documented, and except as noted, below.]
 
 Changes with Apache 2.0.46
+
+  *) Fix a problem that caused httpd to be linked with incorrect flags
+     on some platforms when mod_so was enabled by default, breaking 
+     DSOs on AIX.  PR 19012  [Jeff Trawick]
 
   *) By default, use the same CC and CPP with which APR was built.
      The user can override with CC and CPP environment variables.
