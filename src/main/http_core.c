@@ -685,6 +685,7 @@ const char *filesection (cmd_parms *cmd, core_dir_config *c, const char *arg)
 {
     const char *errmsg;
     char *endp = strrchr (arg, '>');
+    int old_overrides = cmd->override;
     char *old_path = cmd->path;
     core_dir_config *conf;
     regex_t *r = NULL;
@@ -696,6 +697,9 @@ const char *filesection (cmd_parms *cmd, core_dir_config *c, const char *arg)
     if (cmd->limited != -1) return "Can't have <Files> within <Limit>";
 
     cmd->path = getword_conf (cmd->pool, &arg);
+    /* Only if not an .htaccess file */
+    if (cmd->path)
+	cmd->override = OR_ALL|ACCESS_CONF;
 
     if (!strcmp(cmd->path, "~")) {
 	cmd->path = getword_conf (cmd->pool, &arg);
@@ -716,6 +720,7 @@ const char *filesection (cmd_parms *cmd, core_dir_config *c, const char *arg)
     add_file_conf (c, new_file_conf);
     
     cmd->path = old_path;
+    cmd->override = old_overrides;
 
     return NULL;
 }

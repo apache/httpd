@@ -1,5 +1,8 @@
 Changes with Apache 1.2b5
 
+  *) Correctly allow access and auth directives in <Files> sections in
+     server config files. [Alexei Kosut]
+
   *) Fix bug with ServerPath that could cause certaub files to be not
      found by the server. [Alexei Kosut] 
 
