@@ -1064,7 +1064,6 @@ typedef struct core_output_filter_ctx {
  
 typedef struct core_filter_ctx {
     apr_bucket_brigade *b;
-    int first_line;
 } core_ctx_t;
  
 typedef struct core_net_rec {

@@ -2780,6 +2780,35 @@ static int default_handler(request_rec *r)
     return ap_pass_brigade(r->output_filters, bb);
 }
 
+static int net_time_filter(ap_filter_t *f, apr_bucket_brigade *b, ap_input_mode_t mode, apr_off_t *readbytes)
+{
+    int keptalive = f->c->keepalive == 1;
+    apr_socket_t *csd = ap_get_module_config(f->c->conn_config, &core_module);
+    int *first_line = f->ctx;
+
+    if (!f->ctx) {
+        f->ctx = first_line = apr_palloc(f->r->pool, sizeof(*first_line));
+        *first_line = 1;
+    }
+
+    if (mode != AP_MODE_INIT && mode != AP_MODE_PEEK) {
+        if (*first_line) {
+            apr_setsocketopt(csd, APR_SO_TIMEOUT,
+                             (int)(keptalive
+                      ? f->c->base_server->keep_alive_timeout * APR_USEC_PER_SEC
+                      : f->c->base_server->timeout * APR_USEC_PER_SEC));
+            *first_line = 0;
+        }
+        else {
+            if (keptalive) {
+                apr_setsocketopt(csd, APR_SO_TIMEOUT,
+                         (int)(f->c->base_server->timeout * APR_USEC_PER_SEC));
+            }
+        }
+    }
+    return ap_get_brigade(f->next, b, mode, readbytes);
+}
+
 static int core_input_filter(ap_filter_t *f, apr_bucket_brigade *b, ap_input_mode_t mode, apr_off_t *readbytes)
 {
     apr_bucket *e;
@@ -2788,7 +2817,6 @@ static int core_input_filter(ap_filter_t *f, apr_bucket_brigade *b, ap_input_mod
     core_ctx_t *ctx = net->in_ctx;
     const char *str;
     apr_size_t len;
-    int keptalive = f->c->keepalive == 1;
 
     if (mode == AP_MODE_INIT) {
         /*
@@ -2813,21 +2841,6 @@ static int core_input_filter(ap_filter_t *f, apr_bucket_brigade *b, ap_input_mod
         e = apr_bucket_socket_create(net->client_socket);
         APR_BRIGADE_INSERT_TAIL(ctx->b, e);
         net->in_ctx = ctx;
-        ctx->first_line = 1;
-    }
-
-    if (ctx->first_line) {
-        apr_setsocketopt(net->client_socket, APR_SO_TIMEOUT,
-                         (int)(keptalive
-                         ? f->c->base_server->keep_alive_timeout * APR_USEC_PER_SEC
-                         : f->c->base_server->timeout * APR_USEC_PER_SEC));
-        ctx->first_line = 0;
-    }
-    else {
-        if (keptalive) {
-            apr_setsocketopt(net->client_socket, APR_SO_TIMEOUT,
-                             (int)(f->c->base_server->timeout * APR_USEC_PER_SEC));
-        }
     }
 
     /* ### This is bad. */
@@ -3272,6 +3285,8 @@ static int core_create_req(request_rec *r)
         req_cfg->bb = apr_brigade_create(r->pool);
         ap_set_module_config(r->request_config, &core_module, req_cfg);
     }
+
+    ap_add_input_filter("NET_TIME", NULL, r, r->connection);
     return OK;
 }
 
@@ -3355,6 +3370,7 @@ static void register_hooks(apr_pool_t *p)
     ap_hook_insert_filter(core_insert_filter, NULL, NULL, APR_HOOK_MIDDLE);
 
     ap_register_input_filter("CORE_IN", core_input_filter, AP_FTYPE_NETWORK);
+    ap_register_input_filter("NET_TIME", net_time_filter, AP_FTYPE_CONTENT);
     ap_register_output_filter("CONTENT_LENGTH", ap_content_length_filter, 
                               AP_FTYPE_HTTP_HEADER);
     ap_register_output_filter("CORE", core_output_filter, AP_FTYPE_NETWORK);

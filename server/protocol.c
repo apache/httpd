@@ -553,8 +553,6 @@ request_rec *ap_read_request(conn_rec *conn)
     r->connection      = conn;
     r->server          = conn->base_server;
 
-    conn->keepalive    = 0;
-
     r->user            = NULL;
     r->ap_auth_type    = NULL;
 
