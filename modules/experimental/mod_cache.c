@@ -207,6 +207,16 @@ static int cache_url_handler(request_rec *r, int lookup)
             if (lookup) {
                 return OK;
             }
+            rv = ap_meets_conditions(r);
+            if (rv != OK) {
+                ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
+                             "cache: fresh cache - returning status %d", rv);
+                return rv;
+            }
+
+            /*
+             * Not a conditionl request. Serve up the content 
+             */
             ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
                          "cache: fresh cache - add cache_out filter and "
                          "handle request");
