@@ -253,7 +253,7 @@ static int check_speling(request_rec *r)
     }
 
     /* We've already got a file of some kind or another */
-    if (r->proxyreq || (r->finfo.protection != 0)) {
+    if (r->proxyreq || (r->finfo.filetype != 0)) {
         return DECLINED;
     }
 

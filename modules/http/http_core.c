@@ -2992,7 +2992,7 @@ static int default_handler(request_rec *r)
     if (r->method_number == M_PUT) {
         return HTTP_METHOD_NOT_ALLOWED;
     }
-    if (r->finfo.protection == 0 || (r->path_info && *r->path_info)) {
+    if (r->finfo.filetype == 0 || (r->path_info && *r->path_info)) {
 	ap_log_rerror(APLOG_MARK, APLOG_ERR|APLOG_NOERRNO, 0, r,
 		      "File does not exist: %s",r->path_info ?
 		      apr_pstrcat(r->pool, r->filename, r->path_info, NULL)

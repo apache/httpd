@@ -1186,7 +1186,7 @@ static struct ent *make_autoindex_entry(const char *name, int autoindex_opts,
     if (autoindex_opts & FANCY_INDEXING) {
         request_rec *rr = ap_sub_req_lookup_file(name, r, NULL);
 
-	if (rr->finfo.protection != 0) {
+	if (rr->finfo.filetype != 0) {
 	    p->lm = rr->finfo.mtime;
 	    if (rr->finfo.filetype == APR_DIR) {
 	        if (!(p->icon = find_icon(d, rr, 1))) {

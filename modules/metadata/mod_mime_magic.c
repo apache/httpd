@@ -1493,7 +1493,7 @@ static int fsmagic(request_rec *r, const char *fn)
 	break;
     default:
 	ap_log_rerror(APLOG_MARK, APLOG_NOERRNO | APLOG_ERR, 0, r,
-		    MODNAME ": invalid mode 0%o.", (unsigned int)r->finfo.protection);
+		      MODNAME ": invalid file type %d.", r->finfo.filetype);
 	return HTTP_INTERNAL_SERVER_ERROR;
     }
 
@@ -2432,7 +2432,7 @@ static int magic_find_ct(request_rec *r)
     magic_server_config_rec *conf;
 
     /* the file has to exist */
-    if (r->finfo.protection == 0 || !r->filename) {
+    if (r->finfo.filetype == 0 || !r->filename) {
 	return DECLINED;
     }
 

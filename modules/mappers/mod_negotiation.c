@@ -2601,7 +2601,7 @@ static int handle_multi(request_rec *r)
     int res;
     int j;
 
-    if (r->finfo.protection != 0 || !(ap_allow_options(r) & OPT_MULTI)) {
+    if (r->finfo.filetype != 0 || !(ap_allow_options(r) & OPT_MULTI)) {
         return DECLINED;
     }
 

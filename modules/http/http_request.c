@@ -134,7 +134,7 @@ AP_IMPLEMENT_HOOK_VOID(insert_filter, (request_rec *r), (r))
 static int check_safe_file(request_rec *r)
 {
 
-    if (r->finfo.protection == 0      /* doesn't exist */
+    if (r->finfo.filetype == 0      /* doesn't exist */
         || r->finfo.filetype == APR_DIR
         || r->finfo.filetype == APR_REG
         || r->finfo.filetype == APR_LNK) {
@@ -226,7 +226,7 @@ static int get_path_info(request_rec *r)
     char bStripSlash=1;
 #endif
 
-    if (r->finfo.protection) {
+    if (r->finfo.filetype) {
 	/* assume path_info already set */
 	return OK;
     }
@@ -294,7 +294,6 @@ static int get_path_info(request_rec *r)
              * argument starts with the component after that.
              */
             if (r->finfo.filetype == APR_DIR && last_cp) {
-                r->finfo.protection = 0;  /* XXX: Wrong test for no such file... */
                 r->finfo.filetype = APR_NOFILE;  /* No such file... */
                 cp = last_cp;
             }
@@ -351,7 +350,6 @@ static int directory_walk(request_rec *r)
 
     if (r->filename == NULL) {
         r->filename = apr_pstrdup(r->pool, r->uri);
-        r->finfo.protection = 0;   /* Not really a file... */
         r->finfo.filetype = APR_NOFILE;
         r->per_dir_config = per_dir_defaults;
 
@@ -982,7 +980,7 @@ AP_DECLARE(request_rec *) ap_sub_req_lookup_file(const char *new_file,
         if (((rv = apr_stat(&rnew->finfo, rnew->filename,
                            APR_FINFO_NORM, rnew->pool)) != APR_SUCCESS)
                                                  && (rv != APR_INCOMPLETE)) {
-            rnew->finfo.protection = 0;
+            rnew->finfo.filetype = 0;
         }
 
         if ((res = check_safe_file(rnew))) {

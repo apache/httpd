@@ -630,7 +630,7 @@ AP_DECLARE(char *) ap_make_etag(request_rec *r, int force_weak)
     weak = ((r->request_time - r->mtime > APR_USEC_PER_SEC)
 	    && !force_weak) ? "" : "W/";
 
-    if (r->finfo.protection != 0) {
+    if (r->finfo.filetype != 0) {
         etag = apr_psprintf(r->pool,
 			    "%s\"%lx-%lx-%lx\"", weak,
 			    (unsigned long) r->finfo.inode,

@@ -467,7 +467,7 @@ static int add_expires(request_rec *r)
 
     switch (code[0]) {
     case 'M':
-	if (r->finfo.protection == 0) { 
+	if (r->finfo.filetype == 0) { 
 	    /* file doesn't exist on disk, so we can't do anything based on
 	     * modification time.  Note that this does _not_ log an error.
 	     */
