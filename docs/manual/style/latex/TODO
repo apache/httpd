@@ -1,0 +1,44 @@
+Some things that need to be done with the LaTeX transforms:
+
+- Finish special pages:
+  * module index
+  * directive index
+  * quick reference
+  * faq
+
+- Fix tables
+
+  Perhaps we need to add some xml hints about the size of different
+  columns in the source files.  For example:
+  <table><columnlist><column width="20%"/><column width="80%"/></columnlist>
+  <tr><td>...
+
+- href
+
+  External hrefs should be transformed to \footnote{}s, but it's not
+  working at the moment.  It is easy enough just to <value-of> the @href,
+  but this won't work because the result needs to be run through the
+  escaping routines or LaTeX will barf.
+
+- Images
+
+  A quick search makes me believe that pdftex will not handle gifs.
+  It probably will handle png.
+
+- Fix quotes
+
+  In LaTeX, quotes should be like ``This''.  This may
+  not be feasible for us, in which case we could simply replace
+  " with \texttt{"} or something, so that the quotes are all straight.
+
+- Add hyperlinks for directives and modules (for online use only,
+  not page number references).
+
+- Reduce the size of the pdf (both bytes and pages) in any way possible.
+
+- Hundreds of other little problems with presentation, cross-referencing,
+  etc.
+
+- Fix build system
+
+- Cleanup xsl to make it more readable.
