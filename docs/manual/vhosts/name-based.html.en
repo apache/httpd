@@ -78,7 +78,7 @@ are pointing to the IP address <SAMP>111.22.33.44</SAMP></P>
 directive then requests to that IP address will only ever be served
 by matching &lt;VirtualHost&gt;s.  The "main server" will
 <STRONG>never</STRONG> be served from the specified IP address.
-If you start to use virtual hosts you should stop to use the "main server"
+If you start to use virtual hosts you should stop using the "main server"
 as an independent server and rather use it as a place for
 configuration directives that are common for all your virtual hosts.
 In other words, you should add a &lt;VirtualHost&gt; section for
