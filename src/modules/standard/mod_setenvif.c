@@ -112,6 +112,7 @@
 #include "httpd.h"
 #include "http_config.h"
 #include "http_core.h"
+#include "http_log.h"
 
 typedef struct {
     char *name;			/* header name */
@@ -179,7 +180,7 @@ static const char *add_setenvif(cmd_parms *cmd, void *mconfig, const char *args)
 		        cmd->cmd->name, NULL);
 	return error;
     }
-    while (feature = getword_conf(cmd->pool, &cmdline)) {
+    while ((feature = getword_conf(cmd->pool, &cmdline))) {
 	beenhere++;
 
 	/*
