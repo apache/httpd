@@ -72,6 +72,12 @@
  * On some BSD systems (e.g. FreeBSD and NetBSD) dbm is automatically
  * mapped to Berkeley DB. You can use either mod_auth_dbm or
  * mod_auth_db. The latter makes it more obvious that it's Berkeley.
+ *
+ * dirkx - Added Authoratative control to allow passing on to lower  
+ *         modules if and only if the user-id is not known to this
+ *         module. A known user with a faulty or absent password still
+ *         causes an AuthRequired. The default is 'Authoratative', i.e.
+ *         no control is passed along.
  */
 
 #include "httpd.h"
@@ -85,12 +91,17 @@ typedef struct  {
 
     char *auth_dbpwfile;
     char *auth_dbgrpfile;
-
+    int   auth_dbauthoritative;
 } db_auth_config_rec;
 
 void *create_db_auth_dir_config (pool *p, char *d)
 {
-    return pcalloc (p, sizeof(db_auth_config_rec));
+    db_auth_config_rec *sec
+	= (db_auth_config_rec *)pcalloc (p, sizeof(db_auth_config_rec));
+    sec->auth_dbpwfile = NULL;
+    sec->auth_dbgrpfile = NULL;
+    sec->auth_dbauthoritative=1; /* fortress is secure by default */
+    return sec;
 }
 
 const char *set_db_slot (cmd_parms *cmd, void *offset, char *f, char *t)
@@ -114,6 +125,10 @@ command_rec db_auth_cmds[] = {
 { "AuthGroupFile", set_db_slot,
     (void*)XtOffsetOf(db_auth_config_rec, auth_dbgrpfile),
     OR_AUTHCFG, TAKE12, NULL },
+{ "AuthDBAuthoratative", set_flag_slot,
+    (void*)XtOffsetOf(db_auth_config_rec, auth_dbauthoritative),
+    OR_AUTHCFG, FLAG, 
+    "Set to 'no' to allow access control to be passed along to lower modules if the userID is not known to this module" },
 { NULL }
 };
 
@@ -184,6 +199,8 @@ int db_authenticate_basic_user (request_rec *r)
         return DECLINED;
 	
     if(!(real_pw = get_db_pw(r, c->user, sec->auth_dbpwfile))) {
+	if (!(sec -> auth_dbauthoritative))
+	    return DECLINED; 
         sprintf(errstr,"DB user %s not found", c->user);
 	log_reason (errstr, r->filename, r);
 	note_basic_auth_failure (r);
@@ -234,6 +251,8 @@ int db_check_auth(request_rec *r) {
            char *v;
 
            if (!(groups = get_db_grp(r, user, sec->auth_dbgrpfile))) {
+	       if (!(sec->auth_dbauthoritative))
+		 return DECLINED:
                sprintf(errstr,"user %s not in DB group file %s",
 		       user, sec->auth_dbgrpfile);
 	       log_reason (errstr, r->filename, r);

@@ -56,6 +56,12 @@
  * Rob McCool & Brian Behlendorf.
  * 
  * Adapted to Apache by rst.
+ *
+ * dirkx - Added Authoratative control to allow passing on to lower  
+ *         modules if and only if the user-id is not known to this
+ *         module. A known user with a faulty or absent password still
+ *         causes an AuthRequired. The default is 'Authoratative', i.e.
+ *         no control is passed along.
  */
 
 #include "httpd.h"
@@ -69,12 +75,20 @@ typedef struct  {
 
     char *auth_dbmpwfile;
     char *auth_dbmgrpfile;
+    int   auth_dbmauthoritative;
 
 } dbm_auth_config_rec;
 
 void *create_dbm_auth_dir_config (pool *p, char *d)
 {
-    return pcalloc (p, sizeof(dbm_auth_config_rec));
+    dbm_auth_config_rec *sec
+       = (dbm_auth_config_rec *)pcalloc (p, sizeof(dbm_auth_config_rec));
+
+    sec->auth_dbmpwfile = NULL;
+    sec->auth_dbmgrpfile = NULL;
+    sec->auth_dbmauthoritative = 1; /* fortress is secure by default */
+
+    return sec;
 }
 
 const char *set_dbm_slot (cmd_parms *cmd, void *offset, char *f, char *t)
@@ -98,6 +112,9 @@ command_rec dbm_auth_cmds[] = {
 { "AuthGroupFile", set_dbm_slot,
     (void*)XtOffsetOf(dbm_auth_config_rec, auth_dbmgrpfile),
     OR_AUTHCFG, TAKE12, NULL },
+{ "AuthDBMAuthoritative", set_flag_slot,
+    (void*)XtOffsetOf(dbm_auth_config_rec, auth_dbmauthoritative),
+    OR_AUTHCFG, FLAG, "Set to 'no' to allow access control to be passed along to lower modules, if the UserID is not known in this module" },
 { NULL }
 };
 
@@ -170,6 +187,8 @@ int dbm_authenticate_basic_user (request_rec *r)
         return DECLINED;
 	
     if(!(real_pw = get_dbm_pw(r, c->user, sec->auth_dbmpwfile))) {
+	if (!(sec->auth_dbmauthoritative))
+	    return DECLINED;
         sprintf(errstr,"DBM user %s not found", c->user);
 	log_reason (errstr, r->filename, r);
 	note_basic_auth_failure (r);
@@ -220,6 +239,8 @@ int dbm_check_auth(request_rec *r) {
 	   char *v;
 
            if (!(groups = get_dbm_grp(r, user, sec->auth_dbmgrpfile))) {
+	       if (!(sec->auth_dbmauthoritative))
+	           return DECLINED;
                sprintf(errstr,"user %s not in DBM group file %s",
 		       user, sec->auth_dbmgrpfile);
 	       log_reason (errstr, r->filename, r);

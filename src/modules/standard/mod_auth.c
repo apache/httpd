@@ -56,6 +56,12 @@
  * Rob McCool
  * 
  * Adapted to Apache by rst.
+ *
+ * dirkx - Added Authoratative control to allow passing on to lower
+ *	   modules if and only if the user-id is not known to this
+ *	   module. A known user with a faulty or absent password still
+ *	   causes an AuthRequired. The default is 'Authoratative', i.e.
+ *	   no control is passed along.
  */
 
 #include "httpd.h"
@@ -70,11 +76,17 @@
 typedef struct auth_config_struct {
     char *auth_pwfile;
     char *auth_grpfile;
+    int auth_authoritative;
 } auth_config_rec;
 
 void *create_auth_dir_config (pool *p, char *d)
 {
-    return pcalloc (p, sizeof(auth_config_rec));
+    auth_config_rec *sec =
+    	(auth_config_rec *) pcalloc (p, sizeof(auth_config_rec));
+    sec->auth_pwfile = NULL; /* just to illustrate the default really */ 
+    sec->auth_grpfile = NULL; /* unless you have a broken HP cc */
+    sec->auth_authoritative = 1; /* keep the fortress secure by default */
+    return sec;
 }
 
 const char *set_auth_slot (cmd_parms *cmd, void *offset, char *f, char *t)
@@ -90,6 +102,10 @@ command_rec auth_cmds[] = {
   (void*)XtOffsetOf(auth_config_rec,auth_pwfile), OR_AUTHCFG, TAKE12, NULL },
 { "AuthGroupFile", set_auth_slot,
   (void*)XtOffsetOf(auth_config_rec,auth_grpfile), OR_AUTHCFG, TAKE12, NULL },
+{ "Auth_MSQL_Authoritative", set_flag_slot,
+  (void*)XtOffsetOf(auth_config_rec,auth_authoritative), 
+    OR_AUTHCFG, FLAG, 
+   "Set to 'no' to allow access control to be passed along to lower modules if the UserID is not known to this module" },
 { NULL }
 };
 
@@ -180,6 +196,8 @@ int authenticate_basic_user (request_rec *r)
         return DECLINED;
 	
     if (!(real_pw = get_pw(r, c->user, sec->auth_pwfile))) {
+	if (!(sec->auth_authoritative))
+	    return DECLINED;
         sprintf(errstr,"user %s not found",c->user);
 	log_reason (errstr, r->uri, r);
 	note_basic_auth_failure (r);
@@ -252,6 +270,9 @@ int check_user_access (request_rec *r) {
     
     if (!method_restricted)
       return OK;
+
+    if (!(sec -> auth_authoritative))
+      return DECLINED;
 
     note_basic_auth_failure (r);
     return AUTH_REQUIRED;

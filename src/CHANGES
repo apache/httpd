@@ -1,5 +1,12 @@
 Changes with Apache 1.2b3:
 
+  *) Add "Authoratative" directive for Auth modules that don't
+     currently have it. This gives admin control to assign authoritative
+     control to an authentication scheme and allow "fall through" for
+     those authentication modules that aren't "Authoritative" thereby
+     allowing multiple authentication mechanisms to be chained.
+     [Dirk vanGulik]
+
   *) Remove requirement for ResourceConfig/AccessConfig if not using
      the three config file layout. [Randy Terbush]
 
