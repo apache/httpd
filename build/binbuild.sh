@@ -7,13 +7,13 @@
 # See http://www.apache.org/docs/LICENSE
 
 OS=`./srclib/apr/build/config.guess`
-BUILD_DIR="`pwd`/bindist"
-DEFAULT_DIR="/usr/local/apache2"
-APDIR=`pwd`
-APDIR=`basename $APDIR`
 APFULLDIR=`pwd`
+BUILD_DIR="$APFULLDIR/bindist"
+DEFAULT_DIR="/usr/local/apache2"
+APDIR=$APFULLDIR
+APDIR=`basename $APDIR`
 CONFIGPARAM="--enable-layout=Apache --prefix=$BUILD_DIR --enable-mods-shared=most --with-expat=$APFULLDIR/srclib/apr-util/xml/expat --enable-static-support"
-VER=`echo $APDIR |sed s/httpd-//`
+VER=`echo $APDIR | sed s/httpd-//`
 TAR="`srclib/apr/build/PrintPath tar`"
 GZIP="`srclib/apr/build/PrintPath gzip`"
 
