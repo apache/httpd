@@ -496,21 +496,21 @@ static const char *
     proxy_server_conf *conf =
     (proxy_server_conf *) ap_get_module_config(s->module_config, &proxy_module);
     struct proxy_alias *new;
-		if (r!=NULL && cmd->path == NULL ) {
-			new = apr_array_push(conf->aliases);
-			new->fake = f;
-			new->real = r;
-		} else if (r==NULL && cmd->path != NULL) {
-			new = apr_array_push(conf->aliases);
-			new->fake = cmd->path;
-			new->real = f;
-		} else {
-			if ( r== NULL)
-				return "ProxyPass needs a path when not defined in a location";
-			else 
-				return "ProxyPass can not have a path when defined in a location";
-		}
-  
+    if (r!=NULL && cmd->path == NULL ) {
+      new = apr_array_push(conf->aliases);
+      new->fake = f;
+      new->real = r;
+      } else if (r==NULL && cmd->path != NULL) {
+        new = apr_array_push(conf->aliases);
+        new->fake = cmd->path;
+        new->real = f;
+      } else {
+        if ( r== NULL)
+          return "ProxyPass needs a path when not defined in a location";
+        else 
+          return "ProxyPass can not have a path when defined in a location";
+      }
+
      return NULL;
 }
 
@@ -523,21 +523,21 @@ static const char *
 
     conf = (proxy_server_conf *)ap_get_module_config(s->module_config, 
                                                   &proxy_module);
-		if (r!=NULL && cmd->path == NULL ) {
-			new = apr_array_push(conf->raliases);
-			new->fake = f;
-			new->real = r;
-		} else if (r==NULL && cmd->path != NULL) {
-			new = apr_array_push(conf->raliases);
-			new->fake = cmd->path;
-			new->real = f;
-		} else {
-			if ( r == NULL)
-				return "ProxyPassReverse needs a path when not defined in a location";
-			else 
-				return "ProxyPassReverse can not have a path when defined in a location";
-		}
-  
+    if (r!=NULL && cmd->path == NULL ) {
+      new = apr_array_push(conf->raliases);
+      new->fake = f;
+      new->real = r;
+    } else if (r==NULL && cmd->path != NULL) {
+      new = apr_array_push(conf->raliases);
+      new->fake = cmd->path;
+      new->real = f;
+    } else {
+      if ( r == NULL)
+        return "ProxyPassReverse needs a path when not defined in a location";
+      else 
+        return "ProxyPassReverse can not have a path when defined in a location";
+    }
+    
     return NULL;
 }
 
