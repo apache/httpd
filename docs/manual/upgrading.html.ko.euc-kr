@@ -25,6 +25,8 @@
 <a href="./ko/upgrading.html" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="./ru/upgrading.html" hreflang="ru" rel="alternate" title="Russian">&nbsp;ru&nbsp;</a></p>
 </div>
+<div class="outofdate">이 문서는 최신판 번역이 아닙니다.
+            최근에 변경된 내용은 영어 문서를 참고하세요.</div>
 
   <p>우리는 기존 아파치 사용자가 업그레이드하는 것을 돕기위해
   중요한 정보를 알려주는 문서를 제공한다. 이 문서는 간단한

@@ -25,6 +25,8 @@
 <a href="./ko/upgrading.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="./ru/upgrading.html" hreflang="ru" rel="alternate" title="Russian">&nbsp;ru&nbsp;</a></p>
 </div>
+<div class="outofdate">This translation may be out of date. Check the
+            English version for recent changes.</div>
 
   <p>アップグレードを簡単にするために、既存の Apache ユーザに
   非常に重要な情報をこの文書にまとめています。これは短い
