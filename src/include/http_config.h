@@ -217,6 +217,18 @@ typedef struct module_struct {
     int (*fixer_upper)(request_rec *);
     int (*logger)(request_rec *);
     int (*header_parser)(request_rec *);
+
+    /* Regardless of the model the server uses for managing "units of
+     * execution", i.e. multi-process, multi-threaded, hybrids of those,
+     * there is the concept of a "heavy weight process".  That is, a
+     * process with its own memory space, file spaces, etc.  This method,
+     * child_init, is called once for each heavy-weight process before
+     * any requests are served.  Note that no provision is made yet for
+     * initialization per light-weight process (i.e. thread).  The
+     * parameters passed here are the same as those passed to the global
+     * init method above.
+     */
+    int (*child_init)(server_rec *, pool *);
 } module;
 
 /* Initializer for the first few module slots, which are only
@@ -262,6 +274,7 @@ API_EXPORT(module *) find_linked_module (const char *name);
 
 server_rec *read_config (pool *conf_pool, pool *temp_pool, char *config_name);
 void init_modules(pool *p, server_rec *s);
+void child_init_modules(pool *p, server_rec *s);
 void setup_prelinked_modules();
 void show_directives();
 void show_modules();

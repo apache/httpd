@@ -2548,5 +2548,6 @@ module mime_magic_module = {
     NULL,            /* check access */
     magic_find_ct,   /* type_checker */
     NULL,            /* fixups */
-    NULL             /* logger */
+    NULL,            /* logger */
+    NULL	     /* child_init */
 };

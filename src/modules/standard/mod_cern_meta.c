@@ -321,5 +321,6 @@ module MODULE_VAR_EXPORT cern_meta_module = {
    NULL,			/* type_checker */
    add_cern_meta_data,		/* fixups */
    NULL,			/* logger */
-   NULL				/* header parser */
+   NULL,			/* header parser */
+   NULL				/* child_init */
 };

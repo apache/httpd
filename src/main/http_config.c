@@ -1216,6 +1216,15 @@ void init_modules(pool *p, server_rec *s)
 	    (*m->init) (s, p);
 }
 
+void child_init_modules(pool *p, server_rec *s)
+{
+    module *m;
+
+    for (m = top_module; m; m = m->next)
+        if (m->child_init)
+	    (*m->child_init) (s, p);
+}
+
 /********************************************************************
  * Configuration directives are restricted in terms of where they may
  * appear in the main configuration files and/or .htaccess files according

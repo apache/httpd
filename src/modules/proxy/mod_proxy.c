@@ -556,6 +556,7 @@ module proxy_module = {
    NULL,                        /* type_checker */
    proxy_fixup,                 /* pre-run fixups */
    NULL,                        /* logger */
-   NULL                         /* header parser */
+   NULL,                        /* header parser */
+   NULL				/* child_init */
 };
 

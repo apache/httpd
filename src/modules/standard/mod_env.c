@@ -257,5 +257,6 @@ module MODULE_VAR_EXPORT env_module = {
    NULL,			/* type_checker */
    fixup_env_module,		/* fixups */
    NULL,			/* logger */
-   NULL				/* header parser */
+   NULL,			/* header parser */
+   NULL				/* child_init */
 };

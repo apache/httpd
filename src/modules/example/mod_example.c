@@ -1106,5 +1106,6 @@ module example_module = {
     example_typer,		/* [6] MIME type checker/setter */
     example_fixer,		/* [7] fixups */
     example_logger,		/* [9] logger */
-    example_hparser		/* [2] header parser */
+    example_hparser,		/* [2] header parser */
+    NULL			/* child_init */
 };

@@ -947,5 +947,6 @@ module MODULE_VAR_EXPORT autoindex_module = {
    NULL,                        /* type_checker */
    NULL,                        /* fixups */
    NULL,                        /* logger */
-   NULL                         /* header parser */
+   NULL,                        /* header parser */
+   NULL				/* child_init */
 };

@@ -582,5 +582,6 @@ module MODULE_VAR_EXPORT cgi_module = {
    NULL,			/* type_checker */
    NULL,			/* fixups */
    NULL,			/* logger */
-   NULL				/* header parser */
+   NULL,			/* header parser */
+   NULL				/* child_init */
 };

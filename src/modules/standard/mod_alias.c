@@ -384,5 +384,6 @@ module MODULE_VAR_EXPORT alias_module = {
    NULL,			/* type_checker */
    fixup_redir,			/* fixups */
    NULL,			/* logger */
-   NULL				/* header parser */
+   NULL,			/* header parser */
+   NULL				/* child_init */
 };

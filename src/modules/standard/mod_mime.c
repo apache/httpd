@@ -320,5 +320,6 @@ module MODULE_VAR_EXPORT mime_module = {
    find_ct,			/* type_checker */
    NULL,			/* fixups */
    NULL,			/* logger */
-   NULL				/* header parser */
+   NULL,			/* header parser */
+   NULL				/* child_init */
 };

@@ -481,5 +481,6 @@ module MODULE_VAR_EXPORT expires_module = {
    NULL,			/* type_checker */
    add_expires,			/* fixups */
    NULL,			/* logger */
-   NULL				/* header parser */
+   NULL,			/* header parser */
+   NULL				/* child_init */
 };

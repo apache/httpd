@@ -338,5 +338,6 @@ module MODULE_VAR_EXPORT usertrack_module = {
    NULL,		   /* type_checker */
    spot_cookie,		   /* fixups */
    NULL,                   /* logger */
-   NULL			   /* header parser */
+   NULL,		   /* header parser */
+   NULL			   /* child_init */
 };

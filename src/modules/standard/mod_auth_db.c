@@ -299,5 +299,6 @@ module db_auth_module = {
    NULL,			/* type_checker */
    NULL,			/* fixups */
    NULL,			/* logger */
-   NULL				/* header parser */
+   NULL,			/* header parser */
+   NULL				/* child_init */
 };

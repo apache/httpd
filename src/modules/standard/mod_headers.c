@@ -249,5 +249,6 @@ module MODULE_VAR_EXPORT headers_module = {
    NULL,			/* type_checker */
    fixup_headers,		/* fixups */
    NULL,			/* logger */
-   NULL				/* header parser */
+   NULL,			/* header parser */
+   NULL				/* child_init */
 };

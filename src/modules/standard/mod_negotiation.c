@@ -2041,5 +2041,6 @@ module MODULE_VAR_EXPORT negotiation_module = {
    handle_multi,		/* type_checker */
    NULL,			/* fixups */
    NULL,			/* logger */
-   NULL				/* header parser */
+   NULL,			/* header parser */
+   NULL				/* child_init */
 };
