@@ -196,6 +196,13 @@ void mod_auth_ldap_build_filter(char *filtbuf,
         strcat(filtbuf, "))");
 }
 
+static apr_status_t mod_auth_ldap_cleanup_connection_close(void *param)
+{
+    util_ldap_connection_t *ldc = param;
+    util_ldap_connection_close(ldc);
+    return APR_SUCCESS;
+}
+
 
 /*
  * Authentication Phase
@@ -361,6 +368,9 @@ int mod_auth_ldap_auth_checker(request_rec *r)
         ldc = util_ldap_connection_find(r, sec->host, sec->port,
                                        sec->binddn, sec->bindpw, sec->deref,
                                        sec->netscapessl, sec->starttls);
+        apr_pool_cleanup_register(r->pool, ldc,
+                                  mod_auth_ldap_cleanup_connection_close,
+                                  apr_pool_cleanup_null);
     }
     else {
         ap_log_rerror(APLOG_MARK, APLOG_WARNING|APLOG_NOERRNO, 0, r, 
