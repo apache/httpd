@@ -117,6 +117,7 @@
 #include "apr_file_io.h"
 #include "apr_time.h"
 #include "apr_getopt.h"
+#include "apr_strings.h"
 #include "ap_base64.h"
 #ifdef NOT_ASCII
 #include "apr_xlate.h"
@@ -180,6 +181,8 @@ int tlimit = 0;        		/* time limit in cs */
 int keepalive = 0;        	/* try and do keepalive connections */
 char servername[1024];      /* name that server reports */
 char hostname[1024];        /* host name */
+char *host_field;               /* value of "Host:" header field */
+int family = APR_UNSPEC;        /* requested address family */
 char path[1024];        	/* path name */
 char postfile[1024];        /* name of file containing post data */
 char *postdata;        		/* *buffer containing data from postfile */
@@ -492,7 +495,7 @@ static void start_connect(struct connection *c)
     c->cbx = 0;
     c->gotheader = 0;
 
-    if ((rv = apr_getaddrinfo(&destsa, hostname, APR_UNSPEC, port, 0, cntxt))
+    if ((rv = apr_getaddrinfo(&destsa, hostname, family, port, 0, cntxt))
          != APR_SUCCESS) {
         char buf[120];
 
@@ -773,7 +776,7 @@ static void test(void)
         	path,
         	AB_VERSION,
         	keepalive ? "Connection: Keep-Alive\r\n" : "",
-        	cookie, auth, hostname, hdrs);
+        	cookie, auth, host_field, hdrs);
     }
     else {
         sprintf(request, "POST %s HTTP/1.0\r\n"
@@ -789,7 +792,7 @@ static void test(void)
         	AB_VERSION,
         	keepalive ? "Connection: Keep-Alive\r\n" : "",
         	cookie, auth,
-        	hostname, postlen,
+        	host_field, postlen,
         	(content_type[0]) ? content_type : "text/plain", hdrs);
     }
 
@@ -883,14 +886,14 @@ static void test(void)
 static void copyright(void)
 {
     if (!use_html) {
-        printf("This is ApacheBench, Version %s\n", AB_VERSION " <$Revision: 1.34 $> apache-2.0");
+        printf("This is ApacheBench, Version %s\n", AB_VERSION " <$Revision: 1.35 $> apache-2.0");
         printf("Copyright (c) 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/\n");
         printf("Copyright (c) 1998-2000 The Apache Software Foundation, http://www.apache.org/\n");
         printf("\n");
     }
     else {
         printf("<p>\n");
-        printf(" This is ApacheBench, Version %s <i>&lt;%s&gt;</i> apache-2.0<br>\n", AB_VERSION, "$Revision: 1.34 $");
+        printf(" This is ApacheBench, Version %s <i>&lt;%s&gt;</i> apache-2.0<br>\n", AB_VERSION, "$Revision: 1.35 $");
         printf(" Copyright (c) 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/<br>\n");
         printf(" Copyright (c) 1998-2000 The Apache Software Foundation, http://www.apache.org/<br>\n");
         printf("</p>\n<p>\n");
@@ -939,6 +942,23 @@ static int parse_url(char *url)
     if (strlen(url) > 7 && strncmp(url, "http://", 7) == 0)
         url += 7;
     h = url;
+    if (*url == '[') { /* RFC 2732 format */
+        h = url + 1;
+        url = strchr(h, ']');
+        if (!url) { /* malformed IPv6 literal address format */
+            return 1;
+        }
+        *url = '\0';
+        ++url;
+        /* According to RFC 2732, this syntax is allowed only for IPv6 numeric 
+         * address strings, so set the family passed to apr_getaddrinfo() so
+         * that it fails if the hostname is IPv4.
+         *
+         * It is certainly possible that the hostname parameter isn't a numeric 
+         * address string; that error won't be caught here.
+         */
+        family = APR_INET6;
+    }
     if ((cp = strchr(url, ':')) != NULL) {
         *cp++ = '\0';
         p = cp;
@@ -949,6 +969,12 @@ static int parse_url(char *url)
     strcpy(path, cp);
     *cp = '\0';
     strcpy(hostname, h);
+    if (family == APR_INET6) {
+        host_field = apr_psprintf(cntxt, "[%s]",hostname);
+    }
+    else {
+        host_field = hostname;
+    }
     if (p != NULL)
         port = atoi(p);
     return 0;
