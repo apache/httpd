@@ -264,22 +264,6 @@ ap_set_module_config(c->conn_config, &ssl_module, val)
 #endif
 
 /*
- * The own data structures
- */
-typedef struct {
-    apr_pool_t *pPool;
-    apr_pool_t *pSubPool;
-    apr_array_header_t *aData;
-} ssl_ds_array;
-
-typedef struct {
-    apr_pool_t *pPool;
-    apr_pool_t *pSubPool;
-    apr_array_header_t *aKey;
-    apr_array_header_t *aData;
-} ssl_ds_table;
-
-/*
  * Define the certificate algorithm types
  */
 
@@ -718,20 +702,6 @@ void         ssl_pphrase_Handle(server_rec *, apr_pool_t *);
 /*  Diffie-Hellman Parameter Support  */
 DH           *ssl_dh_GetTmpParam(int);
 DH           *ssl_dh_GetParamFromFile(char *);
-
-/*  Data Structures */
-ssl_ds_array *ssl_ds_array_make(apr_pool_t *, int);
-BOOL          ssl_ds_array_isempty(ssl_ds_array *);
-void         *ssl_ds_array_push(ssl_ds_array *);
-void         *ssl_ds_array_get(ssl_ds_array *, int);
-void          ssl_ds_array_wipeout(ssl_ds_array *);
-void          ssl_ds_array_kill(ssl_ds_array *);
-ssl_ds_table *ssl_ds_table_make(apr_pool_t *, int);
-BOOL          ssl_ds_table_isempty(ssl_ds_table *);
-void         *ssl_ds_table_push(ssl_ds_table *, char *);
-void         *ssl_ds_table_get(ssl_ds_table *, char *);
-void          ssl_ds_table_wipeout(ssl_ds_table *);
-void          ssl_ds_table_kill(ssl_ds_table *);
 
 unsigned char *ssl_asn1_table_set(apr_hash_t *table,
                                   const char *key,

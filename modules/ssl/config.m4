@@ -54,7 +54,6 @@ ssl_objs="dnl
 mod_ssl.lo dnl
 ssl_engine_config.lo dnl
 ssl_engine_dh.lo dnl
-ssl_engine_ds.lo dnl
 ssl_engine_ext.lo dnl
 ssl_engine_init.lo dnl
 ssl_engine_io.lo dnl
