@@ -734,6 +734,14 @@ static void fix_hostname(request_rec *r)
         goto bad;
     }
 
+    if (!host && port) {
+        /* silly looking host ("Host: 123") but that isn't our job
+         * here to judge; apr_parse_addr_port() would think we had a port
+         * but no address
+         */
+        host = apr_psprintf(r->pool, "%d", (int)port);
+    }
+
     /* if the hostname is an IPv6 numeric address string, it was validated 
      * already; otherwise, further validation is needed 
      */
