@@ -198,6 +198,23 @@ static apr_status_t decrement_refcount(void *arg)
 {
     cache_object_t *obj = (cache_object_t *) arg;
 
+    /* If obj->complete is not set, the cache update failed and the
+     * object needs to be removed from the cache.
+     */
+    if (!obj->complete) {
+        mem_cache_object_t *mobj = (mem_cache_object_t *) obj->vobj;
+        if (sconf->lock) {
+            apr_thread_mutex_lock(sconf->lock);
+        }
+        apr_hash_set(sconf->cacheht, obj->key, strlen(obj->key), NULL);
+        sconf->object_cnt--;
+        sconf->cache_size -= mobj->m_len;
+        if (sconf->lock) {
+            apr_thread_mutex_unlock(sconf->lock);
+        }
+    }
+
+    /* Cleanup the cache object */
 #ifdef USE_ATOMICS
     if (!apr_atomic_dec(&obj->refcount)) {
         if (obj->cleanup) {
