@@ -1,5 +1,8 @@
 Changes with Apache 1.3.25
 
+  *) Add support for dechunking chunked responses in proxy.
+     [Graham Leggett]
+
   *) Made AB's use of the Host: header rfc2616 compliant
      by Taisuke Yamada <tai@iij.ad.jp> [Dirl-Willem van Gulik].
      

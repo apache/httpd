@@ -366,64 +366,6 @@ const char *
 }
 
 
-/* NOTE: This routine is taken from http_protocol::getline()
- * because the old code found in the proxy module was too
- * difficult to understand and maintain.
- */
-/* Get a line of protocol input, including any continuation lines
- * caused by MIME folding (or broken clients) if fold != 0, and place it
- * in the buffer s, of size n bytes, without the ending newline.
- *
- * Returns -1 on error, or the length of s.
- *
- * Note: Because bgets uses 1 char for newline and 1 char for NUL,
- *       the most we can get is (n - 2) actual characters if it
- *       was ended by a newline, or (n - 1) characters if the line
- *       length exceeded (n - 1).  So, if the result == (n - 1),
- *       then the actual input line exceeded the buffer length,
- *       and it would be a good idea for the caller to puke 400 or 414.
- */
-static int proxy_getline(char *s, int n, BUFF *in, int fold)
-{
-    char *pos, next;
-    int retval;
-    int total = 0;
-
-    pos = s;
-
-    do {
-        retval = ap_bgets(pos, n, in);  /* retval == -1 if error, 0 if EOF */
-
-        if (retval <= 0)
-            return ((retval < 0) && (total == 0)) ? -1 : total;
-
-        /* retval is the number of characters read, not including NUL      */
-
-        n -= retval;            /* Keep track of how much of s is full     */
-        pos += (retval - 1);    /* and where s ends                        */
-        total += retval;        /* and how long s has become               */
-
-        if (*pos == '\n') {     /* Did we get a full line of input?        */
-            *pos = '\0';
-            --total;
-            ++n;
-        }
-        else
-            return total;       /* if not, input line exceeded buffer size */
-
-        /*
-         * Continue appending if line folding is desired and the last line
-         * was not empty and we have room in the buffer and the next line
-         * begins with a continuation character.
-         */
-    } while (fold && (retval != 1) && (n > 1)
-             && (ap_blookc(&next, in) == 1)
-             && ((next == ' ') || (next == '\t')));
-
-    return total;
-}
-
-
 /*
  * Reads headers from a buffer and returns an array of headers.
  * Returns NULL on file error
@@ -447,7 +389,7 @@ table *ap_proxy_read_headers(request_rec *r, char *buffer, int size, BUFF *f)
      * Read header lines until we get the empty separator line, a read error,
      * the connection closes (EOF), or we timeout.
      */
-    while ((len = proxy_getline(buffer, size, f, 1)) > 0) {
+    while ((len = ap_getline(buffer, size, f, 1)) > 0) {
 
         if (!(value = strchr(buffer, ':'))) {   /* Find the colon separator */
 
@@ -488,7 +430,7 @@ table *ap_proxy_read_headers(request_rec *r, char *buffer, int size, BUFF *f)
 
         /* the header was too long; at the least we should skip extra data */
         if (len >= size - 1) {
-            while ((len = proxy_getline(field, MAX_STRING_LEN, f, 1))
+            while ((len = ap_getline(field, MAX_STRING_LEN, f, 1))
                    >= MAX_STRING_LEN - 1) {
                 /* soak up the extra data */
             }
@@ -504,11 +446,12 @@ table *ap_proxy_read_headers(request_rec *r, char *buffer, int size, BUFF *f)
  * - r->connection->client, if nowrite == 0
  */
 
-long int ap_proxy_send_fb(BUFF *f, request_rec *r, cache_req *c, off_t len, int nowrite, size_t recv_buffer_size)
+long int ap_proxy_send_fb(BUFF *f, request_rec *r, cache_req *c, off_t len, int nowrite, int chunked, size_t recv_buffer_size)
 {
     int ok;
     char *buf;
     size_t buf_size;
+    size_t remaining = 0;
     long total_bytes_rcvd;
     register int n, o, w;
     conn_rec *con = r->connection;
@@ -572,13 +515,67 @@ long int ap_proxy_send_fb(BUFF *f, request_rec *r, cache_req *c, off_t len, int 
         if (alternate_timeouts)
             ap_hard_timeout("proxy recv body from upstream server", r);
 
-        /* Read block from server */
-        if (-1 == len) {
-            n = ap_bread(f, buf, buf_size);
+
+        /* read a chunked block */
+        if (chunked) {
+            long chunk_start = 0;
+            n = 0;
+
+            /* start of a new chunk */
+            if (remaining == 0) {
+                /* get the chunk size from the stream */
+                chunk_start = ap_getline(buf, buf_size, f, 0);
+                if ((chunk_start <= 0) || (chunk_start >= (buf_size - 1)) || !ap_isxdigit(*buf)) {
+                    n = -1;
+                }
+                /* parse the chunk size */
+                else {
+                    remaining = ap_get_chunk_size(buf);
+                    if (remaining == 0) { /* Last chunk indicated, get footers */
+                        /* as we are a proxy, we discard the footers, as the headers
+                         * have already been sent at this point.
+                         */
+                        if (NULL == ap_proxy_read_headers(r, buf, buf_size, f)) {
+                            n = -1;
+                        }
+                    }
+                }
+            }
+
+            /* read the chunk */
+            if (remaining > 0) {
+                n = ap_bread(f, buf, MIN((off_t)buf_size, remaining));
+                if (n > -1) {
+                    remaining -= n;
+                }
+            }
+
+            /* soak up trailing CRLF */
+            if (0 == remaining) {
+                char ch;
+/****/
+/* XXXX FIXME: Does this little "soak CRLF" work with EBCDIC???? */
+/****/
+                if ((ch = ap_bgetc(f)) == CR) {
+                    ch = ap_bgetc(f);
+                }
+                if (ch != LF) {
+                    n = -1;
+                }
+            }
         }
+
+
+        /* otherwise read block normally */
         else {
-            n = ap_bread(f, buf, MIN((off_t)buf_size, len - total_bytes_rcvd));
+            if (-1 == len) {
+                n = ap_bread(f, buf, buf_size);
+            }
+            else {
+                n = ap_bread(f, buf, MIN((off_t)buf_size, len - total_bytes_rcvd));
+            }
         }
+
 
         if (alternate_timeouts)
             ap_kill_timeout(r);
@@ -1475,6 +1472,19 @@ void ap_proxy_clear_connection(pool *p, table *headers)
         ap_table_unset(headers, name);
     }
     ap_table_unset(headers, "Connection");
+
+    /* unset hop-by-hop headers defined in RFC2616 13.5.1 */
+    ap_table_unset(headers,"Keep-Alive");
+    ap_table_unset(headers,"Proxy-Authenticate");
+    ap_table_unset(headers,"TE");
+    ap_table_unset(headers,"Trailer");
+    /* it is safe to just chop the transfer-encoding header
+     * here, because proxy doesn't support any other encodings
+     * to the backend other than chunked.
+     */
+    ap_table_unset(headers,"Transfer-Encoding");
+    ap_table_unset(headers,"Upgrade");
+
 }
 
 /* overlay one table on another

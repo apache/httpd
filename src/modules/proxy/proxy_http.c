@@ -164,6 +164,7 @@ int ap_proxy_http_handler(request_rec *r, cache_req *c, char *url,
     char portstr[32];
     pool *p = r->pool;
     int destport = 0;
+    int chunked = 0;
     char *destportstr = NULL;
     const char *urlptr = NULL;
     const char *datestr, *urlstr;
@@ -476,7 +477,12 @@ int ap_proxy_http_handler(request_rec *r, cache_req *c, char *url,
                 );
         }
 
-        /* strip hop-by-hop headers defined by Connection */
+        /* is this content chunked? */
+        chunked = ap_find_last_token(r->pool,
+                                     ap_table_get(resp_hdrs, "Transfer-Encoding"),
+                                     "chunked");
+
+        /* strip hop-by-hop headers defined by Connection and RFC2616 */
         ap_proxy_clear_connection(p, resp_hdrs);
         /* Now add out bound headers set by other modules */
         resp_hdrs = ap_overlay_tables(r->pool, r->err_headers_out, resp_hdrs);
@@ -595,7 +601,7 @@ int ap_proxy_http_handler(request_rec *r, cache_req *c, char *url,
  * content length is not known. We need to make 100% sure c->len is always
  * set correctly before we get here to correctly do keepalive.
  */
-        ap_proxy_send_fb(f, r, c, c->len, 0, conf->io_buffer_size);
+        ap_proxy_send_fb(f, r, c, c->len, 0, chunked, conf->io_buffer_size);
     }
 
     /* ap_proxy_send_fb() closes the socket f for us */

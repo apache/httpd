@@ -719,7 +719,7 @@ static int sub_garbage_coll(request_rec *r, array_header *files,
  *
  * We don't yet understand If-Range, but we will...
  */
-    int ap_proxy_cache_conditional(request_rec *r, cache_req *c, BUFF *cachefp){
+    int ap_proxy_cache_conditional(request_rec *r, cache_req *c, BUFF *cachefp) {
         const char *etag, *wetag = NULL;
 
         /* get etag */
@@ -784,7 +784,7 @@ static int sub_garbage_coll(request_rec *r, array_header *files,
             /* if cache file is being updated */
             if (c->origfp) {
                 ap_proxy_write_headers(c, c->resp_line, c->hdrs);
-                ap_proxy_send_fb(c->origfp, r, c, c->len, 1, IOBUFSIZE);
+                ap_proxy_send_fb(c->origfp, r, c, c->len, 1, 0, IOBUFSIZE);
                 ap_proxy_cache_tidy(c);
             }
             else
@@ -855,7 +855,7 @@ static int sub_garbage_coll(request_rec *r, array_header *files,
             /* are we updating the cache file? */
             if (c->origfp) {
                 ap_proxy_write_headers(c, c->resp_line, c->hdrs);
-                ap_proxy_send_fb(c->origfp, r, c, c->len, 1, IOBUFSIZE);
+                ap_proxy_send_fb(c->origfp, r, c, c->len, 1, 0, IOBUFSIZE);
                 ap_proxy_cache_tidy(c);
             }
             else
@@ -884,14 +884,14 @@ static int sub_garbage_coll(request_rec *r, array_header *files,
         /* are we rewriting the cache file? */
         if (c->origfp) {
             ap_proxy_write_headers(c, c->resp_line, c->hdrs);
-            ap_proxy_send_fb(c->origfp, r, c, c->len, r->header_only, IOBUFSIZE);
+            ap_proxy_send_fb(c->origfp, r, c, c->len, r->header_only, 0, IOBUFSIZE);
             ap_proxy_cache_tidy(c);
             return OK;
         }
 
         /* no, we not */
         if (!r->header_only) {
-            ap_proxy_send_fb(cachefp, r, NULL, c->len, 0, IOBUFSIZE);
+            ap_proxy_send_fb(cachefp, r, NULL, c->len, 0, 0, IOBUFSIZE);
         }
         else {
             ap_pclosef(r->pool, ap_bfileno(cachefp, B_WR));

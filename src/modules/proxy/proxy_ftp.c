@@ -1355,7 +1355,7 @@ int ap_proxy_ftp_handler(request_rec *r, cache_req *c, char *url)
 /* we need to set this for ap_proxy_send_fb()... */
             if (c != NULL)
                 c->cache_completion = 0;
-            ap_proxy_send_fb(data, r, c, -1, 0, conf->io_buffer_size);
+            ap_proxy_send_fb(data, r, c, -1, 0, 0, conf->io_buffer_size);
         }
         else {
             send_dir(data, r, c, cwd);
