@@ -86,3 +86,11 @@ Body:----------sv--
 Om du tror att detta beror p&aring; ett serverfel, v&auml;nligen kontakta 
 <a href="mailto:<!--#echo encoding="url" var="SERVER_ADMIN" -->">webbansvarig</a>.
 ----------sv--
+
+Content-language: tr
+Content-type: text/html; charset=ISO-8859-9
+Body:----------tr--
+Bunun bir sunucu hatas&#305; oldu&#287;unu dü&#351;ünüyorsan&#305;z, lütfen
+<a href="mailto:<!--#echo encoding="url" var="SERVER_ADMIN" -->">site
+yöneticisi</a> ile ileti&#351;ime geçin.
+----------tr--

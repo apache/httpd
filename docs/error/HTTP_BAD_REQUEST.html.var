@@ -155,3 +155,18 @@ Body:----------sv--
 
 <!--#include virtual="include/bottom.html" -->  
 ----------sv--
+
+Content-language: tr
+Content-type: text/html; charset=ISO-8859-9
+Body:----------tr--
+<!--#set var="CONTENT_LANGUAGE" value="tr"
+--><!--#set var="CHARACTER_ENCODING" value="ISO-8859-9"
+--><!--#set var="TITLE" value="Bad request!"
+--><!--#include virtual="include/top.html" -->
+
+    Gezgininiz (veya vekil sunucunuz) bu sunucunun
+    tan&#305;mad&#305;&#287;&#305;
+    bir istemde bulundu.
+
+<!--#include virtual="include/bottom.html" -->
+----------tr--

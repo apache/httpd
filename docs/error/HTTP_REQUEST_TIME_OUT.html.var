@@ -160,3 +160,17 @@ Body:----------sv--
 
 <!--#include virtual="include/bottom.html" -->
 ----------sv--
+
+Content-language: tr
+Content-type: text/html; charset=ISO-8859-9
+Body:----------tr--
+<!--#set var="CONTENT_LANGUAGE" value="tr"
+--><!--#set var="CHARACTER_ENCODING" value="ISO-8859-9"
+--><!--#set var="TITLE" value="Request time-out!"
+--><!--#include virtual="include/top.html" -->
+
+    Sunucu a&#287; ba&#287;lant&#305;s&#305;n&#305; kapatt&#305; çünkü gezgin
+    talebini belirlenmi&#351; süre içinde tamamlayamad&#305;.
+
+<!--#include virtual="include/bottom.html" --> 
+----------tr--

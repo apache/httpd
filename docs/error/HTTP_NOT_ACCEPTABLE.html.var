@@ -156,3 +156,17 @@ Body:----------sv--
 
 <!--#include virtual="include/bottom.html" -->
 ----------sv--
+
+Content-language: tr
+Content-type: text/html; charset=ISO-8859-9
+Body:----------tr--
+<!--#set var="CONTENT_LANGUAGE" value="tr"
+--><!--#set var="CHARACTER_ENCODING" value="ISO-8859-9"
+--><!--#set var="TITLE" value="No acceptable object found!"
+--><!--#include virtual="include/top.html" -->
+
+    Sunucu üzerinde, talep etti&#287;iniz kayna&#287;&#305;n
+    uygun bir kar&#351;&#305;l&#305;&#287;&#305; bulunamad&#305;.
+
+<!--#include virtual="include/bottom.html" -->
+----------tr--
