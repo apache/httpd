@@ -102,7 +102,6 @@ static APR_OPTIONAL_FN_TYPE(ap_register_include_handler) *ssi_pfn_register;
  * option only changes the default.
  */
 
-module include_module;
 enum xbithack {
     xbithack_off, xbithack_on, xbithack_full
 };
@@ -126,7 +125,8 @@ typedef struct {
 /* Sentinel value to store in subprocess_env for items that
  * shouldn't be evaluated until/unless they're actually used
  */
-static char lazy_eval_sentinel;
+static const char lazy_eval_sentinel;
+#define LAZY_VALUE (&lazy_eval_sentinel)
 
 /* XXX: could use ap_table_overlap here */
 static void add_include_vars(request_rec *r, char *timefmt)
@@ -134,14 +134,14 @@ static void add_include_vars(request_rec *r, char *timefmt)
     apr_table_t *e = r->subprocess_env;
     char *t;
 
-    apr_table_setn(e, "DATE_LOCAL", &lazy_eval_sentinel);
-    apr_table_setn(e, "DATE_GMT", &lazy_eval_sentinel);
-    apr_table_setn(e, "LAST_MODIFIED", &lazy_eval_sentinel);
+    apr_table_setn(e, "DATE_LOCAL", LAZY_VALUE);
+    apr_table_setn(e, "DATE_GMT", LAZY_VALUE);
+    apr_table_setn(e, "LAST_MODIFIED", LAZY_VALUE);
     apr_table_setn(e, "DOCUMENT_URI", r->uri);
     if (r->path_info && *r->path_info) {
         apr_table_setn(e, "DOCUMENT_PATH_INFO", r->path_info);
     }
-    apr_table_setn(e, "USER_NAME", &lazy_eval_sentinel);
+    apr_table_setn(e, "USER_NAME", LAZY_VALUE);
     if ((t = strrchr(r->filename, '/'))) {
         apr_table_setn(e, "DOCUMENT_NAME", ++t);
     }
@@ -190,6 +190,17 @@ static const char *add_include_vars_lazy(request_rec *r, const char *var)
     if (val) {
         apr_table_setn(r->subprocess_env, var, val);
     }
+    return val;
+}
+
+static const char *get_include_var(request_rec *r, const char *var)
+{
+    const char *val;
+    val = apr_table_get(r->subprocess_env, var);
+
+    if (val == LAZY_VALUE)
+        val = add_include_vars_lazy(r, var);
+
     return val;
 }
 
@@ -770,10 +781,7 @@ static void ap_ssi_parse_string(request_rec *r, const char *in, char *out,
 		if (l != 0) {
                     tmp_store        = *end_of_var_name;
                     *end_of_var_name = '\0';
-                    val = apr_table_get(r->subprocess_env, start_of_var_name);
-                    if (val == &lazy_eval_sentinel) {
-                        val = add_include_vars_lazy(r, start_of_var_name);
-                    }
+                    val = get_include_var(r, start_of_var_name);
                     *end_of_var_name = tmp_store;
 
 		    if (val) {
@@ -1018,11 +1026,7 @@ static int handle_echo(include_ctx_t *ctx, apr_bucket_brigade **bb, request_rec 
                 }
             }
             if (!strcmp(tag, "var")) {
-                const char *val = apr_table_get(r->subprocess_env, tag_val);
-
-                if (val == &lazy_eval_sentinel) {
-                    val = add_include_vars_lazy(r, tag_val);
-                }
+                const char *val = get_include_var(r, tag_val);
                 if (val) {
                     switch(encode) {
                     case E_NONE:   
@@ -2410,13 +2414,11 @@ static int handle_printenv(include_ctx_t *ctx, apr_bucket_brigade **bb, request_
             *inserted_head = NULL;
             for (i = 0; i < arr->nelts; ++i) {
                 key_text = ap_escape_html(r->pool, elts[i].key);
-                if (elts[i].val == &lazy_eval_sentinel) {
-                    val_text =
-                        ap_escape_html(r->pool,
-                                       add_include_vars_lazy(r, elts[i].key));
-                } else {
-                    val_text = ap_escape_html(r->pool, elts[i].val);
+                val_text = elts[i].val;
+                if (val_text == LAZY_VALUE) {
+                    val_text = add_include_vars_lazy(r, elts[i].key);
                 }
+                val_text = ap_escape_html(r->pool, elts[i].val);
                 k_len = strlen(key_text);
                 v_len = strlen(val_text);
 
