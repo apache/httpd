@@ -108,7 +108,6 @@ What works:
   mod_cgi.c         +
   mod_digest.c      - / MD5 not ported yet
   mod_dir.c         +
-  mod_dld.c         - / no shared libs
   mod_env.c         +
   mod_example.c     - / not tried yet
   mod_expires.c     +
@@ -122,9 +121,10 @@ What works:
   mod_mime.c        +
   mod_mime_magic.c  - / not tried yet
   mod_negotiation.c +
-  mod_proxy.c       ? / works, cache still needs some work
+  mod_proxy.c       +
   mod_rewrite.c     ? / untested
   mod_setenvif.c    +
+  mod_so.c          - / no shared libs
   mod_speling.c     +
   mod_status.c      +
   mod_unique_id.c   +
@@ -136,7 +136,6 @@ Additional (third-party) modules:                    See:
   mod_php.c         - / not ported yet           http://www.php.net/
   mod_put.c         ? / untested                 http://hpwww.ec-lyon.fr/~vincent/apache/mod_put.html
   mod_session.c     ? / untested                 ftp://hachiman.vidya.com/pub/apache/mod_session.tar.gz
-  mod_so.c          - / no shared libs
 
 
 Notes:
@@ -146,4 +145,4 @@ standard db-1.85.14 with little problems. Note however that you will need
 a working perl5 as well if you want to use Apache's dbmmanage script to
 maintain db user databases.
 
-			    Martin Kraemer, 20-Feb-1998
+			    Martin Kraemer, 31-Mar-1998
