@@ -69,7 +69,7 @@ Available Patches:
     * Ken's merge of the Three Config Files into one, with srm.conf and
       access.conf made into "go see the One True Config File" placeholders.
 	Message-ID: <3624C175.D0C18CAA@Golux.Com>
-	Status: 
+	Status: Ben +1, Jim +1
 
     * Harrie Hazewinkel's PATCH scoreboard
       This is a patch that changes the 'vhost'-name (type char [32])
