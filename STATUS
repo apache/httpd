@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:						-*-text-*-
-Last modified at [$Date: 2001/04/03 22:56:48 $]
+Last modified at [$Date: 2001/04/03 23:47:39 $]
 
 Release:
 
@@ -97,6 +97,13 @@ RELEASE SHOWSTOPPERS:
         MsgId: <3A9C0097.9C83F07C@Golux.Com>
 
 RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
+
+    * the autoconf setup should be fixed to default to using the 
+      "Apache" layout from config.layout, and each variable settable
+      in a layout should be overridable on the command line.  Plus,
+      what we do right now just doesn't seem to fully fit into how autoconf
+      works, eg. AC_PREFIX_DEFAULT issues.
+        Message-ID: <Pine.BSF.4.20.0104031557420.20876-100000@alive.znep.com>
 
     * mod_status ExtendedStatus SS (seconds since last request) is
       bogus because of an uninitialized field in the scoreboard.
