@@ -712,7 +712,8 @@ static dav_error * dav_fs_load_lock_record(dav_lockdb *lockdb, dav_datum key,
 				 DAV_ERR_LOCK_CORRUPT_DB,
 				 apr_psprintf(p,
 					     "The lock database was found to "
-					     "be corrupt. offset %i, c=%02x",
+					     "be corrupt. offset %"
+                                             APR_SIZE_T_FMT ", c=%02x",
 					     offset, val.dptr[offset]));
 	}
     }
@@ -909,7 +910,8 @@ static dav_error * dav_fs_save_locknull_list(apr_pool_t *p, const char *dirpath,
         || amt != pbuf->cur_len) {
 	err = dav_new_error(p, HTTP_INTERNAL_SERVER_ERROR, 0,
 			    apr_psprintf(p,
-					"Error writing %i bytes to %s",
+					"Error writing %" APR_SIZE_T_FMT 
+                                        " bytes to %s",
 					pbuf->cur_len, pathname));
     }
 

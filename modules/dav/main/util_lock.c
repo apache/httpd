@@ -173,7 +173,7 @@ const char *dav_lock_get_activelock(request_rec *r, dav_lock *lock,
 	}
 	else {
 	    time_t now = time(NULL);
-	    sprintf(tmp, "Second-%lu", lock->timeout - now);
+	    sprintf(tmp, "Second-%lu", (long unsigned int)(lock->timeout - now));
 	    dav_buffer_append(p, pbuf, tmp);
 	}
 
