@@ -181,7 +181,13 @@ AC_DEFUN(APACHE_CHECK_SHM_RW,[
   AC_TRY_COMPILE([
 #include <sys/types.h>
 #include <sys/ipc.h>
+#ifndef _OSD_POSIX
 #include <sys/shm.h>
+#else
+#define _KMEMUSER   /* BS2000 needs this to enable SHM_[RW] */
+#include <sys/shm.h>
+#undef  _KMEMUSER
+#endif
 ],[
   int x = SHM_R | SHM_W;
 ],[
@@ -190,8 +196,8 @@ AC_DEFUN(APACHE_CHECK_SHM_RW,[
   ac_cv_shm_rw=no
 ])])
   if test "$ac_cv_shm_rw" = "no"; then
-    AC_DEFINE(SHM_R, 0x400, [ ])
-    AC_DEFINE(SHM_W, 0x200, [ ])
+    AC_DEFINE(SHM_R, 0400, [ ])
+    AC_DEFINE(SHM_W, 0200, [ ])
   fi
 ])
 
