@@ -1216,8 +1216,8 @@ static dav_error *dav_gen_supported_methods(request_rec *r,
                                             const apr_table_t *methods,
                                             ap_text_header *body)
 {
-    apr_array_header_t *arr;
-    apr_table_entry_t *elts;
+    const apr_array_header_t *arr;
+    const apr_table_entry_t *elts;
     ap_xml_elem *child;
     ap_xml_attr *attr;
     char *s;
@@ -1228,7 +1228,7 @@ static dav_error *dav_gen_supported_methods(request_rec *r,
     if (elem->first_child == NULL) {
         /* show all supported methods */
         arr = apr_table_elts(methods);
-        elts = (apr_table_entry_t *) arr->elts;
+        elts = (const apr_table_entry_t *) arr->elts;
 
         for (i = 0; i < arr->nelts; ++i) {
             if (elts[i].key == NULL)
@@ -1459,8 +1459,8 @@ static int dav_method_options(request_rec *r)
     const char *dav_level;
     char *allow;
     char *s;
-    apr_array_header_t *arr;
-    apr_table_entry_t *elts;
+    const apr_array_header_t *arr;
+    const apr_table_entry_t *elts;
     apr_table_t *methods = apr_table_make(r->pool, 12);
     ap_text_header vsn_options = { 0 };
     ap_text_header body = { 0 };
@@ -1641,7 +1641,7 @@ static int dav_method_options(request_rec *r)
 
     /* Generate the Allow header */
     arr = apr_table_elts(methods);
-    elts = (apr_table_entry_t *) arr->elts;
+    elts = (const apr_table_entry_t *) arr->elts;
     text_size = 0;
 
     /* first, compute total length */

@@ -257,8 +257,8 @@ static int log_script(request_rec *r, cgi_server_conf * conf, int ret,
 		  char *dbuf, const char *sbuf, apr_file_t *script_in, 
                   apr_file_t *script_err)
 {
-    apr_array_header_t *hdrs_arr = apr_table_elts(r->headers_in);
-    apr_table_entry_t *hdrs = (apr_table_entry_t *) hdrs_arr->elts;
+    const apr_array_header_t *hdrs_arr = apr_table_elts(r->headers_in);
+    const apr_table_entry_t *hdrs = (const apr_table_entry_t *) hdrs_arr->elts;
     char argsbuffer[HUGE_STRING_LEN];
     apr_file_t *f = NULL;
     int i;
@@ -300,7 +300,7 @@ static int log_script(request_rec *r, cgi_server_conf * conf, int ret,
 
     apr_file_puts("%response\n", f);
     hdrs_arr = apr_table_elts(r->err_headers_out);
-    hdrs = (apr_table_entry_t *) hdrs_arr->elts;
+    hdrs = (const apr_table_entry_t *) hdrs_arr->elts;
 
     for (i = 0; i < hdrs_arr->nelts; ++i) {
 	if (!hdrs[i].key)

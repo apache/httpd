@@ -406,7 +406,7 @@ static int match_headers(request_rec *r)
 {
     sei_cfg_rec *sconf;
     sei_entry *entries;
-    apr_table_entry_t *elts;
+    const apr_table_entry_t *elts;
     const char *val;
     int i, j;
     char *last_name;
@@ -459,8 +459,8 @@ static int match_headers(request_rec *r)
                      * the headers_in until we find a match or run out of
                      * headers.
                      */
-                    apr_array_header_t *arr = apr_table_elts(r->headers_in);
-                    elts = (apr_table_entry_t *) arr->elts;
+                    const apr_array_header_t *arr = apr_table_elts(r->headers_in);
+                    elts = (const apr_table_entry_t *) arr->elts;
                     val = NULL;
                     for (j = 0; j < arr->nelts; ++j) {
                         if (!ap_regexec(b->pnamereg, elts[j].key, 0, NULL, 0)) { 
@@ -489,8 +489,8 @@ static int match_headers(request_rec *r)
         }
 
         if (!ap_regexec(b->preg, val, 0, NULL, 0)) {
-	    apr_array_header_t *arr = apr_table_elts(b->features);
-            elts = (apr_table_entry_t *) arr->elts;
+	    const apr_array_header_t *arr = apr_table_elts(b->features);
+            elts = (const apr_table_entry_t *) arr->elts;
 
             for (j = 0; j < arr->nelts; ++j) {
                 if (!strcmp(elts[j].val, "!")) {

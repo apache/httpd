@@ -3627,12 +3627,12 @@ static char *lookup_variable(request_rec *r, char *var)
 
 static char *lookup_header(request_rec *r, const char *name)
 {
-    apr_array_header_t *hdrs_arr;
-    apr_table_entry_t *hdrs;
+    const apr_array_header_t *hdrs_arr;
+    const apr_table_entry_t *hdrs;
     int i;
 
     hdrs_arr = apr_table_elts(r->headers_in);
-    hdrs = (apr_table_entry_t *)hdrs_arr->elts;
+    hdrs = (const apr_table_entry_t *)hdrs_arr->elts;
     for (i = 0; i < hdrs_arr->nelts; ++i) {
         if (hdrs[i].key == NULL) {
             continue;

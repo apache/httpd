@@ -2609,8 +2609,8 @@ static int handle_printenv(include_ctx_t *ctx, apr_bucket_brigade **bb,
     if (ctx->flags & FLAG_PRINTING) {
         ap_ssi_get_tag_and_value(ctx, &tag, &tag_val, 1);
         if ((tag == NULL) && (tag_val == NULL)) {
-            apr_array_header_t *arr = apr_table_elts(r->subprocess_env);
-            apr_table_entry_t *elts = (apr_table_entry_t *)arr->elts;
+            const apr_array_header_t *arr = apr_table_elts(r->subprocess_env);
+            const apr_table_entry_t *elts = (const apr_table_entry_t *)arr->elts;
             int i;
             const char *key_text, *val_text;
             apr_size_t   k_len, v_len, t_wrt;
