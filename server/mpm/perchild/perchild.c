@@ -259,6 +259,9 @@ static void just_die(int sig)
 static int volatile shutdown_pending;
 static int volatile restart_pending;
 static int volatile is_graceful;
+/* we don't currently track ap_my_generation, but mod_status 
+ * references it so it must be defined */
+ap_generation_t volatile ap_my_generation=0;
 
 /*
  * ap_start_shutdown() and ap_start_restart(), below, are a first stab at
