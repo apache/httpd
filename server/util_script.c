@@ -280,7 +280,7 @@ AP_DECLARE(void) ap_add_common_vars(request_rec *r)
     apr_table_addn(e, "SERVER_ADMIN", s->server_admin);	/* Apache */
     apr_table_addn(e, "SCRIPT_FILENAME", r->filename);	/* Apache */
 
-    apr_sockaddr_port_get(&rport, c->remote_addr);
+    rport = c->remote_addr->port;
     apr_table_addn(e, "REMOTE_PORT", apr_itoa(r->pool, rport));
 
     if (r->user) {

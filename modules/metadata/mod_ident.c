@@ -210,8 +210,8 @@ static apr_status_t rfc1413_query(apr_socket_t *sock, conn_rec *conn,
     char user[RFC1413_USERLEN + 1];     /* XXX */
     apr_size_t buflen;
 
-    apr_sockaddr_port_get(&sav_our_port, conn->local_addr);
-    apr_sockaddr_port_get(&sav_rmt_port, conn->remote_addr);
+    sav_our_port = conn->local_addr->port;
+    sav_rmt_port = conn->remote_addr->port;
 
     /* send the data */
     buflen = apr_snprintf(buffer, sizeof(buffer), "%hu,%hu\r\n", sav_rmt_port,
