@@ -281,7 +281,7 @@ static apr_status_t deflate_out_filter(ap_filter_t *f,
              || strncmp(r->content_type, "text/html", 9)) {
             const char *env_value = apr_table_get(r->subprocess_env,
                                                   "gzip-only-text/html");
-            if ( env_value == NULL || strcmp(env_value,"1") ) {
+            if ( env_value && (strcmp(env_value,"1") == 0) ) {
                 ap_remove_output_filter(f);
             }
             return ap_pass_brigade(f->next, bb);
