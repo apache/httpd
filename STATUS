@@ -31,11 +31,11 @@ Available Patches:
 
     * Ralf's [PATCH] New RewriteMap types for mod_rewrite
       <199802121518.QAA27349@en1.engelschall.com>
-      Status (for 1.3b6-dev): Ralf +1
+      Status: Ralf +1
 
     * Ralf's [PATCH] Apache as a Reverse Proxy
       <199802121503.QAA25633@en1.engelschall.com>
-      Status (for 1.3b6-dev): Ralf +1
+      Status: Ralf +1, Martin +1
 
     * Doug's [PATCH] unbind cpu option for aix
       <34EA1E72.E79AA3D2@telebusiness.co.nz>
