@@ -670,8 +670,8 @@ static char *lcase_header_name_return_body(char *header, request_rec *r)
 {
     char *cp = header;
 
-    while (*cp && *cp != ':') {
-        *cp++ = tolower(*cp);
+    for ( ; *cp && *cp != ':' ; ++cp) {
+        *cp = tolower(*cp);
     }
 
     if (!*cp) {
