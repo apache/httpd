@@ -96,6 +96,7 @@ typedef struct disk_cache_object {
  
 typedef struct {
     const char* cache_root;
+    apr_size_t cache_root_len;
     off_t space;                 /* Maximum cache size (in 1024 bytes) */
     apr_time_t maxexpire;        /* Maximum time to keep cached files in msecs */
     apr_time_t defaultexpire;    /* default time to keep cached file in msecs */
@@ -143,15 +144,30 @@ static char *data_file(apr_pool_t *p, int dirlevels, int dirlength,
     return apr_pstrcat(p, root, "/", hashfile, CACHE_DATA_SUFFIX, NULL);
 }
 
-static int mkdir_structure(char *file, const char *root)
+static void mkdir_structure(disk_cache_conf *conf, const char *file, apr_pool_t *pool)
 {
-    
-    /* XXX TODO: Use APR to make a root directory. Do some sanity checking... */
-    return 0;
+    apr_status_t rv;
+    char *p;
+
+    for (p = file + conf->cache_root_len + 1;;) {
+        p = strchr(p, '/');
+        if (!p)
+            break;
+        *p = '\0';
+
+        rv = apr_dir_make(file, 
+                          APR_UREAD|APR_UWRITE|APR_UEXECUTE, pool);
+        if (rv != APR_SUCCESS && !APR_STATUS_IS_EEXIST(rv)) {
+            /* XXX */
+        }
+        *p = '/';
+        ++p;
+    }
 }
 
-static apr_status_t file_cache_el_final(cache_info *info, cache_handle_t *h, request_rec *r)
+static apr_status_t file_cache_el_final(cache_handle_t *h, request_rec *r)
 {
+    apr_status_t rv;
     disk_cache_conf *conf = ap_get_module_config(r->server->module_config,
                                                  &disk_cache_module);
     disk_cache_object_t *dobj = (disk_cache_object_t *) h->cache_obj->vobj;
@@ -159,35 +175,31 @@ static apr_status_t file_cache_el_final(cache_info *info, cache_handle_t *h, req
     /* move the data over */
     if (dobj->fd) {
         apr_file_flush(dobj->fd);
-        if (!dobj->datafile) dobj->datafile = data_file(r->pool, conf->dirlevels, conf->dirlength,
-                                                        conf->cache_root, h->cache_obj->key);
-        if (unlink(dobj->datafile)) {
-            mkdir_structure(dobj->datafile, conf->cache_root);
+        if (!dobj->datafile) {
+            dobj->datafile = data_file(r->pool, conf->dirlevels, conf->dirlength,
+                                       conf->cache_root, h->cache_obj->key);
         }
-        else {
+        /* Remove old file with the same name. If remove fails, then
+         * perhaps we need to create the directory tree where we are
+         * about to write the new file.
+         */
+        rv = apr_file_remove(dobj->datafile, r->pool);
+        if (rv != APR_SUCCESS) {
+            mkdir_structure(conf, dobj->datafile, r->pool);
+        }
+
+        /*
+         * This assumes that the tempfile is on the same file system
+         * as the cache_root. If not, then we need a file copy/move
+         * rather than a rename.
+         */
+        rv = apr_file_rename(dobj->tempfile, dobj->datafile, r->pool);
+        if (rv != APR_SUCCESS) {
             /* XXX log */
         }
-#ifdef WIN32
-        /* XXX: win32 doesn't have a link */
-        if  (apr_file_copy(dobj->tempfile, dobj->datafile, APR_FILE_SOURCE_PERMS, r->pool) != APR_SUCCESS) {
-#else
-        if (link(dobj->tempfile, dobj->datafile) == -1) {
-#endif
-            /* XXX log */
-        }
-        else {
-            /* XXX log message */
-        }
-       if (unlink(dobj->tempfile) == -1) {
-           /* XXX log message */
-       }
-       else {
-           /* XXX log message */
-       }
-   }
-   if (dobj->fd) {
-       apr_file_close(dobj->fd);     /* if you finalize, you are done writing, so close it */
-       dobj->fd = 0;
+
+        apr_file_close(dobj->fd);
+        dobj->fd = NULL;
        /* XXX log */
    }
 
@@ -542,13 +554,15 @@ static int write_headers(cache_handle_t *h, request_rec *r, cache_info *info)
     disk_cache_object_t *dobj = (disk_cache_object_t*) h->cache_obj->vobj;
 
     if (!dobj->fd)  {
-        if(!dobj->hdrsfile) dobj->hdrsfile = header_file(r->pool, 
-                                                         conf->dirlevels, 
-                                                         conf->dirlength, 
-                                                         conf->cache_root,
-                                                         h->cache_obj->key);
+        if (!dobj->hdrsfile) {
+            dobj->hdrsfile = header_file(r->pool, 
+                                         conf->dirlevels, 
+                                         conf->dirlength, 
+                                         conf->cache_root,
+                                         h->cache_obj->key);
+        }
         if(unlink(dobj->hdrsfile)) /* if we can remove it, we clearly don't have to build the dirs */
-            mkdir_structure(dobj->hdrsfile, conf->cache_root);
+            mkdir_structure(conf, dobj->hdrsfile, r->pool);
         else {
             /* XXX log message */
         }
@@ -612,7 +626,7 @@ static int write_body(cache_handle_t *h, request_rec *r, apr_bucket_brigade *b)
         apr_file_write(dobj->fd, str, &length);
     }
     if (APR_BUCKET_IS_EOS(APR_BRIGADE_LAST(b))) {
-        file_cache_el_final(info, h, r);    /* Link to the perm file, and close the descriptor  */
+        file_cache_el_final(h, r);    /* Link to the perm file, and close the descriptor  */
     }
     return OK;	
 }
@@ -627,7 +641,10 @@ static void *create_config(apr_pool_t *p, server_rec *s)
     conf->space = MAX_CACHE_SIZE;
     conf->maxfs = MAX_FILE_SIZE;
     conf->minfs = MIN_FILE_SIZE;
-    
+
+    conf->cache_root = NULL;
+    conf->cache_root_len = 0;
+
     return conf;
 }
 
@@ -640,6 +657,8 @@ static const char
     disk_cache_conf *conf = ap_get_module_config(parms->server->module_config, 
                                                  &disk_cache_module);
     conf->cache_root = arg;
+    conf->cache_root_len = strlen(arg);
+
     return NULL;
 }
 static const char
