@@ -220,13 +220,13 @@ static void *merge_mime_dir_configs(apr_pool_t *p, void *basev, void *addv)
     attrib_info *suffix;
 
     if (base->extension_mappings && add->extension_mappings) {
-        if (base->copy_mappings)
-            new->extension_mappings = base->extension_mappings;
-        else {
+        /* XXX: Greg Ames' fast hack to always copy the hash.
+         * It's incomplete, and slower than tables, but at least
+         * the server (mostly) runs once again.
+         */
             new->extension_mappings = apr_hash_make(p);
             overlay_extension_mappings(p, base->extension_mappings,
                                        new->extension_mappings);
-        }
         overlay_extension_mappings(p, add->extension_mappings,
                                    new->extension_mappings);
         new->copy_mappings = 1;
