@@ -1,5 +1,5 @@
   1.3 STATUS:
-  Last modified at [$Date: 2000/10/12 16:26:23 $]
+  Last modified at [$Date: 2000/10/14 03:03:48 $]
 
 Release:
 
@@ -516,7 +516,8 @@ Binaries (1.3.14):
  netware                       no 
  OS/2                          no      Brian Havard
  OS/390-09.00-02               no                     
- powerpc-apple-rhapsody5.6     no      Wilfredo Sanchez
+ powerpc+i386-apple-darwin1.2  yes     Wilfredo Sanchez
+ powerpc-apple-rhapsody5.5     yes     Wilfredo Sanchez
  rs6000-ibm-aix3.2.5           no      Sameer Parekh
  rs6000-ibm-aix4.1             no      Lars Eilebrecht
  rs6000-ibm-aix4.2             no      Bill Stoddard
