@@ -344,6 +344,10 @@ int main(int argc, const char * const argv[])
 	    new = (char **)apr_array_push(ap_server_config_defines);
 	    *new = apr_pstrdup(pcommands, optarg);
 	    break;
+	case 'X':
+	    new = (char **)apr_array_push(ap_server_config_defines);
+	    *new = "DEBUG";
+	    break;
 	case 'f':
 	    confname = optarg;
 	    break;

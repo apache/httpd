@@ -1,5 +1,8 @@
 Changes with Apache 2.0.26-dev
 
+  *) Add -X functionality back.  This indicates to all MPMs and any other
+     part of Apache that it should run in "debug" mode.  [Justin Erenkrantz]
+
   *) Some initial support for the cygwin platform [prefork only].
      This is not to be confused with support for the WinNT/Win32
      platform, which is the recommended configuration for native

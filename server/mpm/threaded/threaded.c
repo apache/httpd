@@ -148,13 +148,10 @@ static apr_lock_t *pipe_of_death_mutex;   /* insures that a child process only
 
 server_rec *ap_server_conf;
 
-
-/* The threaded MPM respects a couple of runtime flags that can aid
- * in debugging. Setting the -DNO_DETACH flag will prevent the root process
- * from detaching from its controlling terminal. Additionally, setting
- * the -DONE_PROCESS flag (which implies -DNO_DETACH) will get you the
- * child_main loop running in the process which originally started up.
- * This gives you a pretty nice debugging environment.  (You'll get a SIGHUP
+/* one_process --- debugging mode variable; can be set from the command line
+ * with the -X flag.  If set, this gets you the child_main loop running
+ * in the process which originally started up (no detach, no make_child),
+ * which is a pretty nice debugging environment.  (You'll get a SIGHUP
  * early in standalone_main; just continue through.  This is the server
  * trying to kill off any child processes which it might have lying
  * around --- Apache doesn't keep track of their pids, it just sends
@@ -1360,10 +1357,17 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
 static void threaded_pre_config(apr_pool_t *pconf, apr_pool_t *plog, apr_pool_t *ptemp)
 {
     static int restart_num = 0;
-    int no_detach = 0;
+    int no_detach, debug;
 
-    one_process = !!ap_exists_config_define("ONE_PROCESS");
-    no_detach = !!ap_exists_config_define("NO_DETACH");
+    debug = ap_exists_config_define("DEBUG");
+
+    if (debug)
+        no_detach = one_process = 1;
+    else
+    {
+        no_detach = ap_exists_config_define("NO_DETACH");
+        one_process = ap_exists_config_define("ONE_PROCESS");
+    }
 
     /* sigh, want this only the second time around */
     if (restart_num++ == 1) {

@@ -105,11 +105,6 @@ signal <code>USR1</code>.</li>
 qui servait à afficher la configuration des hôtes virtuels est 
 remplacé par <code>-t -D DUMP_VHOSTS</code>.</li>
 
-<li>L'option <code>-X</code> du programme <code>httpd</code> 
-est supprime. La majorité des MPM permettent la même fonctionnalité
-en définissant les variables d'environnement  <code>ONE_PROCESS</code> et
-<code>NO_DETACH</code> avant de lancer <code>httpd</code>.</li>
-
 <li>Le module mod_auth_digest, qui était expérimental dans la version 1.3,
 est maintenant un module standard.</li>
 
