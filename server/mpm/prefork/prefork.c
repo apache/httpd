@@ -1016,7 +1016,10 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
 	 * extra child
 	 */
 	if (pid.pid != -1) {
-	    ap_process_child_status(&pid, exitwhy, status);
+            if (ap_process_child_status(&pid, exitwhy, status) == APEXIT_CHILDFATAL) {
+                return 1;
+            }
+
 	    /* non-fatal death... note that it's gone in the scoreboard. */
 	    ap_sync_scoreboard_image();
 	    child_slot = find_child_by_pid(&pid);

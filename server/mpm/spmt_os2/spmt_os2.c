@@ -297,6 +297,7 @@ static void usr1_handler(int sig)
 static int volatile shutdown_pending;
 static int volatile restart_pending;
 static int volatile is_graceful;
+static int volatile child_fatal;
 
 static void sig_term(int sig)
 {
@@ -998,7 +999,11 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
 	if (tid >= 0) {
             apr_proc_t dummyproc;
             dummyproc.pid = tid;
-            ap_process_child_status(&dummyproc, status);
+            if (ap_process_child_status(&dummyproc, status) == APEXIT_CHILDFATAL) {
+                shutdown_pending = 1;
+                child_fatal = 1;
+                break;
+            }
 	    /* non-fatal death... note that it's gone in the scoreboard. */
 	    thread_slot = find_thread_by_tid(tid);
 	    if (thread_slot >= 0) {
@@ -1086,16 +1091,18 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
             }
         }
 
-        /* cleanup pid file on normal shutdown */
-        pidfile = ap_server_root_relative (pconf, ap_pid_fname);
-        if ( pidfile != NULL && unlink(pidfile) == 0)
-            ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_INFO, 0,
-                            ap_server_conf,
-                            "removed PID file %s (pid=%ld)",
-                            pidfile, (long)getpid());
-
-	ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_NOTICE, 0, ap_server_conf,
-		    "caught SIGTERM, shutting down");
+        if (!child_fatal) {
+            /* cleanup pid file on normal shutdown */
+            pidfile = ap_server_root_relative (pconf, ap_pid_fname);
+            if ( pidfile != NULL && unlink(pidfile) == 0)
+                ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_INFO, 0,
+                             ap_server_conf,
+                             "removed PID file %s (pid=%ld)",
+                             pidfile, (long)getpid());
+            
+            ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_NOTICE, 0, ap_server_conf,
+                         "caught SIGTERM, shutting down");
+        }
 	return 1;
     }
 

@@ -171,6 +171,7 @@ static void sig_coredump(int sig)
 static int volatile shutdown_pending;
 static int volatile restart_pending;
 static int volatile is_graceful;
+static int volatile child_fatal;
 ap_generation_t volatile ap_my_generation = 0;
 
 /*
@@ -610,7 +611,11 @@ static void server_main_loop(int remaining_threads_to_start)
         ap_wait_or_timeout(&exitwhy, &status, &pid, pconf);
          
         if (pid.pid >= 0) {
-            ap_process_child_status(&pid, exitwhy, status);
+            if (ap_process_child_status(&pid, exitwhy, status) == APEXIT_CHILDFATAL) {
+                shutdown_pending = 1;
+                child_fatal = 1;
+                return;
+            }
             /* non-fatal death... note that it's gone in the scoreboard. */
             child_slot = -1;
             for (i = 0; i < ap_max_child_assigned; ++i) {
@@ -887,7 +892,7 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
     /* close the UDP socket we've been using... */
     apr_socket_close(listening_sockets[0]);
 
-    if (one_process || shutdown_pending) {
+    if ((one_process || shutdown_pending) && !child_fatal) {
         const char *pidfile = NULL;
         pidfile = ap_server_root_relative (pconf, ap_pid_fname);
         if ( pidfile != NULL && unlink(pidfile) == 0)
@@ -914,9 +919,11 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
         /* use ap_reclaim_child_processes starting with SIGTERM */
         ap_reclaim_child_processes(1);
 
-        /* record the shutdown in the log */
-        ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_NOTICE, 0, ap_server_conf,
-            "caught SIGTERM, shutting down");
+        if (!child_fatal) {         /* already recorded */
+            /* record the shutdown in the log */
+            ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_NOTICE, 0, ap_server_conf,
+                         "caught SIGTERM, shutting down");
+        }
     
         return 1;
     }

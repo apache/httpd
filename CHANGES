@@ -1,5 +1,8 @@
 Changes with Apache 2.0.29-dev
 
+  *) Get mod_cgid killed when a MPM exits due to a fatal error.
+     [Jeff Trawick]
+
   *) Fix a file descriptor leak in mod_include.  When we include a
      file, we use a sub-request, but we didn't destroy the sub-request
      immediately, instead we waited until the original request was

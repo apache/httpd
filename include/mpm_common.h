@@ -134,9 +134,10 @@ void ap_wait_or_timeout(apr_exit_why_e *status, int *exitcode, apr_proc_t *ret,
  * parent signalling it.
  * @param pid The child that has died
  * @param status The status returned from ap_wait_or_timeout
+ * @return 0 on success, APEXIT_CHILDFATAL if MPM should terminate
  */
 #ifdef AP_MPM_WANT_PROCESS_CHILD_STATUS
-void ap_process_child_status(apr_proc_t *pid, apr_exit_why_e why, int status);
+int ap_process_child_status(apr_proc_t *pid, apr_exit_why_e why, int status);
 #endif
 
 #if defined(TCP_NODELAY) && !defined(MPE) && !defined(TPF)
