@@ -1,5 +1,8 @@
 Changes with Apache 2.0.40
 
+  *) Restore the ability to specify host names on Listen directives.
+     PR 11030.  [Jeff Trawick, David Shane Holden <dpejesh@yahoo.com>]
+
   *) When deciding on the default address family for listening sockets, 
      make sure we can actually bind to an AF_INET6 socket before
      deciding that we should default to AF_INET6.  This fixes a startup

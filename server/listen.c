@@ -251,7 +251,6 @@ static const char *alloc_listener(process_rec *process, char *addr, apr_port_t p
     ap_listen_rec **walk;
     ap_listen_rec *new;
     apr_status_t status;
-    char *oldaddr;
     apr_port_t oldport;
     apr_sockaddr_t *sa;
 
@@ -279,8 +278,7 @@ static const char *alloc_listener(process_rec *process, char *addr, apr_port_t p
         /* Some listeners are not real so they will not have a bind_addr. */
         if (sa) {
             apr_sockaddr_port_get(&oldport, sa);
-            apr_sockaddr_ip_get(&oldaddr, sa);
-            if (!strcmp(oldaddr, addr) && port == oldport) {
+            if (!strcmp(sa->hostname, addr) && port == oldport) {
                 /* re-use existing record */
                 new = *walk;
                 *walk = new->next;
