@@ -5607,8 +5607,9 @@ int main(int argc, char *argv[], char *envp[])
      * but only handle the -L option 
      */
     llp_dir = SHARED_CORE_DIR;
-    while ((c = getopt(argc, argv, "C:c:Xd:f:vVhlL:Z:")) != -1) {
+    while ((c = getopt(argc, argv, "D:C:c:Xd:f:vVhlL:SZ:t")) != -1) {
 	switch (c) {
+	case 'D':
 	case 'C':
 	case 'c':
 	case 'X':
@@ -5618,7 +5619,9 @@ int main(int argc, char *argv[], char *envp[])
 	case 'V':
 	case 'h':
 	case 'l':
+	case 'S':
 	case 'Z':
+	case 't':
 	case '?':
 	    break;
 	case 'L':
