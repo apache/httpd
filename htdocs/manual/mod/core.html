@@ -14,28 +14,26 @@ always available.
 
 
 <ul>
-<LI> <A HREF="#sendbuffersize>SendBufferSize</A>
-<LI> <A HREF="#files">&lt;Files&gt;</A>
-<LI> <A HREF="#ifmodule">&lt;IfModule%gt;</A>
-<LI> Satisfy
-<LI> RLimitCPU
-<LI> RLimitMEM
-<LI> RLimitNPROC
-<LI> AddModule
-<LI> ClearModuleList
+<li>RLimitCPU
+<li>RLimitMEM
+<li>RLimitNPROC
 <li><A HREF="#accessconfig">AccessConfig</A>
 <li><A HREF="#accessfilename">AccessFileName</A>
+<li>AddModule
 <li><A HREF="#allowoverride">AllowOverride</A>
 <li><A HREF="#authname">AuthName</A>
 <li><A HREF="#authtype">AuthType</A>
 <li><A HREF="#bindaddress">BindAdress</A>
+<li>ClearModuleList
 <li><A HREF="#defaulttype">DefaultType</A>
 <li><A HREF="#directory">&lt;Directory&gt;</A>
 <li><A HREF="#documentroot">DocumentRoot</A>
 <li><A HREF="#errordocument">ErrorDocument</A>
 <li><A HREF="#errorlog">ErrorLog</A>
+<li><A HREF="#files">&lt;Files&gt;</A>
 <li><A HREF="#group">Group</A>
 <li><A HREF="#identitycheck">IdentityCheck</A>
+<li><A HREF="#ifmodule">&lt;IfModule%gt;</A>
 <li><A HREF="#keepalive">KeepAlive</A>
 <li><A HREF="#keepalivetimeout">KeepAliveTimeout</A>
 <li><A HREF="#limit">&lt;Limit&gt;</A>
@@ -50,6 +48,8 @@ always available.
 <li><A HREF="#port">Port</A>
 <li><A HREF="#require">require</A>
 <li><A HREF="#resourceconfig">ResourceConfig</A>
+<li>Satisfy
+<li><A HREF="#sendbuffersize>SendBufferSize</A>
 <li><A HREF="#serveradmin">ServerAdmin</A>
 <li><A HREF="#serveralias">ServerAlias</A>
 <li><A HREF="#servername">ServerName</A>
@@ -87,12 +87,42 @@ which match the regexp.
 <p> <hr>
 
 <A NAME="ifmodule"><H2>&lt;IfModule&gt;</H2></A>
-<STRONG>Syntax:</STRONG> &lt;IfModule <em>modulename</em>&gt;<BR>
-<STRONG>Context:</STRONG> server config, virtual host, directory<BR>
-<STRONG>Status:</STRONG> core<p>
+<b>Syntax:</b> &lt;IfModule [!]<i>module-name</i>&gt; <i>...</i>
+&lt;/IfModule&gt;<br>
+<b>Default:</b> None<br>
+<b>Context:</b> all<br>
+<b>Status:</b> Core
+<strong>Compatibility:</strong> ScriptLog is only available in 1.2 and
+later.<P>
 
-Directives within the &lt;IfModule&gt; container are activated
-if the specified module is configured into the server.
+<p>
+
+The &lt;IfModule <i>test</i>&gt;...&lt;/IfModule&gt;
+section is used to mark directives that are conditional. The
+directives within an IfModule section are only
+processed if the <i>test</i> is true. If <i>test</i>
+is false, everything between the start and end markers
+is ignored.<p>
+
+The <i>test</i> in the &lt;IfModule&gt; section directive
+can be one of two forms:
+
+<ul>
+<li><i>module name</i>
+<li>!<i>module name</i>
+</ul>
+
+<p>In the former case, the directives between the start and end markers
+are only processed if the module named <i>module name</i> is compiled
+in to Apache. The second format reverses the test, and only processes
+the directives if <i>module name</i> is <b>not</b> compiled in.
+
+<p>The <i>module name</i> argument is a module name as given as the file
+name of the module, at the time it was compiled. For example,
+<code>mod_rewrite.c</code>.
+
+<p>&lt;IfModule&gt; sections are nestable, which can be used to implement
+simple multiple-module tests.
 
 <P> <hr>
 

@@ -165,12 +165,44 @@ See the examples below.
 <h2>Directives</h2>
 
 <ul>
+<li><A HREF="#cookielog">CookieLog</A>
+<LI><A HREF="#customlog">CustomLog</A>
 <li><A HREF="#logformat">LogFormat</A>
 <li><A HREF="#transferlog">TransferLog</A>
-<LI><A HREF="#customlog">CustomLog</A>
 </ul>
 <hr>
 
+
+<A name="cookielog"><h2>CookieLog</h2></A>
+<!--%plaintext &lt;?INDEX {\tt CookieLog} directive&gt; -->
+<strong>Syntax:</strong> CookieLog <em>filename</em><br>
+<Strong>Context:</strong> server config, virtual host<br>
+<strong>Module:</strong> mod_cookies<br>
+<strong>Compatibility:</strong> Only available in Apache 1.2 and above<p>
+
+The CookieLog directive sets the filename for logging of cookies.
+The filename is relative to the <A
+HREF="core.html#serverroot">ServerRoot</A>. This directive is included
+only for compatibility with <a
+href="mod_cookies.html">mod_cookies</a>, and is depreciated.
+<p>
+
+<A NAME="customlog"><H2>CustomLog</H2></A>
+<STRONG>Syntax:</STRONG> CustomLog <em>file-pipe</em> <em>format</em><BR>
+<STRONG>Context:</STRONG> server config, virtual host<BR>
+<STRONG>Status:</STRONG> Base<BR>
+<STRONG>Module:</STRONG> mod_log_config<P>
+
+The first argument is the filename to log to. This is used
+exactly like the argument to <tt>TransferLog</tt>, that is,
+it is either a full path, or relative to the current
+server root. <p>
+
+The format argument specifies a format for each line of the log file.
+The options available for the format are exactly the same as for
+the argument of the <tt>LogFormat</tt> directive. If the format
+includes any spaces (which it will do in almost all cases) it
+should be enclosed in double quotes.
 
 <A name="logformat"><h2>LogFormat</h2></A>
 <!--%plaintext &lt;?INDEX {\tt LogFormat} directive&gt; -->
@@ -206,22 +238,6 @@ the TransferLog from the main server.
 run under the user who started httpd. This will be root if the server
 was started by root; be sure that the program is secure.<p>
 
-<A NAME="customlog"><H2>CustomLog</H2></A>
-<STRONG>Syntax:</STRONG> CustomLog <em>file-pipe</em> <em>format</em><BR>
-<STRONG>Context:</STRONG> server config, virtual host<BR>
-<STRONG>Status:</STRONG> Base<BR>
-<STRONG>Module:</STRONG> mod_log_config<P>
-
-The first argument is the filename to log to. This is used
-exactly like the argument to <tt>TransferLog</tt>, that is,
-it is either a full path, or relative to the current
-server root. <p>
-
-The format argument specifies a format for each line of the log file.
-The options available for the format are exactly the same as for
-the argument of the <tt>LogFormat</tt> directive. If the format
-includes any spaces (which it will do in almost all cases) it
-should be enclosed in double quotes.
 
 <!--#include virtual="footer.html" -->
 </BODY>
