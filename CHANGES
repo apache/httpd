@@ -1,5 +1,11 @@
 Changes with Apache 2.0.36
 
+  *) Fix perchild MPM so that it can be configured with the move to the
+     experimental directory.  [Scott Lamb <slamb@slamb.org>]
+
+  *) Fix perchild MPM so that it uses ap_gname2id for groups instead of
+     ap_uname2id. [Scott Lamb <slamb@slamb.org>]
+
   *) Fix AcceptPathInfo. PR 8234  [Cliff Woolley]
 
   *) [Security] Added the APLOG_TOCLIENT flag to ap_log_rerror() to

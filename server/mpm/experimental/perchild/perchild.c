@@ -1834,7 +1834,7 @@ static const char *set_child_per_uid(cmd_parms *cmd, void *dummy, const char *u,
         }
     
         ug->uid = ap_uname2id(u);
-        ug->gid = ap_uname2id(g); 
+        ug->gid = ap_gname2id(g); 
 
 #ifndef BIG_SECURITY_HOLE
         if (ug->uid == 0 || ug->gid == 0) {
@@ -1851,7 +1851,7 @@ static const char *assign_childuid(cmd_parms *cmd, void *dummy, const char *uid,
     int i;
     int matching = 0;
     int u = ap_uname2id(uid);
-    int g = ap_uname2id(gid);
+    int g = ap_gname2id(gid);
     const char *errstr;
     int socks[2];
     perchild_server_conf *sconf = (perchild_server_conf *)
