@@ -868,7 +868,7 @@ static dav_error * dav_fs_write_stream(dav_stream *stream,
     apr_status_t status;
 
     status = apr_file_write_full(stream->f, buf, bufsize, NULL);
-    if (status == APR_ENOSPC) {
+    if (APR_STATUS_IS_ENOSPC(status)) {
         return dav_new_error(stream->p, HTTP_INSUFFICIENT_STORAGE, 0,
                              "There is not enough storage to write to "
                              "this resource.");
