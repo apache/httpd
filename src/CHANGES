@@ -1,5 +1,15 @@
 Changes with Apache 1.3.13
 
+  *) Under Win32, The console input mode is fixed to ignore mouse events 
+     and always listen for a Ctrl+C interrupt, even if the console window
+     defaults to another mode. [William Rowe]
+
+  *) All Win32 services will now perform a graceful restart when given
+     the -n servicename -k restart signal.  No equivilant control exists
+     in the service control panel applet or through the NET command.
+     There is no useful acknowledgement on Windows 95/98, however.
+     [William Rowe]
+
   *) Significant overhaul of the Win32 port documentation contained in
      the README-WIN.TXT, as well as the htdocs/manual pages windows.html,
      win_compiling.html, and the new win_service.html.
