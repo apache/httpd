@@ -175,7 +175,7 @@ typedef struct dav_lock_discovery
 typedef struct dav_lock_indirect
 {
     dav_locktoken *locktoken;
-    dav_datum key;
+    apr_datum_t key;
     struct dav_lock_indirect *next;
     time_t timeout;
 } dav_lock_indirect;
@@ -193,7 +193,7 @@ typedef struct dav_lock_indirect
 				 + ((a)->auth_user ? strlen((a)->auth_user) : 0) \
 				 + 2)
 
-/* Stored indirect lock info - lock token and dav_datum */
+/* Stored indirect lock info - lock token and apr_datum_t */
 #define dav_size_indirect(a)	(1 + sizeof(apr_uuid_t) \
 				 + sizeof(time_t) \
 				 + sizeof(int) + (a)->key.dsize)
@@ -233,7 +233,7 @@ typedef struct
 */
 struct dav_lock_private
 {
-    dav_datum key;	/* key into the lock database */
+    apr_datum_t key;	/* key into the lock database */
 };
 typedef struct
 {
@@ -249,7 +249,7 @@ extern const dav_hooks_locks dav_hooks_locks_fs;
 
 
 /* internal function for creating locks */
-static dav_lock *dav_fs_alloc_lock(dav_lockdb *lockdb, dav_datum key,
+static dav_lock *dav_fs_alloc_lock(dav_lockdb *lockdb, apr_datum_t key,
 				   const dav_locktoken *locktoken)
 {
     dav_lock_combined *comb;
@@ -406,7 +406,7 @@ static dav_error * dav_fs_open_lockdb(request_rec *r, int ro, int force,
 static void dav_fs_close_lockdb(dav_lockdb *lockdb)
 {
     if (lockdb->info->db != NULL)
-	(*dav_hooks_db_dbm.close)(lockdb->info->db);
+	dav_dbm_close(lockdb->info->db);
 }
 
 /*
@@ -414,9 +414,9 @@ static void dav_fs_close_lockdb(dav_lockdb *lockdb)
 **
 ** Given a pathname, build a DAV_TYPE_FNAME lock database key.
 */
-static dav_datum dav_fs_build_fname_key(apr_pool_t *p, const char *pathname)
+static apr_datum_t dav_fs_build_fname_key(apr_pool_t *p, const char *pathname)
 {
-    dav_datum key;
+    apr_datum_t key;
 
     /* ### does this allocation have a proper lifetime? need to check */
     /* ### can we use a buffer for this? */
@@ -432,20 +432,21 @@ static dav_datum dav_fs_build_fname_key(apr_pool_t *p, const char *pathname)
 }
 
 /*
-** dav_fs_build_key:  Given a resource, return a dav_datum key
+** dav_fs_build_key:  Given a resource, return a apr_datum_t key
 **    to look up lock information for this file.
 **
 **    (Win32 or file is lock-null):
-**       dav_datum->dvalue = full path
+**       apr_datum_t->dvalue = full path
 **
 **    (non-Win32 and file exists ):
-**       dav_datum->dvalue = inode, dev_major, dev_minor
+**       apr_datum_t->dvalue = inode, dev_major, dev_minor
 */
-static dav_datum dav_fs_build_key(apr_pool_t *p, const dav_resource *resource)
+static apr_datum_t dav_fs_build_key(apr_pool_t *p,
+                                    const dav_resource *resource)
 {
     const char *file = dav_fs_pathname(resource);
 #ifndef WIN32
-    dav_datum key;
+    apr_datum_t key;
     apr_finfo_t finfo;
 
     /* ### use lstat() ?? */
@@ -481,12 +482,12 @@ static int dav_fs_lock_expired(time_t expires)
 **    direct and indirect lock lists about path into the lock database.
 **    If direct and indirect == NULL, the key is removed.
 */
-static dav_error * dav_fs_save_lock_record(dav_lockdb *lockdb, dav_datum key,
+static dav_error * dav_fs_save_lock_record(dav_lockdb *lockdb, apr_datum_t key,
 					   dav_lock_discovery *direct,
 					   dav_lock_indirect *indirect)
 {
     dav_error *err;
-    dav_datum val = { 0 };
+    apr_datum_t val = { 0 };
     char *ptr;
     dav_lock_discovery *dp = direct;
     dav_lock_indirect *ip = indirect;
@@ -510,7 +511,7 @@ static dav_error * dav_fs_save_lock_record(dav_lockdb *lockdb, dav_datum key,
     if (dp == NULL && ip == NULL) {
         /* don't fail if the key is not present */
         /* ### but what about other errors? */
-	(void) (*dav_hooks_db_dbm.remove)(lockdb->info->db, key);
+	(void) dav_dbm_delete(lockdb->info->db, key);
         return NULL;
     }
 		
@@ -566,8 +567,7 @@ static dav_error * dav_fs_save_lock_record(dav_lockdb *lockdb, dav_datum key,
 	ip = ip->next;
     }
 
-    if ((err = (*dav_hooks_db_dbm.store)(lockdb->info->db,
-						key, val)) != NULL) {
+    if ((err = dav_dbm_store(lockdb->info->db, key, val)) != NULL) {
 	/* ### more details? add an error_id? */
 	return dav_push_error(lockdb->info->pool,
 			      HTTP_INTERNAL_SERVER_ERROR,
@@ -589,7 +589,7 @@ static dav_error * dav_fs_save_lock_record(dav_lockdb *lockdb, dav_datum key,
 **    Passive lock removal:  If lock has timed out, it will not be returned.
 **    ### How much "logging" does RFC 2518 require?
 */
-static dav_error * dav_fs_load_lock_record(dav_lockdb *lockdb, dav_datum key,
+static dav_error * dav_fs_load_lock_record(dav_lockdb *lockdb, apr_datum_t key,
 					   int add_method,
 					   dav_lock_discovery **direct,
 					   dav_lock_indirect **indirect)
@@ -598,7 +598,7 @@ static dav_error * dav_fs_load_lock_record(dav_lockdb *lockdb, dav_datum key,
     dav_error *err;
     apr_size_t offset = 0;
     int need_save = DAV_FALSE;
-    dav_datum val = { 0 };
+    apr_datum_t val = { 0 };
     dav_lock_discovery *dp;
     dav_lock_indirect *ip;
     dav_buffer buf = { 0 };
@@ -620,7 +620,7 @@ static dav_error * dav_fs_load_lock_record(dav_lockdb *lockdb, dav_datum key,
     if (lockdb->info->db == NULL)
 	return NULL;
 
-    if ((err = (*dav_hooks_db_dbm.fetch)(lockdb->info->db, key, &val)) != NULL)
+    if ((err = dav_dbm_fetch(lockdb->info->db, key, &val)) != NULL)
         return err;
 	
     if (!val.dsize)
@@ -703,7 +703,7 @@ static dav_error * dav_fs_load_lock_record(dav_lockdb *lockdb, dav_datum key,
 	    break;
 
 	default:
-	    (*dav_hooks_db_dbm.freedatum)(lockdb->info->db, val);
+	    dav_dbm_freedatum(lockdb->info->db, val);
 
 	    /* ### should use a computed_desc and insert corrupt token data */
 	    --offset;
@@ -718,7 +718,7 @@ static dav_error * dav_fs_load_lock_record(dav_lockdb *lockdb, dav_datum key,
 	}
     }
 
-    (*dav_hooks_db_dbm.freedatum)(lockdb->info->db, val);
+    dav_dbm_freedatum(lockdb->info->db, val);
 
     /* Clean up this record if we found expired locks */
     /*
@@ -1046,7 +1046,7 @@ static dav_error * dav_fs_remove_locknull_state(
     {
 	dav_lock_discovery *ld;
 	dav_lock_indirect  *id;
-	dav_datum key;
+	apr_datum_t key;
 
 	/*
 	** Fetch the lock(s) that made the resource lock-null. Remove
@@ -1080,7 +1080,7 @@ static dav_error * dav_fs_create_lock(dav_lockdb *lockdb,
 				      const dav_resource *resource,
 				      dav_lock **lock)
 {
-    dav_datum key;
+    apr_datum_t key;
 
     key = dav_fs_build_key(lockdb->info->pool, resource);
 
@@ -1099,7 +1099,7 @@ static dav_error * dav_fs_get_locks(dav_lockdb *lockdb,
 				    dav_lock **locks)
 {
     apr_pool_t *p = lockdb->info->pool;
-    dav_datum key;
+    apr_datum_t key;
     dav_error *err;
     dav_lock *lock = NULL;
     dav_lock *newlock;
@@ -1177,7 +1177,7 @@ static dav_error * dav_fs_find_lock(dav_lockdb *lockdb,
 				    dav_lock **lock)
 {
     dav_error *err;
-    dav_datum key;
+    apr_datum_t key;
     dav_lock_discovery *dp;
     dav_lock_indirect *ip;
 
@@ -1239,7 +1239,7 @@ static dav_error * dav_fs_has_locks(dav_lockdb *lockdb,
 				    int *locks_present)
 {
     dav_error *err;
-    dav_datum key;
+    apr_datum_t key;
 
     *locks_present = 0;
 
@@ -1257,7 +1257,7 @@ static dav_error * dav_fs_has_locks(dav_lockdb *lockdb,
 
     key = dav_fs_build_key(lockdb->info->pool, resource);
 
-    *locks_present = (*dav_hooks_db_dbm.exists)(lockdb->info->db, key);
+    *locks_present = dav_dbm_exists(lockdb->info->db, key);
 
     return NULL;
 }
@@ -1271,7 +1271,7 @@ static dav_error * dav_fs_append_locks(dav_lockdb *lockdb,
     dav_error *err;
     dav_lock_indirect *ip;
     dav_lock_discovery *dp;
-    dav_datum key;
+    apr_datum_t key;
 
     key = dav_fs_build_key(lockdb->info->pool, resource);
     if ((err = dav_fs_load_lock_record(lockdb, key, 0, &dp, &ip)) != NULL) {
@@ -1354,7 +1354,7 @@ static dav_error * dav_fs_remove_lock(dav_lockdb *lockdb,
     dav_buffer buf = { 0 };
     dav_lock_discovery *dh = NULL;
     dav_lock_indirect *ih = NULL;
-    dav_datum key;
+    apr_datum_t key;
 
     key = dav_fs_build_key(lockdb->info->pool, resource);
 
@@ -1443,7 +1443,7 @@ static dav_error * dav_fs_refresh_locks(dav_lockdb *lockdb,
 					dav_lock **locks)
 {
     dav_error *err;
-    dav_datum key;
+    apr_datum_t key;
     dav_lock_discovery *dp;
     dav_lock_discovery *dp_scan;
     dav_lock_indirect *ip;

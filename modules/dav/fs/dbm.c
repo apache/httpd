@@ -75,6 +75,7 @@
 #include "mod_dav.h"
 #include "repos.h"
 
+
 struct dav_db {
     apr_pool_t *pool;
     apr_dbm_t *file;
@@ -195,52 +196,52 @@ static dav_error * dav_dbm_open(apr_pool_t * p, const dav_resource *resource,
     return dav_dbm_open_direct(p, pathname, ro, pdb);
 }
 
-static void dav_dbm_close(dav_db *db)
+void dav_dbm_close(dav_db *db)
 {
     apr_dbm_close(db->file);
 }
 
-static dav_error * dav_dbm_fetch(dav_db *db, dav_datum key, dav_datum *pvalue)
+dav_error * dav_dbm_fetch(dav_db *db, apr_datum_t key, apr_datum_t *pvalue)
 {
     apr_status_t status = apr_dbm_fetch(db->file, key, pvalue);
 
     return dav_fs_dbm_error(db, NULL, status);
 }
 
-static dav_error * dav_dbm_store(dav_db *db, dav_datum key, dav_datum value)
+dav_error * dav_dbm_store(dav_db *db, apr_datum_t key, apr_datum_t value)
 {
     apr_status_t status = apr_dbm_store(db->file, key, value);
 
     return dav_fs_dbm_error(db, NULL, status);
 }
 
-static dav_error * dav_dbm_delete(dav_db *db, dav_datum key)
+dav_error * dav_dbm_delete(dav_db *db, apr_datum_t key)
 {
     apr_status_t status = apr_dbm_delete(db->file, key);
 
     return dav_fs_dbm_error(db, NULL, status);
 }
 
-static int dav_dbm_exists(dav_db *db, dav_datum key)
+int dav_dbm_exists(dav_db *db, apr_datum_t key)
 {
     return apr_dbm_exists(db->file, key);
 }
 
-static dav_error * dav_dbm_firstkey(dav_db *db, dav_datum *pkey)
+static dav_error * dav_dbm_firstkey(dav_db *db, apr_datum_t *pkey)
 {
     apr_status_t status = apr_dbm_firstkey(db->file, pkey);
 
     return dav_fs_dbm_error(db, NULL, status);
 }
 
-static dav_error * dav_dbm_nextkey(dav_db *db, dav_datum *pkey)
+static dav_error * dav_dbm_nextkey(dav_db *db, apr_datum_t *pkey)
 {
     apr_status_t status = apr_dbm_nextkey(db->file, pkey);
 
     return dav_fs_dbm_error(db, NULL, status);
 }
 
-static void dav_dbm_freedatum(dav_db *db, dav_datum data)
+void dav_dbm_freedatum(dav_db *db, apr_datum_t data)
 {
     apr_dbm_freedatum(db->file, data);
 }
