@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2002/04/22 19:41:41 $]
+Last modified at [$Date: 2002/04/22 20:37:34 $]
 
 Release:
 
@@ -49,8 +49,9 @@ CURRENT RELEASE NOTES:
 
 RELEASE SHOWSTOPPERS:
 
-    * Is there still a C-L / byterange filter misordering problem?
-      If so, do any patches exist?
+    * Incorrect Content-Range headers or invalid 416 HTTP responses
+      if a filter such as INCLUDES changes the content length.  It may
+      happen only when there are multiple output brigades.
 
     * worker MPM segfaults because the apr_bucket_alloc_t is cleaned
       up twice.
