@@ -251,9 +251,15 @@ static void *merge_mime_dir_configs(apr_pool_t *p, void *basev, void *addv)
         else {
             new->extension_mappings = base->extension_mappings;
         }
-        if (new->extension_mappings && (add->handlers_remove 
-                                     || add->types_remove 
-                                     || add->encodings_remove)) {
+        /* We may not be merging the tables, but if we potentially will change
+         * an exinfo member, then we are about to trounce it anyways.
+         * We must have a copy for safety.
+         */
+        if (new->extension_mappings && (add->charsets_remove
+                                     || add->encodings_remove
+                                     || add->handlers_remove 
+                                     || add->languages_remove 
+                                     || add->types_remove)) {
             apr_hash_t *copyhash = new->extension_mappings;
             new->extension_mappings = apr_hash_make(p);
             overlay_extension_mappings(p, copyhash, new->extension_mappings);
