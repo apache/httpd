@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2002/07/22 14:26:21 $]
+Last modified at [$Date: 2002/07/23 14:08:26 $]
 
 Release:
 
@@ -58,8 +58,7 @@ RELEASE SHOWSTOPPERS:
       issue.
 
     * On AIX and Tru64, Apache won't load due to an unresolved
-      reference to iconv.  This is apparently because
-      APRUTIL_EXPORT_LIBS is not being used in the Apache build.
+      reference to iconv.
 
 CURRENT VOTES:
 
