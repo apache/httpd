@@ -1147,8 +1147,6 @@ static void worker_main(int child_num)
         apr_make_os_sock(&context->sock, &sockinfo, context->ptrans);
 
         c = ap_new_connection(context->ptrans, server_conf, context->sock,
-                              (struct sockaddr_in *) context->sa_client,
-                              (struct sockaddr_in *) context->sa_server,
                               child_num);
 
         ap_process_connection(c);
