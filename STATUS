@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2002/05/31 05:23:26 $]
+Last modified at [$Date: 2002/06/02 06:16:20 $]
 
 Release:
 
@@ -73,6 +73,7 @@ RELEASE SHOWSTOPPERS:
 
     * Find a better name for ap_signal_server()
       Message-ID: <m37kltilb3.fsf@rdu88-251-253.nc.rr.com>
+      BrianP says:  how about "ap_apachectl()"?
 
     * server pushed CGI's not working.  (Is this a showstopper??)
       PR: 8482
