@@ -1,5 +1,8 @@
 Changes with Apache 1.3.7
 
+  *) Fix the ownership delegation for proxy directory under `make install'.
+     [Ralf S. Engelschall]
+
   *) APACI would not correctly build suexec. [Maria Verina
      <mariav@icgeb.trieste.it>] PR#4260
 
