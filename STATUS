@@ -1,5 +1,5 @@
 APACHE 1.3 STATUS:						-*-text-*-
-  Last modified at [$Date: 2002/05/15 14:00:32 $]
+  Last modified at [$Date: 2002/05/15 14:01:56 $]
 
 Release:
 
@@ -146,13 +146,6 @@ In progress:
 	Status: 
 
 Needs patch:
-
-    * MaxRequestsPerChild doesn't count requests, only the
-      number of connections processed.
-      We can either 'fix' it by renaming the directive to
-      MaxConnectionsPerChild or really fix it to actually count
-      the number of requests.
-      Status: Will be fixed in 2.0
 
     * get_path_info bug; ap_get_remote_host should be ap_vformatter instead.
       See: <Pine.LNX.3.96dg4.980427034301.16648P-100000@twinlark.arctic.org>
