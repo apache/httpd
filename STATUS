@@ -164,19 +164,21 @@ Available Patches:
 
 In progress:
 
-    * Ralf's and Martin's enhancement to the DSO support in Apache
-      to be able to support DSO under mostly all SVR4-variants, too. 
-      This would be a major milestone for Apache's DSO support. It is done by
+    * Ralf's and Martin's enhancement to the DSO support in Apache to be
+      able to support DSO under mostly all SVR4 variants, too. This would
+      be a major milestone for Apache's DSO support. It is done by
       providing a Configuration.tmpl Rule which builds Apache into its own
       libhttpd.so while the httpd program is just a stub. This implicitly
-      makes DSO working under SVR4 because under this platform one cannot
-      force the linker to export global symbols (to make them available to the
-      DSO modules). But when Apache's core itself is in a shared object these
-      symbols _are_ available. BINGO! A nice sideeffect is that the usage of a
-      libhttpd.so can be nice under other platforms, too. Oh, BTW: This is the
-      trick Perl 5 already does to support DSO under SVR4, i.e. the idea is
-      just stolen from Perl 5 because this trick is the only portable way to
-      provide DSO support for program extensions under SVR4 ;-)
+      makes DSO working under SVR4 because under this platform there is no
+      generally available compiler switch to force the linker to export
+      global symbols (to make them available to the DSO modules). But when
+      Apache's core itself is in a shared object these symbols _are_
+      available. BINGO! A nice side effect is that the usage of a
+      libhttpd.so can be nice under other platforms, too. Oh, BTW: This is
+      the trick Perl 5 already does to support DSO under SVR4, i.e. the
+      idea is just stolen from Perl 5 because this trick is the only
+      portable way to provide DSO support for program extensions under
+      SVR4 ;-)
       Patch from Ralf is coming in the next days!
 
     * Ken's IndexFormat enhancement to mod_autoindex to allow
@@ -216,14 +218,14 @@ Open issues:
     * What prefixes to use for the renaming:
 
         - Apache provided general functions (e.g., ap_cpystrn)
-            ap_xxx:    +1: Ken, Brian, Ralf, Martin, Paul, Randy
+	    ap_xxx:    +1: Ken, Brian, Ralf, Paul, Randy
 
-        - Public API functions (e.g., palloc)
+	- Public API functions (e.g., palloc, bgets)
             ap_xxx:    +1: Ralf, Randy, Martin, Brian, Paul
 
         - Private functions which we can't make static (because of
           cross-object usage) but should be (e.g., new_connection)
-            ap_xxx:    +1: Randy, Martin, Brian, Paul, Ralf
+	    ap_xxx:    +1: Randy, Brian, Paul, Ralf
 
         Notes: 
 	    - Ken: Veto rescinded.
@@ -288,6 +290,19 @@ Open issues:
               name (i.e., if everything is ap_, the prefix fades into the
               background of our cognitive model of the source code).
 
+	    - Martin:
+	      As a high priority item, *ALL* clashes with system functions
+	      should be avoided if at all possible. Even names like bgets()
+	      are ``in use'' by SVR4 and should be prefixed.
+	      The next priority level is a *documented* API (thanks for
+	      the beginnings of that, Ken!) which should IMO offer ap_*
+	      functions only.
+	      Then there's our libap approach which can best be realized by
+	      prefixing the functions to show where they belong.
+	      And finally, there's all the "private" glue that keeps the
+	      core together (and I don't really care if it has prefixes
+	      as long as there are no name clashes with 3rd party things).
+
     * Paul would like to see a 'gdbm' option because he uses
       it a lot.
 
@@ -298,7 +313,7 @@ Open issues:
     * What do we call the binary: apache or httpd? Under UNIX
       it's httpd, under Win32 it's apache.
 	apache-httpd: Ken +1
-        leave it apache: Brian +1, Ralf +1
+	leave it apache: +1 Brian, Ralf, Martin
 
     * Maybe a http_paths.h file? See
 	<Pine.BSF.3.95q.971209222046.25627D-100000@valis.worldgate.com>
