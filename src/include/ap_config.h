@@ -180,6 +180,7 @@ typedef unsigned short mode_t;
 #define waitpid(a,b,c) wait4(a,(union wait *)b,c,NULL)
 typedef int pid_t;
 #define JMP_BUF jmp_buf
+#define NO_USE_SIGACTION
 
 #elif defined(LINUX)
 #undef HAS_GMTOFF
