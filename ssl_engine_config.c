@@ -190,6 +190,7 @@ void *ssl_config_server_merge(apr_pool_t *p, void *basev, void *addv)
     SSLSrvConfigRec *add  = (SSLSrvConfigRec *)addv;
     SSLSrvConfigRec *new  = (SSLSrvConfigRec *)apr_palloc(p, sizeof(SSLSrvConfigRec));
 
+    cfgMergeString(szVHostID);
     cfgMergeBool(bEnabled);
     cfgMergeString(szCACertificatePath);
     cfgMergeString(szCACertificateFile);
