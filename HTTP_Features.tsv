@@ -1,0 +1,112 @@
+This tab-separated-value file is for use as a checklist			
+for features against <draft-ietf-http-v11-spec-rev-02.txt>,			
+since two independently developed and interoperable			
+implementations are needed for each feature.  For each entry,
+	?	means not filled-in	
+	-	means not applicable	
+	n	means no	
+	y	means yes	
+			
+Section	Feature	Implemented	Tested
+8.1	Persistent Connections	?	?
+8.2.3	Automatic retrying of requests	?	?
+8.2.4	Use of the 100 (Continue) status	?	?
+9.2	OPTIONS	?	?
+9.3	GET	?	?
+9.4	HEAD	?	?
+9.5	POST	?	?
+9.6	PUT	?	?
+9.7	DELETE 	?	?
+9.8	TRACE	?	?
+9.9	CONNECT	?	?
+10.1.1	100 Continue	?	?
+10.1.2	101 Switching Protocols	?	?
+10.2.1	200 OK 	?	?
+10.2.2	201 Created	?	?
+10.2.3	202 Accepted	?	?
+10.2.4	203 Non-Authoritative Information	?	?
+10.2.5	204 No Content	?	?
+10.2.6	205 Reset Content	?	?
+10.2.7	206 Partial Content	?	?
+10.2.8	207 Partial Update OK	?	?
+10.3.1	300 Multiple Choices	?	?
+10.3.2	301 Moved Permanently	?	?
+10.3.3	302 Found	?	?
+10.3.4	303 See Other	?	?
+10.3.5	304 Not Modified	?	?
+10.3.6	305 Use Proxy	?	?
+10.3.7	307 Temporary Redirect	?	?
+10.4.1	400 Bad Request	?	?
+10.4.2	401 Unauthorized	?	?
+10.4.3	402 Payment Required	?	?
+10.4.4	403 Forbidden	?	?
+10.4.5	404 Not Found	?	?
+10.4.6	405 Method Not Allowed	?	?
+10.4.7	406 Not Acceptable	?	?
+10.4.8	407 Proxy Authentication Required	?	?
+10.4.9	408 Request Timeout	?	?
+10.4.10	409 Conflict	?	?
+10.4.11	410 Gone	?	?
+10.4.12	411 Length Required	?	?
+10.4.13	412 Precondition Failed	?	?
+10.4.14	413 Request Entity Too Large	?	?
+10.4.15	414 Request-URI Too Long	?	?
+10.4.16	415 Unsupported Media Type	?	?
+10.4.17	416 Requested range not satisfiable	?	?
+10.4.18	417 Expectation Failed	?	?
+10.5.1	500 Internal Server Error	?	?
+10.5.2	501 Not Implemented	?	?
+10.5.3	502 Bad Gateway	?	?
+10.5.4	503 Service Unavailable	?	?
+10.5.5	504 Gateway Timeout	?	?
+10.5.6	505 HTTP Version Not Supported	?	?
+10.5.7	506 Partial Update Not Implemented	?	?
+13.3.3	Strong entity tags	?	?
+13.3.3	Weak entity tags	?	?
+14.1	Accept 	?	?
+14.2	Accept-Charset	?	?
+14.3	Accept-Encoding	?	?
+14.4	Accept-Language	?	?
+14.5	Accept-Ranges	?	?
+14.6	Age	?	?
+14.7	Allow	?	?
+14.8	Authorization	?	?
+14.9	Cache-Control	?	?
+14.10	Connection	?	?
+14.11	Content-Encoding	?	?
+14.12	Content-Language	?	?
+14.13	Content-Length	?	?
+14.14	Content-Location	?	?
+14.15	Content-MD5	?	?
+14.16	Content-Range	?	?
+14.17	Content-Type	?	?
+14.18	Date	?	?
+14.19	ETag	?	?
+14.20	Expect 	?	?
+14.21	Expires	?	?
+14.22	From	?	?
+14.23	Host	?	?
+14.24	If-Modified-Since	?	?
+14.25	If-Match	?	?
+14.26	If-None-Match	?	?
+14.27	If-Range	?	?
+14.28	If-Unmodified-Since	?	?
+14.29	Last-Modified	?	?
+14.30	Location	?	?
+14.31	Max-Forwards	?	?
+14.32	Pragma 	?	?
+14.33	Proxy-Authenticate	?	?
+14.34	Proxy-Authorization	?	?
+14.35	Range	?	?
+14.36	Referer	?	?
+14.37	Retry-After	?	?
+14.38	Server 	?	?
+14.39	TE	?	?
+14.40	Trailer	?	?
+14.41	Transfer-Encoding	?	?
+14.42	Upgrade	?	?
+14.43	User-Agent	?	?
+14.44	Vary	?	?
+14.45	Via	?	?
+14.46	Warning	?	?
+14.47	WWW-Authenticate	?	?
