@@ -1,9 +1,12 @@
 Changes with Apache 2.0.48
+  
+  *) SECURITY [CAN-2003-0789]: mod_cgid: Resolve some mishandling of
+     the AF_UNIX socket used to communicate with the cgid daemon and
+     the CGI script.  [Jeff Trawick]
 
-  *) SECURITY: CAN-2003-0542 (cve.mitre.org)
-     Fix buffer overflows in mod_alias and mod_rewrite which occurred if
-     one configured a regular expression with more than 9 captures.
-     [André Malo]
+  *) SECURITY [CAN-2003-0542]: Fix buffer overflows in mod_alias and
+     mod_rewrite which occurred if one configured a regular expression
+     with more than 9 captures.  [André Malo]
 
   *) mod_include: fix segfault which occured if the filename was not
      set, for example, when processing some error conditions.
@@ -24,6 +27,11 @@ Changes with Apache 2.0.48
 
   *) mod_rewrite: Don't die silently when failing to open RewriteLogs.
      PR 23416.  [André Malo]
+
+
+  *) SECURITY [CAN-2003-0789]: mod_cgid: Resolve some mishandling of
+     the AF_UNIX socket used to communicate with the cgid daemon and
+     the CGI script.  [Jeff Trawick]
 
   *) mod_rewrite: Fix mod_rewrite's support of the [P] option to send
      rewritten request using "proxy:". The code was adding multiple "proxy:"
