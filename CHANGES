@@ -5,7 +5,10 @@ Changes with Apache 2.0.28-dev
      run-time deduction of the correct server port (depending on
      SSL/plain, and depending also on the current setting of
      UseCanonicalName). This change makes redirections
-     work, even with https:// connections. [Martin Kraemer]
+     work, even with https:// connections. As in Apache-1.3, the
+     connection's actual port number is never used, only the ServerName
+     setting or the client's Host: setting. Documentation updated
+     to reflect the change. [Martin Kraemer]
 
   *) Add a '%{note-name}e' argument to mod-headers, which works in
      the same way as mod_log_confg.  [Ian Holsman]

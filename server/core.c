@@ -752,17 +752,29 @@ AP_DECLARE(apr_port_t) ap_get_server_port(const request_rec *r)
     core_dir_config *d =
       (core_dir_config *)ap_get_module_config(r->per_dir_config, &core_module);
     
-    port = r->server->port ? r->server->port : ap_default_port(r);
-
     if (d->use_canonical_name == USE_CANONICAL_NAME_OFF
 	|| d->use_canonical_name == USE_CANONICAL_NAME_DNS) {
-        if (r->connection && r->connection->client_socket) {
-            apr_sockaddr_t *localsa;
 
-            apr_socket_addr_get(&localsa, APR_LOCAL, r->connection->client_socket);
-            apr_sockaddr_port_get(&port, localsa);
-        }
+        /* With UseCanonicalName off Apache will form self-referential
+	 * URLs using the hostname and port supplied by the client if
+	 * any are supplied (otherwise it will use the canonical name).
+	 */
+        port = r->parsed_uri.port ? r->parsed_uri.port :
+               r->server->port ? r->server->port :
+               ap_default_port(r);
     }
+    else { /* d->use_canonical_name == USE_CANONICAL_NAME_ON */
+
+        /* With UseCanonicalName on (and in all versions prior to 1.3)
+	 * Apache will use the hostname and port specified in the
+	 * ServerName directive to construct a canonical name for the
+	 * server. (If no port was specified in the ServerName
+         * directive, Apache implies port 80 for http:// and
+	 * port 443 for https://)
+	 */
+        port = r->server->port ? r->server->port : ap_default_port(r);
+    }
+
     /* default */
     return port;
 }
