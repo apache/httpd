@@ -458,19 +458,12 @@ AP_DECLARE(apr_status_t) unixd_accept(void **accepted, ap_listen_rec *lr,
 {
     apr_socket_t *csd;
     apr_status_t status;
-    int sockdes;
 
     *accepted = NULL;
     status = apr_socket_accept(&csd, lr->sd, ptrans);
     if (status == APR_SUCCESS) { 
         *accepted = csd;
-        apr_os_sock_get(&sockdes, csd);
-#ifdef TPF
-        if (sockdes == 0) {                  /* 0 is invalid socket for TPF */
-            return APR_EINTR;
-        }
-#endif
-        return status;
+        return APR_SUCCESS;
     }
 
     if (APR_STATUS_IS_EINTR(status)) {
