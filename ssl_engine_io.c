@@ -582,7 +582,7 @@ static apr_status_t ssl_io_filter_Output(ap_filter_t *f,
     SSLFilterRec *ctx = f->ctx;
 
     if (!ctx->pssl) {
-        /* ssl_hook_CloseConnection has already been called */
+        /* ssl_abort() has been called */
         return ap_pass_brigade(f->next, bb);
     }
 
