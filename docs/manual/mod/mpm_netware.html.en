@@ -19,7 +19,7 @@
 <div id="path">
 <a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentation</a> &gt; <a href="../">Version 2.0</a> &gt; <a href="./">Modules</a></div>
 <div id="page-content">
-<div id="preamble"><h1>Apache Module mpm_netware</h1>
+<div id="preamble"><h1>Apache MPM netware</h1>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Multi-Processing Module implementing an exclusively threaded web
     server optimized for Novell NetWare</td></tr>
 <tr><th><a href="module-dict.html#Status">Status:</a></th><td>MPM</td></tr>
@@ -46,12 +46,9 @@
     regulate how the main thread creates worker threads to serve
     requests. In general, Apache is very self-regulating, so most
     sites do not need to adjust these directives from their default
-    values. Sites which need to serve more than 250 simultaneous
-    requests may need to increase <code class="directive">MaxThreads</code>, while
-    sites with limited memory may need to decrease
-    <code class="directive">MaxThreads</code> to keep the server from thrashing
-    (spawning and terminating idle threads). More information about
-    tuning process creation is provided in the <a href="../misc/perf-tuning.html">performance hints</a>
+    values. Sites with limited memory may need to decrease <code class="directive"><a href="#maxthreads">MaxThreads</a></code> to keep the server from
+    thrashing (spawning and terminating idle threads). More information
+    about tuning process creation is provided in the <a href="../misc/perf-tuning.html">performance hints</a>
     documentation.</p>
 
     <p><code class="directive"><a href="../mod/mpm_common.html#maxrequestsperchild">MaxRequestsPerChild</a></code>
@@ -83,21 +80,27 @@
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="MaxThreads" id="MaxThreads">MaxThreads</a> <a name="maxthreads" id="maxthreads">Directive</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td /></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Set the maximum number of worker threads</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>MaxThreads <var>number</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>MaxThreads 250</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>MaxThreads 2048</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>MPM</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mpm_netware</td></tr>
 </table>
-<p>The MaxThreads directive sets the desired maximum
-    number worker threads allowable.</p>
+    <p>The <code class="directive">MaxThreads</code> directive sets the desired
+    maximum number worker threads allowable. The default value is
+    also the compiled in hard limit. Therefore it can only be lowered,
+    for example:</p>
+
+    <div class="example"><p><code>
+      MaxThreads 512
+    </code></p></div>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="ThreadStackSize" id="ThreadStackSize">ThreadStackSize</a> <a name="threadstacksize" id="threadstacksize">Directive</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td /></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Determine the stack size for each thread</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>ThreadStackSize <var>number</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>ThreadStackSize 65536</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>

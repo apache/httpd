@@ -19,30 +19,64 @@
 <div id="path">
 <a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentation</a> &gt; <a href="../">Version 2.0</a> &gt; <a href="./">Modules</a></div>
 <div id="page-content">
-<div id="preamble"><h1>Apache Module perchild</h1>
-<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Multi-Processing Module allowing for daemon processes
-    serving requests to be assigned a variety of different
-    userids</td></tr>
+<div id="preamble"><h1>Apache MPM perchild</h1>
+<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Multi-Processing Module allowing for daemon processes serving
+requests to be assigned a variety of different userids</td></tr>
 <tr><th><a href="module-dict.html#Status">Status:</a></th><td>MPM</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">Module Identifier:</a></th><td>mpm_perchild_module</td></tr>
 <tr><th><a href="module-dict.html#SourceFile">Source File:</a></th><td>perchild.c</td></tr></table>
 <h3>Summary</h3>
 
-<div class="warning">
-This MPM does not currently work on most platforms.  Work is ongoing to
-make it functional.
-</div>
+    <div class="warning">
+      This MPM does not currently work on most platforms.  Work is ongoing
+      to make it functional.
+    </div>
 
     <p>This Multi-Processing Module (MPM) implements a hybrid
     multi-process, multi-threaded web server. A fixed number of
     processes create threads to handle requests. Fluctuations in
     load are handled by increasing or decreasing the number of
     threads in each process.</p>
-
+</div>
+<div id="quickview"><h3 class="directives">Directives</h3>
+<ul id="toc">
+<li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#acceptmutex">AcceptMutex</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#assignuserid">AssignUserID</a></li>
+<li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#bs2000account">BS2000Account</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#childperuserid">ChildPerUserID</a></li>
+<li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#coredumpdirectory">CoreDumpDirectory</a></li>
+<li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#group">Group</a></li>
+<li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#listen">Listen</a></li>
+<li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#listenbacklog">ListenBacklog</a></li>
+<li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#lockfile">LockFile</a></li>
+<li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#maxrequestsperchild">MaxRequestsPerChild</a></li>
+<li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#maxsparethreads">MaxSpareThreads</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#maxthreadsperchild">MaxThreadsPerChild</a></li>
+<li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#minsparethreads">MinSpareThreads</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#numservers">NumServers</a></li>
+<li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#pidfile">PidFile</a></li>
+<li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#scoreboardfile">ScoreBoardFile</a></li>
+<li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#sendbuffersize">SendBufferSize</a></li>
+<li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#serverlimit">ServerLimit</a></li>
+<li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#startthreads">StartThreads</a></li>
+<li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#threadlimit">ThreadLimit</a></li>
+<li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#user">User</a></li>
+</ul>
+<h3>Topics</h3>
+<ul id="topics">
+<li><img alt="" src="../images/down.gif" /> <a href="#how-it-works">How it works</a></li>
+</ul><h3>See also</h3>
+<ul class="seealso">
+<li><a href="../bind.html">Setting which addresses and ports Apache
+uses</a></li>
+</ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="how-it-works" id="how-it-works">How it works</a></h2>
     <p>A single control process launches the number of child processes
-    indicated by the <code class="directive"><a href="../mod/mpm_common.html#numservers">NumServers</a></code> directive at server
-    startup. Each child process creates threads as specified in the
-    <code class="directive"><a href="../mod/mpm_common.html#startthreads">StartThreads</a></code> directive.
+    indicated by the <code class="directive"><a href="#numservers">NumServers</a></code>
+    directive at server startup. Each child process creates threads as
+    specified in the <code class="directive"><a href="../mod/mpm_common.html#startthreads">StartThreads</a></code> directive.
     The individual threads then
     listen for connections and serve them when they arrive.</p>
 
@@ -58,7 +92,7 @@ make it functional.
     necessary to modify these directives from their default values.
     The maximum number of clients that may be served simultaneously
     is determined by multiplying the number of server processes
-    that will be created (<code class="directive"><a href="../mod/mpm_common.html#numservers">NumServers</a></code>) by the maximum
+    that will be created (<code class="directive"><a href="#numservers">NumServers</a></code>) by the maximum
     number of threads created in each process
     (<code class="directive"><a href="../mod/mpm_common.html#maxthreadsperchild">MaxThreadsPerChild</a></code>).</p>
 
@@ -77,70 +111,142 @@ make it functional.
     server recycles processes by killing old ones and launching new
     ones.</p>
 
-    <p>In addition it adds the extra ability to specify that
-    specific processes should serve requests under different
-    userids. These processes can then be associated with specific
-    virtual hosts.</p>
+    <h3><a name="user-ids" id="user-ids">Working with different user-IDs</a></h3>
+      <p>The <code class="module"><a href="../mod/perchild.html">perchild</a></code> MPM adds the extra ability to
+      specify that particular processes should serve requests under
+      different user-IDs. These user-IDs can then be associated with
+      specific virtual hosts. You have to use one <code class="directive"><a href="#childperuserid">ChildPerUserID</a></code> directive for
+      every user/group combination you want to be run. Then you can tie
+      particular virtual hosts to that user and group IDs.</p>
+
+      <p>The following example runs 7 child processes. Two of them are run
+      under <code>user1</code>/<code>group1</code>. The next four are run
+      under <code>user2</code>/<code>group2</code> and the remaining
+      process uses the <code class="directive"><a href="../mod/mpm_common.html#user">User</a></code> and <code class="directive"><a href="../mod/mpm_common.html#group">Group</a></code>
+      of the main server:</p>
+
+      <div class="example"><h3>Global config</h3><p><code>
+        NumServers 7<br />
+        ChildPerUserID user1 group1 2<br />
+        ChildPerUserID user2 group2 4
+      </code></p></div>
+
+      <p>Using unbalanced numbers of processes as above is useful, if the
+      particular virtual hosts produce different load. The assignment to
+      the virtual hosts is easily done as in the example below. In
+      conclusion with the example above the following assumes, that
+      <code>server2</code> has to serve about twice of the hits of
+      <code>server1</code>.</p>
+
+      <div class="example"><h3>Example</h3><p><code>
+        NameVirtualHost *<br />
+        <br />
+        &lt;VirtualHost *&gt;<br />
+        <span class="indent">
+          ServerName fallbackhost<br />
+          # no assignment; use fallback<br />
+        </span>
+        &lt;/VirtualHost&gt;<br />
+        <br />
+        &lt;VirtualHost *&gt;<br />
+        <span class="indent">
+          ServerName server1<br />
+          AssignUserID user1 group1<br />
+        </span>
+        &lt;/VirtualHost&gt;<br />
+        <br />
+        &lt;VirtualHost *&gt;<br />
+        <span class="indent">
+          ServerName server2<br />
+          AssignUserID user2 group2<br />
+        </span>
+        &lt;/VirtualHost&gt;
+      </code></p></div>
     
 </div>
-<div id="quickview"><h3 class="directives">Directives</h3>
-<ul id="toc">
-<li><img alt="" src="../images/down.gif" /> <a href="#assignuserid">AssignUserId</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#childperuserid">ChildPerUserId</a></li>
-<li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#coredumpdirectory">CoreDumpDirectory</a></li>
-<li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#group">Group</a></li>
-<li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#listen">Listen</a></li>
-<li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#listenbacklog">ListenBacklog</a></li>
-<li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#lockfile">LockFile</a></li>
-<li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#maxrequestsperchild">MaxRequestsPerChild</a></li>
-<li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#maxsparethreads">MaxSpareThreads</a></li>
-<li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#maxthreadsperchild">MaxThreadsPerChild</a></li>
-<li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#minsparethreads">MinSpareThreads</a></li>
-<li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#numservers">NumServers</a></li>
-<li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#pidfile">PidFile</a></li>
-<li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#scoreboardfile">ScoreBoardFile</a></li>
-<li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#sendbuffersize">SendBufferSize</a></li>
-<li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#startthreads">StartThreads</a></li>
-<li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#user">User</a></li>
-</ul>
-<h3>See also</h3>
-<ul class="seealso">
-<li><a href="../bind.html">Setting which addresses and
-    ports Apache uses</a>
-</li>
-</ul></div>
-
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AssignUserId" id="AssignUserId">AssignUserId</a> <a name="assignuserid" id="assignuserid">Directive</a></h2>
+<div class="directive-section"><h2><a name="AssignUserID" id="AssignUserID">AssignUserID</a> <a name="assignuserid" id="assignuserid">Directive</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>AssignUserID <var>user_id</var> <var>group_id</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Tie a virtual host to a user and group ID</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>AssignUserID <var>user-id</var> <var>group-id</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>virtual host</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>MPM</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>perchild</td></tr>
 </table>
-    <p>Tie a virtual host to a specific child process. Requests addressed to
-the virtual host where this directive appears will be served by the process
-running with the specified user and group id.</p>
+    <p>Tie a virtual host to a specific user/group combination. Requests
+    addressed to the virtual host where this directive appears will be
+    served by a process running with the specified user and group ID.</p>
+
+    <p>The user and group ID has to be assigned to a number of children
+    in the global server config using the <code class="directive"><a href="#childperuserid">ChildPerUserID</a></code> directive. See the section above for a
+    <a href="#user-ids">configuration example</a>.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ChildPerUserId" id="ChildPerUserId">ChildPerUserId</a> <a name="childperuserid" id="childperuserid">Directive</a></h2>
+<div class="directive-section"><h2><a name="ChildPerUserID" id="ChildPerUserID">ChildPerUserID</a> <a name="childperuserid" id="childperuserid">Directive</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>ChildPerUserID <var>user_id</var>
-<var>group_id</var> <var>num_children</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Specify user ID and group ID for a number of child
+processes</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>ChildPerUserID <var>user-id</var> <var>group-id</var>
+<var>num-children</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>MPM</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>perchild</td></tr>
 </table>
-<p>Specify a user id and group id for a number of child processes.  The third
-argument, num_children, is the number of child processes to start with the
-specified user and group.  It does <strong>not</strong> represent a specific
-child number.  If the total number of child processes, found by totaling all of
-the third arguments to all ChildPerUserId directives in the config file, is
-less than <code class="directive"><a href="../mod/mpm_common.html#numservers">NumServers</a></code>, then all
-remaining children will inherit the <code class="directive"><a href="../mod/mpm_common.html#user">User</a></code> and <code class="directive"><a href="../mod/mpm_common.html#group">Group</a></code> settings from the main server </p> 
+    <p>Specify a user ID and group ID for a number of child processes.
+    The third argument, <var>num-children</var>, is the number of child
+    processes to start with the specified user and group. It does
+    <em>not</em> represent a specific child number. In order to use this
+    directive, the server must be run initially as <code>root</code>.
+    If you start the server as a non-root user, it will fail to change
+    to the lesser privileged user.</p>
+
+    <p>If the total number of child processes, found by totaling all of the
+    third arguments to all <code class="directive">ChildPerUserID</code> directives
+    in the config file, is less than <code class="directive"><a href="#numservers">NumServers</a></code>, then all remaining children will inherit the
+    <code class="directive"><a href="../mod/mpm_common.html#user">User</a></code> and <code class="directive"><a href="../mod/mpm_common.html#group">Group</a></code> settings from the main server.
+    See the section above for a <a href="#user-ids">configuration
+    example</a>.</p>
+
+    <div class="warning"><h3>Security</h3>
+      <p>Don't set <var>user-id</var> (or <var>group-id</var>) to
+      <code>root</code> unless you know exactly what you are doing, and
+      what the dangers are.</p>
+    </div>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="MaxThreadsPerChild" id="MaxThreadsPerChild">MaxThreadsPerChild</a> <a name="maxthreadsperchild" id="maxthreadsperchild">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Maximum number of threads per child process</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>MaxThreadsPerChild <var>number</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>MaxThreadsPerChild 64</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>MPM</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>perchild</td></tr>
+</table>
+    <p>This directive sets the maximum number of threads that will be
+    created in each child process. To increase this value beyond its
+    default, it is necessary to change the value of the <code class="directive"><a href="../mod/mpm_common.html#threadlimit">ThreadLimit</a></code> directive and stop and
+    re-start the server.</p>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="NumServers" id="NumServers">NumServers</a> <a name="numservers" id="numservers">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Total number of children alive at the same time</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>NumServers <var>number</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>NumServers 2</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>MPM</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>perchild</td></tr>
+</table>
+    <p>The <code class="directive">NumServers</code> directive determines the number
+    of children alive at the same time. This number should be large enough to
+    handle the requests for the entire site. To increase this value beyond the
+    value of <code>8</code>, it is necessary to change the value of the
+    <code class="directive"><a href="../mod/mpm_common.html#serverlimit">ServerLimit</a></code> directive and stop
+    and re-start the server. See the section above for a <a href="#user-ids">configuration example</a>.</p>
 
 </div>
 </div>
