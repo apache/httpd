@@ -1838,7 +1838,7 @@ static int parse_expr(request_rec *r, const char *expr, const char *error)
 
         case token_rbrace:
             ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r->server,
-                        "Unmatched ')' in \"%s\" in file %s\n",
+                        "Unmatched ')' in \"%s\" in file %s",
                         expr, r->filename);
             ap_rputs(error, r);
             goto RETURN;

@@ -917,7 +917,7 @@ static config_log_state *open_config_log(server_rec *s, pool *p,
         char *fname = ap_server_root_relative(p, cls->fname);
         if ((cls->log_fd = ap_popenf(p, fname, xfer_flags, xfer_mode)) < 0) {
             ap_log_error(APLOG_MARK, APLOG_ERR, s,
-                         "httpd: could not open transfer log file %s.\n", fname);
+                         "httpd: could not open transfer log file %s.", fname);
             exit(1);
         }
     }

@@ -792,7 +792,7 @@ static void accept_mutex_child_init(pool *p)
     lock_fd = ap_popenf(p, ap_lock_fname, O_WRONLY, 0600);
     if (lock_fd == -1) {
 	ap_log_error(APLOG_MARK, APLOG_EMERG, server_conf,
-		    "Child cannot open lock file: %s\n", ap_lock_fname);
+		    "Child cannot open lock file: %s", ap_lock_fname);
 	clean_child_exit(APEXIT_CHILDINIT);
     }
 }
@@ -808,7 +808,7 @@ static void accept_mutex_init(pool *p)
     lock_fd = ap_popenf(p, ap_lock_fname, O_CREAT | O_WRONLY | O_EXCL, 0600);
     if (lock_fd == -1) {
 	ap_log_error(APLOG_MARK, APLOG_EMERG, server_conf,
-		    "Parent cannot open lock file: %s\n", ap_lock_fname);
+		    "Parent cannot open lock file: %s", ap_lock_fname);
 	exit(APEXIT_INIT);
     }
     ap_register_cleanup(p, NULL, accept_mutex_cleanup, ap_null_cleanup);
@@ -1662,7 +1662,7 @@ static void setup_shared_mem(pool *p)
 	if (errno == ENOSYS) {
 	    ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_EMERG, server_conf,
 		    "httpd: Your kernel was built without CONFIG_SYSVIPC\n"
-		    "httpd: please consult the Apache FAQ for details\n");
+		    "httpd: please consult the Apache FAQ for details");
 	}
 #endif
 	ap_log_error(APLOG_MARK, APLOG_EMERG, server_conf,
@@ -3728,7 +3728,7 @@ static int make_child(server_rec *s, int slot, time_t now)
 				   PROCESSOR_CLASS_ANY);
 	if (status != OK) {
 	    ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_WARNING, server_conf,
-			"processor unbind failed %d\n", status);
+			"processor unbind failed %d", status);
 	}
 #endif
 	RAISE_SIGSTOP(MAKE_CHILD);
