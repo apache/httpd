@@ -11,12 +11,27 @@
   VLINK="#000080"
   ALINK="#FF0000"
  >
-  <h1 align="CENTER">Module mod_mime_magic</h1>
+ <DIV ALIGN="CENTER">
+  <IMG SRC="../images/sub.gif" ALT="[APACHE DOCUMENTATION]">
+ </DIV>
 
-  This module is an optional extension to the Apache HTTPD server.
-  The current version can be obtained from
-  <a href="http://www.employees.org/~ikluft/apache/mod_mime_magic/">
-  http://www.employees.org/~ikluft/apache/mod_mime_magic/</a>.
+ <h1 align="CENTER">Module mod_mime_magic</h1>
+
+  This module is contained in the mod_mime_magic.c file, and is
+  an optional extension to the Apache HTTPD server.
+  It can be used to determine the MIME type of a file by looking at a
+  few bytes of its contents, the same way the Unix file(1) command works.
+  To use mod_mime_magic you have to enable the following line in the
+  server build <tt>Configuration</tt> file: 
+
+  <pre>
+      Module mime_magic_module   mod_mime_magic.o
+  </pre>
+
+  This should be listed <em>before</em> mod_mime in the build
+  <tt>Configuration</tt> file so that it will be used after mod_mime.
+  mod_mime_magic is intended as a "second line of defense" for cases
+  mod_mime cannot resolve.
 
   <h2>Summary</h2>
 
@@ -177,12 +192,6 @@
 
   <h2><a name="notes">Notes</a></h2>
 
-  Patches and suggestions for mod_mime_magic should be sent to
-  Ian Kluft &lt;ikluft<!--- comment inserted to discourage spam --->@cisco.com&gt;.
-  Note that enhancements are done on a volunteer basis so no timetable can
-  be committed for any particular request.
-  Obviously, patches are given much higher priority over plain requests.
-  <p>
   The following notes apply to the mod_mime_magic module and are
   included here for compliance with contributors' copyright restrictions
   that require their acknowledgement.
