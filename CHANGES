@@ -1,5 +1,9 @@
 Changes with Apache 2.0.51
 
+  *) mod_ssl: Add "SSLUserName" directive to set r->user based on a
+     chosen SSL environment variable.  PR 20957. 
+     [Martin v. Loewis <martin v.loewis.de>]
+
   *) suexec: Pass the SERVER_SIGNATURE envvar through to CGIs.
      [Zvi Har'El <rl math.technion.ac.il>]
 
