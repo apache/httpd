@@ -11,8 +11,13 @@ Release:
 
 FINAL RELEASE SHOWSTOPPERS:
 
-    * proxy security fixes from 1.2.5 need to be brought forward
-       Jim: What are these?
+    * proxy security fixes from 1.2.5 need to be brought forward,
+      specifically:
+        -  if (strlen(x) < 30) {
+        +  if (strlen(x)+1 < 30) {
+	       x = ap_palloc(p, 30);
+	   }
+      in proxy_util.c.
 
     * Someone other than Dean has to do a security/correctness review on
       psprintf(), bprintf(), and ap_snprintf().  In particular these routines
@@ -23,9 +28,9 @@ FINAL RELEASE SHOWSTOPPERS:
 
     * The DoS issue about symlinks to /dev/zero is still present.
       A device checker patch had been sent to the list a while ago.
-      Msg-Id: ?
-       Jim: Couldn't we just use stat() and check the file-type?
-            stats are expensive though...
+      PATCH: Make the code wrapped by unvoted_DISALLOW_DEVICE_ACCESS
+             the default in ap_pcfg_openfile()
+      Status: Martin +1, Jim +1, Brian +1
 
     * get_path_info bug; ap_get_remote_host should be ap_vformatter instead.
       See: <Pine.LNX.3.96dg4.980427034301.16648P-100000@twinlark.arctic.org>
