@@ -117,10 +117,10 @@
         </td>
 
         <td>
-          <xsl:if test="contextlist/* = 'server config'">s</xsl:if>
-          <xsl:if test="contextlist/* = 'virtual host'">v</xsl:if>
-          <xsl:if test="contextlist/* = 'directory'">d</xsl:if>
-          <xsl:if test="contextlist/* = '.htaccess'">h</xsl:if>
+          <xsl:if test="contextlist/context[normalize-space(.)='server config']">s</xsl:if>
+          <xsl:if test="contextlist/context[normalize-space(.)='virtual host']">v</xsl:if>
+          <xsl:if test="contextlist/context[normalize-space(.)='directory']">d</xsl:if>
+          <xsl:if test="contextlist/context[normalize-space(.)='.htaccess']">h</xsl:if>
         </td>
 
         <td>
