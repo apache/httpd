@@ -417,7 +417,7 @@ apr_table_t *ap_proxy_read_headers(request_rec *r, char *buffer, int size, conn_
      * the connection closes (EOF), or we timeout.
      */
     while ((len = ap_getline(buffer, size, rr, 1)) > 0) {
-	
+
 	if (!(value = strchr(buffer, ':'))) {     /* Find the colon separator */
 
 	    /* Buggy MS IIS servers sometimes return invalid headers
@@ -1108,7 +1108,6 @@ static int proxy_match_word(struct dirconn_entry *This, request_rec *r)
 apr_status_t ap_proxy_doconnect(apr_socket_t *sock, char *host, apr_uint32_t port, request_rec *r)
 {
     apr_status_t rv;
-    int i;
     apr_sockaddr_t *destsa;
 
     rv = apr_getaddrinfo(&destsa, host, AF_INET, port, 0, r->pool);

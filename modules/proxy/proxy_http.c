@@ -361,7 +361,7 @@ int ap_proxy_http_handler(request_rec *r, ap_cache_el *c, char *url,
     AP_BRIGADE_INSERT_TAIL(bb, e);
     ap_pass_brigade(origin->output_filters, bb);
 
-    ap_add_input_filter("HTTP", NULL, NULL, origin);
+    ap_add_input_filter("HTTP_IN", NULL, NULL, origin);
     ap_add_input_filter("CORE_IN", NULL, NULL, origin);
 
     ap_brigade_destroy(bb);
@@ -371,7 +371,8 @@ int ap_proxy_http_handler(request_rec *r, ap_cache_el *c, char *url,
     origin->remain = 0;
 
     ap_get_brigade(origin->input_filters, bb, AP_MODE_BLOCKING);
-    ap_bucket_read(AP_BRIGADE_FIRST(bb), (const char **)&buffer2, &len, AP_BLOCK_READ);
+    e = AP_BRIGADE_FIRST(bb);
+    ap_bucket_read(e, (const char **)&buffer2, &len, AP_BLOCK_READ);
     if (len == -1) {
 	apr_close_socket(sock);
 	ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
@@ -384,6 +385,8 @@ int ap_proxy_http_handler(request_rec *r, ap_cache_el *c, char *url,
 	return ap_proxyerror(r, HTTP_BAD_GATEWAY,
 			     "Document contains no data");
     }
+    AP_BUCKET_REMOVE(e);
+    ap_bucket_destroy(e);
 
 /* Is it an HTTP/1 response?  This is buggy if we ever see an HTTP/1.10 */
     if (ap_checkmask(buffer2, "HTTP/#.# ###*")) {
@@ -403,6 +406,7 @@ int ap_proxy_http_handler(request_rec *r, ap_cache_el *c, char *url,
 
 	buffer2[12] = '\0';
 	r->status = atoi(&buffer2[9]);
+
 	buffer2[12] = ' ';
 	r->status_line = apr_pstrdup(p, &buffer2[9]);
 
@@ -421,6 +425,9 @@ int ap_proxy_http_handler(request_rec *r, ap_cache_el *c, char *url,
         {
             clear_connection(p, resp_hdrs);    /* Strip Connection hdrs */
             ap_cache_el_header_merge(c, resp_hdrs);
+            if (apr_table_get(resp_hdrs, "Content-type")) {
+                r->content_type = apr_pstrdup(r->pool, apr_table_get(resp_hdrs, "Content-type"));
+            }
         }
 
 	if (conf->viaopt != via_off && conf->viaopt != via_block) {
@@ -480,7 +487,7 @@ int ap_proxy_http_handler(request_rec *r, ap_cache_el *c, char *url,
 #if 0
     if (!r->assbackwards)
 	ap_rvputs(r, "HTTP/1.0 ", r->status_line, CRLF, NULL);
-#endif
+
     if (cachefp && apr_puts(apr_pstrcat(r->pool, "HTTP/1.0 ",
         r->status_line, CRLF, NULL), cachefp) != APR_SUCCESS) {
 	    ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
@@ -488,18 +495,19 @@ int ap_proxy_http_handler(request_rec *r, ap_cache_el *c, char *url,
 	    ap_proxy_cache_error(&c);
             cachefp = NULL;
     }
+#endif
 
+#if 0
 /* send headers */
     ap_cache_el_header_walk(c, ap_proxy_send_hdr_line, r, NULL);
-
+#endif
+/*
     if (!r->assbackwards)
 	ap_rputs(CRLF, r);
-
+*/
     r->sent_bodyct = 1;
 /* Is it an HTTP/0.9 response? If so, send the extra data */
     if (backasswards) {
-        cntr = len;
-	apr_send(r->connection->client_socket, buffer, &cntr);
         cntr = len;
         e = ap_bucket_create_heap(buffer, cntr, 0, NULL);
         AP_BRIGADE_INSERT_TAIL(bb, e);
@@ -525,6 +533,8 @@ int ap_proxy_http_handler(request_rec *r, ap_cache_el *c, char *url,
                 break;
             }
             ap_pass_brigade(r->output_filters, bb);
+            ap_brigade_destroy(bb);
+            bb = ap_brigade_create(r->pool);
         }
     }
 
