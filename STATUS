@@ -1,5 +1,5 @@
 Apache 2.0 STATUS:
-Last modified at [$Date: 2000/05/05 23:17:51 $]
+Last modified at [$Date: 2000/05/07 00:40:38 $]
 
 Release:
 
@@ -77,14 +77,6 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
     * Win32: Enable the winnt MPM to use the new scoreboard API
 
     * Win32: Graceful restart of a service is broken (code does shutdown then start)
-
-    * Dynamically loadable MPMs
-      Enable users of the binary distributions of Apache to be able to 
-      dynamically load the MPM.
-
-      Dean says this probably isn't a good idea.  For example consider
-      -lpthread, you couldn't have the same core run with pthreads,
-      prefork, and gnu pth without a lot of headaches is my guess.
 
     * Platforms that do not support fork (primarily Win32 and AS/400)
       Consider introducing HAVE_FORK feature macro. Architect start-up code
