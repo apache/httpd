@@ -402,7 +402,6 @@ static int match_headers(request_rec *r)
 	    switch (b->special_type) {
 	    case SPECIAL_REMOTE_ADDR:
 		val = r->connection->remote_ip;
-		break;
                 break;
             case SPECIAL_SERVER_ADDR:
                 val = r->connection->local_ip;
