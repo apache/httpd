@@ -1,18 +1,29 @@
 
-                   Apache HTTP Server 1.3.30 freigegeben
+                   Apache HTTP Server 1.3.31 freigegeben
 
    Wir, die Apache Software Foundation und das Apache HTTP Server Projekt, 
-   freuen uns, die Freigabe der Version 1.3.30 des Apache HTTP Servers 
+   freuen uns, die Freigabe der Version 1.3.31 des Apache HTTP Servers 
    ("Apache") bekannt zu geben. Diese Ankündigung führt die wesentlichen 
-   Änderungen von 1.3.30 gegenüber 1.3.29 auf. Die Ankündigung ist auch in 
-   englischer Sprache unter http://www.apache.org/dist/httpd/Announcement.txt 
+   Änderungen von 1.3.31 gegenüber 1.3.29 auf (die Version 1.3.30 wurde nicht
+   freigegeben). Die Ankündigung ist auch in englischer Sprache sowie
+   spanischer und japanischer Übersetzung unter
+
+        http://www.apache.org/dist/httpd/Announcement.html
+        http://www.apache.org/dist/httpd/Announcement.html.es
+        http://www.apache.org/dist/httpd/Announcement.html.ja
+
    verfügbar.
 
    Diese Version des Apache ist vornehmlich ein Bug-Fix- und Sicherheits-
    Update. Eine kurze Zusammenfassung der Bug-Fixes ist am Ende des Dokumentes
    aufgeführt. Die vollständige Liste der Änderungen ist in der CHANGES-
-   Datei zu finden. Apache 1.3.30 behebt insbesondere 3 mögliche
+   Datei zu finden. Apache 1.3.31 behebt insbesondere 4 mögliche
    Sicherheitslücken:
+
+     o CAN-2003-0987 (cve.mitre.org)
+       Im mod_digest wird der vom Client verwendete "Nonce"-Wert nun
+       verifiziert, ob er mit dem vom Server erzeugten korrespondiert.
+       Dieses Problem betrifft nicht das mod_auth_digest-Modul.
 
      o CAN-2003-0020 (cve.mitre.org)
        Daten beliebiger Herkunft werden maskiert, bevor sie ins
@@ -21,21 +32,23 @@
      o CAN-2004-0174 (cve.mitre.org)
        Korrektur von "verhungernden" lauschenden Sockets, wo eine
        kurzlebige Verbindung an einem selten verbundenen, lauschenden Socket
-       einen Kindprozess veranlaßt, den Accept-Mutex festzuhalten und neue
-       Verbindungen solange zu blockieren, bis eine weitere Verbindung auf
-       dem selten verbundenen Socket eintrifft.
+       einen Kindprozess veranlasst, den Accept-Mutex nicht freizugeben und
+       neue Verbindungen solange zu blockieren, bis eine weitere Verbindung
+       auf dem selten verbundenen Socket eintrifft. Dieses Problem betrifft
+       nur bestimmte Plattformen, wie Solaris, AIX und IRIX. Linux ist nicht
+       betroffen.
      
      o CAN-2003-0993 (cve.mitre.org) 
        Korrektur des Parsers für Allow-/Deny-Regeln, die IP-Adressen ohne
        Angabe einer Netmask verwenden. Das Problem ist lediglich auf
        Big-Endian-64-bit-Plattformen bekannt.
      
-   Wir betrachten den Apache 1.3.30 als die beste verfügbare Version des
+   Wir betrachten den Apache 1.3.31 als die beste verfügbare Version des
    Apache 1.3 und wir empfehlen Benutzern älterer Versionen, insbesondere
    der Familien 1.1.x und 1.2.x, umgehend die Aufrüstung. Für die 1.2.x-
    Familie werden keine weiteren Releases mehr erstellt.
 
-   Apache 1.3.30 steht unter folgender Adresse zum Download bereit:
+   Apache 1.3.31 steht unter folgender Adresse zum Download bereit:
 
        http://httpd.apache.org/download.cgi
 
@@ -88,9 +101,14 @@
    besseren Performance, Stabilität und Sicherheit auf den Apache 2.0 zu
    wechseln.
 
-               Wesentliche Änderungen des Apache 1.3.30
+               Wesentliche Änderungen des Apache 1.3.31
 
    Sicherheitslücken
+
+     o CAN-2003-0987 (cve.mitre.org)
+       Im mod_digest wird der vom Client verwendete "Nonce"-Wert nun
+       verifiziert, ob er mit dem vom Server erzeugten korrespondiert.
+       Dieses Problem betrifft nicht das mod_auth_digest-Modul.
 
      o CAN-2003-0020 (cve.mitre.org)
        Daten beliebiger Herkunft werden maskiert, bevor sie ins
@@ -133,7 +151,7 @@ Neuerungen
    Behobene Fehler
 
     Die folgenden nennenswerten Fehler wurden im Apache 1.3.29 (oder
-    früher) gefunden und im Apache 1.3.30 behoben:
+    früher) gefunden und im Apache 1.3.31 behoben:
 
      * Korrektur von Speicherkorruptionen bei der Funktion
        ap_custom_response(). Die per-dir-Grunkonfiguration würde später auf
