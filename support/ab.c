@@ -80,7 +80,7 @@
    **    - Enhanced by Dean Gaudet <dgaudet@apache.org>, November 1997
    **    - Cleaned up by Ralf S. Engelschall <rse@apache.org>, March 1998
    **    - POST and verbosity by Kurt Sussman <kls@merlot.com>, August 1998
-   **    - HTML ap_table_t output added by David N. Welton <davidw@prosa.it>, January 1999
+   **    - HTML table output added by David N. Welton <davidw@prosa.it>, January 1999
    **    - Added Cookie, Arbitrary header and auth support. <dirkx@webweaving.org>, April 199
    **
  */
@@ -97,7 +97,7 @@
  *   only an issue for loopback usage
  */
 
-#define VERSION "1.3a"
+#define VERSION "1.3b"
 
 /*  -------------------------------------------------------------------- */
 
@@ -254,7 +254,7 @@ static void write_request(struct connection * c)
     out[0].iov_base = request;
     out[0].iov_len = reqlen;
 
-    if (posting) {
+    if (posting>0) {
 	out[1].iov_base = postdata;
 	out[1].iov_len = postlen;
 	outcnt = 2;
@@ -263,7 +263,7 @@ static void write_request(struct connection * c)
     writev(c->fd,out, outcnt);
 #else
     write(c->fd,request,reqlen);
-    if (posting) {
+    if (posting>0) {
         write(c->fd,postdata,postlen);
         totalposted += (reqlen + postlen);
     }
@@ -331,7 +331,7 @@ static void output_results(void)
     if (keepalive)
 	printf("Keep-Alive requests:    %d\n", doneka);
     printf("Total transferred:      %d bytes\n", totalread);
-    if (posting)
+    if (posting>0)
 	printf("Total POSTed:           %d\n", totalposted);
     printf("HTML transferred:       %d bytes\n", totalbread);
 
@@ -340,7 +340,7 @@ static void output_results(void)
 	printf("Requests per second:    %.2f\n", 1000 * (float) (done) / timetaken);
 	printf("Transfer rate:          %.2f kb/s received\n",
 	       (float) (totalread) / timetaken);
-	if (posting) {
+	if (posting>0) {
 	    printf("                        %.2f kb/s sent\n",
 		   (float) (totalposted) / timetaken);
 	    printf("                        %.2f kb/s total\n",
@@ -429,7 +429,7 @@ static void output_html_results(void)
     printf("<tr %s><th colspan=2 %s>Total transferred:</th>"
 	   "<td colspan=2 %s>%d bytes</td></tr>\n",
 	   trstring, tdstring, tdstring, totalread);
-    if (posting)
+    if (posting>0)
 	printf("<tr %s><th colspan=2 %s>Total POSTed:</th>"
 	       "<td colspan=2 %s>%d</td></tr>\n",
 	       trstring, tdstring, tdstring, totalposted);
@@ -445,7 +445,7 @@ static void output_html_results(void)
 	printf("<tr %s><th colspan=2 %s>Transfer rate:</th>"
 	       "<td colspan=2 %s>%.2f kb/s received</td></tr>\n",
 	     trstring, tdstring, tdstring, (float) (totalread) / timetaken);
-	if (posting) {
+	if (posting>0) {
 	    printf("<tr %s><td colspan=2 %s>&nbsp;</td>"
 		   "<td colspan=2 %s>%.2f kb/s sent</td></tr>\n",
 		   trstring, tdstring, tdstring,
@@ -703,7 +703,8 @@ static void read_connection(struct connection * c)
 	totalbread += r;
     }
 
-    if (c->keepalive && (c->bread >= c->length)) {
+    /* cater for the case where we're using keepalives and doing HEAD requests */
+    if (c->keepalive && ((c->bread >= c->length) || (posting < 0))) {
 	/* finished a keep-alive connection */
 	good++;
 	doneka++;
@@ -769,13 +770,14 @@ static void test(void)
     FD_ZERO(&writebits);
 
     /* setup request */
-    if (!posting) {
-	sprintf(request, "GET %s HTTP/1.0\r\n"
+    if (posting <= 0) {
+	sprintf(request, "%s %s HTTP/1.0\r\n"
 		"User-Agent: ApacheBench/%s\r\n"
 		"%s" "%s" "%s"
 		"Host: %s\r\n"
 		"Accept: */*\r\n"
-		"\r\n" "%s",
+		"%s" "\r\n",
+		(posting == 0) ? "GET" : "HEAD",
 		path,
 		VERSION,
 		keepalive ? "Connection: Keep-Alive\r\n" : "",
@@ -890,7 +892,8 @@ static void usage(char *progname)
     fprintf(stderr, "    -T content-type Content-type header for POSTing\n");
     fprintf(stderr, "    -v verbosity    How much troubleshooting info to print\n");
     fprintf(stderr, "    -w              Print out results in HTML tables\n");
-    fprintf(stderr, "    -x attributes   String to insert as ap_table_t attributes\n");
+    fprintf(stderr, "    -i              Use HEAD instead of GET\n");
+    fprintf(stderr, "    -x attributes   String to insert as table attributes\n");
     fprintf(stderr, "    -y attributes   String to insert as tr attributes\n");
     fprintf(stderr, "    -z attributes   String to insert as td or th attributes\n");
     fprintf(stderr, "    -C attribute    Add cookie, eg. 'Apache=1234. (repeatable)\n");
@@ -975,7 +978,7 @@ int main(int argc, char **argv)
     int c, r,l;
     char tmp[1024];
 
-    /* ap_table_t defaults  */
+    /* table defaults  */
     tablestring = "";
     trstring = "";
     tdstring = "bgcolor=white";
@@ -983,7 +986,7 @@ int main(int argc, char **argv)
     auth[0] = '\0';
     hdrs[0] = '\0';
     optind = 1;
-    while ((c = getopt(argc, argv, "n:c:t:T:p:v:kVhwx:y:z:C:H:P:A:")) > 0) {
+    while ((c = getopt(argc, argv, "n:c:t:T:p:v:kVhwix:y:z:C:H:P:A:")) > 0) {
 	switch (c) {
 	case 'n':
 	    requests = atoi(optarg);
@@ -997,7 +1000,16 @@ int main(int argc, char **argv)
 	case 'c':
 	    concurrency = atoi(optarg);
 	    break;
+	case 'i':
+	    if (posting==1) 
+		err("Cannot mix POST and HEAD");
+
+	    posting = -1;
+	    break;
 	case 'p':
+	    if (posting!=0) 
+		err("Cannot mix POST and HEAD");
+
 	    if (0 == (r = open_postfile(optarg))) {
 		posting = 1;
 	    }
