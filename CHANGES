@@ -1,5 +1,9 @@
 Changes with Apache 2.0.19-dev
 
+  *) Move the addition of default AP_HTTP_HTTP_HEADER filters to the
+     insert_filter phase so that other filters are not bypassed by default.
+     [Graham Leggett]
+
   *) Reimplement mod_headers as an output filter. mod_headers can now
      add custom headers to inbound requests using the RequestHeader directive
      and to responses using the same old Header directive.  [Graham Leggett]
