@@ -174,6 +174,11 @@ int get_path_info(request_rec *r)
     char *last_cp = NULL;
     int rv;
 
+    if (r->finfo.st_mode) {
+	/* assume path_info already set */
+	return OK;
+    }
+
     /* Advance over trailing slashes ... NOT part of filename */
 
     for (cp = end; cp > path && cp[-1] == '/'; --cp)
