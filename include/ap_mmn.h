@@ -89,12 +89,15 @@
  * 20050127.0 (2.1.3-dev) renamed regex_t->ap_regex_t, regmatch_t->ap_regmatch_t,
  *                        REG_*->AP_REG_*, removed reg* in place of ap_reg*;
  *                        added ap_regex.h
+ * 20050217.0 (2.1.3-dev) Axed find_child_by_pid, mpm_*_completion_context (winnt mpm)
+ *                        symbols from the public sector, and decorated real_exit_code
+ *                        with ap_ in the win32 os.h.
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503230UL /* "AP20" */
 
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
-#define MODULE_MAGIC_NUMBER_MAJOR 20050127
+#define MODULE_MAGIC_NUMBER_MAJOR 20050217
 #endif
 #define MODULE_MAGIC_NUMBER_MINOR 0                     /* 0...n */
 

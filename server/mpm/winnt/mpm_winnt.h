@@ -114,8 +114,8 @@ typedef enum {
     IOCP_SHUTDOWN = 4
 } io_state_e;
 
-AP_DECLARE(PCOMP_CONTEXT) mpm_get_completion_context(void);
-AP_DECLARE(void)          mpm_recycle_completion_context(PCOMP_CONTEXT pCompContext);
-AP_DECLARE(apr_status_t)  mpm_post_completion_context(PCOMP_CONTEXT pCompContext, io_state_e state);
+PCOMP_CONTEXT mpm_get_completion_context(void);
+void          mpm_recycle_completion_context(PCOMP_CONTEXT pCompContext);
+apr_status_t  mpm_post_completion_context(PCOMP_CONTEXT pCompContext, io_state_e state);
 void hold_console_open_on_error(void);
 #endif /* APACHE_MPM_WINNT_H */

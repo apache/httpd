@@ -17,6 +17,9 @@
 #ifndef AP_RELEASE_H
 #define AP_RELEASE_H
 
+/* The numeric compile-time version constants. These constants are the
+ * authoritative version numbers for APR. 
+ */
 /** Properly quote a value as a string in the C preprocessor */
 #define AP_STRINGIFY(n) AP_STRINGIFY_HELPER(n)
 /** Helper macro for AP_STRINGIFY */
