@@ -483,9 +483,10 @@ static int add_expires(request_rec *r)
     };
 
     expires = base + additional;
-    ap_table_setn(r->headers_out, "Cache-Control",
-	ap_psprintf(r->pool, "max-age=%qd",
-	    (expires - r->request_time) / AP_USEC_PER_SEC));
+    ap_table_mergen(r->headers_out, "Cache-Control",
+		    ap_psprintf(r->pool, "max-age=%qd",
+				(expires - r->request_time)
+				    / AP_USEC_PER_SEC));
     timestr = ap_palloc(r->pool, AP_RFC822_DATE_LEN);
     ap_rfc822_date(timestr, expires);
     ap_table_setn(r->headers_out, "Expires", timestr);
