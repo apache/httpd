@@ -39,18 +39,12 @@
  * that one of these matches the original address.
  */
 
-
+#include "conf.h"
 #include <sys/types.h>
 
 #include <ctype.h>
-#include <netdb.h>
 #include <string.h>
-#include <stdio.h>
-#include <stdlib.h>
 
-#include <sys/socket.h>
-
-#include <netinet/in.h>
 #ifndef MPE
 #include <arpa/inet.h>
 #endif
@@ -71,7 +65,7 @@ static void stats(FILE *output);
 /* number of buckets in cache hash table */
 #define BUCKETS 256
 
-#if defined(MPE) || defined(NEXT)
+#if defined(NEED_STRDUP)
 char *strdup (const char *str)
 {
     char *dup;
