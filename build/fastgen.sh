@@ -97,16 +97,24 @@ else
     echo "creating $makefile"
     dir=`echo $makefile|sed 's%/*[^/][^/]*$%%'`
     $mkdir_p "$dir/"
-
-    cat - $top_srcdir/$makefile.in <<EOF >$makefile
+    if test -z "$dir"; then
+        cat - $top_srcdir/$makefile.in <<EOF >$makefile
+top_srcdir   = $top_srcdir
+top_builddir = $top_builddir
+srcdir       = $top_srcdir
+builddir     = $top_builddir
+VPATH        = $top_srcdir
+EOF
+        dir="."
+    else
+        cat - $top_srcdir/$makefile.in <<EOF >$makefile
 top_srcdir   = $top_srcdir
 top_builddir = $top_builddir
 srcdir       = $top_srcdir/$dir
 builddir     = $top_builddir/$dir
 VPATH        = $top_srcdir/$dir
 EOF
-  
-    test -z "$dir" && dir="."
+    fi 
     touch $dir/.deps
   done
 fi
