@@ -31,6 +31,7 @@
 <seealso><module>mod_mime</module></seealso>
 <seealso><a href="../content-negotiation.html">Content
 Negotiation</a></seealso>
+<seealso><a href="../env.html">Environment Variables</a></seealso>
 
 <section id="typemaps"><title>Type maps</title>
     <p>A type map has a format similar to RFC822 mail headers. It
