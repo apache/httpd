@@ -66,6 +66,11 @@ Committed Code Changes:
 
 Available Patches:
 
+    * Ken's [PATCH] for copyright year update
+	<34AA4B95.36726117@Golux.Com>
+	Status: Ken +1, Jim +1
+	Gregory Lundberg says it's legally invalid
+
     * [PATCH] mod_digest/1599: proxy authentication using the digest auth
       scheme never succeeds (fwd)
 	<Pine.LNX.3.95dg3.971225184830.17380C-100000@twinlark.arctic.org>
