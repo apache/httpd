@@ -1,0 +1,23 @@
+<!--#set var="TITLE" value="Object not found!" -->
+<!--#include virtual="include/top.html" -->
+
+	El URL requerido no ha sido localizado en
+	este servidor.
+
+  <!--#if expr="$HTTP_REFERER" -->
+
+	El URL en la 
+    <a href="<!--#echo encoding="url" var="HTTP_REFERER"-->">p&aacute;gina referida</a> 
+	parece tener algun error o estar fuera de tiempo. Porfavor
+	comunique al autor de  
+    <a href="<!--#echo encoding="url" var="HTTP_REFERER"-->">la p&aacute;gina</a> 
+	acerca del error.
+
+  <!--#else -->
+
+	Si usted provisiono el URL de manera manual le solicitamos
+	que porfavor revise los datos e intente de nuevo.
+
+  <!--#endif -->
+
+<!--#include virtual="include/bottom.html" -->

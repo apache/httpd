@@ -1,0 +1,23 @@
+<!--#set var="TITLE" value="Serverfehler!" -->
+<!--#include virtual="include/top.html" -->
+
+  <!--#if expr="$REDIRECT_ERROR_NOTES" -->
+
+    Dir Proxy-Anfrage konnte nicht ausgeführt werden.
+
+    <!--#include virtual="include/spacer.html" -->
+
+    Fehlermeldung:
+    <BR><!--#echo var="REDIRECT_ERROR_NOTES" -->
+
+
+  <!--#else -->
+
+    Die Anfrage kann nicht beantwortet werden, da im Server
+    ein interner Fehler aufgetreten ist.
+    Der Server ist entweder überlastet oder ein Fehler in
+    einem CGI-Script ist aufgetreten.
+
+  <!--#endif -->
+
+<!--#include virtual="include/bottom.html" -->

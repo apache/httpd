@@ -1,0 +1,21 @@
+<!--#set var="TITLE" value="Objet non trouv&eacute;!" -->
+<!--#include virtual="include/top.html" -->
+
+    L'URL requise n'a pu etre trouv&eacute;e sur ce serveur.
+
+  <!--#if expr="$HTTP_REFERER" -->
+
+    La r&eacute;f&eacute;rence sur
+    <a href="<!--#echo encoding="url" var="HTTP_REFERER"-->">la page cit&eacute;e</a>
+    semble &ecirc;tre erron&eacute;e ou perim&eacute;e. Nous vous prions d'informer l'auteur de
+    <a href="<!--#echo encoding="url" var="HTTP_REFERER"-->">cette page</a>
+    de cette erreur.
+
+  <!--#else -->
+
+    Si vous avez tap&eacute; l'URL &agrave; la main, veuillez v&eacute;rifier
+    l'orthographe et r&eacute;essayer.
+
+  <!--#endif -->
+
+<!--#include virtual="include/bottom.html" -->       

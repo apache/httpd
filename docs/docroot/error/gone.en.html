@@ -1,0 +1,20 @@
+<!--#set var="TITLE" value="Resource is no longer available!" -->
+<!--#include virtual="include/top.html" -->
+
+   The requested URL is no longer available on this server and there is no
+   forwarding address.
+  
+  <!--#if expr="$HTTP_REFERER" -->
+  
+   Please inform the author of the
+   <a href="<!--#echo encoding="url" var="HTTP_REFERER"-->">referring
+   page</a> that the link is outdated.
+   
+  <!--#else -->
+  
+   If you followed a link from a foreign page, please contact the
+   author of this page.
+   
+  <!--#endif -->
+  
+<!--#include virtual="include/bottom.html" --> 
