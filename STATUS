@@ -1,5 +1,5 @@
 Apache 2.0 STATUS:
-Last modified at [$Date: 2000/11/14 02:42:51 $]
+Last modified at [$Date: 2000/11/28 20:07:17 $]
 
 Release:
 
@@ -82,12 +82,7 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
 
     * OS/2: Make mod_status work for spmt_os2 MPM.
 
-    * Build scripts do not recognise AIX 4.2.1 pthreads, so the
-      pthread MPMs will not build.
-
     * Win32: Enable the winnt MPM to use the new scoreboard API
-
-    * Win32: Implement ap_shm_ functions in APR.
 
     * Win32: Win9x console window still won't play nice with the
         close window, logoff and shutdown scenarios.
@@ -97,18 +92,12 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
         death (non-zero exit code) in console mode.
 
     * Platforms that do not support fork (primarily Win32 and AS/400)
-      Consider introducing HAVE_FORK feature macro. Architect start-up code
-      that avoids initializing all the modules in the parent process on
-      platforms that do not support fork.
+      Architect start-up code that avoids initializing all the modules 
+      in the parent process on platforms that do not support fork.
 
     * Win32: Migrate the MPM over to use APR thread/process calls. This
       would eliminate some code in the Win32 branch that essentially
       duplicates what is in APR.
-
-      Bill says we need a new procattr, APR_CREATE_SUSPENDED (or
-      something similar) to direct ap_create_process to create the
-      process suspended. We also need a call to wake up the suspended 
-      process This may not be able to be implemented everywhere though.
 
     * There are still a number of places in the code where we are
       losing error status (i.e. throwing away the error returned by a
@@ -167,8 +156,6 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
       Status: Greg +1 (volunteers), Jeff +1, Ryan +1, Tony -0(?)
 
     * mod_info to use the configuration tree
-
-    * make apr_get_uuid() thread-safe
 
     * (possibly) use UUIDs in mod_unique_id and/or mod_usertrack
 
