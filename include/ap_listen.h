@@ -58,13 +58,13 @@
 #include "apr_network_io.h"
 #include "httpd.h"
 #include "http_config.h"
-#include "mpm.h"
 
 /**
  * @package Apache Listeners Library
  */
 
 typedef struct ap_listen_rec ap_listen_rec;
+typedef apr_status_t (*accept_function)(void **csd, ap_listen_rec *lr, apr_pool_t *ptrans);
 
 /**
  * Apache's listeners record.  These are used in the Multi-Processing Modules
@@ -83,6 +83,10 @@ struct ap_listen_rec {
      * The sockaddr the socket should bind to
      */
     apr_sockaddr_t *bind_addr;
+    /**
+     * The accept function for this socket
+     */
+    accept_function accept_func;
     /**
      * Is this socket currently active 
      */

@@ -55,6 +55,8 @@
 #ifndef AP_MMN_H
 #define AP_MMN_H
 
+#include "apr_thread_proc.h"
+
 /**
  * @package Multi-Processing Module library
  */
