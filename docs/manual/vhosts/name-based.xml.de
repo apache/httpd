@@ -1,10 +1,10 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.de.xsl"?>
-<!-- English revision: 1.23.2.5 -->
+<!-- English revision: 1.5.2.5 -->
 
 <manualpage metafile="name-based.xml.meta">
-<parentdocument href="./">Virtual Hosts</parentdocument>
+  <parentdocument href="./">Virtuelle Hosts</parentdocument>
 <title>Unterst&uuml;tzung namensbasierter virtueller Hosts</title>
 
 <summary>
