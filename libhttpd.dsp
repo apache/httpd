@@ -493,6 +493,10 @@ SOURCE=.\include\ap_mpm.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\server\mpm\winnt\child.c
+# End Source File
+# Begin Source File
+
 SOURCE=.\server\listen.c
 # End Source File
 # Begin Source File

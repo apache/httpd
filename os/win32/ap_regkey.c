@@ -58,9 +58,10 @@
 
 #ifdef WIN32
 
-#include "ap_regkey.h"
+#include "apr.h"
 #include "arch/win32/fileio.h"
 #include "arch/win32/misc.h"
+#include "ap_regkey.h"
 
 struct ap_regkey_t {
     apr_pool_t *pool;
