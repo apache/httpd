@@ -1,4 +1,8 @@
 Changes with Apache 1.3.23
+  *) When the default of 'Group #-1' was changed to 'Group "#-1"',
+     the Makefile wasn't updated to recognise the quotation marks.
+     [Owen Boyle <obo@bourse.ch>]
+
   *) Win32: Do not allow threads to continue handling keepalive
      requests after a shutdown or restart has ben signaled.
      [Bill Stoddard]
