@@ -119,9 +119,19 @@ static int asis_handler(request_rec *r)
     if (!r->header_only) {
         apr_bucket_brigade *bb;
         apr_bucket *b;
+        apr_off_t pos = 0;
+
+        rv = apr_file_seek(f, APR_CUR, &pos);
+        if (rv != APR_SUCCESS) {
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
+                          "mod_asis: failed to find end-of-headers position "
+                          "for %s", r->filename);
+            apr_file_close(f);
+            return HTTP_INTERNAL_SERVER_ERROR;
+        }
 
         bb = apr_brigade_create(r->pool);
-        b = apr_bucket_file_create(f, 0, (apr_size_t) r->finfo.size, r->pool);
+        b = apr_bucket_file_create(f, pos, (apr_size_t) (r->finfo.size - pos), r->pool);
         APR_BRIGADE_INSERT_TAIL(bb, b);
         b = apr_bucket_eos_create();
         APR_BRIGADE_INSERT_TAIL(bb, b);
@@ -129,6 +139,7 @@ static int asis_handler(request_rec *r)
         if (rv != APR_SUCCESS) {
             ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
                           "mod_asis: ap_pass_brigade failed for file %s", r->filename);
+            return HTTP_INTERNAL_SERVER_ERROR;
         }
     }
     else {
