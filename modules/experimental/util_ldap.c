@@ -844,6 +844,18 @@ start_over:
         ldap_msgfree(res);
         return result;
     }
+    else {
+        /*
+         * Since we just bound the connection to the authenticating user id, update the
+         * ldc->binddn and ldc->bindpw to reflect the change and also to allow the next 
+         * call to util_ldap_connection_open() to handle the connection reuse appropriately.
+         * Otherwise the next time that this connection is reused, it will indicate that
+         * it is bound to the original user id specified ldc->binddn when in fact it is 
+         * bound to a completely different user id.
+         */
+        ldc->binddn = apr_pstrdup(st->pool, *binddn);
+        ldc->bindpw = apr_pstrdup(st->pool, bindpw);
+    }
 
     /*
      * Get values for the provided attributes.
