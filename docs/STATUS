@@ -1,5 +1,5 @@
 Apache HTTP Server 2.1 Documentation Status File.
-Last modified: $Date: 2003/04/05 18:36:27 $
+Last modified: $Date: 2003/04/07 16:47:57 $
 
 For more information on how to contribute to the Apache Documentation
 Project, please see http://httpd.apache.org/docs-project/
@@ -178,8 +178,6 @@ XML Conversions
 The following files need to be converted to XML as described at
 http://httpd.apache.org/docs-project/docsformat.html
 
-index.html.en                      # leave in html?
-howto/auth.html.en
 expand.pl                          # delete after finishing everything
 
 # These will require manual.xsl changes
