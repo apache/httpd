@@ -148,6 +148,7 @@ apr_status_t ap_queue_pop(FDQueue *queue, apr_socket_t **sd, apr_pool_t **p, int
     if (queue->head == queue->tail) {
         if (block_if_empty) {
             pthread_cond_wait(&queue->not_empty, &queue->one_big_mutex);
+fprintf(stderr, "Found a non-empty queue  :-)\n");
         }
     } 
     
@@ -158,4 +159,10 @@ apr_status_t ap_queue_pop(FDQueue *queue, apr_socket_t **sd, apr_pool_t **p, int
         queue->head = (queue->head + 1) % queue->bounds;
     }
     return APR_SUCCESS;
+}
+
+void ap_queue_signal_all_wakeup(FDQueue *queue)
+{
+fprintf(stderr, "trying to broadcast to all workers\n");
+    pthread_cond_broadcast(&queue->not_empty);
 }

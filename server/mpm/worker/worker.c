@@ -191,6 +191,12 @@ static const char *lock_fname;
 #define SAFE_ACCEPT(stmt) (stmt)
 #endif
 
+static signal_workers(void)
+{
+    workers_may_exit = 1;
+    ap_queue_signal_all_wakeup(worker_queue);
+}
+
 AP_DECLARE(apr_status_t) ap_mpm_query(int query_code, int *result)
 {
     switch(query_code){
@@ -481,7 +487,7 @@ static void process_socket(apr_pool_t *p, apr_socket_t *sock, int my_child_num, 
 static void check_infinite_requests(void)
 {
     if (ap_max_requests_per_child) {
-        workers_may_exit = 1;              
+        signal_workers();
     }
     else {
         /* wow! if you're executing this code, you may have set a record.
@@ -502,6 +508,7 @@ static void check_infinite_requests(void)
 /* Sets workers_may_exit if we received a character on the pipe_of_death */
 static void check_pipe_of_death(void)
 {
+fprintf(stderr, "looking at pipe of death\n");
     apr_lock_acquire(pipe_of_death_mutex);
     if (!workers_may_exit) {
         apr_status_t ret;
@@ -516,7 +523,7 @@ static void check_pipe_of_death(void)
         else {
             /* It won the lottery (or something else is very
              * wrong). Embrace death with open arms. */
-            workers_may_exit = 1;
+            signal_workers();
         }
     }
     apr_lock_release(pipe_of_death_mutex);
@@ -564,7 +571,7 @@ static void *listener_thread(apr_thread_t *thd, void * dummy)
             ap_log_error(APLOG_MARK, APLOG_EMERG, rv, ap_server_conf,
                          "apr_lock_acquire failed. Attempting to shutdown "
                          "process gracefully.");
-            workers_may_exit = 1;
+            signal_workers();
         }
 
         while (!workers_may_exit) {
@@ -581,7 +588,7 @@ static void *listener_thread(apr_thread_t *thd, void * dummy)
                  * circumstances. Let's try exiting gracefully, for now. */
                 ap_log_error(APLOG_MARK, APLOG_ERR, ret, (const server_rec *)
                              ap_server_conf, "apr_poll: (listen)");
-                workers_may_exit = 1;
+                signal_workers();
             }
 
             if (workers_may_exit) break;
@@ -628,7 +635,7 @@ static void *listener_thread(apr_thread_t *thd, void * dummy)
                 ap_log_error(APLOG_MARK, APLOG_EMERG, rv, ap_server_conf,
                              "apr_lock_release failed. Attempting to shutdown "
                              "process gracefully.");
-                workers_may_exit = 1;
+                signal_workers();
             }
             if (csd != NULL) {
                 ap_queue_push(worker_queue, csd, ptrans);
@@ -641,7 +648,7 @@ static void *listener_thread(apr_thread_t *thd, void * dummy)
                 ap_log_error(APLOG_MARK, APLOG_EMERG, rv, ap_server_conf,
                              "apr_lock_release failed. Attempting to shutdown "
                              "process gracefully.");
-                workers_may_exit = 1;
+                signal_workers();
             }
             break;
         }
@@ -885,7 +892,7 @@ static void child_main(int child_num_arg)
 
     apr_signal_thread(check_signal);
 
-    workers_may_exit = 1;   /* helps us terminate a little more quickly when 
+    signal_workers();       /* helps us terminate a little more quickly when 
                              * the dispatch of the signal thread
                              * beats the Pipe of Death and the browsers
                              */
