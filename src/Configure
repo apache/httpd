@@ -906,6 +906,7 @@ done
 if [ "$RULE_WANTHSREGEX" = "yes" ]; then
     REGLIB="regex/libregex.a"
     SUBDIRS="$SUBDIRS regex"
+    CFLAGS="$CFLAGS -DUSE_HSREGEX"
 fi
 
 # create modules.c

@@ -46,7 +46,7 @@ purge:
 	rm -f *.o
 
 # stuff to build regex.h
-REGEXH=../include/regex.h
+REGEXH=../include/hsregex.h
 REGEXHSRC=regex2.h $(REGSRC)
 $(REGEXH):	$(REGEXHSRC) mkh
 	sh ./mkh $(MKHFLAGS) -i _REGEX_H_ $(REGEXHSRC) > $(REGEXH)
@@ -105,7 +105,7 @@ print:
 
 
 mf.tmp:	Makefile
-	sed '/^REGEXH=/s/=.*/=..\/include\\regex.h/' Makefile \
+	sed '/^REGEXH=/s/=.*/=..\/include\\hsregex.h/' Makefile \
 	| sed '/#DEL$$/d' >$@
 
 DTRH=cclass.h cname.h regex2.h utils.h
@@ -132,4 +132,4 @@ clean:	tidy
 
 # don't do this one unless you know what you're doing
 spotless:	clean
-	rm -f mkh regex.h
+	rm -f mkh ../include/hsregex.h

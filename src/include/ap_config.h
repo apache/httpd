@@ -868,7 +868,9 @@ API_EXPORT(int) ap_vsnprintf(char *buf, size_t len, const char *format,
 #endif
 
 #ifdef WIN32
-#include "../regex/regex.h"
+#include "../include/hsregex.h"
+#elif defined(USE_HSREGEX)
+#include "hsregex.h"
 #else
 #include <regex.h>
 #endif
