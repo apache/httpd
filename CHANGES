@@ -1,5 +1,8 @@
 Changes with Apache 2.0.25-dev
 
+  *) Fix a couple of issues in mod_include when the tag appeared at
+     offsets near 8192 in the file being parsed.  [Jeff Trawick]
+
   *) Fix --enable-modules=all breakage with mod_auth_db and mod_auth_digest
      by allowing a module to disable itself if its prerequisites are not
      met.  [Justin Erenkrantz]
@@ -8,6 +11,19 @@ Changes with Apache 2.0.25-dev
      reached.  [Jeff Trawick]
 
 Changes with Apache 2.0.24
+
+  *) Numerous improvements to the Win32 build system.  Introduced command line
+     builds without requiring .mak files for MSVC 6.0 and later versions.
+     Improved .dsp file compatibility for both Visual Studio 5.0 and 6.0 users.
+     [William Rowe]
+
+  *) Assorted corrections and improvements to the winnt_mpm startup code.  Better
+     reporting of uninstalled services and other error conditions, and changed the 
+     default service name to Apache2.  [William Rowe]
+
+  *) Numerous improvements to the Win32 ApacheMonitor utility, including winnt_mpm 
+     compatibility with existing Apache 1.3 Win32 Apache management utilites.  
+     [Mladen Turk <mturk@mappingsoft.com>, William Rowe]
 
   *) Fixed the segfaults in mod_mime introduced by hash tables in 2.0.20.
      [William Rowe, Greg Ames]
