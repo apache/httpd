@@ -865,7 +865,7 @@ API_EXPORT (file_type_e) ap_get_win32_interpreter(const  request_rec *r,
         return FileTypeUNKNOWN;
     }
 
-    bResult = ReadFile(hFile, (void*) &buffer, sizeof(buffer), 
+    bResult = ReadFile(hFile, (void*) &buffer, sizeof(buffer) - 1, 
                        &nBytesRead, NULL);
     if (!bResult || (nBytesRead == 0)) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, r,
