@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/12/10 21:03:46 $]
+Last modified at [$Date: 2003/12/10 22:41:54 $]
 
 Release:
 
@@ -110,7 +110,7 @@ PATCHES TO BACKPORT FROM 2.1
     * Replace some of the mutex locking in the worker MPM with
       atomic operations for higher concurrency.
       server/mpm/worker/fdqueue.c 1.24, 1.25
-      +1: brianp
+      +1: brianp, ianh
 
     * Rewrite how proxy sends its request to allow input bodies to 
       morph the request bodies.  Previously, if an input filter
@@ -193,7 +193,7 @@ PATCHES TO BACKPORT FROM 2.1
 
     * ab: catch out of memory (reasoning report ID 29)
         support/ab.c: r1.125
-      +1: nd, erikabele
+      +1: nd, erikabele, ianh
        0: trawick, who is not about to stand in anybody's way on this,
           but has two comments nonetheless:
           a) with no abort function specified for the pools, this is just
@@ -213,7 +213,7 @@ PATCHES TO BACKPORT FROM 2.1
       SSL support; r1.130 adds some state-handling fixes related to
       ab's breakage in 2.0.47
         support/ab.c: r1.129, r1.130
-      +1: trawick, brianp
+      +1: trawick, brianp, ianh
 
     * mod_rewrite: more or less cosmetic fix. If a .htaccess in DocumentRoot
       configures:
@@ -300,14 +300,14 @@ PATCHES TO BACKPORT FROM 2.1
     * mod_status: Report total CPU time accurately when using a
       threaded MPM.  PR: 23795
         modules/generators/mod_status.c r1.75
-      +1: trawick, jim
+      +1: trawick, jim, ianh
        (nd: +1 on concept, lacking knowledge prevents me from definitely +1'ing
             it.)
 
     * Let mod_autoindex show filenames containing special characters.
       PR 13598.
         server/request.c: r1.130
-      +1: nd
+      +1: nd, ianh
 
     * mod_setenvif: Fix optimizer to treat regexps as such even if they
       only contain anchors like \b. PR 24219.
@@ -335,7 +335,7 @@ PATCHES TO BACKPORT FROM 2.1
      * Fix htdbm to generate comment fields in the DBM files correctly.
       (This causes DBMAuthGroupFile to break)
         support/htdbm.c r1.11
-      +1: jerenkrantz, striker, trawick
+      +1: jerenkrantz, striker, trawick, ianh
 
     * Fix mod_mem_cache removal ordering bug.
         modules/experimental/mod_mem_cache.c r1.97,1.99
@@ -352,14 +352,14 @@ PATCHES TO BACKPORT FROM 2.1
         Makefile.in r1.134
         modules/generators/mod_status.c r1.173
         modules/generators/mod_status.h r1.2
-      +1: trawick
+      +1: trawick, ianh
 
     * fix memory leak while handling request body with reverse proxy
         modules/proxy/proxy_http.c r1.173
         (but code has changed slightly since stable branch so patch
         posted to bugzilla is one to use...  see PR at
         http://nagoya.apache.org/bugzilla/show_bug.cgi?id=24991)
-      +1: trawick, stas
+      +1: trawick, stas, ianh
 
 CURRENT RELEASE NOTES:
 
