@@ -1,5 +1,8 @@
 Changes with Apache 1.3.2
 
+  *) Remove 64 thread limit on Win32.
+     [Bill Stoddard <stoddard@raleigh.ibm.com>]
+
   *) Remove redundant substitutions in top-level Makefile.tmpl.
      [Ralf S. Engelschall]
 
