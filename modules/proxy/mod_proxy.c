@@ -1032,7 +1032,7 @@ static const char *add_member(cmd_parms *cmd, void *dummy, const char *arg)
     server_rec *s = cmd->server;
     proxy_server_conf *conf =
     ap_get_module_config(s->module_config, &proxy_module);
-    struct proxy_balancer *balancer, *balancers;
+    struct proxy_balancer *balancer;
     proxy_worker *worker;
     char *path = NULL;
     char *name = NULL;
@@ -1092,14 +1092,7 @@ static const char *add_member(cmd_parms *cmd, void *dummy, const char *arg)
         }
     }
     /* Try to find the balancer */
-    balancers = (struct proxy_balancer *)conf->balancers->elts;
-    for (i = 0; i < conf->balancers->nelts; i++) {
-        if (!strcmp(name, balancers[i].name)) {
-            balancer = &balancers[i];
-            break;
-        }
-    }
-
+    balancer = ap_proxy_get_balancer(cmd->temp_pool, conf, name); 
     if (!balancer) {
         apr_status_t rc = 0;
 #if DEBUGGING
