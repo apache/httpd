@@ -344,12 +344,18 @@ extern "C" {
  */
 # define AP_DECLARE_NONSTD(type)    type
 #endif
-
-#ifndef AP_MODULE_DECLARE_DATA
-# define AP_MODULE_DECLARE_DATA
-#endif
 #ifndef AP_DECLARE_DATA
 # define AP_DECLARE_DATA
+#endif
+
+#ifndef AP_MODULE_DECLARE
+# define AP_MODULE_DECLARE(type)    type
+#endif
+#ifndef AP_MODULE_DECLARE_NONSTD
+# define AP_MODULE_DECLARE_NONSTD(type)  type
+#endif
+#ifndef AP_MODULE_DECLARE_DATA
+# define AP_MODULE_DECLARE_DATA
 #endif
 
 /* modules should not used functions marked AP_CORE_DECLARE
