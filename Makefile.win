@@ -155,7 +155,7 @@ installd:
 	$(MAKE) $(MAKEOPT) -f Makefile.win SHORT=D LONG=Debug   _build _install
 
 clean:	_cleanr _cleand
-	-rd /s Browse < << > nul
+	-if exist Browse\. rd /s Browse < << > nul
 y
 <<
 
@@ -190,7 +190,6 @@ _build:
 	cd server
 	 $(MAKE) $(MAKEOPT) -f gen_test_char.mak   CFG="gen_test_char - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	cd ..
-	 -del $(LONG)\buildmark.obj
 	 $(MAKE) $(MAKEOPT) -f libhttpd.mak        CFG="libhttpd - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f Apache.mak          CFG="Apache - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	cd modules\aaa
@@ -295,7 +294,6 @@ _cleand:
 
 _build:
 	echo Building Win32 $(LONG) targets ($(SHORT) suffixes)
-	-del $(LONG)\buildmark.obj
 	devenv Apache.sln /useenv $(CTARGET) $(LONG) /project BuildBin
 !IF EXIST("srclib\openssl")
 	devenv Apache.sln /useenv $(CTARGET) $(LONG) /project mod_ssl
@@ -315,7 +313,6 @@ _cleand:
 
 _build:
 	echo Building Win32 $(LONG) targets ($(SHORT) suffixes)
-	-del $(LONG)\buildmark.obj
 	msdev Apache.dsw /USEENV /MAKE \
 		"BuildBin - Win32 $(LONG)" $(CTARGET)
 !IF EXIST("srclib\openssl")
