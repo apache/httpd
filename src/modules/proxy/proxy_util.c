@@ -693,6 +693,9 @@ long int ap_proxy_send_fb(BUFF *f, request_rec *r, cache_req *c, off_t len, int 
     }
 
     ap_kill_timeout(r);
+
+    r->bytes_sent += total_bytes_rcvd;
+
     return total_bytes_rcvd;
 }
 

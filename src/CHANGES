@@ -1,5 +1,10 @@
 Changes with Apache 1.3.25
 
+  *) Fix a problem in mod_proxy: it would not set the number of bytes
+     transferred, so other modules could not access the value from
+     the request_rec->bytes_sent field.
+     [Anthony Howe <achowe at snert.com>] PR#6841
+
   *) Fix a problem in mod_rewrite which would lead to 400 Bad Request
      responses for rewriting rules which resulted in a local path.
      [Martin Kraemer]
