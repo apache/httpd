@@ -84,7 +84,6 @@
 #include "http_conf_globals.h"
 #include "http_core.h"          /* for get_remote_host */
 #include "scoreboard.h"
-#include <setjmp.h>
 #include <assert.h>
 #include <sys/stat.h>
 #ifdef HAVE_SHMGET
@@ -180,14 +179,6 @@ int one_process = 0;
 #define ap_killpg(x, y)		(kill (-(x), (y)))
 #else
 #define ap_killpg(x, y)		(killpg ((x), (y)))
-#endif
-
-#if defined(USE_LONGJMP)
-#define ap_longjmp(x, y)	(longjmp ((x), (y)))
-#define ap_setjmp(x)		(setjmp (x))
-#else
-#define ap_longjmp(x, y)	(siglongjmp ((x), (y)))
-#define ap_setjmp(x)		(sigsetjmp ((x), 1))
 #endif
 
 #if defined(USE_FCNTL_SERIALIZED_ACCEPT)

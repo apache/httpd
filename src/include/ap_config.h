@@ -61,7 +61,6 @@
 
 /* Define one of these according to your system. */
 #if defined(MPE)
-#include <setjmp.h>
 #include <sys/times.h>
 #define JMP_BUF sigjmp_buf
 #define NO_SETSID
@@ -650,6 +649,16 @@ typedef void Sigfunc(int);
 #endif
 #define signal(s,f)	ap_signal(s,f)
 Sigfunc *signal(int signo, Sigfunc *func);
+#endif
+
+#include <setjmp.h>
+
+#if defined(USE_LONGJMP)
+#define ap_longjmp(x, y)        longjmp((x), (y))
+#define ap_setjmp(x)            setjmp(x)
+#else
+#define ap_longjmp(x, y)        siglongjmp((x), (y))
+#define ap_setjmp(x)            sigsetjmp((x), 1)
 #endif
 
 /* Finding offsets of elements within structures.

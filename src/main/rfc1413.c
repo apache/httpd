@@ -72,13 +72,9 @@
 
 /* Rewritten by David Robinson */
 
-#include "httpd.h"    /* for server_rec, conn_rec */
+#include "httpd.h"    /* for server_rec, conn_rec, ap_longjmp, etc. */
 #include "http_log.h" /* for log_unixerr */
 #include "rfc1413.h"
-
-/* System libraries. */
-
-#include <setjmp.h>
 
 #ifndef SCO
 extern char *strchr();
@@ -93,13 +89,13 @@ extern char *inet_ntoa();
 /* rough limit on the amount of data we accept. */
 #define RFC1413_MAXDATA 1000
 
+#ifndef RFC1413_TIMEOUT
 #define RFC1413_TIMEOUT	30
+#endif
 #define	ANY_PORT	0		/* Any old port will do */
 #define FROM_UNKNOWN  "unknown"
 
-int rfc1413_timeout = RFC1413_TIMEOUT;/* Global so it can be changed */
-
-static jmp_buf timebuf;
+JMP_BUF timebuf;
 
 /* bind_connect - bind both ends of a socket */
 
@@ -182,11 +178,11 @@ get_rfc1413(int sock, const struct sockaddr_in *our_sin,
     return 0;
 }
 
-/* timeout - handle timeouts */
+/* ident_timeout - handle timeouts */
 static void
-timeout(int sig)
+ident_timeout(int sig)
 {
-    longjmp(timebuf, sig);
+    ap_longjmp(timebuf, sig);
 }
 
 /* rfc1413 - return remote user name, given socket structures */
@@ -209,10 +205,10 @@ rfc1413(conn_rec *conn, server_rec *srv)
     /*
      * Set up a timer so we won't get stuck while waiting for the server.
      */
-    if (setjmp(timebuf) == 0)
+    if (ap_setjmp(timebuf) == 0)
     {
-	signal(SIGALRM, timeout);
-	alarm(rfc1413_timeout);
+	signal(SIGALRM, ident_timeout);
+	alarm(RFC1413_TIMEOUT);
 	
 	if (get_rfc1413(sock, &conn->local_addr, &conn->remote_addr, user,
 		      srv)
