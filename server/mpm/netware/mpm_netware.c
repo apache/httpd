@@ -173,7 +173,9 @@ static  CommandParser_t ConsoleHandler = {0, NULL, 0};
 #define HANDLEDCOMMAND  0
 #define NOTMYCOMMAND    1
 
-#if 1
+static int show_settings = 0;
+
+#if 0
 #define DBPRINT0(s) printf(s)
 #define DBPRINT1(s,v1) printf(s,v1)
 #define DBPRINT2(s,v1,v2) printf(s,v1,v2)
@@ -193,19 +195,6 @@ static void clean_child_exit(int code, int worker_num)
     if (worker_num >=0)
         ap_update_child_status(AP_CHILD_THREAD_FROM_ID(worker_num), WORKER_DEAD, (request_rec *) NULL);
     NXThreadExit((void*)&code);
-}
-
-static apr_status_t accept_mutex_child_cleanup(void *foo)
-{
-    return apr_thread_mutex_unlock(accept_mutex);
-}
-
-/* Initialize mutex lock.
- * Done by each child at its birth
- */
-static void accept_mutex_child_init(apr_pool_t *p)
-{
-    apr_pool_cleanup_register(p, NULL, accept_mutex_child_cleanup, apr_pool_cleanup_null);
 }
 
 AP_DECLARE(apr_status_t) ap_mpm_query(int query_code, int *result)
@@ -714,6 +703,69 @@ static void perform_idle_server_maintenance(apr_pool_t *p)
     }
 }
 
+static void display_settings ()
+{
+    int status_array[SERVER_NUM_STATUS];
+    int i, status, total=0;
+
+    ClearScreen (getscreenhandle());
+    printf("%s \n", ap_get_server_version());
+
+    for (i=0;i<SERVER_NUM_STATUS;i++) {
+        status_array[i] = 0;
+    }
+
+    for (i = 0; i < ap_threads_limit; ++i) {
+        status = (ap_scoreboard_image->servers[0][i]).status;
+        status_array[status]++;
+    }
+
+    for (i=0;i<SERVER_NUM_STATUS;i++) {
+        switch(i)
+        {
+        case SERVER_DEAD:
+            printf ("Available:\t%d\n", status_array[i]);
+            break;
+        case SERVER_STARTING:
+            printf ("Starting:\t%d\n", status_array[i]);
+            break;
+        case SERVER_READY:
+            printf ("Ready:\t\t%d\n", status_array[i]);
+            break;
+        case SERVER_BUSY_READ:
+            printf ("Busy:\t\t%d\n", status_array[i]);
+            break;
+        case SERVER_BUSY_WRITE:
+            printf ("Busy Write:\t%d\n", status_array[i]);
+            break;
+        case SERVER_BUSY_KEEPALIVE:
+            printf ("Busy Keepalive:\t%d\n", status_array[i]);
+            break;
+        case SERVER_BUSY_LOG:
+            printf ("Busy Log:\t%d\n", status_array[i]);
+            break;
+        case SERVER_BUSY_DNS:
+            printf ("Busy DNS:\t%d\n", status_array[i]);
+            break;
+        case SERVER_CLOSING:
+            printf ("Closing:\t%d\n", status_array[i]);
+            break;
+        case SERVER_GRACEFUL:
+            printf ("Restart:\t%d\n", status_array[i]);
+            break;
+        case SERVER_IDLE_KILL:
+            printf ("Idle Kill:\t%d\n", status_array[i]);
+            break;
+        default:
+            printf ("Unknown Status:\t%d\n", status_array[i]);
+            break;
+        }
+        if (i != SERVER_DEAD)
+            total+=status_array[i];
+    }
+    printf ("Total Running:\t%d\tout of: \t%d\n", total, ap_threads_limit);
+}
+
 static int setup_listeners(server_rec *s)
 {
     ap_listen_rec *lr;
@@ -786,6 +838,8 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
 
     while (!restart_pending && !shutdown_pending) {
         perform_idle_server_maintenance(pconf);
+        if (show_settings)
+            display_settings();
         apr_sleep(SCOREBOARD_MAINTENANCE_INTERVAL);
     }
 
@@ -919,6 +973,7 @@ static int CommandLineInterpreter(scr_t screenID, const char *commandLine)
         ActivateScreen (getscreenhandle());
 
         if (!strnicmp("RESTART",&commandLine[6],3)) {
+            printf("Restart Requested...\n");
             restart();
         }
         else if (!strnicmp("VERSION",&commandLine[6],3)) {
@@ -932,7 +987,19 @@ static int CommandLineInterpreter(scr_t screenID, const char *commandLine)
 	        ap_show_directives();
         }
         else if (!strnicmp("SHUTDOWN",&commandLine[6],3)) {
+            printf("Shutdown Requested...\n");
             shutdown_pending = 1;
+        }
+        else if (!strnicmp("SETTINGS",&commandLine[6],3)) {
+            if (show_settings) {
+                show_settings = 0;
+                ClearScreen (getscreenhandle());
+                printf("%s \n", ap_get_server_version());
+            }
+            else {
+                show_settings = 1;
+                display_settings();
+            }
         }
         else {
             printf("Unknown HTTPD command %s\n", &commandLine[6]);
