@@ -1,5 +1,7 @@
 Changes with Apache 1.3a2
 
+  *) PORT: BeOS support added [Alexei Kosut]
+
   *) Configure no longer accepts the -make option, since it creates
      Makefile on the fly based on Makefile.tmpl and Configuration.
 
