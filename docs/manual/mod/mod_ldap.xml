@@ -470,20 +470,19 @@ Certificate Authority or global client certificates</description>
     certificates and/or client certificates <module>mod_ldap</module>
     should use when establishing an SSL or TLS connection to an LDAP
     server. The type specifies the kind of certificate parameter being
-    set, depending on the LDAP toolkit being used. Supported types are:
-      <ul>
-        <li>CA_DER - binary DER encoded CA certificate</li>
-        <li>CA_BASE64 - PEM encoded CA certificate</li>
-        <li>CA_CERT7_DB - Netscape cert7.db CA certificate database file</li>
-        <li>CA_SECMOD - Netscape secmod database file</li>
-        <li>CERT_DER - binary DER encoded client certificate</li>
-        <li>CERT_BASE64 - PEM encoded client certificate</li>
-        <li>CERT_KEY3_DB - Netscape key3.db client certificate database file</li>
-        <li>CERT_NICKNAME - Client certificate "nickname" (Netscape SDK)</li>
-        <li>KEY_DER - binary DER encoded private key</li>
-        <li>KEY_BASE64 - PEM encoded private key</li>
-      </ul>
-    </p>
+    set, depending on the LDAP toolkit being used. Supported types are:</p>
+    <ul>
+      <li>CA_DER - binary DER encoded CA certificate</li>
+      <li>CA_BASE64 - PEM encoded CA certificate</li>
+      <li>CA_CERT7_DB - Netscape cert7.db CA certificate database file</li>
+      <li>CA_SECMOD - Netscape secmod database file</li>
+      <li>CERT_DER - binary DER encoded client certificate</li>
+      <li>CERT_BASE64 - PEM encoded client certificate</li>
+      <li>CERT_KEY3_DB - Netscape key3.db client certificate database file</li>
+      <li>CERT_NICKNAME - Client certificate "nickname" (Netscape SDK)</li>
+      <li>KEY_DER - binary DER encoded private key</li>
+      <li>KEY_BASE64 - PEM encoded private key</li>
+    </ul>
 </usage>
 </directivesynopsis>
 
@@ -501,15 +500,14 @@ connection client certificates.</description>
     or TLS connection to an LDAP server. Not all LDAP toolkits support
     per connection client certificates (See the toolkit guide for details).
     The type specifies the kind of certificate parameter being
-    set, depending on the LDAP toolkit being used. Supported types are:
-      <ul>
-        <li>CERT_DER - binary DER encoded client certificate</li>
-        <li>CERT_BASE64 - PEM encoded client certificate</li>
-        <li>CERT_NICKNAME - Client certificate "nickname" (Netscape SDK)</li>
-        <li>KEY_DER - binary DER encoded private key</li>
-        <li>KEY_BASE64 - PEM encoded private key</li>
-      </ul>
-    </p>
+    set, depending on the LDAP toolkit being used. Supported types are:</p>
+    <ul>
+      <li>CERT_DER - binary DER encoded client certificate</li>
+      <li>CERT_BASE64 - PEM encoded client certificate</li>
+      <li>CERT_NICKNAME - Client certificate "nickname" (Netscape SDK)</li>
+      <li>KEY_DER - binary DER encoded private key</li>
+      <li>KEY_BASE64 - PEM encoded private key</li>
+    </ul>
 </usage>
 </directivesynopsis>
 
@@ -521,12 +519,11 @@ connection client certificates.</description>
 
 <usage>
     <p>The following modes are supported:</p>
-      <ul>
-	<li>NONE - no encryption</li>
-	<li>SSL - ldaps:// encryption on default port 636</li>
-	<li>TLS - STARTTLS encryption on default port 389</li>
-      </ul>
-    </p>
+    <ul>
+      <li>NONE - no encryption</li>
+      <li>SSL - ldaps:// encryption on default port 636</li>
+      <li>TLS - STARTTLS encryption on default port 389</li>
+    </ul>
 
     <p>Not all LDAP toolkits support all the above modes. An error message
     will be logged at runtime if a mode is not supported, and the
@@ -535,7 +532,6 @@ connection client certificates.</description>
 
     <p>If an ldaps:// URL is specified, the mode becomes SSL and the setting
     of LDAPTrustedMode is ignored.</p>
-
 </usage>
 </directivesynopsis>
 
