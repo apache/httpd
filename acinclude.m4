@@ -372,6 +372,7 @@ AC_DEFUN(APACHE_ENABLE_MODULES,[
         module_selection=$i
         module_default=shared
       else
+        i=`echo $i | sed 's/-/_/g'`
     	eval "enable_$i=shared"
       fi
     done
