@@ -438,6 +438,7 @@ static apr_status_t deflate_out_filter(ap_filter_t *f,
         }
     }
 
+    apr_brigade_destroy(bb);
     return APR_SUCCESS;
 }
 
