@@ -22,7 +22,7 @@ VERSION=`(uname -v) 2>/dev/null` || VERSION="unknown"
 # Now test for SCO, since it is has a braindamaged uname.
 #
 # We need to work around FreeBSD 1.1.5.1 
-SCO=`uname -X 2>/dev/null | grep "^Release" | cut -f3 -d' '`
+SCO=`uname -X 2>/dev/null | grep "^Release" | awk '{print $3}'`
 if [ "x$SCO" != "x" ]; then
     case "$SCO" in
    	3\.2v4\.2)
