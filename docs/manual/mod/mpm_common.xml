@@ -369,7 +369,7 @@ will handle during its life</description>
 <name>MinSpareThreads</name>
 <description>Minimum number of idle threads available to handle request
 spikes</description>
-<syntax>MinSpareServers <var>number</var></syntax>
+<syntax>MinSpareThreads <var>number</var></syntax>
 <contextlist><context>server config</context></contextlist>
 <modulelist><module>mpm_netware</module>
 <module>perchild</module><module>worker</module>      
