@@ -74,6 +74,13 @@
 #ifndef DEFAULT_BUFSIZE
 #define DEFAULT_BUFSIZE (4096)
 #endif
+/* This must be enough to represent (DEFAULT_BUFSIZE - 3) in hex,
+ * plus two extra characters.
+ */
+#ifndef CHUNK_HEADER_SIZE
+#define CHUNK_HEADER_SIZE (5)
+#endif
+
 
 /* bwrite()s of greater than this size can result in a large_write() call,
  * which can result in a writev().  It's a little more work to set up the
@@ -381,6 +388,8 @@ API_EXPORT(int) bgetopt(BUFF *fb, int optname, void *optval)
     }
 }
 
+static int bflush_core(BUFF *fb);
+
 /*
  * Start chunked encoding.
  *
@@ -392,9 +401,6 @@ API_EXPORT(int) bgetopt(BUFF *fb, int optname, void *optval)
  */
 static void start_chunk(BUFF *fb)
 {
-    char chunksize[16];		/* Big enough for practically anything */
-    int chunk_header_size;
-
     if (fb->outchunk != -1) {
 	/* already chunking */
 	return;
@@ -404,26 +410,15 @@ static void start_chunk(BUFF *fb)
 	return;
     }
 
-    /* we know that the chunk header is going to take at least 3 bytes... */
-    chunk_header_size = ap_snprintf(chunksize, sizeof(chunksize),
-				 "%x\015\012", fb->bufsiz - fb->outcnt - 3);
     /* we need at least the header_len + at least 1 data byte
      * remember that we've overallocated fb->outbase so that we can always
      * fit the two byte CRLF trailer
      */
-    if (fb->bufsiz - fb->outcnt < chunk_header_size + 1) {
-	bflush(fb);
+    if (fb->bufsiz - fb->outcnt < CHUNK_HEADER_SIZE + 1) {
+	bflush_core(fb);
     }
-    /* assume there's enough space now */
-#ifdef CHARSET_EBCDIC
-    /* Chunks are an HTTP/1.1 Protocol feature. They must ALWAYS be in ASCII */
-    ebcdic2ascii(&fb->outbase[fb->outcnt], chunksize, chunk_header_size);
-#else /*CHARSET_EBCDIC*/
-    memcpy(&fb->outbase[fb->outcnt], chunksize, chunk_header_size);
-#endif /*CHARSET_EBCDIC*/
     fb->outchunk = fb->outcnt;
-    fb->outcnt += chunk_header_size;
-    fb->outchunk_header_size = chunk_header_size;
+    fb->outcnt += CHUNK_HEADER_SIZE;
 }
 
 
@@ -433,13 +428,14 @@ static void start_chunk(BUFF *fb)
 static void end_chunk(BUFF *fb)
 {
     int i;
+    char *strp;
 
     if (fb->outchunk == -1) {
 	/* not chunking */
 	return;
     }
 
-    if (fb->outchunk + fb->outchunk_header_size == fb->outcnt) {
+    if (fb->outchunk + CHUNK_HEADER_SIZE == fb->outcnt) {
 	/* nothing was written into this chunk, and we can't write a 0 size
 	 * chunk because that signifies EOF, so just erase it
 	 */
@@ -449,26 +445,24 @@ static void end_chunk(BUFF *fb)
     }
 
     /* we know this will fit because of how we wrote it in start_chunk() */
-    i = ap_snprintf((char *) &fb->outbase[fb->outchunk],
-		    fb->outchunk_header_size,
-		"%x", fb->outcnt - fb->outchunk - fb->outchunk_header_size);
+    i = ap_snprintf((char *) &fb->outbase[fb->outchunk], CHUNK_HEADER_SIZE,
+		"%x", fb->outcnt - fb->outchunk - CHUNK_HEADER_SIZE);
 
     /* we may have to tack some trailing spaces onto the number we just wrote
      * in case it was smaller than our estimated size.  We've also written
      * a \0 into the buffer with ap_snprintf so we might have to put a
      * \r back in.
      */
-    i += fb->outchunk;
-    while (fb->outbase[i] != '\015' && fb->outbase[i] != '\012') {
-	fb->outbase[i++] = ' ';
+    strp = &fb->outbase[fb->outchunk + i];
+    while (i < CHUNK_HEADER_SIZE - 2) {
+	*strp++ = ' ';
+	++i;
     }
-    if (fb->outbase[i] == '\012') {
-	/* we overwrote the \r, so put it back */
-	fb->outbase[i - 1] = '\015';
-    }
+    *strp++ = '\015';
+    *strp = '\012';
 #ifdef CHARSET_EBCDIC
     /* Chunks are an HTTP/1.1 Protocol feature. They must ALWAYS be in ASCII */
-    ebcdic2ascii(&fb->outbase[fb->outchunk], &fb->outbase[fb->outchunk], fb->outchunk_header_size);
+    ebcdic2ascii(&fb->outbase[fb->outchunk], &fb->outbase[fb->outchunk], CHUNK_HEADER_SIZE);
 #endif /*CHARSET_EBCDIC*/
 
     /* tack on the trailing CRLF, we've reserved room for this */
@@ -1156,7 +1150,7 @@ static int large_write(BUFF *fb, const void *buf, int nbyte)
  */
 API_EXPORT(int) bwrite(BUFF *fb, const void *buf, int nbyte)
 {
-    int i, nwr;
+    int i, nwr, useable_bufsiz;
 #ifdef CHARSET_EBCDIC
     static char *cbuf = NULL;
     static int csize = 0;
@@ -1259,8 +1253,13 @@ API_EXPORT(int) bwrite(BUFF *fb, const void *buf, int nbyte)
  * Note also that bcwrite never does a partial write if we're chunking,
  * so we're guaranteed to either end in an error state, or make it
  * out of this loop and call start_chunk() below.
+ *
+ * Remember we may not be able to use the entire buffer if we're
+ * chunking.
  */
-    while (nbyte >= fb->bufsiz) {
+    useable_bufsiz = fb->bufsiz;
+    if (fb->flags & B_CHUNK) useable_bufsiz -= CHUNK_HEADER_SIZE;
+    while (nbyte >= useable_bufsiz) {
 	i = bcwrite(fb, buf, nbyte);
 	if (i <= 0) {
 	    return nwr ? nwr : -1;
@@ -1284,22 +1283,10 @@ API_EXPORT(int) bwrite(BUFF *fb, const void *buf, int nbyte)
     return nwr;
 }
 
-/*
- * Flushes the buffered stream.
- * Returns 0 on success or -1 on error
- */
-API_EXPORT(int) bflush(BUFF *fb)
+
+static int bflush_core(BUFF *fb)
 {
     int i;
-
-    if (!(fb->flags & B_WR) || (fb->flags & B_EOUT))
-	return 0;
-
-    if (fb->flags & B_WRERR)
-	return -1;
-
-    if (fb->flags & B_CHUNK)
-	end_chunk(fb);
 
     while (fb->outcnt > 0) {
 	i = write_with_errors(fb, fb->outbase, fb->outcnt);
@@ -1325,11 +1312,33 @@ API_EXPORT(int) bflush(BUFF *fb)
 	    return -1;
     }
 
-    if (fb->flags & B_CHUNK) {
+    return 0;
+}
+
+/*
+ * Flushes the buffered stream.
+ * Returns 0 on success or -1 on error
+ */
+API_EXPORT(int) bflush(BUFF *fb)
+{
+    int ret;
+
+    if (!(fb->flags & B_WR) || (fb->flags & B_EOUT))
+	return 0;
+
+    if (fb->flags & B_WRERR)
+	return -1;
+
+    if (fb->flags & B_CHUNK)
+	end_chunk(fb);
+
+    ret = bflush_core(fb);
+
+    if (ret == 0 && (fb->flags & B_CHUNK)) {
 	start_chunk(fb);
     }
 
-    return 0;
+    return ret;
 }
 
 /*
