@@ -3107,7 +3107,7 @@ static void detach(void)
 
 static void set_group_privs(void)
 {
-#if !defined(WIN32) && !defined(NETWARE)
+#if !defined(WIN32) && !defined(NETWARE) && !defined(BEOS)
     if (!geteuid()) {
 	char *name;
 
@@ -3161,7 +3161,7 @@ static void set_group_privs(void)
 #endif /* MULTIPLE_GROUPS */
 #endif /* !defined(OS2) && !defined(TPF) */
     }
-#endif /* ndef WIN32 */
+#endif /* !defined(WIN32) && !defined(NETWARE) && !defined(BEOS) */
 }
 
 /* check to see if we have the 'suexec' setuid wrapper installed */
