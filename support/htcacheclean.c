@@ -348,11 +348,9 @@ static int process_dir(char *path, apr_pool_t *pool)
     }
 
     while (apr_dir_read(&info, 0, dir) == APR_SUCCESS && !interrupted) {
-        /* skip first two entries which will always be '.' and '..' */
-        if (skip < 2) {
-            skip++;
-            continue;
-        }
+        if (!strcmp(info.name, ".") || !strcmp(info.name, "..")) {
+	    continue;
+	}
         d = apr_pcalloc(p, sizeof(DIRENTRY));
         d->basename = apr_pstrcat(p, path, "/", info.name, NULL);
         APR_RING_INSERT_TAIL(&anchor, d, _direntry, link);
