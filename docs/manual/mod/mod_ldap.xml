@@ -492,7 +492,8 @@ Certificate Authority or global client certificates</description>
 connection client certificate. Not all LDAP toolkits support per
 connection client certificates.</description>
 <syntax>LDAPTrustedClientCert <var>type</var> <var>directory-path/filename/nickname</var> <var>[password]</var></syntax>
-<contextlist><context>All</context></contextlist>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context></contextlist>
 
 <usage>
     <p>It specifies the directory path, file name or nickname of a
@@ -515,7 +516,8 @@ connection client certificates.</description>
 <name>LDAPTrustedMode</name>
 <description>Specifies the SSL/TLS mode to be used when connecting to an LDAP server.</description>
 <syntax>LDAPTrustedMode <var>type</var></syntax>
-<contextlist><context>All</context></contextlist>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context></contextlist>
 
 <usage>
     <p>The following modes are supported:</p>
