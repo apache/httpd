@@ -766,6 +766,7 @@ API_EXPORT(ap_status_t) ap_pcfg_openfile(configfile_t **ret_cfg, ap_context_t *p
 {
     configfile_t *new_cfg;
     ap_file_t *file = NULL;
+    ap_finfo_t finfo;
     ap_status_t stat;
     ap_filetype_e type;
 
@@ -791,7 +792,8 @@ API_EXPORT(ap_status_t) ap_pcfg_openfile(configfile_t **ret_cfg, ap_context_t *p
     if (stat != APR_SUCCESS)
         return stat;
 
-    stat = ap_get_filetype(&type, file);
+    ap_getfileinfo(&finfo, file);
+    stat = ap_get_filetype(&type, finfo.protection);
     if (stat != APR_SUCCESS)
         return stat;
 

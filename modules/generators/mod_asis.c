@@ -72,7 +72,7 @@ static int asis_handler(request_rec *r)
     r->allowed |= (1 << M_GET);
     if (r->method_number != M_GET)
 	return DECLINED;
-    if (r->finfo.st_mode == 0) {
+    if (r->finfo.protection == 0) {
 	ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
 		    "File does not exist: %s", r->filename);
 	return NOT_FOUND;

@@ -284,15 +284,12 @@ static void set_mime_fields(var_rec *var, accept_rec *mime_info)
 
 static void set_vlist_validator(request_rec *r, request_rec *vlistr)
 {
-    ap_time_t *temp;
     /* Calculating the variant list validator is similar to
      * calculating an etag for the source of the variant list
      * information, so we use ap_make_etag().  Note that this
      * validator can be 'weak' in extreme case.
      */
-    ap_make_time(&temp, vlistr->pool);
-    ap_set_curtime(temp, vlistr->finfo.st_mtime);
-    ap_update_mtime(vlistr, temp);
+    ap_update_mtime(vlistr, vlistr->finfo.mtime);
     r->vlist_validator = ap_make_etag(vlistr, 0);
 
     /* ap_set_etag will later take r->vlist_validator into account
@@ -2581,7 +2578,7 @@ static int handle_multi(request_rec *r)
     int res;
     int j;
 
-    if (r->finfo.st_mode != 0 || !(ap_allow_options(r) & OPT_MULTI)) {
+    if (r->finfo.protection != 0 || !(ap_allow_options(r) & OPT_MULTI)) {
         return DECLINED;
     }
 
@@ -2624,7 +2621,7 @@ static int handle_multi(request_rec *r)
 
     /* BLECH --- don't multi-resolve non-ordinary files */
 
-    if (!S_ISREG(sub_req->finfo.st_mode)) {
+    if (!S_ISREG(sub_req->finfo.protection)) {
         res = NOT_FOUND;
         goto return_from_multi;
     }

@@ -768,7 +768,7 @@ struct request_rec {
     char *filename;
     char *path_info;
     char *args;			/* QUERY_ARGS, if any */
-    struct stat finfo;		/* ST_MODE set to zero if no such file */
+    ap_finfo_t finfo;		/* ST_MODE set to zero if no such file */
     uri_components parsed_uri;	/* components of uri, dismantled */
 
     /* Various other config info which may change with .htaccess files

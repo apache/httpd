@@ -1021,20 +1021,20 @@ void ap_process_resource_config(server_rec *s, const char *fname, ap_context_t *
 {
     const char *errmsg;
     cmd_parms parms;
-    ap_file_t *finfo = NULL;
+    ap_finfo_t finfo;
 
     fname = ap_server_root_relative(p, fname);
 
     if (!(strcmp(fname, ap_server_root_relative(p, RESOURCE_CONFIG_FILE))) ||
 	!(strcmp(fname, ap_server_root_relative(p, ACCESS_CONFIG_FILE)))) {
-	if (ap_stat(&finfo, fname, ptemp) != APR_SUCCESS)   
+	if (ap_stat(&finfo, fname, p) != APR_SUCCESS)   
 	    return;
     }
 
     /* don't require conf/httpd.conf if we have a -C or -c switch */
     if((ap_server_pre_read_config->nelts || ap_server_post_read_config->nelts) &&
        !(strcmp(fname, ap_server_root_relative(p, SERVER_CONFIG_FILE)))) {
-	if (ap_stat(&finfo, fname, ptemp) != APR_SUCCESS)     
+	if (ap_stat(&finfo, fname, p) != APR_SUCCESS)     
 	    return;
     }
 

@@ -127,23 +127,21 @@ static void add_include_vars(request_rec *r, char *timefmt)
     ap_time_t *date = r->request_time;
     ap_time_t *mtime = NULL;
 
-    ap_make_time(&mtime, r->pool);
-    ap_set_curtime(mtime, r->finfo.st_mtime); 
 
     ap_table_setn(e, "DATE_LOCAL", ap_ht_time(r->pool, date, timefmt, 0));
     ap_table_setn(e, "DATE_GMT", ap_ht_time(r->pool, date, timefmt, 1));
     ap_table_setn(e, "LAST_MODIFIED",
-              ap_ht_time(r->pool, mtime, timefmt, 0));
+              ap_ht_time(r->pool, r->finfo.mtime, timefmt, 0));
     ap_table_setn(e, "DOCUMENT_URI", r->uri);
     ap_table_setn(e, "DOCUMENT_PATH_INFO", r->path_info);
 #ifndef WIN32
-    pw = getpwuid(r->finfo.st_uid);
+    pw = getpwuid(r->finfo.user);
     if (pw) {
         ap_table_setn(e, "USER_NAME", ap_pstrdup(r->pool, pw->pw_name));
     }
     else {
         ap_table_setn(e, "USER_NAME", ap_psprintf(r->pool, "user#%lu",
-                    (unsigned long) r->finfo.st_uid));
+                    (unsigned long) r->finfo.user));
     }
 #endif /* ndef WIN32 */
 
@@ -596,7 +594,7 @@ static int include_cgi(char *s, request_rec *r)
     if ((rr->path_info && rr->path_info[0]) || rr->args) {
         return -1;
     }
-    if (rr->finfo.st_mode == 0) {
+    if (rr->finfo.protection == 0) {
         return -1;
     }
 
@@ -1026,16 +1024,12 @@ static int handle_config(ap_file_t *in, request_rec *r, char *error, char *tf,
         }
         else if (!strcmp(tag, "timefmt")) {
             ap_time_t *date = r->request_time;
-            ap_time_t *mtime = NULL;
-
-            ap_make_time(&mtime, r->pool);
-            ap_set_curtime(mtime, r->finfo.st_mtime);
 
             parse_string(r, tag_val, tf, MAX_STRING_LEN, 0);
             ap_table_setn(env, "DATE_LOCAL", ap_ht_time(r->pool, date, tf, 0));
             ap_table_setn(env, "DATE_GMT", ap_ht_time(r->pool, date, tf, 1));
             ap_table_setn(env, "LAST_MODIFIED",
-                      ap_ht_time(r->pool, mtime, tf, 0));
+                      ap_ht_time(r->pool, r->finfo.mtime, tf, 0));
         }
         else if (!strcmp(tag, "sizefmt")) {
             parse_string(r, tag_val, parsed_string, sizeof(parsed_string), 0);
@@ -1078,7 +1072,7 @@ static int find_file(request_rec *r, const char *directive, const char *tag,
             ap_getparents(tag_val);    /* get rid of any nasties */
             rr = ap_sub_req_lookup_file(tag_val, r);
 
-            if (rr->status == HTTP_OK && rr->finfo.st_mode != 0) {
+            if (rr->status == HTTP_OK && rr->finfo.protection != 0) {
                 to_send = rr->filename;
                 if (stat(to_send, finfo)) {
                     error_fmt = "unable to get information about \"%s\" "
@@ -1104,7 +1098,7 @@ static int find_file(request_rec *r, const char *directive, const char *tag,
     else if (!strcmp(tag, "virtual")) {
         rr = ap_sub_req_lookup_uri(tag_val, r);
 
-        if (rr->status == HTTP_OK && rr->finfo.st_mode != 0) {
+        if (rr->status == HTTP_OK && rr->finfo.protection != 0) {
             memcpy((char *) finfo, (const char *) &rr->finfo,
                    sizeof(struct stat));
             ap_destroy_sub_req(rr);
@@ -2361,7 +2355,7 @@ static int send_parsed_file(request_rec *r)
     if (r->method_number != M_GET) {
         return DECLINED;
     }
-    if (r->finfo.st_mode == 0) {
+    if (r->finfo.protection == 0) {
         ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
 		    "File does not exist: %s",
                     (r->path_info
@@ -2381,12 +2375,10 @@ static int send_parsed_file(request_rec *r)
     if ((*state == xbithack_full)
 #if !defined(OS2) && !defined(WIN32)
     /*  OS/2 dosen't support Groups. */
-        && (r->finfo.st_mode & S_IXGRP)
+        && (r->finfo.protection & S_IXGRP)
 #endif
         ) {
-        ap_make_time(&mtime, r->pool);
-        ap_set_curtime(mtime, r->finfo.st_mtime);
-        ap_update_mtime(r, mtime);
+        ap_update_mtime(r, r->finfo.mtime);
         ap_set_last_modified(r);
     }
     if ((errstatus = ap_meets_conditions(r)) != OK) {
@@ -2411,7 +2403,7 @@ static int send_parsed_file(request_rec *r)
 	 */
 	r->subprocess_env = parent->subprocess_env;
 	ap_pool_join(parent->pool, r->pool);
-	r->finfo.st_mtime = parent->finfo.st_mtime;
+	r->finfo.mtime = parent->finfo.mtime;
     }
     else {
 	/* we're not a nested include, so we create an initial
@@ -2455,7 +2447,7 @@ static int xbithack_handler(request_rec *r)
 #else
     enum xbithack *state;
 
-    if (!(r->finfo.st_mode & S_IXUSR)) {
+    if (!(r->finfo.protection & S_IXUSR)) {
         return DECLINED;
     }
 

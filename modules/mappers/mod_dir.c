@@ -161,7 +161,7 @@ static int handle_dir(request_rec *r)
         char *name_ptr = *names_ptr;
         request_rec *rr = ap_sub_req_lookup_uri(name_ptr, r);
 
-        if (rr->status == HTTP_OK && S_ISREG(rr->finfo.st_mode)) {
+        if (rr->status == HTTP_OK && S_ISREG(rr->finfo.protection)) {
             char *new_uri = ap_escape_uri(r->pool, rr->uri);
 
             if (rr->args != NULL)

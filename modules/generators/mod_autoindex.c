@@ -953,7 +953,7 @@ static void emit_head(request_rec *r, char *header_fname, int suppress_amble,
 	&& (rr = ap_sub_req_lookup_uri(header_fname, r))
 	&& (rr->status == HTTP_OK)
 	&& (rr->filename != NULL)
-	&& S_ISREG(rr->finfo.st_mode)) {
+	&& S_ISREG(rr->finfo.protection)) {
 	/*
 	 * Check for the two specific cases we allow: text/html and
 	 * text/anything-else.  The former is allowed to be processed for
@@ -1036,7 +1036,7 @@ static void emit_tail(request_rec *r, char *readme_fname, int suppress_amble)
 	&& (rr = ap_sub_req_lookup_uri(readme_fname, r))
 	&& (rr->status == HTTP_OK)
 	&& (rr->filename != NULL)
-	&& S_ISREG(rr->finfo.st_mode)) {
+	&& S_ISREG(rr->finfo.protection)) {
 	/*
 	 * Check for the two specific cases we allow: text/html and
 	 * text/anything-else.  The former is allowed to be processed for
@@ -1161,9 +1161,9 @@ static struct ent *make_autoindex_entry(char *name, int autoindex_opts,
     if (autoindex_opts & FANCY_INDEXING) {
         request_rec *rr = ap_sub_req_lookup_file(name, r);
 
-	if (rr->finfo.st_mode != 0) {
-	    p->lm = rr->finfo.st_mtime;
-	    if (S_ISDIR(rr->finfo.st_mode)) {
+	if (rr->finfo.protection != 0) {
+	    ap_get_curtime(rr->finfo.mtime, (ap_int64_t *)&p->lm);
+	    if (S_ISDIR(rr->finfo.protection)) {
 	        if (!(p->icon = find_icon(d, rr, 1))) {
 		    p->icon = find_default_icon(d, "^^DIRECTORY^^");
 		}
@@ -1176,7 +1176,7 @@ static struct ent *make_autoindex_entry(char *name, int autoindex_opts,
 	    else {
 		p->icon = find_icon(d, rr, 0);
 		p->alt = find_alt(d, rr, 0);
-		p->size = rr->finfo.st_size;
+		p->size = rr->finfo.size;
 	    }
 	}
 

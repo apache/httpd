@@ -492,11 +492,11 @@ static int cgi_handler(request_rec *r)
         }
     }
 #else
-    if (r->finfo.st_mode == 0)
+    if (r->finfo.protection == 0)
 	return log_scripterror(r, conf, NOT_FOUND, APLOG_NOERRNO,
 			       "script not found or unable to stat");
 #endif
-    if (S_ISDIR(r->finfo.st_mode))
+    if (S_ISDIR(r->finfo.protection))
 	return log_scripterror(r, conf, FORBIDDEN, APLOG_NOERRNO,
 			       "attempt to invoke directory as script");
 

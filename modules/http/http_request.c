@@ -116,10 +116,10 @@ IMPLEMENT_HOOK_RUN_FIRST(int,auth_checker,(request_rec *r),(r),DECLINED)
 static int check_safe_file(request_rec *r)
 {
 
-    if (r->finfo.st_mode == 0         /* doesn't exist */
-        || S_ISDIR(r->finfo.st_mode)
-        || S_ISREG(r->finfo.st_mode)
-        || S_ISLNK(r->finfo.st_mode)) {
+    if (r->finfo.protection == 0         /* doesn't exist */
+        || S_ISDIR(r->finfo.protection)
+        || S_ISREG(r->finfo.protection)
+        || S_ISLNK(r->finfo.protection)) {
         return OK;
     }
     ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
@@ -200,7 +200,7 @@ static int get_path_info(request_rec *r)
     char bStripSlash=1;
 #endif
 
-    if (r->finfo.st_mode) {
+    if (r->finfo.protection) {
 	/* assume path_info already set */
 	return OK;
     }
@@ -260,20 +260,20 @@ static int get_path_info(request_rec *r)
          }
          else {
              errno = 0;
-             rv = stat(path, &r->finfo);
+             rv = ap_stat(&r->finfo, path, r->pool);
          }
 
         if (cp != end)
             *cp = '/';
 
-        if (!rv) {    
+        if (rv != APR_SUCCESS) {    
             /*
              * Aha!  Found something.  If it was a directory, we will search
              * contents of that directory for a multi_match, so the PATH_INFO
              * argument starts with the component after that.
              */
-            if (S_ISDIR(r->finfo.st_mode) && last_cp) {
-                r->finfo.st_mode = 0;   /* No such file... */
+            if (S_ISDIR(r->finfo.protection) && last_cp) {
+                r->finfo.protection = 0;   /* No such file... */
                 cp = last_cp;
             }
 
@@ -284,7 +284,7 @@ static int get_path_info(request_rec *r)
 	/* must set this to zero, some stat()s may have corrupted it
 	 * even if they returned an error.
 	 */
-	r->finfo.st_mode = 0;
+	r->finfo.protection = 0;
 
 #if defined(ENOENT) && defined(ENOTDIR)
         if (errno == ENOENT || errno == ENOTDIR) {
@@ -354,7 +354,7 @@ static int directory_walk(request_rec *r)
 
     if (r->filename == NULL) {
         r->filename = ap_pstrdup(r->pool, r->uri);
-        r->finfo.st_mode = 0;   /* Not really a file... */
+        r->finfo.protection = 0;   /* Not really a file... */
         r->per_dir_config = per_dir_defaults;
 
         return OK;
@@ -436,7 +436,7 @@ static int directory_walk(request_rec *r)
     if (test_filename[test_filename_len - 1] == '/')
         --num_dirs;
 
-    if (S_ISDIR(r->finfo.st_mode))     
+    if (S_ISDIR(r->finfo.protection))     
         ++num_dirs;
 
     /*
@@ -571,7 +571,7 @@ static int directory_walk(request_rec *r)
      * S_ISDIR test.  But if you accessed /symlink/index.html, for example,
      * you would *not* get the 403.
      */
-    if (!S_ISDIR(r->finfo.st_mode) 
+    if (!S_ISDIR(r->finfo.protection) 
         && (res = check_symlinks(r->filename, ap_allow_options(r)))) {
         ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
                     "Symbolic link not allowed: %s", r->filename);
@@ -860,8 +860,8 @@ API_EXPORT(request_rec *) ap_sub_req_lookup_file(const char *new_file,
         rnew->filename = ap_make_full_path(rnew->pool, fdir, new_file);
         ap_parse_uri(rnew, rnew->uri);    /* fill in parsed_uri values */
 
-        if (stat(rnew->filename, &rnew->finfo) < 0) {
-            rnew->finfo.st_mode = 0;
+        if (ap_stat(&rnew->finfo, rnew->filename, rnew->pool) != APR_SUCCESS) {
+            rnew->finfo.protection = 0;
         }
 
         if ((res = check_safe_file(rnew))) {
@@ -875,7 +875,7 @@ API_EXPORT(request_rec *) ap_sub_req_lookup_file(const char *new_file,
          * no matter what, if it's a subdirectory, we need to re-run
          * directory_walk
          */
-        if (S_ISDIR(rnew->finfo.st_mode)) {  
+        if (S_ISDIR(rnew->finfo.protection)) {  
             res = directory_walk(rnew);
             if (!res) {
                 res = file_walk(rnew);
