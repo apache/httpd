@@ -123,8 +123,6 @@ fi
 
 cd ../..
 
-# Now run the configs...
-
+# Remove cached config data
 rm -f config.cache
-./configure
 
