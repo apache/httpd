@@ -597,13 +597,7 @@ static int read_request_line(request_rec *r)
                          &len, r, 0);
 
         if (rv != APR_SUCCESS) {
-            /* We could get TIMEUP, EOF, or CONNRESET on socket timeouts,
-             * so those are common errors that we don't want to log.
-             */
-            if (!APR_STATUS_IS_TIMEUP(rv) && !APR_STATUS_IS_EOF(rv) &&
-                !APR_STATUS_IS_ECONNRESET(rv)) {
-                ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, "read_request_line() failed");
-            }
+            ap_log_rerror(APLOG_MARK, APLOG_NOTICE, rv, r, "read_request_line() failed");
 	        r->request_time = apr_time_now();
             return 0;
         }
@@ -710,7 +704,7 @@ static void get_mime_headers(request_rec *r)
         }
 
         if (rv != APR_SUCCESS) {
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, "get_mime_headers() failed");
+            ap_log_rerror(APLOG_MARK, APLOG_NOTICE, rv, r, "get_mime_headers() failed");
             return;
         }
 
