@@ -1,7 +1,5 @@
 Changes with Apache 1.3.22
 
-Changes with Apache 1.3.22
-
   *) Recognize AIX 5.1.  [Jeff Trawick]
 
   *) PORT: Support AtheOS (see www.atheos.cx)
