@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/09/22 16:01:10 $]
+Last modified at [$Date: 2004/09/22 16:52:33 $]
 
 Release:
 
@@ -84,13 +84,12 @@ PATCHES TO BACKPORT FROM 2.1
        +1: minfrin, bnicholes
 
     *) Fix a segfault in the LDAP cache purge. PR 24801
-         modules/ldap/util_ldap_cache_mgr.c: 1.9
+         modules/ldap/util_ldap_cache_mgr.c: 1.9, 1.10
        +1: minfrin
         0: bnicholes - backporting modules/ldap/util_ldap_cache_mgr.c: r1.7 below
 	    should eliminate the need to backport the "else" condition included
 	    in this patch.
-       minfrin: The v1.7 is a patch against util_ald_create_caches(), while
-                this is a patch against util_ald_cache_purge().
+       minfrin: The excess "else" condition has been removed in v1.10.
 
     *) Fix a segfault in the LDAP cache when it is configured switched off.
          modules/ldap/util_ldap_cache_mgr.c: 1.7
