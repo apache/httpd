@@ -74,12 +74,6 @@ Changes with Apache 2.1.0-dev
   *) mod_auth_ldap: Fix some segfaults in the cache logic.  PR 18756.
      [Matthieu Estrade <apache moresecurity.org>]
 
-  *) mod_autoindex: Add 'XHTML' option in order to allow switching between
-     HTML 3.2 and XHTML 1.0 output. PR 23747.  [André Malo]
-
-  *) Add XHTML Document Type Definitions to httpd.h (minor MMN bump).
-     [André Malo]
-
   *) mod_setenvif: Fix the regex optimizer, which under circumstances
      treated the supplied regex as literal string. PR 24219.
      [André Malo]
@@ -254,6 +248,12 @@ Changes with Apache 2.1.0-dev
    Apache 2.0.xx tree as documented, and except as noted, below.]
 
 Changes with Apache 2.0.49
+
+  *) mod_autoindex: Add 'XHTML' option in order to allow switching between
+     HTML 3.2 and XHTML 1.0 output. PR 23747.  [André Malo]
+
+  *) Add XHTML Document Type Definitions to httpd.h (minor MMN bump).
+     [André Malo]
 
   *) mod_ssl: Advertise SSL library version as determined at run-time rather
      than at compile-time.  PR 23956.  [Eric Seidel <seidel apple.com>]
