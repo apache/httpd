@@ -2240,7 +2240,7 @@ API_EXPORT(int) ap_discard_request_body(request_rec *r)
  */
 API_EXPORT(long) ap_send_fd(ap_file_t *fd, request_rec *r)
 {
-    long len = r->finfo.size;
+    ap_size_t len = r->finfo.size;
 #if APR_HAS_SENDFILE
     if (!r->chunked) {
 	ap_status_t rv;
