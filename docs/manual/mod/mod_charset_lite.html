@@ -2,7 +2,7 @@
 XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
      This file is generated from xml source: DO NOT EDIT
 XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
---><title>mod_charset_lite - Apache HTTP Server</title><link href="../style/manual.css" type="text/css" rel="stylesheet"/></head><body><blockquote><div align="center"><img alt="[APACHE DOCUMENTATION]" src="../images/sub.gif"/><h3>Apache HTTP Server Version 2.0</h3></div><h1 align="center">Apache Module mod_charset_lite</h1><table cellspacing="1" cellpadding="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td valign="top"><span class="help">Description:</span></td><td><description>Specify character set translation or recoding</description></td></tr><tr><td><a href="module-dict.html#Status" class="help">Status:</a></td><td>Experimental</td></tr><tr><td><a href="module-dict.html#ModuleIdentifier" class="help">Module&nbsp;Identifier:</a></td><td>charset_lite_module</td></tr></table></td></tr></table><h2>Summary</h2><summary>
+--><title>mod_charset_lite - Apache HTTP Server</title><link href="../style/manual.css" type="text/css" rel="stylesheet"/></head><body><blockquote><div align="center"><img alt="[APACHE DOCUMENTATION]" src="../images/sub.gif"/><h3>Apache HTTP Server Version 2.0</h3></div><h1 align="center">Apache Module mod_charset_lite</h1><table cellspacing="1" cellpadding="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td valign="top"><span class="help">Description:</span></td><td>Specify character set translation or recoding</td></tr><tr><td><a href="module-dict.html#Status" class="help">Status:</a></td><td>Experimental</td></tr><tr><td><a href="module-dict.html#ModuleIdentifier" class="help">Module&nbsp;Identifier:</a></td><td>charset_lite_module</td></tr></table></td></tr></table><h2>Summary</h2>
     <p>This is an <strong>experimental</strong> module and should
     be used with care. Experiment with your
     <code>mod_charset_lite</code> configuration to ensure that it
@@ -25,7 +25,7 @@ XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
     <p>This module provides a small subset of configuration
     mechanisms implemented by Russian Apache and its associated
     <code>mod_charset</code>.</p>
-</summary><h2>Directives</h2><ul><li><a href="#charsetdefault">CharsetDefault</a></li><li><a href="#charsetoptions">CharsetOptions</a></li><li><a href="#charsetsourceenc">CharsetSourceEnc</a></li></ul><h2>Common Problems</h2>
+<h2>Directives</h2><ul><li><a href="#charsetdefault">CharsetDefault</a></li><li><a href="#charsetoptions">CharsetOptions</a></li><li><a href="#charsetsourceenc">CharsetSourceEnc</a></li></ul><h2>Common Problems</h2>
 
 <h3>Invalid character set names</h3>
 
@@ -57,7 +57,7 @@ XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       it cannot translate the input buffer.</li>
     </ul>
 
-<hr/><h2><a name="CharsetDefault">CharsetDefault</a> <a name="charsetdefault">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>Charset to translate into</td></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td><syntax>CharsetDefault <em>charset</em></syntax></td></tr><tr><td><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config, virtual host, directory, .htaccess</td></tr><tr><td><a href="directive-dict.html#Override" class="help">Override:</a></td><td>FileInfo</td></tr><tr><td><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Experimental</td></tr><tr><td><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_charset_lite</td></tr></table></td></tr></table><usage>
+<hr/><h2><a name="CharsetDefault">CharsetDefault</a> <a name="charsetdefault">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>Charset to translate into</td></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td>CharsetDefault <em>charset</em></td></tr><tr><td><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config, virtual host, directory, .htaccess</td></tr><tr><td><a href="directive-dict.html#Override" class="help">Override:</a></td><td>FileInfo</td></tr><tr><td><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Experimental</td></tr><tr><td><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_charset_lite</td></tr></table></td></tr></table>
     <p>The <code class="directive">CharsetDefault</code> directive specifies the
     charset that content in the associated container should be
     translated to.</p>
@@ -73,8 +73,8 @@ XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
     CharsetDefault    ISO8859-1<br>
     &lt;/Directory&gt;
 </code></td></tr></table></blockquote>
-</usage><hr/><h2><a name="CharsetOptions">CharsetOptions</a> <a name="charsetoptions">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>Configures charset tranlation behavior</td></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td><syntax>CharsetOptions <em>option</em> [<em>option</em>] ...</syntax></td></tr><tr><td><a href="directive-dict.html#Default" class="help">Default:</a></td><td><code>CharsetOptions DebugLevel=0 
-NoImplicitAdd</code></td></tr><tr><td><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config, virtual host, directory, .htaccess</td></tr><tr><td><a href="directive-dict.html#Override" class="help">Override:</a></td><td>FileInfo</td></tr><tr><td><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Experimental</td></tr><tr><td><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_charset_lite</td></tr></table></td></tr></table><usage>
+<hr/><h2><a name="CharsetOptions">CharsetOptions</a> <a name="charsetoptions">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>Configures charset tranlation behavior</td></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td>CharsetOptions <em>option</em> [<em>option</em>] ...</td></tr><tr><td><a href="directive-dict.html#Default" class="help">Default:</a></td><td><code>CharsetOptions DebugLevel=0 
+NoImplicitAdd</code></td></tr><tr><td><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config, virtual host, directory, .htaccess</td></tr><tr><td><a href="directive-dict.html#Override" class="help">Override:</a></td><td>FileInfo</td></tr><tr><td><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Experimental</td></tr><tr><td><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_charset_lite</td></tr></table></td></tr></table>
     <p>The <code class="directive">CharsetOptions</code> directive configures certain
     behaviors of <code><a href="mod_charset_lite.html">mod_charset_lite</a></code>. <em>Option</em> can
     be one of</p>
@@ -102,7 +102,7 @@ NoImplicitAdd</code></td></tr><tr><td><a href="directive-dict.html#Context" clas
       <code>NoImplicitAdd</code> should be specified so that
       <code><a href="mod_charset_lite.html">mod_charset_lite</a></code> doesn't add its filter.</dd>
     </dl>
-</usage><hr/><h2><a name="CharsetSourceEnc">CharsetSourceEnc</a> <a name="charsetsourceenc">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>Source charset of files</td></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td><syntax>CharsetSourceEnc <em>charset</em></syntax></td></tr><tr><td><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config, virtual host, directory, .htaccess</td></tr><tr><td><a href="directive-dict.html#Override" class="help">Override:</a></td><td>FileInfo</td></tr><tr><td><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Experimental</td></tr><tr><td><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_charset_lite</td></tr></table></td></tr></table><usage>
+<hr/><h2><a name="CharsetSourceEnc">CharsetSourceEnc</a> <a name="charsetsourceenc">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>Source charset of files</td></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td>CharsetSourceEnc <em>charset</em></td></tr><tr><td><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config, virtual host, directory, .htaccess</td></tr><tr><td><a href="directive-dict.html#Override" class="help">Override:</a></td><td>FileInfo</td></tr><tr><td><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Experimental</td></tr><tr><td><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_charset_lite</td></tr></table></td></tr></table>
     <p>The <code class="directive">CharsetSourceEnc</code> directive specifies the
     source charset of files in the associated container.</p>
 
@@ -119,4 +119,4 @@ NoImplicitAdd</code></td></tr><tr><td><a href="directive-dict.html#Context" clas
 </code></td></tr></table></blockquote>
     <p>The character set names in this example work with the iconv
     translation support in Solaris 8.</p>
-</usage><hr/><h3 align="center">Apache HTTP Server Version 2.0</h3><a href="./"><img alt="Index" src="../images/index.gif"/></a><a href="../"><img alt="Home" src="../images/home.gif"/></a></blockquote></body></html>
+<hr/><h3 align="center">Apache HTTP Server Version 2.0</h3><a href="./"><img alt="Index" src="../images/index.gif"/></a><a href="../"><img alt="Home" src="../images/home.gif"/></a></blockquote></body></html>

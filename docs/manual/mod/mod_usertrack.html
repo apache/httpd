@@ -2,17 +2,17 @@
 XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
      This file is generated from xml source: DO NOT EDIT
 XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
---><title>mod_usertrack - Apache HTTP Server</title><link href="../style/manual.css" type="text/css" rel="stylesheet"/></head><body><blockquote><div align="center"><img alt="[APACHE DOCUMENTATION]" src="../images/sub.gif"/><h3>Apache HTTP Server Version 2.0</h3></div><h1 align="center">Apache Module mod_usertrack</h1><table cellspacing="1" cellpadding="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td valign="top"><span class="help">Description:</span></td><td><description>
+--><title>mod_usertrack - Apache HTTP Server</title><link href="../style/manual.css" type="text/css" rel="stylesheet"/></head><body><blockquote><div align="center"><img alt="[APACHE DOCUMENTATION]" src="../images/sub.gif"/><h3>Apache HTTP Server Version 2.0</h3></div><h1 align="center">Apache Module mod_usertrack</h1><table cellspacing="1" cellpadding="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td valign="top"><span class="help">Description:</span></td><td>
     This module uses cookies to provide for a
     <em>clickstream</em> log of user activity on a site.
-</description></td></tr><tr><td><a href="module-dict.html#Status" class="help">Status:</a></td><td>Extension</td></tr><tr><td><a href="module-dict.html#ModuleIdentifier" class="help">Module&nbsp;Identifier:</a></td><td>usertrack_module</td></tr><tr><td align="left" valign="top"><a href="module-dict.html#Compatibility" class="help">Compatibility:</a></td><td><compatibility>Known as mod_cookies prior to Apache 1.3.</compatibility></td></tr></table></td></tr></table><h2>Summary</h2><summary>
+</td></tr><tr><td><a href="module-dict.html#Status" class="help">Status:</a></td><td>Extension</td></tr><tr><td><a href="module-dict.html#ModuleIdentifier" class="help">Module&nbsp;Identifier:</a></td><td>usertrack_module</td></tr><tr><td align="left" valign="top"><a href="module-dict.html#Compatibility" class="help">Compatibility:</a></td><td><compatibility>Known as mod_cookies prior to Apache 1.3.</compatibility></td></tr></table></td></tr></table><h2>Summary</h2>
     <p>Previous releases of Apache have included a module which
     generates a 'clickstream' log of user activity on a site using
     cookies. This was called the "cookies" module, mod_cookies. In
     Apache 1.2 and later this module has been renamed the "user
     tracking" module, mod_usertrack. This module has been
     simplified and new directives added.</p>
-</summary><h2>Directives</h2><ul><li><a href="#cookiedomain">CookieDomain</a></li><li><a href="#cookieexpires">CookieExpires</a></li><li><a href="#cookiename">CookieName</a></li><li><a href="#cookiestyle">CookieStyle</a></li><li><a href="#cookietracking">CookieTracking</a></li></ul><h2>Logging</h2>
+<h2>Directives</h2><ul><li><a href="#cookiedomain">CookieDomain</a></li><li><a href="#cookieexpires">CookieExpires</a></li><li><a href="#cookiename">CookieName</a></li><li><a href="#cookiestyle">CookieStyle</a></li><li><a href="#cookietracking">CookieTracking</a></li></ul><h2>Logging</h2>
 
 
     <p>Previously, the cookies module (now the user tracking
@@ -69,7 +69,7 @@ form, but also understands 4-digit years, which can probably reach up until
 time late in the year "37".
 </pre>
 
-<hr/><h2><a name="CookieDomain">CookieDomain</a> <a name="cookiedomain">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>controls the setting of the domain to which the tracking cookie applies.</td></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td><syntax>CookieDomain <em>domain</em></syntax></td></tr><tr><td><a href="directive-dict.html#Default" class="help">Default:</a></td><td><code>None</code></td></tr><tr><td><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config, virtual host, directory, .htaccess</td></tr><tr><td><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Extension</td></tr><tr><td><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_usertrack</td></tr></table></td></tr></table><usage>
+<hr/><h2><a name="CookieDomain">CookieDomain</a> <a name="cookiedomain">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>controls the setting of the domain to which the tracking cookie applies.</td></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td>CookieDomain <em>domain</em></td></tr><tr><td><a href="directive-dict.html#Default" class="help">Default:</a></td><td><code>None</code></td></tr><tr><td><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config, virtual host, directory, .htaccess</td></tr><tr><td><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Extension</td></tr><tr><td><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_usertrack</td></tr></table></td></tr></table>
 
     <p>This directive controls the setting of the domain to which
     the tracking cookie applies. If not present, no domain is
@@ -78,8 +78,8 @@ time late in the year "37".
     <p>The domain string <strong>must</strong> begin with a dot, and
     <strong>must</strong> include at least one embedded dot. That is,
     ".foo.com" is legal, but "foo.bar.com" and ".com" are not.</p>
-</usage><hr/><h2><a name="CookieExpires">CookieExpires</a> <a name="cookieexpires">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td/></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td><syntax>CookieExpires <em>expiry-period</em></syntax></td></tr><tr><td><a href="directive-dict.html#Default" class="help">Default:</a></td><td><code/></td></tr><tr><td><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config, virtual host, directory, .htaccess</td></tr><tr><td><a href="directive-dict.html#Override" class="help">Override:</a></td><td/></tr><tr><td><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Extension</td></tr><tr><td><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_usertrack</td></tr><tr><td align="left" valign="top"><a href="directive-dict.html#Compatibility" class="help">Compatibility:</a></td><td>In 1.3.20 and earlier, not usable in directory and
-.htaccess</td></tr></table></td></tr></table><usage>
+<hr/><h2><a name="CookieExpires">CookieExpires</a> <a name="cookieexpires">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td/></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td>CookieExpires <em>expiry-period</em></td></tr><tr><td><a href="directive-dict.html#Default" class="help">Default:</a></td><td><code/></td></tr><tr><td><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config, virtual host, directory, .htaccess</td></tr><tr><td><a href="directive-dict.html#Override" class="help">Override:</a></td><td/></tr><tr><td><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Extension</td></tr><tr><td><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_usertrack</td></tr><tr><td align="left" valign="top"><a href="directive-dict.html#Compatibility" class="help">Compatibility:</a></td><td>In 1.3.20 and earlier, not usable in directory and
+.htaccess</td></tr></table></td></tr></table>
     <p>When used, this directive sets an expiry time on the cookie
     generated by the usertrack module. The <em>expiry-period</em>
     can be given either as a number of seconds, or in the format
@@ -90,7 +90,7 @@ time late in the year "37".
 
     <p>If this directive is not used, cookies last only for the
     current browser session.</p>
-</usage><hr/><h2><a name="CookieName">CookieName</a> <a name="cookiename">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td/></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td><syntax>CookieName <em>token</em></syntax></td></tr><tr><td><a href="directive-dict.html#Default" class="help">Default:</a></td><td><code>Apache</code></td></tr><tr><td><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config, virtual host, directory, .htaccess</td></tr><tr><td><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Extension</td></tr><tr><td><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_usertrack</td></tr></table></td></tr></table><usage>
+<hr/><h2><a name="CookieName">CookieName</a> <a name="cookiename">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td/></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td>CookieName <em>token</em></td></tr><tr><td><a href="directive-dict.html#Default" class="help">Default:</a></td><td><code>Apache</code></td></tr><tr><td><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config, virtual host, directory, .htaccess</td></tr><tr><td><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Extension</td></tr><tr><td><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_usertrack</td></tr></table></td></tr></table>
     <p>This directive allows you to change the name of the cookie
     this module uses for its tracking purposes. By default the
     cookie is named "<code>Apache</code>".</p>
@@ -98,8 +98,8 @@ time late in the year "37".
     <p>You must specify a valid cookie name; results are
     unpredictable if you use a name containing unusual characters.
     Valid characters include A-Z, a-z, 0-9, "_", and "-".</p>
-</usage><hr/><h2><a name="CookieStyle">CookieStyle</a> <a name="cookiestyle">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>Controls the format of the cookie header field</td></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td><syntax>CookieStyle
-    <em>Netscape|Cookie|Cookie2|RFC2109|RFC2965</em></syntax></td></tr><tr><td><a href="directive-dict.html#Default" class="help">Default:</a></td><td><code/></td></tr><tr><td><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config, virtual host, directory, .htaccess</td></tr><tr><td><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Extension</td></tr><tr><td><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_usertrack</td></tr></table></td></tr></table><usage>
+<hr/><h2><a name="CookieStyle">CookieStyle</a> <a name="cookiestyle">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>Controls the format of the cookie header field</td></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td>CookieStyle
+    <em>Netscape|Cookie|Cookie2|RFC2109|RFC2965</em></td></tr><tr><td><a href="directive-dict.html#Default" class="help">Default:</a></td><td><code/></td></tr><tr><td><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config, virtual host, directory, .htaccess</td></tr><tr><td><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Extension</td></tr><tr><td><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_usertrack</td></tr></table></td></tr></table>
     <p>This directive controls the format of the cookie header
     field. The three formats allowed are:</p>
 
@@ -118,7 +118,7 @@ time late in the year "37".
     <p>Not all clients can understand all of these formats. but you
     should use the newest one that is generally acceptable to your
     users' browsers.</p>
-</usage><hr/><h2><a name="CookieTracking">CookieTracking</a> <a name="cookietracking">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td/></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td><syntax>CookieTracking on|off</syntax></td></tr><tr><td><a href="directive-dict.html#Default" class="help">Default:</a></td><td><code/></td></tr><tr><td><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config, virtual host, directory, .htaccess</td></tr><tr><td><a href="directive-dict.html#Override" class="help">Override:</a></td><td>FileInfo</td></tr><tr><td><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Extension</td></tr><tr><td><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_usertrack</td></tr></table></td></tr></table><usage>
+<hr/><h2><a name="CookieTracking">CookieTracking</a> <a name="cookietracking">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td/></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td>CookieTracking on|off</td></tr><tr><td><a href="directive-dict.html#Default" class="help">Default:</a></td><td><code/></td></tr><tr><td><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config, virtual host, directory, .htaccess</td></tr><tr><td><a href="directive-dict.html#Override" class="help">Override:</a></td><td>FileInfo</td></tr><tr><td><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Extension</td></tr><tr><td><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_usertrack</td></tr></table></td></tr></table>
     <p>When the user track module is compiled in, and
     "CookieTracking on" is set, Apache will start sending a
     user-tracking cookie for all new requests. This directive can
@@ -126,4 +126,4 @@ time late in the year "37".
     per-directory basis. By default, compiling mod_usertrack will
     not activate cookies. </p>
 
-</usage><hr/><h3 align="center">Apache HTTP Server Version 2.0</h3><a href="./"><img alt="Index" src="../images/index.gif"/></a><a href="../"><img alt="Home" src="../images/home.gif"/></a></blockquote></body></html>
+<hr/><h3 align="center">Apache HTTP Server Version 2.0</h3><a href="./"><img alt="Index" src="../images/index.gif"/></a><a href="../"><img alt="Home" src="../images/home.gif"/></a></blockquote></body></html>

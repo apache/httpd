@@ -2,8 +2,8 @@
 XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
      This file is generated from xml source: DO NOT EDIT
 XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
---><title>mod_setenvif - Apache HTTP Server</title><link href="../style/manual.css" type="text/css" rel="stylesheet"/></head><body><blockquote><div align="center"><img alt="[APACHE DOCUMENTATION]" src="../images/sub.gif"/><h3>Apache HTTP Server Version 2.0</h3></div><h1 align="center">Apache Module mod_setenvif</h1><table cellspacing="1" cellpadding="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td valign="top"><span class="help">Description:</span></td><td><description>Allows the setting of environment variables based
-on characteristics of the request</description></td></tr><tr><td><a href="module-dict.html#Status" class="help">Status:</a></td><td>Base</td></tr><tr><td><a href="module-dict.html#ModuleIdentifier" class="help">Module&nbsp;Identifier:</a></td><td>setenvif_module</td></tr><tr><td align="left" valign="top"><a href="module-dict.html#Compatibility" class="help">Compatibility:</a></td><td><compatibility>Available in Apache 1.3 and later</compatibility></td></tr></table></td></tr></table><h2>Summary</h2><summary>
+--><title>mod_setenvif - Apache HTTP Server</title><link href="../style/manual.css" type="text/css" rel="stylesheet"/></head><body><blockquote><div align="center"><img alt="[APACHE DOCUMENTATION]" src="../images/sub.gif"/><h3>Apache HTTP Server Version 2.0</h3></div><h1 align="center">Apache Module mod_setenvif</h1><table cellspacing="1" cellpadding="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td valign="top"><span class="help">Description:</span></td><td>Allows the setting of environment variables based
+on characteristics of the request</td></tr><tr><td><a href="module-dict.html#Status" class="help">Status:</a></td><td>Base</td></tr><tr><td><a href="module-dict.html#ModuleIdentifier" class="help">Module&nbsp;Identifier:</a></td><td>setenvif_module</td></tr><tr><td align="left" valign="top"><a href="module-dict.html#Compatibility" class="help">Compatibility:</a></td><td><compatibility>Available in Apache 1.3 and later</compatibility></td></tr></table></td></tr></table><h2>Summary</h2>
 
     <p>The <code><a href="mod_setenvif.html">mod_setenvif</a></code> module allows you to set
     environment variables according to whether different aspects of
@@ -20,11 +20,11 @@ on characteristics of the request</description></td></tr><tr><td><a href="module
   BrowserMatch ^Mozilla netscape<br>
   BrowserMatch MSIE !netscape<br>
 </code></td></tr></table></blockquote>
-</summary><p><strong>See also </strong></p><ul><li><a href="../env.html">Environment Variables in Apache</a></li></ul><h2>Directives</h2><ul><li><a href="#browsermatch">BrowserMatch</a></li><li><a href="#browsermatchnocase">BrowserMatchNoCase</a></li><li><a href="#setenvif">SetEnvIf</a></li><li><a href="#setenvifnocase">SetEnvIfNoCase</a></li></ul><hr/><h2><a name="BrowserMatch">BrowserMatch</a> <a name="browsermatch">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>Sets environment variables conditional on HTTP User-Agent
-</td></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td><syntax>BrowserMatch <em>regex env-variable</em>[=<em>value</em>]
-[<em>env-variable</em>[=<em>value</em>]] ...</syntax></td></tr><tr><td><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config, virtual host, directory, .htaccess</td></tr><tr><td><a href="directive-dict.html#Override" class="help">Override:</a></td><td>FileInfo</td></tr><tr><td><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Base</td></tr><tr><td><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_setenvif</td></tr><tr><td align="left" valign="top"><a href="directive-dict.html#Compatibility" class="help">Compatibility:</a></td><td>Apache 1.2 and
+<h2>Directives</h2><ul><li><a href="#browsermatch">BrowserMatch</a></li><li><a href="#browsermatchnocase">BrowserMatchNoCase</a></li><li><a href="#setenvif">SetEnvIf</a></li><li><a href="#setenvifnocase">SetEnvIfNoCase</a></li></ul><p><strong>See also </strong></p><ul><li><a href="../env.html">Environment Variables in Apache</a></li></ul><hr/><h2><a name="BrowserMatch">BrowserMatch</a> <a name="browsermatch">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>Sets environment variables conditional on HTTP User-Agent
+</td></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td>BrowserMatch <em>regex env-variable</em>[=<em>value</em>]
+[<em>env-variable</em>[=<em>value</em>]] ...</td></tr><tr><td><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config, virtual host, directory, .htaccess</td></tr><tr><td><a href="directive-dict.html#Override" class="help">Override:</a></td><td>FileInfo</td></tr><tr><td><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Base</td></tr><tr><td><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_setenvif</td></tr><tr><td align="left" valign="top"><a href="directive-dict.html#Compatibility" class="help">Compatibility:</a></td><td>Apache 1.2 and
     above (in Apache 1.2 this directive was found in the
-    now-obsolete mod_browser module)</td></tr></table></td></tr></table><usage>
+    now-obsolete mod_browser module)</td></tr></table></td></tr></table>
     <p>The <code class="directive">BrowserMatch</code> directive defines
     environment variables based on the <code>User-Agent</code> HTTP
     request header field.  The first argument should be a POSIX.2
@@ -69,11 +69,11 @@ on characteristics of the request</description></td></tr><tr><td><a href="module
    BrowserMatchNoCase Robot is_a_robot<br>
    SetEnvIfNoCase User-Agent Robot is_a_robot<br>
 </code></td></tr></table></blockquote>
-</usage><hr/><h2><a name="BrowserMatchNoCase">BrowserMatchNoCase</a> <a name="browsermatchnocase">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>Sets environment variables conditional on User-Agent without
-respect to case</td></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td><syntax>BrowserMatchNoCase  <em>regex env-variable</em>[=<em>value</em>]
-    [<em>env-variable</em>[=<em>value</em>]] ...</syntax></td></tr><tr><td><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config, virtual host, directory, .htaccess</td></tr><tr><td><a href="directive-dict.html#Override" class="help">Override:</a></td><td>FileInfo</td></tr><tr><td><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Base</td></tr><tr><td><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_setenvif</td></tr><tr><td align="left" valign="top"><a href="directive-dict.html#Compatibility" class="help">Compatibility:</a></td><td>Apache 1.2 and
+<hr/><h2><a name="BrowserMatchNoCase">BrowserMatchNoCase</a> <a name="browsermatchnocase">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>Sets environment variables conditional on User-Agent without
+respect to case</td></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td>BrowserMatchNoCase  <em>regex env-variable</em>[=<em>value</em>]
+    [<em>env-variable</em>[=<em>value</em>]] ...</td></tr><tr><td><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config, virtual host, directory, .htaccess</td></tr><tr><td><a href="directive-dict.html#Override" class="help">Override:</a></td><td>FileInfo</td></tr><tr><td><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Base</td></tr><tr><td><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_setenvif</td></tr><tr><td align="left" valign="top"><a href="directive-dict.html#Compatibility" class="help">Compatibility:</a></td><td>Apache 1.2 and
     above (in Apache 1.2 this directive was found in the
-    now-obsolete mod_browser module)</td></tr></table></td></tr></table><usage>
+    now-obsolete mod_browser module)</td></tr></table></td></tr></table>
 
     <p>The <code class="directive">BrowserMatchNoCase</code> directive is
     semantically identical to the <a href="#browsermatch" class="directive"><code class="directive">BrowserMatch</code></a> directive.
@@ -92,12 +92,12 @@ respect to case</td></tr><tr><td><a href="directive-dict.html#Syntax" class="hel
    BrowserMatchNoCase Robot is_a_robot<br>
    SetEnvIfNoCase User-Agent Robot is_a_robot<br>
 </code></td></tr></table></blockquote>
-</usage><hr/><h2><a name="SetEnvIf">SetEnvIf</a> <a name="setenvif">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>Sets environment variables based on attributes of the request
-</td></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td><syntax>SetEnvIf <em>attribute
+<hr/><h2><a name="SetEnvIf">SetEnvIf</a> <a name="setenvif">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>Sets environment variables based on attributes of the request
+</td></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td>SetEnvIf <em>attribute
     regex env-variable</em>[=<em>value</em>]
-    [<em>env-variable</em>[=<em>value</em>]] ...</syntax></td></tr><tr><td><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config, virtual host, directory, .htaccess</td></tr><tr><td><a href="directive-dict.html#Override" class="help">Override:</a></td><td>FileInfo</td></tr><tr><td><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Base</td></tr><tr><td><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_setenvif</td></tr><tr><td align="left" valign="top"><a href="directive-dict.html#Compatibility" class="help">Compatibility:</a></td><td>Apache 1.3 and
+    [<em>env-variable</em>[=<em>value</em>]] ...</td></tr><tr><td><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config, virtual host, directory, .htaccess</td></tr><tr><td><a href="directive-dict.html#Override" class="help">Override:</a></td><td>FileInfo</td></tr><tr><td><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Base</td></tr><tr><td><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_setenvif</td></tr><tr><td align="left" valign="top"><a href="directive-dict.html#Compatibility" class="help">Compatibility:</a></td><td>Apache 1.3 and
     above; the Request_Protocol keyword and environment-variable
-    matching are only available with 1.3.7 and later</td></tr></table></td></tr></table><usage>
+    matching are only available with 1.3.7 and later</td></tr></table></td></tr></table>
     <p>The <code class="directive">SetEnvIf</code> directive defines environment
     variables based on attributes of the request. These attributes
     can be the values of various HTTP request header fields (see <a href="http://www.rfc-editor.org/rfc/rfc2616.txt">RFC2616</a>
@@ -174,9 +174,9 @@ respect to case</td></tr><tr><td><a href="directive-dict.html#Syntax" class="hel
     <code>HAVE_TS</code> if the request contains any headers that
     begin with "TS" whose values begins with any character in the
     set [a-z].</p>
-</usage><hr/><h2><a name="SetEnvIfNoCase">SetEnvIfNoCase</a> <a name="setenvifnocase">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>Sets environment variables based on attributes of the request
-without respect to case</td></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td><syntax>SetEnvIfNoCase <em>attribute regex env-variable</em>[=<em>value</em>]
-    [<em>env-variable</em>[=<em>value</em>]] ...</syntax></td></tr><tr><td><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config, virtual host, directory, .htaccess</td></tr><tr><td><a href="directive-dict.html#Override" class="help">Override:</a></td><td>FileInfo</td></tr><tr><td><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Base</td></tr><tr><td><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_setenvif</td></tr><tr><td align="left" valign="top"><a href="directive-dict.html#Compatibility" class="help">Compatibility:</a></td><td>Apache 1.3 and above</td></tr></table></td></tr></table><usage>
+<hr/><h2><a name="SetEnvIfNoCase">SetEnvIfNoCase</a> <a name="setenvifnocase">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>Sets environment variables based on attributes of the request
+without respect to case</td></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td>SetEnvIfNoCase <em>attribute regex env-variable</em>[=<em>value</em>]
+    [<em>env-variable</em>[=<em>value</em>]] ...</td></tr><tr><td><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config, virtual host, directory, .htaccess</td></tr><tr><td><a href="directive-dict.html#Override" class="help">Override:</a></td><td>FileInfo</td></tr><tr><td><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Base</td></tr><tr><td><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_setenvif</td></tr><tr><td align="left" valign="top"><a href="directive-dict.html#Compatibility" class="help">Compatibility:</a></td><td>Apache 1.3 and above</td></tr></table></td></tr></table>
 
     <p>The <code class="directive">SetEnvIfNoCase</code> is semantically identical to
     the <a href="#setenvif" class="directive"><code class="directive">SetEnvIf</code></a> directive,
@@ -191,4 +191,4 @@ without respect to case</td></tr><tr><td><a href="directive-dict.html#Syntax" cl
     field <code>Host:</code> was included and contained
     <code>Apache.Org</code>, <code>apache.org</code>, or any other
     combination.</p>
-</usage><hr/><h3 align="center">Apache HTTP Server Version 2.0</h3><a href="./"><img alt="Index" src="../images/index.gif"/></a><a href="../"><img alt="Home" src="../images/home.gif"/></a></blockquote></body></html>
+<hr/><h3 align="center">Apache HTTP Server Version 2.0</h3><a href="./"><img alt="Index" src="../images/index.gif"/></a><a href="../"><img alt="Home" src="../images/home.gif"/></a></blockquote></body></html>

@@ -2,12 +2,12 @@
 XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
      This file is generated from xml source: DO NOT EDIT
 XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
---><title>mod_headers - Apache HTTP Server</title><link href="../style/manual.css" type="text/css" rel="stylesheet"/></head><body><blockquote><div align="center"><img alt="[APACHE DOCUMENTATION]" src="../images/sub.gif"/><h3>Apache HTTP Server Version 2.0</h3></div><h1 align="center">Apache Module mod_headers</h1><table cellspacing="1" cellpadding="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td valign="top"><span class="help">Description:</span></td><td><description>Customization of HTTP request
-    and response headers</description></td></tr><tr><td><a href="module-dict.html#Status" class="help">Status:</a></td><td>Extension</td></tr><tr><td><a href="module-dict.html#ModuleIdentifier" class="help">Module&nbsp;Identifier:</a></td><td>headers_module</td></tr><tr><td align="left" valign="top"><a href="module-dict.html#Compatibility" class="help">Compatibility:</a></td><td><compatibility>RequestHeader is available only in Apache 2.0</compatibility></td></tr></table></td></tr></table><h2>Summary</h2><summary>
+--><title>mod_headers - Apache HTTP Server</title><link href="../style/manual.css" type="text/css" rel="stylesheet"/></head><body><blockquote><div align="center"><img alt="[APACHE DOCUMENTATION]" src="../images/sub.gif"/><h3>Apache HTTP Server Version 2.0</h3></div><h1 align="center">Apache Module mod_headers</h1><table cellspacing="1" cellpadding="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td valign="top"><span class="help">Description:</span></td><td>Customization of HTTP request
+    and response headers</td></tr><tr><td><a href="module-dict.html#Status" class="help">Status:</a></td><td>Extension</td></tr><tr><td><a href="module-dict.html#ModuleIdentifier" class="help">Module&nbsp;Identifier:</a></td><td>headers_module</td></tr><tr><td align="left" valign="top"><a href="module-dict.html#Compatibility" class="help">Compatibility:</a></td><td><compatibility>RequestHeader is available only in Apache 2.0</compatibility></td></tr></table></td></tr></table><h2>Summary</h2>
     <p>This module provides directives to control and modify HTTP
     request and response headers. Headers can be merged, replaced
     or removed.</p>
-</summary><h2>Directives</h2><ul><li><a href="#header">Header</a></li><li><a href="#requestheader">RequestHeader</a></li></ul><h2>Order of Processing</h2>
+<h2>Directives</h2><ul><li><a href="#header">Header</a></li><li><a href="#requestheader">RequestHeader</a></li></ul><h2>Order of Processing</h2>
 
     <p>The directives provided by mod_header can occur almost
     anywhere within the server configuration. They are valid in the
@@ -93,8 +93,8 @@ RequestHeader append MirrorID "mirror 12"<br>
 </code></td></tr></table></blockquote>
       </li>
     </ol>
-<hr/><h2><a name="Header">Header</a> <a name="header">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>Configure HTTP response headers</td></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td><syntax>Header set|append|add|unset|echo  <em>header</em> 
-[<em>value</em>]</syntax></td></tr><tr><td><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config, virtual host, directory, .htaccess</td></tr><tr><td><a href="directive-dict.html#Override" class="help">Override:</a></td><td>FileInfo</td></tr><tr><td><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Extension</td></tr><tr><td><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_headers</td></tr></table></td></tr></table><usage>
+<hr/><h2><a name="Header">Header</a> <a name="header">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>Configure HTTP response headers</td></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td>Header set|append|add|unset|echo  <em>header</em> 
+[<em>value</em>]</td></tr><tr><td><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config, virtual host, directory, .htaccess</td></tr><tr><td><a href="directive-dict.html#Override" class="help">Override:</a></td><td>FileInfo</td></tr><tr><td><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Extension</td></tr><tr><td><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_headers</td></tr></table></td></tr></table>
     <p>This directive can replace, merge or remove HTTP response
     headers. The header is modified just after the content handler
     and output filters are run, allowing outgoing headers to be
@@ -172,8 +172,8 @@ variable</a> FOOBAR.</td></tr>
     is sent to the network. These means that it is possible to set
     and/or override most headers, except for those headers added by
     the header filter.</p>
-</usage><hr/><h2><a name="RequestHeader">RequestHeader</a> <a name="requestheader">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>Configure HTTP request headers</td></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td><syntax>RequestHeader   set|append|add|unset <em>header</em> 
-[<em>value</em>]</syntax></td></tr><tr><td><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config, virtual host, directory, .htaccess</td></tr><tr><td><a href="directive-dict.html#Override" class="help">Override:</a></td><td>FileInfo</td></tr><tr><td><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Extension</td></tr><tr><td><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_headers</td></tr></table></td></tr></table><usage>
+<hr/><h2><a name="RequestHeader">RequestHeader</a> <a name="requestheader">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>Configure HTTP request headers</td></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td>RequestHeader   set|append|add|unset <em>header</em> 
+[<em>value</em>]</td></tr><tr><td><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config, virtual host, directory, .htaccess</td></tr><tr><td><a href="directive-dict.html#Override" class="help">Override:</a></td><td>FileInfo</td></tr><tr><td><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Extension</td></tr><tr><td><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_headers</td></tr></table></td></tr></table>
     <p>This directive can replace, merge or remove HTTP request
     headers. The header is modified just before the content handler
     is run, allowing incoming headers to be modified. The action it
@@ -216,4 +216,4 @@ variable</a> FOOBAR.</td></tr>
     just before the request is run by its handler in the fixup phase.
     This should allow headers generated by the browser, or by Apache
     input filters to be overridden or modified.</p>
-</usage><hr/><h3 align="center">Apache HTTP Server Version 2.0</h3><a href="./"><img alt="Index" src="../images/index.gif"/></a><a href="../"><img alt="Home" src="../images/home.gif"/></a></blockquote></body></html>
+<hr/><h3 align="center">Apache HTTP Server Version 2.0</h3><a href="./"><img alt="Index" src="../images/index.gif"/></a><a href="../"><img alt="Home" src="../images/home.gif"/></a></blockquote></body></html>
