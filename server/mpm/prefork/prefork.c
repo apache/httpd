@@ -2530,7 +2530,7 @@ static void process_child_status(int pid, ap_wait_t status)
 }
 
 
-static int setup_listeners(ap_context_t *p, server_rec *s)
+static int setup_listeners(server_rec *s)
 {
     ap_listen_rec *lr;
     int sockdes;
@@ -2568,7 +2568,7 @@ int ap_mpm_run(ap_context_t *_pconf, ap_context_t *plog, server_rec *s)
  
     ap_log_pid(pconf, ap_pid_fname);
 
-    if (setup_listeners(pconf, s)) {
+    if (setup_listeners(s)) {
 	/* XXX: hey, what's the right way for the mpm to indicate a fatal error? */
 	return 1;
     }
