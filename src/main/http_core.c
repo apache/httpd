@@ -352,7 +352,7 @@ API_EXPORT(char *) default_type (request_rec *r)
     core_dir_config *conf = 
       (core_dir_config *)get_module_config(r->per_dir_config, &core_module); 
 
-    return conf->default_type ? conf->default_type : DEFAULT_TYPE;
+    return conf->default_type ? conf->default_type : DEFAULT_CONTENT_TYPE;
 }
 
 API_EXPORT(char *) document_root (request_rec *r) /* Don't use this!!! */

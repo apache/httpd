@@ -1,5 +1,32 @@
 Changes with Apache 1.3a2
 
+  *) PORT: Apache has need for mutexes to serialize its children around
+     accept.  In prior versions either fcntl file locking or flock file
+     locking were used.  The method is chosen by the definition of
+     USE_xxx_SERIALIZED_ACCEPT in conf.h.  xxx is FCNTL for fcntl(),
+     and FLOCK for flock().  New options have been added:
+	- SYSVSEM to use System V style semaphores
+	- PTHREAD to use Posix threads (appears to work on Solaris only)
+	- USLOCK to use IRIX uslock
+     Based on timing various techniques, the following changes were made
+     to the defaults:
+	- Linux 2.x uses flock instead of fcntl
+	- Solaris 2.x uses pthreads
+	- IRIX uses SysV semaphores -- however multiprocessor IRIX boxes
+	    work far faster if you -DUSE_USLOCK_SERIALIZED_ACCEPT
+     [Dean Gaudet, Pierre-Yves Kerembellec <Pierre-Yves.Kerembellec@vtcom.fr>,
+     Martijn Koster <m.koster@pobox.com>]
+
+  *) PORT: The semantics of accept/select make it very desirable to use
+     mutexes to serialize accept when multiple Listens are in use.  But
+     in the case where only a single socket is open it is sometimes
+     redundant to serialize accept().  Not all unixes do a good job with
+     potentially dozens of children blocked on accept() on the same
+     socket.  It's now possible to define SAFE_UNSERIALIZED_ACCEPT and
+     the server will avoid serialization when listening on only one socket,
+     and use serialization when listening on multiple sockets.
+     [Dean Gaudet] PR#467
+
   *) Configure changes: TestLib replaced by TestCompile, which has
      some additional capability (such as doing a sanity check of
      the compiler and flags selected); the version of Solaris is now
@@ -9,9 +36,6 @@ Changes with Apache 1.3a2
 
   *) mod_browser has been removed, since it's replaced by mod_setenvif.
      [Ken Coar]
-
-  *) PORT: Timings show that on Linux 2.0.30 flock is slightly cheaper than
-     fcntl file locking.  So use flock for the mutexes. [Dean Gaudet]
 
   *) Fix another long-standing bug in sub_req_lookup_file where it would
      happily skip past access checks on subdirectories looked up with

@@ -100,7 +100,10 @@ typedef int rlim_t;
 #define HAVE_SYS_RESOURCE_H
 #define bzero(a,b) memset(a,0,b)
 #define JMP_BUF sigjmp_buf
-#define USE_FCNTL_SERIALIZED_ACCEPT
+/*#define USE_FCNTL_SERIALIZED_ACCEPT*/
+/*#define USE_SYSVSEM_SERIALIZED_ACCEPT*/
+#define USE_PTHREAD_SERIALIZED_ACCEPT
+#define NEED_UNION_SEMUN
 #define HAVE_MMAP
 #define HAVE_CRYPT_H
 int gethostname(char *name, int namelen);
@@ -112,7 +115,8 @@ int gethostname(char *name, int namelen);
 #define NO_KILLPG
 #undef NO_SETSID
 #define JMP_BUF sigjmp_buf
-#define USE_FCNTL_SERIALIZED_ACCEPT
+/*#define USE_FCNTL_SERIALIZED_ACCEPT*/
+#define USE_SYSVSEM_SERIALIZED_ACCEPT
 #define HAVE_SHMGET
 #define HAVE_CRYPT_H
 #define NO_LONG_DOUBLE

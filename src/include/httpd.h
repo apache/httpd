@@ -157,8 +157,8 @@
 
 /* Define this to be what type you'd like returned for files with unknown */
 /* suffixes */
-#ifndef DEFAULT_TYPE
-#define DEFAULT_TYPE "text/plain"
+#ifndef DEFAULT_CONTENT_TYPE
+#define DEFAULT_CONTENT_TYPE "text/plain"
 #endif
 
 /* Define this to be what your per-directory security files are called */

@@ -261,18 +261,248 @@ static void expand_lock_fname(pool *p)
 }
 #endif
 
-#if defined(USE_FCNTL_SERIALIZED_ACCEPT)
+#if defined (USE_USLOCK_SERIALIZED_ACCEPT)
+
+#include <ulocks.h>
+
+static ulock_t uslock = NULL;
+
+#define accept_mutex_cleanup()
+
+static void accept_mutex_init(pool *p)
+{
+    ptrdiff_t old;
+    usptr_t *us;
+
+
+    /* default is 8, allocate enough for all the children plus the parent */
+    if ((old = usconfig(CONF_INITUSERS, HARD_SERVER_LIMIT+1)) == -1) {
+        perror("usconfig(CONF_INITUSERS)");
+        exit(-1);
+    }
+
+    if ((old = usconfig(CONF_LOCKTYPE, US_NODEBUG)) == -1) {
+        perror("usconfig(CONF_LOCKTYPE)");
+        exit(-1);
+    }
+    if ((old = usconfig(CONF_ARENATYPE, US_SHAREDONLY)) == -1) {
+        perror("usconfig(CONF_ARENATYPE)");
+        exit(-1);
+    }
+    if ((us = usinit("/dev/zero")) == NULL) {
+        perror("usinit");
+        exit(-1);
+    }
+
+    if ((uslock = usnewlock(us)) == NULL) {
+        perror("usnewlock");
+        exit(-1);
+    }
+}
+
+static void accept_mutex_on()
+{
+    switch(ussetlock(uslock)) {
+        case 1:
+            /* got lock */
+            break;
+        case 0:
+            fprintf(stderr, "didn't get lock\n");
+            exit(-1);
+        case -1:
+            perror("ussetlock");
+            exit(-1);
+    }
+}
+
+static void accept_mutex_off()
+{
+    if (usunsetlock(uslock) == -1) {
+        perror("usunsetlock");
+        exit(-1);
+    }
+}
+
+#elif defined (USE_PTHREAD_SERIALIZED_ACCEPT)
+
+/* This code probably only works on Solaris ... but it works really fast
+ * on Solaris
+ */
+
+#include <pthread.h>
+
+static pthread_mutex_t *accept_mutex;
+
+static void accept_mutex_cleanup(void)
+{
+    if (munmap ((caddr_t)accept_mutex, sizeof (*accept_mutex))) {
+	perror ("munmap");
+    }
+}
+
+static void accept_mutex_init(pool *p)
+{
+    pthread_mutexattr_t mattr;
+    int fd;
+
+    fd = open ("/dev/zero", O_RDWR);
+    if (fd == -1) {
+        perror ("open(/dev/zero)");
+        exit (1);
+    }
+    accept_mutex = (pthread_mutex_t *)mmap ((caddr_t)0, sizeof (*accept_mutex),
+                    PROT_READ|PROT_WRITE, MAP_SHARED, fd, 0);
+    if (accept_mutex == (void *)(caddr_t)-1) {
+        perror ("mmap");
+        exit (1);
+    }
+    close (fd);
+    if (pthread_mutexattr_init(&mattr)) {
+        perror ("pthread_mutexattr_init");
+        exit (1);
+    }
+    if (pthread_mutexattr_setpshared(&mattr, PTHREAD_PROCESS_SHARED)) {
+        perror ("pthread_mutexattr_setpshared");
+        exit (1);
+    }
+    if (pthread_mutex_init(accept_mutex, &mattr)) {
+        perror ("pthread_mutex_init");
+        exit (1);
+    }
+}
+
+static void accept_mutex_on()
+{
+    if (pthread_mutex_lock (accept_mutex)) {
+        perror ("pthread_mutex_lock");
+        exit (1);
+    }
+}
+
+static void accept_mutex_off()
+{
+    if (pthread_mutex_unlock (accept_mutex)) {
+        perror ("pthread_mutex_unlock");
+        exit (1);
+    }
+}
+
+#elif defined (USE_SYSVSEM_SERIALIZED_ACCEPT)
+
+#include <sys/types.h>
+#include <sys/ipc.h>
+#include <sys/sem.h>
+
+#ifdef NEED_UNION_SEMUN
+/* it makes no sense, but this isn't defined on solaris */
+union semun {
+    int val;
+    struct semid_ds *buf;
+    ushort *array;
+};
+#endif
+
+static int sem_cleanup_registered;
+static pid_t sem_cleanup_pid;
+static int sem_id = -1;
+static struct sembuf op_on;
+static struct sembuf op_off;
+
+/* We get a random semaphore ... the lame sysv semaphore interface
+ * means we have to be sure to clean this up or else we'll leak
+ * semaphores.  Note that this is registered via atexit, so we can't
+ * do many things in here... especially nothing that would allocate
+ * memory or use a FILE *.
+ */
+static void accept_mutex_cleanup (void)
+{
+    union semun ick;
+
+    if (sem_id < 0) return;
+    if (getpid() != sem_cleanup_pid) return;
+    /* this is ignored anyhow */
+    ick.val = 0;
+    semctl (sem_id, 0, IPC_RMID, ick);
+}
+
+
+static void accept_mutex_init(pool *p)
+{
+    union semun ick;
+    struct semid_ds buf;
+
+    if (!sem_cleanup_registered) {
+	/* only the parent will try to do cleanup */
+	sem_cleanup_pid = getpid();
+	if (atexit (accept_mutex_cleanup)) {
+	    perror ("atexit");
+	    exit (1);
+	}
+	sem_cleanup_registered = 1;
+    }
+    /* acquire the semaphore */
+    sem_id = semget(IPC_PRIVATE, 1, IPC_CREAT | 0600);
+    if (sem_id < 0) {
+       perror ("semget");
+       exit (1);
+    }
+    ick.val = 1;
+    if (semctl(sem_id, 0, SETVAL, ick) < 0) {
+	perror ("semctl(SETVAL)");
+        exit (1);
+    }
+    if (!getuid()) {
+	/* restrict it to use only by the appropriate user_id ... not that this
+	 * stops CGIs from acquiring it and dinking around with it.
+	 */
+	buf.sem_perm.uid = user_id;
+	buf.sem_perm.gid = group_id;
+	buf.sem_perm.mode = 0600;
+	ick.buf = &buf;
+	if (semctl(sem_id, 0, IPC_SET, ick) < 0) {
+	    perror ("semctl(IPC_SET)");
+	    exit (1);
+	}
+    }
+
+    /* pre-initialize these */
+    op_on.sem_num = 0;
+    op_on.sem_op = -1;
+    op_on.sem_flg = SEM_UNDO;
+    op_off.sem_num = 0;
+    op_off.sem_op = 1;
+    op_off.sem_flg = SEM_UNDO;
+}
+
+static void accept_mutex_on()
+{
+    if (semop(sem_id, &op_on, 1) < 0) {
+        perror ("accept_mutex_on");
+        exit (1);
+    }
+}
+
+static void accept_mutex_off()
+{
+    if (semop(sem_id, &op_off, 1) < 0) {
+        perror ("accept_mutex_off");
+        exit (1);
+    }
+}
+
+#elif defined(USE_FCNTL_SERIALIZED_ACCEPT)
 static struct flock lock_it;
 static struct flock unlock_it;
 
 static int lock_fd=-1;
 
+#define accept_mutex_cleanup()
+
 /*
  * Initialize mutex lock.
  * Must be safe to call this on a restart.
  */
-void
-accept_mutex_init(pool *p)
+static void accept_mutex_init(pool *p)
 {
 
     lock_it.l_whence = SEEK_SET;   /* from current point */
@@ -297,7 +527,7 @@ accept_mutex_init(pool *p)
     unlink(lock_fname);
 }
 
-void accept_mutex_on(void)
+static void accept_mutex_on(void)
 {
     int ret;
     
@@ -311,7 +541,7 @@ void accept_mutex_on(void)
     }
 }
 
-void accept_mutex_off(void)
+static void accept_mutex_off(void)
 {
     if (fcntl (lock_fd, F_SETLKW, &unlock_it) < 0)
     {
@@ -320,16 +550,18 @@ void accept_mutex_off(void)
 	exit(1);
     }
 }
+
 #elif defined(USE_FLOCK_SERIALIZED_ACCEPT)
 
 static int lock_fd=-1;
+
+#define accept_mutex_cleanup()
 
 /*
  * Initialize mutex lock.
  * Must be safe to call this on a restart.
  */
-void
-accept_mutex_init(pool *p)
+static void accept_mutex_init(pool *p)
 {
 
     expand_lock_fname (p);
@@ -343,7 +575,7 @@ accept_mutex_init(pool *p)
     unlink(lock_fname);
 }
 
-void accept_mutex_on(void)
+static void accept_mutex_on(void)
 {
     int ret;
     
@@ -357,7 +589,7 @@ void accept_mutex_on(void)
     }
 }
 
-void accept_mutex_off(void)
+static void accept_mutex_off(void)
 {
     if (flock (lock_fd, LOCK_UN) < 0)
     {
@@ -366,13 +598,26 @@ void accept_mutex_off(void)
 	exit(1);
     }
 }
+
 #else
 /* Default --- no serialization.  Other methods *could* go here,
  * as #elifs...
  */
+#define accept_mutex_cleanup()
 #define accept_mutex_init(x)
 #define accept_mutex_on()
 #define accept_mutex_off()
+#endif
+
+/* On some architectures it's safe to do unserialized accept()s in the
+ * single Listen case.  But it's never safe to do it in the case where
+ * there's multiple Listen statements.  Define SAFE_UNSERIALIZED_ACCEPT
+ * when it's safe in the single Listen case.
+ */
+#ifdef SAFE_UNSERIALIZED_ACCEPT
+#define SAFE_ACCEPT(stmt) do {if(listeners->next != listeners) {stmt;}} while(0)
+#else
+#define SAFE_ACCEPT(stmt) do {stmt;} while(0)
 #endif
 
 void usage(char *bin)
@@ -1490,6 +1735,7 @@ static int wait_or_timeout (void)
 void sig_term(int sig) {
     log_error("httpd: caught SIGTERM, shutting down", server_conf);
     cleanup_scoreboard();
+    accept_mutex_cleanup();
 #ifdef SIGKILL
     ap_killpg (pgrp, SIGKILL);
 #endif /* SIGKILL */
@@ -2399,7 +2645,8 @@ void child_main(int child_num_arg)
          * Wait for an acceptable connection to arrive.
          */
 
-        accept_mutex_on();  /* Lock around "accept", if necessary */
+	/* Lock around "accept", if necessary */
+        SAFE_ACCEPT(accept_mutex_on());
 
         for (;;) {
 	    if (listeners->next != listeners) {
@@ -2464,7 +2711,7 @@ void child_main(int child_num_arg)
 		child_exit_modules(pconf, server_conf);
         }
 
-        accept_mutex_off(); /* unlock after "accept" */
+        SAFE_ACCEPT(accept_mutex_off()); /* unlock after "accept" */
 
 	/* We've got a socket, let's at least process one request off the
 	 * socket before we accept a graceful restart request.
@@ -2806,7 +3053,7 @@ void standalone_main(int argc, char **argv)
 	init_modules (pconf, server_conf);
 	open_logs (server_conf, pconf);
 	set_group_privs ();
-	accept_mutex_init (pconf);
+	SAFE_ACCEPT(accept_mutex_init (pconf));
 	if (!is_graceful) {
 	    reinit_scoreboard(pconf);
 	}
@@ -2947,6 +3194,8 @@ void standalone_main(int argc, char **argv)
 	    log_error ("SIGHUP received.  Attempting to restart", server_conf);
 	}
 	++generation;
+
+	SAFE_ACCEPT(accept_mutex_cleanup());
 
     } while (restart_pending);
 
