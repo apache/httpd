@@ -1,9 +1,9 @@
 Apache 2.0 STATUS:
-Last modified at [$Date: 2000/04/12 20:20:01 $]
+Last modified at [$Date: 2000/04/13 00:38:55 $]
 
 Release:
 
-    2.0a2   : vague plans to release in April sometime.
+    2.0a3   : vague plans to release in April sometime.
     2.0a2   : released March 31, 2000
     2.0a1   : released March 10, 2000
 
@@ -21,9 +21,6 @@ RELEASE SHOWSTOPPERS:
 
     * Fix SAFEREAD.
 	see <Pine.LNX.4.21.0004101511380.7822-100000@twinlark.arctic.org>
-
-    * Fix lingering close
-        see <Pine.LNX.4.21.0004110902390.10177-100000@twinlark.arctic.org>
 
     * MPMs should have responsibility for closing sockets and
         registering the socket cleanup. Stop registering multiple
