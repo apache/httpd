@@ -59,8 +59,8 @@
 
 /* mod_speling.c - by Alexei Kosut <akosut@organic.com> June, 1996
  *
- * This module is transparent, and simple. It attemps to correct
- * mispellings of URLs that users might have entered, namely by checking
+ * This module is transparent, and simple. It attempts to correct
+ * misspellings of URLs that users might have entered, namely by checking
  * capitalizations. If it finds a match, it sends a redirect.
  *
  * 08-Aug-1997 <Martin.Kraemer@Mch.SNI.De>

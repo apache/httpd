@@ -14,7 +14,7 @@
 #
 # Makefile options, such as CC=gcc, etc...
 #
-# Rules, distinquished by having "Rule" at the front. These are used to
+# Rules, distinguished by having "Rule" at the front. These are used to
 # control Configure's behavior as far as how to create Makefile.
 #
 # Module selection lines, distinguished by having 'AddModule' at the front.
@@ -207,7 +207,7 @@ AddModule modules/standard/mod_negotiation.o
 ## The Info module displays configuration information for the server and 
 ## all included modules. It's very useful for debugging.
 
-# AddModule         modules/standard/mod_info.o
+# AddModule modules/standard/mod_info.o
 
 ## mod_include translates server-side include (SSI) statements in text files.
 ## mod_autoindex handles requests for directories which have no index file
@@ -219,7 +219,7 @@ AddModule modules/standard/mod_autoindex.o
 AddModule modules/standard/mod_dir.o
 AddModule modules/standard/mod_cgi.o
 
-## The asis module implemented ".asis" file types, which allow the embedding
+## The asis module implements ".asis" file types, which allow the embedding
 ## of HTTP headers at the beginning of the document.  mod_imap handles internal 
 ## imagemaps (no more cgi-bin/imagemap/!).  mod_actions is used to specify 
 ## CGI scripts which act as "handlers" for particular files, for example to
@@ -233,7 +233,7 @@ AddModule modules/standard/mod_actions.o
 ## URL translation modules.
 ##
 
-## The Speling module attemps to correct mispellings of URLs that
+## The Speling module attempts to correct misspellings of URLs that
 ## users might have entered, namely by checking capitalizations
 ## or by allowing up to one misspelling (character insertion / omission /
 ## transposition/typo). This catches the majority of misspelled requests.
@@ -306,7 +306,7 @@ AddModule modules/standard/mod_auth.o
 
 ## Miscellaneous modules
 ##
-## mod_usertrack.c is the new name for mod_cookies.c.  This module
+## mod_usertrack is the new name for mod_cookies.  This module
 ## uses Netscape cookies to automatically construct and log
 ## click-trails from Netscape cookies, or compatible clients who
 ## aren't coming in via proxy.   
@@ -335,7 +335,10 @@ AddModule modules/standard/mod_setenvif.o
 
 # AddModule modules/standard/mod_unique_id.o
 
-## mod_so lets you add modules to Apache without recompiling. This
-## is experimental at this stage. 
+## mod_so lets you add modules to Apache without recompiling.
+## This is an experimental feature at this stage and only supported 
+## on a subset of the platforms we generally support. 
+## Don't change this entry to a 'SharedModule' variant (Bootstrapping!)
 
 # AddModule modules/standard/mod_so.o
+
