@@ -2,7 +2,7 @@
 <!DOCTYPE directiveindex SYSTEM "../style/modulesynopsis.dtd"
   [ <!ENTITY allmodules SYSTEM "allmodules.xml"> ]
 >
-<?xml-stylesheet type="text/xsl" href="../style/manual.xsl"?>
+<?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
 
 <directiveindex>
   <title>Directive Index</title>
