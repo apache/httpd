@@ -553,15 +553,11 @@ API_EXPORT(void) ap_no2slash(char *name)
 API_EXPORT(char *) ap_make_dirstr_prefix(char *d, const char *s, int n)
 {
     for (;;) {
-	*d = *s;
-	if (*d == '\0') {
+	if (*s == '\0' || (*s == '/' && (--n) == 0)) {
 	    *d = '/';
 	    break;
 	}
-	if (*d == '/' && (--n) == 0)
-	    break;
-	++d;
-	++s;
+	*d++ = *s++;
     }
     *++d = 0;
     return (d);
