@@ -1,5 +1,5 @@
 Apache 2.0 STATUS:
-Last modified at [$Date: 2000/09/02 11:32:42 $]
+Last modified at [$Date: 2000/09/25 19:06:39 $]
 
 Release:
 
@@ -134,10 +134,6 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
 	Status: fanf is working on this.
 
     * configuration option to use *DBM
-      Status: Greg +1 (volunteers)
-
-    * add SDBM into src/lib/sdbm/ as a default/fallback DBM implementation.
-      SDBM is used by Perl, mod_dav, mod_sssl, others for basic DBM support.
       Status: Greg +1 (volunteers)
 
     * Integrate mod_dav.
