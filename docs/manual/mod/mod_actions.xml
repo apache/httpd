@@ -41,7 +41,7 @@ content-type</description>
     <em>cgi-script</em> when <em>action-type</em> is triggered by the
     request.  The <em>cgi-script</em> is the URL-path to a resource
     that has been designated as a CGI script using <directive
-    module="mod_alias">ScriptAliase</directive> or <directive
+    module="mod_alias">ScriptAlias</directive> or <directive
     module="mod_mime">AddHandler</directive>.  The
     <em>action-type</em> can be either a <a
     href="../handler.html">handler</a> or a MIME content type. It
