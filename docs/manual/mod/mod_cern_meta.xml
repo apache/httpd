@@ -52,7 +52,14 @@ files</description>
     meta information files. The directory is usually a 'hidden'
     subdirectory of the directory that contains the file being
     accessed. Set to "<code>.</code>" to look in the same directory
-    as the file.</p>
+    as the file:</p>
+
+    <example>MetaDir .</example>
+
+    <p>Or, to set it to a subdirectory of the directory containing the
+    files:</p>
+
+    <example>MetaDir .meta</example>
 </usage>
 </directivesynopsis>
 
