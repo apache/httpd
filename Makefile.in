@@ -83,6 +83,10 @@ install-other:
 			cp -p $$file $(bindir); \
 		fi; \
 	done;
+	file=httpd.dll; \
+	if test -f $$file; then \
+		cp -p $$file $(bindir); \
+	fi;
 
 install-include:
 	@echo Installing header files
