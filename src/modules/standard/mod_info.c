@@ -350,6 +350,8 @@ static int display_info(request_rec *r) {
 		if(!r->args || !strcasecmp(r->args,"server")) {	
 			ap_snprintf(buf, sizeof(buf), "<a name=\"server\"><strong>Server Version:</strong> <font size=+1><tt>%s</tt></a></font><br>\n",SERVER_VERSION);
 			rputs(buf,r);
+			ap_snprintf(buf, sizeof(buf), "<strong>Server Built:</strong> <font size=+1><tt>%s</tt></a></font><br>\n",SERVER_BUILT);
+			rputs(buf,r);
 			ap_snprintf(buf, sizeof(buf), "<strong>API Version:</strong> <tt>%d</tt><br>\n",MODULE_MAGIC_NUMBER);
 			rputs(buf,r);
 			ap_snprintf(buf, sizeof(buf), "<strong>Run Mode:</strong> <tt>%s</tt><br>\n",standalone?"standalone":"inetd");

@@ -548,6 +548,11 @@ static int example_handler
     rputs ("  <H1><SAMP>mod_example</SAMP> Module Content-Handler Output\n", r);
     rputs ("  </H1>\n", r);
     rputs ("  <P>\n", r);
+    rprintf (r, "  Apache HTTP Server version: \"%s\"\n", SERVER_VERSION);
+    rputs ("  <BR>\n", r);
+    rprintf (r, "  Server built: \"%s\"\n", SERVER_BUILT);
+    rputs ("  </P>\n", r);;
+    rputs ("  <P>\n", r);
     rputs ("  The format for the callback trace is:\n", r);
     rputs ("  </P>\n", r);
     rputs ("  <DL>\n", r);
@@ -1190,5 +1195,5 @@ module example_module = {
     example_hparser,            /* [2] header parser */
     example_child_init,         /* process initializer */
     example_child_exit,		/* process exit/cleanup */
-    example_post_readreq	/* ? */
+    example_post_readreq	/* [?] post read_request handling */
 };
