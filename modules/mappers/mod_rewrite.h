@@ -451,7 +451,7 @@ static void  rewritelog(request_rec *r, int level, const char *text, ...)
 static char *current_logtime(request_rec *r);
 
     /* rewriting lockfile support */
-static void rewritelock_create(server_rec *s, apr_pool_t *p);
+static apr_status_t rewritelock_create(server_rec *s, apr_pool_t *p);
 static apr_status_t rewritelock_remove(void *data);
 
     /* program map support */

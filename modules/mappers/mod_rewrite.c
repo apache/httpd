@@ -964,7 +964,19 @@ static int post_config(apr_pool_t *p,
         return HTTP_INTERNAL_SERVER_ERROR;
     }
 
-    rewritelock_create(s, p);
+    rv = unixd_set_global_mutex_perms(rewrite_log_lock);
+    if (rv != APR_SUCCESS) {
+        ap_log_error(APLOG_MARK, APLOG_CRIT, rv, s,
+                     "mod_rewrite: Could not set permissions on "
+                     "rewrite_log_lock; check User and Group directives");
+        return HTTP_INTERNAL_SERVER_ERROR;
+    }
+
+    rv = rewritelock_create(s, p);
+    if (rv != APR_SUCCESS) {
+        return HTTP_INTERNAL_SERVER_ERROR;
+    }
+
     apr_pool_cleanup_register(p, (void *)s, rewritelock_remove, apr_pool_cleanup_null);
 
     /* step through the servers and
@@ -3296,26 +3308,34 @@ static char *current_logtime(request_rec *r)
 
 #define REWRITELOCK_MODE ( APR_UREAD | APR_UWRITE | APR_GREAD | APR_WREAD )
 
-static void rewritelock_create(server_rec *s, apr_pool_t *p)
+static apr_status_t rewritelock_create(server_rec *s, apr_pool_t *p)
 {
     apr_status_t rc;
 
     /* only operate if a lockfile is used */
     if (lockname == NULL || *(lockname) == '\0') {
-        return;
+        return APR_EINVAL;
     }
 
     /* create the lockfile */
     rc = apr_global_mutex_create(&rewrite_mapr_lock_acquire, lockname,
                                  APR_LOCK_DEFAULT, p);
     if (rc != APR_SUCCESS) {
-        ap_log_error(APLOG_MARK, APLOG_ERR, rc, s,
+        ap_log_error(APLOG_MARK, APLOG_CRIT, rc, s,
                      "mod_rewrite: Parent could not create RewriteLock "
                      "file %s", lockname);
-        exit(1);
+        return rc;
     }
 
-    return;
+    rc = unixd_set_global_mutex_perms(rewrite_mapr_lock_acquire);
+    if (rc != APR_SUCCESS) {
+        ap_log_error(APLOG_MARK, APLOG_CRIT, rc, s,
+                     "mod_rewrite: Parent could not set permissions "
+                     "on RewriteLock; check User and Group directives");
+        return rc;
+    }
+
+    return APR_SUCCESS;
 }
 
 static apr_status_t rewritelock_remove(void *data)
