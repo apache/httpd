@@ -1,5 +1,9 @@
 Changes with Apache 1.3.13
 
+  *) Work around a popular restriction of some sed(1)'s in APACI where
+     "1,/<pattern>/" commands start searching for <pattern> at line 2 only.
+     [Ralf S. Engelschall]
+
   *) Merged in a small subset of SGI's latest `10x' patchkit for Apache
      1.3.11. The extracted and merged in parts are entirely cleanup and
      non-performance related changes only. SGI's remaining changes are

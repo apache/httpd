@@ -486,12 +486,13 @@ do
                 echo "configure:Error: Path layout definition file $file not found" 1>&2
                 exit 1
             fi
+            (echo ''; cat $file; echo '') |\
             sed -e "1,/[ 	]*<[Ll]ayout[ 	]*$name[ 	]*>[ 	]*/d" \
                 -e '/[ 	]*<\/Layout>[ 	]*/,$d' \
                 -e "s/^[ 	]*//g" \
                 -e "s/:[ 	]*/=\'/g" \
                 -e "s/[ 	]*$/'/g" \
-                $file >$pldconf
+                >$pldconf
             . $pldconf
             OOIFS="$IFS"  # most likely not needed: jmj
             IFS="$DIFS"   # ditto
