@@ -2,7 +2,7 @@
 # This is the Apache server configuration file providing SSL support.
 # It contains the configuration directives to instruct the server how to
 # serve pages over an https connection. For detailing information about these 
-# directives see <URL:http://httpd.apache.org/docs-2.1/mod/mod_ssl.html>
+# directives see <URL:http://httpd.apache.org/docs-2.0/mod/mod_ssl.html>
 #
 #   For the moment, see <URL:http://www.modssl.org/docs/> for this info. 
 #   The documents are still being prepared from material donated by the

@@ -566,7 +566,7 @@ AC_SUBST(ap_make_delimiter)
 dnl Ensure that docs/conf is created.
 test -d docs/conf||$mkdir_p docs/conf
 
-AC_OUTPUT($APACHE_OUTPUT_FILES docs/conf/httpd-std.conf include/ap_config_layout.h support/apxs support/apachectl support/dbmmanage support/envvars-std support/log_server_status support/logresolve.pl support/phf_abuse_log.cgi support/split-logfile build/rules.mk,[true],[
+AC_OUTPUT($APACHE_OUTPUT_FILES docs/conf/httpd-std.conf docs/conf/ssl-std.conf include/ap_config_layout.h support/apxs support/apachectl support/dbmmanage support/envvars-std support/log_server_status support/logresolve.pl support/phf_abuse_log.cgi support/split-logfile build/rules.mk,[true],[
   APACHE_GEN_MAKEFILES
 ])
 

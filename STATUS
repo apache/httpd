@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/09/27 18:47:05 $]
+Last modified at [$Date: 2003/09/29 12:08:06 $]
 
 Release:
 
@@ -146,36 +146,6 @@ PATCHES TO PORT FROM 2.1
       New patch forthcoming - JimJag's changes make the merge ugly.
       +1: wrowe
       +1 (concept): jim (final vote when the patch is available)
-
-    * Ensure that ssl-std.conf is generated at configure time, and switch
-      to using the expanded config variables to work the same as 
-      httpd-std.conf PR: 19611
-      (this requires deleting ssl-std.conf and replacing it with an autogen'd
-      one)
-      configure.in: r1.250
-      docs/conf/ssl-std.conf.in: r1.1,1.2
-      +1: thommay, jerenkrantz, striker, jim, nd, trawick
-          nd: The runtime files (e.g. cache) should be in runtimedir, since the
-              logfilefir should not be writable for the httpd user.
-	  
-	  thommay: In principle I agree; however I was going for the principle
-	           of least surprise - the new version uses exactly the same
-		   settings as the old one. If we want to change the locations
-		   I'm quite happy to do that but don't think that should 
-		   affect backporting this fix.
-
-          nd: Actually I see no problem with surprises. If someone uses this
-              tailored example config, it's probably his first SSL config. If
-              it's not his first one, he probably doesn't care about - IMHO :)
-              An appropriate change-log entry should warn the rest of the
-              people, shouldn't it?
-
-          trawick: existing configs shouldn't be overwritten, new configs
-              should default to our best available recommendation
-
-          thommay: can't argue with this, commited.
-          
-          nd: thx.:)
 
     * mod_ssl: Drop SSL_EXPERIMENTAL_ENGINE test in favor of testing for the
       ENGINE_init() function in config.m4, and use HAVE_ENGINE_INIT instead.
