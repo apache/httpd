@@ -1,5 +1,5 @@
   1.3 STATUS:
-  Last modified at [$Date: 1999/06/04 18:30:07 $]
+  Last modified at [$Date: 1999/06/05 12:08:45 $]
 
 Release:
 
@@ -96,6 +96,16 @@ Documentation that needs writing:
 
 
 Available Patches:
+
+    * Salvador Ortiz Garcia <sog@msg.com.mx>' patch to allow DirectoryIndex
+      to refer to URIs for non-static resources.
+	Message-ID: <Pine.LNX.4.10.9906041415330.15776-100000@xiomara.msg.com.mx>
+	Status: Ken +1 (on concept)
+
+    * Eli Marmor <marmor@elmar.co.il>'s patch to include apxs in ./configure's
+      and binbuild.sh's filesystem path editing.
+	Message-ID: PR#4526
+	Status: 
 
     * Ralf's [PATCH] to add EAPI (ctx, hook, mm, etc.) to the base package
 	Message-ID: <19990414134729.A93825@engelschall.com>
