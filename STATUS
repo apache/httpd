@@ -4,18 +4,21 @@ Release:
 
     1.3.2: In preparation for a release.
            - Tarball rolling proposed for Monday, September 21th, 1998
-           - Release and announcement proposed for Wednesday, September 23th, 1998
+           - Release and announcement proposed for Wednesday, September 23th,
+	     1998
            - Ralf is the release manager.
 
            Current test status:
            o FreeBSD 2.2.6 ...................... Ok (Ralf S. Engelschall)
            o FreeBSD 2.2.7 ...................... Ok (Jim Jagielski)
            o Debian GNU/Linux 1.3 ............... Ok (Ralf S. Engelschall)
+           o RedHat 4.2 ......................... Ok (Ken Coar)
            o RedHat 5.1 ......................... Ok (Shane Owenby)
            o HPUX 10.20 ......................... Ok (Ralf S. Engelschall)
            o AIX 4.1.5 .......................... Ok (Jens-Uwe Mager)
            o AIX 4.1.5 / gcc 2.7.2.2 ............ Ok (Shane Owenby)
-           o AIX 4.1.5 / xlC 3.6.4 .............. Fails (Shane Owenby) [KNOWN PROBLEM]
+           o AIX 4.1.5 / xlC 3.6.4 .............. Fails (Shane Owenby)
+						  [KNOWN PROBLEM]
            o AIX 4.2.1 .......................... Ok (Bill Stoddard)
            o AIX 4.2.1 / xlC 3.1.4 .............. Ok (Shane Owenby)
            o AIX 4.3.1 / xlC 3.1.4 .............. Ok (Shane Owenby)
@@ -29,7 +32,8 @@ Release:
            o IRIX 6.2 ........................... Ok (Dan Jacobowitz)
            o OS\2 ............................... Ok (Brian Havard)
            o Windows NT (general)................ Ok (Bill Stoddard)
-           o Netwinder .......................... Fails (Rasmus Lerdorf) [NOT CRITICAL]
+           o Netwinder .......................... Fails (Rasmus Lerdorf)
+						  [NOT CRITICAL]
            o A/UX 3.1.1 ......................... Ok (Jim Jagielski)
 
     1.3.1: Tagged and rolled on July 19. Announced and released.
