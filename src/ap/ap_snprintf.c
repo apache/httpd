@@ -68,6 +68,33 @@
 #include <stdlib.h>
 #include <math.h>
 
+typedef enum {
+    NO = 0, YES = 1
+} boolean_e;
+
+#define FALSE			0
+#define TRUE			1
+#define NUL			'\0'
+#define INT_NULL		((int *)0)
+#define WIDE_INT		long
+
+typedef WIDE_INT wide_int;
+typedef unsigned WIDE_INT u_wide_int;
+typedef int bool_int;
+
+#define S_NULL			"(null)"
+#define S_NULL_LEN		6
+
+#define FLOAT_DIGITS		6
+#define EXPONENT_LENGTH		10
+
+/*
+ * NUM_BUF_SIZE is the size of the buffer used for arithmetic conversions
+ *
+ * XXX: this is a magic number; do not decrease it
+ */
+#define NUM_BUF_SIZE		512
+
 /*
  * cvt.c - IEEE floating point formatting routines for FreeBSD
  * from GNU libc-4.6.27.  Modified to be thread safe.
@@ -171,7 +198,7 @@ static char *ap_fcvt(double arg, int ndigits, int *decpt, int *sign, char *buf)
  * minimal length string
  */
 
-static char *ap_gcvt(double number, int ndigit, char *buf)
+static char *ap_gcvt(double number, int ndigit, char *buf, boolean_e altform)
 {
     int sign, decpt;
     register char *p1, *p2;
@@ -224,38 +251,11 @@ static char *ap_gcvt(double number, int ndigit, char *buf)
 	    *p2++ = '.';
 	}
     }
-    if (p2[-1] == '.')
+    if (p2[-1] == '.' && !altform)
 	p2--;
     *p2 = '\0';
     return (buf);
 }
-
-typedef enum {
-    NO = 0, YES = 1
-} boolean_e;
-
-#define FALSE			0
-#define TRUE			1
-#define NUL			'\0'
-#define INT_NULL		((int *)0)
-#define WIDE_INT		long
-
-typedef WIDE_INT wide_int;
-typedef unsigned WIDE_INT u_wide_int;
-typedef int bool_int;
-
-#define S_NULL			"(null)"
-#define S_NULL_LEN		6
-
-#define FLOAT_DIGITS		6
-#define EXPONENT_LENGTH		10
-
-/*
- * NUM_BUF_SIZE is the size of the buffer used for arithmetic conversions
- *
- * XXX: this is a magic number; do not decrease it
- */
-#define NUM_BUF_SIZE		512
 
 /*
  * The INS_CHAR macro inserts a character in the buffer and writes
@@ -799,7 +799,8 @@ API_EXPORT(int) ap_vformatter(int (*flush_func)(ap_vformatter_buff *),
 		/*
 		 * * We use &num_buf[ 1 ], so that we have room for the sign
 		 */
-		s = ap_gcvt(va_arg(ap, double), precision, &num_buf[1]);
+		s = ap_gcvt(va_arg(ap, double), precision, &num_buf[1],
+		            alternate_form);
 		if (*s == '-')
 		    prefix_char = *s++;
 		else if (print_sign)
