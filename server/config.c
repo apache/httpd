@@ -867,6 +867,7 @@ static const char *ap_build_config_sub(apr_pool_t *p, apr_pool_t *temp_pool,
                                        ap_directive_t **curr_parent,
                                        ap_directive_t **conftree)
 {
+    const char *retval = NULL;
     const char *args;
     char *cmd_name;
     ap_directive_t *newdir;
@@ -905,7 +906,6 @@ static const char *ap_build_config_sub(apr_pool_t *p, apr_pool_t *temp_pool,
 
     if ((cmd = ap_find_command_in_modules(cmd_name, &mod)) != NULL) {
         if (cmd->req_override & EXEC_ON_READ) {
-            const char *retval;
             ap_directive_t *sub_tree = NULL;
 
             parms->err_directive = newdir;
@@ -915,7 +915,7 @@ static const char *ap_build_config_sub(apr_pool_t *p, apr_pool_t *temp_pool,
                 (*current)->next = sub_tree;
             }
             else {
-                (*current) = sub_tree;
+                *current = sub_tree;
                 if (*curr_parent) {
                     (*curr_parent)->first_child = (*current);
                 }
@@ -979,7 +979,7 @@ static const char *ap_build_config_sub(apr_pool_t *p, apr_pool_t *temp_pool,
         *current = ap_add_node(curr_parent, *current, newdir, 0);
     }
 
-    return NULL;
+    return retval;
 }
 
 AP_DECLARE(const char *) ap_build_cont_config(apr_pool_t *p,
@@ -1043,6 +1043,11 @@ static const char *ap_walk_config_sub(const ap_directive_t *current,
                                                      mod,
                                                      parms->pool);
             const char *retval;
+
+            /* Once was enough? */
+            if (cmd->req_override & EXEC_ON_READ) {
+                return NULL;
+            }
 
             retval = invoke_cmd(cmd, parms, dir_config, current->args);
             if (retval == NULL) {
