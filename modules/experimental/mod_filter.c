@@ -60,6 +60,7 @@ static void filter_trace(apr_pool_t *pool, int debug, const char *fname,
                          apr_bucket_brigade *bb)
 {
     apr_bucket *b;
+
     switch (debug) {
     case 0:        /* normal, operational use */
         return;
