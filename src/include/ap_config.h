@@ -258,6 +258,9 @@ typedef int rlim_t;
 #endif
 
 #elif defined(ULTRIX)
+/* we don't want to use sys/resource.h under
+   Ultrix although this header exists. */
+#undef HAVE_SYS_RESOURCE_H
 #define HAVE_GMTOFF 1
 #undef NO_KILLPG
 #undef NO_SETSID
