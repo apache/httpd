@@ -17,3 +17,13 @@ EXPORTS
   "apr_debug_module_hooks"
   "apr_current_hooking_module"
 
+; One for mod_dav from socket library
+  "_swaps"
+
+; And some more for mod_unique_id
+  "gethostname"
+  "gethostbyname"
+  "_swapl"
+  "h_errno"
+  "inet_ntoa"
+
