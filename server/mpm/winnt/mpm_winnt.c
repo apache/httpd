@@ -825,13 +825,13 @@ static void drain_acceptex_complport(HANDLE hComplPort, BOOLEAN bCleanUp)
             lastError = GetLastError();
             if (lastError == ERROR_OPERATION_ABORTED) {
                 ap_log_error(APLOG_MARK,APLOG_INFO,lastError, server_conf,
-                             "Child: %d - Draining a packet off the completion port.", my_pid);
+                             "Child %d: - Draining a packet off the completion port.", my_pid);
                 continue;
             }
             break;
         }
         ap_log_error(APLOG_MARK,APLOG_INFO,APR_SUCCESS, server_conf,
-                     "Child: %d - Nuking an active connection. context = %x", my_pid, context);
+                     "Child %d: - Nuking an active connection. context = %x", my_pid, context);
         context = (PCOMP_CONTEXT) pol;
         if (context && bCleanUp) {
             /* It is only valid to clean-up in the process that initiated the I/O */
@@ -994,28 +994,41 @@ static PCOMP_CONTEXT winnt_get_connection(PCOMP_CONTEXT context)
                                        INFINITE);
         if (!rc) {
             ap_log_error(APLOG_MARK,APLOG_ERR, GetLastError(), server_conf,
-                         "Child: %d - GetQueuedCompletionStatus() failed", my_pid);
-            /* Todo: What to do when we receive an error here? */
-//            continue;
+                         "Child %d: - GetQueuedCompletionStatus() failed", my_pid);
+            /* During a restart, the new child process can catch 
+             * ERROR_OPERATION_ABORTED completion packets
+             * posted by the old child process. Just continue...
+             */
+            continue;
         }
+
+        /* Check the Completion Key.
+         * == my_pid indicate this process wants to exit
+         * == 0 implies valid i/o completion
+         * != 0 implies a posted completion packet by an old
+         *     process. Just ignore it.
+         */
+        if (CompKey == my_pid) {
+            return NULL;
+        }
+        if (CompKey != 0)
+            continue;
+
+        context = (PCOMP_CONTEXT) pol;
         break;
     }
-    context = (PCOMP_CONTEXT) pol;
-    if ((CompKey == 999) || workers_may_exit) {
-        ap_log_error(APLOG_MARK,APLOG_INFO, APR_SUCCESS, server_conf,
-                     "Child: %d - Completion port posted.", my_pid);
-        return NULL;
-    }
 
-    /* Check to see if we need to create more completion contexts */
-    ap_lock(allowed_globals.jobmutex);
-    context->lr->count--;
-    if (context->lr->count < 2) {
-        ap_log_error(APLOG_MARK, APLOG_INFO, APR_SUCCESS, server_conf,
-                         "Child %d: Signaling child maintenance event...", my_pid);
-        SetEvent(maintenance_event);
+    /* Check to see if we need to create more completion contexts,
+     * but only if we are not in the process of shutting down
+     */
+    if (!workers_may_exit) {
+        ap_lock(allowed_globals.jobmutex);
+        context->lr->count--;
+        if (context->lr->count < 2) {
+            SetEvent(maintenance_event);
+        }
+        ap_unlock(allowed_globals.jobmutex);
     }
-    ap_unlock(allowed_globals.jobmutex);
 
     /* Received a connection */
     context->conn_io->incnt = BytesRead;
@@ -1128,7 +1141,6 @@ static void create_listeners()
  * - sets up the worker thread pool
  * - starts the accept thread (Win 9x)
  * - creates AcceptEx contexts (Win NT)
- *   This thread also does async Acceptex for the server (Win NT)
  * - waits for exit_event, maintenance_event or maintenance timeout
  *   and does the right thing depending on which event is received.
  */
@@ -1184,15 +1196,6 @@ static void child_main()
     allowed_globals.jobsemaphore = create_semaphore(0);
     ap_create_lock(&allowed_globals.jobmutex, APR_MUTEX, APR_INTRAPROCESS, NULL, pchild);
 
-    /* Create the worker thread pool */
-    ap_log_error(APLOG_MARK,APLOG_INFO, APR_SUCCESS, server_conf, 
-                 "Child %d: Starting %d worker threads.", my_pid, nthreads);
-    child_handles = (thread *) alloca(nthreads * sizeof(int));
-    for (i = 0; i < nthreads; i++) {
-        child_handles[i] = (thread *) _beginthreadex(NULL, 0, (LPTHREAD_START_ROUTINE) worker_main,
-                                                     NULL, 0, &thread_id);
-    }
-
     /*
      * Wait until we have permission to start accepting connections.
      * start_mutex is used to ensure that only one child ever
@@ -1207,6 +1210,15 @@ static void child_main()
     }
     ap_log_error(APLOG_MARK,APLOG_INFO, APR_SUCCESS, server_conf, 
                  "Child %d: Acquired the start mutex.", my_pid);
+
+    /* Create the worker thread pool */
+    ap_log_error(APLOG_MARK,APLOG_INFO, APR_SUCCESS, server_conf, 
+                 "Child %d: Starting %d worker threads.", my_pid, nthreads);
+    child_handles = (thread *) alloca(nthreads * sizeof(int));
+    for (i = 0; i < nthreads; i++) {
+        child_handles[i] = (thread *) _beginthreadex(NULL, 0, (LPTHREAD_START_ROUTINE) worker_main,
+                                                     NULL, 0, &thread_id);
+    }
 
     /* Begin accepting connections */
     if (osver.dwPlatformId == VER_PLATFORM_WIN32_WINDOWS) {
@@ -1239,6 +1251,14 @@ static void child_main()
             workers_may_exit = 1;
             ap_log_error(APLOG_MARK, APLOG_CRIT, GetLastError(), server_conf,
                          "Child %d: WaitForMultipeObjects WAIT_FAILED -- doing server shutdown");
+            /* Give a busy server the chance to drain AcceptEx completion contexts
+             * by servicing connections. Note that the setting of workers_may_exit
+             * prevents new AcceptEx completion contexts from being created.
+             */
+            Sleep(1000);
+
+            /* Drain any remaining contexts. May loose a few connections here. */
+            drain_acceptex_complport(AcceptExCompPort, FALSE);
         }
         else if (rv == WAIT_TIMEOUT) {
             /* Hey, this cannot happen */
@@ -1253,8 +1273,9 @@ static void child_main()
         }
         else {
             /* Child maintenance event signaled */
-            if (osver.dwPlatformId != VER_PLATFORM_WIN32_WINDOWS)
+            if (osver.dwPlatformId != VER_PLATFORM_WIN32_WINDOWS) {
                 create_listeners();
+            }
             ResetEvent(maintenance_event);
             ap_log_error(APLOG_MARK, APLOG_INFO, APR_SUCCESS, server_conf,
                          "Child %d: Child maintenance event signaled...", my_pid);
@@ -1268,33 +1289,32 @@ static void child_main()
         }
     }
     else { /* Windows NT/2000 */
-        ap_listen_rec *lr;
-        SOCKET nsd;
-        for (lr = ap_listeners; lr != NULL; lr = lr->next) {
-            ap_get_os_sock(&nsd, lr->sd);
-            CancelIo((HANDLE)nsd);
-        }
- 
-        /* Tell the worker threads to exit. */
-        for (i=0; i < nthreads; i++) {
-            if (!PostQueuedCompletionStatus(AcceptExCompPort, 0, 999, NULL)) {
+        /* Sometimes posted completion contexts intended for this process
+         * are consumed by the new process (during restart). Send a few 
+         * extra to compensate. At worst, this process may hang around
+         * for several minutes because a thread is not exiting because
+         * it is blocked on GetQueuedCompletionStatus.
+         */
+        for (i=0; i < 2*nthreads; i++) {
+            if (!PostQueuedCompletionStatus(AcceptExCompPort, 0, my_pid, NULL)) {
                 ap_log_error(APLOG_MARK,APLOG_INFO, APR_SUCCESS, server_conf, 
                              "PostQueuedCompletionStatus failed");
             }
         }
     }
 
-    ap_log_error(APLOG_MARK,APLOG_INFO, APR_SUCCESS, server_conf, 
-                 "Child %d: Waiting for %d threads to die.", my_pid, nthreads);
-
-    /* Give the workers a chance to pick-up the posted completion context */
-    Sleep(1000);
-
+    /* Release the start_mutex to let the new process (in the restart
+     * scenario) a chance to begin servicing requests 
+     */
     ap_log_error(APLOG_MARK,APLOG_INFO, APR_SUCCESS, server_conf, 
                  "Child %d: Releasing the start mutex", my_pid);
     ap_unlock(start_mutex);
 
-    /* Wait for the worker threads to die */
+    /* Give busy worker threads a chance to service their connections.
+     * Kill them off if they take too long
+     */
+    ap_log_error(APLOG_MARK,APLOG_INFO, APR_SUCCESS, server_conf, 
+                 "Child %d: Waiting for %d threads to die.", my_pid, nthreads);
     end_time = time(NULL) + 180;
     while (nthreads) {
         rv = wait_for_many_objects(nthreads, child_handles, end_time - time(NULL));
@@ -1302,8 +1322,6 @@ static void child_main()
 	    rv = rv - WAIT_OBJECT_0;
 	    ap_assert((rv >= 0) && (rv < nthreads));
 	    cleanup_thread(child_handles, &nthreads, rv);
-            ap_log_error(APLOG_MARK,APLOG_INFO, APR_SUCCESS, server_conf, 
-                         "Child %d: Cleanup thread now.", my_pid);
             continue;
         }
         break;
