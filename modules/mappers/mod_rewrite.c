@@ -4012,7 +4012,7 @@ static char *subst_prefix_path(request_rec *r, char *input, char *match,
     output = input;
 
     /* first create a match string which always has a trailing slash */
-    l = apr_cpystrn(matchbuf, match, sizeof(matchbuf)) - matchbuf;
+    l = apr_cpystrn(matchbuf, match, sizeof(matchbuf) - 1) - matchbuf;
     if (matchbuf[l-1] != '/') {
        matchbuf[l] = '/';
        matchbuf[l+1] = '\0';
@@ -4024,7 +4024,7 @@ static char *subst_prefix_path(request_rec *r, char *input, char *match,
         output = apr_pstrdup(r->pool, output+l);
 
         /* and now add the base-URL as replacement prefix */
-        l = apr_cpystrn(substbuf, subst, sizeof(substbuf)) - substbuf;
+        l = apr_cpystrn(substbuf, subst, sizeof(substbuf) - 1) - substbuf;
         if (substbuf[l-1] != '/') {
            substbuf[l] = '/';
            substbuf[l+1] = '\0';
