@@ -760,7 +760,7 @@ static void child_main(int child_num_arg)
     ap_pool_t *ptrans;
     conn_rec *current_conn;
     ap_iol *iol;
-    ap_status_t stat = APR_SUCCESS;
+    ap_status_t stat = APR_EINIT;
     int sockdes;
 
     ap_my_pid = getpid();
