@@ -93,7 +93,7 @@
 #include "http_config.h"
 #include "http_core.h"		/* for get_remote_host */
 #include "http_connection.h"
-#include "scoreboard_prefork.h"
+#include "scoreboard.h"
 #include "ap_mpm.h"
 #include "unixd.h"
 #include "iol_socket.h"
