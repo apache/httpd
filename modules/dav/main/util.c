@@ -400,6 +400,71 @@ const char *dav_xml_get_cdata(const ap_xml_elem *elem, apr_pool_t *pool,
     return cdata;
 }
 
+DAV_DECLARE(dav_xmlns_info *) dav_xmlns_create(apr_pool_t *pool)
+{
+    dav_xmlns_info *xi = apr_pcalloc(pool, sizeof(*xi));
+
+    xi->uri_prefix = apr_hash_make(pool);
+    xi->prefix_uri = apr_hash_make(pool);
+
+    return xi;
+}
+
+DAV_DECLARE(void) dav_xmlns_add(dav_xmlns_info *xi,
+                                const char *prefix, const char *uri)
+{
+    /* this "should" not overwrite a prefix mapping */
+    apr_hash_set(xi->prefix_uri, prefix, APR_HASH_KEY_STRING, uri);
+
+    /* note: this may overwrite an existing URI->prefix mapping, but it
+       doesn't matter -- any prefix is usuable to specify the URI. */
+    apr_hash_set(xi->uri_prefix, uri, APR_HASH_KEY_STRING, prefix);
+}
+
+DAV_DECLARE(const char *) dav_xmlns_add_uri(dav_xmlns_info *xi,
+                                            const char *uri)
+{
+    const char *prefix;
+
+    if ((prefix = apr_hash_get(xi->uri_prefix, uri,
+                               APR_HASH_KEY_STRING)) != NULL)
+        return prefix;
+
+    prefix = apr_psprintf(xi->pool, "g%d", xi->count++);
+    dav_xmlns_add(xi, prefix, uri);
+    return prefix;
+}
+
+DAV_DECLARE(const char *) dav_xmlns_get_uri(dav_xmlns_info *xi,
+                                            const char *prefix)
+{
+    return apr_hash_get(xi->prefix_uri, prefix, APR_HASH_KEY_STRING);
+}
+
+DAV_DECLARE(const char *) dav_xmlns_get_prefix(dav_xmlns_info *xi,
+                                               const char *uri)
+{
+    return apr_hash_get(xi->uri_prefix, uri, APR_HASH_KEY_STRING);
+}
+
+DAV_DECLARE(void) dav_xmlns_generate(dav_xmlns_info *xi,
+                                     apr_text_header *phdr)
+{
+    apr_hash_index_t *hi = apr_hash_first(xi->pool, xi->prefix_uri);
+
+    for (; hi != NULL; hi = apr_hash_next(hi)) {
+        const void *prefix;
+        void *uri;
+        const char *s;
+
+        apr_hash_this(hi, &prefix, NULL, &uri);
+
+        s = apr_psprintf(xi->pool, " xmlns:%s=\"%s\"",
+                         (const char *)prefix, (const char *)uri);
+        ap_text_append(xi->pool, phdr, s);
+    }
+}
+
 /* ---------------------------------------------------------------
 **
 ** Timeout header processing
