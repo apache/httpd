@@ -6,8 +6,8 @@ APACHE_MODPATH_INIT(aaa)
 
 APACHE_MODULE(access, host-based access control, , , yes)
 APACHE_MODULE(auth, user-based access control, , , yes)
-APACHE_MODULE(auth_anon, anonymous user access)
-APACHE_MODULE(auth_dbm, DBM-based access databases)
+APACHE_MODULE(auth_anon, anonymous user access, , , most)
+APACHE_MODULE(auth_dbm, DBM-based access databases, , , most)
 
 APACHE_MODULE(auth_db, DB-based access databases, , , , [
   AC_CHECK_HEADERS(db.h)
