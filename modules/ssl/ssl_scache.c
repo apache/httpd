@@ -181,7 +181,7 @@ void ssl_scache_expire(server_rec *s)
 **  SSL Extension to mod_status
 **  _________________________________________________________________
 */
-
+#if 0 /* NOT YET */
 static void ssl_ext_ms_display(request_rec *, int, int);
 
 void ssl_scache_status_register(apr_pool_t *p)
@@ -220,3 +220,4 @@ static void ssl_ext_ms_display(request_rec *r, int no_table_report, int short_re
     ap_rputs("</table>\n", r);
     return;
 }
+#endif
