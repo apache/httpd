@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2002/02/07 23:01:47 $]
+Last modified at [$Date: 2002/02/08 17:15:01 $]
 
 Release:
 
@@ -41,6 +41,15 @@ on related projects:
 
 
 CURRENT RELEASE NOTES:
+
+    * 32 status:
+        Justin is waiting for Win32 to become functional.  As potential
+        RM for .32, he considers it a showstopper.  Once Win32 is
+        operational (per EitherBills), .32 will be rolled.  If the group
+        thinks that we could have a good beta without Win32 support, please
+        note so here.  If a majority agree that Win32 is not required for
+        a beta, Justin will roll .32 ASAP.  (And, if you agree with the
+        fact that Win32 is a showstopper, please note that here too.)
 
     * Proposed BETA possibilities
       31 + fixes for all resolved problems and call it 32 (instead of HEAD)
