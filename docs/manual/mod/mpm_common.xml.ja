@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="iso-2022-jp"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
-<!-- English Revision: 105989 (outdated: 106808) -->
+<!-- English Revision: 106808 -->
 
 <!--
  Copyright 2002-2004 The Apache Software Foundation
@@ -201,7 +201,7 @@ accept $B$7$h$&$H$7$F$$$k$H$-$K!"(BApache $B$,$=$l$i$N;R%W%m%;%9$rD>Ns2=$9$k$
     <p>$BFC5-;v9`(B: $B$3$N%G%#%l%/%F%#%V$r(B
     <directive module="core" type="section">VirtualHost</directive>
     $B$G;HMQ$9$k$3$H$O%5%]!<%H$5$l$J$/$J$j$^$7$?!#(BApache 2.0 $B$G(B
-    <a href="../suexec.html">suexec</a> $B$r@_Dj$7$?$$>l9g$O!"(B
+    <program>suexec</program> $B$r@_Dj$7$?$$>l9g$O!"(B
     <directive module="mod_suexec">SuexecUserGroup</directive>
     $B$r;HMQ$7$F$/$@$5$$!#(B</p>
 
@@ -249,7 +249,7 @@ accept $B$7$h$&$H$7$F$$$k$H$-$K!"(BApache $B$,$=$l$i$N;R%W%m%;%9$rD>Ns2=$9$k$
 
     <note><title>$BCm0U(B</title>
       <p>Apache 2 $B$G$O!"(B
-      <a href="../programs/apachectl.html">apachectl</a>
+      <program>apachectl</program>
       $B%9%/%j%W%H$N$_$r;HMQ$7$F%5!<%P$N(B ($B:F(B) $B5/F0$dDd;_$r(B
       $B9T$J$&$3$H$r?d>)$7$F$$$^$9!#(B</p>
     </note>
@@ -313,6 +313,13 @@ accept $B$7$h$&$H$7$F$$$k$H$-$K!"(BApache $B$,$=$l$i$N;R%W%m%;%9$rD>Ns2=$9$k$
     <example>
        Listen [fe80::a00:20ff:fea7:ccea]:80
     </example>
+
+    <note><title>$B%(%i!<>r7o(B</title>
+      $BF10l(B IP $B%"%I%l%9$H%]!<%H$NAH$K!"J#?t$N(B <code>Listen</code> 
+      $B%G%#%l%/%F%#%V$r;XDj$7$F$7$^$&$H!"(B'Address already in use' 
+      $B$H$$$&%(%i!<%a%C%;!<%8$r<u$1$k$3$H$K$J$j$^$9!#(B
+    </note>
+
 </usage>
 
 <seealso><a href="../dns-caveats.html">DNS $B$NLdBj(B</a></seealso>
@@ -960,7 +967,7 @@ accept $B$7$h$&$H$7$F$$$k$H$-$K!"(BApache $B$,$=$l$i$N;R%W%m%;%9$rD>Ns2=$9$k$
     <p>$BFC5-;v9`(B: $B$3$N%G%#%l%/%F%#%V$r(B
     <directive module="core" type="section">VirtualHost</directive>
     $B$G;HMQ$9$k$3$H$O%5%]!<%H$5$l$J$/$J$j$^$7$?!#(B
-    <a href="../suexec.html">suexec</a> $B8~$1$K%5!<%P$r@_Dj$9$k$N$G$"$l$P!"(B
+    <program>suexec</program> $B8~$1$K%5!<%P$r@_Dj$9$k$N$G$"$l$P!"(B
     <directive module="mod_suexec">SuexecUserGroup</directive>
     $B$r;HMQ$7$F$/$@$5$$!#(B</p>
 

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="iso-2022-jp"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
-<!-- English Revision: 105989 (outdated: 106807) -->
+<!-- English Revision: 106807 -->
 
 <!--
  Copyright 2003-2004 The Apache Software Foundation
@@ -706,7 +706,8 @@ module="core">Directory</directive></seealso>
 </contextlist>
 
 <usage>
-    <p>このディレクティブは、<code>httpd</code> がファイルを提供するディレクトリを設定します。
+    <p>このディレクティブは、<program>httpd</program>
+    がファイルを提供するディレクトリを設定します。
      <directive module="mod_alias">Alias</directive> のようなディレクティブにマッチしない場合には、
     ドキュメントの (訳注:ファイルシステム上の) パスを生成するために、
     リクエストされた URL のパス部分をドキュメントルートに付与します。
@@ -743,7 +744,8 @@ module="core">Directory</directive></seealso>
 
 <usage>
     <p>このディレクティブは配送中にファイルの内容を読み込む必要があるときに
-    <code>httpd</code> がメモリマッピングを使うかどうかを制御します。デフォルトでは、
+    <program>httpd</program> がメモリマッピングを使うかどうかを制御します。
+    デフォルトでは、
     例えば、<module>mod_include</module> を使って SSI ファイルを配送
     するときのように、ファイルの途中のデータをアクセスする必要があるときには
     Apache は OS がサポートしていればファイルをメモリにマップします。</p>
@@ -754,12 +756,12 @@ module="core">Directory</directive></seealso>
     使用しないようにした方が良い場合もあります:</p>
 
     <ul>
-    <li>マルチプロセッサシステムの中にはメモリマッピングをすると <code>httpd</code> の
-    性能が落ちるものがあります。</li>
+    <li>マルチプロセッサシステムの中にはメモリマッピングをすると
+    <program>httpd</program> の性能が落ちるものがあります。</li>
     <li>NFS マウントされた <directive module="core">DocumentRoot</directive>
-    では、<code>httpd</code> がメモリマップしている間にファイルが削除されたり
+    では、<program>httpd</program> がメモリマップしている間にファイルが削除されたり
     短くなったりしたときに起こるセグメンテーションフォールトのために
-    <code>httpd</code> がクラッシュする可能性があります。</li>
+    <program>httpd</program> がクラッシュする可能性があります。</li>
     </ul>
 
     <p>これらの問題に当てはまるサーバの設定の場合は、以下のようにして
@@ -796,7 +798,7 @@ module="core">Directory</directive></seealso>
 
 <usage>
     <p>このディレクティブはクライアンにファイルの内容を送るときに
-    <code>httpd</code> がカーネルの
+    <program>httpd</program> がカーネルの
     sendfile サポートを使うかどうかを制御します。デフォルトでは、
     例えば静的なファイルの配送のように、リクエストの処理にファイルの
     途中のデータのアクセスを必要としないときには、Apache は OS が
@@ -1218,8 +1220,7 @@ module="core">Directory</directive></seealso>
     負荷の高いサイトではこのディレクティブは <code>Off</code> にすべきです。
     なお、<var>/support</var> ディレクトリに含まれ、デフォルトでは
     インストールディレクトリの <code>bin</code> サブディレクトリに
-    インストールされる <a
-    href="../programs/logresolve.html">logresolve</a> ユーティリティにより、
+    インストールされる <program>logresolve</program> ユーティリティにより、
     Apache の動作とは別に、ログに残されている IP アドレスからホスト名を
     ルックアップすることが可能です。</p>
 </usage>
@@ -1262,7 +1263,7 @@ module="core">Directory</directive></seealso>
     場合に処理されます。</p>
 
     <p><var>parameter-name</var> 引数は、サーバを起動する際に
-    <code>httpd</code> のコマンドラインに
+    <program>httpd</program> のコマンドラインに
     <code>-D<var>parameter-</var></code> という形で指定すると定義されます。 </p>
 
     <p><directive type="section">IfDefine</directive> セクションは
@@ -1396,7 +1397,7 @@ module="core">Directory</directive></seealso>
     </example>
 </usage>
 
-<seealso><a href="../programs/apachectl.html">apachectl</a></seealso>
+<seealso><program>apachectl</program></seealso>
 </directivesynopsis>
 
 <directivesynopsis>
@@ -2675,7 +2676,10 @@ module="core">Directory</directive></seealso>
     サーバが存在するディレクトリを設定します。
     通常、<code>conf/</code> や <code>logs/</code> といったサブディレクトリが
     存在します。
-    また、他の設定ファイルにおける相対パスは、このディレクトリからとなります。</p>
+    また、他の設定ディレクティブ (例えば <directive
+    module="core">Include</directive> や <directive
+    module="mod_so">LoadModule</directive> など) における相対パスは、
+    このディレクトリからの相対位置となります。</p>
 
     <example><title>例</title>
       ServerRoot /home/httpd
