@@ -278,8 +278,8 @@ static ap_inline void vhost_alias_checkspace(request_rec *r, char *buf,
     }
 }
 
-static void vhost_alias_interpolate(request_rec *r, const char *name,
-				    const char *map, const char *uri)
+static int vhost_alias_interpolate(request_rec *r, const char *name,
+				   const char *map, const char *uri)
 {
     /* 0..9 9..0 */
     enum { MAXDOTS = 19 };
@@ -391,6 +391,8 @@ static void vhost_alias_interpolate(request_rec *r, const char *name,
 	}
 	vhost_alias_checkspace(r, buf, &dest, end - start);
 	for (p = start; p < end; ++p) {
+	    if (!isalnum(*p) && *p != '-' && *p != '.')
+		return HTTP_BAD_REQUEST;
 	    *dest++ = ap_tolower(*p);
 	}
     }
@@ -405,6 +407,7 @@ static void vhost_alias_interpolate(request_rec *r, const char *name,
     else {
 	r->filename = ap_pstrcat(r->pool, buf, uri, NULL);
     }
+    return OK;
 }
 
 static int mva_translate(request_rec *r)
@@ -412,7 +415,7 @@ static int mva_translate(request_rec *r)
     mva_sconf_t *conf;
     const char *name, *map, *uri;
     mva_mode_e mode;
-    int cgi;
+    int cgi, bad;
   
     conf = (mva_sconf_t *) ap_get_module_config(r->server->module_config,
 					      &vhost_alias_module);
@@ -446,7 +449,9 @@ static int mva_translate(request_rec *r)
 	return DECLINED;
     }
 
-    vhost_alias_interpolate(r, name, map, uri);
+    bad = vhost_alias_interpolate(r, name, map, uri);
+    if (bad != OK)
+	return bad;
 
     if (cgi) {
 	/* see is_scriptaliased() in mod_cgi */
