@@ -19,7 +19,7 @@ LTLIBRARY_SOURCES = \
 
 TARGETS = delete-exports $(LTLIBRARY_NAME) $(CORE_IMPLIB_FILE) export_vars.h httpd.exp
 
-include $(top_srcdir)/build/rules.mk
+include $(top_builddir)/build/rules.mk
 include $(top_srcdir)/build/library.mk
 
 gen_test_char_OBJECTS = gen_test_char.lo util_debug.lo

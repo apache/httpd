@@ -1,4 +1,4 @@
 
 SUBDIRS = $(OS_DIR)
 
-include $(top_srcdir)/build/rules.mk
+include $(top_builddir)/build/rules.mk

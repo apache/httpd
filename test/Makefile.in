@@ -10,7 +10,7 @@ PROGRAM_DEPENDENCIES =  \
 	$(top_srcdir)/srclib/apr-util/libaprutil.la \
 	$(top_srcdir)/srclib/apr/libapr.la
 
-include $(top_srcdir)/build/rules.mk
+include $(top_builddir)/build/rules.mk
 
 test: $(PROGRAMS)
 
