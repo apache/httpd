@@ -76,6 +76,12 @@ Available Patches:
       lookup table to display the server name.
         Message-ID: <36189CC2.52006F33@jrc.it>
         Status: Roy (untested +1)
+	Dean -1: I see no need to add a new "virtual host number" to the
+	    server guts... although I can understand why it's nice for
+	    SNMP.  However I'd be totally for a patch which places
+	    "server_rec *" into the scoreboard in place of the name
+	    -- because the pointers are valid across parent and
+	    children... why waste the time doing number lookups and such.
 
     * Manoj's [PATCH] mime.types update
         Message-ID: <19980923190915.B15359@raleigh.ibm.com>
