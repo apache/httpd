@@ -69,8 +69,6 @@
 #include "apr_getopt.h"
 #include "ap_mpm.h"
 
-ap_directive_t *ap_conftree;
-
 /* WARNING: Win32 binds http_main.c dynamically to the server. Please place 
  *          extern functions and global data in another appropriate module.
  *

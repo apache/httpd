@@ -101,6 +101,8 @@ AP_DECLARE_DATA apr_array_header_t *ap_server_pre_read_config;
 AP_DECLARE_DATA apr_array_header_t *ap_server_post_read_config;
 AP_DECLARE_DATA apr_array_header_t *ap_server_config_defines;
 
+AP_DECLARE_DATA ap_directive_t *ap_conftree;
+
 AP_HOOK_STRUCT(
 	    AP_HOOK_LINK(header_parser)
 	    AP_HOOK_LINK(pre_config)

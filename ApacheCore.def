@@ -418,7 +418,8 @@ EXPORTS
         ap_sort_hooks
 	ap_fini_vhost_config
 	ap_fixup_virtual_hosts
-
+        ap_conftree
+        
 ; 
 ; util_xml.h
        ap_text_append
