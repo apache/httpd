@@ -556,7 +556,8 @@ static request_rec *internal_internal_redirect(const char *new_uri,
     return new;
 }
 
-AP_DECLARE(void) ap_internal_fast_redirect(request_rec *rr, request_rec *r))
+/* XXX: Is this function is so bogus and fragile that we deep-6 it? */
+AP_DECLARE(void) ap_internal_fast_redirect(request_rec *rr, request_rec *r)
 {
     /* We need to tell POOL_DEBUG that we're guaranteeing that rr->pool
      * will exist as long as r->pool.  Otherwise we run into troubles because
@@ -564,7 +565,9 @@ AP_DECLARE(void) ap_internal_fast_redirect(request_rec *rr, request_rec *r))
      * rr->pool.
      */
     apr_pool_join(r->pool, rr->pool);
-    r->mtime = 0; /* reset etag info for subrequest */
+    r->mtime = rr->mtime; /* reset etag info for subrequest */
+    r->uri = rr->uri;
+    r->args = rr->args;
     r->filename = rr->filename;
     r->handler = rr->handler;
     r->content_type = rr->content_type;
