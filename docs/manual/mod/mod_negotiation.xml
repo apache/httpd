@@ -201,7 +201,7 @@ found</description>
     than returning an HTTP result 300 (MULTIPLE CHOICES) when there
     are several equally valid choices.  If the directives below were
     given, and the user's Accept-Language header assigned en and de
-    each as quality .500 (equally acceptable) then then first matching
+    each as quality .500 (equally acceptable) then the first matching
     variant, en, will be served.</p>
 
 <example>
