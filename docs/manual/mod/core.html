@@ -575,16 +575,40 @@ considerations.<p><hr>
 
 <h2><A name="hostnamelookups">HostNameLookups directive</A></h2>
 <!--%plaintext &lt;?INDEX {\tt HostNameLookups} directive&gt; -->
-<strong>Syntax:</strong> HostNameLookups <em>boolean</em><br>
-<strong>Default:</strong> <code>HostNameLookups on</code><br>
+<strong>Syntax:</strong> HostNameLookups <em>on | off | double</em><br>
+<strong>Default:</strong> <code>HostNameLookups off</code><br>
 <strong>Context:</strong> server config, virtual host<br>
-<strong>Status:</strong> core<p>
+<strong>Status:</strong> core<br>
+<strong>Compatibility:</strong> <code>double</code> available only in Apache
+1.3 and above.<br>
+<strong>Compatibility:</strong> Default was <code>on</code> prior to Apache
+1.3.<p>
 
-This directive enables DNS lookups so that host names can be logged.
-Having this directive set <code>on</code> also enables the use of names
-in &lt;Limit&gt; blocks for access control.<p>
+This directive enables DNS lookups so that host names can be logged (and
+passed to CGIs/SSIs in <code>REMOTE_HOST</code>).
+The value <code>double</code> refers to doing double-reverse DNS.
+That is, after a reverse lookup is performed, a forward lookup is then
+performed on that result.  At least one of the ip addresses in the forward
+lookup must match the original address.  (In "tcpwrappers" terminology
+this is called <code>PARANOID</code>.)<p>
 
-Heavily loaded sites should set this directive <code>off</code>, since DNS
+Regardless of the setting, when <a href="mod_access.html">mod_access</a>
+is used for controlling access by hostname, a double reverse lookup
+will be performed.  This is necessary for security.  Note that the
+result of this double-reverse isn't generally available unless
+you set <code>HostnameLookups double</code>.  For example, if only
+<code>HostnameLookups on</code> and a request is made to an object that
+is protected by hostname restrictions, regardless of whether the
+double-reverse fails or not, CGIs will still be passed the single-reverse
+result in <code>REMOTE_HOST</code>.<p>
+
+The default for this directive was previously <code>on</code> in
+versions of Apache prior to 1.3.  It was changed to <code>off</code>
+in order to save the network traffic for those sites that don't truly
+need the reverse lookups done.  It is also better for the end users
+because they don't have to suffer the extra latency that a lookup
+entails.
+Heavily loaded sites should leave this directive <code>off</code>, since DNS
 lookups can take considerable amounts of time. The utility <i>logresolve</i>,
 provided in the <i>/support</i> directory, can be used to look up host names
 from logged IP addresses offline.<p><hr>
