@@ -1237,16 +1237,6 @@ PROXY_DECLARE(int) ap_proxy_pre_request(proxy_worker **worker,
 {
     int access_status;
     
-    if (r->proxyreq == PROXYREQ_PROXY) {
-        if (conf->forward) {
-            *balancer = NULL;
-            *worker = conf->forward;
-            access_status = OK;
-        }
-        else
-            access_status = DECLINED;
-        return access_status;
-    }
     access_status = proxy_run_pre_request(worker, balancer, r, conf, url);
     if (access_status == DECLINED && *balancer == NULL) {
         *worker = ap_proxy_get_worker(r->pool, conf, *url);
@@ -1254,8 +1244,13 @@ PROXY_DECLARE(int) ap_proxy_pre_request(proxy_worker **worker,
             *balancer = NULL;
             access_status = OK;
         }
-        else
-            access_status = DECLINED;
+        else if (r->proxyreq == PROXYREQ_PROXY) {
+            if (conf->forward) {
+                *balancer = NULL;
+                *worker = conf->forward;
+                access_status = OK;
+            }
+        }
     }
     else if (access_status == DECLINED && balancer != NULL) {
         /* All the workers are busy */
