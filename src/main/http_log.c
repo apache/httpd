@@ -248,12 +248,14 @@ API_EXPORT(void) aplog_error (const char *file, int line, int level,
 	vfprintf(r->server->error_log, fmt, args);
 	fflush(r->server->error_log);
     }
+#ifdef NOTYET
     else {
 	if (errstr)
 	    syslog(level, "%s", errstr);
 
 	vsyslog(level, fmt, args);
     }
+#endif
     
     va_end(args);
 }
