@@ -448,7 +448,8 @@ API_EXPORT(void) ap_MD5Encode(const unsigned char *pw,
     const unsigned char *sp, *ep;
     unsigned char final[16];
     int i;
-    unsigned int sl, pl;
+    unsigned int sl;
+    int pl;
     unsigned int pwlen;
     AP_MD5_CTX ctx, ctx1;
     unsigned long l;
@@ -509,7 +510,7 @@ API_EXPORT(void) ap_MD5Encode(const unsigned char *pw,
     ap_MD5Update(&ctx1, pw, pwlen);
     ap_MD5Final(final, &ctx1);
     for(pl = pwlen; pl > 0; pl -= 16) {
-	ap_MD5Update(&ctx, final, (pl > 16) ? 16 : pl);
+	ap_MD5Update(&ctx, final, (pl > 16) ? 16 : (unsigned int) pl);
     }
 
     /*
