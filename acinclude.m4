@@ -326,7 +326,7 @@ AC_DEFUN(APACHE_LAYOUT,[
   rm $pldconf
   for var in prefix exec_prefix bindir sbindir libexecdir mandir \
              sysconfdir datadir errordir iconsdir htdocsdir cgidir \
-             includedir localstatedir runtimedir logfiledir \
+             includedir localstatedir runtimedir logfiledir libdir \
              manualdir proxycachedir installbuilddir; do
     eval "val=\"\$$var\""
     case $val in
