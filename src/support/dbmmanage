@@ -89,9 +89,9 @@ my $Is_Win32  = $^O eq "MSWin32";
 my %DB = ();
 my @range = ();
 my($mode, $flags) = $command =~ 
-    /^(?:view|check)$/ ? (undef, O_RDONLY) : (0644, O_RDWR|O_CREAT);
+    /^(?:view|check)$/ ? (0644, O_RDONLY) : (0644, O_RDWR|O_CREAT);
 
-tie %DB, "AnyDBM_File", $file, $flags, $mode;
+tie %DB, "AnyDBM_File", $file, $flags, $mode || die "Can't tie $file: $!";
 dbmc->$command();
 untie %DB;
 
