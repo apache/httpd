@@ -1,5 +1,9 @@
 Changes with Apache 2.0.45
 
+  *) suexec: Be more pedantic when cleaning environment. Clean it
+     immediately after startup. PR 2790, 10449.
+     [Jeff Stewart <jws@purdue.edu>, André Malo]
+
   *) Fix apxs to insert LoadModule directives only outside of sections.
      PR 8712, 9012.  [André Malo]
 
