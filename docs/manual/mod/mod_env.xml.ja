@@ -2,7 +2,7 @@
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
 <modulesynopsis>
-<!-- English revision: 1.3 -->
+<!-- English revision: 1.4 -->
 
 <name>mod_env</name>
   <description>CGI スクリプト及び SSI
@@ -23,7 +23,7 @@
     <name>PassEnv</name>
     <description>シェルからの環境変数を渡す</description>
     <syntax>PassEnv
-    <em>env-variable</em> [<em>env-variable</em>] ...</syntax>
+    <var>env-variable</var> [<var>env-variable</var>] ...</syntax>
     <contextlist>
       <context>server config</context><context>virtual host</context>
       <context>directory</context><context>.htaccess</context>
@@ -33,9 +33,8 @@
 <usage>
 
     <p>httpd プロセスを起動したシェルの環境から CGI スクリプトと
-    SSI ページに渡す環境変数を一つ以上指定します。例:
-    </p>
-<example>
+    SSI ページに渡す環境変数を一つ以上指定します。</p>
+<example><title>例</title>
     PassEnv LD_LIBRARY_PATH
 </example>
 </usage>
@@ -44,7 +43,7 @@
 <directivesynopsis>
 <name>SetEnv</name>
 <description>環境変数を設定する</description>
-<syntax>SetEnv <em>env-variable value</em></syntax>
+<syntax>SetEnv <var>env-variable value</var></syntax>
 <contextlist>
 <context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context>
@@ -53,8 +52,8 @@
 
 <usage>
     <p>環境変数を設定し、それを CGI スクリプトと SSI
-    ページに渡すようにします。例:</p>
-<example>
+    ページに渡すようにします。</p>
+<example><title>例</title>
     SetEnv SPECIAL_PATH /foo/bin
 </example>
 </usage>
@@ -63,7 +62,7 @@
 <directivesynopsis>
 <name>UnsetEnv</name>
 <description>環境から変数を取り除く</description>
-<syntax>UnsetEnv <em>env-variable</em> [<em>env-variable</em>] ...</syntax>
+<syntax>UnsetEnv <var>env-variable</var> [<var>env-variable</var>] ...</syntax>
 <contextlist>
 <context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context>
@@ -72,8 +71,8 @@
 
 <usage>
     <p>CGI スクリプトと SSI
-    ページに渡される環境変数から指定された環境変数を取り除きます。例:</p>
-<example>
+    ページに渡される環境変数から指定された環境変数を取り除きます。</p>
+<example><title>例</title>
     UnsetEnv LD_LIBRARY_PATH
 </example>
 </usage>

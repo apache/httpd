@@ -2,7 +2,7 @@
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
 <modulesynopsis>
-<!-- English revision: 1.7.2.1 -->
+<!-- English revision: 1.7.2.2 -->
 
 <name>mod_access</name> 
 <description>クライアントのホスト名、IP アドレス、その他のクライアント
@@ -82,38 +82,53 @@
     <dl>
       <dt>ドメイン名 (の一部)</dt>
 
-      <dd>例: <code>Allow from apache.org</code><br />
-      この文字列に合うか、これで終わる名前のホストのアクセスが許可されます。
+      <dd>
+      <example><title>例:</title>
+        Allow from apache.org
+      </example>
+      <p>この文字列に合うか、これで終わる名前のホストのアクセスが許可されます。
       各部分が完全に合うものだけに適用されますので、上の例は
       <code>foo.apache.org</code> にはマッチしますが、
       <code>fooapache.org</code> にはマッチしません。
       この設定をすると、サーバは
       <directive module="core">HostnameLookups</directive>
       の設定に関わらず、クライアントの IP アドレスに対して
-      DNS の逆引きを行ないます。</dd>
+      DNS の逆引きを行ないます。</p></dd>
 
       <dt>完全な IP アドレス</dt>
 
-      <dd>例: <code>Allow from 10.1.2.3</code><br />
-      アクセスを許可する IP アドレスです。</dd>
+      <dd>
+      <example><title>例:</title>
+        Allow from 10.1.2.3
+      </example>
+      <p>アクセスを許可する IP アドレスです。</p></dd>
 
       <dt>IP アドレスの一部</dt>
 
-      <dd>例: <code>Allow from 10.1</code><br />
-      サブネットの制限用の、IP
-      アドレスの最初の一つから三つまでのバイトです。</dd>
+      <dd>
+      <example><title>例:</title>
+        Allow from 10.1
+      </example>
+      <p>サブネットの制限用の、IP
+      アドレスの最初の一つから三つまでのバイトです。</p></dd>
 
       <dt>ネットワーク/ネットマスク の対</dt>
 
-      <dd>例: <code>Allow from 10.1.0.0/255.255.0.0</code><br />
-      ネットワーク a.b.c.d とネットマスク w.x.y.z です。
-      より細粒度のサブネット制限用です。</dd>
+      <dd>
+      <example><title>例:</title>
+        Allow from 10.1.0.0/255.255.0.0
+      </example>
+      <p>ネットワーク a.b.c.d とネットマスク w.x.y.z です。
+      より細粒度のサブネット制限用です。</p></dd>
 
       <dt>ネットワーク/nnn CIDR 指定</dt>
 
-      <dd>例: <code>Allow from 10.1.0.0/16</code><br />
-      ネットマスクが nnn の上位ビットが 1
-      となっているものからなること以外は前のものと同じです。</dd>
+      <dd>
+      <example><title>例:</title>
+        Allow from 10.1.0.0/16
+      </example>
+      <p>ネットマスクが nnn の上位ビットが 1
+      となっているものからなること以外は前のものと同じです。</p></dd>
     </dl>
 
     <p>注: 最後の三つの例はまったく同じホストに合います。</p>
@@ -155,17 +170,12 @@
     <p>この場合、user-agent の文字列が <code>KnockKnock/2.0</code>
     で始まるブラウザのみがアクセスを許可され、
     他のものはアクセスを拒否されます。</p>
-
 </usage>
-
 </directivesynopsis>
 
 <directivesynopsis>
-
 <name>Deny</name>
-
 <description>サーバがアクセスを拒否するホストを制御する</description>
-
 <syntax> Deny from
     all|<var>host</var>|env=<var>env-variable</var>
     [<var>host</var>|env=<var>env-variable</var>] ...</syntax>
@@ -202,7 +212,7 @@
     <var>Ordering</var> は以下のどれかです。</p>
 
     <dl>
-      <dt>Deny,Allow</dt>
+      <dt><code>Deny,Allow</code></dt>
 
       <dd><directive module="mod_access">Deny</directive> ディレクティブが
       <directive module="mod_access">Allow</directive>
@@ -212,7 +222,7 @@
       ディレクティブに合わないか、<directive module="mod_access">Allow</directive>
       ディレクティブに合うクライアントはアクセスを許可されます。</dd>
 
-      <dt>Allow,Deny</dt>
+      <dt><code>Allow,Deny</code></dt>
 
       <dd><directive module="mod_access">Allow</directive>
       ディレクティブが <directive
@@ -224,7 +234,7 @@
       ディレクティブに合うクライアントはアクセスを拒否されます。
       </dd>
 
-      <dt>Mutual-failure</dt>
+      <dt><code>Mutual-failure</code></dt>
 
       <dd><directive module="mod_access">Allow</directive> のリストに現れて、
       <directive module="mod_access">Deny</directive>
@@ -234,7 +244,7 @@
     </dl>
 
     <p>キーワードはコンマで分離することだけが可能です。
-    間に空白があってはいけません。どの場合でも、<directive
+    間に<em>空白があってはいけません</em>。どの場合でも、<directive
     module="mod_access">Allow</directive> と
     <directive module="mod_access">Deny</directive> 文は
     全て評価されるということに注意してください。
