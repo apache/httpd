@@ -55,8 +55,8 @@
  * 
  */ 
 
-#ifndef APACHE_MPM_MPMT_PTHREAD_H
-#define APACHE_MPM_MPMT_PTHREAD_H
+#ifndef APACHE_MPM_MPMT_BEOS_H
+#define APACHE_MPM_MPMT_BEOS_H
 
 extern int ap_threads_per_child;
 extern int ap_max_requests_per_child;
@@ -64,5 +64,6 @@ extern int ap_pipe_of_death[2];
 extern void clean_child_exit(int);
 extern int ap_extended_status;
 extern void clean_child_exit(int);
+extern int max_daemons_limit;
 
-#endif /* APACHE_MPM_MPMT_PTHREAD_H */
+#endif /* APACHE_MPM_MPMT_BEOS_H */
