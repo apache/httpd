@@ -288,7 +288,7 @@ static const char *remove_handler(cmd_parms *cmd, void *m, const char *ext)
  * Just like the previous function, except that it records encoding
  * associations to be undone.
  */
-static const char *remove_encoding(cmd_parms *cmd, void *m, char *ext)
+static const char *remove_encoding(cmd_parms *cmd, void *m, const char *ext)
 {
     mime_dir_config *mcfg = (mime_dir_config *) m;
     attrib_info *suffix;
@@ -305,7 +305,7 @@ static const char *remove_encoding(cmd_parms *cmd, void *m, char *ext)
  * Similar to the previous functions, except that it deals with filename
  * suffix/MIME-type associations.
  */
-static const char *remove_type(cmd_parms *cmd, void *m, char *ext)
+static const char *remove_type(cmd_parms *cmd, void *m, const char *ext)
 {
     mime_dir_config *mcfg = (mime_dir_config *) m;
     attrib_info *suffix;
@@ -347,9 +347,9 @@ AP_INIT_TAKE1("ForceType", ap_set_string_slot_lower,
      "a media type"),
 AP_INIT_ITERATE("RemoveHandler", remove_handler, NULL, OR_FILEINFO,
      "one or more file extensions"),
-AP_INIT_ITERATE("RemoveEncoding", remove_handler, NULL, OR_FILEINFO,
+AP_INIT_ITERATE("RemoveEncoding", remove_encoding, NULL, OR_FILEINFO,
      "one or more file extensions"),
-AP_INIT_ITERATE("RemoveType", remove_handler, NULL, OR_FILEINFO,
+AP_INIT_ITERATE("RemoveType", remove_type, NULL, OR_FILEINFO,
      "one or more file extensions"),
 AP_INIT_TAKE1("SetHandler", ap_set_string_slot_lower, 
      (void *)XtOffsetOf(mime_dir_config, handler), OR_FILEINFO,
