@@ -626,7 +626,7 @@ CORE_EXPORT(void) ap_parse_uri(request_rec *r, const char *uri)
 
 static int read_request_line(request_rec *r)
 {
-    char l[r->server->limit_req_line + 2];
+    char *l=alloca(r->server->limit_req_line + 2);
     const char *ll = l, *uri;
     conn_rec *conn = r->connection;
     int major = 1, minor = 0;   /* Assume HTTP/1.0 if non-"HTTP" protocol */
@@ -714,7 +714,7 @@ static void get_mime_headers(request_rec *r)
     char *value, *copy;
     int len;
     unsigned int fields_read = 0;
-    char field[r->server->limit_req_fieldsize + 2];
+    char *field=alloca(r->server->limit_req_fieldsize + 2);
 
     /*
      * Read header lines until we get the empty separator line, a read error,
