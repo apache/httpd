@@ -68,7 +68,7 @@ LINK32=link.exe
 # PROP Intermediate_Dir "Debug"
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
-# ADD BASE CPP /nologo /MDd /W3 /GX /ZI /Od /I ".\include" /I ".\srclib\apr\include" /I ".\srclib\apr-util\include" /I "./server/mpm/winnt" /I "./srclib/expat-lite" /I "./os/win32" /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /D "AP_DECLARE_EXPORT" /FD /c
+# ADD BASE CPP /nologo /MDd /W3 /GX /Zi /Od /I ".\include" /I ".\srclib\apr\include" /I ".\srclib\apr-util\include" /I "./server/mpm/winnt" /I "./srclib/expat-lite" /I "./os/win32" /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /D "AP_DECLARE_EXPORT" /FD /c
 # ADD CPP /nologo /MDd /W3 /GX /Zi /Od /I ".\include" /I ".\srclib\apr\include" /I ".\srclib\apr-util\include" /I "./server/mpm/winnt" /I "./srclib/expat-lite" /I "./os/win32" /I "./modules/http" /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /D "AP_DECLARE_EXPORT" /Fd"Debug\libhttpd" /FD /c
 # ADD BASE MTL /nologo /D "_DEBUG" /win32
 # ADD MTL /nologo /D "_DEBUG" /mktyplib203 /win32

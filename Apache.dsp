@@ -65,7 +65,7 @@ LINK32=link.exe
 # PROP Intermediate_Dir "Debug"
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
-# ADD BASE CPP /nologo /MDd /W3 /GX /ZI /Od /I "./include" /I "./os/win32" /I "./srclib/apr/include" /I "./srclib/apr-util/include" /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /FD /c
+# ADD BASE CPP /nologo /MDd /W3 /GX /Zi /Od /I "./include" /I "./os/win32" /I "./srclib/apr/include" /I "./srclib/apr-util/include" /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /FD /c
 # ADD CPP /nologo /MDd /W3 /GX /Zi /Od /I "./include" /I "./os/win32" /I "./srclib/apr/include" /I "./srclib/apr-util/include" /D "_DEBUG" /D "WIN32" /D "_CONSOLE" /Fd"Debug\Apache" /FD /c
 # SUBTRACT CPP /YX
 # ADD BASE RSC /l 0x409 /d "_DEBUG"
