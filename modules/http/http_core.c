@@ -2560,7 +2560,7 @@ static int default_handler(request_rec *r)
     ap_mmap_offset((void**)&addr, mm ,0);
 
 	if (d->content_md5 & 1) {
-	    AP_MD5_CTX context;
+	    ap_md5_ctx_t context;
 	    
 	    ap_MD5Init(&context);
 	    ap_MD5Update(&context, addr, (unsigned int)r->finfo.size);

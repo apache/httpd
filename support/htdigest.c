@@ -69,10 +69,8 @@
  */
 
 #include "apr_lib.h"
-#include "ap_config.h"
-#include <sys/types.h>
-#include "ap.h"
-#include "ap_md5.h"
+#include "apr_md5.h"
+#include "apr_portable.h"
 #if defined(MPE) || defined(QNX) || defined(WIN32) || defined(__TANDEM) || defined(BEOS)
 #include <signal.h>
 #else
@@ -142,8 +140,8 @@ static void putline(FILE *f, char *l)
 static void add_password(char *user, char *realm, FILE *f)
 {
     char *pw;
-    AP_MD5_CTX context;
-    unsigned char digest[16];
+    ap_md5_ctx_t context;
+    unsigned char digest[MD5_DIGESTSIZE];
     char string[MAX_STRING_LEN];
     char pwin[MAX_STRING_LEN];
     char pwv[MAX_STRING_LEN];
@@ -174,7 +172,7 @@ static void add_password(char *user, char *realm, FILE *f)
     ap_MD5Update(&context, (unsigned char *) string, strlen(string));
     ap_MD5Final(digest, &context);
 
-    for (i = 0; i < 16; i++)
+    for (i = 0; i < MD5_DIGESTSIZE; i++)
 	fprintf(f, "%02x", digest[i]);
 
     fprintf(f, "\n");
