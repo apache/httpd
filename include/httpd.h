@@ -462,6 +462,8 @@ API_EXPORT(const char *) ap_get_server_built(void);
 /* Methods recognized (but not necessarily handled) by the server.
  * These constants are used in bit shifting masks of size int, so it is
  * unsafe to have more methods than bits in an int.  HEAD == M_GET.
+ * This list must be tracked by the list in http_protocol.c in routine
+ * ap_method_name_of().
  */
 #define M_GET        0
 #define M_PUT        1
