@@ -1,5 +1,5 @@
 Apache 2.0 STATUS:
-Last modified at [$Date: 1999/11/04 18:25:23 $]
+Last modified at [$Date: 1999/11/04 18:59:39 $]
 
 Release:
 
@@ -12,21 +12,26 @@ Plan:
 
 RELEASE SHOWSTOPPERS:
 
+    * Complete HAVE_SENDFILE work. Need to add iovec head and tail pointers to 
+      the iol sendfile API and make it work under Unix.
+        Status: Bill <stoddard@raleigh.ibm.com> is working on this
+
     * Pipes to CGI scripts are not being timed out
         Status:
 
     * Port mod_rewrite
-        Status: Paul Reder is working on this.
+        Status: Paul Reder <rederpj@raleigh.ibm.com> is working on this.
 
     * Port mod_mime_magic
-        Status: Paul Reder is working on this.
+        Status: Paul Reder <rederpj@raleigh.ibm.com> is working on this.
 
     * suEXEC doesn't work
         Status: Manoj has posted an patch to fix this.
         <19991103003605.A20612@samosa.mindspring.com>
 
     * Windows NT port isn't done
-        Status: Bill is working on MPM and APR. Remaining work:
+        Status: Bill  <stoddard@raleigh.ibm.com> is working on MPM and APR. 
+	Remaining work:
         1. Add back ability to run Apache as a service
         2. Fix Win9* specific code in the winnt MPM
         3. Get the MPM working in multi process mode (one parent & one child)
@@ -52,9 +57,14 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
       that will write to the native stderr handle instead of the CRT stderr handle.
       Bleh.
 
-    * Win32: Migrate the MPM over to use APR thread/process calls.
+    * Win32: Migrate the MPM over to use APR thread/process calls. This would eliminate
+	some code in the Win32 branch that essentially duplicates what is in APR.
+	Status: Bill <stoddard@raleigh.ibm.com> is working on this.
 
     * Move I/O layering into APR.
+
+    * APR'ize I/O layering. iol is using native sockets now, which is the source of
+      the double close problem Manoj ran into.
 
     * There are still a number of places in the code where we are loosing error
       status (i.e. throwing away the error returned by a system call and replacing
@@ -65,8 +75,8 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
       style stat structure, just to keep it familier.
 
     * Implement reliable piped logs on Windows
-      Status: Bill has prototype code (not reliable) in 1.3. Should be much 
-      cleaner with APR in 2.0.
+        Status: Bill <stoddard@raleigh.ibm.com> has prototype code (not reliable) in 1.3. 
+        Should be much cleaner with APR in 2.0.
 
     * Switch to autoconf, et al. for configuration.
 
