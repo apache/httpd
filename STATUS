@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/02/05 15:55:39 $]
+Last modified at [$Date: 2004/02/05 18:41:58 $]
 
 Release:
 
@@ -229,11 +229,6 @@ PATCHES TO BACKPORT FROM 2.1
 	  wouldn't be listening on any port so it wouldn't matter anyway.
          nd replies: But if it can't be 0 the alternatives thereafter make no
            sense anymore, right?
-
-    * mod_setenvif: Fix optimizer to treat regexps as such even if they
-      only contain anchors like \b. PR 24219.
-        modules/metadata/mod_setenvif.c: r1.44, r1.46
-      +1: nd, jerenkrantz, trawick
 
     * LDAP cache fixes from Matthieu Estrade; see PR 18756
         include/util_ldap.h r1.12
