@@ -1,5 +1,10 @@
 Changes with Apache 1.3.12
 
+  *) Cast integer ap_wait_t values in http_main.c to get rid of compile
+     time errors on platforms where "ap_wait_t" is not defined as "int"
+     (currently only the NEXT and UTS21 platforms).
+     [Gary Bickford <garyb@fxt.com>, Ralf S. Engelschall] PR#5053
+
   *) The default suexec path was HTTPD_ROOT/sbin/suexec if not
      configured via APACI. Changed to HTTPD_ROOT/bin/suexec.
      [Lars Eilebrecht]

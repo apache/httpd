@@ -1585,7 +1585,7 @@ API_EXPORT(void) ap_unregister_other_child(void *data)
     for (pocr = &other_children; *pocr; pocr = &(*pocr)->next) {
 	if ((*pocr)->data == data) {
 	    nocr = (*pocr)->next;
-	    (*(*pocr)->maintenance) (OC_REASON_UNREGISTER, (*pocr)->data, -1);
+	    (*(*pocr)->maintenance) (OC_REASON_UNREGISTER, (*pocr)->data, (ap_wait_t)-1);
 	    *pocr = nocr;
 	    /* XXX: um, well we've just wasted some space in pconf ? */
 	    return;
@@ -1641,7 +1641,7 @@ static void probe_writable_fds(void)
 	    continue;
 	if (FD_ISSET(ocr->write_fd, &writable_fds))
 	    continue;
-	(*ocr->maintenance) (OC_REASON_UNWRITABLE, ocr->data, -1);
+	(*ocr->maintenance) (OC_REASON_UNWRITABLE, ocr->data, (ap_wait_t)-1);
     }
 }
 
@@ -2460,16 +2460,16 @@ static void reclaim_child_processes(int terminate)
 	    waitret = waitpid(ocr->pid, &status, WNOHANG);
 	    if (waitret == ocr->pid) {
 		ocr->pid = -1;
-		(*ocr->maintenance) (OC_REASON_DEATH, ocr->data, status);
+		(*ocr->maintenance) (OC_REASON_DEATH, ocr->data, (ap_wait_t)status);
 	    }
 	    else if (waitret == 0) {
-		(*ocr->maintenance) (OC_REASON_RESTART, ocr->data, -1);
+		(*ocr->maintenance) (OC_REASON_RESTART, ocr->data, (ap_wait_t)-1);
 		++not_dead_yet;
 	    }
 	    else if (waitret == -1) {
 		/* uh what the heck? they didn't call unregister? */
 		ocr->pid = -1;
-		(*ocr->maintenance) (OC_REASON_LOST, ocr->data, -1);
+		(*ocr->maintenance) (OC_REASON_LOST, ocr->data, (ap_wait_t)-1);
 	    }
 	}
 #endif
