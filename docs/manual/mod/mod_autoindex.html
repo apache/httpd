@@ -543,6 +543,13 @@ the file will be processed for server-side includes (see the
 <A HREF="mod_include.html"><SAMP>mod_include</SAMP></A> documentation).
 </BLOCKQUOTE>
 <P>
+If the file specified by <SAMP>HeaderName</SAMP> contains the
+beginnings of an HTML document (&lt;HTML&gt;, &lt;HEAD&gt;, etc) then
+you will probably want to set <A
+HREF="#indexoptions:suppresshtmlpreamble"><SAMP>IndexOptions
++SuppressHTMLPreamble</SAMP></A>, so that these tags are not
+repeated.
+<P>
 See also <A HREF="#readmename">ReadmeName</A>.
 <P><HR>
 
