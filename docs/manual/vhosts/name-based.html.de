@@ -20,6 +20,7 @@
 <div class="toplang">
 <p><span>Verfügbare Sprachen: </span><a href="../de/vhosts/name-based.html" title="Deutsch">&nbsp;de&nbsp;</a> |
 <a href="../en/vhosts/name-based.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../es/vhosts/name-based.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
 <a href="../ja/vhosts/name-based.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/vhosts/name-based.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
@@ -258,6 +259,7 @@
 <div class="bottomlang">
 <p><span>Verfügbare Sprachen: </span><a href="../de/vhosts/name-based.html" title="Deutsch">&nbsp;de&nbsp;</a> |
 <a href="../en/vhosts/name-based.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../es/vhosts/name-based.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
 <a href="../ja/vhosts/name-based.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/vhosts/name-based.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div><div id="footer">

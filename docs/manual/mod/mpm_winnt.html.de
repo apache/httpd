@@ -23,6 +23,7 @@
 <div class="toplang">
 <p><span>Verfügbare Sprachen: </span><a href="../de/mod/mpm_winnt.html" title="Deutsch">&nbsp;de&nbsp;</a> |
 <a href="../en/mod/mpm_winnt.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../es/mod/mpm_winnt.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
 <a href="../ja/mod/mpm_winnt.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a></p>
 </div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Beschreibung:</a></th><td> Das Multi-Processing-Modul ist optimiert für
@@ -85,6 +86,7 @@ Direktive, um den Gebrauch von AcceptEx() zu deaktivieren.</code></td></tr>
 <div class="bottomlang">
 <p><span>Verfügbare Sprachen: </span><a href="../de/mod/mpm_winnt.html" title="Deutsch">&nbsp;de&nbsp;</a> |
 <a href="../en/mod/mpm_winnt.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../es/mod/mpm_winnt.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
 <a href="../ja/mod/mpm_winnt.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 1999-2004 The Apache Software Foundation.<br />Lizenziert unter der <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
