@@ -276,11 +276,7 @@ PROXY_DECLARE(char *)
 	if (!apr_isdigit(host[i]) && host[i] != '.')
 	    break;
     /* must be an IP address */
-#if defined(WIN32) || defined(NETWARE) || defined(TPF) || defined(BEOS)
-    if (host[i] == '\0' && (inet_addr(host) == -1))
-#else
-    if (host[i] == '\0' && (ap_inet_addr(host) == -1 || inet_network(host) == -1))
-#endif
+    if (host[i] == '\0' && (apr_inet_addr(host) == -1))
     {
 	return "Bad IP address in URL";
     }
@@ -630,7 +626,7 @@ PROXY_DECLARE(int) ap_proxy_is_ipaddr(struct dirconn_entry *This, apr_pool_t *p)
     long bits;
 
     /* if the address is given with an explicit netmask, use that */
-    /* Due to a deficiency in ap_inet_addr(), it is impossible to parse */
+    /* Due to a deficiency in apr_inet_addr(), it is impossible to parse */
     /* "partial" addresses (with less than 4 quads) correctly, i.e.  */
     /* 192.168.123 is parsed as 192.168.0.123, which is not what I want. */
     /* I therefore have to parse the IP address manually: */
