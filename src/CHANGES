@@ -1,5 +1,8 @@
 Changes with Apache 1.3.24
 
+  *) Fix a NULL variable check in proxy where we were checking the
+     wrong variable. [Geff Hanoian <geff@pier64.com>]
+
   *) Fix typo in default config files related to Swedish language
      documents.  PR: 9906, 10040  [Tomas Ögren <stric@ing.umu.se>,
      Dennis Lundberg <dennis.lundberg@mdh.se>]

@@ -1155,7 +1155,7 @@ int ap_proxy_cache_check(request_rec *r, char *url, struct cache_conf *conf,
         smaxage = -1;
 
     /* extract max-age from request */
-    if (cc_cresp && ap_proxy_liststr(cc_req, "max-age", &val))
+    if (cc_req && ap_proxy_liststr(cc_req, "max-age", &val))
         maxage_req =  atoi(val);
     else
         maxage_req = -1;
