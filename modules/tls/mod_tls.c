@@ -186,7 +186,7 @@ static apr_status_t churn_output(TLSFilterCtx *pCtx)
     return APR_SUCCESS;
 }
 
-static apr_status_t churn(TLSFilterCtx *pCtx,apr_read_type_e eReadType,apr_size_t readbytes)
+static apr_status_t churn(TLSFilterCtx *pCtx,apr_read_type_e eReadType,apr_size_t *readbytes)
 {
     ap_input_mode_t eMode=eReadType == APR_BLOCK_READ ? AP_MODE_BLOCKING
       : AP_MODE_NONBLOCKING;
@@ -333,7 +333,7 @@ static apr_status_t tls_out_filter(ap_filter_t *f,apr_bucket_brigade *pbbIn)
 }
 
 static apr_status_t tls_in_filter(ap_filter_t *f,apr_bucket_brigade *pbbOut,
-				  ap_input_mode_t eMode, apr_size_t readbytes)
+				  ap_input_mode_t eMode, apr_size_t *readbytes)
 {
     TLSFilterCtx *pCtx=f->ctx;
     apr_read_type_e eReadType=eMode == AP_MODE_BLOCKING ? APR_BLOCK_READ :

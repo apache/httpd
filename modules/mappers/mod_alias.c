@@ -335,7 +335,16 @@ static char *try_alias_list(request_rec *r, apr_array_header_t *aliases, int doe
 		    found = ap_pregsub(r->pool, p->real, r->uri,
 				    p->regexp->re_nsub + 1, regm);
 		    if (found && doesc) {
-			found = ap_escape_uri(r->pool, found);
+                        uri_components uri;
+                        ap_parse_uri_components(r->pool, found, &uri);
+			found = ap_escape_uri(r->pool, uri.path);
+                        if (uri.query) {
+                            found = apr_pstrcat(r->pool, found, "?", uri.query, NULL);
+                        }
+                        else if (uri.fragment) {
+                            found = apr_pstrcat(r->pool, found, "#", uri.fragment, NULL);
+
+                        }
 		    }
 		}
 		else {
