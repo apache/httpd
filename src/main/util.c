@@ -1976,7 +1976,7 @@ char *ap_get_local_host(pool *a)
 #define MAXHOSTNAMELEN 256
 #endif
     char str[MAXHOSTNAMELEN];
-    char *server_hostname;
+    char *server_hostname = NULL;
     struct hostent *p;
 
 #ifdef BEOS /* BeOS returns zero as an error for gethostname */
@@ -1984,17 +1984,31 @@ char *ap_get_local_host(pool *a)
 #else    
     if (gethostname(str, sizeof(str) - 1) != 0) {
 #endif /* BeOS */
-	perror("Unable to gethostname");
-	exit(1);
+	ap_log_error(APLOG_MARK, APLOG_WARNING, NULL,
+	             "%s: gethostname() failed to detemine ServerName\n",
+                     ap_server_argv0);
+	server_hostname = ap_pstrdup(a, "127.0.0.1");
     }
-    str[sizeof(str) - 1] = '\0';
-    if ((!(p = gethostbyname(str))) || (!(server_hostname = find_fqdn(a, p)))) {
-	fprintf(stderr, "%s: cannot determine local host name.\n",
-		ap_server_argv0);
-	fprintf(stderr, "Use the ServerName directive to set it manually.\n");
-	exit(1);
+    else 
+    {
+        str[sizeof(str) - 1] = '\0';
+        if ((!(p = gethostbyname(str))) 
+            || (!(server_hostname = find_fqdn(a, p)))) {
+            /* Recovery - return the default servername by IP: */
+            if (!str && p->h_addr_list[0]) {
+                ap_snprintf(str, sizeof(str), "%pA", p->h_addr_list[0]);
+	        server_hostname = ap_pstrdup(a, str);
+            }
+        }
     }
 
+    if (!server_hostname) 
+        server_hostname = ap_pstrdup(a, "127.0.0.1");
+    
+    ap_log_error(APLOG_MARK, APLOG_ALERT|APLOG_NOERRNO, NULL,
+	         "%s: Missing ServerName directive, assumed host name %s\n",
+                 ap_server_argv0, server_hostname);
+    
     return server_hostname;
 }
 
