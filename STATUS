@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/02/15 01:02:59 $]
+Last modified at [$Date: 2003/02/15 01:21:30 $]
 
 Release:
 
@@ -99,10 +99,6 @@ PATCHES TO PORT FROM 2.1
       modules/dav/main/util.c: r1.45
       [ This one is under review.  Don't merge.  ]
       +1:
-
-    * Better report problems with piped log processes (PR 15761)
-      server/log.c: r1.129 and r1.130
-      +1: trawick, nd, jerenkrantz
 
     * Better report problems with external scripts
       modules/filters/mod_ext_filter.c: r1.4

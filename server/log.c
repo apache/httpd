@@ -220,6 +220,13 @@ AP_DECLARE(apr_status_t) ap_replace_stderr_log(apr_pool_t *p,
     return rc;
 }
 
+static void log_child_errfn(apr_pool_t *pool, apr_status_t err,
+                            const char *description)
+{
+    ap_log_error(APLOG_MARK, APLOG_ERR, err, NULL,
+                 "%s", description);
+}
+
 static int log_child(apr_pool_t *p, const char *progname,
                      apr_file_t **fpin)
 {
@@ -235,7 +242,9 @@ static int log_child(apr_pool_t *p, const char *progname,
         && ((rc = apr_procattr_io_set(procattr,
                                       APR_FULL_BLOCK,
                                       APR_NO_PIPE,
-                                      APR_NO_PIPE)) == APR_SUCCESS)) {
+                                      APR_NO_PIPE)) == APR_SUCCESS)
+        && ((rc = apr_procattr_error_check_set(procattr, 1)) == APR_SUCCESS)
+        && ((rc = apr_procattr_child_errfn_set(procattr, log_child_errfn)) == APR_SUCCESS)) {
         char **args;
         const char *pname;
 
@@ -725,7 +734,7 @@ static void piped_log_maintenance(int reason, void *data, apr_wait_t status);
 
 static int piped_log_spawn(piped_log *pl)
 {
-    int rc;
+    int rc = 0;
     apr_procattr_t *procattr;
     apr_proc_t *procnew = NULL;
     apr_status_t status;
@@ -734,7 +743,10 @@ static int piped_log_spawn(piped_log *pl)
         ((status = apr_procattr_child_in_set(procattr,
                                              ap_piped_log_read_fd(pl),
                                              ap_piped_log_write_fd(pl)))
-        != APR_SUCCESS)) {
+        != APR_SUCCESS) ||
+        ((status = apr_procattr_child_errfn_set(procattr, log_child_errfn))
+         != APR_SUCCESS) ||
+        ((status = apr_procattr_error_check_set(procattr, 1)) != APR_SUCCESS)) {
         char buf[120];
         /* Something bad happened, give up and go away. */
         ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
@@ -749,22 +761,26 @@ static int piped_log_spawn(piped_log *pl)
         apr_tokenize_to_argv(pl->program, &args, pl->p);
         pname = apr_pstrdup(pl->p, args[0]);
         procnew = apr_pcalloc(pl->p, sizeof(apr_proc_t));
-        rc = apr_proc_create(procnew, pname, (const char * const *) args,
-                             NULL, procattr, pl->p);
+        status = apr_proc_create(procnew, pname, (const char * const *) args,
+                                 NULL, procattr, pl->p);
 
-        if (rc == APR_SUCCESS) {
-            /* pjr - This no longer happens inside the child, */
-            /*   I am assuming that if apr_proc_create was  */
-            /*   successful that the child is running.        */
-            RAISE_SIGSTOP(PIPED_LOG_SPAWN);
+        if (status == APR_SUCCESS) {
             pl->pid = procnew;
             ap_piped_log_write_fd(pl) = procnew->in;
             apr_proc_other_child_register(procnew, piped_log_maintenance, pl,
                                           ap_piped_log_write_fd(pl), pl->p);
         }
+        else {
+            char buf[120];
+            /* Something bad happened, give up and go away. */
+            ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
+                         "unable to start piped log program '%s': %s",
+                         pl->program, apr_strerror(status, buf, sizeof(buf)));
+            rc = -1;
+        }
     }
 
-    return 0;
+    return rc;
 }
 
 
@@ -775,14 +791,10 @@ static void piped_log_maintenance(int reason, void *data, apr_wait_t status)
 
     switch (reason) {
     case APR_OC_REASON_DEATH:
-        pl->pid = NULL;
-        apr_proc_other_child_unregister(pl);
-        if (pl->program == NULL) {
-            /* during a restart */
-            break;
-        }
-        break;
     case APR_OC_REASON_LOST:
+        ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
+                     "piped log program '%s' failed unexpectedly",
+                     pl->program);
         pl->pid = NULL;
         apr_proc_other_child_unregister(pl);
         if (pl->program == NULL) {
