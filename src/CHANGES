@@ -1,5 +1,8 @@
 Changes with Apache 1.3.7
 
+  *) "IndexOptions None" generated extra spaces at the end of each
+     line.  [inkling@firstnethou.com] PR#3770
+
   *) The "100 Continue" response wasn't being sent after internal
      redirects. [Jose KAHAN <kahan@w3.org>] PR#3910, 3806, 3575
 

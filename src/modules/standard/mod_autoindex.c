@@ -1198,7 +1198,7 @@ static void output_directories(struct ent **ar, int n,
 	}
 	else {
 	    ap_rvputs(r, "<LI><A HREF=\"", anchor, "\"> ", t2,
-		      "</A>", pad_scratch + strlen(t2), NULL);
+		      "</A>", NULL);
 	}
 	ap_rputc('\n', r);
     }
