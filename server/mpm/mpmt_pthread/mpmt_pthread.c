@@ -911,7 +911,7 @@ static void perform_idle_server_maintenance(void)
     int free_slots[MAX_SPAWN_RATE];
     int last_non_dead;
     int total_non_dead;
-    int one = 1;
+    ap_ssize_t one = 1;
     ap_status_t rv;
 
     /* initialize the free_list */
@@ -1087,7 +1087,7 @@ int ap_mpm_run(ap_pool_t *_pconf, ap_pool_t *plog, server_rec *s)
 {
     int remaining_children_to_start;
     ap_status_t rv;
-    int one = 1;
+    ap_ssize_t one = 1;
 
     pconf = _pconf;
     ap_server_conf = s;
