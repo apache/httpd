@@ -34,10 +34,22 @@ are some directives you can use to modify Apache's behavior:
 HREF="mod/core.html#keepalive">KeepAlive</A> directive.</P>
 
 <h3>KeepAlive</h3>
-<STRONG>Syntax:</STRONG> KeepAlive <EM>max-requests</EM><BR>
-<STRONG>Default:</STRONG> <CODE>KeepAlive 5</CODE><BR>
-<STRONG>Context:</STRONG> server config<BR>
-<STRONG>Status:</STRONG> Core<P>
+<A
+ HREF="directive-dict.html#Syntax"
+ REL="Help"
+><STRONG>Syntax:</STRONG></A> KeepAlive <EM>max-requests</EM><BR>
+<A
+ HREF="directive-dict.html#Default"
+ REL="Help"
+><STRONG>Default:</STRONG></A> <CODE>KeepAlive 5</CODE><BR>
+<A
+ HREF="directive-dict.html#Context"
+ REL="Help"
+><STRONG>Context:</STRONG></A> server config<BR>
+<A
+ HREF="directive-dict.html#Status"
+ REL="Help"
+><STRONG>Status:</STRONG></A> Core<P>
 
 This directive enables Keep-Alive support. Set <EM>max-requests</EM>
 to the maximum number of requests you want Apache to entertain per
@@ -45,10 +57,22 @@ connection. A limit is imposed to prevent a client from hogging your
 server resources. Set this to <CODE>0</CODE> to disable support.
 
 <h3>KeepAliveTimeout</h3>
-<STRONG>Syntax:</STRONG> KeepAliveTimeout <EM>seconds</EM><BR>
-<STRONG>Default:</STRONG> <CODE>KeepAliveTimeout 15</CODE><BR>
-<STRONG>Context:</STRONG> server config<BR>
-<STRONG>Status:</STRONG> Core<P>
+<A
+ HREF="directive-dict.html#Syntax"
+ REL="Help"
+><STRONG>Syntax:</STRONG></A> KeepAliveTimeout <EM>seconds</EM><BR>
+<A
+ HREF="directive-dict.html#Default"
+ REL="Help"
+><STRONG>Default:</STRONG></A> <CODE>KeepAliveTimeout 15</CODE><BR>
+<A
+ HREF="directive-dict.html#Context"
+ REL="Help"
+><STRONG>Context:</STRONG></A> server config<BR>
+<A
+ HREF="directive-dict.html#Status"
+ REL="Help"
+><STRONG>Status:</STRONG></A> Core<P>
 
 The number of seconds Apache will wait for a subsequent request before
 closing the connection. Once a request has been received, the timeout
