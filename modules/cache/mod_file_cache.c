@@ -216,6 +216,12 @@ static apr_status_t cleanup_file_cache(void *sconfv)
 static const char *cachefile(cmd_parms *cmd, void *dummy, const char *filename)
 
 {
+    /* ToDo:
+     * Disable the file cache on a Windows 9X box. APR_HAS_SENDFILE will be
+     * defined in an Apache for Windows build, but apr_sendfile is not
+     * implemened on Windows 9X because TransmitFile is not available.
+     */
+
 #if APR_HAS_SENDFILE
     a_server_config *sconf;
     a_file *new_file;
@@ -400,12 +406,27 @@ static int sendfile_handler(request_rec *r, a_file *file)
     apr_status_t rv = APR_EINIT;
     apr_off_t offset = 0;
 
-    rv = apr_seek(file->file, APR_SET, &offset);
-    if (rv != APR_SUCCESS) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
-                      "seek failed");
-        return HTTP_INTERNAL_SERVER_ERROR;
+    /* A cached file handle (more importantly, its file pointer) is 
+     * shared by all threads in the process. The file pointer will 
+     * be corrupted if multiple threads attempt to read from the 
+     * cached file handle. The sendfile API does not rely on the position 
+     * of the file pointer instead taking explicit file offset and 
+     * length arguments. 
+     *
+     * We should call ap_send_fd with a cached file handle IFF 
+     * we are CERTAIN the file will be served with apr_sendfile(). 
+     * The presense of an AP_FTYPE_FILTER in the filter chain nearly
+     * guarantees that apr_sendfile will NOT be used to send the file.
+     * Furthermore, AP_FTYPE_CONTENT filters will be at the beginning
+     * of the chain, so it should suffice to just check the first 
+     * filter in the chain. If the first filter is not a content filter, 
+     * assume apr_sendfile() will be used to send the content.
+     */
+    if (r->output_filters && r->output_filters->frec) {
+        if (r->output_filters->frec->ftype == AP_FTYPE_CONTENT)
+            return DECLINED;
     }
+
 
     rv = ap_send_fd(file->file, r, 0, file->finfo.size, &nbytes);
     if (rv != APR_SUCCESS) {
