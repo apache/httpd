@@ -12,8 +12,11 @@
  <message name="corefeatures">Core Features and Multi-Processing Modules</message>
  <message name="othermodules">Other Modules</message>
 
- <!-- Title for modulesynopsis -->
+ <!-- Used for the modulesynopsis and sitemap -->
  <message name="apachemodule">Apache Module</message>
+ <message name="apachecore">Apache Core Features</message>
+ <message name="apachempmcommon">Apache MPM Common Directives</message>
+ <message name="apachempm">Apache MPM</message>
 
  <!-- Used in description box for modulesynopsis -->
  <message name="description">Description</message>

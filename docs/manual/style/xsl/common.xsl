@@ -38,6 +38,7 @@
   <xsl:include href="directiveindex.xsl"/>
   <xsl:include href="manualpage.xsl"/>
   <xsl:include href="synopsis.xsl"/>
+  <xsl:include href="sitemap.xsl"/>
 
   <!--                                                            -->
   <!--    Utility templates for constructing pages                -->
