@@ -80,6 +80,7 @@ Committed Code Changes:
     * Brian Havard's [Patch] OS/2 - fix up shut down
     * Dean's [PATCH] make mod_rewrite use ap_cpystrn
     * Martin's [PORT] Make apache compile & run on an EBCDIC mainframe
+    * Martin's [PATCH] mod_speling [300] Multiple Choices bug (Take 2)
 
 Available Patches:
 
@@ -102,11 +103,6 @@ Available Patches:
     * Dean's [PATCH] yet another slow function
         <Pine.LNX.3.95dg3.980106142612.1054W-100000@twinlark.arctic.org>
 	Status: Dean +1, Jim +1, Martin +1, Paul +1
-
-    * Martin's [PATCH] mod_speling [300] Multiple Choices bug (Take 2)
-	Submitted by: Soeren Ziehe <ROBINTON@AMTRASH.comlink.de>
-	<19980109130721.21356@deejai.mch.sni.de>
-	Status: Martin +1, Dean +1, Jim +1, Soeren +1, Dirk.vanGulik@jrc.it +1
 
     * Marc's [PATCH] PR#1543: suexec logging exec failures
 	<Pine.BSF.3.95.971210202721.1361I-100000@alive.znep.com>

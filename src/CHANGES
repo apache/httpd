@@ -1,5 +1,13 @@
 Changes with Apache 1.3b4
 
+  *) Mod_speling returned incorrect HREF's when an ambigous match
+     was found. Noticed by <robinton@amtrash.comlink.de> (Soeren Ziehe)
+     [robinton@amtrash.comlink.de (Soeren Ziehe), Martin Kraemer]
+
+  *) PORT: Apache now compiles & runs on an EBCDIC mainframe
+     (the Siemens Nixdorf BS2000-OSD family) in the POSIX subsystem
+     [Martin Kraemer]
+
   *) PORT: Fix problem killing children when terminating.  Allow ^C
      to shut down the server.  [Brian Havard]
 

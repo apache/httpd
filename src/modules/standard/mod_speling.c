@@ -93,14 +93,14 @@ static const char *set_speling(cmd_parms *cmd, void *dummy, int arg)
     void *server_conf = cmd->server->module_config;
 
     /* any non-NULL pointer means speling is enabled */
-    set_module_config(server_conf, &speling_module, arg ? (void *)&speling_module : NULL);
+    set_module_config(server_conf, &speling_module, arg ? (void *) &speling_module : NULL);
     return NULL;
 }
 
 static command_rec speling_cmds[] =
 {
     {"CheckSpelling", set_speling, NULL, RSRC_CONF, FLAG,
-    "whether or not to fix miscapitalized/misspelled requests"},
+     "whether or not to fix miscapitalized/misspelled requests"},
     {NULL}
 };
 
@@ -128,7 +128,7 @@ static const char *sp_reason_str[] =
 typedef struct {
     const char *name;
     sp_reason quality;
-}      misspelled_file;
+} misspelled_file;
 
 /*
  * spdist() is taken from Kernighan & Pike,
@@ -163,7 +163,7 @@ static sp_reason spdist(const char *s, const char *t)
                 return SP_SIMPLETYPO;   /* 1 char mismatch */
         }
         if (strcasecmp(s + 1, t) == 0)
-            return SP_EXTRACHAR;/* extra character */
+            return SP_EXTRACHAR;        /* extra character */
     }
     if (*t && strcasecmp(s, t + 1) == 0)
         return SP_MISSINGCHAR;  /* missing character */
@@ -173,7 +173,7 @@ static sp_reason spdist(const char *s, const char *t)
 static int sort_by_quality(const void *left, const void *rite)
 {
     return (int) (((misspelled_file *) left)->quality)
-    - (int) (((misspelled_file *) rite)->quality);
+        - (int) (((misspelled_file *) rite)->quality);
 }
 
 static int check_speling(request_rec *r)
@@ -205,11 +205,12 @@ static int check_speling(request_rec *r)
      * r->uri: /correct-url/mispelling/more
      * r->filename: /correct-file/mispelling r->path_info: /more
      *
-     * So we do this in steps. First break r->filename into two peices
+     * So we do this in steps. First break r->filename into two pieces
      */
 
     filoc = rind(r->filename, '/');
-    if (filoc == -1)
+    /* Don't do anything if the request doesn't contain a slash, or requests "/" */
+    if (filoc == -1 || strcmp(r->uri, "/") == 0)
         return DECLINED;
 
     /* good = /correct-file */
@@ -240,7 +241,7 @@ static int check_speling(request_rec *r)
     if (dotloc == -1)
         dotloc = strlen(bad);
 
-    while ((dir_entry = readdir(dirp))) {
+    while ((dir_entry = readdir(dirp)) != NULL) {
         sp_reason q;
 
         /*
@@ -328,10 +329,8 @@ static int check_speling(request_rec *r)
         /*
          * Conditions for immediate redirection: 
          *     a) the first candidate was not found by stripping the suffix 
-	 * AND b) there exists only one candidate OR the best match is not ambigous
-         * 
-         * Otherwise, a "[300] Multiple Choices" list with the variants is
-         * returned.
+         * AND b) there exists only one candidate OR the best match is not ambigous
+         * then return a redirection right away.
          */
         if (variant[0].quality != SP_VERYDIFFERENT &&
             (candidates->nelts == 1 || variant[0].quality != variant[1].quality)) {
@@ -342,7 +341,7 @@ static int check_speling(request_rec *r)
             table_set(r->headers_out, "Location",
                       construct_url(r->pool, nuri, r->server));
 
-            aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_INFO, r->server,
+            aplog_error(APLOG_MARK, APLOG_NOERRNO | APLOG_INFO, r->server,
                         ref ? "Fixed spelling: %s to %s from %s"
                         : "Fixed spelling: %s to %s",
                         r->uri, nuri, ref);
@@ -367,17 +366,22 @@ static int check_speling(request_rec *r)
                 notes = r->main->notes;
             }
 
-            /* Generate the reponse text. */
-            t = pstrcat(p, "The document name you requested (<code>",
-                     r->uri, "</code>) could not be found on this server.\n"
-                        "However, we found documents with names similar to the one you requested.<p>"
-                        "Available documents:\n<ul>\n", NULL);
+            /* Generate the response text. */
+            /* Since the text is expanded by repeated calls of
+             * t = pstrcat(p, t, ".."), we can avoid a little waste
+             * of memory by adding the header AFTER building the list.
+             * XXX: FIXME: find a way to build a string concatenation
+             *             without repeatedly requesting new memory
+             * XXX: FIXME: Limit the list to a maximum number of entries
+             */
+            t = "";
 
             for (i = 0; i < candidates->nelts; ++i) {
 
                 /* The format isn't very neat... */
-                t = pstrcat(p, t, "<li><a href=\"", variant[i].name, "\">",
-                            variant[i].name, "</a> (",
+                t = pstrcat(p, t, "<li><a href=\"", url,
+                            variant[i].name, r->path_info, "\">",
+                            variant[i].name, r->path_info, "</a> (",
                     sp_reason_str[(int) (variant[i].quality)], ")\n", NULL);
 
                 /*
@@ -393,7 +397,10 @@ static int check_speling(request_rec *r)
                     t = pstrcat(p, t, "</ul>\nFurthermore, the following related documents were found:\n<ul>\n", NULL);
                 }
             }
-            t = pstrcat(p, t, "</ul>\n", NULL);
+            t = pstrcat(p, "The document name you requested (<code>",
+                     r->uri, "</code>) could not be found on this server.\n"
+                        "However, we found documents with names similar to the one you requested.<p>"
+                        "Available documents:\n<ul>\n", t, "</ul>\n", NULL);
 
             /* If we know there was a referring page, add a note: */
             if (ref != NULL)
@@ -403,7 +410,7 @@ static int check_speling(request_rec *r)
             /* Pass our table to http_protocol.c (see mod_negotiation): */
             table_set(notes, "variant-list", t);
 
-            aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_INFO, r->server,
+            aplog_error(APLOG_MARK, APLOG_NOERRNO | APLOG_INFO, r->server,
                         ref ? "Spelling fix: %s: %d candidates from %s"
                         : "Spelling fix: %s: %d candidates",
                         r->uri, candidates->nelts, ref);
@@ -415,7 +422,8 @@ static int check_speling(request_rec *r)
     return OK;
 }
 
-module MODULE_VAR_EXPORT speling_module = {
+module MODULE_VAR_EXPORT speling_module =
+{
     STANDARD_MODULE_STUFF,
     NULL,                       /* initializer */
     NULL,                       /* create per-dir config */
