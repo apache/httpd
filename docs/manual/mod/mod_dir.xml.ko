@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="EUC-KR" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ko.xsl"?>
-<!-- English Revision: 1.4.2.4 (outdated: 1.4.2.7) -->
+<!-- English Revision: 1.4.2.7 -->
 
 <!--
  Copyright 2003-2004 The Apache Software Foundation
@@ -87,6 +87,62 @@ index 파일을 서비스한다</description>
     <p>이 경우 디렉토리에 <code>index.html</code>이나
     <code>index.txt</code>가 없으면 CGI 스크립트
     <code>/cgi-bin/index.pl</code>을 실행한다.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>DirectorySlash</name>
+<description>마지막 슬래쉬 리다이렉션을 키고 끈다</description>
+<syntax>DirectorySlash On|Off</syntax>
+<default>DirectorySlash On</default>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context></contextlist>
+<override>Indexes</override>
+<compatibility>아파치 2.0.51 이후부터</compatibility>
+
+<usage>
+    <p><directive>DirectorySlash</directive> 지시어는
+    <module>mod_dir</module>가 디렉토리를 가리키는 URL을 수정할지
+    여부를 결정한다.</p>
+
+    <p>사용자가 마지막 슬래쉬없이 디렉토리에 해당하는 자원을
+    요청하면, <module>mod_dir</module>는 보통 다음과 같은 이유로
+    사용자를 마지막 슬래쉬를 <em>붙인</em> 동일한 자원으로
+    리다이렉션한다.</p>
+
+    <ul>
+    <li>사용자는 결국 자원의 정규 URL을 요청하게 된다</li>
+    <li><module>mod_autoindex</module>가 올바로 동작한다. 이
+    기능이 없다면 이 모듈은 링크에 잘못된 경로를 쓰게 된다.</li>
+    <li><directive module="mod_dir">DirectoryIndex</directive>는
+    마지막 슬래쉬가 있는 디렉토리 요청<em>만을</em> 처리한다.</li>
+    <li>html 페이지에 있는 상대적인 URL 참조가 올바로 동작한다.</li>
+    </ul>
+
+    <p>그런데 이 기능을 원하지 않거<em>나</em> 위에 든 이유가
+    당신에게 알맞지 않다면 다음과 같이 리다이렉션을 하지 않을
+    수 있다.</p>
+
+    <example>
+        # 아래 보안 경고 참고!<br />
+        &lt;Location /some/path&gt;<br />
+        <indent>
+            DirectorySlash Off<br />
+            SetHandler some-handler<br />
+        </indent>
+        &lt;/Location&gt;
+    </example>
+
+    <note type="warning"><title>보안 경고</title>
+    <p>마지막 슬래쉬 리다이렉션을 끄면 정보가 유출될 수 있다.
+    (<code>Options +Indexes</code>) <module>mod_autoindex</module>를
+    사용하고 <directive module="mod_dir">DirectoryIndex</directive>를
+    (<code>index.html</code> 같은) 유효한 자원으로 설정하였지만
+    해당 URL에 다른 특별한 핸들러가 없는 상황을 상상해보라.
+    이 경우 마지막 슬래쉬가 있는 요청은 <code>index.html</code>
+    파일을 보여준다. <strong>그러나 마지막 슬래쉬가 없는 요청은
+    디렉토리 내용을 보여준다</strong>.</p>
+    </note>
 </usage>
 </directivesynopsis>
 

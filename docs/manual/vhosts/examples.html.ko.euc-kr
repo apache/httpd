@@ -21,8 +21,6 @@
 <p><span>가능한 언어: </span><a href="../en/vhosts/examples.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../ko/vhosts/examples.html" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<div class="outofdate">이 문서는 최신판 번역이 아닙니다.
-            최근에 변경된 내용은 영어 문서를 참고하세요.</div>
 
 
     <p>이 문서는 자주 문의되는 가상호스트
@@ -77,9 +75,9 @@
     Listen 80<br />
     <br />
     # 모든 IP 주소에서 가상호스트 요청을 기다린다<br />
-    NameVirtualHost *<br />
+    NameVirtualHost *:80<br />
     <br />
-    &lt;VirtualHost *&gt;<br />
+    &lt;VirtualHost *:80&gt;<br />
     <span class="indent">
       DocumentRoot /www/example1<br />
       ServerName www.example1.com<br />
@@ -89,7 +87,7 @@
     </span>
     &lt;/VirtualHost&gt;<br />
     <br />
-    &lt;VirtualHost *&gt;<br />
+    &lt;VirtualHost *:80&gt;<br />
     <span class="indent">
       DocumentRoot /www/example2<br />
       ServerName www.example2.org<br />

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="EUC-KR" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ko.xsl"?>
-<!-- English Revision: 1.3.2.7 (outdated: 1.3.2.8) -->
+<!-- English Revision: 1.3.2.8 -->
 
 <!--
  Copyright 2004 The Apache Software Foundation
@@ -400,6 +400,11 @@
         module="mod_nw_ssl">NWSSLTrustedCerts</directive> -
         프록시하는 서버에 보안연결할때 사용할 신뢰하는
         인증서(certificate)를 추가한다.</li>
+      </ul>
+      <ul>
+        <li><directive module="mod_nw_ssl">NWSSLUpgradeable</directive> -
+        특정 주소/포트로 맺어진 연결을 SSL 연결로 변경할 수
+        있다.</li>
       </ul>
 
     </section>

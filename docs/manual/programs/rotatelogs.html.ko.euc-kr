@@ -59,7 +59,9 @@
 <div class="section">
 <h2><a name="synopsis" id="synopsis">개요</a></h2>
 
-     <p><code><strong>rotatelogs</strong> <var>logfile</var>
+     <p><code><strong>rotatelogs</strong>
+     [ -<strong>l</strong> ]
+     <var>logfile</var>
      [ <var>rotationtime</var> [ <var>offset</var> ]] |
      [ <var>filesize</var>M ]</code></p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -67,6 +69,11 @@
 <h2><a name="options" id="options">옵션</a></h2>
 
 <dl>
+
+<dt><code>-l</code> (<em>2.0.51 이후</em>)</dt>
+<dd>순환주기로 GMT 대신 지역시간을 사용한다. (BST나 DST와 같이)
+GMT 시간차가 변하는 환경에서 <code>-l</code>을 사용하면 예기치
+않은 결과가 발생할 수 있다!</dd>
 
 <dt><code><var>logfile</var></code></dt>
 

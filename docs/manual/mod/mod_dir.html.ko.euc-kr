@@ -25,8 +25,6 @@
 <a href="../ja/mod/mod_dir.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_dir.html" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<div class="outofdate">이 문서는 최신판 번역이 아닙니다.
-            최근에 변경된 내용은 영어 문서를 참고하세요.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">설명:</a></th><td>"마지막 슬래쉬" 리다이렉션을 제공하고 디렉토리
 index 파일을 서비스한다</td></tr>
 <tr><th><a href="module-dict.html#Status">상태:</a></th><td>Base</td></tr>
@@ -58,6 +56,7 @@ index 파일을 서비스한다</td></tr>
 <div id="quickview"><h3 class="directives">지시어들</h3>
 <ul id="toc">
 <li><img alt="" src="../images/down.gif" /> <a href="#directoryindex">DirectoryIndex</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#directoryslash">DirectorySlash</a></li>
 </ul>
 </div>
 
@@ -99,6 +98,62 @@ index 파일을 서비스한다</td></tr>
     <p>이 경우 디렉토리에 <code>index.html</code>이나
     <code>index.txt</code>가 없으면 CGI 스크립트
     <code>/cgi-bin/index.pl</code>을 실행한다.</p>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="DirectorySlash" id="DirectorySlash">DirectorySlash</a> <a name="directoryslash" id="directoryslash">지시어</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">설명:</a></th><td>마지막 슬래쉬 리다이렉션을 키고 끈다</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">문법:</a></th><td><code>DirectorySlash On|Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">기본값:</a></th><td><code>DirectorySlash On</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">사용장소:</a></th><td>주서버설정, 가상호스트, directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Override 옵션:</a></th><td>Indexes</td></tr>
+<tr><th><a href="directive-dict.html#Status">상태:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">모듈:</a></th><td>mod_dir</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">지원:</a></th><td>아파치 2.0.51 이후부터</td></tr>
+</table>
+    <p><code class="directive">DirectorySlash</code> 지시어는
+    <code class="module"><a href="../mod/mod_dir.html">mod_dir</a></code>가 디렉토리를 가리키는 URL을 수정할지
+    여부를 결정한다.</p>
+
+    <p>사용자가 마지막 슬래쉬없이 디렉토리에 해당하는 자원을
+    요청하면, <code class="module"><a href="../mod/mod_dir.html">mod_dir</a></code>는 보통 다음과 같은 이유로
+    사용자를 마지막 슬래쉬를 <em>붙인</em> 동일한 자원으로
+    리다이렉션한다.</p>
+
+    <ul>
+    <li>사용자는 결국 자원의 정규 URL을 요청하게 된다</li>
+    <li><code class="module"><a href="../mod/mod_autoindex.html">mod_autoindex</a></code>가 올바로 동작한다. 이
+    기능이 없다면 이 모듈은 링크에 잘못된 경로를 쓰게 된다.</li>
+    <li><code class="directive"><a href="#directoryindex">DirectoryIndex</a></code>는
+    마지막 슬래쉬가 있는 디렉토리 요청<em>만을</em> 처리한다.</li>
+    <li>html 페이지에 있는 상대적인 URL 참조가 올바로 동작한다.</li>
+    </ul>
+
+    <p>그런데 이 기능을 원하지 않거<em>나</em> 위에 든 이유가
+    당신에게 알맞지 않다면 다음과 같이 리다이렉션을 하지 않을
+    수 있다.</p>
+
+    <div class="example"><p><code>
+        # 아래 보안 경고 참고!<br />
+        &lt;Location /some/path&gt;<br />
+        <span class="indent">
+            DirectorySlash Off<br />
+            SetHandler some-handler<br />
+        </span>
+        &lt;/Location&gt;
+    </code></p></div>
+
+    <div class="warning"><h3>보안 경고</h3>
+    <p>마지막 슬래쉬 리다이렉션을 끄면 정보가 유출될 수 있다.
+    (<code>Options +Indexes</code>) <code class="module"><a href="../mod/mod_autoindex.html">mod_autoindex</a></code>를
+    사용하고 <code class="directive"><a href="#directoryindex">DirectoryIndex</a></code>를
+    (<code>index.html</code> 같은) 유효한 자원으로 설정하였지만
+    해당 URL에 다른 특별한 핸들러가 없는 상황을 상상해보라.
+    이 경우 마지막 슬래쉬가 있는 요청은 <code>index.html</code>
+    파일을 보여준다. <strong>그러나 마지막 슬래쉬가 없는 요청은
+    디렉토리 내용을 보여준다</strong>.</p>
+    </div>
 
 </div>
 </div>

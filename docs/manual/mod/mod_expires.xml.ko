@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="EUC-KR" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ko.xsl"?>
-<!-- English Revision: 1.3.2.4 (outdated: 1.3.2.5) -->
+<!-- English Revision: 1.3.2.5 -->
 
 <!--
  Copyright 2004 The Apache Software Foundation
@@ -22,22 +22,30 @@
 <modulesynopsis metafile="mod_expires.xml.meta">
 
 <name>mod_expires</name>
-<description>사용자가 지정한 기준에 따라 <code>Expires</code>
-HTTP 헤더를 생성한다</description>
+<description>사용자가 지정한 기준에 따라 <code>Expires</code>와
+<code>Cache-Control</code> HTTP 헤더를 생성한다</description>
 <status>Extension</status>
 <sourcefile>mod_expires.c</sourcefile>
 <identifier>expires_module</identifier>
 
 <summary>
-    <p>이 모듈은 서버 응답의 <code>Expires</code> HTTP 헤더
-    설정을 조절한다. 만기일을 소스파일이 마직막 수정될 시간
+    <p>이 모듈은 서버 응답의 <code>Expires</code> HTTP 헤더와
+    <code>Cache-Control</code> HTTP 헤더의 <code>max-age</code>
+    지시어 설정을 조절한다. 만기일을 파일이 마직막 수정된 시간
     혹은 클라이언트가 접속한 시간에 상대적으로 설정할 수 있다.</p>
 
-    <p><code>Expires</code> HTTP 헤더는 클라이언트에게 문서의
+    <p>이 HTTP 헤더들은 클라이언트에게 문서의
     유효성과 지속성을 알려준다. 이 시간이 아직 지나지않았다면,
     문서를 캐쉬에서 가져와도 된다. 만기일이 지났다면 캐쉬된
     것을 "만료되고" 유효하지 않다고 간주하여, 소스에서 문서를
     새로 얻어와야 한다.</p>
+
+    <p><directive module="mod_headers">Header</directive> 지시어를
+    사용하여 <code>max-age</code> 외의 다른
+    <code>Cache-Control</code> 지시어(<a
+    href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.9">RFC
+    2616, 14.9 절</a> 참고)를 수정할 수 있다.</p>
+
 </summary>
 
 <section id="AltSyn"><title>다른 내부 문법</title>
@@ -113,19 +121,19 @@ HTTP 헤더를 생성한다</description>
 <usage>
     <p>이 지시어는 해당 영역에 대해 (즉, <code>.htaccess</code>
     파일에서 사용한다면 그 디렉토리 아래에 있는 문서들만 해당된다.)
-    <code>Expires</code> 헤더를 생성할지 유무를 결정한다.
-    (<code>.htaccess</code> 파일 등으로 더 하위 단계에서 서버설정을
-    변경하지않는 한) <code>Off</code>이면 해당 영역에 있는
-    문서에 <code>Expires</code> 헤더를 생성하지 않는다.
-    <code>On</code>이면 <directive
+    <code>Expires</code>와 <code>Cache-Control</code> 헤더를
+    생성할지 유무를 결정한다. (<code>.htaccess</code> 파일 등으로
+    더 하위 단계에서 서버설정을 변경하지않는 한)
+    <code>Off</code>이면 해당 영역에 있는 문서에 이들 헤더를
+    생성하지 않는다. <code>On</code>이면 <directive
     module="mod_expires">ExpiresByType</directive>과 <directive
     module="mod_expires">ExpiresDefault</directive> 지시어로
     (<em>해당 항목을 참고하라</em>) 지정한 규칙에 따라 서비스하려는
-    문서에 헤더를 생성한다.</p>
+    문서에 이 헤더들을 생성한다.</p>
 
-    <p>이 지시어는 <code>Expires</code> 헤더를 보장하지 않는다.
-    규칙에 해당하지 않다면 마치 이 지시어가 없는 것처럼 헤더를
-    만들지 않는다.</p>
+    <p>이 지시어가 <code>Expires</code>나 <code>Cache-Control</code>
+    헤더를 보장하지는 않는다. 규칙에 해당하지 않다면 마치 이
+    지시어가 없는 것처럼 헤더를 만들지 않는다.</p>
 </usage>
 </directivesynopsis>
 
@@ -141,8 +149,11 @@ HTTP 헤더를 생성한다</description>
 <usage>
     <p>이 지시어는 특정 종류의 (<em>에를 들어</em>,
     <code>text/html</code>) 문서에 대한 <code>Expires</code>
-    헤더값을 정의한다. 두번째 아규먼트는 만기시간을 결정할때
-    기준 시간에 더할 초단위 값을 지정한다.</p>
+    헤더값과 <code>Cache-Control</code> 헤더의 <code>max-age</code>
+    지시어값을 정의한다. 두번째 아규먼트는 만기시간을 결정할때
+    기준 시간에 더할 초단위 값을 지정한다. <code>Cache-Control:
+    max-age</code>는 만기시간에서 요청한 시간을 빼서 계산하고,
+    결과는 초단위로 표시한다.</p>
 
     <p>기준 시간은 파일의 최근 수정시간 혹은 클라이언트가 문서에
     접근한 시간이다. 이떤 것을 사용할지는

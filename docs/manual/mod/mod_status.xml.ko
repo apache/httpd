@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="EUC-KR" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ko.xsl"?>
-<!-- English Revision: 1.4.2.5 (outdated: 1.4.2.6) -->
+<!-- English Revision: 1.4.2.6 -->
 
 <!--
  Copyright 2004 The Apache Software Foundation
@@ -29,13 +29,6 @@
 
 
 <summary>
-
-<note>
-  <strong>경고:</strong> 이 문서는 아파치 웹서버 2.0 버전에서
-  변경된 내용을 담고 있지 않다. 아직도 유효한 정보가 있지만,
-  주의해서 사용하길 바란다.
-</note>
-
     <p>Status 모듈은 서버 관리자에게 서버의 상태를 보여준다.
     쉽게 읽을 수 있는 HTML 페이지로 현재 서버통계를 보여준다.
     필요하다면 (표준을 따르는 브라우저에서) 페이지를 자동으로
@@ -45,12 +38,12 @@
     <p>알려주는 정보는:</p>
 
     <ul>
-      <li>요청을 서비스하는 자식의 개수</li>
+      <li>요청을 서비스하는 worker의 개수</li>
 
-      <li>쉬고 있는(idle) 자식의 개수</li>
+      <li>쉬고 있는(idle) worker의 개수</li>
 
-      <li>각 자식들의 상태, 자식이 처리한 요청의 개수와 자식이
-      서비스한 전체 바이트수 (*)</li>
+      <li>각 worker들의 상태, worker가 처리한 요청의 개수와
+      worker가 서비스한 전체 바이트수 (*)</li>
 
       <li>총 접근 횟수와 서비스한 바이트수 (*)</li>
 
@@ -59,7 +52,7 @@
       <li>초당 요청수 평균, 초당 서비스한 바이트수와 요청당
       바이트수 평균 (*)</li>
 
-      <li>현재 아파치 전체와 각 자식들의 CPU 비율 (*)</li>
+      <li>현재 아파치 전체와 각 worker들의 CPU 비율 (*)</li>
 
       <li>현재 처리하고 있는 호스트와 요청 (*)</li>
     </ul>
@@ -86,11 +79,6 @@
     <p>이제 웹브라우저로
     <code>http://your.server.name/server-status</code> 페이지에
     접근하면 서버 통계를 볼 수 있다.</p>
-
-    <note><p><module>mod_status</module>는 아파치를 <a
-    href="core.html#servertype">inetd</a> 상태로 실행하면 동작하지
-    않고, <a href="core.html#servertype">standalone</a> 상태로
-    실행할때만 동작함을 주의하라.</p></note>
 </section>
 
 <section id="autoupdate">

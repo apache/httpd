@@ -97,8 +97,8 @@ index 파일을 서비스한다</dd>
 <dt><a href="mod_env.html">mod_env</a></dt><dd>CGI 스크립트나 SSI 페이지에 전달할 환경변수를
 수정한다</dd>
 <dt><a href="mod_example.html">mod_example</a></dt><dd>아파치 모듈 API를 설명한다</dd>
-<dt><a href="mod_expires.html">mod_expires</a></dt><dd>사용자가 지정한 기준에 따라 <code>Expires</code>
-HTTP 헤더를 생성한다</dd>
+<dt><a href="mod_expires.html">mod_expires</a></dt><dd>사용자가 지정한 기준에 따라 <code>Expires</code>와
+<code>Cache-Control</code> HTTP 헤더를 생성한다</dd>
 <dt><a href="mod_ext_filter.html">mod_ext_filter</a></dt><dd>응답 내용을 외부 프로그램으로 처리한 후 클라이언트로
 보낸다</dd>
 <dt><a href="mod_file_cache.html" id="F" name="F">mod_file_cache</a></dt><dd>메모리에 정적 파일들을 캐쉬</dd>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="EUC-KR" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ko.xsl"?>
-<!-- English Revision: 1.4.2.10 (outdated: 1.4.2.12) -->
+<!-- English Revision: 1.4.2.12 -->
 
 <!--
  Copyright 2004 The Apache Software Foundation
@@ -122,16 +122,23 @@ RewriteRule   ^/([uge])/(<strong>[^/]+</strong>)$  /$1/$2<strong>/</strong>   [<
       <dl>
         <dt>상황설명:</dt>
 
-        <dd>...</dd>
+        <dd>이 규칙은 동일한 사이트에 도달할 수 있는 다른 호스트명
+        대신 특정 호스트명을 사용하도록 강제한다. 예를 들어,
+        <strong>example.com</strong> 대신
+        <strong>www.example.com</strong>을 사용하도록 강제하고
+        싶다면 다음과 같은 규칙을 사용할 수 있다.</dd>
 
         <dt>해결책:</dt>
 
         <dd>
 <example><pre>
+# 80번이 아닌 포트에서 실행하는 사이트용
 RewriteCond %{HTTP_HOST}   !^fully\.qualified\.domain\.name [NC]
 RewriteCond %{HTTP_HOST}   !^$
 RewriteCond %{SERVER_PORT} !^80$
 RewriteRule ^/(.*)         http://fully.qualified.domain.name:%{SERVER_PORT}/$1 [L,R]
+
+# 그리고, 80번 포트에서 실행하는 사이트용
 RewriteCond %{HTTP_HOST}   !^fully\.qualified\.domain\.name [NC]
 RewriteCond %{HTTP_HOST}   !^$
 RewriteRule ^/(.*)         http://fully.qualified.domain.name/$1 [L,R]

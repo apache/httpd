@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="EUC-KR" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ko.xsl"?>
-<!-- English Revision: 1.2.2.5 (outdated: 1.2.2.6) -->
+<!-- English Revision: 1.2.2.6 -->
 
 <!--
  Copyright 2003-2004 The Apache Software Foundation
@@ -82,8 +82,8 @@
 
       <dt><em>regex</em></dt>
 
-      <dd>문자를 검색할 패턴을 설명하는 정규표현식(regular
-      expression). 지시어는 <em>regex</em>로 무엇인가를 검색한다.</dd>
+      <dd>Perl 형식의 <a href="../glossary.html#regex">정규표현식(regular
+      expression)</a>. 지시어는 <em>regex</em>로 무엇인가를 검색한다.</dd>
 
       <dt><em>extension</em></dt>
 

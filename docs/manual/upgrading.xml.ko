@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='EUC-KR' ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.ko.xsl"?>
-<!-- English Revision: 1.6.2.8 (outdated: 1.6.2.10) -->
+<!-- English Revision: 1.6.2.10 -->
 
 <!--
  Copyright 2003-2004 The Apache Software Foundation
@@ -150,6 +150,17 @@
       module="mod_mime">MultiviewsMatch</directive> 지시어를
       사용하여 이전과 같이 동작하게 할 수 있다.</li>
 
+      <li>(<em>2.0.51 버전 이후</em>)
+      <p><code>ErrorHeader</code> 지시어는 잘못된 명칭으로,
+      이 지시어가 담당한 기능은 <directive
+      module="mod_headers">Header</directive> 지시어로도 가능하다.
+      원하는 기능을 위해,</p>
+
+      <example>
+        Header always set 어쩌고 저쩌고
+      </example>
+
+      <p>와 같이 설정한다.</p></li>
     </ul>
   </section>
 
