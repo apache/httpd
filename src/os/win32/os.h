@@ -67,7 +67,9 @@ every configuration function as __stdcall.
 /* Seems Windows is not a subgenius */
 #define NO_SLACK
 #include <stddef.h>
-/* Unknown system - Edit these to match */
+
+#define NO_OTHER_CHILD
+#define NO_RELIABLE_PIPED_LOGS
 
 
 API_EXPORT(int)os_is_path_absolute(char *f);

@@ -63,6 +63,7 @@
 #include "http_config.h"
 #include "http_core.h"
 #include "http_log.h"
+#include "http_main.h"
 
 #include <stdarg.h>
 
@@ -352,3 +353,200 @@ API_EXPORT(void) log_assert (const char *szExp, const char *szFile, int nLine)
     exit(1);
 #endif
 }
+
+/* piped log support */
+
+#ifndef NO_RELIABLE_PIPED_LOGS
+/* forward declaration */
+static void piped_log_maintenance (int reason, void *data, int status);
+
+static int piped_log_spawn (piped_log *pl)
+{
+    int pid;
+
+    block_alarms();
+    pid = fork();
+    if (pid == 0) {
+	/* XXX: this needs porting to OS2 and WIN32 */
+	/* XXX: need to check what open fds the logger is actually passed,
+	 * XXX: and CGIs for that matter ... cleanup_for_exec *should*
+	 * XXX: close all the relevant stuff, but hey, it could be broken. */
+	/* we're now in the child */
+	close (STDIN_FILENO);
+	dup2 (pl->fds[0], STDIN_FILENO);
+
+	cleanup_for_exec ();
+	signal (SIGCHLD, SIG_DFL);	/* for HPUX */
+	signal (SIGHUP, SIG_IGN);
+	execl (SHELL_PATH, SHELL_PATH, "-c", pl->program, NULL);
+	fprintf (stderr,
+	    "piped_log_spawn: unable to exec %s -c '%s': %s\n",
+	    SHELL_PATH, pl->program, strerror (errno));
+	exit (1);
+    }
+    if (pid == -1) {
+	fprintf (stderr,
+	    "piped_log_spawn: unable to fork(): %s\n", strerror (errno));
+	unblock_alarms ();
+	return -1;
+    }
+    unblock_alarms();
+    pl->pid = pid;
+    register_other_child (pid, piped_log_maintenance, pl, pl->fds[1]);
+    return 0;
+}
+
+
+static void piped_log_maintenance (int reason, void *data, int status)
+{
+    piped_log *pl = data;
+    int pid;
+
+    switch (reason) {
+    case OC_REASON_DEATH:
+    case OC_REASON_LOST:
+	pl->pid = -1;
+	unregister_other_child (pl);
+	if (pl->program == NULL) {
+	    /* during a restart */
+	    break;
+	}
+	if (piped_log_spawn (pl) == -1) {
+	    /* what can we do?  This could be the error log we're having
+	     * problems opening up... */
+	    fprintf (stderr,
+		"piped_log_maintenance: unable to respawn '%s': %s\n",
+		pl->program, strerror (errno));
+	}
+	break;
+    
+    case OC_REASON_UNWRITABLE:
+	if (pl->pid != -1) {
+	    kill (pl->pid, SIGTERM);
+	}
+	break;
+    
+    case OC_REASON_RESTART:
+	pl->program = NULL;
+	if (pl->pid != -1) {
+	    kill (pl->pid, SIGTERM);
+	}
+	break;
+
+    case OC_REASON_UNREGISTER:
+	break;
+    }
+}
+
+
+static void piped_log_cleanup (void *data)
+{
+    piped_log *pl = data;
+
+    if (pl->pid != -1) {
+	kill (pl->pid, SIGTERM);
+    }
+    unregister_other_child (pl);
+    close (pl->fds[0]);
+    close (pl->fds[1]);
+}
+
+
+static void piped_log_cleanup_for_exec (void *data)
+{
+    piped_log *pl = data;
+
+    close (pl->fds[0]);
+    close (pl->fds[1]);
+}
+
+
+API_EXPORT(piped_log *) open_piped_log (pool *p, const char *program)
+{
+    piped_log *pl;
+    int pid;
+
+    pl = palloc (p, sizeof (*pl));
+    pl->p = p;
+    pl->program = pstrdup (p, program);
+    pl->pid = -1;
+    block_alarms ();
+    if (pipe (pl->fds) == -1) {
+	int save_errno = errno;
+	unblock_alarms();
+	errno = save_errno;
+	return NULL;
+    }
+    register_cleanup (p, pl, piped_log_cleanup, piped_log_cleanup_for_exec);
+    if (piped_log_spawn (pl) == -1) {
+	int save_errno = errno;
+	kill_cleanup (p, pl, piped_log_cleanup);
+	close (pl->fds[0]);
+	close (pl->fds[1]);
+	unblock_alarms ();
+	errno = save_errno;
+	return NULL;
+    }
+    unblock_alarms ();
+    return pl;
+}
+
+API_EXPORT(void) close_piped_log (piped_log *pl)
+{
+    block_alarms ();
+    piped_log_cleanup (pl);
+    kill_cleanup (pl->p, pl, piped_log_cleanup);
+    unblock_alarms ();
+}
+
+#else
+static int piped_log_child (void *cmd)
+{
+    /* Child process code for 'TransferLog "|..."';
+     * may want a common framework for this, since I expect it will
+     * be common for other foo-loggers to want this sort of thing...
+     */
+    int child_pid = 1;
+
+    cleanup_for_exec();
+#ifdef SIGHUP
+    signal (SIGHUP, SIG_IGN);
+#endif
+#if defined(WIN32)
+    child_pid = spawnl (_P_NOWAIT, SHELL_PATH, SHELL_PATH, "/c", (char *)cmd, NULL);
+    return(child_pid);
+#elif defined(__EMX__)
+    /* For OS/2 we need to use a '/' */
+    execl (SHELL_PATH, SHELL_PATH, "/c", (char *)cmd, NULL);
+#else
+    execl (SHELL_PATH, SHELL_PATH, "-c", (char *)cmd, NULL);
+#endif
+    perror ("exec");
+    fprintf (stderr, "Exec of shell for logging failed!!!\n");
+    return(child_pid);
+}
+
+
+API_EXPORT(piped_log *) open_piped_log (pool *p, const char *program)
+{
+    piped_log *pl;
+    FILE *dummy;
+    
+    if (!spawn_child (p, piped_log_child, (void *)program,
+		kill_after_timeout, &dummy, NULL)) {
+	perror ("spawn_child");
+	fprintf (stderr, "Couldn't fork child for piped log process\n");
+	exit (1);
+    }
+    pl = palloc (p, sizeof (*pl));
+    pl->p = p;
+    pl->write_f = dummy;
+    return pl;
+}
+
+
+API_EXPORT(void) close_piped_log (piped_log *pl)
+{
+    pfclose (pl->p, pl->write_f);
+}
+#endif

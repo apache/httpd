@@ -234,6 +234,19 @@ pid_t pgrp;
 
 int one_process = 0;
 
+#ifndef NO_OTHER_CHILD
+/* used to maintain list of children which aren't part of the scoreboard */
+typedef struct other_child_rec other_child_rec;
+struct other_child_rec {
+    other_child_rec *next;
+    int pid;
+    void (*maintenance)(int, void *, int);
+    void *data;
+    int write_fd;
+};
+static other_child_rec *other_children;
+#endif
+
 pool *pconf;			/* Pool for config stuff */
 pool *ptrans;			/* Pool for per-transaction stuff */
 
@@ -1043,6 +1056,107 @@ static void lingering_close (request_rec *r)
 #endif /* ndef NO_LINGCLOSE */
 
 /*****************************************************************
+ * dealing with other children
+ */
+
+#ifndef NO_OTHER_CHILD
+void register_other_child (int pid,
+    void (*maintenance)(int reason, void *, int status),
+    void *data, int write_fd)
+{
+    other_child_rec *ocr;
+
+    ocr = palloc (pconf, sizeof (*ocr));
+    ocr->pid = pid;
+    ocr->maintenance = maintenance;
+    ocr->data = data;
+    ocr->write_fd = write_fd;
+    ocr->next = other_children;
+    other_children = ocr;
+}
+
+/* note that since this can be called by a maintenance function while we're
+ * scanning the other_children list, all scanners should protect themself
+ * by loading ocr->next before calling any maintenance function.
+ */
+void unregister_other_child (void *data)
+{
+    other_child_rec **pocr, *nocr;
+
+    for (pocr = &other_children; *pocr; pocr = &(*pocr)->next) {
+	if ((*pocr)->data == data) {
+	    nocr = (*pocr)->next;
+	    (*(*pocr)->maintenance)(OC_REASON_UNREGISTER, (*pocr)->data, -1);
+	    *pocr = nocr;
+	    /* XXX: um, well we've just wasted some space in pconf ? */
+	    return;
+	}
+    }
+}
+
+/* test to ensure that the write_fds are all still writable, otherwise
+ * invoke the maintenance functions as appropriate */
+static void probe_writable_fds (void)
+{
+    fd_set writable_fds;
+    int fd_max;
+    other_child_rec *ocr, *nocr;
+    struct timeval tv;
+    int rc;
+
+    if (other_children == NULL) return;
+
+    fd_max = 0;
+    FD_ZERO (&writable_fds);
+    for (ocr = other_children; ocr; ocr = ocr->next) {
+	if (ocr->write_fd == -1) continue;
+	FD_SET (ocr->write_fd, &writable_fds);
+	if (ocr->write_fd > fd_max) {
+	    fd_max = ocr->write_fd;
+	}
+    }
+    if (fd_max == 0) return;
+
+    do {
+	tv.tv_sec = 0;
+	tv.tv_usec = 0;
+	rc = ap_select (fd_max + 1, NULL, &writable_fds, NULL, &tv);
+    } while (rc == -1 && errno == EINTR);
+
+    if (rc == -1) {
+	/* XXX: uhh this could be really bad, we could have a bad file
+	 * descriptor due to a bug in one of the maintenance routines */
+	log_unixerr ("probe_writable_fds", "select", "could not probe
+	    writable fds", server_conf);
+	return;
+    }
+    if (rc == 0) return;
+
+    for (ocr = other_children; ocr; ocr = nocr) {
+	nocr = ocr->next;
+	if (ocr->write_fd == -1) continue;
+	if (FD_ISSET (ocr->write_fd, &writable_fds)) continue;
+	(*ocr->maintenance)(OC_REASON_UNWRITABLE, ocr->data, -1);
+    }
+}
+
+/* possibly reap an other_child, return 0 if yes, -1 if not */
+static int reap_other_child (int pid, int status)
+{
+    other_child_rec *ocr, *nocr;
+
+    for (ocr = other_children; ocr; ocr = nocr) {
+	nocr = ocr->next;
+	if (ocr->pid != pid) continue;
+	ocr->pid = -1;
+	(*ocr->maintenance)(OC_REASON_DEATH, ocr->data, status);
+	return 0;
+    }
+    return -1;
+}
+#endif
+
+/*****************************************************************
  *
  * Dealing with the scoreboard... a lot of these variables are global
  * only to avoid getting clobbered by the longjmp() that happens when
@@ -1605,73 +1719,103 @@ static void reclaim_child_processes (int start_tries)
 {
 #ifndef MULTITHREAD
     int i, status;
+    long int waittime = 4096; /* in usecs */
+    struct timeval tv;
+    int waitret, tries;
+    int not_dead_yet;
+#ifndef NO_OTHER_CHILD
+    other_child_rec *ocr, *nocr;
+#endif
 
     sync_scoreboard_image();
-    for (i = 0; i < max_daemons_limit; ++i) {
-	int pid = scoreboard_image->servers[i].x.pid;
 
-	if (pid != my_pid && pid != 0) { 
-	    int waitret = 0,
-		tries = start_tries;
+    tries = 0;
+    for(tries = start_tries; tries < 4; ++tries) {
+	/* don't want to hold up progress any more than 
+	* necessary, but we need to allow children a few moments to exit.
+	* delay with an exponential backoff.
+	* Currently set for a maximum wait of a bit over
+	* four seconds.
+	*/
+	tv.tv_sec = waittime / 1000000;
+	tv.tv_usec = waittime % 1000000;
+	waittime = waittime * 2;
+	ap_select(0, NULL, NULL, NULL, &tv);
 
-	    while (waitret == 0 && tries <= 4) {
-		long int waittime = 4096; /* in usecs */
-		struct timeval tv;
-	    
-		/* don't want to hold up progress any more than 
-		 * necessary, so keep checking to see if the child
-		 * has exited with an exponential backoff.
-		 * Currently set for a maximum wait of a bit over
-		 * four seconds.
-		 */
-		while (((waitret = waitpid(pid, &status, WNOHANG)) == 0) &&
-			 waittime < 3000000) {
-		       tv.tv_sec = waittime / 1000000;
-		       tv.tv_usec = waittime % 1000000;
-		       waittime = waittime * 2;
-		       ap_select(0, NULL, NULL, NULL, &tv);
-		}
-		if (waitret == 0) {
-		    switch (tries) {
-		    case 1:
-			/* perhaps it missed the SIGHUP, lets try again */
-			aplog_error(APLOG_MARK, APLOG_ERR, server_conf,
-				    "child process %d did not exit, sending another SIGHUP",
-				    pid);
-			kill(pid, SIGHUP);
-			break;
-		    case 2:
-			/* ok, now it's being annoying */
-			aplog_error(APLOG_MARK, APLOG_ERR, server_conf,
-				    "child process %d still did not exit, sending a SIGTERM",
-				    pid);
-			kill(pid, SIGTERM);
-			break;
-		    case 3:
-			/* die child scum */
-			aplog_error(APLOG_MARK, APLOG_ERR, server_conf,
-				    "child process %d still did not exit, sending a SIGKILL",
-				    pid);
-			kill(pid, SIGKILL);
-			break;
-		    case 4:
-			/* gave it our best shot, but alas...  If this really 
-			 * is a child we are trying to kill and it really hasn't
-			 * exited, we will likely fail to bind to the port
-			 * after the restart.
-			 */
-			aplog_error(APLOG_MARK, APLOG_ERR, server_conf,
-				    "could not make child process %d exit, attempting to continue anyway",
-				    pid);
-			break;
-		    }
-		}
-		tries++;
+	/* now see who is done */
+	not_dead_yet = 0;
+	for (i = 0; i < max_daemons_limit; ++i) {
+	    int pid = scoreboard_image->servers[i].x.pid;
+
+	    if (pid == my_pid || pid == 0) continue;
+
+	    waitret = waitpid (pid, &status, WNOHANG);
+	    if (waitret == pid || waitret == -1) {
+		scoreboard_image->servers[i].x.pid = 0;
+		continue;
 	    }
+	    ++not_dead_yet;
+	    switch (tries) {
+	    case 1:
+		/* perhaps it missed the SIGHUP, lets try again */
+		aplog_error(APLOG_MARK, APLOG_ERR, server_conf,
+		    "child process %d did not exit, sending another SIGHUP",
+		    pid);
+		kill(pid, SIGHUP);
+		break;
+	    case 2:
+		/* ok, now it's being annoying */
+		aplog_error(APLOG_MARK, APLOG_ERR, server_conf,
+		    "child process %d still did not exit, sending a SIGTERM",
+		    pid);
+		kill(pid, SIGTERM);
+		break;
+	    case 3:
+		/* die child scum */
+		aplog_error(APLOG_MARK, APLOG_ERR, server_conf,
+		    "child process %d still did not exit, sending a SIGKILL",
+		    pid);
+		kill(pid, SIGKILL);
+		break;
+	    case 4:
+		/* gave it our best shot, but alas...  If this really 
+		    * is a child we are trying to kill and it really hasn't
+		    * exited, we will likely fail to bind to the port
+		    * after the restart.
+		    */
+		aplog_error(APLOG_MARK, APLOG_ERR, server_conf,
+		    "could not make child process %d exit, "
+		    "attempting to continue anyway", pid);
+		break;
+	    }
+	}
+#ifndef NO_OTHER_CHILD
+	for (ocr = other_children; ocr; ocr = nocr) {
+	    nocr = ocr->next;
+	    if (ocr->pid == -1) continue;
+
+	    waitret = waitpid (ocr->pid, &status, WNOHANG);
+	    if (waitret == ocr->pid) {
+		ocr->pid = -1;
+		(*ocr->maintenance)(OC_REASON_DEATH, ocr->data, status);
+	    } else if (waitret == 0) {
+		(*ocr->maintenance)(OC_REASON_RESTART, ocr->data, -1);
+		++not_dead_yet;
+	    } else if (waitret == -1) {
+		/* uh what the heck? they didn't call unregister? */
+		ocr->pid = -1;
+		(*ocr->maintenance)(OC_REASON_LOST, ocr->data, -1);
+	    }
+	}
+#endif
+	if (!not_dead_yet) {
+	    /* nothing left to wait for */
+	    break;
 	}
     }
 #endif /* ndef MULTITHREAD */
 }
+
 
 #if defined(BROKEN_WAIT) || defined(NEED_WAITPID)
 /*
@@ -1687,9 +1831,9 @@ int reap_children (void)
 
     for (n = 0; n < max_daemons_limit; ++n) {
 	if (scoreboard_image->servers[n].status != SERVER_DEAD
-		&& waitpid (scoreboard_image->servers[n].x.pid, &status, WNOHANG)
-		    == -1
-		&& errno == ECHILD) {
+	    && waitpid (scoreboard_image->servers[n].x.pid, &status, WNOHANG)
+		== -1
+	    && errno == ECHILD) {
 	    sync_scoreboard_image ();
 	    update_child_status (n, SERVER_DEAD, NULL);
 	    ret = 1;
@@ -1703,7 +1847,13 @@ int reap_children (void)
  * a while...
  */
 
-static int wait_or_timeout (void)
+/* number of calls to wait_or_timeout between writable probes */
+#ifndef INTERVAL_OF_WRITABLE_PROBES
+#define INTERVAL_OF_WRITABLE_PROBES 10
+#endif
+static int wait_or_timeout_counter;
+
+static int wait_or_timeout (int *status)
 {
 #ifdef WIN32
 #define MAXWAITOBJ MAXIMUM_WAIT_OBJECTS
@@ -1740,21 +1890,22 @@ static int wait_or_timeout (void)
 
 #else /* WIN32 */
     struct timeval tv;
-#ifndef NEED_WAITPID
     int ret;
 
-    ret = waitpid (-1, NULL, WNOHANG);
+    ++wait_or_timeout_counter;
+    if (wait_or_timeout_counter == INTERVAL_OF_WRITABLE_PROBES) {
+	wait_or_timeout_counter = 0;
+#ifndef NO_OTHER_CHILD
+	probe_writable_fds();
+#endif
+    }
+    ret = waitpid (-1, status, WNOHANG);
     if (ret == -1 && errno == EINTR) {
 	return -1;
     }
     if (ret > 0) {
 	return ret;
     }
-#else
-    if (reap_children ()) {
-	return -1;
-    }
-#endif
     tv.tv_sec = SCOREBOARD_MAINTENANCE_INTERVAL / 1000000;
     tv.tv_usec = SCOREBOARD_MAINTENANCE_INTERVAL % 1000000;
     ap_select(0, NULL, NULL, NULL, &tv);
@@ -2008,6 +2159,10 @@ int init_suexec (void)
 #endif /* ndef WIN32 */
     return (suexec_enabled);
 }
+
+/*****************************************************************
+ * Connection structures and accounting...
+ */
 
 /* This hashing function is designed to get good distribution in the cases
  * where the server is handling entire "networks" of servers.  i.e. a
@@ -3183,7 +3338,8 @@ void standalone_main(int argc, char **argv)
 
 	while (!restart_pending && !shutdown_pending) {
 	    int child_slot;
-	    int pid = wait_or_timeout();
+	    int status;
+	    int pid = wait_or_timeout (&status);
 
 	    /* XXX: if it takes longer than 1 second for all our children
 	     * to start up and get into IDLE state then we may spawn an
@@ -3207,6 +3363,10 @@ void standalone_main(int argc, char **argv)
 			/* don't perform idle maintenance yet */
 			continue;
 		    }
+#ifndef NO_OTHER_CHILD
+		} else if (reap_other_child (pid, status) == 0) {
+		    /* handled */
+#endif
 		} else if (is_graceful) {
 		    /* Great, we've probably just lost a slot in the
 		     * scoreboard.  Somehow we don't know about this

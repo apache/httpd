@@ -258,6 +258,17 @@ Allows additional information to be listed along with a specified module.
     identifier is available in the environment variable
     <code>UNIQUE_ID</code>.
 
+<li><strong>Reliable Piped Logs</strong><br>
+    On almost all Unix architectures Apache now implements "reliable"
+    piped logs in <a href="mod/mod_log_config.html">mod_log_config</a>.
+    Where reliable means that if the logging child dies for whatever
+    reason, Apache will recover and respawn it without having to restart
+    the entire server.  Furthermore if the logging child becomes "stuck"
+    and isn't reading its pipe frequently enough Apache will also restart
+    it.  This opens up more opportunities for log rotation, hit filtering,
+    real-time splitting of multiple vhosts into separate logs, and
+    asynchronous DNS resolving on the fly.
+
 </ul>
 
 <!--#include virtual="footer.html" -->

@@ -256,6 +256,16 @@ build for your OS.
        an int *len on some architectures and a size_t *len on others.
        If left undefined apache will default it to int.
 
+      NO_OTHER_CHILD:
+       Do not implement the register_other_child API, usually because
+       certain system calls aren't available.
+
+      NO_RELIABLE_PIPED_LOGS:
+       Do not use reliable piped logs, which happen to also require
+       the register_other_child API.  The reliable piped log code
+       requires another child spawning interface which hasn't been
+       generalised yet.
+
 -----------
 Conclusion:
 -----------

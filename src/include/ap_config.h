@@ -445,6 +445,7 @@ extern char *crypt();
 #undef NO_KILLPG
 #define NO_SETSID
 #define NEED_WAITPID
+#define NO_OTHER_CHILD
 #define STDIN_FILENO 0
 #define STDOUT_FILENO 1
 #define STDERR_FILENO 2
@@ -541,6 +542,7 @@ int initgroups (char *, int);
 #include <sys/time.h>     
 #define MAXSOCKETS 4096
 #define HAVE_MMAP
+#define NO_RELIABLE_PIPED_LOGS
     
 #elif defined(__MACHTEN__)
 typedef int rlim_t;
@@ -595,6 +597,7 @@ typedef int rlim_t;
 #define NO_SETSID
 #define NO_USE_SIGACTION
 #define NEED_WAITPID
+#define NO_OTHER_CHILD
 #define HAVE_SYSLOG
 #include <sys/time.h>
 #include <stdlib.h>
@@ -632,6 +635,7 @@ typedef int rlim_t;
 /* All windows stuff is now in os/win32/os.h */
 
 #else
+/* Unknown system - Edit these to match */
 #ifdef BSD
 #define HAVE_GMTOFF
 #else
@@ -839,6 +843,10 @@ Sigfunc *signal(int signo, Sigfunc *func);
 /* so that we can use inline on some critical functions */
 #if !defined(__GNUC__)
 #define inline
+#endif
+
+#ifdef NO_OTHER_CHILD
+#define NO_RELIABLE_PIPED_LOGS
 #endif
 
 /* Finding offsets of elements within structures.

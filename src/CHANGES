@@ -1,6 +1,16 @@
 Changes with Apache 1.3b1
 
-  *) set_last_modified() broken into set_last_modified(), set_etag(), and
+  *) API: New register_other_child() API (see http_main.h) which allows
+     modules to register children with the parent for maintenance.  It
+     is disabled by defining NO_OTHER_CHILD.  [Dean Gaudet]
+
+  *) API: New piped_log API (see http_log.h) which implements piped logs,
+     and will use register_other_child to implement reliable piped logs
+     when it is available.  The reliable piped logs part can be disabled
+     by defining NO_RELIABLE_PIPED_LOGS.  At the moment reliable piped
+     logs is only available on Unix. [Dean Gaudet]
+
+  *) API: set_last_modified() broken into set_last_modified(), set_etag(), and
      meets_conditions().  This allows conditional HTTP selection to be
      handled separately from the storing of the header fields, and provides
      the ability for CGIs to set their own ETags for conditional checking.

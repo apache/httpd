@@ -79,3 +79,23 @@ API_EXPORT(void) log_printf(const server_rec *s, const char *fmt, ...);
 API_EXPORT(void) log_reason(const char *reason, const char *fname,
 			    request_rec *r);
 
+typedef struct piped_log {
+    pool *p;
+#ifndef NO_RELIABLE_PIPED_LOGS
+    char *program;
+    int pid;
+    int fds[2];
+#else
+    FILE *write_f;
+#endif
+} piped_log;
+
+API_EXPORT(piped_log *) open_piped_log (pool *p, const char *program);
+API_EXPORT(void) close_piped_log (piped_log *);
+#ifndef NO_RELIABLE_PIPED_LOGS
+#define piped_log_read_fd(pl)	((pl)->fds[0])
+#define piped_log_write_fd(pl)	((pl)->fds[1])
+#else
+#define piped_log_read_fd(pl)	(-1)
+#define piped_log_write_fd(pl)	(fileno((pl)->write_f))
+#endif

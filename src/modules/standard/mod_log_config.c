@@ -164,6 +164,7 @@
 #include "httpd.h"
 #include "http_config.h"
 #include "http_core.h" /* For REMOTE_NAME */
+#include "http_log.h"
 
 module MODULE_VAR_EXPORT config_log_module;
 
@@ -717,32 +718,6 @@ static command_rec config_log_cmds[] = {
 { NULL }
 };
 
-static int config_log_child (void *cmd)
-{
-    /* Child process code for 'TransferLog "|..."';
-     * may want a common framework for this, since I expect it will
-     * be common for other foo-loggers to want this sort of thing...
-     */
-    int child_pid = 1;
-
-    cleanup_for_exec();
-#ifdef SIGHUP
-    signal (SIGHUP, SIG_IGN);
-#endif
-#if defined(WIN32)
-    child_pid = spawnl (_P_NOWAIT, SHELL_PATH, SHELL_PATH, "/c", (char *)cmd, NULL);
-    return(child_pid);
-#elif defined(__EMX__)
-    /* For OS/2 we need to use a '/' */
-    execl (SHELL_PATH, SHELL_PATH, "/c", (char *)cmd, NULL);
-#else
-    execl (SHELL_PATH, SHELL_PATH, "-c", (char *)cmd, NULL);
-#endif
-    perror ("exec");
-    fprintf (stderr, "Exec of shell for logging failed!!!\n");
-    return(child_pid);
-}
-
 static config_log_state *open_config_log (server_rec *s, pool *p,
 				   config_log_state *cls,
 				   array_header *default_format) {
@@ -753,16 +728,13 @@ static config_log_state *open_config_log (server_rec *s, pool *p,
     }
 
     if (*cls->fname == '|') {
-        FILE *dummy;
-        
-        if (!spawn_child (p, config_log_child, (void *)(cls->fname+1),
-                    kill_after_timeout, &dummy, NULL)) {
-	    perror ("spawn_child");
-            fprintf (stderr, "Couldn't fork child for TransferLog process\n");
-            exit (1);
-        }
+	piped_log *pl;
 
-        cls->log_fd = fileno (dummy);
+	pl = open_piped_log (p, cls->fname + 1);
+	if (pl == NULL) {
+	    exit (1);
+	}
+	cls->log_fd = piped_log_write_fd (pl);
     }
     else {
         char *fname = server_root_relative (p, cls->fname);
