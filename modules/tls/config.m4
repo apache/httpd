@@ -24,7 +24,14 @@ APACHE_MODULE(tls, TLS/SSL support, $tls_objs, , no, [
                   LIBS="$LIBS -L$withval -lssl -lcrypto"
                   ssl_lib="OpenSSL"
               else
-                  AC_MSG_ERROR(no - Unable to locate $withval/inc/ssl.h)
+                  searchfile="$withval/include/openssl/ssl.h"
+                  if test -f $searchfile ; then
+                      INCLUDES="$INCLUDES -I$withval/include"
+                      LIBS="$LIBS -L$withval/lib -lssl -lcrypto"
+                      ssl_lib="OpenSSL"
+                  else
+                      AC_MSG_ERROR(no - Unable to locate $withval/inc/ssl.h)
+                  fi
               fi
           fi
       fi
