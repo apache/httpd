@@ -25,7 +25,7 @@ if test "$apache_cv_mpm" = "mpmt_pthread" -o "$apache_cv_mpm" = "dexter"; then
   AC_MSG_CHECKING([for which threading library to use])
   AC_MSG_RESULT($threads_result)
 
-  if test "$apache_threads_working" = "no"; then
+  if test "$pthreads_working" = "no"; then
     AC_MSG_RESULT(The currently selected MPM requires pthreads which your system seems to lack)
     AC_MSG_CHECKING(checking for replacement)
     AC_MSG_RESULT(prefork selected)
