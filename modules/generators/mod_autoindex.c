@@ -1298,7 +1298,7 @@ static struct ent *make_autoindex_entry(const apr_finfo_t *dirent,
     }
 
     p = (struct ent *) apr_pcalloc(r->pool, sizeof(struct ent));
-    if (rr->finfo.filetype == APR_DIR) {
+    if (dirent->filetype == APR_DIR) {
         p->name = apr_pstrcat(r->pool, dirent->name, "/", NULL);
     }
     else {
@@ -1316,7 +1316,7 @@ static struct ent *make_autoindex_entry(const apr_finfo_t *dirent,
 
     if (autoindex_opts & (FANCY_INDEXING | TABLE_INDEXING)) {
         p->lm = rr->finfo.mtime;
-        if (rr->finfo.filetype == APR_DIR) {
+        if (dirent->filetype == APR_DIR) {
             if (autoindex_opts & FOLDERS_FIRST) {
                 p->isdir = 1;
             }
@@ -1885,6 +1885,8 @@ static int index_directory(request_rec *r,
     char keyid;
     char direction;
     char *colargs;
+    char *fullpath;
+    apr_size_t dirpathlen;
 
     if ((status = apr_dir_open(&thedir, name, r->pool)) != APR_SUCCESS) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, status, r,
@@ -2023,7 +2025,30 @@ static int index_directory(request_rec *r,
         head = p;
         num_ent++;
     }
-    while (apr_dir_read(&dirent, APR_FINFO_DIRENT, thedir) == APR_SUCCESS) {
+    fullpath = apr_palloc(r->pool, APR_PATH_MAX);
+    dirpathlen = strlen(name);
+    memcpy(fullpath, name, dirpathlen);
+    while (apr_dir_read(&dirent, APR_FINFO_MIN | APR_FINFO_NAME, thedir) == APR_SUCCESS) {
+        /* We want to explode symlinks here. */
+        if (dirent.filetype == APR_LNK) {
+            const char *savename;
+            apr_finfo_t fi;
+            /* We *must* have FNAME. */
+            savename = dirent.name;
+            apr_cpystrn(fullpath + dirpathlen, dirent.name,
+                        APR_PATH_MAX - dirpathlen);
+            status = apr_stat(&fi, fullpath, 
+                              dirent.valid & ~(APR_FINFO_NAME), r->pool);
+            if (status != APR_SUCCESS) {
+                /* Something bad happened, skip this file. */
+                continue;
+            }
+            memcpy(&dirent, &fi, sizeof(fi));
+            if (savename) {
+                dirent.name = savename;
+                dirent.valid |= APR_FINFO_NAME;
+            }
+        }
         p = make_autoindex_entry(&dirent, autoindex_opts, autoindex_conf, r, 
                                  keyid, direction, pstring);
         if (p != NULL) {

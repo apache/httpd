@@ -1,5 +1,9 @@
 Changes with Apache 2.0.32-dev
 
+  *) Allow mod_autoindex to serve symlinks if permitted and attempt to
+     do only one stat() call when generating the directory listings.
+     [Justin Erenkrantz]
+
   *) Fix resolve_symlink to save the original symlink name if known.
      [Justin Erenkrantz]
 
