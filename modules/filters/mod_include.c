@@ -626,7 +626,12 @@ static apr_bucket *find_end_sequence(apr_bucket *dptr, include_ctx_t *ctx,
                     }
                 }
                 else if (ctx->state == PARSE_TAG) {
-                    ctx->tag_length++;
+                    const char *tmp = c;
+                    do {
+                        c++;
+                    } while ((c < buf + len) && (*c != *str));
+                    ctx->tag_length += (c - tmp);
+                    continue;
                 }
                 else {
                     if (ctx->parse_pos != 0) {
