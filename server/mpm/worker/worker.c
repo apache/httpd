@@ -1138,6 +1138,10 @@ static void child_main(int child_num_arg)
         /* make sure the start thread has finished; signal_workers() 
          * and join_workers() depend on that
          */
+        /* XXX join_start_thread() won't be awakened if one of our
+         *     threads encounters a critical error and attempts to
+         *     shutdown this child
+         */
         join_start_thread(start_thread_id);
         signal_workers(); /* helps us terminate a little more quickly when
                            * the dispatch of the signal thread
@@ -1155,6 +1159,10 @@ static void child_main(int child_num_arg)
     else { /* !one_process */
         /* Watch for any messages from the parent over the POD */
         while (1) {
+            /* XXX join_start_thread() won't be awakened if one of our
+             *     threads encounters a critical error and attempts to
+             *     shutdown this child
+             */
             rv = ap_mpm_pod_check(pod);
             if (rv == AP_GRACEFUL || rv == AP_RESTART) {
                 /* make sure the start thread has finished; 
