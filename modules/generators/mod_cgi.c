@@ -348,6 +348,7 @@ static void add_ssi_vars(request_rec *r, ap_filter_t *next)
             apr_table_setn(e, "PATH_TRANSLATED",
                            apr_pstrcat(r->pool, pa_req->filename, pa_req->path_info, NULL));
         }
+        ap_destroy_sub_req(pa_req);
     }
 
     if (r->args) {
