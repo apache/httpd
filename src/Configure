@@ -165,6 +165,12 @@ else
 fi
 
 case "$PLAT" in
+    *MPE/iX*)
+        OS='MPE/iX'
+	CFLAGS="$CFLAGS -DMPE -D_POSIX_SOURCE -D_SOCKET_SOURCE"
+	LIBS="$LIBS -lsocket"
+	LFLAGS="$LFLAGS -Xlinker \"-WL,cap=ia,ba,ph,pm;nmstack=1024000\""
+	;;
     *-apple-aux3*)
 	OS='A/UX 3.1.x'
 	CFLAGS="$CFLAGS -DAUX -D_POSIX_SOURCE"

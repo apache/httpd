@@ -7,7 +7,11 @@
 #include <sys/types.h>
 #include <stdio.h>
 #include <string.h>
+#ifdef MPE
+#include <signal.h>
+#else
 #include <sys/signal.h>
+#endif
 #include <stdlib.h>
 #include <time.h>
 #include <unistd.h>
@@ -75,6 +79,25 @@ void to64(register char *s, register long v, register int n) {
         v >>= 6;
     }
 }
+
+#ifdef MPE
+/* MPE lacks getpass() and a way to suppress stdin echo.  So for now, just
+issue the prompt and read the results with echo.  (Ugh). */
+
+char *getpass(const char *prompt) {
+
+static char password[81];
+
+fputs(prompt,stderr);
+gets((char *)&password);
+
+if (strlen((char *)&password) > 8) {
+  password[8]='\0';
+}
+
+return (char *)&password;
+}
+#endif
 
 void add_password(char *user, FILE *f) {
     char *pw, *cpw, salt[3];

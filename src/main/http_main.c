@@ -1136,6 +1136,9 @@ void detach()
     int x;
 
     chdir("/");
+#ifndef MPE
+/* Don't detach for MPE because child processes can't survive the death of
+   the parent. */
     if((x = fork()) > 0)
         exit(0);
     else if(x == -1) {
@@ -1143,6 +1146,7 @@ void detach()
         perror("fork");
         exit(1);
     }
+#endif
 #ifndef NO_SETSID
     if((pgrp=setsid()) == -1) {
         fprintf(stderr,"httpd: setsid failed\n");
@@ -1157,9 +1161,9 @@ void detach()
         exit(1);
     }
 #else
-#ifdef __EMX__
-    /* OS/2 doesn't support process group IDs */
-    pgrp=getpid();
+#if defined(__EMX__) || defined(MPE)
+    /* OS/2 and MPE don't support process group IDs */
+    pgrp=-getpid();
 #else
     if((pgrp=setpgrp(getpid(),0)) == -1) {
         fprintf(stderr,"httpd: setpgrp failed\n");
@@ -1504,9 +1508,12 @@ void sock_disable_nagle (int s)
      * In spite of these problems, failure here is not a shooting offense.
      */
     const int just_say_no = 1;
+#ifndef MPE
+/* MPE does not support TCP_NODELAY */
     if (0 != setsockopt(s, IPPROTO_TCP, TCP_NODELAY, (char*)&just_say_no,
 			sizeof(just_say_no)))
 	fprintf(stderr, "httpd: could not set socket option TCP_NODELAY\n");
+#endif
 }
 
 /*****************************************************************
@@ -1537,11 +1544,23 @@ void child_main(int child_num_arg)
     reopen_scoreboard (pconf);
     (void)update_child_status (child_num, SERVER_READY, (request_rec*)NULL);
 
+#ifdef MPE
+    /* Only try to switch if we're running as MANAGER.SYS */
+    if (geteuid() == 1 && user_id > 1) {
+        GETPRIVMODE();
+        if (setuid(user_id) == -1) {
+            GETUSERMODE();
+#else
     /* Only try to switch if we're running as root */
     if(!geteuid() && setuid(user_id) == -1) {
+#endif
         log_unixerr("setuid", NULL, "unable to change uid", server_conf);
 	exit (1);
     }
+#ifdef MPE
+        GETUSERMODE();
+    }
+#endif
 
 #ifdef NEXT
     setjmp(jmpbuffer);
@@ -1758,6 +1777,8 @@ make_sock(pool *pconf, const struct sockaddr_in *server)
 
     note_cleanups_for_fd (pconf, s); /* arrange to close on exec or restart */
     
+#ifndef MPE
+/* MPE does not support SO_REUSEADDR and SO_KEEPALIVE */
     if((setsockopt(s, SOL_SOCKET,SO_REUSEADDR,(char *)&one,sizeof(one)))
        == -1) {
 	perror("setsockopt(SO_REUSEADDR)");
@@ -1770,6 +1791,7 @@ make_sock(pool *pconf, const struct sockaddr_in *server)
         fprintf(stderr,"httpd: could not set socket option SO_KEEPALIVE\n"); 
         exit(1); 
     }
+#endif
 
     sock_disable_nagle(s);
     
@@ -1820,8 +1842,15 @@ make_sock(pool *pconf, const struct sockaddr_in *server)
 	}
     }
 
+#ifdef MPE
+/* MPE requires CAP=PM and GETPRIVMODE to bind to ports less than 1024 */
+    if (ntohs(server->sin_port) < 1024) GETPRIVMODE();
+#endif
     if(bind(s, (struct sockaddr *)server,sizeof(struct sockaddr_in)) == -1)
     {
+#ifdef MPE
+        if (ntohs(server->sin_port) < 1024) GETUSERMODE();
+#endif
         perror("bind");
 	if (server->sin_addr.s_addr != htonl(INADDR_ANY))
 	    fprintf(stderr,"httpd: could not bind to address %s port %d\n",
@@ -1831,6 +1860,9 @@ make_sock(pool *pconf, const struct sockaddr_in *server)
 		    ntohs(server->sin_port));
         exit(1);
     }
+#ifdef MPE
+    if (ntohs(server->sin_port) < 1024) GETUSERMODE();
+#endif
     listen(s, 512);
     return s;
 }
@@ -2118,11 +2150,23 @@ main(int argc, char *argv[])
 	set_group_privs();
 	default_server_hostnames (server_conf);
 
+#ifdef MPE
+      /* Only try to switch if we're running as MANAGER.SYS */
+      if (geteuid() == 1 && user_id > 1) {
+          GETPRIVMODE();
+          if (setuid(user_id) == -1) {
+              GETUSERMODE();
+#else
       /* Only try to switch if we're running as root */
       if(!geteuid() && setuid(user_id) == -1) {
+#endif
           log_unixerr("setuid", NULL, "unable to change uid", server_conf);
           exit (1);
       }
+#ifdef MPE
+          GETUSERMODE();
+      }
+#endif
 
 	c = sizeof(sa_client);
 	if ((getpeername(fileno(stdin), &sa_client, &c)) < 0)
@@ -2140,7 +2184,17 @@ main(int argc, char *argv[])
 	}
 	server_conf->port =ntohs(((struct sockaddr_in *)&sa_server)->sin_port);
 	cio = bcreate(ptrans, B_RDWR);
+#ifdef MPE
+/* HP MPE 5.5 inetd only passes the incoming socket as stdin (fd 0), whereas
+   HPUX inetd passes the incoming socket as stdin (fd 0) and stdout (fd 1).
+   Go figure.  SR 5003355016 has been submitted to request that the existing
+   functionality be documented, and then to enhance the functionality to be
+   like HPUX. */
+
+        cio->fd = fileno(stdin);
+#else
 	cio->fd = fileno(stdout);
+#endif
 	cio->fd_in = fileno(stdin);
 	conn = new_connection (ptrans, server_conf, cio,
 			       (struct sockaddr_in *)&sa_client,

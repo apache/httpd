@@ -55,12 +55,27 @@
  * See README for a listing of what they mean
  */
 
-#ifndef QNX
+#if !defined(QNX) && !defined(MPE)
 #include <sys/param.h>
 #endif
 
 /* Define one of these according to your system. */
-#if defined(SUNOS4)
+#if defined(MPE)
+#include <setjmp.h>
+#include <sys/times.h>
+#define JMP_BUF sigjmp_buf
+#define NO_SETSID
+#define NO_KILLPG
+#define NEED_INITGROUPS
+#define NEED_STRCASECMP
+#define NEED_STRDUP
+#define NEED_STRNCASECMP
+#define getwd(d) getcwd(d,MAX_STRING_LEN)
+extern void GETPRIVMODE();
+extern void GETUSERMODE();
+extern char *inet_ntoa();
+
+#elif defined(SUNOS4)
 #define HAVE_GMTOFF
 #define HAVE_SYS_RESOURCE_H
 #undef NO_KILLPG
@@ -513,7 +528,9 @@ int ap_vsnprintf(char *buf, size_t len, const char *format, va_list ap);
 #include <stdlib.h>
 #include <string.h>
 #include <sys/stat.h>
+#ifndef MPE
 #include <sys/file.h>
+#endif
 #include <sys/socket.h>
 #ifdef HAVE_SYS_SELECT_H
 #include <sys/select.h>
@@ -522,7 +539,9 @@ int ap_vsnprintf(char *buf, size_t len, const char *format, va_list ap);
 #include <netinet/in.h>
 #include <netdb.h>
 #include <sys/ioctl.h>
+#ifndef MPE
 #include <arpa/inet.h>  /* for inet_ntoa */
+#endif
 #include <time.h>  /* for ctime */
 #include <signal.h>
 #include <errno.h>

@@ -1015,9 +1015,8 @@ int strncasecmp (const char *a, const char *b, int n)
 #ifdef NEED_INITGROUPS
 int initgroups(const char *name, gid_t basegid)
 {
-#ifdef QNX
-/* QNX does not appear to support supplementary groups.
-Ben <ben@algroup.co.uk> */
+#if defined(QNX) || defined(MPE)
+/* QNX and MPE do not appear to support supplementary groups. */
 	return 0;
 #else /* ndef QNX */
   gid_t groups[NGROUPS_MAX];

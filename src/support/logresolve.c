@@ -51,7 +51,9 @@
 #include <sys/socket.h>
 
 #include <netinet/in.h>
+#ifndef MPE
 #include <arpa/inet.h>
+#endif
 
 static void cgethost(struct in_addr ipnum, char *string, int check);
 static int getline(char *s, int n);
@@ -68,6 +70,19 @@ static void stats(FILE *output);
 
 /* number of buckets in cache hash table */
 #define BUCKETS 256
+
+#ifdef MPE
+char *strdup (const char *str)
+{
+  char *dup; 
+             
+  if(!(dup = (char *)malloc (strlen (str) + 1)))
+      return NULL;
+  dup = strcpy (dup, str);
+     
+  return dup; 
+}
+#endif
 
 /*
  * struct nsrec - record of nameservice for cache linked list

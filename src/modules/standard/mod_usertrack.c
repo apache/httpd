@@ -120,7 +120,13 @@ void make_cookie(request_rec *r)
 {
     cookie_log_state *cls = get_module_config (r->server->module_config,
 					       &usertrack_module);
+#ifdef MPE
+    clock_t mpe_times;
+    struct tms mpe_tms;
+#else
     struct timeval tv;
+    struct timezone tz = { 0 , 0 };
+#endif
     /* 1024 == hardcoded constants */
     char *new_cookie = palloc( r->pool, 1024);	
     char *cookiebuf = palloc( r->pool, 1024);
@@ -128,14 +134,24 @@ void make_cookie(request_rec *r)
     const char *rname = pstrdup(r->pool, 
 		       	    get_remote_host(r->connection, r->per_dir_config,
 						REMOTE_NAME));
-    
-    struct timezone tz = { 0 , 0 };
 
     if ((dot = strchr(rname,'.'))) *dot='\0';	/* First bit of hostname */
+
+#ifdef MPE
+/* MPE lacks gettimeofday(), so we must use time() to obtain the epoch
+   seconds, and then times() to obtain CPU clock ticks (milliseconds).
+   Combine this together to obtain a hopefully unique cookie ID. */
+
+    mpe_times=times(&mpe_tms);
+
+    ap_snprintf(cookiebuf, 1024, "%s%d%ld%ld", rname, (int)getpid(),
+              (long)time(NULL), (long)mpe_tms.tms_utime);
+#else
     gettimeofday(&tv, &tz);
 
     ap_snprintf(cookiebuf, 1024, "%s%d%ld%d", rname, (int)getpid(),
 	      (long)tv.tv_sec, (int)tv.tv_usec/1000);	    
+#endif
 
     if (cls->expires) {
       static const char *const days[7]=
