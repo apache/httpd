@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/11/01 23:22:38 $]
+Last modified at [$Date: 2004/11/01 23:43:44 $]
 
 Release:
 
@@ -70,6 +70,11 @@ Contributors looking for a mission:
     * Open bugs in the bug database.
 
 RELEASE SHOWSTOPPERS:
+
+    *) mod_rewrite: Regression since 2.0.52 in QUERY_STRING handling
+       for [P] rules.
+       http://cvs.apache.org/viewcvs.cgi/httpd-2.0/modules/mappers/mod_rewrite.c?r1=1.262&r2=1.263
+       +1: jorton
 
 PATCHES TO BACKPORT FROM 2.1
   [ please place file names and revisions from HEAD here, so it is easy to
