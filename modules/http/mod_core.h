@@ -71,35 +71,33 @@ extern "C" {
  */
 
 /*
- * These (output) filters are internal to the mod_core operation.
- */
-AP_CORE_DECLARE_NONSTD(apr_status_t) ap_byterange_filter(ap_filter_t *f, apr_bucket_brigade *b);
-AP_CORE_DECLARE_NONSTD(apr_status_t) ap_http_header_filter(ap_filter_t *f, apr_bucket_brigade *b);
-AP_CORE_DECLARE_NONSTD(apr_status_t) ap_content_length_filter(ap_filter_t *, 
-                                                              apr_bucket_brigade *);
-AP_CORE_DECLARE_NONSTD(apr_status_t) ap_old_write_filter(ap_filter_t *f, apr_bucket_brigade *b);
-
-/*
  * These (input) filters are internal to the mod_core operation.
  */
 apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b, ap_input_mode_t mode);
 apr_status_t ap_dechunk_filter(ap_filter_t *f, apr_bucket_brigade *b, ap_input_mode_t mode);
 
+char *ap_response_code_string(request_rec *r, int error_index);
 
-/*
- * Setting up the protocol fields for subsidiary requests...
- * Also, a wrapup function to keep the internal accounting straight.
+/**
+ * Send the minimal part of an HTTP response header.
+ * @param r The current request
+ * @param bb The brigade to add the header to.
+ * @warning Modules should be very careful about using this, and should
+ *          prefer ap_send_http_header().  Much of the HTTP/1.1 implementation
+ *          correctness depends on code in ap_send_http_header().
+ * @deffunc void ap_basic_http_header(request_rec *r, apr_bucket_brigade *bb)
  */
-void ap_set_sub_req_protocol(request_rec *rnew, const request_rec *r);
-void ap_finalize_sub_req_protocol(request_rec *sub_r);
+AP_DECLARE(void) ap_basic_http_header(request_rec *r, apr_bucket_brigade *bb);
+ 
+/**
+ * Send the Status-Line and header fields for HTTP response
+ * @param r The current request
+ * @deffunc void ap_send_http_header(request_rec *r)
+ */
+AP_DECLARE(void) ap_send_http_header(request_rec *r);
 
-
-/* Send the response to special method requests */
 AP_DECLARE(int) ap_send_http_trace(request_rec *r);
 int ap_send_http_options(request_rec *r);
-
-
-char *ap_response_code_string(request_rec *r, int error_index);
 
 #ifdef __cplusplus
 }

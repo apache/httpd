@@ -85,6 +85,7 @@
 #include "http_main.h"
 #include "util_script.h"
 
+#include "mod_core.h"
 
 module AP_MODULE_DECLARE_DATA autoindex_module;
 

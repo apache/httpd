@@ -109,6 +109,7 @@
 #include "http_main.h"
 #include "http_log.h"
 #include "util_script.h"
+#include "mod_core.h"
 
 
 #define IMAP_MAGIC_TYPE "application/x-httpd-imap"
