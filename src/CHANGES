@@ -1,5 +1,9 @@
 Changes with Apache 1.3.32
 
+  *) SECURITY: CAN-2004-0492 (cve.mitre.org)
+     Reject responses from a remote server if sent an invalid (negative) 
+     Content-Length.  [Mark Cox]
+
   *) Fix a bunch of cases where the return code of the regex compiler
      was not checked properly. This affects mod_usertrack and
      core. PR 28218.  [André Malo]

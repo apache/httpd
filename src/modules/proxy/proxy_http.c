@@ -485,6 +485,13 @@ int ap_proxy_http_handler(request_rec *r, cache_req *c, char *url,
         content_length = ap_table_get(resp_hdrs, "Content-Length");
         if (content_length != NULL) {
             c->len = ap_strtol(content_length, NULL, 10);
+
+	    if (c->len < 0) {
+		ap_kill_timeout(r);
+		return ap_proxyerror(r, HTTP_BAD_GATEWAY, ap_pstrcat(r->pool,
+				     "Invalid Content-Length from remote server",
+                                      NULL));
+	    }
         }
 
     }
