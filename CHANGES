@@ -1,5 +1,8 @@
 Changes with Apache 2.0.37
 
+  *) Detect overflow when reading the hex bytes forming a chunk line.
+     [Aaron Bannert]
+
   *) Allow RewriteMap prg:'s to take command-line arguments.  PR 8464.
      [James Tait <JTait@wyrddreams.demon.co.uk>]
 
