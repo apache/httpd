@@ -102,7 +102,7 @@ API_EXPORT(unsigned short) ap_default_port_for_request(const request_rec *r)
  * from a call to gethostbyname() and lives in static storage.
  * By creating a copy we can tuck it away for later use.
  */
-API_EXPORT(struct hostent *) ap_pduphostent(pool *p, struct hostent *hp)
+API_EXPORT(struct hostent *) ap_pduphostent(pool *p, const struct hostent *hp)
 {
     struct hostent *newent;
     char	  **ptrs;
@@ -111,7 +111,7 @@ API_EXPORT(struct hostent *) ap_pduphostent(pool *p, struct hostent *hp)
     int		   i = 0, j = 0;
 
     if (hp == NULL)
-	return hp;
+	return NULL;
 
     /* Count number of alias entries */
     if (hp->h_aliases != NULL)
