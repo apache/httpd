@@ -3,7 +3,7 @@
 # test programs, then "make test"
 targets =
 
-PROGRAMS = dbu
+PROGRAMS =
 
 PROGRAM_LDADD        = $(EXTRA_LDFLAGS) $(PROGRAM_DEPENDENCIES) $(EXTRA_LIBS)
 PROGRAM_DEPENDENCIES = ../srclib/apr-util/libaprutil.la \
@@ -13,6 +13,7 @@ include $(top_srcdir)/build/rules.mk
 
 test: $(PROGRAMS)
 
-dbu_OBJECTS = dbu.lo
-dbu: $(dbu_OBJECTS)
-	$(LINK) $(dbu_OBJECTS) $(PROGRAM_LDADD)
+# example for building a test proggie
+# dbu_OBJECTS = dbu.lo
+# dbu: $(dbu_OBJECTS)
+#	$(LINK) $(dbu_OBJECTS) $(PROGRAM_LDADD)
