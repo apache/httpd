@@ -242,15 +242,8 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
       lost.  This might be an APR issue with how it deals with
       the child_init hook (i.e. the fcntl lock needs to be resynced).
       More examination and analysis is required.
-        Status: This has also been reported on Cygwin.
-                FreeBSD 4.7 was reputed to have 'fixed' threads.  Not.
-                FreeBSD 5.2-RC is a confirmed fix w/either libkse or libthr.
-                [libc_r, still the default, does not serve any pages w/worker;
-                 so on FreeBSD 5.2, you must use libmap.conf (see man page).]
-                Work needs to be done to get APR to try to be knowledgable that
-                libkse/libthr are acceptable.  Still not recommended for the
-                default since libc_r is still broken.
-        Message-ID: <3C2CC514.8EF3BED1@wapme-systems.de> (cygnus)
+        Status: Works with FreeBSD 5.3. Does not work in previous versions.
+                This has also been reported on Cygwin.
 
     * There is increasing demand from module writers for an API
       that will allow them to control the server à la apachectl.
