@@ -330,10 +330,21 @@ AP_DECLARE_DATA extern module core_module;
 
 /* Per-request configuration */
 
+typedef enum {
+    AP_WALK_DIRECTORY,
+    AP_WALK_LOCATION,
+    AP_WALK_FILE,
+    AP_NUM_WALK_CACHES
+} ap_walk_cache_type;
+
 typedef struct {
     /* bucket brigade used by getline for look-ahead and 
      * ap_get_client_block for holding left-over request body */
     struct apr_bucket_brigade *bb;
+
+    /* a place to hold per-request working data for
+     * ap_directory_walk, ap_location_walk, and ap_file_walk */
+    void *walk_cache[AP_NUM_WALK_CACHES];
 } core_request_config;
 
 /* Per-directory configuration */
