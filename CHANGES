@@ -1,6 +1,9 @@
 Changes with Apache 2.0.35
 
-
+  *) [APR-related] The ordering of the default accept mutex method has
+     been changed to better match what's done in Apache 1.3. The ordering 
+     is now (highest to lowest): pthread -> sysvsem -> fcntl -> flock.
+     [Jim Jagielski]
 
 Changes with Apache 2.0.34
 
