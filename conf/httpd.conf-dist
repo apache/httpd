@@ -341,10 +341,10 @@ UserDir public_html
 #        Order allow,deny
 #        Allow from all
 #    </Limit>
-#    <Limit PUT DELETE PATCH PROPPATCH MKCOL COPY MOVE LOCK UNLOCK>
+#    <LimitExcept GET POST OPTIONS PROFIND>
 #        Order deny,allow
 #        Deny from all
-#    </Limit>
+#    </LimitExcept>
 #</Directory>
 
 #
