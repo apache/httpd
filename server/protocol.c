@@ -1167,7 +1167,7 @@ AP_DECLARE(int) ap_vrprintf(request_rec *r, const char *fmt, va_list va)
 {
     apr_size_t written;
     struct ap_vrprintf_data vd;
-    static char vrprintf_buf[AP_IOBUFSIZE];
+    char vrprintf_buf[AP_IOBUFSIZE];
 
     vd.vbuff.curpos = vrprintf_buf;
     vd.vbuff.endpos = vrprintf_buf + AP_IOBUFSIZE;
