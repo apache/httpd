@@ -66,6 +66,10 @@
  * Rasmus Lerdorf <rasmus@vex.net>, May 1996
  *
  * 05.01.96 Initial Version
+ *
+ * Lou Langholtz <ldl@usi.utah.edu>, July 1997
+ *
+ * 07.11.97 Addition of the AddModuleInfo directive
  * 
  */
 
@@ -78,6 +82,15 @@
 #include "util_script.h"
 #include "http_conf_globals.h"
 
+typedef struct {
+    char *name;	/* matching module name */
+    char *info;	/* additional info */
+} mod_info_entry;
+
+typedef struct {
+    array_header *more_info;
+} mod_info_server_conf;
+
 typedef struct mod_info_config_lines {
 	char *cmd;
 	char *line;
@@ -86,6 +99,26 @@ typedef struct mod_info_config_lines {
 
 module MODULE_VAR_EXPORT info_module;
 extern module *top_module;
+
+void *create_info_config(pool *p, server_rec *s)
+{
+    mod_info_server_conf *conf = (mod_info_server_conf *)
+	pcalloc(p, sizeof(mod_info_server_conf));
+
+    conf->more_info = make_array(p, 20, sizeof(mod_info_entry));
+    return conf;
+}
+
+void *merge_info_config(pool *p, void *basev, void *overridesv)
+{
+    mod_info_server_conf *new = (mod_info_server_conf *)
+	pcalloc(p, sizeof(mod_info_server_conf));
+    mod_info_server_conf *base = (mod_info_server_conf *)basev;
+    mod_info_server_conf *overrides = (mod_info_server_conf *)overridesv;
+
+    new->more_info = append_arrays(p, overrides->more_info, base->more_info);
+    return new;
+}
 
 char *mod_info_html_cmd_string(char *string) {
 	char *s,*t;
@@ -259,9 +292,27 @@ void mod_info_module_cmds(request_rec *r, mod_info_config_lines *cfg, command_re
 	}
 }
 
+char *find_more_info(server_rec *serv, const char *module_name)
+{
+    int i;
+    mod_info_server_conf *conf = (mod_info_server_conf *)
+	get_module_config(serv->module_config,&info_module);
+    mod_info_entry *entry = (mod_info_entry *)conf->more_info->elts;
+
+    if (!module_name) return 0;
+    for (i = 0; i < conf->more_info->nelts; i++) {
+	if (!strcmp(module_name, entry->name)) {
+	    return entry->info;
+	}
+	entry++;
+    }
+    return 0;
+}
+
 int display_info(request_rec *r) {
 	module *modp = NULL;
 	char buf[512], *cfname;
+	char *more_info;
 	command_rec *cmd=NULL;
 	handler_rec *hand=NULL;
 	server_rec *serv = r->server;
@@ -414,6 +465,13 @@ int display_info(request_rec *r) {
 				} else {
 					rputs("<tt> none</tt>\n",r);
 				}
+
+				more_info = find_more_info(serv, modp->name);
+				if (more_info) {
+				    rputs("<dt><strong>Additional Information:</strong>\n<dd>",r);
+				    rputs(more_info,r);
+				}
+
 				rputs("<dt><hr>\n",r);
 				if(r->args) break;
 			}
@@ -431,6 +489,24 @@ int display_info(request_rec *r) {
 	return 0;
 }
 
+const char *add_module_info(cmd_parms *cmd, void *dummy, char *name, char *info)
+{
+    server_rec *s = cmd->server;
+    mod_info_server_conf *conf = (mod_info_server_conf *)
+	get_module_config(s->module_config,&info_module);
+    mod_info_entry *new = push_array(conf->more_info);
+
+    new->name = name;
+    new->info = info;
+    return NULL;
+}
+
+command_rec info_cmds[] = {
+{ "AddModuleInfo", add_module_info, NULL, RSRC_CONF, TAKE2,
+    "a module name and additional information on that module"},
+{ NULL }
+};
+
 handler_rec info_handlers[] = {
 	{ "server-info", display_info },
 	{ NULL }
@@ -441,9 +517,9 @@ module MODULE_VAR_EXPORT info_module = {
 	NULL,				/* initializer */
 	NULL,				/* dir config creater */
 	NULL,				/* dir merger --- default is to override */
-	NULL,				/* server config */
-	NULL,				/* merge server config */
-	NULL,				/* command table */
+	create_info_config,		/* server config */
+	merge_info_config,		/* merge server config */
+	info_cmds,			/* command table */
 	info_handlers,		/* handlers */
 	NULL,				/* filename translation */
 	NULL,				/* check_user_id */
