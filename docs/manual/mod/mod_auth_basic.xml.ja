@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="iso-2022-jp"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
+<!-- English Revision: 1.10 -->
 
 <!--
  Copyright 2002-2004 The Apache Software Foundation
@@ -19,7 +20,6 @@
 -->
 
 <modulesynopsis metafile="mod_auth_basic.xml.meta">
-<!-- English revision: 1.8 -->
 
 <name>mod_auth_basic</name>
 <description>基本認証</description>

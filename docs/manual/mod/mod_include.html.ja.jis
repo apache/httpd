@@ -91,7 +91,7 @@
     <a href="../handler.html">ハンドラ</a> も INCLUDES フィルタを
     有効にします。MIME タイプ <code>text/x-server-parsed-html</code> や
     <code>text/x-server-parsed-html3</code> のドキュメントに対しても
-    Apache は INCLUDES フィルタを有効にします (出力されるものは
+    Apache は INCLUDES フィルタを有効にします (出力されるものは
     MIME タイプ <code>text/html</code> になります)。</p>
 
     <p>詳しい情報は <a href="../howto/ssi.html">Tutorial on Server Side Includes</a>.</p>
@@ -194,7 +194,7 @@
       <dd>値は表示する変数の名前です。</dd>
 
       <dt><code>encoding</code></dt>
-      <dd><p>変数を出力する前に、変数中の特別文字をどのようにエンコードするかを
+      <dd><p>変数を出力する前に、変数中の特別文字をどのようにエンコードするかを
       指定します。<code>none</code> に設定されていると、エンコードは行なわれません。
       <code>url</code> に設定されていると、URL エンコード (%-エンコードとも
       呼ばれています。これはリンク等の URL の使用に適切です) が
@@ -320,7 +320,7 @@
       その他の場合は、クエリー文字列も含め、コマンドで指定された
       完全な URL を使って普通に CGI スクリプトが呼び出されます。</p>
 
-      <p>属性が文書の位置を指定します。include コマンドに与えられたそれぞれの
+      <p>属性が文書の位置を指定します。include コマンドに与えられたそれぞれの
       属性に対して挿入作業が行なわれます。有効な属性は次の通りです。</p>
 
       <dl>
@@ -361,7 +361,7 @@
 
     <h3><a name="element.printenv" id="element.printenv">printenv 要素</a></h3>
       <p>これは、存在するすべての変数とその値を表示します。Apache 1.3.12 から、
-      特別な文字は出力される前にエンティティエンコード (詳細は <a href="#element.echo"><code>echo</code></a> 要素を参照)
+      特別な文字は出力される前にエンティティエンコード (詳細は <a href="#element.echo"><code>echo</code></a> 要素を参照)
       されるようになりました。属性はありません。</p>
 
       <div class="example"><h3>例</h3><p><code>
@@ -479,7 +479,7 @@
     </code></p></div>
 
     <p><code>if</code> 要素はプログラミング言語の
-    if 文と同じように動作します。条件が評価され、結果が真であれば次の
+    if 文と同じように動作します。条件が評価され、結果が真であれば次の
     <code>elif</code> か <code>else</code> か <code>endif</code>
     要素までの文字列が出力に挿入されます。</p>
 
@@ -578,7 +578,7 @@
       になります。</p></div>
 
     <div class="note"><h3>真偽値表現の最適化</h3>
-      <p>式がもっと複雑になり、処理の速度低下が顕著になった場合は、
+      <p>式がもっと複雑になり、処理の速度低下が顕著になった場合は、
       評価ルールに従って最適化してみると良いでしょう。</p>
       <ul>
       <li>評価は左から右に向かって行われます。</li>
@@ -727,7 +727,7 @@ directive]"</code></td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">互換性:</a></th><td>2.0.34 以降で利用可能</td></tr>
 </table>
     <p>このディレクティブは変数が定義されていないにも関わらず
-    "echo" されたときに <code class="module"><a href="../mod/mod_include.html">mod_include</a></code>
+    "echo" されたときに <code class="module"><a href="../mod/mod_include.html">mod_include</a></code>
     が表示する文字列を変更します。</p>
 
     <div class="example"><h3>例</h3><p><code>
