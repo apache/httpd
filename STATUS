@@ -1,5 +1,5 @@
 Apache 2.0 STATUS:
-Last modified at [$Date: 2000/07/10 11:23:12 $]
+Last modified at [$Date: 2000/07/11 21:09:58 $]
 
 Release:
 
@@ -10,6 +10,8 @@ Release:
     2.0a1   : released March 10, 2000
 
 RELEASE SHOWSTOPPERS:
+    * apachectl not being built or installed
+
     * Win32: Get mod_auth_digest working under win32
       - APR_HAS_RANDOM should be defined on windows and there is a 
       lib/apr/misc/win32/rand.c which is basically a copy of what
@@ -55,6 +57,11 @@ RELEASE SHOWSTOPPERS:
       a lot of directives to be removed from the core.
 
 RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
+    * Create unified scoreboard API and implementation shared across
+      the MPMs 
+
+    * Document mod_file_cache.
+
     * OS/2: Get loadable modules working again. Requires shared core support
       which doesn't appear to be catered for in the current build system.
 
@@ -62,10 +69,6 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
 
     * Build scripts do not recognise AIX 4.2.1 pthreads, so the
       pthread MPMs will not build.
-
-    * Win32: Reuse accept socket after transmitfile/close
-	This is not a bug, but would be nice to get this feature in 
-	before ship.
 
     * Win32: Enable the winnt MPM to use the new scoreboard API
 
@@ -100,16 +103,11 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
       process suspended. We also need a call to wake up the suspended 
       process This may not be able to be implemented everywhere though.
 
-        Status: 
-
-    * Move I/O layering into APR.
-
     * There are still a number of places in the code where we are
       loosing error status (i.e. throwing away the error returned by a
       system call and replacing it with a generic error code)
 
     * Win32: Implement reliable piped logs on Windows
-        Status: 
           
     * Use APR to get rid of more platform dependancies.
         Status: Ryan Bloom <rbb@covalenet.net> is working on this.
