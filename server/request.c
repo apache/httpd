@@ -164,7 +164,6 @@ AP_DECLARE(int) ap_process_request_internal(request_rec *r)
 
         if ((access_status = ap_run_translate_name(r))) {
             return decl_die(access_status, "translate", r);
-            return access_status;
         }
     }
 
@@ -1363,20 +1362,16 @@ AP_DECLARE(int) ap_file_walk(request_rec *r)
  * structure...
  */
 
-static request_rec *make_sub_request(const request_rec *r)
+static request_rec *make_sub_request(const request_rec *r, 
+                                     ap_filter_t *next_filter)
 {
     apr_pool_t *rrp;
-    request_rec *rr;
+    request_rec *rnew;
     
     apr_pool_create(&rrp, r->pool);
-    rr = apr_pcalloc(rrp, sizeof(request_rec));
-    rr->pool = rrp;
-    return rr;
-}
+    rnew = apr_pcalloc(rrp, sizeof(request_rec));
+    rnew->pool = rrp;
 
-static void fill_in_sub_req_vars(request_rec *rnew, const request_rec *r,
-                                 ap_filter_t *next_filter)
-{
     rnew->hostname       = r->hostname;
     rnew->request_time   = r->request_time;
     rnew->connection     = r->connection;
@@ -1410,6 +1405,13 @@ static void fill_in_sub_req_vars(request_rec *rnew, const request_rec *r,
     /* no input filters for a subrequest */
 
     ap_set_sub_req_protocol(rnew, r);
+
+    /* We have to run this after we fill in sub req vars, 
+     * or the r->main pointer won't be setup
+     */
+    ap_run_create_request(rnew);
+
+    return rnew;
 }
 
 AP_CORE_DECLARE_NONSTD(apr_status_t) ap_sub_req_output_filter(ap_filter_t *f,
@@ -1462,13 +1464,7 @@ AP_DECLARE(request_rec *) ap_sub_req_method_uri(const char *method,
     int res;
     char *udir;
 
-    rnew = make_sub_request(r);
-    fill_in_sub_req_vars(rnew, r, next_filter);
-
-    /* We have to run this after fill_in_sub_req_vars, or the r->main
-     * pointer won't be setup
-     */
-    ap_run_create_request(rnew);
+    rnew = make_sub_request(r, next_filter);
 
     /* would be nicer to pass "method" to ap_set_sub_req_protocol */
     rnew->method = method;
@@ -1506,13 +1502,7 @@ AP_DECLARE(request_rec *) ap_sub_req_lookup_dirent(const apr_finfo_t *dirent,
     char *fdir;
     char *udir;
 
-    rnew = make_sub_request(r);
-    fill_in_sub_req_vars(rnew, r, next_filter);
-
-    /* We have to run this after fill_in_sub_req_vars, or the r->main
-     * pointer won't be setup
-     */
-    ap_run_create_request(rnew);
+    rnew = make_sub_request(r, next_filter);
 
     /* Special case: we are looking at a relative lookup in the same directory. 
      * This is 100% safe, since dirent->name just came from the filesystem.
@@ -1601,13 +1591,7 @@ AP_DECLARE(request_rec *) ap_sub_req_lookup_file(const char *new_file,
     char *fdir;
     apr_size_t fdirlen;
 
-    rnew = make_sub_request(r);
-    fill_in_sub_req_vars(rnew, r, next_filter);
-
-    /* We have to run this after fill_in_sub_req_vars, or the r->main
-     * pointer won't be setup
-     */
-    ap_run_create_request(rnew);
+    rnew = make_sub_request(r, next_filter);
 
     fdir = ap_make_dirstr_parent(rnew->pool, r->filename);
     fdirlen = strlen(fdir);
