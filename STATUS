@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/12/14 00:26:12 $]
+Last modified at [$Date: 2003/12/14 00:50:20 $]
 
 Release:
 
@@ -208,12 +208,6 @@ PATCHES TO BACKPORT FROM 2.1
               around... :)
               Yes, I think, a useful error message is better than
               a coredump in this case.
-
-    * More ab fixes; r1.129 fixes what looks like a trivial error in the 
-      SSL support; r1.130 adds some state-handling fixes related to
-      ab's breakage in 2.0.47
-        support/ab.c: r1.129, r1.130
-      +1: trawick, brianp, ianh
 
     * mod_rewrite: more or less cosmetic fix. If a .htaccess in DocumentRoot
       configures:
