@@ -799,7 +799,7 @@ static int cache_in_filter(ap_filter_t *f, apr_bucket_brigade *in)
 
     info->content_type = apr_pstrdup(r->pool, r->content_type);
     info->etag = apr_pstrdup(r->pool, etag);
-    info->lastmod = apr_pstrdup(r->pool, lastmods);
+    info->lastmods = apr_pstrdup(r->pool, lastmods);
     info->filename = apr_pstrdup(r->pool, r->filename );
 
     /*
