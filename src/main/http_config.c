@@ -652,6 +652,8 @@ server_rec *init_virtual_host (pool *p, char *hostname)
     s->srm_confname = NULL;
     s->access_confname = NULL;
     s->timeout = 0;
+    s->keep_alive_timeout = DEFAULT_KEEPALIVE_TIMEOUT;
+    s->keep_alive = DEFAULT_KEEPALIVE;
     s->host_addr.s_addr = get_virthost_addr (hostname, &s->host_port);
     s->port = s->host_port;  /* set them the same, by default */
     s->next = NULL;
