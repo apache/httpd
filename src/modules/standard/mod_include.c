@@ -97,12 +97,6 @@
 #define SIZEFMT_KMG 1
 
 
-static ap_inline void safe_copy(char *dest, const char *src, size_t max_len)
-{
-    strncpy(dest, src, max_len - 1);
-    dest[max_len - 1] = '\0';
-}
-
 /* ------------------------ Environment function -------------------------- */
 
 static void add_include_vars(request_rec *r, char *timefmt)
@@ -366,7 +360,7 @@ static char *get_tag(pool *p, FILE *in, char *tag, int tagbuf_len, int dodecode)
                 GET_CHAR(in, c, NULL, p);
             } while (isspace(c));
             if (c == '>') {
-                safe_copy(tag, "done", tagbuf_len);
+                ap_cpystrn(tag, "done", tagbuf_len);
                 return tag;
             }
         }
@@ -1574,7 +1568,7 @@ static int parse_expr(request_rec *r, const char *expr, const char *error)
             rputs("     Evaluate string\n", r);
 #endif
             parse_string(r, current->token.value, buffer, sizeof(buffer), 0);
-	    safe_copy(current->token.value, buffer, sizeof(current->token.value));
+	    ap_cpystrn(current->token.value, buffer, sizeof(current->token.value));
             current->value = (current->token.value[0] != '\0');
             current->done = 1;
             current = current->parent;
@@ -1598,7 +1592,7 @@ static int parse_expr(request_rec *r, const char *expr, const char *error)
                 case token_string:
                     parse_string(r, current->left->token.value,
                                  buffer, sizeof(buffer), 0);
-                    safe_copy(current->left->token.value, buffer,
+                    ap_cpystrn(current->left->token.value, buffer,
                             sizeof(current->left->token.value));
 		    current->left->value = (current->left->token.value[0] != '\0');
                     current->left->done = 1;
@@ -1613,7 +1607,7 @@ static int parse_expr(request_rec *r, const char *expr, const char *error)
                 case token_string:
                     parse_string(r, current->right->token.value,
                                  buffer, sizeof(buffer), 0);
-                    safe_copy(current->right->token.value, buffer,
+                    ap_cpystrn(current->right->token.value, buffer,
                             sizeof(current->right->token.value));
 		    current->right->value = (current->right->token.value[0] != '\0');
                     current->right->done = 1;
@@ -1660,11 +1654,11 @@ static int parse_expr(request_rec *r, const char *expr, const char *error)
             }
             parse_string(r, current->left->token.value,
                          buffer, sizeof(buffer), 0);
-            safe_copy(current->left->token.value, buffer,
+            ap_cpystrn(current->left->token.value, buffer,
 			sizeof(current->left->token.value));
             parse_string(r, current->right->token.value,
                          buffer, sizeof(buffer), 0);
-            safe_copy(current->right->token.value, buffer,
+            ap_cpystrn(current->right->token.value, buffer,
 			sizeof(current->right->token.value));
             if (current->right->token.value[0] == '/') {
                 int len;
@@ -1725,11 +1719,11 @@ static int parse_expr(request_rec *r, const char *expr, const char *error)
             }
             parse_string(r, current->left->token.value,
                          buffer, sizeof(buffer), 0);
-            safe_copy(current->left->token.value, buffer,
+            ap_cpystrn(current->left->token.value, buffer,
 			sizeof(current->left->token.value));
             parse_string(r, current->right->token.value,
                          buffer, sizeof(buffer), 0);
-            safe_copy(current->right->token.value, buffer,
+            ap_cpystrn(current->right->token.value, buffer,
 			sizeof(current->right->token.value));
 #ifdef DEBUG_INCLUDE
             rvputs(r, "     Compare (", current->left->token.value,
@@ -2056,8 +2050,8 @@ static void send_parsed_content(FILE *f, request_rec *r)
     int printing;
     int conditional_status;
 
-    safe_copy(error, DEFAULT_ERROR_MSG, sizeof(error));
-    safe_copy(timefmt, DEFAULT_TIME_FORMAT, sizeof(timefmt));
+    ap_cpystrn(error, DEFAULT_ERROR_MSG, sizeof(error));
+    ap_cpystrn(timefmt, DEFAULT_TIME_FORMAT, sizeof(timefmt));
     sizefmt = SIZEFMT_KMG;
 
 /*  Turn printing on */
