@@ -117,11 +117,11 @@ module MODULE_VAR_EXPORT auth_module;
 
 static char *get_pw(request_rec *r, char *user, char *auth_pwfile)
 {
-    FILE *f;
+    configfile_t *f;
     char l[MAX_STRING_LEN];
     const char *rpw, *w;
 
-    if (!(f = pfopen(r->pool, auth_pwfile, "r"))) {
+    if (!(f = pcfg_openfile(r->pool, auth_pwfile))) {
 	aplog_error(APLOG_MARK, APLOG_ERR, r->server,
 		    "Could not open password file: %s", auth_pwfile);
 	return NULL;
@@ -133,24 +133,27 @@ static char *get_pw(request_rec *r, char *user, char *auth_pwfile)
 	w = getword(r->pool, &rpw, ':');
 
 	if (!strcmp(user, w)) {
-	    pfclose(r->pool, f);
+	    cfg_closefile(f);
 	    return getword(r->pool, &rpw, ':');
 	}
     }
-    pfclose(r->pool, f);
+    cfg_closefile(f);
     return NULL;
 }
 
 static table *groups_for_user(pool *p, char *user, char *grpfile)
 {
-    FILE *f;
+    configfile_t *f;
     table *grps = make_table(p, 15);
     pool *sp;
     char l[MAX_STRING_LEN];
     const char *group_name, *ll, *w;
 
-    if (!(f = pfopen(p, grpfile, "r")))
+    if (!(f = pcfg_openfile(p, grpfile))) {
+/*add?	aplog_error(APLOG_MARK, APLOG_ERR, NULL,
+		    "Could not open group file: %s", grpfile);*/
 	return NULL;
+    }
 
     sp = make_sub_pool(p);
 
@@ -170,7 +173,7 @@ static table *groups_for_user(pool *p, char *user, char *grpfile)
 	    }
 	}
     }
-    pfclose(p, f);
+    cfg_closefile(f);
     destroy_pool(sp);
     return grps;
 }

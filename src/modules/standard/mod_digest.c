@@ -102,12 +102,12 @@ module MODULE_VAR_EXPORT digest_module;
 
 char *get_hash(request_rec *r, char *user, char *auth_pwfile)
 {
-    FILE *f;
+    configfile_t *f;
     char l[MAX_STRING_LEN];
     const char *rpw;
     char *w, *x;
 
-    if (!(f = pfopen(r->pool, auth_pwfile, "r"))) {
+    if (!(f = pcfg_openfile(r->pool, auth_pwfile))) {
 	aplog_error(APLOG_MARK, APLOG_ERR, r->server,
 		    "Could not open password file: %s", auth_pwfile);
 	return NULL;
@@ -120,11 +120,11 @@ char *get_hash(request_rec *r, char *user, char *auth_pwfile)
 	x = getword(r->pool, &rpw, ':');
 
 	if (x && w && !strcmp(user, w) && !strcmp(auth_name(r), x)) {
-	    pfclose(r->pool, f);
+	    cfg_closefile(f);
 	    return pstrdup(r->pool, rpw);
 	}
     }
-    pfclose(r->pool, f);
+    cfg_closefile(f);
     return NULL;
 }
 

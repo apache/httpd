@@ -59,8 +59,16 @@
  * 
  */
 
+/* Debugging aid:
+ * #define DEBUG            to trace all cfg_open*()/cfg_closefile() calls
+ * #define DEBUG_CFG_LINES  to trace every line read from the config files
+ */
+
 #include "httpd.h"
 #include "http_conf_globals.h"	/* for user_id & group_id */
+#if defined(DEBUG)||defined(DEBUG_CFG_LINES)
+#include "http_log.h"
+#endif
 
 const char month_snames[12][4] =
 {
@@ -653,40 +661,151 @@ void cfg_getword(char *word, char *line)
 }
 #endif
 
-API_EXPORT(int) cfg_getline(char *s, int n, FILE *f)
+
+/* Open a configfile_t as FILE, return open configfile_t struct pointer */
+API_EXPORT(configfile_t *) pcfg_openfile(pool *p, const char *name)
 {
-    register int i = 0, c;
+    configfile_t *new_cfg;
+    FILE *file = fopen(name, "r");
 
-    s[0] = '\0';
-    /* skip leading whitespace */
-    do {
-	c = getc(f);
-    } while (c == '\t' || c == ' ');
+#ifdef DEBUG
+    aplog_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, NULL, "Opening config file %s (%s)", name, file == NULL ? strerror(errno) : "successful");
+#endif
 
-    if (c == EOF)
-	return 1;
+    if (file == NULL)
+	return NULL;
 
-    while (1) {
-	if ((c == '\t') || (c == ' ')) {
-	    s[i++] = ' ';
-	    while ((c == '\t') || (c == ' '))
-		c = getc(f);
+    new_cfg = palloc(p, sizeof (*new_cfg));
+    new_cfg->param = file;
+    new_cfg->name = pstrdup(p, name);
+    new_cfg->getch = (int(*)(void*))fgetc;
+    new_cfg->getstr = (void *(*)(void *,size_t,void *))fgets;
+    new_cfg->close = (int(*)(void*))fclose;
+    new_cfg->line_number = 0;
+    return new_cfg;
+}
+
+
+/* Allocate a configfile_t handle with user defined functions and params */
+API_EXPORT(configfile_t *) pcfg_open_custom(pool *p, const char *descr,
+    void *param,
+    int(*getch)(void*),
+    void *(*getstr) (void *buf, size_t bufsiz, void *param),
+    int(*close)(void*))
+{
+    configfile_t *new_cfg = palloc(p, sizeof (*new_cfg));
+#ifdef DEBUG
+    aplog_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, NULL, "Opening config handler %s", descr);
+#endif
+    new_cfg->param = param;
+    new_cfg->name = descr;
+    new_cfg->getch = getch;
+    new_cfg->getstr = getstr;
+    new_cfg->close = close;
+    new_cfg->line_number = 0;
+    return new_cfg;
+}
+
+
+/* Read one character from a configfile_t */
+API_EXPORT(int) cfg_getc(configfile_t *cfp)
+{
+    register int ch = cfp->getch(cfp->param);
+    if (ch == LF) 
+	++cfp->line_number;
+    return ch;
+}
+
+
+/* Read one line from open configfile_t, strip LF, increase line number */
+/* If custom handler does not define a getstr() function, read char by char */
+API_EXPORT(int) cfg_getline(char *buf, size_t bufsize, configfile_t *cfp)
+{
+    /* If a "get string" function is defined, use it */
+    if (cfp->getstr != NULL) {
+	char *src, *dst;
+	++cfp->line_number;
+	if (cfp->getstr(buf, bufsize, cfp->param) == NULL)
+	    return 1;
+
+	/* Compress the line, reducing all blanks and tabs to one space.
+	 * Leading and trailing white space is eliminated completely
+	 */
+	src = dst = buf;
+	while (isspace(*src))
+	    ++src;
+	while (*src != '\0')
+	{
+	    /* Copy words */
+	    while (!isspace(*dst = *src) && *src != '\0') {
+		++src;
+		++dst;
+	    }
+	    *dst++ = ' ';
+	    while (isspace(*src))
+		++src;
 	}
-	if (c == CR) {
-	    c = getc(f);
+	*dst = '\0';
+	/* blast trailing whitespace */
+	while (--dst >= buf && isspace(*dst))
+	    *dst = '\0';
+
+#ifdef DEBUG_CFG_LINES
+	aplog_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, NULL, "Read config: %s", buf);
+#endif
+	return 0;
+    } else {
+	/* No "get string" function defined; read character by character */
+	register int c;
+	register size_t i = 0;
+
+	buf[0] = '\0';
+	/* skip leading whitespace */
+	do {
+	    c = cfp->getch(cfp->param);
+	} while (c == '\t' || c == ' ');
+
+	if (c == EOF)
+	    return 1;
+
+	while (1) {
+	    if ((c == '\t') || (c == ' ')) {
+		buf[i++] = ' ';
+		while ((c == '\t') || (c == ' '))
+		    c = cfp->getch(cfp->param);
+	    }
+	    if (c == CR) {
+		/* silently ignore CR (_assume_ that a LF follows) */
+		c = cfp->getch(cfp->param);
+	    } else if (c == LF) {
+		/* increase line number and return on LF */
+		++cfp->line_number;
+	    }
+	    if (c == EOF || c == 0x4 || c == LF || i == (bufsize - 1)) {
+		/* blast trailing whitespace */
+		while (i > 0 && isspace(buf[i - 1]))
+		    --i;
+		buf[i] = '\0';
+#ifdef DEBUG_CFG_LINES
+		aplog_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, NULL, "Read config: %s", buf);
+#endif
+		return 0;
+	    }
+	    buf[i] = c;
+	    ++i;
+	    c = cfp->getch(cfp->param);
 	}
-	if (c == EOF || c == 0x4 || c == LF || i == (n - 1)) {
-	    /* blast trailing whitespace */
-	    while (i && (s[i - 1] == ' '))
-		--i;
-	    s[i] = '\0';
-	    return 0;
-	}
-	s[i] = c;
-	++i;
-	c = getc(f);
     }
 }
+
+API_EXPORT(int) cfg_closefile(configfile_t *fp)
+{
+#ifdef DEBUG
+    aplog_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, NULL, "Done with config file %s", fp->name);
+#endif
+    return (fp->close == NULL) ? 0 : fp->close(fp->param);
+}
+
 
 /* Retrieve a token, spacing over it and returning a pointer to
  * the first non-white byte afterwards.  Note that these tokens

@@ -793,7 +793,6 @@ const char *handle_command(cmd_parms *parms, void *config, const char *l)
     const command_rec *cmd;
     module *mod = top_module;
 
-    ++parms->config_line;
     if ((l[0] == '#') || (!l[0]))
 	return NULL;
 
@@ -834,7 +833,7 @@ const char *srm_command_loop(cmd_parms *parms, void *config)
 {
     char l[MAX_STRING_LEN];
 
-    while (!(cfg_getline(l, MAX_STRING_LEN, parms->infile))) {
+    while (!(cfg_getline(l, MAX_STRING_LEN, parms->config_file))) {
 	const char *errmsg = handle_command(parms, config, l);
 	if (errmsg)
 	    return errmsg;
@@ -888,7 +887,7 @@ const char *set_file_slot(cmd_parms *cmd, char *struct_ptr, char *arg)
  */
 
 cmd_parms default_parms =
-{NULL, 0, -1, NULL, 0, NULL, NULL, NULL, NULL};
+{NULL, 0, -1, NULL, NULL, NULL, NULL, NULL, NULL};
 
 API_EXPORT(char *) server_root_relative(pool *p, char *file)
 {
@@ -899,7 +898,6 @@ API_EXPORT(char *) server_root_relative(pool *p, char *file)
 
 void process_resource_config(server_rec *s, char *fname, pool *p, pool *ptemp)
 {
-    FILE *cfg;
     const char *errmsg;
     cmd_parms parms;
     struct stat finfo;
@@ -915,38 +913,35 @@ void process_resource_config(server_rec *s, char *fname, pool *p, pool *ptemp)
     /* GCC's initialization extensions are soooo nice here... */
 
     parms = default_parms;
-    parms.config_file = fname;
     parms.pool = p;
     parms.temp_pool = ptemp;
     parms.server = s;
     parms.override = (RSRC_CONF | OR_ALL) & ~(OR_AUTHCFG | OR_LIMIT);
 
-    if (!(cfg = fopen(fname, "r"))) {
+    if (!(parms.config_file = pcfg_openfile(p,fname))) {
 	perror("fopen");
 	fprintf(stderr, "httpd: could not open document config file %s\n",
 		fname);
 	exit(1);
     }
 
-    parms.infile = cfg;
-
     errmsg = srm_command_loop(&parms, s->lookup_defaults);
 
     if (errmsg) {
 	fprintf(stderr, "Syntax error on line %d of %s:\n",
-		parms.config_line, fname);
+		parms.config_file->line_number, fname);
 	fprintf(stderr, "%s\n", errmsg);
 	exit(1);
     }
 
-    fclose(cfg);
+    cfg_closefile(parms.config_file);
 }
 
 
 int parse_htaccess(void **result, request_rec *r, int override,
 		   const char *d, const char *access_name)
 {
-    FILE *f = NULL;
+    configfile_t *f = NULL;
     cmd_parms parms;
     const char *errmsg;
     char *filename = NULL;
@@ -973,17 +968,16 @@ int parse_htaccess(void **result, request_rec *r, int override,
     while (!f && access_name[0]) {
 	char *w = getword_conf(r->pool, &access_name);
 	filename = make_full_path(r->pool, d, w);
-	f = pfopen(r->pool, filename, "r");
+	f = pcfg_openfile(r->pool, filename);
     }
     if (f) {
 	dc = create_per_dir_config(r->pool);
 
-	parms.infile = f;
-	parms.config_file = filename;
+	parms.config_file = f;
 
 	errmsg = srm_command_loop(&parms, dc);
 
-	pfclose(r->pool, f);
+	cfg_closefile(f);
 
 	if (errmsg) {
 	    aplog_error(APLOG_MARK, APLOG_ALERT, r->server, "%s: %s", filename, errmsg);
@@ -997,7 +991,7 @@ int parse_htaccess(void **result, request_rec *r, int override,
 	    dc = NULL;
 	else {
 	    aplog_error(APLOG_MARK, APLOG_CRIT, r->server,
-			"%s pfopen: unable to check htaccess file, ensure it is readable",
+			"%s pcfg_openfile: unable to check htaccess file, ensure it is readable",
 			filename);
 	    return HTTP_FORBIDDEN;
 	}

@@ -994,7 +994,7 @@ const char *start_ifmod (cmd_parms *cmd, void *dummy, char *arg)
     if ((!not && found) || (not && !found))
       return NULL;
 
-    while (nest && !(cfg_getline (l, MAX_STRING_LEN, cmd->infile))) {
+    while (nest && !(cfg_getline (l, MAX_STRING_LEN, cmd->config_file))) {
         if (!strncasecmp(l, "<IfModule", 9))
 	  nest++;
 	if (!strcasecmp(l, "</IfModule>"))

@@ -190,7 +190,7 @@ static table *hash_buckets[MIME_HASHSIZE];
 
 static void init_mime(server_rec *s, pool *p)
 {
-    FILE *f;
+    configfile_t *f;
     char l[MAX_STRING_LEN];
     int x;
     char *types_confname = get_module_config(s->module_config, &mime_module);
@@ -200,7 +200,7 @@ static void init_mime(server_rec *s, pool *p)
 
     types_confname = server_root_relative(p, types_confname);
 
-    if (!(f = fopen(types_confname, "r"))) {
+    if (!(f = pcfg_openfile(p, types_confname))) {
         perror("fopen");
         fprintf(stderr, "httpd: could not open mime types file %s\n",
                 types_confname);
@@ -223,7 +223,7 @@ static void init_mime(server_rec *s, pool *p)
             table_set(hash_buckets[hash(ext[0])], ext, ct);
         }
     }
-    fclose(f);
+    cfg_closefile(f);
 }
 
 /* note that the proxy module uses this via mime_find_ct */

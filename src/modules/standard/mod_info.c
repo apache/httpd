@@ -155,11 +155,11 @@ static info_cfg_lines *mod_info_load_config(pool *p, char *filename,
                                             request_rec *r)
 {
     char s[MAX_STRING_LEN];
-    FILE *fp;
+    configfile_t *fp;
     info_cfg_lines *new, *ret = NULL, *prev = NULL;
     char *t, *tt, o, *msg;
 
-    fp = pfopen(p, filename, "r");
+    fp = pcfg_openfile(p, filename);
     if (!fp) {
         msg = pstrcat(r->pool, "mod_info: couldn't open config file ",
                       filename, NULL);
@@ -199,7 +199,7 @@ static info_cfg_lines *mod_info_load_config(pool *p, char *filename,
         }
         prev = new;
     }
-    pfclose(p, fp);
+    cfg_closefile(fp);
     return (ret);
 }
 

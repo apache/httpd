@@ -806,7 +806,34 @@ API_EXPORT(void) str_tolower(char *);
 API_EXPORT(int) ind(const char *, char);	/* Sigh... */
 API_EXPORT(int) rind(const char *, char);
 
-API_EXPORT(int) cfg_getline(char *s, int n, FILE *f);
+/* Common structure for reading of config files / passwd files etc. */
+typedef struct {
+    int (*getch) (void *param);	/* a getc()-like function */
+    void *(*getstr) (void *buf, size_t bufsiz, void *param); /* a fgets()-like function */
+    int (*close) (void *param);	/* a fclose()-like function */
+    void *param;		/* the argument passed to getc()/close()/gets() */
+    const char *name;		/* the filename / description */
+    unsigned line_number;	/* current line number, starting at 1 */
+} configfile_t;
+
+/* Open a configfile_t as FILE, return open configfile_t struct pointer */
+API_EXPORT(configfile_t *) pcfg_openfile(pool *p, const char *name);
+
+/* Allocate a configfile_t handle with user defined functions and params */
+API_EXPORT(configfile_t *) pcfg_open_custom(pool *p, const char *descr,
+    void *param,
+    int(*getc)(void*),
+    void *(*gets) (void *buf, size_t bufsiz, void *param),
+    int(*close)(void*));
+
+/* Read one line from open configfile_t, strip LF, increase line number */
+API_EXPORT(int) cfg_getline(char *buf, size_t bufsize, configfile_t *cfp);
+
+/* Read one char from open configfile_t, increase line number upon LF */
+API_EXPORT(int) cfg_getc(configfile_t *cfp);
+
+/* Detach from open configfile_t, calling the close handler */
+API_EXPORT(int) cfg_closefile(configfile_t *fp);
 
 #ifdef NEED_STRERROR
 char *strerror(int err);

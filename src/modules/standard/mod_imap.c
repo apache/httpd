@@ -654,12 +654,12 @@ static int imap_handler(request_rec *r)
     char *imap_base = icr->imap_base ?
     icr->imap_base : IMAP_BASE_DEFAULT;
 
-    FILE *imap; 
+    configfile_t *imap; 
 
     if (r->method_number != M_GET)
 	return DECLINED;
 
-    imap = pfopen(r->pool, r->filename, "r"); 
+    imap = pcfg_openfile(r->pool, r->filename);
 
     if (!imap)
         return NOT_FOUND;
@@ -780,7 +780,7 @@ static int imap_handler(request_rec *r)
         if (!strcasecmp(directive, "poly")) {   /* poly */
 
             if (pointinpoly(testpoint, pointarray)) {
-                pfclose(r->pool, imap);
+		cfg_closefile(imap);
                 imap_url(r, base, value, redirect);
                 return (imap_reply(r, redirect));
             }
@@ -790,7 +790,7 @@ static int imap_handler(request_rec *r)
         if (!strcasecmp(directive, "circle")) {         /* circle */
 
             if (pointincircle(testpoint, pointarray)) {
-                pfclose(r->pool, imap);
+		cfg_closefile(imap);
                 imap_url(r, base, value, redirect);
                 return (imap_reply(r, redirect));
             }
@@ -800,7 +800,7 @@ static int imap_handler(request_rec *r)
         if (!strcasecmp(directive, "rect")) {   /* rect */
 
             if (pointinrect(testpoint, pointarray)) {
-                pfclose(r->pool, imap);
+		cfg_closefile(imap);
                 imap_url(r, base, value, redirect);
                 return (imap_reply(r, redirect));
             }
@@ -819,7 +819,7 @@ static int imap_handler(request_rec *r)
 
     }                           /* nothing matched, so we get another line! */
 
-    pfclose(r->pool, imap);     /* we are done with the map file, so close it */
+    cfg_closefile(imap);        /* we are done with the map file, so close it */
 
     if (showmenu) {
         menu_footer(r);         /* finish the menu and we are done */

@@ -135,9 +135,7 @@ typedef struct {
     int override;		/* Which allow-override bits are set */
     int limited;		/* Which methods are <Limit>ed */
 
-    char *config_file;		/* Filename cmd read from */
-    int config_line;		/* Line cmd read from */
-    FILE *infile;		/* fd for more lines (not currently used) */
+    configfile_t *config_file;	/* Config file structure from pcfg_openfile() */
 
     pool *pool;			/* Pool to allocate new storage in */
     pool *temp_pool;		/* Pool for scratch memory; persists during
