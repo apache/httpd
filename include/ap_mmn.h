@@ -110,12 +110,13 @@
  * 20020612 (2.0.38-dev) Changed server_rec->[keep_alive_]timeout to apr time
  * 20020625 (2.0.40-dev) Changed conn_rec->keepalive to an enumeration
  * 20020628 (2.0.40-dev) Added filter_init to filter registration functions
+ * 20020903 (2.0.41-dev) APR's error constants changed
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503230UL /* "AP20" */
 
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
-#define MODULE_MAGIC_NUMBER_MAJOR 20020628
+#define MODULE_MAGIC_NUMBER_MAJOR 20020903
 #endif
 #define MODULE_MAGIC_NUMBER_MINOR 0                     /* 0...n */
 
