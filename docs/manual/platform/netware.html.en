@@ -497,10 +497,15 @@
         </li>
         
         <li>Set the environment variable <code>AP_WORK</code> to the full path of
-        the <code>\httpd-2.0</code> directory.</li>
+        the <code>httpd</code> source code directory.</li>
 
         <li>Set the environment variable <code>APR_WORK</code> to the full path of
-        the <code>\httpd-2.0\srclib\apr</code> directory.</li>
+        the <code>apr</code> source code directory. Typically <code>\httpd\srclib\apr</code>
+        but the APR project can be outside of the httpd directory structure.</li>
+
+        <li>Set the environment variable <code>APU_WORK</code> to the full path of
+        the <code>apr-util</code> source code directory. Typically <code>\httpd\srclib\apr-util</code>
+        but the APR-UTIL project can be outside of the httpd directory structure.</li>
 
         <li>Make sure that the path to the AWK utility and the GNU make utility
         (<code>gmake.exe</code>) have been included in the system's
