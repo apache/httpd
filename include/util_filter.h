@@ -155,7 +155,8 @@ typedef struct ap_filter_t ap_filter_t;
  */
 typedef apr_status_t (*ap_out_filter_func)(ap_filter_t *f, apr_bucket_brigade *b);
 typedef apr_status_t (*ap_in_filter_func)(ap_filter_t *f, apr_bucket_brigade *b, 
-                                          ap_input_mode_t mode);
+                                          ap_input_mode_t mode, apr_size_t *readbytes);
+
 typedef union ap_filter_func {
     ap_out_filter_func out_func;
     ap_in_filter_func in_func;
@@ -273,7 +274,7 @@ struct ap_filter_t {
  * @param mode   ::AP_MODE_BLOCKING, ::AP_MODE_NONBLOCKING, or ::AP_MODE_PEEK
  */
 AP_DECLARE(apr_status_t) ap_get_brigade(ap_filter_t *filter, apr_bucket_brigade *bucket, 
-                                        ap_input_mode_t mode);
+                                        ap_input_mode_t mode, apr_size_t *readbytes);
 
 /**
  * Pass the current bucket brigade down to the next filter on the filter

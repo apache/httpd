@@ -186,14 +186,14 @@ static apr_status_t churn_output(TLSFilterCtx *pCtx)
     return APR_SUCCESS;
 }
 
-static apr_status_t churn(TLSFilterCtx *pCtx,apr_read_type_e eReadType)
+static apr_status_t churn(TLSFilterCtx *pCtx,apr_read_type_e eReadType,apr_size_t *readbytes)
 {
     ap_input_mode_t eMode=eReadType == APR_BLOCK_READ ? AP_MODE_BLOCKING
       : AP_MODE_NONBLOCKING;
     apr_bucket *pbktIn;
 
     if(APR_BRIGADE_EMPTY(pCtx->pbbInput)) {
-	ap_get_brigade(pCtx->pInputFilter->next,pCtx->pbbInput,eMode);
+	ap_get_brigade(pCtx->pInputFilter->next,pCtx->pbbInput,eMode,readbytes);
 	if(APR_BRIGADE_EMPTY(pCtx->pbbInput))
 	    return APR_EOF;
     }
@@ -329,7 +329,7 @@ static apr_status_t tls_out_filter(ap_filter_t *f,apr_bucket_brigade *pbbIn)
 }
 
 static apr_status_t tls_in_filter(ap_filter_t *f,apr_bucket_brigade *pbbOut,
-				  ap_input_mode_t eMode)
+				  ap_input_mode_t eMode, apr_size_t *readbytes)
 {
     TLSFilterCtx *pCtx=f->ctx;
     apr_read_type_e eReadType=eMode == AP_MODE_BLOCKING ? APR_BLOCK_READ :
@@ -340,7 +340,7 @@ static apr_status_t tls_in_filter(ap_filter_t *f,apr_bucket_brigade *pbbOut,
     assert(eMode != AP_MODE_PEEK);
 
     // churn the state machine
-    ret=churn(pCtx,eReadType);
+    ret=churn(pCtx,eReadType,readbytes);
     if(ret != APR_SUCCESS)
 	return ret;
 

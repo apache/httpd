@@ -1005,7 +1005,7 @@ static void transfer_brigade(apr_bucket_brigade *in, apr_bucket_brigade *out)
 }
 
 static int xlate_in_filter(ap_filter_t *f, apr_bucket_brigade *bb, 
-                           ap_input_mode_t mode)
+                           ap_input_mode_t mode, apr_size_t *readbytes)
 {
     apr_status_t rv;
     charset_req_t *reqinfo = ap_get_module_config(f->r->request_config,
@@ -1049,11 +1049,11 @@ static int xlate_in_filter(ap_filter_t *f, apr_bucket_brigade *bb,
     }
 
     if (ctx->noop) {
-        return ap_get_brigade(f->next, bb, mode);
+        return ap_get_brigade(f->next, bb, mode, readbytes);
     }
 
     if (APR_BRIGADE_EMPTY(ctx->bb)) {
-        if ((rv = ap_get_brigade(f->next, bb, mode)) != APR_SUCCESS) {
+        if ((rv = ap_get_brigade(f->next, bb, mode, readbytes)) != APR_SUCCESS) {
             return rv;
         }
     }

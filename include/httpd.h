@@ -697,7 +697,7 @@ struct request_rec {
     apr_off_t clength;
 
     /** bytes left to read */
-    long remaining;
+    apr_size_t remaining;
     /** bytes that have been read */
     long read_length;
     /** how the request body should be read */
@@ -887,9 +887,6 @@ struct conn_rec {
     /** A list of output filters to be used for this connection
      *  @defvar ap_filter_t *filters */
     struct ap_filter_t *output_filters;
-    /** The length of the current request body
-     *  @defvar long remain */
-    long remain;
 };
 
 /* Per-vhost config... */

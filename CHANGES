@@ -1,4 +1,10 @@
 Changes with Apache 2.0.18-dev
+
+  *) Change how input filters decide how much data is returned to the
+     higher filter.  We used to use a field in the conn_rec, with this
+     change, we use an argument to ap_get_brigade to determine how much
+     data is retrieved. [Ryan Bloom]
+
   *) Fix seg fault at start-up introduced by Ryan's change to enable
      modules to specify their own logging tags. mod_log_config
      registers an optional function, ap_register_log_handler().
