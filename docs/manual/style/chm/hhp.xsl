@@ -186,24 +186,24 @@
 <!-- files referenced in sitemap                                          -->
 <!-- ==================================================================== -->
 <xsl:template match="category/page">
-<xsl:call-template name="helper.back-slash">
-    <xsl:with-param name="file">
-        <xsl:choose>
-        <xsl:when test="contains(@href, '#') and substring(@href,
-                        string-length(substring-before(@href, '#')), 1) = '/'">
-            <xsl:value-of select="substring-before(@href, '#')" />
-            <xsl:text>index.html</xsl:text>
-        </xsl:when>
-        <xsl:when test="substring(@href, string-length(@href), 1) = '/'">
-            <xsl:value-of select="@href"/>
-            <xsl:text>index.html</xsl:text>
-        </xsl:when>
-        <xsl:otherwise>
-            <xsl:value-of select="@href"/>
-        </xsl:otherwise>
-        </xsl:choose>
-    </xsl:with-param>
-</xsl:call-template>&lf;
+<xsl:variable name="filename">
+    <xsl:choose>
+    <xsl:when test="contains(@href, '#') and substring(@href,
+                    string-length(substring-before(@href, '#')), 1) = '/'">
+        <xsl:value-of select="substring-before(@href, '#')" />
+        <xsl:text>index.html</xsl:text>
+    </xsl:when>
+    <xsl:when test="substring(@href, string-length(@href), 1) = '/'">
+        <xsl:value-of select="@href"/>
+        <xsl:text>index.html</xsl:text>
+    </xsl:when>
+    <xsl:otherwise>
+        <xsl:value-of select="@href"/>
+    </xsl:otherwise>
+    </xsl:choose>
+</xsl:variable>
+
+<xsl:value-of select="translate($filename, '/', '\')" />&lf;
 </xsl:template>
 <!-- /page[@href] -->
 
@@ -217,29 +217,6 @@
 <xsl:text>.html</xsl:text>&lf;
 </xsl:template>
 <!-- /modulefilelist/modulefile -->
-
-
-<!-- ==================================================================== -->
-<!-- turn slashes back                                                    -->
-<!-- ==================================================================== -->
-<xsl:template name="helper.back-slash">
-<xsl:param name="file" />
-
-<xsl:choose>
-<xsl:when test="contains($file, '/')">
-    <xsl:value-of select="substring-before($file, '/')" />
-    <xsl:text>\</xsl:text>
-
-    <xsl:call-template name="helper.back-slash">
-        <xsl:with-param name="file" select="substring-after($file, '/')" />
-    </xsl:call-template>
-</xsl:when>
-<xsl:otherwise>
-    <xsl:value-of select="$file" />
-</xsl:otherwise>
-</xsl:choose>
-</xsl:template>
-<!-- /helper.back-slash -->
 
 
 <!-- ==================================================================== -->
