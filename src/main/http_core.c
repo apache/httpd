@@ -652,7 +652,7 @@ static const char end_virtualhost_section[] = "</VirtualHost>";
 static const char end_ifmodule_section[] = "</IfModule>";
 
 
-const char *check_cmd_context(cmd_parms *cmd, unsigned forbidden)
+API_EXPORT(const char *) check_cmd_context(cmd_parms *cmd, unsigned forbidden)
 {
     const char *gt = (cmd->cmd->name[0] == '<'
 		   && cmd->cmd->name[strlen(cmd->cmd->name)-1] != '>') ? ">" : "";
@@ -2036,7 +2036,7 @@ static void mmap_cleanup (void *mmv)
  * the last handler called and return 405 or 501.
  */
 
-int default_handler (request_rec *r)
+static int default_handler (request_rec *r)
 {
     core_dir_config *d =
       (core_dir_config *)get_module_config(r->per_dir_config, &core_module);

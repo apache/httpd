@@ -264,7 +264,7 @@ API_EXPORT(int) set_content_length(request_rec *r, long clength)
     return 0;
 }
 
-int set_keepalive(request_rec *r)
+API_EXPORT(int) set_keepalive(request_rec *r)
 {
     int ka_sent = 0;
     int wimpy = find_token(r->pool,
@@ -2133,15 +2133,4 @@ void send_error_response(request_rec *r, int recursive_error)
     }
     kill_timeout(r);
     finalize_request_protocol(r);
-}
-
-/* Finally, this... it's here to support nph- scripts
- * Now what ever are we going to do about them when HTTP-NG packetization
- * comes along?
- */
-
-API_EXPORT(void) client_to_stdout(conn_rec *c)
-{
-    bflush(c->client);
-    dup2(c->client->fd, STDOUT_FILENO);
 }

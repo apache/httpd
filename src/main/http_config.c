@@ -123,8 +123,7 @@ API_EXPORT(void) set_module_config(void *conf_vector, module *m, void *val)
     confv[m->module_index] = val;
 }
 
-void *
-     create_empty_config(pool *p)
+static void *create_empty_config(pool *p)
 {
     void **conf_vector = (void **) pcalloc(p, sizeof(void *) *
 				    (total_modules + DYNAMIC_MODULE_LIMIT));

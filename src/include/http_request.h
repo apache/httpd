@@ -96,7 +96,6 @@ API_EXPORT(time_t) update_mtime(request_rec *r, time_t dependency_mtime);
 #ifdef CORE_PRIVATE
 /* Function called by main.c to handle first-level request */
 void process_request(request_rec *);
-int default_handler(request_rec *);
 void die(int type, request_rec *r);
 #endif
 

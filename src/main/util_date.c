@@ -132,7 +132,7 @@ API_EXPORT(int) checkmask(const char *data, const char *mask)
  *
  * This routine is intended to be very fast, much faster than mktime().
  */
-time_t tm2sec(const struct tm * t)
+API_EXPORT(time_t) tm2sec(const struct tm * t)
 {
     int year;
     time_t days;

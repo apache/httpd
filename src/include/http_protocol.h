@@ -105,7 +105,7 @@ void send_error_response(request_rec *r, int recursive_error);
  */
 
 API_EXPORT(int) set_content_length(request_rec *r, long length);
-int set_keepalive(request_rec *r);
+API_EXPORT(int) set_keepalive(request_rec *r);
 API_EXPORT(time_t) rationalize_mtime(request_rec *r, time_t mtime);
 API_EXPORT(void) set_etag(request_rec *r);
 API_EXPORT(void) set_last_modified(request_rec *r);
@@ -161,16 +161,6 @@ API_EXPORT(int) discard_request_body(request_rec *r);
 
 API_EXPORT(int) set_byterange(request_rec *r);
 API_EXPORT(int) each_byterange(request_rec *r, long *offset, long *length);
-
-/* Finally, this charming little number is here to encapsulate the
- * degree to which nph- scripts completely escape from any discipline
- * the protocol code might care to impose (this as opposed to other
- * scripts, which *partially* escape to the extent that they may try
- * to explicitly set the status line).
- */
-
-API_EXPORT(void) client_to_stdout(conn_rec *c);
-
 
 /* Support for the Basic authentication protocol.  Note that there's
  * nothing that prevents these from being in mod_auth.c, except that other

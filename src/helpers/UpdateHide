@@ -88,6 +88,7 @@ $listend    = '\n#endif\n';
     T:find_pool
     T:pool_is_ancestor
     T:pool_join
+    T:check_alarm
 );
 
 #   determine os-dependend stuff

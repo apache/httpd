@@ -376,7 +376,7 @@ struct pool {
 #endif
 };
 
-pool *permanent_pool;
+static pool *permanent_pool;
 
 /* Each pool structure is allocated in the start of its own first block,
  * so we need to know how many bytes that is (once properly aligned...).

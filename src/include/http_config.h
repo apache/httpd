@@ -325,7 +325,6 @@ void show_modules(void);
 void *create_request_config(pool *p);
 CORE_EXPORT(void *) create_per_dir_config(pool *p);
 void *merge_per_dir_configs(pool *p, void *base, void *new);
-void *create_empty_config(pool *p);
 
 /* For http_core.c... (<Directory> command and virtual hosts) */
 
@@ -337,7 +336,7 @@ CORE_EXPORT(const char *) init_virtual_host(pool *p, const char *hostname,
 void process_resource_config(server_rec *s, char *fname, pool *p, pool *ptemp);
 
 /* check_cmd_context() definitions: */
-extern const char *check_cmd_context(cmd_parms *cmd, unsigned forbidden);
+API_EXPORT(const char *) check_cmd_context(cmd_parms *cmd, unsigned forbidden);
 
 /* check_cmd_context():                  Forbidden in: */
 #define  NOT_IN_VIRTUALHOST     0x01 /* <Virtualhost> */

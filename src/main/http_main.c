@@ -268,12 +268,12 @@ array_header *server_post_read_config;
 
 /* *Non*-shared http_main globals... */
 
-server_rec *server_conf;
-JMP_BUF APACHE_TLS jmpbuffer;
-int sd;
+static server_rec *server_conf;
+static JMP_BUF APACHE_TLS jmpbuffer;
+static int sd;
 static fd_set listenfds;
 static int listenmaxfd;
-pid_t pgrp;
+static pid_t pgrp;
 
 /* one_process --- debugging mode variable; can be set from the command line
  * with the -X flag.  If set, this gets you the child_main loop running
@@ -315,7 +315,7 @@ static pool *ptrans;		/* Pool for per-transaction stuff */
 static pool *pchild;		/* Pool for httpd child stuff */
 static pool *pcommands;	/* Pool for -C and -c switches */
 
-int APACHE_TLS my_pid;		/* it seems silly to call getpid all the time */
+static int APACHE_TLS my_pid;		/* it seems silly to call getpid all the time */
 #ifndef MULTITHREAD
 static int my_child_num;
 #endif
@@ -972,9 +972,9 @@ unsigned int set_callback_and_alarm(void (*fn) (int), int x)
 }
 
 
+#ifdef WIN32
 int check_alarm(void)
 {
-#ifdef WIN32
     if (alarm_expiry_time) {
 	unsigned int t;
 
@@ -990,10 +990,8 @@ int check_alarm(void)
     }
     else
 	return (0);
-#else
-    return (0);
-#endif /* WIN32 */
 }
+#endif /* WIN32 */
 
 
 

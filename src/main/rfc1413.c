@@ -94,7 +94,7 @@
 
 int rfc1413_timeout = RFC1413_TIMEOUT;	/* Global so it can be changed */
 
-JMP_BUF timebuf;
+static JMP_BUF timebuf;
 
 /* bind_connect - bind both ends of a socket */
 /* Ambarish fix this. Very broken */

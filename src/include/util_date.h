@@ -67,7 +67,7 @@
 #define BAD_DATE (time_t)0
 
 API_EXPORT(int) checkmask(const char *data, const char *mask);
-time_t tm2sec(const struct tm *t);
+API_EXPORT(time_t) tm2sec(const struct tm *t);
 API_EXPORT(time_t) parseHTTPdate(const char *date);
 
 #endif	/* !APACHE_UTIL_DATE_H */
