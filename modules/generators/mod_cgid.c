@@ -962,8 +962,12 @@ static int cgid_handler(request_rec *r)
                 break; 
             } 
         } 
-        shutdown(sd, 1); /* done writing; force EOF on child's stdin */
     } 
+    /* we're done writing, or maybe we didn't write at all;
+     * force EOF on child's stdin so that the cgi detects end (or
+     * absence) of data
+     */
+    shutdown(sd, 1);
 
     /* Handle script return... */ 
     if (!nph) { 
