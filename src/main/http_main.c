@@ -5590,23 +5590,26 @@ void worker_main(void)
 
 	srv = ap_select(listenmaxfd + 1, &main_fds, NULL, NULL, &tv);
 
-        if (srv == 0 || (srv == SOCKET_ERROR && h_errno == WSAEINTR)) {
+        if (srv == 0) {
             count_select_errors = 0;    /* reset count of errors */            
             continue;
         }
 	else if (srv == SOCKET_ERROR) {
-            /* A "real" error occurred, log it and increment the count of
-             * select errors. This count is used to ensure we don't go into
-             * a busy loop of continuous errors.
-             */
-            ap_log_error(APLOG_MARK, APLOG_WARNING, server_conf, 
-                         "select failed with errno %d", h_errno);
-            count_select_errors++;
-            if (count_select_errors > MAX_SELECT_ERRORS) {
-                ap_log_error(APLOG_MARK, APLOG_ERR|APLOG_NOERRNO, server_conf,
-                             "Too many errors in select loop. Child process exiting.");
-		    break;
+            if (h_errno != WSAEINTR) {
+                /* A "real" error occurred, log it and increment the count of
+                 * select errors. This count is used to ensure we don't go into
+                 * a busy loop of continuous errors.
+                 */
+                ap_log_error(APLOG_MARK, APLOG_WARNING, server_conf, 
+                             "select failed with errno %d", h_errno);
+                count_select_errors++;
+                if (count_select_errors > MAX_SELECT_ERRORS) {
+                    ap_log_error(APLOG_MARK, APLOG_ERR|APLOG_NOERRNO, server_conf,
+                                 "Too many errors in select loop. Child process exiting.");
+                    break;
+                }
             }
+            continue;
 	} else {
 	    listen_rec *lr;
 
