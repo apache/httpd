@@ -118,7 +118,7 @@ static int ReportStatusToSCMgr(int currentState, int exitCode, int waitHint);
  * behavior on exit.  All service and child processes are expected to
  * reset this flag to zero to avoid undesireable side effects.
  */
-int real_exit_code = 1;
+AP_DECLARE_DATA int real_exit_code = 1;
 
 void hold_console_open_on_error(void)
 {
@@ -697,6 +697,9 @@ apr_status_t mpm_service_to_start(const char **display_name, apr_pool_t *p)
     HANDLE hProc = GetCurrentProcess();
     HANDLE hThread = GetCurrentThread();
     HANDLE waitfor[2];
+
+    /* Prevent holding open the (hidden) console */
+    real_exit_code = 0;
 
      /* GetCurrentThread returns a psuedo-handle, we need
       * a real handle for another thread to wait upon.
