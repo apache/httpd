@@ -41,6 +41,7 @@ char *ap_os_error_message(int err);
 
 /* OS/2 doesn't have symlinks so S_ISLNK is always false */
 #define S_ISLNK(m) 0
+#define lstat(x, y) stat(x, y)
 
 /* Dynamic loading functions */
 #define     ap_os_dso_handle_t  unsigned long
