@@ -315,7 +315,9 @@ struct request_rec {
   int proxyreq;                 /* A proxy request */
   int header_only;		/* HEAD request, as opposed to GET */
   char *protocol;		/* Protocol, as given to us, or HTTP/0.9 */
-  
+  char *hostname;		/* Host, as set by full URI or Host: */
+  int hostlen;			/* Length of http://host:port in full URI */
+
   char *status_line;		/* Status line, if set by script */
   int status;			/* In any case */
   
@@ -458,6 +460,8 @@ struct server_rec {
   int timeout;			/* Timeout, in seconds, before we give up */
   int keep_alive_timeout;	/* Seconds we'll wait for another request */
   int keep_alive;		/* Maximum requests per connection */
+
+  char *names;			/* Wildcarded names for HostAlias servers */
 };
 
 /* These are more like real hosts than virtual hosts */
@@ -500,6 +504,7 @@ char *make_full_path(pool *a, char *dir, char *f);
      
 int is_matchexp(char *str);
 int strcmp_match(char *str, char *exp);
+int strcasecmp_match(char *str, char *exp);
 char *uudecode (pool *, char *);
 
 void str_tolower (char *);

@@ -277,12 +277,16 @@ char *check_fulluri (request_rec *r, char *uri) {
   /* Make sure ports patch */
   if (port != r->server->port) return uri;
 
+  /* Save it for later use */
+  r->hostname = pstrdup(r->pool, host);
+  r->hostlen = 7 + i;
+
   /* The easy cases first */
   if (!strcasecmp(host, r->server->server_hostname)) {
-    return (uri + 7 + i);
+    return (uri + r->hostlen);
   }
   else if (!strcmp(host, inet_ntoa(r->connection->local_addr.sin_addr))) {
-    return (uri + 7 + i);
+    return (uri + r->hostlen);
   }
 
   /* Now things get a bit trickier - check the IP address(es) of the host */
@@ -295,7 +299,7 @@ char *check_fulluri (request_rec *r, char *uri) {
       for (n = 0; hp->h_addr_list[n] != NULL; n++) {
 	if (r->connection->local_addr.sin_addr.s_addr ==
 	    (((struct in_addr *)(hp->h_addr_list[n]))->s_addr)) {
-	  return (uri + 7 + i);
+	  return (uri + r->hostlen);
 	}
       }
     }
@@ -345,6 +349,35 @@ void get_mime_headers(request_rec *r)
     }
 }
 
+void check_hostalias (request_rec *r) {
+  char *host = getword(r->pool, &r->hostname, ':');	/* Get rid of port */
+  server_rec *s;
+
+  if (*r->hostname && (atoi(r->hostname) != r->server->port))
+    return;
+
+  r->hostname = host;
+
+  for (s = r->server->next; s; s = s->next) {
+    char *names = s->names;
+
+    if (s->is_virtual != 2) continue;	/* No a HostAlias */
+
+    while (*names) {
+      char *name = getword_conf (r->pool, &names);
+
+      if ((is_matchexp(name) && !strcasecmp_match(host, name)) ||
+	  (!strcasecmp(host, name))) {
+	r->server = r->connection->server = s;
+	if (r->hostlen && !strncmp(r->uri, "http://", 7)) {
+	  r->uri += r->hostlen;
+	  r->proxyreq = 0;
+	}
+      }
+    }
+  }
+}
+
 request_rec *read_request (conn_rec *conn)
 {
     request_rec *r = (request_rec *)pcalloc (conn->pool, sizeof(request_rec));
@@ -382,6 +415,9 @@ request_rec *read_request (conn_rec *conn)
     if (!r->assbackwards) get_mime_headers(r);
 
 /* handle Host header here, to get virtual server */
+
+    if (r->hostname || (r->hostname = table_get(r->headers_in, "Host")))
+      check_hostalias(r);
 
     kill_timeout (r);
     conn->keptalive = 0;   /* We now have a request - so no more short timeouts */

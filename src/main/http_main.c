@@ -956,7 +956,8 @@ server_rec *find_virtual_server (struct in_addr server_ip, int port,
     server_rec *virt;
 
     for (virt = server->next; virt; virt = virt->next)
-	if ((virt->host_addr.s_addr == htonl(INADDR_ANY) ||
+	if ((virt->is_virtual == 1) &&	/* VirtualHost */
+	    (virt->host_addr.s_addr == htonl(INADDR_ANY) ||
 	     virt->host_addr.s_addr == server_ip.s_addr) &&
 	    (virt->host_port == 0 || virt->host_port == port))
 	    return virt;

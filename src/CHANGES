@@ -1,3 +1,8 @@
+  *) Add <HostAlias> directive, similar to <VirtualHost>, but does not
+     require additional IP addresses - instead uses the Host: header sent
+     by some (but not all) clients - those that do not will get the normal
+     set of documents. Use as: <HostAlias foo.bar.net *.foo.com foo.com>
+
   *) Added Status module with preliminary documentation available
      http://www.apache.org/docs/1.1/mod_status.html
 

@@ -195,6 +195,29 @@ int strcmp_match(char *str, char *exp) {
     return (str[x] != '\0');
 }
 
+int strcasecmp_match(char *str, char *exp) {
+    int x,y;
+
+    for(x=0,y=0;exp[y];++y,++x) {
+        if((!str[x]) && (exp[y] != '*'))
+            return -1;
+        if(exp[y] == '*') {
+            while(exp[++y] == '*');
+            if(!exp[y])
+                return 0;
+            while(str[x]) {
+                int ret;
+                if((ret = strcasecmp_match(&str[x++],&exp[y])) != 1)
+                    return ret;
+            }
+            return -1;
+        } else 
+            if((exp[y] != '?') && (tolower(str[x]) != tolower(exp[y])))
+                return 1;
+    }
+    return (str[x] != '\0');
+}
+
 int is_matchexp(char *str) {
     register int x;
 
