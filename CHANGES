@@ -1,6 +1,10 @@
 Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
+
+  *) Use saner default config values for suexec. PR 15713.
+     [Thom May <thom@planetarytramp.net>]
+
   *) Allow 'make depend' to work with non-GCC compilers.
      [Justin Erenkrantz]
 
