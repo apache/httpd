@@ -82,6 +82,7 @@ Committed Code Changes:
     * Ben's WIN32: Make roots of filesystems (e.g. c:/) work, PR#1558
     * Ben's WIN32: Extensive overhaul of the way UNCs are handled.
     * Ralf's fix for referer/agent log entries in installed httpd.conf, PR#2175
+    * Jim's fix for MIME type case sensitivity disparity, PR#2112
 
 Available Patches:
 
@@ -136,11 +137,6 @@ In progress:
       CustomLog-like tailoring of directory listing formats
 
 FINAL RELEASE SHOWSTOPPERS:
-
-    * MIME type case sensitivity disparity between 1.2.6 and 1.3b6 (PR #2112)
-      mod_autoindex should lowercase the mime-type when comparing
-      [PATCH] <199805030057.UAA03270@devsys.jaguNET.com>
-      Status: Jim, Dean +1
 
     * proxy security fixes from 1.2.5 need to be brought forward
        Jim: What are these?

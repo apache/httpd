@@ -437,13 +437,13 @@ static char *find_item(request_rec *r, array_header *list, int path_only)
 	    else if (!path_only) {
 		if (!content_encoding) {
 		    if (p->type == BY_TYPE) {
-			if (content_type && !ap_strcmp_match(content_type, p->apply_to))
+			if (content_type && !ap_strcasecmp_match(content_type, p->apply_to))
 			    return p->data;
 		    }
 		}
 		else {
 		    if (p->type == BY_ENCODING) {
-			if (!ap_strcmp_match(content_encoding, p->apply_to))
+			if (!ap_strcasecmp_match(content_encoding, p->apply_to))
 			    return p->data;
 		    }
 		}

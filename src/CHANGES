@@ -1,5 +1,8 @@
 Changes with Apache 1.3b7
- 
+
+  *) mod_autoindex's find_itme() was sensitive to MIME type case.
+     [Jim Jagielski] PR#2112
+
   *) Make sure the referer_log and agent_log entries in the default httpd.conf
      file are also adjusted for the actual relative installation paths.
      [Ralf S. Engelschall] PR#2175
