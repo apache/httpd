@@ -9,9 +9,10 @@
 OS=`./srclib/apr/build/config.guess`
 BUILD_DIR="`pwd`/bindist"
 DEFAULT_DIR="/usr/local/apache2"
-CONFIGPARAM="--with-layout=BinaryDistribution --prefix=$BUILD_DIR --enable-mods-shared=most"
 APDIR=`pwd`
 APDIR=`basename $APDIR`
+APFULLDIR=`pwd`
+CONFIGPARAM="--with-layout=BinaryDistribution --prefix=$BUILD_DIR --enable-mods-shared=most --with-expat=$APFULLDIR/srclib/apr-util/xml/expat"
 VER=`echo $APDIR |sed s/httpd-//`
 TAR="`srclib/apr/build/PrintPath tar`"
 GTAR="`srclib/apr/build/PrintPath gtar`"

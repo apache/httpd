@@ -1,5 +1,9 @@
 Changes with Apache 2.0.32-dev
 
+  *) binbuild.sh: Make sure that we use the expat from our source
+     tree so that there aren't any surprises on the target machine.
+     [Jeff Trawick]
+
   *) mod_cgid: Add retry logic for when the daemon can't fork fast
      enough to keep up with new requests.  Start using 
      HTTP_SERVER_UNAVAILABLE instead of HTTP_INTERNAL_SERVER_ERROR
