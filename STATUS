@@ -72,6 +72,8 @@ Committed Code Changes:
     * Ralf's workaround for sed limitation in configure script, PR#2136
     * Ralf's support for making APACI install root overrideable by pkg authors
     * Ralf's more granular install paths: runtimedir, logfiledir, proxycachedir
+    * Roy's bugfixes for select() handling
+    * Martin's suppress "error(0)" messages for ap_log_error()
 
 Available Patches:
 
