@@ -1,5 +1,10 @@
 Changes with Apache 1.2b7
 
+  *) Several fixes for suexec wrapper. [Randy Terbush]
+     - Make wrapper work for files on NFS filesystem.
+     - Fix portability problem of MAXPATHLEN.
+     - Fix array overrun problem in clean_env().
+
   *) Removed extraneous blank line is description of mod_status chars.
      [Kurt Kohler]
 
