@@ -1662,6 +1662,15 @@ static char *unclosed_directive(cmd_parms *cmd)
                        "> directive missing closing '>'", NULL);
 }
 
+/*
+ * Report a missing args in '<Foo >' syntax error.
+ */
+static char *missing_container_arg(cmd_parms *cmd)
+{
+    return apr_pstrcat(cmd->pool, cmd->cmd->name,
+                       "> directive requires additional arguments", NULL);
+}
+
 AP_CORE_DECLARE_NONSTD(const char *) ap_limit_section(cmd_parms *cmd,
                                                       void *dummy,
                                                       const char *arg)
@@ -1682,6 +1691,10 @@ AP_CORE_DECLARE_NONSTD(const char *) ap_limit_section(cmd_parms *cmd,
     }
 
     limited_methods = apr_pstrndup(cmd->pool, arg, endp - arg);
+
+    if (!limited_methods[0]) {
+        return missing_container_arg(cmd);
+    }
 
     while (limited_methods[0]) {
         char *method = ap_getword_conf(cmd->pool, &limited_methods);
@@ -1749,6 +1762,10 @@ static const char *dirsection(cmd_parms *cmd, void *mconfig, const char *arg)
     }
 
     arg = apr_pstrndup(cmd->pool, arg, endp - arg);
+
+    if (!arg[0]) {
+        return missing_container_arg(cmd);
+    }
 
     if (!arg) {
         if (thiscmd->cmd_data)
@@ -1850,6 +1867,10 @@ static const char *urlsection(cmd_parms *cmd, void *mconfig, const char *arg)
 
     arg = apr_pstrndup(cmd->pool, arg, endp - arg);
 
+    if (!arg[0]) {
+        return missing_container_arg(cmd);
+    }
+
     cmd->path = ap_getword_conf(cmd->pool, &arg);
     cmd->override = OR_ALL|ACCESS_CONF;
 
@@ -1914,6 +1935,10 @@ static const char *filesection(cmd_parms *cmd, void *mconfig, const char *arg)
     }
 
     arg = apr_pstrndup(cmd->pool, arg, endp - arg);
+
+    if (!arg[0]) {
+        return missing_container_arg(cmd);
+    }
 
     cmd->path = ap_getword_conf(cmd->pool, &arg);
     /* Only if not an .htaccess file */
@@ -1984,6 +2009,10 @@ static const char *start_ifmod(cmd_parms *cmd, void *mconfig, const char *arg)
 
     if (not) {
         arg++;
+    }
+
+    if (!arg[0]) {
+        return missing_container_arg(cmd);
     }
 
     found = ap_find_linked_module(arg);
@@ -2059,6 +2088,10 @@ static const char *start_ifdefine(cmd_parms *cmd, void *dummy, const char *arg)
         arg++;
     }
 
+    if (!arg[0]) {
+        return missing_container_arg(cmd);
+    }
+
     defined = ap_exists_config_define(arg);
     if ((!not && defined) || (not && !defined)) {
         ap_directive_t *parent = NULL;
@@ -2096,6 +2129,10 @@ static const char *virtualhost_section(cmd_parms *cmd, void *dummy,
     }
 
     arg = apr_pstrndup(cmd->pool, arg, endp - arg);
+
+    if (!arg[0]) {
+        return missing_container_arg(cmd);
+    }
 
     /* FIXME: There's another feature waiting to happen here -- since you
         can now put multiple addresses/names on a single <VirtualHost>
