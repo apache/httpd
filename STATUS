@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:						-*-text-*-
-Last modified at [$Date: 2002/02/01 06:25:20 $]
+Last modified at [$Date: 2002/02/01 12:31:07 $]
 
 Release:
 
@@ -48,6 +48,7 @@ RELEASE SHOWSTOPPERS:
         Justin says: "Is this really a showstopper?  Most people won't
                       be using -DNO_DETACH and will look at the error
                       logs anyway."
+        Not a showstopper: trawick
 
     * ap_directory_walk skips some per-dir config merge functions
       if there is no "<Directory />" block in the configuration
@@ -90,7 +91,7 @@ RELEASE SHOWSTOPPERS:
       filename extensions.  At minimum, some sort of +-[0-10] syntax seems
       like the quickest fix for a 2.0 gold release.
         Justin says: "Could we delay this for a point release or 2.1?"
-        Not a showstopper: justin, wrowe
+        Not a showstopper: justin, wrowe, trawick
 
     * Convert all instances of the old apr_lock_t type to the new
       types (once they are fully supported in APR).
@@ -135,7 +136,7 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
         Message-ID: <20020111115006.K1529@clove.org>
        Vote: Is a non-portable perchild going to hold up a GA release?
         Yes:
-         No: Aaron, Justin
+         No: Aaron, Justin, trawick
 
     * Modify the worker MPM so that it doesn't need to create and
       destroy a pool for each request--possibly by adopting a
