@@ -58,9 +58,6 @@ _cleand:
 clean:	_cleanr _cleand
 	$(MAKE) $(MAKEOPT) -f Makefile.win SHORT=R LONG=Release CTARGET=CLEAN _installdll
 
-installdll:
-	$(MAKE) $(MAKEOPT) -f Makefile.win SHORT=R LONG=Release _installdll
-
 
 _build:
 #	echo LONG $(LONG) SHORT $(SHORT) x
@@ -215,8 +212,3 @@ A
       print $$0;
     }
 <<
-
-_installdll:
- 	cd os\win32\installer\installdll
-	 $(MAKE) $(MAKEOPT) -f install.mak CFG="install - Win32 $(LONG)" RECURSE=0 $(CTARGET)
-	cd ..\..\..
