@@ -891,13 +891,19 @@ apr_status_t http_filter(ap_filter_t *f, ap_bucket_brigade *b, apr_ssize_t lengt
 
     if (length > 0) {
         int remain = length;
+        const char *ignore;
+
         e = AP_BRIGADE_FIRST(b);
-        while (remain > e->length && e != AP_BRIGADE_SENTINEL(b)) {
-            remain -= e->length;
+        while (e != AP_BRIGADE_SENTINEL(b)) {
+            e->read(e, &ignore, &len, 0);
+            if (remain <= len) {
+                break;
+            }
+            remain -= len;
             e = AP_BUCKET_NEXT(e);
         }
         if (e != AP_BRIGADE_SENTINEL(b)) {
-            if (remain <= e->length) {
+            if (remain <= len) {
                 e->split(e, remain);
                 remain = 0;
             }
@@ -2380,12 +2386,12 @@ API_EXPORT(long) ap_get_client_block(request_rec *r, char *buffer, int bufsiz)
 {
     int c;
     apr_size_t len_to_read;
-    apr_ssize_t len_read;
+    apr_ssize_t len_read, total;
     long chunk_start = 0;
     long max_body;
     apr_status_t rv;
     apr_int32_t timeout;
-    ap_bucket *b;
+    ap_bucket *b, *old;
     ap_bucket_brigade *bb = ap_brigade_create(r->pool);
 
     if (!r->read_chunked) {     /* Content-length read */
@@ -2420,21 +2426,29 @@ API_EXPORT(long) ap_get_client_block(request_rec *r, char *buffer, int bufsiz)
             }
         } while (AP_BRIGADE_EMPTY(bb));
 
-        rv = b->read(b, &tempbuf, &len_read, 0);
-        if (len_to_read < b->length) {
-            b->split(b, len_to_read);
-        }
-        else {
-            len_to_read = len_read;
-        }
-
-        memcpy(buffer, tempbuf, len_to_read);
-        AP_BUCKET_REMOVE(b);
-        ap_bucket_destroy(b);
-
-        r->read_length += len_to_read;
-        r->remaining -= len_to_read;
-        return len_to_read;
+        total = 0;
+        do {
+            rv = b->read(b, &tempbuf, &len_read, 0);
+            if (len_to_read < b->length) { /* shouldn't happen */
+                b->split(b, len_to_read);
+            }
+            else {
+                len_to_read = len_read;
+            }
+            
+            memcpy(buffer, tempbuf, len_to_read);
+            buffer += len_to_read;
+            
+            r->read_length += len_to_read;
+            total += len_to_read;
+            r->remaining -= len_to_read;
+            old = b;
+            b = AP_BUCKET_NEXT(b);
+            AP_BUCKET_REMOVE(old);
+            ap_bucket_destroy(old);
+        } while (b != AP_BRIGADE_SENTINEL(bb));
+        ap_brigade_destroy(bb);
+        return total;
     }
    
     /*
