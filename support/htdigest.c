@@ -68,7 +68,7 @@
 #include "apr_md5.h"
 
 #ifdef HAVE_SYS_TYPES_H
- #include <sys/types.h>
+#include <sys/types.h>
 #endif
 
 #ifdef HAVE_SYS_SIGNAL_H

@@ -382,7 +382,7 @@ pid_t os_fork(server_rec *s, int slot)
 }
 
 int os_check_server(char *server) {
-    #ifndef USE_TPF_DAEMON
+#ifndef USE_TPF_DAEMON
     int rv;
     int *current_acn;
     if((rv = inetd_getServerStatus(server)) == INETD_SERVER_STATUS_INACTIVE)
@@ -392,7 +392,7 @@ int os_check_server(char *server) {
         if(ecbp2()->ce2acn != *current_acn)
             return 1;
     }
-    #endif
+#endif
     return 0;
 }
 
