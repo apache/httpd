@@ -1,131 +1,190 @@
 
-                            Apache 1.3.20 Released
-                                       
-   The Apache Software Foundation and The Apache Server Project are
-   pleased to announce the release of version 1.3.20 of the Apache HTTP
-   server.
-   
-   This version of Apache is principally a security fix release which
-   closes a problem under the Windows and OS2 ports that would segfault
-   the server in response to a carefully constructed URL.  It also fixes
-   some potential configuration quirks present in the 1.3.19 release.  
-   A summary of the new features is given at the end of this document.
-   
-   We consider Apache 1.3.20 to be the best version of Apache available
-   and we strongly recommend that users of older versions, especially of
-   the 1.1.x and 1.2.x family, upgrade as soon as possible.  No further
-   releases will be made in the 1.2.x family.
-   
-   Apache 1.3.20 is available for download from
-   
-     http://httpd.apache.org/dist/httpd/
-     
-   Please see the CHANGES_1.3 file in the same directory for a full list
-   of changes.
-   
-   Binary distributions are available from
-   
-     http://httpd.apache.org/dist/httpd/binaries/
-     
-   The source and binary distributions are also available via any of the
-   mirrors listed at
-   
-     http://www.apache.org/mirrors/
-     
-   Apache 1.3.20 for Win32 and OS2 corrects a serious denial of service 
-   vulnerability, and users are strongly discouraged from using any 
-   previous versions on those platforms.
-   
-   As of Apache 1.3.17, Win32 binary distributions are now based on the
-   Microsoft Installer (.MSI) technology.  This change occured in order
-   to resolve the many problems WinME and Win2K users experienced with
-   the older InstallShield-based installer .exe file.  While development
-   continues to make this new installation method more robust, questions
-   should be directed at the news:comp.infosystems.www.servers.ms-windows
-   newsgroup.  
+                            Apache 1.3.21 Released
 
-   As of Apache 1.3.12 binary distributions contain all standard Apache
-   modules as shared objects (if supported by the platform) and include
-   full source code. Installation is easily done by executing the
-   included install script. See the README.bindist and INSTALL.bindist
-   files for a complete explanation. Please note that the binary
-   distributions are only provided for your convenience and current
-   distributions for specific platforms are not always available.
+   The  Apache  Software  Foundation  and  The  Apache Server Project are
+   pleased  to  announce the release of version 1.3.21 of the Apache HTTP
+   server.
+
+   This  version  of  Apache  is principally a security fix release which
+   closes  some  problems  where  a  directory  listing could be obtained
+   instead of the default index page. A summary of the bug fixs and major
+   new features is given at the end of this document.
+
+   We  consider  Apache 1.3.21 to be the best version of Apache available
+   and  we strongly recommend that users of older versions, especially of
+   the  1.1.x  and  1.2.x family, upgrade as soon as possible. No further
+   releases will be made in the 1.2.x family.
+
+   Apache 1.3.21 is available for download from
    
+       http://httpd.apache.org/dist/httpd/
+
+   Please  see the CHANGES_1.3 file in the same directory for a full list
+   of changes.
+
+   Binary distributions are available from
+
+       http://httpd.apache.org/dist/httpd/binaries/
+
+   The  source and binary distributions are also available via any of the
+   mirrors listed at
+
+       http://www.apache.org/mirrors/
+
+   As  of  Apache 1.3.17, Win32 binary distributions are now based on the
+   Microsoft Installer (.MSI) technology. This change occured in order to
+   resolve  the  many problems WinME and Win2K users experienced with the
+   older   InstallShield-based   installer.exe  file.  While  development
+   continues  to make this new installation method more robust, questions
+   should be directed at the news:comp.infosystems.www.servers.ms-windows
+   newsgroup.
+
+   As  of  Apache 1.3.12 binary distributions contain all standard Apache
+   modules  as  shared objects (if supported by the platform) and include
+   full  source  code.  Installation  is  easily  done  by  executing the
+   included  install  script.  See the README.bindist and INSTALL.bindist
+   files  for  a  complete  explanation.  Please  note  that  the  binary
+   distributions  are  only  provided  for  your  convenience and current
+   distributions for specific platforms are not always available.
+
    For an overview of new features introduced after 1.2 please see
    
-     http://httpd.apache.org/docs/new_features_1_3.html
-     
-   In general, Apache 1.3 offers several substantial improvements over
-   version 1.2, including better performance, reliability and a wider
-   range of supported platforms, including Windows 95/98 and NT (which
-   fall under the "Win32" label), OS2, Netware, and TPE threaded platforms.
-   
+   http://httpd.apache.org/docs/new_features_1_3.html
+
+   In  general,  Apache  1.3 offers several substantial improvements over
+   version  1.2,  including  better  performance, reliability and a wider
+   range  of  supported  platforms, including Windows 95/98 and NT (which
+   fall  under  the  "Win32"  label),  OS2,  Netware,  and  TPE  threaded
+   platforms.
+
    Apache is the most popular web server in the known universe; over half
-   of the servers on the Internet are running Apache or one of its
+   of  the  servers  on  the  Internet  are  running Apache or one of its
    variants.
-   
-   IMPORTANT NOTE FOR WIN32 USERS: Over the years, many users have come
-   to trust Apache as a secure and stable server. It must be realized
+
+   IMPORTANT  NOTE  FOR WIN32 USERS: Over the years, many users have come
+   to  trust  Apache  as  a secure and stable server. It must be realized
    that the current Win32 code has not yet reached the levels of the Unix
-   version, but is of acceptable quality.  Win32 stability or security 
+   version,  but  is  of  acceptable quality. Win32 stability or security
    problems do not reflect on the Unix version.
-   
-                         Apache 1.3.20  Major changes
 
-   The primary security fix is:
-     * A carefully constructed URI could cause the server to segfault on
-       Win32 and OS2, denying access to users until the error was cleared.
-       This is resolved on both platforms, no server data vulnerability
-       was identified for this denial of service exploit.
-                                            
-   The general bug fixes:
-     * Eliminate a potential segfault if an invalid floating point value
-       is passed to the ap_snprintf() function, on platforms supporting
-       isnan() and isinf().
-     * Fix a possible segfault at startup in the detection of a default
-       ServerName or IP string when no ServerName was specified.
-     * Fixed mod_proxy to retain empty headers, as allowed by RFC2068.
-     * Properly resolve the location of ndbm on Linux and some glibc2
-       builds, where ndbm.h is in the nonstandard db1/ subdir.
+                          Apache 1.3.21 Major changes
 
-   Win32 bug fixes:
-     * Win32 now properly handles the SSI exec cmd tag.  Due to argument
-       parsing issues with spaces and slashes, cmd is interpreted as an 
-       executable file, not a long command line string.
-     * Resolved a threading problem with WinNT/2K services, allowing
-       modules such as mod_jserv and mod_perl to shut down cleanly.
-     * Resolved stdin and stdout pipes for the parent Win32 service 
-       process, solving bugs such as "dup2(stdin) failed" when trying 
-       to use piped logs.  
+  Security vulnerabilities
 
-   Netware specific bug fixes:
-     * Netware initial screen allows the -s parameter to switch to the 
-       system console screen, warning messages during startup are now 
-       displayed.
-     * Netware added '.' and '..' to the directory listing so mod_autoindex 
-       will now display the parent directory.
-     * NetWare now shuts down cleanly in error conditions, such as a failure
-       while reading the httpd.conf file.
+     * A  vulnerability  was  found in the Win32 port of Apache 1.3.20. A
+       client  submitting a very long URI could cause a directory listing
+       to be returned rather than the default index page. A 403 Forbidden
+       will now be returned
+     * A  vulnerability was found in the split-logfile support program. A
+       request with a specially crafted Host: header could allow any file
+       with a .log extension on the system to be written to. PR#7848
+     * A  vulnerability  was  found when Multiviews are used to negotiate
+       the directory index. In some configurations, requesting a URI with
+       a QUERY_STRING of M=D could return a directory listing rather than
+       the expected index page.
 
-   The main new features include:
-     * Enhanced rotatelogs to allow a UTC offset to be specified, and
-       the format logfile names with human-readable date/time stamps.
-     * Added the NOESCAPE (NS) flag to RewriteRule, to disable *all* 
-       normal URI escaping.  Note incautious use can give unexpected 
-       results or introduce security risks.
-     * Added the '\' character to RewriteRule to allow escaping of 
-       special characters.  Allows embedding of both the '$' and '%' 
-       characters in the results, so 'foo\$1' translates to 'foo$1' 
-       rather than 'foo\<value of $1>'.
-     * Added the -V flag to suexec, to display the compile-time settings
-       with which it was built.  (Only valid for root or the HTTPD_USER 
-       username.)          
-     * Introduced EBCDIC conversion configuration options, controlling the 
-       conversion based on MIME type or file suffix.
-     * Support for the Cygwin 1.x platform (a POSIX emulation layer for 
-       Win32 systems, see http://www.cygwin.com).  Note this is an entirely
-       different implementation than the native calls in the win32 port.
-     * Support for building modules with apxs under Win32.  cygwin builders 
-       must use a cygwin build of perl to avoid MSVC handling.
+  New features
 
+   The main new features in 1.3.21 (compared to 1.3.20) are:
+     * The  user  manual  has  been updated. As well as a number of small
+       fixes  these  updates  include  new  translations  into French and
+       Japanese,  a  guide  to using Apache httpd on Cygwin, a lexicon of
+       Apache   error   messages,   updated   TPF  documentation,  and  a
+       comprehensive guide to using log files
+     * The  user manual has been moved out of the htdocs DocumentRoot and
+       is now handled by an Alias directive in a similar way to the icons
+       directory
+     * The supplied icons are now also distributed in PNG format
+     * A  significant  overhaul  to  the the Apache Bench program, ab has
+       taken  place,  as  first  reported  in April. The new Apache Bench
+       includes fixes, additional statistics, csv and gnuplot output, and
+       SSL support
+     * New  directives  have  been added to the mod_usertrack module, The
+       first,   CookieDomain,   can  be  used  to  customise  the  Domain
+       attribute.  The  patch to add the CookieDomain directive was first
+       submitted  over two years ago. Historically mod_usertrack has used
+       the obsolete Netscape cookie syntax. The new CookieStyle directive
+       allows  use  of  the  RFC2109  or RFC2965 syntax instead. PR#5023,
+       PR#5920, PR#6140.
+     * The server will now display a warning if line-end comments (#) are
+       found  in  the  configuration file. Not all directives are able to
+       handle comments on the same line
+     * A new directive, AcceptMutex, allows run-time configuration of the
+       mutex type used for accept serialization, currently a compile-time
+       only setting in 1.3. Since different types of mutex have different
+       performance characteristics on different platforms, this directive
+       will allow administrators to tune their Apache server more easily.
+       The current list of possible methods is: uslock, pthread, sysvsem,
+       fcntl, flock, os2sem, tpfcore, none. Not all platforms support all
+       methods
+     * mod_auth  has  been  enhanced  to allow access to a document to be
+       controlled  based  on  the owner of the file being served. Require
+       file-owner   will   only  allow  files  to  be  served  where  the
+       authenticated  username  matches  the user that owns the document.
+       Require  file-group works in a similar way checking that the group
+       matches
+
+   New features that relate to specific platforms:
+     * On Win32 and NetWare the mod_unique_id and mod_vhost_alias modules
+       are now included
+     * On  Win32 the code to allow the server to run under Cygwin has had
+       a  number  of fixes and updates. Cygwin support was first added to
+       version 1.3.20
+     * A  new  directive,  AcceptFilter,  has  been  added to control BSD
+       accept  filters  at  run-time.  This should make it easier to move
+       server  binaries  across  different BSD machines without requiring
+       recompilation.  Support  for  accept  filters  was  first added to
+       version 1.3.14, the functionality can postpone the requirement for
+       a  child  process to handle a new connection until an HTTP request
+       has arrived, therefore increasing the number of connections that a
+       given number of child processes can handle
+     * The  server  will now take advantage of recent improvements to the
+       TPF  operating  system  which  include an enhanced system fork and
+       exec,  updates  to  allow  non-blocking  file  descriptors, and an
+       update to shutdown processing
+
+  Bugs fixed
+
+   The  following bugs were found in Apache 1.3.20 and have been fixed in
+   Apache 1.3.21:
+     * Under  certain  circumstances  a  child  may crash due to a bug in
+       mod_include.  If  a  server uses an ErrorDocument for 404 (request
+       not  found) errors which points to a server-parsed HTML file which
+       uses  a  <!--#include  virtual="file"  --> section, then a request
+       containing %2f will result in a segfault. The segfault is harmless
+       and  does  not cause a security problem, but is being triggered by
+       the recent IIS worm
+     * The   Multiviews   functionality   has   been   fixed  to  prevent
+       mod_negotiation  from  serving any multiview variant that contains
+       unknown filename extensions. PR#8130
+     * UnsetEnv  now  works  from  the main body of a configuration file.
+       PR#8254
+     * When  used  as  a  reverse  proxy any headers set by other modules
+       (such  as  mod_usertrack  or mod_securid) now get passed on to the
+       back-end server. PR#6055
+     * Server response headers can now be logged via the proxy. PR#7461
+     * mod_proxy  will now pay attention to HTTP headers that specify the
+       request is not to be cached. PR#5668
+     * When  a  client  making a request via mod_proxy died unexpectedly,
+       mod_proxy did not close its connection. PR#8090
+     * The   CacheForceCompletion   directive  has  been  fixed  PR#7383,
+       PR#8067, PR#6585
+     * A memory leak has been fixed in the mod_mime_magic module
+     * A  Satisfy  All  option  has  been  added to the default container
+       designed   to   stop  access  to  .htaccess  files.  Without  this
+       directive,  these files could still be fetched if they were within
+       the scope of a Satisfy Any directive.
+
+   The following bugs relate to specific platforms:
+     * A  number  of  fixes  for  NetWare have been added. These include:
+       enabling  long  file  names  in  htpasswd and htdigest, protection
+       against   ill   behaved   modules,  better  handling  of  abnormal
+       shutdowns, dealing with the limited stack space during server side
+       includes,  and recognising special filenames such as proxy:http://
+       correctly
+     * A  shutdown  hang  could occur on Solaris when using lots of piped
+       TransferLogs and at least one piped ErrorLog
+     * On EBCDIC platforms a bug in the proxy module stopped SSL proxying
+       working
+     * On  Win32,  mod_unique_id  did  not  guarantee  a unique ID due to
+       threading
