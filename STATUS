@@ -1,5 +1,5 @@
 Apache 2.0 STATUS:
-Last modified at [$Date: 2000/04/15 19:05:10 $]
+Last modified at [$Date: 2000/04/15 19:30:25 $]
 
 Release:
 
@@ -8,6 +8,11 @@ Release:
     2.0a1   : released March 10, 2000
 
 RELEASE SHOWSTOPPERS:
+    * Win32: Get mod_auth_digest working under win32
+      - APR_HAS_RANDOM should be defined on windows and there is a 
+      lib/apr/misc/win32/rand.c which is basically a copy of what
+      mod_auth_digest used to use.
+
     * Re-work configuration for top level Apache.  Work should start with
       trying to clean the autoconf stuff.  If and only if this proves
       impossible to do (very unlikely), autoconf should be removed and we
@@ -61,10 +66,6 @@ RELEASE SHOWSTOPPERS:
 	we access the logs?
 	Status: 
 
-    * Win32:  Smoke test all ported modules to make sure they work 
-	correctly under Windows.
-	Status: 
-
     * Current 2.0 code is not tested on many Unix platforms. Make 2.0
       work on most, if not all the systems 1.3 did
         Status: Autoconf and APR will get us most of the way there.
@@ -106,8 +107,6 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
 	before ship.
 
     * Win32: Enable the winnt MPM to use the new scoreboard API
-
-    * Win32: Non-blocking CGI pipes
 
     * Win32: Graceful restart of a service is broken (code does shutdown then start)
 
