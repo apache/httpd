@@ -91,6 +91,6 @@
  <message name="sitemap">サイトマップ</message>
 
  <!-- footer line -->
- <message name="maintainedby">Maintained by the</message>
+ <message name="licensed">Licensed under the</message>
  <message name="langavail">Available Languages</message>
 </messages>

@@ -257,14 +257,18 @@
 
 <div id="footer">&lf;
     <p class="apache">
-        <xsl:value-of select="$messages/message[@name='maintainedby']"/>
+        <xsl:text>Copyright 1999-2004 The Apache Software </xsl:text>
+        <xsl:text>Foundation.</xsl:text><br />
+        <xsl:value-of select="$messages/message[@name='licensed']"/>
         <xsl:text> </xsl:text>
-        <a href="http://httpd.apache.org/docs-project/">
+
+        <a href="http://www.apache.org/licenses/LICENSE-2.0">
             <xsl:if test="$ext-target">
                 <xsl:attribute name="target">_blank</xsl:attribute>
             </xsl:if>
-            <xsl:text>Apache HTTP Server Documentation Project</xsl:text>
+            <xsl:text>Apache License, Version 2.0</xsl:text>
         </a>
+        <xsl:text>.</xsl:text>
     </p>&lf;
 
     <xsl:call-template name="super-menu"/>
