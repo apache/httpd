@@ -392,7 +392,7 @@ if test "x$ap_ssltk_configured" = "x"; then
 #error "Insecure SSL-C version " stringize_ver(SSLC_VERSION_NUMBER)
 #endif],
       [AC_MSG_RESULT(OK)],
-      [dnl Replace this with OPENSSL_VERSION_TEXT from opensslv.h?
+      [dnl Replace this with SSLC_VERSION_NUMBER?
        AC_MSG_RESULT([not encouraging])
        echo "WARNING: SSL-C version may contain security vulnerabilities!"
        echo "         Ensure the latest security patches have been applied!"
