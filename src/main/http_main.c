@@ -2797,6 +2797,7 @@ static void show_compile_settings(void)
     printf("Server version \"%s\"\n", SERVER_VERSION);
 #endif
     printf("Server built:  %s\n", SERVER_BUILT);
+    printf("Server's Module Magic Number: %lu\n", MODULE_MAGIC_NUMBER);
     printf("Server compiled with....\n");
 #ifdef BIG_SECURITY_HOLE
     printf(" -D BIG_SECURITY_HOLE\n");
