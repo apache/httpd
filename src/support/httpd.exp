@@ -96,6 +96,7 @@ ap_escape_quotes
 ap_escape_shell_cmd
 ap_excess_requests_per_child
 ap_exists_scoreboard_image
+ap_extended_status
 ap_finalize_request_protocol
 ap_finalize_sub_req_protocol
 ap_find_command
@@ -167,6 +168,7 @@ ap_log_error_old
 ap_log_pid
 ap_log_printf
 ap_log_reason
+ap_log_rerror
 ap_log_transaction
 ap_log_unixerr
 ap_make_array
@@ -198,6 +200,7 @@ ap_open_piped_log
 ap_os_escape_path
 ap_os_is_path_absolute
 ap_overlay_tables
+ap_overlap_tables
 ap_palloc
 ap_parseHTTPdate
 ap_parse_hostinfo_components
