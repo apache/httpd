@@ -1,8 +1,8 @@
-<html xmlns="http://www.w3.org/TR/xhtml1/strict"><head><!--
-XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-     This file is generated from xml source: DO NOT EDIT
-XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
---><title>mod_cache - Apache HTTP Server</title><link rel="stylesheet" type="text/css" href="../style/manual.css"/></head><body><blockquote><div align="center"><img src="../images/sub.gif" alt="[APACHE DOCUMENTATION]"/><h3>Apache HTTP Server Version 2.0</h3></div><h1 align="center">Apache Module mod_cache</h1><table bgcolor="#cccccc" cellpadding="0" cellspacing="1"><tr><td><table bgcolor="#ffffff"><tr><td valign="top"><span class="help">Description:</span></td><td>Content cache keyed to URIs</td></tr><tr><td><a class="help" href="module-dict.html#Status">Status:</a></td><td>Experimental</td></tr><tr><td><a class="help" href="module-dict.html#ModuleIdentifier">Module&nbsp;Identifier:</a></td><td>cache_module</td></tr></table></td></tr></table><h2>Summary</h2>
+<html xmlns="http://www.w3.org/TR/xhtml1/strict"><head><!-- 
+          XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+                This file is generated from xml source: DO NOT EDIT
+          XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+        --><title>mod_cache- Apache HTTP Server</title><link rel="stylesheet" type="text/css" href="../style/manual.css"/></head><body><blockquote><div align="center"><img src="../images/sub.gif" alt="[APACHE DOCUMENTATION]"/><h3>Apache HTTP Server Version 2.0</h3></div><h1 align="center">Apache Module mod_cache</h1><table bgcolor="#cccccc" cellpadding="0" cellspacing="1"><tr><td><table bgcolor="#ffffff"><tr><td valign="top"><span class="help">Description:</span></td><td>Content cache keyed to URIs</td></tr><tr><td><a class="help" href="module-dict.html#Status">Status:</a></td><td>Experimental</td></tr><tr><td><a class="help" href="module-dict.html#ModuleIdentifier">Module&nbsp;Identifier:</a></td><td>cache_module</td></tr></table></td></tr></table><h2>Summary</h2>
 
 <blockquote><table><tr><td bgcolor="#ffe5f5">
 This module is experimental. Documentation is still under development...
@@ -11,14 +11,19 @@ This module is experimental. Documentation is still under development...
     cache that can be used to cache either local or proxied content.
     mod_cache requires the services of one or more storage
     management modules. Two storage management modules are included in
-    the base Apache distribution: <em>mod_disk_cache</em> implements a
-    disk based storage manager (generally used for proxy caching) and 
-    <em>mod_mem_cache</em> implements an in-memory based storage
-    manager (primarily useful for caching local content). </p>
-
+    the base Apache distribution:</p>
+    <dl>
+    <dt><em>mod_disk_cache</em></dt>
+    <dd>implements a disk based storage manager for use with mod_proxy</dd>
+    <dt><em>mod_mem_cache</em></dt>
+    <dd>implements an in-memory based storage manager. mod_mem_cache
+    can be configured to operate in two modes: caching open file
+    descriptors or caching objects in heap storage. <em>mod_mem_cache</em>
+    is most useful when used to cache locally generated content or to cache 
+    backend server content for mod_proxy configured for ProxyPass (aka <em>reverse proxy</em>)</dd>
+    </dl>
     <p>Content stored and retrived keyed to the URL. Content with
     access protections is not cached.</p>
-
 <h2>Directives</h2><ul><li><a href="#cachedefaultexpire">CacheDefaultExpire</a></li><li><a href="#cachedisable">CacheDisable</a></li><li><a href="#cacheenable">CacheEnable</a></li><li><a href="#cacheignorecachecontrol">CacheIgnoreCacheControl</a></li><li><a href="#cacheignorenolastmod">CacheIgnoreNoLastMod</a></li><li><a href="#cachelastmodifiedfactor">CacheLastModifiedFactor</a></li><li><a href="#cachemaxexpire">CacheMaxExpire</a></li><li><a href="#cacheon">CacheOn</a></li></ul><h2>Sample Configuration</h2>
 
 <blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><p align="center"><strong>Sample httpd.conf</strong></p><code>
@@ -33,6 +38,7 @@ LoadModule cache_module modules/mod_cache.so  <br/>
    #LoadModule disk_cache_module modules/mod_disk_cache.so <br/>
    &lt;IfModule mod_disk_cache.c&gt; <br/>
       CacheRoot c:/cacheroot <br/>
+      CacheSize 
       CacheEnable disk  / <br/>
       CacheDirLevels 5 <br/>
       CacheDirLength 3 <br/>
@@ -40,11 +46,11 @@ LoadModule cache_module modules/mod_cache.so  <br/>
 <p/>
    LoadModule mem_cache_module modules/mod_mem_cache.so <br/>
    &lt;IfModule mod_mem_cache.c&gt; <br/>
-      CacheEnable mem  / <br/>
-      CacheSize 4096 <br/>
-      CacheMaxObjectCount 100 <br/>
-      CacheMinObjectSize 1 <br/>
-      CacheMaxObjectSize 2048 <br/>
+      MCacheEnable mem  / <br/>
+      MCacheSize 4096 <br/>
+      MCacheMaxObjectCount 100 <br/>
+      MCacheMinObjectSize 1 <br/>
+      MCacheMaxObjectSize 2048 <br/>
    &lt;/IfModule&gt; <br/>
 <p/>
 &lt;/IfModule&gt; <br/>
@@ -74,7 +80,8 @@ LoadModule cache_module modules/mod_cache.so  <br/>
 
 <blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>
   CacheEnable  disk  / <br/>
-  CacheEnable  mem   /manual
+  CacheEnable  mem   /manual <br/>
+  CacheEnable  fd    /images <br/>
 </code></td></tr></table></blockquote>
 <hr/><h2><a name="CacheIgnoreCacheControl">CacheIgnoreCacheControl</a> <a name="cacheignorecachecontrol">Directive</a></h2><table bgcolor="#cccccc" border="0" cellspacing="0" cellpadding="1"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>Ignore requests from the client for uncached content</td></tr><tr><td><a class="help" href="directive-dict.html#Syntax">Syntax:</a></td><td/></tr><tr><td><a class="help" href="directive-dict.html#Context">Context:</a></td><td>server config</td></tr><tr><td><a class="help" href="directive-dict.html#Status">Status:</a></td><td>Experimental</td></tr><tr><td><a class="help" href="directive-dict.html#Module">Module:</a></td><td>mod_cache</td></tr></table></td></tr></table>
     <p>Ignore requests from the client for uncached content</p>
@@ -107,4 +114,4 @@ LoadModule cache_module modules/mod_cache.so  <br/>
 <blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>
   CacheOn
 </code></td></tr></table></blockquote>
-<hr/><h3 align="center">Apache HTTP Server Version 2.0</h3><a href="./"><img src="../images/index.gif" alt="Index"/></a><a href="../"><img src="../images/home.gif" alt="Home"/></a></blockquote></body></html>
+<hr/></blockquote><h3 align="center">Apache HTTP Server Version 2.0</h3><a href="./"><img src="../images/index.gif" alt="Index"/></a><a href="../"><img src="../images/home.gif" alt="Home"/></a></body></html>
