@@ -340,7 +340,7 @@ static int check_speling(request_rec *r)
             table_set(r->headers_out, "Location",
                       construct_url(r->pool, nuri, r->server));
 
-            aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r->server,
+            aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_INFO, r->server,
                         ref ? "Fixed spelling: %s to %s from %s"
                         : "Fixed spelling: %s to %s",
                         r->uri, nuri, ref);
@@ -401,7 +401,7 @@ static int check_speling(request_rec *r)
             /* Pass our table to http_protocol.c (see mod_negotiation): */
             table_set(notes, "variant-list", t);
 
-            aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_WARNING, r->server,
+            aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_INFO, r->server,
                         ref ? "Spelling fix: %s: %d candidates from %s"
                         : "Spelling fix: %s: %d candidates",
                         r->uri, candidates->nelts, ref);
