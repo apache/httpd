@@ -559,7 +559,13 @@ static void cgid_child_errfn(apr_pool_t *pool, apr_status_t err,
      * have r->headers_in and possibly other storage referenced by
      * ap_log_rerror()
      */
-    ap_log_error(APLOG_MARK, APLOG_ERR, err, r->server, "%s", description);
+    ap_log_error(APLOG_MARK, APLOG_ERR, err, r->server, "%s", 
+#ifdef AP_UNSAFE_ERROR_LOG_UNESCAPED
+                 description
+#else
+                 ap_escape_logitem(pool, description)
+#endif
+                 );
 }
 
 static int cgid_server(void *data) 

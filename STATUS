@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/09/02 20:09:28 $]
+Last modified at [$Date: 2004/09/02 22:06:22 $]
 
 Release:
 
@@ -97,13 +97,6 @@ PATCHES TO BACKPORT FROM 2.1
          (1) is the use of APR_ASCII_* ebcdic-safe? I.e. shouldn't we use the
              native chars here and it will be converted later? (I'm not sure)
          (2) I'd put out (null) only if val is NULL, not if it's empty.
-
-    *) Escape errfn strings before sending them to the log file (and
-       analogus patch to mod_cgid)
-       http://cvs.apache.org/viewcvs.cgi/httpd-2.0/modules/generators/mod_cgi.c?r1=1.167&r2=1.168
-       +1: stoddard, trawick, jorton
-       nd: I'd like to add 1.169
-       trawick: 1.169 is fine with me
 
     *) Add -l option to rotatelogs to let it use local time rather than
        UTC.  PR 24417.  [Ken Coar, Uli Zappe <uli ritual.org>]
