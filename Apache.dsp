@@ -95,7 +95,7 @@ SOURCE=.\os\win32\apache.rc
 # End Source File
 # Begin Source File
 
-SOURCE=.\server\http_main.c
+SOURCE=.\server\main.c
 # End Source File
 # End Target
 # End Project
