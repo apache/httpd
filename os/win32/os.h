@@ -131,6 +131,10 @@ every configuration function as __stdcall.
 
 #define MODULE_VAR_EXPORT   __declspec(dllexport)
 
+
+#define HAVE_STRCASECMP
+#define HAVE_STRNCASECMP
+
 #define strcasecmp(s1, s2) stricmp(s1, s2)
 #define strncasecmp(s1, s2, n) strnicmp(s1, s2, n)
 #define lstat(x, y) stat(x, y)
