@@ -67,15 +67,41 @@
 
 #include <stdarg.h>
 
+void error_log_child (void *cmd)
+{
+    /* Child process code for 'ErrorLog "|..."';
+     * may want a common framework for this, since I expect it will
+     * be common for other foo-loggers to want this sort of thing...
+     */
+    
+    cleanup_for_exec();
+    signal (SIGHUP, SIG_IGN);
+    execl (SHELL_PATH, SHELL_PATH, "-c", (char *)cmd, NULL);
+    exit (1);
+}
+
 void open_error_log(server_rec *s, pool *p)
 {
     char *fname;
   
     fname = server_root_relative (p, s->error_fname);
-    if(!(s->error_log = pfopen(p, fname, "a"))) {
-        fprintf(stderr,"httpd: could not open error log file %s.\n", fname);
-        perror("fopen");
-        exit(1);
+
+    if (*fname == '|') {
+      FILE *dummy;
+
+      spawn_child(p, error_log_child, (void *)(fname+1),
+                    kill_after_timeout, &dummy, NULL);
+
+        if (dummy == NULL) {
+            fprintf (stderr, "Couldn't fork child for ErrorLog process\n");
+            exit (1);
+      }
+    } else {
+        if(!(s->error_log = pfopen(p, fname, "a"))) {
+            fprintf(stderr,"httpd: could not open error log file %s.\n", fname);
+            perror("fopen");
+            exit(1);
+      }
     }
 }
 
