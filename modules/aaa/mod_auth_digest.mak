@@ -360,7 +360,6 @@ DEP_CPP_MOD_A=\
 	
 NODEP_CPP_MOD_A=\
 	"..\..\include\ap_config_auto.h"\
-	".\ap_config_auto.h"\
 	
 
 "$(INTDIR)\mod_auth_digest.obj" : $(SOURCE) $(DEP_CPP_MOD_A) "$(INTDIR)"
