@@ -3,8 +3,8 @@ If you are about to edit a file, mark it as RESERVED below with your name.
 If a file has already been indent'd, or doesn't need it, mark it as DONE
 
 ./main:				STATUS
-   alloc.c			RESERVED by Dean
-   alloc.h			RESERVED by Dean
+   alloc.c			DONE by Dean
+   alloc.h			DONE by Dean
    buff.c			DONE by Dean
    buff.h			DONE by Dean
    conf.h
