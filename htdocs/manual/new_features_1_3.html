@@ -509,6 +509,15 @@ Allows additional information to be listed along with a specified module.
   separate subdirectory and library so they can be used by other
   applications than just the server.
  </LI>
+
+ <LI><STRONG>New <SAMP><A HREF="mod/core.html#serversignature">ServerSignature</A></SAMP> directive</STRONG>
+  <BR>
+  This directive optionally adds a line containing the server version and
+  virtual host name to server-generated pages (error documents, ftp
+  directory listings, mod_info output etc.). This makes it easier for users
+  to tell which server produced the error message, especially in a proxy
+  chain (often found in intranet environments).
+ </LI>
 </UL>
 
 <!--#include virtual="footer.html" -->
