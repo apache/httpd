@@ -218,6 +218,11 @@ FILES_nlm_Ximports = \
 #
 FILES_nlm_exports = \
 	proxy_module \
+	proxy_hook_scheme_handler \
+	proxy_hook_canon_handler \
+	ap_proxy_ssl_enable \
+	ap_proxy_ssl_disable \
+	proxy_run_fixups \
 	$(EOLIST)
 	
 #   
