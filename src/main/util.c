@@ -1344,7 +1344,7 @@ int ap_slack (int fd, int line)
     int new_fd;
 
 #ifdef HIGH_SLACK_LINE
-    if (line == AP_SLACK_HIGH) {
+    if (line == AP_SLACK_HIGH && fd < HIGH_SLACK_LINE) {
 	new_fd = fcntl (fd, F_DUPFD, HIGH_SLACK_LINE);
 	if (new_fd != -1) {
 	    close (fd);
@@ -1353,6 +1353,9 @@ int ap_slack (int fd, int line)
     }
 #endif
     /* otherwise just assume line == AP_SLACK_LOW */
+    if (fd >= LOW_SLACK_LINE) {
+	return fd;
+    }
     new_fd = fcntl (fd, F_DUPFD, LOW_SLACK_LINE);
     if (new_fd == -1) {
       return fd;
