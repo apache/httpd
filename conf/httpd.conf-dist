@@ -22,6 +22,7 @@ Port 80
 #   e.g.   www.apache.org (on) or 204.62.129.132 (off)
 # The default is off because it'd be overall better for the net if people
 # had to knowingly turn this feature on.
+
 HostnameLookups off
 
 # If you wish httpd to run as a different user or group, you must run
@@ -31,14 +32,9 @@ HostnameLookups off
 #  On SCO (ODT 3) use User nouser and Group nogroup
 #  On HPUX you may not be able to use shared memory as nobody, and the
 #  suggested workaround is to create a user www and use that user.
+
 User nobody
 Group #-1
-
-# The following directive disables keepalives and HTTP header flushes for
-# Netscape 2.x and browsers which spoof it. There are known problems with
-# these
-
-BrowserMatch Mozilla/2 nokeepalive
 
 # ServerAdmin: Your address, where problems with the server should be
 # e-mailed.

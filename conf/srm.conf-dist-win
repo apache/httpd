@@ -212,3 +212,16 @@ LanguagePriority en fr de
 # mod_mime_magic allows the server to use various hints from the file itself
 # to determine its type.
 #MimeMagicFile conf/magic
+
+# The following directive disables keepalives and HTTP header flushes for
+# Netscape 2.x and browsers which spoof it. There are known problems with
+# these
+
+BrowserMatch Mozilla/2 nokeepalive
+
+# The following directive disables HTTP/1.1 responses to browsers which
+# are in violation of the HTTP/1.0 spec by not being able to grok a
+# basic 1.1 response.
+
+BrowserMatch "RealPlayer 4.0" force-response-1.0
+

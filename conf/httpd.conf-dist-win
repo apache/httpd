@@ -33,12 +33,6 @@ HostnameLookups off
 User nobody
 Group #-1
 
-# The following directive disables keepalives and HTTP header flushes for
-# Netscape 2.x and browsers which spoof it. There are known problems with
-# these
-
-BrowserMatch Mozilla/2 nokeepalive
-
 # ServerAdmin: Your address, where problems with the server should be
 # e-mailed.
 
