@@ -513,12 +513,12 @@ static void set_service_description(void)
                      "SYSTEM\\CurrentControlSet\\Services\\%s", 
                      mpm_service_name);
         rv = ap_regkey_open(&svckey, AP_REGKEY_LOCAL_MACHINE, szPath,
-                            APR_WRITE, pconf);
+                            APR_READ | APR_WRITE, pconf);
         if (rv != APR_SUCCESS) {
             return;
         }
         /* Attempt to set the Description value for our service */
-        ap_regkey_value_set(svckey, "Description", full_description, pconf);
+        ap_regkey_value_set(svckey, "Description", full_description, 0, pconf);
         ap_regkey_close(svckey);
     }
 }
@@ -933,9 +933,10 @@ apr_status_t mpm_service_install(apr_pool_t *ptemp, int argc,
         launch_cmd = apr_psprintf(ptemp, "\"%s\" -n %s -k runservice", 
                                  exe_path, mpm_service_name);
         rv = ap_regkey_open(&key, AP_REGKEY_LOCAL_MACHINE, SERVICECONFIG9X, 
-                            APR_READ, pconf);
+                            APR_READ | APR_WRITE | APR_CREATE, pconf);
         if (rv == APR_SUCCESS) {
-            rv = ap_regkey_value_set(key, mpm_service_name, launch_cmd, pconf);
+            rv = ap_regkey_value_set(key, mpm_service_name, 
+                                     launch_cmd, 0, pconf);
             ap_regkey_close(key);
         }
         if (rv != APR_SUCCESS) {
@@ -947,14 +948,14 @@ apr_status_t mpm_service_install(apr_pool_t *ptemp, int argc,
 
         apr_snprintf(key_name, sizeof(key_name), SERVICECONFIG, mpm_service_name);
         rv = ap_regkey_open(&key, AP_REGKEY_LOCAL_MACHINE, key_name, 
-                            APR_READ, pconf);
+                            APR_READ | APR_WRITE | APR_CREATE, pconf);
         if (rv != APR_SUCCESS) {
             ap_log_error(APLOG_MARK, APLOG_ERR | APLOG_STARTUP, rv, NULL, 
                          "%s: Failed to create the registry service key.", 
                          mpm_display_name);
             return (rv);
         }
-        rv = ap_regkey_value_set(key, "ImagePath", launch_cmd, pconf);
+        rv = ap_regkey_value_set(key, "ImagePath", launch_cmd, 0, pconf);
         if (rv != APR_SUCCESS) {
             ap_log_error(APLOG_MARK, APLOG_ERR | APLOG_STARTUP, rv, NULL, 
                          "%s: Failed to store ImagePath in the registry.", 
@@ -962,7 +963,8 @@ apr_status_t mpm_service_install(apr_pool_t *ptemp, int argc,
             ap_regkey_close(key);
             return (rv);
         }
-        rv = ap_regkey_value_set(key, "DisplayName", mpm_display_name, pconf);
+        rv = ap_regkey_value_set(key, "DisplayName", 
+                                 mpm_display_name, 0, pconf);
         ap_regkey_close(key);
         if (rv != APR_SUCCESS) {
             ap_log_error(APLOG_MARK, APLOG_ERR | APLOG_STARTUP, rv, NULL, 
@@ -978,7 +980,7 @@ apr_status_t mpm_service_install(apr_pool_t *ptemp, int argc,
      */
     apr_snprintf(key_name, sizeof(key_name), SERVICEPARAMS, mpm_service_name);
     rv = ap_regkey_open(&key, AP_REGKEY_LOCAL_MACHINE, key_name, 
-                        APR_READ, pconf);
+                        APR_READ | APR_WRITE | APR_CREATE, pconf);
     if (rv == APR_SUCCESS) {
         rv = ap_regkey_value_array_set(key, "ConfigArgs", argc, argv, pconf);
         ap_regkey_close(key);
@@ -1055,7 +1057,7 @@ apr_status_t mpm_service_uninstall(void)
         /* TODO: assure the service is stopped before continuing */
 
         rv = ap_regkey_open(&key, AP_REGKEY_LOCAL_MACHINE, SERVICECONFIG9X, 
-                            APR_WRITE, pconf);
+                            APR_READ | APR_WRITE | APR_CREATE, pconf);
         if (rv == APR_SUCCESS) {
             rv = ap_regkey_value_remove(key, mpm_service_name, pconf);
             ap_regkey_close(key);

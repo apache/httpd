@@ -63,6 +63,7 @@
 #include "mpm_winnt.h"
 #include "apr_strings.h"
 #include "apr_lib.h"
+#include "ap_regkey.h"
 
 static char  *display_name  = NULL;
 static HANDLE stderr_thread = NULL;
@@ -76,8 +77,12 @@ static DWORD WINAPI service_stderr_thread(LPVOID hPipe)
     char *errmsg = errbuf;
     const char *errarg[9];
     DWORD errres;
-    HKEY hk;
+    ap_regkey_t *regkey;
+    apr_status_t rv;
+    apr_pool_t *p;
     
+    apr_pool_sub_make(&p, NULL, NULL);
+
     errarg[0] = "The Apache service named";
     errarg[1] = display_name;
     errarg[2] = "reported the following error:\r\n>>>";
@@ -89,23 +94,26 @@ static DWORD WINAPI service_stderr_thread(LPVOID hPipe)
     errarg[8] = NULL;
 
     /* What are we going to do in here, bail on the user?  not. */
-    if (!RegCreateKey(HKEY_LOCAL_MACHINE, "SYSTEM\\CurrentControlSet\\Services"
-                      "\\EventLog\\Application\\Apache Service", &hk)) 
+    if ((rv = ap_regkey_open(&regkey, AP_REGKEY_LOCAL_MACHINE, 
+                             "SYSTEM\\CurrentControlSet\\Services\\"
+                             "EventLog\\Application\\Apache Service",
+                             APR_READ | APR_WRITE | APR_CREATE, p)) 
+            == APR_SUCCESS)
     {
-        /* The stock message file */
-        char *netmsgkey = "%SystemRoot%\\System32\\netmsg.dll";
         DWORD dwData = EVENTLOG_ERROR_TYPE | EVENTLOG_WARNING_TYPE | 
                        EVENTLOG_INFORMATION_TYPE; 
  
-        RegSetValueEx(hk, "EventMessageFile", 0, REG_EXPAND_SZ,
-                          (LPBYTE) netmsgkey, strlen(netmsgkey) + 1);
+        /* The stock message file */
+        ap_regkey_value_set(regkey, "EventMessageFile", 
+                            "%SystemRoot%\\System32\\netmsg.dll", 
+                            AP_REGKEY_EXPAND, p);
         
-        RegSetValueEx(hk, "TypesSupported", 0, REG_DWORD,
-                          (LPBYTE) &dwData, sizeof(dwData));
-        RegCloseKey(hk);
+        ap_regkey_value_raw_set(regkey, "TypesSupported", &dwData, 
+                                sizeof(dwData), REG_DWORD, p);
+        ap_regkey_close(regkey);
     }
 
-    hEventSource = RegisterEventSource(NULL, "Apache Service");
+    hEventSource = RegisterEventSourceW(NULL, L"Apache Service");
 
     SetEvent(stderr_ready);
 
@@ -145,6 +153,7 @@ static DWORD WINAPI service_stderr_thread(LPVOID hPipe)
     DeregisterEventSource(hEventSource);
     CloseHandle(stderr_thread);
     stderr_thread = NULL;
+    apr_pool_destroy(p);
     return 0;
 }
 
