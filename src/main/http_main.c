@@ -2338,7 +2338,6 @@ int make_child(server_rec *server_conf, int child_num)
 
 void standalone_main(int argc, char **argv)
 {
-    struct sockaddr_in sa_server;
     int remaining_children_to_start;
     listen_rec *lr;
 
