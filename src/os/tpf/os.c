@@ -273,11 +273,11 @@ int ap_tpf_spawn_child(pool *p, int (*func) (void *, child_info *),
    /* use a copy of cld->filename because strtok is destructive */
    arguments = ap_pstrdup(p, cld->filename);
    args[0] = strtok(arguments, WHITE);
-   args[MAXARGC + 1] = NULL;
 
    for (i = 0; i < MAXARGC && args[i] ; i++) {
        args[i + 1] = strtok(NULL, WHITE);
    }
+   args[MAXARGC] = NULL;
 
    if ((pid = tpf_fork(&fork_input,
                        (const char **)args,
