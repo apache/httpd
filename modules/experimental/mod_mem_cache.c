@@ -66,7 +66,6 @@
 #error This module does not currently compile unless you have a thread-capable APR. Sorry!
 #endif
 
-static apr_size_t max_cache_entry_size = 5000;
 module AP_MODULE_DECLARE_DATA mem_cache_module;
 
 /* 
@@ -111,10 +110,14 @@ typedef struct {
     int space;
     apr_time_t maxexpire;
     apr_time_t defaultexpire;
+    apr_size_t min_cache_object_size;
+    apr_size_t max_cache_object_size;
 } mem_cache_conf;
 static mem_cache_conf *sconf;
 
 #define DEFAULT_CACHE_SPACE 100*1024
+#define DEFAULT_MIN_CACHE_OBJECT_SIZE 0
+#define DEFAULT_MAX_CACHE_OBJECT_SIZE 10000
 #define CACHEFILE_LEN 20
 
 /* Forward declarations */
@@ -209,6 +212,9 @@ static apr_status_t cleanup_cache_mem(void *sconfv)
     }
     return APR_SUCCESS;
 }
+/*
+ * TODO: enable directives to be overridden in various containers
+ */
 static void *create_cache_config(apr_pool_t *p, server_rec *s)
 {
     int threaded_mpm;
@@ -221,6 +227,9 @@ static void *create_cache_config(apr_pool_t *p, server_rec *s)
         apr_thread_mutex_create(&sconf->lock, APR_THREAD_MUTEX_DEFAULT, p);
     }
     sconf->cacheht = apr_hash_make(p);
+    sconf->min_cache_object_size = DEFAULT_MIN_CACHE_OBJECT_SIZE;
+    sconf->max_cache_object_size = DEFAULT_MAX_CACHE_OBJECT_SIZE;
+
     apr_pool_cleanup_register(p, NULL, cleanup_cache_mem, apr_pool_cleanup_null);
 
     return sconf;
@@ -238,12 +247,11 @@ static int create_entity(cache_handle_t *h, request_rec *r,
         return DECLINED;
     }
 
-    /* XXX Check len to see if it is withing acceptable bounds 
-     * max cache check should be configurable variable.
-     */
-    if (len < 0 || len > max_cache_entry_size) {
+    if (len < sconf->min_cache_object_size || 
+        len > sconf->max_cache_object_size) {
         return DECLINED;
     }
+
     /* XXX Check total cache size and number of entries. Are they within the
      * configured limits? If not, kick off garbage collection thread.
      */
@@ -638,14 +646,25 @@ static const char
     return NULL;
 }
 static const char 
-*set_cache_entry_size(cmd_parms *parms, void *in_struct_ptr, const char *arg)
+*set_min_cache_object_size(cmd_parms *parms, void *in_struct_ptr, const char *arg)
 {
-    int val;
+    apr_size_t val;
 
     if (sscanf(arg, "%d", &val) != 1) {
-        return "CacheSize value must be an integer (bytes)";
+        return "CacheMinObjectSize value must be an integer (bytes)";
     }
-    max_cache_entry_size = val;
+    sconf->min_cache_object_size = val;
+    return NULL;
+}
+static const char 
+*set_max_cache_object_size(cmd_parms *parms, void *in_struct_ptr, const char *arg)
+{
+    apr_size_t val;
+
+    if (sscanf(arg, "%d", &val) != 1) {
+        return "CacheMaxObjectSize value must be an integer (KB)";
+    }
+    sconf->max_cache_object_size = val;
     return NULL;
 }
 
@@ -661,8 +680,10 @@ static const command_rec cache_cmds[] =
      */
     AP_INIT_TAKE1("CacheMemSize", set_cache_size, NULL, RSRC_CONF,
      "The maximum space used by the cache in Kb"),
-    AP_INIT_TAKE1("CacheMemEntrySize", set_cache_entry_size, NULL, RSRC_CONF,
-     "The maximum size (in bytes) that a entry can take"),
+    AP_INIT_TAKE1("CacheMinObjectSize", set_min_cache_object_size, NULL, RSRC_CONF,
+     "The minimum size (in bytes) of an object to be placed in the cache"),
+    AP_INIT_TAKE1("CacheMaxObjectSize", set_max_cache_object_size, NULL, RSRC_CONF,
+     "The maximum size (in KB) of an object to be placed in the cache"),
     {NULL}
 };
 
