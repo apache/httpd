@@ -176,19 +176,20 @@ RewriteRule ^/(.*)         http://fully.qualified.domain.name/$1 [L,R]
         <dt>Solution:</dt>
 
         <dd>
-          <p>We just redirect the URL <code>/</code> to
-          <code>/e/www/</code>. While is seems trivial it is
-          actually trivial with <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>, only.
-          Because the typical old mechanisms of URL <em>Aliases</em>
-          (as provides by <code class="module"><a href="../mod/mod_alias.html">mod_alias</a></code> and friends)
-          only used <em>prefix</em> matching. With this you cannot
-          do such a redirection because the <code class="directive"><a href="../mod/core.html#documentroot">DocumentRoot</a></code> is a prefix of all URLs. With
-          <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> it is really trivial:</p>
-
+          <p>We redirect the URL <code>/</code> to
+          <code>/e/www/</code>:
+          </p>
+         
 <div class="example"><pre>
 RewriteEngine on
 RewriteRule   <strong>^/$</strong>  /e/www/  [<strong>R</strong>]
 </pre></div>
+
+    <p>Note that this can also be handled using the <code class="directive"><a href="../mod/mod_alias.html#redirectmatch">RedirectMatch</a></code> directive:</p>
+
+    <div class="example"><p><code>
+    RedirectMatch ^/$ http://example.com/e/www/
+    </code></p></div>
         </dd>
       </dl>
 
