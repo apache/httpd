@@ -564,7 +564,7 @@ This is deliberate to remind me to do something about it!
     }
     resume_thread(tid);
     
-    ap_child_table[slot].pid = getpid();
+    ap_child_table[slot].pid = tid;
     ap_child_table[slot].status = SERVER_ALIVE;
     return 0;
 }
@@ -888,6 +888,11 @@ int ap_mpm_run(ap_pool_t *_pconf, ap_pool_t *plog, server_rec *s)
     if (!is_graceful) {
         ap_restart_time = time(NULL); 
     }
+
+    /* just before we go, tidy up the locks we've created to prevent a 
+     * potential leak of semaphores... */
+    ap_destroy_lock(worker_thread_count_mutex);
+    ap_destroy_lock(accept_mutex);
 
     return 0;
 }
