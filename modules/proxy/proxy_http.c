@@ -1115,6 +1115,7 @@ int ap_proxy_http_handler(request_rec *r, proxy_worker *worker,
     int status;
     char server_portstr[32];
     char *scheme;
+    const char *proxy_function;
     const char *u;
     proxy_conn_rec *backend = NULL;
     int is_ssl = 0;
@@ -1154,11 +1155,18 @@ int ap_proxy_http_handler(request_rec *r, proxy_worker *worker,
             return DECLINED;
         }
         is_ssl = 1;
+        proxy_function = "HTTPS";
     }
     else if (!(strcmp(scheme, "http") == 0 || (strcmp(scheme, "ftp") == 0 && proxyname))) {
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
                      "proxy: HTTP: declining URL %s", url);
         return DECLINED; /* only interested in HTTP, or FTP via proxy */
+    }
+    else {
+        if (*scheme == 'h')
+            proxy_function = "HTTP";
+        else
+            proxy_function = "FTP";
     }
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
              "proxy: HTTP: serving URL %s", url);
@@ -1173,11 +1181,11 @@ int ap_proxy_http_handler(request_rec *r, proxy_worker *worker,
     }
     /* create space for state information */
     if (!backend) {
-        status = ap_proxy_acquire_connection(scheme, &backend, worker, r->server);
+        status = ap_proxy_acquire_connection(proxy_function, &backend, worker, r->server);
         if (status != OK) {
             if (backend) {
                 backend->close_on_recycle = 1;
-                ap_proxy_release_connection(scheme, backend, r->server);
+                ap_proxy_release_connection(proxy_function, backend, r->server);
             }
             return status;
         }
@@ -1200,14 +1208,13 @@ int ap_proxy_http_handler(request_rec *r, proxy_worker *worker,
     }
 
     /* Step Two: Make the Connection */
-    status = ap_proxy_connect_backend(scheme, backend, worker, r->server);
-    if ( status != OK ) {
-        return status;
+    if (ap_proxy_connect_backend(proxy_function, backend, worker, r->server)) {
+        return HTTP_SERVICE_UNAVAILABLE;
     }
 
     /* Step Three: Create conn_rec */
     if (!backend->connection) {
-        status = ap_proxy_connection_create(scheme, backend, c, r->server);
+        status = ap_proxy_connection_create(proxy_function, backend, c, r->server);
         if (status != OK)
             return status;
     }
@@ -1224,12 +1231,12 @@ int ap_proxy_http_handler(request_rec *r, proxy_worker *worker,
                                             server_portstr);
     if (status != OK) {
         /* clean up even if there is an error */
-        ap_proxy_http_cleanup(scheme, r, backend);
+        ap_proxy_http_cleanup(proxy_function, r, backend);
         return status;
     }
 
     /* Step Six: Clean Up */
-    status = ap_proxy_http_cleanup(scheme, r, backend);
+    status = ap_proxy_http_cleanup(proxy_function, r, backend);
     if ( status != OK ) {
         return status;
     }
