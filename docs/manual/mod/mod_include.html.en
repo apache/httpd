@@ -568,8 +568,7 @@
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="SSIStartTag" id="SSIStartTag">SSIStartTag</a> <a name="ssistarttag" id="ssistarttag">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
               </a></th><td>String that starts an include element</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td>Changes the string that mod_include looks for to start an
-include element</td></tr><tr><th><a href="directive-dict.html#Default">Default: 
+              </a></th><td>SSIStartTag <em>tag</em></td></tr><tr><th><a href="directive-dict.html#Default">Default: 
               </a></th><td><code>SSIStartTag "&lt;!--"</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>server config, virtual host</td></tr><tr><th><a href="directive-dict.html#Status">Status:
               </a></th><td>Base</td></tr><tr><th><a href="directive-dict.html#Module">Module:

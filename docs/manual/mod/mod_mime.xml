@@ -447,7 +447,7 @@ to the specified content language</description>
 
 <directivesynopsis>
 <name>AddOutputFilter</name>
-<description>maps the filename
+<description>Maps filename
 extensions to the filters that will process
 responses from the server</description>
 <syntax>AddOutputFilter

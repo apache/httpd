@@ -351,7 +351,7 @@ to the specified content language</td></tr><tr><th><a href="directive-dict.html#
     be specified with or without a leading dot.</p>
 
 <h3>See also</h3><ul><li><code class="module"><a href="../mod/mod_negotiation.html">mod_negotiation</a></code></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="AddOutputFilter" id="AddOutputFilter">AddOutputFilter</a> <a name="addoutputfilter" id="addoutputfilter">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
-              </a></th><td>maps the filename
+              </a></th><td>Maps filename
 extensions to the filters that will process
 responses from the server</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
               </a></th><td>AddOutputFilter

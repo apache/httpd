@@ -61,7 +61,7 @@ SetHandler server-info<br />
 
 <directivesynopsis>
 <name>AddModuleInfo</name>
-<description>Allows additional information to be added to the module
+<description>Adds additional information to the module
 information displayed by the server-info handler</description>
 <syntax>AddModuleInfo <em>module-name string</em></syntax>
 <contextlist><context>server config</context> <context>virtual

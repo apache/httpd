@@ -517,10 +517,10 @@ such as via different symbolic links.</p>
 
 <directivesynopsis type="section">
 <name>DirectoryMatch</name>
-<description>Enclose a group of directives that apply only to 
-file-system directories that match a regular expression and their
+<description>Enclose directives that apply to 
+file-system directories matching a regular expression and their
 subdirectories</description>
-<syntax>&lt;Directory <em>regex</em>&gt;
+<syntax>&lt;DirectoryMatch <em>regex</em>&gt;
 ... &lt;/Directory&gt;</syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>

@@ -635,8 +635,7 @@ an unset variable is echoed</description>
 <directivesynopsis>
 <name>SSIStartTag</name>
 <description>String that starts an include element</description>
-<syntax>Changes the string that mod_include looks for to start an
-include element</syntax>
+<syntax>SSIStartTag <em>tag</em></syntax>
 <default>SSIStartTag &quot;&lt;!--&quot;</default>
 <contextlist>
 <context>server config</context>

@@ -111,13 +111,13 @@ content-type</td></tr>
 to the specified content language</td></tr>
 <tr class="even"><td><a href="mod_info.html#addmoduleinfo" style="text-decoration: none">AddModuleInfo <em>module-name string</em></a></td><td /><td>E</td><td>s</td></tr><tr class="even"><td colspan="4">
                  
-               Allows additional information to be added to the module
+               Adds additional information to the module
 information displayed by the server-info handler</td></tr>
 <tr class="odd"><td><a href="mod_mime.html#addoutputfilter" style="text-decoration: none">AddOutputFilter
     <em>filter</em>[<em>;filter</em>...] extension
     [<em>extension</em> ...]</a></td><td /><td>B</td><td>svdh</td></tr><tr class="odd"><td colspan="4">
                  
-               maps the filename
+               Maps filename
 extensions to the filters that will process
 responses from the server</td></tr>
 <tr class="even"><td><a href="mod_mime.html#addtype" style="text-decoration: none">AddType <em>MIME-type
@@ -214,7 +214,7 @@ for digest authentication</td></tr>
                  
                Enables or disables checking of the nonce-count sent by the
 server</td></tr>
-<tr class="odd"><td><a href="mod_auth_digest.html#authdigestnonceformat" style="text-decoration: none">???</a></td><td /><td>X</td><td>dh</td></tr><tr class="odd"><td colspan="4">
+<tr class="odd"><td><a href="mod_auth_digest.html#authdigestnonceformat" style="text-decoration: none">AuthDigestNonceFormat <em>format</em></a></td><td /><td>X</td><td>dh</td></tr><tr class="odd"><td colspan="4">
                  
                Determines how the nonce is generated</td></tr>
 <tr class="even"><td><a href="mod_auth_digest.html#authdigestnoncelifetime" style="text-decoration: none">AuthDigestNonceLifetime <em>seconds</em></a></td><td> 300 </td><td>X</td><td>dh</td></tr><tr class="even"><td colspan="4">
@@ -228,42 +228,45 @@ authentication</td></tr>
                  
                Sets the name of a text file containing the list
 of user groups for authentication</td></tr>
-<tr class="odd"><td><a href="mod_auth_ldap.html#authldapauthoritative" style="text-decoration: none">AuthLDAPAuthoritative on|off</a></td><td> on </td><td /><td>dh</td></tr><tr class="odd"><td colspan="4">
+<tr class="odd"><td><a href="mod_auth_ldap.html#authldapauthoritative" style="text-decoration: none">AuthLDAPAuthoritative on|off</a></td><td> on </td><td>X</td><td>dh</td></tr><tr class="odd"><td colspan="4">
                  
-               </td></tr>
-<tr class="even"><td><a href="mod_auth_ldap.html#authldapbinddn" style="text-decoration: none">AuthLDAPBindDN <em>distinguished-name</em></a></td><td /><td /><td>dh</td></tr><tr class="even"><td colspan="4">
+               Prevent other authentication modules from
+authenticating the user if this one fails</td></tr>
+<tr class="even"><td><a href="mod_auth_ldap.html#authldapbinddn" style="text-decoration: none">AuthLDAPBindDN <em>distinguished-name</em></a></td><td /><td>X</td><td>dh</td></tr><tr class="even"><td colspan="4">
                  
-               </td></tr>
-<tr class="odd"><td><a href="mod_auth_ldap.html#authldapbindpassword" style="text-decoration: none">AuthLDAPBindPassword <em>password</em></a></td><td /><td /><td>dh</td></tr><tr class="odd"><td colspan="4">
+               Optional DN to use in binding to the LDAP server</td></tr>
+<tr class="odd"><td><a href="mod_auth_ldap.html#authldapbindpassword" style="text-decoration: none">AuthLDAPBindPassword <em>password</em></a></td><td /><td>X</td><td>dh</td></tr><tr class="odd"><td colspan="4">
                  
-               </td></tr>
-<tr class="even"><td><a href="mod_auth_ldap.html#authldapcomparednonserver" style="text-decoration: none">AuthLDAPCompareDNOnServer on|off</a></td><td> on </td><td /><td>dh</td></tr><tr class="even"><td colspan="4">
+               Password used in conjuction with the bind DN</td></tr>
+<tr class="even"><td><a href="mod_auth_ldap.html#authldapcomparednonserver" style="text-decoration: none">AuthLDAPCompareDNOnServer on|off</a></td><td> on </td><td>X</td><td>dh</td></tr><tr class="even"><td colspan="4">
                  
-               </td></tr>
-<tr class="odd"><td><a href="mod_auth_ldap.html#authldapdereferencealiases" style="text-decoration: none">AuthLDAPDereferenceAliases never|searching|finding|always</a></td><td> Always </td><td /><td>dh</td></tr><tr class="odd"><td colspan="4">
+               Use the LDAP server to compare the DNs</td></tr>
+<tr class="odd"><td><a href="mod_auth_ldap.html#authldapdereferencealiases" style="text-decoration: none">AuthLDAPDereferenceAliases never|searching|finding|always</a></td><td> Always </td><td>X</td><td>dh</td></tr><tr class="odd"><td colspan="4">
                  
-               </td></tr>
-<tr class="even"><td><a href="mod_auth_ldap.html#authldapenabled" style="text-decoration: none"> AuthLDAPEnabled on|off</a></td><td> on </td><td /><td>dh</td></tr><tr class="even"><td colspan="4">
+               When will the module de-reference aliases</td></tr>
+<tr class="even"><td><a href="mod_auth_ldap.html#authldapenabled" style="text-decoration: none"> AuthLDAPEnabled on|off</a></td><td> on </td><td>X</td><td>dh</td></tr><tr class="even"><td colspan="4">
                  
-               </td></tr>
-<tr class="odd"><td><a href="mod_auth_ldap.html#authldapfrontpagehack" style="text-decoration: none">AuthLDAPFrontPageHack on|off</a></td><td /><td /><td>dh</td></tr><tr class="odd"><td colspan="4">
+               Turn on or off LDAP authentication</td></tr>
+<tr class="odd"><td><a href="mod_auth_ldap.html#authldapfrontpagehack" style="text-decoration: none">AuthLDAPFrontPageHack on|off</a></td><td /><td>X</td><td>dh</td></tr><tr class="odd"><td colspan="4">
                  
-               </td></tr>
-<tr class="even"><td><a href="mod_auth_ldap.html#authldapgroupattribute" style="text-decoration: none">AuthLDAPGroupAttribute <em>attribute</em></a></td><td /><td /><td>dh</td></tr><tr class="even"><td colspan="4">
+               Allow LDAP authentication to work with MS FrontPage</td></tr>
+<tr class="even"><td><a href="mod_auth_ldap.html#authldapgroupattribute" style="text-decoration: none">AuthLDAPGroupAttribute <em>attribute</em></a></td><td /><td>X</td><td>dh</td></tr><tr class="even"><td colspan="4">
                  
-               </td></tr>
-<tr class="odd"><td><a href="mod_auth_ldap.html#authldapgroupattributeisdn" style="text-decoration: none">AuthLDAPGroupAttributeIsDN on|off</a></td><td> on </td><td /><td>dh</td></tr><tr class="odd"><td colspan="4">
+               LDAP attributes used to check for group membership</td></tr>
+<tr class="odd"><td><a href="mod_auth_ldap.html#authldapgroupattributeisdn" style="text-decoration: none">AuthLDAPGroupAttributeIsDN on|off</a></td><td> on </td><td>X</td><td>dh</td></tr><tr class="odd"><td colspan="4">
                  
-               </td></tr>
-<tr class="even"><td><a href="mod_auth_ldap.html#authldapremoteuserisdn" style="text-decoration: none">AuthLDAPRemoteUserIsDN on|off</a></td><td /><td /><td>dh</td></tr><tr class="even"><td colspan="4">
+               Use the DN of the client username when checking for
+group membership</td></tr>
+<tr class="even"><td><a href="mod_auth_ldap.html#authldapremoteuserisdn" style="text-decoration: none">AuthLDAPRemoteUserIsDN on|off</a></td><td /><td>X</td><td>dh</td></tr><tr class="even"><td colspan="4">
                  
-               </td></tr>
-<tr class="odd"><td><a href="mod_auth_ldap.html#authldapstarttls directive" style="text-decoration: none">AuthLDAPStartTLS on|off</a></td><td /><td /><td>dh</td></tr><tr class="odd"><td colspan="4">
+               Use the DN of the client username to set the REMOTE_USER
+environment variable</td></tr>
+<tr class="odd"><td><a href="mod_auth_ldap.html#authldapstarttls directive" style="text-decoration: none">AuthLDAPStartTLS on|off</a></td><td /><td>X</td><td>dh</td></tr><tr class="odd"><td colspan="4">
                  
-               </td></tr>
-<tr class="even"><td><a href="mod_auth_ldap.html#authldapurl" style="text-decoration: none">AuthLDAPUrl <em>url</em></a></td><td /><td /><td>dh</td></tr><tr class="even"><td colspan="4">
+               Use a secure TLS connection to the LDAP server</td></tr>
+<tr class="even"><td><a href="mod_auth_ldap.html#authldapurl" style="text-decoration: none">AuthLDAPUrl <em>url</em></a></td><td /><td>X</td><td>dh</td></tr><tr class="even"><td colspan="4">
                  
-               </td></tr>
+               URL specifying the LDAP search parameters</td></tr>
 <tr class="odd"><td><a href="core.html#authname" style="text-decoration: none">AuthName <em>auth-domain</em></a></td><td /><td>C</td><td>dh</td></tr><tr class="odd"><td colspan="4">
                  
                Authorization realm for use in HTTP
@@ -316,7 +319,7 @@ respect to case</td></tr>
 <tr class="odd"><td><a href="mod_cache.html#cachemaxstreamingbuffer" style="text-decoration: none">CacheMaxStreamingBuffer <em>size_in_bytes</em></a></td><td> 0 </td><td>X</td><td>s</td></tr><tr class="odd"><td colspan="4">
                  
                Maximum amount of a streamed response to buffer in memory before declaring the response uncacheable</td></tr>
-<tr class="even"><td><a href="mod_negotiation.html#cachenegotiateddocs" style="text-decoration: none">CacheNegotiatedDocs on|off</a></td><td> off </td><td>B</td><td>s</td></tr><tr class="even"><td colspan="4">
+<tr class="even"><td><a href="mod_negotiation.html#cachenegotiateddocs" style="text-decoration: none">CacheNegotiatedDocs on|off</a></td><td> off </td><td>B</td><td>sv</td></tr><tr class="even"><td colspan="4">
                  
                Allows content-negotiated documents to be 
 cached by proxy servers</td></tr>
@@ -430,11 +433,11 @@ named file-system directory and sub-directories</td></tr>
                  
                List of resources to look for when the client requests
 a directory</td></tr>
-<tr class="even"><td><a href="core.html#directorymatch" style="text-decoration: none">&lt;Directory <em>regex</em>&gt;
+<tr class="even"><td><a href="core.html#directorymatch" style="text-decoration: none">&lt;DirectoryMatch <em>regex</em>&gt;
 ... &lt;/Directory&gt;</a></td><td /><td>C</td><td>sv</td></tr><tr class="even"><td colspan="4">
                  
-               Enclose a group of directives that apply only to 
-file-system directories that match a regular expression and their
+               Enclose directives that apply to 
+file-system directories matching a regular expression and their
 subdirectories</td></tr>
 <tr class="odd"><td><a href="core.html#documentroot" style="text-decoration: none">DocumentRoot <em>directory-path</em></a></td><td> /usr/local/apache/h
                    +
@@ -471,9 +474,8 @@ by MIME type</td></tr>
                Default algorithm for calculating expiration time</td></tr>
 <tr class="odd"><td><a href="mod_status.html#extendedstatus" style="text-decoration: none">ExtendedStatus On|Off</a></td><td> Off </td><td>B</td><td>s</td></tr><tr class="odd"><td colspan="4">
                  
-               This directive controls whether the server keeps track of
-extended status information for each request. This is only
-useful if the status module is enabled on the server.</td></tr>
+               Keep track of extended status information for each 
+request</td></tr>
 <tr class="even"><td><a href="mod_ext_filter.html#extfilterdefine" style="text-decoration: none">ExtFilterDefine <em>filtername</em> <em>parameters</em></a></td><td /><td>X</td><td>s</td></tr><tr class="even"><td colspan="4">
                  
                </td></tr>
@@ -593,24 +595,26 @@ requests on a persistent connection</td></tr>
                  
                The precendence of language variants for cases where
 the client does not express a preference</td></tr>
-<tr class="even"><td><a href="mod_ldap.html#ldapcacheentries" style="text-decoration: none">LDAPCacheEntries <em>number</em></a></td><td> 1024 </td><td /><td>s</td></tr><tr class="even"><td colspan="4">
+<tr class="even"><td><a href="mod_ldap.html#ldapcacheentries" style="text-decoration: none">LDAPCacheEntries <em>number</em></a></td><td> 1024 </td><td>X</td><td>s</td></tr><tr class="even"><td colspan="4">
                  
-               </td></tr>
-<tr class="odd"><td><a href="mod_ldap.html#ldapcachettl" style="text-decoration: none">LDAPCacheTTL <em>seconds</em></a></td><td> 600 </td><td /><td>s</td></tr><tr class="odd"><td colspan="4">
+               Maximum number of entires in the primary LDAP cache</td></tr>
+<tr class="odd"><td><a href="mod_ldap.html#ldapcachettl" style="text-decoration: none">LDAPCacheTTL <em>seconds</em></a></td><td> 600 </td><td>X</td><td>s</td></tr><tr class="odd"><td colspan="4">
                  
-               </td></tr>
-<tr class="even"><td><a href="mod_ldap.html#ldapcertdbpath" style="text-decoration: none">LDAPCertDBPath <em>directory-path</em></a></td><td /><td /><td>s</td></tr><tr class="even"><td colspan="4">
+               Time that cached items remain valid</td></tr>
+<tr class="even"><td><a href="mod_ldap.html#ldapcertdbpath" style="text-decoration: none">LDAPCertDBPath <em>directory-path</em></a></td><td /><td>X</td><td>s</td></tr><tr class="even"><td colspan="4">
                  
-               </td></tr>
-<tr class="odd"><td><a href="mod_ldap.html#ldapopcacheentries" style="text-decoration: none">LDAPOpCacheEntries <em>number</em></a></td><td> 1024 </td><td /><td>s</td></tr><tr class="odd"><td colspan="4">
+               Directory containing certificates for SSL support</td></tr>
+<tr class="odd"><td><a href="mod_ldap.html#ldapopcacheentries" style="text-decoration: none">LDAPOpCacheEntries <em>number</em></a></td><td> 1024 </td><td>X</td><td>s</td></tr><tr class="odd"><td colspan="4">
                  
-               </td></tr>
-<tr class="even"><td><a href="mod_ldap.html#ldapopcachettl" style="text-decoration: none">LDAPOpCacheTTL <em>seconds</em></a></td><td> 600 </td><td /><td>s</td></tr><tr class="even"><td colspan="4">
+               Number of entries used to cache LDAP compare 
+operations</td></tr>
+<tr class="even"><td><a href="mod_ldap.html#ldapopcachettl" style="text-decoration: none">LDAPOpCacheTTL <em>seconds</em></a></td><td> 600 </td><td>X</td><td>s</td></tr><tr class="even"><td colspan="4">
                  
-               </td></tr>
-<tr class="odd"><td><a href="mod_ldap.html#ldapsharedcachesize" style="text-decoration: none">LDAPSharedCacheSize <em>bytes</em></a></td><td> 102400 </td><td /><td>s</td></tr><tr class="odd"><td colspan="4">
+               Time that entries in the operation cache remain 
+valid</td></tr>
+<tr class="odd"><td><a href="mod_ldap.html#ldapsharedcachesize" style="text-decoration: none">LDAPSharedCacheSize <em>bytes</em></a></td><td> 102400 </td><td>X</td><td>s</td></tr><tr class="odd"><td colspan="4">
                  
-               </td></tr>
+               Size in bytes of the shared-memory cache</td></tr>
 <tr class="even"><td><a href="core.html#limit" style="text-decoration: none">&lt;Limit <em>method</em> [<em>method</em>] ... &gt; ...
     &lt;/Limit&gt;</a></td><td /><td>C</td><td>svdh</td></tr><tr class="even"><td colspan="4">
                  
@@ -647,10 +651,10 @@ listens to</td></tr>
 <tr class="even"><td><a href="mpm_common.html#listenbacklog" style="text-decoration: none">ListenBacklog <em>backlog</em></a></td><td /><td>M</td><td>s</td></tr><tr class="even"><td colspan="4">
                  
                Maximum length of the queue of pending connections</td></tr>
-<tr class="odd"><td><a href="mod_so.html#loadfile" style="text-decoration: none">LoadFile <em>filename</em> [<em>filename</em>] ...</a></td><td /><td /><td>s</td></tr><tr class="odd"><td colspan="4">
+<tr class="odd"><td><a href="mod_so.html#loadfile" style="text-decoration: none">LoadFile <em>filename</em> [<em>filename</em>] ...</a></td><td /><td>E</td><td>s</td></tr><tr class="odd"><td colspan="4">
                  
                Link in the named object file or library</td></tr>
-<tr class="even"><td><a href="mod_so.html#loadmodule" style="text-decoration: none">LoadModule <em>module filename</em></a></td><td /><td /><td>s</td></tr><tr class="even"><td colspan="4">
+<tr class="even"><td><a href="mod_so.html#loadmodule" style="text-decoration: none">LoadModule <em>module filename</em></a></td><td /><td>E</td><td>s</td></tr><tr class="even"><td colspan="4">
                  
                Links in the object file or library, and adds to the list
 of active modules</td></tr>
@@ -741,15 +745,7 @@ searching for a matching file with MultiViews</td></tr>
                  
                Designates an IP address for name-virtual
 hosting</td></tr>
-<tr class="even"><td><a href="mod_proxy.html#noproxy" style="text-decoration: none">NoProxy 
- <em>Domain</em>|
- <em>SubNet</em>|
- <em>IpAddr</em>| 
- <em>Hostname</em>
-[<em>Domain</em>| 
- <em>SubNet</em>|
- <em>IpAddr</em>| 
- <em>Hostname</em>] ...</a></td><td /><td>E</td><td>sv</td></tr><tr class="even"><td colspan="4">
+<tr class="even"><td><a href="mod_proxy.html#noproxy" style="text-decoration: none">NoProxy <em>host</em> [<em>host</em>] ...</a></td><td /><td>E</td><td>sv</td></tr><tr class="even"><td colspan="4">
                  
                Hosts, domains, or networks that will be connected
 to directly</td></tr>
@@ -847,9 +843,8 @@ of the index listing</td></tr>
 a different URL</td></tr>
 <tr class="odd"><td><a href="mod_alias.html#redirectmatch" style="text-decoration: none">RedirectMatch [<em>status</em>] <em>regex URL</em></a></td><td /><td>B</td><td>svdh</td></tr><tr class="odd"><td colspan="4">
                  
-               Sends an external redirect asking the client to fetch
-a different URL based on a regular expression match of the 
-current URL</td></tr>
+               Sends an external redirect based on a regular expression match 
+of the current URL</td></tr>
 <tr class="even"><td><a href="mod_alias.html#redirectpermanent" style="text-decoration: none">RedirectPermanent <em>URL-path URL</em></a></td><td /><td>B</td><td>svdh</td></tr><tr class="even"><td colspan="4">
                  
                Sends an external permanent redirect asking the client to fetch
@@ -1055,8 +1050,7 @@ server</td></tr>
                  </td><td>B</td><td>svdh</td></tr><tr class="odd"><td colspan="4">
                  
                Error message displayed when there is an SSI error</td></tr>
-<tr class="even"><td><a href="mod_include.html#ssistarttag" style="text-decoration: none">Changes the string that mod_include looks for to start an
-include element</a></td><td> "&lt;!--" </td><td>B</td><td>sv</td></tr><tr class="even"><td colspan="4">
+<tr class="even"><td><a href="mod_include.html#ssistarttag" style="text-decoration: none">SSIStartTag <em>tag</em></a></td><td> "&lt;!--" </td><td>B</td><td>sv</td></tr><tr class="even"><td colspan="4">
                  
                String that starts an include element</td></tr>
 <tr class="odd"><td><a href="mod_include.html#ssitimeformat" style="text-decoration: none">SSITimeFormat <em>formatstring</em></a></td><td> "%A, %d-%b-%Y %H:%M
@@ -1229,11 +1223,11 @@ requests</td></tr>
 <tr class="even"><td><a href="mod_userdir.html#userdir" style="text-decoration: none">UserDir <em>directory-filename</em></a></td><td> public_html </td><td>B</td><td>s</td></tr><tr class="even"><td colspan="4">
                  
                Location of the user-specific directories</td></tr>
-<tr class="odd"><td><a href="mod_vhost_alias.html#virtualdocumentroot" style="text-decoration: none">VirtualDocumentRoot <em>interpolated-directory</em></a></td><td /><td>E</td><td>sv</td></tr><tr class="odd"><td colspan="4">
+<tr class="odd"><td><a href="mod_vhost_alias.html#virtualdocumentroot" style="text-decoration: none">VirtualDocumentRoot <em>interpolated-directory</em>|none</a></td><td> none </td><td>E</td><td>sv</td></tr><tr class="odd"><td colspan="4">
                  
                Dynamically configure the location of the document root
 for a given virtual host</td></tr>
-<tr class="even"><td><a href="mod_vhost_alias.html#virtualdocumentrootip" style="text-decoration: none">VirtualDocumentRootIP <em>interpolated-directory</em></a></td><td /><td>E</td><td>sv</td></tr><tr class="even"><td colspan="4">
+<tr class="even"><td><a href="mod_vhost_alias.html#virtualdocumentrootip" style="text-decoration: none">VirtualDocumentRootIP <em>interpolated-directory</em>|none</a></td><td> none </td><td>E</td><td>sv</td></tr><tr class="even"><td colspan="4">
                  
                Dynamically configure the location of the document root
 for a given virtual host</td></tr>
@@ -1243,11 +1237,11 @@ for a given virtual host</td></tr>
                  
                Contains directives that apply only to a specific
 hostname or IP address</td></tr>
-<tr class="even"><td><a href="mod_vhost_alias.html#virtualscriptalias" style="text-decoration: none">VirtualScriptAlias <em>interpolated-directory</em></a></td><td /><td>E</td><td>sv</td></tr><tr class="even"><td colspan="4">
+<tr class="even"><td><a href="mod_vhost_alias.html#virtualscriptalias" style="text-decoration: none">VirtualScriptAlias <em>interpolated-directory</em>|none</a></td><td> none </td><td>E</td><td>sv</td></tr><tr class="even"><td colspan="4">
                  
                Dynamically configure the location of the CGI directory for
 a given virtual host</td></tr>
-<tr class="odd"><td><a href="mod_vhost_alias.html#virtualscriptaliasip" style="text-decoration: none">VirtualScriptAliasIP <em>interpolated-directory</em></a></td><td /><td>E</td><td>sv</td></tr><tr class="odd"><td colspan="4">
+<tr class="odd"><td><a href="mod_vhost_alias.html#virtualscriptaliasip" style="text-decoration: none">VirtualScriptAliasIP <em>interpolated-directory</em>|none</a></td><td> none </td><td>E</td><td>sv</td></tr><tr class="odd"><td colspan="4">
                  
                Dynamically configure the location of the cgi directory for
 a given virtual host</td></tr>

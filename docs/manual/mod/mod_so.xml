@@ -6,9 +6,11 @@
 <name>mod_so</name>
 <description>Loading of executable code and
 modules into the server at start-up or restart time</description>
-<status>Base (Windows); Optional (Unix)</status>
+<status>Extension</status>
 <sourcefile>mod_so.c</sourcefile>
 <identifier>so_module</identifier>
+<compatibility>This is a Base module (always included) on 
+Windows</compatibility>
 
 <summary>
 
