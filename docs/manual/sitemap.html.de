@@ -56,7 +56,7 @@
 <li><a href="misc/security_tips.html">Tipps zur Sicherheit</a></li>
 <li><a href="dso.html">Dynamic Shared Object (DSO)</a></li>
 <li><a href="content-negotiation.html">Content Negotiation</a></li>
-<li><a href="custom-error.html">Individuelle Fehler-Rückmeldungen</a></li>
+<li><a href="custom-error.html">Individuelle Fehlermeldungen</a></li>
 <li><a href="bind.html">Bestimmen der vom Apache verwendeten Adressen und Ports</a></li>
 <li><a href="mpm.html">Multi-Processing-Module (MPMs)</a></li>
 <li><a href="env.html">Umgebungsvariablen</a></li>
