@@ -1,5 +1,8 @@
 Changes with Apache 1.3.7
 
+  *) Fixed `httpd' usage display: -D was missing.
+     [Ralf S. Engelschall] PR#4614
+
   *) Fix `make r' test procedure in src/regex/: ap_isprint was not found.
      [Ralf S. Engelschall] PR#4561, PR#4562
 

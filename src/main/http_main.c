@@ -1028,9 +1028,9 @@ static void usage(char *bin)
 	pad[i] = ' ';
     pad[i] = '\0';
 #ifdef SHARED_CORE
-    fprintf(stderr, "Usage: %s [-R directory] [-d directory] [-f file]\n", bin);
+    fprintf(stderr, "Usage: %s [-R directory] [-D name] [-d directory] [-f file]\n", bin);
 #else
-    fprintf(stderr, "Usage: %s [-d directory] [-f file]\n", bin);
+    fprintf(stderr, "Usage: %s [-D name] [-d directory] [-f file]\n", bin);
 #endif
     fprintf(stderr, "       %s [-C \"directive\"] [-c \"directive\"]\n", pad);
     fprintf(stderr, "       %s [-v] [-V] [-h] [-l] [-L] [-S] [-t]\n", pad);
