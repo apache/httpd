@@ -80,49 +80,49 @@
  * Name: dbm_auth_module
  * ConfigStart
     if ./helpers/TestCompile func dbm_open; then
-        :
+	:
     else
-	case "$PLAT" in
-	    *-linux*)
-		# many systems don't have -ldbm
-		DBM_LIB=""
-		if ./helpers/TestCompile lib dbm; then
-		    DBM_LIB="-ldbm"
-		elif ./helpers/TestCompile lib ndbm; then
-		    DBM_LIB="-lndbm"
-		fi
-		;;
-	esac
-	LIBS="$LIBS $DBM_LIB"
-	if [ "X$DBM_LIB" != "X" ]; then
-	    echo " + using $DBM_LIB for mod_auth_dbm"
-	fi
+    case "$PLAT" in
+	*-linux*)
+	    # many systems don't have -ldbm
+	    DBM_LIB=""
+	    if ./helpers/TestCompile lib dbm; then
+		DBM_LIB="-ldbm"
+	    elif ./helpers/TestCompile lib ndbm; then
+		DBM_LIB="-lndbm"
+	    fi
+	    ;;
+    esac
+    LIBS="$LIBS $DBM_LIB"
+    if [ "X$DBM_LIB" != "X" ]; then
+	echo " + using $DBM_LIB for mod_auth_dbm"
+    fi
     fi
  * ConfigEnd
  * MODULE-DEFINITION-END
  */
 
-typedef struct  {
+typedef struct {
 
     char *auth_dbmpwfile;
     char *auth_dbmgrpfile;
-    int   auth_dbmauthoritative;
+    int auth_dbmauthoritative;
 
 } dbm_auth_config_rec;
 
-static void *create_dbm_auth_dir_config (pool *p, char *d)
+static void *create_dbm_auth_dir_config(pool *p, char *d)
 {
     dbm_auth_config_rec *sec
-       = (dbm_auth_config_rec *)pcalloc (p, sizeof(dbm_auth_config_rec));
+    = (dbm_auth_config_rec *) pcalloc(p, sizeof(dbm_auth_config_rec));
 
     sec->auth_dbmpwfile = NULL;
     sec->auth_dbmgrpfile = NULL;
-    sec->auth_dbmauthoritative = 1; /* fortress is secure by default */
+    sec->auth_dbmauthoritative = 1;	/* fortress is secure by default */
 
     return sec;
 }
 
-static const char *set_dbm_slot (cmd_parms *cmd, void *offset, char *f, char *t)
+static const char *set_dbm_slot(cmd_parms *cmd, void *offset, char *f, char *t)
 {
     if (!t || strcmp(t, "dbm"))
 	return DECLINE_CMD;
@@ -130,43 +130,44 @@ static const char *set_dbm_slot (cmd_parms *cmd, void *offset, char *f, char *t)
     return set_file_slot(cmd, offset, f);
 }
 
-static command_rec dbm_auth_cmds[] = {
-{ "AuthDBMUserFile", set_file_slot,
-    (void*)XtOffsetOf(dbm_auth_config_rec, auth_dbmpwfile),
-    OR_AUTHCFG, TAKE1, NULL },
-{ "AuthDBMGroupFile", set_file_slot,
-    (void*)XtOffsetOf(dbm_auth_config_rec, auth_dbmgrpfile),
-    OR_AUTHCFG, TAKE1, NULL },
-{ "AuthUserFile", set_dbm_slot,
-    (void*)XtOffsetOf(dbm_auth_config_rec, auth_dbmpwfile),
-    OR_AUTHCFG, TAKE12, NULL },
-{ "AuthGroupFile", set_dbm_slot,
-    (void*)XtOffsetOf(dbm_auth_config_rec, auth_dbmgrpfile),
-    OR_AUTHCFG, TAKE12, NULL },
-{ "AuthDBMAuthoritative", set_flag_slot,
-    (void*)XtOffsetOf(dbm_auth_config_rec, auth_dbmauthoritative),
-    OR_AUTHCFG, FLAG, "Set to 'no' to allow access control to be passed along to lower modules, if the UserID is not known in this module" },
-{ NULL }
+static command_rec dbm_auth_cmds[] =
+{
+    {"AuthDBMUserFile", set_file_slot,
+     (void *) XtOffsetOf(dbm_auth_config_rec, auth_dbmpwfile),
+     OR_AUTHCFG, TAKE1, NULL},
+    {"AuthDBMGroupFile", set_file_slot,
+     (void *) XtOffsetOf(dbm_auth_config_rec, auth_dbmgrpfile),
+     OR_AUTHCFG, TAKE1, NULL},
+    {"AuthUserFile", set_dbm_slot,
+     (void *) XtOffsetOf(dbm_auth_config_rec, auth_dbmpwfile),
+     OR_AUTHCFG, TAKE12, NULL},
+    {"AuthGroupFile", set_dbm_slot,
+     (void *) XtOffsetOf(dbm_auth_config_rec, auth_dbmgrpfile),
+     OR_AUTHCFG, TAKE12, NULL},
+    {"AuthDBMAuthoritative", set_flag_slot,
+     (void *) XtOffsetOf(dbm_auth_config_rec, auth_dbmauthoritative),
+     OR_AUTHCFG, FLAG, "Set to 'no' to allow access control to be passed along to lower modules, if the UserID is not known in this module"},
+    {NULL}
 };
 
 module dbm_auth_module;
 
-static char *get_dbm_pw (request_rec *r, char *user, char *auth_dbmpwfile)
+static char *get_dbm_pw(request_rec *r, char *user, char *auth_dbmpwfile)
 {
-    DBM *f; 
-    datum d, q; 
+    DBM *f;
+    datum d, q;
     char *pw = NULL;
 
-    q.dptr = user; 
+    q.dptr = user;
 #ifndef NETSCAPE_DBM_COMPAT
-    q.dsize = strlen(q.dptr); 
+    q.dsize = strlen(q.dptr);
 #else
-    q.dsize = strlen(q.dptr) + 1; 
+    q.dsize = strlen(q.dptr) + 1;
 #endif
 
-    
-    if (!(f=dbm_open(auth_dbmpwfile,O_RDONLY,0664))) {
-        aplog_error(APLOG_MARK, APLOG_ERR, r->server,
+
+    if (!(f = dbm_open(auth_dbmpwfile, O_RDONLY, 0664))) {
+	aplog_error(APLOG_MARK, APLOG_ERR, r->server,
 		    "could not open dbm auth file: %s", auth_dbmpwfile);
 	return NULL;
     }
@@ -174,13 +175,13 @@ static char *get_dbm_pw (request_rec *r, char *user, char *auth_dbmpwfile)
     d = dbm_fetch(f, q);
 
     if (d.dptr) {
-        pw = palloc(r->pool, d.dsize + 1);
-	strncpy(pw,d.dptr,d.dsize);
-	pw[d.dsize] = '\0';         /* Terminate the string */
+	pw = palloc(r->pool, d.dsize + 1);
+	strncpy(pw, d.dptr, d.dsize);
+	pw[d.dsize] = '\0';	/* Terminate the string */
     }
 
     dbm_close(f);
-    return pw; 
+    return pw;
 }
 
 /* We do something strange with the group file.  If the group file
@@ -194,142 +195,151 @@ static char *get_dbm_pw (request_rec *r, char *user, char *auth_dbmpwfile)
  * mark@telescope.org, 22Sep95
  */
 
-static char  *get_dbm_grp(request_rec *r, char *user, char *auth_dbmgrpfile) {
-    char *grp_data = get_dbm_pw (r, user, auth_dbmgrpfile);
-    char *grp_colon; char *grp_colon2;
+static char *get_dbm_grp(request_rec *r, char *user, char *auth_dbmgrpfile)
+{
+    char *grp_data = get_dbm_pw(r, user, auth_dbmgrpfile);
+    char *grp_colon;
+    char *grp_colon2;
 
-    if (grp_data == NULL) return NULL;
-    
-    if ((grp_colon = strchr(grp_data, ':'))!=NULL) {
-        grp_colon2 = strchr(++grp_colon, ':');
-        if (grp_colon2) *grp_colon2='\0';
-        return grp_colon;
+    if (grp_data == NULL)
+	return NULL;
+
+    if ((grp_colon = strchr(grp_data, ':')) != NULL) {
+	grp_colon2 = strchr(++grp_colon, ':');
+	if (grp_colon2)
+	    *grp_colon2 = '\0';
+	return grp_colon;
     }
     return grp_data;
 }
 
-static int dbm_authenticate_basic_user (request_rec *r)
+static int dbm_authenticate_basic_user(request_rec *r)
 {
     dbm_auth_config_rec *sec =
-	(dbm_auth_config_rec *)get_module_config(r->per_dir_config,
-						 &dbm_auth_module);
+    (dbm_auth_config_rec *) get_module_config(r->per_dir_config,
+					      &dbm_auth_module);
     conn_rec *c = r->connection;
     char *sent_pw, *real_pw, *colon_pw;
     char errstr[MAX_STRING_LEN];
     int res;
-    
+
     if ((res = get_basic_auth_pw(r, &sent_pw)))
-        return res;
-    
+	return res;
+
     if (!sec->auth_dbmpwfile)
-        return DECLINED;
-	
-    if(!(real_pw = get_dbm_pw(r, c->user, sec->auth_dbmpwfile))) {
+	return DECLINED;
+
+    if (!(real_pw = get_dbm_pw(r, c->user, sec->auth_dbmpwfile))) {
 	if (!(sec->auth_dbmauthoritative))
 	    return DECLINED;
-        ap_snprintf(errstr, sizeof(errstr), "DBM user %s not found", c->user);
+	ap_snprintf(errstr, sizeof(errstr), "DBM user %s not found", c->user);
 	aplog_error(APLOG_MARK, APLOG_ERR, r->server, "%s: %s", errstr, r->filename);
 	note_basic_auth_failure(r);
 	return AUTH_REQUIRED;
-    }    
+    }
     /* Password is up to first : if exists */
-    colon_pw = strchr(real_pw,':');
-    if (colon_pw) *colon_pw='\0';   
+    colon_pw = strchr(real_pw, ':');
+    if (colon_pw)
+	*colon_pw = '\0';
     /* anyone know where the prototype for crypt is? */
-    if (strcmp(real_pw,(char *)crypt(sent_pw,real_pw))) {
-        ap_snprintf(errstr, sizeof(errstr), 
-		    "user %s: password mismatch",c->user);
+    if (strcmp(real_pw, (char *) crypt(sent_pw, real_pw))) {
+	ap_snprintf(errstr, sizeof(errstr),
+		    "user %s: password mismatch", c->user);
 	aplog_error(APLOG_MARK, APLOG_ERR, r->server, "%s: %s", errstr, r->uri);
 	note_basic_auth_failure(r);
 	return AUTH_REQUIRED;
     }
     return OK;
 }
-    
+
 /* Checking ID */
-    
-static int dbm_check_auth (request_rec *r)
+
+static int dbm_check_auth(request_rec *r)
 {
     dbm_auth_config_rec *sec =
-	(dbm_auth_config_rec *)get_module_config(r->per_dir_config,
-						 &dbm_auth_module);
+    (dbm_auth_config_rec *) get_module_config(r->per_dir_config,
+					      &dbm_auth_module);
     char *user = r->connection->user;
     int m = r->method_number;
     char errstr[MAX_STRING_LEN];
-    
+
     array_header *reqs_arr = requires(r);
-    require_line *reqs = reqs_arr ? (require_line *)reqs_arr->elts : NULL;
+    require_line *reqs = reqs_arr ? (require_line *) reqs_arr->elts : NULL;
 
     register int x;
     const char *t;
     char *w;
 
-    if (!sec->auth_dbmgrpfile) return DECLINED;
-    if (!reqs_arr) return DECLINED;
-    
-    for (x = 0; x < reqs_arr->nelts; x++) {
-      
-	if (! (reqs[x].method_mask & (1 << m))) continue;
-	
-        t = reqs[x].requirement;
-        w = getword(r->pool, &t, ' ');
-	
-        if (!strcmp(w,"group") && sec->auth_dbmgrpfile) {
-           const char *orig_groups,*groups;
-	   char *v;
+    if (!sec->auth_dbmgrpfile)
+	return DECLINED;
+    if (!reqs_arr)
+	return DECLINED;
 
-           if (!(groups = get_dbm_grp(r, user, sec->auth_dbmgrpfile))) {
-	       if (!(sec->auth_dbmauthoritative))
-	           return DECLINED;
-               ap_snprintf(errstr, sizeof(errstr), 
-			   "user %s not in DBM group file %s",
-			   user, sec->auth_dbmgrpfile);
-	       aplog_error(APLOG_MARK, APLOG_ERR, r->server,
-			   "%s: %s", errstr, r->filename);
-	       note_basic_auth_failure(r);
-	       return AUTH_REQUIRED;
-           }
-           orig_groups = groups;
-           while (t[0]) {
-               w = getword(r->pool, &t, ' ');
-               groups = orig_groups;
-               while (groups[0]) {
-                   v = getword(r->pool, &groups,',');
-                   if (!strcmp(v,w))
-                       return OK;
-               }
-           }
-           ap_snprintf(errstr, sizeof(errstr), 
-		       "user %s not in right group", user);
-	   aplog_error(APLOG_MARK, APLOG_ERR, r->server,
-		       "%s: %s", errstr, r->filename);
-           note_basic_auth_failure(r);
-	   return AUTH_REQUIRED;
-       }
+    for (x = 0; x < reqs_arr->nelts; x++) {
+
+	if (!(reqs[x].method_mask & (1 << m)))
+	    continue;
+
+	t = reqs[x].requirement;
+	w = getword(r->pool, &t, ' ');
+
+	if (!strcmp(w, "group") && sec->auth_dbmgrpfile) {
+	    const char *orig_groups, *groups;
+	    char *v;
+
+	    if (!(groups = get_dbm_grp(r, user, sec->auth_dbmgrpfile))) {
+		if (!(sec->auth_dbmauthoritative))
+		    return DECLINED;
+		ap_snprintf(errstr, sizeof(errstr),
+			    "user %s not in DBM group file %s",
+			    user, sec->auth_dbmgrpfile);
+		aplog_error(APLOG_MARK, APLOG_ERR, r->server,
+			    "%s: %s", errstr, r->filename);
+		note_basic_auth_failure(r);
+		return AUTH_REQUIRED;
+	    }
+	    orig_groups = groups;
+	    while (t[0]) {
+		w = getword(r->pool, &t, ' ');
+		groups = orig_groups;
+		while (groups[0]) {
+		    v = getword(r->pool, &groups, ',');
+		    if (!strcmp(v, w))
+			return OK;
+		}
+	    }
+	    ap_snprintf(errstr, sizeof(errstr),
+			"user %s not in right group", user);
+	    aplog_error(APLOG_MARK, APLOG_ERR, r->server,
+			"%s: %s", errstr, r->filename);
+	    note_basic_auth_failure(r);
+	    return AUTH_REQUIRED;
+	}
     }
-    
+
     return DECLINED;
 }
 
 
-module dbm_auth_module = {
-   STANDARD_MODULE_STUFF,
-   NULL,			/* initializer */
-   create_dbm_auth_dir_config,	/* dir config creater */
-   NULL,			/* dir merger --- default is to override */
-   NULL,			/* server config */
-   NULL,			/* merge server config */
-   dbm_auth_cmds,		/* command table */
-   NULL,			/* handlers */
-   NULL,			/* filename translation */
-   dbm_authenticate_basic_user,	/* check_user_id */
-   dbm_check_auth,		/* check auth */
-   NULL,			/* check access */
-   NULL,			/* type_checker */
-   NULL,			/* fixups */
-   NULL,			/* logger */
-   NULL,			/* header parser */
-   NULL,			/* child_init */
-   NULL,			/* child_exit */
-   NULL				/* post read-request */
+module dbm_auth_module =
+{
+    STANDARD_MODULE_STUFF,
+    NULL,			/* initializer */
+    create_dbm_auth_dir_config,	/* dir config creater */
+    NULL,			/* dir merger --- default is to override */
+    NULL,			/* server config */
+    NULL,			/* merge server config */
+    dbm_auth_cmds,		/* command table */
+    NULL,			/* handlers */
+    NULL,			/* filename translation */
+    dbm_authenticate_basic_user,	/* check_user_id */
+    dbm_check_auth,		/* check auth */
+    NULL,			/* check access */
+    NULL,			/* type_checker */
+    NULL,			/* fixups */
+    NULL,			/* logger */
+    NULL,			/* header parser */
+    NULL,			/* child_init */
+    NULL,			/* child_exit */
+    NULL			/* post read-request */
 };

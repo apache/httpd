@@ -87,76 +87,77 @@
 #include "http_protocol.h"
 #include <db.h>
 
-typedef struct  {
+typedef struct {
 
     char *auth_dbpwfile;
     char *auth_dbgrpfile;
-    int   auth_dbauthoritative;
+    int auth_dbauthoritative;
 } db_auth_config_rec;
 
-static void *create_db_auth_dir_config (pool *p, char *d)
+static void *create_db_auth_dir_config(pool *p, char *d)
 {
     db_auth_config_rec *sec
-	= (db_auth_config_rec *)pcalloc (p, sizeof(db_auth_config_rec));
+    = (db_auth_config_rec *) pcalloc(p, sizeof(db_auth_config_rec));
     sec->auth_dbpwfile = NULL;
     sec->auth_dbgrpfile = NULL;
-    sec->auth_dbauthoritative=1; /* fortress is secure by default */
+    sec->auth_dbauthoritative = 1;	/* fortress is secure by default */
     return sec;
 }
 
-static const char *set_db_slot (cmd_parms *cmd, void *offset, char *f, char *t)
+static const char *set_db_slot(cmd_parms *cmd, void *offset, char *f, char *t)
 {
     if (!t || strcmp(t, "db"))
-        return DECLINE_CMD;
+	return DECLINE_CMD;
 
     return set_file_slot(cmd, offset, f);
 }
 
-static command_rec db_auth_cmds[] = {
-{ "AuthDBUserFile", set_file_slot,
-    (void*)XtOffsetOf(db_auth_config_rec, auth_dbpwfile),
-    OR_AUTHCFG, TAKE1, NULL },
-{ "AuthDBGroupFile", set_file_slot,
-    (void*)XtOffsetOf(db_auth_config_rec, auth_dbgrpfile),
-    OR_AUTHCFG, TAKE1, NULL },
-{ "AuthUserFile", set_db_slot,
-    (void*)XtOffsetOf(db_auth_config_rec, auth_dbpwfile),
-    OR_AUTHCFG, TAKE12, NULL },
-{ "AuthGroupFile", set_db_slot,
-    (void*)XtOffsetOf(db_auth_config_rec, auth_dbgrpfile),
-    OR_AUTHCFG, TAKE12, NULL },
-{ "AuthDBAuthoritative", set_flag_slot,
-    (void*)XtOffsetOf(db_auth_config_rec, auth_dbauthoritative),
-    OR_AUTHCFG, FLAG, 
-    "Set to 'no' to allow access control to be passed along to lower modules if the userID is not known to this module" },
-{ NULL }
+static command_rec db_auth_cmds[] =
+{
+    {"AuthDBUserFile", set_file_slot,
+     (void *) XtOffsetOf(db_auth_config_rec, auth_dbpwfile),
+     OR_AUTHCFG, TAKE1, NULL},
+    {"AuthDBGroupFile", set_file_slot,
+     (void *) XtOffsetOf(db_auth_config_rec, auth_dbgrpfile),
+     OR_AUTHCFG, TAKE1, NULL},
+    {"AuthUserFile", set_db_slot,
+     (void *) XtOffsetOf(db_auth_config_rec, auth_dbpwfile),
+     OR_AUTHCFG, TAKE12, NULL},
+    {"AuthGroupFile", set_db_slot,
+     (void *) XtOffsetOf(db_auth_config_rec, auth_dbgrpfile),
+     OR_AUTHCFG, TAKE12, NULL},
+    {"AuthDBAuthoritative", set_flag_slot,
+     (void *) XtOffsetOf(db_auth_config_rec, auth_dbauthoritative),
+     OR_AUTHCFG, FLAG,
+     "Set to 'no' to allow access control to be passed along to lower modules if the userID is not known to this module"},
+    {NULL}
 };
 
 module db_auth_module;
 
 static char *get_db_pw(request_rec *r, char *user, const char *auth_dbpwfile)
 {
-    DB *f; 
-    DBT d, q; 
+    DB *f;
+    DBT d, q;
     char *pw = NULL;
 
-    q.data = user; 
-    q.size = strlen(q.data); 
-    
-    if (!(f = dbopen(auth_dbpwfile,O_RDONLY,0664,DB_HASH,NULL))) {
-        aplog_error(APLOG_MARK, APLOG_ERR, r->server,
+    q.data = user;
+    q.size = strlen(q.data);
+
+    if (!(f = dbopen(auth_dbpwfile, O_RDONLY, 0664, DB_HASH, NULL))) {
+	aplog_error(APLOG_MARK, APLOG_ERR, r->server,
 		    "could not open db auth file: %s", auth_dbpwfile);
 	return NULL;
     }
 
-    if (!((f->get)(f,&q,&d,0))) {
-        pw = palloc(r->pool, d.size + 1);
-	strncpy(pw,d.data,d.size);
-	pw[d.size] = '\0';         /* Terminate the string */
+    if (!((f->get) (f, &q, &d, 0))) {
+	pw = palloc(r->pool, d.size + 1);
+	strncpy(pw, d.data, d.size);
+	pw[d.size] = '\0';	/* Terminate the string */
     }
 
-    (f->close)(f);
-    return pw; 
+    (f->close) (f);
+    return pw;
 }
 
 /* We do something strange with the group file.  If the group file
@@ -170,141 +171,150 @@ static char *get_db_pw(request_rec *r, char *user, const char *auth_dbpwfile)
  * mark@telescope.org, 22Sep95
  */
 
-static char *get_db_grp(request_rec *r, char *user, const char *auth_dbgrpfile) {
-    char *grp_data = get_db_pw (r, user, auth_dbgrpfile);
-    char *grp_colon; char *grp_colon2;
+static char *get_db_grp(request_rec *r, char *user, const char *auth_dbgrpfile)
+{
+    char *grp_data = get_db_pw(r, user, auth_dbgrpfile);
+    char *grp_colon;
+    char *grp_colon2;
 
-    if (grp_data == NULL) return NULL;
-    
-    if ((grp_colon = strchr(grp_data, ':'))!=NULL) {
-        grp_colon2 = strchr(++grp_colon, ':');
-        if (grp_colon2) *grp_colon2='\0';
-        return grp_colon;
+    if (grp_data == NULL)
+	return NULL;
+
+    if ((grp_colon = strchr(grp_data, ':')) != NULL) {
+	grp_colon2 = strchr(++grp_colon, ':');
+	if (grp_colon2)
+	    *grp_colon2 = '\0';
+	return grp_colon;
     }
     return grp_data;
 }
 
-static int db_authenticate_basic_user (request_rec *r)
+static int db_authenticate_basic_user(request_rec *r)
 {
     db_auth_config_rec *sec =
-	(db_auth_config_rec *)get_module_config(r->per_dir_config,
-						&db_auth_module);
+    (db_auth_config_rec *) get_module_config(r->per_dir_config,
+					     &db_auth_module);
     conn_rec *c = r->connection;
     char *sent_pw, *real_pw, *colon_pw;
     char errstr[MAX_STRING_LEN];
     int res;
-    
+
     if ((res = get_basic_auth_pw(r, &sent_pw)))
-        return res;
-    
+	return res;
+
     if (!sec->auth_dbpwfile)
-        return DECLINED;
-	
+	return DECLINED;
+
     if (!(real_pw = get_db_pw(r, c->user, sec->auth_dbpwfile))) {
-	if (!(sec -> auth_dbauthoritative))
-	    return DECLINED; 
-        ap_snprintf(errstr, sizeof(errstr), "DB user %s not found", c->user);
+	if (!(sec->auth_dbauthoritative))
+	    return DECLINED;
+	ap_snprintf(errstr, sizeof(errstr), "DB user %s not found", c->user);
 	aplog_error(APLOG_MARK, APLOG_ERR, r->server, "%s: %s", errstr, r->filename);
 	note_basic_auth_failure(r);
 	return AUTH_REQUIRED;
-    }    
+    }
     /* Password is up to first : if exists */
-    colon_pw = strchr(real_pw,':');
-    if (colon_pw) *colon_pw='\0';   
+    colon_pw = strchr(real_pw, ':');
+    if (colon_pw)
+	*colon_pw = '\0';
     /* anyone know where the prototype for crypt is? */
-    if (strcmp(real_pw,(char *)crypt(sent_pw,real_pw))) {
-        ap_snprintf(errstr, sizeof(errstr), "user %s: password mismatch",c->user);
+    if (strcmp(real_pw, (char *) crypt(sent_pw, real_pw))) {
+	ap_snprintf(errstr, sizeof(errstr), "user %s: password mismatch", c->user);
 	aplog_error(APLOG_MARK, APLOG_ERR, r->server, "%s: %s", errstr, r->uri);
 	note_basic_auth_failure(r);
 	return AUTH_REQUIRED;
     }
     return OK;
 }
-    
+
 /* Checking ID */
-    
+
 static int db_check_auth(request_rec *r)
 {
     db_auth_config_rec *sec =
-	(db_auth_config_rec *)get_module_config(r->per_dir_config,
-						&db_auth_module);
+    (db_auth_config_rec *) get_module_config(r->per_dir_config,
+					     &db_auth_module);
     char *user = r->connection->user;
     int m = r->method_number;
     char errstr[MAX_STRING_LEN];
-    
-    array_header *reqs_arr = requires (r);
-    require_line *reqs = reqs_arr ? (require_line *)reqs_arr->elts : NULL;
+
+    array_header *reqs_arr = requires(r);
+    require_line *reqs = reqs_arr ? (require_line *) reqs_arr->elts : NULL;
 
     register int x;
     const char *t;
     char *w;
 
-    if (!sec->auth_dbgrpfile) return DECLINED;
-    if (!reqs_arr) return DECLINED;
-    
-    for (x = 0; x < reqs_arr->nelts; x++) {
-      
-	if (! (reqs[x].method_mask & (1 << m))) continue;
-	
-        t = reqs[x].requirement;
-        w = getword(r->pool, &t, ' ');
-	
-        if (!strcmp(w,"group") && sec->auth_dbgrpfile) {
-	   const char *orig_groups,*groups;
-           char *v;
+    if (!sec->auth_dbgrpfile)
+	return DECLINED;
+    if (!reqs_arr)
+	return DECLINED;
 
-           if (!(groups = get_db_grp(r, user, sec->auth_dbgrpfile))) {
-	       if (!(sec->auth_dbauthoritative))
-		 return DECLINED;
-               ap_snprintf(errstr, sizeof(errstr), 
-			   "user %s not in DB group file %s",
-			   user, sec->auth_dbgrpfile);
-	       aplog_error(APLOG_MARK, APLOG_ERR, r->server,
-			   "%s: %s", errstr, r->filename);
-	       note_basic_auth_failure(r);
-	       return AUTH_REQUIRED;
-           }
-           orig_groups = groups;
-           while (t[0]) {
-               w = getword(r->pool, &t, ' ');
-               groups = orig_groups;
-               while (groups[0]) {
-                   v = getword(r->pool, &groups,',');
-                   if (!strcmp(v,w))
-                       return OK;
-               }
-           }
-           ap_snprintf(errstr, sizeof(errstr), 
-		       "user %s not in right group",user);
-	   aplog_error(APLOG_MARK, APLOG_ERR, r->server,
-		       "%s: %s", errstr, r->filename);
-           note_basic_auth_failure(r);
-	   return AUTH_REQUIRED;
-       }
+    for (x = 0; x < reqs_arr->nelts; x++) {
+
+	if (!(reqs[x].method_mask & (1 << m)))
+	    continue;
+
+	t = reqs[x].requirement;
+	w = getword(r->pool, &t, ' ');
+
+	if (!strcmp(w, "group") && sec->auth_dbgrpfile) {
+	    const char *orig_groups, *groups;
+	    char *v;
+
+	    if (!(groups = get_db_grp(r, user, sec->auth_dbgrpfile))) {
+		if (!(sec->auth_dbauthoritative))
+		    return DECLINED;
+		ap_snprintf(errstr, sizeof(errstr),
+			    "user %s not in DB group file %s",
+			    user, sec->auth_dbgrpfile);
+		aplog_error(APLOG_MARK, APLOG_ERR, r->server,
+			    "%s: %s", errstr, r->filename);
+		note_basic_auth_failure(r);
+		return AUTH_REQUIRED;
+	    }
+	    orig_groups = groups;
+	    while (t[0]) {
+		w = getword(r->pool, &t, ' ');
+		groups = orig_groups;
+		while (groups[0]) {
+		    v = getword(r->pool, &groups, ',');
+		    if (!strcmp(v, w))
+			return OK;
+		}
+	    }
+	    ap_snprintf(errstr, sizeof(errstr),
+			"user %s not in right group", user);
+	    aplog_error(APLOG_MARK, APLOG_ERR, r->server,
+			"%s: %s", errstr, r->filename);
+	    note_basic_auth_failure(r);
+	    return AUTH_REQUIRED;
+	}
     }
-    
+
     return DECLINED;
 }
 
 
-module db_auth_module = {
-   STANDARD_MODULE_STUFF,
-   NULL,			/* initializer */
-   create_db_auth_dir_config,	/* dir config creater */
-   NULL,			/* dir merger --- default is to override */
-   NULL,			/* server config */
-   NULL,			/* merge server config */
-   db_auth_cmds,		/* command table */
-   NULL,			/* handlers */
-   NULL,			/* filename translation */
-   db_authenticate_basic_user,	/* check_user_id */
-   db_check_auth,		/* check auth */
-   NULL,			/* check access */
-   NULL,			/* type_checker */
-   NULL,			/* fixups */
-   NULL,			/* logger */
-   NULL,			/* header parser */
-   NULL,			/* child_init */
-   NULL,			/* child_exit */
-   NULL				/* post read-request */
+module db_auth_module =
+{
+    STANDARD_MODULE_STUFF,
+    NULL,			/* initializer */
+    create_db_auth_dir_config,	/* dir config creater */
+    NULL,			/* dir merger --- default is to override */
+    NULL,			/* server config */
+    NULL,			/* merge server config */
+    db_auth_cmds,		/* command table */
+    NULL,			/* handlers */
+    NULL,			/* filename translation */
+    db_authenticate_basic_user,	/* check_user_id */
+    db_check_auth,		/* check auth */
+    NULL,			/* check access */
+    NULL,			/* type_checker */
+    NULL,			/* fixups */
+    NULL,			/* logger */
+    NULL,			/* header parser */
+    NULL,			/* child_init */
+    NULL,			/* child_exit */
+    NULL			/* post read-request */
 };
