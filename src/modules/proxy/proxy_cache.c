@@ -52,9 +52,6 @@
 
 /* Cache and garbage collection routines for Apache proxy */
 
-#include "conf.h"
-#include "md5.h"
-
 #include "mod_proxy.h"
 #include "http_log.h"
 #include "http_main.h"
@@ -65,6 +62,7 @@
 #include <utime.h>
 #endif /* WIN32 */
 #include "multithread.h"
+#include "md5.h"
 
 #define	abs(c)	((c) >= 0 ? (c) : -(c))
 
