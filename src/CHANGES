@@ -1,4 +1,8 @@
 Changes with Apache 1.3b4
+  
+  *) mod_autoindex had an fread() without checking the result code.
+     It also wouldn't handle "AddIconByType (TXT,/icons/text.gif text/*"
+     (note the missing closing paren) properly.  [Dean Gaudet]
 
   *) It appears the "257th byte" bug (see
      htdocs/manual/misc/known_client_problems.html#257th-byte) can happen

@@ -186,8 +186,14 @@ static const char *add_icon(cmd_parms *cmd, void *d, char *icon, char *to)
     char *iconbak = pstrdup(cmd->pool, icon);
 
     if (icon[0] == '(') {
-	char *alt = getword_nc(cmd->pool, &iconbak, ',');
-	iconbak[strlen(iconbak) - 1] = '\0';	/* Lose closing paren */
+	char *alt;
+	char *cl = strchr(iconbak, ')');
+
+	if (cl == NULL) {
+	    return "missing closing paren";
+	}
+	alt = getword_nc(cmd->pool, &iconbak, ',');
+	*cl = '\0';				/* Lose closing paren */
 	add_alt(cmd, d, &alt[1], to);
     }
     if (cmd->info == BY_PATH)
@@ -612,6 +618,10 @@ static char *find_title(request_rec *r)
 	if (!(thefile = pfopen(r->pool, r->filename, "r")))
 	         return NULL;
 	n = fread(titlebuf, sizeof(char), MAX_STRING_LEN - 1, thefile);
+	if (n <= 0) {
+	    pfclose(r->pool, thefile);
+	    return NULL;
+	}
 	titlebuf[n] = '\0';
 	for (x = 0, p = 0; titlebuf[x]; x++) {
 	    if (toupper(titlebuf[x]) == find[p]) {
