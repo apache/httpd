@@ -225,7 +225,8 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_byterange_filter(
     apr_off_t range_end;
     char *current;
     char *bound_head;
-    int clength = 0;
+    apr_ssize_t bb_length;
+    apr_off_t clength = 0;
     apr_status_t rv;
     int found = 0;
 
@@ -286,17 +287,8 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_byterange_filter(
     /* It is possible that we won't have a content length yet, so we have to
      * compute the length before we can actually do the byterange work.
      */
-    APR_BRIGADE_FOREACH(e, bb) {
-        const char *ignore;
-        apr_size_t len;
-
-        if (e->length >= 0) {
-            clength += e->length;
-            continue;
-        }
-        apr_bucket_read(e, &ignore, &len, APR_NONBLOCK_READ);
-        clength += e->length;
-    }
+    (void) apr_brigade_length(bb, 1, &bb_length);
+    clength = (apr_off_t)bb_length;
 
     /* this brigade holds what we will be sending */
     bsend = apr_brigade_create(r->pool);
@@ -1791,7 +1783,7 @@ AP_DECLARE(const char *) ap_get_status_line(int status)
 }
 
 typedef struct header_struct {
-    request_rec *r;
+    apr_pool_t *pool;
     apr_bucket_brigade *bb;
 } header_struct;
 
@@ -1801,13 +1793,13 @@ typedef struct header_struct {
  * It returns true unless there was a write error of some kind.
  */
 static int form_header_field(header_struct *h,
-    const char *fieldname, const char *fieldval)
+                             const char *fieldname, const char *fieldval)
 {
     char *headfield;
 
-    headfield = apr_pstrcat(h->r->pool, fieldname, ": ", fieldval, CRLF, NULL);
+    headfield = apr_pstrcat(h->pool, fieldname, ": ", fieldval, CRLF, NULL);
     ap_xlate_proto_to_ascii(headfield, strlen(headfield));
-    apr_brigade_write(h->bb, NULL, NULL, headfield, strlen(headfield));
+    apr_brigade_puts(h->bb, NULL, NULL, headfield);
     return 1;
 }
 
@@ -1848,12 +1840,12 @@ static void basic_http_header(request_rec *r, apr_bucket_brigade *bb, const char
 
     tmp = apr_pstrcat(r->pool, protocol, " ", r->status_line, CRLF, NULL);
     ap_xlate_proto_to_ascii(tmp, strlen(tmp));
-    apr_brigade_write(bb, NULL, NULL, tmp, strlen(tmp));
+    apr_brigade_puts(bb, NULL, NULL, tmp);
 
     date = apr_palloc(r->pool, APR_RFC822_DATE_LEN);
     apr_rfc822_date(date, r->request_time);
 
-    h.r = r;
+    h.pool = r->pool;
     h.bb = bb;
     form_header_field(&h, "Date", date);
     form_header_field(&h, "Server", ap_get_server_version());
@@ -1889,17 +1881,18 @@ AP_DECLARE(void) ap_basic_http_header(request_rec *r, apr_bucket_brigade *bb)
  */
 static void terminate_header(apr_bucket_brigade *bb)
 {
-    char *tmp = "X-Pad: avoid browser bug" CRLF;
-    char *crlf = CRLF;
-    apr_bucket *b = APR_BRIGADE_LAST(bb);
-    apr_bucket_shared *s = b->data;
+    char tmp[] = "X-Pad: avoid browser bug" CRLF;
+    char crlf[] = CRLF;
+    apr_ssize_t len;
 
-    if (s->end >= 255 && s->end <= 257) {
+    (void) apr_brigade_length(bb, 1, &len);
+
+    if (len >= 255 && len <= 257) {
         ap_xlate_proto_to_ascii(tmp, strlen(tmp));
-        apr_brigade_write(bb, NULL, NULL, tmp, strlen(tmp));
+        apr_brigade_puts(bb, NULL, NULL, tmp);
     }
     ap_xlate_proto_to_ascii(crlf, strlen(crlf));
-    apr_brigade_write(bb, NULL, NULL, crlf, strlen(crlf));
+    apr_brigade_puts(bb, NULL, NULL, crlf);
 }
 
 /*
@@ -2157,7 +2150,7 @@ int ap_send_http_options(request_rec *r)
     apr_table_setn(r->headers_out, "Allow", make_allow(r));
     ap_set_keepalive(r);
 
-    h.r = r;
+    h.pool = r->pool;
     h.bb = bb;
 
     apr_table_do((int (*) (void *, const char *, const char *)) form_header_field,
@@ -2442,7 +2435,7 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_http_header_filter(ap_filter_t *f, apr_b
     const char *clheader;
     const char *protocol;
     apr_bucket *e;
-    apr_bucket_brigade *b2 = apr_brigade_create(r->pool);
+    apr_bucket_brigade *b2;
     apr_size_t len = 0;
     header_struct h;
     header_filter_ctx *ctx = f->ctx;
@@ -2557,9 +2550,10 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_http_header_filter(ap_filter_t *f, apr_b
         apr_table_unset(r->headers_out, "Content-Length");
     }
 
+    b2 = apr_brigade_create(r->pool);
     basic_http_header(r, b2, protocol);
 
-    h.r = r;
+    h.pool = r->pool;
     h.bb = b2;
 
     if (r->status == HTTP_NOT_MODIFIED) {
