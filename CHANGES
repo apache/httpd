@@ -1,4 +1,8 @@
 Changes with Apache 2.0.15-dev
+
+  *) Stop the forced downgrade of the connection to HTTP/1.0 for
+     proxy requests.  [Graham Leggett]
+
   *) Avoid using sscanf to determine the HTTP protocol number in
      the common case because sscanf is a performance hog. From
      Mike Abbot's Accelerating Apache patch number 6.
