@@ -167,11 +167,6 @@ struct noproxy_entry {
     struct apr_sockaddr_t *addr;
 };
 
-struct origin_entry {
-    conn_rec *origin;
-    struct origin_entry *next;
-};
-
 typedef struct {
     apr_array_header_t *proxies;
     apr_array_header_t *aliases;
@@ -179,8 +174,10 @@ typedef struct {
     apr_array_header_t *noproxies;
     apr_array_header_t *dirconn;
     apr_array_header_t *allowed_connect_ports;
-/*    apr_array_header_t *origin_array;*/
-    conn_rec *origin;
+    long id;
+    const char *connectname;
+    apr_port_t connectport;
+    apr_socket_t *client_socket;
     const char *domain;		/* domain name to use in absence of a domain name in the request */
     int req;			/* true if proxy requests are enabled */
     char req_set;

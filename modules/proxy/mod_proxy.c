@@ -414,8 +414,12 @@ static int proxy_handler(request_rec *r)
     if (strcasecmp(scheme, "ftp") == 0)
 	return ap_proxy_ftp_handler(r, NULL, url);
 #endif
-    else
+    else {
+        ap_log_error(APLOG_MARK, APLOG_DEBUG | APLOG_NOERRNO, 0, r->server,
+		     "Neither CONNECT, HTTP or FTP for %s",
+		     r->uri);
 	return HTTP_FORBIDDEN;
+    }
 }
 
 /* -------------------------------------------------------------- */
@@ -431,7 +435,7 @@ static void * create_proxy_config(apr_pool_t *p, server_rec *s)
     ps->noproxies = ap_make_array(p, 10, sizeof(struct noproxy_entry));
     ps->dirconn = ap_make_array(p, 10, sizeof(struct dirconn_entry));
     ps->allowed_connect_ports = ap_make_array(p, 10, sizeof(int));
-/*    pc->origin = ap_make_array(p, 10, sizeof(struct origin_entry));*/
+    ps->client_socket = NULL;
     ps->domain = NULL;
     ps->viaopt = via_off; /* initially backward compatible with 1.3.1 */
     ps->viaopt_set = 0; /* 0 means default */
@@ -455,7 +459,6 @@ static void * merge_proxy_config(apr_pool_t *p, void *basev, void *overridesv)
     ps->noproxies = ap_append_arrays(p, base->noproxies, overrides->noproxies);
     ps->dirconn = ap_append_arrays(p, base->dirconn, overrides->dirconn);
     ps->allowed_connect_ports = ap_append_arrays(p, base->allowed_connect_ports, overrides->allowed_connect_ports);
-/*    ps->origin = base->origin;*/
 
     ps->domain = (overrides->domain == NULL) ? base->domain : overrides->domain;
     ps->viaopt = (overrides->viaopt_set == 0) ? base->viaopt : overrides->viaopt;
