@@ -2001,7 +2001,7 @@ static const char *set_max_clients (cmd_parms *cmd, void *dummy,
                     "WARNING: MaxClients (%d) must be at least as large",
                     max_clients);
        ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL, 
-                    " large as ThreadsPerChild (%d). Automatically",
+                    " as ThreadsPerChild (%d). Automatically",
                     ap_threads_per_child);
        ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL, 
                     " increasing MaxClients to %d.",
