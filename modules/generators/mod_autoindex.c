@@ -1628,7 +1628,7 @@ static void output_directories(struct ent **ar, int n,
 		        ap_rvputs(r, "</td><td>", 
                                   terminate_description(d, ar[x]->desc,
 						        autoindex_opts, 
-                                                        name_width), NULL);
+                                                        desc_width), NULL);
 		}
 	    }
             else
@@ -1700,7 +1700,7 @@ static void output_directories(struct ent **ar, int n,
 		if (ar[x]->desc) {
 		    ap_rputs(terminate_description(d, ar[x]->desc,
 						   autoindex_opts,
-                                                   name_width), r);
+                                                   desc_width), r);
 		}
 	    }
 	    ap_rputc('\n', r);
