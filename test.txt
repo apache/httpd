@@ -1,1 +1,0 @@
-This file is just a test of the CVS repository.
