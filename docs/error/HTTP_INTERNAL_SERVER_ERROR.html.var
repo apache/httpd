@@ -120,8 +120,8 @@ Body:----------nl--
 
     <!--#include virtual="include/spacer.html" -->
 
-    Foutbericht :
-    <BR><!--#echo var="REDIRECT_ERROR_NOTES" -->
+    Foutbericht:
+    <br /><!--#echo var="REDIRECT_ERROR_NOTES" -->
 
   <!--#else -->
 
