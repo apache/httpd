@@ -806,7 +806,7 @@ struct request_rec {
 
     char *unparsed_uri;		/* the uri without any parsing performed */
     char *uri;			/* the path portion of the URI */
-    char *filename;
+    char *filename;		/* filename if found, otherwise NULL */
     char *path_info;
     char *args;			/* QUERY_ARGS, if any */
     struct stat finfo;		/* ST_MODE set to zero if no such file */

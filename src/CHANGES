@@ -1,5 +1,10 @@
 Changes with Apache 1.3.21
 
+  *) ErrorDocument 404 pointing to a parsed html file with a
+     <!--#include virtual="file" --> with a request URI containing
+     %2f would result in a segfault (NULL pointer deref, not a
+     security problem).  [Jeff Moe <tux@themoes.org>, Dean Gaudet] PR#8362
+
   *) UnsetEnv from main body of httpd.conf file didn't work; backport
      of bugfix from 2.0 codebase. [Gary Benson <gbenson@redhat.com>] PR#8254
 
