@@ -7,6 +7,7 @@ rotatelogs
 htpasswd
 htdbm
 htdigest
+htcacheclean
 unescape
 inc2shtml
 httpd_monitor
