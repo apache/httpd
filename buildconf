@@ -64,9 +64,9 @@ if [ ! -d srclib/apr -o ! -f srclib/apr/build/apr_common.m4 ]; then
     echo "You don't have a srclib/apr/ subdirectory.  Please get one:"
     echo ""
     echo "   cd srclib"
-    echo "   cvs -d :pserver:anoncvs@apache.org:/home/cvspublic login"
+    echo "   cvs -d :pserver:anoncvs@cvs.apache.org:/home/cvspublic login"
     echo "      (password 'anoncvs')"
-    echo "   cvs -d :pserver:anoncvs@apache.org:/home/cvspublic co apr"
+    echo "   cvs -d :pserver:anoncvs@cvs.apache.org:/home/cvspublic co apr"
     echo ""
     exit 1
 fi
@@ -75,9 +75,9 @@ if [ ! -d srclib/apr-util -o ! -f srclib/apr-util/Makefile.in ]; then
     echo "You don't have a srclib/apr-util/ subdirectory.  Please get one:"
     echo ""
     echo "   cd srclib"
-    echo "   cvs -d :pserver:anoncvs@apache.org:/home/cvspublic login"
+    echo "   cvs -d :pserver:anoncvs@cvs.apache.org:/home/cvspublic login"
     echo "      (password 'anoncvs')"
-    echo "   cvs -d :pserver:anoncvs@apache.org:/home/cvspublic co apr-util"
+    echo "   cvs -d :pserver:anoncvs@cvs.apache.org:/home/cvspublic co apr-util"
     echo ""
     exit 1
 fi
