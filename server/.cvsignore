@@ -9,7 +9,7 @@ test_char.h
 gen_test_char
 *.mak
 exports.c
-export_vars.c
+export_vars.h
 Debug
 Release
 apache.exports
