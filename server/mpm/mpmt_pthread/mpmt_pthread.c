@@ -950,10 +950,16 @@ static void * worker_thread(void * dummy)
             }
         }
     got_fd:
-        SAFE_ACCEPT(accept_mutex_off(0));
-        SAFE_ACCEPT(intra_mutex_off(0));
-        if (workers_may_exit) break;
-        csd = ap_accept(sd, &sa_client, &len);
+        if (!workers_may_exit) {
+            csd = ap_accept(sd, &sa_client, &len);
+            SAFE_ACCEPT(accept_mutex_off(0));
+            SAFE_ACCEPT(intra_mutex_off(0));
+        }
+        else {
+            SAFE_ACCEPT(accept_mutex_off(0));
+            SAFE_ACCEPT(intra_mutex_off(0));
+            break;
+        }
         process_socket(ptrans, &sa_client, csd, process_slot, thread_slot);
         ap_clear_pool(ptrans);
         requests_this_child--;
