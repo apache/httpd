@@ -124,7 +124,7 @@
 
      * Korrektur eines trivialen Fehlers in mod_log_forensic, der bei 
        Kindprozessen zu Speicherzugriffsverletzungen führte, wenn bestimmte 
-       ungültige Anfragen an diesen geschickt wurden während die forensiche
+       ungültige Anfragen an diesen geschickt wurden, während die forensische
        Protokollierung aktiviert war. PR 29313.
 
      * mod_dav, Frontpage und andere werden nicht mehr gestört. Korrektur
