@@ -17,7 +17,7 @@
 <H1 ALIGN="CENTER">Using Apache With Microsoft Windows</H1>
 
 <p>This document explains how to compile, install, configure and run
-   Apache 1.3a1 (or later) under Microsoft Windows. Please note that at
+   Apache 1.3b3 (or later) under Microsoft Windows. Please note that at
    this time, Windows support is entirely experimental, and is
    recommended only for experienced users. The Apache Group does not
    guarantee that this software will work as documented, or even at
@@ -45,7 +45,7 @@ on a Unix platform such as Solaris, FreeBSD, or Linux.</b></p>
 
 <h2><a name="req">Requirements</a></h2>
 
-<p>Apache 1.3b2 requires the following:</p>
+<p>Apache 1.3b3 requires the following:</p>
 
 <ul>
   <li>Microsoft Windows NT 4.0<a href="#351">*</a>, or Windows 95.
@@ -56,11 +56,6 @@ on a Unix platform such as Solaris, FreeBSD, or Linux.</b></p>
 
 <p><small><a name="351">*</a> Apache may run with Windows NT 3.5.1, but
    has not been tested.</small></p>
-
-<p>Apache 1.3b2 is currently available only in source form. Future releases 
-   will contain prebuilt binaries for use by those without compilers
-   (which are the vast majority of Windows users), however the current
-   release requires Microsoft Visual C++ 5.0 or later. <p>
 
 <p>This documentation assumes good working knowledge of Microsoft
    Windows, Microsoft Visual C++, and the Apache web server (for
@@ -74,13 +69,10 @@ HREF="http://www.apache.org/">http://www.apache.org/</A>.  This will
 list the current release, any more recent alpha or beta-test release,
 together with details of mirror web and anonymous ftp sites.</p>
 
-<p>You will be able to download Apache 1.3b2 or a later release in
-   several forms, including a WinZip (<code>.zip</code>)
-   archive. Although this contains the same files as the others (likely
-   <code>.tar.gz</code> and <code>.tar.Z</code>), it is recommended for
-   Windows use, as all the files contained therein will contain Windows
-   line breaks. The other archives may contain files with Unix line
-   breaks, which will not function on Windows (although they may).</p>
+<p>You can download Apache 1.3b3 in two different forms: an InstallShield-based
+  <code>.exe</code> file which contains the precompiled binary, and a
+  <code>.tar.gz</code> which contains the source code (and is also the
+  regular Unix distribution). 
 
 <h2><a name="comp">Compiling Apache for Windows</a></h2>
 
