@@ -655,8 +655,7 @@ static void __stdcall service_nt_main_fn(DWORD argc, LPTSTR *argv)
         char **cmb_data;
 
         mpm_new_argv->nalloc = mpm_new_argv->nelts + argc - 1;
-        cmb_data = apr_palloc(mpm_new_argv->pool,
-                              mpm_new_argv->nalloc * sizeof(const char *));
+        cmb_data = malloc(mpm_new_argv->nalloc * sizeof(const char *));
 
         /* mpm_new_argv remains first (of lower significance) */
         memcpy (cmb_data, mpm_new_argv->elts, 
@@ -711,7 +710,7 @@ DWORD WINAPI service_nt_dispatch_thread(LPVOID nada)
 apr_status_t mpm_service_set_name(apr_pool_t *p, const char **display_name, 
                                   const char *set_name)
 {
-    char *key_name;
+    char key_name[MAX_PATH];
     apr_status_t rv;
 
     /* ### Needs improvement, on Win2K the user can _easily_ 
@@ -720,7 +719,7 @@ apr_status_t mpm_service_set_name(apr_pool_t *p, const char **display_name,
      */
     mpm_service_name = apr_palloc(p, strlen(set_name) + 1);
     apr_collapse_spaces((char*) mpm_service_name, set_name);
-    key_name = apr_psprintf(p, SERVICECONFIG, mpm_service_name);
+    apr_snprintf(key_name, sizeof(key_name), SERVICECONFIG, mpm_service_name);
     rv = ap_registry_get_value(p, key_name, "DisplayName", &mpm_display_name);
     if (rv != APR_SUCCESS) {
         /* Take the given literal name if there is no service entry */
@@ -764,7 +763,7 @@ apr_status_t mpm_merge_service_args(apr_pool_t *p,
      * the service's default arguments (all others override them)...
      */
     args->nalloc = args->nelts + svc_args->nelts;
-    cmb_data = apr_palloc(p, args->nalloc * sizeof(const char *));
+    cmb_data = malloc(args->nalloc * sizeof(const char *));
 
     /* First three args (argv[0], -f, path) remain first */
     memcpy(cmb_data, args->elts, args->elt_size * fixed_args);
@@ -1142,7 +1141,7 @@ apr_status_t mpm_service_start(apr_pool_t *ptemp, int argc,
         }
         
         argc += 1;
-        start_argv = apr_palloc(ptemp, argc * sizeof(const char **));
+        start_argv = malloc(argc * sizeof(const char **));
         start_argv[0] = mpm_service_name;
         if (argc > 1)
             memcpy(start_argv + 1, argv, (argc - 1) * sizeof(const char **));
@@ -1165,7 +1164,8 @@ apr_status_t mpm_service_start(apr_pool_t *ptemp, int argc,
         STARTUPINFO si;           /* Filled in prior to call to CreateProcess */
         PROCESS_INFORMATION pi;   /* filled in on call to CreateProcess */
         char exe_path[MAX_PATH];
-        char *pCommand;
+        char exe_cmd[MAX_PATH * 4];
+        char *next_arg;
         int i;
 
         /* Locate the active top level window named service_name
@@ -1192,11 +1192,14 @@ apr_status_t mpm_service_start(apr_pool_t *ptemp, int argc,
             return rv;
         }
         
-        pCommand = apr_psprintf(ptemp, "\"%s\" -n %s -k runservice", 
-                               exe_path, mpm_service_name);  
+        apr_snprintf(exe_cmd, sizeof(exe_cmd), 
+                     "\"%s\" -n %s -k runservice", 
+                     exe_path, mpm_service_name);  
+        next_arg = strchr(exe_cmd, '\0');
         for (i = 0; i < argc; ++i) {
-            pCommand = apr_pstrcat(ptemp, pCommand,
-                                   " \"", argv[i], "\"", NULL);
+            apr_snprintf(next_arg, sizeof(exe_cmd) - (next_arg - exe_cmd), 
+                         " \"%s\"", argv[i]);
+            next_arg = strchr(exe_cmd, '\0');
         }
         
         memset(&si, 0, sizeof(si));
@@ -1206,7 +1209,7 @@ apr_status_t mpm_service_start(apr_pool_t *ptemp, int argc,
         si.wShowWindow = SW_HIDE;   /* This might be redundant */
         
         rv = APR_EINIT;
-        if (CreateProcess(NULL, pCommand, NULL, NULL, FALSE, 
+        if (CreateProcess(NULL, exe_cmd, NULL, NULL, FALSE, 
                            DETACHED_PROCESS, /* Creation flags */
                            NULL, NULL, &si, &pi)) 
         {
