@@ -5757,16 +5757,20 @@ static PSECURITY_ATTRIBUTES GetNullACL()
     PSECURITY_DESCRIPTOR pSD;
     PSECURITY_ATTRIBUTES sa;
 
-    sa  = (PSECURITY_ATTRIBUTES) LocalAlloc(LPTR, sizeof (SECURITY_ATTRIBUTES));
-    pSD = (PSECURITY_DESCRIPTOR) LocalAlloc(LPTR, SECURITY_DESCRIPTOR_MIN_LENGTH);
-    if (pSD == NULL || sa == NULL)
+    sa  = (PSECURITY_ATTRIBUTES) LocalAlloc(LPTR, sizeof(SECURITY_ATTRIBUTES));
+    pSD = (PSECURITY_DESCRIPTOR) LocalAlloc(LPTR,
+					    SECURITY_DESCRIPTOR_MIN_LENGTH);
+    if (pSD == NULL || sa == NULL) {
         return NULL;
-    if (!InitializeSecurityDescriptor(pSD, SECURITY_DESCRIPTOR_REVISION)) {
+    }
+    if (!InitializeSecurityDescriptor(pSD, SECURITY_DESCRIPTOR_REVISION)
+	|| GetLastError()) {
         LocalFree( pSD );
         LocalFree( sa );
         return NULL;
     }
-    if (!SetSecurityDescriptorDacl(pSD, TRUE, (PACL) NULL, FALSE)) {
+    if (!SetSecurityDescriptorDacl(pSD, TRUE, (PACL) NULL, FALSE)
+	|| GetLastError()) {
         LocalFree( pSD );
         LocalFree( sa );
         return NULL;
