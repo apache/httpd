@@ -100,15 +100,15 @@ AP_HOOK_STRUCT(
 	    AP_HOOK_LINK(child_init)
 )
 
-AP_IMPLEMENT_HOOK_RUN_ALL(API_EXPORT,int,header_parser,
+AP_IMPLEMENT_HOOK_RUN_ALL(int,header_parser,
                           (request_rec *r),(r),OK,DECLINED)
-AP_IMPLEMENT_HOOK_VOID(API_EXPORT,post_config,
+AP_IMPLEMENT_HOOK_VOID(post_config,
 		       (ap_pool_t *pconf, ap_pool_t *plog, ap_pool_t *ptemp,
                         server_rec *s),(pconf,plog,ptemp,s))
-AP_IMPLEMENT_HOOK_VOID(API_EXPORT,open_logs,
+AP_IMPLEMENT_HOOK_VOID(open_logs,
 		       (ap_pool_t *pconf, ap_pool_t *plog, ap_pool_t *ptemp, 
                         server_rec *s),(pconf,plog,ptemp,s))
-AP_IMPLEMENT_HOOK_VOID(API_EXPORT,child_init,
+AP_IMPLEMENT_HOOK_VOID(child_init,
                        (ap_pool_t *pchild, server_rec *s),(pchild,s))
 
 /****************************************************************

@@ -87,17 +87,17 @@ AP_HOOK_STRUCT(
 	    AP_HOOK_LINK(auth_checker)
 )
 
-AP_IMPLEMENT_HOOK_RUN_FIRST(API_EXPORT,int,translate_name,
+AP_IMPLEMENT_HOOK_RUN_FIRST(int,translate_name,
                             (request_rec *r),(r),DECLINED)
-AP_IMPLEMENT_HOOK_RUN_FIRST(API_EXPORT,int,check_user_id,
+AP_IMPLEMENT_HOOK_RUN_FIRST(int,check_user_id,
                             (request_rec *r),(r),DECLINED)
-AP_IMPLEMENT_HOOK_RUN_ALL(API_EXPORT,int,fixups,
+AP_IMPLEMENT_HOOK_RUN_ALL(int,fixups,
                           (request_rec *r),(r),OK,DECLINED)
-AP_IMPLEMENT_HOOK_RUN_FIRST(API_EXPORT,int,type_checker,
+AP_IMPLEMENT_HOOK_RUN_FIRST(int,type_checker,
                             (request_rec *r),(r),DECLINED)
-AP_IMPLEMENT_HOOK_RUN_ALL(API_EXPORT,int,access_checker,
+AP_IMPLEMENT_HOOK_RUN_ALL(int,access_checker,
                           (request_rec *r),(r),OK,DECLINED)
-AP_IMPLEMENT_HOOK_RUN_FIRST(API_EXPORT,int,auth_checker,
+AP_IMPLEMENT_HOOK_RUN_FIRST(int,auth_checker,
                             (request_rec *r),(r),DECLINED)
 
 /*****************************************************************

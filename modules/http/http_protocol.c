@@ -2898,11 +2898,11 @@ API_EXPORT(void) ap_send_error_response(request_rec *r, int recursive_error)
     ap_rflush(r);
 }
 
-AP_IMPLEMENT_HOOK_RUN_ALL(API_EXPORT,int,post_read_request,
+AP_IMPLEMENT_HOOK_RUN_ALL(int,post_read_request,
                           (request_rec *r),(r),OK,DECLINED)
-AP_IMPLEMENT_HOOK_RUN_ALL(API_EXPORT,int,log_transaction,
+AP_IMPLEMENT_HOOK_RUN_ALL(int,log_transaction,
                           (request_rec *r),(r),OK,DECLINED)
-AP_IMPLEMENT_HOOK_RUN_FIRST(API_EXPORT,const char *,http_method,
+AP_IMPLEMENT_HOOK_RUN_FIRST(const char *,http_method,
                             (const request_rec *r),(r),NULL)
-AP_IMPLEMENT_HOOK_RUN_FIRST(API_EXPORT,unsigned short,default_port,
+AP_IMPLEMENT_HOOK_RUN_FIRST(unsigned short,default_port,
                             (const request_rec *r),(r),0)
