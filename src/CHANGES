@@ -1,5 +1,9 @@
 Changes with Apache 1.3.10
 
+  *) Fix various compile time warnings in hashbang_emul code which
+     prevent successful compilation on OS/390
+     [Ovies Brabson <oviesb@us.ibm.com>]
+
   *) EBCDIC: Fixed binary upload capability (plain and chunked) for
      all methods using the ap_*_client_block() functions, most notably
      POST and PUT. The functionality to switch input between protocol
@@ -27,8 +31,8 @@ Changes with Apache 1.3.10
      PDF files could not be read by Acrobat Reader (which sends long
      lists of byte ranges in each request) when the server was apache
      on ebcdic machines.
-     [Noted by Oliver Reh <Oliver.Reh@FAEDV-N.Bayern.de>, solved by
-     Martin Kraemer]
+     [Noted by Oliver Reh <Oliver.Reh@FAEDV-N.Bayern.de>, solved by Martin
+     Kraemer, warnings fixed by Ovies Brabson <oviesb@us.ibm.com>]
 
   *) Add IndexOptions FoldersFirst to allow fancy-indexed directory
      listings to have the subdirectories always listed at the top.

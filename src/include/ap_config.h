@@ -1244,8 +1244,8 @@ Sigfunc *signal(int signo, Sigfunc * func);
  */
 #ifdef NEED_HASHBANG_EMUL
 extern int ap_execle(const char *filename, const char *arg,...);
-extern int ap_execve(const char *filename, const char *argv[],
-                     const char *envp[]);
+extern int ap_execve(const char *filename, char * const argv[],
+                     char * const envp[]);
 /* ap_execle() is a wrapper function around ap_execve(). */
 #define execle  ap_execle
 #define execve(path,argv,envp)  ap_execve(path,argv,envp)

@@ -99,7 +99,7 @@
 #undef execle
 #undef execve
 
-static const char **hashbang(const char *filename, char **argv);
+static const char **hashbang(const char *filename, char * const *argv);
 
 
 /* Historically, a list of arguments on the stack was often treated as
@@ -133,7 +133,7 @@ int ap_execle(const char *filename, const char *argv0, ...)
 
     /* Pass two --- copy the argument strings into the result space */
     va_start(adummy, argv0);
-    argv[0] = argv0;
+    argv[0] = (char *)argv0;
     for (argc = 1; (argv[argc] = va_arg(adummy, char *)) != NULL; ++argc) {
 	continue;
     }
@@ -149,7 +149,7 @@ int ap_execle(const char *filename, const char *argv0, ...)
 /* Count number of entries in vector "args", including the trailing NULL entry
  */
 static int
-count_args(const char **args)
+count_args(char * const *args)
 {
     int i;
     for (i = 0; args[i] != NULL; ++i) {
@@ -163,14 +163,14 @@ count_args(const char **args)
  * We have to fiddle with the argv array to make it work on platforms
  * which don't support the "hashbang" interpreter line by default.
  */
-int ap_execve(const char *filename, const char *argv[],
-	      const char *envp[])
+int ap_execve(const char *filename, char * const argv[],
+	      char * const envp[])
 {
-    const char **script_argv;
+    char **script_argv;
     extern char **environ;
 
     if (envp == NULL) {
-	envp = (const char **) environ;
+	envp = (char * const *) environ;
     }
 
     /* Try to execute the file directly first: */
@@ -201,7 +201,7 @@ int ap_execve(const char *filename, const char *argv[],
 	 * Interpret the line following the #! as a command line
 	 * in shell style.
 	 */
-	if ((script_argv = hashbang(filename, argv)) != NULL) {
+	if ((script_argv = (char **)hashbang(filename, argv)) != NULL) {
 
 	    /* new filename is the interpreter to call */
 	    filename = script_argv[0];
@@ -257,7 +257,7 @@ int ap_execve(const char *filename, const char *argv[],
  */
 #define HACKBUFSZ 1024		/* Max chars in #! vector */
 #define HACKVECSZ 128		/* Max words in #! vector */
-static const char **hashbang(const char *filename, char **argv)
+static const char **hashbang(const char *filename, char * const *argv)
 {
     char lbuf[HACKBUFSZ];
     char *sargv[HACKVECSZ];
@@ -347,7 +347,7 @@ static const char **hashbang(const char *filename, char **argv)
 	    }
 	    ++i;
 
-	    newargv = (char **) malloc((p - lbuf + 1)
+	    newargv = (const char **) malloc((p - lbuf + 1)
                       + (i + sargc + 1) * sizeof(*newargv));
 	    if (newargv == NULL) {
 		fprintf(stderr, "Ouch!  Out of memory in hashbang()!\n");

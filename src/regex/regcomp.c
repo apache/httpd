@@ -116,7 +116,7 @@ int cflags;
 
 		for (idx=0; idx < sizeof(cclasses) / sizeof(cclasses[0]); ++idx) {
 			if (strcmp(cclasses[idx].name, "cntrl") == 0) {
-				cclasses[idx].chars = ctlchars_ebcdic;
+				cclasses[idx].chars = (char *)ctlchars_ebcdic;
 				break;
 			}
 		}

@@ -68,7 +68,7 @@ extern "C" {
 API_EXPORT(char *) ap_cpystrn(char *, const char *, size_t);
 int ap_slack(int, int);
 int ap_execle(const char *, const char *, ...);
-int ap_execve(const char *, const char *argv[], const char *envp[]);
+int ap_execve(const char *, char * const argv[], char * const envp[]);
 API_EXPORT(int) ap_getpass(const char *prompt, char *pwbuf, size_t bufsiz);
 
 /* small utility macros to make things easier to read */
