@@ -56,6 +56,9 @@ parties with specific needs or functions are available at
 instructions on that page for linking these modules into the
 core Apache code.
 
-
+If during compilation you get a warning about a missing 'regex.h', set
+WANTHSREGEX=yes in the 'Configuration', and send a message to
+apache-bugs@apache.org indicating you needed to do this for your OS.
+Include the output of the command "uname -a".
  
 
