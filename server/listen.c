@@ -288,13 +288,20 @@ static const char *alloc_listener(process_rec *process, char *addr, apr_port_t p
     return NULL;
 }
 
-AP_DECLARE(int) ap_listen_open(apr_pool_t *pool, apr_port_t port)
+/**
+ * Create and open a socket on the specified port.  This includes listening
+ * and binding the socket.
+ * @param process The process record for the currently running server
+ * @param port The port to open a socket on.
+ * @return The number of open sockets
+ */
+static int open_listeners(apr_pool_t *pool, apr_port_t port)
 {
     ap_listen_rec *lr;
     ap_listen_rec *next;
     ap_listen_rec *previous;
     int num_open;
-    const char *userdata_key = "ap_listen_open";
+    const char *userdata_key = "ap_open_listeners";
     void *data;
 
     /* Don't allocate a default listener.  If we need to listen to a
@@ -396,7 +403,7 @@ AP_DECLARE(int) ap_listen_open(apr_pool_t *pool, apr_port_t port)
             status = apr_socket_opt_set(lr->sd, APR_SO_NONBLOCK, 1);
             if (status != APR_SUCCESS) {
                 ap_log_perror(APLOG_MARK, APLOG_STARTUP|APLOG_ERR, status, pool,
-                              "ap_listen_open: unable to make socket non-blocking");
+                              "unable to make listening socket non-blocking");
                 return -1;
             }
         }
@@ -423,7 +430,7 @@ AP_DECLARE(int) ap_setup_listeners(server_rec *s)
     ap_listen_rec *lr;
     int num_listeners = 0;
 
-    if (ap_listen_open(s->process->pool, s->port)) {
+    if (open_listeners(s->process->pool, s->port)) {
        return 0;
     }
 

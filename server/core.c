@@ -93,12 +93,6 @@ AP_DECLARE_DATA ap_filter_rec_t *ap_content_length_filter_handle;
 AP_DECLARE_DATA ap_filter_rec_t *ap_net_time_filter_handle;
 AP_DECLARE_DATA ap_filter_rec_t *ap_core_input_filter_handle;
 
-extern int core_input_filter(ap_filter_t *, apr_bucket_brigade *,
-                             ap_input_mode_t, apr_read_type_e, apr_off_t);
-extern int net_time_filter(ap_filter_t *, apr_bucket_brigade *,
-                           ap_input_mode_t, apr_read_type_e, apr_off_t);
-extern apr_status_t core_output_filter(ap_filter_t *, apr_bucket_brigade *);
-
 /* magic pointer for ErrorDocument xxx "default" */
 static char errordocument_default;
 
@@ -3782,16 +3776,16 @@ static void register_hooks(apr_pool_t *p)
     ap_hook_insert_filter(core_insert_filter, NULL, NULL, APR_HOOK_MIDDLE);
 
     ap_core_input_filter_handle =
-        ap_register_input_filter("CORE_IN", core_input_filter,
+        ap_register_input_filter("CORE_IN", ap_core_input_filter,
                                  NULL, AP_FTYPE_NETWORK);
     ap_net_time_filter_handle =
-        ap_register_input_filter("NET_TIME", net_time_filter,
+        ap_register_input_filter("NET_TIME", ap_net_time_filter,
                                  NULL, AP_FTYPE_PROTOCOL);
     ap_content_length_filter_handle =
         ap_register_output_filter("CONTENT_LENGTH", ap_content_length_filter,
                                   NULL, AP_FTYPE_PROTOCOL);
     ap_core_output_filter_handle =
-        ap_register_output_filter("CORE", core_output_filter,
+        ap_register_output_filter("CORE", ap_core_output_filter,
                                   NULL, AP_FTYPE_NETWORK);
     ap_subreq_core_filter_handle =
         ap_register_output_filter("SUBREQ_CORE", ap_sub_req_output_filter,

@@ -75,20 +75,6 @@ AP_DECLARE(void) ap_listen_pre_config(void);
  */ 
 AP_DECLARE(int) ap_setup_listeners(server_rec *s);
 #endif
-/* Split into two #if's to make the exports scripts easier.
- */
-#if defined(SPMT_OS2_MPM)
-/**
- * Create and open a socket on the specified port.  This includes listening
- * and binding the socket.
- * @param process The process record for the currently running server
- * @param port The port to open a socket on.
- * @return The number of open sockets
- * @warning This function is only available to Windows platforms, or the
- * Prefork or SPMT_OS2 MPMs.
- */
-AP_DECLARE(int) ap_listen_open(process_rec *process, apr_port_t port);
-#endif
 
 /* Although these functions are exported from libmain, they are not really
  * public functions.  These functions are actually called while parsing the

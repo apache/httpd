@@ -61,9 +61,9 @@ typedef struct net_time_filter_ctx {
     int           first_line;
 } net_time_filter_ctx_t;
 
-int net_time_filter(ap_filter_t *f, apr_bucket_brigade *b,
-                           ap_input_mode_t mode, apr_read_type_e block,
-                           apr_off_t readbytes)
+int ap_net_time_filter(ap_filter_t *f, apr_bucket_brigade *b,
+                       ap_input_mode_t mode, apr_read_type_e block,
+                       apr_off_t readbytes)
 {
     net_time_filter_ctx_t *ctx = f->ctx;
     int keptalive = f->c->keepalive == AP_CONN_KEEPALIVE;
@@ -108,9 +108,9 @@ do { \
     } while (!APR_BRIGADE_EMPTY(b) && (e != APR_BRIGADE_SENTINEL(b))); \
 } while (0)
 
-int core_input_filter(ap_filter_t *f, apr_bucket_brigade *b,
-                             ap_input_mode_t mode, apr_read_type_e block,
-                             apr_off_t readbytes)
+int ap_core_input_filter(ap_filter_t *f, apr_bucket_brigade *b,
+                         ap_input_mode_t mode, apr_read_type_e block,
+                         apr_off_t readbytes)
 {
     apr_bucket *e;
     apr_status_t rv;
@@ -535,7 +535,7 @@ static apr_status_t emulate_sendfile(core_net_rec *c, apr_file_t *fd,
  */
 extern APR_OPTIONAL_FN_TYPE(ap_logio_add_bytes_out) *logio_add_bytes_out;
 
-apr_status_t core_output_filter(ap_filter_t *f, apr_bucket_brigade *b)
+apr_status_t ap_core_output_filter(ap_filter_t *f, apr_bucket_brigade *b)
 {
     apr_status_t rv;
     apr_bucket_brigade *more;
