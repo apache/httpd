@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2002/05/29 22:15:44 $]
+Last modified at [$Date: 2002/05/30 02:55:56 $]
 
 Release:
 
@@ -59,11 +59,6 @@ RELEASE SHOWSTOPPERS:
       PR: 9457
 
     * decide if the MMN bump was warranted
-
-    * Darwin: httpd won't start.  Hangs looking up 0.0.0.0 during config
-      file processing.
-      Status: backtrace posted
-      Message-ID: <20020525201238.P27903@apache.org>
 
     * Win32: httpd won't start.  There was a command line args problem
       that got fixed, but now something else is wrong.
