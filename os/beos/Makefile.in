@@ -5,6 +5,6 @@ srcdir    = @srcdir@
 VPATH     = @srcdir@
 
 LTLIBRARY_NAME    = libos.la
-LTLIBRARY_SOURCES = os.c os-inline.c beosd.c iol_socket.c
+LTLIBRARY_SOURCES = os.c beosd.c iol_socket.c
 
 include $(top_srcdir)/build/ltlib.mk

@@ -60,7 +60,6 @@
 #define APACHE_OS_H
 
 #include "ap_config.h"
-#include <kernel/image.h>
 
 #ifndef PLATFORM
 #define PLATFORM "BeOS"
@@ -78,26 +77,5 @@ extern int ap_os_is_path_absolute(const char *file);
 #define ap_os_systemcase_filename(p,f)  (f)
 #define ap_os_is_filename_valid(f)          (1)
 #define ap_os_kill(pid, sig)                kill(pid, sig)
-
-/*
- *  Abstraction layer for loading
- *  Apache modules under run-time via 
- *  dynamic shared object (DSO) mechanism
- */
-
-void *dlopen(const char *, int);
-int dlclose(void *);
-void *dlsym(void *, const char *);
-const char *dlerror(void);
-
-#define RTLD_NOW 1
-#define RTLD_GLOBAL 0
-
-#define     ap_os_dso_handle_t  image_id *
-void        ap_os_dso_init(void);
-void *      ap_os_dso_load(const char *);
-void        ap_os_dso_unload(void *);
-void *      ap_os_dso_sym(void *, const char *);
-const char *ap_os_dso_error(void);
 
 #endif	/* !APACHE_OS_H */
