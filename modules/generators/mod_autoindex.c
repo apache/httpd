@@ -913,8 +913,8 @@ static int ignore_entry(autoindex_config_rec *d, char *path)
 static void do_emit_plain(request_rec *r, apr_file_t *f)
 {
     char buf[AP_IOBUFSIZE + 1];
-    int i, c, ch;
-    apr_size_t n;
+    int ch;
+    apr_size_t i, c, n;
     apr_status_t stat;
 
     ap_rputs("<PRE>\n", r);
@@ -924,7 +924,8 @@ static void do_emit_plain(request_rec *r, apr_file_t *f)
 	    stat = apr_file_read(f, buf, &n);
 	}
 	while (stat != APR_SUCCESS && APR_STATUS_IS_EINTR(stat));
-	if (n == -1 || n == 0) {
+	if (n == 0 || stat != APR_SUCCESS) {
+            /* ###: better error here? */
 	    break;
 	}
 	buf[n] = '\0';
