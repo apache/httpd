@@ -139,7 +139,7 @@ int ap_proxy_connect_handler(request_rec *r, char *url,
     }
 
     ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r->server,
-		 "proxy: CONNECT connecting %s to %s:%d", url, uri.hostname, uri.port);
+		 "proxy: CONNECT: connecting %s to %s:%d", url, uri.hostname, uri.port);
 
     /* do a DNS lookup for the destination host */
     err = apr_sockaddr_info_get(&uri_addr, uri.hostname, APR_UNSPEC, uri.port, 0, p);
@@ -148,17 +148,15 @@ int ap_proxy_connect_handler(request_rec *r, char *url,
     if (proxyname) {
 	connectname = proxyname;
 	connectport = proxyport;
-        ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, NULL,
-            "CONNECT to remote proxy %s on port %d", proxyname, proxyport);
         err = apr_sockaddr_info_get(&connect_addr, proxyname, APR_UNSPEC, proxyport, 0, p);
     }
     else {
 	connectname = uri.hostname;
 	connectport = uri.port;
 	connect_addr = uri_addr;
-        ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, NULL,
-            "CONNECT to %s on port %d", connectname, connectport);
     }
+    ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, NULL,
+		 "proxy: CONNECT: connecting to remote proxy %s on port %d", connectname, connectport);
 
     /* check if ProxyBlock directive on this host */
     if (OK != ap_proxy_checkproxyblock(r, conf, uri_addr)) {
@@ -225,7 +223,7 @@ int ap_proxy_connect_handler(request_rec *r, char *url,
 	    /* if an error occurred, loop round and try again */
             if (err != APR_SUCCESS) {
 		ap_log_error(APLOG_MARK, APLOG_ERR, err, r->server,
-			     "proxy: attempt to connect to %pI (%s) failed", connect_addr, connectname);
+			     "proxy: CONNECT: attempt to connect to %pI (%s) failed", connect_addr, connectname);
 		connect_addr = connect_addr->next;
 		continue;
             }
@@ -237,6 +235,7 @@ int ap_proxy_connect_handler(request_rec *r, char *url,
 
 	/* handle a permanent error from the above loop */
 	if (failed) {
+	    apr_socket_close(sock);
 	    if (proxyname) {
 		return DECLINED;
 	    }
@@ -261,17 +260,17 @@ int ap_proxy_connect_handler(request_rec *r, char *url,
 	 * a HTTP/1.0 request to keep things simple.
 	 */
         ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, NULL,
-             "Sending the CONNECT request to the remote proxy");
+		     "proxy: CONNECT: sending the CONNECT request to the remote proxy");
         nbytes = apr_snprintf(buffer, sizeof(buffer),
-             "CONNECT %s HTTP/1.1" CRLF, r->uri);
+			      "CONNECT %s HTTP/1.1" CRLF, r->uri);
         apr_send(sock, buffer, &nbytes);
         nbytes = apr_snprintf(buffer, sizeof(buffer),
-             "Proxy-agent: %s" CRLF CRLF, ap_get_server_version());
+			      "Proxy-agent: %s" CRLF CRLF, ap_get_server_version());
         apr_send(sock, buffer, &nbytes);
     }
     else {
         ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, NULL,
-            "Returning 200 OK Status");
+		     "proxy: CONNECT: Returning 200 OK Status");
         ap_rvputs(r, "HTTP/1.0 200 Connection established" CRLF, NULL);
         ap_rvputs(r, "Proxy-agent: ", ap_get_server_version(), CRLF CRLF, NULL);
         ap_rflush(r);
@@ -286,8 +285,9 @@ int ap_proxy_connect_handler(request_rec *r, char *url,
 
     if(apr_poll_setup(&pollfd, 2, r->pool) != APR_SUCCESS)
     {
+	apr_socket_close(sock);
         ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
-            "proxy: error apr_poll_setup()");
+            "proxy: CONNECT: error apr_poll_setup()");
         return HTTP_INTERNAL_SERVER_ERROR;
     }
 
@@ -302,8 +302,9 @@ int ap_proxy_connect_handler(request_rec *r, char *url,
         (apr_os_sock_t *)get_socket(r->connection->client),
                       r->pool) != APR_SUCCESS)
     {
+	apr_socket_close(sock);
         ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
-            "proxy: error creating client apr_socket_t");
+            "proxy: CONNECT: error creating client apr_socket_t");
         return HTTP_INTERNAL_SERVER_ERROR;
     }
     apr_poll_socket_add(pollfd, client_sock, APR_POLLIN);
@@ -313,20 +314,21 @@ int ap_proxy_connect_handler(request_rec *r, char *url,
     apr_poll_socket_add(pollfd, sock, APR_POLLIN);
 
     while (1) { /* Infinite loop until error (one side closes the connection) */
-        ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, NULL, "Going to sleep (poll)");
+        ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, NULL, "proxy: CONNECT: going to sleep (poll)");
         if(apr_poll(pollfd, &pollcnt, -1) != APR_SUCCESS)
         {
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, "proxy: error apr_poll()");
+	    apr_socket_close(sock);
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, "proxy: CONNECT: error apr_poll()");
             return HTTP_INTERNAL_SERVER_ERROR;
         }
         ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, NULL,
-                     "Woke from select(), i=%d", pollcnt);
+                     "proxy: CONNECT: woke from select(), i=%d", pollcnt);
 
         if (pollcnt) {
             apr_poll_revents_get(&pollevent, sock, pollfd);
             if (pollevent & APR_POLLIN) {
                 ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, NULL,
-                             "sock was set");
+                             "proxy: CONNECT: sock was set");
                 nbytes = HUGE_STRING_LEN;
                 if(apr_recv(sock, buffer, &nbytes) == APR_SUCCESS) {
                     int o = 0;
@@ -337,7 +339,8 @@ int ap_proxy_connect_handler(request_rec *r, char *url,
                         o += i;
                         nbytes -= i;
                     }
-                    ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, NULL,                                 "Wrote %d bytes to client", nbytes);
+                    ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, NULL,
+				 "proxy: CONNECT: wrote %d bytes to client", nbytes);
                 }
                 else
                     break;
@@ -346,7 +349,7 @@ int ap_proxy_connect_handler(request_rec *r, char *url,
             apr_poll_revents_get(&pollevent, client_sock, pollfd);
             if (pollevent & APR_POLLIN) {
                 ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, NULL,
-                             "client was set");
+                             "proxy: CONNECT: client was set");
                 nbytes = HUGE_STRING_LEN;
                 if(apr_recv(r->connection->client_socket, buffer, &nbytes) == APR_SUCCESS) {
                     int o = 0;
@@ -358,7 +361,7 @@ int ap_proxy_connect_handler(request_rec *r, char *url,
                         nbytes -= i;
                     }
                     ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0,
-                        NULL, "Wrote %d bytes to server", nbytes);
+                        NULL, "proxy: CONNECT: wrote %d bytes to server", nbytes);
                 }
                 else
                     break;
