@@ -108,7 +108,6 @@ ap_find_last_token
 ap_find_linked_module
 ap_find_list_item
 ap_find_module_name
-ap_find_opaque_token
 ap_find_path_info
 ap_find_token
 ap_find_types
