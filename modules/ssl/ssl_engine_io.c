@@ -146,6 +146,9 @@ static int ssl_io_hook_write(SSL *ssl, unsigned char *buf, int len)
 
 static apr_status_t churn_output(SSLFilterRec *pRec)
 {
+    conn_rec *c = pRec->pOutputFilter->c;
+    apr_pool_t *p = c->pool;
+
     apr_bucket_brigade *pbbOutput=NULL;
     int done;
 
@@ -162,21 +165,19 @@ static apr_status_t churn_output(SSLFilterRec *pRec)
 	done=0;
 
 	if (BIO_pending(pRec->pbioWrite)) {
-            n = BIO_read(pRec->pbioWrite,buf,sizeof buf);
+            n = BIO_read(pRec->pbioWrite, buf, sizeof buf);
             if(n > 0) {
 		char *pbuf;
 
 		if(!pbbOutput)
-		    pbbOutput=apr_brigade_create(pRec->pOutputFilter->c->pool);
+		    pbbOutput = apr_brigade_create(p);
 
-		pbuf=apr_pmemdup(pRec->pOutputFilter->c->pool,buf,n);
-		pbkt=apr_bucket_pool_create(pbuf,n,
-					    pRec->pOutputFilter->c->pool);
+		pbuf = apr_pmemdup(p, buf, n);
+		pbkt = apr_bucket_pool_create(pbuf, n, p);
 		APR_BRIGADE_INSERT_TAIL(pbbOutput,pbkt);
 		done=1;
 	    }
             else {
-                conn_rec *c = (conn_rec *)SSL_get_app_data(pRec->pssl);
                 ssl_log(c->base_server, SSL_LOG_ERROR|SSL_ADD_SSLERR,
                         "attempting to read %d bytes from wbio, got %d",
                         sizeof buf, n);
@@ -204,6 +205,8 @@ static apr_status_t churn_output(SSLFilterRec *pRec)
 static apr_status_t churn (SSLFilterRec *pRec,
         apr_read_type_e eReadType, apr_off_t *readbytes)
 {
+    conn_rec *c = pRec->pInputFilter->c;
+    apr_pool_t *p = c->pool;
     apr_bucket *pbktIn;
     ap_input_mode_t eMode = (eReadType == APR_BLOCK_READ) 
                             ? AP_MODE_BLOCKING : AP_MODE_NONBLOCKING;
@@ -269,7 +272,6 @@ static apr_status_t churn (SSLFilterRec *pRec,
 	n = BIO_write (pRec->pbioRead, data, len);
         
         if (n != len) {
-            conn_rec *c = (conn_rec *)SSL_get_app_data(pRec->pssl);
             /* this should never really happen, since we're just writing
              * into a memory buffer, unless, of course, we run out of 
              * memory
@@ -303,11 +305,11 @@ static apr_status_t churn (SSLFilterRec *pRec,
 	    apr_bucket *pbktOut;
 	    char *pbuf;
 
-	    pbuf=apr_pmemdup(pRec->pInputFilter->c->pool,buf,n);
+	    pbuf = apr_pmemdup(p, buf, n);
 	    /* XXX: should we use a heap bucket instead? Or a transient (in
 	     * which case we need a separate brigade for each bucket)?
 	     */
-	    pbktOut=apr_bucket_pool_create(pbuf,n,pRec->pInputFilter->c->pool);
+	    pbktOut = apr_bucket_pool_create(pbuf, n, p);
 	    APR_BRIGADE_INSERT_TAIL(pRec->pbbPendingInput,pbktOut);
 
            /* Once we've read something, we can move to non-blocking mode (if
