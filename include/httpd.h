@@ -381,7 +381,7 @@ extern "C" {
 #define SERVER_BASEVERSION "Apache/2.0-dev"       /* SEE COMMENTS ABOVE */
 #define SERVER_VERSION  SERVER_BASEVERSION
 
-/* TODO: re ap_context_t mplement the server token/version stuff -- it's part of http_core
+/* TODO: re-implement the server token/version stuff -- it's part of http_core
  * it should be possible to do without touching http_main at all. (or else
  * we haven't got enough module hooks)
  */
@@ -542,7 +542,7 @@ API_EXPORT(const char *) ap_get_server_built(void);
 #define ASCIITEXT_MAGIC_TYPE_PREFIX "text/x-ascii-" /* Text files whose content-type starts with this are passed thru unconverted */
 #endif /*CHARSET_EBCDIC*/
 #define MAP_FILE_MAGIC_TYPE "application/x-type-map"
-#define ASIS_MAGIC_TYPE "httpd/send-as ap_context_t s"
+#define ASIS_MAGIC_TYPE "httpd/send-as-is"
 #define DIR_MAGIC_TYPE "httpd/unix-directory"
 #define STATUS_MAGIC_TYPE "application/x-httpd-status"
 
