@@ -1,169 +1,138 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
-<HTML>
-<HEAD>
-<TITLE>Module mod_cern_meta</TITLE>
-</HEAD>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
-<!-- Background white, links blue (unvisited), navy (visited), red (active) -->
-<BODY
- BGCOLOR="#FFFFFF"
- TEXT="#000000"
- LINK="#0000FF"
- VLINK="#000080"
- ALINK="#FF0000"
->
-<!--#include virtual="header.html" -->
-<H1 ALIGN="CENTER">Apache module mod_cern_meta</H1>
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta name="generator" content="HTML Tidy, see www.w3.org" />
 
-<p>This module provides for CERN httpd metafile semantics.</p>
+    <title>Module mod_cern_meta</title>
+  </head>
+  <!-- Background white, links blue (unvisited), navy (visited), red (active) -->
 
-<P><A
-HREF="module-dict.html#Status"
-REL="Help"
-><STRONG>Status:</STRONG></A> Extension
-<BR>
-<A
-HREF="module-dict.html#SourceFile"
-REL="Help"
-><STRONG>Source File:</STRONG></A> mod_cern_meta.c
-<BR>
-<A
-HREF="module-dict.html#ModuleIdentifier"
-REL="Help"
-><STRONG>Module Identifier:</STRONG></A> cern_meta_module
-<BR>
-<A
-HREF="module-dict.html#Compatibility"
-REL="Help"
-><STRONG>Compatibility:</STRONG></A> Available in Apache 1.1 and later.
-</P>
+  <body bgcolor="#FFFFFF" text="#000000" link="#0000FF"
+  vlink="#000080" alink="#FF0000">
+    <!--#include virtual="header.html" -->
 
+    <h1 align="CENTER">Apache module mod_cern_meta</h1>
 
-<H2>Summary</H2>
+    <p>This module provides for CERN httpd metafile semantics.</p>
 
-<!-- XXX: Should mention other possibilities in Apache: mod_header -->
+    <p><a href="module-dict.html#Status"
+    rel="Help"><strong>Status:</strong></a> Extension<br />
+     <a href="module-dict.html#SourceFile"
+    rel="Help"><strong>Source File:</strong></a>
+    mod_cern_meta.c<br />
+     <a href="module-dict.html#ModuleIdentifier"
+    rel="Help"><strong>Module Identifier:</strong></a>
+    cern_meta_module<br />
+     <a href="module-dict.html#Compatibility"
+    rel="Help"><strong>Compatibility:</strong></a> Available in
+    Apache 1.1 and later.</p>
 
-Emulate the CERN HTTPD Meta file semantics.  Meta files are HTTP
-headers that can be output in addition to the normal range of headers
-for each file accessed.  They appear rather like the Apache
-.asis files, and are able to provide a crude way of influencing
-the Expires: header, as well as providing other curiosities.
-There are many ways to manage meta information, this one was
-chosen because there is already a large number of CERN users
-who can exploit this module.
+    <h2>Summary</h2>
+    <!-- XXX: Should mention other possibilities in Apache: mod_header -->
+    Emulate the CERN HTTPD Meta file semantics. Meta files are HTTP
+    headers that can be output in addition to the normal range of
+    headers for each file accessed. They appear rather like the
+    Apache .asis files, and are able to provide a crude way of
+    influencing the Expires: header, as well as providing other
+    curiosities. There are many ways to manage meta information,
+    this one was chosen because there is already a large number of
+    CERN users who can exploit this module. 
 
-<P>More information on the
-<A HREF="http://www.w3.org/pub/WWW/Daemon/User/Config/General.html#MetaDir"
->CERN metafile semantics</A> is available.
+    <p>More information on the <a
+    href="http://www.w3.org/pub/WWW/Daemon/User/Config/General.html#MetaDir">
+    CERN metafile semantics</a> is available.</p>
 
-<H2>Directives</H2>
-<UL>
-<LI><A HREF="#metafiles">MetaFiles</A>
-<LI><A HREF="#metadir">MetaDir</A>
-<LI><A HREF="#metasuffix">MetaSuffix</A>
-</UL>
+    <h2>Directives</h2>
 
-<HR>
+    <ul>
+      <li><a href="#metafiles">MetaFiles</a></li>
 
-<H2><A NAME="metafiles">MetaFiles</A> directive</H2>
-<A
- HREF="directive-dict.html#Syntax"
- REL="Help"
-><STRONG>Syntax:</STRONG></A> MetaFiles on|off<BR>
-<A
- HREF="directive-dict.html#Default"
- REL="Help"
-><STRONG>Default:</STRONG></A> <CODE>MetaFiles off</CODE><BR>
-<A
- HREF="directive-dict.html#Context"
- REL="Help"
-><STRONG>Context:</STRONG></A> per-directory config<BR>
-<A
- HREF="directive-dict.html#Status"
- REL="Help"
-><STRONG>Status:</STRONG></A> Base<BR>
-<A
- HREF="directive-dict.html#Module"
- REL="Help"
-><STRONG>Module:</STRONG></A> mod_cern_meta<BR>
-<A
- HREF="directive-dict.html#Compatibility"
- REL="Help"
-><STRONG>Compatibility:</STRONG></A> MetaFiles is only available in Apache 1.3
-and later.<P>
+      <li><a href="#metadir">MetaDir</a></li>
 
-Turns on/off Meta file processing on a per-directory basis. This option was introduced in Apache 1.3.
+      <li><a href="#metasuffix">MetaSuffix</a></li>
+    </ul>
+    <hr />
 
-<hr>
+    <h2><a id="metafiles" name="metafiles">MetaFiles</a>
+    directive</h2>
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>Syntax:</strong></a> MetaFiles on|off<br />
+     <a href="directive-dict.html#Default"
+    rel="Help"><strong>Default:</strong></a> <code>MetaFiles
+    off</code><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Context:</strong></a> per-directory
+    config<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>Status:</strong></a> Base<br />
+     <a href="directive-dict.html#Module"
+    rel="Help"><strong>Module:</strong></a> mod_cern_meta<br />
+     <a href="directive-dict.html#Compatibility"
+    rel="Help"><strong>Compatibility:</strong></a> MetaFiles is
+    only available in Apache 1.3 and later. 
 
-<H2><A NAME="metadir">MetaDir</A> directive</H2>
-<A
- HREF="directive-dict.html#Syntax"
- REL="Help"
-><STRONG>Syntax:</STRONG></A> MetaDir <EM>directory</EM><BR>
-<A
- HREF="directive-dict.html#Default"
- REL="Help"
-><STRONG>Default:</STRONG></A> <CODE>MetaDir .web</CODE><BR>
-<STRONG>Context: (Apache prior to 1.3)</STRONG> server config<BR>
-<STRONG>Context: (Apache 1.3)</STRONG> per-directory config<BR>
-<A
- HREF="directive-dict.html#Status"
- REL="Help"
-><STRONG>Status:</STRONG></A> Base<BR>
-<A
- HREF="directive-dict.html#Module"
- REL="Help"
-><STRONG>Module:</STRONG></A> mod_cern_meta<BR>
-<A
- HREF="directive-dict.html#Compatibility"
- REL="Help"
-><STRONG>Compatibility:</STRONG></A> MetaDir is only available in Apache 1.1
-and later.<P>
+    <p>Turns on/off Meta file processing on a per-directory basis.
+    This option was introduced in Apache 1.3.</p>
+    <hr />
 
-Specifies the name of the directory in which Apache can find
-meta information files.  The directory is usually a 'hidden'
-subdirectory of the directory that contains the file being
-accessed. Set to "<CODE>.</CODE>" to look in the same directory as the
-file.
+    <h2><a id="metadir" name="metadir">MetaDir</a> directive</h2>
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>Syntax:</strong></a> MetaDir
+    <em>directory</em><br />
+     <a href="directive-dict.html#Default"
+    rel="Help"><strong>Default:</strong></a> <code>MetaDir
+    .web</code><br />
+     <strong>Context: (Apache prior to 1.3)</strong> server
+    config<br />
+     <strong>Context: (Apache 1.3)</strong> per-directory
+    config<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>Status:</strong></a> Base<br />
+     <a href="directive-dict.html#Module"
+    rel="Help"><strong>Module:</strong></a> mod_cern_meta<br />
+     <a href="directive-dict.html#Compatibility"
+    rel="Help"><strong>Compatibility:</strong></a> MetaDir is only
+    available in Apache 1.1 and later. 
 
-<hr>
+    <p>Specifies the name of the directory in which Apache can find
+    meta information files. The directory is usually a 'hidden'
+    subdirectory of the directory that contains the file being
+    accessed. Set to "<code>.</code>" to look in the same directory
+    as the file.</p>
+    <hr />
 
-<H2><A NAME="metasuffix">MetaSuffix</A> directive</H2>
-<A
- HREF="directive-dict.html#Syntax"
- REL="Help"
-><STRONG>Syntax:</STRONG></A> MetaSuffix <EM>suffix</EM><BR>
-<A
- HREF="directive-dict.html#Default"
- REL="Help"
-><STRONG>Default:</STRONG></A> <CODE>MetaSuffix .meta</CODE><BR>
-<STRONG>Context: (Apache prior to 1.3)</STRONG> server config<BR>
-<STRONG>Context: (Apache 1.3)</STRONG> per-directory config<BR>
-<A
- HREF="directive-dict.html#Status"
- REL="Help"
-><STRONG>Status:</STRONG></A> Base<BR>
-<A
- HREF="directive-dict.html#Module"
- REL="Help"
-><STRONG>Module:</STRONG></A> mod_cern_meta<BR>
-<A
- HREF="directive-dict.html#Compatibility"
- REL="Help"
-><STRONG>Compatibility:</STRONG></A> MetaSuffix is only available in Apache 1.1
-and later.<P>
+    <h2><a id="metasuffix" name="metasuffix">MetaSuffix</a>
+    directive</h2>
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>Syntax:</strong></a> MetaSuffix
+    <em>suffix</em><br />
+     <a href="directive-dict.html#Default"
+    rel="Help"><strong>Default:</strong></a> <code>MetaSuffix
+    .meta</code><br />
+     <strong>Context: (Apache prior to 1.3)</strong> server
+    config<br />
+     <strong>Context: (Apache 1.3)</strong> per-directory
+    config<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>Status:</strong></a> Base<br />
+     <a href="directive-dict.html#Module"
+    rel="Help"><strong>Module:</strong></a> mod_cern_meta<br />
+     <a href="directive-dict.html#Compatibility"
+    rel="Help"><strong>Compatibility:</strong></a> MetaSuffix is
+    only available in Apache 1.1 and later. 
 
-Specifies the file name suffix for the file containing the
-meta information. For example, the default values for the two
-directives will cause a request to <CODE>
-DOCUMENT_ROOT/somedir/index.html</CODE> to look in
-<CODE>DOCUMENT_ROOT/somedir/.web/index.html.meta</CODE> and  will use
-its contents to generate additional MIME header information.
+    <p>Specifies the file name suffix for the file containing the
+    meta information. For example, the default values for the two
+    directives will cause a request to
+    <code>DOCUMENT_ROOT/somedir/index.html</code> to look in
+    <code>DOCUMENT_ROOT/somedir/.web/index.html.meta</code> and
+    will use its contents to generate additional MIME header
+    information.</p>
 
-<P>
-
-<!--#include virtual="footer.html" -->
-</BODY>
-</HTML>
+    <p><!--#include virtual="footer.html" -->
+    </p>
+  </body>
+</html>
 

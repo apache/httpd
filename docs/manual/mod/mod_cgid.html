@@ -1,101 +1,88 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
-<HTML>
-<HEAD>
-<TITLE>Apache module mod_cgi</TITLE>
-</HEAD>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
-<!-- Background white, links blue (unvisited), navy (visited), red (active) -->
-<BODY
- BGCOLOR="#FFFFFF"
- TEXT="#000000"
- LINK="#0000FF"
- VLINK="#000080"
- ALINK="#FF0000"
->
-<!--#include virtual="header.html" -->
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta name="generator" content="HTML Tidy, see www.w3.org" />
 
-<H1 ALIGN="CENTER">Module mod_cgid</H1>
+    <title>Apache module mod_cgi</title>
+  </head>
+  <!-- Background white, links blue (unvisited), navy (visited), red (active) -->
 
-<p>This module provides for execution of CGI scripts using an external
-CGI daemon.</p>
+  <body bgcolor="#FFFFFF" text="#000000" link="#0000FF"
+  vlink="#000080" alink="#FF0000">
+    <!--#include virtual="header.html" -->
 
-<P><A
-HREF="module-dict.html#Status"
-REL="Help"
-><STRONG>Status:</STRONG></A> Base (unix threaded MPMs only)
-<BR>
-<A
-HREF="module-dict.html#SourceFile"
-REL="Help"
-><STRONG>Source File:</STRONG></A> mod_cgid.c
-<BR>
-<A
-HREF="module-dict.html#ModuleIdentifier"
-REL="Help"
-><STRONG>Module Identifier:</STRONG></A> cgid_module
-</P>
+    <h1 align="CENTER">Module mod_cgid</h1>
 
+    <p>This module provides for execution of CGI scripts using an
+    external CGI daemon.</p>
 
-<H2>Summary</H2>
+    <p><a href="module-dict.html#Status"
+    rel="Help"><strong>Status:</strong></a> Base (unix threaded
+    MPMs only)<br />
+     <a href="module-dict.html#SourceFile"
+    rel="Help"><strong>Source File:</strong></a> mod_cgid.c<br />
+     <a href="module-dict.html#ModuleIdentifier"
+    rel="Help"><strong>Module Identifier:</strong></a>
+    cgid_module</p>
 
-<p>On certain unix operating systems, forking a process from a
-multi-threaded server is a very expensive operation because the new
-process will replicate all the threads of the parent process.  In
-order to avoid incurring this expense on each CGI invocation, mod_cgid
-creates an external daemon that is responsible for forking child
-processes to run CGI scripts.  The main server communicates with this
-daemon using a unix domain socket.</p>
+    <h2>Summary</h2>
 
-<p>This module is used by default whenever a multi-threaded MPM is
-selected during the compilation process.  At the user level, this
-module is identical in configuration and operation to <a
-href="mod_cgi.html">mod_cgi</a>.  The only exception is the additional
-directive <code>ScriptSock</code> which gives the name of the socket
-to use for communication with the cgi daemon.</p>
+    <p>On certain unix operating systems, forking a process from a
+    multi-threaded server is a very expensive operation because the
+    new process will replicate all the threads of the parent
+    process. In order to avoid incurring this expense on each CGI
+    invocation, mod_cgid creates an external daemon that is
+    responsible for forking child processes to run CGI scripts. The
+    main server communicates with this daemon using a unix domain
+    socket.</p>
 
-<h2>Directives</h2>
+    <p>This module is used by default whenever a multi-threaded MPM
+    is selected during the compilation process. At the user level,
+    this module is identical in configuration and operation to <a
+    href="mod_cgi.html">mod_cgi</a>. The only exception is the
+    additional directive <code>ScriptSock</code> which gives the
+    name of the socket to use for communication with the cgi
+    daemon.</p>
 
-<ul>
-<li><a href="mod_cgi.html#scriptlog">ScriptLog</a></li>
-<li><a href="mod_cgi.html#scriptloglength">ScriptLogLength</a></li>
-<li><a href="mod_cgi.html#scriptlogbuffer">ScriptLogBuffer</a></li>
-<li><a href="#scriptsock">ScriptSock</a></li>
-</ul>
+    <h2>Directives</h2>
 
-<hr>
+    <ul>
+      <li><a href="mod_cgi.html#scriptlog">ScriptLog</a></li>
 
-<H3><A NAME="scriptsock">ScriptSock</A> directive</H3>
+      <li><a
+      href="mod_cgi.html#scriptloglength">ScriptLogLength</a></li>
 
-<p><A
- HREF="directive-dict.html#Syntax"
- REL="Help"
-><STRONG>Syntax:</STRONG></A> Scriptsock <EM>filename</EM><BR>
-<A
- HREF="directive-dict.html#Default"
- REL="Help"
-><STRONG>Default:</STRONG></A> logs/cgisock<BR>
-<A
- HREF="directive-dict.html#Context"
- REL="Help"
-><STRONG>Context:</STRONG></A> server config<BR>
-<A
- HREF="directive-dict.html#Status"
- REL="Help"
-><STRONG>Status:</STRONG></A> Base<br>
-<A
- HREF="directive-dict.html#Module"
- REL="Help"
-><STRONG>Module:</STRONG></A> mod_cgid</p>
+      <li><a
+      href="mod_cgi.html#scriptlogbuffer">ScriptLogBuffer</a></li>
 
-<p>This directive sets the name of the socket to use for communication
-with the CGI daemon.  The socket will be opened using the permissions
-of the user who starts Apache (usually root).  To maintain the security
-of communications with CGI scripts, it is important that no other
-user has permission to write in the directory where the socket is
-located.</p>
+      <li><a href="#scriptsock">ScriptSock</a></li>
+    </ul>
+    <hr />
 
+    <h3><a id="scriptsock" name="scriptsock">ScriptSock</a>
+    directive</h3>
 
-<!--#include virtual="footer.html" -->
-</BODY>
-</HTML>
+    <p><a href="directive-dict.html#Syntax"
+    rel="Help"><strong>Syntax:</strong></a> Scriptsock
+    <em>filename</em><br />
+     <a href="directive-dict.html#Default"
+    rel="Help"><strong>Default:</strong></a> logs/cgisock<br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Context:</strong></a> server config<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>Status:</strong></a> Base<br />
+     <a href="directive-dict.html#Module"
+    rel="Help"><strong>Module:</strong></a> mod_cgid</p>
+
+    <p>This directive sets the name of the socket to use for
+    communication with the CGI daemon. The socket will be opened
+    using the permissions of the user who starts Apache (usually
+    root). To maintain the security of communications with CGI
+    scripts, it is important that no other user has permission to
+    write in the directory where the socket is located.</p>
+    <!--#include virtual="footer.html" -->
+  </body>
+</html>
 

@@ -1,48 +1,46 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
-<HTML>
- <HEAD>
-  <TITLE>Other Programs - Apache HTTP Server</TITLE>
- </HEAD>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
- <!-- Background white, links blue (unvisited), navy (visited), red (active) -->
- <BODY
-  BGCOLOR="#FFFFFF"
-  TEXT="#000000"
-  LINK="#0000FF"
-  VLINK="#000080"
-  ALINK="#FF0000"
- >
-  <!--#include virtual="header.html" -->
-  <H1 ALIGN="CENTER">Other Programs</H1>
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta name="generator" content="HTML Tidy, see www.w3.org" />
 
-<p>The following programs are simple support programs included with
-the Apache HTTP Server which do not have their own manual pages.</p>
+    <title>Other Programs - Apache HTTP Server</title>
+  </head>
+  <!-- Background white, links blue (unvisited), navy (visited), red (active) -->
 
+  <body bgcolor="#FFFFFF" text="#000000" link="#0000FF"
+  vlink="#000080" alink="#FF0000">
+    <!--#include virtual="header.html" -->
 
-<h2><a name="log_server_status">log_server_status</a></h2>
+    <h1 align="CENTER">Other Programs</h1>
 
-<p>This Perl script is designed to be run at a frequent interval by something
-like cron.  It connects to the server and downloads the status
-information.  It reformats the information to a single line and logs
-it to a file.  Adjust the variables at the top of the script
-to specify the location of the resulting logfile.</p>
+    <p>The following programs are simple support programs included
+    with the Apache HTTP Server which do not have their own manual
+    pages.</p>
 
-<h2><a name="split-logfile">split-logfile</a></h2>
+    <h2><a id="log_server_status"
+    name="log_server_status">log_server_status</a></h2>
 
-<p>This Perl script will take a combined Web server access
-log file and break its contents into separate files.
-It assumes that the first field of each line is the
-virtual host identity (put there by "%v"), and that
-the logfiles should be named that+".log" in the current
-directory.</p>
+    <p>This Perl script is designed to be run at a frequent
+    interval by something like cron. It connects to the server and
+    downloads the status information. It reformats the information
+    to a single line and logs it to a file. Adjust the variables at
+    the top of the script to specify the location of the resulting
+    logfile.</p>
 
-<p>The combined log file is read from stdin. Records read
-will be appended to any existing log files.</p>
+    <h2><a id="split-logfile"
+    name="split-logfile">split-logfile</a></h2>
 
+    <p>This Perl script will take a combined Web server access log
+    file and break its contents into separate files. It assumes
+    that the first field of each line is the virtual host identity
+    (put there by "%v"), and that the logfiles should be named
+    that+".log" in the current directory.</p>
 
+    <p>The combined log file is read from stdin. Records read will
+    be appended to any existing log files.</p>
+    <!--#include virtual="footer.html" -->
+  </body>
+</html>
 
-</dl>
-
-  <!--#include virtual="footer.html" -->
- </BODY>
-</HTML>

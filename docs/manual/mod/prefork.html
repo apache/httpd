@@ -1,228 +1,230 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
-<HTML>
-<HEAD>
-<TITLE>Apache MPM prefork</TITLE>
-</HEAD>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
-<!-- Background white, links blue (unvisited), navy (visited), red (active) -->
-<BODY
- BGCOLOR="#FFFFFF"
- TEXT="#000000"
- LINK="#0000FF"
- VLINK="#000080"
- ALINK="#FF0000"
->
-<!--#include virtual="header.html" -->
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta name="generator" content="HTML Tidy, see www.w3.org" />
 
-<H1 ALIGN="CENTER">Multi-Processing Module prefork</H1>
-<P>
-This Multi-Processing Module implements a non-threaded, pre-forking
-web server.
-</P>
+    <title>Apache MPM prefork</title>
+  </head>
+  <!-- Background white, links blue (unvisited), navy (visited), red (active) -->
 
-<P><A
-HREF="module-dict.html#Status"
-REL="Help"
-><STRONG>Status:</STRONG></A> MPM
-<BR>
-<A
-HREF="module-dict.html#SourceFile"
-REL="Help"
-><STRONG>Source File:</STRONG></A> prefork.c
-<BR>
-<A
-HREF="module-dict.html#ModuleIdentifier"
-REL="Help"
-><STRONG>Module Identifier:</STRONG></A> mpm_prefork_module
-</P>
+  <body bgcolor="#FFFFFF" text="#000000" link="#0000FF"
+  vlink="#000080" alink="#FF0000">
+    <!--#include virtual="header.html" -->
 
-<H2>Summary</H2>
+    <h1 align="CENTER">Multi-Processing Module prefork</h1>
 
-<p>This Multi-Processing Module (MPM) implements a non-threaded,
-pre-forking web server which handles request in a manner very similar
-to the default behavior of Apache 1.3 on Unix.</p>
+    <p>This Multi-Processing Module implements a non-threaded,
+    pre-forking web server.</p>
 
-<p>A single control process is responsible for launching child
-processes which listen for connections and serve them when they
-arrive.  Apache always tries to maintain several <em>spare</em> or
-idle server processes, which stand ready to serve incoming requests.
-In this way, clients do not need to wait for a new child processes to
-be forked before their requests can be served.</p>
+    <p><a href="module-dict.html#Status"
+    rel="Help"><strong>Status:</strong></a> MPM<br />
+     <a href="module-dict.html#SourceFile"
+    rel="Help"><strong>Source File:</strong></a> prefork.c<br />
+     <a href="module-dict.html#ModuleIdentifier"
+    rel="Help"><strong>Module Identifier:</strong></a>
+    mpm_prefork_module</p>
 
-<p>The <code>StartServers</code>, <code>MinSpareServers</code>,
-<code>MaxSpareServers</code>, and <code>MaxClients</code> regulate how
-the parent process creates children to serve requests.  In general,
-Apache is very self-regulating, so most sites do not need to adjust
-these directives from their default values.  Sites which need to serve
-more than 256 simultaneous requests may need to increase
-<code>MaxClients</code>, while sites with limited memory may need to
-decrease <code>MaxClients</code> to keep the server from thrashing
-(swapping memory to disk and back).  More information about tuning
-process creation is provided in the <a
-href="../misc/perf-tuning.html">performance hints</a> documentation.</p>
+    <h2>Summary</h2>
 
-<p>While the parent process is usually started as root under Unix
-in order to bind to port 80, the child processes are launched
-by Apache as a less-privileged user.  The <code>User</code> and
-<code>Group</code> directives are used to set the privileges
-of the Apache child processes.  The child processes must
-be able to read all the content that will be served, but
-should have as few privileges beyond that as possible.
-In addition, unless <a href="../suexec.html">suexec</a> is used,
-these directives also set the privileges which will be inherited
-by CGI scripts.</p>
+    <p>This Multi-Processing Module (MPM) implements a
+    non-threaded, pre-forking web server which handles request in a
+    manner very similar to the default behavior of Apache 1.3 on
+    Unix.</p>
 
-<p><code>MaxRequestsPerChild</code> controls how frequently the server
-recycles processes by killing old ones and launching new ones.</p>
+    <p>A single control process is responsible for launching child
+    processes which listen for connections and serve them when they
+    arrive. Apache always tries to maintain several <em>spare</em>
+    or idle server processes, which stand ready to serve incoming
+    requests. In this way, clients do not need to wait for a new
+    child processes to be forked before their requests can be
+    served.</p>
 
-<p>See also: <a href="../bind.html">Setting which addresses and ports
-Apache uses</a>.</p>
+    <p>The <code>StartServers</code>, <code>MinSpareServers</code>,
+    <code>MaxSpareServers</code>, and <code>MaxClients</code>
+    regulate how the parent process creates children to serve
+    requests. In general, Apache is very self-regulating, so most
+    sites do not need to adjust these directives from their default
+    values. Sites which need to serve more than 256 simultaneous
+    requests may need to increase <code>MaxClients</code>, while
+    sites with limited memory may need to decrease
+    <code>MaxClients</code> to keep the server from thrashing
+    (swapping memory to disk and back). More information about
+    tuning process creation is provided in the <a
+    href="../misc/perf-tuning.html">performance hints</a>
+    documentation.</p>
 
-<H2>Directives</H2>
-<UL>
-<li><a href="#acceptmutex">AcceptMutex</a>
-<li><a href="mpm_common.html#coredumpdirectory">CoreDumpDirectory</a></li>
-<li><a href="mpm_common.html#group">Group</a></li>
-<li><a href="mpm_common.html#pidfile">PidFile</a></li>
-<li><a href="mpm_common.html#listen">Listen</a></li>
-<li><a href="mpm_common.html#listenbacklog">ListenBacklog</a></li>
-<li><a href="mpm_common.html#lockfile">LockFile</a></li>
-<li><a href="mpm_common.html#maxclients">MaxClients</a></li>
-<li><a href="mpm_common.html#maxrequestsperchild">MaxRequestsPerChild</a></li>
-<li><a href="#maxspareservers">MaxSpareServers</a></li>
-<li><a href="#minspareservers">MinSpareServers</a></li>
-<li><a href="mpm_common.html#scoreboardfile">ScoreBoardFile</a></li>
-<li><a href="mpm_common.html#sendbuffersize">SendBufferSize</a></li>
-<li><a href="mpm_common.html#startservers">StartServers</a></li>
-<li><a href="mpm_common.html#user">User</a></li>
-</UL>
+    <p>While the parent process is usually started as root under
+    Unix in order to bind to port 80, the child processes are
+    launched by Apache as a less-privileged user. The
+    <code>User</code> and <code>Group</code> directives are used to
+    set the privileges of the Apache child processes. The child
+    processes must be able to read all the content that will be
+    served, but should have as few privileges beyond that as
+    possible. In addition, unless <a
+    href="../suexec.html">suexec</a> is used, these directives also
+    set the privileges which will be inherited by CGI scripts.</p>
 
-<p><hr>
+    <p><code>MaxRequestsPerChild</code> controls how frequently the
+    server recycles processes by killing old ones and launching new
+    ones.</p>
 
+    <p>See also: <a href="../bind.html">Setting which addresses and
+    ports Apache uses</a>.</p>
 
-<H2><A NAME="AcceptMutex">AcceptMutex Directive</A></H2>
-<p><A
- HREF="directive-dict.html#Syntax"
- REL="Help"
-><STRONG>Syntax:</STRONG></A> AcceptMutex default|<EM>method</EM><BR>
-<A
- HREF="directive-dict.html#Default"
- REL="Help"
-><STRONG>Default:</STRONG></A> <code>AcceptMutex default</code><BR>
-<A
- HREF="directive-dict.html#Context"
- REL="Help"
-><STRONG>Context:</STRONG></A> server config<BR>
-<A
- HREF="directive-dict.html#Status"
- REL="Help"
-><STRONG>Status:</STRONG></A> core</p>
+    <h2>Directives</h2>
 
-<p>The <code>AcceptMutex</code> directives sets the method that Apache
-uses to serialize multiple children accepting requests on network
-sockets. Prior to Apache 2.0, the method was selectable only at
-compile time. The optimal method to use is highly architecture and
-platform dependent.  For further details, see the <a
-href="../misc/perf-tuning.html">performance tuning</a>
-documentation.</p>
+    <ul>
+      <li><a href="#acceptmutex">AcceptMutex</a></li>
 
-<p>If this directive is set to <code>default</code>, then the
-compile-time selected default will be used.  Other possible
-methods are listed below.  Note that not all methods are available
-on all platforms.  If a method is specified which is not available,
-a message will be written to the error log listing the available
-methods.</p>
+      <li><a
+      href="mpm_common.html#coredumpdirectory">CoreDumpDirectory</a></li>
 
-<dl>
+      <li><a href="mpm_common.html#group">Group</a></li>
 
-<dt><code>flock</code></dt>
-<dd>uses the <code>flock(2)</code> system call to lock the
-file defined by the <a href="mpm_common.html#lockfile">LockFile</a>
-directive.</dd>
+      <li><a href="mpm_common.html#pidfile">PidFile</a></li>
 
-<dt><code>fcntl</code></dt>
-<dd>uses the <code>fnctl(2)</code> system call to lock the
-file defined by the <a href="mpm_common.html#lockfile">LockFile</a>
-directive.</dd>
+      <li><a href="mpm_common.html#listen">Listen</a></li>
 
-<dt><code>sysvsem</code></dt>
-<dd>uses SySV-style semaphores to implement the mutex.</dd>
+      <li><a
+      href="mpm_common.html#listenbacklog">ListenBacklog</a></li>
 
-<dt><code>proc_pthread</code></dt>
-<dd>uses POSIX mutexes as implemented by the POSIX Threads (PThreads)
-specification.</dd>
+      <li><a href="mpm_common.html#lockfile">LockFile</a></li>
 
-</dl>
+      <li><a href="mpm_common.html#maxclients">MaxClients</a></li>
 
-<hr>
+      <li><a
+      href="mpm_common.html#maxrequestsperchild">MaxRequestsPerChild</a></li>
 
-<H2><A NAME="maxspareservers">MaxSpareServers directive</A></H2>
-<!--%plaintext &lt;?INDEX {\tt MaxSpareServers} directive&gt; -->
-<A
- HREF="directive-dict.html#Syntax"
- REL="Help"
-><STRONG>Syntax:</STRONG></A> MaxSpareServers <EM>number</EM><BR>
-<A
- HREF="directive-dict.html#Default"
- REL="Help"
-><STRONG>Default:</STRONG></A> <CODE>MaxSpareServers 10</CODE><BR>
-<A
- HREF="directive-dict.html#Context"
- REL="Help"
-><STRONG>Context:</STRONG></A> server config<BR>
-<A
- HREF="directive-dict.html#Status"
- REL="Help"
-><STRONG>Status:</STRONG></A> core<P>
+      <li><a href="#maxspareservers">MaxSpareServers</a></li>
 
-The MaxSpareServers directive sets the desired maximum number of <EM>idle</EM>
-child server processes. An idle process is one which is not handling
-a request. If there are more than MaxSpareServers idle, then the parent
-process will kill off the excess processes.<P>
+      <li><a href="#minspareservers">MinSpareServers</a></li>
 
-Tuning of this parameter should only be necessary on very busy sites.
-Setting this parameter to a large number is almost always a bad idea.<P>
+      <li><a
+      href="mpm_common.html#scoreboardfile">ScoreBoardFile</a></li>
 
-<P>
+      <li><a
+      href="mpm_common.html#sendbuffersize">SendBufferSize</a></li>
 
-See also <A HREF="#minspareservers">MinSpareServers</A> and
-<A HREF="mpm_common.html#startservers">StartServers</A>.<P><HR>
+      <li><a
+      href="mpm_common.html#startservers">StartServers</a></li>
 
-<H2><A NAME="minspareservers">MinSpareServers directive</A></H2>
-<!--%plaintext &lt;?INDEX {\tt MinSpareServers} directive&gt; -->
-<A
- HREF="directive-dict.html#Syntax"
- REL="Help"
-><STRONG>Syntax:</STRONG></A> MinSpareServers <EM>number</EM><BR>
-<A
- HREF="directive-dict.html#Default"
- REL="Help"
-><STRONG>Default:</STRONG></A> <CODE>MinSpareServers 5</CODE><BR>
-<A
- HREF="directive-dict.html#Context"
- REL="Help"
-><STRONG>Context:</STRONG></A> server config<BR>
-<A
- HREF="directive-dict.html#Status"
- REL="Help"
-><STRONG>Status:</STRONG></A> core<P>
+      <li><a href="mpm_common.html#user">User</a></li>
+    </ul>
+    <hr />
 
-The MinSpareServers directive sets the desired minimum number of <EM>idle</EM>
-child server processes. An idle process is one which is not handling
-a request. If there are fewer than MinSpareServers idle, then the parent
-process creates new children at a maximum rate of 1 per second.<P>
+    <h2><a id="AcceptMutex" name="AcceptMutex">AcceptMutex
+    Directive</a></h2>
 
-Tuning of this parameter should only be necessary on very busy sites.
-Setting this parameter to a large number is almost always a bad idea.<P>
+    <p><a href="directive-dict.html#Syntax"
+    rel="Help"><strong>Syntax:</strong></a> AcceptMutex
+    default|<em>method</em><br />
+     <a href="directive-dict.html#Default"
+    rel="Help"><strong>Default:</strong></a> <code>AcceptMutex
+    default</code><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Context:</strong></a> server config<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>Status:</strong></a> core</p>
 
-This directive has no effect on Microsoft Windows.
+    <p>The <code>AcceptMutex</code> directives sets the method that
+    Apache uses to serialize multiple children accepting requests
+    on network sockets. Prior to Apache 2.0, the method was
+    selectable only at compile time. The optimal method to use is
+    highly architecture and platform dependent. For further
+    details, see the <a href="../misc/perf-tuning.html">performance
+    tuning</a> documentation.</p>
 
-<P>
+    <p>If this directive is set to <code>default</code>, then the
+    compile-time selected default will be used. Other possible
+    methods are listed below. Note that not all methods are
+    available on all platforms. If a method is specified which is
+    not available, a message will be written to the error log
+    listing the available methods.</p>
 
-See also <A HREF="#maxspareservers">MaxSpareServers</A> and
-<A HREF="mpm_common.html#startservers">StartServers</A>.
+    <dl>
+      <dt><code>flock</code></dt>
 
+      <dd>uses the <code>flock(2)</code> system call to lock the
+      file defined by the <a
+      href="mpm_common.html#lockfile">LockFile</a> directive.</dd>
 
-<!--#include virtual="footer.html" -->
-</BODY>
-</HTML>
+      <dt><code>fcntl</code></dt>
+
+      <dd>uses the <code>fnctl(2)</code> system call to lock the
+      file defined by the <a
+      href="mpm_common.html#lockfile">LockFile</a> directive.</dd>
+
+      <dt><code>sysvsem</code></dt>
+
+      <dd>uses SySV-style semaphores to implement the mutex.</dd>
+
+      <dt><code>proc_pthread</code></dt>
+
+      <dd>uses POSIX mutexes as implemented by the POSIX Threads
+      (PThreads) specification.</dd>
+    </dl>
+    <hr />
+
+    <h2><a id="maxspareservers"
+    name="maxspareservers">MaxSpareServers directive</a></h2>
+    <!--%plaintext &lt;?INDEX {\tt MaxSpareServers} directive&gt; -->
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>Syntax:</strong></a> MaxSpareServers
+    <em>number</em><br />
+     <a href="directive-dict.html#Default"
+    rel="Help"><strong>Default:</strong></a> <code>MaxSpareServers
+    10</code><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Context:</strong></a> server config<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>Status:</strong></a> core 
+
+    <p>The MaxSpareServers directive sets the desired maximum
+    number of <em>idle</em> child server processes. An idle process
+    is one which is not handling a request. If there are more than
+    MaxSpareServers idle, then the parent process will kill off the
+    excess processes.</p>
+
+    <p>Tuning of this parameter should only be necessary on very
+    busy sites. Setting this parameter to a large number is almost
+    always a bad idea.</p>
+
+    <p>See also <a href="#minspareservers">MinSpareServers</a> and
+    <a href="mpm_common.html#startservers">StartServers</a>.</p>
+    <hr />
+
+    <h2><a id="minspareservers"
+    name="minspareservers">MinSpareServers directive</a></h2>
+    <!--%plaintext &lt;?INDEX {\tt MinSpareServers} directive&gt; -->
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>Syntax:</strong></a> MinSpareServers
+    <em>number</em><br />
+     <a href="directive-dict.html#Default"
+    rel="Help"><strong>Default:</strong></a> <code>MinSpareServers
+    5</code><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Context:</strong></a> server config<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>Status:</strong></a> core 
+
+    <p>The MinSpareServers directive sets the desired minimum
+    number of <em>idle</em> child server processes. An idle process
+    is one which is not handling a request. If there are fewer than
+    MinSpareServers idle, then the parent process creates new
+    children at a maximum rate of 1 per second.</p>
+
+    <p>Tuning of this parameter should only be necessary on very
+    busy sites. Setting this parameter to a large number is almost
+    always a bad idea.</p>
+
+    <p>This directive has no effect on Microsoft Windows.</p>
+
+    <p>See also <a href="#maxspareservers">MaxSpareServers</a> and
+    <a href="mpm_common.html#startservers">StartServers</a>. 
+    <!--#include virtual="footer.html" -->
+    </p>
+  </body>
+</html>
+

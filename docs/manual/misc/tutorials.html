@@ -1,209 +1,213 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
-<HTML>
-<HEAD>
-<TITLE>Apache Tutorials</TITLE>
-</HEAD>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
-<!-- Background white, links blue (unvisited), navy (visited), red (active) -->
-<BODY
- BGCOLOR="#FFFFFF"
- TEXT="#000000"
- LINK="#0000FF"
- VLINK="#000080"
- ALINK="#FF0000"
->
-<!--#include virtual="header.html" -->
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta name="generator" content="HTML Tidy, see www.w3.org" />
 
-<blockquote><strong>Warning:</strong>
-This document has not been updated to take into account changes
-made in the 2.0 version of the Apache HTTP Server.  Some of the
-information may still be relevant, but please use it
-with care.
-</blockquote>
+    <title>Apache Tutorials</title>
+  </head>
+  <!-- Background white, links blue (unvisited), navy (visited), red (active) -->
 
+  <body bgcolor="#FFFFFF" text="#000000" link="#0000FF"
+  vlink="#000080" alink="#FF0000">
+    <!--#include virtual="header.html" -->
 
-<H1 ALIGN="CENTER">Apache Tutorials</H1>
+    <blockquote>
+      <strong>Warning:</strong> This document has not been updated
+      to take into account changes made in the 2.0 version of the
+      Apache HTTP Server. Some of the information may still be
+      relevant, but please use it with care.
+    </blockquote>
 
-<P>The following documents give you step-by-step instructions on how
-to accomplish common tasks with the Apache http server.  Many of these
-documents are located at external sites and are not the work of the
-Apache Software Foundation.  Copyright to documents on external sites
-is owned by the authors or their assignees.  Please consult the <A
-HREF="../">official Apache Server documentation</A> to verify what you
-read on external sites.
+    <h1 align="CENTER">Apache Tutorials</h1>
 
+    <p>The following documents give you step-by-step instructions
+    on how to accomplish common tasks with the Apache http server.
+    Many of these documents are located at external sites and are
+    not the work of the Apache Software Foundation. Copyright to
+    documents on external sites is owned by the authors or their
+    assignees. Please consult the <a href="../">official Apache
+    Server documentation</a> to verify what you read on external
+    sites.</p>
 
-<H2>Installation & Getting Started</H2>
+    <h2>Installation &amp; Getting Started</h2>
 
-<UL>
+    <ul>
+      <li><a
+      href="http://apachetoday.com/news_story.php3?ltsn=2000-06-1-001-01-NW-DP-LF">
+      Getting Started with Apache 1.3</a> (ApacheToday)</li>
 
-<LI><A
-HREF="http://apachetoday.com/news_story.php3?ltsn=2000-06-1-001-01-NW-DP-LF"
->Getting Started with Apache 1.3</A> (ApacheToday)
+      <li><a
+      href="http://apachetoday.com/news_story.php3?ltsn=2000-07-10-001-01-NW-LF-SW">
+      Configuring Your Apache Server Installation</a>
+      (ApacheToday)</li>
 
-<LI><A
-HREF="http://apachetoday.com/news_story.php3?ltsn=2000-07-10-001-01-NW-LF-SW"
->Configuring Your Apache Server Installation</A> (ApacheToday)
+      <li><a
+      href="http://oreilly.apacheweek.com/pub/a/apache/2000/02/24/installing_apache.html">
+      Getting, Installing, and Running Apache (on Unix)</a>
+      (O'Reilly Network Apache DevCenter)</li>
 
-<LI><A
-HREF="http://oreilly.apacheweek.com/pub/a/apache/2000/02/24/installing_apache.html"
->Getting, Installing, and Running Apache (on Unix)</A> (O'Reilly
-Network Apache DevCenter)
+      <li><a
+      href="http://www.builder.com/Servers/Apache/ss01.html">Maximum
+      Apache: Getting Started</a> (CNET Builder.com)</li>
 
-<LI><A HREF="http://www.builder.com/Servers/Apache/ss01.html">Maximum
-Apache: Getting Started</A> (CNET Builder.com)
+      <li><a
+      href="http://www.devshed.com/Server_Side/Administration/APACHE/">
+      How to Build the Apache of Your Dreams</a> (Developer
+      Shed)</li>
+    </ul>
 
-<LI><A HREF="http://www.devshed.com/Server_Side/Administration/APACHE/"
->How to Build the Apache of Your Dreams</A> (Developer Shed)
+    <h2>Basic Configuration</h2>
 
-</UL>
+    <ul>
+      <li><a
+      href="http://oreilly.apacheweek.com/pub/a/apache/2000/03/02/configuring_apache.html">
+      An Amble Through Apache Configuration</a> (O'Reilly Network
+      Apache DevCenter)</li>
 
+      <li><a
+      href="http://apachetoday.com/news_story.php3?ltsn=2000-07-19-002-01-NW-LF-SW">
+      Using .htaccess Files with Apache</a> (ApacheToday)</li>
 
-<H2>Basic Configuration</H2>
+      <li><a
+      href="http://apachetoday.com/news_story.php3?ltsn=2000-07-17-001-01-PS">
+      Setting Up Virtual Hosts</a> (ApacheToday)</li>
 
-<UL>
+      <li><a
+      href="http://www.builder.com/Servers/Apache/ss02.html">Maximum
+      Apache: Configure Apache</a> (CNET Builder.com)</li>
 
-<LI><A
-HREF="http://oreilly.apacheweek.com/pub/a/apache/2000/03/02/configuring_apache.html"
->An Amble Through Apache Configuration</A> (O'Reilly Network Apache
-DevCenter)
+      <li>Getting More Out of Apache <a
+      href="http://www.devshed.com/Server_Side/Administration/MoreApache/">
+      Part 1</a> - <a
+      href="http://www.devshed.com/Server_Side/Administration/MoreApache2/">
+      Part 2</a> (Developer Shed)</li>
+    </ul>
 
-<LI><A
-HREF="http://apachetoday.com/news_story.php3?ltsn=2000-07-19-002-01-NW-LF-SW"
->Using .htaccess Files with Apache</A> (ApacheToday)
+    <h2>Security</h2>
 
-<LI><A
-HREF="http://apachetoday.com/news_story.php3?ltsn=2000-07-17-001-01-PS"
->Setting Up Virtual Hosts</A> (ApacheToday)
+    <ul>
+      <li><a
+      href="http://www.linuxplanet.com/linuxplanet/tutorials/1527/1/">
+      Security and Apache: An Essential Primer</a>
+      (LinuxPlanet)</li>
 
-<LI><A HREF="http://www.builder.com/Servers/Apache/ss02.html">Maximum
-Apache: Configure Apache</A> (CNET Builder.com)
+      <li><a
+      href="http://www.apacheweek.com/features/userauth">Using User
+      Authentication</a> (Apacheweek)</li>
 
-<LI>Getting More Out of Apache <A HREF="http://www.devshed.com/Server_Side/Administration/MoreApache/">Part 1</A> - <A HREF="http://www.devshed.com/Server_Side/Administration/MoreApache2/">Part 2</A> (Developer Shed)
+      <li><a href="http://www.apacheweek.com/features/dbmauth">DBM
+      User Authentication</a> (Apacheweek)</li>
 
-</UL>
+      <li><a
+      href="http://linux.com/security/newsitem.phtml?sid=12&amp;aid=3549">
+      An Introduction to Securing Apache</a> (Linux.com)</li>
 
-<H2>Security</H2>
+      <li><a
+      href="http://linux.com/security/newsitem.phtml?sid=12&amp;aid=3667">
+      Securing Apache - Access Control</a> (Linux.com)</li>
 
-<UL>
+      <li>Apache Authentication <a
+      href="http://apachetoday.com/news_story.php3?ltsn=2000-07-24-002-01-NW-LF-SW">
+      Part 1</a> - <a
+      href="http://apachetoday.com/news_story.php3?ltsn=2000-07-31-001-01-NW-DP-LF">
+      Part 2</a> - <a
+      href="http://apachetoday.com/news_story.php3?ltsn=2000-08-07-001-01-NW-LF-SW">
+      Part 3</a> - <a
+      href="http://apachetoday.com/news_story.php3?ltsn=2000-08-14-001-01-NW-LF-SW">
+      Part 4</a> (ApacheToday)</li>
 
-<LI><A
-HREF="http://www.linuxplanet.com/linuxplanet/tutorials/1527/1/">Security
-and Apache: An Essential Primer</A> (LinuxPlanet)
+      <li><a
+      href="http://apachetoday.com/news_story.php3?ltsn=2000-11-13-003-01-SC-LF-SW">
+      mod_access: Restricting Access by Host</a> (ApacheToday)</li>
+    </ul>
 
-<LI><A HREF="http://www.apacheweek.com/features/userauth">Using User
-Authentication</A> (Apacheweek)
+    <h2>Logging</h2>
 
-<LI><A HREF="http://www.apacheweek.com/features/dbmauth">DBM User
-Authentication</A> (Apacheweek)
+    <ul>
+      <li><a
+      href="http://oreilly.apacheweek.com/pub/a/apache/2000/03/10/log_rhythms.html">
+      Log Rhythms</a> (O'Reilly Network Apache DevCenter)</li>
 
-<LI><A
-HREF="http://linux.com/security/newsitem.phtml?sid=12&aid=3549">An
-Introduction to Securing Apache</A> (Linux.com)
+      <li><a
+      href="http://www.apacheweek.com/features/logfiles">Gathering
+      Visitor Information: Customising Your Logfiles</a>
+      (Apacheweek)</li>
 
-<LI><A
-HREF="http://linux.com/security/newsitem.phtml?sid=12&aid=3667">Securing
-Apache - Access Control</A> (Linux.com)
+      <li>Apache Guide: Logging <a
+      href="http://apachetoday.com/news_story.php3?ltsn=2000-08-21-003-01-NW-LF-SW">
+      Part 1</a> - <a
+      href="http://apachetoday.com/news_story.php3?ltsn=2000-08-28-001-01-NW-LF-SW">
+      Part 2</a> - <a
+      href="http://apachetoday.com/news_story.php3?ltsn=2000-09-05-001-01-NW-LF-SW">
+      Part 3</a> - <a
+      href="http://apachetoday.com/news_story.php3?ltsn=2000-09-18-003-01-NW-LF-SW">
+      Part 4</a> - <a
+      href="http://apachetoday.com/news_story.php3?ltsn=2000-09-25-001-01-NW-LF-SW">
+      Part 5</a> (ApacheToday)</li>
+    </ul>
 
-<LI>Apache Authentication <A
-HREF="http://apachetoday.com/news_story.php3?ltsn=2000-07-24-002-01-NW-LF-SW"
->Part 1</A> - <A
-HREF="http://apachetoday.com/news_story.php3?ltsn=2000-07-31-001-01-NW-DP-LF"
->Part 2</A> - <A
-HREF="http://apachetoday.com/news_story.php3?ltsn=2000-08-07-001-01-NW-LF-SW"
->Part 3</A> - <A
-HREF="http://apachetoday.com/news_story.php3?ltsn=2000-08-14-001-01-NW-LF-SW"
->Part 4</A> (ApacheToday)
+    <h2>CGI and SSI</h2>
 
-<LI><a href="http://apachetoday.com/news_story.php3?ltsn=2000-11-13-003-01-SC-LF-SW"
->mod_access: Restricting Access by Host</a> (ApacheToday)
+    <ul>
+      <li><a
+      href="http://apachetoday.com/news_story.php3?ltsn=2000-06-05-001-10-NW-LF-SW">
+      Dynamic Content with CGI</a> (ApacheToday)</li>
 
-</UL>
+      <li><a
+      href="http://www.perl.com/CPAN-local/doc/FAQs/cgi/idiots-guide.html">
+      The Idiot's Guide to Solving Perl CGI Problems</a>
+      (CPAN)</li>
 
-<H2>Logging</H2>
+      <li><a
+      href="http://www.linuxplanet.com/linuxplanet/tutorials/1445/1/">
+      Executing CGI Scripts as Other Users</a> (LinuxPlanet)</li>
 
-<UL>
+      <li><a href="http://www.htmlhelp.org/faq/cgifaq.html">CGI
+      Programming FAQ</a> (Web Design Group)</li>
 
-<LI><A
-HREF="http://oreilly.apacheweek.com/pub/a/apache/2000/03/10/log_rhythms.html"
->Log Rhythms</A> (O'Reilly Network Apache DevCenter)
+      <li>Introduction to Server Side Includes <a
+      href="http://apachetoday.com/news_story.php3?ltsn=2000-06-12-001-01-PS">
+      Part 1</a> - <a
+      href="http://apachetoday.com/news_story.php3?ltsn=2000-06-19-002-01-NW-LF-SW">
+      Part 2</a> (ApacheToday)</li>
 
-<LI><A HREF="http://www.apacheweek.com/features/logfiles">Gathering
-Visitor Information: Customising Your Logfiles</A> (Apacheweek)
+      <li><a
+      href="http://apachetoday.com/news_story.php3?ltsn=2000-06-26-001-01-NW-LF-SW">
+      Advanced SSI Techniques</a> (ApacheToday)</li>
 
-<LI>Apache Guide: Logging
-<A HREF="http://apachetoday.com/news_story.php3?ltsn=2000-08-21-003-01-NW-LF-SW"
->Part 1</A> -
-<A HREF="http://apachetoday.com/news_story.php3?ltsn=2000-08-28-001-01-NW-LF-SW"
->Part 2</A> - 
-<A HREF="http://apachetoday.com/news_story.php3?ltsn=2000-09-05-001-01-NW-LF-SW"
->Part 3</A> -
-<A HREF="http://apachetoday.com/news_story.php3?ltsn=2000-09-18-003-01-NW-LF-SW"
->Part 4</A> -
-<A HREF="http://apachetoday.com/news_story.php3?ltsn=2000-09-25-001-01-NW-LF-SW"
->Part 5</A> (ApacheToday)
+      <li><a
+      href="http://www.builder.com/Servers/ApacheFiles/082400/">Setting
+      up CGI and SSI with Apache</a> (CNET Builder.com)</li>
+    </ul>
 
-</UL>
+    <h2>Other Features</h2>
 
-<H2>CGI and SSI</H2>
+    <ul>
+      <li><a
+      href="http://www.apacheweek.com/features/negotiation">Content
+      Negotiation Explained</a> (Apacheweek)</li>
 
-<UL>
+      <li><a
+      href="http://www.apacheweek.com/features/imagemaps">Using
+      Apache Imagemaps</a> (Apacheweek)</li>
 
-<LI><A
-HREF="http://apachetoday.com/news_story.php3?ltsn=2000-06-05-001-10-NW-LF-SW"
->Dynamic Content with CGI</A> (ApacheToday)
+      <li><a
+      href="http://apachetoday.com/news_story.php3?ltsn=2000-06-14-002-01-PS">
+      Keeping Your Images from Adorning Other Sites</a>
+      (ApacheToday)</li>
 
-<LI><A
-HREF="http://www.perl.com/CPAN-local/doc/FAQs/cgi/idiots-guide.html">The
-Idiot's Guide to Solving Perl CGI Problems</A> (CPAN)
+      <li><a
+      href="http://ppewww.ph.gla.ac.uk/~flavell/www/lang-neg.html">Language
+      Negotiation Notes</a> (Alan J. Flavell)</li>
+    </ul>
 
-<LI><A
-HREF="http://www.linuxplanet.com/linuxplanet/tutorials/1445/1/">Executing
-CGI Scripts as Other Users</A> (LinuxPlanet)
+    <p>If you have a pointer to a an accurate and well-written
+    tutorial not included here, please let us know by submitting it
+    to the <a href="http://bugs.apache.org/">Apache Bug
+    Database</a>. <!--#include virtual="footer.html" -->
+    </p>
+  </body>
+</html>
 
-<LI><A HREF="http://www.htmlhelp.org/faq/cgifaq.html">CGI Programming
-FAQ</A> (Web Design Group)
-
-<LI>Introduction to Server Side Includes <A
-HREF="http://apachetoday.com/news_story.php3?ltsn=2000-06-12-001-01-PS">Part
-1</A> - <A
-HREF="http://apachetoday.com/news_story.php3?ltsn=2000-06-19-002-01-NW-LF-SW"
->Part 2</A> (ApacheToday)
-
-<LI><A
-HREF="http://apachetoday.com/news_story.php3?ltsn=2000-06-26-001-01-NW-LF-SW"
->Advanced SSI Techniques</A> (ApacheToday)
-
-<LI><A
-HREF="http://www.builder.com/Servers/ApacheFiles/082400/">Setting up
-CGI and SSI with Apache</A> (CNET Builder.com)
-
-</UL>
-
-<H2>Other Features</H2>
-
-<UL>
-
-<LI><A HREF="http://www.apacheweek.com/features/negotiation">Content
-Negotiation Explained</A> (Apacheweek)
-
-<LI><A HREF="http://www.apacheweek.com/features/imagemaps">Using
-Apache Imagemaps</A> (Apacheweek)
-
-<LI><A
-HREF="http://apachetoday.com/news_story.php3?ltsn=2000-06-14-002-01-PS"
->Keeping Your Images from Adorning Other Sites</A> (ApacheToday)
-
-<LI><A HREF="http://ppewww.ph.gla.ac.uk/~flavell/www/lang-neg.html"
->Language Negotiation Notes</A> (Alan J. Flavell)
-
-</UL>
-
-
-<P>If you have a pointer to a an accurate and well-written tutorial
-not included here, please let us know by submitting it to the
-<A HREF="http://bugs.apache.org/">Apache Bug Database</A>.
-
-<!--#include virtual="footer.html" -->
-</BODY>
-</HTML>

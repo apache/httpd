@@ -1,146 +1,176 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
-<HTML><HEAD>
-<TITLE>Dynamically configured mass virtual hosting</TITLE>
-</HEAD>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
-<!-- Background white, links blue (unvisited), navy (visited), red (active) -->
-<BODY
- BGCOLOR="#FFFFFF"
- TEXT="#000000"
- LINK="#0000FF"
- VLINK="#000080"
- ALINK="#FF0000"
->
-<!--#include virtual="header.html" -->
-<H1 ALIGN="CENTER">Dynamically configured mass virtual hosting</H1>
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta name="generator" content="HTML Tidy, see www.w3.org" />
 
-<P>This document describes how to efficiently serve an arbitrary number
-of virtual hosts with Apache 1.3. 
+    <title>Dynamically configured mass virtual hosting</title>
+  </head>
+  <!-- Background white, links blue (unvisited), navy (visited), red (active) -->
 
-<!--
+  <body bgcolor="#FFFFFF" text="#000000" link="#0000FF"
+  vlink="#000080" alink="#FF0000">
+    <!--#include virtual="header.html" -->
 
-Written by Tony Finch (fanf@demon.net) (dot@dotat.at).
+    <h1 align="CENTER">Dynamically configured mass virtual
+    hosting</h1>
 
-Some examples were derived from Ralf S. Engleschall's document
-	http://www.engelschall.com/pw/apache/rewriteguide/
+    <p>This document describes how to efficiently serve an
+    arbitrary number of virtual hosts with Apache 1.3. <!--
 
-Some suggestions were made by Brian Behlendorf.
+                Written by Tony Finch (fanf@demon.net) (dot@dotat.at).
 
--->
+                Some examples were derived from Ralf S. Engleschall's document
+                    http://www.engelschall.com/pw/apache/rewriteguide/
 
-<H2><A NAME="contents">Contents:</A></H2>
+                Some suggestions were made by Brian Behlendorf.
 
-<UL>
-<LI><A HREF="#motivation">Motivation</A>
-<LI><A HREF="#overview">Overview</A>
-<LI><A HREF="#simple">Simple dynamic virtual hosts</A>
-<LI><A HREF="#homepages">A virtually hosted homepages system</A>
-<LI><A HREF="#combinations">Using more than one virtual hosting system on the same server</A>
-<LI><A HREF="#ipbased">More efficient IP-based virtual hosting</A>
-<LI><A HREF="#oldversion">Using older versions of Apache</A>
-<LI><A HREF="#simple.rewrite">Simple dynamic virtual hosts using <CODE>mod_rewrite</CODE></A>
-<LI><A HREF="#homepages.rewrite">A homepages system using <CODE>mod_rewrite</CODE></A>
-<LI><A HREF="#xtra-conf">Using a separate virtual host configuration file</A>
-</UL>
+                -->
+    </p>
 
-<HR><H2><A NAME="motivation">Motivation</A></H2>
+    <h2><a id="contents" name="contents">Contents:</a></h2>
 
-<P>The techniques described here are of interest if your
-<CODE>httpd.conf</CODE> contains many
-<CODE>&lt;VirtualHost&gt;</CODE> sections that are substantially the
-same, for example:
-<PRE>
+    <ul>
+      <li><a href="#motivation">Motivation</a></li>
+
+      <li><a href="#overview">Overview</a></li>
+
+      <li><a href="#simple">Simple dynamic virtual hosts</a></li>
+
+      <li><a href="#homepages">A virtually hosted homepages
+      system</a></li>
+
+      <li><a href="#combinations">Using more than one virtual
+      hosting system on the same server</a></li>
+
+      <li><a href="#ipbased">More efficient IP-based virtual
+      hosting</a></li>
+
+      <li><a href="#oldversion">Using older versions of
+      Apache</a></li>
+
+      <li><a href="#simple.rewrite">Simple dynamic virtual hosts
+      using <code>mod_rewrite</code></a></li>
+
+      <li><a href="#homepages.rewrite">A homepages system using
+      <code>mod_rewrite</code></a></li>
+
+      <li><a href="#xtra-conf">Using a separate virtual host
+      configuration file</a></li>
+    </ul>
+    <hr />
+
+    <h2><a id="motivation" name="motivation">Motivation</a></h2>
+
+    <p>The techniques described here are of interest if your
+    <code>httpd.conf</code> contains many
+    <code>&lt;VirtualHost&gt;</code> sections that are
+    substantially the same, for example:</p>
+<pre>
 NameVirtualHost 111.22.33.44
 &lt;VirtualHost 111.22.33.44&gt;
-	ServerName		           www.customer-1.com
-	DocumentRoot		/www/hosts/www.customer-1.com/docs
-	ScriptAlias  /cgi-bin/  /www/hosts/www.customer-1.com/cgi-bin
+    ServerName                 www.customer-1.com
+    DocumentRoot        /www/hosts/www.customer-1.com/docs
+    ScriptAlias  /cgi-bin/  /www/hosts/www.customer-1.com/cgi-bin
 &lt;/VirtualHost&gt;
 &lt;VirtualHost 111.22.33.44&gt;
-	ServerName		           www.customer-2.com
-	DocumentRoot		/www/hosts/www.customer-2.com/docs
-	ScriptAlias  /cgi-bin/  /www/hosts/www.customer-2.com/cgi-bin
+    ServerName                 www.customer-2.com
+    DocumentRoot        /www/hosts/www.customer-2.com/docs
+    ScriptAlias  /cgi-bin/  /www/hosts/www.customer-2.com/cgi-bin
 &lt;/VirtualHost&gt;
 # blah blah blah
 &lt;VirtualHost 111.22.33.44&gt;
-	ServerName		           www.customer-N.com
-	DocumentRoot		/www/hosts/www.customer-N.com/docs
-	ScriptAlias  /cgi-bin/  /www/hosts/www.customer-N.com/cgi-bin
+    ServerName                 www.customer-N.com
+    DocumentRoot        /www/hosts/www.customer-N.com/docs
+    ScriptAlias  /cgi-bin/  /www/hosts/www.customer-N.com/cgi-bin
 &lt;/VirtualHost&gt;
-</PRE>
-</P>
+</pre>
+    <br />
+     <br />
+     
 
-<P>The basic idea is to replace all of the static
-<CODE>&lt;VirtualHost&gt;</CODE> configuration with a mechanism that
-works it out dynamically. This has a number of advantages:
-<OL>
-    <LI>Your configuration file is smaller so Apache starts faster and
-	uses less memory.
-    <LI>Adding virtual hosts is simply a matter of creating the
-	appropriate directories in the filesystem and entries in the DNS -
-	you don't need to reconfigure or restart Apache.
-</OL>
-</P>
+    <p>The basic idea is to replace all of the static
+    <code>&lt;VirtualHost&gt;</code> configuration with a mechanism
+    that works it out dynamically. This has a number of
+    advantages:</p>
 
-<P>The main disadvantage is that you cannot have a different log file
-for each virtual host; however if you have very many virtual hosts
-then doing this is dubious anyway because it eats file descriptors. It
-is better to log to a pipe or a fifo and arrange for the process at
-the other end to distribute the logs to the customers (it can also
-accumulate statistics, etc.).</P>
+    <ol>
+      <li>Your configuration file is smaller so Apache starts
+      faster and uses less memory.</li>
 
+      <li>Adding virtual hosts is simply a matter of creating the
+      appropriate directories in the filesystem and entries in the
+      DNS - you don't need to reconfigure or restart Apache.</li>
+    </ol>
+    <br />
+     <br />
+     
 
-<HR><H2><A NAME="overview">Overview</A></H2>
+    <p>The main disadvantage is that you cannot have a different
+    log file for each virtual host; however if you have very many
+    virtual hosts then doing this is dubious anyway because it eats
+    file descriptors. It is better to log to a pipe or a fifo and
+    arrange for the process at the other end to distribute the logs
+    to the customers (it can also accumulate statistics, etc.).</p>
+    <hr />
 
-<P>A virtual host is defined by two pieces of information: its IP
-address, and the contents of the <CODE>Host:</CODE> header in the HTTP
-request. The dynamic mass virtual hosting technique is based on
-automatically inserting this information into the pathname of the file
-that is used to satisfy the request. This is done most easily using
-<A HREF="../mod/mod_vhost_alias.html"><CODE>mod_vhost_alias</CODE></A>,
-but if you are using a version of Apache up to 1.3.6 then you must use
-<A HREF="../mod/mod_rewrite.html"><CODE>mod_rewrite</CODE></A>. Both
-of these modules are disabled by default; you must enable one of them
-when configuring and building Apache if you want to use this technique.</P>
+    <h2><a id="overview" name="overview">Overview</a></h2>
 
-<P>A couple of things need to be `faked' to make the dynamic virtual
-host look like a normal one. The most important is the server name
-which is used by Apache to generate self-referential URLs, etc. It
-is configured with the <CODE>ServerName</CODE> directive, and it is
-available to CGIs via the <CODE>SERVER_NAME</CODE> environment
-variable. The actual value used at run time is controlled by the
-<A HREF="../mod/core.html#usecanonicalname"><CODE>UseCanonicalName</CODE></A>
-setting. With <CODE>UseCanonicalName Off</CODE> the server name
-comes from the contents of the <CODE>Host:</CODE> header in the
-request. With <CODE>UseCanonicalName DNS</CODE> it comes from a
-reverse DNS lookup of the virtual host's IP address. The former
-setting is used for name-based dynamic virtual hosting, and the latter
-is used for IP-based hosting. If Apache cannot work out the server
-name because there is no <CODE>Host:</CODE> header or the DNS lookup
-fails then the value configured with <CODE>ServerName</CODE> is used
-instead.</P>
+    <p>A virtual host is defined by two pieces of information: its
+    IP address, and the contents of the <code>Host:</code> header
+    in the HTTP request. The dynamic mass virtual hosting technique
+    is based on automatically inserting this information into the
+    pathname of the file that is used to satisfy the request. This
+    is done most easily using <a
+    href="../mod/mod_vhost_alias.html"><code>mod_vhost_alias</code></a>,
+    but if you are using a version of Apache up to 1.3.6 then you
+    must use <a
+    href="../mod/mod_rewrite.html"><code>mod_rewrite</code></a>.
+    Both of these modules are disabled by default; you must enable
+    one of them when configuring and building Apache if you want to
+    use this technique.</p>
 
-<P>The other thing to `fake' is the document root (configured
-with <CODE>DocumentRoot</CODE> and available to CGIs via the
-<CODE>DOCUMENT_ROOT</CODE> environment variable). In a normal
-configuration this setting is used by the core module when mapping
-URIs to filenames, but when the server is configured to do dynamic
-virtual hosting that job is taken over by another module (either
-<CODE>mod_vhost_alias</CODE> or <CODE>mod_rewrite</CODE>) which has
-a different way of doing the mapping. Neither of these modules is
-responsible for setting the <CODE>DOCUMENT_ROOT</CODE> environment
-variable so if any CGIs or SSI documents make use of it they will
-get a misleading value.</P>
+    <p>A couple of things need to be `faked' to make the dynamic
+    virtual host look like a normal one. The most important is the
+    server name which is used by Apache to generate
+    self-referential URLs, etc. It is configured with the
+    <code>ServerName</code> directive, and it is available to CGIs
+    via the <code>SERVER_NAME</code> environment variable. The
+    actual value used at run time is controlled by the <a
+    href="../mod/core.html#usecanonicalname"><code>UseCanonicalName</code></a>
+    setting. With <code>UseCanonicalName Off</code> the server name
+    comes from the contents of the <code>Host:</code> header in the
+    request. With <code>UseCanonicalName DNS</code> it comes from a
+    reverse DNS lookup of the virtual host's IP address. The former
+    setting is used for name-based dynamic virtual hosting, and the
+    latter is used for IP-based hosting. If Apache cannot work out
+    the server name because there is no <code>Host:</code> header
+    or the DNS lookup fails then the value configured with
+    <code>ServerName</code> is used instead.</p>
 
+    <p>The other thing to `fake' is the document root (configured
+    with <code>DocumentRoot</code> and available to CGIs via the
+    <code>DOCUMENT_ROOT</code> environment variable). In a normal
+    configuration this setting is used by the core module when
+    mapping URIs to filenames, but when the server is configured to
+    do dynamic virtual hosting that job is taken over by another
+    module (either <code>mod_vhost_alias</code> or
+    <code>mod_rewrite</code>) which has a different way of doing
+    the mapping. Neither of these modules is responsible for
+    setting the <code>DOCUMENT_ROOT</code> environment variable so
+    if any CGIs or SSI documents make use of it they will get a
+    misleading value.</p>
+    <hr />
 
-<HR><H2><A NAME="simple">Simple dynamic virtual hosts</A></H2>
+    <h2><a id="simple" name="simple">Simple dynamic virtual
+    hosts</a></h2>
 
-<P>This extract from <CODE>httpd.conf</CODE> implements the virtual
-host arrangement outlined in the <A HREF="#motivation">Motivation</A>
-section above, but in a generic fashion using
-<CODE>mod_vhost_alias</CODE>.</P>
-
-<PRE>
+    <p>This extract from <code>httpd.conf</code> implements the
+    virtual host arrangement outlined in the <a
+    href="#motivation">Motivation</a> section above, but in a
+    generic fashion using <code>mod_vhost_alias</code>.</p>
+<pre>
 # get the server name from the Host: header
 UseCanonicalName Off
 
@@ -151,25 +181,26 @@ CustomLog logs/access_log vcommon
 # include the server name in the filenames used to satisfy requests
 VirtualDocumentRoot /www/hosts/%0/docs
 VirtualScriptAlias  /www/hosts/%0/cgi-bin
-</PRE>
+</pre>
 
-<P>This configuration can be changed into an IP-based virtual hosting
-solution by just turning <CODE>UseCanonicalName Off</CODE> into
-<CODE>UseCanonicalName DNS</CODE>. The server name that is inserted
-into the filename is then derived from the IP address of the virtual
-host.</P>
+    <p>This configuration can be changed into an IP-based virtual
+    hosting solution by just turning <code>UseCanonicalName
+    Off</code> into <code>UseCanonicalName DNS</code>. The server
+    name that is inserted into the filename is then derived from
+    the IP address of the virtual host.</p>
+    <hr />
 
+    <h2><a id="homepages" name="homepages">A virtually hosted
+    homepages system</a></h2>
 
-<HR><H2><A NAME="homepages">A virtually hosted homepages system</A></H2>
-
-<P>This is an adjustment of the above system tailored for an ISP's
-homepages server. Using a slightly more complicated configuration we
-can select substrings of the server name to use in the filename so
-that e.g. the documents for <SAMP>www.user.isp.com</SAMP> are found in
-<CODE>/home/user/</CODE>. It uses a single <CODE>cgi-bin</CODE>
-directory instead of one per virtual host.</P>
-
-<PRE>
+    <p>This is an adjustment of the above system tailored for an
+    ISP's homepages server. Using a slightly more complicated
+    configuration we can select substrings of the server name to
+    use in the filename so that e.g. the documents for
+    <samp>www.user.isp.com</samp> are found in
+    <code>/home/user/</code>. It uses a single <code>cgi-bin</code>
+    directory instead of one per virtual host.</p>
+<pre>
 # all the preliminary stuff is the same as above, then
 
 # include part of the server name in the filenames
@@ -177,72 +208,71 @@ VirtualDocumentRoot /www/hosts/%2/docs
 
 # single cgi-bin directory
 ScriptAlias  /cgi-bin/  /www/std-cgi/
-</PRE>
+</pre>
 
-<P>There are examples of more complicated
-<CODE>VirtualDocumentRoot</CODE> settings in
-<A HREF="../mod/mod_vhost_alias.html">the
-<CODE>mod_vhost_alias</CODE> documentation</A>.</P>
+    <p>There are examples of more complicated
+    <code>VirtualDocumentRoot</code> settings in <a
+    href="../mod/mod_vhost_alias.html">the
+    <code>mod_vhost_alias</code> documentation</a>.</p>
+    <hr />
 
+    <h2><a id="combinations" name="combinations">Using more than
+    one virtual hosting system on the same server</a></h2>
 
-<HR><H2><A NAME="combinations">Using more than one virtual hosting
-system on the same server</A></H2>
-
-<P>With more complicated setups you can use Apache's normal
-<CODE>&lt;VirtualHost&gt;</CODE> directives to control the scope of
-the various virtual hosting configurations. For example, you could
-have one IP address for homepages customers and another for commercial
-customers with the following setup. This can of course be combined
-with conventional <CODE>&lt;VirtualHost&gt;</CODE> configuration
-sections.</P>
-
-<PRE>
+    <p>With more complicated setups you can use Apache's normal
+    <code>&lt;VirtualHost&gt;</code> directives to control the
+    scope of the various virtual hosting configurations. For
+    example, you could have one IP address for homepages customers
+    and another for commercial customers with the following setup.
+    This can of course be combined with conventional
+    <code>&lt;VirtualHost&gt;</code> configuration sections.</p>
+<pre>
 UseCanonicalName Off
 
 LogFormat "%V %h %l %u %t \"%r\" %s %b" vcommon
 
 &lt;Directory /www/commercial&gt;
-	Options FollowSymLinks
-	AllowOverride All
+    Options FollowSymLinks
+    AllowOverride All
 &lt;/Directory&gt;
 
 &lt;Directory /www/homepages&gt;
-	Options FollowSymLinks
-	AllowOverride None
+    Options FollowSymLinks
+    AllowOverride None
 &lt;/Directory&gt;
 
 &lt;VirtualHost 111.22.33.44&gt;
-	ServerName www.commercial.isp.com
+    ServerName www.commercial.isp.com
 
-	CustomLog logs/access_log.commercial vcommon
+    CustomLog logs/access_log.commercial vcommon
 
-	VirtualDocumentRoot /www/commercial/%0/docs
-	VirtualScriptAlias  /www/commercial/%0/cgi-bin
+    VirtualDocumentRoot /www/commercial/%0/docs
+    VirtualScriptAlias  /www/commercial/%0/cgi-bin
 &lt;/VirtualHost&gt;
 
 &lt;VirtualHost 111.22.33.45&gt;
-	ServerName www.homepages.isp.com
+    ServerName www.homepages.isp.com
 
-	CustomLog logs/access_log.homepages vcommon
+    CustomLog logs/access_log.homepages vcommon
 
-	VirtualDocumentRoot /www/homepages/%0/docs
-	ScriptAlias         /cgi-bin/ /www/std-cgi/
+    VirtualDocumentRoot /www/homepages/%0/docs
+    ScriptAlias         /cgi-bin/ /www/std-cgi/
 &lt;/VirtualHost&gt;
-</PRE>
+</pre>
+    <hr />
 
+    <h2><a id="ipbased" name="ipbased">More efficient IP-based
+    virtual hosting</a></h2>
 
-<HR><H2><A NAME="ipbased">More efficient IP-based virtual hosting</A></H2>
-
-<P>After <A HREF="#simple">the first example</A> I noted that it is
-easy to turn it into an IP-based virtual hosting setup. Unfortunately
-that configuration is not very efficient because it requires a DNS
-lookup for every request. This can be avoided by laying out the
-filesystem according to the IP addresses themselves rather than the
-corresponding names and changing the logging similarly. Apache will
-then usually not need to work out the server name and so incur a DNS
-lookup.</P>
-
-<PRE>
+    <p>After <a href="#simple">the first example</a> I noted that
+    it is easy to turn it into an IP-based virtual hosting setup.
+    Unfortunately that configuration is not very efficient because
+    it requires a DNS lookup for every request. This can be avoided
+    by laying out the filesystem according to the IP addresses
+    themselves rather than the corresponding names and changing the
+    logging similarly. Apache will then usually not need to work
+    out the server name and so incur a DNS lookup.</p>
+<pre>
 # get the server name from the reverse DNS of the IP address
 UseCanonicalName DNS
 
@@ -253,48 +283,51 @@ CustomLog logs/access_log vcommon
 # include the IP address in the filenames
 VirtualDocumentRootIP /www/hosts/%0/docs
 VirtualScriptAliasIP  /www/hosts/%0/cgi-bin
-</PRE>
+</pre>
+    <hr />
 
+    <h2><a id="oldversion" name="oldversion">Using older versions
+    of Apache</a></h2>
 
-<HR><H2><A NAME="oldversion">Using older versions of Apache</A></H2>
+    <p>The examples above rely on <code>mod_vhost_alias</code>
+    which appeared after version 1.3.6. If you are using a version
+    of Apache without <code>mod_vhost_alias</code> then you can
+    implement this technique with <code>mod_rewrite</code> as
+    illustrated below, but only for Host:-header-based virtual
+    hosts.</p>
 
-<P>The examples above rely on <CODE>mod_vhost_alias</CODE> which
-appeared after version 1.3.6. If you are using a version of Apache
-without <CODE>mod_vhost_alias</CODE> then you can implement this
-technique with <CODE>mod_rewrite</CODE> as illustrated below, but
-only for Host:-header-based virtual hosts.</P>
+    <p>In addition there are some things to beware of with logging.
+    Apache 1.3.6 is the first version to include the
+    <code>%V</code> log format directive; in versions 1.3.0 - 1.3.3
+    the <code>%v</code> option did what <code>%V</code> does;
+    version 1.3.4 has no equivalent. In all these versions of
+    Apache the <code>UseCanonicalName</code> directive can appear
+    in <code>.htaccess</code> files which means that customers can
+    cause the wrong thing to be logged. Therefore the best thing to
+    do is use the <code>%{Host}i</code> directive which logs the
+    <code>Host:</code> header directly; note that this may include
+    <code>:port</code> on the end which is not the case for
+    <code>%V</code>.</p>
+    <hr />
 
-<P>In addition there are some things to beware of with logging. Apache
-1.3.6 is the first version to include the <CODE>%V</CODE> log format
-directive; in versions 1.3.0 - 1.3.3 the <CODE>%v</CODE> option did
-what <CODE>%V</CODE> does; version 1.3.4 has no equivalent. In
-all these versions of Apache the <CODE>UseCanonicalName</CODE>
-directive can appear in <CODE>.htaccess</CODE> files which means that
-customers can cause the wrong thing to be logged. Therefore the best
-thing to do is use the <CODE>%{Host}i</CODE> directive which logs the
-<CODE>Host:</CODE> header directly; note that this may include
-<CODE>:port</CODE> on the end which is not the case for
-<CODE>%V</CODE>.</P>
+    <h2><a id="simple.rewrite" name="simple.rewrite">Simple dynamic
+    virtual hosts using <code>mod_rewrite</code></a></h2>
 
+    <p>This extract from <code>httpd.conf</code> does the same
+    thing as <a href="#simple">the first example</a>. The first
+    half is very similar to the corresponding part above but with
+    some changes for backward compatibility and to make the
+    <code>mod_rewrite</code> part work properly; the second half
+    configures <code>mod_rewrite</code> to do the actual work.</p>
 
-<HR><H2><A NAME="simple.rewrite">Simple dynamic virtual hosts
-using <CODE>mod_rewrite</CODE></A></H2>
-
-<P>This extract from <CODE>httpd.conf</CODE> does the same thing as
-<A HREF="#simple">the first example</A>. The first half is very
-similar to the corresponding part above but with some changes for
-backward compatibility and to make the <CODE>mod_rewrite</CODE> part
-work properly; the second half configures <CODE>mod_rewrite</CODE> to
-do the actual work.</P>
-
-<P>There are a couple of especially tricky bits: By default,
-<CODE>mod_rewrite</CODE> runs before the other URI translation modules
-(<CODE>mod_alias</CODE> etc.) so if they are used then
-<CODE>mod_rewrite</CODE> must be configured to accommodate them.
-Also, mome magic must be performed to do a per-dynamic-virtual-host
-equivalent of <CODE>ScriptAlias</CODE>.</P>
-
-<PRE>
+    <p>There are a couple of especially tricky bits: By default,
+    <code>mod_rewrite</code> runs before the other URI translation
+    modules (<code>mod_alias</code> etc.) so if they are used then
+    <code>mod_rewrite</code> must be configured to accommodate
+    them. Also, mome magic must be performed to do a
+    per-dynamic-virtual-host equivalent of
+    <code>ScriptAlias</code>.</p>
+<pre>
 # get the server name from the Host: header
 UseCanonicalName Off
 
@@ -303,9 +336,9 @@ LogFormat "%{Host}i %h %l %u %t \"%r\" %s %b" vcommon
 CustomLog logs/access_log vcommon
 
 &lt;Directory /www/hosts&gt;
-	# ExecCGI is needed here because we can't force
-	# CGI execution in the way that ScriptAlias does
-	Options FollowSymLinks ExecCGI
+    # ExecCGI is needed here because we can't force
+    # CGI execution in the way that ScriptAlias does
+    Options FollowSymLinks ExecCGI
 &lt;/Directory&gt;
 
 # now for the hard bit
@@ -328,16 +361,15 @@ RewriteCond  %{REQUEST_URI}  ^/cgi-bin/
 RewriteRule  ^/(.*)$  /www/hosts/${lowercase:%{SERVER_NAME}}/cgi-bin/$1  [T=application/x-httpd-cgi]
 
 # that's it!
-</PRE>
+</pre>
+    <hr />
 
+    <h2><a id="homepages.rewrite" name="homepages.rewrite">A
+    homepages system using <code>mod_rewrite</code></a></h2>
 
-<HR><H2><A NAME="homepages.rewrite">A homepages system
-using <CODE>mod_rewrite</CODE></A></H2>
-
-<P>This does the same thing as <A HREF="#homepages">the
-second example</A>.</P>
-
-<PRE>
+    <p>This does the same thing as <a href="#homepages">the second
+    example</a>.</p>
+<pre>
 RewriteEngine on
 
 RewriteMap   lowercase  int:tolower
@@ -357,27 +389,31 @@ RewriteRule  ^www\.([a-z-]+)\.isp\.com/(.*) /home/$1/$2
 
 # define the global CGI directory
 ScriptAlias  /cgi-bin/  /www/std-cgi/
-</PRE>
+</pre>
+    <hr />
 
+    <h2><a id="xtra-conf" name="xtra-conf">Using a separate virtual
+    host configuration file</a></h2>
 
-<HR><H2><A NAME="xtra-conf">Using a separate virtual host configuration file</A></H2>
+    <p>This arrangement uses more advanced <code>mod_rewrite</code>
+    features to get the translation from virtual host to document
+    root from a separate configuration file. This provides more
+    flexibility but requires more complicated configuration.</p>
 
-<P>This arrangement uses more advanced <CODE>mod_rewrite</CODE>
-features to get the translation from virtual host to document root
-from a separate configuration file. This provides more flexibility but
-requires more complicated configuration.</P>
-
-<P>The <CODE>vhost.map</CODE> file contains something like this:
-<PRE>
+    <p>The <code>vhost.map</code> file contains something like
+    this:</p>
+<pre>
 www.customer-1.com  /www/customers/1
 www.customer-2.com  /www/customers/2
 # ...
 www.customer-N.com  /www/customers/N
-</PRE>
-</P>
+</pre>
+    <br />
+     <br />
+     
 
-<P>The <CODE>http.conf</CODE> contains this:
-<PRE>
+    <p>The <code>http.conf</code> contains this:</p>
+<pre>
 RewriteEngine on
 
 RewriteMap   lowercase  int:tolower
@@ -397,9 +433,10 @@ RewriteCond  %{REQUEST_URI}               ^/cgi-bin/
 RewriteCond  ${lowercase:%{SERVER_NAME}}  ^(.+)$
 RewriteCond  ${vhost:%1}                  ^(/.*)$
 RewriteRule  ^/(.*)$                      %1/cgi-bin/$1
-</PRE>
-</P>
+</pre>
+    <br />
+     <br />
+     <!--#include virtual="footer.html" -->
+  </body>
+</html>
 
-<!--#include virtual="footer.html" -->
-</BODY>
-</HTML>

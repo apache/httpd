@@ -1,285 +1,232 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
-<HTML>
- <HEAD>
-  <TITLE>Apache module mod_charset_lite</TITLE>
- </HEAD>
-<!-- Background white, links blue (unvisited), navy (visited), red (active) -->
- <BODY
-  BGCOLOR="#FFFFFF"
-  TEXT="#000000"
-  LINK="#0000FF"
-  VLINK="#000080"
-  ALINK="#FF0000"
- >
-<!--#include virtual="header.html" -->
-  <H1 ALIGN="CENTER">Module mod_charset_lite</H1>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
-<p>This module provides the ability to specify character set
-  translation or recoding.</p>
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta name="generator" content="HTML Tidy, see www.w3.org" />
 
-<P><A
-HREF="module-dict.html#Status"
-REL="Help"
-><STRONG>Status:</STRONG></A> Experimental
-<BR>
-<A
-HREF="module-dict.html#SourceFile"
-REL="Help"
-><STRONG>Source File:</STRONG></A> mod_charset_lite.c
-<BR>
-<A
-HREF="module-dict.html#ModuleIdentifier"
-REL="Help"
-><STRONG>Module Identifier:</STRONG></A> charset_lite_module
-</P>
+    <title>Apache module mod_charset_lite</title>
+  </head>
+  <!-- Background white, links blue (unvisited), navy (visited), red (active) -->
 
-  <H2>Summary</H2>
-  <P>
-  This is an <STRONG>experimental</STRONG> module and should be used with
-  care.  Experiment with your <CODE>mod_charset_lite</CODE> configuration to
-  ensure that it performs the desired function.
-  </P>
-  <P>
-  <CODE>mod_charset_lite</CODE> allows the administrator to specify the
-  source character set of objects as well as the character set they should 
-  be translated into before sending to the client.  
-  <CODE>mod_charset_lite</CODE> does not translate the data itself but
-  instead tells Apache what translation to perform.  
-  <CODE>mod_charset_lite</CODE> is applicable to EBCDIC and ASCII 
-  host environments.  In an EBCDIC environment, Apache normally translates 
-  text content from the code page of the Apache process locale to 
-  ISO-8859-1.  <CODE>mod_charset_lite</CODE> can be used to specify that
-  a different translation is to be performed.  In an ASCII environment,
-  Apache normally performs no translation, so <CODE>mod_charset_lite</CODE>
-  is needed in order for any translation to take place.
-  </P>
+  <body bgcolor="#FFFFFF" text="#000000" link="#0000FF"
+  vlink="#000080" alink="#FF0000">
+    <!--#include virtual="header.html" -->
 
-  <p>This module will only work if <code>APACHE_XLATE</code> is defined
-  at compile time.</p>
+    <h1 align="CENTER">Module mod_charset_lite</h1>
 
-  <P>
-  This module provides a small subset of configuration mechanisms
-  implemented by Russian Apache and its associated <CODE>mod_charset</CODE>.
-  </P>
+    <p>This module provides the ability to specify character set
+    translation or recoding.</p>
 
-  <H2>Directives</H2>
-  <UL>
-   <LI><A HREF="#charsetsourceenc">CharsetSourceEnc</A>
-   <LI><A HREF="#charsetdefault">CharsetDefault</A>
-   <LI><A HREF="#charsetoptions">CharsetOptions</A>
-   </LI>
-  </UL>
+    <p><a href="module-dict.html#Status"
+    rel="Help"><strong>Status:</strong></a> Experimental<br />
+     <a href="module-dict.html#SourceFile"
+    rel="Help"><strong>Source File:</strong></a>
+    mod_charset_lite.c<br />
+     <a href="module-dict.html#ModuleIdentifier"
+    rel="Help"><strong>Module Identifier:</strong></a>
+    charset_lite_module</p>
 
- <H2>Common Problems</H2>
+    <h2>Summary</h2>
 
-  <H3>Invalid character set names</H3>
+    <p>This is an <strong>experimental</strong> module and should
+    be used with care. Experiment with your
+    <code>mod_charset_lite</code> configuration to ensure that it
+    performs the desired function.</p>
 
-  <P>
-  The character set name parameters of CharsetSourceEnc and CharsetDefault
-  must be acceptable to the translation mechanism used by APR on the system
-  where mod_charset_lite is deployed.  These character set names are not 
-  standardized and are usually not the same as the corresponding values used 
-  in http headers.  Currently, APR can only use iconv(3), so you can easily
-  test your character set names using the iconv(1) program, as follows:
-  </P>
+    <p><code>mod_charset_lite</code> allows the administrator to
+    specify the source character set of objects as well as the
+    character set they should be translated into before sending to
+    the client. <code>mod_charset_lite</code> does not translate
+    the data itself but instead tells Apache what translation to
+    perform. <code>mod_charset_lite</code> is applicable to EBCDIC
+    and ASCII host environments. In an EBCDIC environment, Apache
+    normally translates text content from the code page of the
+    Apache process locale to ISO-8859-1.
+    <code>mod_charset_lite</code> can be used to specify that a
+    different translation is to be performed. In an ASCII
+    environment, Apache normally performs no translation, so
+    <code>mod_charset_lite</code> is needed in order for any
+    translation to take place.</p>
 
-  <PRE>
+    <p>This module will only work if <code>APACHE_XLATE</code> is
+    defined at compile time.</p>
+
+    <p>This module provides a small subset of configuration
+    mechanisms implemented by Russian Apache and its associated
+    <code>mod_charset</code>.</p>
+
+    <h2>Directives</h2>
+
+    <ul>
+      <li><a href="#charsetsourceenc">CharsetSourceEnc</a></li>
+
+      <li><a href="#charsetdefault">CharsetDefault</a></li>
+
+      <li><a href="#charsetoptions">CharsetOptions</a></li>
+    </ul>
+
+    <h2>Common Problems</h2>
+
+    <h3>Invalid character set names</h3>
+
+    <p>The character set name parameters of CharsetSourceEnc and
+    CharsetDefault must be acceptable to the translation mechanism
+    used by APR on the system where mod_charset_lite is deployed.
+    These character set names are not standardized and are usually
+    not the same as the corresponding values used in http headers.
+    Currently, APR can only use iconv(3), so you can easily test
+    your character set names using the iconv(1) program, as
+    follows:</p>
+<pre>
   iconv -f charsetsourceenc-value -t charsetdefault-value
-  </PRE>
-
-  <H3>Mismatch between character set of content and translation rules</H3>
-
-  <P>
-  If the translation rules don't make sense for the content, translation
-  can fail in various ways, including:
-  </P>
-
-  <UL>
-  <LI>
-  The translation mechanism may return a bad return code, and the connection
-  will be aborted.
-  <LI>
-  The translation mechanism may silently place special characters (e.g., question
-  marks) in the output buffer when it cannot translate the input buffer.
-  </UL>
-
-  <HR>
-
-  <H2><A NAME="charsetsourceenc">CharsetSourceEnc</A></H2>
-  <P>
-  <A
-   HREF="directive-dict.html#Syntax"
-   REL="Help"
-  ><STRONG>Syntax:</STRONG></A> CharsetSourceEnc <EM>charset</EM>
-  <BR>
-  <A
-   HREF="directive-dict.html#Default"
-   REL="Help"
-  ><STRONG>Default:</STRONG></A> <EM>None</EM>
-  <BR>
-  <A
-   HREF="directive-dict.html#Context"
-   REL="Help"
-  ><STRONG>Context:</STRONG></A> directory, virtual host
-  <BR>
-  <A
-   HREF="directive-dict.html#Override"
-   REL="Help"
-  ><STRONG>Override:</STRONG></A> <EM>FileInfo</EM>
-  <BR>
-  <A
-   HREF="directive-dict.html#Status"
-   REL="Help"
-  ><STRONG>Status:</STRONG></A> Experimental
-  <BR>
-  <A
-   HREF="directive-dict.html#Module"
-   REL="Help"
-  ><STRONG>Module:</STRONG></A> mod_charset_lite
-  <BR>
-
-  <P>
-  The <CODE>CharsetSourceEnc</CODE> directive specifies the source charset
-  of files in the associated container.
-  </P>
-
-  <P>
-  The value of the <EM>charset</EM> argument must be accepted as a valid
-  character set name by the character set support in APR.  Generally, this
-  means that it must be supported by iconv.
-  </P>
-
-  Example:
-
-  <PRE>
-    &lt;Directory "/export/home/trawick/apacheinst/htdocs/convert"&gt;
-    CharsetSourceEnc  UTF-16BE
-    CharsetDefault    ISO8859-1
-    &lt;/Directory&gt;
-  </PRE>
-
-  The character set names in this example work with the iconv
-  translation support in Solaris 8.
-  <P>
-
-<hr>
-
-  <H2><A NAME="charsetdefault">CharsetDefault</A></H2>
-  <P>
-  <A
-   HREF="directive-dict.html#Syntax"
-   REL="Help"
-  ><STRONG>Syntax:</STRONG></A> CharsetDefault <EM>charset</EM>
-  <BR>
-  <A
-   HREF="directive-dict.html#Default"
-   REL="Help"
-  ><STRONG>Default:</STRONG></A> <EM>None</EM>
-  <BR>
-  <A
-   HREF="directive-dict.html#Context"
-   REL="Help"
-  ><STRONG>Context:</STRONG></A> directory, virtual host
-  <BR>
-  <A
-   HREF="directive-dict.html#Override"
-   REL="Help"
-  ><STRONG>Override:</STRONG></A> <EM>FileInfo</EM>
-  <BR>
-  <A
-   HREF="directive-dict.html#Status"
-   REL="Help"
-  ><STRONG>Status:</STRONG></A> Experimental
-  <BR>
-  <A
-   HREF="directive-dict.html#Module"
-   REL="Help"
-  ><STRONG>Module:</STRONG></A> mod_charset_lite
-  <BR>
-
-  <P>
-  The <CODE>CharsetDefault</CODE> directive specifies the charset that
-  content in the associated container should be translated to.
-  </P>
-
-  <P>
-  The value of the <EM>charset</EM> argument must be accepted as a valid
-  character set name by the character set support in APR.  Generally, this
-  means that it must be supported by iconv.
-  </P>
-
-  Example:
-
-  <PRE>
-    &lt;Directory "/export/home/trawick/apacheinst/htdocs/convert"&gt;
-    CharsetSourceEnc  UTF-16BE
-    CharsetDefault    ISO8859-1
-    &lt;/Directory&gt;
-  </PRE>
-
-  <P>
-
-<hr>
-
-  <H2><A NAME="charsetoptions">CharsetOptions</A></H2>
-  <P>
-  <A
-   HREF="directive-dict.html#Syntax"
-   REL="Help"
-  ><STRONG>Syntax:</STRONG></A> CharsetOptions <EM>option</em>
-  [<em>option</em>] ...
-  <BR>
-  <A
-   HREF="directive-dict.html#Default"
-   REL="Help"
-  ><STRONG>Default:</STRONG></A> <EM>DebugLevel=0</EM> <EM>NoImplicitAdd</EM>
-  <BR>
-  <A
-   HREF="directive-dict.html#Context"
-   REL="Help"
-  ><STRONG>Context:</STRONG></A> directory, virtual host
-  <BR>
-  <A
-   HREF="directive-dict.html#Override"
-   REL="Help"
-  ><STRONG>Override:</STRONG></A> <EM>FileInfo</EM>
-  <BR>
-  <A
-   HREF="directive-dict.html#Status"
-   REL="Help"
-  ><STRONG>Status:</STRONG></A> Experimental
-  <BR>
-  <A
-   HREF="directive-dict.html#Module"
-   REL="Help"
-  ><STRONG>Module:</STRONG></A> mod_charset_lite
-  <BR>
-
-  <P>
-  The <CODE>CharsetOptions</CODE> directive configures certain behaviors 
-  of <CODE>mod_charset_lite</CODE>.  <EM>Option</EM> can be one of
-  <DL>
-  <DT>DebugLevel=<EM>n</EM>
-  <DD>
-  The <SAMP>DebugLevel</SAMP> keyword allows you to specify the level of
-  debug messages generated by <CODE>mod_charset_lite</CODE>.  By default, no
-  messages are generated.  This is equivalent to <SAMP>DebugLevel=0</SAMP>.
-  With higher numbers, more debug messages are generated, and server 
-  performance will be degraded.  The actual meanings of the numeric values
-  are described with the definitions of the DBGLVL_ constants near the 
-  beginning of <CODE>mod_charset_lite.c</CODE>.
-  <DT>ImplicitAdd | NoImplicitAdd
-  <DD>
-  The <SAMP>ImplicitAdd</SAMP> keyword specifies that 
-  <CODE>mod_charset_lite</CODE> should implicitly insert its filter when
-  the configuration specifies that the character set of content should be 
-  translated.  If the filter chain is explicitly configured using the 
-  AddOutputFilter directive, <SAMP>NoImplicitAdd</SAMP> should be specified so 
-  that <CODE>mod_charset_lite</CODE> doesn't add its filter.
-  </DL>
-  </P>
-
  
-<!--#include virtual="footer.html" -->
- </BODY>
-</HTML>
+</pre>
+
+    <h3>Mismatch between character set of content and translation
+    rules</h3>
+
+    <p>If the translation rules don't make sense for the content,
+    translation can fail in various ways, including:</p>
+
+    <ul>
+      <li>The translation mechanism may return a bad return code,
+      and the connection will be aborted.</li>
+
+      <li>The translation mechanism may silently place special
+      characters (e.g., question marks) in the output buffer when
+      it cannot translate the input buffer.</li>
+    </ul>
+    <hr />
+
+    <h2><a id="charsetsourceenc"
+    name="charsetsourceenc">CharsetSourceEnc</a></h2>
+
+    <p><a href="directive-dict.html#Syntax"
+    rel="Help"><strong>Syntax:</strong></a> CharsetSourceEnc
+    <em>charset</em><br />
+     <a href="directive-dict.html#Default"
+    rel="Help"><strong>Default:</strong></a> <em>None</em><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Context:</strong></a> directory, virtual
+    host<br />
+     <a href="directive-dict.html#Override"
+    rel="Help"><strong>Override:</strong></a>
+    <em>FileInfo</em><br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>Status:</strong></a> Experimental<br />
+     <a href="directive-dict.html#Module"
+    rel="Help"><strong>Module:</strong></a> mod_charset_lite<br />
+    </p>
+
+    <p>The <code>CharsetSourceEnc</code> directive specifies the
+    source charset of files in the associated container.</p>
+
+    <p>The value of the <em>charset</em> argument must be accepted
+    as a valid character set name by the character set support in
+    APR. Generally, this means that it must be supported by
+    iconv.</p>
+    Example: 
+<pre>
+    &lt;Directory "/export/home/trawick/apacheinst/htdocs/convert"&gt;
+    CharsetSourceEnc  UTF-16BE
+    CharsetDefault    ISO8859-1
+    &lt;/Directory&gt;
+ 
+</pre>
+    The character set names in this example work with the iconv
+    translation support in Solaris 8. 
+    <hr />
+
+    <h2><a id="charsetdefault"
+    name="charsetdefault">CharsetDefault</a></h2>
+
+    <p><a href="directive-dict.html#Syntax"
+    rel="Help"><strong>Syntax:</strong></a> CharsetDefault
+    <em>charset</em><br />
+     <a href="directive-dict.html#Default"
+    rel="Help"><strong>Default:</strong></a> <em>None</em><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Context:</strong></a> directory, virtual
+    host<br />
+     <a href="directive-dict.html#Override"
+    rel="Help"><strong>Override:</strong></a>
+    <em>FileInfo</em><br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>Status:</strong></a> Experimental<br />
+     <a href="directive-dict.html#Module"
+    rel="Help"><strong>Module:</strong></a> mod_charset_lite<br />
+    </p>
+
+    <p>The <code>CharsetDefault</code> directive specifies the
+    charset that content in the associated container should be
+    translated to.</p>
+
+    <p>The value of the <em>charset</em> argument must be accepted
+    as a valid character set name by the character set support in
+    APR. Generally, this means that it must be supported by
+    iconv.</p>
+    Example: 
+<pre>
+    &lt;Directory "/export/home/trawick/apacheinst/htdocs/convert"&gt;
+    CharsetSourceEnc  UTF-16BE
+    CharsetDefault    ISO8859-1
+    &lt;/Directory&gt;
+ 
+</pre>
+    <hr />
+
+    <h2><a id="charsetoptions"
+    name="charsetoptions">CharsetOptions</a></h2>
+
+    <p><a href="directive-dict.html#Syntax"
+    rel="Help"><strong>Syntax:</strong></a> CharsetOptions
+    <em>option</em> [<em>option</em>] ...<br />
+     <a href="directive-dict.html#Default"
+    rel="Help"><strong>Default:</strong></a> <em>DebugLevel=0</em>
+    <em>NoImplicitAdd</em><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Context:</strong></a> directory, virtual
+    host<br />
+     <a href="directive-dict.html#Override"
+    rel="Help"><strong>Override:</strong></a>
+    <em>FileInfo</em><br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>Status:</strong></a> Experimental<br />
+     <a href="directive-dict.html#Module"
+    rel="Help"><strong>Module:</strong></a> mod_charset_lite<br />
+    </p>
+
+    <p>The <code>CharsetOptions</code> directive configures certain
+    behaviors of <code>mod_charset_lite</code>. <em>Option</em> can
+    be one of</p>
+
+    <dl>
+      <dt>DebugLevel=<em>n</em></dt>
+
+      <dd>The <samp>DebugLevel</samp> keyword allows you to specify
+      the level of debug messages generated by
+      <code>mod_charset_lite</code>. By default, no messages are
+      generated. This is equivalent to <samp>DebugLevel=0</samp>.
+      With higher numbers, more debug messages are generated, and
+      server performance will be degraded. The actual meanings of
+      the numeric values are described with the definitions of the
+      DBGLVL_ constants near the beginning of
+      <code>mod_charset_lite.c</code>.</dd>
+
+      <dt>ImplicitAdd | NoImplicitAdd</dt>
+
+      <dd>The <samp>ImplicitAdd</samp> keyword specifies that
+      <code>mod_charset_lite</code> should implicitly insert its
+      filter when the configuration specifies that the character
+      set of content should be translated. If the filter chain is
+      explicitly configured using the AddOutputFilter directive,
+      <samp>NoImplicitAdd</samp> should be specified so that
+      <code>mod_charset_lite</code> doesn't add its filter.</dd>
+    </dl>
+    <br />
+     <br />
+     <!--#include virtual="footer.html" -->
+  </body>
+</html>
+

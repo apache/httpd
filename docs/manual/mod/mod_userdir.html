@@ -1,139 +1,122 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
-<HTML>
-<HEAD>
-<TITLE>Apache module mod_userdir</TITLE>
-</HEAD>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
-<!-- Background white, links blue (unvisited), navy (visited), red (active) -->
-<BODY
- BGCOLOR="#FFFFFF"
- TEXT="#000000"
- LINK="#0000FF"
- VLINK="#000080"
- ALINK="#FF0000"
->
-<!--#include virtual="header.html" -->
-<H1 ALIGN="CENTER">Module mod_userdir</H1>
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta name="generator" content="HTML Tidy, see www.w3.org" />
 
-<p>This module provides for user-specific directories.</p>
+    <title>Apache module mod_userdir</title>
+  </head>
+  <!-- Background white, links blue (unvisited), navy (visited), red (active) -->
 
-<P><A
-HREF="module-dict.html#Status"
-REL="Help"
-><STRONG>Status:</STRONG></A> Base
-<BR>
-<A
-HREF="module-dict.html#SourceFile"
-REL="Help"
-><STRONG>Source File:</STRONG></A> mod_userdir.c
-<BR>
-<A
-HREF="module-dict.html#ModuleIdentifier"
-REL="Help"
-><STRONG>Module Identifier:</STRONG></A> userdir_module
-</P>
+  <body bgcolor="#FFFFFF" text="#000000" link="#0000FF"
+  vlink="#000080" alink="#FF0000">
+    <!--#include virtual="header.html" -->
 
-<h2>Directives</h2>
+    <h1 align="CENTER">Module mod_userdir</h1>
 
+    <p>This module provides for user-specific directories.</p>
 
-<UL>
-<LI><A HREF="#userdir">UserDir</A>
-</UL>
-<HR>
+    <p><a href="module-dict.html#Status"
+    rel="Help"><strong>Status:</strong></a> Base<br />
+     <a href="module-dict.html#SourceFile"
+    rel="Help"><strong>Source File:</strong></a>
+    mod_userdir.c<br />
+     <a href="module-dict.html#ModuleIdentifier"
+    rel="Help"><strong>Module Identifier:</strong></a>
+    userdir_module</p>
 
-<H2><A NAME="userdir">UserDir</A> directive</H2>
-<!--%plaintext &lt;?INDEX {\tt UserDir} directive&gt; -->
-<A
- HREF="directive-dict.html#Syntax"
- REL="Help"
-><STRONG>Syntax:</STRONG></A> UserDir <EM>directory-filename</EM><BR>
-<A
- HREF="directive-dict.html#Default"
- REL="Help"
-><STRONG>Default:</STRONG></A> <CODE>UserDir public_html</CODE><BR>
-<A
- HREF="directive-dict.html#Context"
- REL="Help"
-><STRONG>Context:</STRONG></A> server config, virtual host<BR>
-<A
- HREF="directive-dict.html#Status"
- REL="Help"
-><STRONG>Status:</STRONG></A> Base<BR>
-<A
- HREF="directive-dict.html#Module"
- REL="Help"
-><STRONG>Module:</STRONG></A> mod_userdir<BR>
-<A
- HREF="directive-dict.html#Compatibility"
- REL="Help"
-><STRONG>Compatibility:</STRONG></A> All forms except the <CODE>UserDir
-public_html</CODE> form are only available in Apache 1.1 or above.  Use
-of the <SAMP>enabled</SAMP> keyword, or <SAMP>disabled</SAMP> with a
-list of usernames, is only available in Apache 1.3 and above.<P>
+    <h2>Directives</h2>
 
-The UserDir directive sets the real directory in a user's home directory
-to use when a request for a document for a user is received.
-<EM>Directory-filename</EM> is one of the following:
-</P>
-<UL>
- <LI>The name of a directory or a pattern such as those shown below.
- </LI>
- <LI>The keyword <SAMP>disabled</SAMP>.  This turns off <EM>all</EM>
-  username-to-directory translations except those explicitly named with
-  the <SAMP>enabled</SAMP> keyword (see below).
- </LI>
- <LI>The keyword <SAMP>disabled</SAMP> followed by a space-delimited
-  list of usernames.  Usernames that appear in such a list will
-  <EM>never</EM> have directory translation performed, even if they
-  appear in an <SAMP>enabled</SAMP> clause.
- </LI>
- <LI>The keyword <SAMP>enabled</SAMP> followed by a space-delimited list
-  of usernames.  These usernames will have directory translation
-  performed even if a global disable is in effect, but not if they also
-  appear in a <SAMP>disabled</SAMP> clause.
- </LI>
-</UL>
-<P>
-If neither the <SAMP>enabled</SAMP> nor the <SAMP>disabled</SAMP>
-keywords appear in the <SAMP>Userdir</SAMP> directive, the argument is
-treated as a filename pattern, and is used to turn the name into a
-directory specification.  A request for
-<CODE>http://www.foo.com/~bob/one/two.html</CODE> will be translated to:
-<PRE>
+    <ul>
+      <li><a href="#userdir">UserDir</a></li>
+    </ul>
+    <hr />
+
+    <h2><a id="userdir" name="userdir">UserDir</a> directive</h2>
+    <!--%plaintext &lt;?INDEX {\tt UserDir} directive&gt; -->
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>Syntax:</strong></a> UserDir
+    <em>directory-filename</em><br />
+     <a href="directive-dict.html#Default"
+    rel="Help"><strong>Default:</strong></a> <code>UserDir
+    public_html</code><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Context:</strong></a> server config, virtual
+    host<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>Status:</strong></a> Base<br />
+     <a href="directive-dict.html#Module"
+    rel="Help"><strong>Module:</strong></a> mod_userdir<br />
+     <a href="directive-dict.html#Compatibility"
+    rel="Help"><strong>Compatibility:</strong></a> All forms except
+    the <code>UserDir public_html</code> form are only available in
+    Apache 1.1 or above. Use of the <samp>enabled</samp> keyword,
+    or <samp>disabled</samp> with a list of usernames, is only
+    available in Apache 1.3 and above. 
+
+    <p>The UserDir directive sets the real directory in a user's
+    home directory to use when a request for a document for a user
+    is received. <em>Directory-filename</em> is one of the
+    following:</p>
+
+    <ul>
+      <li>The name of a directory or a pattern such as those shown
+      below.</li>
+
+      <li>The keyword <samp>disabled</samp>. This turns off
+      <em>all</em> username-to-directory translations except those
+      explicitly named with the <samp>enabled</samp> keyword (see
+      below).</li>
+
+      <li>The keyword <samp>disabled</samp> followed by a
+      space-delimited list of usernames. Usernames that appear in
+      such a list will <em>never</em> have directory translation
+      performed, even if they appear in an <samp>enabled</samp>
+      clause.</li>
+
+      <li>The keyword <samp>enabled</samp> followed by a
+      space-delimited list of usernames. These usernames will have
+      directory translation performed even if a global disable is
+      in effect, but not if they also appear in a
+      <samp>disabled</samp> clause.</li>
+    </ul>
+
+    <p>If neither the <samp>enabled</samp> nor the
+    <samp>disabled</samp> keywords appear in the
+    <samp>Userdir</samp> directive, the argument is treated as a
+    filename pattern, and is used to turn the name into a directory
+    specification. A request for
+    <code>http://www.foo.com/~bob/one/two.html</code> will be
+    translated to:</p>
+<pre>
 UserDir public_html     -&gt; ~bob/public_html/one/two.html
 UserDir /usr/web        -&gt; /usr/web/bob/one/two.html
 UserDir /home/*/www     -&gt; /home/bob/www/one/two.html
-</PRE>
-The following directives will send redirects to the client:
-<PRE>
+</pre>
+    The following directives will send redirects to the client: 
+<pre>
 UserDir http://www.foo.com/users -&gt; http://www.foo.com/users/bob/one/two.html
 UserDir http://www.foo.com/*/usr -&gt; http://www.foo.com/bob/usr/one/two.html
 UserDir http://www.foo.com/~*/   -&gt; http://www.foo.com/~bob/one/two.html
-</PRE>
-</P>
-<BLOCKQUOTE>
- <STRONG>
- Be careful when using this directive; for instance,
- <SAMP>&quot;UserDir&nbsp;./&quot;</SAMP> would map
- <SAMP>&quot;/~root&quot;</SAMP> to
- <SAMP>&quot;/&quot;</SAMP> - which is probably undesirable.  If you are
- running Apache 1.3 or above, it is strongly recommended that your
- configuration include a
- &quot;<SAMP>UserDir&nbsp;disabled&nbsp;root</SAMP>&quot; declaration.
- See also
- the
- <A
-  HREF="core.html#directory"
- >&lt;Directory&gt;</A>
- directive and the
- <A
-  HREF="../misc/security_tips.html"
- >Security Tips</A>
- page for more information.
- </STRONG>
-</BLOCKQUOTE>
+</pre>
+    <br />
+     <br />
+     
 
-<!--#include virtual="footer.html" -->
-</BODY>
-</HTML>
+    <blockquote>
+      <strong>Be careful when using this directive; for instance,
+      <samp>"UserDir&nbsp;./"</samp> would map
+      <samp>"/~root"</samp> to <samp>"/"</samp> - which is probably
+      undesirable. If you are running Apache 1.3 or above, it is
+      strongly recommended that your configuration include a
+      "<samp>UserDir&nbsp;disabled&nbsp;root</samp>" declaration.
+      See also the <a
+      href="core.html#directory">&lt;Directory&gt;</a> directive
+      and the <a href="../misc/security_tips.html">Security
+      Tips</a> page for more information.</strong>
+    </blockquote>
+    <!--#include virtual="footer.html" -->
+  </body>
+</html>
 
