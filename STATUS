@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2002/04/25 17:29:19 $]
+Last modified at [$Date: 2002/04/26 05:12:29 $]
 
 Release:
 
@@ -81,6 +81,22 @@ CURRENT VOTES:
       -1:   Aaron (premature decision, needs more discussion and bug fixes)
 
 RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
+
+    * The worker MPM's fdqueue needs to be turned back into a FIFO.
+      Status: Aaron volunteers.
+
+    * The worker MPM needs to be able to gracelessly kill off its
+      children. The current proposal would have the worker keep
+      track of all currently accepted socket descriptors, and to
+      close them all as soon as the listener thread receives the
+      signal to shutdown.
+      Status: Aaron volunteers
+
+    * The worker MPM should not accept more connections than it
+      currently has available workers. Instead, the listener thread
+      should block on a condition of the fdqueue such that it waits
+      until there are at least one idle worker before continuing
+      into the accept-loop.
 
     * Incorrect Content-Range headers or invalid 416 HTTP responses
       if a filter such as INCLUDES changes the content length.  It may
