@@ -136,7 +136,7 @@ $HTML = <<EOHT;
   Documents containing the search word are <EM>not</EM> listed in any
   sort of priority order.
   </P>
-  <ISINDEX PROMPT="Word to find: ">
+  <ISINDEX PROMPT="Enter word to find and press ENTER: ">
 EOHT
 
 printf ($HTML);
