@@ -509,13 +509,18 @@ int location_walk(request_rec *r)
 	return OK;
     }
 
-    /*
-     * Collapse multiple slashes, if it's a path URL (we don't want to do
-     * anything to <Location http://...> or such).
+    /* Location and LocationMatch differ on their behaviour w.r.t. multiple
+     * slashes.  Location matches multiple slashes with a single slash,
+     * LocationMatch doesn't.  An exception, for backwards brokenness is
+     * absoluteURIs... in which case neither match multiple slashes.
      */
-    test_location = pstrdup(r->pool, r->uri);
-    if (test_location[0] == '/')
-        no2slash(test_location);
+    if (r->uri[0] != '/') {
+	test_location = r->uri;
+    }
+    else {
+	test_location = pstrdup(r->pool, r->uri);
+	no2slash(test_location);
+    }
 
     /* Go through the location entries, and check for matches. */
 
@@ -535,7 +540,7 @@ int location_walk(request_rec *r)
 	this_conf = NULL;
 
 	if (entry_core->r) {
-	    if (!regexec(entry_core->r, test_location, 0, NULL, 0))
+	    if (!regexec(entry_core->r, r->uri, 0, NULL, 0))
 		this_conf = entry_config;
 	}
 	else if (entry_core->d_is_fnmatch) {

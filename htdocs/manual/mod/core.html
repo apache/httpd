@@ -1312,35 +1312,42 @@ the backlog parameter to the <CODE>listen(2)</CODE> system call.</P><HR>
 1.1 and later.<P>
 
 <P>The &lt;Location&gt; directive provides for access control by
-URL. It is comparable to the <A
+URL. It is similar to the <A
 HREF="#directory">&lt;Directory&gt;</A> directive, and
-should be matched with a &lt;/Location&gt; directive. Directives that
-apply to the URL given should be listed
-within. <CODE>&lt;Location&gt;</CODE> sections are processed in the
+starts a subsection which is terminated with a &lt;/Location&gt;
+directive.  <CODE>&lt;Location&gt;</CODE> sections are processed in the
 order they appear in the configuration file, after the
 &lt;Directory&gt; sections and <CODE>.htaccess</CODE> files are
-read.</P>
+read, and after the &lt;Files&gt; sections.</P>
 
-<P>Note that, due to the way HTTP functions, <EM>URL prefix</EM>
-should, save for proxy requests, be of the form <CODE>/path/</CODE>,
-and should not include the <CODE>http://servername</CODE>. It doesn't
-necessarily have to protect a directory (it can be an individual
-file, or a number of files), and can include wild-cards.  In a wild-card
-string, `?' matches any single character, and `*' matches any
-sequences of characters.
+<p>Note that URLs do not have to line up with the filesystem at all,
+it should be emphasized that &lt;Location&gt; operates completely outside
+the filesystem.
+
+<p>For all origin (non-proxy) requests, the URL to be matched is
+of the form <code>/path/</code>, and you should not include any
+<code>http://servername</code> prefix.  For proxy requests, the URL
+to be matched is of the form <code>scheme://servername/path</code>,
+and you must include the prefix.
+
+<p>The URL may use wildcards In a wild-card string, `?' matches any
+single character, and `*' matches any sequences of characters.
 
 <P><STRONG>Apache 1.2 and above:</STRONG>
 Extended regular expressions can also be used, with the addition of
-the
-<CODE>~</CODE> character. For example:</P>
+the <CODE>~</CODE> character.
+
+For example:</P>
 
 <PRE>
    &lt;Location ~ &quot;/(extra|special)/data&quot;&gt;
 </PRE>
 
 <P>would match URLs that contained the substring "/extra/data" or
-"/special/data". However, in Apache 1.3 and above, use of <A
-HREF="#locationmatch">&lt;LocationMatch&gt;</A> is preferred.</P>
+"/special/data".  In Apache 1.3 and above, a new directive
+<A HREF="#locationmatch">&lt;LocationMatch&gt;</A> exists which
+behaves identical to the regex version of
+<code>&lt;Location&gt;</code>.
 
 <P>The <CODE>Location</CODE> functionality is especially useful when
 combined with the <CODE><A
@@ -1355,6 +1362,23 @@ from browsers at foo.com, you might use:
     allow from .foo.com
     &lt;/Location&gt;
 </PRE>
+
+<p><strong>Apache 1.3 and above note about / (slash)</strong>:  The slash character has special
+meaning depending on where in a URL it appears.  People may be used
+to its behaviour in the filesystem where multiple adjacent slashes are
+frequently collapsed to a single slash (i.e. <code>/home///foo</code>
+is the same as <code>/home/foo</code>).  In URL-space this is not
+necessarily true.  The <code>&lt;LocationMatch&gt;</code> directive
+and the regex version of <code>&lt;Location&gt;</code> require you
+to explicitly specify multiple slashes if that is your intention.
+For example, <code>&lt;LocationMatch ^/abc&gt;</code> would match the
+request URL <code>/abc</code> but not the request URL <code>//abc</code>.
+The (non-regex) <code>&lt;Location&gt;</code> directive behaves
+similarly when used for proxy requests.  But when (non-regex)
+<code>&lt;Location&gt;</code> is used for non-proxy requests it will
+implicitly match multiple slashes with a single slash.  For example,
+if you specify <code>&lt;Location /abc/def&gt;</code> and the request
+is to <code>/abc//def</code> then it will match.
 
 <P>
 <STRONG>See also</STRONG>: <A HREF="../sections.html">How Directory,

@@ -77,7 +77,7 @@ document, or in the <CODE>src/CHANGES</CODE> file.
      AuthName "This and That"
     </PRE>
     </P>
-    This change was made for HTTP/1.1 compliance.
+    This change was made for consistency in the config language.
   <LI><STRONG>The default Apache ServerRoot directory changed</STRONG>
     from the NCSA-compatible <SAMP>/usr/local/etc/httpd/</SAMP> to
     <SAMP>/usr/local/apache/</SAMP>. This change covers only the default
@@ -131,6 +131,10 @@ document, or in the <CODE>src/CHANGES</CODE> file.
      inconsistancies, and was removed.  To emulate this older behaviour
      use a &lt;Files&gt; section nested inside a &lt;Directory&gt;
      section.
+
+  <li>&lt;Location&gt; matching behaviour with respect to slashes has
+     changed.  See the <a href="mod/core.html#location">&lt;Location&gt;
+     documentation</a> for more info.
 
 </UL>
 

@@ -1,5 +1,15 @@
 Changes with Apache 1.3b6
 
+  *) Change to Location and LocationMatch semantics.  LocationMatch no
+     longer lets a single slash match multiple adjacent slashes in the
+     URL.  This change is for consistency with RewriteRule and
+     AliasMatch.  Multiple slashes have meaning in URLs that they do
+     not have in (some) filesystems.  Location on the other hand can
+     be considered a shorthand for a more complicated regex, and it
+     does match multiple slashes with a single slash -- which is
+     also consistent with the Alias directive.
+     [Dean Gaudet] related PR#1440
+
   *) Fix bug with mod_mime_magic causing certain files, including files
      of length 0, to result in no response from the server.
      [Dean Gaudet]
