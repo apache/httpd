@@ -252,8 +252,8 @@ static void bndm_compile(bndm_t *t, const char *n, apr_size_t nl)
  * Returns the count of character that is the first match or hl if no
  * match is found.
  */
-static int bndm(const char *n, apr_size_t nl, const char *h, apr_size_t hl, 
-                bndm_t *t)
+static apr_size_t bndm(const char *n, apr_size_t nl, const char *h, 
+                       apr_size_t hl, bndm_t *t)
 {
     apr_size_t skip;
     const char *he, *p, *pi;
