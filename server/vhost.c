@@ -186,11 +186,10 @@ void ap_init_vhost_config(apr_pool_t *p)
 static const char *get_addresses(apr_pool_t *p, const char *w_,
 				 server_addr_rec ***paddr, apr_port_t port)
 {
-    struct hostent *hep;
     apr_in_addr_t my_addr;
     server_addr_rec *sar;
     char *t;
-    int i, is_an_ip_addr;
+    int i;
     char *w;
 
     if (*w_ == 0)
@@ -222,49 +221,12 @@ static const char *get_addresses(apr_pool_t *p, const char *w_,
         }
     }
 
-/*        
-   is_an_ip_addr = 0;
-    if (strcmp(w, "*") == 0) {
-	my_addr.s_addr = htonl(INADDR_ANY);
-	is_an_ip_addr = 1;
-    }
-    else if (strcasecmp(w, "_default_") == 0
-	     || strcmp(w, "255.255.255.255") == 0) {
-	my_addr.s_addr = DEFAULT_VHOST_ADDR;
-	is_an_ip_addr = 1;
-    }
-    else if ((my_addr.s_addr = apr_inet_addr(w)) != INADDR_NONE) {
-	is_an_ip_addr = 1;
-    }
-    if (is_an_ip_addr) {
-*/
-	sar = apr_pcalloc(p, sizeof(server_addr_rec));
-	**paddr = sar;
-	*paddr = &sar->next;
-	sar->host_addr = my_addr;
-	sar->host_port = port;
-	sar->virthost = apr_pstrdup(p, w);
-	return NULL;
-/*
-    }
-
-    hep = gethostbyname(w);
-
-    if ((!hep) || (hep->h_addrtype != AF_INET || !hep->h_addr_list[0])) {
-	ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, NULL,
-	    "Cannot resolve host name %s --- ignoring!", w);
-	return NULL;
-    }
-
-    for (i = 0; hep->h_addr_list[i]; ++i) {
-	sar = apr_pcalloc(p, sizeof(server_addr_rec));
-	**paddr = sar;
-	*paddr = &sar->next;
-	sar->host_addr = *(struct in_addr *) hep->h_addr_list[i];
-	sar->host_port = port;
-	sar->virthost = apr_pstrdup(p, w);
-    }
-*/
+    sar = apr_pcalloc(p, sizeof(server_addr_rec));
+    **paddr = sar;
+    *paddr = &sar->next;
+    sar->host_addr = my_addr;
+    sar->host_port = port;
+    sar->virthost = apr_pstrdup(p, w);
     return NULL;
 }
 
