@@ -260,7 +260,7 @@ int ssl_init_Module(apr_pool_t *p, apr_pool_t *plog,
     ssl_init_SSLLibrary(base_server);
 
 #if APR_HAS_THREADS
-    ssl_util_thread_setup(base_server, p);
+    ssl_util_thread_setup(p);
 #endif
 
     /*

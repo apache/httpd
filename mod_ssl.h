@@ -720,7 +720,7 @@ BOOL         ssl_util_path_check(ssl_pathcheck_t, const char *, apr_pool_t *);
 ssl_algo_t   ssl_util_algotypeof(X509 *, EVP_PKEY *); 
 char        *ssl_util_algotypestr(ssl_algo_t);
 char        *ssl_util_ptxtsub(apr_pool_t *, const char *, const char *, char *);
-void         ssl_util_thread_setup(server_rec *, apr_pool_t *);
+void         ssl_util_thread_setup(apr_pool_t *);
 
 #define APR_SHM_MAXSIZE (64 * 1024 * 1024)
 #endif /* __MOD_SSL_H__ */
