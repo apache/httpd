@@ -230,6 +230,9 @@
 #include "ap_config_auto.h"
 #include "ap_config_layout.h"
 #endif
+#if defined(NETWARE)
+#define AP_NONBLOCK_WHEN_MULTI_LISTEN 1
+#endif
 
 /* TODO - We need to put OS detection back to make all the following work */
 

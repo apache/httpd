@@ -829,9 +829,6 @@ static int setup_listeners(server_rec *s)
         if (sockdes > listenmaxfd) {
             listenmaxfd = sockdes;
         }
-        /* Use non-blocking listen sockets so that we
-           never get hung up. */
-        apr_socket_opt_set(lr->sd, APR_SO_NONBLOCK, 1);
     }
     return 0;
 }
