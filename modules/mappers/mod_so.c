@@ -197,7 +197,6 @@ static apr_status_t unload_module(void *data)
 static const char *load_module(cmd_parms *cmd, void *dummy, 
                                const char *modname, const char *filename)
 {
-    apr_status_t status;
     apr_dso_handle_t *modhandle;
     apr_dso_handle_sym_t modsym;
     module *modp;
@@ -231,7 +230,7 @@ static const char *load_module(cmd_parms *cmd, void *dummy,
     /*
      * Load the file into the Apache address space
      */
-    if ((status = apr_dso_load(&modhandle, szModuleFile, cmd->pool )) != APR_SUCCESS) {
+    if (apr_dso_load(&modhandle, szModuleFile, cmd->pool) != APR_SUCCESS) {
         char my_error[256];
 
         return apr_pstrcat(cmd->pool, "Cannot load ", szModuleFile,
@@ -247,7 +246,7 @@ static const char *load_module(cmd_parms *cmd, void *dummy,
      * First with the hidden variant (prefix `AP_') and then with the plain
      * symbol name.
      */
-    if ((status = apr_dso_sym(&modsym, modhandle, modname)) != APR_SUCCESS) {
+    if (apr_dso_sym(&modsym, modhandle, modname) != APR_SUCCESS) {
         char my_error[256];
 
 	return apr_pstrcat(cmd->pool, "Can't locate API module structure `",
@@ -296,18 +295,17 @@ static const char *load_module(cmd_parms *cmd, void *dummy,
 
 static const char *load_file(cmd_parms *cmd, void *dummy, const char *filename)
 {
-    apr_status_t status;
     apr_dso_handle_t *handle;
     const char *file;
 
     file = ap_server_root_relative(cmd->pool, filename);
     
-    if ((status = apr_dso_load(&handle, file, cmd->pool)) != APR_SUCCESS) {
+    if (apr_dso_load(&handle, file, cmd->pool) != APR_SUCCESS) {
         char my_error[256];
 
 	return apr_pstrcat(cmd->pool, "Cannot load ", filename, 
 			  " into server: ", 
-			  apr_strerror(status, my_error, sizeof(my_error)),
+			  apr_dso_error(handle, my_error, sizeof(my_error)),
 			  NULL);
     }
     
