@@ -964,13 +964,6 @@ void send_http_header(request_rec *r)
     if (r->content_language)
         bvputs(fd,"Content-Language: ", r->content_language, "\015\012", NULL);
 
-    /* If it's a TRACE, or if they sent us Via:, send one back */
-    if ((r->method_number == M_TRACE) || table_get(r->headers_in, "Via"))
-        bvputs(fd, "Via: ",
-	SERVER_PROTOCOL + (!strncmp(SERVER_PROTOCOL, "HTTP/", 5) ? 5 : 0), " ",
-	construct_server(r->pool, r->server->server_hostname, r->server->port),
-	       " (", SERVER_VERSION, ")\015\012", NULL);
-    
     /* We now worry about this here */
 
     if (r->no_cache && (r->proto_num >= 1001))
