@@ -114,5 +114,9 @@ SOURCE=.\ap_sha1.c
 
 SOURCE=.\ap_checkpass.c
 # End Source File
+# Begin Source File
+
+SOURCE=.\ap_base64.c
+# End Source File
 # End Target
 # End Project

@@ -51,6 +51,7 @@ CLEAN :
 	-@erase "$(INTDIR)\ap_slack.obj"
 	-@erase "$(INTDIR)\ap_snprintf.obj"
 	-@erase "$(INTDIR)\ap_sha1.obj"
+	-@erase "$(INTDIR)\ap_base64.obj"
 	-@erase "$(INTDIR)\ap_checkpass.obj"
 	-@erase "$(INTDIR)\vc50.idb"
 	-@erase "$(OUTDIR)\ap.lib"
@@ -97,7 +98,7 @@ CPP_SBRS=.
 BSC32=bscmake.exe
 BSC32_FLAGS=/nologo /o"$(OUTDIR)\ap.bsc" 
 BSC32_SBRS= \
-	
+
 LIB32=link.exe -lib
 LIB32_FLAGS=/nologo /out:"$(OUTDIR)\ap.lib" 
 LIB32_OBJS= \
@@ -108,6 +109,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\ap_slack.obj" \
 	"$(INTDIR)\ap_snprintf.obj" \
 	"$(INTDIR)\ap_sha1.obj" \
+	"$(INTDIR)\ap_base64.obj" \
 	"$(INTDIR)\ap_checkpass.obj"
 
 "$(OUTDIR)\ap.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
@@ -141,6 +143,7 @@ CLEAN :
 	-@erase "$(INTDIR)\ap_slack.obj"
 	-@erase "$(INTDIR)\ap_snprintf.obj"
 	-@erase "$(INTDIR)\ap_sha1.obj"
+	-@erase "$(INTDIR)\ap_base64.obj"
 	-@erase "$(INTDIR)\ap_checkpass.obj"
 	-@erase "$(INTDIR)\vc50.idb"
 	-@erase "$(OUTDIR)\ap.lib"
@@ -187,7 +190,7 @@ CPP_SBRS=.
 BSC32=bscmake.exe
 BSC32_FLAGS=/nologo /o"$(OUTDIR)\ap.bsc" 
 BSC32_SBRS= \
-	
+
 LIB32=link.exe -lib
 LIB32_FLAGS=/nologo /out:"$(OUTDIR)\ap.lib" 
 LIB32_OBJS= \
@@ -198,6 +201,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\ap_slack.obj" \
 	"$(INTDIR)\ap_snprintf.obj" \
 	"$(INTDIR)\ap_sha1.obj" \
+	"$(INTDIR)\ap_base64.obj" \
 	"$(INTDIR)\ap_checkpass.obj"
 
 "$(OUTDIR)\ap.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
@@ -227,13 +231,13 @@ DEP_CPP_AP_CP=\
 	"..\os\win32\readdir.h"\
 	{$(INCLUDE)}"sys\stat.h"\
 	{$(INCLUDE)}"sys\types.h"\
-	
+
 NODEP_CPP_AP_CP=\
 	"..\include\ap_config_auto.h"\
 	"..\include\ebcdic.h"\
 	"..\include\os.h"\
 	"..\include\sfio.h"\
-	
+
 
 "$(INTDIR)\ap_cpystrn.obj" : $(SOURCE) $(DEP_CPP_AP_CP) "$(INTDIR)"
 
@@ -252,7 +256,7 @@ DEP_CPP_AP_CP=\
 	"..\include\util_uri.h"\
 	"..\os\win32\os.h"\
 	"..\os\win32\readdir.h"\
-	
+
 
 "$(INTDIR)\ap_cpystrn.obj" : $(SOURCE) $(DEP_CPP_AP_CP) "$(INTDIR)"
 
@@ -272,11 +276,11 @@ DEP_CPP_AP_FN=\
 	"..\os\win32\os.h"\
 	{$(INCLUDE)}"sys\stat.h"\
 	{$(INCLUDE)}"sys\types.h"\
-	
+
 NODEP_CPP_AP_FN=\
 	"..\include\ap_config_auto.h"\
 	"..\include\os.h"\
-	
+
 
 "$(INTDIR)\ap_fnmatch.obj" : $(SOURCE) $(DEP_CPP_AP_FN) "$(INTDIR)"
 
@@ -290,7 +294,7 @@ DEP_CPP_AP_FN=\
 	"..\include\fnmatch.h"\
 	"..\include\hsregex.h"\
 	"..\os\win32\os.h"\
-	
+
 
 "$(INTDIR)\ap_fnmatch.obj" : $(SOURCE) $(DEP_CPP_AP_FN) "$(INTDIR)"
 
@@ -315,13 +319,13 @@ DEP_CPP_AP_SI=\
 	"..\os\win32\readdir.h"\
 	{$(INCLUDE)}"sys\stat.h"\
 	{$(INCLUDE)}"sys\types.h"\
-	
+
 NODEP_CPP_AP_SI=\
 	"..\include\ap_config_auto.h"\
 	"..\include\ebcdic.h"\
 	"..\include\os.h"\
 	"..\include\sfio.h"\
-	
+
 
 "$(INTDIR)\ap_signal.obj" : $(SOURCE) $(DEP_CPP_AP_SI) "$(INTDIR)"
 
@@ -340,7 +344,7 @@ DEP_CPP_AP_SI=\
 	"..\include\util_uri.h"\
 	"..\os\win32\os.h"\
 	"..\os\win32\readdir.h"\
-	
+
 
 "$(INTDIR)\ap_signal.obj" : $(SOURCE) $(DEP_CPP_AP_SI) "$(INTDIR)"
 
@@ -366,13 +370,13 @@ DEP_CPP_AP_SL=\
 	"..\os\win32\readdir.h"\
 	{$(INCLUDE)}"sys\stat.h"\
 	{$(INCLUDE)}"sys\types.h"\
-	
+
 NODEP_CPP_AP_SL=\
 	"..\include\ap_config_auto.h"\
 	"..\include\ebcdic.h"\
 	"..\include\os.h"\
 	"..\include\sfio.h"\
-	
+
 
 "$(INTDIR)\ap_slack.obj" : $(SOURCE) $(DEP_CPP_AP_SL) "$(INTDIR)"
 
@@ -392,7 +396,7 @@ DEP_CPP_AP_SL=\
 	"..\include\util_uri.h"\
 	"..\os\win32\os.h"\
 	"..\os\win32\readdir.h"\
-	
+
 
 "$(INTDIR)\ap_slack.obj" : $(SOURCE) $(DEP_CPP_AP_SL) "$(INTDIR)"
 
@@ -417,13 +421,13 @@ DEP_CPP_AP_SN=\
 	"..\os\win32\readdir.h"\
 	{$(INCLUDE)}"sys\stat.h"\
 	{$(INCLUDE)}"sys\types.h"\
-	
+
 NODEP_CPP_AP_SN=\
 	"..\include\ap_config_auto.h"\
 	"..\include\ebcdic.h"\
 	"..\include\os.h"\
 	"..\include\sfio.h"\
-	
+
 
 "$(INTDIR)\ap_snprintf.obj" : $(SOURCE) $(DEP_CPP_AP_SN) "$(INTDIR)"
 
@@ -442,7 +446,7 @@ DEP_CPP_AP_SN=\
 	"..\include\util_uri.h"\
 	"..\os\win32\os.h"\
 	"..\os\win32\readdir.h"\
-	
+
 
 "$(INTDIR)\ap_snprintf.obj" : $(SOURCE) $(DEP_CPP_AP_SN) "$(INTDIR)"
 
@@ -462,12 +466,12 @@ DEP_CPP_AP_MD=\
 	"..\os\win32\os.h"\
 	{$(INCLUDE)}"sys\stat.h"\
 	{$(INCLUDE)}"sys\types.h"\
-	
+
 NODEP_CPP_AP_MD=\
 	"..\include\ap_config_auto.h"\
 	"..\include\os.h"\
 	".\ebcdic.h"\
-	
+
 
 "$(INTDIR)\ap_md5c.obj" : $(SOURCE) $(DEP_CPP_AP_MD) "$(INTDIR)"
 
@@ -481,7 +485,7 @@ DEP_CPP_AP_MD=\
 	"..\include\ap_mmn.h"\
 	"..\include\hsregex.h"\
 	"..\os\win32\os.h"\
-	
+
 
 "$(INTDIR)\ap_md5c.obj" : $(SOURCE) $(DEP_CPP_AP_MD) "$(INTDIR)"
 
@@ -501,12 +505,12 @@ DEP_CPP_AP_CH=\
 	"..\os\win32\os.h"\
 	{$(INCLUDE)}"sys\stat.h"\
 	{$(INCLUDE)}"sys\types.h"\
-	
+
 NODEP_CPP_AP_CH=\
 	"..\include\ap_config_auto.h"\
 	"..\include\os.h"\
 	".\ebcdic.h"\
-	
+
 
 "$(INTDIR)\ap_checkpass.obj" : $(SOURCE) $(DEP_CPP_AP_CH) "$(INTDIR)"
 
@@ -519,7 +523,7 @@ DEP_CPP_AP_CH=\
 	"..\include\ap_mmn.h"\
 	"..\include\hsregex.h"\
 	"..\os\win32\os.h"\
-	
+
 
 "$(INTDIR)\ap_checkpass.obj" : $(SOURCE) $(DEP_CPP_AP_CH) "$(INTDIR)"
 
@@ -539,12 +543,12 @@ DEP_CPP_AP_SH=\
 	"..\os\win32\os.h"\
 	{$(INCLUDE)}"sys\stat.h"\
 	{$(INCLUDE)}"sys\types.h"\
-	
+
 NODEP_CPP_AP_SH=\
 	"..\include\ap_config_auto.h"\
 	"..\include\os.h"\
 	".\ebcdic.h"\
-	
+
 
 "$(INTDIR)\ap_sha1.obj" : $(SOURCE) $(DEP_CPP_AP_SH) "$(INTDIR)"
 
@@ -558,9 +562,46 @@ DEP_CPP_AP_SH=\
 	"..\include\ap_mmn.h"\
 	"..\include\hsregex.h"\
 	"..\os\win32\os.h"\
-	
+
 
 "$(INTDIR)\ap_sha1.obj" : $(SOURCE) $(DEP_CPP_AP_SH) "$(INTDIR)"
+
+
+!ENDIF 
+
+SOURCE=.\ap_base64.c
+
+!IF  "$(CFG)" == "ap - Win32 Release"
+
+DEP_CPP_AP_BA=\
+	"..\include\ap_config.h"\
+	"..\include\ap_ctype.h"\
+	"..\include\ap_mmn.h"\
+	"..\include\hsregex.h"\
+	"..\os\win32\os.h"\
+	{$(INCLUDE)}"sys\stat.h"\
+	{$(INCLUDE)}"sys\types.h"\
+
+NODEP_CPP_AP_BA=\
+	"..\include\ap_config_auto.h"\
+	"..\include\os.h"\
+	".\ebcdic.h"\
+
+
+"$(INTDIR)\ap_base64.obj" : $(SOURCE) $(DEP_CPP_AP_BA) "$(INTDIR)"
+
+
+!ELSEIF  "$(CFG)" == "ap - Win32 Debug"
+
+DEP_CPP_AP_BA=\
+	"..\include\ap_config.h"\
+	"..\include\ap_ctype.h"\
+	"..\include\ap_mmn.h"\
+	"..\include\hsregex.h"\
+	"..\os\win32\os.h"\
+
+
+"$(INTDIR)\ap_base64.obj" : $(SOURCE) $(DEP_CPP_AP_BA) "$(INTDIR)"
 
 
 !ENDIF 
