@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/10/23 13:40:10 $]
+Last modified at [$Date: 2004/10/23 13:47:05 $]
 
 Release:
 
@@ -74,10 +74,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES TO BACKPORT FROM 2.1
   [ please place file names and revisions from HEAD here, so it is easy to
     identify exactly what the proposed changes are! ]
-
-    *) mod_ldap: Fix format strings to use %APR_PID_T_FMT instead of %d.
-         modules/ldap/util_ldap.c: 1.16
-       +1: minfrin, pquerna, bnicholes
 
     *) mod_ssl: Fix and prevent an SSLCipherSuite bypass by resuming a
        session during a renegotiation.
