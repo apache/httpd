@@ -20,3 +20,8 @@ vc*.idb
 *.plg
 *.pdb
 apachectl
+dbmmanage
+log_server_status
+logresolve.pl
+split-logfile
+phf_abuse_log.cgi
