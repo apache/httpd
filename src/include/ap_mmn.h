@@ -192,10 +192,11 @@
  *                                    -- added ap_single_module_init()
  * 19981229             - mod_negotiation overhaul -- added ap_make_etag()
  *                        and added vlist_validator to request_rec.
+ * 19990101             - renamed macro escape_uri() to ap_escape_uri()
  */
 
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
-#define MODULE_MAGIC_NUMBER_MAJOR 19981229
+#define MODULE_MAGIC_NUMBER_MAJOR 19990101
 #endif
 #define MODULE_MAGIC_NUMBER_MINOR 0                     /* 0...n */
 #define MODULE_MAGIC_NUMBER MODULE_MAGIC_NUMBER_MAJOR	/* backward compat */

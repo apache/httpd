@@ -127,10 +127,10 @@ static int handle_dir(request_rec *r)
     if (r->uri[0] == '\0' || r->uri[strlen(r->uri) - 1] != '/') {
         char *ifile;
         if (r->args != NULL)
-            ifile = ap_pstrcat(r->pool, escape_uri(r->pool, r->uri),
+            ifile = ap_pstrcat(r->pool, ap_escape_uri(r->pool, r->uri),
                             "/", "?", r->args, NULL);
         else
-            ifile = ap_pstrcat(r->pool, escape_uri(r->pool, r->uri),
+            ifile = ap_pstrcat(r->pool, ap_escape_uri(r->pool, r->uri),
                             "/", NULL);
 
         ap_table_setn(r->headers_out, "Location",
@@ -162,7 +162,7 @@ static int handle_dir(request_rec *r)
         request_rec *rr = ap_sub_req_lookup_uri(name_ptr, r);
 
         if (rr->status == HTTP_OK && rr->finfo.st_mode != 0) {
-            char *new_uri = escape_uri(r->pool, rr->uri);
+            char *new_uri = ap_escape_uri(r->pool, rr->uri);
 
             if (rr->args != NULL)
                 new_uri = ap_pstrcat(r->pool, new_uri, "?", rr->args, NULL);

@@ -1145,7 +1145,7 @@ static int hook_uri2file(request_rec *r)
                 ;
             if (*cp != '\0') {
                 rewritelog(r, 1, "escaping %s for redirect", r->filename);
-                cp2 = escape_uri(r->pool, cp);
+                cp2 = ap_escape_uri(r->pool, cp);
                 *cp = '\0';
                 r->filename = ap_pstrcat(r->pool, r->filename, cp2, NULL);
             }
@@ -1434,7 +1434,7 @@ static int hook_fixup(request_rec *r)
             if (*cp != '\0') {
                 rewritelog(r, 1, "[per-dir %s] escaping %s for redirect",
                            dconf->directory, r->filename);
-                cp2 = escape_uri(r->pool, cp);
+                cp2 = ap_escape_uri(r->pool, cp);
                 *cp = '\0';
                 r->filename = ap_pstrcat(r->pool, r->filename, cp2, NULL);
             }

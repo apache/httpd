@@ -717,7 +717,7 @@ API_EXPORT(request_rec *) ap_sub_req_lookup_uri(const char *new_file,
         ap_parse_uri(rnew, new_file);
     else {
         udir = ap_make_dirstr_parent(rnew->pool, r->uri);
-        udir = escape_uri(rnew->pool, udir);    /* re-escape it */
+        udir = ap_escape_uri(rnew->pool, udir);    /* re-escape it */
         ap_parse_uri(rnew, ap_make_full_path(rnew->pool, udir, new_file));
     }
 

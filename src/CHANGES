@@ -1,4 +1,8 @@
 Changes with Apache 1.3.4
+ 
+  *) Renamed the macro escape_uri() to ap_escape_uri() which was
+     forgotten (because it was a macro) in the symbol renaming process.
+     [Ralf S. Engelschall]
 
   *) Fix some inconsistencies related to the scopes of directives. The only
      user visible change is that the directives `UseCanonicalName' and

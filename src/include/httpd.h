@@ -943,7 +943,7 @@ API_EXPORT(void) ap_no2slash(char *name);
 API_EXPORT(void) ap_getparents(char *name);
 API_EXPORT(char *) ap_escape_path_segment(pool *p, const char *s);
 API_EXPORT(char *) ap_os_escape_path(pool *p, const char *path, int partial);
-#define escape_uri(ppool,path) ap_os_escape_path(ppool,path,1)
+#define ap_escape_uri(ppool,path) ap_os_escape_path(ppool,path,1)
 API_EXPORT(char *) ap_escape_html(pool *p, const char *s);
 API_EXPORT(char *) ap_construct_server(pool *p, const char *hostname,
 				    unsigned port, const request_rec *r);

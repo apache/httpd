@@ -796,7 +796,7 @@ static int include_cmd_child(void *arg, child_info *pinfo)
 
         ap_table_setn(env, "PATH_INFO", ap_escape_shell_cmd(r->pool, r->path_info));
 
-        pa_req = ap_sub_req_lookup_uri(escape_uri(r->pool, r->path_info), r);
+        pa_req = ap_sub_req_lookup_uri(ap_escape_uri(r->pool, r->path_info), r);
         if (pa_req->filename) {
             ap_table_setn(env, "PATH_TRANSLATED",
                       ap_pstrcat(r->pool, pa_req->filename, pa_req->path_info,

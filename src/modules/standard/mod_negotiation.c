@@ -2606,7 +2606,7 @@ static int handle_map_file(request_rec *r)
         r->uri[ap_find_path_info(r->uri, r->path_info)] = '\0';
     }
     udir = ap_make_dirstr_parent(r->pool, r->uri);
-    udir = escape_uri(r->pool, udir);
+    udir = ap_escape_uri(r->pool, udir);
     ap_internal_redirect(ap_pstrcat(r->pool, udir, best->file_name,
                                     r->path_info, NULL), r);
     return OK;

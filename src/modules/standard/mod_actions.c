@@ -197,7 +197,7 @@ static int action_handler(request_rec *r)
     if (script == NULL)
 	return DECLINED;
 
-    ap_internal_redirect_handler(ap_pstrcat(r->pool, script, escape_uri(r->pool,
+    ap_internal_redirect_handler(ap_pstrcat(r->pool, script, ap_escape_uri(r->pool,
 			  r->uri), r->args ? "?" : NULL, r->args, NULL), r);
     return OK;
 }

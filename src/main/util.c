@@ -1253,7 +1253,7 @@ API_EXPORT(char *) ap_os_escape_path(pool *p, const char *path, int partial)
     return copy;
 }
 
-/* escape_uri is now a macro for os_escape_path */
+/* ap_escape_uri is now a macro for os_escape_path */
 
 API_EXPORT(char *) ap_escape_html(pool *p, const char *s)
 {
