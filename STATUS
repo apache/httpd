@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/11/03 21:59:58 $]
+Last modified at [$Date: 2003/11/05 00:30:26 $]
 
 Release:
 
@@ -313,6 +313,14 @@ PATCHES TO BACKPORT FROM 2.1
       directories that don't contain an index file.
         modules/generators/mod_autoindex.c: r1.125
       +1: nd
+
+    * EBCDIC: Translate the protocol data...  SHOWSTOPPER
+        modules/http/http_protocol.c: r1.469
+      +1: trawick
+
+    * os/unix/unixd.c portability issue (ushort vs. unsigned short)
+        os/unix/unixd.c: r1.61
+      +1: trawick
 
 CURRENT RELEASE NOTES:
 
