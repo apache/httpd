@@ -135,7 +135,7 @@ ThreadsPerChild 50
 
 # To enable the cache as well, edit and uncomment the following lines:
 
-#CacheRoot /usr/local/etc/httpd/proxy
+#CacheRoot /usr/local/apache/proxy
 #CacheSize 5
 #CacheGcInterval 4
 #CacheMaxExpire 24

@@ -1,5 +1,8 @@
 Changes with Apache 1.3b3
 
+  *) Default pathname has been changed everywhere to /usr/local/apache
+     [Sameer <sameer@c2.net>]
+
   *) PORT: AIX now uses USE_FCNTL_SERIALIZED_ACCEPT.
 	[David Bronder <David-Bronder@uiowa.edu>] PR#849
 

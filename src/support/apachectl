@@ -21,10 +21,10 @@
 # --------------------                              --------------------
 # 
 # the path to your PID file
-PIDFILE=/usr/local/etc/httpd/logs/httpd.pid
+PIDFILE=/usr/local/apache/logs/httpd.pid
 #
 # the path to your httpd binary
-HTTPD=/usr/local/etc/httpd/src/httpd
+HTTPD=/usr/local/apache/src/httpd
 #
 # a command that outputs a formatted text version of the HTML at the
 # url given on the command line.  Designed for lynx, however other

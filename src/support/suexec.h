@@ -115,7 +115,7 @@
  *             debugging purposes.
  */
 #ifndef LOG_EXEC
-#define LOG_EXEC "/usr/local/etc/httpd/logs/cgi.log"	/* Need me? */
+#define LOG_EXEC "/usr/local/apache/logs/cgi.log"	/* Need me? */
 #endif
 
 /*
@@ -124,7 +124,7 @@
  *             that can be used for suEXEC behavior.
  */
 #ifndef DOC_ROOT
-#define DOC_ROOT "/usr/local/etc/httpd/htdocs"
+#define DOC_ROOT "/usr/local/apache/htdocs"
 #endif
 
 /*

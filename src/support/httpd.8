@@ -82,7 +82,7 @@ compiled into httpd.
 .BI \-d " serverroot"
 Set the initial value for the ServerRoot directive to \fIserverroot\fP. This
 can be overridden by the ServerRoot command in the configuration file. The
-default is \fB/usr/local/etc/httpd\fP.
+default is \fB/usr/local/apache\fP.
 .TP
 .BI \-f " config"
 Execute the commands in the file \fIconfig\fP on startup. If \fIconfig\fP
@@ -108,19 +108,19 @@ Print the version of httpd, and then exit.
 Print a list of the httpd options, and then exit.
 .SH FILES
 .PD 0
-.B /usr/local/etc/httpd/conf/httpd.conf
+.B /usr/local/apache/conf/httpd.conf
 .br
-.B /usr/local/etc/httpd/conf/srm.conf
+.B /usr/local/apache/conf/srm.conf
 .br
-.B /usr/local/etc/httpd/conf/access.conf
+.B /usr/local/apache/conf/access.conf
 .br
-.B /usr/local/etc/httpd/conf/mime.types
+.B /usr/local/apache/conf/mime.types
 .br
-.B /usr/local/etc/httpd/logs/error_log
+.B /usr/local/apache/logs/error_log
 .br
-.B /usr/local/etc/httpd/logs/access_log
+.B /usr/local/apache/logs/access_log
 .br
-.B /usr/local/etc/httpd/logs/httpd.pid
+.B /usr/local/apache/logs/httpd.pid
 .PD
 .SH SEE ALSO
 .BR inetd (8).

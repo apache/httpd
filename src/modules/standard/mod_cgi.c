@@ -178,7 +178,7 @@ static int log_scripterror(request_rec *r, cgi_server_conf * conf, int ret,
     /* "%% [Wed Jun 19 10:53:21 1996] GET /cgi-bin/printenv HTTP/1.0" */
     fprintf(f, "%%%% [%s] %s %s%s%s %s\n", get_time(), r->method, r->uri,
 	    r->args ? "?" : "", r->args ? r->args : "", r->protocol);
-    /* "%% 500 /usr/local/etc/httpd/cgi-bin */
+    /* "%% 500 /usr/local/apache/cgi-bin */
     fprintf(f, "%%%% %d %s\n", ret, r->filename);
 
     fprintf(f, "%%error\n%s\n", error);
@@ -212,7 +212,7 @@ static int log_script(request_rec *r, cgi_server_conf * conf, int ret,
     /* "%% [Wed Jun 19 10:53:21 1996] GET /cgi-bin/printenv HTTP/1.0" */
     fprintf(f, "%%%% [%s] %s %s%s%s %s\n", get_time(), r->method, r->uri,
 	    r->args ? "?" : "", r->args ? r->args : "", r->protocol);
-    /* "%% 500 /usr/local/etc/httpd/cgi-bin" */
+    /* "%% 500 /usr/local/apache/cgi-bin" */
     fprintf(f, "%%%% %d %s\n", ret, r->filename);
 
     fputs("%request\n", f);

@@ -74,7 +74,7 @@
 /* Set default for Windows file system */
 #define HTTPD_ROOT "/apache"
 #else
-#define HTTPD_ROOT "/usr/local/etc/httpd"
+#define HTTPD_ROOT "/usr/local/apache"
 #endif
 #endif /* HTTPD_ROOT */
 
@@ -84,7 +84,7 @@
 /* Set default for OS/2 file system */
 #define DOCUMENT_LOCATION "/os2httpd/docs"
 #else
-#define DOCUMENT_LOCATION "/usr/local/etc/httpd/htdocs"
+#define DOCUMENT_LOCATION "/usr/local/apache/htdocs"
 #endif
 #endif /* DOCUMENT_LOCATION */
 
@@ -225,7 +225,7 @@
 
 /* The path to the suExec wrapper, can be overridden in Configuration */
 #ifndef SUEXEC_BIN
-#define SUEXEC_BIN "/usr/local/etc/httpd/sbin/suexec"
+#define SUEXEC_BIN "/usr/local/apache/sbin/suexec"
 #endif
 
 /* The default string lengths */

@@ -55,7 +55,7 @@ ExcessRequestsPerChild  - Number of additional requests a server responds
 
 Due to the behavior of NT when multiple processes have a socket open
 for listening, I would recommend that you set the following in httpd.conf
-(in the directory /usr/local/etc/httpd/conf):
+(in the directory /usr/local/apache/conf):
 
 # Start up 3 servers (in case one dies, another can take its place, while
 # a new one is spawned

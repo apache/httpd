@@ -59,7 +59,7 @@ return the file /ftp/pub/image/foo.gif.
 <P>
 Note that if you include a trailing / on the <em>url-path</em> then the
 server will require a trailing / in order to expand the alias.  That is,
-if you use <code>Alias /icons/ /usr/local/etc/httpd/icons/</code> then
+if you use <code>Alias /icons/ /usr/local/apache/icons/</code> then
 the url <code>/icons</code> will not be aliased.
 </p>
 <P>
@@ -83,7 +83,7 @@ and if it matches, the server will substitute any parenthesized
 matches into the given string and use it as a filename. For example,
 to activate the <code>/icons</code> directory, one might use:
 <pre>
-    AliasMatch ^/icons(.*) /usr/local/etc/httpd/icons$1
+    AliasMatch ^/icons(.*) /usr/local/apache/icons$1
 </pre>
 </p>
 
@@ -248,7 +248,7 @@ and if it matches, the server will substitute any parenthesized
 matches into the given string and use it as a filename. For example,
 to activate the standard <code>/cgi-bin</code>, one might use:
 <pre>
-    ScriptAlias ^/cgi-bin(.*) /usr/local/etc/httpd/cgi-bin$1
+    ScriptAlias ^/cgi-bin(.*) /usr/local/apache/cgi-bin$1
 </pre>
 </p>
 
