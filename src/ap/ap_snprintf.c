@@ -410,10 +410,11 @@ static char *conv_10_quad(widest_int num, register bool_int is_unsigned,
     u_widest_int magnitude;
 
     /*
-     * If the value is less than the maximum unsigned long value,
-     * then we know we aren't using quads, so use the faster function
+     * We see if we can use the faster non-quad version by checking the
+     * number against the largest long value it can be. If <=, we
+     * punt to the quicker version.
      */
-    if (num <= ULONG_MAX && is_unsigned)
+    if ((num <= ULONG_MAX && is_unsigned) || (num <= LONG_MAX && !is_unsigned))
     	return(conv_10( (wide_int)num, is_unsigned, is_negative,
 	       buf_end, len));
 
