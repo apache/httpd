@@ -164,9 +164,6 @@
       リクエストを受け取ったサーバの IP アドレス
       (2.0.43 以降のみ)</li>
 
-      <li><code>Remote_User</code> -
-      認証されたユーザ名 (もしあれば)</li>
-
       <li><code>Request_Method</code> -
       使用されているメソッド名 (<code>GET</code>, <code>POST</code>
       <em>など</em>)</li>
@@ -205,7 +202,7 @@
       <li><code><em>varname</em>=<em>value</em></code></li>
     </ol>
 
-    <p>のどれかの形式になります。</p>
+    <p>のどれかの形式になります。</p>
 
     <p>最初の形式では、値は "1" に設定されます。
     二つ目はもし値が定義されていればそれを取り除きます。

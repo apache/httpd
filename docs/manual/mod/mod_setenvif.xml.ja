@@ -157,9 +157,6 @@
       リクエストを受け取ったサーバの IP アドレス
       (2.0.43 以降のみ)</li>
 
-      <li><code>Remote_User</code> -
-      認証されたユーザ名 (もしあれば)</li>
-
       <li><code>Request_Method</code> -
       使用されているメソッド名 (<code>GET</code>, <code>POST</code>
       <em>など</em>)</li>
