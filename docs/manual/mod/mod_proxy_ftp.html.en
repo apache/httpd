@@ -31,7 +31,8 @@
 <h3>Summary</h3>
 
     <p>This module <em>requires</em> the service of <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code>. It provides support for the proxying
-    FTP sites.</p>
+    FTP sites.  Note that FTP support is currently limited to
+    the GET method.</p>
 
     <p>Thus, in order to get the ability of handling FTP proxy requests,
     <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> and <code class="module"><a href="../mod/mod_proxy_ftp.html">mod_proxy_ftp</a></code>
