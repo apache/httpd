@@ -25,7 +25,7 @@ DocumentRoot "@@ServerRoot@@/htdocs"
 # a Windows login, so one of the forms such as the below needs to be
 # used.  See the manual for details.
 #
-#UserDir "/@@ServerRoot@@/users/"
+#UserDir "@@ServerRoot@@/users/"
 
 # DirectoryIndex: Name of the file or files to use as a pre-written HTML
 # directory index.  Separate multiple entries with spaces.
