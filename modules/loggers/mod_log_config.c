@@ -134,8 +134,8 @@
  * %...{Foobar}o:  The contents of Foobar: header line(s) in the reply.
  * %...p:  the port the request was served to
  * %...P:  the process ID of the child that serviced the request.
- * %...I:  the thread ID of the thread that serviced the request (or
- *         0 if APR doesn't support threads)
+ * %...{format}P: the process ID or thread ID of the child/thread that
+ *                serviced the request
  * %...r:  first line of request
  * %...s:  status.  For requests that got internally redirected, this
  *         is status of the *original* request --- %...>s for the last.
