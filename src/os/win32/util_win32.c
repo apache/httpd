@@ -59,6 +59,7 @@ API_EXPORT(char *) os_canonical_filename(pool *pPool, const char *szFile)
     char buf[HUGE_STRING_LEN];
 
     sub_canonical_filename(buf, szFile);
+    buf[0]=tolower(buf[0]);
     return pstrdup(pPool, buf);
 }
 
