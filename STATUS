@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/09/22 18:19:35 $]
+Last modified at [$Date: 2004/09/23 15:22:56 $]
 
 Release:
 
@@ -76,12 +76,12 @@ PATCHES TO BACKPORT FROM 2.1
 
     *) Another ap_rgetline_core fix.
        http://cvs.apache.org/viewcvs.cgi/httpd-2.0/server/protocol.c?r1=1.152&r2=1.153
-       +1: jorton, jerenkrantz
+       +1: jorton, jerenkrantz, trawick
 
     *) Fix the global mutex crash when the global mutex is never allocated
        due to disabled/empty caches.
          modules/ldap/util_ldap.c: 1.13
-       +1: minfrin, bnicholes
+       +1: minfrin, bnicholes, trawick
 
     *) Fix a segfault in the LDAP cache purge. PR 24801
          modules/ldap/util_ldap_cache_mgr.c: 1.9, 1.10
@@ -93,7 +93,7 @@ PATCHES TO BACKPORT FROM 2.1
 
     *) Fix a segfault in the LDAP cache when it is configured switched off.
          modules/ldap/util_ldap_cache_mgr.c: 1.7
-       +1: minfrin, bnicholes
+       +1: minfrin, bnicholes, trawick
 
     *) Use HTML 2.0 <hr> for error pages. PR 30732
          modules/http/http_protocol.c: r1.483
@@ -316,7 +316,7 @@ PATCHES TO BACKPORT FROM 2.1
     * mod_expires: Allow mod_cache to properly cache Expire responses by making
       ExpiresFilter run before mod_cache's cache_save_filter.
       modules/metadata/mod_expires.c: r1.55
-      +1: jerenkrantz
+      +1: jerenkrantz, trawick
 
 CURRENT RELEASE NOTES:
 
