@@ -1,15 +1,16 @@
 
-                                 Apache
-                             Version 2.0 (and up)
+                          Apache HTTP Server
 
   What is it?
   -----------
 
-  Apache is an HTTP server designed as a plug-in replacement for
-  the NCSA server version 1.3 (or 1.4). It fixes numerous bugs in
-  the NCSA server and includes many frequently requested new
-  features, and has an API which allows it to be extended to meet
-  users' needs more easily.
+  The Apache HTTP Server is a powerful and flexible HTTP/1.1 compliant
+  web server.  Originally designed as a replacement for the NCSA HTTP
+  Server, it has grown to be the most popular web server on the
+  Internet.  As a project of the Apache Software Foundation, the
+  developers aim to collaboratively develop and maintain a robust,
+  commercial-grade, standards-based server with freely available
+  source code.
 
   The Latest Version
   ------------------
@@ -21,28 +22,14 @@
   -------------
 
   The documentation available as of the date of this release is
-  also included, in HTML format, in the htdocs/manual/ directory.
-  For the most up-to-date documentation can be found on
-  http://httpd.apache.org/docs/.
+  included in HTML format in the docs/manual/ directory.  The most
+  up-to-date documentation can be found at
+  http://httpd.apache.org/docs-2.0/.
 
   Installation
   ------------
 
-  Apache 2.0 uses autoconf for configuration and installation.  To create
-  Apache's autoconf script, you will need libtool 1.3.3 or higher, and
-  autoconf 2.13 or newer.  Those tools will not be required if you are just
-  using a package downloaded from apache.org, they are only required for
-  developers.
-
-  To configure Apache 2.0 run the following commands.
-
-  ./buildconf  (not required unless you are a developer)
-  ./configure [autoconf arguments] [apache arguments]
-  make
-  make install
-  
-  The buildconf script is very important.  Just running autoconf will not
-  leave the directory tree in a usable state.
+  Please see the file called INSTALL.
 
   Licensing
   ---------
