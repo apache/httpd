@@ -593,9 +593,13 @@ static void child_main(int child_num_arg)
         listensocks[i].sd = lr->sd;
     }
 
-    apr_poll_setup(&pollset, num_listensocks, pchild);
-    for (i = 0; i < num_listensocks; i++)
-        apr_poll_socket_add(pollset, listensocks[i].sd, APR_POLLIN);
+    pollset = apr_palloc(pchild, sizeof(*pollset) * num_listensocks);
+    pollset[0].p = pchild;
+    for (i = 0; i < num_listensocks; i++) {
+        pollset[i].desc.s = listensocks[i].sd;
+        pollset[i].desc_type = APR_POLL_SOCKET;
+        pollset[i].reqevents = APR_POLLIN;
+    }
 
     bucket_alloc = apr_bucket_alloc_create(pchild);
 
@@ -655,8 +659,7 @@ static void child_main(int child_num_arg)
                         curr_pollfd = 0;
                     }
                     /* XXX: Should we check for POLLERR? */
-                    apr_poll_revents_get(&event, listensocks[curr_pollfd].sd, pollset);
-                    if (event & APR_POLLIN) {
+                    if (pollset[curr_pollfd].rtnevents & APR_POLLIN) {
                         last_pollfd = curr_pollfd;
                         offset = curr_pollfd;
                         goto got_fd;
