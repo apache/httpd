@@ -1620,6 +1620,14 @@ case "$PLAT" in
 		TLIB='-ldl'
 	    fi
 	fi
+	# Test for the presence of the "union semun":
+	if TCADDINCL='#include <sys/types.h>
+#include <sys/ipc.h>
+#include <sys/sem.h>' ./helpers/TestCompile sizeof "union semun"; then
+            : Okay, union semun is defined
+	else
+	    CFLAGS="$CFLAGS -DNEED_UNION_SEMUN"
+	fi
 	# Test for the presence of the _rini_struct typedef:
 	if TCADDINCL='#include <pwd.h>' ./helpers/TestCompile sizeof _rini_struct; then
 	    CFLAGS="$CFLAGS -DHAVE_RINI_STRUCT"
