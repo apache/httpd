@@ -204,25 +204,6 @@ ap_set_module_config(c->conn_config, &ssl_module, val)
 #define myCtxVarGet(mc,num,type) (type)(mc->rCtx.pV##num)
 
 /*
- * SSL Logging
- */
-#define SSL_LOG_NONE    (1<<0)
-#define SSL_LOG_ERROR   (1<<1)
-#define SSL_LOG_WARN    (1<<2)
-#define SSL_LOG_INFO    (1<<3)
-#define SSL_LOG_TRACE   (1<<4)
-#define SSL_LOG_DEBUG   (1<<5)
-#define SSL_LOG_MASK    (SSL_LOG_ERROR|SSL_LOG_WARN|SSL_LOG_INFO|SSL_LOG_TRACE|SSL_LOG_DEBUG)
-
-#define SSL_ADD_NONE     (1<<8)
-#define SSL_ADD_ERRNO    (1<<9)
-#define SSL_ADD_SSLERR   (1<<10)
-#define SSL_NO_TIMESTAMP (1<<11)
-#define SSL_NO_LEVELID   (1<<12)
-#define SSL_NO_NEWLINE   (1<<13)
-#define SSL_INIT         (1<<14)
-
-/*
  * Defaults for the configuration
  */
 #ifndef SSL_SESSION_CACHE_TIMEOUT
@@ -431,12 +412,9 @@ typedef struct {
     const char *verify_info;
     const char *verify_error;
     int verify_depth;
-    int log_level; /* for avoiding expensive logging */
     int is_proxy;
     int disabled;
 } SSLConnRec;
-
-#define SSLConnLogApplies(sslconn, level) (sslconn->log_level >= level)
 
 typedef struct {
     pid_t           pid;
@@ -528,9 +506,6 @@ struct SSLSrvConfigRec {
     BOOL             proxy_enabled;
     const char      *vhost_id;
     int              vhost_id_len;
-    const char      *log_file_name;
-    apr_file_t      *log_file;
-    int              log_level;
     int              session_cache_timeout;
     modssl_ctx_t    *server;
     modssl_ctx_t    *proxy;
@@ -586,8 +561,6 @@ const char  *ssl_cmd_SSLVerifyClient(cmd_parms *, void *, const char *);
 const char  *ssl_cmd_SSLVerifyDepth(cmd_parms *, void *, const char *);
 const char  *ssl_cmd_SSLSessionCache(cmd_parms *, void *, const char *);
 const char  *ssl_cmd_SSLSessionCacheTimeout(cmd_parms *, void *, const char *);
-const char  *ssl_cmd_SSLLog(cmd_parms *, void *, const char *);
-const char  *ssl_cmd_SSLLogLevel(cmd_parms *, void *, const char *);
 const char  *ssl_cmd_SSLProtocol(cmd_parms *, void *, const char *);
 const char  *ssl_cmd_SSLOptions(cmd_parms *, void *, const char *);
 const char  *ssl_cmd_SSLRequireSSL(cmd_parms *, void *);
@@ -704,8 +677,6 @@ int          ssl_mutex_on(server_rec *);
 int          ssl_mutex_off(server_rec *);
 
 /*  Logfile Support  */
-void         ssl_log_open(server_rec *, server_rec *, apr_pool_t *);
-void         ssl_log(server_rec *, int, const char *, ...);
 void         ssl_die(void);
 void         ssl_log_ssl_error(const char *, int, int, server_rec *);
 

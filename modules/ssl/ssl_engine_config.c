@@ -209,9 +209,6 @@ static SSLSrvConfigRec *ssl_config_server_new(apr_pool_t *p)
     sc->proxy_enabled          = UNSET;
     sc->vhost_id               = NULL;  /* set during module init */
     sc->vhost_id_len           = 0;     /* set during module init */
-    sc->log_file_name          = NULL;
-    sc->log_file               = NULL;  /* set during module init */
-    sc->log_level              = SSL_LOG_NONE;
     sc->session_cache_timeout  = UNSET;
 
     modssl_ctx_init_proxy(sc, p);
@@ -296,8 +293,6 @@ void *ssl_config_server_merge(apr_pool_t *p, void *basev, void *addv)
     cfgMerge(mc, NULL);
     cfgMergeBool(enabled);
     cfgMergeBool(proxy_enabled);
-    cfgMergeString(log_file_name);
-    cfgMerge(log_level, SSL_LOG_NONE);
     cfgMergeInt(session_cache_timeout);
 
     modssl_ctx_cfg_merge_proxy(base->proxy, add->proxy, mrg->proxy);
@@ -1047,61 +1042,6 @@ const char *ssl_cmd_SSLSessionCacheTimeout(cmd_parms *cmd,
 
     if (sc->session_cache_timeout < 0) {
         return "SSLSessionCacheTimeout: Invalid argument";
-    }
-
-    return NULL;
-}
-
-#define SSL_FLAGS_LOG_CONTEXT \
-    (NOT_IN_LIMIT|NOT_IN_DIRECTORY|NOT_IN_LOCATION|NOT_IN_FILES)
-
-const char *ssl_cmd_SSLLog(cmd_parms *cmd,
-                           void *dcfg,
-                           const char *arg)
-{
-    SSLSrvConfigRec *sc = mySrvConfig(cmd->server);
-    const char *err;
-
-    if ((err = ap_check_cmd_context(cmd, SSL_FLAGS_LOG_CONTEXT))) {
-        return err;
-    }
-
-    sc->log_file_name = arg;
-
-    return NULL;
-}
-
-const char *ssl_cmd_SSLLogLevel(cmd_parms *cmd,
-                                void *dcfg,
-                                const char *level)
-{
-    SSLSrvConfigRec *sc = mySrvConfig(cmd->server);
-    const char *err;
-
-    if ((err = ap_check_cmd_context(cmd, SSL_FLAGS_LOG_CONTEXT))) {
-        return err;
-    }
-
-    if (strcEQ(level, "none")) {
-        sc->log_level = SSL_LOG_NONE;
-    }
-    else if (strcEQ(level, "error")) {
-        sc->log_level = SSL_LOG_ERROR;
-    }
-    else if (strcEQ(level, "warn")) {
-        sc->log_level = SSL_LOG_WARN;
-    }
-    else if (strcEQ(level, "info")) {
-        sc->log_level = SSL_LOG_INFO;
-    }
-    else if (strcEQ(level, "trace")) {
-        sc->log_level = SSL_LOG_TRACE;
-    }
-    else if (strcEQ(level, "debug")) {
-        sc->log_level = SSL_LOG_DEBUG;
-    }
-    else {
-        return "SSLLogLevel: Invalid argument";
     }
 
     return NULL;
