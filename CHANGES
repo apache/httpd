@@ -1,9 +1,12 @@
 Changes with Apache 2.0.40
 
+  *) Support the -w flag on to keep the Win32 console open on error.
+     [William Rowe]
+
   *) Normalize the hostname value in the request_rec to all-lowercase
      [Perry Harrington <pedward@webcom.com>]
 
-  *) Fix Win32 cgi 500 errors when QUERY_ARGS or other strings include
+  *) Fix WinNT cgi 500 errors when QUERY_ARGS or other strings include
      extended characters (non US-ASCII) in non-utf8 format.  This brings
      Win32 back into CGI/1.1 compliance, and leaves charset decoding up
      to the cgi application itself.  [William Rowe]
