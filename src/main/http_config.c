@@ -1074,6 +1074,26 @@ server_rec *init_server_config(pool *p)
     return s;
 }
 
+
+static void default_listeners(pool *p, server_rec *s)
+{
+    listen_rec *new;
+
+    if (listeners != NULL) {
+	return;
+    }
+    /* allocate a default listener */
+    new = pcalloc(p, sizeof(listen_rec));
+    new->local_addr.sin_family = AF_INET;
+    new->local_addr.sin_addr.s_addr = htonl(INADDR_ANY);
+    new->local_addr.sin_port = htons(s->port);
+    new->fd = -1;
+    new->used = 0;
+    new->next = NULL;
+    listeners = new;
+}
+
+
 server_rec *read_config(pool *p, pool *ptemp, char *confname)
 {
     server_rec *s = init_server_config(p);
@@ -1088,11 +1108,12 @@ server_rec *read_config(pool *p, pool *ptemp, char *confname)
     process_resource_config (s, s->access_confname, p, ptemp);
     
     fixup_virtual_hosts (p, s);
+    default_listeners (p, s);
     
     for (m = top_module; m; m = m->next)
         if (m->init)
 	    (*m->init) (s, p);
-    
+
     return s;
 }
 

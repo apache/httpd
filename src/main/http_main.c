@@ -1894,51 +1894,51 @@ static int make_sock(pool *pconf, const struct sockaddr_in *server)
 static listen_rec *old_listeners;
 
 static void copy_listeners(pool *p)
-    {
+{
     listen_rec *lr;
 
     assert(old_listeners == NULL);
-    for(lr=listeners ; lr ; lr=lr->next)
-	{
-	listen_rec *nr=malloc(sizeof *nr);
+    for (lr = listeners; lr; lr = lr->next) {
+	listen_rec *nr = malloc(sizeof *nr);
 	if (nr == NULL) {
-	  fprintf (stderr, "Ouch!  malloc failed in copy_listeners()\n");
-	  exit (1);
+	    fprintf (stderr, "Ouch!  malloc failed in copy_listeners()\n");
+	    exit (1);
 	}
-	*nr=*lr;
-	kill_cleanups_for_socket(p,nr->fd);
-	nr->next=old_listeners;
+	*nr = *lr;
+	kill_cleanups_for_socket(p, nr->fd);
+	nr->next = old_listeners;
 	assert(!nr->used);
-	old_listeners=nr;
-	}
+	old_listeners = nr;
     }
+}
+
 
 static int find_listener(listen_rec *lr)
-    {
+{
     listen_rec *or;
 
-    for(or=old_listeners ; or ; or=or->next)
-	if(!memcmp(&or->local_addr,&lr->local_addr,sizeof or->local_addr))
-	    {
-	    or->used=1;
+    for (or = old_listeners; or; or = or->next) {
+	if (!memcmp(&or->local_addr, &lr->local_addr, sizeof(or->local_addr))) {
+	    or->used = 1;
 	    return or->fd;
-	    }
-    return -1;
+	}
     }
+    return -1;
+}
+
 
 static void close_unused_listeners()
-    {
-    listen_rec *or,*next;
+{
+    listen_rec *or, *next;
 
-    for(or=old_listeners ; or ; or=next)
-	{
-	next=or->next;
-	if(!or->used)
+    for (or = old_listeners; or; or = next) {
+	next = or->next;
+	if (!or->used)
 	    closesocket(or->fd);
 	free(or);
-	}
-    old_listeners=NULL;
     }
+    old_listeners = NULL;
+}
 
 
 static int s_iInitCount = 0;
@@ -2019,6 +2019,7 @@ void child_main(int child_num_arg)
 #endif
     struct sockaddr sa_server;
     struct sockaddr sa_client;
+    listen_rec *lr;
 
     csd = -1;
     dupped_csd = -1;
@@ -2090,12 +2091,6 @@ void child_main(int child_num_arg)
 
 	(void)update_child_status(child_num, SERVER_READY, (request_rec*)NULL);
 
-        if (listeners == NULL) {
-            FD_ZERO(&listenfds);
-            FD_SET(sd, &listenfds);
-            listenmaxfd = sd;
-        }
-
         /*
          * Wait for an acceptable connection to arrive.
          */
@@ -2122,12 +2117,11 @@ void child_main(int child_num_arg)
             if (srv <= 0)
                 continue;
 
-            if (listeners != NULL) {
-                for (sd = listenmaxfd; sd >= 0; sd--)
-                    if (FD_ISSET(sd, &main_fds)) break;
-                if (sd < 0)
-                    continue;
+	    for (lr = listeners; lr; lr = lr->next) {
+		if (FD_ISSET(lr->fd, &main_fds)) break;
             }
+	    if (lr == NULL) continue;
+	    sd = lr->fd;
 
 	    /* if we accept() something we don't want to die, so we have to
 	     * defer the exit
@@ -2338,11 +2332,11 @@ int make_child(server_rec *server_conf, int child_num)
 void standalone_main(int argc, char **argv)
 {
     struct sockaddr_in sa_server;
-    int saved_sd;
     int remaining_children_to_start;
+    listen_rec *lr;
 
     standalone = 1;
-    sd = listenmaxfd = -1;
+    listenmaxfd = -1;
 
     is_graceful = 0;
     ++generation;
@@ -2351,7 +2345,6 @@ void standalone_main(int argc, char **argv)
 
     do {
 	copy_listeners(pconf);
-	saved_sd = sd;
 	if (!is_graceful) {
 	    restart_time = time(NULL);
 	}
@@ -2379,38 +2372,20 @@ void standalone_main(int argc, char **argv)
 
 	default_server_hostnames (server_conf);
 
-	if (listeners == NULL) {
-	    if (!is_graceful) {
-		memset ((char *)&sa_server, 0, sizeof (sa_server));
-		sa_server.sin_family = AF_INET;
-		sa_server.sin_addr = bind_address;
-		sa_server.sin_port = htons (server_conf->port);
-		sd = make_sock (pconf, &sa_server);
-	    }
-	    else {
-		sd = saved_sd;
-		note_cleanups_for_fd(pconf, sd);
-	    }
-	}
-	else {
-	    listen_rec *lr;
+	listenmaxfd = -1;
+	FD_ZERO (&listenfds);
+	for (lr = listeners; lr != NULL; lr = lr->next) {
 	    int fd;
-
-	    listenmaxfd = -1;
-	    FD_ZERO (&listenfds);
-	    for (lr = listeners; lr != NULL; lr = lr->next)
-	    {
-		fd = find_listener (lr);
-		if (fd < 0) {
-		    fd = make_sock (pconf, &lr->local_addr);
-		}
-		FD_SET (fd, &listenfds);
-		if (fd > listenmaxfd) listenmaxfd = fd;
-		lr->fd = fd;
+	    
+	    fd = find_listener (lr);
+	    if (fd < 0) {
+		fd = make_sock (pconf, &lr->local_addr);
 	    }
-	    close_unused_listeners ();
-	    sd = -1;
+	    FD_SET (fd, &listenfds);
+	    if (fd > listenmaxfd) listenmaxfd = fd;
+	    lr->fd = fd;
 	}
+	close_unused_listeners ();
 
 	set_signals ();
 	log_pid (pconf, pid_fname);
@@ -2519,7 +2494,6 @@ void standalone_main(int argc, char **argv)
 	    update_scoreboard_global ();
 
 	    log_error ("SIGUSR1 received.  Doing graceful restart",server_conf);
-	    kill_cleanups_for_socket (pconf, sd);
 	    /* kill off the idle ones */
 	    if (ap_killpg(pgrp, SIGUSR1) < 0) {
 		log_unixerr ("killpg SIGUSR1", NULL, NULL, server_conf);
@@ -3018,7 +2992,6 @@ void worker_main()
      * useful on Unix (not sure it even makes sense
      * in a multi-threaded env.
      */
-    int saved_sd;
     int nthreads;
     fd_set main_fds;
     int srv;
@@ -3056,7 +3029,6 @@ void worker_main()
     ++generation;
   
     copy_listeners(pconf);
-    saved_sd=sd;
     restart_time = time(NULL);
 
     reinit_scoreboard(pconf);
@@ -3064,38 +3036,25 @@ void worker_main()
 
     acquire_mutex(start_mutex);
     {
+	listen_rec *lr;
+	int fd;
+
         listenmaxfd = -1;
 	FD_ZERO(&listenfds);
 
-        if (listeners == NULL) {
-	    memset((char *) &sa_server, 0, sizeof(sa_server));
-	    sa_server.sin_family=AF_INET;
-	    sa_server.sin_addr=bind_address;
-	    sa_server.sin_port=htons(server_conf->port);
-
-	    sd = make_sock(pconf, &sa_server);
-            FD_SET(sd, &listenfds);
-            listenmaxfd = sd;
-        }
-        else {
-	    listen_rec *lr;
-	    int fd;
-
-	    
-	    for (lr=listeners; lr != NULL; lr=lr->next)
+	for (lr=listeners; lr != NULL; lr=lr->next)
+	{
+	    fd=find_listener(lr);
+	    if(fd < 0)
 	    {
-	        fd=find_listener(lr);
-	        if(fd < 0)
-                {
-		    fd = make_sock(pconf, &lr->local_addr);
-                }
-	        FD_SET(fd, &listenfds);
-	        if (fd > listenmaxfd) listenmaxfd = fd;
-	        lr->fd=fd;
+		fd = make_sock(pconf, &lr->local_addr);
 	    }
-	    close_unused_listeners();
-	    sd = -1;
-        }
+	    FD_SET(fd, &listenfds);
+	    if (fd > listenmaxfd) listenmaxfd = fd;
+	    lr->fd=fd;
+	}
+	close_unused_listeners();
+	sd = -1;
     }
 
     set_signals();
@@ -3140,20 +3099,15 @@ void worker_main()
             start_mutex_released = 1;
             /* set the listen queue to 1 */
             {
-                if (listeners == NULL) {
-	            listen(sd, 1);
-                }
-                else {
-	            listen_rec *lr;
-	            
-	            for (lr=listeners; lr != NULL; lr=lr->next)
-	            {
-	                if(lr->used)
-                        {
-                            listen(lr->fd, 1);
-                        }
-	            }
-                }
+		listen_rec *lr;
+		
+		for (lr=listeners; lr != NULL; lr=lr->next)
+		{
+		    if(lr->used)
+		    {
+			listen(lr->fd, 1);
+		    }
+		}
             }
         }
         if(!start_exit)
@@ -3200,7 +3154,7 @@ void worker_main()
                 continue;
         }
 
-        if (listeners != NULL) {
+        {
 	    listen_rec *lr;
 	    int fd;
 	    
@@ -3254,21 +3208,16 @@ void worker_main()
     }
             
     {
-        if (listeners == NULL) {
-	    closesocket(sd);
-        }
-        else {
-	    listen_rec *lr;
-	    
-	    for (lr=listeners; lr != NULL; lr=lr->next)
+	listen_rec *lr;
+	
+	for (lr=listeners; lr != NULL; lr=lr->next)
+	{
+	    if(lr->used)
 	    {
-	        if(lr->used)
-                {
-                    closesocket(lr->fd);
-                    lr->fd = -1;
-                }
+		closesocket(lr->fd);
+		lr->fd = -1;
 	    }
-        }
+	}
     }
 
     for(i=0; i<nthreads; i++)
