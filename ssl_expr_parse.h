@@ -1,3 +1,4 @@
+#if 0 /* XXX */
 #ifndef YYERRCODE
 #define YYERRCODE 256
 #endif
@@ -27,3 +28,4 @@ typedef union {
     ssl_expr *exVal;
 } YYSTYPE;
 extern YYSTYPE ssl_expr_yylval;
+#endif /* XXX */

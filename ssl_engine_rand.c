@@ -62,6 +62,7 @@
 
 #include "mod_ssl.h"
 
+#if 0 /* XXX */
 
 /*  _________________________________________________________________
 **
@@ -210,4 +211,6 @@ static int ssl_rand_choosenum(int l, int h)
     if (i > h) i = h;
     return i;
 }
+
+#endif /* XXX */
 

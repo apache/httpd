@@ -63,6 +63,7 @@
                                          -- Unknown         */
 #include "mod_ssl.h"
 
+#if 0 /* XXX */
 
 /*  _________________________________________________________________
 **
@@ -191,4 +192,6 @@ void ssl_ds_table_kill(ssl_ds_table *t)
     t->aData    = NULL;
     return;
 }
+
+#endif /* XXX */
 

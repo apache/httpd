@@ -63,6 +63,8 @@
                                                  -- Unknown         */
 #include "mod_ssl.h"
 
+#if 0 /* XXX */
+
 /*  _________________________________________________________________
 **
 **  Session Cache: Common Abstraction Layer
@@ -199,4 +201,6 @@ void ssl_scache_expire(server_rec *s)
 #endif
     return;
 }
+
+#endif /* XXX */
 

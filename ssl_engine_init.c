@@ -61,6 +61,7 @@
                                         -- Unknown   */
 #include "mod_ssl.h"
 
+#if 0 /* XXX */
 
 /*  _________________________________________________________________
 **
@@ -1041,4 +1042,6 @@ void ssl_init_ModuleKill(void *data)
 
     return;
 }
+
+#endif /* XXX */
 

@@ -63,6 +63,7 @@
                                             -- Calvin          */
 #include "mod_ssl.h"
 
+#if 0 /* XXX */
 
 /*  _________________________________________________________________
 **
@@ -388,4 +389,6 @@ void ssl_util_thread_setup(void)
 #endif /* WIN32 */
     return;
 }
+
+#endif /* XXX */
 

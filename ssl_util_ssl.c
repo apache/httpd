@@ -59,6 +59,7 @@
 
 #include "mod_ssl.h"
 
+#if 0 /* XXX */
 
 /*  _________________________________________________________________
 **
@@ -539,4 +540,6 @@ char *SSL_SESSION_id2sz(unsigned char *id, int idlen)
     *cp = NUL;
     return str;
 }
+
+#endif /* XXX */
 

@@ -62,6 +62,8 @@
 
 #include "mod_ssl.h"
 
+#if 0 /* XXX */
+
 /* ----BEGIN GENERATED SECTION-------- */
 
 /*
@@ -251,3 +253,6 @@ unlink("dh1024.pem");
 
 =pod
 */
+
+#endif /* XXX */
+

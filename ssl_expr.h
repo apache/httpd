@@ -61,6 +61,8 @@
 #ifndef SSL_EXPR_H
 #define SSL_EXPR_H
 
+#if 0 /* XXX */
+
 #ifndef FALSE
 #define FALSE 0
 #endif
@@ -132,5 +134,7 @@ extern int       ssl_expr_exec(request_rec *, ssl_expr *);
 extern char     *ssl_expr_get_error(void);
 extern ssl_expr *ssl_expr_make(ssl_expr_node_op, void *, void *);
 extern BOOL      ssl_expr_eval(request_rec *, ssl_expr *);
+
+#endif /* XXX */
 
 #endif /* SSL_EXPR_H */

@@ -62,6 +62,7 @@
                                           -- Unknown  */
 #include "mod_ssl.h"
 
+#if 0 /* XXX */
 
 /*  _________________________________________________________________
 **
@@ -114,4 +115,6 @@ int ssl_expr_exec(request_rec *r, ssl_expr *expr)
     else
         return (rc ? 1 : 0);
 }
+
+#endif /* XXX */
 

@@ -61,6 +61,7 @@
                                         -- Unknown */
 #include "mod_ssl.h"
 
+#if 0 /* XXX */
 
 /*  _________________________________________________________________
 **
@@ -277,4 +278,6 @@ static int ssl_expr_eval_strcmplex(char *cpNum1, char *cpNum2)
     }
     return 0;
 }
+
+#endif /* XXX */
 

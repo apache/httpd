@@ -62,6 +62,7 @@
                                          -- Ralf S. Engelschall     */
 #include "mod_ssl.h"
 
+#if 0 /* XXX */
 
 /*  _________________________________________________________________
 **
@@ -321,4 +322,6 @@ void ssl_die(void)
      */
     exit(1);
 }
+
+#endif /* XXX */
 

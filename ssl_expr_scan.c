@@ -1,3 +1,4 @@
+#if 0 /* XXX */
 #define yy_create_buffer ssl_expr_yy_create_buffer
 #define yy_delete_buffer ssl_expr_yy_delete_buffer
 #define yy_scan_buffer ssl_expr_yy_scan_buffer
@@ -1999,4 +2000,4 @@ int yyinput(char *buf, int max_size)
     ssl_expr_info.inputptr += n;
     return n;
 }
-
+#endif /* XXX */

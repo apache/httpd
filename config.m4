@@ -50,9 +50,34 @@ dnl #  start of module specific part
 APACHE_MODPATH_INIT(ssl)
 
 dnl #  list of module object files
-ssl_objs="mod_ssl.lo"
-ssl_objs="$ssl_objs ssl_engine_config.lo"
-
+ssl_objs="dnl
+mod_ssl.lo dnl
+ssl_engine_compat.lo dnl
+ssl_engine_config.lo dnl
+ssl_engine_dh.lo dnl
+ssl_engine_ds.lo dnl
+ssl_engine_ext.lo dnl
+ssl_engine_init.lo dnl
+ssl_engine_io.lo dnl
+ssl_engine_kernel.lo dnl
+ssl_engine_log.lo dnl
+ssl_engine_mutex.lo dnl
+ssl_engine_pphrase.lo dnl
+ssl_engine_rand.lo dnl
+ssl_engine_vars.lo dnl
+ssl_expr.lo dnl
+ssl_expr_eval.lo dnl
+ssl_expr_parse.lo dnl
+ssl_expr_scan.lo dnl
+ssl_scache.lo dnl
+ssl_scache_dbm.lo dnl
+ssl_scache_shmcb.lo dnl
+ssl_scache_shmht.lo dnl
+ssl_util.lo dnl
+ssl_util_sdbm.lo dnl
+ssl_util_ssl.lo dnl
+ssl_util_table.lo dnl
+"
 dnl #  hook module into the Autoconf mechanism (--enable-ssl option)
 APACHE_MODULE(ssl, [SSL/TLS support (mod_ssl)], $ssl_objs, , no, [
 

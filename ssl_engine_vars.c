@@ -62,6 +62,7 @@
                                                   -- Unknown       */
 #include "mod_ssl.h"
 
+#if 0 /* XXX */
 
 /*  _________________________________________________________________
 **
@@ -610,4 +611,7 @@ static char *ssl_var_lookup_ssl_version(pool *p, char *var)
     }
     return result;
 }
+
+#endif /* XXX */
+
 
