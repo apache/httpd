@@ -1,9 +1,0 @@
-Debug
-Release
-Makefile
-*.lo
-*.la
-*.so
-modules.mk
-.deps
-.libs
