@@ -594,14 +594,6 @@ void         ssl_scache_dbm_remove(server_rec *, UCHAR *, int);
 void         ssl_scache_dbm_expire(server_rec *);
 void         ssl_scache_dbm_status(request_rec *r, int flags, apr_pool_t *pool);
 
-void         ssl_scache_shmht_init(server_rec *, apr_pool_t *);
-void         ssl_scache_shmht_kill(server_rec *);
-BOOL         ssl_scache_shmht_store(server_rec *, UCHAR *, int, time_t, SSL_SESSION *);
-SSL_SESSION *ssl_scache_shmht_retrieve(server_rec *, UCHAR *, int);
-void         ssl_scache_shmht_remove(server_rec *, UCHAR *, int);
-void         ssl_scache_shmht_expire(server_rec *);
-void         ssl_scache_shmht_status(server_rec *, apr_pool_t *, void (*)(char *, void *), void *);
-
 void         ssl_scache_shmcb_init(server_rec *, apr_pool_t *);
 void         ssl_scache_shmcb_kill(server_rec *);
 BOOL         ssl_scache_shmcb_store(server_rec *, UCHAR *, int, time_t, SSL_SESSION *);
