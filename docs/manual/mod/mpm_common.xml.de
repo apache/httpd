@@ -1,0 +1,918 @@
+<?xml version="1.0"?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.de.xsl"?>
+<!-- English revision: 1.27 -->
+
+
+<modulesynopsis metafile="mpm_common.xml.meta">
+
+<name>mpm_common</name>
+<description>Eine Sammlung von Direktiven, die in mehr als einem
+  Multi-Processing-Modul (MPM) implementiert sind.</description>
+<status>MPM</status>
+
+<directivesynopsis>
+<name>AcceptMutex</name>
+<description>Vom Apache verwendete Methode zur Serialisierung mehrerer
+  Kindprozesse, die Anfragen an Netzwerk-Sockets entgegennehmen.</description>
+<syntax>AcceptMutex Default|<var>Methode</var></syntax>
+<default>AcceptMutex Default</default>
+<contextlist><context>server config</context></contextlist>
+<modulelist><module>leader</module><module>perchild</module>
+<module>prefork</module><module>threadpool</module><module>worker</module>
+</modulelist>
+
+<usage>
+    <p>Die Direktive <directive>AcceptMutex</directive> bestimmt die
+    Methode, die der Apache zur Serialisierung mehrerer Kindprozesse
+    verwendet, welche Anfragen an Netzwerk-Sockets entgegennehmen. Vor
+    Apache 2.0 war diese Methode nur zur Kompilierungszeit einstellbar.
+    Die optimale Methode ist sehr stark von der Architektur und
+    Plattform abh&auml;ngig. Lesen Sie bitte <a
+    href="../misc/perf-tuning.html">Perfomance-Hinweise</a> f&uuml;r
+    weitere Details.</p>
+
+    <p>Wenn die Direktive auf <code>Default</code> eingestellt ist, dann
+    wird die zur Kompilierungszeit gew&auml;hlte Voreinstellung verwendet.
+    Weitere m&ouml;gliche Methoden sind unten angegeben. Beachten Sie, dass
+    nicht alle Methoden auf allen Plattformen verf&uuml;gbar sind. Wird
+    eine Methode angegeben, die nicht verf&uuml;gbar ist, dann wird
+    eine Nachricht in das Fehlerprotokoll geschrieben, welche die
+    verf&uuml;gbaren Methoden auflistet.</p>
+
+    <dl>
+      <dt><code>flock</code></dt>
+      <dd>verwendet die Systemfunktion <code>flock(2)</code>, um die
+      durch die <directive module="mpm_common"
+      >LockFile</directive>-Direktive definierte Datei zu sperren.</dd>
+
+      <dt><code>fcntl</code></dt>
+      <dd>verwendet die Systemfunktion <code>fcntl(2)</code>, um die
+      durch die <directive module="mpm_common"
+      >LockFile</directive>-Direktive definierte Datei zu sperren.</dd>
+
+      <dt><code>posixsem</code></dt>
+      <dd>verwendet POSIX-kompatible Semaphore, um den Mutex zu
+      imlementieren.</dd>
+
+      <dt><code>pthread</code></dt>
+      <dd>verwendet gem&auml;&szlig; der POSIX-Thread-Spezifikation
+      implementierte POSIX-Mutexe.</dd>
+
+      <dt><code>sysvsem</code></dt>
+      <dd>verwendet Semaphoren des SysV-Typs, um den Mutex zu
+      implementieren.</dd>
+    </dl>
+
+    <p>Um die bei der Kompilierung gew&auml;hlte Voreinstellung f&uuml;r
+    Ihr System herauszufinden, k&ouml;nnen Sie Ihr <directive module="core"
+    >LogLevel</directive> auf <code>debug</code> setzen. Dann wird der
+    voreingestellte <directive>AcceptMutex</directive> ins <directive
+    module="core">ErrorLog</directive> geschrieben.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>BS2000Account</name>
+<description>Bestimmt den nicht-privilegierten Account auf
+BS2000-Maschinen</description>
+<syntax>BS2000Account <var>Account</var></syntax>
+<contextlist><context>server config</context></contextlist>
+<modulelist><module>perchild</module><module>prefork</module></modulelist>
+<compatibility>Nur f&uuml;r BS2000-Maschinen verf&uuml;gbar</compatibility>
+
+<usage>
+    <p>Die Direktive <directive>BS2000Account</directive> ist nur
+    f&uuml;r BS2000-Hosts verf&uuml;gbar. Sie muss dazu verwendet werden,
+    den Account f&uuml;r den nicht-privilegierten Apache-Server-Benutzer
+    (der durch die Direktive <directive module="mpm_common">User</directive>
+    eingestellt wird) zu bestimmen. Dies wird vom BS2000-POSIX-Subsystem
+    ben&ouml;tigt (um die zugrundeliegende BS2000-Anwendungsumgebung
+    mittels eines Sub-LOGONs zu wechseln), um zu verhindern, dass
+    CGI-Skripte auf Ressourcen des privilegierten Accounts zugreifen, der
+    den Server gestartet hat, &uuml;blicherweise <code>SYSROOT</code>.</p>
+
+    <note><title>Anmerkung</title>
+      <p>Es kann nur eine <code>BS2000Account</code>-Direktive verwendet
+      werden.</p>
+    </note>
+</usage>
+<seealso><a
+  href="../platform/ebcdic.html">Apache-EBCDIC-Portierung</a></seealso>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>CoreDumpDirectory</name>
+<description>Verzeichnis, in das der Apache zu wechseln versucht, bevor er
+  einen Hauptspeicherauszug erstellt</description>
+<syntax>CoreDumpDirectory <var>Verzeichnis</var></syntax>
+<default>F&uuml;r die Voreinstellung siehe Beschreibung</default>
+<contextlist><context>server config</context></contextlist>
+<modulelist><module>beos</module><module>leader</module>
+<module>mpm_winnt</module><module>perchild</module><module>prefork</module>
+<module>threadpool</module><module>worker</module></modulelist>
+
+<usage>
+    <p>Dies beeinflusst das Verzeichnis, in welches der Apache zu wechseln
+    versucht, bevor er einen Hauptspeicherauszug <transnote>einen
+    so genannten Core-Dump</transnote> erstellt. Die Voreinstellung ist das
+    <directive module="core">ServerRoot</directive>-Verzeichnis. Da dieses
+    jedoch nicht f&uuml;r den Benutzer beschreibbar sein soll, unter dem
+    der Server l&auml;uft, werden normalerweise keine
+    Hauptspeicherausz&uuml;ge geschrieben. Wenn Sie zum Debuggen
+    einen Hauptspeicherausz&uuml;g haben m&ouml;chten, k&ouml;nnen Sie
+    ihn mit dieser Direktive an einem anderen Ort ablegen lassen.</p>
+
+    <p>Wenn Sie den Apache als <code>root</code> starten und explizit
+    <directive>CoreDumpDirectory</directive> konfigurieren, aktiviert
+    der Apache ab Linux 2.4 Core-Dumps.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>Group</name>
+<description>Benutzergruppe, unter welcher der Server Anfragen
+  beantwortet</description>
+<syntax>Group <var>Unix-Gruppe</var></syntax>
+<default>Group #-1</default>
+<contextlist><context>server config</context></contextlist>
+<modulelist><module>beos</module><module>leader</module>
+<module>mpmt_os2</module><module>perchild</module><module>prefork</module>
+<module>threadpool</module><module>worker</module></modulelist>
+<compatibility>Seit Apache 2.0 nur in der globalen Server-Konfiguration
+  g&uuml;ltig</compatibility>
+
+<usage>
+    <p>Die Direktive <directive>Group</directive> bestimmt die
+    Benutzergruppe, unter welcher der Server Anfragen beantwortet.
+    Um diese Direktive zu verwenden, muss der Server als <code>root</code> gestartet
+    werden. Wenn Sie den Server unter einem nicht-root-Benutzer starten,
+    wird er nicht zur angegebenen Gruppe wechseln k&ouml;nnen und statt
+    dessen weiter mit der Gruppe des urspr&uuml;nglichen Benutzers
+    laufen. <var>Unix-Gruppe</var> kann sein:</p>
+
+    <dl>
+      <dt>Ein Gruppenname</dt>
+      <dd>Verweist auf die durch den Namen angegebene Gruppe.</dd>
+
+      <dt><code>#</code> gefolgt von einer Gruppennummer.</dt>
+      <dd>Verweist auf die durch ihre Nummer angegebene Gruppe.</dd>
+    </dl>
+
+    <example><title>Beispiel</title>
+      Group www-group
+    </example>
+
+    <p>Es wird empfohlen, dass Sie eine neue Gruppe speziell zum Betrieb
+    des Servers erstellen. Einige Administratoren verwenden den Benutzer
+    <code>nobody</code>. Dies ist jedoch nicht immer m&ouml;glich
+    oder gew&uuml;nscht.</p>
+
+    <note type="warning"><title>Sicherheit</title>
+      <p>Setzen Sie <directive>Group</directive> (oder <directive
+      module="mpm_common">User</directive>) nicht auf <code>root</code>,
+      solange Sie nicht ganz genau wissen, was Sie tun und welche Gefahren
+      Sie eingehen.</p>
+    </note>
+
+    <p>Wichtiger Hinweis: Die Verwendung der Diretive innerhalb von
+    <directive module="core" type="section">VirtualHost</directive>
+    wird nicht l&auml;nger unterst&uuml;tzt. Benutzen Sie <directive
+    module="mod_suexec">SuexecUserGroup</directive> um Ihren Server
+    f&uuml;r <a href="mod_suexec.html">suexec</a> einzurichten.</p>
+
+    <note><title>Anmerkung</title>
+      <p>Obwohl die Direktive <directive>Group</directive> in den MPMs
+      <module>beos</module> und <module>mpmt_os2</module> existiert, ist
+      sie dort tats&auml;chlich eine Leeranweisung und exisitert nur
+      aus Kompatibilit&auml;tsgr&uuml;nden.</p>
+    </note>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>PidFile</name>
+<description>Datei, in welcher der Server die Prozess-ID des Daemons
+ablegt</description>
+<syntax>PidFile <var>Dateiname</var></syntax>
+<default>PidFile logs/httpd.pid</default>
+<contextlist><context>server config</context></contextlist>
+<modulelist><module>beos</module><module>leader</module>
+<module>mpm_winnt</module><module>mpmt_os2</module>
+<module>perchild</module><module>prefork</module>
+<module>threadpool</module><module>worker</module></modulelist>
+
+<usage>
+    <p>Die Direktive <directive>PidFile</directive> bestimmt die Datei,
+    in welcher der Server die Prozess-ID des Daemons ablegt. Wenn der
+    Dateiname nicht absolut angegeben wird, wird er relativ zu
+    <directive module="core">ServerRoot</directive> interpretiert.</p>
+
+    <example><title>Beispiel</title>
+      PidFile /var/run/apache.pid
+    </example>
+
+    <p>Es ist oft hilfreich, dem Server ein Signal senden zu k&ouml;nnen,
+    damit er seine <directive module="core">ErrorLog</directive>s und
+    <directive module="mod_log_config">TransferLog</directive>s
+    schlie&szlig;t und dann neu &ouml;ffnet und seine
+    Konfigurationsdateien neu einliest. Dies kann durch Senden eines
+    SIGHUP-Signals (kill -1) an die Prozess-ID geschehen, die im
+    <directive>PidFile</directive> eingetragen ist.</p>
+
+    <p>Die <directive>PidFile</directive>-Datei unterliegt den
+    gleichen Warnungen &uuml;ber die Ablage von Protokolldateien
+    und <a href="../misc/security_tips.html#serverroot">Sicherheit</a>.</p>
+
+    <note><title>Anmerkung</title>
+      <p>Ab Apache 2 wird empfohlen, nur das Skript <a
+      href="../programs/apachectl.html">apachectl</a> zum (Neu-)Starten
+      und Stoppen des Servers zu verwenden.</p>
+    </note>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>Listen</name>
+<description>IP-Adressen und Ports, an denen der Server lauscht</description>
+<syntax>Listen [<var>IP-Addresse</var>:]<var>Port</var></syntax>
+<contextlist><context>server config</context></contextlist>
+<modulelist><module>beos</module><module>leader</module>
+<module>mpm_netware</module><module>mpm_winnt</module>
+<module>mpmt_os2</module><module>perchild</module>
+<module>prefork</module><module>threadpool</module><module>worker</module>
+</modulelist>
+<compatibility>Seit Apache 2.0 vorgeschrieben</compatibility>
+
+<usage>
+    <p>Die Direktive <directive>Listen</directive> weist den Apache an,
+    nur an den angegebenen IP-Adressen oder Ports zu lauschen.
+    Standardm&auml;&szlig;ig antwortet er auf alle Anfragen an allen
+    IP-Interfaces. <directive>Listen</directive> ist nun eine notwendige
+    Anweisung. Wenn sie nicht in der Konfigurationsdatei enthalten ist,
+    wird der Server-Start fehlschlagen. Dies ist eine &Auml;nderung
+    gegen&uuml;ber fr&uuml;heren Versionen des Apache.</p>
+
+    <p>Die Direktive <directive>Listen</directive> weist den Server an,
+    ankommende Anfragen am angegebenen Port oder der
+    Kombination aus Adresse und Port entgegenzunehmen. Wenn nur eine Portnummer
+    angegeben ist, dann lauscht der Server am angegebenen Port an allen
+    Interfaces. Wenn sowohl eine IP-Adresse als auch ein Port angegeben
+    sind, dann lauscht der Server am angegeben Port und Interface.</p>
+
+    <p>Es k&ouml;nnen mehrere <directive>Listen</directive>-Anweisungen
+    verwendet werden, um eine Reihe von Adressen und Port anzugeben, an
+    denen gelauscht werden soll. Der Server antwortet auf Anfragen von
+    jedem der aufgef&uuml;hrten Adressen und Ports.</p>
+
+    <p>Um beispielsweise den Server Verbindungen an den beiden Ports 80 und
+    8000 annehmen zu lassen, verwenden Sie:</p>
+
+    <example>
+      Listen 80<br />
+      Listen 8000
+    </example>
+
+    <p>Um den Server Verbindungen an zwei angegebenen Interfaces und Ports
+    annehmen zu lassen, verwenden Sie:</p>
+
+    <example>
+      Listen 192.170.2.1:80<br />
+      Listen 192.170.2.5:8000
+    </example>
+
+    <p>IPv6-Adressen m&uuml;ssen wie in dem folgenden Beispiel in eckige
+    Klammern eingeschlossen werden:</p>
+
+    <example>
+      Listen [fe80::a00:20ff:fea7:ccea]:80
+    </example>
+</usage>
+<seealso><a href="../dns-caveats.html">DNS-Probleme</a></seealso>
+<seealso><a href="../bind.html">Bestimmen, welche Adressen und Ports der
+Apache verwendet</a></seealso>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>ListenBackLog</name>
+<description>Maximale L&auml;nge der Warteschlange schwebender
+  Verbindungen</description>
+<syntax>ListenBacklog <var>backlog</var></syntax>
+<default>ListenBacklog 511</default>
+<contextlist><context>server config</context></contextlist>
+<modulelist><module>beos</module><module>leader</module>
+<module>mpm_netware</module><module>mpm_winnt</module>
+<module>mpmt_os2</module><module>perchild</module><module>prefork</module>
+<module>threadpool</module><module>worker</module></modulelist>
+
+<usage>
+    <p>Die maximale L&auml;nge der Warteschlange schwebender Verbindungen.
+    &Uuml;blicherweise ist keine Feineinstellung notwendig oder sinnvoll,
+    auf einigen System kann es jedoch gew&uuml;nscht sein, diesen Wert bei
+    TCP-SYN-Angriffen zu erh&ouml;hen. Beachten Sie auch die Beschreibung des
+    backlog-Parameters der Systemfunktion <code>listen(2)</code>.</p>
+
+    <p>Der Wert wird vom Betriebssystem oft auf eine niedrigere
+    Einstellung begrenzt. Dies variiert von Betriebssystem zu Betriebssystem.
+    Beachten Sie auch, dass viele Betriebssyteme nicht genau beachten,
+    was f&uuml;r backlog angegeben ist, jedoch einen Wert basierend auf der
+    Angabe (normalerweiseweise jedoch gr&ouml;&szlig;er als diese) verwenden.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>LockFile</name>
+<description>Ablageort der Lock-Datei f&uuml;r die Serialisierung von
+entgegengenommenen Anfragen</description>
+<syntax>LockFile <var>Dateiname</var></syntax>
+<default>LockFile logs/accept.lock</default>
+<contextlist><context>server config</context></contextlist>
+<modulelist><module>leader</module><module>perchild</module>
+<module>prefork</module><module>threadpool</module><module>worker</module>
+</modulelist>
+
+<usage>
+    <p>Die Direktive <directive>LockFile</directive> legt den Pfad zur
+    Lock-Datei fest, die verwendet wird, wenn der Apache mit einer der
+    <directive module="mpm_common">AcceptMutex</directive>-Einstellungen
+    <code>fcntl</code> oder <code>flock</code> verwendet wird. Die Anweisung
+    sollte normalerweise bei der Voreinstellung belassen werden.
+    Der Hauptgrund, sie zu &auml;ndern, ist, wenn das
+    <code>logs</code>-Verzeichnis auf einem per NFS-eingebundenen Laufwerk
+    liegt, da <strong>die Lock-Datei auf einer lokalen Platte abgelegt sein
+    muss</strong>. Die PID <transnote>Prozess-ID</transnote> des
+    Hauptserverprozesses wird automatisch an den Dateinamen angeh&auml;ngt.</p>
+
+    <note type="warning"><title>Sicherheit</title>
+      <p>Es ist am besten, die Ablage in einem allgemein <transnote>f&uuml;r
+      jederman</transnote> beschreibbaren
+      Verzeichnis wie <code>/var/tmp</code> <em>zu vermeiden</em>, da
+      ein Denial-of-Servide-Angriff gestartet werden k&ouml;nnte und der
+      Server am Start gehindert werden k&ouml;nnte, indem eine Lock-Datei
+      mit dem gleichen Namen erstellt wird, wie der Server sie zu erstellen
+      versuchen w&uuml;rde.</p>
+    </note>
+</usage>
+<seealso><directive module="mpm_common">AcceptMutex</directive></seealso>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>MaxClients</name>
+<description>Maximale Anzahl der Kindprozesse, die zur Bedienung von Anfragen
+  gestartet wird</description>
+<syntax>MaxClients <var>Anzahl</var></syntax>
+<default>F&uuml;r Details siehe Beschreibung</default>
+<contextlist><context>server config</context></contextlist>
+<modulelist><module>beos</module><module>leader</module>
+<module>prefork</module><module>threadpool</module><module>worker</module>
+</modulelist>
+
+<usage>
+    <p>Die Direktive <directive>MaxClients</directive> setzt die Grenze
+    f&uuml;r die Anzahl gleichzeitig bedienter Anfragen. Jeder
+    Verbindungsversuch oberhalb der <directive
+    >MaxClients</directive>-Begrenzung wird &uuml;blicherweise in eine
+    Warteschlange gestellt, bis zu einer Anzahl basierend auf der
+    <directive module="mpm_common">ListenBacklog</directive>-Anweisung.
+    Sobald ein Kindprozess am Ende einer anderen Anfrage freigegeben wird,
+    wird die Verbindung bedient.</p>
+
+    <p>F&uuml;r Server ohne Thread-Unterst&uuml;tzung (<em>z.B.</em>
+    <module>prefork</module>) wird <directive>MaxClients</directive> als
+    maximale Anzahl der Kindprozesse verstanden, die zur Bedienung von
+    Anfragen gestartet werden. Die Voreinstellung ist <code>256</code>. Um
+    diesen Wert zu erh&ouml;hen, muss auch <directive
+    module="mpm_common">ServerLimit</directive> angehoben werden.</p>
+
+    <p>Bei Servern mit Thread-Unterst&uuml;tzung und bei Hybrid-Servern
+    (<em>z.B.</em> <module>beos</module> oder <module>worker</module>)
+    begrenzt <directive>MaxClients</directive> die Gesamtzahl der Threads,
+    die f&uuml;r die Bedienung von Anfragen verf&uuml;gbar sind.
+    Die Voreinstellung f&uuml;r <module>beos</module> ist <code>50</code>.
+    Bei Hybrid-MPMs ist die Voreinstellung <code>16</code> (<directive
+    module="mpm_common">ServerLimit</directive>) multipliziert mit
+    dem Wert <code>25</code> (<directive module="mpm_common"
+    >ThreadsPerChild</directive>). Um <directive>MaxClients</directive>
+    auf einen Wert zu erh&ouml;hen, der mehr als 16 Prozesse erfordert,
+    m&uuml;ssen Sie daher auch <directive module="mpm_common"
+    >ServerLimit</directive> anheben.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>MaxMemFree</name>
+<description>Maximale Menge des Arbeitsspeichers, den die
+  Haupt-Zuteilungsroutine verwalten darf, ohne <code>free()</code>
+  aufzurufen</description>
+<syntax>MaxMemFree <var>KBytes</var></syntax>
+<default>MaxMemFree 0</default>
+<contextlist><context>server config</context></contextlist>
+<modulelist><module>beos</module><module>leader</module>
+<module>mpm_netware</module><module>prefork</module>
+<module>threadpool</module><module>worker</module></modulelist>
+
+<usage>
+    <p>Die Direktive <directive>MaxMemFree</directive> gibt die maximale
+    Menge freier Kilobytes an, welche die Haupt-Zuteilungsroutine verwalten
+    darf, ohne <code>free()</code> aufzurufen. Wenn keine Angabe gemacht wird,
+    oder Null angegeben ist, wird dieser Wert nicht eingeschr&auml;nkt.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>MaxRequestsPerChild</name>
+<description>Obergrenze f&uuml;r die Anzahl von Anfragen, die ein einzelner
+  Kindprozess w&auml;hrend seines Lebens bearbeitet</description>
+<syntax>MaxRequestsPerChild <var>number</var></syntax>
+<default>MaxRequestsPerChild 10000</default>
+<contextlist><context>server config</context></contextlist>
+<modulelist><module>leader</module><module>mpm_netware</module>
+<module>mpm_winnt</module><module>mpmt_os2</module>
+<module>perchild</module><module>prefork</module>
+<module>threadpool</module><module>worker</module></modulelist>
+
+<usage>
+    <p>Die Direktive <directive>MaxRequestsPerChild</directive> legt die
+    Grenze f&uuml;r die Anzahl von Anfragen fest, die ein einzelner
+    Kinprozess w&auml;hrend seines Lebens bearbeitet. Nach
+    <directive>MaxRequestsPerChild</directive> Anfragen stirbt der
+    Kindprozess. Wenn <directive>MaxRequestsPerChild</directive>
+    <code>0</code> ist, endet der Prozess niemals.</p>
+
+    <note><title>Abweichende Voreinstellungen</title>
+      <p>Die Voreinstellung f&uuml;r <module>mpm_netware</module> und
+      <module>mpm_winnt</module> ist <code>0</code>.</p>
+    </note>
+
+    <p>Die Begrenzung von <directive>MaxRequestsPerChild</directive> auf einen
+    Wert ungleich Null hat zwei vorteilhafte Auswirkungen:</p>
+
+    <ul>
+      <li>sie begrenzt die Menge an Arbeitsspeicher, die ein Prozess
+      durch (versehentliche) Speicherlecks verbrauchen kann.</li>
+
+      <li>das Festlegen einer endlichen Lebensdauer von Prozessen hilft, die
+      Anzahl von Prozessen zu reduzieren, wenn die Serverlast
+      zur&uuml;ckgeht.</li>
+    </ul>
+
+    <note><title>Anmerkung</title>
+      <p>Bei <directive module="core">KeepAlive</directive>-Anfragen
+      wird nur die erste Anfrage f&uuml;r diese begrenzung gez&auml;hlt.
+      Eigentlich wird nur die Begrenzung f&uuml;r die Anzahl der
+      <em>Verbindungen</em> pro Kindprozess ge&auml;ndert.</p>
+    </note>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>MaxSpareThreads</name>
+<description>Maximale Anzahl unbesch&auml;ftigter Threads</description>
+<syntax>MaxSpareThreads <var>Anzahl</var></syntax>
+<default>F&uuml;r Details siehe Beschreibung</default>
+<contextlist><context>server config</context></contextlist>
+<modulelist><module>beos</module><module>leader</module>
+<module>mpm_netware</module><module>mpmt_os2</module>
+<module>perchild</module><module>threadpool</module><module>worker</module>
+</modulelist>
+
+<usage>
+    <p>Maximale Anzahl unbesch&auml;ftigter Threads. Die verschiedenen MPMs
+    behandeln diese Anweisung unterschiedlich.</p>
+
+    <p>Die Voreinstellung f&uuml;r <module>perchild</module> ist
+    <code>MaxSpareThreads 10</code>. Das MPM &uuml;berwacht die Anzahl der
+    unbesch&auml;ftigten Threads auf der Basis einzelner Kindprozesse. Wenn
+    zu viele unbesch&auml;ftigte Threads in einem Kindprozess existieren,
+    beendet der Server Threads innerhalb dieses Kindprozesses.</p>
+
+    <p>Die Voreinstellung f&uuml;r <module>worker</module>,
+    <module>leader</module> und <module>threadpool</module> ist
+    <code>MaxSpareThreads 250</code>. Diese MPMs behandeln Threads
+    auf einer serverweiten Basis. Wenn zu viele unbesch&auml;ftigte Threads
+    im Server existieren, dann werden solange Kindprozesse beendet, bis
+    die Anzahl der unbesch&auml;ftigten Threads kleiner als der
+    angegebene Wert ist.</p>
+
+    <p>Die Voreinstellung f&uuml;r <module>mpm_netware</module> ist
+    <code>MaxSpareThreads 100</code>. Da dieses MPM nur einen einzigen
+    Prozess ausf&uuml;hrt, ist die Z&auml;hlung &uuml;bersch&uuml;ssiger
+    Threads ebenfalls serverweit.</p>
+
+    <p><module>beos</module> and <module>mpmt_os2</module> arbeiten
+    &auml;hnlich wie <module>mpm_netware</module>. Die Voreinstellung
+    f&uuml;r <module>beos</module> ist <code>MaxSpareThreads 50</code>.
+    Die Voreinstellung f&uuml;r <module>mpmt_os2</module> ist
+    <code>10</code>.</p>
+
+    <note><title>Restriktionen</title>
+      <p>Der Wertebereich von <directive>MaxSpareThreads</directive>
+      ist eingeschr&auml;nkt. Apache korrigiert den angegebenen Wert
+      automatisch gem&auml;&szlig; den folgenden Regeln:</p>
+      <ul>
+        <li><module>perchild</module> verlangt, dass <directive
+        >MaxSpareThreads</directive> kleiner oder gleich <directive
+        module="mpm_common">ThreadLimit</directive> ist.</li>
+
+        <li><module>mpm_netware</module> verlangt einen Wert gr&ouml;&szlig;er
+        als <directive module="mpm_common">MinSpareThreads</directive>.</li>
+
+        <li>Bei <module>leader</module>, <module>threadpool</module> und
+        <module>worker</module> muss der Wert gr&ouml;&szlig;er oder gleich
+        der Summe aus <directive
+        module="mpm_common">MinSpareThreads</directive> und
+        <directive module="mpm_common">ThreadsPerChild</directive> sein.</li>
+      </ul>
+    </note>
+</usage>
+<seealso><directive module="mpm_common">MinSpareThreads</directive></seealso>
+<seealso><directive module="mpm_common">StartServers</directive></seealso>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>MinSpareThreads</name>
+<description>Minimale Anzahl unbesch&auml;ftigter Threads, die zur
+  Bedienung von Anfragespitzen zur Verf&uuml;gung stehen</description>
+<syntax>MinSpareThreads <var>Anzahl</var></syntax>
+<default>F&uuml;r Details siehe Beschreibung</default>
+<contextlist><context>server config</context></contextlist>
+<modulelist><module>beos</module><module>leader</module>
+<module>mpm_netware</module><module>mpmt_os2</module>
+<module>perchild</module><module>threadpool</module><module>worker</module>
+</modulelist>
+
+<usage>
+    <p>Minimale Anzahl unbesch&auml;ftigter Threads, um Anfragespitzen
+    zu bedienen. Die verschiedenen MPMs behandeln die Anweisung
+    unterschiedlich.</p>
+
+    <p><module>perchild</module> verwendet die Voreinstellung
+    <code>MinSpareThreads 5</code> und &uuml;berwacht die Anzahl der
+    unbesch&auml;ftigten Threads auf der Basis einzelner Kindprozesse. Wenn
+    in einem Kindprozess nicht gen&uuml;gend unbesch&auml;ftigte
+    Threads vorhanden sind, erstellt der Server neue Threads innerhalb
+    dieses Kindprozesses. Wenn Sie also <directive module="perchild"
+    >NumServers</directive> auf <code>10</code> und <directive
+    >MinSpareThreads</directive> auf einen Wert von <code>5</code> setzen,
+    haben Sie mindestens 50 unbesch&auml;ftigte Threads auf Ihrem
+    System.</p>
+
+    <p><module>worker</module>, <module>leader</module> und
+    <module>threadpool</module> verwenden eine Voreinstellung von
+    <code>MinSpareThreads 75</code> und behandeln unbesch&auml;ftigte
+    Threads auf serverweiter Basis. Wenn nicht gen&uuml;gend
+    unbesch&auml;ftigte Threads im Server vorhanden sind, dann
+    werden solange Kindprozesse erzeugt, bis die Anzahl unbesch&auml;ftigter
+    Threads gr&ouml;&szlig;er als der angegebene Wert ist.</p>
+
+    <p><module>mpm_netware</module> verwendet die Voreinstellung
+    <code>MinSpareThreads 10</code> und verfolgt dies serverweit, da
+    es ein Einzelprozess-MPM ist.</p>
+
+    <p><module>beos</module> und <module>mpmt_os2</module> arbeiten
+    &auml;hnlich wie <module>mpm_netware</module>. Die Voreinstellung
+    f&uuml;r <module>beos</module> ist <code>MinSpareThreads 1</code>.
+    Die Voreinstellung f&uuml;r <module>mpmt_os2</module> ist
+    <code>5</code>.</p>
+
+</usage>
+<seealso><directive module="mpm_common">MaxSpareThreads</directive></seealso>
+<seealso><directive module="mpm_common">StartServers</directive></seealso>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>ScoreBoardFile</name>
+<description>Ablageort der Datei, die zur Speicherung von Daten zur
+  Koordinierung der Kindprozesse verwendet wird</description>
+<syntax>ScoreBoardFile <var>Dateipfad</var></syntax>
+<default>ScoreBoardFile logs/apache_status</default>
+<contextlist><context>server config</context></contextlist>
+<modulelist><module>beos</module><module>leader</module>
+<module>mpm_winnt</module><module>perchild</module><module>prefork</module>
+<module>threadpool</module><module>worker</module></modulelist>
+
+<usage>
+    <p>Apache verwendet ein Scoreboard zur Kommunikation zwischen
+    seinen Eltern- und Kindprozessen. Einige Architekturen erfordern
+    eine Datei zur Unterst&uuml;tzung der Kommunikation. Wenn die Datei
+    undefiniert bleibt, versucht der Apache zuerst, das Scoreboard im
+    Arbeitsspeicher  zu erstellen (Verwendung von anonymem Shared-Memory),
+    und versucht bei einem Fehlschlag anschlie&szlig;end die Datei auf
+    der Festplatte zu erstellen (Verwendung von Datei-basiertem
+    Shared-Memory). Die Angabe dieser Direktive veranla&szlig;t den
+    Apache stets, die Datei auf der Festplatte zu erstellen.</p>
+
+    <example><title>Beispiel</title>
+      ScoreBoardFile /var/run/apache_status
+    </example>
+
+    <p>Datei-basiertes Shared-Memory ist f&uuml;r Applikationen von
+    Drittanbietern hilfreich, die direkten Zugriff auf das Scoreboard
+    ben&ouml;tigen.</p>
+
+    <p>Wenn Sie eine <directive>ScoreBoardFile</directive>-Anweisung
+    verwenden, erreichen Sie eventuell eine h&ouml;here Geschwindigkeit, wenn
+    Sie die Datei auf einer RAM-Disk ablegen. Achten Sie darauf, die
+    gleichen Warnungen wie &uuml;ber die Ablage von Protokolldateien und
+    <a href="../misc/security_tips.html">Sicherheit</a> zu beherzigen.</p>
+</usage>
+<seealso><a href="../stopping.html">Apache beenden und neu
+  starten</a></seealso>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>SendBufferSize</name>
+<description>Gr&ouml;&szlig;e des TCP-Puffers</description>
+<syntax>SendBufferSize <var>Bytes</var></syntax>
+<default>SendBufferSize 0</default>
+<contextlist><context>server config</context></contextlist>
+<modulelist><module>beos</module><module>leader</module>
+<module>mpm_netware</module><module>mpm_winnt</module>
+<module>mpmt_os2</module><module>perchild</module><module>prefork</module>
+<module>threadpool</module><module>worker</module></modulelist>
+
+<usage>
+    <p>Der Server setzt die Gr&ouml;&szlig;e des TCP-Puffers auf die
+    angegebene Anzahl Bytes. Dies ist sehr hilfreich, um Voreinstellungen
+    alter Standardbetriebssysteme f&uuml;r Hochgeschwindigkeitsverbindungen
+    mit hoher Latenzzeit anzuheben (<em>d.h.</em> 100ms oder so, wie bei
+    Interkontinentalverbindungen).</p>
+
+    <p>Wird der Wert auf <code>0</code> gesetzt, dann verwendet der Server
+    die Voreinstellung des Betriebssystems.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>ServerLimit</name>
+<description>Obergrenze f&uuml;r die konfigurierbare Anzahl von
+  Prozessen</description>
+<syntax>ServerLimit <var>Anzahl</var></syntax>
+<default>F&uuml;r Details siehe Beschreibung</default>
+<contextlist><context>server config</context></contextlist>
+<modulelist><module>leader</module><module>perchild</module>
+<module>prefork</module><module>threadpool</module><module>worker</module>
+</modulelist>
+
+<usage>
+    <p>Bei dem MPM <module>prefork</module> bestimmt die Direktive
+    den w&auml;hrend der Lebensdauer des Apache-Prozesses maximal
+    einstellbaren Wert f&uuml;r <directive
+    module="mpm_common">MaxClients</directive>. Beim MPM
+    <module>worker</module> bestimmt die Direktive in Verbindung mit
+    <directive module="mpm_common">ThreadLimit</directive> den Maximalwert
+    f&uuml;r <directive module="mpm_common">MaxClients</directive>
+    f&uuml;r die Lebensdauer des Apache-Prozesses. Jeder Versuch, diese
+    Anweisung w&auml;hrend eines Neustarts zu &auml;ndern, wird ignoriert.
+    <directive module="mpm_common">MaxClients</directive> kann jedoch
+    w&auml;hrend eines Neustarts ge&auml;ndert werden.</p>
+
+    <p>Lassen Sie besondere Vorsicht bei der Verwendung dieser Direktive
+    walten. Wenn <directive>ServerLimit</directive> auf einen Wert deutlich
+    h&ouml;her als notwendig gesetzt wird, wird zus&auml;tzliches,
+    unbenutztes Shared-Memory belegt. Wenn sowohl
+    <directive>ServerLimit</directive> als auch <directive
+    module="mpm_common">MaxClients</directive> auf Werte gesetzt werden, die
+    gr&ouml;&szlig;er sind, als das System sie handhaben kann, dann kann
+    der Apache m&ouml;glicherweise nicht starten, oder das System kann
+    instabil werden.</p>
+
+    <p>Verwenden Sie die Direktive bei dem MPM <module>prefork</module>
+    nur, wenn Sie <directive module="mpm_common">MaxClients</directive>
+    auf mehr als 256 (Voreinstellung) setzen m&uuml;ssen. Setzen Sie den
+    Wert nicht h&ouml;her als den Wert, den Sie f&uuml;r <directive
+    module="mpm_common">MaxClients</directive> angeben m&ouml;chten.</p>
+
+    <p>Verwenden Sie die Direktive bei <module>worker</module>,
+    <module>leader</module> und <module>threadpool</module> nur, wenn Ihre
+    <directive module="mpm_common">MaxClients</directive>- und
+    <directive module="mpm_common">ThreadsPerChild</directive>-Einstellungen
+    mehr als 16 Serverprozesse (Voreinstellung) erfordern. Setzen Sie den
+    Wert dieser Direktive nicht h&ouml;her, als die Anzahl der Serverprozesse,
+    die daf&uuml;r erforderlich ist, was Sie bei <directive
+    module="mpm_common">MaxClients</directive> und
+    <directive module="mpm_common">ThreadsPerChild</directive> angeben
+    m&ouml;chten.</p>
+
+    <p>Verwenden Sie die Direktive beim MPM <module>perchild</module> nur,
+    wenn Sie <directive module="perchild">NumServers</directive> auf einen
+    Wert gr&ouml;&szlig;er als 8 (Voreinstellung) setzen m&uuml;ssen.</p>
+
+    <note><title>Anmerkung</title>
+      <p>Eine feste Begrenzung von <code>ServerLimit 20000</code> ist in den
+      Server einkompiliert. Dies soll unangenehme Effekte durch Tippfehler
+      verhindern.</p>
+    </note>
+</usage>
+<seealso><a href="../stopping.html">Apache beenden und neu
+  starten</a></seealso>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>StartServers</name>
+<description>Anzahl der Kindprozesse des Servers, die beim Start erstellt
+  werden</description>
+<syntax>StartServers <var>Anzahl</var></syntax>
+<default>F&uuml;r Details siehe Beschreibung</default>
+<contextlist><context>server config</context></contextlist>
+<modulelist><module>leader</module><module>mpmt_os2</module>
+<module>prefork</module><module>threadpool</module><module>worker</module>
+</modulelist>
+
+<usage>
+    <p>Die Direktive <directive>StartServers</directive> bestimmt
+    die Anzahl der Kindprozesse des Servers, die beim Start erstellt
+    werden. Da die Anzahl der Prozesse abh&auml;ngig von der Last
+    dynamisch kontrolliert wird, besteht normalerweise wenig
+    Grund f&uuml;r eine &Auml;nderung dieses Parameters.</p>
+
+    <p>Die Voreinstellung unterscheidet sich von MPM zu MPM. Bei
+    <module>leader</module>, <module>threadpool</module> und
+    <module>worker</module> ist die Voreinstellung
+    <code>StartServers 3</code>. Die Voreinstellung bei
+    <module>prefork</module> ist <code>5</code> und bei
+    <module>mpmt_os2</module> <code>2</code>.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>StartThreads</name>
+<description>Anzahl der Threads, die beim Start erstellt werden</description>
+<syntax>StartThreads <var>Anzahl</var></syntax>
+<default>F&uuml;r Details siehe Beschreibung</default>
+<contextlist><context>server config</context></contextlist>
+<modulelist><module>beos</module><module>mpm_netware</module>
+<module>perchild</module></modulelist>
+
+<usage>
+    <p>Anzahl der Threads, die beim Start erstellt werden. Da die Anzahl
+    der Threads abh&auml;ngig von der Last dynamisch kontrolliert wird,
+    besteht normalerweise wenig Grund f&uuml;r eine &Auml;nderung
+    dieses Parameters.</p>
+
+    <p>Die Voreinstellung f&uuml;r <module>perchild</module> ist
+    <code>StartThreads 5</code>. Die Direktive setzt w&auml;hrend des
+    Starts die Anzahl der Threads pro Prozess.</p>
+
+    <p>Die Voreinstellung bei <module>mpm_netware</module> ist
+    <code>StartThreads 50</code>. Da hier lediglich ein einzelner Prozess
+    existiert, ist dies die Gesamtzahl der Threads, die beim Start
+    erstellt wird, um Anfragen zu bedienen.</p>
+
+    <p>Die Voreinstellung f&uuml;r <module>beos</module> ist <code>StartThreads
+    10</code>. Die Einstellung reflektiert ebenfalls die Gesamtzahl der Threads, die
+    beim Start erstellt werden, um Anfragen zu bedienen.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>ThreadLimit</name>
+<description>Bestimmt die Obergrenze der konfigurierbaren Anzahl von Threads
+  pro Kindprozess</description>
+<syntax>ThreadLimit <var>Anzahl</var></syntax>
+<default>F&uuml;r Details siehe Beschreibung</default>
+<contextlist><context>server config</context></contextlist>
+<modulelist><module>leader</module><module>mpm_winnt</module>
+<module>perchild</module><module>threadpool</module><module>worker</module>
+</modulelist>
+<compatibility>Verf&uuml;gbar f&uuml;r <module>mpm_winnt</module> ab
+  Apache 2.0.41</compatibility>
+
+<usage>
+    <p>Die Direktive bestimmt den w&auml;hrend der Lebensdauer des
+    Apache-Prozesses maximal einstellbaren Wert f&uuml;r
+    <directive module="mpm_common">ThreadsPerChild</directive>. Jeder
+    Versuch, diese Direktive w&auml;hrend eines Neustarts zu &auml;ndern,
+    wird ignoriert. <directive module="mpm_common">ThreadsPerChild</directive>
+    kann jedoch w&auml;hrend eines Neustarts modifiziert werden bis zu dem
+    Wert dieser Anweisung.</p>
+
+    <p>Lassen Sie besondere Vorsicht bei der Verwendung dieser Direktive
+    walten. Wenn <directive>ThreadLimit</directive> auf einen Wert
+    deutlich h&ouml;her als <directive
+    module="mpm_common">ThreadsPerChild</directive> gesetzt wird, wird
+    zus&auml;tzliches, ungenutztes Shared-Memory belegt. Wenn sowohl
+    <directive>ThreadLimit</directive> als auch <directive
+    module="mpm_common">ThreadsPerChild</directive> auf Werte gesetzt werden,
+    die gr&ouml;&szlig;er sind, als das System sie handhaben kann, dann kann
+    der Apache m&ouml;glicherweise nicht starten oder das System kann
+    instabil werden. Setzen Sie den Wert dieser Direktive nicht h&ouml;her
+    als Ihre gr&ouml;&szlig;te erwartete Einstellung f&uuml;r
+    <directive module="mpm_common">ThreadsPerChild</directive>
+    w&auml;hrend der aktuellen Ausf&uuml;hrung des Apache.</p>
+
+    <p>Die Voreinstellung f&uuml;r <directive>ThreadLimit</directive> ist
+    <code>1920</code> wenn sie zusammen mit <module>mpm_winnt</module>
+    verwendet wird, und <code>64</code> bei der Verwendung mit anderen
+    MPMs.</p>
+
+    <note><title>Anmerkung</title>
+      <p>Eine feste Begrenzung von <code>ThreadLimit 20000</code>
+      (oder <code>ThreadLimit 15000</code> bei <module>mpm_winnt</module>)
+      ist in den Server einkompiliert. Dies soll unangenehme Effekte durch
+      Tippfehler verhindern.</p>
+    </note>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>ThreadsPerChild</name>
+<description>Anzahl der Threads, die mit jedem Kindprozess gestartet
+  werden</description>
+<syntax>ThreadsPerChild <var>Anzahl</var></syntax>
+<default>F&uuml;r Details siehe Beschreibung</default>
+<contextlist><context>server config</context></contextlist>
+<modulelist><module>leader</module><module>mpm_winnt</module>
+<module>threadpool</module><module>worker</module></modulelist>
+
+<usage>
+    <p>Die Direktive legt die Anzahl der Threads fest, die mit jedem
+    Kindprozess gestartet werden. Der Kindprozess erstellt diese Threads
+    beim Start und erstellt sp&auml;ter keine weiteren mehr. Wenn Sie ein
+    MPM wie <module>mpm_winnt</module> verwenden, wo nur ein
+    Kindprozess existiert, dann sollte diese Angabe hoch genug sein,
+    die gesamte Last des Servers zu bew&auml;ltigen. Wenn Sie ein MPM
+    wie <module>worker</module> verwenden, wo mehrere Kindprozesse
+    existieren, dann sollte die <em>Gesamt</em>zahl der Thread gro&szlig;
+    genug sein, die &uuml;bliche Last auf dem Server zu bew&auml;ltigen.</p>
+
+    <p>Die Voreinstellung f&uuml;r <directive>ThreadsPerChild</directive> ist
+    <code>64</code>, wenn <module>mpm_winnt</module> verwendet wird, und
+    <code>25</code> bei der Verwendung der anderen MPMs.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>User</name>
+<description>Die Benutzerkennung, unter welcher der Server Anfragen
+  beantwortet</description>
+<syntax>User <var>Unix-User-ID</var></syntax>
+<default>User #-1</default>
+<contextlist><context>server config</context></contextlist>
+<modulelist><module>leader</module><module>perchild</module>
+<module>prefork</module><module>threadpool</module><module>worker</module>
+</modulelist>
+<compatibility>Seit Apache 2.0 nur in der globalen Server-Konfiguration
+g&uuml;ltig</compatibility>
+
+<usage>
+    <p>Die Direktive <directive>User</directive> legt die Benutzerkennung
+    fest, mit der der Server Anfragen beantwortet. Um diese Anweisung
+    zu verwenden, muss der Server als <code>root</code> gestartet werden.
+    Wenn Sie den Server unter einem nicht-root-Benutzer starten, kann
+    er nicht zu dem minder privilegierten Benutzer wechseln und wird statt
+    dessen weiter mit der urspr&uuml;nglichen Benutzerkennung laufen.
+    Wenn Sie den Server als <code>root</code> starten, dann ist es normal,
+    dass der Elternprozess als root weiterl&auml;uft.
+    <var>Unix-User-ID</var> kann sein:</p>
+
+    <dl>
+      <dt>Ein Benutzername</dt>
+      <dd>Verweist auf den durch Namen angegebenen Benutzer.</dd>
+
+      <dt># gefolgt von einer Benutzernummer.</dt>
+      <dd>Verweist auf einen durch eine Nummer angegebenen Benutzer.</dd>
+    </dl>
+
+    <p>Der Benutzer sollte keine Rechte besitzen, die dazu f&uuml;hren,
+    dass er in der Lage ist, auf Dateien zuzugreifen, die nicht daf&uuml;r
+    bestimmt sind, f&uuml;r die Au&szlig;enwelt sichtbar zu sein.
+    Gleicherma&szlig;en sollte der Benutzer nicht in der Lage sein,
+    Code auszuf&uuml;hren, der nicht f&uuml;r HTTP-Anfragen bestimmt ist.
+    Es wird empfohlen, einen neuen Benutzer und eine neue Gruppe speziell
+    zur Ausf&uuml;hrung des Servers zu erstellen. Einige Administratoren
+    verwenden den Benutzer <code>nobody</code>. Dies ist jedoch nicht
+    immer w&uuml;nschenswert, da der Benuter <code>nobody</code> andere
+    Rechte auf dem System besitzen kann.</p>
+
+    <note type="warning"><title>Sicherheit</title>
+      <p>Setzen Sie <directive>User</directive> (oder <directive
+      module="mpm_common">Group</directive>) nicht auf <code>root</code>,
+      solange Sie nicht genau wissen, was Sie tun, und welches die Gefahren
+      sind.</p>
+    </note>
+
+    <p>Beim MPM <module>perchild</module>, das daf&uuml;r gedacht ist,
+    virtuelle Hosts unter verschiedenen Benutzerkennungen auszuf&uuml;hren,
+    bestimmt die Direktive <directive>User</directive> die
+    Benutzerkennung f&uuml;r den Hauptserver und bildet den R&uuml;ckfallwert
+    f&uuml;r <directive type="section"
+    module="core">VirtualHost</directive>-Abschnitte ohne eine
+    <directive module="perchild">AssignUserID</directive>-Anweisung.</p>
+
+    <p>Wichtiger Hinweis: Die Verwendung dieser Direktive innerhalb von
+    <directive module="core" type="section">VirtualHost</directive> wird
+    nicht mehr unterst&uuml;tzt. Benutzen Sie <directive
+    module="mod_suexec">SuexecUserGroup</directive>, um Ihren Server
+    f&uuml;r <a href="../suexec.html">suexec</a> einzurichten.</p>
+
+    <note><title>Anmerkung</title>
+      <p>Obwohl die Direktive <directive>User</directive> in den MPMs
+      <module>beos</module> und <module>mpmt_os2</module> existiert, ist
+      sie dort tats&auml;chlich eine Leeranweisung und exisitert nur
+      aus Kompatibilit&auml;tsgr&uuml;nden.</p>
+    </note>
+</usage>
+</directivesynopsis>
+
+</modulesynopsis>
