@@ -1355,7 +1355,7 @@ static long get_chunk_size(char *b)
  */
 AP_DECLARE(long) ap_get_client_block(request_rec *r, char *buffer, apr_size_t bufsiz)
 {
-    apr_size_t len_read, total;
+    apr_size_t total;
     apr_status_t rv;
     apr_bucket *b, *old;
     const char *tempbuf;
@@ -1365,6 +1365,7 @@ AP_DECLARE(long) ap_get_client_block(request_rec *r, char *buffer, apr_size_t bu
     apr_bucket_brigade *bb = req_cfg->bb;
 
     do {
+        apr_off_t len_read;
         if (APR_BRIGADE_EMPTY(bb)) {
             len_read = r->remaining;
             if (ap_get_brigade(r->input_filters, bb, AP_MODE_BLOCKING,
@@ -1399,6 +1400,7 @@ AP_DECLARE(long) ap_get_client_block(request_rec *r, char *buffer, apr_size_t bu
     while (total < bufsiz
            && b != APR_BRIGADE_SENTINEL(bb)
            && !APR_BUCKET_IS_EOS(b)) {
+        apr_size_t len_read;
 
         if ((rv = apr_bucket_read(b, &tempbuf, &len_read, APR_BLOCK_READ)) != APR_SUCCESS) {
             return -1;
