@@ -413,7 +413,6 @@ _install:
 	}
     }
 <<
-	copy docs\cgi-examples\test-cgi.bat "$(INSTDIR)\cgi-bin" <.y
 	xcopy docs\error "$(INSTDIR)\error" /s /d < .a
 	xcopy docs\docroot "$(INSTDIR)\htdocs" /d < .a
 	xcopy docs\manual "$(INSTDIR)\manual" /s /d < .a
