@@ -15,7 +15,7 @@
   <!--#include virtual="header.html" -->
   <H1 ALIGN="CENTER">Apache Server Frequently Asked Questions</H1>
   <P>
-  $Revision: 1.89 $ ($Date: 1997/09/18 13:00:15 $)
+  $Revision: 1.90 $ ($Date: 1997/10/21 01:10:27 $)
   </P>
   <P>
   The latest version of this FAQ is always available from the main
@@ -253,6 +253,9 @@
     specification&quot;?</A>
    </LI>
    <LI><A HREF="#year2000">Is Apache Year 2000 compliant?</A>
+   </LI>
+   <LI><A HREF="#namevhost">I upgraded to Apache 1.3b2 and now my
+    virtual hosts don't work!</A>
    </LI>
   </OL>
  </LI>
@@ -2100,6 +2103,48 @@
   the magic boundary to worry about is the year 2038 and not 2000.
   But modern operating systems shouldn't cause any trouble
   at all.
+  </P>
+  <HR>
+ </LI>
+ <LI><A NAME="namevhost">
+      <STRONG>I upgraded to Apache 1.3b2 and now my virtual hosts don't
+      work!</STRONG>
+     </A>
+  <P>
+  In versions of Apache prior to 1.3b2, there was a lot of confusion
+  regarding address-based virtual hosts and (HTTP/1.1) name-based
+  virtual hosts, and the rules concerning how the server processed
+  <SAMP>&lt;VirtualHost&gt;</SAMP> definitions were very complex and not
+  well documented.
+  </P>
+  <P>
+  Apache 1.3b2 introduced a new directive,
+  <A
+   HREF="http://www.apache.org/docs/mod/core.html#namevirtualhost"
+  ><SAMP>NameVirtualHost</SAMP></A>,
+  which simplifies the rules quite a bit.  However, changing the rules
+  like this means that your existing name-based
+  <SAMP>&lt;VirtualHost&gt;</SAMP> containers probably won't work
+  correctly immediately following the upgrade.
+  </P>
+  <P>
+  To correct this problem, add the following line to the beginning of
+  your server configuration file, before defining any virtual hosts:
+  </P>
+  <DL>
+   <DD><CODE>NameVirtualHost <EM>n.n.n.n</EM></CODE>
+   </DD>
+  </DL>
+  <P>
+  Replace the &quot;<SAMP>n.n.n.n</SAMP>&quot; with the IP address to
+  which the name-based virtual host names resolve; if you have multiple
+  name-based hosts on multiple addresses, repeat the directive for each
+  address.
+  </P>
+  <P>
+  Make sure that your name-based <SAMP>&lt;VirtualHost&gt;</SAMP> blocks
+  contain <SAMP>ServerName</SAMP> and possibly <SAMP>ServerAlias</SAMP>
+  directives so Apache can be sure to tell them apart correctly.
   </P>
   <HR>
  </LI>
