@@ -266,7 +266,7 @@ struct configfile_t {
     /** a close hander function 
      *  @deffunc int close(void *param)*/
     int (*close) (void *param);	
-    /** the argument passed to getch/getstr/close 
+    /** the argument passed to getch/getstr/close */
     void *param;
     /** the filename / description */
     const char *name;
@@ -352,7 +352,7 @@ struct module_struct {
     /** The handle for the DSO.  Internal use only */
     void *dynamic_load_handle;
 
-    /** A pointer to the next module in the list;
+    /** A pointer to the next module in the list; */
     struct module_struct *next;
 
     /** Magic Cookie to identify a module structure;  It's mainly 
