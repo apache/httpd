@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/02/25 17:33:00 $]
+Last modified at [$Date: 2003/02/25 18:06:39 $]
 
 Release:
 
@@ -66,12 +66,12 @@ PATCHES TO PORT FROM 2.1
       modules/ssl/mod_ssl.h r1.125
       modules/ssl/ssl_engine_config.c r1.73
       modules/ssl/ssl_engine_mutex.c r1.19
-      +1:
+      +1: jim, wrowe
       -1:
 
     * Fix 64-bit breakage in mod_ssl.
       modules/ssl/ssl_engine_io.c r1.104
-      +1: trawick
+      +1: trawick, jim
 
     * Rewrite how proxy sends its request to allow input bodies to 
       morph the request bodies.  Previously, if an input filter
