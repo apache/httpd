@@ -359,7 +359,7 @@ case "$PLAT" in
 	;;
     *-freebsd*)
     	PLATOSVERS=`echo $PLAT | sed 's/^.*freebsd//'`
-	OS='FreeBSD $PLATOSVERS'
+	OS="FreeBSD $PLATOSVERS"
 	case "$PLATOSVERS" in
 	    [23]*)
 		DEF_WANTHSREGEX=no
