@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/04/05 23:55:39 $]
+Last modified at [$Date: 2003/04/07 16:44:50 $]
 
 Release:
 
@@ -104,23 +104,33 @@ PATCHES TO PORT FROM 2.1
       -1: brianp (we need a more robust solution than what's in 2.1 right now),
           jerenkrantz (should be fixed, but I don't have time to do this)
 
-    * port "prefer-language". This would be very useful for the distributed
-      documentation. I plan to put something like
+    * Extend the SetEnvIf directive to capture subexpressions of the
+      matched value. This is related to the backport proposal below ... ;-)
+      modules/metadata/mod_setenvif.c r1.42
+      +1: nd
+
+    * port the "prefer-language" env variable.
+      there are docs online with explanations what it does:
+      <http://httpd.apache.org/docs-2.1/env.html#prefer-language>
+      <http://httpd.apache.org/docs-2.1/content-negotiation.html#exceptions>
+        (last paragraph)
+      This feature would allow us to set up a resaonable (and distributable)
+      config for our multilingual documentation with crosslinks between the
+      languages, such as:
         Alias /manual    /path/to/manual
         Alias /manual/en /path/to/manual
         Alias /manual/de /path/to/manual
         SetEnvIf Request_URI ^/manual/en/ prefer-language=en
         SetEnvIf Request_URI ^/manual/de/ prefer-language=de
-      into the distributed config (but with regexps). We're going to get
-      an intelligent system for choosing the language either by user's
-      choice or language negotiation. If user's choice doesn't exist, it
-      falls back to negotiation again.
+        :
+      (but with regexps, see the backport proposal above). We're going to
+      get a clever system for choosing the  language either by user's choice
+      or language negotiation. If user's choice doesn't exist, it falls back
+      to negotiation again.
+      (There's a somewhat outdated example for such cross language links:
+       <http://test.perlig.de/manual/>, done with mod_rewrite, waiting for
+       mod_negotiation enhancement ;-))
       modules/mappers/mod_negotiation.c r1.110
-      +1: nd
-
-    * Extend the SetEnvIf directive to capture subexpressions of the
-      matched value. This is related to the backport proposal above ... ;-)
-      modules/metadata/mod_setenvif.c r1.42
       +1: nd
 
     * Allow mod_dav to do weak entity comparison functions.
