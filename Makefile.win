@@ -61,7 +61,7 @@ _tryssl:
 	$(MAKE) $(MAKEOPT) -f abs.mak CFG="abs - Win32 $(LONG)" RECURSE=0 $(LONG)\abs.exe
 	cd ..
 !ELSE
-	msdev Apache.dsw /MAKE\
+	msdev Apache.dsw /USEENV /MAKE \
 		"mod_ssl - Win32 $(LONG)"\
 		"abs - Win32 $(LONG)" /NORECURSE $(CTARGET)
 !ENDIF
@@ -98,6 +98,8 @@ MAKEOPT=-nologo
 MAKEOPT=-s -N
 !ENDIF
 !ENDIF
+
+_dummy:
 
 _browse:
 	cd Browse
@@ -249,7 +251,7 @@ _cleand:
 _build:
 	echo Building Win32 $(LONG) targets ($(SHORT) suffixes)
 	-del $(LONG)\buildmark.obj
-	msdev Apache.dsw /MAKE\
+	msdev Apache.dsw /USEENV /MAKE \
 		"apr - Win32 $(LONG)"\
 		"libapr - Win32 $(LONG)"\
 		"gen_uri_delims - Win32 $(LONG)"\
@@ -309,7 +311,7 @@ _build:
 		"ApacheMonitor - Win32 $(LONG)"\
 		"wintty - Win32 $(LONG)" /NORECURSE $(CTARGET)
 !IF EXIST("srclib\openssl")
-	msdev Apache.dsw /MAKE\
+	msdev Apache.dsw /USEENV /MAKE \
 		"mod_ssl - Win32 $(LONG)"\
 		"abs - Win32 $(LONG)" /NORECURSE $(CTARGET)
 !ENDIF
