@@ -17,7 +17,6 @@
   1. Overview for the impatient
      --------------------------
 
-     $ ./buildconf
      $ ./configure --prefix=PREFIX
      $ make
      $ make install
