@@ -838,14 +838,14 @@ static void test(void)
 static void copyright(void)
 {
     if (!use_html) {
-        printf("This is ApacheBench, Version %s\n", VERSION " <$Revision: 1.11 $> apache-2.0");
+        printf("This is ApacheBench, Version %s\n", VERSION " <$Revision: 1.12 $> apache-2.0");
         printf("Copyright (c) 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/\n");
         printf("Copyright (c) 1998-2000 The Apache Software Foundation, http://www.apache.org/\n");
         printf("\n");
     }
     else {
         printf("<p>\n");
-        printf(" This is ApacheBench, Version %s <i>&lt;%s&gt;</i> apache-2.0<br>\n", VERSION, "$Revision: 1.11 $");
+        printf(" This is ApacheBench, Version %s <i>&lt;%s&gt;</i> apache-2.0<br>\n", VERSION, "$Revision: 1.12 $");
         printf(" Copyright (c) 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/<br>\n");
         printf(" Copyright (c) 1998-2000 The Apache Software Foundation, http://www.apache.org/<br>\n");
         printf("</p>\n<p>\n");
@@ -970,7 +970,7 @@ int main(int argc, char **argv)
         fprintf(stderr, "ap_xlate_open(to ASCII)->%d\n", status);
         exit(1);
     }
-    status = ap_xlate_open(&from_ascii, APR_DEFAULT_CHARSET, "ISO8859-1", cntxt)
+    status = ap_xlate_open(&from_ascii, APR_DEFAULT_CHARSET, "ISO8859-1", cntxt);
 
     if (status) {
         fprintf(stderr, "ap_xlate_open(from ASCII)->%d\n", status);
