@@ -78,10 +78,10 @@
  * Actual definitions of config globals
  */
 
-static int threads_to_start=0;         /* Worker threads per child */
-static int min_spare_threads=1;
-static int max_spare_threads=HARD_THREAD_LIMIT;
-static int max_requests_per_child=0;
+static int threads_to_start = 0;         /* Worker threads per child */
+static int min_spare_threads = 0;
+static int max_spare_threads = 0;
+static int max_requests_per_child = 0;
 static char *ap_pid_fname=NULL;
 static int num_daemons=0;
 static int workers_may_exit = 0;
@@ -1440,8 +1440,10 @@ static void dexter_pre_config(pool *pconf, pool *plog, pool *ptemp)
 
     unixd_pre_config();
     ap_listen_pre_config();
-    num_daemons = HARD_SERVER_LIMIT;
-    threads_to_start = DEFAULT_THREADS_PER_CHILD;
+    num_daemons = DEFAULT_NUM_DAEMON;
+    threads_to_start = DEFAULT_START_THREAD;
+    min_spare_threads = DEFAULT_MIN_SPARE_THREAD;
+    max_spare_threads = DEFAULT_MAX_SPARE_THREAD;
     ap_pid_fname = DEFAULT_PIDLOG;
     ap_lock_fname = DEFAULT_LOCKFILE;
     max_requests_per_child = DEFAULT_MAX_REQUESTS_PER_CHILD;
