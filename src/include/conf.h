@@ -238,6 +238,13 @@ extern int strncasecmp(const char *,const char *,unsigned);
 /* These are to let -Wall compile more cleanly */
 extern int strcasecmp(const char *, const char *);
 extern int strncasecmp(const char *,const char *,unsigned);
+extern int set42sig(), getopt(), getpeername(), bzero();
+extern int listen(), bind(), socket(), getsockname();
+extern int accept(), gethostname(), connect(), lstat();
+extern int select(), killpg(), shutdown();
+extern int initgroups(), setsockopt();
+extern char *crypt();
+extern char *getwd();
 #undef HAVE_GMTOFF
 #undef NO_KILLPG
 #undef NO_SETSID
