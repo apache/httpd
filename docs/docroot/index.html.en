@@ -3,7 +3,8 @@
  <HEAD>
   <TITLE>Test Page for Apache Installation</TITLE>
  </HEAD>
-<!-- Background white, links blue (unvisited), navy (visited), red (active) -->
+<!-- Background white, links blue (unvisited), navy (visited), red
+(active) -->
  <BODY
   BGCOLOR="#FFFFFF"
   TEXT="#000000"
@@ -13,26 +14,32 @@
  >
 
 
-<P>
-If you can see this, it means that the installation of the <A HREF="http://httpd.apache.org/">Apache web server</A> software on this system was successful.  You may now add content to this directory and replace this page.
+<p>If you can see this, it means that the installation of the <A
+HREF="http://httpd.apache.org/">Apache web server</A> software on this
+system was successful.  You may now add content to this directory and
+replace this page.</p>
 
-<P><HR WIDTH="50%" SIZE="8">
+<HR WIDTH="50%" SIZE="8">
 
 <H2 ALIGN="CENTER">Seeing this instead of the website you expected?</H2>
 
-<P>
-This page is here because the site administrator has changed the configuration of this web server.  
-Please  <STRONG>contact the person responsible for maintaining this server with questions.</STRONG>   The Apache Software Foundation, which wrote the web server software this site administrator is using, has nothing to do with maintaining this site and cannot help resolve configuration issues.
+<p>This page is here because the site administrator has changed the
+configuration of this web server.  Please <STRONG>contact the person
+responsible for maintaining this server with questions.</STRONG>  The
+Apache Software Foundation, which wrote the web server software this
+site administrator is using, has nothing to do with maintaining this
+site and cannot help resolve configuration issues.</p>
 
-<P><HR WIDTH="50%" SIZE="8">
+<HR WIDTH="50%" SIZE="8">
 
 
-<P>
-The Apache <A HREF="manual/index.html">documentation</A> has been included with this distribution.
+<p>The Apache <A HREF="manual/">documentation</A> has been included with
+this distribution.</p>
 
-<P>
-You are free to use the image below on an Apache-powered web server.  Thanks for using Apache!
+<p>You are free to use the image below on an Apache-powered web server. 
+Thanks for using Apache!</p>
 
 <DIV ALIGN="CENTER"><IMG SRC="apache_pb.gif" ALT=""></DIV>
+
 </BODY>
 </HTML>

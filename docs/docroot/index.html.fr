@@ -38,7 +38,7 @@
   <HR>
   <P>
   La
-  <A HREF="manual/index.html">documentation</A>
+  <A HREF="manual/">documentation</A>
   Apache est incluse dans cette distribution.
   </P>
   <P>
