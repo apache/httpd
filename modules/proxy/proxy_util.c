@@ -214,7 +214,7 @@ PROXY_DECLARE(char *)
      ap_proxy_canon_netloc(apr_pool_t *p, char **const urlp, char **userp,
 			char **passwordp, char **hostp, apr_port_t *port)
 {
-    apr_port_t i;
+    int i;
     char *strp, *host, *url = *urlp;
     char *user = NULL, *password = NULL;
 
@@ -267,9 +267,12 @@ PROXY_DECLARE(char *)
 	if (strp[i] != '\0') {
 	    return "Bad port number in URL";
 	} else if (i > 0) {
-	    *port = atoi(strp);
-	    if (*port > 65535)
+            int int_port = atoi(strp);
+
+	    if (int_port > 65535)
 		return "Port number in URL > 65535";
+
+	    *port = (apr_port_t)int_port;
 	}
     }
     ap_str_tolower(host);		/* DNS names are case-insensitive */
@@ -604,7 +607,7 @@ static const char *
      proxy_get_host_of_request(request_rec *r)
 {
     char *url, *user = NULL, *password = NULL, *err, *host;
-    apr_port_t port = -1;
+    apr_port_t port;
 
     if (r->hostname != NULL)
 	return r->hostname;
