@@ -425,14 +425,15 @@ AP_DECLARE(void) ap_internal_fast_redirect(request_rec *rr, request_rec *r)
     apr_pool_join(r->pool, rr->pool);
     r->mtime = rr->mtime;
     r->uri = rr->uri;
-    r->args = rr->args;
     r->filename = rr->filename;
     r->canonical_filename = rr->canonical_filename;
+    r->path_info = rr->path_info;
+    r->args = rr->args;
+    r->finfo = rr->finfo;
     r->handler = rr->handler;
     r->content_type = rr->content_type;
     r->content_encoding = rr->content_encoding;
     r->content_languages = rr->content_languages;
-    r->finfo = rr->finfo;
     r->per_dir_config = rr->per_dir_config;
     /* copy output headers from subrequest, but leave negotiation headers */
     r->notes = apr_table_overlay(r->pool, rr->notes, r->notes);
