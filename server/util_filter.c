@@ -55,24 +55,6 @@
 #include "httpd.h"
 #include "util_filter.h"
 
-/*
- * ap_filter_rec_t:
- *
- * This (internal) structure is used for recording information about the
- * registered filters. It associates a name with the filter's callback
- * and filter type.
- *
- * At the moment, these are simply linked in a chain, so a ->next pointer
- * is available.
- */
-typedef struct ap_filter_rec_t {
-    const char *name;
-    ap_filter_func filter_func;
-    ap_filter_type ftype;
-
-    struct ap_filter_rec_t *next;
-} ap_filter_rec_t;
-
 /* ### make this visible for direct manipulation?
  * ### use a hash table
  */
@@ -91,8 +73,8 @@ static ap_filter_rec_t *registered_filters = NULL;
 ** corresponds to a different request.
 */
 #define INSERT_BEFORE(f, before_this) ((before_this) == NULL \
-                                       || (before_this)->ftype > (f)->ftype \
-                                       || (before_this)->r != (f)->r)
+                           || (before_this)->frec->ftype > (f)->frec->ftype \
+                           || (before_this)->r != (f)->r)
 
 
 static apr_status_t filter_cleanup(void *ctx)
@@ -125,9 +107,8 @@ API_EXPORT(void) ap_add_filter(const char *name, request_rec *r)
         if (!strcasecmp(name, frec->name)) {
             ap_filter_t *f = apr_pcalloc(r->pool, sizeof(*f));
 
-            f->filter_func = frec->filter_func;
+            f->frec = frec;
             f->ctx = NULL;
-            f->ftype = frec->ftype;
             f->r = r;
 
             if (INSERT_BEFORE(f, r->filters)) {
@@ -158,7 +139,7 @@ API_EXPORT(apr_status_t) ap_pass_brigade(ap_filter_t *next, ap_bucket_brigade *b
         if (AP_BRIGADE_LAST(bb)->type == AP_BUCKET_EOS) {
             next->r->eos_sent = 1;
         }
-        return next->filter_func(next, bb);
+        return next->frec->filter_func(next, bb);
     }
     return AP_NOBODY_WROTE;
 }
