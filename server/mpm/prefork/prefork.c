@@ -88,6 +88,7 @@
 #include "apr_portable.h"
 #include "apr_strings.h"
 #include "apr_thread_proc.h"
+#include "apr_signal.h"
 
 #define APR_WANT_STDIO
 #define APR_WANT_STRFUNC

@@ -61,6 +61,7 @@
 #include "apr_strings.h"
 #include "apr_file_io.h"
 #include "apr_thread_proc.h"
+#include "apr_signal.h"
 
 #if APR_HAVE_UNISTD_H
 #include <unistd.h>

@@ -69,6 +69,7 @@
 #include "apr_errno.h"
 #include "apr_thread_proc.h"
 #include "apr_lib.h"
+#include "apr_signal.h"
 
 #define APR_WANT_STDIO
 #define APR_WANT_STRFUNC
