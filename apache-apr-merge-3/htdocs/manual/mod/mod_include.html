@@ -1,0 +1,420 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+<TITLE>Apache module mod_include</TITLE>
+</HEAD>
+
+<!-- Background white, links blue (unvisited), navy (visited), red (active) -->
+<BODY
+ BGCOLOR="#FFFFFF"
+ TEXT="#000000"
+ LINK="#0000FF"
+ VLINK="#000080"
+ ALINK="#FF0000"
+>
+<!--#include virtual="header.html" -->
+<H1 ALIGN="CENTER">Module mod_include</H1>
+
+This module is contained in the <CODE>mod_include.c</CODE> file, and
+is compiled in by default. It provides for server-parsed html
+documents. Several directives beyond the original NCSA definition were
+introduced in Apache 1.2 - these are flagged below with the phrase
+"Apache 1.2 and above".  Of particular significance are the new flow
+control directives documented at the bottom.
+
+<H2>Enabling Server-Side Includes</H2>
+
+Any document with handler of "server-parsed" will be parsed by this
+module, if the <CODE>Includes</CODE> option is set. If documents
+containing server-side include directives are given the extension
+.shtml, the following directives will make Apache parse them and
+assign the resulting document the mime type of <CODE>text/html</CODE>:
+
+<PRE>
+AddType text/html .shtml
+AddHandler server-parsed .shtml
+</PRE>
+
+The following directive must be given for the directories containing
+the shtml files (typically in a <CODE>&lt;Directory&gt;</CODE> section,
+but this directive is also valid .htaccess files if <CODE>AllowOverride
+Options</CODE> is set):
+
+<PRE>
+Options +Includes
+</PRE>
+
+Alternatively the <A HREF="#xbithack"><CODE>XBitHack</CODE></A>
+directive can be used to parse normal (<CODE>text/html</CODE>) files,
+based on file permissions.  <P>
+
+For backwards compatibility, documents with mime type
+<CODE>text/x-server-parsed-html</CODE> or
+<CODE>text/x-server-parsed-html3</CODE> will also be parsed
+(and the resulting output given the mime type <CODE>text/html</CODE>).
+
+<H2>Basic Elements</H2>
+
+The document is parsed as an HTML document, with special commands embedded
+as SGML comments. A command has the syntax:
+
+<BLOCKQUOTE><CODE>
+&lt;!--#</CODE><EM>element attribute=value attribute=value ...</EM>
+<CODE> --&gt;
+</CODE></BLOCKQUOTE>
+
+The value will often be enclosed in double quotes; many commands only allow
+a single attribute-value pair.  Note that the comment terminator
+(<SAMP>--&gt;</SAMP>) should be preceded by whitespace to ensure that it
+isn't considered part of an SSI token.
+<P>
+The allowed elements are:<P>
+
+<DL>
+
+<DT><STRONG>config</STRONG>
+<DD>
+This command controls various aspects of the parsing. The valid attributes
+are:
+<DL>
+<DT>errmsg
+<DD>The value is a message that is sent back to the client if an error occurs
+whilst parsing the document.
+<DT>sizefmt
+<DD>The value sets the format to be used which displaying the size of a file.
+Valid values are <CODE>bytes</CODE> for a count in bytes, or
+<CODE>abbrev</CODE> for a count in Kb or Mb as appropriate.
+<DT>timefmt
+<DD>The value is a string to be used by the <CODE>strftime(3)</CODE> library
+routine when printing dates.
+</DL>
+
+<DT><STRONG>echo</STRONG>
+<DD>
+This command prints one of the include variables, defined below.
+If the variable is unset, it is printed as <CODE>(none)</CODE>.
+Any dates printed are subject to the currently configured <CODE>timefmt</CODE>.
+Attributes:
+<DL>
+<DT>var
+<DD>The value is the name of the variable to print.
+</DL>
+
+<DT><STRONG>exec</STRONG>
+<DD>
+The exec command executes a given shell command or CGI script.
+The IncludesNOEXEC <A HREF="core.html#options">Option</A> disables this command
+completely. The valid attributes are:
+<DL>
+<DT>cgi
+<DD>
+The value specifies a (%-encoded) URL relative path to the CGI script.
+If the path does not begin with a (/), then it is taken to be relative to
+the current document. The document referenced by this path is invoked
+as a CGI script, even if the server would not normally recognize it as
+such. However, the directory containing the script must be enabled for
+CGI scripts (with <A HREF="mod_alias.html#scriptalias">ScriptAlias</A>
+or the ExecCGI <A HREF="core.html#options">Option</A>).<P>
+The CGI script is given the PATH_INFO and query string (QUERY_STRING) of the
+original request from the client; these cannot be specified in the URL path.
+The include variables will be available to the script in addition to the
+standard <A HREF="mod_cgi.html">CGI</A> environment.<P>
+If the script returns a Location: header instead of output, then this
+will be translated into an HTML anchor.<P>
+The <CODE>include virtual</CODE> element should be used in preference to
+<CODE>exec cgi</CODE>.
+<DT>cmd
+<DD>The server will execute the given string using <CODE>/bin/sh</CODE>.
+The include variables are available to the command.
+</DL>
+
+<DT><STRONG>fsize</STRONG>
+<DD>
+This command prints the size of the specified file, subject to the
+<CODE>sizefmt</CODE> format specification. Attributes:
+<DL>
+<DT>file
+<DD>The value is a path relative to the directory containing the current
+document being parsed.
+<DT>virtual
+<DD>The value is a (%-encoded) URL-path relative to the current document being
+parsed. If it does not begin with a slash (/) then it is taken to be relative
+to the current document.
+</DL>
+
+<DT><STRONG>flastmod</STRONG>
+<DD>
+This command prints the last modification date of the specified file,
+subject to the <CODE>timefmt</CODE> format specification. The attributes are
+the same as for the <CODE>fsize</CODE> command.
+
+<DT><STRONG>include</STRONG>
+<DD>
+This command inserts the text of another document or file into the parsed
+file. Any included file is subject to the usual access control. If the
+directory containing the parsed file has the
+<A HREF="core.html#options">Option</A>
+IncludesNOEXEC set, and the including the document would cause a program
+to be executed, then it will not be included; this prevents the execution of
+CGI scripts. Otherwise CGI scripts are invoked as normal using the complete
+URL given in the command, including any query string.
+<!--%plaintext &lt;?INDEX CGI scripts, {\tt include} element and&gt; -->
+<P>
+
+An attribute defines the location of the document; the inclusion is done for
+each attribute given to the include command. The valid attributes are:
+<DL>
+<DT>file
+<DD>The value is a path relative to the directory containing the current
+document being parsed. It cannot contain <CODE>../</CODE>, nor can it be an
+absolute path. The <CODE>virtual</CODE> attribute should always be used
+in preference to this one.
+<DT>virtual
+<DD>The value is a (%-encoded) URL relative to the current document being
+parsed. The URL cannot contain a scheme or hostname, only a path and
+an optional query string. If it does not begin with a slash (/) then it
+is taken to be relative to the current document.
+</DL>
+A URL is constructed from the attribute, and the output the server
+would return if the URL were accessed by the client is included in the parsed
+output. Thus included files can be nested.
+
+<DT><STRONG>printenv</STRONG>
+<DD>This prints out a listing of all existing variables and their values.
+    No attributes.
+<DD>For example: <CODE>&lt;!--#printenv --&gt;</CODE>
+<DD>Apache 1.2 and above.
+
+<DT><STRONG>set</STRONG>
+<DD>This sets the value of a variable.  Attributes:
+<DL>
+<DT>var
+<DD>The name of the variable to set.
+<DT>value
+<DD>The value to give a variable.
+</DL>
+For example:
+  <CODE>&lt;!--#set var="category" value="help" --&gt;</CODE>
+<DD>Apache 1.2 and above.
+
+</DL>
+
+<H2>Include Variables</H2>
+
+In addition to the variables in the standard CGI environment, these are
+available for the <CODE>echo</CODE> command, for <CODE>if</CODE> and
+<CODE>elif</CODE>, and to any program invoked by the document.
+
+<DL>
+<DT>DATE_GMT
+<DD>The current date in Greenwich Mean Time.
+<DT>DATE_LOCAL
+<DD>The current date in the local time zone.
+<DT>DOCUMENT_NAME
+<DD>The filename (excluding directories) of the document requested by the
+user.
+<DT>DOCUMENT_URI
+<DD>The (%-decoded) URL path of the document requested by the user. Note that
+in the case of nested include files, this is <EM>not</EM> then URL for the
+current document.
+<DT>LAST_MODIFIED
+<DD>The last modification date of the document requested by the user.
+</DL>
+<P>
+
+<H2>Variable Substitution</H2>
+<P> Variable substitution is done within quoted strings in most cases
+    where they may reasonably occur as an argument to an SSI directive.
+    This includes the
+    <SAMP>config</SAMP>,
+    <SAMP>exec</SAMP>,
+    <SAMP>flastmod</SAMP>,
+    <SAMP>fsize</SAMP>,
+    <SAMP>include</SAMP>, and
+    <SAMP>set</SAMP>
+    directives, as well as the arguments to conditional operators.
+    You can insert a literal dollar sign into the string using backslash
+    quoting:
+
+<PRE>
+    &lt;!--#if expr="$a = \$test" --&gt;
+</PRE>
+
+<P> If a variable reference needs to be substituted in the middle of a
+    character sequence that might otherwise be considered a valid
+    identifier in its own right, it can be disambiguated by enclosing
+    the reference in braces, <EM>&agrave; la</EM> shell substitution:
+
+<PRE>
+    &lt;!--#set var="Zed" value="${REMOTE_HOST}_${REQUEST_METHOD}" --&gt;
+</PRE>
+
+<P> This will result in the <SAMP>Zed</SAMP> variable being set to
+    &quot;<SAMP>X_Y</SAMP>&quot; if <SAMP>REMOTE_HOST</SAMP> is
+    &quot;<SAMP>X</SAMP>&quot; and <SAMP>REQUEST_METHOD</SAMP> is
+    &quot;<SAMP>Y</SAMP>&quot;.
+
+<P> EXAMPLE: the below example will print "in foo" if the DOCUMENT_URI is
+/foo/file.html, "in bar" if it is /bar/file.html and "in neither"
+otherwise:
+<PRE>
+    &lt;!--#if expr="\"$DOCUMENT_URI\" = \"/foo/file.html\"" --&gt;
+    in foo
+    &lt;!--#elif expr="\"$DOCUMENT_URI\" = \"/bar/file.html\"" --&gt;
+    in bar
+    &lt;!--#else --&gt;
+    in neither
+    &lt;!--#endif --&gt;
+</PRE>
+
+<H2><A NAME="flowctrl">Flow Control Elements</A></H2>
+
+These are available in Apache 1.2 and above.  The basic flow control
+elements are:
+
+<PRE>
+    &lt;!--#if expr="<EM>test_condition</EM>" --&gt;
+    &lt;!--#elif expr="<EM>test_condition</EM>" --&gt;
+    &lt;!--#else --&gt;
+    &lt;!--#endif --&gt;
+</PRE>
+
+<P> The <STRONG><CODE>if</CODE></STRONG> element works like an
+    if statement in a programming language.  The test condition
+    is evaluated and if the result is true, then the text until
+    the next <STRONG><CODE>elif</CODE></STRONG>, <STRONG><CODE>else</CODE></STRONG>.
+    or <STRONG><CODE>endif</CODE></STRONG> element is included in the
+    output stream.
+
+<P> The <STRONG><CODE>elif</CODE></STRONG> or <STRONG><CODE>else</CODE></STRONG>
+    statements are be used the put text into the output stream
+    if the original test_condition was false.  These elements
+    are optional.
+
+<P> The <STRONG><CODE>endif</CODE></STRONG> element ends the
+    <STRONG><CODE>if</CODE></STRONG> element and is required.
+
+<P> <EM>test_condition</EM> is one of the following:
+
+<DL>
+
+<DT><EM>string</EM><DD>true if <EM>string</EM> is not empty
+
+<DT><EM>string1</EM> = <EM>string2</EM>
+    <BR>
+    <EM>string1</EM> != <EM>string2</EM>
+    <BR>
+    <EM>string1</EM> &lt; <EM>string2</EM>
+    <BR>
+    <EM>string1</EM> &lt;= <EM>string2</EM>
+    <BR>
+    <EM>string1</EM> &gt; <EM>string2</EM>
+    <BR>
+    <EM>string1</EM> &gt;= <EM>string2</EM>
+
+<DD>Compare string1 with string 2.  If string2 has the form <EM>/string/</EM>
+    then it is compared as a regular expression.
+    Regular expressions have the same syntax as those found in the
+    Unix <SAMP>egrep</SAMP> command.
+
+<DT>( <EM>test_condition</EM> )
+        <DD>true if <EM>test_condition</EM> is true
+<DT>! <EM>test_condition</EM>
+        <DD>true if <EM>test_condition</EM> is false
+<DT><EM>test_condition1</EM> && <EM>test_condition2</EM>
+        <DD>true if both <EM>test_condition1</EM> and
+        <EM>test_condition2</EM> are true
+<DT><EM>test_condition1</EM> || <EM>test_condition2</EM>
+        <DD>true if either <EM>test_condition1</EM> or
+        <EM>test_condition2</EM> is true
+</DL>
+
+<P> "<EM>=</EM>" and "<EM>!=</EM>" bind more tightly than "<EM>&&</EM>" and
+    "<EM>||</EM>".
+    "<EM>!</EM>" binds most tightly.  Thus, the following are equivalent:
+
+<PRE>
+    &lt;!--#if expr="$a = test1 && $b = test2" --&gt;
+    &lt;!--#if expr="($a = test1) && ($b = test2)" --&gt;
+</PRE>
+
+<P> Anything that's not recognized as a variable or an operator is
+    treated as a string.  Strings can also be quoted: <EM>'string'</EM>.
+    Unquoted strings can't contain whitespace (blanks and tabs)
+    because it is used to separate tokens such as variables.  If
+    multiple strings are found in a row, they are concatenated using
+    blanks.  So,
+
+<PRE>
+     <EM>string1    string2</EM>  results in <EM>string1 string2</EM>
+    <EM>'string1    string2'</EM> results in <EM>string1    string2</EM>
+</PRE>
+
+<HR>
+<H2>Directives</H2>
+<UL>
+<LI><A HREF="#xbithack">XBitHack</A>
+</UL>
+<HR>
+
+
+<H2><A NAME="xbithack">XBitHack</A></H2>
+<!--%plaintext &lt;?INDEX {\tt XBitHack} directive&gt; -->
+<A
+ HREF="directive-dict.html#Syntax"
+ REL="Help"
+><STRONG>Syntax:</STRONG></A> XBitHack <EM>status</EM><BR>
+<A
+ HREF="directive-dict.html#Default"
+ REL="Help"
+><STRONG>Default:</STRONG></A> <CODE>XBitHack off</CODE><BR>
+<A
+ HREF="directive-dict.html#Context"
+ REL="Help"
+><STRONG>Context:</STRONG></A> server config, virtual host, directory, .htaccess<BR>
+<A
+ HREF="directive-dict.html#Override"
+ REL="Help"
+><STRONG>Override:</STRONG></A> Options<BR>
+<A
+ HREF="directive-dict.html#Status"
+ REL="Help"
+><STRONG>Status:</STRONG></A> Base<BR>
+<A
+ HREF="directive-dict.html#Module"
+ REL="Help"
+><STRONG>Module:</STRONG></A> mod_include<P>
+
+The XBitHack directives controls the parsing of ordinary html documents.
+This directive only affects files associated with the MIME type
+<CODE>text/html</CODE>.
+<EM>Status</EM> can have the following values:
+<DL>
+<DT>off
+<DD>No special treatment of executable files.
+<DT>on
+<DD>Any file that has the user-execute bit set will be treated as a
+server-parsed html document.
+<DT>full
+<DD>As for <CODE>on</CODE> but also test the group-execute bit. If it
+is set, then set the Last-modified date of the returned file to be the
+last modified time of the file. If it is not set, then no last-modified date
+is sent. Setting this bit allows clients and proxies to cache the result of
+the request.
+<P><STRONG>Note:</STRONG> you would not want to use this, for example, when you
+<CODE>#include</CODE> a CGI that produces different output on each hit
+(or potentially depends on the hit).
+</DL>
+<P>
+
+<HR>
+<H2>Using Server Side Includes for ErrorDocuments</H2>
+
+There is <A HREF="../misc/custom_errordocs.html">a document</A> which
+describes how to use the features of mod_include to offer internationalized
+customized server error documents.
+<P>
+
+<!--#include virtual="footer.html" -->
+</BODY>
+</HTML>

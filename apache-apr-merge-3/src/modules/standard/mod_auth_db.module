@@ -1,0 +1,36 @@
+Name: db_auth_module
+ConfigStart
+    DB_VERSION=''
+    DB_LIB=''
+    if ./helpers/TestCompile func db_open; then
+        DB_VERSION='Berkeley-DB/2.x'
+    else
+        if ./helpers/TestCompile lib db db_open; then
+            DB_VERSION='Berkeley-DB/2.x'
+            DB_LIB='-ldb'
+        else
+            if ./helpers/TestCompile func dbopen; then
+                DB_VERSION='Berkeley-DB/1.x'
+            else
+                if ./helpers/TestCompile lib db dbopen; then
+                    DB_VERSION='Berkeley-DB/1.x'
+                    DB_LIB='-ldb'
+                fi
+            fi 
+        fi
+    fi
+    if [ ".$DB_VERSION" != . ]; then
+        if [ ".$DB_LIB" != . ]; then
+            LIBS="$LIBS $DB_LIB"
+            echo "      using $DB_VERSION for mod_auth_db ($DB_LIB)"
+        else
+            echo "      using $DB_VERSION for mod_auth_db (-lc)"
+        fi
+    else
+        echo "Error: Neither Berkeley-DB/1.x nor Berkeley-DB/2.x library found."
+        echo "       Either disable mod_auth_db or provide us with the paths"
+        echo "       to the Berkeley-DB include and library files."
+        echo "       (Hint: INCLUDES, LDFLAGS, LIBS)"
+        exit 1
+    fi
+ConfigEnd
