@@ -158,8 +158,6 @@ static void format_kbyte_out(request_rec *r, unsigned long kbytes)
 static void show_time(request_rec *r, time_t tsecs)
 {
     long days, hrs, mins, secs;
-    char buf[100];
-    char *s;
 
     secs = tsecs % 60;
     tsecs /= 60;
@@ -167,8 +165,6 @@ static void show_time(request_rec *r, time_t tsecs)
     tsecs /= 60;
     hrs = tsecs % 24;
     days = tsecs / 24;
-    s = buf;
-    *s = '\0';
     if (days)
 	rprintf(r, " %ld day%s", days, days == 1 ? "" : "s");
     if (hrs)
@@ -190,19 +186,22 @@ static void show_time(request_rec *r, time_t tsecs)
 
 struct stat_opt {
     int id;
-    char *form_data_str;
-    char *hdr_out_str;
+    const char *form_data_str;
+    const char *hdr_out_str;
 };
+
+static const struct stat_opt status_options[] =	/* see #defines above */
+{
+    {STAT_OPT_REFRESH, "refresh", "Refresh"},
+    {STAT_OPT_NOTABLE, "notable", NULL},
+    {STAT_OPT_AUTO, "auto", NULL},
+    {STAT_OPT_END, NULL, NULL}
+};
+
+static char status_flags[SERVER_NUM_STATUS];
 
 static int status_handler(request_rec *r)
 {
-    struct stat_opt options[] =	/* see #defines above */
-    {
-	{STAT_OPT_REFRESH, "refresh", "Refresh"},
-	{STAT_OPT_NOTABLE, "notable", NULL},
-	{STAT_OPT_AUTO, "auto", NULL},
-	{STAT_OPT_END, NULL, NULL}
-    };
     char *loc;
     time_t nowtime = time(NULL);
     time_t up_time;
@@ -228,21 +227,10 @@ static int status_handler(request_rec *r)
     server_rec *server = r->server;
     short_score score_record;
     parent_score ps_record;
-    char status[SERVER_NUM_STATUS];
     char stat_buffer[HARD_SERVER_LIMIT];
     clock_t tu, ts, tcu, tcs;
 
     tu = ts = tcu = tcs = 0;
-
-    status[SERVER_DEAD] = '.';	/* We don't want to assume these are in */
-    status[SERVER_READY] = '_';	/* any particular order in scoreboard.h */
-    status[SERVER_STARTING] = 'S';
-    status[SERVER_BUSY_READ] = 'R';
-    status[SERVER_BUSY_WRITE] = 'W';
-    status[SERVER_BUSY_KEEPALIVE] = 'K';
-    status[SERVER_BUSY_LOG] = 'L';
-    status[SERVER_BUSY_DNS] = 'D';
-    status[SERVER_GRACEFUL] = 'G';
 
     if (!exists_scoreboard_image()) {
 	aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r->server,
@@ -261,15 +249,15 @@ static int status_handler(request_rec *r)
 
     if (r->args) {
 	i = 0;
-	while (options[i].id != STAT_OPT_END) {
-	    if ((loc = strstr(r->args, options[i].form_data_str)) != NULL) {
-		switch (options[i].id) {
+	while (status_options[i].id != STAT_OPT_END) {
+	    if ((loc = strstr(r->args, status_options[i].form_data_str)) != NULL) {
+		switch (status_options[i].id) {
 		case STAT_OPT_REFRESH:
-		    if (*(loc + strlen(options[i].form_data_str)) == '=')
-			table_set(r->headers_out, options[i].hdr_out_str,
-				  loc + strlen(options[i].hdr_out_str) + 1);
+		    if (*(loc + strlen(status_options[i].form_data_str)) == '=')
+			table_set(r->headers_out, status_options[i].hdr_out_str,
+				  loc + strlen(status_options[i].hdr_out_str) + 1);
 		    else
-			table_set(r->headers_out, options[i].hdr_out_str, "1");
+			table_set(r->headers_out, status_options[i].hdr_out_str, "1");
 		    break;
 		case STAT_OPT_NOTABLE:
 		    no_table_report = 1;
@@ -294,7 +282,7 @@ static int status_handler(request_rec *r)
 	score_record = scoreboard_image->servers[i];
 	ps_record = scoreboard_image->parent[i];
 	res = score_record.status;
-	stat_buffer[i] = (res == SERVER_UNKNOWN) ? '?' : status[res];
+	stat_buffer[i] = (res == SERVER_UNKNOWN) ? '?' : status_flags[res];
 	if (res == SERVER_READY)
 	    ready++;
 	else if (res != SERVER_DEAD && res != SERVER_UNKNOWN)
@@ -656,6 +644,20 @@ static int status_handler(request_rec *r)
     return 0;
 }
 
+
+static void status_init(server_rec *s, pool *p)
+{
+    status_flags[SERVER_DEAD] = '.';	/* We don't want to assume these are in */
+    status_flags[SERVER_READY] = '_';	/* any particular order in scoreboard.h */
+    status_flags[SERVER_STARTING] = 'S';
+    status_flags[SERVER_BUSY_READ] = 'R';
+    status_flags[SERVER_BUSY_WRITE] = 'W';
+    status_flags[SERVER_BUSY_KEEPALIVE] = 'K';
+    status_flags[SERVER_BUSY_LOG] = 'L';
+    status_flags[SERVER_BUSY_DNS] = 'D';
+    status_flags[SERVER_GRACEFUL] = 'G';
+}
+
 static handler_rec status_handlers[] =
 {
     {STATUS_MAGIC_TYPE, status_handler},
@@ -666,7 +668,7 @@ static handler_rec status_handlers[] =
 module MODULE_VAR_EXPORT status_module =
 {
     STANDARD_MODULE_STUFF,
-    NULL,			/* initializer */
+    status_init,		/* initializer */
     NULL,			/* dir config creater */
     NULL,			/* dir merger --- default is to override */
     NULL,			/* server config */
