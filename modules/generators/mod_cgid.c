@@ -676,8 +676,8 @@ static int cgid_init(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp,
         daemon_should_exit = 0; /* clear setting from previous generation */
         if ((daemon_pid = fork()) < 0) {
             ap_log_error(APLOG_MARK, APLOG_ERR, errno, main_server, 
-                         "Couldn't spawn cgid daemon process"); 
-            /* XXX should we return a failure here ? */
+                         "mod_cgid: Couldn't spawn cgid daemon process"); 
+            return DECLINED;
         }
         else if (daemon_pid == 0) {
             apr_pool_create(&pcgi, p); 
