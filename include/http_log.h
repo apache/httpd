@@ -68,6 +68,10 @@ extern "C" {
 #ifdef HAVE_SYSLOG
 #include <syslog.h>
 
+#ifndef LOG_PRIMASK
+#define LOG_PRIMASK 7
+#endif
+
 #define APLOG_EMERG     LOG_EMERG     /* system is unusable */
 #define APLOG_ALERT     LOG_ALERT     /* action must be taken immediately */
 #define APLOG_CRIT      LOG_CRIT      /* critical conditions */
