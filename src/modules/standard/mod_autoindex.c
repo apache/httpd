@@ -612,8 +612,8 @@ static char *find_title(request_rec *r)
 	return NULL;
     }
     if (r->content_type
-	&& (!strcmp(r->content_type, "text/html")
-	    || !strcmp(r->content_type, INCLUDES_MAGIC_TYPE))
+	&& (!strcasecmp(r->content_type, "text/html")
+	    || !strcasecmp(r->content_type, INCLUDES_MAGIC_TYPE))
 	&& !r->content_encoding) {
 	if (!(thefile = pfopen(r->pool, r->filename, "r")))
 	         return NULL;

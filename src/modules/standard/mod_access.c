@@ -152,12 +152,12 @@ static const char *allow_cmd(cmd_parms *cmd, void *dv, char *from, char *where)
     a->x.from = where = pstrdup(cmd->pool, where);
     a->limited = cmd->limited;
 
-    if (!strncmp(where, "env=", 4)) {
+    if (!strncasecmp(where, "env=", 4)) {
 	a->type = T_ENV;
 	a->x.from += 4;
 
     }
-    else if (!strcmp(where, "all")) {
+    else if (!strcasecmp(where, "all")) {
 	a->type = T_ALL;
 
     }

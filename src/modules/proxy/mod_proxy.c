@@ -302,7 +302,7 @@ static int proxy_handler(request_rec *r)
     /* Check URI's destination host against NoProxy hosts */
     /* Bypass ProxyRemote server lookup if configured as NoProxy */
     /* we only know how to handle communication to a proxy via http */
-    /*if (strcmp(scheme, "http") == 0) */
+    /*if (strcasecmp(scheme, "http") == 0) */
     {
 	int ii;
 	struct dirconn_entry *list = (struct dirconn_entry *) conf->dirconn->elts;
@@ -331,9 +331,9 @@ static int proxy_handler(request_rec *r)
 	for (i = 0; i < proxies->nelts; i++) {
 	    p = strchr(ents[i].scheme, ':');	/* is it a partial URL? */
 	    if (strcmp(ents[i].scheme, "*") == 0 ||
-		(p == NULL && strcmp(scheme, ents[i].scheme) == 0) ||
+		(p == NULL && strcasecmp(scheme, ents[i].scheme) == 0) ||
 		(p != NULL &&
-	       strncmp(url, ents[i].scheme, strlen(ents[i].scheme)) == 0)) {
+	       strncasecmp(url, ents[i].scheme, strlen(ents[i].scheme)) == 0)) {
 		/* CONNECT is a special method that bypasses the normal
 		 * proxy code.
 		 */
@@ -341,7 +341,7 @@ static int proxy_handler(request_rec *r)
 		    rc = proxy_connect_handler(r, cr, url, ents[i].hostname,
 					       ents[i].port);
 /* we only know how to handle communication to a proxy via http */
-		else if (strcmp(ents[i].protocol, "http") == 0)
+		else if (strcasecmp(ents[i].protocol, "http") == 0)
 		    rc = proxy_http_handler(r, cr, url, ents[i].hostname,
 					    ents[i].port);
 		else
@@ -361,9 +361,9 @@ static int proxy_handler(request_rec *r)
     /* handle the scheme */
     if (r->method_number == M_CONNECT)
 	return proxy_connect_handler(r, cr, url, NULL, 0);
-    if (strcmp(scheme, "http") == 0)
+    if (strcasecmp(scheme, "http") == 0)
 	return proxy_http_handler(r, cr, url, NULL, 0);
-    if (strcmp(scheme, "ftp") == 0)
+    if (strcasecmp(scheme, "ftp") == 0)
 	return proxy_ftp_handler(r, cr, url);
     else
 	return NOT_IMPLEMENTED;
@@ -427,7 +427,7 @@ static const char *
     if (port == -1) {
 	int i;
 	for (i = 0; defports[i].scheme != NULL; i++)
-	    if (strcmp(defports[i].scheme, r) == 0)
+	    if (strcasecmp(defports[i].scheme, r) == 0)
 		break;
 	port = defports[i].port;
     }

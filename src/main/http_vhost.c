@@ -191,7 +191,7 @@ static const char *get_addresses(pool *p, char *w, server_addr_rec ***paddr,
 	my_addr = htonl(INADDR_ANY);
 	is_an_ip_addr = 1;
     }
-    else if (strcmp(w, "_default_") == 0
+    else if (strcasecmp(w, "_default_") == 0
 	     || strcmp(w, "255.255.255.255") == 0) {
 	my_addr = DEFAULT_VHOST_ADDR;
 	is_an_ip_addr = 1;
@@ -678,7 +678,7 @@ static void check_hostalias(request_rec *r)
 found:
     /* s is the first matching server, we're done */
     r->server = r->connection->server = s;
-    if (r->hostlen && !strncmp(r->uri, "http://", 7)) {
+    if (r->hostlen && !strncasecmp(r->uri, "http://", 7)) {
 	r->uri += r->hostlen;
 	parse_uri(r, r->uri);
     }

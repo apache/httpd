@@ -137,7 +137,7 @@ API_EXPORT(int) set_byterange(request_rec *r)
     if (!(range = table_get(r->headers_in, "Range")))
         range = table_get(r->headers_in, "Request-Range");
 
-    if (!range || strncmp(range, "bytes=", 6)) {
+    if (!range || strncasecmp(range, "bytes=", 6)) {
         table_setn(r->headers_out, "Accept-Ranges", "bytes");
         return 0;
     }
@@ -630,7 +630,7 @@ const char *check_fulluri(request_rec *r, const char *uri)
     unsigned port;
 
     /* This routine parses full URLs, if they match the server */
-    if (strncmp(uri, "http://", 7))
+    if (strncasecmp(uri, "http://", 7))
         return uri;
     name = pstrdup(r->pool, uri + 7);
 

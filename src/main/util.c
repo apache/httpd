@@ -1526,7 +1526,7 @@ static char *find_fqdn(pool *a, struct hostent *p)
     if (ind(p->h_name, '.') == -1) {
 	for (x = 0; p->h_aliases[x]; ++x) {
 	    if ((ind(p->h_aliases[x], '.') != -1) &&
-		(!strncmp(p->h_aliases[x], p->h_name, strlen(p->h_name))))
+		(!strncasecmp(p->h_aliases[x], p->h_name, strlen(p->h_name))))
 		return pstrdup(a, p->h_aliases[x]);
 	}
 	return NULL;

@@ -1,5 +1,8 @@
 Changes with Apache 1.3b4
 
+  *) Some case-sensitivity issues cleaned up to be consistent with
+     RFC2068.  [Dean Gaudet]
+
   *) SIGURG doesn't exist everywhere.
      [Mark Andrew Heinrich <heinrich@tinderbox.Stanford.EDU>]
 

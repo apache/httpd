@@ -662,7 +662,7 @@ static int handle_include(FILE *in, request_rec *r, const char *error, int noexe
             }
 
             if (!error_fmt && noexec && rr->content_type
-                && (strncmp(rr->content_type, "text/", 5))) {
+                && (strncasecmp(rr->content_type, "text/", 5))) {
                 error_fmt = "unable to include potential exec \"%s\" "
                     "in parsed file %s";
             }

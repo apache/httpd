@@ -991,13 +991,13 @@ static int hook_uri2file(request_rec *r)
             return OK; 
         }
         else if (  (strlen(r->filename) > 7 &&
-                    strncmp(r->filename, "http://", 7) == 0)
+                    strncasecmp(r->filename, "http://", 7) == 0)
                 || (strlen(r->filename) > 8 &&
-                    strncmp(r->filename, "https://", 8) == 0)
+                    strncasecmp(r->filename, "https://", 8) == 0)
                 || (strlen(r->filename) > 9 &&
-                    strncmp(r->filename, "gopher://", 9) == 0)
+                    strncasecmp(r->filename, "gopher://", 9) == 0)
                 || (strlen(r->filename) > 6 &&
-                    strncmp(r->filename, "ftp://", 6) == 0)    ) {
+                    strncasecmp(r->filename, "ftp://", 6) == 0)    ) {
             /* it was finally rewritten to a remote URL */
 
             /* skip 'scheme:' */
@@ -1773,10 +1773,10 @@ static int apply_rewrite_rule(request_rec *r, rewriterule_entry *p,
     i = strlen(r->filename);
     if (   prefixstrip
         && !(   r->filename[0] == '/'
-             || (    (i > 7 && strncmp(r->filename, "http://", 7)   == 0)
-                  || (i > 8 && strncmp(r->filename, "https://", 8)  == 0)
-                  || (i > 9 && strncmp(r->filename, "gopher://", 9) == 0)
-                  || (i > 6 && strncmp(r->filename, "ftp://", 6)    == 0)))) {
+             || (    (i > 7 && strncasecmp(r->filename, "http://", 7)   == 0)
+                  || (i > 8 && strncasecmp(r->filename, "https://", 8)  == 0)
+                  || (i > 9 && strncasecmp(r->filename, "gopher://", 9) == 0)
+                  || (i > 6 && strncasecmp(r->filename, "ftp://", 6)    == 0)))) {
         rewritelog(r, 3, "[per-dir %s] add per-dir prefix: %s -> %s%s",
                    perdir, r->filename, perdir, r->filename);
         r->filename = pstrcat(r->pool, perdir, r->filename, NULL);
@@ -1837,10 +1837,10 @@ static int apply_rewrite_rule(request_rec *r, rewriterule_entry *p,
      *  directly force an external HTTP redirect.
      */
     i = strlen(r->filename);
-    if (   (i > 7 && strncmp(r->filename, "http://", 7)   == 0)
-        || (i > 8 && strncmp(r->filename, "https://", 8)  == 0)
-        || (i > 9 && strncmp(r->filename, "gopher://", 9) == 0)
-        || (i > 6 && strncmp(r->filename, "ftp://", 6)    == 0)) {
+    if (   (i > 7 && strncasecmp(r->filename, "http://", 7)   == 0)
+        || (i > 8 && strncasecmp(r->filename, "https://", 8)  == 0)
+        || (i > 9 && strncasecmp(r->filename, "gopher://", 9) == 0)
+        || (i > 6 && strncasecmp(r->filename, "ftp://", 6)    == 0)) {
         if (perdir == NULL)
             rewritelog(r, 2, 
                        "implicitly forcing redirect (rc=%d) with %s",
@@ -2097,11 +2097,11 @@ static void reduce_uri(request_rec *r)
 
 #ifdef APACHE_SSL
     if (   (!r->connection->client->ssl &&
-            strncmp(r->filename, "http://", 7) == 0)
+            strncasecmp(r->filename, "http://", 7) == 0)
         || (r->connection->client->ssl &&
-            strncmp(r->filename, "https://", 8) == 0)) {
+            strncasecmp(r->filename, "https://", 8) == 0)) {
 #else
-    if (strncmp(r->filename, "http://", 7) == 0) {
+    if (strncasecmp(r->filename, "http://", 7) == 0) {
 #endif
         /* there was really a rewrite to a remote path */
 
@@ -2175,10 +2175,10 @@ static void fully_qualify_uri(request_rec *r)
     char port[32];
 
     i = strlen(r->filename);
-    if (!(   (i > 7 && strncmp(r->filename, "http://", 7)   == 0)
-          || (i > 8 && strncmp(r->filename, "https://", 8)  == 0)
-          || (i > 9 && strncmp(r->filename, "gopher://", 9) == 0)
-          || (i > 6 && strncmp(r->filename, "ftp://", 6)    == 0))) {
+    if (!(   (i > 7 && strncasecmp(r->filename, "http://", 7)   == 0)
+          || (i > 8 && strncasecmp(r->filename, "https://", 8)  == 0)
+          || (i > 9 && strncasecmp(r->filename, "gopher://", 9) == 0)
+          || (i > 6 && strncasecmp(r->filename, "ftp://", 6)    == 0))) {
 #ifdef APACHE_SSL
         if (is_default_port(r->server->port,r))
 #else
