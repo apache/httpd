@@ -58,6 +58,7 @@
 
 /* CONNECT method for Apache proxy */
 
+#include "apr_strings.h"
 #include "mod_proxy.h"
 #include "http_log.h"
 #include "http_main.h"
@@ -145,7 +146,7 @@ int ap_proxy_connect_handler(request_rec *r, ap_cache_el  *c, char *url,
 /* check if ProxyBlock directive on this host */
     destaddr.s_addr = apr_inet_addr(host);
     for (i = 0; i < conf->noproxies->nelts; i++) {
-    if ((npent[i].name != NULL && strstr(host, npent[i].name) != NULL)
+    if ((npent[i].name != NULL && ap_strstr_c(host, npent[i].name) != NULL)
         || destaddr.s_addr == npent[i].addr.s_addr || npent[i].name[0] == '*')
         return ap_proxyerror(r, HTTP_FORBIDDEN,
                  "Connect to remote machine blocked");

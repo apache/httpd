@@ -57,6 +57,7 @@
  */
 
 /* Utility routines for Apache proxy */
+#include "apr_strings.h"
 #include "mod_proxy.h"
 #include "http_main.h"
 #include "apr_md5.h"
@@ -141,8 +142,8 @@ char *
 {
     int i, j, ch;
     char *y;
-    const char *allowed;    /* characters which should not be encoded */
-    const char *reserved;    /* characters which much not be en/de-coded */
+    char *allowed;    /* characters which should not be encoded */
+    char *reserved;    /* characters which much not be en/de-coded */
 
 /* N.B. in addition to :@&=, this allows ';' in an http path
  * and '?' in an ftp path -- this may be revised
@@ -311,8 +312,9 @@ static const char * const lwday[7] =
  * formatted, then it exits very quickly.
  */
 const char *
-     ap_proxy_date_canon(apr_pool_t *p, const char *x)
+     ap_proxy_date_canon(apr_pool_t *p, const char *x1)
 {
+    char *x = apr_pstrdup(p, x1);
     int wk, mday, year, hour, min, sec, mon;
     char *q, month[4], zone[4], week[4];
 
@@ -500,7 +502,7 @@ long int ap_proxy_send_fb(proxy_completion *completion, BUFF *f, request_rec *r,
     register int n, o;
     conn_rec *con = r->connection;
     int alternate_timeouts = 1;    /* 1 if we alternate between soft & hard timeouts */
-    BUFF *cachefp = NULL;
+    apr_file_t *cachefp = NULL;
     int written = 0, wrote_to_cache;
     
     total_bytes_rcvd = 0;
@@ -554,7 +556,8 @@ long int ap_proxy_send_fb(proxy_completion *completion, BUFF *f, request_rec *r,
     
         /* Write to cache first. */
         /*@@@ XXX FIXME: Assuming that writing the cache file won't time out?!!? */
-        if (cachefp && ap_bwrite(cachefp, &buf[0], cntr, &wrote_to_cache) != APR_SUCCESS) {
+        wrote_to_cache = cntr;
+        if (cachefp && apr_write(cachefp, &buf[0], &wrote_to_cache) != APR_SUCCESS) {
             ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                           "proxy: error writing to cache");
             ap_proxy_cache_error(&c);
@@ -636,7 +639,7 @@ int ap_proxy_liststr(const char *list, const char *val)
     len = strlen(val);
 
     while (list != NULL) {
-    p = strchr(list, ',');
+    p = ap_strchr_c(list, ',');
     if (p != NULL) {
         i = p - list;
         do
@@ -1125,7 +1128,7 @@ int ap_proxy_is_word(struct dirconn_entry *This, apr_pool_t *p)
 static int proxy_match_word(struct dirconn_entry *This, request_rec *r)
 {
     const char *host = proxy_get_host_of_request(r);
-    return host != NULL && strstr(host, This->name) != NULL;
+    return host != NULL && ap_strstr_c(host, This->name) != NULL;
 }
 
 int ap_proxy_doconnect(apr_socket_t *sock, char *host, apr_uint32_t port, request_rec *r)
@@ -1173,16 +1176,17 @@ int ap_proxy_send_hdr_line(void *p, const char *key, const char *value)
 unsigned ap_proxy_bputs2(const char *data, BUFF *client, ap_cache_el  *cache)
 {
     unsigned len = ap_bputs(data, client);
-    BUFF *cachefp = NULL;
+    apr_file_t *cachefp = NULL;
     
     if (ap_cache_el_data(cache, &cachefp) == APR_SUCCESS)
-        ap_bputs(data, cachefp);
+        apr_puts(data, cachefp);
     return len;
 }
 
 int ap_proxy_cache_send(request_rec *r, ap_cache_el *c)
 {
-    BUFF *cachefp = NULL, *fp = r->connection->client;
+    apr_file_t *cachefp = NULL;
+    BUFF *fp = r->connection->client;
     char buffer[500];
     
     ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, NULL,
@@ -1190,13 +1194,18 @@ int ap_proxy_cache_send(request_rec *r, ap_cache_el *c)
     if(ap_cache_el_data(c, &cachefp) != APR_SUCCESS)
         return HTTP_INTERNAL_SERVER_ERROR;
     /* send the response */
-    if(ap_bgets(buffer, sizeof(buffer), cachefp))
+    if(apr_fgets(buffer, sizeof(buffer), cachefp))
         ap_bvputs(fp, buffer, NULL);
     /* send headers */
     ap_cache_el_header_walk(c, ap_proxy_send_hdr_line, r, NULL);
     ap_bputs(CRLF, fp);
     /* send data */
-    if(!r->header_only && !ap_proxy_send_fb(0, cachefp, r, NULL))
+    /* XXX I changed the ap_proxy_send_fb call to use fp instead of cachefp.
+     *     this compiles cleanly, but it is probably the completely wrong
+     *     solution.  We need to go through the proxy code, and remove all
+     *     of the BUFF's.  rbb
+     */
+    if(!r->header_only && !ap_proxy_send_fb(0, fp, r, NULL))
         return HTTP_INTERNAL_SERVER_ERROR;
     return OK;
 }

@@ -58,6 +58,7 @@
 
 /* HTTP routines for Apache proxy */
 
+#include "apr_strings.h"
 #include "mod_proxy.h"
 #include "http_log.h"
 #include "http_main.h"
@@ -171,7 +172,7 @@ int ap_proxy_http_handler(request_rec *r, ap_cache_el  *c, char *url,
 {
     const char *strp;
     char *strp2;
-    const char *desthost;
+    char *desthost;
     apr_socket_t *sock;
     int i, len, backasswards, content_length=-1;
     apr_array_header_t *reqhdrs_arr;
@@ -179,7 +180,8 @@ int ap_proxy_http_handler(request_rec *r, ap_cache_el  *c, char *url,
     apr_table_entry_t *reqhdrs;
     struct sockaddr_in server;
     struct in_addr destaddr;
-    BUFF *f, *cachefp=NULL;
+    BUFF *f;
+    apr_file_t *cachefp=NULL;
     char buffer[HUGE_STRING_LEN];
     char portstr[32];
     apr_pool_t *p = r->pool;
@@ -207,7 +209,7 @@ int ap_proxy_http_handler(request_rec *r, ap_cache_el  *c, char *url,
         return HTTP_BAD_REQUEST;
     urlptr += 3;
     destport = DEFAULT_HTTP_PORT;
-    strp = strchr(urlptr, '/');
+    strp = ap_strchr_c(urlptr, '/');
     if (strp == NULL) {
         desthost = apr_pstrdup(p, urlptr);
         urlptr = "/";
@@ -220,7 +222,7 @@ int ap_proxy_http_handler(request_rec *r, ap_cache_el  *c, char *url,
         desthost = q;
     }
 
-    strp2 = strchr(desthost, ':');
+    strp2 = ap_strchr(desthost, ':');
     if (strp2 != NULL) {
         *(strp2++) = '\0';
         if (apr_isdigit(*strp2)) {
@@ -232,7 +234,7 @@ int ap_proxy_http_handler(request_rec *r, ap_cache_el  *c, char *url,
 /* check if ProxyBlock directive on this host */
     destaddr.s_addr = apr_inet_addr(desthost);
     for (i = 0; i < conf->noproxies->nelts; i++) {
-        if ((npent[i].name != NULL && strstr(desthost, npent[i].name) != NULL)
+        if ((npent[i].name != NULL && ap_strstr_c(desthost, npent[i].name) != NULL)
             || destaddr.s_addr == npent[i].addr.s_addr || npent[i].name[0] == '*')
             return ap_proxyerror(r, HTTP_FORBIDDEN,
                                  "Connect to remote machine blocked");
@@ -421,7 +423,7 @@ int ap_proxy_http_handler(request_rec *r, ap_cache_el  *c, char *url,
         content_length = atoi(clen ? clen : "-1");
 
     for (i = 0; i < conf->nocaches->nelts; i++) {
-        if ((ncent[i].name != NULL && strstr(desthost, ncent[i].name) != NULL)
+        if ((ncent[i].name != NULL && ap_strstr_c(desthost, ncent[i].name) != NULL)
             || destaddr.s_addr == ncent[i].addr.s_addr || ncent[i].name[0] == '*')
             nocache = 1;
     }
@@ -434,7 +436,7 @@ int ap_proxy_http_handler(request_rec *r, ap_cache_el  *c, char *url,
 /* write status line */
     if (!r->assbackwards)
         ap_rvputs(r, "HTTP/1.0 ", r->status_line, CRLF, NULL);
-    if (cachefp &&    ap_bvputs(cachefp, "HTTP/1.0 ", r->status_line, CRLF, NULL) == -1) {
+    if (cachefp &&    apr_puts(apr_pstrcat(r->pool, "HTTP/1.0 ", r->status_line, CRLF, NULL), cachefp) != APR_SUCCESS) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                       "proxy: error writing status line to cache");
         ap_proxy_cache_error(&c);
@@ -452,7 +454,8 @@ int ap_proxy_http_handler(request_rec *r, ap_cache_el  *c, char *url,
 /* Is it an HTTP/0.9 respose? If so, send the extra data */
     if (backasswards) {
         ap_bwrite(r->connection->client, buffer, len, &cntr);
-        if (cachefp && ap_bwrite(cachefp, buffer, len, &cntr) != len) {
+        cntr = len;
+        if (cachefp && apr_write(cachefp, buffer, &cntr) != APR_SUCCESS) {
             ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                           "proxy: error writing extra data to cache %ld",
                           (long)cachefp);
