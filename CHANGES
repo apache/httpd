@@ -1,4 +1,6 @@
 Changes with Apache 2.0.41
+  *) mod-proxy: handle proxied responses with no status lines
+     [JD Silvester <jsilves@uwo.ca>, Brett Huttley <brett@huttley.net>]
 
   *) Fix bug where environment or command line arguments containing 
      non-ASCII-7 characters would cause the Win32 child process creation

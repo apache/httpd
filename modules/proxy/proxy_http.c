@@ -676,6 +676,7 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
                                             char *server_portstr) {
     conn_rec *c = r->connection;
     char buffer[HUGE_STRING_LEN];
+    char keepchar;
     request_rec *rp;
     apr_bucket *e;
     int len, backasswards;
@@ -735,10 +736,11 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
             }
             backasswards = 0;
 
+            keepchar = buffer[12];
             buffer[12] = '\0';
             r->status = atoi(&buffer[9]);
 
-            buffer[12] = ' ';
+            buffer[12] = keepchar;
             r->status_line = apr_pstrdup(p, &buffer[9]);
 
             /* read the headers. */
