@@ -19,6 +19,14 @@ significant outstanding bugs at release time.
 <H2>Version 1.2</H2>
 
 <OL>
+
+	<LI>users have reported problems with many connections stuck in the
+FIN_WAIT_2 state due to server timeouts. This is an issue with the OS TCP
+stack, as some OS never timeout from this state. An example patch for BSDI
+is available
+<a href="http://www.apache.org/dist/contrib/patches/1.2/fin_wait_2.patch">
+here</a>.
+
 	<LI>hard_timeout() for request reads uses incorrect logic, and
 ends up waiting for an initial request read for the default "timeout"
 number of seconds, 1200, yet only the "KeepAliveTimeout" number of
