@@ -56,8 +56,8 @@
  * University of Illinois, Urbana-Champaign.
  */
 
-#ifndef APACHE_MPM_WINNT_H
-#define APACHE_MPM_WINNT_H
+#ifndef APACHE_MPM_H
+#define APACHE_MPM_H
 
 
-#endif /* APACHE_MPM_WINNT_H */
+#endif /* APACHE_MPM_H */
