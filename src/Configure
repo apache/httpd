@@ -1537,6 +1537,11 @@ for modfile in $MODFILES ; do
 		    fi
 		    . ./$tmpfile3
 		fi
+		if grep "Libs:" $tmpfile2 > /dev/null; then
+		    modlibs1=`grep Libs: $tmpfile2 | sed 's/^.*Libs:[ 	]*//'`
+		    echo "    o $modbase adds libraries: $modlibs1"
+		    modlibs="$modlibs $modlibs1"
+		fi
 		rm -f $tmpfile2 $tmpfile3
 		if [ "x$ext" != "x$SHLIB_SUFFIX_NAME" ]; then
 		    ext=o
@@ -1977,7 +1982,7 @@ echo "#endif /* AP_CONFIG_AUTO_H */" >>$AP_CONFIG_AUTO_H
 ####################################################################
 ## Finish creating the Makefile.config file
 ##
-echo "LIBS1=$LIBS">> Makefile.config
+echo "LIBS1=$modlibs $LIBS">> Makefile.config
 echo "##" >> Makefile.config
 echo "##  (End of automatically generated section)">> Makefile.config
 echo "##" >> Makefile.config
