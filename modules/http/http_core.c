@@ -324,7 +324,7 @@ static void register_hooks(apr_pool_t *p)
     ap_hook_insert_filter(ap_http_insert_filter, NULL, NULL, APR_HOOK_REALLY_LAST);
     ap_http_input_filter_handle =
         ap_register_input_filter("HTTP_IN", ap_http_filter,
-                                 AP_FTYPE_CONNECTION);
+                                 AP_FTYPE_HTTP_HEADER);
     ap_http_header_filter_handle =
         ap_register_output_filter("HTTP_HEADER", ap_http_header_filter, 
                                   AP_FTYPE_HTTP_HEADER);
