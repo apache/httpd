@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="iso-2022-jp"?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
+<modulesynopsis metafile="mod_logio.xml.meta">
+<!-- English revision: 1.3 -->
+
+<name>mod_logio</name>
+<description>リクエスト毎に入力バイト数と出力バイト数とをロギング</description>
+<status>Base</status>
+<sourcefile>mod_logio.c</sourcefile>
+<identifier>logio_module</identifier>
+
+<summary>
+
+    <p>このモジュールはリクエストごとに受け取ったバイト数と
+    送信したバイト数のロギングを行なう機能を提供します。
+    記録される数字はリクエストのヘッダとレスポンスの本体を
+    反映した、実際にネットワークで受け取ったバイト値です。
+    入力では SSL/TLS の前に、出力では SSL/TLS の後に数えるので、
+    数字は暗号による変化も正しく反映したものになります。</p>
+
+    <p>このモジュールの使用には <module>mod_log_config</module> モジュールが
+    必要です。</p>
+
+</summary>
+
+<seealso><module>mod_log_config</module></seealso>
+<seealso><a href="../logs.html">Apache ログファイル</a></seealso>
+
+<section id="formats">
+<title>カスタムログ書式</title>
+
+    <p>このモジュールは新しいロギング用ディレクティブを加えます。
+    リクエスト自身の特徴はフォーマット文字列に、以下の様に置換される
+     "<code>%</code>" ディレクティブを
+    入れることでログ収集されます:</p>
+
+    <table border="1" style="zebra">
+    <tr><th>フォーマット文字列</th>
+        <th>説明</th></tr>
+
+    <tr><td><code>%...I</code></td>
+        <td>リクエストとヘッダを含む、受け取ったバイト数。
+        0 にはならない。</td></tr>
+
+    <tr><td><code>%...O</code></td>
+        <td>ヘッダを含む、送信したバイト数。0 にはならない。</td></tr>
+    </table>
+
+    <p>通常、この機能は以下の様に使用されます:</p>
+
+    <dl>
+      <dt>結合 I/O ログ書式:</dt>
+      <dd><code>"%h %l %u %t \"%r\" %&gt;s %b \"%{Referer}i\"
+      \"%{User-agent}i\" %I %O"</code></dd>
+    </dl>
+</section>
+
+</modulesynopsis>

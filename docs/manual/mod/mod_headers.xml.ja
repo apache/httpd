@@ -1,0 +1,248 @@
+<?xml version="1.0" encoding="iso-2022-jp"?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
+<modulesynopsis metafile="mod_headers.xml.meta">
+<!-- English revision: 1.7 -->
+
+<name>mod_headers</name>
+<description>HTTP リクエストのヘッダと応答のヘッダのカスタマイズ</description>
+<status>Extension</status>
+<sourcefile>mod_headers.c</sourcefile>
+<identifier>headers_module</identifier>
+<compatibility><directive module="mod_headers">RequestHeader</directive> 
+は Apache 2.0 以降のみで使用可能</compatibility>
+
+<summary>
+    <p>このモジュールは HTTP のリクエストヘッダと応答ヘッダを制御し、
+    変更するためのディレクティブを提供します。ヘッダを追加したり、
+    置き換えたり、削除したりすることができます。</p>
+</summary>
+
+<section id="order"><title>処理の順番</title>
+
+    <p><module>mod_header</module> のディレクティブはサーバ設定のほぼどこにでも
+    書くことができ、影響する範囲を<a
+    href="../sections.html">設定用セクション</a>で囲むことで限定する
+    ことができます。</p>
+
+    <p>処理の順番は重要で、設定ファイル中の順番と、<a
+    href="../sections.html">設定用セクション</a>内の位置との両方に
+    影響されます。以下の二つのヘッダは順番が逆になると
+    違う結果になります:</p>
+
+    <example>
+      RequestHeader append MirrorID "mirror 12"<br />
+      RequestHeader unset MirrorID
+    </example>
+
+    <p>この順番の場合は、<code>MirrorID</code> ヘッダは設定されません。
+    逆になっていると、MirrorID ヘッダは "mirror 12" に設定されます。</p>
+</section>
+
+<section id="examples"><title>例</title>
+
+    <ol>
+      <li>リクエストヘッダ中の "TS" で始まるフィールドをすべて応答ヘッダに
+        コピーします:
+        <example>
+          Header echo ^TS
+        </example>
+      </li>
+
+      <li>
+        リクエストを受け付けた時刻とリクエストを処理した時間を入れたヘッダ、
+        <code>MyHeader</code> を応答に追加します。このヘッダはクライアントが
+        サーバの負荷を直観的に知るためや、クライアント-サーバ間の
+        ボトルネックを調べるために使うことができます。
+
+        <example>
+           Header add MyHeader "%D %t"
+        </example>
+
+        <p>上記の設定では、以下のようなヘッダが応答に追加されることになります:</p>
+
+        <example>
+           MyHeader: D=3775428 t=991424704447256
+        </example>
+      </li>
+
+      <li>
+        Joe にあいさつをします:
+
+        <example>
+           Header add MyHeader "Hello Joe. It took %D microseconds for Apache to serve this request."
+        </example>
+
+        <p>以下のようなヘッダが応答に追加されることになります</p>
+
+        <example>
+           MyHeader: Hello Joe. It took D=3775428 microseconds for Apache to serve this request.
+        </example>
+      </li>
+
+      <li>リクエストに "MyRequestHeader" があるときに限り <code>MyHeader</code> を応答に
+      付けます。これは、クライアントの要求に応えてヘッダを作成するときに
+      役に立ちます。この例では <module>mod_setenvif</module> モジュールが必要なことに
+      注意してください。
+
+        <example>
+           SetEnvIf MyRequestHeader value HAVE_MyRequestHeader<br />
+           Header add MyHeader "%D %t mytext" env=HAVE_MyRequestHeader
+        </example>
+
+        <p>もし HTTP リクエストに <code>MyRequestHeader: value</code> ヘッダが
+        あると、応答には以下のようなヘッダが付加されます。</p>
+
+        <example>
+           MyHeader: D=3775428 t=991424704447256 mytext
+        </example>
+      </li>
+    </ol>
+</section>
+
+<directivesynopsis>
+<name>RequestHeader</name>
+<description>HTTP リクエストヘッダの設定</description>
+<syntax>RequestHeader set|append|add|unset <var>header</var>
+[<var>value</var>]</syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context></contextlist>
+<override>FileInfo</override>
+
+<usage>
+    <p>このディレクティブは HTTP リクエストヘッダを置換、追加、削除できます。
+    ヘッダはコンテントハンドラが実行される直前に実行され、
+    入って来るヘッダを変更することが可能になっています。
+    行なう処理は第 1 引数により決まります。これには以下の値を指定
+    することができます:</p>
+
+    <dl>
+    <dt><code>set</code></dt>
+    <dd>リクエストヘッダを設定します。同じ名前のヘッダが存在していると、
+    それを置き換えます。</dd>
+
+    <dt><code>append</code></dt>
+    <dd>リクエストヘッダは、既に存在する同じ名前のヘッダに追加されます。
+    新しい値が既存のヘッダに追加されるときには、既存のヘッダの
+    後にコンマで区切られて追加されます。これはヘッダに複数の値を
+    指定するときの HTTP の標準の方法です。</dd>
+
+    <dt><code>add</code></dt>
+    <dd>ヘッダが既に存在しているときでさえも、リクエストヘッダを
+    既存のヘッダに追加します。これにより、二つ (かそれ以上) の
+    ヘッダの名前が同じになることがあります。その結果、想定できない
+    ことが起こる可能性がありますので、一般的には <code>append</code> の方を
+    使う方が良いでしょう。</dd>
+
+    <dt><code>unset</code></dt>
+    <dd>もし指定された名前のリクエストヘッダが存在していれば、削除されます。
+    同じ名前の複数のヘッダがあるときは、すべて削除されます。</dd>
+    </dl>
+
+    <p>この引数の後にはヘッダ名 (<em>header</em>) が続きます。
+    ヘッダ名には最後にコロンを含めることもできますが、無くても構いません。
+    大文字小文字は区別されません。<code>add</code>,
+    <code>append</code>, <code>set</code> の場合は、<em>value</em> が三つ目の
+    引数として指定されます。<em>value</em> に空白がある場合は二重引用符で
+    囲む必要があります。unset の場合は、<em>value</em> は指定しません。</p>
+
+    <p><directive>RequestHeader</directive> ディレクティブは、
+    fixup フェーズでリクエストがハンドラに扱われる直前に
+    処理されます。これにより、ブラウザや Apache の入力フィルタにより
+    生成されたヘッダを上書きしたり修正したりできるようになっています。</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>Header</name>
+<description>HTTP 応答ヘッダの設定</description>
+<syntax>Header set|append|add|unset|echo  <var>header</var>
+[<var>value</var> [env=[!]<var>variable</var>]]</syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context></contextlist>
+<override>FileInfo</override>
+<usage>
+    <p>このディレクティブは HTTP 応答ヘッダを置換、追加、削除できます。
+    ヘッダはコンテントハンドラや出力フィルタが実行された直後に実行され、
+    出て行くヘッダを変更することが可能になっています。
+    行なう処理は最初の引数により決まります。これには以下の値を指定
+    することができます:</p>
+
+    <dl>
+    <dt><code>set</code></dt>
+    <dd>応答ヘッダを設定します。同じ名前のヘッダが存在する場合はそれを
+    置き換えます。<em>value</em> にはフォーマット文字列を
+    指定することもできます。</dd>
+
+    <dt><code>append</code></dt>
+    <dd>応答ヘッダを既に存在する同じ名前のヘッダに追加します。
+    新しい値が既存のヘッダに追加されるときには、既存のヘッダの
+    後にコンマで区切られて追加されます。これはヘッダに複数の値を
+    指定するときの HTTP の標準の方法です。</dd>
+
+    <dt><code>add</code></dt>
+    <dd>ヘッダが既に存在しているときでさえも、応答ヘッダを
+    既存のヘッダに追加します。これにより、二つ (かそれ以上) の
+    ヘッダの名前が同じになることがあります。その結果、想定できない
+    ことが起こる可能性がありますので、一般的には <code>append</code> の方を
+    使う方が良いでしょう。</dd>
+
+    <dt><code>unset</code></dt>
+    <dd>もし指定された名前の応答ヘッダが存在していれば、削除されます。
+    同じ名前のヘッダが複数あるときは、すべて削除されます。</dd>
+
+    <dt><code>echo</code></dt>
+    <dd>指定されたものと同じ名前のリクエストヘッダを応答ヘッダで
+    そのまま返します。<var>header</var> には正規表現も指定できます。</dd>
+    </dl>
+
+    <p>この引数の後にはヘッダ名 (<var>header</var>) が続きます。
+    ヘッダ名には最後にコロンを含めることもできますが、無くても構いません。
+    <code>set</code>, <code>append</code>, <code>add</code>,
+    <code>unset</code> では大文字小文字は
+    区別されません。echo の <em>header</em> 名は大文字小文字を区別し、
+    正規表現を指定することもできます。</p>
+
+    <p><code>add</code>, <code>append</code>,
+    <code>set</code> では <var>value</var> を三つ目の
+    引数として指定します。<var>value</var> に空白がある場合は二重引用符で
+    囲む必要があります。<var>value</var> は文字のみからなる文字列、
+    フォーマット指示子を含む文字列、もしくは両方からなる文字列を指定できます。
+    <var>value</var> は以下のフォーマット指示子をサポートします:</p>
+
+    <table>
+    <tr><td><code>%t</code></td>
+        <td>リクエストを受け取った時刻を、
+        Universal Coordinated Time での始まりの時刻 (Jan. 1, 1970) から経過した
+        時間をマイクロ秒として現したもの。値の最初には 
+        <code>t=</code> が付加されます。</td></tr>
+
+    <tr><td><code>%D</code></td>
+        <td>リクエストを受け取った時刻と、ヘッダを送り出した
+        時間との差。これは、リクエストが存在していた期間を現します。
+        値の最初には <code>D=</code> が付加されます。</td></tr>
+
+    <tr><td><code>%{FOOBAR}e</code></td>
+        <td><a href="../env.html">環境変数</a>
+        <code>FOOBAR</code> の値です。</td></tr>
+    </table>
+
+    <p><directive>Header</directive> ディレクティブが
+    <code>add</code>, <code>append</code>, <code>set</code> として
+    使われたときには、動作を行なう条件を四つ目の引数で指定することができます。
+    <code>env=...</code> 引数で指定された <a
+    href="../env.html">環境変数</a> が存在する (もしくは <code>env=!...</code>
+    が指定されていて環境変数が存在しない) 場合は、<directive>Header</directive>
+    ディレクティブで指定された動作が行なわれます。そうでない場合は、
+    ディレクティブはそのリクエストには何もしません。</p>
+
+    <p><directive>Header</directive>
+    ディレクティブは応答がネットワークに送られる直前に
+    処理されます。これは、ヘッダフィルタにより追加されるヘッダを
+    除き、ほとんどのヘッダを設定したり上書きしたりすることが
+    可能、ということです。</p>
+</usage>
+</directivesynopsis>
+
+</modulesynopsis>
+
