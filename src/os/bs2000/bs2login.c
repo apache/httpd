@@ -255,6 +255,7 @@ int os_init_job_environment(server_rec *server, const char *user_name, int one_p
 pid_t os_fork(const char *user)
 {
     pid_t pid;
+    char  username[USER_LEN+1];
 
     switch (os_forktype()) {
       case bs2_FORK:
@@ -267,7 +268,18 @@ pid_t os_fork(const char *user)
 	break;
 
       case bs2_UFORK:
+	ap_cpystrn(username, user, sizeof username);
+
+	/* Make user name all upper case - for some versions of ufork() */
+	ap_str_toupper(username);
+
 	pid = ufork(user);
+	if (pid == -1 && errno == EPERM) {
+	    ap_log_error(APLOG_MARK, APLOG_EMERG,
+			 NULL, "ufork: Possible mis-configuration "
+			 "for user %s - Aborting.", user);
+	    clean_parent_exit(1);
+	}
 	break;
 
       default:
