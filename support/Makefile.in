@@ -9,7 +9,7 @@ PROGRAM_DEPENDENCIES = \
 	$(top_builddir)/srclib/apr-util/libaprutil.la \
 	$(top_builddir)/srclib/apr/libapr.la
 
-include $(top_srcdir)/build/rules.mk
+include $(top_builddir)/build/rules.mk
 
 install:
 	@test -d $(bindir) || $(MKINSTALLDIRS) $(bindir)

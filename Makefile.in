@@ -24,7 +24,7 @@ DISTCLEAN_TARGETS  = include/ap_config_auto.h include/ap_config_path.h \
 	modules.c config.cache config.log config.status config_vars.mk
 EXTRACLEAN_TARGETS = configure include/ap_config_auto.h.in generated_lists
 
-include $(top_srcdir)/build/rules.mk
+include $(top_builddir)/build/rules.mk
 include $(top_srcdir)/build/program.mk
 
 install-conf:
