@@ -1,123 +1,151 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
-<HTML><HEAD>
-<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-<TITLE>Mise à jour de la version 1.3 à la version 2.0</TITLE>
-</HEAD>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
-<!-- Background white, links blue (unvisited), navy (visited), red (active) -->
-<BODY
- BGCOLOR="#FFFFFF"
- TEXT="#000000"
- LINK="#0000FF"
- VLINK="#000080"
- ALINK="#FF0000"
->
-<!--#include virtual="header.html" -->
-<H1 ALIGN="CENTER">Mise à de la version 1.3 à la version 2.0</H1>
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta name="generator" content="HTML Tidy, see www.w3.org" />
+    <meta http-equiv="Content-Type"
+    content="text/html; charset=iso-8859-1" />
 
-<P>Afin d'aider les personnes souhaitant se mettre à jour, nous 
-maintenons un document décrivant les informations critiques concernant
-les utilisateurs d'Apache. Ces informations sont sous la forme de brèves
-notes, et vous pouvez trouver plus d'informations dans le document 
- <A HREF="new_features_2_0.html">Nouvelles fonctionnalités</A> 
- ou dans le fichier <CODE>src/CHANGES</CODE>.
+    <title>Mise &agrave; jour de la version 1.3 &agrave; la version
+    2.0</title>
+  </head>
+  <!-- Background white, links blue (unvisited), navy (visited), red (active) -->
 
-<H3>Changement de la configuration à la compilation</H3>
+  <body bgcolor="#FFFFFF" text="#000000" link="#0000FF"
+  vlink="#000080" alink="#FF0000">
+    <!--#include virtual="header.html" -->
 
-<UL>
-<LI>Apache utilise maintenant <code>autoconf</code> et <code>libtool</code>
-afin de configurer la compilation. L'utilisation de ces outils est
-similaire, mais pas tout à fait identique, au système APACI
-de configuration existant dans la version 1.3 d'Apache. 
-</li>
+    <h1 align="CENTER">Mise &agrave; de la version 1.3 &agrave; la
+    version 2.0</h1>
 
-<li>En plus de l'habituelle sélection de modules que vous pouvez choisir
-de compiler, Apache 2.0 a déplacé la majeure partie du traitement
-des requêtes dans les <a href="mpm.html">modules multi-traitements</a> (MPMs).</li>
-</UL>
+    <p>Afin d'aider les personnes souhaitant se mettre &agrave;
+    jour, nous maintenons un document d&eacute;crivant les
+    informations critiques concernant les utilisateurs d'Apache.
+    Ces informations sont sous la forme de br&egrave;ves notes, et
+    vous pouvez trouver plus d'informations dans le document <a
+    href="new_features_2_0.html">Nouvelles
+    fonctionnalit&eacute;s</a> ou dans le fichier
+    <code>src/CHANGES</code>.</p>
 
-<H3>Changement de la configuration à  l'exécution</H3>
+    <h3>Changement de la configuration &agrave; la compilation</h3>
 
-<UL>
-<li>La directive <code>CacheNegotiatedDocs</code> prend maintenant un 
-paramètre qui est soit <code>on</code> soit <code>off</code>. Les configurations
-existantes utilisant la directive <code>CacheNegotiatedDocs</code> doivent
-la remplacer par <code>CacheNegotiatedDocs on</code>.</li>
+    <ul>
+      <li>Apache utilise maintenant <code>autoconf</code> et
+      <code>libtool</code> afin de configurer la compilation.
+      L'utilisation de ces outils est similaire, mais pas tout
+      &agrave; fait identique, au syst&egrave;me APACI de
+      configuration existant dans la version 1.3 d'Apache.</li>
 
-<li>La directive <code>ErrorDocument</code> n'utilise plus de guillemets 
-ou d'apostrophes au début du paramètre indiquant le message. 
-Dorénavant, le message devra être entre guillemets. Par exemple, la
-directive <blockquote><code>ErrorDocument 403 "Some Message</code></blockquote> 
-devra être remplacé par <blockquote><code>ErrorDocument 403 "Some
-Message"</code></blockquote> Si le second argument n'est pas une URL ou un chemin
-valide, il sera traité comme un message.</li>
+      <li>En plus de l'habituelle s&eacute;lection de modules que
+      vous pouvez choisir de compiler, Apache 2.0 a
+      d&eacute;plac&eacute; la majeure partie du traitement des
+      requ&ecirc;tes dans les <a href="mpm.html">modules
+      multi-traitements</a> (MPMs).</li>
+    </ul>
 
-<li>Les directives <code>AccessConfig</code> et <code>ResourceConfig</code>
-n'existent plus. Ces directives peuvent être remplacées de manière
-équivalente par la directive
-<a href="mod/core.html#include"><code>Include</code></a>.
-Si vous utilisiez ces directives en utilisant les valeurs par défaut sans
-les définir explicitement, vous devez
-ajouter les lignes <code>Include conf/access.conf</code> et
-<code>Include conf/srm.conf</code> dans votre fichier httpd.conf.  
-Afin de garantir qu'Apache lit les différents fichiers de configuration
-dans le même ordre que celui pour les anciennes directives, Les directives
-<code>Include</code> doivent être situées à la fin du fichier 
-httpd.conf, celle représentant <code>srm.conf</code> avant celle pour 
-<code>access.conf</code>.</li>
+    <h3>Changement de la configuration &agrave;
+    l'ex&eacute;cution</h3>
 
-<li>La directive <code>BindAddress</code> n'existe plus. La même
-fonctionnalité est fournie par la directive 
-<code><a href="mod/mpm_common.html">Listen</a></code>.</li>
+    <ul>
+      <li>La directive <code>CacheNegotiatedDocs</code> prend
+      maintenant un param&egrave;tre qui est soit <code>on</code>
+      soit <code>off</code>. Les configurations existantes
+      utilisant la directive <code>CacheNegotiatedDocs</code>
+      doivent la remplacer par <code>CacheNegotiatedDocs
+      on</code>.</li>
 
-<li>La directive <code>ExtendedStatus</code>  n'existe plus.
-Le suivi des statuts a été entièrement réécrit
-afin de bénéficier du nouveau système MPM.</li>
+      <li>
+        La directive <code>ErrorDocument</code> n'utilise plus de
+        guillemets ou d'apostrophes au d&eacute;but du
+        param&egrave;tre indiquant le message. Dor&eacute;navant,
+        le message devra &ecirc;tre entre guillemets. Par exemple,
+        la directive 
 
-<li>La directive <code>ServerType</code> n'existe plus. 
-La méthode utilisée pour servir les requêtes est 
-déterminée maintenant par la sélection d'un MPM.
-Il n'existe pas actuellement de MPM conçu pour être lancé
-par inetd.</li>
+        <blockquote>
+          <code>ErrorDocument 403 "Some Message</code>
+        </blockquote>
+        devra &ecirc;tre remplac&eacute; par 
 
-<li>Beaucoup de directives qui étaient situées dans le noyau 
-du serveur pour la version 1.3 se trouvent maintenant dans les MPMs.</li>
+        <blockquote>
+          <code>ErrorDocument 403 "Some Message"</code>
+        </blockquote>
+        Si le second argument n'est pas une URL ou un chemin
+        valide, il sera trait&eacute; comme un message.
+      </li>
 
-<li>Les modules mod_log_agent et mod_log_referer qui traitaient les directives
-<code>AgentLog</code>, <code>RefererLog</code> et
-<code>RefererIgnore</code> ont été supprimés. 
-Le traçage des agents et référants et toujours disponible
-en utilisant la directive 
-<a href="mod/mod_log_config.html#customlog">CustomLog</a> du module
-mod_log_config.</li>
+      <li>Les directives <code>AccessConfig</code> et
+      <code>ResourceConfig</code> n'existent plus. Ces directives
+      peuvent &ecirc;tre remplac&eacute;es de mani&egrave;re
+      &eacute;quivalente par la directive <a
+      href="mod/core.html#include"><code>Include</code></a>. Si
+      vous utilisiez ces directives en utilisant les valeurs par
+      d&eacute;faut sans les d&eacute;finir explicitement, vous
+      devez ajouter les lignes <code>Include
+      conf/access.conf</code> et <code>Include conf/srm.conf</code>
+      dans votre fichier httpd.conf. Afin de garantir qu'Apache lit
+      les diff&eacute;rents fichiers de configuration dans le
+      m&ecirc;me ordre que celui pour les anciennes directives, Les
+      directives <code>Include</code> doivent &ecirc;tre
+      situ&eacute;es &agrave; la fin du fichier httpd.conf, celle
+      repr&eacute;sentant <code>srm.conf</code> avant celle pour
+      <code>access.conf</code>.</li>
 
-</UL>
+      <li>La directive <code>BindAddress</code> n'existe plus. La
+      m&ecirc;me fonctionnalit&eacute; est fournie par la directive
+      <code><a href="mod/mpm_common.html">Listen</a></code>.</li>
 
-<H3>Changements divers</H3>
+      <li>La directive <code>ExtendedStatus</code> n'existe plus.
+      Le suivi des statuts a &eacute;t&eacute; enti&egrave;rement
+      r&eacute;&eacute;crit afin de b&eacute;n&eacute;ficier du
+      nouveau syst&egrave;me MPM.</li>
 
-<UL>
+      <li>La directive <code>ServerType</code> n'existe plus. La
+      m&eacute;thode utilis&eacute;e pour servir les requ&ecirc;tes
+      est d&eacute;termin&eacute;e maintenant par la
+      s&eacute;lection d'un MPM. Il n'existe pas actuellement de
+      MPM con&ccedil;u pour &ecirc;tre lanc&eacute; par inetd.</li>
 
-<li>L'option <code>-S</code> du programme <code>httpd</code>
-qui servait à afficher la configuration des hôtes virtuels est 
-remplacé par <code>-t -D DUMP_VHOSTS</code>.</li>
+      <li>Beaucoup de directives qui &eacute;taient situ&eacute;es
+      dans le noyau du serveur pour la version 1.3 se trouvent
+      maintenant dans les MPMs.</li>
 
-<li>Le module mod_auth_digest, qui était expérimental dans la version 1.3,
-est maintenant un module standard.</li>
+      <li>Les modules mod_log_agent et mod_log_referer qui
+      traitaient les directives <code>AgentLog</code>,
+      <code>RefererLog</code> et <code>RefererIgnore</code> ont
+      &eacute;t&eacute; supprim&eacute;s. Le tra&ccedil;age des
+      agents et r&eacute;f&eacute;rants et toujours disponible en
+      utilisant la directive <a
+      href="mod/mod_log_config.html#customlog">CustomLog</a> du
+      module mod_log_config.</li>
+    </ul>
 
-<li>Le module mod_mmap_static, qui était expérimental dans la version 1.3
-a été remplacé par le module mod_file_cache.</li>
+    <h3>Changements divers</h3>
 
+    <ul>
+      <li>L'option <code>-S</code> du programme <code>httpd</code>
+      qui servait &agrave; afficher la configuration des
+      h&ocirc;tes virtuels est remplac&eacute; par <code>-t -D
+      DUMP_VHOSTS</code>.</li>
 
-</UL>
+      <li>Le module mod_auth_digest, qui &eacute;tait
+      exp&eacute;rimental dans la version 1.3, est maintenant un
+      module standard.</li>
 
-<H3>Modules tiers</H3>
+      <li>Le module mod_mmap_static, qui &eacute;tait
+      exp&eacute;rimental dans la version 1.3 a &eacute;t&eacute;
+      remplac&eacute; par le module mod_file_cache.</li>
+    </ul>
 
-<p>D'énormes changements ont été réalisés
-sur l'API du serveur Apache 2.0. Les modules conçus à l'aide de 
-l'API Apache 1.3 <strong>ne fonctionneront pas</strong> sur Apache 2.0 sans 
-modifications. Plus de détails sont fournis dans la
-<a href="developer/">documentation du développeur</a>.</p>
+    <h3>Modules tiers</h3>
 
-<!--#include virtual="footer.html" -->
-</BODY>
-</HTML>
+    <p>D'&eacute;normes changements ont &eacute;t&eacute;
+    r&eacute;alis&eacute;s sur l'API du serveur Apache 2.0. Les
+    modules con&ccedil;us &agrave; l'aide de l'API Apache 1.3
+    <strong>ne fonctionneront pas</strong> sur Apache 2.0 sans
+    modifications. Plus de d&eacute;tails sont fournis dans la <a
+    href="developer/">documentation du d&eacute;veloppeur</a>.</p>
+    <!--#include virtual="footer.html" -->
+  </body>
+</html>
+

@@ -1,93 +1,98 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
-<HTML><HEAD>
-<TITLE>PATH_INFO Changes in the CGI Environment</TITLE>
-</HEAD>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
-<!-- Background white, links blue (unvisited), navy (visited), red (active) -->
-<BODY
- BGCOLOR="#FFFFFF"
- TEXT="#000000"
- LINK="#0000FF"
- VLINK="#000080"
- ALINK="#FF0000"
->
-<!--#include virtual="header.html" -->
-<H1 ALIGN="CENTER">PATH_INFO Changes in the CGI Environment</H1>
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta name="generator" content="HTML Tidy, see www.w3.org" />
 
-<HR>
+    <title>PATH_INFO Changes in the CGI Environment</title>
+  </head>
+  <!-- Background white, links blue (unvisited), navy (visited), red (active) -->
 
-<H2><A NAME="over">Overview</A></H2>
+  <body bgcolor="#FFFFFF" text="#000000" link="#0000FF"
+  vlink="#000080" alink="#FF0000">
+    <!--#include virtual="header.html" -->
 
-<P>As implemented in Apache 1.1.1 and earlier versions, the method
-Apache used to create PATH_INFO in the CGI environment was
-counterintuitive, and could result in crashes in certain cases. In
-Apache 1.2 and beyond, this behavior has changed. Although this
-results in some compatibility problems with certain legacy CGI
-applications, the Apache 1.2 behavior is still compatible with the
-CGI/1.1 specification, and CGI scripts can be easily modified (<A
-HREF="#compat">see below</A>).
+    <h1 align="CENTER">PATH_INFO Changes in the CGI
+    Environment</h1>
+    <hr />
 
-<H2><A NAME="prob">The Problem</A></H2>
+    <h2><a id="over" name="over">Overview</a></h2>
 
-<P>Apache 1.1.1 and earlier implemented the PATH_INFO and SCRIPT_NAME
-environment variables by looking at the filename, not the URL. While
-this resulted in the correct values in many cases, when the filesystem
-path was overloaded to contain path information, it could result in
-errant behavior. For example, if the following appeared in a config
-file:
-<PRE>
+    <p>As implemented in Apache 1.1.1 and earlier versions, the
+    method Apache used to create PATH_INFO in the CGI environment
+    was counterintuitive, and could result in crashes in certain
+    cases. In Apache 1.2 and beyond, this behavior has changed.
+    Although this results in some compatibility problems with
+    certain legacy CGI applications, the Apache 1.2 behavior is
+    still compatible with the CGI/1.1 specification, and CGI
+    scripts can be easily modified (<a href="#compat">see
+    below</a>).</p>
+
+    <h2><a id="prob" name="prob">The Problem</a></h2>
+
+    <p>Apache 1.1.1 and earlier implemented the PATH_INFO and
+    SCRIPT_NAME environment variables by looking at the filename,
+    not the URL. While this resulted in the correct values in many
+    cases, when the filesystem path was overloaded to contain path
+    information, it could result in errant behavior. For example,
+    if the following appeared in a config file:</p>
+<pre>
      Alias /cgi-ralph /usr/local/httpd/cgi-bin/user.cgi/ralph
-</PRE>
-<P>In this case, <CODE>user.cgi</CODE> is the CGI script, the "/ralph"
-is information to be passed onto the CGI. If this configuration was in
-place, and a request came for "<CODE>/cgi-ralph/script/</CODE>", the
-code would set PATH_INFO to "<CODE>/ralph/script</CODE>", and
-SCRIPT_NAME to "<CODE>/cgi-</CODE>". Obviously, the latter is
-incorrect. In certain cases, this could even cause the server to
-crash.</P>
+</pre>
 
-<H2><A NAME="solution">The Solution</A></H2>
+    <p>In this case, <code>user.cgi</code> is the CGI script, the
+    "/ralph" is information to be passed onto the CGI. If this
+    configuration was in place, and a request came for
+    "<code>/cgi-ralph/script/</code>", the code would set PATH_INFO
+    to "<code>/ralph/script</code>", and SCRIPT_NAME to
+    "<code>/cgi-</code>". Obviously, the latter is incorrect. In
+    certain cases, this could even cause the server to crash.</p>
 
-<P>Apache 1.2 and later now determine SCRIPT_NAME and PATH_INFO by
-looking directly at the URL, and determining how much of the URL is
-client-modifiable, and setting PATH_INFO to it. To use the above
-example, PATH_INFO would be set to "<CODE>/script</CODE>", and
-SCRIPT_NAME to "<CODE>/cgi-ralph</CODE>". This makes sense and results
-in no server behavior problems. It also permits the script to be
-guaranteed that
-"<CODE>http://$SERVER_NAME:$SERVER_PORT$SCRIPT_NAME$PATH_INFO</CODE>"
-will always be an accessible URL that points to the current script,
-something which was not necessarily true with previous versions of
-Apache.
+    <h2><a id="solution" name="solution">The Solution</a></h2>
 
-<P>However, the "<CODE>/ralph</CODE>"
-information from the <CODE>Alias</CODE> directive is lost. This is
-unfortunate, but we feel that using the filesystem to pass along this
-sort of information is not a recommended method, and a script making
-use of it "deserves" not to work. Apache 1.2b3 and later, however, do
-provide <A HREF="#compat">a workaround.</A>
+    <p>Apache 1.2 and later now determine SCRIPT_NAME and PATH_INFO
+    by looking directly at the URL, and determining how much of the
+    URL is client-modifiable, and setting PATH_INFO to it. To use
+    the above example, PATH_INFO would be set to
+    "<code>/script</code>", and SCRIPT_NAME to
+    "<code>/cgi-ralph</code>". This makes sense and results in no
+    server behavior problems. It also permits the script to be
+    guaranteed that
+    "<code>http://$SERVER_NAME:$SERVER_PORT$SCRIPT_NAME$PATH_INFO</code>"
+    will always be an accessible URL that points to the current
+    script, something which was not necessarily true with previous
+    versions of Apache.</p>
 
-<H2><A NAME="compat">Compatibility with Previous Servers</A></H2>
+    <p>However, the "<code>/ralph</code>" information from the
+    <code>Alias</code> directive is lost. This is unfortunate, but
+    we feel that using the filesystem to pass along this sort of
+    information is not a recommended method, and a script making
+    use of it "deserves" not to work. Apache 1.2b3 and later,
+    however, do provide <a href="#compat">a workaround.</a></p>
 
-<P>It may be necessary for a script that was designed for earlier
-versions of Apache or other servers to need the information that the
-old PATH_INFO variable provided. For this purpose, Apache 1.2 (1.2b3
-and later) sets an additional variable, FILEPATH_INFO. This
-environment variable contains the value that PATH_INFO would have had
-with Apache 1.1.1.</P>
+    <h2><a id="compat" name="compat">Compatibility with Previous
+    Servers</a></h2>
 
-<P>A script that wishes to work with both Apache 1.2 and earlier
-versions can simply test for the existence of FILEPATH_INFO, and use
-it if available. Otherwise, it can use PATH_INFO. For example, in
-Perl, one might use:
-<PRE>
+    <p>It may be necessary for a script that was designed for
+    earlier versions of Apache or other servers to need the
+    information that the old PATH_INFO variable provided. For this
+    purpose, Apache 1.2 (1.2b3 and later) sets an additional
+    variable, FILEPATH_INFO. This environment variable contains the
+    value that PATH_INFO would have had with Apache 1.1.1.</p>
+
+    <p>A script that wishes to work with both Apache 1.2 and
+    earlier versions can simply test for the existence of
+    FILEPATH_INFO, and use it if available. Otherwise, it can use
+    PATH_INFO. For example, in Perl, one might use:</p>
+<pre>
     $path_info = $ENV{'FILEPATH_INFO'} || $ENV{'PATH_INFO'};
-</PRE>
+</pre>
 
-<P>By doing this, a script can work with all servers supporting the
-CGI/1.1 specification, including all versions of Apache.</P>
-
-<!--#include virtual="footer.html" -->
-</BODY>
-</HTML>
+    <p>By doing this, a script can work with all servers supporting
+    the CGI/1.1 specification, including all versions of
+    Apache.</p>
+    <!--#include virtual="footer.html" -->
+  </body>
+</html>
 
