@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:						-*-text-*-
-Last modified at [$Date: 2001/01/19 02:58:56 $]
+Last modified at [$Date: 2001/01/19 03:01:14 $]
 
 Release:
 
@@ -152,12 +152,6 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
 
     * Mass vhosting version of suEXEC.
 
-    * Replace tables with a proper opaque ADT that has pluggable
-      implementations (including something like the existing data type,
-      plus hash tables for speed, with options for more later).
-	Status: fanf is working on this.
-	[ gjs: still? really? ]
-
     * All DBMs suffer from confusion in support/dbmmanage (perl script) since 
         the dbmmanage employs the first-matched dbm format.  This is not
         necessarily the library that Apache was built with.  Aught to
@@ -187,11 +181,6 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
       ap_sort_hooks()  [to reduce the logic in main()]
 
     * read the config tree just once, and process N times (as necessary)
-
-    * add a version number to ap_initialize() as an extra failsafe against
-      (APR) library version skew.
-      MsgID: <Pine.LNX.4.10.10005231712380.31927-100000@nebula.lyra.org>
-        Status: Greg +1 (volunteers), Jeff +1, Ryan +1, Tony -0(?)
 
     * (possibly) use UUIDs in mod_unique_id and/or mod_usertrack
 
@@ -658,9 +647,6 @@ Other bugs that need fixing:
     * SIGSEGV on Linux (glibc 2.1.2) isn't caught properly by a
       sigwaiting thread. We need to work around this, perhaps unless
       there is hope soon for a fixed glibc.
-
-    * The MM library is built as static and shared library. This should
-      be set up to build only the required version.
 
 Other features that need writing:
 
