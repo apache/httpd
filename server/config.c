@@ -974,6 +974,9 @@ API_EXPORT(const char *) ap_build_config(configfile_t *cfp,
 	if (errmsg != NULL)
 	    return errmsg;
 
+        if (*conftree == NULL && curr_parent != NULL) { 
+            *conftree = curr_parent;
+        }
         if (*conftree == NULL && current != NULL) {
             *conftree = current;
         }
