@@ -643,6 +643,7 @@ extensions</description>
 <syntax>RemoveCharset
     <em>extension</em> [<em>extension</em>] ...</syntax>
 <contextlist>
+<context>virtual host</context>
 <context>directory</context>
 <context>.htaccess</context>
 </contextlist>
@@ -673,6 +674,7 @@ extensions</description>
 <syntax>RemoveEncoding
     <em>extension</em> [<em>extension</em>] ...</syntax>
 <contextlist>
+<context>virtual host</context>
 <context>directory</context>
 <context>.htaccess</context>
 </contextlist>
@@ -719,6 +721,7 @@ extensions</description>
 <syntax>RemoveHandler
     <em>extension</em> [<em>extension</em>] ...</syntax>
 <contextlist>
+<context>virtual host</context>
 <context>directory</context>
 <context>.htaccess</context>
 </contextlist>
@@ -760,6 +763,7 @@ extensions</description>
 <syntax>RemoveInputFilter
     <em>extension</em> [<em>extension</em>] ...</syntax>
 <contextlist>
+<context>virtual host</context>
 <context>directory</context>
 <context>.htaccess</context>
 </contextlist>
@@ -787,6 +791,7 @@ extensions</description>
 <syntax>RemoveLanguage
     <em>extension</em> [<em>extension</em>] ...</syntax>
 <contextlist>
+<context>virtual host</context>
 <context>directory</context>
 <context>.htaccess</context>
 </contextlist>
@@ -814,6 +819,7 @@ extensions</description>
 <syntax>RemoveOutputFilter
     <em>extension</em> [<em>extension</em>] ...</syntax>
 <contextlist>
+<context>virtual host</context>
 <context>directory</context>
 <context>.htaccess</context>
 </contextlist>
@@ -848,6 +854,7 @@ extensions</description>
 <syntax>RemoveType
     <em>extension</em> [<em>extension</em>] ...</syntax>
 <contextlist>
+<context>virtual host</context>
 <context>directory</context>
 <context>.htaccess</context>
 </contextlist>
