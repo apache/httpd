@@ -26,6 +26,7 @@
         [ <a href="#download">Download</a> |
         <a href="#compilation">Compilation</a> |
         <a href="#installation">Installation</a> |
+        <a href="#activation">Activation</a> |
         <a href="#linkmap">Link Map</a>&nbsp;] 
         <hr />
     </center>
@@ -66,9 +67,13 @@
 
     <ol>
         <li>
-            <p>Download the compressed Apache files (the "tarball")
-            to your PC. The file name on the web site will be
-            <tt>apache_1.3.<i>vv</i>.tar.Z</tt>.</p>
+            <p>Download the compressed Apache 1.3 files (the "tarball") from
+	    <a href="http://httpd.apache.org/download.cgi">http://httpd.apache.org/download.cgi</a>
+	    to your PC.  The file name on the web site will be
+	    <tt>apache_1.3.<i>vv</i>.tar.Z</tt>, where "<tt><i>vv</i></tt>" 
+	    is the version number.
+	    Replaced "<tt><i>vv</i></tt>" throughout these instructions
+	    with the actual version number.</p>
 
             <p>
             <font color="#CC6600"><font size="+1">TIP:</font></font>
@@ -119,8 +124,7 @@
                 binary:&nbsp;&nbsp;<b><tt>binary</tt></b>&nbsp;</li>
 
                 <li>send the file to OS/390 UNIX:<br />
-                 <b><tt>&nbsp;&nbsp;&nbsp;send&nbsp;"c:/<i>path</i>/apache_1.3.
-                <i>vv</i>.tar.Z"&nbsp;apache_1.3.<i>vv</i>.tar.Z</tt></b></li>
+                 <b><tt>&nbsp;&nbsp;&nbsp;send&nbsp;"c:/<i>path</i>/apache_1.3.<i>vv</i>.tar.Z"&nbsp;apache_1.3.<i>vv</i>.tar.Z</tt></b></li>
 
                 <li>exit FTP:&nbsp;&nbsp;<b><tt>bye</tt></b></li>
             </ul>
@@ -135,7 +139,7 @@
         </li>
 
         <li>
-            <p>Decompress and extract the archived files necessary
+	<p>On your OS/390 UNIX machine, decompress and extract the archived files necessary
             for compiling Apache:</p>
 
             <p class="indented">
@@ -413,7 +417,7 @@
                to generate modules.c, include/ap_config_auto.h, and
                necessary Makefiles:</p>
 
-            <p class="indented"><b><tt>Configure</tt></b></p>
+            <p class="indented"><b><tt>./Configure</tt></b></p>
 
             <table class="indented">
                 <tr>
@@ -445,7 +449,7 @@ $
             you want to maintain multiple configurations:</p>
 
             <p class="indented">
-            <b><tt>Configure&nbsp;-file&nbsp;Configuration.2nd</tt></b></p>
+            <b><tt>./Configure&nbsp;-file&nbsp;Configuration.2nd</tt></b></p>
 
             <table class="indented">
                 <tr>
@@ -696,7 +700,8 @@ Creating Makefile
             <p>Create the Apache run-time configuration file. The
             server requires a configuration file to initialize
             itself during activation.<br />
-             Copy the distribution version, conf/httpd.conf-dist,
+	    Copy the distribution version, conf/httpd.conf-dist
+	    from the decompressed tarball on your PC,
             to conf/httpd.conf and then edit the conf/httpd.conf
             copy with your site specific information.</p>
 
@@ -841,15 +846,22 @@ Creating Makefile
 
              <b><tt>zinet&nbsp;start&nbsp;s-apache</tt></b></p>
         </li>
+    </ol>
 
-        <li>
-            <p>Request a page from your browser:</p>
+    <center>
+        <h2><a id="activation"
+           name="activation"></a>Activation</h2>
+    </center>
+
+    <ol>
+	    <li><p>Request a page from your browser:</p>
 
             <p class="indented">
             <tt><b>http://<i>xx.xx.xx.xx</i></b></tt>&nbsp;&nbsp;&nbsp;(where
             <i>xx.xx.xx.xx</i> is your test system IP address)</p>
         </li>
-    </ol><br />
+    </ol>
+    <br />
      
 
     <center>
@@ -972,6 +984,7 @@ regex/regfree.o
         [ <a href="#top">top</a> | <a href="#download">Download</a>
         | <a href="#compilation">Compilation</a> |
         <a href="#installation">Installation</a> |
+        <a href="#activation">Activation</a> |
         <a href="#linkmap">Link Map</a>&nbsp;]
     </center>
 </body>
