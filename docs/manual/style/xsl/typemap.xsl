@@ -123,7 +123,7 @@ The XSLT-Stylesheet won't work without modification.
 <item lang="fr"    charset="ISO-8859-1" >.fr</item>
 <item lang="ja"    charset="ISO-2022-JP">.ja.jis</item>
 <item lang="ko"    charset="EUC-KR"     >.ko.euc-kr</item>
-<item lang="ru"    charset="KOI8-r"     >.ru.koi8-r</item>
+<item lang="ru"    charset="KOI8-R"     >.ru.koi8-r</item>
 <item lang="zh-CN" charset="GB2312"     >.zh-cn.gb2312</item>
 </xsl:template>
 
