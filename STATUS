@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/05/14 11:30:42 $]
+Last modified at [$Date: 2004/05/17 14:13:49 $]
 
 Release:
 
@@ -227,18 +227,10 @@ PATCHES TO BACKPORT FROM 2.1
        http://cvs.apache.org/viewcvs.cgi/httpd-2.0/modules/aaa/mod_auth_digest.c?r1=1.86&r2=1.87
        +1: geoff, nd
 
-    *) mod_dav: Fix a 2617 compliance issue
-       http://cvs.apache.org/viewcvs.cgi/httpd-2.0/modules/dav/main/util.c?r1=1.53&r2=1.54
-       +1: jorton, nd, trawick
-
     *) mod_dav: Send an EOS at the end of the multistatus brigade.
        http://cvs.apache.org/viewcvs.cgi/httpd-2.0/modules/dav/main/mod_dav.c?r1=1.105&r2=1.106
        +1: jorton
          nd asks: Sure, you want to drop the return code of ap_pass_brigade?
-
-    *) mod_dav_fs: Better ENOSPC handling and a remove a write(,,0) call:
-       http://cvs.apache.org/viewcvs.cgi/httpd-2.0/modules/dav/fs/repos.c?r1=1.77&r2=1.79
-       +1: jorton, nd, trawick
 
     *) Allow Satisfy directives to be influenced by <Limit>.
        PR: 14726
