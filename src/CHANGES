@@ -1,5 +1,10 @@
 Changes with Apache 1.2b8
 
+  *) Negotiation changes: Don't output empty content-type in variant list;
+     Output charset in variant list; Return sooner from handle_multi() if
+     no variants found; Add handling of '*' wildcard in Accept-Charset.
+     [Petr Lampa and Paul Sutton]
+
   *) Memory allocation problem in push_array() -- it would corrupt memory
      when nalloc==0.  [Kai Risku <krisku@tf.hut.fi> and Roy Fielding]
 

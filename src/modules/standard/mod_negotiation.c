@@ -1274,18 +1274,14 @@ void set_charset_quality(negotiation_state *neg, var_rec *variant)
     int i;
     accept_rec *accept_recs = (accept_rec *)neg->accept_charsets->elts;
     char *charset = variant->content_charset;
-
-    if (!charset)
-        return;                 /* variant has no charset */
+    accept_rec *star = NULL;
 
     /* if no Accept-Charset: header, leave quality alone (will
      * remain at the default value of 1) */
     if (!neg->accept_charsets || neg->accept_charsets->nelts == 0) 
         return;
 
-    if (!*charset || !strcmp(charset, "iso-8859-1"))
-        return;                 /* default charset always ok */
-
+    if (charset == NULL || !*charset) charset = "iso-8859-1";
 
     /*
      * Go through each of the items on the Accept-Charset: header,
@@ -1299,9 +1295,22 @@ void set_charset_quality(negotiation_state *neg, var_rec *variant)
         if (!strcmp(type->type_name, charset)) {
             variant->charset_quality = type->quality;
             return;
+        } else
+        if (strcmp(type->type_name, "*") == 0) {
+            star = type;    
         }
     }
-    variant->charset_quality = 0.0;
+    /* No explicit match */
+    if (star) {
+        variant->charset_quality = star->quality;
+        return;
+    }
+    /* If this variant is in charset iso-8859-1, the default is 1.0 */
+    if (strcmp(charset, "iso-8859-1") == 0) {
+        variant->charset_quality = 1.0;
+    } else {
+        variant->charset_quality = 0.0;
+    }
 }
 
 /* For a given variant, find the best matching Accept: header
@@ -1737,7 +1746,6 @@ char *make_variant_list (request_rec *r, negotiation_state *neg)
     for (i = 0; i < neg->avail_vars->nelts; ++i) {
         var_rec *variant = &((var_rec *)neg->avail_vars->elts)[i];
         char *filename = variant->file_name ? variant->file_name : "";
-        char *content_type = variant->type_name ? variant->type_name : "";
         array_header *languages = variant->content_languages;
         char *description = variant->description ? variant->description : "";
 
@@ -1746,12 +1754,14 @@ char *make_variant_list (request_rec *r, negotiation_state *neg)
 	 * 'English'). */
         t = pstrcat(r->pool, t, "<li><a href=\"", filename, "\">", 
                     filename, "</a> ", description, NULL);
-	if (content_type)
-	    t = pstrcat(r->pool, t, " type ", content_type, NULL);
+	if (variant->type_name && *variant->type_name)
+	    t = pstrcat(r->pool, t, ", type ", variant->type_name, NULL);
 	if (languages && languages->nelts)
-	    t = pstrcat(r->pool, t, " language ",
+	    t = pstrcat(r->pool, t, ", language ",
 			merge_string_array(r->pool, languages, ", "),
 			NULL);
+	if (variant->content_charset && *variant->content_charset)
+	    t = pstrcat(r->pool, t, ", charset ", variant->content_charset, NULL);
 	t = pstrcat(r->pool, t, "\n", NULL);
     }
     t = pstrcat(r->pool, t, "</ul>\n", NULL);
@@ -1897,13 +1907,12 @@ return_from_multi:
         }
         return res;
     }
-    
+    if (neg->avail_vars->nelts == 0) return DECLINED;
+
     maybe_add_default_encodings(neg,
                                 r->method_number != M_GET
                                   || r->args || r->path_info);
     
-    if (neg->avail_vars->nelts == 0) return DECLINED;
-
     na_result = best_match(neg, &best);
     if (na_result == na_list) {
         /*
