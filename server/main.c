@@ -203,26 +203,24 @@ static void destroy_and_exit_process(process_rec *process, int process_exit_valu
     exit(process_exit_value);
 }
 
-static process_rec *create_process(int argc, char *const *argv)
+static process_rec *create_process(int argc, const char * const *argv)
 {
     process_rec *process;
-    
-    {
-	apr_pool_t *cntx;
-        apr_status_t stat;
+    apr_pool_t *cntx;
+    apr_status_t stat;
 
-	stat = apr_create_pool(&cntx, NULL);
-        if (stat != APR_SUCCESS) {
-            ap_log_error(APLOG_MARK, APLOG_ERR|APLOG_NOERRNO, 0, NULL,
-                         "apr_create_pool() failed to create "
-                         "initial context");
-            apr_terminate();
-            exit(1);
-        }
-
-	process = apr_palloc(cntx, sizeof(process_rec));
-	process->pool = cntx;
+    stat = apr_create_pool(&cntx, NULL);
+    if (stat != APR_SUCCESS) {
+        ap_log_error(APLOG_MARK, APLOG_ERR|APLOG_NOERRNO, 0, NULL,
+                     "apr_create_pool() failed to create "
+                     "initial context");
+        apr_terminate();
+        exit(1);
     }
+
+    process = apr_palloc(cntx, sizeof(process_rec));
+    process->pool = cntx;
+
     apr_create_pool(&process->pconf, process->pool);
     process->argc = argc;
     process->argv = argv;
@@ -281,7 +279,7 @@ static void usage(process_rec *process)
     destroy_and_exit_process(process, 1);
 }
 
-int main(int argc, char *argv[])
+int main(int argc, const char * const argv[])
 {
     char c;
     int configtestonly = 0;

@@ -88,10 +88,11 @@
 #include "mpm_winnt.h"
 #include "apr_strings.h"
 
-char const* service_name = NULL;
-char const* display_name = NULL;
-char const* signal_arg = NULL;
-    
+static const char * service_name = NULL;
+
+/* ### should be namespace-protected */
+const char * display_name = NULL;
+
 static struct
 {
     HANDLE mpm_thread;       /* primary thread handle of the apache server */
@@ -536,7 +537,7 @@ static void __stdcall service_nt_main_fn(DWORD argc, LPTSTR *argv)
     globdat.ssStatus.dwServiceSpecificExitCode = 0;
     globdat.ssStatus.dwCheckPoint = 1;
 
-    if(!(globdat.hServiceStatus = RegisterServiceCtrlHandler(argv[0], service_nt_ctrl)))
+    if (!(globdat.hServiceStatus = RegisterServiceCtrlHandler(argv[0], service_nt_ctrl)))
     {
         ap_log_error(APLOG_MARK, APLOG_ERR | APLOG_STARTUP, apr_get_os_error(), 
                      NULL, "Failure registering service handler");
@@ -594,9 +595,11 @@ static void __stdcall service_nt_main_fn(DWORD argc, LPTSTR *argv)
      */
     if (argc > 1) 
     {
-        char **cmb_data;
-        cmb_data = apr_palloc(mpm_new_argv->cont, 
-                             (mpm_new_argv->nelts + argc - 1) * sizeof(char *));
+        const char **cmb_data;
+
+        mpm_new_argv->nalloc = mpm_new_argv->nelts + argc - 1;
+        cmb_data = apr_palloc(mpm_new_argv->cont,
+                              mpm_new_argv->nalloc * sizeof(const char *));
 
         /* mpm_new_argv remains first (of lower significance) */
         memcpy (cmb_data, mpm_new_argv->elts, 
@@ -607,8 +610,8 @@ static void __stdcall service_nt_main_fn(DWORD argc, LPTSTR *argv)
                 mpm_new_argv->elt_size * (argc - 1));
         
         /* The replacement arg list is complete */
-        mpm_new_argv->elts = (char*) cmb_data;
-        mpm_new_argv->nalloc = mpm_new_argv->nelts += argc - 1;
+        mpm_new_argv->elts = (char *)cmb_data;
+        mpm_new_argv->nelts = mpm_new_argv->nalloc;
     }
         
     /* Let the main thread continue now... but hang on to the
@@ -670,7 +673,7 @@ apr_status_t mpm_merge_service_args(apr_pool_t *p,
 {
     apr_array_header_t *svc_args = NULL;
     char conf_key[MAX_PATH];
-    char **cmb_data;
+    const char **cmb_data;
     apr_status_t rv;
 
     apr_snprintf(conf_key, sizeof(conf_key), SERVICEPARAMS, service_name);
@@ -696,22 +699,23 @@ apr_status_t mpm_merge_service_args(apr_pool_t *p,
      * time to _prepend_ the default arguments for the server from 
      * the service's default arguments (all others override them)...
      */
-    cmb_data = apr_palloc(p, (args->nelts + svc_args->nelts) * sizeof(char *));
+    args->nalloc = args->nelts + svc_args->nelts;
+    cmb_data = apr_palloc(p, args->nalloc * sizeof(const char *));
 
     /* First three args (argv[0], -f, path) remain first */
-    memcpy (cmb_data, args->elts, args->elt_size * fixed_args);
+    memcpy(cmb_data, args->elts, args->elt_size * fixed_args);
     
     /* Service args follow from service registry array */
-    memcpy (cmb_data + fixed_args, svc_args->elts, 
-            svc_args->elt_size * svc_args->nelts);
+    memcpy(cmb_data + fixed_args, svc_args->elts, 
+           svc_args->elt_size * svc_args->nelts);
     
     /* Remaining new args follow  */
-    memcpy (cmb_data + fixed_args + svc_args->nelts,
-            (char**) args->elts + fixed_args, 
-            args->elt_size * (args->nelts - fixed_args));
+    memcpy(cmb_data + fixed_args + svc_args->nelts,
+           (const char **)args->elts + fixed_args, 
+           args->elt_size * (args->nelts - fixed_args));
     
-    args->elts = (char*) cmb_data;
-    args->nalloc = (args->nelts += svc_args->nelts);
+    args->elts = (char *)cmb_data;
+    args->nelts = args->nalloc;
 
     return APR_SUCCESS;
 }
@@ -814,7 +818,7 @@ void mpm_service_stopping(void)
 
 
 apr_status_t mpm_service_install(apr_pool_t *ptemp, int argc, 
-                                char const* const* argv)
+                                 const char * const * argv)
 {
     char key_name[MAX_PATH];
     char exe_path[MAX_PATH];
@@ -1020,7 +1024,7 @@ static int signal_service_transition(SC_HANDLE schService, DWORD signal, DWORD p
 
 
 apr_status_t mpm_service_start(apr_pool_t *ptemp, int argc, 
-                              char const* const* argv)
+                               const char * const * argv)
 {
     apr_status_t rv;
     
@@ -1028,7 +1032,7 @@ apr_status_t mpm_service_start(apr_pool_t *ptemp, int argc,
 
     if (osver.dwPlatformId == VER_PLATFORM_WIN32_NT)
     {
-        char **start_argv;
+        const char **start_argv;
         SC_HANDLE   schService;
         SC_HANDLE   schSCManager;
 
@@ -1062,10 +1066,10 @@ apr_status_t mpm_service_start(apr_pool_t *ptemp, int argc,
         }
         
         argc += 1;
-        start_argv = apr_palloc(ptemp, argc * sizeof(char**));
-        start_argv[0] = (char*) service_name;
+        start_argv = apr_palloc(ptemp, argc * sizeof(const char **));
+        start_argv[0] = service_name;
         if (argc > 1)
-            memcpy(start_argv + 1, argv, (argc - 1) * sizeof(char**));
+            memcpy(start_argv + 1, argv, (argc - 1) * sizeof(const char **));
         
         rv = APR_EINIT;
         if (StartService(schService, argc, start_argv)
@@ -1115,7 +1119,8 @@ apr_status_t mpm_service_start(apr_pool_t *ptemp, int argc,
         pCommand = apr_psprintf(ptemp, "\"%s\" -n %s -k runservice", 
                                exe_path, service_name);  
         for (i = 0; i < argc; ++i) {
-            pCommand = apr_pstrcat(ptemp, pCommand, " \"", argv[i], "\"", NULL);
+            pCommand = apr_pstrcat(ptemp, pCommand,
+                                   " \"", argv[i], "\"", NULL);
         }
         
         memset(&si, 0, sizeof(si));

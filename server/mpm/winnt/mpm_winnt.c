@@ -1789,7 +1789,7 @@ die_now:
 }
 
 
-#define SERVICE_UNNAMED -1
+#define SERVICE_UNNAMED (-1)
 
 /* service_nt_main_fn needs to append the StartService() args 
  * outside of our call stack and thread as the service starts...
@@ -1803,7 +1803,7 @@ apr_array_header_t *mpm_new_argv;
 
 static apr_status_t service_to_start_success;
 static int inst_argc;
-static char **inst_argv;
+static const char * const *inst_argv;
     
 void winnt_rewrite_args(process_rec *process) 
 {
@@ -1887,18 +1887,16 @@ void winnt_rewrite_args(process_rec *process)
      * initial pre-flight of the config parser.
      */
 
-    mpm_new_argv = apr_make_array(process->pool, process->argc + 2, sizeof(char *));
-    new_arg = (char**) apr_push_array(mpm_new_argv);
-    *new_arg = (char *) process->argv[0];
-    
-    new_arg = (char**) apr_push_array(mpm_new_argv);
-    *new_arg = "-d";
-    new_arg = (char**) apr_push_array(mpm_new_argv);
-    *new_arg = def_server_root;
+    mpm_new_argv = apr_make_array(process->pool, process->argc + 2,
+                                  sizeof(const char *));
+    *(const char **)apr_push_array(mpm_new_argv) = process->argv[0];
+    *(const char **)apr_push_array(mpm_new_argv) = "-d";
+    *(const char **)apr_push_array(mpm_new_argv) = def_server_root;
 
     fixed_args = mpm_new_argv->nelts;
 
-    optbuf[0] = '-'; optbuf[2] = '\0';
+    optbuf[0] = '-';
+    optbuf[2] = '\0';
     apr_initopt(&opt, process->pool, process->argc, (char**) process->argv);
     while (apr_getopt(opt, "n:k:iu" AP_SERVER_BASEARGS, 
                       optbuf + 1, &optarg) == APR_SUCCESS) {
@@ -1920,11 +1918,11 @@ void winnt_rewrite_args(process_rec *process)
             signal_arg = "uninstall";
             break;
         default:
-            new_arg = (char**) apr_push_array(mpm_new_argv);
-            *new_arg = apr_pstrdup(process->pool, optbuf);
+            *(const char **)apr_push_array(mpm_new_argv) =
+                apr_pstrdup(process->pool, optbuf);
+
             if (optarg) {
-                new_arg = (char**) apr_push_array(mpm_new_argv);
-                *new_arg = optarg;
+                *(const char **)apr_push_array(mpm_new_argv) = optarg;
             }
             break;
         }
@@ -2005,10 +2003,11 @@ void winnt_rewrite_args(process_rec *process)
      * These will be used for the -k install parameters, as well as
      * for the -k start service override arguments.
      */
-    inst_argv = (char**) mpm_new_argv->elts + mpm_new_argv->nelts - inst_argc;
+    inst_argv = (const char * const *)mpm_new_argv->elts
+        + mpm_new_argv->nelts - inst_argc;
 
     process->argc = mpm_new_argv->nelts; 
-    process->argv = (char**) mpm_new_argv->elts;
+    process->argv = (const char * const *) mpm_new_argv->elts;
 }
 
 
