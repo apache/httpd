@@ -20,6 +20,12 @@
 
 module AP_MODULE_DECLARE_DATA proxy_ajp_module;
 
+int ap_proxy_ajp_canon(request_rec *r, char *url);
+int ap_proxy_ajp_handler(request_rec *r, proxy_worker *worker,
+                         proxy_server_conf *conf,
+                         char *url, const char *proxyname, 
+                         apr_port_t proxyport);
+
 /*
  * Canonicalise http-like URLs.
  *  scheme is the scheme for the URL
