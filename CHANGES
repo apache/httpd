@@ -92,10 +92,6 @@ Changes with Apache 2.1.0-dev
   *) mod_ext_filter: Add the ability to filter request bodies.
      [Philipp Reisner <philipp.reisner@linbit.com>]
 
-  *) Correct the code in ap_check_cache_feshness to check max_age,
-     smax_age, and expires correctly. Patch submitted by Thomas
-     Castelle [Paul J. Reder]
-
   *) mod_cgid: Restart the cgid daemon if it crashes.  PR 19849
      [Glenn Nielsen <glenn@apache.org>]
 
@@ -219,6 +215,9 @@ Changes with Apache 2.1.0-dev
    Apache 2.0.xx tree as documented, and except as noted, below.]
 
 Changes with Apache 2.0.48
+
+  *) cache_util: Fix ap_check_cache_feshness to check max_age, smax_age, and
+     expires as directed in RFC 2616. [Thomas Castelle tcastelle@generali.fr]
 
   *) Ensure that ssl-std.conf is generated at configure time, and switch
      to using the expanded config variables to work the same as
