@@ -228,10 +228,14 @@ fi
 APACHE_FAST_OUTPUT(Makefile modules/Makefile srclib/Makefile) 
 APACHE_FAST_OUTPUT(os/beos/Makefile os/os2/Makefile os/Makefile)
 APACHE_FAST_OUTPUT(os/unix/Makefile server/Makefile)
-APACHE_FAST_OUTPUT(support/Makefile test/Makefile srclib/pcre/Makefile)
+APACHE_FAST_OUTPUT(support/Makefile srclib/pcre/Makefile)
 for i in $AP_LIB_DIRS; do
   APACHE_FAST_OUTPUT(srclib/$i/Makefile)
 done
+
+if test -d ./test; then
+    APACHE_FAST_OUTPUT(test/Makefile)
+fi
 
 dnl ## Run configure for packages Apache uses
 dnl ## This has been placed at this location for a reason.  This allows
