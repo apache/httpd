@@ -276,4 +276,24 @@ void ap_process_child_status(ap_proc_t *pid, ap_wait_t status)
     }
 }
 
+#if defined(TCP_NODELAY) && !defined(MPE) && !defined(TPF)
+void ap_sock_disable_nagle(int s)
+{
+    /* The Nagle algorithm says that we should delay sending partial
+     * packets in hopes of getting more data.  We don't want to do
+     * this; we are not telnet.  There are bad interactions between
+     * persistent connections and Nagle's algorithm that have very severe
+     * performance penalties.  (Failing to disable Nagle is not much of a
+     * problem with simple HTTP.)
+     *
+     * In spite of these problems, failure here is not a shooting offense.
+     */
+    int just_say_no = 1;
 
+    if (ap_setsockopt(s, IPPROTO_TCP, TCP_NODELAY, (char *) &just_say_no,
+                   sizeof(int)) != APR_SUCCESS) {
+        ap_log_error(APLOG_MARK, APLOG_WARNING, errno, ap_server_conf,
+                    "setsockopt: (TCP_NODELAY)");
+    }
+}
+#endif

@@ -293,8 +293,6 @@ static void set_signals(void)
  * Here follows a long bunch of generic server bookkeeping stuff...
  */
 
-//#define sock_disable_nagle(s)	/* NOOP */
-
 int ap_graceful_stop_signalled(void)
 {
     /* XXX - Does this really work? - Manoj */

@@ -377,31 +377,6 @@ static void set_signals(void)
  * Here follows a long bunch of generic server bookkeeping stuff...
  */
 
-#if defined(TCP_NODELAY) && !defined(MPE) && !defined(TPF)
-static void sock_disable_nagle(int s) 
-{
-    /* The Nagle algorithm says that we should delay sending partial
-     * packets in hopes of getting more data.  We don't want to do
-     * this; we are not telnet.  There are bad interactions between
-     * persistent connections and Nagle's algorithm that have very severe
-     * performance penalties.  (Failing to disable Nagle is not much of a
-     * problem with simple HTTP.)
-     *
-     * In spite of these problems, failure here is not a shooting offense.
-     */
-    int just_say_no = 1;
-
-    if (setsockopt(s, IPPROTO_TCP, TCP_NODELAY, (char *) &just_say_no,
-		   sizeof(int)) < 0) {
-	ap_log_error(APLOG_MARK, APLOG_WARNING, errno, ap_server_conf,
-		    "setsockopt: (TCP_NODELAY)");
-    }
-}
-
-#else
-#define sock_disable_nagle(s)	/* NOOP */
-#endif
-
 int ap_graceful_stop_signalled(void)
 {
     /* XXX - Does this really work? - Manoj */
@@ -432,7 +407,7 @@ static void process_socket(ap_pool_t *p, ap_socket_t *sock, int my_child_num, in
         return;
     }
 
-    sock_disable_nagle(csd);
+    ap_sock_disable_nagle(csd);
 
     iol = ap_iol_attach_socket(p, sock);
 
