@@ -48,7 +48,7 @@ Changes with Apache 1.1b4:
 
   *) More mod_auth_msql authentication improvements.
 
-  *) VirtualHost's based on Host: headers no longer conflict with the
+  *) VirtualHosts based on Host: headers no longer conflict with the
      Listen directive.
 
   *) OS/2 compatibility enhancements. [Gary Smiley]
