@@ -80,6 +80,8 @@ typedef struct {
 #define	DEFAULT_SNEWS_PORT	563
 #define	DEFAULT_PROSPERO_PORT	1525	/* WARNING: conflict w/Oracle */
 
+#define DEFAULT_URI_SCHEME "http"
+
 /* Flags passed to unparse_uri_components(): */
 #define UNP_OMITSITEPART	(1U<<0)	/* suppress "scheme://user@site:port" */
 #define	UNP_OMITUSER		(1U<<1)	/* Just omit user */

@@ -170,61 +170,118 @@ API_EXPORT(struct hostent *) ap_pgethostbyname(pool *p, const char *hostname)
 
 /* Unparse a uri_components structure to an URI string.
  * Optionally suppress the password for security reasons.
+ * See also RFC 2396.
  */
 API_EXPORT(char *) ap_unparse_uri_components(pool *p,
                                              const uri_components * uptr,
                                              unsigned flags)
 {
-    char *ret = "";
-
-    /* If suppressing the site part, omit both user name & scheme://hostname */
+    char *parts[16];     /* 16 distinct parts of a URI */
+    char *scheme = NULL; /* to hold the scheme without modifying const args */
+    int j = 0;           /* an index into parts */
+    
+    memset(parts, 0, sizeof(parts));
+        
+    /* If suppressing the site part, omit all of scheme://user:pass@host:port */
     if (!(flags & UNP_OMITSITEPART)) {
 
-        /* Construct a "user:password@" string, honoring the passed UNP_ flags: */
-        if (uptr->user || uptr->password)
-            ret = ap_pstrcat(p,
-                             (uptr->user
-                              && !(flags & UNP_OMITUSER)) ? uptr->user : "",
-                             (uptr->password
-                              && !(flags & UNP_OMITPASSWORD)) ? ":" : "",
-                             (uptr->password && !(flags & UNP_OMITPASSWORD))
-                             ? ((flags & UNP_REVEALPASSWORD) ? uptr->
-                                password : "XXXXXXXX")
-                             : "", "@", NULL);
+        /* if the user passes in a scheme, we'll assume an absoluteURI */
+        if (uptr->scheme) {
+            scheme = uptr->scheme;
+            
+            parts[j++] = uptr->scheme;
+            parts[j++] = ":";
+        }
+        
+        /* handle the hier_part */
+        if (uptr->user || uptr->password || uptr->hostname) {
+            
+            /* this stuff requires absoluteURI, so we have to add the scheme */
+            if (!uptr->scheme) {
+                scheme = DEFAULT_URI_SCHEME;
+                
+                parts[j++] = DEFAULT_URI_SCHEME;
+                parts[j++] = ":";
+            }
+            
+            parts[j++] = "//";
+            
+            /* userinfo requires hostport */
+            if (uptr->hostname && (uptr->user || uptr->password)) {
+                if (uptr->user && !(flags & UNP_OMITUSER))
+                    parts[j++] = uptr->user;
+                
+                if (uptr->password && !(flags & UNP_OMITPASSWORD)) {
+                    parts[j++] = ":";
 
-        /* Construct scheme://site string */
-        if (uptr->hostname) {
-            int is_default_port;
+                    if (flags & UNP_REVEALPASSWORD)
+                        parts[j++] = uptr->password;
+                    else
+                        parts[j++] = "XXXXXXXX";
+                }    
 
-            is_default_port =
-                (uptr->port_str == NULL ||
-                 uptr->port == 0 ||
-                 uptr->port == ap_default_port_for_scheme(uptr->scheme));
+                parts[j++] = "@";
+            }                
+            
+            /* If we get here, there must be a hostname. */
+            parts[j++] = uptr->hostname;
+            
+            /* Emit the port.  A small beautification
+             * prevents http://host:80/ and similar visual blight.
+             */
+            if (uptr->port_str &&
+                !(uptr->port   &&
+                  scheme       &&
+                  uptr->port == ap_default_port_for_scheme(scheme))) {
 
-            ret = ap_pstrcat(p,
-                             uptr->scheme, "://", ret,
-                             uptr->hostname ? uptr->hostname : "",
-                             is_default_port ? "" : ":",
-                             is_default_port ? "" : uptr->port_str, NULL);
+                parts[j++] = ":";
+                parts[j++] = uptr->port_str;
+            }
+        }
+    }
+        
+    if (!(flags & UNP_OMITPATHINFO)) {
+        
+        
+        /* We must ensure we don't put out a hier_part and a rel_path */
+        if (j && uptr->path && *uptr->path != '/')
+            parts[j++] = "/";
+        
+        parts[j++] = uptr->path;
+
+        if (!(flags & UNP_OMITQUERY)) {
+            if (uptr->query) {
+                parts[j++] = "?";
+                parts[j++] = uptr->query;
+            }
+            
+            if (uptr->fragment) {
+                parts[j++] = "#";
+                parts[j++] = uptr->fragment;
+            }
         }
     }
 
-    /* Should we suppress all path info? */
-    if (!(flags & UNP_OMITPATHINFO)) {
-        /* Append path, query and fragment strings: */
-        ret = ap_pstrcat(p,
-                         ret,
-                         uptr->path ? uptr->path : "",
-                         (uptr->query && !(flags & UNP_OMITQUERY)) ? "?" : "",
-                         (uptr->query
-                          && !(flags & UNP_OMITQUERY)) ? uptr->query : "",
-                         (uptr->fragment
-                          && !(flags & UNP_OMITQUERY)) ? "#" : NULL,
-                         (uptr->fragment
-                          && !(flags & UNP_OMITQUERY)) ? uptr->
-                         fragment : NULL, NULL);
-    }
-    return ret;
+    /* Ugly, but correct and probably faster than ap_vsnprintf. */
+    return ap_pstrcat(p,
+        parts[0],
+        parts[1],
+        parts[2],
+        parts[3],
+        parts[4],
+        parts[5],
+        parts[6],
+        parts[7],
+        parts[8],
+        parts[9],
+        parts[10],
+        parts[11],
+        parts[12],
+        parts[13],
+        parts[14],
+        parts[15],
+        NULL
+    );
 }
 
 /* The regex version of parse_uri_components has the advantage that it is

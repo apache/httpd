@@ -1,5 +1,8 @@
 Changes with Apache 1.3.19
 
+  *) Rewrite ap_unparse_uri_components() to make it safer and more readable
+     ["Jeffrey W. Baker" <jwbaker@acm.org>]
+
   *) Under certain circumstances, Apache did not supply the
      right response headers when requiring authentication.
      [Gertjan van Wingerde <Gertjan.van.Wingerde@cmg.nl>] PR#7114
