@@ -60,7 +60,7 @@
 
 #include "mod_cache.h"
 
-module AP_MODULE_DECLARE_DATA tcache_module;
+module AP_MODULE_DECLARE_DATA cache_module;
 
 
 
@@ -89,7 +89,6 @@ int ap_url_cache_handler(request_rec *r)
 {
     apr_status_t rv;
     const char *cc_in;
-    apr_pool_t *p = r->pool;
     apr_uri_t uri = r->parsed_uri;
     char *url = r->unparsed_uri;
     char *path = uri.path;
@@ -97,7 +96,7 @@ int ap_url_cache_handler(request_rec *r)
     cache_info *info = NULL;
     cache_request_rec *cache;
     cache_server_conf *conf = (cache_server_conf *) ap_get_module_config(r->server->module_config, 
-                                                                         &tcache_module);
+                                                                         &cache_module);
 
     /* we don't handle anything but GET */
     if (r->method_number != M_GET) return DECLINED;
@@ -112,10 +111,10 @@ int ap_url_cache_handler(request_rec *r)
                  "cache: URL %s is being handled by %s", path, types);
 
     /* make space for the per request config */
-    cache = (cache_request_rec *) ap_get_module_config(r->request_config, &tcache_module);
+    cache = (cache_request_rec *) ap_get_module_config(r->request_config, &cache_module);
     if (!cache) {
         cache = ap_pcalloc(r->pool, sizeof(cache_request_rec));
-        ap_set_module_config(r->request_config, &tcache_module, cache);
+        ap_set_module_config(r->request_config, &cache_module, cache);
     }
 
     /* save away the type */
@@ -273,11 +272,19 @@ int ap_cache_out_filter(ap_filter_t *f, apr_bucket_brigade *bb);
 
 int ap_cache_out_filter(ap_filter_t *f, apr_bucket_brigade *bb)
 {
-    cache_info *info = NULL;
     request_rec *r = f->r;
     apr_table_t *headers;
     cache_request_rec *cache = (cache_request_rec *) ap_get_module_config(r->request_config, 
-                                                                          &tcache_module);
+                                                                          &cache_module);
+
+    if (!cache) {
+        /* user likely configured CACHE_OUT manually; they should use mod_cache
+         * configuration to do that */
+        ap_log_error(APLOG_MARK, APLOG_ERR, 0, r->server,
+                     "CACHE_OUT enabled unexpectedly");
+        ap_remove_output_filter(f);
+        return ap_pass_brigade(f->next, bb);
+    }
 
     ap_log_error(APLOG_MARK, APLOG_DEBUG | APLOG_NOERRNO, 0, r->server,
 		 "cache: running CACHE_OUT filter");
@@ -341,24 +348,18 @@ int ap_cache_in_filter(ap_filter_t *f, apr_bucket_brigade *in);
 int ap_cache_in_filter(ap_filter_t *f, apr_bucket_brigade *in)
 {
     request_rec *r = f->r;
-    apr_uri_t uri = r->parsed_uri;
     char *url = r->unparsed_uri;
-    apr_pool_t *p = r->pool;
-    apr_bucket *e;
-    apr_bucket_brigade *out = apr_brigade_create(p);
-
     const char *cc_out = ap_table_get(r->headers_out, "Cache-Control");
     const char *exps, *lastmods, *dates, *etag;
     apr_time_t exp, date, lastmod, now;
     apr_size_t size;
-
     cache_info *info;
     void *sconf = r->server->module_config;
     cache_server_conf *conf =
-    (cache_server_conf *) ap_get_module_config(sconf, &tcache_module);
+    (cache_server_conf *) ap_get_module_config(sconf, &cache_module);
     void *scache = r->request_config;
     cache_request_rec *cache =
-    (cache_request_rec *) ap_get_module_config(scache, &tcache_module);
+    (cache_request_rec *) ap_get_module_config(scache, &cache_module);
 
 
     ap_log_error(APLOG_MARK, APLOG_DEBUG | APLOG_NOERRNO, 0, f->r->server,
@@ -670,7 +671,7 @@ static void * merge_cache_config(apr_pool_t *p, void *basev, void *overridesv)
 static const char
 *set_cache_on(cmd_parms *parms, void *dummy, int flag)
 {
-    cache_server_conf *conf = ap_get_module_config(parms->server->module_config, &tcache_module);
+    cache_server_conf *conf = ap_get_module_config(parms->server->module_config, &cache_module);
 
     conf->cacheon = 1;
     conf->cacheon_set = 1;
@@ -680,7 +681,7 @@ static const char
 static const char
 *add_cache_enable(cmd_parms *parms, void *dummy, const char *type, const char *url)
 {
-    cache_server_conf *conf = ap_get_module_config(parms->server->module_config, &tcache_module);
+    cache_server_conf *conf = ap_get_module_config(parms->server->module_config, &cache_module);
     struct cache_enable *new;
 
     new = apr_array_push(conf->cacheenable);
@@ -692,7 +693,7 @@ static const char
 static const char
 *add_cache_disable(cmd_parms *parms, void *dummy, const char *url)
 {
-    cache_server_conf *conf = ap_get_module_config(parms->server->module_config, &tcache_module);
+    cache_server_conf *conf = ap_get_module_config(parms->server->module_config, &cache_module);
     struct cache_enable *new;
 
     new = apr_array_push(conf->cachedisable);
@@ -703,7 +704,7 @@ static const char
 static const char
 *set_cache_maxex(cmd_parms *parms, void *dummy, const char *arg)
 {
-    cache_server_conf *conf = ap_get_module_config(parms->server->module_config, &tcache_module);
+    cache_server_conf *conf = ap_get_module_config(parms->server->module_config, &cache_module);
     double val;
 
     if (sscanf(arg, "%lg", &val) != 1)
@@ -716,7 +717,7 @@ static const char
 static const char
 *set_cache_defex(cmd_parms *parms, void *dummy, const char *arg)
 {
-    cache_server_conf *conf = ap_get_module_config(parms->server->module_config, &tcache_module);
+    cache_server_conf *conf = ap_get_module_config(parms->server->module_config, &cache_module);
     double val;
 
     if (sscanf(arg, "%lg", &val) != 1)
@@ -729,7 +730,7 @@ static const char
 static const char
 *set_cache_factor(cmd_parms *parms, void *dummy, const char *arg)
 {
-    cache_server_conf *conf = ap_get_module_config(parms->server->module_config, &tcache_module);
+    cache_server_conf *conf = ap_get_module_config(parms->server->module_config, &cache_module);
     double val;
 
     if (sscanf(arg, "%lg", &val) != 1)
@@ -742,7 +743,7 @@ static const char
 static const char
 *set_cache_complete(cmd_parms *parms, void *dummy, const char *arg)
 {
-    cache_server_conf *conf = ap_get_module_config(parms->server->module_config, &tcache_module);
+    cache_server_conf *conf = ap_get_module_config(parms->server->module_config, &cache_module);
     int val;
 
     if (sscanf(arg, "%u", &val) != 1)
@@ -792,7 +793,7 @@ register_hooks(apr_pool_t *p)
     ap_register_output_filter("CACHE_CONDITIONAL", ap_cache_conditional_filter, AP_FTYPE_NETWORK);
 }
 
-module AP_MODULE_DECLARE_DATA tcache_module =
+module AP_MODULE_DECLARE_DATA cache_module =
 {
     STANDARD20_MODULE_STUFF,
     NULL,			/* create per-directory config structure */
@@ -802,4 +803,3 @@ module AP_MODULE_DECLARE_DATA tcache_module =
     cache_cmds,			/* command apr_table_t */
     register_hooks
 };
-
