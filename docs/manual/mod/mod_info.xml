@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
-<!-- $Revision: 1.16 $ -->
+<!-- $Revision: 1.17 $ -->
 
 <!--
  Copyright 2002-2004 The Apache Software Foundation
@@ -40,41 +40,93 @@ configuration</description>
       &lt;/Location&gt;
     </example>
 
-    <p>You may wish to add a 
-    <directive type="section" module="core">Limit</directive> 
-    clause inside the 
-    <directive type="section" module="core">Location</directive>
-    directive to limit access to your server configuration 
-    information.</p>
-
     <p>Once configured, the server information is obtained by
     accessing <code>http://your.host.dom/server-info</code></p>
-
-    <note>
-      Note that the configuration files are read by the
-      module at run-time, and therefore the display may
-      <em>not</em> reflect the running server's active
-      configuration if the files have been changed since the server
-      was last reloaded. Also, the configuration files must be
-      readable by the user as which the server is running (see the
-      <directive module="mpm_common">User</directive> directive), or
-      else the directive settings will not be listed.
-
-      <p>It should also be noted that if
-      <module>mod_info</module> is compiled into the server, its
-      handler capability is available in <em>all</em> configuration
-      files, including per-directory files (<em>e.g.</em>,
-      <code>.htaccess</code>). This may have security-related
-      ramifications for your site.</p>
-
-      <p>In particular, this module can leak sensitive information
-      from the configuration directives of other Apache modules such as
-      system paths, usernames/passwords, database names, etc.  Due to
-      the way this module works there is no way to block information
-      from it.  Therefore, this module should <strong>only</strong> be
-      used in a controlled environment and always with caution.</p>
-    </note>
 </summary>
+
+<section id="security"><title>Security Issues</title>
+    <p>Once <module>mod_info</module> is loaded into the server, its
+    handler capability is available in <em>all</em> configuration
+    files, including per-directory files (<em>e.g.</em>,
+    <code>.htaccess</code>). This may have security-related
+    ramifications for your site.</p>
+
+    <p>In particular, this module can leak sensitive information
+    from the configuration directives of other Apache modules such as
+    system paths, usernames/passwords, database names, etc. Therefore,
+    this module should <strong>only</strong> be
+    used in a controlled environment and always with caution.</p>
+
+    <p>You will probably want to use <module>mod_access</module> 
+    to limit access to your server configuration information.</p>
+      
+    <example><title>Access control</title>
+      &lt;Location /server-info&gt;<br />
+      <indent>
+        SetHandler server-info<br />
+        Order allow,deny
+        # Allow access from server itself
+        Allow from 127.0.0.1
+        # Additionally, allow access from local workstation
+        Allow from 192.168.1.17
+      </indent>
+      &lt;/Location&gt;
+    </example>
+</section>
+
+<section id="queries"><title>Selecting the information shown</title>
+    <p>By default, the server information includes a list of
+    all enabled modules, and for each module, a description of
+    the directives understood by that module, the hooks implemented
+    by that module, and the relevant directives from the current
+    configuration.</p>
+    
+    <p>Other views of the configuration information are available by
+    appending a query to the <code>server-info</code> request. For
+    example, <code>http://your.host.dom/server-info?config</code>
+    will show all configuration directives.</p>
+    
+    <dl>
+        <dt><code>?&lt;module-name&gt;</code></dt>
+            <dd>Only information relevant to the named module</dd>
+        <dt><code>?config</code></dt>
+            <dd>Just the configuration directives, not sorted by module</dd>
+        <dt><code>?list</code></dt>
+            <dd>Only a simple list of enabled modules</dd>
+        <dt><code>?server</code></dt>
+            <dd>Only the basic server information</dd>
+    </dl>
+</section>
+
+<section id="limitations"><title>Known Limitations</title>
+    <p><module>mod_info</module> provides its information by reading the
+    parsed configuration, rather than reading the original configuration
+    file. There are a few limitations as a result of the way the parsed
+    configuration tree is created:</p>
+    <ul>
+      <li>Directives which are executed immediately rather than being
+          stored in the parsed configuration are not listed. These include
+          <directive module="core">ServerRoot</directive>,
+          <directive module="mod_so">LoadModule</directive>, and
+          <directive module="mod_so">LoadFile</directive>.</li>
+      <li>Directives which control the configuration file itself, such as
+          <directive module="core">Include</directive>,
+          <directive module="core">&lt;IfModule&gt;</directive> and
+          <directive module="core">&lt;IfDefine&gt;</directive> are not
+          listed, but the included configuration directives are.</li>
+      <li>Comments are not listed. (This may be considered a feature.)</li>
+      <li>Configuration directives from <code>.htaccess</code> files are
+          not listed (since they do not form part of the permanent server
+          configuration).</li>
+      <li>Container directives such as
+          <directive module="core">&lt;Directory&gt;</directive>
+          are listed normally, but <module>mod_info</module> cannot figure
+          out the line number for the closing
+          <directive module="core">&lt;/Directory&gt;</directive>.</li>
+      <li>Directives generated by third party modules such as <module>mod_perl</module>
+          might not be listed.</li>
+    </ul>
+</section>
 
 <directivesynopsis>
 <name>AddModuleInfo</name>
@@ -93,12 +145,11 @@ information displayed by the server-info handler</description>
     <example>
       AddModuleInfo mod_deflate.c 'See &lt;a \<br />
       <indent>
-      href="http://www.apache.org/docs-2.1/mod/mod_deflate.html"&gt;\<br />
-      http://www.apache.org/docs-2.1/mod/mod_deflate.html&lt;/a&gt;'
+        href="http://www.apache.org/docs-2.1/mod/mod_deflate.html"&gt;\<br />
+        http://www.apache.org/docs-2.1/mod/mod_deflate.html&lt;/a&gt;'
       </indent>
     </example>
 </usage>
 
 </directivesynopsis>
 </modulesynopsis>
-
