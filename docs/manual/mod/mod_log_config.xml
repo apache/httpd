@@ -209,6 +209,17 @@
     "%!200,304,302{Referer}i" logs <code>Referer:</code> on all requests
     which did <em>not</em> return some sort of normal status.</p>
 
+    <p>The modifiers "&lt;" and "&gt;" can be used for requests that
+    have been internally redirected to choose whether the original or
+    final (respectively) request should be consulted.  By default, the
+    <code>%</code> directives <code>%s, %U, %T, %D,</code> and
+    <code>%r</code> look at the original request while all others look
+    at the final request.  So for example, <code>%&gt;s</code> can be
+    used to record the final status of the request and
+    <code>%&lt;u</code> can be used to record the original
+    authenticated user on a request that is internally redirect to an
+    unauthenticated resource.</p>
+
     <p>Note that in httpd 2.0 versions prior to 2.0.46, no escaping was performed
     on the strings from <code>%...r</code>, <code>%...i</code> and
     <code>%...o</code>. This was mainly to comply with the requirements of
