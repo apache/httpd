@@ -1212,6 +1212,7 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_http_header_filter(
 
     if (r->header_only) {
         apr_brigade_destroy(b);
+        ap_remove_output_filter(f);
         return OK;
     }
 
