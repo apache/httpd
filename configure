@@ -300,7 +300,7 @@ if [ ".$help" = .no ]; then
                 -e 's:$:" \\:' >>$configstatus
         done
     fi
-    echo '$*' >>$configstatus
+    echo '"$@"' >>$configstatus
     echo '' >>$configstatus
     chmod a+x $configstatus
 fi

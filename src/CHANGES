@@ -1,5 +1,9 @@
 Changes with Apache 1.3.2
 
+  *) Use the construct ``"$@"'' instead of ``$*'' in the generated
+     config.status script to be immune against arguments with whitespaces.
+     [Yves Arrouye <yves@apple.com>] PR#2866
+
   *) Replace the inlined information grabbing stuff for the configuration
      adjustment feature (no --without-confadjust) with calls to a new helper
      script `buildinfo.sh' which is both more flexible and already proofed to
