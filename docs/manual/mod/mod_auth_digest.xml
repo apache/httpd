@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
-<!-- $Revision: 1.17 $ -->
+<!-- $Revision: 1.18 $ -->
 
 <!--
  Copyright 2002-2004 The Apache Software Foundation
@@ -87,7 +87,7 @@
 
 <section id="msie"><title>Working with MS Internet Explorer</title>
     <p>The Digest authentication implementation in current Internet
-    Explorer implementations has known issues, namely that <code><GET</code>
+    Explorer implementations has known issues, namely that <code>GET</code>
     requests with a query string are not RFC compliant.  There are a
     few ways to work around this issue.</p>
 
