@@ -914,7 +914,7 @@ static void child_main(int child_num_arg)
 		 * lead to never-ending loops here.  So it seems best
 		 * to just exit in most cases.
 		 */
-                switch (errno) {
+                switch (stat) {
 #ifdef EPROTO
 		    /* EPROTO on certain older kernels really means
 		     * ECONNABORTED, so we need to ignore it for them.
@@ -971,25 +971,25 @@ static void child_main(int child_num_arg)
 		      * Ben Hyde noted that temporary ENETDOWN situations
 		      * occur in mobile IP.
 		      */
-		    ap_log_error(APLOG_MARK, APLOG_EMERG, errno, ap_server_conf,
-			"accept: giving up.");
+		    ap_log_error(APLOG_MARK, APLOG_EMERG, stat, ap_server_conf,
+			"ap_accept: giving up.");
 		    clean_child_exit(APEXIT_CHILDFATAL);
 #endif /*ENETDOWN*/
 
 #ifdef TPF
 		case EINACT:
-		    ap_log_error(APLOG_MARK, APLOG_EMERG, errno, ap_server_conf,
+		    ap_log_error(APLOG_MARK, APLOG_EMERG, stat, ap_server_conf,
 			"offload device inactive");
 		    clean_child_exit(APEXIT_CHILDFATAL);
 		    break;
 		default:
 		    ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, ap_server_conf,
-			"select/accept error (%u)", errno);
+			"select/accept error (%u)", stat);
 		    clean_child_exit(APEXIT_CHILDFATAL);
 #else
 		default:
-		    ap_log_error(APLOG_MARK, APLOG_ERR, errno, ap_server_conf,
-				"accept: (client socket)");
+		    ap_log_error(APLOG_MARK, APLOG_ERR, stat, ap_server_conf,
+				"ap_accept: (client socket)");
 		    clean_child_exit(1);
 #endif
 		}
@@ -1253,7 +1253,7 @@ static void perform_idle_server_maintenance(void)
         if(make_child(ap_server_conf, free_slots[i], now) == -1) {
             if(free_length == 1) {
                 shutdown_pending = 1;
-                ap_log_error(APLOG_MARK, APLOG_EMERG, ap_server_conf,
+                ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_EMERG, 0, ap_server_conf,
                 "No active child processes: shutting down");
             }
         }
@@ -1321,7 +1321,7 @@ static void process_child_status(ap_proc_t *pid, ap_wait_t status)
 #endif
 #else
 	    ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_NOTICE,
-			 ap_server_conf,
+			 0, ap_server_conf,
 			 "child pid %ld exit signal %d",
 			 (long)pid->pid, WTERMSIG(status));
 #endif
