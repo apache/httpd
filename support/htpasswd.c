@@ -398,7 +398,7 @@ static void check_args(apr_pool_t *pool, int argc, const char *const argv[],
         }
         *pwfilename = apr_pstrdup(pool, argv[i]);
         if (strlen(argv[i + 1]) > (MAX_STRING_LEN - 1)) {
-            apr_file_printf(errfile, "%s: username too long (>%" APR_SIZE_T_FMT ")\n",
+            apr_file_printf(errfile, "%s: username too long (> %d)\n",
                 argv[0], MAX_STRING_LEN - 1);
             exit(ERR_OVERFLOW);
         }
@@ -411,7 +411,7 @@ static void check_args(apr_pool_t *pool, int argc, const char *const argv[],
     }
     if (*mask & NONINTERACTIVE) {
         if (strlen(argv[i + 2]) > (MAX_STRING_LEN - 1)) {
-            apr_file_printf(errfile, "%s: password too long (>%" APR_SIZE_T_FMT ")\n",
+            apr_file_printf(errfile, "%s: password too long (> %d)\n",
                 argv[0], MAX_STRING_LEN);
             exit(ERR_OVERFLOW);
         }
