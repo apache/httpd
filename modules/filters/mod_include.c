@@ -957,10 +957,7 @@ static void ap_ssi_get_tag_and_value(include_ctx_t *ctx, char **tag,
     }
     
     *(c-shift_val) = '\0'; /* Overwrites delimiter (term or WS) with NULL. */
-    if (*c) {
-        ++c;
-    }
-    ctx->curr_tag_pos = c;
+    ctx->curr_tag_pos = ++c;
     if (dodecode) {
         decodehtml(*tag_val);
     }
