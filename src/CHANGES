@@ -1,5 +1,13 @@
 Changes with Apache 1.3.3
 
+  *) Win32 name canonicalisation could end up using the server's
+     working directory to fill in some blanks.  [Ken Parzygnat
+     <kparz@raleigh.ibm.com>] PR#3001
+
+  *) Correct invalid assumption by ap_sub_req_lookup_file() that all
+     absolute paths begin with "/" -- because they don't on Win32.
+     [Ken Parzygnat <kparz@raleigh.ibm.com>] PR#2976, 3074
+
   *) Add [REDIRECT_]VARIANTS environment variable to mod_speling
      so that ErrorDocument 300 processors can reformat the list
      if desired.  [Ken Coar] PR#2859
