@@ -79,8 +79,28 @@
 struct dav_db {
     apr_pool_t *pool;
     apr_dbm_t *file;
+
+    /* when used as a property database: */
+
+    int version;		/* *minor* version of this db */
+
+    dav_buffer ns_table;	/* table of namespace URIs */
+    short ns_count;		/* number of entries in table */
+    int ns_table_dirty;		/* ns_table was modified */
+    apr_hash_t *uri_index;      /* map URIs to (1-based) table indices */
+
+    dav_buffer wb_key;		/* work buffer for dav_gdbm_key */
+
+    apr_datum_t iter;           /* iteration key */
 };
 
+/* -------------------------------------------------------------------------
+ *
+ * GENERIC DBM ACCESS
+ *
+ * For the most part, this just uses the APR DBM functions. They are wrapped
+ * a bit with some error handling (using the mod_dav error functions).
+ */
 
 void dav_dbm_get_statefiles(apr_pool_t *p, const char *fname,
 			    const char **state1, const char **state2)
@@ -246,15 +266,523 @@ void dav_dbm_freedatum(dav_db *db, apr_datum_t data)
     apr_dbm_freedatum(db->file, data);
 }
 
+/* -------------------------------------------------------------------------
+ *
+ * PROPERTY DATABASE FUNCTIONS
+ */
+
+
+#define DAV_GDBM_NS_KEY		"METADATA"
+#define DAV_GDBM_NS_KEY_LEN	8
+
+typedef struct {
+    unsigned char major;
+#define DAV_DBVSN_MAJOR		4
+    /*
+    ** V4 -- 0.9.9 ..
+    **       Prior versions could have keys or values with invalid
+    **       namespace prefixes as a result of the xmlns="" form not
+    **       resetting the default namespace to be "no namespace". The
+    **       namespace would be set to "" which is invalid; it should
+    **       be set to "no namespace".
+    **
+    ** V3 -- 0.9.8
+    **       Prior versions could have values with invalid namespace
+    **       prefixes due to an incorrect mapping of input to propdb
+    **       namespace indices. Version bumped to obsolete the old
+    **       values.
+    **
+    ** V2 -- 0.9.7
+    **       This introduced the xml:lang value into the property value's
+    **       record in the propdb.
+    **
+    ** V1 -- .. 0.9.6
+    **       Initial version.
+    */
+
+
+    unsigned char minor;
+#define DAV_DBVSN_MINOR		0
+
+    short ns_count;
+
+} dav_propdb_metadata;
+
+struct dav_deadprop_rollback {
+    apr_datum_t key;
+    apr_datum_t value;
+};
+
+struct dav_namespace_map {
+    int *ns_map;
+};
+
+/*
+** Internal function to build a key
+**
+** WARNING: returns a pointer to a "static" buffer holding the key. The
+**          value must be copied or no longer used if this function is
+**          called again.
+*/
+static apr_datum_t dav_build_key(dav_db *db, const dav_prop_name *name)
+{
+    char nsbuf[20];
+    size_t l_ns;
+    size_t l_name = strlen(name->name);
+    apr_datum_t key = { 0 };
+
+    /*
+     * Convert namespace ID to a string. "no namespace" is an empty string,
+     * so the keys will have the form ":name". Otherwise, the keys will
+     * have the form "#:name".
+     */
+    if (*name->ns == '\0') {
+	nsbuf[0] = '\0';
+	l_ns = 0;
+    }
+    else {
+        int ns_id = (int)apr_hash_get(db->uri_index, name->ns,
+                                      APR_HASH_KEY_STRING);
+
+
+        if (ns_id == 0) {
+            /* the namespace was not found(!) */
+            return key;         /* zeroed */
+        }
+
+        l_ns = sprintf(nsbuf, "%d", ns_id - 1);
+    }
+
+    /* assemble: #:name */
+    dav_set_bufsize(db->pool, &db->wb_key, l_ns + 1 + l_name + 1);
+    memcpy(db->wb_key.buf, nsbuf, l_ns);
+    db->wb_key.buf[l_ns] = ':';
+    memcpy(&db->wb_key.buf[l_ns + 1], name->name, l_name + 1);
+
+    /* build the database key */
+    key.dsize = l_ns + 1 + l_name + 1;
+    key.dptr = db->wb_key.buf;
+
+    return key;
+}
+
+static void dav_append_prop(apr_pool_t *pool,
+			    const char *name, const char *value,
+			    apr_text_header *phdr)
+{
+    const char *s;
+    const char *lang = value;
+
+    /* skip past the xml:lang value */
+    value += strlen(lang) + 1;
+
+    if (*value == '\0') {
+	/* the property is an empty value */
+	if (*name == ':') {
+	    /* "no namespace" case */
+	    s = apr_psprintf(pool, "<%s/>" DEBUG_CR, name+1);
+	}
+	else {
+	    s = apr_psprintf(pool, "<ns%s/>" DEBUG_CR, name);
+	}
+    }
+    else if (*lang != '\0') {
+	if (*name == ':') {
+	    /* "no namespace" case */
+	    s = apr_psprintf(pool, "<%s xml:lang=\"%s\">%s</%s>" DEBUG_CR,
+			    name+1, lang, value, name+1);
+	}
+	else {
+	    s = apr_psprintf(pool, "<ns%s xml:lang=\"%s\">%s</ns%s>" DEBUG_CR,
+			    name, lang, value, name);
+	}
+    }
+    else if (*name == ':') {
+	/* "no namespace" case */
+	s = apr_psprintf(pool, "<%s>%s</%s>" DEBUG_CR, name+1, value, name+1);
+    }
+    else {
+	s = apr_psprintf(pool, "<ns%s>%s</ns%s>" DEBUG_CR, name, value, name);
+    }
+
+    apr_text_append(pool, phdr, s);
+}
+
+static dav_error * dav_propdb_open(apr_pool_t *pool,
+                                   const dav_resource *resource, int ro,
+                                   dav_db **pdb)
+{
+    dav_db *db;
+    dav_error *err;
+    apr_datum_t key;
+    apr_datum_t value = { 0 };
+
+    *pdb = NULL;
+
+    /*
+    ** Return if an error occurred, or there is no database.
+    **
+    ** NOTE: db could be NULL if we attempted to open a readonly
+    **       database that doesn't exist. If we require read/write
+    **       access, then a database was created and opened.
+    */
+    if ((err = dav_dbm_open(pool, resource, ro, &db)) != NULL
+        || db == NULL)
+        return err;
+
+    db->uri_index = apr_hash_make(pool);
+
+    key.dptr = DAV_GDBM_NS_KEY;
+    key.dsize = DAV_GDBM_NS_KEY_LEN;
+    if ((err = dav_dbm_fetch(db, key, &value)) != NULL) {
+        /* ### push a higher-level description? */
+        return err;
+    }
+
+    if (value.dptr == NULL) {
+	dav_propdb_metadata m = {
+	    DAV_DBVSN_MAJOR, DAV_DBVSN_MINOR, 0
+	};
+
+        /*
+        ** If there is no METADATA key, then the database may be
+        ** from versions 0.9.0 .. 0.9.4 (which would be incompatible).
+        ** These can be identified by the presence of an NS_TABLE entry.
+        */
+        key.dptr = "NS_TABLE";
+        key.dsize = 8;
+        if (dav_dbm_exists(db, key)) {
+            dav_dbm_close(db);
+
+            /* call it a major version error */
+            return dav_new_error(pool, HTTP_INTERNAL_SERVER_ERROR,
+                                 DAV_ERR_PROP_BAD_MAJOR,
+                                 "Prop database has the wrong major "
+                                 "version number and cannot be used.");
+	}
+
+	/* initialize a new metadata structure */
+	dav_set_bufsize(pool, &db->ns_table, sizeof(m));
+	memcpy(db->ns_table.buf, &m, sizeof(m));
+    }
+    else {
+	dav_propdb_metadata m;
+        int ns;
+        const char *uri;
+
+	dav_set_bufsize(pool, &db->ns_table, value.dsize);
+	memcpy(db->ns_table.buf, value.dptr, value.dsize);
+
+	memcpy(&m, value.dptr, sizeof(m));
+	if (m.major != DAV_DBVSN_MAJOR) {
+	    dav_dbm_close(db);
+
+	    return dav_new_error(pool, HTTP_INTERNAL_SERVER_ERROR,
+				 DAV_ERR_PROP_BAD_MAJOR,
+				 "Prop database has the wrong major "
+				 "version number and cannot be used.");
+	}
+	db->version = m.minor;
+	db->ns_count = ntohs(m.ns_count);
+
+	dav_dbm_freedatum(db, value);
+
+        /* create db->uri_index */
+        for (ns = 0, uri = db->ns_table.buf + sizeof(dav_propdb_metadata);
+             ns++ < db->ns_count;
+             uri += strlen(uri) + 1) {
+
+            /* we must copy the key, in case ns_table.buf moves */
+            apr_hash_set(db->uri_index,
+                         apr_pstrdup(pool, uri), APR_HASH_KEY_STRING,
+                         (void *)ns);
+        }
+    }
+
+    *pdb = db;
+    return NULL;
+}
+
+static void dav_propdb_close(dav_db *db)
+{
+
+    if (db->ns_table_dirty) {
+	dav_propdb_metadata m;
+	apr_datum_t key;
+	apr_datum_t value;
+	dav_error *err;
+
+	key.dptr = DAV_GDBM_NS_KEY;
+	key.dsize = DAV_GDBM_NS_KEY_LEN;
+
+	value.dptr = db->ns_table.buf;
+	value.dsize = db->ns_table.cur_len;
+
+	/* fill in the metadata that we store into the prop db. */
+	m.major = DAV_DBVSN_MAJOR;
+	m.minor = db->version;          /* ### keep current minor version? */
+	m.ns_count = htons(db->ns_count);
+
+	memcpy(db->ns_table.buf, &m, sizeof(m));
+
+	err = dav_dbm_store(db, key, value);
+	/* ### what to do with the error? */
+    }
+
+    dav_dbm_close(db);
+}
+
+static dav_error * dav_propdb_define_namespaces(dav_db *db, dav_xmlns_info *xi)
+{
+    int ns = db->ns_count;
+    const char *uri = db->ns_table.buf + sizeof(dav_propdb_metadata);
+    char prefix[23];    /* "ns" + 20 digits + '\0' */
+
+    prefix[0] = 'n';
+    prefix[1] = 's';
+
+    /* within the prop values, we use "ns%d" for prefixes... register them */
+    for (ns = 0; ns < db->ns_count; ++ns, uri += strlen(uri) + 1) {
+        sprintf(&prefix[2], "%d", ns);
+
+        /* prefix is on the stack, and ns_table.buf can move, so copy the
+           two strings (and we simply want the values to last as long as
+           the provided dav_xmlns_info). */
+        dav_xmlns_add(xi,
+                      apr_pstrdup(xi->pool, prefix),
+                      apr_pstrdup(xi->pool, uri));
+    }
+
+    return NULL;
+}
+
+static dav_error * dav_propdb_output_value(dav_db *db,
+                                           const dav_prop_name *name,
+                                           dav_xmlns_info *xi,
+                                           apr_text_header *phdr,
+                                           int *found)
+{
+    apr_datum_t key = dav_build_key(db, name);
+    apr_datum_t value;
+    dav_error *err;
+
+    if ((err = dav_dbm_fetch(db, key, &value)) != NULL)
+        return err;
+    if (value.dptr == NULL) {
+        *found = 0;
+        return NULL;
+    }
+    *found = 1;
+
+    dav_append_prop(db->pool, key.dptr, value.dptr, phdr);
+
+    dav_dbm_freedatum(db, value);
+
+    return NULL;
+}
+
+static dav_error * dav_propdb_map_namespaces(
+    dav_db *db,
+    const apr_array_header_t *namespaces,
+    dav_namespace_map **mapping)
+{
+    dav_namespace_map *m = apr_palloc(db->pool, sizeof(*m));
+    int i;
+    int *pmap;
+    const char **puri;
+
+    /*
+    ** Iterate over the provided namespaces. If a namespace already appears
+    ** in our internal map of URI -> ns_id, then store that in the map. If
+    ** we don't know the namespace yet, then add it to the map and to our
+    ** table of known namespaces.
+    */
+    pmap = apr_palloc(db->pool, namespaces->nelts * sizeof(*pmap));
+    for (i = namespaces->nelts, puri = (const char **)namespaces->elts;
+         i-- > 0;
+         ++puri, ++pmap) {
+
+        const char *uri = *puri;
+        apr_size_t uri_len = strlen(uri);
+        int ns_id = (int)apr_hash_get(db->uri_index, uri, uri_len);
+
+        if (ns_id == 0) {
+            dav_check_bufsize(db->pool, &db->ns_table, uri_len + 1);
+            memcpy(db->ns_table.buf + db->ns_table.cur_len, uri, uri_len + 1);
+            db->ns_table.cur_len += uri_len + 1;
+
+            /* copy the uri in case the passed-in namespaces changes in
+               some way. */
+            apr_hash_set(db->uri_index, apr_pstrdup(db->pool, uri), uri_len,
+                         (void *)(db->ns_count + 1));
+
+            db->ns_table_dirty = 1;
+
+            *pmap = db->ns_count++;
+        }
+        else {
+            *pmap = ns_id - 1;
+        }
+    }
+
+    m->ns_map = pmap;
+    *mapping = m;
+    return NULL;
+}
+
+static dav_error * dav_propdb_store(dav_db *db, const dav_prop_name *name,
+                                    const apr_xml_elem *elem,
+                                    dav_namespace_map *mapping)
+{
+    apr_datum_t key = dav_build_key(db, name);
+    apr_datum_t value;
+
+    /* Note: mapping->ns_map was set up in dav_propdb_map_namespaces() */
+
+    /* ### use a db- subpool for these values? clear on exit? */
+
+    /* quote all the values in the element */
+    /* ### be nice to do this without affecting the element itself */
+    /* ### of course, the cast indicates Badness is occurring here */
+    apr_xml_quote_elem(db->pool, (apr_xml_elem *)elem);
+
+    /* generate a text blob for the xml:lang plus the contents */
+    apr_xml_to_text(db->pool, elem, APR_XML_X2T_LANG_INNER, NULL,
+                    mapping->ns_map,
+                    (const char **)&value.dptr, &value.dsize);
+
+    return dav_dbm_store(db, key, value);
+}
+
+static dav_error * dav_propdb_remove(dav_db *db, const dav_prop_name *name)
+{
+    apr_datum_t key = dav_build_key(db, name);
+    return dav_dbm_delete(db, key);
+}
+
+static int dav_propdb_exists(dav_db *db, const dav_prop_name *name)
+{
+    apr_datum_t key = dav_build_key(db, name);
+    return dav_dbm_exists(db, key);
+}
+
+static const char *dav_get_ns_table_uri(dav_db *db, int ns_id)
+{
+    const char *p = db->ns_table.buf + sizeof(dav_propdb_metadata);
+
+    while (ns_id--)
+        p += strlen(p) + 1;
+
+    return p;
+}
+
+static void dav_set_name(dav_db *db, dav_prop_name *pname)
+{
+    const char *s = db->iter.dptr;
+
+    if (s == NULL) {
+        pname->ns = pname->name = NULL;
+    }
+    else if (*s == ':') {
+        pname->ns = "";
+        pname->name = s + 1;
+    }
+    else {
+        int id = atoi(s);
+
+        pname->ns = dav_get_ns_table_uri(db, id);
+        if (s[1] == ':') {
+            pname->name = s + 2;
+        }
+        else {
+            pname->name = ap_strchr_c(s + 2, ':') + 1;
+        }
+    }
+}
+
+static dav_error * dav_propdb_next_name(dav_db *db, dav_prop_name *pname)
+{
+    dav_error *err;
+
+    /* free the previous key. note: if the loop is aborted, then the DBM
+       will toss the key (via pool cleanup) */
+    if (db->iter.dptr != NULL)
+        dav_dbm_freedatum(db, db->iter);
+
+    if ((err = dav_dbm_nextkey(db, &db->iter)) != NULL)
+        return err;
+
+    /* skip past the METADATA key */
+    if (db->iter.dptr != NULL && *db->iter.dptr == 'M')
+        return dav_propdb_next_name(db, pname);
+
+    dav_set_name(db, pname);
+    return NULL;
+}
+
+static dav_error * dav_propdb_first_name(dav_db *db, dav_prop_name *pname)
+{
+    dav_error *err;
+
+    if ((err = dav_dbm_firstkey(db, &db->iter)) != NULL)
+        return err;
+
+    /* skip past the METADATA key */
+    if (db->iter.dptr != NULL && *db->iter.dptr == 'M')
+        return dav_propdb_next_name(db, pname);
+
+    dav_set_name(db, pname);
+    return NULL;
+}
+
+static dav_error * dav_propdb_get_rollback(dav_db *db,
+                                           const dav_prop_name *name,
+                                           dav_deadprop_rollback **prollback)
+{
+    dav_deadprop_rollback *rb = apr_pcalloc(db->pool, sizeof(*rb));
+    apr_datum_t key;
+    apr_datum_t value;
+    dav_error *err;
+
+    key = dav_build_key(db, name);
+    rb->key.dptr = apr_pstrdup(db->pool, key.dptr);
+    rb->key.dsize = key.dsize;
+
+    if ((err = dav_dbm_fetch(db, key, &value)) != NULL)
+        return err;
+    if (value.dptr != NULL) {
+        rb->value.dptr = apr_pmemdup(db->pool, value.dptr, value.dsize);
+        rb->value.dsize = value.dsize;
+    }
+
+    *prollback = rb;
+    return NULL;
+}
+
+static dav_error * dav_propdb_apply_rollback(dav_db *db,
+                                             dav_deadprop_rollback *rollback)
+{
+    if (rollback->value.dptr == NULL) {
+        /* don't fail if the thing isn't really there. */
+        (void) dav_dbm_delete(db, rollback->key);
+        return NULL;
+    }
+
+    return dav_dbm_store(db, rollback->key, rollback->value);
+}
+
 const dav_hooks_db dav_hooks_db_dbm =
 {
-    dav_dbm_open,
-    dav_dbm_close,
-    dav_dbm_fetch,
-    dav_dbm_store,
-    dav_dbm_delete,
-    dav_dbm_exists,
-    dav_dbm_firstkey,
-    dav_dbm_nextkey,
-    dav_dbm_freedatum,
+    dav_propdb_open,
+    dav_propdb_close,
+    dav_propdb_define_namespaces,
+    dav_propdb_output_value,
+    dav_propdb_map_namespaces,
+    dav_propdb_store,
+    dav_propdb_remove,
+    dav_propdb_exists,
+    dav_propdb_first_name,
+    dav_propdb_next_name,
+    dav_propdb_get_rollback,
+    dav_propdb_apply_rollback,
 };

@@ -533,8 +533,8 @@ const char *dav_xml_get_cdata(const ap_xml_elem *elem, apr_pool_t *pool,
 ** XML namespace handling
 **
 ** This structure tracks namespace declarations (xmlns:prefix="URI").
-** It maintains a many-to-one relationship of URIs-to-prefixes. In other
-** words, a URI may be defined by multiple prefixes, but any specific
+** It maintains a one-to-many relationship of URIs-to-prefixes. In other
+** words, one URI may be defined by many prefixes, but any specific
 ** prefix will specify only one URI.
 **
 ** Prefixes using the "g###" pattern can be generated automatically if
@@ -1020,7 +1020,13 @@ enum {
 */
 
 typedef struct dav_db dav_db;
-typedef apr_datum_t dav_datum;
+typedef struct dav_namespace_map dav_namespace_map;
+typedef struct dav_deadprop_rollback dav_deadprop_rollback;
+
+typedef struct {
+    const char *ns;     /* "" signals "no namespace" */
+    const char *name;
+} dav_prop_name;
 
 /* hook functions to enable pluggable databases */
 struct dav_hooks_propdb
@@ -1030,23 +1036,93 @@ struct dav_hooks_propdb
     void (*close)(dav_db *db);
 
     /*
-    ** Fetch the value from the database. If the value does not exist,
-    ** then *pvalue should be zeroed.
+    ** In bulk, define any namespaces that the values and their name
+    ** elements may need.
+    **
+    ** Note: sometimes mod_dav will defer calling this until output_value
+    ** returns found==1. If the output process needs the dav_xmlns_info
+    ** filled for its work, then it will need to fill it on demand rather
+    ** than depending upon this hook to fill in the structure.
+    **
+    ** Note: this will *always* be called during an output sequence. Thus,
+    ** the provider may rely solely on using this to fill the xmlns info.
+    */
+    dav_error * (*define_namespaces)(dav_db *db, dav_xmlns_info *xi);
+
+    /*
+    ** Output the value from the database (i.e. add an element name and
+    ** the value into *phdr). Set *found based on whether the name/value
+    ** was found in the propdb.
     **
     ** Note: it is NOT an error for the key/value pair to not exist.
+    **
+    ** The dav_xmlns_info passed to define_namespaces() is also passed to
+    ** each output_value() call so that namespaces can be added on-demand.
+    ** It can also be used to look up prefixes or URIs during the output
+    ** process.
     */
-    dav_error * (*fetch)(dav_db *db, dav_datum key, dav_datum *pvalue);
+    dav_error * (*output_value)(dav_db *db, const dav_prop_name *name,
+                                dav_xmlns_info *xi,
+                                apr_text_header *phdr, int *found);
 
-    dav_error * (*store)(dav_db *db, dav_datum key, dav_datum value);
-    dav_error * (*remove)(dav_db *db, dav_datum key);
+    /*
+    ** Build a mapping from "global" namespaces (stored in apr_xml_*)
+    ** into provider-local namespace identifiers.
+    **
+    ** This mapping should be done once per set of namespaces, and the
+    ** resulting mapping should be passed into the store() hook function.
+    **
+    ** Note: usually, there is just a single document/namespaces for all
+    ** elements passed. However, the generality of creating multiple
+    ** mappings and passing them to store() is provided here.
+    **
+    ** Note: this is only in preparation for a series of store() calls.
+    ** As a result, the propdb must be open for read/write access when
+    ** this function is called.
+    */
+    dav_error * (*map_namespaces)(dav_db *db,
+                                  const apr_array_header_t *namespaces,
+                                  dav_namespace_map **mapping);
+    
+    /*
+    ** Store a property value for a given name. The value->combined field
+    ** MUST be set for this call.
+    **
+    ** ### WARNING: current providers will quote the text within ELEM.
+    ** ### this implies you can call this function only once with a given
+    ** ### element structure (a second time will quote it again).
+    */
+    dav_error * (*store)(dav_db *db, const dav_prop_name *name,
+                         const apr_xml_elem *elem,
+                         dav_namespace_map *mapping);
+
+    /* remove a given property */
+    dav_error * (*remove)(dav_db *db, const dav_prop_name *name);
 
     /* returns 1 if the record specified by "key" exists; 0 otherwise */
-    int (*exists)(dav_db *db, dav_datum key);
+    int (*exists)(dav_db *db, const dav_prop_name *name);
 
-    dav_error * (*firstkey)(dav_db *db, dav_datum *pkey);
-    dav_error * (*nextkey)(dav_db *db, dav_datum *pkey);
+    /*
+    ** Iterate over the property names in the database.
+    **
+    ** iter->name.ns == iter->name.name == NULL when there are no more names.
+    **
+    ** Note: only one iteration may occur over the propdb at a time.
+    */
+    dav_error * (*first_name)(dav_db *db, dav_prop_name *pname);
+    dav_error * (*next_name)(dav_db *db, dav_prop_name *pname);
 
-    void (*freedatum)(dav_db *db, dav_datum data);
+    /*
+    ** Rollback support: get rollback context, and apply it.
+    **
+    ** struct dav_deadprop_rollback is a provider-private structure; it
+    ** should remember the name, and the name's old value (or the fact that
+    ** the value was not present, and should be deleted if a rollback occurs).
+    */
+    dav_error * (*get_rollback)(dav_db *db, const dav_prop_name *name,
+                                dav_deadprop_rollback **prollback);
+    dav_error * (*apply_rollback)(dav_db *db,
+                                  dav_deadprop_rollback *rollback);
 };
 
 
