@@ -24,24 +24,32 @@
 <p><span>Available Languages: </span><a href="../en/mod/mod_expires.html" title="English">&nbsp;en&nbsp;</a> |
 <a href="../ko/mod/mod_expires.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Generation of <code>Expires</code> HTTP headers according to
-user-specified criteria</td></tr>
+<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Generation of <code>Expires</code> and
+<code>Cache-Control</code> HTTP headers according to user-specified
+criteria</td></tr>
 <tr><th><a href="module-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">Module Identifier:</a></th><td>expires_module</td></tr>
 <tr><th><a href="module-dict.html#SourceFile">Source File:</a></th><td>mod_expires.c</td></tr></table>
 <h3>Summary</h3>
 
     <p>This module controls the setting of the <code>Expires</code>
-    HTTP header in server responses. The expiration date can set to
-    be relative to either the time the source file was last
-    modified, or to the time of the client access.</p>
+    HTTP header and the <code>max-age</code> directive of the
+    <code>Cache-Control</code> HTTP header in server responses. The
+    expiration date can set to be relative to either the time the
+    source file was last modified, or to the time of the client
+    access.</p>
 
-    <p>The <code>Expires</code> HTTP header is an instruction to
-    the client about the document's validity and persistence. If
-    cached, the document may be fetched from the cache rather than
-    from the source until this time has passed. After that, the
-    cache copy is considered "expired" and invalid, and a new copy
-    must be obtained from the source.</p>
+    <p>These HTTP headers are an instruction to the client about the
+    document's validity and persistence. If cached, the document may
+    be fetched from the cache rather than from the source until this
+    time has passed. After that, the cache copy is considered
+    "expired" and invalid, and a new copy must be obtained from the
+    source.</p> 
+
+    <p>To modify <code>Cache-Control</code> directives other than
+    <code>max-age</code> (see <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.9">RFC
+    2616 section 14.9</a>), you can use the <code class="directive"><a href="../mod/mod_headers.html#header">Header</a></code> directive.</p>
+
 </div>
 <div id="quickview"><h3 class="directives">Directives</h3>
 <ul id="toc">
@@ -129,23 +137,25 @@ headers</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_expires</td></tr>
 </table>
     <p>This directive enables or disables the generation of the
-    <code>Expires</code> header for the document realm in question.
-    (That is, if found in an <code>.htaccess</code> file, for
-    instance, it applies only to documents generated from that
-    directory.) If set to <code>Off</code>, no <code>Expires</code> header
-    will be generated for any document in the realm (unless overridden at
-    a lower level, such as an <code>.htaccess</code> file overriding a
-    server config file). If set to <code>On</code>, the header will be
-    added to served documents according to the criteria defined by the 
-    <code class="directive"><a href="#expiresbytype">ExpiresByType</a></code> and 
-    <code class="directive"><a href="#expiresdefault">ExpiresDefault</a></code> directives
-    (<em>q.v.</em>).</p>
+    <code>Expires</code> and <code>Cache-Control</code> headers for
+    the document realm in question.  (That is, if found in an
+    <code>.htaccess</code> file, for instance, it applies only to
+    documents generated from that directory.) If set to
+    <code>Off</code>, the headers will not be generated for any
+    document in the realm (unless overridden at a lower level, such as
+    an <code>.htaccess</code> file overriding a server config
+    file). If set to <code>On</code>, the headers will be added to
+    served documents according to the criteria defined by the
+    <code class="directive"><a href="#expiresbytype">ExpiresByType</a></code> and
+    <code class="directive"><a href="#expiresdefault">ExpiresDefault</a></code>
+    directives (<em>q.v.</em>).</p>
 
     <p>Note that this directive does not guarantee that an
-    <code>Expires</code> header will be generated. If the criteria
-    aren't met, no header will be sent, and the effect will be as
-    though this directive wasn't even specified.</p>
-
+    <code>Expires</code> or <code>Cache-Control</code> header will be
+    generated. If the criteria aren't met, no header will be sent, and
+    the effect will be as though this directive wasn't even
+    specified.</p>
+ 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="ExpiresByType" id="ExpiresByType">ExpiresByType</a> <a name="expiresbytype" id="expiresbytype">Directive</a></h2>
@@ -160,10 +170,13 @@ by MIME type</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_expires</td></tr>
 </table>
     <p>This directive defines the value of the <code>Expires</code>
-    header generated for documents of the specified type (<em>e.g.</em>,
-    <code>text/html</code>). The second argument sets the number of
-    seconds that will be added to a base time to construct the expiration
-    date.</p>
+    header and the <code>max-age</code> directive of the
+    <code>Cache-Control</code> header generated for documents of the
+    specified type (<em>e.g.</em>, <code>text/html</code>). The second
+    argument sets the number of seconds that will be added to a base
+    time to construct the expiration date.  The <code>Cache-Control:
+    max-age</code> is calculated by subtracting the request time from
+    the expiration date and expressing the result in seconds.</p>
 
     <p>The base time is either the last modification time of the
     file, or the time of the client's access to the document. Which
