@@ -125,7 +125,7 @@ do
 	    fi
 	else
 	    if $HTTPD -t >/dev/null 2>&1; then
-		if kill -@AP_SIG_GRACEFUL@ $PID ; then
+		if kill -@AP_SIG_GRACEFUL_SHORT@ $PID ; then
 		    echo "$0 $ARG: httpd gracefully restarted"
 		else
 		    echo "$0 $ARG: httpd could not be restarted"
