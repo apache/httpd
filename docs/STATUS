@@ -1,5 +1,5 @@
 Apache HTTP Server 2.0 Documentation Status File.
-Last modified: $Date: 2002/07/25 21:36:43 $
+Last modified: $Date: 2002/07/27 15:45:43 $
 
 If you are interested in helping accomplish some of the tasks on this
 list or otherwise improving the documentation, please join the
@@ -20,11 +20,10 @@ tutorial on how to get started with making your contribution.
     - The xsl transformations could be greatly improved to a) look better
       and b) use proper CSS+html rather than the horrible hack that
       Joshua did.
-    - xslt code needs to be added to deal with <manualpage>; shouldn't be
-      too difficult.
-    - Build system needs to be modified to transform directories other than
-      mod/ and probably to set up some variables to get references in the
-      <directive> and <module> tags to point to the right place.
+    - Is there a way to get Ant+Xalan to validate the documents when
+      transforming?
+    - Rewriting of the remainder of the manual into xml is in
+      progress.
 
 - modules docs
     - mod_suexec: very little documentation
