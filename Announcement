@@ -1,5 +1,5 @@
 
-Apache 2.0alpha7 Released
+Apache 2.0alpha8 Released
 -------------------------
 
 The Apache Group is pleased to announce the release of the seventh public
@@ -10,18 +10,18 @@ boosts over the 1.3 codebase. The most visible and noteworthy addition
 is the ability to run Apache in a hybrid thread/process mode on any
 platform that supports both threads and processes.  This has shown to
 improve the scalability of the Apache HTTPD server significantly in
-our early testing, on some versions of Unix.  This release also
+our early testing, on some versions of Unix.  With this version of Apache,
+we have also added support for filtered I/O.  This allows modules to modify
+the output of other modules before it is sent to the client.  This release also
 greatly improves the performance and robustness of Apache on the
 Microsoft Windows Operating Systems.  Lastly we are proud to announce
 support for BeOS in this version of the server.
 
-The newest development in Apache 2.0 is the addition of input filtering.
-This allows modules to filter data before the core server receives it from
-the network.  The sixth alpha had support for output filtering only, this
-alpha adds input filtering as well.  This feature is still in its infancy, 
-and it is likely to change and evolve in the next few weeks.
+Included in this alpha is a pre-alpha version of mod_proxy.  Mod_proxy
+is not at the same level as the rest of the server, and should be enabled
+only by people who are very interested in working with the code.
 
-Apache 2.0a7 under UNIX has undergone some testing, but there are some
+Apache 2.0a8 under UNIX has undergone some testing, but there are some
 known issues in the current release (hey, it is an "alpha" for a
 reason!). It is intended for developers and experienced Apache HTTPD
 administrators to play around with and work on. It is not a production
@@ -29,7 +29,7 @@ release. If you do not feel comfortable compiling and working with
 code, the Apache Group strongly recommends that you wait for a more
 stable beta release before you try this version.
 
-Apache 2.0a7 under Windows has undergone some testing as well.  There
+Apache 2.0a8 under Windows has undergone some testing as well.  There
 are known issues in the current release with regards to Apache on windows
 95 and 98.  We are working through those problems, and hope to have them
 fixed for future releases of the 2.0 alpha.
@@ -48,283 +48,387 @@ Internet web servers.
 
 For more information, please check out http://www.apache.org/httpd.html
 
-Changes with Apache 2.0a7
-  *) Fix mod_log_config so that it compiles cleanly with BUFFERED_LOGS
-     [Mike Abbott <mja@sgi.com>]
-
-  *) Remove ap_send_fb.  This is no longer used in Apache, and it doesn't
-     make much sense, because Apache uses buckets instead of BUFFs now.
+Changes with Apache 2.0a8
+  *) Add a directive to mod_mime so that filters can be associated with
+     a given mime-type.
      [Ryan Bloom]
 
-  *) send_the_file now falls back to a read/write loop on platforms that
-     do not have sendfile.
-     [Ryan Bloom and Brian Havard]
-
-  *) Install apachectl correctly, and substitute the proper values so
-     that it works again.  [Ryan Bloom]
-
-  *) Better(??) handle platforms that lack sendfile().
-     [Jim Jagielski]
-
-  *) APR now has UUID generation/formatting/parsing support.
-     [Greg Stein]
-
-  *) Begin the http_filter.  This is an input filter that understands
-     the absolute basic amount required to parse an HTTP Request.  The
-     goal is to be able to split headers from request body before passing
-     the data back to the other filters.
+  *) Get multi-views working again.  We were setting the path_info
+     field incorrectly if we couldn't find the specified file.
      [Ryan Bloom]
 
-  *) Bring forward from 1.3.13 the config directory implementation
-     [Jim Jagielski]
-
-  *) install apxs if it is created
+  *) Fix 304 processing.  The core should never try to send the headers
+     down the filter stack.  Always, just setup the table in the request
+     record, and let the header filter convert it to data that is ready
+     for the network.
      [Ryan Bloom]
 
-  *) Added APR_IS_STATUS_condition test macros to eliminate canonical error
-     conversions.  [William Rowe]
-
-  *) Now that we have ap_add_input_filter(), rename ap_add_filter() to 
-     ap_add_output_filter().  [Jeff Trawick]
-
-  *) Multiple build and configuration fixes
-    Build process:
-
-      -add datadir and localstatedir substitutions
-      -fix layout name
-      -fix logfilename misspelling
-      -fix evaluation of installation dir variables and
-      -replace $foobar by $(foobar) to be usefull in the makefile
-    
-    Cross compile:
-    
-      -add rules for cross-compiling in rules.mk. Okay, rule to check for
-       $CC_FOR_BUILD is still missing
-      -use CHECK_TOOL instead of CHECK_PROG for ranlib
-      -add missing "AR=@AR@" to severaly Makefile.in's
-      -cache result for "struct rlimit"
-      -compile all helper programs with native and cross compiler
-       and use the native version to generate header file
-     ["Rüdiger" Kuhlmann <Tadu@gmx.de>]
-
-  *) Prepare our autoconf setup for autoconf 2.14a and for cross-
-     compiling.
-     ["Rüdiger" Kuhlmann <Tadu@gmx.de>]
-
-  *) Fix a bug where a client which only sends \n to delimit header
-     lines (netcat) gets a strange looking HTTP_NOT_IMPLEMENTED 
-     message.  Start working on ebcdic co-existance with input 
-     filtering.
-     [William Rowe, Greg Ames]
-
-  *) If mod_so is enabled in the server always create libexec, even
-     if there are no modules installed in this directory.  This is a
-     requirement for APXS to work correctly.
+  *) More fixes for the proxy.  There are still bugs in the proxy code,
+     but this has now proxied www.yahoo.com and www.ntrnet.net (my ISP)
+     successfully.
      [Ryan Bloom]
 
-  *) Connection oriented output filters are now stored in the 
-     conn_rec instead of the request_rec.  This allows us to add the
-     output filter in the pre-connection phase instead of the
-     post_read_request phase, which keeps us from trying to write an
-     error page before we have a filter to write to the network.
-     [Ryan Bloom, Jeff Trawick, and Greg Ames]
+  *) Fix params for apr_getaddrinfo() call in connect proxy handler.
+     [Chuck Murcko]
 
-  *) Cleaning up an mmap bucket no longer deletes the mmap.  An
-     mmap can be used across multiple buckets (default_handler with
-     byte ranges, mod_file_cache, mod_mmap_static), so cleanup of
-     the mmap itself can't be associated with the bucket.
-     [Jeff Trawick]
+  *) APR: Add new apr_getopt_long function to handle long options.
+     [B. W. Fitzpatrick <fitz@red-bean.com>]
 
-  *) Add .dll caching directive ISAPICacheFile to mod_isapi.
-     [William Rowe]
+  *) APR: Change apr_connect() to take apr_sockaddr_t instead of hostname.
+     Add generic apr_create_socket().  Add apr_getaddrinfo() for doing
+     hostname resolution/address string parsing and building
+     apr_sockaddr_t.  Add apr_get_sockaddr() for getting the address
+     of one of the apr_sockaddr_t structures for a socket.  Change
+     apr_bind() to take apr_sockaddr_t.  [David Reid and Jeff Trawick]
 
-  *) Radical surgery to improve mod_isapi support under Win32.
-     Includes a number of newer ServerSupportFunction calls, support
-     for ReadClient (in order to retrieve POSTs greater than 48KB),
-     and general bug fixes to more reliably load ISAPI .dll's and
-     prevent leaking handle resources.  Note: There are still 
-     discrepancies between IIS's and Apache's ServerVariables, and
-     async calls are still not supported.  Additional warnings are
-     logged to facilitate debugging of unsupported ISAPI calls.
-     [William Rowe]
-
-  *) Add input filtering to Apache.  The basic idea for the input
-     filters is the same as the ideas for output filters.  The biggest
-     difference is that instead of calling ap_pass_brigade, ap_get_brigade
-     should be called, and the order of execution for the filter itself is
-     different.  When writing an output filter, a brigade is passed in,
-     and filters operate directly on that brigade, when done, they call
-     ap_pass_brigade.  Input filters are the exact opposite.  Because input
-     is not a push operation, filters first call ap_get_brigade.  When this
-     function returns, the input filter will be left with a valid brigade.
-     The input filter should then operate on the brigade, and return.
+  *) Remove the BUFF from the HTTP proxy.  This is still a bit ugly, but
+     I have proxied pages with it, cleanup will commence soon.
      [Ryan Bloom]
 
-  *) Fix building on BSD/OS using its native make. The build system
-     falls back to the BSD .include directive on that host platform.
+  *) Make the proxy work with filters.  This isn't perfect, because we
+     aren't dealing with the headers properly.  [Ryan Bloom]
+
+  *) Do not send a content-length iff the C-L is 0 and this is a head
+     request.  [Ryan Bloom]
+
+  *) Make cgi-bin work as a regular directory when using mod_vhost_alias
+     with no VirtualScriptAlias directives. PR#6829 [Tony Finch]
+
+  *) Remove BUFF from the PROXY connect handling. [Ryan Bloom]
+
+  *) Get the default_handler to stop trying to deal with HEAD requests.
+     The idea is to let the content-length filter compute the C-L before
+     we try to send the data.  If we can get the C-L correctly, then we
+     should send it in the HEAD response.
+     [Ryan Bloom]
+
+  *) The Header filter can now determine if a body should be sent based
+     on r->header_only.  The general idea of this is that if we delay
+     deciding to send the body, then we might be able to compute the
+     content-length correctly, which will help caching proxies to cache
+     our data better.  Any handler that doesn't want to try to compute
+     the content-length can just send an EOS bucket without data and
+     everything will just work.
+     [Ryan Bloom]
+
+  *) Add the referer to the error log if one is available.
+     [Markus Gyger <mgyger@itr.ch>]
+
+  *) Mod_info.c has now been ported to Apache 2.0.  As a part of this
+     change, the root of the configuration tree has been exposed to modules
+     as ap_conftree.
+     [Ryan Morgan <rmorgan@covalent.net>]
+
+  *) Get the core_output_filter to use the bucket interface directly.
+     This keeps us from calling the content-length filter multiple times
+     for a simple static request.
+     [Ryan Bloom]
+
+  *) We are sending the content-type correctly now.
+     [Ryan Bloom and Will Rowe]
+
+  *) APR on FreeBSD: Fix a bug in apr_sendfile() which caused us to report
+     a bogus bytes-sent value when the only thing being sent was trailers
+     and writev() returned an error (or EAGAIN).  [Jeff Trawick]
+
+  *) Get SINGLE_LISTEN_UNSERIALIZED_ACCEPT working again.  This uses the
+     hints file to determine which platforms define
+     SINGLE_LISTEN_UNSERIALIZED_ACCEPT.
+     [Ryan Bloom]
+
+  *) APR: add apr_get_home_directory()  [Jeff Trawick]
+
+  *) Initial import of 1.3-current mod_proxy. [Chuck Murcko]
+
+  *) Not all platforms have INADDR_NONE defined by default.  Apache
+     used to make this check and define INADDR_NONE if appropriate,
+     but APR needs the check too, and I suspect other applications will
+     as well.  APR now defines APR_INADDR_NONE, which is always a valid
+     value on all platforms.
+     [Branko Èibej <brane@xbc.nu>]
+
+  *) Destroy the pthread mutex in lock_intra_cleanup() for PR#6824.
+     [Shuichi Kitaguchi <ki@hh.iij4u.or.jp>]
+
+  *) Relax the syntax checking of Host: headers in order to support
+     iDNS. PR#6635 [Tony Finch]
+
+  *) When reading from file buckets we convert to an MMAP if it makes
+     sense.  This also simplifies the default handler because the
+     default handler no longer needs to try to create MMAPs.
+     [Ryan Bloom]
+
+  *) BUFF has been removed from the main server.  The BUFF code will remain
+     in the code until it has been purged from the proxy module as well.
+     [Ryan Bloom]
+
+  *) Byteranges have been completely re-written to be a filter.  This
+     has been tested, and I believe it is working correctly, but it could
+     doesn't work for the Adobe Acrobat plug-in.  The output almost matches
+     the output from 1.3, the only difference being that 1.3 includes
+     a content-length in the response, and this does not.
+     [Ryan Bloom]
+
+  *) APR read/write functions and bucket read functions now operate
+     on unsigned integers, instead of signed ones.  It doesn't make
+     any sense to use signed ints, because we return the error codes,
+     so if we have an error we should report 0 bytes read or written.
+     [Ryan Bloom]
+
+  *) Always compute the content length, whether it is sent or not.
+     The reason for this, is that it allows us to correctly report
+     the bytes_sent when logging the request.  This also simplifies
+     content-length filter a bit, and fixes the actual byte-reporing
+     code in mod_log_config.c
+     [Ryan Bloom]
+
+  *) Remove AP_END_OF_BRIGADE definition.  This does not signify what
+     it says, because it was only used by EOS and FLUSH buckets.  Since
+     neither of those are required at the end of a brigade, this was
+     really signifying FLUSH_THE_DATA, but that can be determined better
+     by checking AP_BUCKET_IS_EOS() or AP_BUCKET_IS_FLUSH.  EOS and FLUSH
+     buckets now return a length of 0, which is actually the amount of data
+     read, so they make more sense.
+     [Ryan Bloom]
+
+  *) Allow the core_output_filter to save some data past the end of a
+     request.  If we get an EOS bucket, we only send the data if it
+     makes sense to send it.  This allows us to pipeline request
+     responses.  As a part of this, we also need to allocate mmap
+     buckets out of the connection pool, not the request pool.  This
+     allows the mmap to outlive the request.
+     [Ryan Bloom]
+
+  *) Make blocking and non-blocking bucket reads work correctly for
+     sockets and pipes.  These are the only bucket types that should
+     have non-blocking reads, because the other bucket types should
+     ALWAYS be able to return something immediately.
+     [Ryan Bloom]
+
+  *) In the Apache/Win32 console window, accept Ctrl+C to stop the
+     server, but use Ctrl+Break to initiate a graceful restart
+     instead of duplicating behavior. [John Sterling]
+
+  *) Patch mod_autoindex to set the Last-Modified header based on
+     the directory's mtime, and add the ETag header.  [William Rowe]
+
+  *) Merge the 1.3 patch to add support for logging query string in
+     such a way that "%m %U%q %H" is the same as "%r".
+     [Bill Stoddard]
+
+  *) Port three log methods from mod_log_config 1.3 to 2.0:
+     CLF compliant '-' byte count, method and protocol.
+     [Bill Stoddard]
+
+  *) Add a new LogFormat directive, %c, that will log connection
+     status at the end of the response as follows:
+     'X' - connection aborted before the response completed.
+     '+' - connection may be kept-alive by the server.
+     '-' - connection will be closed by the server.
+     [Bill Stoddard]
+
+  *) Expand APR for WinNT to fully accept and return utf-8 encoded
+     Unicode file names and paths for Win32, and tag the Content-Type
+     from mod_autoindex to reflect that charset if the the feature
+     macro APR_HAS_UNICODE_FS is true.  [William Rowe]
+
+  *) Compute the content length (and add appropriate header field) for
+     the response when no content length is available and we can't use
+     chunked encoding.  [Jeff Trawick]
+
+  *) Changed ap_discard_request_body() to use REQUEST_CHUNKED_DECHUNK,
+     so that content input filters get dechunked data when using
+     the default handler. Also removed REQUEST_CHUNKED_PASS.
      [Sascha Schumann]
 
-  *) Expand dbmmanage to allow -d -m -s -p options for Crypt, MD5,
-     SHA1 and plaintext password encodings.  Make feature tests a
-     bit more flexible.  [William Rowe]
+  *) Add mod_ext_filter as an experimental module.  This module allows
+     the administrator to use external programs as filters.  Currently,
+     only filtering of output is supported.  [Jeff Trawick]
 
-  *) Charset translation: mod_charset_lite handles output content 
-     translation in a filter.  mod_charset_lite no longer ignores 
-     subrequests.  A bunch of cruft related to BUFF's support for
-     translating response bodies was removed.  [Jeff Trawick]
+  *) Most Apache functions work on EBCDIC machines again, as protocol
+     data is now translated (again).  [Jeff Trawick]
 
-  *) Move the addition of the CORE filter to the post_read_request
-     hook in http_core.c.  This removes the need to add the filter in
-     multiple places and allows for an SSL module to be added much
-     simpler. [Ryan Bloom]
+  *) Introduce ap_xlate_proto_{to|from}_ascii() to clean up some of
+     the EBCDIC support.  They are noops on ASCII machines, so this
+     type of translation doesn't have to be surrounded by #ifdef
+     CHARSET_EBCDIC.  [Jeff Trawick]
 
-  *) Fix a security problem that affects certain configurations of
-     mod_rewrite. If the result of a RewriteRule is a filename that
-     contains expansion specifiers, especially regexp backreferences
-     $0..$9 and %0..%9, then it may be possible for an attacker to
-     access any file on the web server. [Tony Finch]
+  *) Fix mod_include.  tag commands work again, and the server will
+     send the FAQ again.  This also allows mod_include to set aside
+     buckets that include partial buckets.
+     [Ryan Bloom and David Reid]
 
-  *) Fix a bug where errors that are detected during early request parsing
-     don't produce visible HTTP error messages at the browser, because
-     the core_filter wasn't present.  [Greg Ames]
+  *) Add suexec support back.  [Manoj Kasichainula]
 
-  *) Provide apr_socklen_t as a portability aid. 
-     [Victor  J. Orlikowski]
+  *) Lingering close now uses the socket directly instead of using
+     BUFF.  This has been tested, but since all we can tell is that it
+     doesn't fail, this needs to be really hacked on.
+     [Ryan Bloom]
 
-  *) Overhaul of dbmmanage to allow a groups arg (as in Apache 1.2)
-     as well as a comment arg to the add, adduser and update cmds.
-     update allows the user to clear or preserve pw/groups/comment.
-     Fixed a bug in dbmmanage that prevented the check option from 
-     parsing a password followed by :group... text.  Corrected the
-     seed calcualation for Win32 systems, and added -lsdbm support.
+  *) Allow filters to modify headers and have those headers be sent to
+     the client.  The idea is that we have an http_header filter that
+     actually sends the headers to the network.  This removes the need
+     for the BUFF to send headers.
+     [Ryan Bloom]
+
+  *) Charset translation: mod_charset_lite handles translation of
+     request bodies.  Get rid of the xlate version of ap_md5_digest()
+     since we don't compute digests of filtered (e.g., translated)
+     response bodies this way anymore.  (Note that we don't do it at
+     all at the present; somebody needs to write a filter to do so.)
+     [Jeff Trawick]
+
+  *) Input filters and ap_get_brigade() now have a input mode parameter
+     (blocking, non-blocking, peek) instead of a length parameter.
+     [hackathon]
+
+  *) Update the mime.types file to the registered media types as
+     of 2000-10-19. PR#6613 [Carsten Klapp <carsten.klapp@home.net>,
+     Tony Finch]
+
+  *) Namespace protect some macros declared in ap_config.h
+     [Ryan Bloom]
+
+  *) Support HTTP header line folding with input filtering.
+     [Greg Ames]
+
+  *) Mod_include works again.  This should still be re-written, but at
+     least now we can serve an SHTML page again.
+     [Ryan Bloom]
+
+  *) Begin to remove BUFF from the core.  Currently, we keep a pointer
+     to both the BUFF and the socket in the conn_rec.  Functions that
+     want to use the BUFF can, functions that want to use the socket,
+     can.  They point to the same place.
+     [Ryan Bloom]
+
+  *) apr_psprintf doesn't understand %lld as a format.  Make it %ld.
+     [Tomas "Ögren" <stric@ing.umu.se>]
+
+  *) APR pipes on Unix and Win32 are now cleaned up automatically when the
+     associated pool goes away.  (APR pipes on OS/2 were already had this
+     logic.)  This resolvs a fatal file descriptor leak with CGIs.
+     [Jeff Trawick]
+
+  *) The final line of the config file was not being read if there was
+     no \n at the end of it.  This was caused by apr_fgets returning
+     APR_EOF even though we had read valid data.  This is solved by
+     making cfg_getline check the buff that was returned from apr_fgets.
+     If apr_fgets return APR_EOF, but there was data in the buf, then we
+     return the buf, otherwise we return NULL.
+     [Ryan Bloom]
+
+  *) Piped logs work again in the 2.0 series.
+     [Ryan Bloom]
+
+  *) Restore functionality broken by the mod_rewrite security fix:
+     rewrite map lookup keys and default values are now expanded
+     so that the lookup can depend on the requested URI etc.
+     PR #6671 [Tony Finch]
+
+  *) Tighten up the syntax checking of Host: headers to fix a
+     security bug in some mass virtual hosting configurations
+     that can allow a remote attacker to retrieve some files
+     on the system that should be inaccessible. [Tony Finch]
+
+  *) Add a pool bucket type.  This bucket is used for data allocated out
+     of a pool.  If the pool is cleaned before the bucket is destroyed, then
+     the data is converted to a heap bucket, allowing it to survive the
+     death of the pool.
+     [Ryan Bloom]
+
+  *) Add a flush bucket.  This allows modules to signal that the filters
+     should all flush whatever data they currently have.  There is no way
+     to actually force them to do this, so if a filter ignores this bucket,
+     that's life, but at least we can try with this.
+     [Ryan Bloom]
+
+  *) Add an output filter for sub-requests.  This filter just strips the
+     EOS bucket so that we don't confuse the main request's core output
+     filter by sending multiple EOS buckets.  This change also makes sub
+     requests start to send EOS buckets when they are finished.
+     [Ryan Bloom]
+
+  *) Make ap_bucket_(read|destroy|split|setaside) into macros.  Also
+     makes ap_bucket_destroy a return void, which is okay because it
+     used to always return APR_SUCCESS, and nobody ever checked its
+     return value anyway.
+     [Cliff Woolley <cliffwoolley@yahoo.com>]
+
+  *) Remove the index into the bucket-type table from the buckets
+     structure.  This has now been replaced with a pointer to the
+     bucket_type.  Also add some macros to test the bucket-type.
+     [Ryan Bloom]
+
+  *) Renamed all MODULE_EXPORT symbols to AP_MODULE_DECLARE and all symbols
+     for CORE_EXPORT to AP_CORE_DECLARE (namespace protecting the wrapper)
+     and retitled API_EXPORT as AP_DECLARE and APR_EXPORT as APR_DECLARE.
+     All _VAR_ flavors changes to _DATA to be absolutely clear.
      [William Rowe]
 
-  *) Configured mod_auth_dbm to compile with sdbmlib under Win32.
-     [William Rowe]
+  *) Add support for /, //, //servername and //server/sharename
+     parsing of <Directory> blocks under Win32 and OS2.
+     [Tim Costello, William Rowe, Brian Harvard]
 
-  *) Avoid a segfault when parsing .htaccess files.  An 
-     uninitialized tree pointer was passed to ap_build_config().
-     [Jeff Trawick]
-
-  *) Change the way that inet_addr & inet_network are checked for
-     in APR's configure process to allow BeOS BONE to correctly
-     find them. With this change BeOS BONE now builds from source
-     with no problems.  [David Reid]
-
-  *) Fix a bug in apr_create_process() for Unix.  The NULL signifying
-     the end of the parameters to execve() was stored in the wrong
-     location, overlaying the storage beyond the newargs[] array and 
-     also passing uninitialized storage to execve(), which would 
-     sometimes fail with EFAULT.  [Jeff Trawick]
-
-  *) Fix a bug parsing configuration file containers.  With a sequence
-     like this in the config file
-
-       <IfModule mod_kilroy.c>
-       any stuff
-       </IfModule>
-       <IfModule mod_lovejoy.c>
-       (blank line)
-       any stuff
-       </IfModule>
-
-     the second container would be terminated at the blank line due to
-     sediment in the buffer from reading the prior </IfModule> and an 
-     error message would be generated for the real </IfModule> for the
-     second container.  Also due to this problem, any two characters 
-     could be used for "</" in the close of a container.  
-     [Jeff Trawick]
-
-  *) ap_add_filter prototype changed to remove the ctx pointer.  The
-     pointer still remains in the filter structure, but it can not be
-     a part of the ap_add_filter prototype.  The reason is that when
-     the core uses AddFilter to add a filter to the stack it doesn't
-     know how to allocate the ctx pointer, or even how much memory should
-     be allocated.  The filters will have to be responsible for allocating
-     the ctx memory when they need it.
+  *) Remove the function pointers from the ap_bucket type.  They have been
+     replaced with a global table.  Modules are allowed to register bucket
+     types and use then use those buckets.
      [Ryan Bloom]
 
-  *) Add an AddFilter directive.  This directive takes a list of filters
-     that should be activated for the requested resource.
+  *) mod_cgid: In the handler, shut down the Unix socket (only for write)
+     once we finish writing the request body to the cgi child process;
+     otherwise, the client doesn't hit EOF on stdin.  Small request bodies
+     worked without this change (for reasons I don't understand), but large
+     ones didn't.  [Jeff Trawick]
+
+  *) Remove file bucket specific information from the ap_bucket type.
+     This has been moved to a file_bucket specific type that hangs off
+     the data pointer in the ap_bucket type.
      [Ryan Bloom]
 
-  *) apr_snprintf(): Get quad format strings working on OS/390 (and perhaps
-     some other platforms).  [Jeff Trawick]
+  *) Input filtering now has a third argument.  This is the amount of data
+     to read from lower filters.  This argument can be -1, 0, or a positive
+     number.  -1 means give me all the data you have, I'll deal with it and
+     let you know if I need more.  0 means give me one line and one line
+     only.  A positive number means I want no more than this much data.
 
-  *) Modify mod_include to be a filter.  Currently, it has only been tested
-     on actual files, but it should work for CGI scripts too.
+     Currently, only 0 and a positive number are implemented.  This allows
+     us to remove the remaining field from the conn_rec structure, which
+     has also been done.
      [Ryan Bloom]
 
-  *) apr_putc(), apr_puts() for Unix: handle buffered files and interrupted
-     writes.  apr_flush() for Unix: handle interrupted writes.
-     [Jeff Trawick]
+  *) Big cleanup of the input filtering.  The goal is that http_filter
+     understands two conditions, headers and body.  It knows where it is
+     based on c->remaining.  If c->remaining is 0, then we are in headers,
+     and http_filter returns a line at a time.  If it is not 0, then we are
+     in body, and http_filter returns raw data, but only up to c->remaining
+     bytes.  It can return less, but never more.
+     [Greg Ames, Ryan Bloom, Jeff Trawick]
 
-  *) NameVirtualHost can now take "*" as an argument instead of
-     an IP address. This allows you to create a purely name-based
-     virtual hosting server that does not have any IP addresses in
-     the configuration file and which ignores the local address
-     of any connections. PR #5595, PR #4455 [Tony Finch]
+  *) mod_cgi: Write all of the request body to the child, not just what
+     the kernel would accept on the first write.  [Jeff Trawick]
 
-  *) Fix some compile warnings in mod_mmap_static.c
-     [Mike Abbott <mja@sgi.com>]
-
-  *) Fix chunking problem with CGI scripts.  The general problem was that
-     the CGI modules were adding an EOS bucket and then the core added an
-     EOS bucket.  The chunking filter finalizes the chunked response when it
-     encounters an EOS bucket.  Because two EOS buckets were sent, we
-     finalized the response twice.  The fix is to make sure we only send one
-     EOS, by utilizing a flag in the request_rec.
+  *) Back out the change that moved the brigade from the core_output_filters
+     ctx to the conn_rec.  Since all requests over a given connection
+     go through the same core_output_filter, the ctx pointer has the
+     correct lifetime.
      [Ryan Bloom]
 
-  *) apr_put_os_file() now sets up the unget byte appropriately on Unix
-     and Win32.  Previously, the first read from an apr_file_t set up via
-     apr_put_os_file() would return a '\0'.  [Jeff Trawick]
+  *) Fix another bug in the send_the_file() read/write loop. A partial
+     send by apr_send would cause unsent data in the read buffer to
+     get clobbered. Complete making send_the_file handle partial
+     writes to the network.
+     [Bill Stoddard]
 
-  *) Mod_cgid now creates a single element bucket brigade, with a pipe
-     bucket, instead of using BUFF's and ap_r*.
-     [Ryan Bloom]
+  *) Fix a couple of type fixes to allow compilation on AIX again
+     [Victor J. Orlikowski <v.j.orlikowski@gte.net>]
 
-  *) APRVARS.in no longer overwrites the EXTRA_LIBS variable.
-     [Mike Abbott <mja@sgi.com>]
+  *) Fix bug in send_the_file() which causes offset to be ignored
+     if there are no headers to send.
+     [Bill Stoddard]
 
-  *) Remove ap_bopenf from buff code.  This required modifying the file_cache
-     code to use APR file's directly instead of going through BUFFs.
-     [Ryan Bloom]
+  *) Handle APR_ENOTIMPL returned from apr_sendfile in the core
+     filter. Useful for supporting Windows 9* with a binary
+     compiled on Windows NT.
+     [Bill Stoddard]
 
-  *) Fix compile break on some platforms for mod_mime_magic.c
-     [John K. Sterling <sterling@covalent.net>]
-
-  *) Fix merging of AddDefaultCharset directive.
-     PR #5872 (1.3) [Jun Kuriyama <kuriyama@imgsrc.co.jp>]
-
-  *) Minor revamp of the rlimit sections of code. We now test
-     explicitly for setrlimit and getrlimit. Also, unixd_set_rlimit()
-     is now "available" even if the platform doesn't support
-     the rlimit family (it's just a noop though). [Jim Jagielski]
-
-  *) Migrate the pre-selection of which MPM to use for specific
-     platforms to hints.m4, which contains (or should contain)
-     all platform specific "hints". [Jim Jagielski]
-
-  *) Remove IOLs from Apache.  With filtering, IOLs are no longer necessary
-     [Ryan Bloom]
-
-  *) Add tables with non-string/binary values to APR.
-     [Ken Coar]
-
-  *) Fix some bad calls to ap_log_rerror() in mod_rewrite. 
-     [Jeff Trawick]
-
-  *) Update PCRE to version 3.2.  [Ryan Bloom]
-
-  *) Change the way buckets' destroy functions are called so that
-     they can be more directly used when changing the type of a
-     bucket in place. [Tony Finch]
-
-  *) Add generic support for reference-counting the resources used by
-     buckets, and alter the HEAP and MMAP buckets to use it. Change
-     the way buckets are initialised to support changing the type of
-     buckets in place, and use it when setting aside TRANSIENT buckets.
-     Change the implementation of TRANSIENT buckets so that it can be
-     mostly shared with IMMORTAL buckets, which are now implemented.
-     [Tony Finch]
