@@ -198,16 +198,15 @@ AP_DECLARE(char *) ap_md5contextTo64(apr_pool_t *a, apr_md5_ctx_t *context)
 AP_DECLARE(char *) ap_md5digest(apr_pool_t *p, apr_file_t *infile)
 {
     apr_md5_ctx_t context;
-    unsigned char buf[1000];
-    long length = 0;
+    unsigned char buf[4096]; /* keep this a multiple of 64 */
     apr_size_t nbytes;
     apr_off_t offset = 0L;
 
     apr_md5_init(&context);
     nbytes = sizeof(buf);
     while (apr_file_read(infile, buf, &nbytes) == APR_SUCCESS) {
-	length += nbytes;
 	apr_md5_update(&context, buf, nbytes);
+        nbytes = sizeof(buf);
     }
     apr_file_seek(infile, APR_SET, &offset);
     return ap_md5contextTo64(p, &context);
