@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/02/04 19:06:49 $]
+Last modified at [$Date: 2003/02/10 19:45:16 $]
 
 Release:
 
@@ -89,6 +89,10 @@ PATCHES TO PORT FROM 2.1
     * Fix to apr_file_open() parms in mod_cern_meta for PR 12353
       modules/metadata/mod_cern_meta.c: r1.40 
       +1: trawick, nd
+
+    * Better report problems with piped log processes (PR 15761)
+      server/log.c: r1.129 and r1.130
+      +1: trawick
 
 CURRENT RELEASE NOTES:
 
