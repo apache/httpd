@@ -1,5 +1,5 @@
 Apache 2.0 STATUS:
-Last modified at [$Date: 2000/10/26 11:36:10 $]
+Last modified at [$Date: 2000/10/28 14:57:36 $]
 
 Release:
 
@@ -61,6 +61,12 @@ RELEASE SHOWSTOPPERS:
 
     * Modify mod_cgi and mod_cgid to deal with directories.  This allows
       a lot of directives to be removed from the core.
+
+    * The AddInputFilter and AddOutputFilter directives do not allow the
+      administrator to remove or reorder filters.  Once a filter is added
+      in a container, it is present in any subcontainers.  It can only be
+      added to the filter chain after any filters specified in enclosing
+      containers.
 
 RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
     * Combine log_child and piped_log_spawn. Clean up http_log.c.
@@ -141,12 +147,12 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
 	- find a new home for ap_text(_header)
 	- is it possible to remove the DAV: namespace stuff from util_xml?
 
-    * ap_core_translate() and its use by mod_mmap_static are a bit wonky.
-      The function should probably be exposed as a utility function (such
-      as ap_translate_url2fs() or ap_validate_fs_url() or something).
-      Another approach would be a new hook phase after "translate" which
-      would allow mod_mmap_static to munge what the translation has
-      decided to do.
+    * ap_core_translate() and its use by mod_mmap_static and mod_file_cache
+      are a bit wonky.  The function should probably be exposed as a utility 
+      function (such as ap_translate_url2fs() or ap_validate_fs_url() or 
+      something).  Another approach would be a new hook phase after "translate" 
+      which would allow the module to munge what the translation has decided 
+      to do.
         Status: Greg +1 (volunteers), Ryan +1
 
     * Explore use of a post-config hook for the code in http_main.c which
