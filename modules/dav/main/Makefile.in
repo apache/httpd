@@ -1,6 +1,0 @@
-
-LTLIBRARY_NAME    = libapachemod_dav.la
-LTLIBRARY_SOURCES = mod_dav.c props.c util.c util_lock.c \
-			opaquelock.c dav_dyn.c
-
-include $(top_srcdir)/build/ltlib.mk

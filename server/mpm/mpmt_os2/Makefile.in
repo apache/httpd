@@ -1,5 +1,0 @@
-
-LTLIBRARY_NAME    = libmpmt_os2.la
-LTLIBRARY_SOURCES = mpmt_os2.c mpmt_os2_child.c
-
-include $(top_srcdir)/build/ltlib.mk
