@@ -56,10 +56,210 @@
  * University of Illinois, Urbana-Champaign.
  */
 
-#include "apr_buckets.h"
+#ifndef MOD_CACHE_H
+#define MOD_CACHE_H 
+
+/*
+ * Main include file for the Apache Transparent Cache
+ */
+
+#define CORE_PRIVATE
+
 #include "apr_hooks.h"
+#include "apr.h"
+#include "apr_compat.h"
+#include "apr_lib.h"
+#include "apr_strings.h"
+#include "apr_buckets.h"
+#include "apr_md5.h"
+#include "apr_pools.h"
+#include "apr_strings.h"
+
 #include "httpd.h"
+#include "http_config.h"
+#include "ap_config.h"
+#include "http_core.h"
+#include "http_protocol.h"
+#include "http_request.h"
+#include "http_vhost.h"
+#include "http_main.h"
+#include "http_log.h"
+#include "http_connection.h"
+#include "util_filter.h"
+#include "apr_date.h"
+#include "apr_uri.h"
 
-AP_DECLARE_HOOK(int,serve_cache,(request_rec *r));
-AP_DECLARE_HOOK(int,store_cache,(request_rec *r, apr_bucket_brigade *bb, void **cf));
+#ifdef HAVE_NETDB_H
+#include <netdb.h>
+#endif
 
+#ifdef HAVE_SYS_SOCKET_H
+#include <sys/socket.h>
+#endif
+
+#ifdef HAVE_NETINET_IN_H
+#include <netinet/in.h>
+#endif
+
+#ifdef HAVE_ARPA_INET_H
+#include <arpa/inet.h>
+#endif
+
+#ifndef MAX
+#define MAX(a,b)                ((a) > (b) ? (a) : (b))
+#endif
+#ifndef MIN
+#define MIN(a,b)                ((a) < (b) ? (a) : (b))
+#endif
+
+
+/* default completion is 60% */
+#define DEFAULT_CACHE_COMPLETION (60)
+
+#define MSEC_ONE_DAY ((apr_time_t)(86400*APR_USEC_PER_SEC)) /* one day, in microseconds */
+#define MSEC_ONE_HR  ((apr_time_t)(3600*APR_USEC_PER_SEC))  /* one hour, in microseconds */
+
+#define DEFAULT_CACHE_MAXEXPIRE MSEC_ONE_DAY
+#define DEFAULT_CACHE_EXPIRE    MSEC_ONE_HR
+#define DEFAULT_CACHE_LMFACTOR (0.1)
+
+struct cache_enable {
+    const char *url;
+    const char *type;
+};
+
+struct cache_disable {
+    const char *url;
+};
+
+/* static information about the local cache */
+typedef struct {
+    int cacheon;			/* Cache enabled? */
+    int cacheon_set;
+    apr_array_header_t *cacheenable;	/* URLs to cache */
+    apr_array_header_t *cachedisable;	/* URLs not to cache */
+    apr_time_t maxex;			/* Maximum time to keep cached files in msecs */
+    int maxex_set;
+    apr_time_t defex;			/* default time to keep cached file in msecs */
+    int defex_set;
+    double factor;			/* factor for estimating expires date */
+    int factor_set;
+    int complete;			/* Force cache completion after this point */
+    int complete_set;
+
+} cache_server_conf;
+
+/* cache info information */
+typedef struct cache_info cache_info;
+struct cache_info {
+    char *content_type;
+    const char *etag;
+    const char *lastmods;	/* last modified of cache entity */
+    apr_time_t date;
+    apr_time_t lastmod;
+    char lastmod_str[APR_RFC822_DATE_LEN];
+    apr_time_t expire;
+    apr_time_t request_time;
+    apr_time_t response_time;
+    apr_size_t len;
+};
+
+/* cache handle information */
+typedef struct cache_handle cache_handle;
+struct cache_handle {
+    cache_info *info;
+    cache_handle *next;
+    void *cache_obj;           /* Pointer to cache specific object */
+
+    /* Cache call back functions */
+    int (*remove_entity) (cache_handle *h);
+    int (*write_headers)(cache_handle *h, request_rec *r, cache_info *i);
+    int (*write_body)(cache_handle *h, apr_bucket_brigade *b);
+    int (*read_headers) (cache_handle *h, request_rec *r, cache_info **i);
+    int (*read_body) (cache_handle *h, apr_bucket_brigade *bb); 
+
+};
+
+/* per request cache information */
+typedef struct {
+    const char *types;			/* the types of caches allowed */
+    const char *type;			/* the type of cache selected */
+    int fresh;				/* is the entitey fresh? */
+    cache_handle *handle;		/* current cache handle */
+    int in_checked;			/* CACHE_IN must cache the entity */
+} cache_request_rec;
+
+
+/* cache_util.c */
+int ap_cache_request_is_conditional(request_rec *r);
+void ap_cache_reset_output_filters(request_rec *r);
+const char *ap_cache_get_cachetype(request_rec *r, cache_server_conf *conf, const char *url);
+int ap_cache_liststr(const char *list, const char *key, char **val);
+const char *ap_cache_tokstr(apr_pool_t *p, const char *list, const char **str);
+
+/**
+ * cache_storage.c
+ */
+int cache_remove_url(request_rec *r, const char *types, char *url);
+int cache_create_entity(request_rec *r, const char *types, char *url, apr_size_t size);
+int cache_remove_entity(request_rec *r, const char *types, cache_handle *h);
+int cache_select_url(request_rec *r, const char *types, char *url);
+
+apr_status_t cache_write_entity_headers(cache_handle *h, request_rec *r, cache_info *info, 
+                                        apr_table_t *headers_in, apr_table_t *headers_out);
+apr_status_t cache_write_entity_body(cache_handle *h, apr_bucket_brigade *bb);
+
+apr_status_t cache_read_entity_headers(cache_handle *h, request_rec *r, apr_table_t **headers);
+apr_status_t cache_read_entity_body(cache_handle *h, apr_bucket_brigade *bb);
+
+
+/* hooks */
+
+/* Create a set of CACHE_DECLARE(type), CACHE_DECLARE_NONSTD(type) and 
+ * CACHE_DECLARE_DATA with appropriate export and import tags for the platform
+ */
+#if !defined(WIN32)
+#define CACHE_DECLARE(type)            type
+#define CACHE_DECLARE_NONSTD(type)     type
+#define CACHE_DECLARE_DATA
+#elif defined(CACHE_DECLARE_STATIC)
+#define CACHE_DECLARE(type)            type __stdcall
+#define CACHE_DECLARE_NONSTD(type)     type
+#define CACHE_DECLARE_DATA
+#elif defined(CACHE_DECLARE_EXPORT)
+#define CACHE_DECLARE(type)            __declspec(dllexport) type __stdcall
+#define CACHE_DECLARE_NONSTD(type)     __declspec(dllexport) type
+#define CACHE_DECLARE_DATA             __declspec(dllexport)
+#else
+#define CACHE_DECLARE(type)            __declspec(dllimport) type __stdcall
+#define CACHE_DECLARE_NONSTD(type)     __declspec(dllimport) type
+#define CACHE_DECLARE_DATA             __declspec(dllimport)
+#endif
+
+APR_DECLARE_EXTERNAL_HOOK(cache, CACHE, int, create_entity, 
+                          (cache_handle **hp, const char *type,
+                           char *url, apr_size_t len))
+APR_DECLARE_EXTERNAL_HOOK(cache, CACHE, int, open_entity,  
+                          (cache_handle **hp, const char *type,
+                           char *url))
+APR_DECLARE_EXTERNAL_HOOK(cache, CACHE, int, remove_url, 
+                          (const char *type, char *url))
+
+#if 0
+APR_DECLARE_EXTERNAL_HOOK(cache, CACHE, int, remove_entity, 
+                          (cache_handle *h))
+APR_DECLARE_EXTERNAL_HOOK(cache, CACHE, int, read_entity_headers, 
+                          (cache_handle *h, cache_info **info,
+                           apr_table_t **headers_in, apr_table_t **headers_out))
+APR_DECLARE_EXTERNAL_HOOK(cache, CACHE, int, read_entity_body, 
+                          (cache_handle *h,
+                           apr_bucket_brigade *out))
+APR_DECLARE_EXTERNAL_HOOK(cache, CACHE, int, write_entity_headers, 
+                          (cache_handle *h, cache_info *info,
+                           apr_table_t *headers_in, apr_table_t *headers_out))
+APR_DECLARE_EXTERNAL_HOOK(cache, CACHE, int, write_entity_body, 
+                          (cache_handle *h,
+                           apr_bucket_brigade *in))
+#endif
+
+#endif /*MOD_CACHE_H*/
