@@ -81,6 +81,13 @@ Available Patches:
       See: http://www.engelschall.com/sw/apache/ [extradeps]
       Status (for 1.3.1-dev): Ralf +1, Marc +1
 
+    * Paul's patch to add integrated restart/shutdown signalling (Win32)
+      This patch make Apache listen on predictable event names to allow
+      restarts and shutdowns to be initiated. Also adds a new command line
+      option to send the shutdown or restart signal to the running parent 
+      process.
+      See: <Pine.LNX.3.96.980510152254.21880O-100000@ecstasy.localnet>
+
 In progress:
  
     * Ken's IndexFormat enhancement to mod_autoindex to allow
