@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2002/10/22 16:58:59 $]
+Last modified at [$Date: 2002/10/22 17:01:44 $]
 
 Release:
 
@@ -483,7 +483,12 @@ EXPERIMENTAL MODULES:
       to collect status.  Status should be queryable by
       HTTP or SNMP?
 
-    
+    * Enable mod_cache/mod_mem_cache/mod_disk_cache to handle
+      multiviews
+
+    * mod_mem_cache fd caching is broken on Unix. The cached fd cannot
+      be used across multiple threads except for use on sendfile().
+
     mod_auth_ldap/util_ldap:
     
     * implement cross-platform/cross-library TLS support
