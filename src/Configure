@@ -1049,7 +1049,7 @@ if [ "x$using_shlib" = "x1" ] ; then
 	    LDFLAGS_SHLIB_EXPORT=""
 	    SHLIB_SUFFIX_DEPTH=2
 	    ;;
-	*-freebsd3*|*-freebsd4*|*-freebsd5*)
+	*-freebsd[3-9]*)
 		LD_SHLIB="gcc"
 	    CFLAGS_SHLIB="-fpic"
 	    LDFLAGS_SHLIB="-shared"
