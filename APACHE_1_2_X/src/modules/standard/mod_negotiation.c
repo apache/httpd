@@ -1443,6 +1443,7 @@ int is_variant_better_na(negotiation_state *neg, var_rec *variant, var_rec *best
            the same charset quality, then we prefer this variant */
         if (variant->charset_quality == best->charset_quality &&
             (variant->content_charset != NULL &&
+             *variant->content_charset != '\0' &&
              strcmp(variant->content_charset, "iso-8859-1") != 0) &&
             (best->content_charset == NULL ||
              *best->content_charset == '\0' ||
@@ -1545,6 +1546,7 @@ float is_variant_better(negotiation_state *neg, var_rec *variant, var_rec *best,
        the same charset quality, then we prefer this variant */
     if (variant->charset_quality > best->charset_quality ||
 	((variant->content_charset != NULL &&
+          *variant->content_charset != '\0' &&
 	  strcmp(variant->content_charset, "iso-8859-1") != 0) &&
 	 (best->content_charset == NULL ||
 	  *best->content_charset == '\0' ||
