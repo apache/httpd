@@ -1396,7 +1396,6 @@ ap_proxy_determine_connection(apr_pool_t *p, request_rec *r,
     if (proxyname) {
         mconf->conn_rec->hostname = apr_pstrdup(ppool, proxyname);
         mconf->conn_rec->port = proxyport;
-        /* see memory note above */
     } else {
         mconf->conn_rec->hostname = apr_pstrdup(ppool, uri->hostname);
         mconf->conn_rec->port = uri->port;
@@ -1405,13 +1404,17 @@ ap_proxy_determine_connection(apr_pool_t *p, request_rec *r,
                            uri->fragment ? "#" : "",
                            uri->fragment ? uri->fragment : "", NULL);
     }
+    /* Worker can have the single constant backend adress.
+     * The single DNS lookup is used once per worker.
+     * If dynamic change is needed then set the addr to NULL
+     * inside dynamic config to force the lookup.
+     */
     if (!mconf->worker->cp->addr)
         err = apr_sockaddr_info_get(&(mconf->worker->cp->addr),
                                     mconf->conn_rec->hostname, APR_UNSPEC,
                                     mconf->conn_rec->port, 0,
                                     mconf->worker->cp->pool);
 
-    /* do a DNS lookup for the destination host */
     if (err != APR_SUCCESS) {
         return ap_proxyerror(r, HTTP_BAD_GATEWAY,
                              apr_pstrcat(p, "DNS lookup failure for: ",
