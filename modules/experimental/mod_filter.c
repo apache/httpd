@@ -102,7 +102,7 @@ typedef struct {
     mod_filter_chain* chain ;
 } mod_filter_cfg ;
 
-const char* filter_bucket_type(apr_bucket* b)
+static const char* filter_bucket_type(apr_bucket* b)
 {
     static struct {
         const void* fn ;
@@ -115,7 +115,9 @@ const char* filter_bucket_type(apr_bucket* b)
         { &apr_bucket_type_eos, "EOS" } ,
         { &apr_bucket_type_flush, "FLUSH" } ,
         { &apr_bucket_type_file, "FILE" } ,
+#if APR_HAS_MMAP
         { &apr_bucket_type_mmap, "MMAP" } ,
+#endif
         { &apr_bucket_type_pipe, "PIPE" } ,
         { &apr_bucket_type_socket, "SOCKET" } ,
         { NULL, NULL }
