@@ -704,7 +704,16 @@ echo "SHELL=$SHELL">> Makefile.config
 ####################################################################
 # Use TestCompile to see if $(CC) is ANSI
 #
-./helpers/TestCompile ansi
+if ./helpers/TestCompile ansi; then
+    :
+else
+   echo "** A test compilation with your Makefile configuration"
+   echo "** failed. This is mostly like since your C compiler"
+   echo "** is not ANSI. Apache requires an ANSI C Compiler, such"
+   echo "** as gcc."
+   echo " Aborting!"
+   exit 1
+fi
 
 ####################################################################
 # Use TestCompile to look for various LIBS
