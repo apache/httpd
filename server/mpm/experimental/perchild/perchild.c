@@ -61,6 +61,7 @@
 #include "ap_config.h"
 #include "apr_hash.h"
 #include "apr_strings.h"
+#include "apr_pools.h"
 #include "apr_portable.h"
 #include "apr_file_io.h"
 #include "httpd.h" 
@@ -128,7 +129,6 @@ typedef struct {
     const char *fullsockname;   /* socket base name + extension */
     int        sd;       /* The socket descriptor */
     int        sd2;       /* The socket descriptor */
-    char       *buffer;
 } perchild_server_conf;
 
 typedef struct child_info_t child_info_t;
@@ -1349,8 +1349,11 @@ static int pass_request(request_rec *r)
     perchild_server_conf *sconf = (perchild_server_conf *)
                             ap_get_module_config(r->server->module_config, 
                                                  &mpm_perchild_module);
-    char *foo = sconf->buffer;
-    int len = strlen(sconf->buffer);
+    char *foo;
+    int len;
+
+    apr_get_userdata((void **)&foo, "PERCHILD_BUFFER", r->connection->pool);
+    len = strlen(foo);
 
     apr_get_os_sock(&sfd, thesock);
 
@@ -1457,9 +1460,6 @@ static int perchild_post_read(request_rec *r)
 
 static apr_status_t perchild_buffer(ap_filter_t *f, ap_bucket_brigade *b, ap_input_mode_t mode)
 {
-    perchild_server_conf *sconf = (perchild_server_conf *)
-                            ap_get_module_config(f->r->server->module_config, 
-                                                 &mpm_perchild_module);
     ap_bucket *e;
     apr_status_t rv;
 
@@ -1467,11 +1467,18 @@ static apr_status_t perchild_buffer(ap_filter_t *f, ap_bucket_brigade *b, ap_inp
         return rv;
     }
 
+
     AP_BRIGADE_FOREACH(e, b) {
-        const char *str;
+        char *buffer = NULL;
+	const char *str;
         apr_size_t len;
+
+        apr_get_userdata((void **)&buffer, "PERCHILD_BUFFER", f->c->pool);
+
         ap_bucket_read(e, &str, &len, AP_NONBLOCK_READ);
-        apr_pstrcat(f->r->pool, sconf->buffer, str);
+        apr_pstrcat(f->c->pool, buffer, str);
+
+        apr_set_userdata(&buffer, "PERCHILD_BUFFER", apr_null_cleanup, f->c->pool);
     }
     
     return APR_SUCCESS;
