@@ -308,6 +308,71 @@ char *ssl_util_ptxtsub(apr_pool_t *p, const char *cpLine,
     return cpResult;
 }
 
+/*
+ * certain key and cert data needs to survive restarts,
+ * which are stored in the user data table of s->process->pool.
+ * to prevent "leaking" of this data, we use malloc/free
+ * rather than apr_palloc and these wrappers to help make sure
+ * we do not leak the malloc-ed data.
+ */
+unsigned char *ssl_asn1_table_set(apr_hash_t *table,
+                                  const char *key,
+                                  long int length)
+{
+    apr_ssize_t klen = strlen(key);
+    ssl_asn1_t *asn1 = apr_hash_get(table, key, klen);
+
+    /*
+     * if a value for this key already exists,
+     * reuse as much of the already malloc-ed data
+     * as possible.
+     */
+    if (asn1) {
+        if (asn1->nData != length) {
+            free(asn1->cpData); /* XXX: realloc? */
+            asn1->cpData = NULL;
+        }
+    }
+    else {
+        asn1 = malloc(sizeof(*asn1));
+        asn1->source_mtime = 0; /* used as a note for encrypted private keys */
+        asn1->cpData = NULL;
+    }
+
+    asn1->nData = length;
+    if (!asn1->cpData) {
+        asn1->cpData = malloc(length);
+    }
+
+    apr_hash_set(table, key, klen, asn1);
+
+    return asn1->cpData; /* caller will assign a value to this */
+}
+
+ssl_asn1_t *ssl_asn1_table_get(apr_hash_t *table,
+                               const char *key)
+{
+    return (ssl_asn1_t *)apr_hash_get(table, key, APR_HASH_KEY_STRING);
+}
+
+void ssl_asn1_table_unset(apr_hash_t *table,
+                          const char *key)
+{
+    apr_ssize_t klen = strlen(key);
+    ssl_asn1_t *asn1 = apr_hash_get(table, key, klen);
+
+    if (!asn1) {
+        return;
+    }
+
+    if (asn1->cpData) {
+        free(asn1->cpData);
+    }
+    free(asn1);
+
+    apr_hash_set(table, key, klen, NULL);
+}
+
 #if APR_HAS_THREADS
 /*
  * To ensure thread-safetyness in OpenSSL - work in progress
