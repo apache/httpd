@@ -309,7 +309,7 @@ static apr_status_t run_cgi_child(BUFF **script_out, BUFF **script_in, BUFF **sc
     apr_proc_t *procnew = apr_pcalloc(p, sizeof(*procnew));
     apr_status_t rc = APR_SUCCESS;
     apr_file_t *file = NULL;
-    apr_file_t *sock = NULL;
+    apr_socket_t *sock = NULL;
 #if defined(RLIMIT_CPU)  || defined(RLIMIT_NPROC) || \
     defined(RLIMIT_DATA) || defined(RLIMIT_VMEM) || defined (RLIMIT_AS)
     core_dir_config *conf;
@@ -342,7 +342,7 @@ static apr_status_t run_cgi_child(BUFF **script_out, BUFF **script_in, BUFF **sc
 	fprintf(dbg, "'%s'\n", env[i]);
 #endif
 
-    /* Transumute ourselves into the script.
+    /* Transmute ourselves into the script.
      * NB only ISINDEX scripts get decoded arguments.
      */
     if (((rc = apr_createprocattr_init(&procattr, p)) != APR_SUCCESS) ||
