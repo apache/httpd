@@ -656,8 +656,37 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b, ap_input_mode
            ### we could probably just use brigade_partition() in here.
         */
 
-        apr_brigade_partition(ctx->b, *readbytes, &e);
-        b = apr_brigade_split(ctx->b, e);
+        while (!APR_BRIGADE_EMPTY(ctx->b)) {
+            const char *ignore;
+
+            e = APR_BRIGADE_FIRST(ctx->b);
+            if ((rv = apr_bucket_read(e, &ignore, &len, mode)) != APR_SUCCESS) {
+                /* probably APR_IS_EAGAIN(rv); socket state isn't correct;
+                 * remove log once we get this squared away */
+                ap_log_error(APLOG_MARK, APLOG_ERR, rv, f->c->base_server, 
+                             "apr_bucket_read");
+                return rv;
+            }
+
+            if (len) {
+                /* note: this can sometimes insert empty buckets into the
+                 * brigade, or the data might come in a few characters at
+                 * a time - don't assume that one call to apr_bucket_read()
+                 * will return the full string.
+                 */
+                if (*readbytes < len) {
+                    apr_bucket_split(e, *readbytes);
+                    *readbytes = 0;
+                }
+                else {
+                    *readbytes -= len;
+                }
+                APR_BUCKET_REMOVE(e);
+                APR_BRIGADE_INSERT_TAIL(b, e);
+                break; /* once we've gotten some data, deliver it to caller */
+            }
+            apr_bucket_delete(e);
+        }
 
         /* ### this is a hack. it is saying, "if we have read everything
            ### that was requested, then we are at the end of the request."
