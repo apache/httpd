@@ -1,4 +1,9 @@
 Changes with Apache 2.0.41
+  *) mod_cache: cache_storage.c. Add the hostname and any request
+     args to the key generated for caching. This provides a unique
+     key for each virtual host and for each request with unique
+     args. [Paul J. Reder, args code provided by Kris Verbeeck]
+
   *) mod_cache: Do not cache responses to GET requests with query
      URLs if the origin server does not explicitly provide an
      Expires header on the response (RFC 2616 Section 13.9)

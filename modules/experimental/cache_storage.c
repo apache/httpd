@@ -294,8 +294,13 @@ apr_status_t cache_read_entity_body(cache_handle_t *h, apr_pool_t *p, apr_bucket
 
 apr_status_t cache_generate_key_default( request_rec *r, apr_pool_t*p, char**key ) 
 {
-   *key = apr_pstrdup(p,r->uri);
-   return APR_SUCCESS;
+    if (r->hostname) {
+        *key = apr_pstrcat(p, r->hostname, r->uri, "?", r->args, NULL);
+    }
+    else {
+        *key = apr_pstrcat(p, r->uri, "?", r->args, NULL);
+    }
+    return APR_SUCCESS;
 }
 
 APR_IMPLEMENT_EXTERNAL_HOOK_RUN_FIRST(cache, CACHE, int, create_entity, 
