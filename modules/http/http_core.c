@@ -3307,11 +3307,21 @@ static int core_input_filter(ap_filter_t *f, ap_bucket_brigade *b)
 {
     apr_socket_t *csock = NULL;
     ap_bucket *e;
-
-    ap_bpop_socket(&csock, f->c->client);
-    e = ap_bucket_create_socket(csock);
-    AP_BRIGADE_INSERT_TAIL(b, e);
-    return APR_SUCCESS;
+    
+    if (!f->ctx) {    /* If we haven't passed up the socket yet... */
+        f->ctx = (void *)1;
+        ap_bpop_socket(&csock, f->c->client);
+        e = ap_bucket_create_socket(csock);
+        AP_BRIGADE_INSERT_TAIL(b, e);
+        return APR_SUCCESS;
+    }
+    else {            
+        /* Either some code lost track of the socket
+         * bucket or we already found out that the
+         * client closed.
+         */
+        return APR_EOF;
+    }
 }
 
 /* Default filter.  This filter should almost always be used.  Its only job
