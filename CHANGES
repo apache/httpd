@@ -1,5 +1,8 @@
 Changes with Apache 2.0.26-dev
 
+  *) Make mod_include check for BYTE_CHECK_THRESHOLD per bucket rather 
+     than per character.  [Brian Pane <bpane@pacbell.net>]
+
   *) Normalize the primary request, redirects and sub-requests to
      run the same ap_process_request_internal for consistency in
      robustness, behavior and security.  [William Rowe]

@@ -137,8 +137,6 @@ static void add_include_vars(request_rec *r, char *timefmt)
     }
 }
 
-
-
 /* --------------------------- Parser functions --------------------------- */
 
 /* This function returns either a pointer to the split bucket containing the
@@ -146,7 +144,7 @@ static void add_include_vars(request_rec *r, char *timefmt)
  * returns NULL if no match found.
  */
 static apr_bucket *find_start_sequence(apr_bucket *dptr, include_ctx_t *ctx,
-                                      apr_bucket_brigade *bb, int *do_cleanup)
+                                       apr_bucket_brigade *bb, int *do_cleanup)
 {
     apr_size_t len;
     const char *c;
@@ -158,39 +156,56 @@ static apr_bucket *find_start_sequence(apr_bucket *dptr, include_ctx_t *ctx,
     *do_cleanup = 0;
 
     do {
+        apr_status_t rv;
+        int read_done = 0;
+
         if (APR_BUCKET_IS_EOS(dptr)) {
             break;
         }
-        apr_bucket_read(dptr, &buf, &len, APR_BLOCK_READ);
-        /* XXX handle retcodes */
+
+        if (ctx->bytes_parsed >= BYTE_COUNT_THRESHOLD) {
+            ctx->output_now = 1;
+        }
+        else if (ctx->bytes_parsed > 0) {
+            rv = apr_bucket_read(dptr, &buf, &len, APR_NONBLOCK_READ);
+            read_done = 1;
+            if (APR_STATUS_IS_EAGAIN(rv)) {
+                ctx->output_now = 1;
+            }
+        }
+
+        if (ctx->output_now) {
+            apr_size_t start_index;
+            apr_bucket *start_bucket;
+            apr_bucket_brigade *remainder;
+            if (ctx->head_start_index > 0) {
+                start_bucket = ctx->head_start_bucket;
+                apr_bucket_split(start_bucket, start_index);
+                start_bucket = APR_BUCKET_NEXT(start_bucket);
+                ctx->head_start_index = 0;
+                ctx->head_start_bucket = start_bucket;
+                ctx->parse_pos = 0;
+                ctx->state = PRE_HEAD;
+            }
+            else {
+                start_bucket = dptr;
+            }
+            return start_bucket;
+        }
+
+        if (!read_done) {
+            rv = apr_bucket_read(dptr, &buf, &len, APR_BLOCK_READ);
+        }
+        if (!APR_STATUS_IS_SUCCESS(rv)) {
+            ctx->status = rv;
+            return NULL;
+        }
+
         if (len == 0) { /* end of pipe? */
             break;
         }
         c = buf;
         while (c < buf + len) {
-            if (ctx->bytes_parsed >= BYTE_COUNT_THRESHOLD) {
-                apr_bucket *start_bucket;
-
-                if (ctx->head_start_index > 0) {
-                    start_index  = ctx->head_start_index;
-                    start_bucket = ctx->head_start_bucket;
-                }
-                else {
-                    start_index  = (c - buf);
-                    start_bucket = dptr;
-                }
-                apr_bucket_split(start_bucket, start_index);
-                tmp_bkt = APR_BUCKET_NEXT(start_bucket);
-                if (ctx->head_start_index > 0) {
-                    ctx->head_start_index  = 0;
-                    ctx->head_start_bucket = tmp_bkt;
-                    ctx->parse_pos = 0;
-                    ctx->state = PRE_HEAD;
-                }
-
-                return tmp_bkt;
-            }
-
             if (*c == str[ctx->parse_pos]) {
                 if (ctx->state == PRE_HEAD) {
                     ctx->state             = PARSE_HEAD;
@@ -210,7 +225,8 @@ static apr_bucket *find_start_sequence(apr_bucket *dptr, include_ctx_t *ctx,
                     ctx->tag_start_index  = c - buf;
                     if (ctx->head_start_index > 0) {
                         start_index = (c - buf) - ctx->head_start_index;
-                        apr_bucket_split(ctx->head_start_bucket, ctx->head_start_index);
+                        apr_bucket_split(ctx->head_start_bucket, 
+                                         ctx->head_start_index);
                         tmp_bkt = APR_BUCKET_NEXT(ctx->head_start_bucket);
                         if (dptr == ctx->head_start_bucket) {
                             ctx->tag_start_bucket = tmp_bkt;
@@ -258,11 +274,40 @@ static apr_bucket *find_end_sequence(apr_bucket *dptr, include_ctx_t *ctx, apr_b
     const char *str = ENDING_SEQUENCE;
 
     do {
+        apr_status_t rv;
+        int read_done = 0;
+
         if (APR_BUCKET_IS_EOS(dptr)) {
             break;
         }
-        apr_bucket_read(dptr, &buf, &len, APR_BLOCK_READ);
-        /* XXX handle retcodes */
+        if (ctx->bytes_parsed >= BYTE_COUNT_THRESHOLD) {
+            ctx->output_now = 1;
+        }
+        else if (ctx->bytes_parsed > 0) {
+            rv = apr_bucket_read(dptr, &buf, &len, APR_NONBLOCK_READ);
+            read_done = 1;
+            if (APR_STATUS_IS_EAGAIN(rv)) {
+                ctx->output_now = 1;
+            }
+        }
+
+        if (ctx->output_now) {
+            if (ctx->state == PARSE_DIRECTIVE) {
+                /* gonna start over parsing the directive next time through */
+                ctx->directive_length = 0;
+                ctx->tag_length       = 0;
+            }
+            return dptr;
+        }
+
+        if (!read_done) {
+            rv = apr_bucket_read(dptr, &buf, &len, APR_BLOCK_READ);
+        }
+        if (!APR_STATUS_IS_SUCCESS(rv)) {
+            ctx->status = rv;
+            return NULL;
+        }
+
         if (len == 0) { /* end of pipe? */
             break;
         }
@@ -273,15 +318,6 @@ static apr_bucket *find_end_sequence(apr_bucket *dptr, include_ctx_t *ctx, apr_b
             c = buf;
         }
         while (c < buf + len) {
-            if (ctx->bytes_parsed >= BYTE_COUNT_THRESHOLD) {
-                if (ctx->state == PARSE_DIRECTIVE) {
-                    /* gonna start over parsing the directive next time through */
-                    ctx->directive_length = 0;
-                    ctx->tag_length       = 0;
-                }
-                return dptr;
-            }
-
             if (*c == str[ctx->parse_pos]) {
                 if (ctx->state != PARSE_TAIL) {
                     ctx->state             = PARSE_TAIL;
@@ -2366,6 +2402,9 @@ static apr_status_t send_parsed_content(apr_bucket_brigade **bb,
             apr_size_t cleanup_bytes = ctx->parse_pos;
 
             tmp_dptr = find_start_sequence(dptr, ctx, *bb, &do_cleanup);
+            if (!APR_STATUS_IS_SUCCESS(ctx->status)) {
+                return ctx->status;
+            }
 
             /* The few bytes stored in the ssi_tag_brigade turned out not to
              * be a tag after all. This can only happen if the starting
@@ -2403,7 +2442,9 @@ static apr_status_t send_parsed_content(apr_bucket_brigade **bb,
                     dptr = APR_BRIGADE_SENTINEL(*bb);
                 }
             }
-            else if ((tmp_dptr != NULL) && (ctx->bytes_parsed >= BYTE_COUNT_THRESHOLD)) {
+            else if ((tmp_dptr != NULL) &&
+                     (ctx->output_now ||
+                      (ctx->bytes_parsed >= BYTE_COUNT_THRESHOLD))) {
                                /* Send the large chunk of pre-tag bytes...  */
                 tag_and_after = apr_brigade_split(*bb, tmp_dptr);
                 rv = ap_pass_brigade(f->next, *bb);
@@ -2413,9 +2454,12 @@ static apr_status_t send_parsed_content(apr_bucket_brigade **bb,
                 *bb  = tag_and_after;
                 dptr = tmp_dptr;
                 ctx->bytes_parsed = 0;
+                ctx->output_now = 0;
             }
-            else if (tmp_dptr == NULL) { /* There was no possible SSI tag in the */
-                dptr = APR_BRIGADE_SENTINEL(*bb);  /* remainder of this brigade...    */
+            else if (tmp_dptr == NULL) { 
+                /* There was no possible SSI tag in the
+                 * remainder of this brigade... */
+                dptr = APR_BRIGADE_SENTINEL(*bb);  
             }
         }
 
@@ -2425,6 +2469,9 @@ static apr_status_t send_parsed_content(apr_bucket_brigade **bb,
              (ctx->state == PARSE_TAIL))       &&
             (dptr != APR_BRIGADE_SENTINEL(*bb))) {
             tmp_dptr = find_end_sequence(dptr, ctx, *bb);
+            if (!APR_STATUS_IS_SUCCESS(ctx->status)) {
+                return ctx->status;
+            }
 
             if (tmp_dptr != NULL) {
                 dptr = tmp_dptr;  /* Adjust bucket pos... */
@@ -2440,11 +2487,13 @@ static apr_status_t send_parsed_content(apr_bucket_brigade **bb,
                     APR_BRIGADE_CONCAT(ctx->ssi_tag_brigade, *bb);
                     *bb = tag_and_after;
                 }
-                else if (ctx->bytes_parsed >= BYTE_COUNT_THRESHOLD) {
+                else if (ctx->output_now ||
+                         (ctx->bytes_parsed >= BYTE_COUNT_THRESHOLD)) {
                     SPLIT_AND_PASS_PRETAG_BUCKETS(*bb, ctx, f->next, rv);
                     if (rv != APR_SUCCESS) {
                         return rv;
                     }
+                    ctx->output_now = 0;
                 }
             }
             else {
@@ -2717,6 +2766,7 @@ static apr_status_t includes_filter(ap_filter_t *f, apr_bucket_brigade *b)
                 ctx->flags |= FLAG_NO_EXEC;
             }
             ctx->ssi_tag_brigade = apr_brigade_create(f->c->pool);
+            ctx->status = APR_SUCCESS;
 
             apr_cpystrn(ctx->error_str, conf->default_error_msg, sizeof(ctx->error_str));
             apr_cpystrn(ctx->time_str, conf->default_time_fmt, sizeof(ctx->time_str));

@@ -138,6 +138,8 @@ typedef struct include_filter_ctx {
     int          if_nesting_level;
     apr_size_t   parse_pos;
     int          bytes_parsed;
+    apr_status_t status;
+    int          output_now;
     
     apr_bucket   *head_start_bucket;
     apr_size_t   head_start_index;
