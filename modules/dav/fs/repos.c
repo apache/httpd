@@ -208,7 +208,8 @@ struct dav_stream {
 };
 
 /* forward declaration for internal treewalkers */
-static dav_error * dav_fs_walk(dav_walker_ctx *wctx, int depth);
+static dav_error * dav_fs_walk(const dav_walk_params *params, int depth,
+                               dav_response **response);
 static dav_error * dav_fs_internal_walk(const dav_walk_params *params,
                                         int depth, int is_move,
                                         const dav_resource *root_dst,
@@ -1251,23 +1252,24 @@ static dav_error * dav_fs_remove_resource(dav_resource *resource,
      * including the state dirs
      */
     if (resource->collection) {
-	dav_walker_ctx ctx = { { 0 } };
+        dav_walk_params params = { 0 };
 	dav_error *err = NULL;
+        dav_response *multi_status;
 
-	ctx.w.walk_type = (DAV_WALKTYPE_NORMAL
-                           | DAV_WALKTYPE_HIDDEN
-                           | DAV_WALKTYPE_POSTFIX);
-	ctx.w.func = dav_fs_delete_walker;
-        ctx.w.walk_ctx = &ctx;
-	ctx.w.pool = info->pool;
-	ctx.w.root = resource;
+	params.walk_type = (DAV_WALKTYPE_NORMAL
+                            | DAV_WALKTYPE_HIDDEN
+                            | DAV_WALKTYPE_POSTFIX);
+	params.func = dav_fs_delete_walker;
+	params.pool = info->pool;
+	params.root = resource;
 
-	if ((err = dav_fs_walk(&ctx, DAV_INFINITY)) != NULL) {
+	if ((err = dav_fs_walk(&params, DAV_INFINITY,
+                               &multi_status)) != NULL) {
             /* on a "real" error, then just punt. nothing else to do. */
             return err;
         }
 
-        if ((*response = ctx.response) != NULL) {
+        if ((*response = multi_status) != NULL) {
             /* some multistatus responses exist. wrap them in a 207 */
             return dav_new_error(info->pool, HTTP_MULTI_STATUS, 0,
                                  "Error(s) occurred on some resources during "
@@ -1648,15 +1650,11 @@ static dav_error * dav_fs_internal_walk(const dav_walk_params *params,
     return err;
 }
 
-static dav_error * dav_fs_walk(dav_walker_ctx *wctx, int depth)
+static dav_error * dav_fs_walk(const dav_walk_params *params, int depth,
+                               dav_response **response)
 {
-    dav_response *response;
-    dav_error *err;
-
     /* always return the error, and any/all multistatus responses */
-    err = dav_fs_internal_walk(&wctx->w, depth, 0, NULL, &response);
-    wctx->response = response;
-    return err;
+    return dav_fs_internal_walk(params, depth, 0, NULL, response);
 }
 
 /* dav_fs_etag:  Stolen from ap_make_etag.  Creates a strong etag

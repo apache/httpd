@@ -356,6 +356,7 @@ dav_error * dav_add_lock(request_rec *r, const dav_resource *resource,
     if (depth > 0) {
 	/* Walk existing collection and set indirect locks */
         dav_walker_ctx ctx = { { 0 } };
+        dav_response *multi_status;
 
 	ctx.w.walk_type = DAV_WALKTYPE_NORMAL | DAV_WALKTYPE_AUTH;
 	ctx.w.func = dav_lock_walker;
@@ -367,15 +368,15 @@ dav_error * dav_add_lock(request_rec *r, const dav_resource *resource,
 	ctx.r = r;
 	ctx.lock = lock;
 
-	err = (*resource->hooks->walk)(&ctx, DAV_INFINITY);
+	err = (*resource->hooks->walk)(&ctx.w, DAV_INFINITY, &multi_status);
 	if (err != NULL) {
 	    /* implies a 5xx status code occurred. screw the multistatus */
 	    return err;
 	}
 
-	if (ctx.response != NULL) {
+	if (multi_status != NULL) {
 	    /* manufacture a 207 error for the multistatus response */
-	    *response = ctx.response;
+	    *response = multi_status;
 	    return dav_new_error(r->pool, HTTP_MULTI_STATUS, 0,
 				 "Error(s) occurred on resources during the "
 				 "addition of a depth lock.");
@@ -556,6 +557,7 @@ int dav_unlock(request_rec *r, const dav_resource *resource,
 
     if (lock_resource->collection) {
         dav_walker_ctx ctx = { { 0 } };
+        dav_response *multi_status;
 
 	ctx.w.walk_type = DAV_WALKTYPE_NORMAL | DAV_WALKTYPE_LOCKNULL;
 	ctx.w.func = dav_unlock_walker;
@@ -567,9 +569,10 @@ int dav_unlock(request_rec *r, const dav_resource *resource,
 	ctx.r = r;
 	ctx.locktoken = locktoken;
 
-	err = (*repos_hooks->walk)(&ctx, DAV_INFINITY);
+	err = (*repos_hooks->walk)(&ctx.w, DAV_INFINITY, &multi_status);
 
 	/* ### fix this! */
+        /* ### do something with multi_status */
 	result = err == NULL ? OK : err->status;
     }
     else
@@ -614,6 +617,7 @@ static dav_error * dav_inherit_locks(request_rec *r, dav_lockdb *lockdb,
     dav_lock *prev;
     dav_walker_ctx ctx = { { 0 } };
     const dav_hooks_repository *repos_hooks = resource->hooks;
+    dav_response *multi_status;
 
     if (use_parent) {
 	which_resource = (*repos_hooks->get_parent_resource)(resource);
@@ -677,7 +681,8 @@ static dav_error * dav_inherit_locks(request_rec *r, dav_lockdb *lockdb,
     ctx.lock = locks;
     ctx.skip_root = !use_parent;
 
-    return (*repos_hooks->walk)(&ctx, DAV_INFINITY);
+    /* ### do something with multi_status */
+    return (*repos_hooks->walk)(&ctx.w, DAV_INFINITY, &multi_status);
 }
 
 /* ---------------------------------------------------------------

@@ -1531,6 +1531,7 @@ static int dav_method_propfind(request_rec *r)
     ap_xml_doc *doc;
     const ap_xml_elem *child;
     dav_walker_ctx ctx = { { 0 } };
+    dav_response *multi_status;
 
     /* Ask repository module to resolve the resource */
     result = dav_get_resource(r, 1 /*target_allowed*/, NULL, &resource);
@@ -1622,7 +1623,7 @@ static int dav_method_propfind(request_rec *r)
 	ctx.w.walk_type |= DAV_WALKTYPE_LOCKNULL;
     }
 
-    err = (*resource->hooks->walk)(&ctx, depth);
+    err = (*resource->hooks->walk)(&ctx.w, depth, &multi_status);
 
     if (ctx.w.lockdb != NULL) {
 	(*ctx.w.lockdb->hooks->close_lockdb)(ctx.w.lockdb);
@@ -1641,11 +1642,11 @@ static int dav_method_propfind(request_rec *r)
      * scope for the badprops. */
     /* NOTE: propstat_404 != NULL implies doc != NULL */
     if (ctx.propstat_404 != NULL) {
-	dav_send_multistatus(r, HTTP_MULTI_STATUS, ctx.response,
+	dav_send_multistatus(r, HTTP_MULTI_STATUS, multi_status,
                              doc->namespaces);
     }
     else {
-	dav_send_multistatus(r, HTTP_MULTI_STATUS, ctx.response, NULL);
+	dav_send_multistatus(r, HTTP_MULTI_STATUS, multi_status, NULL);
     }
 
     /* the response has been sent. */

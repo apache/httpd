@@ -1314,6 +1314,7 @@ dav_error * dav_validate_request(request_rec *r, dav_resource *resource,
     /* (1) Validate the specified resource, at the specified depth */
     if (resource->exists && depth > 0) {
         dav_walker_ctx ctx = { { 0 } };
+        dav_response *multi_status;
 
 	ctx.w.walk_type = DAV_WALKTYPE_NORMAL;
 	ctx.w.func = dav_validate_walker;
@@ -1330,9 +1331,9 @@ dav_error * dav_validate_request(request_rec *r, dav_resource *resource,
 	    ctx.w.walk_type |= DAV_WALKTYPE_LOCKNULL;
 	}
 
-	err = (*repos_hooks->walk)(&ctx, DAV_INFINITY);
+	err = (*repos_hooks->walk)(&ctx.w, DAV_INFINITY, &multi_status);
 	if (err == NULL) {
-            *response = ctx.response;
+            *response = multi_status;;
 	}
         /* else: implies a 5xx status code occurred. */
     }
