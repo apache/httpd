@@ -13,7 +13,7 @@
 
 <!-- some meta information have to be passed to the transformation -->
 <xsl:variable name="output-encoding" select="'gb2312'" />
-<xsl:variable name="toc-font" select="'SimHei,10,134'" /> <!-- MS magic ... -->
+<xsl:variable name="toc-font" select="'SimSun,9,134'" /> <!-- MS magic ... -->
 <xsl:variable name="xml-ext" select="'.xml.zh-cn'" />
 
 <!-- Now get the real guts of the stylesheet -->
