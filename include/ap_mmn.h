@@ -84,7 +84,7 @@
  *                      changed ap_add_module, ap_add_loaded_module,
  *                      ap_setup_prelinked_modules, ap_process_resource_config
  * 20040425.1 (2.1.0-dev) Added ap_module_symbol_t and ap_prelinked_module_symbols
- * 20050101.0 (2.1.2-dev) Axed mixnamed http_method for http_scheme (which it was!)
+ * 20050101.0 (2.1.2-dev) Axed misnamed http_method for http_scheme (which it was!)
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503230UL /* "AP20" */
