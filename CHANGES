@@ -31,12 +31,6 @@ Changes with Apache 2.1.0-dev
   *) Allow restart of httpd to occur even with syntax errors in the config
      file.  PR 16813.  [Justin Erenkrantz]
 
-  *) Rewrite ap_xml_parse_input to use bucket brigades.  PR 16134.
-     [Justin Erenkrantz]
-
-  *) Fix potential memory leaks in mod_deflate on malformed data.  PR 16046.
-     [Justin Erenkrantz]
-
   *) Use APR_LAYOUT instead of APACHE_LAYOUT in configure.  PR 15679.
      [Justin Erenkrantz]
 
@@ -135,6 +129,12 @@ Changes with Apache 2.1.0-dev
    Apache 2.0.xx tree as documented, and except as noted, below.]
 
 Changes with Apache 2.0.45
+
+  *) Fix potential memory leaks in mod_deflate on malformed data.  PR 16046.
+     [Justin Erenkrantz]
+
+  *) Rewrite ap_xml_parse_input to use bucket brigades.  PR 16134.
+     [Justin Erenkrantz]
 
   *) Fix segfault which occurred when a section in an included
      configuration file was not closed. PR 17093.  [André Malo]
