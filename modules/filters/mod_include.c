@@ -2579,7 +2579,7 @@ static int handle_if(include_ctx_t *ctx, apr_bucket_brigade **bb,
     char debug_buf[MAX_DEBUG_SIZE];
 
     *inserted_head = NULL;
-    if (!ctx->flags & FLAG_PRINTING) {
+    if (!(ctx->flags & FLAG_PRINTING)) {
         ctx->if_nesting_level++;
     }
     else {
