@@ -983,19 +983,7 @@ API_EXPORT(int) ap_run_sub_req(request_rec *r)
 
     /* see comments in process_request_internal() */
     ap_run_insert_filter(r);
-
-#ifndef APACHE_XLATE
     retval = ap_invoke_handler(r);
-#else /*APACHE_XLATE*/
-    {
-        /* Save the output conversion setting across subrequests */
-        apr_xlate_t *saved_xlate;
-
-        ap_bgetopt(r->connection->client, BO_WXLATE, &saved_xlate);
-        retval  = ap_invoke_handler(r);
-        ap_bsetopt(r->connection->client, BO_WXLATE, &saved_xlate);
-    }
-#endif /*APACHE_XLATE*/
     ap_finalize_sub_req_protocol(r);
     return retval;
 }

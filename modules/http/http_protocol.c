@@ -428,17 +428,6 @@ API_EXPORT(int) ap_set_keepalive(request_rec *r)
                            apr_table_get(r->headers_out, "Connection"), "close");
     const char *conn = apr_table_get(r->headers_in, "Connection");
 
-#ifdef APACHE_XLATE
-    if (r->rrx->to_net && !r->rrx->to_net_sb) {
-        /* Translation is not single-byte-only, so we don't know the
-         * content length. Zap the Content-Length header before the 
-         * following logic, as the absence of the Content-Length header
-         * may affect the decision on chunked encoding.
-         */
-        apr_table_unset(r->headers_out,"Content-Length");
-    }
-#endif /* APACHE_XLATE */
-
     /* The following convoluted conditional determines whether or not
      * the current connection should remain persistent after this response
      * (a.k.a. HTTP Keep-Alive) and whether or not the output message
@@ -2075,20 +2064,6 @@ API_EXPORT(void) ap_send_http_header(request_rec *r)
         return;
     }
 
-#ifdef CHARSET_EBCDIC
-    /* By default, we convert all content.  ap_checkconv() can decide
-     * that conversion shouldn't be performed.  Also, if the content type
-     * contains the "magic" prefix for serving raw ascii
-     * (text/x-ascii-{plain,html,...}), the type is corrected to the real
-     * text/{plain,html,...} type which goes into the headers.
-     * This may not seem like the best place to put this call, but doing
-     * it here avoids having to call it in every handler (which is
-     * particularly hard to do with handlers in modules which aren't
-     * part of the Apache httpd distribution).
-     */
-    ap_checkconv(r);
-#endif
-      
     /*
      * Now that we are ready to send a response, we need to combine the two
      * header field tables into a single table.  If we don't do this, our
@@ -3241,15 +3216,6 @@ API_EXPORT(void) ap_send_error_response(request_rec *r, int recursive_error)
             return;
         }
     }
-
-#ifdef APACHE_XLATE
-    /* Ensure that the proper translation handle (if any) is used when
-     * sending the response document to the client.  Note that on an 
-     * ASCII machine, ap_hdrs_to_ascii is NULL, so this will turn off 
-     * any translation selected by a module for content.
-     */
-    ap_set_content_xlate(r, 1, ap_hdrs_to_ascii);
-#endif
 
     if ((custom_response = ap_response_code_string(r, idx))) {
         /*

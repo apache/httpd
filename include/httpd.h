@@ -579,10 +579,6 @@ typedef struct request_rec request_rec;
 /** structure to aid charset translate between machine and network */
 struct ap_rr_xlate {
     /* contents are experimental! expect it to change! */
-    /** translation handle to use when going to the network */
-    apr_xlate_t *to_net;
-    /** whether or not write translation is single-byte-only */
-    int to_net_sb;
     /** translation handle to use when coming from the network */
     apr_xlate_t *from_net;
 };
