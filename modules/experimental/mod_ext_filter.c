@@ -503,7 +503,7 @@ static apr_status_t init_filter_instance(ap_filter_t *f)
         }
         if (ctx->filter->outtype &&
             ctx->filter->outtype != OUTTYPE_UNCHANGED) {
-            f->r->content_type = ctx->filter->outtype;
+            ap_set_content_type(f->r, ctx->filter->outtype);
         }
         if (ctx->filter->preserves_content_length != 1) {
             /* nasty, but needed to avoid confusing the browser 
