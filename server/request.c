@@ -92,15 +92,15 @@
 #endif
 
 APR_HOOK_STRUCT(
-	    APR_HOOK_LINK(translate_name)
-	    APR_HOOK_LINK(map_to_storage)
-	    APR_HOOK_LINK(check_user_id)
-	    APR_HOOK_LINK(fixups)
-	    APR_HOOK_LINK(type_checker)
-	    APR_HOOK_LINK(access_checker)
-	    APR_HOOK_LINK(auth_checker)
-	    APR_HOOK_LINK(insert_filter)
-            APR_HOOK_LINK(create_request)
+    APR_HOOK_LINK(translate_name)
+    APR_HOOK_LINK(map_to_storage)
+    APR_HOOK_LINK(check_user_id)
+    APR_HOOK_LINK(fixups)
+    APR_HOOK_LINK(type_checker)
+    APR_HOOK_LINK(access_checker)
+    APR_HOOK_LINK(auth_checker)
+    APR_HOOK_LINK(insert_filter)
+    APR_HOOK_LINK(create_request)
 )
 
 AP_IMPLEMENT_HOOK_RUN_FIRST(int,translate_name,
@@ -145,10 +145,10 @@ AP_DECLARE(int) ap_process_request_internal(request_rec *r)
 
     /* Ignore embedded %2F's in path for proxy requests */
     if (!r->proxyreq && r->parsed_uri.path) {
-	access_status = ap_unescape_url(r->parsed_uri.path);
-	if (access_status) {
-	    return access_status;
-	}
+        access_status = ap_unescape_url(r->parsed_uri.path);
+        if (access_status) {
+            return access_status;
+        }
     }
 
     ap_getparents(r->uri);     /* OK --- shrinking transformations... */
@@ -200,11 +200,11 @@ AP_DECLARE(int) ap_process_request_internal(request_rec *r)
      * identical input.)  If the config changes, we must re-auth.
      */
     if (r->main && (r->main->per_dir_config == r->per_dir_config)) {
-        r->user = r->main->user;	
+        r->user = r->main->user;        
         r->ap_auth_type = r->main->ap_auth_type;
     } 
     else if (r->prev && (r->prev->per_dir_config == r->per_dir_config)) {
-        r->user = r->prev->user;	
+        r->user = r->prev->user;        
         r->ap_auth_type = r->prev->ap_auth_type;
     }
     else {
@@ -218,40 +218,41 @@ AP_DECLARE(int) ap_process_request_internal(request_rec *r)
                 if (((access_status = ap_run_check_user_id(r)) != 0)
                     || !ap_auth_type(r)) {
                     return decl_die(access_status, ap_auth_type(r)
-                                    ? "check user.  No user file?"
-                                    : "perform authentication. AuthType not set!",
-                                    r);
+                                  ? "check user.  No user file?"
+                                  : "perform authentication. AuthType not set!",
+                                  r);
                 }
                 if (((access_status = ap_run_auth_checker(r)) != 0)
                     || !ap_auth_type(r)) {
                     return decl_die(access_status, ap_auth_type(r)
-                                    ? "check access.  No groups file?"
-                                    : "perform authentication. AuthType not set!",
-                                    r);
+                                  ? "check access.  No groups file?"
+                                  : "perform authentication. AuthType not set!",
+                                   r);
                 }
             }
             break;
         case SATISFY_ANY:
-            if (((access_status = ap_run_access_checker(r)) != 0) || !ap_auth_type(r)) {
+            if (((access_status = ap_run_access_checker(r)) != 0) || 
+                !ap_auth_type(r)) {
                 if (!ap_some_auth_required(r)) {
                     return decl_die(access_status, ap_auth_type(r)
-                                    ? "check access"
-                                    : "perform authentication. AuthType not set!",
-                                    r);
+                                  ? "check access"
+                                  : "perform authentication. AuthType not set!",
+                                  r);
                 }
                 if (((access_status = ap_run_check_user_id(r)) != 0)
                     || !ap_auth_type(r)) {
                     return decl_die(access_status, ap_auth_type(r)
-                                    ? "check user.  No user file?"
-                                    : "perform authentication. AuthType not set!",
-                                    r);
+                                  ? "check user.  No user file?"
+                                  : "perform authentication. AuthType not set!",
+                                  r);
                 }
                 if (((access_status = ap_run_auth_checker(r)) != 0)
                     || !ap_auth_type(r)) {
                     return decl_die(access_status, ap_auth_type(r)
-                                    ? "check access.  No groups file?"
-                                    : "perform authentication. AuthType not set!",
-                                    r);
+                                  ? "check access.  No groups file?"
+                                  : "perform authentication. AuthType not set!",
+                                  r);
                 }
             }
             break;
@@ -262,7 +263,7 @@ AP_DECLARE(int) ap_process_request_internal(request_rec *r)
      *                              && !strcmp(r->parsed_uri.scheme, "http")
      */
     if ((access_status = ap_run_type_checker(r)) != 0) {
-	return decl_die(access_status, "find types", r);
+        return decl_die(access_status, "find types", r);
     }
 
     if ((access_status = ap_run_fixups(r)) != 0) {
@@ -610,22 +611,22 @@ AP_DECLARE(int) ap_directory_walk(request_rec *r)
         sec_idx = 0;
 
         /*
-         * Go down the directory hierarchy.  Where we have to check for symlinks,
-         * do so.  Where a .htaccess file has permission to override anything,
-         * try to find one.
+         * Go down the directory hierarchy.  Where we have to check for 
+         * symlinks, do so.  Where a .htaccess file has permission to 
+         * override anything, try to find one.
          */
         do {
             int res;
             char *seg_name;
             char *delim;
-	    int temp_slash=0;
+            int temp_slash=0;
         
             /* We have no trailing slash, but we sure would appreciate one...
              */
             if (sec_idx && r->filename[filename_len-1] != '/') {
                 r->filename[filename_len++] = '/';
                 r->filename[filename_len] = 0;
-		temp_slash=1;
+                temp_slash=1;
             }
 
             /* Begin *this* level by looking for matching <Directory> sections
@@ -651,7 +652,8 @@ AP_DECLARE(int) ap_directory_walk(request_rec *r)
                  */
                 if (entry_core->d_components
                       && (entry_core->d_is_fnmatch
-                            ? (apr_fnmatch(entry_core->d, r->filename, FNM_PATHNAME) != APR_SUCCESS)
+                            ? (apr_fnmatch(entry_core->d, r->filename, 
+                                           FNM_PATHNAME) != APR_SUCCESS)
                             : (strcmp(r->filename, entry_core->d) != 0))) {
                     continue;
                 }
@@ -673,7 +675,7 @@ AP_DECLARE(int) ap_directory_walk(request_rec *r)
                 }
 
                 if (now_merged) {
-	            now_merged = ap_merge_per_dir_configs(r->pool, 
+                    now_merged = ap_merge_per_dir_configs(r->pool, 
                                                           now_merged,
                                                           sec_ent[sec_idx]);
                 }
@@ -687,8 +689,8 @@ AP_DECLARE(int) ap_directory_walk(request_rec *r)
 
                 /* Do a mini-merge to our globally-based running calculations of
                  * core_dir->override and core_dir->opts, since now_merged
-                 * never considered the global config.  Of course, if there is no
-                 * core config at this level, continue without a thought.
+                 * never considered the global config.  Of course, if there is 
+                 * no core config at this level, continue without a thought.
                  * See core.c::merge_core_dir_configs() for explanation.
                  */
 minimerge:
@@ -699,15 +701,16 @@ minimerge:
                 }
 
                 if (this_dir->opts & OPT_UNSET) {
-	            opts_add = (opts_add & ~this_dir->opts_remove) | this_dir->opts_add;
-	            opts_remove = (opts_remove & ~this_dir->opts_add)
-	                        | this_dir->opts_remove;
-	            opts = (opts & ~opts_remove) | opts_add;
+                    opts_add = (opts_add & ~this_dir->opts_remove) 
+                               | this_dir->opts_add;
+                    opts_remove = (opts_remove & ~this_dir->opts_add)
+                                | this_dir->opts_remove;
+                    opts = (opts & ~opts_remove) | opts_add;
                 }
                 else {
-	            opts = this_dir->opts;
-	            opts_add = this_dir->opts_add;
-	            opts_remove = this_dir->opts_remove;
+                    opts = this_dir->opts;
+                    opts_add = this_dir->opts_add;
+                    opts_remove = this_dir->opts_remove;
                 }
                 if (!(this_dir->override & OR_UNSET)) {
                     override = this_dir->override;
@@ -742,14 +745,15 @@ minimerge:
                             goto minimerge2;
                         }
                         /* We fell out of sync.  This is our own copy of walked,
-                         * so truncate the remaining matches and reset remaining.
+                         * so truncate the remaining matches and reset 
+                         * remaining.
                          */
                         cache->walked->nelts -= matches;
                         matches = 0;
                     }
 
                     if (now_merged) {
-	                now_merged = ap_merge_per_dir_configs(r->pool, 
+                        now_merged = ap_merge_per_dir_configs(r->pool, 
                                                               now_merged,
                                                               htaccess_conf);
                     }
@@ -761,10 +765,11 @@ minimerge:
                     last_walk->matched = htaccess_conf;
                     last_walk->merged = now_merged;
 
-                    /* Do a mini-merge to our globally-based running calculations of
-                     * core_dir->override and core_dir->opts, since now_merged
-                     * never considered the global config.  Of course, if there is no
-                     * core config at this level, continue without a thought.
+                    /* Do a mini-merge to our globally-based running 
+                     * calculations of core_dir->override and core_dir->opts,
+                     * since now_merged never considered the global config.
+                     * Of course, if there is no core config at this level, 
+                     * continue without a thought.
                      * See core.c::merge_core_dir_configs() for explanation.
                      */
 minimerge2:
@@ -773,16 +778,16 @@ minimerge2:
 
                     if (this_dir) {
                         if (this_dir->opts & OPT_UNSET) {
-	                    opts_add = (opts_add & ~this_dir->opts_remove)
+                            opts_add = (opts_add & ~this_dir->opts_remove)
                                 | this_dir->opts_add;
-	                    opts_remove = (opts_remove & ~this_dir->opts_add)
+                            opts_remove = (opts_remove & ~this_dir->opts_add)
                                 | this_dir->opts_remove;
-	                    opts = (opts & ~opts_remove) | opts_add;
+                            opts = (opts & ~opts_remove) | opts_add;
                         }
                         else {
-	                    opts = this_dir->opts;
-	                    opts_add = this_dir->opts_add;
-	                    opts_remove = this_dir->opts_remove;
+                            opts = this_dir->opts;
+                            opts_add = this_dir->opts_add;
+                            opts_remove = this_dir->opts_remove;
                         }
                         if (!(this_dir->override & OR_UNSET)) {
                             override = this_dir->override;
@@ -922,8 +927,8 @@ minimerge2:
                 }
                 else if (thisinfo.filetype != APR_DIR) {
                     ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
-                                  "symlink doesn't point to a file or directory: %s",
-                                  r->filename);
+                             "symlink doesn't point to a file or directory: %s",
+                             r->filename);
                     return r->status = HTTP_FORBIDDEN;
                 }
             }
@@ -956,7 +961,7 @@ minimerge2:
          */
         for (; sec_idx < num_sec; ++sec_idx) {
 
-	    core_dir_config *entry_core; 
+            core_dir_config *entry_core; 
             entry_core = ap_get_module_config(sec_ent[sec_idx], &core_module);
 
             if (!entry_core->r) {
@@ -984,7 +989,7 @@ minimerge2:
             }
 
             if (now_merged) {
-	        now_merged = ap_merge_per_dir_configs(r->pool, 
+                now_merged = ap_merge_per_dir_configs(r->pool, 
                                                       now_merged,
                                                       sec_ent[sec_idx]);
             }
@@ -1069,7 +1074,7 @@ AP_DECLARE(int) ap_location_walk(request_rec *r)
      * redirected again to a vhost with <Location > blocks to optimize.
      */
     if (!num_sec) {
-	return OK;
+        return OK;
     }
 
     /* Location and LocationMatch differ on their behaviour w.r.t. multiple
@@ -1078,11 +1083,11 @@ AP_DECLARE(int) ap_location_walk(request_rec *r)
      * absoluteURIs... in which case neither match multiple slashes.
      */
     if (r->uri[0] != '/') {
-	entry_uri = r->uri;
+        entry_uri = r->uri;
     }
     else {
         char *uri = apr_pstrdup(r->pool, r->uri);
-	ap_no2slash(uri);
+        ap_no2slash(uri);
         entry_uri = uri;
     }
 
@@ -1125,18 +1130,18 @@ AP_DECLARE(int) ap_location_walk(request_rec *r)
          */
         for (sec_idx = 0; sec_idx < num_sec; ++sec_idx) {
 
-	    core_dir_config *entry_core; 
+            core_dir_config *entry_core; 
             entry_core = ap_get_module_config(sec_ent[sec_idx], &core_module);
-	    
+            
             /* ### const strlen can be optimized in location config parsing */
-	    len = strlen(entry_core->d);
+            len = strlen(entry_core->d);
 
             /* Test the regex, fnmatch or string as appropriate.
              * If it's a strcmp, and the <Location > pattern was 
              * not slash terminated, then this uri must be slash
              * terminated (or at the end of the string) to match.
              */
-	    if (entry_core->r 
+            if (entry_core->r 
                 ? ap_regexec(entry_core->r, r->uri, 0, NULL, 0)
                 : (entry_core->d_is_fnmatch
                    ? apr_fnmatch(entry_core->d, cache->cached, FNM_PATHNAME)
@@ -1144,7 +1149,7 @@ AP_DECLARE(int) ap_location_walk(request_rec *r)
                       ||   (entry_core->d[len - 1] != '/'
                             && cache->cached[len] != '/' 
                             && cache->cached[len] != '\0')))) {
-	        continue;
+                continue;
             }
 
             /* If we merged this same section last time, reuse it
@@ -1164,7 +1169,7 @@ AP_DECLARE(int) ap_location_walk(request_rec *r)
             }
 
             if (now_merged) {
-	        now_merged = ap_merge_per_dir_configs(r->pool, 
+                now_merged = ap_merge_per_dir_configs(r->pool, 
                                                       now_merged,
                                                       sec_ent[sec_idx]);
             }
@@ -1225,7 +1230,7 @@ AP_DECLARE(int) ap_file_walk(request_rec *r)
      * redirected again to a context containing the same or similar <Files >.
      */
     if (!num_sec) {
-	return OK;
+        return OK;
     }
 
     /* Get the basename .. and copy for the cache just 
@@ -1233,10 +1238,10 @@ AP_DECLARE(int) ap_file_walk(request_rec *r)
      */
     test_file = strrchr(r->filename, '/');
     if (test_file == NULL) {
-	test_file = apr_pstrdup(r->pool, r->filename);
+        test_file = apr_pstrdup(r->pool, r->filename);
     }
     else {
-	test_file = apr_pstrdup(r->pool, ++test_file);
+        test_file = apr_pstrdup(r->pool, ++test_file);
     }
 
     /* If we have an cache->cached file name that matches test_file,
@@ -1306,7 +1311,7 @@ AP_DECLARE(int) ap_file_walk(request_rec *r)
             }
 
             if (now_merged) {
-	        now_merged = ap_merge_per_dir_configs(r->pool, 
+                now_merged = ap_merge_per_dir_configs(r->pool, 
                                                       now_merged,
                                                       sec_ent[sec_idx]);
             }
@@ -1653,16 +1658,16 @@ AP_DECLARE(request_rec *) ap_sub_req_lookup_file(const char *new_file,
             ap_parse_uri(rnew, rnew->uri);    /* fill in parsed_uri values */
         }
         else {
-	    ap_parse_uri(rnew, new_file);	/* fill in parsed_uri values */
+            ap_parse_uri(rnew, new_file);        /* fill in parsed_uri values */
             rnew->uri = apr_pstrdup(rnew->pool, "");
         }
     }
     else {
-	/* XXX: @@@: What should be done with the parsed_uri values?
+        /* XXX: @@@: What should be done with the parsed_uri values?
          * We would be better off stripping down to the 'common' elements
          * of the path, then reassembling the URI as best as we can.
          */
-	ap_parse_uri(rnew, new_file);	/* fill in parsed_uri values */
+        ap_parse_uri(rnew, new_file);        /* fill in parsed_uri values */
         /*
          * XXX: this should be set properly like it is in the same-dir case
          * but it's actually sometimes to impossible to do it... because the
@@ -1700,7 +1705,7 @@ AP_DECLARE(void) ap_destroy_sub_req(request_rec *r)
 AP_DECLARE(void) ap_update_mtime(request_rec *r, apr_time_t dependency_mtime)
 {
     if (r->mtime < dependency_mtime) {
-	r->mtime = dependency_mtime;
+        r->mtime = dependency_mtime;
     }
 }
 
