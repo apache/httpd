@@ -50,7 +50,7 @@
  *
  */
 
-/* $Id: http_main.c,v 1.68 1996/09/17 14:53:52 chuck Exp $ */
+/* $Id: http_main.c,v 1.69 1996/09/23 09:53:32 ben Exp $ */
 
 /*
  * httpd.c: simple http daemon for answering WWW file requests
@@ -1839,6 +1839,33 @@ void standalone_main(int argc, char **argv)
 
 } /* standalone_main */
 
+void show_overrides(command_rec *pc,module *pm)
+    {
+    int n;
+    struct
+	{
+	int override;
+	char letter;
+	} aOvers[]= {
+	{ OR_LIMIT, 'L' },
+	{ OR_OPTIONS, 'O' },
+	{ OR_FILEINFO, 'F' },
+	{ OR_AUTHCFG, 'A' },
+	{ OR_INDEXES, 'I' },
+	{ ACCESS_CONF, 'a' },
+	{ RSRC_CONF, 'r' },
+	{ (OR_ALL|RSRC_CONF)&~(OR_LIMIT|OR_AUTHCFG), 'd' }, /* outside <Directory> */
+	{ OR_ALL|ACCESS_CONF, 'D' }, /* inside <Directory> */
+	{ 0, '\0' }
+	};
+	
+    for(n=0 ; aOvers[n].override ; ++n)
+	if(pc->req_override&aOvers[n].override)
+	    putchar(aOvers[n].letter);
+    if((pc->req_override&(OR_ALL|ACCESS_CONF)) && !pm->create_dir_config)
+	putchar('!');	/* Directive allowed inside <Directory> but module doesn't support per-dir config */
+    }
+
 void show_directives()
     {
     extern module *prelinked_modules[];
@@ -1851,7 +1878,11 @@ void show_directives()
 	;
     for(n=0 ; prelinked_modules[n] ; ++n)
 	for(pc=prelinked_modules[n]->cmds ; pc && pc->name ; ++pc)
-	    printf("%s\t%s\t%s\n",pc->name,pc->errmsg,module_names[t-n-1]);
+	    {
+	    printf("%s\t%s\t%s\t",pc->name,pc->errmsg,module_names[t-n-1]);
+	    show_overrides(pc,prelinked_modules[n]);
+	    putchar('\n');
+	    }
     }
 
 extern char *optarg;
