@@ -117,12 +117,14 @@ void mpm_start_child_console_handler(void);
 extern OSVERSIONINFO osver;
 extern void clean_child_exit(int);
 
-AP_DECLARE(void) ap_start_shutdown(void);
-AP_DECLARE(void) ap_start_restart(int gracefully);
-
 void setup_signal_names(char *prefix);
-void signal_parent(int type);
 
+typedef enum {
+    SIGNAL_PARENT_SHUTDOWN,
+    SIGNAL_PARENT_RESTART,
+    SIGNAL_PARENT_RESTART_GRACEFUL
+} ap_signal_parent_e;
+AP_DECLARE(void) ap_signal_parent(ap_signal_parent_e type);
 
 /* This code is stolen from the apr_private.h and misc/win32/misc.c
  * Please see those sources for detailed documentation.
