@@ -49,29 +49,6 @@ APR_DECLARE_OPTIONAL_FN(int, ssl_engine_disable, (conn_rec *));
 /* -------------------------------------------------------------- */
 /* Translate the URL into a 'filename' */
 
-#ifdef FIX_15207
-/* XXX: EBCDIC safe? --nd */
-#define x2c(x) (((x >= '0') && (x <= '9'))         \
-                   ? (x - '0')                     \
-                   : (((x >= 'a') && (x <= 'f'))   \
-                       ? (10 + x - 'a')            \
-                       : ((x >= 'A') && (x <='F')) \
-                           ? (10 + x - 'A')        \
-                           : 0                     \
-                     )                             \
-               )
-
-static unsigned char hex2c(const char* p) {
-  const char c1 = p[1];
-  const char c2 = p[1] ? p[2]: '\0';
-  int i1 = c1 ? x2c(c1) : 0;
-  int i2 = c2 ? x2c(c2) : 0;
-  unsigned char ret = (i1 << 4) | i2;
-
-  return ret;
-}
-#endif
-
 #define PROXY_COPY_CONF_PARAMS(w, c) \
     do {                             \
         (w)->timeout              = (c)->timeout;               \
@@ -288,28 +265,9 @@ static int alias_match(const char *uri, const char *alias_fakename)
                 ++urip;
         }
         else {
-#ifndef FIX_15207
             /* Other characters are compared literally */
             if (*urip++ != *aliasp++)
                 return 0;
-#else
-            /* Other characters are canonicalised and compared literally */
-            if (*urip == '%') {
-                uric = hex2c(urip);
-                urip += 3;
-            } else {
-                uric = (unsigned char)*urip++;
-            }
-            if (*aliasp == '%') {
-                aliasc = hex2c(aliasp);
-                aliasp += 3;
-            } else {
-                aliasc = (unsigned char)*aliasp++;
-            }
-            if (uric != aliasc) {
-                return 0;
-            }
-#endif
         }
     }
 
@@ -356,10 +314,6 @@ static int proxy_detect(request_rec *r)
     void *sconf = r->server->module_config;
     proxy_server_conf *conf =
         (proxy_server_conf *) ap_get_module_config(sconf, &proxy_module);
-#ifdef FIX_15207
-    int i, len;
-    struct proxy_alias *ent = (struct proxy_alias *)conf->aliases->elts;
-#endif
 
     /* Ick... msvc (perhaps others) promotes ternary short results to int */
 
@@ -384,37 +338,17 @@ static int proxy_detect(request_rec *r)
         r->uri = r->unparsed_uri;
         r->filename = apr_pstrcat(r->pool, "proxy:", r->uri, NULL);
         r->handler = "proxy-server";
-#ifdef FIX_15207
-    } else {
-        /* test for a ProxyPass */
-        for (i = 0; i < conf->aliases->nelts; i++) {
-            len = alias_match(r->unparsed_uri, ent[i].fake);
-            if (len > 0) {
-                if ((ent[i].real[0] == '!') && (ent[i].real[1] == 0)) {
-                    return DECLINED;
-                }
-                r->filename = apr_pstrcat(r->pool, "proxy:", ent[i].real,
-                                          r->unparsed_uri + len, NULL);
-                r->handler = "proxy-server";
-                r->proxyreq = PROXYREQ_REVERSE;
-                r->uri = r->unparsed_uri;
-                break;
-            }
-        }
-#endif
     }
     return DECLINED;
 }
 
 static int proxy_trans(request_rec *r)
 {
-#ifndef FIX_15207
     void *sconf = r->server->module_config;
     proxy_server_conf *conf =
     (proxy_server_conf *) ap_get_module_config(sconf, &proxy_module);
     int i, len;
     struct proxy_alias *ent = (struct proxy_alias *) conf->aliases->elts;
-#endif
 
     if (r->proxyreq) {
         /* someone has already set up the proxy, it was possibly ourselves
@@ -423,7 +357,6 @@ static int proxy_trans(request_rec *r)
         return OK;
     }
 
-#ifndef FIX_15207
     /* XXX: since r->uri has been manipulated already we're not really
      * compliant with RFC1945 at this point.  But this probably isn't
      * an issue because this is a hybrid proxy/origin server.
@@ -444,7 +377,6 @@ static int proxy_trans(request_rec *r)
            return OK;
        }
     }
-#endif
     return DECLINED;
 }
 
@@ -506,7 +438,6 @@ static int proxy_map_location(request_rec *r)
 
     return OK;
 }
-#ifndef FIX_15207
 /* -------------------------------------------------------------- */
 /* Fixup the filename */
 
@@ -520,15 +451,6 @@ static int proxy_fixup(request_rec *r)
 
     if (!r->proxyreq || !r->filename || strncmp(r->filename, "proxy:", 6) != 0)
         return DECLINED;
-
-#ifdef FIX_15207
-/* We definitely shouldn't canonicalize a proxy_pass.
- * But should we really canonicalize a STD_PROXY??? -- Fahree
- */
-    if (r->proxyreq == PROXYREQ_REVERSE) {
-        return OK;
-    }
-#endif
 
     /* XXX: Shouldn't we try this before we run the proxy_walk? */
     url = &r->filename[6];
@@ -544,7 +466,6 @@ static int proxy_fixup(request_rec *r)
 
     return OK;      /* otherwise; we've done the best we can */
 }
-#endif
 /* Send a redirection if the request contains a hostname which is not */
 /* fully qualified, i.e. doesn't have a domain name appended. Some proxy */
 /* servers like Netscape's allow this and access hosts from the local */
@@ -1834,9 +1755,7 @@ static void register_hooks(apr_pool_t *p)
     /* fixup before mod_rewrite, so that the proxied url will not
      * escaped accidentally by our fixup.
      */
-#ifndef FIX_15207
     static const char * const aszSucc[]={ "mod_rewrite.c", NULL };
-#endif
     /* Only the mpm_winnt has child init hook handler.
      * make sure that we are called after the mpm
      * initializes.
@@ -1850,10 +1769,8 @@ static void register_hooks(apr_pool_t *p)
     ap_hook_translate_name(proxy_trans, NULL, NULL, APR_HOOK_FIRST);
     /* walk <Proxy > entries and suppress default TRACE behavior */
     ap_hook_map_to_storage(proxy_map_location, NULL,NULL, APR_HOOK_FIRST);
-#ifndef FIX_15207
     /* fixups */
     ap_hook_fixups(proxy_fixup, NULL, aszSucc, APR_HOOK_FIRST);
-#endif
     /* post read_request handling */
     ap_hook_post_read_request(proxy_detect, NULL, NULL, APR_HOOK_FIRST);
     /* pre config handling */
