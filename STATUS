@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:						-*-text-*-
-Last modified at [$Date: 2002/02/03 18:51:17 $]
+Last modified at [$Date: 2002/02/03 19:19:13 $]
 
 Release:
 
@@ -45,7 +45,7 @@ RELEASE SHOWSTOPPERS:
         running on Daedalus since  02-Feb-2002 7:58 PST (need 3 days)
         Compiles on : AIX, Solaris, FreeBSD 3.5, Win32, Linux 2.4
         for beta
-            +1 : Justin, Ian, Jeff Trawick
+            +1 : Justin, Ian, Jeff Trawick, BillS
             +0 : 
             -1 :
         bumps since original tag:
@@ -63,7 +63,7 @@ RELEASE SHOWSTOPPERS:
             * erroneous check in an AP_DEBUG_ASSERT() call.  Only happens
               in maintainer mode.  Fixed in modules/http/http_protocol.c
               revision 1.391.  Add item in release notes:
-                +1: Justin, Cliff, Aaron
+                +1: Justin, Cliff, Aaron, BillS
                 +0:
                 -1:
             * hasn't run for 3 days on Daedalus 
