@@ -1,5 +1,10 @@
 Changes with Apache 1.3a2
 
+  *) Canonicalise filenames under Win32. Short filenames are
+     converted to long ones. Backslashes are converted to forward
+	 slashes. Case is converted to lower. Parts of URLs that do not
+	 correspond to files are left completely alone. [Ben Laurie]
+
   *) PORT: 2 new OSs added to the list of ports:
       Encore's UMAX V: Arieh Markel <amarkel@encore.com>
       Acorn RISCiX: Stephen Borrill <sborrill@xemplar.co.uk>
