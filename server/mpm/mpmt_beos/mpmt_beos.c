@@ -104,6 +104,15 @@ typedef struct {
     ap_context_t *tpool; /* "pthread" would be confusing */
 } proc_info;
 
+#define SERVER_DEAD 0
+#define SERVER_DYING 1
+#define SERVER_ALIVE 2
+
+static struct {
+    pid_t pid;
+    unsigned char status;
+} child_table[HARD_SERVER_LIMIT];
+
 #if 0
 #define SAFE_ACCEPT(stmt) do {if (ap_listeners->next != NULL) {stmt;}} while (0)
 #else
@@ -115,7 +124,7 @@ typedef struct {
  * to deal with MaxClients changes across SIGWINCH restarts.  We use this
  * value to optimize routines that have to scan the entire scoreboard.
  */
-static int max_daemons_limit = -1;
+int max_daemons_limit = -1;
 static char ap_coredump_dir[MAX_STRING_LEN];
 port_id port_of_death;
 
@@ -307,8 +316,6 @@ static void reclaim_child_processes(int terminate)
     other_child_rec *ocr, *nocr;
 #endif
 
-    ap_sync_scoreboard_image();
-
     for (tries = terminate ? 4 : 1; tries <= 9; ++tries) {
 	/* don't want to hold up progress any more than 
 	 * necessary, but we need to allow children a few moments to exit.
@@ -322,15 +329,16 @@ static void reclaim_child_processes(int terminate)
 	/* now see who is done */
 	not_dead_yet = 0;
 	for (i = 0; i < max_daemons_limit; ++i) {
-	    int pid = ap_scoreboard_image->parent[i].pid;
+        int pid;
+        if (child_table[i].status == SERVER_DEAD)
+            continue;
 
-	    if (pid == my_pid || pid == 0)
-		continue;
+	    pid = child_table[i].pid;
 
 	    waitret = waitpid(pid, &status, WNOHANG);
 	    if (waitret == pid || waitret == -1) {
-		ap_scoreboard_image->parent[i].pid = 0;
-		continue;
+		    child_table[i].status = SERVER_DEAD;
+		    continue;
 	    }
 	    ++not_dead_yet;
 	    switch (tries) {
@@ -460,7 +468,6 @@ static void just_die(int sig)
 static int volatile shutdown_pending;
 static int volatile restart_pending;
 static int volatile is_graceful;
-ap_generation_t volatile ap_my_generation;
 
 /*
  * ap_start_shutdown() and ap_start_restart(), below, are a first stab at
@@ -659,8 +666,6 @@ static void process_socket(ap_context_t *p, ap_socket_t *sock, int my_child_num,
 	return;
     }
 
-    (void) ap_update_child_status(my_child_num, my_thread_num,  
-				  SERVER_BUSY_READ, (request_rec *) NULL);
     conn_io = ap_bcreate(p, B_RDWR);
     ap_bpush_iol(conn_io, iol);
 
@@ -703,8 +708,6 @@ static int32 worker_thread(void * dummy)
         workers_may_exit |= (ap_max_requests_per_child != 0) && (requests_this_child <= 0);
         if (workers_may_exit) break;
 
-        (void) ap_update_child_status(process_slot, thread_slot, SERVER_READY, 
-                                      (request_rec *) NULL);
         SAFE_ACCEPT(intra_mutex_on(0));
         if (workers_may_exit) {
             SAFE_ACCEPT(intra_mutex_off(0));
@@ -766,8 +769,6 @@ static int32 worker_thread(void * dummy)
     }
 
     ap_destroy_pool(tpool);
-    ap_update_child_status(process_slot, thread_slot, SERVER_DEAD,
-        (request_rec *) NULL);
     be_mutex_lock(&worker_thread_count_mutex);
     worker_thread_count--;
     if (worker_thread_count == 0) {
@@ -798,8 +799,6 @@ static int32 child_main(void * data)
     ap_create_context(&pchild, pconf);
 
     /*stuff to do before we switch id's, so we have permissions.*/
-    reopen_scoreboard(pchild);
-
     SAFE_ACCEPT(intra_mutex_init(pchild, 1));
     SAFE_ACCEPT(accept_mutex_child_init(pchild));
 
@@ -844,8 +843,6 @@ static int32 child_main(void * data)
 	ap_create_context(&my_info->tpool, pchild);
 	
 	/* We are creating threads right now */
-	(void) ap_update_child_status(my_child_num, i, SERVER_STARTING, 
-				      (request_rec *) NULL);
 
 	if ((thread = spawn_thread(worker_thread, "httpd_worker_thread",
 	      B_NORMAL_PRIORITY, my_info)) < B_NO_ERROR) {
@@ -885,7 +882,8 @@ static int make_child(server_rec *s, int slot, time_t now) /* ZZZ */
 
     if (one_process) {
     	set_signals();
-        ap_scoreboard_image->parent[slot].pid = getpid();
+        child_table[slot].pid = getpid();
+        child_table[slot].status = SERVER_ALIVE;
 	    //child_main(slot);
     }
 
@@ -903,14 +901,8 @@ static int make_child(server_rec *s, int slot, time_t now) /* ZZZ */
     }
     resume_thread(tid);
     
-/*    if (!pid) {
-        RAISE_SIGSTOP(MAKE_CHILD);
-        signal(SIGTERM, just_die);
-        child_main(slot);
-    	return 0;
-    }*/
-    /* else */
-    ap_scoreboard_image->parent[slot].pid = tid;
+    child_table[slot].pid = getpid();
+    child_table[slot].status = SERVER_ALIVE;
     return 0;
 }
 
@@ -920,7 +912,7 @@ static void startup_children(int number_to_start)
     int i;
 
     for (i = 0; number_to_start && i < ap_daemons_limit; ++i) {
-	if (ap_scoreboard_image->parent[i].pid != 0) {
+	if (child_table[i].status  != SERVER_DEAD) {
 	    continue;
 	}
 	if (make_child(server_conf, i, 0) < 0) {
@@ -932,12 +924,12 @@ static void startup_children(int number_to_start)
 
 
 /*
- * idle_spawn_rate is the number of children that will be spawned on the
+ * spawn_rate is the number of children that will be spawned on the
  * next maintenance cycle if there aren't enough idle servers.  It is
  * doubled up to MAX_SPAWN_RATE, and reset only when a cycle goes by
  * without the need to spawn.
  */
-static int idle_spawn_rate = 1;
+static int spawn_rate = 1;
 #ifndef MAX_SPAWN_RATE
 #define MAX_SPAWN_RATE	(32)
 #endif
@@ -947,7 +939,6 @@ static void perform_idle_server_maintenance(void)
 {
     int i, j;
     int idle_thread_count;
-    thread_score *ss;
     time_t now = 0;
     int free_length;
     int free_slots[MAX_SPAWN_RATE];
@@ -957,91 +948,27 @@ static void perform_idle_server_maintenance(void)
     /* initialize the free_list */
     free_length = 0;
 
-    idle_thread_count = 0;
-    last_non_dead = -1;
-    total_non_dead = 0;
-
     ap_check_signals();
-
-    ap_sync_scoreboard_image();
+    
     for (i = 0; i < ap_daemons_limit; ++i) {
-	/* Initialization to satisfy the compiler. It doesn't know
-	 * that ap_threads_per_child is always > 0 */
-	int status = SERVER_DEAD;
-	int any_dying_threads = 0;
-	int all_dead_threads = 1;
-	int idle_thread_addition = 0;
-
-	if (i >= max_daemons_limit && free_length == idle_spawn_rate)
-	    break;
-	for (j = 0; j < ap_threads_per_child; j++) {
-            ss = &ap_scoreboard_image->servers[i][j];
-	    status = ss->status;
-
-	    any_dying_threads = any_dying_threads || (status == SERVER_DEAD)
-                                    || (status == SERVER_GRACEFUL);
-	    all_dead_threads = all_dead_threads && (status == SERVER_DEAD);
-
-	    /* We consider a starting server as idle because we started it
-	     * at least a cycle ago, and if it still hasn't finished starting
-	     * then we're just going to swamp things worse by forking more.
-	     * So we hopefully won't need to fork more if we count it.
-	     * This depends on the ordering of SERVER_READY and SERVER_STARTING.
-	     */
-	    if (status <= SERVER_READY) {
-	        ++idle_thread_addition;
-	    }
-	}
-	if (all_dead_threads && free_length < idle_spawn_rate) {
-	    free_slots[free_length] = i;
-	    ++free_length;
-	}
-	if (!all_dead_threads) {
-            last_non_dead = i;
-	}
-        if (!any_dying_threads) {
-            ++total_non_dead;
-	    idle_thread_count += idle_thread_addition;
+        if (child_table[i].status == SERVER_DEAD) {
+            if (free_length < spawn_rate) {
+                free_slots[free_length] = i;
+                ++free_length;
+            }
         }
+        else {
+            last_non_dead = i;
+        }
+
+    	if (i >= max_daemons_limit && free_length >= spawn_rate) {
+	         break;
+	    }
     }
     max_daemons_limit = last_non_dead + 1;
 
-    if (idle_thread_count > max_spare_threads) {
-        /* Kill off one child */
-        char char_of_death = '!';
-        if (write_port(port_of_death, 99, &char_of_death, 1) != B_OK) {
-            ap_log_error(APLOG_MARK, APLOG_WARNING, errno, server_conf,
-                 "write pipe_of_death");
-        }
-        idle_spawn_rate = 1;
-    }
-    else if (idle_thread_count < min_spare_threads) {
-        /* terminate the free list */
-        if (free_length == 0) {
-	    /* only report this condition once */
-	    static int reported = 0;
-	    
-	    if (!reported) {
-	        ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, errno, server_conf,
-			     "server reached MaxClients setting, consider"
-			     " raising the MaxClients setting");
-		reported = 1;
-	    }
-	    idle_spawn_rate = 1;
-	}
-	else {
-	    /* ZZZZ */
-	    
-	    if (idle_spawn_rate >= 8) {
-	        ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_INFO, errno, server_conf,
-			     "server seems busy, (you may need "
-			     "to increase StartServers, ThreadsPerChild "
-                             "or Min/MaxSparetThreads), "
-			     "spawning %d children, there are around %d idle "
-                             "threads, and %d total children", idle_spawn_rate,
-			     idle_thread_count, total_non_dead);
-	    }
-	    for (i = 0; i < free_length; ++i) {
+    if (free_length > 0) {
+    	for (i = 0; i < free_length; ++i) {
 	        make_child(server_conf, free_slots[i], now);
 	    }
 	    /* the next time around we want to spawn twice as many if this
@@ -1049,14 +976,11 @@ static void perform_idle_server_maintenance(void)
 	     */
 	    if (hold_off_on_exponential_spawning) {
 	        --hold_off_on_exponential_spawning;
+	    } else if (spawn_rate < MAX_SPAWN_RATE) {
+	        spawn_rate *= 2;
 	    }
-	    else if (idle_spawn_rate < MAX_SPAWN_RATE) {
-	        idle_spawn_rate *= 2;
-	    }
-	}
-    }
-    else {
-      idle_spawn_rate = 1;
+    } else {
+        spawn_rate = 1;
     }
 }
 
@@ -1073,10 +997,20 @@ static void server_main_loop(int remaining_children_to_start)
         if (pid >= 0) {
             process_child_status(pid, status);
             /* non-fatal death... note that it's gone in the scoreboard. */
-            child_slot = find_child_by_pid(pid);
+            child_slot = -1;
+            for (i = 0; i < max_daemons_limit; ++i) {
+        	if (child_table[i].pid == pid) {
+                    int j;
+
+                    child_slot = i;
+                    for (j = 0; j < HARD_THREAD_LIMIT; j++) {
+                        ap_mpmt_beos_force_reset_connection_status(i * HARD_THREAD_LIMIT + j);
+                    }
+                    break;
+                }
+            }
             if (child_slot >= 0) {
-                for (i = 0; i < ap_threads_per_child; i++)
-                    ap_update_child_status(child_slot, i, SERVER_DEAD, (request_rec *) NULL);
+                child_table[child_slot].status = SERVER_DEAD;
                 
 		if (remaining_children_to_start
 		    && child_slot < ap_daemons_limit) {
@@ -1217,14 +1151,6 @@ int ap_mpm_run(ap_context_t *_pconf, ap_context_t *plog, server_rec *s)
 	return 1;
     }
 
-    /* advance to the next generation */
-    /* XXX: we really need to make sure this new generation number isn't in
-     * use by any of the children.
-     */
-    ++ap_my_generation;
-    ap_scoreboard_image->global.running_generation = ap_my_generation;
-    update_scoreboard_global();
-
     if (is_graceful) {
 	int i, j;
         char char_of_death = '!';
@@ -1234,25 +1160,16 @@ int ap_mpm_run(ap_context_t *_pconf, ap_context_t *plog, server_rec *s)
 
 	/* give the children the signal to die */
         for (i = 0; i < ap_daemons_limit;) {
-            if (write_port(port_of_death, 99, &char_of_death, 1) != B_OK) {
-                if (errno == EINTR) continue;
-                ap_log_error(APLOG_MARK, APLOG_WARNING, errno, server_conf,
-                   "write pipe_of_death");
+            if(child_table[i].status != SERVER_DEAD) {
+                if (write_port(port_of_death, 99, &char_of_death, 1) != B_OK) {
+                    if (errno == EINTR) continue;
+                    ap_log_error(APLOG_MARK, APLOG_WARNING, errno, server_conf,
+                       "write port_of_death");
+                }
             }
             i++;
         }
 
-	/* This is mostly for debugging... so that we know what is still
-         * gracefully dealing with existing request.
-         */
-	
-	for (i = 0; i < ap_daemons_limit; ++i) {
-  	    for (j = 0; j < ap_threads_per_child; j++) { 
-	        if (ap_scoreboard_image->servers[i][j].status != SERVER_DEAD) {
-		    ap_scoreboard_image->servers[i][j].status = SERVER_GRACEFUL;
-		}
-	    } 
-	}
     }
     else {
       /* Kill 'em all.  Since the child acts the same on the parents SIGTERM 
@@ -1301,7 +1218,7 @@ static void mpmt_beos_pre_config(ap_context_t *pconf, ap_context_t *plog, ap_con
     ap_pid_fname = DEFAULT_PIDLOG;
     ap_scoreboard_fname = DEFAULT_SCOREBOARD;
     ap_max_requests_per_child = DEFAULT_MAX_REQUESTS_PER_CHILD;
-    ap_extended_status = 0;
+    ap_mpmt_beos_set_maintain_connection_status(1);
 
     ap_cpystrn(ap_coredump_dir, ap_server_root, sizeof(ap_coredump_dir));
 }
@@ -1437,6 +1354,18 @@ static const char *set_max_requests(cmd_parms *cmd, void *dummy, char *arg)
     return NULL;
 }
 
+static const char *set_maintain_connection_status(cmd_parms *cmd,
+                                                  core_dir_config *d, int arg) 
+{
+    const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
+    if (err != NULL) {
+        return err;
+    }
+
+    ap_mpmt_beos_set_maintain_connection_status(arg != 0);
+    return NULL;
+}
+
 static const char *set_coredumpdir (cmd_parms *cmd, void *dummy, char *arg) 
 {
     struct stat finfo;
@@ -1508,6 +1437,8 @@ LISTEN_COMMANDS
   "Number of threads each child creates" },
 { "MaxRequestsPerChild", set_max_requests, NULL, RSRC_CONF, TAKE1,
   "Maximum number of requests a particular child serves before dying." },
+{ "ConnectionStatus", set_maintain_connection_status, NULL, RSRC_CONF, FLAG,
+  "Whether or not to maintain status information on current connections"},
 { "CoreDumpDirectory", set_coredumpdir, NULL, RSRC_CONF, TAKE1,
   "The location of the directory Apache changes to before dumping core" },
 { NULL }
