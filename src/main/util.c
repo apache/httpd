@@ -863,26 +863,14 @@ API_EXPORT(int) ap_cfg_getline(char *buf, size_t bufsize, configfile_t *cfp)
 	    break;
 	}
 
-	/* Compress the line, reducing all blanks and tabs to one space.
+	/*
 	 * Leading and trailing white space is eliminated completely
 	 */
-	src = dst = buf;
+	src = buf;
 	while (ap_isspace(*src))
 	    ++src;
-	while (*src != '\0')
-	{
-	    /* Copy words */
-	    while (!ap_isspace(*dst = *src) && *src != '\0') {
-		++src;
-		++dst;
-	    }
-	    if (*src == '\0') break;
-	    *dst++ = ' ';
-	    while (ap_isspace(*src))
-		++src;
-	}
-	*dst = '\0';
 	/* blast trailing whitespace */
+	dst = &src[strlen(src)];
 	while (--dst >= buf && ap_isspace(*dst))
 	    *dst = '\0';
 
