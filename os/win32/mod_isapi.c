@@ -595,7 +595,7 @@ BOOL WINAPI GetServerVariable (HCONN hConn, LPSTR lpszVariableName,
         int nelts = 2 * apr_table_elts(r->headers_in)->nelts;
         int i;
 
-        for (i = 0; i < nelts; i += 2)
+        for (len = 0, i = 0; i < nelts; i += 2)
             len += strlen(raw[i]) + strlen(raw[i + 1]) + 2;
   
         if (*lpdwSizeofBuffer < len + 1) {
