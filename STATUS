@@ -1,5 +1,5 @@
 Apache 2.0 STATUS:
-Last modified at [$Date: 2000/06/09 15:22:12 $]
+Last modified at [$Date: 2000/06/10 01:32:35 $]
 
 Release:
 
@@ -10,6 +10,8 @@ Release:
     2.0a1   : released March 10, 2000
 
 RELEASE SHOWSTOPPERS:
+    * Turn on buffering for config file reads.
+
     * Win32: Get mod_auth_digest working under win32
       - APR_HAS_RANDOM should be defined on windows and there is a 
       lib/apr/misc/win32/rand.c which is basically a copy of what
