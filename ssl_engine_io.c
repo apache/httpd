@@ -986,7 +986,7 @@ long ssl_io_data_cb(BIO *bio, int cmd,
                     (cmd == (BIO_CB_WRITE|BIO_CB_RETURN) ? "write" : "read"),
                     rc, argi, (cmd == (BIO_CB_WRITE|BIO_CB_RETURN) ? "to" : "from"),
                     bio, argp,
-                    (argp != NULL ? "(BIO dump follows)" : "(Ops, no memory buffer?)"));
+                    (argp != NULL ? "(BIO dump follows)" : "(Oops, no memory buffer?)"));
             if (argp != NULL)
                 ssl_io_data_dump(s, argp, rc);
         }
