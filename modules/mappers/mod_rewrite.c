@@ -3096,7 +3096,7 @@ static void open_rewritelog(server_rec *s, apr_pool_t *p)
     const char *fname;
     apr_status_t rc;
     piped_log *pl;
-    int    rewritelog_flags = ( APR_WRITE | APR_APPEND | APR_CREATE | APR_INHERIT );
+    int    rewritelog_flags = ( APR_WRITE | APR_APPEND | APR_CREATE );
     apr_fileperms_t rewritelog_mode  = ( APR_UREAD | APR_UWRITE | APR_GREAD | APR_WREAD );
 
     conf = ap_get_module_config(s->module_config, &rewrite_module);
@@ -3130,6 +3130,7 @@ static void open_rewritelog(server_rec *s, apr_pool_t *p)
                          "file %s", fname);
             exit(1);
         }
+        apr_file_set_inherit(conf->rewritelogfp);
     }
     return;
 }

@@ -207,13 +207,14 @@ static void cache_the_file(cmd_parms *cmd, const char *filename, int mmap)
 	return;
     }
 
-    rc = apr_file_open(&fd, fspec, APR_READ | APR_BINARY | APR_XTHREAD | APR_INHERIT,
+    rc = apr_file_open(&fd, fspec, APR_READ | APR_BINARY | APR_XTHREAD,
                        APR_OS_DEFAULT, cmd->pool);
     if (rc != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_WARNING, rc, cmd->server,
                      "mod_file_cache: unable to open(%s, O_RDONLY), skipping", fspec);
 	return;
     }
+    apr_file_set_inherit(fd);
 
     /* WooHoo, we have a file to put in the cache */
     new_file = apr_pcalloc(cmd->pool, sizeof(a_file));
