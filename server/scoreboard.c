@@ -351,33 +351,9 @@ int ap_create_scoreboard(apr_pool_t *p, ap_scoreboard_e sb_type)
  * anyway.
  */
 
-void ap_sync_scoreboard_image(void)
-{
-}
-
 AP_DECLARE(int) ap_exists_scoreboard_image(void)
 {
     return (ap_scoreboard_image ? 1 : 0);
-}
-
-static APR_INLINE void put_scoreboard_info(int child_num, int thread_num, 
-                                           worker_score *new_score_rec)
-{
-    /* XXX - needs to be fixed to account for threads */
-#ifdef SCOREBOARD_FILE
-    lseek(scoreboard_fd, sizeof(global_score) 
-                         + (long)child_num * sizeof(worker_score), 0);
-    force_write(scoreboard_fd, new_score_rec, sizeof(worker_score));
-#endif
-}
-
-void update_scoreboard_global(void)
-{
-#ifdef SCOREBOARD_FILE
-    lseek(scoreboard_fd, 0, 0);
-    force_write(scoreboard_fd, &ap_scoreboard_image->global,
-                sizeof ap_scoreboard_image->global);
-#endif
 }
 
 AP_DECLARE(void) ap_increment_counts(ap_sb_handle_t *sb, request_rec *r)
@@ -395,8 +371,6 @@ AP_DECLARE(void) ap_increment_counts(ap_sb_handle_t *sb, request_rec *r)
     ws->bytes_served += r->bytes_sent;
     ws->my_bytes_served += r->bytes_sent;
     ws->conn_bytes += r->bytes_sent;
-
-    put_scoreboard_info(sb->child_num, sb->thread_num, ws);
 }
 
 AP_DECLARE(int) find_child_by_pid(apr_proc_t *pid)
@@ -482,7 +456,6 @@ AP_DECLARE(int) ap_update_child_status_from_indexes(int child_num,
         }
     }
     
-    put_scoreboard_info(child_num, thread_num, ws);
     return old_status;
 }
 
@@ -509,7 +482,6 @@ void ap_time_process_request(int child_num, int thread_num, int status)
     else if (status == STOP_PREQUEST) {
         ws->stop_time = apr_time_now(); 
     }
-    put_scoreboard_info(child_num, thread_num, ws);
 }
 
 AP_DECLARE(worker_score *) ap_get_scoreboard_worker(int x, int y)

@@ -956,7 +956,6 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
          */
         ++ap_my_generation;
         ap_scoreboard_image->global->running_generation = ap_my_generation;
-        update_scoreboard_global();
 
     	ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_NOTICE, 0, ap_server_conf,
 		    "Graceful restart requested, doing restart");

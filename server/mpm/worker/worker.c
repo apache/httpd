@@ -1354,7 +1354,6 @@ static void perform_idle_server_maintenance(void)
     last_non_dead = -1;
     total_non_dead = 0;
 
-    ap_sync_scoreboard_image();
     for (i = 0; i < ap_daemons_limit; ++i) {
         /* Initialization to satisfy the compiler. It doesn't know
          * that ap_threads_per_child is always > 0 */
@@ -1606,7 +1605,6 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
          * cleared scoreboard
          */
         ap_scoreboard_image->global->running_generation = ap_my_generation;
-        update_scoreboard_global();
     }
 
     set_signals();
@@ -1688,7 +1686,6 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
      */
     ++ap_my_generation;
     ap_scoreboard_image->global->running_generation = ap_my_generation;
-    update_scoreboard_global();
     
     if (is_graceful) {
         ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_NOTICE, 0, ap_server_conf,
