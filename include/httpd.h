@@ -1542,6 +1542,8 @@ const char *ap_strstr_c(const char *s, const char *c);
 
 #endif
 
+#define AP_NORESTART		APR_OS_START_USEERR + 1
+
 #ifdef __cplusplus
 }
 #endif

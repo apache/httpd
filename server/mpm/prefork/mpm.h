@@ -68,6 +68,7 @@
 
 #define MPM_NAME "Prefork"
 
+#define AP_MPM_USES_POD 1
 #define AP_MPM_NEEDS_RECLAIM_CHILD_PROCESSES 1
 #define MPM_SYNC_CHILD_TABLE() (ap_sync_scoreboard_image())
 #define MPM_CHILD_PID(i) (ap_scoreboard_image->parent[i].pid)

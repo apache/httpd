@@ -164,6 +164,49 @@ AP_DECLARE(gid_t) ap_gname2id(const char *name);
 
 #define AP_MPM_HARD_LIMITS_FILE APACHE_MPM_DIR "/mpm_default.h"
 
+#ifdef AP_MPM_USES_POD
+
+typedef struct ap_pod_t ap_pod_t;
+
+struct ap_pod_t {
+    apr_file_t *pod_in;
+    apr_file_t *pod_out;
+    apr_pool_t *p;
+};
+
+/**
+ * Open the pipe-of-death.  The pipe of death is used to tell all child
+ * processes that it is time to die gracefully.
+ * @param p The pool to use for allocating the pipe
+ */
+AP_DECLARE(apr_status_t) ap_mpm_pod_open(apr_pool_t *p, ap_pod_t **pod);
+
+/**
+ * Check the pipe to determine if the process has been signalled to die.
+ */
+AP_DECLARE(apr_status_t) ap_mpm_pod_check(ap_pod_t *pod);
+
+/**
+ * Close the pipe-of-death
+ */
+AP_DECLARE(apr_status_t) ap_mpm_pod_close(ap_pod_t *pod);
+
+/**
+ * Write data to the pipe-of-death, signalling that one child process
+ * should die.
+ * @param p The pool to use when allocating any required structures.
+ */
+AP_DECLARE(apr_status_t) ap_mpm_pod_signal(ap_pod_t *pod);
+
+/**
+ * Write data to the pipe-of-death, signalling that all child process
+ * should die.
+ * @param p The pool to use when allocating any required structures.
+ * @param num The number of child processes to kill
+ */
+AP_DECLARE(void) ap_mpm_pod_killpg(ap_pod_t *pod, int num);
+#endif
+
 #ifdef __cplusplus
 }
 #endif
