@@ -3,7 +3,7 @@
   [ <!ENTITY sitemap SYSTEM "../sitemap.xml.ja"> ]
 >
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
-<!-- English revision: 1.4 -->
+<!-- English revision: 1.5 -->
 
 <moduleindex>
   <title>モジュール一覧</title>
@@ -14,6 +14,10 @@
       ディレクティブ</a> のアルファベット順のリストも見てください。
     </p>
   </summary>
+  <seealso><a href="../mpm.html">マルチプロセッシングモジュール (MPMs)</a>
+  </seealso>
+  <seealso><a href="quickreference.html">ディレクティブ クイックリファレンス</a>
+  </seealso>
 
   &sitemap;
 </moduleindex>

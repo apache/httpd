@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="iso-2022-jp"?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
+<!-- English revision: 1.1 -->
+<modulesynopsis>
+
+<name>mod_dav_fs</name> 
+<description><module>mod_dav</module> のためのファイルシステムプロバイダ</description>
+<status>Extension</status>
+<sourcefile>mod_dav_fs.c</sourcefile>
+<identifier>dav_fs_module</identifier>
+
+<summary>
+    <p>このモジュールは <module>mod_dav</module>
+    のサービスを<em>必要とします</em>。<module>mod_dav</module>
+    のサポートモジュールとして動作し、サーバファイルシステム上に
+    位置するリソースへのアクセスを提供します。このプロバイダの正式な名前は
+    <code>filesystem</code> です。<module>mod_dav</module>
+    バックエンドプロバイダは <directive module="mod_dav">Dav</directive>
+    ディレクティブを使用して起動されます。</p>
+
+    <example><title>例</title>
+      Dav filesystem
+    </example>
+
+    <p><code>filesystem</code> は <module>mod_dav</module>
+    のデフォルトプロバイダになっていますから、代わりに単に
+    <code>On</code> と指定することもできます。</p>
+</summary>
+<seealso><module>mod_dav</module></seealso>
+
+<directivesynopsis>
+<name>DavLockDB</name>
+<description>DAV ロックデータベースの位置</description>
+<syntax>DavLockDB <var>file-path</var></syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
+
+<usage>
+    <p>ロックデータベースへのフルパスを、拡張子を除いた形で
+    指定するには、<directive>DavLockDB</directive>
+    を使います。パスが絶対パスでなければ、<directive module=
+    "core">ServerRoot</directive> からの相対パスと解釈されます。
+    <module>mod_dav_fs</module> 実装では、ユーザロックを
+    追跡するために SDBM データベースを使います。</p>
+
+    <!-- XXX: someone should add that tool to the support directory...
+    The utility <code>modules/dav/util/lockview</code> can be used from
+    the server to display all locks in a lock database.</p> -->
+
+    <example><title>例</title>
+      DavLockDB logs/DavLock
+    </example>
+</usage>
+</directivesynopsis>
+
+</modulesynopsis>
+

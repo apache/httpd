@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="iso-2022-jp"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
-<!-- English revision: 1.4 -->
+<!-- English revision: 1.5 -->
 <modulesynopsis>
 
 <name>mod_dav</name> 
@@ -19,77 +19,102 @@
     この HTTP プロトコルの拡張により、リモートのウェブサーバ上にある
     リソースやコレクションを
     作成、移動、複製、削除できるようになります。</p>
+</summary>
+<seealso><directive module="mod_dav_fs">DavLockDB</directive></seealso>
+<seealso><directive module="core">LimitXMLRequestBody</directive></seealso>
+<seealso><a href="http://www.webdav.org">WebDAV Resources</a></seealso>
 
+<section id="example"><title>Enabling WebDAV</title>
     <p>mod_dav を有効にするには、<code>httpd.conf</code>
     ファイル中のコンテナに次を加えます:</p>
 
-<example>Dav On</example>
+    <example>Dav On</example>
 
-    <p>同時に <code>httpd.conf</code> ファイルの
-    グローバルセクションに次を加えることによって、
-    DAV ロックデータベースのために使う
-    正当なファイル名を指定します:</p>
+    <p>これは DAV ファイルシステムプロバイダを有効にします。DAV
+    ファイルシステムプロバイダは <module>mod_dav_fs</module>
+    モジュールで実装されています。ですから、このモジュールはコンパイル時に
+    サーバに組み込まれているか、あるいは
+    <directive module="mod_so">LoadModule</directive>
+    を使用して実行時にロードされている必要があります。</p>
+    
+    <p>動作させるには、<code>httd.conf</code> ファイルの
+    グローバルセクションに次を加えて、ウェブサーバが書き込みできる
+    DAV ロックデータベースファイル名を指定します。</p>
 
-<example>DavLockDB /tmp/DavLock&nbsp;&nbsp;&nbsp;&nbsp;
-      <em>(ウェブサーバの書き込めるファイル名で、
-      拡張子のないもの)</em>
-</example>
-</summary>
+    <example>
+      DavLockDB /tmp/DavLock
+    </example>
+
+    <p><directive module="core" type="section">Limit</directive>
+    節を <directive module="core" type="section">Location</directive>
+    ディレクティブ内部に追加して、DAV が有効な場所への
+    アクセスを制限することもできます。DAV クライアントが
+    一度のリクエストで送信できる最大バイト数を指定したいときは、
+    <directive module="core">LimitXMLRequestBody</directive>
+    ディレクティブを使用する必要があります。「通常の」
+    <directive module="core">LimitRequestBody</directive>
+    ディレクティブは DAV リクエストに対しては効力を持ちません。</p>
+
+    <example><title>完全な例</title>
+      DavLockDB /tmp/DavLock<br />
+      <br />
+       &lt;Location /foo&gt;<br />
+       <indent>
+         Dav On<br />
+         <br />
+         AuthType Basic<br />
+         AuthName DAV<br />
+         AuthUserFile user.passwd<br />
+         <br />
+         &lt;LimitExcept GET HEAD OPTIONS&gt;<br />
+         <indent>
+           require user admin<br />
+         </indent>
+         &lt;/LimitExcept&gt;<br />
+       </indent>
+       &lt;/Location&gt;<br />
+    </example>
+
+    <note type="warning"><title>セキュリティ</title>
+      <p>HTTP 基本認証の使用は推奨できません。少なくとも 
+      <module>mod_auth_digest</module> モジュールで提供される HTTP 
+      ダイジェスト認証を用いるべきです。WebDAV クライアントのほとんどは
+      この認証方法に対応しています。もちろん、<a href="../ssl/">SSL</a>
+      有効なコネクションを通した基本認証でもセキュリティが確保できます。</p>
+    </note>
+</section>
 
 <directivesynopsis>
 <name>Dav</name>
 <description>WebDAV HTTP メソッドを有効にします</description>
-<syntax>Dav on|off</syntax>
-<default>Dav off</default>
+<syntax>Dav On|Off|<var>provider-name</var></syntax>
+<default>Dav Off</default>
 <contextlist><context>directory</context></contextlist>
 
 <usage>
-    <p>与えられたコンテナで WebDAV HTTP メソッドが使えるようにするには、
-    <directive>Dav</directive> ディレクティブを使います。
-    DAV を有効にした場所へのアクセスを制限するためには、
-    <directive module="core" type="section">Location</directive>
-    ディレクティブ内部に
-    <directive module="core" type="section">Limit</directive>
-    節を加えます。</p>
+    <p>与えられたコンテナで WebDAV HTTP メソッドが使えるようにするには
+    次のようにします。</p>
 
-<example><title>例</title>
-        DavLockDB /tmp/DavLock<br />
-        <br />
-         &lt;Location /foo&gt;<br />
-         Dav On<br />
-        <br />
-         AuthType Basic<br />
-         AuthName DAV<br />
-         AuthUserFile user.passwd<br />
-        <br />
-         &nbsp;&nbsp;&lt;LimitExcept GET HEAD OPTIONS&gt;<br />
-         &nbsp;&nbsp;require user admin<br />
-         &nbsp;&nbsp;&lt;/LimitExcept&gt;<br />
-         &lt;/Location&gt;<br />
-</example>
-</usage>
-</directivesynopsis>
+    <example>
+      &lt;Location /foo&gt;<br />
+      <indent>
+        Dav On<br />
+      </indent>
+      &lt;/Location&gt;
+    </example>
 
-<directivesynopsis>
-<name>DavLockDB</name>
-<description>DAV ロックデータベースの位置です</description>
-<syntax>DavLockDB <em>file-path</em></syntax>
-<contextlist><context>server config</context><context>virtual host</context>
-</contextlist>
+    <p><code>On</code> という指定は実際には <module>mod_dav_fs</module>
+    で提供されているデフォルトのプロバイダ、<code>filesystem</code>
+    へのエイリアスになっています。一度あるロケーションで DAV 
+    を有効にした後は、そのサブロケーションで<em>無効化することはできない</em>
+    ということに注意してください。完全な設定例は<a 
+    href="#example">上記のセクション</a> をご覧下さい。</p>
 
-<usage>
-    <p>ロックデータベースへのフルパスを、拡張子を除いた形で
-    指定するには、<directive>DavLockDB</directive>
-    を使います。デフォルトの
-    mod_dav の (ファイルシステム) 実装では、ユーザロックを
-    追跡するために SDBM データベースを使います。サーバからは、
-    ロックデータベースに入っている全てのロックを表示するために
-    <code>modules/dav/util/lockview</code>
-    ユーティリティを使用できます。</p>
-
-<example><title>例</title>
-DavLockDB /tmp/DavLock
-</example>
+    <note type="warning">
+      サーバのセキュリティが確保できるまで WebDAV を有効にしないでください。
+      そうしなければ誰でもそのサーバでファイルを配布することができるように
+      なってしまいます。
+    </note>
 </usage>
 </directivesynopsis>
 
@@ -97,9 +122,10 @@ DavLockDB /tmp/DavLock
 <name>DavMinTimeout</name>
 <description>サーバが DAV リソースのロックを維持する最小時間です。
 </description>
-<syntax>DavMinTimeout <em>seconds</em></syntax>
+<syntax>DavMinTimeout <var>seconds</var></syntax>
 <default>DavMinTimeout 0</default>
-<contextlist><context>directory</context></contextlist>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context></contextlist>
 
 <usage>
     <p>クライアントが DAV リソースロックを要求した場合、
@@ -116,11 +142,13 @@ DavLockDB /tmp/DavLock
     <directive>DavMinTimeout</directive> を使って
     これをもっと大きな値 (例えば 600 秒) に上書きできます。</p>
 
-<example><title>例</title>
-         &lt;Location /MSWord&gt;<br />
-         DavMinTimeout 600<br />
-         &lt;/Location&gt;<br />
-</example>
+    <example><title>例</title>
+      &lt;Location /MSWord&gt;<br />
+      <indent>
+        DavMinTimeout 600<br />
+      </indent>
+      &lt;/Location&gt;
+    </example>
 </usage>     
 </directivesynopsis>
 
@@ -129,11 +157,12 @@ DavLockDB /tmp/DavLock
 <description>PROPFIND, Depth: Infinity リクエストを許可します</description>
 <syntax>DavDepthInfinity on|off</syntax>
 <default>DavDepthInfinity off</default>
-<contextlist><context>directory</context></contextlist>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context></contextlist>
 
 <usage>
     <p>'Depth: Infinity' を含んでいる
-    PROPFIND リクエストを処理できるようにするには、
+    <code>PROPFIND</code> リクエストを処理できるようにするには、
     <directive>DavDepthInfinity</directive>
     ディレクティブを使います。このタイプのリクエストは
     denial-of-service アタックとなりうるので、

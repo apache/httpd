@@ -2,7 +2,7 @@
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
 <modulesynopsis>
-<!-- English revision: 1.3 -->
+<!-- English revision: 1.7 -->
 
 <name>mod_auth_basic</name>
 <description>基本認証</description>
@@ -12,12 +12,10 @@
 <compatibility>Apache 2.1 以降</compatibility>
 
 <summary>
-
     <p>与えられたプロバイダ (訳注: 認証での照会を行う問い合わせ先) 
     でユーザを検索し、HTTP 基本認証でアクセス制限できるようになります。
     HTTP ダイジェスト認証については <module>mod_auth_digest</module>
     で提供されます。</p>
-
 </summary>
 <seealso><directive module="core">AuthName</directive></seealso>
 <seealso><directive module="core">AuthType</directive></seealso>
@@ -25,7 +23,10 @@
 <directivesynopsis>
 <name>AuthBasicProvider</name>
 <description>この位置に対する認証プロバイダを設定します。</description>
-<syntax>AuthBasicProvider <em>provider-name</em></syntax>
+<syntax>AuthBasicProvider On|Off|<var>provider-name</var>
+[<var>provider-name</var>] ...</syntax>
+<default>AuthBasicProvider On</default>
+<contextlist><context>directory</context><context>.htaccess</context>
 <contextlist>
   <context>directory</context>
   <context>.htaccess</context>
@@ -34,12 +35,30 @@
 
 <usage>
     <p><directive>AuthBasicProvider</directive> ディレクティブで、
-    この位置に対するユーザ認証に用いられる認証プロバイダを設定します。</p>
+    この位置に対するユーザ認証に用いられる認証プロバイダを設定します。
+    <code>On</code> に設定するとデフォルトの認証プロバイダ
+    (<code>file</code>) が使用されます。<code>file</code>
+    プロバイダは <module>mod_authn_file</module>
+    モジュールで実装されていますので、
+    このモジュールがサーバに入っていることを確認してください。</p>
+
+    <example><title>Example</title>
+      &lt;Location /secure&gt;<br />
+      <indent>
+        AuthBasicProvider  dbm<br />
+        AuthDBMType        SDBM<br />
+        AuthDBMUserFile    /www/etc/dbmpasswd<br />
+        Require            valid-user<br />
+      </indent>
+      &lt;/Location&gt;
+    </example>
 
     <p>認証プロバイダについては
-    <module>mod_authn_dbm</module>, <module>mod_authn_file</module>
+    <module>mod_authn_dbm</module> と <module>mod_authn_file</module>
     をご覧下さい。</p>
 
+    <p><code>Off</code> はプロバイダリストをクリアして、デフォルトの
+    状態に戻します。</p>
 </usage>
 </directivesynopsis>
 
@@ -47,38 +66,34 @@
 <name>AuthBasicAuthoritative</name>
 <description>認証と承認を、より低いレベルのモジュールに移行させるかを
 設定します。</description>
-<syntax>AuthBasicAuthoritative on|off</syntax>
-<default>AuthBasicAuthoritative on</default>
-<contextlist>
-  <context>directory</context>
-  <context>.htaccess</context>
+<syntax>AuthBasicAuthoritative On|Off</syntax>
+<default>AuthBasicAuthoritative On</default>
+<contextlist><context>directory</context><context>.htaccess</context>
 </contextlist>
 <override>AuthConfig</override>
 
 <usage>
     <p><directive>AuthBasicAuthoritative</directive>
-    ディレクティブで明示的に <strong>'off'</strong>に設定すると、
+    ディレクティブで明示的に <code>Off</code>に設定すると、
     与えられた認証ユーザ ID に対して<strong>ユーザ ID がない</strong>
     または<strong>ルールがない</strong>場合に、
     認証と承認の両方のプロセスが、
-    より低いレベルのモジュール (<code>Configuration</code> と 
-    <code>modules.c</code> ファイルで定義) に移行するようにできます。
+    より低いレベルのモジュール (<code>modules.c</code> ファイルで定義) に移行するようにできます。
     ユーザ ID がある、かつまたは、ルールが指定されている場合は、
     通常のパスワードとアクセスチェックが適用されて、
-    認証に失敗すると「 Authorization Required 」応答が返されます。</p>
+    認証に失敗すると "Authentication Required" 応答が返されます。</p>
 
     <p>ですから、二つ以上のモジュールのデータベースで同一の
     ユーザ ID が現われたり、
     または、正しい <directive module="core">Require</directive>
     ディレクティブが二つ以上のモジュールで現われたりした場合は、
-    一つ目のモジュールが認定を行って、AuthAuthoritative 設定に関わらず、
-    アクセスは移行しません。</p>
+    一つ目のモジュールが認定を行って、<directive>AuthAuthoritative</directive>
+    設定に関わらず、アクセスは移行しません。</p>
 
     <p>デフォルトでは、制御は移行しません。そして、未知のユーザ ID や
-    ルールがあっても「 Authorization Required 」応答が返されます。
-    ですから、このディレクティブ設定しないことでシステムの安全を維持できて、また、
+    ルールがあっても "Authentication Required" 応答が返されます。
+    ですから、このディレクティブを設定しないことでシステムの安全を維持できて、また、
     NCSA 準拠の挙動を強制できます。</p>
-
 </usage>
 </directivesynopsis>
 
