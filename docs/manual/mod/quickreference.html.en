@@ -95,8 +95,8 @@ information displayed by the server-info handler</td></tr>
 <tr><td><a href="mod_mime.html#addoutputfilter">AddOutputFilter <var>filter</var>[;<var>filter</var>...]
 <var>extension</var> [<var>extension</var>] ...</a></td><td /><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Maps filename extensions to the filters that will process
 responses from the server</td></tr>
-<tr class="odd"><td><a href="core.html#addoutputfilterbytype">AddOutputFilterByType <var>filter</var>[;<var>filter</var>...] <var>MIME-type</var>
-[<var>MIME-type</var>] ...</a></td><td /><td>svdh</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">assigns an output filter to a particular MIME-type</td></tr>
+<tr class="odd"><td><a href="core.html#addoutputfilterbytype">AddOutputFilterByType <var>filter</var>[;<var>filter</var>...]
+<var>MIME-type</var> [<var>MIME-type</var>] ...</a></td><td /><td>svdh</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">assigns an output filter to a particular MIME-type</td></tr>
 <tr><td><a href="mod_mime.html#addtype">AddType <var>MIME-type</var> <var>extension</var>
 [<var>extension</var>] ...</a></td><td /><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Maps the given filename extensions onto the specified content
 type</td></tr>
@@ -111,7 +111,7 @@ expressions</td></tr>
 server</td></tr>
 <tr><td><a href="mod_proxy.html#allowconnect">AllowCONNECT <em>port</em> [<em>port</em>] ...</a></td><td> 443 563 </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Ports that are allowed to <code>CONNECT</code> through
 the proxy</td></tr>
-<tr class="odd"><td><a href="core.html#allowoverride">AllowOverride All|None|<var>directive-type</var> 
+<tr class="odd"><td><a href="core.html#allowoverride">AllowOverride All|None|<var>directive-type</var>
 [<var>directive-type</var>] ...</a></td><td> All </td><td>d</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Types of directives that are allowed in
 .htaccess files</td></tr>
 <tr><td><a href="mod_auth_anon.html#anonymous">Anonymous <var>user</var> [<var>user</var>] ...</a></td><td /><td>dh</td><td>E</td></tr><tr><td class="descr" colspan="4">Specifies userIDs that areallowed access without
@@ -220,7 +220,7 @@ stored</td></tr>
 <tr class="odd"><td><a href="mod_disk_cache.html#cachesize">CacheSize <var>KBytes</var></a></td><td> 1000000 </td><td>sv</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">The maximum amount of disk space that will be used by the
 cache in KBytes</td></tr>
 <tr><td><a href="mod_disk_cache.html#cachetimemargin">CacheTimeMargin <var>?</var></a></td><td> ? </td><td>sv</td><td>X</td></tr><tr><td class="descr" colspan="4">The minimum time margin to cache a document</td></tr>
-<tr class="odd"><td><a href="core.html#cgimapextension">CGIMapExtension cgi-path .extension</a></td><td /><td>dh</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Technique for locating the interpreter for CGI 
+<tr class="odd"><td><a href="core.html#cgimapextension">CGIMapExtension <var>cgi-path</var> <var>.extension</var></a></td><td /><td>dh</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Technique for locating the interpreter for CGI
 scripts</td></tr>
 <tr><td><a href="mod_charset_lite.html#charsetdefault">CharsetDefault <var>charset</var></a></td><td /><td>svdh</td><td>X</td></tr><tr><td class="descr" colspan="4">Charset to translate into</td></tr>
 <tr class="odd"><td><a href="mod_charset_lite.html#charsetoptions">CharsetOptions <var>option</var> [<var>option</var>] ...</a></td><td> DebugLevel=0 NoImpl +</td><td>svdh</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Configures charset translation behavior</td></tr>
@@ -229,7 +229,7 @@ scripts</td></tr>
 module</td></tr>
 <tr><td><a href="perchild.html#childperuserid">ChildPerUserID <var>user_id</var>
 <var>group_id</var> <var>num_children</var></a></td><td /><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">-</td></tr>
-<tr class="odd"><td><a href="core.html#contentdigest">ContentDigest on|off</a></td><td> off </td><td>svdh</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Enables the generation of Content-MD5 HTTP Response
+<tr class="odd"><td><a href="core.html#contentdigest">ContentDigest On|Off</a></td><td> Off </td><td>svdh</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Enables the generation of Content-MD5 HTTP Response
 headers</td></tr>
 <tr><td><a href="mod_usertrack.html#cookiedomain">CookieDomain <em>domain</em></a></td><td /><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">The domain to which the tracking cookie applies</td></tr>
 <tr class="odd"><td><a href="mod_usertrack.html#cookieexpires">CookieExpires <em>expiry-period</em></a></td><td /><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Expiry time for the tracking cookie</td></tr>
@@ -268,13 +268,13 @@ named file-system directory and sub-directories</td></tr>
     <var>local-url</var> [<var>local-url</var>] ...</a></td><td> index.html </td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">List of resources to look for when the client requests
 a directory</td></tr>
 <tr><td><a href="core.html#directorymatch">&lt;DirectoryMatch <var>regex</var>&gt;
-... &lt;/DirectoryMatch&gt;</a></td><td /><td>sv</td><td>C</td></tr><tr><td class="descr" colspan="4">Enclose directives that apply to 
+... &lt;/DirectoryMatch&gt;</a></td><td /><td>sv</td><td>C</td></tr><tr><td class="descr" colspan="4">Enclose directives that apply to
 file-system directories matching a regular expression and their
 subdirectories</td></tr>
 <tr class="odd"><td><a href="core.html#documentroot">DocumentRoot <var>directory-path</var></a></td><td> /usr/local/apache/h +</td><td>sv</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Directory that forms the main document tree visible
 from the web</td></tr>
-<tr><td><a href="core.html#enablemmap" id="E" name="E">EnableMMAP on|off</a></td><td> on </td><td>svdh</td><td>C</td></tr><tr><td class="descr" colspan="4">Use memory-mapping to read files during delivery</td></tr>
-<tr class="odd"><td><a href="core.html#enablesendfile">EnableSendfile on|off</a></td><td> on </td><td>svdh</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Use the kernel sendfile support to deliver files to the client</td></tr>
+<tr><td><a href="core.html#enablemmap" id="E" name="E">EnableMMAP On|Off</a></td><td> On </td><td>svdh</td><td>C</td></tr><tr><td class="descr" colspan="4">Use memory-mapping to read files during delivery</td></tr>
+<tr class="odd"><td><a href="core.html#enablesendfile">EnableSendfile On|Off</a></td><td> On </td><td>svdh</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Use the kernel sendfile support to deliver files to the client</td></tr>
 <tr><td><a href="core.html#errordocument">ErrorDocument <var>error-code</var> <var>document</var></a></td><td /><td>svdh</td><td>C</td></tr><tr><td class="descr" colspan="4">What the server will return to the client
 in case of an error</td></tr>
 <tr class="odd"><td><a href="core.html#errorlog"> ErrorLog <var>file-path</var>|syslog[:<var>facility</var>]</a></td><td> logs/error_log (Uni +</td><td>sv</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Location where the server will log errors</td></tr>
@@ -306,8 +306,8 @@ requests</td></tr>
 [<var>value</var> [env=[!]<var>variable</var>]]</a></td><td /><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Configure HTTP response headers</td></tr>
 <tr><td><a href="mod_autoindex.html#headername">HeaderName <var>filename</var></a></td><td /><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Name of the file that will be inserted at the top
 of the index listing</td></tr>
-<tr class="odd"><td><a href="core.html#hostnamelookups">HostnameLookups on|off|double</a></td><td> off </td><td>svd</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Enables DNS lookups on client IP addresses</td></tr>
-<tr><td><a href="core.html#identitycheck" id="I" name="I">IdentityCheck on|off</a></td><td> off </td><td>svd</td><td>C</td></tr><tr><td class="descr" colspan="4">Enables logging of the RFC1413 identity of the remote 
+<tr class="odd"><td><a href="core.html#hostnamelookups">HostnameLookups On|Off|Double</a></td><td> Off </td><td>svd</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Enables DNS lookups on client IP addresses</td></tr>
+<tr><td><a href="core.html#identitycheck" id="I" name="I">IdentityCheck On|Off</a></td><td> Off </td><td>svd</td><td>C</td></tr><tr><td class="descr" colspan="4">Enables logging of the RFC1413 identity of the remote
 user</td></tr>
 <tr class="odd"><td><a href="core.html#ifdefine">&lt;IfDefine [!]<var>parameter-name</var>&gt; ...
     &lt;/IfDefine&gt;</a></td><td /><td>svdh</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Encloses directives that will be processed only
@@ -340,7 +340,7 @@ ISAPI extensions to the query field</td></tr>
 extensions</td></tr>
 <tr class="odd"><td><a href="mod_isapi.html#isapireadaheadbuffer">ISAPIReadAheadBuffer <var>size</var></a></td><td> 49152 </td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Size of the Read Ahead Buffer sent to ISAPI
 extensions</td></tr>
-<tr><td><a href="core.html#keepalive" id="K" name="K">KeepAlive on|off</a></td><td> On </td><td>sv</td><td>C</td></tr><tr><td class="descr" colspan="4">Enables HTTP persistent connections</td></tr>
+<tr><td><a href="core.html#keepalive" id="K" name="K">KeepAlive On|Off</a></td><td> On </td><td>sv</td><td>C</td></tr><tr><td class="descr" colspan="4">Enables HTTP persistent connections</td></tr>
 <tr class="odd"><td><a href="core.html#keepalivetimeout">KeepAliveTimeout <var>seconds</var></a></td><td> 15 </td><td>sv</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Amount of time the server will wait for subsequent
 requests on a persistent connection</td></tr>
 <tr><td><a href="mod_negotiation.html#languagepriority" id="L" name="L">LanguagePriority <var>MIME-lang</var> [<var>MIME-lang</var>]
@@ -362,7 +362,7 @@ methods</td></tr>
 except the named ones</td></tr>
 <tr class="odd"><td><a href="core.html#limitrequestbody">LimitRequestBody <var>bytes</var></a></td><td> 0 </td><td>svdh</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Restricts the total size of the HTTP request body sent
 from the client</td></tr>
-<tr><td><a href="core.html#limitrequestfields">LimitRequestFields <var>number</var></a></td><td> 100 </td><td>s</td><td>C</td></tr><tr><td class="descr" colspan="4">Limits the number of HTTP request header fields that 
+<tr><td><a href="core.html#limitrequestfields">LimitRequestFields <var>number</var></a></td><td> 100 </td><td>s</td><td>C</td></tr><tr><td class="descr" colspan="4">Limits the number of HTTP request header fields that
 will be accepted from the client</td></tr>
 <tr class="odd"><td><a href="core.html#limitrequestfieldsize">LimitRequestFieldsize <var>bytes</var></a></td><td /><td>s</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Limits the size of the HTTP request header allowed from the
 client</td></tr>
@@ -376,10 +376,10 @@ listens to</td></tr>
 <tr class="odd"><td><a href="mod_so.html#loadmodule">LoadModule <em>module filename</em></a></td><td /><td>s</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Links in the object file or library, and adds to the list
 of active modules</td></tr>
 <tr><td><a href="core.html#location">&lt;Location
-    URL-path|URL&gt; ... &lt;/Location&gt;</a></td><td /><td>sv</td><td>C</td></tr><tr><td class="descr" colspan="4">Applies the enclosed directives only to matching
+    <var>URL-path</var>|<var>URL</var>&gt; ... &lt;/Location&gt;</a></td><td /><td>sv</td><td>C</td></tr><tr><td class="descr" colspan="4">Applies the enclosed directives only to matching
 URLs</td></tr>
 <tr class="odd"><td><a href="core.html#locationmatch">&lt;LocationMatch
-    <var>regex</var>&gt; ... &lt;/LocationMatch&gt;</a></td><td /><td>sv</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Applies the enclosed directives only to regular-expression 
+    <var>regex</var>&gt; ... &lt;/LocationMatch&gt;</a></td><td /><td>sv</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Applies the enclosed directives only to regular-expression
 matching URLs</td></tr>
 <tr><td><a href="mpm_common.html#lockfile">LockFile <var>filename</var></a></td><td> logs/accept.lock </td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">Location of the accept serialization lock file</td></tr>
 <tr class="odd"><td><a href="mod_log_config.html#logformat">LogFormat <var>format</var>|<var>nickname</var>
@@ -387,7 +387,7 @@ matching URLs</td></tr>
 <tr><td><a href="core.html#loglevel">LogLevel <var>level</var></a></td><td> warn </td><td>sv</td><td>C</td></tr><tr><td class="descr" colspan="4">Controls the verbosity of the ErrorLog</td></tr>
 <tr class="odd"><td><a href="mpm_common.html#maxclients" id="M" name="M">MaxClients <var>number</var></a></td><td /><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Maximum number of child processes that will be created
 to serve requests</td></tr>
-<tr><td><a href="core.html#maxkeepaliverequests">MaxKeepAliveRequests <var>number</var></a></td><td> 100 </td><td>sv</td><td>C</td></tr><tr><td class="descr" colspan="4">Number of requests allowed on a persistent 
+<tr><td><a href="core.html#maxkeepaliverequests">MaxKeepAliveRequests <var>number</var></a></td><td> 100 </td><td>sv</td><td>C</td></tr><tr><td class="descr" colspan="4">Number of requests allowed on a persistent
 connection</td></tr>
 <tr class="odd"><td><a href="mpm_common.html#maxmemfree">MaxMemFree <var>number</var></a></td><td /><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Maximum amount of memory that the main allocator is allowed
 to hold without calling free()</td></tr>
@@ -524,9 +524,9 @@ engine</td></tr>
 by Apache children</td></tr>
 <tr class="odd"><td><a href="core.html#rlimitmem">RLimitMEM <var>number</var>|max [<var>number</var>|max]</a></td><td /><td>svdh</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Limits the memory consumption of processes launched
 by Apache children</td></tr>
-<tr><td><a href="core.html#rlimitnproc">RLimitNPROC <var>number</var>|max [<var>number</var>|max]</a></td><td /><td>svdh</td><td>C</td></tr><tr><td class="descr" colspan="4">Limits the number of processes that can be launched by 
+<tr><td><a href="core.html#rlimitnproc">RLimitNPROC <var>number</var>|max [<var>number</var>|max]</a></td><td /><td>svdh</td><td>C</td></tr><tr><td class="descr" colspan="4">Limits the number of processes that can be launched by
 processes launched by Apache children</td></tr>
-<tr class="odd"><td><a href="core.html#satisfy" id="S" name="S">Satisfy any|all</a></td><td> all </td><td>dh</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Interaction between host-level access control and 
+<tr class="odd"><td><a href="core.html#satisfy" id="S" name="S">Satisfy Any|All</a></td><td> All </td><td>dh</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Interaction between host-level access control and
 user authentication</td></tr>
 <tr><td><a href="mpm_common.html#scoreboardfile">ScoreBoardFile <var>file-path</var></a></td><td> logs/apache_status </td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">Location of the file used to store coordination data for
 the child processes</td></tr>
@@ -538,7 +538,7 @@ target as a CGI script</td></tr>
 <tr class="odd"><td><a href="mod_alias.html#scriptaliasmatch">ScriptAliasMatch <var>regex</var>
 <var>file-path</var>|<var>directory-path</var></a></td><td /><td>sv</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Maps a URL to a filesystem location using a regular expression
 and designates the target as a CGI script</td></tr>
-<tr><td><a href="core.html#scriptinterpretersource">ScriptInterpreterSource registry|script</a></td><td> script </td><td>svdh</td><td>C</td></tr><tr><td class="descr" colspan="4">Technique for locating the interpreter for CGI 
+<tr><td><a href="core.html#scriptinterpretersource">ScriptInterpreterSource Registry|Registry-Strict|Script</a></td><td> Script </td><td>svdh</td><td>C</td></tr><tr><td class="descr" colspan="4">Technique for locating the interpreter for CGI
 scripts</td></tr>
 <tr class="odd"><td><a href="mod_cgi.html#scriptlog">ScriptLog <var>file-path</var></a></td><td /><td>sv</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Location of the CGI script error logfile</td></tr>
 <tr><td><a href="mod_cgi.html#scriptlogbuffer">ScriptLogBuffer <var>bytes</var></a></td><td> 1024 </td><td>sv</td><td>B</td></tr><tr><td class="descr" colspan="4">Maximum amount of PUT or POST requests that will be recorded
@@ -554,11 +554,11 @@ to name-virtual hosts</td></tr>
 <tr><td><a href="mpm_common.html#serverlimit">ServerLimit <var>number</var></a></td><td> 256 (prefork), Serv +</td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">Upper limit on configurable number of processes</td></tr>
 <tr class="odd"><td><a href="core.html#servername">ServerName <var>fully-qualified-domain-name</var>[:<var>port</var>]</a></td><td /><td>sv</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Hostname and port that the server uses to identify
 itself</td></tr>
-<tr><td><a href="core.html#serverpath">ServerPath <var>URL-path</var></a></td><td /><td>v</td><td>C</td></tr><tr><td class="descr" colspan="4">Legacy URL pathname for a name-virtual host that
+<tr><td><a href="core.html#serverpath">ServerPath <var>URL-path</var></a></td><td /><td>v</td><td>C</td></tr><tr><td class="descr" colspan="4">Legacy URL pathname for a name-based virtual host that
 is accessed by an incompatible browser</td></tr>
 <tr class="odd"><td><a href="core.html#serverroot">ServerRoot <var>directory-path</var></a></td><td> /usr/local/apache </td><td>s</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Base directory for the server installation</td></tr>
 <tr><td><a href="core.html#serversignature">ServerSignature On|Off|EMail</a></td><td> Off </td><td>svdh</td><td>C</td></tr><tr><td class="descr" colspan="4">Configures the footer on server-generated documents</td></tr>
-<tr class="odd"><td><a href="core.html#servertokens">ServerTokens Major|Minor|Minimal|ProductOnly|OS|Full</a></td><td> Full </td><td>s</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Configures the Server HTTP response header</td></tr>
+<tr class="odd"><td><a href="core.html#servertokens">ServerTokens Major|Minor|Min[imal]|Prod[uctOnly]|OS|Full</a></td><td> Full </td><td>s</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Configures the Server HTTP response header</td></tr>
 <tr><td><a href="mod_env.html#setenv">SetEnv <var>env-variable</var> <var>value</var></a></td><td /><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Sets environment variables</td></tr>
 <tr class="odd"><td><a href="mod_setenvif.html#setenvif">SetEnvIf <em>attribute
     regex [!]env-variable</em>[=<em>value</em>]
@@ -568,7 +568,7 @@ is accessed by an incompatible browser</td></tr>
         [!]env-variable</em>[=<em>value</em>]
     [[!]<em>env-variable</em>[=<em>value</em>]] ...</a></td><td /><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Sets environment variables based on attributes of the request
 without respect to case</td></tr>
-<tr class="odd"><td><a href="core.html#sethandler">SetHandler <var>handler-name</var>|none</a></td><td /><td>svdh</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Forces all matching files to be processed by a
+<tr class="odd"><td><a href="core.html#sethandler">SetHandler <var>handler-name</var>|None</a></td><td /><td>svdh</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Forces all matching files to be processed by a
 handler</td></tr>
 <tr><td><a href="core.html#setinputfilter">SetInputFilter <var>filter</var>[;<var>filter</var>...]</a></td><td /><td>svdh</td><td>C</td></tr><tr><td class="descr" colspan="4">Sets the filters that will process client requests and POST
 input</td></tr>
@@ -645,7 +645,7 @@ certain events before failing a request</td></tr>
 <tr><td><a href="mod_mime.html#typesconfig">TypesConfig <var>file-path</var></a></td><td> conf/mime.types </td><td>s</td><td>B</td></tr><tr><td class="descr" colspan="4">The location of the <code>mime.types</code> file</td></tr>
 <tr class="odd"><td><a href="mod_env.html#unsetenv" id="U" name="U">UnsetEnv <var>env-variable</var> [<var>env-variable</var>]
 ...</a></td><td /><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Removes variables from the environment</td></tr>
-<tr><td><a href="core.html#usecanonicalname">UseCanonicalName on|off|dns</a></td><td> on </td><td>svd</td><td>C</td></tr><tr><td class="descr" colspan="4">Configures how the server determines its own name and
+<tr><td><a href="core.html#usecanonicalname">UseCanonicalName On|Off|DNS</a></td><td> On </td><td>svd</td><td>C</td></tr><tr><td class="descr" colspan="4">Configures how the server determines its own name and
 port</td></tr>
 <tr class="odd"><td><a href="mpm_common.html#user">User <var>unix-userid</var></a></td><td> #-1 </td><td>sv</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">The userid under which the server will answer
 requests</td></tr>
