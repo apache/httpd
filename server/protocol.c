@@ -303,13 +303,13 @@ AP_DECLARE(apr_status_t) ap_rgetline_core(char **s, apr_size_t n,
                 *s = apr_palloc(r->pool, len);
             }
             else if (bytes_handled + len > current_alloc) {
-                /* We resize to the next power of 2. */
-                apr_size_t new_size = current_alloc;
+                /* Increase the buffer size */
+                apr_size_t new_size = current_alloc * 2;
                 char *new_buffer;
 
-                do {
-                    new_size *= 2;
-                } while (bytes_handled + len > new_size);
+                if (bytes_handled + len > new_size) {
+                    new_size = (bytes_handled + len) * 2;
+                }
 
                 new_buffer = apr_palloc(r->pool, new_size);
 
