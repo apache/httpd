@@ -260,7 +260,7 @@ proxy_http_handler(request_rec *r, struct cache_req *c, char *url,
     for (i=0; i < reqhdrs_arr->nelts; i++)
     {
 	if (reqhdrs[i].key == NULL || reqhdrs[i].val == NULL
-	  || !strcmp(reqhdrs[i].key, "Host"))	/* already sent if there */
+	  || !strcasecmp(reqhdrs[i].key, "Host"))  /* already sent if there */
 	    continue;
 	bvputs(f, reqhdrs[i].key, ": ", reqhdrs[i].val, "\015\012", NULL);
     }
@@ -331,9 +331,8 @@ proxy_http_handler(request_rec *r, struct cache_req *c, char *url,
  * one type
  */
     
-    len = resp_hdrs->nelts;
     hdr = (struct hdr_entry *)resp_hdrs->elts;
-    for (i=0; i < len; i++)
+    for (i=0; i < resp_hdrs->nelts; i++)
     {
 	if (hdr[i].value[0] == '\0') continue;
 	p = hdr[i].field;
@@ -371,8 +370,7 @@ proxy_http_handler(request_rec *r, struct cache_req *c, char *url,
 	    cache = proxy_cache_error(c);
 
 /* send headers */
-    len = resp_hdrs->nelts;
-    for (i=0; i < len; i++)
+    for (i=0; i < resp_hdrs->nelts; i++)
     {
 	if (hdr[i].field == NULL || hdr[i].value == NULL ||
 	    hdr[i].value[0] == '\0') continue;
