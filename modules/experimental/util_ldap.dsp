@@ -53,7 +53,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib /nologo /subsystem:windows /dll /map /machine:I386 /out:"Release/util_ldap.so" /base:@..\..\os\win32\BaseAddr.ref,util_ldap
-# ADD LINK32 kernel32.lib nsldap32v50.lib /nologo /subsystem:windows /dll /map /machine:I386 /out:"Release/util_ldap.so" /base:@..\..\os\win32\BaseAddr.ref,util_ldap
+# ADD LINK32 kernel32.lib nsldap32v50.lib /nologo /subsystem:windows /dll /map /machine:I386 /out:"Release/util_ldap.so" /libpath:"..\..\srclib\ldap\lib" /base:@..\..\os\win32\BaseAddr.ref,util_ldap
 
 !ELSEIF  "$(CFG)" == "util_ldap - Win32 Debug"
 
@@ -79,7 +79,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib /nologo /subsystem:windows /dll /incremental:no /map /debug /machine:I386 /out:"Debug/util_ldap.so" /base:@..\..\os\win32\BaseAddr.ref,util_ldap
-# ADD LINK32 kernel32.lib nsldap32v50.lib /nologo /subsystem:windows /dll /incremental:no /map /debug /machine:I386 /out:"Debug/util_ldap.so" /base:@..\..\os\win32\BaseAddr.ref,util_ldap
+# ADD LINK32 kernel32.lib nsldap32v50.lib /nologo /subsystem:windows /dll /incremental:no /map /debug /machine:I386 /out:"Debug/util_ldap.so" /libpath:"..\..\srclib\ldap\lib" /base:@..\..\os\win32\BaseAddr.ref,util_ldap
 
 !ENDIF 
 
