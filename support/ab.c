@@ -510,11 +510,11 @@ static void output_results(void)
 	/* work out connection times */
 	long i;
 	double totalcon = 0, total = 0, totald = 0, totalwait = 0;
-   apr_interval_time_t mincon = AB_MAX, mintot = AB_MAX, mind = AB_MAX, 
-                       minwait = AB_MAX;
-   apr_interval_time_t maxcon = 0, maxtot = 0, maxd = 0, maxwait = 0;
-   apr_interval_time_t meancon = 0, meantot = 0, meand = 0, meanwait = 0;
-   double sdtot = 0, sdcon = 0, sdd = 0, sdwait = 0;
+        apr_interval_time_t mincon = AB_MAX, mintot = AB_MAX, mind = AB_MAX, 
+                            minwait = AB_MAX;
+        apr_interval_time_t maxcon = 0, maxtot = 0, maxd = 0, maxwait = 0;
+        apr_interval_time_t meancon = 0, meantot = 0, meand = 0, meanwait = 0;
+        double sdtot = 0, sdcon = 0, sdd = 0, sdwait = 0;
 
 	for (i = 0; i < requests; i++) {
 	    struct data s = stats[i];
@@ -540,7 +540,7 @@ static void output_results(void)
 
 	for (i = 0; i < requests; i++) {
 	    struct data s = stats[i];
-        apr_interval_time_t a;
+            apr_interval_time_t a;
 	    a = (s.time - total);
 	    sdtot += a * a;
 	    a = (s.ctime - totalcon);
@@ -549,7 +549,7 @@ static void output_results(void)
 	    sdd += a * a;
 	    a = (s.waittime - totalwait);
 	    sdwait += a * a;
-	};
+	}
 
 	sdtot = (requests > 1) ? sqrt(sdtot / (requests - 1)) : 0;
 	sdcon = (requests > 1) ? sqrt(sdcon / (requests - 1)) : 0;
@@ -564,7 +564,7 @@ static void output_results(void)
 	    if (!out) {
 		perror("Cannot open gnuplot output file");
 		exit(1);
-	    };
+	    }
 	    fprintf(out, "starttime\tseconds\tctime\tdtime\tttime\twait\n");
 	    for (i = 0; i < requests; i++) {
 		sttime = stats[i].starttime;
@@ -581,9 +581,9 @@ static void output_results(void)
 			stats[i].waittime);
 	    }
 	    fclose(out);
-	};
+	}
     /*
-     * XXX: what is better; this hideous cast of the copare function; or
+     * XXX: what is better; this hideous cast of the compradre function; or
      * the four warnings during compile ? dirkx just does not know and
      * hates both/
      */
@@ -622,11 +622,11 @@ static void output_results(void)
 #define CONF_FMT_STRING "%" APR_TIME_T_FMT " %5d %6.1f %" APR_TIME_T_FMT " %" APR_TIME_T_FMT "\n"
 	    printf("            min  mean[+/-sd] median   max\n");
 	    printf("Connect:    " CONF_FMT_STRING, 
-           mincon, (int) (totalcon + 0.5), sdcon, meancon, maxcon);
+                   mincon, (int) (totalcon + 0.5), sdcon, meancon, maxcon);
 	    printf("Processing: " CONF_FMT_STRING,
 		   mind, (int) (totald + 0.5), sdd, meand, maxd);
 	    printf("Waiting:    " CONF_FMT_STRING,
-	       minwait, (int) (totalwait + 0.5), sdwait, meanwait, maxwait);
+	           minwait, (int) (totalwait + 0.5), sdwait, meanwait, maxwait);
 	    printf("Total:      " CONF_FMT_STRING,
 		   mintot, (int) (total + 0.5), sdtot, meantot, maxtot);
 #undef CONF_FMT_STRING
@@ -636,11 +636,11 @@ static void output_results(void)
                 double d = avg - mean; \
                 if (d < 0) d = -d; \
                 if (d > 2 * sd ) \
-                        printf("ERROR: The median and mean for " what " are more than twice the standard\n" \
-                            "       deviation apart. These results are NOT reliable.\n"); \
+                    printf("ERROR: The median and mean for " what " are more than twice the standard\n" \
+                           "       deviation apart. These results are NOT reliable.\n"); \
                 else if (d > sd ) \
-                        printf("WARING: The median and mean for " what " are not within a normal deviation\n" \
-                            "        These results are propably not that reliable.\n"); \
+                    printf("WARING: The median and mean for " what " are not within a normal deviation\n" \
+                           "        These results are propably not that reliable.\n"); \
             }
 	    SANE("the initial connection time", totalcon, meancon, sdcon);
 	    SANE("the processing time", totald, meand, sdd);
@@ -650,12 +650,13 @@ static void output_results(void)
 	else {
 	    printf("              min   avg   max\n");
 #define CONF_FMT_STRING "%5" APR_TIME_T_FMT " %5e %5" APR_TIME_T_FMT "\n"
-	    printf("Connect:    " CONF_FMT_STRING, mincon, totalcon / requests, 
-           maxcon);
+	    printf("Connect:    " CONF_FMT_STRING, 
+                   mincon, totalcon / requests, maxcon);
 	    printf("Processing: " CONF_FMT_STRING, mintot - mincon, 
-           (total / requests) - (totalcon / requests), maxtot - maxcon);
-	    printf("Total:      " CONF_FMT_STRING, mintot, total / requests, 
-           maxtot);
+                   (total / requests) - (totalcon / requests), 
+                   maxtot - maxcon);
+	    printf("Total:      " CONF_FMT_STRING, 
+                   mintot, total / requests, maxtot);
 #undef CONF_FMT_STRING
 	}
 
@@ -666,20 +667,20 @@ static void output_results(void)
 	    for (i = 0; i < sizeof(percs) / sizeof(int); i++)
 		if (percs[i] <= 0)
 		    printf(" 0%%  <0> (never)\n");
-		else if (percs[i] >= 100)
-		    printf(" 100%%  %5" APR_TIME_T_FMT " (longest request)\n", 
-               stats[requests - 1].time);
-		else
-		    printf("  %d%%  %5" APR_TIME_T_FMT "\n",
-		    percs[i], stats[(int) (requests * percs[i] / 100)].time);
-	};
+                else if (percs[i] >= 100)
+		    printf(" 100%%  %5" APR_TIME_T_FMT " (longest request)\n",
+                           stats[requests - 1].time);
+                else
+		    printf("  %d%%  %5" APR_TIME_T_FMT "\n", percs[i], 
+                           stats[(int) (requests * percs[i] / 100)].time);
+	}
 	if (csvperc) {
 	    FILE *out = fopen(csvperc, "w");
 	    int i;
 	    if (!out) {
 		perror("Cannot open CSV output file");
 		exit(1);
-	    };
+	    }
 	    fprintf(out, "" "Percentage served" "," "Time in ms" "\n");
 	    for (i = 0; i < 100; i++) {
 		double d;
@@ -692,7 +693,7 @@ static void output_results(void)
 		fprintf(out, "%d,%e\n", i, d);
 	    }
 	    fclose(out);
-	};
+        }
 
     }
 }
@@ -951,7 +952,7 @@ static void read_connection(struct connection * c)
     totalread += r;
     if (c->read == 0) {
 	c->beginread = apr_time_now();
-    };
+    }
     c->read += r;
 
 
@@ -1291,14 +1292,14 @@ static void test(void)
 static void copyright(void)
 {
     if (!use_html) {
-	printf("This is ApacheBench, Version %s\n", AB_VERSION " <$Revision: 1.75 $> apache-2.0");
+	printf("This is ApacheBench, Version %s\n", AB_VERSION " <$Revision: 1.76 $> apache-2.0");
 	printf("Copyright (c) 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/\n");
 	printf("Copyright (c) 1998-2001 The Apache Software Foundation, http://www.apache.org/\n");
 	printf("\n");
     }
     else {
 	printf("<p>\n");
-	printf(" This is ApacheBench, Version %s <i>&lt;%s&gt;</i> apache-2.0<br>\n", AB_VERSION, "$Revision: 1.75 $");
+	printf(" This is ApacheBench, Version %s <i>&lt;%s&gt;</i> apache-2.0<br>\n", AB_VERSION, "$Revision: 1.76 $");
 	printf(" Copyright (c) 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/<br>\n");
 	printf(" Copyright (c) 1998-2001 The Apache Software Foundation, http://www.apache.org/<br>\n");
 	printf("</p>\n<p>\n");
@@ -1606,7 +1607,7 @@ int main(int argc, const char *const argv[])
 		    *p = '\0';
 		    p++;
 		    proxyport = atoi(p);
-		};
+		}
 		strcpy(proxyhost, optarg);
 		isproxy = 1;
 	    }
