@@ -1,24 +1,24 @@
 Content-language: de
 Content-type: text/html
 Body:----------de--
- Sofern Sie dies f&uuml;r eine Fehlfunktion des Servers halten,
- informieren Sie bitte den
- <A HREF="mailto:<!--#echo encoding="none" var="SERVER_ADMIN" -->">Webmaster</A>
- hier&uuml;ber.
+Sofern Sie dies f&uuml;r eine Fehlfunktion des Servers halten,
+informieren Sie bitte den
+<a href="mailto:<!--#echo encoding="none" var="SERVER_ADMIN" -->">Webmaster</a>
+hier&uuml;ber.
 ----------de--
 
 Content-language: en
 Content-type: text/html
 Body:----------en--
- If you think this is a server error, please contact
- the <A HREF="mailto:<!--#echo encoding="none" var="SERVER_ADMIN" -->">webmaster</A>
+If you think this is a server error, please contact
+the <a href="mailto:<!--#echo encoding="none" var="SERVER_ADMIN" -->">webmaster</a>
 ----------en--
 
 Content-language: es
 Content-type: text/html
 Body:----------es--
 Favor de contactar al 
-<A HREF="mailto:<!--#echo encoding="none" var="SERVER_ADMIN" -->">webmaster</A>
+<a href="mailto:<!--#echo encoding="none" var="SERVER_ADMIN" -->">webmaster</a>
 en caso de que usted crea que existe un error en el servidor. 
 ----------es--
 
@@ -26,5 +26,5 @@ Content-language: fr
 Content-type: text/html
 Body:----------fr--
 Si vous pensez qu'il s'agit d'une erreur du serveur, veuillez contacter 
-le <A HREF="mailto:<!--#echo encoding="none" var="SERVER_ADMIN" -->">gestionnaire du site</A>   
+le <a href="mailto:<!--#echo encoding="none" var="SERVER_ADMIN" -->">gestionnaire du site</a>   
 ----------fr--
