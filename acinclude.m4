@@ -221,31 +221,6 @@ AC_DEFUN(APACHE_CHECK_SIGWAIT_ONE_ARG,[
   fi
 ])
 
-AC_DEFUN(APACHE_CHECK_SHM_RW,[
-  AC_CACHE_CHECK([whether system defines SHM_R,SHM_W],ac_cv_shm_rw,[
-  AC_TRY_COMPILE([
-#include <sys/types.h>
-#include <sys/ipc.h>
-#ifndef _OSD_POSIX
-#include <sys/shm.h>
-#else
-#define _KMEMUSER   /* BS2000 needs this to enable SHM_[RW] */
-#include <sys/shm.h>
-#undef  _KMEMUSER
-#endif
-],[
-  int x = SHM_R | SHM_W;
-],[
-  ac_cv_shm_rw=yes
-],[
-  ac_cv_shm_rw=no
-])])
-  if test "$ac_cv_shm_rw" = "no"; then
-    AC_DEFINE(SHM_R, 0400, [ ])
-    AC_DEFINE(SHM_W, 0200, [ ])
-  fi
-])
-
 AC_DEFUN(APACHE_EBCDIC,[
   AC_CACHE_CHECK([whether system uses EBCDIC],ac_cv_ebcdic,[
   AC_TRY_RUN( [
