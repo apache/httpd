@@ -2,11 +2,11 @@
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
 <modulesynopsis metafile="mod_logio.xml.meta">
-<!-- English revision: 1.3 -->
+<!-- English revision: 1.4 -->
 
 <name>mod_logio</name>
 <description>リクエスト毎に入力バイト数と出力バイト数とをロギング</description>
-<status>Base</status>
+<status>Extension</status>
 <sourcefile>mod_logio.c</sourcefile>
 <identifier>logio_module</identifier>
 
