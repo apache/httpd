@@ -3146,7 +3146,7 @@ this option Apache does a reverse DNS lookup on the server IP address
 that the client connected to in order to work out self-referential URLs.
 This can have adverse performance implications, especially if you use
 <CODE>%V</CODE> in a <A HREF="mod_log_config.html#customlog">CustomLog</A> 
-directive or have <A HREF="mod_status.html">ExtendedStatus</A> on.
+directive.
 
 <P><STRONG>Warning:</STRONG> if CGIs make assumptions about the values of
 <CODE>SERVER_NAME</CODE> they may be broken by this option.  The client

@@ -2256,8 +2256,6 @@ int ap_update_child_status(int child_num, int status, request_rec *r)
 				       sizeof(ss->request));
 	    }
 	    ss->vhostrec =  r->server;
-	    ap_cpystrn(ss->vhostname, ap_get_server_name(r),
-		       sizeof(ss->vhostname));
 	}
     }
     if (status == SERVER_STARTING && r == NULL) {

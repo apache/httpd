@@ -599,7 +599,7 @@ static int status_handler(request_rec *r)
 			ap_rprintf(r, " <i>%s {%s}</i> <b>[%s]</b><br>\n\n",
 			    score_record.client,
 			    ap_escape_html(r->pool, score_record.request),
-			    vhost ? score_record.vhostname : "(unavailable)");
+			    vhost ? vhost->server_hostname : "(unavailable)");
 		    }
 		    else {		/* !no_table_report */
 			if (score_record.status == SERVER_DEAD)
@@ -672,7 +672,7 @@ static int status_handler(request_rec *r)
 			    ap_rprintf(r,
 			     "<td>%s<td nowrap>%s<td nowrap>%s</tr>\n\n",
 			     score_record.client,
-			     vhost ? score_record.vhostname : "(unavailable)",
+			     vhost ? vhost->server_hostname : "(unavailable)",
 			     ap_escape_html(r->pool, score_record.request));
 		    }		/* no_table_report */
 		}			/* !short_report */
