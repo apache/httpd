@@ -280,10 +280,9 @@ eMode     = AP_MODE_BLOCKING;
 	    return APR_SUCCESS;
 	}
 
-	assert(len > 0);
-
-        n = BIO_write (pRec->pbioRead, data, len);
-        assert(n == len);
+	n = BIO_write (pRec->pbioRead, data, len);
+        
+        assert(n >= 0 && (apr_size_t)n == len);
 
         ssl_hook_process_connection (pRec);
 
