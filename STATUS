@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/03/06 17:16:42 $]
+Last modified at [$Date: 2003/03/06 18:46:41 $]
 
 Release:
 
@@ -59,6 +59,13 @@ Contributors looking for a mission:
 PATCHES TO PORT FROM 2.1
   [ please place file names and revisions from HEAD here, so it is easy to
     identify exactly what the proposed changes are! ]
+
+    * One step closer to being binary compatible between debug and production
+      (--enable-maintainer-mode or not).
+      include/http_config.h r1.100
+      include/httpd.h r1.195
+      server/util_debug.c r1.10
+      +1: striker
 
     * AllowEncodedSlashes patch to permit %2f in path-info.
       CHANGES r1.1038
