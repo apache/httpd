@@ -10,7 +10,7 @@ OS=`./config.guess`
 CONFIGPARAM="--with-layout=BinaryDistribution --prefix=`pwd`/bindist"
 APDIR=`pwd`
 APDIR=`basename $APDIR`
-VER=`echo $APDIR |sed s/apache_//`
+VER=`echo $APDIR |sed s/httpd-//`
 TAR="`srclib/apr/build/PrintPath tar`"
 GTAR="`srclib/apr/build/PrintPath gtar`"
 GZIP="`srclib/apr/build/PrintPath gzip`"
@@ -97,7 +97,7 @@ echo "Creating supplementary files..."
   ./bindist/bin/httpd -V && \
   echo "----------------------------------------------------------------------" \
 ) > README.bindist
-cp README.bindist ../apache_$VER-$OS.README
+cp README.bindist ../httpd-$VER-$OS.README
 
 ( echo " " && \
   echo "Apache $VER binary installation" && \
@@ -263,31 +263,31 @@ then
 else
   if [ "x$GTAR" != "x" ]
   then
-    $GTAR -zcf ../apache_$VER-$OS.tar.gz -C .. apache_$VER
+    $GTAR -zcf ../httpd-$VER-$OS.tar.gz -C .. httpd-$VER
   else
     if [ "x$TAR" != "x" ]
     then
       case "x$OS" in
-        x*390*) $TAR -cfU ../apache_$VER-$OS.tar -C .. apache_$VER;;
-	    *) (cd .. && $TAR -cf apache_$VER-$OS.tar apache_$VER);;
+        x*390*) $TAR -cfU ../httpd-$VER-$OS.tar -C .. httpd-$VER;;
+	    *) (cd .. && $TAR -cf httpd-$VER-$OS.tar httpd-$VER);;
       esac
       if [ "x$GZIP" != "x" ]
       then
-        $GZIP ../apache_$VER-$OS.tar
+        $GZIP ../httpd-$VER-$OS.tar
       fi
     else
       echo "ERROR: Could not find a 'tar' program!"
       echo "       Please execute the following commands manually:"
-      echo "         tar -cf ../apache_$VER-$OS.tar ."
-      echo "         gzip ../apache_$VER-$OS.tar"
+      echo "         tar -cf ../httpd-$VER-$OS.tar ."
+      echo "         gzip ../httpd-$VER-$OS.tar"
     fi
   fi
 
-  if [ -f ../apache_$VER-$OS.tar.gz ] && [ -f ../apache_$VER-$OS.README ]
+  if [ -f ../httpd-$VER-$OS.tar.gz ] && [ -f ../httpd-$VER-$OS.README ]
   then
     echo "Ready."
-    echo "You can find the binary archive (apache_$VER-$OS.tar.gz)"
-    echo "and the readme file (apache_$VER-$OS.README) in the"
+    echo "You can find the binary archive (httpd-$VER-$OS.tar.gz)"
+    echo "and the readme file (httpd-$VER-$OS.README) in the"
     echo "parent directory."
     exit 0;
   else
