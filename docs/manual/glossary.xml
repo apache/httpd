@@ -45,9 +45,9 @@ a finite number of steps. Algorithms for encryption are usually called
 <dfn>Ciphers</dfn>.</dd>
 
 <dt><a name="apacheextensiontool">APache eXtension Tool</a> <a
-name="apxs">(apxs)</a></dt> <dd>A perl script that aids in compiling <a
-href="#module">module</a> sources into Dynamic Shared Objects (<a
-href="#dso">DSO</a>s) and helps install them in the Apache Web
+name="apxs">(apxs)</a></dt> <dd>A perl script that aids in compiling <glossary
+ref="module">module</glossary> sources into Dynamic Shared Objects (<glossary
+ref="dso">DSO</glossary>s) and helps install them in the Apache Web
 server.<br /> See: <a
 href="programs/apxs.html">Manual Page: apxs</a></dd>
 
@@ -60,18 +60,19 @@ Control</a></dd>
 <dt><a name="certificate">Certificate</a></dt>
 <dd>A data record used for authenticating network entities such
     as a server or a client. A certificate contains X.509 information pieces
-    about its owner (called the subject) and the signing <a
-    href="#certificationauthority">Certification Authority</a> (called the
-    issuer), plus the owner's <a href="#publickey">public key</a> and the
+    about its owner (called the subject) and the signing <glossary
+    ref="certificationauthority">Certification Authority</glossary> (called
+    the issuer), plus the owner's <glossary ref="publickey">public
+    key</glossary> and the
     signature made by the CA. Network entities verify these signatures
     using CA certificates.<br />
 See: <a href="ssl/">SSL/TLS Encryption</a></dd>
 
 <dt><a name="certificatsigningrequest">Certificate Signing Request</a>
-<a name="csr">(CSR)</a></dt> <dd>An unsigned <a
-href="#certificate">certificate</a> for submission to a <a
-href="#certificationauthority">Certification Authority</a>, which signs it
-with the <a href="#privatekey">Private Key</a> of their CA
+<a name="csr">(CSR)</a></dt> <dd>An unsigned <glossary
+  ref="certificate">certificate</glossary> for submission to a <glossary
+  ref="certificationauthority">Certification Authority</glossary>, which signs it
+with the <glossary ref="privatekey">Private Key</glossary> of their CA
 <em>Certificate</em>. Once the CSR is signed, it becomes a real
 certificate.<br />
 See: <a href="ssl/">SSL/TLS Encryption</a></dd>
@@ -87,9 +88,9 @@ See: <a href="ssl/">SSL/TLS Encryption</a></dd>
 data encryption. Examples are DES, IDEA, RC4, etc.<br />
 See: <a href="ssl/">SSL/TLS Encryption</a></dd>
 
-<dt><a name="ciphertext">Ciphertext</a></dt> <dd>The result after <a
-href="#plaintext">Plaintext</a> is passed through a <a
-href="#cipher">Cipher</a>.<br /> See: <a href="ssl/">SSL/TLS
+<dt><a name="ciphertext">Ciphertext</a></dt> <dd>The result after <glossary
+ref="plaintext">Plaintext</glossary> is passed through a <glossary
+ref="cipher">Cipher</glossary>.<br /> See: <a href="ssl/">SSL/TLS
 Encryption</a></dd>
 
 <dt><a name="commongatewayinterface">Common Gateway Interface</a> <a
@@ -103,27 +104,29 @@ See: <a href="howto/cgi.html">Dynamic Content with CGI</a></dd>
 
 
 <dt><a name="configurationdirective">Configuration Directive</a></dt>
-<dd>See: <a href="#directive">Directive</a></dd>
+<dd>See: <glossary ref="directive">Directive</glossary></dd>
 
 <dt><a name="configurationfile">Configuration File</a></dt>
-<dd>A text file containing <a href="#directive">Directives</a>
+<dd>A text file containing <glossary ref="directive">Directives</glossary>
 that control the configuration of Apache.<br />
 See: <a href="configuring.html">Configuration Files</a></dd>
 
 <dt><a name="connect">CONNECT</a></dt>
-<dd>An HTTP <a href="#method">method</a> for proxying raw data channels
+<dd>An HTTP <glossary ref="method">method</glossary> for proxying raw data
+channels
 over HTTP. It can be used to encapsulate other protocols, such as the SSL
 protocol.</dd>
 
-<dt><a name="context">Context</a></dt> <dd>An area in the <a
-href="#configurationfile">configuration files</a> where certain types
-of <a href="#directive">directives</a> are allowed.<br /> See: <a
+<dt><a name="context">Context</a></dt> <dd>An area in the <glossary
+ref="configurationfile">configuration files</glossary> where certain types
+of <glossary ref="directive">directives</glossary> are allowed.<br /> See: <a
 href="mod/directive-dict.html#Context">Terms
 Used to Describe Apache Directives</a></dd>
 
 <dt><a name="digitalsignature">Digital Signature</a></dt>
 <dd>An encrypted text block that validates a certificate or other file. A
-    <a href="#certificationauthority">Certification Authority</a> creates a
+  <glossary ref="certificationauthority">Certification Authority</glossary>
+  creates a
     signature by generating a hash of the <em>Public Key</em> embedded in a
     <em>Certificate</em>, then encrypting the hash with its own <em>Private
     Key</em>. Only the CA's public key can decrypt the signature, verifying
@@ -133,12 +136,12 @@ See: <a href="ssl/">SSL/TLS Encryption</a></dd>
 
 <dt><a name="directive">Directive</a></dt> <dd>A configuration command
 that controls one or more aspects of Apache's behavior.  Directives
-are placed in the <a href="#configurationfile">Configuration
-File</a><br /> See: <a href="mod/directives.html">Directive
+are placed in the <glossary ref="configurationfile">Configuration
+File</glossary><br /> See: <a href="mod/directives.html">Directive
 Index</a></dd>
 
 <dt><a name="dynamicsharedobject">Dynamic Shared Object</a> <a
-name="dso">(DSO)</a></dt> <dd><a href="#module">Modules</a> compiled
+    name="dso">(DSO)</a></dt> <dd><glossary ref="module">Modules</glossary> compiled
 separately from the Apache httpd binary that can be loaded on-demand.<br />
 See: <a href="dso.html">Dynamic Shared Object Support</a></dd>
 
@@ -165,7 +168,7 @@ server.  Input filters process
 data sent by the client to the server, while output filters process
 documents on the server before they are sent to the client.  For
 example, the <code>INCLUDES</code> output filter processes documents
-for <a href="#ssi">Server Side Includes</a>.<br /> See: <a
+for <glossary ref="ssi">Server Side Includes</glossary>.<br /> See: <a
 href="filter.html">Filters</a></dd>
 
 <dt><a name="fully-qualifieddomain-name">Fully-Qualified
@@ -180,25 +183,26 @@ resolve to an IP address. For example, <code>www</code> is a hostname,
 a file is called. Generally, files have implicit handlers, based on the file
 type. Normally, all files are simply served by the server, but certain
 file types are "handled" separately.  For example, the
-<code>cgi-script</code> handler designates files to be processed as <a
-href="#cgi">CGIs</a>.<br />
+<code>cgi-script</code> handler designates files to be processed as <glossary
+  ref="cgi">CGIs</glossary>.<br />
 See: <a href="handler.html">Apache's Handler Use</a></dd>
 
 <dt><a name="header">Header</a></dt>
-<dd>The part of the <a href="#http">HTTP</a> request and response that
+<dd>The part of the <glossary ref="http">HTTP</glossary> request and response that
 is sent before the actual content, and that contains meta-information
 describing the content.</dd>
 
-<dt><a name=".htaccess">.htaccess</a></dt> <dd>A <a
-href="#configurationfile">configuration file</a> that is placed inside
-the web tree and applies configuration <a
-href="#directive">directives</a> to the directory where it is placed
+<dt><a name=".htaccess">.htaccess</a></dt> <dd>A <glossary
+    ref="configurationfile">configuration file</glossary> that is placed inside
+  the web tree and applies configuration <glossary
+ref="directive">directives</glossary> to the directory where it is placed
 and all sub-directories.  Despite its name, this file can hold almost
 any type of directive, not just access-control directives.<br />
 See: <a href="configuring.html">Configuration Files</a></dd>
 
 <dt><a name="httpd.conf">httpd.conf</a></dt>
-<dd>The main Apache <a href="#configurationfile">configuration file</a>.
+<dd>The main Apache <glossary ref="configurationfile">configuration
+    file</glossary>.
 The default location is <code>/usr/local/apache2/conf/httpd.conf</code>,
 but it may be moved using run-time or compile-time configuration.<br />
 See: <a href="configuring.html">Configuration Files</a></dd>
@@ -213,11 +217,11 @@ href="http://ietf.org/rfc/rfc2616.txt">RFC 2616</a>.</dd>
 <dt><a name="https">HTTPS</a></dt>
 <dd>The HyperText Transfer Protocol (Secure), the standard encrypted
     communication mechanism on the World Wide Web. This is actually just HTTP
-    over <a href="#ssl">SSL</a>.<br />
+    over <glossary ref="ssl">SSL</glossary>.<br />
 See: <a href="ssl/">SSL/TLS Encryption</a></dd>
 
-<dt><a name="method">Method</a></dt> <dd>In the context of <a
-href="#http">HTTP</a>, an action to perform on a resource, specified
+<dt><a name="method">Method</a></dt> <dd>In the context of <glossary
+    ref="http">HTTP</glossary>, an action to perform on a resource, specified
 on the request line by the client.  Some of the methods available in
 HTTP are <code>GET</code>, <code>POST</code>, and <code>PUT</code>.</dd>
 
@@ -232,8 +236,8 @@ that its format is borrowed from the Multipurpose Internet Mail
 Extensions.  It consists of a major type and a minor type, separated
 by a slash.  Some examples are <code>text/html</code>,
 <code>image/gif</code>, and <code>application/octet-stream</code>.  In
-HTTP, the MIME-type is transmitted in the <code>Content-Type</code> <a
-href="#header">header</a>.<br /> See: <a
+HTTP, the MIME-type is transmitted in the <code>Content-Type</code> <glossary
+  ref="header">header</glossary>.<br /> See: <a
 href="mod/mod_mime.html">mod_mime</a></dd>
 
 <dt><a name="module">Module</a></dt> <dd>An independent part of a
@@ -241,11 +245,11 @@ program.  Much of Apache's functionality is contained in modules that
 you can choose to include or exclude.  Modules that are compiled into
 the Apache httpd binary are called <em>static modules</em>, while
 modules that are stored separately and can be optionally loaded at
-run-time are called <em>dynamic modules</em> or <a
-href="#dso">DSOs</a>.  Modules that are included by default are called
+run-time are called <em>dynamic modules</em> or <glossary
+ref="dso">DSOs</glossary>.  Modules that are included by default are called
 <em>base modules</em>.  Many modules are available for Apache that are
-not distributed as part of the Apache HTTP Server <a
-href="#tarball">tarball</a>.  These are referred to as <em>third-party
+not distributed as part of the Apache HTTP Server <glossary
+ref="tarball">tarball</glossary>.  These are referred to as <em>third-party
 modules</em>.<br />
 See: <a href="mod/">Module Index</a></dd>
 
@@ -276,7 +280,8 @@ href="ssl/">SSL/TLS Encryption</a></dd>
 <dd>The unencrypted text.</dd>
 
 <dt><a name="privatekey">Private Key</a></dt> <dd>The secret key in a
-<a href="#publickeycryptography">Public Key Cryptography</a> system,
+  <glossary ref="publickeycryptography">Public Key Cryptography</glossary>
+  system,
 used to decrypt incoming messages and sign outgoing ones.<br />
 See: <a href="ssl/">SSL/TLS Encryption</a></dd>
 
@@ -290,8 +295,8 @@ from the origin server each time, thereby reducing response time.<br />
 See: <a href="mod/mod_proxy.html">mod_proxy</a></dd>
 
 <dt><a name="publickey">Public Key</a></dt> <dd>The publicly
-available key in a <a href="#publickeycryptography">Public Key
-Cryptography</a> system, used to encrypt messages bound for its owner
+available key in a <glossary ref="publickeycryptography">Public Key
+  Cryptography</glossary> system, used to encrypt messages bound for its owner
 and to decrypt signatures made by its owner.<br />
 See: <a href="ssl/">SSL/TLS Encryption</a></dd>
 
@@ -313,8 +318,8 @@ directory could be written as "<code>/images/.*(jpg|gif)$</code>".
 Apache uses Perl Compatible Regular Expressions provided by the
 <a href="http://www.pcre.org/">PCRE</a> library.</dd>
 
-<dt><a name="reverseproxy">Reverse Proxy</a></dt> <dd>A <a
-href="#proxy">proxy</a> server that appears to the client as if it is
+<dt><a name="reverseproxy">Reverse Proxy</a></dt> <dd>A <glossary
+    ref="proxy">proxy</glossary> server that appears to the client as if it is
 an <em>origin server</em>.  This is useful to hide the real origin
 server from the client for security reasons, or to load balance.</dd>
 
@@ -359,8 +364,8 @@ See: <a href="ssl/">SSL/TLS Encryption</a></dd>
 name="url">(URL)</a></dt>
 <dd>The name/address of a resource on the
 Internet.  This is the common informal term for what is formally
-called a <a href="#uniformresourceidentifier">Uniform Resource
-Identifier</a>.  URLs are usually made up of a scheme, like
+called a <glossary ref="uniformresourceidentifier">Uniform Resource
+  Identifier</glossary>.  URLs are usually made up of a scheme, like
 <code>http</code> or <code>https</code>, a hostname, and a path.  A
 URL for this page is
 <code>http://httpd.apache.org/docs-2.1/glossary.html</code>.</dd>
@@ -371,7 +376,7 @@ name="URI">(URI)</a></dt>
 identifying an abstract or physical resource.  It is formally defined
 by <a href="http://www.ietf.org/rfc/rfc2396.txt">RFC 2396</a>.
 URIs used on the world-wide web are commonly referred to
-as <a href="#url">URLs</a>.</dd>
+as <glossary ref="url">URLs</glossary>.</dd>
 
 <dt><a name="virtualhosting">Virtual Hosting</a></dt>
 <dd>Serving multiple websites using a single instance of Apache.
