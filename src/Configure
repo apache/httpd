@@ -1570,18 +1570,18 @@ fi
 ## Add in the Expat library if needed/wanted.
 ##
 if [ -d ./lib/expat/ ]; then
-    if [ "$RULE_EXPAT" = "default" ]; then
+    if [ "x$RULE_EXPAT" = "xdefault" ]; then
         RULE_EXPAT=yes
     fi
 else
-    if [ "$RULE_EXPAT" = "yes" ]; then
+    if [ "$xRULE_EXPAT" = "xyes" ]; then
         echo "ERROR: RULE_EXPAT set to \"yes\" but is not available."
 	exit 1
     else
         RULE_EXPAT=no
     fi
 fi
-if [ "$RULE_EXPAT" = "yes" ]; then
+if [ "x$RULE_EXPAT" = "xyes" ]; then
     EXPATLIB="lib/expat/libexpat.a"
     APLIBDIRS="expat $APLIBDIRS"
     CFLAGS="$CFLAGS -DUSE_EXPAT -I\$(SRCDIR)/lib/expat"
