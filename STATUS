@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/02/21 14:50:26 $]
+Last modified at [$Date: 2004/02/21 15:12:46 $]
 
 Release:
 
@@ -94,8 +94,9 @@ PATCHES TO BACKPORT FROM 2.1
 
     * Fix file extensions for real media files and removed rpm extension
       from mime.types. PR 26079. (2.0 + 1.3)
-        docs/conf/mime.types: r1.23
+        docs/conf/mime.types: r1.23, r1.24
       jerenkrantz: Why is rm not application/vnd.rn-realmedia as in PR 26079?
+      nd: good question. I'd guess I was tired :-). Fixed in 1.24.
       +1: nd, trawick
 
     * Replace some of the mutex locking in the worker MPM with
