@@ -1,6 +1,6 @@
 APACHE 2.x ROADMAP:
 
-Last modified at [$Date: 2002/10/01 13:55:00 $]
+Last modified at [$Date: 2002/10/01 15:26:20 $]
 
 DEFERRRED FOR APACHE 2.1
 
@@ -130,18 +130,18 @@ MAKING APACHE REPOSITORY-AGNOSTIC
       typedef struct {
           const char *name;  /* name of this node relative to parent */
 
-	  struct ap_conf_vector_t *locn_config;
-	  
-	  apr_hash_t *children; /* NULL if no child configs */
+          struct ap_conf_vector_t *locn_config;
+
+          apr_hash_t *children; /* NULL if no child configs */
       } ap_locn_node;
 
       The following config:
       
       <Location /server-status>
           SetHandler server-status
-	  Order deny,allow
-	  Deny from allo
-	  Allow from 127.0.0.1
+          Order deny,allow
+          Deny from all
+          Allow from 127.0.0.1
       </Location>
       
       Creates a node with name=="server_status", and the node is a
