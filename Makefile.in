@@ -17,10 +17,10 @@ targets         = $(PROGRAMS) $(other_targets)
 phony_targets   = $(srcdir)/buildmark.c
 install_targets = install-conf install-htdocs install-icons install-other \
 	install-cgi install-include install-support install-suexec
-DISTCLEAN_TARGETS  = include/config_auto.h modules.c aclocal.m4 buildmk.stamp \
-	configure generated_lists include/ap_config_auto.h \
-	include/ap_config_auto.h.in include/ap_config_path.h install-sh \
-	missing mkinstalldirs
+DISTCLEAN_TARGETS  = include/ap_config_auto.h include/ap_config_path.h \
+	modules.c libtool
+EXTRACLEAN_TARGETS = configure include/ap_config_auto.h.in \
+	generated_lists
 
 include $(top_srcdir)/build/rules.mk
 include $(top_srcdir)/build/program.mk
