@@ -169,7 +169,7 @@ static void unique_id_global_init(ap_pool_t *p, ap_pool_t *plog, ap_pool_t *ptem
 #endif
     char str[MAXHOSTNAMELEN + 1];
     struct hostent *hent;
-    ap_time_t tv;
+    ap_interval_time_t pause;
 
     /*
      * Calculate the sizes and offsets in cur_unique_id.
@@ -230,8 +230,8 @@ static void unique_id_global_init(ap_pool_t *p, ap_pool_t *plog, ap_pool_t *ptem
      * But protecting against it is relatively cheap.  We just sleep into the
      * next second.
      */
-    tv = ap_now();
-    ap_sleep(tv);
+    pause = (ap_interval_time_t)(1000000 - (ap_now() % AP_USEC_PER_SEC));
+    ap_sleep(pause);
 }
 
 static void unique_id_child_init(ap_pool_t *p, server_rec *s)
@@ -273,7 +273,7 @@ static void unique_id_child_init(ap_pool_t *p, server_rec *s)
     /* Some systems have very low variance on the low end of their system
      * counter, defend against that.
      */
-    cur_unique_id.counter = tv % APR_USEC_PER_SEC / 10;
+    cur_unique_id.counter = tv % AP_USEC_PER_SEC / 10;
 
     /*
      * We must always use network ordering for these bytes, so that
