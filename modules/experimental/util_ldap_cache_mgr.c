@@ -99,7 +99,8 @@ void *util_ald_alloc(util_ald_cache_t *cache, unsigned long size)
 #if APR_HAS_SHARED_MEMORY
     if (cache->rmm_addr) {
         /* allocate from shared memory */
-        return (void *)apr_rmm_addr_get(cache->rmm_addr, apr_rmm_calloc(cache->rmm_addr, size));
+        apr_rmm_off_t block = apr_rmm_calloc(cache->rmm_addr, size);
+        return block ? (void *)apr_rmm_addr_get(cache->rmm_addr, block) : NULL;
     }
     else {
         /* Cache shm is not used */
@@ -115,7 +116,8 @@ const char *util_ald_strdup(util_ald_cache_t *cache, const char *s)
 #if APR_HAS_SHARED_MEMORY
     if (cache->rmm_addr) {
         /* allocate from shared memory */
-        char *buf = (char *)apr_rmm_addr_get(cache->rmm_addr, apr_rmm_calloc(cache->rmm_addr, strlen(s)+1));
+        apr_rmm_off_t block = apr_rmm_calloc(cache->rmm_addr, strlen(s)+1);
+        char *buf = block ? (char *)apr_rmm_addr_get(cache->rmm_addr, block) : NULL;
         if (buf) {
             strcpy(buf, s);
             return buf;
@@ -262,9 +264,13 @@ util_ald_cache_t *util_ald_create_cache(util_ldap_state_t *st,
         return NULL;
 
 #if APR_HAS_SHARED_MEMORY
-    if (!st->cache_rmm)
+    if (!st->cache_rmm) {
         return NULL;
-    cache = (util_ald_cache_t *)apr_rmm_addr_get(st->cache_rmm, apr_rmm_calloc(st->cache_rmm, sizeof(util_ald_cache_t)));
+    }
+    else {
+        apr_rmm_off_t block = apr_rmm_calloc(st->cache_rmm, sizeof(util_ald_cache_t));
+        cache = block ? (util_ald_cache_t *)apr_rmm_addr_get(st->cache_rmm, block) : NULL;
+    }
 #else
     cache = (util_ald_cache_t *)calloc(sizeof(util_ald_cache_t), 1);
 #endif
@@ -362,22 +368,40 @@ void util_ald_cache_insert(util_ald_cache_t *cache, void *payload)
     int hashval;
     util_cache_node_t *node;
 
-    if (cache == NULL || payload == NULL)
+    /* sanity check */
+    if (cache == NULL || payload == NULL) {
         return;
+    }
 
-    if ((node = (util_cache_node_t *)util_ald_alloc(cache, sizeof(util_cache_node_t))) == NULL)
+    /* check if we are full - if so, try purge */
+    if (cache->numentries >= cache->maxentries) {
+        util_ald_cache_purge(cache);
+        if (cache->numentries >= cache->maxentries) {
+            /* if the purge was not effective, we leave now to avoid an overflow */
+            return;
+        }
+    }
+
+    /* should be safe to add an entry */
+    if ((node = (util_cache_node_t *)util_ald_alloc(cache, sizeof(util_cache_node_t))) == NULL) {
         return;
+    }
 
+    /* populate the entry */
     cache->inserts++;
     hashval = (*cache->hash)(payload) % cache->size;
     node->add_time = apr_time_now();
     node->payload = (*cache->copy)(cache, payload);
     node->next = cache->nodes[hashval];
     cache->nodes[hashval] = node;
-    if (++cache->numentries == cache->fullmark) 
+
+    /* if we reach the full mark, note the time we did so
+     * for the benefit of the purge function
+     */
+    if (++cache->numentries == cache->fullmark) {
         cache->marktime=apr_time_now();
-    if (cache->numentries >= cache->maxentries)
-        util_ald_cache_purge(cache);
+    }
+
 }
 
 void util_ald_cache_remove(util_ald_cache_t *cache, void *payload)
