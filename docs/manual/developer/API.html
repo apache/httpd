@@ -561,7 +561,7 @@ int my_handler(request_rec *r)
     struct my_structure *foo;
     ...
 
-    foo = (foo *)palloc (r->pool, sizeof(my_structure));
+    foo = (foo *)palloc (r-&gt;pool, sizeof(my_structure));
 }
 </pre>
 
@@ -598,7 +598,7 @@ at least two <code>char *</code> arguments, the last of which must be
 of the strings, as a unit; for instance:
 
 <pre>
-     pstrcat (r->pool, "foo", "/", "bar", NULL);
+     pstrcat (r-&gt;pool, "foo", "/", "bar", NULL);
 </pre>
 
 returns a pointer to 8 bytes worth of memory, initialized to
@@ -614,7 +614,7 @@ the same as the typical arguments to <code>fopen</code>, e.g.,
 
 <pre>
      ...
-     FILE *f = pfopen (r->pool, r->filename, "r");
+     FILE *f = pfopen (r-&gt;pool, r-&gt;filename, "r");
 
      if (f == NULL) { ... } else { ... }
 </pre>
@@ -933,22 +933,22 @@ the <code>get_module_config</code> function.
 int find_ct(request_rec *r)
 {
     int i;
-    char *fn = pstrdup (r->pool, r->filename);
+    char *fn = pstrdup (r-&gt;pool, r-&gt;filename);
     mime_dir_config *conf = (mime_dir_config *)
-             get_module_config(r->per_dir_config, &amp;mime_module);
+             get_module_config(r-&gt;per_dir_config, &amp;mime_module);
     char *type;
 
-    if (S_ISDIR(r->finfo.st_mode)) {
-        r->content_type = DIR_MAGIC_TYPE;
+    if (S_ISDIR(r-&gt;finfo.st_mode)) {
+        r-&gt;content_type = DIR_MAGIC_TYPE;
         return OK;
     }
     
     if((i=rind(fn,'.')) &lt; 0) return DECLINED;
     ++i;
 
-    if ((type = table_get (conf->encoding_types, &amp;fn[i])))
+    if ((type = table_get (conf-&gt;encoding_types, &amp;fn[i])))
     {
-        r->content_encoding = type;
+        r-&gt;content_encoding = type;
 
         /* go back to previous extension to try to use it as a type */
 
@@ -957,9 +957,9 @@ int find_ct(request_rec *r)
         ++i;
     }
 
-    if ((type = table_get (conf->forced_types, &amp;fn[i])))
+    if ((type = table_get (conf-&gt;forced_types, &amp;fn[i])))
     {
-        r->content_type = type;
+        r-&gt;content_type = type;
     }
     
     return OK;
@@ -989,7 +989,7 @@ per-directory config data):
 <pre>
 char *add_redirect(cmd_parms *cmd, void *dummy, char *f, char *url)
 {
-    server_rec *s = cmd->server;
+    server_rec *s = cmd-&gt;server;
     alias_server_conf *conf = (alias_server_conf *)
             get_module_config(s-&gt;module_config,&amp;alias_module);
     alias_entry *new = push_array (conf-&gt;redirects);
