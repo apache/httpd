@@ -377,7 +377,6 @@ install-config:
 		 cat $(TOP)/conf/$${conf}-dist ) |\
 		 sed -e '/# LoadModule/r $(TOP)/$(SRC)/.apaci.install.conf' \
 			-e 's;@@ServerRoot@@/htdocs;$(datadir)/htdocs;' \
-			-e 's;@@ServerRoot@@/htdocs;$(datadir)/htdocs;' \
 			-e 's;@@ServerRoot@@/icons;$(datadir)/icons;' \
 			-e 's;@@ServerRoot@@/cgi-bin;$(datadir)/cgi-bin;' \
 			-e 's;@@ServerRoot@@/proxy;$(proxycachedir);' \
