@@ -121,3 +121,7 @@ $(apr_configure): lib/apr/aclocal.m4 lib/apr/configure.in lib/apr/apr_common.m4 
 $(pcre_configure): lib/pcre/configure.in
 	@echo rebuilding $@
 	(cd lib/pcre && autoconf)
+
+$(mm_configure): $(mm_configure).in
+	@echo rebuilding $@
+	(cd lib/apr/shmem/unix/mm && autoconf)
