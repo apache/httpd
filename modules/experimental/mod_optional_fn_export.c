@@ -58,7 +58,7 @@
 #include "mod_optional_fn_export.h"
 
 /* The alert will note a strange mirror-image style resemblance to
- * mod_generic_hook_import.c. Yes, I _did_ mean import. Think about it.
+ * mod_optional_hook_import.c. Yes, I _did_ mean import. Think about it.
  */
 
 static int TestOptionalFn(const char *szStr)

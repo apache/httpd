@@ -57,13 +57,13 @@
 #include "mod_optional_hook_export.h"
 #include "http_protocol.h"
 
-APR_IMPLEMENT_OPTIONAL_HOOK_RUN_ALL(ap,AP_MODULE,int,generic_hook_test,
+APR_IMPLEMENT_OPTIONAL_HOOK_RUN_ALL(ap,AP_MODULE,int,optional_hook_test,
 				    (const char *szStr),
 				    (szStr),OK,DECLINED)
 
 static int ExportLogTransaction(request_rec *r)
 {
-    return ap_run_generic_hook_test(r->the_request);
+    return ap_run_optional_hook_test(r->the_request);
 }
 
 static void ExportRegisterHooks(apr_pool_t *p)

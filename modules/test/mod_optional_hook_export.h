@@ -52,11 +52,11 @@
  * <http://www.apache.org/>.
  */
 
-#ifndef MOD_GENERIC_HOOK_EXPORT_H
-#define MOD_GENERIC_HOOK_EXPORT_H
+#ifndef MOD_OPTIONAL_HOOK_EXPORT_H
+#define MOD_OPTOPNAL_HOOK_EXPORT_H
 
 #include "apr_optional_hooks.h"
 
-APR_DECLARE_EXTERNAL_HOOK(ap,AP_MODULE,int,generic_hook_test,(const char *))
+APR_DECLARE_EXTERNAL_HOOK(ap,AP_MODULE,int,optional_hook_test,(const char *))
 
-#endif /* def MOD_GENERIC_HOOK_EXPORT_H */
+#endif /* def MOD_OPTIONAL_HOOK_EXPORT_H */
