@@ -36,9 +36,6 @@ Changes with Apache 2.1.0-dev
   *) mod_logio: Account for some bytes handed to the network layer prior to
      dropped connections.  [Jeff Trawick]
 
-  *) Win32 MPM: The bucket brigades subsystem now honors the MaxMemFree setting.
-     [Bill Stoddard]
-
   *) mod_autoindex: new directive IndexStyleSheet 
     [Tyler Riddle <triddle_1999 yahoo.com>, Paul Querna <chip force-elite.com>]
 
@@ -256,6 +253,9 @@ Changes with Apache 2.1.0-dev
    Apache 2.0.xx tree as documented, and except as noted, below.]
 
 Changes with Apache 2.0.49
+  *) Win32 MPM: Implement MaxMemFree to enable setting an upper
+     limit on the amount of storage used by the bucket brigades
+     in each server thread. [Bill Stoddard]
 
   *) Modified the cache code to be header-location agnostic. Also
      fixed a number of other cache code bugs related to PR 15852.
