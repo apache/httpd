@@ -37,7 +37,7 @@
 <page href="handler.html">Apache's Handler Use</page>
 <page href="filter.html">Filters</page>
 <page href="suexec.html">suEXEC Support</page>
-<page href="misc/perf-tuning.html">Performance Hintes</page>
+<page href="misc/perf-tuning.html">Performance Hints</page>
 <page href="misc/rewriteguide.html">URL Rewriting Guide</page>
 </category>
 
