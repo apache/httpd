@@ -7,6 +7,13 @@
 
 # Originally by Rob McCool
 
+# Shared Object Module Loading:
+# To be able to use the functionality of a module which was built
+# as a shared object you have to place corresponding `LoadModule'
+# lines at this location so the directives contained in it are
+# actually available _before_ they are used. 
+#LoadModule config_log_module libexec/mod_log_config.so
+
 # ServerType is either inetd, or standalone.
 
 ServerType standalone
