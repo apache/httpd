@@ -347,7 +347,7 @@ AP_DECLARE(void) ap_register_hooks(module *m, apr_pool_t *p)
 	    printf("Registering hooks for %s\n",m->name);
 	    apr_debug_module_hooks=1;
 	}
-	apr_debug_module_name=m->name;
+	apr_current_hooking_module=m->name;
 	m->register_hooks(p);
     }
 }
