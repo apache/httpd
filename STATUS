@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/03/24 02:58:02 $]
+Last modified at [$Date: 2004/03/24 05:59:21 $]
 
 Release:
 
@@ -93,7 +93,7 @@ PATCHES TO BACKPORT FROM 2.1
        into a crash-a-matic :(
            include/http_core.h: r1.82
            server/core.c: r1.268
-       +1: trawick
+       +1: trawick, stoddard
 
     *) Limit the concurrency in 'ab' to MAX_CONCURRENCY to prevent a 
        segmentation fault.
