@@ -64,9 +64,6 @@
 #include "apr_strings.h"
 #include "apr_lib.h"
 
-#include "apr_dbg_win32_handles.h"
-
-
 static char  *display_name  = NULL;
 static HANDLE stderr_thread = NULL;
 static HANDLE stderr_ready;
