@@ -28,7 +28,7 @@ include $(top_srcdir)/build/program.mk
 
 install-conf:
 	@echo Installing configuration files ; \
-	if [ -d $(DESTDIR)$(sysconfdir) ]; then \
+	if [ ! -d $(DESTDIR)$(sysconfdir) ]; then \
 	    $(MKINSTALLDIRS) $(DESTDIR)$(sysconfdir) ; \
 	fi ; \
 	cd $(top_srcdir)/docs/conf; \
