@@ -61,3 +61,16 @@ Body:----------sv--
 
 <!--#include virtual="include/bottom.html" -->
 ----------sv--
+
+Content-language: it
+Content-type: text/html
+Body:----------it--
+<!--#set var="TITLE" value="URI troppo lungo!" -->
+<!--#include virtual="include/top.html" -->
+
+    La lunghezza dell'indirizzo (URL) trasmesso supera il
+    limite massimo imposto da questo server.
+    La richiesta non pu&ograve; essere soddisfatta.
+
+<!--#include virtual="include/bottom.html" -->
+----------it--

@@ -37,7 +37,6 @@ Body:----------es--
 
 	Le solicitamos que porfavor repita la operaci&oacute;n
 	mas tarde.
-	
 
 <!--#include virtual="include/bottom.html" -->
 ----------es--
@@ -69,3 +68,17 @@ Body:----------sv--
 
 <!--#include virtual="include/bottom.html" -->
 ----------sv--
+
+Content-language: it
+Content-type: text/html
+Body:----------it--
+<!--#set var="TITLE" value="Servizio non disponibile!" -->
+<!--#include virtual="include/top.html" -->
+
+    Il server in questo momento non &egrave; in grado di
+    soddisfare la richiesta per motivi di manutenzione
+    o di sovraccarico del sistema.
+    Per favore, riprova pi&ugrave; tardi.
+
+<!--#include virtual="include/bottom.html" -->
+----------it--

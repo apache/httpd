@@ -62,3 +62,16 @@ Body:----------sv--
 
 <!--#include virtual="include/bottom.html" -->
 ----------sv--
+
+Content-language: it
+Content-type: text/html
+Body:----------it--
+<!--#set var="TITLE" value="La versione variante varia essa stessa!" -->
+<!--#include virtual="include/top.html" -->
+
+    Non &egrave; possibile accedere all'entit&agrave;
+    richiesta perch&eacute; &grave; essa stessa
+    una risorsa negoziabile.
+
+<!--#include virtual="include/bottom.html" -->
+----------it--

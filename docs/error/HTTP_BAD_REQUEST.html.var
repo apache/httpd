@@ -57,3 +57,15 @@ Body:----------sv--
 
 <!--#include virtual="include/bottom.html" -->  
 ----------sv--
+
+Content-language: it
+Content-type: text/html
+Body:----------it--
+<!--#set var="TITLE" value="Richiesta incomprensibile!" -->
+<!--#include virtual="include/top.html" -->
+
+    Il tuo browser (o il proxy) ha inviato a
+    questo server una richiesta incomprensibile.
+
+<!--#include virtual="include/bottom.html" -->
+----------it--

@@ -11,27 +11,34 @@ Content-language: en
 Content-type: text/html
 Body:----------en--
 If you think this is a server error, please contact
-the <a href="mailto:<!--#echo encoding="none" var="SERVER_ADMIN" -->">webmaster</a>
+the <a href="mailto:<!--#echo encoding="none" var="SERVER_ADMIN" -->">webmaster</a>.
 ----------en--
 
 Content-language: es
 Content-type: text/html
 Body:----------es--
-Favor de contactar al 
+Favor de contactar al
 <a href="mailto:<!--#echo encoding="none" var="SERVER_ADMIN" -->">webmaster</a>
-en caso de que usted crea que existe un error en el servidor. 
+en caso de que usted crea que existe un error en el servidor.
 ----------es--
 
 Content-language: fr
 Content-type: text/html
 Body:----------fr--
-Si vous pensez qu'il s'agit d'une erreur du serveur, veuillez contacter 
-le <a href="mailto:<!--#echo encoding="none" var="SERVER_ADMIN" -->">gestionnaire du site</a>   
+Si vous pensez qu'il s'agit d'une erreur du serveur, veuillez contacter le
+<a href="mailto:<!--#echo encoding="none" var="SERVER_ADMIN" -->">gestionnaire du site</a>.
 ----------fr--
 
 Content-language: sv
 Content-type: text/html
 Body:----------sv--
 Om du tror att detta beror p&aring; ett serverfel, v&auml;nligen kontakta
-<a href="mailto:<!--#echo encoding="none" var="SERVER_ADMIN" -->">webbansvarig</a>   
+<a href="mailto:<!--#echo encoding="none" var="SERVER_ADMIN" -->">webbansvarig</a>.
 ----------sv--
+
+Content-language: it
+Content-type: text/html
+Body:----------it--
+Se pensi che questo sia un errore del server, per favore contatta il
+<a href="mailto:<!--#echo encoding="none" var="SERVER_ADMIN" -->">webmaster</a>.
+----------it--

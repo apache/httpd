@@ -123,3 +123,29 @@ Body:----------sv--
 
 <!--#include virtual="include/bottom.html" -->
 ----------sv--
+
+Content-language: it
+Content-type: text/html
+Body:----------it--
+<!--#set var="TITLE" value="La risorsa non &egrave; pi&ugrave; disponibile!" -->
+<!--#include virtual="include/top.html" -->
+
+    L'URL richiesto non &egrave; pi&ugrave; disponibile su questo server
+    e non esistono indirizzi verso i quali sia possibile inoltrare
+    la richiesta.
+
+  <!--#if expr="$HTTP_REFERER" -->
+
+    Per favore, informa l'autore della
+    <a href="<!--#echo encoding="url" var="HTTP_REFERER"-->">pagina
+    di provenienza</a> che il link non &egrave; pi&ugrave; valido.
+
+  <!--#else -->
+
+    Se sei arrivato da una pagina esterna, informa l'autore della
+    pagina di provenienza che il link non &egrave; pi&ugrave; valido.
+
+  <!--#endif -->
+
+<!--#include virtual="include/bottom.html" -->
+----------it--

@@ -132,3 +132,29 @@ Body:----------sv--
 
 <!--#include virtual="include/bottom.html" -->
 ----------sv--
+
+Content-language: it
+Content-type: text/html
+Body:----------it--
+<!--#set var="TITLE" value="Oggetto non trovato!" -->
+<!--#include virtual="include/top.html" -->
+
+    L'URL richiesto non esiste su questo server.
+
+  <!--#if expr="$HTTP_REFERER" -->
+
+    Il link della
+    <a href="<!--#echo encoding="url" var="HTTP_REFERER"-->">pagina da cui
+    sei arrivato</a> potrebbe essere errato o non essere pi&ugrave; valido.
+    Per favore, informa dell'errore l'autore della
+    <a href="<!--#echo encoding="url" var="HTTP_REFERER"-->">pagina</a>.
+
+  <!--#else -->
+
+    Se hai scritto l'URL a mano, per favore controlla che
+    non ci siano errori.
+
+  <!--#endif -->
+
+<!--#include virtual="include/bottom.html" -->
+----------it--

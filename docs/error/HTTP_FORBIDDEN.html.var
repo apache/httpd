@@ -111,3 +111,24 @@ Body:----------sv--
 
 <!--#include virtual="include/bottom.html" -->
 ----------sv--
+
+Content-language: it
+Content-type: text/html
+Body:----------it--
+<!--#set var="TITLE" value="Accesso negato!" -->
+<!--#include virtual="include/top.html" -->
+
+  <!--#if expr="$REDIRECT_URL = /\/$/" -->
+
+   Non disponi dei permessi necessari per accedere alla
+   directory richiesta oppure non esiste il documento indice.
+
+  <!--#else -->
+
+   Non disponi dei permessi necessari per accedere all'oggetto
+   richiesto, oppure l'oggetto non pu&ograve; essere letto dal server.
+
+  <!--#endif -->
+
+<!--#include virtual="include/bottom.html" -->
+----------it--

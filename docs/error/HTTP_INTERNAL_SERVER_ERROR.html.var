@@ -14,7 +14,6 @@ Body:----------de--
     Fehlermeldung:
     <br /><!--#echo var="REDIRECT_ERROR_NOTES" -->
 
-
   <!--#else -->
 
     Die Anfrage kann nicht beantwortet werden, da im Server
@@ -137,3 +136,31 @@ Body:----------sv--
 
 <!--#include virtual="include/bottom.html" -->
 ----------sv--
+
+Content-language: it
+Content-type: text/html
+Body:----------it--
+<!--#set var="TITLE" value="Errore del server!" -->
+<!--#include virtual="include/top.html" -->
+
+  <!--#if expr="$REDIRECT_ERROR_NOTES" -->
+
+    Il server ha generato un errore interno e non &egrave;
+    in grado di soddisfare la richiesta.
+
+    <!--#include virtual="include/spacer.html" -->
+
+    Messaggio di errore:
+    <br /><!--#echo var="REDIRECT_ERROR_NOTES" -->
+
+  <!--#else -->
+
+    Il server ha generato un errore interno e non &egrave;
+    in grado di soddisfare la richiesta. Il server potrebbe
+    essere sovraccarico oppure si &egrave; verificato un
+    errore in uno script CGI.
+
+  <!--#endif -->
+
+<!--#include virtual="include/bottom.html" -->
+----------it--

@@ -6,7 +6,7 @@ Body:----------de--
 
     Das bei der Anfrage &uuml;bermittelte Format (Media Type)
     wird vom Server nicht unterst&uuml;tzt.
-    
+
 <!--#include virtual="include/bottom.html" -->
 ----------de--
 
@@ -55,3 +55,15 @@ Body:----------sv--
 
 <!--#include virtual="include/bottom.html" -->
 ----------sv--
+
+Content-language: it
+Content-type: text/html
+Body:----------it--
+<!--#set var="TITLE" value="Tipo di dato non supportato!" -->
+<!--#include virtual="include/top.html" -->
+
+    Il server non &egrave; in grado di gestire il 
+    tipo del formato dei dati trasmesso nella richiesta.
+   
+<!--#include virtual="include/bottom.html" -->
+----------it--
