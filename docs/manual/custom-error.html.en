@@ -29,9 +29,9 @@
       response, then this response can be replaced with either some
       friendlier text or by a redirection to another URL (local or
       external).
-	
+        
       <P>
-	
+        
 <DT>Old behavior
 
   <DD>NCSA httpd 1.3 would return some boring old error/problem message 
