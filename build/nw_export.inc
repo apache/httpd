@@ -33,7 +33,7 @@
 #include "http_request.h"
 #include "http_vhost.h"
 #include "mpm_common.h"
-#include "pcreposix.h"
+#include "ap_regex.h"
 #include "scoreboard.h"
 #include "util_cfgtree.h"
 #include "util_charset.h"
