@@ -155,7 +155,7 @@ static int get_rfc1413(ap_socket_t *sock, const char *local_ip,
 #endif
     i = 0;
     while(i < strlen(buffer)) {
-        int j = strlen(buffer + i);
+        ap_ssize_t j = strlen(buffer + i);
         ap_status_t status;
 	status  = ap_send(sock, buffer+i, &j);
 	if (status != APR_SUCCESS && status != APR_EINTR) {
@@ -181,7 +181,7 @@ static int get_rfc1413(ap_socket_t *sock, const char *local_ip,
      * this allows it to work on both ASCII and EBCDIC machines.
      */
     while((cp = strchr(buffer, '\012')) == NULL && i < sizeof(buffer) - 1) {
-        int j = sizeof(buffer) - 1 - i;
+        ap_ssize_t j = sizeof(buffer) - 1 - i;
         ap_status_t status;
 	status = ap_recv(sock, buffer+i, &j);
 	if (status != APR_SUCCESS && status != APR_EINTR) {

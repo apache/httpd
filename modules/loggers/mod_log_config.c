@@ -739,7 +739,7 @@ static int config_log_transaction(request_rec *r, config_log_state *cls,
     int *strl;
     request_rec *orig;
     int i;
-    int len = 0;
+    ap_ssize_t len = 0;
     ap_array_header_t *format;
     char *envar;
 
