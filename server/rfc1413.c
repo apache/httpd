@@ -84,6 +84,7 @@
 #include "http_log.h"		/* for aplog_error */
 #include "rfc1413.h"
 #include "http_main.h"		/* set_callback_and_alarm */
+#include "util_ebcdic.h"
 #include "apr_network_io.h"
 #include <string.h>
 
@@ -116,6 +117,9 @@ static int get_rfc1413(ap_socket_t *sock, const char *local_ip,
     char *cp;
     char buffer[RFC1413_MAXDATA + 1];
     int buflen;
+#ifdef CHARSET_EBCDIC
+    ap_size_t inbytes_left, outbytes_left;
+#endif
 
     /*
      * Bind the local and remote ends of the query socket to the same
@@ -150,11 +154,13 @@ static int get_rfc1413(ap_socket_t *sock, const char *local_ip,
 /* send the data */
     buflen = ap_snprintf(buffer, sizeof(buffer), "%u,%u\r\n", sav_rmt_port,
 		sav_our_port);
+#ifdef CHARSET_EBCDIC
+    inbytes_left = outbytes_left = buflen;
+    ap_xlate_conv_buffer(hdrs_to_ascii, buffer, &inbytes_left,
+                         buffer, &outbytes_left);
+#endif
 
     /* send query to server. Handle short write. */
-#ifdef CHARSET_EBCDIC
-    ebcdic2ascii(&buffer, &buffer, buflen);
-#endif
     i = 0;
     while(i < strlen(buffer)) {
         ap_ssize_t j = strlen(buffer + i);
@@ -202,7 +208,9 @@ static int get_rfc1413(ap_socket_t *sock, const char *local_ip,
 
 /* RFC1413_USERLEN = 512 */
 #ifdef CHARSET_EBCDIC
-    ascii2ebcdic(&buffer, &buffer, (size_t)i);
+    inbytes_left = outbytes_left = i;
+    ap_xlate_conv_buffer(hdrs_from_ascii, buffer, &inbytes_left,
+                         buffer, &outbytes_left);
 #endif
     if (sscanf(buffer, "%u , %u : USERID :%*[^:]:%512s", &rmt_port, &our_port,
 	       user) != 3 || sav_rmt_port != rmt_port

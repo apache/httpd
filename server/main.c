@@ -63,6 +63,7 @@
 #include "http_log.h" 
 #include "http_config.h"
 #include "util_uri.h" 
+#include "util_ebcdic.h"
 #include "apr_getopt.h"
 #include "ap_mpm.h"
 
@@ -304,7 +305,13 @@ API_EXPORT_NONSTD(int)        main(int argc, char *argv[])
     pglobal = process->pool;
     pconf = process->pconf;
     ap_server_argv0 = process->short_name;
-    
+
+#ifdef CHARSET_EBCDIC
+    if (ap_init_ebcdic(pglobal) != APR_SUCCESS) {
+        destroy_and_exit_process(process, 1);
+    }
+#endif
+
     ap_util_uri_init();
 
     g_pHookPool=pconf;
