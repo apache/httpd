@@ -247,11 +247,13 @@ int ssl_init_Module(apr_pool_t *p, apr_pool_t *plog,
         sc->vhost_id = ssl_util_vhostid(p, s);
         sc->vhost_id_len = strlen(sc->vhost_id);
 
+#if 0
+       /* If sc->enabled is UNSET, then SSL is optional on this vhost  */
         /* Fix up stuff that may not have been set */
         if (sc->enabled == UNSET) {
             sc->enabled = FALSE;
         }
-
+#endif
         if (sc->proxy_enabled == UNSET) {
             sc->proxy_enabled = FALSE;
         }
@@ -982,6 +984,9 @@ void ssl_init_ConfigureServer(server_rec *s,
                               apr_pool_t *ptemp,
                               SSLSrvConfigRec *sc)
 {
+    /* A bit of a hack, but initialize the server if SSL is optional or
+     * not.
+     */
     if (sc->enabled) {
         ap_log_error(APLOG_MARK, APLOG_INFO, 0, s,
                      "Configuring server for SSL protocol");
@@ -1010,7 +1015,7 @@ void ssl_init_CheckServers(server_rec *base_server, apr_pool_t *p)
     for (s = base_server; s; s = s->next) {
         sc = mySrvConfig(s);
 
-        if (sc->enabled && (s->port == DEFAULT_HTTP_PORT)) {
+        if ((sc->enabled == TRUE) && (s->port == DEFAULT_HTTP_PORT)) {
             ap_log_error(APLOG_MARK, APLOG_WARNING, 0,
                          base_server,
                          "Init: (%s) You configured HTTPS(%d) "

@@ -1181,6 +1181,89 @@ static int ssl_io_filter_connect(ssl_filter_ctx_t *filter_ctx)
     return APR_SUCCESS;
 }
 
+static apr_status_t ssl_io_filter_Upgrade(ap_filter_t *f,
+                                         apr_bucket_brigade *bb)
+
+{
+#define SWITCH_STATUS_LINE "HTTP/1.1 101 Switching Protocols"
+#define UPGRADE_HEADER "Upgrade: TLS/1.0 HTTP/1.1"
+#define CONNECTION_HEADER "Connection: Upgrade"
+    const char *upgrade;
+    const char *connection;
+    apr_bucket_brigade *upgradebb;
+    request_rec *r = f->r;
+    SSLConnRec *sslconn;
+    SSL *ssl;
+
+    /* Just remove the filter, if it doesn't work the first time, it won't
+     * work at all for this request.
+     */
+    ap_remove_output_filter(f);
+
+    /* No need to ensure that this is a server with optional SSL, the filter
+     * is only inserted if that is true.
+     */
+
+    upgrade = apr_table_get(r->headers_in, "Upgrade");
+    if (upgrade == NULL) {
+        return ap_pass_brigade(f->next, bb);
+    }
+    connection = apr_table_get(r->headers_in, "Connection");
+
+    apr_table_unset(r->headers_out, "Upgrade");
+
+    /* XXX: I don't think the requirement that the client sends exactly 
+     * "Connection: Upgrade" is correct; the only requirement here is 
+     * on the client to send a  Connection header including the "upgrade" 
+     * token.
+     */
+    if (strcmp(connection, "Upgrade") || strcmp(upgrade, "TLS/1.0")) {
+        return ap_pass_brigade(f->next, bb);
+    }
+
+    if (r->method_number == M_OPTIONS) {
+        apr_bucket *b = NULL;
+        /* This is a mandatory SSL upgrade. */
+
+        upgradebb = apr_brigade_create(r->pool, f->c->bucket_alloc);
+
+        ap_fputstrs(f->next, upgradebb, SWITCH_STATUS_LINE, CRLF,
+                    UPGRADE_HEADER, CRLF, CONNECTION_HEADER, CRLF, CRLF, NULL);
+
+        b = apr_bucket_flush_create(f->c->bucket_alloc);
+        APR_BRIGADE_INSERT_TAIL(upgradebb, b);
+
+        ap_pass_brigade(f->next, upgradebb);
+    }
+    else {
+        /* This is optional, and should be configurable, for now don't bother
+         * doing anything.
+         */
+        return ap_pass_brigade(f->next, bb);
+    }
+
+    ssl_init_ssl_connection(f->c);
+
+    ap_log_error(APLOG_MARK, APLOG_INFO, 0, r->server,
+                 "Awaiting re-negotiation handshake");
+
+    sslconn = myConnConfig(f->c);
+    ssl = sslconn->ssl;
+
+    SSL_set_state(ssl, SSL_ST_ACCEPT);
+    SSL_do_handshake(ssl);
+
+    if (SSL_get_state(ssl) != SSL_ST_OK) {
+        ap_log_error(APLOG_MARK, APLOG_ERR, 0, r->server,
+                     "Re-negotiation handshake failed: "
+                "Not accepted by client!?");
+
+        return AP_FILTER_ERROR;
+    }
+
+    return OK;
+}
+
 static apr_status_t ssl_io_filter_input(ap_filter_t *f,
                                         apr_bucket_brigade *bb,
                                         ap_input_mode_t mode,
@@ -1393,6 +1476,11 @@ void ssl_io_filter_init(conn_rec *c, SSL *ssl)
 
 void ssl_io_filter_register(apr_pool_t *p)
 {
+    /* This filter MUST be after the HTTP_HEADER filter, but it also must be
+     * a resource-level filter so it has the request_rec.
+     */
+    ap_register_output_filter ("UPGRADE_FILTER", ssl_io_filter_Upgrade, NULL, AP_FTYPE_PROTOCOL + 5);
+
     ap_register_input_filter  (ssl_io_filter, ssl_io_filter_input,  NULL, AP_FTYPE_CONNECTION + 5);
     ap_register_output_filter (ssl_io_filter, ssl_io_filter_output, NULL, AP_FTYPE_CONNECTION + 5);
     return;
