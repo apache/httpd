@@ -61,13 +61,13 @@ TOUCH_FILES = mkinstalldirs install-sh missing
 LT_TARGETS = ltconfig ltmain.sh config.guess config.sub
 
 config_h_in = include/ap_config_auto.h.in
-apr_config_h_in = lib/apr/include/apr_config.h.in
+apr_private.h_in = lib/apr/include/apr_private.h.in
 apr_configure = lib/apr/configure
 mm_configure = lib/apr/shmem/mm/configure
 
 APACHE_TARGETS = $(TOUCH_FILES) $(LT_TARGETS) configure $(config_h_in)
 
-APR_TARGETS = $(apr_configure) $(apr_config_h_in) $(mm_configure)
+APR_TARGETS = $(apr_configure) $(apr_private.h_in) $(mm_configure)
 
 targets = .deps aclocal.m4 $(APACHE_TARGETS) $(APR_TARGETS)
 
@@ -100,7 +100,7 @@ configure: aclocal.m4 configure.in $(config_m4_files)
 	rm -f config.cache
 	autoconf
 
-$(apr_config_h_in): $(apr_configure) lib/apr/acconfig.h
+$(apr_private.h_in): $(apr_configure) lib/apr/acconfig.h
 	@echo rebuilding $@
 	@rm -f $@
 	(cd lib/apr && autoheader)
