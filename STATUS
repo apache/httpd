@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:						-*-text-*-
-Last modified at [$Date: 2001/04/04 03:39:39 $]
+Last modified at [$Date: 2001/04/10 17:32:08 $]
 
 Release:
 
@@ -98,6 +98,8 @@ RELEASE SHOWSTOPPERS:
         MsgId: <3A9C0097.9C83F07C@Golux.Com>
 
 RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
+
+    * Eliminate unnecessary creation of pipes in mod_cgid
 
     * the autoconf setup should be fixed to default to using the 
       "Apache" layout from config.layout, and each variable settable
