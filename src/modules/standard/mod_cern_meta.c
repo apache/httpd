@@ -131,6 +131,7 @@
 #include <sys/stat.h>
 #include "util_script.h"
 #include "http_log.h"
+#include "http_request.h"
 
 #define DEFAULT_METADIR		".web"
 #define DEFAULT_METASUFFIX	".meta"
@@ -242,6 +243,7 @@ int add_cern_meta_data(request_rec *r)
     FILE *f;   
     cern_meta_config *cmc ;
     int rv;
+    request_rec *rr;
 
     cmc = get_module_config (r->server->module_config,
                            &cern_meta_module); 
@@ -276,29 +278,19 @@ int add_cern_meta_data(request_rec *r)
 
     metafilename = pstrcat(r->pool, "/", scrap_book, "/", cmc->metadir, "/", real_file, cmc->metasuffix, NULL);
 
-    /*
-     * stat can legitimately fail for a bewildering number of reasons,
-     * only one of which implies the file isn't there.  A hardened
-     * version of this module should test for all conditions, but later...
+    /* XXX: it sucks to require this subrequest to complete, because this
+     * means people must leave their meta files accessible to the world.
+     * A better solution might be a "safe open" feature of pfopen to avoid
+     * pipes, symlinks, and crap like that.
      */
-    if (stat(metafilename, &meta_stat) == -1) {
-	/* stat failed, possibly file missing */
+    rr = sub_req_lookup_file (metafilename, r);
+    if (rr->status != HTTP_OK) {
+	destroy_sub_req (rr);
 	return DECLINED;
-    };
-
-    /*
-     * this check is to be found in other Jan/96 Apache code, I've
-     * not been able to find any corroboration in the man pages but
-     * I've been wrong before so I'll put it in anyway.  Never
-     * admit to being clueless...
-     */
-    if ( meta_stat.st_mode == 0 ) {
-	/* stat failed, definately file missing */
-	return DECLINED;
-    };
+    }
+    destroy_sub_req (rr);
 
     f = pfopen (r->pool, metafilename, "r");
-    
     if (f == NULL) {
         log_reason("meta file permissions deny server access", metafilename, r);
         return FORBIDDEN;

@@ -176,11 +176,17 @@ const char *add_ignore(cmd_parms *cmd, void *d, char *ext) {
 }
 
 const char *add_header(cmd_parms *cmd, void *d, char *name) {
+    if (strchr (name, '/')) {
+	return "HeaderName cannot contain a /";
+    }
     push_item(((dir_config_rec *)d)->hdr_list, 0, NULL, cmd->path, name);
     return NULL;
 }
 
 const char *add_readme(cmd_parms *cmd, void *d, char *name) {
+    if (strchr (name, '/')) {
+	return "ReadmeName cannot contain a /";
+    }
     push_item(((dir_config_rec *)d)->rdme_list, 0, NULL, cmd->path, name);
     return NULL;
 }
@@ -451,7 +457,9 @@ int insert_readme(char *name, char *readme_fname, int rule, request_rec *r) {
     FILE *f;
     struct stat finfo;
     int plaintext=0;
+    request_rec *rr;
 
+    /* XXX: this is a load of crap, it needs to do a full sub_req_lookup_uri */
     fn = make_full_path(r->pool, name, readme_fname);
     fn = pstrcat(r->pool, fn, ".html", NULL);
     if(stat(fn,&finfo) == -1) {
@@ -464,6 +472,14 @@ int insert_readme(char *name, char *readme_fname, int rule, request_rec *r) {
         rputs("<PRE>\n", r);
     }
     else if (rule) rputs("<HR>\n", r);
+    /* XXX: when the above is rewritten properly, this necessary security
+     * check will be redundant. -djg */
+    rr = sub_req_lookup_file (fn, r);
+    if (rr->status != HTTP_OK) {
+	destroy_sub_req (rr);
+	return 0;
+    }
+    destroy_sub_req (rr);
     if(!(f = pfopen(r->pool,fn,"r")))
         return 0;
     if (!plaintext)
@@ -505,6 +521,9 @@ char *find_title(request_rec *r) {
     FILE *thefile = NULL;
     int x,y,n,p;
 
+    if (r->status != HTTP_OK) {
+	return NULL;
+    }
     if (r->content_type && !strcmp(r->content_type,"text/html") && !r->content_encoding) {
         if(!(thefile = pfopen(r->pool, r->filename,"r")))
             return NULL;

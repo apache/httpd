@@ -645,17 +645,20 @@ char *lcase_header_name_return_body (char *header, request_rec *r)
     return cp;
 }
 
-int read_type_map (negotiation_state *neg, char *map_name)
+static int read_type_map (negotiation_state *neg, request_rec *rr)
 {
     request_rec *r = neg->r;
-    FILE *map = pfopen (neg->pool, map_name, "r");
-
+    FILE *map;
     char buffer[MAX_STRING_LEN];
     enum header_state hstate;
     struct var_rec mime_info;
     
+    if (rr->status != HTTP_OK) {
+	return rr->status;
+    }
+    map = pfopen (neg->pool, rr->filename, "r");
     if (map == NULL) {
-        log_reason("cannot access type map file", map_name, r);
+        log_reason("cannot access type map file", rr->filename, r);
 	return FORBIDDEN;
     }
 
@@ -783,7 +786,7 @@ int read_types_multi (negotiation_state *neg)
 	    closedir(dirp);
 	    
 	    neg->avail_vars->nelts = 0;
-	    return read_type_map (neg, sub_req->filename);
+	    return read_type_map (neg, sub_req);
 	}
 	
 	/* Have reasonable variant --- gather notes.
@@ -1853,7 +1856,7 @@ int handle_map_file (request_rec *r)
     
     char *udir;
     
-    if ((res = read_type_map (neg, r->filename))) return res;
+    if ((res = read_type_map (neg, r))) return res;
     
     maybe_add_default_encodings(neg, 0);
     

@@ -85,6 +85,24 @@
  * they change, all the way down.
  */
 
+
+/*
+ * We don't want people able to serve up pipes, or unix sockets, or other
+ * scary things.  Note that symlink tests are performed later.
+ */
+static int check_safe_file(request_rec *r)
+{
+    if (r->finfo.st_mode == 0		/* doesn't exist */
+	|| S_ISDIR (r->finfo.st_mode)
+	|| S_ISREG (r->finfo.st_mode)
+	|| S_ISLNK (r->finfo.st_mode)) {
+	return OK;
+    }
+    log_reason("object is not a file, directory or symlink", r->filename, r);
+    return HTTP_FORBIDDEN;
+}
+
+
 int check_symlinks (char *d, int opts)
 { 
 #if defined(__EMX__) || defined(WIN32)
@@ -310,11 +328,17 @@ int directory_walk (request_rec *r)
     if (res != OK) {
 	return res;
     }
-    
+
+    if ((res = check_safe_file(r))) {
+	return res;
+    }
+
     if (test_filename[strlen(test_filename)-1] == '/')
 	--num_dirs;
 
-    if (S_ISDIR (r->finfo.st_mode)) ++num_dirs;
+    if (S_ISDIR (r->finfo.st_mode)) {
+	++num_dirs;
+    }
 
     for (i = 1; i <= num_dirs; ++i) {
         core_dir_config *core_dir =
@@ -399,8 +423,16 @@ int directory_walk (request_rec *r)
 
     r->per_dir_config = per_dir_defaults;
 
-    if ((res = check_symlinks (r->filename, allow_options(r))))
-    {
+    /* Symlink permissions are determined by the parent.  If the request is for
+     * a directory then applying the symlink test here would use the
+     * permissions of the directory as opposed to its parent.  Consider a
+     * symlink pointing to a dir with a .htaccess disallowing symlinks.  If you
+     * access /symlink (or /symlink/) you would get a 403 without this S_ISDIR
+     * test.  But if you accessed /symlink/index.html, for example, you would
+     * *not* get the 403.
+     */
+    if (!S_ISDIR (r->finfo.st_mode)
+	&& (res = check_symlinks (r->filename, allow_options(r)))) {
 	log_reason("Symbolic link not allowed", r->filename, r);
 	return res;
     }
@@ -667,6 +699,11 @@ request_rec *sub_req_lookup_file (const char *new_file, const request_rec *r)
 	rnew->filename = make_full_path (rnew->pool, fdir, new_file);
 	if (stat (rnew->filename, &rnew->finfo) < 0) {
 	    rnew->finfo.st_mode = 0;
+	}
+
+	if ((res = check_safe_file(rnew))) {
+	    rnew->status = res;
+	    return rnew;
 	}
 
 	rnew->per_dir_config = r->per_dir_config;
