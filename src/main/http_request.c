@@ -246,11 +246,9 @@ int directory_walk (request_rec *r)
 {
     core_server_config *sconf = get_module_config (r->server->module_config,
 						   &core_module);
-    array_header *sec_array = copy_array (r->pool, sconf->sec);
     void *per_dir_defaults = r->server->lookup_defaults;
-    
-    core_dir_config **sec = (core_dir_config **)sec_array->elts;
-    int num_sec = sec_array->nelts;
+    void **sec = (void **)sconf->sec->elts;
+    int num_sec = sconf->sec->nelts;
     char *test_filename = pstrdup (r->pool, r->filename);
     char *test_dirname;
     int res;
@@ -294,7 +292,6 @@ int directory_walk (request_rec *r)
 	for (j = 0; j < num_sec; ++j) {
 
 	    entry_config = sec[j];
-	    if (!entry_config) continue;
 	    
 	    entry_core =(core_dir_config *)
 		get_module_config(entry_config, &core_module);
@@ -387,7 +384,6 @@ int directory_walk (request_rec *r)
 	    this_conf = NULL;
 	    if (entry_core->d_is_fnmatch) {
 		if (!fnmatch(entry_dir, test_dirname, FNM_PATHNAME)) {
-		    sec[j] = NULL;	
 		    this_conf = entry_config;
 		}
 	    }
@@ -467,11 +463,9 @@ int location_walk (request_rec *r)
 {
     core_server_config *sconf = get_module_config (r->server->module_config,
 						   &core_module);
-    array_header *url_array = copy_array (r->pool, sconf->sec_url);
     void *per_dir_defaults = r->per_dir_config;
-    
-    core_dir_config **url = (core_dir_config **)url_array->elts;
-    int len, num_url = url_array->nelts;
+    void **url = (void **)sconf->sec_url->elts;
+    int len, num_url = sconf->sec_url->nelts;
     char *test_location = pstrdup (r->pool, r->uri);
 
     /* Collapse multiple slashes, if it's a path URL (we don't want to
@@ -495,7 +489,6 @@ int location_walk (request_rec *r)
 	for (j = 0; j < num_url; ++j) {
 
 	    entry_config = url[j];
-	    if (!entry_config) continue;
 	    
 	    entry_core =(core_dir_config *)
 		get_module_config(entry_config, &core_module);
@@ -533,11 +526,9 @@ int location_walk (request_rec *r)
 int file_walk (request_rec *r)
 {
     core_dir_config *conf = get_module_config(r->per_dir_config, &core_module);
-    array_header *file_array = copy_array (r->pool, conf->sec);
     void *per_dir_defaults = r->per_dir_config;
-    
-    core_dir_config **file = (core_dir_config **)file_array->elts;
-    int len, num_files = file_array->nelts;
+    void **file = (void **)conf->sec->elts;
+    int len, num_files = conf->sec->nelts;
     char *test_file = pstrdup (r->pool, r->filename);
 
     /* Collapse multiple slashes */
@@ -558,7 +549,6 @@ int file_walk (request_rec *r)
 	for (j = 0; j < num_files; ++j) {
 
 	    entry_config = file[j];
-	    if (!entry_config) continue;
 	    
 	    entry_core =(core_dir_config *)
 		get_module_config(entry_config, &core_module);

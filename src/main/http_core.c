@@ -237,74 +237,90 @@ void add_file_conf (core_dir_config *conf, void *url_config)
     *new_space = url_config;
 }
 
-/* This routine reorders the directory sections such that the 1-component
- * sections come first, then the 2-component, and so on, finally followed by
- * the "special" sections.  A section is "special" if it's a regex, or if it
- * doesn't start with / -- consider proxy: matching.  All movements are
- * in-order to preserve the ordering of the sections from the config files.
+/* core_reorder_directories reorders the directory sections such that the
+ * 1-component sections come first, then the 2-component, and so on, finally
+ * followed by the "special" sections.  A section is "special" if it's a regex,
+ * or if it doesn't start with / -- consider proxy: matching.  All movements
+ * are in-order to preserve the ordering of the sections from the config files.
  * See directory_walk().
  */
+
+#define IS_SPECIAL(entry_core)	\
+    ((entry_core)->r != NULL || (entry_core)->d[0] != '/')
+
+/* We need to do a stable sort, qsort isn't stable.  So to make it stable
+ * we'll be maintaining the original index into the list, and using it
+ * as the minor key during sorting.  The major key is the number of
+ * components (where a "special" section has infinite components).
+ */
+struct reorder_sort_rec {
+    void *elt;
+    int orig_index;
+};
+
+static int reorder_sorter (const void *va, const void *vb)
+{
+    const struct reorder_sort_rec *a = va;
+    const struct reorder_sort_rec *b = vb;
+    core_dir_config *core_a;
+    core_dir_config *core_b;
+
+    core_a = (core_dir_config *)get_module_config (a->elt, &core_module);
+    core_b = (core_dir_config *)get_module_config (b->elt, &core_module);
+    if (IS_SPECIAL(core_a)) {
+	if (!IS_SPECIAL(core_b)) {
+	    return 1;
+	}
+    } else if (IS_SPECIAL(core_b)) {
+	return -1;
+    } else {
+	/* we know they're both not special */
+	if (core_a->d_components < core_b->d_components) {
+	    return -1;
+	} else if (core_a->d_components > core_b->d_components) {
+	    return 1;
+	}
+    }
+    /* Either their both special, or their both not special and have the
+     * same number of components.  In any event, we now have to compare
+     * the minor key. */
+    return a->orig_index - b->orig_index;
+}
+
 void core_reorder_directories (pool *p, server_rec *s)
 {
     core_server_config *sconf;
-    array_header *old_sec;
-    array_header *new_sec;
+    array_header *sec;
+    struct reorder_sort_rec *sortbin;
     int nelts;
-    unsigned n_components;
-    unsigned next_n_components;
-    core_dir_config *entry_core;
-    int still_more_to_go;
-    int i;
     void **elts;
+    int i;
 
-    sconf = get_module_config (s->module_config, &core_module);
-    old_sec = sconf->sec;
-    nelts = old_sec->nelts;
-    elts = (void **)old_sec->elts;
-    new_sec = make_array (p, nelts, sizeof(void *));
-
-    /* First collect all the 1 component names, then the 2 componennt names,
-     * and so on.  We use next_n_components to know what to look for the
-     * next time around... to deal with weird configs with many many many
-     * in at least one <Directory>.
+    /* XXX: we are about to waste some ram ... we will build a new array
+     * and we need some scratch space to do it.  The old array and the
+     * scratch space are never freed.
      */
-    n_components = 1;
-    do {
-	/* guess there's none left other than ones with exactly n_components */
-	still_more_to_go = 0;
-	/* guess that what's left has infinite components */
-	next_n_components = ~0u;
-	for (i = 0; i < nelts; ++i) {
-	    if (elts[i] == NULL) continue;
-	    entry_core = (core_dir_config *)get_module_config (elts[i],
-							    &core_module);
-	    if (entry_core->r) continue;
-	    if (entry_core->d[0] != '/') continue;
-	    if (entry_core->d_components != n_components) {
-		/* oops, the guess was wrong */
-		still_more_to_go = 1;
-		if (entry_core->d_components < next_n_components) {
-		    next_n_components = entry_core->d_components;
-		}
-		continue;
-	    }
-	    *(void **)push_array (new_sec) = elts[i];
-	    elts[i] = NULL;
-	}
-	n_components = next_n_components;
-    } while (still_more_to_go);
-    
-    /* anything left is a "special" case */
+    sconf = get_module_config (s->module_config, &core_module);
+    sec = sconf->sec;
+    nelts = sec->nelts;
+    elts = (void **)sec->elts;
+
+    /* build our sorting space */
+    sortbin = palloc (p, sec->nelts * sizeof (*sortbin));
     for (i = 0; i < nelts; ++i) {
-	if (elts[i] == NULL) continue;
-	*(void **)push_array (new_sec) = elts[i];
+	sortbin[i].orig_index = i;
+	sortbin[i].elt = elts[i];
     }
 
-    /* XXX: in theory we could have allocated new_sec from the ptemp
-     * pool, and then memcpy'd it over top of old_sec ... oh well,
-     * we're wasting some ram here.
-     */
-    sconf->sec = new_sec;
+    qsort (sortbin, nelts, sizeof (*sortbin), reorder_sorter);
+
+    /* and now build a new array */
+    sec = make_array (p, nelts, sizeof (void *));
+    for (i = 0; i < nelts; ++i) {
+	*(void **)push_array (sec) = sortbin[i].elt;
+    }
+
+    sconf->sec = sec;
 }
 
 /*****************************************************************
