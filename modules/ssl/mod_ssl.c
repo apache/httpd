@@ -244,7 +244,7 @@ int ssl_proxy_enable(conn_rec *c)
     SSLConnRec *sslconn = ssl_init_connection_ctx(c);
 
     if (!sc->proxy_enabled) {
-        ap_log_error(APLOG_MARK, APLOG_ERR|APLOG_NOERRNO, 0, c->base_server,
+        ap_log_error(APLOG_MARK, APLOG_ERR, 0, c->base_server,
                      "SSL Proxy requested for %s but not enabled "
                      "[Hint: SSLProxyEngine]", sc->vhost_id);
 
@@ -307,7 +307,7 @@ static int ssl_hook_pre_connection(conn_rec *c, void *csd)
      * later access inside callback functions
      */
 
-    ap_log_error(APLOG_MARK, APLOG_INFO|APLOG_NOERRNO, 0, c->base_server,
+    ap_log_error(APLOG_MARK, APLOG_INFO, 0, c->base_server,
                  "Connection to child %ld established "
                  "(server %s, client %s)", c->id, sc->vhost_id, 
                  c->remote_ip ? c->remote_ip : "unknown");
@@ -325,7 +325,7 @@ static int ssl_hook_pre_connection(conn_rec *c, void *csd)
      * so we can detach later.
      */
     if (!(ssl = SSL_new(mctx->ssl_ctx))) {
-        ap_log_error(APLOG_MARK, APLOG_ERR|APLOG_NOERRNO, 0, c->base_server,
+        ap_log_error(APLOG_MARK, APLOG_ERR, 0, c->base_server,
                      "Unable to create a new SSL connection from the SSL "
                      "context");
         ssl_log_ssl_error(APLOG_MARK, APLOG_ERR, c->base_server);
@@ -340,7 +340,7 @@ static int ssl_hook_pre_connection(conn_rec *c, void *csd)
     if (!SSL_set_session_id_context(ssl, (unsigned char *)vhost_md5,
                                     MD5_DIGESTSIZE*2))
     {
-        ap_log_error(APLOG_MARK, APLOG_ERR|APLOG_NOERRNO, 0, c->base_server,
+        ap_log_error(APLOG_MARK, APLOG_ERR, 0, c->base_server,
                      "Unable to set session id context to `%s'", vhost_md5);
         ssl_log_ssl_error(APLOG_MARK, APLOG_ERR, c->base_server);
 
@@ -408,7 +408,7 @@ int ssl_hook_process_connection(SSLFilterRec *filter)
     if (!SSL_is_init_finished(filter->pssl)) {
         if (sslconn->is_proxy) {
             if ((n = SSL_connect(filter->pssl)) <= 0) {
-                ap_log_error(APLOG_MARK, APLOG_ERR|APLOG_NOERRNO, 0,
+                ap_log_error(APLOG_MARK, APLOG_ERR, 0,
                              c->base_server,
                              "SSL Proxy connect failed");
                 ssl_log_ssl_error(APLOG_MARK, APLOG_ERR, c->base_server);
@@ -427,7 +427,7 @@ int ssl_hook_process_connection(SSLFilterRec *filter)
                  * was transferred. That's not a real error and can occur
                  * sporadically with some clients.
                  */
-                ap_log_error(APLOG_MARK, APLOG_INFO|APLOG_NOERRNO, 0,
+                ap_log_error(APLOG_MARK, APLOG_INFO, 0,
                              c->base_server,
                              "SSL handshake stopped: connection was closed");
             }
@@ -452,14 +452,14 @@ int ssl_hook_process_connection(SSLFilterRec *filter)
                      (errno != EINTR))
             {
                 if (errno > 0) {
-                    ap_log_error(APLOG_MARK, APLOG_ERR|APLOG_NOERRNO, 0,
+                    ap_log_error(APLOG_MARK, APLOG_ERR, 0,
                                  c->base_server,
                                  "SSL handshake interrupted by system "
                                  "[Hint: Stop button pressed in browser?!]");
                     ssl_log_ssl_error(APLOG_MARK, APLOG_ERR, c->base_server);
                 }
                 else {
-                    ap_log_error(APLOG_MARK, APLOG_ERR|APLOG_NOERRNO, 0, 
+                    ap_log_error(APLOG_MARK, APLOG_ERR, 0, 
                                  c->base_server,
                                  "Spurious SSL handshake interrupt [Hint: "
                                  "Usually just one of those OpenSSL "
@@ -471,7 +471,7 @@ int ssl_hook_process_connection(SSLFilterRec *filter)
                 /*
                  * Ok, anything else is a fatal error
                  */
-                ap_log_error(APLOG_MARK, APLOG_ERR|APLOG_NOERRNO, 0, 
+                ap_log_error(APLOG_MARK, APLOG_ERR, 0, 
                              c->base_server,
                              "SSL handshake failed (server %s, client %s)",
                              ssl_util_vhostid(c->pool, c->base_server),
@@ -501,7 +501,7 @@ int ssl_hook_process_connection(SSLFilterRec *filter)
                  * optional_no_ca doesn't appear to work as advertised
                  * in 1.x
                  */
-                ap_log_error(APLOG_MARK, APLOG_ERR|APLOG_NOERRNO, 0,
+                ap_log_error(APLOG_MARK, APLOG_ERR, 0,
                              c->base_server,
                              "SSL client authentication failed, "
                              "accepting certificate based on "
@@ -514,7 +514,7 @@ int ssl_hook_process_connection(SSLFilterRec *filter)
                     sslconn->verify_error :
                     X509_verify_cert_error_string(verify_result);
 
-                ap_log_error(APLOG_MARK, APLOG_ERR|APLOG_NOERRNO, 0,
+                ap_log_error(APLOG_MARK, APLOG_ERR, 0,
                              c->base_server,
                              "SSL client authentication failed: %s",
                              error ? error : "unknown");
@@ -539,7 +539,7 @@ int ssl_hook_process_connection(SSLFilterRec *filter)
         if ((sc->server->auth.verify_mode == SSL_CVERIFY_REQUIRE) &&
             !sslconn->client_cert)
         {
-            ap_log_error(APLOG_MARK, APLOG_ERR|APLOG_NOERRNO, 0, c->base_server,
+            ap_log_error(APLOG_MARK, APLOG_ERR, 0, c->base_server,
                          "No acceptable peer certificate available");
 
             return ssl_abort(filter, c);

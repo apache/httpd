@@ -106,7 +106,7 @@ int ap_proxy_http_canon(request_rec *r, char *url)
     }
     def_port = apr_uri_default_port_for_scheme(scheme);
 
-    ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r->server,
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
              "proxy: HTTP: canonicalising URL %s", url);
 
     /* do syntatic check.
@@ -218,7 +218,7 @@ apr_status_t ap_proxy_http_determine_connection(apr_pool_t *p, request_rec *r,
         uri->port = apr_uri_default_port_for_scheme(uri->scheme);
     }
 
-    ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r->server,
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
                  "proxy: HTTP connecting %s to %s:%d", *url, uri->hostname,
                  uri->port);
 
@@ -300,10 +300,10 @@ apr_status_t ap_proxy_http_create_connection(apr_pool_t *p, request_rec *r,
             (backend->port == p_conn->port) &&
             (backend->hostname) &&
             (!apr_strnatcasecmp(backend->hostname, p_conn->name))) {
-            ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r->server,
+            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
                          "proxy: keepalive address match (keep original socket)");
         } else {
-            ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r->server,
+            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
                          "proxy: keepalive address mismatch / connection has"
                          " changed (close old socket (%s/%s, %d/%d))", 
                          p_conn->name, backend->hostname, p_conn->port,
@@ -334,7 +334,7 @@ apr_status_t ap_proxy_http_create_connection(apr_pool_t *p, request_rec *r,
         /* put back old timeout */
         apr_setsocketopt(p_conn->sock, APR_SO_TIMEOUT, current_timeout);
         if ( APR_STATUS_IS_EOF(socket_status) ) {
-            ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, NULL,
+            ap_log_error(APLOG_MARK, APLOG_ERR, 0, NULL,
                          "proxy: HTTP: previous connection is closed");
             new = 1;
         }
@@ -367,7 +367,7 @@ apr_status_t ap_proxy_http_create_connection(apr_pool_t *p, request_rec *r,
             }
         }
 
-        ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r->server,
+        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
                      "proxy: socket is connected");
 
         /* the socket is now open, create a new backend server connection */
@@ -378,7 +378,7 @@ apr_status_t ap_proxy_http_create_connection(apr_pool_t *p, request_rec *r,
         /* the peer reset the connection already; ap_run_create_connection() 
          * closed the socket
          */
-            ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0,
+            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0,
                          r->server, "proxy: an error occurred creating a "
                          "new connection to %pI (%s)", p_conn->addr,
                          p_conn->name);
@@ -391,7 +391,7 @@ apr_status_t ap_proxy_http_create_connection(apr_pool_t *p, request_rec *r,
 
         if (backend->is_ssl) {
             if (!ap_proxy_ssl_enable(backend->connection)) {
-                ap_log_error(APLOG_MARK, APLOG_ERR|APLOG_NOERRNO, 0,
+                ap_log_error(APLOG_MARK, APLOG_ERR, 0,
                              r->server, "proxy: failed to enable ssl support "
                              "for %pI (%s)", p_conn->addr, p_conn->name);
                 return HTTP_INTERNAL_SERVER_ERROR;
@@ -401,7 +401,7 @@ apr_status_t ap_proxy_http_create_connection(apr_pool_t *p, request_rec *r,
             ap_proxy_ssl_disable(backend->connection);
         }
 
-        ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r->server,
+        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
                      "proxy: connection complete to %pI (%s)",
                      p_conn->addr, p_conn->name);
 
@@ -469,7 +469,7 @@ apr_status_t ap_proxy_http_request(apr_pool_t *p, request_rec *r,
         const char* hostname = apr_table_get(r->headers_in,"Host");        
         if (!hostname) {
             hostname =  r->server->server_hostname;
-            ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_WARNING, 0, r,
+            ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r,
                           "proxy: no HTTP 0.9 request (with no host line) "
                           "on incoming request and preserve host set "
                           "forcing hostname to be %s for uri %s", 
@@ -675,7 +675,7 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
         if (len <= 0) {
             apr_socket_close(p_conn->sock);
             backend->connection = NULL;
-            ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                           "proxy: error reading status line from remote "
                           "server %s", p_conn->name);
             return ap_proxyerror(r, HTTP_BAD_GATEWAY,
@@ -717,7 +717,7 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
             r->headers_out = ap_proxy_read_headers(r, rp, buffer,
                                                    sizeof(buffer), origin);
             if (r->headers_out == NULL) {
-                ap_log_error(APLOG_MARK, APLOG_WARNING|APLOG_NOERRNO, 0,
+                ap_log_error(APLOG_MARK, APLOG_WARNING, 0,
                              r->server, "proxy: bad HTTP/%d.%d header "
                              "returned by %s (%s)", major, minor, r->uri,
                              r->method);
@@ -780,7 +780,7 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
         if ( r->status != HTTP_CONTINUE ) {
             received_continue = 0;
         } else {
-            ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_DEBUG, 0, NULL,
+            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, NULL,
                          "proxy: HTTP: received 100 CONTINUE");
         }
 
@@ -848,7 +848,7 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
             apr_table_unset(r->headers_out,"Transfer-Encoding");
             apr_table_unset(r->headers_out,"Content-Length");
 
-            ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r->server,
+            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
                          "proxy: start body send");
              
             /*
@@ -868,7 +868,7 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
                     {
                     apr_off_t readbytes;
                     apr_brigade_length(bb, 0, &readbytes);
-                    ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0,
+                    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0,
                                  r->server, "proxy (PID %d): readbytes: %#x",
                                  getpid(), readbytes);
                     }
@@ -907,10 +907,10 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
                     }
                 }
             }
-            ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r->server,
+            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
                          "proxy: end body send");
         } else {
-            ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r->server,
+            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
                          "proxy: header only");
         }
     }
@@ -994,7 +994,7 @@ int ap_proxy_http_handler(request_rec *r, proxy_server_conf *conf,
     /* is it for us? */
     if (strncasecmp(url, "https:", 6) == 0) {
         if (!ap_proxy_ssl_enable(NULL)) {
-            ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r->server,
+            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
                          "proxy: HTTPS: declining URL %s"
                          " (mod_ssl not configured?)", url);
             return DECLINED;
@@ -1002,11 +1002,11 @@ int ap_proxy_http_handler(request_rec *r, proxy_server_conf *conf,
         is_ssl = 1;
     }
     else if (strncasecmp(url, "http:", 5)) {
-        ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r->server,
+        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
                      "proxy: HTTP: declining URL %s", url);
         return DECLINED; /* only interested in HTTP */
     }
-    ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r->server,
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
              "proxy: HTTP: serving URL %s", url);
     
     

@@ -368,7 +368,7 @@ void ssl_scache_shmcb_init(server_rec *s, apr_pool_t *p)
      * Create shared memory segment
      */
     if (mc->szSessionCacheDataFile == NULL) {
-        ap_log_error(APLOG_MARK, APLOG_ERR|APLOG_NOERRNO, 0, s,
+        ap_log_error(APLOG_MARK, APLOG_ERR, 0, s,
                      "SSLSessionCache required");
         ssl_die();
     }
@@ -378,7 +378,7 @@ void ssl_scache_shmcb_init(server_rec *s, apr_pool_t *p)
                              mc->szSessionCacheDataFile,
                              mc->pPool)) != APR_SUCCESS) {
         char buf[100];
-        ap_log_error(APLOG_MARK, APLOG_ERR|APLOG_NOERRNO, 0, s,
+        ap_log_error(APLOG_MARK, APLOG_ERR, 0, s,
                      "Cannot allocate shared memory: (%d)%s", rv,
                      apr_strerror(rv, buf, sizeof(buf)));
         ssl_die();
@@ -386,15 +386,15 @@ void ssl_scache_shmcb_init(server_rec *s, apr_pool_t *p)
     shm_segment = apr_shm_baseaddr_get(mc->pSessionCacheDataMM);
     shm_segsize = apr_shm_size_get(mc->pSessionCacheDataMM);
 
-    ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, s,
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
                  "shmcb_init allocated %u bytes of shared memory",
                  shm_segsize);
     if (!shmcb_init_memory(s, shm_segment, shm_segsize)) {
-        ap_log_error(APLOG_MARK, APLOG_ERR|APLOG_NOERRNO, 0, s,
+        ap_log_error(APLOG_MARK, APLOG_ERR, 0, s,
                      "Failure initialising 'shmcb' shared memory");
         ssl_die();
     }
-    ap_log_error(APLOG_MARK, APLOG_INFO|APLOG_NOERRNO, 0, s,
+    ap_log_error(APLOG_MARK, APLOG_INFO, 0, s,
                  "Shared memory session cache initialised");
 
     /* 
@@ -429,11 +429,11 @@ BOOL ssl_scache_shmcb_store(server_rec *s, UCHAR *id, int idlen,
     ssl_mutex_on(s);
     if (!shmcb_store_session(s, shm_segment, id, idlen, pSession, timeout))
         /* in this cache engine, "stores" should never fail. */
-        ap_log_error(APLOG_MARK, APLOG_ERR|APLOG_NOERRNO, 0, s,
+        ap_log_error(APLOG_MARK, APLOG_ERR, 0, s,
                      "'shmcb' code was unable to store a "
                      "session in the cache.");
     else {
-        ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, s,
+        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
                      "shmcb_store successful");
         to_return = TRUE;
     }
@@ -453,12 +453,12 @@ SSL_SESSION *ssl_scache_shmcb_retrieve(server_rec *s, UCHAR *id, int idlen)
     pSession = shmcb_retrieve_session(s, shm_segment, id, idlen);
     ssl_mutex_off(s);
     if (pSession)
-        ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, s,
+        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
                      "shmcb_retrieve had a hit");
     else {
-        ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, s,
+        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
                      "shmcb_retrieve had a miss");
-        ap_log_error(APLOG_MARK, APLOG_INFO|APLOG_NOERRNO, 0, s,
+        ap_log_error(APLOG_MARK, APLOG_INFO, 0, s,
                      "Client requested a 'session-resume' but "
                      "we have no such session.");
     }
@@ -497,7 +497,7 @@ void ssl_scache_shmcb_status(server_rec *s, apr_pool_t *p,
     double expiry_total;
     time_t average_expiry, now, max_expiry, min_expiry, idxexpiry;
 
-    ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, s, 
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, 
                  "inside ssl_scache_shmcb_status");
 
     /* We've kludged our pointer into the other cache's member variable. */
@@ -568,7 +568,7 @@ void ssl_scache_shmcb_status(server_rec *s, apr_pool_t *p,
     func(apr_psprintf(p, "total removes since starting: <b>%lu</b> hit, "
                      "<b>%lu</b> miss<br>", header->num_removes_hit,
                      header->num_removes_miss), arg);
-    ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, s, 
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, 
                  "leaving shmcb_status");
     return;
 }
@@ -588,7 +588,7 @@ static BOOL shmcb_init_memory(
     SHMCBCache cache;
     unsigned int temp, loop, granularity;
 
-    ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, s, 
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, 
                  "entered shmcb_init_memory()");
 
     /* Calculate some sizes... */
@@ -596,7 +596,7 @@ static BOOL shmcb_init_memory(
 
     /* If the segment is ridiculously too small, bail out */
     if (shm_mem_size < (2*temp)) {
-        ap_log_error(APLOG_MARK, APLOG_ERR|APLOG_NOERRNO, 0, s,
+        ap_log_error(APLOG_MARK, APLOG_ERR, 0, s,
                      "shared memory segment too small");
         return FALSE;
     }
@@ -610,7 +610,7 @@ static BOOL shmcb_init_memory(
      * the cache is full, which is a lot less stupid than having
      * having not enough index space to utilise the whole cache!. */
     temp /= 120;
-    ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, s,
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
                  "for %u bytes, recommending %u indexes",
                  shm_mem_size, temp);
 
@@ -627,7 +627,7 @@ static BOOL shmcb_init_memory(
 
     /* Too small? Bail ... */
     if (temp < 5) {
-        ap_log_error(APLOG_MARK, APLOG_ERR|APLOG_NOERRNO, 0, s,
+        ap_log_error(APLOG_MARK, APLOG_ERR, 0, s,
                      "shared memory segment too small");
         return FALSE;
     }
@@ -653,38 +653,38 @@ static BOOL shmcb_init_memory(
                               header->queue_size - header->cache_data_offset;
 
     /* Output trace info */
-    ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, s,
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
                  "shmcb_init_memory choices follow");
-    ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, s,
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
                  "division_mask = 0x%02X", header->division_mask);
-    ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, s,
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
                  "division_offset = %u", header->division_offset);
-    ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, s,
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
                   "division_size = %u", header->division_size);
-    ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, s,
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
                   "queue_size = %u", header->queue_size);
-    ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, s,
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
                   "index_num = %u", header->index_num);
-    ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, s,
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
                   "index_offset = %u", header->index_offset);
-    ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, s,
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
                   "index_size = %u", header->index_size);
-    ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, s,
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
                   "cache_data_offset = %u", header->cache_data_offset);
-    ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, s,
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
                   "cache_data_size = %u", header->cache_data_size);
 
     /* The header is done, make the caches empty */
     for (loop = 0; loop < granularity; loop++) {
         if (!shmcb_get_division(header, &queue, &cache, loop))
-            ap_log_error(APLOG_MARK, APLOG_ERR|APLOG_NOERRNO, 0, s, "shmcb_init_memory, " "internal error");
+            ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, "shmcb_init_memory, " "internal error");
         shmcb_set_safe_uint(cache.first_pos, 0);
         shmcb_set_safe_uint(cache.pos_count, 0);
         shmcb_set_safe_uint(queue.first_pos, 0);
         shmcb_set_safe_uint(queue.pos_count, 0);
     }
 
-    ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, s,
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
                  "leaving shmcb_init_memory()");
     return TRUE;
 }
@@ -704,17 +704,17 @@ static BOOL shmcb_store_session(
     time_t expiry_time;
     unsigned char *session_id = SSL_SESSION_get_session_id(pSession);
 
-    ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, s,
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
                  "inside shmcb_store_session");
 
     /* Get the header structure, which division this session will fall into etc. */
     shmcb_get_header(shm_segment, &header);
     masked_index = session_id[0] & header->division_mask;
-    ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, s,
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
                  "session_id[0]=%u, masked index=%u",
                  session_id[0], masked_index);
     if (!shmcb_get_division(header, &queue, &cache, (unsigned int)masked_index)) {
-        ap_log_error(APLOG_MARK, APLOG_ERR|APLOG_NOERRNO, 0, s,
+        ap_log_error(APLOG_MARK, APLOG_ERR, 0, s,
                      "shmcb_store_session internal error");
         return FALSE;
     }
@@ -724,7 +724,7 @@ static BOOL shmcb_store_session(
      * or we find some assurance that it will never be necessary. */
     len_encoded = i2d_SSL_SESSION(pSession, NULL);
     if (len_encoded > SSL_SESSION_MAX_DER) {
-        ap_log_error(APLOG_MARK, APLOG_ERR|APLOG_NOERRNO, 0, s,
+        ap_log_error(APLOG_MARK, APLOG_ERR, 0, s,
                      "session is too big (%u bytes)", len_encoded);
         return FALSE;
     }
@@ -734,11 +734,11 @@ static BOOL shmcb_store_session(
     if (!shmcb_insert_encoded_session(s, &queue, &cache, encoded,
                                      len_encoded, session_id,
                                      expiry_time)) {
-        ap_log_error(APLOG_MARK, APLOG_ERR|APLOG_NOERRNO, 0, s,
+        ap_log_error(APLOG_MARK, APLOG_ERR, 0, s,
                      "can't store a session!");
         return FALSE;
     }
-    ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, s,
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
                  "leaving shmcb_store successfully");
     header->num_stores++;
     return TRUE;
@@ -754,10 +754,10 @@ static SSL_SESSION *shmcb_retrieve_session(
     unsigned char masked_index;
     SSL_SESSION *pSession;
 
-    ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, s,
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
                  "inside shmcb_retrieve_session");
     if (idlen < 2) {
-        ap_log_error(APLOG_MARK, APLOG_ERR|APLOG_NOERRNO, 0, s, "unusably short session_id provided "
+        ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, "unusably short session_id provided "
                 "(%u bytes)", idlen);
         return FALSE;
     }
@@ -766,10 +766,10 @@ static SSL_SESSION *shmcb_retrieve_session(
      * will come from etc. */
     shmcb_get_header(shm_segment, &header);
     masked_index = id[0] & header->division_mask;
-    ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, s,
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
                  "id[0]=%u, masked index=%u", id[0], masked_index);
     if (!shmcb_get_division(header, &queue, &cache, (unsigned int) masked_index)) {
-        ap_log_error(APLOG_MARK, APLOG_ERR|APLOG_NOERRNO, 0, s,
+        ap_log_error(APLOG_MARK, APLOG_ERR, 0, s,
                      "shmcb_retrieve_session internal error");
         header->num_retrieves_miss++;
         return FALSE;
@@ -782,7 +782,7 @@ static SSL_SESSION *shmcb_retrieve_session(
         header->num_retrieves_hit++;
     else
         header->num_retrieves_miss++;
-    ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, s,
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
                  "leaving shmcb_retrieve_session");
     return pSession;
 }
@@ -797,10 +797,10 @@ static BOOL shmcb_remove_session(
     unsigned char masked_index;
     BOOL res;
 
-    ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, s,
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
                  "inside shmcb_remove_session");
     if (id == NULL) {
-        ap_log_error(APLOG_MARK, APLOG_ERR|APLOG_NOERRNO, 0, s, "remove called with NULL session_id!");
+        ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, "remove called with NULL session_id!");
         return FALSE;
     }
 
@@ -808,10 +808,10 @@ static BOOL shmcb_remove_session(
      * will happen in etc. */
     shmcb_get_header(shm_segment, &header);
     masked_index = id[0] & header->division_mask;
-    ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, s,
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
                  "id[0]=%u, masked index=%u", id[0], masked_index);
     if (!shmcb_get_division(header, &queue, &cache, (unsigned int)masked_index)) {
-        ap_log_error(APLOG_MARK, APLOG_ERR|APLOG_NOERRNO, 0, s, "shmcb_remove_session, internal error");
+        ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, "shmcb_remove_session, internal error");
         header->num_removes_miss++;
         return FALSE;
     }
@@ -820,7 +820,7 @@ static BOOL shmcb_remove_session(
         header->num_removes_hit++;
     else
         header->num_removes_miss++;
-    ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, s,
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
                  "leaving shmcb_remove_session");
     return res;
 }
@@ -1009,7 +1009,7 @@ static unsigned int shmcb_expire_division(
     unsigned int loop, index_num, pos_count, new_pos;
     SHMCBHeader *header;
 
-    ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, s,
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
                  "entering shmcb_expire_division");
 
     /* We must calculate num and space ourselves based on expiry times. */
@@ -1033,7 +1033,7 @@ static unsigned int shmcb_expire_division(
 
     /* Find the new_offset and make the expiries happen. */
     if (loop > 0) {
-        ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, s,
+        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
                      "will be expiring %u sessions", loop);
         /* We calculate the new_offset by "peeking" (or in the
          * case it's the last entry, "sneaking" ;-). */
@@ -1058,7 +1058,7 @@ static unsigned int shmcb_expire_division(
                                                   shmcb_get_safe_uint(&(idx->offset))));
             shmcb_set_safe_uint(cache->first_pos, shmcb_get_safe_uint(&(idx->offset)));
         }
-        ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, s,
+        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
                      "we now have %u sessions",
                      shmcb_get_safe_uint(queue->pos_count));
     }
@@ -1085,7 +1085,7 @@ static BOOL shmcb_insert_encoded_session(
     unsigned int gap, new_pos, loop, new_offset;
     int need;
 
-    ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, s,
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
                  "entering shmcb_insert_encoded_session, "
                  "*queue->pos_count = %u",
                  shmcb_get_safe_uint(queue->pos_count));
@@ -1108,7 +1108,7 @@ static BOOL shmcb_insert_encoded_session(
                                    shmcb_get_safe_uint(&(idx->offset)));
         }
         if (loop > 0) {
-            ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, s,
+            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
                          "about to scroll %u sessions from %u",
                          loop, shmcb_get_safe_uint(queue->pos_count));
             /* We are removing "loop" items from the cache. */
@@ -1120,7 +1120,7 @@ static BOOL shmcb_insert_encoded_session(
             shmcb_set_safe_uint(cache->first_pos, shmcb_get_safe_uint(&(idx->offset)));
             shmcb_set_safe_uint(queue->pos_count, shmcb_get_safe_uint(queue->pos_count) - loop);
             shmcb_set_safe_uint(queue->first_pos, new_pos);
-            ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, s,
+            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
                          "now only have %u sessions",
                          shmcb_get_safe_uint(queue->pos_count));
             /* Update the stats!!! */
@@ -1132,16 +1132,16 @@ static BOOL shmcb_insert_encoded_session(
      * is verified. */
     if (shmcb_get_safe_uint(cache->pos_count) + encoded_len >
         header->cache_data_size) {
-        ap_log_error(APLOG_MARK, APLOG_ERR|APLOG_NOERRNO, 0, s,
+        ap_log_error(APLOG_MARK, APLOG_ERR, 0, s,
                      "shmcb_insert_encoded_session internal error");
         return FALSE;
     }
     if (shmcb_get_safe_uint(queue->pos_count) == header->index_num) {
-        ap_log_error(APLOG_MARK, APLOG_ERR|APLOG_NOERRNO, 0, s,
+        ap_log_error(APLOG_MARK, APLOG_ERR, 0, s,
                      "shmcb_insert_encoded_session internal error");
         return FALSE;
     }
-    ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, s,
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
                  "we have %u bytes and %u indexes free - enough",
                  header->cache_data_size -
                  shmcb_get_safe_uint(cache->pos_count), header->index_num -
@@ -1170,12 +1170,12 @@ static BOOL shmcb_insert_encoded_session(
     new_pos = shmcb_cyclic_increment(header->index_num,
                                      shmcb_get_safe_uint(queue->first_pos),
                                      shmcb_get_safe_uint(queue->pos_count));
-    ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, s,
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
                  "storing in index %u, at offset %u",
                  new_pos, new_offset);
     idx = shmcb_get_index(queue, new_pos);
     if (idx == NULL) {
-        ap_log_error(APLOG_MARK, APLOG_ERR|APLOG_NOERRNO, 0, s,
+        ap_log_error(APLOG_MARK, APLOG_ERR, 0, s,
                      "shmcb_insert_encoded_session internal error");
         return FALSE;
     }
@@ -1185,7 +1185,7 @@ static BOOL shmcb_insert_encoded_session(
 
     /* idx->removed = (unsigned char)0; */ /* Not needed given the memset above. */
     idx->s_id2 = session_id[1];
-    ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, s,
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
                  "session_id[0]=%u, idx->s_id2=%u",
                  session_id[0], session_id[1]);
 
@@ -1196,11 +1196,11 @@ static BOOL shmcb_insert_encoded_session(
                        shmcb_get_safe_uint(queue->pos_count) + 1);
 
     /* And just for good debugging measure ... */
-    ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, s,
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
                  "leaving now with %u bytes in the cache and %u indexes",
                  shmcb_get_safe_uint(cache->pos_count),
                  shmcb_get_safe_uint(queue->pos_count));
-    ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, s,
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
                  "leaving shmcb_insert_encoded_session");
     return TRUE;
 }
@@ -1221,7 +1221,7 @@ static SSL_SESSION *shmcb_lookup_session_id(
     unsigned char *ptr;
     time_t now;
 
-    ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, s,
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
                  "entering shmcb_lookup_session_id");
 
     /* If there are entries to expire, ditch them first thing. */
@@ -1231,11 +1231,11 @@ static SSL_SESSION *shmcb_lookup_session_id(
     count = shmcb_get_safe_uint(queue->pos_count);
     header = queue->header;
     for (loop = 0; loop < count; loop++) {
-        ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, s,
+        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
                      "loop=%u, count=%u, curr_pos=%u",
                      loop, count, curr_pos);
         idx = shmcb_get_index(queue, curr_pos);
-        ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, s,
+        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
                      "idx->s_id2=%u, id[1]=%u, offset=%u",
                 idx->s_id2, id[1], shmcb_get_safe_uint(&(idx->offset)));
         /* Only look into the session further if;
@@ -1252,7 +1252,7 @@ static SSL_SESSION *shmcb_lookup_session_id(
             unsigned int session_id_length;
             unsigned char *session_id;
 
-            ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, s,
+            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
                          "at index %u, found possible session match",
                          curr_pos);
             shmcb_cyclic_cton_memcpy(header->cache_data_size,
@@ -1265,24 +1265,24 @@ static SSL_SESSION *shmcb_lookup_session_id(
             session_id = SSL_SESSION_get_session_id(pSession);
 
             if (pSession == NULL) {
-                ap_log_error(APLOG_MARK, APLOG_ERR|APLOG_NOERRNO, 0, s,
+                ap_log_error(APLOG_MARK, APLOG_ERR, 0, s,
                              "scach2_lookup_session_id internal error");
                 return NULL;
             }
             if ((session_id_length == idlen) &&
                 (memcmp(session_id, id, idlen) == 0)) {
-                ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, s,
+                ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
                              "a match!");
                 return pSession;
             }
-            ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, s,
+            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
                          "not a match");
             SSL_SESSION_free(pSession);
             pSession = NULL;
         }
         curr_pos = shmcb_cyclic_increment(header->index_num, curr_pos, 1);
     }
-    ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, s,
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
                  "no matching sessions were found");
     return NULL;
 }
@@ -1299,7 +1299,7 @@ static BOOL shmcb_remove_session_id(
     unsigned char *ptr;
     BOOL to_return = FALSE;
 
-    ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, s,
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
                  "entering shmcb_remove_session_id");
 
     /* If there's entries to expire, ditch them first thing. */
@@ -1318,11 +1318,11 @@ static BOOL shmcb_remove_session_id(
     count = shmcb_get_safe_uint(queue->pos_count);
     header = cache->header;
     for (loop = 0; loop < count; loop++) {
-        ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, s,
+        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
                      "loop=%u, count=%u, curr_pos=%u",
                 loop, count, curr_pos);
         idx = shmcb_get_index(queue, curr_pos);
-        ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, s,
+        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
                      "idx->s_id2=%u, id[1]=%u", idx->s_id2,
                 id[1]);
         /* Only look into the session further if the second byte of the
@@ -1331,7 +1331,7 @@ static BOOL shmcb_remove_session_id(
             unsigned int session_id_length;
             unsigned char *session_id;
 
-            ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, s,
+            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
                          "at index %u, found possible "
                          "session match", curr_pos);
             shmcb_cyclic_cton_memcpy(header->cache_data_size,
@@ -1341,7 +1341,7 @@ static BOOL shmcb_remove_session_id(
             ptr = tempasn;
             pSession = d2i_SSL_SESSION(NULL, &ptr, SSL_SESSION_MAX_DER);
             if (pSession == NULL) {
-                ap_log_error(APLOG_MARK, APLOG_ERR|APLOG_NOERRNO, 0, s,
+                ap_log_error(APLOG_MARK, APLOG_ERR, 0, s,
                              "shmcb_remove_session_id, internal error");
                 goto end;
             }
@@ -1350,7 +1350,7 @@ static BOOL shmcb_remove_session_id(
 
             if ((session_id_length == idlen) 
                  && (memcmp(id, session_id, idlen) == 0)) {
-                ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, s,
+                ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
                             "a match!");
                 /* Scrub out this session "quietly" */
                 idx->removed = (unsigned char) 1;
@@ -1358,20 +1358,20 @@ static BOOL shmcb_remove_session_id(
                 to_return = TRUE;
                 goto end;
             }
-            ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, s,
+            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
                          "not a match");
             SSL_SESSION_free(pSession);
             pSession = NULL;
         }
         curr_pos = shmcb_cyclic_increment(header->index_num, curr_pos, 1);
     }
-    ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, s,
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
                  "no matching sessions were found");
 
     /* If there's entries to expire, ditch them now. */
     shmcb_expire_division(s, queue, cache);
 end:
-    ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, s,
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
                  "leaving shmcb_remove_session_id");
     return to_return;
 }

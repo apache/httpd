@@ -326,7 +326,7 @@ static int proxy_needsdomain(request_rec *r, const char *url, const char *domain
                            APR_URI_UNP_REVEALPASSWORD);
 
     apr_table_set(r->headers_out, "Location", nuri);
-    ap_log_rerror(APLOG_MARK, APLOG_INFO|APLOG_NOERRNO, 0, r,
+    ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r,
                   "Domain missing: %s sent to %s%s%s", r->uri,
                   apr_uri_unparse(r->pool, &r->parsed_uri,
                                   APR_URI_UNP_OMITUSERINFO),
@@ -425,7 +425,7 @@ static int proxy_handler(request_rec *r)
             direct_connect = list[ii].matcher(&list[ii], r);
         }
 #if DEBUGGING
-        ap_log_rerror(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r,
+        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
                       (direct_connect) ? "NoProxy for %s" : "UseProxy for %s",
                       r->uri);
 #endif
@@ -442,7 +442,7 @@ static int proxy_handler(request_rec *r)
                  strncasecmp(url, ents[i].scheme, strlen(ents[i].scheme)) == 0)) {
 
                 /* handle the scheme */
-                ap_log_error(APLOG_MARK, APLOG_DEBUG | APLOG_NOERRNO, 0, r->server,
+                ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
                              "Trying to run scheme_handler against proxy");
                 access_status = proxy_run_scheme_handler(r, conf, url, ents[i].hostname, ents[i].port);
 
@@ -461,11 +461,11 @@ static int proxy_handler(request_rec *r)
      */
 
     /* handle the scheme */
-    ap_log_error(APLOG_MARK, APLOG_DEBUG | APLOG_NOERRNO, 0, r->server,
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
                  "Trying to run scheme_handler");
     access_status = proxy_run_scheme_handler(r, conf, url, NULL, 0);
     if (DECLINED == access_status) {
-        ap_log_error(APLOG_MARK, APLOG_WARNING | APLOG_NOERRNO, 0, r->server,
+        ap_log_error(APLOG_MARK, APLOG_WARNING, 0, r->server,
                     "proxy: No protocol handler was valid for the URL %s. "
                     "If you are using a DSO version of mod_proxy, make sure "
                     "the proxy submodules are included in the configuration "
@@ -762,23 +762,23 @@ static const char *
 
 	if (ap_proxy_is_ipaddr(New, parms->pool)) {
 #if DEBUGGING
-            ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL,
+            ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
                          "Parsed addr %s", inet_ntoa(New->addr));
-            ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL,
+            ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
                          "Parsed mask %s", inet_ntoa(New->mask));
 #endif
 	}
 	else if (ap_proxy_is_domainname(New, parms->pool)) {
             ap_str_tolower(New->name);
 #if DEBUGGING
-            ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL,
+            ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
                          "Parsed domain %s", New->name);
 #endif
         }
         else if (ap_proxy_is_hostname(New, parms->pool)) {
             ap_str_tolower(New->name);
 #if DEBUGGING
-            ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL,
+            ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
                          "Parsed host %s", New->name);
 #endif
         }

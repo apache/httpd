@@ -455,7 +455,7 @@ PROXY_DECLARE(apr_table_t *)ap_proxy_read_headers(request_rec *r, request_rec *r
 		return NULL;
 	    }
 
-	    ap_log_error(APLOG_MARK, APLOG_WARNING|APLOG_NOERRNO, 0, r->server,
+	    ap_log_error(APLOG_MARK, APLOG_WARNING, 0, r->server,
 			 "proxy: Ignoring duplicate HTTP header "
 			 "returned by %s (%s)", r->uri, r->method);
 	    continue;
@@ -624,7 +624,7 @@ PROXY_DECLARE(int) ap_proxyerror(request_rec *r, int statuscode, const char *mes
     apr_table_setn(r->notes, "verbose-error-to", apr_pstrdup(r->pool, "*"));
 
     r->status_line = apr_psprintf(r->pool, "%3.3u Proxy Error", statuscode);
-    ap_log_rerror(APLOG_MARK, APLOG_ERR|APLOG_NOERRNO, 0, r,
+    ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
 			 "proxy: %s returned by %s", message, r->uri);
     return statuscode;
 }
@@ -648,7 +648,7 @@ static const char *
     err = ap_proxy_canon_netloc(r->pool, &url, &user, &password, &host, &port);
 
     if (err != NULL)
-	ap_log_rerror(APLOG_MARK, APLOG_ERR|APLOG_NOERRNO, 0, r,
+	ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
 		     "%s", err);
 
     r->hostname = host;
@@ -736,7 +736,7 @@ PROXY_DECLARE(int) ap_proxy_is_ipaddr(struct dirconn_entry *This, apr_pool_t *p)
 	bits = 8 * quads;
 
 	if (bits != 32)		/* no warning for fully qualified IP address */
-            ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL,
+            ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
 	      "Warning: NetMask not supplied with IP-Addr; guessing: %s/%ld\n",
 		 inet_ntoa(This->addr), bits);
     }
@@ -744,11 +744,11 @@ PROXY_DECLARE(int) ap_proxy_is_ipaddr(struct dirconn_entry *This, apr_pool_t *p)
     This->mask.s_addr = htonl(APR_INADDR_NONE << (32 - bits));
 
     if (*addr == '\0' && (This->addr.s_addr & ~This->mask.s_addr) != 0) {
-        ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL,
+        ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
 	    "Warning: NetMask and IP-Addr disagree in %s/%ld\n",
 		inet_ntoa(This->addr), bits);
 	This->addr.s_addr &= This->mask.s_addr;
-        ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL,
+        ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
 	    "         Set to %s/%ld\n",
 		inet_ntoa(This->addr), bits);
     }
@@ -780,22 +780,22 @@ static int proxy_match_ipaddr(struct dirconn_entry *This, request_rec *r)
 
 	if (This->addr.s_addr == (addr.s_addr & This->mask.s_addr)) {
 #if DEBUGGING
-        ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL,
+        ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
                          "1)IP-Match: %s[%s] <-> ", host, inet_ntoa(addr));
-        ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL,
+        ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
                          "%s/", inet_ntoa(This->addr));
-        ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL,
+        ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
                          "%s", inet_ntoa(This->mask));
 #endif
 	    return 1;
 	}
 #if DEBUGGING
 	else {
-        ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL,
+        ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
                          "1)IP-NoMatch: %s[%s] <-> ", host, inet_ntoa(addr));
-        ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL,
+        ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
                          "%s/", inet_ntoa(This->addr));
-        ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL,
+        ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
                          "%s", inet_ntoa(This->mask));
 	}
 #endif
@@ -806,7 +806,7 @@ static int proxy_match_ipaddr(struct dirconn_entry *This, request_rec *r)
         if (apr_sockaddr_info_get(&reqaddr, host, APR_UNSPEC, 0, 0, r->pool)
 	    != APR_SUCCESS) {
 #if DEBUGGING
-	    ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL,
+	    ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
 			 "2)IP-NoMatch: hostname=%s msg=Host not found", 
 			 host);
 #endif
@@ -819,24 +819,24 @@ static int proxy_match_ipaddr(struct dirconn_entry *This, request_rec *r)
 	    ip = (struct in_addr *) reqaddr->ipaddr_ptr;
 	    if (This->addr.s_addr == (ip->s_addr & This->mask.s_addr)) {
 #if DEBUGGING
-		ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL,
+		ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
 			     "3)IP-Match: %s[%s] <-> ", host, 
 			     inet_ntoa(*ip));
-		ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL,
+		ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
 			     "%s/", inet_ntoa(This->addr));
-		ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL,
+		ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
 			     "%s", inet_ntoa(This->mask));
 #endif
 		return 1;
 	    }
 #if DEBUGGING
 	    else {
-                ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL,
+                ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
 			     "3)IP-NoMatch: %s[%s] <-> ", host, 
 			     inet_ntoa(*ip));
-                ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL,
+                ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
 			     "%s/", inet_ntoa(This->addr));
-                ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL,
+                ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
 			     "%s", inet_ntoa(This->mask));
 	    }
 #endif
@@ -863,7 +863,7 @@ PROXY_DECLARE(int) ap_proxy_is_domainname(struct dirconn_entry *This, apr_pool_t
 
 #if 0
     if (addr[i] == ':') {
-    ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL,
+    ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
                      "@@@@ handle optional port in proxy_is_domainname()");
 	/* @@@@ handle optional port */
     }
@@ -985,11 +985,11 @@ PROXY_DECLARE(int) ap_proxy_checkproxyblock(request_rec *r, proxy_server_conf *c
     for (j = 0; j < conf->noproxies->nelts; j++) {
         struct noproxy_entry *npent = (struct noproxy_entry *) conf->noproxies->elts;
         struct apr_sockaddr_t *conf_addr = npent[j].addr;
-        ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r->server,
+        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
                      "proxy: checking remote machine [%s] against [%s]", uri_addr->hostname, npent[j].name);
         if ((npent[j].name && ap_strstr_c(uri_addr->hostname, npent[j].name))
             || npent[j].name[0] == '*') {
-            ap_log_error(APLOG_MARK, APLOG_WARNING|APLOG_NOERRNO, 0, r->server,
+            ap_log_error(APLOG_MARK, APLOG_WARNING, 0, r->server,
                          "proxy: connect to remote machine %s blocked: name %s matched", uri_addr->hostname, npent[j].name);
             return HTTP_FORBIDDEN;
         }
@@ -999,10 +999,10 @@ PROXY_DECLARE(int) ap_proxy_checkproxyblock(request_rec *r, proxy_server_conf *c
                 char *uri_ip;
                 apr_sockaddr_ip_get(&conf_ip, conf_addr);
                 apr_sockaddr_ip_get(&uri_ip, uri_addr);
-                ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r->server,
+                ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
                              "proxy: ProxyBlock comparing %s and %s", conf_ip, uri_ip);
                 if (!apr_strnatcasecmp(conf_ip, uri_ip)) {
-                    ap_log_error(APLOG_MARK, APLOG_WARNING|APLOG_NOERRNO, 0, r->server,
+                    ap_log_error(APLOG_MARK, APLOG_WARNING, 0, r->server,
                                  "proxy: connect to remote machine %s blocked: IP %s matched", uri_addr->hostname, conf_ip);
                     return HTTP_FORBIDDEN;
                 }
@@ -1166,7 +1166,7 @@ PROXY_DECLARE(int) ap_proxy_connect_to_backend(apr_socket_t **newsock,
                              (int)(s->timeout * APR_USEC_PER_SEC));
         }
 
-        ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, s,
+        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
                      "proxy: %s: fam %d socket created to connect to %s",
                      proxy_function, backend_addr->family, backend_name);
 

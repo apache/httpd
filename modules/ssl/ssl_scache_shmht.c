@@ -117,7 +117,7 @@ void ssl_scache_shmht_init(server_rec *s, apr_pool_t *p)
      * Create shared memory segment
      */
     if (mc->szSessionCacheDataFile == NULL) {
-        ap_log_error(APLOG_MARK, APLOG_ERR|APLOG_NOERRNO, 0, s,
+        ap_log_error(APLOG_MARK, APLOG_ERR, 0, s,
                      "SSLSessionCache required");
         ssl_die();
     }
@@ -137,7 +137,7 @@ void ssl_scache_shmht_init(server_rec *s, apr_pool_t *p)
                      "Cannot initialize rmm");
         ssl_die();
     }
-    ap_log_error(APLOG_MARK, APLOG_ERR|APLOG_NOERRNO, 0, s,
+    ap_log_error(APLOG_MARK, APLOG_ERR, 0, s,
                  "initialize MM %p RMM %p",
                  mc->pSessionCacheDataMM, mc->pSessionCacheDataRMM);
 
@@ -157,7 +157,7 @@ void ssl_scache_shmht_init(server_rec *s, apr_pool_t *p)
                           ssl_scache_shmht_calloc, 
                           ssl_scache_shmht_realloc, 
                           ssl_scache_shmht_free, s )) == NULL) {
-        ap_log_error(APLOG_MARK, APLOG_ERR|APLOG_NOERRNO, 0, s,
+        ap_log_error(APLOG_MARK, APLOG_ERR, 0, s,
                      "Cannot allocate hash table in shared memory: %s",
                      table_strerror(ta_errno));
         ssl_die();
@@ -171,7 +171,7 @@ void ssl_scache_shmht_init(server_rec *s, apr_pool_t *p)
     /*
      * Log the done work
      */
-    ap_log_error(APLOG_MARK, APLOG_INFO|APLOG_NOERRNO, 0, s, 
+    ap_log_error(APLOG_MARK, APLOG_INFO, 0, s, 
                  "Init: Created hash-table (%d buckets) "
                  "in shared memory (%d bytes) for SSL session cache",
                  n, avail);
@@ -340,7 +340,7 @@ void ssl_scache_shmht_expire(server_rec *s)
         /* (vpKeyThis != vpKey) && (nKeyThis != nKey) */
     }
     ssl_mutex_off(s);
-    ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, s,
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
                  "Inter-Process Session Cache (SHMHT) Expiry: "
                  "old: %d, new: %d, removed: %d",
                  nElements, nElements-nDeleted, nDeleted);
