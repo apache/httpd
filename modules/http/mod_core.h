@@ -92,7 +92,7 @@ char *ap_response_code_string(request_rec *r, int error_index);
 AP_DECLARE(void) ap_basic_http_header(request_rec *r, apr_bucket_brigade *bb);
  
 AP_DECLARE(int) ap_send_http_trace(request_rec *r);
-int ap_send_http_options(request_rec *r);
+AP_DECLARE(int) ap_send_http_options(request_rec *r);
 
 #ifdef __cplusplus
 }

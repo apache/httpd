@@ -221,7 +221,7 @@ AP_CORE_DECLARE(void) ap_process_connection(conn_rec *c)
    structure, but for now...
 */
 
-conn_rec *ap_new_connection(apr_pool_t *p, server_rec *server, 
+AP_CORE_DECLARE(conn_rec *)ap_new_connection(apr_pool_t *p, server_rec *server, 
                             apr_socket_t *inout, long id)
 {
     conn_rec *conn = (conn_rec *) apr_pcalloc(p, sizeof(conn_rec));

@@ -251,7 +251,7 @@ static void merge_server_configs(apr_pool_t *p, ap_conf_vector_t *base,
     }
 }
 
-ap_conf_vector_t *ap_create_request_config(apr_pool_t *p)
+AP_CORE_DECLARE(ap_conf_vector_t *)ap_create_request_config(apr_pool_t *p)
 {
     return create_empty_config(p);
 }

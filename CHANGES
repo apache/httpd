@@ -1,5 +1,9 @@
 Changes with Apache 2.0.18-dev
 
+  *) Add the AP_DECLARE()/AP_CORE_DECLARE macros on the return types
+     of functions used by mod_proxy for export in the DLL 
+     [Ian Holsman <IanH@cnet.com>]
+
   *) Prevent a hang when a cgi handled by mod_cgid tries to read a
      request body from its stdin but no reqest body is being written to 
      the cgi.  [Jeff Trawick]
