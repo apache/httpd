@@ -57,9 +57,9 @@
        ><STRONG>Compatibility:</STRONG></A> <EM>compatibility notes</EM>
        <BR>
        <A
-        HREF="#Depricated"
+        HREF="#Deprecated"
         REL="Help"
-       ><STRONG>Depricated:</STRONG></A> <EM>see other</EM>
+       ><STRONG>Deprecated:</STRONG></A> <EM>see other</EM>
    </DD>
   </DL>
   <P>
@@ -83,7 +83,7 @@
    </LI>
    <LI><A HREF="#Compatibility">Compatibility</A>
    </LI>
-   <LI><A HREF="#Depricated">Depricated</A>
+   <LI><A HREF="#Deprecated">Deprecated</A>
    </LI>
   </UL>
 
@@ -365,11 +365,11 @@ more details.</dd>
   </P>
 
   <HR>
-  <H2><A NAME="Depricated">Depricated</A></H2>
+  <H2><A NAME="Deprecated">Deprecated</A></H2>
   <P>
   If this directive is eliminated since the Apache version 1 distribution,
   the directive or option that replaces the behavior should be cited here.
-  In general, directives, features, and options are only depreciated to
+  In general, directives, features, and options are only deprecated to
   minimize debugging of conflicting features, or features that can only
   be supported in an alternate manner.
   </P>
