@@ -31,7 +31,7 @@
   <!--#include virtual="header.html" -->
   <H1 ALIGN="CENTER">Apache Server Frequently Asked Questions</H1>
   <P>
-  $Revision: 1.3 $ ($Date: 1999/07/03 22:12:50 $)
+  $Revision: 1.4 $ ($Date: 2000/01/16 20:52:30 $)
   </P>
   <P>
   The latest version of this FAQ is always available from the main
@@ -81,6 +81,8 @@
         without using SSI?</A>
    </LI>
    <LI><A HREF="#search">Does Apache include a search engine?</A>
+   </LI>
+   <LI><A HREF="#rotate">How can I rotate my log files?</A>
    </LI>
   </OL>
  </LI>
@@ -202,6 +204,27 @@
   Apache include <A HREF="http://www.htdig.org/">ht://Dig</A> and <A
   HREF="http://sunsite.berkeley.edu/SWISH-E/">SWISH-E</A>.
   </P>
+  <HR>
+ </LI>
+ <LI><A NAME="rotate">
+      <STRONG>How can I rotate my log files?</STRONG>
+     </A>
+  <P>The simple answer: by piping the transfer log into an appropriate
+  log file rotation utility.</P>
+  <P>The longer answer: In the src/support/ directory, you will find a
+  utility called <CODE>rotatelogs</CODE> which can be used like this:<PRE>
+   TransferLog "|/path/to/rotatelogs /path/to/logs/access_log 86400"
+  </PRE> to enable daily rotation of the log files.<BR>
+  A more sophisticated solution of a logfile rotation utility is
+  available under the name <CODE>cronolog</CODE> from Andrew Ford's site at
+  <A HREF="http://www.ford-mason.co.uk/resources/cronolog/"
+  >http://www.ford-mason.co.uk/resources/cronolog/</A>. It can automatically
+  create logfile subdirectories based on time and date, and can have a
+  constant symlink point to the rotating logfiles. (As of version 1.6.1,
+  cronolog is available under the <A HREF="../LICENSE">Apache License</A>).
+  Use it like this:<PRE>
+   CustomLog "|/path/to/cronolog --symlink=/usr/local/apache/logs/access_log /usr/local/apache/logs/%Y/%m/access_log" combined
+  </PRE></P>
   <HR>
  </LI>
 </OL>
