@@ -1,5 +1,5 @@
 Apache 2.0 STATUS:
-Last modified at [$Date: 2000/04/11 16:35:27 $]
+Last modified at [$Date: 2000/04/12 20:20:01 $]
 
 Release:
 
@@ -140,7 +140,13 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
     * Win32: Migrate the MPM over to use APR thread/process calls. This
       would eliminate some code in the Win32 branch that essentially
       duplicates what is in APR.
-        Status: Bill <stoddard@raleigh.ibm.com> is working on this.
+
+      Bill says we need a new procattr, APR_CREATE_SUSPENDED (or
+      something similar) to direct ap_create_process to create the
+      process suspended. We also need a call to wake up the suspended 
+      process This may not be able to be implemented everywhere though.
+
+        Status: 
 
     * Move I/O layering into APR.
 
@@ -149,8 +155,7 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
       system call and replacing it with a generic error code)
 
     * Win32: Implement reliable piped logs on Windows
-        Status: Bill <stoddard@raleigh.ibm.com> has prototype code (not
-        reliable) in 1.3.  Should be much cleaner with APR in 2.0.
+        Status: 
 
     * Switch to autoconf, et al. for configuration.
         Status: Manoj has placed an initial version into the 2.0
