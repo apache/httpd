@@ -1,5 +1,5 @@
 Apache HTTP Server 2.0 Documentation Status File.
-Last modified: $Date: 2002/07/21 21:16:40 $
+Last modified: $Date: 2002/07/25 21:36:43 $
 
 If you are interested in helping accomplish some of the tasks on this
 list or otherwise improving the documentation, please join the
@@ -121,13 +121,6 @@ New User documentation
 
 * public_html - tutorial covering what is involved in helping users set
   up web serving out of their home directory.
-
-* .htaccess - Perhaps as simple as an auto-generated listing of what
-  directives are permitted in .htaccess files (possible with the
-  appropriate xsl stylesheet). Would be nice if common
-  examples (authentication, adding SSI or CGI capabilities, etc) could
-  be given as well.
-
 
 Documentation improvements
 ==========================
