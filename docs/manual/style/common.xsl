@@ -1,8 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE xsl:stylesheet [ <!ENTITY nbsp "&#160;"> ]>
 <xsl:stylesheet version="1.0"
-              xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
-                  xmlns="http://www.w3.org/TR/xhtml1/strict">
+              xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 
   <!--                                                          -->
   <!-- Please, don't hard-code output strings! Use the language -->
