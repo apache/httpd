@@ -989,9 +989,7 @@ int table_set_data_alignment(table_t * table_p, const int alignment)
  */
 int table_clear(table_t * table_p)
 {
-#if 0
     table_entry_t *entry_p, *next_p;
-#endif
     table_entry_t **bucket_p, **bounds_p;
 
     if (table_p == NULL)
@@ -1000,14 +998,12 @@ int table_clear(table_t * table_p)
         return TABLE_ERROR_PNT;
     /* free the table allocation and table structure */
     bounds_p = table_p->ta_buckets + table_p->ta_bucket_n;
-    for (bucket_p = table_p->ta_buckets; bucket_p <= bounds_p; bucket_p++) {
-#if 0
+    for (bucket_p = table_p->ta_buckets; bucket_p < bounds_p; bucket_p++) {
         for (entry_p = *bucket_p; entry_p != NULL; entry_p = next_p) {
             /* record the next pointer before we free */
             next_p = entry_p->te_next_p;
             table_p->ta_free(table_p->opt_param, entry_p);
         }
-#endif
         /* clear the bucket entry after we free its entries */
         *bucket_p = NULL;
     }
