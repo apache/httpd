@@ -202,7 +202,7 @@
 #define DAV_EMPTY_VALUE		"\0"	/* TWO null terms */
 
 /* the namespace URI was not found; no ID is available */
-#define DAV_NS_ERROR_NOT_FOUND	(DAV_NS_ERROR_BASE)
+#define AP_XML_NS_ERROR_NOT_FOUND	(AP_XML_NS_ERROR_BASE)
 
 typedef struct {
     unsigned char major;
@@ -322,42 +322,43 @@ static const char *dav_get_ns_table_uri(dav_propdb *propdb, int ns)
 }
 #endif
 
-static void dav_find_liveprop(dav_propdb *propdb, dav_xml_elem *elem)
+static void dav_find_liveprop(dav_propdb *propdb, ap_xml_elem *elem)
 {
     int propid;
     const char *ns_uri;
     const dav_dyn_hooks *ddh;
+    dav_elem_private *priv = elem->private;
 
-    if (elem->ns == DAV_NS_DAV_ID) {
+    if (elem->ns == AP_XML_NS_DAV_ID) {
 	const char * const *p = dav_core_props;
 
 	for (propid = DAV_PROPID_CORE; *p != NULL; ++p, ++propid)
 	    if (strcmp(elem->name, *p) == 0) {
-		elem->propid = propid;
+		priv->propid = propid;
 		return;
 	    }
 
 	/* didn't find it. fall thru. a provider can define DAV: props */
     }
-    else if (elem->ns == DAV_NS_NONE) {
+    else if (elem->ns == AP_XML_NS_NONE) {
 	/* policy: liveprop providers cannot define no-namespace properties */
-	elem->propid = DAV_PROPID_CORE_UNKNOWN;
+	priv->propid = DAV_PROPID_CORE_UNKNOWN;
 	return;
     }
 
-    ns_uri = DAV_GET_URI_ITEM(propdb->ns_xlate, elem->ns);
+    ns_uri = AP_XML_GET_URI_ITEM(propdb->ns_xlate, elem->ns);
 
     for (ddh = propdb->liveprop; ddh != NULL; ddh = ddh->next) {
 	propid = (*DAV_AS_HOOKS_LIVEPROP(ddh)->find_prop)(ns_uri, elem->name);
 	if (propid != 0) {
-	    elem->propid = propid;
-	    elem->provider = DAV_AS_HOOKS_LIVEPROP(ddh);
-	    elem->ns_map = ddh->ctx.ns_map;
+	    priv->propid = propid;
+	    priv->provider = DAV_AS_HOOKS_LIVEPROP(ddh);
+	    priv->ns_map = ddh->ctx.ns_map;
 	    return;
 	}
     }
 
-    elem->propid = DAV_PROPID_CORE_UNKNOWN;
+    priv->propid = DAV_PROPID_CORE_UNKNOWN;
 }
 
 /* is the live property read/write? */
@@ -415,7 +416,7 @@ static void dav_do_prop_subreq(dav_propdb *propdb)
 static dav_error * dav_insert_coreprop(dav_propdb *propdb,
 				       int propid, const char *name,
 				       int getvals,
-				       dav_text_header *phdr,
+				       ap_text_header *phdr,
 				       int *inserted)
 {
     const char *value = NULL;
@@ -542,7 +543,7 @@ static dav_error * dav_insert_coreprop(dav_propdb *propdb,
 	    /* use D: prefix to refer to the DAV: namespace URI */
 	    s = ap_psprintf(propdb->p, "<D:%s/>" DEBUG_CR, name);
 	}
-	dav_text_append(propdb->p, phdr, s);
+	ap_text_append(propdb->p, phdr, s);
 
 	*inserted = 1;
     }
@@ -551,22 +552,23 @@ static dav_error * dav_insert_coreprop(dav_propdb *propdb,
 }
 
 static dav_error * dav_insert_liveprop(dav_propdb *propdb,
-				       const dav_xml_elem *elem,
+				       const ap_xml_elem *elem,
 				       int getvals,
-				       dav_text_header *phdr,
+				       ap_text_header *phdr,
 				       int *inserted)
 {
     dav_prop_insert pi;
+    dav_elem_private *priv = elem->private;
 
     *inserted = 0;
 
-    if (DAV_IS_CORE_PROP(elem->propid))
-	return dav_insert_coreprop(propdb, elem->propid, elem->name,
+    if (DAV_IS_CORE_PROP(priv->propid))
+	return dav_insert_coreprop(propdb, priv->propid, elem->name,
 				   getvals, phdr, inserted);
 
     /* ask the provider (that defined this prop) to insert the prop */
-    pi = (*elem->provider->insert_prop)(propdb->resource, elem->propid,
-					getvals, elem->ns_map, phdr);
+    pi = (*priv->provider->insert_prop)(propdb->resource, priv->propid,
+					getvals, priv->ns_map, phdr);
 #if DAV_DEBUG
     if (pi == DAV_PROP_INSERT_NOTME) {
 	/* ### the provider should have returned NOTDEF, at least */
@@ -585,7 +587,7 @@ static dav_error * dav_insert_liveprop(dav_propdb *propdb,
 
 static void dav_append_prop(dav_propdb *propdb,
 			    const char *name, const char *value,
-			    dav_text_header *phdr)
+			    ap_text_header *phdr)
 {
     const char *s;
     const char *lang = value;
@@ -621,7 +623,7 @@ static void dav_append_prop(dav_propdb *propdb,
     else {
 	s = ap_psprintf(propdb->p, "<ns%s>%s</ns%s>" DEBUG_CR, name, value, name);
     }
-    dav_text_append(propdb->p, phdr, s);
+    ap_text_append(propdb->p, phdr, s);
 }
 
 /*
@@ -640,7 +642,7 @@ static void dav_append_prop(dav_propdb *propdb,
 ** ### we should always initialize the propdb namespace array with "DAV:"
 ** ### since we know it will be entered anyhow (by virtue of it always
 ** ### occurring in the ns_xlate array). That will allow us to use
-** ### DAV_NS_DAV_ID for propdb ns values, too.
+** ### AP_XML_NS_DAV_ID for propdb ns values, too.
 */
 static void dav_prep_ns_map(dav_propdb *propdb, int add_ns)
 {
@@ -678,7 +680,7 @@ static void dav_prep_ns_map(dav_propdb *propdb, int add_ns)
 	if (updating) {
 	    /* updating an existing mapping... we can skip a lot of stuff */
 
-	    if (*pmap != DAV_NS_ERROR_NOT_FOUND) {
+	    if (*pmap != AP_XML_NS_ERROR_NOT_FOUND) {
 		/* This entry has been filled in, so we can skip it */
 		continue;
 	    }
@@ -711,7 +713,7 @@ static void dav_prep_ns_map(dav_propdb *propdb, int add_ns)
 	    }
 
 	    if (!add_ns) {
-		*pmap = DAV_NS_ERROR_NOT_FOUND;
+		*pmap = AP_XML_NS_ERROR_NOT_FOUND;
 
 		/*
 		** This flag indicates that we have an ns_map with missing
@@ -763,16 +765,16 @@ static int dav_find_dav_id(dav_propdb *propdb)
 }
 
 static void dav_insert_xmlns(ap_pool_t *p, const char *pre_prefix, int ns,
-			     const char *ns_uri, dav_text_header *phdr)
+			     const char *ns_uri, ap_text_header *phdr)
 {
     const char *s;
 
     s = ap_psprintf(p, " xmlns:%s%d=\"%s\"", pre_prefix, ns, ns_uri);
-    dav_text_append(p, phdr, s);
+    ap_text_append(p, phdr, s);
 }
 
 /* return all known namespaces (in this propdb) */
-static void dav_get_propdb_xmlns(dav_propdb *propdb, dav_text_header *phdr)
+static void dav_get_propdb_xmlns(dav_propdb *propdb, ap_text_header *phdr)
 {
     int i;
     const char *p = propdb->ns_table.buf + sizeof(dav_propdb_metadata);
@@ -791,14 +793,14 @@ static void dav_get_propdb_xmlns(dav_propdb *propdb, dav_text_header *phdr)
 static void dav_add_marked_xmlns(dav_propdb *propdb, char *marks, int ns,
 				 ap_array_header_t *ns_table,
 				 const char *pre_prefix,
-				 dav_text_header *phdr)
+				 ap_text_header *phdr)
 {
     if (marks[ns])
 	return;
     marks[ns] = 1;
 
     dav_insert_xmlns(propdb->p,
-		     pre_prefix, ns, DAV_GET_URI_ITEM(ns_table, ns),
+		     pre_prefix, ns, AP_XML_GET_URI_ITEM(ns_table, ns),
 		     phdr);
 }
 
@@ -809,7 +811,7 @@ static void dav_add_marked_xmlns(dav_propdb *propdb, char *marks, int ns,
 **          value must be copied or no longer used if this function is
 **          called again.
 */
-static dav_datum dav_gdbm_key(dav_propdb *propdb, const dav_xml_elem *elem)
+static dav_datum dav_gdbm_key(dav_propdb *propdb, const ap_xml_elem *elem)
 {
     int ns;
     char nsbuf[20];
@@ -822,7 +824,7 @@ static dav_datum dav_gdbm_key(dav_propdb *propdb, const dav_xml_elem *elem)
      * so the keys will have the form ":name". Otherwise, the keys will
      * have the form "#:name".
      */
-    if (elem->ns == DAV_NS_NONE) {
+    if (elem->ns == AP_XML_NS_NONE) {
 	nsbuf[0] = '\0';
 	l_ns = 0;
     }
@@ -837,7 +839,7 @@ static dav_datum dav_gdbm_key(dav_propdb *propdb, const dav_xml_elem *elem)
 	}
 
 	ns = propdb->ns_map[elem->ns];
-	if (DAV_NS_IS_ERROR(ns))
+	if (AP_XML_NS_IS_ERROR(ns))
 	    return key;		/* zeroed */
 
 	l_ns = sprintf(nsbuf, "%d", ns);
@@ -1021,8 +1023,8 @@ void dav_close_propdb(dav_propdb *propdb)
 dav_get_props_result dav_get_allprops(dav_propdb *propdb, int getvals)
 {
     const dav_hooks_db *db_hooks = propdb->db_hooks;
-    dav_text_header hdr = { 0 };
-    dav_text_header hdr_ns = { 0 };
+    ap_text_header hdr = { 0 };
+    ap_text_header hdr_ns = { 0 };
     dav_get_props_result result = { 0 };
     int found_resourcetype = 0;
     int found_contenttype = 0;
@@ -1036,9 +1038,9 @@ dav_get_props_result dav_get_allprops(dav_propdb *propdb, int getvals)
     dav_get_propdb_xmlns(propdb, &hdr_ns);
 
     /* initialize the result with some start tags... */
-    dav_text_append(propdb->p, &hdr,
-		    "<D:propstat>" DEBUG_CR
-		    "<D:prop>" DEBUG_CR);
+    ap_text_append(propdb->p, &hdr,
+		   "<D:propstat>" DEBUG_CR
+		   "<D:prop>" DEBUG_CR);
 
     /* if there ARE properties, then scan them */
     if (propdb->db != NULL) {
@@ -1167,23 +1169,23 @@ dav_get_props_result dav_get_allprops(dav_propdb *propdb, int getvals)
     }
 
     /* terminate the result */
-    dav_text_append(propdb->p, &hdr,
-		    "</D:prop>" DEBUG_CR
-		    "<D:status>HTTP/1.1 200 OK</D:status>" DEBUG_CR
-		    "</D:propstat>" DEBUG_CR);
+    ap_text_append(propdb->p, &hdr,
+		   "</D:prop>" DEBUG_CR
+		   "<D:status>HTTP/1.1 200 OK</D:status>" DEBUG_CR
+		   "</D:propstat>" DEBUG_CR);
 
     result.propstats = hdr.first;
     result.xmlns = hdr_ns.first;
     return result;
 }
 
-dav_get_props_result dav_get_props(dav_propdb *propdb, dav_xml_doc *doc)
+dav_get_props_result dav_get_props(dav_propdb *propdb, ap_xml_doc *doc)
 {
     const dav_hooks_db *db_hooks = propdb->db_hooks;
-    dav_xml_elem *elem = dav_find_child(doc->root, "prop");
-    dav_text_header hdr_good = { 0 };
-    dav_text_header hdr_bad = { 0 };
-    dav_text_header hdr_ns = { 0 };
+    ap_xml_elem *elem = dav_find_child(doc->root, "prop");
+    ap_text_header hdr_good = { 0 };
+    ap_text_header hdr_bad = { 0 };
+    ap_text_header hdr_ns = { 0 };
     int have_good = 0;
     dav_get_props_result result = { 0 };
     char *marks_input;
@@ -1193,9 +1195,9 @@ dav_get_props_result dav_get_props(dav_propdb *propdb, dav_xml_doc *doc)
        the marks */
 
     /* we will ALWAYS provide a "good" result, even if it is EMPTY */
-    dav_text_append(propdb->p, &hdr_good,
-		    "<D:propstat>" DEBUG_CR
-		    "<D:prop>" DEBUG_CR);
+    ap_text_append(propdb->p, &hdr_good,
+		   "<D:propstat>" DEBUG_CR
+		   "<D:prop>" DEBUG_CR);
 
     /* generate all the namespaces that are in the propdb */
     dav_get_propdb_xmlns(propdb, &hdr_ns);
@@ -1211,6 +1213,7 @@ dav_get_props_result dav_get_props(dav_propdb *propdb, dav_xml_doc *doc)
     for (elem = elem->first_child; elem; elem = elem->next) {
 	dav_datum key;
 	dav_datum value = { 0 };
+	dav_elem_private *priv;
 
 	/*
 	** Note: the key may be NULL if we have no properties that are in
@@ -1223,6 +1226,11 @@ dav_get_props_result dav_get_props(dav_propdb *propdb, dav_xml_doc *doc)
 	    (void) (*db_hooks->fetch)(propdb->db, key, &value);
 	}
 
+	if (elem->private == NULL) {
+	    elem->private = ap_pcalloc(propdb->p, sizeof(*elem->private));
+	}
+	priv = elem->private;
+
 	/*
 	** If we did not find the property in the database, then it may
 	** be a liveprop that we can handle specially.
@@ -1232,7 +1240,7 @@ dav_get_props_result dav_get_props(dav_propdb *propdb, dav_xml_doc *doc)
 	    int inserted;
 
 	    /* cache the propid; dav_get_props() could be called many times */
-	    if (elem->propid == 0)
+	    if (priv->propid == 0)
 		dav_find_liveprop(propdb, elem);
 
 	    /* insert the property. returns 1 if an insertion was done. */
@@ -1248,12 +1256,12 @@ dav_get_props_result dav_get_props(dav_propdb *propdb, dav_xml_doc *doc)
 		** Add the liveprop's namespace URIs. Note that provider==NULL
 		** for core properties.
 		*/
-		if (elem->provider != NULL) {
+		if (priv->provider != NULL) {
 		    const char * const * scan_ns_uri;
 		    const int * scan_ns;
 
-		    for (scan_ns_uri = elem->provider->namespace_uris,
-			     scan_ns = elem->ns_map;
+		    for (scan_ns_uri = priv->provider->namespace_uris,
+			     scan_ns = priv->ns_map;
 			 *scan_ns_uri != NULL;
 			 ++scan_ns_uri, ++scan_ns) {
 
@@ -1271,9 +1279,9 @@ dav_get_props_result dav_get_props(dav_propdb *propdb, dav_xml_doc *doc)
 
 	    /* make sure we've started our "bad" propstat */
 	    if (hdr_bad.first == NULL) {
-		dav_text_append(propdb->p, &hdr_bad,
-				"<D:propstat>" DEBUG_CR
-				"<D:prop>" DEBUG_CR);
+		ap_text_append(propdb->p, &hdr_bad,
+			       "<D:propstat>" DEBUG_CR
+			       "<D:prop>" DEBUG_CR);
 	    }
 
 	    /* note: key.dptr may be NULL if the propdb doesn't have an
@@ -1281,7 +1289,7 @@ dav_get_props_result dav_get_props(dav_propdb *propdb, dav_xml_doc *doc)
 	    if (key.dptr == NULL) {
 		const char *s;
 
-		if (elem->ns == DAV_NS_NONE) {
+		if (elem->ns == AP_XML_NS_NONE) {
 		    /*
 		     * elem has a prefix already (xml...:name) or the elem
 		     * simply has no namespace.
@@ -1296,7 +1304,7 @@ dav_get_props_result dav_get_props(dav_propdb *propdb, dav_xml_doc *doc)
 		    s = ap_psprintf(propdb->p, "<i%d:%s/>" DEBUG_CR,
 				    elem->ns, elem->name);
 		}
-		dav_text_append(propdb->p, &hdr_bad, s);
+		ap_text_append(propdb->p, &hdr_bad, s);
 	    }
 	    else {
 		/* add in the bad prop using our namespace decl */
@@ -1314,7 +1322,7 @@ dav_get_props_result dav_get_props(dav_propdb *propdb, dav_xml_doc *doc)
 	}
     }
 
-    dav_text_append(propdb->p, &hdr_good,
+    ap_text_append(propdb->p, &hdr_good,
 		    "</D:prop>" DEBUG_CR
 		    "<D:status>HTTP/1.1 200 OK</D:status>" DEBUG_CR
 		    "</D:propstat>" DEBUG_CR);
@@ -1324,10 +1332,10 @@ dav_get_props_result dav_get_props(dav_propdb *propdb, dav_xml_doc *doc)
 
     /* we may not have any "bad" results */
     if (hdr_bad.first != NULL) {
-	dav_text_append(propdb->p, &hdr_bad,
-			"</D:prop>" DEBUG_CR
-			"<D:status>HTTP/1.1 404 Not Found</D:status>" DEBUG_CR
-			"</D:propstat>" DEBUG_CR);
+	ap_text_append(propdb->p, &hdr_bad,
+		       "</D:prop>" DEBUG_CR
+		       "<D:status>HTTP/1.1 404 Not Found</D:status>" DEBUG_CR
+		       "</D:propstat>" DEBUG_CR);
 
 	/* if there are no good props, then just return the bad */
 	if (!have_good) {
@@ -1346,7 +1354,10 @@ dav_get_props_result dav_get_props(dav_propdb *propdb, dav_xml_doc *doc)
 void dav_prop_validate(dav_prop_ctx *ctx)
 {
     dav_propdb *propdb = ctx->propdb;
-    dav_xml_elem *prop = ctx->prop;
+    ap_xml_elem *prop = ctx->prop;
+    dav_elem_private *priv;
+
+    priv = ctx->prop->private = ap_pcalloc(propdb->p, sizeof(*priv));
 
     /*
     ** Check to see if this is a live property, and fill the fields
@@ -1355,17 +1366,17 @@ void dav_prop_validate(dav_prop_ctx *ctx)
     ** Verify that the property is read/write. If not, then it cannot
     ** be SET or DELETEd.
     */
-    if (prop->propid == 0) {
+    if (priv->propid == 0) {
 	dav_find_liveprop(propdb, prop);
 
 	/* it's a liveprop if a provider was found */
 	/* ### actually the "core" props should really be liveprops, but
 	   ### there is no "provider" for those and the r/w props are
 	   ### treated as dead props anyhow */
-	ctx->is_liveprop = prop->provider != NULL;
+	ctx->is_liveprop = priv->provider != NULL;
     }
 
-    if (!dav_rw_liveprop(propdb, prop->propid)) {
+    if (!dav_rw_liveprop(propdb, priv->propid)) {
 	ctx->err = dav_new_error(propdb->p, HTTP_CONFLICT,
 				 DAV_ERR_PROP_READONLY,
 				 "Property is read-only.");
@@ -1375,7 +1386,7 @@ void dav_prop_validate(dav_prop_ctx *ctx)
     if (ctx->is_liveprop) {
 	int defer_to_dead = 0;
 
-	ctx->err = (*prop->provider->patch_validate)(propdb->resource,
+	ctx->err = (*priv->provider->patch_validate)(propdb->resource,
 						     prop, ctx->operation,
 						     &ctx->liveprop_ctx,
 						     &defer_to_dead);
@@ -1434,15 +1445,16 @@ void dav_prop_exec(dav_prop_ctx *ctx)
     dav_propdb *propdb = ctx->propdb;
     dav_error *err = NULL;
     dav_rollback_item *rollback;
+    dav_elem_private *priv = ctx->prop->private;
 
     rollback = ap_pcalloc(propdb->p, sizeof(*rollback));
     ctx->rollback = rollback;
 
     if (ctx->is_liveprop) {
-	err = (*ctx->prop->provider->patch_exec)(propdb->resource,
-						 ctx->prop, ctx->operation,
-						 ctx->liveprop_ctx,
-						 &ctx->rollback->liveprop);
+	err = (*priv->provider->patch_exec)(propdb->resource,
+					    ctx->prop, ctx->operation,
+					    ctx->liveprop_ctx,
+					    &ctx->rollback->liveprop);
     }
     else {
 	dav_datum key;
@@ -1463,12 +1475,12 @@ void dav_prop_exec(dav_prop_ctx *ctx)
 	    /* Note: propdb->ns_map was set in dav_prop_validate() */
 
 	    /* quote all the values in the element */
-	    dav_quote_xml_elem(propdb->p, ctx->prop);
+	    ap_xml_quote_elem(propdb->p, ctx->prop);
 
 	    /* generate a text blob for the xml:lang plus the contents */
-	    dav_xml2text(propdb->p, ctx->prop, DAV_X2T_LANG_INNER, NULL,
-			 propdb->ns_map,
-			 (const char **)&value.dptr, &value.dsize);
+	    ap_xml_to_text(propdb->p, ctx->prop, AP_XML_X2T_LANG_INNER, NULL,
+			   propdb->ns_map,
+			   (const char **)&value.dptr, &value.dsize);
 
 	    err = (*propdb->db_hooks->store)(propdb->db, key, value);
 
@@ -1504,22 +1516,25 @@ void dav_prop_exec(dav_prop_ctx *ctx)
 
 void dav_prop_commit(dav_prop_ctx *ctx)
 {
+    dav_elem_private *priv = ctx->prop->private;
+
     /*
     ** Note that a commit implies ctx->err is NULL. The caller should assume
     ** a status of HTTP_OK for this case.
     */
 
     if (ctx->is_liveprop) {
-	(*ctx->prop->provider->patch_commit)(ctx->propdb->resource,
-					     ctx->operation,
-					     ctx->liveprop_ctx,
-					     ctx->rollback->liveprop);
+	(*priv->provider->patch_commit)(ctx->propdb->resource,
+					ctx->operation,
+					ctx->liveprop_ctx,
+					ctx->rollback->liveprop);
     }
 }
 
 void dav_prop_rollback(dav_prop_ctx *ctx)
 {
     dav_error *err = NULL;
+    dav_elem_private *priv = ctx->prop->private;
 
     /* do nothing if there is no rollback information. */
     if (ctx->rollback == NULL)
@@ -1532,10 +1547,10 @@ void dav_prop_rollback(dav_prop_ctx *ctx)
     */
 
     if (ctx->is_liveprop) {
-	err = (*ctx->prop->provider->patch_rollback)(ctx->propdb->resource,
-						     ctx->operation,
-						     ctx->liveprop_ctx,
-						     ctx->rollback->liveprop);
+	err = (*priv->provider->patch_rollback)(ctx->propdb->resource,
+						ctx->operation,
+						ctx->liveprop_ctx,
+						ctx->rollback->liveprop);
     }
     else if (ctx->rollback->value.dptr == NULL) {
 	/* don't fail if the thing isn't really there */

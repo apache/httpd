@@ -1685,7 +1685,7 @@ static int dav_fs_find_prop(const char *ns_uri, const char *name)
 static dav_prop_insert dav_fs_insert_prop(const dav_resource *resource,
 					  int propid, int insvalue,
 					  const int *ns_map,
-					  dav_text_header *phdr)
+					  ap_text_header *phdr)
 {
     const char *value;
     const char *s;
@@ -1781,6 +1781,7 @@ static dav_prop_insert dav_fs_insert_prop(const dav_resource *resource,
     for (scan = dav_fs_props; scan->name != NULL; ++scan)
 	if (scan->propid == propid)
 	    break;
+
     /* assert: scan->name != NULL */
 
     /* map our NS index into a global NS index */
@@ -1799,14 +1800,14 @@ static dav_prop_insert dav_fs_insert_prop(const dav_resource *resource,
 	s = ap_psprintf(p, "<lp%d:%s/>" DEBUG_CR, ns, scan->name);
 	which = DAV_PROP_INSERT_NAME;
     }
-    dav_text_append(p, phdr, s);
+    ap_text_append(p, phdr, s);
 
     /* we inserted a name or value (this prop is done) */
     return which;
 }
 
 static void dav_fs_insert_all(const dav_resource *resource, int insvalue,
-			      const int *ns_map, dav_text_header *phdr)
+			      const int *ns_map, ap_text_header *phdr)
 {
     if (!resource->exists) {
 	/* a lock-null resource */
@@ -1859,16 +1860,17 @@ static dav_prop_rw dav_fs_is_writeable(const dav_resource *resource,
 }
 
 static dav_error *dav_fs_patch_validate(const dav_resource *resource,
-					const dav_xml_elem *elem,
+					const ap_xml_elem *elem,
 					int operation,
 					void **context,
 					int *defer_to_dead)
 {
-    const dav_text *cdata;
-    const dav_text *f_cdata;
+    const ap_text *cdata;
+    const ap_text *f_cdata;
     char value;
+    dav_elem_private *priv = elem->private;
 
-    if (elem->propid != DAV_PROPID_FS_executable) {
+    if (priv->propid != DAV_PROPID_FS_executable) {
 	*defer_to_dead = 1;
 	return NULL;
     }
@@ -1885,7 +1887,7 @@ static dav_error *dav_fs_patch_validate(const dav_resource *resource,
 	? NULL
 	: elem->first_child->following_cdata.first;
 
-    DBG3("name=%s  cdata=%s  f_cdata=%s",elem->name,cdata ? cdata->text : "[null]",f_cdata ? f_cdata->text : "[null]");
+    /* DBG3("name=%s  cdata=%s  f_cdata=%s",elem->name,cdata ? cdata->text : "[null]",f_cdata ? f_cdata->text : "[null]"); */
 
     if (cdata == NULL) {
 	if (f_cdata == NULL) {
@@ -1923,7 +1925,7 @@ static dav_error *dav_fs_patch_validate(const dav_resource *resource,
 }
 
 static dav_error *dav_fs_patch_exec(dav_resource *resource,
-				    const dav_xml_elem *elem,
+				    const ap_xml_elem *elem,
 				    int operation,
 				    void *context,
 				    dav_liveprop_rollback **rollback_ctx)
@@ -1935,7 +1937,7 @@ static dav_error *dav_fs_patch_exec(dav_resource *resource,
     /* assert: prop == executable. operation == SET. */
 
     /* don't do anything if there is no change. no rollback info either. */
-    DBG2("new value=%d  (old=%d)", value, old_value);
+    /* DBG2("new value=%d  (old=%d)", value, old_value); */
     if (value == old_value)
 	return NULL;
 

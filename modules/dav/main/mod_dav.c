@@ -546,7 +546,7 @@ static const char *dav_xml_escape_uri(ap_pool_t *p, const char *uri)
     ** Note: this is a teeny bit of overkill since we know there are no
     ** '<' or '>' characters, but who cares.
     */
-    return dav_quote_string(p, e_uri, 0);
+    return ap_xml_quote_string(p, e_uri, 0);
 }
 
 static void dav_send_multistatus(request_rec *r, int status,
@@ -569,7 +569,7 @@ static void dav_send_multistatus(request_rec *r, int status,
 
 	for (i = namespaces->nelts; i--; ) {
 	    ap_rprintf(r, " xmlns:ns%d=\"%s\"", i,
-		       DAV_GET_URI_ITEM(namespaces, i));
+		       AP_XML_GET_URI_ITEM(namespaces, i));
 	}
     }
 
@@ -577,7 +577,7 @@ static void dav_send_multistatus(request_rec *r, int status,
     ap_rputs(">" DEBUG_CR, r);
 
     for (; first != NULL; first = first->next) {
-	dav_text *t;
+	ap_text *t;
 
 	if (first->propresult.xmlns == NULL) {
 	    ap_rputs("<D:response>", r);
@@ -1563,27 +1563,27 @@ static int dav_method_options(request_rec *r)
 
 static void dav_cache_badprops(dav_walker_ctx *ctx)
 {
-    const dav_xml_elem *elem;
-    dav_text_header hdr = { 0 };
+    const ap_xml_elem *elem;
+    ap_text_header hdr = { 0 };
 
     /* just return if we built the thing already */
     if (ctx->propstat_404 != NULL) {
 	return;
     }
 
-    dav_text_append(ctx->pool, &hdr,
-		    "<D:propstat>" DEBUG_CR
-		    "<D:prop>" DEBUG_CR);
+    ap_text_append(ctx->pool, &hdr,
+		   "<D:propstat>" DEBUG_CR
+		   "<D:prop>" DEBUG_CR);
 
     elem = dav_find_child(ctx->doc->root, "prop");
     for (elem = elem->first_child; elem; elem = elem->next) {
-	dav_text_append(ctx->pool, &hdr, dav_empty_elem(ctx->pool, elem));
+	ap_text_append(ctx->pool, &hdr, ap_xml_empty_elem(ctx->pool, elem));
     }
 
-    dav_text_append(ctx->pool, &hdr,
-		    "</D:prop>" DEBUG_CR
-		    "<D:status>HTTP/1.1 404 Not Found</D:status>" DEBUG_CR
-		    "</D:propstat>" DEBUG_CR);
+    ap_text_append(ctx->pool, &hdr,
+		   "</D:prop>" DEBUG_CR
+		   "<D:status>HTTP/1.1 404 Not Found</D:status>" DEBUG_CR
+		   "</D:propstat>" DEBUG_CR);
 
     ctx->propstat_404 = hdr.first;
 }
@@ -1645,8 +1645,8 @@ static int dav_method_propfind(request_rec *r)
     int depth;
     dav_error *err;
     int result;
-    dav_xml_doc *doc;
-    const dav_xml_elem *child;
+    ap_xml_doc *doc;
+    const ap_xml_elem *child;
     dav_walker_ctx ctx = { 0 };
 
     /* Ask repository module to resolve the resource */
@@ -1681,7 +1681,7 @@ static int dav_method_propfind(request_rec *r)
 	}
     }
 
-    if ((result = dav_parse_input(r, &doc)) != OK) {
+    if ((result = ap_xml_parse_input(r, &doc)) != OK) {
 	return result;
     }
     /* note: doc == NULL if no request body */
@@ -1769,10 +1769,10 @@ static int dav_method_propfind(request_rec *r)
     return DONE;
 }
 
-static dav_text * dav_failed_proppatch(ap_pool_t *p,
+static ap_text * dav_failed_proppatch(ap_pool_t *p,
                                        ap_array_header_t *prop_ctx)
 {
-    dav_text_header hdr = { 0 };
+    ap_text_header hdr = { 0 };
     int i = prop_ctx->nelts;
     dav_prop_ctx *ctx = (dav_prop_ctx *)prop_ctx->elts;
     dav_error *err424_set = NULL;
@@ -1782,11 +1782,11 @@ static dav_text * dav_failed_proppatch(ap_pool_t *p,
     /* ### might be nice to sort by status code and description */
 
     for ( ; i-- > 0; ++ctx ) {
-	dav_text_append(p, &hdr,
-			"<D:propstat>" DEBUG_CR
-			"<D:prop>");
-	dav_text_append(p, &hdr, dav_empty_elem(p, ctx->prop));
-	dav_text_append(p, &hdr, "</D:prop>" DEBUG_CR);
+	ap_text_append(p, &hdr,
+		       "<D:propstat>" DEBUG_CR
+		       "<D:prop>");
+	ap_text_append(p, &hdr, ap_xml_empty_elem(p, ctx->prop));
+	ap_text_append(p, &hdr, "</D:prop>" DEBUG_CR);
 
 	if (ctx->err == NULL) {
 	    /* nothing was assigned here yet, so make it a 424 */
@@ -1815,24 +1815,24 @@ static dav_text * dav_failed_proppatch(ap_pool_t *p,
 			"HTTP/1.1 %d (status)"
 			"</D:status>" DEBUG_CR,
 			ctx->err->status);
-	dav_text_append(p, &hdr, s);
+	ap_text_append(p, &hdr, s);
 
 	/* ### we should use compute_desc if necessary... */
 	if (ctx->err->desc != NULL) {
-	    dav_text_append(p, &hdr, "<D:responsedescription>" DEBUG_CR);
-	    dav_text_append(p, &hdr, ctx->err->desc);
-	    dav_text_append(p, &hdr, "</D:responsedescription>" DEBUG_CR);
+	    ap_text_append(p, &hdr, "<D:responsedescription>" DEBUG_CR);
+	    ap_text_append(p, &hdr, ctx->err->desc);
+	    ap_text_append(p, &hdr, "</D:responsedescription>" DEBUG_CR);
 	}
 
-	dav_text_append(p, &hdr, "</D:propstat>" DEBUG_CR);
+	ap_text_append(p, &hdr, "</D:propstat>" DEBUG_CR);
     }
 
     return hdr.first;
 }
 
-static dav_text * dav_success_proppatch(ap_pool_t *p, ap_array_header_t *prop_ctx)
+static ap_text * dav_success_proppatch(ap_pool_t *p, ap_array_header_t *prop_ctx)
 {
-    dav_text_header hdr = { 0 };
+    ap_text_header hdr = { 0 };
     int i = prop_ctx->nelts;
     dav_prop_ctx *ctx = (dav_prop_ctx *)prop_ctx->elts;
 
@@ -1841,15 +1841,15 @@ static dav_text * dav_success_proppatch(ap_pool_t *p, ap_array_header_t *prop_ct
     ** ### this code assumes everything will return status==200.
     */
 
-    dav_text_append(p, &hdr,
-		    "<D:propstat>" DEBUG_CR
-		    "<D:prop>" DEBUG_CR);
+    ap_text_append(p, &hdr,
+		   "<D:propstat>" DEBUG_CR
+		   "<D:prop>" DEBUG_CR);
 
     for ( ; i-- > 0; ++ctx ) {
-	dav_text_append(p, &hdr, dav_empty_elem(p, ctx->prop));
+	ap_text_append(p, &hdr, ap_xml_empty_elem(p, ctx->prop));
     }
 
-    dav_text_append(p, &hdr,
+    ap_text_append(p, &hdr,
 		    "</D:prop>" DEBUG_CR
 		    "<D:status>HTTP/1.1 200 OK</D:status>" DEBUG_CR
 		    "</D:propstat>" DEBUG_CR);
@@ -1904,12 +1904,12 @@ static int dav_method_proppatch(request_rec *r)
     dav_error *err;
     dav_resource *resource;
     int result;
-    dav_xml_doc *doc;
-    dav_xml_elem *child;
+    ap_xml_doc *doc;
+    ap_xml_elem *child;
     dav_propdb *propdb;
     int failure = 0;
     dav_response resp = { 0 };
-    dav_text *propstat_text;
+    ap_text *propstat_text;
     ap_array_header_t *ctx_list;
     dav_prop_ctx *ctx;
 
@@ -1922,7 +1922,7 @@ static int dav_method_proppatch(request_rec *r)
 	return HTTP_NOT_FOUND;
     }
 
-    if ((result = dav_parse_input(r, &doc)) != OK) {
+    if ((result = ap_xml_parse_input(r, &doc)) != OK) {
 	return result;
     }
     /* note: doc == NULL if no request body */
@@ -1963,11 +1963,11 @@ static int dav_method_proppatch(request_rec *r)
     /* do a first pass to ensure that all "remove" properties exist */
     for (child = doc->root->first_child; child; child = child->next) {
 	int is_remove;
-	dav_xml_elem *prop_group;
-	dav_xml_elem *one_prop;
+	ap_xml_elem *prop_group;
+	ap_xml_elem *one_prop;
 
 	/* Ignore children that are not set/remove */
-	if (child->ns != DAV_NS_DAV_ID
+	if (child->ns != AP_XML_NS_DAV_ID
 	    || (!(is_remove = strcmp(child->name, "remove") == 0)
 		&& strcmp(child->name, "set") != 0)) {
 	    continue;
@@ -2601,7 +2601,7 @@ static int dav_method_lock(request_rec *r)
     int result;
     int depth;
     int new_lock_request = 0;
-    dav_xml_doc *doc = NULL;
+    ap_xml_doc *doc = NULL;
     dav_lock *lock;
     dav_response *multi_response = NULL;
     dav_lockdb *lockdb;
@@ -2612,7 +2612,7 @@ static int dav_method_lock(request_rec *r)
     if (locks_hooks == NULL)
         return DECLINED;
 
-    if ((result = dav_parse_input(r, &doc)) != OK)
+    if ((result = ap_xml_parse_input(r, &doc)) != OK)
 	return result;
 
     depth = dav_get_depth(r, DAV_INFINITY);
