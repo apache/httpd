@@ -1,5 +1,9 @@
 Changes with Apache 2.0.34-dev
 
+  *) Change the header merging behaviour in proxy, as some headers
+     (like Set-Cookie) cannot be unmerged due to stray commas in
+     dates. [Graham Leggett]
+
   *) Be more vocal about what AcceptMutex values we allow, to make
      us closer to how 1.3 does it. [Jim Jagielski]
 

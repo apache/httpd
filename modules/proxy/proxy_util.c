@@ -392,8 +392,11 @@ PROXY_DECLARE(request_rec *)ap_proxy_make_fake_req(conn_rec *c, request_rec *r)
  * Reads headers from a buffer and returns an array of headers.
  * Returns NULL on file error
  * This routine tries to deal with too long lines and continuation lines.
- * @@@: XXX: FIXME: currently the headers are passed thru un-merged. 
- * Is that okay, or should they be collapsed where possible?
+ *
+ * Note: Currently the headers are passed through unmerged. This has to be
+ * done so that headers which react badly to merging (such as Set-Cookie
+ * headers, which contain commas within the date field) do not get stuffed
+ * up.
  */
 PROXY_DECLARE(apr_table_t *)ap_proxy_read_headers(request_rec *r, request_rec *rr, char *buffer, int size, conn_rec *c)
 {
@@ -441,8 +444,8 @@ PROXY_DECLARE(apr_table_t *)ap_proxy_read_headers(request_rec *r, request_rec *r
 	for (end = &value[strlen(value)-1]; end > value && apr_isspace(*end); --end)
 	    *end = '\0';
 
-        /* make sure we merge so as not to destroy duplicated headers */
-        apr_table_merge(headers_out, buffer, value);
+        /* make sure we add so as not to destroy duplicated headers */
+        apr_table_add(headers_out, buffer, value);
 
 	/* the header was too long; at the least we should skip extra data */
 	if (len >= size - 1) { 
