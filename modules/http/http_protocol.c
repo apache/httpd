@@ -2111,7 +2111,7 @@ API_EXPORT(long) ap_send_fb_length(BUFF *fb, request_rec *r, long length)
     while (!ap_is_aborted(r->connection)) {
         rv = ap_bread(fb, buf, sizeof(buf), &n);
         if (n == 0) {
-            if (rv == APR_SUCCESS || rv == APR_EOF) {    /* eof */
+            if (rv == APR_SUCCESS) {    /* eof */
                 (void) ap_rflush(r);
                 break;
             }
