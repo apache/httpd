@@ -229,6 +229,11 @@
               </tr>
 
               <tr>
+                <td><a href="howto/auth.html">Authentication,
+                Authorization, and Access Control</a></td>
+              </tr>
+
+              <tr>
                 <td><a href="handler.html">Handlers</a> </td>
               </tr>
 
