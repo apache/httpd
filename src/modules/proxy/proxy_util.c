@@ -643,6 +643,7 @@ void ap_proxy_send_headers(request_rec *r, const char *respline, array_header *h
 	ap_bvputs(fp, hdrs[i].field, ": ", hdrs[i].value, CRLF, NULL);
 	/* XXX: can't this be ap_table_setn? -djg */
 	ap_table_set(r->headers_out, hdrs[i].field, hdrs[i].value);
+	/* XXX: another O(n^2) attack, fixed by ap_overlap_tables */
     }
 
     ap_bputs(CRLF, fp);

@@ -427,6 +427,8 @@ int ap_proxy_http_handler(request_rec *r, struct cache_req *c, char *url,
 	    ap_rvputs(r, hdr[i].field, ": ", hdr[i].value, CRLF, NULL);
 	    /* XXX: can't this be ap_table_setn? -djg */
 	    ap_table_set(r->headers_out, hdr[i].field, hdr[i].value);
+	    /* XXX: regardless, there's an O(n^2) attack here, which
+	     * could be fixed with ap_overlap_tables */
 	}
 	if (cache != NULL)
 	    if (ap_bvputs(cache, hdr[i].field, ": ", hdr[i].value, CRLF,
