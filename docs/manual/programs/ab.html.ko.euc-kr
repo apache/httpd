@@ -93,7 +93,7 @@
     <dt><code>-g <var>gnuplot-file</var></code></dt>
     <dd>측정한 모든 값을 'gnuplot' 혹은 TSV (Tab separate values,
     탭으로 구분한 값) 파일에 기록한다. Gnuplot, IDL, Mathematica,
-    Igor, 심지어 Excell 같은 프로그램에서도 이런 파일을 쉽게
+    Igor, 심지어 Excel 같은 프로그램에서도 이런 파일을 쉽게
     읽을 수 있다. 파일의 첫번째 줄에 항목이름이 나온다. </dd>
 
     <dt><code>-h</code></dt>
