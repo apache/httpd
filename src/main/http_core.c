@@ -3070,7 +3070,11 @@ static int default_handler(request_rec *r)
 	    else {
 		long offset, length;
 		while (ap_each_byterange(r, &offset, &length)) {
-		    if (fseek(f, offset, SEEK_SET) == -1) {
+		    /*
+		     * Non zero returns are more portable than checking
+		     * for a return of -1.
+		     */
+		    if (fseek(f, offset, SEEK_SET)) {
 			ap_log_error(APLOG_MARK, APLOG_ERR, r->server,
 			      "Failed to fseek for byterange (%ld, %ld)",
 			      offset, length);
