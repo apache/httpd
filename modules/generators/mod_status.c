@@ -257,7 +257,6 @@ static int status_handler(request_rec *r)
     char *stat_buffer;
     pid_t *pid_buffer;
     clock_t tu, ts, tcu, tcs;
-    server_rec *vhost;
 
     if (strcmp(r->handler, STATUS_MAGIC_TYPE) && strcmp(r->handler, "server-status")) {
         return DECLINED;
@@ -525,11 +524,7 @@ static int status_handler(request_rec *r)
 	for (j = 0; j < thread_limit; ++j) {
 	    ws_record = ap_scoreboard_image->servers[i][j];
 	    ps_record = ap_scoreboard_image->parent[i];
-	    vhost = ws_record.vhostrec;
-	    if (ps_record.generation != ap_my_generation) {
-		vhost = NULL;
-	    }
-
+	    
 #if defined(NO_GETTIMEOFDAY)
 #ifdef HAVE_TIMES
 	    if (ws_record.start_time == (clock_t) 0)
@@ -636,8 +631,7 @@ static int status_handler(request_rec *r)
 			ap_rprintf(r, " <i>%s {%s}</i> <b>[%s]</b><br />\n\n",
 			    ap_escape_html(r->pool, ws_record.client),
 			    ap_escape_html(r->pool, ws_record.request),
-			    vhost ? ap_escape_html(r->pool, 
-				vhost->server_hostname) : "(unavailable)");
+			    ap_escape_html(r->pool, ws_record.vhost));
 		    }
 		    else {		/* !no_table_report */
 			if (ws_record.status == SERVER_DEAD)
@@ -713,8 +707,7 @@ static int status_handler(request_rec *r)
 			    ap_rprintf(r,
 			     "</td><td>%s</td><td nowrap>%s</td><td nowrap>%s</td></tr>\n\n",
 			     ap_escape_html(r->pool, ws_record.client),
-			     vhost ? ap_escape_html(r->pool, 
-				vhost->server_hostname) : "(unavailable)",
+			     ap_escape_html(r->pool, ws_record.vhost),
 			     ap_escape_html(r->pool, ws_record.request));
 		    }		/* no_table_report */
 		}			/* !short_report */

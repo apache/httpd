@@ -116,53 +116,11 @@
 #include "http_protocol.h"
 #include "apr_uri.h"
 #include "util_md5.h"
+#include "apr_shm.h"
+#include "apr_rmm.h"
 
-/* Disable shmem until pools/init gets sorted out - remove next line when fixed */
 #undef APR_HAS_SHARED_MEMORY
-#define APR_HAS_SHARED_MEMORY 0
-
-#if APR_HAS_SHARED_MEMORY
-#include "apr_shmem.h"
-#else
-/* just provide dummies - the code does run-time checks anyway */
-typedef   void apr_shmem_t;
-typedef   void apr_shm_name_t;
-
-/*
-static apr_status_t apr_shm_init(apr_shmem_t **m, apr_size_t reqsize, const char *file, apr_pool_t *cont) {
-    return APR_ENOTIMPL;
-}
-*/
-static apr_status_t apr_shm_destroy(apr_shmem_t *m) {
-    return APR_ENOTIMPL;
-}
-static void *apr_shm_malloc(apr_shmem_t *c, apr_size_t reqsize) {
-    return NULL;
-}
-/*
-static void *apr_shm_calloc(apr_shmem_t *shared, apr_size_t size) {
-    return NULL;
-}
-*/
-static apr_status_t apr_shm_free(apr_shmem_t *shared, void *free) {
-    return APR_ENOTIMPL;
-}
-/*
-static apr_status_t apr_shm_name_get(apr_shmem_t *c, apr_shm_name_t **name) {
-    return APR_ENOTIMPL;
-}
-static apr_status_t apr_shm_name_set(apr_shmem_t *c, apr_shm_name_t *name) {
-    return APR_ENOTIMPL;
-}
-static apr_status_t apr_shm_open(apr_shmem_t *c) {
-    return APR_ENOTIMPL;
-}
-static apr_status_t apr_shm_avail(apr_shmem_t *c, apr_size_t *avail) {
-    return APR_ENOTIMPL;
-}
-*/
-#endif /* ndef APR_HAS_SHARED_MEMORY */
-
+#define APR_HAS_SHARED_MEMORY 1
 
 /* struct to hold the configuration info */
 
@@ -253,8 +211,9 @@ static unsigned char secret[SECRET_LEN];
 
 /* client-list, opaque, and one-time-nonce stuff */
 
-static apr_shmem_t    *client_shm = NULL;
-static unsigned long *opaque_cntr;
+static apr_shm_t      *client_shm =  NULL;
+static apr_rmm_t      *client_rmm = NULL;
+static unsigned long  *opaque_cntr;
 static apr_time_t     *otn_counter;     /* one-time-nonce counter */
 static apr_lock_t     *client_lock = NULL;
 static apr_lock_t     *opaque_lock = NULL;
@@ -277,7 +236,7 @@ module AP_MODULE_DECLARE_DATA auth_digest_module;
 
 static apr_status_t cleanup_tables(void *not_used)
 {
-    ap_log_rerror(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
+    ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
                   "Digest: cleaning up shared memory");
     fflush(stderr);
 
@@ -343,13 +302,13 @@ static void initialize_tables(server_rec *s, apr_pool_t *ctx)
 
     /* set up client list */
 
-    sts = apr_shm_init(&client_shm, shmem_size, tmpnam(NULL), ctx);
+    sts = apr_shm_create(&client_shm, shmem_size, tmpnam(NULL), ctx);
     if (sts != APR_SUCCESS) {
         log_error_and_cleanup("failed to create shared memory segments", sts, s);
         return;
     }
 
-    client_list = apr_shm_malloc(client_shm, sizeof(*client_list) +
+    client_list = apr_rmm_malloc(client_rmm, sizeof(*client_list) +
                                             sizeof(client_entry*)*num_buckets);
     if (!client_list) {
         log_error_and_cleanup("failed to allocate shared memory", -1, s);
@@ -373,7 +332,7 @@ static void initialize_tables(server_rec *s, apr_pool_t *ctx)
 
     /* setup opaque */
 
-    opaque_cntr = apr_shm_malloc(client_shm, sizeof(*opaque_cntr));
+    opaque_cntr = apr_rmm_malloc(client_rmm, sizeof(*opaque_cntr));
     if (opaque_cntr == NULL) {
         log_error_and_cleanup("failed to allocate shared memory", -1, s);
         return;
@@ -391,7 +350,7 @@ static void initialize_tables(server_rec *s, apr_pool_t *ctx)
 
     /* setup one-time-nonce counter */
 
-    otn_counter = apr_shm_malloc(client_shm, sizeof(*otn_counter));
+    otn_counter = apr_rmm_malloc(client_rmm, sizeof(*otn_counter));
     if (otn_counter == NULL) {
         log_error_and_cleanup("failed to allocate shared memory", -1, s);
         return;
@@ -812,7 +771,7 @@ static long gc(void)
             client_list->table[idx] = NULL;
         }
         if (entry) {                    /* remove entry */
-            apr_shm_free(client_shm, entry);
+            apr_rmm_free(client_rmm, entry);
             num_removed++;
         }
     }
@@ -848,7 +807,7 @@ static client_entry *add_client(unsigned long key, client_entry *info,
 
     /* try to allocate a new entry */
 
-    entry = apr_shm_malloc(client_shm, sizeof(client_entry));
+    entry = apr_rmm_malloc(client_rmm, sizeof(client_entry));
     if (!entry) {
         long num_removed = gc();
         ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_INFO, 0, s,
@@ -857,7 +816,7 @@ static client_entry *add_client(unsigned long key, client_entry *info,
                      "%ld", num_removed,
                      client_list->num_created - client_list->num_renewed,
                      client_list->num_removed, client_list->num_renewed);
-        entry = apr_shm_malloc(client_shm, sizeof(client_entry));
+        entry = apr_rmm_malloc(client_rmm, sizeof(client_entry));
         if (!entry) {
             return NULL;       /* give up */
         }

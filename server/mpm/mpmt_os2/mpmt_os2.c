@@ -215,7 +215,7 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s )
 
         restart = master_main();
         ++ap_my_generation;
-        ap_scoreboard_image->global.running_generation = ap_my_generation;
+        ap_scoreboard_image->global->running_generation = ap_my_generation;
 
         if (!restart) {
             const char *pidfile = ap_server_root_relative(pconf, ap_pid_fname);
@@ -297,7 +297,8 @@ static char master_main()
 
     /* Allocate shared memory for scoreboard */
     if (ap_scoreboard_image == NULL) {
-        rc = DosAllocSharedMem((PPVOID)&ap_scoreboard_image, ap_scoreboard_fname,
+        void *sb_mem;
+        rc = DosAllocSharedMem((PPVOID)&sbmem, ap_scoreboard_fname,
                                ap_calc_scoreboard_size(),
                                PAG_COMMIT|PAG_READ|PAG_WRITE);
 
@@ -307,7 +308,7 @@ static char master_main()
             return FALSE;
         }
 
-        ap_init_scoreboard();
+        ap_init_scoreboard(sb_mem);
     }
 
     ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_NOTICE, 0, ap_server_conf,

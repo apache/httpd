@@ -535,14 +535,13 @@ const char *ap_mpm_set_pidfile(cmd_parms *cmd, void *dummy,
 #endif
 
 #ifdef AP_MPM_WANT_SET_SCOREBOARD
-AP_DECLARE(const char *) ap_mpm_set_scoreboard(cmd_parms *cmd, void *dummy,
-					       const char *arg)
+const char * ap_mpm_set_scoreboard(cmd_parms *cmd, void *dummy,
+                                   const char *arg)
 {
     const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
     if (err != NULL) {
         return err;
     }
-
     ap_scoreboard_fname = arg;
     return NULL;
 }
@@ -550,8 +549,8 @@ AP_DECLARE(const char *) ap_mpm_set_scoreboard(cmd_parms *cmd, void *dummy,
 
 #ifdef AP_MPM_WANT_SET_LOCKFILE
 const char *ap_lock_fname = NULL;
-AP_DECLARE(const char *) ap_mpm_set_lockfile(cmd_parms *cmd, void *dummy,
-					     const char *arg)
+const char *ap_mpm_set_lockfile(cmd_parms *cmd, void *dummy,
+                                const char *arg)
 {
     const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
     if (err != NULL) {

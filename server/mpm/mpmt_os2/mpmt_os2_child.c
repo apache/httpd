@@ -298,7 +298,7 @@ void ap_mpm_child_main(apr_pool_t *pconf)
 
         if (ap_max_requests_per_child != 0 && requests_this_child >= ap_max_requests_per_child)
             break;
-    } while (!shutdown_pending && ap_my_generation == ap_scoreboard_image->global.running_generation);
+    } while (!shutdown_pending && ap_my_generation == ap_scoreboard_image->global->running_generation);
 
     ap_scoreboard_image->parent[child_slot].quiescing = 1;
     DosPostEventSem(shutdown_event);
@@ -404,7 +404,7 @@ static void worker_main(void *vpArg)
     BYTE priority;
     int thread_slot = (int)vpArg;
     EXCEPTIONREGISTRATIONRECORD reg_rec = { NULL, thread_exception_handler };
-    void *sbh;
+    ap_sb_handle_t *sbh;
   
     /* Trap exceptions in this thread so we don't take down the whole process */
     DosSetExceptionHandler( &reg_rec );

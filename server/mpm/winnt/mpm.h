@@ -71,6 +71,7 @@
 #define AP_MPM_WANT_SET_PIDFILE
 #define AP_MPM_WANT_SET_MAX_REQUESTS
 #define AP_MPM_WANT_SET_COREDUMPDIR
+#define AP_MPM_WANT_SET_SCOREBOARD
 
 extern int ap_threads_per_child;
 extern server_rec *ap_server_conf;

@@ -546,7 +546,7 @@ static void process_socket(apr_pool_t *p, apr_socket_t *sock, long conn_id)
     int csd;
     apr_status_t rv;
     int thread_num = conn_id % thread_limit;
-    void *sbh;
+    ap_sb_handle_t *sbh;
 
     if ((rv = apr_os_sock_get(&csd, sock)) != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_ERR, rv, NULL, "apr_os_sock_get");

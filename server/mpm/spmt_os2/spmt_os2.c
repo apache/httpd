@@ -458,7 +458,7 @@ AP_DECLARE(void) ap_child_terminate(request_rec *r)
 int ap_graceful_stop_signalled(void)
 {
     if (thread_control[THREAD_GLOBAL(thread_num)].deferred_die ||
-	ap_scoreboard_image->global.running_generation != thread_control[THREAD_GLOBAL(thread_num)].generation) {
+	ap_scoreboard_image->global->running_generation != thread_control[THREAD_GLOBAL(thread_num)].generation) {
 	return 1;
     }
     return 0;
@@ -470,7 +470,7 @@ int ap_stop_signalled(void)
 {
     if (shutdown_pending || restart_pending ||
         thread_control[THREAD_GLOBAL(thread_num)].deferred_die ||
-	ap_scoreboard_image->global.running_generation != thread_control[THREAD_GLOBAL(thread_num)].generation) {
+	ap_scoreboard_image->global->running_generation != thread_control[THREAD_GLOBAL(thread_num)].generation) {
 	return 1;
     }
     return 0;
@@ -508,7 +508,7 @@ static void thread_main(void *thread_num_arg)
     apr_pollfd_t *listen_poll;
     apr_socket_t *csd = NULL;
     int nsds, rv;
-    void *sbh;
+    ap_sb_handle_t *sbh;
 
     /* Disable the restart signal handlers and enable the just_die stuff.
      * Note that since restart() just notes that a restart has been
@@ -527,7 +527,7 @@ static void thread_main(void *thread_num_arg)
     *ppthread_globals = (struct thread_globals *)apr_palloc(pchild, sizeof(struct thread_globals));
     THREAD_GLOBAL(thread_num) = (int)thread_num_arg;
     THREAD_GLOBAL(pchild) = pchild;
-    thread_control[THREAD_GLOBAL(thread_num)].generation = ap_scoreboard_image->global.running_generation;
+    thread_control[THREAD_GLOBAL(thread_num)].generation = ap_scoreboard_image->global->running_generation;
     apr_pool_create(&ptrans, pchild);
 
     if (setup_listen_poll(pchild, &listen_poll)) {
@@ -1147,7 +1147,7 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
     /* XXX: we really need to make sure this new generation number isn't in
      * use by any of the children.
      */
-    ++ap_scoreboard_image->global.running_generation;
+    ++ap_scoreboard_image->global->running_generation;
 
     if (is_graceful) {
 	ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_NOTICE, 0, ap_server_conf,

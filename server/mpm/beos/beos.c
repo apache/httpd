@@ -332,7 +332,7 @@ static void process_socket(apr_pool_t *p, apr_socket_t *sock, int my_child_num)
     conn_rec *current_conn;
     long conn_id = my_child_num;
     int csd;
-    void *sbh;
+    ap_sb_handle_t *sbh;
 
     (void)apr_os_sock_get(&csd, sock);
     

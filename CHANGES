@@ -1,5 +1,9 @@
 Changes with Apache 2.0.31-dev
 
+  *) Moved several pointers out of the shared Scoreboard so it is
+     more portable, and will present the vhost name across server
+     generation restarts.  [William Rowe]
+
   *) Fix SSLPassPhraseDialog exec: and SSLRandomSeed exec:
      [Doug MacEachern]
 
