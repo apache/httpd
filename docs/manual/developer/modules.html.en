@@ -108,7 +108,7 @@ static void register_hooks(void)
     </ul>
 
     <p>To define the position you use the position and then modify
-    it with the predecessors and successors. each of the modifiers
+    it with the predecessors and successors. Each of the modifiers
     can be a list of functions that should be called, either before
     the function is run (predecessors) or after the function has
     run (successors).</p>
