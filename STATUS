@@ -138,6 +138,9 @@ Committed Code Changes:
     * Martin's [PATCH] "Signing" server generated pages
     * Dmitry's table_*n API addition
     * mod_unique_id didn't deal with internal_redirect properly
+    * SIGURG isn't everywhere like elvis
+    * some rfc2068 case insensitivity issues
+    * r->allowed cleanup
 
 Available Patches:
 

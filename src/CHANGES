@@ -1,5 +1,8 @@
 Changes with Apache 1.3b4
 
+  *) r->allowed handling cleaned up in the standard modules.
+     [Dean Gaudet]
+
   *) Some case-sensitivity issues cleaned up to be consistent with
      RFC2068.  [Dean Gaudet]
 
