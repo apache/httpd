@@ -83,6 +83,8 @@
 #include "http_protocol.h"
 #include "http_request.h"   /* for ap_hook_(check_user_id | auth_checker)*/
 
+#include "mod_auth.h"
+
 typedef struct {
     char *grpfile;
     char *dbmtype;
@@ -195,9 +197,11 @@ static int dbm_check_auth(request_rec *r)
     require_line *reqs = reqs_arr ? (require_line *) reqs_arr->elts : NULL;
     register int x;
     const char *t;
-    const char *orig_groups = NULL;
     char *w;
     int required_group = 0;
+    const char *filegroup = NULL;
+    const char *orig_groups = NULL;
+    char *reason = NULL;
 
     if (!conf->grpfile) {
         return DECLINED;
@@ -216,7 +220,19 @@ static int dbm_check_auth(request_rec *r)
         t = reqs[x].requirement;
         w = ap_getword_white(r->pool, &t);
  
-        if (!strcmp(w, "group")) {
+        if (!strcmp(w, "file-group")) {
+            filegroup = apr_table_get(r->notes, AUTHZ_GROUP_NOTE);
+            
+            if (!filegroup) {
+                /* mod_authz_owner is not present or not
+                 * authoritative. We are just a helper module for testing
+                 * group membership, so we don't care and decline.
+                 */
+                continue;
+            }
+        }
+
+        if (!strcmp(w, "group") || filegroup) {
             const char *realm = ap_auth_name(r);
             const char *groups;
             char *v;
@@ -241,46 +257,61 @@ static int dbm_check_auth(request_rec *r)
                 }
 
                 if (groups == NULL) {
-                    if (!conf->authoritative) {
-                        return DECLINED;
-                    }
-
-                    ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
-                                  "user %s not in DBM group file %s: %s",
-                                  user, conf->grpfile, r->filename);
-
-                    ap_note_auth_failure(r);
-                    return HTTP_UNAUTHORIZED;
+                    /* no groups available, so exit immediately */
+                    reason = apr_psprintf(r->pool,
+                                          "user doesn't appear in DBM group "
+                                          "file (%s).", conf->grpfile);
+                    break;
                 }
 
                 orig_groups = groups;
             }
 
-            while (t[0]) {
-                w = ap_getword_white(r->pool, &t);
+            if (filegroup) {
                 groups = orig_groups;
                 while (groups[0]) {
                     v = ap_getword(r->pool, &groups, ',');
-                    if (!strcmp(v, w)) {
+                    if (!strcmp(v, filegroup)) {
                         return OK;
+                    }
+                }
+
+                if (conf->authoritative) {
+                    reason = apr_psprintf(r->pool,
+                                          "file group '%s' does not match.",
+                                          filegroup);
+                    break;
+                }
+
+                /* now forget the filegroup, thus alternatively require'd
+                   groups get a real chance */
+                filegroup = NULL;
+            }
+            else {
+                while (t[0]) {
+                    w = ap_getword_white(r->pool, &t);
+                    groups = orig_groups;
+                    while (groups[0]) {
+                        v = ap_getword(r->pool, &groups, ',');
+                        if (!strcmp(v, w)) {
+                            return OK;
+                        }
                     }
                 }
             }
         }
     }
 
-    /* no group requirement seen */
-    if (!required_group) {
-        return DECLINED;
-    }
-
-    if (!conf->authoritative) {
+    /* No applicable "require group" for this method seen */
+    if (!required_group || !conf->authoritative) {
         return DECLINED;
     }
 
     ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
-                  "user %s not in right group: %s",
-                  user, r->filename);
+                  "Authorization of user %s to access %s failed, reason: %s",
+                  r->user, r->uri,
+                  reason ? reason : "user is not part of the "
+                                    "'require'ed group(s).");
 
     ap_note_auth_failure(r);
     return HTTP_UNAUTHORIZED;
@@ -288,7 +319,9 @@ static int dbm_check_auth(request_rec *r)
 
 static void register_hooks(apr_pool_t *p)
 {
-    ap_hook_auth_checker(dbm_check_auth, NULL, NULL, APR_HOOK_MIDDLE);
+    static const char * const aszPre[]={ "mod_authz_owner.c", NULL };
+
+    ap_hook_auth_checker(dbm_check_auth, aszPre, NULL, APR_HOOK_MIDDLE);
 }
 
 module AP_MODULE_DECLARE_DATA authz_dbm_module =
