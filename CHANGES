@@ -64,13 +64,19 @@ features:
        to set up anything that need to be done once per processes. For
        example, connections to databases.
 
-  *) Integrated mod_rewrite 3.0.9 & Moved development authority
-	   The last officially available release of mod_rewrite (3.0.9) was
-	   integrated into the Apache source repository. Additionally to the fact
-	   that this fixes some bugs, mod_rewrite now is no longer developed and
-	   maintained _externally_ by the original author Ralf S. Engelschall.
-	   Instead he has officially joined the Apache Group and gifted the
-	   sources to it (removed the shared copyright), so further development
-	   takes place directly at the Apache Groups source repository. No more
-	   version synchronizations are needed in the future.
+  *) Totally overhauled mod_rewrite:
+       First the last officially available release of mod_rewrite (3.0.9) was
+       integrated into the Apache source repository. Additionally to the fact
+       that this fixed some bugs, mod_rewrite now is no longer developed and
+       maintained _externally_ by the original author Ralf S. Engelschall.
+       Instead he has officially joined the Apache Group and gifted the
+       complete sources to it (removed the shared copyright), so further
+       development takes place directly at the Apache Groups source
+       repository. No more version synchronizations are needed in the future.
+       Additionally the rewriting engine was both enhanced and cleaned up by
+       introducing a generic way to interpolate backreferences. The noticeable
+       effect is that one now can use backreferences at nearly any string
+       construction point (RewriteRule subst string, RewriteCond test string,
+       ENV flag key/value, etc.) to access the parts of RewriteRule and
+       RewriteCond patterns via $N and %N.
 
