@@ -2995,7 +2995,143 @@ static int default_handler(request_rec *r)
     apr_close(fd);
     return OK;
 }
+/* Buffer filter 
+ * This is a relatively simple filter to coalesce many small buckets into 
+ * one large bucket. This implementation of buffer_filter will only coalesce
+ * a single contiguous string of coalesable buckets. It will not coalesce 
+ * multiple non-contiguous buckets. 
+ * 
+ * For example, if a brigade contains 10 small buckets followed by a 
+ * large bucket (or a pipe or file bucket) followed by more small buckets, 
+ * only the first 10 buckets will be coalesced.
+ */
+typedef struct BUFFER_FILTER_CTX {
+    char *buf;           /* Start of buffer */
+    char *cur;           /* Pointer to next location to write */
+    apr_ssize_t cnt;     /* Number of bytes put in buf */
+    apr_ssize_t avail;   /* Number of bytes available in the buf */
+} buffer_filter_ctx_t;
+#define FILTER_BUFF_SIZE 8192
+#define MIN_BUCKET_SIZE 200
+static apr_status_t buffer_filter(ap_filter_t *f, ap_bucket_brigade *b)
+{
+    apr_status_t rv;
+    apr_pool_t *p = f->r->pool;
+    ap_bucket *e, *insert_before = NULL, *destroy_me = NULL;
+    buffer_filter_ctx_t *ctx = f->ctx;
+    int pass_the_brigade = 0, insert_first = 0;
 
+    if (ctx == NULL) {
+        f->ctx = ctx = apr_pcalloc(p, sizeof(buffer_filter_ctx_t));
+        ctx->avail = FILTER_BUFF_SIZE;
+    }
+
+    if (ctx->cnt) {
+        insert_first = 1;
+    }
+
+    /* Iterate across the buckets, coalescing the small buckets into a 
+     * single buffer 
+     */
+    AP_BRIGADE_FOREACH(e, b) {
+        if (destroy_me) {
+            ap_bucket_destroy(destroy_me);
+            destroy_me = NULL;
+        }
+        if ((e->type == AP_BUCKET_EOS)  || (e->type == AP_BUCKET_FILE) ||
+            (e->type == AP_BUCKET_PIPE)) {
+            pass_the_brigade = 1;
+        }
+        else {
+            const char *str;
+            apr_ssize_t n;
+            rv = e->read(e, &str, &n, 0);
+            if (rv != APR_SUCCESS) {
+                /* XXX: log error */
+                return rv;
+            }
+            if ((n < MIN_BUCKET_SIZE) && (n < ctx->avail)) {
+                /* Coalesce this bucket into the buffer */
+                if (ctx->buf == NULL) {
+                    ctx->buf = apr_palloc(p, FILTER_BUFF_SIZE);
+                    ctx->cur = ctx->buf;
+                    ctx->cnt = 0;
+                }
+                memcpy(ctx->cur, str, n);
+                ctx->cnt += n;
+                ctx->cur += n;
+                ctx->avail -= n;
+                /* If this is the first bucket to be coalesced, don't remove it 
+                 * from the brigade. Save it as a marker for where to insert 
+                 * ctx->buf into the brigade when we're done.
+                 */
+                if (insert_before || insert_first){
+                    AP_BUCKET_REMOVE(e);
+                    destroy_me = e;
+                }
+                else {
+                    insert_before = e;
+                }
+            } 
+            else if (insert_before || insert_first) {
+                /* This bucket was not able to be coalesced because it either
+                 * exceeds MIN_BUCKET_SIZE or its contents will not fit into
+                 * buf. We're done...
+                 */
+                pass_the_brigade = 1;
+                break;
+            }
+            else {
+                /* If there is even a single bucket that cannot be coalesced, 
+                 * then we must pass the brigade down to the next filter.
+                 */
+                pass_the_brigade = 1;
+            }
+        }
+    }
+
+    if (destroy_me) {
+        ap_bucket_destroy(destroy_me);
+        destroy_me = NULL;
+    }
+
+    if (pass_the_brigade) {
+        /* Insert ctx->buf into the correct spotin the brigade */
+        if (insert_first) {
+            e = ap_bucket_create_transient(ctx->buf, ctx->cnt);
+            AP_BRIGADE_INSERT_HEAD(b, e);
+        } 
+        else if (insert_before) {
+            e = ap_bucket_create_transient(ctx->buf, ctx->cnt);
+            AP_BUCKET_INSERT_BEFORE(e, insert_before);
+            AP_BUCKET_REMOVE(insert_before);
+            ap_bucket_destroy(insert_before);
+            insert_before = NULL;
+        }
+        rv = ap_pass_brigade(f->next, b);
+        if (rv != APR_SUCCESS) {
+            /* XXX: Log the error */
+            return rv;
+        }
+        /* Get ctx->buf ready for the next brigade */
+        if (ctx) {
+            ctx->cur = ctx->buf;
+            ctx->cnt = 0;
+            ctx->avail = FILTER_BUFF_SIZE;
+        }
+    }
+    else {
+        if (insert_before) {
+            AP_BUCKET_REMOVE(insert_before);
+            ap_bucket_destroy(insert_before);
+        }
+        /* The brigade should be empty now because all the buckets
+         * were coalesced into the buffer_filter buf
+         */
+    }
+
+    return APR_SUCCESS;
+}
 /*
  * HTTP/1.1 chunked transfer encoding filter.
  */
@@ -3325,6 +3461,7 @@ static void register_hooks(void)
     ap_hook_insert_filter(core_register_filter, NULL, NULL, AP_HOOK_MIDDLE);
     ap_register_output_filter("CORE", core_filter, AP_FTYPE_CONNECTION + 1);
     ap_register_output_filter("CHUNK", chunk_filter, AP_FTYPE_CONNECTION);
+    ap_register_output_filter("BUFFER", buffer_filter, AP_FTYPE_CONNECTION);
 }
 
 API_VAR_EXPORT module core_module = {
