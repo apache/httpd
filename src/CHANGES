@@ -1,10 +1,11 @@
 Changes with Apache 1.3.18
 
-  *) Really fix mod_rewrite map lookups this time. [Tony Finch]
+  *) Fix pointer arithmetic in mod_rewrite map expansion.
+     [Christopher A. Bongaarts <cab@tc.umn.edu>] PR#7157, 7158
 
   *) Fixed a problem with file extensions being truncated during
      the call to ap_os_canonical_filename().
-	 [Brad Nicholes <BNICHOLES@novell.com>]
+     [Brad Nicholes <BNICHOLES@novell.com>]
 
 Changes with Apache 1.3.17
 
