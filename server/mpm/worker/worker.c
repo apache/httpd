@@ -228,6 +228,10 @@ int raise_sigstop_flags;
 
 static apr_pool_t *pconf;                 /* Pool for config stuff */
 static apr_pool_t *pchild;                /* Pool for httpd child stuff */
+static apr_pool_t *thread_pool;           /* pool for APR to use for our
+                                           * threads (shouldn't call it
+                                           * pthreads :) )
+                                           */
 
 static pid_t ap_my_pid; /* Linux getpid() doesn't work except in main 
                            thread. Use this instead */
@@ -916,7 +920,7 @@ static void create_listener_thread(thread_starter *ts)
     my_info->tid = -1; /* listener thread doesn't have a thread slot */
     my_info->sd = 0;
     rv = apr_thread_create(&ts->listener, thread_attr, listener_thread,
-                           my_info, pchild);
+                           my_info, thread_pool);
     if (rv != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_ALERT, rv, ap_server_conf,
                      "apr_thread_create: unable to create listener thread");
@@ -988,7 +992,7 @@ static void * APR_THREAD_FUNC start_threads(apr_thread_t *thd, void *dummy)
              * done because it lets us deal with tid better.
              */
             rv = apr_thread_create(&threads[i], thread_attr, 
-                                   worker_thread, my_info, pchild);
+                                   worker_thread, my_info, thread_pool);
             if (rv != APR_SUCCESS) {
                 ap_log_error(APLOG_MARK, APLOG_ALERT, rv, ap_server_conf,
                     "apr_thread_create: unable to create worker thread");
@@ -1118,6 +1122,10 @@ static void child_main(int child_num_arg)
 
     ap_my_pid = getpid();
     apr_pool_create(&pchild, pconf);
+    /* pool passed to apr_thread_create() can't be cleaned up with pchild
+     * since that causes segfaults with graceless termination
+     */
+    apr_pool_create(&thread_pool, NULL);
 
     /*stuff to do before we switch id's, so we have permissions.*/
     ap_reopen_scoreboard(pchild, NULL, 0);
@@ -1182,7 +1190,7 @@ static void child_main(int child_num_arg)
     ts->threadattr = thread_attr;
 
     rv = apr_thread_create(&start_thread_id, thread_attr, start_threads,
-                           ts, pchild);
+                           ts, thread_pool);
     if (rv != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_ALERT, rv, ap_server_conf,
                      "apr_thread_create: unable to create worker thread");
