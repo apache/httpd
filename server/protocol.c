@@ -593,6 +593,10 @@ static int read_request_line(request_rec *r)
     do {
         apr_status_t rv;
 
+        /* insure ap_rgetline allocates storage each time thru the loop
+         * if there are empty lines
+         */
+        r->the_request = NULL;
         rv = ap_rgetline(&(r->the_request), DEFAULT_LIMIT_REQUEST_LINE + 2,
                          &len, r, 0);
 
