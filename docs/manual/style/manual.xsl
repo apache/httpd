@@ -210,7 +210,7 @@
 
   <xsl:template match="note">
   <blockquote>
-  <table><tr><td bgcolor="#ffffcc">
+  <table><tr><td bgcolor="#e0e5f5">
      <xsl:apply-templates/>
   </td></tr></table>
   </blockquote>
