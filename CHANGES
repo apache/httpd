@@ -1,4 +1,9 @@
 Changes with Apache 2.0.30-dev
+
+  *) Fix matching of vhosts by ip address so we find IPv4
+     vhost address when target address is v4-mapped form of
+     that address.  [Jeff Trawick]
+
   *) More performance tweaks to the BNDM string-search algorithm
      used to find "<!--#" tokens in mod_include [Brian Pane]
 
