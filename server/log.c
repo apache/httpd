@@ -411,7 +411,7 @@ static void log_error_core(const char *file, int line, int level,
     }
     if (!(level & APLOG_NOERRNO)
 	&& (status != 0)) {
-        char buf[100];
+        char buf[120];
 	len += ap_snprintf(errstr + len, MAX_STRING_LEN - len,
 		"(%d)%s: ", status, ap_strerror(status, buf, sizeof(buf)));
     }
