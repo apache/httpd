@@ -1124,6 +1124,13 @@ request_rec *ap_read_request(conn_rec *conn)
         ap_log_transaction(r);
         return r;
     }
+
+    if ((access_status = ap_run_post_read_request(r))) {
+        ap_die(access_status, r);
+        ap_log_transaction(r);
+        return NULL;
+    }
+
     if (((expect = ap_table_get(r->headers_in, "Expect")) != NULL) &&
         (expect[0] != '\0')) {
         /*
@@ -1145,12 +1152,6 @@ request_rec *ap_read_request(conn_rec *conn)
             ap_log_transaction(r);
             return r;
         }
-    }
-
-    if ((access_status = ap_run_post_read_request(r))) {
-        ap_die(access_status, r);
-        ap_log_transaction(r);
-        return NULL;
     }
 
     return r;
