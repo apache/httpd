@@ -392,14 +392,14 @@ int main(int argc, const char * const argv[])
 	ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, "Syntax OK\n");
 	destroy_and_exit_process(process, 0);
     }
-    apr_clear_pool(plog);
+    apr_pool_clear(plog);
     ap_run_open_logs(pconf, plog, ptemp, server_conf);
     ap_post_config_hook(pconf, plog, ptemp, server_conf);
     apr_pool_destroy(ptemp);
 
     for (;;) {
 	apr_hook_deregister_all();
-	apr_clear_pool(pconf);
+	apr_pool_clear(pconf);
         for (mod = ap_prelinked_modules; *mod != NULL; mod++) {
             ap_register_hooks(*mod, pconf);
         }
@@ -418,7 +418,7 @@ int main(int argc, const char * const argv[])
         ap_fixup_virtual_hosts(pconf, server_conf);
         ap_fini_vhost_config(pconf, server_conf);
         apr_sort_hooks();
-	apr_clear_pool(plog);
+	apr_pool_clear(plog);
 	ap_run_open_logs(pconf, plog, ptemp, server_conf);
 	ap_post_config_hook(pconf, plog, ptemp, server_conf);
 	apr_pool_destroy(ptemp);

@@ -734,7 +734,7 @@ static void *worker_thread(void *arg)
             pthread_mutex_unlock(&idle_thread_count_mutex);
 	    break;
 	}
-        apr_clear_pool(ptrans);
+        apr_pool_clear(ptrans);
     }
 
     pthread_mutex_lock(&thread_pool_parent_mutex);

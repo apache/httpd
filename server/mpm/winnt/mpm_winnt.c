@@ -743,7 +743,7 @@ static PCOMP_CONTEXT win9x_get_connection(PCOMP_CONTEXT context)
     
 
     while (1) {
-        apr_clear_pool(context->ptrans);        
+        apr_pool_clear(context->ptrans);        
         context->accept_socket = remove_job();
         if (context->accept_socket == -1) {
             return NULL;
@@ -892,7 +892,7 @@ static apr_inline apr_status_t reset_acceptex_context(PCOMP_CONTEXT context)
     int rc, i;
 
     /* reset the buffer pools */
-    apr_clear_pool(context->ptrans);
+    apr_pool_clear(context->ptrans);
     context->sock = NULL;
 
     /* recreate and initialize the accept socket if it is not being reused */

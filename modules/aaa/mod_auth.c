@@ -173,7 +173,7 @@ static apr_table_t *groups_for_user(apr_pool_t *p, char *user, char *grpfile)
 	if ((l[0] == '#') || (!l[0]))
 	    continue;
 	ll = l;
-	apr_clear_pool(sp);
+	apr_pool_clear(sp);
 
 	group_name = ap_getword(sp, &ll, ':');
 
