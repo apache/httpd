@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/08/25 01:50:12 $]
+Last modified at [$Date: 2003/08/25 04:03:04 $]
 
 Release:
 
@@ -342,6 +342,13 @@ PATCHES TO PORT FROM 2.1
 
     * Fix inconsistency in generated expression parse tree. (2.0 + 1.3)
         modules/filters/mod_include.c: r1.261
+      +1: nd
+
+    * mod_include's expression tokenizer: don't skip the first character of
+      a string, it may be a backslash. (2.0 + 1.3)
+      (patch for 2.0: http://cvs.apache.org/~nd/ssi-escape.patch)
+      1.3 goes the same way.
+        modules/filters/mod_include.c: r1.264
       +1: nd
 
 CURRENT RELEASE NOTES:
