@@ -1,5 +1,9 @@
 Changes with Apache 2.0.23-dev
 
+  *) Fixed an error in mod_include's directive parsing routines which
+     caused #if, #elif, and #else expressions containing backslashes
+     to be improperly evaluated.  [Cliff Woolley]
+
   *) Introduced new mod_autoindex IndexOptions flags; SuppressIcon to 
      drop the icon column, SuppressRules to drop the <hr> elements, 
      and HTMLTable to create rudimentary HTML table listings (implies 
