@@ -5323,6 +5323,7 @@ int REALMAIN(int argc, char *argv[])
             ap_scoreboard_image =
                 (scoreboard *)input_parms.child.scoreboard_heap;
 #endif
+            ap_init_mutex_method(ap_default_mutex_method());
             child_main(input_parms.child.slot);
         }
         else
