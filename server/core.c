@@ -2764,6 +2764,12 @@ static const char *add_ct_output_filters(cmd_parms *cmd, void *conf_,
     else {
         old = (ap_filter_rec_t*) apr_hash_get(conf->ct_output_filters, arg2,
                                               APR_HASH_KEY_STRING);
+        /* find last entry */
+        if (old) {
+            while (old->next) {
+                old = old->next;
+            }
+        }
     }
 
     while (*arg &&
@@ -2774,7 +2780,11 @@ static const char *add_ct_output_filters(cmd_parms *cmd, void *conf_,
 
         /* We found something, so let's append it.  */
         if (old) {
-            new->next = old;
+            old->next = new;
+        }
+        else {
+            apr_hash_set(conf->ct_output_filters, arg2,
+                         APR_HASH_KEY_STRING, new);
         }
         old = new;
     }
@@ -2783,8 +2793,6 @@ static const char *add_ct_output_filters(cmd_parms *cmd, void *conf_,
         return "invalid filter name";
     }
     
-    apr_hash_set(conf->ct_output_filters, arg2, APR_HASH_KEY_STRING, new);
-
     return NULL;
 }
 /* 
