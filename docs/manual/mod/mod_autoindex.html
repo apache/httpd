@@ -86,20 +86,69 @@ order) even though they both are shown as &quot;1K&quot;.
 
 <H2>Autoindex Request Query Arguments</H2>
 
-The column sorting headers are self-referencing hyperlinks that add the following
-query options, they may be added to any request for the directory resource, where
-They have no effect if the  <A HREF="#indexoptions">IndexOptions</A> directive's 
-<SAMP>SuppressColumnSorting</SAMP> option is in effect.  In the list below, 
-<EM>S</EM> is the desired sort order, either <SAMP>A</SAMP> for ascending or 
-<SAMP>D</SAMP> for descending sequence.  
+<P>Apache 2.0.23 reorganized the Query Arguments for Column Sorting, and introduced
+an entire group of new query options.  To effectively eliminate all client control
+over the output, the <SAMP><A HREF="#indexoptions:ignoreclient">IndexOptions 
+IgnoreClient</A></SAMP> option was introduced.</P>
+
+<P>The column sorting headers themselves are self-referencing hyperlinks that add the 
+sort query options shown below.  Any option below may be added to any request for the 
+directory resource.  
 
 <ul>
-<li><SAMP>N=<EM>S</EM></SAMP> sorts the directory by file name
-<li><SAMP>M=<EM>S</EM></SAMP> sorts the directory by last-modified date, then file name
-<li><SAMP>S=<EM>S</EM></SAMP> sorts the directory by size, then file name
-<li><SAMP>D=<EM>S</EM></SAMP> sorts the directory by description, then file name
+<li><SAMP>C=N</SAMP> sorts the directory by file name
+<li><SAMP>C=M</SAMP> sorts the directory by last-modified date, then file name
+<li><SAMP>C=S</SAMP> sorts the directory by size, then file name
+<li><SAMP>C=D</SAMP> sorts the directory by description, then file name<br />&nbsp;
+
+<li><SAMP>O=A</SAMP> sorts the listing in Ascending Order
+<li><SAMP>O=D</SAMP> sorts the listing in Descending Order<br />&nbsp;
+
+<li><SAMP>F=0</SAMP> formats the listing as a simple list (not FancyIndexed)
+<li><SAMP>F=1</SAMP> formats the listing as a FancyIndexed list
+<li><SAMP>F=2</SAMP> formats the listing as an HTMLTable FancyIndexed list<br />&nbsp;
+
+<li><SAMP>V=0</SAMP> disables version sorting
+<li><SAMP>V=0</SAMP> enables version sorting<br />&nbsp;
+
+<li><SAMP>P=<EM>pattern</EM></SAMP> lists only files matching the given <EM>pattern</EM>
 </ul>
 
+<P>Note that the 'P'attern query argument is tested <em>after</em> the usual IndexIgnore
+directives are processed, and all file names are still subjected to the same critera
+as any other autoindex listing.  The Query Arguments parser in mod_autoindex will stop
+abruptly when an unrecognized option is encountered.  The Query Arguments must be well
+formed, according to the table above.</P>
+
+<P>The simple example below, which can be clipped and saved in a header.html file, 
+illustrates these query options.  Note that the unknown "X" argument, for the
+submit button, is listed last to assure the arguments are all parsed before
+mod_autoindex encounters the X=Go input.</P>
+
+<pre>&lt;FORM METHOD="GET"&gt;
+    Show me a &lt;SELECT NAME="F"&gt;
+      &lt;OPTION VALUE="0"&gt; Plain list 
+      &lt;OPTION VALUE="1" SELECTED&gt; Fancy list
+      &lt;OPTION VALUE="2"&gt; Table list
+    &lt;/SELECT&gt;
+    Sorted by &lt;SELECT NAME="C"&gt;
+      &lt;OPTION VALUE="N" SELECTED&gt; Name
+      &lt;OPTION VALUE="M"&gt; Date Modified
+      &lt;OPTION VALUE="S"&gt; Size
+      &lt;OPTION VALUE="D"&gt; Description
+    &lt;/SELECT&gt;
+    &lt;SELECT NAME="O"&gt;
+      &lt;OPTION VALUE="A" SELECTED&gt; Ascending
+      &lt;OPTION VALUE="D"&gt; Descending
+    &lt;/SELECT&gt;
+    &lt;SELECT NAME="V"&gt;
+      &lt;OPTION VALUE="0" SELECTED&gt; in Normal order
+      &lt;OPTION VALUE="1"&gt; in Version order
+    &lt;/SELECT&gt;
+    Matching &lt;INPUT TYPE="text" NAME="P" VALUE="*"&gt;
+    &lt;INPUT TYPE="submit" NAME="X" VALUE="Go"&gt;
+&lt;/FORM&gt;
+</pre>
 
 <H2>Directives</H2>
 
@@ -603,6 +652,11 @@ fancy directory listing.  Note this will confuse older browsers.  It is particul
 necessary if file names or description text will alternate between left-to-right 
 and right-to-left reading order, as can happen on WinNT or other utf-8 
 enabled platforms.
+<DT><A NAME="indexoptions:iconsarelinks">IconsAreLinks</A>
+<DD>
+<!--%plaintext &lt;?INDEX {\tt IconsAreLinks} index option&gt; -->
+This makes the icons part of the anchor for the filename, for
+fancy indexing.
 <DT><A NAME="indexoptions:iconheight">IconHeight[=pixels] (<EM>Apache 1.3 and later</EM>)</A>
 <DD>
 <!--%plaintext &lt;?INDEX {\tt IconHeight} index option&gt; -->
@@ -613,11 +667,6 @@ precalculate the page layout without having to wait until all the
 images have been loaded.  If no value is given for the option, it
 defaults to the standard height of the icons supplied with the Apache
 software.
-<DT><A NAME="indexoptions:iconsarelinks">IconsAreLinks</A>
-<DD>
-<!--%plaintext &lt;?INDEX {\tt IconsAreLinks} index option&gt; -->
-This makes the icons part of the anchor for the filename, for
-fancy indexing.
 <DT><A NAME="indexoptions:iconwidth">IconWidth[=pixels] (<EM>Apache 1.3 and later</EM>)</A>
 <DD>
 <!--%plaintext &lt;?INDEX {\tt IconWidth} index option&gt; -->
@@ -628,6 +677,12 @@ precalculate the page layout without having to wait until all the
 images have been loaded.  If no value is given for the option, it
 defaults to the standard width of the icons supplied with the Apache
 software.
+<DT><A NAME="indexoptions:ignoreclient">IgnoreClient</A>
+<DD>
+<!--%plaintext &lt;?INDEX {\tt IgnoreClient} index option&gt; -->
+This option causes mod_autoindex to ignore all query variables from the
+client, including sort order (implies <EM><A 
+ HREF="#indexoptions:suppresscolumnsorting">SuppressColumnSorting</A></EM>.)
 <DT><A NAME="indexoptions:namewidth">NameWidth=[<EM>n</EM> | *] (<EM>Apache 1.3.2 and later</EM>)</A>
 <DD>
 The NameWidth keyword allows you to specify the width of the
@@ -649,7 +704,10 @@ document for the value of the TITLE tag.  This is CPU and disk intensive.
 If specified, Apache will not make the column headings in a FancyIndexed
 directory listing into links for sorting.  The default behaviour is
 for them to be links; selecting the column heading will sort the directory
-listing by the values in that column.
+listing by the values in that column.  <STRONG>Prior to Apache 2.0.23, this
+also disabled parsing the Query Arguments for the sort string.</STRONG>
+That behavior is now controled by <A HREF="#indexoptions:ignoreclient"
+ >IndexOptions IgnoreClient</A> in Apache 2.0.23.
 <DT><A NAME="indexoptions:suppressdescription">SuppressDescription</A>
 <DD>
 <!--%plaintext &lt;?INDEX {\tt SuppressDescription} index option&gt; -->
