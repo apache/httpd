@@ -2,6 +2,9 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) mod_autoindex no longer forgets output format and enabled version
+     sort in linked column headers.  [André Malo]
+
   *) Extend mod_negotiation to evaluate the environment variables
      no-gzip and gzip-only-text/html the same way as mod_deflate does.
      [André Malo]
