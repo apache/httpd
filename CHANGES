@@ -2,6 +2,9 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) mod_autoindex / core: Don't fail to show filenames containing
+     special characters like '%'. PR 13598.  [André Malo]
+
   *) mod_info: HTML escape configuration information so it displays 
      correctly. PR 24232. [Thom May]
      

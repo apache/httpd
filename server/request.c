@@ -1697,10 +1697,13 @@ AP_DECLARE(request_rec *) ap_sub_req_lookup_dirent(const apr_finfo_t *dirent,
             rnew->uri = ap_make_full_path(rnew->pool, rnew->uri, r->path_info + 1);
             rnew->path_info = apr_pstrdup(rnew->pool, r->path_info);
         }
+        rnew->uri = ap_escape_uri(rnew->pool, rnew->uri);
     }
     else {
         udir = ap_make_dirstr_parent(rnew->pool, r->uri);
-        rnew->uri = ap_make_full_path(rnew->pool, udir, dirent->name);
+        rnew->uri = ap_escape_uri(rnew->pool, ap_make_full_path(rnew->pool,
+                                                                udir,
+                                                                dirent->name));
     }
 
     fdir = ap_make_dirstr_parent(rnew->pool, r->filename);
