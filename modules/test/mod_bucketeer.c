@@ -67,6 +67,7 @@
 #include "util_filter.h"
 #include "apr_buckets.h"
 #include "http_request.h"
+#include "http_protocol.h"
 
 static const char bucketeerFilterName[] = "BUCKETEER";
 module AP_MODULE_DECLARE_DATA bucketeer_module;
@@ -137,6 +138,13 @@ static apr_status_t bucketeer_out_filter(ap_filter_t *f,
              * Ignore flush buckets for the moment.. 
              * we decide what to stream
              */
+            continue;
+        }
+
+        if (AP_BUCKET_IS_ERROR(e)) {     
+            apr_bucket *err_copy;
+            apr_bucket_copy(e, &err_copy);
+            APR_BRIGADE_INSERT_TAIL(ctx->bb, err_copy);
             continue;
         }
 
