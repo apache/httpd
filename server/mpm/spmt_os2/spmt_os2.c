@@ -177,13 +177,11 @@ static void clean_child_exit(int code)
 
 
 
-static HMTX lock_sem = -1;
+static ap_lock_t *accept_mutex = NULL;
 
-static ap_status_t accept_mutex_cleanup(void *foo)
+static ap_status_t accept_mutex_child_cleanup(void *foo)
 {
-    DosReleaseMutexSem(lock_sem);
-    DosCloseMutexSem(lock_sem);
-    return APR_SUCCESS;
+    return ap_unlock(accept_mutex);
 }
 
 /*
@@ -192,15 +190,7 @@ static ap_status_t accept_mutex_cleanup(void *foo)
  */
 static void accept_mutex_child_init(ap_pool_t *p)
 {
-    int rc = DosOpenMutexSem(NULL, &lock_sem);
-
-    if (rc != 0) {
-	ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_EMERG, 0, server_conf,
-		    "Child cannot open lock semaphore, rc=%d", rc);
-	clean_child_exit(APEXIT_CHILDINIT);
-    } else {
-        ap_register_cleanup(p, NULL, accept_mutex_cleanup, ap_null_cleanup);
-    }
+    ap_register_cleanup(p, NULL, accept_mutex_child_cleanup, ap_null_cleanup);
 }
 
 /*
@@ -209,35 +199,33 @@ static void accept_mutex_child_init(ap_pool_t *p)
  */
 static void accept_mutex_init(ap_pool_t *p)
 {
-    int rc = DosCreateMutexSem(NULL, &lock_sem, DC_SEM_SHARED, FALSE);
-    
-    if (rc != 0) {
-	ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_EMERG, 0, server_conf,
-		    "Parent cannot create lock semaphore, rc=%d", rc);
-	exit(APEXIT_INIT);
-    }
+    ap_status_t rc = ap_create_lock(&accept_mutex, APR_MUTEX, APR_INTRAPROCESS, NULL, p);
 
-    ap_register_cleanup(p, NULL, accept_mutex_cleanup, ap_null_cleanup);
+    if (rc != APR_SUCCESS) {
+	ap_log_error(APLOG_MARK, APLOG_EMERG, rc, server_conf,
+		    "Error creating accept lock. Exiting!");
+	clean_child_exit(APEXIT_CHILDFATAL);
+    }
 }
 
 static void accept_mutex_on(void)
 {
-    int rc = DosRequestMutexSem(lock_sem, SEM_INDEFINITE_WAIT);
+    ap_status_t rc = ap_lock(accept_mutex);
 
-    if (rc != 0) {
-	ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_EMERG, 0, server_conf,
-		    "OS2SEM: Error %d getting accept lock. Exiting!", rc);
+    if (rc != APR_SUCCESS) {
+	ap_log_error(APLOG_MARK, APLOG_EMERG, rc, server_conf,
+		    "Error getting accept lock. Exiting!");
 	clean_child_exit(APEXIT_CHILDFATAL);
     }
 }
 
 static void accept_mutex_off(void)
 {
-    int rc = DosReleaseMutexSem(lock_sem);
-    
-    if (rc != 0) {
-	ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_EMERG, 0, server_conf,
-		    "OS2SEM: Error %d freeing accept lock. Exiting!", rc);
+    ap_status_t rc = ap_unlock(accept_mutex);
+
+    if (rc != APR_SUCCESS) {
+	ap_log_error(APLOG_MARK, APLOG_EMERG, rc, server_conf,
+		    "Error freeing accept lock. Exiting!");
 	clean_child_exit(APEXIT_CHILDFATAL);
     }
 }
@@ -867,9 +855,23 @@ API_EXPORT(void) ap_child_terminate(request_rec *r)
     ap_scoreboard_image->parent[THREAD_GLOBAL(child_num)].deferred_die = 1;
 }
 
+
+
 int ap_graceful_stop_signalled(void)
 {
     if (ap_scoreboard_image->parent[THREAD_GLOBAL(child_num)].deferred_die ||
+	ap_scoreboard_image->global.running_generation != ap_scoreboard_image->parent[THREAD_GLOBAL(child_num)].generation) {
+	return 1;
+    }
+    return 0;
+}
+
+
+
+int ap_stop_signalled(void)
+{
+    if (shutdown_pending || restart_pending ||
+        ap_scoreboard_image->parent[THREAD_GLOBAL(child_num)].deferred_die ||
 	ap_scoreboard_image->global.running_generation != ap_scoreboard_image->parent[THREAD_GLOBAL(child_num)].generation) {
 	return 1;
     }
@@ -946,7 +948,7 @@ static void child_main(void *child_num_arg)
     signal(SIGHUP, just_die);
     signal(SIGTERM, just_die);
 
-    while (!ap_graceful_stop_signalled()) {
+    while (!ap_stop_signalled()) {
         BUFF *conn_io;
         int srv;
         ap_socket_t *sd;
@@ -977,14 +979,18 @@ static void child_main(void *child_num_arg)
 	 */
 
 	/* Lock around "accept", if necessary */
-	SAFE_ACCEPT(accept_mutex_on());
+        SAFE_ACCEPT(accept_mutex_on());
+
+        if (ap_stop_signalled()) {
+            clean_child_exit(0);
+        }
 
 	for (;;) {
 	    if (ap_listeners->next) {
 		/* more than one socket */
-		srv = ap_poll(listen_poll, &nsds, -1);
+                srv = ap_poll(listen_poll, &nsds, -1);
 
-		if (srv < 0 && errno != EINTR) {
+		if (srv != APR_SUCCESS) {
 		    /* Single Unix documents select as returning errnos
 		     * EBADF, EINTR, and EINVAL... and in none of those
 		     * cases does it make sense to continue.  In fact
@@ -994,9 +1000,6 @@ static void child_main(void *child_num_arg)
 		    ap_log_error(APLOG_MARK, APLOG_ERR, errno, server_conf, "select: (listen)");
 		    clean_child_exit(1);
 		}
-
-		if (srv <= 0)
-		    continue;
 
 		/* we remember the last_lr we searched last time around so that
 		   we don't end up starving any particular listening socket */
@@ -1035,16 +1038,8 @@ static void child_main(void *child_num_arg)
 	    /* if we accept() something we don't want to die, so we have to
 	     * defer the exit
 	     */
-	    THREAD_GLOBAL(usr1_just_die) = 0;
-	    for (;;) {
-		if (ap_scoreboard_image->parent[THREAD_GLOBAL(child_num)].deferred_die) {
-		    /* we didn't get a socket, and we were told to die */
-		    clean_child_exit(0);
-		}
-		rv = ap_accept(&csd, sd, ptrans);
-		if (rv != APR_EINTR)
-		    break;
-	    }
+            THREAD_GLOBAL(usr1_just_die) = 0;
+            rv = ap_accept(&csd, sd, ptrans);
 
 	    if (rv == APR_SUCCESS)
 		break;		/* We have a socket ready for reading */
@@ -1060,7 +1055,7 @@ static void child_main(void *child_num_arg)
 		 * lead to never-ending loops here.  So it seems best
 		 * to just exit in most cases.
 		 */
-                switch (rv) {
+                switch (ap_canonical_error(rv)) {
 #ifdef EPROTO
 		    /* EPROTO on certain older kernels really means
 		     * ECONNABORTED, so we need to ignore it for them.
@@ -1101,6 +1096,12 @@ static void child_main(void *child_num_arg)
 		case ENETUNREACH:
 #endif
                     break;
+
+                case EINTR:
+                    /* We only get hit by an EINTR if the parent is
+                     * killing us off
+                     */
+                    clean_child_exit(0);
 		default:
 		    ap_log_error(APLOG_MARK, APLOG_ERR, rv, server_conf,
 				"accept: (client socket)");
@@ -1108,7 +1109,7 @@ static void child_main(void *child_num_arg)
 		}
 	    }
 
-	    if (ap_graceful_stop_signalled()) {
+	    if (ap_stop_signalled()) {
 		clean_child_exit(0);
 	    }
 	    THREAD_GLOBAL(usr1_just_die) = 1;
@@ -1527,6 +1528,12 @@ int ap_mpm_run(ap_pool_t *_pconf, ap_pool_t *plog, server_rec *s)
         int slot;
         TID tid;
         ULONG rc;
+        ap_listen_rec *lr;
+
+        for (lr = ap_listeners; lr; lr = lr->next) {
+            ap_close_socket(lr->sd);
+            DosSleep(0);
+        }
 
         /* Kill off running threads */
         for (slot=0; slot<max_daemons_limit; slot++) {
@@ -1534,16 +1541,18 @@ int ap_mpm_run(ap_pool_t *_pconf, ap_pool_t *plog, server_rec *s)
                 tid = ap_scoreboard_image->parent[slot].tid;
                 rc = DosKillThread(tid);
 
-                if (rc == 0) {
-                    rc = DosWaitThread(&tid, DCWW_WAIT);
+                if (rc != ERROR_INVALID_THREADID) { // Already dead, ignore
+                    if (rc == 0) {
+                        rc = DosWaitThread(&tid, DCWW_WAIT);
 
-                    if (rc) {
+                        if (rc) {
+                            ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_WARNING, 0, server_conf,
+                                         "error %lu waiting for thread to terminate", rc);
+                        }
+                    } else {
                         ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_WARNING, 0, server_conf,
-                                     "error %lu waiting for thread to terminate", rc);
+                                     "error %lu killing thread", rc);
                     }
-                } else {
-                    ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_WARNING, 0, server_conf,
-                                 "error %lu killing thread", rc);
                 }
             }
         }
