@@ -1,5 +1,5 @@
 Apache 2.0 STATUS:
-Last modified at [$Date: 2000/05/29 11:54:11 $]
+Last modified at [$Date: 2000/05/30 02:43:29 $]
 
 Release:
 
@@ -54,9 +54,6 @@ RELEASE SHOWSTOPPERS:
     * We need a thread-safe resolver, at least on Unix.
         Status: The best known candidate would be something from
 	BIND v9.
-
-    * The wrong line number is reported for configuration file syntax 
-      errors.  If this isn't fixed, the bug database will explode.
 
 RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
     * OS/2: Get loadable modules working again. Requires shared core support
