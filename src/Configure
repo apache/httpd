@@ -1247,7 +1247,7 @@ $(LIB): $(OBJS)
 
 .c.so:
 	$(CC) -c $(INCLUDES) $(CFLAGS) $(CFLAGS_SHLIB) $(SPACER) -o $*-so.o $<
-	$(LD) $(LDFLAGS) $(LDFLAGS_SHLIB) -o $@ $*-so.o
+	$(LD) $(LDFLAGS_SHLIB) -o $@ $*-so.o
 
 clean:
 	rm -f $(OBJS) $(SHLIBS) $(SHLIBS_OBJ) $(LIB) $(SHLIB)
