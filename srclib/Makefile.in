@@ -1,4 +1,5 @@
 
+SUBDIRS = pcre
 BUILD_SUBDIRS = apr apr-util
 CLEAN_SUBDIRS = apr-util apr
 
