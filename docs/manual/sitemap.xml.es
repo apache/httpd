@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE sitemap SYSTEM "./style/sitemap.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.es.xsl"?>
-<!-- English Revision: 1.38 -->
+<!-- English Revision: 1.39 -->
 
 <!--
  Copyright 2004 The Apache Software Foundation
@@ -119,6 +119,7 @@ Apache</page>
 <page href="programs/apxs.html">P&#225;gina de Ayuda: apxs</page>
 <page href="programs/configure.html">P&#225;gina de Ayuda: configure</page>
 <page href="programs/dbmmanage.html">P&#225;gina de Ayuda: dbmmanage</page>
+<page href="programs/htcacheclean.html">P&#225;gina de Ayuda: htcacheclean</page>
 <page href="programs/htdigest.html">P&#225;gina de Ayuda: htdigest</page>
 <page href="programs/htpasswd.html">P&#225;gina de Ayuda: htpasswd</page>
 <page href="programs/logresolve.html">P&#225;gina de Ayuda: logresolve</page>

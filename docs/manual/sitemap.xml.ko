@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="EUC-KR" ?>
 <!DOCTYPE sitemap SYSTEM "./style/sitemap.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.ko.xsl"?>
-<!-- English Revision: 1.38 -->
+<!-- English Revision: 1.39 -->
 
 <!--
  Copyright 2003-2004 The Apache Software Foundation
@@ -122,6 +122,7 @@
 <page href="programs/apxs.html">Manpage: apxs</page>
 <page href="programs/configure.html">Manpage: configure</page>
 <page href="programs/dbmmanage.html">Manpage: dbmmanage</page>
+<page href="programs/htcacheclean.html">Manpage: htcacheclean</page>
 <page href="programs/htdigest.html">Manpage: htdigest</page>
 <page href="programs/htpasswd.html">Manpage: htpasswd</page>
 <page href="programs/logresolve.html">Manpage: logresolve</page>
