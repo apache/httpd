@@ -1,5 +1,8 @@
 Changes with Apache 2.0.28-dev
  
+  *) Introduce htdbm, a user management utility for db/dbm authorization
+     databases.  [Mladen Turk <mturk@mappingsoft.com>]
+
   *) Optimize usage of strlen and strcat in ap_directory_walk.
      [Brian Pane <bpane@pacbell.net>]
 
