@@ -52,8 +52,7 @@
 
 /*
  * util_date.c: date parsing utility routines
- *     These routines are (hopefully) platform-independent aside from
- *     the limitations of Unix time (must fit inside a signed long).
+ *     These routines are (hopefully) platform-independent.
  * 
  * 27 Oct 1996  Roy Fielding
  *     Extracted (with many modifications) from mod_proxy.c and
@@ -112,19 +111,21 @@ int checkmask(const char *data, const char *mask)
  * 
  * The return value is always a valid time_t value -- (time_t)0 is returned
  * if the input date is outside that capable of being represented by time(),
- * i.e., outside Thu, 01 Jan 1970 00:00:00 to 01 Jan 2038 00:00:00.
+ * i.e., before Thu, 01 Jan 1970 00:00:00 for all systems and 
+ * beyond 2038 for 32bit systems.
  *
  * This routine is intended to be very fast, much faster than mktime().
  */
 time_t tm2sec(const struct tm *t)
 {
     int  year;
-    long days;
+    time_t days;
     const int dayoffset[12] =
         {306, 337, 0, 31, 61, 92, 122, 153, 184, 214, 245, 275};
 
     year = t->tm_year;
-    if (year < 70 || year >= 138)    /* Most OSes have a limited range */
+
+    if (year < 70 || ((sizeof(time_t) <= 4) && (year >= 138)))
         return BAD_DATE;
 
     /* shift new year to 1st March in order to make leap year calc easy */
@@ -132,9 +133,8 @@ time_t tm2sec(const struct tm *t)
     if (t->tm_mon < 2) year--;
 
     /* Find number of days since 1st March 1900 (in the Gregorian calendar). */
-    /* Because year 2000 is a leap year, we don't need to adjust for century */
 
-    days  = year * 365 + year/4;
+    days  = year * 365 + year/4 - year/100 + (year/100 + 3)/4;
     days += dayoffset[t->tm_mon] + t->tm_mday - 1;
     days -= 25508; /* 1 jan 1970 is 25508 days since 1 mar 1900 */
 
@@ -143,7 +143,7 @@ time_t tm2sec(const struct tm *t)
     if (days < 0)
         return BAD_DATE;       /* must have overflowed */
     else
-        return (time_t)days;   /* must be a valid time */
+        return days;           /* must be a valid time */
 }
 
 /*
@@ -222,11 +222,8 @@ time_t parseHTTPdate(const char *date)
                /* start of the actual date information for all 3 formats. */
     
     if (checkmask(date, "## @$$ #### ##:##:## *")) {     /* RFC 1123 format */
-        if ((date[7] == '1') && (date[8] == '9'))
-            ds.tm_year = 0;
-        else if ((date[7] == '2') && (date[8] == '0'))
-            ds.tm_year = 100;
-        else
+        ds.tm_year = ((date[7] - '0') * 10 + (date[8] - '0') - 19) * 100;
+        if (ds.tm_year < 0)
             return BAD_DATE;
 
         ds.tm_year += ((date[9] - '0') * 10) + (date[10] - '0');
@@ -247,11 +244,8 @@ time_t parseHTTPdate(const char *date)
         timstr = date + 10;
     }
     else if (checkmask(date, "@$$ ~# ##:##:## ####*")) { /* asctime format  */
-        if ((date[16] == '1') && (date[17] == '9'))
-            ds.tm_year = 0;
-        else if ((date[16] == '2') && (date[17] == '0'))
-            ds.tm_year = 100;
-        else
+        ds.tm_year = ((date[16] - '0') * 10 + (date[17] - '0') - 19) * 100;
+        if (ds.tm_year < 0)
             return BAD_DATE;
 
         ds.tm_year += ((date[18] - '0') * 10) + (date[19] - '0');
@@ -288,12 +282,11 @@ time_t parseHTTPdate(const char *date)
     if ((ds.tm_mday == 31) && (mon == 3 || mon == 5 || mon == 8 || mon == 10))
         return BAD_DATE;
 
-    /* February gets special check for leapyear, but we don't have to worry */
-    /* about 100 and 400 year adjustments since 2000 is a special leap year */
-    /* Note also that (ds.tm_year & 3) == (ds.tm_year % 4).                 */
+    /* February gets special check for leapyear */
 
-    if ((mon == 1) &&
-        ((ds.tm_mday > 29) || ((ds.tm_mday == 29) && (ds.tm_year & 3))))
+    if ((mon == 1) && ((ds.tm_mday > 29) ||
+         ((ds.tm_mday == 29) && ((ds.tm_year & 3) ||
+           (((ds.tm_year % 100) == 0) && (((ds.tm_year % 400) != 100)))))))
         return BAD_DATE;
 
     ds.tm_mon = mon;
