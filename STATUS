@@ -167,16 +167,6 @@ Open issues:
       appropriate environment. Marc and Alexei don't see any
       big deal. Martin says that not every "env" has a -u flag.
 
-    * 206 vs. 200 issue on Content-Length
-	See <Pine.BSF.3.95q.971102000930.5555B-100000@valis.worldgate.com>
-	Roy says sending 200 is correct, but Alexei disagrees.
-	Marc sides with Alexei.  We were talking about two different PRs.
-        Apache should be sending 200 *and* Accept-Ranges.
-
-	Dean says: I'm still really confused as to what the problem is or
-	isn't.  If one of you three could work up a patch that would be
-	most excellent.
-
     * Marc's socket options like source routing (kill them?)
 	Marc, Martin say Yes
 
