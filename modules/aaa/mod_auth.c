@@ -229,14 +229,14 @@ static int authenticate_basic_user(request_rec *r)
         if (!(conf->auth_authoritative)) {
             return DECLINED;
         }
-        ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                       "user %s not found: %s", r->user, r->uri);
         ap_note_basic_auth_failure(r);
         return HTTP_UNAUTHORIZED;
     }
     invalid_pw = apr_password_validate(sent_pw, real_pw);
     if (invalid_pw != APR_SUCCESS) {
-        ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                       "user %s: authentication failure for \"%s\": "
                       "Password Mismatch",
                       r->user, r->uri);
@@ -316,7 +316,7 @@ static int check_user_access(request_rec *r)
              * That something could be a missing "AuthAuthoritative off", but
              * more likely is a typo in the require directive.
              */
-            ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                           "access to %s failed, reason: unknown require "
                           "directive:\"%s\"", r->uri, reqs[x].requirement);
         }
@@ -330,7 +330,7 @@ static int check_user_access(request_rec *r)
         return DECLINED;
     }
 
-    ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
+    ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                   "access to %s failed, reason: user %s not allowed access",
                   r->uri, user);
         

@@ -494,7 +494,7 @@ AP_DECLARE(int) ap_method_register(apr_pool_t *p, const char *methname)
         /* The method registry  has run out of dynamically
          * assignable method numbers. Log this and return M_INVALID.
          */
-        ap_log_perror(APLOG_MARK, APLOG_ERR|APLOG_NOERRNO, 0, p,
+        ap_log_perror(APLOG_MARK, APLOG_ERR, 0, p,
                       "Maximum new request methods %d reached while "
                       "registering method %s.",
                       METHOD_NUMBER_LAST, methname);
@@ -806,7 +806,7 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b,
              * time, stop it here if it is invalid. 
              */ 
             if (ctx->limit && ctx->limit < ctx->remaining) {
-                ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, f->r,
+                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, f->r,
                           "Requested content-length of %" APR_OFF_T_FMT 
                           " is larger than the configured limit"
                           " of %" APR_OFF_T_FMT, ctx->remaining, ctx->limit);
@@ -935,7 +935,7 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b,
          * really count.  This seems to be up for interpretation.  */
         ctx->limit_used += totalread;
         if (ctx->limit < ctx->limit_used) {
-            ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, f->r,
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, f->r,
                           "Read content-length of %" APR_OFF_T_FMT 
                           " is larger than the configured limit"
                           " of %" APR_OFF_T_FMT, ctx->limit_used, ctx->limit);
@@ -1593,12 +1593,12 @@ AP_DECLARE(int) ap_setup_client_block(request_rec *r, int read_policy)
 
     if (tenc) {
         if (strcasecmp(tenc, "chunked")) {
-            ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                           "Unknown Transfer-Encoding %s", tenc);
             return HTTP_NOT_IMPLEMENTED;
         }
         if (r->read_body == REQUEST_CHUNKED_ERROR) {
-            ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                           "chunked Transfer-Encoding forbidden: %s", r->uri);
             return (lenp) ? HTTP_BAD_REQUEST : HTTP_LENGTH_REQUIRED;
         }
@@ -1612,7 +1612,7 @@ AP_DECLARE(int) ap_setup_client_block(request_rec *r, int read_policy)
             ++pos;
         }
         if (*pos != '\0') {
-            ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                           "Invalid Content-Length %s", lenp);
             return HTTP_BAD_REQUEST;
         }
@@ -1622,7 +1622,7 @@ AP_DECLARE(int) ap_setup_client_block(request_rec *r, int read_policy)
 
     if ((r->read_body == REQUEST_NO_BODY)
         && (r->read_chunked || (r->remaining > 0))) {
-        ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                       "%s with body is not allowed for %s", r->method, r->uri);
         return HTTP_REQUEST_ENTITY_TOO_LARGE;
     }

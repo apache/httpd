@@ -2144,7 +2144,7 @@ static int handle_autoindex(request_rec *r)
         return index_directory(r, d);
     }
     else {
-        ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                       "Directory index forbidden by rule: %s", r->filename);
         return HTTP_FORBIDDEN;
     }

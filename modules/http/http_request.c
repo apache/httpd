@@ -197,7 +197,7 @@ AP_DECLARE(void) ap_die(int type, request_rec *r)
              * dying with a recursive server error...
              */
             recursive_error = HTTP_INTERNAL_SERVER_ERROR;
-            ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                         "Invalid error redirection directive: %s",
                         custom_response);
         }

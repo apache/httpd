@@ -209,12 +209,12 @@ static void cache_the_file(cmd_parms *cmd, const char *filename, int mmap)
 	return;
     }
     if (tmp.finfo.filetype != APR_REG) {
-	ap_log_error(APLOG_MARK, APLOG_WARNING|APLOG_NOERRNO, 0, cmd->server,
+	ap_log_error(APLOG_MARK, APLOG_WARNING, 0, cmd->server,
 	    "mod_file_cache: %s isn't a regular file, skipping", fspec);
 	return;
     }
     if (tmp.finfo.size > AP_MAX_SENDFILE) {
-	ap_log_error(APLOG_MARK, APLOG_WARNING|APLOG_NOERRNO, 0, cmd->server,
+	ap_log_error(APLOG_MARK, APLOG_WARNING, 0, cmd->server,
 	    "mod_file_cache: %s is too large to cache, skipping", fspec);
 	return;
     }
@@ -288,7 +288,7 @@ static const char *cachefilehandle(cmd_parms *cmd, void *dummy, const char *file
     cache_the_file(cmd, filename, 0);
 #else
     /* Sendfile not supported by this OS */
-    ap_log_error(APLOG_MARK, APLOG_WARNING|APLOG_NOERRNO, 0, cmd->server,
+    ap_log_error(APLOG_MARK, APLOG_WARNING, 0, cmd->server,
                  "mod_file_cache: unable to cache file: %s. Sendfile is not supported on this OS", filename);
 #endif
     return NULL;
@@ -299,7 +299,7 @@ static const char *cachefilemmap(cmd_parms *cmd, void *dummy, const char *filena
     cache_the_file(cmd, filename, 1);
 #else
     /* MMAP not supported by this OS */
-    ap_log_error(APLOG_MARK, APLOG_WARNING|APLOG_NOERRNO, 0, cmd->server,
+    ap_log_error(APLOG_MARK, APLOG_WARNING, 0, cmd->server,
                  "mod_file_cache: unable to cache file: %s. MMAP is not supported by this OS", filename);
 #endif
     return NULL;

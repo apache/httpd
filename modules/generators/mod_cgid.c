@@ -584,7 +584,7 @@ static int cgid_server(void *data)
         r->pool = ptrans; 
         rc = get_req(sd2, r, &argv0, &env, &req_type); 
         if (rc) {
-            ap_log_error(APLOG_MARK, APLOG_ERR|APLOG_NOERRNO, 0,
+            ap_log_error(APLOG_MARK, APLOG_ERR, 0,
                          main_server,
                          "Error reading request on cgid socket");
             close(sd2);
@@ -796,7 +796,7 @@ static int log_scripterror(request_rec *r, cgid_server_conf * conf, int ret,
     apr_file_t *f = NULL; 
     struct stat finfo; 
     char time_str[APR_CTIME_LEN];
-    int log_flags = rv ? APLOG_ERR : APLOG_NOERRNO | APLOG_ERR;
+    int log_flags = rv ? APLOG_ERR : APLOG_ERR;
 
     ap_log_rerror(APLOG_MARK, log_flags, rv, r, 
                 "%s: %s", error, r->filename); 
@@ -1444,7 +1444,7 @@ static int handle_exec(include_ctx_t *ctx, apr_bucket_brigade **bb, request_rec 
     *inserted_head = NULL;
     if (ctx->flags & FLAG_PRINTING) {
         if (ctx->flags & FLAG_NO_EXEC) {
-            ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                       "exec used but not allowed in %s", r->filename);
             CREATE_ERROR_BUCKET(ctx, tmp_buck, head_ptr, *inserted_head);
         }
@@ -1462,7 +1462,7 @@ static int handle_exec(include_ctx_t *ctx, apr_bucket_brigade **bb, request_rec 
                 if (!strcmp(tag, "cmd")) {
                     cgid_pfn_ps(r, ctx, tag_val, parsed_string, sizeof(parsed_string), 1);
                     if (include_cmd(ctx, bb, parsed_string, r, f) == -1) {
-                        ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
+                        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                                     "execution failure for parameter \"%s\" "
                                     "to tag exec in file %s", tag, r->filename);
                         CREATE_ERROR_BUCKET(ctx, tmp_buck, head_ptr, *inserted_head);
@@ -1479,13 +1479,13 @@ static int handle_exec(include_ctx_t *ctx, apr_bucket_brigade **bb, request_rec 
                     }
 
                     if (include_cgi(parsed_string, r, f->next, head_ptr, inserted_head) == -1) {
-                        ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
+                        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                                     "invalid CGI ref \"%s\" in %s", tag_val, file);
                         CREATE_ERROR_BUCKET(ctx, tmp_buck, head_ptr, *inserted_head);
                     }
                 }
                 else {
-                    ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
+                    ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                                 "unknown parameter \"%s\" to tag exec in %s", tag, file);
                     CREATE_ERROR_BUCKET(ctx, tmp_buck, head_ptr, *inserted_head);
                 }

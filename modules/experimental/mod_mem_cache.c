@@ -506,7 +506,7 @@ static int remove_entity(cache_handle_t *h)
         sconf->object_cnt--;
         sconf->cache_size -= mobj->m_len;
         obj->cleanup = 1;
-        ap_log_error(APLOG_MARK, APLOG_INFO|APLOG_NOERRNO, 0, NULL, "gcing a cache entry");
+        ap_log_error(APLOG_MARK, APLOG_INFO, 0, NULL, "gcing a cache entry");
     }
 
     if (sconf->lock) {

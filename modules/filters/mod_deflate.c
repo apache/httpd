@@ -309,7 +309,7 @@ static apr_status_t deflate_out_filter(ap_filter_t *f,
 
         if (zRC != Z_OK) {
             f->ctx = NULL;
-            ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0, r,
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                           "unable to init Zlib: "
                           "deflateInit2 returned %d: URL %s",
                           zRC, r->uri);
@@ -388,7 +388,7 @@ static apr_status_t deflate_out_filter(ap_filter_t *f,
 
             b = apr_bucket_pool_create(buf, 8, r->pool, f->c->bucket_alloc);
             APR_BRIGADE_INSERT_TAIL(ctx->bb, b);
-            ap_log_rerror(APLOG_MARK, APLOG_DEBUG | APLOG_NOERRNO, 0, r,
+            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
                           "Zlib: Compressed %ld to %ld : URL %s",
                           ctx->stream.total_in, ctx->stream.total_out, r->uri);
 

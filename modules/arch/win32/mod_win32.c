@@ -461,7 +461,7 @@ static apr_status_t ap_cgi_build_command(const char **cmd, const char ***argv,
             *type = APR_PROGRAM_PATH;
         }
         else {
-            ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_INFO, 0, r->server,
+            ap_log_error(APLOG_MARK, APLOG_INFO, 0, r->server,
                  strict ? "No ExecCGI verb found for files of type '%s'."
                         : "No ExecCGI or Open verb found for files of type '%s'.", 
                  ext);
@@ -520,7 +520,7 @@ static apr_status_t ap_cgi_build_command(const char **cmd, const char ***argv,
         }
     }
     if (!interpreter) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR|APLOG_NOERRNO, 0, r,
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                       "%s is not executable; ensure interpreted scripts have "
                       "\"#!\" first line", *cmd);
         return APR_EBADF;

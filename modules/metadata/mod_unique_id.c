@@ -234,7 +234,7 @@ static int unique_id_global_init(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *pt
     }
 
     apr_sockaddr_ip_get(&ipaddrstr, sockaddr);
-    ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_INFO, 0, main_server,
+    ap_log_error(APLOG_MARK, APLOG_INFO, 0, main_server,
                 "mod_unique_id: using ip addr %s",
                  ipaddrstr);
 
@@ -280,7 +280,7 @@ static void unique_id_child_init(apr_pool_t *p, server_rec *s)
      * global_init ... but oh well.
      */
     if ((pid_t)cur_unique_id.pid != pid) {
-        ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_CRIT, 0, s,
+        ap_log_error(APLOG_MARK, APLOG_CRIT, 0, s,
                     "oh no! pids are greater than 32-bits!  I'm broken!");
     }
 

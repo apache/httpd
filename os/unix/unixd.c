@@ -276,7 +276,7 @@ AP_DECLARE(void) unixd_set_rlimit(cmd_parms *cmd, struct rlimit **plimit,
         }
     }
     else {
-        ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, cmd->server,
+        ap_log_error(APLOG_MARK, APLOG_ERR, 0, cmd->server,
                      "Invalid parameters for %s", cmd->cmd->name);
         return;
     }
@@ -289,7 +289,7 @@ AP_DECLARE(void) unixd_set_rlimit(cmd_parms *cmd, struct rlimit **plimit,
     if (geteuid()) {
         limit->rlim_cur = cur;
         if (max) {
-            ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, cmd->server,
+            ap_log_error(APLOG_MARK, APLOG_ERR, 0, cmd->server,
                          "Must be uid 0 to raise maximum %s", cmd->cmd->name);
         }
     }
@@ -303,7 +303,7 @@ AP_DECLARE(void) unixd_set_rlimit(cmd_parms *cmd, struct rlimit **plimit,
     }
 #else
 
-    ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, cmd->server,
+    ap_log_error(APLOG_MARK, APLOG_ERR, 0, cmd->server,
                  "Platform does not support rlimit for %s", cmd->cmd->name);
 #endif
 }
@@ -439,7 +439,7 @@ AP_DECLARE(apr_status_t) unixd_accept(void **accepted, ap_listen_rec *lr,
         *accepted = csd;
         apr_os_sock_get(&sockdes, csd);
         if (sockdes >= FD_SETSIZE) {
-            ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_WARNING, 0, NULL,
+            ap_log_error(APLOG_MARK, APLOG_WARNING, 0, NULL,
                          "new file descriptor %d is too large; you probably need "
                          "to rebuild Apache with a larger FD_SETSIZE "
                          "(currently %d)",
@@ -549,7 +549,7 @@ AP_DECLARE(apr_status_t) unixd_accept(void **accepted, ap_listen_rec *lr,
             return APR_EGENERAL;
             break;
         default:
-            ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, ap_server_conf,
+            ap_log_error(APLOG_MARK, APLOG_ERR, 0, ap_server_conf,
                          "select/accept error (%d)", status);
             return APR_EGENERAL;
 #else
