@@ -595,6 +595,7 @@ AddLanguage fr .fr
 AddLanguage de .de
 AddLanguage el .el
 AddLanguage he .he
+AddCharset ISO-8859-8 .iso8859-8
 AddLanguage it .it
 AddLanguage ja .ja
 AddCharset ISO-2022-JP .jis
