@@ -16,7 +16,7 @@ client</description>
     your server to be compressed before being sent to the client over
     the network.</p>
 </summary>
-<seealso><a href="../filter.html">The filter documentation</a></seealso>
+<seealso><a href="../filter.html">Filters</a></seealso>
 
 <section id="recommended"><title>Recommended Configuration</title>
     <p>This is a sample configuration for the impatient. But please take
@@ -190,9 +190,10 @@ client</description>
 <directivesynopsis>
 <name>DeflateFilterNote</name>
 <description>Places the compression ratio in a note for logging</description>
-<syntax>DeflateFilterNote <var>notename</var></syntax>
+<syntax>DeflateFilterNote [<var>type</var>] <var>notename</var></syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
+<compatibility><var>type</var> is available since Apache 2.0.45</compatibility>
 
 <usage>
     <p>The <directive>DeflateFilterNote</directive> directive
@@ -206,6 +207,34 @@ client</description>
       DeflateFilterNote ratio<br />
       <br />
       LogFormat '"%r" %b (%{ratio}n) "%{User-agent}i"' deflate<br />
+      CustomLog logs/deflate_log deflate
+    </example>
+
+    <p>If you want to extract more accurate values from your logs, you
+    can use the <var>type</var> argument to specify the type of data
+    left as note for logging. <var>type</var> can be one of:</p>
+
+    <dl>
+      <dt><code>Input</code></dt>
+      <dd>Store the byte count of the filter's input stream in the note.</dd>
+
+      <dt><code>Output</code></dt>
+      <dd>Store the byte count of the filter's output stream in the note.</dd>
+
+      <dt><code>Ratio</code></dt>
+      <dd>Store the compression ratio (<code>output/input * 100</code>)
+      in the note. This is the default, if the <var>type</var> argument
+      is omitted.</dd>
+    </dl>
+
+    <p>Thus you may log it this way:</p>
+
+    <example><title>Accurate Logging</title>
+      DeflateFilterNote Input instream<br />
+      DeflateFilterNote Output outstream<br />
+      DeflateFilterNote Ratio ratio<br />
+      <br />
+      LogFormat '"%r" %{outstream}n/%{instream}n (%{ratio}n%%)' deflate<br />
       CustomLog logs/deflate_log deflate
     </example>
 </usage>
@@ -243,6 +272,7 @@ client</description>
 </directivesynopsis>
 
 <directivesynopsis>
+
 <name>DeflateMemLevel</name>
 <description>How much memory should be used by zlib for compression</description>
 <syntax>DeflateMemLevel <var>value</var></syntax>
@@ -256,6 +286,25 @@ client</description>
     (a value between 1 and 9).</p>
 </usage>
 </directivesynopsis>
+
+<directivesynopsis>
+<name>DeflateCompressionLevel</name>
+<description>How much compression do we apply to the output</description>
+<syntax>DeflateCompressionLevel<var>value</var></syntax>
+<default>Zlib's default</default>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
+<compatibility>This directive is available since Apache 2.0.45</compatibility>
+
+<usage>
+    <p>The <directive>DeflateCompressionLevel</directive> directive specifies
+        what level of compression should be used, the higher the value, 
+        the better the compression, but the more CPU time is required to
+        achieve this.</p>
+    <p>The value must between 1 (less compression) and 9 (more compression).</p>
+</usage>
+</directivesynopsis>
+
 
 </modulesynopsis>
 

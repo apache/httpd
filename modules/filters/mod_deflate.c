@@ -128,11 +128,15 @@ typedef struct deflate_filter_config_t
 {
     int windowSize;
     int memlevel;
+    int compressionlevel;
     apr_size_t bufferSize;
-    char *noteName;
+    char *note_ratio_name;
+    char *note_input_name;
+    char *note_output_name;
 } deflate_filter_config;
 
 /* windowsize is negative to suppress Zlib header */
+#define DEFAULT_COMPRESSION Z_DEFAULT_COMPRESSION
 #define DEFAULT_WINDOWSIZE -15
 #define DEFAULT_MEMLEVEL 9
 #define DEFAULT_BUFFERSIZE 8096
@@ -165,6 +169,7 @@ static void *create_deflate_server_config(apr_pool_t *p, server_rec *s)
     c->memlevel   = DEFAULT_MEMLEVEL;
     c->windowSize = DEFAULT_WINDOWSIZE;
     c->bufferSize = DEFAULT_BUFFERSIZE;
+    c->compressionlevel = DEFAULT_COMPRESSION;
 
     return c;
 }
@@ -202,11 +207,26 @@ static const char *deflate_set_buffer_size(cmd_parms *cmd, void *dummy,
     return NULL;
 }
 static const char *deflate_set_note(cmd_parms *cmd, void *dummy,
-                                    const char *arg)
+                                    const char *arg1, const char *arg2)
 {
     deflate_filter_config *c = ap_get_module_config(cmd->server->module_config,
                                                     &deflate_module);
-    c->noteName = apr_pstrdup(cmd->pool, arg);
+    
+    if (arg2 == NULL) {
+        c->note_ratio_name = apr_pstrdup(cmd->pool, arg1);
+    }
+    else if (!strcasecmp(arg1, "ratio")) {
+        c->note_ratio_name = apr_pstrdup(cmd->pool, arg2);
+    }
+    else if (!strcasecmp(arg1, "input")) {
+        c->note_input_name = apr_pstrdup(cmd->pool, arg2);
+    }
+    else if (!strcasecmp(arg1, "output")) {
+        c->note_output_name = apr_pstrdup(cmd->pool, arg2);
+    }
+    else {
+        return apr_psprintf(cmd->pool, "Unknown note type %s", arg1);
+    }
 
     return NULL;
 }
@@ -224,6 +244,23 @@ static const char *deflate_set_memlevel(cmd_parms *cmd, void *dummy,
         return "DeflateMemLevel must be between 1 and 9";
 
     c->memlevel = i;
+
+    return NULL;
+}
+
+static const char *deflate_set_compressionlevel(cmd_parms *cmd, void *dummy,
+                                        const char *arg)
+{
+    deflate_filter_config *c = ap_get_module_config(cmd->server->module_config,
+                                                    &deflate_module);
+    int i;
+
+    i = atoi(arg);
+
+    if (i < 1 || i > 9)
+        return "Compression Level must be between 1 and 9";
+
+    c->compressionlevel = i;
 
     return NULL;
 }
@@ -337,7 +374,7 @@ static apr_status_t deflate_out_filter(ap_filter_t *f,
         ctx->bb = apr_brigade_create(r->pool, f->c->bucket_alloc);
         ctx->buffer = apr_palloc(r->pool, c->bufferSize);
 
-        zRC = deflateInit2(&ctx->stream, Z_BEST_SPEED, Z_DEFLATED,
+        zRC = deflateInit2(&ctx->stream, c->compressionlevel, Z_DEFLATED,
                            c->windowSize, c->memlevel,
                            Z_DEFAULT_STRATEGY);
 
@@ -433,18 +470,31 @@ static apr_status_t deflate_out_filter(ap_filter_t *f,
                           "Zlib: Compressed %ld to %ld : URL %s",
                           ctx->stream.total_in, ctx->stream.total_out, r->uri);
 
-            if (c->noteName) {
-                if (ctx->stream.total_in > 0) {
-                    int total;
+            /* leave notes for logging */
+            if (c->note_input_name) {
+                apr_table_setn(r->notes, c->note_input_name,
+                               (ctx->stream.total_in > 0)
+                                ? apr_off_t_toa(r->pool,
+                                                ctx->stream.total_in)
+                                : "-");
+            }
 
-                    total = ctx->stream.total_out * 100 / ctx->stream.total_in;
+            if (c->note_output_name) {
+                apr_table_setn(r->notes, c->note_output_name,
+                               (ctx->stream.total_in > 0)
+                                ? apr_off_t_toa(r->pool,
+                                                ctx->stream.total_out)
+                                : "-");
+            }
 
-                    apr_table_setn(r->notes, c->noteName,
-                                   apr_itoa(r->pool, total));
-                }
-                else {
-                    apr_table_setn(r->notes, c->noteName, "-");
-                }
+            if (c->note_ratio_name) {
+                apr_table_setn(r->notes, c->note_ratio_name,
+                               (ctx->stream.total_in > 0)
+                                ? apr_itoa(r->pool,
+                                           (int)(ctx->stream.total_out
+                                                 * 100
+                                                 / ctx->stream.total_in))
+                                : "-");
             }
 
             deflateEnd(&ctx->stream);
@@ -580,7 +630,7 @@ static apr_status_t deflate_in_filter(ap_filter_t *f,
         if (rv != APR_SUCCESS) {
             return rv;
         }
-      
+
         len = 10; 
         rv = apr_brigade_flatten(ctx->bb, deflate_hdr, &len); 
         if (rv != APR_SUCCESS) {
@@ -733,7 +783,7 @@ static apr_status_t deflate_in_filter(ap_filter_t *f,
                 }
 
                 inflateEnd(&ctx->stream);
-    
+
                 eos = apr_bucket_eos_create(f->c->bucket_alloc);
                 APR_BRIGADE_INSERT_TAIL(ctx->proc_bb, eos); 
                 break;
@@ -784,7 +834,7 @@ static void register_hooks(apr_pool_t *p)
 }
 
 static const command_rec deflate_filter_cmds[] = {
-    AP_INIT_TAKE1("DeflateFilterNote", deflate_set_note, NULL, RSRC_CONF,
+    AP_INIT_TAKE12("DeflateFilterNote", deflate_set_note, NULL, RSRC_CONF,
                   "Set a note to report on compression ratio"),
     AP_INIT_TAKE1("DeflateWindowSize", deflate_set_window_size, NULL,
                   RSRC_CONF, "Set the Deflate window size (1-15)"),
@@ -792,6 +842,8 @@ static const command_rec deflate_filter_cmds[] = {
                   "Set the Deflate Buffer Size"),
     AP_INIT_TAKE1("DeflateMemLevel", deflate_set_memlevel, NULL, RSRC_CONF,
                   "Set the Deflate Memory Level (1-9)"),
+    AP_INIT_TAKE1("DeflateCompressionLevel", deflate_set_compressionlevel, NULL, RSRC_CONF,
+                  "Set the Deflate Compression Level (1-9)"),
     {NULL}
 };
 
