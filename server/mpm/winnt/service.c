@@ -96,7 +96,7 @@ static int ReportStatusToSCMgr(int currentState, int exitCode, int waitHint);
  * HKLM\System\CurrentControlSet\Services\[service name]
  *
  *     \DisplayName
- *     \ImagePath            (NT Only)
+ *     \ImagePath
  *     \Parameters\ConfigArgs
  *
  * For Win9x, the launch service command is stored under:
@@ -964,6 +964,13 @@ apr_status_t mpm_service_install(apr_pool_t *ptemp, int argc,
         }
 
         apr_snprintf(key_name, sizeof(key_name), SERVICECONFIG, mpm_service_name);
+        rv = ap_registry_store_value(key_name, "ImagePath", launch_cmd);
+        if (rv != APR_SUCCESS) {
+            ap_log_error(APLOG_MARK, APLOG_ERR | APLOG_STARTUP, rv, NULL, 
+                         "%s: Failed to store ImagePath in the registry.", 
+                         mpm_display_name);
+            return (rv);
+        }
         rv = ap_registry_store_value(key_name, "DisplayName", mpm_display_name);
         if (rv != APR_SUCCESS) {
             ap_log_error(APLOG_MARK, APLOG_ERR | APLOG_STARTUP, rv, NULL, 
