@@ -60,14 +60,15 @@ dnl
 dnl This fixes that by creating a soft link that has the name of the
 dnl desired MPM to mpmt.c.  Now, Apache can search for the specified MPM
 dnl and actually find it.
+  test -d modules/mpm/mpmt || $srcdir/helpers/mkdir.sh modules/mpm/mpmt
   if test "$MPM_NAME" = "mpmt_pthread" ; then
     EXTRA_CFLAGS="$EXTRA_CFLAGS -DMPMT_PTHREAD"
     MPM_FAKE_NAME=mpmt_pthread.c
-    ln -s mpmt.c modules/mpm/mpmt/mpmt_pthread.c
+    $LN_S $abs_srcdir/modules/mpm/mpmt/mpmt.c modules/mpm/mpmt/mpmt_pthread.c
   elif test "$MPM_NAME" = "dexter" ; then
     EXTRA_CFLAGS="$EXTRA_CFLAGS -DDEXTER"
     MPM_FAKE_NAME=dexter.c
-    ln -s mpmt.c modules/mpm/mpmt/dexter.c
+    $LN_S $abs_srcdir/modules/mpm/mpmt/mpmt.c modules/mpm/mpmt/dexter.c
   fi
 
   if test "$MPM_NAME" = "dexter" -o "$MPM_NAME" = "mpmt_pthread" -o "$MPM_NAME" = "prefork"; then
