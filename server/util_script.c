@@ -95,20 +95,28 @@
 #define MALFORMED_MESSAGE "malformed header from script. Bad header="
 #define MALFORMED_HEADER_LENGTH_TO_SHOW 30
 
-static char *http2env(apr_pool_t *a, char *w)
+static char *http2env(apr_pool_t *a, const char *w)
 {
-    char *res = apr_pstrcat(a, "HTTP_", w, NULL);
+    char *res = (char *)apr_palloc(a, sizeof("HTTP_") + strlen(w));
     char *cp = res;
+    char c;
 
-    while (*++cp) {
-	if (!apr_isalnum(*cp) && *cp != '_') {
-	    *cp = '_';
-	}
-	else {
-	    *cp = apr_toupper(*cp);
-	}
+    *cp++ = 'H';
+    *cp++ = 'T';
+    *cp++ = 'T';
+    *cp++ = 'P';
+    *cp++ = '_';
+
+    while ((c = *w++) != 0) {
+        if (!apr_isalnum(c)) {
+            *cp++ = '_';
+        }
+        else {
+            *cp++ = apr_toupper(c);
+        }
     }
-
+    *cp = 0;
+ 
     return res;
 }
 
