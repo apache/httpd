@@ -1,4 +1,4 @@
-Changes with Apache 1.3b4
+Changes with Apache 1.3b5
 
   *) WIN32: Append a '.' to extensionless executables in spawn[lv]e*
      replacements, which makes them work.
@@ -6,6 +6,8 @@ Changes with Apache 1.3b4
 
   *) Sort out problems with canonical filename handling happening too late.
      [Dean Gaudet, Ben Laurie]
+
+Changes with Apache 1.3b4
 
   *) The module structure was modified to include a *dynamic_load_handle
      in the STANDARD_MODULE_STUFF portion, and the MODULE_MAGIC_NUMBER
