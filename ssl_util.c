@@ -187,7 +187,7 @@ char *ssl_util_readfilter(server_rec *s, apr_pool_t *p, char *cmd)
     return buf;
 }
 
-BOOL ssl_util_path_check(ssl_pathcheck_t pcm, char *path, apr_pool_t *p)
+BOOL ssl_util_path_check(ssl_pathcheck_t pcm, const char *path, apr_pool_t *p)
 {
     apr_finfo_t finfo;
 
