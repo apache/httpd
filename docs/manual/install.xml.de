@@ -426,7 +426,7 @@
     stehen in verschiedenen Modulen bereit. W&#228;hrend des
     Konfigurationsprozesses m&#252;ssen Sie ausw&#228;hlen, welche Module
     f&#252;r die Verwendung mit Ihrem Server kompiliert werden sollen. Eine
-    <a href="mod/index-bytype.html">Liste von Modulen</a> ist in dieser
+    <a href="mod/">Liste von Modulen</a> ist in dieser
     Dokumentation enthalten. Module mit dem <a
     href="mod/module-dict.html#Status">Status</a> "Base"
     sind standardm&#228;&#223;ig enthalten und m&#252;ssen ausdr&#252;cklich
