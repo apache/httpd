@@ -67,6 +67,7 @@ extern void clean_child_exit(int);
 typedef struct CompContext {
     OVERLAPPED Overlapped;
     SOCKET accept_socket;
+    ap_socket_t *sock;
     ap_listen_rec *lr;
     BUFF *conn_io;
     char *recv_buf;
@@ -77,16 +78,4 @@ typedef struct CompContext {
     struct sockaddr *sa_client;
     int sa_client_len;
 } COMP_CONTEXT, *PCOMP_CONTEXT;
-#if 0
-typedef struct CompContext {
-    OVERLAPPED Overlapped;
-    SOCKET accept_socket;
-    BUFF* conn_io;
-    ap_context_t *ptrans;
-    struct sockaddr sa_server;
-    int sa_server_len;
-    struct sockaddr sa_client;
-    int sa_client_len;
-} COMP_CONTEXT, *PCOMP_CONTEXT;
-#endif
 #endif /* APACHE_MPM_WINNT_H */

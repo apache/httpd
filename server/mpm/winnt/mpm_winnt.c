@@ -104,6 +104,15 @@ ap_lock_t *start_mutex;
 int my_pid;
 int parent_pid;
 
+static ap_status_t socket_cleanup(void *sock)
+{
+    struct socket_t *thesocket = sock;
+    SOCKET sd;
+    if (ap_get_os_sock(&sd, thesocket) == APR_SUCCESS) {
+        closesocket(sd);
+    }
+    return APR_SUCCESS;
+}
 
 /* A bunch or routines from os/win32/multithread.c that need to be merged into APR
  * or thrown out entirely...
@@ -995,6 +1004,7 @@ static ap_inline int reset_acceptex_context(PCOMP_CONTEXT context)
     }
 
     ap_clear_pool(context->ptrans);
+    context->sock = NULL;
     context->conn_io = ap_bcreate(context->ptrans, B_RDWR);
     context->recv_buf = context->conn_io->inbase;
     context->recv_buf_size = context->conn_io->bufsiz - 2*PADDED_ADDR_SIZE;
@@ -1149,13 +1159,10 @@ static void worker_main(int child_num)
 
         if (!context)
             break;
-
-        /* TODO: Register cleanups for our sockets.*/
-        /* ap_note_cleanups_for_socket(context->ptrans, context->accept_socket); */
-
-	sock_disable_nagle(context->accept_socket);
-
-        iol = win32_attach_socket(context->ptrans, context->accept_socket);
+        sock_disable_nagle(context->accept_socket);
+        ap_put_os_sock(&context->sock, &context->accept_socket, context->ptrans);
+        ap_register_cleanup(context->ptrans, context->sock, socket_cleanup, ap_null_cleanup);
+        iol = win32_attach_socket(context->ptrans, context->sock);
         if (iol == NULL) {
             ap_log_error(APLOG_MARK, APLOG_ERR, APR_ENOMEM, server_conf,
                          "worker_main: attach_socket() failed. Continuing...");
