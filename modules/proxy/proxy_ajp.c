@@ -118,6 +118,7 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
     const char *tenc;
     int havebody=1;
     int isok=1;
+    apr_off_t bb_len;
 
     /*
      * Send the AJP request to the remote server
@@ -192,6 +193,7 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
                              conn->worker->hostname);
                 return HTTP_SERVICE_UNAVAILABLE;
             }
+            conn->worker->s->transfered += bufsiz;
         }
     }
 
@@ -206,7 +208,6 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
                      conn->worker->hostname);
         return HTTP_SERVICE_UNAVAILABLE;
     }
-
     /* parse the reponse */
     result = ajp_parse_type(r, conn->data);
     output_brigade = apr_brigade_create(p, r->connection->bucket_alloc);
@@ -248,6 +249,7 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
                                      "ajp_send_data_msg failed");
                         break;
                     }
+                    conn->worker->s->transfered += bufsiz;
                 } else {
                     /* something is wrong TC asks for more body but we are
                      * already at the end of the body data
@@ -304,6 +306,11 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
     	result = ajp_parse_type(r, conn->data);
     }
     apr_brigade_destroy(input_brigade);
+
+    apr_brigade_length(output_brigade, 0, &bb_len);
+    if (bb_len != -1)
+        conn->worker->s->readed += bb_len;
+
     if (!isok)
         apr_brigade_destroy(output_brigade);
 

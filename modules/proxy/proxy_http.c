@@ -250,6 +250,7 @@ apr_status_t ap_proxy_http_request(apr_pool_t *p, request_rec *r,
     int counter, seen_eos, send_chunks;
     apr_status_t status;
     apr_bucket_brigade *header_brigade, *body_brigade, *input_brigade;
+    apr_off_t transfered = 0;
 
     header_brigade = apr_brigade_create(p, origin->bucket_alloc);
     body_brigade = apr_brigade_create(p, origin->bucket_alloc);
@@ -482,7 +483,11 @@ apr_status_t ap_proxy_http_request(apr_pool_t *p, request_rec *r,
     APR_BRIGADE_INSERT_TAIL(header_brigade, e);
     e = apr_bucket_flush_create(c->bucket_alloc);
     APR_BRIGADE_INSERT_TAIL(header_brigade, e);
-
+    
+    apr_brigade_length(header_brigade, 0, &transfered);
+    if (transfered != -1)
+        conn->worker->s->transfered += transfered;
+    conn->worker->s->transfered += transfered;
     if (send_chunks) {
         status = ap_pass_brigade(origin->output_filters, header_brigade);
 
@@ -630,9 +635,11 @@ apr_status_t ap_proxy_http_request(apr_pool_t *p, request_rec *r,
                       conn->worker->cp->addr, conn->hostname);
         return status;
     }
- 
-    apr_brigade_cleanup(body_brigade);
+    apr_brigade_length(body_brigade, 0, &transfered);
+    if (transfered != -1)
+        conn->worker->s->transfered += transfered;
 
+    apr_brigade_cleanup(body_brigade);
     return APR_SUCCESS;
 }
 static void process_proxy_header(request_rec* r, proxy_server_conf* c,
@@ -803,7 +810,6 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
      * response.
      */
     rp->proxyreq = PROXYREQ_RESPONSE;
-
     do {
         apr_brigade_cleanup(bb);
 
@@ -820,6 +826,8 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
             return ap_proxyerror(r, HTTP_BAD_GATEWAY,
                                  "Error reading from remote server");
         }
+        /* XXX: Is this a real headers length send from remote? */
+        backend->worker->s->readed += len;
 
        /* Is it an HTTP/1 response?
         * This is buggy if we ever see an HTTP/1.10
@@ -1023,10 +1031,11 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
                                       AP_MODE_READBYTES, 
                                       APR_BLOCK_READ, 
                                       conf->io_buffer_size) == APR_SUCCESS) {
-#if DEBUGGING
-                    {
                     apr_off_t readbytes;
                     apr_brigade_length(bb, 0, &readbytes);
+                    backend->worker->s->readed += readbytes;
+#if DEBUGGING
+                    {
                     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0,
                                  r->server, "proxy (PID %d): readbytes: %#x",
                                  getpid(), readbytes);
