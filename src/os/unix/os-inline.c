@@ -26,5 +26,5 @@
 
 INLINE int os_is_path_absolute(char *file)
 {
-  return (file && file[0] == '/' ? 1 : 0);
+  return file[0] == '/';
 }
