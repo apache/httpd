@@ -9,7 +9,8 @@
 <p>This module allows user-specific directories to be accessed using the
 <code>http://example.com/~user/</code> syntax.</p>
 <h2>Directives</h2><ul><li><a href="#userdir">UserDir</a></li></ul><p><strong>See also </strong></p><ul><li><a href="../urlmapping.html">Mapping URLs to the
-Filesystem</a></li></ul><hr><h2><a name="UserDir">UserDir</a> <a name="userdir">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
+Filesystem</a></li><li><a href="../howto/public_html.html">public_html
+tutorial</a></li></ul><hr><h2><a name="UserDir">UserDir</a> <a name="userdir">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
                   </strong></td><td>Location of the user-specific directories</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">Syntax:
                   </a></td><td>UserDir <em>directory-filename</em></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Default" class="help">Default: 
                     </a></td><td><code>UserDir public_html</code></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">Context:
@@ -100,4 +101,5 @@ UserDir enabled<br>
 UserDir disabled user4 user5 user6
 </code></td></tr></table></blockquote>
 
-<hr></blockquote><h3 align="center">Apache HTTP Server Version 2.0</h3><a href="./"><img src="../images/index.gif" alt="Index"></a><a href="../"><img src="../images/home.gif" alt="Home"></a></body></html>
+<p><strong>See also </strong></p><ul><li><a href="../howto/public_html.html">public_html
+tutorial</a></li></ul><hr></blockquote><h3 align="center">Apache HTTP Server Version 2.0</h3><a href="./"><img src="../images/index.gif" alt="Index"></a><a href="../"><img src="../images/home.gif" alt="Home"></a></body></html>
