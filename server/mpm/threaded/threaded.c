@@ -1036,7 +1036,7 @@ static void perform_idle_server_maintenance(void)
 			     "to increase StartServers, ThreadsPerChild "
                              "or Min/MaxSpareThreads), "
 			     "spawning %d children, there are around %d idle "
-                             "threads, and %d total children", idle_spawn_rate,
+                             "threads, and %d total children", free_length,
 			     idle_thread_count, total_non_dead);
 	    }
 	    for (i = 0; i < free_length; ++i) {
