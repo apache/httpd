@@ -78,7 +78,7 @@
 
 static void decodehtml(char *s);
 static char *get_tag(pool *p, FILE *in, char *tag, int tag_len, int dodecode);
-static int get_directive(FILE *in, char *d);
+static int get_directive(FILE *in, char *d, pool *p);
 
 /* ------------------------ Environment function -------------------------- */
 
@@ -114,11 +114,11 @@ void add_include_vars(request_rec *r, char *timefmt)
     }
 }
 
-#define GET_CHAR(f,c,r) \
+#define GET_CHAR(f,c,r,p) \
  { \
    int i = getc(f); \
    if(feof(f) || ferror(f) || (i == -1)) { \
-        fclose(f); \
+        pfclose(p, f); \
         return r; \
    } \
    c = (char)i; \
@@ -136,7 +136,7 @@ int find_string(FILE *in,char *str, request_rec *r) {
 
     p=0;
     while(1) {
-        GET_CHAR(in,c,1);
+        GET_CHAR(in,c,1,r->pool);
         if(c == str[p]) {
             if((++p) == l)
                 return 0;
@@ -253,15 +253,15 @@ get_tag(pool *p, FILE *in, char *tag, int tagbuf_len, int dodecode) {
     n = 0;
 
     do { /* skip whitespace */
-	GET_CHAR(in,c,NULL);
+	GET_CHAR(in,c,NULL,p);
     } while (isspace(c));
 
     /* tags can't start with - */
     if(c == '-') {
-        GET_CHAR(in,c,NULL);
+        GET_CHAR(in,c,NULL,p);
         if(c == '-') {
             do {
-		GET_CHAR(in,c,NULL);
+		GET_CHAR(in,c,NULL,p);
 	    } while (isspace(c));
             if(c == '>') {
                 strcpy(tag,"done");
@@ -279,17 +279,17 @@ get_tag(pool *p, FILE *in, char *tag, int tagbuf_len, int dodecode) {
         }
 	if(c == '=' || isspace(c)) break;
 	*(t++) = tolower(c);
-        GET_CHAR(in,c,NULL);
+        GET_CHAR(in,c,NULL,p);
     }
 
     *t++ = '\0';
     tag_val = t;
 
-    while (isspace(c)) GET_CHAR(in, c, NULL); /* space before = */
+    while (isspace(c)) GET_CHAR(in, c, NULL,p); /* space before = */
     if (c != '=') return NULL;
 
     do {
-	GET_CHAR(in,c,NULL);  /* space after = */
+	GET_CHAR(in,c,NULL,p);  /* space after = */
     } while (isspace(c));
 
     /* we should allow a 'name' as a value */
@@ -297,7 +297,7 @@ get_tag(pool *p, FILE *in, char *tag, int tagbuf_len, int dodecode) {
     if (c != '"' && c != '\'') return NULL;
     term = c;
     while(1) {
-	GET_CHAR(in,c,NULL);
+	GET_CHAR(in,c,NULL,p);
 	if(++n == tagbuf_len) {
 	    t[tagbuf_len - 1] = '\0';
 	    return NULL;
@@ -310,20 +310,21 @@ get_tag(pool *p, FILE *in, char *tag, int tagbuf_len, int dodecode) {
     return pstrdup (p, tag_val);
 }
 
+/* the pool is required to allow GET_CHAR to call pfclose */
 static int
-get_directive(FILE *in, char *d) {
+get_directive(FILE *in, char *d, pool *p) {
     char c;
 
     /* skip initial whitespace */
     while(1) {
-        GET_CHAR(in,c,1);
+        GET_CHAR(in,c,1,p);
         if(!isspace(c))
             break;
     }
     /* now get directive */
     while(1) {
         *d++ = tolower(c);
-        GET_CHAR(in,c,1);
+        GET_CHAR(in,c,1,p);
         if(isspace(c))
             break;
     }
@@ -723,7 +724,7 @@ void send_parsed_content(FILE *f, request_rec *r)
 
     while(1) {
         if(!find_string(f,STARTING_SEQUENCE,r)) {
-            if(get_directive(f,directive))
+            if(get_directive(f,directive,r->pool))
                 return;
             if(!strcmp(directive,"exec")) {
                 if(noexec) {
