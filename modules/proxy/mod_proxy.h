@@ -184,6 +184,7 @@ typedef struct {
     apr_array_header_t *allowed_connect_ports;
     const char *domain;		/* domain name to use in absence of a domain name in the request */
     int req;			/* true if proxy requests are enabled */
+    char req_set;
     float cache_completion;     /* Force cache completion after this point */
     enum {
       via_off,
@@ -191,7 +192,9 @@ typedef struct {
       via_block,
       via_full
     } viaopt;                   /* how to deal with proxy Via: headers */
+    char viaopt_set;
     size_t recv_buffer_size;
+    char recv_buffer_size_set;
     ap_cache_handle_t *cache;
 } proxy_server_conf;
 
