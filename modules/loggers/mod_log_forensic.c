@@ -30,9 +30,11 @@
 #include "http_log.h"
 #include "apr_strings.h"
 #include "apr_atomic.h"
-#include <unistd.h>
 #include "http_protocol.h"
 #include "test_char.h"
+#if APR_HAVE_UNISTD_H
+#include <unistd.h>
+#endif
 
 module AP_MODULE_DECLARE_DATA log_forensic_module;
 

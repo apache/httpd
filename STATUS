@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/05/07 21:49:34 $]
+Last modified at [$Date: 2004/05/12 20:08:35 $]
 
 Release:
 
@@ -86,10 +86,6 @@ PATCHES TO BACKPORT FROM 2.1
     *) Prevent Win32 pool corruption at startup
          server/mpm/winnt/child.c: r1.36 
        +1: ake, trawick
-
-    *) mod_log_forensic: Fix build on systems without unistd.h. PR 28572
-         modules/loggers/mod_log_forensic.c: r1.19
-       +1: nd, trawick
 
     *) mod_actions: Regression from 1.3: the file referred to must exist.
        Solve this by introducing the "virtual" modifier to the Action
