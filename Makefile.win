@@ -255,6 +255,7 @@ _build:
 	cd ..\..
 	cd modules\loggers
 	 $(MAKE) $(MAKEOPT) -f mod_log_config.mak  CFG="mod_log_config - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+	 $(MAKE) $(MAKEOPT) -f mod_logio.mak       CFG="mod_logio - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	cd ..\..
 	cd modules\mappers
 	 $(MAKE) $(MAKEOPT) -f mod_actions.mak     CFG="mod_actions - Win32 $(LONG)" RECURSE=0 $(CTARGET)
@@ -409,6 +410,7 @@ _install:
 	copy modules\generators\$(LONG)\mod_status.so "$(INSTDIR)\modules" <.y
 	copy modules\http\$(LONG)\mod_mime.so "$(INSTDIR)\modules" <.y
 	copy modules\loggers\$(LONG)\mod_log_config.so "$(INSTDIR)\modules" <.y
+	copy modules\loggers\$(LONG)\mod_logio.so "$(INSTDIR)\modules" <.y
 	copy modules\mappers\$(LONG)\mod_actions.so "$(INSTDIR)\modules" <.y
 	copy modules\mappers\$(LONG)\mod_alias.so "$(INSTDIR)\modules" <.y
 	copy modules\mappers\$(LONG)\mod_dir.so "$(INSTDIR)\modules" <.y
@@ -460,6 +462,7 @@ _install:
 	copy modules\generators\$(LONG)\mod_status.pdb "$(INSTDIR)\modules" <.y
 	copy modules\http\$(LONG)\mod_mime.pdb "$(INSTDIR)\modules" <.y
 	copy modules\loggers\$(LONG)\mod_log_config.pdb "$(INSTDIR)\modules" <.y
+	copy modules\loggers\$(LONG)\mod_logio.pdb "$(INSTDIR)\modules" <.y
 	copy modules\mappers\$(LONG)\mod_actions.pdb "$(INSTDIR)\modules" <.y
 	copy modules\mappers\$(LONG)\mod_alias.pdb "$(INSTDIR)\modules" <.y
 	copy modules\mappers\$(LONG)\mod_dir.pdb "$(INSTDIR)\modules" <.y
