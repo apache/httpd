@@ -1,5 +1,9 @@
 Changes with Apache 2.0.26-dev
 
+  *) Eliminate the wasteful run-time conversion of method names from strings 
+     to numbers in places where the methods are known at compile time.  
+     [Brian Pane <bpane@pacbell.net>]
+
   *) Turn the worker MPM's queue into a LIFO.  This may
      improve cache-hit performance under some conditions.
      [Aaron Bannert <aaron@clove.org>]

@@ -261,6 +261,25 @@ AP_DECLARE(void) ap_update_mtime(request_rec *r, apr_time_t dependency_mtime);
  */
 AP_DECLARE(void) ap_allow_methods(request_rec *r, int reset, ...);
 
+/**
+ * Add one or more methods to the list permitted to access the resource.
+ * Usually executed by the content handler before the response header is
+ * sent, but sometimes invoked at an earlier phase if a module knows it
+ * can set the list authoritatively.  Note that the methods are ADDED
+ * to any already permitted unless the reset flag is non-zero.  The
+ * list is used to generate the Allow response header field when it
+ * is needed.
+ * @param   r     The pointer to the request identifying the resource.
+ * @param   reset Boolean flag indicating whether this list should
+ *                completely replace any current settings.
+ * @param   ...   A list of method identifiers, from the "M_" series
+ *                defined in httpd.h, terminated with a value of -1
+ *                (e.g., "M_GET, M_POST, M_OPTIONS, -1")
+ * @return  None.
+ * @deffunc void ap_allow_standard_methods(request_rec *r, int reset, ...)
+ */
+AP_DECLARE(void) ap_allow_standard_methods(request_rec *r, int reset, ...);
+
 #define MERGE_ALLOW 0
 #define REPLACE_ALLOW 1
 
