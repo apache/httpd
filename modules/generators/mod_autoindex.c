@@ -1159,23 +1159,24 @@ static char *find_title(request_rec *r)
     return NULL;
 }
 
-static struct ent *make_autoindex_entry(const char *name, int autoindex_opts,
+static struct ent *make_autoindex_entry(const apr_finfo_t *dirent, 
+                                        int autoindex_opts,
 					autoindex_config_rec *d,
 					request_rec *r, char keyid,
 					char direction)
 {
     struct ent *p;
 
-    if ((name[0] == '.') && (!name[1])) {
+    if ((dirent->name[0] == '.') && (!dirent->name[1])) {
 	return (NULL);
     }
 
-    if (ignore_entry(d, ap_make_full_path(r->pool, r->filename, name))) {
+    if (ignore_entry(d, ap_make_full_path(r->pool, r->filename, dirent->name))) {
         return (NULL);
     }
 
     p = (struct ent *) apr_pcalloc(r->pool, sizeof(struct ent));
-    p->name = apr_pstrdup(r->pool, name);
+    p->name = apr_pstrdup(r->pool, dirent->name);
     p->size = -1;
     p->icon = NULL;
     p->alt = NULL;
@@ -1186,7 +1187,7 @@ static struct ent *make_autoindex_entry(const char *name, int autoindex_opts,
     p->version_sort = autoindex_opts & VERSION_SORT;
 
     if (autoindex_opts & FANCY_INDEXING) {
-        request_rec *rr = ap_sub_req_lookup_file(name, r, NULL);
+        request_rec *rr = ap_sub_req_lookup_dirent(dirent, r, NULL);
 
 	if (rr->finfo.filetype != 0) {
 	    p->lm = rr->finfo.mtime;
@@ -1198,7 +1199,7 @@ static struct ent *make_autoindex_entry(const char *name, int autoindex_opts,
 		    p->alt = "DIR";
 		}
 		p->size = -1;
-		p->name = apr_pstrcat(r->pool, name, "/", NULL);
+		p->name = apr_pstrcat(r->pool, dirent->name, "/", NULL);
 	    }
 	    else {
 		p->icon = find_icon(d, rr, 0);
@@ -1622,7 +1623,7 @@ static int index_directory(request_rec *r,
      */
     head = NULL;
     while (apr_dir_read(&dirent, APR_FINFO_DIRENT, thedir) == APR_SUCCESS) {
-	p = make_autoindex_entry(dirent.name, autoindex_opts,
+	p = make_autoindex_entry(&dirent, autoindex_opts,
 				 autoindex_conf, r, keyid, direction);
 	if (p != NULL) {
 	    p->next = head;
