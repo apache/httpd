@@ -1239,39 +1239,43 @@ static int parse_expr(include_ctx_t *ctx, const char *expr, int *was_error)
 
         case TOKEN_AND:
         case TOKEN_OR:
-            /* Percolate upwards */
-            while (current) {
-                switch (current->token.type) {
-                case TOKEN_LBRACE:
+            switch (current->token.type) {
+            case TOKEN_STRING:
+            case TOKEN_RE:
+            case TOKEN_GROUP:
+                current = current->parent;
+
+                while (current) {
+                    switch (current->token.type) {
+                    case TOKEN_AND:
+                    case TOKEN_OR:
+                    case TOKEN_LBRACE:
+                        break;
+
+                    default:
+                        current = current->parent;
+                        continue;
+                    }
                     break;
+                }
 
-                case TOKEN_RBRACE:
-                    ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, error, expr,
-                                  r->filename);
-                    *was_error = 1;
-                    return 0;
-
-                default:
-                    current = current->parent;
+                if (!current) {
+                    new->left = root;
+                    root->parent = new;
+                    current = root = new;
                     continue;
                 }
-                break;
-            }
-
-            if (!current) {
-                new->left = root;
-                new->left->parent = new;
-                new->parent = NULL;
-                root = new;
-            }
-            else {
+            
                 new->left = current->right;
                 new->left->parent = new;
-                current->right = new;
                 new->parent = current;
+                current = current->right = new;
+                continue;
+
+            default:
+                break;
             }
-            current = new;
-            continue;
+            break;
 
         case TOKEN_EQ:
         case TOKEN_NE:
@@ -1368,43 +1372,43 @@ static int parse_expr(include_ctx_t *ctx, const char *expr, int *was_error)
                 return 0;
             }
 
-            if (!current->right->done) {
-                switch (current->right->token.type) {
+            if (!current->left->done) {
+                switch (current->left->token.type) {
                 case TOKEN_STRING:
-                    current->right->token.value =
-                        ap_ssi_parse_string(ctx, current->right->token.value,
+                    current->left->token.value =
+                        ap_ssi_parse_string(ctx, current->left->token.value,
                                             NULL, 0, SSI_EXPAND_DROP_NAME);
-                    current->right->value = !!*current->right->token.value;
-                    DEBUG_DUMP_EVAL(ctx, current->right);
-                    current->right->done = 1;
+                    current->left->value = !!*current->left->token.value;
+                    DEBUG_DUMP_EVAL(ctx, current->left);
+                    current->left->done = 1;
                     break;
 
                 default:
-                    current = current->right;
+                    current = current->left;
                     continue;
                 }
             }
 
             /* short circuit evaluation */
-            if (!current->left->done && !regex &&
-                ((current->token.type == TOKEN_AND && !current->right->value) ||
-                (current->token.type == TOKEN_OR && current->right->value))) {
-                current->value = current->right->value;
+            if (!current->right->done && !regex &&
+                ((current->token.type == TOKEN_AND && !current->left->value) ||
+                (current->token.type == TOKEN_OR && current->left->value))) {
+                current->value = current->left->value;
             }
             else {
-                if (!current->left->done) {
-                    switch (current->left->token.type) {
+                if (!current->right->done) {
+                    switch (current->right->token.type) {
                     case TOKEN_STRING:
-                        current->left->token.value =
-                            ap_ssi_parse_string(ctx, current->left->token.value,
+                        current->right->token.value =
+                            ap_ssi_parse_string(ctx,current->right->token.value,
                                                 NULL, 0, SSI_EXPAND_DROP_NAME);
-                        current->left->value = !!*current->left->token.value;
-                        DEBUG_DUMP_EVAL(ctx, current->left);
-                        current->left->done = 1;
+                        current->right->value = !!*current->right->token.value;
+                        DEBUG_DUMP_EVAL(ctx, current->right);
+                        current->right->done = 1;
                         break;
 
                     default:
-                        current = current->left;
+                        current = current->right;
                         continue;
                     }
                 }
