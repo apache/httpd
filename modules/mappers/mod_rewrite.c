@@ -2968,7 +2968,7 @@ static char *lookup_map_program(request_rec *r, ap_file_t *fpin,
     char buf[LONG_STRING_LEN];
     char c;
     int i;
-    ap_size_t nbytes;
+    ap_ssize_t nbytes;
 
 #ifndef NO_WRITEV
     struct iovec iova[2];
@@ -3201,7 +3201,7 @@ static void rewritelog(request_rec *r, int level, const char *text, ...)
     char redir[20];
     va_list ap;
     int i;
-    ap_size_t nbytes;
+    ap_ssize_t nbytes;
     request_rec *req;
     char *ruser;
     const char *rhost;
@@ -3334,7 +3334,7 @@ static ap_status_t rewritelock_remove(void *data)
 {
     /* only operate if a lockfile is used */
     if (lockname == NULL || *(lockname) == '\0') {
-        return;
+        return APR_SUCCESS;
     }
 
     /* destroy the rewritelock */
