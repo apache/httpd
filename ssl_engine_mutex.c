@@ -68,6 +68,7 @@ int ssl_mutex_init(server_rec *s, apr_pool_t *p)
 
     if (mc->nMutexMode == SSL_MUTEXMODE_NONE) 
         return TRUE;
+
     if (apr_lock_create(&mc->pMutex, APR_MUTEX, APR_LOCKALL, APR_LOCK_DEFAULT,
                         mc->szMutexFile, p) != APR_SUCCESS)
         return FALSE;
@@ -80,6 +81,7 @@ int ssl_mutex_reinit(server_rec *s, apr_pool_t *p)
 
     if (mc->nMutexMode == SSL_MUTEXMODE_NONE)
         return TRUE;
+
     if (apr_lock_child_init(&mc->pMutex, mc->szMutexFile, p) != APR_SUCCESS)
         return FALSE;
     return TRUE;
@@ -108,21 +110,6 @@ int ssl_mutex_off(server_rec *s)
         ssl_log(s, SSL_LOG_WARN, "Failed to release global mutex lock");
         return FALSE;
     }
-    return TRUE;
-}
-
-int ssl_mutex_kill(server_rec *s)
-{
-    SSLModConfigRec *mc = myModConfig(s);
-
-    if (mc->nMutexMode == SSL_MUTEXMODE_NONE)
-        return TRUE;
-    /* XXX: currently mutex is not created until 2nd pass at startup */
-    if (!mc->pMutex)
-        return TRUE;
-    if (apr_lock_destroy(mc->pMutex) != APR_SUCCESS)
-        return FALSE;
-    mc->pMutex = NULL;
     return TRUE;
 }
 
