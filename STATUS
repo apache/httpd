@@ -1,12 +1,12 @@
   1.3 STATUS:
-  Last modified at [$Date: 1999/03/23 15:43:48 $]
+  Last modified at [$Date: 1999/03/23 21:19:48 $]
 
 Release:
 
     1.3.6-dev: current.
       - Tarball tagging/rolling:  March 22. Monday
-      - Release date:             March 24. Wednesday
-      - Announcement:             March 24. Wednesday
+      - Release date:             March 24. Wednesday [ 0:00 CET]
+      - Announcement:             March 24. Wednesday [23:00 CET]
       - Release manager:          Lars
       - Win32 release:            Paul
 
