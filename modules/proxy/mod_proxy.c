@@ -60,13 +60,7 @@
 
 #include "mod_proxy.h"
 
-APR_HOOK_STRUCT(
-	APR_HOOK_LINK(proxy_scheme_handler)
-	APR_HOOK_LINK(proxy_canon_handler)
-)
-
-AP_IMPLEMENT_HOOK_RUN_FIRST(int, proxy_scheme_handler, (request_rec *r, char *url, const char *proxyhost, apr_port_t proxyport),(r,url,proxyhost,proxyport),DECLINED)
-AP_IMPLEMENT_HOOK_RUN_FIRST(int, proxy_canon_handler, (request_rec *r, char *url),(r,url),DECLINED)
+extern module AP_MODULE_DECLARE_DATA proxy_module;
 
 
 /*
@@ -213,7 +207,7 @@ static int proxy_fixup(request_rec *r)
     url = &r->filename[6];
 
     /* canonicalise each specific scheme */
-    if ((access_status = ap_run_proxy_canon_handler(r, url))) {
+    if ((access_status = proxy_run_canon_handler(r, url))) {
 	return access_status;
     }
 
@@ -276,7 +270,7 @@ static int proxy_handler(request_rec *r)
         ap_get_module_config(sconf, &proxy_module);
     apr_array_header_t *proxies = conf->proxies;
     struct proxy_remote *ents = (struct proxy_remote *) proxies->elts;
-    int i, rc;
+    int i, rc, access_status;
     int direct_connect = 0;
     const char *str;
     long maxfwd;
@@ -360,52 +354,45 @@ static int proxy_handler(request_rec *r)
 #endif
     }
 
-/* firstly, try a proxy, unless a NoProxy directive is active */
-
-    if (!direct_connect)
+    /* firstly, try a proxy, unless a NoProxy directive is active */
+    if (!direct_connect) {
 	for (i = 0; i < proxies->nelts; i++) {
             p2 = ap_strchr_c(ents[i].scheme, ':');  /* is it a partial URL? */
 	    if (strcmp(ents[i].scheme, "*") == 0 ||
 		(p2 == NULL && strcasecmp(scheme, ents[i].scheme) == 0) ||
 		(p2 != NULL &&
-	       strncasecmp(url, ents[i].scheme, strlen(ents[i].scheme)) == 0)) {
-		/* CONNECT is a special method that bypasses the normal
-		 * proxy code.
-		 */
-		if (r->method_number == M_CONNECT)
-		    rc = ap_proxy_connect_handler(r, url, ents[i].hostname,
-					       ents[i].port);
-/* we only know how to handle communication to a proxy via http */
-		else if (strcasecmp(ents[i].protocol, "http") == 0)
-		    rc = ap_proxy_http_handler(r, url, ents[i].hostname,
-					    ents[i].port);
-		else
-		    rc = DECLINED;
+	        strncasecmp(url, ents[i].scheme, strlen(ents[i].scheme)) == 0)) {
+
+		/* handle the scheme */
+		ap_log_error(APLOG_MARK, APLOG_DEBUG | APLOG_NOERRNO, 0, r->server,
+			     "Trying to run scheme_handler against proxy");
+		access_status = proxy_run_scheme_handler(r, conf, url, NULL, 0);
 
 		/* an error or success */
-		if (rc != DECLINED && rc != HTTP_BAD_GATEWAY)
-		    return rc;
+		if (access_status != DECLINED && access_status != HTTP_BAD_GATEWAY) {
+		    return access_status;
+		}
 		/* we failed to talk to the upstream proxy */
 	    }
 	}
+    }
 
-/* otherwise, try it direct */
-/* N.B. what if we're behind a firewall, where we must use a proxy or
- * give up??
- */
+    /* otherwise, try it direct */
+    /* N.B. what if we're behind a firewall, where we must use a proxy or
+     * give up??
+     */
+
     /* handle the scheme */
-    if (r->method_number == M_CONNECT)
-	return ap_proxy_connect_handler(r, url, NULL, 0);
-    if (strcasecmp(scheme, "http") == 0)
-	return ap_proxy_http_handler(r, url, NULL, 0);
-    if (strcasecmp(scheme, "ftp") == 0)
-	return ap_proxy_ftp_handler(r, url, NULL, 0);
-    else {
+    ap_log_error(APLOG_MARK, APLOG_DEBUG | APLOG_NOERRNO, 0, r->server,
+		 "Trying to run scheme_handler");
+    access_status = proxy_run_scheme_handler(r, conf, url, NULL, 0);
+    if (DECLINED == access_status) {
         ap_log_error(APLOG_MARK, APLOG_DEBUG | APLOG_NOERRNO, 0, r->server,
 		     "Neither CONNECT, HTTP or FTP for %s",
 		     r->uri);
 	return HTTP_FORBIDDEN;
     }
+    return access_status;
 }
 
 /* -------------------------------------------------------------- */
@@ -749,8 +736,6 @@ static void register_hooks(apr_pool_t *p)
     ap_hook_handler(proxy_handler, NULL, NULL, APR_HOOK_FIRST);
     /* filename-to-URI translation */
     ap_hook_translate_name(proxy_trans, NULL, NULL, APR_HOOK_FIRST);
-    /* filters */
-    ap_register_output_filter("PROXY_SEND_DIR", ap_proxy_send_dir_filter, AP_FTYPE_CONTENT);
     /* fixups */
     ap_hook_fixups(proxy_fixup, NULL, NULL, APR_HOOK_FIRST);
     /* post read_request handling */
@@ -767,3 +752,17 @@ module AP_MODULE_DECLARE_DATA proxy_module =
     proxy_cmds,			/* command table */
     register_hooks
 };
+
+APR_HOOK_STRUCT(
+	APR_HOOK_LINK(scheme_handler)
+	APR_HOOK_LINK(canon_handler)
+)
+
+APR_IMPLEMENT_EXTERNAL_HOOK_RUN_FIRST(proxy, PROXY, int, scheme_handler, 
+                                     (request_rec *r, proxy_server_conf *conf, 
+                                     char *url, const char *proxyhost, 
+                                     apr_port_t proxyport),(r,conf,url,
+                                     proxyhost,proxyport),DECLINED)
+APR_IMPLEMENT_EXTERNAL_HOOK_RUN_FIRST(proxy, PROXY, int, canon_handler, 
+                                     (request_rec *r, char *url),(r,
+                                     url),DECLINED)

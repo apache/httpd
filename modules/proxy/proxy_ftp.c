@@ -64,6 +64,14 @@
 
 module AP_MODULE_DECLARE_DATA proxy_ftp_module;
 
+PROXY_DECLARE (int) ap_proxy_ftp_canon(request_rec *r, char *url);
+PROXY_DECLARE (int) ap_proxy_ftp_handler(request_rec *r, proxy_server_conf *conf, 
+                         char *url, const char *proxyhost, 
+                         apr_port_t proxyport);
+apr_status_t ap_proxy_send_dir_filter(ap_filter_t *f,
+				      apr_bucket_brigade *bb);
+
+
 /*
  * Decodes a '%' escaped string, and returns the number of characters
  */
@@ -113,7 +121,7 @@ static int ftp_check_string(const char *x)
 /*
  * Canonicalise ftp URLs.
  */
-int ap_proxy_ftp_canon(request_rec *r, char *url)
+PROXY_DECLARE (int) ap_proxy_ftp_canon(request_rec *r, char *url)
 {
     char *user, *password, *host, *path, *parms, *strp, sport[7];
     apr_pool_t *p = r->pool;
@@ -128,6 +136,9 @@ int ap_proxy_ftp_canon(request_rec *r, char *url)
 	return DECLINED;
     }
     def_port = ap_default_port_for_scheme("ftp");
+
+    ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r->server,
+		 "proxy: FTP: canonicalising URL %s", url);
 
     port = def_port;
     err = ap_proxy_canon_netloc(p, &url, &user, &password, &host, &port);
@@ -514,10 +525,13 @@ static int ftp_unauthorized (request_rec *r, int log_it)
  * PASV added by Chuck
  * Filters by [Graham Leggett <minfrin@sharp.fm>]
  */
-int ap_proxy_ftp_handler(request_rec *r, char *url, const char *proxyhost, apr_port_t proxyport)
+PROXY_DECLARE (int) ap_proxy_ftp_handler(request_rec *r, proxy_server_conf *conf, 
+                         char *url, const char *proxyhost, 
+                         apr_port_t proxyport)
 {
     apr_pool_t *p = r->pool;
     conn_rec *c = r->connection;
+    proxy_conn_rec *backend;
     apr_socket_t *sock, *local_sock, *remote_sock;
     apr_sockaddr_t *connect_addr;
     apr_status_t rv;
@@ -541,18 +555,28 @@ int ap_proxy_ftp_handler(request_rec *r, char *url, const char *proxyhost, apr_p
     int connect = 0, use_port = 0;
     char dates[AP_RFC822_DATE_LEN];
 
-    void *sconf = r->server->module_config;
-    proxy_server_conf *conf =
-    (proxy_server_conf *) ap_get_module_config(sconf, &proxy_module);
+    /* is this for us? */
+    if (proxyhost) {
+	ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r->server,
+		     "proxy: FTP: rejecting URL %s - proxyhost %s specified:", url, proxyhost);
+	return DECLINED; /* proxy connections are via HTTP */
+    }
+    if (strncasecmp(url, "ftp:", 4)) {
+	ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r->server,
+		     "proxy: FTP: rejecting URL %s - not ftp:", url);
+	return DECLINED; /* only interested in FTP */
+    }
+    ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r->server,
+		 "proxy: FTP: serving URL %s", url);
 
-    proxy_conn_rec *backend =
-    (proxy_conn_rec *) ap_get_module_config(c->conn_config, &proxy_module);
+    /* create space for state information */
+    backend = (proxy_conn_rec *) ap_get_module_config(c->conn_config, &proxy_ftp_module);
     if (!backend) {
 	backend = ap_pcalloc(c->pool, sizeof(proxy_conn_rec));
 	backend->connection = NULL;
 	backend->hostname = NULL;
 	backend->port = 0;
-	ap_set_module_config(c->conn_config, &proxy_module, backend);
+	ap_set_module_config(c->conn_config, &proxy_ftp_module, backend);
     }
 
 
@@ -1620,8 +1644,11 @@ int ap_proxy_ftp_handler(request_rec *r, char *url, const char *proxyhost, apr_p
 
 static void ap_proxy_ftp_register_hook(apr_pool_t *p)
 {
-    ap_hook_proxy_scheme_handler(ap_proxy_ftp_handler, NULL, NULL, APR_HOOK_MIDDLE);
-    ap_hook_proxy_canon_handler(ap_proxy_ftp_canon, NULL, NULL, APR_HOOK_MIDDLE);
+    /* hooks */
+    proxy_hook_scheme_handler(ap_proxy_ftp_handler, NULL, NULL, APR_HOOK_MIDDLE);
+    proxy_hook_canon_handler(ap_proxy_ftp_canon, NULL, NULL, APR_HOOK_MIDDLE);
+    /* filters */
+    ap_register_output_filter("PROXY_SEND_DIR", ap_proxy_send_dir_filter, AP_FTYPE_CONTENT);
 }
 
 module AP_MODULE_DECLARE_DATA proxy_ftp_module = {

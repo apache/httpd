@@ -81,6 +81,7 @@
 
 #define CORE_PRIVATE
 
+#include "apr_hooks.h"
 #include "apr.h"
 #include "apr_compat.h"
 #include "apr_lib.h"
@@ -89,7 +90,6 @@
 #include "apr_md5.h"
 #include "apr_pools.h"
 #include "apr_strings.h"
-#include "apr_hooks.h"
 
 #include "httpd.h"
 #include "http_config.h"
@@ -119,8 +119,6 @@
 #if APR_HAVE_ARPA_INET_H
 #include <arpa/inet.h>
 #endif
-
-extern module AP_MODULE_DECLARE_DATA proxy_module;
 
 /* for proxy_canonenc() */
 enum enctype {
@@ -202,27 +200,34 @@ typedef struct {
 } proxy_completion;
 
 
-/* Function prototypes */
+/* hooks */
 
-/* proxy_connect.c */
+/* Create a set of PROXY_DECLARE(type), PROXY_DECLARE_NONSTD(type) and 
+ * PROXY_DECLARE_DATA with appropriate export and import tags for the platform
+ */
+#if !defined(WIN32)
+#define PROXY_DECLARE(type)            type
+#define PROXY_DECLARE_NONSTD(type)     type
+#define PROXY_DECLARE_DATA
+#elif defined(PROXY_DECLARE_STATIC)
+#define PROXY_DECLARE(type)            type __stdcall
+#define PROXY_DECLARE_NONSTD(type)     type
+#define PROXY_DECLARE_DATA
+#elif defined(PROXY_DECLARE_EXPORT)
+#define PROXY_DECLARE(type)            __declspec(dllexport) type __stdcall
+#define PROXY_DECLARE_NONSTD(type)     __declspec(dllexport) type
+#define PROXY_DECLARE_DATA             __declspec(dllexport)
+#else
+#define PROXY_DECLARE(type)            __declspec(dllimport) type __stdcall
+#define PROXY_DECLARE_NONSTD(type)     __declspec(dllimport) type
+#define PROXY_DECLARE_DATA             __declspec(dllimport)
+#endif
 
-int ap_proxy_connect_canon(request_rec *r, char *url);
-int ap_proxy_connect_handler(request_rec *r, char *url,
-			  const char *proxyhost, apr_port_t proxyport);
-
-/* proxy_ftp.c */
-
-int ap_proxy_ftp_canon(request_rec *r, char *url);
-int ap_proxy_ftp_handler(request_rec *r, char *url, const char *proxyhost, apr_port_t proxyport);
-apr_status_t ap_proxy_send_dir_filter(ap_filter_t *f,
-				      apr_bucket_brigade *bb);
-
-
-/* proxy_http.c */
-
-int ap_proxy_http_canon(request_rec *r, char *url);
-int ap_proxy_http_handler(request_rec *r, char *url,
-		       const char *proxyhost, apr_port_t proxyport);
+APR_DECLARE_EXTERNAL_HOOK(proxy, PROXY, int, scheme_handler, (request_rec *r, 
+                          proxy_server_conf *conf, char *url, 
+                          const char *proxyhost, apr_port_t proxyport))
+APR_DECLARE_EXTERNAL_HOOK(proxy, PROXY, int, canon_handler, (request_rec *r, 
+                          char *url))
 
 /* proxy_util.c */
 
@@ -249,13 +254,6 @@ int ap_proxy_checkproxyblock(request_rec *r, proxy_server_conf *conf, apr_sockad
 int ap_proxy_pre_http_connection(conn_rec *c, request_rec *r);
 apr_status_t ap_proxy_string_read(conn_rec *c, apr_bucket_brigade *bb, char *buff, size_t bufflen, int *eos);
 void ap_proxy_reset_output_filters(conn_rec *c);
-
-
-/* hooks */
-
-
-AP_DECLARE_HOOK(int, proxy_scheme_handler, (request_rec *r, char *url, const char *proxyhost, apr_port_t proxyport))
-AP_DECLARE_HOOK(int, proxy_canon_handler, (request_rec *r, char *url))
 
 
 #endif /*MOD_PROXY_H*/
