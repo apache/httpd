@@ -1,129 +1,186 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-
-<html xmlns="http://www.w3.org/1999/xhtml">
-  <head>
-    <meta name="generator" content="HTML Tidy, see www.w3.org" />
-
-    <title>Module mod_cern_meta</title>
-  </head>
-  <!-- Background white, links blue (unvisited), navy (visited), red (active) -->
-
-  <body bgcolor="#FFFFFF" text="#000000" link="#0000FF"
-  vlink="#000080" alink="#FF0000">
-    <!--#include virtual="header.html" -->
-
-    <h1 align="CENTER">Apache module mod_cern_meta</h1>
-
-    <p>This module provides for CERN httpd metafile semantics.</p>
-
-    <p><a href="module-dict.html#Status"
-    rel="Help"><strong>Status:</strong></a> Extension<br />
-     <a href="module-dict.html#SourceFile"
-    rel="Help"><strong>Source File:</strong></a>
-    mod_cern_meta.c<br />
-     <a href="module-dict.html#ModuleIdentifier"
-    rel="Help"><strong>Module Identifier:</strong></a>
-    cern_meta_module<br />
-     <a href="module-dict.html#Compatibility"
-    rel="Help"><strong>Compatibility:</strong></a> Available in
-    Apache 1.1 and later.</p>
-
-    <h2>Summary</h2>
-    <!-- XXX: Should mention other possibilities in Apache: mod_header -->
-    Emulate the CERN HTTPD Meta file semantics. Meta files are HTTP
+<html>
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<!--
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+     This file is generated from xml source: DO NOT EDIT
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+-->
+<title>mod_cern_meta - Apache HTTP Server</title>
+<link href="../style/manual.css" type="text/css" rel="stylesheet">
+</head>
+<body>
+<blockquote>
+<div align="center">
+<img alt="[APACHE DOCUMENTATION]" src="../images/sub.gif"><h3>Apache HTTP Server Version 2.0</h3>
+</div>
+<h1 align="center">Apache Module mod_cern_meta</h1>
+<table cellspacing="1" cellpadding="0" bgcolor="#cccccc">
+<tr>
+<td>
+<table bgcolor="#ffffff">
+<tr>
+<td><span class="help">Description:</span></td><td>
+<description>CERN httpd metafile semantics</description>
+</td>
+</tr>
+<tr>
+<td><a href="module-dict.html#Status" class="help">Status:</a></td><td>Extension</td>
+</tr>
+<tr>
+<td><a href="module-dict.html#ModuleIdentifier" class="help">Module&nbsp;Identifier:</a></td><td>cern_meta_module</td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+<h2>Summary</h2>
+<summary>
+    
+    
+<p>Emulate the CERN HTTPD Meta file semantics. Meta files are HTTP
     headers that can be output in addition to the normal range of
     headers for each file accessed. They appear rather like the
     Apache .asis files, and are able to provide a crude way of
     influencing the Expires: header, as well as providing other
     curiosities. There are many ways to manage meta information,
     this one was chosen because there is already a large number of
-    CERN users who can exploit this module. 
+    CERN users who can exploit this module.</p>
 
-    <p>More information on the <a
-    href="http://www.w3.org/pub/WWW/Daemon/User/Config/General.html#MetaDir">
+    
+<p>More information on the <a href="http://www.w3.org/pub/WWW/Daemon/User/Config/General.html#MetaDir">
     CERN metafile semantics</a> is available.</p>
 
-    <h2>Directives</h2>
-
-    <ul>
-      <li><a href="#metafiles">MetaFiles</a></li>
-
-      <li><a href="#metadir">MetaDir</a></li>
-
-      <li><a href="#metasuffix">MetaSuffix</a></li>
-    </ul>
-    <hr />
-
-    <h2><a id="metafiles" name="metafiles">MetaFiles</a>
-    directive</h2>
-    <a href="directive-dict.html#Syntax"
-    rel="Help"><strong>Syntax:</strong></a> MetaFiles on|off<br />
-     <a href="directive-dict.html#Default"
-    rel="Help"><strong>Default:</strong></a> <code>MetaFiles
-    off</code><br />
-     <a href="directive-dict.html#Context"
-    rel="Help"><strong>Context:</strong></a> per-directory
-    config<br />
-     <a href="directive-dict.html#Status"
-    rel="Help"><strong>Status:</strong></a> Base<br />
-     <a href="directive-dict.html#Module"
-    rel="Help"><strong>Module:</strong></a> mod_cern_meta<br />
-     <a href="directive-dict.html#Compatibility"
-    rel="Help"><strong>Compatibility:</strong></a> MetaFiles is
-    only available in Apache 1.3 and later. 
-
-    <p>Turns on/off Meta file processing on a per-directory basis.
-    This option was introduced in Apache 1.3.</p>
-    <hr />
-
-    <h2><a id="metadir" name="metadir">MetaDir</a> directive</h2>
-    <a href="directive-dict.html#Syntax"
-    rel="Help"><strong>Syntax:</strong></a> MetaDir
-    <em>directory</em><br />
-     <a href="directive-dict.html#Default"
-    rel="Help"><strong>Default:</strong></a> <code>MetaDir
-    .web</code><br />
-     <strong>Context: (Apache prior to 1.3)</strong> server
-    config<br />
-     <strong>Context: (Apache 1.3)</strong> per-directory
-    config<br />
-     <a href="directive-dict.html#Status"
-    rel="Help"><strong>Status:</strong></a> Base<br />
-     <a href="directive-dict.html#Module"
-    rel="Help"><strong>Module:</strong></a> mod_cern_meta<br />
-     <a href="directive-dict.html#Compatibility"
-    rel="Help"><strong>Compatibility:</strong></a> MetaDir is only
-    available in Apache 1.1 and later. 
-
-    <p>Specifies the name of the directory in which Apache can find
+</summary>
+<h2>Directives</h2>
+<ul>
+<li>
+<a href="#metadir">MetaDir</a>
+</li>
+<li>
+<a href="#metafiles">MetaFiles</a>
+</li>
+<li>
+<a href="#metasuffix">MetaSuffix</a>
+</li>
+</ul>
+<hr>
+<h2>
+<a name="MetaDir">MetaDir</a> <a name="metadir">Directive</a>
+</h2>
+<table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc">
+<tr>
+<td>
+<table width="100%" bgcolor="#ffffff">
+<tr>
+<td><strong>Description: </strong></td><td>Name of the directory to find CERN-style meta information
+files</td>
+</tr>
+<tr>
+<td><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td>
+<syntax>MetaDir <em>directory</em>
+</syntax>
+</td>
+</tr>
+<tr>
+<td><a href="directive-dict.html#Default" class="help">Default:</a></td><td><code>MetaDir .web</code></td>
+</tr>
+<tr>
+<td><a href="directive-dict.html#Context" class="help">Context:</a></td><td>directory</td>
+</tr>
+<tr>
+<td><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Extension</td>
+</tr>
+<tr>
+<td><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_cern_meta</td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+<usage>
+    
+<p>Specifies the name of the directory in which Apache can find
     meta information files. The directory is usually a 'hidden'
     subdirectory of the directory that contains the file being
     accessed. Set to "<code>.</code>" to look in the same directory
     as the file.</p>
-    <hr />
 
-    <h2><a id="metasuffix" name="metasuffix">MetaSuffix</a>
-    directive</h2>
-    <a href="directive-dict.html#Syntax"
-    rel="Help"><strong>Syntax:</strong></a> MetaSuffix
-    <em>suffix</em><br />
-     <a href="directive-dict.html#Default"
-    rel="Help"><strong>Default:</strong></a> <code>MetaSuffix
-    .meta</code><br />
-     <strong>Context: (Apache prior to 1.3)</strong> server
-    config<br />
-     <strong>Context: (Apache 1.3)</strong> per-directory
-    config<br />
-     <a href="directive-dict.html#Status"
-    rel="Help"><strong>Status:</strong></a> Base<br />
-     <a href="directive-dict.html#Module"
-    rel="Help"><strong>Module:</strong></a> mod_cern_meta<br />
-     <a href="directive-dict.html#Compatibility"
-    rel="Help"><strong>Compatibility:</strong></a> MetaSuffix is
-    only available in Apache 1.1 and later. 
+</usage>
+<hr>
+<h2>
+<a name="MetaFiles">MetaFiles</a> <a name="metafiles">Directive</a>
+</h2>
+<table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc">
+<tr>
+<td>
+<table width="100%" bgcolor="#ffffff">
+<tr>
+<td><strong>Description: </strong></td><td>Activates CERN meta-file processing</td>
+</tr>
+<tr>
+<td><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td>
+<syntax>MetaFiles on|off</syntax>
+</td>
+</tr>
+<tr>
+<td><a href="directive-dict.html#Default" class="help">Default:</a></td><td><code>MetaFiles off</code></td>
+</tr>
+<tr>
+<td><a href="directive-dict.html#Context" class="help">Context:</a></td><td>directory</td>
+</tr>
+<tr>
+<td><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Extension</td>
+</tr>
+<tr>
+<td><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_cern_meta</td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+<usage>
+    
+<p>Turns on/off Meta file processing on a per-directory basis.</p>
 
-    <p>Specifies the file name suffix for the file containing the
+</usage>
+<hr>
+<h2>
+<a name="MetaSuffix">MetaSuffix</a> <a name="metasuffix">Directive</a>
+</h2>
+<table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc">
+<tr>
+<td>
+<table width="100%" bgcolor="#ffffff">
+<tr>
+<td><strong>Description: </strong></td><td>File name suffix for the file containg CERN-style
+meta information</td>
+</tr>
+<tr>
+<td><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td>
+<syntax>MetaSuffix <em>suffix</em>
+</syntax>
+</td>
+</tr>
+<tr>
+<td><a href="directive-dict.html#Default" class="help">Default:</a></td><td><code>MetaSuffix .meta</code></td>
+</tr>
+<tr>
+<td><a href="directive-dict.html#Context" class="help">Context:</a></td><td>directory</td>
+</tr>
+<tr>
+<td><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Extension</td>
+</tr>
+<tr>
+<td><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_cern_meta</td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+<usage>
+    
+<p>Specifies the file name suffix for the file containing the
     meta information. For example, the default values for the two
     directives will cause a request to
     <code>DOCUMENT_ROOT/somedir/index.html</code> to look in
@@ -131,8 +188,10 @@
     will use its contents to generate additional MIME header
     information.</p>
 
-    <p><!--#include virtual="footer.html" -->
-    </p>
-  </body>
+</usage>
+<hr>
+<h3 align="center">Apache HTTP Server Version 2.0</h3>
+<a href="./"><img alt="Index" src="../images/index.gif"></a><a href="../"><img alt="Home" src="../images/home.gif"></a>
+</blockquote>
+</body>
 </html>
-

@@ -1,0 +1,76 @@
+<?xml version="1.0"?>
+<!DOCTYPE xml:manual [ <!ENTITY nbsp "&#160;"> ]>
+<?xml-stylesheet type="text/xsl" href="../style/manual.xsl"?>
+<modulesynopsis>
+
+<name>mod_cern_meta</name>
+<description>CERN httpd metafile semantics</description>
+<status>Extension</status>
+<sourcefile>mod_cern_meta.c</sourcefile>
+<identifier>cern_meta_module</identifier>
+
+<summary>
+    <!-- XXX: Should mention other possibilities in Apache: mod_header -->
+    <p>Emulate the CERN HTTPD Meta file semantics. Meta files are HTTP
+    headers that can be output in addition to the normal range of
+    headers for each file accessed. They appear rather like the
+    Apache .asis files, and are able to provide a crude way of
+    influencing the Expires: header, as well as providing other
+    curiosities. There are many ways to manage meta information,
+    this one was chosen because there is already a large number of
+    CERN users who can exploit this module.</p>
+
+    <p>More information on the <a
+    href="http://www.w3.org/pub/WWW/Daemon/User/Config/General.html#MetaDir">
+    CERN metafile semantics</a> is available.</p>
+</summary>
+
+<directivesynopsis>
+<name>MetaFiles</name>
+<description>Activates CERN meta-file processing</description>
+<syntax>MetaFiles on|off</syntax>
+<default>MetaFiles off</default>
+<contextlist><context>directory</context></contextlist>
+
+<usage>
+    <p>Turns on/off Meta file processing on a per-directory basis.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>MetaDir</name>
+<description>Name of the directory to find CERN-style meta information
+files</description>
+<syntax>MetaDir <em>directory</em></syntax>
+<default>MetaDir .web</default>
+<contextlist><context>directory</context></contextlist>
+
+<usage>
+    <p>Specifies the name of the directory in which Apache can find
+    meta information files. The directory is usually a 'hidden'
+    subdirectory of the directory that contains the file being
+    accessed. Set to "<code>.</code>" to look in the same directory
+    as the file.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>MetaSuffix</name>
+<description>File name suffix for the file containg CERN-style
+meta information</description>
+<syntax>MetaSuffix <em>suffix</em></syntax>
+<default>MetaSuffix .meta</default>
+<contextlist><context>directory</context></contextlist>
+
+<usage>
+    <p>Specifies the file name suffix for the file containing the
+    meta information. For example, the default values for the two
+    directives will cause a request to
+    <code>DOCUMENT_ROOT/somedir/index.html</code> to look in
+    <code>DOCUMENT_ROOT/somedir/.web/index.html.meta</code> and
+    will use its contents to generate additional MIME header
+    information.</p>
+</usage>
+</directivesynopsis>
+
+</modulesynopsis>
