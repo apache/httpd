@@ -92,6 +92,7 @@
 #include "http_log.h"
 #include "http_main.h"
 #include "http_protocol.h"
+#include "http_request.h"
 #include "util_script.h"
 #include "apr_strings.h"
 #include "apr_lib.h"
@@ -247,6 +248,86 @@ static void mod_info_module_cmds(request_rec * r, const command_rec * cmds,
 
     }
 }
+
+typedef struct { /*XXX: should get something from apr_hooks.h instead */
+    void (*pFunc)(void); /* just to get the right size */
+    const char *szName;
+    const char * const *aszPredecessors;
+    const char * const *aszSuccessors;
+    int nOrder;
+} hook_struct_t;
+
+typedef apr_array_header_t * (*hook_get_t)(void);
+
+typedef struct {
+    const char *name;
+    hook_get_t get;
+} hook_lookup_t;
+
+static hook_lookup_t request_hooks[] = {
+    {"Post-Read Request", ap_hook_get_post_read_request},
+    {"Header Parse", ap_hook_get_header_parser},
+    {"Translate Path", ap_hook_get_translate_name},
+    {"Check Access", ap_hook_get_access_checker},
+    {"Verify User ID", ap_hook_get_check_user_id},
+    {"Verify User Access", ap_hook_get_auth_checker},
+    {"Check Type", ap_hook_get_type_checker},
+    {"Fixups", ap_hook_get_fixups},
+    {"Logging", ap_hook_get_log_transaction},
+    {NULL},
+};
+
+static int module_find_hook(module *modp,
+                            hook_get_t hook_get)
+{
+    int i;
+    apr_array_header_t *hooks = hook_get();
+    hook_struct_t *elts;
+
+    if (!hooks) {
+        return 0;
+    }
+
+    elts = (hook_struct_t *)hooks->elts;
+
+    for (i=0; i< hooks->nelts; i++) {
+        if (strcmp(elts[i].szName, modp->name) == 0) {
+            return 1;
+        }
+    }
+
+    return 0;
+}
+
+static void module_participate(request_rec *r,
+                               module *modp,
+                               hook_lookup_t *lookup,
+                               int *comma)
+{
+    if (module_find_hook(modp, lookup->get)) {
+        if (*comma) {
+            ap_rputs(", ", r);
+        }
+        ap_rvputs(r, "<tt>", lookup->name, "</tt>", NULL);
+        *comma = 1;
+    }
+}
+
+static void module_request_hook_participate(request_rec *r, module *modp)
+{
+    int i, comma=0;
+
+    ap_rputs("<dt><strong>Request Phase Participation:</strong> \n", r);
+
+    for (i=0; request_hooks[i].name; i++) {
+        module_participate(r, modp, &request_hooks[i], &comma);
+    }
+
+    if (!comma) {
+        ap_rputs("<tt> <EM>none</EM></tt>", r);
+    }
+}
+
 static const char *find_more_info(server_rec *s, const char *module_name)
 {
     int i;
@@ -364,7 +445,12 @@ static int display_info(request_rec *r)
                     ap_rputs("<tt> <EM>none</EM></tt>", r);
                 }
 #else
-                ap_rputs("<tt> <EM>(code broken)</EM></tt>", r);
+                if (module_find_hook(modp, ap_hook_get_handler)) {
+                    ap_rputs("<tt> <EM>yes</EM></tt>", r);
+                }
+                else {
+                    ap_rputs("<tt> <EM>none</EM></tt>", r);
+                }
 #endif
                 ap_rputs("<dt><strong>Configuration Phase Participation:</strong> \n",
                       r);
@@ -399,6 +485,9 @@ static int display_info(request_rec *r)
                 if (!comma)
                     ap_rputs("<tt> <EM>none</EM></tt>", r);
                 comma = 0;
+
+                module_request_hook_participate(r, modp);
+
                 ap_rputs("<dt><strong>Module Directives:</strong> ", r);
                 cmd = modp->cmds;
                 if (cmd) {

@@ -1,4 +1,6 @@
 Changes with Apache 2.0.18-dev
+  *) add "Request Phase Participation" info to mod_info
+     [Doug MacEachern]
 
   *) Make first phase changes to the scoreboard data structures in
      preparation for the rewriting of the scoreboard per my posted
