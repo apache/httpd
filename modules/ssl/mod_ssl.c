@@ -224,19 +224,20 @@ static int ssl_hook_pre_connection(conn_rec *c, void *csd)
     SSLSrvConfigRec *sc = mySrvConfig(c->base_server);
     SSL *ssl;
     char *cpVHostMD5;
-    SSLConnRec *sslconn = apr_pcalloc(c->pool, sizeof(*sslconn));
-
-    /*
-     * Create SSL context
-     */
-    myConnConfigSet(c, sslconn);
-    sslconn->log_level = sc->nLogLevel;
+    SSLConnRec *sslconn;
 
     /*
      * Immediately stop processing if SSL is disabled for this connection
      */
     if (sc == NULL || !sc->bEnabled)
         return DECLINED;
+
+    /*
+     * Create SSL context
+     */
+    sslconn = apr_pcalloc(c->pool, sizeof(*sslconn));
+    myConnConfigSet(c, sslconn);
+    sslconn->log_level = sc->nLogLevel;
 
     /*
      * Remember the connection information for
