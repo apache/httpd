@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/09/15 20:27:03 $]
+Last modified at [$Date: 2004/09/17 09:01:49 $]
 
 Release:
 
@@ -74,9 +74,17 @@ PATCHES TO BACKPORT FROM 2.1
   [ please place file names and revisions from HEAD here, so it is easy to
     identify exactly what the proposed changes are! ]
 
+    *) buildconf: Clean autoconf cache and do mod_ssl timestamp dance.
+       http://cvs.apache.org/viewcvs.cgi/httpd-2.0/buildconf?r1=1.37&r2=1.40
+       +1: jorton
+    
+    *) remove config.{guess,sub} and PrintPath from build (they are copied
+       by buildconf already)
+       +1: jorton
+
     *) Use HTML 2.0 <hr> for error pages. PR 30732
          modules/http/http_protocol.c: r1.483
-       +1: nd
+       +1: nd, jorton
 
     *) mod_mem_cache: Fixed race condition causing segfault because of memory being
        freed twice, or reused after being freed. Changed the atomic usage of refcount
