@@ -53,7 +53,8 @@
 /*
 Note that the Explain() stuff is not yet complete.
 Also note numerous FIXMEs and CHECKMEs which should be eliminated.
-If TESTING is set, then grabage collection doesn't delete ... probably a good
+
+If TESTING is set, then garbage collection doesn't delete ... probably a good
 idea when hacking.
 
 This code is still experimental!
@@ -1367,7 +1368,7 @@ static int sub_garbage_coll(request_rec *r,array_header *files,
 			     const char *cachebasedir,const char *cachesubdir)
 {
     char line[27];
-    char cachedir[PATHSIZE];
+    char cachedir[HUGE_STRING_LEN];
     struct stat buf;
     int fd,i;
     DIR *dir;
@@ -1425,7 +1426,7 @@ static int sub_garbage_coll(request_rec *r,array_header *files,
 	}
 	if(S_ISDIR(buf.st_mode))
 	    {
-	    char newcachedir[PATHSIZE];
+	    char newcachedir[HUGE_STRING_LEN];
 	    close(fd);
 	    sprintf(newcachedir,"%s%s/",cachesubdir,ent->d_name);
 	    if(!sub_garbage_coll(r,files,cachebasedir,newcachedir))
