@@ -3,7 +3,7 @@
 #  will print out the full pathname unless
 #  called with the '-s' option
 #
-if [ $1 = "-s" ]; then
+if [ "x$1" = "x-s" ]; then
     shift
 else
     echo="yes"
