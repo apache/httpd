@@ -1467,7 +1467,7 @@ When using the NOT character
           <code>mod_proxy.c</code> is part of the ``<code>httpd
           -l</code>'' output. If yes, this functionality is
           available to mod_rewrite. If not, then you first have to
-          rebuild the ``<code>httpd</code>'' program with mod_proxy
+          rebuild the <program>httpd</program> program with mod_proxy
           enabled.</p>
         </li>
 

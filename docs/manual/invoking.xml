@@ -31,15 +31,15 @@
     and <a href="platform/windows.html#wincons">Running Apache as a
     Console Application</a>.</p>
 
-    <p>On Unix, the <a href="programs/httpd.html">httpd</a> program
+    <p>On Unix, the <program>httpd</program> program
     is run as a daemon that executes continuously in the
     background to handle requests.  This document describes how
-    to invoke <code>httpd</code>.</p>
+    to invoke <program>httpd</program>.</p>
 </summary>
 
 <seealso><a href="stopping.html">Stopping and Restarting</a></seealso>
-<seealso><a href="programs/httpd.html">httpd</a></seealso>
-<seealso><a href="programs/apachectl.html">apachectl</a></seealso>
+<seealso><program>httpd</program></seealso>
+<seealso><program>apachectl</program></seealso>
 
 <section id="startup"><title>How Apache Starts</title>
 
@@ -55,18 +55,17 @@
     run as a less privileged user. This is controlled by the selected
     <a href="mpm.html">Multi-Processing Module</a>.</p>
 
-    <p>The recommended method of invoking the <code>httpd</code>
-    executable is to use the <a
-    href="programs/apachectl.html">apachectl</a> control script.  This
+    <p>The recommended method of invoking the <program>httpd</program>
+    executable is to use the <program>apachectl</program> control script. This
     script sets certain environment variables that are necessary for
-    <code>httpd</code> to function correctly under some operating
-    systems, and then invokes the <code>httpd</code> binary.
-    <code>apachectl</code> will pass through any command line
-    arguments, so any <code>httpd</code> options may also be used with
-    <code>apachectl</code>.  You may also directly edit the
-    <code>apachectl</code> script by changing the <code>HTTPD</code>
+    <program>httpd</program> to function correctly under some operating
+    systems, and then invokes the <program>httpd</program> binary.
+    <program>apachectl</program> will pass through any command line
+    arguments, so any <program>httpd</program> options may also be used with
+    <program>apachectl</program>.  You may also directly edit the
+    <program>apachectl</program> script by changing the <code>HTTPD</code>
     variable near the top to specify the correct location of the
-    <code>httpd</code> binary and any command-line arguments that you
+    <program>httpd</program> binary and any command-line arguments that you
     wish to be <em>always</em> present.</p>
 
     <p>The first thing that <code>httpd</code> does when it is
@@ -114,27 +113,26 @@
 <section id="boot"><title>Starting at Boot-Time</title>
 
     <p>If you want your server to continue running after a system
-    reboot, you should add a call to <code>apachectl</code> to your
+    reboot, you should add a call to <program>apachectl</program> to your
     system startup files (typically <code>rc.local</code> or a file in
     an <code>rc.N</code> directory). This will start Apache as
     root. Before doing this ensure that your server is properly
     configured for security and access restrictions.</p>
 
-    <p>The <code>apachectl</code> script is designed to act like a
+    <p>The <program>apachectl</program> script is designed to act like a
     standard SysV init script; it can take the arguments
     <code>start</code>, <code>restart</code>, and <code>stop</code>
     and translate them into the appropriate signals to
-    <code>httpd</code>.  So you can often simply link
-    <code>apachectl</code> into the appropriate init directory. But be
+    <program>httpd</program>.  So you can often simply link
+    <program>apachectl</program> into the appropriate init directory. But be
     sure to check the exact requirements of your system.</p>
 </section>
 
 <section id="info"><title>Additional Information</title>
 
-    <p>Additional information about the command-line options of <a
-    href="programs/httpd.html">httpd</a> and <a
-    href="programs/apachectl.html">apachectl</a> as well as other
-    support programs included with the server is available on the
+    <p>Additional information about the command-line options of <program>
+    httpd</program> and <program>apachectl</program> as well as other support
+    programs included with the server is available on the
     <a href="programs/">Server and Supporting Programs</a> page.
     There is also documentation on all the <a
     href="mod/">modules</a> included with the Apache distribution

@@ -446,7 +446,8 @@
     <p><strong>Setting paranoid permissions</strong><br />
     Although the suEXEC wrapper will check to ensure that its
     caller is the correct user as specified with the
-    <code>--with-suexec-caller</code> configure option, there is
+    <code>--with-suexec-caller</code> <program>configure</program>
+    option, there is
     always the possibility that a system or library call suEXEC uses
     before this check may be exploitable on your system. To counter
     this, and because it is best-practise in general, you should use 
@@ -460,7 +461,7 @@
     Group webgroup<br />
 </example>
 
-    <p>and <code>suexec</code> is installed at
+    <p>and <program>suexec</program> is installed at
     "/usr/local/apache2/sbin/suexec", you should run:</p>
 
 <example>
@@ -476,14 +477,14 @@
     suEXEC</title>
 
     <p>Upon startup of Apache, it looks for the file
-    <code>suexec</code> in the directory defined by the
+    <program>suexec</program> in the directory defined by the
     <code>--sbindir</code> option (default is
     "/usr/local/apache/sbin/suexec"). If Apache finds a properly
     configured suEXEC wrapper, it will print the following message
     to the error log:</p>
 
 <example>
-    [notice] suEXEC mechanism enabled (wrapper: <em>/path/to/suexec</em>)
+    [notice] suEXEC mechanism enabled (wrapper: <var>/path/to/suexec</var>)
 </example>
 
     <p>If you don't see this message at server startup, the server is
@@ -495,7 +496,7 @@
     restart Apache. Restarting it with a simple HUP or USR1 signal
     will not be enough. </p>
      <p>If you want to disable suEXEC you should kill and restart
-    Apache after you have removed the <code>suexec</code> file. </p>
+    Apache after you have removed the <program>suexec</program> file.</p>
 </section>
 
 <section id="usage"><title>Using suEXEC</title>

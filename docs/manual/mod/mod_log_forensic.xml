@@ -127,9 +127,9 @@ version 2.1</compatibility>
 
       <note type="warning"><title>Security:</title>
       <p>If a program is used, then it will be run as the user who
-      started httpd. This will be root if the server was started by root;
-      be sure that the program is secure or switches to a less privileged
-      user.</p>
+      started <program>httpd</program>. This will be root if the server was
+      started by root; be sure that the program is secure or switches to a
+      less privileged user.</p>
       </note>
 
       <note><title>Note</title>

@@ -158,8 +158,8 @@
         everything else is stored at sbindir. ==> clarify/change this -->
         <dt><code>--bindir=<var>DIR</var></code></dt>
         <dd>Install user executables in <var>DIR</var>. The user executables
-          are supporting programs like <code>htpasswd</code>,
-          <code>dbmmanage</code>, etc. which are useful for site
+          are supporting programs like <program>htpasswd</program>,
+          <program>dbmmanage</program>, etc. which are useful for site
           administrators. By default <var>DIR</var> is set to
           <code><var>EPREFIX</var>/bin</code>.</dd>
 
@@ -209,10 +209,11 @@
         
         <dt><code>--sbindir=<var>DIR</var></code></dt>
         <dd>Install the system administrator executables in <var>DIR</var>.
-          Those are server programs like <code>httpd</code>,
-          <code>apachectl</code>, <code>suexec</code>, etc. which are neccessary
-          to run the Apache HTTP Server. By default <code>sbindir</code> is
-          set to <code><var>EPREFIX</var>/sbin</code>.</dd>
+          Those are server programs like <program>httpd</program>,
+          <program>apachectl</program>, <program>suexec</program>, etc. which
+          are neccessary to run the Apache HTTP Server. By default
+          <code>sbindir</code> is set to
+          <code><var>EPREFIX</var>/sbin</code>.</dd>
 
         <dt><code>--sharedstatedir=<var>DIR</var></code></dt>
         <dd>Install modifiable architecture-independent data in <var>DIR</var>.
@@ -634,7 +635,7 @@
             vendor's documentation.</p>
           <note><title>Note</title>
             If you want to build a DSO module instead of a statically linked
-            use <a href="apxs.html">apxs</a>.</note>
+            use <program>apxs</program>.</note>
         </dd>
 
         <dt><code>--with-mpm=MPM</code></dt>
@@ -679,7 +680,7 @@
         <dt><code>--enable-modules=<var>MODULE-LIST</var></code></dt>
         <dd>This option behaves similar to <code>--enable-mods-shared</code>, 
           but will link the given modules statically. This mean, these modules
-          will always be present while running <code>httpd</code>. They need
+          will always be present while running <program>httpd</program>. They need
           not be loaded with <directive
           module="mod_so">LoadModule</directive>.</dd>
 
@@ -687,8 +688,8 @@
         <dd>Allow IPv6 sockets to handle IPv4 connections.</dd>
 
         <dt><code>--with-port=<var>PORT</var></code></dt>
-        <dd>This defines the port on which <code>httpd</code> will listen. This
-          port number is used when generating the configuration file
+        <dd>This defines the port on which <program>httpd</program> will listen.
+          This port number is used when generating the configuration file
           <code>httpd.conf</code>. The default is 80.</dd>
 
         <dt><code>--with-program-name</code></dt>
@@ -724,7 +725,7 @@
     <section id="packageopt"><title>Specific packages</title>
       <dl>
         <dt><code>--with-apr=<var>DIR</var>|<var>FILE</var></code></dt>
-        <dd>The Apache Portable Runtime (APR) is part of the <code>httpd</code>
+        <dd>The Apache Portable Runtime (APR) is part of the httpd
           source distribution and will automatically be build together with the
           HTTP server. If you want to use an already installed APR instead you
           have to tell <code>configure</code> the path to the
@@ -735,7 +736,7 @@
         
         <dt><code>--with-apr-util=<var>DIR</var>|<var>FILE</var></code></dt>
         <dd>The Apache Portable Runtime Utilities (APU) are part of the
-          <code>httpd</code> source distribution and will automatically be build
+          httpd source distribution and will automatically be build
           together with the HTTP server. If you want to use an already installed
           APU instead you have to tell <code>configure</code> the path to the
           <code>apu-config</code> script. You may set the absolute path and name
@@ -803,12 +804,12 @@
         dynamically by default.</dd>
 
       <dt><code>--enable-suexec</code></dt> 
-      <dd>Use this option to enable <code><a
-        href="suexec.html">suexec</a></code>, which allows you to set
+      <dd>Use this option to enable <program>
+        suexec</program>, which allows you to set
         uid and gid for spawned processes. <strong>Do not use this
         option unless you understand all the security implications of
         running a suid binary on your server.</strong> Further options
-        to configure <code>suexec</code> are described <a
+        to configure <program>suexec</program> are described <a
         href="#suexec">below</a>.</dd> </dl>
 
     <p>It is possible to create a statically linked binary of a single
@@ -816,8 +817,8 @@
 
     <dl>
       <dt><code>--enable-static-ab</code></dt>
-      <dd>Build a statically linked version of <code><a
-            href="ab.html">ab</a></code>.</dd>
+      <dd>Build a statically linked version of <program>
+        ab</program>.</dd>
 
       <!-- missing documentation for chechgid -->
       <dt><code>--enable-static-checkgid</code></dt>
@@ -828,25 +829,25 @@
       <dd>Build a statically linked version of <code>htdbm</code>.</dd>
 
       <dt><code>--enable-static-htdigest</code></dt>
-      <dd>Build a statically linked version of <code><a
-            href="htdigest.html">htdigest</a></code>.</dd>
+      <dd>Build a statically linked version of <program>
+        htdigest</program>.</dd>
         
       <dt><code>--enable-static-htpasswd</code></dt>
-      <dd>Build a statically linked version of <code><a
-            href="htpasswd.html">htpasswd</a></code>.</dd>
+      <dd>Build a statically linked version of <program>
+        htpasswd</program>.</dd>
 
       <dt><code>--enable-static-logresolve</code></dt>
-      <dd>Build a statically linked version of <code><a
-            href="logresolve.html">logresolve</a></code>.</dd>
+      <dd>Build a statically linked version of <program>
+        logresolve</program>.</dd>
 
       <dt><code>--enable-static-rotatelogs</code></dt>
-      <dd>Build a statically linked version of <code><a
-            href="rotatelogs.html">rotatelogs</a></code>.</dd>
+      <dd>Build a statically linked version of <program>
+        rotatelogs</program>.</dd>
     </dl>
 
     <section id="suexec"><title>suexec configuration options</title>
-      <p>The following options are used to fine tune the behavior of <code><a
-        href="suexec.html">suexec</a></code>. See <a
+      <p>The following options are used to fine tune the behavior of <program>
+        suexec</program>. See <a
         href="suexec.html#install">Configuring and installing suEXEC</a>
         for further information.</p>
 
@@ -854,47 +855,47 @@
         <dt><code>--with-suexec-bin</code></dt>
         <dd>This defines the path to suexec binary. Default is
           <code>--sbindir</code> (see <a href="directoryfinetuning">Fine
-            tuning of installation directories</a>).</dd>
+          tuning of installation directories</a>).</dd>
 
         <dt><code>--with-suexec-caller</code></dt>
-        <dd>This defines the user allowed to call <code>suexec</code>. It should
-          be the same as the user under which <code>httpd</code> normally
-          runs.</dd>
+        <dd>This defines the user allowed to call <program>suexec</program>.
+          It should be the same as the user under which <program>httpd</program>
+          normally runs.</dd>
 
         <dt><code>--with-suexec-docroot</code></dt>
-        <dd>This defines the directory tree under which <code>suexec</code>
-          access is allowed for executables. Default value is
+        <dd>This defines the directory tree under which <program>
+          suexec</program> access is allowed for executables. Default value is
           <code>--datadir/htdocs</code>.</dd>
 
         <dt><code>--with-suexec-gidmin</code></dt>
         <dd>Define this as the lowest GID allowed to be a target user for
-          <code>suexec</code>. The default value is 100.</dd>
+          <program>suexec</program>. The default value is 100.</dd>
 
         <dt><code>--with-suexec-logfile</code></dt>
-        <dd>This defines the filename of the <code>suexec</code> logfile. By
-          default the logfile is named <code>suexec_log</code> and located in
+        <dd>This defines the filename of the <program>suexec</program> logfile.
+          By default the logfile is named <code>suexec_log</code> and located in
           <code>--logfiledir</code>.</dd>
 
         <dt><code>--with-suexec-safepath</code></dt>
         <dd>Define the value of the environment variable <code>PATH</code> to
-          be set for processes started by <code>suexec</code>. Default value is
-          <code>/usr/local/bin:/usr/bin:/bin</code>.</dd>
+          be set for processes started by <program>suexec</program>. Default
+          value is <code>/usr/local/bin:/usr/bin:/bin</code>.</dd>
 
         <dt><code>--with-suexec-userdir</code></dt>
         <dd>This defines the subdirectory under the user's directory that
-          contains all executables for which <code>suexec</code> access is
-          allowed. This setting is necessary when you want to use
-          <code>suexec</code> together with user-specific directories (as
+          contains all executables for which <program>suexec</program> access
+          is allowed. This setting is necessary when you want to use
+          <program>suexec</program> together with user-specific directories (as
           provided by <module>mod_userdir</module>). The default is
           <code>public_html</code>.</dd>
 
         <dt><code>--with-suexec-uidmin</code></dt>
         <dd>Define this as the lowest UID allowed to be a target user for
-          <code>suexec</code>. The default value is 100.</dd>
+          <program>suexec</program>. The default value is 100.</dd>
 
         <dt><code>--with-suexec-umask</code></dt>
-        <dd>Set <code>umask</code> for processes started by <code>suexec</code>.
-          It defaults to your system settings.</dd>
+        <dd>Set <code>umask</code> for processes started by
+          <program>suexec</program>. It defaults to your system settings.</dd>
       </dl>
     </section>
   </section>

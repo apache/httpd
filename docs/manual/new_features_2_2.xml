@@ -43,9 +43,9 @@
       <dt>Caching</dt>
       <dd><module>mod_cache</module>, <module>mod_disk_cache</module>, and
           <module>mod_mem_cache</module> have undergone a lot of changes
-          are now considered production-quality. <a
-          href="programs/htcacheclean.html">htcacheclean</a> has been
-          introduced to cleanup <module>mod_disk_cache</module> setups.</dd>
+          are now considered production-quality. <program>htcacheclean</program>
+          has been introduced to cleanup <module>mod_disk_cache</module>
+          setups.</dd>
 
       <dt>Proxying</dt>
       <dd>The new <module>mod_proxy_balancer</module> module provides 
@@ -103,7 +103,7 @@
 
       <dd>A new hook, <code>test_config</code> has been added to aid
           modules that want to execute special code only when the user passes
-          <code>-t</code> to httpd.</dd>
+          <code>-t</code> to <program>httpd</program>.</dd>
 
       <dt>Set Threaded MPM's Stacksize</dt>
 

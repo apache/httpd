@@ -105,16 +105,15 @@
     might want to put the password file(s) in
     <code>/usr/local/apache/passwd</code>.</p>
 
-    <p>To create the file, use the <a
-    href="../programs/htpasswd.html">htpasswd</a> utility that came
-    with Apache. This will be located in the <code>bin</code> directory
+    <p>To create the file, use the <program>htpasswd</program> utility that
+    came with Apache. This will be located in the <code>bin</code> directory
     of wherever you installed Apache. To create the file, type:</p>
 
     <example>
       htpasswd -c /usr/local/apache/passwd/passwords rbowen
     </example>
 
-    <p><code>htpasswd</code> will ask you for the password, and
+    <p><program>htpasswd</program> will ask you for the password, and
     then ask you to type it again to confirm it:</p>
 
     <example>
@@ -124,7 +123,7 @@
       Adding password for user rbowen
     </example>
 
-    <p>If <code>htpasswd</code> is not in your path, of course
+    <p>If <program>htpasswd</program> is not in your path, of course
     you'll have to type the full path to the file to get it to run.
     On my server, it's located at
     <code>/usr/local/apache/bin/htpasswd</code></p>
@@ -178,14 +177,14 @@
 
     <p>The <directive module="mod_authn_file">AuthUserFile</directive>
     directive sets the path to the password file that we just
-    created with <code>htpasswd</code>. If you have a large number
+    created with <program>htpasswd</program>. If you have a large number
     of users, it can be quite slow to search through a plain text
     file to authenticate the user on each request. Apache also has
     the ability to store user information in fast database files.
     The <module>mod_authn_dbm</module> module provides the <directive
     module="mod_authn_dbm">AuthDBMUserFile</directive> directive. These
-    files can be created and manipulated with the <a
-    href="../programs/dbmmanage.html">dbmmanage</a> program. Many
+    files can be created and manipulated with the <program>
+    dbmmanage</program> program. Many
     other types of authentication options are available from third
     party modules in the <a
     href="http://modules.apache.org/">Apache Modules

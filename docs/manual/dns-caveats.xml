@@ -140,8 +140,8 @@
 
     <p>The addition of <a href="vhosts/name-based.html">name-based
     virtual host support</a> in Apache 1.1 requires Apache to know
-    the IP address(es) of the host that httpd is running on. To get
-    this address it uses either the global 
+    the IP address(es) of the host that <program>httpd</program>
+    is running on. To get this address it uses either the global
     <directive module="core">ServerName</directive>
     (if present) or calls the C function <code>gethostname</code>
     (which should return the same as typing "hostname" at the

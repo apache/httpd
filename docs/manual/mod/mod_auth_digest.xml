@@ -51,7 +51,7 @@
     URI(s) for this protection space.</p>
 
     <p>Appropriate user (text) files can be created using the
-    <a href="../programs/htdigest.html">htdigest</a> tool.</p>
+    <program>htdigest</program> tool.</p>
 
     <example><title>Example:</title>
       &lt;Location /private/&gt;<br />

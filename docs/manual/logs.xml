@@ -224,8 +224,7 @@
         the hostname and log it in place of the IP address. However,
         this configuration is not recommended since it can
         significantly slow the server. Instead, it is best to use a
-        log post-processor such as <a
-        href="programs/logresolve.html">logresolve</a> to determine
+        log post-processor such as <program>logresolve</program> to determine
         the hostnames. The IP address reported here is not
         necessarily the address of the machine at which the user is
         sitting. If a proxy server exists between the user and the
@@ -492,9 +491,8 @@
 
     <p>One important use of piped logs is to allow log rotation
     without having to restart the server. The Apache HTTP Server
-    includes a simple program called <a
-    href="programs/rotatelogs.html">rotatelogs</a> for this
-    purpose. For example, to rotate the logs every 24 hours, you
+    includes a simple program called <program>rotatelogs</program>
+    for this purpose. For example, to rotate the logs every 24 hours, you
     can use:</p>
 
     <example>

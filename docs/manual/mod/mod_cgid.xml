@@ -56,7 +56,8 @@
 </summary>
 
 <seealso><module>mod_cgi</module></seealso>
-<seealso><a href="../suexec.html">Running CGI programs under different user IDs</a></seealso>
+<seealso><a href="../suexec.html">Running CGI programs under different
+    user IDs</a></seealso>
 
 <directivesynopsis location="mod_cgi">
 <name>ScriptLog</name>

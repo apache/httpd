@@ -52,7 +52,7 @@
       ref="module">module</glossary> sources into Dynamic Shared Objects
       (<glossary ref="dso">DSO</glossary>s) and helps install them in the
       Apache Web server.<br />
-      See: <a href="programs/apxs.html">Manual Page: apxs</a>
+      See: Manual Page: <program>apxs</program>
     </dd>
 
     <dt><a name="authentication" id="authentication">Authentication</a></dt>
@@ -165,7 +165,7 @@
     <dt><a name="dynamicsharedobject" id="dynamicsharedobject">Dynamic
         Shared Object</a> <a name="dso" id="dso">(DSO)</a></dt>
     <dd><glossary ref="module">Modules</glossary> compiled separately from the
-      Apache httpd binary that can be loaded on-demand.<br />
+      Apache <program>httpd</program> binary that can be loaded on-demand.<br />
       See: <a href="dso.html">Dynamic Shared Object Support</a>
     </dd>
 
@@ -289,14 +289,15 @@
     <dt><a name="module" id="module">Module</a></dt>
     <dd>An independent part of a program.  Much of Apache's functionality is
       contained in modules that you can choose to include or exclude.  Modules
-      that are compiled into the Apache httpd binary are called <em>static
-      modules</em>, while modules that are stored separately and can be
-      optionally loaded at run-time are called <em>dynamic modules</em> or
-      <glossary ref="dso">DSOs</glossary>.  Modules that are included by default
-      are called <em>base modules</em>.  Many modules are available for Apache
+      that are compiled into the Apache <program>httpd</program> binary are
+      called <dfn>static modules</dfn>, while modules that are stored
+      separately and can be optionally loaded at run-time are called
+      <dfn>dynamic modules</dfn> or <glossary ref="dso">DSOs</glossary>.
+      Modules that are included by default
+      are called <dfn>base modules</dfn>. Many modules are available for Apache
       that are not distributed as part of the Apache HTTP Server <glossary
       ref="tarball">tarball</glossary>.  These are referred to as
-      <em>third-party modules</em>.<br />
+      <dfn>third-party modules</dfn>.<br />
       See: <a href="mod/">Module Index</a>
     </dd>
 
