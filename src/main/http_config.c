@@ -81,6 +81,7 @@
 #include "http_conf_globals.h"	/* Sigh... */
 #include "http_vhost.h"
 #include "explain.h"
+#include "fnmatch.h"
 
 DEF_Explain
 
@@ -1211,7 +1212,7 @@ CORE_EXPORT(void) ap_process_resource_config(server_rec *s, char *fname, pool *p
     const char *errmsg;
     cmd_parms parms;
     struct stat finfo;
-
+    int ispatt;
     fname = ap_server_root_relative(p, fname);
 
     if (!(strcmp(fname, ap_server_root_relative(p, RESOURCE_CONFIG_FILE))) ||
@@ -1233,12 +1234,38 @@ CORE_EXPORT(void) ap_process_resource_config(server_rec *s, char *fname, pool *p
      * horrible loops).  If so, let's recurse and toss it back into
      * the function.
      */
-    if (ap_is_rdirectory(fname)) {
+    ispatt = ap_is_fnmatch(fname);
+    if (ispatt || ap_is_rdirectory(fname)) {
 	DIR *dirp;
 	struct DIR_TYPE *dir_entry;
 	int current;
 	array_header *candidates = NULL;
 	fnames *fnew;
+	char *path = ap_pstrdup(p,fname);
+	char *pattern = NULL;
+
+        if(ispatt) {
+	    pattern = strrchr(path, '/');
+            *pattern++ = '\0';
+            if (ap_is_fnmatch(path)) {
+                fprintf(stderr, "%s: wildcard patterns not allowed in Include "
+                        "%s\n", ap_server_argv0, fname);
+                exit(1);
+            }
+
+            if (!ap_is_rdirectory(path)){ 
+                fprintf(stderr, "%s: Include directory '%s' not found",
+                        ap_server_argv0, path);
+                exit(1);
+            }
+            if (!ap_is_fnmatch(pattern)) {
+                fprintf(stderr, "%s: must include a wildcard pattern "
+                        "for Include %s\n", ap_server_argv0, fname);
+                exit(1);
+            }
+
+        }
+
 
 	/*
 	 * first course of business is to grok all the directory
@@ -1246,11 +1273,11 @@ CORE_EXPORT(void) ap_process_resource_config(server_rec *s, char *fname, pool *p
 	 * for this.
 	 */
 	fprintf(stderr, "Processing config directory: %s\n", fname);
-	dirp = ap_popendir(p, fname);
+	dirp = ap_popendir(p, path);
 	if (dirp == NULL) {
 	    perror("fopen");
 	    fprintf(stderr, "%s: could not open config directory %s\n",
-		ap_server_argv0, fname);
+		ap_server_argv0, path);
 #ifdef NETWARE
 	    clean_parent_exit(1);
 #else
@@ -1261,9 +1288,11 @@ CORE_EXPORT(void) ap_process_resource_config(server_rec *s, char *fname, pool *p
 	while ((dir_entry = readdir(dirp)) != NULL) {
 	    /* strip out '.' and '..' */
 	    if (strcmp(dir_entry->d_name, ".") &&
-		strcmp(dir_entry->d_name, "..")) {
+		strcmp(dir_entry->d_name, "..") &&
+                (!ispatt ||
+                 !ap_fnmatch(pattern,dir_entry->d_name, FNM_PERIOD)) ) {
 		fnew = (fnames *) ap_push_array(candidates);
-		fnew->fname = ap_make_full_path(p, fname, dir_entry->d_name);
+		fnew->fname = ap_make_full_path(p, path, dir_entry->d_name);
 	    }
 	}
 	ap_pclosedir(p, dirp);
