@@ -518,9 +518,6 @@ struct ap_method_list_t {
 #define INCLUDES_MAGIC_TYPE "text/x-server-parsed-html"
 #define INCLUDES_MAGIC_TYPE3 "text/x-server-parsed-html3"
 #define DIR_MAGIC_TYPE "httpd/unix-directory"
-#ifdef CHARSET_EBCDIC
-#define ASCIITEXT_MAGIC_TYPE_PREFIX "text/x-ascii-" /* Text files whose content-type starts with this are passed thru unconverted */
-#endif /*CHARSET_EBCDIC*/         
 
 /* Just in case your linefeed isn't the one the other end is expecting. */
 #ifndef CHARSET_EBCDIC
@@ -591,17 +588,6 @@ typedef struct conn_rec conn_rec;
 typedef struct request_rec request_rec;
 
 #include "util_uri.h"
-
-#ifdef APACHE_XLATE
-#include "apr_xlate.h"
-
-/** structure to aid charset translate between machine and network */
-struct ap_rr_xlate {
-    /* contents are experimental! expect it to change! */
-    /** translation handle to use when coming from the network */
-    apr_xlate_t *from_net;
-};
-#endif /*APACHE_XLATE*/
 
 /** A structure that represents one process */
 struct process_rec {
