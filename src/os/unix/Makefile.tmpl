@@ -26,6 +26,7 @@ $(LIB): $(OBJS)
 	$(CC) -c $(INCLUDES) $(CFLAGS) $(SPACER) $<
 
 clean:
+	for i in $(COPY); do  rm -f $(INCDIR)/$$i ; done
 	rm -f $(OBJS) $(LIB)
 
 $(OBJS): Makefile
