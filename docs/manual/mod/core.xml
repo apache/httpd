@@ -815,7 +815,7 @@ filenames</description>
     type="directive">Location</directive> directives. It should be
     matched with a <code>&lt;/Files&gt;</code> directive. The
     directives given within this section will be applied to any object
-    with a basename (not a full path) matching the
+    with a basename (last component of filename) matching the
     specified filename. <directive type="section">Files</directive>
     sections are processed in the order they appear in the
     configuration file, after the <directive module="core"
@@ -1039,7 +1039,7 @@ $ httpd -DReverseProxy ...
 <directivesynopsis type="section">
 <name>IfModule</name>
 <description>Encloses directives that are processed conditional on the
-presence of absence of a specific module</description>
+presence or absence of a specific module</description>
 <syntax>&lt;IfModule [!]<var>module-name</var>&gt; ...
     &lt;/IfModule&gt;</syntax>     
 <contextlist><context>server config</context><context>virtual host</context>
