@@ -650,6 +650,15 @@ in case of an error</description>
     "ErrorDocument 401" directive then it must refer to a local
     document.</strong></p>
 
+    <p>Microsoft Internet Explorer (MSIE) will ignore server-generated
+    error messages when they are "too small" and substitute its own
+    "friendly" error messages.  The size threshold varies depending on
+    the type of error, but in general, if you make your error document
+    greater than 512 bytes, then MSIE will show the server-generated
+    error rather than masking it.  More information is available in
+    Microsoft Knowledgebase article <a
+    href="http://support.microsoft.com/default.aspx?scid=kb;en-us;Q294807">Q294807</a>.</p>
+
     <p>Prior to version 2.0, messages were indicated by prefixing
     them with a single unmatched double quote character.</p>
 </usage>
