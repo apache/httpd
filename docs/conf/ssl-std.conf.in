@@ -51,15 +51,15 @@ SSLPassPhraseDialog  builtin
 #   Configure the SSL Session Cache: First the mechanism 
 #   to use and second the expiring timeout (in seconds).
 #SSLSessionCache        none
-#SSLSessionCache        shmht:logs/ssl_scache(512000)
-#SSLSessionCache        shmcb:logs/ssl_scache(512000)
-SSLSessionCache         dbm:logs/ssl_scache
+#SSLSessionCache        shmht:@exp_logfiledir@/ssl_scache(512000)
+#SSLSessionCache        shmcb:@exp_logfiledir@/ssl_scache(512000)
+SSLSessionCache         dbm:@exp_logfiledir@/ssl_scache
 SSLSessionCacheTimeout  300
 
 #   Semaphore:
 #   Configure the path to the mutual exclusion semaphore the
 #   SSL engine uses internally for inter-process synchronization. 
-SSLMutex  file:logs/ssl_mutex
+SSLMutex  file:@exp_logfiledir@/ssl_mutex
 
 #   Pseudo Random Number Generator (PRNG):
 #   Configure one or more sources to seed the PRNG of the 
@@ -85,11 +85,11 @@ SSLRandomSeed connect builtin
 <VirtualHost _default_:443>
 
 #  General setup for the virtual host
-DocumentRoot "@@ServerRoot@@/htdocs"
+DocumentRoot "@exp_htdocsdir@"
 ServerName new.host.name:443
 ServerAdmin you@your.address
-ErrorLog logs/error_log
-TransferLog logs/access_log
+ErrorLog @exp_logfiledir@/error_log
+TransferLog @exp_logfiledir@/access_log
 
 #   SSL Engine Switch:
 #   Enable/Disable SSL for this virtual host.
@@ -107,16 +107,16 @@ SSLCipherSuite ALL:!ADH:!EXPORT56:RC4+RSA:+HIGH:+MEDIUM:+LOW:+SSLv2:+EXP:+eNULL
 #   in mind that if you have both an RSA and a DSA certificate you
 #   can configure both in parallel (to also allow the use of DSA
 #   ciphers, etc.)
-SSLCertificateFile @@ServerRoot@@/conf/ssl.crt/server.crt
-#SSLCertificateFile @@ServerRoot@@/conf/ssl.crt/server-dsa.crt
+SSLCertificateFile @exp_sysconfdir@/ssl.crt/server.crt
+#SSLCertificateFile @exp_sysconfdir@/ssl.crt/server-dsa.crt
 
 #   Server Private Key:
 #   If the key is not combined with the certificate, use this
 #   directive to point at the key file.  Keep in mind that if
 #   you've both a RSA and a DSA private key you can configure
 #   both in parallel (to also allow the use of DSA ciphers, etc.)
-SSLCertificateKeyFile @@ServerRoot@@/conf/ssl.key/server.key
-#SSLCertificateKeyFile @@ServerRoot@@/conf/ssl.key/server-dsa.key
+SSLCertificateKeyFile @exp_sysconfdir@/ssl.key/server.key
+#SSLCertificateKeyFile @exp_sysconfdir@/ssl.key/server-dsa.key
 
 #   Server Certificate Chain:
 #   Point SSLCertificateChainFile at a file containing the
@@ -125,7 +125,7 @@ SSLCertificateKeyFile @@ServerRoot@@/conf/ssl.key/server.key
 #   the referenced file can be the same as SSLCertificateFile
 #   when the CA certificates are directly appended to the server
 #   certificate for convinience.
-#SSLCertificateChainFile @@ServerRoot@@/conf/ssl.crt/ca.crt
+#SSLCertificateChainFile @exp_sysconfdir@/ssl.crt/ca.crt
 
 #   Certificate Authority (CA):
 #   Set the CA certificate verification path where to find CA
@@ -134,8 +134,8 @@ SSLCertificateKeyFile @@ServerRoot@@/conf/ssl.key/server.key
 #   Note: Inside SSLCACertificatePath you need hash symlinks
 #         to point to the certificate files. Use the provided
 #         Makefile to update the hash symlinks after changes.
-#SSLCACertificatePath @@ServerRoot@@/conf/ssl.crt
-#SSLCACertificateFile @@ServerRoot@@/conf/ssl.crt/ca-bundle.crt
+#SSLCACertificatePath @exp_sysconfdir@/ssl.crt
+#SSLCACertificateFile @exp_sysconfdir@/ssl.crt/ca-bundle.crt
 
 #   Certificate Revocation Lists (CRL):
 #   Set the CA revocation path where to find CA CRLs for client
@@ -144,8 +144,8 @@ SSLCertificateKeyFile @@ServerRoot@@/conf/ssl.key/server.key
 #   Note: Inside SSLCARevocationPath you need hash symlinks
 #         to point to the certificate files. Use the provided
 #         Makefile to update the hash symlinks after changes.
-#SSLCARevocationPath @@ServerRoot@@/conf/ssl.crl
-#SSLCARevocationFile @@ServerRoot@@/conf/ssl.crl/ca-bundle.crl
+#SSLCARevocationPath @exp_sysconfdir@/ssl.crl
+#SSLCARevocationFile @exp_sysconfdir@/ssl.crl/ca-bundle.crl
 
 #   Client Authentication (Type):
 #   Client certificate verification type and depth.  Types are
@@ -205,7 +205,7 @@ SSLCertificateKeyFile @@ServerRoot@@/conf/ssl.key/server.key
 <Files ~ "\.(cgi|shtml|phtml|php3?)$">
     SSLOptions +StdEnvVars
 </Files>
-<Directory "@@ServerRoot@@/cgi-bin">
+<Directory "@exp_cgidir@">
     SSLOptions +StdEnvVars
 </Directory>
 
@@ -240,7 +240,7 @@ SetEnvIf User-Agent ".*MSIE.*" \
 #   Per-Server Logging:
 #   The home of a custom SSL log file. Use this when you want a
 #   compact non-error SSL logfile on a virtual host basis.
-CustomLog logs/ssl_request_log \
+CustomLog @exp_logfiledir@/ssl_request_log \
           "%t %h %{SSL_PROTOCOL}x %{SSL_CIPHER}x \"%r\" %b"
 
 </VirtualHost>                                  
