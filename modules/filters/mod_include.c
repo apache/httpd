@@ -2293,10 +2293,7 @@ static void send_parsed_content(ap_bucket_brigade **bb, request_rec *r,
         if ((tagbuck = find_string(dptr, STARTING_SEQUENCE, AP_BRIGADE_LAST(*bb))) != NULL) {
             dptr2 = tagbuck;
             dptr = tagbuck;
-            while (dptr2 != AP_BRIGADE_SENTINEL(*bb) && 
-                  (endsec = find_string(dptr2, ENDING_SEQUENCE, AP_BRIGADE_LAST(*bb))) == NULL) {
-                dptr2 = AP_BUCKET_NEXT(dptr2);
-            }
+            endsec = find_string(dptr2, ENDING_SEQUENCE, AP_BRIGADE_LAST(*bb));
             if (endsec == NULL) {
                 /** XXX No ending tag, needs to become an error bucket
                  ** Tag could come in the next brigade (unless we've 
