@@ -57,9 +57,9 @@
 #include "http_log.h"
 #include "mod_optional_hook_export.h"
 
-static int ImportGenericHookTestHook(const char *szStr)
+static int ImportOptionalHookTestHook(const char *szStr)
 {
-    ap_log_error(APLOG_MARK,APLOG_ERR,OK,NULL,"Generic hook test said: %s",
+    ap_log_error(APLOG_MARK,APLOG_ERR,OK,NULL,"Optional hook test said: %s",
 		 szStr);
 
     return OK;
@@ -67,7 +67,7 @@ static int ImportGenericHookTestHook(const char *szStr)
 
 static void ImportRegisterHooks(apr_pool_t *p)
 {
-    AP_OPTIONAL_HOOK(optional_hook_test,ImportGenericHookTestHook,NULL,
+    AP_OPTIONAL_HOOK(optional_hook_test,ImportOptionalHookTestHook,NULL,
 		     NULL,APR_HOOK_MIDDLE);
 }
 
