@@ -650,8 +650,8 @@ Apache</a></seealso>
 
     <note><title>Note</title>
       <p>There is a hard limit of <code>ServerLimit 20000</code> compiled
-      into the server. This is intended to avoid nasty effects caused by
-      typos.</p>
+      into the server (for the <module>prefork</module> MPM 200000). This is
+      intended to avoid nasty effects caused by typos.</p>
     </note>
 </usage>
 <seealso><a href="../stopping.html">Stopping and Restarting Apache</a></seealso>

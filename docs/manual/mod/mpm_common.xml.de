@@ -691,8 +691,8 @@ entgegengenommenen Anfragen</description>
 
     <note><title>Anmerkung</title>
       <p>Eine feste Begrenzung von <code>ServerLimit 20000</code> ist in den
-      Server einkompiliert. Dies soll unangenehme Effekte durch Tippfehler
-      verhindern.</p>
+      Server einkompiliert (bei dem MPM <module>prefork</module> 200000).
+      Dies soll unangenehme Effekte durch Tippfehler verhindern.</p>
     </note>
 </usage>
 <seealso><a href="../stopping.html">Apache beenden und neu

@@ -691,8 +691,8 @@ ablegt</td></tr>
 
     <div class="note"><h3>Anmerkung</h3>
       <p>Eine feste Begrenzung von <code>ServerLimit 20000</code> ist in den
-      Server einkompiliert. Dies soll unangenehme Effekte durch Tippfehler
-      verhindern.</p>
+      Server einkompiliert (bei dem MPM <code class="module"><a href="../mod/prefork.html">prefork</a></code> 200000).
+      Dies soll unangenehme Effekte durch Tippfehler verhindern.</p>
     </div>
 
 <h3>Siehe auch</h3>
