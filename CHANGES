@@ -1,3 +1,16 @@
+Changes with Apache 2.0.29-dev
+
+  *) Add Debian layout.  [Daniel Stone <daniel@sfarc.net>]
+
+  *) If shared modules are requested and mod_so is not available,
+     produce a fatal config-time error.  [Justin Erenkrantz]
+
+  *) Improve http2env's performance by cutting the work it has to
+     do.  [Brian Pane <bpane@pacbell.net>]
+
+  *) use new 'apr_hash_merge' function in mod_mime (performance fix)
+     [Brian Pane <bpane@pacbell.net>]
+
 Changes with Apache 2.0.28
 
   *) Fix infinite loop in mod_cgid.c.  
