@@ -253,8 +253,8 @@ int add_cern_meta_data(request_rec *r)
 	return DECLINED;
     };
 
-    /* does uri end in a trailing slash? */
-    if ( r->uri[strlen(r->uri) - 1] == '/' ) {
+    /* is this a directory? */
+    if (S_ISDIR(r->finfo.st_mode) || r->uri[strlen(r->uri) - 1] == '/') {
 	return DECLINED;
     };
 

@@ -1,5 +1,9 @@
 Changes with Apache 1.3a2
 
+  *) mod_cern_meta would attempt to find meta files for the directory itself
+     in some cases, but not in others.  It now avoids it in all cases.
+     [Dean Gaudet]
+
   *) mod_mime_magic would core dump if there was a decompression error.
      [Martin Kraemer <Martin.Kraemer@mch.sni.de>] PR#904
 
