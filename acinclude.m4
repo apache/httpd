@@ -43,6 +43,7 @@ AC_DEFUN(APACHE_GEN_CONFIG_VARS,[
   APACHE_SUBST(libexecdir)
   APACHE_SUBST(htdocsdir)
   APACHE_SUBST(includedir)
+  APACHE_SUBST(errordir)
   APACHE_SUBST(iconsdir)
   APACHE_SUBST(sysconfdir)
   APACHE_SUBST(installbuilddir)
@@ -275,8 +276,9 @@ AC_DEFUN(APACHE_LAYOUT,[
   . $pldconf
   rm $pldconf
   for var in prefix exec_prefix bindir sbindir libexecdir mandir \
-             sysconfdir datadir iconsdir htdocsdir cgidir includedir \
-             localstatedir runtimedir logfiledir proxycachedir installbuilddir; do
+             sysconfdir datadir errordir iconsdir htdocsdir cgidir \
+             includedir localstatedir runtimedir logfiledir \
+             proxycachedir installbuilddir; do
     eval "val=\"\$$var\""
     case $val in
       *+)
@@ -318,6 +320,7 @@ if test -z "$LAYOUT"; then
   # create the Apache layout in config.layout, and it really should just
   # use what is specified in config.layout instead of duping it.
   htdocsdir='$(prefix)/htdocs'
+  errordir='$(prefix)/error'
   iconsdir='$(prefix)/icons'
   cgidir='$(prefix)/cgi-bin'
   logfiledir='$(prefix)/logs'
