@@ -55,3 +55,6 @@ $(TARGET_EXPORTS):
 
 exports.c: $(EXPORT_FILES)
 	(cat $(EXPORT_FILES) | ../build/buildexports.sh ..) > $@
+
+# wtf does this have to be explicit????
+exports.lo: exports.c
