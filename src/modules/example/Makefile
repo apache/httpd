@@ -56,7 +56,7 @@
 # directory.  If the depth or relationship changes, the following line
 # may need to be changed.
 #
-INCDIR=../../core
+INCDIR=../../main
 
 #
 # Everything below this point should be invariant.
