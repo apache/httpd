@@ -1,9 +1,11 @@
 Changes with Apache 2.0.30-dev
+
   *) Win32: Fix bug that could cause CGI scripts with QUERY_STRINGS
      to fail. [Bill Stoddard]
 
   *) Change core code to allow an MPM to set hard thread/server
-     limits at startup.  [Jeff Trawick]
+     limits at startup.  prefork and worker MPMs now have directives
+     to set these limits.  [Jeff Trawick]
 
   *) Win32: The async AcceptEx() event should be autoreset upon
      successful completion of a wait (WaitForSingleObject). This
