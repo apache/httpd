@@ -584,6 +584,9 @@ void get_handles_from_parent(server_rec *s)
                      "Child %d: Unable to reopen the scoreboard from the parent", my_pid);
         exit(APEXIT_CHILDINIT);
     }
+    /* We must 'initialize' the scoreboard to relink all the
+     * process-local pointer arrays into the shared memory block.
+     */
     ap_init_scoreboard(sb_shared);
 
     ap_log_error(APLOG_MARK, APLOG_DEBUG | APLOG_NOERRNO, 0, ap_server_conf,
@@ -2182,12 +2185,15 @@ static int winnt_pre_config(apr_pool_t *pconf, apr_pool_t *plog, apr_pool_t *pte
     return OK;
 }
 
-static int winnt_post_config(apr_pool_t *pconf, apr_pool_t *plog, apr_pool_t *ptemp, server_rec* server)
+static int winnt_post_config(apr_pool_t *pconf_, apr_pool_t *plog, apr_pool_t *ptemp, server_rec* s)
 {
     static int restart_num = 0;
     apr_status_t rv = 0;
 
-    ap_server_conf = server;
+    /* Initialize shared static objects. 
+     */
+    pconf = pconf_;
+    ap_server_conf = s;
     
     /* Handle the following SCM aspects in this phase:
      *
@@ -2271,7 +2277,7 @@ static int winnt_post_config(apr_pool_t *pconf, apr_pool_t *plog, apr_pool_t *pt
                 if (osver.dwPlatformId != VER_PLATFORM_WIN32_NT) 
                 {
                     rv = mpm_service_to_start(&service_name,
-                                              server->process->pool);
+                                              s->process->pool);
                     if (rv != APR_SUCCESS) {
                         ap_log_error(APLOG_MARK,APLOG_ERR, rv, ap_server_conf,
                                      "%s: Unable to start the service manager.",
@@ -2313,9 +2319,6 @@ static int winnt_post_config(apr_pool_t *pconf, apr_pool_t *plog, apr_pool_t *pt
  */
 static int winnt_open_logs(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp, server_rec *s)
 {
-    pconf = p;
-    ap_server_conf = s;
-
     if (parent_pid != my_pid) {
         return OK;
     }
@@ -2330,7 +2333,7 @@ static int winnt_open_logs(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp, s
         return OK;
     }
 
-    if (ap_setup_listeners(ap_server_conf) < 1) {
+    if (ap_setup_listeners(s) < 1) {
         ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ALERT|APLOG_STARTUP, 0, 
                      NULL, "no listening sockets available, shutting down");
         return DONE;
@@ -2343,7 +2346,7 @@ static int winnt_open_logs(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp, s
     return OK;
 }
 
-static void winnt_child_init(apr_pool_t *pchild, struct server_rec *ap_server_conf)
+static void winnt_child_init(apr_pool_t *pchild, struct server_rec *s)
 {
     apr_status_t rv;
 
@@ -2352,19 +2355,20 @@ static void winnt_child_init(apr_pool_t *pchild, struct server_rec *ap_server_co
     /* This is a child process, not in single process mode */
     if (!one_process) {
         /* Set up events and the scoreboard */
-        get_handles_from_parent(ap_server_conf);
+        get_handles_from_parent(s);
 
         /* Set up the listeners */
-        get_listeners_from_parent(ap_server_conf);
+        get_listeners_from_parent(s);
 
         ap_my_generation = atoi(getenv("AP_MY_GENERATION"));
 
-        rv = apr_proc_mutex_child_init(&start_mutex, signal_name_prefix, pconf);
+        rv = apr_proc_mutex_child_init(&start_mutex, signal_name_prefix, 
+                                       s->process->pool);
     }
     else {
         /* Single process mode - this lock doesn't even need to exist */
         rv = apr_proc_mutex_create(&start_mutex, signal_name_prefix, 
-                                   APR_LOCK_DEFAULT, pconf);
+                                   APR_LOCK_DEFAULT, s->process->pool);
         
         /* Borrow the shutdown_even as our _child_ loop exit event */
         exit_event = shutdown_event;
