@@ -742,7 +742,7 @@ case "$PLAT" in
 	;;
     *-tandem-oss)
 	OS='Tandem OSS'
-	CFLAGS="-D_TANDEM_SOURCE -D_XOPEN_SOURCE_EXTENDED=1 -g"
+	CFLAGS="-D_TANDEM_SOURCE -D_XOPEN_SOURCE_EXTENDED=1"
 	CC='c89'
 	;;
     *) # default: Catch systems we don't know about
