@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2002/02/15 17:16:54 $]
+Last modified at [$Date: 2002/02/15 20:54:17 $]
 
 Release:
 
@@ -157,12 +157,6 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
         Justin says: "Could we delay this for a point release or 2.1?"
         Not a showstopper: justin, wrowe, trawick, stoddard, Jim, Ian, Aaron,
                            gregames
-
-    * Make some modifications to the scoreboard creation routines,
-      prefer anonymous shared memory, and allow a configuration
-      directive to override the defaults.
-        Message-ID: <20020130080804.C16977@clove.org>
-      Status: Aaron volunteers
 
     * Get perchild to work on platforms other than Linux. This
       will require a portable mechanism to pass data and file/socket
