@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
-<!-- $Revision: 1.13.2.13 $ -->
+<!-- $Revision: 1.13.2.14 $ -->
 
 <!--
  Copyright 2002-2004 The Apache Software Foundation
@@ -108,8 +108,8 @@
 
     <tr><td><code>%...l</code></td>
         <td>Remote logname (from identd, if supplied). This will return a
-        dash unless <module>mod_ident</module> is present and <directive
-        module="mod_ident">IdentityCheck</directive> is set
+        dash unless <directive
+        module="core">IdentityCheck</directive> is set
         <code>On</code>.</td></tr>
 
     <tr><td><code>%...m</code></td>
