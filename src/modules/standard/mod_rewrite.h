@@ -64,7 +64,7 @@
 **  |_| |_| |_|\___/ \__,_|___|_|  \___| \_/\_/ |_|  |_|\__\___|
 **                       |_____|
 **
-**  URL Rewriting Module, Version 3.0.6 (15-Jun-1997)
+**  URL Rewriting Module, Version 3.0.9 (11-Jul-1997)
 **
 **  This module uses a rule-based rewriting engine (based on a
 **  regular-expression parser) to rewrite requested URLs on the fly. 
@@ -137,7 +137,14 @@
 #include <fcntl.h>
 #endif
 
-
+    /* The locking support for the RewriteMap programs:
+       Locking a pipe to the child works fine under most
+       Unix derivates, but braindead SunOS 4.1.x has 
+       problems with this approach... */
+#define USE_PIPE_LOCKING 1
+#ifdef SUNOS4
+#undef USE_PIPE_LOCKING
+#endif
 
 
 /*
@@ -350,13 +357,21 @@ static char *lookup_map_program(request_rec *r, int fpin, int fpout, char *key);
 
     /* rewriting logfile support */
 static void  open_rewritelog(server_rec *s, pool *p);
+#if MODULE_MAGIC_NUMBER > 19970622
 static int   rewritelog_child(void *cmd);
+#else
+static void  rewritelog_child(void *cmd);
+#endif
 static void  rewritelog(request_rec *r, int level, const char *text, ...);
 static char *current_logtime(request_rec *r);
 
     /* program map support */
 static void  run_rewritemap_programs(server_rec *s, pool *p);
+#if MODULE_MAGIC_NUMBER > 19970622
 static int   rewritemap_program_child(void *cmd);
+#else
+static void  rewritemap_program_child(void *cmd);
+#endif
 
     /* env variable support */
 static void  expand_variables_inbuffer(request_rec *r, char *buf, int buf_len);

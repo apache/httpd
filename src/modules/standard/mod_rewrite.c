@@ -61,7 +61,7 @@
 **  |_| |_| |_|\___/ \__,_|___|_|  \___| \_/\_/ |_|  |_|\__\___|
 **                       |_____|
 **
-**  URL Rewriting Module, Version 3.0.6 (15-Jun-1997)
+**  URL Rewriting Module, Version 3.0.9 (11-Jul-1997)
 **
 **  This module uses a rule-based rewriting engine (based on a
 **  regular-expression parser) to rewrite requested URLs on the fly. 
@@ -1116,6 +1116,7 @@ static int hook_fixup(request_rec *r)
     char *prefix;
     int l;
     int n;
+    char *ofilename;
 
     dconf = (rewrite_perdir_conf *)get_module_config(r->per_dir_config, &rewrite_module);
 
@@ -1147,6 +1148,13 @@ static int hook_fixup(request_rec *r)
         if (dconf->state == ENGINE_DISABLED)
             return DECLINED;
     }
+
+    /*
+     *  remember the current filename before rewriting for later check
+     *  to prevent deadlooping because of internal redirects
+     *  on final URL/filename which can be equal to the inital one.
+     */
+    ofilename = r->filename;
 
     /*
      *  now apply the rules ... 
@@ -1261,6 +1269,18 @@ static int hook_fixup(request_rec *r)
             /* the filename has to start with a slash! */
             if (r->filename[0] != '/')
                 return BAD_REQUEST;
+
+            /* Check for deadlooping:
+             * At this point we KNOW that at least one rewriting
+             * rule was applied, but when the resulting URL is
+             * the same as the initial URL, we are not allowed to
+             * use the following internal redirection stuff because
+             * this would lead to a deadloop.
+             */
+            if (strcmp(r->filename, ofilename) == 0) {
+                rewritelog(r, 1, "[per-dir %s] initial URL equal rewritten URL: %s [IGNORING REWRITE]", dconf->directory, r->filename);
+                return OK;
+            }
 
             /* if there is a valid base-URL then substitute
                the per-dir prefix with this base-URL if the
@@ -1503,8 +1523,17 @@ static int apply_rewrite_rule(request_rec *r, rewriterule_entry *p, char *perdir
             return 0; /* if any condition fails this complete rule fails */
 
         /* if this is a pure matching rule we return immediately */
-        if (strcmp(output, "-") == 0) 
+        if (strcmp(output, "-") == 0) {
+            /* but before we set the env variables... */
+            for (i = 0; p->env[i] != NULL; i++) {
+                strncpy(env2, p->env[i], sizeof(env2)-1);
+                EOS_PARANOIA(env2);
+                strncpy(env, pregsub(r->pool, env2, uri, regexp->re_nsub+1, regmatch), sizeof(env)-1);    /* substitute in output */
+                EOS_PARANOIA(env);
+                add_env_variable(r, env);
+            }
             return 2;
+        }
 
         /* if this is a forced proxy request ... */
         if (p->flags & RULEFLAG_PROXY) {
@@ -1624,6 +1653,7 @@ static int apply_rewrite_rule(request_rec *r, rewriterule_entry *p, char *perdir
            and the current URL still is not a fully qualified one we
            finally prefix it with http[s]://<ourname> explicitly */
         if (flags & RULEFLAG_FORCEREDIRECT) {
+            r->status = p->forced_responsecode;
             if (  !(strlen(r->filename) > 7 &&
                     strncmp(r->filename, "http://", 7) == 0)
                && !(strlen(r->filename) > 8 &&
@@ -1659,7 +1689,6 @@ static int apply_rewrite_rule(request_rec *r, rewriterule_entry *p, char *perdir
                 else
                     rewritelog(r, 2, "[per-dir %s] prepare forced redirect %s -> %s", perdir, r->filename, newuri);
                 r->filename = pstrdup(r->pool, newuri);
-                r->status = p->forced_responsecode;
                 return 1;
             }
         }
@@ -1808,9 +1837,15 @@ static void splitout_queryargs(request_rec *r, int qsappend)
             r->args = pstrcat(r->pool, q, "&", r->args, NULL);
         else
             r->args = pstrdup(r->pool, q);
-        if (r->args[strlen(r->args)-1] == '&')
-            r->args[strlen(r->args)-1] = '\0';
-        rewritelog(r, 3, "split uri=%s -> uri=%s, args=%s", olduri, r->filename, r->args);
+        if (strlen(r->args) == 0) {
+            r->args = NULL;
+            rewritelog(r, 3, "split uri=%s -> uri=%s, args=<none>", olduri, r->filename);
+        }
+        else {
+            if (r->args[strlen(r->args)-1] == '&')
+                r->args[strlen(r->args)-1] = '\0';
+            rewritelog(r, 3, "split uri=%s -> uri=%s, args=%s", olduri, r->filename, r->args);
+        }
     }
     return;            
 }
@@ -2213,7 +2248,9 @@ static char *lookup_map_program(request_rec *r, int fpin, int fpout, char *key)
     int i;
 
     /* lock the channel */
+#ifdef USE_PIPE_LOCKING
     fd_lock(fpin);
+#endif
 
     /* write out the request key */
     write(fpin, key, strlen(key));
@@ -2229,7 +2266,9 @@ static char *lookup_map_program(request_rec *r, int fpin, int fpout, char *key)
     buf[i] = '\0';
 
     /* unlock the channel */
+#ifdef USE_PIPE_LOCKING
     fd_unlock(fpin);
+#endif
 
     if (strcasecmp(buf, "NULL") == 0)
         return NULL;
@@ -2254,8 +2293,8 @@ static void open_rewritelog(server_rec *s, pool *p)
     rewrite_server_conf *conf;
     char *fname;
     FILE *fp;
-    static int    rewritelog_flags = ( O_WRONLY|O_APPEND|O_CREAT );
-    static mode_t rewritelog_mode  = ( S_IRUSR|S_IWUSR|S_IRGRP|S_IROTH );
+    int    rewritelog_flags = ( O_WRONLY|O_APPEND|O_CREAT );
+    mode_t rewritelog_mode  = ( S_IRUSR|S_IWUSR|S_IRGRP|S_IROTH );
   
     conf = get_module_config(s->module_config, &rewrite_module);
     
@@ -2288,9 +2327,15 @@ static void open_rewritelog(server_rec *s, pool *p)
 }
 
 /* Child process code for 'RewriteLog "|..."' */
+#if MODULE_MAGIC_NUMBER > 19970622
 static int rewritelog_child(void *cmd)
+#else
+static void rewritelog_child(void *cmd)
+#endif
 {
+#if MODULE_MAGIC_NUMBER > 19970622
     int child_pid = 1;
+#endif
 
     cleanup_for_exec();
     signal(SIGHUP, SIG_IGN);
@@ -2302,7 +2347,11 @@ static int rewritelog_child(void *cmd)
 #else
     execl(SHELL_PATH, SHELL_PATH, "-c", (char *)cmd, NULL);
 #endif
+#if MODULE_MAGIC_NUMBER > 19970622
     return(child_pid);
+#else
+    return;
+#endif
 }
 
 static void rewritelog(request_rec *r, int level, const char *text, ...)
@@ -2310,14 +2359,15 @@ static void rewritelog(request_rec *r, int level, const char *text, ...)
     rewrite_server_conf *conf;
     conn_rec *connect;
     char *str1;
-    static char str2[HUGE_STRING_LEN];
-    static char str3[HUGE_STRING_LEN];
-    static char type[20];
-    static char redir[20];
+    char str2[512];
+    char str3[1024];
+    char type[20];
+    char redir[20];
     va_list ap;
     int i;
     request_rec *req;
     char *ruser;
+    const char *rhost;
     
     va_start(ap, text);
     conf = get_module_config(r->server->module_config, &rewrite_module);
@@ -2343,7 +2393,11 @@ static void rewritelog(request_rec *r, int level, const char *text, ...)
         ruser = "\"\"";
     }
 
-    str1 = pstrcat(r->pool, get_remote_host(connect, r->server->module_config, REMOTE_NAME), " ",
+    rhost = get_remote_host(connect, r->server->module_config, REMOTE_NAME);
+    if (rhost == NULL)
+        rhost = "UNKNOWN-HOST";
+
+    str1 = pstrcat(r->pool, rhost, " ",
                             (connect->remote_logname != NULL ? connect->remote_logname : "-"), " ",
                             ruser, NULL);
     ap_vsnprintf(str2, sizeof(str2), text, ap);
@@ -2353,8 +2407,8 @@ static void rewritelog(request_rec *r, int level, const char *text, ...)
     else
         strcpy(type, "subreq");
 
-    for (i = 0, req = r->prev; req != NULL; req = req->prev) 
-        ;
+    for (i = 0, req = r; req->prev != NULL; req = req->prev) 
+        i++;
     if (i == 0)
         redir[0] = '\0';
     else
@@ -2439,9 +2493,15 @@ static void run_rewritemap_programs(server_rec *s, pool *p)
 }
 
 /* child process code */
+#if MODULE_MAGIC_NUMBER > 19970622
 static int rewritemap_program_child(void *cmd)
+#else
+static void rewritemap_program_child(void *cmd)
+#endif
 {
+#if MODULE_MAGIC_NUMBER > 19970622
     int child_pid = 1;
+#endif
     
     cleanup_for_exec();
     signal(SIGHUP, SIG_IGN);
@@ -2453,7 +2513,11 @@ static int rewritemap_program_child(void *cmd)
 #else
     execl(SHELL_PATH, SHELL_PATH, "-c", (char *)cmd, NULL);
 #endif
+#if MODULE_MAGIC_NUMBER > 19970622
     return(child_pid);
+#else
+    return;
+#endif
 }
 
 
