@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/06/05 17:02:46 $]
+Last modified at [$Date: 2003/06/05 17:06:52 $]
 
 Release:
 
@@ -200,6 +200,9 @@ PATCHES TO PORT FROM 2.1
         modules/dav/main/mod_dav.c 1.94
         modules/dav/main/mod_dav.h 1.67
         +1: gstein, sander
+        jerenkrantz says: dav_handle_err needs to be fixed to handle the
+                          case where an error is found during a multistatus
+                          response.
 
     * winnt MPM: fix some invalid ap_log_error() invocations
         server/mpm/winnt/child.c 1.15
