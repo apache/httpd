@@ -1,5 +1,10 @@
 Changes with Apache 1.3.1
 
+  *) Change "Options None" to "Options FollowSymLinks" in the 
+     <Directory /> section of the default access.conf-dist
+     (and -win even though it doesn't matter there).  This has better
+     performance, and more intuitive semantics.  [Dean Gaudet]
+
   *) PORT: Updated support for UTS 2.1.2.
      [Dave Dykstra <dwd@bell-labs.com>] PR#2320
 
