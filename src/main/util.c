@@ -110,7 +110,7 @@ struct tm *get_gmtoff(int *tz) {
     struct tm *t = localtime(&tt);
 
     *tz = (int) (t->tm_gmtoff / 60);
-    return t
+    return t;
 }
 #else
 struct tm *get_gmtoff(int *tz) {
