@@ -1940,6 +1940,7 @@ int handle_multi (request_rec *r)
     r->content_type = sub_req->content_type;
     r->content_encoding = sub_req->content_encoding;
     r->content_languages = sub_req->content_languages;
+    r->content_language = sub_req->content_language;
     r->finfo = sub_req->finfo;
     
     return OK;
