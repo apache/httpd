@@ -71,7 +71,7 @@
     assumed to be zero. The following numerical <var>operator</var>s are
     possible:</p>
 
-    <table>
+    <table style="zebra" border="1">
     <tr><th><var>operator</var></th><th>description</th></tr>
     <tr><td><code>=</code> or <code>==</code></td>
         <td>httpd version is equal</td></tr>
@@ -97,8 +97,8 @@
     <p>Besides the numerical comparison it is possible to match a regular
     expression against the httpd version. There are two ways to write it:</p>
 
-    <table>
-    <tr><th>operator</th><th>description</th></tr>
+    <table style="zebra" border="1">
+    <tr><th><var>operator</var></th><th>description</th></tr>
     <tr><td><code>=</code> or <code>==</code></td>
         <td><var>version</var> has the form
             <code>/<var>regex</var>/</code></td></tr>
@@ -126,7 +126,8 @@
       &lt;/IfVersion&gt;
     </example>
 
-    <p>If the operator is omitted, it is assumed to be <code>=</code>.</p>
+    <p>If the <var>operator</var> is omitted, it is assumed to be
+    <code>=</code>.</p>
 </usage>
 </directivesynopsis>
 

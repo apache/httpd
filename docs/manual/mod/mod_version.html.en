@@ -79,19 +79,18 @@
     assumed to be zero. The following numerical <var>operator</var>s are
     possible:</p>
 
-    <table>
-    <tr><th><var>operator</var></th><th>description</th></tr>
-    <tr><td><code>=</code> or <code>==</code></td>
+    <table class="bordered"><tr class="header"><th><var>operator</var></th><th>description</th></tr>
+<tr><td><code>=</code> or <code>==</code></td>
         <td>httpd version is equal</td></tr>
-    <tr><td><code>&gt;</code></td>
+<tr class="odd"><td><code>&gt;</code></td>
         <td>httpd version is greater than</td></tr>
-    <tr><td><code>&gt;=</code></td>
+<tr><td><code>&gt;=</code></td>
         <td>httpd version is greater or equal</td></tr>
-    <tr><td><code>&lt;</code></td>
+<tr class="odd"><td><code>&lt;</code></td>
         <td>httpd version is less than</td></tr>
-    <tr><td><code>&lt;=</code></td>
+<tr><td><code>&lt;=</code></td>
         <td>httpd version is less or equal</td></tr>
-    </table>
+</table>
 
     <div class="example"><h3>Example</h3><p><code>
       &lt;IfVersion &gt;= 2.1&gt;<br />
@@ -105,15 +104,14 @@
     <p>Besides the numerical comparison it is possible to match a regular
     expression against the httpd version. There are two ways to write it:</p>
 
-    <table>
-    <tr><th>operator</th><th>description</th></tr>
-    <tr><td><code>=</code> or <code>==</code></td>
+    <table class="bordered"><tr class="header"><th><var>operator</var></th><th>description</th></tr>
+<tr><td><code>=</code> or <code>==</code></td>
         <td><var>version</var> has the form
             <code>/<var>regex</var>/</code></td></tr>
-    <tr><td><code>~</code></td>
+<tr class="odd"><td><code>~</code></td>
         <td><var>version</var> has the form
             <code><var>regex</var></code></td></tr>
-    </table>
+</table>
 
     <div class="example"><h3>Example</h3><p><code>
       &lt;IfVersion = /^2.1.[01234]$/&gt;<br />
@@ -134,7 +132,8 @@
       &lt;/IfVersion&gt;
     </code></p></div>
 
-    <p>If the operator is omitted, it is assumed to be <code>=</code>.</p>
+    <p>If the <var>operator</var> is omitted, it is assumed to be
+    <code>=</code>.</p>
 
 </div>
 </div>
