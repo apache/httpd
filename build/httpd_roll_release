@@ -1,6 +1,6 @@
 #!/bin/sh
 
-if [ "x$1" = "xhelp" ]; then
+if [ "x$1" = "xhelp" -o "x$2" = "x" ]; then
     echo "Usage:  ./httpd_roll_release tag log_name [user]"
     echo "tag        the tag to use when checking out the repository"
     echo "log_name   the name of a file to log the results to."
@@ -35,11 +35,11 @@ cd $START_DIR/$WORKING_DIR
 # Make sure the master site's FAQ is up-to-date.  It doesn't hurt to do this
 # all the time.  :-)
 echo "Updating the site's FAQ"
-(cd /www/www.apache.org/docs-2.0/misc ; cvs update)
+(cd /www/httpd.apache.org/docs-2.0/faq/; cvs update)
 
 # Now update the FAQ in the tarball
-rm -f docs/manual/misc/FAQ*.html
-links -source http://www.apache.org/docs-2.0/misc/FAQ.html > docs/manual/misc/FAQ.html
+rm -f docs/manual/faq/*.html
+cp /www/www.apache.org/docs-2.0/faq/*.html docs/manual/faq/
 
 # Create the configure scripts
 echo "Creating the configure script"
@@ -62,7 +62,8 @@ echo "Making sure people can read the manual (expanding SSI's)"
 
 echo >> $LOG_NAME
 echo "Making sure people can read the manual (expanding SSI's)" >> $LOG_NAME
-( cd docs/manual ; chmod +x expand.pl ; ./expand.pl ; rm ./expand.pl ) >> $LOG_NAME
+# run expand.pl twice to handle the two levels of includes in docs/manual/
+( cd docs/manual ; chmod +x expand.pl ; ./expand.pl ; ./expand.pl ; rm ./expand.pl ) >> $LOG_NAME
 
 # Time to roll the tarball
 echo "Rolling the tarballs"
@@ -96,9 +97,9 @@ if [ "x$USER" != "x" ]; then
     USER="-u $USER"
 fi
 
-echo Tagging the tarballs
+echo Signing the tarballs
 
-echo "Tagging the tarballs" >> $LOG_NAME
+echo "Signing the tarballs" >> $LOG_NAME
 pgp -sba $WORKING_DIR-alpha.tar.gz $USER
 pgp -sba $WORKING_DIR-alpha.tar.Z $USER
 
