@@ -19,7 +19,7 @@
 .el .ne 3
 .IP "\\$1" \\$2
 ..
-.TH "HTTPD" 8 "2003-04-29" "Apache HTTP Server" "httpd"
+.TH "HTTPD" 8 "2003-11-25" "Apache HTTP Server" "httpd"
 
 .SH NAME
 httpd \- Apache Hypertext Transfer Protocol Server
@@ -47,7 +47,6 @@ In general, httpd should not be invoked directly, but rather should be invoked v
 
 .SH "OPTIONS"
  
-.RS
  
 .TP
 -d \fIserverroot\fR
@@ -100,12 +99,10 @@ Print the version and build parameters of httpd, and then exit\&.
 .TP
 -X
 Run httpd in debug mode\&. Only one worker will be started and the server will not detach from the console\&.  
-.RE
  
 .PP
 The following arguments are available only on the Windows platform:
  
-.RS
  
 .TP
 -k install|config|uninstall
@@ -116,5 +113,4 @@ The \fIname\fR of the Apache service to signal\&.
 .TP
 -w
 Keep the console window open on error so that the error message can be read\&.  
-.RE
  
