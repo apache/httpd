@@ -1,5 +1,5 @@
 Apache HTTP Server 2.0 Documentation Status File.
-Last modified: $Date: 2002/09/16 16:08:06 $
+Last modified: $Date: 2002/09/16 20:08:36 $
 
 If you are interested in helping accomplish some of the tasks on this
 list or otherwise improving the documentation, please join the
@@ -12,6 +12,9 @@ tutorial on how to get started with making your contribution.
 
               ------------------------------
 
+Things That Need Fixing
+=======================
+
 - XML
     - Rewriting of the remainder of the manual into xml is in
       progress.  See the bottom of this file for status info.
@@ -19,6 +22,24 @@ tutorial on how to get started with making your contribution.
     - Some of the nested <dl>s in mod/mod_include.xml are not working
       in mozilla.  Probably enclosing some of the bare paragraphs
       in <p> would fix it.
+
+- Windows platform docs are in desperate need of rewrites/updates for 2.0.
+    - Bill Rowe and Bill Stoddard are good contacts for tech questions.
+
+- New Auth system
+    - With the new auth system, we have a bunch of directives that are
+      duplicated in multiple modules, where one of the modules is obsolete.
+      We probably need to mark the old modules as <status>obsolete</status>
+      and key on that to omit them from the directive index, etc.
+    - Much clean-up and enhancement of docs
+    - Independent note on how to upgrade to new auth system
+
+- Figure out what to do about the 2.0 FAQ
+    - Copy important stuff from 1.3?
+    - Some kind of XML?
+    - Something that allows dynamic contributions from users a la
+      FAQ-O-Matic?  (I don't think any really good software exists 
+      for this.)
 
 - modules docs
     - mod_suexec: very little documentation
@@ -35,6 +56,7 @@ tutorial on how to get started with making your contribution.
 
       - we should be able to setup an XSLT to convert XML to nroff,
         shouldn't we? --nd
+        - Theoretically?  Yes.  ;-) --Joshua
 
 - MPM documentation
      - Non unix/windows MPMs still need to be completed.
@@ -51,8 +73,8 @@ tutorial on how to get started with making your contribution.
      - misc/known_client_problems.html - mostly ancient
 
 - New build process.
-    - install.html has had a first-pass rewrite, but many things have
-      changed in the build system since it was written.
+    - install.html has had a first-pass rewrite, it is basically
+      accurate, but very incomplete.
 
 - API documentation
     Status: Ben Laurie has written some hooks documentation
@@ -64,13 +86,11 @@ tutorial on how to get started with making your contribution.
 
     http://httpd.apache.org/docs-project/translations.html
 
-New User documentation
-======================
-
-* Directory Handling (mod_dir/mod_autoindex/etc)
 
 Documentation improvements
 ==========================
+
+* New user docs: Directory Handling (mod_dir/mod_autoindex/etc)
 
 * Enhancements to the DTD/XSL:
   - <glossary> tag that links to the glossary and uses some special 
@@ -79,19 +99,24 @@ Documentation improvements
     more structure for the cookie-crumbs, etc.
   - New index: directives by context, including listing which directives
     are available for each AllowOverride setting.
-  - Add more information to the directives.html index (description,
-    syntax, context, ...) or perhaps add a quickreference.html
-    that contains this info.
-  - Use a tag like <var> (but not that long) in place of
-    <em> for things like the <syntax> listing.
+  - Add a quickreference.html that contains summary info on each
+    directive.
+    - Joshua is working on this
+  - Use a tag like <var> in place of <em> for things like the 
+    <syntax> listing.
     - nd volunteers
   - Use the sitemap.xml in place of allmodules.xml to generate the
     directives.html and mod/index.html.
   - Handle more levels of sub<section>s.
   - add letter links to glossary, perhaps also a term overview (sidebar)
 
-* Improving the "security docs"
+* Autogeneration of PDF
+  - FOP?
 
+* Windows help file
+  - David Shane Holden was working on this
+
+* Improving the "security docs"
   - More content and better organisation.
 
 * General cleaning and improving of module docs
