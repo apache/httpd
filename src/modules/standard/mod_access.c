@@ -185,6 +185,10 @@ int find_allowdeny (request_rec *r, array_header *a, int method)
     for (i = 0; i < a->nelts; ++i) {
         if (!(mmask & ap[i].limited))
 	    continue;
+
+	if (!strncmp(ap[i].from,"env=",4) && table_get(r->subprocess_env,ap[i].from+4))
+	    return 1;
+	    
         if (ap[i].from && !strcmp(ap[i].from, "user-agents")) {
 	    char * this_agent = table_get(r->headers_in, "User-Agent");
 	    int j;

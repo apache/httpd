@@ -878,13 +878,18 @@ int index_of_response(int status)
 void basic_http_header (request_rec *r)
 {
     BUFF *fd = r->connection->client;
+    char *t;
     
     if (r->assbackwards) return;
     
     if (!r->status_line)
         r->status_line = status_lines[index_of_response(r->status)];
     
-    bvputs(fd, SERVER_PROTOCOL, " ", r->status_line, "\015\012", NULL);
+    if(table_get(r->subprocess_env,"force-response-1.0"))
+	t="HTTP/1.0";
+    else
+	t=SERVER_PROTOCOL;
+    bvputs(fd, t, " ", r->status_line, "\015\012", NULL);
     bvputs(fd,"Date: ",gm_timestr_822 (r->pool, r->request_time),
 	   "\015\012", NULL);
     bvputs(fd,"Server: ", SERVER_VERSION, "\015\012", NULL);
