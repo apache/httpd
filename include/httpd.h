@@ -910,16 +910,16 @@ struct request_rec {
     const struct htaccess_result *htaccess;
 
     /** A list of output filters to be used for this request */
-    struct ap_filter_t *output_filters;
+    ap_filter_t *output_filters;
     /** A list of input filters to be used for this request */
-    struct ap_filter_t *input_filters;
+    ap_filter_t *input_filters;
 
     /** A list of protocol level output filters to be used for this
      *  request */
-    struct ap_filter_t *proto_output_filters;
+    ap_filter_t *proto_output_filters;
     /** A list of protocol level input filters to be used for this
      *  request */
-    struct ap_filter_t *proto_input_filters;
+    ap_filter_t *proto_input_filters;
 
     /** A flag to determine if the eos bucket has been sent yet */
     int eos_sent;
@@ -1007,9 +1007,9 @@ struct conn_rec {
      *  another. must remain valid for all requests on this conn */
     apr_table_t *notes;
     /** A list of input filters to be used for this connection */
-    struct ap_filter_t *input_filters;
+    ap_filter_t *input_filters;
     /** A list of output filters to be used for this connection */
-    struct ap_filter_t *output_filters;
+    ap_filter_t *output_filters;
     /** handle to scoreboard information for this connection */
     void *sbh;
     /** The bucket allocator to use for all bucket/brigade creations */
