@@ -3,7 +3,7 @@
   [ <!ENTITY allmodules SYSTEM "allmodules.xml.de"> ]
 >
 <?xml-stylesheet type="text/xsl" href="../style/manual.de.xsl"?>
-<!-- English revision: 1.4 -->
+<!-- English revision: 1.6 -->
 
 <quickreference metafile="quickreference.xml.meta">
   <title>Kurzreferenz der Direktiven</title>
