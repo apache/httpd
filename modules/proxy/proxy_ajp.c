@@ -203,7 +203,7 @@ apr_status_t ap_proxy_http_create_connection(apr_pool_t *p, request_rec *r,
                                              proxy_conn_rec *backend,
                                              proxy_server_conf *conf,
                                              const char *proxyname) {
-    int failed=0, new=0;
+    int failed = 0, new_conn = 0;
     apr_socket_t *client_socket = NULL;
 
     /* We have determined who to connect to. Now make the connection, supporting
@@ -238,7 +238,7 @@ apr_status_t ap_proxy_http_create_connection(apr_pool_t *p, request_rec *r,
     }
 
     /* get a socket - either a keepalive one, or a new one */
-    new = 1;
+    new_conn = 1;
     if ((backend->connection) && (backend->connection->id == c->id)) {
         apr_size_t buffer_len = 1;
         char test_buffer[1]; 
@@ -248,7 +248,7 @@ apr_status_t ap_proxy_http_create_connection(apr_pool_t *p, request_rec *r,
         /* use previous keepalive socket */
         *origin = backend->connection;
         p_conn->sock = client_socket;
-        new = 0;
+        new_conn = 0;
 
         /* save timeout */
         apr_socket_timeout_get(p_conn->sock, &current_timeout);
@@ -260,10 +260,10 @@ apr_status_t ap_proxy_http_create_connection(apr_pool_t *p, request_rec *r,
         if ( APR_STATUS_IS_EOF(socket_status) ) {
             ap_log_error(APLOG_MARK, APLOG_ERR, 0, NULL,
                          "proxy: AJP: previous connection is closed");
-            new = 1;
+            new_conn = 1;
         }
     }
-    if (new) {
+    if (new_conn) {
 
         /* create a new socket */
         backend->connection = NULL;
@@ -302,7 +302,7 @@ apr_status_t ap_proxy_http_create_connection(apr_pool_t *p, request_rec *r,
         /* the peer reset the connection already; ap_run_create_connection() 
          * closed the socket
          */
-            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0,
+            ap_log_error(APLOG_MARK, APLOG_ERR, 0,
                          r->server, "proxy: an error occurred creating a "
                          "new connection to %pI (%s)", p_conn->addr,
                          p_conn->name);
@@ -364,7 +364,7 @@ apr_status_t ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
     input_brigade = apr_brigade_create(p, r->connection->bucket_alloc);
     status = ap_get_brigade(r->input_filters, input_brigade,
                             AP_MODE_READBYTES, APR_BLOCK_READ,
-                            8186);
+                            AJP13_MAX_SEND_BODY_SZ);
  
     if (status != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
@@ -393,7 +393,7 @@ apr_status_t ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
         /* XXXX calls apr_brigade_flatten... */
         status = apr_brigade_flatten(input_brigade, buff, &bufsiz);
         if (status != APR_SUCCESS) {
-             ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
+             ap_log_error(APLOG_MARK, APLOG_ERR, status, r->server,
                      "proxy: apr_brigade_flatten");
             return status;
         }
@@ -412,8 +412,7 @@ apr_status_t ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
     }
 
     /* read the response */
-    status = ajp_read_header(p_conn->sock, r,
-                             (ajp_msg_t **)&(p_conn->data));
+    status = ajp_read_header(p_conn->sock, r, &(p_conn->data));
     if (status != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_ERR, status, r->server,
                      "proxy: request failed to %pI (%s)",
@@ -453,7 +452,8 @@ apr_status_t ap_proxy_ajp_process_response(apr_pool_t * p, request_rec *r,
                                             conn_rec *origin,
                                             proxy_conn_rec *backend,
                                             proxy_server_conf *conf,
-                                            char *server_portstr) {
+                                            char *server_portstr) 
+{
     conn_rec *c = r->connection;
     apr_bucket *e;
     apr_bucket_brigade *bb;
@@ -467,7 +467,7 @@ apr_status_t ap_proxy_ajp_process_response(apr_pool_t * p, request_rec *r,
     while (type != CMD_AJP13_END_RESPONSE) {
         if (type == CMD_AJP13_SEND_HEADERS) {
             /* AJP13_SEND_HEADERS: process them */
-            status = ajp_parse_headers(r, p_conn->data); 
+            status = ajp_parse_header(r, p_conn->data); 
             if (status != APR_SUCCESS) {
                 break;
             }
@@ -484,8 +484,7 @@ apr_status_t ap_proxy_ajp_process_response(apr_pool_t * p, request_rec *r,
             break;
         }
         /* Read the next message */
-        status = ajp_read_header(p_conn->sock, r,
-                                 (ajp_msg_t **)&(p_conn->data));
+        status = ajp_read_header(p_conn->sock, r, &(p_conn->data));
         if (status != APR_SUCCESS) {
             break;
         }
@@ -646,8 +645,8 @@ int ap_proxy_ajp_handler(request_rec *r, proxy_server_conf *conf,
     }
 
     /* Step Four: Receive the Response */
-    status = ap_proxy_ajp_process_response(p, r, p_conn, origin, backend, conf,
-                                            server_portstr);
+    status = ap_proxy_ajp_process_response(p, r, p_conn, origin, backend,
+                                           conf, server_portstr);
     if ( status != OK ) {
         /* clean up even if there is an error */
         p_conn->close++;
