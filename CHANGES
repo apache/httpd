@@ -2,6 +2,10 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) mod_setenvif: Fix the regex optimizer, which under circumstances
+     treated the supplied regex as literal string. PR 24219.
+     [André Malo]
+
   *) mod_autoindex: Don't omit the <tr> start tag if the SuppressIcon
      option is set. PR 21668.  [Jesse Tie-Ten-Quee <highos@highos.com>]
 

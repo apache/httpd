@@ -239,29 +239,34 @@ static const char *non_regex_pattern(apr_pool_t *p, const char *s)
     int in_escape = 0;
 
     while (*src) {
-        if (in_escape) {
-            in_escape = 0;
-        }
-        else {
-            switch (*src) {
-            case '^':
-            case '.':
-            case '$':
-            case '|':
-            case '(':
-            case ')':
-            case '[':
-            case ']':
-            case '*':
-            case '+':
-            case '?':
-            case '{':
-            case '}':
+        switch (*src) {
+        case '^':
+        case '.':
+        case '$':
+        case '|':
+        case '(':
+        case ')':
+        case '[':
+        case ']':
+        case '*':
+        case '+':
+        case '?':
+        case '{':
+        case '}':
+            if (!in_escape) {
                 return NULL;
-            case '\\':
-                in_escape = 1;
-                escapes_found = 1;
             }
+            in_escape = 0;
+            break;
+        case '\\':
+            in_escape = 1;
+            escapes_found = 1;
+            break;
+        default:
+            if (in_escape) {
+                return NULL;
+            }
+            break;
         }
         src++;
     }
