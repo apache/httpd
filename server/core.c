@@ -607,9 +607,13 @@ static APR_INLINE void do_double_reverse (conn_rec *conn)
 }
 
 AP_DECLARE(const char *) ap_get_remote_host(conn_rec *conn, void *dir_config,
-					    int type)
+					    int type, int *str_is_ip)
 {
     int hostname_lookups;
+
+    if (str_is_ip) { /* if caller wants to know */
+        *str_is_ip = 0;
+    }
 
     /* If we haven't checked the host name, and we want to */
     if (dir_config) {
@@ -667,6 +671,9 @@ AP_DECLARE(const char *) ap_get_remote_host(conn_rec *conn, void *dir_config,
 	    return NULL;
 	}
 	else {
+            if (str_is_ip) { /* if caller wants to know */
+                *str_is_ip = 1;
+            }
 	    return conn->remote_ip;
 	}
     }

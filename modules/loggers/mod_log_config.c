@@ -303,7 +303,7 @@ static const char *constant_item(request_rec *dummy, char *stuff)
 static const char *log_remote_host(request_rec *r, char *a)
 {
     return ap_get_remote_host(r->connection, r->per_dir_config,
-                                    REMOTE_NAME);
+                                    REMOTE_NAME, NULL);
 }
 
 static const char *log_remote_address(request_rec *r, char *a)

@@ -3138,7 +3138,7 @@ static void rewritelog(request_rec *r, int level, const char *text, ...)
     }
 
     rhost = ap_get_remote_host(conn, r->server->module_config, 
-                               REMOTE_NOLOOKUP);
+                               REMOTE_NOLOOKUP, NULL);
     if (rhost == NULL) {
         rhost = "UNKNOWN-HOST";
     }
@@ -3409,7 +3409,7 @@ static char *lookup_variable(request_rec *r, char *var)
     }
     else if (strcasecmp(var, "REMOTE_HOST") == 0) {
         result = (char *)ap_get_remote_host(r->connection,
-                                         r->per_dir_config, REMOTE_NAME);
+                                            r->per_dir_config, REMOTE_NAME, NULL);
     }
     else if (strcasecmp(var, "REMOTE_USER") == 0) {
         result = r->user;

@@ -341,10 +341,12 @@ static int find_allowdeny(request_rec *r, apr_array_header_t *a, int method)
 
 	case T_HOST:
 	    if (!gothost) {
-		remotehost = ap_get_remote_host(r->connection, r->per_dir_config,
-					    REMOTE_DOUBLE_REV);
+                int remotehost_is_ip;
 
-		if ((remotehost == NULL) || is_ip(remotehost))
+		remotehost = ap_get_remote_host(r->connection, r->per_dir_config,
+                                                REMOTE_DOUBLE_REV, &remotehost_is_ip);
+
+		if ((remotehost == NULL) || remotehost_is_ip)
 		    gothost = 1;
 		else
 		    gothost = 2;

@@ -247,7 +247,7 @@ AP_DECLARE(void) ap_add_common_vars(request_rec *r)
     apr_table_addn(e, "SERVER_ADDR", r->connection->local_ip);	/* Apache */
     apr_table_addn(e, "SERVER_PORT",
 		  apr_psprintf(r->pool, "%u", ap_get_server_port(r)));
-    host = ap_get_remote_host(c, r->per_dir_config, REMOTE_HOST);
+    host = ap_get_remote_host(c, r->per_dir_config, REMOTE_HOST, NULL);
     if (host) {
 	apr_table_addn(e, "REMOTE_HOST", host);
     }

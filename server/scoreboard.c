@@ -300,7 +300,7 @@ int ap_update_child_status(int child_num, int thread_num, int status, request_re
 	if (r) {
 	    conn_rec *c = r->connection;
 	    apr_cpystrn(ss->client, ap_get_remote_host(c, r->per_dir_config,
-				  REMOTE_NOLOOKUP), sizeof(ss->client));
+				  REMOTE_NOLOOKUP, NULL), sizeof(ss->client));
 	    if (r->the_request == NULL) {
 		    apr_cpystrn(ss->request, "NULL", sizeof(ss->request));
 	    } else if (r->parsed_uri.password == NULL) {

@@ -138,7 +138,7 @@ static void make_cookie(request_rec *r)
     char cookiebuf[1024];
     char *new_cookie;
     const char *rname = ap_get_remote_host(r->connection, r->per_dir_config,
-					   REMOTE_NAME);
+					   REMOTE_NAME, NULL);
     cookie_dir_rec *dcfg;
 
     dcfg = ap_get_module_config(r->per_dir_config, &usertrack_module);
