@@ -525,6 +525,19 @@ static apr_bucket *find_end_sequence(apr_bucket *dptr, include_ctx_t *ctx,
                     ctx->tail_start_index  = c - buf;
                 }
                 ctx->parse_pos++;
+                if (str[ctx->parse_pos] == '\0') {
+                        apr_bucket *tmp_buck = dptr;
+
+                        /* We want to split the bucket at the '>'. The
+                         * end of the END_SEQUENCE is in the current bucket.
+                         * The beginning might be in a previous bucket.
+                         */
+                        ctx->bytes_parsed++;
+                        ctx->state = PARSED;
+                        apr_bucket_split(dptr, c - buf + 1);
+                        tmp_buck = APR_BUCKET_NEXT(dptr);
+                        return (tmp_buck);
+                    }           
             }
             else {
                 if (ctx->state == PARSE_DIRECTIVE) {
@@ -550,22 +563,7 @@ static apr_bucket *find_end_sequence(apr_bucket *dptr, include_ctx_t *ctx,
                     ctx->tag_length++;
                 }
                 else {
-                    if (str[ctx->parse_pos] == '\0') {
-                        apr_bucket *tmp_buck = dptr;
-
-                        /* We want to split the bucket at the '>'. The
-                         * end of the END_SEQUENCE is in the current bucket.
-                         * The beginning might be in a previous bucket.
-                         */
-                        ctx->bytes_parsed++;
-                        ctx->state = PARSED;
-                        if ((c - buf) > 0) {
-                            apr_bucket_split(dptr, c - buf);
-                            tmp_buck = APR_BUCKET_NEXT(dptr);
-                        }
-                        return (tmp_buck);
-                    }
-                    else if (ctx->parse_pos != 0) {
+                    if (ctx->parse_pos != 0) {
                         /* The reason for this, is that we need to make sure 
                          * that we catch cases like --->.  This makes the 
                          * second check after the original check fails.
