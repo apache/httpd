@@ -688,7 +688,7 @@ static const command_rec digest_cmds[] =
 {
     AP_INIT_TAKE1("AuthName", set_realm, NULL, OR_AUTHCFG, 
      "The authentication realm (e.g. \"Members Only\")"),
-    AP_INIT_ITERATE("AuthDigestProvider", add_authn_provider, NULL, ACCESS_CONF,
+    AP_INIT_ITERATE("AuthDigestProvider", add_authn_provider, NULL, OR_AUTHCFG,
                      "specify the auth providers for a directory or location"),
     AP_INIT_ITERATE("AuthDigestQop", set_qop, NULL, OR_AUTHCFG, 
      "A list of quality-of-protection options"),
