@@ -1,5 +1,10 @@
 Changes with Apache 1.3b3
 
+  *) New support tool: src/support/split-logfile, a sample Perl script which
+     splits up a combined access log into separate files based on the
+     name of the virtual host (listed first in the log records by "%v").
+     [Ken Coar]
+
 Changes with Apache 1.3b2 (there is no 1.3b1)
 
   *) TestCompile was not passing $LIBS [Dean Gaudet]
