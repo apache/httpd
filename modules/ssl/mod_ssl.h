@@ -97,13 +97,7 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <time.h>
-#ifndef WIN32
 #include <sys/time.h>
-#endif
-#ifdef WIN32
-#include <wincrypt.h>
-#include <winsock2.h>
-#endif
 
 /* OpenSSL headers */
 #include <openssl/ssl.h>
@@ -257,7 +251,7 @@
 #endif
 #if !defined(SSL_USE_FCNTL) && !defined(SSL_USE_FLOCK)
 #define SSL_USE_FLOCK 1
-#if !defined(MPE) && !defined(WIN32)
+#if !defined(MPE)
 #include <sys/file.h>
 #endif
 #ifndef LOCK_UN
@@ -275,11 +269,7 @@
 /*
  * Support for Mutex
  */
-#ifndef WIN32
 #define SSL_MUTEX_LOCK_MODE ( S_IRUSR|S_IWUSR )
-#else
-#define SSL_MUTEX_LOCK_MODE (_S_IREAD|_S_IWRITE )
-#endif
 #if defined(USE_SYSVSEM_SERIALIZED_ACCEPT) ||\
     (defined(__FreeBSD__) && defined(__FreeBSD_version) &&\
      __FreeBSD_version >= 300000) ||\
@@ -305,30 +295,16 @@ union ssl_ipc_semun {
     unsigned short int *array;
 };
 #endif
-#ifdef WIN32
-#define SSL_CAN_USE_SEM
-#define SSL_HAVE_W32SEM
-#include "multithread.h"
-#include <process.h>
-#endif
 
 /*
  * Support for MM library
  */
-#ifndef WIN32
 #define SSL_MM_FILE_MODE ( S_IRUSR|S_IWUSR )
-#else
-#define SSL_MM_FILE_MODE ( _S_IREAD|_S_IWRITE )
-#endif
 
 /*
  * Support for DBM library
  */
-#ifndef WIN32
 #define SSL_DBM_FILE_MODE ( S_IRUSR|S_IWUSR )
-#else
-#define SSL_DBM_FILE_MODE ( _S_IREAD|_S_IWRITE )
-#endif
 
 #if !defined(SSL_DBM_FILE_SUFFIX_DIR) && !defined(SSL_DBM_FILE_SUFFIX_PAG)
 #if defined(DBM_SUFFIX)

@@ -168,39 +168,7 @@ int ssl_util_ppopen_child(void *cmd, child_info *pinfo)
     /*
      * Exec() the child program
      */
-#if defined(WIN32)
-    /* MS Windows */
-    {
-        char pCommand[MAX_STRING_LEN];
-        STARTUPINFO si;
-        PROCESS_INFORMATION pi;
-
-        ap_snprintf(pCommand, sizeof(pCommand), "%s /C %s", SHELL_PATH, cmd);
-
-        memset(&si, 0, sizeof(si));
-        memset(&pi, 0, sizeof(pi));
-
-        si.cb          = sizeof(si);
-        si.dwFlags     = STARTF_USESHOWWINDOW | STARTF_USESTDHANDLES;
-        si.wShowWindow = SW_HIDE;
-        si.hStdInput   = pinfo->hPipeInputRead;
-        si.hStdOutput  = pinfo->hPipeOutputWrite;
-        si.hStdError   = pinfo->hPipeErrorWrite;
-
-        if (CreateProcess(NULL, pCommand, NULL, NULL, TRUE, 0,
-                          environ, NULL, &si, &pi)) {
-            CloseHandle(pi.hProcess);
-            CloseHandle(pi.hThread);
-            child_pid = pi.dwProcessId;
-        }
-    }
-#elif defined(OS2)
-    /* IBM OS/2 */
-    spawnl(P_NOWAIT, SHELL_PATH, SHELL_PATH, "/c", (char *)cmd, NULL);
-#else
-    /* Standard Unix */
     execl(SHELL_PATH, SHELL_PATH, "-c", (char *)cmd, NULL);
-#endif
     return (child_pid);
 }
 
