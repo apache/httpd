@@ -1,5 +1,11 @@
 Changes with Apache 2.0.24-dev
 
+  *) We have always used the obsolete/deprecated Netscape syntax
+     for our tracking cookies; now the CookieStyle directive
+     allows the Webmaster to choose the Netscape, RFC2109, or
+     RFC2965 format.  The new CookieDomain directive allows the
+     setting of the cookie's Domain= attribute, too.
+
   *) Tweak server/Makefile so that the rules for generating exports.c
      are compatible with make utilities which don't expand wildcards
      in a dependency list (e.g., OS/390 make, certain levels of GNU
