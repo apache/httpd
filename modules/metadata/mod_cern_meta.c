@@ -361,10 +361,16 @@ static int add_cern_meta_data(request_rec *r)
 		 dconf->metasuffix ? dconf->metasuffix : DEFAULT_METASUFFIX,
 			   NULL);
 
-    /* XXX: it sucks to require this subrequest to complete, because this
+    /* It sucks to require this subrequest to complete, because this
      * means people must leave their meta files accessible to the world.
      * A better solution might be a "safe open" feature of pfopen to avoid
      * pipes, symlinks, and crap like that.
+     *
+     * In fact, this doesn't suck.  Because <Location > blocks are never run
+     * against sub_req_lookup_file, the meta can be somewhat protected by
+     * either masking it with a <Location > directive or alias, or stowing
+     * the file outside of the web document tree, while providing the
+     * appropriate directory blocks to allow access to it as a file.
      */
     rr = ap_sub_req_lookup_file(metafilename, r, NULL);
     if (rr->status != HTTP_OK) {
