@@ -64,8 +64,8 @@
 
 module AP_MODULE_DECLARE_DATA proxy_ftp_module;
 
-PROXY_DECLARE (int) ap_proxy_ftp_canon(request_rec *r, char *url);
-PROXY_DECLARE (int) ap_proxy_ftp_handler(request_rec *r, proxy_server_conf *conf, 
+int ap_proxy_ftp_canon(request_rec *r, char *url);
+int ap_proxy_ftp_handler(request_rec *r, proxy_server_conf *conf, 
                          char *url, const char *proxyhost, 
                          apr_port_t proxyport);
 apr_status_t ap_proxy_send_dir_filter(ap_filter_t *f,
@@ -121,7 +121,7 @@ static int ftp_check_string(const char *x)
 /*
  * Canonicalise ftp URLs.
  */
-PROXY_DECLARE (int) ap_proxy_ftp_canon(request_rec *r, char *url)
+int ap_proxy_ftp_canon(request_rec *r, char *url)
 {
     char *user, *password, *host, *path, *parms, *strp, sport[7];
     apr_pool_t *p = r->pool;
@@ -530,7 +530,7 @@ static int ftp_unauthorized (request_rec *r, int log_it)
  * PASV added by Chuck
  * Filters by [Graham Leggett <minfrin@sharp.fm>]
  */
-PROXY_DECLARE (int) ap_proxy_ftp_handler(request_rec *r, proxy_server_conf *conf, 
+int ap_proxy_ftp_handler(request_rec *r, proxy_server_conf *conf, 
                          char *url, const char *proxyhost, 
                          apr_port_t proxyport)
 {
@@ -586,8 +586,8 @@ PROXY_DECLARE (int) ap_proxy_ftp_handler(request_rec *r, proxy_server_conf *conf
     }
 
 
-    /*
-     * I: Who Do I Connect To?
+    /* 
+     * I: Who Do I Connect To? 
      * -----------------------
      *
      * Break up the URL to determine the host to connect to
