@@ -211,7 +211,7 @@ AC_DEFUN(APACHE_CHECK_SIGWAIT_ONE_ARG,[
      * header to get a prototype for sigwait().  Else things will fail later
      * on.  XXX Should probably be fixed in the unproven-pthreads package.
      */
-#incluide <pthread.h>
+#include <pthread.h>
 #endif
 #include <signal.h>
 ],[
