@@ -674,23 +674,24 @@ API_EXPORT(int) ap_method_number_of(const char *method)
 static int getline(char *s, int n, BUFF *in, int fold)
 {
     char *pos, next;
-    int retval;
+    ap_status_t retval;
+    ap_ssize_t nbytes;
     int total = 0;
 
     pos = s;
 
     do {
-        retval = ap_bgets(pos, n, in);
-       /* retval == -1 if error, 0 if EOF */
+        retval = ap_bgets(pos, n, in, &nbytes);
+       /* retval == APR_EOF if EOF, normal error codes otherwise */
 
-        if (retval <= 0)
-            return ((retval < 0) && (total == 0)) ? -1 : total;
+        if (retval != APR_SUCCESS)        /* error or eof */
+            return ((retval != APR_EOF) && (total == 0)) ? -1 : total;
 
-        /* retval is the number of characters read, not including NUL      */
+        /* nbytes is the number of characters read, not including NUL      */
 
-        n -= retval;            /* Keep track of how much of s is full     */
-        pos += (retval - 1);    /* and where s ends                        */
-        total += retval;        /* and how long s has become               */
+        n -= nbytes;            /* Keep track of how much of s is full     */
+        pos += (nbytes - 1);    /* and where s ends                        */
+        total += nbytes;        /* and how long s has become               */
 
         if (*pos == '\n') {     /* Did we get a full line of input?        */
             /*
@@ -715,7 +716,7 @@ static int getline(char *s, int n, BUFF *in, int fold)
          * the last line was not empty and we have room in the buffer and
          * the next line begins with a continuation character.
          */
-    } while (fold && (retval != 1) && (n > 1)
+    } while (fold && (nbytes != 1) && (n > 1)
                   && (next = ap_blookc(in))
                   && ((next == ' ') || (next == '\t')));
 

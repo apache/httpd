@@ -201,6 +201,7 @@ static int log_script(request_rec *r, cgi_server_conf * conf, int ret,
     ap_file_t *f;
     int i;
     struct stat finfo;
+    ap_ssize_t n;       /* Ignored */
 
     if (!conf->logname ||
 	((stat(ap_server_root_relative(r->pool, conf->logname), &finfo) == 0)
@@ -208,19 +209,22 @@ static int log_script(request_rec *r, cgi_server_conf * conf, int ret,
          (ap_open(&f, ap_server_root_relative(r->pool, conf->logname),
                   APR_APPEND, APR_OS_DEFAULT, r->pool) != APR_SUCCESS)) {
 	/* Soak up script output */
-	while (ap_bgets(argsbuffer, HUGE_STRING_LEN, script_in) > 0)
+	while (ap_bgets(argsbuffer, HUGE_STRING_LEN, script_in, &n)
+               == APR_SUCCESS)
 	    continue;
 #ifdef WIN32
         /* Soak up stderr and redirect it to the error log.
          * Script output to stderr is already directed to the error log
          * on Unix, thanks to the magic of fork().
          */
-        while (ap_bgets(argsbuffer, HUGE_STRING_LEN, script_err) > 0) {
+        while (ap_bgets(argsbuffer, HUGE_STRING_LEN, script_err, &n)
+               == APR_SUCCESS) {
             ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0, r, 
                           "%s", argsbuffer);            
         }
 #else
-	while (ap_bgets(argsbuffer, HUGE_STRING_LEN, script_err) > 0)
+	while (ap_bgets(argsbuffer, HUGE_STRING_LEN, script_err, &n)
+               == APR_SUCCESS)
 	    continue;
 #endif
 	return ret;
@@ -256,18 +260,19 @@ static int log_script(request_rec *r, cgi_server_conf * conf, int ret,
     if (sbuf && *sbuf)
 	ap_fprintf(f, "%s\n", sbuf);
 
-    if (ap_bgets(argsbuffer, HUGE_STRING_LEN, script_in) > 0) {
+    if (ap_bgets(argsbuffer, HUGE_STRING_LEN, script_in, &n) == APR_SUCCESS) {
 	ap_puts("%stdout\n", f);
 	ap_puts(argsbuffer, f);
-	while (ap_bgets(argsbuffer, HUGE_STRING_LEN, script_in) > 0)
+	while (ap_bgets(argsbuffer, HUGE_STRING_LEN, script_in, &n) > 0)
 	    ap_puts(argsbuffer, f);
 	ap_puts("\n", f);
     }
 
-    if (ap_bgets(argsbuffer, HUGE_STRING_LEN, script_err) > 0) {
+    if (ap_bgets(argsbuffer, HUGE_STRING_LEN, script_err, &n) == APR_SUCCESS) {
 	ap_puts("%stderr\n", f);
 	ap_puts(argsbuffer, f);
-	while (ap_bgets(argsbuffer, HUGE_STRING_LEN, script_err) > 0)
+	while (ap_bgets(argsbuffer, HUGE_STRING_LEN, script_err, &n)
+               == APR_SUCCESS)
 	    ap_puts(argsbuffer, f);
 	ap_puts("\n", f);
     }
@@ -445,6 +450,7 @@ static int cgi_handler(request_rec *r)
     char *argv0, *dbuf = NULL;
     char *command;
     char **argv = NULL;
+    ap_ssize_t n;       /* Ignored */
 
     BUFF *script_out = NULL, *script_in = NULL, *script_err = NULL;
     char argsbuffer[HUGE_STRING_LEN];
@@ -591,10 +597,12 @@ static int cgi_handler(request_rec *r)
 	if (location && location[0] == '/' && r->status == 200) {
 
 	    /* Soak up all the script output */
-	    while (ap_bgets(argsbuffer, HUGE_STRING_LEN, script_in) > 0) {
+	    while (ap_bgets(argsbuffer, HUGE_STRING_LEN, script_in, &n)
+                   == APR_SUCCESS) {
 		continue;
 	    }
-	    while (ap_bgets(argsbuffer, HUGE_STRING_LEN, script_err) > 0) {
+	    while (ap_bgets(argsbuffer, HUGE_STRING_LEN, script_err, &n)
+                   == APR_SUCCESS) {
 		continue;
 	    }
 	    /* This redirect needs to be a GET no matter what the original
@@ -625,7 +633,8 @@ static int cgi_handler(request_rec *r)
 	}
 	ap_bclose(script_in);
 
-	while (ap_bgets(argsbuffer, HUGE_STRING_LEN, script_err) > 0) {
+	while (ap_bgets(argsbuffer, HUGE_STRING_LEN, script_err, &n)
+               == APR_SUCCESS) {
 	    continue;
 	}
 	ap_bclose(script_err);
