@@ -1226,7 +1226,7 @@ if [ "x$using_shlib" = "x1" ] ; then
 	    # Older SINIX machines must be linked as "shared core"-Apache
 	    case $CC in
 		*/gcc|gcc ) CFLAGS_SHLIB="-fpic" ;;
-		*/cc|cc   ) CFLAGS_SHLIB="-KPIC" ;;
+		*)          CFLAGS_SHLIB="-KPIC" ;;
 	    esac
 	    LDFLAGS_SHLIB="-G"
 	    LDFLAGS_MOD_SHLIB=$LDFLAGS_SHLIB
