@@ -56,6 +56,7 @@
  * University of Illinois, Urbana-Champaign.
  */
 
+#ifdef WIN32
 
 #include "apr_strings.h"
 #include "apr_portable.h"
@@ -71,8 +72,7 @@
 #include "mod_core.h"
 #include "mod_cgi.h"
 #include "apr_lib.h"
-
-#ifdef WIN32
+#include "ap_regkey.h"
 
 extern OSVERSIONINFO osver; /* hiding in mpm_winnt.c */
 static int win_nt;
@@ -180,56 +180,6 @@ static void prep_string(const char ** str, apr_pool_t *p)
     *(ch2++) = '\0';
 }
 
-/* Pretty unexciting ... yank a registry value, and explode any envvars
- * that the system has configured (e.g. %SystemRoot%/someapp.exe)
- *
- * XXX: Need Unicode versions for i18n
- */
-static apr_status_t get_win32_registry_default_value(apr_pool_t *p, HKEY hkey,
-                                                     char* relativepath, 
-                                                     char **value)
-{
-    HKEY hkeyOpen;
-    DWORD type;
-    DWORD size = 0;
-    DWORD result = RegOpenKeyEx(hkey, relativepath, 0, 
-                                KEY_QUERY_VALUE, &hkeyOpen);
-    
-    if (result != ERROR_SUCCESS) {
-        return APR_FROM_OS_ERROR(result);
-    }
-
-    /* Read to NULL buffer to determine value size */
-    result = RegQueryValueEx(hkeyOpen, "", 0, &type, NULL, &size);
-    
-   if (result == ERROR_SUCCESS) {
-        if ((size < 2) || (type != REG_SZ && type != REG_EXPAND_SZ)) {
-            result = ERROR_INVALID_PARAMETER;
-        }
-        else {
-            *value = apr_palloc(p, size);
-            /* Read value based on size query above */
-            result = RegQueryValueEx(hkeyOpen, "", 0, &type, *value, &size);
-        }
-    }
-
-    /* TODO: This might look fine, but we need to provide some warning
-     * somewhere that some environment variables may -not- be translated,
-     * seeing as we may have chopped the environment table down somewhat.
-     */
-    if ((result == ERROR_SUCCESS) && (type == REG_EXPAND_SZ)) {
-        char *tmp = *value;
-        size = ExpandEnvironmentStrings(tmp, *value, 0);
-        if (size) {
-            *value = apr_palloc(p, size);
-            size = ExpandEnvironmentStrings(tmp, *value, size);
-        }
-    }
-
-    RegCloseKey(hkeyOpen);
-    return APR_FROM_OS_ERROR(result);
-}
-
 /* Somewhat more exciting ... figure out where the registry has stashed the
  * ExecCGI or Open command - it may be nested one level deep (or more???)
  */
@@ -237,15 +187,13 @@ static char* get_interpreter_from_win32_registry(apr_pool_t *p,
                                                  const char* ext,
                                                  int strict)
 {
+    apr_status_t rv;
+    ap_regkey_t *name_key = NULL;
+    ap_regkey_t *type_key;
+    ap_regkey_t *key;
     char execcgi_path[] = "SHELL\\EXECCGI\\COMMAND";
     char execopen_path[] = "SHELL\\OPEN\\COMMAND";
-    char typeName[MAX_PATH];
-    int cmdOfName = FALSE;
-    HKEY hkeyName;
-    HKEY hkeyType;
-    DWORD type;
-    int size;
-    int result;
+    char *type_name;
     char *buffer;
     
     if (!ext) {
@@ -258,25 +206,19 @@ static char* get_interpreter_from_win32_registry(apr_pool_t *p,
      */
 
     /* Open the key associated with the script filetype extension */
-    result = RegOpenKeyEx(HKEY_CLASSES_ROOT, ext, 0, KEY_QUERY_VALUE, 
-                          &hkeyType);
+    rv = ap_regkey_open(&type_key, AP_REGKEY_CLASSES_ROOT, ext, APR_READ, p);
 
-    if (result != ERROR_SUCCESS) {
+    if (rv != APR_SUCCESS) {
         return NULL;
     }
 
     /* Retrieve the name of the script filetype extension */
-    size = sizeof(typeName);
-    result = RegQueryValueEx(hkeyType, "", NULL, &type, typeName, &size);
-    
-    if (result == ERROR_SUCCESS && type == REG_SZ && typeName[0]) {
-        /* Open the key associated with the script filetype extension */
-        result = RegOpenKeyEx(HKEY_CLASSES_ROOT, typeName, 0, 
-                              KEY_QUERY_VALUE, &hkeyName);
+    rv = ap_regkey_value_get(&type_name, type_key, "", p);
 
-        if (result == ERROR_SUCCESS) {
-            cmdOfName = TRUE;
-        }
+    if (rv == APR_SUCCESS && type_name[0]) {
+        /* Open the key associated with the script filetype extension */
+        rv = ap_regkey_open(&name_key, AP_REGKEY_CLASSES_ROOT, type_name, 
+                            APR_READ, p);
     }
 
     /* Open the key for the script command path by:
@@ -290,33 +232,45 @@ static char* get_interpreter_from_win32_registry(apr_pool_t *p,
      *   4) the extension's type key for Open/Command
      */
 
-    if (cmdOfName) {
-        result = get_win32_registry_default_value(p, hkeyName, 
-                                                  execcgi_path, &buffer);
+    if (name_key) {
+        if ((rv = ap_regkey_open(&key, name_key, execcgi_path, APR_READ, p))
+                == APR_SUCCESS) {
+            rv = ap_regkey_value_get(&buffer, key, "", p);
+            ap_regkey_close(name_key);
+        }
     }
 
-    if (!cmdOfName || (result != ERROR_SUCCESS)) {
-        result = get_win32_registry_default_value(p, hkeyType, 
-                                                  execcgi_path, &buffer);
+    if (!name_key || (rv != APR_SUCCESS)) {
+        if ((rv = ap_regkey_open(&key, type_key, execcgi_path, APR_READ, p))
+                == APR_SUCCESS) {
+            rv = ap_regkey_value_get(&buffer, key, "", p);
+            ap_regkey_close(type_key);
+        }
     }
 
-    if (!strict && cmdOfName && (result != ERROR_SUCCESS)) {
-        result = get_win32_registry_default_value(p, hkeyName, 
-                                                  execopen_path, &buffer);
+    if (!strict && name_key && (rv != APR_SUCCESS)) {
+        if ((rv = ap_regkey_open(&key, name_key, execopen_path, APR_READ, p))
+                == APR_SUCCESS) {
+            rv = ap_regkey_value_get(&buffer, key, "", p);
+            ap_regkey_close(name_key);
+        }
     }
 
-    if (!strict && (result != ERROR_SUCCESS)) {
-        result = get_win32_registry_default_value(p, hkeyType, 
-                                                  execopen_path, &buffer);
+    if (!strict && (rv != APR_SUCCESS)) {
+        if ((rv = ap_regkey_open(&key, type_key, execopen_path, APR_READ, p))
+                == APR_SUCCESS) {
+            rv = ap_regkey_value_get(&buffer, key, "", p);
+            ap_regkey_close(type_key);
+        }
     }
 
-    if (cmdOfName) {
-        RegCloseKey(hkeyName);
+    if (name_key) {
+        ap_regkey_close(name_key);
     }
 
-    RegCloseKey(hkeyType);
+    ap_regkey_close(type_key);
 
-    if (result != ERROR_SUCCESS  || !buffer[0]) {
+    if (rv != APR_SUCCESS || !buffer[0]) {
         return NULL;
     }
 
@@ -635,4 +589,4 @@ module AP_MODULE_DECLARE_DATA win32_module = {
    register_hooks               /* register hooks */
 };
 
-#endif
+#endif /* defined WIN32 */
