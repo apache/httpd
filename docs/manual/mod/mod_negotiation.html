@@ -13,9 +13,9 @@
  ALINK="#FF0000"
 >
 <!--#include virtual="header.html" -->
-<H1 ALIGN="CENTER">Module mod_negotiation</h1>
+<H1 ALIGN="CENTER">Module mod_negotiation</H1>
 
-This module is contained in the <code>mod_negotiation.c</code> file,
+This module is contained in the <CODE>mod_negotiation.c</CODE> file,
 and is compiled in by default. It provides for <A
 HREF="../content-negotiation.html">content negotiation</A>.
 
@@ -24,13 +24,13 @@ Content negotiation, or more accurately content selection, is the
 selection of the document that best matches the clients
 capabilities, from one of several available documents.
 There are two implementations of this.
-<ul>
-<li> A type map (a file with the handler <code>type-map</code>)
+<UL>
+<LI> A type map (a file with the handler <CODE>type-map</CODE>)
 which explicitly lists the files containing the variants.
-<li> A MultiViews search (enabled by the MultiViews
+<LI> A MultiViews search (enabled by the MultiViews
 <A HREF="core.html#options">Option</A>, where the server does an implicit
 filename pattern match, and choose from amongst the results.
-</ul>
+</UL>
 
 <h3>Type maps</h3>
 A type map has the same format as RFC822 mail headers. It contains document
@@ -44,70 +44,70 @@ between the header name and value, and between the tokens of value.
 
 The headers allowed are:
 
-<dl>
-<dt>Content-Encoding:
-<dd>The encoding of the file. Currently only two encodings are recognized
-by http; <code>x-compress</code> for compressed files, and <code>x-gzip</code>
+<DL>
+<DT>Content-Encoding:
+<DD>The encoding of the file. Currently only two encodings are recognized
+by http; <CODE>x-compress</CODE> for compressed files, and <CODE>x-gzip</CODE>
 for gzipped files.
-<dt>Content-Language:
-<dd>The language of the variant, as an Internet standard language code, such
-as <code>en</code>.
-<dt>Content-Length:
-<dd>The length of the file, in bytes. If this header is not present, then
+<DT>Content-Language:
+<DD>The language of the variant, as an Internet standard language code, such
+as <CODE>en</CODE>.
+<DT>Content-Length:
+<DD>The length of the file, in bytes. If this header is not present, then
 the actual length of the file is used.
-<dt>Content-Type:
-<dd>The MIME media type of the document, with optional parameters.
+<DT>Content-Type:
+<DD>The MIME media type of the document, with optional parameters.
 parameters are separated from the media type and from one another by
 semi-colons. Parameter syntax is name=value; allowed parameters are:
-<dl>
-<dt>level
-<dd>the value is an integer, which specifies the version of the media type.
-For <code>text/html</code> this defaults to 2, otherwise 0.
-<dt>qs
-<dd>the value is a floating-point number with value between 0. and 1.
+<DL>
+<DT>level
+<DD>the value is an integer, which specifies the version of the media type.
+For <CODE>text/html</CODE> this defaults to 2, otherwise 0.
+<DT>qs
+<DD>the value is a floating-point number with value between 0. and 1.
 It indications the 'quality' of this variant.
-</dl>
+</DL>
 Example:
-<blockquote><code>Content-Type: image/jpeg; qs=0.8</code></blockquote>
-<dt>URI:
-<dd>The path to the file containing this variant, relative to the map file.
-</dl>
+<BLOCKQUOTE><CODE>Content-Type: image/jpeg; qs=0.8</CODE></BLOCKQUOTE>
+<DT>URI:
+<DD>The path to the file containing this variant, relative to the map file.
+</DL>
 
 <h3>MultiViews</h3>
 A MultiViews search is enabled by the MultiViews
 <A HREF="core.html#options">Option</A>.
-If the server receives a request for <code>/some/dir/foo</code> and
-<code>/some/dir/foo</code> does <em>not</em> exist, then the server reads the
-directory looking for all files named <code>foo.*</code>, and effectively
+If the server receives a request for <CODE>/some/dir/foo</CODE> and
+<CODE>/some/dir/foo</CODE> does <EM>not</EM> exist, then the server reads the
+directory looking for all files named <CODE>foo.*</CODE>, and effectively
 fakes up a type map which names all those files, assigning them the same media
 types and content-encodings it would have if the client had asked for
 one of them by name.  It then chooses the best match to the client's
-requirements, and returns that document.<p>
+requirements, and returns that document.<P>
 
 
 
 <h2>Directives</h2>
-<ul>
-<li><A href="#cachenegotiateddocs">CacheNegotiatedDocs</a>
-<li><A HREF="#languagepriority">LanguagePriority</A>
-</ul>
-<hr>
+<UL>
+<LI><A HREF="#cachenegotiateddocs">CacheNegotiatedDocs</A>
+<LI><A HREF="#languagepriority">LanguagePriority</A>
+</UL>
+<HR>
 
 
 <h2><A name="cachenegotiateddocs">CacheNegotiatedDocs</A></h2>
-<strong>Syntax:</strong> CacheNegotiatedDocs<br>
-<Strong>Context:</strong> server config<br>
-<strong>Status:</strong> Base<br>
-<strong>Module:</strong> mod_negotiation<br>
-<strong>Compatibility:</strong> CacheNegotiatedDocs is only available
-in Apache 1.1 and later.<p>
+<STRONG>Syntax:</STRONG> CacheNegotiatedDocs<BR>
+<Strong>Context:</STRONG> server config<BR>
+<STRONG>Status:</STRONG> Base<BR>
+<STRONG>Module:</STRONG> mod_negotiation<BR>
+<STRONG>Compatibility:</STRONG> CacheNegotiatedDocs is only available
+in Apache 1.1 and later.<P>
 
-<p>If set, this directive allows content-negotiated documents to be
+<P>If set, this directive allows content-negotiated documents to be
 cached by proxy servers. This could mean that clients behind those
 proxys could retrieve versions of the documents that are not the best
 match for their abilities, but it will make caching more
 efficient.
-<p>
+<P>
 
 This directive only applies to requests which come from HTTP/1.0 browsers.
 HTTP/1.1 provides much better control over the caching of negotiated
@@ -118,22 +118,22 @@ HTTP/1.1 requests.
 
 <h2><A name="languagepriority">LanguagePriority</A></h2>
 <!--%plaintext &lt;?INDEX {\tt LanguagePriority} directive&gt; -->
-<strong>Syntax:</strong> LanguagePriority <em>mime-lang mime-lang...</em><br>
-<Strong>Context:</strong> server config, virtual host, directory, .htaccess<br>
-<Strong>Override:</strong> FileInfo<br>
-<strong>Status:</strong> Base<br>
-<strong>Module:</strong> mod_negotiation<p>
+<STRONG>Syntax:</STRONG> LanguagePriority <EM>mime-lang mime-lang...</EM><BR>
+<Strong>Context:</STRONG> server config, virtual host, directory, .htaccess<BR>
+<Strong>Override:</STRONG> FileInfo<BR>
+<STRONG>Status:</STRONG> Base<BR>
+<STRONG>Module:</STRONG> mod_negotiation<P>
 
 The LanguagePriority sets the precedence of language variants for the case
 where the client does not express a preference, when handling a
-MultiViews request. The list of <em>mime-lang</em> are in order of decreasing
+MultiViews request. The list of <EM>mime-lang</EM> are in order of decreasing
 preference. Example:
 
-<blockquote><code>LanguagePriority en fr de</code></blockquote>
+<BLOCKQUOTE><CODE>LanguagePriority en fr de</CODE></BLOCKQUOTE>
 
-For a request for <code>foo.html</code>, where <code>foo.html.fr</code>
-and <code>foo.html.de</code> both existed, but the browser did not express
-a language preference, then <code>foo.html.fr</code> would be returned.<p>
+For a request for <CODE>foo.html</CODE>, where <CODE>foo.html.fr</CODE>
+and <CODE>foo.html.de</CODE> both existed, but the browser did not express
+a language preference, then <CODE>foo.html.fr</CODE> would be returned.<P>
 
 <P>
 

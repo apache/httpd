@@ -15,85 +15,85 @@
   <IMG SRC="../images/sub.gif" ALT="[APACHE DOCUMENTATION]">
  </DIV>
 
- <h1 align="CENTER">Module mod_mime_magic</h1>
+ <h1 align="CENTER">Module mod_mime_magic</H1>
 
   This module is contained in the mod_mime_magic.c file, and is
   an optional extension to the Apache HTTPD server.
   It can be used to determine the MIME type of a file by looking at a
   few bytes of its contents, the same way the Unix file(1) command works.
   To use mod_mime_magic you have to enable the following line in the
-  server build <tt>Configuration</tt> file: 
+  server build <TT>Configuration</TT> file: 
 
-  <pre>
+  <PRE>
       AddModule modules/standard/mod_mime_magic.o
-  </pre>
+  </PRE>
 
-  This should be listed <em>before</em> mod_mime in the build
-  <tt>Configuration</tt> file so that it will be used after mod_mime.
+  This should be listed <EM>before</EM> mod_mime in the build
+  <TT>Configuration</TT> file so that it will be used after mod_mime.
   mod_mime_magic is intended as a "second line of defense" for cases
   mod_mime cannot resolve.
 
   <h2>Summary</h2>
 
-  This module is derived from a free version of the <code>file(1)</code>
+  This module is derived from a free version of the <CODE>file(1)</CODE>
   command for Unix,
   which uses "magic numbers" and other hints from a file's contents to
   figure out what the contents are.
   In the case of this module,
   it tries to figure out the MIME type of the file.
-  <p>
+  <P>
   This module active only if the magic file is specified by the 
-  <A HREF="#mimemagicfile"><code>MimeMagicFile</code></a> directive.
-  <p>
+  <A HREF="#mimemagicfile"><CODE>MimeMagicFile</CODE></A> directive.
+  <P>
   The contents of the file are plain ASCII text in 4-5 columns.
   Blank lines are allowed but ignored.
   Commented lines use a hash mark "#".
   The remaining lines are parsed for the following columns:
   <table border=1>
   <tr valign=top>
-  <th>Column</th>
-  <th>Description</th>
-  </tr>
+  <TH>Column</TH>
+  <TH>Description</TH>
+  </TR>
   <tr valign=top>
-  <td>1</td>
-  <td>byte number to begin checking from
-  <br>
-  "&gt;" indicates a dependency upon the previous non-"&gt;" line</td>
-  </tr><tr valign=top>
-  <td>2</td>
-  <td>type of data to match
+  <TD>1</TD>
+  <TD>byte number to begin checking from
+  <BR>
+  "&gt;" indicates a dependency upon the previous non-"&gt;" line</TD>
+  </TR><tr valign=top>
+  <TD>2</TD>
+  <TD>type of data to match
     <table border=1>
-    <tr><td>byte</td><td>single character</td></tr>
-    <tr><td>short</td><td>machine-order 16-bit integer</td></tr>
-    <tr><td>long</td><td>machine-order 32-bit integer</td></tr>
-    <tr><td>string</td><td>arbitrary-length string</td></tr>
-    <tr><td>date</td><td>long integer date
-      (seconds since Unix epoch/1970)</td></tr>
-    <tr><td>beshort</td><td>big-endian 16-bit integer</td></tr>
-    <tr><td>belong</td><td>big-endian 32-bit integer</td></tr>
-    <tr><td>bedate</td><td>big-endian 32-bit integer date</td></tr>
-    <tr><td>leshort</td><td>little-endian 16-bit integer</td></tr>
-    <tr><td>lelong</td><td>little-endian 32-bit integer</td></tr>
-    <tr><td>ledate</td><td>little-endian 32-bit integer date</td></tr>
-    </table>
-  </td>
-  </tr><tr valign=top>
-  <td>3</td>
-  <td>contents of data to match</td>
-  </tr><tr valign=top>
-  <td>4</td>
-  <td>MIME type if matched</td>
-  </tr><tr valign=top>
-  <td>5</td>
-  <td>MIME encoding if matched (optional)</td>
-  </tr>
-  </table>
+    <TR><TD>byte</TD><TD>single character</TD></TR>
+    <TR><TD>short</TD><TD>machine-order 16-bit integer</TD></TR>
+    <TR><TD>long</TD><TD>machine-order 32-bit integer</TD></TR>
+    <TR><TD>string</TD><TD>arbitrary-length string</TD></TR>
+    <TR><TD>date</TD><TD>long integer date
+      (seconds since Unix epoch/1970)</TD></TR>
+    <TR><TD>beshort</TD><TD>big-endian 16-bit integer</TD></TR>
+    <TR><TD>belong</TD><TD>big-endian 32-bit integer</TD></TR>
+    <TR><TD>bedate</TD><TD>big-endian 32-bit integer date</TD></TR>
+    <TR><TD>leshort</TD><TD>little-endian 16-bit integer</TD></TR>
+    <TR><TD>lelong</TD><TD>little-endian 32-bit integer</TD></TR>
+    <TR><TD>ledate</TD><TD>little-endian 32-bit integer date</TD></TR>
+    </TABLE>
+  </TD>
+  </TR><tr valign=top>
+  <TD>3</TD>
+  <TD>contents of data to match</TD>
+  </TR><tr valign=top>
+  <TD>4</TD>
+  <TD>MIME type if matched</TD>
+  </TR><tr valign=top>
+  <TD>5</TD>
+  <TD>MIME encoding if matched (optional)</TD>
+  </TR>
+  </TABLE>
 
-  <p>
+  <P>
   For example, the following magic file lines
   would recognize some audio formats.
 
-<pre>
+<PRE>
 # Sun/NeXT audio data
 0       string          .snd
 &gt;12     belong          1               audio/basic
@@ -104,13 +104,13 @@
 &gt;12     belong          6               audio/basic
 &gt;12     belong          7               audio/basic
 &gt;12     belong          23              audio/x-adpcm
-</pre>
+</PRE>
 
   Or these would recognize the difference between "*.doc" files containing
   Microsoft Word or FrameMaker documents.  (These are incompatible file
   formats which use the same file suffix.)
 
-<pre>
+<PRE>
 # Frame
 0       string          \&lt;MakerFile     application/x-frame
 0       string          \&lt;MIFFile       application/x-frame
@@ -124,23 +124,23 @@
 0       string          \376\067\0\043                  application/msword
 0       string          \320\317\021\340\241\261        application/msword
 0       string          \333\245-\0\0\0                 application/msword
-</pre>
+</PRE>
 
   An optional MIME encoding can be included as a fifth column.
   For example, this can recognize gzipped files and set the encoding
   for them.
 
-<pre>
+<PRE>
 # gzip (GNU zip, not to be confused with [Info-ZIP/PKWARE] zip archiver)
 0       string          \037\213        application/octet-stream        x-gzip
-</pre>
+</PRE>
 
   <h3>Performance Issues</h3>
 
   This module is not for every system.  If your system is barely keeping
   up with its load or if you're performing a web server benchmark,
   you may not want to enable this because the processing is not free.
-  <p>
+  <P>
   However, an effort was made to improve the performance of the original
   file(1) code to make it fit in a busy web server.
   It was designed for a server where there are thousands of users who
@@ -152,14 +152,14 @@
   ...even if just to reduce the "why doesn't my page work" calls
   when users improperly name their own files.
   You have to decide if the extra work suits your environment.
-  <p>
+  <P>
   When compiling an Apache server, this module should be at or near the
   top of the list of modules in the Configuration file.  The modules are
   listed in increasing priority so that will mean this one is used only
   as a last resort, just like it was designed to.
 
   <h2>Directives</h2>
-  <p>
+  <P>
   <UL>
    <LI><A HREF="#mimemagicfile">MimeMagicFile</A>
    </LI>
@@ -170,7 +170,7 @@
    MimeMagicFile
   </A></H2>
   <P>
-  <STRONG>Syntax:</STRONG> MimeMagicFile <em>magic-file-name</em>
+  <STRONG>Syntax:</STRONG> MimeMagicFile <EM>magic-file-name</EM>
   <BR>
   <STRONG>Default:</STRONG> none
   <BR>
@@ -179,24 +179,24 @@
   <STRONG>Status:</STRONG> Extension
   <BR>
   <STRONG>Module:</STRONG> mod_mime_magic
-  <p>
+  <P>
 
-  The <code>MimeMagicFile</code> directive can be used to enable this module,
-  the default file is distributed at <code>conf/magic</code>.
+  The <CODE>MimeMagicFile</CODE> directive can be used to enable this module,
+  the default file is distributed at <CODE>conf/magic</CODE>.
   Non-rooted paths are relative to the ServerRoot.  Virtual hosts
   will use the same file as the main server unless a more specific setting
   is used, in which case the more specific setting overrides the main server's
   file.
-  <p>
+  <P>
   <HR>
 
-  <h2><a name="notes">Notes</a></h2>
+  <h2><A name="notes">Notes</A></h2>
 
   The following notes apply to the mod_mime_magic module and are
   included here for compliance with contributors' copyright restrictions
   that require their acknowledgment.
 
-<pre>
+<PRE>
 /*
  * mod_mime_magic: MIME type lookup via file magic numbers
  * Copyright (c) 1996-1997 Cisco Systems, Inc.
@@ -254,7 +254,7 @@
  * - Command-line flags have been removed since they will never be used here.
  *
  */
-</pre>
+</PRE>
 
  </BODY>
 </HTML>

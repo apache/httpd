@@ -268,11 +268,11 @@ suEXEC binary in its proper location, and configure Apache for use with suEXEC.
 <P ALIGN="LEFT">
 <STRONG>EDITING THE SUEXEC HEADER FILE</STRONG><BR>
 - From the top-level of the Apache source tree, type:&nbsp;&nbsp;
-<STRONG><code>cd support [ENTER]</code></STRONG>
+<STRONG><CODE>cd support [ENTER]</CODE></STRONG>
 </P>
 
 <P ALIGN="LEFT">
-Edit the <code>suexec.h</code> file and change the following macros to
+Edit the <CODE>suexec.h</CODE> file and change the following macros to
 match your local Apache installation.
 </P>
 
@@ -347,7 +347,7 @@ match your local Apache installation.
 <STRONG>COMPILING THE SUEXEC WRAPPER</STRONG><BR>
 You now need to compile the suEXEC wrapper.  At the shell command prompt,
 type:&nbsp;&nbsp;<STRONG><CODE>cc suexec.c -o suexec [ENTER]</CODE></STRONG>.
-This should create the <STRONG><em>suexec</em></STRONG> wrapper executable.
+This should create the <STRONG><EM>suexec</EM></STRONG> wrapper executable.
 </P>
 
 <P ALIGN="LEFT">
@@ -373,7 +373,7 @@ info on this process.
 
 <P ALIGN="LEFT">
 <STRONG>COPYING THE SUEXEC BINARY TO ITS PROPER LOCATION</STRONG><BR>
-Copy the <STRONG><em>suexec</em></STRONG> executable created in the
+Copy the <STRONG><EM>suexec</EM></STRONG> executable created in the
 exercise above to the defined location for <STRONG>SUEXEC_BIN</STRONG>.
 </P>
 
@@ -383,8 +383,8 @@ exercise above to the defined location for <STRONG>SUEXEC_BIN</STRONG>.
 
 <P ALIGN="LEFT">
 In order for the wrapper to set the user ID, it must me installed as owner
-<STRONG><em>root</em></STRONG> and must have the setuserid execution bit
-set for file modes.  If you are not running a <STRONG><em>root</em></STRONG>
+<STRONG><EM>root</EM></STRONG> and must have the setuserid execution bit
+set for file modes.  If you are not running a <STRONG><EM>root</EM></STRONG>
 user shell, do so now and execute the following commands.
 </P>
 
@@ -420,16 +420,16 @@ your installation and try again.
 
 <P ALIGN="LEFT">
 One way to use <STRONG>suEXEC</STRONG> is through the
-<a href="mod/core.html#user"><STRONG>User</STRONG></a> and
-<a href="mod/core.html#group"><STRONG>Group</STRONG></a> directives in
-<a href="mod/core.html#virtualhost"><STRONG>VirtualHost</STRONG></a>
+<A HREF="mod/core.html#user"><STRONG>User</STRONG></A> and
+<A HREF="mod/core.html#group"><STRONG>Group</STRONG></A> directives in
+<A HREF="mod/core.html#virtualhost"><STRONG>VirtualHost</STRONG></A>
 definitions. By setting these directives to values different from the
 main server user ID, all requests for CGI resources will be executed as
 the <STRONG>User</STRONG> and <STRONG>Group</STRONG> defined for that
 <STRONG>&lt;VirtualHost&gt;</STRONG>. If only one or
 neither of these directives are specified for a
 <STRONG>&lt;VirtualHost&gt;</STRONG> then the main
-server userid is assumed.<p>
+server userid is assumed.<P>
 
 <STRONG>suEXEC</STRONG> can also be used to to execute CGI programs as
 the user to which the request is being directed. This is accomplished by
@@ -437,7 +437,7 @@ using the <STRONG>~</STRONG> character prefixing the user ID for whom
 execution is desired.
 The only requirement needed for this feature to work is for CGI
 execution to be enabled for the user and that the script must meet the
-scrutiny of the <a href="#model">security checks</a> above.
+scrutiny of the <A HREF="#model">security checks</A> above.
 
 <P ALIGN="CENTER">
 <STRONG><A HREF="suexec.html">BACK TO CONTENTS</A></STRONG>
@@ -446,7 +446,7 @@ scrutiny of the <a href="#model">security checks</a> above.
 <H3><A NAME="debug">Debugging suEXEC</A></H3>
 <P ALIGN="LEFT">
 The suEXEC wrapper will write log information to the location defined in
-the <code>suexec.h</code> as indicated above. If you feel you have
+the <CODE>suexec.h</CODE> as indicated above. If you feel you have
 configured and installed the wrapper properly, have a look at this log
 and the error_log for the server to see where you may have gone astray.
 </P>

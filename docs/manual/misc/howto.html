@@ -18,49 +18,49 @@
 <H1 ALIGN="CENTER">Apache HOWTO documentation</H1>
 
 How to:
-<ul>
-<li><A HREF="#redirect">redirect an entire server or directory to a single URL</A>
-<li><A HREF="#logreset">reset your log files</A>
-<li><A HREF="#stoprob">stop/restrict robots</A>
-</ul>
+<UL>
+<LI><A HREF="#redirect">redirect an entire server or directory to a single URL</A>
+<LI><A HREF="#logreset">reset your log files</A>
+<LI><A HREF="#stoprob">stop/restrict robots</A>
+</UL>
 
 <HR>
 <H2><A name="redirect">How to redirect an entire server or directory to a single URL</A></H2>
 
 <P>There are two chief ways to redirect all requests for an entire
 server to a single location: one which requires the use of
-<code>mod_rewrite</code>, and another which uses a CGI script.
+<CODE>mod_rewrite</CODE>, and another which uses a CGI script.
 
 <P>First: if all you need to do is migrate a server from one name to
-another, simply use the <code>Redirect</code> directive, as supplied
-by <code>mod_alias</code>:
+another, simply use the <CODE>Redirect</CODE> directive, as supplied
+by <CODE>mod_alias</CODE>:
 
-<blockquote><pre>
+<BLOCKQUOTE><PRE>
   Redirect / http://www.apache.org/
-</pre></blockquote>
+</PRE></BLOCKQUOTE>
 
-<P>Since <code>Redirect</code> will forward along the complete path,
+<P>Since <CODE>Redirect</CODE> will forward along the complete path,
 however, it may not be appropriate - for example, when the directory
 structure has changed after the move, and you simply want to direct people
 to the home page.
 
-<P>The best option is to use the standard Apache module <code>mod_rewrite</code>.
+<P>The best option is to use the standard Apache module <CODE>mod_rewrite</CODE>.
 If that module is compiled in, the following lines:
 
-<blockquote><pre>RewriteEngine On
+<BLOCKQUOTE><PRE>RewriteEngine On
 RewriteRule /.* http://www.apache.org/ [R]
-</pre></blockquote>
+</PRE></BLOCKQUOTE>
 
 This will send an HTTP 302 Redirect back to the client, and no matter
 what they gave in the original URL, they'll be sent to
 "http://www.apache.org".
 
 The second option is to set up a <CODE>ScriptAlias</Code> pointing to
-a <B>cgi script</B> which outputs a 301 or 302 status and the location
+a <STRONG>cgi script</STRONG> which outputs a 301 or 302 status and the location
 of the other server.</P>
 
-<P>By using a <B>cgi-script</B> you can intercept various requests and
-treat them specially, e.g. you might want to intercept <B>POST</B>
+<P>By using a <STRONG>cgi-script</STRONG> you can intercept various requests and
+treat them specially, e.g. you might want to intercept <STRONG>POST</STRONG>
 requests, so that the client isn't redirected to a script on the other
 server which expects POST information (a redirect will lose the POST
 information.) You might also want to use a CGI script if you don't
@@ -68,17 +68,17 @@ want to compile mod_rewrite into your server.
 
 <P>Here's how to redirect all requests to a script... In the server
 configuration file,
-<blockquote><pre>ScriptAlias / /usr/local/httpd/cgi-bin/redirect_script</pre></blockquote>
+<BLOCKQUOTE><PRE>ScriptAlias / /usr/local/httpd/cgi-bin/redirect_script</PRE></BLOCKQUOTE>
 
 and here's a simple perl script to redirect requests:
 
-<blockquote><pre>
+<BLOCKQUOTE><PRE>
 #!/usr/local/bin/perl
 
 print "Status: 302 Moved Temporarily\r
 Location: http://www.some.where.else.com/\r\n\r\n";
 
-</pre></blockquote></P>
+</PRE></BLOCKQUOTE></P>
 
 <HR>
 
@@ -100,14 +100,14 @@ characters.</P>
 
 <P>The correct procedure is to move the logfile, then signal Apache to tell it to reopen the logfiles.</P>
 
-<P>Apache is signaled using the <B>SIGHUP</B> (-1) signal. e.g.
-<blockquote><code>
+<P>Apache is signaled using the <STRONG>SIGHUP</STRONG> (-1) signal. e.g.
+<BLOCKQUOTE><CODE>
 mv access_log access_log.old<BR>
 kill -1 `cat httpd.pid`
-</code></blockquote>
+</CODE></BLOCKQUOTE>
 </P>
 
-<P>Note: <code>httpd.pid</code> is a file containing the <B>p</B>rocess <B>id</B>
+<P>Note: <CODE>httpd.pid</CODE> is a file containing the <STRONG>p</STRONG>rocess <STRONG>id</STRONG>
 of the Apache httpd daemon, Apache saves this in the same directory as the log
 files.</P>
 
@@ -118,16 +118,16 @@ nightly or weekly basis.</P>
 <H2><A name="stoprob">How to stop or restrict robots</A></H2>
 
 <P>Ever wondered why so many clients are interested in a file called
-<code>robots.txt</code> which you don't have, and never did have?</P>
+<CODE>robots.txt</CODE> which you don't have, and never did have?</P>
 
-<P>These clients are called <B>robots</B> (also known as crawlers,
+<P>These clients are called <STRONG>robots</STRONG> (also known as crawlers,
 spiders and other cute name) - special automated clients which
 wander around the web looking for interesting resources.</P>
 
-<P>Most robots are used to generate some kind of <em>web index</em> which
-is then used by a <em>search engine</em> to help locate information.</P>
+<P>Most robots are used to generate some kind of <EM>web index</EM> which
+is then used by a <EM>search engine</EM> to help locate information.</P>
 
-<P><code>robots.txt</code> provides a means to request that robots limit their
+<P><CODE>robots.txt</CODE> provides a means to request that robots limit their
 activities at the site, or more often than not, to leave the site alone.</P>
 
 <P>When the first robots were developed, they had a bad reputation for
