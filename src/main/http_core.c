@@ -2726,12 +2726,18 @@ static int default_handler(request_rec *r)
     }
 
     if (r->finfo.st_mode == 0 || (r->path_info && *r->path_info)) {
-	ap_log_rerror(APLOG_MARK, APLOG_ERR|APLOG_NOERRNO, r, 
-                    "File does not exist: %s", 
-		     r->path_info 
-		         ? ap_pstrcat(r->pool, r->filename, r->path_info, NULL)
-		         : r->filename);
-	return NOT_FOUND;
+	char *emsg;
+
+	emsg = "File does not exist: ";
+	if (r->path_info == NULL) {
+	    emsg = ap_pstrcat(r->pool, emsg, r->filename, NULL);
+	}
+	else {
+	    emsg = ap_pstrcat(r->pool, emsg, r->filename, r->path_info, NULL);
+	}
+	ap_log_rerror(APLOG_MARK, APLOG_ERR|APLOG_NOERRNO, r, emsg);
+	ap_table_setn(r->notes, "error-notes", emsg);
+	return HTTP_NOT_FOUND;
     }
     if (r->method_number != M_GET) {
         return METHOD_NOT_ALLOWED;
