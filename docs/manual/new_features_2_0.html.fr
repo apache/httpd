@@ -16,7 +16,7 @@
   vlink="#000080" alink="#FF0000">
     <!--#include virtual="header.html" -->
 
-    <h1 align="CENTER">Aper&ccedil;u des nouvelles
+    <h1 align="center">Aper&ccedil;u des nouvelles
     fonctionnalit&eacute;s d'Apache 2.0</h1>
 
     <p>Am&eacute;liorations&nbsp;: <a href="#core">Noyau</a> | <a
