@@ -382,7 +382,10 @@ int directory_walk (request_rec *r)
 	    entry_dir = entry_core->d;
 
 	    if (entry_core->r
+/* FIXME: Temporarily removed, pending an explanation of function, in order to
+          fix Win32 [Ben]
 		|| entry_dir[0] != '/'
+*/
 		|| entry_core->d_components > i) break;
 
 	    this_conf = NULL;
