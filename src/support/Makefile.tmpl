@@ -19,7 +19,7 @@ htpasswd: htpasswd.c
 	$(CC) $(CFLAGS) htpasswd.c -o htpasswd $(LIBS)
 
 htdigest: htdigest.c
-	$(CC) $(CFLAGS) htdigest.c -o htdigest
+	$(CC) $(CFLAGS) htdigest.c -o htdigest $(LIBS)
 
 httpd_monitor: httpd_monitor.c
 	$(CC) $(INCLUDES) $(CFLAGS) httpd_monitor.c -o httpd_monitor
