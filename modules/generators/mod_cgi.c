@@ -88,6 +88,8 @@
 #include "util_script.h"
 #include "ap_mpm.h"
 #include "http_conf_globals.h"
+#include "apr_optional.h"
+#include "../filters/mod_include.h"
 #ifdef HAVE_STRING_H
 #include <string.h>
 #endif
@@ -96,6 +98,23 @@
 #endif
 
 module AP_MODULE_DECLARE_DATA cgi_module;
+
+static APR_OPTIONAL_FN_TYPE(ap_register_include_handler) *cgi_pfn_reg_with_ssi;
+static APR_OPTIONAL_FN_TYPE(ap_ssi_get_tag_and_value) *cgi_pfn_gtv;
+static APR_OPTIONAL_FN_TYPE(ap_ssi_parse_string) *cgi_pfn_ps;
+
+typedef enum {RUN_AS_SSI, RUN_AS_CGI} prog_types;
+
+typedef struct {
+    apr_int32_t          in_pipe;
+    apr_int32_t          out_pipe;
+    apr_int32_t          err_pipe;
+    apr_cmdtype_e        cmd_type;
+    prog_types           prog_type;
+    apr_bucket_brigade **bb;
+    include_ctx_t       *ctx;
+    ap_filter_t         *next;
+} exec_info;
 
 /* KLUDGE --- for back-combatibility, we don't have to check ExecCGI
  * in ScriptAliased directories, which means we need to know if this
@@ -313,21 +332,52 @@ static int log_script(request_rec *r, cgi_server_conf * conf, int ret,
     return ret;
 }
 
+
+/* This is the special environment used for running the "exec cmd="
+ *   variety of SSI directives.
+ */
+static void add_ssi_vars(request_rec *r, ap_filter_t *next)
+{
+    apr_table_t *e = r->subprocess_env;
+
+    if (r->path_info && r->path_info[0] != '\0') {
+        request_rec *pa_req;
+
+        apr_table_setn(e, "PATH_INFO", ap_escape_shell_cmd(r->pool, r->path_info));
+
+        pa_req = ap_sub_req_lookup_uri(ap_escape_uri(r->pool, r->path_info), r, next);
+        if (pa_req->filename) {
+            apr_table_setn(e, "PATH_TRANSLATED",
+                           apr_pstrcat(r->pool, pa_req->filename, pa_req->path_info, NULL));
+        }
+    }
+
+    if (r->args) {
+        char *arg_copy = apr_pstrdup(r->pool, r->args);
+
+        apr_table_setn(e, "QUERY_STRING", r->args);
+        ap_unescape_url(arg_copy);
+        apr_table_setn(e, "QUERY_STRING_UNESCAPED", ap_escape_shell_cmd(r->pool, arg_copy));
+    }
+}
+
 static apr_status_t run_cgi_child(apr_file_t **script_out,
                                   apr_file_t **script_in,
                                   apr_file_t **script_err, 
                                   const char *command,
                                   const char * const argv[],
-                                  request_rec *r, apr_pool_t *p)
+                                  request_rec *r,
+                                  apr_pool_t *p,
+                                  exec_info *e_info)
 {
     const char * const *env;
     apr_procattr_t *procattr;
-    apr_proc_t *procnew = apr_pcalloc(p, sizeof(*procnew));
+    apr_proc_t *procnew;
     apr_status_t rc = APR_SUCCESS;
 #if defined(RLIMIT_CPU)  || defined(RLIMIT_NPROC) || \
     defined(RLIMIT_DATA) || defined(RLIMIT_VMEM) || defined (RLIMIT_AS)
     core_dir_config *conf;
-    conf = (core_dir_config *) ap_get_module_config(r->per_dir_config,                                                              &core_module);
+    conf = (core_dir_config *) ap_get_module_config(r->per_dir_config, &core_module);
 #endif
 
 
@@ -347,7 +397,13 @@ static apr_status_t run_cgi_child(apr_file_t **script_out,
 	    r->filename, cld->nph ? "NPH " : "", argv0);
 #endif
 
-    ap_add_cgi_vars(r);
+    if (e_info->prog_type == RUN_AS_CGI) {
+        ap_add_cgi_vars(r);
+    }
+    else /* SSIs want a controlled environment and a special path. */
+    {
+        add_ssi_vars(r, e_info->next);
+    }
     env = (const char * const *)ap_create_environment(p, r->subprocess_env);
 
 #ifdef DEBUG_CGI
@@ -360,10 +416,10 @@ static apr_status_t run_cgi_child(apr_file_t **script_out,
      * NB only ISINDEX scripts get decoded arguments.
      */
     if (((rc = apr_createprocattr_init(&procattr, p)) != APR_SUCCESS) ||
-        ((rc = apr_setprocattr_io(procattr, 
-                                 APR_CHILD_BLOCK, 
-                                 APR_CHILD_BLOCK,
-                                 APR_CHILD_BLOCK)) != APR_SUCCESS) ||
+        ((rc = apr_setprocattr_io(procattr,
+                                  e_info->in_pipe,
+                                  e_info->out_pipe,
+                                  e_info->err_pipe)) != APR_SUCCESS) ||
         ((rc = apr_setprocattr_dir(procattr, 
                                   ap_make_dirstr_parent(r->pool, r->filename))) != APR_SUCCESS) ||
 #ifdef RLIMIT_CPU
@@ -375,12 +431,17 @@ static apr_status_t run_cgi_child(apr_file_t **script_out,
 #ifdef RLIMIT_NPROC
         ((rc = apr_setprocattr_limit(procattr, APR_LIMIT_NPROC, conf->limit_nproc)) != APR_SUCCESS) ||
 #endif
-        ((rc = apr_setprocattr_cmdtype(procattr, APR_PROGRAM)) != APR_SUCCESS)) {
+        ((rc = apr_setprocattr_cmdtype(procattr, e_info->cmd_type)) != APR_SUCCESS)) {
         /* Something bad happened, tell the world. */
 	ap_log_rerror(APLOG_MARK, APLOG_ERR, rc, r,
 		      "couldn't set child process attributes: %s", r->filename);
     }
     else {
+        procnew = apr_pcalloc(p, sizeof(*procnew));
+        if (e_info->prog_type == RUN_AS_SSI) {
+            SPLIT_AND_PASS_PRETAG_BUCKETS(*(e_info->bb), e_info->ctx, e_info->next);
+        }
+
         rc = ap_os_create_privileged_process(r, procnew, command, argv, env, procattr, p);
     
         if (rc != APR_SUCCESS) {
@@ -394,20 +455,19 @@ static apr_status_t run_cgi_child(apr_file_t **script_out,
             *script_in = procnew->out;
             if (!script_in)
                 return APR_EBADF;
-            apr_set_pipe_timeout(*script_in, 
-                                 (int)(r->server->timeout * APR_USEC_PER_SEC));
+            apr_set_pipe_timeout(*script_in, (int)(r->server->timeout * APR_USEC_PER_SEC));
 
-            *script_out = procnew->in;
-            if (!*script_out)
-                return APR_EBADF;
-            apr_set_pipe_timeout(*script_out, 
-                                 (int)(r->server->timeout * APR_USEC_PER_SEC));
+            if (e_info->prog_type == RUN_AS_CGI) {
+                *script_out = procnew->in;
+                if (!*script_out)
+                    return APR_EBADF;
+                apr_set_pipe_timeout(*script_out, (int)(r->server->timeout * APR_USEC_PER_SEC));
 
-            *script_err = procnew->err;
-            if (!*script_err)
-                return APR_EBADF;
-            apr_set_pipe_timeout(*script_err, 
-                                 (int)(r->server->timeout * APR_USEC_PER_SEC));
+                *script_err = procnew->err;
+                if (!*script_err)
+                    return APR_EBADF;
+                apr_set_pipe_timeout(*script_err, (int)(r->server->timeout * APR_USEC_PER_SEC));
+            }
         }
     }
     return (rc);
@@ -516,6 +576,7 @@ static int cgi_handler(request_rec *r)
     apr_pool_t *p;
     cgi_server_conf *conf;
     apr_status_t rv;
+    exec_info e_info;
 
     if(strcmp(r->handler,CGI_MAGIC_TYPE) && strcmp(r->handler,"cgi-script"))
 	return DECLINED;
@@ -600,9 +661,18 @@ static int cgi_handler(request_rec *r)
     }
     argv[0] = apr_pstrdup(p, command);
 
+    e_info.cmd_type  = APR_PROGRAM;
+    e_info.in_pipe   = APR_CHILD_BLOCK;
+    e_info.out_pipe  = APR_CHILD_BLOCK;
+    e_info.err_pipe  = APR_CHILD_BLOCK;
+    e_info.prog_type = RUN_AS_CGI;
+    e_info.bb        = NULL;
+    e_info.ctx       = NULL;
+    e_info.next      = NULL;
+
     /* run the script in its own process */
     if ((rv = run_cgi_child(&script_out, &script_in, &script_err,
-                            command, argv, r, p)) != APR_SUCCESS) {
+                            command, argv, r, p, &e_info)) != APR_SUCCESS) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
                       "couldn't spawn child process: %s", r->filename);
         return HTTP_INTERNAL_SERVER_ERROR;
@@ -723,9 +793,204 @@ static int cgi_handler(request_rec *r)
     return OK;			/* NOT r->status, even if it has changed. */
 }
 
+/*============================================================================
+ *============================================================================
+ * This is the beginning of the cgi filter code moved from mod_include. This
+ *   is the code required to handle the "exec" SSI directive.
+ *============================================================================
+ *============================================================================*/
+static int include_cgi(char *s, request_rec *r, ap_filter_t *next,
+                       apr_bucket *head_ptr, apr_bucket **inserted_head)
+{
+    request_rec *rr = ap_sub_req_lookup_uri(s, r, next);
+    int rr_status;
+    apr_bucket  *tmp_buck, *tmp2_buck;
+
+    if (rr->status != HTTP_OK) {
+        return -1;
+    }
+
+    /* No hardwired path info or query allowed */
+
+    if ((rr->path_info && rr->path_info[0]) || rr->args) {
+        return -1;
+    }
+    if (rr->finfo.protection == 0) {
+        return -1;
+    }
+
+    /* Script gets parameters of the *document*, for back compatibility */
+
+    rr->path_info = r->path_info;       /* hard to get right; see mod_cgi.c */
+    rr->args = r->args;
+
+    /* Force sub_req to be treated as a CGI request, even if ordinary
+     * typing rules would have called it something else.
+     */
+
+    rr->content_type = CGI_MAGIC_TYPE;
+
+    /* Run it. */
+
+    rr_status = ap_run_sub_req(rr);
+    if (ap_is_HTTP_REDIRECT(rr_status)) {
+        apr_size_t len_loc, h_wrt;
+        const char *location = apr_table_get(rr->headers_out, "Location");
+
+        location = ap_escape_html(rr->pool, location);
+        len_loc = strlen(location);
+
+        tmp_buck = apr_bucket_create_immortal("<A HREF=\"", sizeof("<A HREF=\""));
+        APR_BUCKET_INSERT_BEFORE(head_ptr, tmp_buck);
+        tmp2_buck = apr_bucket_create_heap(location, len_loc, 1, &h_wrt);
+        APR_BUCKET_INSERT_BEFORE(head_ptr, tmp2_buck);
+        tmp2_buck = apr_bucket_create_immortal("\">", sizeof("\">"));
+        APR_BUCKET_INSERT_BEFORE(head_ptr, tmp2_buck);
+        tmp2_buck = apr_bucket_create_heap(location, len_loc, 1, &h_wrt);
+        APR_BUCKET_INSERT_BEFORE(head_ptr, tmp2_buck);
+        tmp2_buck = apr_bucket_create_immortal("</A>", sizeof("</A>"));
+        APR_BUCKET_INSERT_BEFORE(head_ptr, tmp2_buck);
+
+        if (*inserted_head == NULL) {
+            *inserted_head = tmp_buck;
+        }
+    }
+
+    ap_destroy_sub_req(rr);
+
+    return 0;
+}
+
+
+static int include_cmd(include_ctx_t *ctx, apr_bucket_brigade **bb, char *command,
+                       request_rec *r, ap_filter_t *f)
+{
+    exec_info      e_info;
+    const char   **argv;
+    apr_file_t    *script_out = NULL, *script_in = NULL, *script_err = NULL;
+    apr_bucket_brigade *bcgi;
+    apr_bucket *b;
+
+    if (build_argv_list(&argv, r, r->pool) != APR_SUCCESS) {
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, errno, r,
+                      "couldn't spawn cmd child process: %s", r->filename);
+        return HTTP_INTERNAL_SERVER_ERROR;
+    }
+    argv[0] = apr_pstrdup(r->pool, command);
+
+    e_info.cmd_type  = APR_SHELLCMD;
+    e_info.in_pipe   = APR_NO_PIPE;
+    e_info.out_pipe  = APR_FULL_BLOCK;
+    e_info.err_pipe  = APR_NO_PIPE;
+    e_info.prog_type = RUN_AS_SSI;
+    e_info.bb        = bb;
+    e_info.ctx       = ctx;
+    e_info.next      = f->next;
+
+    /* run the script in its own process */
+    if (run_cgi_child(&script_out, &script_in, &script_err,
+                      command, argv, r, r->pool, &e_info) != APR_SUCCESS) {
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, errno, r,
+                      "couldn't spawn child process: %s", r->filename);
+        return HTTP_INTERNAL_SERVER_ERROR;
+    }
+
+    bcgi = apr_brigade_create(r->pool);
+    b = apr_bucket_create_pipe(script_in);
+    APR_BRIGADE_INSERT_TAIL(bcgi, b);
+    ap_pass_brigade(f->next, bcgi);
+
+    /* We can't close the pipe here, because we may return before the
+     * full CGI has been sent to the network.  That's okay though,
+     * because we can rely on the pool to close the pipe for us.
+     */
+
+    return 0;
+}
+
+static int handle_exec(include_ctx_t *ctx, apr_bucket_brigade **bb, request_rec *r,
+                       ap_filter_t *f, apr_bucket *head_ptr, apr_bucket **inserted_head)
+{
+    char *tag     = NULL;
+    char *tag_val = NULL;
+    char *file = r->filename;
+    apr_bucket  *tmp_buck;
+    char parsed_string[MAX_STRING_LEN];
+
+    *inserted_head = NULL;
+    if (ctx->flags & FLAG_PRINTING) {
+        if (ctx->flags & FLAG_NO_EXEC) {
+            ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
+                      "exec used but not allowed in %s", r->filename);
+            CREATE_ERROR_BUCKET(ctx, tmp_buck, head_ptr, *inserted_head);
+        }
+        else {
+            while (1) {
+                cgi_pfn_gtv(ctx, &tag, &tag_val, 1);
+                if (tag_val == NULL) {
+                    if (tag == NULL) {
+                        return (0);
+                    }
+                    else {
+                        return 1;
+                    }
+                }
+                if (!strcmp(tag, "cmd")) {
+                    cgi_pfn_ps(r, tag_val, parsed_string, sizeof(parsed_string), 1);
+                    if (include_cmd(ctx, bb, parsed_string, r, f) == -1) {
+                        ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
+                                    "execution failure for parameter \"%s\" "
+                                    "to tag exec in file %s", tag, r->filename);
+                        CREATE_ERROR_BUCKET(ctx, tmp_buck, head_ptr, *inserted_head);
+                    }
+                }
+                else if (!strcmp(tag, "cgi")) {
+                    cgi_pfn_ps(r, tag_val, parsed_string, sizeof(parsed_string), 0);
+                    SPLIT_AND_PASS_PRETAG_BUCKETS(*bb, ctx, f->next);
+                    if (include_cgi(parsed_string, r, f->next, head_ptr, inserted_head) == -1) {
+                        ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
+                                    "invalid CGI ref \"%s\" in %s", tag_val, file);
+                        CREATE_ERROR_BUCKET(ctx, tmp_buck, head_ptr, *inserted_head);
+                    }
+                }
+                else {
+                    ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
+                                "unknown parameter \"%s\" to tag exec in %s", tag, file);
+                    CREATE_ERROR_BUCKET(ctx, tmp_buck, head_ptr, *inserted_head);
+                }
+            }
+        }
+    }
+    return 0;
+}
+
+
+/*============================================================================
+ *============================================================================
+ * This is the end of the cgi filter code moved from mod_include.
+ *============================================================================
+ *============================================================================*/
+
+
+static void cgi_post_config(apr_pool_t *p, apr_pool_t *plog,
+                                apr_pool_t *ptemp, server_rec *s)
+{
+    cgi_pfn_reg_with_ssi = APR_RETRIEVE_OPTIONAL_FN(ap_register_include_handler);
+    cgi_pfn_gtv          = APR_RETRIEVE_OPTIONAL_FN(ap_ssi_get_tag_and_value);
+    cgi_pfn_ps           = APR_RETRIEVE_OPTIONAL_FN(ap_ssi_parse_string);
+
+    if ((cgi_pfn_reg_with_ssi) && (cgi_pfn_gtv) && (cgi_pfn_ps)) {
+        /* Required by mod_include filter. This is how mod_cgi registers
+         *   with mod_include to provide processing of the exec directive.
+         */
+        cgi_pfn_reg_with_ssi("exec", handle_exec);
+    }
+}
+
 static void register_hooks(apr_pool_t *p)
 {
     ap_hook_handler(cgi_handler, NULL, NULL, APR_HOOK_MIDDLE);
+    ap_hook_post_config(cgi_post_config, NULL, NULL, APR_HOOK_REALLY_FIRST);
 }
 
 module AP_MODULE_DECLARE_DATA cgi_module =
