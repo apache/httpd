@@ -43,8 +43,8 @@
 
     <h3><a id="what" name="what">What is suEXEC?</a></h3>
 
-    <p align="LEFT">The <strong>suEXEC</strong> feature --
-    introduced in Apache 1.2 -- provides Apache users the ability
+    <p align="LEFT">The <strong>suEXEC</strong> feature provides
+    Apache users the ability
     to run <strong>CGI</strong> and <strong>SSI</strong> programs
     under user IDs different from the user ID of the calling
     web-server. Normally, when a CGI or SSI program executes, it
@@ -367,15 +367,9 @@
     <h3><a id="install" name="install">Configuring &amp; Installing
     suEXEC</a></h3>
 
-    <p align="LEFT">Here's where we begin the fun. If you use
-    Apache 1.2 or prefer to configure Apache 1.3 with the
-    "<code>src/Configure</code>" script you have to edit the suEXEC
-    header file and install the binary in its proper location
-    manually. The following sections describe the configuration and
-    installation for Apache 1.3 with the AutoConf-style interface
-    (APACI).</p>
+    <p align="LEFT">Here's where we begin the fun.</p>
 
-    <p align="LEFT"><strong>APACI's suEXEC configuration
+    <p align="LEFT"><strong>suEXEC configuration
     options</strong><br />
     </p>
 
@@ -530,14 +524,14 @@
 
     <p align="LEFT"><strong>Virtual Hosts:</strong><br />
      One way to use the suEXEC wrapper is through the <a
-    href="mod/mpm_common.html#user">User</a> and <a
-    href="mod/mpm_common.html#group">Group</a> directives in <a
+    href="mod/mod_suexec.html#suexecusergroup">SuexecUserGroup</a>
+    directive in <a
     href="mod/core.html#virtualhost">VirtualHost</a> definitions.
-    By setting these directives to values different from the main
+    By setting this directive to values different from the main
     server user ID, all requests for CGI resources will be executed
     as the <em>User</em> and <em>Group</em> defined for that
-    <code>&lt;VirtualHost&gt;</code>. If only one or neither of
-    these directives are specified for a
+    <code>&lt;VirtualHost&gt;</code>. If this directive is not
+    specified for a
     <code>&lt;VirtualHost&gt;</code> then the main server userid is
     assumed.</p>
 
