@@ -183,7 +183,8 @@ DAV_DECLARE(void) dav_buffer_place_mem(apr_pool_t *p, dav_buffer *pbuf,
 ** If NULL is returned, then an error occurred with parsing the URI or
 ** the URI does not match the current server.
 */
-dav_lookup_result dav_lookup_uri(const char *uri, request_rec * r)
+dav_lookup_result dav_lookup_uri(const char *uri, request_rec * r,
+                                 int must_be_absolute)
 {
     dav_lookup_result result = { 0 };
     const char *scheme;
@@ -200,44 +201,57 @@ dav_lookup_result dav_lookup_uri(const char *uri, request_rec * r)
     }
 
     /* the URI must be an absoluteURI (WEBDAV S9.3) */
-    if (comp.scheme == NULL) {
+    if (comp.scheme == NULL && must_be_absolute) {
 	result.err.status = HTTP_BAD_REQUEST;
 	result.err.desc = "Destination URI must be an absolute URI.";
 	return result;
     }
 
-    /* ### not sure this works if the current request came in via https: */
-    scheme = r->parsed_uri.scheme;
-    if (scheme == NULL)
-	scheme = ap_http_method(r);
-
-    /* insert a port if the URI did not contain one */
-    if (comp.port == 0)
-        comp.port = ap_default_port_for_scheme(comp.scheme);
-
-    /* now, verify that the URI uses the same scheme as the current request.
-       the port, must match our port.
-       the URI must not have a query (args) or a fragment
-     */
-    apr_sockaddr_port_get(&port, r->connection->local_addr);
-    if (strcasecmp(comp.scheme, scheme) != 0 ||
-	comp.port != port) {
-	result.err.status = HTTP_BAD_GATEWAY;
-	result.err.desc = apr_psprintf(r->pool,
-				      "Destination URI refers to different "
-				      "scheme or port (%s://hostname:%d)" 
-                                      APR_EOL_STR "(want: %s://hostname:%d)",
-				      comp.scheme ? comp.scheme : scheme,
-				      comp.port ? comp.port : port,
-				      scheme, port);
-	return result;
-    }
+    /* the URI must not have a query (args) or a fragment */
     if (comp.query != NULL || comp.fragment != NULL) {
 	result.err.status = HTTP_BAD_REQUEST;
 	result.err.desc =
 	    "Destination URI contains invalid components "
 	    "(a query or a fragment).";
 	return result;
+    }
+
+    /* If the scheme or port was provided, then make sure that it matches
+       the scheme/port of this request. If the request must be absolute,
+       then require the (explicit/implicit) scheme/port be matching.
+
+       ### hmm. if a port wasn't provided (does the parse return port==0?),
+       ### but we're on a non-standard port, then we won't detect that the
+       ### URI's port implies the wrong one.
+    */
+    if (comp.scheme != NULL || comp.port != 0 || must_be_absolute)
+    {
+        /* ### not sure this works if the current request came in via https: */
+        scheme = r->parsed_uri.scheme;
+        if (scheme == NULL)
+            scheme = ap_http_method(r);
+
+        /* insert a port if the URI did not contain one */
+        if (comp.port == 0)
+            comp.port = ap_default_port_for_scheme(comp.scheme);
+
+        /* now, verify that the URI uses the same scheme as the current.
+           request. the port must match our port.
+        */
+        apr_sockaddr_port_get(&port, r->connection->local_addr);
+        if (strcasecmp(comp.scheme, scheme) != 0 ||
+            comp.port != port) {
+            result.err.status = HTTP_BAD_GATEWAY;
+            result.err.desc = apr_psprintf(r->pool,
+                                           "Destination URI refers to "
+                                           "different scheme or port "
+                                           "(%s://hostname:%d)" APR_EOL_STR
+                                           "(want: %s://hostname:%d)",
+                                           comp.scheme ? comp.scheme : scheme,
+                                           comp.port ? comp.port : port,
+                                           scheme, port);
+            return result;
+        }
     }
 
     /* we have verified the scheme, port, and general structure */
@@ -254,8 +268,9 @@ dav_lookup_result dav_lookup_uri(const char *uri, request_rec * r)
     ** ### maybe the admin should list the unqualified hosts in a
     ** ### <ServerAlias> block?
     */
-    if (strrchr(comp.hostname, '.') == NULL &&
-	(domain = strchr(r->server->server_hostname, '.')) != NULL) {
+    if (comp.hostname != NULL
+        && strrchr(comp.hostname, '.') == NULL
+	&& (domain = strchr(r->server->server_hostname, '.')) != NULL) {
 	comp.hostname = apr_pstrcat(r->pool, comp.hostname, domain, NULL);
     }
 

@@ -491,7 +491,8 @@ typedef struct
 } dav_lookup_result;
 
 
-dav_lookup_result dav_lookup_uri(const char *uri, request_rec *r);
+dav_lookup_result dav_lookup_uri(const char *uri, request_rec *r,
+                                 int must_be_absolute);
 
 /* defines type of property info a provider is to return */
 typedef enum {

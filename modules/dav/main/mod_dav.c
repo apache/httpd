@@ -2522,7 +2522,7 @@ static int dav_method_copymove(request_rec *r, int is_move)
 	return HTTP_BAD_REQUEST;
     }
 
-    lookup = dav_lookup_uri(dest, r);
+    lookup = dav_lookup_uri(dest, r, 1 /* must_be_absolute */);
     if (lookup.rnew == NULL) {
 	if (lookup.err.status == HTTP_BAD_REQUEST) {
 	    /* This supplies additional information for the default message. */
@@ -3686,7 +3686,7 @@ static int dav_method_update(request_rec *r)
     /* if target is a version, resolve the version resource */
     /* ### dav_lookup_uri only allows absolute URIs; is that OK? */
     if (!is_label) {
-        lookup = dav_lookup_uri(target, r);
+        lookup = dav_lookup_uri(target, r, 0 /* must_be_absolute */);
         if (lookup.rnew == NULL) {
 	    if (lookup.err.status == HTTP_BAD_REQUEST) {
 	        /* This supplies additional information for the default message. */
@@ -4156,7 +4156,7 @@ static int dav_method_merge(request_rec *r)
 
     /* get a subrequest for the source, so that we can get a dav_resource
        for that source. */
-    lookup = dav_lookup_uri(source, r);
+    lookup = dav_lookup_uri(source, r, 0 /* must_be_absolute */);
     if (lookup.rnew == NULL) {
         if (lookup.err.status == HTTP_BAD_REQUEST) {
 	    /* This supplies additional information for the default message. */
@@ -4278,7 +4278,7 @@ static int dav_method_bind(request_rec *r)
 	return HTTP_BAD_REQUEST;
     }
 
-    lookup = dav_lookup_uri(dest, r);
+    lookup = dav_lookup_uri(dest, r, 0 /* must_be_absolute */);
     if (lookup.rnew == NULL) {
 	if (lookup.err.status == HTTP_BAD_REQUEST) {
 	    /* This supplies additional information for the default message. */
