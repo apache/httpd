@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/04/16 08:55:49 $]
+Last modified at [$Date: 2003/04/16 13:04:40 $]
 
 Release:
 
@@ -68,6 +68,14 @@ RELEASE SHOWSTOPPERS:
 PATCHES TO PORT FROM 2.1
   [ please place file names and revisions from HEAD here, so it is easy to
     identify exactly what the proposed changes are! ]
+
+    * Enable ap_sock_disable_nagle for Windows (and consequently disable Nagle).
+      We need to backport this to 2.0 because the change to apr.hw head at 1.114 
+      opens up the dependency on ap_sock_disable_nagle and without this the 2.0 
+      branch won't build for Windows.
+      CHANGES 1.1145 
+      server/mpm_common.c 1.107
+      +1: ake
 
     * AllowEncodedSlashes patch to permit %2f in path-info.
       CHANGES r1.1038
