@@ -337,7 +337,7 @@ static int my_child_num;
 scoreboard *ap_scoreboard_image = NULL;
 
 /*
- * Pieces for managing the contents of the Server-Version response header
+ * Pieces for managing the contents of the Server response header
  * field.
  */
 static char *server_version = NULL;
