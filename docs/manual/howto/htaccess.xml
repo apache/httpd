@@ -17,7 +17,7 @@ changes on a per-directory basis.</p>
             <module>core</module>
             <module>mod_auth</module>
             <module>mod_cgi</module>
-            <module>mod_includes</module>
+            <module>mod_include</module>
             <module>mod_mime</module>
         </modulelist>
 
