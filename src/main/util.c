@@ -1170,7 +1170,7 @@ unsigned long get_virthost_addr (const char *w, short int *ports) {
 #else
     my_addr = inet_addr(w);
 #endif
-    if (my_addr != (~0ul))
+    if (my_addr != INADDR_NONE)
     {
 	if (p != NULL) *p = ':';
 	return my_addr;

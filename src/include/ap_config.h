@@ -457,6 +457,10 @@ int setrlimit( int, struct rlimit *);
 #define S_ISLNK(m) (((m) & S_IFMT) == S_IFLNK)
 #endif
 
+#ifndef INADDR_NONE
+#define INADDR_NONE ((unsigned long) -1)
+#endif
+
 /* Finding offsets of elements within structures.
  * Taken from the X code... they've sweated portability of this stuff
  * so we don't have to.  Sigh...
