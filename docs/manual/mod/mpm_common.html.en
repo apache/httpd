@@ -272,7 +272,7 @@ the child processes</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.htm
     system may become unstable.</p>
 
     <p>With the <code><a href="prefork.html">prefork</a></code> MPM, use this directive only
-    if you need to set <a href="#maxclients" class="directive"><code class="directive">MaxClients</code></a> higher higher than 256.
+    if you need to set <a href="#maxclients" class="directive"><code class="directive">MaxClients</code></a> higher than 256.
     Do not set the value of this directive any higher than what you
     might want to set <a href="#maxclients" class="directive"><code class="directive">MaxClients</code></a> to.</p>
 
@@ -323,7 +323,7 @@ per child process</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#
 <hr/><h2><a name="ThreadsPerChild">ThreadsPerChild</a> <a name="threadsperchild">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: </strong></td><td>Number of threads created by each child process</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td>ThreadsPerChild <em>number</em></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Default" class="help">Default:</a></td><td><code>ThreadsPerChild 50</code></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Status" class="help">Status:</a></td><td>MPM</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Module" class="help">Module:</a></td><td><code><a href="worker.html">worker</a></code>, <code><a href="mpm_winnt.html">mpm_winnt</a></code></td></tr></table></td></tr></table>
     <p>This directive sets the number of threads created by each
     child process. The child creates these threads at startup and
-    never creates more. if using an MPM like mpmt_winnt, where
+    never creates more. If using an MPM like mpmt_winnt, where
     there is only one child process, this number should be high
     enough to handle the entire load of the server. If using an MPM
     like worker, where there are multiple child processes, the
