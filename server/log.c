@@ -673,7 +673,6 @@ static apr_status_t piped_log_cleanup(void *data)
     if (pl->pid != NULL) {
 	apr_proc_kill(pl->pid, SIGTERM);
     }
-    apr_proc_other_child_unregister(pl);
     apr_file_close(ap_piped_log_read_fd(pl));
     apr_file_close(ap_piped_log_write_fd(pl));
     return APR_SUCCESS;
