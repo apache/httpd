@@ -429,7 +429,7 @@ int ap_update_child_status(int child_num, int status, request_rec *r)
 void ap_time_process_request(int child_num, int status)
 {
     short_score *ss;
-#if !defined(HAVE_GETTIMEOFDAY) && !defined(NO_TIMES)
+#if !defined(HAVE_GETTIMEOFDAY) && defined(HAVE_TIMES)
     struct tms tms_blk;
 #endif
 
@@ -440,9 +440,9 @@ void ap_time_process_request(int child_num, int status)
 
     if (status == START_PREQUEST) {
 #if !defined(HAVE_GETTIMEOFDAY)
-#ifndef NO_TIMES
+#ifdef HAVE_TIMES
 	if ((ss->start_time = times(&tms_blk)) == -1)
-#endif /* NO_TIMES */
+#endif /* HAVE_TIMES */
 	    ss->start_time = (clock_t) 0;
 #else
 	if (gettimeofday(&ss->start_time, (struct timezone *) 0) < 0)
@@ -452,7 +452,7 @@ void ap_time_process_request(int child_num, int status)
     }
     else if (status == STOP_PREQUEST) {
 #if !defined(HAVE_GETTIMEOFDAY)
-#ifndef NO_TIMES
+#ifdef HAVE_TIMES
 	if ((ss->stop_time = times(&tms_blk)) == -1)
 #endif
 	    ss->stop_time = ss->start_time = (clock_t) 0;
@@ -478,7 +478,7 @@ static void increment_counts(int child_num, request_rec *r)
     if (r->sent_bodyct)
 	ap_bgetopt(r->connection->client, BO_BYTECT, &bs);
 
-#ifndef NO_TIMES
+#ifdef HAVE_TIMES
     times(&ss->times);
 #endif
     ss->access_count++;

@@ -62,7 +62,9 @@
 extern "C" {
 #endif
 
+#ifdef HAVE_SYS_TIMES_H
 #include <sys/times.h>
+#endif
 
 /* Scoreboard info on a thread is, for now, kept very brief --- 
  * just status value and pid (the latter so that the caretaker thread
@@ -143,7 +145,7 @@ typedef struct {
     struct timeval start_time;
     struct timeval stop_time;
 #endif
-#ifndef NO_TIMES
+#ifdef HAVE_TIMES
     struct tms times;
 #endif
 #ifndef OPTIMIZE_TIMEOUTS

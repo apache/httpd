@@ -560,7 +560,7 @@ void increment_counts(int child_num, int thread_num, request_rec *r)
     if (r->sent_bodyct)
 	ap_bgetopt(r->connection->client, BO_BYTECT, &bs);
 
-#ifndef NO_TIMES
+#ifdef HAVE_TIMES
     times(&ss->times);
 #endif
     ss->access_count++;

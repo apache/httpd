@@ -99,7 +99,7 @@
 #define CASE_BLIND_FILESYSTEM
 #define NO_WRITEV
 #define NO_USE_SIGACTION
-#define NO_TIMES
+/* #undef HAVE_TIMES */
 /* #undef HAVE_GETTIMEOFDAY */
 #define USE_LONGJMP
 #define HAVE_MMAP

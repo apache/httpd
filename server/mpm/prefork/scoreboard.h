@@ -70,6 +70,10 @@ extern "C" {
 #endif /* TPF */
 #endif
 
+#ifdef HAVE_SYS_TIMES_H
+#include <sys/times.h>
+#endif
+
 /* Scoreboard info on a process is, for now, kept very brief --- 
  * just status value and pid (the latter so that the caretaker process
  * can properly update the scoreboard when a process dies).  We may want
@@ -149,7 +153,7 @@ typedef struct {
     struct timeval start_time;
     struct timeval stop_time;
 #endif
-#ifndef NO_TIMES
+#ifdef HAVE_TIMES
     struct tms times;
 #endif
 #ifndef OPTIMIZE_TIMEOUTS

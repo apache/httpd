@@ -1401,6 +1401,11 @@ long vfprintf(FILE *, const char *, va_list);
 #define HAVE_SETSID
 #endif
 
+#if !defined(NO_TIMES) && !defined(HAVE_TIMES)
+#define HAVE_TIMES
+#define HAVE_SYS_TIMES_H
+#endif
+
 #endif /* HAVE_CONFIG_H */
 
 /* The assumption is that when the functions are missing,
