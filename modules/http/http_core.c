@@ -2521,7 +2521,7 @@ static int default_handler(request_rec *r)
         return FORBIDDEN;
     }
     else
-       ap_get_os_file (fd, &fd_os);
+       ap_get_os_file(&fd_os, fd);
 	
     ap_update_mtime(r, r->finfo.st_mtime);
     ap_set_last_modified(r);

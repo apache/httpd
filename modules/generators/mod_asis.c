@@ -86,7 +86,7 @@ static int asis_handler(request_rec *r)
 	return FORBIDDEN;
     }
 
-    ap_get_os_file(f, &thefd); 
+    ap_get_os_file(&thefd, f); 
     thefile = fdopen(thefd, "r");
     
     ap_scan_script_header_err(r, thefile, NULL);

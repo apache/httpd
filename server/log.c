@@ -258,7 +258,7 @@ void ap_open_logs(server_rec *s_main, ap_context_t *p)
     if (s_main->error_log) {
 	/* replace stderr with this new log */
 	fflush(stderr);
-        ap_get_os_file(s_main->error_log, &errfile);
+        ap_get_os_file(&errfile, s_main->error_log);
 	if (dup2(errfile, STDERR_FILENO) == -1) {
 	    ap_log_error(APLOG_MARK, APLOG_CRIT, s_main,
 		"unable to replace stderr with error_log");
@@ -295,7 +295,7 @@ void ap_open_logs(server_rec *s_main, ap_context_t *p)
 API_EXPORT(void) ap_error_log2stderr(server_rec *s) {
     int errfile;
 
-    ap_get_os_file(s->error_log, &errfile);
+    ap_get_os_file(&errfile, s->error_log);
     if (   s->error_log != NULL
         && errfile != STDERR_FILENO)
         dup2(errfile, STDERR_FILENO);
@@ -458,8 +458,8 @@ static void log_error_core(const char *file, int line, int level,
     if (logf) {
       /* ZZZ let's just use AP funcs to Write to the error log.  If failure,
 	 can we output a message to the console??? */
-	ap_puts(logf, errstr);
-	ap_putc(logf, '\n');
+	ap_puts(errstr, logf);
+	ap_putc('\n', logf);
 	ap_flush(logf);
     }
 #ifdef HAVE_SYSLOG
