@@ -90,7 +90,7 @@ tmpfile2=$tmpfile.2
 tmpfile3=$tmpfile.3
 awkfile=$tmpfile.4
 tmpconfig=$tmpfile.5
-SUBDIRS='$(OSDIR) ap main modules' 
+SUBDIRS="ap main modules"
 
 ####################################################################
 ## Now handle any arguments, which, for now, is -file
@@ -702,6 +702,7 @@ esac
 ## Show user what OS we came up with
 ##
 echo " + configured for $OS platform"
+SUBDIRS="$OSDIR $SUBDIRS"
 
 ####################################################################
 ## And adjust/override WANTHSREGEX as needed
@@ -1072,7 +1073,7 @@ case "$OS" in
 	;;
     'SCO 5')
 	case "$CC" in
-	    */cc|cc ) OSBPRINTF="-K noinline" ;;
+	    */cc|cc ) CFLAGS="$CFLAGS -K noinline" ;;
 	esac
 	;;
     'HI-UX')
@@ -1523,6 +1524,7 @@ echo "" >>Makefile
 ## Now add the target for the main Makefile
 ##
 echo "TARGET=$TARGET" >> Makefile
+echo "SUBDIRS=$SUBDIRS" >> Makefile
 echo "SUBTARGET=$SUBTARGET" >> Makefile
 echo "SHLIB_SUFFIX_LIST=$SHLIB_SUFFIX_LIST" >> Makefile
 echo "" >> Makefile
@@ -1550,18 +1552,16 @@ fi
 ## Continue building Makefile.config.
 ##
 echo "CFLAGS1=$CFLAGS">> Makefile.config
+echo "OSDIR=\$(SRCDIR)/$OSDIR">> Makefile.config
 echo "INCDIR=\$(SRCDIR)/include" >>Makefile.config
-echo "INCLUDES0=-I\$(SRCDIR)/$OSDIR -I\$(SRCDIR)/include">> Makefile.config
+echo "INCLUDES0=-I\$(OSDIR) -I\$(INCDIR)">> Makefile.config
 echo "INCLUDES1=$INCLUDES">> Makefile.config
 echo "LIBS1=$LIBS">> Makefile.config
 echo "LDFLAGS1=$LDFLAGS">> Makefile.config
-echo "BROKEN_BPRINTF_FLAGS=$OSBPRINTF">> Makefile.config
 echo "MFLAGS_STATIC=$MFLAGS_STATIC">> Makefile.config
 echo "REGLIB=$REGLIB">> Makefile.config
 echo "RANLIB=$RANLIB">> Makefile.config
 echo "SHELL=$SHELL">> Makefile.config
-echo "OSDIR=$OSDIR">> Makefile.config
-echo "SUBDIRS=$SUBDIRS">> Makefile.config
 echo "##" >> Makefile.config
 echo "##  (End of automatically generated section)">> Makefile.config
 echo "##" >> Makefile.config

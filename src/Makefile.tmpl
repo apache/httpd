@@ -94,7 +94,8 @@ depend:
 	cp Makefile.tmpl Makefile.tmpl.bak \
 	    && sed -ne '1,/^# DO NOT REMOVE/p' Makefile.tmpl > Makefile.new \
 	    && gcc -MM $(INCLUDES) $(CFLAGS) *.c >> Makefile.new \
-	    && sed -e '1,$$s: $(INCDIR)/: $$(INCDIR)/:g' Makefile.new \
+	    && sed -e '1,$$s: $(INCDIR)/: $$(INCDIR)/:g' \
+	           -e '1,$$s: $(OSDIR)/: $$(OSDIR)/:g' Makefile.new \
 		> Makefile.tmpl \
 	    && rm Makefile.new
 	for i in $(SUBDIRS); do \
@@ -106,9 +107,8 @@ depend:
 $(OBJS): Makefile
 
 # DO NOT REMOVE
-buildmark.o: buildmark.c include/conf.h os/unix/os.h include/hsregex.h \
- include/httpd.h include/alloc.h include/buff.h include/ap.h \
- include/util_uri.h
+buildmark.o: buildmark.c include/conf.h os/unix/os.h include/httpd.h \
+ include/alloc.h include/buff.h include/ap.h include/util_uri.h
 modules.o: modules.c include/httpd.h include/conf.h os/unix/os.h \
- include/hsregex.h include/alloc.h include/buff.h include/ap.h \
- include/util_uri.h include/http_config.h
+ include/alloc.h include/buff.h include/ap.h include/util_uri.h \
+ include/http_config.h

@@ -1,4 +1,15 @@
 Changes with Apache 1.3b7
+ 
+  *) Various Makefile consistency cleanups:
+     - make OSDIR also automatically be relative to src/ like INCDIR
+     - SUBDIRS is now generated in src/Makefile only and not in
+       Makefile.config because it is a local define for this location.
+     - remove BROKEN_BPRINTF_FLAGS because is it no longer used inside
+       any Makefile but make sure that at least the "-K inline" is kept in
+       CFLAGS for SCO 5.
+     - update the "depend" targets in Makefile.tmpl files to use $(OSDIR), too.
+     - updated the dependencies theirself
+     [Ralf S. Engelschall]
 
   *) WIN32: Make Win32 work again after the /dev/null DoS fix.
      [Ben Laurie]

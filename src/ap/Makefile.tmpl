@@ -33,27 +33,27 @@ depend:
 	cp Makefile.tmpl Makefile.tmpl.bak \
 	    && sed -ne '1,/^# DO NOT REMOVE/p' Makefile.tmpl > Makefile.new \
 	    && gcc -MM $(INCLUDES) $(CFLAGS) *.c >> Makefile.new \
-	    && sed -e '1,$$s: $(INCDIR)/: $$(INCDIR)/:g' Makefile.new \
+	    && sed -e '1,$$s: $(INCDIR)/: $$(INCDIR)/:g' \
+	           -e '1,$$s: $(OSDIR)/: $$(OSDIR)/:g' Makefile.new \
 		> Makefile.tmpl \
 	    && rm Makefile.new
 
 # DO NOT REMOVE
 ap_cpystrn.o: ap_cpystrn.c $(INCDIR)/httpd.h $(INCDIR)/conf.h \
- ../os/unix/os.h $(INCDIR)/hsregex.h $(INCDIR)/alloc.h \
- $(INCDIR)/buff.h $(INCDIR)/ap.h $(INCDIR)/util_uri.h
+ $(OSDIR)/os.h $(INCDIR)/alloc.h $(INCDIR)/buff.h $(INCDIR)/ap.h \
+ $(INCDIR)/util_uri.h
 ap_execve.o: ap_execve.c $(INCDIR)/httpd.h $(INCDIR)/conf.h \
- ../os/unix/os.h $(INCDIR)/hsregex.h $(INCDIR)/alloc.h \
- $(INCDIR)/buff.h $(INCDIR)/ap.h $(INCDIR)/util_uri.h
+ $(OSDIR)/os.h $(INCDIR)/alloc.h $(INCDIR)/buff.h $(INCDIR)/ap.h \
+ $(INCDIR)/util_uri.h
 ap_signal.o: ap_signal.c $(INCDIR)/httpd.h $(INCDIR)/conf.h \
- ../os/unix/os.h $(INCDIR)/hsregex.h $(INCDIR)/alloc.h \
- $(INCDIR)/buff.h $(INCDIR)/ap.h $(INCDIR)/util_uri.h
+ $(OSDIR)/os.h $(INCDIR)/alloc.h $(INCDIR)/buff.h $(INCDIR)/ap.h \
+ $(INCDIR)/util_uri.h
 ap_slack.o: ap_slack.c $(INCDIR)/httpd.h $(INCDIR)/conf.h \
- ../os/unix/os.h $(INCDIR)/hsregex.h $(INCDIR)/alloc.h \
- $(INCDIR)/buff.h $(INCDIR)/ap.h $(INCDIR)/util_uri.h \
- $(INCDIR)/http_log.h
+ $(OSDIR)/os.h $(INCDIR)/alloc.h $(INCDIR)/buff.h $(INCDIR)/ap.h \
+ $(INCDIR)/util_uri.h $(INCDIR)/http_log.h
 ap_snprintf.o: ap_snprintf.c $(INCDIR)/httpd.h $(INCDIR)/conf.h \
- ../os/unix/os.h $(INCDIR)/hsregex.h $(INCDIR)/alloc.h \
- $(INCDIR)/buff.h $(INCDIR)/ap.h $(INCDIR)/util_uri.h
+ $(OSDIR)/os.h $(INCDIR)/alloc.h $(INCDIR)/buff.h $(INCDIR)/ap.h \
+ $(INCDIR)/util_uri.h
 ap_strings.o: ap_strings.c $(INCDIR)/httpd.h $(INCDIR)/conf.h \
- ../os/unix/os.h $(INCDIR)/hsregex.h $(INCDIR)/alloc.h \
- $(INCDIR)/buff.h $(INCDIR)/ap.h $(INCDIR)/util_uri.h
+ $(OSDIR)/os.h $(INCDIR)/alloc.h $(INCDIR)/buff.h $(INCDIR)/ap.h \
+ $(INCDIR)/util_uri.h

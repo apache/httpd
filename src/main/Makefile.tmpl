@@ -51,7 +51,8 @@ depend:
 	cp Makefile.tmpl Makefile.tmpl.bak \
 	    && sed -ne '1,/^# DO NOT REMOVE/p' Makefile.tmpl > Makefile.new \
 	    && gcc -MM $(INCLUDES) $(CFLAGS) *.c >> Makefile.new \
-	    && sed -e '1,$$s: $(INCDIR)/: $$(INCDIR)/:g' Makefile.new \
+	    && sed -e '1,$$s: $(INCDIR)/: $$(INCDIR)/:g' \
+	           -e '1,$$s: $(OSDIR)/: $$(OSDIR)/:g' Makefile.new \
 		> Makefile.tmpl \
 	    && rm Makefile.new
 
@@ -60,94 +61,84 @@ depend:
 $(OBJS): Makefile
 
 # DO NOT REMOVE
-alloc.o: alloc.c $(INCDIR)/httpd.h $(INCDIR)/conf.h ../os/unix/os.h \
- $(INCDIR)/hsregex.h $(INCDIR)/alloc.h $(INCDIR)/buff.h \
- $(INCDIR)/ap.h $(INCDIR)/util_uri.h $(INCDIR)/multithread.h \
- $(INCDIR)/http_log.h
-buff.o: buff.c $(INCDIR)/httpd.h $(INCDIR)/conf.h ../os/unix/os.h \
- $(INCDIR)/hsregex.h $(INCDIR)/alloc.h $(INCDIR)/buff.h \
- $(INCDIR)/ap.h $(INCDIR)/util_uri.h $(INCDIR)/http_main.h \
- $(INCDIR)/http_log.h
-fnmatch.o: fnmatch.c $(INCDIR)/conf.h ../os/unix/os.h \
- $(INCDIR)/hsregex.h $(INCDIR)/fnmatch.h
+alloc.o: alloc.c $(INCDIR)/httpd.h $(INCDIR)/conf.h $(OSDIR)/os.h \
+ $(INCDIR)/alloc.h $(INCDIR)/buff.h $(INCDIR)/ap.h \
+ $(INCDIR)/util_uri.h $(INCDIR)/multithread.h $(INCDIR)/http_log.h
+buff.o: buff.c $(INCDIR)/httpd.h $(INCDIR)/conf.h $(OSDIR)/os.h \
+ $(INCDIR)/alloc.h $(INCDIR)/buff.h $(INCDIR)/ap.h \
+ $(INCDIR)/util_uri.h $(INCDIR)/http_main.h $(INCDIR)/http_log.h
+fnmatch.o: fnmatch.c $(INCDIR)/conf.h $(OSDIR)/os.h \
+ $(INCDIR)/fnmatch.h
 gen_test_char.o: gen_test_char.c $(INCDIR)/httpd.h $(INCDIR)/conf.h \
- ../os/unix/os.h $(INCDIR)/hsregex.h $(INCDIR)/alloc.h \
- $(INCDIR)/buff.h $(INCDIR)/ap.h $(INCDIR)/util_uri.h
+ $(OSDIR)/os.h $(INCDIR)/alloc.h $(INCDIR)/buff.h $(INCDIR)/ap.h \
+ $(INCDIR)/util_uri.h
 gen_uri_delims.o: gen_uri_delims.c
 http_config.o: http_config.c $(INCDIR)/httpd.h $(INCDIR)/conf.h \
- ../os/unix/os.h $(INCDIR)/hsregex.h $(INCDIR)/alloc.h \
- $(INCDIR)/buff.h $(INCDIR)/ap.h $(INCDIR)/util_uri.h \
- $(INCDIR)/http_config.h $(INCDIR)/http_core.h $(INCDIR)/http_log.h \
- $(INCDIR)/http_request.h $(INCDIR)/http_conf_globals.h \
- $(INCDIR)/http_vhost.h $(INCDIR)/explain.h
+ $(OSDIR)/os.h $(INCDIR)/alloc.h $(INCDIR)/buff.h $(INCDIR)/ap.h \
+ $(INCDIR)/util_uri.h $(INCDIR)/http_config.h $(INCDIR)/http_core.h \
+ $(INCDIR)/http_log.h $(INCDIR)/http_request.h \
+ $(INCDIR)/http_conf_globals.h $(INCDIR)/http_vhost.h \
+ $(INCDIR)/explain.h
 http_core.o: http_core.c $(INCDIR)/httpd.h $(INCDIR)/conf.h \
- ../os/unix/os.h $(INCDIR)/hsregex.h $(INCDIR)/alloc.h \
- $(INCDIR)/buff.h $(INCDIR)/ap.h $(INCDIR)/util_uri.h \
- $(INCDIR)/http_config.h $(INCDIR)/http_core.h \
+ $(OSDIR)/os.h $(INCDIR)/alloc.h $(INCDIR)/buff.h $(INCDIR)/ap.h \
+ $(INCDIR)/util_uri.h $(INCDIR)/http_config.h $(INCDIR)/http_core.h \
  $(INCDIR)/http_protocol.h $(INCDIR)/http_request.h \
  $(INCDIR)/http_conf_globals.h $(INCDIR)/http_vhost.h \
  $(INCDIR)/http_main.h $(INCDIR)/http_log.h $(INCDIR)/rfc1413.h \
  $(INCDIR)/util_md5.h $(INCDIR)/md5.h $(INCDIR)/scoreboard.h \
  $(INCDIR)/fnmatch.h
 http_log.o: http_log.c $(INCDIR)/httpd.h $(INCDIR)/conf.h \
- ../os/unix/os.h $(INCDIR)/hsregex.h $(INCDIR)/alloc.h \
- $(INCDIR)/buff.h $(INCDIR)/ap.h $(INCDIR)/util_uri.h \
- $(INCDIR)/http_config.h $(INCDIR)/http_core.h $(INCDIR)/http_log.h \
- $(INCDIR)/http_main.h
+ $(OSDIR)/os.h $(INCDIR)/alloc.h $(INCDIR)/buff.h $(INCDIR)/ap.h \
+ $(INCDIR)/util_uri.h $(INCDIR)/http_config.h $(INCDIR)/http_core.h \
+ $(INCDIR)/http_log.h $(INCDIR)/http_main.h
 http_main.o: http_main.c $(INCDIR)/httpd.h $(INCDIR)/conf.h \
- ../os/unix/os.h $(INCDIR)/hsregex.h $(INCDIR)/alloc.h \
- $(INCDIR)/buff.h $(INCDIR)/ap.h $(INCDIR)/util_uri.h \
- $(INCDIR)/http_main.h $(INCDIR)/http_log.h $(INCDIR)/http_config.h \
- $(INCDIR)/http_protocol.h $(INCDIR)/http_request.h \
- $(INCDIR)/http_conf_globals.h $(INCDIR)/http_core.h \
- $(INCDIR)/http_vhost.h $(INCDIR)/util_script.h \
- $(INCDIR)/scoreboard.h $(INCDIR)/multithread.h $(INCDIR)/explain.h
+ $(OSDIR)/os.h $(INCDIR)/alloc.h $(INCDIR)/buff.h $(INCDIR)/ap.h \
+ $(INCDIR)/util_uri.h $(INCDIR)/http_main.h $(INCDIR)/http_log.h \
+ $(INCDIR)/http_config.h $(INCDIR)/http_protocol.h \
+ $(INCDIR)/http_request.h $(INCDIR)/http_conf_globals.h \
+ $(INCDIR)/http_core.h $(INCDIR)/http_vhost.h \
+ $(INCDIR)/util_script.h $(INCDIR)/scoreboard.h \
+ $(INCDIR)/multithread.h $(INCDIR)/explain.h
 http_protocol.o: http_protocol.c $(INCDIR)/httpd.h $(INCDIR)/conf.h \
- ../os/unix/os.h $(INCDIR)/hsregex.h $(INCDIR)/alloc.h \
- $(INCDIR)/buff.h $(INCDIR)/ap.h $(INCDIR)/util_uri.h \
- $(INCDIR)/http_config.h $(INCDIR)/http_core.h \
+ $(OSDIR)/os.h $(INCDIR)/alloc.h $(INCDIR)/buff.h $(INCDIR)/ap.h \
+ $(INCDIR)/util_uri.h $(INCDIR)/http_config.h $(INCDIR)/http_core.h \
  $(INCDIR)/http_protocol.h $(INCDIR)/http_main.h \
  $(INCDIR)/http_request.h $(INCDIR)/http_vhost.h \
  $(INCDIR)/http_log.h $(INCDIR)/util_date.h \
  $(INCDIR)/http_conf_globals.h
 http_request.o: http_request.c $(INCDIR)/httpd.h $(INCDIR)/conf.h \
- ../os/unix/os.h $(INCDIR)/hsregex.h $(INCDIR)/alloc.h \
- $(INCDIR)/buff.h $(INCDIR)/ap.h $(INCDIR)/util_uri.h \
- $(INCDIR)/http_config.h $(INCDIR)/http_request.h \
- $(INCDIR)/http_core.h $(INCDIR)/http_protocol.h \
- $(INCDIR)/http_log.h $(INCDIR)/http_main.h $(INCDIR)/scoreboard.h \
- $(INCDIR)/fnmatch.h
+ $(OSDIR)/os.h $(INCDIR)/alloc.h $(INCDIR)/buff.h $(INCDIR)/ap.h \
+ $(INCDIR)/util_uri.h $(INCDIR)/http_config.h \
+ $(INCDIR)/http_request.h $(INCDIR)/http_core.h \
+ $(INCDIR)/http_protocol.h $(INCDIR)/http_log.h \
+ $(INCDIR)/http_main.h $(INCDIR)/scoreboard.h $(INCDIR)/fnmatch.h
 http_vhost.o: http_vhost.c $(INCDIR)/httpd.h $(INCDIR)/conf.h \
- ../os/unix/os.h $(INCDIR)/hsregex.h $(INCDIR)/alloc.h \
- $(INCDIR)/buff.h $(INCDIR)/ap.h $(INCDIR)/util_uri.h \
- $(INCDIR)/http_config.h $(INCDIR)/http_conf_globals.h \
- $(INCDIR)/http_log.h $(INCDIR)/http_vhost.h \
- $(INCDIR)/http_protocol.h
-md5c.o: md5c.c $(INCDIR)/conf.h ../os/unix/os.h $(INCDIR)/hsregex.h \
- $(INCDIR)/md5.h
+ $(OSDIR)/os.h $(INCDIR)/alloc.h $(INCDIR)/buff.h $(INCDIR)/ap.h \
+ $(INCDIR)/util_uri.h $(INCDIR)/http_config.h \
+ $(INCDIR)/http_conf_globals.h $(INCDIR)/http_log.h \
+ $(INCDIR)/http_vhost.h $(INCDIR)/http_protocol.h
+md5c.o: md5c.c $(INCDIR)/conf.h $(OSDIR)/os.h $(INCDIR)/md5.h
 rfc1413.o: rfc1413.c $(INCDIR)/httpd.h $(INCDIR)/conf.h \
- ../os/unix/os.h $(INCDIR)/hsregex.h $(INCDIR)/alloc.h \
- $(INCDIR)/buff.h $(INCDIR)/ap.h $(INCDIR)/util_uri.h \
- $(INCDIR)/http_log.h $(INCDIR)/rfc1413.h $(INCDIR)/http_main.h
-util.o: util.c $(INCDIR)/httpd.h $(INCDIR)/conf.h ../os/unix/os.h \
- $(INCDIR)/hsregex.h $(INCDIR)/alloc.h $(INCDIR)/buff.h \
- $(INCDIR)/ap.h $(INCDIR)/util_uri.h $(INCDIR)/http_conf_globals.h \
+ $(OSDIR)/os.h $(INCDIR)/alloc.h $(INCDIR)/buff.h $(INCDIR)/ap.h \
+ $(INCDIR)/util_uri.h $(INCDIR)/http_log.h $(INCDIR)/rfc1413.h \
+ $(INCDIR)/http_main.h
+util.o: util.c $(INCDIR)/httpd.h $(INCDIR)/conf.h $(OSDIR)/os.h \
+ $(INCDIR)/alloc.h $(INCDIR)/buff.h $(INCDIR)/ap.h \
+ $(INCDIR)/util_uri.h $(INCDIR)/http_conf_globals.h \
  $(INCDIR)/http_log.h test_char.h
-util_date.o: util_date.c $(INCDIR)/conf.h ../os/unix/os.h \
- $(INCDIR)/hsregex.h $(INCDIR)/util_date.h
-util_md5.o: util_md5.c $(INCDIR)/httpd.h $(INCDIR)/conf.h \
- ../os/unix/os.h $(INCDIR)/hsregex.h $(INCDIR)/alloc.h \
- $(INCDIR)/buff.h $(INCDIR)/ap.h $(INCDIR)/util_uri.h \
- $(INCDIR)/util_md5.h $(INCDIR)/md5.h
-util_script.o: util_script.c $(INCDIR)/httpd.h $(INCDIR)/conf.h \
- ../os/unix/os.h $(INCDIR)/hsregex.h $(INCDIR)/alloc.h \
- $(INCDIR)/buff.h $(INCDIR)/ap.h $(INCDIR)/util_uri.h \
- $(INCDIR)/http_config.h $(INCDIR)/http_conf_globals.h \
- $(INCDIR)/http_main.h $(INCDIR)/http_log.h \
- $(INCDIR)/http_protocol.h $(INCDIR)/http_core.h \
- $(INCDIR)/http_request.h $(INCDIR)/util_script.h \
+util_date.o: util_date.c $(INCDIR)/conf.h $(OSDIR)/os.h \
  $(INCDIR)/util_date.h
+util_md5.o: util_md5.c $(INCDIR)/httpd.h $(INCDIR)/conf.h \
+ $(OSDIR)/os.h $(INCDIR)/alloc.h $(INCDIR)/buff.h $(INCDIR)/ap.h \
+ $(INCDIR)/util_uri.h $(INCDIR)/util_md5.h $(INCDIR)/md5.h
+util_script.o: util_script.c $(INCDIR)/httpd.h $(INCDIR)/conf.h \
+ $(OSDIR)/os.h $(INCDIR)/alloc.h $(INCDIR)/buff.h $(INCDIR)/ap.h \
+ $(INCDIR)/util_uri.h $(INCDIR)/http_config.h \
+ $(INCDIR)/http_conf_globals.h $(INCDIR)/http_main.h \
+ $(INCDIR)/http_log.h $(INCDIR)/http_protocol.h \
+ $(INCDIR)/http_core.h $(INCDIR)/http_request.h \
+ $(INCDIR)/util_script.h $(INCDIR)/util_date.h
 util_uri.o: util_uri.c $(INCDIR)/httpd.h $(INCDIR)/conf.h \
- ../os/unix/os.h $(INCDIR)/hsregex.h $(INCDIR)/alloc.h \
- $(INCDIR)/buff.h $(INCDIR)/ap.h $(INCDIR)/util_uri.h \
- $(INCDIR)/http_log.h $(INCDIR)/http_conf_globals.h uri_delims.h
+ $(OSDIR)/os.h $(INCDIR)/alloc.h $(INCDIR)/buff.h $(INCDIR)/ap.h \
+ $(INCDIR)/util_uri.h $(INCDIR)/http_log.h \
+ $(INCDIR)/http_conf_globals.h uri_delims.h

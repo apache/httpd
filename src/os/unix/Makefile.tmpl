@@ -30,14 +30,14 @@ depend:
 	cp Makefile.tmpl Makefile.tmpl.bak \
 	    && sed -ne '1,/^# DO NOT REMOVE/p' Makefile.tmpl > Makefile.new \
 	    && gcc -MM $(INCLUDES) $(CFLAGS) *.c >> Makefile.new \
-	    && sed -e '1,$$s: $(INCDIR)/: $$(INCDIR)/:g' Makefile.new \
+	    && sed -e '1,$$s: $(INCDIR)/: $$(INCDIR)/:g' \
+	           -e '1,$$s: $(OSDIR)/: $$(OSDIR)/:g' Makefile.new \
 		> Makefile.tmpl \
 	    && rm Makefile.new
 
 $(OBJS): Makefile
 
 # DO NOT REMOVE
-os-inline.o: os-inline.c $(INCDIR)/conf.h ../../os/unix/os.h \
- $(INCDIR)/hsregex.h
-os.o: os.c $(INCDIR)/conf.h ../../os/unix/os.h \
- $(INCDIR)/hsregex.h os.h
+os-aix-dso.o: os-aix-dso.c
+os-inline.o: os-inline.c $(INCDIR)/conf.h $(OSDIR)/os.h
+os.o: os.c $(INCDIR)/conf.h $(OSDIR)/os.h os.h
