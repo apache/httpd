@@ -571,7 +571,7 @@ dav_error *dav_open_propdb(request_rec *r, dav_lockdb *lockdb,
 #endif
 
     propdb->r = r;
-    propdb->p = r->pool; /* ### get rid of this */
+    apr_pool_create(&propdb->p, r->pool);
     propdb->resource = resource;
     propdb->ns_xlate = ns_xlate;
 
@@ -592,10 +592,15 @@ dav_error *dav_open_propdb(request_rec *r, dav_lockdb *lockdb,
 
 void dav_close_propdb(dav_propdb *propdb)
 {
-    if (propdb->db == NULL)
-        return;
+    if (propdb->db != NULL) {
+        (*propdb->db_hooks->close)(propdb->db);
+    }
 
-    (*propdb->db_hooks->close)(propdb->db);
+    /* Currently, mod_dav's pool usage doesn't clearing this pool. */
+#if 0
+    apr_pool_destroy(propdb->p);
+#endif
+    return;
 }
 
 dav_get_props_result dav_get_allprops(dav_propdb *propdb, dav_prop_insert what)
