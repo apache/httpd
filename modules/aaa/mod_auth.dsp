@@ -43,7 +43,7 @@ RSC=rc.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MD /W3 /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /FD /c
-# ADD CPP /nologo /MD /W3 /O2 /I "../../include" /I "../../srclib/apr/include" /I "../../srclib/apr-util/include" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /Fd"Release\mod_auth" /FD /c
+# ADD CPP /nologo /MD /W3 /Zi /O2 /I "../../include" /I "../../srclib/apr/include" /I "../../srclib/apr-util/include" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /Fd"Release\mod_auth_src" /FD /c
 # ADD BASE MTL /nologo /D "NDEBUG" /win32
 # ADD MTL /nologo /D "NDEBUG" /mktyplib203 /win32
 # ADD BASE RSC /l 0x409 /d "NDEBUG"
@@ -52,8 +52,17 @@ BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
 LINK32=link.exe
-# ADD BASE LINK32 kernel32.lib /nologo /subsystem:windows /dll /map /machine:I386 /out:"Release/mod_auth.so" /base:@..\..\os\win32\BaseAddr.ref,mod_auth
-# ADD LINK32 kernel32.lib /nologo /subsystem:windows /dll /map /machine:I386 /out:"Release/mod_auth.so" /base:@..\..\os\win32\BaseAddr.ref,mod_auth
+# ADD BASE LINK32 kernel32.lib /nologo /subsystem:windows /dll /map /machine:I386 /out:"Release/mod_auth.so" /base:@..\..\os\win32\BaseAddr.ref,mod_auth.so
+# ADD LINK32 kernel32.lib /nologo /subsystem:windows /dll /incremental:no /map /debug /debugtype:both /machine:I386 /out:"Release/mod_auth.so" /pdbtype:sept /base:@..\..\os\win32\BaseAddr.ref,mod_auth.so
+# Begin Custom Build - Extracting .dbg symbols from $(InputPath)
+InputPath=.\Release\mod_auth.so
+SOURCE="$(InputPath)"
+
+".\Release\mod_auth.dbgmark" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	rebase -q -i "../../os/win32/BaseAddr.ref" -x ".\Release" $(InputPath)
+	echo rebased > ".\Release\mod_auth.dbgmark"
+
+# End Custom Build
 
 !ELSEIF  "$(CFG)" == "mod_auth - Win32 Debug"
 
@@ -78,8 +87,8 @@ BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
 LINK32=link.exe
-# ADD BASE LINK32 kernel32.lib /nologo /subsystem:windows /dll /incremental:no /map /debug /machine:I386 /out:"Debug/mod_auth.so" /base:@..\..\os\win32\BaseAddr.ref,mod_auth
-# ADD LINK32 kernel32.lib /nologo /subsystem:windows /dll /incremental:no /map /debug /machine:I386 /out:"Debug/mod_auth.so" /base:@..\..\os\win32\BaseAddr.ref,mod_auth
+# ADD BASE LINK32 kernel32.lib /nologo /subsystem:windows /dll /incremental:no /map /debug /machine:I386 /out:"Debug/mod_auth.so" /base:@..\..\os\win32\BaseAddr.ref,mod_auth.so
+# ADD LINK32 kernel32.lib /nologo /subsystem:windows /dll /incremental:no /map /debug /machine:I386 /out:"Debug/mod_auth.so" /base:@..\..\os\win32\BaseAddr.ref,mod_auth.so
 
 !ENDIF 
 

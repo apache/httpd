@@ -43,7 +43,7 @@ RSC=rc.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MD /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /FD /c
-# ADD CPP /nologo /MD /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "STRICT" /Fd"Release/ApacheMonitor" /FD /c
+# ADD CPP /nologo /MD /W3 /GX /Zi /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "STRICT" /Fd"Release/ApacheMonitor_src" /FD /c
 # ADD BASE MTL /nologo /D "NDEBUG" /mktyplib203 /win32
 # ADD MTL /nologo /D "NDEBUG" /mktyplib203 /win32
 # ADD BASE RSC /l 0x409 /d "NDEBUG"
@@ -53,7 +53,16 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib comctl32.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib /nologo /subsystem:windows /machine:I386
-# ADD LINK32 kernel32.lib user32.lib gdi32.lib comctl32.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib /nologo /subsystem:windows /map /machine:I386
+# ADD LINK32 kernel32.lib user32.lib gdi32.lib comctl32.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib /nologo /subsystem:windows /map /debug /debugtype:both /machine:I386 /pdbtype:sept
+# Begin Custom Build - Extracting .dbg symbols from $(InputPath)
+InputPath=.\Release\ApacheMonitor.so
+SOURCE="$(InputPath)"
+
+".\Release\ApacheMonitor.dbgmark" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	rebase -q -b 0x00400000 -x ".\Release" $(InputPath)
+	echo rebased > ".\Release\ApacheMonitor.dbgmark"
+
+# End Custom Build
 
 !ELSEIF  "$(CFG)" == "ApacheMonitor - Win32 Debug"
 
@@ -69,7 +78,7 @@ LINK32=link.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /Gm /GX /Zi /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /FD /c
-# ADD CPP /nologo /MDd /W3 /Gm /GX /Zi /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /D "STRICT" /Fd"Debug/ApacheMonitor" /FD /c
+# ADD CPP /nologo /MDd /W3 /Gm /GX /Zi /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /D "STRICT" /Fd"Debug/ApacheMonitor_src" /FD /c
 # ADD BASE MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD BASE RSC /l 0x409 /d "_DEBUG"
@@ -131,13 +140,6 @@ SOURCE=.\ApacheMonitor.c
 # Begin Source File
 
 SOURCE=.\ApacheMonitorVer.rc
-
-!IF  "$(CFG)" == "ApacheMonitor - Win32 Release"
-
-!ELSEIF  "$(CFG)" == "ApacheMonitor - Win32 Debug"
-
-!ENDIF 
-
 # End Source File
 # Begin Source File
 
