@@ -92,7 +92,6 @@
 <li><a href="mod_auth_ldap.html#authldapgroupattribute">AuthLDAPGroupAttribute</a></li>
 <li><a href="mod_auth_ldap.html#authldapgroupattributeisdn">AuthLDAPGroupAttributeIsDN</a></li>
 <li><a href="mod_auth_ldap.html#authldapremoteuserisdn">AuthLDAPRemoteUserIsDN</a></li>
-<li><a href="mod_auth_ldap.html#authldapstarttls">AuthLDAPStartTLS</a></li>
 <li><a href="mod_auth_ldap.html#authldapurl">AuthLDAPUrl</a></li>
 <li><a href="core.html#authname">AuthName</a></li>
 <li><a href="core.html#authtype">AuthType</a></li>
@@ -202,10 +201,11 @@
 <li><a href="mod_negotiation.html#languagepriority" id="L" name="L">LanguagePriority</a></li>
 <li><a href="mod_ldap.html#ldapcacheentries">LDAPCacheEntries</a></li>
 <li><a href="mod_ldap.html#ldapcachettl">LDAPCacheTTL</a></li>
-<li><a href="mod_ldap.html#ldapcertdbpath">LDAPCertDBPath</a></li>
 <li><a href="mod_ldap.html#ldapopcacheentries">LDAPOpCacheEntries</a></li>
 <li><a href="mod_ldap.html#ldapopcachettl">LDAPOpCacheTTL</a></li>
 <li><a href="mod_ldap.html#ldapsharedcachesize">LDAPSharedCacheSize</a></li>
+<li><a href="mod_ldap.html#ldaptrustedca">LDAPTrustedCA</a></li>
+<li><a href="mod_ldap.html#ldaptrustedcatype">LDAPTrustedCAType</a></li>
 <li><a href="core.html#limit">&lt;Limit&gt;</a></li>
 <li><a href="core.html#limitexcept">&lt;LimitExcept&gt;</a></li>
 <li><a href="core.html#limitrequestbody">LimitRequestBody</a></li>
