@@ -661,7 +661,7 @@ static int cgi_handler(request_rec *r)
 	    AP_BRIGADE_INSERT_TAIL(bb, b);
             b = ap_bucket_create_eos();
 	    AP_BRIGADE_INSERT_TAIL(bb, b);
-	    ap_pass_brigade(r->filters, bb);
+	    ap_pass_brigade(r->output_filters, bb);
 	}
 
         log_script_err(r, script_err);
@@ -674,7 +674,7 @@ static int cgi_handler(request_rec *r)
 	AP_BRIGADE_INSERT_TAIL(bb, b);
 	b = ap_bucket_create_eos();
 	AP_BRIGADE_INSERT_TAIL(bb, b);
-        ap_pass_brigade(r->filters, bb);
+        ap_pass_brigade(r->output_filters, bb);
     }
 
     return OK;			/* NOT r->status, even if it has changed. */

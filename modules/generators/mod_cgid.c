@@ -1014,7 +1014,7 @@ static int cgid_handler(request_rec *r)
             AP_BRIGADE_INSERT_TAIL(bb, b);
             b = ap_bucket_create_eos();
             AP_BRIGADE_INSERT_TAIL(bb, b);
-            ap_pass_brigade(r->filters, bb);
+            ap_pass_brigade(r->output_filters, bb);
         } 
     } 
 
@@ -1024,7 +1024,7 @@ static int cgid_handler(request_rec *r)
         AP_BRIGADE_INSERT_TAIL(bb, b);
         b = ap_bucket_create_eos();
         AP_BRIGADE_INSERT_TAIL(bb, b);
-        ap_pass_brigade(r->filters, bb);
+        ap_pass_brigade(r->output_filters, bb);
     } 
 
     apr_close(tempsock);

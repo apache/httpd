@@ -778,7 +778,7 @@ API_EXPORT(request_rec *) ap_sub_req_method_uri(const char *method,
     ap_copy_method_list(rnew->allowed_methods, r->allowed_methods);
 
     /* start with the same set of output filters */
-    rnew->filters = r->filters;
+    rnew->output_filters = r->output_filters;
 
     ap_set_sub_req_protocol(rnew, r);
 
@@ -873,7 +873,7 @@ API_EXPORT(request_rec *) ap_sub_req_lookup_file(const char *new_file,
     ap_copy_method_list(rnew->allowed_methods, r->allowed_methods);
 
     /* start with the same set of output filters */
-    rnew->filters = r->filters;
+    rnew->output_filters = r->output_filters;
 
     ap_set_sub_req_protocol(rnew, r);
     fdir = ap_make_dirstr_parent(rnew->pool, r->filename);

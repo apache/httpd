@@ -186,7 +186,7 @@ static void *create_core_dir_config(apr_pool_t *a, char *dir)
     conf->add_default_charset = ADD_DEFAULT_CHARSET_UNSET;
     conf->add_default_charset_name = DEFAULT_ADD_DEFAULT_CHARSET_NAME;
 
-    conf->filters = apr_make_array(a, 40, sizeof(void *));
+    conf->filters = apr_make_array(a, 2, sizeof(void *));
     return (void *)conf;
 }
 
