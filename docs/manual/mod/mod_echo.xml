@@ -1,0 +1,43 @@
+<?xml version="1.0"?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
+<modulesynopsis>
+
+<name>mod_echo</name>
+<description>A simple echo server to illustrate protocol 
+modules</description>
+<status>Experimental</status>
+<sourcefile>mod_echo.c</sourcefile>
+<identifier>echo_module</identifier>
+<compatibility>Available in Apache 2.0 and later</compatibility>
+
+<summary>
+    This module provides an example protocol module to illustrate the
+    concept. It provides a simple echo server. Telnet to it and type
+    stuff, and it will echo it.
+</summary>
+
+<directivesynopsis>
+
+<name>ProtocolEcho</name>
+<description>Turn the echo server on or off</description>
+<syntax>ProtocolEcho <em>On|Off</em></syntax>
+<contextlist><context>server config</context>
+<context>virtual host</context></contextlist>
+<compatibility>ProtocolEcho is only available in 2.0 and
+later.</compatibility>
+
+<usage>
+    <p>The <directive>ProtocolEcho</directive> directive enables or
+    disables the echo server.</p>
+
+    <example>
+    <title>Example</title>
+    ProtocolEcho On
+    </example>
+
+</usage>
+
+</directivesynopsis>
+</modulesynopsis>
+

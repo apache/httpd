@@ -19,6 +19,7 @@
   <modulefile>mod_dav.xml</modulefile>
   <modulefile>mod_deflate.xml</modulefile>
   <modulefile>mod_dir.xml</modulefile>
+  <modulefile>mod_echo.xml</modulefile>
   <modulefile>mod_env.xml</modulefile>
   <modulefile>mod_example.xml</modulefile>
   <modulefile>mod_expires.xml</modulefile>
