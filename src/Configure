@@ -752,6 +752,7 @@ for modfile in $MODFILES ; do
 	modbase=`echo $modfile | sed 's/\.[^.]*$//'`
 	if [ x$ext = x$modfile ]; then ext=o; modbase=$modfile; modfile=$modbase.o; fi
 	if [ x$ext = x ] ; then ext=o; modbase=$modfile; fi
+	if [ x$ext = xc ] ; then ext=o; fi
 
 	# modbase is the path+filename without extension, ext is the
 	# extension given, or if none, o
