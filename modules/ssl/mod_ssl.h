@@ -584,7 +584,7 @@ RSA         *ssl_callback_TmpRSA(SSL *, int, int);
 DH          *ssl_callback_TmpDH(SSL *, int, int);
 int          ssl_callback_SSLVerify(int, X509_STORE_CTX *);
 int          ssl_callback_SSLVerify_CRL(int, X509_STORE_CTX *, conn_rec *);
-int          ssl_callback_proxy_cert(SSL *ssl, X509 **x509, EVP_PKEY **pkey);
+int          ssl_callback_proxy_cert(SSL *ssl, MODSSL_CLIENT_CERT_CB_ARG_TYPE **x509, EVP_PKEY **pkey);
 int          ssl_callback_NewSessionCacheEntry(SSL *, SSL_SESSION *);
 SSL_SESSION *ssl_callback_GetSessionCacheEntry(SSL *, unsigned char *, int, int *);
 void         ssl_callback_DelSessionCacheEntry(SSL_CTX *, SSL_SESSION *);
