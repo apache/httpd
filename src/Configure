@@ -235,6 +235,7 @@ case "$PLAT" in
     *-next-nextstep*)
 	OS='NeXT'
 	CFLAGS="$CFLAGS -DNEXT"
+	DEF_WANTHSREGEX=yes
 	;;
     *-dec-osf*)
 	OS='DEC OSF/1'
