@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/07/12 15:13:29 $]
+Last modified at [$Date: 2003/07/13 10:01:35 $]
 
 Release:
 
@@ -152,7 +152,7 @@ PATCHES TO PORT FROM 2.1
       (this requires deleting ssl-std.conf and replacing it with an autogen'd
       one)
       configure.in: r1.250
-      docs/conf/ssl-std.conf.in: r1.1
+      docs/conf/ssl-std.conf.in: r1.1,1.2
       +1: thommay, jerenkrantz, striker, jim
        0: nd, trawick
           nd: The runtime files (e.g. cache) should be in runtimedir, since the
@@ -172,6 +172,8 @@ PATCHES TO PORT FROM 2.1
 
           trawick: existing configs shouldn't be overwritten, new configs
               should default to our best available recommendation
+
+          thommay: can't argue with this, commited.    
 
     * Assure that we block on the read BIO when we invoke the read BIO for both
       first-use cases (via ssl_io_input_add_filter) and when we are writing and
