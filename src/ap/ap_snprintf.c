@@ -344,13 +344,71 @@ static char *ap_gcvt(double number, int ndigit, char *buf, boolean_e altform)
  * The caller provides a buffer for the string: that is the buf_end argument
  * which is a pointer to the END of the buffer + 1 (i.e. if the buffer
  * is declared as buf[ 100 ], buf_end should be &buf[ 100 ])
+ *
+ * Note: we have 2 versions. One is used when we need to use quads (conv_10),
+ * the other isn't (conv_10_l). We're assuming the latter is faster.
  */
+static char *conv_10_l(register wide_int num, register bool_int is_unsigned,
+		     register bool_int *is_negative, char *buf_end,
+		     register int *len)
+{
+    register char *p = buf_end;
+    register u_wide_int magnitude;
+
+    if (is_unsigned) {
+	magnitude = (u_wide_int) num;
+	*is_negative = FALSE;
+    }
+    else {
+	*is_negative = (num < 0);
+
+	/*
+	 * On a 2's complement machine, negating the most negative integer 
+	 * results in a number that cannot be represented as a signed integer.
+	 * Here is what we do to obtain the number's magnitude:
+	 *      a. add 1 to the number
+	 *      b. negate it (becomes positive)
+	 *      c. convert it to unsigned
+	 *      d. add 1
+	 */
+	if (*is_negative) {
+	    wide_int t = num + 1;
+
+	    magnitude = ((u_wide_int) -t) + 1;
+	}
+	else
+	    magnitude = (u_wide_int) num;
+    }
+
+    /*
+     * We use a do-while loop so that we write at least 1 digit 
+     */
+    do {
+	register u_wide_int new_magnitude = magnitude / 10;
+
+	*--p = (char) (magnitude - new_magnitude * 10 + '0');
+	magnitude = new_magnitude;
+    }
+    while (magnitude);
+
+    *len = buf_end - p;
+    return (p);
+}
+
 static char *conv_10(register widest_int num, register bool_int is_unsigned,
 		     register bool_int *is_negative, char *buf_end,
 		     register int *len)
 {
     register char *p = buf_end;
     register u_widest_int magnitude;
+
+    /*
+     * If the value is less than the maximum unsigned long value,
+     * then we know we aren't using quads, so use the faster function
+     */
+    if (num <= ULONG_MAX)
+    	return(conv_10_l( (wide_int)num, is_unsigned, is_negative,
+	       buf_end, len));
 
     if (is_unsigned) {
 	magnitude = (u_widest_int) num;
@@ -401,13 +459,13 @@ static char *conv_in_addr(struct in_addr *ia, char *buf_end, int *len)
     bool_int is_negative;
     int sub_len;
 
-    p = conv_10((addr & 0x000000FF)      , TRUE, &is_negative, p, &sub_len);
+    p = conv_10_l((addr & 0x000000FF)      , TRUE, &is_negative, p, &sub_len);
     *--p = '.';
-    p = conv_10((addr & 0x0000FF00) >>  8, TRUE, &is_negative, p, &sub_len);
+    p = conv_10_l((addr & 0x0000FF00) >>  8, TRUE, &is_negative, p, &sub_len);
     *--p = '.';
-    p = conv_10((addr & 0x00FF0000) >> 16, TRUE, &is_negative, p, &sub_len);
+    p = conv_10_l((addr & 0x00FF0000) >> 16, TRUE, &is_negative, p, &sub_len);
     *--p = '.';
-    p = conv_10((addr & 0xFF000000) >> 24, TRUE, &is_negative, p, &sub_len);
+    p = conv_10_l((addr & 0xFF000000) >> 24, TRUE, &is_negative, p, &sub_len);
 
     *len = buf_end - p;
     return (p);
@@ -421,7 +479,7 @@ static char *conv_sockaddr_in(struct sockaddr_in *si, char *buf_end, int *len)
     bool_int is_negative;
     int sub_len;
 
-    p = conv_10(ntohs(si->sin_port), TRUE, &is_negative, p, &sub_len);
+    p = conv_10_l(ntohs(si->sin_port), TRUE, &is_negative, p, &sub_len);
     *--p = ':';
     p = conv_in_addr(&si->sin_addr, p, &sub_len);
 
@@ -498,7 +556,7 @@ static char *conv_fp(register char format, register double num,
 	*s++ = format;		/* either e or E */
 	decimal_point--;
 	if (decimal_point != 0) {
-	    p = conv_10((widest_int) decimal_point, FALSE, &exponent_is_negative,
+	    p = conv_10_l((wide_int) decimal_point, FALSE, &exponent_is_negative,
 			&temp[EXPONENT_LENGTH], &t_len);
 	    *s++ = exponent_is_negative ? '-' : '+';
 
@@ -531,7 +589,29 @@ static char *conv_fp(register char format, register double num,
  * The caller provides a buffer for the string: that is the buf_end argument
  * which is a pointer to the END of the buffer + 1 (i.e. if the buffer
  * is declared as buf[ 100 ], buf_end should be &buf[ 100 ])
+ *
+ * As with conv_10, we have a faster version which is used when
+ * the number isn't quad size.
  */
+static char *conv_p2_l(register u_wide_int num, register int nbits,
+		     char format, char *buf_end, register int *len)
+{
+    register int mask = (1 << nbits) - 1;
+    register char *p = buf_end;
+    static const char low_digits[] = "0123456789abcdef";
+    static const char upper_digits[] = "0123456789ABCDEF";
+    register const char *digits = (format == 'X') ? upper_digits : low_digits;
+
+    do {
+	*--p = digits[num & mask];
+	num >>= nbits;
+    }
+    while (num);
+
+    *len = buf_end - p;
+    return (p);
+}
+
 static char *conv_p2(register u_widest_int num, register int nbits,
 		     char format, char *buf_end, register int *len)
 {
@@ -540,6 +620,9 @@ static char *conv_p2(register u_widest_int num, register int nbits,
     static const char low_digits[] = "0123456789abcdef";
     static const char upper_digits[] = "0123456789ABCDEF";
     register const char *digits = (format == 'X') ? upper_digits : low_digits;
+
+    if (num <= ULONG_MAX)
+    	return(conv_p2_l( (u_wide_int)num, nbits, format, buf_end, len));
 
     do {
 	*--p = digits[num & mask];
