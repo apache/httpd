@@ -927,7 +927,7 @@ request_rec *ap_read_request(conn_rec *conn)
     const char *expect;
     int access_status;
 
-    ap_create_context(conn->pool, NULL, &p);
+    ap_create_context(conn->pool, &p);
     r = ap_pcalloc(p, sizeof(request_rec));
     r->pool            = p;
     r->connection      = conn;

@@ -157,7 +157,7 @@ static ap_table_t *groups_for_user(ap_context_t *p, char *user, char *grpfile)
 	return NULL;
     }
 
-    ap_create_context(p, NULL, &sp);
+    ap_create_context(p, &sp);
 
     while (!(ap_cfg_getline(l, MAX_STRING_LEN, f))) {
 	if ((l[0] == '#') || (!l[0]))

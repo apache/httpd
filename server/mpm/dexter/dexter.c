@@ -858,9 +858,9 @@ static void *worker_thread(void *arg)
     int native_socket;
 
     pthread_mutex_lock(&thread_pool_create_mutex);
-    ap_create_context(thread_pool_parent, NULL, &tpool);
+    ap_create_context(thread_pool_parent, &tpool);
     pthread_mutex_unlock(&thread_pool_create_mutex);
-    ap_create_context(tpool, NULL, &ptrans);
+    ap_create_context(tpool, &ptrans);
 
     while (!workers_may_exit) {
         workers_may_exit |= (max_requests_per_child != 0) && (requests_this_child <= 0);
@@ -981,7 +981,7 @@ static void child_main(int child_num_arg)
 
     my_pid = getpid();
     child_num = child_num_arg;
-    ap_create_context(pconf, NULL, &pchild);
+    ap_create_context(pconf, &pchild);
 
     /*stuff to do before we switch id's, so we have permissions.*/
 
@@ -1026,7 +1026,7 @@ static void child_main(int child_num_arg)
     for (i = 0; i < max_threads; i++) {
         worker_thread_free_ids[i] = i;
     }
-    ap_create_context(pchild, NULL, &thread_pool_parent);
+    ap_create_context(pchild, &thread_pool_parent);
     pthread_mutex_init(&thread_pool_create_mutex, NULL);
     pthread_mutex_init(&idle_thread_count_mutex, NULL);
     pthread_mutex_init(&worker_thread_count_mutex, NULL);
