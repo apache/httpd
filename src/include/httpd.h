@@ -907,12 +907,6 @@ typedef struct {
     unsigned line_number;	/* current line number, starting at 1 */
 } configfile_t;
 
-/* Common structure that holds the file and pool for ap_pcfg_openfile */
-typedef struct {
-    struct pool *pool;
-    FILE *file;
-} poolfile_t;
-
 /* Open a configfile_t as FILE, return open configfile_t struct pointer */
 API_EXPORT(configfile_t *) ap_pcfg_openfile(pool *p, const char *name);
 

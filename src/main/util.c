@@ -706,6 +706,12 @@ API_EXPORT(int) ap_cfg_closefile(configfile_t *cfp)
     return (cfp->close == NULL) ? 0 : cfp->close(cfp->param);
 }
 
+/* Common structure that holds the file and pool for ap_pcfg_openfile */
+typedef struct {
+    struct pool *pool;
+    FILE *file;
+} poolfile_t;
+
 static int cfg_close(void *param)
 {
     poolfile_t *cfp = (poolfile_t *) param;
