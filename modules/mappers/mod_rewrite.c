@@ -2630,6 +2630,11 @@ static char *expand_tildepaths(request_rec *r, char *uri)
     struct passwd *pw;
     char *newuri;
     int i, j;
+#if APR_HAS_THREADS && defined(_POSIX_THREAD_SAFE_FUNCTIONS)
+    struct passwd pwd;
+    size_t buflen = sysconf(_SC_GETPW_R_SIZE_MAX);
+    char *buf = apr_pcalloc(r->pool, buflen);
+#endif
 
     newuri = uri;
     if (uri != NULL && strlen(uri) > 2 && uri[0] == '/' && uri[1] == '~') {
@@ -2642,7 +2647,11 @@ static char *expand_tildepaths(request_rec *r, char *uri)
         user[j] = '\0';
 
         /* lookup username in systems passwd file */
+#if APR_HAS_THREADS && defined(_POSIX_THREAD_SAFE_FUNCTIONS)
+        if (!getpwnam_r(user, &pwd, buf, buflen, &pw)) {
+#else
         if ((pw = getpwnam(user)) != NULL) {
+#endif
             /* ok, user was found, so expand the ~user string */
             if (uri[i] != '\0') {
                 /* ~user/anything...  has to be expanded */
