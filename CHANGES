@@ -159,6 +159,9 @@ Changes with Apache 2.1.0-dev
 
 Changes with Apache 2.0.45
 
+  *) Added an rpm build script.
+     [Graham Leggett, Joe Orton <jorton@redhat.com>]
+
   *) Simpler, faster code path for request header scanning  [Brian Pane]
 
   *) SECURITY:  Eliminated leaks of several file descriptors to child
