@@ -31,7 +31,7 @@
   <!--#include virtual="header.html" -->
   <H1 ALIGN="CENTER">Apache Server Frequently Asked Questions</H1>
   <P>
-  $Revision: 1.2 $ ($Date: 1999/07/03 22:12:50 $)
+  $Revision: 1.3 $ ($Date: 2000/04/18 17:52:31 $)
   </P>
   <P>
   The latest version of this FAQ is always available from the main
@@ -101,6 +101,9 @@
    </LI>
    <LI><A HREF="#remote-user-var">Why is the environment variable
         <SAMP>REMOTE_USER</SAMP> not set?</A>
+   </LI>
+   <LI><A HREF="#user-cgi">How do I allow each of my user directories
+     to have a cgi-bin directory?</A>
    </LI>
   </OL>
  </LI>
@@ -511,6 +514,42 @@
   authentication happens only after filling out the form).
   </P>
   <HR>
+ </LI>
+ <LI><A NAME="user-cgi"><STRONG>How do I allow each of my user directories
+     to have a cgi-bin directory?</STRONG></A>
+  <P>
+  Remember that CGI execution does not need to be restricted only to
+  cgi-bin directories.  You can <A HREF="#CGIoutsideScriptAlias">allow
+  cgi execution in arbitrary parts of your filesystem</A>.
+  </P>
+  <P>
+  There are many ways to give each user directory a cgi-bin directory
+  such that anything requested as 
+  <SAMP>http://example.com/~user/cgi-bin/program</SAMP> will be
+  executed as a CGI program.
+  Two alternatives are:
+  <OL>
+   <LI>Place the cgi-bin directory next to the public_html directory:
+    <P>
+    <DL>
+     <DD><CODE>ScriptAliasMatch ^/~([^/]*)/cgi-bin/(.*) /home/$1/cgi-bin/$2</CODE>
+     </DD>
+    </DL>
+    </P>
+    </LI>
+   <LI>Place the cgi-bin directory underneath the public_html directory:
+    <P>
+    <DL>
+    <DD><CODE>&lt;Directory /home/*/public_html/cgi-bin&gt;<BR>
+    Options ExecCGI<BR> 
+    SetHandler cgi-script<BR>
+    &lt;/Directory&gt;</CODE>
+    </DD>
+    </DL>
+    </P>
+   </LI>
+   </OL>
+  <HR> 
  </LI>
 
 </OL>
