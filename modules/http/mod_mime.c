@@ -837,7 +837,7 @@ static void mime_insert_filter(request_rec *r)
     mime_dir_config *conf =
     (mime_dir_config *) ap_get_module_config(r->per_dir_config, &mime_module);
 
-    apr_table_do(filter_chain, r, conf->filter_names, r->content_type, NULL);
+    apr_table_do(filter_chain, r, conf->filter_names, r->handler, NULL);
 }
 
 static void register_hooks(void)
