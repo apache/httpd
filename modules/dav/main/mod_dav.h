@@ -395,7 +395,7 @@ AP_DECLARE_HOOK(int, find_liveprop, (request_rec *r,
                                      const dav_hooks_liveprop **hooks))
 AP_DECLARE_HOOK(void, insert_all_liveprops, (request_rec *r,
                                              const dav_resource *resource,
-                                             int insvalue, ap_hash_t *ns_map,
+                                             int insvalue,
                                              ap_text_header *phdr))
 
 #define DAV_KEY_RESOURCE        "dav-resource"
@@ -406,6 +406,11 @@ AP_DECLARE_HOOK(void, insert_all_liveprops, (request_rec *r,
 const dav_hooks_locks *dav_get_lock_hooks(request_rec *r);
 const dav_hooks_propdb *dav_get_propdb_hooks(request_rec *r);
 const dav_hooks_vsn *dav_get_vsn_hooks(request_rec *r);
+
+void dav_register_liveprop_namespace(ap_pool_t *pool, const char *uri);
+int dav_get_liveprop_ns_index(const char *uri);
+int dav_get_liveprop_ns_count(void);
+void dav_add_all_liveprop_xmlns(ap_pool_t *p, ap_text_header *phdr);
 
 
 /* --------------------------------------------------------------------
@@ -556,7 +561,6 @@ void dav_process_builtin_modules(ap_pool_t *p);
 void dav_process_module(ap_pool_t *p, const dav_dyn_module *mod);
 
 int * dav_collect_liveprop_uris(ap_pool_t *p, const dav_hooks_liveprop *hooks);
-extern ap_array_header_t *dav_liveprop_uris;
 
 void *dav_prepare_scan(ap_pool_t *p, const dav_dyn_module *mod);
 int dav_scan_providers(void *ctx,

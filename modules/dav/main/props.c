@@ -1031,8 +1031,6 @@ dav_get_props_result dav_get_allprops(dav_propdb *propdb, int getvals)
     int found_contenttype = 0;
     int found_contentlang = 0;
     int unused_inserted;
-    int i;
-    const char * const * scan_uri;
     const dav_dyn_hooks *ddh;
 
     /* generate all the namespaces that are in the propdb */
@@ -1124,10 +1122,7 @@ dav_get_props_result dav_get_allprops(dav_propdb *propdb, int getvals)
     }
 
     /* add namespaces for all the liveprop providers */
-    for (i = 0, scan_uri = (const char * const *)dav_liveprop_uris->elts;
-	 i < dav_liveprop_uris->nelts;
-	 ++i, ++scan_uri)
-	dav_insert_xmlns(propdb->p, "lp", i, *scan_uri, &hdr_ns);
+    dav_add_all_liveprop_xmlns(propdb->p, &hdr_ns);
     
     /* ask the liveprop providers to insert their properties */
     for (ddh = propdb->liveprop; ddh != NULL; ddh = ddh->next) {
@@ -1209,7 +1204,7 @@ dav_get_props_result dav_get_props(dav_propdb *propdb, ap_xml_doc *doc)
     marks_input = ap_pcalloc(propdb->p, propdb->ns_xlate->nelts);
 
     /* same for the liveprops */
-    marks_liveprop = ap_pcalloc(propdb->p, dav_liveprop_uris->nelts);
+    marks_liveprop = ap_pcalloc(propdb->p, dav_get_liveprop_ns_count());
 
     for (elem = elem->first_child; elem; elem = elem->next) {
 	dav_datum key;
@@ -1259,15 +1254,19 @@ dav_get_props_result dav_get_props(dav_propdb *propdb, ap_xml_doc *doc)
 		*/
 		if (priv->provider != NULL) {
 		    const char * const * scan_ns_uri;
-		    const int * scan_ns;
 
-		    for (scan_ns_uri = priv->provider->namespace_uris,
-			     scan_ns = priv->ns_map;
+		    for (scan_ns_uri = priv->provider->namespace_uris;
 			 *scan_ns_uri != NULL;
-			 ++scan_ns_uri, ++scan_ns) {
+			 ++scan_ns_uri) {
+                        int ns;
 
-			dav_add_marked_xmlns(propdb, marks_liveprop, *scan_ns,
-					     dav_liveprop_uris, "lp", &hdr_ns);
+                        ns = dav_get_liveprop_ns_index(*scan_ns_uri);
+                        if (marks_liveprop[ns])
+                            continue;
+                        marks_liveprop[ns] = 1;
+
+                        dav_insert_xmlns(propdb->p, "lp", ns, *scan_ns_uri,
+                                         &hdr_ns);
 		    }
 		}
 
