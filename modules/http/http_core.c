@@ -84,9 +84,6 @@
 #include "util_ebcdic.h"
 #include "mpm.h"
 
-#ifdef HAVE_NETDB_H
-#include <netdb.h>
-#endif
 #ifdef HAVE_SYS_SOCKET_H
 #include <sys/socket.h>
 #endif
@@ -586,7 +583,8 @@ char *ap_response_code_string(request_rec *r, int error_index)
 /* Code from Harald Hanche-Olsen <hanche@imf.unit.no> */
 static apr_inline void do_double_reverse (conn_rec *conn)
 {
-    struct hostent *hptr;
+    apr_sockaddr_t *sa;
+    apr_status_t rv;
 
     if (conn->double_reverse) {
 	/* already done */
@@ -597,17 +595,17 @@ static apr_inline void do_double_reverse (conn_rec *conn)
 	conn->double_reverse = -1;
 	return;
     }
-    hptr = gethostbyname(conn->remote_host);   
-    if (hptr) {          
-	char **haddr;
-
-	for (haddr = hptr->h_addr_list; *haddr; haddr++) {
-	    if (((struct in_addr *)(*haddr))->s_addr
-		== conn->remote_addr->sa.sin.sin_addr.s_addr) {
-		conn->double_reverse = 1;
-		return;
-	    }
-	}
+    rv = apr_getaddrinfo(&sa, conn->remote_host, APR_UNSPEC, 0, 0, conn->pool);
+    if (rv == APR_SUCCESS) {
+        while (sa) {
+            if (sa->ipaddr_len == conn->remote_addr->ipaddr_len &&
+                !memcmp(sa->ipaddr_ptr, conn->remote_addr->ipaddr_ptr,
+                        sa->ipaddr_len)) {
+                conn->double_reverse = 1;
+                return;
+            }
+            sa = sa->next;
+        }
     }
     conn->double_reverse = -1;
 }
