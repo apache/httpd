@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/05/13 15:10:46 $]
+Last modified at [$Date: 2003/05/13 15:39:07 $]
 
 Release:
 
@@ -228,9 +228,6 @@ PATCHES TO PORT FROM 2.1
       server/core.c r1.232+r1.235
       +1: trawick, stoddard
 
-    * Fix for a pair of potential buffer overflows in htdigest.
-      support/htdigest.c r1.36
-      +1: thommay, nd, trawick
 
     * Hook mod_rewrite's type checker before mod_mime's one. That way the
       RewriteRule [T=...] Flag should work as expected now. PR 19626.

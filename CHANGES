@@ -1,5 +1,7 @@
 Changes with Apache 2.0.46
 
+  *) forward port of buffer overflow fixes for htdigest. [Thom May]
+
   *) Added AllowEncodedSlashes directive to permit control of whether
      the server will accept encoded slashes ('%2f') in the URI path.
      Default condition is off (the historical behaviour).  This permits

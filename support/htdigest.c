@@ -307,8 +307,8 @@ int main(int argc, const char * const argv[])
 	fprintf(stderr, "Use -c option to create new one.\n");
 	cleanup_tempfile_and_exit(1);
     }
-    strcpy(user, argv[3]);
-    strcpy(realm, argv[2]);
+    apr_cpystrn(user, argv[3], sizeof(user));
+    apr_cpystrn(realm, argv[2], sizeof(realm));
 
     found = 0;
     while (!(get_line(line, MAX_STRING_LEN, f))) {
