@@ -765,7 +765,9 @@ static int32 worker_thread(void * dummy)
             SAFE_ACCEPT(intra_mutex_off(0));
             break;
         }
+#if B_BEOS_VERSION < 0x0460
         ap_clear_pool(ptrans);
+#endif
     }
 
     ap_destroy_pool(tpool);
