@@ -1,8 +1,12 @@
-<html><head><META http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><!--
-        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-              This file is generated from xml source: DO NOT EDIT
-        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-      --><title>Starting Apache - Apache HTTP Server</title><link href="./style/manual.css" type="text/css" rel="stylesheet"></head><body><blockquote><div align="center"><img src="./images/sub.gif" alt="[APACHE DOCUMENTATION]"><h3>Apache HTTP Server Version 2.0</h3></div><h1 align="center">Starting Apache</h1>
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="./style/manual.en.xsl"?>
+<manualpage>
+<relativepath href="."/>
+
+  <title>Starting Apache</title>
+
+<summary>
     <p>On Windows, Apache is normally run as a service on Windows
     NT, or as a console application on Windows 95. For details, see
     <a href="platform/windows.html#run">running Apache for
@@ -12,9 +16,11 @@
     is run as a daemon that executes continuously in the
     background to handle requests.  This document describes how
     to invoke <code>httpd</code>.</p>
-<ul><li><a href="#startup">How Apache Starts</a></li><li><a href="#errors">Errors During Start-up</a></li><li><a href="#boot">Starting at Boot-Time</a></li><li><a href="#info">Additional Information</a></li></ul><hr><h2><a name="startup">How Apache Starts</a></h2>
+</summary>
 
-    <p>If the <a href="./mod/mpm_common.html#listen" class="directive"><code class="directive">Listen</code></a>
+<section id="startup"><title>How Apache Starts</title>
+
+    <p>If the <directive module="mpm_common">Listen</directive>
     specified in the configuration file is default of 80 (or any other
     port below 1024), then it is necessary to have root privileges in
     order to start apache, so that it can bind to this privileged
@@ -27,16 +33,18 @@
     <a href="mpm.html">Multi-Processing Module</a>.</p>
 
     <p>The first thing that <code>httpd</code> does when it is
-    invoked is to locate and read the <a href="configuring.html">configuration file</a>
+    invoked is to locate and read the <a
+    href="configuring.html">configuration file</a>
     <code>httpd.conf</code>. The location of this file is set at
     compile-time, but it is possible to specify its location at run
     time using the <code>-f</code> command-line option as in</p>
 
-<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>/usr/local/apache/bin/httpd -f
-      /usr/local/apache/conf/httpd.conf</code></td></tr></table></blockquote>
+<example>/usr/local/apache/bin/httpd -f
+      /usr/local/apache/conf/httpd.conf</example>
 
     <p>As an alternative to invoking the <code>httpd</code> binary
-    directly, a shell script called <a href="programs/apachectl.html">apachectl</a> is provided which
+    directly, a shell script called <a
+    href="programs/apachectl.html">apachectl</a> is provided which
     can be used to control the daemon process with simple commands
     such as <code>apachectl start</code> and <code>apachectl
     stop</code>.</p>
@@ -45,14 +53,17 @@
     the terminal and the command prompt will return almost
     immediately. This indicates that the server is up and running.
     You can then use your browser to connect to the server and view
-    the test page in the <a href="./mod/core.html#documentroot" class="directive"><code class="directive">DocumentRoot</code></a> directory
+    the test page in the <directive
+    module="core">DocumentRoot</directive> directory
     and the local copy of the documentation linked from that
     page.</p>
-<h2><a name="errors">Errors During Start-up</a></h2>
+</section>
+
+<section id="errors"><title>Errors During Start-up</title>
 
     <p>If Apache suffers a fatal problem during startup, it will
     write a message describing the problem either to the console or
-    to the <a href="./mod/core.html#errorlog" class="directive"><code class="directive">ErrorLog</code></a> before
+    to the <directive module="core">ErrorLog</directive> before
     exiting. One of the most common error messages is "<code>Unable
     to bind to Port ...</code>". This message is usually caused by
     either:</p>
@@ -68,7 +79,9 @@
 
     <p>For further trouble-shooting instructions, consult the
     Apache <a href="faq/">FAQ</a>.</p>
-<h2><a name="boot">Starting at Boot-Time</a></h2>
+</section>
+
+<section id="boot"><title>Starting at Boot-Time</title>
 
     <p>If you want your server to continue running after a system
     reboot, you should add a call to <code>httpd</code> or
@@ -80,12 +93,19 @@
     designed so that it can often be linked directly as an init
     script, but be sure to check the exact requirements of your
     system.</p>
-<h2><a name="info">Additional Information</a></h2>
+</section>
 
-    <p>Additional information about the command-line options of <a href="programs/httpd.html">httpd</a> and <a href="programs/apachectl.html">apachectl</a> as well as other
+<section id="info"><title>Additional Information</title>
+
+    <p>Additional information about the command-line options of <a
+    href="programs/httpd.html">httpd</a> and <a
+    href="programs/apachectl.html">apachectl</a> as well as other
     support programs included with the server is available on the
     <a href="programs/">Server and Supporting Programs</a> page.
-    There is also documentation on all the <a href="mod/">modules</a> included with the Apache distribution
+    There is also documentation on all the <a
+    href="mod/">modules</a> included with the Apache distribution
     and the <a href="mod/directives.html">directives</a> that they
     provide.</p>
-<hr></blockquote><h3 align="center">Apache HTTP Server Version 2.0</h3><a href="./"><img src="./images/index.gif" alt="Index"></a><a href="./"><img src="./images/home.gif" alt="Home"></a></body></html>
+</section>
+
+</manualpage>
