@@ -314,6 +314,8 @@ char *ssl_util_ptxtsub(apr_pool_t *p, const char *cpLine,
  */
 
 static apr_thread_mutex_t **lock_cs;
+/* FIXME: CRYPTO_NUM_LOCKS may vary between releases - replace with
+   CRYPT_num_locks() [Ben, Jan 2002] */
 static long                 lock_count[CRYPTO_NUM_LOCKS];
 
 static void ssl_util_thr_lock(int mode, int type, const char *file, int line)
