@@ -362,7 +362,6 @@
 #else
 #define SERVER_VERSION	SERVER_BASEVERSION
 #endif
-extern MODULE_VAR_EXPORT const char SERVER_BUILT[];
 
 const char *apapi_get_server_version();
 const char *apapi_get_server_built();
