@@ -236,18 +236,6 @@ struct ap_filter_rec_t {
     /** The next filter_rec in the list */
     struct ap_filter_rec_t *next;
 
-    /** Dispatch criteria for filter providers */
-    enum {
-        HANDLER,
-        REQUEST_HEADERS,
-        RESPONSE_HEADERS,
-        SUBPROCESS_ENV,
-        CONTENT_TYPE
-    } dispatch;
-
-    /** Match value for filter providers */
-    const char* value;
-
     /** Providers for this filter */
     ap_filter_provider_t *providers;
 

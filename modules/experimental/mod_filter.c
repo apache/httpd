@@ -75,6 +75,18 @@ struct ap_filter_provider_t {
 
     /** The next provider in the list */
     ap_filter_provider_t *next;
+
+    /** Dispatch criteria for filter providers */
+    enum {
+        HANDLER,
+        REQUEST_HEADERS,
+        RESPONSE_HEADERS,
+        SUBPROCESS_ENV,
+        CONTENT_TYPE
+    } dispatch;
+
+    /** Match value for filter providers */
+    const char* value;
 };
 
 /** we need provider_ctx to save ctx values set by providers in filter_init */
@@ -174,15 +186,15 @@ static int filter_lookup(ap_filter_t *f, ap_filter_rec_t *filter)
     /* Check registered providers in order */
     for (provider = filter->providers; provider; provider = provider->next) {
         match = 1;
-        switch (filter->dispatch) {
+        switch (provider->dispatch) {
         case REQUEST_HEADERS:
-            str = apr_table_get(r->headers_in, filter->value);
+            str = apr_table_get(r->headers_in, provider->value);
             break;
         case RESPONSE_HEADERS:
-            str = apr_table_get(r->headers_out, filter->value);
+            str = apr_table_get(r->headers_out, provider->value);
             break;
         case SUBPROCESS_ENV:
-            str = apr_table_get(r->subprocess_env, filter->value);
+            str = apr_table_get(r->subprocess_env, provider->value);
             break;
         case CONTENT_TYPE:
             str = r->content_type;
@@ -269,7 +281,7 @@ static int filter_lookup(ap_filter_t *f, ap_filter_rec_t *filter)
              * toes of filters which want to do it themselves.
              * 
              */
-            proto_flags = filter->proto_flags | provider->frec->proto_flags;
+            proto_flags = provider->frec->proto_flags;
 
             /* some specific things can't happen in a proxy */
             if (r->proxyreq) {
@@ -458,7 +470,7 @@ static const char *filter_protocol(cmd_parms *cmd, void *CFG, const char *fname,
 #endif
 
 static const char *filter_declare(cmd_parms *cmd, void *CFG, const char *fname,
-                                  const char *condition, const char *place)
+                                  const char *place)
 {
     const char *eq;
     char *tmpname = "";
@@ -473,40 +485,6 @@ static const char *filter_declare(cmd_parms *cmd, void *CFG, const char *fname,
     filter->filter_func.out_func = filter_harness;
     filter->ftype = AP_FTYPE_RESOURCE;
     filter->next = NULL;
-
-    /* determine what this filter will dispatch on */
-    eq = ap_strchr_c(condition, '=');
-    if (eq) {
-        tmpname = apr_pstrdup(cmd->pool, eq+1);
-        if (!strncasecmp(condition, "env=", 4)) {
-            filter->dispatch = SUBPROCESS_ENV;
-        }
-        else if (!strncasecmp(condition, "req=", 4)) {
-            filter->dispatch = REQUEST_HEADERS;
-        }
-        else if (!strncasecmp(condition, "resp=", 5)) {
-            filter->dispatch = RESPONSE_HEADERS;
-        }
-        else {
-            return "FilterCondition: unrecognized dispatch table";
-        }
-    }
-    else {
-        if (!strcasecmp(condition, "handler")) {
-            filter->dispatch = HANDLER;
-        }
-        else {
-            filter->dispatch = RESPONSE_HEADERS;
-        }
-        tmpname = apr_pstrdup(cmd->pool, condition);
-        ap_str_tolower(tmpname);
-    }
-
-    if (   (filter->dispatch == RESPONSE_HEADERS)
-        && !strcmp(tmpname, "content-type")) {
-        filter->dispatch = CONTENT_TYPE;
-    }
-    filter->value = tmpname;
 
     if (place) {
         if (!strcasecmp(place, "CONTENT_SET")) {
@@ -526,14 +504,24 @@ static const char *filter_declare(cmd_parms *cmd, void *CFG, const char *fname,
     return NULL;
 }
 
-static const char *filter_provider(cmd_parms *cmd, void *CFG, const char *fname,
-                                   const char *pname, const char *match)
+static const char *filter_provider(cmd_parms *cmd, void *CFG, const char *args)
 {
     int flags;
     ap_filter_provider_t *provider;
     const char *rxend;
     const char *c;
     char *str;
+    const char *eq;
+
+    /* insist on exactly four arguments */
+    const char *fname = ap_getword_conf(cmd->pool, &args) ;
+    const char *pname = ap_getword_conf(cmd->pool, &args) ;
+    const char *condition = ap_getword_conf(cmd->pool, &args) ;
+    const char *match = ap_getword_conf(cmd->pool, &args) ;
+    eq = ap_getword_conf(cmd->pool, &args) ;
+    if ( !*fname || !*pname || !*match || !*condition || *eq ) {
+        return "usage: FilterProvider filter provider condition match" ;
+    }
 
     /* fname has been declared with DeclareFilter, so we can look it up */
     mod_filter_cfg *cfg = CFG;
@@ -542,6 +530,14 @@ static const char *filter_provider(cmd_parms *cmd, void *CFG, const char *fname,
     /* if provider has been registered, we can look it up */
     ap_filter_rec_t *provider_frec = ap_get_output_filter_handle(pname);
     /* or if provider is mod_filter itself, we can also look it up */
+
+    if (!frec) {
+        c = filter_declare(cmd, CFG, fname, NULL);
+        if ( c ) {
+            return c;
+        }
+        frec = apr_hash_get(cfg->live_filters, fname, APR_HASH_KEY_STRING);
+    }
 
     if (!provider_frec) {
         provider_frec = apr_hash_get(cfg->live_filters, pname,
@@ -554,79 +550,111 @@ static const char *filter_provider(cmd_parms *cmd, void *CFG, const char *fname,
     else if (!provider_frec) {
         return apr_psprintf(cmd->pool, "Unknown filter provider %s", pname);
     }
-    else {
-        provider = apr_palloc(cmd->pool, sizeof(ap_filter_provider_t));
 
-        if (*match == '!') {
-            provider->not = 1;
+    provider = apr_palloc(cmd->pool, sizeof(ap_filter_provider_t));
+    if (*match == '!') {
+        provider->not = 1;
+        ++match;
+    }
+    else {
+        provider->not = 0;
+    }
+
+    switch (*match++) {
+    case '<':
+        if (*match == '=') {
+            provider->match_type = INT_LE;
             ++match;
         }
         else {
-            provider->not = 0;
+            provider->match_type = INT_LT;
         }
-
-        switch (*match++) {
-        case '<':
-            if (*match == '=') {
-                provider->match_type = INT_LE;
-                ++match;
-            }
-            else {
-                provider->match_type = INT_LT;
-            }
-            provider->match.number = atoi(match);
-            break;
-        case '>':
-            if (*match == '=') {
-                provider->match_type = INT_GE;
-                ++match;
-            }
-            else {
-                provider->match_type = INT_GT;
-            }
-            provider->match.number = atoi(match);
-            break;
-        case '=':
-            provider->match_type = INT_EQ;
-            provider->match.number = atoi(match);
-            break;
-        case '/':
-            provider->match_type = REGEX_MATCH;
-            rxend = ap_strchr_c(match, '/');
-            if (!rxend) {
-                  return "Bad regexp syntax";
-            }
-            flags = REG_NOSUB;        /* we're not mod_rewrite:-) */
-            for (c = rxend+1; *c; ++c) {
-                switch (*c) {
-                case 'i': flags |= REG_ICASE; break;
-                }
-            }
-            provider->match.regex = ap_pregcomp(cmd->pool,
-                                                apr_pstrndup(cmd->pool,
-                                                             match,
-                                                             rxend-match),
-                                                flags);
-            break;
-        case '*':
-            provider->match_type = DEFINED;
-            provider->match.number = -1;
-            break;
-        case '$':
-            provider->match_type = STRING_CONTAINS;
-            str = apr_pstrdup(cmd->pool, match);
-            ap_str_tolower(str);
-            provider->match.string = str;
-            break;
-        default:
-            provider->match_type = STRING_MATCH;
-            provider->match.string = apr_pstrdup(cmd->pool, match-1);
-            break;
+        provider->match.number = atoi(match);
+        break;
+    case '>':
+        if (*match == '=') {
+            provider->match_type = INT_GE;
+            ++match;
         }
-        provider->frec = provider_frec;
-        provider->next = frec->providers;
-        frec->providers = provider;
+        else {
+            provider->match_type = INT_GT;
+        }
+        provider->match.number = atoi(match);
+        break;
+    case '=':
+        provider->match_type = INT_EQ;
+        provider->match.number = atoi(match);
+        break;
+    case '/':
+        provider->match_type = REGEX_MATCH;
+        rxend = ap_strchr_c(match, '/');
+        if (!rxend) {
+              return "Bad regexp syntax";
+        }
+        flags = REG_NOSUB;        /* we're not mod_rewrite:-) */
+        for (c = rxend+1; *c; ++c) {
+            switch (*c) {
+            case 'i': flags |= REG_ICASE; break;
+            }
+        }
+        provider->match.regex = ap_pregcomp(cmd->pool,
+                                            apr_pstrndup(cmd->pool,
+                                                         match,
+                                                         rxend-match),
+                                            flags);
+        break;
+    case '*':
+        provider->match_type = DEFINED;
+        provider->match.number = -1;
+        break;
+    case '$':
+        provider->match_type = STRING_CONTAINS;
+        str = apr_pstrdup(cmd->pool, match);
+        ap_str_tolower(str);
+        provider->match.string = str;
+        break;
+    default:
+        provider->match_type = STRING_MATCH;
+        provider->match.string = apr_pstrdup(cmd->pool, match-1);
+        break;
     }
+    provider->frec = provider_frec;
+    provider->next = frec->providers;
+    frec->providers = provider;
+
+    /* determine what a filter will dispatch this provider on */
+    eq = ap_strchr_c(condition, '=');
+    if (eq) {
+        str = apr_pstrdup(cmd->pool, eq+1);
+        if (!strncasecmp(condition, "env=", 4)) {
+            provider->dispatch = SUBPROCESS_ENV;
+        }
+        else if (!strncasecmp(condition, "req=", 4)) {
+            provider->dispatch = REQUEST_HEADERS;
+        }
+        else if (!strncasecmp(condition, "resp=", 5)) {
+            provider->dispatch = RESPONSE_HEADERS;
+        }
+        else {
+            return "FilterProvider: unrecognized dispatch table";
+        }
+    }
+    else {
+        if (!strcasecmp(condition, "handler")) {
+            provider->dispatch = HANDLER;
+        }
+        else {
+            provider->dispatch = RESPONSE_HEADERS;
+        }
+        str = apr_pstrdup(cmd->pool, condition);
+        ap_str_tolower(str);
+    }
+   
+    if (   (provider->dispatch == RESPONSE_HEADERS)
+        && !strcmp(str, "content-type")) {
+        provider->dispatch = CONTENT_TYPE;
+    }
+    provider->value = str;
 
     return NULL;
 }
@@ -704,6 +732,9 @@ static const char *filter_debug(cmd_parms *cmd, void *CFG, const char *fname,
     mod_filter_cfg *cfg = CFG;
     ap_filter_rec_t *frec = apr_hash_get(cfg->live_filters, fname,
                                          APR_HASH_KEY_STRING);
+    if (!frec) {
+        return apr_psprintf(cmd->pool, "Undeclared smart filter %s", fname);
+    }
     frec->debug = atoi(level);
 
     return NULL;
@@ -791,10 +822,11 @@ static void *filter_merge(apr_pool_t *pool, void *BASE, void *ADD)
 }
 
 static const command_rec filter_cmds[] = {
-    AP_INIT_TAKE23("FilterDeclare", filter_declare, NULL, OR_OPTIONS,
-        "filter-name, dispatch-criterion [, filter-type]"),
-    AP_INIT_TAKE3("FilterProvider", filter_provider, NULL, OR_OPTIONS,
-        "filter-name, provider-name, dispatch-match"),
+    AP_INIT_TAKE12("FilterDeclare", filter_declare, NULL, OR_OPTIONS,
+        "filter-name [, filter-type]"),
+    /** we don't have a TAKE4, so we have to use RAW_ARGS */
+    AP_INIT_RAW_ARGS("FilterProvider", filter_provider, NULL, OR_OPTIONS,
+        "filter-name, provider-name, dispatch--criterion, dispatch-match"),
     AP_INIT_ITERATE("FilterChain", filter_chain, NULL, OR_OPTIONS,
         "list of filter names with optional [+-=!@]"),
     AP_INIT_TAKE2("FilterTrace", filter_debug, NULL, RSRC_CONF | ACCESS_CONF,
