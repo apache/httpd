@@ -1,5 +1,8 @@
 Changes with Apache 2.0.48
 
+  *) mod_deflate: Don't attempt to hold all of the response until we're
+     done.  [Justin Erenkrantz]
+
   *) Assure that we block properly when reading input bodies with SSL.
      PR 19242.  [David Deaves <David.Deaves@dd.id.au>, William Rowe]
 
