@@ -17,8 +17,6 @@ Changes with Apache 2.1.0-dev
      instead of db3. Fixed complaints about unpackaged files.
      [Graham Leggett]
 
-  *) Fix handling of IPv6 numeric strings in mod_proxy.  [Jeff Trawick]
-
   *) External rewrite map responses are no longer limited to 2048
      bytes.  [André Malo]
 
@@ -148,9 +146,6 @@ Changes with Apache 2.1.0-dev
      AUTH_GENERAL_ERROR.
      [Geoffrey Young]
 
-  *) mod_isapi: send_response_header() failed to copy status string's 
-     last character.  PR 20619.  [Jesse Pelton <jsp pkc.com>]
-
   *) The whole codebase was relicensed and is now available under
      the Apache License, Version 2.0 (http://www.apache.org/licenses).
      [Apache Software Foundation]
@@ -160,9 +155,6 @@ Changes with Apache 2.1.0-dev
 
   *) Delete some make-generated files in the server directory during 
      "make clean" processing.  PR 26552.  [Jeff Trawick]
-
-  *) Unix MPMs: Stop dropping connections when the file descriptor
-     is at least FD_SETSIZE.  [Jeff Trawick]
 
   *) Add core version query function (ap_get_server_revision) and
      accompanying ap_version_t structure (minor MMN bump).
@@ -382,6 +374,19 @@ Changes with Apache 2.1.0-dev
    Apache 2.0.xx tree as documented, and except as noted, below.]
 
 Changes with Apache 2.0.50
+
+  *) Regression from 1.3: At startup, suexec now will be checked for
+     availability, the setuid bit and user root. The works only if
+     httpd is compiled with the shipped APR version (0.9.5).
+     [André Malo]
+
+  *) Unix MPMs: Stop dropping connections when the file descriptor
+     is at least FD_SETSIZE.  [Jeff Trawick]
+
+  *) Fix handling of IPv6 numeric strings in mod_proxy.  [Jeff Trawick]
+
+  *) mod_isapi: send_response_header() failed to copy status string's 
+     last character.  PR 20619.  [Jesse Pelton <jsp pkc.com>]
 
   *) Fix a segfault when requests for shared memory fails and returns
      NULL. Fix a segfault caused by a lack of bounds checking on the
