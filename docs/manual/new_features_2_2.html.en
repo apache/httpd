@@ -38,10 +38,16 @@
     <dl>
 
       <dt>Authn/Authz</dt>
-      <dd>...</dd>
+      <dd>The bundled authentication and authorization modules have
+          been refactored.  There is a new authentication backend provider
+          scheme which greatly eases the construction of new authentication
+          backends.</dd>
 
       <dt>Caching</dt>
-      <dd>...</dd>
+      <dd><code class="module"><a href="./mod/mod_cache.html">mod_cache</a></code>, <code class="module"><a href="./mod/mod_disk_cache.html">mod_disk_cache</a></code>, and
+          <code class="module"><a href="./mod/mod_mem_cache.html">mod_mem_cache</a></code> have undergone a lot of changes
+          are now considered production-quality. <a href="programs/htcacheclean.html">htcacheclean</a> has been
+          introduced to cleanup <code class="module"><a href="./mod/mod_disk_cache.html">mod_disk_cache</a></code> setups.</dd>
 
       <dt>Proxying</dt>
       <dd>The new <code class="module"><a href="./mod/mod_proxy_balancer.html">mod_proxy_balancer</a></code> module provides 
