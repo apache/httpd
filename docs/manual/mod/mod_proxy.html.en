@@ -70,6 +70,7 @@ dangerous both to your network and to the Internet at large.</p></div>
 <li><img alt="" src="../images/down.gif" /> <a href="#allowconnect">AllowCONNECT</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#noproxy">NoProxy</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#proxy">&lt;Proxy&gt;</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#proxybadheader">ProxyBadHeader</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#proxyblock">ProxyBlock</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#proxydomain">ProxyDomain</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#proxyerroroverride">ProxyErrorOverride</a></li>
@@ -459,6 +460,36 @@ server:</p>
   SetOutputFilter INCLUDES<br />
 &lt;/Proxy&gt;
 </code></p></div>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="ProxyBadHeader" id="ProxyBadHeader">ProxyBadHeader</a> <a name="proxybadheader" id="proxybadheader">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Determines how to handle bad header lines in a
+response</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>ProxyBadHeader IsError|Ignore|StartBody</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>ProxyBadHeader IsError</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>available in Apache 2.0.44 and later</td></tr>
+</table>
+<p>The <code class="directive">ProxyBadHeader</code> directive determines the behaviour
+of <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> if it receives syntactically invalid header lines
+(<em>i.e.</em> containing no colon). The following arguments are possible:</p>
+<dl>
+<dt><code>IsError</code></dt>
+<dd>Abort the request and end up with a 502 (Bad Gateway) response. This is the
+default behaviour.</dd>
+
+<dt><code>Ignore</code></dt>
+<dd>Treat bad header lines as if they weren't sent.</dd>
+
+<dt><code>StartBody</code></dt>
+<dd>When receiving the first bad header line, finish reading the headers and
+treat the remainder as body. This helps to work around buggy backend servers
+which forget to insert an empty line between the headers and the body.</dd>
+</dl>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
