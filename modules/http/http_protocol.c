@@ -795,10 +795,12 @@ static int read_request_line(request_rec *r)
      * read().  B_SAFEREAD ensures that the BUFF layer flushes if it will
      * have to block during a read.
      */
-    ap_bsetflag(conn->client, B_SAFEREAD, 1);
+    /* TODO: re-implement SAFEREAD external to BUFF using a layer */
+    /* //ap_bsetflag(conn->client, B_SAFEREAD, 1); */
+    ap_bflush(conn->client);
     while ((len = getline(l, sizeof(l), conn->client, 0)) <= 0) {
         if ((len < 0) || ap_bgetflag(conn->client, B_EOF)) {
-            ap_bsetflag(conn->client, B_SAFEREAD, 0);
+	    /* //ap_bsetflag(conn->client, B_SAFEREAD, 0); */
 	    /* this is a hack to make sure that request time is set,
 	     * it's not perfect, but it's better than nothing 
 	     */
@@ -811,7 +813,7 @@ static int read_request_line(request_rec *r)
     signal(SIGUSR1, SIG_IGN);
 #endif
 
-    ap_bsetflag(conn->client, B_SAFEREAD, 0);
+    /* //ap_bsetflag(conn->client, B_SAFEREAD, 0); */
 
     r->request_time = time(NULL);
     r->the_request = ap_pstrdup(r->pool, l);
