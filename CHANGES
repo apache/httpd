@@ -12,12 +12,6 @@ Changes with Apache 2.1.0-dev
   *) mod_ext_filter: Add the ability to filter request bodies.
      [Philipp Reisner <philipp.reisner@linbit.com>]
 
-  *) Fix NULL-pointer issue in ab when parsing an incomplete or non-HTTP
-     response. PR 21085. [Glenn Nielsen <glenn@apache.org>, André Malo]
-
-  *) Added FreeBSD directory layout. PR 21100.
-     [Sander Holthaus <info@orangexl.com>, André Malo]
-
   *) Correct the code in ap_check_cache_feshness to check max_age,
      smax_age, and expires correctly. Patch submitted by Thomas
      Castelle [Paul J. Reder]
@@ -157,6 +151,12 @@ Changes with Apache 2.1.0-dev
    Apache 2.0.xx tree as documented, and except as noted, below.]
 
 Changes with Apache 2.0.48
+
+  *) Added FreeBSD directory layout. PR 21100.
+     [Sander Holthaus <info@orangexl.com>, André Malo]
+
+  *) Fix NULL-pointer issue in ab when parsing an incomplete or non-HTTP
+     response. PR 21085. [Glenn Nielsen <glenn@apache.org>, André Malo]
 
   *) mod_rewrite: Perform child initialization on the rewrite log lock.
      This fixes a log corruption issue when flock-based serialization
