@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/12/04 06:31:01 $]
+Last modified at [$Date: 2003/12/04 06:40:13 $]
 
 Release:
 
@@ -337,12 +337,6 @@ PATCHES TO BACKPORT FROM 2.1
         include/httpd.h: r1.201
         include/ap_mmn.h: r1.60
       +1: nd
-
-    * mod_autoindex: Restore the ability to add a description for
-      directories that don't contain an index file.
-      PR 7990
-        modules/generators/mod_autoindex.c: r1.125
-      +1: nd, trawick, striker
 
     * LDAP cache fixes from Matthieu Estrade; see PR 18756
         include/util_ldap.h r1.12
