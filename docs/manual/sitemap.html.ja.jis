@@ -139,6 +139,11 @@
 <li><a href="mod/mod_userdir.html">Apache モジュール mod_userdir</a></li>
 <li><a href="mod/mod_usertrack.html">Apache モジュール mod_usertrack</a></li>
 <li><a href="mod/mod_vhost_alias.html">Apache モジュール mod_vhost_alias</a></li>
+</ul><ul><li><a href="mod/obs_mod_access.html"> mod_access</a></li>
+<li><a href="mod/obs_mod_auth.html"> mod_auth</a></li>
+<li><a href="mod/obs_mod_auth_anon.html"> mod_auth_anon</a></li>
+<li><a href="mod/obs_mod_auth_dbm.html"> mod_auth_dbm</a></li>
+<li><a href="mod/obs_mod_auth_digest.html"> mod_auth_digest</a></li>
 </ul></div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div><div class="section"><h2><a name="developer" id="developer">開発者のためのドキュメント</a></h2><ul><li class="separate"><a href="developer/">概略</a></li>
 <li><a href="developer/API.html">Apache API メモ</a></li>
 <li><a href="developer/debugging.html">APR
