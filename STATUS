@@ -206,10 +206,10 @@ Open issues:
       1.3b6 and thus for the 1.3.x release branch via the
       apache-1.3/src/test/rename/rename.cf file as the configuration for the
       renaming. The used prefix or prefixes are configureable in the file.
-       +1: Ralf
-        0: Marc
+       +1:
+        0: Ralf, Marc
 
-      NOTES:
+      Notes:
        - Marc: this is the wrong time for such a big change
 
     * What prefixes to use for the renaming:
@@ -222,20 +222,7 @@ Open issues:
 
         - Private functions which we can't make static (because of
           cross-object usage) but should be (e.g., new_connection)
-            ap_xxx:    +1: Randy, Martin, Brian, Paul
-	               -0: Ralf
-            apx_xxx:   +1: Ralf
-            appri_xxx: +0: Ralf
-
-        - Public API module structure variables (e.g.,
-          status_module) which are used special in Configure,
-          mod_so, etc and have to be exported:
-          [CANNOT BE DONE AUTOMATICALLY BY RENAME.PL!]
-            ..._module:+1: 
-	               +0: Ralf
-            ap_xxx:    +1:
-	               -0: Ralf
-            apm_xxx:   +0: Ralf
+            ap_xxx:    +1: Randy, Martin, Brian, Paul, Ralf
 
         Notes: 
 	    - Ken: Veto rescinded.
