@@ -886,7 +886,7 @@ apr_status_t ap_dechunk_filter(ap_filter_t *f, ap_bucket_brigade *bb,
          */
         b = AP_BRIGADE_FIRST(bb);
         while (b != AP_BRIGADE_SENTINEL(bb) && !AP_BUCKET_IS_EOS(b)) {
-            ap_bucket_read(b, &buf, &len, 1);
+            ap_bucket_read(b, &buf, &len, AP_BLOCK_READ);
             AP_DEBUG_ASSERT(len <= ctx->chunk_size - ctx->bytes_delivered);
             ctx->bytes_delivered += len;
             b = AP_BUCKET_NEXT(b);
@@ -927,12 +927,25 @@ apr_status_t ap_http_filter(ap_filter_t *f, ap_bucket_brigade *b, ap_input_mode_
     if (mode == AP_MODE_PEEK) {
         /* XXX make me *try* to read from the network if AP_BRIGADE_EMPTY().
          * For now, we can't do a non-blocking read so we bypass this.
-         *
-         * Also, note that in the cases where another request can be read now
-         * without blocking, it is likely already in our brigade, so this hack 
-         * isn't so bad after all.
          */
+        ap_bucket *e;
+        const char *str;
+        apr_size_t length;
+
+        e = AP_BRIGADE_FIRST(ctx->b);
+        while (e->length == 0) {
+            AP_BUCKET_REMOVE(e);
+            ap_bucket_destroy(e);
+
         if (AP_BRIGADE_EMPTY(ctx->b)) {
+                e = NULL;
+                break;
+            }
+
+            e = AP_BRIGADE_FIRST(ctx->b);
+        }    
+
+        if (!e || ap_bucket_read(e, &str, &length, AP_NONBLOCK_READ) != APR_SUCCESS) {
             return APR_EOF;
         }
         else {
@@ -951,7 +964,7 @@ apr_status_t ap_http_filter(ap_filter_t *f, ap_bucket_brigade *b, ap_input_mode_
         while (e != AP_BRIGADE_SENTINEL(ctx->b)) {
             const char *ignore;
 
-            if ((rv = ap_bucket_read(e, &ignore, &len, 0)) != APR_SUCCESS) {
+            if ((rv = ap_bucket_read(e, &ignore, &len, AP_BLOCK_READ)) != APR_SUCCESS) {
                 /* probably APR_IS_EAGAIN(rv); socket state isn't correct;
                  * remove log once we get this squared away */
                 ap_log_error(APLOG_MARK, APLOG_ERR, rv, f->c->base_server, 
@@ -987,7 +1000,7 @@ apr_status_t ap_http_filter(ap_filter_t *f, ap_bucket_brigade *b, ap_input_mode_
 
     while (!AP_BRIGADE_EMPTY(ctx->b)) {
         e = AP_BRIGADE_FIRST(ctx->b);
-        if ((rv = ap_bucket_read(e, (const char **)&buff, &len, 0)) != APR_SUCCESS) {
+        if ((rv = ap_bucket_read(e, (const char **)&buff, &len, AP_BLOCK_READ)) != APR_SUCCESS) {
             return rv;
         }
 
@@ -1050,7 +1063,7 @@ static int getline(char *s, int n, request_rec *r, int fold)
             ap_bucket_destroy(e);
             continue;
         }
-        retval = ap_bucket_read(e, &temp, &length, 0);
+        retval = ap_bucket_read(e, &temp, &length, AP_BLOCK_READ);
 
         if (retval != APR_SUCCESS) {
             total = ((length < 0) && (total == 0)) ? -1 : total;
@@ -2283,7 +2296,7 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_content_length_filter(ap_filter_t *f,
                     const char *ignored;
                     apr_ssize_t length;
                     
-                    rv = ap_bucket_read(e, &ignored, &length, 1);
+                    rv = ap_bucket_read(e, &ignored, &length, AP_BLOCK_READ);
                     if (rv != APR_SUCCESS) {
                         return rv;
                     }
@@ -2669,7 +2682,7 @@ AP_DECLARE(long) ap_get_client_block(request_rec *r, char *buffer, int bufsiz)
 
     total = 0;
     while (total < bufsiz &&  b != AP_BRIGADE_SENTINEL(bb) && !AP_BUCKET_IS_EOS(b)) {
-        if ((rv = ap_bucket_read(b, &tempbuf, &len_read, 0)) != APR_SUCCESS) {
+        if ((rv = ap_bucket_read(b, &tempbuf, &len_read, AP_BLOCK_READ)) != APR_SUCCESS) {
             return -1;
         }
         if (total + len_read > bufsiz) {
