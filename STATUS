@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/09/17 10:15:09 $]
+Last modified at [$Date: 2004/09/17 15:28:07 $]
 
 Release:
 
@@ -85,14 +85,7 @@ PATCHES TO BACKPORT FROM 2.1
     *) Use HTML 2.0 <hr> for error pages. PR 30732
          modules/http/http_protocol.c: r1.483
        +1: nd, jorton, trawick
-
-    *) mod_mem_cache: Fixed race condition causing segfault because of memory being
-       freed twice, or reused after being freed. Changed the atomic usage of refcount
-       variable by combining it with a cleanup flag.
-       modules/experimental/mod_mem_cache.c: r1.115
-       modules/experimental/mod_cache.h: r1.49
-       +1: clar
-    
+  
     *) mod_rewrite: Fix 0 bytes write into random memory position. PR 31036.
        (2.0 + 1.3)
          http://www.apache.org/~nd/dbmmap_1.3.patch
