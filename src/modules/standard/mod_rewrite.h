@@ -429,6 +429,7 @@ static void do_expand_env(request_rec *r, char *env[],
 static void  splitout_queryargs(request_rec *r, int qsappend);
 static void  fully_qualify_uri(request_rec *r);
 static void  reduce_uri(request_rec *r);
+static int   is_absolute_uri(char *uri);
 static char *expand_tildepaths(request_rec *r, char *uri);
 
     /* rewrite map support functions */
