@@ -172,6 +172,7 @@ ap_hook_child_init
 ap_hook_default_port
 ap_hook_deregister_all
 ap_hook_fixups
+ap_hook_handler
 ap_hook_header_parser
 ap_hook_http_method
 ap_hook_log_transaction
@@ -232,6 +233,7 @@ ap_parse_htaccess
 ap_parse_uri
 ap_parse_uri_components
 ap_parse_vhost_addrs
+ap_pass_brigade
 ap_pbase64decode
 ap_pbase64encode
 ap_pcfg_open_custom
@@ -350,6 +352,12 @@ apr_append_arrays
 apr_array_cat
 apr_array_pstrcat
 apr_bind
+apr_brigade_create
+apr_brigade_split
+apr_bucket_eos_create
+apr_bucket_heap_create
+apr_bucket_immortal_create
+apr_bucket_pipe_create
 apr_bytes_in_free_blocks
 apr_bytes_in_pool
 apr_child_init_lock
@@ -392,6 +400,14 @@ apr_eof
 apr_explode_gmt
 apr_explode_localtime
 apr_fgets
+apr_file_close
+apr_file_flush
+apr_file_gets
+apr_file_open
+apr_file_pipe_timeout_set
+apr_file_printf
+apr_file_puts
+apr_file_write
 apr_filename_of_pathname
 apr_flush
 apr_fnmatch
@@ -399,8 +415,6 @@ apr_format_uuid
 apr_fprintf
 apr_full_read
 apr_full_write
-apr_getaddrinfo
-apr_getnameinfo
 apr_get_dir_filename
 apr_get_filedata
 apr_get_ipaddr
@@ -424,9 +438,11 @@ apr_get_threaddata
 apr_get_threadkeydata
 apr_get_userdata
 apr_get_uuid
+apr_getaddrinfo
 apr_getc
 apr_getfileinfo
 apr_gethostname
+apr_getnameinfo
 apr_getopt
 apr_getpass
 apr_getsocketopt
@@ -467,6 +483,12 @@ apr_parse_addr_port
 apr_parse_uuid
 apr_pcalloc
 apr_poll
+apr_pool_note_subprocess
+apr_procattr_cmdtype_set
+apr_procattr_create
+apr_procattr_dir_set
+apr_procattr_io_set
+apr_procattr_limit_set
 apr_psprintf
 apr_pstrcat
 apr_pstrdup
@@ -488,6 +510,7 @@ apr_remove_dir
 apr_remove_file
 apr_remove_poll_socket
 apr_rename_file
+apr_retrieve_optional_fn
 apr_rewinddir
 apr_rfc822_date
 apr_run_cleanup
@@ -537,6 +560,7 @@ apr_terminate
 apr_thread_detach
 apr_thread_exit
 apr_thread_join
+apr_time_now
 apr_tokenize_to_argv
 apr_ungetc
 apr_unlock
