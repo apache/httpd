@@ -133,7 +133,7 @@ static void *create_core_dir_config(apr_pool_t *a, char *dir)
         conf->d = apr_pstrcat(a, dir, "/", NULL);
     }
     conf->d_is_fnmatch = conf->d ? (apr_is_fnmatch(conf->d) != 0) : 0;
-    conf->d_is_absolute = conf->d ? (ap_os_is_path_absolute(conf->d) != 0) : 0;
+    conf->d_is_absolute = conf->d ? (ap_os_is_path_absolute(a, conf->d) != 0) : 0;
     conf->d_components = conf->d ? ap_count_dirs(conf->d) : 0;
 
     conf->opts = dir ? OPT_UNSET : OPT_UNSET|OPT_ALL;
@@ -1221,8 +1221,11 @@ static const char *set_document_root(cmd_parms *cmd, void *dummy,
         return err;
     }
 
-    arg = ap_os_canonical_filename(cmd->pool, arg);
-    if (/* TODO: ap_configtestonly && ap_docrootcheck && */ !ap_is_directory(cmd->pool, arg)) {
+    /* TODO: ap_configtestonly && ap_docrootcheck && */
+    /* XXX Shouldn't this be relative to ServerRoot ??? */
+    if (apr_filepath_merge((char**)&conf->ap_document_root, NULL, arg,
+                           APR_FILEPATH_TRUENAME, cmd->pool) != APR_SUCCESS
+        || !ap_is_directory(cmd->pool, arg)) {
 	if (cmd->server->is_virtual) {
 	    ap_log_perror(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, cmd->pool,
                          "Warning: DocumentRoot [%s] does not exist",
@@ -1232,8 +1235,6 @@ static const char *set_document_root(cmd_parms *cmd, void *dummy,
 	    return "DocumentRoot must be a directory";
 	}
     }
-    
-    conf->ap_document_root = arg;
     return NULL;
 }
 
@@ -1571,8 +1572,13 @@ static const char *dirsection(cmd_parms *cmd, void *mconfig, const char *arg)
     }
 #endif
     else {
+        char *newpath;
 	/* Ensure that the pathname is canonical */
-	cmd->path = ap_os_canonical_filename(cmd->pool, cmd->path);
+        if (apr_filepath_merge(&newpath, NULL, cmd->path, 
+                               APR_FILEPATH_TRUENAME, cmd->pool) != APR_SUCCESS)
+    	    return apr_pstrcat(cmd->pool, "<Directory \"", cmd->path,
+			       "\"> is invalid.", NULL);
+        cmd->path = newpath;
     }
 
     /* initialize our config and fetch it */
@@ -1641,7 +1647,7 @@ static const char *urlsection(cmd_parms *cmd, void *mconfig, const char *arg)
 
     conf->d = apr_pstrdup(cmd->pool, cmd->path);	/* No mangling, please */
     conf->d_is_fnmatch = apr_is_fnmatch(conf->d) != 0;
-    conf->d_is_absolute = ap_os_is_path_absolute(conf->d) != 0;
+    conf->d_is_absolute = (conf->d && (*conf->d == '/'));
     conf->r = r;
 
     ap_add_per_url_conf(cmd->server, new_url_conf);
@@ -1694,8 +1700,14 @@ static const char *filesection(cmd_parms *cmd, void *mconfig, const char *arg)
 	r = ap_pregcomp(cmd->pool, cmd->path, REG_EXTENDED|USE_ICASE);
     }
     else {
-	/* Ensure that the pathname is canonical */
-	cmd->path = ap_os_canonical_filename(cmd->pool, cmd->path);
+        char *newpath;
+	/* Ensure that the pathname is canonical, but we
+         * can't test the case/aliases without a fixed path */
+        if (apr_filepath_merge(&newpath, "", cmd->path, 
+                               0, cmd->pool) != APR_SUCCESS)
+    	    return apr_pstrcat(cmd->pool, "<Files \"", cmd->path,
+			       "\"> is invalid.", NULL);
+	cmd->path = newpath;
     }
 
     /* initialize our config and fetch it */
@@ -1708,7 +1720,7 @@ static const char *filesection(cmd_parms *cmd, void *mconfig, const char *arg)
 
     conf->d = cmd->path;
     conf->d_is_fnmatch = apr_is_fnmatch(conf->d) != 0;
-    conf->d_is_absolute = ap_os_is_path_absolute(conf->d) != 0;
+    conf->d_is_absolute = 0;
     conf->r = r;
 
     ap_add_file_conf(c, new_file_conf);
@@ -1967,12 +1979,11 @@ static const char *set_server_root(cmd_parms *cmd, void *dummy,
         return err;
     }
 
-    arg = ap_os_canonical_filename(cmd->pool, arg);
-
-    if (!ap_is_directory(cmd->pool, arg)) {
+    if ((apr_filepath_merge((char**)&ap_server_root, NULL, arg, 
+                            APR_FILEPATH_TRUENAME, cmd->pool) != APR_SUCCESS)
+        || !ap_is_directory(cmd->pool, ap_server_root)) {
         return "ServerRoot must be a valid directory";
     }
-    ap_server_root = arg;
     return NULL;
 }
 
@@ -2080,8 +2091,8 @@ static const char *include_config (cmd_parms *cmd, void *dummy,
     ap_directive_t *conftree = NULL;
 
     ap_process_resource_config(cmd->server,
-	ap_server_root_relative(cmd->pool, name),
-                               	 &conftree, cmd->pool, cmd->temp_pool);
+                               ap_server_root_relative(cmd->pool, name),
+                               &conftree, cmd->pool, cmd->temp_pool);
     *(ap_directive_t **)dummy = conftree;
     return NULL;
 }
