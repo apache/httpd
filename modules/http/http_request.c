@@ -817,6 +817,19 @@ static request_rec *make_sub_request(const request_rec *r)
     return rr;
 }
 
+AP_CORE_DECLARE(apr_status_t) ap_sub_req_output_filter(ap_filter_t *f,
+                                                 ap_bucket_brigade *bb)
+{
+    ap_bucket *e = AP_BRIGADE_LAST(bb);
+
+    if (AP_BUCKET_IS_EOS(e)) {
+        AP_BUCKET_REMOVE(e);
+        ap_bucket_destroy(e);
+    }
+    ap_pass_brigade(f->next, bb);
+    return APR_SUCCESS;
+}
+
 AP_DECLARE(request_rec *) ap_sub_req_method_uri(const char *method,
                                                 const char *new_file,
                                                 const request_rec *r)
@@ -840,6 +853,8 @@ AP_DECLARE(request_rec *) ap_sub_req_method_uri(const char *method,
 
     /* start with the same set of output filters */
     rnew->output_filters = r->output_filters;
+    ap_add_output_filter("SUBREQ_CORE", NULL, rnew, rnew->connection); 
+
     /* no input filters for a subrequest */
 
     ap_set_sub_req_protocol(rnew, r);
@@ -936,6 +951,8 @@ AP_DECLARE(request_rec *) ap_sub_req_lookup_file(const char *new_file,
 
     /* start with the same set of output filters */
     rnew->output_filters = r->output_filters;
+    ap_add_output_filter("SUBREQ_CORE", NULL, rnew, rnew->connection); 
+
     /* no input filters for a subrequest */
 
     ap_set_sub_req_protocol(rnew, r);

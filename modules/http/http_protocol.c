@@ -1560,12 +1560,7 @@ static void end_output_stream(request_rec *r)
 
 void ap_finalize_sub_req_protocol(request_rec *sub)
 {
-    /* tell the filter chain there is no more content coming */
-    /* ### crap. we need to tell the subrequest's filters that no more
-       ### is coming. there is definitely more for the parent requests.
-       ### create a SUB_EOS bucket?
-    */
-    /* end_output_stream(sub); */
+    end_output_stream(sub); 
 
     SET_BYTES_SENT(sub->main);
 }
