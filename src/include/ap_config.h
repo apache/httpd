@@ -532,6 +532,7 @@ int initgroups (char *, int);
 #define NEED_STRCASECMP
 #define NEED_STRNCASECMP
 #define NO_SETSID
+#define NO_TIMES
 /* Add some drive name support */
 #define chdir _chdir2
 #include <sys/time.h>     
@@ -641,6 +642,8 @@ typedef int rlim_t;
 #define NO_WRITEV
 #define NO_SETSID
 #define NO_USE_SIGACTION
+#define NO_TIMES
+#define NO_GETTIMEOFDAY
 #define NEED_PROCESS_H
 #define USE_LONGJMP
 #define HAVE_MMAP

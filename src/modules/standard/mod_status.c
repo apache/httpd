@@ -213,9 +213,9 @@ static int status_handler (request_rec *r)
     unsigned long bcount=0;
     unsigned long kbcount=0;
     long req_time;
-#ifdef NEXT
+#if defined(NEXT)
     float tick=HZ;
-#else
+#elif !defined(WIN32)
     float tick=sysconf(_SC_CLK_TCK);
 #endif
 #endif /* STATUS */
@@ -303,10 +303,12 @@ static int status_handler (request_rec *r)
         if (lres!=0 || (score_record.status != SERVER_READY
 	  && score_record.status != SERVER_DEAD))
 	{
+#ifndef NO_TIMES
 	    tu+=score_record.times.tms_utime;
 	    ts+=score_record.times.tms_stime;
 	    tcu+=score_record.times.tms_cutime;
 	    tcs+=score_record.times.tms_cstime;
+#endif /* NO_TIMES */
             count+=lres;
 	    bcount+=bytes;
 	    if (bcount>=KBYTE) {
@@ -339,7 +341,7 @@ static int status_handler (request_rec *r)
     {
         rprintf(r,"Total Accesses: %lu\nTotal kBytes: %lu\n",count,kbcount);
 
-#ifndef __EMX__
+#ifndef NO_TIMES
     /* Allow for OS/2 not having CPU stats */
 	if(ts || tu || tcu || tcs)
 	    rprintf(r,"CPULoad: %g\n",(tu+ts+tcu+tcs)/tick/up_time*100.);
@@ -359,7 +361,7 @@ static int status_handler (request_rec *r)
 	rprintf(r,"Total accesses: %lu - Total Traffic: ", count);
 	format_kbyte_out(r,kbcount);
 
-#ifndef __EMX__
+#ifndef NO_TIMES
 	/* Allow for OS/2 not having CPU stats */
 	rputs("<br>\n",r);
         rprintf(r,"CPU Usage: u%g s%g cu%g cs%g",
@@ -445,12 +447,16 @@ static int status_handler (request_rec *r)
         score_record=get_scoreboard_info(i);
 
 #if defined(NO_GETTIMEOFDAY)
+#ifndef NO_TIMES
 	if (score_record.start_time == (clock_t)0)
+#endif /* NO_TIMES */
 	    req_time = 0L;
+#ifndef NO_TIMES
 	else {
 	    req_time = score_record.stop_time - score_record.start_time;
 	    req_time = (req_time*1000)/(int)tick;
 	}
+#endif /* NO_TIMES */
 #else
 	if (score_record.start_time.tv_sec == 0L &&
 	 score_record.start_time.tv_usec == 0L)
@@ -516,7 +522,7 @@ static int status_handler (request_rec *r)
 			    rputs("?STATE?",r);
 			    break;
 		    }
-#ifdef __EMX__
+#ifdef NO_TIMES
                     /* Allow for OS/2 not having CPU stats */
                     rprintf(r,"]\n %.0f %ld (",
 #else
@@ -581,7 +587,7 @@ static int status_handler (request_rec *r)
 			    rputs("<td>?",r);
 			    break;
 		    }
-#ifdef __EMX__
+#ifdef NO_TIMES
 	            /* Allow for OS/2 not having CPU stats */
         	    rprintf(r,"\n<td>%.0f<td>%ld",
 #else

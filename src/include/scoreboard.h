@@ -116,7 +116,9 @@ typedef struct {
     struct timeval start_time;
     struct timeval stop_time;
 #endif
+#ifndef NO_TIMES
     struct tms times;
+#endif
     time_t last_used;
     char client[32];	/* Keep 'em small... */
     char request[64];	/* We just want an idea... */
