@@ -339,10 +339,10 @@ void unixd_siglist_init(void)
 }
 #endif /* NEED_AP_SYS_SIGLIST */
 
-#if defined(RLIMIT_CPU) || defined(RLIMIT_DATA) || defined(RLIMIT_VMEM) || defined(RLIMIT_NPROC) || defined(RLIMIT_AS)
 API_EXPORT(void) unixd_set_rlimit(cmd_parms *cmd, struct rlimit **plimit, 
                            const char *arg, const char * arg2, int type)
 {
+#if (defined(RLIMIT_CPU) || defined(RLIMIT_DATA) || defined(RLIMIT_VMEM) || defined(RLIMIT_NPROC) || defined(RLIMIT_AS)) && APR_HAVE_STRUCT_RLIMIT && APR_HAVE_GETRLIMIT
     char *str;
     struct rlimit *limit;
     /* If your platform doesn't define rlim_t then typedef it in ap_config.h */
@@ -392,6 +392,10 @@ API_EXPORT(void) unixd_set_rlimit(cmd_parms *cmd, struct rlimit **plimit,
             limit->rlim_max = max;
         }
     }
-}
+#else
+
+    ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, cmd->server,
+                 "Platform does not support rlimit for %s", cmd->cmd->name);
 #endif
+}
 
