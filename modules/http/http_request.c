@@ -222,7 +222,7 @@ static int get_path_info(request_rec *r)
         char *p;
         int iCount=0;
         p = path;
-        while (p = strchr(p,'/')) {
+        while ((p = strchr(p,'/')) != NULL) {
             p++;
             iCount++;
         }
