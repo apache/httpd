@@ -3230,6 +3230,7 @@ static apr_status_t send_parsed_content(apr_bucket_brigade **bb,
             APR_BRIGADE_CONCAT(ctx->ssi_tag_brigade, *bb);
         }
         else {                  /* End of brigade contains part of SSI tag... */
+            apr_bucket *last;
             if (ctx->head_start_index > 0) {
                 apr_bucket_split(ctx->head_start_bucket, ctx->head_start_index);
                 ctx->head_start_bucket = 
@@ -3238,7 +3239,30 @@ static apr_status_t send_parsed_content(apr_bucket_brigade **bb,
             }
                            /* Set aside tag, pass pre-tag... */
             tag_and_after = apr_brigade_split(*bb, ctx->head_start_bucket);
-            ap_save_brigade(f, &ctx->ssi_tag_brigade, &tag_and_after, r->pool);
+            rv = ap_pass_brigade(f->next, *bb);
+            /* Set aside the partial tag
+             * Exception: if there's an EOS at the end of this brigade,
+             * the tag will never be completed, so send an error and EOS
+             */
+            last = APR_BRIGADE_LAST(tag_and_after);
+            if (APR_BUCKET_IS_EOS(last)) {
+                /* Remove everything before the EOS (i.e., the partial tag)
+                 * and replace it with an error msg */
+                apr_bucket *b;
+                apr_bucket *err_bucket = NULL;
+                for (b = APR_BRIGADE_FIRST(tag_and_after);
+                     !APR_BUCKET_IS_EOS(b);
+                     b = APR_BRIGADE_FIRST(tag_and_after)) {
+                    APR_BUCKET_REMOVE(b);
+                    apr_bucket_destroy(b);
+                }
+                CREATE_ERROR_BUCKET(ctx, err_bucket, b, err_bucket);
+                ap_pass_brigade(f->next, tag_and_after);
+            }
+            else {
+                ap_save_brigade(f, &ctx->ssi_tag_brigade,
+                                &tag_and_after, r->pool);
+            }
             if (APR_BUCKET_IS_EOS(APR_BRIGADE_LAST(ctx->ssi_tag_brigade))) {
                 apr_bucket *new_eos;
                 /* Make sure there's no EOS at the end of the set-aside
@@ -3253,7 +3277,7 @@ static apr_status_t send_parsed_content(apr_bucket_brigade **bb,
                 new_eos = apr_bucket_eos_create((*bb)->bucket_alloc);
                 APR_BRIGADE_INSERT_TAIL(*bb, new_eos);
             }
-            rv = ap_pass_brigade(f->next, *bb);
+
             if (rv != APR_SUCCESS) {
                 return rv;
             }
