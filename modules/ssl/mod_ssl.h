@@ -595,6 +595,7 @@ apr_status_t ssl_init_ModuleKill(void *data);
 /*  Apache API hooks  */
 void         ssl_hook_NewConnection(conn_rec *);
 void         ssl_hook_TimeoutConnection(int);
+int          ssl_hook_process_connection(SSLFilterRec *pRec);
 apr_status_t ssl_hook_CloseConnection(SSLFilterRec *);
 int          ssl_hook_Translate(request_rec *);
 int          ssl_hook_Auth(request_rec *);

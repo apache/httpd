@@ -320,7 +320,7 @@ static int ssl_hook_pre_connection(conn_rec *c)
  * Adv. if conn_rec * can be accepted is we can hook this function using the
  * ap_hook_process_connection hook.
  */
-static int ssl_hook_process_connection(SSLFilterRec *pRec)
+int ssl_hook_process_connection(SSLFilterRec *pRec)
 {
     int n, err;
     conn_rec *c = SSL_get_app_data (pRec->pssl);
