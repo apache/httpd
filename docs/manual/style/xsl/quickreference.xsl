@@ -5,8 +5,8 @@
                   xmlns="http://www.w3.org/1999/xhtml">
 
   <!--                                                    -->
-  <!-- <directiveindex>                                   -->
-  <!-- Builds the directive index page                    -->
+  <!-- <quickreference>                                   -->
+  <!-- Builds the directive quickreference page           -->
   <!--                                                    -->
   <xsl:template match="quickreference">
     <html xml:lang="{$messages/@lang}" lang="{$messages/@lang}">
@@ -27,21 +27,14 @@
 
         <div id="directive-list">
         <table class="qref">
-        <tr><th><a href="directive-dict.html#Syntax"><xsl:value-of select="$messages/message[@name='syntax']"/></a></th>
-           <th><a href="directive-dict.html#Default"><xsl:value-of select="$messages/message[@name='default']"/></a></th>
-           <th></th><th></th></tr>
          <xsl:for-each select="document(/*/modulefilelist/modulefile)/modulesynopsis/directivesynopsis[not(@location)]">
          <xsl:sort select="name"/>
 
 
             <xsl:variable name="rowpos">
               <xsl:choose>
-                <xsl:when test="position() mod 2 = 0">
-                  even
-                </xsl:when>
-                <xsl:otherwise>
-                  odd
-                </xsl:otherwise>
+                <xsl:when test="position() mod 2 = 0">even</xsl:when>
+                <xsl:otherwise>odd</xsl:otherwise>
               </xsl:choose>
            </xsl:variable>
 
@@ -82,7 +75,7 @@
            </tr>
 
            <tr class="{$rowpos}">
-             <td>
+             <td colspan="4">
                &nbsp;&nbsp;
                <xsl:apply-templates select="description"/>
              </td>
