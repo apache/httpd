@@ -53,9 +53,8 @@
 
 
 /*
- * This is an EXPERIMENTAL module, which implements the TransferLog directive
- * (same as the common log module), and an additional directive, LogFormat.
- * Bugs would not surprise me.
+ * This is module implements the TransferLog directive (same as the
+ * common log module), and an additional directive, LogFormat.
  *
  * The argument to LogFormat is a string, which can include literal
  * characters copied into the log files, and '%' directives as follows:
@@ -111,8 +110,7 @@
  * but have some indication which host they came from, though a %v
  * directive may well be a better way to handle this.
  *
- * --- rst
- */
+ * --- rst */
 
 #define DEFAULT_LOG_FORMAT "%h %l %u %t \"%r\" %s %b"
 
