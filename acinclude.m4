@@ -349,3 +349,105 @@ AC_DEFUN(APACHE_REQUIRE_CXX,[
     apache_cxx_done=yes
   fi
 ])
+
+dnl
+dnl APACHE_CHECK_SSL_TOOLKIT
+dnl
+dnl Find the openssl toolkit installation and check it for the right
+dnl version, then add its flags to INCLUDES and LIBS.  This should
+dnl really be using a custom AC_TRY_COMPILE function to test the includes
+dnl and then AC_TRY_LINK to test the libraries directly for the version,
+dnl but that will require someone who knows how to program openssl.
+dnl
+AC_DEFUN(APACHE_CHECK_SSL_TOOLKIT,[
+  AC_MSG_CHECKING(for SSL/TLS toolkit base)
+  ap_ssltk_base=""
+  AC_ARG_WITH(ssl, [  --with-ssl[=DIR]        SSL/TLS toolkit (OpenSSL)], [
+    if test "x$withval" != "xyes" -a "x$withval" != "x"; then
+      ap_ssltk_base="$withval"
+    fi
+  ])
+  if test "x$ap_ssltk_base" = "x"; then
+    AC_CACHE_VAL(ap_cv_ssltk,[
+      #
+      # shotgun approach: find all occurrences of the openssl program
+      #
+      ap_ssltk_try=""
+      for p in /usr/local/openssl/bin /usr/local/ssl/bin $path; do
+        if test -f "$p/openssl"; then
+          ap_ssltk_try="$ap_ssltk_try $p"
+        fi
+      done
+      if test "x$ap_ssltk_try" = "x"; then
+        AC_MSG_ERROR(['openssl' not found in path])
+      fi
+      for p in $ap_ssltk_try; do
+        ap_ssltk_version="`$p/openssl version`"
+        case "$ap_ssltk_version" in
+            *[[^0-9a-z.]][[1-9]]* | \
+            *[[^0-9a-z.]]0.9.[[6-9]]* | \
+            *[[^0-9a-z.]]0.[[1-9]][[0-9]]* )
+                ap_cv_ssltk="`(cd $p/.. && pwd)`"
+                break
+                ;;
+            *)
+                # skip because it is too old or a bad result
+                ;;
+        esac
+      done
+      if test "x$ap_cv_ssltk" = "x"; then
+        AC_MSG_ERROR([requires OpenSSL 0.9.6 or higher])
+      fi
+    ])
+    ap_ssltk_base="$ap_cv_ssltk"
+  fi
+  if test ! -d $ap_ssltk_base; then
+    AC_MSG_ERROR([invalid SSL/TLS toolkit base directory $ap_ssltk_base])
+  fi
+  AC_MSG_RESULT($ap_ssltk_base)
+    
+  AC_MSG_CHECKING(for SSL/TLS toolkit version)
+  AC_MSG_RESULT($ap_ssltk_version)
+    
+  AC_MSG_CHECKING(for SSL/TLS toolkit includes)
+  ap_ssltk_incdir=""
+  for p in $ap_ssltk_base/include /usr/local/openssl/include \
+           /usr/local/ssl/include /usr/local/include /usr/include; do
+    if test -f "$p/openssl/ssl.h"; then
+      ap_ssltk_incdir="$p"
+      break
+    fi
+  done
+  if test "x$ap_ssltk_incdir" = "x"; then
+    AC_MSG_ERROR([OpenSSL headers not found])
+  fi
+  AC_MSG_RESULT($ap_ssltk_incdir)
+
+  AC_MSG_CHECKING(for SSL/TLS toolkit libraries)
+  ap_ssltk_libdir=""
+  for p in $ap_ssltk_base/lib /usr/local/openssl/lib \
+           /usr/local/ssl/lib /usr/local/lib /usr/lib /lib; do
+    if test -f "$p/libssl.a" -o -f "$p/libssl.so"; then
+      ap_ssltk_libdir="$p"
+      break
+    fi
+  done
+  if test ".$ap_ssltk_libdir" = .; then
+    AC_MSG_ERROR([OpenSSL libraries not found])
+  fi
+  AC_MSG_RESULT($ap_ssltk_libdir)
+
+  dnl #  annotate the Apache build environment with determined information
+  if test "x$ap_ssltk_incdir" != "x/usr/include"; then
+    APR_ADDTO(INCLUDES, [-I$ap_ssltk_incdir])
+  fi
+  if test "x$ap_ssltk_libdir" != "x/usr/lib"; then
+    APR_ADDTO(LIBS, [-L$ap_ssltk_libdir])
+    if test "x$ap_platform_needs_R" = "xyes"; then
+      APR_ADDTO(LIBS, [-R$ap_ssltk_libdir])
+    fi
+  fi
+  APR_ADDTO(LIBS, [-lssl -lcrypto])
+  ap_cv_ssltk="$ap_ssltk_base"
+])
+

@@ -57,6 +57,9 @@ dnl	;;
         APR_SETVAR(APACHE_MPM, [beos])
         APR_SETVAR(SINGLE_LISTEN_UNSERIALIZED_ACCEPT, [1])
         ;;
+    *-solaris2*)
+        ap_platform_needs_R="yes"
+        ;;
   esac
 
 fi
