@@ -518,9 +518,17 @@ int main(int argc, char *argv[])
      * to add or update.  Let's do it..
      */
     tempfilename = tmpnam(NULL);
+    if ((tempfilename == NULL) || (strlen(tempfilename) == 0)) {
+	fprintf(stderr, "%s: unable to generate temporary filename\n",
+		argv[0]);
+	errno = ENOENT;
+	perror("tmpnam");
+	exit(ERR_FILEPERM);
+    }
     ftemp = fopen(tempfilename, "w+");
     if (ftemp == NULL) {
-	fprintf(stderr, "%s: unable to create temporary file\n", argv[0]);
+	fprintf(stderr, "%s: unable to create temporary file '%s'\n", argv[0],
+		tempfilename);
 	perror("fopen");
 	exit(ERR_FILEPERM);
     }
