@@ -918,7 +918,6 @@ static void child_main(int child_num_arg)
 
     apr_threadattr_create(&worker_thread_attr, pchild);
     apr_threadattr_detach_set(worker_thread_attr, 1);                                     
-    apr_create_signal_thread(&thread, worker_thread_attr, check_signal, pchild);
 
     /* We are creating worker threads right now */
     for (i=0; i < threads_to_start; i++) {
@@ -928,9 +927,7 @@ static void child_main(int child_num_arg)
         }
     }
 
-    /* This thread will be be a worker thread too. */
-    worker_thread(&worker_thread_free_ids[max_threads - 1]);
-
+    apr_signal_thread_func(check_signal);
 }
 
 static int make_child(server_rec *s, int slot)
