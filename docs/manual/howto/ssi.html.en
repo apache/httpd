@@ -91,10 +91,6 @@ Tutorial: Introduction to Server Side Includes</a></h2>
 </tr>
 </table>
 
-<p>This HOWTO first appeared in Apache Today
-(http://www.apachetoday.com/) as a series of three articles. They
-appear here by arrangement with ApacheToday and Internet.com.</p>
-
 <p>This article deals with Server Side Includes, usually called simply
 SSI. In this article, I'll talk about configuring your server to permit
 SSI, and introduce some basic SSI techniques for adding dynamic content
