@@ -359,7 +359,14 @@ static void cgi_child_errfn(apr_pool_t *pool, apr_status_t err,
                     "(%d)%s: %s\n",
                     err,
                     apr_strerror(err, errbuf, sizeof(errbuf)),
-                    ap_escape_logitem(pool, description));
+#ifndef AP_UNSAFE_ERROR_LOG_UNESCAPED
+                    ap_escape_logitem(pool,
+#endif
+                    description
+#ifndef AP_UNSAFE_ERROR_LOG_UNESCAPED
+                    )
+#endif
+                    );
 }
 
 static apr_status_t run_cgi_child(apr_file_t **script_out,
