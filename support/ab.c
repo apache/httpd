@@ -350,7 +350,7 @@ struct connection *con;		/* connection array */
 struct data *stats;		/* date for each request */
 apr_pool_t *cntxt;
 
-apr_pollfd_t *readbits;
+apr_pollset_t *readbits;
 
 apr_sockaddr_t *destsa;
 
@@ -788,7 +788,14 @@ static void write_request(struct connection * c)
 #ifdef USE_SSL
     if (ssl != 1)
 #endif
-    apr_poll_socket_add(readbits, c->aprsock, APR_POLLIN);
+    {
+        apr_pollfd_t new_pollfd;
+        new_pollfd.desc_type = APR_POLL_SOCKET;
+        new_pollfd.reqevents = APR_POLLIN;
+        new_pollfd.desc.s = c->aprsock;
+        new_pollfd.client_data = c;
+        apr_pollset_add(readbits, &new_pollfd);
+    }
 }
 
 /* --------------------------------------------------------- */
@@ -1241,13 +1248,21 @@ static void start_connect(struct connection * c)
     c->start = apr_time_now();
     if ((rv = apr_connect(c->aprsock, destsa)) != APR_SUCCESS) {
 	if (APR_STATUS_IS_EINPROGRESS(rv)) {
+            apr_pollfd_t new_pollfd;
 	    c->state = STATE_CONNECTING;
 	    c->rwrite = 0;
-	    apr_poll_socket_add(readbits, c->aprsock, APR_POLLOUT);
+            new_pollfd.desc_type = APR_POLL_SOCKET;
+            new_pollfd.reqevents = APR_POLLIN;
+            new_pollfd.desc.s = c->aprsock;
+            new_pollfd.client_data = c;
+	    apr_pollset_add(readbits, &new_pollfd);
 	    return;
 	}
 	else {
-	    apr_poll_socket_remove(readbits, c->aprsock);
+            apr_pollfd_t remove_pollfd;
+            remove_pollfd.desc_type = APR_POLL_SOCKET;
+            remove_pollfd.desc.s = c->aprsock;
+	    apr_pollset_remove(readbits, &remove_pollfd);
 	    apr_socket_close(c->aprsock);
 	    err_conn++;
 	    if (bad++ > 10) {
@@ -1310,13 +1325,15 @@ static void close_connection(struct connection * c)
         SSL_shutdown(c->ssl);
         SSL_free(c->ssl);
     }
-    else {
+    else
 #endif
-    apr_poll_socket_remove(readbits, c->aprsock);
-    apr_socket_close(c->aprsock);
-#ifdef USE_SSL
+    {
+        apr_pollfd_t remove_pollfd;
+        remove_pollfd.desc_type = APR_POLL_SOCKET;
+        remove_pollfd.desc.s = c->aprsock;
+        apr_pollset_remove(readbits, &remove_pollfd);
+        apr_socket_close(c->aprsock);
     }
-#endif
     c->state = STATE_UNCONNECTED;
 
     /* connect again */
@@ -1417,7 +1434,10 @@ static void read_connection(struct connection * c)
 	    }
 	    else {
 		/* header is in invalid or too big - close connection */
-		apr_poll_socket_remove(readbits, c->aprsock);
+                apr_pollfd_t remove_pollfd;
+                remove_pollfd.desc_type = APR_POLL_SOCKET;
+                remove_pollfd.desc.s = c->aprsock;
+                apr_pollset_remove(readbits, &remove_pollfd);
 		apr_socket_close(c->aprsock);
 		err_response++;
 		if (bad++ > 10) {
@@ -1560,7 +1580,7 @@ static void test(void)
     con = calloc(concurrency * sizeof(struct connection), 1);
     
     stats = calloc(requests * sizeof(struct data), 1);
-    apr_poll_setup(&readbits, concurrency, cntxt);
+    apr_pollset_create(&readbits, concurrency, cntxt, 0);
 
     /* setup request */
     if (posting <= 0) {
@@ -1644,6 +1664,7 @@ static void test(void)
     while (done < requests) {
 	apr_int32_t n;
 	apr_int32_t timed;
+        const apr_pollfd_t *pollresults;
 
 	/* check for time limit expiry */
 	now = apr_time_now();
@@ -1659,7 +1680,7 @@ static void test(void)
             status = APR_SUCCESS;
         else
 #endif
-	status = apr_poll(readbits, concurrency, &n, aprtimeout);
+	status = apr_pollset_poll(readbits, aprtimeout, &n, &pollresults);
 	if (status != APR_SUCCESS)
 	    apr_err("apr_poll", status);
 
@@ -1667,11 +1688,14 @@ static void test(void)
 	    err("\nServer timed out\n\n");
 	}
 
-	for (i = 0; i < concurrency; i++) {
+	for (i = 0; i < n; i++) {
+            const apr_pollfd_t *next_fd = &(pollresults[i]);
+            struct connection *c = next_fd->client_data;
+
 	    /*
 	     * If the connection isn't connected how can we check it?
 	     */
-	    if (con[i].state == STATE_UNCONNECTED)
+	    if (c->state == STATE_UNCONNECTED)
 		continue;
 
 #ifdef USE_SSL
@@ -1679,7 +1703,8 @@ static void test(void)
                 rv = APR_POLLIN;
             else
 #endif
-	    apr_poll_revents_get(&rv, con[i].aprsock, readbits);
+            rv = next_fd->rtnevents;
+
 	    /*
 	     * Notes: APR_POLLHUP is set after FIN is received on some
 	     * systems, so treat that like APR_POLLIN so that we try to read
@@ -1693,15 +1718,15 @@ static void test(void)
 	     * apr_poll().
 	     */
 	    if ((rv & APR_POLLIN) || (rv & APR_POLLPRI) || (rv & APR_POLLHUP))
-		read_connection(&con[i]);
+		read_connection(c);
 	    if ((rv & APR_POLLERR) || (rv & APR_POLLNVAL)) {
 		bad++;
 		err_except++;
-		start_connect(&con[i]);
+		start_connect(c);
 		continue;
 	    }
 	    if (rv & APR_POLLOUT)
-		write_request(&con[i]);
+		write_request(c);
 
 	    /*
 	     * When using a select based poll every time we check the bits
@@ -1713,9 +1738,15 @@ static void test(void)
 #ifdef USE_SSL
             if (ssl != 1)
 #endif
-	    if (con[i].state == STATE_READ || con[i].state == STATE_CONNECTING)
-		apr_poll_socket_add(readbits, con[i].aprsock, APR_POLLIN);
-
+	    if (c->state == STATE_READ ||
+                c->state == STATE_CONNECTING) {
+                    apr_pollfd_t new_pollfd;
+                    new_pollfd.desc_type = APR_POLL_SOCKET;
+                    new_pollfd.reqevents = APR_POLLIN;
+                    new_pollfd.desc.s = c->aprsock;
+                    new_pollfd.client_data = c;
+                    apr_pollset_add(readbits, &new_pollfd);
+                }
 	}
     }
 
@@ -1736,14 +1767,14 @@ static void test(void)
 static void copyright(void)
 {
     if (!use_html) {
-	printf("This is ApacheBench, Version %s\n", AP_AB_BASEREVISION " <$Revision: 1.117 $> apache-2.0");
+	printf("This is ApacheBench, Version %s\n", AP_AB_BASEREVISION " <$Revision: 1.118 $> apache-2.0");
 	printf("Copyright (c) 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/\n");
 	printf("Copyright (c) 1998-2002 The Apache Software Foundation, http://www.apache.org/\n");
 	printf("\n");
     }
     else {
 	printf("<p>\n");
-	printf(" This is ApacheBench, Version %s <i>&lt;%s&gt;</i> apache-2.0<br>\n", AP_AB_BASEREVISION, "$Revision: 1.117 $");
+	printf(" This is ApacheBench, Version %s <i>&lt;%s&gt;</i> apache-2.0<br>\n", AP_AB_BASEREVISION, "$Revision: 1.118 $");
 	printf(" Copyright (c) 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/<br>\n");
 	printf(" Copyright (c) 1998-2002 The Apache Software Foundation, http://www.apache.org/<br>\n");
 	printf("</p>\n<p>\n");
