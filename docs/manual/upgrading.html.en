@@ -92,6 +92,14 @@
       <code><a href="mod/mpm_common.html#listen">Listen</a></code>
       directive.</li>
 
+      <li>Another use of the <code>Port</code> 
+      directive in Apache-1.3 was setting the port number to be used
+      in self-referential URL's. The Apache-2.0 equivalent is
+      the new <a href="mod/core.html#servername"><code>ServerName</code></a>
+      syntax: it has been changed to allow specifying both the
+      hostname <em>and</em> the port number for self-referential URL's
+      in one directive.</li>
+
       <li>The <code>ServerType</code> directive no longer exists.
       The method used to serve requests is now determined by the
       selection of MPM. There is currently no MPM designed to be
