@@ -1440,8 +1440,7 @@ static const char *require(cmd_parms *cmd, void *c_, const char *arg)
 }
 
 CORE_EXPORT_NONSTD(const char *) ap_limit_section(cmd_parms *cmd, void *dummy,
-						  const char *arg)
-{
+						  const char *arg) {
     const char *limited_methods = ap_getword(cmd->pool, &arg, '>');
     void *tog = cmd->cmd->cmd_data;
     int limited = 0;
@@ -1451,7 +1450,7 @@ CORE_EXPORT_NONSTD(const char *) ap_limit_section(cmd_parms *cmd, void *dummy,
     if (err != NULL) {
         return err;
     }
-    
+
     while (limited_methods[0]) {
         char *method = ap_getword_conf(cmd->pool, &limited_methods);
         int  methnum = ap_method_number_of(method);
@@ -1460,8 +1459,38 @@ CORE_EXPORT_NONSTD(const char *) ap_limit_section(cmd_parms *cmd, void *dummy,
             return "TRACE cannot be controlled by <Limit>";
         }
         else if (methnum == M_INVALID) {
-            return apr_pstrcat(cmd->pool, "unknown method \"", method,
-                              "\" in <Limit", tog ? "Except>" : ">", NULL);
+	    char **xmethod;
+	    register int i, j, k;
+
+	    /*
+	     * Deal with <Limit> by adding the method to the list.
+	     */
+	    if (!tog) {
+		if (cmd->limited_xmethods == NULL) {
+		    cmd->limited_xmethods = apr_make_array(cmd->pool, 2,
+							   sizeof(char *));
+		}
+		xmethod = (char **) apr_push_array(cmd->limited_xmethods);
+		*xmethod = apr_pstrdup(cmd->pool, method);
+	    }
+	    /*
+	     * <LimitExcept>, so remove any/all occurrences of the method
+	     * in the extension array.
+	     */
+	    else if ((cmd->limited_xmethods != NULL)
+		     && (cmd->limited_xmethods->nelts != 0)) {
+		xmethod = (char **) cmd->limited_xmethods->elts;
+		for (i = 0; i < cmd->limited_xmethods->nelts; ) {
+		    if (strcmp(xmethod[i], method) == 0) {
+			for (j = i, k = i + 1;
+			     k < cmd->limited_xmethods->nelts;
+			     ++j, ++k) {
+			    xmethod[j] = xmethod[k];
+			}
+			cmd->limited_xmethods->nelts--;
+		    }
+		}
+	    }
         }
         else {
             limited |= (1 << methnum);
@@ -2731,7 +2760,7 @@ static int default_handler(request_rec *r)
         return errstatus;
     }
 
-    r->allowed |= (1 << M_GET) | (1 << M_OPTIONS);
+    ap_allow_methods(r, MERGE_ALLOW, "GET", "OPTIONS", NULL);
 
     if (r->method_number == M_INVALID) {
 	ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
