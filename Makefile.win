@@ -85,7 +85,6 @@ _build:
 	cd ..
 	 -del Core$(SHORT)\buildmark.obj
 #	 libhttpd creates the dynamic libhttpd.dll from the static library project httpd
-	 $(MAKE) $(MAKEOPT) -f httpd.mak CFG="httpd - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f libhttpd.mak CFG="libhttpd - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f Apache.mak CFG="Apache - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	cd modules\aaa
