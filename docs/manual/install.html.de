@@ -4,7 +4,19 @@
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-      --><title>Kompilieren und Installieren - Apache HTTP Server</title><link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" /><link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" /><link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link href="./images/favicon.ico" rel="shortcut icon" /></head><body id="manual-page"><div id="page-header"><p class="menu"><a href="./mod/">Module</a> | <a href="./mod/directives.html">Direktiven</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">Glossar</a> | <a href="./sitemap.html">Seitenindex</a></p><p class="apache">Apache HTTP Server Version 2.0</p><img alt="" src="./images/feather.gif" /></div><div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="./images/left.gif" /></a></div><div id="path"><a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP-Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Dokumentation</a> &gt; <a href="./">Version 2.0</a></div><div id="page-content"><div id="preamble"><h1>Kompilieren und Installieren</h1>
+      -->
+<title>Kompilieren und Installieren - Apache HTTP Server</title>
+<link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
+<link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
+<link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
+<link href="./images/favicon.ico" rel="shortcut icon" /></head>
+<body id="manual-page"><div id="page-header">
+<p class="menu"><a href="./mod/">Module</a> | <a href="./mod/directives.html">Direktiven</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">Glossar</a> | <a href="./sitemap.html">Seitenindex</a></p>
+<p class="apache">Apache HTTP Server Version 2.0</p>
+<img alt="" src="./images/feather.gif" /></div>
+<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="./images/left.gif" /></a></div>
+<div id="path">
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP-Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Dokumentation</a> &gt; <a href="./">Version 2.0</a></div><div id="page-content"><div id="preamble"><h1>Kompilieren und Installieren</h1>
     <p>Dieses Dokument umfaßt nur die Kompilierung und Installation des
     Apache auf Unix und Unix-ähnlichen Systemen. Für die
     Kompilierung und Installation unter Windows lesen Sie bitte <a href="platform/windows.html">Den Apache unter Microsoft Windows
@@ -18,7 +30,20 @@
     <code>libtool</code> und <code>autoconf</code>, um eine Umgebung zu
     schaffen, die der vieler anderer Open Source Projekte ähnlich
     sieht.</p>
-</div><div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#overview">Überblick für die Ungeduldigen</a></li><li><img alt="" src="./images/down.gif" /> <a href="#requirements">Anforderungen</a></li><li><img alt="" src="./images/down.gif" /> <a href="#download">Download</a></li><li><img alt="" src="./images/down.gif" /> <a href="#extract">Auspacken</a></li><li><img alt="" src="./images/down.gif" /> <a href="#configure">Den Codebaum konfigurieren</a></li><li><img alt="" src="./images/down.gif" /> <a href="#compile">Erstellen</a></li><li><img alt="" src="./images/down.gif" /> <a href="#install">Installieren</a></li><li><img alt="" src="./images/down.gif" /> <a href="#customize">Anpassen</a></li><li><img alt="" src="./images/down.gif" /> <a href="#test">Testen</a></li></ul><h3>Siehe auch</h3><ul class="seealso"><li><a href="invoking.html">Starten</a></li><li><a href="stopping.html">Stoppen oder Neustarten</a></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div><div class="section"><h2><a name="overview" id="overview">Überblick für die Ungeduldigen</a></h2>
+</div>
+<div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#overview">Überblick für die Ungeduldigen</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#requirements">Anforderungen</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#download">Download</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#extract">Auspacken</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#configure">Den Codebaum konfigurieren</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#compile">Erstellen</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#install">Installieren</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#customize">Anpassen</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#test">Testen</a></li>
+</ul><h3>Siehe auch</h3><ul class="seealso"><li><a href="invoking.html">Starten</a></li><li><a href="stopping.html">Stoppen oder Neustarten</a></li></ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="overview" id="overview">Überblick für die Ungeduldigen</a></h2>
 
     <table>
       <tr>
@@ -79,7 +104,9 @@
     für die Kompilierung und Installation des Apache HTTPD ist
     weiter unten jeder Abschnitt des Kompilierungs- und
     Installationsvorganges genauer beschrieben.</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div><div class="section"><h2><a name="requirements" id="requirements">Anforderungen</a></h2>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="requirements" id="requirements">Anforderungen</a></h2>
 
     <p>Folgende Anforderungen gelten für die Erstellung des
     Apache:</p>
@@ -131,7 +158,9 @@
       sicherzustellen, dass der richtige Interpreter von
       <code>./configure</code> ausgewählt wird.</dd>
     </dl>
-</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div><div class="section"><h2><a name="download" id="download">Download</a></h2>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="download" id="download">Download</a></h2>
 
     <p>Der Apache kann von der <a href="http://www.apache.org/dist/httpd/">Apache Software
     Foundation Downloadseite</a> oder von einem <a href="http://www.apache.org/dyn/closer.cgi">nahegelegenen
@@ -193,7 +222,9 @@
     Solange Sie der Authentizität der <code>KEYS</code>-Datei
     vertrauen, ist dies kein Problem.</p>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div><div class="section"><h2><a name="extract" id="extract">Auspacken</a></h2>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="extract" id="extract">Auspacken</a></h2>
 
     <p>Das Auspacken des Quellcodes aus dem Apache HTTPD Tarball besteht
     aus einem simplen Dekomprimieren und danach "Ent-tarren":</p>
@@ -208,7 +239,9 @@
     Sie sollten mit <code>cd</code> in dieses Verzeichnis wechseln,
     bevor Sie mit der Kompilierung des Servers weitermachen. </p>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div><div class="section"><h2><a name="configure" id="configure">Den Codebaum konfigurieren</a></h2>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="configure" id="configure">Den Codebaum konfigurieren</a></h2>
 
     <p>Der nächste Schritt ist die Konfiguration des
     Apache-Codebaumes für Ihre spezielle Plattform und Ihre
@@ -532,7 +565,9 @@
     und beachten, bevor Sie dieses Feature implementieren.
     </p>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div><div class="section"><h2><a name="compile" id="compile">Erstellen</a></h2>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="compile" id="compile">Erstellen</a></h2>
 
     <p>Nun können Sie die verschiedenen Teile, die das Apache-Paket
     bilden, einfach durch Ausführen des folgenden Befehls erstellen:</p>
@@ -543,7 +578,9 @@
     benötigt ungefähr 3 Minuten auf einem Pentium III/Linux 2.2.
     System. Dies kann aber abhängig von Ihrer Hardware und der Anzahl
     der Module, die Sie aktiviert haben, sehr stark variieren.</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div><div class="section"><h2><a name="install" id="install">Installieren</a></h2>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="install" id="install">Installieren</a></h2>
 
     <p>Nun endlich installieren Sie das Package unter dem konfigurierten
     Installations-<em>PREFIX</em> (siehe oben: Option <code>--prefix</code>
@@ -553,7 +590,9 @@
 
     <p>Wenn Sie upgraden, wird die Installation Ihre Konfigurationsdateien
     oder Dokumente nicht überschrieben.</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div><div class="section"><h2><a name="customize" id="customize">Anpassen</a></h2>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="customize" id="customize">Anpassen</a></h2>
 
     <p>Als nächstes können Sie Ihren Apache HTTP Server anpassen,
     indem Sie die <a href="configuring.html">Konfigurationsdateien</a>
@@ -564,7 +603,9 @@
     <p>Werfen Sie auch einen Blick in das Apache-Handbuch unter <a href="./">docs/manual/</a>. Die aktuellste Version dieses Handbuchs
     sowie eine komplette Referenz der verfügbaren <a href="mod/directives.html">Konfigurationsanweisungen</a> finden
     Sie unter <a href="http://httpd.apache.org/docs-2.0/">http://httpd.apache.org/docs-2.0/</a>.</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div><div class="section"><h2><a name="test" id="test">Testen</a></h2>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="test" id="test">Testen</a></h2>
 
     <p>Sie können nun Ihren Apache HTTP Server <a href="invoking.html">starten</a>, indem Sie einfach</p>
 
@@ -580,4 +621,8 @@
     Ausführen von:</p>
 
   <div class="example"><p><code>$ <em>PREFIX</em>/bin/apachectl stop</code></p></div>
-</div></div><div id="footer"><p class="apache">Gepflegt durch das <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p><p class="menu"><a href="./mod/">Module</a> | <a href="./mod/directives.html">Direktiven</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">Glossar</a> | <a href="./sitemap.html">Seitenindex</a></p></div></body></html>
+</div></div>
+<div id="footer">
+<p class="apache">Gepflegt durch das <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p>
+<p class="menu"><a href="./mod/">Module</a> | <a href="./mod/directives.html">Direktiven</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">Glossar</a> | <a href="./sitemap.html">Seitenindex</a></p></div>
+</body></html>
