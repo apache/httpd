@@ -173,14 +173,6 @@ LanguagePriority en fr de
 # Format: Action media/type /cgi-script/location
 # Format: Action handler-name /cgi-script/location
 
-# For example to add a footer (footer.html in your document root) to
-# files with extension .foot (e.g. foo.html.foot), you could use:
-#AddHandler foot-action foot
-#Action foot-action /cgi-bin/footer
-
-# Or to do this for all HTML files, for example, use:
-#Action text/html /cgi-bin/footer
-
 # MetaDir: specifies the name of the directory in which Apache can find
 # meta information files. These files contain additional HTTP headers
 # to include when sending the document
