@@ -228,7 +228,11 @@ typedef struct module_struct {
      * parameters passed here are the same as those passed to the global
      * init method above.
      */
-    int (*child_init)(server_rec *, pool *);
+#ifdef ULTRIX_BRAIN_DEATH
+    void (*child_init)();
+#else
+    void (*child_init)(server_rec *, pool *);
+#endif
 } module;
 
 /* Initializer for the first few module slots, which are only

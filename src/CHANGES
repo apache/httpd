@@ -1,5 +1,9 @@
 Changes with Apache 1.3
-  
+
+  *) API: Correct child_init() slot declaration from int to void, to
+     match the init() declaration.  Update mod_example to use the new
+     hook.  [Ken Coar]
+
   *) added transport handle slot (t_handle) to the BUFF structure
      [Doug MacEachern]
      
@@ -8,7 +12,7 @@ Changes with Apache 1.3
      [Kenichi Hori <ken@d2.bs1.fc.nec.co.jp>] PR#815
 
   *) Support the image map format of FrontPage.  For example:
-	rect /url.hrm 10 20 30 40
+        rect /url.hrm 10 20 30 40
      ["Chris O'Byrne" <obyrne@iol.ie>] PR#807
   
   *) PORT: -lresolv and -lsocks were in the wrong order for Solaris.
@@ -76,7 +80,7 @@ Changes with Apache 1.3
      you're carrying over an old Configuration file and you use directory
      indexing then you'll want to add:
 
-     Module autoindex_module	mod_autoindex.o
+     Module autoindex_module    mod_autoindex.o
 
      before mod_dir in your Configuration.  [Dean Gaudet]
 
@@ -103,7 +107,7 @@ Changes with Apache 1.3
 
   *) Makefile.nt added - to build all the bits from the command line:
         nmake -f Makefile.nt
-	 Doesn't yet work properly. [Ben Laurie]
+         Doesn't yet work properly. [Ben Laurie]
 
   *) Default text of 404 error is now "Not Found" rather than the
      potentially misleading "File Not Found".  [Ken Coar]

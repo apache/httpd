@@ -66,12 +66,12 @@
 #include <stdio.h>
 
 /*--------------------------------------------------------------------------*/
-/*									    */
-/* Data declarations.							    */
-/*									    */
-/* Here are the static cells and structure declarations private to our	    */
-/* module.								    */
-/*									    */
+/*                                                                          */
+/* Data declarations.                                                       */
+/*                                                                          */
+/* Here are the static cells and structure declarations private to our      */
+/* module.                                                                  */
+/*                                                                          */
 /*--------------------------------------------------------------------------*/
 
 /*
@@ -91,15 +91,15 @@
  * inheritance, and modifying it will change the rules for other locations.
  */
 typedef struct example_config {
-    int	    cmode;	/* Environment to which record applies (directory,  */
-			/* server, or combination).			    */
+    int     cmode;      /* Environment to which record applies (directory,  */
+                        /* server, or combination).                         */
 #define CONFIG_MODE_SERVER 1
 #define CONFIG_MODE_DIRECTORY 2
-#define CONFIG_MODE_COMBO 3  /* Shouldn't ever happen.			    */
-    int	    local;	/* Boolean: was "Example" directive declared here?  */
-    int	    congenital;	/* Boolean: did we inherit an "Example"?	    */
-    char    *trace;	/* Pointer to trace string.			    */
-    char    *loc;	/* Location to which this record applies.	    */
+#define CONFIG_MODE_COMBO 3  /* Shouldn't ever happen.                      */
+    int     local;      /* Boolean: was "Example" directive declared here?  */
+    int     congenital; /* Boolean: did we inherit an "Example"?            */
+    char    *trace;     /* Pointer to trace string.                         */
+    char    *loc;       /* Location to which this record applies.           */
 } example_config;
 
 /*
@@ -129,21 +129,21 @@ static pool *example_subpool = NULL;
 module example_module;
 
 /*--------------------------------------------------------------------------*/
-/*									    */
+/*                                                                          */
 /* The following pseudo-prototype declarations illustrate the parameters    */
-/* passed to command handlers for the different types of directive	    */
-/* syntax.  If an argument was specified in the directive definition	    */
+/* passed to command handlers for the different types of directive          */
+/* syntax.  If an argument was specified in the directive definition        */
 /* (look for "command_rec" below), it's available to the command handler    */
-/* via the (void *) info field in the cmd_parms argument passed to the	    */
-/* handler (cmd->info for the examples below).				    */
-/*									    */
+/* via the (void *) info field in the cmd_parms argument passed to the      */
+/* handler (cmd->info for the examples below).                              */
+/*                                                                          */
 /*--------------------------------------------------------------------------*/
 
 /*
  * Command handler for a NO_ARGS directive.
  *
  * static const char *handle_NO_ARGS
- *	(cmd_parms *cmd, void *mconfig);
+ *      (cmd_parms *cmd, void *mconfig);
  */
  
 /*
@@ -151,7 +151,7 @@ module example_module;
  * of the commandline following the directive itself.
  *
  * static const char *handle_RAW_ARGS
- *	(cmd_parms *cmd, void *mconfig, const char *args);
+ *      (cmd_parms *cmd, void *mconfig, const char *args);
  */
 
 /*
@@ -159,7 +159,7 @@ module example_module;
  * "word1".
  *
  * static const char *handle_TAKE1
- *	(cmd_parms *cmd, void *mconfig, char *word1);
+ *      (cmd_parms *cmd, void *mconfig, char *word1);
  */
 
 /*
@@ -167,7 +167,7 @@ module example_module;
  * exactly two arguments.
  *
  * static const char *handle_TAKE2
- *	(cmd_parms *cmd, void *mconfig, char *word1, char *word2);
+ *      (cmd_parms *cmd, void *mconfig, char *word1, char *word2);
  */
 
 /*
@@ -175,7 +175,7 @@ module example_module;
  * three arguments, or the parser complains and doesn't bother calling us.
  *
  * static const char *handle_TAKE3
- *	(cmd_parms *cmd, void *mconfig, char *word1, char *word2, char *word3);
+ *      (cmd_parms *cmd, void *mconfig, char *word1, char *word2, char *word3);
  */
 
 /*
@@ -184,7 +184,7 @@ module example_module;
  * - word2 is a NULL pointer if no second argument was specified.
  *
  * static const char *handle_TAKE12
- *	(cmd_parms *cmd, void *mconfig, char *word1, char *word2);
+ *      (cmd_parms *cmd, void *mconfig, char *word1, char *word2);
  */
 
 /*
@@ -194,7 +194,7 @@ module example_module;
  * - word3 is a NULL pointer if no third argument was specified.
  *
  * static const char *handle_TAKE123
- *	(cmd_parms *cmd, void *mconfig, char *word1, char *word2, char *word3);
+ *      (cmd_parms *cmd, void *mconfig, char *word1, char *word2, char *word3);
  */
 
 /*
@@ -203,7 +203,7 @@ module example_module;
  * - word2 and word3 are NULL pointers if only one argument was specified.
  *
  * static const char *handle_TAKE13
- *	(cmd_parms *cmd, void *mconfig, char *word1, char *word2, char *word3);
+ *      (cmd_parms *cmd, void *mconfig, char *word1, char *word2, char *word3);
  */
 
 /*
@@ -212,7 +212,7 @@ module example_module;
  * - word3 is a NULL pointer if no third argument was specified.
  *
  * static const char *handle_TAKE23
- *	(cmd_parms *cmd, void *mconfig, char *word1, char *word2, char *word3);
+ *      (cmd_parms *cmd, void *mconfig, char *word1, char *word2, char *word3);
  */
 
 /*
@@ -221,7 +221,7 @@ module example_module;
  * - word1 points to each argument in turn.
  *
  * static const char *handle_ITERATE
- *	(cmd_parms *cmd, void *mconfig, char *word1);
+ *      (cmd_parms *cmd, void *mconfig, char *word1);
  */
 
 /*
@@ -233,54 +233,54 @@ module example_module;
  * - word2 points to each of the second and subsequent arguments in turn.
  *
  * static const char *handle_ITERATE2
- *	(cmd_parms *cmd, void *mconfig, char *word1, char *word2);
+ *      (cmd_parms *cmd, void *mconfig, char *word1, char *word2);
  */
 
 /*--------------------------------------------------------------------------*/
-/*									    */
-/* These routines are strictly internal to this module, and support its	    */
-/* operation.  They are not referenced by any external portion of the	    */
-/* server.								    */
-/*									    */
+/*                                                                          */
+/* These routines are strictly internal to this module, and support its     */
+/* operation.  They are not referenced by any external portion of the       */
+/* server.                                                                  */
+/*                                                                          */
 /*--------------------------------------------------------------------------*/
 
 /*
  * Locate our directory configuration record for the current request.
  */
 static example_config *our_dconfig
-	(request_rec *r) {
+        (request_rec *r) {
 
     return (example_config *) get_module_config
-				(
-				    r->per_dir_config,
-				    &example_module
-				);
+                                (
+                                    r->per_dir_config,
+                                    &example_module
+                                );
 }
 
 /*
  * Locate our server configuration record for the specified server.
  */
 static example_config *our_sconfig
-	(server_rec *s) {
+        (server_rec *s) {
 
     return (example_config *) get_module_config
-				(
-				    s->module_config,
-				    &example_module
-				);
+                                (
+                                    s->module_config,
+                                    &example_module
+                                );
 }
 
 /*
  * Likewise for our configuration record for the specified request.
  */
 static example_config *our_rconfig
-	(request_rec *r) {
+        (request_rec *r) {
 
     return (example_config *) get_module_config
-				(
-				    r->request_config,
-				    &example_module
-				);
+                                (
+                                    r->request_config,
+                                    &example_module
+                                );
 }
 
 /*
@@ -291,14 +291,14 @@ static void setup_module_cells () {
      * If we haven't already allocated our module-private pool, do so now.
      */
     if (example_pool == NULL) {
-	example_pool = make_sub_pool (NULL);
+        example_pool = make_sub_pool (NULL);
     };
     /*
      * Likewise for the table of routine/environment pairs we visit outside of
      * request context.
      */
     if (static_calls_made == NULL) {
-	static_calls_made = make_table (example_pool, 16);
+        static_calls_made = make_table (example_pool, 16);
     };
 }
 
@@ -323,8 +323,8 @@ static void setup_module_cells () {
 #define TRACE_NOTE "example-trace"
 
 static void trace_add
-	(server_rec *s, request_rec *r, example_config *mconfig,
-	 const char *note) {
+        (server_rec *s, request_rec *r, example_config *mconfig,
+         const char *note) {
 
     char    *sofar;
     char    *addon;
@@ -332,7 +332,7 @@ static void trace_add
     pool    *p;
     char    *trace_copy;
     example_config
-	    *rconfig;
+            *rconfig;
 
     /*
      * Make sure our pools and tables are set up - we need 'em.
@@ -342,34 +342,34 @@ static void trace_add
      * Now, if we're in request-context, we use the request pool.
      */
     if (r != NULL) {
-	p = r->pool;
-	if ((trace_copy = table_get (r->notes, TRACE_NOTE)) == NULL) {
-	    trace_copy = "";
-	}
+        p = r->pool;
+        if ((trace_copy = table_get (r->notes, TRACE_NOTE)) == NULL) {
+            trace_copy = "";
+        }
     } else {
-	/*
-	 * We're not in request context, so the trace gets attached to our
-	 * module-wide pool.  We do the create/destroy every time we're called
-	 * in non-request context; this avoids leaking memory in some of
-	 * the subsequent calls that allocate memory only once (such as the
-	 * key formation below).
-	 *
-	 * Make a new sub-pool and copy any existing trace to it.  Point the
-	 * trace cell at the copied value.
-	 */
-	p = make_sub_pool (example_pool);
-	if (trace != NULL) {
-	    trace = pstrdup (p, trace);
-	}
-	/*
-	 * Now, if we have a sub-pool from before, nuke it and replace with
-	 * the one we just allocated.
-	 */
-	if (example_subpool != NULL) {
-	    destroy_pool (example_subpool);
-	}
-	example_subpool = p;
-	trace_copy = trace;
+        /*
+         * We're not in request context, so the trace gets attached to our
+         * module-wide pool.  We do the create/destroy every time we're called
+         * in non-request context; this avoids leaking memory in some of
+         * the subsequent calls that allocate memory only once (such as the
+         * key formation below).
+         *
+         * Make a new sub-pool and copy any existing trace to it.  Point the
+         * trace cell at the copied value.
+         */
+        p = make_sub_pool (example_pool);
+        if (trace != NULL) {
+            trace = pstrdup (p, trace);
+        }
+        /*
+         * Now, if we have a sub-pool from before, nuke it and replace with
+         * the one we just allocated.
+         */
+        if (example_subpool != NULL) {
+            destroy_pool (example_subpool);
+        }
+        example_subpool = p;
+        trace_copy = trace;
     }
     /*
      * If we weren't passed a configuration record, we can't figure out to
@@ -386,45 +386,45 @@ static void trace_add
      * module's private pool, which doesn't get destroyed.
      */
     if (r == NULL) {
-	char	*key;
+        char    *key;
 
-	key = pstrcat (p, note, ":", where, NULL);
-	if (table_get (static_calls_made, key) != NULL) {
-	    /*
-	     * Been here, done this.
-	     */
-	    return;
-	} else {
-	    /*
-	     * First time for this combination of routine and environment -
-	     * log it so we don't do it again.
-	     */
-	    table_set (static_calls_made, key, "been here");
-	}
+        key = pstrcat (p, note, ":", where, NULL);
+        if (table_get (static_calls_made, key) != NULL) {
+            /*
+             * Been here, done this.
+             */
+            return;
+        } else {
+            /*
+             * First time for this combination of routine and environment -
+             * log it so we don't do it again.
+             */
+            table_set (static_calls_made, key, "been here");
+        }
     }
     addon = pstrcat 
-		(
-		    p,
-		    "   <LI>\n",
-		    "    <DL>\n",
-		    "     <DT><SAMP>",
-		    note,
-		    "</SAMP>\n",
-		    "     </DT>\n",
-		    "     <DD><SAMP>[",
-		    where,
-		    "]</SAMP>\n",
-		    "     </DD>\n",
-		    "    </DL>\n",
-		    "   </LI>\n",
-		    NULL
-		);
+                (
+                    p,
+                    "   <LI>\n",
+                    "    <DL>\n",
+                    "     <DT><SAMP>",
+                    note,
+                    "</SAMP>\n",
+                    "     </DT>\n",
+                    "     <DD><SAMP>[",
+                    where,
+                    "]</SAMP>\n",
+                    "     </DD>\n",
+                    "    </DL>\n",
+                    "   </LI>\n",
+                    NULL
+                );
     sofar = (trace_copy == NULL) ? "" : trace_copy;
     trace_copy = pstrcat (p, sofar, addon, NULL);
     if (r != NULL) {
-	table_set (r->notes, TRACE_NOTE, trace_copy);
+        table_set (r->notes, TRACE_NOTE, trace_copy);
     } else {
-	trace = trace_copy;
+        trace = trace_copy;
     }
     /*
      * You *could* uncomment the following if you wanted to see the calling
@@ -443,19 +443,19 @@ static void trace_add
 /* We prototyped the various syntax for command handlers (routines that     */
 /* are called when the configuration parser detects a directive declared    */
 /* by our module) earlier.  Now we actually declare a "real" routine that   */
-/* will be invoked by the parser when our "real" directive is		    */
-/* encountered.								    */
-/*									    */
+/* will be invoked by the parser when our "real" directive is               */
+/* encountered.                                                             */
+/*                                                                          */
 /* If a command handler encounters a problem processing the directive, it   */
-/* signals this fact by returning a non-NULL pointer to a string	    */
-/* describing the problem.						    */
-/*									    */
-/* The magic return value DECLINE_CMD is used to deal with directives	    */
-/* that might be declared by multiple modules.  If the command handler	    */
+/* signals this fact by returning a non-NULL pointer to a string            */
+/* describing the problem.                                                  */
+/*                                                                          */
+/* The magic return value DECLINE_CMD is used to deal with directives       */
+/* that might be declared by multiple modules.  If the command handler      */
 /* returns NULL, the directive was processed; if it returns DECLINE_CMD,    */
 /* the next module (if any) that declares the directive is given a chance   */
 /* at it.  If it returns any other value, it's treated as the text of an    */
-/* error message.							    */
+/* error message.                                                           */
 /*--------------------------------------------------------------------------*/
 /* 
  * Command handler for the NO_ARGS "Example" directive.  All we do is mark the
@@ -463,10 +463,10 @@ static void trace_add
  * current location in that location's configuration record.
  */
 static const char *cmd_example
-	(cmd_parms *cmd, void *mconfig) {
+        (cmd_parms *cmd, void *mconfig) {
 
     example_config
-	    *cfg = (example_config *) mconfig;
+            *cfg = (example_config *) mconfig;
 
     /*
      * "Example Wuz Here"
@@ -477,18 +477,18 @@ static const char *cmd_example
 }
 
 /*--------------------------------------------------------------------------*/
-/*									    */
+/*                                                                          */
 /* Now we declare our content handlers, which are invoked when the server   */
 /* encounters a document which our module is supposed to have a chance to   */
-/* see.  (See mod_mime's SetHandler and AddHandler directives, and the	    */
-/* mod_info and mod_status examples, for more details.)			    */
-/*									    */
-/* Since content handlers are dumping data directly into the connexion	    */
-/* (using the r*() routines, such as rputs() and rprintf()) without	    */
-/* intervention by other parts of the server, they need to make		    */
-/* sure any accumulated HTTP headers are sent first.  This is done by	    */
+/* see.  (See mod_mime's SetHandler and AddHandler directives, and the      */
+/* mod_info and mod_status examples, for more details.)                     */
+/*                                                                          */
+/* Since content handlers are dumping data directly into the connexion      */
+/* (using the r*() routines, such as rputs() and rprintf()) without         */
+/* intervention by other parts of the server, they need to make             */
+/* sure any accumulated HTTP headers are sent first.  This is done by       */
 /* calling send_http_header().  Otherwise, no header will be sent at all,   */
-/* and the output sent to the client will actually be HTTP-uncompliant.	    */
+/* and the output sent to the client will actually be HTTP-uncompliant.     */
 /*--------------------------------------------------------------------------*/
 /* 
  * Sample content handler.  All this does is display the call list that has
@@ -501,12 +501,12 @@ static const char *cmd_example
  *  HTTP_mumble ("an error status should be reported")
  */
 static int example_handler
-	(request_rec *r) {
+        (request_rec *r) {
 
     example_config
-	    *dcfg;
+            *dcfg;
     example_config
-	    *rcfg;
+            *rcfg;
 
     dcfg = our_dconfig (r);
     trace_add (r->server, r, dcfg, "example_handler()");
@@ -530,8 +530,8 @@ static int example_handler
      * already there.
      */
     if (r->header_only) {
-	kill_timeout (r);
-	return OK;
+        kill_timeout (r);
+        return OK;
     }
 
     /*
@@ -569,32 +569,32 @@ static int example_handler
     rputs ("  namespace.\n", r);
     rputs ("  </P>\n", r);
     rprintf
-	(
-	    r,
-	    "  <H2>Static callbacks so far:</H2>\n  <OL>\n%s  </OL>\n",
-	    trace
-	);
+        (
+            r,
+            "  <H2>Static callbacks so far:</H2>\n  <OL>\n%s  </OL>\n",
+            trace
+        );
     rprintf
-	(
-	    r,
-	    "  <H2>Request-specific callbacks so far:</H2>\n  <OL>\n%s  </OL>\n",
-	    table_get (r->notes, TRACE_NOTE)
-	);
+        (
+            r,
+            "  <H2>Request-specific callbacks so far:</H2>\n  <OL>\n%s  </OL>\n",
+            table_get (r->notes, TRACE_NOTE)
+        );
     rputs ("  <H2>Environment for <EM>this</EM> call:</H2>\n", r);
     rputs ("  <UL>\n", r);
     rprintf (r, "   <LI>Applies-to: <SAMP>%s</SAMP>\n   </LI>\n", dcfg->loc);
     rprintf
-	(
-	    r,
-	    "   <LI>\"Example\" directive declared here: %s\n   </LI>\n",
-	    (dcfg->local ? "YES" : "NO")
-	);
+        (
+            r,
+            "   <LI>\"Example\" directive declared here: %s\n   </LI>\n",
+            (dcfg->local ? "YES" : "NO")
+        );
     rprintf
-	(
-	    r,
-	    "   <LI>\"Example\" inherited: %s\n   </LI>\n",
-	    (dcfg->congenital ? "YES" : "NO")
-	);
+        (
+            r,
+            "   <LI>\"Example\" inherited: %s\n   </LI>\n",
+            (dcfg->congenital ? "YES" : "NO")
+        );
     rputs ("  </UL>\n", r);
     rputs (" </BODY>\n", r);
     rputs ("</HTML>\n", r);
@@ -613,33 +613,33 @@ static int example_handler
 }
 
 /*--------------------------------------------------------------------------*/
-/*									    */
-/* Now let's declare routines for each of the callback phase in order.	    */
-/* (That's the order in which they're listed in the callback list, *not	    */
-/* the order in which the server calls them!  See the command_rec	    */
-/* declaration near the bottom of this file.)  Note that these may be	    */
+/*                                                                          */
+/* Now let's declare routines for each of the callback phase in order.      */
+/* (That's the order in which they're listed in the callback list, *not     */
+/* the order in which the server calls them!  See the command_rec           */
+/* declaration near the bottom of this file.)  Note that these may be       */
 /* called for situations that don't relate primarily to our function - in   */
-/* other words, the fixup handler shouldn't assume that the request has	    */
-/* to do with "example" stuff.	    					    */
-/*									    */
+/* other words, the fixup handler shouldn't assume that the request has     */
+/* to do with "example" stuff.                                              */
+/*                                                                          */
 /* With the exception of the content handler, all of our routines will be   */
 /* called for each request, unless an earlier handler from another module   */
-/* aborted the sequence.						    */
-/*									    */
-/* Handlers that are declared as "int" can return the following:	    */
-/*									    */
-/*  OK		Handler accepted the request and did its thing with it.	    */
-/*  DECLINED	Handler took no action.					    */
-/*  HTTP_mumble	Handler looked at request and found it wanting.		    */
-/*									    */
-/* What the server does after calling a module handler depends upon the	    */
-/* handler's return value.  In all cases, if the handler returns	    */
+/* aborted the sequence.                                                    */
+/*                                                                          */
+/* Handlers that are declared as "int" can return the following:            */
+/*                                                                          */
+/*  OK          Handler accepted the request and did its thing with it.     */
+/*  DECLINED    Handler took no action.                                     */
+/*  HTTP_mumble Handler looked at request and found it wanting.             */
+/*                                                                          */
+/* What the server does after calling a module handler depends upon the     */
+/* handler's return value.  In all cases, if the handler returns            */
 /* DECLINED, the server will continue to the next module with an handler    */
-/* for the current phase.  However, if the handler return a non-OK,	    */
-/* non-DECLINED status, the server aborts the request right there.  If	    */
-/* the handler returns OK, the server's next action is phase-specific;	    */
-/* see the individual handler comments below for details.		    */
-/*									    */
+/* for the current phase.  However, if the handler return a non-OK,         */
+/* non-DECLINED status, the server aborts the request right there.  If      */
+/* the handler returns OK, the server's next action is phase-specific;      */
+/* see the individual handler comments below for details.                   */
+/*                                                                          */
 /*--------------------------------------------------------------------------*/
 /* 
  * This function is called during server initialisation.  Any information
@@ -653,7 +653,7 @@ static int example_handler
  * All our module-initialiser does is add its trace to the log.
  */
 static void example_init
-	(server_rec *s, pool *p) {
+        (server_rec *s, pool *p) {
 
     char    *note;
     char    *sname = s->server_hostname;
@@ -671,6 +671,37 @@ static void example_init
     trace_add (s, NULL, NULL, note);
 }
 
+/* 
+ * This function is called during server initialisation when an heavy-weight
+ * process (such as a child) is being initialised.  As with the
+ * module-initialisation function, any information that needs to be recorded
+ * must be in static cells, since there's no configuration record.
+ *
+ * There is no return value.
+ */
+
+/*
+ * All our process-initialiser does is add its trace to the log.
+ */
+static void example_child_init
+        (server_rec *s, pool *p) {
+
+    char    *note;
+    char    *sname = s->server_hostname;
+
+    /*
+     * Set up any module cells that ought to be initialised.
+     */
+    setup_module_cells();
+    /*
+     * The arbitrary text we add to our trace entry indicates for which server
+     * we're being called.
+     */
+    sname = (sname != NULL) ? sname : "";
+    note = pstrcat (p, "example_child_init(", sname, ")", NULL);
+    trace_add (s, NULL, NULL, note);
+}
+
 /*
  * This function gets called to create up a per-directory configuration
  * record.  This will be called for the "default" server environment, and for
@@ -684,10 +715,10 @@ static void example_init
  * structure.
  */
 static void *example_dir_create
-	(pool *p, char *dirspec) {
+        (pool *p, char *dirspec) {
 
     example_config
-	    *cfg;
+            *cfg;
     char    *dname = dirspec;
 
     /*
@@ -726,15 +757,15 @@ static void *example_dir_create
  * containing the merged values.
  */
 static void *example_dir_merge
-	(pool *p, void *parent_conf, void *newloc_conf) {
+        (pool *p, void *parent_conf, void *newloc_conf) {
 
     example_config
-	    *merged_config =
-		(example_config *) pcalloc (p, sizeof(example_config));
+            *merged_config =
+                (example_config *) pcalloc (p, sizeof(example_config));
     example_config
-	    *pconf = (example_config *) parent_conf;
+            *pconf = (example_config *) parent_conf;
     example_config
-	    *nconf = (example_config *) newloc_conf;
+            *nconf = (example_config *) newloc_conf;
     char    *note;
 
     /*
@@ -755,21 +786,21 @@ static void *example_dir_merge
      * the current value.
      */
     merged_config->cmode =
-	(pconf->cmode == nconf->cmode) ? pconf->cmode : CONFIG_MODE_COMBO;
+        (pconf->cmode == nconf->cmode) ? pconf->cmode : CONFIG_MODE_COMBO;
     /*
      * Now just record our being called in the trace list.  Include the
      * locations we were asked to merge.
      */
     note = pstrcat
-	    (
-		p,
-		"example_dir_merge(\"",
-		pconf->loc,
-		"\",\"",
-		nconf->loc,
-		"\")",
-		NULL
-	    );
+            (
+                p,
+                "example_dir_merge(\"",
+                pconf->loc,
+                "\",\"",
+                nconf->loc,
+                "\")",
+                NULL
+            );
     trace_add (NULL, NULL, merged_config, note);
     return (void *) merged_config;
 }
@@ -782,10 +813,10 @@ static void *example_dir_merge
  * structure.
  */
 static void *example_server_create
-	(pool *p, server_rec *s) {
+        (pool *p, server_rec *s) {
 
     example_config
-	    *cfg;
+            *cfg;
     char    *sname = s->server_hostname;
 
     /*
@@ -819,15 +850,15 @@ static void *example_server_create
  * containing the merged values.
  */
 static void *example_server_merge
-	(pool *p, void *server1_conf, void *server2_conf) {
+        (pool *p, void *server1_conf, void *server2_conf) {
 
     example_config
-	    *merged_config =
-		(example_config *) pcalloc (p, sizeof(example_config));
+            *merged_config =
+                (example_config *) pcalloc (p, sizeof(example_config));
     example_config
-	    *s1conf = (example_config *) server1_conf;
+            *s1conf = (example_config *) server1_conf;
     example_config
-	    *s2conf = (example_config *) server2_conf;
+            *s2conf = (example_config *) server2_conf;
     char    *note;
 
     /*
@@ -835,7 +866,7 @@ static void *example_server_merge
      * Basically, just note whence we came.
      */
     merged_config->cmode =
-	(s1conf->cmode == s2conf->cmode) ? s1conf->cmode : CONFIG_MODE_COMBO;
+        (s1conf->cmode == s2conf->cmode) ? s1conf->cmode : CONFIG_MODE_COMBO;
     merged_config->local = s2conf->local;
     merged_config->congenital = (s1conf->congenital | s1conf->local);
     merged_config->loc = pstrdup (p, s2conf->loc);
@@ -843,15 +874,15 @@ static void *example_server_merge
      * Trace our call, including what we were asked to merge.
      */
     note = pstrcat
-	    (
-		p,
-		"example_server_merge(\"",
-		s1conf->loc,
-		"\",\"",
-		s2conf->loc,
-		"\")",
-		NULL
-	    );
+            (
+                p,
+                "example_server_merge(\"",
+                s1conf->loc,
+                "\",\"",
+                s2conf->loc,
+                "\")",
+                NULL
+            );
     trace_add (NULL, NULL, merged_config, note);
     return (void *) merged_config;
 }
@@ -865,10 +896,10 @@ static void *example_server_merge
  * further modules are called for this phase.
  */
 static int example_xlate
-	(request_rec *r) {
+        (request_rec *r) {
 
     example_config
-	    *cfg;
+            *cfg;
 
     cfg = our_dconfig (r);
     /*
@@ -889,10 +920,10 @@ static int example_xlate
  * at the request during this phase.
  */
 static int example_ckuser
-	(request_rec *r) {
+        (request_rec *r) {
 
     example_config
-	    *cfg;
+            *cfg;
 
     cfg = our_dconfig (r);
     /*
@@ -913,10 +944,10 @@ static int example_ckuser
  * error.
  */
 static int example_ckauth
-	(request_rec *r) {
+        (request_rec *r) {
 
     example_config
-	    *cfg;
+            *cfg;
 
     cfg = our_dconfig (r);
     /*
@@ -937,10 +968,10 @@ static int example_ckauth
  * will abort the sequence (and the request) as usual.
  */
 static int example_ckaccess
-	(request_rec *r) {
+        (request_rec *r) {
 
     example_config
-	    *cfg;
+            *cfg;
 
     cfg = our_dconfig (r);
     trace_add (r->server, r, cfg, "example_ckaccess()");
@@ -956,10 +987,10 @@ static int example_ckaccess
  * further modules are given a chance at the request for this phase.
  */
 static int example_typer
-	(request_rec *r) {
+        (request_rec *r) {
 
     example_config
-	    *cfg;
+            *cfg;
 
     cfg = our_dconfig (r);
     /*
@@ -979,10 +1010,10 @@ static int example_typer
  * phase.
  */
 static int example_fixer
-	(request_rec *r) {
+        (request_rec *r) {
 
     example_config
-	    *cfg;
+            *cfg;
 
     cfg = our_dconfig (r);
     /*
@@ -1000,10 +1031,10 @@ static int example_fixer
  * remaining modules with an handler for this phase will still be called.
  */
 static int example_logger
-	(request_rec *r) {
+        (request_rec *r) {
 
     example_config
-	    *cfg;
+            *cfg;
 
     cfg = our_dconfig (r);
     trace_add (r->server, r, cfg, "example_logger()");
@@ -1019,10 +1050,10 @@ static int example_logger
  * remaining modules with handlers for this phase will still be called.
  */
 static int example_hparser
-	(request_rec *r) {
+        (request_rec *r) {
 
     example_config
-	    *cfg;
+            *cfg;
 
     cfg = our_dconfig (r);
     trace_add (r->server, r, cfg, "example_hparser()");
@@ -1030,34 +1061,34 @@ static int example_hparser
 }
 
 /*--------------------------------------------------------------------------*/
-/*									    */
-/* All of the routines have been declared now.  Here's the list of	    */
-/* directives specific to our module, and information about where they	    */
-/* may appear and how the command parser should pass them to us for	    */
+/*                                                                          */
+/* All of the routines have been declared now.  Here's the list of          */
+/* directives specific to our module, and information about where they      */
+/* may appear and how the command parser should pass them to us for         */
 /* processing.  Note that care must be taken to ensure that there are NO    */
-/* collisions of directive names between modules.			    */
-/*									    */
+/* collisions of directive names between modules.                           */
+/*                                                                          */
 /*--------------------------------------------------------------------------*/
 /* 
  * List of directives specific to our module.
  */
 command_rec example_commands[] = {
     {
-	"Example",			/* directive name */
-	cmd_example,			/* action routine for directive */
-	NULL,				/* argument to include in call */
-	OR_OPTIONS,			/* where available */
-	NO_ARGS,			/* arguments */
-	"Example directive - no arguments"
-					/* directive description */
+        "Example",                      /* directive name */
+        cmd_example,                    /* action routine for directive */
+        NULL,                           /* argument to include in call */
+        OR_OPTIONS,                     /* where available */
+        NO_ARGS,                        /* arguments */
+        "Example directive - no arguments"
+                                        /* directive description */
     },
     { NULL }
 };
 
 /*--------------------------------------------------------------------------*/
-/*									    */
-/* Now the list of content handlers available from this module.		    */
-/*									    */
+/*                                                                          */
+/* Now the list of content handlers available from this module.             */
+/*                                                                          */
 /*--------------------------------------------------------------------------*/
 /* 
  * List of content handlers our module supplies.  Each handler is defined by
@@ -1077,10 +1108,10 @@ handler_rec example_handlers[] = {
 };
 
 /*--------------------------------------------------------------------------*/
-/*									    */
-/* Finally, the list of callback routines and data structures that	    */
+/*                                                                          */
+/* Finally, the list of callback routines and data structures that          */
 /* provide the hooks into our module from the other parts of the server.    */
-/*									    */
+/*                                                                          */
 /*--------------------------------------------------------------------------*/
 /* 
  * Module definition for configuration.  If a particular callback is not
@@ -1092,20 +1123,20 @@ handler_rec example_handlers[] = {
  */
 module example_module = {
     STANDARD_MODULE_STUFF,
-    example_init,		/* initializer */
-    example_dir_create,		/* per-directory config creater */
-    example_dir_merge,		/* dir config merger - default is to override */
-    example_server_create,	/* server config creator */
-    example_server_merge,	/* server config merger */
-    example_commands,		/* command table */
-    example_handlers,		/* [6] list of handlers */
-    example_xlate,		/* [1] filename-to-URI translation */
-    example_ckuser,		/* [4] check/validate HTTP user_id */
-    example_ckauth,		/* [5] check HTTP user_id is valid *here* */
-    example_ckaccess,		/* [3] check access by host address, etc. */
-    example_typer,		/* [6] MIME type checker/setter */
-    example_fixer,		/* [7] fixups */
-    example_logger,		/* [9] logger */
-    example_hparser,		/* [2] header parser */
-    NULL			/* child_init */
+    example_init,               /* module initializer */
+    example_dir_create,         /* per-directory config creater */
+    example_dir_merge,          /* dir config merger - default is to override */
+    example_server_create,      /* server config creator */
+    example_server_merge,       /* server config merger */
+    example_commands,           /* command table */
+    example_handlers,           /* [6] list of handlers */
+    example_xlate,              /* [1] filename-to-URI translation */
+    example_ckuser,             /* [4] check/validate HTTP user_id */
+    example_ckauth,             /* [5] check HTTP user_id is valid *here* */
+    example_ckaccess,           /* [3] check access by host address, etc. */
+    example_typer,              /* [6] MIME type checker/setter */
+    example_fixer,              /* [7] fixups */
+    example_logger,             /* [9] logger */
+    example_hparser,            /* [2] header parser */
+    example_child_init          /* process initializer */
 };
