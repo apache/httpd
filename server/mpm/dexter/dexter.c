@@ -388,7 +388,7 @@ static void process_child_status(ap_proc_t *pid, ap_wait_t status)
 	*/
     if ((WIFEXITED(status)) &&
 	WEXITSTATUS(status) == APEXIT_CHILDFATAL) {
-	ap_log_error(APLOG_MARK, APLOG_ALERT|APLOG_NOERRNO, errno, ap_server_conf,
+	ap_log_error(APLOG_MARK, APLOG_ALERT|APLOG_NOERRNO, 0, ap_server_conf,
 			"Child %ld returned a Fatal error... \n"
 			"Apache is exiting!",
 			(long)pid->pid);
@@ -405,7 +405,7 @@ static void process_child_status(ap_proc_t *pid, ap_wait_t status)
 #ifdef SYS_SIGLIST
 #ifdef WCOREDUMP
 	    if (WCOREDUMP(status)) {
-		ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_NOTICE, errno,
+		ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_NOTICE, 0,
 			     ap_server_conf,
 			     "child pid %ld exit signal %s (%d), "
 			     "possible coredump in %s",
@@ -415,7 +415,7 @@ static void process_child_status(ap_proc_t *pid, ap_wait_t status)
 	    }
 	    else {
 #endif
-		ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_NOTICE, errno,
+		ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_NOTICE, 0,
 			     ap_server_conf,
 			     "child pid %ld exit signal %s (%d)", 
                              (long)pid->pid,
@@ -424,7 +424,7 @@ static void process_child_status(ap_proc_t *pid, ap_wait_t status)
 	    }
 #endif
 #else
-	    ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_NOTICE, errno,
+	    ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_NOTICE, 0,
 			 ap_server_conf,
 			 "child pid %ld exit signal %d",
 			 (long)pid->pid, WTERMSIG(status));
@@ -549,7 +549,7 @@ static int start_thread(void)
         static int reported = 0;
         
         if (!reported) {
-            ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, errno, ap_server_conf,
+            ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, ap_server_conf,
                          "server reached MaxThreadsPerChild setting, consider raising the"
                          " MaxThreadsPerChild or NumServers settings");
             reported = 1;
@@ -649,10 +649,10 @@ static void *worker_thread(void *arg)
                     continue;
                 }
 
-                /* poll() will only return errors in catastrophic
+                /* ap_poll() will only return errors in catastrophic
                  * circumstances. Let's try exiting gracefully, for now. */
-                ap_log_error(APLOG_MARK, APLOG_ERR, errno, (const server_rec *)
-                             ap_get_server_conf(), "poll: (listen)");
+                ap_log_error(APLOG_MARK, APLOG_ERR, srv, (const server_rec *)
+                             ap_get_server_conf(), "ap_poll: (listen)");
                 workers_may_exit = 1;
             }
             if (workers_may_exit) break;
@@ -690,7 +690,7 @@ static void *worker_thread(void *arg)
     got_fd:
         if (!workers_may_exit) {
             if ((rv = ap_accept(&csd, sd, ptrans)) != APR_SUCCESS) {
-                ap_log_error(APLOG_MARK, APLOG_ERR, rv, NULL, "ap_accept");
+                ap_log_error(APLOG_MARK, APLOG_ERR, rv, ap_server_conf, "ap_accept");
             }
             if ((rv = SAFE_ACCEPT(ap_unlock(process_accept_mutex)))
                 != APR_SUCCESS) {
@@ -1030,7 +1030,7 @@ static void server_main_loop(int remaining_children_to_start)
 		 * child table.  Somehow we don't know about this
 		 * child.
 		 */
-		ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_WARNING, errno, 
+		ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_WARNING, 0, 
                              ap_server_conf,
 			    "long lost child came home! (pid %ld)", 
                              (long)pid.pid);
@@ -1069,22 +1069,23 @@ int ap_mpm_run(ap_pool_t *_pconf, ap_pool_t *plog, server_rec *s)
 
     pconf = _pconf;
     ap_server_conf = s;
-    if (ap_create_pipe(&pipe_of_death_in, &pipe_of_death_out, pconf) != APR_SUCCESS) {
-        ap_log_error(APLOG_MARK, APLOG_ERR, errno,
+    if ((rv = ap_create_pipe(&pipe_of_death_in, &pipe_of_death_out, pconf)) 
+        != APR_SUCCESS) {
+        ap_log_error(APLOG_MARK, APLOG_ERR, rv,
                      (const server_rec*) ap_server_conf,
-                     "pipe: (pipe_of_death)");
+                     "ap_create_pipe (pipe_of_death)");
         exit(1);
     }
-    if (ap_set_pipe_timeout(pipe_of_death_in, 0) != APR_SUCCESS) {
-        ap_log_error(APLOG_MARK, APLOG_ERR, errno,
+    if ((rv = ap_set_pipe_timeout(pipe_of_death_in, 0)) != APR_SUCCESS) {
+        ap_log_error(APLOG_MARK, APLOG_ERR, rv,
                      (const server_rec*) ap_server_conf,
-                     "fcntl: O_NONBLOCKing (pipe_of_death)");
+                     "ap_set_pipe_timeout (pipe_of_death)");
         exit(1);
     }
     ap_server_conf = s;
     if ((num_listenfds = setup_listeners(ap_server_conf)) < 1) {
         /* XXX: hey, what's the right way for the mpm to indicate a fatal error? */
-        ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ALERT, errno, s,
+        ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ALERT, 0, s,
             "no listening sockets available, shutting down");
         return 1;
     }
@@ -1133,10 +1134,10 @@ int ap_mpm_run(ap_pool_t *_pconf, ap_pool_t *plog, server_rec *s)
 	hold_off_on_exponential_spawning = 10;
     }
 
-    ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_NOTICE, errno, ap_server_conf,
+    ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_NOTICE, 0, ap_server_conf,
 		"%s configured -- resuming normal operations",
 		ap_get_server_version());
-    ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_INFO, errno, ap_server_conf,
+    ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_INFO, 0, ap_server_conf,
 		"Server built: %s", ap_get_server_built());
     restart_pending = shutdown_pending = 0;
 
@@ -1157,13 +1158,13 @@ int ap_mpm_run(ap_pool_t *_pconf, ap_pool_t *plog, server_rec *s)
             const char *pidfile = NULL;
             pidfile = ap_server_root_relative (pconf, ap_pid_fname);
             if ( pidfile != NULL && unlink(pidfile) == 0)
-                ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_INFO, errno,
+                ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_INFO, 0,
             		 ap_server_conf,
             		 "removed PID file %s (pid=%ld)",
             		 pidfile, (long)getpid());
         }
     
-        ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_NOTICE, errno,
+        ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_NOTICE, 0,
                      ap_server_conf, "caught SIGTERM, shutting down");
     
 	return 1;
@@ -1180,7 +1181,7 @@ int ap_mpm_run(ap_pool_t *_pconf, ap_pool_t *plog, server_rec *s)
     if (is_graceful) {
         char char_of_death = '!';
 
-	ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_NOTICE, errno, ap_server_conf,
+	ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_NOTICE, 0, ap_server_conf,
 		    "SIGWINCH received.  Doing graceful restart");
 
 	/* This is mostly for debugging... so that we know what is still
@@ -1194,9 +1195,9 @@ int ap_mpm_run(ap_pool_t *_pconf, ap_pool_t *plog, server_rec *s)
 	}
 	/* give the children the signal to die */
         for (i = 0; i < num_daemons;) {
-            if (ap_write(pipe_of_death_out, &char_of_death, &one) != APR_SUCCESS) {
-                if (errno == EINTR) continue;
-                ap_log_error(APLOG_MARK, APLOG_WARNING, errno, ap_server_conf,
+            if ((rv = ap_write(pipe_of_death_out, &char_of_death, &one)) != APR_SUCCESS) {
+                if (ap_canonical_error(rv) == APR_EINTR) continue;
+                ap_log_error(APLOG_MARK, APLOG_WARNING, rv, ap_server_conf,
                              "write pipe_of_death");
             }
             i++;
@@ -1212,7 +1213,7 @@ int ap_mpm_run(ap_pool_t *_pconf, ap_pool_t *plog, server_rec *s)
                          "killpg SIGTERM");
 	}
         ap_reclaim_child_processes(1);		/* Start with SIGTERM */
-	ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_NOTICE, errno,
+	ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_NOTICE, 0,
                      ap_server_conf, "SIGHUP received.  Attempting to restart");
     }
     return 0;
