@@ -100,6 +100,9 @@ static struct pollfd *listenfds;
  * The max child slot ever assigned, preserved across restarts.  Necessary
  * to deal with NumServers changes across SIGWINCH restarts.  We use this
  * value to optimize routines that have to scan the entire scoreboard.
+ *
+ * XXX - It might not be worth keeping this code in. There aren't very
+ * many child processes in this MPM.
  */
 int max_daemons_limit = -1;
 
@@ -1141,13 +1144,15 @@ static void perform_child_maintenance(void)
         unsigned char status = ap_scoreboard_image[i].status;
 
         if (status == SERVER_DEAD) {
-            free_slots[free_length] = i;
-            ++free_length;
+            if (free_length < spawn_rate) {
+                free_slots[free_length] = i;
+                ++free_length;
+            }
         } else {
             last_non_dead = i;
         }
 
-	if (free_length >= spawn_rate) {
+	if (i >= max_daemons_limit && free_length >= spawn_rate) {
 	    break;
 	}
     }
