@@ -1474,7 +1474,7 @@ static void update_scoreboard_global(void)
 void ap_time_process_request(int child_num, int status)
 {
     short_score *ss;
-#if defined(NO_GETTIMEOFDAY) && !defined(NO_TIMES)
+#if !defined(HAVE_GETTIMEOFDAY) && !defined(NO_TIMES)
     struct tms tms_blk;
 #endif
 
@@ -1485,7 +1485,7 @@ void ap_time_process_request(int child_num, int status)
     ss = &ap_scoreboard_image->servers[child_num];
 
     if (status == START_PREQUEST) {
-#if defined(NO_GETTIMEOFDAY)
+#if !defined(HAVE_GETTIMEOFDAY)
 #ifndef NO_TIMES
 	if ((ss->start_time = times(&tms_blk)) == -1)
 #endif /* NO_TIMES */
@@ -1497,7 +1497,7 @@ void ap_time_process_request(int child_num, int status)
 #endif
     }
     else if (status == STOP_PREQUEST) {
-#if defined(NO_GETTIMEOFDAY)
+#if !defined(HAVE_GETTIMEOFDAY)
 #ifndef NO_TIMES
 	if ((ss->stop_time = times(&tms_blk)) == -1)
 #endif
@@ -2702,7 +2702,7 @@ int ap_mpm_run(ap_context_t *_pconf, ap_context_t *plog, server_rec *s)
 	/* Time to gracefully shut down:
 	 * Kill child processes, tell them to call child_exit, etc...
 	 */
-	if (ap_killpg(getpgrp(), SIGTERM) < 0) {
+	if (unixd_killpg(getpgrp(), SIGTERM) < 0) {
 	    ap_log_error(APLOG_MARK, APLOG_WARNING, errno, server_conf, "killpg SIGTERM");
 	}
 	reclaim_child_processes(1);		/* Start with SIGTERM */
@@ -2748,7 +2748,7 @@ int ap_mpm_run(ap_context_t *_pconf, ap_context_t *plog, server_rec *s)
 		    "SIGUSR1 received.  Doing graceful restart");
 
 	/* kill off the idle ones */
-	if (ap_killpg(getpgrp(), SIGUSR1) < 0) {
+	if (unixd_killpg(getpgrp(), SIGUSR1) < 0) {
 	    ap_log_error(APLOG_MARK, APLOG_WARNING, errno, server_conf, "killpg SIGUSR1");
 	}
 #ifndef SCOREBOARD_FILE
@@ -2767,7 +2767,7 @@ int ap_mpm_run(ap_context_t *_pconf, ap_context_t *plog, server_rec *s)
     }
     else {
 	/* Kill 'em off */
-	if (ap_killpg(getpgrp(), SIGHUP) < 0) {
+	if (unixd_killpg(getpgrp(), SIGHUP) < 0) {
 	    ap_log_error(APLOG_MARK, APLOG_WARNING, errno, server_conf, "killpg SIGHUP");
 	}
 	reclaim_child_processes(0);		/* Not when just starting up */

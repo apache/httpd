@@ -1700,7 +1700,7 @@ API_EXPORT(int) ap_is_url(const char *u)
     return (x ? 1 : 0);		/* If the first character is ':', it's broken, too */
 }
 
-#ifdef NEED_STRDUP
+#ifndef HAVE_STRDUP
 char *strdup(const char *str)
 {
     char *sdup;
@@ -1716,7 +1716,7 @@ char *strdup(const char *str)
 #endif
 
 /* The following two routines were donated for SVR4 by Andreas Vogel */
-#ifdef NEED_STRCASECMP
+#ifndef HAVE_STRCASECMP
 int strcasecmp(const char *a, const char *b)
 {
     const char *p = a;
@@ -1735,7 +1735,7 @@ int strcasecmp(const char *a, const char *b)
 
 #endif
 
-#ifdef NEED_STRNCASECMP
+#ifndef HAVE_STRNCASECMP
 int strncasecmp(const char *a, const char *b, int n)
 {
     const char *p = a;
@@ -1756,7 +1756,7 @@ int strncasecmp(const char *a, const char *b, int n)
 #endif
 
 /* The following routine was donated for UTS21 by dwd@bell-labs.com */
-#ifdef NEED_STRSTR
+#ifndef HAVE_STRSTR
 char *strstr(char *s1, char *s2)
 {
     char *p1, *p2;
@@ -1785,7 +1785,7 @@ char *strstr(char *s1, char *s2)
 }
 #endif
 
-#ifdef NEED_INITGROUPS
+#ifndef HAVE_INITGROUPS
 int initgroups(const char *name, gid_t basegid)
 {
 #if defined(QNX) || defined(MPE) || defined(BEOS) || defined(_OSD_POSIX) || defined(TPF) || defined(__TANDEM)
@@ -1816,7 +1816,7 @@ int initgroups(const char *name, gid_t basegid)
 }
 #endif /* def NEED_INITGROUPS */
 
-#ifdef NEED_WAITPID
+#ifndef HAVE_WAITPID
 /* From ikluft@amdahl.com
  * this is not ideal but it works for SVR3 variants
  * Modified by dwd@bell-labs.com to call wait3 instead of wait because
@@ -2094,7 +2094,7 @@ char *ap_double_quotes(ap_context_t *p, char *str)
 #endif
 
 
-#ifdef NEED_STRERROR
+#ifndef HAVE_STRERROR
 char *
      strerror(int err)
 {
@@ -2107,7 +2107,7 @@ char *
 }
 #endif
 
-#if defined(NEED_DIFFTIME)
+#ifndef HAVE_DIFFTIME
 double difftime(time_t time1, time_t time0)
 {
     return (time1 - time0);

@@ -118,7 +118,7 @@ stat() properly */
 #endif
 
 #if !defined(QNX) && !defined(MPE) && !defined(WIN32) && !defined(TPF)
-#include <sys/param.h>
+/* #include <sys/param.h> */
 #endif
 
 /* Define one of these according to your system. */
@@ -1352,29 +1352,80 @@ long vfprintf(FILE *, const char *, va_list);
 
 #endif /* SUNOS_LIB_PROTOTYPES */
 
+/*
+ * Transition macros from old-style configuration to autoconf
+ */
+#ifndef HAVE_CONFIG_H
+
+#if !defined(NO_KILLPG) && !defined(HAVE_KILLPG)
+#define HAVE_KILLPG
+#endif
+
+#if !defined(NEED_STRDUP) && !defined(HAVE_STRDUP)
+#define HAVE_STRDUP
+#endif
+
+#if !defined(NEED_STRCASECMP) && !defined(HAVE_STRCASECMP)
+#define HAVE_STRCASECMP
+#endif
+
+#if !defined(NEED_STRNCASECMP) && !defined(HAVE_STRNCASECMP)
+#define HAVE_STRNCASECMP
+#endif
+
+#if !defined(NEED_STRSTR) && !defined(HAVE_STRSTR)
+#define HAVE_STRSTR
+#endif
+
+#if !defined(NEED_INITGROUPS) && !defined(HAVE_INITGROUPS)
+#define HAVE_INITGROUPS
+#endif
+
+#if !defined(NEED_WAITPID) && !defined(HAVE_WAITPID)
+#define HAVE_WAITPID
+#endif
+
+#if !defined(NEED_STRERROR) && !defined(HAVE_STRERROR)
+#define HAVE_STRERROR
+#endif
+
+#if !defined(NEED_DIFFTIME) && !defined(HAVE_DIFFTIME)
+#define HAVE_DIFFTIME
+#endif
+
+#if !defined(NEED_GETTIMEOFDAY) && !defined(HAVE_GETTIMEOFDAY)
+#define HAVE_GETTIMEOFDAY
+#endif
+
+#if !defined(NEED_SETSID) && !defined(HAVE_SETSID)
+#define HAVE_SETSID
+#endif
+
+#endif /* HAVE_CONFIG_H */
+
 /* The assumption is that when the functions are missing,
  * then there's no matching prototype available either.
  * Declare what is needed exactly as the replacement routines implement it.
  */
-#ifdef NEED_STRDUP
+#ifndef HAVE_STRDUP
 extern char *strdup (const char *str);
 #endif
-#ifdef NEED_STRCASECMP
+#ifndef HAVE_STRCASECMP
 extern int strcasecmp (const char *a, const char *b);
 #endif
-#ifdef NEED_STRNCASECMP
+#ifndef HAVE_STRNCASECMP
 extern int strncasecmp (const char *a, const char *b, int n);
 #endif
-#ifdef NEED_INITGROUPS
+#ifndef HAVE_INITGROUPS
 extern int initgroups(const char *name, gid_t basegid);
 #endif
-#ifdef NEED_WAITPID
+#ifndef HAVE_WAITPID
 extern int waitpid(pid_t pid, int *statusp, int options);
 #endif
-#ifdef NEED_STRERROR
+#ifndef HAVE_STRERROR
 extern char *strerror (int err);
 #endif
-#ifdef NEED_DIFFTIME
+#ifndef HAVE_DIFFTIME
 extern double difftime(time_t time1, time_t time0);
 #endif
 

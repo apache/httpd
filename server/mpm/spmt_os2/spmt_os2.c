@@ -429,7 +429,7 @@ int ap_update_child_status(int child_num, int status, request_rec *r)
 void ap_time_process_request(int child_num, int status)
 {
     short_score *ss;
-#if defined(NO_GETTIMEOFDAY) && !defined(NO_TIMES)
+#if !defined(HAVE_GETTIMEOFDAY) && !defined(NO_TIMES)
     struct tms tms_blk;
 #endif
 
@@ -439,7 +439,7 @@ void ap_time_process_request(int child_num, int status)
     ss = &ap_scoreboard_image->servers[child_num];
 
     if (status == START_PREQUEST) {
-#if defined(NO_GETTIMEOFDAY)
+#if !defined(HAVE_GETTIMEOFDAY)
 #ifndef NO_TIMES
 	if ((ss->start_time = times(&tms_blk)) == -1)
 #endif /* NO_TIMES */
@@ -451,7 +451,7 @@ void ap_time_process_request(int child_num, int status)
 #endif
     }
     else if (status == STOP_PREQUEST) {
-#if defined(NO_GETTIMEOFDAY)
+#if !defined(HAVE_GETTIMEOFDAY)
 #ifndef NO_TIMES
 	if ((ss->stop_time = times(&tms_blk)) == -1)
 #endif

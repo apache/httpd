@@ -82,7 +82,7 @@ void unixd_detach(void)
     }
     RAISE_SIGSTOP(DETACH);
 #endif
-#ifndef NO_SETSID
+#ifdef HAVE_SETSID
     if ((pgrp = setsid()) == -1) {
 	perror("setsid");
 	ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 

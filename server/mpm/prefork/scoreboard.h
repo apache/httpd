@@ -142,7 +142,7 @@ typedef struct {
     unsigned long my_bytes_served;
     unsigned long conn_bytes;
     unsigned short conn_count;
-#if defined(NO_GETTIMEOFDAY)
+#if !defined(HAVE_GETTIMEOFDAY)
     clock_t start_time;
     clock_t stop_time;
 #else

@@ -1406,7 +1406,7 @@ int ap_mpm_run(ap_context_t *_pconf, ap_context_t *plog, server_rec *s)
         /* Time to gracefully shut down:
          * Kill child processes, tell them to call child_exit, etc...
          */
-        if (ap_killpg(getpgrp(), SIGTERM) < 0) {
+        if (unixd_killpg(getpgrp(), SIGTERM) < 0) {
             ap_log_error(APLOG_MARK, APLOG_WARNING, errno, server_conf, "killpg SIGTERM");
         }
         reclaim_child_processes(1);		/* Start with SIGTERM */
@@ -1477,7 +1477,7 @@ int ap_mpm_run(ap_context_t *_pconf, ap_context_t *plog, server_rec *s)
        * and a SIGHUP, we may as well use the same signal, because some user
        * pthreads are stealing signals from us left and right.
        */
-	if (ap_killpg(getpgrp(), SIGTERM) < 0) {
+	if (unixd_killpg(getpgrp(), SIGTERM) < 0) {
 	    ap_log_error(APLOG_MARK, APLOG_WARNING, errno, server_conf, "killpg SIGTERM");
 	}
         reclaim_child_processes(1);		/* Start with SIGTERM */

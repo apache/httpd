@@ -168,7 +168,7 @@ static void unique_id_global_init(server_rec *s, ap_context_t *p)
 #endif
     char str[MAXHOSTNAMELEN + 1];
     struct hostent *hent;
-#ifndef NO_GETTIMEOFDAY
+#ifdef HAVE_GETTIMEOFDAY
     struct timeval tv;
 #endif
 
@@ -231,7 +231,7 @@ static void unique_id_global_init(server_rec *s, ap_context_t *p)
      * But protecting against it is relatively cheap.  We just sleep into the
      * next second.
      */
-#ifdef NO_GETTIMEOFDAY
+#ifndef HAVE_GETTIMEOFDAY
     sleep(1);
 #else
     if (gettimeofday(&tv, NULL) == -1) {
@@ -248,7 +248,7 @@ static void unique_id_global_init(server_rec *s, ap_context_t *p)
 static void unique_id_child_init(server_rec *s, ap_context_t *p)
 {
     pid_t pid;
-#ifndef NO_GETTIMEOFDAY
+#ifdef HAVE_GETTIMEOFDAY
     struct timeval tv;
 #endif
 
@@ -282,7 +282,7 @@ static void unique_id_child_init(server_rec *s, ap_context_t *p)
      * against restart problems, and a little less protection against a clock
      * going backwards in time.
      */
-#ifndef NO_GETTIMEOFDAY
+#ifdef HAVE_GETTIMEOFDAY
     if (gettimeofday(&tv, NULL) == -1) {
         cur_unique_id.counter = 0;
     }

@@ -89,13 +89,22 @@ const char *unixd_set_group(cmd_parms *cmd, void *dummy, char *arg);
 
 #ifdef SYS_SIGLIST /* platform has sys_siglist[] */
 #define INIT_SIGLIST()  /* nothing */
-#else /* platform has no sys_siglist[], define our own */
+#elif defined(SYS_SIGLIST_DECLARED) /* from autoconf */
+#define INIT_SIGLIST()  /* nothing */
+#define SYS_SIGLIST sys_siglist
+#else
 #define NEED_AP_SYS_SIGLIST
 extern const char *ap_sys_siglist[NumSIG];
 #define SYS_SIGLIST ap_sys_siglist
 void unixd_siglist_init(void);
 #define INIT_SIGLIST() unixd_siglist_init();
 #endif /* platform has sys_siglist[] */
+
+#ifdef HAVE_KILLPG
+#define unixd_killpg(x, y)	(killpg ((x), (y)))
+#else /* HAVE_KILLPG */
+#define unixd_killpg(x, y)	(kill (-(x), (y)))
+#endif /* HAVE_KILLPG */
 
 #define UNIX_DAEMON_COMMANDS	\
 { "User", unixd_set_user, NULL, RSRC_CONF, TAKE1, \
