@@ -282,7 +282,7 @@
     
     <p>To keep up-to-date with what is actually going on against your server 
     you have to check the <a href="../logs.html">Log Files</a>.  Even though 
-    the log files only reports what has already happend, they will give you 
+    the log files only reports what has already happened, they will give you 
     some understanding of what attacks is thrown against the server and 
     allows you to check if the necessary level of security is present.</p>
     
@@ -303,7 +303,7 @@
       by server configuration: /usr/local/apache/htdocs/.htpasswd
     </example>
     
-    <p>As you can see, the log files only report what already has happend, so 
+    <p>As you can see, the log files only report what already has happened, so 
     if the client had been able to access the <code>.htpasswd</code> file you 
     would have seen something similar to:</p>
     
