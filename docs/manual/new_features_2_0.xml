@@ -11,7 +11,7 @@
      1.3 and 2.0 versions of the Apache HTTP Server.</p>
 </summary>
 
-<seealso><a href="upgrading.html">Upgrading to Apache 2.0</a></seealso>
+<seealso><a href="upgrading.html">Upgrading to 2.0 from 1.3</a></seealso>
 
   <section id="core">
     <title>Core Enhancements</title>
@@ -214,4 +214,3 @@
     </dl>
   </section>
 </manualpage>
-
