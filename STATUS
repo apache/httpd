@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/01/29 09:50:19 $]
+Last modified at [$Date: 2004/01/29 13:46:37 $]
 
 Release:
 
@@ -73,10 +73,6 @@ RELEASE SHOWSTOPPERS:
     IPv4 numeric address string from IPv4-mapped address would work
     but actually resolving the host would not.  To catch the check
     via retcode, you have to specify the NI_NAMEREQD flag.
-
-  worker MPM parent process crash
-    http://cvs.apache.org/viewcvs.cgi/httpd-2.0/server/mpm/worker/worker.c?r1=1.145&r2=1.146
-    +1: trawick, stoddard, jorton
 
 PATCHES TO BACKPORT FROM 2.1
   [ please place file names and revisions from HEAD here, so it is easy to

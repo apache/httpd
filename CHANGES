@@ -1,4 +1,8 @@
 Changes with Apache 2.0.49
+
+  *) worker MPM: fix stack overlay bug that could cause the parent
+     process to crash.  [Jeff Trawick]
+
   *) Win32: Add Win32DisableAcceptEx directive. This Windows
      NT/2000/CP directive is useful to work around bugs in some 
      third party layered service providers like virus scanners, 
