@@ -85,6 +85,7 @@
    <LI>mod_autoindex.c
    <LI>mod_cern_meta.c
    <LI>mod_cgi.c <i><small>(requires PUT10)</small></i>
+   <LI>mod_digest.c
    <LI>mod_dir.c
    <LI>mod_env.c
    <LI>mod_example.c
@@ -101,6 +102,7 @@
    <LI>mod_negotiation.c
    <LI><A HREF="http://hpwww.ec-lyon.fr/~vincent/apache/mod_put.html">mod_put.c</A>
           <i> <small>(third party module)</small></i>
+   <LI>mod_proxy.c
    <LI>mod_setenvif.c
    <LI>mod_speling.c
    <LI>mod_status.c
@@ -110,6 +112,11 @@
    <LI>mod_usertrack.c
    <LI>os.c
    <LI>os-inline.c
+   <LI>proxy_cache.c
+   <LI>proxy_connect.c
+   <LI>proxy_ftp.c
+   <LI>proxy_http.c
+   <LI>proxy_util.c
    <LI>regular expression parser
    <LI>regular expression test tool <i><small>(requires PUT10)</small></i>
    <LI>rfc1413.c
@@ -120,8 +127,7 @@
    <LI>util_script.c
    <LI>util_uri.c
    </UL></MULTICOL>
-   <b>Notes:</b>
-      <A NAME="notes"></A>
+   <A NAME="notes"></A><b>Notes:</b>
    <ol>
       <li>Use of mod_access directives &quot;<tt>allow from</tt>&quot; &amp; &quot;<tt>deny from</tt>&quot;
           with host <i>names</i> (verses ip addresses) requires TPF version 4.1 PUT10
@@ -130,14 +136,13 @@
 
 <H3>Components/modules not yet supported on TPF:</H3>
 
-   <UL>
+   <multicol COLS=3><UL>
    <LI>htdigest.c
    <LI>lib/expat-lite
-   <LI>mod_digest.c
+   <LI>mod_auth_digest.c
    <LI>mod_rewrite.c
    <LI>mod_vhost_alias.c
-   <LI>proxy server code
-   </UL>
+   </UL></MULTICOL>
 
 <H3>Components/modules that don't apply or that probably won't ever be available on TPF:</H3>
 
