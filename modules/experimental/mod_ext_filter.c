@@ -402,7 +402,7 @@ static apr_status_t init_ext_filter_process(ap_filter_t *f)
                                   
     rc = apr_create_process(ctx->proc, 
                             ctx->filter->command, 
-                            ctx->filter->args, 
+                            (const char * const *)ctx->filter->args, 
                             NULL, /* environment */
                             ctx->procattr, 
                             ctx->p);
