@@ -301,7 +301,7 @@ API</td></tr>
 </td></tr>
 <tr class="odd"><td><a href="core.html#forcetype">ForceType <var>MIME-type</var>|None</a></td><td></td><td>dh</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">すべてのマッチするファイルが指定の MIME コンテントタイプで
 送られるようにする</td></tr>
-<tr><td><a href="mod_log_forensic.html#forensiclog">ForensicLog <var>filename</var>|<var>pipe</var></a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Sets filename of the forensic log</td></tr>
+<tr><td><a href="mod_log_forensic.html#forensiclog">ForensicLog <var>filename</var>|<var>pipe</var></a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Forensic ログのファイル名を設定する</td></tr>
 <tr class="odd"><td><a href="mpm_common.html#group" id="G" name="G">Group <var>unix-group</var></a></td><td> #-1 </td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">リクエストに応答する際に所属するグループ</td></tr>
 <tr><td><a href="mod_headers.html#header" id="H" name="H">Header set|append|add|unset|echo  <var>header</var>
 [<var>value</var> [env=[!]<var>variable</var>]]</a></td><td></td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">HTTP 応答ヘッダの設定</td></tr>
