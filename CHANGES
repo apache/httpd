@@ -1,5 +1,11 @@
 Changes with Apache 2.0.26-dev
 
+  *) Update the Win32 build to re-absorb mod_proxy and family.
+     [William Rowe]
+
+  *) Resolved the build failure on Win32 using MSVC 5.0 (without the
+     current SDK.)  [William Rowe]
+
   *) Some style changes to the code that does ProxyErrorOverride. Fixed
      config merge behaviour. [Graham Leggett]
 
