@@ -100,7 +100,7 @@ void make_cookie(request_rec *r)
     struct timeval tv;
     char new_cookie[100];	/* blurgh */
     char *dot;
-    char *rname = get_remote_host(r->connection, r->per_dir_config,
+    const char *rname = get_remote_host(r->connection, r->per_dir_config,
 				  REMOTE_NAME);
     struct timezone tz = { 0 , 0 };
 
