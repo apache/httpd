@@ -268,11 +268,13 @@ static int translate_userdir(request_rec *r)
                  * redirected to a URL or to a file on some drive. Since I
                  * know of no protocols that are a single letter, if the : is
                  * the second character, I will assume a file was specified
+                 *
+                 * Still no good for NETWARE, since : is embedded (sys:/home)
                  */
                 if (strchr(x + 2, ':'))
 #else
                 if (strchr(x, ':'))
-#endif                          /* WIN32 */
+#endif /* def HAVE_DRIVE_LETTERS */
 		{
                     redirect = ap_pstrcat(r->pool, x, w, userdir, dname, NULL);
                     ap_table_setn(r->headers_out, "Location", redirect);
