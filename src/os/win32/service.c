@@ -343,8 +343,12 @@ DWORD WINAPI WatchWindow(void *service_name)
  */
 static BOOL CALLBACK EnumttyWindow(HWND wnd, LPARAM retwnd)
 {
-    char tmp[8];
-    if (GetClassName(wnd, tmp, sizeof(tmp)) && !strcmp("tty",tmp)) 
+    char tmp[20], *tty;
+    if (isWindowsNT())
+        tty = "ConsoleWindowClass";
+    else
+        tty = "tty";
+    if (GetClassName(wnd, tmp, sizeof(tmp)) && !strcmp(tmp, tty)) 
     {
         DWORD wndproc, thisproc = GetCurrentProcessId();
         GetWindowThreadProcessId(wnd, &wndproc);
@@ -396,11 +400,27 @@ void ap_start_child_console(int is_child_of_service)
         die_on_logoff = TRUE;
 
     if (isWindowsNT()) {
-        /* Apache/NT installs no child console handler, otherwise
+        if (!is_child_of_service) {
+            /*
+             * Console mode Apache/WinNT needs to detach from the parent
+             * console and create and hide it's own console window.
+             * Not only is logout and shutdown more stable under W2K,
+             * but this eliminates the mystery 'flicker' that users see
+             * when invoking CGI apps (e.g. the titlebar or icon of the
+             * console window changing to the cgi process's identifiers.)
+             */
+            FreeConsole();
+            AllocConsole();
+            EnumWindows(EnumttyWindow, (long)(&console_wnd));
+            if (console_wnd)
+                ShowWindow(console_wnd, SW_HIDE);
+        }
+        /*
+         * Apache/WinNT installs no child console handler, otherwise
          * logoffs interfere with the service's child process!
          * The child process must have a later shutdown priority
          * than the parent, or the parent cannot shut down the
-         * child process properly.
+         * child process properly.  (The parent's default is 0x280.)
          */
         SetProcessShutdownParameters(0x200, 0);
         return;
@@ -421,10 +441,31 @@ void ap_start_child_console(int is_child_of_service)
     if (!RegisterServiceProcess(0, 1))
         return;
 
-    /* Locate our winoldap process, and tag it as a service process */
+    if (!is_child_of_service) {
+        /*
+         * Needs thorough testing, although the idea makes sense;
+         * Console mode Apache/Win9x might benefit from detaching
+         * from the parent console, creating and hiding it's own 
+         * console window.  No noticable difference yet, except
+         * that the flicker (when executing CGIs) does disappear.
+         */
+        FreeConsole();
+        AllocConsole();
+    }
+
     EnumWindows(EnumttyWindow, (long)(&console_wnd));
+    if (console_wnd && !is_child_of_service)
+    {
+        /*
+         * Hide our newly created child console
+         */
+        ShowWindow(console_wnd, SW_HIDE);
+    }
     if (console_wnd)
     {
+        /*
+         * Locate our winoldap process, and tag it as a service process 
+         */
         HWND console_child = GetWindow(console_wnd, GW_CHILD);
         GetWindowThreadProcessId(console_child, &dos_child_procid);
         if (dos_child_procid)
