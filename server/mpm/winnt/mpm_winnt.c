@@ -840,6 +840,7 @@ static PCOMP_CONTEXT win9x_get_connection(PCOMP_CONTEXT context)
         /* allocate the completion context and the transaction pool */
         context = apr_pcalloc(pconf, sizeof(COMP_CONTEXT));
         apr_pool_create(&context->ptrans, pconf);
+        apr_pool_tag(context->ptrans, "ptrans");
     }
     
 
@@ -1035,6 +1036,8 @@ static PCOMP_CONTEXT winnt_get_connection(PCOMP_CONTEXT pCompContext)
     if ((rc = apr_pool_create(&pCompContext->ptrans, pconf)) != APR_SUCCESS) {
         ap_log_error(APLOG_MARK,APLOG_DEBUG, rc, ap_server_conf,
                      "Child %d: apr_pool_create failed with rc %d", my_pid, rc);
+    } else {
+        apr_pool_tag(pCompContext->ptrans, "ptrans");
     }
 
     return pCompContext;
@@ -1144,6 +1147,7 @@ static void child_main()
     int cld;
 
     apr_pool_create(&pchild, pconf);
+    apr_pool_tag(pchild, "pchild");
 
     ap_run_child_init(pchild, ap_server_conf);
     
