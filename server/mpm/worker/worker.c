@@ -531,6 +531,7 @@ static void check_infinite_requests(void)
 /* Sets workers_may_exit if we received a character on the pipe_of_death */
 static apr_status_t check_pipe_of_death(void **csd, ap_listen_rec *lr, apr_pool_t *ptrans)
 {
+    *csd = NULL;
     apr_thread_mutex_lock(pipe_of_death_mutex);
     if (!workers_may_exit) {
         apr_status_t ret;

@@ -1,5 +1,8 @@
 Changes with Apache 2.0.29-dev
 
+  *) Fix segv in worker MPM following accept on pipe-of-death
+     [Brian Pane]
+
   *) Add mod_deflate to experimental.  
      [Ian Holsman, Justin Erenkrantz]
 
