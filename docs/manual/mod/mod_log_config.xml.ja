@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="iso-2022-jp"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
-<!-- English Revision: 106803:151408 (outdated) -->
+<!-- English Revision: 151408 -->
 
 <!--
- Copyright 2004-2005 The Apache Software Foundation or its licensors,
-                     as applicable.
+ Copyright 2002-2005 The Apache Software Foundation or its licensors, as
+ applicable.
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -82,10 +82,10 @@
         <td>ローカル IP アドレス</td></tr>
 
     <tr><td><code>%...B</code></td>
-        <td>HTTP ヘッダ以外の送られたバイト数</td></tr>
+        <td>レスポンスのバイト数。HTTP ヘッダは除く。</td></tr>
 
     <tr><td><code>%...b</code></td>
-        <td>HTTP ヘッダ以外の送られたバイト数。CLF 書式。
+        <td>レスポンスのバイト数。HTTP ヘッダは除く。CLF 書式。
         <em>すなわち</em>、1 バイトも送られなかったときは 0 ではなく、
         '<code>-</code>' になる</td></tr>
 
@@ -242,6 +242,14 @@
     C 形式の表記法が使われる空白文字 (<code>\n</code>, <code>\t</code> など) が
     あります。</p>
 
+    <p>httpd 2.0 では 1.3 とは異なり、<code>%b</code> と <code>%B</code>
+    フォーマット文字列はクライアントに送信されたバイト数そのものではなく、
+    HTTP レスポンスのバイト数です (これらは異なるもので、たとえば、
+    コネクションが途中で破棄された場合や、SSL 使用時に一致しません) 。
+    <module>mod_logio</module> で提供されている <code>%O</code>
+    フォーマット文字列で、ネットワーク経由で実際に転送されたバイト数を
+    記録できます。</p>
+
     <p>よく使われるフォーマット文字列は:</p>
 
     <dl>
@@ -375,6 +383,14 @@
       SetEnvIf Request_URI \.gif$ gif-image<br />
       CustomLog gif-requests.log common env=gif-image<br />
       CustomLog nongif-requests.log common env=!gif-image
+    </example>
+
+    <p>古い RefererIgnore ディレクティブと同じ挙動をさせたい場合は、
+    次のようにします:</p>
+
+    <example>
+    SetEnvIf Referer example\.com localreferer<br />
+    CustomLog referer.log referer env=!localreferer
     </example>
 </usage>
 </directivesynopsis>

@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="iso-2022-jp"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
-<!-- English Revision: 125277:151408 (outdated) -->
+<!-- English Revision: 151408 -->
 
 <!--
- Copyright 2002-2005 The Apache Software Foundation or its licensors,
-                     as applicable.
+ Copyright 2002-2005 The Apache Software Foundation or its licensors, as
+ applicable.
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -40,14 +40,25 @@
       &lt;/Location&gt;
     </example>
 
-    <p>サーバ設定の情報へのアクセスを制限するために、
-    <directive type="section" module="core">Location</directive>
-    ディレクティブの中に <directive type="section" module="core">Limit</directive>
-    節を入れるとよいかもしれません。</p>
+    <p><directive type="section" module="core">Location</directive>
+    の中で <module>mod_access</module> を使って、サーバ設定情報への
+    アクセスを制限したいと思うかもしれません :</p>
+
+    <example>
+      &lt;Location /server-info&gt;<br />
+      <indent>
+        SetHandler server-info<br />
+        Order deny,allow<br />
+        Deny from all<br />
+        Allow from yourcompany.com<br />
+      </indent>
+      &lt;/Location&gt;
+    </example>
 
     <p>一旦設定すると、<code>http://your.host.example.com/server-info</code>
-    をアクセスすることでサーバの情報を得られるようになります。</p>
+    にアクセスすることでサーバの情報を得られるようになります。</p>
 </summary>
+
 <section id="security"><title>Security Issues</title>
     <p>一旦 <module>mod_info</module> がサーバに読み込まれると、
     提供しているハンドラ機能はディレクトリ毎の設定ファイル (<em>例えば</em>
@@ -156,4 +167,3 @@
 
 </directivesynopsis>
 </modulesynopsis>
-
