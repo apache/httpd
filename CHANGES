@@ -160,3 +160,14 @@ features:
        modules outside the Apache source tree. To achieve this APACI installs
        the Apache C header files together with the "apxs" tool.
 
+  *) THE BIG SYMBOL RENAMING
+       To avoid symbol clashes with third-party code compiled into the server,
+       the general prefix `ap_' was globally applied to the following classes
+       of symbols in the Apache source tree: Apache provided general functions
+       (e.g., ap_cpystrn), public API functions (e.g., palloc, bgets) and
+       private functions which can't be made static (because of cross-object
+       usage) but should be (e.g., new_connection).  For backward source
+       compatibility with Apache 1.2 a new header file named compat.h was
+       created which provides defines for the old symbol names and should be
+       used by third-party module authors.
+
