@@ -439,85 +439,48 @@ static int open_rewritelog(server_rec *s, apr_pool_t *p)
     return 1;
 }
 
-static void rewritelog(request_rec *r, int level, const char *text, ...)
+static void rewritelog(request_rec *r, int level, const char *fmt, ...)
 {
     rewrite_server_conf *conf;
-    conn_rec *conn;
-    char *str1;
-    char str2[512];
-    char str3[1024];
-    const char *type;
-    char redir[20]; /* enough for "/redir#%d" if int is 32 bit */
-    va_list ap;
-    int i;
+    char *logline, *text;
+    const char *rhost, *rname;
     apr_size_t nbytes;
-    request_rec *req;
-    char *ruser;
-    const char *rhost;
+    int redir;
     apr_status_t rv;
+    request_rec *req;
+    va_list ap;
 
-    va_start(ap, text);
     conf = ap_get_module_config(r->server->module_config, &rewrite_module);
-    conn = r->connection;
 
-    if (conf->rewritelogfp == NULL) {
-        return;
-    }
-    if (conf->rewritelogfile == NULL) {
-        return;
-    }
-    if (*(conf->rewritelogfile) == '\0') {
+    if (!conf->rewritelogfp || level > conf->rewriteloglevel) {
         return;
     }
 
-    if (level > conf->rewriteloglevel) {
-        return;
-    }
-
-    if (r->user == NULL) {
-        ruser = "-";
-    }
-    else if (strlen(r->user) != 0) {
-        ruser = r->user;
-    }
-    else {
-        ruser = "\"\"";
-    }
-
-    rhost = ap_get_remote_host(conn, r->per_dir_config,
+    rhost = ap_get_remote_host(r->connection, r->per_dir_config,
                                REMOTE_NOLOOKUP, NULL);
-    if (rhost == NULL) {
-        rhost = "UNKNOWN-HOST";
+    rname = ap_get_remote_logname(r);
+
+    for (redir=0, req=r; req->prev; req = req->prev) {
+        ++redir;
     }
 
-    str1 = apr_pstrcat(r->pool, rhost, " ",
-                      (conn->remote_logname != NULL ?
-                      conn->remote_logname : "-"), " ",
-                      ruser, NULL);
-    apr_vsnprintf(str2, sizeof(str2), text, ap);
+    va_start(ap, fmt);
+    text = apr_pvsprintf(r->pool, fmt, ap);
+    va_end(ap);
 
-    if (r->main == NULL) {
-        type = "initial";
-    }
-    else {
-        type = "subreq";
-    }
-
-    for (i = 0, req = r; req->prev != NULL; req = req->prev) {
-        i++;
-    }
-    if (i == 0) {
-        redir[0] = '\0';
-    }
-    else {
-        apr_snprintf(redir, sizeof(redir), "/redir#%d", i);
-    }
-
-    apr_snprintf(str3, sizeof(str3),
-                "%s %s [%s/sid#%lx][rid#%lx/%s%s] (%d) %s" APR_EOL_STR, str1,
-                current_logtime(r), ap_get_server_name(r),
-                (unsigned long)(r->server), (unsigned long)r,
-                type, redir, level, str2);
+    logline = apr_psprintf(r->pool, "%s %s %s %s [%s/sid#%pp][rid#%pp/%s%s%s] "
+                                    "(%d) %s" APR_EOL_STR,
+                           rhost ? rhost : "UNKNOWN-HOST",
+                           rname ? rname : "-",
+                           r->user ? (*r->user ? r->user : "\"\"") : "-",
+                           current_logtime(r),
+                           ap_get_server_name(r),
+                           (void *)(r->server),
+                           (void *)r,
+                           r->main ? "subreq" : "initial",
+                           redir ? "/redir#" : "",
+                           redir ? apr_itoa(r->pool, redir) : "",
+                           level, text);
 
     rv = apr_global_mutex_lock(rewrite_log_lock);
     if (rv != APR_SUCCESS) {
@@ -525,8 +488,10 @@ static void rewritelog(request_rec *r, int level, const char *text, ...)
                       "apr_global_mutex_lock(rewrite_log_lock) failed");
         /* XXX: Maybe this should be fatal? */
     }
-    nbytes = strlen(str3);
-    apr_file_write(conf->rewritelogfp, str3, &nbytes);
+
+    nbytes = strlen(logline);
+    apr_file_write(conf->rewritelogfp, logline, &nbytes);
+
     rv = apr_global_mutex_unlock(rewrite_log_lock);
     if (rv != APR_SUCCESS) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
@@ -534,7 +499,6 @@ static void rewritelog(request_rec *r, int level, const char *text, ...)
         /* XXX: Maybe this should be fatal? */
     }
 
-    va_end(ap);
     return;
 }
 
