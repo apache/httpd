@@ -16,14 +16,29 @@
 
 <H1 ALIGN="CENTER">Module mod_cgi</H1>
 
-This module is contained in the <CODE>mod_cgi.c</CODE> file, and
-is compiled in by default. It provides for execution of CGI scripts.
-Any file with mime type <CODE>application/x-httpd-cgi</CODE> will be
-processed by this module.
-<!--%plaintext &lt;?INDEX {\tt application/x-httpd-cgi} mime type&gt; -->
-<!--%plaintext &lt;?INDEX CGI scripts&gt; -->
+<p>This module provides for execution of CGI scripts.</p>
+
+<P><A
+HREF="module-dict.html#Status"
+REL="Help"
+><STRONG>Status:</STRONG></A> Base
+<BR>
+<A
+HREF="module-dict.html#SourceFile"
+REL="Help"
+><STRONG>Source File:</STRONG></A> mod_cgi.c
+<BR>
+<A
+HREF="module-dict.html#ModuleIdentifier"
+REL="Help"
+><STRONG>Module Identifier:</STRONG></A> cgi_module
+</P>
+
 
 <H2>Summary</H2>
+<!-- XXX: Should have references to CGI definition/RFC -->
+<!-- XXX: Should mention Options ExecCGI  -->
+
 Any file that has the mime type <CODE>application/x-httpd-cgi</CODE>
 or handler <CODE>cgi-script</CODE> (Apache 1.1 or later)
 will be treated as a CGI script, and run by the server, with its output
@@ -36,6 +51,18 @@ When the server invokes a CGI script, it will add a variable called
 <CODE>DOCUMENT_ROOT</CODE> to the environment. This variable will contain the
 value of the <A HREF="core.html#documentroot">DocumentRoot</A>
 configuration variable.
+
+<h2>Directives</h2>
+
+<ul>
+<li><a href="#scriptlog">ScriptLog</a></li>
+<li><a href="#scriptloglength">ScriptLogLength</a></li>
+<li><a href="#scriptlogbuffer">ScriptLogBuffer</a></li>
+</ul>
+
+<p>See also: <a href="core.html#options">Options</a>, <a
+href="mod_alias.html#scriptalias">ScriptAlias</a> and <a
+href="mod_mime.html#addtype">AddType</a>.
 
 <H2>CGI Environment variables</H2>
 The server will set the CGI environment variables as described in the
@@ -116,9 +143,7 @@ anything on standard output or standard error).
 
 <HR>
 
-<H2>Directives</H2>
-
-<H3><A NAME="scriptlog">ScriptLog</A></H3>
+<H3><A NAME="scriptlog">ScriptLog</A> directive</H3>
 
 <A
  HREF="directive-dict.html#Syntax"
@@ -158,7 +183,9 @@ running servers. It is not optimized for speed or efficiency, and may
 have security problems if used in a manner other than that for which
 it was designed.</P>
 
-<H3><A NAME="scriptloglength">ScriptLogLength</A></H3>
+<hr>
+
+<H3><A NAME="scriptloglength">ScriptLogLength</A> directive</H3>
 
 <A
  HREF="directive-dict.html#Syntax"
@@ -184,6 +211,8 @@ error (all request headers, all script output) it can grow to be a big
 file. To prevent problems due to unbounded growth, this directive can
 be used to set an maximum file-size for the CGI logfile. If the file
 exceeds this size, no more information will be written to it.
+
+<hr>
 
 <H3><A NAME="scriptlogbuffer">ScriptLogBuffer</A></H3>
 
