@@ -84,3 +84,35 @@ end
 document dump_filters
     Print filter chain info
 end
+
+define dump_process_rec
+    set $p = $arg0
+    printf "process_rec=0x%lx:\n", (unsigned long)$p
+    printf "   pool=0x%lx, pconf=0x%lx\n", \
+           (unsigned long)$p->pool, (unsigned long)$p->pconf
+end
+document dump_process_rec
+    Print process_rec info
+end
+
+define dump_server_rec
+    set $s = $arg0
+    printf "name=%s:%d\n", \
+            $s->server_hostname, $s->port
+    dump_process_rec($s->process)
+end
+document dump_server_rec
+    Print server_rec info
+end
+
+define dump_servers
+    set $s = $arg0
+    while $s
+        dump_server_rec($s)
+        printf "\n"
+        set $s = $s->next
+    end
+end
+document dump_servers
+    Print server_rec list info
+end
