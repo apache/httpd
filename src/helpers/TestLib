@@ -1,5 +1,6 @@
 #!/bin/sh
-trap 'rm -f Makefile dummy; exit' 0 1 2 3 15
+exstat=1
+trap 'rm -f Makefile dummy; exit $exstat' 0 1 2 3 15
 #
 # Yet another Apache Configure helper script.
 # This one exists simply to test for the existance of
@@ -20,7 +21,7 @@ trap 'rm -f Makefile dummy; exit' 0 1 2 3 15
 # Make sure we have an argument
 #
 if [ "x$1" = "x" ]; then
-  exit 1
+  exit
 fi
 
 #
@@ -30,22 +31,21 @@ cd ./helpers
 rm -f dummy
 cat ../Makefile.config > Makefile
 cat <<EOF >> Makefile
-CFLAGS=$(OPTIM) $(CFLAGS1) $(EXTRA_CFLAGS)
-LIBS=$(EXTRA_LIBS) $(LIBS1)
-INCLUDES=$(INCLUDES1) $(EXTRA_INCLUDES)
-LDFLAGS=$(LDFLAGS1) $(EXTRA_LDFLAGS)
+CFLAGS=\$(OPTIM) \$(CFLAGS1) \$(EXTRA_CFLAGS)
+LIBS=\$(EXTRA_LIBS) \$(LIBS1)
+INCLUDES=\$(INCLUDES1) \$(EXTRA_INCLUDES)
+LDFLAGS=\$(LDFLAGS1) \$(EXTRA_LDFLAGS)
 
-all:
+dummy:
 	\$(CC) \$(CFLAGS) \$(INCLUDES) \$(LDFLAGS) dummy.c -o dummy -l$1
 
 EOF
 
 # Now run that Makefile
-`make > /dev/null 2<&1`
+make dummy > /dev/null 2<&1
 
-# And see if dummy exists
+# And see if dummy exists, if so, then we assume the 
+# library we are testing for exists
 if [ -f dummy ]; then
-    echo "yes"
-else
-    echo "no"
+    exstat=0
 fi
