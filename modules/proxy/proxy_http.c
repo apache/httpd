@@ -661,6 +661,10 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
         apr_brigade_cleanup(bb);
 
         len = ap_getline(buffer, sizeof(buffer), rp, 0);
+        if (len == 0) {
+            /* handle one potential stray CRLF */
+            len = ap_getline(buffer, sizeof(buffer), rp, 0);
+        }
         if (len <= 0) {
             apr_socket_close(p_conn->sock);
             backend->connection = NULL;

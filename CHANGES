@@ -1,5 +1,10 @@
 Changes with Apache 2.0.36
 
+  *) Proxy was bombing out every second keepalive request, caused by a
+     stray CRLF before the second response's status line. Proxy now
+     tries to read one more line if it encounters a CRLF where it
+     expected a status. PR 10010 [Graham Leggett]
+
   *) Deprecated the apr_lock.h API. Please see the following files
      for the improved thread and process locking and signaling: 
      apr_proc_mutex.h, apr_thread_mutex.h, apr_thread_rwlock.h,
