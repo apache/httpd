@@ -326,10 +326,21 @@ static apr_status_t ap_unix_create_privileged_process(
     const char **newargs;
     char *newprogname;
     char *execuser, *execgroup;
+    const char *argv0;
 
     if (!unixd_config.suexec_enabled) {
         return apr_proc_create(newproc, progname, args, env, attr, p);
     }
+
+    argv0 = strrchr(progname, '/');
+    /* Allow suexec's "/" check to succeed */
+    if (argv0 != NULL) {
+        argv0++;
+    }
+    else {
+        argv0 = progname;
+    }
+
 
     if (ugid->userdir) {
         execuser = apr_psprintf(p, "~%ld", (long) ugid->uid);
@@ -355,7 +366,7 @@ static apr_status_t ap_unix_create_privileged_process(
     newargs[0] = SUEXEC_BIN;
     newargs[1] = execuser;
     newargs[2] = execgroup;
-    newargs[3] = apr_pstrdup(p, progname);
+    newargs[3] = apr_pstrdup(p, argv0);
 
     /*
     ** using a shell to execute suexec makes no sense thus

@@ -513,13 +513,7 @@ static apr_status_t default_build_command(const char **cmd, const char ***argv,
     const char *args = NULL;
 
     if (e_info->process_cgi) {
-        /* Allow suexec's "/" check to succeed */
-        const char *argv0 = strrchr(r->filename, '/');
-        if (argv0 != NULL)
-            argv0++;
-        else
-            argv0 = r->filename;
-        *cmd = argv0;
+        *cmd = r->filename;
         args = r->args;
         /* Do not process r->args if they contain an '=' assignment 
          */
