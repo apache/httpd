@@ -98,7 +98,7 @@
  *
  * XXX: this needs updating for apache-2.0 configuration method
  * MODULE-DEFINITION-START
- * Name: auth_dbm_module
+ * Name: dbm_auth_module
  * ConfigStart
     . ./helpers/find-dbm-lib
  * ConfigEnd
@@ -153,7 +153,7 @@ static const command_rec dbm_auth_cmds[] =
     {NULL}
 };
 
-module AP_MODULE_DECLARE_DATA auth_dbm_module;
+module AP_MODULE_DECLARE_DATA dbm_auth_module;
 
 static char *get_dbm_pw(request_rec *r, char *user, char *auth_dbmpwfile)
 {
@@ -234,7 +234,7 @@ static int dbm_authenticate_basic_user(request_rec *r)
 {
     dbm_auth_config_rec *sec =
     (dbm_auth_config_rec *) ap_get_module_config(r->per_dir_config,
-					      &auth_dbm_module);
+					      &dbm_auth_module);
     const char *sent_pw;
     char *real_pw, *colon_pw;
     apr_status_t invalid_pw;
@@ -277,7 +277,7 @@ static int dbm_check_auth(request_rec *r)
 {
     dbm_auth_config_rec *sec =
     (dbm_auth_config_rec *) ap_get_module_config(r->per_dir_config,
-					      &auth_dbm_module);
+					      &dbm_auth_module);
     char *user = r->user;
     int m = r->method_number;
 
@@ -341,7 +341,7 @@ static void register_hooks(void)
     ap_hook_auth_checker(dbm_check_auth, NULL, NULL, AP_HOOK_MIDDLE);
 }
 
-module AP_MODULE_DECLARE_DATA auth_dbm_module =
+module AP_MODULE_DECLARE_DATA dbm_auth_module =
 {
     STANDARD20_MODULE_STUFF,
     create_dbm_auth_dir_config,	/* dir config creater */

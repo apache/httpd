@@ -102,19 +102,19 @@
 #include "http_request.h"
 #include "apr_strings.h"
 
-typedef struct auth_anon {
+typedef struct anon_auth {
     char *password;
-    struct auth_anon *next;
-} auth_anon;
+    struct anon_auth *next;
+} anon_auth;
 
 typedef struct {
 
-    auth_anon *auth_anon_passwords;
-    int auth_anon_nouserid;
-    int auth_anon_logemail;
-    int auth_anon_verifyemail;
-    int auth_anon_mustemail;
-    int auth_anon_authoritative;
+    anon_auth *anon_auth_passwords;
+    int anon_auth_nouserid;
+    int anon_auth_logemail;
+    int anon_auth_verifyemail;
+    int anon_auth_mustemail;
+    int anon_auth_authoritative;
 
 } anon_auth_config_rec;
 
@@ -127,13 +127,13 @@ static void *create_anon_auth_dir_config(apr_pool_t *p, char *d)
 	return NULL;		/* no memory... */
 
     /* just to illustrate the defaults really. */
-    sec->auth_anon_passwords = NULL;
+    sec->anon_auth_passwords = NULL;
 
-    sec->auth_anon_nouserid = 0;
-    sec->auth_anon_logemail = 1;
-    sec->auth_anon_verifyemail = 0;
-    sec->auth_anon_mustemail = 1;
-    sec->auth_anon_authoritative = 0;
+    sec->anon_auth_nouserid = 0;
+    sec->anon_auth_logemail = 1;
+    sec->anon_auth_verifyemail = 0;
+    sec->anon_auth_mustemail = 1;
+    sec->anon_auth_authoritative = 0;
     return sec;
 }
 
@@ -141,7 +141,7 @@ static const char *anon_set_passwd_flag(cmd_parms *cmd,
 				 void *dummy, int arg)
 {
     anon_auth_config_rec *sec = dummy;
-    sec->auth_anon_mustemail = arg;
+    sec->anon_auth_mustemail = arg;
     return NULL;
 }
 
@@ -149,7 +149,7 @@ static const char *anon_set_userid_flag(cmd_parms *cmd,
 				 void *dummy, int arg)
 {
     anon_auth_config_rec *sec = dummy;
-    sec->auth_anon_nouserid = arg;
+    sec->anon_auth_nouserid = arg;
     return NULL;
 }
 
@@ -157,7 +157,7 @@ static const char *anon_set_logemail_flag(cmd_parms *cmd,
 				   void *dummy, int arg)
 {
     anon_auth_config_rec *sec = dummy;
-    sec->auth_anon_logemail = arg;
+    sec->anon_auth_logemail = arg;
     return NULL;
 }
 
@@ -165,14 +165,14 @@ static const char *anon_set_verifyemail_flag(cmd_parms *cmd,
 				      void *dummy, int arg)
 {
     anon_auth_config_rec *sec = dummy;
-    sec->auth_anon_verifyemail = arg;
+    sec->anon_auth_verifyemail = arg;
     return NULL;
 }
 static const char *anon_set_authoritative_flag(cmd_parms *cmd,
 					void *dummy, int arg)
 {
     anon_auth_config_rec *sec = dummy;
-    sec->auth_anon_authoritative = arg;
+    sec->anon_auth_authoritative = arg;
     return NULL;
 }
 
@@ -180,20 +180,20 @@ static const char *anon_set_string_slots(cmd_parms *cmd,
 				  void *dummy, const char *arg)
 {
     anon_auth_config_rec *sec = dummy;
-    auth_anon *first;
+    anon_auth *first;
 
     if (!(*arg))
 	return "Anonymous string cannot be empty, use Anonymous_NoUserId instead";
 
     /* squeeze in a record */
-    first = sec->auth_anon_passwords;
+    first = sec->anon_auth_passwords;
 
-    if (!(sec->auth_anon_passwords = apr_palloc(cmd->pool, sizeof(auth_anon))) ||
-       !(sec->auth_anon_passwords->password = apr_pstrdup(cmd->pool, arg)))
+    if (!(sec->anon_auth_passwords = apr_palloc(cmd->pool, sizeof(anon_auth))) ||
+       !(sec->anon_auth_passwords->password = apr_pstrdup(cmd->pool, arg)))
 	     return "Failed to claim memory for an anonymous password...";
 
     /* and repair the next */
-    sec->auth_anon_passwords->next = first;
+    sec->anon_auth_passwords->next = first;
 
     return NULL;
 }
@@ -215,13 +215,13 @@ static const command_rec anon_auth_cmds[] =
     {NULL}
 };
 
-module AP_MODULE_DECLARE_DATA auth_anon_module;
+module AP_MODULE_DECLARE_DATA anon_auth_module;
 
 static int anon_authenticate_basic_user(request_rec *r)
 {
     anon_auth_config_rec *sec =
     (anon_auth_config_rec *) ap_get_module_config(r->per_dir_config,
-					       &auth_anon_module);
+					       &anon_auth_module);
     const char *sent_pw;
     int res = DECLINED;
 
@@ -229,17 +229,17 @@ static int anon_authenticate_basic_user(request_rec *r)
 	return res;
 
     /* Ignore if we are not configured */
-    if (!sec->auth_anon_passwords)
+    if (!sec->anon_auth_passwords)
 	return DECLINED;
 
     /* Do we allow an empty userID and/or is it the magic one
      */
 
-    if ((!(r->user[0])) && (sec->auth_anon_nouserid)) {
+    if ((!(r->user[0])) && (sec->anon_auth_nouserid)) {
 	res = OK;
     }
     else {
-	auth_anon *p = sec->auth_anon_passwords;
+	anon_auth *p = sec->anon_auth_passwords;
 	res = DECLINED;
 	while ((res == DECLINED) && (p != NULL)) {
 	    if (!(strcasecmp(r->user, p->password)))
@@ -251,12 +251,12 @@ static int anon_authenticate_basic_user(request_rec *r)
     /* username is OK */
 	   (res == OK)
     /* password been filled out ? */
-	   && ((!sec->auth_anon_mustemail) || strlen(sent_pw))
+	   && ((!sec->anon_auth_mustemail) || strlen(sent_pw))
     /* does the password look like an email address ? */
-	   && ((!sec->auth_anon_verifyemail)
+	   && ((!sec->anon_auth_verifyemail)
 	       || ((strpbrk("@", sent_pw) != NULL)
 		   && (strpbrk(".", sent_pw) != NULL)))) {
-	if (sec->auth_anon_logemail && ap_is_initial_req(r)) {
+	if (sec->anon_auth_logemail && ap_is_initial_req(r)) {
 	    ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_INFO, APR_SUCCESS, r,
 			"Anonymous: Passwd <%s> Accepted",
 			sent_pw ? sent_pw : "\'none\'");
@@ -264,7 +264,7 @@ static int anon_authenticate_basic_user(request_rec *r)
 	return OK;
     }
     else {
-	if (sec->auth_anon_authoritative) {
+	if (sec->anon_auth_authoritative) {
 	    ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, APR_SUCCESS, r,
 			"Anonymous: Authoritative, Passwd <%s> not accepted",
 			sent_pw ? sent_pw : "\'none\'");
@@ -282,12 +282,12 @@ static int check_anon_access(request_rec *r)
     conn_rec *c = r->connection;
     anon_auth_config_rec *sec =
     (anon_auth_config_rec *) ap_get_module_config(r->per_dir_config,
-					       &auth_anon_module);
+					       &anon_auth_module);
 
-    if (!sec->auth_anon)
+    if (!sec->anon_auth)
 	return DECLINED;
 
-    if (strcasecmp(r->connection->user, sec->auth_anon))
+    if (strcasecmp(r->connection->user, sec->anon_auth))
 	return DECLINED;
 
     return OK;
@@ -300,7 +300,7 @@ static void register_hooks(void)
     ap_hook_auth_checker(check_anon_access,NULL,NULL,AP_HOOK_MIDDLE);
 }
 
-module AP_MODULE_DECLARE_DATA auth_anon_module =
+module AP_MODULE_DECLARE_DATA anon_auth_module =
 {
     STANDARD20_MODULE_STUFF,
     create_anon_auth_dir_config,/* dir config creater */
