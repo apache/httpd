@@ -470,7 +470,7 @@ char *find_title(request_rec *r) {
         n = fread(titlebuf,sizeof(char),MAX_STRING_LEN - 1,thefile);
         titlebuf[n] = '\0';
         for(x=0,p=0;titlebuf[x];x++) {
-            if(titlebuf[x] == find[p]) {
+            if(toupper(titlebuf[x]) == find[p]) {
                 if(!find[++p]) {
                     if((p = ind(&titlebuf[++x],'<')) != -1)
                         titlebuf[x+p] = '\0';

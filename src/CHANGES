@@ -1,3 +1,5 @@
+  *) Allow ScanHTMLTitles to work with lowercase <title> tags.
+
 Changes with Apache 1.1b4:
 
   *) r->bytes_sent variable restored
