@@ -431,8 +431,6 @@ static int set_listeners_noninheritable(apr_pool_t *p)
     SOCKET nsd;
     HANDLE hProcess = GetCurrentProcess();
 
-    ap_log_error(APLOG_MARK, APLOG_INFO | APLOG_NOERRNO, 0, ap_server_conf,
-                 "set_listeners_noninheritable: Marking listeners.");
     for (lr = ap_listeners; lr; lr = lr->next) {
         apr_os_sock_get(&nsd,lr->sd);
         if (!DuplicateHandle(hProcess, (HANDLE) nsd, hProcess, &dup, 0,
@@ -445,6 +443,14 @@ static int set_listeners_noninheritable(apr_pool_t *p)
         }
         nsd = (SOCKET) dup;
         apr_os_sock_put(&lr->sd, &nsd, p);
+    }
+
+    if (my_pid == parent_pid) {
+        ap_log_error(APLOG_MARK, APLOG_INFO | APLOG_NOERRNO, 0, ap_server_conf,
+                     "Parent: Marking listeners non-inherited.");
+    } else {
+        ap_log_error(APLOG_MARK, APLOG_INFO | APLOG_NOERRNO, 0, ap_server_conf,
+                     "Child %d: Marking listeners non-inherited.", my_pid);
     }
     return 1;
 }
@@ -476,26 +482,32 @@ static APR_INLINE ap_listen_rec *find_ready_listener(fd_set * main_fds)
 /*
  *
  */
-void get_scoreboard_from_parent(server_rec *s)
+void get_handles_from_parent(server_rec *s)
 {
-    apr_status_t rv;
     HANDLE pipe;
-    HANDLE sb_os_shm;
+    HANDLE hScore;
     DWORD BytesRead;
     void *sb_shared;
-
-    ap_log_error(APLOG_MARK, APLOG_INFO | APLOG_NOERRNO, 0, ap_server_conf,
-                 "Child %d: Retrieving scoreboard from parent.", my_pid);
-
+    apr_status_t rv;
+    
     pipe = GetStdHandle(STD_INPUT_HANDLE);
-    if (!ReadFile(pipe, &sb_os_shm, sizeof(sb_os_shm),
+    if (!ReadFile(pipe, &exit_event, sizeof(HANDLE),
                   &BytesRead, (LPOVERLAPPED) NULL)
-        || (BytesRead != sizeof(sb_os_shm))) {
+        || (BytesRead != sizeof(HANDLE))) {
+        ap_log_error(APLOG_MARK, APLOG_CRIT, apr_get_os_error(), ap_server_conf,
+                     "Child %d: Unable to retrieve the exit event from the parent", my_pid);
+        exit(APEXIT_CHILDINIT);
+    }
+
+    if (!ReadFile(pipe, &hScore, sizeof(hScore),
+                  &BytesRead, (LPOVERLAPPED) NULL)
+        || (BytesRead != sizeof(hScore))) {
         ap_log_error(APLOG_MARK, APLOG_CRIT, apr_get_os_error(), ap_server_conf,
                      "Child %d: Unable to retrieve the scoreboard from the parent", my_pid);
         exit(APEXIT_CHILDINIT);
     }
-    if ((rv = apr_os_shm_put(&ap_scoreboard_shm, &sb_os_shm, s->process->pool)) 
+
+    if ((rv = apr_os_shm_put(&ap_scoreboard_shm, &hScore, s->process->pool)) 
             != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_CRIT, rv, ap_server_conf,
                      "Child %d: Unable to access the scoreboard from the parent", my_pid);
@@ -509,6 +521,9 @@ void get_scoreboard_from_parent(server_rec *s)
         exit(APEXIT_CHILDINIT);
     }
     ap_init_scoreboard(sb_shared);
+
+    ap_log_error(APLOG_MARK, APLOG_INFO | APLOG_NOERRNO, 0, ap_server_conf,
+                 "Child %d: Retrieved our scoreboard from the parent.", my_pid);
 }
 
 /* 
@@ -525,9 +540,6 @@ void get_listeners_from_parent(server_rec *s)
     DWORD BytesRead;
     int lcnt = 0;
     SOCKET nsd;
-
-    ap_log_error(APLOG_MARK, APLOG_INFO | APLOG_NOERRNO, 0, ap_server_conf,
-                 "Child %d: getting listeners from parent", my_pid);
 
     /* Set up a default listener if necessary */
     if (ap_listeners == NULL) {
@@ -559,14 +571,13 @@ void get_listeners_from_parent(server_rec *s)
         }
         apr_os_sock_put(&lr->sd, &nsd, pconf);
     }
-    CloseHandle(pipe);
+
+    ap_log_error(APLOG_MARK, APLOG_INFO | APLOG_NOERRNO, 0, ap_server_conf,
+                 "Child %d: retrieved %d listeners from parent", my_pid, lcnt);
 
     if (!set_listeners_noninheritable(pconf)) {
         exit(APEXIT_CHILDINIT);
     }
-
-    ap_log_error(APLOG_MARK, APLOG_INFO | APLOG_NOERRNO, 0, ap_server_conf,
-                 "Child %d: retrieved %d listeners from parent", my_pid, lcnt);
 }
 
 
@@ -1042,7 +1053,6 @@ static void child_main()
     apr_status_t status;
     ap_listen_rec *lr;
     HANDLE child_events[2];
-    char* exit_event_name;
     int nthreads = ap_threads_per_child;
     int tid;
     thread *child_handles;
@@ -1053,31 +1063,15 @@ static void child_main()
 
     apr_pool_create(&pchild, pconf);
 
-    exit_event_name = apr_psprintf(pconf, "apC%d", my_pid);
-    setup_signal_names(apr_psprintf(pconf,"ap%d", parent_pid));
-
-    if (one_process) {
-        /* Single process mode */
-        apr_lock_create(&start_mutex, APR_MUTEX, APR_CROSS_PROCESS,
-                        APR_LOCK_DEFAULT, signal_name_prefix, pconf);
-        exit_event = CreateEvent(NULL, TRUE, FALSE, exit_event_name);
-    }
-    else {
-        /* Child process mode */
-        apr_lock_child_init(&start_mutex, signal_name_prefix, pconf);
-        exit_event = OpenEvent(EVENT_ALL_ACCESS, FALSE, exit_event_name);
-        ap_log_error(APLOG_MARK, APLOG_INFO, APR_SUCCESS, ap_server_conf,
-                     "Child %d: exit_event_name = %s", my_pid, exit_event_name);
-    }
-
     ap_run_child_init(pchild, ap_server_conf);
     
-    ap_assert(start_mutex);
-    ap_assert(exit_event);
-    ap_assert(max_requests_per_child_event);
-
     /* Initialize the child_events */
     max_requests_per_child_event = CreateEvent(NULL, TRUE, FALSE, NULL);
+    if (!max_requests_per_child_event) {
+        ap_log_error(APLOG_MARK, APLOG_CRIT, status, ap_server_conf,
+                     "Child %d: Failed to create a max_requests event.", my_pid);
+        exit(APEXIT_CHILDINIT);
+    }
     child_events[0] = exit_event;
     child_events[1] = max_requests_per_child_event;
 
@@ -1276,28 +1270,42 @@ static void child_main()
     CloseHandle(exit_event);
 }
 
-static int send_scoreboard_to_child(apr_pool_t *p, HANDLE hProcess, HANDLE hPipeWrite)
+static int send_handles_to_child(apr_pool_t *p, HANDLE child_exit_event, HANDLE hProcess, HANDLE hPipeWrite)
 {
     apr_status_t rv;
-    HANDLE sb_os_shm;
-    HANDLE dup_os_shm;
+    HANDLE hScore;
+    HANDLE hDup;
     HANDLE hCurrentProcess = GetCurrentProcess();
     DWORD BytesWritten;
 
-    if ((rv = apr_os_shm_get(&sb_os_shm, ap_scoreboard_shm)) != APR_SUCCESS) {
-        ap_log_error(APLOG_MARK, APLOG_CRIT, rv, ap_server_conf,
-                     "Parent: Unable to retrieve the scoreboard handle");
+    if (!DuplicateHandle(hCurrentProcess, child_exit_event, hProcess, &hDup,
+                         0, FALSE, DUPLICATE_SAME_ACCESS)) {
+        ap_log_error(APLOG_MARK, APLOG_CRIT, apr_get_os_error(), ap_server_conf,
+                     "Parent: Unable to duplicate the exit event handle for the child");
         return -1;
     }
-    if (!DuplicateHandle(hCurrentProcess, sb_os_shm, hProcess, &dup_os_shm,
+    if (!WriteFile(hPipeWrite, &hDup, sizeof(hDup),
+                   &BytesWritten, (LPOVERLAPPED) NULL)
+            || (BytesWritten != sizeof(hDup))) {
+        ap_log_error(APLOG_MARK, APLOG_CRIT, apr_get_os_error(), ap_server_conf,
+                     "Parent: Unable to send the exit event handle to the child");
+        return -1;
+    }
+
+    if ((rv = apr_os_shm_get(&hScore, ap_scoreboard_shm)) != APR_SUCCESS) {
+        ap_log_error(APLOG_MARK, APLOG_CRIT, rv, ap_server_conf,
+                     "Parent: Unable to retrieve the scoreboard handle for the child");
+        return -1;
+    }
+    if (!DuplicateHandle(hCurrentProcess, hScore, hProcess, &hDup,
                          0, FALSE, DUPLICATE_SAME_ACCESS)) {
         ap_log_error(APLOG_MARK, APLOG_CRIT, apr_get_os_error(), ap_server_conf,
                      "Parent: Unable to duplicate the scoreboard handle to the child");
         return -1;
     }
-    if (!WriteFile(hPipeWrite, &dup_os_shm, sizeof(dup_os_shm),
+    if (!WriteFile(hPipeWrite, &hDup, sizeof(hDup),
                    &BytesWritten, (LPOVERLAPPED) NULL)
-        || (BytesWritten != sizeof(dup_os_shm))) {
+            || (BytesWritten != sizeof(hDup))) {
         ap_log_error(APLOG_MARK, APLOG_CRIT, apr_get_os_error(), ap_server_conf,
                      "Parent: Unable to send the scoreboard handle to the child");
         return -1;
@@ -1344,7 +1352,7 @@ static int send_listeners_to_child(apr_pool_t *p, DWORD dwProcessId, HANDLE hPip
     }
 
     ap_log_error(APLOG_MARK, APLOG_INFO | APLOG_NOERRNO, 0, ap_server_conf,
-                 "Parent: Sent the %d listeners to child %d", lcnt, dwProcessId);
+                 "Parent: Sent %d listeners to child %d", lcnt, dwProcessId);
     return 0;
 }
 
@@ -1359,13 +1367,11 @@ static int create_process(apr_pool_t *p, HANDLE *child_proc, HANDLE *child_exit_
     int iEnvBlockLen;
     STARTUPINFO si;           /* Filled in prior to call to CreateProcess */
     PROCESS_INFORMATION pi;   /* filled in on call to CreateProcess */
-
+    HANDLE hDup;
     HANDLE hPipeRead;
     HANDLE hPipeWrite;
-    HANDLE hPipeWriteDup;
     HANDLE hNullOutput;
     HANDLE hShareError;
-    HANDLE hShareErrorDup;
     HANDLE hCurrentProcess = GetCurrentProcess();
     SECURITY_ATTRIBUTES sa = {sizeof(SECURITY_ATTRIBUTES), NULL, TRUE};
 
@@ -1394,6 +1400,86 @@ static int create_process(apr_pool_t *p, HANDLE *child_proc, HANDLE *child_exit_
         pCommand = apr_pstrcat(p, pCommand, " \"", ap_server_conf->process->argv[i], "\"", NULL);
     }
 
+    /* Create a pipe to send socket info to the child */
+    if (!CreatePipe(&hPipeRead, &hPipeWrite, &sa, 0)) {
+        ap_log_error(APLOG_MARK, APLOG_CRIT, apr_get_os_error(), ap_server_conf,
+                     "Parent: Unable to create pipe to child process.");
+        return -1;
+    }
+
+    /* Make our end of the handle non-inherited */
+    if (DuplicateHandle(hCurrentProcess, hPipeWrite, hCurrentProcess,
+                        &hDup, 0, FALSE, DUPLICATE_SAME_ACCESS)) {
+        CloseHandle(hPipeWrite);
+        hPipeWrite = hDup;
+    }
+    else {
+        ap_log_error(APLOG_MARK, APLOG_CRIT, apr_get_os_error(), ap_server_conf,
+                     "Parent: Unable to duplicate pipe to child.\n");
+        CloseHandle(hPipeWrite);
+        CloseHandle(hPipeRead);
+        return -1;
+    }
+
+    /* Open a null handle to soak info from the child */
+    hNullOutput = CreateFile("nul", GENERIC_READ | GENERIC_WRITE, 
+                             FILE_SHARE_READ | FILE_SHARE_WRITE, 
+                             &sa, OPEN_EXISTING, 0, NULL);
+    if (hNullOutput == INVALID_HANDLE_VALUE) {
+        ap_log_error(APLOG_MARK, APLOG_CRIT, apr_get_os_error(), ap_server_conf,
+                     "Parent: Unable to create null output pipe for child process.\n");
+        CloseHandle(hPipeWrite);
+        CloseHandle(hPipeRead);
+        return -1;
+    }
+
+    /* Child's initial stderr -> our main server error log (or, failing that, stderr) */
+    if (ap_server_conf->error_log) {
+        rv = apr_os_file_get(&hShareError, ap_server_conf->error_log);
+        if (rv == APR_SUCCESS && hShareError != INVALID_HANDLE_VALUE) {
+            if (DuplicateHandle(hCurrentProcess, hShareError, 
+                                hCurrentProcess, &hDup, 
+                                0, TRUE, DUPLICATE_SAME_ACCESS)) {
+                hShareError = hDup;
+            }
+            else {
+                rv = apr_get_os_error();
+            }
+        }
+        if (rv != APR_SUCCESS) {
+            ap_log_error(APLOG_MARK, APLOG_CRIT, rv, ap_server_conf,
+                         "Parent: Unable to share error log with child.\n");
+            CloseHandle(hPipeWrite);
+            CloseHandle(hPipeRead);
+            CloseHandle(hNullOutput);
+            return -1;
+        }
+        else if (hShareError == INVALID_HANDLE_VALUE) {
+            ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_CRIT, 0, ap_server_conf,
+                         "Parent: Failed to share error log with child.\n");
+            CloseHandle(hPipeWrite);
+            CloseHandle(hPipeRead);
+            CloseHandle(hNullOutput);
+            return -1;
+        }
+        else {
+            hShareError = GetStdHandle(STD_ERROR_HANDLE);
+        }
+
+    }
+
+    /* Create the child_exit_event */
+    *child_exit_event = CreateEvent(NULL, TRUE, FALSE, NULL);
+    if (!(*child_exit_event)) {
+        ap_log_error(APLOG_MARK, APLOG_CRIT, apr_get_os_error(), ap_server_conf,
+                     "Parent: Could not create exit event for child process");
+        CloseHandle(hPipeWrite);
+        CloseHandle(hPipeRead);
+        CloseHandle(hNullOutput);
+        CloseHandle(hShareError);
+        return -1;
+    }
+    
     /*
      * Build the environment
      * Win32's CreateProcess call requires that the environment
@@ -1418,59 +1504,6 @@ static int create_process(apr_pool_t *p, HANDLE *child_proc, HANDLE *child_exit_
         i++;
     }
     pEnvVar = '\0';
-    /* Create a pipe to send socket info to the child */
-    if (!CreatePipe(&hPipeRead, &hPipeWrite, &sa, 0)) {
-        ap_log_error(APLOG_MARK, APLOG_CRIT, apr_get_os_error(), ap_server_conf,
-                     "Parent: Unable to create pipe to child process.");
-        return -1;
-    }
-
-    /* Make our end of the handle non-inherited */
-    if (DuplicateHandle(hCurrentProcess, hPipeWrite, hCurrentProcess,
-                        &hPipeWriteDup, 0, FALSE, DUPLICATE_SAME_ACCESS)) {
-        CloseHandle(hPipeWrite);
-        hPipeWrite = hPipeWriteDup;
-    }
-    else {
-        ap_log_error(APLOG_MARK, APLOG_CRIT, apr_get_os_error(), ap_server_conf,
-                     "Parent: Unable to duplicate pipe to child.\n");
-    }
-
-    /* Open a null handle to soak info from the child */
-    hNullOutput = CreateFile("nul", GENERIC_READ | GENERIC_WRITE, 
-                             FILE_SHARE_READ | FILE_SHARE_WRITE, 
-                             &sa, OPEN_EXISTING, 0, NULL);
-    if (hNullOutput == INVALID_HANDLE_VALUE) {
-        ap_log_error(APLOG_MARK, APLOG_CRIT, apr_get_os_error(), ap_server_conf,
-                     "Parent: Unable to create null output pipe for child process.\n");
-    }
-
-    /* Child's initial stderr -> our main server error log (or, failing that, stderr) */
-    if (ap_server_conf->error_log) {
-        rv = apr_os_file_get(&hShareError, ap_server_conf->error_log);
-        if (rv == APR_SUCCESS && hShareError != INVALID_HANDLE_VALUE) {
-            if (DuplicateHandle(hCurrentProcess, hShareError, 
-                                hCurrentProcess, &hShareErrorDup, 
-                                0, TRUE, DUPLICATE_SAME_ACCESS)) {
-                hShareError = hShareErrorDup;
-            }
-            else {
-                rv = apr_get_os_error();
-            }
-        }
-        if (rv != APR_SUCCESS) {
-            ap_log_error(APLOG_MARK, APLOG_CRIT, rv, ap_server_conf,
-                         "Parent: Unable to share error log with child.\n");
-        }
-        else if (hShareError == INVALID_HANDLE_VALUE) {
-            ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_CRIT, 0, ap_server_conf,
-                         "Parent: Failed to share error log with child.\n");
-        }
-        else {
-            hShareError = GetStdHandle(STD_ERROR_HANDLE);
-        }
-
-    }
 
     /* Give the read end of the pipe (hPipeRead) to the child as stdin. The 
      * parent will write the socket data to the child on this pipe.
@@ -1486,13 +1519,14 @@ static int create_process(apr_pool_t *p, HANDLE *child_proc, HANDLE *child_exit_
 
     rv = CreateProcess(NULL, pCommand, NULL, NULL, 
                        TRUE,               /* Inherit handles */
-                       CREATE_SUSPENDED,   /* Creation flags */
+                       0,                  /* Creation flags */
                        pEnvBlock,          /* Environment block */
                        NULL,
                        &si, &pi);
 
     /* Undo everything we created for the child only
      */
+    CloseHandle(pi.hThread);
     CloseHandle(hPipeRead);
     CloseHandle(hNullOutput);
     CloseHandle(hShareError);
@@ -1511,23 +1545,6 @@ static int create_process(apr_pool_t *p, HANDLE *child_proc, HANDLE *child_exit_
     ap_log_error(APLOG_MARK, APLOG_INFO, APR_SUCCESS, ap_server_conf,
                  "Parent: Created child process %d", pi.dwProcessId);
 
-    /* Create the child_exit_event, apCchild_pid. */
-    sa.nLength = sizeof(sa);
-    sa.bInheritHandle = TRUE;
-    sa.lpSecurityDescriptor = NULL;        
-    *child_exit_event = CreateEvent(&sa, TRUE, FALSE, apr_psprintf(pconf,"apC%d", pi.dwProcessId));
-    if (!(*child_exit_event)) {
-        ap_log_error(APLOG_MARK, APLOG_CRIT, apr_get_os_error(), ap_server_conf,
-                     "Parent: Could not create exit event for child process");
-        CloseHandle(hPipeWrite);
-        CloseHandle(pi.hProcess);
-        CloseHandle(pi.hThread);
-        return -1;
-    }
-    
-    ResumeThread(pi.hThread);
-    CloseHandle(pi.hThread);
-
     /* Important:
      * Give the child process a chance to run before dup'ing the sockets.
      * We have already set the listening sockets noninheritable, but if 
@@ -1538,7 +1555,7 @@ static int create_process(apr_pool_t *p, HANDLE *child_proc, HANDLE *child_exit_
      */
     Sleep(1000);
 
-    if (send_scoreboard_to_child(p, pi.hProcess, hPipeWrite)) {
+    if (send_handles_to_child(p, *child_exit_event, pi.hProcess, hPipeWrite)) {
         CloseHandle(hPipeWrite);
         return -1;
     }
@@ -2201,15 +2218,28 @@ static int winnt_open_logs(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp, s
 
 static void winnt_child_init(apr_pool_t *pchild, struct server_rec *ap_server_conf)
 {
+    setup_signal_names(apr_psprintf(pchild,"ap%d", parent_pid));
+
     /* This is a child process, not in single process mode */
     if (!one_process) {
-        /* Set up the scoreboard. */
-        get_scoreboard_from_parent(ap_server_conf);
+        /* Set up events and the scoreboard */
+        get_handles_from_parent(ap_server_conf);
 
-        /* Set up the listeners. */
+        /* Set up the listeners */
         get_listeners_from_parent(ap_server_conf);
 
         ap_my_generation = atoi(getenv("AP_MY_GENERATION"));
+
+        apr_lock_child_init(&start_mutex, signal_name_prefix, pconf);
+        DebugBreak();
+    }
+    else {
+        /* Single process mode - this lock doesn't even need to exist */
+        apr_lock_create(&start_mutex, APR_MUTEX, APR_CROSS_PROCESS,
+                        APR_LOCK_DEFAULT, signal_name_prefix, pconf);
+        
+        /* Borrow the shutdown_even as our _child_ loop exit event */
+        exit_event = shutdown_event;
     }
 }
 
