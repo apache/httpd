@@ -116,8 +116,13 @@ for. You will also note that 'CFLAGS' defines "-DAUX". In this case,
 below]) to handle OS-specific code. Each code that has and requires
 such OS-specific code will require a unique "system cookie" defined
 in 'CFLAGS'. You will also note that Configure also goes ahead and
-predefines the LIBS and LDFLAGS Makefile variables (DEF_WANTHSREGEX is
-explained below).
+predefines the LIBS and LDFLAGS Makefile variables.
+
+DEF_WANTHSREGEX indicates the "default" setting of the WANTHSREGEX rule.
+If left undefined it'll default to yes.  Yes means the src/regex/
+directory, containing Henry Spencer's regex library will be used rather
+than any system supplied regex.  It's been our experience that system
+supplied regex libraries are generally buggy, and to be avoided.
 
 conf.h:
  =======

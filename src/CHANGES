@@ -1,5 +1,9 @@
 Changes with Apache 1.3b3
 
+  *) PORT: All ports which don't otherwise define DEF_WANTHSREGEX will
+     get Spencer regex by default.  This is to avoid having to
+     discover bugs in operating system libraries.  [Dean Gaudet]
+
   *) PORT: "Fix" PR#467 by generating warnings on systems which we have
      not been able to get working USE_*_SERIALIZED_ACCEPT settings for.
      Document this a bit more in src/PORTING.  [Dean Gaudet] PR#467
