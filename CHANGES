@@ -1,5 +1,8 @@
 Changes with Apache 2.0.36
 
+  *) Fix subreqs with non-defined Content-Types being served improperly.
+     [Justin Erenkrantz]
+
   *) Merge in latest GNU config.guess and config.sub files.  PR 7818.
      [Justin Erenkrantz]
 

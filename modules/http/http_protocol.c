@@ -1297,7 +1297,10 @@ static void fixup_vary(request_rec *r)
 
 AP_DECLARE(void) ap_set_content_type(request_rec *r, const char *ct)
 {
-    if (!r->content_type || strcmp(r->content_type, ct)) {
+    if (!ct) {
+        r->content_type = NULL;
+    }
+    else if (!r->content_type || strcmp(r->content_type, ct)) {
         r->content_type = ct;
 
         /* Insert filters requested by the AddOutputFiltersByType 
