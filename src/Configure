@@ -268,8 +268,22 @@ case "$PLAT" in
 	CFLAGS="$CFLAGS -DUXPDS"
 	LIBS="$LIBS -lsocket -lnsl"
 	;;
+    *-ultrix)
+	OS='ULTRIX'
+	CFLAGS="-DULTRIX"
+	;;
     *) # default: Catch systems we don't know about
     	echo Sorry, but we cannot grok \"$PLAT\"
+	echo uname -m
+	uname -m
+	echo uname -r
+	uname -r
+	echo uname -s
+	uname -s
+	echo uname -v
+	uname -v
+	echo uname -X
+	uname -X
 	echo Please Email this output to apache-bugs@apache.org
 	echo Thank you
 	exit 1

@@ -19,8 +19,7 @@ SYSTEM=`(uname -s) 2>/dev/null`  || SYSTEM="unknown"
 VERSION=`(uname -v) 2>/dev/null` || VERSION="unknown"
 
 
-# Now test for SCO, since it is has a unique uname option
-# that allows us to do a quick test
+# Now test for SCO, since it is has a braindamaged uname.
 #
 # We need to work around FreeBSD 1.1.5.1 
 SCO=`uname -X 2>/dev/null | grep "^Release" | cut -f3 -d' '`
@@ -31,6 +30,9 @@ if [ "x$SCO" != "x" ]; then
 	    ;;
 	3\.2v5\.0\.0)
 	    echo "whatever-whatever-sco5"; exit 0
+	    ;;
+	4\.2MP)
+	    echo "whatever-whatever-unixware2"; exit 0
 	    ;;
     esac
 else
@@ -63,6 +65,10 @@ else
 
 	IRIX:*)
 	    echo "${MACHINE}-sgi-irix"; exit 0
+	    ;;
+
+	IRIX64:*)
+	    echo "${MACHINE}-sgi-irix64"; exit 0
 	    ;;
 
 	Linux:*)
@@ -127,6 +133,10 @@ else
 
 	*:4.0:*:3[34]??,* | *:4.0:*:3[34]??,*)
 	    echo "${MACHINE}-whatever-sysv4"; exit 0
+	    ;;
+
+	ULTRIX:*)
+	    echo "${MACHINE}-unknown-ultrix"; exit 0
 	    ;;
 
     esac
