@@ -12,8 +12,19 @@ SUBDIRS = \
 
 include $(APR_WORK)\build\NWGNUhead.inc
 
+PCRE		= $(AP_WORK)/srclib/pcre
+
 #
 # build this level's files
+
+FILES_prebuild_headers = \
+	$(PCRE)/config.h \
+	$(PCRE)/pcre.h \
+	$(EOLIST) 
+	
+$(PCRE)/%.h: $(subst /,\,$(PCRE))\%.hw
+	@echo Creating $(subst /,\,$@)
+	copy $< $(subst /,\,$(PCRE))\$(@F)
 
 #
 # Make sure all needed macro's are defined
@@ -105,7 +116,7 @@ NLM_NAME		= dftables
 #
 NLM_DESCRIPTION	= Generate character tables
 
-#
+#$(FILES_prebuild_headers)
 # This is used by the '-threadname' directive.  If left blank,
 # NLM_NAME Thread will be used.
 #
@@ -171,6 +182,7 @@ TARGET_lib = \
 # Paths must all use the '/' character
 #
 FILES_nlm_objs = \
+	$(FILES_prebuild_headers) \
 	$(OBJDIR)/dftables.o \
 	$(EOLIST)
 
