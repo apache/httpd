@@ -624,7 +624,12 @@ static void child_main(int child_num_arg)
 
     /*done with init critical section */
 
-    apr_setup_signal_thread();
+    rv = apr_setup_signal_thread();
+    if (rv != APR_SUCCESS) {
+        ap_log_error(APLOG_MARK, APLOG_EMERG, rv, ap_server_conf,
+                     "Couldn't initialize signal thread");
+        clean_child_exit(APEXIT_CHILDFATAL);
+    }
 
     requests_this_child = ap_max_requests_per_child;
     
@@ -647,7 +652,12 @@ static void child_main(int child_num_arg)
     apr_threadattr_create(&thread_attr, pchild);
     apr_threadattr_detach_set(thread_attr);
 
-    apr_create_signal_thread(&thread, thread_attr, check_signal, pchild);
+    rv = apr_create_signal_thread(&thread, thread_attr, check_signal, pchild);
+    if (rv != APR_SUCCESS) {
+        ap_log_error(APLOG_MARK, APLOG_EMERG, rv, ap_server_conf,
+                     "Couldn't create signal thread");
+        clean_child_exit(APEXIT_CHILDFATAL);
+    }
 
     for (i=0; i < ap_threads_per_child - 1; i++) {
 
