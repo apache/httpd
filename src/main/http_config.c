@@ -1087,7 +1087,7 @@ static void default_listeners(pool *p, server_rec *s)
     /* allocate a default listener */
     new = pcalloc(p, sizeof(listen_rec));
     new->local_addr.sin_family = AF_INET;
-    new->local_addr.sin_addr.s_addr = htonl(INADDR_ANY);
+    new->local_addr.sin_addr = bind_address;
     new->local_addr.sin_port = htons(s->port);
     new->fd = -1;
     new->used = 0;
