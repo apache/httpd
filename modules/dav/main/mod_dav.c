@@ -4595,7 +4595,7 @@ static int dav_handler(request_rec *r)
     return DECLINED;
 }
 
-static int dav_type_checker(request_rec *r)
+static int dav_fixups(request_rec *r)
 {
     dav_dir_conf *conf;
 
@@ -4635,8 +4635,6 @@ static int dav_type_checker(request_rec *r)
          * ### we lock down this hierarchy so that we are the ultimate
          * ### arbiter? (or do we simply depend on the administrator
          * ### to avoid conflicting configurations?)
-         *
-         * ### I think the OK stops running type-checkers. need to look.
          */
         r->handler = "dav-handler";
         return OK;
@@ -4649,7 +4647,7 @@ static void register_hooks(apr_pool_t *p)
 {
     ap_hook_handler(dav_handler, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_post_config(dav_init_handler, NULL, NULL, APR_HOOK_MIDDLE);
-    ap_hook_type_checker(dav_type_checker, NULL, NULL, APR_HOOK_FIRST);
+    ap_hook_fixups(dav_fixups, NULL, NULL, APR_HOOK_MIDDLE);
 
     dav_hook_find_liveprop(dav_core_find_liveprop, NULL, NULL, APR_HOOK_LAST);
     dav_hook_insert_all_liveprops(dav_core_insert_all_liveprops,
