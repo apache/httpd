@@ -157,9 +157,6 @@ Changes with Apache 2.1.2
   *) mod_proxy: Respect errors reported by pre_connection hooks.
      [Jeff Trawick]
 
-  *) worker MPM: Fix a problem which could cause httpd processes to
-     remain active after shutdown.  [Jeff Trawick]
-
   *) core: Error out on sections that are missing an argument instead of
      silently consuming the section. PR 25460.
      [Geoffrey Young, Paul Querna]
@@ -227,9 +224,6 @@ Changes with Apache 2.1.1
 
   *) mod_rewrite: Removed the MaxRedirects option in favor of the
      core LimitInternalRecursion directive.  [André Malo]
-
-  *) Unix MPMs: Shut down the server more quickly when child processes are
-     slow to exit.  [Joe Orton, Jeff Trawick]
 
   *) mod_info: Added listing of the Request Hooks and added more build 
      information like 'httpd -V' contains. Changed output to XHTML. 
@@ -626,6 +620,12 @@ Changes with Apache 2.1.1
    Apache 2.0.xx tree as documented, and except as noted, below.]
 
 Changes with Apache 2.0.54
+
+  *) worker MPM: Fix a problem which could cause httpd processes to
+     remain active after shutdown.  [Jeff Trawick]
+
+  *) Unix MPMs: Shut down the server more quickly when child processes are
+     slow to exit.  [Joe Orton, Jeff Trawick]
 
   *) Remove formatting characters from ap_log_error() calls.  These
      were escaped as fallout from CAN-2003-0020.
