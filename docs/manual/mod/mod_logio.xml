@@ -5,7 +5,7 @@
 
 <name>mod_logio</name>
 <description>Logging of input and output bytes per request</description>
-<status>Base</status>
+<status>Extension</status>
 <sourcefile>mod_logio.c</sourcefile>
 <identifier>logio_module</identifier>
 
