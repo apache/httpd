@@ -8,4 +8,8 @@ Makefile
 *.so
 Debug
 Release
-*.rc 
+*.plg
+*.aps
+*.dep
+*.mak
+*.rc

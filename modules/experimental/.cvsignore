@@ -10,4 +10,7 @@ Makefile
 Debug
 Release
 *.plg
-*.rc 
+*.aps
+*.dep
+*.mak
+*.rc

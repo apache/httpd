@@ -5,4 +5,8 @@ Makefile
 modules.mk
 Debug
 Release
-*.rc 
+*.plg
+*.aps
+*.dep
+*.mak
+*.rc

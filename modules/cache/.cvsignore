@@ -9,4 +9,8 @@ Makefile
 *.x
 Debug
 Release
-*.rc 
+*.plg
+*.aps
+*.dep
+*.mak
+*.rc
