@@ -1,5 +1,6 @@
 Name: db_auth_module
 ConfigStart
+	# XXX: this needs updating for apache-2.0 configuration method
     DB_VERSION=''
     DB_LIB=''
     if ./helpers/TestCompile func db_open; then
