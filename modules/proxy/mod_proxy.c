@@ -714,6 +714,7 @@ static void * create_proxy_config(apr_pool_t *p, server_rec *s)
     ps->timeout_set = 0;
     ps->badopt = bad_error;
     ps->badopt_set = 0;
+    ps->pool = p;
     return ps;
 }
 
@@ -749,7 +750,7 @@ static void * merge_proxy_config(apr_pool_t *p, void *basev, void *overridesv)
     ps->preserve_host = (overrides->preserve_host_set == 0) ? base->preserve_host : overrides->preserve_host;
     ps->timeout= (overrides->timeout_set == 0) ? base->timeout : overrides->timeout;
     ps->badopt = (overrides->badopt_set == 0) ? base->badopt : overrides->badopt;
-
+    ps->pool = p;
     return ps;
 }
 
