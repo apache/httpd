@@ -1392,7 +1392,7 @@ struct dav_hooks_repository
     ** NOTE: if this function is NULL (which is allowed), then any
     **       operations using Content-Range will be refused.
     */
-    dav_error * (*seek_stream)(dav_stream *stream, off_t abs_position);
+    dav_error * (*seek_stream)(dav_stream *stream, apr_off_t abs_position);
 
     /*
     ** If a GET is processed using a stream (open_stream, read_stream)
