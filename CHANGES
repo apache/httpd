@@ -1,5 +1,8 @@
 Changes with Apache 2.0.45
 
+  *) Restore the ability of htdigest.exe to create files that contain
+     more than one user. PR 12910.  [André Malo]
+
   *) Improve binary compatibility of the core between debug (aka
      maintainer-mode) and a non-debug compile.
      [Sander Striker]
