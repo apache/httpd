@@ -1375,8 +1375,8 @@ static apr_status_t ssl_io_filter_output(ap_filter_t *f,
      * mode so that we block for any required ssl input, because
      * output filtering is always nonblocking.
      */
-    inctx->mode = APR_MODE_READBYTES;
-    inctx->block = AP_BLOCK_READ;
+    inctx->mode = AP_MODE_READBYTES;
+    inctx->block = APR_BLOCK_READ;
 
     if ((status = ssl_io_filter_connect(filter_ctx)) != APR_SUCCESS) {
         return ssl_io_filter_error(f, bb, status);
