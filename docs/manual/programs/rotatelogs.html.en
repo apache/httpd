@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head><!--
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+              This file is generated from xml source: DO NOT EDIT
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+      -->
+<title>rotatelogs - Piped logging program to rotate Apache logs - Apache HTTP Server</title>
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
+<link href="../images/favicon.ico" rel="shortcut icon" /></head>
+<body id="manual-page"><div id="page-header">
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p>
+<p class="apache">Apache HTTP Server Version 2.1</p>
+<img alt="" src="../images/feather.gif" /></div>
+<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<div id="path">
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentation</a> &gt; <a href="../">Version 2.1</a> &gt; <a href="./">Programs</a></div><div id="page-content"><div id="preamble"><h1>rotatelogs - Piped logging program to rotate Apache logs</h1>
+     <p><code>rotatelogs</code> is a simple program for use in
+     conjunction with Apache's piped logfile feature.  For example:</p>
+
+<div class="example"><p><code>
+     CustomLog "|bin/rotatelogs /var/logs/logfile 86400" common
+</code></p></div>
+	 
+     <p>This creates the files /var/logs/logfile.nnnn where nnnn  is
+     the system time at which the log nominally starts (this time
+     will always be a multiple of the rotation time, so  you  can
+     synchronize cron scripts with it).  At the end of each rota-
+     tion time (here after 24 hours) a new log is started.</p>
+
+<div class="example"><p><code>	 
+     CustomLog "|bin/rotatelogs /var/logs/logfile 5M" common
+</code></p></div>
+
+     <p>This configuration will rotate the logfile whenever it reaches
+     a size of 5 megabytes.</p>
+	 
+</div>
+<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#synopsis">Synopsis</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#options">Options</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#portability">Portability</a></li>
+</ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="synopsis" id="synopsis">Synopsis</a></h2>
+
+     <p><code><strong>rotatelogs </strong><var>logfile</var>
+     [<var>rotationtime </var>[<var>offset</var>]] |
+     [<var>filesize</var>M]</code></p>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="options" id="options">Options</a></h2>
+
+<dl>
+
+<dt><code><var>logfile</var></code></dt>
+
+<dd>The path plus basename of the logfile.  If <var>logfile</var>
+includes any '%' characters, it is treated as a format string for
+<code>strftime(3)</code>.  Otherwise, the suffix
+<var>.nnnnnnnnnn</var> is automatically added and is the time in
+seconds.  Both formats compute the start time from the beginning of
+the current period.</dd>
+
+<dt><code><var>rotationtime</var></code></dt>
+
+<dd>The time between log file rotations in seconds.</dd>
+
+<dt><code><var>offset</var></code></dt>
+
+<dd>The number of minutes offset from UTC.  If omitted, zero is
+assumed and UTC is used.  For example, to use local time in the zone
+UTC -5 hours, specify a value of <code>-300</code> for this argument.</dd>
+
+<dt><code><var>filesize</var>M</code></dt>
+
+<dd>The maximum file size in megabytes followed by the letter
+<code>M</code> to specify size rather than time.  Use this parameter
+in place of both rotationtime and offset.</dd>
+</dl>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="portability" id="portability">Portability</a></h2>
+
+<p>The following logfile format string substitutions should be
+supported by all <code>strftime(3)</code> implementations, see
+the <code>strftime(3)</code> man page for library-specific
+extensions.</p>
+
+<table class="bordered"><tr><td><code>%A</code></td><td>full weekday name (localized)</td></tr>
+<tr class="odd"><td><code>%a</code></td><td>3-character weekday name (localized)</td></tr>
+<tr><td><code>%B</code></td><td>full month name (localized)</td></tr>
+<tr class="odd"><td><code>%b</code></td><td>3-character month name (localized)</td></tr>
+<tr><td><code>%c</code></td><td>date and time (localized)</td></tr>
+<tr class="odd"><td><code>%d</code></td><td>2-digit day of month</td></tr>
+<tr><td><code>%H</code></td><td>2-digit hour (24 hour clock)</td></tr>
+<tr class="odd"><td><code>%I</code></td><td>2-digit hour (12 hour clock)</td></tr>
+<tr><td><code>%j</code></td><td>3-digit day of year</td></tr>
+<tr class="odd"><td><code>%M</code></td><td>2-digit minute</td></tr>
+<tr><td><code>%m</code></td><td>2-digit month</td></tr>
+<tr class="odd"><td><code>%p</code></td><td>am/pm of 12 hour clock (localized)</td></tr>
+<tr><td><code>%S</code></td><td>2-digit second</td></tr>
+<tr class="odd"><td><code>%U</code></td><td>2-digit week of year 
+(Sunday first day of week)</td></tr>
+<tr><td><code>%W</code></td><td>2-digit week of year 
+(Monday first day of week)</td></tr>
+<tr class="odd"><td><code>%w</code></td><td>1-digit weekday 
+(Sunday first day of week)</td></tr>
+<tr><td><code>%X</code></td><td>time (localized)</td></tr>
+<tr class="odd"><td><code>%x</code></td><td>date (localized)</td></tr>
+<tr><td><code>%Y</code></td><td>4-digit year</td></tr>
+<tr class="odd"><td><code>%y</code></td><td>2-digit year</td></tr>
+<tr><td><code>%Z</code></td><td>time zone name</td></tr>
+<tr class="odd"><td><code>%%</code></td><td>literal `%'</td></tr>
+</table>
+
+</div></div>
+<div id="footer">
+<p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div>
+</body></html>

@@ -1,0 +1,106 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
+<manualpage metafile="httpd.xml.meta">
+<parentdocument href="./">Programs</parentdocument>
+
+  <title>rotatelogs - Piped logging program to rotate Apache logs</title>
+
+<summary>
+     <p><code>rotatelogs</code> is a simple program for use in
+     conjunction with Apache's piped logfile feature.  For example:</p>
+
+<example>
+     CustomLog "|bin/rotatelogs /var/logs/logfile 86400" common
+</example>
+	 
+     <p>This creates the files /var/logs/logfile.nnnn where nnnn  is
+     the system time at which the log nominally starts (this time
+     will always be a multiple of the rotation time, so  you  can
+     synchronize cron scripts with it).  At the end of each rota-
+     tion time (here after 24 hours) a new log is started.</p>
+
+<example>	 
+     CustomLog "|bin/rotatelogs /var/logs/logfile 5M" common
+</example>
+
+     <p>This configuration will rotate the logfile whenever it reaches
+     a size of 5 megabytes.</p>
+	 
+</summary>
+
+<section id="synopsis"><title>Synopsis</title>
+
+     <p><code><strong>rotatelogs </strong><var>logfile</var>
+     [<var>rotationtime </var>[<var>offset</var>]] |
+     [<var>filesize</var>M]</code></p>
+</section>
+
+<section id="options"><title>Options</title>
+
+<dl>
+
+<dt><code><var>logfile</var></code></dt>
+
+<dd>The path plus basename of the logfile.  If <var>logfile</var>
+includes any '%' characters, it is treated as a format string for
+<code>strftime(3)</code>.  Otherwise, the suffix
+<var>.nnnnnnnnnn</var> is automatically added and is the time in
+seconds.  Both formats compute the start time from the beginning of
+the current period.</dd>
+
+<dt><code><var>rotationtime</var></code></dt>
+
+<dd>The time between log file rotations in seconds.</dd>
+
+<dt><code><var>offset</var></code></dt>
+
+<dd>The number of minutes offset from UTC.  If omitted, zero is
+assumed and UTC is used.  For example, to use local time in the zone
+UTC -5 hours, specify a value of <code>-300</code> for this argument.</dd>
+
+<dt><code><var>filesize</var>M</code></dt>
+
+<dd>The maximum file size in megabytes followed by the letter
+<code>M</code> to specify size rather than time.  Use this parameter
+in place of both rotationtime and offset.</dd>
+</dl>
+</section>
+
+<section id="portability"><title>Portability</title>
+
+<p>The following logfile format string substitutions should be
+supported by all <code>strftime(3)</code> implementations, see
+the <code>strftime(3)</code> man page for library-specific
+extensions.</p>
+
+<table border="1" style="zebra">
+<tr><td><code>%A</code></td><td>full weekday name (localized)</td></tr>
+<tr><td><code>%a</code></td><td>3-character weekday name (localized)</td></tr>
+<tr><td><code>%B</code></td><td>full month name (localized)</td></tr>
+<tr><td><code>%b</code></td><td>3-character month name (localized)</td></tr>
+<tr><td><code>%c</code></td><td>date and time (localized)</td></tr>
+<tr><td><code>%d</code></td><td>2-digit day of month</td></tr>
+<tr><td><code>%H</code></td><td>2-digit hour (24 hour clock)</td></tr>
+<tr><td><code>%I</code></td><td>2-digit hour (12 hour clock)</td></tr>
+<tr><td><code>%j</code></td><td>3-digit day of year</td></tr>
+<tr><td><code>%M</code></td><td>2-digit minute</td></tr>
+<tr><td><code>%m</code></td><td>2-digit month</td></tr>
+<tr><td><code>%p</code></td><td>am/pm of 12 hour clock (localized)</td></tr>
+<tr><td><code>%S</code></td><td>2-digit second</td></tr>
+<tr><td><code>%U</code></td><td>2-digit week of year 
+(Sunday first day of week)</td></tr>
+<tr><td><code>%W</code></td><td>2-digit week of year 
+(Monday first day of week)</td></tr>
+<tr><td><code>%w</code></td><td>1-digit weekday 
+(Sunday first day of week)</td></tr>
+<tr><td><code>%X</code></td><td>time (localized)</td></tr>
+<tr><td><code>%x</code></td><td>date (localized)</td></tr>
+<tr><td><code>%Y</code></td><td>4-digit year</td></tr>
+<tr><td><code>%y</code></td><td>2-digit year</td></tr>
+<tr><td><code>%Z</code></td><td>time zone name</td></tr>
+<tr><td><code>%%</code></td><td>literal `%'</td></tr>
+</table>
+
+</section>
+</manualpage>
