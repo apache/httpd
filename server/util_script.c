@@ -645,7 +645,7 @@ static int getsfunc_BRIGADE(char *buf, int len, void *arg)
             if (*src == '\n') {
                 done = 1;
             }
-            else {
+            else if (*src != '\r') {
                 *dst++ = *src;
             }
             src++;
