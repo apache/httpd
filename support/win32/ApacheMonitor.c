@@ -326,9 +326,11 @@ void ShowTryPopupMenu(HWND hWnd)
         appendMenuItem(hMenu, 0, "", FALSE, TRUE);
         appendMenuItem(hMenu, IDM_EXIT,  g_lpMsg[IDS_MSG_MNUEXIT-IDS_MSG_FIRST], FALSE, TRUE);
 
+        if (!SetForegroundWindow(hWnd))
+            SetForegroundWindow(NULL);
         GetCursorPos(&pt);
-        SetForegroundWindow(NULL);
-        TrackPopupMenu(hMenu, TPM_LEFTALIGN|TPM_RIGHTBUTTON, pt.x, pt.y, 0, hWnd, NULL);
+        TrackPopupMenu(hMenu, TPM_LEFTALIGN|TPM_RIGHTBUTTON, 
+                       pt.x, pt.y, 0, hWnd, NULL);
         DestroyMenu(hMenu);
     }
 }
@@ -350,9 +352,11 @@ void ShowTryServicesMenu(HWND hWnd)
         }
         if (i)
         {
+            if (!SetForegroundWindow(hWnd))
+                SetForegroundWindow(NULL);
             GetCursorPos(&pt);
-            SetForegroundWindow(NULL);
-            TrackPopupMenu(hMenu, TPM_LEFTALIGN|TPM_RIGHTBUTTON, pt.x, pt.y, 0, hWnd, NULL);
+            TrackPopupMenu(hMenu, TPM_LEFTALIGN|TPM_RIGHTBUTTON, 
+                           pt.x, pt.y, 0, hWnd, NULL);
             DestroyMenu(hMenu);
         }
     }
