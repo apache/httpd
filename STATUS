@@ -54,6 +54,10 @@ Available Patches:
       also marginally increases the efficiency of Apache when the server
       runs with DNS lookups turned off.
 
+    * Ed Korthof's patch to fix protocol issues surrounding 400, 408, and
+      414 responses.
+      <Pine.GSO.3.95.980204191834.4314K-200000@aether.organic.com>
+
 In progress:
 
     * Ken's IndexFormat enhancement to mod_autoindex to allow
@@ -68,12 +72,17 @@ FINAL RELEASE SHOWSTOPPERS:
       do lots of fun pointer manipulations and such and possibly have overflow
       errors.  The respective flush_funcs also need to be exercised.
 
-Needs patch:
+Documentation that needs writing:
 
     * Documentation for:
       1) htdocs/manual/sourcereorg.html and other files should mention 
          new mod_so capabilities.
       2) windows.html should be cleaned up.
+
+    * Need a document explaining mod_rewrite/"UseCanonicalName off" based
+	virtualhosting.  (If it exists already I can't find it easily.)
+
+Needs patch:
 
     * uri issues
 	- RFC2068 requires a server to recognize its own IP addr(s) in dot
@@ -81,6 +90,40 @@ Needs patch:
 	documentation... we should handle it in the case the user doesn't ever
 	supply a dot-notation address.
 
+    * Amdalh UTS 2.1.2
+	Message-Id: <9801211635.ZM7239@ihgp1.ih.lucent.com>
+	Message-Id: <199801220935.BAA13813@tiber.cisco.com>
+
+    * Problems dealing with .-rooted domain names such as "twinlark." versus
+	"twinlark.arctic.org.".  See the thread containing
+	Message-ID: <19980203211817.06723@deejai.mch.sni.de> for more details.
+	In particular this affects the correctness of the proxy and the
+	vhost mechanism.
+
+    * Lynx OS re-port
+	<Pine.BSD.3.96.980209120938.85I-100000@mag.devdep.sysgo.de>
+
+    * NeXT tweaks for 1.3b5
+	<x7vhub3px5.fsf@sierra.covalent.net>  (in the feb98 archives)
+
+    * PR#1799: we need to add a "default" or "none" handler to deal with
+	filenames such as foo.map.gif which aren't image maps, and shouldn't
+	be considered such.  See discussion in
+	<Pine.LNX.3.96dg4.980220010131.20009H-100000@twinlark.arctic.org>
+	<Pine.LNX.3.96.980220095126.10974A-100000@ecstasy.localnet>
+	<34ED6E5A.29555AB8@Golux.Com>
+	<34EECEB1.5AD015CF@Golux.Com>
+	(feb98 archives)
+
+    * proxy_*_canon routines use r->proxyreq incorrectly.  See
+	<Pine.LNX.3.96dg4.980304030057.13656O-100000@twinlark.arctic.org>
+
+    * TZ should not be dealt with specially any longer now that we have
+      "PassEnv".  See
+      <Pine.LNX.3.96dg4.980309224241.11283X-100000@twinlark.arctic.org>
+    
+
+    
 Closed issues:
 
 Open issues:
@@ -116,6 +159,10 @@ Open issues:
 	Roy says sending 200 is correct, but Alexei disagrees.
 	Marc sides with Alexei.  We were talking about two different PRs.
         Apache should be sending 200 *and* Accept-Ranges.
+
+	Dean says: I'm still really confused as to what the problem is or
+	isn't.  If one of you three could work up a patch that would be
+	most excellent.
 
     * Marc's socket options like source routing (kill them?)
 	Marc, Martin say Yes
@@ -158,6 +205,9 @@ Open issues:
             Randy: I would also argue that 1.3b6 is _not_ stable. I've been 
                    having real fits keeping it alive on a dual processor
                    machine. Could be OS problems..
+
+    * Should we re-enable nagle now that we're non-buffering CGIs?  See various
+	messages from Marc in March 98.
 
 Win32 specific issues:
 
