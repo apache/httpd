@@ -317,23 +317,9 @@ AC_ARG_ENABLE(layout,
 ])
 
 if test -z "$LAYOUT"; then
-  # XXX FIXME: this isn't a complete list of things that have to be set to 
-  # create the Apache layout in config.layout, and it really should just
-  # use what is specified in config.layout instead of duping it.
-  htdocsdir='$(prefix)/htdocs'
-  manualdir='$(prefix)/manual'
-  errordir='$(prefix)/error'
-  iconsdir='$(prefix)/icons'
-  cgidir='$(prefix)/cgi-bin'
-  logfiledir='$(prefix)/logs'
-  sysconfdir='${prefix}/conf'
-  libexecdir='${prefix}/modules'
-  mandir='${prefix}/man'
-  layout_name=Apache
-  installbuilddir='${prefix}/build'
-else 
-  APACHE_LAYOUT($srcdir/config.layout, $LAYOUT)
+  LAYOUT="Apache"
 fi
+APACHE_LAYOUT($srcdir/config.layout, $LAYOUT)
 
 AC_MSG_CHECKING(for chosen layout)
 AC_MSG_RESULT($layout_name)
