@@ -679,6 +679,7 @@ typedef int rlim_t;
 #define MAXSOCKETS 4096
 #define USE_OS2_SCOREBOARD
 #define NO_RELIABLE_PIPED_LOGS
+#define HAVE_SYS_SELECT_H 1
 
 #elif defined(__MACHTEN__)
 typedef int rlim_t;

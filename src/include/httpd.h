@@ -887,6 +887,9 @@ API_EXPORT(int) ap_is_matchexp(const char *str);
 API_EXPORT(int) ap_strcmp_match(const char *str, const char *exp);
 API_EXPORT(int) ap_strcasecmp_match(const char *str, const char *exp);
 API_EXPORT(char *) ap_uudecode(pool *, const char *);
+#ifdef __EMX__
+void os2pathname(char *path);
+#endif
 
 API_EXPORT(char *) ap_pregsub(pool *p, const char *input, const char *source,
 			   size_t nmatch, regmatch_t pmatch[]);

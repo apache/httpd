@@ -1,5 +1,7 @@
 Changes with Apache 1.3b8
 
+  *) Various OS/2 cleanups ["Brian Havard" <brianh@kheldar.apana.org.au>]
+
   *) PORT: QNX needed a #include <sys/mman.h>; and now it uses flock
      serialized accept to handle multiple sockets.
      [Rob Saccoccio <robs@InfiniteTechnology.com>] PR#2295, 2296

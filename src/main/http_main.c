@@ -189,6 +189,7 @@ long _stksize = 32768;
 #ifdef USE_OS2_SCOREBOARD
     /* Add MMAP style functionality to OS/2 */
 #define INCL_DOSMEMMGR
+#define INCL_DOSEXCEPTIONS
 #include <os2.h>
 #include <umalloc.h>
 #include <stdio.h>
@@ -1485,7 +1486,6 @@ static void setup_shared_mem(pool *p)
 {
     caddr_t m;
 
-    char errstr[MAX_STRING_LEN];
     int rc;
 
     m = (caddr_t) create_shared_heap("\\SHAREMEM\\SCOREBOARD", SCOREBOARD_SIZE);
