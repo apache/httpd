@@ -80,12 +80,10 @@ gifted exclusively to the The Apache Group in July 1997 by
 
 
 <CENTER>
-<A name="Configuration">
-<H1>Configuration Directives</H1>
-</A>
+<H1><A NAME="Configuration">Configuration Directives</A></H1>
 </CENTER>
 
-<A name="RewriteEngine"><H3>RewriteEngine</H3></A>
+<H3><A NAME="RewriteEngine">RewriteEngine</A></H3>
 <A
  HREF="directive-dict.html#Syntax"
  REL="Help"
@@ -119,7 +117,7 @@ HREF="#RewriteOptions">RewriteOptions inherit</A> is enabled.
 <hr noshade size=1>
 <P>
 
-<A name="RewriteOptions"><H3>RewriteOptions</H3></A>
+<H3><A NAME="RewriteOptions">RewriteOptions</A></H3>
 <A
  HREF="directive-dict.html#Syntax"
  REL="Help"
@@ -151,7 +149,7 @@ strings can be one of the following:
 <hr noshade size=1>
 <P>
 
-<A name="RewriteLog"><H3>RewriteLog</H3></A>
+<H3><A NAME="RewriteLog">RewriteLog</A></H3>
 <A
  HREF="directive-dict.html#Syntax"
  REL="Help"
@@ -209,7 +207,7 @@ RewriteLog "/usr/local/var/apache/logs/rewrite.log"
 <hr noshade size=1>
 <P>
 
-<A name="RewriteLogLevel"><H3>RewriteLogLevel</H3></A>
+<H3><A NAME="RewriteLogLevel">RewriteLogLevel</A></H3>
 <A
  HREF="directive-dict.html#Syntax"
  REL="Help"
@@ -254,7 +252,7 @@ RewriteLogLevel 3
 <hr noshade size=1>
 <P>
 
-<A name="RewriteMap"><H3>RewriteMap</H3></A>
+<H3><A NAME="RewriteMap">RewriteMap</A></H3>
 <A
  HREF="directive-dict.html#Syntax"
  REL="Help"
@@ -274,7 +272,7 @@ which can be used inside rule substitution strings by the mapping-functions
 to insert/substitute fields through a key lookup.
 <P>
 
-The <A name="mapfunc"><EM>Mapname</EM></A> is the name of the map and will
+The <A NAME="mapfunc"><EM>Mapname</EM></A> is the name of the map and will
 be used to specify a mapping-function for the substitution strings of a
 rewriting rule via
 
@@ -405,7 +403,7 @@ only happens once!
 <hr noshade size=1>
 <P>
 
-<A name="RewriteBase"><H3>RewriteBase</H3></A>
+<H3><A NAME="RewriteBase">RewriteBase</A></H3>
 <A
  HREF="directive-dict.html#Syntax"
  REL="Help"
@@ -517,7 +515,7 @@ sure the design and implementation is correct.
 <hr noshade size=1>
 <P>
 
-<A name="RewriteCond"><H3>RewriteCond</H3></A>
+<H3><A NAME="RewriteCond">RewriteCond</A></H3>
 <A
  HREF="directive-dict.html#Syntax"
  REL="Help"
@@ -550,7 +548,8 @@ expanded constructs in addition to plain text:
 <TT>$N</TT>
 </STRONG></BLOCKQUOTE>
 
-(1 <= N <= 9) which provide access to the grouped parts (parenthesis!) of the
+(1 &lt;= N &lt;= 9) which provide access to the grouped parts (parenthesis!)
+of the
 pattern from the corresponding <TT>RewriteRule</TT> directive (the one
 following the current bunch of <TT>RewriteCond</TT> directives).
 
@@ -561,7 +560,7 @@ following the current bunch of <TT>RewriteCond</TT> directives).
 <TT>%N</TT>
 </STRONG></BLOCKQUOTE>
 
-(1 <= N <= 9) which provide access to the grouped parts (parenthesis!) of the
+(1 &lt;= N &lt;= 9) which provide access to the grouped parts (parenthesis!) of the
 pattern from the last matched <TT>RewriteCond</TT> directive in the current
 bunch of conditions.
 
@@ -822,7 +821,7 @@ use any other browser you get the standard homepage.
 <hr noshade size=1>
 <P>
 
-<A name="RewriteRule"><H3>RewriteRule</H3></A>
+<H3><A NAME="RewriteRule">RewriteRule</A></H3>
 <A
  HREF="directive-dict.html#Syntax"
  REL="Help"
@@ -844,8 +843,8 @@ rewriting rule.  The <STRONG>definition order</STRONG> of these rules is
 run-time.
 
 <P>
-<A name="patterns"><EM>Pattern</EM></A> can be (for Apache 1.1.x a System
-V8 and for Apache 1.2.x a POSIX) <A name="regexp">regular expression</A>
+<A NAME="patterns"><EM>Pattern</EM></A> can be (for Apache 1.1.x a System
+V8 and for Apache 1.2.x a POSIX) <A NAME="regexp">regular expression</A>
 which gets applied to the current URL. Here ``current'' means the value of the
 URL when this rule gets applied. This may not be the original requested
 URL, because there could be any number of rules before which already matched
@@ -897,7 +896,7 @@ substitution string!
 </TABLE>
 
 <P>
-<A name="rhs"><EM>Substitution</EM></A> of a rewriting rule is the string
+<A NAME="rhs"><EM>Substitution</EM></A> of a rewriting rule is the string
 which is substituted for (or replaces) the original URL for which
 <EM>Pattern</EM> matched.  Beside plain text you can use
 
@@ -966,7 +965,7 @@ as the third argument to the <TT>RewriteRule</TT> directive. <EM>Flags</EM> is a
 comma-separated list of the following flags:
 
 <UL>
-<LI>'<STRONG><CODE>redirect|R</CODE>[=<EM>code</EM>]</STRONG>' (force <A name="redirect"><STRONG>r</STRONG>edirect</A>)<BR>
+<LI>'<STRONG><CODE>redirect|R</CODE>[=<EM>code</EM>]</STRONG>' (force <A NAME="redirect"><STRONG>r</STRONG>edirect</A>)<BR>
     Prefix <EM>Substitution</EM>
     with <CODE>http://thishost[:thisport]/</CODE> (which makes the new URL a URI) to
     force a external redirection. If no <EM>code</EM> is given a HTTP response
@@ -1287,14 +1286,10 @@ RewriteRule  ^/([^/]+)/~([^/]+)/(.*)$   /u/${real-to-user:$2|nobody}/$3.$1
 <!--/%hypertext -->
 
 <CENTER>
-<A name="Additional">
-<H1>Additional Features</H1>
-</A>
+<H1><A NAME="Additional">Additional Features</A></H1>
 </CENTER>
 
-<A name="EnvVar">
-<H2>Environment Variables</H2>
-</A>
+<H2><A NAME="EnvVar">Environment Variables</A></H2>
 
 This module keeps track of two additional (non-standard) CGI/SSI environment
 variables named <TT>SCRIPT_URL</TT> and <TT>SCRIPT_URI</TT>. These contain

@@ -12,9 +12,7 @@
  VLINK="#000080"
  ALINK="#FF0000"
 >
-<DIV ALIGN="CENTER">
- <IMG SRC="../images/sub.gif" ALT="[APACHE DOCUMENTATION]">
-</DIV>
+<!--#include virtual="header.html" -->
 
 <H1 ALIGN="CENTER">Using XSSI and <SAMP>ErrorDocument</SAMP> to configure
 customized international server error responses</H1>
@@ -30,7 +28,7 @@ customized international server error responses</H1>
  <LI><A HREF="#listings">HTML listing of the discussed example</A>
 </UL>
 <HR>
-<A NAME="intro"><H2>Introduction</H2></A>
+<H2><A NAME="intro">Introduction</A></H2>
 This document describes an easy way to provide your apache WWW server
 with a set of customized error messages which take advantage of
 <A HREF="../content-negotiation.html">Content Negotiation</A>
@@ -76,14 +74,15 @@ For this hypothetic server, we assume that all error messages...
 <P>
 An example of a "document not found" message for a german client might
 look like this:<BR>
-<IMG SRC="../images/custom_errordocs.gif"><BR>
+<IMG SRC="../images/custom_errordocs.gif"
+ ALT="[Needs graphics capability to display]"><BR>
 All links in the document as well as links to the server's administrator
 mail address, and even the name and port of the serving virtual host
 are inserted in the error document at "run-time", i.e., when the error
 actually occurs.
 </P>
 
-<A NAME="createdir"><H2>Creating an ErrorDocument directory</H2></A>
+<H2><A NAME="createdir">Creating an ErrorDocument directory</A></H2>
 
 For this concept to work as easily as possible, we must take advantage
 of as much server support as we can get:
@@ -159,7 +158,7 @@ The directory for the error messages (here:
 appropriate permissions (readable and executable by the server uid or gid, 
 only writable for the administrator).
 
-<A NAME="docnames"><H3>Naming the individual error document files</H3></A>
+<H3><A NAME="docnames">Naming the individual error document files</A></H3>
 
 By defining the <SAMP>MultiViews</SAMP> option, the server was told to
 automatically scan the directory for matching variants (looking at language
@@ -186,7 +185,7 @@ the configured error documents):
      variant (<A HREF="#fallback">see below</A>).
 </UL>
 
-<A NAME="headfoot"><H3>The common header and footer files</H3></A>
+<H3><A NAME="headfoot">The common header and footer files</A></H3>
 
 By putting as much layout information in two special "include files", 
 the error documents can be reduced to a bare minimum.
@@ -229,7 +228,7 @@ See <A HREF="#listings">the listings below</A> to see an actual HTML
 implementation of the discussed example.
 
 
-<A NAME="createdocs"><H3>Creating ErrorDocuments in different languages</H3></A>
+<H3><A NAME="createdocs">Creating ErrorDocuments in different languages</A></H3>
 
 After all this preparation work, little remains to be said about the
 actual documents. They all share a simple common structure:
@@ -243,7 +242,7 @@ In the <A HREF="#listings">listings section</A>, you can see an example
 of a [400 Bad Request] error document. Documents as simple as that
 certainly cause no problems to translate or expand.
 
-<A NAME="fallback"><H3>The fallback language</H3></A>
+<H3><A NAME="fallback">The fallback language</A></H3>
 
 Do we need a special handling for languages other than those we have
 translations for? We did set the LanguagePriority, didn't we?!
@@ -276,7 +275,7 @@ A simple shell script to do it (execute within the errordocs/ dir):
 <P>
 </P>
 
-<A NAME="listings"><H2>HTML listing of the discussed example</H2></A>
+<H2><A NAME="listings">HTML listing of the discussed example</A></H2>
 
 So, to summarize our example, here's the complete listing of the
 <SAMP>400.shtml.en</SAMP> document. You will notice that it contains
