@@ -459,15 +459,15 @@ static void dump_a_vhost(apr_file_t *f, ipaddr_chain *ic)
 	return;
     }
     apr_fprintf(f, "%-22s is a NameVirtualHost\n"
-	    "%22s default server %s (%s:%u)\n",
+	    "%8s default server %s (%s:%u)\n",
 	    buf, "", ic->server->server_hostname,
 	    ic->server->defn_name, ic->server->defn_line_number);
     for (nc = ic->names; nc; nc = nc->next) {
 	if (nc->sar->host_port) {
-	    apr_fprintf(f, "%22s port %u ", "", nc->sar->host_port);
+	    apr_fprintf(f, "%8s port %u ", "", nc->sar->host_port);
 	}
 	else {
-	    apr_fprintf(f, "%22s port * ", "");
+	    apr_fprintf(f, "%8s port * ", "");
 	}
 	apr_fprintf(f, "namevhost %s (%s:%u)\n", nc->server->server_hostname,
 		nc->server->defn_name, nc->server->defn_line_number);
