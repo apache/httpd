@@ -93,6 +93,9 @@ void *create_core_dir_config (pool *a, char *dir)
 
     conf->hostname_lookups = 2;/* binary, but will use 2 as an "unset = on" */
     conf->do_rfc1413 = DEFAULT_RFC1413 | 2;  /* set bit 1 to indicate default */
+
+    conf->sec = make_array (a, 2, sizeof(void *));
+
     return (void *)conf;
 }
 
@@ -107,6 +110,7 @@ void *merge_core_dir_configs (pool *a, void *basev, void *newv)
     memcpy ((char *)conf, (const char *)base, sizeof(core_dir_config));
     
     conf->d = new->d;
+    conf->r = new->r;
     
     if (new->opts != OPT_UNSET) conf->opts = new->opts;
     if (new->override != OR_UNSET) conf->override = new->override;
@@ -123,6 +127,8 @@ void *merge_core_dir_configs (pool *a, void *basev, void *newv)
 	conf->hostname_lookups = new->hostname_lookups;
     if ((new->do_rfc1413 & 2) == 0) conf->do_rfc1413 = new->do_rfc1413;
     if ((new->content_md5 & 2) == 0) conf->content_md5 = new->content_md5;
+
+    conf->sec = append_arrays (a, base->sec, new->sec);
 
     return (void*)conf;
 }
@@ -175,6 +181,13 @@ void add_per_url_conf (server_rec *s, void *url_config)
     core_server_config *sconf = get_module_config (s->module_config,
 						   &core_module);
     void **new_space = (void **) push_array (sconf->sec_url);
+    
+    *new_space = url_config;
+}
+
+void add_file_conf (core_dir_config *conf, void *url_config)
+{
+    void **new_space = (void **) push_array (conf->sec);
     
     *new_space = url_config;
 }
@@ -518,19 +531,29 @@ char *dirsection (cmd_parms *cmd, void *dummy, char *arg)
     char *errmsg, *endp = strrchr (arg, '>');
     int old_overrides = cmd->override;
     char *old_path = cmd->path;
+    core_dir_config *conf;
     void *new_dir_conf = create_per_dir_config (cmd->pool);
+    regex_t *r = NULL;
 
     if (endp) *endp = '\0';
 
     if (cmd->path) return "<Directory> sections don't nest";
     if (cmd->limited != -1) return "Can't have <Directory> within <Limit>";
-    
+
     cmd->path = getword_conf (cmd->pool, &arg);
     cmd->override = OR_ALL|ACCESS_CONF;
 
+    if (!strcmp(cmd->path, "~")) {
+	cmd->path = getword_conf (cmd->pool, &arg);
+	r = pregcomp(cmd->pool, cmd->path, REG_EXTENDED);
+    }
+
     errmsg = srm_command_loop (cmd, new_dir_conf);
     add_per_dir_conf (cmd->server, new_dir_conf);
-    
+
+    conf = (core_dir_config *)get_module_config(new_dir_conf, &core_module);
+    conf->r = r;
+ 
     cmd->path = old_path;
     cmd->override = old_overrides;
 
@@ -550,6 +573,7 @@ char *urlsection (cmd_parms *cmd, void *dummy, char *arg)
     int old_overrides = cmd->override;
     char *old_path = cmd->path;
     core_dir_config *conf;
+    regex_t *r = NULL;
 
     void *new_url_conf = create_per_dir_config (cmd->pool);
 
@@ -561,16 +585,66 @@ char *urlsection (cmd_parms *cmd, void *dummy, char *arg)
     cmd->path = getword_conf (cmd->pool, &arg);
     cmd->override = OR_ALL|ACCESS_CONF;
 
+    if (!strcmp(cmd->path, "~")) {
+	cmd->path = getword_conf (cmd->pool, &arg);
+	r = pregcomp(cmd->pool, cmd->path, REG_EXTENDED);
+    }
+
     errmsg = srm_command_loop (cmd, new_url_conf);
     if (errmsg != end_url_magic) return errmsg;
 
     conf = (core_dir_config *)get_module_config(new_url_conf, &core_module);
     conf->d = pstrdup(cmd->pool, cmd->path);	/* No mangling, please */
+    conf->r = r;
 
     add_per_url_conf (cmd->server, new_url_conf);
     
     cmd->path = old_path;
     cmd->override = old_overrides;
+
+    return NULL;
+}
+
+static char *end_file_magic = "</Files> outside of any <Files> section";
+
+char *end_filesection (cmd_parms *cmd, void *dummy) {
+    return end_file_magic;
+}
+
+char *filesection (cmd_parms *cmd, core_dir_config *c, char *arg)
+{
+    char *errmsg, *endp = strrchr (arg, '>');
+    char *old_path = cmd->path;
+    core_dir_config *conf;
+    regex_t *r = NULL;
+
+    void *new_file_conf = create_per_dir_config (cmd->pool);
+
+    if (endp) *endp = '\0';
+
+    if (cmd->limited != -1) return "Can't have <Files> within <Limit>";
+
+    cmd->path = getword_conf (cmd->pool, &arg);
+
+    if (!strcmp(cmd->path, "~")) {
+	cmd->path = getword_conf (cmd->pool, &arg);
+	if (old_path && cmd->path[0] != '/' && cmd->path[0] != '^')
+	    cmd->path = pstrcat(cmd->pool, "^", old_path, cmd->path, NULL);
+	r = pregcomp(cmd->pool, cmd->path, REG_EXTENDED);
+    }
+    else if (old_path && cmd->path[0] != '/')
+	cmd->path = pstrcat(cmd->pool, old_path, cmd->path, NULL);
+
+    errmsg = srm_command_loop (cmd, new_file_conf);
+    if (errmsg != end_file_magic) return errmsg;
+
+    conf = (core_dir_config *)get_module_config(new_file_conf, &core_module);
+    conf->d = pstrdup(cmd->pool, cmd->path);
+    conf->r = r;
+
+    add_file_conf (c, new_file_conf);
+    
+    cmd->path = old_path;
 
     return NULL;
 }
@@ -779,6 +853,8 @@ command_rec core_cmds[] = {
 { "</Directory>", end_dirsection, NULL, ACCESS_CONF, NO_ARGS, NULL },
 { "<Location", urlsection, NULL, RSRC_CONF, RAW_ARGS, NULL },
 { "</Location>", end_urlsection, NULL, ACCESS_CONF, NO_ARGS, NULL },
+{ "<Files", filesection, NULL, OR_ALL, RAW_ARGS, NULL },
+{ "</Files>", end_filesection, NULL, OR_ALL, NO_ARGS, NULL },
 { "<Limit", limit, NULL, OR_ALL, RAW_ARGS, NULL },
 { "</Limit>", endlimit, NULL, OR_ALL, RAW_ARGS, NULL },
 { "AuthType", set_string_slot, (void*)XtOffsetOf(core_dir_config, auth_type),

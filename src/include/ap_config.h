@@ -388,6 +388,7 @@ extern int strncasecmp(const char *,const char *,unsigned);
 #ifndef QNX
 #include <memory.h>
 #endif
+#include "regex/regex.h"
 
 #ifdef HAVE_RESOURCE
 #include <sys/resource.h>

@@ -152,6 +152,10 @@ typedef struct {
     int hostname_lookups;
     int do_rfc1413;   /* See if client is advertising a username? */
 
+    /* Access control */
+    array_header *sec;
+    regex_t *r;
+
 } core_dir_config;
 
 /* Per-server core configuration */
@@ -165,7 +169,7 @@ typedef struct {
     char *document_root;
   
     /* Access control */
-  
+
     char *access_name;
     array_header *sec;
     array_header *sec_url;

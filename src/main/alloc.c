@@ -803,6 +803,27 @@ int pfclose(struct pool *a, FILE *fd)
   return res;
 }
 
+/*
+ * Here's a pool-based interface to POSIX regex's regcomp().
+ * Note that we return regex_t instead of being passed one.
+ * The reason is that if you use an already-used regex_t structure,
+ * the memory that you've already allocated gets forgotten, and
+ * regfree() doesn't clear it. So we don't allow it.
+ */
+
+static void regex_cleanup (void *preg) { regfree ((regex_t *)preg); }
+
+regex_t *pregcomp(pool *p, const char *pattern, int cflags) {
+    regex_t *preg = palloc(p, sizeof(regex_t));
+
+    if (regcomp(preg, pattern, cflags))
+	return NULL;
+
+    register_cleanup (p, (void *)preg, regex_cleanup, regex_cleanup);
+
+    return preg;
+}
+
 /*****************************************************************
  *
  * More grotty system stuff... subprocesses.  Frump.  These don't use

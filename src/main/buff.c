@@ -56,6 +56,7 @@
 #include <string.h>
 #include <unistd.h>
 
+#include "conf.h"
 #include "alloc.h"
 #include "buff.h"
 

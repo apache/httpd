@@ -13,15 +13,9 @@
  * 18 May 1996 Initial revision [Ben Laurie]
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <stdarg.h>
-#include <string.h>
-#ifndef QNX
-#include <memory.h>
-#endif
 #include <assert.h>
 #include <math.h>
+#include "conf.h"
 #include "alloc.h"
 #include "buff.h"
 

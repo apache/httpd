@@ -242,7 +242,11 @@ int directory_walk (request_rec *r)
 	    entry_dir = entry_core->d;
 
 	    this_conf = NULL;
-	    if (is_matchexp(entry_dir)) {
+	    if (entry_core->r) {
+		if (!regexec(entry_core->r, test_filename, 0, NULL, 0))
+		    this_conf = entry_config;
+	    }
+	    else if (is_matchexp(entry_dir)) {
 		if (!strcmp_match(test_filename, entry_dir))
 		    this_conf = entry_config;
 	    }
@@ -301,11 +305,19 @@ int directory_walk (request_rec *r)
 	      (core_dir_config *)get_module_config(entry_config, &core_module);
 	    entry_dir = entry_core->d;
 	
-	    if (is_matchexp(entry_dir) && !strcmp_match(this_dir, entry_dir)) {
-		/* Don't try this wildcard again --- if it ends in '*'
-		 * it'll match again, and subdirectories won't be able to
-		 * override it...
-		 */
+	    if (entry_core->r) {
+		if (!regexec(entry_core->r, this_dir, 0, NULL,
+			     (j == num_sec) ? 0 : REG_NOTEOL)) {
+		    /* Don't try this wildcard again --- if it ends in '*'
+		     * it'll match again, and subdirectories won't be able to
+		     * override it...
+		     */
+		    sec[j] = NULL;
+		    this_conf = entry_config;
+		}
+	    }
+	    else if (is_matchexp(entry_dir) &&
+		     !strcmp_match(this_dir, entry_dir)) {
 		sec[j] = NULL;	
 	        this_conf = entry_config;
 	    }
@@ -359,7 +371,7 @@ int location_walk (request_rec *r)
     void *per_dir_defaults = r->per_dir_config;
     
     core_dir_config **url = (core_dir_config **)url_array->elts;
-    int num_url = url_array->nelts;
+    int len, num_url = url_array->nelts;
     char *test_location = pstrdup (r->pool, r->uri);
 
     /* Go through the location entries, and check for matches. */
@@ -383,12 +395,80 @@ int location_walk (request_rec *r)
 		get_module_config(entry_config, &core_module);
 	    entry_url = entry_core->d;
 
+	    len = strlen(entry_url);
+
 	    this_conf = NULL;
-	    if (is_matchexp(entry_url)) {
+
+	    if (entry_core->r) {
+		if (!regexec(entry_core->r, test_location, 0, NULL, 0))
+		    this_conf = entry_config;
+	    }
+	    else if (is_matchexp(entry_url)) {
 		if (!strcmp_match(test_location, entry_url))
 		    this_conf = entry_config;
 	    }
-	    else if (!strncmp (test_location, entry_url, strlen(entry_url)))
+	    else if (!strncmp (test_location, entry_url, len) &&
+		     (entry_url[len - 1] == '/' ||
+		      test_location[len] == '/' || test_location[len] == '\0'))
+	        this_conf = entry_config;
+
+	    if (this_conf)
+	        per_dir_defaults = merge_per_dir_configs (r->pool,
+					    per_dir_defaults, this_conf);
+	}
+
+	r->per_dir_config = per_dir_defaults;
+    }
+
+    return OK;
+}
+
+int file_walk (request_rec *r)
+{
+    core_dir_config *conf = get_module_config(r->per_dir_config, &core_module);
+    array_header *file_array = copy_array (r->pool, conf->sec);
+    void *per_dir_defaults = r->per_dir_config;
+    
+    core_dir_config **file = (core_dir_config **)file_array->elts;
+    int len, num_files = file_array->nelts;
+    char *test_file = pstrdup (r->pool, r->filename);
+
+    /* Go through the file entries, and check for matches. */
+
+    if (num_files) {
+        void *this_conf, *entry_config;
+	core_dir_config *entry_core;
+	char *entry_file;
+	int j;
+
+/* 
+ * we apply the directive sections in some order; should really try them
+ * with the most general first.
+ */
+	for (j = 0; j < num_files; ++j) {
+
+	    entry_config = file[j];
+	    if (!entry_config) continue;
+	    
+	    entry_core =(core_dir_config *)
+		get_module_config(entry_config, &core_module);
+	    entry_file = entry_core->d;
+
+	    len = strlen(entry_file);
+
+	    this_conf = NULL;
+
+	    if (entry_core->r) {
+		if (!regexec(entry_core->r, test_file, 0, NULL, 0))
+		    this_conf = entry_config;
+	    }
+	    else if (is_matchexp(entry_file)) {
+		if (!strcmp_match(test_file, entry_file))
+		    this_conf = entry_config;
+	    }
+	    else if (!strncmp (test_file, entry_file, len) &&
+		     (entry_file[len - 1] == '/' ||
+		      test_file[len] == '/' || test_file[len] == '\0'))
 	        this_conf = entry_config;
 
 	    if (this_conf)
@@ -513,6 +593,7 @@ request_rec *sub_req_lookup_uri (char *new_file, request_rec *r)
      */
     
     if ((res = directory_walk (rnew))
+	|| (res = file_walk (rnew))
 	|| (!some_auth_required (rnew) ? 0 :
 	     ((res = check_user_id (rnew)) || (res = check_auth (rnew))))
 	|| (res = check_access (rnew))
@@ -555,6 +636,7 @@ request_rec *sub_req_lookup_file (char *new_file, request_rec *r)
 		      make_full_path (rnew->pool, fdir, new_file));
 	
     if ((res = directory_walk (rnew))
+	|| (res = file_walk (rnew))
 	|| (res = check_access (rnew))
 	|| (!some_auth_required (rnew) ? 0 :
 	     ((res = check_user_id (rnew)) && (res = check_auth (rnew))))
@@ -732,11 +814,16 @@ void process_request_internal (request_rec *r)
         die (access_status, r);
 	return;
     }	
-    
+
     if ((access_status = location_walk (r))) {
         die (access_status, r);
 	return;
     }	
+    
+    if ((access_status = file_walk (r))) {
+	die (access_status, r);
+	return;
+    }
     
     if ((access_status = check_access (r)) != 0) {
         decl_die (access_status, "check access", r);
