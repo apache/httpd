@@ -2197,7 +2197,15 @@ void winnt_rewrite_args(process_rec *process)
          * may have extra StartService() command arguments to
          * add for us.
          *
-         * Any other process has a console, so we don't to begin
+         * The SCM will generally invoke the executable with
+         * the c:\win\system32 default directory.  This is very
+         * lethal if folks use ServerRoot /foopath on windows
+         * without a drive letter.  Change to the default root
+         * (path to apache root, above /bin) for safety.
+         */
+        SetCurrentDirectory(def_server_root);
+        
+        /* Any other process has a console, so we don't to begin
          * a Win9x service until the configuration is parsed and
          * any command line errors are reported.
          *
