@@ -12,7 +12,7 @@ Plan:
 
 Showstoppers:
 
-Committed:
+Committed Code Changes:
 
     * Ben Hyde's [PATCH] fix mmap error conditions again
     * [PATCH] Fix problems with timeouts in inetd mode and -X mode
@@ -59,7 +59,7 @@ Committed:
     * Ben Hyde's [PATCH] Finish suite of mutex ops for non-threaded platforms
     * Ben Hyde's [PATCH] Serialize the update to pool.sub_* in destroy_pool (take 2)
 
-Available:
+Available Patches:
 
     * Jim's [PATCH] ap_cpystrn() function (replace strncpy) Take II
 	<199712262015.PAA10624@devsys.jaguNET.com>
@@ -128,6 +128,13 @@ Available:
 	See <Pine.LNX.3.95dg3.971024175935.25347U-100000@twinlark.arctic.org>
 	for a more up-to-date idea (int vformatter) that has a
 	vote of +1 from Dean, Ben, Martin, Paul and Jim for concept
+
+Concepts:
+
+   * Jim's [CONCEPT] platform.h header file. Instead of lumping
+	all OS stuff in conf.h, create a ./platforms/ sub-dir
+	and have Configure copy and modify platform.h as needed.
+	<199712272303.SAA16225@devsys.jaguNET.com>
 
 In progress:
 
