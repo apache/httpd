@@ -169,7 +169,8 @@ int in_ip(char *domain, char *what) {
 
 static int is_ip(const char *host)
 {
-    while (*host && ((*host == '.') || isdigit(*host))) host++;
+    while ((*host == '.') || isdigit(*host))
+        host++;
     return (*host == '\0');
 }
 
