@@ -478,14 +478,14 @@ static const char *get_include_var(request_rec *r, include_ctx_t *ctx,
  * (Note: If out==NULL, this function allocs a buffer for the resulting
  * string from r->pool.  The return value is the parsed string)
  */
-static char *ap_ssi_parse_string(request_rec *r, include_ctx_t *ctx, 
-                                 const char *in, char *out,
+static char *ap_ssi_parse_string(include_ctx_t *ctx, const char *in, char *out,
                                  apr_size_t length, int leave_name)
 {
     char ch;
     char *next;
     char *end_out;
     apr_size_t out_size;
+    request_rec *r = ctx->intern->r;
 
     /* allocate an output buffer if needed */
     if (!out) {
@@ -1206,7 +1206,7 @@ static int parse_expr(request_rec *r, include_ctx_t *ctx, const char *expr,
                     sizeof ("     Evaluate string\n"));
             debug_pos += sizeof ("     Evaluate string\n");
 #endif
-            buffer = ap_ssi_parse_string(r, ctx, current->token.value, NULL, 
+            buffer = ap_ssi_parse_string(ctx, current->token.value, NULL, 
                                          MAX_STRING_LEN, 0);
             current->token.value = buffer;
             current->value = (current->token.value[0] != '\0');
@@ -1239,7 +1239,7 @@ static int parse_expr(request_rec *r, include_ctx_t *ctx, const char *expr,
             if (!current->left->done) {
                 switch (current->left->token.type) {
                 case token_string:
-                    buffer = ap_ssi_parse_string(r, ctx, current->left->token.value,
+                    buffer = ap_ssi_parse_string(ctx, current->left->token.value,
                                                  NULL, MAX_STRING_LEN, 0);
                     current->left->token.value = buffer;
                     current->left->value = 
@@ -1254,7 +1254,7 @@ static int parse_expr(request_rec *r, include_ctx_t *ctx, const char *expr,
             if (!current->right->done) {
                 switch (current->right->token.type) {
                 case token_string:
-                    buffer = ap_ssi_parse_string(r, ctx, current->right->token.value,
+                    buffer = ap_ssi_parse_string(ctx, current->right->token.value,
                                                  NULL, MAX_STRING_LEN, 0);
                     current->right->token.value = buffer;
                     current->right->value = 
@@ -1304,10 +1304,10 @@ static int parse_expr(request_rec *r, include_ctx_t *ctx, const char *expr,
                 *was_error = 1;
                 return retval;
             }
-            buffer = ap_ssi_parse_string(r, ctx, current->left->token.value,
+            buffer = ap_ssi_parse_string(ctx, current->left->token.value,
                                          NULL, MAX_STRING_LEN, 0);
             current->left->token.value = buffer;
-            buffer = ap_ssi_parse_string(r, ctx, current->right->token.value,
+            buffer = ap_ssi_parse_string(ctx, current->right->token.value,
                                          NULL, MAX_STRING_LEN, 0);
             current->right->token.value = buffer;
             if (current->right->token.type == token_re) {
@@ -1361,11 +1361,11 @@ static int parse_expr(request_rec *r, include_ctx_t *ctx, const char *expr,
                 *was_error = 1;
                 return retval;
             }
-            buffer = ap_ssi_parse_string(r, ctx, current->left->token.value,
-                                         NULL, MAX_STRING_LEN, 0);
+            buffer = ap_ssi_parse_string(ctx, current->left->token.value, NULL,
+                                         MAX_STRING_LEN, 0);
             current->left->token.value = buffer;
-            buffer = ap_ssi_parse_string(r, ctx, current->right->token.value,
-                                         NULL, MAX_STRING_LEN, 0);
+            buffer = ap_ssi_parse_string(ctx, current->right->token.value, NULL,
+                                         MAX_STRING_LEN, 0);
             current->right->token.value = buffer;
 #ifdef DEBUG_INCLUDE
             debug_pos += sprintf (&debug[debug_pos],
@@ -1666,8 +1666,7 @@ static apr_status_t handle_include(include_ctx_t *ctx, ap_filter_t *f,
             break;
         }
 
-        parsed_string = ap_ssi_parse_string(r, ctx, tag_val, NULL,
-                                            MAX_STRING_LEN,
+        parsed_string = ap_ssi_parse_string(ctx, tag_val, NULL, MAX_STRING_LEN,
                                             SSI_EXPAND_DROP_NAME);
         if (tag[0] == 'f') {
             /* XXX: Port to apr_filepath_merge
@@ -1813,7 +1812,7 @@ static apr_status_t handle_echo(include_ctx_t *ctx, ap_filter_t *f,
             apr_size_t e_len;
 
             val = get_include_var(r, ctx,
-                                  ap_ssi_parse_string(r, ctx, tag_val, NULL,
+                                  ap_ssi_parse_string(ctx, tag_val, NULL,
                                                       MAX_STRING_LEN,
                                                       SSI_EXPAND_DROP_NAME));
             if (val) {
@@ -1916,7 +1915,7 @@ static apr_status_t handle_config(include_ctx_t *ctx, ap_filter_t *f,
                 ctx->error_str = ctx->intern->error_str_override;
             }
 
-            ap_ssi_parse_string(r, ctx, tag_val,ctx->intern->error_str_override,
+            ap_ssi_parse_string(ctx, tag_val, ctx->intern->error_str_override,
                                 MAX_STRING_LEN, SSI_EXPAND_DROP_NAME);
         }
         else if (!strcmp(tag, "timefmt")) {
@@ -1926,7 +1925,7 @@ static apr_status_t handle_config(include_ctx_t *ctx, ap_filter_t *f,
                                                             MAX_STRING_LEN);
                 ctx->time_str = ctx->intern->time_str_override;
             }
-            ap_ssi_parse_string(r, ctx, tag_val, ctx->intern->time_str_override,
+            ap_ssi_parse_string(ctx, tag_val, ctx->intern->time_str_override,
                                 MAX_STRING_LEN, SSI_EXPAND_DROP_NAME);
 
             apr_table_setn(env, "DATE_LOCAL", ap_ht_time(r->pool, date, 
@@ -1938,7 +1937,7 @@ static apr_status_t handle_config(include_ctx_t *ctx, ap_filter_t *f,
                            ctx->time_str, 0));
         }
         else if (!strcmp(tag, "sizefmt")) {
-            parsed_string = ap_ssi_parse_string(r, ctx, tag_val, NULL, 
+            parsed_string = ap_ssi_parse_string(ctx, tag_val, NULL,
                                                 MAX_STRING_LEN,
                                                 SSI_EXPAND_DROP_NAME);
             if (!strcmp(parsed_string, "bytes")) {
@@ -2002,8 +2001,7 @@ static apr_status_t handle_fsize(include_ctx_t *ctx, ap_filter_t *f,
             break;
         }
 
-        parsed_string = ap_ssi_parse_string(r, ctx, tag_val, NULL,
-                                            MAX_STRING_LEN,
+        parsed_string = ap_ssi_parse_string(ctx, tag_val, NULL, MAX_STRING_LEN,
                                             SSI_EXPAND_DROP_NAME);
 
         if (!find_file(r, "fsize", tag, parsed_string, &finfo)) {
@@ -2090,8 +2088,7 @@ static apr_status_t handle_flastmod(include_ctx_t *ctx, ap_filter_t *f,
             break;
         }
 
-        parsed_string = ap_ssi_parse_string(r, ctx, tag_val, NULL,
-                                            MAX_STRING_LEN,
+        parsed_string = ap_ssi_parse_string(ctx, tag_val, NULL, MAX_STRING_LEN,
                                             SSI_EXPAND_DROP_NAME);
 
         if (!find_file(r, "flastmod", tag, parsed_string, &finfo)) {
@@ -2397,7 +2394,7 @@ static apr_status_t handle_set(include_ctx_t *ctx, ap_filter_t *f,
         }
 
         if (!strcmp(tag, "var")) {
-            var = ap_ssi_parse_string(r, ctx, tag_val, NULL, MAX_STRING_LEN,
+            var = ap_ssi_parse_string(ctx, tag_val, NULL, MAX_STRING_LEN,
                                       SSI_EXPAND_DROP_NAME);
         }
         else if (!strcmp(tag, "value")) {
@@ -2411,7 +2408,7 @@ static apr_status_t handle_set(include_ctx_t *ctx, ap_filter_t *f,
                 break;
             }
 
-            parsed_string = ap_ssi_parse_string(r, ctx, tag_val, NULL,
+            parsed_string = ap_ssi_parse_string(ctx, tag_val, NULL,
                                                 MAX_STRING_LEN,
                                                 SSI_EXPAND_DROP_NAME);
             apr_table_setn(r->subprocess_env, apr_pstrdup(p, var),
