@@ -148,14 +148,14 @@ AP_CORE_DECLARE(void) ap_flush_conn(conn_rec *c)
  * TCP RST packets to be sent which can tear down a connection before
  * all the response data has been sent to the client.
  */
-
+#define SECONDS_TO_LINGER  2
 void ap_lingering_close(conn_rec *c)
 {
     char dummybuf[512];
-    apr_time_t start;
-    apr_size_t nbytes;
+    apr_size_t nbytes = sizeof(dummybuf);
     apr_status_t rc;
-    int timeout;
+    apr_int32_t timeout;
+    apr_int32_t total_linger_time = 0;
 
 #ifdef NO_LINGCLOSE
     ap_flush_conn(c);	/* just close it */
@@ -187,23 +187,21 @@ void ap_lingering_close(conn_rec *c)
     }
 
     /* Read all data from the peer until we reach "end-of-file" (FIN
-     * from peer) or we've exceeded our overall timeout.
+     * from peer) or we've exceeded our overall timeout. If the client does 
+     * not send us bytes within 2 seconds (a value pulled from Apache 1.3
+     * which seems to work well), close the connection.
      */
-    
-    start = apr_time_now();
-    timeout = MAX_SECS_TO_LINGER * APR_USEC_PER_SEC;
+    timeout = SECONDS_TO_LINGER * APR_USEC_PER_SEC;
     for (;;) {
         apr_setsocketopt(c->client_socket, APR_SO_TIMEOUT, timeout);
         nbytes = sizeof(dummybuf);
         rc = apr_recv(c->client_socket, dummybuf, &nbytes);
         if (rc != APR_SUCCESS || nbytes == 0) break;
 
-        /* how much time has elapsed? */
-        timeout = (int)((apr_time_now() - start) / APR_USEC_PER_SEC);
-        if (timeout >= MAX_SECS_TO_LINGER) break;
-
-        /* figure out the new timeout */
-        timeout = (int)((MAX_SECS_TO_LINGER - timeout) * APR_USEC_PER_SEC);
+        total_linger_time += SECONDS_TO_LINGER;
+        if (total_linger_time >= MAX_SECS_TO_LINGER) {
+            break;
+        }
     }
 
     apr_socket_close(c->client_socket);
