@@ -2790,7 +2790,7 @@ static int includes_filter(ap_filter_t *f, apr_bucket_brigade *b)
     return OK;
 }
 
-static void ap_register_include_handler(char *tag, include_handler func)
+static void ap_register_include_handler(char *tag, include_handler *func)
 {
     apr_hash_set(include_hash, tag, strlen(tag) + 1, (const void *)func);
 }

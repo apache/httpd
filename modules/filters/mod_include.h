@@ -195,7 +195,7 @@ if ((APR_BRIGADE_EMPTY(cntxt->ssi_tag_brigade)) &&                \
 }
 
 
-typedef int (*include_handler)(include_ctx_t *ctx, apr_bucket_brigade **bb, 
+typedef int (include_handler)(include_ctx_t *ctx, apr_bucket_brigade **bb, 
                        request_rec *r, ap_filter_t *f, apr_bucket *head_ptr, 
                        apr_bucket **inserted_head);
 
@@ -209,6 +209,6 @@ APR_DECLARE_OPTIONAL_FN(void, ap_ssi_parse_string, (request_rec *r,
                                                     size_t length,
                                                     int leave_name));
 APR_DECLARE_OPTIONAL_FN(void, ap_register_include_handler, (char *tag,
-                                                         include_handler func));
+                                                         include_handler *func));
 
 #endif /* MOD_INCLUDE */
