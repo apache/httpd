@@ -58,6 +58,7 @@ dangerous both to your network and to the Internet at large.</p></note>
         proxy module?</a></li>
 <!--<li><a href="#socks">Can I use the Apache proxy module with my SOCKS proxy?</a>-->
 <li><a href="#intranet">What other functions are useful for an intranet proxy server?</a></li>
+<li><a href="#envsettings">How can I make the proxy talk HTTP/1.0 and disable keepalives?</a></li>
 </ul>
 
 <section id="forwardreverse"><title>Forward and Reverse Proxies</title>
@@ -254,6 +255,24 @@ is used and the server is <a href="#proxyrequests">configured for
 proxy service</a>, Apache can return a redirect response and send the client
 to the correct, fully qualified, server address. This is the preferred method
 since the user's bookmark files will then contain fully qualified hosts.</p>
+</section>
+<section id="envsettings"><title>How can I make the proxy talk HTTP/1.0 and 
+disable keepalives?</title>
+
+<p>For circumstances where you have a application server which doesn't implement
+keepalives or HTTP/1.1 properly, there are 2 environment variables which when
+set send a HTTP/1.0 with no keepalive. These are set via the  <directive
+module="mod_env">SetEnv</directive> directive.</p>
+<p>These are the 'force-proxy-request-1.0' and 'proxy-nokeepalive' notes.</p>
+
+<example>
+&lt;location /buggyappserver/ &gt;<br />
+ProxyPass http://buggyappserver:7001/foo/<br />
+SetEnv force-proxy-request-1.0 1<br />
+SetEnv proxy-nokeepalive 1<br />
+&lt;/location&gt;
+</example>
+
 </section>
 
 </section>
