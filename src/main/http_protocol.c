@@ -254,6 +254,56 @@ void parse_uri (request_rec *r, char *uri)
     }
 }
 
+char *check_fulluri (request_rec *r, char *uri) {
+  char *name, *host;
+  int i, port;
+
+  /* This routine parses full URLs, if they match the server */
+  if (strncmp(uri, "http://", 7)) return uri;
+  name = pstrcat(r->pool, uri + 7);
+  
+  /* Find the hostname, assuming a valid request */
+  i = ind(name, '/');
+  name[i] = '\0';
+
+  /* Find the port */
+  host = getword(r->pool, &name, ':');
+  if (*name) port = atoi(name);
+  else {
+    host = name;
+    port = 80;
+  }
+
+  /* Make sure ports patch */
+  if (port != r->server->port) return uri;
+
+  /* The easy cases first */
+  if (!strcasecmp(host, r->server->server_hostname)) {
+    return (uri + 7 + i);
+  }
+  else if (!strcmp(host, inet_ntoa(r->connection->local_addr.sin_addr))) {
+    return (uri + 7 + i);
+  }
+
+  /* Now things get a bit trickier - check the IP address(es) of the host */
+  /* they gave, see if it matches ours.                                   */
+  else {
+    struct hostent *hp;
+    int n;
+
+    if ((hp = gethostbyname(host))) {
+      for (n = 0; hp->h_addr_list[n] != NULL; n++) {
+	if (r->connection->local_addr.sin_addr.s_addr ==
+	    (((struct in_addr *)(hp->h_addr_list[n]))->s_addr)) {
+	  return (uri + 7 + i);
+	}
+      }
+    }
+  }
+  
+  return uri;
+}
+
 int read_request_line (request_rec *r)
 {
     char l[HUGE_STRING_LEN];
@@ -269,6 +319,7 @@ int read_request_line (request_rec *r)
     r->the_request = pstrdup (r->pool, l);
     r->method = getword(r->pool, &ll,' ');
     uri = getword(r->pool, &ll,' ');
+    uri = check_fulluri(r, uri);
     parse_uri (r, uri);
     
     r->assbackwards = (ll[0] == '\0');
@@ -482,7 +533,7 @@ char *response_titles[] = {
    "Bad Gateway"
 };
 
-int index_of_response(int err_no) { 
+int index_of_response(int err_no) {
    char *cptr, err_string[10];
    static char *response_codes = RESPONSE_CODE_LIST;
    int index_number;
