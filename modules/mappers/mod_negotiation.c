@@ -951,7 +951,7 @@ static int read_types_multi(negotiation_state *neg)
          * which we'll be slapping default_type on later).
          */
 
-        sub_req = ap_sub_req_lookup_file(dirent.name, r, NULL);
+        sub_req = ap_sub_req_lookup_dirent(&dirent, r, NULL);
 
         /* If it has a handler, we'll pretend it's a CGI script,
          * since that's a good indication of the sort of thing it
