@@ -1,0 +1,141 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html><head>
+<title>Apache name-based Virtual Hosts</title>
+</head>
+
+<!-- Background white, links blue (unvisited), navy (visited), red (active) -->
+<BODY
+ BGCOLOR="#FFFFFF"
+ TEXT="#000000"
+ LINK="#0000FF"
+ VLINK="#000080"
+ ALINK="#FF0000"
+>
+<!--#include virtual="header.html" -->
+<h1 ALIGN="CENTER">Apache name-based Virtual Host Support</h1>
+
+<strong>See Also:</strong>
+<a href="ip-based.html">IP-based Virtual Host Support</a>
+
+<hr>
+
+<h2>Name-based vs. IP-based virtual hosts</h2>
+
+<p>While the approach with IP-based virtual hosts works still very well,
+it is not the most elegant solution, because a dedicated IP address
+is needed for every virtual host and it is hard to implement on some
+machines. The <code>HTTP/1.1</code> protocol contains a method for the
+server to identify what name it is being addressed as. Apache 1.1 and
+later support this approach as well as the traditional
+IP-address-per-hostname method.</p>
+
+<p>The benefits of using the new name-based virtual host support is a
+practically unlimited number of servers, ease of configuration and use, and
+requires no additional hardware or software. 
+The main disadvantage is that the client must support this part of the
+protocol. The latest versions of most browsers do, but there are still
+old browsers in use who do not. This can cause problems, although a possible
+solution is addressed below.</p>
+
+<h2>Using non-IP Virtual Hosts</h2>
+
+<p>Using the new virtual hosts is quite easy, and superficially looks
+like the old method. You simply add to one of the Apache configuration
+files (most likely <code>httpd.conf</code> or <code>srm.conf</code>)
+code similar to the following:</p>
+<pre>
+    NameVirtualHost 111.22.33.44
+
+    &lt;VirtualHost 111.22.33.44&gt;
+    ServerName www.domain.tld
+    DocumentRoot /web/domain
+    &lt;/VirtualHost&gt;
+</pre>
+
+<p>The notable difference between IP-based and name-based virtual host
+configuration is the
+<A HREF="../mod/core.html#namevirtualhost"><code>NameVirtualHost</code></A>
+directive which specifies any IP address that should be used as a target for
+name-based virtual hosts.
+
+<p>Of course, any additional directives can (and should) be placed
+into the <code>&lt;VirtualHost&gt;</code> section. To make this work,
+all that is needed is to make sure that the name
+<samp>www.domain.tld</samp> is an alias (CNAME) pointing to the IP address
+<samp>111.22.33.44</samp></p>
+
+<p>Additionally, many servers may wish to be accessible by more than
+one name. For example, the example server might want to be accessible
+as <code>domain.tld</code>, or <code>www2.domain.tld</code>, assuming
+the IP addresses pointed to the same server. In fact, one might want it
+so that all addresses at <code>domain.tld</code> were picked up by the
+server. This is possible with the
+<A HREF="../mod/core.html#serveralias"><code>ServerAlias</code></A>
+directive, placed inside the &lt;VirtualHost&gt; section. For
+example:</p>
+
+<pre>
+    ServerAlias domain.tld *.domain.tld
+</pre>
+
+<p>Note that you can use <code>*</code> and <code>?</code> as wild-card
+characters.</p>
+
+<p>You also might need <code>ServerAlias</code> if you are
+serving local users who do not always include the domain name.
+For example, if local users are
+familiar with typing "www" or "www.foobar" then you will need to add
+<code>ServerAlias www www.foobar</code>.  It isn't possible for the
+server to know what domain the client uses for their name resolution
+because the client doesn't provide that information in the request.</p>
+
+<h2>Compatibility with Older Browsers</h2>
+
+<p>As mentioned earlier, there are still some clients in use who
+do not send the required data for the name-based virtual hosts to work
+properly. These clients will always be sent the pages from the
+<cite>primary</cite> name-based virtual host (the first virtual host
+appearing in the configuration file for a specific IP address).</p>
+
+<p>There is a possible workaround with the
+<A HREF="../mod/core.html#serverpath"><code>ServerPath</code></A>
+directive, albeit a slightly cumbersome one:</p>
+
+<p>Example configuration:
+
+<pre>
+    NameVirtualHost 111.22.33.44
+
+    &lt;VirtualHost 111.22.33.44&gt;
+    ServerName www.domain.tld
+    ServerPath /domain
+    DocumentRoot /web/domain
+    &lt;/VirtualHost&gt;
+</pre>
+
+<p>What does this mean? It means that a request for any URI beginning
+with "<samp>/domain</samp>" will be served from the virtual host
+<samp>www.domain.tld</samp> This means that the pages can be accessed as
+<code>http://www.domain.tld/domain/</code> for all clients, although
+clients sending a <samp>Host:</samp> header can also access it as
+<code>http://www.domain.tld/</code>.</p>
+
+<p>In order to make this work, put a link on your primary virtual host's page
+to <samp>http://www.domain.tld/domain/</samp>
+Then, in the virtual host's pages, be sure to use either purely
+relative links (e.g. "<samp>file.html</samp>" or
+"<samp>../icons/image.gif</samp>" or links containing the prefacing
+<samp>/domain/</samp>
+(e.g. "<samp>http://www.domain.tld/domain/misc/file.html</samp>" or
+"<samp>/domain/misc/file.html</samp>").</p>
+
+<p>This requires a bit of
+discipline, but adherence to these guidelines will, for the most part,
+ensure that your pages will work with all browsers, new and old.</p>
+
+<p>See also: <A HREF="examples.html#serverpath">ServerPath configuration
+example</A></p>
+
+<!--#include virtual="footer.html" -->
+</BODY>
+</HTML>

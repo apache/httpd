@@ -57,6 +57,7 @@ always available.
 <li><A HREF="#maxrequestsperchild">MaxRequestsPerChild</A>
 <li><A HREF="#maxspareservers">MaxSpareServers</A>
 <li><A HREF="#minspareservers">MinSpareServers</A>
+<li><A HREF="#namevirtualhost">NameVirtualHost</A>
 <li><A HREF="#options">Options</A>
 <li><A HREF="#pidfile">PidFile</A>
 <li><A HREF="#port">Port</A>
@@ -252,7 +253,7 @@ control over which address and ports Apache listens to, use the
 <code>BindAddress</code>.<p>
 
 <code>BindAddress</code> can be used as an alternative method for
-supporting <A HREF="../virtual-host.html">virtual hosts</A> using
+supporting <A HREF="../vhosts/index.html">virtual hosts</A> using
 multiple independent servers, instead of using <code><A
 HREF="#virtualhost">&lt;VirtualHost&gt;</A></code> sections.
 
@@ -1111,6 +1112,34 @@ Setting this parameter to a large number is almost always a bad idea.<p>
 See also <A HREF="#maxspareservers">MaxSpareServers</A> and
 <A HREF="#startservers">StartServers</A>.<p><hr>
 
+<h2><A name="namevirtualhost">NameVirtualHost directive</A></h2>
+<!--%plaintext &lt;?INDEX {\tt NameVirtualHost} directive&gt; -->
+<strong>Syntax:</strong> NameVirtualHost <em>addr</em>[:<em>port</em>]<br>
+<strong>Context:</strong> server config<br>
+<strong>Status:</strong> core<p>
+<strong>Compatibility:</strong> NameVirtualHost is only available in Apache 1.3 and later<p>
+
+The NameVirtualHost directive is a required directive if you want to configure
+<A HREF="../vhosts/index.html">name-based virtual hosts</A>.<p>
+
+Although <em>addr</em> can be hostname it is recommended that you always use
+an IP address, e.g.
+
+<blockquote><code>NameVirtualHost 111.22.33.44</code></blockquote>
+
+With the NameVirtualHost directive the address to which your name-based
+virtual host names resolve.
+If you have multiple name-based hosts on multiple addresses,
+repeat the directive for each address.<p>
+
+Optionally you can specify a port number on which the name-based
+virtual hosts should be used, e.g.
+
+<blockquote><code>NameVirtualHost 111.22.33.44:8080</code></blockquote>
+
+<strong>See also:</strong>
+<a href="../vhosts/index.html">Apache Virtual Host documentation</a>
+
 <h2><A name="options">Options directive</A></h2>
 <!--%plaintext &lt;?INDEX {\tt Options} directive&gt; -->
 <strong>Syntax:</strong> Options <em>[+|-]option [+|-]option ...</em><br>
@@ -1490,9 +1519,10 @@ as users do not always mention that they are talking about the server!<p><hr>
 
 The ServerAlias directive sets the alternate names for a host, for use
 with
-<a href="../host.html">Host-header based virtual hosts</a>.
-<p><strong>See Also</strong>:
-<a href="../vhosts-in-depth.html">In-depth description of Virtual Host matching</a></p>
+<a href="../vhosts/name-based.html">name-based virtual hosts</a>.
+
+<p><strong>See also:</strong>
+<a href="../vhosts/index.html">Apache Virtual Host documentation</a>
 
 <hr>
 
@@ -1522,9 +1552,11 @@ were <code>monster.wibble.com</code>.<p>
 1.1 and later.<p>
 
 The ServerPath directive sets the legacy URL pathname for a host, for
-use with <a href="../host.html">Host-header based virtual hosts</a>.
-<p><strong>See Also</strong>:
-<a href="../vhosts-in-depth.html">In-depth description of Virtual Host matching</a></p>
+use with <a href="../vhosts/index.html">name-based virtual hosts</a>.
+
+<p><strong>See also:</strong>
+<a href="../vhosts/index.html">Apache Virtual Host documentation</a>
+
 <hr>
 
 <h2><A name="serverroot">ServerRoot directive</A></h2>
@@ -1742,14 +1774,9 @@ either <a href="#bindaddress">BindAddress</a> or <a
 href="#listen">Listen</a>.
 
 <p><strong>See also:</strong>
+<a href="../vhosts/index.html">Apache Virtual Host documentation</a><br>
+<strong>See also:</strong>
 <A HREF="../dns-caveats.html">Warnings about DNS and Apache</a><br>
-<strong>See also:</strong>
-<A HREF="../virtual-host.html">Information on Virtual Hosts.
-(multihome)</A><br>
-<strong>See also:</strong>
-<a href="../host.html">Non-IP address-based Virtual Hosts</a><br>
-<strong>See also:</strong>
-<a href="../vhosts-in-depth.html">In-depth description of Virtual Host matching</a><br>
 <strong>See also:</strong>
 <a href="../bind.html">Setting which addresses and ports Apache uses</a><br>
 <strong>See also</strong>: <a href="../sections.html">How Directory,
