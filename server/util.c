@@ -117,7 +117,7 @@ API_EXPORT(char *) ap_field_noparam(ap_context_t *p, const char *intype)
 
 API_EXPORT(char *) ap_ht_time(ap_context_t *p, ap_time_t t, const char *fmt, int gmt)
 {
-    ap_int32_t retcode;
+    ap_size_t retcode;
     char ts[MAX_STRING_LEN];
     char tf[MAX_STRING_LEN];
     ap_exploded_time_t xt;
