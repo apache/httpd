@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/05/20 19:37:33 $]
+Last modified at [$Date: 2003/05/20 23:28:14 $]
 
 Release:
 
@@ -169,7 +169,7 @@ PATCHES TO PORT FROM 2.1
       one)
       configure.in: r1.250
       docs/conf/ssl-std.conf.in: r1.1
-      +1: thommay, jerenkrantz
+      +1: thommay, jerenkrantz, striker
        0: nd, trawick
           nd: The runtime files (e.g. cache) should be in runtimedir, since the
               logfilefir should not be writable for the httpd user.
@@ -194,7 +194,7 @@ PATCHES TO PORT FROM 2.1
       [Andreas Leimbacher <andreasl67@yahoo.de>, Madhusudan
       Mathihalli]
       modules/ssl/ssl_util_table.c: r1.9
-      +1: jerenkrantz
+      +1: jerenkrantz, striker
 
     * If mod_mime_magic does not know the content-type, do not attempt to
       guess.  PR 16908.  [Andrew Gapon <agapon@telcordia.com>]
@@ -204,7 +204,7 @@ PATCHES TO PORT FROM 2.1
     * htpasswd: add a delete flag.
       support/htpasswd.c: r1.70
       docs/manual/programs/htpasswd.xml r1.3
-      +1: thommay, nd, brianp
+      +1: thommay, nd, brianp, striker
 
     * Assure that we block on the read BIO when we invoke the read BIO for both
       first-use cases (via ssl_io_input_add_filter) and when we are writing and
@@ -244,7 +244,13 @@ PATCHES TO PORT FROM 2.1
     * Allow httpd's configure to recognize libtool 1.5 as capable of
       producing DSOs.
       configure.in: r1.252
-      +1: jerenkrantz, trawick
+      +1: jerenkrantz, trawick, striker
+
+    * Fix for mod_dav.  Call the 'can_be_activity' callback, if provided,
+      when a MKACTIVITY request comes in.
+      Submitted by: Ben Collins-Sussman <sussman@apache.org>
+      modules/dav/main/mod_dav.c r1.93
+      +1: striker
 
 CURRENT RELEASE NOTES:
 
