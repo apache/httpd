@@ -203,7 +203,7 @@ cp README.bindist ../apache_$VER-$OS.README
   echo "lmkdir \$SR/proxy 750" && \
   echo "lmkdir \$SR/logs 750" && \
   echo "lcopy bindist/man \$SR/man 755 644" && \
-  echo "lcopy bindist/libexec \$SR/libexec 750 644" && \
+  echo "lcopy bindist/libexec \$SR/libexec 750 750" && \
   echo "lcopy bindist/include \$SR/include 755 644" && \
   echo "lcopy bindist/icons \$SR/icons 755 644" && \
   echo "lcopy bindist/cgi-bin \$SR/cgi-bin 750 750" && \

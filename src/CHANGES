@@ -1,4 +1,11 @@
 Changes with Apache 1.3.23
+
+  *) Unix: The generated install script for binary distributions,
+     install-bindist.sh, now makes DSO files executable, like
+     make install.  This allows a binary distribution to work on 
+     HP-UX without any manual intervention.  PR 7428  
+     [Jeff Trawick]
+
   *) Win32: The Apache Win32 developers generally recommend that
      MaxRequestsPerChild be set to 0 to prevent the child process
      from ever recycling. However, for those that do require a 
