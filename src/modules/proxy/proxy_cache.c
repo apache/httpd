@@ -98,7 +98,7 @@ void proxy_garbage_coll(request_rec *r)
     array_header *files;
     struct stat buf;
     struct gc_ent *fent,**elts;    
-    int i;
+    int i, timefd;
     static time_t lastcheck=BAD_DATE;  /* static data!!! */
 
     cachedir = conf->root;
@@ -122,7 +122,7 @@ void proxy_garbage_coll(request_rec *r)
 	    unblock_alarms();
 	    return;
 	}
-	if (creat(filename, 0666) == -1)
+	if ((timefd = creat(filename, 0666)) == -1)
 	{
 	    if (errno != EEXIST)
 		proxy_log_uerror("creat", filename, NULL, r->server);
@@ -131,6 +131,7 @@ void proxy_garbage_coll(request_rec *r)
 	    unblock_alarms();
 	    return;
 	}
+	close(timefd);
     } else
     {
 	lastcheck = buf.st_mtime;  /* save the time */
