@@ -60,6 +60,8 @@
 #include "ap_config.h"
 #include <dirent.h>
 
+extern char ap_server_root[MAX_STRING_LEN];
+
 void ap_os_dso_init(void)
 {
 }
@@ -140,11 +142,17 @@ void init_name_space()
  */
 char *ap_os_canonical_filename(pool *pPool, const char *szFile)
 {
-    char *pNewName;
-    
-    pNewName = ap_pstrdup(pPool, szFile);
-    strlwr(pNewName);
+    char *pNewName = ap_pstrdup(pPool, szFile);
+	
     bslash2slash(pNewName);
+    if ((pNewName[0] == '/') && (strchr (pNewName, ':') == NULL))
+    {
+        char vol[256];
+
+        _splitpath (ap_server_root, vol, NULL, NULL, NULL);
+        pNewName = ap_pstrcat (pPool, vol, pNewName, NULL);
+    }
+    strlwr(pNewName);
     return pNewName;
 }
 
@@ -289,3 +297,4 @@ int ap_os_is_filename_valid(const char *file)
 
     return 1;
 }
+
