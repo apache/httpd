@@ -67,6 +67,7 @@ $(OBJS): Makefile
 # DO NOT REMOVE
 alloc.o: alloc.c httpd.h conf.h alloc.h buff.h multithread.h
 buff.o: buff.c httpd.h conf.h alloc.h buff.h http_main.h
+dummy.o: dummy.c
 explain.o: explain.c explain.h
 http_bprintf.o: http_bprintf.c httpd.h conf.h alloc.h buff.h
 http_config.o: http_config.c httpd.h conf.h alloc.h buff.h \
@@ -105,6 +106,9 @@ mod_auth_dbm.o: mod_auth_dbm.c httpd.h conf.h alloc.h buff.h \
  http_config.h http_core.h http_log.h http_protocol.h
 mod_auth_msql.o: mod_auth_msql.c httpd.h conf.h alloc.h buff.h \
  http_config.h http_core.h http_log.h http_protocol.h
+mod_autoindex.o: mod_autoindex.c httpd.h conf.h alloc.h buff.h \
+ http_config.h http_core.h http_request.h http_protocol.h http_log.h \
+ http_main.h util_script.h
 mod_browser.o: mod_browser.c httpd.h conf.h alloc.h buff.h \
  http_config.h
 mod_cern_meta.o: mod_cern_meta.c httpd.h conf.h alloc.h buff.h \
@@ -140,6 +144,8 @@ mod_log_config.o: mod_log_config.c httpd.h conf.h alloc.h buff.h \
 mod_log_referer.o: mod_log_referer.c httpd.h conf.h alloc.h buff.h \
  http_config.h
 mod_mime.o: mod_mime.c httpd.h conf.h alloc.h buff.h http_config.h
+mod_mime_magic.o: mod_mime_magic.c httpd.h conf.h alloc.h buff.h \
+ http_config.h http_request.h http_core.h http_log.h http_protocol.h
 mod_negotiation.o: mod_negotiation.c httpd.h conf.h alloc.h buff.h \
  http_config.h http_request.h http_core.h http_log.h util_script.h
 mod_rewrite.o: mod_rewrite.c httpd.h conf.h alloc.h buff.h \
