@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:						-*-text-*-
-Last modified at [$Date: 2001/01/10 20:33:02 $]
+Last modified at [$Date: 2001/01/11 06:10:50 $]
 
 Release:
 
@@ -80,6 +80,10 @@ RELEASE SHOWSTOPPERS:
       libtool installed. This is because the module needs to have its
       config.m4 incorporated into ./configure, which means "buildconf"
       must be run.
+      Note: This is in part because we have removed the "extra" directory.
+            In the Apache-2.0 repository, this directory had a config.m4
+            file that allowed people to add external modules by
+            specifying --with-module on the configure line.
 
 RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
     * The directives to setup output filters need to be re-visited.  These
