@@ -1,5 +1,5 @@
 Apache 2.0 STATUS:
-Last modified at [$Date: 2000/05/01 21:46:19 $]
+Last modified at [$Date: 2000/05/01 21:52:18 $]
 
 Release:
 
@@ -134,8 +134,6 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
           
           - a tool to simplfy third-party module building should be
             written. Something like apxs
-          - Add a lot more checks to satisfy the various platforms, e.g.
-            for threading
 
     * Use APR to get rid of more platform dependancies.
         Status: Ryan Bloom <rbb@covalenet.net> is working on this.
