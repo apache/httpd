@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:						-*-text-*-
-Last modified at [$Date: 2001/08/10 19:02:02 $]
+Last modified at [$Date: 2001/08/10 19:30:43 $]
 
 Release:
 
@@ -362,10 +362,6 @@ put them into 'the next release':
       requests (.htaccess)
 	Status: 
 
-    * PR#573: mod_log-any
-      More LogFormat directives
-	Status: 
-
     * PR#612: mod_proxy
       Proxy FTP Authentication Fails
 	Status: 
@@ -376,10 +372,6 @@ put them into 'the next release':
 
     * PR#628: config
       Request of "Options SymLinksIfGroupMatch"
-	Status: 
-
-    * PR#697: mod_include
-      A security tweak I've been using for a few years for SSI
 	Status: 
 
     * PR#700: mod_proxy
@@ -619,10 +611,6 @@ put them into 'the next release':
 
     * PR#2763: general
       mailto tags and bundling bug report script
-	Status: 
-
-    * PR#2772: mod_log-any
-      more % escapes
 	Status: 
 
     * PR#2785: os-aix
