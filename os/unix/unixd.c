@@ -411,7 +411,7 @@ API_EXPORT(void) unixd_set_rlimit(cmd_parms *cmd, struct rlimit **plimit,
     limit = *plimit;
     if ((getrlimit(type, limit)) != 0)  {
         *plimit = NULL;
-        ap_log_error(APLOG_MARK, APLOG_ERR, cmd->server,
+        ap_log_error(APLOG_MARK, APLOG_ERR, 0, cmd->server,
                      "%s: getrlimit failed", cmd->cmd->name);
         return;
     }
@@ -425,7 +425,7 @@ API_EXPORT(void) unixd_set_rlimit(cmd_parms *cmd, struct rlimit **plimit,
         }
     }
     else {
-        ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, cmd->server,
+        ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, cmd->server,
                      "Invalid parameters for %s", cmd->cmd->name);
         return;
     }
@@ -438,7 +438,7 @@ API_EXPORT(void) unixd_set_rlimit(cmd_parms *cmd, struct rlimit **plimit,
     if (geteuid()) {
         limit->rlim_cur = cur;
         if (max) {
-            ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, cmd->server,
+            ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, cmd->server,
                          "Must be uid 0 to raise maximum %s", cmd->cmd->name);
         }
     }
