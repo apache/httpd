@@ -3062,7 +3062,7 @@ static int ap_set_byterange(request_rec *r)
         range = apr_table_get(r->headers_in, "Request-Range");
     }
 
-    if (!range || strncasecmp(range, "bytes=", 6)) {
+    if (!range || strncasecmp(range, "bytes=", 6) || r->status != HTTP_OK) {
         return 0;
     }
 
