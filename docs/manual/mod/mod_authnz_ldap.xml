@@ -532,15 +532,23 @@ require valid-user
 <section id="usingtls"><title>Using TLS</title>
 
     <p>To use TLS, see the <module>mod_ldap</module> directives <directive
-    module="mod_ldap">LDAPTrustedCA</directive> and <directive
-    module="mod_ldap">LDAPTrustedCAType</directive>.</p>
+    module="mod_ldap">LDAPTrustedClientCert</directive>, <directive
+    module="mod_ldap">LDAPTrustedGlobalCert</directive> and <directive
+    module="mod_ldap">LDAPTrustedMode</directive>.</p>
+
+    <p>An optional second parameter can be added to the 
+    <directive module="mod_authnz_ldap">AuthLDAPURL</directive> to override
+    the default connection type set by <directive module="mod_ldap">LDAPTrustedMode</directive>.
+    This will allow the connection established by an <em>ldap://</em> Url 
+    to be upgraded to a secure connection on the same port.</p>
 </section>
 
 <section id="usingssl"><title>Using SSL</title>
 
     <p>To use SSL, see the <module>mod_ldap</module> directives <directive
-    module="mod_ldap">LDAPTrustedCA</directive> and <directive
-    module="mod_ldap">LDAPTrustedCAType</directive>.</p>
+    module="mod_ldap">LDAPTrustedClientCert</directive>, <directive
+    module="mod_ldap">LDAPTrustedGlobalCert</directive> and <directive
+    module="mod_ldap">LDAPTrustedMode</directive>.</p>
 
     <p>To specify a secure LDAP server, use <em>ldaps://</em> in the
     <directive module="mod_authnz_ldap">AuthLDAPURL</directive>
@@ -816,7 +824,7 @@ environment variable</description>
 <directivesynopsis>
 <name>AuthLDAPUrl</name>
 <description>URL specifying the LDAP search parameters</description>
-<syntax>AuthLDAPUrl <em>url</em></syntax>
+<syntax>AuthLDAPUrl <em>url [NONE|SSL|TLS|STARTTLS]</em></syntax>
 <contextlist><context>directory</context><context>.htaccess</context>
 </contextlist>
 <override>AuthConfig</override>
@@ -903,6 +911,22 @@ environment variable</description>
     a client attempts to connect using a username of <code>Babs
     Jenson</code>, the resulting search filter will be
     <code>(&amp;(posixid=*)(cn=Babs Jenson))</code>.</p>
+
+    <p>An optional parameter can be added to allow the LDAP Url to override 
+    the connection type.  This parameter can be one of the following:</p>
+
+<dl>
+    <dt>NONE</dt>
+        <dd>Establish an unsecure connection on the default LDAP port. This
+        is the same as <code>ldap://</code> on port 389.</dd>
+    <dt>SSL</dt>
+        <dd>Establish a secure connection on the default secure LDAP port.
+        This is the same as <code>ldaps://</code></dd>
+    <dt>TLS | STARTTLS</dt>
+        <dd>Establish an upgraded secure connection on the default LDAP port.
+        This connection will be initiated on port 389 by default and then 
+        upgraded to a secure connection on the same port.</dd>
+</dl>
 
     <p>See above for examples of <directive
     module="mod_authnz_ldap">AuthLDAPURL</directive> URLs.</p>

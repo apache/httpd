@@ -2,6 +2,11 @@ Changes with Apache 2.1.3
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) mod_authnz_ldap: Added an optional second parameter to AuthLDAPURL
+     to allow it to override the connection type set in mod_ldap. This
+     parameter can be set to NONE, SSL or TLS | STARTTLS.
+     [Brad Nicholes]
+
   *) Fix --with-apr=/usr and/or --with-apr-util=/usr.  PR 29740.
      [Max Bowsher <maxb ukf.net>]
 
