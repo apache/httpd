@@ -1224,7 +1224,6 @@ enum {
     DAV_CALLTYPE_MEMBER = 1,	/* called for a member resource */
     DAV_CALLTYPE_COLLECTION,	/* called for a collection */
     DAV_CALLTYPE_LOCKNULL,	/* called for a locknull resource */
-    DAV_CALLTYPE_POSTFIX	/* postfix call for a collection */
 };
 
 typedef struct
@@ -1234,9 +1233,6 @@ typedef struct
 
     /* the current resource */
     const dav_resource *resource;
-
-    /* the current secondary/tracking resource */
-    const dav_resource *res_dst;
 
     /* OUTPUT: add responses to this */
     dav_response *response;
@@ -1250,11 +1246,6 @@ typedef struct
 #define DAV_WALKTYPE_NORMAL	0x0002	/* walk normal files */
 #define DAV_WALKTYPE_LOCKNULL	0x0004	/* walk locknull resources */
 
-#define DAV_WALKTYPE_POSTFIX    0x0100  /* do postfix call for collections */
-
-#define DAV_WALKTYPE_ALL	DAV_WALKTYPE_NORMAL     /* ### compat */
-#define DAV_WALKTYPE_HIDDEN	0x1000	/* walk hidden files */
-
     /* callback function and a client context for the walk */
     dav_error * (*func)(dav_walk_resource *wres, int calltype);
     void *walk_ctx;
@@ -1264,9 +1255,6 @@ typedef struct
 
     /* beginning root of the walk */
     const dav_resource *root;
-
-    /* secondary, tracking resource */
-    const dav_resource *root_dst;
 
     /* lock database to enable walking LOCKNULL resources */
     dav_lockdb *lockdb;
@@ -1283,7 +1271,7 @@ typedef struct dav_walker_ctx
     dav_response *response;
 
 
-    /* ### private data... phasing out this big glom */
+    /* ### client data... phasing out this big glom */
 
     request_rec *r;			/* original request */
 
@@ -1296,16 +1284,14 @@ typedef struct dav_walker_ctx
 
     ap_text *propstat_404;	/* (cached) propstat giving a 404 error */
 
-    /* for COPY and MOVE operations */
-    int is_move;
-    dav_buffer work_buf;
-
     const dav_if_header *if_header;	/* for validation */
     const dav_locktoken *locktoken;	/* for UNLOCK */
     const dav_lock *lock;		/* for LOCK */
     int skip_root;			/* for dav_inherit_locks() */
 
     int flags;
+
+    dav_buffer work_buf;                /* for dav_validate_request() */
 
 } dav_walker_ctx;
 

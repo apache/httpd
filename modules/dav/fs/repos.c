@@ -90,17 +90,40 @@ typedef struct {
     dav_walk_resource wres;
 
     dav_resource res1;
-    dav_resource res2;
     dav_resource_private info1;
-    dav_resource_private info2;
     dav_buffer path1;
-    dav_buffer path2;
+    dav_buffer uri_buf;
 
-    dav_buffer uri_buf; /* URI for res1 */
+    /* MOVE/COPY need a secondary path */
+    dav_resource res2;
+    dav_resource_private info2;
+    dav_buffer path2;
 
     dav_buffer locknull_buf;
 
 } dav_fs_walker_context;
+
+typedef struct {
+    int is_move;                /* is this a MOVE? */
+    dav_buffer work_buf;        /* handy buffer for copymove_file() */
+
+    /* CALLBACK: this is a secondary resource managed specially for us */
+    const dav_resource *res_dst;
+
+    /* copied from dav_walk_params (they are invariant across the walk) */
+    const dav_resource *root;
+    apr_pool_t *pool;
+
+} dav_fs_copymove_walk_ctx;
+
+/* an internal WALKTYPE to walk hidden files (the .DAV directory) */
+#define DAV_WALKTYPE_HIDDEN	0x4000
+
+/* an internal WALKTYPE to call collections (again) after their contents */
+#define DAV_WALKTYPE_POSTFIX    0x8000
+
+#define DAV_CALLTYPE_POSTFIX    1000    /* a private call type */
+
 
 /* pull this in from the other source file */
 extern const dav_hooks_locks dav_hooks_locks_fs;
@@ -186,6 +209,10 @@ struct dav_stream {
 
 /* forward declaration for internal treewalkers */
 static dav_error * dav_fs_walk(dav_walker_ctx *wctx, int depth);
+static dav_error * dav_fs_internal_walk(const dav_walk_params *params,
+                                        int depth, int is_move,
+                                        const dav_resource *root_dst,
+                                        dav_response **response);
 
 /* --------------------------------------------------------------------
 **
@@ -916,9 +943,9 @@ static dav_error * dav_fs_create_collection(dav_resource *resource)
 static dav_error * dav_fs_copymove_walker(dav_walk_resource *wres,
                                           int calltype)
 {
-    dav_walker_ctx *ctx = wres->walk_ctx;
+    dav_fs_copymove_walk_ctx *ctx = wres->walk_ctx;
     dav_resource_private *srcinfo = wres->resource->info;
-    dav_resource_private *dstinfo = wres->res_dst->info;
+    dav_resource_private *dstinfo = ctx->res_dst->info;
     dav_error *err = NULL;
 
     if (wres->resource->collection) {
@@ -932,15 +959,15 @@ static dav_error * dav_fs_copymove_walker(dav_walk_resource *wres,
         else {
 	    /* copy/move of a collection. Create the new, target collection */
             if (apr_make_dir(dstinfo->pathname, APR_OS_DEFAULT,
-                             ctx->w.pool) != APR_SUCCESS) {
+                             ctx->pool) != APR_SUCCESS) {
 		/* ### assume it was a permissions problem */
 		/* ### need a description here */
-                err = dav_new_error(ctx->w.pool, HTTP_FORBIDDEN, 0, NULL);
+                err = dav_new_error(ctx->pool, HTTP_FORBIDDEN, 0, NULL);
             }
 	}
     }
     else {
-	err = dav_fs_copymove_file(ctx->is_move, ctx->w.pool, 
+	err = dav_fs_copymove_file(ctx->is_move, ctx->pool, 
 				   srcinfo->pathname, dstinfo->pathname, 
 				   &ctx->work_buf);
 	/* ### push a higher-level description? */
@@ -961,7 +988,7 @@ static dav_error * dav_fs_copymove_walker(dav_walk_resource *wres,
     if (err != NULL
         && !ap_is_HTTP_SERVER_ERROR(err->status)
 	&& (ctx->is_move
-            || !dav_fs_is_same_resource(wres->resource, ctx->w.root))) {
+            || !dav_fs_is_same_resource(wres->resource, ctx->root))) {
 	/* ### use errno to generate DAV:responsedescription? */
 	dav_add_response(wres, err->status, NULL);
 
@@ -988,27 +1015,29 @@ static dav_error *dav_fs_copymove_resource(
      * including the state dirs
      */
     if (src->collection) {
-	dav_walker_ctx ctx = { { 0 } };
+        dav_walk_params params = { 0 };
+        dav_response *multi_status;
 
-	ctx.w.walk_type = DAV_WALKTYPE_ALL | DAV_WALKTYPE_HIDDEN;
-	ctx.w.func = dav_fs_copymove_walker;
-        ctx.w.walk_ctx = &ctx;
-	ctx.w.pool = src->info->pool;
-	ctx.w.root = src;
-	ctx.w.root_dst = dst;
+	params.walk_type = DAV_WALKTYPE_NORMAL | DAV_WALKTYPE_HIDDEN;
+	params.func = dav_fs_copymove_walker;
+	params.pool = src->info->pool;
+	params.root = src;
 
-	ctx.is_move = is_move;
+        /* params.walk_ctx is managed by dav_fs_internal_walk() */
 
 	/* postfix is needed for MOVE to delete source dirs */
         if (is_move)
-            ctx.w.walk_type |= DAV_WALKTYPE_POSTFIX;
+            params.walk_type |= DAV_WALKTYPE_POSTFIX;
 
-	if ((err = dav_fs_walk(&ctx, depth)) != NULL) {
+        /* note that we return the error OR the multistatus. never both */
+
+	if ((err = dav_fs_internal_walk(&params, depth, is_move, dst,
+                                        &multi_status)) != NULL) {
             /* on a "real" error, then just punt. nothing else to do. */
             return err;
         }
 
-        if ((*response = ctx.response) != NULL) {
+        if ((*response = multi_status) != NULL) {
             /* some multistatus responses exist. wrap them in a 207 */
             return dav_new_error(src->info->pool, HTTP_MULTI_STATUS, 0,
                                  "Error(s) occurred on some resources during "
@@ -1225,7 +1254,7 @@ static dav_error * dav_fs_remove_resource(dav_resource *resource,
 	dav_walker_ctx ctx = { { 0 } };
 	dav_error *err = NULL;
 
-	ctx.w.walk_type = (DAV_WALKTYPE_ALL
+	ctx.w.walk_type = (DAV_WALKTYPE_NORMAL
                            | DAV_WALKTYPE_HIDDEN
                            | DAV_WALKTYPE_POSTFIX);
 	ctx.w.func = dav_fs_delete_walker;
@@ -1538,11 +1567,14 @@ static dav_error * dav_fs_walker(dav_fs_walker_context *fsctx, int depth)
     return NULL;
 }
 
-static dav_error * dav_fs_walk(dav_walker_ctx *wctx, int depth)
+static dav_error * dav_fs_internal_walk(const dav_walk_params *params,
+                                        int depth, int is_move,
+                                        const dav_resource *root_dst,
+                                        dav_response **response)
 {
-    const dav_walk_params *params = &wctx->w;
     dav_fs_walker_context fsctx = { 0 };
     dav_error *err;
+    dav_fs_copymove_walk_ctx cm_ctx = { 0 };
 
 #if DAV_DEBUG
     if ((params->walk_type & DAV_WALKTYPE_LOCKNULL) != 0
@@ -1563,20 +1595,31 @@ static dav_error * dav_fs_walk(dav_walker_ctx *wctx, int depth)
     fsctx.res1.info = &fsctx.info1;
     fsctx.info1 = *params->root->info;
 
+    /* the pathname is stored in the path1 buffer */
     dav_buffer_init(params->pool, &fsctx.path1, fsctx.info1.pathname);
     fsctx.info1.pathname = fsctx.path1.buf;
 
-    if (params->root_dst != NULL) {
-	fsctx.res2 = *params->root_dst;
+    if (root_dst != NULL) {
+        /* internal call from the COPY/MOVE code. set it up. */
+
+        fsctx.wres.walk_ctx = &cm_ctx;
+        cm_ctx.is_move = is_move;
+        cm_ctx.res_dst = &fsctx.res2;
+        cm_ctx.root = params->root;
+        cm_ctx.pool = params->pool;
+
+	fsctx.res2 = *root_dst;
 	fsctx.res2.exists = 0;
 	fsctx.res2.collection = 0;
+        fsctx.res2.uri = NULL;          /* we don't track this */
 
 	fsctx.res2.info = &fsctx.info2;
-	fsctx.info2 = *params->root_dst->info;
+	fsctx.info2 = *root_dst->info;
 
 	/* res2 does not exist -- clear its finfo structure */
 	memset(&fsctx.info2.finfo, 0, sizeof(fsctx.info2.finfo));
 
+        /* the pathname is stored in the path2 buffer */
 	dav_buffer_init(params->pool, &fsctx.path2, fsctx.info2.pathname);
 	fsctx.info2.pathname = fsctx.path2.buf;
     }
@@ -1593,20 +1636,26 @@ static dav_error * dav_fs_walk(dav_walker_ctx *wctx, int depth)
 	fsctx.uri_buf.buf[fsctx.uri_buf.cur_len] = '\0';
     }
 
-    /*
-    ** URI is tracked in the walker context. Ensure that people do not try
-    ** to fetch it from res2. We will ensure that res1 and uri will remain
-    ** synchronized.
-    */
+    /* the current resource's URI is stored in the uri_buf buffer */
     fsctx.res1.uri = fsctx.uri_buf.buf;
-    fsctx.res2.uri = NULL;
 
-    /* use our resource structures */
+    /* point the callback's resource at our structure */
     fsctx.wres.resource = &fsctx.res1;
-    fsctx.wres.res_dst = &fsctx.res2;
 
+    /* always return the error, and any/all multistatus responses */
     err = dav_fs_walker(&fsctx, depth);
-    wctx->response = fsctx.wres.response;
+    *response = fsctx.wres.response;
+    return err;
+}
+
+static dav_error * dav_fs_walk(dav_walker_ctx *wctx, int depth)
+{
+    dav_response *response;
+    dav_error *err;
+
+    /* always return the error, and any/all multistatus responses */
+    err = dav_fs_internal_walk(&wctx->w, depth, 0, NULL, &response);
+    wctx->response = response;
     return err;
 }
 
