@@ -1110,7 +1110,7 @@ static const char *set_threads_limit (cmd_parms *cmd, void *dummy, const char *a
     return NULL;
 }
 
-static const char *set_requests_per_thread (cmd_parms *cmd, void *dummy, const char *arg)
+static const char *set_max_requests_per_thread (cmd_parms *cmd, void *dummy, const char *arg)
 {
     const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
     if (err != NULL) {
@@ -1139,7 +1139,7 @@ AP_INIT_TAKE1( "MaxSpareThreads", set_max_spare_threads, NULL, RSRC_CONF,
   "Maximum number of idle children" ),
 AP_INIT_TAKE1( "MaxClients", set_threads_limit, NULL, RSRC_CONF, 
   "Maximum number of children alive at the same time (max threads)" ),
-AP_INIT_TAKE1( "RequestsPerThread", set_requests_per_thread, NULL, RSRC_CONF,
+AP_INIT_TAKE1( "MaxRequestsPerThread", set_max_requests_per_thread, NULL, RSRC_CONF,
   "Maximum number of requests served by a thread" ),
 { NULL }
 };

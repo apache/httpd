@@ -1,5 +1,8 @@
 Changes with Apache 2.0.31-dev
 
+  *) Rename BeOS MPM directive RequestsPerThread to MaxRequestsPerThread.
+     [Lars Eilebrecht]
+
   *) Split out blocking from the mode in the input filters.
      [Justin Erenkrantz]
 
