@@ -1048,8 +1048,10 @@ static int read_request_line(request_rec *r)
     if (2 == sscanf(r->protocol, "HTTP/%u.%u%n", &major, &minor, &n)
       && minor < HTTP_VERSION(1,0))	/* don't allow HTTP/0.1000 */
 	r->proto_num = HTTP_VERSION(major, minor);
-    else
+    else {
 	r->proto_num = HTTP_VERSION(1,0);
+	n = 0;
+    }
 
     /* Check for a valid protocol, and disallow everything but whitespace
      * after the protocol string */
