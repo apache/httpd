@@ -157,7 +157,7 @@ static apr_status_t cached_explode(apr_exploded_time_t *xt, apr_time_t t,
         memcpy(&(cache_element->xt), xt, sizeof(apr_exploded_time_t));
         cache_element->t_validate = seconds;
     }
-    xt->tm_usec = t % APR_USEC_PER_SEC;
+    xt->tm_usec = (int)(t % APR_USEC_PER_SEC);
     return APR_SUCCESS;
 }
 
