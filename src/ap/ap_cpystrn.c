@@ -60,8 +60,8 @@
  *   (2) strncpy() null fills, which is bogus, esp. when copy 8byte
  *       strings into 8k blocks.
  *   (3) Instead of returning the pointer to the beginning of
- *       the destination string, we return the end so we can
- *       "check" for truncation
+ *       the destination string, we return a pointer to the
+ *       terminating '\0' to allow us to "check" for truncation
  *
  * ap_cpystrn() follows the same call structure as strncpy().
  */
