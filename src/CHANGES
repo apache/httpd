@@ -25,9 +25,6 @@ Changes with Apache 1.3.18 [not released]
   *) Sporadic core dump in ap_default_port_for_scheme() with
      internal requests fixed by [Jeffrey W. Baker <jwbaker@acm.org>]
 
-  *) Escapes in hostnames such as www.%61rctic.org were not handled
-     properly.  [Dean Gaudet]
-
   *) PORT: Allow for build under latest dev. version of NonStopUX
      on Compaq. [Tom Bates <tom.bates@compaq.com>]
 
