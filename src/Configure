@@ -1858,16 +1858,6 @@ fi
 ## to choose for us ('default' - system is prefered if available).
 ##
 
-# set the default, based on whether expat-lite is bundled. if it is present,
-# then we can always include expat.
-if [ "x$RULE_EXPAT" = "xdefault" ]; then
-    if [ -d ./lib/expat-lite/ ]; then
-        RULE_EXPAT=yes
-    else
-        RULE_EXPAT=no
-    fi
-fi
-
 if ./helpers/TestCompile lib expat && [ "x$RULE_EXPAT" != "xno" ]; then
         echo " + using system Expat"
 	LIBS="$LIBS -lexpat"
