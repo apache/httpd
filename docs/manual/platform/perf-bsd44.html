@@ -123,7 +123,12 @@ In many cases, NMBCLUSTERS must be set much larger than would appear
 necessary at first glance. The reason for this is that if the browser
 disconnects in mid-transfer, the socket fd associated with that particular
 connection ends up in the TIME_WAIT state for several minutes, during
-which time its mbufs are not yet freed.
+which time its mbufs are not yet freed. Another reason is that, on server
+timeouts, some connections end up in FIN_WAIT_2 state forever, because
+this state doesn't time out on the server, and the browser never sent
+a final FIN. An example patch for BSDI is available
+<a href="http://www.apache.org/dist/contrib/patches/1.2/fin_wait_2.patch">
+here</a>.
 
 <p>
 
