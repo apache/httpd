@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/06/11 21:05:21 $]
+Last modified at [$Date: 2004/06/12 09:54:56 $]
 
 Release:
 
@@ -74,8 +74,10 @@ PATCHES TO BACKPORT FROM 2.1
 
     *) mod_ssl: Remove some unused functions (after CAN-2004-0488 fix is applied)
        http://cvs.apache.org/viewcvs.cgi/httpd-2.0/modules/ssl/ssl_util.c?r1=1.46&r2=1.47
-       +1: jorton, nd
+       +1: jorton
        trawick: need changes to mod_ssl.h to remove prototypes for those removed functions
+       -1: nd: actually that's a public API change (major bump) then and not
+           applicable for 2.0, just let 'em in
 
     *) Enable the option to support anonymous shared memory in mod_ldap.
        This makes the cache work on Linux again.
