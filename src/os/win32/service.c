@@ -223,7 +223,8 @@ DWORD WINAPI WatchWindow(void *service_name)
 
 void stop_service_monitor(void)
 {
-    PostThreadMessage(monitor_thread_id, WM_QUIT, 0, 0);
+    if (monitor_thread_id)
+        PostThreadMessage(monitor_thread_id, WM_QUIT, 0, 0);
 
     /* When the service quits, remove it from the 
        system service table */
@@ -231,6 +232,41 @@ void stop_service_monitor(void)
 
     /* Free the kernel library */
     FreeLibrary(monitor_hkernel);
+}
+
+/*
+ * The WinNT child can simply free its console.
+ * Win9x children cannot loose the console since 16bit cgi processes
+ * will hang if they are not launched from a 32bit console app.
+ * Instead, mark the Win9x child as a service process and let the
+ * parent process clean it up as necessary.
+ */
+void ap_prepare_child_console(void)
+{
+    if (isWindowsNT()) {
+        FreeConsole();
+        return;
+    }
+
+    /* Obtain a handle to the kernel library */
+    monitor_hkernel = LoadLibrary("KERNEL32.DLL");
+    if (!monitor_hkernel)
+        return;
+    
+    /* Find the RegisterServiceProcess function */
+    RegisterServiceProcess = (DWORD (WINAPI *)(DWORD, DWORD))
+                   GetProcAddress(monitor_hkernel, "RegisterServiceProcess");
+    if (RegisterServiceProcess == NULL)
+        return;
+	
+    /* Register this process as a service */
+    if (!RegisterServiceProcess((DWORD)NULL, 1))
+        return;
+
+    /* Borrowing stop_service_monitor, but there is no monitor thread */
+    monitor_thread_id = 0;
+
+    atexit(stop_service_monitor);
 }
 
 int service95_main(int (*main_fn)(int, char **), int argc, char **argv, 
@@ -968,7 +1004,7 @@ int send_signal_to_service(char *display_name, char *sig)
                         printf("The %s service has %s.\n", display_name, 
                                past[action]);
                         strcpy(sig, "start");
-                        return status;
+                        return success;
                     }
                     
                     ap_start_restart(1);

@@ -7016,8 +7016,8 @@ int REALMAIN(int argc, char *argv[])
 	if (!exit_event || !start_mutex)
 	    exit(-1);
 #ifdef WIN32
-    if (child && isWindowsNT())
-        FreeConsole();
+        if (child)
+            ap_prepare_child_console();
 #endif
 	worker_main();
 	ap_destroy_mutex(start_mutex);

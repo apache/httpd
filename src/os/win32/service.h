@@ -16,6 +16,7 @@
 extern int real_exit_code;
 void hold_console_open_on_error(void);
 
+void ap_prepare_child_console(void);
 int service_main(int (*main_fn)(int, char **), int argc, char **argv);
 int service95_main(int (*main_fn)(int, char **), int argc, char **argv,
 		   char *display_name);
