@@ -30,8 +30,8 @@ umask 022
 echo Checking out httpd-2.0 > $LOG_NAME
 cvs checkout -r $TAG -d $WORKING_DIR $REPO >> $LOG_NAME
 cd $WORKING_DIR/srclib
-echo "Checking out apr, apr-iconv and apr-util" >> $LOG_NAME
-cvs checkout -r $TAG apr apr-iconv apr-util >> $LOG_NAME
+echo "Checking out apr, and apr-util" >> $LOG_NAME
+cvs checkout -r $TAG apr apr-util >> $LOG_NAME
 cd $START_DIR/$WORKING_DIR
 
 # Make sure the master site's FAQ is up-to-date.  It doesn't hurt to do this
