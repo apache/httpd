@@ -165,8 +165,11 @@ CACHE_DECLARE(int) ap_cache_check_freshness(cache_handle_t *h,
      * entity, and it's value is in the past, it has expired.
      * 
      */
+    /* This value comes from the client's initial request. */
+    cc_req = apr_table_get(r->headers_in, "Cache-Control");
+
+    /* These come from the cached entity. */
     cc_cresp = apr_table_get(h->resp_hdrs, "Cache-Control");
-    cc_req = apr_table_get(h->req_hdrs, "Cache-Control");
     expstr = apr_table_get(h->resp_hdrs, "Expires");
 
     if ((agestr = apr_table_get(h->resp_hdrs, "Age"))) {

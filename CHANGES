@@ -2,6 +2,9 @@ Changes with Apache 2.1.4
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) mod_cache: Fix error where incoming Cache-Control would be ignored.
+     [Justin Erenkrantz]
+
   *) worker MPM/mod_status: Support per-worker tracking of pid and
      generation in the scoreboard so that mod_status can accurately
      represent workers in processes which are gracefully terminating.
