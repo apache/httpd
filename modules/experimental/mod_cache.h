@@ -202,7 +202,7 @@ struct cache_info {
     apr_time_t ius;    /*  If-UnModified_Since header value    */
     const char *im;         /* If-Match header value */
     const char *inm;         /* If-None-Match header value */
-    apr_table_t *req_hdrs;   /* These are the original request headers   */
+
 };
 
 /* cache handle information */
@@ -230,6 +230,7 @@ struct cache_handle {
     apr_status_t (*write_body)(cache_handle_t *h, request_rec *r, apr_bucket_brigade *b);
     apr_status_t (*read_headers) (cache_handle_t *h, request_rec *r);
     apr_status_t (*read_body) (cache_handle_t *h, apr_pool_t *p, apr_bucket_brigade *bb); 
+    apr_table_t *req_hdrs;   /* These are the original request headers */
 };
 
 /* per request cache information */

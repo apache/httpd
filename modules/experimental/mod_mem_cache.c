@@ -621,7 +621,7 @@ static int open_entity(cache_handle_t *h, request_rec *r, const char *type, cons
     h->write_headers = &write_headers;
     h->remove_entity = &remove_entity;
     h->cache_obj = obj;
-
+    h->req_hdrs = NULL;  /* Pick these up in read_headers() */
     return OK;
 }
 
@@ -771,17 +771,15 @@ static apr_status_t read_headers(cache_handle_t *h, request_rec *r)
 {
     int rc;
     mem_cache_object_t *mobj = (mem_cache_object_t*) h->cache_obj->vobj;
-    cache_info *info = &(h->cache_obj->info);
  
-    info->req_hdrs = apr_table_make(r->pool, mobj->num_req_hdrs);
-
+    h->req_hdrs = apr_table_make(r->pool, mobj->num_req_hdrs);
     r->headers_out = apr_table_make(r->pool, mobj->num_header_out);
     r->subprocess_env = apr_table_make(r->pool, mobj->num_subprocess_env);
     r->notes = apr_table_make(r->pool, mobj->num_notes);
 
     rc = unserialize_table(mobj->req_hdrs,
                            mobj->num_req_hdrs,
-                           info->req_hdrs);
+                           h->req_hdrs);
     rc = unserialize_table( mobj->header_out,
                             mobj->num_header_out, 
                             r->headers_out);
