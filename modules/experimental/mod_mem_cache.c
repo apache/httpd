@@ -604,7 +604,7 @@ static apr_status_t read_body(cache_handle_t *h, apr_pool_t *p, apr_bucket_briga
 static apr_status_t write_headers(cache_handle_t *h, request_rec *r, cache_info *info)
 {
     cache_object_t *obj = h->cache_obj;
-    mem_cache_object_t *mobj = (mem_cache_object_t*) h->cache_obj->vobj;
+    mem_cache_object_t *mobj = (mem_cache_object_t*) obj->vobj;
     int rc;
 
     /* Precompute how much storage we need to hold the headers */
@@ -675,7 +675,7 @@ static apr_status_t write_body(cache_handle_t *h, request_rec *r, apr_bucket_bri
          */
         APR_BRIGADE_FOREACH(e, b) {
             if (APR_BUCKET_IS_EOS(e)) {
-                h->cache_obj->complete = 1;
+                obj->complete = 1;
             }
             else if (APR_BUCKET_IS_FILE(e)) {
                 apr_bucket_file *a = e->data;
@@ -686,7 +686,7 @@ static apr_status_t write_body(cache_handle_t *h, request_rec *r, apr_bucket_bri
                 other++;
             }
         }
-        if (fd == 1 && !other && h->cache_obj->complete) {
+        if (fd == 1 && !other && obj->complete) {
             apr_file_t *tmpfile;
 
             mobj->type = CACHE_TYPE_FILE;
@@ -702,10 +702,10 @@ static apr_status_t write_body(cache_handle_t *h, request_rec *r, apr_bucket_bri
 
             obj->cleanup = 0;
             obj->refcount--;    /* Count should be 0 now */
-            apr_pool_cleanup_kill(r->pool, h->cache_obj, decrement_refcount);
+            apr_pool_cleanup_kill(r->pool, obj, decrement_refcount);
 
             /* Open for business */
-            h->cache_obj->complete = 1;
+            obj->complete = 1;
             return APR_SUCCESS;
         }
     }
@@ -720,9 +720,9 @@ static apr_status_t write_body(cache_handle_t *h, request_rec *r, apr_bucket_bri
             return APR_ENOMEM;
         }
         mobj->type = CACHE_TYPE_HEAP;
-        h->cache_obj->count = 0;
+        obj->count = 0;
     }
-    cur = (char*) mobj->m + h->cache_obj->count;
+    cur = (char*) mobj->m + obj->count;
 
     /* Iterate accross the brigade and populate the cache storage */
     APR_BRIGADE_FOREACH(e, b) {
@@ -732,10 +732,10 @@ static apr_status_t write_body(cache_handle_t *h, request_rec *r, apr_bucket_bri
         if (APR_BUCKET_IS_EOS(e)) {
             obj->cleanup = 0;
             obj->refcount--;    /* Count should be 0 now */
-            apr_pool_cleanup_kill(r->pool, h->cache_obj, decrement_refcount);
+            apr_pool_cleanup_kill(r->pool, obj, decrement_refcount);
 
             /* Open for business */
-            h->cache_obj->complete = 1;
+            obj->complete = 1;
             break;
         }
         rv = apr_bucket_read(e, &s, &len, eblock);
@@ -746,12 +746,12 @@ static apr_status_t write_body(cache_handle_t *h, request_rec *r, apr_bucket_bri
         if (len ) {
             memcpy(cur, s, len);
             cur+=len;
-            h->cache_obj->count+=len;
+            obj->count+=len;
         }
         /* This should not happen, but if it does, we are in BIG trouble
          * cause we just stomped all over the heap.
          */
-        AP_DEBUG_ASSERT(h->cache_obj->count > mobj->m_len);
+        AP_DEBUG_ASSERT(obj->count > mobj->m_len);
     }
     return APR_SUCCESS;
 }
