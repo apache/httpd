@@ -94,11 +94,13 @@ Example:
 <blockquote><pre>
 BrowserMatch ^KnockKnock/2.0 let_me_in
 &lt;Directory /docroot&gt;
-order allow,deny
-allow from env=let_me_in
-deny from all
+    order deny,allow
+    deny from all
+    allow from env=let_me_in
 &lt;/Directory&gt;
 </pre></blockquote>
+In this case browsers with the user-agent string <tt>KnockKnock/2.0</tt> will
+be allowed access, and all others will be denied.
 <P>
 See also <A HREF="#denyfromenv">deny from env</A>
 and <A HREF="#order">order</A>.
@@ -167,11 +169,13 @@ Example:
 <blockquote><pre>
 BrowserMatch ^BadRobot/0.9 go_away
 &lt;Directory /docroot&gt;
-order deny,allow
-deny from env=go_away
-allow from all
+    order allow,deny
+    allow from all
+    deny from env=go_away
 &lt;/Directory&gt;
 </pre></blockquote>
+In this case browsers with the user-agent string <tt>BadRobot/0.9</tt> will
+be denied access, and all others will be allowed.
 
 <P>
 See also <A HREF="#allowfromenv">allow from env</A>
@@ -206,16 +210,16 @@ initial state is FORBIDDEN.)
 on the deny list are granted access.  (The initial state is irrelevant.)
 </dl>
 <P>
-Note that in all cases every <code>allow</code> and <code>deny</code>
-statement is evaluated, there is no &quot;short-circuiting&quot;.
+<b>Note that in all cases every <code>allow</code> and <code>deny</code>
+statement is evaluated, there is no &quot;short-circuiting&quot;.</b>
 </P>
 <p>
 Example:
 </P>
 <blockquote><code>
-order deny,allow<br>
-deny from all<br>
-allow from .ncsa.uiuc.edu<br>
+    order deny,allow<br>
+    deny from all<br>
+    allow from .ncsa.uiuc.edu<br>
 </code></blockquote>
 <P>
 Hosts in the ncsa.uiuc.edu domain are allowed access; all other hosts are
