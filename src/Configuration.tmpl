@@ -347,6 +347,15 @@ AddModule modules/standard/mod_auth.o
 
 # AddModule modules/standard/mod_so.o
 
+## mod_mmap_static lets you speedup the serving of a list of files
+## by mmap()ing them at server startup-time into memory and thus 
+## avoiding a lot of I/O which is required on normal file serving.
+## This is an experimental feature. USE IT WITH CARE AND ALWAYS
+## REMMBER THAT WHENEVER ONE OF THESE FILES CHANGE THE SERVER HAS
+## TO BE RESTARTED MANUALLY TO SYNC WITH THE CHANGED FILE CONTENTS.
+
+# AddModule modules/experimental/mod_mmap_static.o
+
 ## mod_setenvif lets you set environment variables based on the HTTP header
 ## fields in the request; this is useful for conditional HTML, for example.
 ## Since it is also used to detect buggy browsers for workarounds, it

@@ -137,6 +137,7 @@ Committed Code Changes:
     * Martin's fix CONNECT proxy handling again
     * Ralf's fallback strategy for DSO by trying to guess flags from Perl
     * Ralf's add of the query (-q) option to apxs
+    * Ralf's initial doc and Configuration.tmpl entry for mod_mmap_static
 
 Available Patches:
 
