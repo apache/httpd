@@ -147,15 +147,9 @@ eval "make $TARGET >/dev/null $ERRDIR"
 # And see if dummy exists and is executable, if so, then we
 # assume the condition we are testing for is good
 #
-# Use our PrintPath helper script, knowing that we have
-# 2 versions of it though... Configure should set AP_PRINTPATH
-# but if not, just assume we use our "generic" version. We
-# also use the "-p" option to have PrintPath just search this directory.
+# Use our PrintPath helper script using the "-p" option to
+# have PrintPath just search this directory.
 
-if [ "x$AP_PRINTPATH" = "x" ] ; then
-    AP_PRINTPATH=PrintPath
-fi
-
-if ./$AP_PRINTPATH -s -p`pwd` $TARGET ; then
+if ./PrintPath -s -p`pwd` $TARGET ; then
     exstat=0
 fi

@@ -18,11 +18,6 @@ cat >conftest.c <<EOF
 Syntax Error
 EOF
 
-#   default in case of problems
-if [ ".$AP_PRINTPATH" = . ]; then
-     AP_PRINTPATH='PrintPath'
-fi
-
 #   some braindead systems have a CPP define for a directory :-(
 if [ ".$CPP" != . ]; then
     if [ -d "$CPP" ]; then
@@ -49,9 +44,9 @@ else
         my_error=`grep -v '^ *+' conftest.out`
         if [ ".$my_error" != . ]; then
             #   3. try a standalone cpp command in $PATH and lib dirs
-            CPP="`./helpers/$AP_PRINTPATH cpp`"
+            CPP="`./helpers/PrintPath cpp`"
             if [ ".$CPP" = . ]; then
-                CPP="`./helpers/$AP_PRINTPATH -p/lib:/usr/lib:/usr/local/lib cpp`"
+                CPP="`./helpers/PrintPath -p/lib:/usr/lib:/usr/local/lib cpp`"
             fi
             if [ ".$CPP" != . ]; then
                 (eval "$CPP conftest.c >/dev/null") 2>conftest.out

@@ -257,8 +257,6 @@ SHELL="/bin/sh"
 TARGET="httpd"
 SUBTARGET="target_static"
 SHLIB_SUFFIX_LIST=""
-AP_PRINTPATH=PrintPath
-export AP_PRINTPATH
 CAT="cat"
 
 ####################################################################
@@ -350,8 +348,6 @@ case "$PLAT" in
 	LIBS="$LIBS -lsocket -lufc -lbsd"
 	DBM_LIB="-lgdbm"
 	SHELL=sh
-	AP_PRINTPATH=PrintPathOS2
-	export AP_PRINTPATH
 	;;
     *-hi-hiux)
 	OS='HI-UX'
@@ -769,7 +765,7 @@ if [ "x$TCC" = "x" ]; then
 	for compilers in "gcc" "cc" "acc" "c89"
 	do
 	    lookedfor="$lookedfor $compilers"
-	    if ./helpers/$AP_PRINTPATH -s $compilers; then
+	    if ./helpers/PrintPath -s $compilers; then
 		COMPILER="$compilers"
 		break
 	    fi
@@ -1225,7 +1221,7 @@ if [ ".$RANLIB" = . ]; then
     if [ ".$TRANLIB" != . ]; then
         RANLIB=$TRANLIB
     else
-        if ./helpers/$AP_PRINTPATH -s ranlib; then
+        if ./helpers/PrintPath -s ranlib; then
             RANLIB="ranlib"
         else
             RANLIB="true"
