@@ -1201,3 +1201,15 @@ API_EXPORT(int) is_initial_req(request_rec *r)
 	&&
 	(r->prev == NULL); /* otherwise, this is an internal redirect */
 }
+
+/*
+ * Function to set the r->mtime field to the specified value if it's later
+ * than what's already there.
+ */
+API_EXPORT(time_t) update_mtime(request_rec *r, time_t dependency_mtime)
+{
+    if (r->mtime < dependency_mtime) {
+	r->mtime = dependency_mtime;
+    }
+    return r->mtime;
+}

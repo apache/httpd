@@ -1,5 +1,11 @@
 Changes with Apache 1.3a2
 
+  *) API: A new field in the request_rec, r->mtime, has been added to
+     avoid gratuitous parsing of date strings.  It is intended to hold
+     the last-modified date of the resource (if applicable).  An
+     update_mtime() routine has also been added to advance it if
+     appropriate.  [Roy Fielding, Ken Coar]
+
   *) If a htaccess file can not be read due to bad permissions, deny
      access to the directory with a HTTP_FORBIDDEN.  The previous
      behavior was to ignore the htaccess file if it could not
@@ -14,8 +20,8 @@ Changes with Apache 1.3a2
 
   *) Canonicalise filenames under Win32. Short filenames are
      converted to long ones. Backslashes are converted to forward
-	 slashes. Case is converted to lower. Parts of URLs that do not
-	 correspond to files are left completely alone. [Ben Laurie]
+     slashes. Case is converted to lower. Parts of URLs that do not
+     correspond to files are left completely alone. [Ben Laurie]
 
   *) PORT: 2 new OSs added to the list of ports:
       Encore's UMAX V: Arieh Markel <amarkel@encore.com>
