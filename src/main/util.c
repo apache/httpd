@@ -2054,7 +2054,7 @@ char *ap_get_local_host(pool *a)
             }
         }
 	else
-            /* Since we found a fdqn, return it with no logged message. */
+            /* Since we found a fqdn, return it with no logged message. */
             return server_hostname;
     }
 
