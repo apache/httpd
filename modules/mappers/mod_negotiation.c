@@ -101,6 +101,11 @@ typedef struct {
 
 #define FLP_DEFAULT  FLP_PREFER
 
+/* env evaluation
+ */
+#define DISCARD_ALL_ENCODINGS 1  /* no-gzip */
+#define DISCARD_ALL_BUT_HTML  2  /* gzip-only-text/html */
+
 module AP_MODULE_DECLARE_DATA negotiation_module;
 
 static void *create_neg_dir_config(apr_pool_t *p, char *dummy)
@@ -2226,17 +2231,55 @@ static int variant_has_language(var_rec *variant, const char *lang)
     return 0;
 }
 
+/* check for environment variables 'no-gzip' and
+ * 'gzip-only-text/html' to get a behaviour similiar
+ * to mod_deflate
+ */
+static int discard_variant_by_env(var_rec *variant, int discard)
+{
+    if (   is_identity_encoding(variant->content_encoding)
+        || !strcmp(variant->content_encoding, "identity")) {
+        return 0;
+    }
+
+    return (   (discard == DISCARD_ALL_ENCODINGS)
+            || (discard == DISCARD_ALL_BUT_HTML
+                && (!variant->mime_type
+                    || strncmp(variant->mime_type, "text/html", 9))));
+}
+
 static int best_match(negotiation_state *neg, var_rec **pbest)
 {
     int j;
     var_rec *best;
     float bestq = 0.0f;
     enum algorithm_results algorithm_result;
+    int may_discard = 0;
 
     var_rec *avail_recs = (var_rec *) neg->avail_vars->elts;
 
+    /* fetch request dependent variables
+     * prefer-language: prefer a certain language.
+     */
     const char *preferred_language = apr_table_get(neg->r->subprocess_env,
                                                    "prefer-language");
+
+    /* no-gzip: do not send encoded documents */
+    if (apr_table_get(neg->r->subprocess_env, "no-gzip")) {
+        may_discard = DISCARD_ALL_ENCODINGS;
+    }
+
+    /* gzip-only-text/html: send encoded documents only
+     * if they are text/html. (no-gzip has a higher priority).
+     */
+    else {
+        const char *env_value = apr_table_get(neg->r->subprocess_env,
+                                              "gzip-only-text/html");
+
+        if (env_value && !strcmp(env_value, "1")) {
+            may_discard = DISCARD_ALL_BUT_HTML;
+        }
+    }
 
     set_default_lang_quality(neg);
 
@@ -2253,6 +2296,14 @@ static int best_match(negotiation_state *neg, var_rec **pbest)
 
         for (j = 0; j < neg->avail_vars->nelts; ++j) {
             var_rec *variant = &avail_recs[j];
+
+            /* if this variant is encoded somehow and there are special
+             * variables set, we do not negotiate it. see above.
+             */
+            if (   may_discard
+                && discard_variant_by_env(variant, may_discard)) {
+                continue;
+            }
 
             /* if a language is preferred, but the current variant
              * is not in that language, then drop it for now
