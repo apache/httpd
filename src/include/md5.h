@@ -88,6 +88,10 @@
 #ifndef APACHE_MD5_H
 #define APACHE_MD5_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /* MD5.H - header file for MD5C.C */
 
 /* UINT4 defines a four byte word */
@@ -104,5 +108,9 @@ API_EXPORT(void) ap_MD5Init(AP_MD5_CTX * context);
 API_EXPORT(void) ap_MD5Update(AP_MD5_CTX * context, const unsigned char *input,
 			   unsigned int inputLen);
 API_EXPORT(void) ap_MD5Final(unsigned char digest[16], AP_MD5_CTX * context);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif	/* !APACHE_MD5_H */

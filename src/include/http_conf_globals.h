@@ -58,6 +58,10 @@
 #ifndef APACHE_HTTP_CONF_GLOBALS_H
 #define APACHE_HTTP_CONF_GLOBALS_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /* 
  * Process config --- what the process ITSELF is doing
  */
@@ -104,5 +108,9 @@ extern array_header *ap_server_post_read_config;
  * is some memory corruption, so we allocate it statically.
  */
 extern char ap_coredump_dir[MAX_STRING_LEN];
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif	/* !APACHE_HTTP_CONF_GLOBALS_H */

@@ -58,6 +58,10 @@
 #ifndef APACHE_HTTP_LOG_H
 #define APACHE_HTTP_LOG_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #ifdef HAVE_SYSLOG
 #include <syslog.h>
 
@@ -134,6 +138,10 @@ API_EXPORT(void) ap_close_piped_log (piped_log *);
 #else
 #define ap_piped_log_read_fd(pl)	(-1)
 #define ap_piped_log_write_fd(pl)	(fileno((pl)->write_f))
+#endif
+
+#ifdef __cplusplus
+}
 #endif
 
 #endif	/* !APACHE_HTTP_LOG_H */

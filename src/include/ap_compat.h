@@ -8,6 +8,10 @@
 #ifndef APACHE_COMPAT_H
 #define APACHE_COMPAT_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /* 
  *   Mapping of Apache 1.2 global symbols to the
  *   namespace conflict free variants used in Apache 1.3
@@ -397,5 +401,9 @@
 #define util_uri_init                  ap_util_uri_init
 #define uudecode                       ap_uudecode
 #define vbprintf                       ap_vbprintf
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* APACHE_COMPAT_H */

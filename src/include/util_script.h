@@ -58,6 +58,10 @@
 #ifndef APACHE_UTIL_SCRIPT_H
 #define APACHE_UTIL_SCRIPT_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #ifndef APACHE_ARG_MAX
 #ifdef _POSIX_ARG_MAX
 #define APACHE_ARG_MAX _POSIX_ARG_MAX
@@ -77,5 +81,9 @@ API_EXPORT(int) ap_scan_script_header_err_buff(request_rec *r, BUFF *f,
 API_EXPORT(void) ap_send_size(size_t size, request_rec *r);
 API_EXPORT(int) ap_call_exec(request_rec *r, char *argv0, char **env,
                           int shellcmd);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif	/* !APACHE_UTIL_SCRIPT_H */

@@ -58,6 +58,10 @@
 #ifndef APACHE_BUFF_H
 #define APACHE_BUFF_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #ifdef B_SFIO
 #include "sfio.h"
 #endif
@@ -108,7 +112,7 @@ struct buff_struct {
     void *error_data;
     long int bytes_sent;	/* number of bytes actually written */
 
-    pool *pool;
+    ap_pool *pool;
 
 /* could also put pointers to the basic I/O routines here */
     int fd;			/* the file descriptor */
@@ -198,5 +202,9 @@ API_EXPORT(int) ap_bfileno(BUFF *fb, int direction);
 
 /* bflush() if a read now would block, but don't actually read anything */
 API_EXPORT(void) ap_bhalfduplex(BUFF *fb);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif	/* !APACHE_BUFF_H */

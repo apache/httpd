@@ -58,6 +58,10 @@
 #ifndef APACHE_HTTP_CORE_H
 #define APACHE_HTTP_CORE_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /*****************************************************************
  *
  * The most basic server code is encapsulated in a single module
@@ -248,6 +252,10 @@ CORE_EXPORT(void) ap_add_per_dir_conf (server_rec *s, void *dir_config);
 CORE_EXPORT(void) ap_add_per_url_conf (server_rec *s, void *url_config);
 CORE_EXPORT_NONSTD(const char *) ap_limit_section (cmd_parms *cmd, void *dummy, const char *arg);
 
+#endif
+
+#ifdef __cplusplus
+}
 #endif
 
 #endif	/* !APACHE_HTTP_CORE_H */

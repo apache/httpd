@@ -58,6 +58,10 @@
 #ifndef APACHE_HTTPD_H
 #define APACHE_HTTPD_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /*
  * httpd.h: header for simple (ha! not anymore) http daemon
  */
@@ -571,7 +575,7 @@ typedef struct listen_rec listen_rec;
 
 struct request_rec {
 
-    pool *pool;
+    ap_pool *pool;
     conn_rec *connection;
     server_rec *server;
 
@@ -717,7 +721,7 @@ struct request_rec {
 
 struct conn_rec {
 
-    pool *pool;
+    ap_pool *pool;
     server_rec *server;
     server_rec *base_server;	/* Physical vhost this conn come in on */
     void *vhost_lookup_data;	/* used by http_vhost.c */
@@ -1022,5 +1026,9 @@ API_EXPORT(extern const char *) ap_psignature(const char *prefix, request_rec *r
 #undef strtoul
 #endif
 #define strtoul strtoul_is_not_a_portable_function_use_strtol_instead
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif	/* !APACHE_HTTPD_H */

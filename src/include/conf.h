@@ -58,6 +58,10 @@
 #ifndef APACHE_CONF_H
 #define APACHE_CONF_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /*
  * conf.h: system-dependant #defines and includes...
  * See PORTING for a listing of what they mean
@@ -1144,6 +1148,10 @@ extern char *strerror (int err);
 #endif
 #ifdef NEED_DIFFTIME
 extern double difftime(time_t time1, time_t time0);
+#endif
+
+#ifdef __cplusplus
+}
 #endif
 
 #endif	/* !APACHE_CONF_H */

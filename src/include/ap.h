@@ -61,6 +61,10 @@
 #ifndef APACHE_AP_H
 #define APACHE_AP_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 API_EXPORT(char *) ap_cpystrn(char *, const char *, size_t);
 int ap_slack(int, int);
 API_EXPORT(char *) ap_escape_quotes(pool *, const char *);
@@ -146,5 +150,9 @@ API_EXPORT(int) ap_snprintf(char *buf, size_t len, const char *format,...)
 			    __attribute__((format(printf,3,4)));
 API_EXPORT(int) ap_vsnprintf(char *buf, size_t len, const char *format,
 			     va_list ap);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif	/* !APACHE_AP_H */

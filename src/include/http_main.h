@@ -58,6 +58,10 @@
 #ifndef APACHE_HTTP_MAIN_H
 #define APACHE_HTTP_MAIN_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /*
  * Routines in http_main.c which other code --- in particular modules ---
  * may want to call.  Right now, that's limited to timeout handling.
@@ -161,6 +165,10 @@ API_EXPORT(void) ap_register_other_child(int pid,
  */
 API_EXPORT(void) ap_unregister_other_child(void *data);
 
+#endif
+
+#ifdef __cplusplus
+}
 #endif
 
 #endif	/* !APACHE_HTTP_MAIN_H */

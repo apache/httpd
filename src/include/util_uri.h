@@ -61,6 +61,10 @@
 #ifndef UTIL_URI_H
 #define UTIL_URI_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 typedef struct {
     const char *name;
     unsigned short default_port;
@@ -115,5 +119,9 @@ API_EXPORT(int) ap_parse_uri_components(pool *p, const char *uri, uri_components
 API_EXPORT(int) ap_parse_hostinfo_components(pool *p, const char *hostinfo, uri_components *uptr);
 /* called by the core in main() */
 extern void ap_util_uri_init(void);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /*UTIL_URI_H*/

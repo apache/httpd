@@ -58,6 +58,10 @@
 #ifndef APACHE_HTTP_REQUEST_H
 #define APACHE_HTTP_REQUEST_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /* http_request.c is the code which handles the main line of request
  * processing, once a request has been read in (finding the right per-
  * directory configuration, building it if necessary, and calling all
@@ -101,6 +105,10 @@ API_EXPORT(time_t) ap_update_mtime(request_rec *r, time_t dependency_mtime);
 /* Function called by main.c to handle first-level request */
 void ap_process_request(request_rec *);
 void ap_die(int type, request_rec *r);
+#endif
+
+#ifdef __cplusplus
+}
 #endif
 
 #endif	/* !APACHE_HTTP_REQUEST_H */

@@ -58,6 +58,10 @@
 #ifndef APACHE_HTTP_CONFIG_H
 #define APACHE_HTTP_CONFIG_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /*
  * The central data structures around here...
  */
@@ -149,7 +153,7 @@ typedef struct {
 
     configfile_t *config_file;	/* Config file structure from pcfg_openfile() */
 
-    pool *pool;			/* Pool to allocate new storage in */
+    ap_pool *pool;			/* Pool to allocate new storage in */
     struct pool *temp_pool;		/* Pool for scratch memory; persists during
 				 * configuration, but wiped before the first
 				 * request is served...
@@ -371,6 +375,10 @@ CORE_EXPORT(const command_rec *) ap_find_command(const char *name, const command
 CORE_EXPORT(const command_rec *) ap_find_command_in_modules(const char *cmd_name, module **mod);
 CORE_EXPORT(const char *) ap_handle_command(cmd_parms *parms, void *config, const char *l);
 
+#endif
+
+#ifdef __cplusplus
+}
 #endif
 
 #endif	/* !APACHE_HTTP_CONFIG_H */

@@ -58,6 +58,10 @@
 #ifndef APACHE_HTTP_PROTOCOL_H
 #define APACHE_HTTP_PROTOCOL_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /*
  * Prototypes for routines which either talk directly back to the user,
  * or control the ones that eventually do.
@@ -204,5 +208,9 @@ void ap_finalize_sub_req_protocol(request_rec *sub_r);
 /* This is also useful for putting sub_reqs and internal_redirects together */
 
 CORE_EXPORT(void) ap_parse_uri(request_rec *r, const char *uri);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif	/* !APACHE_HTTP_PROTOCOL_H */

@@ -1,6 +1,10 @@
 #ifndef APACHE_MULTITHREAD_H
 #define APACHE_MULTITHREAD_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #define MULTI_OK (0)
 #define MULTI_TIMEOUT (1)
 #define MULTI_ERR (2)
@@ -53,5 +57,9 @@ extern void *ap_dummy_mutex;
 #define ap_destroy_mutex(mutex_id)	(0)
 
 #endif /* ndef MULTITHREAD */
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* !APACHE_MULTITHREAD_H */

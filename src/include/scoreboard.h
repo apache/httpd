@@ -58,6 +58,10 @@
 #ifndef APACHE_SCOREBOARD_H
 #define APACHE_SCOREBOARD_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #ifndef WIN32
 #include <sys/times.h>
 #endif
@@ -161,5 +165,9 @@ API_VAR_EXPORT extern scoreboard *ap_scoreboard_image;
 /* for time_process_request() in http_main.c */
 #define START_PREQUEST 1
 #define STOP_PREQUEST  2
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif	/* !APACHE_SCOREBOARD_H */

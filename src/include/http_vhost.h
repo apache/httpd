@@ -58,6 +58,10 @@
 #ifndef APACHE_HTTP_VHOST_H
 #define APACHE_HTTP_VHOST_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /* called before any config is read */
 void ap_init_vhost_config(pool *p);
 
@@ -83,5 +87,9 @@ void ap_update_vhost_from_headers(request_rec *r);
  */
 API_EXPORT(int) ap_matches_request_vhost(request_rec *r, const char *host,
     unsigned port);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif	/* !APACHE_HTTP_VHOST_H */

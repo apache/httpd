@@ -58,6 +58,10 @@
 #ifndef APACHE_ALLOC_H
 #define APACHE_ALLOC_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /*
  * Resource allocation routines...
  *
@@ -85,6 +89,7 @@
 #endif
 
 typedef struct pool pool;
+typedef struct pool ap_pool;
 
 pool * ap_init_alloc(void);		/* Set up everything */
 API_EXPORT(pool *) ap_make_sub_pool(pool *);	/* All pools are subpools of permanent_pool */
@@ -131,7 +136,7 @@ API_EXPORT(char *) ap_pvsprintf(struct pool *, const char *fmt, va_list);
  */
 
 typedef struct {
-    pool *pool;
+    ap_pool *pool;
     int elt_size;
     int nelts;
     int nalloc;
@@ -310,5 +315,9 @@ API_EXPORT(int) ap_spawn_child_err(pool *, int (*)(void *), void *,
 
 API_EXPORT(long) ap_bytes_in_pool(pool *p);
 API_EXPORT(long) ap_bytes_in_free_blocks(void);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif	/* !APACHE_ALLOC_H */

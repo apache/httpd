@@ -40,6 +40,10 @@
 #ifndef	_FNMATCH_H_
 #define	_FNMATCH_H_
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #define	FNM_NOMATCH	1	/* Match failed. */
 
 #define	FNM_NOESCAPE	0x01	/* Disable backslash escaping. */
@@ -50,5 +54,9 @@ API_EXPORT(int) ap_fnmatch(const char *, const char *, int);
 
 /* this function is an Apache addition */
 API_EXPORT(extern int) ap_is_fnmatch(const char *);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* !_FNMATCH_H_ */

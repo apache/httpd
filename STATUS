@@ -85,16 +85,13 @@ Committed Code Changes:
     * Jim's fix for MIME type case sensitivity disparity, PR#2112
     * Child processes can now "signal" to the parent process that
       it (the parent process) should abort, shutting down the server.
+    * Michael Anderson's <mka@redes.int.com.mx> C++ friendly patch
 
 Available Patches:
 
     * Dean's mod_alias.c, translate_alias_redir patch
       <Pine.LNX.3.96dg4.980502223053.15827H-100000@twinlark.arctic.org>
       Status: Dean, Ben, Jim +1
-
-    * Michael Anderson's <mka@redes.int.com.mx> C++ friendly patch
-      <354A4183.3E9AF551@redes.int.com.mx> 
-      Status: Ben, Jim +1, Dean +1, Ralf +1
 
     * Arnt Gulbrandsen <agulbra@troll.no> 03 Apr 1998 21:28:17 +0200
       <m3emzer9gu.fsf@lupinella.troll.no> mod_usertrack.c patch:
