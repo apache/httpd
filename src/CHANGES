@@ -1,4 +1,7 @@
 Changes with Apache 1.3.13
+  *) Fix Win32 bug when pathname length exactly equals MAX_PATH. 
+     This bug caused directory index to be displayed rather than
+     returning an error. [Allan Edwards <ake@raleigh.ibm.com>]
 
   *) Correct mod_proxy Win95 dynamic link __declspec(thread) bug.
      David Whitmarsh <david.whitmarsh@dial.pipex.com> 

@@ -580,7 +580,7 @@ API_EXPORT(int) ap_os_is_filename_valid(const char *file)
     };
 
     /* Test 1 */
-    if (strlen(file) > MAX_PATH) {
+    if (strlen(file) >= MAX_PATH) {
 	/* Path too long for Windows. Note that this test is not valid
 	 * if the path starts with //?/ or \\?\. */
 	return 0;
