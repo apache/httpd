@@ -1,13 +1,11 @@
   1.3 STATUS:
-  Last modified at [$Date: 2000/02/25 23:06:52 $]
+  Last modified at [$Date: 2000/04/13 11:44:50 $]
 
 Release:
 
-    1.3.12-dev: In development with a plan to RELEASE on Feb. 25, 2000.
-         Jim offers to be RM.
-           Feb. 22: Freeze CVS tree
-           Feb. 23: tag and roll tarball
-           Feb. 25: Announce and release
+    1.3.13-dev: In development.
+    1.3.12: Tagged and rolled Feb. 23, 2000. Released and
+            announced on the 25th.
     1.3.11: Tagged and rolled Jan. 19, 2000. Released and
             announced on the 21st.
     1.3.10: Not released. Pulled at "last minute" due to
@@ -48,7 +46,7 @@ Available Patches:
 
     * Andrew Ford's patch (1999/12/05) to add absolute times to mod_expires
 	Message-ID: <m3wvqtcoqx.fsf@icarus.demon.co.uk>
-	Status: Martin +1, Jim +1
+	Status: Martin +1, Jim +1, Ken +1 (on concept)
 
     * Raymond S Brand's path to mod_autoindex to fix the header/readme
       include processing so the envariables are correct for the included
@@ -69,10 +67,10 @@ Available Patches:
 	AddIcon (<alttext>,<icon>) ^^DIRECTORY^^ 
 	and 
 	AddIcon (<alttext>,<icon>) ^^BLANKICON^^ 
-	should be able to set the alternate text and icon file for any directory/
-	blankicon in a directory listing. This was not happening because the
-	alternate text for ^^DIRECTORY^^ and ^^BLANKICON^^ were hardcoded to 
-	"DIR" and "   " respectively.
+	should be able to set the alternate text and icon file for any
+	directory/blankicon in a directory listing. This was not happening
+	because the alternate text for ^^DIRECTORY^^ and ^^BLANKICON^^ were
+	hardcoded to  "DIR" and "   " respectively.
 
 	Problem 2:
 	-------------------------
@@ -80,7 +78,7 @@ Available Patches:
 	extension in directory listings. This was NOT happening because the 
 	total filename was being compared with the file-extension.
 
-	Status: Martin +1(untested)
+	Status: Martin +1(untested), Ken +1(untested)
        
     * JJ Keijser's patch (99/10/06) to enable mod_info on Win32
 	PR#: PR2415, PR1442
