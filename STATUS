@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/08/28 06:13:03 $]
+Last modified at [$Date: 2003/08/29 14:53:05 $]
 
 Release:
 
@@ -360,6 +360,9 @@ PATCHES TO PORT FROM 2.1
         server/mpm/worker/worker.c r1.137
       +1: jwoolley
 
+    * mod_ssl: fix check for the plain-HTTP-request error
+        modules/ssl/ssl_engine_io.c r1.111
+      +1: jorton
 
 CURRENT RELEASE NOTES:
 
