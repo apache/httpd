@@ -101,6 +101,7 @@
  */
 
 #include "apr.h"
+#include "apr_lib.h"
 #include "apr_strings.h"
 
 #define APR_WANT_STRFUNC
