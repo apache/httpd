@@ -636,6 +636,13 @@ static void piped_log_maintenance(int reason, void *data, ap_wait_t status)
 
     switch (reason) {
     case APR_OC_REASON_DEATH:
+	pl->pid = NULL;
+	ap_unregister_other_child(pl);
+	if (pl->program == NULL) {
+	    /* during a restart */
+	    break;
+	}
+        break;
     case APR_OC_REASON_LOST:
 	pl->pid = NULL;
 	ap_unregister_other_child(pl);
