@@ -52,10 +52,6 @@ Changes with Apache 2.1.0-dev
      of the server specified. PR 24922
      [Pascal Terjan <pterjan@linuxfr.org>]
 
-  *) RPM spec file changes: changed default dependancy to link to db4
-     instead of db3. Fixed complaints about unpackaged files.
-     [Graham Leggett]
-
   *) External rewrite map responses are no longer limited to 2048
      bytes.  [André Malo]
 
@@ -385,6 +381,12 @@ Changes with Apache 2.1.0-dev
 
   [Apache 2.1.0-dev includes those bug fixes and changes with the
    Apache 2.0.xx tree as documented, and except as noted, below.]
+
+Changes with Apache 2.0.51
+
+  *) RPM spec file changes: changed default dependancy to link to db4
+     instead of db3. Fixed complaints about unpackaged files.
+     [Graham Leggett]
 
 Changes with Apache 2.0.50
 
