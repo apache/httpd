@@ -97,7 +97,7 @@
 
       <dt><strong>mod_auth_db</strong></dt>
 
-      <dd>Now supports Berkely DB 3.0</dd>
+      <dd>Now supports Berkeley DB 3.0</dd>
 
       <dt><strong>mod_auth_digest</strong></dt>
 
