@@ -104,7 +104,7 @@ typedef struct {
     unsigned char buffer[64];	/* input buffer */
 } AP_MD5_CTX;
 
-const char *apr1_id;		/* MD5 passwd marker string */
+extern const char *apr1_id;		/* MD5 passwd marker string */
 
 API_EXPORT(void) ap_MD5Init(AP_MD5_CTX *context);
 API_EXPORT(void) ap_MD5Update(AP_MD5_CTX *context, const unsigned char *input,

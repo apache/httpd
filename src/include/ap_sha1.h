@@ -84,7 +84,7 @@
 extern "C" {
 #endif
 
-const char *sha1_id;	/* passwd prefix marker for SHA1 */
+extern const char *sha1_id;	/* passwd prefix marker for SHA1 */
 API_EXPORT(void) ap_sha1_base64(const char *clear, int len, char *out);
 
 #ifdef __cplusplus

@@ -6648,7 +6648,7 @@ int main(int argc, char *argv[], char *envp[])
  * Force ap_validate_password() into the image so that modules like
  * mod_auth can use it even if they're dynamically loaded.
  */
-const void suck_in_ap_validate_password(void)
+void suck_in_ap_validate_password(void)
 {
     ap_validate_password("a", "b");
 }

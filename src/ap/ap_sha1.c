@@ -133,21 +133,21 @@
     temp = ROT32(A,5) + f##n(B,C,D) + E + W[i] + CONST##n;	\
     E = D; D = C; C = ROT32(B,30); B = A; A = temp
 
-typedef unsigned char BYTE;     /* an 8-bit quantity */
-typedef unsigned long LONG;     /* a 32-bit quantity */
+typedef unsigned char AP_BYTE;     /* an 8-bit quantity */
+typedef unsigned long AP_LONG;     /* a 32-bit quantity */
  
 #define SHA_BLOCKSIZE           64
 #define SHA_DIGESTSIZE          20
  
 typedef struct {
-    LONG digest[5];             /* message digest */
-    LONG count_lo, count_hi;    /* 64-bit bit count */
-    LONG data[16];              /* SHA data buffer */
+    AP_LONG digest[5];             /* message digest */
+    AP_LONG count_lo, count_hi;    /* 64-bit bit count */
+    AP_LONG data[16];              /* SHA data buffer */
     int local;                  /* unprocessed amount in data */
 } SHA_INFO;
 
 static void sha_init(SHA_INFO *);
-static void sha_update(SHA_INFO *, const BYTE *, int);
+static void sha_update(SHA_INFO *, const AP_BYTE *, int);
 static void sha_final(SHA_INFO *);
 static void sha_raw_swap(SHA_INFO *);
 static void output64chunk(unsigned char, unsigned char, unsigned char,
@@ -159,7 +159,7 @@ void sha1_base64(char *, int, char *);
 static void sha_transform(SHA_INFO *sha_info)
 {
     int i;
-    LONG temp, A, B, C, D, E, W[80];
+    AP_LONG temp, A, B, C, D, E, W[80];
 
     for (i = 0; i < 16; ++i) {
 	W[i] = sha_info->data[i];
@@ -231,14 +231,14 @@ static char isLittleEndian(void)
 /* change endianness of data */
 
 /* count is the number of bytes to do an endian flip */
-static void maybe_byte_reverse(LONG *buffer, int count)
+static void maybe_byte_reverse(AP_LONG *buffer, int count)
 {
     int i;
-    BYTE ct[4], *cp;
+    AP_BYTE ct[4], *cp;
 
     if (isLittleEndian()) {    /* do the swap only if it is little endian */
-	count /= sizeof(LONG);
-	cp = (BYTE *) buffer;
+	count /= sizeof(AP_LONG);
+	cp = (AP_BYTE *) buffer;
 	for (i = 0; i < count; ++i) {
 	    ct[0] = cp[0];
 	    ct[1] = cp[1];
@@ -248,7 +248,7 @@ static void maybe_byte_reverse(LONG *buffer, int count)
 	    cp[1] = ct[2];
 	    cp[2] = ct[1];
 	    cp[3] = ct[0];
-	    cp += sizeof(LONG);
+	    cp += sizeof(AP_LONG);
 	}
     }
 }
@@ -269,21 +269,21 @@ static void sha_init(SHA_INFO *sha_info)
 
 /* update the SHA digest */
 
-static void sha_update(SHA_INFO *sha_info, const BYTE *buffer, int count)
+static void sha_update(SHA_INFO *sha_info, const AP_BYTE *buffer, int count)
 {
     int i;
 
-    if ((sha_info->count_lo + ((LONG) count << 3)) < sha_info->count_lo) {
+    if ((sha_info->count_lo + ((AP_LONG) count << 3)) < sha_info->count_lo) {
 	++sha_info->count_hi;
     }
-    sha_info->count_lo += (LONG) count << 3;
-    sha_info->count_hi += (LONG) count >> 29;
+    sha_info->count_lo += (AP_LONG) count << 3;
+    sha_info->count_hi += (AP_LONG) count >> 29;
     if (sha_info->local) {
 	i = SHA_BLOCKSIZE - sha_info->local;
 	if (i > count) {
 	    i = count;
 	}
-	memcpy(((BYTE *) sha_info->data) + sha_info->local, buffer, i);
+	memcpy(((AP_BYTE *) sha_info->data) + sha_info->local, buffer, i);
 	count -= i;
 	buffer += i;
 	sha_info->local += i;
@@ -311,20 +311,20 @@ static void sha_update(SHA_INFO *sha_info, const BYTE *buffer, int count)
 static void sha_final(SHA_INFO *sha_info)
 {
     int count;
-    LONG lo_bit_count, hi_bit_count;
+    AP_LONG lo_bit_count, hi_bit_count;
 
     lo_bit_count = sha_info->count_lo;
     hi_bit_count = sha_info->count_hi;
     count = (int) ((lo_bit_count >> 3) & 0x3f);
-    ((BYTE *) sha_info->data)[count++] = 0x80;
+    ((AP_BYTE *) sha_info->data)[count++] = 0x80;
     if (count > SHA_BLOCKSIZE - 8) {
-	memset(((BYTE *) sha_info->data) + count, 0, SHA_BLOCKSIZE - count);
+	memset(((AP_BYTE *) sha_info->data) + count, 0, SHA_BLOCKSIZE - count);
 	maybe_byte_reverse(sha_info->data, SHA_BLOCKSIZE);
 	sha_transform(sha_info);
-	memset((BYTE *) sha_info->data, 0, SHA_BLOCKSIZE - 8);
+	memset((AP_BYTE *) sha_info->data, 0, SHA_BLOCKSIZE - 8);
     }
     else {
-	memset(((BYTE *) sha_info->data) + count, 0,
+	memset(((AP_BYTE *) sha_info->data) + count, 0,
 	       SHA_BLOCKSIZE - 8 - count);
     }
     maybe_byte_reverse(sha_info->data, SHA_BLOCKSIZE);
@@ -344,7 +344,7 @@ static void sha_raw_swap(SHA_INFO *sha_info)
     int i;
 
     for (i = 0; i < 5; ++i) {
-	maybe_byte_reverse((LONG *) &sha_info->digest[i], 4);
+	maybe_byte_reverse((AP_LONG *) &sha_info->digest[i], 4);
     }
 }
 
