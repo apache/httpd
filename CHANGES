@@ -29,9 +29,6 @@ Changes with Apache 2.1.0-dev
   *) mod_logio: Account for some bytes handed to the network layer prior to
      dropped connections.  [Jeff Trawick]
 
-  *) Fix a problem with the display of empty variables ("SetEnv foo") in
-     mod_include.  PR 24734  [Markus Julen <mj zermatt.net>]
-
   *) Win32 MPM: The bucket brigades subsystem now honors the MaxMemFree setting.
      [Bill Stoddard]
 
@@ -63,9 +60,6 @@ Changes with Apache 2.1.0-dev
   *) mod_autoindex / core: Don't fail to show filenames containing
      special characters like '%'. PR 13598.  [André Malo]
 
-  *) mod_info: HTML escape configuration information so it displays 
-     correctly. PR 24232. [Thom May]
-     
   *) mod_status: Report total CPU time accurately when using a threaded
      MPM.  PR 23795.  [Jeff Trawick]
 
@@ -264,6 +258,15 @@ Changes with Apache 2.1.0-dev
    Apache 2.0.xx tree as documented, and except as noted, below.]
 
 Changes with Apache 2.0.49
+
+  *) mod_info: HTML escape configuration information so it displays 
+     correctly. PR 24232. [Thom May]
+     
+  *) Restore the ability to add a description for directories that
+     don't contain an index file.  (Broken in 2.0.48) [André Malo]
+
+  *) Fix a problem with the display of empty variables ("SetEnv foo") in
+     mod_include.  PR 24734  [Markus Julen <mj zermatt.net>]
 
   *) mod_log_config: Log the minutes component of the timezone correctly.
      PR 23642.  [Hong-Gunn Chew <hgbug gunnet.org>]
