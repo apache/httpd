@@ -1827,7 +1827,7 @@ void winnt_rewrite_args(process_rec *process)
     char optbuf[3];
     const char *optarg;
     int fixed_args;
-    char *pid;
+    int pid;
     apr_getopt_t *opt;
     int running_as_service = 1;
 
@@ -1839,7 +1839,6 @@ void winnt_rewrite_args(process_rec *process)
     if (pid) 
     {
         /* This is the child */
-        parent_pid = (DWORD) atol(pid);
         my_pid = GetCurrentProcessId();
 
         /* The parent is responsible for providing the
