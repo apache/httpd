@@ -669,8 +669,10 @@ int read_types_multi (negotiation_state *neg)
 	 * we're building...
 	 */
 
-	if (!strcmp (sub_req->content_type, MAP_FILE_MAGIC_TYPE) ||
-	    !strcmp (sub_req->handler, "type-map")) {
+	if (((sub_req->content_type) &&
+	     !strcmp (sub_req->content_type, MAP_FILE_MAGIC_TYPE)) || 
+	    ((sub_req->handler) && 
+	    !strcmp (sub_req->handler, "type-map"))) {
 	    closedir(dirp);
 	    
 	    neg->avail_vars->nelts = 0;
