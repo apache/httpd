@@ -74,7 +74,7 @@ _tryssl:
 	@echo mod_ssl and ab/ssl will not build unless openssl is installed
 	@echo in srclib\openssl.  They must be precompiled using the 
 	@echo ms/ntdll.mak file, see srclib\openssl\INSTALL.W32.  The most
-	@echo recent version confirmed to build with mod_ssl and ab is 0.9.6c.
+	@echo recent version confirmed to build with mod_ssl and ab is 0.9.6h.
 	@echo Available from http://www.openssl.org/
 !ENDIF
 
@@ -361,6 +361,93 @@ _build:
 
 !ENDIF
 
+
+_copybin:
+	copy $(LONG)\Apache.$(src_exe) 				"$(inst_exe)" <.y
+	copy $(LONG)\libhttpd.$(src_dll) 			"$(inst_dll)" <.y
+	copy srclib\apr\$(LONG)\libapr.$(src_dll) 		"$(inst_dll)" <.y
+	copy srclib\apr-iconv\$(LONG)\libapriconv.$(src_dll) 	"$(inst_dll)" <.y
+	copy srclib\apr-util\$(LONG)\libaprutil.$(src_dll) 	"$(inst_dll)" <.y
+	copy modules\aaa\$(LONG)\mod_auth_basic.$(src_so) 	"$(inst_so)" <.y
+	copy modules\aaa\$(LONG)\mod_auth_digest.$(src_so) 	"$(inst_so)" <.y
+	copy modules\aaa\$(LONG)\mod_authn_anon.$(src_so) 	"$(inst_so)" <.y
+	copy modules\aaa\$(LONG)\mod_authn_dbm.$(src_so) 	"$(inst_so)" <.y
+	copy modules\aaa\$(LONG)\mod_authn_default.$(src_so) 	"$(inst_so)" <.y
+	copy modules\aaa\$(LONG)\mod_authn_file.$(src_so) 	"$(inst_so)" <.y
+	copy modules\aaa\$(LONG)\mod_authz_dbm.$(src_so) 	"$(inst_so)" <.y
+	copy modules\aaa\$(LONG)\mod_authz_default.$(src_so) 	"$(inst_so)" <.y
+	copy modules\aaa\$(LONG)\mod_authz_groupfile.$(src_so) 	"$(inst_so)" <.y
+	copy modules\aaa\$(LONG)\mod_authz_host.$(src_so) 	"$(inst_so)" <.y
+	copy modules\aaa\$(LONG)\mod_authz_user.$(src_so) 	"$(inst_so)" <.y
+	copy modules\arch\win32\$(LONG)\mod_isapi.$(src_so) 	"$(inst_so)" <.y
+	copy modules\cache\$(LONG)\mod_file_cache.$(src_so) 	"$(inst_so)" <.y
+	copy modules\dav\fs\$(LONG)\mod_dav_fs.$(src_so) 	"$(inst_so)" <.y
+	copy modules\dav\main\$(LONG)\mod_dav.$(src_so)		"$(inst_so)" <.y
+	copy modules\experimental\$(LONG)\mod_cache.$(src_so)		"$(inst_so)" <.y
+	copy modules\experimental\$(LONG)\mod_charset_lite.$(src_so)	"$(inst_so)" <.y
+	copy modules\experimental\$(LONG)\mod_mem_cache.$(src_so)	"$(inst_so)" <.y
+	copy modules\experimental\$(LONG)\mod_disk_cache.$(src_so)	"$(inst_so)" <.y
+	copy modules\experimental\$(LONG)\util_ldap.$(src_so)		"$(inst_so)" <.y
+	copy modules\experimental\$(LONG)\mod_auth_ldap.$(src_so)	"$(inst_so)" <.y
+!IF EXIST("srclib\zlib")
+	copy modules\filters\$(LONG)\mod_deflate.$(src_so) 	"$(inst_so)" <.y
+!ENDIF
+	copy modules\filters\$(LONG)\mod_ext_filter.$(src_so) 	"$(inst_so)" <.y
+	copy modules\filters\$(LONG)\mod_include.$(src_so) 	"$(inst_so)" <.y
+	copy modules\generators\$(LONG)\mod_asis.$(src_so) 	"$(inst_so)" <.y
+	copy modules\generators\$(LONG)\mod_autoindex.$(src_so) "$(inst_so)" <.y
+	copy modules\generators\$(LONG)\mod_cgi.$(src_so) 	"$(inst_so)" <.y
+	copy modules\generators\$(LONG)\mod_info.$(src_so) 	"$(inst_so)" <.y
+	copy modules\generators\$(LONG)\mod_status.$(src_so) 	"$(inst_so)" <.y
+	copy modules\http\$(LONG)\mod_mime.$(src_so) 		"$(inst_so)" <.y
+	copy modules\loggers\$(LONG)\mod_log_config.$(src_so) 	"$(inst_so)" <.y
+	copy modules\loggers\$(LONG)\mod_logio.$(src_so) 	"$(inst_so)" <.y
+	copy modules\mappers\$(LONG)\mod_actions.$(src_so) 	"$(inst_so)" <.y
+	copy modules\mappers\$(LONG)\mod_alias.$(src_so) 	"$(inst_so)" <.y
+	copy modules\mappers\$(LONG)\mod_dir.$(src_so) 		"$(inst_so)" <.y
+	copy modules\mappers\$(LONG)\mod_imap.$(src_so) 	"$(inst_so)" <.y
+	copy modules\mappers\$(LONG)\mod_negotiation.$(src_so) 	"$(inst_so)" <.y
+	copy modules\mappers\$(LONG)\mod_rewrite.$(src_so) 	"$(inst_so)" <.y
+	copy modules\mappers\$(LONG)\mod_speling.$(src_so) 	"$(inst_so)" <.y
+	copy modules\mappers\$(LONG)\mod_userdir.$(src_so) 	"$(inst_so)" <.y
+	copy modules\mappers\$(LONG)\mod_vhost_alias.$(src_so) 	"$(inst_so)" <.y
+	copy modules\metadata\$(LONG)\mod_cern_meta.$(src_so) 	"$(inst_so)" <.y
+	copy modules\metadata\$(LONG)\mod_env.$(src_so) 	"$(inst_so)" <.y
+	copy modules\metadata\$(LONG)\mod_expires.$(src_so) 	"$(inst_so)" <.y
+	copy modules\metadata\$(LONG)\mod_headers.$(src_so) 	"$(inst_so)" <.y
+	copy modules\metadata\$(LONG)\mod_ident.$(src_so) 	"$(inst_so)" <.y
+	copy modules\metadata\$(LONG)\mod_mime_magic.$(src_so) 	"$(inst_so)" <.y
+	copy modules\metadata\$(LONG)\mod_setenvif.$(src_so) 	"$(inst_so)" <.y
+	copy modules\metadata\$(LONG)\mod_unique_id.$(src_so) 	"$(inst_so)" <.y
+	copy modules\metadata\$(LONG)\mod_usertrack.$(src_so) 	"$(inst_so)" <.y
+	copy modules\proxy\$(LONG)\mod_proxy.$(src_so) 		"$(inst_so)" <.y
+	copy modules\proxy\$(LONG)\mod_proxy_connect.$(src_so) 	"$(inst_so)" <.y
+	copy modules\proxy\$(LONG)\mod_proxy_ftp.$(src_so) 	"$(inst_so)" <.y
+	copy modules\proxy\$(LONG)\mod_proxy_http.$(src_so) 	"$(inst_so)" <.y
+!IF EXIST("srclib\openssl")
+	copy modules\ssl\$(LONG)\mod_ssl.$(src_so) 			"$(inst_so)" <.y
+	$(quiet)copy srclib\openssl\$(SSLBIN)\openssl.$(src_exe) 	"$(inst_exe)" <.y
+	$(quiet)copy srclib\openssl\$(SSLBIN)\libeay32.$(src_dll) 	"$(inst_dll)" <.y
+	$(quiet)copy srclib\openssl\$(SSLBIN)\ssleay32.$(src_dll) 	"$(inst_dll)" <.y
+	copy support\$(LONG)\abs.$(src_exe) 	"$(inst_exe)\ab.$(src_exe)" <.y
+!ELSE
+	copy support\$(LONG)\ab.$(src_exe) 				"$(inst_exe)" <.y
+!ENDIF
+	copy support\$(LONG)\htdbm.$(src_exe) 			"$(inst_exe)" <.y
+	copy support\$(LONG)\htdigest.$(src_exe) 		"$(inst_exe)" <.y
+	copy support\$(LONG)\htpasswd.$(src_exe) 		"$(inst_exe)" <.y
+	copy support\$(LONG)\logresolve.$(src_exe) 		"$(inst_exe)" <.y
+	copy support\$(LONG)\rotatelogs.$(src_exe) 		"$(inst_exe)" <.y
+	copy support\win32\$(LONG)\ApacheMonitor.$(src_exe) 	"$(inst_exe)" <.y
+	copy support\win32\$(LONG)\wintty.$(src_exe) 		"$(inst_exe)" <.y
+
+# First we create the tree and populate the README so that 
+# whatever happens, all licensing has already propagated.  
+# Then repeatedly invoke the _copybin build to copy the
+# real binaries, then pdb symbols, anf finally dbg syms.
+# Then hit docs of various sorts, then includes and libs,
+# and finally do the .conf magic.
+#
 _install:
 	echo Y >.y
 	echo A >.A
@@ -378,145 +465,16 @@ _install:
 	-mkdir "$(INSTDIR)\logs"
 	-mkdir "$(INSTDIR)\modules"
 	-mkdir "$(INSTDIR)\proxy"
+	-mkdir "$(INSTDIR)\symbols"
+	-mkdir "$(INSTDIR)\symbols\exe"
+	-mkdir "$(INSTDIR)\symbols\dll"
+	-mkdir "$(INSTDIR)\symbols\so"
 	copy ABOUT_APACHE "$(INSTDIR)\ABOUT_APACHE.txt" <.y
-	copy CHANGES "$(INSTDIR)\CHANGES.txt" <.y
-	copy INSTALL "$(INSTDIR)\INSTALL.txt" <.y
-	copy LICENSE "$(INSTDIR)\LICENSE.txt" <.y
-	copy README "$(INSTDIR)\README.txt" <.y
-	copy $(LONG)\Apache.exe "$(INSTDIR)\bin" <.y
-	copy $(LONG)\libhttpd.dll "$(INSTDIR)\bin" <.y
-	copy srclib\apr\$(LONG)\libapr.dll "$(INSTDIR)\bin" <.y
-	copy srclib\apr-iconv\$(LONG)\libapriconv.dll "$(INSTDIR)\bin" <.y
-	cd srclib\apr-iconv
-	$(MAKE) $(MAKEOPT) /f build\modules.mk.win install \
-		BUILD_MODE=$(LONG) BIND_MODE=shared \
-		API_SOURCE=. INSTALL_DIR="$(INSTDIR)\bin\iconv"
-	cd ..\..
-	copy srclib\apr-util\$(LONG)\libaprutil.dll "$(INSTDIR)\bin" <.y
-	copy modules\aaa\$(LONG)\mod_auth_basic.so "$(INSTDIR)\modules" <.y
-	copy modules\aaa\$(LONG)\mod_auth_digest.so "$(INSTDIR)\modules" <.y
-	copy modules\aaa\$(LONG)\mod_authn_anon.so "$(INSTDIR)\modules" <.y
-	copy modules\aaa\$(LONG)\mod_authn_dbm.so "$(INSTDIR)\modules" <.y
-	copy modules\aaa\$(LONG)\mod_authn_default.so "$(INSTDIR)\modules" <.y
-	copy modules\aaa\$(LONG)\mod_authn_file.so "$(INSTDIR)\modules" <.y
-	copy modules\aaa\$(LONG)\mod_authz_dbm.so "$(INSTDIR)\modules" <.y
-	copy modules\aaa\$(LONG)\mod_authz_default.so "$(INSTDIR)\modules" <.y
-	copy modules\aaa\$(LONG)\mod_authz_groupfile.so "$(INSTDIR)\modules" <.y
-	copy modules\aaa\$(LONG)\mod_authz_host.so "$(INSTDIR)\modules" <.y
-	copy modules\aaa\$(LONG)\mod_authz_user.so "$(INSTDIR)\modules" <.y
-	copy modules\arch\win32\$(LONG)\mod_isapi.so "$(INSTDIR)\modules" <.y
-	copy modules\cache\$(LONG)\mod_file_cache.so "$(INSTDIR)\modules" <.y
-	copy modules\dav\fs\$(LONG)\mod_dav_fs.so "$(INSTDIR)\modules" <.y
-	copy modules\dav\main\$(LONG)\mod_dav.so "$(INSTDIR)\modules" <.y
-	copy modules\experimental\$(LONG)\mod_cache.so "$(INSTDIR)\modules" <.y
-	copy modules\experimental\$(LONG)\mod_charset_lite.so "$(INSTDIR)\modules" <.y
-	copy modules\experimental\$(LONG)\mod_mem_cache.so "$(INSTDIR)\modules" <.y
-	copy modules\experimental\$(LONG)\mod_disk_cache.so "$(INSTDIR)\modules" <.y
-	copy modules\experimental\$(LONG)\util_ldap.so "$(INSTDIR)\modules" <.y
-	copy modules\experimental\$(LONG)\mod_auth_ldap.so "$(INSTDIR)\modules" <.y
-	copy modules\filters\$(LONG)\mod_ext_filter.so "$(INSTDIR)\modules" <.y
-	copy modules\filters\$(LONG)\mod_include.so "$(INSTDIR)\modules" <.y
-	copy modules\generators\$(LONG)\mod_asis.so "$(INSTDIR)\modules" <.y
-	copy modules\generators\$(LONG)\mod_autoindex.so "$(INSTDIR)\modules" <.y
-	copy modules\generators\$(LONG)\mod_cgi.so "$(INSTDIR)\modules" <.y
-	copy modules\generators\$(LONG)\mod_info.so "$(INSTDIR)\modules" <.y
-	copy modules\generators\$(LONG)\mod_status.so "$(INSTDIR)\modules" <.y
-	copy modules\http\$(LONG)\mod_mime.so "$(INSTDIR)\modules" <.y
-	copy modules\loggers\$(LONG)\mod_log_config.so "$(INSTDIR)\modules" <.y
-	copy modules\loggers\$(LONG)\mod_logio.so "$(INSTDIR)\modules" <.y
-	copy modules\mappers\$(LONG)\mod_actions.so "$(INSTDIR)\modules" <.y
-	copy modules\mappers\$(LONG)\mod_alias.so "$(INSTDIR)\modules" <.y
-	copy modules\mappers\$(LONG)\mod_dir.so "$(INSTDIR)\modules" <.y
-	copy modules\mappers\$(LONG)\mod_imap.so "$(INSTDIR)\modules" <.y
-	copy modules\mappers\$(LONG)\mod_negotiation.so "$(INSTDIR)\modules" <.y
-	copy modules\mappers\$(LONG)\mod_rewrite.so "$(INSTDIR)\modules" <.y
-	copy modules\mappers\$(LONG)\mod_speling.so "$(INSTDIR)\modules" <.y
-	copy modules\mappers\$(LONG)\mod_userdir.so "$(INSTDIR)\modules" <.y
-	copy modules\mappers\$(LONG)\mod_vhost_alias.so "$(INSTDIR)\modules" <.y
-	copy modules\metadata\$(LONG)\mod_cern_meta.so "$(INSTDIR)\modules" <.y
-	copy modules\metadata\$(LONG)\mod_env.so "$(INSTDIR)\modules" <.y
-	copy modules\metadata\$(LONG)\mod_expires.so "$(INSTDIR)\modules" <.y
-	copy modules\metadata\$(LONG)\mod_headers.so "$(INSTDIR)\modules" <.y
-	copy modules\metadata\$(LONG)\mod_ident.so "$(INSTDIR)\modules" <.y
-	copy modules\metadata\$(LONG)\mod_mime_magic.so "$(INSTDIR)\modules" <.y
-	copy modules\metadata\$(LONG)\mod_setenvif.so "$(INSTDIR)\modules" <.y
-	copy modules\metadata\$(LONG)\mod_unique_id.so "$(INSTDIR)\modules" <.y
-	copy modules\metadata\$(LONG)\mod_usertrack.so "$(INSTDIR)\modules" <.y
-	copy modules\proxy\$(LONG)\mod_proxy.so "$(INSTDIR)\modules" <.y
-	copy modules\proxy\$(LONG)\mod_proxy_connect.so "$(INSTDIR)\modules" <.y
-	copy modules\proxy\$(LONG)\mod_proxy_ftp.so "$(INSTDIR)\modules" <.y
-	copy modules\proxy\$(LONG)\mod_proxy_http.so "$(INSTDIR)\modules" <.y
-!IF "$(SHORT)" == "D"
-	copy $(LONG)\Apache.pdb "$(INSTDIR)\bin" <.y
-	copy $(LONG)\libhttpd.pdb "$(INSTDIR)\bin" <.y
-	copy srclib\apr\$(LONG)\libapr.pdb "$(INSTDIR)\bin" <.y
-	copy srclib\apr-iconv\$(LONG)\libapriconv.pdb "$(INSTDIR)\bin" <.y
-	copy srclib\apr-util\$(LONG)\libaprutil.pdb "$(INSTDIR)\bin" <.y
-	copy modules\aaa\$(LONG)\mod_auth_basic.pdb "$(INSTDIR)\modules" <.y
-	copy modules\aaa\$(LONG)\mod_auth_digest.pdb "$(INSTDIR)\modules" <.y
-	copy modules\aaa\$(LONG)\mod_authn_anon.pdb "$(INSTDIR)\modules" <.y
-	copy modules\aaa\$(LONG)\mod_authn_dbm.pdb "$(INSTDIR)\modules" <.y
-	copy modules\aaa\$(LONG)\mod_authn_default.pdb "$(INSTDIR)\modules" <.y
-	copy modules\aaa\$(LONG)\mod_authn_file.pdb "$(INSTDIR)\modules" <.y
-	copy modules\aaa\$(LONG)\mod_authz_dbm.pdb "$(INSTDIR)\modules" <.y
-	copy modules\aaa\$(LONG)\mod_authz_default.pdb "$(INSTDIR)\modules" <.y
-	copy modules\aaa\$(LONG)\mod_authz_groupfile.pdb "$(INSTDIR)\modules" <.y
-	copy modules\aaa\$(LONG)\mod_authz_host.pdb "$(INSTDIR)\modules" <.y
-	copy modules\aaa\$(LONG)\mod_authz_user.pdb "$(INSTDIR)\modules" <.y
-	copy modules\arch\win32\$(LONG)\mod_isapi.pdb "$(INSTDIR)\modules" <.y
-	copy modules\cache\$(LONG)\mod_file_cache.pdb "$(INSTDIR)\modules" <.y
-	copy modules\dav\fs\$(LONG)\mod_dav_fs.pdb "$(INSTDIR)\modules" <.y
-	copy modules\dav\main\$(LONG)\mod_dav.pdb "$(INSTDIR)\modules" <.y
-	copy modules\experimental\$(LONG)\mod_cache.pdb "$(INSTDIR)\modules" <.y
-	copy modules\experimental\$(LONG)\mod_charset_lite.pdb "$(INSTDIR)\modules" <.y
-	copy modules\experimental\$(LONG)\mod_mem_cache.pdb "$(INSTDIR)\modules" <.y
-	copy modules\experimental\$(LONG)\mod_disk_cache.pdb "$(INSTDIR)\modules" <.y
-	copy modules\experimental\$(LONG)\util_ldap.pdb "$(INSTDIR)\modules" <.y
-	copy modules\experimental\$(LONG)\mod_auth_ldap.pdb "$(INSTDIR)\modules" <.y
-	copy modules\filters\$(LONG)\mod_ext_filter.pdb "$(INSTDIR)\modules" <.y
-	copy modules\filters\$(LONG)\mod_include.pdb "$(INSTDIR)\modules" <.y
-	copy modules\generators\$(LONG)\mod_asis.pdb "$(INSTDIR)\modules" <.y
-	copy modules\generators\$(LONG)\mod_autoindex.pdb "$(INSTDIR)\modules" <.y
-	copy modules\generators\$(LONG)\mod_cgi.pdb "$(INSTDIR)\modules" <.y
-	copy modules\generators\$(LONG)\mod_info.pdb "$(INSTDIR)\modules" <.y
-	copy modules\generators\$(LONG)\mod_status.pdb "$(INSTDIR)\modules" <.y
-	copy modules\http\$(LONG)\mod_mime.pdb "$(INSTDIR)\modules" <.y
-	copy modules\loggers\$(LONG)\mod_log_config.pdb "$(INSTDIR)\modules" <.y
-	copy modules\loggers\$(LONG)\mod_logio.pdb "$(INSTDIR)\modules" <.y
-	copy modules\mappers\$(LONG)\mod_actions.pdb "$(INSTDIR)\modules" <.y
-	copy modules\mappers\$(LONG)\mod_alias.pdb "$(INSTDIR)\modules" <.y
-	copy modules\mappers\$(LONG)\mod_dir.pdb "$(INSTDIR)\modules" <.y
-	copy modules\mappers\$(LONG)\mod_imap.pdb "$(INSTDIR)\modules" <.y
-	copy modules\mappers\$(LONG)\mod_negotiation.pdb "$(INSTDIR)\modules" <.y
-	copy modules\mappers\$(LONG)\mod_rewrite.pdb "$(INSTDIR)\modules" <.y
-	copy modules\mappers\$(LONG)\mod_speling.pdb "$(INSTDIR)\modules" <.y
-	copy modules\mappers\$(LONG)\mod_userdir.pdb "$(INSTDIR)\modules" <.y
-	copy modules\mappers\$(LONG)\mod_vhost_alias.pdb "$(INSTDIR)\modules" <.y
-	copy modules\metadata\$(LONG)\mod_cern_meta.pdb "$(INSTDIR)\modules" <.y
-	copy modules\metadata\$(LONG)\mod_env.pdb "$(INSTDIR)\modules" <.y
-	copy modules\metadata\$(LONG)\mod_expires.pdb "$(INSTDIR)\modules" <.y
-	copy modules\metadata\$(LONG)\mod_headers.pdb "$(INSTDIR)\modules" <.y
-	copy modules\metadata\$(LONG)\mod_ident.pdb "$(INSTDIR)\modules" <.y
-	copy modules\metadata\$(LONG)\mod_mime_magic.pdb "$(INSTDIR)\modules" <.y
-	copy modules\metadata\$(LONG)\mod_setenvif.pdb "$(INSTDIR)\modules" <.y
-	copy modules\metadata\$(LONG)\mod_unique_id.pdb "$(INSTDIR)\modules" <.y
-	copy modules\metadata\$(LONG)\mod_usertrack.pdb "$(INSTDIR)\modules" <.y
-	copy modules\proxy\$(LONG)\mod_proxy.pdb "$(INSTDIR)\modules" <.y
-	copy modules\proxy\$(LONG)\mod_proxy_connect.pdb "$(INSTDIR)\modules" <.y
-	copy modules\proxy\$(LONG)\mod_proxy_ftp.pdb "$(INSTDIR)\modules" <.y
-	copy modules\proxy\$(LONG)\mod_proxy_http.pdb "$(INSTDIR)\modules" <.y
-!ENDIF
+	copy CHANGES      "$(INSTDIR)\CHANGES.txt" <.y
+	copy INSTALL      "$(INSTDIR)\INSTALL.txt" <.y
+	copy LICENSE      "$(INSTDIR)\LICENSE.txt" <.y
+	copy README       "$(INSTDIR)\README.txt" <.y
 !IF EXIST("srclib\openssl")
-	copy modules\ssl\$(LONG)\mod_ssl.so "$(INSTDIR)\modules" <.y
-	copy srclib\openssl\$(SSLBIN)\openssl.exe "$(INSTDIR)\bin" <.y
-	copy srclib\openssl\$(SSLBIN)\libeay32.dll "$(INSTDIR)\bin" <.y
-	copy srclib\openssl\$(SSLBIN)\ssleay32.dll "$(INSTDIR)\bin" <.y
-!IF "$(SHORT)" == "D"
-	copy modules\ssl\$(LONG)\mod_ssl.pdb "$(INSTDIR)\modules" <.y
-	copy srclib\openssl\$(SSLBIN)\openssl.pdb "$(INSTDIR)\bin" <.y
-	copy srclib\openssl\$(SSLBIN)\libeay32.pdb "$(INSTDIR)\bin" <.y
-	copy srclib\openssl\$(SSLBIN)\ssleay32.pdb "$(INSTDIR)\bin" <.y
-!ENDIF
 	type << >> "$(INSTDIR)\README.txt"
 
   This binary distribution includes cryptographic software written by
@@ -580,15 +538,6 @@ BEGIN {
 
 --------------------------------------------------------------------------------
 <<
-	copy support\$(LONG)\abs.exe "$(INSTDIR)\bin\ab.exe" <.y
-!IF "$(SHORT)" == "D"
-	copy support\$(LONG)\abs.pdb "$(INSTDIR)\bin\ab.pdb" <.y
-!ENDIF
-!ELSE
-	copy support\$(LONG)\ab.exe "$(INSTDIR)\bin" <.y
-!IF "$(SHORT)" == "D"
-	copy support\$(LONG)\ab.pdb "$(INSTDIR)\bin" <.y
-!ENDIF
 !ENDIF
 !IF EXIST("srclib\zlib")
 	type << >> "$(INSTDIR)\README.txt"
@@ -612,27 +561,28 @@ BEGIN {
     exit 1;
 }
 <<
-	copy modules\filters\$(LONG)\mod_deflate.so "$(INSTDIR)\modules" <.y
-!IF "$(SHORT)" == "D"
-	copy modules\filters\$(LONG)\mod_deflate.pdb "$(INSTDIR)\modules" <.y
 !ENDIF
-!ENDIF
-	copy support\$(LONG)\htdbm.exe "$(INSTDIR)\bin" <.y
-	copy support\$(LONG)\htdigest.exe "$(INSTDIR)\bin" <.y
-	copy support\$(LONG)\htpasswd.exe "$(INSTDIR)\bin" <.y
-	copy support\$(LONG)\logresolve.exe "$(INSTDIR)\bin" <.y
-	copy support\$(LONG)\rotatelogs.exe "$(INSTDIR)\bin" <.y
-	copy support\win32\$(LONG)\ApacheMonitor.exe "$(INSTDIR)\bin" <.y
-	copy support\win32\$(LONG)\wintty.exe "$(INSTDIR)\bin" <.y
-!IF "$(SHORT)" == "D"
-	copy support\$(LONG)\htdbm.pdb "$(INSTDIR)\bin" <.y
-	copy support\$(LONG)\htdigest.pdb "$(INSTDIR)\bin" <.y
-	copy support\$(LONG)\htpasswd.pdb "$(INSTDIR)\bin" <.y
-	copy support\$(LONG)\logresolve.pdb "$(INSTDIR)\bin" <.y
-	copy support\$(LONG)\rotatelogs.pdb "$(INSTDIR)\bin" <.y
-	copy support\win32\$(LONG)\ApacheMonitor.pdb "$(INSTDIR)\bin" <.y
-	copy support\win32\$(LONG)\wintty.pdb "$(INSTDIR)\bin" <.y
-!ENDIF
+	$(MAKE) $(MAKEOPT) -f Makefile.win SHORT=$(SHORT) LONG=$(LONG) \
+		_copybin src_exe=exe src_dll=dll src_so=so             \
+		inst_exe="$(INSTDIR)\bin"                              \
+		inst_dll="$(INSTDIR)\bin"                              \
+		inst_mod="$(INSTDIR)\modules"
+	$(MAKE) $(MAKEOPT) -f Makefile.win SHORT=$(SHORT) LONG=$(LONG) \
+		_copybin src_exe=pdb src_dll=pdb src_so=pdb quiet="-"  \
+		inst_exe="$(INSTDIR)\bin"                              \
+		inst_dll="$(INSTDIR)\bin"                              \
+		inst_mod="$(INSTDIR)\modules"
+	$(MAKE) $(MAKEOPT) -f Makefile.win SHORT=$(SHORT) LONG=$(LONG) \
+		_copybin src_exe=dbg src_dll=dbg src_so=dbg quiet="-"  \
+		inst_exe="$(INSTDIR)\symbols\exe"                      \
+		inst_dll="$(INSTDIR)\symbols\dll"                      \
+		inst_mod="$(INSTDIR)\symbols\so" 
+	cd srclib\apr-iconv
+	$(MAKE) $(MAKEOPT) -f build\modules.mk.win install symbols \
+		BUILD_MODE=$(LONG) BIND_MODE=shared API_SOURCE=. \
+		INSTALL_DIR="$(INSTDIR)\bin\iconv" \
+		SYMBOLS_DIR="$(INSTDIR)\symbols"
+	cd ..\..
 	copy docs\cgi-examples\printenv "$(INSTDIR)\cgi-bin\printenv.pl" <.y
 	-awk -f <<script.awk "docs/cgi-examples/printenv" > "$(INSTDIR)\cgi-bin\printenv.pl"
     BEGIN { 
@@ -647,32 +597,32 @@ BEGIN {
 	}
     }
 <<
-	xcopy docs\error "$(INSTDIR)\error" /s /d < .a
-	xcopy docs\docroot "$(INSTDIR)\htdocs" /d < .a
-	xcopy docs\manual "$(INSTDIR)\manual" /s /d < .a
-	xcopy srclib\pcre\pcre*.h "$(INSTDIR)\include" /d < .a
-	xcopy srclib\apr-util\xml\expat\lib\expat.h "$(INSTDIR)\include" /d < .a
-	xcopy srclib\apr\include\*.h "$(INSTDIR)\include" /d < .a
-	xcopy srclib\apr-util\include\*.h "$(INSTDIR)\include" /d < .a
-	xcopy include\*.h "$(INSTDIR)\include" /d < .a
-	xcopy docs\icons "$(INSTDIR)\icons" /s /d < .a
-	copy srclib\apr\Lib$(SHORT)\apr.lib "$(INSTDIR)\lib" <.y
-	copy srclib\apr-util\Lib$(SHORT)\aprutil.lib "$(INSTDIR)\lib" <.y
-	copy srclib\pcre\Lib$(SHORT)\pcre.lib "$(INSTDIR)\lib" <.y
-	copy srclib\pcre\Lib$(SHORT)\pcreposix.lib "$(INSTDIR)\lib" <.y
+	xcopy docs\error 	"$(INSTDIR)\error" /s /d < .a
+	xcopy docs\docroot 	"$(INSTDIR)\htdocs" /d < .a
+	xcopy docs\icons 	"$(INSTDIR)\icons" /s /d < .a
+	xcopy docs\manual 	"$(INSTDIR)\manual" /s /d < .a
+	xcopy srclib\pcre\pcre*.h 			"$(INSTDIR)\include" /d < .a
+	xcopy srclib\apr-util\xml\expat\lib\expat.h 	"$(INSTDIR)\include" /d < .a
+	xcopy srclib\apr\include\*.h 			"$(INSTDIR)\include" /d < .a
+	xcopy srclib\apr-util\include\*.h 		"$(INSTDIR)\include" /d < .a
+	xcopy include\*.h 				"$(INSTDIR)\include" /d < .a
+	copy srclib\apr\Lib$(SHORT)\apr.lib 		"$(INSTDIR)\lib" <.y
+	copy srclib\apr-util\Lib$(SHORT)\aprutil.lib 	"$(INSTDIR)\lib" <.y
+	copy srclib\pcre\Lib$(SHORT)\pcre.lib 		"$(INSTDIR)\lib" <.y
+	copy srclib\pcre\Lib$(SHORT)\pcreposix.lib 	"$(INSTDIR)\lib" <.y
 #       ### until we determine if it's safe to change expat>libexpat and xml>expat
 #       within our cvs tree... at least remain consistent to our naming conventions;
 	copy srclib\apr-util\xml\expat\lib\Lib$(SHORT)\xml.lib "$(INSTDIR)\lib\expat.lib" <.y
-	copy srclib\apr\$(LONG)\libapr.lib "$(INSTDIR)\lib" <.y
-	copy srclib\apr\$(LONG)\libapr.exp "$(INSTDIR)\lib" <.y
-	copy srclib\apr-iconv\$(LONG)\libapriconv.lib "$(INSTDIR)\lib" <.y
-	copy srclib\apr-iconv\$(LONG)\libapriconv.exp "$(INSTDIR)\lib" <.y
-	copy srclib\apr-util\$(LONG)\libaprutil.lib "$(INSTDIR)\lib" <.y
-	copy srclib\apr-util\$(LONG)\libaprutil.exp "$(INSTDIR)\lib" <.y
-	copy $(LONG)\libhttpd.exp "$(INSTDIR)\lib" <.y
-	copy $(LONG)\libhttpd.lib "$(INSTDIR)\lib" <.y
-	copy modules\dav\main\$(LONG)\mod_dav.exp "$(INSTDIR)\lib" <.y
-	copy modules\dav\main\$(LONG)\mod_dav.lib "$(INSTDIR)\lib" <.y
+	copy srclib\apr\$(LONG)\libapr.lib 		"$(INSTDIR)\lib" <.y
+	copy srclib\apr\$(LONG)\libapr.exp 		"$(INSTDIR)\lib" <.y
+	copy srclib\apr-iconv\$(LONG)\libapriconv.lib 	"$(INSTDIR)\lib" <.y
+	copy srclib\apr-iconv\$(LONG)\libapriconv.exp 	"$(INSTDIR)\lib" <.y
+	copy srclib\apr-util\$(LONG)\libaprutil.lib 	"$(INSTDIR)\lib" <.y
+	copy srclib\apr-util\$(LONG)\libaprutil.exp 	"$(INSTDIR)\lib" <.y
+	copy $(LONG)\libhttpd.exp 			"$(INSTDIR)\lib" <.y
+	copy $(LONG)\libhttpd.lib 			"$(INSTDIR)\lib" <.y
+	copy modules\dav\main\$(LONG)\mod_dav.exp 	"$(INSTDIR)\lib" <.y
+	copy modules\dav\main\$(LONG)\mod_dav.lib 	"$(INSTDIR)\lib" <.y
 	copy docs\conf\magic "$(INSTDIR)\conf\magic.default" <.y
 	if not exist "$(INSTDIR)\conf\magic" \
 	    copy "$(INSTDIR)\conf\magic.default" "$(INSTDIR)\conf\magic"

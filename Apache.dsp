@@ -42,7 +42,7 @@ RSC=rc.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MD /W3 /O2 /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "SHARED_MODULE" /FD /c
-# ADD CPP /nologo /MD /W3 /O2 /I "./include" /I "./srclib/apr/include" /I "./srclib/apr-util/include" /D "NDEBUG" /D "WIN32" /D "_CONSOLE" /Fd"Release\Apache" /FD /c
+# ADD CPP /nologo /MD /W3 /Zi /O2 /I "./include" /I "./srclib/apr/include" /I "./srclib/apr-util/include" /D "NDEBUG" /D "WIN32" /D "_CONSOLE" /Fd"Release\Apache" /FD /c
 # ADD BASE RSC /l 0x409 /d "NDEBUG"
 # ADD RSC /l 0x409 /d "NDEBUG"
 BSC32=bscmake.exe
@@ -50,7 +50,16 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib advapi32.lib ws2_32.lib mswsock.lib /nologo /subsystem:console /map /machine:I386
-# ADD LINK32 kernel32.lib user32.lib advapi32.lib ws2_32.lib mswsock.lib /nologo /stack:0x40000 /subsystem:console /map /machine:I386
+# ADD LINK32 kernel32.lib user32.lib advapi32.lib ws2_32.lib mswsock.lib /nologo /stack:0x40000 /subsystem:console /map /debug /debugtype:both /machine:I386 /pdbtype:sept
+# Begin Custom Build - Extracting .dbg symbols from $(InputPath)
+InputPath=.\Release\Apache.exe
+SOURCE="$(InputPath)"
+
+".\Release\Apache.dbgmark" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	rebase -q -b 0x00400000 -x ".\Release" $(InputPath)
+	echo rebased > ".\Release\Apache.dbgmark"
+
+# End Custom Build
 
 !ELSEIF  "$(CFG)" == "Apache - Win32 Debug"
 

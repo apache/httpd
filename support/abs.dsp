@@ -42,7 +42,7 @@ RSC=rc.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MD /W3 /O2 /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /D "APR_DECLARE_STATIC" /D "APU_DECLARE_STATIC" /D "SSL" /FD /c
-# ADD CPP /nologo /MD /W3 /O2 /I "../srclib/apr/include" /I "../srclib/apr-util/include" /I "../include" /I "../srclib/openssl/inc32/openssl" /I "../srclib/openssl/inc32" /D "NDEBUG" /D "WIN32" /D "_CONSOLE" /D "APR_DECLARE_STATIC" /D "APU_DECLARE_STATIC" /D "USE_SSL" /D "WIN32_LEAN_AND_MEAN" /D "NO_IDEA" /D "NO_RC5" /D "NO_MDC2" /Fd"Release/abs" /FD /c
+# ADD CPP /nologo /MD /W3 /Zi /O2 /I "../srclib/apr/include" /I "../srclib/apr-util/include" /I "../include" /I "../srclib/openssl/inc32/openssl" /I "../srclib/openssl/inc32" /D "NDEBUG" /D "WIN32" /D "_CONSOLE" /D "APR_DECLARE_STATIC" /D "APU_DECLARE_STATIC" /D "USE_SSL" /D "WIN32_LEAN_AND_MEAN" /D "NO_IDEA" /D "NO_RC5" /D "NO_MDC2" /Fd"Release/abs_src" /FD /c
 # ADD BASE RSC /l 0x409 /d "NDEBUG"
 # ADD RSC /l 0x409 /d "NDEBUG"
 BSC32=bscmake.exe
@@ -50,7 +50,16 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib wsock32.lib ws2_32.lib ssleay32.lib libeay32.lib /nologo /subsystem:console /map /machine:I386 /libpath:"../srclib/openssl/out32dll"
-# ADD LINK32 kernel32.lib advapi32.lib wsock32.lib ws2_32.lib ssleay32.lib libeay32.lib /nologo /subsystem:console /map /machine:I386 /libpath:"../srclib/openssl/out32dll"
+# ADD LINK32 kernel32.lib advapi32.lib wsock32.lib ws2_32.lib ssleay32.lib libeay32.lib /nologo /subsystem:console /map /debug /debugtype:both /machine:I386 /pdbtype:sept /libpath:"../srclib/openssl/out32dll"
+# Begin Custom Build - Extracting .dbg symbols from $(InputPath)
+InputPath=.\Release\abs.so
+SOURCE="$(InputPath)"
+
+".\Release\abs.dbgmark" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	rebase -q -b 0x00400000 -x ".\Release" $(InputPath)
+	echo rebased > ".\Release\abs.dbgmark"
+
+# End Custom Build
 
 !ELSEIF  "$(CFG)" == "abs - Win32 Debug"
 
@@ -66,7 +75,7 @@ LINK32=link.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MDd /W3 /GX /Zi /Od /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /D "APR_DECLARE_STATIC" /D "APU_DECLARE_STATIC" /D "SSL" /FD /c
-# ADD CPP /nologo /MDd /W3 /GX /Zi /Od /I "../srclib/apr/include" /I "../srclib/apr-util/include" /I "../include" /I "../srclib/openssl/inc32/openssl" /I "../srclib/openssl/inc32" /D "_DEBUG" /D "WIN32" /D "_CONSOLE" /D "APR_DECLARE_STATIC" /D "APU_DECLARE_STATIC" /D "USE_SSL" /D "WIN32_LEAN_AND_MEAN" /D "NO_IDEA" /D "NO_RC5" /D "NO_MDC2" /Fd"Debug/abs" /FD /c
+# ADD CPP /nologo /MDd /W3 /GX /Zi /Od /I "../srclib/apr/include" /I "../srclib/apr-util/include" /I "../include" /I "../srclib/openssl/inc32/openssl" /I "../srclib/openssl/inc32" /D "_DEBUG" /D "WIN32" /D "_CONSOLE" /D "APR_DECLARE_STATIC" /D "APU_DECLARE_STATIC" /D "USE_SSL" /D "WIN32_LEAN_AND_MEAN" /D "NO_IDEA" /D "NO_RC5" /D "NO_MDC2" /Fd"Debug/abs_src" /FD /c
 # ADD BASE RSC /l 0x409 /d "_DEBUG"
 # ADD RSC /l 0x409 /d "_DEBUG"
 BSC32=bscmake.exe
@@ -87,12 +96,15 @@ LINK32=link.exe
 SOURCE=.\ab.c
 
 !IF  "$(CFG)" == "abs - Win32 Release"
+
 # ADD CPP /Fo"Release/abs.obj"
 
 !ELSEIF  "$(CFG)" == "abs - Win32 Debug"
+
 # ADD CPP /Fo"Debug/abs.obj"
 
 !ENDIF 
+
 # End Source File
 # Begin Source File
 
