@@ -240,26 +240,18 @@ static int fixup_headers(request_rec *r)
 
     return DECLINED;
 }
-
+static void register_hooks(void)
+{
+    ap_hook_fixups(fixup_headers,NULL,NULL,HOOK_MIDDLE);
+} 
 module MODULE_VAR_EXPORT headers_module =
 {
-    STANDARD_MODULE_STUFF,
-    NULL,                       /* initializer */
+    STANDARD20_MODULE_STUFF,
     create_headers_dir_config,  /* dir config creater */
     merge_headers_config,       /* dir merger --- default is to override */
     create_headers_config,      /* server config */
     merge_headers_config,       /* merge server configs */
     headers_cmds,               /* command table */
     NULL,                       /* handlers */
-    NULL,                       /* filename translation */
-    NULL,                       /* check_user_id */
-    NULL,                       /* check auth */
-    NULL,                       /* check access */
-    NULL,                       /* type_checker */
-    fixup_headers,              /* fixups */
-    NULL,                       /* logger */
-    NULL,                       /* header parser */
-    NULL,                       /* child_init */
-    NULL,                       /* child_exit */
-    NULL                        /* post read-request */
+    register_hooks		/* register hooks */
 };

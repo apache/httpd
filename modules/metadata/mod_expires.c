@@ -485,26 +485,18 @@ static int add_expires(request_rec *r)
     ap_table_setn(r->headers_out, "Expires", ap_gm_timestr_822(r->pool, expires));
     return OK;
 }
-
+static void register_hooks(void)
+{
+    ap_hook_fixups(add_expires,NULL,NULL,HOOK_MIDDLE);
+}
 module MODULE_VAR_EXPORT expires_module =
 {
-    STANDARD_MODULE_STUFF,
-    NULL,                       /* initializer */
+    STANDARD20_MODULE_STUFF,
     create_dir_expires_config,  /* dir config creater */
     merge_expires_dir_configs,  /* dir merger --- default is to override */
     NULL,                       /* server config */
     NULL,                       /* merge server configs */
     expires_cmds,               /* command table */
     NULL,                       /* handlers */
-    NULL,                       /* filename translation */
-    NULL,                       /* check_user_id */
-    NULL,                       /* check auth */
-    NULL,                       /* check access */
-    NULL,                       /* type_checker */
-    add_expires,                /* fixups */
-    NULL,                       /* logger */
-    NULL,                       /* header parser */
-    NULL,                       /* child_init */
-    NULL,                       /* child_exit */
-    NULL                        /* post read-request */
+    register_hooks		/* register hooks */
 };

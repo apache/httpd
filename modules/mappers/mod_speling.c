@@ -533,26 +533,18 @@ static int check_speling(request_rec *r)
 
     return OK;
 }
-
+static void register_hooks(void)
+{
+    ap_hook_fixups(check_speling,NULL,NULL,HOOK_MIDDLE);
+}
 module MODULE_VAR_EXPORT speling_module =
 {
-    STANDARD_MODULE_STUFF,
-    NULL,                       /* initializer */
+    STANDARD20_MODULE_STUFF,
     create_mconfig_for_directory,  /* create per-dir config */
     NULL,                       /* merge per-dir config */
     create_mconfig_for_server,  /* server config */
     NULL,                       /* merge server config */
     speling_cmds,               /* command table */
     NULL,                       /* handlers */
-    NULL,                       /* filename translation */
-    NULL,                       /* check_user_id */
-    NULL,                       /* check auth */
-    NULL,                       /* check access */
-    NULL,                       /* type_checker */
-    check_speling,              /* fixups */
-    NULL,                       /* logger */
-    NULL,                       /* header parser */
-    NULL,                       /* child_init */
-    NULL,                       /* child_exit */
-    NULL                        /* post read-request */
+    register_hooks		/* register hooks */
 };
