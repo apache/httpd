@@ -40,28 +40,22 @@
     The module can be configured to connect to other proxy modules for these
     and other protocols.</p>
 
-    <p>This module was experimental in Apache 1.1.x. Improvements and bugfixes
-    were made in Apache v1.2.x and Apache v1.3.x, then the module underwent a
-    major overhaul for Apache v2.0. The protocol support was upgraded to
-    <code>HTTP/1.1</code>, and filter support was enabled.</p>
+    <p>Apache's proxy features are divided into several modules in
+    addition to <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code>:
+    <code class="module"><a href="../mod/mod_proxy_http.html">mod_proxy_http</a></code>, <code class="module"><a href="../mod/mod_proxy_ftp.html">mod_proxy_ftp</a></code>
+    and <code class="module"><a href="../mod/mod_proxy_connect.html">mod_proxy_connect</a></code>.  Thus, if you want to use
+    one or more of the particular proxy functions, load
+    <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> <em>and</em> the appropriate module(s)
+    into the server (either statically at compile-time or dynamically
+    via the <code class="directive"><a href="../mod/mod_so.html#loadmodule">LoadModule</a></code>
+    directive).</p>
 
-    <p>During the overhaul process, <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> features
-    have been split into several module files: <code class="module"><a href="../mod/mod_proxy_http.html">mod_proxy_http</a></code>,
-    <code class="module"><a href="../mod/mod_proxy_ftp.html">mod_proxy_ftp</a></code> and <code class="module"><a href="../mod/mod_proxy_connect.html">mod_proxy_connect</a></code>.
-    Thus, if you want to use one or more of the particular proxy functions,
-    load <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> <em>and</em> the appropriate
-    module(s) into the server (either statically or dynamically via the
-    <code class="directive"><a href="../mod/mod_so.html#loadmodule">LoadModule</a></code> directive).</p>
-
-    <p>Please note that the <strong>caching</strong> function present in <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> up to Apache v1.3.x has been <strong>removed</strong>
-    from <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> and incorporated into a new module,
-    <code class="module"><a href="../mod/mod_cache.html">mod_cache</a></code>. In other words, the Apache 2.0.x proxy doesn't 
-    cache - all caching functionality has been moved into
-    <code class="module"><a href="../mod/mod_cache.html">mod_cache</a></code>, which is capable of caching any content, not
-    just content from the proxy.</p>
-
-    <p>If you need to use SSL when contacting remote servers, have a look at the
-    <code>SSLProxy*</code> directives in <code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code>.</p>
+    <p>In addition, extended features are provided by other modules.
+    Caching is provided by <code class="module"><a href="../mod/mod_cache.html">mod_cache</a></code> and related
+    modules.  The ability to contact remote servers using the SSL/TLS
+    protocol is provided by the <code>SSLProxy*</code> directives of
+    <code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code>.  These additional modules will need
+    to be loaded and configured to take advantage of these features.</p>
 </div>
 <div id="quickview"><h3 class="directives">Directives</h3>
 <ul id="toc">
@@ -87,9 +81,16 @@
 </ul>
 <h3>Topics</h3>
 <ul id="topics">
-<li><img alt="" src="../images/down.gif" /> <a href="#configs">Common configuration topics</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#forwardreverse">Forward and Reverse Proxies</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#examples">Basic Examples</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#access">Controlling access to your proxy</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#ftp-proxy">FTP Proxy</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#startup">Slow Startup</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#intranet">Intranet Proxy</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#envsettings">Protocol Adjustments</a></li>
 </ul><h3>See also</h3>
 <ul class="seealso">
+<li><code class="module"><a href="../mod/mod_cache.html">mod_cache</a></code></li>
 <li><code class="module"><a href="../mod/mod_proxy_http.html">mod_proxy_http</a></code></li>
 <li><code class="module"><a href="../mod/mod_proxy_ftp.html">mod_proxy_ftp</a></code></li>
 <li><code class="module"><a href="../mod/mod_proxy_connect.html">mod_proxy_connect</a></code></li>
@@ -97,61 +98,91 @@
 </ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="configs" id="configs">Common configuration topics</a></h2>
-    <ul>
-    <li><a href="#forwardreverse">Forward and Reverse Proxies</a></li>
-    <li><a href="#access">Controlling access to your proxy</a></li>
-    <li><a href="#mimetypes">Why doesn't file type <var>xxx</var> download via
-    FTP?</a></li>
-    <li><a href="#type">How can I force an FTP ASCII download of File
-    <var>xxx</var>?</a></li>
-    <li><a href="#percent2fhack">How can I access FTP files outside of my home
-    directory?</a></li>
-    <li><a href="#ftppass">How can I hide the FTP cleartext password in my
-    browser's URL line?</a></li>
-    <li><a href="#startup">Why does Apache start more slowly when using the
-    proxy module?</a></li>
-    <li><a href="#intranet">What other functions are useful for an intranet
-    proxy server?</a></li>
-    <li><a href="#envsettings">How can I make the proxy talk HTTP/1.0 and
-    disable keepalives?</a></li>
-    </ul>
-
-    <h3><a name="forwardreverse" id="forwardreverse">Forward and Reverse Proxies</a></h3>
+<h2><a name="forwardreverse" id="forwardreverse">Forward and Reverse Proxies</a></h2>
       <p>Apache can be configured in both a <dfn>forward</dfn> and
-      <dfn>reverse</dfn> proxy configuration.</p>
+      <dfn>reverse</dfn> proxy mode.</p>
 
-      <p>A <dfn>forward proxy</dfn> is an intermediate system that enables a
-      browser to connect to a remote network to which it normally does not have
-      access. A forward proxy can also be used to cache data, reducing load on
-      the networks between the forward proxy and the remote webserver.</p>
+      <p>An ordinary <dfn>forward proxy</dfn> is an intermediate
+      server that sits between the client and the <em>origin
+      server</em>.  In order to get content from the origin server,
+      the client sends a request to the proxy naming the origin server
+      as the target and the proxy then requests the content from the
+      origin server and returns it to the client.  The client must be
+      specially configured to use the forward proxy to access other
+      sites.</p>
 
-      <p>Apache's <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> can be figured to behave like a
-      forward proxy using the <code class="directive"><a href="#proxyremote">ProxyRemote</a></code> directive. In addition, caching of data can be
-      achieved by configuring <code class="module"><a href="../mod/mod_cache.html">mod_cache</a></code>. Other dedicated
-      forward proxy packages include <a href="http://www.squid-cache.org/">Squid</a>.</p>
+      <p>A typical usage of a forward proxy is to provide Internet
+      access to internal clients that are otherwise restricted by a
+      firewall.  The forward proxy can also use caching (as provided
+      by <code class="module"><a href="../mod/mod_cache.html">mod_cache</a></code>) to reduce network usage.</p>
 
-      <p>A <dfn>reverse proxy</dfn> is a webserver system that is capable of
-      serving webpages sourced from other webservers - in addition to webpages
-      on disk or generated dynamically by CGI - making these pages look like
-      they originated at the reverse proxy.</p>
+      <p>The forward proxy is activated using the <code class="directive"><a href="#proxyrequests">ProxyRequests</a></code> directive.  Because
+      forward proxys allow clients to access arbitrary sites through
+      your server and to hide their true origin, it is essential that
+      you <a href="#access">secure your server</a> so that only
+      authorized clients can access the proxy before activating a
+      forward proxy.</p>
 
-      <p>When configured with the mod_cache module the reverse proxy can act as
-      a cache for slower backend webservers. The reverse proxy can also enable
-      advanced URL strategies and management techniques, allowing webpages
-      served using different webserver systems or architectures to coexist
-      inside the same URL space. Reverse proxy systems are also ideal for
-      implementing centralised logging websites with many or diverse website
-      backends. Complex multi-tier webserver systems can be constructed using an
-      <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> frontend and any number of backend
-      webservers.</p>
+      <p>A <dfn>reverse proxy</dfn>, by contrast, appears to the
+      client just like an ordinary web server.  No special
+      configuration on the client is necessary.  The client makes
+      ordinary requests for content in the name-space of the reverse
+      proxy.  The reverse proxy then decides where to send those
+      requests, and returns the content as if it was itself the
+      origin.</p>
 
-      <p>The reverse proxy is configured using the <code class="directive"><a href="#proxypass">ProxyPass</a></code> and <code class="directive"><a href="#proxypassreverse">ProxyPassReverse</a></code> directives. Caching can be
-      enabled using mod_cache as with the forward proxy.</p>
-     
+      <p>A typical usage of a reverse proxy is to provide Internet
+      users access to a server that is behind a firewall.  Reverse
+      proxies can also be used to balance load among several back-end
+      servers, or to provide caching for a slower back-end server.
+      In addition, reverse proxies can be used simply to bring
+      several servers into the same URL space.</p>
 
-    <h3><a name="access" id="access">Controlling access to your proxy</a></h3>
-      <p>You can control who can access your proxy via the <code class="directive"><a href="#proxy">&lt;Proxy&gt;</a></code> control block using
+      <p>A reverse proxy is activated using the <code class="directive"><a href="#proxypass">ProxyPass</a></code> directive or the
+      <code>[P]</code> flag to the <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> directive.  It is
+      <strong>not</strong> necessary to turn <code class="directive"><a href="#proxyrequests">ProxyRequests</a></code> on in order to
+      configure a reverse proxy.</p>
+    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="examples" id="examples">Basic Examples</a></h2>
+
+    <p>The examples below are only a very basic idea to help you
+    get started.  Please read the documentation on the individual
+    directives.</p>
+
+    <p>In addition, if you wish to have caching enabled, consult
+    the documentation from <code class="module"><a href="../mod/mod_cache.html">mod_cache</a></code>.</p>
+
+    <div class="example"><h3>Forward Proxy</h3><p><code>
+    ProxyRequests On<br />
+    ProxyVia On<br />
+    <br />
+    &lt;Proxy *&gt;<br />
+    <span class="indent">
+      Order deny,allow<br />
+      Deny from all<br />
+      Allow from internal.example.com<br />
+    </span>
+    &lt;/Proxy
+    </code></p></div>
+
+    <div class="example"><h3>Reverse Proxy</h3><p><code>
+    ProxyRequests Off<br />
+    <br />
+    &lt;Proxy *&gt;<br />
+    <span class="indent">
+      Order deny,allow<br />
+      Allow from all<br />
+    </span>
+    &lt;/Proxy&gt;<br />
+    <br />
+    ProxyPass /foo/ http://foo.example.com/bar/<br />
+    ProxyPassReverse /foo/ http://foo.example.com/bar/
+    </code></p></div>
+    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="access" id="access">Controlling access to your proxy</a></h2>
+      <p>You can control who can access your proxy via the <code class="directive"><a href="#proxy">&lt;Proxy&gt;</a></code> control block as in
       the following example:</p>
 
       <div class="example"><p><code>
@@ -164,9 +195,23 @@
         &lt;/Proxy&gt;
       </code></p></div>
 
-      <p>When configuring a reverse proxy, access control takes on the
-      attributes of the normal server <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code> configuration.</p>
-     
+      <p>For more information on access control directives, see
+      <code class="module"><a href="../mod/mod_access.html">mod_access</a></code>.</p>
+
+      <p>Strictly limiting access is essential if you are using a
+      forward proxy (using the <code class="directive"><a href="#proxyrequests">ProxyRequests</a></code> directive).
+      Otherwise, your server can be used by any client to access
+      arbitrary hosts while hiding his or her true identity.  This is
+      dangerous both for your network and for the Internet at large.
+      When using a reverse proxy (using the <code class="directive"><a href="#proxypass">ProxyPass</a></code> directive with
+      <code>ProxyRequests Off</code>), access control is less
+      critical because clients can only contact the hosts that you
+      have specifically configured.</p>
+
+    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="ftp-proxy" id="ftp-proxy">FTP Proxy</a></h2>
+
 
     <h3><a name="mimetypes" id="mimetypes">Why doesn't file type <var>xxx</var>
     download via FTP?</a></h3>
@@ -251,19 +296,21 @@
         might intercept your password on its way.</p>
       </div>
      
-
-    <h3><a name="startup" id="startup">Why does Apache start more slowly when using
-    the proxy module?</a></h3>
+   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="startup" id="startup">Slow Startup</a></h2>
       <p>If you're using the <code class="directive"><a href="#proxyblock">ProxyBlock</a></code> directive, hostnames' IP addresses are looked up
       and cached during startup for later match test. This may take a few
       seconds (or more) depending on the speed with which the hostname lookups
       occur.</p>
-     
-
-    <h3><a name="intranet" id="intranet">What other functions are useful for an
-    intranet proxy server?</a></h3>
+    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="intranet" id="intranet">Intranet Proxy</a></h2>
       <p>An Apache proxy server situated in an intranet needs to forward
-      external requests through the company's firewall. However, when it has to
+      external requests through the company's firewall (for this, configure
+      the <code class="directive"><a href="#proxyremote">ProxyRemote</a></code> directive
+      to forward the respective <var>scheme</var> to the firewall proxy).
+      However, when it has to
       access resources within the intranet, it can bypass the firewall when
       accessing hosts. The <code class="directive"><a href="#noproxy">NoProxy</a></code>
       directive is useful for specifying which hosts belong to the intranet and
@@ -277,10 +324,9 @@
       a redirect response and send the client to the correct, fully qualified,
       server address. This is the preferred method since the user's bookmark
       files will then contain fully qualified hosts.</p>
-     
-
-    <h3><a name="envsettings" id="envsettings">How can I make the proxy talk HTTP/1.0 and 
-    disable keepalives?</a></h3>
+    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="envsettings" id="envsettings">Protocol Adjustments</a></h2>
       <p>For circumstances where you have a application server which doesn't
       implement keepalives or HTTP/1.1 properly, there are 2 environment
       variables which when set send a HTTP/1.0 with no keepalive. These are set
@@ -298,8 +344,7 @@
         </span>
         &lt;/Location&gt;
       </code></p></div>
-     
-</div>
+    </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="AllowCONNECT" id="AllowCONNECT">AllowCONNECT</a> <a name="allowconnect" id="allowconnect">Directive</a></h2>
 <table class="directive">
@@ -701,8 +746,12 @@ through</td></tr>
       general proxypass directive.</p>
     </div>
 
-    <p>When used inside a <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code> section, the first argument is ommitted and the local
+    <p>When used inside a <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code> section, the first argument is omitted and the local
     directory is obtained from the <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code>.</p>
+
+    <div class="warning">The <code class="directive"><a href="#proxyrequests">ProxyRequests</a></code> directive should
+    usually be set <strong>off</strong> when using
+    <code class="directive">ProxyPass</code>.</div>
 
     <p>If you require a more flexible reverse-proxy configuration, see the
     <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> directive with the
@@ -753,7 +802,7 @@ proxied server</td></tr>
     (<code>RewriteRule ...  [P]</code>) from <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>
     because its doesn't depend on a corresponding <code class="directive"><a href="#proxypass">ProxyPass</a></code> directive.</p>
 
-    <p>When used inside a <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code> section, the first argument is ommitted and the local
+    <p>When used inside a <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code> section, the first argument is omitted and the local
     directory is obtained from the <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code>.</p>
 
 </div>
