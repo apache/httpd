@@ -86,12 +86,12 @@ PidFile logs/httpd.pid
 ScoreBoardFile logs/apache_runtime_status
 
 #
-# In the standard configuration, the server will process this file,
-# srm.conf, and access.conf in that order.  The latter two files are
-# now distributed empty, as it is recommended that all directives
-# be kept in a single file for simplicity.  The commented-out values
-# below are the built-in defaults.  You can have the server ignore
-# these files altogether by using "/dev/null" (for Unix) or
+# In the standard configuration, the server will process httpd.conf (this 
+# file, specified by the -f command line option), srm.conf, and access.conf 
+# in that order.  The latter two files are now distributed empty, as it is 
+# recommended that all directives be kept in a single file for simplicity.  
+# The commented-out values below are the built-in defaults.  You can have the 
+# server ignore these files altogether by using "/dev/null" (for Unix) or
 # "nul" (for Win32) for the arguments to the directives.
 #
 #ResourceConfig conf/srm.conf
@@ -195,7 +195,7 @@ MaxRequestsPerChild 0
 # built-in (statically linked and thus always available) modules in your httpd
 # binary.
 #
-# Note: The order is which modules are loaded is important.  Don't change
+# Note: The order in which modules are loaded is important.  Don't change
 # the order below without expert advice.
 #
 # Example:
@@ -797,7 +797,7 @@ ServerSignature On
 #
 #    1) plain text
 #ErrorDocument 500 "The server made a boo boo.
-#  n.b.  the (") marks it as text, it does not get output
+#  n.b.  the single leading (") marks it as text, it does not get output
 #
 #    2) local redirects
 #ErrorDocument 404 /missing.html
@@ -836,6 +836,7 @@ ServerSignature On
     BrowserMatch "JDK/1\.0" force-response-1.0
 
 </IfModule>
+# End of browser customization directives
 
 #
 # Allow server status reports, with the URL of http://servername/server-status
@@ -850,7 +851,7 @@ ServerSignature On
 
 #
 # Allow remote server configuration reports, with the URL of
-#  http://servername/server-info (requires that mod_info.c be loaded).
+# http://servername/server-info (requires that mod_info.c be loaded).
 # Change the ".your_domain.com" to match your domain to enable.
 #
 #<Location /server-info>
@@ -877,32 +878,32 @@ ServerSignature On
 # enable the proxy server:
 #
 #<IfModule mod_proxy.c>
-    #ProxyRequests On
-    #
-    #<Directory proxy:*>
-    #    Order deny,allow
-    #    Deny from all
-    #    Allow from .your_domain.com
-    #</Directory>
+#    ProxyRequests On
+
+#    <Directory proxy:*>
+#        Order deny,allow
+#        Deny from all
+#        Allow from .your_domain.com
+#    </Directory>
 
     #
     # Enable/disable the handling of HTTP/1.1 "Via:" headers.
     # ("Full" adds the server version; "Block" removes all outgoing Via: headers)
     # Set to one of: Off | On | Full | Block
     #
-    #ProxyVia On
+#    ProxyVia On
 
     #
     # To enable the cache as well, edit and uncomment the following lines:
     # (no cacheing without CacheRoot)
     #
-    #CacheRoot "@@ServerRoot@@/proxy"
-    #CacheSize 5
-    #CacheGcInterval 4
-    #CacheMaxExpire 24
-    #CacheLastModifiedFactor 0.1
-    #CacheDefaultExpire 1
-    #NoCache a_domain.com another_domain.edu joes.garage_sale.com
+#    CacheRoot "@@ServerRoot@@/proxy"
+#    CacheSize 5
+#    CacheGcInterval 4
+#    CacheMaxExpire 24
+#    CacheLastModifiedFactor 0.1
+#    CacheDefaultExpire 1
+#    NoCache a_domain.com another_domain.edu joes.garage_sale.com
 
 #</IfModule>
 # End of proxy directives.
