@@ -1,40 +1,13 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-
-<html xmlns="http://www.w3.org/1999/xhtml">
-  <head>
-    <meta name="generator" content="HTML Tidy, see www.w3.org" />
-
-    <title>Apache module mod_so</title>
-  </head>
-  <!-- Background white, links blue (unvisited), navy (visited), red (active) -->
-
-  <body bgcolor="#FFFFFF" text="#000000" link="#0000FF"
-  vlink="#000080" alink="#FF0000">
-    <!--#include virtual="header.html" -->
-
-    <h1 align="CENTER">Module mod_so</h1>
-
-    <p>This module provides for loading of executable code and
-    modules into the server at start-up or restart time.</p>
-
-    <p><a href="module-dict.html#Status"
-    rel="Help"><strong>Status:</strong></a> Base (Windows);
-    Optional (Unix)<br />
-     <a href="module-dict.html#SourceFile"
-    rel="Help"><strong>Source File:</strong></a> mod_so.c<br />
-     <a href="module-dict.html#ModuleIdentifier"
-    rel="Help"><strong>Module Identifier:</strong></a>
-    so_module<br />
-     <a href="module-dict.html#Compatibility"
-    rel="Help"><strong>Compatibility:</strong></a> Available in
-    Apache 1.3 and later.</p>
-
-    <h2>Summary</h2>
+<html xmlns="http://www.w3.org/TR/xhtml1/strict"><head><!--
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+     This file is generated from xml source: DO NOT EDIT
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+--><title>mod_so - Apache HTTP Server</title><link href="../style/manual.css" type="text/css" rel="stylesheet"/></head><body><blockquote><div align="center"><img alt="[APACHE DOCUMENTATION]" src="../images/sub.gif"/><h3>Apache HTTP Server Version 2.0</h3></div><h1 align="center">Apache Module mod_so</h1><table cellspacing="1" cellpadding="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td valign="top"><span class="help">Description:</span></td><td><description>
+This module provides for loading of executable code and
+modules into the server at start-up or restart time.</description></td></tr><tr><td><a href="module-dict.html#Status" class="help">Status:</a></td><td>Base (Windows&gt;; Optional (Unix)</td></tr><tr><td><a href="module-dict.html#ModuleIdentifier" class="help">Module&nbsp;Identifier:</a></td><td>so_module</td></tr><tr><td align="left" valign="top"><a href="module-dict.html#Compatibility" class="help">Compatibility:</a></td><td><compatibility>Available in Apache 1.3 and later.</compatibility></td></tr></table></td></tr></table><h2>Summary</h2><summary>
 
     <p>On selected operating systems this module can be used to
-    load modules into Apache at runtime via the <a
-    href="../dso.html">Dynamic Shared Object</a> (DSO) mechanism,
+    load modules into Apache at runtime via the <a href="../dso.html">Dynamic Shared Object</a> (DSO) mechanism,
     rather than requiring a recompilation.</p>
 
     <p>On Unix, the loaded code typically comes from shared object
@@ -52,21 +25,12 @@
     <p><strong>Warning: Apache 1.3 modules cannot be directly used
     with Apache 2.0 - the module must be modified to dynamically
     load or compile into Apache 2.0</strong>.</p>
+</summary><h2>Directives</h2><ul><li><a href="#loadfile">LoadFile</a></li><li><a href="#loadmodule">LoadModule</a></li></ul><h2>Creating Loadable Modules
+for Windows</h2>
 
-    <h2>Directives</h2>
-
-    <ul>
-      <li><a href="#loadfile">LoadFile</a></li>
-
-      <li><a href="#loadmodule">LoadModule</a></li>
-    </ul>
-
-    <h2><a id="creating" name="creating">Creating Loadable Modules
-    for Windows</a></h2>
-
-    <p><strong>Note: the module name format changed for Windows
+    <p><blockquote><table><tr><td bgcolor="#e0e5f5">Note: the module name format changed for Windows
     with Apache 1.3.15 and 2.0 - the modules are now named as
-    mod_foo.so</strong>. While mod_so still loads modules with
+    mod_foo.so</td></tr></table></blockquote>. While mod_so still loads modules with
     ApacheModuleFoo.dll names, the new naming convention is
     preferred; if you are converting your loadable module for 2.0,
     please fix the name to this 2.0 convention.</p>
@@ -87,7 +51,7 @@
 
     <p>The second way is to compile the module as a DLL, a shared
     library that can be loaded into the server at runtime, using
-    the <code><a href="#loadmodule">LoadModule</a></code>
+    the <code><code class="directive">LoadModule</code></code>
     directive. These module DLLs can be distributed and run on any
     Apache for Windows installation, without recompilation of the
     server.</p>
@@ -98,14 +62,15 @@
     add the <code>AP_MODULE_DECLARE_DATA</code> (defined in the
     Apache header files) to your module's module record definition.
     For example, if your module has:</p>
-<pre>
+
+<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>
     module foo_module;
-</pre>
+</code></td></tr></table></blockquote>
 
     <p>Replace the above with:</p>
-<pre>
+<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>
     module AP_MODULE_DECLARE_DATA foo_module;
-</pre>
+</code></td></tr></table></blockquote>
 
     <p>Note that this will only be activated on Windows, so the
     module can continue to be used, unchanged, with Unix if needed.
@@ -125,61 +90,29 @@
 
     <p>This should create a DLL version of your module. Now simply
     place it in the <samp>modules</samp> directory of your server
-    root, and use the <code><a
-    href="#loadmodule">LoadModule</a></code> directive to load
-    it.</p>
-    <hr />
+    root, and use the <code class="directive">LoadModule</code>
+    directive to load it.</p>
 
-    <h2><a id="loadfile" name="loadfile">LoadFile</a>
-    directive</h2>
-    <!--%plaintext &lt;?INDEX {\tt LoadFile} directive&gt; -->
-    <a href="directive-dict.html#Syntax"
-    rel="Help"><strong>Syntax:</strong></a> LoadFile
-    <em>filename</em> [<em>filename</em>] ...<br />
-     <a href="directive-dict.html#Context"
-    rel="Help"><strong>Context:</strong></a> server config<br />
-     <a href="directive-dict.html#Status"
-    rel="Help"><strong>Status:</strong></a> Base<br />
-     <a href="directive-dict.html#Module"
-    rel="Help"><strong>Module:</strong></a> mod_so 
+<hr/><h2><a name="LoadFile">LoadFile</a> <a name="loadfile">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>Link in the named object file or library</td></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td><syntax>LoadFile <em>filename</em> [<em>filename</em>] ...</syntax></td></tr><tr><td><a href="directive-dict.html#Default" class="help">Default:</a></td><td><code>none</code></td></tr><tr><td><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config</td></tr><tr><td><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Base (Windows&gt;; Optional (Unix)</td></tr><tr><td><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_so</td></tr></table></td></tr></table><usage>
 
     <p>The LoadFile directive links in the named object files or
     libraries when the server is started or restarted; this is used
     to load additional code which may be required for some module
     to work. <em>Filename</em> is either an absolute path or
     relative to <a href="core.html#serverroot">ServerRoot</a>.</p>
-    <hr />
-
-    <h2><a id="loadmodule" name="loadmodule">LoadModule</a>
-    directive</h2>
-    <!--%plaintext &lt;?INDEX {\tt LoadModule} directive&gt; -->
-    <a href="directive-dict.html#Syntax"
-    rel="Help"><strong>Syntax:</strong></a> LoadModule <em>module
-    filename</em><br />
-     <a href="directive-dict.html#Context"
-    rel="Help"><strong>Context:</strong></a> server config<br />
-     <a href="directive-dict.html#Status"
-    rel="Help"><strong>Status:</strong></a> Base<br />
-     <a href="directive-dict.html#Module"
-    rel="Help"><strong>Module:</strong></a> mod_so 
-
+</usage><hr/><h2><a name="LoadModule">LoadModule</a> <a name="loadmodule">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>Links in the object file or library, and adds to the list
+of active modules</td></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td><syntax>LoadModule <em>module filename</em></syntax></td></tr><tr><td><a href="directive-dict.html#Default" class="help">Default:</a></td><td><code>none</code></td></tr><tr><td><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config</td></tr><tr><td><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Base (Windows&gt;; Optional (Unix)</td></tr><tr><td><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_so</td></tr></table></td></tr></table><usage>
     <p>The LoadModule directive links in the object file or library
     <em>filename</em> and adds the module structure named
     <em>module</em> to the list of active modules. <em>Module</em>
     is the name of the external variable of type
-    <code>module</code> in the file, and is listed as the <a
-    href="module-dict.html#ModuleIdentifier">Module Identifier</a>
+    <code>module</code> in the file, and is listed as the <a href="module-dict.html#ModuleIdentifier">Module Identifier</a>
     in the module documentation. Example:</p>
 
-    <blockquote>
-      <code>LoadModule status_module modules/mod_status.so</code>
-    </blockquote>
+    <blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>
+      LoadModule status_module modules/mod_status.so
+    </code></td></tr></table></blockquote>
 
     <p>loads the named module from the modules subdirectory of the
     ServerRoot.</p>
-
-    <p><!--#include virtual="footer.html" -->
-    </p>
-  </body>
-</html>
-
+</usage><hr/><h3 align="center">Apache HTTP Server Version 2.0</h3><a href="./"><img alt="Index" src="../images/index.gif"/></a><a href="../"><img alt="Home" src="../images/home.gif"/></a></blockquote></body></html>
