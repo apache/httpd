@@ -63,7 +63,7 @@
  * in apr_getopt() format.  Use this for default'ing args that the MPM
  * can safely ignore and pass on from its rewrite_args() handler.
  */
-#define AP_SERVER_BASEARGS "C:c:D:d:f:vVlLth?X"
+#define AP_SERVER_BASEARGS "C:c:D:d:e:f:vVlLth?X"
 
 #ifdef __cplusplus
 extern "C" {

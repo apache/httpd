@@ -278,6 +278,7 @@ static void usage(process_rec *process)
     ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, "  -i                : install an Apache service");
     ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, "  -u                : uninstall an Apache service");
 #endif
+    ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, "  -e level          : show startup errors of level (see LogLevel)");
     ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, "  -v                : show version number");
     ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, "  -V                : show compile settings");
     ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, "  -h                : list available command line options (this page)");
@@ -357,6 +358,35 @@ int main(int argc, const char * const argv[])
 	    new = (char **)apr_array_push(ap_server_config_defines);
 	    *new = apr_pstrdup(pcommands, optarg);
 	    break;
+        case 'e':
+            if (strcasecmp(optarg, "emerg") == 0) {
+                ap_default_loglevel = APLOG_EMERG;
+            } 
+            else if (strcasecmp(optarg, "alert") == 0) {
+                ap_default_loglevel = APLOG_ALERT;
+            } 
+            else if (strcasecmp(optarg, "crit") == 0) {
+                ap_default_loglevel = APLOG_CRIT;
+            } 
+            else if (strcasecmp(optarg, "error") == 0) {
+                ap_default_loglevel = APLOG_ERR;
+            } 
+            else if (strcasecmp(optarg, "warning") == 0) {
+                ap_default_loglevel = APLOG_WARNING;
+            } 
+            else if (strcasecmp(optarg, "notice") == 0) {
+                ap_default_loglevel = APLOG_NOTICE;
+            } 
+            else if (strcasecmp(optarg, "info") == 0) {
+                ap_default_loglevel = APLOG_INFO;
+            } 
+            else if (strcasecmp(optarg, "debug") == 0) {
+                ap_default_loglevel = APLOG_DEBUG;
+            }
+            else {
+                usage(process);
+            }
+            break;
 	case 'X':
 	    new = (char **)apr_array_push(ap_server_config_defines);
 	    *new = "DEBUG";

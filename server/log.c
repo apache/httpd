@@ -100,6 +100,8 @@ APR_HOOK_STRUCT(
     APR_HOOK_LINK(error_log)
 )
 
+int AP_DECLARE_DATA ap_default_loglevel = DEFAULT_LOGLEVEL;
+
 #ifdef HAVE_SYSLOG
 
 static const TRANS facilities[] = {
@@ -358,7 +360,7 @@ static void log_error_core(const char *file, int line, int level,
          * notice
          */
         if ((level_and_mask != APLOG_NOTICE) &&
-            (level_and_mask > DEFAULT_LOGLEVEL)) {
+            (level_and_mask > ap_default_loglevel)) {
             return;
         }
         logf = stderr_log;

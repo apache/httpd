@@ -111,6 +111,8 @@ extern "C" {
 #define DEFAULT_LOGLEVEL	APLOG_WARNING
 #endif
 
+extern int AP_DECLARE_DATA ap_default_loglevel;
+
 #define APLOG_MARK	__FILE__,__LINE__
 
 /**
