@@ -1,4 +1,34 @@
 Changes with Apache 1.3.7
+  *) Win32: Win32 multiple services patch. Added capability to install and
+     run multiple copies of apache as individual services.
+
+     Example 1:
+     apache -n apache1 -i -f c:/httpd.conf
+        Installs apache as service 'apache1' and associates c:/httpd.conf
+        with that service.
+     net start apache1
+        Starts apache1 service.
+     net stop apache1
+        Stops apache1 service
+
+     Example 2:
+     apache -n apache2 -i
+        Installs apache as service 'apache2'. httpd.conf is located under
+        the default server root (/apache/conf/httpd.conf).
+     net start apache2
+        Starts apache2 service.
+
+     Example 3:
+     apache -n apache3 -i -d c:/program files/apache
+        Install apache as service 'apache3' and sets server root to
+        c:/program files/apache.
+
+     Example 4:
+     apache -n apache2 -k restart
+        Restart apache2 service 
+
+     [Keith Wannamaker, Ken Parzygnat, Bill Stoddard]
+
   *) Correct the signed/unsigned character handling for the MD5 routines;
      mismatches were causing compilation problems with gcc -pedantic and
      in the TPF cross-compilation.  [Ken Coar]
@@ -6341,3 +6371,4 @@ Changes with 0.2                                          18 Mar 1995
   *) Based on NCSA httpd 1.3 by Rob McCool and patches by CERT,
      Roy Fielding, Robert Thau, Nicolas Pioch, David Robinson,
      Brian Behlendorf, Rob Hartill, and Cliff Skolnick
+

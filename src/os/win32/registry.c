@@ -469,4 +469,3 @@ int ap_registry_set_server_root(char *dir)
     return rv < 0 ? -1 : 0;
 }
 
-

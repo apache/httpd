@@ -15,4 +15,3 @@ int send_signal_to_service(char *service_name, char *sig);
 #endif /* WIN32 */
 
 #endif /* SERVICE_H */
-
