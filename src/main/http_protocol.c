@@ -352,9 +352,10 @@ void get_mime_headers(request_rec *r)
 
 void check_hostalias (request_rec *r) {
   char *host = getword(r->pool, &r->hostname, ':');	/* Get rid of port */
+  int port = (*r->hostname) ? atoi(r->hostname) : 0;
   server_rec *s;
 
-  if (*r->hostname && (atoi(r->hostname) != r->server->port))
+  if (port && (port != r->server->port))
     return;
 
   if ((host[strlen(host)-1]) == '.') {
@@ -365,8 +366,9 @@ void check_hostalias (request_rec *r) {
 
   for (s = r->server->next; s; s = s->next) {
     char *names = s->names;
-
-    if (!strcasecmp(host, s->server_hostname)) {
+    
+    if ((!strcasecmp(host, s->server_hostname)) &&
+	(!port || (port == s->port))) {
       r->server = r->connection->server = s;
       if (r->hostlen && !strncmp(r->uri, "http://", 7)) {
 	r->uri += r->hostlen;
