@@ -3,7 +3,7 @@
   [ <!ENTITY allmodules SYSTEM "allmodules.xml.de"> ]
 >
 <?xml-stylesheet type="text/xsl" href="../style/manual.de.xsl"?>
-<!-- English revision: 1.7 -->
+<!-- English revision: 1.7.2.1 -->
 
 <directiveindex>
   <title>Verzeichnis der Direktiven</title>

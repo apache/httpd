@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.de.xsl"?>
-<!-- English revision: 1.46.2.7 -->
+<!-- English revision: 1.46.2.12 -->
 
 <modulesynopsis>
 
@@ -414,7 +414,6 @@ HTTP-Authentisierung</description>
 <description>Technik zur Bestimmung des Interpreters f&uuml;r
 CGI-Skripte</description>
 <syntax>CGIMapExtension <var>CGI-Pfad</var> <var>.Endung</var></syntax>
-<default>None</default>
 <contextlist><context>directory</context><context>.htaccess</context>
 </contextlist>
 <override>FileInfo</override>
@@ -974,12 +973,21 @@ ErrorLog logs/error.log (Windows and OS/2)</default>
     ErrorLog syslog:user
     </example>
 
-		<p>SICHERHEITSHINWEIS: Lesen Sie das Dokument <a
+    <p>SICHERHEITSHINWEIS: Lesen Sie das Dokument <a
     href="../misc/security_tips.html#serverroot">Sicherheitshinweise</a>
     zu Einzelheiten dar&uuml;ber, warum Ihre Sicherheit gef&auml;hrdet
     sein kann, wenn das Verzeichnis, in dem die Log-Dateien gespeichert
     werden, f&uuml;r jemand anderen, als den Benutzer, der den Server
     gestartet hat, beschreibbar ist.</p>
+
+    <note type="warning"><title>Anmerkung</title>
+      <p>Bei der Eingabe eines Dateipfads auf nicht-Unix-Plattformen sollte
+      darauf geachtet werden, nur (Vorw&auml;rts-)Schr&auml;gstriche zu
+      verwenden, auch wenn die Plattform r&uuml;ckw&auml;rts gerichtete
+      Schr&auml;gstriche (Backslashes) erlaubt. Im Allgemeinen ist es eine gute
+      Idee, innerhalb der Konfigurationsdateien immer
+      Vorw&auml;rts-Schr&auml;gstriche zu verwenden.</p>
+    </note>
 </usage>
 <seealso><directive module="core">LogLevel</directive></seealso>
 <seealso><a href="../logs.html">Apache-Log-Dateien</a></seealso>
@@ -1135,7 +1143,7 @@ beziehen</description>
 <name>ForceType</name>
 <description>Erzwingt die Auslieferung aller passendenden Dateien mit dem
 angegebenen MIME-Content-Type</description>
-<syntax>ForceType <var>MIME-Type</var>|none</syntax>
+<syntax>ForceType <var>MIME-Type</var>|None</syntax>
 <contextlist><context>directory</context><context>.htaccess</context>
 </contextlist>
 <override>FileInfo</override>
@@ -1162,7 +1170,7 @@ angegebenen MIME-Content-Type</description>
     Medientyp bezeichnen k&ouml;nnten.</p>
 
     <p>Sie k&ouml;nnen jede <directive>ForceType</directive>-Angabe
-    durch die Verwendung des Wertes <code>none</code> &uuml;berschreiben:</p>
+    durch die Verwendung des Wertes <code>None</code> &uuml;berschreiben:</p>
 
     <example>
       # erzwinge image/gif f&uuml;r alle Dateien:<br />
@@ -1175,7 +1183,7 @@ angegebenen MIME-Content-Type</description>
       # hier jedoch normale MIME-Type-Zuordnungen:<br />
       &lt;Location /images/mixed&gt;<br />
       <indent>
-        ForceType none<br />
+        ForceType None<br />
       </indent>
       &lt;/Location&gt;
     </example>
@@ -1522,13 +1530,14 @@ bestimmte HTTP-Methoden</description>
 
     <p>Sie k&ouml;nnen eine oder mehrere der folgenden Methoden angeben:
     <code>GET</code>, <code>POST</code>, <code>PUT</code>, <code>DELETE</code>,
-    <code>CONNECT</code>, <code>OPTIONS</code>, <code>TRACE</code>,
+    <code>CONNECT</code>, <code>OPTIONS</code>,
     <code>PATCH</code>, <code>PROPFIND</code>, <code>PROPPATCH</code>,
     <code>MKCOL</code>, <code>COPY</code>, <code>MOVE</code>,
     <code>LOCK</code> und <code>UNLOCK</code>. <strong>Die Methodennamen
     unterscheiden zwischen Gro&szlig;- und Kleinschreibung.</strong> Wenn
     <code>GET</code> verwendet wird, sind <code>HEAD</code>-Anfragen
-    ebenfalls eingeschr&auml;nkt.</p>
+    ebenfalls eingeschr&auml;nkt. Die <code>TRACE</code>-Methode kann nicht
+    limitiert werden.</p>
 </usage>
 </directivesynopsis>
 
@@ -2788,6 +2797,9 @@ einen Handler</description>
       </indent>
       &lt;/Location&gt;
     </example>
+    <p>Sie k&ouml;nnen eine zuvor definierte
+    <directive>SetHandler</directive>-Anweisung aufheben, indem Sie den Wert
+    <code>None</code> verwenden.</p>
 </usage>
 <seealso><directive module="mod_mime">AddHandler</directive></seealso>
 </directivesynopsis>

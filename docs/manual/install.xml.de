@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.de.xsl"?>
-<!-- English revision: 1.11.2.3 -->
+<!-- English revision: 1.11.2.4 -->
 
 <manualpage>
 <relativepath href="."/>
@@ -514,6 +514,13 @@
 
       <dd>W&#228;hlt das MPM <em>NAME</em>.</dd>
     </dl>
+
+    <p>Um ein MPM mit dem Namen <var>mpm_name</var> zu aktivieren, verwenden
+    Sie</p>
+
+    <example>
+      ./configure --with-mpm=<var>mpm_name</var>
+    </example>
 </section>
 
 <section id="dbm"><title>DBM</title>

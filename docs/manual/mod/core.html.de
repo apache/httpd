@@ -472,7 +472,6 @@ HTTP-Authentisierung</td></tr>
 <tr><th><a href="directive-dict.html#Description">Beschreibung:</a></th><td>Technik zur Bestimmung des Interpreters für
 CGI-Skripte</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>CGIMapExtension <var>CGI-Pfad</var> <var>.Endung</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Voreinstellung:</a></th><td><code>None</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Kontext:</a></th><td>Verzeichnis, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
@@ -1026,11 +1025,20 @@ ErrorLog logs/error.log (Windows and OS/2)</code></td></tr>
     ErrorLog syslog:user
     </code></p></div>
 
-		<p>SICHERHEITSHINWEIS: Lesen Sie das Dokument <a href="../misc/security_tips.html#serverroot">Sicherheitshinweise</a>
+    <p>SICHERHEITSHINWEIS: Lesen Sie das Dokument <a href="../misc/security_tips.html#serverroot">Sicherheitshinweise</a>
     zu Einzelheiten darüber, warum Ihre Sicherheit gefährdet
     sein kann, wenn das Verzeichnis, in dem die Log-Dateien gespeichert
     werden, für jemand anderen, als den Benutzer, der den Server
     gestartet hat, beschreibbar ist.</p>
+
+    <div class="warning"><h3>Anmerkung</h3>
+      <p>Bei der Eingabe eines Dateipfads auf nicht-Unix-Plattformen sollte
+      darauf geachtet werden, nur (Vorwärts-)Schrägstriche zu
+      verwenden, auch wenn die Plattform rückwärts gerichtete
+      Schrägstriche (Backslashes) erlaubt. Im Allgemeinen ist es eine gute
+      Idee, innerhalb der Konfigurationsdateien immer
+      Vorwärts-Schrägstriche zu verwenden.</p>
+    </div>
 
 <h3>Siehe auch</h3>
 <ul>
@@ -1184,7 +1192,7 @@ beziehen</td></tr>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Beschreibung:</a></th><td>Erzwingt die Auslieferung aller passendenden Dateien mit dem
 angegebenen MIME-Content-Type</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>ForceType <var>MIME-Type</var>|none</code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>ForceType <var>MIME-Type</var>|None</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Kontext:</a></th><td>Verzeichnis, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
@@ -1210,7 +1218,7 @@ angegebenen MIME-Content-Type</td></tr>
     Medientyp bezeichnen könnten.</p>
 
     <p>Sie können jede <code class="directive">ForceType</code>-Angabe
-    durch die Verwendung des Wertes <code>none</code> überschreiben:</p>
+    durch die Verwendung des Wertes <code>None</code> überschreiben:</p>
 
     <div class="example"><p><code>
       # erzwinge image/gif für alle Dateien:<br />
@@ -1223,7 +1231,7 @@ angegebenen MIME-Content-Type</td></tr>
       # hier jedoch normale MIME-Type-Zuordnungen:<br />
       &lt;Location /images/mixed&gt;<br />
       <span class="indent">
-        ForceType none<br />
+        ForceType None<br />
       </span>
       &lt;/Location&gt;
     </code></p></div>
@@ -1565,13 +1573,14 @@ bestimmte HTTP-Methoden</td></tr>
 
     <p>Sie können eine oder mehrere der folgenden Methoden angeben:
     <code>GET</code>, <code>POST</code>, <code>PUT</code>, <code>DELETE</code>,
-    <code>CONNECT</code>, <code>OPTIONS</code>, <code>TRACE</code>,
+    <code>CONNECT</code>, <code>OPTIONS</code>,
     <code>PATCH</code>, <code>PROPFIND</code>, <code>PROPPATCH</code>,
     <code>MKCOL</code>, <code>COPY</code>, <code>MOVE</code>,
     <code>LOCK</code> und <code>UNLOCK</code>. <strong>Die Methodennamen
     unterscheiden zwischen Groß- und Kleinschreibung.</strong> Wenn
     <code>GET</code> verwendet wird, sind <code>HEAD</code>-Anfragen
-    ebenfalls eingeschränkt.</p>
+    ebenfalls eingeschränkt. Die <code>TRACE</code>-Methode kann nicht
+    limitiert werden.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -2850,6 +2859,9 @@ einen Handler</td></tr>
       </span>
       &lt;/Location&gt;
     </code></p></div>
+    <p>Sie können eine zuvor definierte
+    <code class="directive">SetHandler</code>-Anweisung aufheben, indem Sie den Wert
+    <code>None</code> verwenden.</p>
 
 <h3>Siehe auch</h3>
 <ul>

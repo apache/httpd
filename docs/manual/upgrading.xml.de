@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.de.xsl"?>
-<!-- English revision: 1.6.2.1 -->
+<!-- English revision: 1.6.2.3 -->
 
 <manualpage>
 <relativepath href="."/>
@@ -61,7 +61,8 @@ in Apache 2.0</a></seealso>
       implementiert waren, jetzt aber als Filter implementiert sind,
       akzeptieren m&#246;glicherweise keine Requests mit
       <code>PATH_INFO</code> mehr. Filter wie <a
-      href="mod/mod_include.html">INCLUDES</a> sind gleich oben im
+      href="mod/mod_include.html">INCLUDES</a> oder <a
+      href="http://www.php.net/">PHP</a> sind gleich oben im
       Core-Handler implementiert und weisen deshalb Requests mit
       <code>PATH_INFO</code> ab. Sie k&#246;nnen die <directive
       module="core">AcceptPathInfo</directive>-Direktive
