@@ -476,17 +476,19 @@ _install:
   and Mark Adler (madler@alumni.caltech.edu) .
 <<
 	-awk -f <<script.awk < "srclib\zlib\README" >> "$(INSTDIR)\LICENSE.txt"
-{  while ( getline > 0 ) {
-      if ( $$0 ~ /Copyright notice:/ ) {
-	print "";
-	print "For the mod_deflate zlib compression component:";
-        while ( getline > 0 && $$0 !~ /^[^ ]/ ) {
-	  print $$0;
+    {
+      while ( getline > 0 ) {
+	if ( $$0 ~ /Copyright notice:/ ) {
+	  print "";
+	  print "For the mod_deflate zlib compression component:";
+	  while ( getline > 0 && $$0 !~ /^[^ ]/ ) {
+	    print $$0;
+          }
+          exit 0;
         }
-        exit 0;
       }
-   }
-}
+      exit 1;
+    }
 <<
 	copy modules\filters\$(LONG)\mod_deflate.so "$(INSTDIR)\modules" <.y
 !ENDIF
@@ -498,17 +500,16 @@ _install:
 	copy support\win32\$(LONG)\ApacheMonitor.exe "$(INSTDIR)\bin" <.y
 	copy support\win32\$(LONG)\wintty.exe "$(INSTDIR)\bin" <.y
 	copy docs\cgi-examples\printenv "$(INSTDIR)\cgi-bin\printenv.pl" <.y
-	-awk -f <<script.awk "docs\cgi-examples\printenv" "$(INSTDIR)\cgi-bin\printenv.pl"
+	-awk -f <<script.awk "docs\cgi-examples\printenv" > "$(INSTDIR)\cgi-bin\printenv.pl"
     BEGIN { 
-	srcfl = ARGV[1];
-	dstfl = ARGV[2];
 	if ( "perl -e \"print $$^X;\"" | getline perlroot ) {
 	    gsub( /\\/, "/", perlroot );
-	    print "#!" perlroot > dstfl;
-	    getline < srcfl;
+	    print "#!" perlroot;
 	}
-	while ( ( getline < srcfl ) > 0 ) {
-	    print $$0 > dstfl;
+    }
+    {
+	if ( $$0 !~ /^#!/ ) {
+	    print $$0;
 	}
     }
 <<
@@ -543,33 +544,35 @@ _install:
 	if not exist "$(INSTDIR)\conf\mime.types" \
 	    copy "$(INSTDIR)\conf\mime.types.default" "$(INSTDIR)\conf\mime.types"
 	copy docs\conf\httpd-win.conf "$(INSTDIR)\conf\httpd.default.conf" <.y
-	-awk -f <<script.awk "docs\conf\httpd-win.conf" "$(INSTDIR)\conf\httpd.default.conf" "$(INSTDIR)"
+	-awk -f <<script.awk "docs\conf\httpd-win.conf" "$(INSTDIR)" > "$(INSTDIR)\conf\httpd.default.conf"
     BEGIN { 
-	srcfl = ARGV[1];
-	dstfl = ARGV[2];
-	serverroot = ARGV[3];
+	serverroot = ARGV[2];
+	delete ARGV[2];
 	gsub( /\\/, "/", serverroot );
-	while ( ( getline < srcfl ) > 0 ) {
-	    gsub( /@@ServerRoot@@/, serverroot );
-	    gsub( /@@ServerName@@/, "$(SERVERNAME)" );
-	    gsub( /@@Port@@/, "$(PORT)" );
-	    print $$0 > dstfl;
-	}
+	"pwd" | getline root;
+	gsub( /^\//, substr( root, 1, 2 ) "/", serverroot );
+    }
+    {
+	gsub( /@@ServerRoot@@/, serverroot );
+	gsub( /@@ServerName@@/, "$(SERVERNAME)" );
+	gsub( /@@Port@@/, "$(PORT)" );
+	print $$0;
     }
 <<
 	if not exist "$(INSTDIR)\conf\httpd.conf" \
 	    copy "$(INSTDIR)\conf\httpd.default.conf" "$(INSTDIR)\conf\httpd.conf"
 	copy docs\conf\ssl-std.conf "$(INSTDIR)\conf\ssl.default.conf" <.y
-	-awk -f <<script.awk "docs\conf\ssl-std.conf" "$(INSTDIR)\conf\ssl.default.conf" "$(INSTDIR)"
+	-awk -f <<script.awk "docs\conf\ssl-std.conf" "$(INSTDIR)" > "$(INSTDIR)\conf\ssl.default.conf"
     BEGIN { 
-	srcfl = ARGV[1];
-	dstfl = ARGV[2];
-	serverroot = ARGV[3];
+	serverroot = ARGV[2];
+	delete ARGV[2];
 	gsub( /\\/, "/", serverroot );
-	while ( ( getline < srcfl ) > 0 ) {
-	    gsub( /@@ServerRoot@@/, serverroot );
-	    print $$0 > dstfl;
-	}
+	"pwd" | getline root;
+	gsub( /^\//, substr( root, 1, 2 ) "/", serverroot );
+    }
+    {
+	gsub( /@@ServerRoot@@/, serverroot );
+	print $$0;
     }
 <<
 	if not exist "$(INSTDIR)\conf\ssl.conf" \
