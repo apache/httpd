@@ -3690,9 +3690,6 @@ static apr_status_t core_output_filter(ap_filter_t *f, apr_bucket_brigade *b)
         apr_bucket *last_e = NULL; /* initialized for debugging */
         apr_bucket *e;
 
-        /* tail of brigade if we need another pass */
-        more = NULL;
-
         /* one group of iovecs per pass over the brigade */
         apr_size_t nvec = 0;
         apr_size_t nvec_trailers = 0;
@@ -3708,6 +3705,9 @@ static apr_status_t core_output_filter(ap_filter_t *f, apr_bucket_brigade *b)
          * to avoid small writes
          */
         apr_bucket *last_merged_bucket = NULL;
+
+        /* tail of brigade if we need another pass */
+        more = NULL;
 
         /* Iterate over the brigade: collect iovecs and/or a file */
         APR_BRIGADE_FOREACH(e, b) {
