@@ -83,7 +83,7 @@ EXPORTS
 	ap_die   @76
 	ap_discard_request_body   @77
 	ap_document_root   @78
-	ap_each_byterange   @79
+	
 	ap_error_log2stderr   @80
 	ap_escape_html   @81
 	ap_escape_path_segment   @82
@@ -225,7 +225,7 @@ EXPORTS
 
 	ap_send_size   @219
 	ap_server_root_relative   @220
-	ap_set_byterange   @221
+	
 	ap_set_content_length   @222
 	ap_set_etag   @223
 	ap_set_keepalive   @224
