@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/05/16 18:44:00 $]
+Last modified at [$Date: 2003/05/16 23:09:46 $]
 
 Release:
 
@@ -182,12 +182,12 @@ PATCHES TO PORT FROM 2.1
     * If mod_mime_magic does not know the content-type, do not attempt to
       guess.  PR 16908.  [Andrew Gapon <agapon@telcordia.com>]
       modules/metadata/mod_mime_magic.c: r1.61
-      +1: jerenkrantz
+      +1: jerenkrantz, nd
 
     * htpasswd: add a delete flag.
       support/htpasswd.c: r1.70
       docs/manual/programs/htpasswd.xml r1.3
-      +1: thommay
+      +1: thommay, nd
 
     * Fix a VPATH build issue - our command lines can sometimes hit the wall
       against the shell's max command line length.  We had a number of needless
@@ -206,9 +206,15 @@ PATCHES TO PORT FROM 2.1
       first-use cases (via ssl_io_input_add_filter) and when we are writing and
       need response from the client (via ssl_io_filter_output).  Both of these
       cases are always blocking. PR: 19242
+
       Submitted by: David Deaves <David.Deaves@dd.id.au>, William Rowe
       modules/ssl/ssl_engine_io.c r1.106
       +1: wrowe
+      
+    * Add another check for already compressed content in mod_deflate.
+      PR 19913.
+      modules/filters/mod_deflate.c: r1.34
+      +1: nd
 
 CURRENT RELEASE NOTES:
 
