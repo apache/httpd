@@ -63,9 +63,6 @@
 #include "ap_md5.h"
 #include "ap_sha1.h"
 #include "ap.h"
-#ifdef CHARSET_EBCDIC
-#include "ebcdic.h"
-#endif /*CHARSET_EBCDIC*/
 #if HAVE_CRYPT_H
 #include <crypt.h>
 #endif
