@@ -59,7 +59,7 @@ parser) to rewrite requested URLs on the fly. It supports an unlimited number
 of rules and an unlimited number of attached rule conditions for each rule to
 provide a really flexible and powerful URL manipulation mechanism.  The URL
 manipulations can depend on various tests, for instance server variables,
-environment variables, HTTP headers, timestamps and even external database
+environment variables, HTTP headers, time stamps and even external database
 lookups in various formats can be used to achieve a really granular URL
 matching. 
 
@@ -129,7 +129,7 @@ and gifted exclusively to the The Apache Group in July 1997 by
 <P>
 The internal processing of this module is very complex but needs to be
 explained once even to the average user to avoid common mistakes and to let
-you exploit its full funtionality. 
+you exploit its full functionality. 
 
 <H2><A NAME="InternalAPI">API Phases</A></H2>
 
@@ -182,7 +182,7 @@ operate. To make this point more clear remember the following two points:
     manipulations in per-server context are really fast and efficient,
     per-directory rewrites are slow and inefficient due to this chicken and
     egg problem. But on the other hand this is the only way mod_rewrite can
-    provide (locally restricted) URL manipulatiuons to the avarage user.
+    provide (locally restricted) URL manipulations to the average user.
 </OL>
 
 <P>
@@ -245,7 +245,7 @@ the substitution of the URL with <EM>Substitution</EM>.
 
 <H2><A NAME="InternalBackRefs">Regex Back-Reference Availability</A></H2>
 
-One important thing here has to be rememberd: Whenever you
+One important thing here has to be remembered: Whenever you
 use parenthesis in <EM>Pattern</EM> or in one of the <EM>TestPattern</EM>
 back-reference are internally created which can be used with the
 strings <CODE>$N</CODE> and <CODE>%N</CODE> (see below). And these
@@ -657,7 +657,7 @@ RewriteMap real-to-host txt:/path/to/file/map.txt
     post-processing feature: After looking up a value it is parsed according
     to contained ``<CODE>|</CODE>'' characters which have the meaning of ``or''.  Or
     in other words: they indicate a set of alternatives from which the actual
-    returned value is choosen randomly. Although this sounds crazy and useless, it
+    returned value is chosen randomly. Although this sounds crazy and useless, it
     was actually designed for load balancing in a reverse proxy situation where
     the looked up values are server names.
     Example:
