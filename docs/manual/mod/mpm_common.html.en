@@ -276,17 +276,17 @@ listens to</td></tr>
       Listen [fe80::a00:20ff:fea7:ccea]:80
     </code></p></div>
 
-    <div class="warning"><h3>Error condition</h3>
-      Multiple <code>Listen</code> directives for the same ip address and
-      port will result in an 'Address already in use' error message.
+    <div class="note"><h3>Error condition</h3>
+      Multiple <code class="directive">Listen</code> directives for the same ip
+      address and port will result in an <code>Address already in use</code>
+      error message.
     </div>
-
 
 <h3>See also</h3>
 <ul>
 <li><a href="../dns-caveats.html">DNS Issues</a></li>
 <li><a href="../bind.html">Setting which addresses and ports Apache
-uses</a></li>
+    uses</a></li>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>

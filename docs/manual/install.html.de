@@ -25,9 +25,6 @@
 <a href="./ja/install.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="./ko/install.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<div class="outofdate">Diese Übersetzung ist möglicherweise
-            nicht mehr aktuell. Bitte prüfen Sie die englische Version auf
-            die neuesten Änderungen.</div>
 
     <p>Dieses Dokument umfaßt nur die Kompilierung und Installation des
     Apache auf Unix und Unix-ähnlichen Systemen. Für die
@@ -160,11 +157,11 @@
 
       <dt><a href="http://www.perl.org/">Perl 5</a>
       [OPTIONAL]</dt>
-      <dd>Für einige Pflegeprogramme wie <a href="programs/apxs.html">apxs</a>
-      oder <a href="programs/dbmmanage.html">dbmmanage</a> (die in Perl
+      <dd>Für einige Hilfsskripte wie <code class="program"><a href="./programs/apxs.html">apxs</a></code>
+      oder <code class="program"><a href="./programs/dbmmanage.html">dbmmanage</a></code> (die in Perl
       geschrieben sind) wird der Perl 5 Interpreter benötigt (die
       Versionen ab 5.003 sind ausreichend). Wenn kein derartiger Interpreter
-      vom '<code>configure</code>'-Skript gefunden werden kann, macht das
+      vom <code class="program"><a href="./programs/configure.html">configure</a></code>-Skript gefunden werden kann, macht das
       jedoch nichts. Selbstverständlich können Sie den Apache 2.0
       auch so generieren und installieren. Lediglich diese Pflegeskripte
       können dann nicht verwendet werden. Wenn Sie mehrere Perl
@@ -172,7 +169,7 @@
       Händler und Perl 5 durch Sie selbst), dann ist die Verwendung der
       <code>--with-perl</code> Option (siehe unten) empfehlenswert, um
       sicherzustellen, dass der richtige Interpreter von
-      <code>./configure</code> ausgewählt wird.</dd>
+      <code class="program"><a href="./programs/configure.html">configure</a></code> ausgewählt wird.</dd>
     </dl>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
@@ -221,8 +218,7 @@
     <p>Der nächste Schritt ist die Konfiguration des
     Apache-Codebaumes für Ihre spezielle Plattform und Ihre
     persönlichen Bedürfnisse. Dies wird mit dem Skript
-    <code><a href="programs/configure.html">configure</a></code>
-    durchgeführt, das im Wurzelverzeichnis
+    <code class="program"><a href="./programs/configure.html">configure</a></code> durchgeführt, das im Wurzelverzeichnis
     der Distribution enthalten ist. (Entwickler, welche die CVS Version
     des Apache-Codebaumes herunterladen, müssen <code>autoconf</code>
     und <code>libtool</code> installiert haben und müssen
@@ -232,7 +228,7 @@
 
     <p>Um den Codebaum mit den Standardeinstellungen zu konfigurieren,
     geben Sie einfach <code>./configure</code> ein. Zur Änderung
-    dieser Voreinstellungen akzeptiert <code>configure</code> eine
+    dieser Voreinstellungen akzeptiert <code class="program"><a href="./programs/configure.html">configure</a></code> eine
     Reihe von Variablen und Kommandozeilenoptionen.</p>
 
     <p>Die wichtigste Option ist <code>--prefix</code>, der Ablageort, an dem
@@ -255,15 +251,15 @@
     <code>--enable-<var>module</var>=shared</code>. Entsprechend können Sie
     Basismodule mit der Option <code>--disable-<var>module</var></code>
     deaktivieren. Lassen Sie Vorsicht walten. wenn Sie diese Optionen verwenden,
-    da <code>configure</code> Sie nicht warnen kann, wenn die von Ihnen
+    da <code class="program"><a href="./programs/configure.html">configure</a></code> Sie nicht warnen kann, wenn die von Ihnen
     angegebenen Module nicht existieren; die Option wird dann einfach
     ignoriert.</p>
 
     <p>Zusätzlich ist es zuweilen notwendig, das
-    <code>configure</code>-Skript mit Extrainformationen zum Ablageort
+    <code class="program"><a href="./programs/configure.html">configure</a></code>-Skript mit Extrainformationen zum Ablageort
     Ihres Compilers, Ihrer Bibliotheken oder Header-Dateien zu versorgen. Das
     tun Sie, indem Sie entweder Umgebungsvariablen oder Kommandozeilenoptionen
-    an <code>configure</code> übergeben. Für mehr Informationen
+    an <code class="program"><a href="./programs/configure.html">configure</a></code> übergeben. Für mehr Informationen
     lesen Sie bitte die <a href="programs/configure.html">Hilfeseite zu
     configure</a>.</p>
 
@@ -282,10 +278,10 @@
        --enable-speling=shared
   </code></p></div>
 
-    <p>Wenn <code>configure</code> startet, benötigt es mehrere Minuten,
-    um die Verfügbarkeit von Features auf Ihrem System zu prüfen
-    und ein Makefile zu generieren, das später zur Kompilierung des
-    Servers verwendet wird.</p>
+    <p>Wenn <code class="program"><a href="./programs/configure.html">configure</a></code> startet, benötigt es mehrere
+    Minuten, um die Verfügbarkeit von Features auf Ihrem System zu
+    prüfen und ein Makefile zu generieren, das später zur
+    Kompilierung des Servers verwendet wird.</p>
 
     <p>Einzelheiten zu den vielen verschiedenen Konfigurationsoptionen finden
     Sie auf der <a href="programs/configure.html">Hilfeseite zu
@@ -365,9 +361,9 @@
     auf 2.0.57) ist einfacher. <code>make install</code> überschreibt
     keine der bereits existierenden Dokumente, Log- und Konfigurationsdateien.
     Ausserdem bemühen sich die Entwickler, inkompatible Änderungen
-    der <code>configure</code>-Optionen, der Laufzeitkonfiguration sowie der
-    Modul-API zu vermeiden. In den meisten Fällen sollten Sie in der
-    Lage sein, den gleichen <code>configure</code>-Befehl, die gleiche
+    der <code class="program"><a href="./programs/configure.html">configure</a></code>-Optionen, der Laufzeitkonfiguration sowie
+    der Modul-API zu vermeiden. In den meisten Fällen sollten Sie in der
+    Lage sein, den gleichen <code class="program"><a href="./programs/configure.html">configure</a></code>-Befehl, die gleiche
     Konfiguration und die gleichen Module wieder zu verwenden. (Das gilt erst
     seit Version 2.0.41 -- frühere Versionen enthielten noch inkompatible
     Änderungen).</p>
@@ -375,7 +371,7 @@
     <p>Wenn Sie den Quellcode von Ihrer letzten Installation aufgehoben haben,
     ist ein Upgrade sogar noch einfacher. Die Datei <code>config.nice</code> im
     Wurzelverzeichnis des alten Quelltextbaums enthält den genauen
-    <code>configure</code>-Befehl, der verwendet wurde, um den Quellcode
+    <code class="program"><a href="./programs/configure.html">configure</a></code>-Befehl, der verwendet wurde, um den Quellcode
     zu konfigurieren. Um jetzt von einer Version auf die nächste zu
     aktualisieren, kopieren Sie einfach die <code>config.nice</code> in das
     Verzeichnis der neuen Version, passen sie bei Bedarf an, und

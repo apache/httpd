@@ -24,9 +24,6 @@
 <a href="./ja/stopping.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="./ko/stopping.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<div class="outofdate">Diese Übersetzung ist möglicherweise
-            nicht mehr aktuell. Bitte prüfen Sie die englische Version auf
-            die neuesten Änderungen.</div>
 
     <p>Dieses Dokument umfasst das Beenden und Neustarten des
     Apache auf Unix-ähnlichen Systemen. Anwender von Windows NT, 2000
@@ -41,18 +38,18 @@
 <li><img alt="" src="./images/down.gif" /> <a href="#graceful">Unterbrechungsfreier Neustart</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#hup">Neustarten</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#race">Anhang: Signale und Wettkampfsituationen</a></li>
-</ul><h3>Siehe auch</h3><ul class="seealso"><li><a href="programs/httpd.html">httpd</a></li><li><a href="programs/apachectl.html">apachectl</a></li></ul></div>
+</ul><h3>Siehe auch</h3><ul class="seealso"><li><code class="program"><a href="./programs/httpd.html">httpd</a></code></li><li><code class="program"><a href="./programs/apachectl.html">apachectl</a></code></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="introduction" id="introduction">Einleitung</a></h2>
 
     <p>Um den Apache zu stoppen oder neu zu starten, müssen Sie
-    ein Signal an den laufenden <code>httpd</code>-Prozess senden. Es gibt
+    ein Signal an den laufenden <code class="program"><a href="./programs/httpd.html">httpd</a></code>-Prozess senden. Es gibt
     zwei Möglichkeiten, diese Signale zu senden. Zum einen können
     Sie den Unix-Befehl <code>kill</code> verwenden, um den Prozessen
     direkt Signale zu senden. Sie werden feststellen, dass auf Ihrem
-    System mehrere <code>httpd</code>-Programme laufen. Sie sollten jedoch
-    nicht jedem dieser Prozesse ein Signal senden, sondern nur dem
+    System mehrere <code class="program"><a href="./programs/httpd.html">httpd</a></code>-Programme laufen. Sie sollten
+    jedoch nicht jedem dieser Prozesse ein Signal senden, sondern nur dem
     Elternprozess, dessen PID im <code class="directive"><a href="./mod/mpm_common.html#pidfile">PidFile</a></code> steht. Das heißt, Sie
     sollten es niemals nötig haben, einem anderen Prozess, als dem
     Elternprozess, ein Signal zu senden. Es gibt drei Signale, die Sie an den
@@ -66,14 +63,14 @@
 
     <div class="example"><p><code>kill -TERM `cat /usr/local/apache2/logs/httpd.pid`</code></p></div>
 
-    <p>Die zweite Methode, dem <code>httpd</code>-Prozess zu signalisieren,
-    ist die Verwendung der <code>-k</code>-Befehlszeilenoptionen
+    <p>Die zweite Methode, dem <code class="program"><a href="./programs/httpd.html">httpd</a></code>-Prozess zu
+    signalisieren, ist die Verwendung der <code>-k</code>-Befehlszeilenoptionen
     <code>stop</code>, <code>restart</code> und <code>graceful</code>, wie
-    unten beschrieben. Dies sind Argumente des <a href="programs/httpd.html">httpd</a>-Programms, es wird jedoch
-    empfohlen, sie unter Verwendung des Steuerskripts <a href="programs/apachectl.html">apachectl</a> zu senden, welches diese
-    an <code>httpd</code> durchreicht.</p>
+    unten beschrieben. Dies sind Argumente des <code class="program"><a href="./programs/httpd.html">httpd</a></code>-Programms, es wird jedoch
+    empfohlen, sie unter Verwendung des Steuerskripts <code class="program"><a href="./programs/apachectl.html">apachectl</a></code> zu senden, welches diese
+    an <code class="program"><a href="./programs/httpd.html">httpd</a></code> durchreicht.</p>
 
-    <p>Nachdem Sie <code>httpd</code> signalisiert haben, können Sie
+    <p>Nachdem Sie <code class="program"><a href="./programs/httpd.html">httpd</a></code> signalisiert haben, können Sie
     dessen Fortschritt beobachten, indem Sie eingeben:</p>
 
     <div class="example"><p><code>tail -f /usr/local/apache2/logs/error_log</code></p></div>
@@ -168,13 +165,13 @@
     binden, an denen er lauschen soll. Bevor Sie einen Neustart
     durchführen, können Sie die Syntax der Konfigurationsdateien
     mit dem Befehlszeilenargument <code>-t</code> überprüfen
-    (siehe auch <a href="programs/httpd.html">httpd</a>). Das garantiert
+    (siehe auch <code class="program"><a href="./programs/httpd.html">httpd</a></code>). Das garantiert
     allerdings nicht, dass der Server korrekt starten wird. Um sowohl die
     Syntax als auch die Semantik der Konfigurationsdateien zu prüfen,
-    können Sie versuchen, <code>httpd</code> als nicht-root-Benutzer
+    können Sie versuchen, <code class="program"><a href="./programs/httpd.html">httpd</a></code> als nicht-root-Benutzer
     zu starten. Wenn dabei keine Fehler auftreten, wird er versuchen, seine
     Sockets und Logdateien zu öffnen und fehlschlagen, da er nicht root
-    ist (oder weil sich der gegenwärtig laufende <code>httpd</code>
+    ist (oder weil sich der gegenwärtig laufende <code class="program"><a href="./programs/httpd.html">httpd</a></code>
     bereits diese Ports gebunden hat). Wenn er aus einem anderen Grund
     fehlschlägt, dann liegt wahrscheinlich ein Konfigurationsfehler vor.
     Der Fehler sollte behoben werden, bevor der unterbrechungsfreie Neustart

@@ -24,9 +24,6 @@
 <a href="./ja/bind.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="./ko/bind.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<div class="outofdate">Diese Übersetzung ist möglicherweise
-            nicht mehr aktuell. Bitte prüfen Sie die englische Version auf
-            die neuesten Änderungen.</div>
 
     <p>Konfiguration der vom Apache verwendeten Adressen und Ports.</p>
   </div>
@@ -104,15 +101,15 @@
       standardmäßig deaktiviert, um den Systemgrundsätzen dieser
       Plattformen zu entsprechen. Doch selbst auf Systemen, wo dies
       standardmäßig dekativiert ist, kann dieses Verhalten mit einem
-      speziellen Konfigurationsparameter für den Apache geändert
-      werden.</p>
+      speziellen <code class="program"><a href="./programs/configure.html">configure</a></code>-Parameter für den Apache
+      geändert werden.</p>
 
     <p>Auf der anderen Seite ist die Verwendung von gemappten Adressen bei
       einigen Plattformen wie Linux und True64 der <strong>einzige</strong>
       Weg, sowohl IPv4 wie auch IPv6 zu verwenden. Wenn Sie möchten, dass
       der Apache IPv4- und IPv6-Verbindungen mit einem Minimum an Sockets
       behandelt, was die Verwendung von IPv4-gemappten IPv6-Adressen
-      erfordert, dann müssen Sie die <a href="programs/configure.html">configure</a>-Option <code>--enable-v4-mapped</code> angeben.</p>
+      erfordert, dann müssen Sie die <code class="program"><a href="./programs/configure.html">configure</a></code>-Option <code>--enable-v4-mapped</code> angeben.</p>
 
     <p><code>--enable-v4-mapped</code> ist die Voreinstellung auf allen
       Plattformen außer FreeBSD, NetBSD und OpenBSD, so dass Ihr Apache
@@ -131,7 +128,7 @@
     <p>Wenn Sie möchten, dass der Apache IPv4- und IPv6-Verbindungen an
       separaten Sockets behandelt (d.h. IPv4-gemappte Adressen deaktiviert
       werden sollen) und Ihre Plattform es unterstützt, dann müssen
-      Sie die <a href="programs/configure.html">configure</a>-Option 
+      Sie die <code class="program"><a href="./programs/configure.html">configure</a></code>-Option 
       <code>--disable-v4-mapped</code> angeben.
       Unter FreeBSD, NetBSD und OpenBSD ist <code>--disable-v4-mapped</code>
       voreingestellt.</p>

@@ -25,9 +25,6 @@
 <a href="../en/mod/mpm_common.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../ja/mod/mpm_common.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a></p>
 </div>
-<div class="outofdate">Diese Übersetzung ist möglicherweise
-            nicht mehr aktuell. Bitte prüfen Sie die englische Version auf
-            die neuesten Änderungen.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Beschreibung:</a></th><td>Eine Sammlung von Direktiven, die in mehr als einem
   Multi-Processing-Modul (MPM) implementiert sind.</td></tr>
 <tr><th><a href="module-dict.html#Status">Status:</a></th><td>MPM</td></tr></table>
@@ -230,7 +227,7 @@ Ausnahmefehler behandeln lassen kann</td></tr>
     <p>Wichtiger Hinweis: Die Verwendung der Direktive innerhalb von
     <code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code>
     wird nicht länger unterstützt. Benutzen Sie <code class="directive"><a href="../mod/mod_suexec.html#suexecusergroup">SuexecUserGroup</a></code> um Ihren Server
-    für <a href="mod_suexec.html">suexec</a> einzurichten.</p>
+    für <code class="program"><a href="../programs/suexec.html">suexec</a></code> einzurichten.</p>
 
     <div class="note"><h3>Anmerkung</h3>
       <p>Obwohl die Direktive <code class="directive">Group</code> in den MPMs
@@ -293,11 +290,18 @@ Ausnahmefehler behandeln lassen kann</td></tr>
       Listen [fe80::a00:20ff:fea7:ccea]:80
     </code></p></div>
 
+    <div class="note"><h3>Fehlermöglichkeit</h3>
+      Mehrere <code class="directive">Listen</code>-Direktiven für gleiche
+      IP-Adresse und Port führen zur Fehlermeldung
+      <code>Address already in use</code> <span class="transnote">(<em>Anm.d.Ü.:</em> Adresse schon in
+      Benutzung)</span>.
+    </div>
+
 <h3>Siehe auch</h3>
 <ul>
 <li><a href="../dns-caveats.html">DNS-Probleme</a></li>
 <li><a href="../bind.html">Bestimmen, welche Adressen und Ports der
-Apache verwendet</a></li>
+    Apache verwendet</a></li>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -601,8 +605,8 @@ ablegt</td></tr>
     und <a href="../misc/security_tips.html#serverroot">Sicherheit</a>.</p>
 
     <div class="note"><h3>Anmerkung</h3>
-      <p>Ab Apache 2 wird empfohlen, nur das Skript <a href="../programs/apachectl.html">apachectl</a> zum (Neu-)Starten
-      und Stoppen des Servers zu verwenden.</p>
+      <p>Ab Apache 2 wird empfohlen, nur das Skript <code class="program"><a href="../programs/apachectl.html">apachectl</a></code> zum (Neu-)Starten und Stoppen des Servers zu
+      verwenden.</p>
     </div>
 
 </div>
@@ -960,7 +964,7 @@ gültig</td></tr>
     <p>Wichtiger Hinweis: Die Verwendung dieser Direktive innerhalb von
     <code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code> wird
     nicht mehr unterstützt. Benutzen Sie <code class="directive"><a href="../mod/mod_suexec.html#suexecusergroup">SuexecUserGroup</a></code>, um Ihren Server
-    für <a href="../suexec.html">suexec</a> einzurichten.</p>
+    für <code class="program"><a href="../programs/suexec.html">suexec</a></code> einzurichten.</p>
 
     <div class="note"><h3>Anmerkung</h3>
       <p>Obwohl die Direktive <code class="directive">User</code> in den MPMs

@@ -25,9 +25,6 @@
 <a href="../en/mod/leader.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../ko/mod/leader.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<div class="outofdate">Diese Übersetzung ist möglicherweise
-            nicht mehr aktuell. Bitte prüfen Sie die englische Version auf
-            die neuesten Änderungen.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Beschreibung:</a></th><td>Eine experimentelle Variante des Standard-MPMs
   <code class="module"><a href="../mod/worker.html">worker</a></code></td></tr>
 <tr><th><a href="module-dict.html#Status">Status:</a></th><td>MPM</td></tr>
@@ -45,9 +42,9 @@
       Leader/Followers-Design-Pattern, um die Arbeit zwischen Threads zu
       koordinieren. Weitere Informationen finden Sie unter <a href="http://deuce.doc.wustl.edu/doc/pspdfs/lf.pdf">http://deuce.doc.wustl.edu/doc/pspdfs/lf.pdf</a>.</p>
 
-    <p>Um bei der Erstellung  des <code>httpd</code> das MPM
+    <p>Um bei der Erstellung  des <code class="program"><a href="../programs/httpd.html">httpd</a></code> das MPM
       <code class="module"><a href="../mod/leader.html">leader</a></code> zu verwenden, fügen Sie den Argumenten
-      des <code>configure</code>-Skripts <code>--with-mpm=leader</code>
+      des <code class="program"><a href="../programs/configure.html">configure</a></code>-Skripts <code>--with-mpm=leader</code>
       hinzu.</p>
   
     <p>Dieses MPM baut auf den atomaren APR-Vergleichs- und -Tauschoperationen
@@ -55,7 +52,7 @@
       x86-Rechner kompilieren, ohne dass 386-Unterstützung benötigt
       wird, oder wenn Sie für einen SPARC-Rechner kompilieren und keine
       pre-UltraSPARC-Chips betreiben müssen, fügen Sie den Argumenten
-      des <code>configure</code>-Skripts
+      des <code class="program"><a href="../programs/configure.html">configure</a></code>-Skripts
       <code>--enable-nonportable-atomics=yes</code> hinzu. Dies veranlasst die
       APR veranlasst dazu, atomare Operationen einzusetzen, welche effizienten
       Befehlscode verwenden, der älteren CPUs nicht zur Verfügung
