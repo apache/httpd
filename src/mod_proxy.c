@@ -844,8 +844,9 @@ send_fb(BUFF *f, request_rec *r, BUFF *f2, struct cache_req *c)
 	
         while(n && !r->connection->aborted) {
             w = bwrite(con->client, &buf[o], n);
-	    if (w > 0)
-	        reset_timeout(r); /* reset timeout after successfule write */
+	    if (w <= 0)
+		break;
+	    reset_timeout(r); /* reset timeout after successfule write */
             n-=w;
             o+=w;
         }
