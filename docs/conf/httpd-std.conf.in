@@ -444,15 +444,10 @@ DefaultType text/plain
 HostnameLookups Off
 
 #
-# EnableMMAP: Control whether the httpd may use memory-mapping when
-# delivering files (assuming that the underlying OS supports it).
-# The default is on, which in many cases yields improved performance
-# for mod_include requests.  On some platforms, however, you will
-# get better performance by disabling memory-mapping.  It is also
-# recommended that you disable memory-mapping for directories on
-# NFS-mounted filesystems; otherwise the httpd may crash if you
-# truncate or delete a file while it is being delivered.
-# To disable memory-mapping, use EnableMMAP off.
+# EnableMMAP: Control whether memory-mapping is used to deliver
+# files (assuming that the underlying OS supports it).
+# The default is on; turn this off if you serve from NFS-mounted 
+# filesystems.
 #
 # EnableMMAP off
 
