@@ -292,9 +292,6 @@ char *
         return "Bad IP address in URL";
     }
 
-/*    if (strchr(host,'.') == NULL && domain != NULL)
-   host = pstrcat(p, host, domain, NULL);
- */
     *urlp = url;
     *hostp = host;
 
