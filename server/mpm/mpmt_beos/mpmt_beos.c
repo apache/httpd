@@ -635,20 +635,15 @@ int ap_graceful_stop_signalled(void)
  * Child process main loop.
  */
 
-static void process_socket(ap_context_t *p, struct sockaddr *sa_client, int csd, int my_child_num, int my_thread_num)
+static void process_socket(ap_context_t *p, ap_socket_t *sock, int my_child_num, int my_thread_num)
 {
-    struct sockaddr sa_server; /* ZZZZ */
-    int len = sizeof(struct sockaddr);
     BUFF *conn_io;
     conn_rec *current_conn;
     ap_iol *iol;
     long conn_id = my_child_num * HARD_THREAD_LIMIT + my_thread_num;
+    int csd;
 
-    if (getsockname(csd, &sa_server, &len) < 0) { 
-	ap_log_error(APLOG_MARK, APLOG_ERR, errno, server_conf, "getsockname");
-	closesocket(csd);
-	return;
-    }
+    ap_get_os_sock(&csd, sock);
 
     sock_disable_nagle(csd);
 
@@ -673,7 +668,8 @@ static void process_socket(ap_context_t *p, struct sockaddr *sa_client, int csd,
     conn_io = ap_bcreate(p, B_RDWR);
     ap_bpush_iol(conn_io, iol);
 
-    current_conn = ap_new_connection(p, server_conf, conn_io, csd, conn_id);
+    current_conn = ap_new_apr_connection(p, server_conf, conn_io, sock, 
+                                         conn_id);
 
     ap_process_connection(current_conn);
 }
@@ -761,16 +757,16 @@ static int32 worker_thread(void * dummy)
             ap_accept(&csd, sd, ptrans);
             SAFE_ACCEPT(accept_mutex_off(0));
             SAFE_ACCEPT(intra_mutex_off(0));
+            process_socket(ptrans, csd, process_slot,
+                       thread_slot);
+            requests_this_child--;
         }
         else {
             SAFE_ACCEPT(accept_mutex_off(0));
             SAFE_ACCEPT(intra_mutex_off(0));
             break;
         }
-        ap_get_os_sock(&thesock, csd);
-        process_socket(ptrans, &sa_client, thesock, process_slot, thread_slot);
         ap_clear_pool(ptrans);
-        requests_this_child--;
     }
 
     ap_destroy_pool(tpool);
