@@ -1,3 +1,9 @@
+Changes with Apache 2.0.25-dev
+
+  *) Fix --enable-modules=all breakage with mod_auth_db and mod_auth_digest
+     by allowing a module to disable itself if its prerequisites are not
+     met.  [Justin Erenkrantz]
+
 Changes with Apache 2.0.24
 
   *) Fix a couple of issues in mod_include when the tag appeared at
