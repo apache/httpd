@@ -954,7 +954,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "mod_cache"=.\modules\experimental\mod_cache.dsp - Package Owner=<4>
+Project: "mod_cache"=.\modules\cache\mod_cache.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -1125,7 +1125,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "mod_disk_cache"=.\modules\experimental\mod_disk_cache.dsp - Package Owner=<4>
+Project: "mod_disk_cache"=.\modules\cache\mod_disk_cache.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -1464,7 +1464,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "mod_mem_cache"=.\modules\experimental\mod_mem_cache.dsp - Package Owner=<4>
+Project: "mod_mem_cache"=.\modules\cache\mod_mem_cache.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
