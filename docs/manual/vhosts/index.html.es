@@ -25,16 +25,12 @@
 <a href="../ko/vhosts/" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../ru/vhosts/" hreflang="ru" rel="alternate" title="Russian">&nbsp;ru&nbsp;</a></p>
 </div>
-<div class="outofdate">Esta traducción podría estar
-            obsoleta. Consulte la versión en inglés de la
-            documentación para comprobar si se han producido cambios
-            recientemente.</div>
 
 
     <p>El término <cite>Hosting Virtual</cite> se refiere a hacer
     funcionar más de un sitio web (tales como
     <code>www.company1.com</code> y <code>www.company2.com</code>) en
-    una sola máquina. Los sitios web virtuales pueden estar "<a href="ip-based.html">basados en su dirección IP</a>", lo que
+    una sola máquina. Los sitios web virtuales pueden estar "<a href="ip-based.html">basados en direcciones IP</a>", lo que
     significa que cada sitio web tiene una dirección IP diferente, o
     "<a href="name-based.html">basados en nombres diferentes</a>", lo
     que significa que con una sola dirección IP están funcionando
@@ -49,7 +45,7 @@
     hosting virtual se llama algunas veces <em>basada en host</em> o
     <em>hosting virtual no basado en IP</em>.</p>
 
-    <p>Más abajo se muestra un listado de documentos que explican con
+    <p>Más abajo se muestra un listado de documentos que explican en
     detalle cómo funciona el hosting virtual en las versiones de
     Apache 1.3 y posteriores.</p>
 
@@ -67,12 +63,14 @@ host virtual</a></li></ul></div>
       nombres</a> (Más de un sitio web con una sola dirección IP)</li>
       <li><a href="ip-based.html">Hosting virtual basado en IPs</a>
       (Una dirección IP para cada sitio web)</li>
-      <li><a href="examples.html">Ejemplos de hosting virtual para
-      configuraciones típicas</a></li>
-      <li><a href="fd-limits.html"> L#237;mites en los descriptores de ficheros</a> (o,
-      <em>demasiados ficheros log</em>)</li>
-      <li><a href="mass.html">Configuración dinámica de Hosting virtual masivo</a></li>   
-      <li><a href="details.html">Discusión en profundidad sobre proceso de selección de host virtual</a></li>
+      <li><a href="examples.html">Ejemplos típicos de
+      configuración para usar hosting virtual</a></li>
+      <li><a href="fd-limits.html">L#237;mites a los descriptores de
+      ficheros</a> (o, <em>demasiados ficheros de registro</em>)</li>
+      <li><a href="mass.html">Configuración dinámica de
+      Hosting virtual masivo</a></li>
+      <li><a href="details.html">Discusión en profundidad sobre el
+      proceso de selección de hosting virtual</a></li>
     </ul>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -87,22 +85,23 @@ host virtual</a></li></ul></div>
       <li><code class="directive"><a href="../mod/core.html#serverpath">ServerPath</a></code></li>
     </ul>
 
-    <p>Si está tratando de solucionar problemas con su configuración de
-    hosting virtual, puede que le sea de utilidad usar la opción de
-    línea de comandos de Apache <code>-S</code>. Es decir, el
-    siguiente comando:</p>
+    <p>Si está tratando de solucionar problemas de
+    configuración de su hosting virtual, puede que le sea de
+    utilidad usar la opción de línea de comandos de Apache
+    <code>-S</code>. Es decir, el siguiente comando:</p>
 
     <div class="example"><p><code>
     /usr/local/apache2/bin/httpd -S
     </code></p></div>
 
-    <p>Este comando le devolverá una descripción de como Apache
-    analiza y entiende el fichero de configuración. Para descubrir si
-    tiene errores de configuración, es conveniente que examine con
-    atención las direcciones IP y los nombres de servidor que está
-    usando. (Consulte <a href="../programs/httpd.html">la
-    documentación del programa httpd</a> para obtener información
-    sobre otras opciones de línea de comandos)</p>
+    <p>Este comando le devolverá una descripción de
+    cómo Apache analiza e interpreta el fichero de
+    configuración. Para saber si contiene errores de
+    configuración, es conveniente que examine con atención
+    las direcciones IP y los nombres de servidor que está
+    usando. (Consulte la documentación sobre el programa
+    <code class="program"><a href="../programs/httpd.html">httpd</a></code> para obtener información sobre otras
+    opciones de línea de comandos)</p>
 
 </div></div>
 <div class="bottomlang">

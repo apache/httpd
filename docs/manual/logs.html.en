@@ -19,6 +19,7 @@
 <a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentation</a> &gt; <a href="./">Version 2.0</a></div><div id="page-content"><div id="preamble"><h1>Log Files</h1>
 <div class="toplang">
 <p><span>Available Languages: </span><a href="./en/logs.html" title="English">&nbsp;en&nbsp;</a> |
+<a href="./es/logs.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
 <a href="./ja/logs.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="./ko/logs.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
@@ -110,7 +111,7 @@
 
     <p>It is not possible to customize the error log by adding or
     removing information. However, error log entries dealing with
-    particular requests have corresponding entries in the <a href="#accesslog">access log</a>. For example, the above example
+    particular requests have corresponding entries in the <a href="#accesslog">access log</a>. For instance, the above example
     entry corresponds to an access log entry with status code 403.
     Since it is possible to customize the access log, you can
     obtain more information about error conditions using that log
@@ -223,7 +224,7 @@
         <dd>The "hyphen" in the output indicates that the requested
         piece of information is not available. In this case, the
         information that is not available is the RFC 1413 identity of
-        the client determined by <code>identd</code> on the clients
+        the client determined by <code>identd</code> on the client's
         machine. This information is highly unreliable and should
         almost never be used except on tightly controlled internal
         networks. Apache httpd will not even attempt to determine
@@ -403,7 +404,7 @@
       </code></p></div>
 
       <p>Although we have just shown that conditional logging is very
-      powerful and flexibly, it is not the only way to control the
+      powerful and flexible, it is not the only way to control the
       contents of the logs. Log files are more useful when they
       contain a complete record of server activity. It is often
       easier to simply post-process the log files to remove requests
@@ -575,6 +576,7 @@
   </div></div>
 <div class="bottomlang">
 <p><span>Available Languages: </span><a href="./en/logs.html" title="English">&nbsp;en&nbsp;</a> |
+<a href="./es/logs.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
 <a href="./ja/logs.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="./ko/logs.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div><div id="footer">

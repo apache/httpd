@@ -5,8 +5,7 @@
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
-<title>Migrar su instalación de la versión 1.3 a la
-2.0 - Servidor HTTP Apache</title>
+<title>Pasar a usar Apache 2.0 si ahora usa Apache 1.3 - Servidor HTTP Apache</title>
 <link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
 <link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
 <link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
@@ -17,8 +16,7 @@
 <img alt="" src="./images/feather.gif" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="./images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">Servidor HTTP</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentación</a> &gt; <a href="./">Versión 2.0</a></div><div id="page-content"><div id="preamble"><h1>Migrar su instalación de la versión 1.3 a la
-2.0</h1>
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">Servidor HTTP</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentación</a> &gt; <a href="./">Versión 2.0</a></div><div id="page-content"><div id="preamble"><h1>Pasar a usar Apache 2.0 si ahora usa Apache 1.3</h1>
 <div class="toplang">
 <p><span>Idiomas disponibles: </span><a href="./de/upgrading.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
 <a href="./en/upgrading.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
@@ -28,10 +26,6 @@
 <a href="./ko/upgrading.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="./ru/upgrading.html" hreflang="ru" rel="alternate" title="Russian">&nbsp;ru&nbsp;</a></p>
 </div>
-<div class="outofdate">Esta traducción podría estar
-            obsoleta. Consulte la versión en inglés de la
-            documentación para comprobar si se han producido cambios
-            recientemente.</div>
 
   <p>Este documento recoge infomación crítica sobre el
   proceso de actulización de la versión de Apache que
@@ -42,7 +36,7 @@
 </div>
 <div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#compile-time">Cambios en el proceso de configuración y
     compilación</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#run-time">Cambios en el proceso de la configuración inicial del
+<li><img alt="" src="./images/down.gif" /> <a href="#run-time">Cambios en el proceso de configuración inicial del
     servidor</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#misc">Cambios de menor importancia</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#third-party">Módulos de terceras partes</a></li>
@@ -62,23 +56,25 @@ nuevas funcionalidades de Apache 2.0</a></li></ul></div>
 
       <li>Además de la selección de módulos habitual
       que puede hacer al compilar, en Apache 2.0 la mayor parte del
-      procesamiento de las petición es llevada a cabo por los <a href="mpm.html">Módulos de MultiProcesamiento</a>
+      procesamiento de las petición es llevada a cabo por <a href="mpm.html">módulos de multiprocesamiento</a>
       (MPMs).</li>
     </ul>
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="run-time" id="run-time">Cambios en el proceso de la configuración inicial del
+<h2><a name="run-time" id="run-time">Cambios en el proceso de configuración inicial del
     servidor</a></h2>
     
 
     <ul>
-      <li>Muchas directivas que no pertenicían al conjunto
-      básico en Apache 1.3 están ahora en los MPMs. Si desea
-      que el nuevo servidor de comporte de la forma más parecida
-      posible a Apache 1.3, debe seleccionar el Módulo de
-      MultiProcesamiento <code class="module"><a href="./mod/prefork.html">prefork</a></code>. Otros MPMs tienen
-      diferentes directivas para controlar el proceso de creación
-      y procesamiento de peticiones.</li>
+      <li>Muchas directivas que pertenecían al core (núcleo)
+      del servidor en Apache 1.3 se encuentran ahora en distintos
+      módulos de multiprocesamiento. Si desea que el nuevo
+      servidor de comporte de la forma más parecida posible a
+      como lo hacía Apache 1.3, debe usar el módulo de
+      multiprocesamiento <code class="module"><a href="./mod/prefork.html">prefork</a></code>. Otros módulos
+      de multiprocesamiento tienen diferentes directivas para
+      controlar la creación de procesos y el procesamiento de
+      peticiones.</li>
 
       <li>El <a href="mod/mod_proxy.html">módulo proxy</a> ha
       sido remodelado para ponerlo al día con la
@@ -87,29 +83,30 @@ nuevas funcionalidades de Apache 2.0</a></li></ul></div>
       está dentro de un bloque <code class="directive"><a href="./mod/mod_proxy.html#proxy">&lt;Proxy&gt;</a></code> en lugar de en un bloque
       <code>&lt;Directory proxy:&gt;</code>.</li>
 
-      <li>El procesamiento de<code>PATH_INFO</code> (la informacion de
-      path que aparece tras un nombre de fichero válido) ha
-      cambiado para algunos módulos. Módulos que fueron
-      previamente implementados como un handle pero ahora son
-      implementados como filtros puede que no acepten ahora peticiones
-      que incluyan <code>PATH_INFO</code>. Filtros como <a href="mod/mod_include.html">INCLUDES</a> o <a href="http://www.php.net/">PHP</a> están implementados
-      encima del handler principal (core handler) core handler, y por
-      tanto rechazan peticiones con <code>PATH_INFO</code>. Puede usar
-      la directiva <code class="directive"><a href="./mod/core.html#acceptpathinfo">AcceptPathInfo</a></code>
-      para forzar al handler principal a aceptar peticiones con
-      <code>PATH_INFO</code> y por tanto restaurar la habilidad de
-      usar <code>PATH_INFO</code> en server-side includes.</li>
+      <li>El procesamiento de <code>PATH_INFO</code> (la
+      información que aparece detrás de un nombre de fichero
+      válido) ha cambiado en algunos módulos. Los
+      módulos que fueron previamente implementados como un handler
+      pero que ahora son implementados como un filtro puede que no
+      acepten peticiones que incluyan <code>PATH_INFO</code>. Filtros
+      como <a href="mod/mod_include.html">INCLUDES</a> o <a href="http://www.php.net/">PHP</a> están implementados
+      sobre el handler principal (core handler), y por tanto
+      rechazarán peticiones con <code>PATH_INFO</code>. Puede
+      usar la directiva <code class="directive"><a href="./mod/core.html#acceptpathinfo">AcceptPathInfo</a></code> para forzar al handler
+      principal a aceptar peticiones con <code>PATH_INFO</code> y por
+      tanto restaurar la posibilidad de usar <code>PATH_INFO</code> en
+      server-side includes.</li>
 
       <li>La directiva <code class="directive"><a href="./mod/mod_negotiation.html#cachenegotiateddocs">CacheNegotiatedDocs</a></code> toma
       ahora como argumento <code>on</code> u <code>off</code>. Las
-      instacias existentes de <code class="directive">CacheNegotiatedDocs</code> deben reemplazarse por
+      instancias existentes de <code class="directive">CacheNegotiatedDocs</code> deben reemplazarse por
       <code>CacheNegotiatedDocs on</code>.</li>
 
       <li>
         La directiva <code class="directive"><a href="./mod/core.html#errordocument">ErrorDocument</a></code> no usa ya dobles
         comillas al principio del argumento para indicar el mensaje de
-        texto que tiene que mostrarse. En lugar de esto, se debe poner
-        entre comillas todo el mensaje. Por ejemplo,
+        texto a mostrar. En lugar de esto, ponga entre comillas todo
+        el mensaje. Por ejemplo,
 
         <div class="example"><p><code>
           ErrorDocument 403 "Mensaje
@@ -126,18 +123,18 @@ nuevas funcionalidades de Apache 2.0</a></li></ul></div>
 
       <li>Las directivas <code>AccessConfig</code> y
       <code>ResourceConfig</code> han desaparecido.  Las instancias
-      existentes de estas directivas pueden sustituirse por la
-      directiva <code class="directive"><a href="./mod/core.html#include">Include</a></code> que tiene
-      una funcionalidad equivalente. Si hacía uso de los valores
-      por defecto de esas directivas sin incluirlas en los ficheros de
-      configuración, puede que necesite añadir <code>Include
-      conf/access.conf</code> e <code>Include conf/srm.conf</code> a
-      su fichero <code>httpd.conf</code>. Para asegurarse de que
-      Apache lee el fichero de configuración en el mismo orden
-      que asumían las antiguas directivas, las directivas
-      <code class="directive"><a href="./mod/core.html#include">Include</a></code> deben ser
-      reemplazadas al final del fichero <code>httpd.conf</code>, con
-      la de <code>srm.conf</code> precediendo a la de
+      existentes de estas directivas pueden ser sustituidas por
+      directivas <code class="directive"><a href="./mod/core.html#include">Include</a></code> que
+      tienen una funcionalidad equivalente. Si hacía uso de los
+      valores por defecto de esas directivas sin incluirlas en los
+      ficheros de configuración, puede que necesite añadir
+      <code>Include conf/access.conf</code> e <code>Include
+      conf/srm.conf</code> a su fichero <code>httpd.conf</code>. Para
+      asegurar que Apache lee el fichero de configuración en el
+      mismo orden que asumían las antiguas directivas, las
+      directivas <code class="directive"><a href="./mod/core.html#include">Include</a></code> deben
+      ser reemplazadas al final del fichero <code>httpd.conf</code>,
+      con la de <code>srm.conf</code> precediendo a la de
       <code>access.conf</code>.</li>
 
       <li>Las directivas <code>BindAddress</code> y <code>Port</code>
@@ -157,25 +154,26 @@ nuevas funcionalidades de Apache 2.0</a></li></ul></div>
 
       <li>La directiva <code>ServerType</code> ha dejado de existir.
       El método usado para servir peticiones está ahora
-      determinado por la selección del Módulo de
-      MultiProcesamiento. Actualmente no hay diseñado un MPM que
-      pueda ser ejecutado por inetd.</li>
+      determinado por la selección del módulo de
+      multiprocesamiento. Actualmente no hay diseñado un
+      módulo de multiprocesamiento que pueda ser ejecutado por
+      inetd.</li>
 
       <li>Los módulos <code>mod_log_agent</code> y
       <code>mod_log_referer</code> que contenían las directivas
       <code>AgentLog</code>, <code>RefererLog</code> y
-      <code>RefererIgnore</code> han desaparecido. Los logs de agente
-      y de referer están disponibles todavía usando la
-      directiva <code class="directive"><a href="./mod/mod_log_config.html#customlog">CustomLog</a></code> del módulo
+      <code>RefererIgnore</code> han desaparecido. Los registros de
+      "agente" y de "referer" están disponibles todavía
+      usando la directiva <code class="directive"><a href="./mod/mod_log_config.html#customlog">CustomLog</a></code> del módulo
       <code class="module"><a href="./mod/mod_log_config.html">mod_log_config</a></code>.</li>
 
-      <li>las directivas <code>AddModule</code> y
+      <li>Las directivas <code>AddModule</code> y
       <code>ClearModuleList</code> no están presentes en la nueva
-      versión.  Estan directivas se usaban para asegurarse de que
-      los módulos pudieran activarse en el orden correcto. La
-      nueva API de Apache 2.0 permite a los módulos especificar
-      explícitamente su orden de activación, eliminando la
-      necesidad de estas directivas.</li>
+      versión de Apache.  Estas directivas se usaban para
+      asegurar que los módulos pudieran activarse en el orden
+      correcto. La nueva API de Apache 2.0 permite a los módulos
+      especificar explícitamente su orden de activación,
+      eliminando la necesidad de las antiguas directivas.</li>
 
       <li>La directiva <code>FancyIndexing</code> se ha eliminado.  La
       funcionalidad que cubría está ahora disponible a
@@ -187,6 +185,17 @@ nuevas funcionalidades de Apache 2.0</a></li></ul></div>
       estricta en su algoritmo de selección de ficheros y solo
       seleccionará ficheros <em>negociables</em>.  El antiguo
       comportamiento puede restaurarse usando la directiva <code class="directive"><a href="./mod/mod_mime.html#multiviewsmatch">MultiviewsMatch</a></code>.</li>
+
+      <li>(<em>a partir de la versión 2.0.51</em>) <p>La
+      funcionalidad de la directiva <code>ErrorHeader</code> se ha
+      unido con la de la directiva <code class="directive"><a href="./mod/mod_headers.html#header">Header</a></code>, porque se estaba usando
+      un término equivocado. Use</p>
+ 
+      <div class="example"><p><code>
+        Header always set foo bar
+      </code></p></div>
+
+      <p>en lugar de conseguir el comportamiento deseado.</p></li>
 
     </ul>
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
@@ -208,7 +217,7 @@ nuevas funcionalidades de Apache 2.0</a></li></ul></div>
       independiente <code>src</code>. En su lugar, el código
       fuente se ha organizado a partir del directorio principal de la
       distribución, y las intalaciones del servidor compilado
-      deben hecerse en un directorio diferente.</li>
+      deben hacerse en un directorio diferente.</li>
     </ul>
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
