@@ -193,6 +193,7 @@ typedef int rlim_t;
 int gethostname(char *name, int namelen);
 #define HAVE_SYSLOG 1
 #define SYS_SIGLIST _sys_siglist
+#define AP_ENABLE_EXCEPTION_HOOK
 
 #elif defined(IRIX)
 #undef HAVE_GMTOFF
@@ -299,6 +300,7 @@ typedef int rlim_t;
 #elif AIX >= 420
 #define NET_SIZE_T size_t
 #endif
+#define AP_ENABLE_EXCEPTION_HOOK
 
 #elif defined(ULTRIX)
 /* we don't want to use sys/resource.h under
@@ -521,6 +523,7 @@ typedef int pid_t;
 #if !defined(__GLIBC__) || __GLIBC__ < 2 || (__GLIBC__ == 2 && __GLIBC_MINOR__ < 1)
 typedef int rlim_t;
 #endif
+#define AP_ENABLE_EXCEPTION_HOOK
 
 #elif defined(SCO)
 #undef HAVE_GMTOFF

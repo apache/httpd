@@ -260,6 +260,9 @@ API_VAR_EXPORT int ap_daemons_limit=0;
 API_VAR_EXPORT time_t ap_restart_time=0;
 API_VAR_EXPORT int ap_suexec_enabled = 0;
 API_VAR_EXPORT int ap_listenbacklog=0;
+#ifdef AP_ENABLE_EXCEPTION_HOOK
+int ap_exception_hook_enabled=0;
+#endif
 
 struct accept_mutex_methods_s {
     void (*child_init)(pool *p);
@@ -3110,12 +3113,63 @@ static void siglist_init(void)
 }
 #endif /* platform has sys_siglist[] */
 
+#ifdef AP_ENABLE_EXCEPTION_HOOK
+typedef struct except_hook_t {
+    struct except_hook_t *next;
+    void (*fn)(ap_exception_info_t *);
+} except_hook_t;
+
+static except_hook_t *except_hooks;
+
+static void except_hook_cleanup(void *ignored)
+{
+    except_hooks = NULL;
+}
+
+API_EXPORT(int) ap_add_fatal_exception_hook(void (*fn)(ap_exception_info_t *))
+{
+    except_hook_t *new;
+
+    ap_assert(pconf);
+
+    if (!ap_exception_hook_enabled) {
+        return 1;
+    }
+
+    new = ap_palloc(pconf, sizeof(except_hook_t));
+    new->next = except_hooks;
+    new->fn = fn;
+    except_hooks = new;
+
+    return 0;
+}
+
+static void run_fatal_exception_hook(int sig)
+{
+    except_hook_t *cur_hook = except_hooks;
+    ap_exception_info_t ei = {0};
+
+    if (ap_exception_hook_enabled &&
+        geteuid() != 0) {
+        ei.sig = sig;
+        ei.pid = getpid();
+
+        while (cur_hook) {
+            cur_hook->fn(&ei);
+            cur_hook = cur_hook->next;
+        }
+    }
+}
+#endif /* AP_ENABLE_EXCEPTION_HOOK */
 
 /* handle all varieties of core dumping signals */
 static void sig_coredump(int sig)
 {
     chdir(ap_coredump_dir);
     signal(sig, SIG_DFL);
+#ifdef AP_ENABLE_EXCEPTION_HOOK
+    run_fatal_exception_hook(sig);
+#endif
 #if !defined(WIN32) && !defined(NETWARE)
     kill(getpid(), sig);
 #else
@@ -4188,6 +4242,9 @@ static void common_init(void)
 
     pglobal = ap_init_alloc();
     pconf = ap_make_sub_pool(pglobal);
+#ifdef AP_ENABLE_EXCEPTION_HOOK
+    ap_register_cleanup(pconf, NULL, except_hook_cleanup, ap_null_cleanup);
+#endif
     plog = ap_make_sub_pool(pglobal);
     ptrans = ap_make_sub_pool(pconf);
 
@@ -5121,6 +5178,9 @@ static void standalone_main(int argc, char **argv)
 	}
 #endif
 	ap_clear_pool(pconf);
+#ifdef AP_ENABLE_EXCEPTION_HOOK
+        ap_register_cleanup(pconf, NULL, except_hook_cleanup, ap_null_cleanup);
+#endif
 	ptrans = ap_make_sub_pool(pconf);
 
 	ap_init_mutex_method(ap_default_mutex_method());

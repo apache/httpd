@@ -9,6 +9,7 @@ ap_SHA1Update_binary
 ap_SHA1Update
 ap_add_cgi_vars
 ap_add_common_vars
+ap_add_fatal_exception_hook
 ap_add_file_conf
 ap_add_module
 ap_add_named_module

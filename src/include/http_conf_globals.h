@@ -100,6 +100,9 @@ extern API_VAR_EXPORT char *ap_pid_fname;
 extern API_VAR_EXPORT char *ap_scoreboard_fname;
 extern API_VAR_EXPORT char *ap_lock_fname;
 extern API_VAR_EXPORT char *ap_server_argv0;
+#ifdef AP_ENABLE_EXCEPTION_HOOK
+extern int ap_exception_hook_enabled;
+#endif
 
 extern enum server_token_type ap_server_tokens;
 

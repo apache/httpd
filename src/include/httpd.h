@@ -1226,6 +1226,32 @@ API_EXPORT(extern const char *) ap_psignature(const char *prefix, request_rec *r
 #endif
 #define strtoul strtoul_is_not_a_portable_function_use_strtol_instead
 
+#ifdef AP_ENABLE_EXCEPTION_HOOK
+/* The exception hook allows a module to run from the server's signal
+ * handler, and perform tasks such as logging the current request or
+ * getting a backtrace or performing other diagnostic functions.  All
+ * operating system requirements for running in a signal handler must
+ * be respected, or the process may not exit properly.
+ *
+ * AP_ENABLE_EXCEPTION_HOOK is already defined for platforms that have
+ * been tested.  It likely will work on other platforms.  In order to
+ * test, define AP_ENABLE_EXCEPTION_HOOK at configure time.
+ */
+typedef struct ap_exception_info_t {
+    int sig;
+    pid_t pid;
+} ap_exception_info_t;
+
+/* Register a function to be called after a fatal exception (on *X systems, a
+ * "synchronous signal" such as SIGSEGV, SIGILL, etc.).
+ *
+ * Returns 0 on success, non-zero on failure.
+ * If EnableExceptionHook directive is not set to "on", this function will
+ * report failure and no such hooks will be called.
+ */
+API_EXPORT(extern int) ap_add_fatal_exception_hook(void (*fn)(ap_exception_info_t *));
+#endif /* AP_ENABLE_EXCEPTION_HOOK */
+
 #ifdef __cplusplus
 }
 #endif

@@ -2248,6 +2248,32 @@ static const char *set_keep_alive_max(cmd_parms *cmd, void *dummy, char *arg)
     return NULL;
 }
 
+#ifdef AP_ENABLE_EXCEPTION_HOOK
+static const char *set_exception_hook(cmd_parms *cmd, void *dummy, char *arg) 
+{
+    const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
+    if (err != NULL) {
+        return err;
+    }
+
+    if (cmd->server->is_virtual) {
+	return "EnableExceptionHook directive not allowed in <VirtualHost>";
+    }
+
+    if (strcasecmp(arg, "on") == 0) {
+        ap_exception_hook_enabled = 1;
+    }
+    else if (strcasecmp(arg, "off") == 0) {
+        ap_exception_hook_enabled = 0;
+    }
+    else {
+        return "parameter must be 'on' or 'off'";
+    }
+
+    return NULL;
+}
+#endif /* AP_ENABLE_EXCEPTION_HOOK */
+
 static const char *set_pidfile(cmd_parms *cmd, void *dummy, char *arg) 
 {
     const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
@@ -3628,6 +3654,10 @@ static const command_rec core_cmds[] = {
 #endif
     "are compiled in"
 },
+#ifdef AP_ENABLE_EXCEPTION_HOOK
+{ "EnableExceptionHook", set_exception_hook, NULL, RSRC_CONF, TAKE1,
+  "Controls whether exception hook may be called after a crash" },
+#endif
 
 /* EBCDIC Conversion directives: */
 #ifdef CHARSET_EBCDIC
