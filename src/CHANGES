@@ -1,5 +1,11 @@
 Changes with Apache 1.3.10
 
+  *) Added the mod_rewrite `URL Rewriting Guide' to the online
+     documentation (htdocs/manual/misc/rewriteguide.html). This paper
+     provides a large collection of practical solutions to URL based
+     problems a webmaster is often confronted with.
+     [Ralf S. Engelschall]
+
   *) Add a suexec status report to the '-l' (compiled-in modules)
      output. [Ken Coar]
 
