@@ -1165,7 +1165,8 @@ static void child_main()
 
     CloseHandle(allowed_globals.jobsemaphore);
     apr_lock_destroy(allowed_globals.jobmutex);
-    apr_lock_destroy(qlock);
+    if (osver.dwPlatformId != VER_PLATFORM_WIN32_WINDOWS)
+    	apr_lock_destroy(qlock);
 
     apr_pool_destroy(pchild);
     CloseHandle(exit_event);
