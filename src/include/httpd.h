@@ -979,4 +979,10 @@ extern int raise_sigstop_flags;
 
 API_EXPORT(extern const char *) psignature(const char *prefix, request_rec *r);
 
+/* strtoul does not exist on sunos4. */
+#ifdef strtoul
+#undef strtoul
+#endif
+#define strtoul strtoul_is_not_a_portable_function_use_strtol_instead
+
 #endif	/* !APACHE_HTTPD_H */

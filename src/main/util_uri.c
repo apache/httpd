@@ -520,9 +520,11 @@ API_EXPORT(int) parse_uri_components(pool *p, const char *uri, uri_components *u
 	    uptr->port_str = pstrndup (p, uptr->hostinfo+match[7].rm_so, match[7].rm_eo - match[7].rm_so);
 	    if (uptr->port_str[0] != '\0') {
 		char *endstr;
+		int port;
 
-		uptr->port = strtoul(uptr->port_str, &endstr, 10);
-		if (*endstr != '\0') {
+		port = strtol(uptr->port_str, &endstr, 10);
+		uptr->port = port;
+		if (*endstr != '\0' || uptr->port != port) {
 		    /* Invalid characters after ':' found */
 		    return HTTP_BAD_REQUEST;
 		}
