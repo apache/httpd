@@ -1806,8 +1806,8 @@ API_EXPORT(void) ap_note_subprocess(pool *a, int pid, enum kill_conditions how)
 #define BINMODE
 #endif
 
-static int spawn_child_err_core(pool *p, int (*func) (void *), void *data,
-				enum kill_conditions kill_how,
+static int spawn_child_err_core(pool *p, int (*func) (void *, child_info *),
+				void *data,enum kill_conditions kill_how,
 				int *pipe_in, int *pipe_out, int *pipe_err)
 {
     int pid;
@@ -1876,7 +1876,7 @@ static int spawn_child_err_core(pool *p, int (*func) (void *), void *data,
 	    close(err_fds[1]);
 	}
 
-	pid = (*func) (data);
+	pid = (*func) (data, NULL);
         if (pid == -1) pid = 0;   /* map Win32 error code onto Unix default */
 
         if (!pid) {
@@ -1965,7 +1965,7 @@ static int spawn_child_err_core(pool *p, int (*func) (void *), void *data,
 	/* HP-UX SIGCHLD fix goes here, if someone will remind me what it is... */
 	signal(SIGCHLD, SIG_DFL);	/* Was that it? */
 
-	func(data);
+	func(data, NULL);
 	exit(1);		/* Should only get here if the exec in func() failed */
     }
 
@@ -1993,9 +1993,10 @@ static int spawn_child_err_core(pool *p, int (*func) (void *), void *data,
 }
 
 
-API_EXPORT(int) ap_spawn_child_err(pool *p, int (*func) (void *), void *data,
-				enum kill_conditions kill_how,
-			   FILE **pipe_in, FILE **pipe_out, FILE **pipe_err)
+API_EXPORT(int) ap_spawn_child_err(pool *p, int (*func) (void *, child_info *),
+				   void *data, enum kill_conditions kill_how,
+				   FILE **pipe_in, FILE **pipe_out,
+				   FILE **pipe_err)
 {
     int fd_in, fd_out, fd_err;
     int pid, save_errno;

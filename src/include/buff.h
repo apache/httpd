@@ -197,7 +197,7 @@ API_EXPORT(int) ap_bfilbuf(BUFF *fb);
 		     ?os_toascii[(unsigned char)c]:(c), 0))
 
 #endif /*CHARSET_EBCDIC*/
-typedef struct {
+struct _child_info {
 #ifdef WIN32
     /*
      *  These handles are used by ap_call_exec to call 
@@ -207,7 +207,7 @@ typedef struct {
     HANDLE hPipeOutputWrite;
     HANDLE hPipeErrorWrite;
 #endif
-} child_info;
+};
 API_EXPORT(int) ap_spawn_child_err_buff(pool *, int (*)(void *, child_info *), void *,
 					enum kill_conditions, BUFF **pipe_in, BUFF **pipe_out,
 					BUFF **pipe_err);

@@ -154,7 +154,7 @@ static const TRANS priorities[] = {
     {NULL,	-1},
 };
 
-static int error_log_child (void *cmd)
+static int error_log_child (void *cmd, child_info *pinfo)
 {
     /* Child process code for 'ErrorLog "|..."';
      * may want a common framework for this, since I expect it will

@@ -1,4 +1,4 @@
-/* ====================================================================
+ /* ====================================================================
  * Copyright (c) 1995-1998 The Apache Group.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -735,7 +735,7 @@ typedef struct {
     char *s;
 } include_cmd_arg;
 
-static int include_cmd_child(void *arg)
+static int include_cmd_child(void *arg, child_info *pinfo)
 {
     request_rec *r = ((include_cmd_arg *) arg)->r;
     char *s = ((include_cmd_arg *) arg)->s;
@@ -786,7 +786,8 @@ static int include_cmd_child(void *arg)
 #endif
     ap_cleanup_for_exec();
     /* set shellcmd flag to pass arg to SHELL_PATH */
-    child_pid = ap_call_exec(r, s, ap_create_environment(r->pool, env), 1);
+    child_pid = ap_call_exec(r, NULL, s, ap_create_environment(r->pool, env),
+			     1);
 #ifdef WIN32
     return (child_pid);
 #else
