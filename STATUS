@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/02/14 23:32:27 $]
+Last modified at [$Date: 2003/02/15 00:51:28 $]
 
 Release:
 
@@ -115,15 +115,21 @@ PATCHES TO PORT FROM 2.1
       +1: trawick
         nd: there's always the same function (foo_child_errfn), shouldn't it
         appear only once in util_script.c?
+        trawick: The implementations are already different for mod_cgi
+                 vs. mod_cgid, and I fear that a fix to mod_cgid to
+                 use the right vhost-specific error log is going to
+                 make them even more different in the future.
+                 Meanwhile, there isn't enough commonality (LOC, not 
+                 percentage) to spread the pieces over multiple files.
 
     * mod_auth_digest: drop the guess_domain function in 2.0 and 1.3. It's
       quite bogus to guess anyway (and it's documented otherwise) (PR 16937)
       modules/aaa/mod_auth_digest.c: r1.79
-      +1: nd, jerenkrantz
+      +1: nd, jerenkrantz, trawick
 
     * Fix suexec compile error on SUNOS4 (no strerror()) for 2.0 and 1.3
       support/suexec.c: r1.24
-      +1: nd
+      +1: nd, trawick
 
 CURRENT RELEASE NOTES:
 
