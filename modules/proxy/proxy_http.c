@@ -309,6 +309,10 @@ apr_status_t ap_proxy_http_create_connection(apr_pool_t *p, request_rec *r,
     /* get a socket - either a keepalive one, or a new one */
     new = 1;
     if ((backend->connection) && (backend->connection->id == c->id)) {
+        int buffer_len = 1;
+        char test_buffer[buffer_len];
+        apr_status_t socket_status;
+        apr_int32_t current_timeout;
 
         /* use previous keepalive socket */
         *origin = backend->connection;
@@ -318,8 +322,18 @@ apr_status_t ap_proxy_http_create_connection(apr_pool_t *p, request_rec *r,
         /* reset the connection filters */
         ap_proxy_reset_output_filters(*origin);
 
-        /* XXX FIXME: If the socket has since closed, change new to 1 so
-         * a new socket is opened */
+        /* save timeout */
+        apr_getsocketopt(p_conn->sock, APR_SO_TIMEOUT, &current_timeout);
+        /* set no timeout */
+        apr_setsocketopt(p_conn->sock, APR_SO_TIMEOUT, 0);
+        socket_status = apr_recv(p_conn->sock, test_buffer, &buffer_len);
+        /* put back old timeout */
+        apr_setsocketopt(p_conn->sock, APR_SO_TIMEOUT, current_timeout);
+        if ( APR_STATUS_IS_EOF(socket_status) ) {
+            ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, NULL,
+                         "proxy: HTTP: previous connection is closed");
+            new = 1;
+        }
     }
     if (new) {
 
