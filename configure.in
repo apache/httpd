@@ -208,6 +208,12 @@ case $host in
       APR_SETVAR(APACHE_MPM, [prefork])
       APR_SETVAR(SINGLE_LISTEN_UNSERIALIZED_ACCEPT, [1])
       ;;
+  *aix*)
+      aixver=`echo $host | sed 's/^[[^0-9]]*//' | sed 's/\.//g'`
+      if test $aixver -ge 4330; then
+        APR_SETVAR(SINGLE_LISTEN_UNSERIALIZED_ACCEPT, [1])
+      fi
+      ;;
 esac
 
 dnl
