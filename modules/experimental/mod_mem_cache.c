@@ -168,7 +168,11 @@ static void cleanup_cache_object(cache_object_t *obj)
             free(mobj->m);
         }
         if (mobj->type == CACHE_TYPE_FILE && mobj->fd) {
-            apr_file_close(mobj->fd);
+#ifdef WIN32
+            CloseHandle(mobj->fd);
+#else
+            close(mobj->fd);
+#endif
         }
         if (mobj->header_out) {
             if (mobj->header_out[0].hdr) 
