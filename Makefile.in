@@ -92,7 +92,7 @@ install-include:
 	@test -d $(includedir)/apr || $(MKINSTALLDIRS) $(includedir)/apr
 	@cp -p include/*.h $(srcdir)/include/*.h $(includedir)
 	@cp -p $(srcdir)/os/$(OS_DIR)/os.h $(includedir)
-	@if test -f $(srcdir)/os/$OSDIR/os-inline.c; then \
+	@if test -f $(srcdir)/os/$(OS_DIR)/os-inline.c; then \
             cp -p $(srcdir)/os/$(OS_DIR)/os-inline.c $(includedir); \
         fi;
 	@cp -p $(srcdir)/modules/dav/main/mod_dav.h $(includedir)
