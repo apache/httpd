@@ -97,6 +97,14 @@ AP_IMPLEMENT_HOOK_VOID(pre_mpm,
                        (apr_pool_t *p, ap_scoreboard_e sb_type),
                        (p, sb_type))
 
+typedef struct sb_handle {
+    int child_num;
+    int thread_num;
+} sb_handle;
+
+static int server_limit, thread_limit;
+static apr_size_t scoreboard_size;
+
 /*
  * ToDo:
  * This function should be renamed to cleanup_shared
@@ -115,6 +123,35 @@ static apr_status_t ap_cleanup_shared_mem(void *d)
     return APR_SUCCESS;
 }
 
+static void calc_scoreboard_size(void)
+{
+    ap_mpm_query(AP_MPMQ_HARD_LIMIT_THREADS, &thread_limit);
+    ap_mpm_query(AP_MPMQ_HARD_LIMIT_DAEMONS, &server_limit);
+    scoreboard_size = sizeof(scoreboard);
+    scoreboard_size += sizeof(process_score) * server_limit;
+    scoreboard_size += sizeof(worker_score * ) * server_limit;
+    scoreboard_size += sizeof(worker_score) * server_limit * thread_limit;
+}
+
+static void init_scoreboard(void)
+{
+    char *more_storage;
+    int i;
+
+    memset(ap_scoreboard_image, 0, scoreboard_size);
+    more_storage = (char *)(ap_scoreboard_image + 1);
+    ap_scoreboard_image->parent = (process_score *)more_storage;
+    more_storage += sizeof(process_score) * server_limit;
+    ap_scoreboard_image->servers = (worker_score **)more_storage;
+    more_storage += server_limit * sizeof(worker_score *);
+
+    for (i = 0; i < server_limit; i++) {
+        ap_scoreboard_image->servers[i] = (worker_score *)more_storage;
+        more_storage += thread_limit * sizeof(worker_score);
+    }
+    ap_assert(more_storage - (char *)ap_scoreboard_image == scoreboard_size);
+}
+
 /* ToDo: This function should be made to handle setting up 
  * a scoreboard shared between processes using any IPC technique, 
  * not just a shared memory segment
@@ -128,14 +165,14 @@ static void setup_shared(apr_pool_t *p)
     apr_status_t rv;
 
     fname = ap_server_root_relative(p, ap_scoreboard_fname);
-    rv = apr_shm_init(&scoreboard_shm, SCOREBOARD_SIZE, fname, p);
+    rv = apr_shm_init(&scoreboard_shm, scoreboard_size, fname, p);
     if (rv != APR_SUCCESS) {
         apr_snprintf(buf, sizeof(buf), "%s: could not open(create) scoreboard: (%d)%s",
                     ap_server_argv0, rv, apr_strerror(rv, errmsg, sizeof errmsg));
         fprintf(stderr, "%s\n", buf);
         exit(APEXIT_INIT);
     }
-    ap_scoreboard_image = apr_shm_malloc(scoreboard_shm, SCOREBOARD_SIZE);
+    ap_scoreboard_image = apr_shm_malloc(scoreboard_shm, scoreboard_size);
     if (ap_scoreboard_image == NULL) {
         apr_snprintf(buf, sizeof(buf), "%s: cannot allocate scoreboard",
                     ap_server_argv0);
@@ -143,7 +180,7 @@ static void setup_shared(apr_pool_t *p)
         apr_shm_destroy(scoreboard_shm);
         exit(APEXIT_INIT);
     }
-    ap_scoreboard_image->global.running_generation = 0;
+    /* everything will be cleared shortly */
 #endif
 }
 
@@ -180,13 +217,14 @@ AP_DECLARE_NONSTD(void) ap_create_scoreboard(apr_pool_t *p, ap_scoreboard_e sb_t
     if (ap_scoreboard_image)
 	running_gen = ap_scoreboard_image->global.running_generation;
     if (ap_scoreboard_image == NULL) {
+        calc_scoreboard_size();
         if (sb_type == SB_SHARED) {
             setup_shared(p);
         }
         else {
             /* A simple malloc will suffice */
             char buf[512];
-            ap_scoreboard_image = (scoreboard *) malloc(SCOREBOARD_SIZE);
+            ap_scoreboard_image = (scoreboard *) malloc(scoreboard_size);
             if (ap_scoreboard_image == NULL) {
                 apr_snprintf(buf, sizeof(buf), "%s: cannot allocate scoreboard",
                              ap_server_argv0);
@@ -195,7 +233,7 @@ AP_DECLARE_NONSTD(void) ap_create_scoreboard(apr_pool_t *p, ap_scoreboard_e sb_t
             }
         }
     }
-    memset(ap_scoreboard_image, 0, SCOREBOARD_SIZE);
+    init_scoreboard(); /* can't just memset() */
     ap_scoreboard_image->global.sb_type = sb_type;
     ap_scoreboard_image->global.running_generation = running_gen;
     ap_restart_time = apr_time_now();
@@ -242,11 +280,12 @@ void update_scoreboard_global(void)
 #endif
 }
 
-AP_DECLARE(void) ap_increment_counts(int child_num, int thread_num, request_rec *r)
+AP_DECLARE(void) ap_increment_counts(void *sbh, request_rec *r)
 {
+    sb_handle *sb = sbh;
     worker_score *ws;
 
-    ws = &ap_scoreboard_image->servers[child_num][thread_num];
+    ws = &ap_scoreboard_image->servers[sb->child_num][sb->thread_num];
 
 #ifdef HAVE_TIMES
     times(&ws->times);
@@ -258,7 +297,7 @@ AP_DECLARE(void) ap_increment_counts(int child_num, int thread_num, request_rec 
     ws->my_bytes_served += r->bytes_sent;
     ws->conn_bytes += r->bytes_sent;
 
-    put_scoreboard_info(child_num, thread_num, ws);
+    put_scoreboard_info(sb->child_num, sb->thread_num, ws);
 }
 
 AP_DECLARE(int) find_child_by_pid(apr_proc_t *pid)
@@ -275,7 +314,19 @@ AP_DECLARE(int) find_child_by_pid(apr_proc_t *pid)
     return -1;
 }
 
-AP_DECLARE(int) ap_update_child_status(int child_num, int thread_num, int status, request_rec *r)
+AP_DECLARE(void) ap_create_sb_handle(void **new_handle, apr_pool_t *p,
+                                     int child_num, int thread_num)
+{
+    sb_handle *sbh;
+
+    sbh = (sb_handle *)apr_palloc(p, sizeof *sbh);
+    *new_handle = sbh;
+    sbh->child_num = child_num;
+    sbh->thread_num = thread_num;
+}
+
+AP_DECLARE(int) ap_update_child_status_from_indexes(int child_num, int thread_num,
+                                                    int status, request_rec *r)
 {
     int old_status, i;
     worker_score *ws;
@@ -292,9 +343,9 @@ AP_DECLARE(int) ap_update_child_status(int child_num, int thread_num, int status
     
     if (status == SERVER_READY
 	&& old_status == SERVER_STARTING) {
-        ws->thread_num = child_num * HARD_SERVER_LIMIT + thread_num;
+        ws->thread_num = child_num * server_limit + thread_num;
         if (ps->generation != ap_my_generation) {
-            for (i = 0; i < HARD_THREAD_LIMIT; i++) {
+            for (i = 0; i < thread_limit; i++) {
                 ap_scoreboard_image->servers[child_num][i].vhostrec = NULL;
             }
             ps->generation = ap_my_generation;
@@ -337,6 +388,14 @@ AP_DECLARE(int) ap_update_child_status(int child_num, int thread_num, int status
     return old_status;
 }
 
+AP_DECLARE(int)ap_update_child_status(void *sbh, int status, request_rec *r)
+{
+    sb_handle *sb = sbh;
+    
+    return ap_update_child_status_from_indexes(sb->child_num, sb->thread_num,
+                                               status, r);
+}
+
 void ap_time_process_request(int child_num, int thread_num, int status)
 {
     worker_score *ws;
@@ -357,8 +416,8 @@ void ap_time_process_request(int child_num, int thread_num, int status)
 
 AP_DECLARE(worker_score *) ap_get_servers_scoreboard(int x, int y)
 {
-    if (((x < 0) || (HARD_SERVER_LIMIT < x)) ||
-        ((y < 0) || (HARD_THREAD_LIMIT < y))) {
+    if (((x < 0) || (server_limit < x)) ||
+        ((y < 0) || (thread_limit < y))) {
         return(NULL); /* Out of range */
     }
     return(&ap_scoreboard_image->servers[x][y]);
@@ -366,7 +425,7 @@ AP_DECLARE(worker_score *) ap_get_servers_scoreboard(int x, int y)
 
 AP_DECLARE(process_score *) ap_get_parent_scoreboard(int x)
 {
-    if ((x < 0) || (HARD_SERVER_LIMIT < x)) {
+    if ((x < 0) || (server_limit < x)) {
         return(NULL); /* Out of range */
     }
     return(&ap_scoreboard_image->parent[x]);

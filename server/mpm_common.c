@@ -83,6 +83,7 @@
 #include "mpm_common.h"
 #include "ap_mpm.h"
 #include "ap_listen.h"
+#include "mpm_default.h"
 
 #ifdef AP_MPM_WANT_SET_SCOREBOARD
 #include "scoreboard.h"

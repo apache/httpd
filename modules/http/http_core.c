@@ -269,23 +269,23 @@ static int ap_process_http_connection(conn_rec *c)
      * until no requests are left or we decide to close.
      */
  
-    ap_update_child_status(AP_CHILD_THREAD_FROM_ID(c->id), SERVER_BUSY_READ, NULL);
+    ap_update_child_status(c->sbh, SERVER_BUSY_READ, NULL);
     while ((r = ap_read_request(c)) != NULL) {
  
         c->keepalive = 0;
         /* process the request if it was read without error */
  
-        ap_update_child_status(AP_CHILD_THREAD_FROM_ID(c->id), SERVER_BUSY_WRITE, r);
+        ap_update_child_status(c->sbh, SERVER_BUSY_WRITE, r);
         if (r->status == HTTP_OK)
             ap_process_request(r);
  
         if (ap_extended_status)
-            ap_increment_counts(AP_CHILD_THREAD_FROM_ID(c->id), r);
+            ap_increment_counts(c->sbh, r);
  
         if (!c->keepalive || c->aborted)
             break;
  
-        ap_update_child_status(AP_CHILD_THREAD_FROM_ID(c->id), SERVER_BUSY_KEEPALIVE, r);
+        ap_update_child_status(c->sbh, SERVER_BUSY_KEEPALIVE, r);
         apr_pool_destroy(r->pool);
  
         if (ap_graceful_stop_signalled())

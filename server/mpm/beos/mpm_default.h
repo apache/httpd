@@ -71,36 +71,6 @@
 #define DEFAULT_START_THREADS 10
 #endif
 
-/* Limit on the total --- clients will be locked out if more servers than
- * this are needed.  It is intended solely to keep the server from crashing
- * when things get out of hand.
- *
- * We keep a hard maximum number of servers, for two reasons:
- * 1) in case something goes seriously wrong, we want to stop the server starting
- *    threads ad infinitum and crashing the server (remember that BeOS has a 192
- *    thread per team limit).
- * 2) it keeps the size of the scoreboard file small
- *    enough that we can read the whole thing without worrying too much about
- *    the overhead.
- */
-
-/* we only ever have 1 main process running... */ 
-#define HARD_SERVER_LIMIT 1
-
-/* Limit on the threads per process.  Clients will be locked out if more than
- * this  * HARD_SERVER_LIMIT are needed.
- *
- * We keep this for one reason it keeps the size of the scoreboard file small
- * enough that we can read the whole thing without worrying too much about
- * the overhead.
- */
-#ifdef NO_THREADS
-#define HARD_THREAD_LIMIT 1
-#endif
-#ifndef HARD_THREAD_LIMIT
-#define HARD_THREAD_LIMIT 50 
-#endif
-
 #ifdef NO_THREADS
 #define DEFAULT_THREADS 1
 #endif

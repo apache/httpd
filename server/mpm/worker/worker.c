@@ -106,9 +106,36 @@
 #include "ap_listen.h"
 #include "scoreboard.h" 
 #include "fdqueue.h"
+#include "mpm_default.h"
 
 #include <signal.h>
 #include <limits.h>             /* for INT_MAX */
+
+/* Limit on the total --- clients will be locked out if more servers than
+ * this are needed.  It is intended solely to keep the server from crashing
+ * when things get out of hand.
+ *
+ * We keep a hard maximum number of servers, for two reasons --- first off,
+ * in case something goes seriously wrong, we want to stop the fork bomb
+ * short of actually crashing the machine we're running on by filling some
+ * kernel table.  Secondly, it keeps the size of the scoreboard file small
+ * enough that we can read the whole thing without worrying too much about
+ * the overhead.
+ */
+#ifndef HARD_SERVER_LIMIT
+#define HARD_SERVER_LIMIT 16
+#endif
+
+/* Limit on the threads per process.  Clients will be locked out if more than
+ * this  * HARD_SERVER_LIMIT are needed.
+ *
+ * We keep this for one reason it keeps the size of the scoreboard file small
+ * enough that we can read the whole thing without worrying too much about
+ * the overhead.
+ */
+#ifndef HARD_THREAD_LIMIT
+#define HARD_THREAD_LIMIT 64 
+#endif
 
 /*
  * Actual definitions of config globals
@@ -140,6 +167,8 @@ typedef struct {
     int child_num_arg;
     apr_threadattr_t *threadattr;
 } thread_starter;
+
+#define ID_FROM_CHILD_THREAD(c, t)    ((c * HARD_THREAD_LIMIT) + t)
 
 /*
  * The max child slot ever assigned, preserved across restarts.  Necessary
@@ -495,9 +524,11 @@ static void process_socket(apr_pool_t *p, apr_socket_t *sock, int my_child_num,
                            int my_thread_num)
 {
     conn_rec *current_conn;
-    long conn_id = AP_ID_FROM_CHILD_THREAD(my_child_num, my_thread_num);
+    long conn_id = ID_FROM_CHILD_THREAD(my_child_num, my_thread_num);
     int csd;
+    void *sbh;
 
+    ap_create_sb_handle(&sbh, p, my_child_num, my_thread_num);
     apr_os_sock_get(&csd, sock);
 
     if (csd >= FD_SETSIZE) {
@@ -510,7 +541,7 @@ static void process_socket(apr_pool_t *p, apr_socket_t *sock, int my_child_num,
         return;
     }
 
-    current_conn = ap_run_create_connection(p, ap_server_conf, sock, conn_id);
+    current_conn = ap_run_create_connection(p, ap_server_conf, sock, conn_id, sbh);
     if (current_conn) {
         ap_process_connection(current_conn);
         ap_lingering_close(current_conn);
@@ -694,9 +725,9 @@ static void *listener_thread(apr_thread_t *thd, void * dummy)
         }
     }
 
-    ap_update_child_status(process_slot, thread_slot, 
-                           (dying) ? SERVER_DEAD : SERVER_GRACEFUL,
-                           (request_rec *) NULL);
+    ap_update_child_status_from_indexes(process_slot, thread_slot, 
+                                        (dying) ? SERVER_DEAD : SERVER_GRACEFUL,
+                                        (request_rec *) NULL);
     dying = 1;
     ap_scoreboard_image->parent[process_slot].quiescing = 1;
     kill(ap_my_pid, SIGTERM);
@@ -718,9 +749,9 @@ static void *worker_thread(apr_thread_t *thd, void * dummy)
 
     free(ti);
 
-    ap_update_child_status(process_slot, thread_slot, SERVER_STARTING, NULL);
+    ap_update_child_status_from_indexes(process_slot, thread_slot, SERVER_STARTING, NULL);
     while (!workers_may_exit) {
-        ap_update_child_status(process_slot, thread_slot, SERVER_READY, NULL);
+        ap_update_child_status_from_indexes(process_slot, thread_slot, SERVER_READY, NULL);
         rv = ap_queue_pop(worker_queue, &csd, &ptrans);
         /* We get FD_QUEUE_EINTR whenever ap_queue_pop() has been interrupted
          * from an explicit call to ap_queue_interrupt_all(). This allows
@@ -734,7 +765,7 @@ static void *worker_thread(apr_thread_t *thd, void * dummy)
         apr_pool_destroy(ptrans);
     }
 
-    ap_update_child_status(process_slot, thread_slot,
+    ap_update_child_status_from_indexes(process_slot, thread_slot,
         (dying) ? SERVER_DEAD : SERVER_GRACEFUL, (request_rec *) NULL);
     apr_thread_mutex_lock(worker_thread_count_mutex);
     worker_thread_count--;
@@ -797,7 +828,7 @@ static void *start_threads(apr_thread_t *thd, void *dummy)
             my_info->sd = 0;
         
               /* We are creating threads right now */
-            ap_update_child_status(my_child_num, i, SERVER_STARTING, NULL);
+            ap_update_child_status_from_indexes(my_child_num, i, SERVER_STARTING, NULL);
             /* We let each thread update its own scoreboard entry.  This is
              * done because it lets us deal with tid better.
              */
@@ -821,8 +852,8 @@ static void *start_threads(apr_thread_t *thd, void *dummy)
     
     /* What state should this child_main process be listed as in the 
      * scoreboard...?
-     *  ap_update_child_status(my_child_num, i, SERVER_STARTING, 
-     *                         (request_rec *) NULL);
+     *  ap_update_child_status_from_indexes(my_child_num, i, SERVER_STARTING, 
+     *                                      (request_rec *) NULL);
      * 
      *  This state should be listed separately in the scoreboard, in some kind
      *  of process_status, not mixed in with the worker threads' status.   
@@ -965,7 +996,7 @@ static int make_child(server_rec *s, int slot)
         /* fork didn't succeed. Fix the scoreboard or else
          * it will say SERVER_STARTING forever and ever
          */
-        ap_update_child_status(slot, 0, SERVER_DEAD, NULL);
+        ap_update_child_status_from_indexes(slot, 0, SERVER_DEAD, NULL);
 
         /* In case system resources are maxxed out, we don't want
            Apache running away with the CPU trying to fork over and
@@ -1222,8 +1253,8 @@ static void server_main_loop(int remaining_children_to_start)
             child_slot = find_child_by_pid(&pid);
             if (child_slot >= 0) {
                 for (i = 0; i < ap_threads_per_child; i++)
-                    ap_update_child_status(child_slot, i, SERVER_DEAD, 
-                                           (request_rec *) NULL);
+                    ap_update_child_status_from_indexes(child_slot, i, SERVER_DEAD, 
+                                                        (request_rec *) NULL);
                 
                 ap_scoreboard_image->parent[child_slot].pid = 0;
                 ap_scoreboard_image->parent[child_slot].quiescing = 0;

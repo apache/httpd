@@ -80,24 +80,6 @@
 #define DEFAULT_MIN_FREE_DAEMON 5
 #endif
 
-/* SPMT_OS2 only ever has 1 process */
-#define HARD_SERVER_LIMIT 1
-
-/* Limit on the total --- clients will be locked out if more servers than
- * this are needed.  It is intended solely to keep the server from crashing
- * when things get out of hand.
- *
- * We keep a hard maximum number of servers, for two reasons --- first off,
- * in case something goes seriously wrong, we want to stop the fork bomb
- * short of actually crashing the machine we're running on by filling some
- * kernel table.  Secondly, it keeps the size of the scoreboard file small
- * enough that we can read the whole thing without worrying too much about
- * the overhead.
- */
-#ifndef HARD_THREAD_LIMIT
-#define HARD_THREAD_LIMIT 256
-#endif
-
 /* Where the main/parent process's pid is logged */
 #ifndef DEFAULT_PIDLOG
 #define DEFAULT_PIDLOG "logs/httpd.pid"
@@ -116,8 +98,5 @@
 #ifndef DEFAULT_MAX_REQUESTS_PER_CHILD
 #define DEFAULT_MAX_REQUESTS_PER_CHILD 10000
 #endif
-
-/* AP_CHILD_THREAD_FROM_ID is used by the scoreboard.  */
-#define AP_CHILD_THREAD_FROM_ID(i)       0, i
 
 #endif /* AP_MPM_DEFAULT_H */

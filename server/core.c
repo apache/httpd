@@ -3426,7 +3426,7 @@ static int core_create_proxy_req(request_rec *r, request_rec *pr)
 }
 
 static conn_rec *core_create_conn(apr_pool_t *ptrans, server_rec *server,
-                                  apr_socket_t *csd, int conn_id)
+                                  apr_socket_t *csd, int conn_id, void *sbh)
 {
     core_net_rec *net = apr_palloc(ptrans, sizeof(*net));
     apr_status_t rv;
@@ -3438,9 +3438,9 @@ static conn_rec *core_create_conn(apr_pool_t *ptrans, server_rec *server,
     net->in_ctx = NULL;
     net->out_ctx = NULL;
     net->c = (conn_rec *) apr_pcalloc(ptrans, sizeof(conn_rec));
- 
-    (void) ap_update_child_status(AP_CHILD_THREAD_FROM_ID(conn_id),
-                                  SERVER_BUSY_READ, (request_rec *) NULL);
+
+    net->c->sbh = sbh;
+    (void) ap_update_child_status(net->c->sbh, SERVER_BUSY_READ, (request_rec *) NULL);
  
     /* Got a connection structure, so initialize what fields we can
      * (the rest are zeroed out by pcalloc).

@@ -103,6 +103,25 @@
 #include <signal.h>
 #include <sys/times.h>
 
+/* Limit on the total --- clients will be locked out if more servers than
+ * this are needed.  It is intended solely to keep the server from crashing
+ * when things get out of hand.
+ *
+ * We keep a hard maximum number of servers, for two reasons --- first off,
+ * in case something goes seriously wrong, we want to stop the fork bomb
+ * short of actually crashing the machine we're running on by filling some
+ * kernel table.  Secondly, it keeps the size of the scoreboard file small
+ * enough that we can read the whole thing without worrying too much about
+ * the overhead.
+ */
+#ifndef HARD_SERVER_LIMIT
+#define HARD_SERVER_LIMIT 256
+#endif
+
+#ifndef HARD_THREAD_LIMIT
+#define HARD_THREAD_LIMIT 1
+#endif
+
 /* config globals */
 
 int ap_threads_per_child=0;         /* Worker threads per child */
@@ -343,7 +362,7 @@ int reap_children(int *exitcode, apr_exit_why_e *status)
         ap_sync_scoreboard_image();
 	if (ap_scoreboard_image->servers[n][0].status != SERVER_DEAD &&
 		kill((pid = ap_scoreboard_image->parent[n].pid), 0) == -1) {
-	    ap_update_child_status(AP_CHILD_THREAD_FROM_ID(n), SERVER_DEAD, NULL);
+	    ap_update_child_status_from_indexes(n, 0, SERVER_DEAD, NULL);
 	    /* just mark it as having a successful exit status */
             *status = APR_PROC_EXIT;
             *exitcode = 0;
@@ -549,6 +568,7 @@ static void child_main(int child_num_arg)
     apr_pollfd_t *pollset;
     int offset;
     void *csd;
+    void *sbh;
 
     my_child_num = child_num_arg;
     ap_my_pid = getpid();
@@ -572,7 +592,9 @@ static void child_main(int child_num_arg)
 
     ap_run_child_init(pchild, ap_server_conf);
 
-    (void) ap_update_child_status(AP_CHILD_THREAD_FROM_ID(my_child_num), SERVER_READY, (request_rec *) NULL);
+    ap_create_sb_handle(&sbh, pchild, my_child_num, 0);
+
+    (void) ap_update_child_status(sbh, SERVER_READY, (request_rec *) NULL);
 
     ap_sync_scoreboard_image();
 
@@ -602,7 +624,7 @@ static void child_main(int child_num_arg)
 	    clean_child_exit(0);
 	}
 
-	(void) ap_update_child_status(AP_CHILD_THREAD_FROM_ID(my_child_num), SERVER_READY, (request_rec *) NULL);
+	(void) ap_update_child_status(sbh, SERVER_READY, (request_rec *) NULL);
 
 	/*
 	 * Wait for an acceptable connection to arrive.
@@ -679,7 +701,7 @@ static void child_main(int child_num_arg)
 	 * socket options, file descriptors, and read/write buffers.
 	 */
 
-	current_conn = ap_run_create_connection(ptrans, ap_server_conf, csd, my_child_num);
+	current_conn = ap_run_create_connection(ptrans, ap_server_conf, csd, my_child_num, sbh);
         if (current_conn) {
             ap_process_connection(current_conn);
             ap_lingering_close(current_conn);
@@ -720,7 +742,8 @@ static int make_child(server_rec *s, int slot)
 	child_main(slot);
     }
 
-    (void) ap_update_child_status(AP_CHILD_THREAD_FROM_ID(slot), SERVER_STARTING, (request_rec *) NULL);
+    (void) ap_update_child_status_from_indexes(slot, 0, SERVER_STARTING,
+                                               (request_rec *) NULL);
 
 
 #ifdef _OSD_POSIX
@@ -736,7 +759,8 @@ static int make_child(server_rec *s, int slot)
 	/* fork didn't succeed. Fix the scoreboard or else
 	 * it will say SERVER_STARTING forever and ever
 	 */
-	(void) ap_update_child_status(AP_CHILD_THREAD_FROM_ID(slot), SERVER_DEAD, (request_rec *) NULL);
+	(void) ap_update_child_status_from_indexes(slot, 0, SERVER_DEAD,
+                                                   (request_rec *) NULL);
 
 	/* In case system resources are maxxed out, we don't want
 	   Apache running away with the CPU trying to fork over and
@@ -1029,8 +1053,8 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
 	    ap_sync_scoreboard_image();
 	    child_slot = find_child_by_pid(&pid);
 	    if (child_slot >= 0) {
-		(void) ap_update_child_status(AP_CHILD_THREAD_FROM_ID(child_slot), SERVER_DEAD,
-					    (request_rec *) NULL);
+		(void) ap_update_child_status_from_indexes(child_slot, 0, SERVER_DEAD,
+                                                           (request_rec *) NULL);
 		if (remaining_children_to_start
 		    && child_slot < ap_daemons_limit) {
 		    /* we're still doing a 1-for-1 replacement of dead

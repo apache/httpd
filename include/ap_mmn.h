@@ -83,12 +83,15 @@
  * 20011127 (2.0.29-dev) bump for postconfig hook change, and removal of socket
  *                       from connection record
  * 20011212 (2.0.30-dev) bump for new used_path_info member of request_rec
+ * 20011218 (2.0.30-dev) bump for new sbh member of conn_rec, different 
+ *                       declarations for scoreboard, new parameter to
+ *                       create_connection hook
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503230UL /* "AP20" */
 
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
-#define MODULE_MAGIC_NUMBER_MAJOR 20011212
+#define MODULE_MAGIC_NUMBER_MAJOR 20011218
 #endif
 #define MODULE_MAGIC_NUMBER_MINOR 0                     /* 0...n */
 #define MODULE_MAGIC_NUMBER MODULE_MAGIC_NUMBER_MAJOR	/* backward compat */

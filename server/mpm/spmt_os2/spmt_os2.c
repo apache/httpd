@@ -82,6 +82,24 @@
 #include <time.h>
 #include <io.h>
 
+/* SPMT_OS2 only ever has 1 process */
+#define HARD_SERVER_LIMIT 1
+
+/* Limit on the total --- clients will be locked out if more servers than
+ * this are needed.  It is intended solely to keep the server from crashing
+ * when things get out of hand.
+ *
+ * We keep a hard maximum number of servers, for two reasons --- first off,
+ * in case something goes seriously wrong, we want to stop the fork bomb
+ * short of actually crashing the machine we're running on by filling some
+ * kernel table.  Secondly, it keeps the size of the scoreboard file small
+ * enough that we can read the whole thing without worrying too much about
+ * the overhead.
+ */
+#ifndef HARD_THREAD_LIMIT
+#define HARD_THREAD_LIMIT 256
+#endif
+
 /* config globals */
 
 static int ap_daemons_to_start=0;
@@ -489,6 +507,7 @@ static void thread_main(void *thread_num_arg)
     apr_pollfd_t *listen_poll;
     apr_socket_t *csd = NULL;
     int nsds, rv;
+    void *sbh;
 
     /* Disable the restart signal handlers and enable the just_die stuff.
      * Note that since restart() just notes that a restart has been
@@ -519,7 +538,9 @@ static void thread_main(void *thread_num_arg)
 
     ap_run_child_init(pchild, ap_server_conf);
 
-    (void) ap_update_child_status(0, THREAD_GLOBAL(thread_num), SERVER_READY, (request_rec *) NULL);
+    (void) ap_update_child_status_from_indexes(0, THREAD_GLOBAL(thread_num), 
+                                               SERVER_READY, 
+                                               (request_rec *) NULL);
     
 
     signal(SIGHUP, just_die);
@@ -548,7 +569,9 @@ static void thread_main(void *thread_num_arg)
 	    clean_child_exit(0);
 	}
 
-	(void) ap_update_child_status(0, THREAD_GLOBAL(thread_num), SERVER_READY, (request_rec *) NULL);
+	(void) ap_update_child_status_from_indexes(0, THREAD_GLOBAL(thread_num), 
+                                                   SERVER_READY, 
+                                                   (request_rec *) NULL);
 
 	/*
 	 * Wait for an acceptable connection to arrive.
@@ -674,6 +697,7 @@ static void thread_main(void *thread_num_arg)
 	 */
 	signal(SIGUSR1, SIG_IGN);
 
+        ap_create_sb_handle(&sbh, ptrans, 0, THREAD_GLOBAL(thread_num));
 	/*
 	 * We now have a connection, so set it up with the appropriate
 	 * socket options, file descriptors, and read/write buffers.
@@ -711,7 +735,8 @@ static int make_child(server_rec *s, int slot)
         *ppthread_globals = parent_globals;
     }
 
-    ap_update_child_status(0, slot, SERVER_STARTING, (request_rec *) NULL);
+    ap_update_child_status_from_indexes(0, slot, SERVER_STARTING, 
+                                        (request_rec *) NULL);
 
     if ((tid = _beginthread(thread_main, NULL,  256*1024, (void *)slot)) == -1) {
 	ap_log_error(APLOG_MARK, APLOG_ERR|APLOG_NOERRNO, 0, s, "_beginthread: Unable to create new thread");
@@ -719,7 +744,8 @@ static int make_child(server_rec *s, int slot)
 	/* _beginthread didn't succeed. Fix the scoreboard or else
 	 * it will say SERVER_STARTING forever and ever
 	 */
-	(void) ap_update_child_status(0, slot, SERVER_DEAD, (request_rec *) NULL);
+	(void) ap_update_child_status_from_indexes(0, slot, SERVER_DEAD, 
+                                                   (request_rec *) NULL);
 
 	/* In case system resources are maxxed out, we don't want
 	   Apache running away with the CPU trying to _beginthread over and
@@ -1007,8 +1033,9 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
 	    /* non-fatal death... note that it's gone in the scoreboard. */
 	    thread_slot = find_thread_by_tid(tid);
 	    if (thread_slot >= 0) {
-		(void) ap_update_child_status(0, thread_slot, SERVER_DEAD,
-					    (request_rec *) NULL);
+		(void) ap_update_child_status_from_indexes(0, thread_slot, 
+                                                           SERVER_DEAD,
+                                                           (request_rec *) NULL);
 		if (remaining_children_to_start
 		    && thread_slot < ap_daemons_limit) {
 		    /* we're still doing a 1-for-1 replacement of dead

@@ -982,6 +982,8 @@ struct conn_rec {
     struct ap_filter_t *input_filters;
     /** A list of output filters to be used for this connection */
     struct ap_filter_t *output_filters;
+    /** handle to scoreboard information for this connection */
+    void *sbh;
 };
 
 /* Per-vhost config... */
