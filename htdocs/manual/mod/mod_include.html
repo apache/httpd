@@ -261,6 +261,19 @@ elements are:
     &lt;!--#if expr="$a = \$test" --&gt;
 </PRE>
 
+<P> EXAMPLE: the below example will print "in foo" if the DOCUMENT_URI is 
+/foo/file.html, "in bar" if it is /bar/file.html and "in neither" 
+otherwise:
+<PRE>
+    &lt;!--#if expr="\"$DOCUMENT_URI\" = \"/foo/file.html\""--&gt;
+    in foo
+    &lt;!--#elif expr="\"$DOCUMENT_URI\" = \"/bar/file.html\""--&gt;
+    in bar
+    &lt;!--#else --&gt;
+    in neither
+    &lt;!--#endif --&gt;
+</PRE>
+
 
 <hr>
 <h2>Directives</h2>
