@@ -50,8 +50,6 @@
 # 
 # simple Makefile for modules in src/modules
 # 
-# $Id: Makefile,v 1.2 1996/10/09 17:12:45 chuck Exp $
-#
 
 SHELL = /bin/sh
 
