@@ -198,7 +198,7 @@ AP_DECLARE(apr_time_t) ap_rationalize_mtime(request_rec *r, apr_time_t mtime)
  *        If no LF is detected on the last line due to a dropped connection 
  *        or a full buffer, that's considered an error.
  */
-AP_CORE_DECLARE(int) ap_getline(char *s, int n, request_rec *r, int fold)
+AP_DECLARE(int) ap_getline(char *s, int n, request_rec *r, int fold)
 {
     char *pos = s;
     char *last_char;
