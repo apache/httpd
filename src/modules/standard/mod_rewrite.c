@@ -203,14 +203,20 @@ module rewrite_module = {
    config_server_merge,         /* merge  per-server config structures */
    command_table,               /* table of config file commands */
 
-   handler_table,               /* [#8] table of MIME-typed-dispatched request action handlers */
-
+   handler_table,               /* [#8] table of MIME-typed-dispatched request
+                                 *      action handlers
+                                 */
    hook_uri2file,               /* [#1] URI to filename translation */
 
-   NULL,                        /* [#4] check_user_id: get and validate user id from the HTTP request */
-   NULL,                        /* [#5] check_auth:    check if the user is ok _here_ */
-   NULL,                        /* [#2] check_access:  check access by host address, etc. */
-
+   NULL,                        /* [#4] check_user_id: get and validate
+                                 *      user id from the HTTP request
+                                 */
+   NULL,                        /* [#5] check_auth: check if the user is
+                                 *      ok _here_
+                                 */
+   NULL,                        /* [#2] check_access: check access by
+                                 *      host address, etc.
+                                 */
    hook_mimetype,               /* [#6] determine MIME type */
 
    hook_fixup,                  /* [#7] pre-run fixups */
@@ -218,7 +224,7 @@ module rewrite_module = {
    NULL,                        /* [#3] header parser */
    NULL,                        /* child_init */
    NULL,                        /* child_exit */
-   NULL				/* post read-request */
+   NULL                         /* post read-request */
 };
 
     /* the cache */
@@ -234,8 +240,6 @@ static regex_t   *lookup_map_txtfile_regexp = NULL;
 static regmatch_t lookup_map_txtfile_regmatch[10];
 
 
-
-
 /*
 ** +-------------------------------------------------------+
 ** |                                                       |
@@ -243,7 +247,6 @@ static regmatch_t lookup_map_txtfile_regmatch[10];
 ** |                                                       |
 ** +-------------------------------------------------------+
 */
-
 
 /*
 **
@@ -279,14 +282,19 @@ static void *config_server_merge(pool *p, void *basev, void *overridesv)
 
     a->state           = overrides->state;
     a->options         = overrides->options;
-    a->rewritelogfile  = base->rewritelogfile  != NULL ? base->rewritelogfile  : overrides->rewritelogfile;
-    a->rewritelogfp    = base->rewritelogfp    != -1   ? base->rewritelogfp    : overrides->rewritelogfp;
+    a->rewritelogfile  = base->rewritelogfile  != NULL ?
+                           base->rewritelogfile : overrides->rewritelogfile;
+    a->rewritelogfp    = base->rewritelogfp    != -1   ?
+                           base->rewritelogfp   : overrides->rewritelogfp;
     a->rewriteloglevel = overrides->rewriteloglevel;
 
     if (a->options & OPTION_INHERIT) {
-        a->rewritemaps  = append_arrays(p, overrides->rewritemaps,  base->rewritemaps);
-        a->rewriteconds = append_arrays(p, overrides->rewriteconds, base->rewriteconds);
-        a->rewriterules = append_arrays(p, overrides->rewriterules, base->rewriterules);
+        a->rewritemaps  = append_arrays(p, overrides->rewritemaps,
+                                        base->rewritemaps);
+        a->rewriteconds = append_arrays(p, overrides->rewriteconds,
+                                        base->rewriteconds);
+        a->rewriterules = append_arrays(p, overrides->rewriterules,
+                                        base->rewriterules);
     }
     else {
         a->rewritemaps  = overrides->rewritemaps;
@@ -337,14 +345,16 @@ static void *config_perdir_merge(pool *p, void *basev, void *overridesv)
     base      = (rewrite_perdir_conf *)basev;
     overrides = (rewrite_perdir_conf *)overridesv;
 
-    a->state           = overrides->state;
-    a->options         = overrides->options;
-    a->directory       = overrides->directory;
-    a->baseurl         = overrides->baseurl;
+    a->state     = overrides->state;
+    a->options   = overrides->options;
+    a->directory = overrides->directory;
+    a->baseurl   = overrides->baseurl;
 
     if (a->options & OPTION_INHERIT) {
-        a->rewriteconds = append_arrays(p, overrides->rewriteconds, base->rewriteconds);
-        a->rewriterules = append_arrays(p, overrides->rewriterules, base->rewriterules);
+        a->rewriteconds = append_arrays(p, overrides->rewriteconds,
+                                        base->rewriteconds);
+        a->rewriterules = append_arrays(p, overrides->rewriterules,
+                                        base->rewriterules);
     }
     else {
         a->rewriteconds = overrides->rewriteconds;
@@ -365,7 +375,9 @@ static const char *cmd_rewriteengine(cmd_parms *cmd, rewrite_perdir_conf *dconf,
 {
     rewrite_server_conf *sconf;
 
-    sconf = (rewrite_server_conf *)get_module_config(cmd->server->module_config, &rewrite_module);
+    sconf = (rewrite_server_conf *)
+            get_module_config(cmd->server->module_config, &rewrite_module);
+
     if (cmd->path == NULL) /* is server command */
         sconf->state = (flag ? ENGINE_ENABLED : ENGINE_DISABLED);
     else                   /* is per-directory command */
@@ -374,26 +386,31 @@ static const char *cmd_rewriteengine(cmd_parms *cmd, rewrite_perdir_conf *dconf,
     return NULL;
 }
 
-static const char *cmd_rewriteoptions(cmd_parms *cmd, rewrite_perdir_conf *dconf, char *option)
+static const char *cmd_rewriteoptions(cmd_parms *cmd,
+                                      rewrite_perdir_conf *dconf, char *option)
 {
     rewrite_server_conf *sconf;
     const char *err;
 
-    sconf = (rewrite_server_conf *)get_module_config(cmd->server->module_config, &rewrite_module);
+    sconf = (rewrite_server_conf *)
+            get_module_config(cmd->server->module_config, &rewrite_module);
+
     if (cmd->path == NULL) /* is server command */
-        err = cmd_rewriteoptions_setoption(cmd->pool, &(sconf->options), option);
+       err = cmd_rewriteoptions_setoption(cmd->pool, &(sconf->options), option);
     else                   /* is per-directory command */
-        err = cmd_rewriteoptions_setoption(cmd->pool, &(dconf->options), option);
+       err = cmd_rewriteoptions_setoption(cmd->pool, &(dconf->options), option);
 
     return err;
 }
 
-static const char *cmd_rewriteoptions_setoption(pool *p, int *options, char *name)
+static const char *cmd_rewriteoptions_setoption(pool *p, int *options,
+                                                char *name)
 {
     if (strcasecmp(name, "inherit") == 0)
         *options |= OPTION_INHERIT;
     else
-        return pstrcat(p, "RewriteOptions: unknown option '", name, "'\n", NULL);
+        return pstrcat(p,"RewriteOptions: unknown option '", name, "'\n", NULL);
+
     return NULL;
 }
 
@@ -401,7 +418,9 @@ static const char *cmd_rewritelog(cmd_parms *cmd, void *dconf, char *a1)
 {
     rewrite_server_conf *sconf;
 
-    sconf = (rewrite_server_conf *)get_module_config(cmd->server->module_config, &rewrite_module);
+    sconf = (rewrite_server_conf *)
+            get_module_config(cmd->server->module_config, &rewrite_module);
+
     sconf->rewritelogfile = a1;
 
     return NULL;
@@ -411,19 +430,24 @@ static const char *cmd_rewriteloglevel(cmd_parms *cmd, void *dconf, char *a1)
 {
     rewrite_server_conf *sconf;
 
-    sconf = (rewrite_server_conf *)get_module_config(cmd->server->module_config, &rewrite_module);
+    sconf = (rewrite_server_conf *)
+            get_module_config(cmd->server->module_config, &rewrite_module);
+
     sconf->rewriteloglevel = atoi(a1);
 
     return NULL;
 }
 
-static const char *cmd_rewritemap(cmd_parms *cmd, void *dconf, char *a1, char *a2)
+static const char *cmd_rewritemap(cmd_parms *cmd, void *dconf, char *a1,
+                                  char *a2)
 {
     rewrite_server_conf *sconf;
     rewritemap_entry *new;
     struct stat st;
 
-    sconf = (rewrite_server_conf *)get_module_config(cmd->server->module_config, &rewrite_module);
+    sconf = (rewrite_server_conf *)
+            get_module_config(cmd->server->module_config, &rewrite_module);
+
     new = push_array(sconf->rewritemaps);
 
     new->name = a1;
@@ -438,7 +462,8 @@ static const char *cmd_rewritemap(cmd_parms *cmd, void *dconf, char *a1, char *a
         new->datafile  = a2+4;
         new->checkfile = pstrcat(cmd->pool, a2+4, NDBM_FILE_SUFFIX, NULL);
 #else
-        return pstrdup(cmd->pool, "RewriteMap: cannot use NDBM mapfile, because no NDBM support compiled in");
+        return pstrdup(cmd->pool, "RewriteMap: cannot use NDBM mapfile, "
+                                  "because no NDBM support is compiled in");
 #endif
     }
     else if (strncmp(a2, "prg:", 4) == 0) {
@@ -455,13 +480,15 @@ static const char *cmd_rewritemap(cmd_parms *cmd, void *dconf, char *a1, char *a
     new->fpout = 0;
 
     if (new->checkfile && (sconf->state == ENGINE_ENABLED)
-        && (stat(new->checkfile, &st) == -1))
-	return pstrcat(cmd->pool, "RewriteMap: map file or program not found:", new->checkfile, NULL);
+                       && (stat(new->checkfile, &st) == -1))
+        return pstrcat(cmd->pool, "RewriteMap: map file or program not found:",
+                       new->checkfile, NULL);
 
     return NULL;
 }
 
-static const char *cmd_rewritebase(cmd_parms *cmd, rewrite_perdir_conf *dconf, char *a1)
+static const char *cmd_rewritebase(cmd_parms *cmd, rewrite_perdir_conf *dconf,
+                                   char *a1)
 {
     if (cmd->path == NULL || dconf == NULL)
         return "RewriteBase: only valid in per-directory config files";
@@ -475,7 +502,8 @@ static const char *cmd_rewritebase(cmd_parms *cmd, rewrite_perdir_conf *dconf, c
     return NULL;
 }
 
-static const char *cmd_rewritecond(cmd_parms *cmd, rewrite_perdir_conf *dconf, char *str)
+static const char *cmd_rewritecond(cmd_parms *cmd, rewrite_perdir_conf *dconf,
+                                   char *str)
 {
     rewrite_server_conf *sconf;
     rewritecond_entry *new;
@@ -487,7 +515,8 @@ static const char *cmd_rewritecond(cmd_parms *cmd, rewrite_perdir_conf *dconf, c
     const char *err;
     int rc;
 
-    sconf = (rewrite_server_conf *)get_module_config(cmd->server->module_config, &rewrite_module);
+    sconf = (rewrite_server_conf *)
+            get_module_config(cmd->server->module_config, &rewrite_module);
 
     /*  make a new entry in the internal temporary rewrite rule list */
     if (cmd->path == NULL)   /* is server command */
@@ -497,7 +526,8 @@ static const char *cmd_rewritecond(cmd_parms *cmd, rewrite_perdir_conf *dconf, c
 
     /*  parse the argument line ourself */
     if (parseargline(str, &a1, &a2, &a3)) 
-        return pstrcat(cmd->pool, "RewriteCond: bad argument line '", str, "'\n", NULL);
+        return pstrcat(cmd->pool, "RewriteCond: bad argument line '", str,
+                       "'\n", NULL);
 
     /*  arg1: the input string */
     new->input = pstrdup(cmd->pool, a1);
@@ -523,18 +553,24 @@ static const char *cmd_rewritecond(cmd_parms *cmd, rewrite_perdir_conf *dconf, c
        we can compile the pattern for case-insensitive matching,
        under the old V8 library we have to do it self via a hack */
     if (new->flags & CONDFLAG_NOCASE)
-        rc = ((regexp = pregcomp(cmd->pool, cp, REG_EXTENDED|REG_ICASE)) == NULL);
+        rc = ((regexp = pregcomp(cmd->pool, cp, REG_EXTENDED|REG_ICASE))
+              == NULL);
     else
         rc = ((regexp = pregcomp(cmd->pool, cp, REG_EXTENDED)) == NULL);
     if (rc)
-        return pstrcat(cmd->pool, "RewriteCond: cannot compile regular expression '", a2, "'\n", NULL);
+        return pstrcat(cmd->pool,
+                       "RewriteCond: cannot compile regular expression '", a2,
+                       "'\n", NULL);
+
     new->pattern = pstrdup(cmd->pool, cp);
     new->regexp  = regexp;
 
     return NULL;
 }
 
-static const char *cmd_rewritecond_parseflagfield(pool *p, rewritecond_entry *cfg, char *str)
+static const char *cmd_rewritecond_parseflagfield(pool *p,
+                                                  rewritecond_entry *cfg,
+                                                  char *str)
 {
     char *cp;
     char *cp1;
@@ -580,7 +616,8 @@ static const char *cmd_rewritecond_parseflagfield(pool *p, rewritecond_entry *cf
     return NULL;
 }
 
-static const char *cmd_rewritecond_setflag(pool *p, rewritecond_entry *cfg, char *key, char *val)
+static const char *cmd_rewritecond_setflag(pool *p, rewritecond_entry *cfg,
+                                           char *key, char *val)
 {
     if (   strcasecmp(key, "nocase") == 0
         || strcasecmp(key, "NC") == 0    ) {
@@ -597,7 +634,8 @@ static const char *cmd_rewritecond_setflag(pool *p, rewritecond_entry *cfg, char
 }
 
 /* NON static */
-const char *cmd_rewriterule(cmd_parms *cmd, rewrite_perdir_conf *dconf, char *str)
+const char *cmd_rewriterule(cmd_parms *cmd, rewrite_perdir_conf *dconf,
+                            char *str)
 {
     rewrite_server_conf *sconf;
     rewriterule_entry *new;
@@ -608,7 +646,8 @@ const char *cmd_rewriterule(cmd_parms *cmd, rewrite_perdir_conf *dconf, char *st
     char *cp;
     const char *err;
 
-    sconf = (rewrite_server_conf *)get_module_config(cmd->server->module_config, &rewrite_module);
+    sconf = (rewrite_server_conf *)
+            get_module_config(cmd->server->module_config, &rewrite_module);
 
     /*  make a new entry in the internal rewrite rule list */
     if (cmd->path == NULL)   /* is server command */
@@ -618,10 +657,12 @@ const char *cmd_rewriterule(cmd_parms *cmd, rewrite_perdir_conf *dconf, char *st
 
     /*  parse the argument line ourself */
     if (parseargline(str, &a1, &a2, &a3)) 
-        return pstrcat(cmd->pool, "RewriteRule: bad argument line '", str, "'\n", NULL);
+        return pstrcat(cmd->pool, "RewriteRule: bad argument line '", str,
+                       "'\n", NULL);
 
     /*  arg1: the pattern
-        try to compile the regexp to test if is ok */
+     *  try to compile the regexp to test if is ok
+     */
     new->flags = RULEFLAG_NONE;
     cp = a1;
     if (cp[0] == '!') {
@@ -629,13 +670,16 @@ const char *cmd_rewriterule(cmd_parms *cmd, rewrite_perdir_conf *dconf, char *st
         cp++;
     }
     if ((regexp = pregcomp(cmd->pool, cp, REG_EXTENDED)) == NULL)
-        return pstrcat(cmd->pool, "RewriteRule: cannot compile regular expression '", a1, "'\n", NULL);
+        return pstrcat(cmd->pool,
+                       "RewriteRule: cannot compile regular expression '", a1,
+                       "'\n", NULL);
     new->pattern = pstrdup(cmd->pool, cp);
     new->regexp  = regexp;
 
     /*  arg2: the output string
-        replace the $<N> by \<n> which is needed by the currently
-        used Regular Expression library */
+     *  replace the $<N> by \<n> which is needed by the currently
+     *  used Regular Expression library
+     */
     new->output = pstrdup(cmd->pool, a2);
 
     /* arg3: optional flags field */
@@ -649,21 +693,24 @@ const char *cmd_rewriterule(cmd_parms *cmd, rewrite_perdir_conf *dconf, char *st
     }
 
     /* now, if the server or per-dir config holds an
-       array of RewriteCond entries, we take it for us 
-       and clear the array */
+     * array of RewriteCond entries, we take it for us 
+     * and clear the array
+     */
     if (cmd->path == NULL) {  /* is server command */
         new->rewriteconds   = sconf->rewriteconds;
-        sconf->rewriteconds = make_array(cmd->pool, 2, sizeof(rewritecond_entry));
+        sconf->rewriteconds = make_array(cmd->pool,2,sizeof(rewritecond_entry));
     }
     else {                    /* is per-directory command */
         new->rewriteconds   = dconf->rewriteconds;
-        dconf->rewriteconds = make_array(cmd->pool, 2, sizeof(rewritecond_entry));
+        dconf->rewriteconds = make_array(cmd->pool,2,sizeof(rewritecond_entry));
     }
 
     return NULL;
 }
 
-static const char *cmd_rewriterule_parseflagfield(pool *p, rewriterule_entry *cfg, char *str)
+static const char *cmd_rewriterule_parseflagfield(pool *p,
+                                                  rewriterule_entry *cfg,
+                                                  char *str)
 {
     char *cp;
     char *cp1;
@@ -709,7 +756,8 @@ static const char *cmd_rewriterule_parseflagfield(pool *p, rewriterule_entry *cf
     return NULL;
 }
 
-static const char *cmd_rewriterule_setflag(pool *p, rewriterule_entry *cfg, char *key, char *val)
+static const char *cmd_rewriterule_setflag(pool *p, rewriterule_entry *cfg,
+                                           char *key, char *val)
 {
     int status = 0;
     int i;
@@ -727,7 +775,8 @@ static const char *cmd_rewriterule_setflag(pool *p, rewriterule_entry *cfg, char
             else if (isdigit(*val))
                 status = atoi(val);
             if (!is_HTTP_REDIRECT(status))
-                return pstrdup(p, "RewriteRule: invalid HTTP response code for flag 'R'");
+                return pstrdup(p, "RewriteRule: invalid HTTP response code "
+                                  "for flag 'R'");
             cfg->forced_responsecode = status;
         }
     }
@@ -756,7 +805,7 @@ static const char *cmd_rewriterule_setflag(pool *p, rewriterule_entry *cfg, char
             cfg->env[i+1] = NULL;
         }
         else 
-            return pstrdup(p, "RewriteRule: to much environment flags 'E'");
+            return pstrdup(p, "RewriteRule: to many environment flags 'E'");
     }
     else if (   strcasecmp(key, "nosubreq") == 0
              || strcasecmp(key, "NS") == 0      ) {
@@ -804,8 +853,9 @@ static const char *cmd_rewriterule_setflag(pool *p, rewriterule_entry *cfg, char
 static void init_module(server_rec *s, pool *p)
 {
     /* step through the servers and
-       - open eachs rewriting logfile 
-       - open the RewriteMap prg:xxx programs */
+     * - open each rewriting logfile 
+     * - open the RewriteMap prg:xxx programs
+     */
     for (; s; s = s->next) {
         open_rewritelog(s, p);
         run_rewritemap_programs(s, p);
@@ -823,8 +873,6 @@ static void init_module(server_rec *s, pool *p)
 }
 
 
-
-
 /*
 ** +-------------------------------------------------------+
 ** |                                                       |
@@ -832,7 +880,6 @@ static void init_module(server_rec *s, pool *p)
 ** |                                                       |
 ** +-------------------------------------------------------+
 */
-
 
 /*
 **
@@ -878,9 +925,11 @@ static int hook_uri2file(request_rec *r)
          var = pstrcat(r->pool, "REDIRECT_", ENVVAR_SCRIPT_URL, NULL);
          var = table_get(r->subprocess_env, var);
          if (var == NULL) 
-             table_set(r->subprocess_env, ENVVAR_SCRIPT_URL, pstrdup(r->pool, r->uri));
+             table_set(r->subprocess_env, ENVVAR_SCRIPT_URL,
+                       pstrdup(r->pool, r->uri));
          else 
-             table_set(r->subprocess_env, ENVVAR_SCRIPT_URL, pstrdup(r->pool, var));
+             table_set(r->subprocess_env, ENVVAR_SCRIPT_URL,
+                       pstrdup(r->pool, var));
     } 
     else {
          var = table_get(r->main->subprocess_env, ENVVAR_SCRIPT_URL);
@@ -908,7 +957,8 @@ static int hook_uri2file(request_rec *r)
 
     /* set the variable */
 #ifdef APACHE_SSL
-    var = pstrcat(r->pool, http_method(r), "://", thisserver, thisport, thisurl, NULL);
+    var = pstrcat(r->pool, http_method(r), "://", thisserver, thisport,
+                  thisurl, NULL);
 #else
     var = pstrcat(r->pool, "http://", thisserver, thisport, thisurl, NULL);
 #endif
@@ -916,10 +966,12 @@ static int hook_uri2file(request_rec *r)
 
 
     /* if filename was not initially set,
-       we start with the requested URI */
+     * we start with the requested URI
+     */
     if (r->filename == NULL) {
         r->filename = pstrdup(r->pool, r->uri);
-        rewritelog(r, 2, "init rewrite engine with requested uri %s", r->filename);
+        rewritelog(r, 2, "init rewrite engine with requested uri %s",
+                   r->filename);
     }
 
     /*
@@ -932,27 +984,29 @@ static int hook_uri2file(request_rec *r)
             /* it should be go on as an internal proxy request */
 
             /* check if the proxy module is enabled, so
-               we can actually use it! */
+             * we can actually use it!
+             */
             if (!proxy_available) {
-		aplog_error(APLOG_MARK, APLOG_ERR, r->server,
-			    "attempt to make remote request from mod_rewrite "
-			    "without proxy enabled", r->filename);
+                aplog_error(APLOG_MARK, APLOG_ERR, r->server,
+                            "attempt to make remote request from mod_rewrite "
+                            "without proxy enabled", r->filename);
                 return FORBIDDEN;
-    	    }
+            }
 
             /* make sure the QUERY_STRING and
-               PATH_INFO parts get incorporated */
+             * PATH_INFO parts get incorporated
+             */
             r->filename = pstrcat(r->pool, r->filename, 
                                            r->path_info ? r->path_info : "", 
                                            r->args ? "?" : NULL, r->args, 
                                            NULL);
 
-            /* now make sure the request gets handled by the
-               proxy handler */
+            /* now make sure the request gets handled by the proxy handler */
             r->proxyreq = 1;
             r->handler  = "proxy-server";
 
-            rewritelog(r, 1, "go-ahead with proxy request %s [OK]", r->filename);
+            rewritelog(r, 1, "go-ahead with proxy request %s [OK]",
+                       r->filename);
             return OK; 
         }
         else if (  (strlen(r->filename) > 7 &&
@@ -1010,11 +1064,12 @@ static int hook_uri2file(request_rec *r)
         else if (strlen(r->filename) > 12 &&
                  strncmp(r->filename, "passthrough:", 12) == 0) {
             /* Hack because of underpowered API: passing the current
-               rewritten filename through to other URL-to-filename handlers
-               just as it were the requested URL. This is to enable
-               post-processing by mod_alias, etc.  which always act on
-               r->uri! The difference here is: We do not try to
-               add the document root */
+             * rewritten filename through to other URL-to-filename handlers
+             * just as it were the requested URL. This is to enable
+             * post-processing by mod_alias, etc.  which always act on
+             * r->uri! The difference here is: We do not try to
+             * add the document root
+             */
             r->uri = pstrdup(r->pool, r->filename+12);
             return DECLINED; 
         }
@@ -1031,24 +1086,24 @@ static int hook_uri2file(request_rec *r)
                 return BAD_REQUEST;
 
             /* if there is no valid prefix, we have 
-               to emulate the translator from the core and
-               prefix the filename with document_root
-
-               NOTICE:
-               We cannot leave out the prefix_stat because
-               - when we always prefix with document_root
-                 then no absolute path can be created, e.g. via 
-                 emulating a ScriptAlias directive, etc.
-               - when we always NOT prefix with document_root
-                 then the files under document_root have to
-                 be references directly and document_root
-                 gets never used and will be a dummy parameter -
-                 this is also bad
-
-               BUT:
-               Under real Unix systems this is no problem,
-               because we only do stat() on the first directory
-               and this gets cached by the kernel for along time!
+             * to emulate the translator from the core and
+             * prefix the filename with document_root
+             *
+             * NOTICE:
+             * We cannot leave out the prefix_stat because
+             * - when we always prefix with document_root
+             *   then no absolute path can be created, e.g. via 
+             *   emulating a ScriptAlias directive, etc.
+             * - when we always NOT prefix with document_root
+             *   then the files under document_root have to
+             *   be references directly and document_root
+             *   gets never used and will be a dummy parameter -
+             *   this is also bad
+             *
+             * BUT:
+             * Under real Unix systems this is no problem,
+             * because we only do stat() on the first directory
+             * and this gets cached by the kernel for along time!
              */
             n = prefix_stat(r->filename, &finfo);
             if (n == 0) {
@@ -1061,11 +1116,16 @@ static int hook_uri2file(request_rec *r)
                     if (docroot[l-1] == '/') {
                         docroot[l-1] = '\0';
                     }
-                    if (r->server->path && !strncmp(r->filename, r->server->path, r->server->pathlen))
-                        r->filename = pstrcat(r->pool, docroot, (r->filename + r->server->pathlen), NULL);
+                    if (r->server->path
+                        && !strncmp(r->filename, r->server->path,
+                                    r->server->pathlen))
+                        r->filename = pstrcat(r->pool, docroot,
+                            (r->filename + r->server->pathlen), NULL);
                     else
-                        r->filename = pstrcat(r->pool, docroot, r->filename, NULL);
-                    rewritelog(r, 2, "prefixed with document_root to %s", r->filename);
+                        r->filename = pstrcat(r->pool, docroot, r->filename,
+                                              NULL);
+                    rewritelog(r, 2, "prefixed with document_root to %s",
+                               r->filename);
                 }
             }
 
@@ -1097,7 +1157,8 @@ static int hook_mimetype(request_rec *r)
     if (t == NULL) 
         return DECLINED;
     else {
-        rewritelog(r, 1, "force filename %s to have MIME-type '%s'", r->filename, t);
+        rewritelog(r, 1, "force filename %s to have MIME-type '%s'",
+                   r->filename, t);
         r->content_type = t;
         return OK;
     }
@@ -1123,7 +1184,8 @@ static int hook_fixup(request_rec *r)
     int n;
     char *ofilename;
 
-    dconf = (rewrite_perdir_conf *)get_module_config(r->per_dir_config, &rewrite_module);
+    dconf = (rewrite_perdir_conf *)
+            get_module_config(r->per_dir_config, &rewrite_module);
 
     /* if there is no per-dir config we return immediately */
     if (dconf == NULL)
@@ -1145,14 +1207,15 @@ static int hook_fixup(request_rec *r)
     if (!(allow_options(r) & (OPT_SYM_LINKS | OPT_SYM_OWNER))) {
         /* FollowSymLinks is mandatory! */
         aplog_error(APLOG_MARK, APLOG_ERR, r->server,
-		    "Options FollowSymLinks or SymLinksIfOwnerMatch is off "
-		    "which implies that RewriteRule directive is forbidden: %s",
-		    r->filename);
+                    "Options FollowSymLinks or SymLinksIfOwnerMatch is off "
+                    "which implies that RewriteRule directive is forbidden: %s",
+                    r->filename);
         return FORBIDDEN;
     }
     else {
         /* FollowSymLinks is given, but the user can
-           still turn off the rewriting engine */
+         * still turn off the rewriting engine
+         */
         if (dconf->state == ENGINE_DISABLED)
             return DECLINED;
     }
@@ -1174,20 +1237,21 @@ static int hook_fixup(request_rec *r)
             /* it should go on as an internal proxy request */
 
             /* make sure the QUERY_STRING and
-               PATH_INFO parts get incorporated */
+             * PATH_INFO parts get incorporated
+             */
             r->filename = pstrcat(r->pool, r->filename, 
                                            /* r->path_info was already
-                                              appended by the rewriting engine
-                                              because of the per-dir context! */
-                                           r->args ? "?" : NULL, r->args, 
-                                           NULL);
+                                            * appended by the rewriting engine
+                                            * because of the per-dir context!
+                                            */
+                                           r->args ? "?" : NULL, r->args, NULL);
 
-            /* now make sure the request gets handled by the
-               proxy handler */
+            /* now make sure the request gets handled by the proxy handler */
             r->proxyreq = 1;
             r->handler  = "proxy-server";
 
-            rewritelog(r, 1, "[per-dir %s] go-ahead with proxy request %s [OK]", dconf->directory, r->filename);
+            rewritelog(r, 1, "[per-dir %s] go-ahead with proxy request %s [OK]",
+                       dconf->directory, r->filename);
             return OK; 
         }
         else if (  (strlen(r->filename) > 7 &&
@@ -1201,8 +1265,9 @@ static int hook_fixup(request_rec *r)
             /* it was finally rewritten to a remote URL */
 
             /* because we are in a per-dir context
-               first try to replace the directory with its base-URL
-               if there is a base-URL available */
+             * first try to replace the directory with its base-URL
+             * if there is a base-URL available
+             */
             if (dconf->baseurl != NULL) {
                 /* skip 'scheme:' */
                 for (cp = r->filename; *cp != ':' && *cp != '\0'; cp++)
@@ -1210,8 +1275,11 @@ static int hook_fixup(request_rec *r)
                 /* skip '://' */
                 cp += 3;
                 if ((cp = strchr(cp, '/')) != NULL) {
-                    rewritelog(r, 2, "[per-dir %s] trying to replace prefix %s with %s", dconf->directory, dconf->directory, dconf->baseurl);
-                    cp2 = subst_prefix_path(r, cp, dconf->directory, dconf->baseurl);
+                    rewritelog(r, 2,
+                        "[per-dir %s] trying to replace prefix %s with %s",
+                        dconf->directory, dconf->directory, dconf->baseurl);
+                    cp2 = subst_prefix_path(r, cp, dconf->directory,
+                                            dconf->baseurl);
                     if (strcmp(cp2, cp) != 0) {
                         *cp = '\0';
                         r->filename = pstrcat(r->pool, r->filename, cp2, NULL);
@@ -1230,7 +1298,8 @@ static int hook_fixup(request_rec *r)
             for ( ; *cp != '/' && *cp != '\0'; cp++)
                 ;
             if (*cp != '\0') {
-                rewritelog(r, 1, "[per-dir %s] escaping %s for redirect", dconf->directory, r->filename);
+                rewritelog(r, 1, "[per-dir %s] escaping %s for redirect",
+                           dconf->directory, r->filename);
                 cp2 = escape_uri(r->pool, cp);
                 *cp = '\0';
                 r->filename = pstrcat(r->pool, r->filename, cp2, NULL);
@@ -1250,7 +1319,8 @@ static int hook_fixup(request_rec *r)
 
             /* now do the redirection */
             table_set(r->headers_out, "Location", r->filename);
-            rewritelog(r, 1, "[per-dir %s] redirect to %s [REDIRECT/%d]", dconf->directory, r->filename, n);
+            rewritelog(r, 1, "[per-dir %s] redirect to %s [REDIRECT/%d]",
+                       dconf->directory, r->filename, n);
             return n;
         }
         else if (strlen(r->filename) > 10 &&
@@ -1267,8 +1337,9 @@ static int hook_fixup(request_rec *r)
             /* it was finally rewritten to a local path */
 
             /* if someone used the PASSTHROUGH flag in per-dir
-               context we just ignore it. It is only useful
-               in per-server context */
+             * context we just ignore it. It is only useful
+             * in per-server context
+             */
             if (strlen(r->filename) > 12 &&
                 strncmp(r->filename, "passthrough:", 12) == 0) {
                 r->filename = pstrdup(r->pool, r->filename+12);
@@ -1286,25 +1357,32 @@ static int hook_fixup(request_rec *r)
              * this would lead to a deadloop.
              */
             if (strcmp(r->filename, ofilename) == 0) {
-                rewritelog(r, 1, "[per-dir %s] initial URL equal rewritten URL: %s [IGNORING REWRITE]", dconf->directory, r->filename);
+                rewritelog(r, 1,
+         "[per-dir %s] initial URL equal rewritten URL: %s [IGNORING REWRITE]",
+                           dconf->directory, r->filename);
                 return OK;
             }
 
             /* if there is a valid base-URL then substitute
-               the per-dir prefix with this base-URL if the
-               current filename still is inside this per-dir 
-               context. If not then treat the result as a 
-               plain URL */
+             * the per-dir prefix with this base-URL if the
+             * current filename still is inside this per-dir 
+             * context. If not then treat the result as a 
+             * plain URL
+             */
             if (dconf->baseurl != NULL) {
-                rewritelog(r, 2, "[per-dir %s] trying to replace prefix %s with %s", dconf->directory, dconf->directory, dconf->baseurl);
-                r->filename = subst_prefix_path(r, r->filename, dconf->directory, dconf->baseurl);
+                rewritelog(r, 2,
+                           "[per-dir %s] trying to replace prefix %s with %s",
+                           dconf->directory, dconf->directory, dconf->baseurl);
+                r->filename = subst_prefix_path(r, r->filename,
+                                                dconf->directory,
+                                                dconf->baseurl);
             }
             else {
                 /* if no explicit base-URL exists we assume
-                   that the directory prefix is also a valid URL
-                   for this webserver and only try to remove the
-                   document_root if it is prefix */
-
+                 * that the directory prefix is also a valid URL
+                 * for this webserver and only try to remove the
+                 * document_root if it is prefix
+                 */
                 if ((cp = document_root(r)) != NULL) {
                     prefix = pstrdup(r->pool, cp);
                     /* always NOT have a trailing slash */
@@ -1314,21 +1392,26 @@ static int hook_fixup(request_rec *r)
                         l--;
                     }
                     if (strncmp(r->filename, prefix, l) == 0) {
-                        rewritelog(r, 2, "[per-dir %s] strip document_root prefix: %s -> %s", dconf->directory, r->filename, r->filename+l);
+                        rewritelog(r, 2,
+                          "[per-dir %s] strip document_root prefix: %s -> %s",
+                          dconf->directory, r->filename, r->filename+l);
                         r->filename = pstrdup(r->pool, r->filename+l); 
                     }
                 }
             }
 
             /* now initiate the internal redirect */
-            rewritelog(r, 1, "[per-dir %s] internal redirect with %s [INTERNAL REDIRECT]", dconf->directory, r->filename);
+            rewritelog(r, 1,
+                "[per-dir %s] internal redirect with %s [INTERNAL REDIRECT]",
+                dconf->directory, r->filename);
             r->filename = pstrcat(r->pool, "redirect:", r->filename, NULL);
             r->handler = "redirect-handler";
             return OK; 
         }
     }
     else {
-        rewritelog(r, 1, "[per-dir %s] pass through %s", dconf->directory, r->filename);
+        rewritelog(r, 1, "[per-dir %s] pass through %s", dconf->directory,
+                   r->filename);
         return DECLINED;
     }
 }
@@ -1357,8 +1440,6 @@ static int handler_redirect(request_rec *r)
 }
 
 
-
-
 /*
 ** +-------------------------------------------------------+
 ** |                                                       |
@@ -1367,8 +1448,8 @@ static int handler_redirect(request_rec *r)
 ** +-------------------------------------------------------+
 */
 
-
-static int apply_rewrite_list(request_rec *r, array_header *rewriterules, char *perdir)
+static int apply_rewrite_list(request_rec *r, array_header *rewriterules,
+                              char *perdir)
 {
     rewriterule_entry *entries;
     rewriterule_entry *p;
@@ -1384,7 +1465,8 @@ static int apply_rewrite_list(request_rec *r, array_header *rewriterules, char *
         p = &entries[i];
 
         /* ignore this rule on subrequests if we are explicitly asked to do so
-           or this is a proxy throughput or a forced redirect rule */
+         * or this is a proxy throughput or a forced redirect rule
+         */
         if (r->main != NULL &&
             (p->flags & RULEFLAG_IGNOREONSUBREQ ||
              p->flags & RULEFLAG_PROXY          ||
@@ -1397,8 +1479,11 @@ static int apply_rewrite_list(request_rec *r, array_header *rewriterules, char *
             if (rc != 2) /* not a match-only rule */
                 changed = 1;
             if (p->flags & RULEFLAG_PASSTHROUGH) {
-                rewritelog(r, 2, "forcing '%s' to get passed through to next URI-to-filename handler", r->filename);
-                r->filename = pstrcat(r->pool, "passthrough:", r->filename, NULL);
+                rewritelog(r, 2,
+          "forcing '%s' to get passed through to next URI-to-filename handler",
+                           r->filename);
+                r->filename = pstrcat(r->pool, "passthrough:", r->filename,
+                                      NULL);
                 changed = 1;
                 break;
             }
@@ -1434,7 +1519,8 @@ static int apply_rewrite_list(request_rec *r, array_header *rewriterules, char *
         }
         else {
             /* if current rule is chained with next rule(s),
-               skip all this next rule(s) */
+             * skip all this next rule(s)
+             */
             while (   i < rewriterules->nelts
                    && p->flags & RULEFLAG_CHAIN) {
                 i++;
@@ -1445,7 +1531,8 @@ static int apply_rewrite_list(request_rec *r, array_header *rewriterules, char *
     return changed;
 }
 
-static int apply_rewrite_rule(request_rec *r, rewriterule_entry *p, char *perdir)
+static int apply_rewrite_rule(request_rec *r, rewriterule_entry *p,
+                              char *perdir)
 {
     char *uri;
     char *output;
@@ -1471,7 +1558,8 @@ static int apply_rewrite_rule(request_rec *r, rewriterule_entry *p, char *perdir
     flags   = p->flags;
 
     if (perdir != NULL && r->path_info != NULL && r->path_info[0] != '\0') {
-        rewritelog(r, 3, "[per-dir %s] add path-info postfix: %s -> %s%s", perdir, uri, uri, r->path_info);
+        rewritelog(r, 3, "[per-dir %s] add path-info postfix: %s -> %s%s",
+                   perdir, uri, uri, r->path_info);
         uri = pstrcat(r->pool, uri, r->path_info, NULL);
     }
 
@@ -1480,16 +1568,19 @@ static int apply_rewrite_rule(request_rec *r, rewriterule_entry *p, char *perdir
         /* this is a per-directory match */
         if (   strlen(uri) >= strlen(perdir)
             && strncmp(uri, perdir, strlen(perdir)) == 0) {
-            rewritelog(r, 3, "[per-dir %s] strip per-dir prefix: %s -> %s", perdir, uri, uri+strlen(perdir));
+            rewritelog(r, 3, "[per-dir %s] strip per-dir prefix: %s -> %s",
+                       perdir, uri, uri+strlen(perdir));
             uri = uri+strlen(perdir);
             prefixstrip = 1;
         }
     }
 
     if (perdir != NULL) 
-        rewritelog(r, 3, "[per-dir %s] applying pattern '%s' to uri '%s'", perdir, p->pattern, uri);
+        rewritelog(r, 3, "[per-dir %s] applying pattern '%s' to uri '%s'",
+                   perdir, p->pattern, uri);
 
-    rc = (regexec(regexp, uri, regexp->re_nsub+1, regmatch, 0) == 0);   /* try to match the pattern */
+    /* try to match the pattern */
+    rc = (regexec(regexp, uri, regexp->re_nsub+1, regmatch, 0) == 0);
     if (( rc && !(p->flags & RULEFLAG_NOTMATCH)) ||
         (!rc &&  (p->flags & RULEFLAG_NOTMATCH))   ) {     
 
@@ -1502,19 +1593,22 @@ static int apply_rewrite_rule(request_rec *r, rewriterule_entry *p, char *perdir
         else {
             briRR->source = pstrdup(r->pool, uri);
             briRR->nsub   = regexp->re_nsub;
-            memcpy((void *)(briRR->regmatch), (void *)(regmatch), sizeof(regmatch_t)*10);
+            memcpy((void *)(briRR->regmatch), (void *)(regmatch),
+                   sizeof(regmatch_t)*10);
         }
 
         /* create the RewriteCond backrefinfo, but
-           initialized as empty backrefinfo, i.e. not subst */
+         * initialized as empty backrefinfo, i.e. not subst
+         */
         briRC = (backrefinfo *)pcalloc(r->pool, sizeof(backrefinfo));
         briRC->source = "";
         briRC->nsub   = 0;
 
         /* ok, the pattern matched, but we now additionally have to check 
-           for any preconditions which have to be also true. We do this
-           at this very late stage to avoid unnessesary checks which
-           slow down the rewriting engine!! */
+         * for any preconditions which have to be also true. We do this
+         * at this very late stage to avoid unnessesary checks which
+         * slow down the rewriting engine!!
+         */
         rewriteconds = p->rewriteconds;
         conds = (rewritecond_entry *)rewriteconds->elts;
         failed = 0;
@@ -1529,7 +1623,8 @@ static int apply_rewrite_rule(request_rec *r, rewriterule_entry *p, char *perdir
                 }
                 else {
                     /* one true cond is enough, so skip the other conds
-                       of the "ornext" chained conds */
+                     * of the "ornext" chained conds
+                     */
                     while (   i < rewriteconds->nelts
                            && c->flags & CONDFLAG_ORNEXT) {
                         i++;
@@ -1567,14 +1662,19 @@ static int apply_rewrite_rule(request_rec *r, rewriterule_entry *p, char *perdir
             output = pstrcat(r->pool, "proxy:", output, NULL);
             strncpy(newuri, output, sizeof(newuri)-1);
             EOS_PARANOIA(newuri);
-            expand_backref_inbuffer(r->pool, newuri, sizeof(newuri), briRR, '$'); /* expand $N */
-            expand_backref_inbuffer(r->pool, newuri, sizeof(newuri), briRC, '%'); /* expand %N */
-            expand_variables_inbuffer(r, newuri, sizeof(newuri));                 /* expand %{...} */
-            expand_map_lookups(r, newuri, sizeof(newuri));                        /* expand ${...} */
+            /* expand $N */
+            expand_backref_inbuffer(r->pool, newuri, sizeof(newuri), briRR,'$');
+            /* expand %N */
+            expand_backref_inbuffer(r->pool, newuri, sizeof(newuri), briRC,'%');
+            /* expand %{...} */
+            expand_variables_inbuffer(r, newuri, sizeof(newuri));
+            /* expand ${...} */
+            expand_map_lookups(r, newuri, sizeof(newuri));
             if (perdir == NULL)
                 rewritelog(r, 2, "rewrite %s -> %s", r->filename, newuri);
             else
-                rewritelog(r, 2, "[per-dir %s] rewrite %s -> %s", perdir, r->filename, newuri);
+                rewritelog(r, 2, "[per-dir %s] rewrite %s -> %s", perdir,
+                           r->filename, newuri);
             r->filename = pstrdup(r->pool, newuri);
             return 1;
         }
@@ -1588,10 +1688,14 @@ static int apply_rewrite_rule(request_rec *r, rewriterule_entry *p, char *perdir
                 || (i > 6 && strncmp(output, "ftp://", 6) == 0)   ) ) {
             strncpy(newuri, output, sizeof(newuri)-1);
             EOS_PARANOIA(newuri);
-            expand_backref_inbuffer(r->pool, newuri, sizeof(newuri), briRR, '$'); /* expand $N */
-            expand_backref_inbuffer(r->pool, newuri, sizeof(newuri), briRC, '%'); /* expand %N */
-            expand_variables_inbuffer(r, newuri, sizeof(newuri));                 /* expand %{...} */
-            expand_map_lookups(r, newuri, sizeof(newuri));                        /* expand ${...} */
+            /* expand $N */
+            expand_backref_inbuffer(r->pool, newuri, sizeof(newuri), briRR,'$');
+            /* expand %N */
+            expand_backref_inbuffer(r->pool, newuri, sizeof(newuri), briRC,'%');
+            /* expand %{...} */
+            expand_variables_inbuffer(r, newuri, sizeof(newuri)); 
+            /* expand ${...} */
+            expand_map_lookups(r, newuri, sizeof(newuri));
             for (i = 0; p->env[i] != NULL; i++) {
                 strncpy(env, p->env[i], sizeof(env)-1);
                 EOS_PARANOIA(env);
@@ -1599,27 +1703,34 @@ static int apply_rewrite_rule(request_rec *r, rewriterule_entry *p, char *perdir
                 expand_backref_inbuffer(r->pool, env, sizeof(env), briRC, '%');
                 add_env_variable(r, env);
             }
-            rewritelog(r, 2, "[per-dir %s] redirect %s -> %s", perdir, r->filename, newuri);
+            rewritelog(r, 2, "[per-dir %s] redirect %s -> %s", perdir,
+                       r->filename, newuri);
             r->filename = pstrdup(r->pool, newuri);
             r->status = p->forced_responsecode;
             return 1;
         }
 
         /* add again the previously stripped perdir prefix if the new 
-           URI is not a new one (i.e. prefixed by a slash which means 
-           that it is not for this per-dir context)                    */
+         * URI is not a new one (i.e. prefixed by a slash which means 
+         * that it is not for this per-dir context)
+         */
         if (prefixstrip && output[0] != '/') {
-            rewritelog(r, 3, "[per-dir %s] add per-dir prefix: %s -> %s%s", perdir, output, perdir, output);
+            rewritelog(r, 3, "[per-dir %s] add per-dir prefix: %s -> %s%s",
+                       perdir, output, perdir, output);
             output = pstrcat(r->pool, perdir, output, NULL);
         }
 
         /* standard case: create the substitution string */
         strncpy(newuri, output, sizeof(newuri)-1);
         EOS_PARANOIA(newuri);
-        expand_backref_inbuffer(r->pool, newuri, sizeof(newuri), briRR, '$'); /* expand $N */
-        expand_backref_inbuffer(r->pool, newuri, sizeof(newuri), briRC, '%'); /* expand %N */
-        expand_variables_inbuffer(r, newuri, sizeof(newuri));                 /* expand %{...} */
-        expand_map_lookups(r, newuri, sizeof(newuri));                        /* expand ${...} */
+        /* expand $N */
+        expand_backref_inbuffer(r->pool, newuri, sizeof(newuri), briRR, '$');
+        /* expand %N */
+        expand_backref_inbuffer(r->pool, newuri, sizeof(newuri), briRC, '%');
+        /* expand %{...} */
+        expand_variables_inbuffer(r, newuri, sizeof(newuri));
+        /* expand ${...} */
+        expand_map_lookups(r, newuri, sizeof(newuri));
         for (i = 0; p->env[i] != NULL; i++) {
             strncpy(env, p->env[i], sizeof(env)-1);
             EOS_PARANOIA(env);
@@ -1631,7 +1742,8 @@ static int apply_rewrite_rule(request_rec *r, rewriterule_entry *p, char *perdir
         if (perdir == NULL)
             rewritelog(r, 2, "rewrite %s -> %s", uri, newuri);
         else
-            rewritelog(r, 2, "[per-dir %s] rewrite %s -> %s", perdir, uri, newuri);
+            rewritelog(r, 2, "[per-dir %s] rewrite %s -> %s", perdir, uri,
+                       newuri);
 
         r->filename = pstrdup(r->pool, newuri);
 
@@ -1641,18 +1753,23 @@ static int apply_rewrite_rule(request_rec *r, rewriterule_entry *p, char *perdir
         /* split out on-the-fly generated QUERY_STRING '....?xxxxx&xxxx...' */
         splitout_queryargs(r, p->flags & RULEFLAG_QSAPPEND);
 
-        /* if a MIME-type should be later forced for this URL, then remember this */
+        /* remember if a MIME-type should be later forced for this URL */
         if (p->forced_mimetype != NULL) {
-            table_set(r->notes, REWRITE_FORCED_MIMETYPE_NOTEVAR, p->forced_mimetype);
+            table_set(r->notes, REWRITE_FORCED_MIMETYPE_NOTEVAR,
+                      p->forced_mimetype);
             if (perdir == NULL)
-                rewritelog(r, 2, "remember %s to have MIME-type '%s'", r->filename, p->forced_mimetype);
+                rewritelog(r, 2, "remember %s to have MIME-type '%s'",
+                           r->filename, p->forced_mimetype);
             else
-                rewritelog(r, 2, "[per-dir %s] remember %s to have MIME-type '%s'", perdir, r->filename, p->forced_mimetype);
+                rewritelog(r, 2,
+                           "[per-dir %s] remember %s to have MIME-type '%s'",
+                           perdir, r->filename, p->forced_mimetype);
         }
 
         /* if we are forced to do a explicit redirect by [R] flag
-           and the current URL still is not a fully qualified one we
-           finally prefix it with http[s]://<ourname> explicitly */
+         * and the current URL still is not a fully qualified one we
+         * finally prefix it with http[s]://<ourname> explicitly
+         */
         if (flags & RULEFLAG_FORCEREDIRECT) {
             r->status = p->forced_responsecode;
             if (  !(strlen(r->filename) > 7 &&
@@ -1665,7 +1782,8 @@ static int apply_rewrite_rule(request_rec *r, rewriterule_entry *p, char *perdir
                     strncmp(r->filename, "ftp://", 6) == 0)    ) {
 
 #ifdef APACHE_SSL
-                if ((!r->connection->client->ssl && r->server->port == DEFAULT_PORT) ||
+                if ((!r->connection->client->ssl
+                     && r->server->port == DEFAULT_PORT) ||
                     ( r->connection->client->ssl && r->server->port == 443)  )
 #else
                 if (r->server->port == DEFAULT_PORT)
@@ -1675,20 +1793,30 @@ static int apply_rewrite_rule(request_rec *r, rewriterule_entry *p, char *perdir
                     ap_snprintf(port, sizeof(port), ":%u", r->server->port);
                 if (r->filename[0] == '/')
 #ifdef APACHE_SSL
-                    ap_snprintf(newuri, sizeof(newuri), "%s://%s%s%s", http_method(r), r->server->server_hostname, port, r->filename);
+                    ap_snprintf(newuri, sizeof(newuri), "%s://%s%s%s",
+                                http_method(r), r->server->server_hostname,
+                                port, r->filename);
 #else
-                    ap_snprintf(newuri, sizeof(newuri), "http://%s%s%s", r->server->server_hostname, port, r->filename);
+                    ap_snprintf(newuri, sizeof(newuri), "http://%s%s%s",
+                                r->server->server_hostname, port, r->filename);
 #endif
                 else
 #ifdef APACHE_SSL
-                    ap_snprintf(newuri, sizeof(newuri), "%s://%s%s/%s", http_method(r), r->server->server_hostname, port, r->filename);
+                    ap_snprintf(newuri, sizeof(newuri), "%s://%s%s/%s",
+                                http_method(r), r->server->server_hostname,
+                                port, r->filename);
 #else
-                    ap_snprintf(newuri, sizeof(newuri), "http://%s%s/%s", r->server->server_hostname, port, r->filename);
+                    ap_snprintf(newuri, sizeof(newuri), "http://%s%s/%s",
+                                r->server->server_hostname, port, r->filename);
 #endif
                 if (perdir == NULL) 
-                    rewritelog(r, 2, "prepare forced redirect %s -> %s", r->filename, newuri);
+                    rewritelog(r, 2, "prepare forced redirect %s -> %s",
+                               r->filename, newuri);
                 else
-                    rewritelog(r, 2, "[per-dir %s] prepare forced redirect %s -> %s", perdir, r->filename, newuri);
+                    rewritelog(r, 2,
+                               "[per-dir %s] prepare forced redirect %s -> %s",
+                               perdir, r->filename, newuri);
+
                 r->filename = pstrdup(r->pool, newuri);
                 return 1;
             }
@@ -1699,7 +1827,9 @@ static int apply_rewrite_rule(request_rec *r, rewriterule_entry *p, char *perdir
     return 0;
 }
 
-static int apply_rewrite_cond(request_rec *r, rewritecond_entry *p, char *perdir, backrefinfo *briRR, backrefinfo *briRC)
+static int apply_rewrite_cond(request_rec *r, rewritecond_entry *p,
+                              char *perdir, backrefinfo *briRR,
+                              backrefinfo *briRC)
 {
     char input[MAX_STRING_LEN];
     struct stat sb;
@@ -1750,11 +1880,11 @@ static int apply_rewrite_cond(request_rec *r, rewritecond_entry *p, char *perdir
     }
     else if (strcmp(p->pattern, "-U") == 0) {
         /* avoid infinite subrequest recursion */
-        if (strlen(input) > 0               /* nonempty path, and */
-            && (   r->main == NULL          /* - either not in a subrequest */
-                || (   r->main->uri != NULL /* - or in a subrequest...*/
-                    && r->uri != NULL       /*   ...and then URIs aren't NULL... */
-                                            /*   ...and sub and main URIs differ */
+        if (strlen(input) > 0               /* nonempty path, and            */
+            && (   r->main == NULL          /* - either not in a subrequest  */
+                || (   r->main->uri != NULL /* - or in a subrequest...       */
+                    && r->uri != NULL       /*   ...and URIs aren't NULL...  */
+                                            /*   ...and sub/main URIs differ */
                     && strcmp(r->main->uri, r->uri) != 0) ) ) {
 
             /* run a URI-based subrequest */
@@ -1765,7 +1895,8 @@ static int apply_rewrite_cond(request_rec *r, rewritecond_entry *p, char *perdir
                 rc = 1;
 
             /* log it */
-            rewritelog(r, 5, "RewriteCond URI (-U) check: path=%s -> status=%d", input, rsub->status);
+            rewritelog(r, 5, "RewriteCond URI (-U) check: path=%s -> status=%d",
+                       input, rsub->status);
 
             /* cleanup by destroying the subrequest */
             destroy_sub_req(rsub);
@@ -1773,15 +1904,16 @@ static int apply_rewrite_cond(request_rec *r, rewritecond_entry *p, char *perdir
     }
     else if (strcmp(p->pattern, "-F") == 0) {
         /* avoid infinite subrequest recursion */
-        if (strlen(input) > 0               /* nonempty path, and */
-            && (   r->main == NULL          /* - either not in a subrequest */
-                || (   r->main->uri != NULL /* - or in a subrequest...*/
-                    && r->uri != NULL       /*   ...and then URIs aren't NULL... */
-                                            /*   ...and sub and main URIs differ */
+        if (strlen(input) > 0               /* nonempty path, and            */
+            && (   r->main == NULL          /* - either not in a subrequest  */
+                || (   r->main->uri != NULL /* - or in a subrequest...       */
+                    && r->uri != NULL       /*   ...and URIs aren't NULL...  */
+                                            /*   ...and sub/main URIs differ */
                     && strcmp(r->main->uri, r->uri) != 0) ) ) {
 
             /* process a file-based subrequest: 
-               this differs from -U in that no path translation is done. */
+             * this differs from -U in that no path translation is done.
+             */
             rsub = sub_req_lookup_file(input, r);
  
             /* file exists for any result up to 2xx, no redirects */
@@ -1791,7 +1923,9 @@ static int apply_rewrite_cond(request_rec *r, rewritecond_entry *p, char *perdir
                 rc = 1;
 
             /* log it */
-            rewritelog(r, 5, "RewriteCond file (-F) check: path=%s -> file=%s status=%d", input, rsub->filename, rsub->status);
+            rewritelog(r, 5,
+                "RewriteCond file (-F) check: path=%s -> file=%s status=%d",
+                       input, rsub->filename, rsub->status);
 
             /* cleanup by destroying the subrequest */
             destroy_sub_req(rsub);
@@ -1811,14 +1945,15 @@ static int apply_rewrite_cond(request_rec *r, rewritecond_entry *p, char *perdir
     }
     else {
         /* it is really a regexp pattern, so apply it */
-        rc = (regexec(p->regexp, input, p->regexp->re_nsub+1, regmatch, 0) == 0);
+        rc = (regexec(p->regexp, input, p->regexp->re_nsub+1, regmatch,0) == 0);
 
         /* if it isn't a negated pattern and really matched
            we update the passed-through regex subst info structure */
         if (rc && !(p->flags & CONDFLAG_NOTMATCH)) { 
             briRC->source = pstrdup(r->pool, input);
             briRC->nsub   = p->regexp->re_nsub;
-            memcpy((void *)(briRC->regmatch), (void *)(regmatch), sizeof(regmatch_t)*10);
+            memcpy((void *)(briRC->regmatch), (void *)(regmatch),
+                   sizeof(regmatch_t)*10);
         }
     }
 
@@ -1835,8 +1970,6 @@ static int apply_rewrite_cond(request_rec *r, rewritecond_entry *p, char *perdir
 }
 
 
-
-
 /*
 ** +-------------------------------------------------------+
 ** |                                                       |
@@ -1844,7 +1977,6 @@ static int apply_rewrite_cond(request_rec *r, rewritecond_entry *p, char *perdir
 ** |                                                       |
 ** +-------------------------------------------------------+
 */
-
 
 /*
 **
@@ -1868,12 +2000,14 @@ static void splitout_queryargs(request_rec *r, int qsappend)
             r->args = pstrdup(r->pool, q);
         if (strlen(r->args) == 0) {
             r->args = NULL;
-            rewritelog(r, 3, "split uri=%s -> uri=%s, args=<none>", olduri, r->filename);
+            rewritelog(r, 3, "split uri=%s -> uri=%s, args=<none>", olduri,
+                       r->filename);
         }
         else {
             if (r->args[strlen(r->args)-1] == '&')
                 r->args[strlen(r->args)-1] = '\0';
-            rewritelog(r, 3, "split uri=%s -> uri=%s, args=%s", olduri, r->filename, r->args);
+            rewritelog(r, 3, "split uri=%s -> uri=%s, args=%s", olduri,
+                       r->filename, r->args);
         }
     }
     return;            
@@ -2119,7 +2253,7 @@ static void expand_map_lookups(request_rec *r, char *uri, int uri_len)
                 n = strlen(cpT);
                 if (cpO + n >= newuri + sizeof(newuri)) {
                     aplog_error(APLOG_MARK, APLOG_ERR, r->server,
-				"insufficient space in expand_map_lookups, aborting");
+                                "insufficient space in expand_map_lookups, aborting");
                     return;
                 }
                 memcpy(cpO, cpT, n);
@@ -2129,7 +2263,7 @@ static void expand_map_lookups(request_rec *r, char *uri, int uri_len)
                 n = strlen(defaultvalue);
                 if (cpO + n >= newuri + sizeof(newuri)) {
                     aplog_error(APLOG_MARK, APLOG_ERR, r->server,
-				"insufficient space in expand_map_lookups, aborting");
+                                "insufficient space in expand_map_lookups, aborting");
                     return;
                 }
                 memcpy(cpO, defaultvalue, n);
@@ -2143,7 +2277,7 @@ static void expand_map_lookups(request_rec *r, char *uri, int uri_len)
             n = cpT-cpI;
             if (cpO + n >= newuri + sizeof(newuri)) {
                 aplog_error(APLOG_MARK, APLOG_ERR, r->server,
-			    "insufficient space in expand_map_lookups, aborting");
+                            "insufficient space in expand_map_lookups, aborting");
                 return;
             }
             memcpy(cpO, cpI, n);
@@ -2192,13 +2326,13 @@ static char *lookup_map(request_rec *r, char *name, char *key)
         if (strcmp(s->name, name) == 0) {
             if (s->type == MAPTYPE_TXT) {
                 if (stat(s->checkfile, &st) == -1) {
-		    aplog_error(APLOG_MARK, APLOG_ERR, r->server,
-			        "mod_rewrite: can't access text RewriteMap file %s: %s",
-			        s->checkfile, strerror(errno));
-		    rewritelog(r, 1,
-			       "can't open RewriteMap file, see error log");
-		    return NULL;
-		}
+                    aplog_error(APLOG_MARK, APLOG_ERR, r->server,
+                                "mod_rewrite: can't access text RewriteMap file %s: %s",
+                                s->checkfile, strerror(errno));
+                    rewritelog(r, 1,
+                               "can't open RewriteMap file, see error log");
+                    return NULL;
+                }
                 value = get_cache_string(cachep, s->name, CACHEMODE_TS, st.st_mtime, key);
                 if (value == NULL) {
                     rewritelog(r, 6, "cache lookup FAILED, forcing new map lookup");
@@ -2220,13 +2354,13 @@ static char *lookup_map(request_rec *r, char *name, char *key)
             else if (s->type == MAPTYPE_DBM) {
 #if HAS_NDBM_LIB
                 if (stat(s->checkfile, &st) == -1) {
-		    aplog_error(APLOG_MARK, APLOG_ERROR, r->server,
-			        "mod_rewrite: can't access dbm RewriteMap file %s: %s",
-			        s->checkfile, strerror(errno));
-		    rewritelog(r, 1,
-			       "can't open RewriteMap file, see error log");
-		    return NULL;
-		}
+                    aplog_error(APLOG_MARK, APLOG_ERROR, r->server,
+                                "mod_rewrite: can't access dbm RewriteMap file %s: %s",
+                                s->checkfile, strerror(errno));
+                    rewritelog(r, 1,
+                               "can't open RewriteMap file, see error log");
+                    return NULL;
+                }
                 value = get_cache_string(cachep, s->name, CACHEMODE_TS, st.st_mtime, key);
                 if (value == NULL) {
                     rewritelog(r, 6, "cache lookup FAILED, forcing new map lookup");
@@ -2552,7 +2686,7 @@ static void run_rewritemap_programs(server_rec *s, pool *p)
      * If the engine isn't turned on, don't even try to do anything.
      */
     if (conf->state == ENGINE_DISABLED) {
-	return;
+        return;
     }
     
 

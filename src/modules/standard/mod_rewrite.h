@@ -89,12 +89,11 @@
 */
 
 
-
-
     /* The NDBM support:
-       We support only NDBM files. 
-       But we have to stat the file for the mtime,
-       so we also need to know the file extension */
+     * We support only NDBM files. 
+     * But we have to stat the file for the mtime,
+     * so we also need to know the file extension
+     */
 #if HAS_NDBM_LIB
 #include <ndbm.h>
 #if (__FreeBSD__)
@@ -106,8 +105,9 @@
 
 
     /* The locking support:
-       Try to determine whether we should use fcntl() or flock().
-       Would be better conf.h could provide this... :-( */
+     * Try to determine whether we should use fcntl() or flock().
+     * Would be better conf.h could provide this... :-(
+     */
 #if defined(USE_FCNTL_SERIALIZED_ACCEPT)
 #define USE_FCNTL 1
 #include <fcntl.h>
@@ -137,16 +137,15 @@
 #define USE_LOCKING
 #endif
 
-
     /* The locking support for the RewriteMap programs:
-       Locking a pipe to the child works fine under most
-       Unix derivates, but braindead SunOS 4.1.x has 
-       problems with this approach... */
+     * Locking a pipe to the child works fine under most
+     * Unix derivates, but braindead SunOS 4.1.x has 
+     * problems with this approach...
+     */
 #define USE_PIPE_LOCKING 1
 #ifdef SUNOS4
 #undef USE_PIPE_LOCKING
 #endif
-
 
 /*
 **
@@ -221,12 +220,12 @@
 */
 
     /* the list structures for holding the mapfile information
-       and the rewrite rules */
-
+     * and the rewrite rules
+     */
 typedef struct {
     char *name;                    /* the name of the map */
-    char *datafile;                /* the file which contains the data of the map */
-    char *checkfile;               /* the file which stays for existence of the map */
+    char *datafile;                /* filename for map data files */
+    char *checkfile;               /* filename to check for map existence */
     int   type;                    /* the type of the map */
     int   fpin;                    /* in  filepointer for program maps */
     int   fpout;                   /* out filepointer for program maps */
@@ -241,20 +240,20 @@ typedef struct {
 
 typedef struct {
     array_header *rewriteconds;    /* the corresponding RewriteCond entries */
-    char         *pattern;         /* the RegExp pattern string */
-    regex_t      *regexp;          /* the RegExp pattern compilation */
-    char         *output;              /* the Substitution string */
-    int           flags;               /* Flags which control the substitution */
-    char         *forced_mimetype;     /* forced MIME type of substitution */
-    int           forced_responsecode; /* forced HTTP redirect response status */
-    char         *env[MAX_ENV_FLAGS+1];/* added environment variables */
-    int           skip;                /* number of next rules to skip */
+    char    *pattern;              /* the RegExp pattern string */
+    regex_t *regexp;               /* the RegExp pattern compilation */
+    char    *output;               /* the Substitution string */
+    int      flags;                /* Flags which control the substitution */
+    char    *forced_mimetype;      /* forced MIME type of substitution */
+    int      forced_responsecode;  /* forced HTTP redirect response status */
+    char    *env[MAX_ENV_FLAGS+1]; /* added environment variables */
+    int      skip;                 /* number of next rules to skip */
 } rewriterule_entry;
 
 
     /* the per-server or per-virtual-server configuration
-       statically generated once on startup for every server */
-
+     * statically generated once on startup for every server
+     */
 typedef struct {
     int           state;           /* the RewriteEngine state */
     int           options;         /* the RewriteOption state */
@@ -268,8 +267,8 @@ typedef struct {
 
 
     /* the per-directory configuration
-       individually generated on-the-fly by Apache server for current request */
-
+     * generated on-the-fly by Apache server for current request
+     */
 typedef struct {
     int           state;           /* the RewriteEngine state */
     int           options;         /* the RewriteOption state */
@@ -321,22 +320,42 @@ static void *config_perdir_create(pool *p, char *path);
 static void *config_perdir_merge (pool *p, void *basev, void *overridesv);
 
     /* config directive handling */
-static const char *cmd_rewriteengine  (cmd_parms *cmd, rewrite_perdir_conf *dconf, int flag);
-static const char *cmd_rewriteoptions (cmd_parms *cmd, rewrite_perdir_conf *dconf, char *option);
-static const char *cmd_rewriteoptions_setoption(pool *p, int *options, char *name);
+static const char *cmd_rewriteengine(cmd_parms *cmd,
+                                     rewrite_perdir_conf *dconf, int flag);
+
+static const char *cmd_rewriteoptions(cmd_parms *cmd,
+                                      rewrite_perdir_conf *dconf, char *option);
+
+static const char *cmd_rewriteoptions_setoption(pool *p, int *options,
+                                                char *name);
+
 static const char *cmd_rewritelog     (cmd_parms *cmd, void *dconf, char *a1);
 static const char *cmd_rewriteloglevel(cmd_parms *cmd, void *dconf, char *a1);
-static const char *cmd_rewritemap     (cmd_parms *cmd, void *dconf, char *a1, char *a2);
+static const char *cmd_rewritemap     (cmd_parms *cmd, void *dconf, char *a1,
+                                       char *a2);
 
-static const char *cmd_rewritebase(cmd_parms *cmd, rewrite_perdir_conf *dconf, char *a1);
+static const char *cmd_rewritebase(cmd_parms *cmd, rewrite_perdir_conf *dconf,
+                                   char *a1);
 
-static const char *cmd_rewritecond    (cmd_parms *cmd, rewrite_perdir_conf *dconf, char *str);
-static const char *cmd_rewritecond_parseflagfield(pool *p, rewritecond_entry *new, char *str);
-static const char *cmd_rewritecond_setflag       (pool *p, rewritecond_entry *cfg, char *key, char *val);
+static const char *cmd_rewritecond(cmd_parms *cmd, rewrite_perdir_conf *dconf,
+                                   char *str);
 
-extern const char *cmd_rewriterule    (cmd_parms *cmd, rewrite_perdir_conf *dconf, char *str);
-static const char *cmd_rewriterule_parseflagfield(pool *p, rewriterule_entry *new, char *str);
-static const char *cmd_rewriterule_setflag       (pool *p, rewriterule_entry *cfg, char *key, char *val);
+static const char *cmd_rewritecond_parseflagfield(pool *p,
+                                                  rewritecond_entry *new,
+                                                  char *str);
+
+static const char *cmd_rewritecond_setflag(pool *p, rewritecond_entry *cfg,
+                                           char *key, char *val);
+
+extern const char *cmd_rewriterule(cmd_parms *cmd, rewrite_perdir_conf *dconf,
+                                   char *str);
+
+static const char *cmd_rewriterule_parseflagfield(pool *p,
+                                                  rewriterule_entry *new,
+                                                  char *str);
+
+static const char *cmd_rewriterule_setflag(pool *p, rewriterule_entry *cfg,
+                                           char *key, char *val);
 
     /* initialisation */
 static void init_module(server_rec *s, pool *p);
@@ -348,14 +367,19 @@ static int hook_fixup      (request_rec *r);
 static int handler_redirect(request_rec *r);
 
     /* rewriting engine */
-static int apply_rewrite_list(request_rec *r, array_header *rewriterules, char *perdir);
-static int apply_rewrite_rule(request_rec *r, rewriterule_entry *p, char *perdir); 
-static int apply_rewrite_cond(request_rec *r, rewritecond_entry *p, char *perdir, backrefinfo *briRR, backrefinfo *briRC); 
+static int apply_rewrite_list(request_rec *r, array_header *rewriterules,
+                              char *perdir);
+static int apply_rewrite_rule(request_rec *r, rewriterule_entry *p,
+                              char *perdir); 
+static int apply_rewrite_cond(request_rec *r, rewritecond_entry *p,
+                              char *perdir, backrefinfo *briRR,
+                              backrefinfo *briRC); 
 
     /* URI transformation function */
 static void  splitout_queryargs(request_rec *r, int qsappend);
 static void  reduce_uri(request_rec *r);
-static void  expand_backref_inbuffer(pool *p, char *buf, int nbuf, backrefinfo *bri, char c);
+static void  expand_backref_inbuffer(pool *p, char *buf, int nbuf,
+                                     backrefinfo *bri, char c);
 static char *expand_tildepaths(request_rec *r, char *uri);
 static void  expand_map_lookups(request_rec *r, char *uri, int uri_len);
 
@@ -384,14 +408,17 @@ static char *lookup_variable(request_rec *r, char *var);
 static char *lookup_header(request_rec *r, const char *name);
 
     /* caching functions */
-static cache      *init_cache(pool *p);
-static char       *get_cache_string(cache *c, char *res, int mode, time_t mtime, char *key);
-static void        set_cache_string(cache *c, char *res, int mode, time_t mtime, char *key, char *value);
+static cache *init_cache(pool *p);
+static char  *get_cache_string(cache *c, char *res, int mode, time_t mtime,
+                               char *key);
+static void   set_cache_string(cache *c, char *res, int mode, time_t mtime,
+                               char *key, char *value);
 static cacheentry *retrieve_cache_string(cache *c, char *res, char *key);
-static void        store_cache_string(cache *c, char *res, cacheentry *ce);
+static void   store_cache_string(cache *c, char *res, cacheentry *ce);
 
     /* misc functions */
-static char  *subst_prefix_path(request_rec *r, char *input, char *match, char *subst);
+static char  *subst_prefix_path(request_rec *r, char *input, char *match,
+                                char *subst);
 static int    parseargline(char *str, char **a1, char **a2, char **a3);
 static int    prefix_stat(const char *path, struct stat *sb);
 static void   add_env_variable(request_rec *r, char *s);
