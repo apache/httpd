@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/08/19 14:59:21 $]
+Last modified at [$Date: 2003/08/19 16:06:20 $]
 
 Release:
 
@@ -320,6 +320,10 @@ PATCHES TO PORT FROM 2.1
       token and to skip token parameters. PR 21523.
       Don't compress if there was *any* non-identity endoding applied before.
         modules/filters/mod_deflate.c: r1.37, r1.38
+      +1: nd
+
+    * Fix mod_log_config's %b format to write "-" in case of bytes_sent == 0.
+        modules/loggers/mod_log_config.c: r1.106
       +1: nd
 
 CURRENT RELEASE NOTES:
