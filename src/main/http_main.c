@@ -2278,7 +2278,9 @@ void standalone_main(int argc, char **argv)
 	}
 
 	if (is_graceful) {
+#ifndef SCOREBOARD_FILE
 	    int i;
+#endif
 
 	    /* USE WITH CAUTION:  Graceful restarts are not known to work
 	    * in various configurations on the architectures we support. */
