@@ -50,7 +50,7 @@
  *
  */
 
-/* $Id: mod_proxy.c,v 1.1 1996/09/26 12:38:02 chuck Exp $ */
+/* $Id: mod_proxy.c,v 1.2 1996/09/29 14:10:58 chuck Exp $ */
 
 /*
 Note that the Explain() stuff is not yet complete.
@@ -77,15 +77,26 @@ More things to do:
 
 0. Massive code cleanup & break into multiple files; link as a lib
 
-1. Check date routines
+1. add PASV mode for ftp now that it works
 
-2. Get ftp working, add PASV mode
+2. Add gopher & WAIS
 
-3. Add gopher & WAIS
+3. Various other fixups to insure no NULL strings parsed, etc.
 
-4. Various other fixups to insure no NULL strings parsed, etc.
+4. NoProxy directive for excluding sites to proxy
+ 
+5. Imply NoCache * if cache directory is not configured, to enable proxy
+   without cache (and avoid SIGSEGV)
+ 
+6. Implement protocol handler struct a la Apache module handlers
+ 
+7. Use a cache expiry database for more efficient GC
 
-Chuck Murcko <chuck@telebase.com> 28 Jul 96
+8. Handle multiple IPs for doconnect()
+
+9. Bulletproof GC against SIGALRM
+
+Chuck Murcko <chuck@telebase.com> 28 Sep 96
 
 */
 
@@ -684,13 +695,13 @@ http_canon(request_rec *r, char *url, const char *scheme, int def_port)
 	search = p;
 	if (search == NULL) return BAD_REQUEST;
     } else
-	search = "";
+	search = NULL;
 
     if (port != def_port) sprintf(sport, ":%d", port);
     else sport[0] = '\0';
 
     r->filename = pstrcat(r->pool, "proxy:", scheme, "://", host, sport, "/",
-			  path, (search[0] != '\0') ? "?" : "", search, NULL);
+			  path, (search) ? "?" : "", (search) ? search : "", NULL);
     return OK;
 }
 
@@ -1265,11 +1276,20 @@ tm2sec(const struct tm *t)
  * 
  *   This routine is very fast; it would be 10x slower if it
  *   used sscanf.
+ *
+ * From Andrew Daviel <andrew@vancouver-webpages.com> 29 Jul 96:
+ *
+ * Expanded to include RFC850 date (used by Netscape)
+ *    rfc850-date = weekday "," SP 2DIGIT "-" month "-" 2DIGIT SP time SP "GMT"
+ * Netscape also appends "; length nnnn" to If-Modified-Since; allow this
+ *
  */
 static int
 parsedate(const char *date, struct tm *d)
 {
     int mint, mon, year;
+    char* comma;
+    int lday;
     struct tm x;
     const int months[12]={
 	('J' << 16) | ( 'a' << 8) | 'n', ('F' << 16) | ( 'e' << 8) | 'b',
@@ -1281,7 +1301,17 @@ parsedate(const char *date, struct tm *d)
     if (d == NULL) d = &x;
 
     d->tm_year = 0;  /* bad date */
-    if (!checkmask(date, "@$$, ## @$$ #### ##:##:## GMT")) return -1;
+    comma = index(date,',') ;
+    lday =  (comma-date) ;
+    
+    if( lday >= 6 && lday <= 8) {   /* RFC850 */
+      date = comma - 3 ;
+      if (!checkmask(date, "day, ##-@$$-## ##:##:## GMT") && 
+        !checkmask(date, "day, ##-@$$-## ##:##:## GMT;*")) return -1;
+    } else { /* RFC1123 */
+      if (!checkmask(date, "@$$, ## @$$ #### ##:##:## GMT") &&
+        !checkmask(date, "@$$, ## @$$ #### ##:##:## GMT;*")) return -1;
+    }
 
 /* we don't test the weekday */
     d->tm_mday = (date[5] - '0') * 10 + (date[6] - '0');
@@ -1292,11 +1322,18 @@ parsedate(const char *date, struct tm *d)
     if (mon == 12) return -1;
     
     d->tm_mon = mon;
-    year = date[12] * 1000 + date[13] * 100 + date[14] * 10 + date[15] -
+    if( lday >= 6 && lday <= 8) {   /* RFC850 */
+      year = 1900 + date[12] * 10 + date[13] - ('0' * 11) ;
+      d->tm_hour = date[15] * 10 + date[16] - '0' * 11;
+      d->tm_min  = date[18] * 10 + date[19] - '0' * 11;
+      d->tm_sec = date[21] * 10 + date[22] - '0' * 11;
+    } else { /* RFC1123 */
+      year = date[12] * 1000 + date[13] * 100 + date[14] * 10 + date[15] -
 	         ('0' * 1111);
-    d->tm_hour = date[17] * 10 + date[18] - '0' * 11;
-    d->tm_min  = date[20] * 10 + date[21] - '0' * 11;
-    d->tm_sec = date[23] * 10 + date[24] - '0' * 11;
+      d->tm_hour = date[17] * 10 + date[18] - '0' * 11;
+      d->tm_min  = date[20] * 10 + date[21] - '0' * 11;
+      d->tm_sec = date[23] * 10 + date[24] - '0' * 11;
+    }
 
     if (d->tm_hour > 23 || d->tm_min > 59 || d->tm_sec > 61) return -1;
 
@@ -1761,7 +1798,8 @@ cache_check(request_rec *r, char *url, struct cache_conf *conf,
 /* find out about whether the request can access the cache */
     pragma = table_get(r->headers_in, "Pragma");
     auth = table_get(r->headers_in, "Authorization");
-    Explain4("Request for %s, pragma=%s, auth=%s, ims=%ld",url,pragma,auth,c->ims);
+    Explain5("Request for %s, pragma=%s, auth=%s, ims=%ld, imstr=%s",url,
+      pragma,auth,c->ims,imstr);
     if (c->filename != NULL && r->method_number == M_GET &&
 	strlen(url) < 1024 && !liststr(pragma, "no-cache") && auth == NULL)
     {
@@ -2392,342 +2430,10 @@ doconnect(int sock, struct sockaddr_in *addr, request_rec *r)
     return i;
 }
 
-#ifdef OLD_FTP_HANDLER
-
 /*
  * Handles direct access of ftp:// URLs
- */
-static int
-ftp_handler(request_rec *r, struct cache_req *c, char *url)
-{
-    char *host, *path, *p, *user, *password, *parms;
-    const char *err;
-    int port, userlen, passlen, i, len, sock, dsock, csd, rc, nocache;
-    struct sockaddr_in server;
-    struct hdr_entry *hdr;
-    array_header *resp_hdrs;
-    BUFF *f, *cache, *data;
-    pool *pool=r->pool;
-    const int one=1;
-    const long int zero=0L;
-
-/* we only support GET and HEAD */
-    if (r->method_number != M_GET) return NOT_IMPLEMENTED;
-
-    host = pstrdup(r->pool, url+6);
-/* We break the URL into host, port, path-search */
-    port = DEFAULT_FTP_PORT;
-    path = strchr(host, '/');
-    if (path == NULL) path = "";
-    else *(path++) = '\0';
-
-    user = password = NULL;
-    nocache = 0;
-    passlen=0;	/* not actually needed, but it shuts the compiler up */
-    p = strchr(host, '@');
-    if (p != NULL)
-    {
-	(*p++) = '\0';
-	user = host;
-	host = p;
-/* find password */
-	p = strchr(user, ':');
-	if (p != NULL)
-	{
-	    *(p++) = '\0';
-	    password = p;
-	    passlen = decodeenc(password);
-	}
-	userlen = decodeenc(user);
-	nocache = 1; /* don't cache when a username is supplied */
-    } else
-    {
-	user = "anonymous";
-	userlen = 9;
-
-	password = "proxy_user@host";
-	passlen = strlen(password);
-    }
-
-    p = strchr(host, ':');
-    if (p != NULL)
-    {
-	*(p++) = '\0';
-	port = atoi(p);
-    }
-
-    parms = strchr(path, ';');
-    if (parms != NULL) *(parms++) = '\0';
-
-    memset(&server,'\0',sizeof server);
-    server.sin_family=AF_INET;
-    server.sin_port = htons(port);
-    err = host2addr(host, &server.sin_addr);
-    if (err != NULL) return proxyerror(r, err); /* give up */
-
-    sock = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
-    if (sock == -1)
-    {
-	log_uerror("socket", NULL, "proxy: error creating socket", r->server);
-	return SERVER_ERROR;
-    }
-    note_cleanups_for_fd(pool, sock);
-
-    if (setsockopt(sock, SOL_SOCKET, SO_REUSEADDR, (const char *)&one,
-		   sizeof(int)) == -1)
-    {
-	log_uerror("setsockopt", NULL, "proxy: error setting reuseaddr option",
-		   r->server);
-	pclosef(pool, sock);
-	return SERVER_ERROR;
-    }
-
-    i = doconnect(sock, &server, r);
-    if (i == -1) return proxyerror(r, "Could not connect to remote machine");
-
-    f = bcreate(pool, B_RDWR);
-    bpushfd(f, sock, sock);
-/* shouldn't we implement telnet control options here? */
-
-/* possible results: 120, 220, 421 */
-    hard_timeout ("proxy ftp", r);
-    i = ftp_getrc(f);
-    if (i == -1) return proxyerror(r, "Error reading from remote server");
-    if (i != 220) return BAD_GATEWAY;
-
-    bputs("USER ", f);
-    bwrite(f, user, userlen);
-    bputs("\015\012", f);
-    bflush(f); /* capture any errors */
-    
-/* possible results; 230, 331, 332, 421, 500, 501, 530 */
-/* states: 1 - error, 2 - success; 3 - send password, 4,5 fail */
-    i = ftp_getrc(f);
-    if (i == -1) return proxyerror(r, "Error sending to remote server");
-    if (i == 530) return FORBIDDEN;
-    else if (i != 230 && i != 331) return BAD_GATEWAY;
-	
-    if (i == 331) /* send password */
-    {
-	if (password == NULL) return FORBIDDEN;
-	bputs("PASS ", f);
-	bwrite(f, password, passlen);
-	bputs("\015\012", f);
-	bflush(f);
-/* possible results 202, 230, 332, 421, 500, 501, 503, 530 */
-	i = ftp_getrc(f);
-	if (i == -1) return proxyerror(r, "Error sending to remote server");
-	if (i == 332 || i == 530) return FORBIDDEN;
-	else if (i != 230 && i != 202) return BAD_GATEWAY;
-    }  
-
-/* set the directory */
-/* this is what we must do if we don't know the OS type of the remote
- * machine
- */
-    for (;;)
-    {
-	p = strchr(path, '/');
-	if (p == NULL) break;
-	*p = '\0';
-
-	len = decodeenc(path);
-	bputs("CWD ", f);
-	bwrite(f, path, len);
-	bputs("\015\012", f);
-        bflush(f);
-/* responses: 250, 421, 500, 501, 502, 530, 550 */
-/* 1,3 error, 2 success, 4,5 failure */
-	i = ftp_getrc(f);
-	if (i == -1) return proxyerror(r, "Error sending to remote server");
-	else if (i == 550) return NOT_FOUND;
-	else if (i != 250) return BAD_GATEWAY;
-
-	path = p + 1;
-    }
-
-    if (parms != NULL && strncmp(parms, "type=", 5) == 0)
-    {
-	parms += 5;
-	if ((parms[0] != 'd' && parms[0] != 'a' && parms[0] != 'i') ||
-	    parms[1] != '\0') parms = "";
-    }
-    else parms = "";
-
-    if (parms[0] == 'i')
-    {
-	/* set type to image */
-	bputs("TYPE I", f);
-	bflush(f);
-/* responses: 200, 421, 500, 501, 504, 530 */
-	i = ftp_getrc(f);
-	if (i == -1) return proxyerror(r, "Error sending to remote server");
-	else if (i != 200 && i != 504) return BAD_GATEWAY;
-/* Allow not implemented */
-	else if (i == 504) parms[0] = '\0';
-    }
-
-/* set up data connection */
-    len = sizeof(struct sockaddr_in);
-    if (getsockname(sock, (struct sockaddr *)&server, &len) < 0)
-    {
-	log_uerror("getsockname", NULL,"proxy: error getting socket address",
-		   r->server);
-	pclosef(pool, sock);
-	return SERVER_ERROR;
-    }
-
-    dsock = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
-    if (dsock == -1)
-    {
-	log_uerror("socket", NULL, "proxy: error creating socket", r->server);
-	pclosef(pool, sock);
-	return SERVER_ERROR;
-    }
-    note_cleanups_for_fd(pool, dsock);
-
-    if (setsockopt(dsock, SOL_SOCKET, SO_REUSEADDR, (const char *)&one,
-		   sizeof(int)) == -1)
-    {
-	log_uerror("setsockopt", NULL, "proxy: error setting reuseaddr option",
-		   r->server);
-	pclosef(pool, dsock);
-	pclosef(pool, sock);
-	return SERVER_ERROR;
-    }
-
-    if (bind(dsock, (struct sockaddr *)&server, sizeof(struct sockaddr_in)) ==
-	-1)
-    {
-	char buff[22];
-
-	sprintf(buff, "%s:%d", inet_ntoa(server.sin_addr), server.sin_port);
-	log_uerror("bind", buff, "proxy: error binding to ftp data socket",
-		   r->server);
-	pclosef(pool, sock);
-	pclosef(pool, dsock);
-    }
-    listen(dsock, 2); /* only need a short queue */
-
-/* set request */
-    len = decodeenc(path);
-    if (parms[0] == 'd')
-    {
-	if (len != 0) bputs("NLST ", f);
-	else bputs("NLST", f);
-    }
-    else bputs("RETR ", f);
-    bwrite(f, path, len);
-    bputs("\015\012", f);
-    bflush(f);
-/* RETR: 110, 125, 150, 226, 250, 421, 425, 426, 450, 451, 500, 501, 530, 550
-   NLST: 125, 150, 226, 250, 421, 425, 426, 450, 451, 500, 501, 502, 530 */
-    rc = ftp_getrc(f);
-    if (rc == -1) return proxyerror(r, "Error sending to remote server");
-    if (rc == 550) return NOT_FOUND;
-    if (rc != 125 && rc != 150 && rc != 226 && rc != 250) return BAD_GATEWAY;
-    kill_timeout(r);
-
-    r->status = 200;
-    r->status_line = "200 OK";
-
-    resp_hdrs = make_array(pool, 2, sizeof(struct hdr_entry));
-    if (parms[0] == 'd')
-	add_header(resp_hdrs, "Content-Type", "text/plain", HDR_REP);
-        
-    i = cache_update(c, resp_hdrs, "FTP", nocache);
-    if (i != DECLINED)
-    {
-	pclosef(pool, dsock);
-	pclosef(pool, sock);
-	return i;
-    }
-    cache = c->fp;
-
-/* wait for connection */
-    hard_timeout ("proxy ftp data connect", r);
-    len = sizeof(struct sockaddr_in);
-    do csd = accept(dsock, (struct sockaddr *)&server, &len);
-    while (csd == -1 && errno == EINTR);	/* SHUDDER on SOCKS - cdm */
-    if (csd == -1)
-    {
-	log_uerror("accept", NULL, "proxy: failed to accept data connection",
-		   r->server);
-	pclosef(pool, dsock);
-	pclosef(pool, sock);
-	cache_error(c);
-	return BAD_GATEWAY;
-    }
-    note_cleanups_for_fd(pool, csd);
-    data = bcreate(pool, B_RD);
-    bpushfd(data, csd, -1);
-    kill_timeout(r);
-
-    hard_timeout ("proxy receive", r);
-/* send response */
-/* write status line */
-    if (!r->assbackwards)
-	rvputs(r, SERVER_PROTOCOL, " ", r->status_line, "\015\012", NULL);
-    if (cache != NULL)
-	if (bvputs(cache, SERVER_PROTOCOL, " ", r->status_line, "\015\012",
-		   NULL) == -1)
-	    cache = cache_error(c);
-
-/* send headers */
-    len = resp_hdrs->nelts;
-    hdr = (struct hdr_entry *)resp_hdrs->elts;
-    for (i=0; i < len; i++)
-    {
-	if (hdr[i].field == NULL || hdr[i].value == NULL ||
-	    hdr[i].value[0] == '\0') continue;
-	if (!r->assbackwards)
-	    rvputs(r, hdr[i].field, ": ", hdr[i].value, "\015\012", NULL);
-	if (cache != NULL)
-	    if (bvputs(cache, hdr[i].field, ": ", hdr[i].value, "\015\012",
-		       NULL) == -1)
-		cache = cache_error(c);
-    }
-
-    if (!r->assbackwards) rputs("\015\012", r);
-    if (cache != NULL)
-	if (bputs("\015\012", cache) == -1) cache = cache_error(c);
-
-    bsetopt(r->connection->client, BO_BYTECT, &zero);
-    r->sent_bodyct = 1;
-/* send body */
-    if (!r->header_only)
-    {
-	send_fb(data, r, cache, c);
-	if (rc == 125 || rc == 150) rc = ftp_getrc(f);
-	if (rc != 226 && rc != 250) cache_error(c);
-    }
-    else
-    {
-/* abort the transfer */
-	bputs("ABOR\015\012", f);
-	bflush(f);
-/* responses: 225, 226, 421, 500, 501, 502 */
-	i = ftp_getrc(f);
-    }
-
-    cache_tidy(c);
-
-/* finish */
-    bputs("QUIT\015\012", f);
-    bflush(f);
-/* responses: 221, 500 */    
-
-    pclosef(pool, csd);
-    pclosef(pool, dsock);
-    pclosef(pool, sock);
-
-    return OK;
-}
-
-#else /* !OLD_FTP_HANDLER */
-
-/*
- * Handles direct access of ftp:// URLs
+ * Original (Non-PASV) version from
+ * Troy Morrison <spiffnet@zoom.com>
  */
 static int
 ftp_handler(request_rec *r, struct cache_req *c, char *url)
@@ -2744,7 +2450,8 @@ ftp_handler(request_rec *r, struct cache_req *c, char *url)
     const long int zero=0L;
 
     /* This appears to fix a bug(?) that generates an "Address family not
-       supported by protocol" error in doconnect() later */
+       supported by protocol" error in doconnect() later (along with
+       making sure server.sin_family = AF_INET - cdm)*/
     memset(&server, 0, sizeof(struct sockaddr_in));
 
 /* we only support GET and HEAD */
@@ -2781,7 +2488,7 @@ ftp_handler(request_rec *r, struct cache_req *c, char *url)
 	user = "anonymous";
 	userlen = 9;
 
-	password = "proxy_user@";
+	password = "proxy_user@apache_host.org";
 	passlen = strlen(password);
     }
 
@@ -2797,11 +2504,12 @@ ftp_handler(request_rec *r, struct cache_req *c, char *url)
     parms = strchr(path, ';');
     if (parms != NULL) *(parms++) = '\0';
 
+    server.sin_family = AF_INET;
     server.sin_port = htons(port);
     err = host2addr(host, &server.sin_addr);
     if (err != NULL) return proxyerror(r, err); /* give up */
 
-    sock = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
+    sock = socket(PF_INET, SOCK_STREAM, IPPROTO_TCP);
     if (sock == -1)
     {
 	log_uerror("socket", NULL, "proxy: error creating socket", r->server);
@@ -2928,7 +2636,7 @@ ftp_handler(request_rec *r, struct cache_req *c, char *url)
 	return SERVER_ERROR;
     }
 
-    dsock = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
+    dsock = socket(PF_INET, SOCK_STREAM, IPPROTO_TCP);
     if (dsock == -1)
     {
 	log_uerror("socket", NULL, "proxy: error creating socket", r->server);
@@ -3150,8 +2858,6 @@ ftp_handler(request_rec *r, struct cache_req *c, char *url)
     return OK;
 }
 
-#endif /* OLD_FTP_HANDLER */
-
 /*  
  * This handles Netscape CONNECT method secure proxy requests.
  * A connection is opened to the specified host and data is
@@ -3219,7 +2925,7 @@ connect_handler(request_rec *r, struct cache_req *c, char *url)
     err = host2addr(host, &server.sin_addr);
     if (err != NULL) return proxyerror(r, err); /* give up */
  
-    sock = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);  
+    sock = socket(PF_INET, SOCK_STREAM, IPPROTO_TCP);  
     if (sock == -1)
     {     
         log_error("proxy: error creating socket", r->server);
@@ -3358,7 +3064,7 @@ http_handler(request_rec *r, struct cache_req *c, char *url,
 	if (err != NULL) return proxyerror(r, err); /* give up */
     }
 
-    sock = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
+    sock = socket(PF_INET, SOCK_STREAM, IPPROTO_TCP);
     if (sock == -1)
     {
 	log_error("proxy: error creating socket", r->server);
