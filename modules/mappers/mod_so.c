@@ -347,6 +347,39 @@ static module *ap_find_loaded_module_symbol(server_rec *s, const char *modname)
     return NULL;
 }
 
+static void ap_dump_loaded_modules(apr_pool_t* p, server_rec* s)
+{
+    ap_module_symbol_t *modie;
+    ap_module_symbol_t *modi;
+    so_server_conf *sconf;
+    module *modp;
+    int i;
+    apr_file_t *out = NULL;
+    apr_file_open_stderr(&out, p);
+
+    apr_file_printf(out, "Loaded Modules:\n");
+
+    sconf = (so_server_conf *)ap_get_module_config(s->module_config, 
+                                                   &so_module);
+    for (i = 0; ; i++) {
+        modi = &ap_prelinked_module_symbols[i];
+        if (modi->name != NULL) {
+            apr_file_printf(out, " %s (static)\n", modi->name);
+        }
+        else {
+            break;
+        }
+    }
+
+    modie = (ap_module_symbol_t *)sconf->loaded_modules->elts;
+    for (i = 0; i < sconf->loaded_modules->nelts; i++) {
+        modi = &modie[i];
+        if (modi->name != NULL) {
+            apr_file_printf(out, " %s (shared)\n", modi->name);
+        }
+    }
+}
+
 #else /* not NO_DLOPEN */
 
 static const char *load_file(cmd_parms *cmd, void *dummy, const char *filename)
@@ -370,6 +403,7 @@ static void register_hooks(apr_pool_t *p)
 {
 #ifndef NO_DLOPEN
     APR_REGISTER_OPTIONAL_FN(ap_find_loaded_module_symbol);
+    APR_REGISTER_OPTIONAL_FN(ap_dump_loaded_modules);
 #endif
 }
 

@@ -22,6 +22,8 @@
 /* optional function declaration */
 APR_DECLARE_OPTIONAL_FN(module *, ap_find_loaded_module_symbol,
                         (server_rec *s, const char *modname));
+APR_DECLARE_OPTIONAL_FN(void, ap_dump_loaded_modules,
+                        (apr_pool_t* p, server_rec *s));
 
 #endif /* MOD_SO_H */
 

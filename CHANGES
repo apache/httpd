@@ -2,6 +2,11 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) mod_so, core: Add new command line options to print all loaded
+     modules. '-t -D DUMP_MODULES' and '-M' will show all static 
+     and shared modules as loaded from the configuration file.
+     [Paul Querna]
+
   *) mod_autoindex: Add ShowForbidden to IndexOptions to list files
      that are not shown because the subrequest returned 401 or 403. 
      PR 10575.  [Paul Querna]

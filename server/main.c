@@ -36,6 +36,8 @@
 #include "ap_mpm.h"
 #include "mpm_common.h"
 
+#include "mod_so.h" /* for dumping loaded modules */
+
 /* WARNING: Win32 binds http_main.c dynamically to the server. Please place
  *          extern functions and global data in another appropriate module.
  *
@@ -327,75 +329,79 @@ static void usage(process_rec *process)
 
 #ifdef SHARED_CORE
     ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
-                 "  -R directory      : specify an alternate location for "
+                 "  -R directory       : specify an alternate location for "
                  "shared object files");
 #endif
 
     ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
-                 "  -D name           : define a name for use in "
+                 "  -D name            : define a name for use in "
                  "<IfDefine name> directives");
     ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
-                 "  -d directory      : specify an alternate initial "
+                 "  -d directory       : specify an alternate initial "
                  "ServerRoot");
     ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
-                 "  -f file           : specify an alternate ServerConfigFile");
+                 "  -f file            : specify an alternate ServerConfigFile");
     ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
-                 "  -C \"directive\"    : process directive before reading "
+                 "  -C \"directive\"     : process directive before reading "
                  "config files");
     ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
-                 "  -c \"directive\"    : process directive after reading "
+                 "  -c \"directive\"     : process directive after reading "
                  "config files");
 
 #ifdef NETWARE
     ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
-                 "  -n name           : set screen name");
+                 "  -n name            : set screen name");
 #endif
 #ifdef WIN32
     ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
-                 "  -n name           : set service name and use its "
+                 "  -n name            : set service name and use its "
                  "ServerConfigFile");
     ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
-                 "  -k start          : tell Apache to start");
+                 "  -k start           : tell Apache to start");
     ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
-                 "  -k restart        : tell running Apache to do a graceful "
+                 "  -k restart         : tell running Apache to do a graceful "
                  "restart");
     ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
-                 "  -k stop|shutdown  : tell running Apache to shutdown");
+                 "  -k stop|shutdown   : tell running Apache to shutdown");
     ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
-                 "  -k install        : install an Apache service");
+                 "  -k install         : install an Apache service");
     ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
-                 "  -k config         : change startup Options of an Apache "
+                 "  -k config          : change startup Options of an Apache "
                  "service");
     ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
-                 "  -k uninstall      : uninstall an Apache service");
+                 "  -k uninstall       : uninstall an Apache service");
     ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
-                 "  -w                : hold open the console window on error");
+                 "  -w                 : hold open the console window on error");
 #endif
 
     ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
-                 "  -e level          : show startup errors of level "
+                 "  -e level           : show startup errors of level "
                  "(see LogLevel)");
     ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
-                 "  -E file           : log startup errors to file");
+                 "  -E file            : log startup errors to file");
     ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
-                 "  -v                : show version number");
+                 "  -v                 : show version number");
     ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
-                 "  -V                : show compile settings");
+                 "  -V                 : show compile settings");
     ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
-                 "  -h                : list available command line options "
+                 "  -h                 : list available command line options "
                  "(this page)");
     ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
-                 "  -l                : list compiled in modules");
+                 "  -l                 : list compiled in modules");
     ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
-                 "  -L                : list available configuration "
+                 "  -L                 : list available configuration "
                  "directives");
     ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
-                 "  -t -D DUMP_VHOSTS : show parsed settings (currently only "
+                 "  -t -D DUMP_VHOSTS  : show parsed settings (currently only "
                  "vhost settings)");
     ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
-                 "  -S                : a synonym for -t -D DUMP_VHOSTS");   
+                 "  -S                 : a synonym for -t -D DUMP_VHOSTS");   
     ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
-                 "  -t                : run syntax check for config files");
+                 "  -t -D DUMP_MODULES : show all loaded modules ");
+    ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
+                 "  -M                 : a synonym for -t -D DUMP_MODULES");   
+    ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
+                 "  -t                 : run syntax check for config files");
 
     destroy_and_exit_process(process, 1);
 }
@@ -481,6 +487,9 @@ int main(int argc, const char * const argv[])
             /* Setting -D DUMP_VHOSTS is equivalent to setting -S */
             if (strcmp(optarg, "DUMP_VHOSTS") == 0)
                 configtestonly = 1;
+            /* Setting -D DUMP_MODULES is equivalent to setting -M */
+            if (strcmp(optarg, "DUMP_MODULES") == 0)
+                configtestonly = 1;
             break;
 
         case 'e':
@@ -552,6 +561,12 @@ int main(int argc, const char * const argv[])
             new = (char **)apr_array_push(ap_server_config_defines);
             *new = "DUMP_VHOSTS";
             break;
+
+        case 'M':
+            configtestonly = 1;
+            new = (char **)apr_array_push(ap_server_config_defines);
+            *new = "DUMP_MODULES";
+            break;
             
         case 'h':
         case '?':
@@ -593,9 +608,17 @@ int main(int argc, const char * const argv[])
     rv = ap_process_config_tree(server_conf, ap_conftree,
                                 process->pconf, ptemp);
     if (rv == OK) {
+        APR_OPTIONAL_FN_TYPE(ap_dump_loaded_modules) *dump_modules =
+            APR_RETRIEVE_OPTIONAL_FN(ap_dump_loaded_modules);
+        
         ap_fixup_virtual_hosts(pconf, server_conf);
         ap_fini_vhost_config(pconf, server_conf);
         apr_hook_sort_all();
+
+        if (dump_modules && ap_exists_config_define("DUMP_MODULES")) {
+            dump_modules(pconf, server_conf);
+        }
+
         if (configtestonly) {
             ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL, "Syntax OK");
             destroy_and_exit_process(process, 0);
