@@ -2926,7 +2926,7 @@ referenced document.
 <A
  HREF="directive-dict.html#Syntax"
  REL="Help"
-><STRONG>Syntax:</STRONG></A> ServerTokens <EM>Minimal|OS|Full</EM><BR>
+><STRONG>Syntax:</STRONG></A> ServerTokens <EM>Minimal|ProductOnly|OS|Full</EM><BR>
 <A
  HREF="directive-dict.html#Default"
  REL="Help"
@@ -2943,7 +2943,8 @@ referenced document.
  HREF="directive-dict.html#Compatibility"
  REL="Help"
 ><STRONG>Compatibility:</STRONG></A> ServerTokens is only available
- in Apache 1.3 and later
+ in Apache 1.3 and later; the <code>ProductOnly</code> keyword is
+ only available in versions later than 1.3.12
 
 <P>
 This directive controls whether <SAMP>Server</SAMP> response header
@@ -2951,6 +2952,10 @@ field which is sent back to clients includes a description of the generic
 OS-type of the server as well as information about compiled-in modules.
 </P>
 <DL>
+ <DT><CODE>ServerTokens Prod[uctOnly]</CODE>
+ </DT>
+ <DD>Server sends (<EM>e.g.</EM>): <SAMP>Server: Apache</SAMP>
+ </DD>
  <DT><CODE>ServerTokens Min[imal]</CODE>
  </DT>
  <DD>Server sends (<EM>e.g.</EM>): <SAMP>Server: Apache/1.3.0</SAMP>
