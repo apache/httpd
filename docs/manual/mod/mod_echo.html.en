@@ -17,7 +17,7 @@ modules</td></tr><tr><th><a href="module-dict.html#Status">Status:
 </div><div id="quickview"><h3 class="directives">Directives</h3><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#protocolecho">ProtocolEcho</a></li>
 </ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="ProtocolEcho" id="ProtocolEcho">ProtocolEcho</a> <a name="protocolecho" id="protocolecho">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
               </a></th><td>Turn the echo server on or off</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td><code>ProtocolEcho <em>On|Off</em></code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
+              </a></th><td><code>ProtocolEcho On|Off</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>server config, virtual host</td></tr><tr><th><a href="directive-dict.html#Status">Status:
               </a></th><td>Experimental</td></tr><tr><th><a href="directive-dict.html#Module">Module:
               </a></th><td>mod_echo</td></tr><tr><th><a href="directive-dict.html#Compatibility">Compatibility:
@@ -27,8 +27,6 @@ later.</td></tr></table>
     disables the echo server.</p>
 
     <div class="example"><h3>Example</h3><p><code>
-    
-    ProtocolEcho On
+      ProtocolEcho On
     </code></p></div>
-
 </div></div><div id="footer"><p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p><p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div></body></html>

@@ -392,7 +392,7 @@ evaluated.</td></tr>
     <em>env-variable</em> [<em>env-variable</em>] ...</a></td><td /><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Passes environment variables from the shell</td></tr>
 <tr class="odd"><td><a href="mpm_common.html#pidfile">PidFile <var>filename</var></a></td><td> logs/httpd.pid </td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">File where the server records the process ID
 of the daemon</td></tr>
-<tr><td><a href="mod_echo.html#protocolecho">ProtocolEcho <em>On|Off</em></a></td><td /><td>sv</td><td>X</td></tr><tr><td class="descr" colspan="4">Turn the echo server on or off</td></tr>
+<tr><td><a href="mod_echo.html#protocolecho">ProtocolEcho On|Off</a></td><td /><td>sv</td><td>X</td></tr><tr><td class="descr" colspan="4">Turn the echo server on or off</td></tr>
 <tr class="odd"><td><a href="mod_proxy.html#proxy">&lt;Proxy <em>wildcard-url</em>&gt; ...&lt;/Proxy&gt;</a></td><td /><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Container for directives applied to proxied 
 resources</td></tr>
 <tr><td><a href="mod_proxy.html#proxyblock">ProxyBlock *|<em>word|host|domain</em>
