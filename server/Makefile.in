@@ -52,7 +52,7 @@ $(TARGET_EXPORTS):
 		$(top_srcdir)/os/$(OS_DIR)/*.h > $@
 
 exports.c: $(EXPORT_FILES)
-	(cat $(EXPORT_FILES) | $(top_srcdir)/build/buildexports.sh ..) > $@
+	(cat $(EXPORT_FILES) | $(top_srcdir)/build/buildexports.sh $(top_srcdir)) > $@
 
 # wtf does this have to be explicit????
 exports.lo: exports.c
