@@ -78,7 +78,7 @@ static void *create_echo_server_config(ap_pool_t *p,server_rec *s)
     return pConfig;
     }
 
-static const char *echo_on(cmd_parms *cmd, void *dummy, char *arg)
+static const char *echo_on(cmd_parms *cmd, void *dummy, const char *arg)
     {
     EchoConfig *pConfig=ap_get_module_config(cmd->server->module_config,
 					     &echo_module);
@@ -110,10 +110,11 @@ static int process_echo_connection(conn_rec *c)
     return OK;
     }
 
-static const command_rec echo_cmds[] = {
-{ "ProtocolEcho", echo_on, NULL, RSRC_CONF, RAW_ARGS,
-  "Run an echo server on this host" },
-{ NULL }
+static const command_rec echo_cmds[] = 
+{
+    AP_INIT_RAW_ARGS("ProtocolEcho", echo_on, NULL, RSRC_CONF,
+                     "Run an echo server on this host"),
+    { NULL }
 };
 
 static void register_hooks(void)

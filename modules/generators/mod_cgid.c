@@ -126,7 +126,7 @@ static int is_scriptaliased(request_rec *r)
 
 typedef struct { 
     const char *sockname;
-    char *logname; 
+    const char *logname; 
     long logbytes; 
     int bufbytes; 
     BUFF *bin; 
@@ -629,7 +629,7 @@ static void *merge_cgid_config(ap_pool_t *p, void *basev, void *overridesv)
     return overrides->logname ? overrides : base; 
 } 
 
-static const char *set_scriptlog(cmd_parms *cmd, void *dummy, char *arg) 
+static const char *set_scriptlog(cmd_parms *cmd, void *dummy, const char *arg) 
 { 
     server_rec *s = cmd->server; 
     cgid_server_conf *conf = 
@@ -639,7 +639,7 @@ static const char *set_scriptlog(cmd_parms *cmd, void *dummy, char *arg)
     return NULL; 
 } 
 
-static const char *set_scriptlog_length(cmd_parms *cmd, void *dummy, char *arg) 
+static const char *set_scriptlog_length(cmd_parms *cmd, void *dummy, const char *arg) 
 { 
     server_rec *s = cmd->server; 
     cgid_server_conf *conf = 
@@ -649,7 +649,7 @@ static const char *set_scriptlog_length(cmd_parms *cmd, void *dummy, char *arg)
     return NULL; 
 } 
 
-static const char *set_scriptlog_buffer(cmd_parms *cmd, void *dummy, char *arg) 
+static const char *set_scriptlog_buffer(cmd_parms *cmd, void *dummy, const char *arg) 
 { 
     server_rec *s = cmd->server; 
     cgid_server_conf *conf = 
@@ -659,7 +659,7 @@ static const char *set_scriptlog_buffer(cmd_parms *cmd, void *dummy, char *arg)
     return NULL; 
 } 
 
-static const char *set_script_socket(cmd_parms *cmd, void *dummy, char *arg) 
+static const char *set_script_socket(cmd_parms *cmd, void *dummy, const char *arg) 
 { 
     server_rec *s = cmd->server; 
     cgid_server_conf *conf = 
@@ -671,14 +671,15 @@ static const char *set_script_socket(cmd_parms *cmd, void *dummy, char *arg)
 
 static const command_rec cgid_cmds[] = 
 { 
-    {"ScriptLog", set_scriptlog, NULL, RSRC_CONF, TAKE1, 
-     "the name of a log for script debugging info"}, 
-    {"ScriptLogLength", set_scriptlog_length, NULL, RSRC_CONF, TAKE1, 
-     "the maximum length (in bytes) of the script debug log"}, 
-    {"ScriptLogBuffer", set_scriptlog_buffer, NULL, RSRC_CONF, TAKE1, 
-     "the maximum size (in bytes) to record of a POST request"}, 
-    {"Scriptsock", set_script_socket, NULL, RSRC_CONF, TAKE1, 
-     "the name of the socket to use for communication with the cgi daemon."}, 
+    AP_INIT_TAKE1("ScriptLog", set_scriptlog, NULL, RSRC_CONF,
+                  "the name of a log for script debugging info"), 
+    AP_INIT_TAKE1("ScriptLogLength", set_scriptlog_length, NULL, RSRC_CONF,
+                  "the maximum length (in bytes) of the script debug log"), 
+    AP_INIT_TAKE1("ScriptLogBuffer", set_scriptlog_buffer, NULL, RSRC_CONF,
+                  "the maximum size (in bytes) to record of a POST request"), 
+    AP_INIT_TAKE1("Scriptsock", set_script_socket, NULL, RSRC_CONF,
+                  "the name of the socket to use for communication with "
+                  "the cgi daemon."), 
     {NULL} 
 }; 
 

@@ -2362,7 +2362,7 @@ static void *create_includes_dir_config(ap_pool_t *p, char *dummy)
     return result;
 }
 
-static const char *set_xbithack(cmd_parms *cmd, void *xbp, char *arg)
+static const char *set_xbithack(cmd_parms *cmd, void *xbp, const char *arg)
 {
     enum xbithack *state = (enum xbithack *) xbp;
 
@@ -2504,7 +2504,8 @@ static int xbithack_handler(request_rec *r)
 
 static const command_rec includes_cmds[] =
 {
-    {"XBitHack", set_xbithack, NULL, OR_OPTIONS, TAKE1, "Off, On, or Full"},
+    AP_INIT_TAKE1("XBitHack", set_xbithack, NULL, OR_OPTIONS, 
+                  "Off, On, or Full"),
     {NULL}
 };
 
