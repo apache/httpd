@@ -14,8 +14,7 @@
   <!--#include virtual="header.html" -->
   <H1 ALIGN="CENTER">Module mod_example</H1>
   <P>
-  This module is contained in the <CODE>modules/mod_example.c</CODE> file, and
-  <STRONG>is not</STRONG> compiled in by default.  It illustrates many of
+  This module illustrates many of
   the aspects of the
   <A
    HREF="../misc/API.html"
@@ -24,6 +23,24 @@
   and, when used, demonstrates the manner in which module callbacks are
   triggered by the server.
   </P>
+
+<P><A
+HREF="module-dict.html#Status"
+REL="Help"
+><STRONG>Status:</STRONG></A> Extension
+<BR>
+<A
+HREF="module-dict.html#SourceFile"
+REL="Help"
+><STRONG>Source File:</STRONG></A> mod_example.c
+<BR>
+<A
+HREF="module-dict.html#ModuleIdentifier"
+REL="Help"
+><STRONG>Module Identifier:</STRONG></A> example_module
+</P>
+
+
   <H2>Summary</H2>
   <P>
   The files in the <CODE>src/modules/example directory</CODE> under the
@@ -43,6 +60,15 @@
   some of the tracing the example module did as the various callbacks
   were made.
   </P>
+  <H2>Directives</H2>
+  <P>
+  <UL>
+   <LI><A HREF="#example">Example</A>
+   </LI>
+  </UL>
+  </P>
+
+  <h2>Compiling the example module</h2>
   <P>
   To include the example module in your server, follow the steps below:
   </P>
@@ -78,9 +104,9 @@
    <LI>Follow steps [1] through [3] above, with appropriate changes.
    </LI>
   </OL>
-  <H3>
+  <H2>
    Using the <SAMP>mod_example</SAMP> Module
-  </H3>
+  </H2>
   <P>
   To activate the example module, include a block similar to the
   following in your <SAMP>srm.conf</SAMP> file:
@@ -105,16 +131,10 @@
   After reloading/restarting your server, you should be able to browse
   to this location and see the brief display mentioned earlier.
   </P>
-  <H2>Directives</H2>
-  <P>
-  <UL>
-   <LI><A HREF="#example">Example</A>
-   </LI>
-  </UL>
-  </P>
+
   <HR>
   <H2><A NAME="example">
-   Example
+   Example directive
   </A></H2>
   <P>
   <A
