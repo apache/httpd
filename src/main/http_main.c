@@ -1104,6 +1104,17 @@ typedef struct _TSD {
     unsigned int 	alarm_expiry_time;
 } TSD;
 
+static TSD Tsd;
+
+void init_tsd()
+{    
+    int *thread_ptr;
+
+    memset(&Tsd, 0, sizeof(TSD));
+    thread_ptr = __get_thread_data_area_ptr();
+    *thread_ptr = (int) &Tsd;
+}
+
 #define get_tsd            TSD* tsd = (TSD*) Thread_Data_Area;
 #define current_conn       tsd->current_conn
 #define alarms_blocked     tsd->alarms_blocked
@@ -6598,14 +6609,9 @@ int REALMAIN(int argc, char *argv[])
     char cwd[MAX_STRING_LEN];
 
 #ifdef NETWARE
-    TSD Tsd;
-    int *thread_ptr;
-
     init_name_space();
     signal(SIGTERM, signal_handler);
-    memset(&Tsd, 0, sizeof(TSD));
-    thread_ptr = __get_thread_data_area_ptr();
-    *thread_ptr = (int) &Tsd;    
+    init_tsd();
 #else
     /* Service application
      * Configuration file in registry at:
@@ -6754,6 +6760,7 @@ int REALMAIN(int argc, char *argv[])
 #endif
     }       /* while  */
 
+#ifdef WIN32
     if (!service_name && install) {
         service_name = DEFAULTSERVICENAME;
     }
@@ -6776,6 +6783,7 @@ int REALMAIN(int argc, char *argv[])
                      "Service \"%s\" is not installed!", service_name);
         clean_parent_exit(0);
     }
+#endif
 
     /* ServerConfFile is found in this order:
      * (1) -f or -n

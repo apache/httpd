@@ -345,4 +345,5 @@ ap_get_virthost_addr
 ap_listeners
 ap_listenbacklog
 clean_parent_exit
+init_tsd
 
