@@ -1,5 +1,7 @@
 Changes with Apache 2.0.48
 
+  *) Fix buildconf errors when libtool version changes.  [Jeff Trawick]
+
   *) Remember an authenticated user during internal redirects if the
      redirection target is not access protected and pass it
      to scripts using the REDIRECT_REMOTE_USER environment variable.
