@@ -1,5 +1,7 @@
 Changes with Apache 1.3b6
 
+  *) PORT: Add -lm to LIBS for HPUX.  [Dean Gaudet] PR#1639
+
   *) Various errors from select() and accept() in child_main() would
      result in an infinite loop.  It seems these two tickle kernel
      or library bugs occasionally, and result in log spammage and

@@ -266,6 +266,7 @@ case "$PLAT" in
 	OS='HP-UX'
 	CFLAGS="$CFLAGS -DHPUX"
 	DEF_WANTHSREGEX=yes
+	LIBS="$LIBS -lm"
 	;;
     *-sgi-irix64)
 # Note: We'd like to see patches to compile 64-bit, but for now...
