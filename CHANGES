@@ -1,5 +1,7 @@
 Changes with Apache 2.0.53
 
+  *) mod_disk_cache: Do not store hop-by-hop headers.  [Justin Erenkrantz]
+
   *) Fix the re-linking issue when purging elements from the LDAP cache
      PR 24801 [Jess Holle <jessh ptc.com>]
       
