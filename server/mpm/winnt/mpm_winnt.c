@@ -266,6 +266,7 @@ AP_DECLARE(PCOMP_CONTEXT) mpm_get_completion_context(void)
             return NULL;
         }
         pCompContext->accept_socket = INVALID_SOCKET;
+        pCompContext->ba = apr_bucket_alloc_create(pchild);
         num_completion_contexts++;
     }
     return pCompContext;
@@ -839,8 +840,9 @@ static PCOMP_CONTEXT win9x_get_connection(PCOMP_CONTEXT context)
     if (context == NULL) {
         /* allocate the completion context and the transaction pool */
         context = apr_pcalloc(pconf, sizeof(COMP_CONTEXT));
-        apr_pool_create(&context->ptrans, pconf);
+        apr_pool_create(&context->ptrans, pchild);
         apr_pool_tag(context->ptrans, "ptrans");
+        context->ba = apr_bucket_alloc_create(pchild);
     }
     
 
@@ -1052,7 +1054,6 @@ static void worker_main(long thread_num)
 {
     static int requests_this_child = 0;
     PCOMP_CONTEXT context = NULL;
-    apr_bucket_alloc_t *bucket_alloc;
     apr_os_sock_info_t sockinfo;
     ap_sb_handle_t *sbh;
 
@@ -1076,9 +1077,6 @@ static void worker_main(long thread_num)
             break;
         }
 
-        /* XXX: where does this go? */
-        bucket_alloc = apr_bucket_alloc_create(context->ptrans);
-
         /* Have we hit MaxRequestPerChild connections? */
         if (ap_max_requests_per_child) {
             requests_this_child++;
@@ -1098,7 +1096,7 @@ static void worker_main(long thread_num)
         ap_create_sb_handle(&sbh, context->ptrans, 0, thread_num);
         c = ap_run_create_connection(context->ptrans, ap_server_conf,
                                      context->sock, thread_num, sbh,
-                                     bucket_alloc);
+                                     context->ba);
 
         if (c) {
             ap_process_connection(c, context->sock);

@@ -199,6 +199,7 @@ typedef struct CompContext {
     struct sockaddr *sa_client;
     int sa_client_len;
     apr_pool_t *ptrans;
+    apr_bucket_alloc_t *ba;
 } COMP_CONTEXT, *PCOMP_CONTEXT;
 
 typedef enum {
