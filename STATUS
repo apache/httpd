@@ -1,5 +1,5 @@
   1.3 STATUS:
-  Last modified at [$Date: 1999/03/23 21:19:48 $]
+  Last modified at [$Date: 1999/03/24 00:27:13 $]
 
 Release:
 
@@ -50,7 +50,7 @@ Binaries (1.3.6):
  mips-sgi-irix6.2              no      Lars Eilebrecht
  mips-sgi-irix6.4              no      Lars Eilebrecht
  mips-sni-svr4                 yes     Martin Kraemer
- OS/2                          no      Brian Havard
+ OS/2                          yes     Brian Havard
  rs6000-ibm-aix3.2.5           no      Sameer Parekh
  rs6000-ibm-aix4.1             no      Lars Eilebrecht
  rs6000-ibm-aix4.2             no      Bill Stoddard
