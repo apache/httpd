@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.de.xsl"?>
-<!-- English Revision: 1.46.2.34 (outdated: 1.46.2.36) -->
+<!-- English Revision: 1.46.2.36 -->
 
 <!--
  Copyright 2003-2004 The Apache Software Foundation
@@ -300,9 +300,10 @@ erlaubt sind.</description>
     <note><title>Nun in &lt;Directory&gt;-Abschnitten verf&uuml;gbar</title>
     <directive>AllowOverride</directive> ist nur in <directive
     type="section" module="core">Directory</directive>-Abschnitten
-    g&uuml;ltig, nicht in <directive type="section"
-    module="core">Location</directive>- oder <directive type="section"
-    module="core">Files</directive>-Abschnitten.
+    g&uuml;ltig, die ohne regul&auml;re Ausdr&uuml;ke definiert wurden, nicht
+    in <directive type="section" module="core">Location</directive>-, 
+    <directive module="core" type="section">DirectoryMatch</directive>- oder
+    <directive type="section" module="core">Files</directive>-Abschnitten.
     </note>
 
     <p>Wenn diese Anweisung auf <code>None</code> gesetzt wird, dann
@@ -386,6 +387,11 @@ erlaubt sind.</description>
     <example>
       AllowOverride AuthConfig Indexes
     </example>
+
+    <p>Im obigen Beispiel erzeugen alle Direktiven einen internal server
+      error <transnote>(Server-interner Fehler)</transnote>, die weder der
+      Gruppe <code>AuthConfig</code> noch der Gruppe <code>Indexes</code>
+      angeh&ouml;ren.</p>
 </usage>
 
 <seealso><directive module="core">AccessFileName</directive></seealso>
@@ -2754,7 +2760,8 @@ selbst zu identifizieren</description>
 
     <p>Wenn kein <directive>ServerName</directive> angegeben wurde,
     dann versucht der Server den Rechnernamen mittels eines Reverse-Lookup
-    herzuleiten. Wenn kein Post im Servernamen angegeben wurde, dann
+    herzuleiten. Wenn kein Post in der <directive
+      >ServerName</directive>-Anweisung angegeben wurde, dann
     verwendet der Server den Port der eingegangenen Anfrage. F&uuml;r eine
     optimale Zuverl&auml;ssigkeit und Berechenbarkeit sollten Sie einen
     eindeutigen Rechnernamen und Port angeben, in dem Sie die Direktive

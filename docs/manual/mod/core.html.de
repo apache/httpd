@@ -24,9 +24,6 @@
 <p><span>Verfügbare Sprachen: </span><a href="../de/mod/core.html" title="Deutsch">&nbsp;de&nbsp;</a> |
 <a href="../en/mod/core.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a></p>
 </div>
-<div class="outofdate">Diese Übersetzung ist möglicherweise
-            nicht mehr aktuell. Bitte prüfen Sie die englische Version auf
-            die neuesten Änderungen.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Beschreibung:</a></th><td>Ständig verfügbare Kernfunktionen des Apache HTTP
 Servers</td></tr>
 <tr><th><a href="module-dict.html#Status">Status:</a></th><td>Core</td></tr></table>
@@ -373,7 +370,10 @@ erlaubt sind.</td></tr>
 
     <div class="note"><h3>Nun in &lt;Directory&gt;-Abschnitten verfügbar</h3>
     <code class="directive">AllowOverride</code> ist nur in <code class="directive"><a href="#directory">&lt;Directory&gt;</a></code>-Abschnitten
-    gültig, nicht in <code class="directive"><a href="#location">&lt;Location&gt;</a></code>- oder <code class="directive"><a href="#files">&lt;Files&gt;</a></code>-Abschnitten.
+    gültig, die ohne reguläre Ausdrüke definiert wurden, nicht
+    in <code class="directive"><a href="#location">&lt;Location&gt;</a></code>-, 
+    <code class="directive"><a href="#directorymatch">&lt;DirectoryMatch&gt;</a></code>- oder
+    <code class="directive"><a href="#files">&lt;Files&gt;</a></code>-Abschnitten.
     </div>
 
     <p>Wenn diese Anweisung auf <code>None</code> gesetzt wird, dann
@@ -437,6 +437,11 @@ erlaubt sind.</td></tr>
     <div class="example"><p><code>
       AllowOverride AuthConfig Indexes
     </code></p></div>
+
+    <p>Im obigen Beispiel erzeugen alle Direktiven einen internal server
+      error <span class="transnote">(<em>Anm.d.Ü.:</em> (Server-interner Fehler))</span>, die weder der
+      Gruppe <code>AuthConfig</code> noch der Gruppe <code>Indexes</code>
+      angehören.</p>
 
 <h3>Siehe auch</h3>
 <ul>
@@ -2795,7 +2800,7 @@ selbst zu identifizieren</td></tr>
 
     <p>Wenn kein <code class="directive">ServerName</code> angegeben wurde,
     dann versucht der Server den Rechnernamen mittels eines Reverse-Lookup
-    herzuleiten. Wenn kein Post im Servernamen angegeben wurde, dann
+    herzuleiten. Wenn kein Post in der <code class="directive">ServerName</code>-Anweisung angegeben wurde, dann
     verwendet der Server den Port der eingegangenen Anfrage. Für eine
     optimale Zuverlässigkeit und Berechenbarkeit sollten Sie einen
     eindeutigen Rechnernamen und Port angeben, in dem Sie die Direktive
