@@ -1056,7 +1056,7 @@ static int rd_chunk_size (BUFF *b) {
     int c;
 
     while ((c = bgetc (b)) != EOF && isxdigit (c)) {
-        int xvalue;
+        int xvalue = 0;
 
         if (c >= '0' && c <= '9') xvalue = c - '0';
         else if (c >= 'A' && c <= 'F') xvalue = c - 'A' + 0xa;
