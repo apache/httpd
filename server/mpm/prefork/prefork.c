@@ -184,7 +184,7 @@ static void chdir_for_gprof(void)
 	use_dir = ap_server_root_relative(pconf, "logs");
     }
 
-    chdir(dir);
+    chdir(use_dir);
 }
 #else
 #define chdir_for_gprof()
