@@ -1059,7 +1059,7 @@ static void worker_main()
     }
 
     allowed_globals.jobsemaphore = create_semaphore(0);
-    ap_create_lock(pchild, APR_MUTEX, APR_INTRAPROCESS, NULL, &allowed_globals.jobmutex);
+    ap_create_lock(&allowed_globals.jobmutex, APR_MUTEX, APR_INTRAPROCESS, NULL, pchild);
 
     /* spawn off accept thread (WIN9x only) */
     if (osver.dwPlatformId == VER_PLATFORM_WIN32_WINDOWS) {
@@ -1312,7 +1312,7 @@ static int create_process(ap_context_t *p, HANDLE *handles, HANDLE *events, int 
             lpWSAProtocolInfo = ap_pcalloc(p, sizeof(WSAPROTOCOL_INFO));
             ap_log_error(APLOG_MARK, APLOG_NOERRNO | APLOG_INFO, server_conf,
                          "Parent: Duplicating socket %d and sending it to child process %d", lr->sd, pi.dwProcessId);
-            ap_get_os_sock(lr->sd,&nsd);
+            ap_get_os_sock(&nsd,lr->sd);
             if (WSADuplicateSocket(nsd, 
                                    pi.dwProcessId,
                                    lpWSAProtocolInfo) == SOCKET_ERROR) {
@@ -1567,11 +1567,11 @@ API_EXPORT(int) ap_mpm_run(ap_context_t *_pconf, ap_context_t *plog, server_rec 
         exit_event_name = ap_psprintf(pconf, "apC%d", my_pid);
         setup_signal_names(ap_psprintf(pconf,"ap%d", parent_pid));
         if (one_process) {
-            ap_create_lock(pconf,APR_MUTEX, APR_CROSS_PROCESS,signal_name_prefix,&start_mutex);
+            ap_create_lock(&start_mutex,APR_MUTEX, APR_CROSS_PROCESS,signal_name_prefix,pconf);
             exit_event = create_exit_event(exit_event_name);
         }
         else {
-            ap_child_init_lock(&start_mutex, pconf, signal_name_prefix);
+            ap_child_init_lock(&start_mutex, signal_name_prefix, pconf);
             exit_event = open_event(exit_event_name);
         }
         ap_assert(start_mutex);
@@ -1623,7 +1623,7 @@ API_EXPORT(int) ap_mpm_run(ap_context_t *_pconf, ap_context_t *plog, server_rec 
              * Ths start mutex is used during a restart to prevent more than one 
              * child process from entering the accept loop at once.
              */
-            ap_create_lock(pconf,APR_MUTEX, APR_CROSS_PROCESS,signal_name_prefix,&start_mutex);
+            ap_create_lock(&start_mutex,APR_MUTEX, APR_CROSS_PROCESS,signal_name_prefix,pconf);
             /* TODO: Add some code to detect failure */
         }
 
