@@ -387,7 +387,7 @@
       <p>To check if you are using suexec, run <code>apachectl
       -V</code> and check for the location of <code>SUEXEC_BIN</code>.
       If Apache finds an suexec binary there on startup, suexec will
-      be actived.</p>
+      be activated.</p>
 
       <p>Unless you fully understand suexec, you should not be using it.
       To disable suexec, simply remove (or rename) the <code>suexec</code>
