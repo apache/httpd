@@ -518,16 +518,7 @@ const char *ssl_cmd_SSLCryptoDevice(cmd_parms *cmd,
     SSLModConfigRec *mc = myModConfig(cmd->server);
     const char *err;
     ENGINE *e;
-#ifdef HAVE_ENGINE_LOAD_BUILTIN_ENGINES
-    static int loaded_engines = FALSE;
 
-    /* early loading to make sure the engines are already 
-       available for ENGINE_by_id() above... */
-    if (!loaded_engines) {
-        ENGINE_load_builtin_engines();
-        loaded_engines = TRUE;
-    }
-#endif
     if ((err = ap_check_cmd_context(cmd, GLOBAL_ONLY))) {
         return err;
     }
@@ -540,7 +531,18 @@ const char *ssl_cmd_SSLCryptoDevice(cmd_parms *cmd,
         ENGINE_free(e);
     }
     else {
-        return "SSLCryptoDevice: Invalid argument";
+        err = "SSLCryptoDevice: Invalid argument; must be one of: "
+              "'builtin' (none)";
+        e = ENGINE_get_first(); 
+        while (e) {
+            ENGINE *en;
+            err = apr_pstrcat(cmd->pool, err, ", '", ENGINE_get_id(e), 
+                                         "' (", ENGINE_get_name(e), ")", NULL);
+            en = ENGINE_get_next(e);
+            ENGINE_free(e);
+            e = en;
+        }
+        return err;
     }
 
     return NULL;
