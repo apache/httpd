@@ -465,6 +465,8 @@ static void output_html_results(void)
 
 static void start_connect(struct connection *c)
 {
+    ap_status_t rv;
+
     c->read = 0;
     c->bread = 0;
     c->keepalive = 0;
@@ -478,16 +480,15 @@ static void start_connect(struct connection *c)
         err("Port:");
     }
     c->start = ap_now();
-    if (ap_connect(c->aprsock, hostname) != APR_SUCCESS) {
-        if (errno == APR_EINPROGRESS) {
+    if ((rv = ap_connect(c->aprsock, hostname)) != APR_SUCCESS) {
+        if (ap_canonical_error(rv) == APR_EINPROGRESS) {
             c->state = STATE_CONNECTING;
             ap_add_poll_socket(readbits, c->aprsock, APR_POLLOUT);
             return;
         }
         else {
-            /* we done't have to close the socket.  If we have an error this
-             * bad, ap_connect will destroy it for us.
-             */
+            ap_remove_poll_socket(readbits, c->aprsock);
+            ap_close_socket(c->aprsock);
             err_conn++;
             if (bad++ > 10) {
                 err("\nTest aborted after 10 failures\n\n");
@@ -839,14 +840,14 @@ static void test(void)
 static void copyright(void)
 {
     if (!use_html) {
-        printf("This is ApacheBench, Version %s\n", VERSION " <$Revision: 1.9 $> apache-2.0");
+        printf("This is ApacheBench, Version %s\n", VERSION " <$Revision: 1.10 $> apache-2.0");
         printf("Copyright (c) 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/\n");
         printf("Copyright (c) 1998-2000 The Apache Software Foundation, http://www.apache.org/\n");
         printf("\n");
     }
     else {
         printf("<p>\n");
-        printf(" This is ApacheBench, Version %s <i>&lt;%s&gt;</i> apache-2.0<br>\n", VERSION, "$Revision: 1.9 $");
+        printf(" This is ApacheBench, Version %s <i>&lt;%s&gt;</i> apache-2.0<br>\n", VERSION, "$Revision: 1.10 $");
         printf(" Copyright (c) 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/<br>\n");
         printf(" Copyright (c) 1998-2000 The Apache Software Foundation, http://www.apache.org/<br>\n");
         printf("</p>\n<p>\n");
