@@ -1,5 +1,5 @@
 APACHE 2.1 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/02/18 21:06:15 $]
+Last modified at [$Date: 2003/02/19 07:21:43 $]
 
 Release [NOTE that only Alpha/Beta releases occur in 2.1 development]:
 
@@ -74,6 +74,14 @@ CURRENT VOTES:
       -0:   Lars
 
 RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
+
+    * RFC 2616 violations.
+      Closed PRs: 15857.
+      Open PRs: 15852, 15859, 15861, 15864, 15865, 15866, 15868, 15869,
+                15870, 16120, 16125, 16126, 16133, 16135, 16136, 16137,
+                16138, 16139, 16140, 16142, 16518, 16520, 16521, 
+      jerenkrantz says: need to decide how many we need to backport and/or
+                        if these rise to showstopper status.
 
     * There is a bug in how we sort some hooks, at least the pre-config
       hook.  The first time we call the hooks, they are in the correct 
