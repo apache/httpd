@@ -1167,8 +1167,8 @@ static void output_directories(struct ent **ar, int n,
 	      nwidth = name_width;
 	    }
 	    ap_rvputs(r, " <A HREF=\"", anchor, "\">",
-	      ap_escape_html(scratch, t2), pad_scratch + nwidth,
-	      "</A>", NULL);
+	      ap_escape_html(scratch, t2), "</A>", pad_scratch + nwidth,
+	      NULL);
 	    /*
 	     * The blank before the storm.. er, before the next field.
 	     */
