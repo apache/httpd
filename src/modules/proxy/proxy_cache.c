@@ -87,9 +87,8 @@ gcdiff(const void *ap, const void *bp)
     else return 0;
 }
 
-static int every;
-static unsigned curbytes, cachesize;
-static unsigned long curblocks;
+static int curbytes, cachesize, every;
+static unsigned long int curblocks;
 static time_t now, expire;
 static char *filename;
 static mutex *garbage_mutex = NULL;
@@ -874,7 +873,7 @@ void
 proxy_cache_tidy(struct cache_req *c)
 {
     server_rec *s=c->req->server;
-    unsigned long bc;
+    long int bc;
 
     if (c->fp == NULL) return;
 

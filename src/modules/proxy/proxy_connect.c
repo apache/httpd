@@ -94,15 +94,14 @@ DEF_Explain
  
 int
 proxy_connect_handler(request_rec *r, struct cache_req *c, char *url,
-    const char *proxyhost, unsigned short proxyport)
+    const char *proxyhost, int proxyport)
 {
     struct sockaddr_in server;
     struct in_addr destaddr;
     struct hostent server_hp;
     const char *host, *err;
     char *p;
-    unsigned short port;
-    int sock;
+    int   port, sock;
     char buffer[HUGE_STRING_LEN];
     int  nbytes, i, j;
     fd_set fds;

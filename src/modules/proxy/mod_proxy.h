@@ -131,7 +131,7 @@ enum enctype { enc_path, enc_search, enc_user, enc_fpath, enc_parm };
 struct proxy_services
 {
     const char *scheme;
-    unsigned short port;
+    int port;
 };
 
 /* static information about a remote proxy */
@@ -140,7 +140,7 @@ struct proxy_remote
     const char *scheme;    /* the schemes handled by this proxy, or '*' */
     const char *protocol;  /* the scheme used to talk to this proxy */
     const char *hostname;  /* the hostname of this proxy */
-    unsigned short port;   /* the port for this proxy */
+    int port;              /* the port for this proxy */
 };
 
 struct proxy_alias {
@@ -238,7 +238,7 @@ void proxy_garbage_coll(request_rec *r);
 /* proxy_connect.c */
 
 int proxy_connect_handler(request_rec *r, struct cache_req *c, char *url, 
-    const char *proxyhost, unsigned short proxyport);
+    const char *proxyhost, int proxyport);
 
 /* proxy_ftp.c */
 
@@ -250,7 +250,7 @@ int proxy_ftp_handler(request_rec *r, struct cache_req *c, char *url);
 int proxy_http_canon(request_rec *r, char *url, const char *scheme,
     int def_port);
 int proxy_http_handler(request_rec *r, struct cache_req *c, char *url,
-    const char *proxyhost, unsigned short proxyport);
+    const char *proxyhost, int proxyport);
 
 /* proxy_util.c */
 
