@@ -69,7 +69,7 @@
       directive looks like:</p>
 
       <div class="example"><p><code>
-        ScriptAlias /cgi-bin/ /usr/local/apache/cgi-bin/
+        ScriptAlias /cgi-bin/ /usr/local/apache2/cgi-bin/
       </code></p></div>
 
       <p>The example shown is from your default <code>httpd.conf</code>
@@ -84,13 +84,13 @@
       that everything under that URL prefix will be considered a CGI
       program. So, the example above tells Apache that any request for a
       resource beginning with <code>/cgi-bin/</code> should be served from
-      the directory  <code>/usr/local/apache/cgi-bin/</code>, and should be
+      the directory  <code>/usr/local/apache2/cgi-bin/</code>, and should be
       treated as a CGI program.</p>
 
       <p>For example, if the URL
       <code>http://www.example.com/cgi-bin/test.pl</code>
       is requested, Apache will attempt to execute the file 
-      <code>/usr/local/apache/cgi-bin/test.pl</code>
+      <code>/usr/local/apache2/cgi-bin/test.pl</code>
       and return the output. Of course, the file will have to
       exist, and be executable, and return output in a particular
       way, or Apache will return an error message.</p>
@@ -109,6 +109,11 @@
       If they want to have their own CGI programs, but don't have access to
       the main <code>cgi-bin</code> directory, they will need to be able to
       run CGI programs elsewhere.</p>
+
+      <p>There are two steps to allowing CGI execution in an arbitrary
+      directory.  First, the <code>cgi-script</code> handler must be
+      activated using the <code class="directive"><a href="../mod/mod_mime.html#addhandler">AddHandler</a></code> or <code class="directive"><a href="../mod/core.html#sethandler">SetHandler</a></code> directive.  Second,
+      <code>ExecCGI</code> must be specified in the <code class="directive"><a href="../mod/core.html#options">Options</a></code> directive.</p> 
     
 
     <h3><a name="options" id="options">Explicitly using Options to permit CGI execution</a></h3>
@@ -119,7 +124,7 @@
       directory:</p>
 
       <div class="example"><p><code>
-        &lt;Directory /usr/local/apache/htdocs/somedir&gt;<br />
+        &lt;Directory /usr/local/apache2/htdocs/somedir&gt;<br />
         <span class="indent">
           Options +ExecCGI<br />
         </span>
@@ -133,41 +138,49 @@
       programs:</p>
 
       <div class="example"><p><code>
-        AddHandler cgi-script cgi pl
+        AddHandler cgi-script .cgi .pl
       </code></p></div>
     
 
     <h3><a name="htaccess" id="htaccess">.htaccess files</a></h3>
       
 
-      <p>A <a href="htaccess.html"><code>.htaccess</code> file</a> is a way
-      to set configuration directives on a per-directory basis. When Apache
-      serves a resource, it looks in the directory from which it is serving
-      a file for a file called <code>.htaccess</code>, and, if it 
-      finds it, it will apply directives found therein.  
-      
-      <code>.htaccess</code> files can be permitted with the 
-      <code class="directive"><a href="../mod/core.html#allowoverride">AllowOverride</a></code> directive,
-      which specifies what types of directives can
-      appear in these files, or if they are not allowed at all. To
-      permit the directive we will need for this purpose, the
-      following configuration will be needed in your main server
-      configuration:</p>
-
-      <div class="example"><p><code>
-        AllowOverride Options
-      </code></p></div>
-
-      <p>In the <code>.htaccess</code> file, you'll need the 
-      following directive:</p>
-
-      <div class="example"><p><code>
-        Options +ExecCGI
-      </code></p></div>
-
-      <p>which tells Apache that execution of CGI programs is
-      permitted in this directory.</p>
+      <p>The <a href="htaccess.html"><code>.htaccess</code> tutorial</a>
+      shows how to activate CGI programs if you do not have
+      access to <code>httpd.conf</code>.</p>
     
+
+    <h3><a name="userdir" id="userdir">User Directories</a></h3>
+      
+
+      <p>To allow CGI program execution for any file ending in
+      <code>.cgi</code> in users' directories, you can use the
+      following configuration.</p>
+
+      <div class="example"><p><code>
+      &lt;Directory /home/*/public_html&gt;<br />
+      <span class="indent">
+        Options +ExecCGI<br />
+        AddHandler cgi-script .cgi<br />
+      </span>
+      &lt;/Directory&gt;
+      </code></p></div>
+
+      <p>If you wish designate a <code>cgi-bin</code> subdirectory of
+      a user's directory where everything will be treated as a CGI
+      program, you can use the following.</p>
+
+      <div class="example"><p><code>
+      &lt;Directory /home/*/public_html/cgi-bin&gt;<br />
+      <span class="indent">
+        Options ExecCGI<br />
+        SetHandler cgi-script<br />
+      </span>
+      &lt;/Directory&gt;
+      </code></p></div>
+
+    
+
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="writing" id="writing">Writing a CGI program</a></h2>
@@ -242,7 +255,9 @@
 
     <dl>
       <dt>The output of your CGI program</dt>
-      <dd>Great! That means everything worked fine.</dd>
+      <dd>Great! That means everything worked fine.  If the output is correct,
+      but the browser is not processing it correctly, make sure you have the
+      correct <code>Content-Type</code> set in your CGI program.</dd>
 
       <dt>The source code of your CGI program or a "POST Method Not
       Allowed" message</dt>
@@ -286,30 +301,22 @@
       files, those files will need to have the correct permissions
       to permit this.</p>
 
-      <p>The exception to this is when the server is configured to
-      use <a href="../suexec.html">suexec</a>. This program allows
-      CGI programs to be run under different
-      user permissions, depending on which virtual host or user
-      home directory they are located in. Suexec has very strict
-      permission checking, and any failure in that checking will
-      result in your CGI programs failing with an "Internal Server
-      Error". In this case, you will need to check the suexec log
-      file to see what specific security check is failing.</p>
     
 
-    <h3><a name="pathinformation" id="pathinformation">Path information</a></h3>
+    <h3><a name="pathinformation" id="pathinformation">Path information and environment</a></h3>
       
 
       <p>When you run a program from your command line, you have
       certain information that is passed to the shell without you
-      thinking about it. For example, you have a path, which tells
-      the shell where it can look for files that you reference.</p>
+      thinking about it. For example, you have a <code>PATH</code>,
+      which tells the shell where it can look for files that you
+      reference.</p>
 
-      <p>When a program runs through the web server as a CGI
-      program, it does not have that path. Any programs that you
-      invoke in your CGI program (like 'sendmail', for example)
-      will need to be specified by a full path, so that the shell
-      can find them when it attempts to execute your CGI
+      <p>When a program runs through the web server as a CGI program,
+      it may not have the same <code>PATH</code>. Any programs that you
+      invoke in your CGI program (like <code>sendmail</code>, for
+      example) will need to be specified by a full path, so that the
+      shell can find them when it attempts to execute your CGI
       program.</p>
 
       <p>A common manifestation of this is the path to the script
@@ -322,17 +329,37 @@
 
       <p>Make sure that this is in fact the path to the
       interpreter.</p>
+
+      <p>In addition, if your CGI program depends on other <a href="#env">environment variables</a>, you will need to
+      assure that those variables are passed by Apache.</p>
+
     
 
-    <h3><a name="syntaxerrors" id="syntaxerrors">Syntax errors</a></h3>
+    <h3><a name="syntaxerrors" id="syntaxerrors">Program errors</a></h3>
       
 
       <p>Most of the time when a CGI program fails, it's because of
       a problem with the program itself. This is particularly true
       once you get the hang of this CGI stuff, and no longer make
-      the above two mistakes. Always attempt to run your program
-      from the command line before you test if via a browser. This
-      will eliminate most of your problems.</p>
+      the above two mistakes.  The first thing to do is to make
+      sure that your program runs from the command line before
+      testing it via the web server.  For example, try:</p>
+
+      <div class="example"><p><code>
+      cd /usr/local/apache2/cgi-bin<br />
+      ./first.pl
+      </code></p></div>
+
+      <p>(Do not call the <code>perl</code> interpreter.  The shell
+      and Apache should find the interpreter using the <a href="#pathinformation">path information</a> on the first line of
+      the script.)</p>
+
+      <p>The first thing you see written by your program should be
+      a set of HTTP headers, including the <code>Content-Type</code>,
+      followed by a blank line.  If you see anything else, Apache will
+      return the <code>Premature end of script headers</code> error if
+      you try to run it through the server. See <a href="#writing">Writing a CGI program</a> above for more
+      details.</p>
     
 
     <h3><a name="errorlogs" id="errorlogs">Error logs</a></h3>
@@ -345,6 +372,30 @@
       probably host your site somewhere else. Learn to read the
       error logs, and you'll find that almost all of your problems
       are quickly identified, and quickly solved.</p>
+    
+
+    <h3><a name="suexec" id="suexec">Suexec</a></h3>
+      
+
+      <p>The <a href="../suexec.html">suexec</a> support program
+      allows CGI programs to be run under different user permissions,
+      depending on which virtual host or user home directory they are
+      located in. Suexec has very strict permission checking, and any
+      failure in that checking will result in your CGI programs
+      failing with <code>Premature end of script headers</code>.</p>
+
+      <p>To check if you are using suexec, run <code>apachectl
+      -V</code> and check for the location of <code>SUEXEC_BIN</code>.
+      If Apache finds an suexec binary there on startup, suexec will
+      be activated.</p>
+
+      <p>Unless you fully understand suexec, you should not be using it.
+      To disable suexec, simply remove (or rename) the <code>suexec</code>
+      binary pointed to by <code>SUEXEC_BIN</code> and then restart the
+      server.  If, after reading about <a href="../suexec.html">suexec</a>,
+      you still wish to use it, then run <code>suexec -V</code> to find
+      the location of the suexec log file, and use that log file to
+      find what policy you are violating.</p>
     
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
