@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/05/26 23:14:03 $]
+Last modified at [$Date: 2004/05/26 23:30:38 $]
 
 Release:
 
@@ -198,10 +198,6 @@ PATCHES TO BACKPORT FROM 2.1
     *) Fix memory leak in mod_rewrite. PR 27862. (2.0 + 1.3)
          http://www.apache.org/~nd/mod_rewrite_fixleak.diff
        +1: nd
-
-    *) mod_logio no longer removes the EOS bucket. PR 27928.
-         modules/loggers/mod_logio.c: r1.8
-       +1: nd, trawick, jorton
 
     *) mod_rewrite no longer turns forward proxy requests into reverse proxy
        requests. PR 28125

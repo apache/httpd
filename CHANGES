@@ -1,5 +1,8 @@
 Changes with Apache 2.0.50
 
+  *) mod_logio no longer removes the EOS bucket. PR 27928.
+     [Bojan Smojver <bojan rexursive.com>]
+
   *) htpasswd no longer refuses to process files that contain empty
      lines.  [André Malo]
 
