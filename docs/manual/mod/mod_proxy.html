@@ -28,7 +28,7 @@ stability is <i>greatly</i> improved.<p>
 <h2>Summary</h2>
 
 This module implements a proxy/cache for Apache. It implements
-proxying capability for 
+proxying capability for
 <code>FTP</code>,
 <code>CONNECT</code> (for SSL),
 <code>HTTP/0.9</code>, and
@@ -42,6 +42,8 @@ and other protocols.
 <li><a href="#proxyremote">ProxyRemote</a>
 <li><a href="#proxypass">ProxyPass</a>
 <li><a href="#proxyblock">ProxyBlock</a>
+<li><a href="#noproxy">NoProxy</a>
+<li><a href="#proxydomain">ProxyDomain</a>
 <li><a href="#cacheroot">CacheRoot</a>
 <li><a href="#cachesize">CacheSize</a>
 <li><a href="#cachemaxexpire">CacheMaxExpire</a>
@@ -58,7 +60,7 @@ and other protocols.
 <A name="proxyrequests"><h2>ProxyRequests</h2></A>
 <strong>Syntax:</strong> ProxyRequests <em>on/off</em><br>
 <strong>Default:</strong> <code>ProxyRequests Off</code><br>
-<strong>Context:</strong> server config<br>
+<strong>Context:</strong> server config, virtual host<br>
 <strong>Status:</strong> Base<br>
 <strong>Module:</strong> mod_proxy<br>
 <strong>Compatibility:</strong> ProxyRequest is only available in
@@ -70,7 +72,7 @@ href="#proxypass">ProxyPass</a> directive.
 
 <A name="proxyremote"><h2>ProxyRemote</h2></A>
 <strong>Syntax:</strong> ProxyRemote <em>&lt;match&gt; &lt;remote-server&gt;</em><br>
-<strong>Context:</strong> server config<br>
+<strong>Context:</strong> server config, virtual host<br>
 <strong>Status:</strong> Base<br>
 <strong>Module:</strong> mod_proxy<br>
 <strong>Compatibility:</strong> ProxyRemote is only available in
@@ -102,7 +104,7 @@ them.
 
 <A name="proxypass"><h2>ProxyPass</h2></A>
 <strong>Syntax:</strong> ProxyPass <em>&lt;path&gt; &lt;url&gt;</em><br>
-<strong>Context:</strong> server config<br>
+<strong>Context:</strong> server config, virtual host<br>
 <strong>Status:</strong> Base<br>
 <strong>Module:</strong> mod_proxy<br>
 <strong>Compatibility:</strong> ProxyPass is only available in
@@ -122,7 +124,7 @@ internally converted into a proxy request to http://foo.com/bar
 
 <A name="proxyblock"><h2>ProxyBlock</h2></A>
 <strong>Syntax:</strong> ProxyBlock <em>&lt;word/host/domain list&gt;</em><br>
-<strong>Context:</strong> server config<br>
+<strong>Context:</strong> server config, virtual host<br>
 <strong>Status:</strong> Base<br>
 <strong>Module:</strong> mod_proxy<br>
 <strong>Compatibility:</strong> ProxyBlock is only available in
@@ -150,9 +152,136 @@ ProxyBlock *
 
 blocks connections to all sites.
 
+<A name="noproxy"><h2>NoProxy</h2></A>
+<strong>Syntax:</strong> NoProxy { <A HREF="#domain"><em>&lt;Domain&gt;</em></A>
+                                 | <A HREF="#subnet"><em>&lt;SubNet&gt;</em></A>
+				 | <A HREF="#ipaddr"><em>&lt;IpAddr&gt;</em></A>
+				 | <A HREF="#hostname"><em>&lt;Hostname&gt;</em></A>
+				 } <br>
+<strong>Context:</strong> server config, virtual host<br>
+<strong>Status:</strong> Base<br>
+<strong>Module:</strong> mod_proxy<br>
+<strong>Compatibility:</strong> NoProxy is only available in
+Apache 1.3 and later.<p>
+
+This directive is only useful for apache proxy servers within intranets.
+The NoProxy directive specifies a list of subnets, IP addresses, hosts
+and/or domains, separated by spaces. A request to a host which matches
+one or more of these is always served directly, without forwarding to
+the configured ProxyRemote proxy server(s).<br>Example:
+
+<pre>
+  ProxyRemote  *  http://firewall.mycompany.com:81
+  NoProxy         .mycompany.com 192.168.112.0/21 
+</pre>
+The arguments to the NoProxy directive are one of the following type list:
+   <DL>
+    <!-- ===================== Domain ======================= -->
+    <A NAME="domain">
+    <DT><EM>Domain</EM>
+    <DD>A <EM>Domain</EM> is a partially qualified DNS domain name, preceded
+        by a period.
+        It represents a list of hosts which logically belong to the same DNS
+        domain or zone (i.e. the suffixes of the hostnames are all ending in 
+        <EM>Domain</EM>).<BR>
+		Examples: <SAMP>.com</SAMP>   <SAMP>.apache.org.</SAMP><BR>
+        To distinguish <EM>Domain</EM>s from <A HREF="#hostname"><EM>Hostname</EM></A>s (both
+        syntactically and semantically; a DNS domain can have a DNS A record,
+        too!), <EM>Domain</EM>s are always written
+        with a leading period.<BR>
+        Note: Domain name comparisons are done without regard to the case,
+        and <EM>Domain</EM>s are always assumed to be anchored in the root 
+        of the DNS tree, therefore two domains <SAMP>.MyDomain.com</SAMP> and
+        <SAMP>.mydomain.com.</SAMP> (note the trailing period) are
+        considered equal. Since a domain comparison does not involve a DNS
+	lookup, it is much more efficient than subnet comparison.
+
+    <!-- ===================== SubNet ======================= -->
+    <A NAME="subnet">
+    <DT><EM>SubNet</EM>
+    <DD>A <EM>SubNet</EM> is a partially qualified internet address in
+        numeric (dotted quad) form, optionally followed by a slash and the
+        netmask, specified as the number of significant bits in the
+        <EM>SubNet</EM>. It is used to represent a subnet of hosts which can
+        be reached over a common network interface. In the absence of the
+        explicit net mask it is assumed that omitted (or zero valued)
+        trailing digits specify the mask. (In this case, the netmask can
+        only be multiples of 8 bits wide.)<BR>
+        Examples:
+        <DL>
+         <DT><SAMP>192.168</SAMP> or <SAMP>192.168.0.0</SAMP>
+         <DD>the subnet 192.168.0.0 with an implied netmask of 16 valid bits
+             (sometimes used in the netmask form <SAMP>255.255.0.0</SAMP>)
+         <DT><SAMP>192.168.112.0/21</SAMP>
+         <DD>the subnet <SAMP>192.168.112.0/21</SAMP> with a netmask of 21
+             valid bits (also used in the form 255.255.248.0)
+        </DL>
+		As a degenerate case, a <EM>SubNet</EM> with 32 valid bits is the
+        equivalent to an <EM>IPAddr</EM>, while a <EM>SubNet</EM> with zero
+        valid bits (e.g., 0.0.0.0/0) is the same as the constant
+        <EM>_Default_</EM>, matching any IP address. 
+
+    <!-- ===================== IPAddr ======================= -->
+    <A NAME="ipaddr">
+    <DT><EM>IPAddr</EM>
+    <DD>A <EM>IPAddr</EM> represents a fully qualified internet address in
+        numeric (dotted quad) form. Usually, this address represents a
+        host, but there need not necessarily be a DNS domain name
+        connected with the address.<BR>
+		Example: 192.168.123.7<BR>
+        Note: An <EM>IPAddr</EM> does not need to be resolved by the DNS system, so
+              it can result in more effective apache performance.<BR>
+<p><strong>See Also:</strong>
+<a href="../dns-caveats.html">DNS Issues</a></p>
+
+    <!-- ===================== Hostname ======================= -->
+    <A NAME="hostname">
+    <DT><EM>Hostname</EM>
+    <DD>A <EM>Hostname</EM> is a fully qualified DNS domain name which can
+        be resolved to one or more <A HREF="#ipaddr"><EM>IPAddrs</EM></A> via the DNS domain name service.
+        It represents a logical host (in contrast to <A HREF="#domain"><EM>Domain</EM></A>s, see
+        above) and must be resolvable to at least one <A HREF="#ipaddr"><EM>IPAddr</EM></A> (or
+        often to a list of hosts with different <A HREF="#ipaddr"><EM>IPAddr</EM></A>'s).<BR>
+		Examples: <SAMP>prep.ai.mit.edu</SAMP>
+                  <SAMP>www.apache.org.</SAMP><BR>
+        Note: In many situations, it is more effective to specify an
+        <A HREF="#ipaddr"><EM>IPAddr</EM></A> in place of a <EM>Hostname</EM> since a DNS lookup
+        can be avoided. Name resolution in Apache can take a remarkable deal
+        of time when the connection to the name server uses a slow PPP
+        link.<BR>
+        Note: <EM>Hostname</EM> comparisons are done without regard to the case,
+        and <EM>Hostname</EM>s are always assumed to be anchored in the root
+        of the DNS tree, therefore two hosts <SAMP>WWW.MyDomain.com</SAMP>
+        and <SAMP>www.mydomain.com.</SAMP> (note the trailing period) are
+        considered equal.<BR>
+<p><strong>See Also:</strong>
+<a href="../dns-caveats.html">DNS Issues</a></p>
+   </DL>
+
+<A name="proxydomain"><h2>ProxyDomain</h2></A>
+<strong>Syntax:</strong> ProxyDomain <em>&lt;Domain&gt;</em><br>
+<strong>Context:</strong> server config, virtual host<br>
+<strong>Status:</strong> Base<br>
+<strong>Module:</strong> mod_proxy<br>
+<strong>Compatibility:</strong> ProxyDomain is only available in
+Apache 1.3 and later.<p>
+
+This directive is only useful for apache proxy servers within intranets.
+The ProxyDomain directive specifies the default domain which the apache
+proxy server will belong to. If a request to a host without a domain name
+is encountered, a redirection response to the same host
+with the configured <em>Domain</em> appended will be generated. 
+<br>Example:
+
+<pre>
+  ProxyRemote  *  http://firewall.mycompany.com:81
+  NoProxy         .mycompany.com 192.168.112.0/21 
+  ProxyDomain     .mycompany.com
+</pre>
+
 <A name="cacheroot"><h2>CacheRoot</h2></A>
 <strong>Syntax:</strong> CacheRoot <em>&lt;directory&gt;</em><br>
-<strong>Context:</strong> server config<br>
+<strong>Context:</strong> server config, virtual host<br>
 <strong>Status:</strong> Base<br>
 <strong>Module:</strong> mod_proxy<br>
 <strong>Compatibility:</strong> CacheRoot is only available in
@@ -165,7 +294,7 @@ by the httpd server.
 <A name="cachesize"><h2>CacheSize</h2></A>
 <strong>Syntax:</strong> CacheSize <em>&lt;size&gt;</em><br>
 <strong>Default:</strong> <code>CacheSize 5</code><br>
-<strong>Context:</strong> server config<br>
+<strong>Context:</strong> server config, virtual host<br>
 <strong>Status:</strong> Base<br>
 <strong>Module:</strong> mod_proxy<br>
 <strong>Compatibility:</strong> CacheSize is only available in
@@ -177,7 +306,7 @@ until the usage is at or below this setting.
 
 <A name="cachegcinterval"><h2>CacheGcInterval</h2></A>
 <strong>Syntax:</strong> CacheGcInterval <em>&lt;time&gt;</em><br>
-<strong>Context:</strong> server config<br>
+<strong>Context:</strong> server config, virtual host<br>
 <strong>Status:</strong> Base<br>
 <strong>Module:</strong> mod_proxy<br>
 <strong>Compatibility:</strong> CacheGcinterval is only available in
@@ -189,7 +318,7 @@ usage is greater than that set by CacheSize.
 <A name="cachemaxexpire"><h2>CacheMaxExpire</h2></A>
 <strong>Syntax:</strong> CacheMaxExpire <em>&lt;time&gt;</em><br>
 <strong>Default:</strong> <code>CacheMaxExpire 24</code><br>
-<strong>Context:</strong> server config<br>
+<strong>Context:</strong> server config, virtual host<br>
 <strong>Status:</strong> Base<br>
 <strong>Module:</strong> mod_proxy<br>
 <strong>Compatibility:</strong> CacheMaxExpire is only available in
@@ -203,7 +332,7 @@ was supplied with the document.
 <A name="cachelastmodifiedfactor"><h2>CacheLastModifiedFactor</h2></A>
 <strong>Syntax:</strong> CacheLastModifiedFactor <em>&lt;factor&gt;</em><br>
 <strong>Default:</strong> <code>CacheLastModifiedFactor 0.1</code><br>
-<strong>Context:</strong> server config<br>
+<strong>Context:</strong> server config, virtual host<br>
 <strong>Status:</strong> Base<br>
 <strong>Module:</strong> mod_proxy<br>
 <strong>Compatibility:</strong> CacheLastModifiedFactor is only available in
@@ -223,7 +352,7 @@ then the latter takes precedence.
 <A name="cachedirlevels"><h2>CacheDirLevels</h2></A>
 <strong>Syntax:</strong> CacheDirLevels <em>&lt;levels&gt;</em><br>
 <strong>Default:</strong> <code>CacheDirLevels 3</code><br>
-<strong>Context:</strong> server config<br>
+<strong>Context:</strong> server config, virtual host<br>
 <strong>Status:</strong> Base<br>
 <strong>Module:</strong> mod_proxy<br>
 <strong>Compatibility:</strong> CacheDirLevels is only available in
@@ -235,7 +364,7 @@ Cached data will be saved this many directory levels below CacheRoot.
 <A name="cachedirlength"><h2>CacheDirLength</h2></A>
 <strong>Syntax:</strong> CacheDirLength <em>&lt;length&gt;</em><br>
 <strong>Default:</strong> <code>CacheDirLength 1</code><br>
-<strong>Context:</strong> server config<br>
+<strong>Context:</strong> server config, virtual host<br>
 <strong>Status:</strong> Base<br>
 <strong>Module:</strong> mod_proxy<br>
 <strong>Compatibility:</strong> CacheDirLength is only available in
@@ -246,7 +375,7 @@ CacheDirLength sets the number of characters in proxy cache subdirectory names.
 <A name="cachedefaultexpire"><h2>CacheDefaultExpire</h2></A>
 <strong>Syntax:</strong> CacheDefaultExpire <em>&lt;time&gt;</em><br>
 <strong>Default:</strong> <code>CacheDefaultExpire 1</code><br>
-<strong>Context:</strong> server config<br>
+<strong>Context:</strong> server config, virtual host<br>
 <strong>Status:</strong> Base<br>
 <strong>Module:</strong> mod_proxy<br>
 <strong>Compatibility:</strong> CacheDefaultExpire is only available in
@@ -259,7 +388,7 @@ override.
 
 <A name="nocache"><h2>NoCache</h2></A>
 <strong>Syntax:</strong> NoCache <em>&lt;word/host/domain list&gt;</em><br>
-<strong>Context:</strong> server config<br>
+<strong>Context:</strong> server config, virtual host<br>
 <strong>Status:</strong> Base<br>
 <strong>Module:</strong> mod_proxy<br>
 <strong>Compatibility:</strong> NoCache is only available in
@@ -299,6 +428,7 @@ disables caching completely.<p>
 <li><a href="#startup">Why does Apache start more slowly when using the
         proxy module?</a>
 <li><a href="#socks">Can I use the Apache proxy module with my SOCKS proxy?</a>
+<li><a href="#intranet">What other functions are useful for an intranet proxy server?</a>
 </ul>
 
 <h2><a name="access">Controlling access to your proxy</a></h2>
@@ -347,7 +477,7 @@ depending on the speed with which the hostname lookups occur.<p>
 <h2><a name="socks">Can I use the Apache proxy module with my SOCKS proxy?</a></h2>
 
 Yes. Just build Apache with the rule <code>SOCKS4=yes</code> in your
-<i>Configuration</i> file, and follow the instructions there. SOCKS5 
+<i>Configuration</i> file, and follow the instructions there. SOCKS5
 capability can be added in a similar way (there's no <code>SOCKS5</code>
 rule yet), so use the <code>EXTRA_LDFLAGS</code> definition, or build Apache
 normally and run it with the <i>runsocks</i> wrapper provided with SOCKS5,
@@ -359,6 +489,24 @@ The problem was solved by upgrading to SOCKS 4.3.<p>
 Remember that you'll also have to grant access to your Apache proxy machine by
 permitting connections on the appropriate ports in your SOCKS daemon's
 configuration.<p>
+
+<h2><a name="intranet">What other functions are useful for an intranet proxy server?</a></h2>
+
+<p>An Apache proxy server situated in an intranet needs to forward external
+requests through the company's firewall. However, when it has to access
+resources within the intranet, it can bypass the firewall when accessing
+hosts. The <A HREF="#noproxy">NoProxy</A> directive is useful for specifying
+which hosts belong to the intranet and should be accessed directly.</p>
+
+<p>Users within an intranet tend to omit the local domain name from their
+WWW requests, thus requesting "http://somehost/" instead of
+"http://somehost.my.dom.ain/". Some commercial proxy servers let them get
+away with this and simply serve the request, implying a configured
+local domain. When the <A HREF="#proxydomain">ProxyDomain</A> directive
+is used and the server is <A HREF="#proxyrequests">configured for
+proxy service</A>, Apache can return a redirect response and send the client
+to the correct, fully qualified, server address. This is the preferred method
+since the user's bookmark files will then contain fully qualified hosts.</p>
 
 <!--#include virtual="footer.html" -->
 </BODY>
