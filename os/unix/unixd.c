@@ -159,7 +159,7 @@ void unixd_detach(void)
 static int set_group_privs(void)
 {
     if (!geteuid()) {
-	char *name;
+	const char *name;
 
 	/* Get username if passed as a uid */
 

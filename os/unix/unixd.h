@@ -77,7 +77,7 @@
 #endif
 
 typedef struct {
-    char *user_name;
+    const char *user_name;
     uid_t user_id;
     gid_t group_id;
 } unixd_config_rec;
