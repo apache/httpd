@@ -2911,10 +2911,10 @@ AP_DECLARE_NONSTD(int) ap_core_translate(request_rec *r)
 	&& (r->server->path[r->server->pathlen - 1] == '/'
 	    || r->uri[r->server->pathlen] == '/'
 	    || r->uri[r->server->pathlen] == '\0')) {
-        if (apr_filepath_merge(r->filename, conf->ap_document_root,
+        if (apr_filepath_merge(&r->filename, conf->ap_document_root,
 			       r->uri + r->server->pathlen, 
                                APR_FILEPATH_TRUENAME 
-                             | APR_SECUREROOT_TEST, r->pool)
+                             | APR_FILEPATH_SECUREROOT, r->pool)
                     != APR_SUCCESS) {
             return HTTP_FORBIDDEN;
         }
@@ -2926,10 +2926,10 @@ AP_DECLARE_NONSTD(int) ap_core_translate(request_rec *r)
          * /'s in a row.  This happens under windows when the document
          * root ends with a /
          */
-        if (apr_filepath_merge(r->filename, conf->ap_document_root,
-                               r->uri + (*(r->uri) == '/') ? 1 : 0, 
-                               APR_FILEPATH_TRUENAME 
-                             | APR_SECUREROOT_TEST, r->pool)
+        if (apr_filepath_merge(&r->filename, conf->ap_document_root,
+                               r->uri + ((*(r->uri) == '/') ? 1 : 0),
+                               APR_FILEPATH_TRUENAME
+                             | APR_FILEPATH_SECUREROOT, r->pool)
                     != APR_SUCCESS) {
             return HTTP_FORBIDDEN;
         }
