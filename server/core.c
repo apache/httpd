@@ -2306,8 +2306,10 @@ AP_DECLARE(const char *) ap_psignature(const char *prefix, request_rec *r)
     if (conf->server_signature == srv_sig_withmail) {
         return apr_pstrcat(r->pool, prefix, "<address>", 
                            ap_get_server_version(),
-                           " Server at <a href=\"mailto:",
-                           r->server->server_admin, "\">",
+                           " Server at <a href=\"",
+                           ap_is_url(r->server->server_admin) ? "" : "mailto:",
+                           ap_escape_html(r->pool, r->server->server_admin),
+                           "\">",
                            ap_escape_html(r->pool, ap_get_server_name(r)),
                            "</a> Port ", sport,
                            "</address>\n", NULL);

@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/07/10 04:05:51 $]
+Last modified at [$Date: 2004/07/10 04:45:22 $]
 
 Release:
 
@@ -157,10 +157,6 @@ PATCHES TO BACKPORT FROM 2.1
        this in the upgrading docs. A 2.0 patch is here:
          http://www.apache.org/~nd/header_always_2.0.diff
        +1: nd
-
-    *) Allow URLs for ServerAdmin. PR 28174.
-         server/core.c: r1.274
-       +1: nd, bnicholes, jjclar
 
     *) mod_rewrite: Fix confused map cache (with maps in different VHs using
        the same name). PR 26462. (2.0 + 1.3)
