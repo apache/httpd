@@ -275,11 +275,12 @@ static int translate_userdir(request_rec *r)
         const char *userdir = ap_getword_conf(r->pool, &userdirs);
         char *filename = NULL;
         apr_status_t rv;
+        int is_absolute = ap_os_is_path_absolute(r->pool, userdir);
 
         if (ap_strchr_c(userdir, '*'))
             x = ap_getword(r->pool, &userdir, '*');
 
-	if (userdir[0] == '\0' || ap_os_is_path_absolute(r->pool, userdir)) {
+        if (userdir[0] == '\0' || is_absolute) {
             if (x) {
 #ifdef HAVE_DRIVE_LETTERS
                 /*
@@ -288,14 +289,12 @@ static int translate_userdir(request_rec *r)
                  * know of no protocols that are a single letter, ignore
                  * a : as the first or second character, and assume a file 
                  * was specified
-                 *
-                 * XXX: Still no good for NETWARE, since : is embedded (sys:/home)
                  */
                 if (strchr(x + 2, ':'))
 #else
-                if (strchr(x, ':'))
+                if (strchr(x, ':') && !is_absolute)
 #endif /* HAVE_DRIVE_LETTERS */
-		{
+                {
                     redirect = apr_pstrcat(r->pool, x, w, userdir, dname, NULL);
                     apr_table_setn(r->headers_out, "Location", redirect);
                     return HTTP_MOVED_TEMPORARILY;
