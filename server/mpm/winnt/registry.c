@@ -95,7 +95,8 @@
  * with SetLastError() before calling the aplog_error() function.
  * Because this is common, let's have a macro.
  */
-#define return_error(rv) return (SetLastError(rv), rv);
+#define return_error(rv) return (apr_set_os_error(APR_FROM_OS_ERROR(rv)),\
+                                 APR_FROM_OS_ERROR(rv));
 
 apr_status_t ap_registry_create_key(const char *key)
 {

@@ -280,8 +280,8 @@ static apr_status_t isapi_load(apr_pool_t *p, isapi_server_conf *sconf,
 
     if (!(*isa)->handle)
     {
-        apr_status_t rv = GetLastError();
-        ap_log_rerror(APLOG_MARK, APLOG_ALERT, GetLastError(), r,
+        apr_status_t rv = apr_get_os_error();
+        ap_log_rerror(APLOG_MARK, APLOG_ALERT, apr_get_os_error(), r,
                       "ISAPI %s failed to load", fpath);
         (*isa)->handle = NULL;
         return rv;
@@ -290,7 +290,7 @@ static apr_status_t isapi_load(apr_pool_t *p, isapi_server_conf *sconf,
     if (!((*isa)->GetExtensionVersion = (void *)(GetProcAddress((*isa)->handle,
                                                       "GetExtensionVersion"))))
     {
-        apr_status_t rv = GetLastError();
+        apr_status_t rv = apr_get_os_error();
         ap_log_rerror(APLOG_MARK, APLOG_ALERT, rv, r,
                       "ISAPI %s is missing GetExtensionVersion()",
                       fpath);
@@ -302,7 +302,7 @@ static apr_status_t isapi_load(apr_pool_t *p, isapi_server_conf *sconf,
     if (!((*isa)->HttpExtensionProc = (void *)(GetProcAddress((*isa)->handle,
                                                        "HttpExtensionProc")))) 
     {
-        apr_status_t rv = GetLastError();
+        apr_status_t rv = apr_get_os_error();
         ap_log_rerror(APLOG_MARK, APLOG_ALERT, rv, r,
                       "ISAPI %s is missing HttpExtensionProc()",
                       fpath);
@@ -318,7 +318,7 @@ static apr_status_t isapi_load(apr_pool_t *p, isapi_server_conf *sconf,
 
     /* Run GetExtensionVersion() */
     if (!((*isa)->GetExtensionVersion)((*isa)->pVer)) {
-        apr_status_t rv = GetLastError();
+        apr_status_t rv = apr_get_os_error();
         ap_log_rerror(APLOG_MARK, APLOG_ALERT, rv, r,
                       "ISAPI %s call GetExtensionVersion() failed", 
                       fpath);
@@ -688,8 +688,8 @@ BOOL WINAPI ReadClient (HCONN ConnID, LPVOID lpvBuffer, LPDWORD lpdwSize)
                                        *lpdwSize - read)) > 0)) {
         if (res < 0) {
             *lpdwSize = 0;
-            if (!GetLastError())
-                SetLastError(TODO_ERROR); /* XXX: Find the right error code */
+            if (!apr_get_os_error())
+                apr_set_os_error(TODO_ERROR); /* XXX: Find the right error code */
             return FALSE;
         }
 

@@ -795,8 +795,9 @@ API_EXPORT(unsigned long) ap_get_limit_req_body(const request_rec *r)
 }
 
 #ifdef WIN32
-static DWORD get_win32_registry_default_value(apr_pool_t *p, HKEY hkey, 
-                                              char* relativepath, char **value)
+static apr_status_t get_win32_registry_default_value(apr_pool_t *p, HKEY hkey,
+                                                     char* relativepath, 
+                                                     char **value)
 {
     HKEY hkeyOpen;
     DWORD type;
@@ -805,7 +806,7 @@ static DWORD get_win32_registry_default_value(apr_pool_t *p, HKEY hkey,
                                 KEY_QUERY_VALUE, &hkeyOpen);
     
     if (result != ERROR_SUCCESS) 
-        return result;
+        return APR_FROM_OS_ERROR(result);
 
     /* Read to NULL buffer to determine value size */
     result = RegQueryValueEx(hkeyOpen, "", 0, &type, NULL, &size);
@@ -836,7 +837,7 @@ static DWORD get_win32_registry_default_value(apr_pool_t *p, HKEY hkey,
     }
 
     RegCloseKey(hkeyOpen);
-    return result;
+    return APR_FROM_OS_ERROR(result);
 }
 
 static char* get_interpreter_from_win32_registry(apr_pool_t *p, const char* ext,

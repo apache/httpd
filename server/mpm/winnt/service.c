@@ -238,7 +238,7 @@ static DWORD WINAPI monitor_service_9x_thread(void *service_name)
 
     if (!RegisterClass(&wc)) 
     {
-        ap_log_error(APLOG_MARK, APLOG_ERR | APLOG_STARTUP, GetLastError(), 
+        ap_log_error(APLOG_MARK, APLOG_ERR | APLOG_STARTUP, apr_get_os_error(), 
                      NULL, "Could not register window class for WatchWindow");
         SetEvent(globdat.signal_monitor);
         globdat.service_thread_id = 0;
@@ -254,7 +254,7 @@ static DWORD WINAPI monitor_service_9x_thread(void *service_name)
                             
     if (!hwndMain)
     {
-        ap_log_error(APLOG_MARK, APLOG_ERR | APLOG_STARTUP, GetLastError(), 
+        ap_log_error(APLOG_MARK, APLOG_ERR | APLOG_STARTUP, apr_get_os_error(), 
                      NULL, "Could not create WatchWindow");
         SetEvent(globdat.signal_monitor);
         globdat.service_thread_id = 0;
@@ -535,7 +535,7 @@ static void __stdcall service_nt_main_fn(DWORD argc, LPTSTR *argv)
 
     if(!(globdat.hServiceStatus = RegisterServiceCtrlHandler(argv[0], service_nt_ctrl)))
     {
-        ap_log_error(APLOG_MARK, APLOG_ERR | APLOG_STARTUP, GetLastError(), 
+        ap_log_error(APLOG_MARK, APLOG_ERR | APLOG_STARTUP, apr_get_os_error(), 
                      NULL, "Failure registering service handler");
         PulseEvent(globdat.signal_monitor);
         return;
@@ -635,7 +635,7 @@ DWORD WINAPI service_nt_dispatch_thread(LPVOID nada)
     if (!StartServiceCtrlDispatcher(dispatchTable))
     {
         /* This is a genuine failure of the SCM. */
-        rv = GetLastError();
+        rv = apr_get_os_error();
         ap_log_error(APLOG_MARK, APLOG_ERR | APLOG_STARTUP, rv, NULL,
                      "Error starting service control dispatcher");
     }
@@ -822,7 +822,7 @@ apr_status_t mpm_service_install(apr_pool_t *ptemp, int argc,
 
     if (GetModuleFileName(NULL, exe_path, sizeof(exe_path)) == 0)
     {
-        apr_status_t rv = GetLastError();
+        apr_status_t rv = apr_get_os_error();
         ap_log_error(APLOG_MARK, APLOG_ERR | APLOG_STARTUP, rv, NULL,
                      "GetModuleFileName failed");
         return rv;
@@ -837,7 +837,7 @@ apr_status_t mpm_service_install(apr_pool_t *ptemp, int argc,
         schSCManager = OpenSCManager(NULL, NULL, /* local, default database */
                                      SC_MANAGER_ALL_ACCESS);
         if (!schSCManager) {
-            rv = GetLastError();
+            rv = apr_get_os_error();
             ap_log_error(APLOG_MARK, APLOG_ERR | APLOG_STARTUP, rv, NULL,
                          "Failed to open the WinNT service manager");
             return (rv);
@@ -866,7 +866,7 @@ apr_status_t mpm_service_install(apr_pool_t *ptemp, int argc,
 
         if (!schService) 
         {
-            rv = GetLastError();
+            rv = apr_get_os_error();
             ap_log_error(APLOG_MARK, APLOG_ERR | APLOG_STARTUP, rv, NULL, 
                          "Failed to create WinNT Service Profile");
             CloseServiceHandle(schSCManager);
@@ -929,7 +929,7 @@ apr_status_t mpm_service_uninstall(void)
         schSCManager = OpenSCManager(NULL, NULL, /* local, default database */
                                      SC_MANAGER_ALL_ACCESS);
         if (!schSCManager) {
-            rv = GetLastError();
+            rv = apr_get_os_error();
             ap_log_error(APLOG_MARK, APLOG_ERR | APLOG_STARTUP, rv, NULL,
                          "Failed to open the WinNT service manager.");
             return (rv);
@@ -938,7 +938,7 @@ apr_status_t mpm_service_uninstall(void)
         schService = OpenService(schSCManager, service_name, SERVICE_ALL_ACCESS);
 
         if (!schService) {
-           rv = GetLastError();
+           rv = apr_get_os_error();
            ap_log_error(APLOG_MARK, APLOG_ERR | APLOG_STARTUP, rv, NULL,
 			"%s: OpenService failed", display_name);
            return (rv);
@@ -955,7 +955,7 @@ apr_status_t mpm_service_uninstall(void)
         // ap_stop_service(schService);
 
         if (DeleteService(schService) == 0) {
-            rv = GetLastError();
+            rv = apr_get_os_error();
 	    ap_log_error(APLOG_MARK, APLOG_ERR | APLOG_STARTUP, rv, NULL,
                          "%s: Failed to delete the service.", display_name);
             return (rv);
@@ -971,7 +971,7 @@ apr_status_t mpm_service_uninstall(void)
         /* TODO: assure the service is stopped before continuing */
 
         if (ap_registry_delete_value(SERVICECONFIG9X, service_name)) {
-            rv = GetLastError();
+            rv = apr_get_os_error();
 	    ap_log_error(APLOG_MARK, APLOG_ERR | APLOG_STARTUP, rv, NULL,
                          "%s: Failed to remove the RunServices registry "
                          "entry.", display_name);
@@ -982,7 +982,7 @@ apr_status_t mpm_service_uninstall(void)
         apr_snprintf(key_name, sizeof(key_name), SERVICECONFIG, service_name);
         if (ap_registry_delete_key(key_name)) 
         {
-            rv = GetLastError();
+            rv = apr_get_os_error();
             ap_log_error(APLOG_MARK, APLOG_ERR | APLOG_STARTUP, rv, NULL,
                          "%s: Failed to remove the service config from the "
                          "registry.", display_name);
@@ -1033,7 +1033,7 @@ apr_status_t mpm_service_start(apr_pool_t *ptemp, int argc,
         schSCManager = OpenSCManager(NULL, NULL, /* local, default database */
                                      SC_MANAGER_ALL_ACCESS);
         if (!schSCManager) {
-            rv = GetLastError();
+            rv = apr_get_os_error();
             ap_log_error(APLOG_MARK, APLOG_ERR | APLOG_STARTUP, rv, NULL,
                          "Failed to open the WinNT service manager");
             return (rv);
@@ -1042,7 +1042,7 @@ apr_status_t mpm_service_start(apr_pool_t *ptemp, int argc,
         schService = OpenService(schSCManager, service_name, 
                                  SERVICE_START | SERVICE_QUERY_STATUS);
         if (!schService) {
-            rv = GetLastError();
+            rv = apr_get_os_error();
             ap_log_error(APLOG_MARK, APLOG_ERR | APLOG_STARTUP, rv, NULL,
                          "%s: Failed to open the service.", display_name);
             CloseServiceHandle(schSCManager);
@@ -1072,7 +1072,7 @@ apr_status_t mpm_service_start(apr_pool_t *ptemp, int argc,
                 rv = APR_SUCCESS;
 
         if (rv != APR_SUCCESS)
-            rv = GetLastError();
+            rv = apr_get_os_error();
         
         CloseServiceHandle(schService);
         CloseServiceHandle(schSCManager);
@@ -1103,7 +1103,7 @@ apr_status_t mpm_service_start(apr_pool_t *ptemp, int argc,
         
         if (GetModuleFileName(NULL, exe_path, sizeof(exe_path)) == 0)
         {
-            apr_status_t rv = GetLastError();
+            apr_status_t rv = apr_get_os_error();
             ap_log_error(APLOG_MARK, APLOG_ERR | APLOG_STARTUP, rv, NULL,
                          "GetModuleFileName failed");
             return rv;
@@ -1137,7 +1137,7 @@ apr_status_t mpm_service_start(apr_pool_t *ptemp, int argc,
         }
         
         if (rv != APR_SUCCESS)
-            rv = GetLastError();
+            rv = apr_get_os_error();
         
         CloseHandle(pi.hProcess);
         CloseHandle(pi.hThread);
@@ -1169,7 +1169,7 @@ void mpm_signal_service(apr_pool_t *ptemp, int signal)
                                      SC_MANAGER_ALL_ACCESS);
         
         if (!schSCManager) {
-            ap_log_error(APLOG_MARK, APLOG_ERR | APLOG_STARTUP, GetLastError(), NULL,
+            ap_log_error(APLOG_MARK, APLOG_ERR | APLOG_STARTUP, apr_get_os_error(), NULL,
                          "Failed to open the NT Service Manager");
             return;
         }
@@ -1179,14 +1179,14 @@ void mpm_signal_service(apr_pool_t *ptemp, int signal)
 
         if (schService == NULL) {
             /* Could not open the service */
-            ap_log_error(APLOG_MARK, APLOG_ERR | APLOG_STARTUP, GetLastError(), NULL,
+            ap_log_error(APLOG_MARK, APLOG_ERR | APLOG_STARTUP, apr_get_os_error(), NULL,
                          "Failed to open the %s Service", display_name);
             CloseServiceHandle(schSCManager);
             return;
         }
         
         if (!QueryServiceStatus(schService, &globdat.ssStatus)) {
-            ap_log_error(APLOG_MARK, APLOG_ERR | APLOG_STARTUP, GetLastError(), NULL,
+            ap_log_error(APLOG_MARK, APLOG_ERR | APLOG_STARTUP, apr_get_os_error(), NULL,
                          "Query of Service %s failed", display_name);
             CloseServiceHandle(schService);
             CloseServiceHandle(schSCManager);
