@@ -88,7 +88,7 @@ static scoreboard *ap_scoreboard_image = NULL;
 
 static ap_shmem_t *scoreboard_shm = NULL;
 
-static ap_status_t cleanup_shared_mem(void *d)
+ap_status_t ap_cleanup_shared_mem(void *d)
 {
     ap_shm_free(scoreboard_shm, ap_scoreboard_image);
     ap_scoreboard_image = NULL;
@@ -116,7 +116,7 @@ static void setup_shared_mem(ap_pool_t *p)
         ap_shm_destroy(scoreboard_shm);
         exit(APEXIT_INIT);
     }
-    ap_register_cleanup(p, NULL, cleanup_shared_mem, ap_null_cleanup);
+    ap_register_cleanup(p, NULL, ap_cleanup_shared_mem, ap_null_cleanup);
 }
 
 void reinit_scoreboard(ap_pool_t *p)

@@ -211,7 +211,7 @@ typedef struct {
 
 API_EXPORT(int) ap_exists_scoreboard_image(void);
 void reinit_scoreboard(ap_pool_t *p);
-void cleanup_scoreboard(void);
+ap_status_t ap_cleanup_shared_mem(void *d);
 API_EXPORT(void) ap_sync_scoreboard_image(void);
 void ap_mpmt_pthread_force_reset_connection_status(long conn_id);
 
