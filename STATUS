@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/08/26 17:26:07 $]
+Last modified at [$Date: 2004/08/26 17:46:54 $]
 
 Release:
 
@@ -180,7 +180,7 @@ PATCHES TO BACKPORT FROM 2.1
 
     *) (re-)add support for RewriteRules in <Proxy> containers. PR 27985
          modules/mappers/mod_rewrite.c: r1.254
-       +1: nd, trawick
+       +1: nd, trawick, stoddard
 
     *) mod_include: remove "recursive-include" check, it's no longer
        necessary and forbids legal actions.
@@ -335,7 +335,7 @@ PATCHES TO BACKPORT FROM 2.1
       (if there is sufficient interest I'll pursue getting APR 0.9
       fixed up as well as putting together a patch for httpd 2.0.next
       which integrates the two rounds of changes)
-      +1 concept: trawick, nd
+      +1 concept: trawick, nd, stoddard
 
 CURRENT RELEASE NOTES:
 
