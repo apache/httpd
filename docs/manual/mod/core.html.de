@@ -918,6 +918,9 @@ Dateien an den Client auszuliefern</td></tr>
     <li>Bei einem über das Netzwerk eingebundenen <code class="directive"><a href="#documentroot">DocumentRoot</a></code> (z.B. NFS oder SMB) ist der
     Kernel möglicherweise nicht in der Lage, die Netzwerkdatei
     über seinen eigenen Cache zu bedienen.</li>
+    <li>Unter Linux löst die Verwendung von <code>sendfile</code>
+    in Verbindung mit bestimmten Netzwerkkarten und IPv6
+    TCP-Checksummenfehler aus.</li>
     </ul>
 
     <p>Bei Serverkonfigurationen, die für dieses Problam
@@ -1594,6 +1597,13 @@ bestimmte HTTP-Methoden</td></tr>
     ebenfalls eingeschränkt. Die <code>TRACE</code>-Methode kann nicht
     limitiert werden.</p>
 
+    <div class="warning">
+      Wenn es um Zugriffsbeschränkungen geht, sollte
+      ein <code class="directive"><a href="#limitexcept">&lt;LimitExcept&gt;</a></code>-Container sollte immmer einem <code class="directive"><a href="#limit">&lt;Limit&gt;</a></code>-Container vorgezogen
+      werden, da <code class="directive"><a href="#limitexcept">&lt;LimitExcept&gt;</a></code>
+      einen Schutz gegen beliebige Methoden bietet.
+    </div>
+
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="LimitExcept" id="LimitExcept">&lt;LimitExcept&gt;</a>-<a name="limitexcept" id="limitexcept">Direktive</a></h2>
@@ -1681,9 +1691,7 @@ HTTP-Request-Body</td></tr>
 </table>
     <p>Die Direktive gibt die Anzahl der <var>Bytes</var> zwischen 0
     (unbegrenzt) und 2147483647 (2GB) an, die im Request-Body (Datenteil der
-    Anfrage) erlaubt sind. Die Voreinstellung wird durch die Konstante
-    <code>DEFAULT_LIMIT_REQUEST_BODY</code> (<code>0</code> bei der
-    Auslieferung) zur Kompilierungszeit gesetzt.</p>
+    Anfrage) erlaubt sind.</p>
 
     <p>Die Direktive <code class="directive">LimitRequestBody</code> erlaubt es dem
     Benutzer, die Größe des HTTP-Request-Bodys in dem Kontext zu
@@ -2135,7 +2143,7 @@ reguläre Ausdrücke passen</td></tr>
       <p>Beim Protokollieren in eine reguläre Datei können
       Nachrichten des Levels <code>notice</code> nicht unterdrückt
       werden und werden daher immer protokolliert. Dies trifft allerdings
-      nicht zu wenn mittels <code>syslog</code> protokolliert wird.</p>
+      nicht zu, wenn mittels <code>syslog</code> protokolliert wird.</p>
     </div>
 
 </div>
