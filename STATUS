@@ -79,6 +79,8 @@ Committed Code Changes:
     * Ralf's DSO support for NetBSD, PR#2158
     * Some optimization defines for NetBSD, PR#2165
     * Ralf's various porting changes to support AIX 3.2, 4.1.5, 4.2 and 4.3.
+    * Ben's WIN32: Make roots of filesystems (e.g. c:/) work, PR#1558
+    * Ben's WIN32: Extensive overhaul of the way UNCs are handled.
     * Ralf's fix for referer/agent log entries in installed httpd.conf, PR#2175
 
 Available Patches:
