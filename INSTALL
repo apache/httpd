@@ -1,11 +1,11 @@
 
   APACHE INSTALLATION OVERVIEW
 
-  For complete installation documentation, see docs/manual/install.html or
-  http://httpd.apache.org/docs-2.0/install.html
+  Quick Start - Unix
+  ------------------
 
-  Quick Start
-  -----------
+  For complete installation documentation, see [ht]docs/manual/install.html or
+  http://httpd.apache.org/docs-2.0/install.html
 
      $ ./configure --prefix=PREFIX
      $ make
@@ -40,8 +40,46 @@
   The easiest way to find all of the configuration flags for Apache 2.0
   is to run ./configure --help.
 
+
+  Quick Start - Windows
+  ---------------------
+
+  For complete documentation, see [ht]docs/manual/platform/windows.html or
+  http://httpd.apache.org/docs-2.0/platform/windows.html.
+
+  The Apache/Win32 binaries are primarily distributed as a Windows Installer 
+  package (.msi), and may be available as a .zip file as well.  These packages 
+  are named apache-2.0.xx-win32-x86.msi and apache-2.0.xx-win32-x86.zip.  
+  Please choose the .msi package if at all possible.
+
+  If you have unpacked a source distribution (named httpd-2.0-xx.zip, without
+  any -win32-x86 notation) you must compile the package yourself, see the links
+  mentioned above.  Unless you intended to do this, please look again for the 
+  binary package from http://www.apache.org/dist/httpd/binaries/win32/ and
+  install that .msi (or .zip package, if you must.)
+
+  If you have unpacked this binary distribution from the .zip package, you 
+  _must_ edit the conf/httpd.conf file (with notepad or another text editor) 
+  to reflect the correct ServerName, Domain, and directory paths.  Search for 
+  the text "@@" to discover what you must edit.  To install and start the 
+  service after you have corrected the httpd.conf file, use the command
+
+    bin\Apache -k install
+    bin\Apache -k start
+
+  The .msi package configures the httpd.conf file, and installs and starts 
+  the Apache2 service for you.  We strongly encourage you to use it.
+
+
+  Postscript
+  ----------
+
+  The Apache HTTP Server group cannot field user's installation questions.
+  There are many valuable forums to help you get started.  Please refer your
+  questions to the appropriate forum, such as the user supported newsgroups
+  comp.infosystems.www.servers.unix and comp.infosystems.www.servers.ms-windows.
+
   Thanks for using the Apache HTTP Server, version 2.0.
 
                                      The Apache Software Foundation
                                      http://www.apache.org/
-
