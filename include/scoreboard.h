@@ -178,6 +178,9 @@ struct process_score{
     pid_t pid;
     ap_generation_t generation;	/* generation of this child */
     ap_scoreboard_e sb_type;
+    int quiescing;          /* the process whose pid is stored above is
+                             * going down gracefully
+                             */
 };
 
 typedef struct {
