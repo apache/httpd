@@ -334,6 +334,7 @@ SSLModConfigRec *ssl_util_getmodconfig_ssl(SSL *ssl, const char *key)
     return mc;
 }
 
+#if APR_HAS_THREADS
 /*
  * To ensure thread-safetyness in OpenSSL - work in progress
  */
@@ -352,12 +353,10 @@ static void ssl_util_thr_lock(int mode, int type, const char *file, int line)
     }
 }
 
-#if APR_HAS_THREADS
 static unsigned long ssl_util_thr_id(void)
 {
     return (unsigned long) apr_os_thread_current();
 }
-#endif
 
 static apr_status_t ssl_util_thread_cleanup(void *data)
 {
@@ -399,9 +398,7 @@ void ssl_util_thread_setup(server_rec *s, apr_pool_t *p)
         apr_thread_mutex_create(&(lock_cs[i]), APR_THREAD_MUTEX_DEFAULT, p);
     }
 
-#if APR_HAS_THREADS
     CRYPTO_set_id_callback(ssl_util_thr_id);
-#endif
 
     CRYPTO_set_locking_callback(ssl_util_thr_lock);
 
@@ -410,3 +407,4 @@ void ssl_util_thread_setup(server_rec *s, apr_pool_t *p)
                               apr_pool_cleanup_null);
 
 }
+#endif
