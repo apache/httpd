@@ -135,12 +135,12 @@ static TRANS facilities[] = {
 #endif
 
 static TRANS priorities[] = {
+    {"notice",	APLOG_NOTICE},
     {"emerg",	APLOG_EMERG},
     {"alert",	APLOG_ALERT},
     {"crit",	APLOG_CRIT},
     {"error",	APLOG_ERR},
     {"warn",	APLOG_WARNING},
-    {"notice",	APLOG_NOTICE},
     {"info",	APLOG_INFO},
     {"debug",	APLOG_DEBUG},
     {NULL,	-1},

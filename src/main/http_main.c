@@ -719,7 +719,7 @@ void timeout(int sig)
     }
 
     if (!current_conn->keptalive)
-	aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_DEBUG,
+	aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_WARNING,
 		    current_conn->server, errstr);
 
     if (timeout_req) {
@@ -951,7 +951,8 @@ static void sock_enable_linger(int s)
 
     if (setsockopt(s, SOL_SOCKET, SO_LINGER,
 		   (char *) &li, sizeof(struct linger)) < 0) {
-	aplog_error(APLOG_MARK, APLOG_WARNING, server_conf, "setsockopt: (SO_LINGER)");
+	aplog_error(APLOG_MARK, APLOG_WARNING, server_conf,
+	            "setsockopt: (SO_LINGER)");
 	/* not a fatal error */
     }
 }
@@ -1948,7 +1949,7 @@ void sig_coredump(int sig)
     ap_snprintf(emsg, sizeof(emsg),
 		"httpd: caught %s, attempting to dump core in %s",
 		s, coredump_dir);
-    aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_INFO, server_conf, emsg);
+    aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_NOTICE, server_conf, emsg);
     chdir(coredump_dir);
     abort();
     exit(1);
@@ -3419,12 +3420,11 @@ void standalone_main(int argc, char **argv)
 	    hold_off_on_exponential_spawning = 10;
 	}
 
-	aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_INFO, server_conf,
-		    "Apache HTTP Server version: %s", SERVER_VERSION);
+	aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_NOTICE, server_conf,
+		    "%s configured -- resuming normal operations",
+		    SERVER_VERSION);
 	aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_INFO, server_conf,
 		    "Server built: %s", SERVER_BUILT);
-	aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_INFO, server_conf,
-		    "Server configured -- resuming normal operations");
 	restart_pending = shutdown_pending = 0;
 
 	while (!restart_pending && !shutdown_pending) {
