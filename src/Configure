@@ -478,6 +478,8 @@ case "$PLAT" in
     *-openbsd*)
 	OS='OpenBSD'
 	DBM_LIB=""
+	DB_LIB=""
+	DEF_WANTHSREGEX=no
 	;;
     *-next-nextstep*)
 	OS='NeXTStep'
