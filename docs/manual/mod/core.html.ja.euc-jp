@@ -25,8 +25,6 @@
 <a href="../en/mod/core.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../ja/mod/core.html" title="Japanese">&nbsp;ja&nbsp;</a></p>
 </div>
-<div class="outofdate">This translation may be out of date. Check the
-            English version for recent changes.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">説明:</a></th><td>常に使用可能な Apache HTTP サーバのコア機能</td></tr>
 <tr><th><a href="module-dict.html#Status">ステータス:</a></th><td>Core</td></tr></table>
 </div>
@@ -2487,6 +2485,8 @@ Apache がファイルをアクセスするために使うファイルシステムのパスに
 <tr><th><a href="directive-dict.html#Override">上書き:</a></th><td>AuthConfig</td></tr>
 <tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>core</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">互換性:</a></th><td>バージョン 2.0.51 以降では <code class="directive"><a href="#limit">&lt;Limit&gt;</a></code> ディレクティブと <code class="directive"><a href="#limitexcept">&lt;LimitExcept&gt;</a></code> ディレクティブの影響を受ける
+</td></tr>
 </table>
     <p><code class="directive"><a href="../mod/mod_authz_host.html#allow">Allow</a></code> と
     <code class="directive"><a href="#require">Require</a></code> の両方が使われているときの
@@ -2512,6 +2512,12 @@ Apache がファイルをアクセスするために使うファイルシステムのパスに
     Satisfy Any
     </code></p></div>
    
+    <p>バージョン 2.0.51 からは
+    <code class="directive"><a href="#limit">&lt;Limit&gt;</a></code> セクションと
+    <code class="directive"><a href="#limitexcept">&lt;LimitExcept&gt;</a></code> セクションを使用することで
+    <code class="directive">Satisfy</code> ディレクティブが
+    適用されるメソッドを制限することが
+    できるようになりました。</p>
 
 <h3>参照</h3>
 <ul>
