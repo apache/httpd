@@ -1689,7 +1689,7 @@ API_EXPORT(long) send_fd_length(FILE *f, request_rec *r, long length)
                     continue;
                 else {
                     aplog_error(APLOG_MARK, APLOG_WARNING, r->server,
-                                "send body lost connection to %s",
+                     "%s client stopped connection before send body completed",
                                 get_remote_host(r->connection,
                                                 r->per_dir_config,
                                                 REMOTE_NAME));
@@ -1778,7 +1778,7 @@ API_EXPORT(long) send_fb_length(BUFF *fb, request_rec *r, long length)
                     continue;
                 else {
                     aplog_error(APLOG_MARK, APLOG_WARNING, r->server,
-                                "send body lost connection to %s",
+                     "%s client stopped connection before send body completed",
                                 get_remote_host(r->connection,
                                                 r->per_dir_config,
                                                 REMOTE_NAME));
@@ -1846,7 +1846,7 @@ API_EXPORT(size_t) send_mmap(void *mm, request_rec *r, size_t offset,
                     continue;
                 else {
                     aplog_error(APLOG_MARK, APLOG_WARNING, r->server,
-                                "send mmap lost connection to %s",
+                     "%s client stopped connection before send mmap completed",
                                 get_remote_host(r->connection,
                                                 r->per_dir_config,
                                                 REMOTE_NAME));

@@ -834,9 +834,10 @@ void timeout(int sig)
     else
 	dirconf = current_conn->server->lookup_defaults;
     if (sig == SIGPIPE) {
-	ap_snprintf(errstr, sizeof(errstr), "%s lost connection to %s",
-		    timeout_name ? timeout_name : "request",
-		    get_remote_host(current_conn, dirconf, REMOTE_NAME));
+	ap_snprintf(errstr, sizeof(errstr),
+		    "%s client stopped connection before %s completed",
+		    get_remote_host(current_conn, dirconf, REMOTE_NAME),
+		    timeout_name ? timeout_name : "request");
     }
     else {
 	ap_snprintf(errstr, sizeof(errstr), "%s timed out for %s",
