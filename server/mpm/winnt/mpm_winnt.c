@@ -1834,8 +1834,6 @@ void winnt_rewrite_args(process_rec *process)
     char *pid;
     apr_getopt_t *opt;
 
-    one_process = !!getenv("ONE_PROCESS");
-
     osver.dwOSVersionInfoSize = sizeof(OSVERSIONINFO);
     GetVersionEx(&osver);
 
@@ -1926,8 +1924,10 @@ void winnt_rewrite_args(process_rec *process)
             /* TODO: warn of depreciated syntax, "use -k uninstall instead" */
             signal_arg = "uninstall";
             break;
+        case 'X':
+            one_process = -1;
+            break;
         default:
-            optbuf[1] = (char) opt;
             new_arg = (char**) apr_push_array(mpm_new_argv);
             *new_arg = apr_pstrdup(process->pool, optbuf);
             if (optarg) {
@@ -2023,6 +2023,12 @@ static void winnt_pre_config(apr_pool_t *pconf, apr_pool_t *plog, apr_pool_t *pt
      * in these cases we -don't- care if httpd.conf has config errors!
      */
     apr_status_t rv;
+
+    if (getenv("ONE_PROCESS"))
+        one_process = -1;
+
+    if (ap_exists_config_define("ONE_PROCESS"))
+        one_process = -1;
 
     if (!strcasecmp(signal_arg, "runservice")
             && (osver.dwPlatformId == VER_PLATFORM_WIN32_NT)
@@ -2218,7 +2224,6 @@ API_EXPORT(int) ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s )
 
 static void winnt_hooks(void)
 {
-    one_process = 0;
     ap_hook_pre_config(winnt_pre_config, NULL, NULL, AP_HOOK_MIDDLE);
     ap_hook_post_config(winnt_post_config, NULL, NULL, 0);
 }
