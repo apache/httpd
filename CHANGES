@@ -1,5 +1,8 @@
 Changes with Apache 2.0.50
 
+  *) mod_isapi: GetServerVariable("ALL_RAW") returned the wrong buffer
+     size.  PR 20617.  [Jesse Pelton <jsp pkc.com>]
+
   *) mod_dav: Fix a problem that could cause crashes when manipulating 
      locks on some platforms.  [Jeff Trawick]
 

@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/04/26 15:45:52 $]
+Last modified at [$Date: 2004/04/26 15:54:22 $]
 
 Release:
 
@@ -352,11 +352,6 @@ PATCHES TO BACKPORT FROM 2.1
 	  wouldn't be listening on any port so it wouldn't matter anyway.
          nd replies: But if it can't be 0 the alternatives thereafter make no
            sense anymore, right?
-
-    * mod_isapi: GetServerVariable("ALL_RAW") returned the wrong buffer
-      size.  PR 20617  [Jesse Pelton <jsp pkc.com>]
-        http://cvs.apache.org/viewcvs.cgi/httpd-2.0/modules/arch/win32/mod_isapi.c?r1=1.96&r2=1.97
-      +1: trawick, stoddard, nd
 
     * mod_isapi: send_response_header() failed to copy status string's 
       last character.  PR 20619.  [Jesse Pelton <jsp pkc.com>]
