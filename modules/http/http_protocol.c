@@ -2322,7 +2322,7 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_http_header_filter(ap_filter_t *f, ap_bu
     const long int zero = 0L;
     char *date = NULL;
     request_rec *r = f->r;
-    char *buff;
+    char *buff, *buff_start;
     ap_bucket *e;
     ap_bucket_brigade *b2;
     apr_size_t len = 0;
@@ -2414,8 +2414,7 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_http_header_filter(ap_filter_t *f, ap_bu
      * and the basic http headers don't overflow this buffer.
      */
     len += strlen(ap_get_server_version()) + 100;
-    buff = apr_pcalloc(r->pool, len);
-    e = ap_bucket_create_pool(buff, len, r->pool);
+    buff_start = buff = apr_pcalloc(r->pool, len);
     ap_basic_http_header(r, buff);
     buff += strlen(buff);
 
@@ -2434,8 +2433,8 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_http_header_filter(ap_filter_t *f, ap_bu
     if (r->chunked) {
         ap_bsetflag(r->connection->client, B_CHUNK, 1);
     }
-    e->length = strlen(buff) + 1;
     b2 = ap_brigade_create(r->pool);
+    e = ap_bucket_create_pool(buff_start, strlen(buff_start), r->pool);
     AP_BRIGADE_INSERT_HEAD(b2, e);
     ap_remove_output_filter(f);
     ap_pass_brigade(f->next, b2);
