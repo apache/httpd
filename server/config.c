@@ -360,7 +360,7 @@ int ap_invoke_handler(request_rec *r)
 int g_bDebugHooks;
 const char *g_szCurrentHookName;
 
-static void register_hooks(module *m)
+void ap_register_hooks(module *m)
     {
     if(m->register_hooks)
 	{
@@ -430,7 +430,7 @@ API_EXPORT(void) ap_add_module(module *m)
 #endif /*_OSD_POSIX*/
 
     /* FIXME: is this the right place to call this? */
-    register_hooks(m);
+    ap_register_hooks(m);
 }
 
 /* 
