@@ -1962,7 +1962,7 @@ API_EXPORT(gid_t) ap_gname2id(const char *name)
  * Parses a host of the form <address>[:port]
  * :port is permitted if 'port' is not NULL
  */
-unsigned long ap_get_virthost_addr(char *w, unsigned short *ports)
+API_EXPORT(unsigned long) ap_get_virthost_addr(char *w, unsigned short *ports)
 {
     struct hostent *hep;
     unsigned long my_addr;
@@ -2028,7 +2028,7 @@ static char *find_fqdn(pool *a, struct hostent *p)
     return ap_pstrdup(a, (void *) p->h_name);
 }
 
-char *ap_get_local_host(pool *a)
+API_EXPORT(char *) ap_get_local_host(pool *a)
 {
 #ifndef MAXHOSTNAMELEN
 #define MAXHOSTNAMELEN 256

@@ -1171,7 +1171,7 @@ static int snprintf_flush(ap_vformatter_buff *vbuff)
 }
 
 
-API_EXPORT(int) ap_snprintf(char *buf, size_t len, const char *format,...)
+API_EXPORT_NONSTD(int) ap_snprintf(char *buf, size_t len, const char *format,...)
 {
     int cc;
     va_list ap;

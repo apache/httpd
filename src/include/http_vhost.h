@@ -64,24 +64,24 @@ extern "C" {
 #endif
 
 /* called before any config is read */
-void ap_init_vhost_config(pool *p);
+API_EXPORT(void) ap_init_vhost_config(pool *p);
 
 /* called after the config has been read */
-void ap_fini_vhost_config(pool *p, server_rec *main_server);
+API_EXPORT(void) ap_fini_vhost_config(pool *p, server_rec *main_server);
 
 /* handle addresses in <VirtualHost> statement */
-const char *ap_parse_vhost_addrs(pool *p, const char *hostname, server_rec *s);
+API_EXPORT(const char *) ap_parse_vhost_addrs(pool *p, const char *hostname, server_rec *s);
 
 /* handle NameVirtualHost directive */
-const char *ap_set_name_virtual_host (cmd_parms *cmd, void *dummy, char *arg);
+API_EXPORT_NONSTD(const char *) ap_set_name_virtual_host (cmd_parms *cmd, void *dummy, char *arg);
 
 /* given an ip address only, give our best guess as to what vhost it is */
-void ap_update_vhost_given_ip(conn_rec *conn);
+API_EXPORT(void) ap_update_vhost_given_ip(conn_rec *conn);
 
 /* The above is never enough, and this is always called after the headers
  * have been read.  It may change r->server.
  */
-void ap_update_vhost_from_headers(request_rec *r);
+API_EXPORT(void) ap_update_vhost_from_headers(request_rec *r);
 
 /* return 1 if the host:port matches any of the aliases of r->server
  * return 0 otherwise

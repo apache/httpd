@@ -92,7 +92,7 @@ extern "C" {
 typedef struct pool pool;
 typedef struct pool ap_pool;
 
-pool * ap_init_alloc(void);		/* Set up everything */
+API_EXPORT(pool *) ap_init_alloc(void);		/* Set up everything */
 void ap_cleanup_alloc(void);
 API_EXPORT(pool *) ap_make_sub_pool(pool *);	/* All pools are subpools of permanent_pool */
 API_EXPORT(void) ap_destroy_pool(pool *);
@@ -232,8 +232,8 @@ API_EXPORT(void) ap_table_mergen(table *, const char *name, const char *more_val
 API_EXPORT(void) ap_table_unset(table *, const char *key);
 API_EXPORT(void) ap_table_add(table *, const char *name, const char *val);
 API_EXPORT(void) ap_table_addn(table *, const char *name, const char *val);
-API_EXPORT(void) ap_table_do(int (*comp) (void *, const char *, const char *), void *rec,
-			  const table *t,...);
+API_EXPORT_NONSTD(void) ap_table_do(int (*comp) (void *, const char *, const char *), 
+                                    void *rec, const table *t,...);
 
 API_EXPORT(table *) ap_overlay_tables(pool *p, const table *overlay, const table *base);
 

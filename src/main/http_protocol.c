@@ -1073,7 +1073,7 @@ static void get_mime_headers(request_rec *r)
     ap_overlap_tables(r->headers_in, tmp_headers, AP_OVERLAP_TABLES_MERGE);
 }
 
-request_rec *ap_read_request(conn_rec *conn)
+API_EXPORT(request_rec *) ap_read_request(conn_rec *conn)
 {
     request_rec *r;
     pool *p;
@@ -1234,7 +1234,7 @@ request_rec *ap_read_request(conn_rec *conn)
  * *someone* has to set the protocol-specific fields...
  */
 
-void ap_set_sub_req_protocol(request_rec *rnew, const request_rec *r)
+API_EXPORT(void) ap_set_sub_req_protocol(request_rec *rnew, const request_rec *r)
 {
     rnew->the_request     = r->the_request;  /* Keep original request-line */
 
@@ -1260,7 +1260,7 @@ void ap_set_sub_req_protocol(request_rec *rnew, const request_rec *r)
     rnew->main = (request_rec *) r;
 }
 
-void ap_finalize_sub_req_protocol(request_rec *sub)
+API_EXPORT(void) ap_finalize_sub_req_protocol(request_rec *sub)
 {
     SET_BYTES_SENT(sub->main);
 }
@@ -1588,7 +1588,7 @@ API_EXPORT(int) ap_send_http_trace(request_rec *r)
     return OK;
 }
 
-int ap_send_http_options(request_rec *r)
+API_EXPORT(int) ap_send_http_options(request_rec *r)
 {
     const long int zero = 0L;
 
@@ -2522,7 +2522,7 @@ API_EXPORT(int) ap_vrprintf(request_rec *r, const char *fmt, va_list ap)
     return n;
 }
 
-API_EXPORT(int) ap_rprintf(request_rec *r, const char *fmt,...)
+API_EXPORT_NONSTD(int) ap_rprintf(request_rec *r, const char *fmt,...)
 {
     va_list vlist;
     int n;

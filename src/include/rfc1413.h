@@ -63,7 +63,7 @@
 extern "C" {
 #endif
 
-extern char *ap_rfc1413(conn_rec *conn, server_rec *srv);
+API_EXPORT(extern char *) ap_rfc1413(conn_rec *conn, server_rec *srv);
 
 #ifdef __cplusplus
 }

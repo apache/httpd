@@ -346,33 +346,33 @@ extern API_VAR_EXPORT module **ap_loaded_modules;
 
 /* For mod_so.c... */
 
-void ap_single_module_configure(pool *p, server_rec *s, module *m);
+API_EXPORT(void) ap_single_module_configure(pool *p, server_rec *s, module *m);
 
 /* For http_main.c... */
 
-server_rec *ap_read_config(pool *conf_pool, pool *temp_pool, char *config_name);
-void ap_init_modules(pool *p, server_rec *s);
-void ap_child_init_modules(pool *p, server_rec *s);
-void ap_child_exit_modules(pool *p, server_rec *s);
-void ap_setup_prelinked_modules(void);
-void ap_show_directives(void);
-void ap_show_modules(void);
+API_EXPORT(server_rec *) ap_read_config(pool *conf_pool, pool *temp_pool, char *config_name);
+API_EXPORT(void) ap_init_modules(pool *p, server_rec *s);
+API_EXPORT(void) ap_child_init_modules(pool *p, server_rec *s);
+API_EXPORT(void) ap_child_exit_modules(pool *p, server_rec *s);
+API_EXPORT(void) ap_setup_prelinked_modules(void);
+API_EXPORT(void) ap_show_directives(void);
+API_EXPORT(void) ap_show_modules(void);
 void ap_cleanup_method_ptrs(void);
 
 /* For http_request.c... */
 
-void *ap_create_request_config(pool *p);
+CORE_EXPORT(void *) ap_create_request_config(pool *p);
 CORE_EXPORT(void *) ap_create_per_dir_config(pool *p);
-void *ap_merge_per_dir_configs(pool *p, void *base, void *new);
+CORE_EXPORT(void *) ap_merge_per_dir_configs(pool *p, void *base, void *new);
 
 /* For http_core.c... (<Directory> command and virtual hosts) */
 
-int ap_parse_htaccess(void **result, request_rec *r, int override,
+CORE_EXPORT(int) ap_parse_htaccess(void **result, request_rec *r, int override,
 		const char *path, const char *access_name);
 
 CORE_EXPORT(const char *) ap_init_virtual_host(pool *p, const char *hostname,
 				server_rec *main_server, server_rec **);
-void ap_process_resource_config(server_rec *s, char *fname, pool *p, pool *ptemp);
+CORE_EXPORT(void) ap_process_resource_config(server_rec *s, char *fname, pool *p, pool *ptemp);
 
 /* ap_check_cmd_context() definitions: */
 API_EXPORT(const char *) ap_check_cmd_context(cmd_parms *cmd, unsigned forbidden);
@@ -389,16 +389,16 @@ API_EXPORT(const char *) ap_check_cmd_context(cmd_parms *cmd, unsigned forbidden
 
 /* Module-method dispatchers, also for http_request.c */
 
-int ap_translate_name(request_rec *);
-int ap_check_access(request_rec *);	/* check access on non-auth basis */
-int ap_check_user_id(request_rec *);	/* obtain valid username from client auth */
-int ap_check_auth(request_rec *);	/* check (validated) user is authorized here */
-int ap_find_types(request_rec *);	/* identify MIME type */
-int ap_run_fixups(request_rec *);	/* poke around for other metainfo, etc.... */
-int ap_invoke_handler(request_rec *);
-int ap_log_transaction(request_rec *r);
-int ap_header_parse(request_rec *);
-int ap_run_post_read_request(request_rec *);
+API_EXPORT(int) ap_translate_name(request_rec *);
+API_EXPORT(int) ap_check_access(request_rec *);	/* check access on non-auth basis */
+API_EXPORT(int) ap_check_user_id(request_rec *);	/* obtain valid username from client auth */
+API_EXPORT(int) ap_check_auth(request_rec *);	/* check (validated) user is authorized here */
+API_EXPORT(int) ap_find_types(request_rec *);	/* identify MIME type */
+API_EXPORT(int) ap_run_fixups(request_rec *);	/* poke around for other metainfo, etc.... */
+API_EXPORT(int) ap_invoke_handler(request_rec *);
+API_EXPORT(int) ap_log_transaction(request_rec *r);
+API_EXPORT(int) ap_header_parse(request_rec *);
+API_EXPORT(int) ap_run_post_read_request(request_rec *);
 
 /* for mod_perl */
 

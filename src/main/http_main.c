@@ -166,8 +166,8 @@ int ap_main(int argc, char *argv[]);
  * main/util_script.c would not be linked into a minimal httpd.
  * And the extra prototype is to make gcc -Wmissing-prototypes quiet.
  */
-extern void ap_force_library_loading(void);
-void ap_force_library_loading(void) {
+API_EXPORT(void) ap_force_library_loading(void);
+API_EXPORT(void) ap_force_library_loading(void) {
     ap_add_cgi_vars(NULL);
 }
 
@@ -234,7 +234,7 @@ unsigned int ap_thread_stack_size = 65536;
 #endif
 int ap_thread_count = 0;
 API_VAR_EXPORT int ap_standalone=0;
-int ap_configtestonly=0;
+API_VAR_EXPORT int ap_configtestonly=0;
 int ap_docrootcheck=1;
 API_VAR_EXPORT uid_t ap_user_id=0;
 API_VAR_EXPORT char *ap_user_name=NULL;
@@ -247,16 +247,16 @@ API_VAR_EXPORT int ap_threads_per_child=0;
 API_VAR_EXPORT int ap_excess_requests_per_child=0;
 API_VAR_EXPORT char *ap_pid_fname=NULL;
 API_VAR_EXPORT char *ap_scoreboard_fname=NULL;
-char *ap_lock_fname;
+API_VAR_EXPORT char *ap_lock_fname;
 API_VAR_EXPORT char *ap_server_argv0=NULL;
-struct in_addr ap_bind_address;
+API_VAR_EXPORT struct in_addr ap_bind_address;
 API_VAR_EXPORT int ap_daemons_to_start=0;
 API_VAR_EXPORT int ap_daemons_min_free=0;
 API_VAR_EXPORT int ap_daemons_max_free=0;
 API_VAR_EXPORT int ap_daemons_limit=0;
-time_t ap_restart_time=0;
+API_VAR_EXPORT time_t ap_restart_time=0;
 API_VAR_EXPORT int ap_suexec_enabled = 0;
-int ap_listenbacklog=0;
+API_VAR_EXPORT int ap_listenbacklog=0;
 
 struct accept_mutex_methods_s {
     void (*child_init)(pool *p);
@@ -309,11 +309,11 @@ static listen_rec *head_listener;
 
 API_VAR_EXPORT char ap_server_root[MAX_STRING_LEN]="";
 API_VAR_EXPORT char ap_server_confname[MAX_STRING_LEN]="";
-char ap_coredump_dir[MAX_STRING_LEN];
+API_VAR_EXPORT char ap_coredump_dir[MAX_STRING_LEN];
 
-array_header *ap_server_pre_read_config;
-array_header *ap_server_post_read_config;
-array_header *ap_server_config_defines;
+API_VAR_EXPORT array_header *ap_server_pre_read_config;
+API_VAR_EXPORT array_header *ap_server_post_read_config;
+API_VAR_EXPORT array_header *ap_server_config_defines;
 
 /* *Non*-shared http_main globals... */
 
@@ -1577,7 +1577,7 @@ static void alrm_handler(int sig)
 }
 #endif
 
-unsigned int ap_set_callback_and_alarm(void (*fn) (int), int x)
+API_EXPORT_NONSTD(unsigned int) ap_set_callback_and_alarm(void (*fn) (int), int x)
 {
     unsigned int old;
 
@@ -1670,7 +1670,7 @@ API_EXPORT(void) ap_reset_timeout(request_rec *r)
 
 
 
-void ap_keepalive_timeout(char *name, request_rec *r)
+API_EXPORT(void) ap_keepalive_timeout(char *name, request_rec *r)
 {
     unsigned int to;
 #ifdef NETWARE
@@ -2547,7 +2547,7 @@ static void clean_parent_exit(int code)
     exit(code);
 }
 
-int ap_update_child_status(int child_num, int status, request_rec *r)
+API_EXPORT(int) ap_update_child_status(int child_num, int status, request_rec *r)
 {
     int old_status;
     short_score *ss;
@@ -3106,7 +3106,7 @@ static void usr1_handler(int sig)
 static int volatile shutdown_pending;
 static int volatile restart_pending;
 static int volatile is_graceful;
-ap_generation_t volatile ap_my_generation=0;
+API_VAR_EXPORT ap_generation_t volatile ap_my_generation=0;
 
 #ifdef WIN32
 /*

@@ -235,7 +235,7 @@ static int get_rfc1413(int sock, const struct sockaddr_in *our_sin,
 }
 
 /* rfc1413 - return remote user name, given socket structures */
-char *ap_rfc1413(conn_rec *conn, server_rec *srv)
+API_EXPORT(char *) ap_rfc1413(conn_rec *conn, server_rec *srv)
 {
     static char user[RFC1413_USERLEN + 1];	/* XXX */
     static char *result;

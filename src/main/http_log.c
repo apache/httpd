@@ -251,7 +251,7 @@ static void open_error_log(server_rec *s, pool *p)
     }
 }
 
-void ap_open_logs(server_rec *s_main, pool *p)
+API_EXPORT(void) ap_open_logs(server_rec *s_main, pool *p)
 {
     server_rec *virt, *q;
     int replace_stderr;
@@ -472,7 +472,7 @@ static void log_error_core(const char *file, int line, int level,
 #endif
 }
     
-API_EXPORT(void) ap_log_error(const char *file, int line, int level,
+API_EXPORT_NONSTD(void) ap_log_error(const char *file, int line, int level,
 			      const server_rec *s, const char *fmt, ...)
 {
     va_list args;
@@ -482,7 +482,7 @@ API_EXPORT(void) ap_log_error(const char *file, int line, int level,
     va_end(args);
 }
 
-API_EXPORT(void) ap_log_rerror(const char *file, int line, int level,
+API_EXPORT_NONSTD(void) ap_log_rerror(const char *file, int line, int level,
 			       const request_rec *r, const char *fmt, ...)
 {
     va_list args;
@@ -508,7 +508,7 @@ API_EXPORT(void) ap_log_rerror(const char *file, int line, int level,
     va_end(args);
 }
 
-void ap_log_pid(pool *p, char *fname)
+API_EXPORT(void) ap_log_pid(pool *p, char *fname)
 {
     FILE *pid_file;
     struct stat finfo;
@@ -567,7 +567,7 @@ API_EXPORT(void) ap_log_unixerr(const char *routine, const char *file,
     ap_log_error(file, 0, APLOG_ERR, s, "%s", msg);
 }
 
-API_EXPORT(void) ap_log_printf(const server_rec *s, const char *fmt, ...)
+API_EXPORT_NONSTD(void) ap_log_printf(const server_rec *s, const char *fmt, ...)
 {
     va_list args;
     

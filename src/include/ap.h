@@ -159,7 +159,7 @@ API_EXPORT(int) ap_vformatter(int (*flush_func)(ap_vformatter_buff *),
  * to distinguish between an output which was truncated, and an output which
  * exactly filled the buffer.
  */
-API_EXPORT(int) ap_snprintf(char *buf, size_t len, const char *format,...)
+API_EXPORT_NONSTD(int) ap_snprintf(char *buf, size_t len, const char *format,...)
 			    __attribute__((format(printf,3,4)));
 API_EXPORT(int) ap_vsnprintf(char *buf, size_t len, const char *format,
 			     va_list ap);

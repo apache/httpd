@@ -1139,8 +1139,8 @@ API_EXPORT(int)    ap_checkconv(struct request_rec *r);    /* for downloads */
 API_EXPORT(int)    ap_checkconv_in(struct request_rec *r); /* for uploads */
 #endif /*#ifdef CHARSET_EBCDIC*/
 
-char *ap_get_local_host(pool *);
-unsigned long ap_get_virthost_addr(char *hostname, unsigned short *port);
+API_EXPORT(char *) ap_get_local_host(pool *);
+API_EXPORT(unsigned long) ap_get_virthost_addr(char *hostname, unsigned short *port);
 
 extern API_VAR_EXPORT time_t ap_restart_time;
 

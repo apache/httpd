@@ -59,6 +59,7 @@
 #include "httpd.h"
 #include "http_main.h"
 #include "http_log.h"
+#include "buff.h"
 
 #include <errno.h>
 #include <stdio.h>

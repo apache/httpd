@@ -457,7 +457,7 @@ static int reorder_sorter(const void *va, const void *vb)
     return a->orig_index - b->orig_index;
 }
 
-void ap_core_reorder_directories(pool *p, server_rec *s)
+CORE_EXPORT(void) ap_core_reorder_directories(pool *p, server_rec *s)
 {
     core_server_config *sconf;
     array_header *sec;
@@ -577,7 +577,7 @@ API_EXPORT(int) ap_satisfies(request_rec *r)
  * modules).
  */
 
-char *ap_response_code_string(request_rec *r, int error_index)
+API_EXPORT(char *) ap_response_code_string(request_rec *r, int error_index)
 {
     core_dir_config *conf;
 

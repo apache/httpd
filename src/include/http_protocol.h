@@ -70,7 +70,7 @@ extern "C" {
 
 /* Read a request and fill in the fields. */
 
-request_rec *ap_read_request(conn_rec *c);
+API_EXPORT(request_rec *) ap_read_request(conn_rec *c);
 
 /* Send a single HTTP header field */
 
@@ -91,7 +91,7 @@ API_EXPORT(void) ap_send_http_header(request_rec *l);
 /* Send the response to special method requests */
 
 API_EXPORT(int) ap_send_http_trace(request_rec *r);
-int ap_send_http_options(request_rec *r);
+API_EXPORT(int) ap_send_http_options(request_rec *r);
 
 /* Finish up stuff after a request */
 
@@ -205,8 +205,8 @@ API_EXPORT(int) ap_get_basic_auth_pw(request_rec *r, const char **pw);
  * Also, a wrapup function to keep the internal accounting straight.
  */
 
-void ap_set_sub_req_protocol(request_rec *rnew, const request_rec *r);
-void ap_finalize_sub_req_protocol(request_rec *sub_r);
+API_EXPORT(void) ap_set_sub_req_protocol(request_rec *rnew, const request_rec *r);
+API_EXPORT(void) ap_finalize_sub_req_protocol(request_rec *sub_r);
 
 /* This is also useful for putting sub_reqs and internal_redirects together */
 

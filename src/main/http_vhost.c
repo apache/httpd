@@ -149,7 +149,7 @@ static server_addr_rec **name_vhost_list_tail;
 
 
 /* called at the beginning of the config */
-void ap_init_vhost_config(pool *p)
+API_EXPORT(void) ap_init_vhost_config(pool *p)
 {
     memset(iphash_table, 0, sizeof(iphash_table));
     default_list = NULL;
@@ -242,7 +242,7 @@ static const char *get_addresses(pool *p, char *w, server_addr_rec ***paddr,
 
 
 /* parse the <VirtualHost> addresses */
-const char *ap_parse_vhost_addrs(pool *p, const char *hostname, server_rec *s)
+API_EXPORT(const char *) ap_parse_vhost_addrs(pool *p, const char *hostname, server_rec *s)
 {
     server_addr_rec **addrs;
     const char *err;
@@ -268,7 +268,7 @@ const char *ap_parse_vhost_addrs(pool *p, const char *hostname, server_rec *s)
 }
 
 
-const char *ap_set_name_virtual_host (cmd_parms *cmd, void *dummy, char *arg)
+API_EXPORT_NONSTD(const char *) ap_set_name_virtual_host (cmd_parms *cmd, void *dummy, char *arg)
 {
     /* use whatever port the main server has at this point */
     return get_addresses(cmd->pool, arg, &name_vhost_list_tail,
@@ -530,7 +530,7 @@ static void remove_unused_name_vhosts(server_rec *main_s, ipaddr_chain **pic)
 }
 
 /* compile the tables and such we need to do the run-time vhost lookups */
-void ap_fini_vhost_config(pool *p, server_rec *main_s)
+API_EXPORT(void) ap_fini_vhost_config(pool *p, server_rec *main_s)
 {
     server_addr_rec *sar;
     int has_default_vhost_addr;
@@ -946,7 +946,7 @@ static void check_serverpath(request_rec *r)
 }
 
 
-void ap_update_vhost_from_headers(request_rec *r)
+API_EXPORT(void) ap_update_vhost_from_headers(request_rec *r)
 {
     /* must set this for HTTP/1.1 support */
     if (r->hostname || (r->hostname = ap_table_get(r->headers_in, "Host"))) {
@@ -967,7 +967,7 @@ void ap_update_vhost_from_headers(request_rec *r)
 /* Called for a new connection which has a known local_addr.  Note that the
  * new connection is assumed to have conn->server == main server.
  */
-void ap_update_vhost_given_ip(conn_rec *conn)
+API_EXPORT(void) ap_update_vhost_given_ip(conn_rec *conn)
 {
     ipaddr_chain *trav;
     unsigned port = ntohs(conn->local_addr.sin_port);

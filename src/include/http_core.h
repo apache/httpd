@@ -172,7 +172,7 @@ API_EXPORT(file_type_e) ap_get_win32_interpreter(const request_rec *, char **);
  * the code that cares really is in http_core.c.  Also, another accessor.
  */
 
-char *ap_response_code_string (request_rec *r, int error_index);
+API_EXPORT(char *) ap_response_code_string (request_rec *r, int error_index);
 
 extern API_VAR_EXPORT module core_module;
 
@@ -333,7 +333,7 @@ typedef struct {
 } core_server_config;
 
 /* for http_config.c */
-void ap_core_reorder_directories(pool *, server_rec *);
+CORE_EXPORT(void) ap_core_reorder_directories(pool *, server_rec *);
 
 /* for mod_perl */
 CORE_EXPORT(void) ap_add_per_dir_conf (server_rec *s, void *dir_config);

@@ -1314,7 +1314,7 @@ static void process_request_internal(request_rec *r)
     ap_finalize_request_protocol(r);
 }
 
-void ap_process_request(request_rec *r)
+API_EXPORT(void) ap_process_request(request_rec *r)
 {
     int old_stat;
 
