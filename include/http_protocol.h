@@ -178,7 +178,8 @@ AP_DECLARE(void) ap_set_last_modified(request_rec *r);
  * inspects the client headers and determines if the response fulfills 
  * the requirements specified.
  * @param r The current request
- * @return 1 if the response fulfills the condition GET rules, 0 otherwise
+ * @return OK if the response fulfills the condition GET rules, some
+ *         other status code otherwise
  * @deffunc int ap_meets_conditions(request_rec *r)
  */
 AP_DECLARE(int) ap_meets_conditions(request_rec *r);
