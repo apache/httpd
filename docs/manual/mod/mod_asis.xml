@@ -1,0 +1,69 @@
+<?xml version="1.0"?>
+<?xml-stylesheet type="text/xsl" href="../style/manual.xsl"?>
+<modulesynopsis>
+
+<name>mod_asis</name>
+<description>Sends files that contain their own
+HTTP headers</description>
+<status>Base</status>
+<sourcefile>mod_asis.c</sourcefile>
+<identifier>asis_module</identifier>
+
+<summary>
+    <p>This module provides the handler <code>send-as-is</code>
+    which causes Apache to send the document without adding most of
+    the usual HTTP headers.</p>
+
+    <p>This can be used to send any kind of data from the server,
+    including redirects and other special HTTP responses, without
+    requiring a cgi-script or an nph script.</p>
+
+    <p>For historical reasons, this module will also process any
+    file with the mime type <code>httpd/send-as-is</code>.</p>
+</summary>
+
+<section><title>Usage</title>
+
+    <p>In the server configuration file, associate files with the
+    <code>send-as-is</code> handler <em>e.g.</em></p>
+
+<example>AddHandler send-as-is asis</example>
+
+    <p>The contents of any file with a <code>.asis</code> extension
+    will then be sent by Apache to the client with almost no
+    changes. Clients will need HTTP headers to be attached, so do
+    not forget them. A Status: header is also required; the data
+    should be the 3-digit HTTP response code, followed by a textual
+    message.</p>
+
+    <p>Here's an example of a file whose contents are sent <em>as
+    is</em> so as to tell the client that a file has
+    redirected.</p>
+
+
+<example>Status: 301 Now where did I leave that URL<br />
+       Location: http://xyz.abc.com/foo/bar.html<br />
+       Content-type: text/html<br />
+      <br />
+       &lt;HTML&gt;<br />
+       &lt;HEAD&gt;<br />
+       &lt;TITLE&gt;Lame excuses'R'us&lt;/TITLE&gt;<br />
+       &lt;/HEAD&gt;<br />
+       &lt;BODY&gt;<br />
+       &lt;H1&gt;Fred's exceptionally wonderful page has moved
+      to<br />
+       &lt;A
+      HREF="http://xyz.abc.com/foo/bar.html"&gt;Joe's&lt;/A&gt;
+      site.<br />
+       &lt;/H1&gt;<br />
+       &lt;/BODY&gt;<br />
+       &lt;/HTML&gt;
+</example>
+
+    <p>Notes: the server always adds a Date: and Server: header to
+    the data returned to the client, so these should not be
+    included in the file. The server does <em>not</em> add a
+    Last-Modified header; it probably should. </p>
+</section>
+
+</modulesynopsis>

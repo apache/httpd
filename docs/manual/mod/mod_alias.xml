@@ -1,0 +1,279 @@
+<?xml version="1.0"?>
+<?xml-stylesheet type="text/xsl" href="../style/manual.xsl"?>
+<modulesynopsis>
+
+<name>mod_alias</name>
+<description>Provides for mapping different parts of the host
+    filesystem in the document tree and for URL redirection</description>
+<status>Base</status>
+<sourcefile>mod_alias.c</sourcefile>
+<identifier>alias_module</identifier>
+
+<summary>
+    <p>The directives contained in this module allow for manipulation
+    and control of URLs as requests arrive at the server. The
+    <directive module="mod_alias">Alias</directive> and <directive
+    module="mod_alias">ScriptAlias</directive> directives are used to
+    map between URLs and filesystem paths.  This allows for content
+    which is not directly under the <directive
+    module="core">DocumentRoot</directive> served as part of the web
+    document tree. The <directive
+    module="mod_alias">ScriptAlias</directive> directive has the
+    additional effect of marking the target directory as containing
+    only CGI scripts.</p>
+
+    <p>The <directive module="mod_alias">Redirect</directive>
+    directives are used to instruct clients to make a new request with
+    a different URL. They are often used when a resource has moved to
+    a new location.</p>
+
+    <p>A more powerful and flexible set of directives for
+    manipulating URLs is contained in the <module>mod_rewrite</module>
+    module.</p>
+</summary>
+
+<directivesynopsis>
+<name>Alias</name>
+<description>Maps URLs to filesystem locations</description>
+<syntax> Alias <em>URL-path
+    file-path</em>|<em>directory-path</em></syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
+
+<usage>
+
+    <p>The <directive>Alias</directive> directive allows documents to
+    be stored in the local filesystem other than under the 
+    <directive module="core">DocumentRoot</directive>. URLs with a
+    (%-decoded) path beginning with <em>url-path</em> will be mapped
+    to local files beginning with <em>directory-filename</em>.</p>
+
+    <p>Example:</p>
+
+<example>Alias /image /ftp/pub/image</example>
+
+    <p>A request for http://myserver/image/foo.gif would cause the
+    server to return the file /ftp/pub/image/foo.gif.</p>
+
+    <p>Note that if you include a trailing / on the
+    <em>url-path</em> then the server will require a trailing / in
+    order to expand the alias. That is, if you use <code>Alias
+    /icons/ /usr/local/apache/icons/</code> then the url
+    <code>/icons</code> will not be aliased.</p>
+
+    <p>Note that you may need to specify additional <directive
+    module="core">&lt;Directory&gt;</directive> sections which cover
+    the <em>destination</em> of aliases.  Aliasing occurs before
+    <directive module="core">&lt;Directory&gt;</directive> sections
+    are checked, so only the destination of aliases are affected.
+    (Note however <directive module="core">&lt;Location&gt;</directive>
+    sections are run through once before aliases are performed, so
+    they will apply.)</p>
+
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>AliasMatch</name>
+<description>Maps URLs to filesystem locations using regular 
+expressions</description>
+<syntax>AliasMatch <em>regex
+    file-path</em>|<em>directory-path</em></syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
+
+<usage>
+    <p>This directive is equivalent to <directive
+    module="mod_alias">Alias</directive>, but makes use of standard
+    regular expressions, instead of simple prefix matching. The
+    supplied regular expression is matched against the URL-path, and
+    if it matches, the server will substitute any parenthesized
+    matches into the given string and use it as a filename. For
+    example, to activate the <code>/icons</code> directory, one might
+    use:</p>
+<example>
+    AliasMatch ^/icons(.*) /usr/local/apache/icons$1
+</example>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>Redirect</name>
+<description>Sends an external redirect asking the client to fetch
+a different URL</description>
+<syntax>Redirect [<em>status</em>] <em>URL-path URL</em></syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context></contextlist>
+<override>FileInfo</override>
+
+<usage>
+    <p>The Redirect directive maps an old URL into a new one. The
+    new URL is returned to the client which attempts to fetch it
+    again with the new address. <em>URL-path</em> a (%-decoded)
+    path; any requests for documents beginning with this path will
+    be returned a redirect error to a new (%-encoded) URL beginning
+    with <em>URL</em>.</p>
+
+    <p>Example:</p>
+
+<example>Redirect /service http://foo2.bar.com/service</example>
+
+    <p>If the client requests http://myserver/service/foo.txt, it
+    will be told to access http://foo2.bar.com/service/foo.txt
+    instead.</p>
+
+<note><title>Note</title> <p>Redirect directives take precedence over
+Alias and ScriptAlias directives, irrespective of their ordering in
+the configuration file. Also, <em>URL-path</em> must be an absolute
+path, not a relative path, even when used with .htaccess files or
+inside of <directive module="core">&lt;Directory&gt;</directive>
+sections.</p></note>
+
+    <p>If no <em>status</em> argument is given, the redirect will
+    be "temporary" (HTTP status 302). This indicates to the client
+    that the resource has moved temporarily. The <em>status</em>
+    argument can be used to return other HTTP status codes:</p>
+
+    <dl>
+      <dt>permanent</dt>
+
+      <dd>Returns a permanent redirect status (301) indicating that
+      the resource has moved permanently.</dd>
+
+      <dt>temp</dt>
+
+      <dd>Returns a temporary redirect status (302). This is the
+      default.</dd>
+
+      <dt>seeother</dt>
+
+      <dd>Returns a "See Other" status (303) indicating that the
+      resource has been replaced.</dd>
+
+      <dt>gone</dt>
+
+      <dd>Returns a "Gone" status (410) indicating that the
+      resource has been permanently removed. When this status is
+      used the <em>url</em> argument should be omitted.</dd>
+    </dl>
+
+    <p>Other status codes can be returned by giving the numeric
+    status code as the value of <em>status</em>. If the status is
+    between 300 and 399, the <em>url</em> argument must be present,
+    otherwise it must be omitted. Note that the status must be
+    known to the Apache code (see the function
+    <code>send_error_response</code> in http_protocol.c).</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>RedirectMatch</name>
+<description>Sends an external redirect asking the client to fetch
+a different URL based on a regular expression match of the 
+current URL</description>
+<syntax>RedirectMatch [<em>status</em>] <em>regex URL</em></syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context></contextlist>
+<override>FileInfo</override>
+
+<usage>
+    <p>This directive is equivalent to <directive
+    module="mod_alias">Redirect</directive>, but makes use of standard
+    regular expressions, instead of simple prefix matching. The
+    supplied regular expression is matched against the URL-path, and
+    if it matches, the server will substitute any parenthesized
+    matches into the given string and use it as a filename. For
+    example, to redirect all GIF files to like-named JPEG files on
+    another server, one might use:</p>
+<example>
+    RedirectMatch (.*)\.gif$ http://www.anotherserver.com$1.jpg
+</example>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>RedirectTemp</name>
+<description>Sends an external temporary redirect asking the client to fetch
+a different URL</description>
+<syntax>RedirectTemp <em>URL-path URL</em></syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context></contextlist>
+<override>FileInfo</override>
+
+<usage>
+    <p>This directive makes the client know that the Redirect is
+    only temporary (status 302). Exactly equivalent to
+    <code>Redirect temp</code>.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>RedirectPermanent</name>
+<description>Sends an external permanent redirect asking the client to fetch
+a different URL</description>
+<syntax>RedirectPermanent <em>URL-path URL</em></syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context></contextlist>
+<override>FileInfo</override>
+
+<usage>
+    <p>This directive makes the client know that the Redirect is
+    permanent (status 301). Exactly equivalent to <code>Redirect
+    permanent</code>.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>ScriptAlias</name>
+<description>Maps a URL to a filesystem location and designates the
+target as a CGI script</description>
+<syntax>ScriptAlias 
+<em>URL-path file-path</em>|<em>directory-path</em></syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
+
+<usage>
+    <p>The <directive>ScriptAlias</directive> directive has the same
+    behavior as the <directive module="mod_alias">Alias</directive>
+    directive, except that in addition it marks the target directory
+    as containing CGI scripts that will be processed by <module
+    >mod_cgi</module>'s cgi-script handler. URLs with a
+    (%-decoded) path beginning with <em>URL-path</em> will be mapped
+    to scripts beginning with the second argument which is a full
+    pathname in the local filesystem.</p>
+
+    <p>Example:</p>
+
+<example>ScriptAlias /cgi-bin/ /web/cgi-bin/</example>
+
+    <p>A request for <code>http://myserver/cgi-bin/foo</code> would cause the
+    server to run the script <code>/web/cgi-bin/foo</code>.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>ScriptAliasMatch</name>
+<description>Maps a URL to a filesystem location using a regular expression
+and designates the target as a CGI script</description>
+<syntax>ScriptAliasMatch
+<em>regex file-path</em>|<em>directory-path</em></syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
+
+<usage>
+    <p>This directive is equivalent to <directive module="mod_alias"
+    >ScriptAlias</directive>, but makes use of standard
+    regular expressions, instead of simple prefix matching. The
+    supplied regular expression is matched against the URL-path,
+    and if it matches, the server will substitute any parenthesized
+    matches into the given string and use it as a filename. For
+    example, to activate the standard <code>/cgi-bin</code>, one
+    might use:</p>
+<example>
+    ScriptAliasMatch ^/cgi-bin(.*) /usr/local/apache/cgi-bin$1
+</example>
+</usage>
+</directivesynopsis>
+
+</modulesynopsis>
+
