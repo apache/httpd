@@ -1,5 +1,11 @@
 Changes with Apache 1.3.13
 
+  *) NameVirtualHost can now take "*" as an argument instead of
+     an IP address. This allows you to create a purely name-based
+     virtual hosting server that does not have any IP addresses in
+     the configuration file and which ignores the local address
+     of any connections. PR #5595, PR #4455 [Tony Finch]
+
   *) Fix processing/merging of Remove* MIME directives.
      PR #5597 [Sander van Zoest <sander@covalent.net>]
 
