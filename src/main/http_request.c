@@ -265,8 +265,12 @@ static int get_path_info(request_rec *r)
             *cp = '\0';
             return OK;
         }
+	/* must set this to zero, some stat()s may have corrupted it
+	 * even if they returned an error.
+	 */
+	r->finfo.st_mode = 0;
 #if defined(ENOENT) && defined(ENOTDIR)
-        else if (errno == ENOENT || errno == ENOTDIR) {
+        if (errno == ENOENT || errno == ENOTDIR) {
             last_cp = cp;
 
             while (--cp > path && *cp != '/')
@@ -299,15 +303,13 @@ static int get_path_info(request_rec *r)
          * you needed to do this.  Please be sure to include the operating
          * system you are using.
          */
-        else {
-            last_cp = cp;
+	last_cp = cp;
 
-            while (--cp > path && *cp != '/')
-                continue;
+	while (--cp > path && *cp != '/')
+	    continue;
 
-            while (cp > path && cp[-1] == '/')
-                --cp;
-        }
+	while (cp > path && cp[-1] == '/')
+	    --cp;
 #endif  /* ENOENT && ENOTDIR */
     }
     return OK;

@@ -1,5 +1,8 @@
 Changes with Apache 1.3.7
 
+  *) When stat() fails, don't assume anything about the contents of
+     the struct stat.  [Ed Korthof <ed@bitmechanic.com>]
+
   *) It's OK for a semop to return EINTR, just loop around and try
      again.  [Dean Gaudet]
 
