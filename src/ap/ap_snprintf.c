@@ -582,9 +582,10 @@ API_EXPORT(int) ap_vformatter(int (*flush_func)(ap_vformatter_buff *),
     char num_buf[NUM_BUF_SIZE];
     char char_buf[2];		/* for printing %% and %<unknown> */
 
-    enum {
+    enum var_type_enum {
     	IS_QUAD, IS_LONG, IS_SHORT, IS_INT
-    } var_type;
+    };
+    enum var_type_enum var_type = IS_INT;
 
     /*
      * Flag variables
