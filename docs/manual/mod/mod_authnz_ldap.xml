@@ -120,7 +120,7 @@ for HTTP Basic authentication.</description>
     phase.</p>
 
     <p><module>mod_authnz_ldap</module> registers both an authn_ldap authentication
-    provider and an anthz_ldap authorization handler.  The authn_ldap
+    provider and an authz_ldap authorization handler.  The authn_ldap
     authentication provider can be enabled through the 
     <directive module="mod_auth_basic">AuthBasicProvider</directive> directive 
     using the <code>ldap</code> value. The authz_ldap handler extends the 
