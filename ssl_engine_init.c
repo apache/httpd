@@ -435,6 +435,30 @@ static SSL_CTX *ssl_init_ctx(server_rec *s,
     return ctx;
 }
 
+static void ssl_init_session_cache_ctx(server_rec *s,
+                                       apr_pool_t *p,
+                                       apr_pool_t *ptemp,
+                                       SSLSrvConfigRec *sc)
+{
+    SSL_CTX *ctx = sc->pSSLCtx;
+    SSLModConfigRec *mc = myModConfig(s);
+    long cache_mode = SSL_SESS_CACHE_OFF;
+
+    if (mc->nSessionCacheMode != SSL_SCMODE_NONE) {
+        /* SSL_SESS_CACHE_NO_INTERNAL_LOOKUP will force OpenSSL
+         * to ignore process local-caching and
+         * to always get/set/delete sessions using mod_ssl's callbacks.
+         */
+        cache_mode = SSL_SESS_CACHE_SERVER|SSL_SESS_CACHE_NO_INTERNAL_LOOKUP;
+    }
+
+    SSL_CTX_set_session_cache_mode(ctx, cache_mode);
+
+    SSL_CTX_sess_set_new_cb(ctx,    ssl_callback_NewSessionCacheEntry);
+    SSL_CTX_sess_set_get_cb(ctx,    ssl_callback_GetSessionCacheEntry);
+    SSL_CTX_sess_set_remove_cb(ctx, ssl_callback_DelSessionCacheEntry);
+}
+
 static void ssl_init_verify(server_rec *s,
                             apr_pool_t *p,
                             apr_pool_t *ptemp,
@@ -534,7 +558,6 @@ void ssl_init_ConfigureServer(server_rec *s,
     BOOL ok = FALSE;
     int is_ca, pathlen;
     int i, n;
-    long cache_mode;
 
     /*
      * Create the server host:port string because we need it a lot
@@ -567,24 +590,9 @@ void ssl_init_ConfigureServer(server_rec *s,
 
     ctx = ssl_init_ctx(s, p, ptemp, sc);
 
-    if (mc->nSessionCacheMode == SSL_SCMODE_NONE) {
-        cache_mode = SSL_SESS_CACHE_OFF;
-    }
-    else {
-        /* SSL_SESS_CACHE_NO_INTERNAL_LOOKUP will force OpenSSL
-         * to ignore process local-caching and
-         * to always get/set/delete sessions using mod_ssl's callbacks.
-         */
-        cache_mode = SSL_SESS_CACHE_SERVER|SSL_SESS_CACHE_NO_INTERNAL_LOOKUP;
-    }
-
-    SSL_CTX_set_session_cache_mode(ctx, cache_mode);
+    ssl_init_session_cache_ctx(s, p, ptemp, sc);
 
     ssl_init_verify(s, p, ptemp, sc);
-
-    SSL_CTX_sess_set_new_cb(ctx,      ssl_callback_NewSessionCacheEntry);
-    SSL_CTX_sess_set_get_cb(ctx,      ssl_callback_GetSessionCacheEntry);
-    SSL_CTX_sess_set_remove_cb(ctx,   ssl_callback_DelSessionCacheEntry);
 
     SSL_CTX_set_tmp_rsa_callback(ctx, ssl_callback_TmpRSA);
     SSL_CTX_set_tmp_dh_callback(ctx,  ssl_callback_TmpDH);
