@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/03/07 00:57:06 $]
+Last modified at [$Date: 2003/03/07 04:04:29 $]
 
 Release:
 
@@ -56,6 +56,12 @@ Contributors looking for a mission:
 
     * just do an egrep on "TODO", "XXX" and see what's there
 
+RELEASE SHOWSTOPPERS:
+
+    * Some have reported sed bogosity in ./configure ... we need to discover
+      what is going on here (may be related to recent apr/apr-util out-of-tree
+      patches on the apr side of the world.)
+
 PATCHES TO PORT FROM 2.1
   [ please place file names and revisions from HEAD here, so it is easy to
     identify exactly what the proposed changes are! ]
@@ -65,8 +71,11 @@ PATCHES TO PORT FROM 2.1
       include/http_config.h r1.100
       include/httpd.h r1.195
       server/util_debug.c r1.10
-      +1: striker
+      +1: striker, wrowe 
       -0: nd (util_debug isn't a so cool place for the functions)
+         wrowe: yes - it would be cool to have debug flavors in the same
+           files as their non-debug versions - but for macros, then what?
+           Andre - suggest an alternative :-)
 
     * AllowEncodedSlashes patch to permit %2f in path-info.
       CHANGES r1.1038
@@ -141,7 +150,7 @@ PATCHES TO PORT FROM 2.1
       include/util_ldap.h r1.11
       modules/experimental/mod_auth_ldap.c r1.12
       modules/experimental/util_ldap.c r1.11
-      +1: bnicholes
+      +1: bnicholes, wrowe (experimental, it can't hurt ;-)
        0: jerenkrantz (mod_ldap is experimental, no need to update it)
 
     * Fix a problem where a redirected subrequest doesn't have the
@@ -176,7 +185,7 @@ PATCHES TO PORT FROM 2.1
       docs/conf/httpd-win.conf: r1.80
       docs/docroot/index.html.se -> index.html.sv
       docs/docroot/index.html.var: r1.10
-      +1: nd
+      +1: nd, wrowe
 
     * Prevent endless loops of internal redirects in mod_rewrite by
       aborting after exceeding a limit of internal redirects. The
@@ -184,23 +193,23 @@ PATCHES TO PORT FROM 2.1
       directive. PR 17462.
       modules/mappers/mod_rewrite.c: r1.148
       modules/mappers/mod_rewrite.h: r1.43
-      +1: nd
+      +1: nd, wrowe
 
     * let mod_autoindex not forget output format and enabled version
       sort in linked column headers.
       modules/generators/mod_autoindex.c: r1.116
-      +1: nd
+      +1: nd, wrowe
 
     * mod_autoindex emits and accepts modern query string parameter
       delimiters (;). Thus column headers no longer contain unescaped
       ampersands. PR 10880 
       modules/generators/mod_autoindex.c: r1.117
-      +1: nd
+      +1: nd, wrowe
 
     * Unescape the supplied wildcard pattern in mod_autoindex. Otherwise
       the pattern will not always match as desired. PR 12596.
       modules/generators/mod_autoindex.c: r1.119
-      +1: nd
+      +1: nd, wrowe
 
     * Restore the ability of htdigest.exe to create files that contain
       more than one user. PR 12910.
@@ -211,6 +220,9 @@ PATCHES TO PORT FROM 2.1
       buildconf: r1.30
       configure.in: r1.239, r1.240
       +1: thommay, striker, ianh
+      +0: wrowe 
+         wrowe: we should first address Trawick's observation about bogus
+           autoconf code that digs into srclib/apr[-urtil]
 
     * New Directive for mod_deflate (compressionlevel), and change to default
       compression level
@@ -221,7 +233,7 @@ PATCHES TO PORT FROM 2.1
       around the problem that cookies were set twice during fast internal
       redirects. PR 13211.
       modules/metadata/mod_usertrack.c: r1.41
-      +1: nd
+      +1: nd, wrowe
 
     * Forward port: Escape special characters (especially control
       characters) in mod_log_config to make a clear distinction between
@@ -242,10 +254,6 @@ CURRENT RELEASE NOTES:
     * All commits to APACHE_2_0_BRANCH must be reflected in cvs HEAD
       as well, if they apply.  Logical progression is commit to HEAD,
       get feedback and then commit to APACHE_2_0_BRANCH.
-
-RELEASE SHOWSTOPPERS:
-
-
 
 CURRENT VOTES:
 
