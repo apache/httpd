@@ -148,15 +148,6 @@ Available Patches:
 		   <http://www.physics.mcgill.ca/~juan/mod_include.patch>
 	Status: Ken -0 for 1.3/+0 for 2.0
 
-    * Patches for the DSO/mod_perl problem (see below for description):
-
-      Ralf's "[PATCH] Fix module init"
-      This fixes the mod_so/mod_perl problems described under "FINAL RELEASE
-      SHOWSTOPPERS" by doing a more correct init of the modules after loading
-      through two new core API functions.
-	Message-ID: <19980611171746.A23845@engelschall.com>
-	Status: Ralf +1, Lars +1
-
 In progress:
  
     * Addition of "cute little icons" to Apache's main icon groups.
@@ -167,27 +158,6 @@ In progress:
       CustomLog-like tailoring of directory listing formats
 
 Needs patch:
-
-    * Ralf: mod_so doesn't correctly initialise modules. For instance
-      the handlers of mod_perl are not initialised. 
-      An ap_init_modules() could be done from mod_so but this is too much.
-
-      I've already debugged this up to ap_invoke_handler() and it correctly
-      sees the handlers from mod_perl ("perl-script") and actually runs them.
-      But under DSO situation it returns DECLINED while under non-DSO
-      situation it runs fine. Sure, its mod_perl's fault because its mod_perl
-      code which returns DECLINED.  But it definitely seems to be caused by a
-      missing init in mod_so under DSO situation. I've already asked Doug for
-      hints but he has not had a chance to look into it.
-
-      Currently at least mod_perl is broken under the DSO situation because of
-      this missing init in mod_so. But perhaps there are more modules which
-      have the same problem. This should be fixed for 1.3.2 or at least found
-      out why it is happening!
-
-      Current status: We have two patches available (see above) but still don't
-                      know the real reason. And the patches work not under
-                      all platforms :-(
 
     * get_path_info bug; ap_get_remote_host should be ap_vformatter instead.
       See: <Pine.LNX.3.96dg4.980427034301.16648P-100000@twinlark.arctic.org>
