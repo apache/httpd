@@ -9,9 +9,6 @@ Changes with Apache 2.1.0-dev
   *) Alter mod_expires to run at a different filter priority to allow
      proper Expires storage by mod_cache.  [Justin Erenkrantz]
 
-  *) Fix the global mutex crash when the global mutex is never allocated due
-     to disabled/empty caches. [Jess Holle <jessh ptc.com>]
-
   *) Fix a segfault in the LDAP cache purge. [Jess Holle <jessh ptc.com>]
 
   *) mod_rewrite: Handle per-location rules when r->filename is unset.
@@ -420,6 +417,9 @@ Changes with Apache 2.1.0-dev
    Apache 2.0.xx tree as documented, and except as noted, below.]
 
 Changes with Apache 2.0.52
+
+  *) Fix the global mutex crash when the global mutex is never allocated due
+     to disabled/empty caches. [Jess Holle <jessh ptc.com>]
 
   *) SECURITY: CAN-2004-0811 (cve.mitre.org)
      Fix merging of the Satisfy directive, which was applied to
