@@ -63,7 +63,7 @@ LT_TARGETS = ltconfig ltmain.sh config.guess config.sub
 config_h_in = include/ap_config_auto.h.in
 apr_private.h_in = lib/apr/include/apr_private.h.in
 apr_configure = lib/apr/configure
-mm_configure = lib/apr/shmem/mm/configure
+mm_configure = lib/apr/shmem/unix/mm/configure
 
 APACHE_TARGETS = $(TOUCH_FILES) $(LT_TARGETS) configure $(config_h_in)
 
@@ -78,7 +78,7 @@ all: $(targets)
 
 libtool_m4 = $(libtool_prefix)/share/aclocal/libtool.m4
 
-aclocal.m4: acinclude.m4 $(libtool_m4)
+aclocal.m4: acinclude.m4 lib/apr/threads.m4 $(libtool_m4)
 	@echo rebuilding $@
 	@cat acinclude.m4 $(libtool_m4) > $@
 
