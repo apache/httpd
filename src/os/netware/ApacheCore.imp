@@ -79,6 +79,7 @@
  ap_each_byterange,
  ap_error_log2stderr,
  ap_escape_html,
+ ap_escape_logitem,
  ap_escape_path_segment,
  ap_escape_quotes,
  ap_escape_shell_cmd,
