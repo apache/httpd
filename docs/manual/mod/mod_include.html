@@ -87,6 +87,13 @@ Options</CODE> is set):</p>
 Options +Includes
 </code></blockquote>
 
+<p>For backwards compatibility, the <code>server-parsed</code> <a
+href="../handler.html">handler</a> also activates the INCLUDES filter.
+As well, Apache will activate the INCLUDES filter for any document
+with mime type <code>text/x-server-parsed-html</code> or
+<code>text/x-server-parsed-html3</code> (and the resulting output will
+have the mime type <code>text/html</code>).</p>
+
 <p>For more information, see our <a href="../howto/ssi.html">Tutorial
 on Server Side Includes</a>.</p>
 
