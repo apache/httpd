@@ -50,7 +50,7 @@
 # 
 # Makefile for the Apache proxy library
 # 
-# $Id: Makefile,v 1.5 1996/10/09 14:52:54 chuck Exp $
+# $Id: Makefile,v 1.6 1996/10/09 17:18:28 chuck Exp $
 #
 
 SHELL = /bin/sh
@@ -60,7 +60,7 @@ INCDIR=../..
 LIB=libproxy.a
 
 # AUX_CFLAGS comes from higher level Makefile
-CFLAGS=-I. -I$(INCDIR) $(AUX_CFLAGS)
+CFLAGS=-I. -I$(INCDIR) -I$(INCDIR)/regex $(AUX_CFLAGS)
 
 # Internal stuff, should not need changing.
 PROXYSRC=mod_proxy.c proxy_cache.c proxy_connect.c proxy_ftp.c proxy_http.c \
