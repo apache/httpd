@@ -72,7 +72,7 @@ HOOK_STRUCT(
 IMPLEMENT_HOOK_VOID(pre_connection,(conn_rec *c),(c))
 IMPLEMENT_HOOK_RUN_FIRST(int,process_connection,(conn_rec *c),(c),DECLINED)
 
-/* TODO: re ap_context_t mplement the lingering close stuff */
+/* TODO: reimplement the lingering close stuff */
 #define NO_LINGCLOSE
 
 /*
