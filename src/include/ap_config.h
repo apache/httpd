@@ -621,6 +621,9 @@ every configuration function as __stdcall.
 #ifndef MODULE_VAR_EXPORT
 #define MODULE_VAR_EXPORT
 #endif
+#ifndef API_VAR_EXPORT
+#define API_VAR_EXPORT
+#endif
 
 /* Do we have sys/resource.h; assume that BSD does. */
 #ifndef HAVE_SYS_RESOURCE_H
