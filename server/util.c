@@ -867,13 +867,6 @@ AP_DECLARE(apr_status_t) ap_pcfg_openfile(ap_configfile_t **ret_cfg, apr_pool_t 
         return APR_EBADF;
     }
 
-    /* ### We no longer need the test ap_os_is_filename_valid() here
-     * The directory was already walked on a segment by segment basis,
-     * so we should never be called with a bad path element, and device 
-     * names as access file names never posed as security threats, since 
-     * it was the admin's choice to assign the .htaccess file's name.
-     */
-
     status = apr_file_open(&file, name, APR_READ | APR_BUFFERED, APR_OS_DEFAULT, p);
 #ifdef DEBUG
     ap_log_error(APLOG_MARK, APLOG_DEBUG | APLOG_NOERRNO, 0, NULL,
@@ -890,9 +883,7 @@ AP_DECLARE(apr_status_t) ap_pcfg_openfile(ap_configfile_t **ret_cfg, apr_pool_t 
 
     if (finfo.filetype != APR_REG &&
 #if defined(WIN32) || defined(OS2)
-        !(strcasecmp(name, "nul") == 0 ||
-          (strlen(name) >= 4 &&
-           strcasecmp(name + strlen(name) - 4, "/nul") == 0))) {
+        strcasecmp(apr_filename_of_pathname(name), "nul") != 0) {
 #else
         strcmp(name, "/dev/null") != 0) {
 #endif /* WIN32 || OS2 */
