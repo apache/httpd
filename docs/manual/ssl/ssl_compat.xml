@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
-<!-- $Revision: 1.11 $ -->
+<!-- $Revision: 1.12 $ -->
 
 <!--
  Copyright 2002-2004 The Apache Software Foundation
@@ -47,12 +47,11 @@ on a different evolution branch named Sioux up to Stronghold 2.x and
 based on mod_ssl since Stronghold 3.x).</p>
 
 <p>
-mod_ssl mostly provides a superset of the functionality of all other
+mod_ssl mostly provides a superset of the functionality of all the other
 solutions, so it's simple to migrate from one of the older modules to
 mod_ssl. The configuration directives and environment variable names
 used by the older SSL solutions vary from those used in mod_ssl;
-tables are included here to give the equivalents used by mod_ssl to
-allow easy migration. .</p>
+mapping tables are included here to give the equivalents used by mod_ssl.</p>
 </summary>
 
 <section id="configuration"><title>Configuration Directives</title>
