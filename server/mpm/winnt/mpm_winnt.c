@@ -923,6 +923,7 @@ static ap_inline ap_status_t reset_acceptex_context(PCOMP_CONTEXT context)
                          "reset_acceptex_context: AcceptEx failed for "
                          "listening socket: %d and accept socket: %d", 
                          nsd, context->accept_socket);
+            context->accept_socket = INVALID_SOCKET;
             return lasterror;
         }
     }
@@ -1078,6 +1079,7 @@ static void worker_main(int child_num)
 
         ap_process_connection(current_conn);
         ap_lingering_close(current_conn);
+        context->accept_socket = INVALID_SOCKET;
     }
 
     ap_log_error(APLOG_MARK, APLOG_INFO, APR_SUCCESS, server_conf,
