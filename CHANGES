@@ -2,6 +2,10 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) Fix a potential SEGV in the 'shmcb' session cache when session data
+     size is greater than the size of the cache. PR 27751
+     [Geoff Thorpe <geoff geoffthorpe.net>]
+
   *) Proxy server was deleting cookies that Apache had already
      assigned if the origin server had set any cookies. PR 27023.
      [Jim Jagielski]
