@@ -5,7 +5,10 @@ httpd
 Makefile.config
 *.mdp
 *.ncb
-Release
-Debug
+*.dsw
+*.opt
+ApacheD
+ApacheR
 CoreD
-LaunchD
+CoreR
+
