@@ -325,7 +325,8 @@ static apr_status_t deflate_out_filter(ap_filter_t *f,
         }
 
         /* Let's see what our current Content-Encoding is.
-         * If gzip is present, don't gzip again.  (We could, but let's not.)
+         * If it's already encoded, don't compress again.
+         * (We could, but let's not.)
          */
         encoding = apr_table_get(r->headers_out, "Content-Encoding");
         if (encoding) {
@@ -350,14 +351,20 @@ static apr_status_t deflate_out_filter(ap_filter_t *f,
             const char *tmp = encoding;
 
             token = ap_get_token(r->pool, &tmp, 0);
-            while (token && token[0]) {
-                if (!strcasecmp(token, "gzip")) {
+            while (token && *token) {
+                /* stolen from mod_negotiation: */
+                if (strcmp(token, "identity") && strcmp(token, "7bit") &&
+                    strcmp(token, "8bit") && strcmp(token, "binary")) {
+
                     ap_remove_output_filter(f);
                     return ap_pass_brigade(f->next, bb);			
                 }
+
                 /* Otherwise, skip token */
-                tmp++;
-                token = ap_get_token(r->pool, &tmp, 0);
+                if (*tmp) {
+                    ++tmp;
+                }
+                token = (*tmp) ? ap_get_token(r->pool, &tmp, 0) : NULL;
             }
         }
 
@@ -376,9 +383,17 @@ static apr_status_t deflate_out_filter(ap_filter_t *f,
 
         token = ap_get_token(r->pool, &accepts, 0);
         while (token && token[0] && strcasecmp(token, "gzip")) {
-            /* skip token */
-            accepts++;
-            token = ap_get_token(r->pool, &accepts, 0);
+            /* skip parameters, XXX: ;q=foo evaluation? */
+            while (*accepts == ';') { 
+                ++accepts;
+                token = ap_get_token(r->pool, &accepts, 1);
+            }
+
+            /* retrieve next token */
+            if (*accepts == ',') {
+                ++accepts;
+            }
+            token = (*accepts) ? ap_get_token(r->pool, &accepts, 0) : NULL;
         }
 
         /* No acceptable token found. */
