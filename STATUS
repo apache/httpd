@@ -1,5 +1,5 @@
 Apache 2.0 STATUS:
-Last modified at [$Date: 2000/07/11 21:09:58 $]
+Last modified at [$Date: 2000/07/12 05:01:27 $]
 
 Release:
 
@@ -229,8 +229,6 @@ Documentation that needs writing:
       which includes some of Roy's comments when the changes were
       committed in rough change-sets by purpose.  Note that the commitlog
       does not show the contents of new files until later.
-
-    * mod_dav documentation (once integrated)
 
 Available Patches:
 
