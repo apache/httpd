@@ -994,6 +994,9 @@ static const char *set_options(cmd_parms *cmd, core_dir_config *d,
 	else if (!strcasecmp(w, "RunScripts")) { /* AI backcompat. Yuck */
 	    opt = OPT_MULTI|OPT_EXECCGI;
 	}
+	else if (!strcasecmp(w, "DebugServerErrors")) {
+	    opt = OPT_DEBUG500;
+	}
 	else if (!strcasecmp(w, "None")) {
 	    opt = OPT_NONE;
 	}

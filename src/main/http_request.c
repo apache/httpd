@@ -464,10 +464,12 @@ static int directory_walk(request_rec *r)
             if (res)
                 return res;
 
-            if (htaccess_conf)
-                per_dir_defaults =
-                    ap_merge_per_dir_configs(r->pool, per_dir_defaults,
-                                          htaccess_conf);
+            if (htaccess_conf) {
+                per_dir_defaults = ap_merge_per_dir_configs(r->pool,
+							    per_dir_defaults,
+							    htaccess_conf);
+		r->per_dir_config = per_dir_defaults;
+	    }
         }
     }
 
