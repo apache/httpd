@@ -689,7 +689,7 @@ void timeout(int sig)			/* Also called on SIGPIPE */
     if (timeout_req != NULL) dirconf = timeout_req->per_dir_config;
     else dirconf = current_conn->server->lookup_defaults;
     if (sig == SIGPIPE) {
-        ap_snprintf(errstr, sizeof(errstr), "%s lost connection to client %s",
+        ap_snprintf(errstr, sizeof(errstr), "%s lost connection to %s",
 		    timeout_name ? timeout_name : "request",
 		    get_remote_host(current_conn, dirconf, REMOTE_NAME));
     } else {
