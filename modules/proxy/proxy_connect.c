@@ -23,7 +23,8 @@
 module AP_MODULE_DECLARE_DATA proxy_connect_module;
 
 int ap_proxy_connect_canon(request_rec *r, char *url);
-int ap_proxy_connect_handler(request_rec *r, proxy_server_conf *conf, 
+int ap_proxy_connect_handler(request_rec *r, proxy_worker *worker,
+                             proxy_server_conf *conf, 
                              char *url, const char *proxyname, 
                              apr_port_t proxyport);
 
@@ -77,7 +78,8 @@ int ap_proxy_connect_canon(request_rec *r, char *url)
 }
 
 /* CONNECT handler */
-int ap_proxy_connect_handler(request_rec *r, proxy_server_conf *conf, 
+int ap_proxy_connect_handler(request_rec *r, proxy_worker *worker,
+                             proxy_server_conf *conf, 
                              char *url, const char *proxyname, 
                              apr_port_t proxyport)
 {
