@@ -53,16 +53,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib ws2_32.lib mswsock.lib /nologo /subsystem:windows /dll /machine:I386 /out:"Release/mod_proxy.so" /base:@..\..\os\win32\BaseAddr.ref,mod_proxy.so
-# ADD LINK32 kernel32.lib ws2_32.lib mswsock.lib /nologo /subsystem:windows /dll /incremental:no /debug /debugtype:both /machine:I386 /out:"Release/mod_proxy.so" /pdbtype:sept /base:@..\..\os\win32\BaseAddr.ref,mod_proxy.so
-# Begin Custom Build - Extracting .dbg symbols from $(InputPath)
-InputPath=.\Release\mod_proxy.so
-SOURCE="$(InputPath)"
-
-".\Release\mod_proxy.dbr" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	rebase -q -p -i "../../os/win32/BaseAddr.ref" -x ".\Release" $(InputPath)
-	echo rebased > ".\Release\mod_proxy.dbr"
-
-# End Custom Build
+# ADD LINK32 kernel32.lib ws2_32.lib mswsock.lib /nologo /subsystem:windows /dll /incremental:no /debug /machine:I386 /out:"Release/mod_proxy.so" /base:@..\..\os\win32\BaseAddr.ref,mod_proxy.so /opt:ref
 
 !ELSEIF  "$(CFG)" == "mod_proxy - Win32 Debug"
 

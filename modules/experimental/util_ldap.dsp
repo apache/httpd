@@ -53,16 +53,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib /nologo /subsystem:windows /dll /machine:I386 /out:"Release/util_ldap.so" /base:@..\..\os\win32\BaseAddr.ref,util_ldap.so
-# ADD LINK32 kernel32.lib wldap32.lib /nologo /subsystem:windows /dll /incremental:no /debug /debugtype:both /machine:I386 /out:"Release/util_ldap.so" /pdbtype:sept /base:@..\..\os\win32\BaseAddr.ref,util_ldap.so
-# Begin Custom Build - Extracting .dbg symbols from $(InputPath)
-InputPath=.\Release\util_ldap.so
-SOURCE="$(InputPath)"
-
-".\Release\util_ldap.dbr" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	rebase -q -p -i "../../os/win32/BaseAddr.ref" -x ".\Release" $(InputPath)
-	echo rebased > ".\Release\util_ldap.dbr"
-
-# End Custom Build
+# ADD LINK32 kernel32.lib wldap32.lib /nologo /subsystem:windows /dll /incremental:no /debug /machine:I386 /out:"Release/util_ldap.so" /base:@..\..\os\win32\BaseAddr.ref,util_ldap.so /opt:ref
 
 !ELSEIF  "$(CFG)" == "util_ldap - Win32 Debug"
 

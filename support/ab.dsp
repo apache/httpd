@@ -50,16 +50,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib wsock32.lib ws2_32.lib /nologo /subsystem:console /machine:I386
-# ADD LINK32 kernel32.lib advapi32.lib wsock32.lib ws2_32.lib /nologo /subsystem:console /debug /debugtype:both /machine:I386 /pdbtype:sept
-# Begin Custom Build - Extracting .dbg symbols from $(InputPath)
-InputPath=.\Release\ab.so
-SOURCE="$(InputPath)"
-
-".\Release\ab.dbr" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	rebase -q -p -b 0x00400000 -x ".\Release" $(InputPath)
-	echo rebased > ".\Release\ab.dbr"
-
-# End Custom Build
+# ADD LINK32 kernel32.lib advapi32.lib wsock32.lib ws2_32.lib /nologo /subsystem:console /debug /machine:I386 /opt:ref
 
 !ELSEIF  "$(CFG)" == "ab - Win32 Debug"
 

@@ -53,16 +53,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib /nologo /subsystem:windows /dll /machine:I386 /out:"Release/mod_auth_basic.so" /base:@..\..\os\win32\BaseAddr.ref,mod_auth_basic.so
-# ADD LINK32 kernel32.lib /nologo /subsystem:windows /dll /incremental:no /debug /debugtype:both /machine:I386 /out:"Release/mod_auth_basic.so" /pdbtype:sept /base:@..\..\os\win32\BaseAddr.ref,mod_auth_basic.so
-# Begin Custom Build - Extracting .dbg symbols from $(InputPath)
-InputPath=.\Release\mod_auth_basic.so
-SOURCE="$(InputPath)"
-
-".\Release\mod_auth_basic.dbr" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	rebase -q -p -i "../../os/win32/BaseAddr.ref" -x ".\Release" $(InputPath)
-	echo rebased > ".\Release\mod_auth_basic.dbr"
-
-# End Custom Build
+# ADD LINK32 kernel32.lib /nologo /subsystem:windows /dll /incremental:no /debug /machine:I386 /out:"Release/mod_auth_basic.so" /base:@..\..\os\win32\BaseAddr.ref,mod_auth_basic.so /opt:ref
 
 !ELSEIF  "$(CFG)" == "mod_auth_basic - Win32 Debug"
 
