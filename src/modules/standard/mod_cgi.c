@@ -388,7 +388,7 @@ int cgi_handler (request_rec *r)
     cld.argv0 = argv0; cld.r = r; cld.nph = nph;
     cld.debug = conf->logname ? 1 : 0;
     
-    if (!spawn_child (r->connection->pool, cgi_child, (void *)&cld,
+    if (!spawn_child_err (r->connection->pool, cgi_child, (void *)&cld,
 		      nph ? just_wait : kill_after_timeout,
 #ifdef __EMX__
 		      &script_out, &script_in, &script_err)) {
