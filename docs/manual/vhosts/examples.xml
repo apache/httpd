@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
-<!-- $Revision: 1.9 $ -->
+<!-- $Revision: 1.10 $ -->
 
 <!--
  Copyright 2002-2004 The Apache Software Foundation
@@ -40,7 +40,7 @@
 
     <p>Your server has a single IP address, and multiple aliases (CNAMES)
     point to this machine in DNS. You want to run a web server for
-    <code>www.example1.com</code> and <code>www.example2.org</code> on this
+    <code>www.example.com</code> and <code>www.example.org</code> on this
     machine.</p>
 
     <note><title>Note</title><p>Creating virtual
@@ -65,7 +65,7 @@
     &lt;VirtualHost *:80&gt;<br />
     <indent>
       DocumentRoot /www/example1<br />
-      ServerName www.example1.com<br />
+      ServerName www.example.com<br />
       <br />
       # Other directives here<br />
       <br />
@@ -75,7 +75,7 @@
     &lt;VirtualHost *:80&gt;<br />
     <indent>
       DocumentRoot /www/example2<br />
-      ServerName www.example2.org<br />
+      ServerName www.example.org<br />
       <br />
       # Other directives here<br />
       <br />
@@ -84,7 +84,7 @@
     </example>
 
     <p>The asterisks match all addresses, so the main server serves no
-    requests. Due to the fact that <code>www.example1.com</code> is first
+    requests. Due to the fact that <code>www.example.com</code> is first
     in the configuration file, it has the highest priority and can be seen
     as the <cite>default</cite> or <cite>primary</cite> server. That means
     that if a request is received that does not match one of the specified
@@ -150,7 +150,7 @@
     &lt;VirtualHost 172.20.30.50&gt;<br />
     <indent>
         DocumentRoot /www/example1<br />
-        ServerName www.example1.com<br />
+        ServerName www.example.com<br />
    			<br />
         # Other directives here ...<br />
 				<br />
@@ -160,7 +160,7 @@
     &lt;VirtualHost 172.20.30.50&gt;<br />
     <indent>
         DocumentRoot /www/example2<br />
-        ServerName www.example2.org<br />
+        ServerName www.example.org<br />
 				<br />
         # Other directives here ...<br />
 				<br />
@@ -171,7 +171,7 @@
     <p>Any request to an address other than <code>172.20.30.50</code> will be
     served from the main server. A request to <code>172.20.30.50</code> with an
     unknown hostname, or no <code>Host:</code> header, will be served from
-    <code>www.example1.com</code>.</p>
+    <code>www.example.com</code>.</p>
 
 	</section>
 
@@ -242,28 +242,28 @@
 		<br />
     &lt;VirtualHost 172.20.30.40:80&gt;<br />
     <indent>
-        ServerName www.example1.com<br />
+        ServerName www.example.com<br />
         DocumentRoot /www/domain-80<br />
     </indent>
     &lt;/VirtualHost&gt;<br />
 		<br />
     &lt;VirtualHost 172.20.30.40:8080&gt;<br />
     <indent>
-        ServerName www.example1.com<br />
+        ServerName www.example.com<br />
         DocumentRoot /www/domain-8080<br />
     </indent>
     &lt;/VirtualHost&gt;<br />
 		<br />
     &lt;VirtualHost 172.20.30.40:80&gt;<br />
     <indent>
-        ServerName www.example2.org<br />
+        ServerName www.example.org<br />
         DocumentRoot /www/otherdomain-80<br />
     </indent>
     &lt;/VirtualHost&gt;<br />
 		<br />
     &lt;VirtualHost 172.20.30.40:8080&gt;<br />
     <indent>
-        ServerName www.example2.org<br />
+        ServerName www.example.org<br />
         DocumentRoot /www/otherdomain-8080<br />
     </indent>
     &lt;/VirtualHost&gt;
@@ -275,7 +275,7 @@
 
     <p>The server has two IP addresses (<code>172.20.30.40</code> and
     <code>172.20.30.50</code>) which resolve to the names
-    <code>www.example1.com</code> and <code>www.example2.org</code>
+    <code>www.example.com</code> and <code>www.example.org</code>
     respectively.</p>
 
     <example>
@@ -286,14 +286,14 @@
     &lt;VirtualHost 172.20.30.40&gt;<br />
     <indent>
         DocumentRoot /www/example1<br />
-        ServerName www.example1.com<br />
+        ServerName www.example.com<br />
     </indent>
     &lt;/VirtualHost&gt;<br />
 		<br />
     &lt;VirtualHost 172.20.30.50&gt;<br />
     <indent>
         DocumentRoot /www/example2<br />
-        ServerName www.example2.org<br />
+        ServerName www.example.org<br />
     </indent>
     &lt;/VirtualHost&gt;
     </example>
@@ -310,7 +310,7 @@
 
     <p>The server machine has two IP addresses (<code>172.20.30.40</code> and
     <code>172.20.30.50</code>) which resolve to the names
-    <code>www.example1.com</code> and <code>www.example2.org</code>
+    <code>www.example.com</code> and <code>www.example.org</code>
     respectively. In each case, we want to run hosts on ports 80 and
     8080.</p>
 
@@ -325,28 +325,28 @@
     &lt;VirtualHost 172.20.30.40:80&gt;<br />
     <indent>
         DocumentRoot /www/example1-80<br />
-        ServerName www.example1.com<br />
+        ServerName www.example.com<br />
     </indent>
     &lt;/VirtualHost&gt;<br />
 		<br />
     &lt;VirtualHost 172.20.30.40:8080&gt;<br />
     <indent>
         DocumentRoot /www/example1-8080<br />
-        ServerName www.example1.com<br />
+        ServerName www.example.com<br />
 		</indent>
     &lt;/VirtualHost&gt;<br />
 		<br />
     &lt;VirtualHost 172.20.30.50:80&gt;<br />
     <indent>
         DocumentRoot /www/example2-80<br />
-        ServerName www.example1.org<br />
+        ServerName www.example.org<br />
     </indent>
     &lt;/VirtualHost&gt;<br />
 		<br />
     &lt;VirtualHost 172.20.30.50:8080&gt;<br />
     <indent>
         DocumentRoot /www/example2-8080<br />
-        ServerName www.example2.org<br />
+        ServerName www.example.org<br />
     </indent>
     &lt;/VirtualHost&gt;
     </example>
@@ -369,14 +369,14 @@
     &lt;VirtualHost 172.20.30.40&gt;<br />
     <indent>
         DocumentRoot /www/example1<br />
-        ServerName www.example1.com<br />
+        ServerName www.example.com<br />
     </indent>
     &lt;/VirtualHost&gt;<br />
 		<br />
     &lt;VirtualHost 172.20.30.40&gt;<br />
     <indent>
         DocumentRoot /www/example2<br />
-        ServerName www.example2.org<br />
+        ServerName www.example.org<br />
     </indent>
     &lt;/VirtualHost&gt;<br />
 		<br />
@@ -495,7 +495,7 @@
     IP-based vhost</title>
 
     <p>The name-based vhost with the hostname
-    <code>www.example2.org</code> (from our <a
+    <code>www.example.org</code> (from our <a
     href="#name">name-based</a> example, setup 2) should get its own IP
     address. To avoid problems with name servers or proxies who cached the
     old IP address for the name-based vhost we want to provide both
@@ -508,7 +508,7 @@
     <title>Server configuration</title>
 
     Listen 80<br />
-    ServerName www.example1.com<br />
+    ServerName www.example.com<br />
     DocumentRoot /www/example1<br />
 		<br />
     NameVirtualHost 172.20.30.40<br />
@@ -516,7 +516,7 @@
     &lt;VirtualHost 172.20.30.40 172.20.30.50&gt;<br />
     <indent>
         DocumentRoot /www/example2<br />
-        ServerName www.example2.org<br />
+        ServerName www.example.org<br />
         # ...<br />
     </indent>
     &lt;/VirtualHost&gt;<br />
@@ -524,8 +524,8 @@
     &lt;VirtualHost 172.20.30.40&gt;<br />
     <indent>
         DocumentRoot /www/example3<br />
-        ServerName www.example3.net<br />
-        ServerAlias *.example3.net<br />
+        ServerName www.example.net<br />
+        ServerAlias *.example.net<br />
         # ...<br />
     </indent>
     &lt;/VirtualHost&gt;
