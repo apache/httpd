@@ -898,15 +898,15 @@ static const char *cmd_parseflagfield(apr_pool_t *p, void *cfg, char *key,
                                                            void *,
                                                            char *, char *))
 {
-    apr_size_t last = strlen(key) - 1;
     char *val, *nextp, *endp;
     const char *err;
 
-    if (*key != '[' || key[last] != ']') {
+    endp = key + strlen(key) - 1;
+    if (*key != '[' || *endp != ']') {
         return "RewriteCond: bad flag delimiters";
     }
 
-    key[last] = ','; /* for simpler parsing */
+    *endp = ','; /* for simpler parsing */
     ++key;
 
     while (*key) {
