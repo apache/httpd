@@ -177,7 +177,7 @@ static void *merge_core_dir_configs(apr_pool_t *a, void *basev, void *newv)
      * (or creating copies for merging) where new-> values exist.
      */
     conf = (core_dir_config *)apr_palloc(a, sizeof(core_dir_config));
-    memcpy((char *)conf, (const char *)base, sizeof(core_dir_config));
+    memcpy(conf, base, sizeof(core_dir_config));
 
     conf->d = new->d;
     conf->d_is_fnmatch = new->d_is_fnmatch;
@@ -351,7 +351,7 @@ static void *merge_core_server_configs(apr_pool_t *p, void *basev, void *virtv)
     core_server_config *conf;
 
     conf = (core_server_config *)apr_palloc(p, sizeof(core_server_config));
-    memcpy(conf. virt, sizeof(core_server_config));
+    memcpy(conf, virt, sizeof(core_server_config));
     if (!conf->access_name) {
         conf->access_name = base->access_name;
     }
