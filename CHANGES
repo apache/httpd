@@ -1,5 +1,15 @@
 Changes with Apache 2.0.33-dev
 
+  *) Fix bug where --sysconfdir and --localstatedir were being
+     ignored.  [Thom May <thom@planetarytramp.net>, Aaron Bannert]
+     PR 9888
+
+  *) Fix --enable-layout to work again. Caution: When specifying
+     --enable-layout, common arguments like --prefix, --exec-prefix,
+     etc. will be ignored and the settings from the layout will be
+     used instead.  [Thom May <thom@planetarytramp.net>, Aaron Bannert]
+     PR 9124, 9873, 9885
+
   *) New Directive for mod_proxy: ProxyRemoteMatch. This provides
      regex pattern matching for the determination of which requests
      to use the remote proxy for. [Jim Jagielski]
