@@ -69,7 +69,8 @@
     directory, and all subdirectories thereof.</p>
 
     <p>Note: If you want to call your .htaccess file something else, you can
-    change the name of the file using the AccessFileName directive. For
+    change the name of the file using the <a
+    href="../mod/core.html#accessfilename">AccessFileName</a> directive. For
     example, if you would rather call the file .config then you can put the
     following in your server configuration file:</p>
 
@@ -84,18 +85,25 @@
     contain an Override section, specifying what value must be in
     AllowOverride in order for that directive to be permitted.</p>
 
-    <p>For example, if you look at the docs for the AddDefaultCharset
+    <p>For example, if you look at the docs for the <a
+    href="../mod/core.html#adddefaultcharset">AddDefaultCharset</a>
     directive, you will find that it is permitted in .htaccess files. (See
-    the Context line in the directive summary.) The Override line reads
+    the Context line in the directive summary.) The <a
+    href="../mod/directive-dict.html#Context">Override</a> line reads
     "FileInfo". Thus, you must have at least "AllowOverride FileInfo" in
     order for this directive to be honored in .htaccess files.</p>
 
     <p>Example:</p>
 
-<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>
-  Context:  server config, virtual host, directory, .htaccess<br>
-  Override:  FileInfo
-</code></td></tr></table></blockquote>
+<blockquote><table>
+<tr><td>
+<a href="../mod/directive-dict.html#Context">Context:</a></td>
+<td>server config, virtual host, directory, .htaccess</td></tr>
+
+<tr><td>
+<a href="directive-dict.html#Override">Override:</a></td>
+<td>FileInfo</td></tr>
+</table></blockquote>
 
     <p>If you are unsure whether a particular diretive is permitted in a
     .htaccess file, look at the documentation for that directive, and check
@@ -119,7 +127,8 @@
 
     <p>However, in general, use of .htaccess files should be avoided when
     possible. Any configuration that you would consider putting in a
-    .htaccess file, can just as effectively be made in a &lt;Directory&gt;
+    .htaccess file, can just as effectively be made in a <a 
+    href="../mod/core.html#Directory">&lt;Directory&gt;</a>
     section in your main server configuration file.</p>
 
     <p>There are two main reasons to avoid the use of .htaccess files.</p>
@@ -251,8 +260,8 @@ Options Includes
     <p>Note that AllowOverride AuthConfig must be in effect for these
     directives to have any effect.</p>
 
-    <p>Please see the authentication tutorial for a more complete discussion
-    of authentication and authorization.</p>
+    <p>Please see the <a href="auth.html">authentication tutorial</a>
+    for a more complete discussion of authentication and authorization.</p>
 
     <h2><a id="ssi" name="ssi">SSI example</a></h2>
 
@@ -269,6 +278,9 @@ Options Includes
 
     <p>Note that AllowOverride Options and AllowOverride FileInfo must both
     be in effect for these directives to have any effect.</p>
+
+    <p>Please see the <a href="ssi.html">SSI tutorial</a> for a more
+    complete discussion of server-side includes.</p>
 
     <h2><a id="cgi" name="cgi">CGI example</a></h2>
 
@@ -293,13 +305,17 @@ Options Includes
     <p>Note that AllowOverride Options must be in effect for these directives
     to have any effect.</p>
 
+    <p>Please see the <a href="cgi.html">CGI tutorial</a> for a more
+    complete discussion of CGI programming and configuration.</p>
+
     <h2><a id="troubleshoot" name="troubleshoot">Troubleshooting</a></h2>
 
     <p>When you put configuration directives in a .htaccess file, and you
     don't get the desired effect, there are a number of things that may be
     going wrong.</p>
 
-    <p>Most commonly, the problem is that AllowOverride is not set such that
+    <p>Most commonly, the problem is that <a 
+    href="../mod/core.html#allowoverride">AllowOverride</a> is not set such that
     your configuration directives are being honored. Make sure that you don't
     have a AllowOverride None in effect for the file scope in question. A
     good test for this is to put garbage in your .htaccess file and reload.
