@@ -1,10 +1,10 @@
 <?xml version='1.0' encoding='iso-2022-jp' ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
-<!-- English revision: 1.3 -->
+<!-- English revision: 1.8 -->
 
 <manualpage metafile="fd-limits.xml.meta">
-
+<parentdocument href="./">バーチャルホスト</parentdocument>
   <title>ファイル記述子の限界</title>
 
 <summary>
@@ -58,13 +58,6 @@
         </example>
       </li>
     </ul>
-
-    <p>ファイル記述子の問題についての詳細や、
-    オペレーティングシステムごとの解決方法については「<a
-    href="../misc/descriptors.html">ファイル記述子と
-    Apache</a>」の文書を参照してください。
-    </p>
-
 </summary>
 
 <section id="splitlogs"><title>ログファイルの分割</title>
