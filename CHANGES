@@ -2,6 +2,10 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) Let suexec send a message to stderr, if it failed or its policy
+     was violated. This message appears in the error log and allows
+     for easier debugging. PR 10773.  [André Malo]
+
   *) Try to log an error if a piped log program fails.  Try to
      restart a piped log program in more failure situations.  PR 15761
      [Jeff Trawick]

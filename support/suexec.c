@@ -170,7 +170,7 @@ char *safe_env_lst[] =
 };
 
 
-static void err_output(const char *fmt, va_list ap)
+static void err_output(int is_error, const char *fmt, va_list ap)
 {
 #ifdef AP_LOG_EXEC
     time_t timevar;
@@ -178,10 +178,15 @@ static void err_output(const char *fmt, va_list ap)
 
     if (!log) {
         if ((log = fopen(AP_LOG_EXEC, "a")) == NULL) {
-            fprintf(stderr, "failed to open log file\n");
+            fprintf(stderr, "suexec failure: could not open log file\n");
             perror("fopen");
             exit(1);
         }
+    }
+
+    if (is_error) {
+        fprintf(stderr, "suexec policy violation: see suexec log for more "
+                        "details\n");
     }
 
     time(&timevar);
@@ -204,7 +209,19 @@ static void log_err(const char *fmt,...)
     va_list ap;
 
     va_start(ap, fmt);
-    err_output(fmt, ap);
+    err_output(1, fmt, ap); /* 1 == is_error */
+    va_end(ap);
+#endif /* AP_LOG_EXEC */
+    return;
+}
+
+static void log_no_err(const char *fmt,...)
+{
+#ifdef AP_LOG_EXEC
+    va_list ap;
+
+    va_start(ap, fmt);
+    err_output(0, fmt, ap); /* 0 == !is_error */
     va_end(ap);
 #endif /* AP_LOG_EXEC */
     return;
@@ -441,10 +458,10 @@ int main(int argc, char *argv[])
      * Log the transaction here to be sure we have an open log 
      * before we setuid().
      */
-    log_err("uid: (%s/%s) gid: (%s/%s) cmd: %s\n",
-            target_uname, actual_uname,
-            target_gname, actual_gname,
-            cmd);
+    log_no_err("uid: (%s/%s) gid: (%s/%s) cmd: %s\n",
+               target_uname, actual_uname,
+               target_gname, actual_gname,
+               cmd);
 
     /*
      * Error out if attempt is made to execute as root or as
