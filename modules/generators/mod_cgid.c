@@ -1355,11 +1355,13 @@ static int cgid_handler(request_rec *r)
                               cleanup_script,
                               apr_pool_cleanup_null);
     /* We are putting the socket discriptor into an apr_file_t so that we can
-     * use a pipe bucket to send the data to the client.
-     * Note that this does not register a cleanup for the socket.  We did
-     * that explicitly right after we created the socket.
+     * use a pipe bucket to send the data to the client.  APR will create
+     * a cleanup for the apr_file_t which will close the socket, so we'll
+     * get rid of the cleanup we registered when we created the socket.
      */
-    apr_os_pipe_put(&tempsock, &sd, r->pool);
+    
+    apr_os_pipe_put_ex(&tempsock, &sd, 1, r->pool);
+    apr_pool_cleanup_kill(r->pool, (void *)sd, close_unix_socket);
 
     if ((argv0 = strrchr(r->filename, '/')) != NULL) 
         argv0++; 
@@ -1492,24 +1494,12 @@ static int cgid_handler(request_rec *r)
             return HTTP_MOVED_TEMPORARILY; 
         } 
 
-        /* Passing our socket down the filter chain in a pipe bucket
-         * gives up the responsibility of closing the socket, so
-         * get rid of the cleanup.
-         */
-        apr_pool_cleanup_kill(r->pool, (void *)sd, close_unix_socket);
-
         ap_pass_brigade(r->output_filters, bb);
     } 
 
     if (nph) {
         struct ap_filter_t *cur;
         
-        /* Passing our socket down the filter chain in a pipe bucket
-         * gives up the responsibility of closing the socket, so
-         * get rid of the cleanup.
-         */
-        apr_pool_cleanup_kill(r->pool, (void *)sd, close_unix_socket);
-
         /* get rid of all filters up through protocol...  since we
          * haven't parsed off the headers, there is no way they can
          * work
@@ -1658,16 +1648,11 @@ static int include_cmd(include_ctx_t *ctx, ap_filter_t *f,
                               apr_pool_cleanup_null);
 
     /* We are putting the socket discriptor into an apr_file_t so that we can
-     * use a pipe bucket to send the data to the client.
-     * Note that this does not register a cleanup for the socket.  We did
-     * that explicitly right after we created the socket.
+     * use a pipe bucket to send the data to the client.  APR will create
+     * a cleanup for the apr_file_t which will close the socket, so we'll
+     * get rid of the cleanup we registered when we created the socket.
      */
-    apr_os_pipe_put(&tempsock, &sd, r->pool);
-
-    /* Passing our socket down the filter chain in a pipe bucket
-     * gives up the responsibility of closing the socket, so
-     * get rid of the cleanup.
-     */
+    apr_os_pipe_put_ex(&tempsock, &sd, 1, r->pool);
     apr_pool_cleanup_kill(r->pool, (void *)sd, close_unix_socket);
 
     APR_BRIGADE_INSERT_TAIL(bb, apr_bucket_pipe_create(tempsock,
