@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2002/05/06 22:23:51 $]
+Last modified at [$Date: 2002/05/07 18:14:25 $]
 
 Release:
 
@@ -83,6 +83,11 @@ CURRENT VOTES:
             latest code, let's continue tuning and testing)
       -0:   Lars
       -1:   Aaron (premature decision, needs more discussion and bug fixes)
+
+    * Change the default config so that we add a ServerToken Minimal
+      to the config. Possibly go one step further and add a option
+      to just report '2.0' instead of '2.0.x'
+      +1:   IanH
 
 RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
     * Get mod_cache/mod_mem_cache out of experimental (still some
