@@ -2,6 +2,10 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) Accept URLs for the ServerAdmin directive. If the supplied
+     argument is not recognized as an URL, assume it's a mail address.
+     PR 28174.  [André Malo]
+
   *) mod_rewrite no longer confuses the RewriteMap caches if
      different maps defined in different virtual hosts use the
      same map name. PR 26462.  [André Malo]
