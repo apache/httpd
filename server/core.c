@@ -3035,6 +3035,10 @@ static int core_input_filter(ap_filter_t *f, apr_bucket_brigade *b, ap_input_mod
         APR_BRIGADE_INSERT_TAIL(ctx->b, e);
         net->in_ctx = ctx;
     }
+    else if (APR_BRIGADE_EMPTY(ctx->b)) {
+        /* hit EOF on socket already */
+        return APR_EOF;
+    }
 
     /* ### This is bad. */
     APR_BRIGADE_NORMALIZE(ctx->b);
@@ -3114,9 +3118,6 @@ static int core_input_filter(ap_filter_t *f, apr_bucket_brigade *b, ap_input_mod
 
         AP_DEBUG_ASSERT(*readbytes > 0);
         
-        if (APR_BRIGADE_EMPTY(ctx->b))
-            return APR_EOF;
-
         e = APR_BRIGADE_FIRST(ctx->b);
         rv = apr_bucket_read(e, &str, &len, mode);
 

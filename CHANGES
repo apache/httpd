@@ -1,5 +1,8 @@
 Changes with Apache 2.0.31-dev
 
+  *) Move a check for an empty brigade to the start of core input filter
+     to avoid segfaults.  [Justin Erenkrantz, Jeff Trawick]
+
   *) Add FileETag directive to allow configurable control of what
      data are used to form ETag values for file-based URIs.  MMN
      bumped to 20020111 because of fields added to the end of
