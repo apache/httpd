@@ -251,12 +251,12 @@ AP_DECLARE(apr_status_t) ap_rgetline_core(char **s, apr_size_t n,
         if (n < bytes_handled + len) {
             *read = bytes_handled;
             if (*s) {
-                /* ensure this string is terminated */
-                if (bytes_handled < n) {
+                /* ensure this string is NUL terminated */
+                if (bytes_handled > 0) {
                     (*s)[bytes_handled-1] = '\0';
                 }
                 else {
-                    (*s)[n-1] = '\0';
+                    (*s)[0] = '\0';
                 }
             }
             return APR_ENOSPC;
