@@ -112,7 +112,7 @@ API_EXPORT(int) ap_mpm_run(pool *pconf, pool *plog, server_rec *server_conf);
 
 /* predicate indicating if a graceful stop has been requested ...
    used by the connection loop */
-API_EXPORT(int) ap_mpm_graceful_stop(void);
+API_EXPORT(int) ap_graceful_stop_signalled(void);
 
 /* a mutex which synchronizes threads within one process */
 typedef struct ap_thread_mutex ap_thread_mutex;
