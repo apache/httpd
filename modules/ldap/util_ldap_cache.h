@@ -193,7 +193,7 @@ void util_ldap_dn_compare_node_free(void *n);
 /* util_ldap_cache_mgr.c */
 
 void util_ald_free(const void *ptr);
-void *util_ald_alloc(int size);
+void *util_ald_alloc(unsigned long size);
 const char *util_ald_strdup(const char *s);
 unsigned long util_ald_hash_string(int nstr, ...);
 void util_ald_cache_purge(util_ald_cache_t *cache);
