@@ -193,7 +193,7 @@ static  CommandParser_t ConsoleHandler = {0, NULL, 0};
 
 static int show_settings = 0;
 
-//#define DBINFO_ON
+#define DBINFO_ON
 //#define DBPRINT_ON
 #ifdef DBPRINT_ON
 #define DBPRINT0(s) printf(s)
@@ -501,7 +501,7 @@ void worker_main(void *arg)
                         would_block++;
                         retry_fail++;
                 }
-                else
+                else if (
 #else
                 if (APR_STATUS_IS_EAGAIN(stat) ||
 #endif
