@@ -1126,8 +1126,8 @@ static void probe_writable_fds (void)
     if (rc == -1) {
 	/* XXX: uhh this could be really bad, we could have a bad file
 	 * descriptor due to a bug in one of the maintenance routines */
-	log_unixerr ("probe_writable_fds", "select", "could not probe
-	    writable fds", server_conf);
+	log_unixerr ("probe_writable_fds", "select", 
+		     "could not probe writable fds", server_conf);
 	return;
     }
     if (rc == 0) return;
