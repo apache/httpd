@@ -107,17 +107,22 @@ typedef struct mem_cache_object {
 typedef struct {
     apr_thread_mutex_t *lock;
     apr_hash_t *cacheht;
-    int space;
-    apr_time_t maxexpire;
-    apr_time_t defaultexpire;
+    apr_size_t cache_size;
+    apr_size_t object_cnt;
+
+    /* Fields set by config directives */
     apr_size_t min_cache_object_size;
     apr_size_t max_cache_object_size;
+    apr_size_t max_cache_size;
+    apr_size_t max_object_cnt;
+
 } mem_cache_conf;
 static mem_cache_conf *sconf;
 
-#define DEFAULT_CACHE_SPACE 100*1024
+#define DEFAULT_MAX_CACHE_SIZE 100*1024
 #define DEFAULT_MIN_CACHE_OBJECT_SIZE 0
 #define DEFAULT_MAX_CACHE_OBJECT_SIZE 10000
+#define DEFAULT_MAX_OBJECT_CNT 1000
 #define CACHEFILE_LEN 20
 
 /* Forward declarations */
@@ -220,15 +225,22 @@ static void *create_cache_config(apr_pool_t *p, server_rec *s)
     int threaded_mpm;
 
     sconf = apr_pcalloc(p, sizeof(mem_cache_conf));
-    sconf->space = DEFAULT_CACHE_SPACE;
+
 
     ap_mpm_query(AP_MPMQ_IS_THREADED, &threaded_mpm);
     if (threaded_mpm) {
         apr_thread_mutex_create(&sconf->lock, APR_THREAD_MUTEX_DEFAULT, p);
     }
     sconf->cacheht = apr_hash_make(p);
+
     sconf->min_cache_object_size = DEFAULT_MIN_CACHE_OBJECT_SIZE;
     sconf->max_cache_object_size = DEFAULT_MAX_CACHE_OBJECT_SIZE;
+    /* Number of objects in the cache */
+    sconf->max_object_cnt = DEFAULT_MAX_OBJECT_CNT;
+    sconf->object_cnt = 0;
+    /* Size of the cache in KB */
+    sconf->max_cache_size = DEFAULT_MAX_CACHE_SIZE;
+    sconf->cache_size = 0;
 
     apr_pool_cleanup_register(p, NULL, cleanup_cache_mem, apr_pool_cleanup_null);
 
@@ -252,9 +264,18 @@ static int create_entity(cache_handle_t *h, request_rec *r,
         return DECLINED;
     }
 
-    /* XXX Check total cache size and number of entries. Are they within the
-     * configured limits? If not, kick off garbage collection thread.
+    /*
+     * TODO: Get smarter about managing the cache size.
+     * If the cache is full, we need to do garbage collection
+     * to weed out old/stale entries
      */
+    if ((sconf->cache_size + len) > sconf->max_cache_size) {
+        return DECLINED;
+    }
+
+    if (sconf->object_cnt >= sconf->max_object_cnt) {
+        return DECLINED;
+    }
 
     /* Allocate and initialize cache_object_t */
     obj = malloc(sizeof(*obj));
@@ -309,6 +330,7 @@ static int create_entity(cache_handle_t *h, request_rec *r,
                                               APR_HASH_KEY_STRING);
     if (!tmp_obj) {
         apr_hash_set(sconf->cacheht, obj->key, strlen(obj->key), obj);
+        sconf->object_cnt++;
     }
     if (sconf->lock) {
         apr_thread_mutex_unlock(sconf->lock);
@@ -385,6 +407,7 @@ static int remove_entity(cache_handle_t *h)
     if (obj) {
         mem_cache_object_t *mobj = (mem_cache_object_t *) obj->vobj;
         apr_hash_set(sconf->cacheht, obj->key, strlen(obj->key), NULL);
+        sconf->object_cnt--;
         if (mobj->refcount) {
             mobj->cleanup = 1;
         }
@@ -484,6 +507,7 @@ static int remove_url(const char *type, const char *key)
     if (obj) {
         mem_cache_object_t *mobj = (mem_cache_object_t *) obj->vobj;
         apr_hash_set(sconf->cacheht, key, APR_HASH_KEY_STRING, NULL);
+        sconf->object_cnt--;
         if (mobj->refcount) {
             mobj->cleanup = 1;
         }
@@ -644,14 +668,14 @@ static int write_body(cache_handle_t *h, request_rec *r, apr_bucket_brigade *b)
 }
 
 static const char 
-*set_cache_size(cmd_parms *parms, void *in_struct_ptr, const char *arg)
+*set_max_cache_size(cmd_parms *parms, void *in_struct_ptr, const char *arg)
 {
     int val;
 
     if (sscanf(arg, "%d", &val) != 1) {
         return "CacheSize value must be an integer (kBytes)";
     }
-    sconf->space = val;
+    sconf->max_cache_size = val;
     return NULL;
 }
 static const char 
@@ -676,19 +700,24 @@ static const char
     sconf->max_cache_object_size = val;
     return NULL;
 }
+static const char 
+*set_max_object_count(cmd_parms *parms, void *in_struct_ptr, const char *arg)
+{
+    apr_size_t val;
 
+    if (sscanf(arg, "%d", &val) != 1) {
+        return "CacheMaxObjectCount value must be an integer";
+    }
+    sconf->max_object_cnt = val;
+    return NULL;
+}
 
 static const command_rec cache_cmds[] =
 {
-    /* XXX
-     * What config directives does this module need?
-     * Should this module manage expire policy for its entries?
-     * Certainly cache limits like max number of entries,
-     * max entry size, and max size of the cache should
-     * be managed by this module. 
-     */
-    AP_INIT_TAKE1("CacheMemSize", set_cache_size, NULL, RSRC_CONF,
-     "The maximum space used by the cache in Kb"),
+    AP_INIT_TAKE1("CacheSize", set_max_cache_size, NULL, RSRC_CONF,
+     "The maximum space used by the cache in KB"),
+    AP_INIT_TAKE1("CacheMaxObjectCount", set_max_object_count, NULL, RSRC_CONF,
+     "The maximum number of objects allowed to be placed in the cache"),
     AP_INIT_TAKE1("CacheMinObjectSize", set_min_cache_object_size, NULL, RSRC_CONF,
      "The minimum size (in bytes) of an object to be placed in the cache"),
     AP_INIT_TAKE1("CacheMaxObjectSize", set_max_cache_object_size, NULL, RSRC_CONF,
