@@ -99,9 +99,9 @@ Committed Code Changes:
     * Ralf's additional manual pages for the support programs
     * Ben Hyde's Configure check for unknown command switch
     * Martin's fix for src/helpers/fp2rp
-    * Ralf's reanim. of (undocumented) directive: ProxyReceiveBufferSize,
-      PR#1348
+    * Ralf's reanim. of undocum. directive: ProxyReceiveBufferSize, PR#1348
     * Ralf's mod_proxy fix to use FTP SIZE response for Content-Length, PR#1183
+    * Ralf's change to make the shared object compilation command more portable
 
 Available Patches:
 

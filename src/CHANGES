@@ -1,5 +1,9 @@
 Changes with Apache 1.3b6
 
+  *) Make the shared object compilation command more portable by avoiding
+     the direct combination of `-c' & `-o' which is not honored by some
+     compilers like UnixWare's cc. [Ralf S. Engelschall]
+
   *) WIN32: the proxy was creating filenames missing the last four
      characters.  While this normally doesn't stop anything from 
      working, it can result in extra collisions.  
