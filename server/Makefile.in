@@ -47,7 +47,7 @@ export_files:
 	tmp=export_files_unsorted.txt; \
 	rm -f $$tmp && touch $$tmp; \
 	for dir in $(EXPORT_DIRS); do \
-	    ls -1 $$dir/*.h >> $$tmp; \
+	    ls $$dir/*.h >> $$tmp; \
 	done; \
 	sort -u $$tmp > $@; \
 	rm -f $$tmp
