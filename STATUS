@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/01/29 17:30:25 $]
+Last modified at [$Date: 2003/01/30 11:29:50 $]
 
 Release:
 
@@ -65,7 +65,7 @@ PATCHES TO PORT FROM 2.1
       serving the response. This fixes segfault observed on
       windows serving mmap cached files.
       modules/cache/mod_file_cache.c r1.76
-      +1: stoddard, jwoolley
+      +1: stoddard, jwoolley, trawick
  
     * mod_file_cache segfault bugfix. PR 16313.
       modules/cache/mod_file_cache.c r1.75
@@ -92,11 +92,11 @@ PATCHES TO PORT FROM 2.1
       in 2.x or causes a weird 500 in 1.3.x. (PR 9076)
       Please vote for 1.3 series, too. The patch is the essentially the same.
       server/request.c r1.124
-      +1: nd, jerenkrantz
+      +1: nd, jerenkrantz, trawick
 
     * Fix If header handling to ignore non-mod_dav locks. (PR 16452)
       modules/dav/main/util.c: r1.44
-      +1: jerenkrantz
+      +1: jerenkrantz, trawick
 
     * Allow mod_dav to do weak entity comparison functions.
       modules/dav/main/util.c: r1.45
