@@ -839,6 +839,7 @@ API_EXPORT(int) cfg_getline(char *buf, size_t bufsize, configfile_t *cfp)
 		++src;
 		++dst;
 	    }
+	    if (*src == '\0') break;
 	    *dst++ = ' ';
 	    while (isspace(*src))
 		++src;

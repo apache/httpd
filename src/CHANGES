@@ -1,8 +1,11 @@
 Changes with Apache 1.3b6
 
+  *) cfg_getline() was not properly handling lines that did not end
+     with a line termination character.  [Marc Slemko] PR#1869, 1909
+
   *) Performance tweak to mod_log_config.  [Dmitry Khrustalev]
 
-  *) Clean up some undocumented behaviour of mod_setenvif related to
+  *) Clean up some undocumented behavior of mod_setenvif related to
      "merging" two SetEnvIf directives when they match the same header
      and regex.  Document that mod_setenvif will perform comparisons in
      the order they appear in the config file.  Optimize mod_setenvif by
@@ -97,7 +100,7 @@ Changes with Apache 1.3b6
      parent will lose its lock.". To overcome this we have to make sure the
      RewriteLock file is opened _AFTER_ the childs were spawned which is now
      the case by opening it in the child_init instead of the module_init API
-     hook. [Ralf S. Engelschall, PR#1029]
+     hook. [Ralf S. Engelschall] PR#1029
 
   *) Change to Location and LocationMatch semantics.  LocationMatch no
      longer lets a single slash match multiple adjacent slashes in the
@@ -123,7 +126,7 @@ Changes with Apache 1.3b6
 
   *) Fix mod_rewrite for the ugly API case where <VirtualHost> sections exist
      but without any RewriteXXXXX directives. Here mod_rewrite is given no
-     chance by the API to initialise its per-server configuration and thus
+     chance by the API to initialize its per-server configuration and thus
      receives the wrong one from the main server. This is now avoided by
      remembering the server together with the config structure while
      configuring and later assuming there is no config when we see a
@@ -133,8 +136,8 @@ Changes with Apache 1.3b6
   *) Fixed the DBM RewriteMap support for mod_rewrite: First the support now
      is automatically disabled under configure time when the dbm_xxx functions
      are not available. Second, two heavy source code errors in the DBM
-     support code were fixed.  This makes DBM RewriteMap's useable again after
-     a long time of brokeness. [Ralf S. Engelschall, PR#1696]
+     support code were fixed.  This makes DBM RewriteMap's usable again after
+     a long time of brokenness. [Ralf S. Engelschall, PR#1696]
 
   *) Now all configuration files support Unix-style line-continuation via 
      the trailing backslash ("\") character. This enables us to write down
@@ -231,7 +234,7 @@ Changes with Apache 1.3b6
      ${map:key}) available for all location where a string is created in
      mod_rewrite rewriting rulesets: 1st arg of RewriteCond, 2nd arg of
      RewriteRule and for the [E=NAME:STRING] flag of RewriteRule. This way the
-     possible expansions are consequently useable at all string creation
+     possible expansions are consequently usable at all string creation
      locations. [Ralf S. Engelschall]
 
   *) Fix initialization of RewriteLogLevel (default now is 0 as documented 
@@ -271,7 +274,7 @@ Changes with Apache 1.3b6
   *) Add new RewriteMap types: First, `rnd' which is equivalent to the `txt'
      type but with a special post-processing for the looked-up value: It
      parses it into alternatives according to `|' chars and then only one
-     particular alternative is choosen randomly (this is an essential
+     particular alternative is chosen randomly (this is an essential
      functionality needed for balancing between backend-servers when using
      Apache as a Reverse Proxy.  The looked up value here is a list of
      servers). Second, `int' with the built-in maps named `tolower' and
