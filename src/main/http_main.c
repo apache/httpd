@@ -2144,7 +2144,7 @@ int reap_children(ap_wait_t *status)
 		kill((pid = ap_scoreboard_image->parent[n].pid), 0) == -1) {
 	    ap_update_child_status(n, SERVER_DEAD, NULL);
 	    /* just mark it as having a successful exit status */
-	    *status = 0; 
+	    bzero((char *) status, sizeof(ap_wait_t));
 	    return(pid);
 	}
     }
