@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/04/20 10:24:22 $]
+Last modified at [$Date: 2004/04/20 20:27:02 $]
 
 Release:
 
@@ -71,6 +71,10 @@ RELEASE SHOWSTOPPERS:
 PATCHES TO BACKPORT FROM 2.1
   [ please place file names and revisions from HEAD here, so it is easy to
     identify exactly what the proposed changes are! ]
+
+    *) detect Include directive recursion by counting the nesting level.
+         server/core.c: r1.1.275
+       +1: nd
 
     *) mod_headers: don't segfault, when supplying an empty header value
          modules/metadata/mod_headers.c: r1.56
