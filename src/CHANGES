@@ -1,5 +1,8 @@
 Changes with Apache 1.3.32
 
+  *) Win32: Improve error reporting after a failed attempt to spawn a 
+     piped log process or rewrite map process.  [Jeff Trawick]
+
   *) SECURITY: CAN-2004-0492 (cve.mitre.org)
      Reject responses from a remote server if sent an invalid (negative) 
      Content-Length.  [Mark Cox]
@@ -16,7 +19,7 @@ Changes with Apache 1.3.32
      It controls how UseCanonicalName Off determines the port value if
      the client doesn't provide one in the Host header. If defined during
      compilation, UseCanonicalName Off will use the physical port number to
-     generate the canonical name. If not defined, it trys the current Port
+     generate the canonical name. If not defined, it tries the current Port
      value followed by the default port for the current scheme.
      [Jim Jagielski]
 

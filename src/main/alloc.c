@@ -2318,9 +2318,11 @@ static pid_t spawn_child_core(pool *p, int (*func) (void *, child_info *),
 	(void) ap_release_mutex(spawn_mutex);
 	/*
 	 * go on to the end of the function, where you can
-	 * unblock alarms and return the pid
+	 * return the pid
 	 */
-
+        if (!pid) {
+            errno = save_errno;
+        }
     }
 #elif defined(NETWARE)
      /* NetWare currently has no pipes yet. This will
