@@ -2319,14 +2319,15 @@ static int handle_printenv(include_ctx_t *ctx, apr_bucket_brigade **bb, request_
 
 /* -------------------------- The main function --------------------------- */
 
-static void send_parsed_content(apr_bucket_brigade **bb, request_rec *r, 
-                                ap_filter_t *f)
+static apr_status_t send_parsed_content(apr_bucket_brigade **bb, 
+                                        request_rec *r, ap_filter_t *f)
 {
     include_ctx_t *ctx = f->ctx;
     apr_bucket *dptr = APR_BRIGADE_FIRST(*bb);
     apr_bucket *tmp_dptr;
     apr_bucket_brigade *tag_and_after;
     int ret;
+    apr_status_t rv;
 
     if (r->args) {              /* add QUERY stuff to env cause it ain't yet */
         char *arg_copy = apr_pstrdup(r->pool, r->args);
@@ -2384,7 +2385,10 @@ static void send_parsed_content(apr_bucket_brigade **bb, request_rec *r,
             else if ((tmp_dptr != NULL) && (ctx->bytes_parsed >= BYTE_COUNT_THRESHOLD)) {
                                /* Send the large chunk of pre-tag bytes...  */
                 tag_and_after = apr_brigade_split(*bb, tmp_dptr);
-                ap_pass_brigade(f->next, *bb);
+                rv = ap_pass_brigade(f->next, *bb);
+                if (rv != APR_SUCCESS) {
+                    return rv;
+                }
                 *bb  = tag_and_after;
                 dptr = tmp_dptr;
                 ctx->bytes_parsed = 0;
@@ -2572,7 +2576,10 @@ static void send_parsed_content(apr_bucket_brigade **bb, request_rec *r,
             } while (dptr != APR_BRIGADE_SENTINEL(*bb));
         }
         else { /* Otherwise pass it along... */
-            ap_pass_brigade(f->next, *bb);  /* No SSI tags in this brigade... */
+            rv = ap_pass_brigade(f->next, *bb);  /* No SSI tags in this brigade... */
+            if (rv != APR_SUCCESS) {
+                return rv;
+            }
             ctx->bytes_parsed = 0;
         }
     }
@@ -2595,7 +2602,10 @@ static void send_parsed_content(apr_bucket_brigade **bb, request_rec *r,
                            /* Set aside tag, pass pre-tag... */
             tag_and_after = apr_brigade_split(*bb, ctx->head_start_bucket);
             ap_save_brigade(f, &ctx->ssi_tag_brigade, &tag_and_after, r->pool);
-            ap_pass_brigade(f->next, *bb);
+            rv = ap_pass_brigade(f->next, *bb);
+            if (rv != APR_SUCCESS) {
+                return rv;
+            }
             ctx->bytes_parsed = 0;
         }
     }
@@ -2661,6 +2671,7 @@ static apr_status_t includes_filter(ap_filter_t *f, apr_bucket_brigade *b)
     request_rec *r = f->r;
     include_ctx_t *ctx = f->ctx;
     request_rec *parent;
+    apr_status_t rv;
     include_dir_config *conf = 
                    (include_dir_config *)ap_get_module_config(r->per_dir_config,
                                                               &include_module);
@@ -2688,8 +2699,7 @@ static apr_status_t includes_filter(ap_filter_t *f, apr_bucket_brigade *b)
             ctx->error_length = strlen(ctx->error_str);
         }
         else {
-            ap_pass_brigade(f->next, b);
-            return APR_ENOMEM;
+            return ap_pass_brigade(f->next, b);
         }
     }
     else {
@@ -2740,7 +2750,7 @@ static apr_status_t includes_filter(ap_filter_t *f, apr_bucket_brigade *b)
      */
     apr_table_unset(f->r->headers_out, "Content-Length");
 
-    send_parsed_content(&b, r, f);
+    rv = send_parsed_content(&b, r, f);
 
     if (parent) {
 	/* signify that the sub request should not be killed */
@@ -2748,7 +2758,7 @@ static apr_status_t includes_filter(ap_filter_t *f, apr_bucket_brigade *b)
 	    NESTED_INCLUDE_MAGIC);
     }
 
-    return APR_SUCCESS;
+    return rv;
 }
 
 static void ap_register_include_handler(char *tag, include_handler_fn_t *func)
