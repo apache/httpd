@@ -1,5 +1,5 @@
 Apache 2.0 STATUS:
-Last modified at [$Date: 2000/03/02 08:07:21 $]
+Last modified at [$Date: 2000/03/02 08:19:35 $]
 
 Release:
 
@@ -85,6 +85,14 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
 	modules/.deps
 	modules/mpm/.deps
 	os/.deps
+    
+    * apaci permissions problem:
+	cvs checkout apache-2.0
+	cd apache-2.0/src
+	./configure
+	edit some Makefile.in
+	./config.status
+	now apaci is no longer executable and future makes fail
 
     * Win32: Reuse accept socket after transmitfile/close
 	This is not a bug, but would be nice to get this feature in 
