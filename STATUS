@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:						-*-text-*-
-Last modified at [$Date: 2001/04/23 11:33:28 $]
+Last modified at [$Date: 2001/04/26 19:08:55 $]
 
 Release:
 
@@ -89,6 +89,10 @@ DAEDALUS 2.0 PROBLEMS:
 RELEASE SHOWSTOPPERS:
 
     WARNING: ALWAYS check srclib/apr/STATUS and srclib/apr-util/STATUS
+
+    * threaded + cgid: "apachectl graceful" followed by "apachectl
+      restart" results in all processes but cgid going away; parent
+      died referencing other-child registration structures
 
     * There is a bug in how we sort some hooks, at least the pre-config
       hook.  The first time we call the hooks, they are in the correct 
