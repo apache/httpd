@@ -68,6 +68,11 @@
  * are required (for a window rather than console application), include
  * windows.h prior to any other Apache header files.
  */
+
+#ifndef _WIN32
+#define _WIN32
+#endif
+
 #include "apr_general.h"
 #include <process.h>
 #include <malloc.h>
