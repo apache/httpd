@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/12/02 19:11:12 $]
+Last modified at [$Date: 2003/12/03 00:13:11 $]
 
 Release:
 
@@ -87,7 +87,7 @@ PATCHES TO BACKPORT FROM 2.1
 
     * prefork: Fix slow graceful restarts on some platforms.
       http://cvs.apache.org/viewcvs/httpd-2.0/server/mpm/prefork/prefork.c.diff?r1=1.279&r2=1.280
-      +1: jorton
+      +1: jorton, trawick
 
     * Make Win32 MPM honor MaxMemFree for transaction pools
       server/mpm/winnt/child.c: r1.17
