@@ -208,6 +208,7 @@
 
 typedef struct {
     int active;
+    int wildcards;
     char *expiresdefault;
     apr_table_t *expiresbytype;
 } expires_dir_config;
@@ -227,6 +228,7 @@ static void *create_dir_expires_config(apr_pool_t *p, char *dummy)
     expires_dir_config *new =
     (expires_dir_config *) apr_pcalloc(p, sizeof(expires_dir_config));
     new->active = ACTIVE_DONTCARE;
+    new->wildcards = 0;
     new->expiresdefault = "";
     new->expiresbytype = apr_table_make(p, 4);
     return (void *) new;
@@ -357,7 +359,13 @@ static const char *set_expiresbytype(cmd_parms *cmd, void *in_dir_config,
 {
     expires_dir_config *dir_config = in_dir_config;
     char *response, *real_code;
+    char *check;
 
+    check = strrchr(mime, '/');
+    if ((strlen(++check) == 1) && (*check == '*')) {
+        dir_config->wildcards = 1;
+    }
+    
     if ((response = check_code(cmd->pool, code, &real_code)) == NULL) {
         apr_table_setn(dir_config->expiresbytype, mime, real_code);
         return NULL;
@@ -410,7 +418,7 @@ static void *merge_expires_dir_configs(apr_pool_t *p, void *basev, void *addv)
     else {
 	new->expiresdefault = base->expiresdefault;
     }
-
+    new->wildcards = add->wildcards;
     new->expiresbytype = apr_table_overlay(p, add->expiresbytype,
                                         base->expiresbytype);
     return new;
@@ -508,8 +516,37 @@ static apr_status_t expires_filter(ap_filter_t *f,
         expiry = apr_table_get(conf->expiresbytype, 
                                ap_field_noparam(r->pool, r->content_type));
         if (expiry == NULL) {
-            /* Use the ExpiresDefault directive */
-            expiry = conf->expiresdefault;
+            int usedefault = 1;
+            /*
+             * See if we have a wildcard entry for the major type.
+             */
+            if (conf->wildcards) {
+                char *checkmime;
+                char *spos;
+                checkmime = apr_pstrdup(r->pool, r->content_type);
+                spos = strchr(checkmime, '/');
+                if (spos != NULL) {
+                    /*
+                     * Without a '/' character, nothing we have will match.
+                     * However, we have one.
+                     */
+                    if (strlen(++spos) > 0) {
+                        *spos++ = '*';
+                        *spos = '\0';
+                    }
+                    else {
+                        checkmime = apr_pstrcat(r->pool, checkmime, "*", NULL);
+                    }
+                    expiry = apr_table_get(conf->expiresbytype, checkmime);
+                    usedefault = (expiry == NULL);
+                }
+            }
+            if (usedefault) {
+                /*
+                 * Use the ExpiresDefault directive
+                 */
+                expiry = conf->expiresdefault;
+            }
         }
         if (expiry != NULL) {
             set_expiration_fields(r, expiry, t);
