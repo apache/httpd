@@ -104,10 +104,6 @@ Changes with Apache 2.1.0-dev
   *) mod_auth_ldap: Fix some segfaults in the cache logic.  PR 18756.
      [Matthieu Estrade <apache moresecurity.org>]
 
-  *) mod_setenvif: Fix the regex optimizer, which under circumstances
-     treated the supplied regex as literal string. PR 24219.
-     [André Malo]
-
   *) Log an error when requests for URIs which fail to map to a valid 
      filesystem name are rejected with 403.  [Jeff Trawick]
 
@@ -267,6 +263,10 @@ Changes with Apache 2.1.0-dev
    Apache 2.0.xx tree as documented, and except as noted, below.]
 
 Changes with Apache 2.0.49
+
+  *) mod_setenvif: Fix the regex optimizer, which under circumstances
+     treated the supplied regex as literal string. PR 24219.
+     [André Malo]
 
   *) ap_mpm.h: Fix include guard of ap_mpm.h to reference mpm
      instead of mmn. [André Malo]
