@@ -59,9 +59,6 @@
 #include <stdio.h>
 #include <stdarg.h>
 #include <string.h>
-#ifndef NO_UNISTD_H
-#include <unistd.h>
-#endif
 #ifndef NO_WRITEV
 #include <sys/types.h>
 #include <sys/uio.h>

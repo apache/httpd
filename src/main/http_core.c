@@ -67,7 +67,6 @@
 #include "fnmatch.h"
 
 #ifdef USE_MMAP_FILES
-#include <unistd.h>
 #include <sys/mman.h>
 
 /* mmap support for static files based on ideas from John Heidemann's

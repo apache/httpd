@@ -909,7 +909,7 @@ int setrlimit(int, struct rlimit *);
 #define LOGNAME_MAX 25
 #endif
 
-#if !defined(NEXT) && !defined(WIN32)
+#ifndef NO_UNISTD_H
 #include <unistd.h>
 #endif
 
