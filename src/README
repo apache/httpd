@@ -1,4 +1,3 @@
-#test -C3
 The basic idea of the new Apache release is to make a modular
 "tinkertoy" server, to which people can easily add code which is
 valuable to them (even if it isn't universally useful) without hairing
