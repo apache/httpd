@@ -4,7 +4,7 @@
 
 <xsl:output 
   method="xml"
-  encoding="ISO-8859-1"
+  encoding="windows-1252"
   indent="no"
   doctype-public="-//W3C//DTD XHTML 1.0 Strict//EN"
   omit-xml-declaration="yes"
@@ -14,7 +14,7 @@
 <xsl:variable name="messages" select="document('../lang/de.xml')/messages"/>
 
 <!-- some meta information have to be passed to the transformation -->
-<xsl:variable name="output-encoding" select="'ISO-8859-1'" />
+<xsl:variable name="output-encoding" select="'windows-1252'" />
 <xsl:variable name="is-chm" select="true()" />
 
 <!-- Now get the real guts of the stylesheet -->

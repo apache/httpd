@@ -4,7 +4,7 @@
 
 <xsl:output 
   method="text"
-  encoding="ISO-8859-1"
+  encoding="windows-1252"
   indent="no"
 />
 
