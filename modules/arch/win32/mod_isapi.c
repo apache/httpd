@@ -114,6 +114,7 @@ typedef struct isapi_dir_conf {
     int log_unsupported;
     int log_to_errlog;
     int log_to_query;
+    int fake_async;
 } isapi_dir_conf;
 
 typedef struct isapi_loaded isapi_loaded;
@@ -129,6 +130,7 @@ static void *create_isapi_dir_config(apr_pool_t *p, char *dummy)
     dir->log_unsupported   = ISAPI_UNDEF;
     dir->log_to_errlog     = ISAPI_UNDEF;
     dir->log_to_query      = ISAPI_UNDEF;
+    dir->fake_async        = ISAPI_UNDEF;
 
     return dir;
 }
@@ -148,9 +150,12 @@ static void *merge_isapi_dir_configs(apr_pool_t *p, void *base_, void *add_)
     dir->log_to_errlog     = (add->log_to_errlog == ISAPI_UNDEF)
                                 ? base->log_to_errlog
                                  : add->log_to_errlog;
-    dir->log_to_query       = (add->log_to_query == ISAPI_UNDEF)
+    dir->log_to_query      = (add->log_to_query == ISAPI_UNDEF)
                                 ? base->log_to_query
                                  : add->log_to_query;
+    dir->fake_async        = (add->fake_async == ISAPI_UNDEF)
+                                ? base->fake_async
+                                 : add->fake_async;
     
     return dir;
 }
@@ -203,16 +208,24 @@ static const char *isapi_cmd_cachefile(cmd_parms *cmd, void *dummy,
 static const command_rec isapi_cmds[] = {
     AP_INIT_TAKE1("ISAPIReadAheadBuffer", ap_set_int_slot,
         (void *) APR_XtOffsetOf(isapi_dir_conf, read_ahead_buflen), 
-        OR_FILEINFO, "Maximum bytes to initially pass to the ISAPI handler"),
+        OR_FILEINFO, "Maximum client request body to initially pass to the"
+                     " ISAPI handler (default: 48192)"),
     AP_INIT_FLAG("ISAPILogNotSupported", ap_set_int_slot,
         (void *) APR_XtOffsetOf(isapi_dir_conf, log_unsupported), 
-        OR_FILEINFO, "Log requests not supported by the ISAPI server"),
+        OR_FILEINFO, "Log requests not supported by the ISAPI server"
+                     " on or off (default: off)"),
     AP_INIT_FLAG("ISAPIAppendLogToErrors", ap_set_flag_slot,
         (void *) APR_XtOffsetOf(isapi_dir_conf, log_to_errlog), 
-        OR_FILEINFO, "Send all Append Log requests to the error log"),
+        OR_FILEINFO, "Send all Append Log requests to the error log"
+                     " on or off (default: off)"),
     AP_INIT_FLAG("ISAPIAppendLogToQuery", ap_set_flag_slot,
         (void *) APR_XtOffsetOf(isapi_dir_conf, log_to_query), 
-        OR_FILEINFO, "Append Log requests are concatinated to the query args"),
+        OR_FILEINFO, "Append Log requests are concatinated to the query args"
+                     " on or off (default: on)"),
+    AP_INIT_FLAG("ISAPIFakeAsync", ap_set_flag_slot,
+        (void *) APR_XtOffsetOf(isapi_dir_conf, fake_async), 
+        OR_FILEINFO, "Fake Asynchronous support for isapi callbacks"
+                     " on or off [Experimental] (default: off)"),
     AP_INIT_ITERATE("ISAPICacheFile", isapi_cmd_cachefile, NULL, 
         RSRC_CONF, "Cache the specified ISAPI extension in-process"),
     {NULL}
@@ -240,13 +253,10 @@ struct isapi_loaded {
     apr_dso_handle_t    *handle;
     HSE_VERSION_INFO    *isapi_version;
     apr_uint32_t         report_version;
+    apr_uint32_t         timeout;
     PFN_GETEXTENSIONVERSION GetExtensionVersion;
     PFN_HTTPEXTENSIONPROC   HttpExtensionProc;
     PFN_TERMINATEEXTENSION  TerminateExtension;
-#ifdef FAKE_ASYNC
-    int                  fakeasync;
-    apr_uint32_t         timeout;
-#endif
 };
 
 static apr_status_t isapi_unload(isapi_loaded *isa, int force)
@@ -298,10 +308,7 @@ static apr_status_t isapi_load(apr_pool_t *p, server_rec *s, request_rec *r, isa
      * location, etc) they apply to.
      */
     isa->report_version = MAKELONG(0, 5); /* Revision 5.0 */
-#ifdef FAKE_ASYNC
     isa->timeout = INFINITE; /* microsecs */
-    isa->fakeasync = 1;
-#endif
     
     rv = apr_dso_load(&isa->handle, isa->filename, p);
     if (rv)
@@ -514,11 +521,9 @@ typedef struct isapi_cid {
     isapi_loaded            *isa;
     request_rec             *r;
     int                      headers_sent;
-#ifdef FAKE_ASYNC
     PFN_HSE_IO_COMPLETION    completion;
     void                    *completion_arg;
     apr_thread_mutex_t      *completed;
-#endif
 } isapi_cid;
 
 int APR_THREAD_FUNC GetServerVariable (isapi_cid    *cid, 
@@ -638,7 +643,6 @@ int APR_THREAD_FUNC WriteClient(isapi_cid    *cid,
     APR_BRIGADE_INSERT_TAIL(bb, b);
     rv = ap_pass_brigade(r->output_filters, bb);
 
-#ifdef FAKE_ASYNC
     if ((flags & HSE_IO_ASYNC) && cid->completion) {
         if (rv == OK) {
             cid->completion(cid->ecb, cid->completion_arg, 
@@ -649,7 +653,6 @@ int APR_THREAD_FUNC WriteClient(isapi_cid    *cid,
                             *buf_size, ERROR_WRITE_FAULT);
         }
     }
-#endif
     return (rv == OK);
 }
 
@@ -711,7 +714,7 @@ static apr_ssize_t send_response_header(isapi_cid *cid,
                 statlen = strlen(stat);
             }
             else {
-                char *flip = head;
+                const char *flip = head;
                 head = stat;
                 stat = flip;
                 headlen -= statlen;
@@ -868,11 +871,9 @@ int APR_THREAD_FUNC ServerSupportFunction(isapi_cid    *cid,
         /* Signal to resume the thread completing this request,
          * leave it to the pool cleanup to dispose of our mutex.
          */
-#ifdef FAKE_ASYNC
         if (cid->completed) {
             apr_thread_mutex_unlock(cid->completed);
         }
-#endif
         return 1;
 
     case HSE_REQ_MAP_URL_TO_PATH:
@@ -928,13 +929,11 @@ int APR_THREAD_FUNC ServerSupportFunction(isapi_cid    *cid,
          * Per MS docs... HSE_REQ_IO_COMPLETION replaces any prior call
          * to HSE_REQ_IO_COMPLETION, and buf_data may be set to NULL.
          */
-#ifdef FAKE_ASYNC
-        if (cid->isa->fakeasync) {
+        if (cid->dconf.fake_async) {
             cid->completion = (PFN_HSE_IO_COMPLETION) buf_data;
             cid->completion_arg = (void *) data_type;
             return 1;
         }
-#endif
         if (cid->dconf.log_unsupported)
             ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_WARNING, 0, r,
                       "ISAPI: ServerSupportFunction HSE_REQ_IO_COMPLETION "
@@ -944,6 +943,8 @@ int APR_THREAD_FUNC ServerSupportFunction(isapi_cid    *cid,
 
     case HSE_REQ_TRANSMIT_FILE:
     {
+        /* we do nothing with (tf->dwFlags & HSE_DISCONNECT_AFTER_SEND)
+         */
         HSE_TF_INFO *tf = (HSE_TF_INFO*)buf_data;
         apr_uint32_t sent = 0;
         apr_ssize_t ate = 0;
@@ -953,11 +954,7 @@ int APR_THREAD_FUNC ServerSupportFunction(isapi_cid    *cid,
         apr_file_t *fd;
         apr_off_t fsize;
 
-#ifdef FAKE_ASYNC
-        if (!cid->isa->fakeasync)
-#endif
-        if (tf->dwFlags & HSE_IO_ASYNC)
-        {
+        if (!cid->dconf.fake_async && (tf->dwFlags & HSE_IO_ASYNC)) {
             if (cid->dconf.log_unsupported)
                 ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_WARNING, 0, r,
                          "ISAPI: ServerSupportFunction HSE_REQ_TRANSMIT_FILE "
@@ -1053,13 +1050,9 @@ int APR_THREAD_FUNC ServerSupportFunction(isapi_cid    *cid,
         APR_BRIGADE_INSERT_TAIL(bb, b);
         ap_pass_brigade(r->output_filters, bb);
 
-        /* we do nothing with (tf->dwFlags & HSE_DISCONNECT_AFTER_SEND)
+        /* Use tf->pfnHseIO + tf->pContext, or if NULL, then use cid->fnIOComplete
+         * pass pContect to the HseIO callback.
          */
-
-#ifdef FAKE_ASYNC
-       /* Use tf->pfnHseIO + tf->pContext, or if NULL, then use cid->fnIOComplete
-        * pass pContect to the HseIO callback.
-        */
         if (tf->dwFlags & HSE_IO_ASYNC) {
             if (tf->pfnHseIO) {
                 if (rv == OK) {
@@ -1082,7 +1075,6 @@ int APR_THREAD_FUNC ServerSupportFunction(isapi_cid    *cid,
                 }
             }
         }
-#endif
         return (rv == OK);
     }
 
@@ -1102,11 +1094,8 @@ int APR_THREAD_FUNC ServerSupportFunction(isapi_cid    *cid,
     case HSE_REQ_ASYNC_READ_CLIENT:
     {
         apr_uint32_t read = 0;
-#ifdef FAKE_ASYNC
         int res;
-        if (!cid->isa->fakeasync)
-#endif
-        {
+        if (!cid->dconf.fake_async) {
             if (cid->dconf.log_unsupported) 
                 ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_WARNING, 0, r,
                             "ISAPI: asynchronous I/O not supported: %s", 
@@ -1115,7 +1104,6 @@ int APR_THREAD_FUNC ServerSupportFunction(isapi_cid    *cid,
             return 0;
         }
 
-#ifdef FAKE_ASYNC
         if (r->remaining < *buf_size) {
             *buf_size = (apr_size_t)r->remaining;
         }
@@ -1137,7 +1125,6 @@ int APR_THREAD_FUNC ServerSupportFunction(isapi_cid    *cid,
             }
         }
         return (res >= 0);
-#endif
     }
 
     case HSE_REQ_GET_IMPERSONATION_TOKEN:  /* Added in ISAPI 4.0 */
@@ -1373,9 +1360,11 @@ apr_status_t isapi_handler (request_rec *r)
     cid->dconf.log_unsupported   = (dconf->log_unsupported == ISAPI_UNDEF)
                                      ? 0 : dconf->log_unsupported;
     cid->dconf.log_to_errlog     = (dconf->log_to_errlog == ISAPI_UNDEF)
-                                     ? 1 : dconf->log_to_errlog;
+                                     ? 0 : dconf->log_to_errlog;
     cid->dconf.log_to_query      = (dconf->log_to_query == ISAPI_UNDEF)
                                      ? 1 : dconf->log_to_query;
+    cid->dconf.fake_async        = (dconf->fake_async == ISAPI_UNDEF)
+                                     ? 0 : dconf->fake_async;
 
     cid->ecb = apr_pcalloc(r->pool, sizeof(EXTENSION_CONTROL_BLOCK));
     cid->ecb->ConnID = cid;
@@ -1483,7 +1472,6 @@ apr_status_t isapi_handler (request_rec *r)
             break;
 
         case HSE_STATUS_PENDING:
-#ifdef FAKE_ASYNC
             /* emulating async behavior...
              *
              * Create a cid->completed mutex and wait on it for some timeout
@@ -1495,8 +1483,7 @@ apr_status_t isapi_handler (request_rec *r)
              * This request completes upon a notification through
              * ServerSupportFunction(HSE_REQ_DONE_WITH_SESSION)
              */
-            if (isa->fakeasync) 
-            {
+            if (cid->dconf.fake_async) {
                 apr_thread_mutex_t *comp;
 
                 rv = apr_thread_mutex_create(&cid->completed, 
@@ -1514,10 +1501,7 @@ apr_status_t isapi_handler (request_rec *r)
                 }
                 break;
             }
-            else
-#endif
-            if (cid->dconf.log_unsupported)
-            {
+            else if (cid->dconf.log_unsupported) {
                  ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_WARNING, 0, r,
                                "ISAPI: asynch I/O result HSE_STATUS_PENDING "
                                "from HttpExtensionProc() is not supported: %s",
