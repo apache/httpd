@@ -716,7 +716,8 @@ static apr_status_t xlate_brigade(charset_filter_ctx_t *ctx,
                                   apr_size_t *buffer_avail,
                                   int *hit_eos)
 {
-    apr_bucket *b, *consumed_bucket;
+    apr_bucket *b = NULL; /* set to NULL only to quiet some gcc */
+    apr_bucket *consumed_bucket;
     const char *bucket;
     apr_size_t bytes_in_bucket; /* total bytes read from current bucket */
     apr_size_t bucket_avail;    /* bytes left in current bucket */
