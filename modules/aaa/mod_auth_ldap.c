@@ -505,8 +505,8 @@ int mod_auth_ldap_auth_checker(request_rec *r)
                     case LDAP_COMPARE_TRUE: {
                         ap_log_rerror(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r, 
                                       "[%d] auth_ldap authorise: require group: "
-                                      "authorisation successful (attribute %s)",
-                                      getpid(), ent[i].name);
+                                      "authorisation successful (attribute %s) [%s][%s]",
+                                      getpid(), ent[i].name, ldc->reason, ldap_err2string(result));
                         return OK;
                     }
                     default: {

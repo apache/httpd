@@ -153,6 +153,7 @@ typedef struct util_compare_node_t {
     const char *attrib;			
     const char *value;
     apr_time_t lastcompare;
+    int result;
 } util_compare_node_t;
 
 /*
