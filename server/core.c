@@ -2899,9 +2899,12 @@ static int default_handler(request_rec *r)
      * match literally anything - this way will require handler to
      * have a / in the middle, which probably captures the original
      * intent, but may cause problems at first - Ben 7th Jan 01
+     * Don't try to serve a dir.  Some OSs do weird things with
+     * raw I/O on a dir.
      */
-    if (strcmp(r->handler, "default-handler")
-        && !ap_strchr_c(r->handler, '/'))
+    if ((strcmp(r->handler, "default-handler")
+         && !ap_strchr_c(r->handler, '/'))
+        || r->finfo.filetype == APR_DIR)
 	return DECLINED;
 
     d = (core_dir_config *)ap_get_module_config(r->per_dir_config,
