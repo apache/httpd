@@ -735,8 +735,11 @@ static int cgid_server(void *data)
             ((rc = apr_procattr_cmdtype_set(procattr, cmd_type)) != APR_SUCCESS) ||
             ((rc = apr_procattr_child_errfn_set(procattr, cgid_child_errfn)) != APR_SUCCESS)) {
             /* Something bad happened, tell the world. */
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, rc, r,
-                      "couldn't set child process attributes: %s", r->filename);
+             * ap_log_rerror() won't work because the header table used by
+             * ap_log_rerror() hasn't been replicated in the phony r
+             */
+            ap_log_error(APLOG_MARK, APLOG_ERR, rc, r->server,
+                         "couldn't set child process attributes: %s", r->filename);
         }
         else {
             apr_pool_userdata_set(r, ERRFN_USERDATA_KEY, apr_pool_cleanup_null, ptrans);
@@ -757,10 +760,13 @@ static int cgid_server(void *data)
                                                  procattr, ptrans);
 
             if (rc != APR_SUCCESS) {
-                /* Bad things happened. Everyone should have cleaned up. */
-                ap_log_rerror(APLOG_MARK, APLOG_ERR|APLOG_TOCLIENT, rc, r,
-                              "couldn't create child process: %d: %s", rc, 
-                              apr_filename_of_pathname(r->filename));
+                /* Bad things happened. Everyone should have cleaned up.
+                 * ap_log_rerror() won't work because the header table used by
+                 * ap_log_rerror() hasn't been replicated in the phony r
+                 */
+                ap_log_error(APLOG_MARK, APLOG_ERR, rc, r->server,
+                             "couldn't create child process: %d: %s", rc, 
+                             apr_filename_of_pathname(r->filename));
             }
             else {
                 apr_hash_set(script_hash, &cgid_req.conn_id, sizeof(cgid_req.conn_id), 
