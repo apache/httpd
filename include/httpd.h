@@ -71,6 +71,9 @@ extern "C" {
  * make this file smaller
  */
 
+/**
+ * @package HTTP Daemon routines
+ */
 
 /* Headers in which EVERYONE has an interest... */
 #include "ap_config.h"
@@ -528,14 +531,18 @@ API_EXPORT(const char *) ap_get_server_built(void);
  * pointer is, in fact, zero.
  */
 
-/* This represents the result of calling htaccess; these are cached for
+/**
+ * This represents the result of calling htaccess; these are cached for
  * each request.
  */
 struct htaccess_result {
-    const char *dir;		/* the directory to which this applies */
-    int override;		/* the overrides allowed for the .htaccess file */
-    void *htaccess;		/* the configuration directives */
-/* the next one, or NULL if no more; N.B. never change this */
+    /** the directory to which this applies */
+    const char *dir;
+    /** the overrides allowed for the .htaccess file */
+    int override;
+    /** the configuration directives */
+    void *htaccess;
+    /** the next one, or NULL if no more; N.B. never change this */
     const struct htaccess_result *next;
 };
 
@@ -556,103 +563,140 @@ typedef struct request_rec request_rec;
 #ifdef APACHE_XLATE
 #include "apr_xlate.h"
 
+/** structure to aid charset translate between machine and network */
 struct ap_rr_xlate {
     /* contents are experimental! expect it to change! */
+    /** translation handle to use when going to the network */
     apr_xlate_t *to_net;
-    int to_net_sb; /* whether or not write translation is single-byte-only */
+    /** whether or not write translation is single-byte-only */
+    int to_net_sb;
+    /** translation handle to use when coming from the network */
     apr_xlate_t *from_net;
 };
 #endif /*APACHE_XLATE*/
 
+/** A structure that represents one process */
 struct process_rec {
-    apr_pool_t *pool;  /* Global pool. Please try to cleared on _all_ exits */
-    apr_pool_t *pconf; /* aka configuration pool, cleared on restarts */
+    /** Global pool. Please try to cleared on _all_ exits */
+    apr_pool_t *pool;
+    /** aka configuration pool, cleared on restarts */
+    apr_pool_t *pconf;
+    /** How many command line arguments were pass to the program */
     int argc;
+    /** The command line arguments */
     char *const *argv;
+    /** The program name used to execute the program */
     const char *short_name;
 };
 
+/** A structure that represents the current request */
 struct request_rec {
-
+    /** The pool associated with the request */
     apr_pool_t *pool;
+    /** The connection over which this connection has been read */
     conn_rec *connection;
+    /** The virtual host this request is for */
     server_rec *server;
 
-    request_rec *next;		/* If we wind up getting redirected,
-				 * pointer to the request we redirected to.
-				 */
-    request_rec *prev;		/* If this is an internal redirect,
-				 * pointer to where we redirected *from*.
-				 */
+    /** If we wind up getting redirected, pointer to the request we 
+     *  redirected to.  */
+    request_rec *next;
+    /** If this is an internal redirect, pointer to where we redirected 
+     *  *from*.  */
+    request_rec *prev;
 
-    request_rec *main;		/* If this is a sub_request (see request.h) 
-				 * pointer back to the main request.
-				 */
+    /** If this is a sub_request (see request.h) pointer back to the 
+     *  main request.  */
+    request_rec *main;
 
     /* Info about the request itself... we begin with stuff that only
      * protocol.c should ever touch...
      */
 
-    char *the_request;		/* First line of request, so we can log it */
-    int assbackwards;		/* HTTP/0.9, "simple" request */
-    int proxyreq;		/* A proxy request (calculated during
-				 * post_read_request or translate_name) */
-    int header_only;		/* HEAD request, as opposed to GET */
-    char *protocol;		/* Protocol, as given to us, or HTTP/0.9 */
-    int proto_num;		/* Number version of protocol; 1.1 = 1001 */
-    const char *hostname;	/* Host, as set by full URI or Host: */
+    /** First line of request, so we can log it */
+    char *the_request;
+    /** HTTP/0.9, "simple" request */
+    int assbackwards;
+    /** A proxy request (calculated during post_read_request/translate_name) */
+    int proxyreq;
+    /** HEAD request, as opposed to GET */
+    int header_only;
+    /** Protocol, as given to us, or HTTP/0.9 */
+    char *protocol;
+    /** Number version of protocol; 1.1 = 1001 */
+    int proto_num;
+    /** Host, as set by full URI or Host: */
+    const char *hostname;
 
-    apr_time_t request_time;	/* When the request started */
+    /** When the request started */
+    apr_time_t request_time;
 
-    const char *status_line;	/* Status line, if set by script */
-    int status;			/* In any case */
+    /** Status line, if set by script */
+    const char *status_line;
+    /** In any case */
+    int status;
 
     /* Request method, two ways; also, protocol, etc..  Outside of protocol.c,
      * look, but don't touch.
      */
 
-    const char *method;		/* GET, HEAD, POST, etc. */
-    int method_number;		/* M_GET, M_POST, etc. */
+    /** GET, HEAD, POST, etc. */
+    const char *method;
+    /** M_GET, M_POST, etc. */
+    int method_number;
 
-    /*
-	allowed is a bitvector of the allowed methods.
-
-	A handler must ensure that the request method is one that
-	it is capable of handling.  Generally modules should DECLINE
-	any request methods they do not handle.  Prior to aborting the
-	handler like this the handler should set r->allowed to the list
-	of methods that it is willing to handle.  This bitvector is used
-	to construct the "Allow:" header required for OPTIONS requests,
-	and HTTP_METHOD_NOT_ALLOWED and HTTP_NOT_IMPLEMENTED status codes.
-
-	Since the default_handler deals with OPTIONS, all modules can
-	usually decline to deal with OPTIONS.  TRACE is always allowed,
-	modules don't need to set it explicitly.
-
-	Since the default_handler will always handle a GET, a
-	module which does *not* implement GET should probably return
-	HTTP_METHOD_NOT_ALLOWED.  Unfortunately this means that a Script GET
-	handler can't be installed by mod_actions.
-    */
+    /** <PRE>
+     *  allowed is a bitvector of the allowed methods.
+     *
+     *  A handler must ensure that the request method is one that
+     *  it is capable of handling.  Generally modules should DECLINE
+     *  any request methods they do not handle.  Prior to aborting the
+     *  handler like this the handler should set r->allowed to the list
+     *  of methods that it is willing to handle.  This bitvector is used
+     *  to construct the "Allow:" header required for OPTIONS requests,
+     *  and HTTP_METHOD_NOT_ALLOWED and HTTP_NOT_IMPLEMENTED status codes.
+     *
+     *  Since the default_handler deals with OPTIONS, all modules can
+     *  usually decline to deal with OPTIONS.  TRACE is always allowed,
+     *  modules don't need to set it explicitly.
+     *
+     *  Since the default_handler will always handle a GET, a
+     *  module which does *not* implement GET should probably return
+     *  HTTP_METHOD_NOT_ALLOWED.  Unfortunately this means that a Script GET
+     *  handler can't be installed by mod_actions. </PRE>
+     */
     int allowed;		/* Allowed methods - for 405, OPTIONS, etc */
 
-    int sent_bodyct;		/* byte count in stream is for body */
-    long bytes_sent;		/* body byte count, for easy access */
-    apr_time_t mtime;		/* Time the resource was last modified */
+    /** byte count in stream is for body */
+    int sent_bodyct;
+    /** body byte count, for easy access */
+    long bytes_sent;
+    /** Time the resource was last modified */
+    apr_time_t mtime;
 
     /* HTTP/1.1 connection-level features */
 
-    int chunked;		/* sending chunked transfer-coding */
-    int byterange;		/* number of byte ranges */
-    char *boundary;		/* multipart/byteranges boundary */
-    const char *range;		/* The Range: header */
-    long clength;		/* The "real" content length */
+    /** sending chunked transfer-coding */
+    int chunked;
+    /** number of byte ranges */
+    int byterange;
+    /** multipart/byteranges boundary */
+    char *boundary;
+    /** The Range: header */
+    const char *range;
+    /** The "real" content length */
+    long clength;
 
-    long remaining;		/* bytes left to read */
-    long read_length;		/* bytes that have been read */
-    int read_body;		/* how the request body should be read */
-    int read_chunked;		/* reading chunked transfer-coding */
-    unsigned expecting_100;	/* is client waiting for a 100 response? */
+    /** bytes left to read */
+    long remaining;
+    /** bytes that have been read */
+    long read_length;
+    /** how the request body should be read */
+    int read_body;
+    /** reading chunked transfer-coding */
+    int read_chunked;
+    /** is client waiting for a 100 response? */
+    unsigned expecting_100;
 
     /* MIME header environments, in and out.  Also, an array containing
      * environment variables to be passed to subprocesses, so people can
@@ -666,65 +710,93 @@ struct request_rec {
      * other set purpose in mind...
      */
 
+    /** MIME header environment from the request */
     apr_table_t *headers_in;
+    /** MIME header environment for the response */
     apr_table_t *headers_out;
+    /** MIME header environment for the response, printed even on errors and
+     * persist across internal redirects */
     apr_table_t *err_headers_out;
+    /** Array of environment variables to be used for sub processes */
     apr_table_t *subprocess_env;
+    /** Notes from one module to another */
     apr_table_t *notes;
 
     /* content_type, handler, content_encoding, content_language, and all
      * content_languages MUST be lowercased strings.  They may be pointers
      * to static strings; they should not be modified in place.
      */
+    /** The content-type for the current request */
     const char *content_type;	/* Break these out --- we dispatch on 'em */
+    /** The handler string that we use to call a handler function */
     const char *handler;	/* What we *really* dispatch on           */
 
+    /** How to encode the data */
     const char *content_encoding;
-    const char *content_language;	/* for back-compat. only -- do not use */
-    apr_array_header_t *content_languages;	/* array of (char*) */
+    /** for back-compat. only -- do not use */
+    const char *content_language;
+    /** array of (char*) representing the content languages */
+    apr_array_header_t *content_languages;
 
-    char *vlist_validator;      /* variant list validator (if negotiated) */
+    /** variant list validator (if negotiated) */
+    char *vlist_validator;
     
-    char *user;			/* If an authentication check was made,
-				 * this gets set to the user name.
-				 */
-    char *ap_auth_type;		/* Ditto. */
+    /** If an authentication check was made, this gets set to the user name. */
+    char *user;	
+    /** If an authentication check was made, this gets set to the auth type. */
+    char *ap_auth_type;
 
+    /** This response is non-cache-able */
     int no_cache;
+    /** There is no local copy of this response */
     int no_local_copy;
 
     /* What object is being requested (either directly, or via include
      * or content-negotiation mapping).
      */
 
-    char *unparsed_uri;		/* the uri without any parsing performed */
-    char *uri;			/* the path portion of the URI */
+    /** the uri without any parsing performed */
+    char *unparsed_uri;	
+    /** the path portion of the URI */
+    char *uri;
+    /** The filename on disk that this response corresponds to */
     char *filename;
+    /** The path_info for this request if there is any. */
     char *path_info;
-    char *args;			/* QUERY_ARGS, if any */
-    apr_finfo_t finfo;		/* ST_MODE set to zero if no such file */
-    uri_components parsed_uri;	/* components of uri, dismantled */
+    /** QUERY_ARGS, if any */
+    char *args;	
+    /** ST_MODE set to zero if no such file */
+    apr_finfo_t finfo;
+    /** components of uri, dismantled */
+    uri_components parsed_uri;
 
     /* Various other config info which may change with .htaccess files
      * These are config vectors, with one void* pointer for each module
      * (the thing pointed to being the module's business).
      */
 
-    void *per_dir_config;	/* Options set in config files, etc. */
-    void *request_config;	/* Notes on *this* request */
+    /** Options set in config files, etc. */
+    void *per_dir_config;
+    /** Notes on *this* request */
+    void *request_config;
 
-/*
+/**
  * a linked list of the configuration directives in the .htaccess files
  * accessed by this request.
  * N.B. always add to the head of the list, _never_ to the end.
  * that way, a sub request's list can (temporarily) point to a parent's list
+ * @defvar const htaccess_result *htaccess
  */
     const struct htaccess_result *htaccess;
 
 #ifdef APACHE_XLATE
+    /** The translation headers for dealing with this request 
+     *  @defvar ap_rr_xlate *rrx */
     struct ap_rr_xlate *rrx;
 #endif /*APACHE_XLATE*/
 
+    /** A list of filters to be used for this request 
+     *  @defvar ap_filter_t *filters */
     struct ap_filter_t *filters;
 
 /* Things placed at the end of the record to avoid breaking binary
@@ -735,49 +807,61 @@ struct request_rec {
 };
 
 
-/* Things which are per connection
- */
-
+/** Structure to store things which are per connection */
 struct conn_rec {
-
+    /** Pool associated with this connection */
     apr_pool_t *pool;
-    server_rec *base_server;	/* Physical vhost this conn come in on */
-    void *vhost_lookup_data;	/* used by http_vhost.c */
+    /** Physical vhost this conn come in on */
+    server_rec *base_server;
+    /** used by http_vhost.c */
+    void *vhost_lookup_data;
 
     /* Information about the connection itself */
 
-    BUFF *client;		/* Connection to the guy */
+    /** Connection to the client */
+    BUFF *client;
 
     /* Who is the client? */
 
-    struct sockaddr_in local_addr;	/* local address */
-    struct sockaddr_in remote_addr;	/* remote address */
-    char *remote_ip;		/* Client's IP address */
-    char *remote_host;		/* Client's DNS name, if known.
-				 * NULL if DNS hasn't been checked,
-				 * "" if it has and no address was found.
-				 * N.B. Only access this though
-				 * get_remote_host() */
-    char *remote_logname;	/* Only ever set if doing rfc1413 lookups.
-				 * N.B. Only access this through
-				 * get_remote_logname() */
+    /** local address */
+    struct sockaddr_in local_addr;
+    /** remote address */
+    struct sockaddr_in remote_addr;
+    /** Client's IP address */
+    char *remote_ip;
+    /** Client's DNS name, if known.  NULL if DNS hasn't been checked,
+     *  "" if it has and no address was found.  N.B. Only access this though
+     * get_remote_host() */
+    char *remote_host;
+    /** Only ever set if doing rfc1413 lookups.  N.B. Only access this through
+     *  get_remote_logname() */
+    char *remote_logname;
 
-    unsigned aborted:1;		/* Are we still talking? */
-    signed int keepalive:2;	/* Are we using HTTP Keep-Alive?
-				 * -1 fatal error, 0 undecided, 1 yes */
-    unsigned keptalive:1;	/* Did we use HTTP Keep-Alive? */
-    signed int double_reverse:2;/* have we done double-reverse DNS?
-				 * -1 yes/failure, 0 not yet, 1 yes/success */
-    int keepalives;		/* How many times have we used it? */
-    char *local_ip;		/* server IP address */
-    char *local_host;		/* used for ap_get_server_name when
-				 * UseCanonicalName is set to DNS
-				 * (ignores setting of HostnameLookups) */
-    long id;                    /* ID of this connection; unique at any
-                                 * point in time */
-    void *conn_config;		/* Notes on *this* connection */
-    apr_table_t *notes;  /* send note from one module to another, must
-                         * remain valid for all requests on this conn */
+    /** Are we still talking? */
+    unsigned aborted:1;
+    /** Are we using HTTP Keep-Alive?  -1 fatal error, 0 undecided, 1 yes */
+    signed int keepalive:2;
+    /** Did we use HTTP Keep-Alive? */
+    unsigned keptalive:1;
+    /** have we done double-reverse DNS? -1 yes/failure, 0 not yet, 
+     *  1 yes/success */
+    signed int double_reverse:2;
+
+    /** How many times have we used it? */
+    int keepalives;
+    /** server IP address */
+    char *local_ip;
+    /** used for ap_get_server_name when UseCanonicalName is set to DNS
+     *  (ignores setting of HostnameLookups) */
+    char *local_host;
+
+    /** ID of this connection; unique at any point in time */
+    long id; 
+    /** Notes on *this* connection */
+    void *conn_config;
+    /** send note from one module to another, must remain valid for all
+     *  requests on this conn */
+    apr_table_t *notes;
 };
 
 /* Per-vhost config... */
@@ -788,62 +872,93 @@ struct conn_rec {
 #define DEFAULT_VHOST_ADDR 0xfffffffful
 
 typedef struct server_addr_rec server_addr_rec;
+
+/** A structure to be used for Per-vhost config */
 struct server_addr_rec {
+    /** The next server in the list
     server_addr_rec *next;
-    apr_in_addr host_addr;	/* The bound address, for this server */
-    unsigned short host_port;	/* The bound port, for this server */
-    char *virthost;		/* The name given in <VirtualHost> */
+    /** The bound address, for this server */
+    apr_in_addr host_addr;
+    /** The bound port, for this server */
+    unsigned short host_port;
+    /** The name given in <VirtualHost> */
+    char *virthost;
 };
 
+/** A structure to store information for each virtual server */
 struct server_rec {
+    /** The process this server is running in */
     process_rec *process;
+    /** The next server in the list */
     server_rec *next;
 
-    /* description of where the definition came from */
+    /** The name of the server */
     const char *defn_name;
+    /** The line of the config file that the server was defined on */
     unsigned defn_line_number;
 
     /* Contact information */
 
+    /** The admin's contact information */
     char *server_admin;
+    /** The server hostname */
     char *server_hostname;
-    unsigned short port;	/* for redirects, etc. */
+    /** for redirects, etc. */
+    unsigned short port;
 
     /* Log files --- note that transfer log is now in the modules... */
 
+    /** The name of the error log */
     char *error_fname;
+    /** A file descriptor that references the error log */
     apr_file_t *error_log;
+    /** The log level for this server */
     int loglevel;
 
     /* Module-specific configuration for server, and defaults... */
 
-    int is_virtual;		/* true if this is the virtual server */
+    /** true if this is the virtual server */
+    int is_virtual;
+    /** Config vector containing pointers to modules' per-server config 
+     *  structures. */
     void *module_config;	/* Config vector containing pointers to
-				 * modules' per-server config structures.
-				 */
+    /** MIME type info, etc., before we start checking per-directory info. */
     void *lookup_defaults;	/* MIME type info, etc., before we start
-				 * checking per-directory info.
-				 */
+
     /* Transaction handling */
 
+    /** I haven't got a clue */
     server_addr_rec *addrs;
-    int timeout;		/* Timeout, in seconds, before we give up */
-    int keep_alive_timeout;	/* Seconds we'll wait for another request */
-    int keep_alive_max;		/* Maximum requests per connection */
-    int keep_alive;		/* Use persistent connections? */
+    /** Timeout, in seconds, before we give up */
+    int timeout;
+    /** Seconds we'll wait for another request */
+    int keep_alive_timeout;
+    /** Maximum requests per connection */
+    int keep_alive_max;
+    /** Use persistent connections? */
+    int keep_alive;
 
-    const char *path;		/* Pathname for ServerPath */
-    int pathlen;		/* Length of path */
+    /** Pathname for ServerPath */
+    const char *path;
+    /** Length of path */
+    int pathlen;
 
-    apr_array_header_t *names;	/* Normal names for ServerAlias servers */
-    apr_array_header_t *wild_names;	/* Wildcarded names for ServerAlias servers */
+    /** Normal names for ServerAlias servers */
+    apr_array_header_t *names;
+    /** Wildcarded names for ServerAlias servers */
+    apr_array_header_t *wild_names;
 
-    uid_t server_uid;        /* effective user id when calling exec wrapper */
-    gid_t server_gid;        /* effective group id when calling exec wrapper */
+    /** effective user id when calling exec wrapper */
+    uid_t server_uid;
+    /** effective group id when calling exec wrapper */
+    gid_t server_gid;
 
-    int limit_req_line;      /* limit on size of the HTTP request line    */
-    int limit_req_fieldsize; /* limit on size of any request header field */
-    int limit_req_fields;    /* limit on number of request header fields  */
+    /** limit on size of the HTTP request line    */
+    int limit_req_line;
+    /** limit on size of any request header field */
+    int limit_req_fieldsize;
+    /** limit on number of request header fields  */
+    int limit_req_fields; 
 };
 
 /* stuff marked API_EXPORT is part of the API, and intended for use
@@ -892,47 +1007,294 @@ struct server_rec {
 #endif
 #endif
 
-/* Time */
-
+/**
+ * Examine a field value (such as a media-/content-type) string and return
+ * it sans any parameters; e.g., strip off any ';charset=foo' and the like.
+ * @param p Pool to allocate memory out of
+ * @param intype The field to examine
+ * @return the field minus any parameters
+ * @deffunc char *ap_field_noparam(apr_pool_t *p, const char *intype);
+ */
 API_EXPORT(char *) ap_field_noparam(apr_pool_t *p, const char *intype);
+
+/**
+ * Convert a time from an integer into a string in a specified format
+ * @param p The pool to allocate memory out of
+ * @param t The time to convert
+ * @param fmt The format to use for the conversion
+ * @param gmt Convert the time for GMT?
+ * @return The string that represents the specified time
+ * @deffunc char *ap_ht_time(apr_pool_t *p, apr_time_t t, const char *fmt, int gmt)
+ */
 API_EXPORT(char *) ap_ht_time(apr_pool_t *p, apr_time_t t, const char *fmt, int gmt);
 
 /* String handling. The *_nc variants allow you to use non-const char **s as
    arguments (unfortunately C won't automatically convert a char ** to a const
    char **) */
 
+/**
+ * Get the characters until the first occurance of a specified character
+ * @param p The pool to allocate memory out of
+ * @param line The string to get the characters from
+ * @param stop The character to stop at
+ * @return A copy of the characters up to the first stop character
+ * @deffunc char *ap_getword(apr_pool_t *p, const char **line, char stop);
+ */
 API_EXPORT(char *) ap_getword(apr_pool_t *p, const char **line, char stop);
+/**
+ * Get the characters until the first occurance of a specified character
+ * @param p The pool to allocate memory out of
+ * @param line The string to get the characters from
+ * @param stop The character to stop at
+ * @return A copy of the characters up to the first stop character
+ * @tip This is the same as ap_getword, except it doesn't use const char **.
+ * @deffunc char *ap_getword_nc(apr_pool_t *p, char **line, char stop);
+ */
 API_EXPORT(char *) ap_getword_nc(apr_pool_t *p, char **line, char stop);
+
+/**
+ * Get the first word from a given string.  A word is defined as all characters
+ * up to the first whitespace.
+ * @param p The pool to allocate memory from
+ * @param line The string to traverse
+ * @retrn The first word in the line
+ * @deffunc char *ap_getword_white(apr_pool_t *p, const char **line)
+ */
 API_EXPORT(char *) ap_getword_white(apr_pool_t *p, const char **line);
+/**
+ * Get the first word from a given string.  A word is defined as all characters
+ * up to the first whitespace.
+ * @param p The pool to allocate memory from
+ * @param line The string to traverse
+ * @retrn The first word in the line
+ * @tip The same as ap_getword_white, except it doesn't use const char **.
+ * @deffunc char *ap_getword_white_nc(apr_pool_t *p, const char **line)
+ */
 API_EXPORT(char *) ap_getword_white_nc(apr_pool_t *p, char **line);
+
+/**
+ * Get all characters from the first occurance of stop to the first '\0'
+ * @param p The pool to allocate memory out of
+ * @param line The line to traverse
+ * @param stop The character to start at
+ * @return A copy of all caracters after the first occurance of the specified
+ *         character
+ * @deffunc char *ap_getword_nulls(apr_pool_t *p, const char **line, char stop)
+ */
 API_EXPORT(char *) ap_getword_nulls(apr_pool_t *p, const char **line, char stop);
+/**
+ * Get all characters from the first occurance of stop to the first '\0'
+ * @param p The pool to allocate memory out of
+ * @param line The line to traverse
+ * @param stop The character to start at
+ * @return A copy of all caracters after the first occurance of the specified
+ *         character
+ * @tip The same as ap_getword_nulls, except it doesn't use const char **.
+ * @deffunc char *ap_getword_nulls_nc(apr_pool_t *p, char **line, char stop)
+ */
 API_EXPORT(char *) ap_getword_nulls_nc(apr_pool_t *p, char **line, char stop);
+
+/**
+ * Get the second word in the string paying attention to quoting
+ * @param p The pool to allocate out of
+ * @param line The line to traverse
+ * @return A copy of the string
+ * @deffunc char *ap_getword_conf(apr_pool_t *p, const char **line)
+ */
 API_EXPORT(char *) ap_getword_conf(apr_pool_t *p, const char **line);
+/**
+ * Get the second word in the string paying attention to quoting
+ * @param p The pool to allocate out of
+ * @param line The line to traverse
+ * @return A copy of the string
+ * @tip The same as ap_getword_conf, except it doesn't use const char **.
+ * @deffunc char *ap_getword_conf_nc(apr_pool_t *p, char **line)
+ */
 API_EXPORT(char *) ap_getword_conf_nc(apr_pool_t *p, char **line);
+
+/**
+ * Check a string for any ${ENV} environment variable construct and replace 
+ * each them by the value of that environment variable, if it exists. If the 
+ * environment value does not exist, leave the ${ENV} construct alone; it 
+ * means something else.
+ * @param p The pool to allocate out of
+ * @param word The string to check
+ * @return The string with the replaced environment variables
+ * @deffunc const char *ap_resolve_env(apr_pool_t *p, const char *word)
+ */
 API_EXPORT(const char *) ap_resolve_env(apr_pool_t *p, const char * word); 
 
+/**
+ * Size an HTTP header field list item, as separated by a comma.
+ * @param field The field to size
+ * @param len The length of the field
+ * @return The return value is a pointer to the beginning of the non-empty 
+ * list item within the original string (or NULL if there is none) and the 
+ * address of field is shifted to the next non-comma, non-whitespace 
+ * character.  len is the length of the item excluding any beginning whitespace.
+ * @deffunc const char *ap_size_list_item(const char **field, int *len)
+ */
 API_EXPORT(const char *) ap_size_list_item(const char **field, int *len);
+
+/**
+ * Retrieve an HTTP header field list item, as separated by a comma,
+ * while stripping insignificant whitespace and lowercasing anything not in
+ * a quoted string or comment.  
+ * @param p The pool to allocate out of
+ * @param field The field to retrieve
+ * @return The return value is a new string containing the converted list 
+ *         item (or NULL if none) and the address pointed to by field is 
+ *         shifted to the next non-comma, non-whitespace.
+ * @deffunc char *ap_get_list_item(apr_pool_t *p, const char **field)
+ */
 API_EXPORT(char *) ap_get_list_item(apr_pool_t *p, const char **field);
+
+/**
+ * Find an item in canonical form (lowercase, no extra spaces) within
+ * an HTTP field value list.  
+ * @param p The pool to allocate out of
+ * @param line The field value list to search
+ * @param tok The token to search for
+ * @return 1 if found, 0 if not found.
+ * @deffunc int ap_find_list_item(apr_pool_t *p, const char *line, const char *tok)
+ */
 API_EXPORT(int) ap_find_list_item(apr_pool_t *p, const char *line, const char *tok);
 
+/**
+ * Retrieve a token, spacing over it and returning a pointer to
+ * the first non-white byte afterwards.  Note that these tokens
+ * are delimited by semis and commas; and can also be delimited
+ * by whitespace at the caller's option.
+ * @param p The pool to allocate out of
+ * @param accept_line The line to retrieve the token from
+ * @param accept_white Is it delimited by whitespace
+ * @return the first non-white byte after the token
+ * @deffunc char *ap_get_token(apr_pool_t *p, const char **accept_line, int accept_white)
+ */
 API_EXPORT(char *) ap_get_token(apr_pool_t *p, const char **accept_line, int accept_white);
+
+/**
+ * find http tokens, see the definition of token from RFC2068 
+ * @param p The pool to allocate out of
+ * @param line The line to find the token
+ * @param tok The token to find
+ * @return 1 if the token is found, 0 otherwise
+ * @deffunc int ap_find_token(apr_pool_t *p, const char *line, const char *tok)
+ */
 API_EXPORT(int) ap_find_token(apr_pool_t *p, const char *line, const char *tok);
+
+/**
+ * find http tokens from the end of the line
+ * @param p The pool to allocate out of
+ * @param line The line to find the token
+ * @param tok The token to find
+ * @return 1 if the token is found, 0 otherwise
+ * @deffunc int ap_find_last_token(apr_pool_t *p, const char *line, const char *tok)
+ */
 API_EXPORT(int) ap_find_last_token(apr_pool_t *p, const char *line, const char *tok);
 
+/**
+ * Check for an Absolute URI syntax
+ * @param u The string to check
+ * @return 1 if URI, 0 otherwise
+ * @deffunc int ap_is_url(const char *u)
+ */
 API_EXPORT(int) ap_is_url(const char *u);
+
+/**
+ * Unescape a URL
+ * @param url The url to unescapte
+ * @return 0 on success, non-zero otherwise
+ * @deffunc int ap_unescape_url(char *url)
+ */
 API_EXPORT(int) ap_unescape_url(char *url);
+/**
+ * Remove all double slashes from a string
+ * @param name The string to parse
+ * @deffunc void ap_no2slash(char *name)
+ */
 API_EXPORT(void) ap_no2slash(char *name);
+
+/**
+ * Remove all ./ and ../ substrings from a file name
+ * @param name the file name to parse
+ * @deffunc void ap_getparents(char *name)
+ */
 API_EXPORT(void) ap_getparents(char *name);
+
+/**
+ * Escape a path segment, as defined in RFC 1808
+ * @param p The pool to allocate out of
+ * @param s The path to convert
+ * @return The converted URL
+ * @deffunc char *ap_escape_path_segment(apr_pool_t *p, const char *s)
+ */
 API_EXPORT(char *) ap_escape_path_segment(apr_pool_t *p, const char *s);
+/**
+ * convert an OS path to a URL in an OS dependant way.
+ * @param p The pool to allocate out of
+ * @param path The path to convert
+ * @param partial if set, assume that the path will be appended to something
+ *        with a '/' in it (and thus does not prefix "./")
+ * @return The converted URL
+ * @deffunc char *ap_os_escape_path(apr_pool_t *p, const char *path, int partial)
+ */
 API_EXPORT(char *) ap_os_escape_path(apr_pool_t *p, const char *path, int partial);
 #define ap_escape_uri(ppool,path) ap_os_escape_path(ppool,path,1)
+
+/**
+ * Escape an html string
+ * @param p The pool to allocate out of
+ * @param s The html to escape
+ * @return The escaped string
+ * @deffunc char *ap_escape_html(apr_pool_t *p, const char *s)
+ */
 API_EXPORT(char *) ap_escape_html(apr_pool_t *p, const char *s);
+
+/**
+ * Construct a full hostname
+ * @param p The pool to allocate out of
+ * @param hostname The hostname of the server
+ * @param port The port the server is running on
+ * @param r The current request
+ * @return The server's hostname
+ * @deffunc char *ap_construct_server(apr_pool_t *p, const char *hostname, unsiged port, const request_rec *r)
+ */
 API_EXPORT(char *) ap_construct_server(apr_pool_t *p, const char *hostname,
 				    unsigned port, const request_rec *r);
+/**
+ * Escape a shell command
+ * @param p The pool to allocate out of
+ * @param s The command to escape
+ * @return The escaped hostname
+ * @deffunc char *ap_escape_shell_cmd(apr_pool_t *p, const char *s)
+ */
 API_EXPORT(char *) ap_escape_shell_cmd(apr_pool_t *p, const char *s);
 
+/**
+ * Count the number of directories in a path
+ * @param The path to count
+ * @return The number of directories
+ * @deffunc int ap_count_dirs(const char *path)
+ */
 API_EXPORT(int) ap_count_dirs(const char *path);
+/**
+ * copy at most n leading directories of s into d d should be at least as 
+ * large as s plus 1 extra byte assumes n > 0
+ * @param d The location to copy to
+ * @param s The location to copy from
+ * @param n The number of directories to copy
+ * @return value is the ever useful pointer to the trailing \0 of d
+ * @deffunc char *ap_make_dirstr_prefix(char *d, const char *s, int n)
+ */
 API_EXPORT(char *) ap_make_dirstr_prefix(char *d, const char *s, int n);
+/**
+ * return the parent directory name including trailing / of the file s
+ * @param p The pool to allocate out of
+ * @param s The file to get the parent of
+ * @return A copy of the file's parent directory
+ * @deffunc char *ap_make_dirstr_parent(apr_pool_t *p, const char *s)
+ */
 API_EXPORT(char *) ap_make_dirstr_parent(apr_pool_t *p, const char *s);
 /* deprecated.  The previous two routines are preferred. */
 API_EXPORT(char *) ap_make_dirstr(apr_pool_t *a, const char *s, int n);
