@@ -996,6 +996,9 @@ static int proxy_match_ipaddr(struct dirconn_entry *This, request_rec *r)
     const char *found;
     const char *host = proxy_get_host_of_request(r);
 
+    if (host == NULL)   /* oops! */
+       return 0;
+
     memset(&addr, '\0', sizeof addr);
     memset(ip_addr, '\0', sizeof ip_addr);
 
@@ -1153,8 +1156,14 @@ static int proxy_match_hostname(struct dirconn_entry *This, request_rec *r)
 {
     char *host = This->name;
     char *host2 = proxy_get_host_of_request(r);
-    int h2_len = strlen(host2);
-    int h1_len = strlen(host);
+    int h2_len;
+    int h1_len;
+
+    if (host == NULL || host2 == NULL)
+       return 0; /* oops! */
+
+    h2_len = strlen(host2);
+    h1_len = strlen(host);
 
 #if 0
     unsigned long *ip_list;
