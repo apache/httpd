@@ -1,5 +1,8 @@
 Changes with Apache 1.2
 
+  *) Escape the HTML-sensitive characters in the Request-URI that is
+     output for each child by mod_status. [Dean Gaudet and Ken Coar] PR#501
+
   *) Properly initialize the flock structures used by the mutex locking
      around accept() when USE_FCNTL_SERIALIZED_ACCEPT is defined.
      [Marc Slemko]

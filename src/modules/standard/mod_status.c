@@ -497,7 +497,8 @@ int status_handler (request_rec *r)
 		    format_byte_out(r,bytes);
 		    rputs(")\n",r);
 		    rprintf(r," <i>%s {%s}</i><br>\n\n",
-			    score_record.client, score_record.request);
+			    score_record.client,
+			    escape_html(r->pool, score_record.request));
 		}
 		else /* !no_table_report */
 		{
@@ -553,7 +554,7 @@ int status_handler (request_rec *r)
 			(float)bytes/MBYTE);
 		    rprintf(r,"<td>%s<td nowrap>%s<td nowrap>%s</tr>\n\n",
 			    score_record.client, score_record.vhost,
-			    score_record.request);
+			    escape_html(r->pool, score_record.request));
 		}	/* no_table_report */
 	    }		/* !short_report */
 	}		/* if (<active child>) */
