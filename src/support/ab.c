@@ -161,7 +161,7 @@
 #endif				/* NO_APACHE_INCLUDES */
 
 #ifdef	USE_SSL
-#if ((!(RSAREF)) && (!(SYSSSL)))
+#if ((!(RSAREF)) && (!defined(SYSSSL)))
 /* Libraries on most systems.. */
 #include <openssl/rsa.h>
 #include <openssl/crypto.h>
@@ -312,8 +312,9 @@ struct sockaddr_in server;	/* server addr structure */
 #endif
 
 static void close_connection(struct connection * c);
-#if NO_WRITEV || USE_SSL
-static void s_write(struct connection * c, char *buff, int len);
+#if (defined(NO_WRITEV) || defined(USE_SSL))
+#define USE_S_WRITE
+static int s_write(struct connection * c, char *buff, int len);
 #endif
 
 /* --------------------------------------------------------- */
@@ -343,12 +344,13 @@ static void write_request(struct connection * c)
 /* XXX this sucks - SSL mode and writev() do not mix
  *     another artificial difference.
  */
-#if !NO_WRITEV && !USE_SSL
+#ifndef USE_S_WRITE
     struct iovec out[2];
-    int outcnt = 1, snd = 0;
+    int outcnt = 1;
 #endif
+    int snd = 0;
     gettimeofday(&c->connect, 0);
-#if !NO_WRITEV && !USE_SSL
+#ifndef USE_S_WRITE
     out[0].iov_base = request;
     out[0].iov_len = reqlen;
 
@@ -362,8 +364,8 @@ static void write_request(struct connection * c)
 #else
     snd = s_write(c, request, reqlen);
     if (posting > 0) {
-	snd += s_write(c, postdata, postlen);
-	totalposted += (reqlen + postlen);
+        snd += s_write(c, postdata, postlen);
+        totalposted += (reqlen + postlen);
     }
 #endif
     if (snd < 0) {
@@ -387,17 +389,18 @@ static void write_request(struct connection * c)
 
 /*  Do actual data writing */
 
-#if NO_WRITEV || USE_SSL
-static void s_write(struct connection * c, char *buff, int len)
+#ifdef USE_S_WRITE
+static int s_write(struct connection * c, char *buff, int len)
 {
+	int left = len;
     do {
 	int n;
-#if USE_SSL
+#ifdef USE_SSL
 	if (ssl) {
-	    n = SSL_write(c->ssl, buff, len);
+	    n = SSL_write(c->ssl, buff, left);
 	    if (n < 0) {
 		int e = SSL_get_error(c->ssl, n);
-		/* XXXX propably wrong !!! */
+		/* XXXX probably wrong !!! */
 		if ((e != SSL_ERROR_WANT_READ) && (e != SSL_ERROR_WANT_WRITE))
 		    n = -1;
 		else
@@ -406,7 +409,7 @@ static void s_write(struct connection * c, char *buff, int len)
 	}
 	else
 #endif
-	    n = ab_write(c->fd, buff, len);
+    n = ab_write(c->fd, buff, left);
 
 	if (n < 0) {
 	    switch (errno) {
@@ -416,9 +419,9 @@ static void s_write(struct connection * c, char *buff, int len)
 		/* We've tried to write to a broken pipe. */
 		epipe++;
 		close_connection(c);
-		return;
+		return len-left;
 	    default:
-#if USE_SSL
+#ifdef USE_SSL
 		if (ssl) {
 			fprintf(stderr,"Error writing: ");
 	    		ERR_print_errors_fp(stderr);
@@ -430,11 +433,13 @@ static void s_write(struct connection * c, char *buff, int len)
 	}
 	else if (n) {
 	    if (verbosity >= 3)
-		printf(" --> write(%x) %d (%d)\n", (unsigned char) buff[0], n, len);
+		printf(" --> write(%x) %d (%d)\n", (unsigned char) buff[0], n, left);
 	    buff += n;
-	    len -= n;
+	    left -= n;
 	};
-    } while (len > 0);
+    } while (left > 0);
+    
+	return len - left;
 }
 #endif
 
@@ -634,7 +639,7 @@ static void output_results(void)
 	/*
 	 * XXX: what is better; this hideous cast of the copare function; or
 	 * the four warnings during compile ? dirkx just does not know and
-	 * hates both/
+	 * hates both
 	 */
 	qsort(stats, requests, sizeof(struct data),
 	      (int (*) (const void *, const void *)) compradre);
@@ -879,9 +884,9 @@ static void start_connect(struct connection * c)
 	goto _bad;
     };
 
-#if USE_SSL
+#ifdef USE_SSL
     /*
-     * XXXX move nonblocker - so that measnurement needs to have its OWN
+     * XXX move nonblocker - so that measnurement needs to have its OWN
      * state engine OR cannot be compared to http.
      */
     if (!ssl)
@@ -899,9 +904,9 @@ again:
     c->state = STATE_CONNECTING;
 
 #ifdef USE_SSL
-    /* XX no proper freeing in error's */
+    /* XXX no proper freeing in error's */
     /*
-     * XXXX no proper choise of completely new connection or one which reuses
+     * XXX no proper choise of completely new connection or one which reuses
      * (older) session keys. Fundamentally unrealistic.
      */
     if (ssl) {
@@ -926,7 +931,7 @@ again:
 	    fprintf(stderr, "SSL connection OK: %s\n", SSL_get_cipher(c->ssl));
     }
 #endif
-#if USE_SSL
+#ifdef USE_SSL
     if (ssl)
 	nonblock(c->fd);
 #endif
@@ -1001,10 +1006,10 @@ static void read_connection(struct connection * c)
     char respcode[4];		/* 3 digits and null */
 
     gettimeofday(&c->beginread, 0);
-#if USE_SSL
+#ifdef USE_SSL
     if (ssl) {
 	r = SSL_read(c->ssl, buffer, sizeof(buffer));
-	/* XXX fundamwentally worng .. */
+	/* XXX fundamentally worng .. */
 	if (r < 0 && SSL_get_error(c->ssl, r) == SSL_ERROR_WANT_READ) {
 	    r = -1;
 	    errno = EAGAIN;
@@ -1346,14 +1351,14 @@ static void test(void)
 static void copyright(void)
 {
     if (!use_html) {
-	printf("This is ApacheBench, Version %s\n", VERSION " <$Revision: 1.63 $> apache-1.3");
+	printf("This is ApacheBench, Version %s\n", VERSION " <$Revision: 1.64 $> apache-1.3");
 	printf("Copyright (c) 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/\n");
 	printf("Copyright (c) 1998-2002 The Apache Software Foundation, http://www.apache.org/\n");
 	printf("\n");
     }
     else {
 	printf("<p>\n");
-	printf(" This is ApacheBench, Version %s <i>&lt;%s&gt;</i> apache-1.3<br>\n", VERSION, "$Revision: 1.63 $");
+	printf(" This is ApacheBench, Version %s <i>&lt;%s&gt;</i> apache-1.3<br>\n", VERSION, "$Revision: 1.64 $");
 	printf(" Copyright (c) 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/<br>\n");
 	printf(" Copyright (c) 1998-2002 The Apache Software Foundation, http://www.apache.org/<br>\n");
 	printf("</p>\n<p>\n");
@@ -1364,7 +1369,7 @@ static void copyright(void)
 static void usage(char *progname)
 {
     fprintf(stderr, "Usage: %s [options] [http"
-#if USE_SSL
+#ifdef USE_SSL
 	    "[s]"
 #endif
 	    "://]hostname[:port]/path\n", progname);
@@ -1394,7 +1399,7 @@ static void usage(char *progname)
     fprintf(stderr, "    -S              Do not show confidence estimators and warnings.\n");
     fprintf(stderr, "    -g filename     Output collected data to gnuplot format file.\n");
     fprintf(stderr, "    -e filename     Output CSV file with percentages served\n");
-#if USE_SSL
+#ifdef USE_SSL
     fprintf(stderr, "    -s              Use httpS instead of HTTP (SSL)\n");
 #endif
     fprintf(stderr, "    -h              Display usage information (this message)\n");
@@ -1414,7 +1419,7 @@ static int parse_url(char * purl)
     if (strlen(purl) > 7 && strncmp(purl, "http://", 7) == 0)
 	purl += 7;
     else
-#if USE_SSL
+#ifdef USE_SSL
     if (strlen(purl) > 8 && strncmp(purl, "https://", 8) == 0) {
 	purl += 8;
 	ssl = 1;
@@ -1442,7 +1447,7 @@ static int parse_url(char * purl)
 	port = atoi(p);
 
     if ((
-#if USE_SSL
+#ifdef USE_SSL
 	(ssl != 0) && (port != 443)) || ((ssl == 0) && 
 #endif
 	(port != 80))) 
@@ -1504,12 +1509,12 @@ int main(int argc, char **argv)
     proxyhost[0] = '\0';
     optind = 1;
     while ((c = getopt(argc, argv, "n:c:t:T:p:v:kVhwix:y:z:C:H:P:A:g:X:de:Sq"
-#if USE_SSL
+#ifdef USE_SSL
 		       "s"
 #endif
 		       )) > 0) {
 	switch (c) {
-#if USE_SSL
+#ifdef USE_SSL
 	case 's':
 	    ssl = 1;
 	    break;
