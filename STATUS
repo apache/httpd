@@ -1,5 +1,5 @@
   1.3 STATUS:
-  Last modified at [$Date: 2001/02/17 15:26:33 $]
+  Last modified at [$Date: 2001/02/17 19:41:43 $]
 
 Release:
 
@@ -62,7 +62,7 @@ Available Patches (Most likely, these will not be added to the official
    *  A rewrite of ap_unparse_uri_components() by Jeffrey W. Baker
      <jwbaker@acm.org> to more fully close some segfault potential.
         Message-ID: <Pine.LNX.4.21.0102102350060.6815-200000@desktop>
-        Status:  Jim +1 (for 1.3.19)
+        Status:  Jim +1 (for 1.3.19), Martin +0
 
     * Patch from "C. Bottelier" <c.bottelier@quicknet.nl> to run
 	Apache without daemonizing the parent process. PR#7040
@@ -120,6 +120,14 @@ Available Patches (Most likely, these will not be added to the official
 	Message-ID: <37306CB4.8EA9D76C@Golux.Com>
 	Status: Ken +1, Dean +1, Randy +1, Lars +0, Jim +1
 
+    * Martin Kraemer's ebcdic rewrite: some new directives which allow
+      fkexible configuration of the EBCDIC conversion rules, combining
+      the stuff common to all ebcdic platforms. That
+      will replace the current hardwired heuristics.
+	Message-Id: <20010209111833.E88789@deejai2.mch.fsc.net> (Part 1) and
+	            <20010209111919.F88789@deejai2.mch.fsc.net> (Part 2)
+	Status: 
+
 In progress:
 
     * Doug MacEachern's libapr - Generic Apache Request Library (Alpha)
@@ -132,13 +140,6 @@ In progress:
       Discussion in thread following message-ID below.
 	Message-ID: <00a001bedc00$fbc5af60$0500a8c0@delf>
 	Status: 
-
-    * Martin Kraemer's mod_ebcdic.c: a new module which will contain the
-      ebcdic related stuff (common to all ebcdic based os's) and will
-      allow for flexible configuration of the conversion rules. That
-      will replace the current hardwired heuristics.
-	Message-Id: none yet
-	Status: first prototype running, to be posted to list soon.
 
 Needs patch:
 
