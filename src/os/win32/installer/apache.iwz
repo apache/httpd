@@ -36,6 +36,7 @@ PACKLIST.EXE Ver=3.00.060
 Version=2.02
 DevTool=Generic Windows
 Platform=Win32
+DisksBuilt=1
 DisksDir=apache\650MB\
 TabsVisit=1111001110000111100011
 LangNum=451
@@ -71,10 +72,10 @@ Type3ComponentList=1 6
 
 [Components]
 Components=6
-Component1Groups=5
+Component1Groups=6
 Component1Name=Application Files
 Component1Description=Application files needed to run the application
-Component1GroupList=1 3 24 25 4 
+Component1GroupList=1 3 24 25 4 35 
 Component2Groups=17
 Component2Name=Source Code
 Component2Description=Source code for Apache and support tools
@@ -97,8 +98,8 @@ Component6Description=
 Component6GroupList=26 28 29 30 
 
 [Groups]
-Groups=34
-Group1Size=519176
+Groups=35
+Group1Size=345096
 Group1Files=9
 Group1Name=Program Executables
 Group1Dir=<INSTALLDIR>
@@ -113,7 +114,7 @@ Group1File6=C:\Apache\LICENSE
 Group1File7=C:\Apache\README
 Group1File8=C:\apache\Makefile.tmpl
 Group1File9=C:\apache\README-NT.TXT
-Group2Size=265728
+Group2Size=132608
 Group2Files=10
 Group2Name=Additional Modules
 Group2Dir=<INSTALLDIR>\modules
@@ -810,6 +811,13 @@ Group34File5=C:\apache\src\os\win32\installer\installdll\test\test.h
 Group34File6=C:\apache\src\os\win32\installer\installdll\test\test.ico
 Group34File7=C:\apache\src\os\win32\installer\installdll\test\test.mak
 Group34File8=C:\apache\src\os\win32\installer\installdll\test\test.rc
+Group35Size=54272
+Group35Files=1
+Group35Name=bin
+Group35Dir=<INSTALLDIR>\bin
+Group35Update=0
+Group35TargetOS=-1
+Group35File1=C:\apache\bin\htpasswd.exe
 
 [Sequence]
 DestinationLocationDir=<ProgramFilesDir>\Apache Group\Apache
