@@ -16,8 +16,6 @@ static struct
 {
     int (*main_fn)(int, char **);
     event *stop_event;
-    int *stop_flag;
-    int *pause_flag;
     int connected;
     SERVICE_STATUS_HANDLE hServiceStatus;
     char *name;
@@ -34,7 +32,7 @@ static void RemoveService();
 
 
 int service_main(int (*main_fn)(int, char **), int argc, char **argv,
-                  int *pause, int *stop, char *service_name,
+                  char *service_name,
                   int install_flag, int run_as_service)
 {
     SERVICE_TABLE_ENTRY dispatchTable[] =
@@ -58,9 +56,7 @@ int service_main(int (*main_fn)(int, char **), int argc, char **argv,
     else
     {
         globdat.main_fn = main_fn;
-        globdat.stop_event = create_event(0, 0, NULL);
-        globdat.stop_flag = stop;
-        globdat.pause_flag = pause;
+        globdat.stop_event = create_event(0, 0, "apache-signal");
      
         if(run_as_service)
         {
@@ -149,7 +145,7 @@ VOID WINAPI service_ctrl(DWORD dwCtrlCode)
         //
         case SERVICE_CONTROL_STOP:
             state = SERVICE_STOP_PENDING;
-            *(globdat.stop_flag) = 1;
+	    start_shutdown();
             break;
 
         // Update the service status.
