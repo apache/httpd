@@ -42,7 +42,7 @@
     sollten es niemals nötig haben, einem anderen Prozess, als dem
     Elternprozess, ein Signal zu senden. Es gibt drei Signale, die Sie an den
     Elternprozess senden können: <a href="#term"><code>TERM</code></a>,
-    <a href="#hub"><code>HUP</code></a> und
+    <a href="#hup"><code>HUP</code></a> und
     <a href="#graceful"><code>USR1</code></a>, die nachfolgend beschrieben
     werden.</p>
 
