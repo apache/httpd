@@ -1,5 +1,8 @@
 Changes with Apache 1.3.7
 
+  *) OS/2: Fix terminating CGIs that aren't compiled by EMX GCC when a 
+     connection is aborted.  [Brian Havard]
+
   *) Force the LANG envariable to the known state of "C" so that we
      have assurance about how string manipulators (e.g., tr) will
      function.  [Ken Coar]  PR#1630

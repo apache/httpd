@@ -2673,8 +2673,13 @@ static void free_proc_chain(struct process_chain *procs)
 	if ((p->kill_how == kill_after_timeout)
 	    || (p->kill_how == kill_only_once)) {
 	    /* Subprocess may be dead already.  Only need the timeout if not. */
+#ifdef OS2
+	    if (ap_os_kill(p->pid, SIGTERM) != -1)
+		need_timeout = 1;
+#else
 	    if (kill(p->pid, SIGTERM) != -1)
 		need_timeout = 1;
+#endif
 	}
 	else if (p->kill_how == kill_always) {
 	    kill(p->pid, SIGKILL);

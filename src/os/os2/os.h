@@ -32,6 +32,9 @@ extern int ap_os_is_path_absolute(const char *file);
 /* FIXME: the following should be implemented on this platform */
 #define ap_os_is_filename_valid(f)         (1)
 
+/* Use a specialized kill() function */
+int ap_os_kill(int pid, int sig);
+
 /* OS/2 doesn't have symlinks so S_ISLNK is always false */
 #define S_ISLNK(m) 0
 

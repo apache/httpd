@@ -1,5 +1,6 @@
 #define INCL_DOSFILEMGR
 #define INCL_DOSERRORS
+#define INCL_DOSEXCEPTIONS
 #include <os2.h>
 #include "httpd.h"
 #include "http_log.h"
@@ -38,4 +39,27 @@ API_EXPORT(char *)ap_os_canonical_filename(pool *pPool, const char *szFile)
             *pos = '/';
     
     return ap_pstrdup(pPool, buf2);
+}
+
+
+
+int ap_os_kill(pid_t pid, int sig)
+{
+/* SIGTERM's don't work too well in OS/2 (only affects other EMX programs).
+   CGIs may not be, esp. REXX scripts, so use a native call instead */
+   
+    int rc;
+    
+    if ( sig == SIGTERM ) {
+        rc = DosSendSignalException( pid, XCPT_SIGNAL_BREAK );
+        
+        if ( rc ) {
+            errno = ESRCH;
+            rc = -1;
+        }
+    } else {
+        rc = kill(pid, sig);
+    }
+    
+    return rc;
 }
