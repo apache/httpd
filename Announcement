@@ -16,93 +16,54 @@
  and the huge list of available "International Mirror Sites" at
      http://www.apache.org/mirrors/
 
- For a detailed list of changes please read the CHANGES file in the
- distribution and the "New Features with Apache 1.3" document at
+ For a full list of specific code changes see src/CHANGES.
+
+ For an overview of new features in 1.2 please read the CHANGES file 
+ in the distribution and the "New Features with Apache 1.3" document at
      http://www.apache.org/docs/new_features_1_3.html
- For your convenience here is a short summary of all major changes between
- Apache 1.2 and 1.3:
 
-   o Ported to Windows 95/NT
-       http://www.apache.org/dist/apache_1.3b7/htdocs/manual/windows
-       http://www.apache.org/dist/apache_1.3b7/README.NT
+ Major changes with this beta:
+  HTTP: fixes for 400 and 408 error codes.
+  WIN32: Child process spawning now uses native Win32 API.
+	   This should address many problems people have had
+           on Win32 - it also forced us to modify the 
+           related child_spawn calls in the Apache API.
+         Other various stability fixes.
+         Extensive overhaul of the way UNCs are handled.
+  Various mod_rewrite fixes.
+  Various makefile cleanups.
+  Various APACI changes.
+  Various DSO cleanups, better support for AIX, OpenBSD, NetBSD
+  Server's OS family now reported in Server: strings.
+  PORT: added support for NCR MP/RAS 3.0
+  Security: we now make sure all config files opened by Apache are not
+            special devices.
+  Added "-s" command line option to dump out vhost settings.
 
-   o Ported to BS2000/OSD, a mainframe OS with EBCDIC charset 
-       http://www.apache.org/dist/apache_1.3b7/htdocs/manual/ebcdic
-
-   o Apache Autoconf-style Interface (APACI) for out-of-the-box installation
-       http://www.apache.org/dist/apache_1.3b7/README.configure
-       http://www.apache.org/dist/apache_1.3b7/INSTALL
-
-   o Dynamic Shared Object (DSO) support for all major Unix platforms 
-       http://www.apache.org/dist/apache_1.3b7/htdocs/manual/dso.html
-
-   o APache eXtenSion (APXS) tool for building third-party modules as DSO
-       http://www.apache.org/dist/apache_1.3b7/htdocs/manual/dso.html
-       http://www.apache.org/dist/apache_1.3b7/src/support/
-
-   o Additional support tools: apachectl, ab (ApacheBench), dbmmanage
-       http://www.apache.org/dist/apache_1.3b7/src/support/
-
-   o Enhanced configuration support: Include and Line-Continuation
-       http://www.apache.org/dist/apache_1.3b7/htdocs/manual/new_features_1_3
-
-   o New `Magic' MIME-typing module for content type guessing 
-       http://www.apache.org/dist/apache_1.3b7/htdocs/manual/mod/mod_mime_magic
-
-   o Regular Expression support for Alias and Redirect directives
-       http://www.apache.org/dist/apache_1.3b7/htdocs/manual/mod/mod_alias
-
-   o Overhauled and enhanced URL Rewriting Engine
-       http://www.apache.org/dist/apache_1.3b7/htdocs/manual/mod/mod_rewrite
-
-   o Spell-checking module for on-the-fly URL corrections
-       http://www.apache.org/dist/apache_1.3b7/htdocs/manual/mod/mod_speling
-
-   o Additional access control via CIDR and Netmasks
-       http://www.apache.org/dist/apache_1.3b7/htdocs/manual/mod/mod_access
-
-   o Improved HTTP/1.1-style Virtual Host support
-       http://www.apache.org/dist/apache_1.3b7/htdocs/manual/vhosts/
-
-   o Less Buffering of CGI Script Output (makes nph- obsolete)
-       http://www.apache.org/dist/apache_1.3b7/htdocs/manual/new_features_1_3
-
-   o Various Proxy Enhancements (NoProxy, ProxyDomain, ProxyPassReverse)
-       http://www.apache.org/dist/apache_1.3b7/htdocs/manual/mod/mod_proxy
-
-   o Various internal performance improvements
-       http://www.apache.org/dist/apache_1.3b7/htdocs/manual/new_features_1_3
-
-   o Various fixes to the hostname DNS lookup handling
-       http://www.apache.org/dist/apache_1.3b7/htdocs/manual/mod/core
-
-   o Various Directory Indexing enhancements
-       http://www.apache.org/dist/apache_1.3b7/htdocs/manual/mod/mod_autoindex
-
-   o Various Logging enhancements (Reliable Piped Logs, Named Log Formats)
-       http://www.apache.org/dist/apache_1.3b7/htdocs/manual/mod/core
-       http://www.apache.org/dist/apache_1.3b7/htdocs/manual/mod/mod_log_config
-
-   o Unique Identifiers
-       http://www.apache.org/dist/apache_1.3b7/htdocs/manual/mod/mod_unique_id
-
-   o Source tree reorganization
-       http://www.apache.org/dist/apache_1.3b7/htdocs/manual/sourcereorg
-
-   o Big Symbol Renaming to avoid symbol clashes with third-party code
-       http://www.apache.org/dist/apache_1.3b7/htdocs/manual/sourcereorg
-
-   o API Additions
-       http://www.apache.org/dist/apache_1.3b7/htdocs/manual/new_features_1_3
-  
- Apache has been the most popular web server on the Internet since April of
- 1996.  The Web Server Survey by Netcraft (http://www.netcraft.co.uk/Survey/)
- found that more web servers were using Apache than any other software.
- Apache and its derivatives are run on over 50% of all web domains on the
- Internet.
-
- The Apache project has been organized to provide an open-source, secure,
- efficient and extensible server which provides HTTP services in sync with the
- current HTTP standards.  For more information about the Apache project check
- out http://www.apache.org/.
+ Contributing code to this beta:
+   Ralf S. Engelschall <rse@apache.org>
+   Ed Korthof <ed@apache.org>
+   Rick Ohnemus <rick@ecompcon.com>
+   Brian Behlendorf <brian@apache.org>
+   Bob Beck <beck@bofh.ucs.ualberta.ca>
+   Ben Laurie <ben@apache.org>
+   Bill Stoddard <wgstodda@us.ibm.com>
+   Ernst Kloppenburg <kloppen@isr.uni-stuttgart.de>
+   John Withers <withers@semi.kcsc.mwr.irs.gov>
+   Jim Patterson <Jim.Patterson@Cognos.COM>
+   Jim Jagielski <jim@apache.org>
+   Martin Kraemer <martin@apache.org>
+   Dean Gaudet <dgaudet@apache.org>
+   Paul Eggert <eggert@twinsun.com>
+   Lars Eilebrecht <lars@apache.org>
+   Ronald.Tschalaer@psi.ch
+   Kari Likovuori <Kari.Likovuori@mol.fi>
+   Michael Anderson's <mka@redes.int.com.mx
+   Jaromir Dolecek <dolecek@ics.muni.cz>
+   Roy Fielding <fielding@apache.org>
+   David MacKenzie <djm@va.pubnix.com>
+   Francisco Tomei <fatomei@sandburg.unm.edu>
+   Jens Schleusener <Jens.Schleusener@dlr.de>
+   Jeff Earickson <jaearick@colby.edu>
+   Marc Slemko <marc@apache.org>
 
