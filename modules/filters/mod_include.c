@@ -275,6 +275,7 @@ static apr_bucket *find_end_sequence(apr_bucket *dptr, include_ctx_t *ctx, apr_b
                 if (ctx->state == PARSE_DIRECTIVE) {
                     /* gonna start over parsing the directive next time through */
                     ctx->directive_length = 0;
+                    ctx->tag_length       = 0;
                 }
                 return dptr;
             }
