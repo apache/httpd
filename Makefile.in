@@ -13,7 +13,6 @@ PROGRAM_DEPENDENCIES = \
 
 PROGRAMS        = $(PROGRAM_NAME)
 TARGETS         = $(PROGRAMS) $(shared_build) $(other_targets)
-PHONY_TARGETS   = $(srcdir)/buildmark.c
 INSTALL_TARGETS = install-conf install-htdocs install-error install-icons \
 	install-other install-cgi install-include install-suexec install-man \
 	install-build

@@ -20,3 +20,4 @@ BuildLog.htm
 *.stt
 *.sto
 *.vcproj
+buildmarked.c
