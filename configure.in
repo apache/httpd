@@ -275,13 +275,13 @@ if test "$apache_need_shared" = "yes"; then
   shared_build="shared-build"
 fi
 
-dnl enable_so tells is if *any* modules can be built as DSOs
+dnl enable_so tells us if *any* modules can be built as DSOs
 
 if test "$enable_so" = "yes"; then
   case $host in
     *-ibm-aix*)
-      HTTPD_LDFLAGS="$HTTPD_LDFLAGS -Wl,-bE:$abs_builddir/server/httpd.exp"
-      SH_LDFLAGS="$SH_LDFLAGS -Wl,-bI:$abs_builddir/server/httpd.exp -Wl,-bI:$abs_builddir/srclib/apr/apr.exp -Wl,-bI:$abs_builddir/srclib/apr-util/aprutil.exp"
+      HTTPD_LDFLAGS="$HTTPD_LDFLAGS -Wl,-uXML_Parse -Wl,-bE:$abs_builddir/server/httpd.exp"
+      UTIL_LDFLAGS="$UTIL_LDFLAGS -Wl,-uXML_Parse"
       ;;
     *beos)
       SH_LDFLAGS='$(top_builddir)/_APP_'
