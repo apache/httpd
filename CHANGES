@@ -1,4 +1,10 @@
 Changes with Apache 2.0.21-dev
+  *) Performance improvement to mod_mime.c. find_ct() in mod_mime, 
+     spends a lot of time in apr_table_get calls.  Using the default 
+     httpd.conf, the tables for languages and charsets are somewhat
+     large, so the time spent scanning them on each request is
+     significant. Replacing the tables with hash tables provides
+     a nice speedup. [Brian Pane <bpane@pacbell.net>]
 
   *) Add two functions to allow modules to access random parts of the
      scoreboard.  This allows modules compiled for one MPM to access the
