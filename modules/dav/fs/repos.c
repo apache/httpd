@@ -71,7 +71,7 @@
 #include "http_protocol.h"	/* for ap_set_* (in dav_fs_set_headers) */
 #include "http_request.h"       /* for ap_update_mtime() */
 
-#include "../main/mod_dav.h"
+#include "mod_dav.h"
 #include "repos.h"
 
 

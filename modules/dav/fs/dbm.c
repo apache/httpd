@@ -74,11 +74,11 @@
 /* ### need to APR-ize */
 #include <fcntl.h>		/* for O_RDONLY, O_WRONLY */
 #include <sys/stat.h>           /* for S_IRUSR, etc */
-/* ### ACK! fix this... */
-#include "../../../lib/sdbm/sdbm.h"
+
+#include "sdbm.h"
 #endif
 
-#include "../main/mod_dav.h"
+#include "mod_dav.h"
 #include "repos.h"
 
 

@@ -58,8 +58,7 @@
 */
 
 /* James Clark's Expat parser */
-/* ### need to fix this... */
-#include "../lib/expat-lite/xmlparse.h"
+#include "xmlparse.h"
 
 #include "httpd.h"
 #include "http_protocol.h"
