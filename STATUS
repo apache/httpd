@@ -327,12 +327,15 @@ Win32 specific issues:
 	- if we don't do DES, can do md5
 
     * modules that need to be made to work on win32
-    	- mod_info
         - mod_example isn't multithreadreded
 	- mod_speling
 	- mod_unique_id (needs mt changes)
+	- mod_auth_db.c  (do we want to even try this?  We should have some
+          db of some sort... what else can we pick from under win32?)
+	- mod_auth_dbm.c
+	- mod_info.c (PR re exporting symbols for it...)
+	- mod_log_agent.c
+	- mod_log_referer.c
+	- mod_mime_magic.c (needs access to mod_mime API stage...)
 
     * do something to disable bogus warnings
-
-
-
