@@ -94,7 +94,11 @@ static int ftp_check_string(const char *x)
 	    ch = proxy_hex2c(&x[i + 1]);
 	    i += 2;
 	}
+#ifndef CHARSET_EBCDIC
 	if (ch == '\015' || ch == '\012' || (ch & 0x80))
+#else /*CHARSET_EBCDIC*/
+	if (ch == '\r' || ch == '\n' || (os_toascii[ch] & 0x80))
+#endif /*CHARSET_EBCDIC*/
 	    return 0;
     }
     return 1;
