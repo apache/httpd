@@ -1334,7 +1334,7 @@ if [ "$RULE_SOCKS4" = "yes" ]; then
     CFLAGS="$CFLAGS -DSOCKS -DSOCKS4"
     CFLAGS="$CFLAGS -Dconnect=Rconnect -Dselect=Rselect"
     CFLAGS="$CFLAGS -Dgethostbyname=Rgethostbyname"
-    if [ "x`grep EXTRA_ Makefile | grep lsocks`" = "x" ]; then
+    if [ "x`egrep '^EXTRA_L' Makefile.config | grep lsocks`" = "x" ]; then
 	LIBS="$LIBS -L/usr/local/lib -lsocks"
     fi
     case $PLAT in
@@ -1353,7 +1353,7 @@ if [ "$RULE_SOCKS5" = "yes" ]; then
     CFLAGS="$CFLAGS -DSOCKS -DSOCKS5"
     CFLAGS="$CFLAGS -Dconnect=SOCKSconnect -Dselect=SOCKSselect"
     CFLAGS="$CFLAGS -Dgethostbyname=SOCKSgethostbyname -Dclose=SOCKSclose"
-    if [ "x`grep EXTRA_ Makefile | grep lsocks5`" = "x" ]; then
+    if [ "x`egrep '^EXTRA_L' Makefile.config | grep lsocks5`" = "x" ]; then
 	LIBS="$LIBS -L/usr/local/lib -lsocks5"
     fi
     case $PLAT in
