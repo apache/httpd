@@ -2444,7 +2444,6 @@ static int send_parsed_file(request_rec *r)
 	 * destroyed, that's dealt with in handle_include().
 	 */
 	r->subprocess_env = parent->subprocess_env;
-	ap_pool_join(parent->pool, r->pool);
 	r->finfo.mtime = parent->finfo.mtime;
     }
     else {
