@@ -134,6 +134,28 @@ IFS="$OIFS"
 PERL="`echo $PERL | sed -e 's://:/:'`"
 
 ##
+##  look for the best Awk we can find because some
+##  standard Awks are really braindead and cause 
+##  problems for our scripts under some platforms.
+##
+
+AWK=awk
+OIFS="$IFS" IFS=':'
+for dir in $PATH; do
+    OIFS2="$IFS" IFS="$DIFS"
+    if [ -x "$dir/nawk" ]; then
+        AWK="$dir/nawk"
+        break 2
+    fi
+    if [ -x "$dir/gawk" ]; then
+        AWK="$dir/gawk"
+        break 2
+    fi
+    IFS="$OIFS2"
+done
+IFS="$OIFS"
+
+##
 ##  determine default parameters
 ##
 
@@ -267,7 +289,7 @@ do
             ;;
         --shadow)
             #   determine GNU platform triple
-            gnutriple=`$aux/GuessOS | awk '{ printf("%s",$1); }' | sed -e 's:/:-:g'`
+            gnutriple=`$aux/GuessOS | $AWK '{ printf("%s",$1); }' | sed -e 's:/:-:g'`
             #   create Makefile wrapper (the first time only)
             if [ ".`ls $top/src.* 2>/dev/null`" = . ]; then
                 if [ .$quiet = .no ]; then
@@ -277,7 +299,7 @@ do
                 echo "##  Apache Makefile (shadow wrapper)" >> Makefile
                 echo "##" >> Makefile
                 echo "" >> Makefile
-                echo "GNUTRIPLE=\`$aux/GuessOS | awk '{ printf(\"%s\",\$\$1); }' | sed -e 's:/:-:g'\`" >> Makefile
+                echo "GNUTRIPLE=\`$aux/GuessOS | $AWK '{ printf(\"%s\",\$\$1); }' | sed -e 's:/:-:g'\`" >> Makefile
                 echo "" >> Makefile
                 echo "all build install install-quiet clean distclean:" >> Makefile
                 echo "	@\$(MAKE) -f Makefile.\$(GNUTRIPLE) \$(MFLAGS) \$@" >> Makefile
@@ -936,7 +958,7 @@ IFS="$OIFS"
 
 #   split sedsubst into chunks of 50 commands
 #   to workaround limits in braindead seds
-files=`awk <$sedsubst '
+files=`$AWK <$sedsubst '
     BEGIN { line=0; cnt=0; }
     {
         if (line % 50 == 0) {

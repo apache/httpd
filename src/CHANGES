@@ -1,5 +1,9 @@
 Changes with Apache 1.3b8
 
+  *) Avoid problems with braindead Awks by additionally searching for gawk 
+     and nawk in APACI's configure script.
+     [Dave Dykstra <dwd@bell-labs.com>, Ralf S. Engelschall] PR#2319
+
   *) Rename md5.h to ap_md5.h to avoid conflicts with native MD5 on
      some systems. [Randy Terbush]
 
