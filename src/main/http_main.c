@@ -2963,7 +2963,7 @@ static void show_compile_settings(void)
  */
 static void common_init(void)
 {
-#ifdef AUX
+#ifdef AUX3
     (void) set42sig();
 #endif
 

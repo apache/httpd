@@ -412,7 +412,7 @@ typedef int rlim_t;
 extern int strcasecmp(const char *, const char *);
 extern int strncasecmp(const char *, const char *, unsigned);
 
-#elif defined(AUX)
+#elif defined(AUX3)
 /* These are to let -Wall compile more cleanly */
 extern int strcasecmp(const char *, const char *);
 extern int strncasecmp(const char *, const char *, unsigned);

@@ -232,7 +232,7 @@ case "$PLAT" in
 	;;
     *-apple-aux3*)
 	OS='A/UX 3.1.x'
-	CFLAGS="$CFLAGS -DAUX -D_POSIX_SOURCE"
+	CFLAGS="$CFLAGS -DAUX3 -D_POSIX_SOURCE"
 	LIBS="$LIBS -lposix -lbsd"
 	LDFLAGS="$LDFLAGS -s"
 	DEF_WANTHSREGEX=no
