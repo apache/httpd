@@ -838,14 +838,14 @@ static void test(void)
 static void copyright(void)
 {
     if (!use_html) {
-        printf("This is ApacheBench, Version %s\n", VERSION " <$Revision: 1.12 $> apache-2.0");
+        printf("This is ApacheBench, Version %s\n", VERSION " <$Revision: 1.13 $> apache-2.0");
         printf("Copyright (c) 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/\n");
         printf("Copyright (c) 1998-2000 The Apache Software Foundation, http://www.apache.org/\n");
         printf("\n");
     }
     else {
         printf("<p>\n");
-        printf(" This is ApacheBench, Version %s <i>&lt;%s&gt;</i> apache-2.0<br>\n", VERSION, "$Revision: 1.12 $");
+        printf(" This is ApacheBench, Version %s <i>&lt;%s&gt;</i> apache-2.0<br>\n", VERSION, "$Revision: 1.13 $");
         printf(" Copyright (c) 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/<br>\n");
         printf(" Copyright (c) 1998-2000 The Apache Software Foundation, http://www.apache.org/<br>\n");
         printf("</p>\n<p>\n");
@@ -979,7 +979,7 @@ int main(int argc, char **argv)
 #endif
 
     ap_optind = 1;
-    while (ap_getopt(argc, argv, "n:c:t:T:p:v:kVhwx:y:z:", &c, cntxt) == APR_SUCCESS) {
+    while (ap_getopt(argc, argv, "n:c:t:T:p:v:kVhwix:y:z:C:H:P:A:", &c, cntxt) == APR_SUCCESS) {
         switch (c) {
         case 'n':
             requests = atoi(ap_optarg);
@@ -995,11 +995,12 @@ int main(int argc, char **argv)
             break;
         case 'i':
             if (posting == 1)
-                err("Cannot mix POST and HEAD");
+                err("Cannot mix POST and HEAD\n");
             posting = -1;
+            break;
         case 'p':
             if (posting != 0)
-                err("Cannot mix POST and HEAD");
+                err("Cannot mix POST and HEAD\n");
 
             if (0 == (r = open_postfile(ap_optarg))) {
                posting = 1;
@@ -1052,7 +1053,29 @@ int main(int argc, char **argv)
         case 'H':
             strncat(hdrs, ap_optarg, sizeof(hdrs));
             strncat(hdrs, "\r\n", sizeof(hdrs));
-            strcpy(content_type, ap_optarg);
+            break;
+	case 'w':
+	    use_html = 1;
+	    break;
+	    /*
+	     * if any of the following three are used, turn on html output
+	     * automatically
+	     */
+	case 'x':
+	    use_html = 1;
+	    tablestring = ap_optarg;
+	    break;
+	case 'y':
+	    use_html = 1;
+	    trstring = ap_optarg;
+	    break;
+	case 'z':
+	    use_html = 1;
+	    tdstring = ap_optarg;
+	    break;
+	case 'h':
+	    usage(argv[0]);
+	    break;
         }
     }
 
