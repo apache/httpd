@@ -97,9 +97,6 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <time.h>
-#if APR_HAVE_SYS_TIME_H
-#include <sys/time.h>
-#endif
 /* XXX: these better go away */
 #include <assert.h>
 
@@ -141,6 +138,16 @@
 #include "ssl_expr.h"
 #include "ssl_util_ssl.h"
 #include "ssl_util_table.h"
+
+/* The #ifdef macros are only defined AFTER including the above
+ * therefore we cannot include these system files at the top  :-(
+ */
+#if APR_HAVE_SYS_TIME_H
+#include <sys/time.h>
+#endif
+#if APR_HAVE_UNISTD_H
+#include <unistd.h> /* needed for STDIN_FILENO et.al., at least on FreeBSD */
+#endif
 
 /*
  * Provide reasonable default for some defines

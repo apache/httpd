@@ -74,7 +74,9 @@
 #include <sys/types.h>
 #include <string.h>
 #include <time.h>
+#if APR_HAVE_UNISTD_H
 #include <unistd.h>
+#endif
 
 #include <stdio.h>
 #include <stdarg.h>
