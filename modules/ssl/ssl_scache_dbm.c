@@ -64,7 +64,7 @@
 void ssl_scache_dbm_init(server_rec *s, pool *p)
 {
     SSLModConfigRec *mc = myModConfig();
-    DBM *dbm;
+    apr_dbm_t *dbm;
 
     /* for the DBM we need the data file */
     if (mc->szSessionCacheDataFile == NULL) {
@@ -74,7 +74,7 @@ void ssl_scache_dbm_init(server_rec *s, pool *p)
 
     /* open it once to create it and to make sure it _can_ be created */
     ssl_mutex_on(s);
-    if ((dbm = ssl_dbm_open(mc->szSessionCacheDataFile,
+    if ((dbm = apr_dbm_open(mc->szSessionCacheDataFile,
                             O_RDWR|O_CREAT, SSL_DBM_FILE_MODE)) == NULL) {
         ssl_log(s, SSL_LOG_ERROR|SSL_ADD_ERRNO,
                 "Cannot create SSLSessionCache DBM file `%s'",
@@ -82,7 +82,7 @@ void ssl_scache_dbm_init(server_rec *s, pool *p)
         ssl_mutex_off(s);
         return;
     }
-    ssl_dbm_close(dbm);
+    apr_dbm_close(dbm);
 
 #if !defined(OS2) && !defined(WIN32)
     /*
@@ -135,9 +135,9 @@ void ssl_scache_dbm_kill(server_rec *s)
 BOOL ssl_scache_dbm_store(server_rec *s, UCHAR *id, int idlen, time_t expiry, SSL_SESSION *sess)
 {
     SSLModConfigRec *mc = myModConfig();
-    DBM *dbm;
-    datum dbmkey;
-    datum dbmval;
+    apr_dbm_t *dbm;
+    apr_datum_t dbmkey;
+    apr_datum_t dbmval;
     UCHAR ucaData[SSL_SESSION_MAX_DER];
     int nData;
     UCHAR *ucp;
@@ -147,7 +147,7 @@ BOOL ssl_scache_dbm_store(server_rec *s, UCHAR *id, int idlen, time_t expiry, SS
     nData = i2d_SSL_SESSION(sess, &ucp);
 
     /* be careful: do not try to store too much bytes in a DBM file! */
-#ifdef SSL_USE_SDBM
+#ifdef PAIRMAX
     if ((idlen + nData) >= PAIRMAX)
         return FALSE;
 #else
@@ -169,7 +169,7 @@ BOOL ssl_scache_dbm_store(server_rec *s, UCHAR *id, int idlen, time_t expiry, SS
 
     /* and store it to the DBM file */
     ssl_mutex_on(s);
-    if ((dbm = ssl_dbm_open(mc->szSessionCacheDataFile,
+    if ((dbm = apr_dbm_open(mc->szSessionCacheDataFile,
                             O_RDWR, SSL_DBM_FILE_MODE)) == NULL) {
         ssl_log(s, SSL_LOG_ERROR|SSL_ADD_ERRNO,
                 "Cannot open SSLSessionCache DBM file `%s' for writing (store)",
@@ -178,16 +178,16 @@ BOOL ssl_scache_dbm_store(server_rec *s, UCHAR *id, int idlen, time_t expiry, SS
         free(dbmval.dptr);
         return FALSE;
     }
-    if (ssl_dbm_store(dbm, dbmkey, dbmval, DBM_INSERT) < 0) {
+    if (apr_dbm_store(dbm, dbmkey, dbmval, DBM_INSERT) < 0) {
         ssl_log(s, SSL_LOG_ERROR|SSL_ADD_ERRNO,
                 "Cannot store SSL session to DBM file `%s'",
                 mc->szSessionCacheDataFile);
-        ssl_dbm_close(dbm);
+        apr_dbm_close(dbm);
         ssl_mutex_off(s);
         free(dbmval.dptr);
         return FALSE;
     }
-    ssl_dbm_close(dbm);
+    apr_dbm_close(dbm);
     ssl_mutex_off(s);
 
     /* free temporary buffers */
@@ -202,9 +202,9 @@ BOOL ssl_scache_dbm_store(server_rec *s, UCHAR *id, int idlen, time_t expiry, SS
 SSL_SESSION *ssl_scache_dbm_retrieve(server_rec *s, UCHAR *id, int idlen)
 {
     SSLModConfigRec *mc = myModConfig();
-    DBM *dbm;
-    datum dbmkey;
-    datum dbmval;
+    apr_dbm_t *dbm;
+    apr_datum_t dbmkey;
+    apr_datum_t dbmval;
     SSL_SESSION *sess = NULL;
     UCHAR *ucpData;
     int nData;
@@ -220,7 +220,7 @@ SSL_SESSION *ssl_scache_dbm_retrieve(server_rec *s, UCHAR *id, int idlen)
 
     /* and fetch it from the DBM file */
     ssl_mutex_on(s);
-    if ((dbm = ssl_dbm_open(mc->szSessionCacheDataFile,
+    if ((dbm = apr_dbm_open(mc->szSessionCacheDataFile,
                             O_RDONLY, SSL_DBM_FILE_MODE)) == NULL) {
         ssl_log(s, SSL_LOG_ERROR|SSL_ADD_ERRNO,
                 "Cannot open SSLSessionCache DBM file `%s' for reading (fetch)",
@@ -228,8 +228,8 @@ SSL_SESSION *ssl_scache_dbm_retrieve(server_rec *s, UCHAR *id, int idlen)
         ssl_mutex_off(s);
         return NULL;
     }
-    dbmval = ssl_dbm_fetch(dbm, dbmkey);
-    ssl_dbm_close(dbm);
+    dbmval = apr_dbm_fetch(dbm, dbmkey);
+    apr_dbm_close(dbm);
     ssl_mutex_off(s);
 
     /* immediately return if not found */
@@ -260,8 +260,8 @@ SSL_SESSION *ssl_scache_dbm_retrieve(server_rec *s, UCHAR *id, int idlen)
 void ssl_scache_dbm_remove(server_rec *s, UCHAR *id, int idlen)
 {
     SSLModConfigRec *mc = myModConfig();
-    DBM *dbm;
-    datum dbmkey;
+    apr_dbm_t *dbm;
+    apr_datum_t dbmkey;
 
     /* create DBM key and values */
     dbmkey.dptr  = (char *)id;
@@ -269,7 +269,7 @@ void ssl_scache_dbm_remove(server_rec *s, UCHAR *id, int idlen)
 
     /* and delete it from the DBM file */
     ssl_mutex_on(s);
-    if ((dbm = ssl_dbm_open(mc->szSessionCacheDataFile,
+    if ((dbm = apr_dbm_open(mc->szSessionCacheDataFile,
                             O_RDWR, SSL_DBM_FILE_MODE)) == NULL) {
         ssl_log(s, SSL_LOG_ERROR|SSL_ADD_ERRNO,
                 "Cannot open SSLSessionCache DBM file `%s' for writing (delete)",
@@ -277,8 +277,8 @@ void ssl_scache_dbm_remove(server_rec *s, UCHAR *id, int idlen)
         ssl_mutex_off(s);
         return;
     }
-    ssl_dbm_delete(dbm, dbmkey);
-    ssl_dbm_close(dbm);
+    apr_dbm_delete(dbm, dbmkey);
+    apr_dbm_close(dbm);
     ssl_mutex_off(s);
 
     return;
@@ -289,15 +289,15 @@ void ssl_scache_dbm_expire(server_rec *s)
     SSLModConfigRec *mc = myModConfig();
     SSLSrvConfigRec *sc = mySrvConfig(s);
     static time_t tLast = 0;
-    DBM *dbm;
-    datum dbmkey;
-    datum dbmval;
+    apr_dbm_t *dbm;
+    apr_datum_t dbmkey;
+    apr_datum_t dbmval;
     pool *p;
     time_t tExpiresAt;
     int nElements = 0;
     int nDeleted = 0;
     int bDelete;
-    datum *keylist;
+    apr_datum_t *keylist;
     int keyidx;
     int i;
     time_t tNow;
@@ -336,7 +336,7 @@ void ssl_scache_dbm_expire(server_rec *s)
 
         /* pass 1: scan DBM database */
         keyidx = 0;
-        if ((dbm = ssl_dbm_open(mc->szSessionCacheDataFile,
+        if ((dbm = apr_dbm_open(mc->szSessionCacheDataFile,
                                 O_RDWR, SSL_DBM_FILE_MODE)) == NULL) {
             ssl_log(s, SSL_LOG_ERROR|SSL_ADD_ERRNO,
                     "Cannot open SSLSessionCache DBM file `%s' for scanning",
@@ -344,11 +344,11 @@ void ssl_scache_dbm_expire(server_rec *s)
             ap_destroy_pool(p);
             break;
         }
-        dbmkey = ssl_dbm_firstkey(dbm);
+        dbmkey = apr_dbm_firstkey(dbm);
         while (dbmkey.dptr != NULL) {
             nElements++;
             bDelete = FALSE;
-            dbmval = ssl_dbm_fetch(dbm, dbmkey);
+            dbmval = apr_dbm_fetch(dbm, dbmkey);
             if (dbmval.dsize <= sizeof(time_t) || dbmval.dptr == NULL)
                 bDelete = TRUE;
             else {
@@ -365,12 +365,12 @@ void ssl_scache_dbm_expire(server_rec *s)
                         break;
                 }
             }
-            dbmkey = ssl_dbm_nextkey(dbm);
+            dbmkey = apr_dbm_nextkey(dbm);
         }
-        ssl_dbm_close(dbm);
+        apr_dbm_close(dbm);
 
         /* pass 2: delete expired elements */
-        if ((dbm = ssl_dbm_open(mc->szSessionCacheDataFile,
+        if ((dbm = apr_dbm_open(mc->szSessionCacheDataFile,
                                 O_RDWR, SSL_DBM_FILE_MODE)) == NULL) {
             ssl_log(s, SSL_LOG_ERROR|SSL_ADD_ERRNO,
                     "Cannot re-open SSLSessionCache DBM file `%s' for expiring",
@@ -379,10 +379,10 @@ void ssl_scache_dbm_expire(server_rec *s)
             break;
         }
         for (i = 0; i < keyidx; i++) {
-            ssl_dbm_delete(dbm, keylist[i]);
+            apr_dbm_delete(dbm, keylist[i]);
             nDeleted++;
         }
-        ssl_dbm_close(dbm);
+        apr_dbm_close(dbm);
 
         /* destroy temporary pool */
         ap_destroy_pool(p);
@@ -400,9 +400,9 @@ void ssl_scache_dbm_expire(server_rec *s)
 void ssl_scache_dbm_status(server_rec *s, pool *p, void (*func)(char *, void *), void *arg)
 {
     SSLModConfigRec *mc = myModConfig();
-    DBM *dbm;
-    datum dbmkey;
-    datum dbmval;
+    apr_dbm_t *dbm;
+    apr_datum_t dbmkey;
+    apr_datum_t dbmval;
     int nElem;
     int nSize;
     int nAverage;
@@ -410,7 +410,7 @@ void ssl_scache_dbm_status(server_rec *s, pool *p, void (*func)(char *, void *),
     nElem = 0;
     nSize = 0;
     ssl_mutex_on(s);
-    if ((dbm = ssl_dbm_open(mc->szSessionCacheDataFile,
+    if ((dbm = apr_dbm_open(mc->szSessionCacheDataFile,
                             O_RDONLY, SSL_DBM_FILE_MODE)) == NULL) {
         ssl_log(s, SSL_LOG_ERROR|SSL_ADD_ERRNO,
                 "Cannot open SSLSessionCache DBM file `%s' for status retrival",
@@ -418,15 +418,15 @@ void ssl_scache_dbm_status(server_rec *s, pool *p, void (*func)(char *, void *),
         ssl_mutex_off(s);
         return;
     }
-    dbmkey = ssl_dbm_firstkey(dbm);
-    for ( ; dbmkey.dptr != NULL; dbmkey = ssl_dbm_nextkey(dbm)) {
-        dbmval = ssl_dbm_fetch(dbm, dbmkey);
+    dbmkey = apr_dbm_firstkey(dbm);
+    for ( ; dbmkey.dptr != NULL; dbmkey = apr_dbm_nextkey(dbm)) {
+        dbmval = apr_dbm_fetch(dbm, dbmkey);
         if (dbmval.dptr == NULL)
             continue;
         nElem += 1;
         nSize += dbmval.dsize;
     }
-    ssl_dbm_close(dbm);
+    apr_dbm_close(dbm);
     ssl_mutex_off(s);
     if (nSize > 0 && nElem > 0)
         nAverage = nSize / nElem;
