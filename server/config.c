@@ -591,6 +591,8 @@ AP_DECLARE(void) ap_clear_module_list(apr_pool_t *p)
 	m = next_m;
     }
 
+    apr_hook_deregister_all();
+
     /* This is required; so we add it always.  */
     ap_add_named_module("http_core.c", p);
 }
