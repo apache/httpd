@@ -88,6 +88,7 @@ module MODULE_VAR_EXPORT autoindex_module;
 #define SUPPRESS_SIZE 16
 #define SUPPRESS_DESC 32
 #define SUPPRESS_PREAMBLE 64
+#define SUPPRESS_COLSORT 128
 
 /*
  * Define keys for sorting.
@@ -270,6 +271,9 @@ static const char *add_opts(cmd_parms *cmd, void *d, const char *optstr)
 	    opts |= SUPPRESS_DESC;
 	else if (!strcasecmp(w, "SuppressHTMLPreamble"))
 	    opts |= SUPPRESS_PREAMBLE;
+        else if (!strcasecmp(w, "SuppressColumnSorting")) {
+            opts |= SUPPRESS_COLSORT;
+	}
 	else if (!strcasecmp(w, "None"))
 	    opts = 0;
 	else if (!strncasecmp(w, "IconWidth", 9)) {
@@ -743,11 +747,12 @@ static char *terminate_description(autoindex_config_rec * d, char *desc,
  * selected again.  Non-active fields always start in ascending order.
  */
 static void emit_link(request_rec *r, char *anchor, char fname, char curkey,
-		      char curdirection)
+                      char curdirection, int nosort)
 {
     char qvalue[5];
     int reverse;
 
+    if (!nosort) {
     qvalue[0] = '?';
     qvalue[1] = fname;
     qvalue[2] = '=';
@@ -755,6 +760,10 @@ static void emit_link(request_rec *r, char *anchor, char fname, char curkey,
     reverse = ((curkey == fname) && (curdirection == D_ASCENDING));
     qvalue[3] = reverse ? D_DESCENDING : D_ASCENDING;
     rvputs(r, "<A HREF=\"", qvalue, "\">", anchor, "</A>", NULL);
+}
+    else {
+        rputs(anchor, r);
+    }
 }
 
 static void output_directories(struct ent **ar, int n,
@@ -764,6 +773,7 @@ static void output_directories(struct ent **ar, int n,
     int x, len;
     char *name = r->uri;
     char *tp;
+    int static_columns = (autoindex_opts & SUPPRESS_COLSORT);
     pool *scratch = make_sub_pool(r->pool);
 
     if (name[0] == '\0')
@@ -785,18 +795,20 @@ static void output_directories(struct ent **ar, int n,
 	    }
 	    rputs("> ", r);
 	}
-	emit_link(r, "Name", K_NAME, keyid, direction);
+        emit_link(r, "Name", K_NAME, keyid, direction, static_columns);
 	rputs("                   ", r);
 	if (!(autoindex_opts & SUPPRESS_LAST_MOD)) {
-	    emit_link(r, "Last modified", K_LAST_MOD, keyid, direction);
+            emit_link(r, "Last modified", K_LAST_MOD, keyid, direction,
+                      static_columns);
 	    rputs("     ", r);
 	}
 	if (!(autoindex_opts & SUPPRESS_SIZE)) {
-	    emit_link(r, "Size", K_SIZE, keyid, direction);
+            emit_link(r, "Size", K_SIZE, keyid, direction, static_columns);
 	    rputs("  ", r);
 	}
 	if (!(autoindex_opts & SUPPRESS_DESC)) {
-	    emit_link(r, "Description", K_DESC, keyid, direction);
+            emit_link(r, "Description", K_DESC, keyid, direction,
+                      static_columns);
 	}
 	rputs("\n<HR>\n", r);
     }
@@ -1027,11 +1039,16 @@ static int index_directory(request_rec *r, autoindex_config_rec * autoindex_conf
     /*
      * Figure out what sort of indexing (if any) we're supposed to use.
      */
+    if (autoindex_opts & SUPPRESS_COLSORT) {
+	keyid = K_NAME;
+	direction = D_ASCENDING;
+    }
+    else {
     qstring = r->args;
 
     /*
-     * If no QUERY_STRING was specified, we use the default: ascending  by
-     * name.
+	 * If no QUERY_STRING was specified, we use the default: ascending
+	 * by name.
      */
     if ((qstring == NULL) || (*qstring == '\0')) {
 	keyid = K_NAME;
@@ -1046,6 +1063,7 @@ static int index_directory(request_rec *r, autoindex_config_rec * autoindex_conf
 	else {
 	    direction = D_ASCENDING;
 	}
+    }
     }
 
     /* 

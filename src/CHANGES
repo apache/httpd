@@ -1,5 +1,10 @@
 Changes with Apache 1.3b3
 
+  *) Add a "SuppressColumnSorting" option to the IndexOptions list,
+     which will keep the column heading from beling links for sorting
+     the display.  [Ken Coar, suggested by Brian Tiemann <btman@pacific.net>]
+     PR #1261
+
   *) PORT: Update the LynxOS port.  [Marius Groeger <mag@sysgo.de>]
 
   *) Fix logic error when issuing a mmap() failed message
