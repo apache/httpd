@@ -142,10 +142,6 @@ SOURCE=.\main\http_vhost.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\main\md5c.c
-# End Source File
-# Begin Source File
-
 SOURCE=.\modules\standard\mod_access.c
 # End Source File
 # Begin Source File

@@ -102,5 +102,9 @@ SOURCE=.\ap_snprintf.c
 
 # PROP Default_Filter ""
 # End Group
+# Begin Source File
+
+SOURCE=.\ap_md5c.c
+# End Source File
 # End Target
 # End Project
