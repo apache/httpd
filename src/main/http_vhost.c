@@ -268,7 +268,7 @@ API_EXPORT(const char *) ap_parse_vhost_addrs(pool *p, const char *hostname, ser
 }
 
 
-API_EXPORT(const char *) ap_set_name_virtual_host (cmd_parms *cmd, void *dummy, char *arg)
+API_EXPORT_NONSTD(const char *) ap_set_name_virtual_host (cmd_parms *cmd, void *dummy, char *arg)
 {
     /* use whatever port the main server has at this point */
     return get_addresses(cmd->pool, arg, &name_vhost_list_tail,
