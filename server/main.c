@@ -524,6 +524,7 @@ int main(int argc, const char * const argv[])
     apr_pool_create(&plog, pglobal);
     apr_pool_tag(plog, "plog");
     apr_pool_create(&ptemp, pconf);
+    apr_pool_tag(ptemp, "ptemp");
 
     /* Note that we preflight the config file once
      * before reading it _again_ in the main loop.
@@ -581,6 +582,7 @@ int main(int argc, const char * const argv[])
          */
         ap_conftree = NULL;
         apr_pool_create(&ptemp, pconf);
+        apr_pool_tag(ptemp, "ptemp");
         ap_server_root = def_server_root;
         server_conf = ap_read_config(process, ptemp, confname, &ap_conftree);
         if (ap_run_pre_config(pconf, plog, ptemp) != OK) {
