@@ -25,24 +25,26 @@ rewriting all their scripts
 <ul>
 <li><A HREF="#passenv">PassEnv</A>
 <li><A HREF="#setenv">SetEnv</A>
+<li><A HREF="#unsetenv">UnsetEnv</A>
 </ul>
 
 <hr>
 
 <A name="passenv"><h2>PassEnv</h2></A>
-<strong>Syntax:</strong> PassEnv <em>variable</em><br>
+<strong>Syntax:</strong> PassEnv <em>variable variable ...</em><br>
 <strong>Context:</strong> server config, virtual host<br>
 <strong>Status:</strong> Base<br>
 <strong>Module:</strong> mod_env<br>
 <strong>Compatibility:</strong> PassEnv is only available in
 Apache 1.1 and later.<p>
 
-Passes an environment variable to CGI scripts from the server's own
-environment. Example:
+Specifies one or more environment variables to pass to CGI scripts
+from the server's own environment. Example:
 <pre>
     PassEnv LD_LIBRARY_PATH
 </pre>
 
+<HR>
 
 <A name="setenv"><h2>SetEnv</h2></A>
 <strong>Syntax:</strong> SetEnv <em>variable value</em><br>
@@ -58,8 +60,25 @@ scripts. Example:
     SetEnv SPECIAL_PATH /foo/bin
 </pre>
 
-<p>
+<hr>
 
+<A name="unsetenv"><h2>UnsetEnv</h2></A>
+<strong>Syntax:</strong> UnsetEnv <em>variable variable ...</em><br>
+<strong>Context:</strong> server config, virtual host<br>
+<strong>Status:</strong> Base<br>
+<strong>Module:</strong> mod_env<br>
+<strong>Compatibility:</strong> UnsetEnv is only available in
+Apache 1.1 and later.<p>
+
+Removes one or more environment variables from those passed on to
+CGI scripts. Example:
+<pre>
+    UnsetEnv LD_LIBRARY_PATH
+</pre>
+
+
+
+<p>
 <!--#include virtual="footer.html" -->
 </BODY>
 </HTML>
