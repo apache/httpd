@@ -63,18 +63,25 @@ struct fd_queue_info_t {
     apr_thread_mutex_t *idlers_mutex;
     apr_thread_cond_t *wait_for_idler;
     int terminated;
+    int max_idlers;
+    apr_pool_t        **recycled_pools;
+    int num_recycled;
 };
 
 static apr_status_t queue_info_cleanup(void *data_)
 {
     fd_queue_info_t *qi = data_;
+    int i;
     apr_thread_cond_destroy(qi->wait_for_idler);
     apr_thread_mutex_destroy(qi->idlers_mutex);
+    for (i = 0; i < qi->num_recycled; i++) {
+        apr_pool_destroy(qi->recycled_pools[i]);
+    }
     return APR_SUCCESS;
 }
 
 apr_status_t ap_queue_info_create(fd_queue_info_t **queue_info,
-                                  apr_pool_t *pool)
+                                  apr_pool_t *pool, int max_idlers)
 {
     apr_status_t rv;
     fd_queue_info_t *qi;
@@ -91,6 +98,10 @@ apr_status_t ap_queue_info_create(fd_queue_info_t **queue_info,
     if (rv != APR_SUCCESS) {
         return rv;
     }
+    qi->recycled_pools = (apr_pool_t **)apr_palloc(pool, max_idlers *
+                                                   sizeof(apr_pool_t *));
+    qi->num_recycled = 0;
+    qi->max_idlers = max_idlers;
     apr_pool_cleanup_register(pool, qi, queue_info_cleanup,
                               apr_pool_cleanup_null);
 
@@ -99,7 +110,8 @@ apr_status_t ap_queue_info_create(fd_queue_info_t **queue_info,
     return APR_SUCCESS;
 }
 
-apr_status_t ap_queue_info_set_idle(fd_queue_info_t *queue_info)
+apr_status_t ap_queue_info_set_idle(fd_queue_info_t *queue_info,
+                                    apr_pool_t *pool_to_recycle)
 {
     apr_status_t rv;
     rv = apr_thread_mutex_lock(queue_info->idlers_mutex);
@@ -107,6 +119,11 @@ apr_status_t ap_queue_info_set_idle(fd_queue_info_t *queue_info)
         return rv;
     }
     AP_DEBUG_ASSERT(queue_info->idlers >= 0);
+    AP_DEBUG_ASSERT(queue_info->num_recycled < queue_info->max_idlers);
+    if (pool_to_recycle) {
+        queue_info->recycled_pools[queue_info->num_recycled++] =
+            pool_to_recycle;
+    }
     if (queue_info->idlers++ == 0) {
         /* Only signal if we had no idlers before. */
         apr_thread_cond_signal(queue_info->wait_for_idler);
@@ -118,9 +135,11 @@ apr_status_t ap_queue_info_set_idle(fd_queue_info_t *queue_info)
     return APR_SUCCESS;
 }
 
-apr_status_t ap_queue_info_wait_for_idler(fd_queue_info_t *queue_info)
+apr_status_t ap_queue_info_wait_for_idler(fd_queue_info_t *queue_info,
+                                          apr_pool_t **recycled_pool)
 {
     apr_status_t rv;
+    *recycled_pool = NULL;
     rv = apr_thread_mutex_lock(queue_info->idlers_mutex);
     if (rv != APR_SUCCESS) {
         return rv;
@@ -139,6 +158,10 @@ apr_status_t ap_queue_info_wait_for_idler(fd_queue_info_t *queue_info)
         }
     }
     queue_info->idlers--; /* Oh, and idler? Let's take 'em! */
+    if (queue_info->num_recycled) {
+        *recycled_pool =
+            queue_info->recycled_pools[--queue_info->num_recycled];
+    }
     rv = apr_thread_mutex_unlock(queue_info->idlers_mutex);
     if (rv != APR_SUCCESS) {
         return rv;
@@ -225,10 +248,6 @@ apr_status_t ap_queue_init(fd_queue_t *queue, int queue_capacity, apr_pool_t *a)
     for (i = 0; i < queue_capacity; ++i)
         queue->data[i].sd = NULL;
 
-    queue->recycled_pools = apr_palloc(a,
-                                       queue_capacity * sizeof(apr_pool_t *));
-    queue->num_recycled = 0;
-
     apr_pool_cleanup_register(a, queue, ap_queue_destroy, apr_pool_cleanup_null);
 
     return APR_SUCCESS;
@@ -239,13 +258,11 @@ apr_status_t ap_queue_init(fd_queue_t *queue, int queue_capacity, apr_pool_t *a)
  * the push operation has completed, it signals other threads waiting
  * in apr_queue_pop() that they may continue consuming sockets.
  */
-apr_status_t ap_queue_push(fd_queue_t *queue, apr_socket_t *sd, apr_pool_t *p,
-                           apr_pool_t **recycled_pool)
+apr_status_t ap_queue_push(fd_queue_t *queue, apr_socket_t *sd, apr_pool_t *p)
 {
     fd_queue_elem_t *elem;
     apr_status_t rv;
 
-    *recycled_pool = NULL;
     if ((rv = apr_thread_mutex_lock(queue->one_big_mutex)) != APR_SUCCESS) {
         return rv;
     }
@@ -262,10 +279,6 @@ apr_status_t ap_queue_push(fd_queue_t *queue, apr_socket_t *sd, apr_pool_t *p,
     elem->p = p;
     queue->nelts++;
 
-    if (queue->num_recycled != 0) {
-        *recycled_pool = queue->recycled_pools[--queue->num_recycled];
-    }
-
     apr_thread_cond_signal(queue->not_empty);
 
     if ((rv = apr_thread_mutex_unlock(queue->one_big_mutex)) != APR_SUCCESS) {
@@ -281,27 +294,13 @@ apr_status_t ap_queue_push(fd_queue_t *queue, apr_socket_t *sd, apr_pool_t *p,
  * Once retrieved, the socket is placed into the address specified by
  * 'sd'.
  */
-apr_status_t ap_queue_pop(fd_queue_t *queue, apr_socket_t **sd, apr_pool_t **p,
-                          apr_pool_t *recycled_pool) 
+apr_status_t ap_queue_pop(fd_queue_t *queue, apr_socket_t **sd, apr_pool_t **p)
 {
     fd_queue_elem_t *elem;
     apr_status_t rv;
-    int delete_pool = 0;
 
     if ((rv = apr_thread_mutex_lock(queue->one_big_mutex)) != APR_SUCCESS) {
-        if (recycled_pool) {
-            apr_pool_destroy(recycled_pool);
-        }
         return rv;
-    }
-
-    if (recycled_pool) {
-        if (queue->num_recycled < queue->bounds) {
-            queue->recycled_pools[queue->num_recycled++] = recycled_pool;
-        }
-        else {
-            delete_pool = 1;
-        }
     }
 
     /* Keep waiting until we wake up and find that the queue is not empty. */
@@ -312,9 +311,6 @@ apr_status_t ap_queue_pop(fd_queue_t *queue, apr_socket_t **sd, apr_pool_t **p,
         /* If we wake up and it's still empty, then we were interrupted */
         if (ap_queue_empty(queue)) {
             rv = apr_thread_mutex_unlock(queue->one_big_mutex);
-            if (delete_pool) {
-                apr_pool_destroy(recycled_pool);
-            }
             if (rv != APR_SUCCESS) {
                 return rv;
             }
@@ -341,9 +337,6 @@ apr_status_t ap_queue_pop(fd_queue_t *queue, apr_socket_t **sd, apr_pool_t **p,
     }
 
     rv = apr_thread_mutex_unlock(queue->one_big_mutex);
-    if (delete_pool) {
-        apr_pool_destroy(recycled_pool);
-    }
     return rv;
 }
 

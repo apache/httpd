@@ -695,7 +695,8 @@ static void *listener_thread(apr_thread_t *thd, void * dummy)
         }
         if (listener_may_exit) break;
 
-        rv = ap_queue_info_wait_for_idler(worker_queue_info);
+        rv = ap_queue_info_wait_for_idler(worker_queue_info,
+                                          &recycled_pool);
         if (APR_STATUS_IS_EOF(rv)) {
             break; /* we've been signaled to die now */
         }
@@ -807,8 +808,7 @@ static void *listener_thread(apr_thread_t *thd, void * dummy)
                 signal_threads(ST_GRACEFUL);
             }
             if (csd != NULL) {
-                rv = ap_queue_push(worker_queue, csd, ptrans,
-                                   &recycled_pool);
+                rv = ap_queue_push(worker_queue, csd, ptrans);
                 if (rv) {
                     /* trash the connection; we couldn't queue the connected
                      * socket to a worker 
@@ -867,7 +867,8 @@ static void * APR_THREAD_FUNC worker_thread(apr_thread_t *thd, void * dummy)
     bucket_alloc = apr_bucket_alloc_create(apr_thread_pool_get(thd));
 
     while (!workers_may_exit) {
-        rv = ap_queue_info_set_idle(worker_queue_info);
+        rv = ap_queue_info_set_idle(worker_queue_info, last_ptrans);
+        last_ptrans = NULL;
         if (rv != APR_SUCCESS) {
             ap_log_error(APLOG_MARK, APLOG_EMERG, rv, ap_server_conf,
                          "ap_queue_info_set_idle failed. Attempting to "
@@ -877,8 +878,7 @@ static void * APR_THREAD_FUNC worker_thread(apr_thread_t *thd, void * dummy)
         }
 
         ap_update_child_status_from_indexes(process_slot, thread_slot, SERVER_READY, NULL);
-        rv = ap_queue_pop(worker_queue, &csd, &ptrans, last_ptrans);
-        last_ptrans = NULL;
+        rv = ap_queue_pop(worker_queue, &csd, &ptrans);
 
         if (rv != APR_SUCCESS) {
             /* We get APR_EOF during a graceful shutdown once all the connections
@@ -986,7 +986,8 @@ static void * APR_THREAD_FUNC start_threads(apr_thread_t *thd, void *dummy)
         clean_child_exit(APEXIT_CHILDFATAL);
     }
 
-    rv = ap_queue_info_create(&worker_queue_info, pchild);
+    rv = ap_queue_info_create(&worker_queue_info, pchild,
+                              ap_threads_per_child);
     if (rv != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_ALERT, rv, ap_server_conf,
                      "ap_queue_info_create() failed");

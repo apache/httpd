@@ -1,5 +1,7 @@
 Changes with Apache 2.0.37
 
+  *) More efficient pool recycling logic for the worker MPM [Brian Pane]
+
   *) Modify the worker MPM to not accept() new connections until
      there is an available worker thread. This prevents queued
      connections from starving for processing time while long-running
