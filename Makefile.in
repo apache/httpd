@@ -34,7 +34,7 @@ install-conf:
 	for i in mime.types magic; do \
 		$(INSTALL_DATA) $$i $(sysconfdir); \
 	done; \
-	for i in *-std*; do \
+	for i in *-std* ldap.conf proxy.conf ssl.conf; do \
 		sed -e 's#@@ServerRoot@@#$(prefix)#g' \
 		    -e 's#@@Port@@#$(PORT)#g' \
 			< $$i > $(sysconfdir)/$$i; \
