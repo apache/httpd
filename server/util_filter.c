@@ -176,13 +176,12 @@ AP_DECLARE(ap_filter_t *) ap_add_output_filter(const char *name, void *ctx,
 			  r ? &r->output_filters : NULL, &c->output_filters);
 }
 
-AP_DECLARE(void) ap_remove_output_filter(ap_filter_t *f)
+static void remove_any_filter(ap_filter_t *f, ap_filter_t **r_filt, 
+                                   ap_filter_t **c_filt)
 {
-    ap_filter_t *curr;
+    ap_filter_t **curr = r_filt ? r_filt : c_filt;
 
-    curr = f->r ? f->r->output_filters : f->c->output_filters;
-
-    if (curr == f) {
+    if ((*curr) == f) {
         if (f->r) {
             f->r->output_filters = f->r->output_filters->next;
         }
@@ -192,13 +191,23 @@ AP_DECLARE(void) ap_remove_output_filter(ap_filter_t *f)
         return;
     }
 
-    while (curr->next != f) {
-        curr = curr->next;
-        if (curr == NULL) {
-            return;
-        }
+    while ((*curr) && (*curr)->next != f) {
+        (*curr) = (*curr)->next;
     }
-    curr->next = f->next;
+    if ((*curr) == NULL) {
+        return;
+    }
+    (*curr)->next = f->next;
+}
+
+AP_DECLARE(void) ap_remove_input_filter(ap_filter_t *f)
+{
+    return remove_any_filter(f, f->r ? &f->r->input_filters : NULL, &f->c->input_filters);
+}
+
+AP_DECLARE(void) ap_remove_output_filter(ap_filter_t *f)
+{
+    return remove_any_filter(f, f->r ? &f->r->output_filters : NULL, &f->c->output_filters);
 }
 
 /* 

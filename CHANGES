@@ -1,5 +1,8 @@
 Changes with Apache 2.0.25-dev
 
+  *) Add a function ap_remove_input_filter.  This is to match
+     up with ap_remove_output_filter.  [Ryan Bloom]
+
   *) Clean up location_walk, so that this step performs a minimum
      amount of redundant effort (it must be run twice, but it will no
      longer reparse all <Location > blocks when the request uri
