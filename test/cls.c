@@ -22,19 +22,19 @@ static int checkmask(const char *data, const char *mask)
 	ch = mask[i];
 	d = data[i];
 	if (ch == '@') {
-	    if (!isupper(d))
+	    if (!apr_isupper(d))
 		return 0;
 	}
 	else if (ch == '$') {
-	    if (!islower(d))
+	    if (!apr_islower(d))
 		return 0;
 	}
 	else if (ch == '#') {
-	    if (!isdigit(d))
+	    if (!apr_isdigit(d))
 		return 0;
 	}
 	else if (ch == '&') {
-	    if (!isxdigit(d))
+	    if (!apr_isxdigit(d))
 		return 0;
 	}
 	else if (ch != d)
@@ -58,9 +58,9 @@ static int hex2sec(const char *x)
     for (i = 0, j = 0; i < 8; i++) {
 	ch = x[i];
 	j <<= 4;
-	if (isdigit(ch))
+	if (apr_isdigit(ch))
 	    j |= ch - '0';
-	else if (isupper(ch))
+	else if (apr_isupper(ch))
 	    j |= ch - ('A' - 10);
 	else
 	    j |= ch - ('a' - 10);
