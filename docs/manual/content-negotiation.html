@@ -208,7 +208,7 @@
     depends on the setting of the <a
     href="mod/mod_mime.html#multiviewsmatch">MultiViewsMatch</a>
     directive.  This directive determines whether handlers, filters,
-    and other file types can participate in MultiViews
+    and other extension types can participate in MultiViews
     negotiation.</p>
 
     <h2>The Negotiation Methods</h2>
@@ -426,6 +426,10 @@
 
     <h3>Language Negotiation Exceptions</h3>
 
+    <p>New in Apache 2.0, some exceptions have been added to the
+    negotiation algorithm to allow graceful fallback when language
+    negotiation fails to find a match.</p>
+
     <p>When a client requests a page on your server, but the server
     cannot find a single page that matches the Accept-language sent by
     the browser, the server will return either a "No Acceptable
@@ -439,26 +443,28 @@
     href="mod_negotiation.html#languagepriority">LanguagePriority</a>
     directive.</p>
 
-    <p>The <code>ForceLanguagePriority</code> directive also causes
-    Apache to attempt to match language-subsets against their parent
-    language when no other match can be obtained.  For example, if a
-    client requests documents with the language <code>en-GB</code> for
-    British English, the server is not normally allowed by the
-    HTTP/1.1 standard to return a document that is marked as simply
+    <p>The server will also attempt to match language-subsets when no
+    other match can be found.  For example, if a client requests
+    documents with the language <code>en-GB</code> for British
+    English, the server is not normally allowed by the HTTP/1.1
+    standard to match that against a document that is marked as simply
     <code>en</code>.  (Note that it is almost surely a configuration
     error to include <code>en-GB</code> and not <code>en</code> in the
     Accept-Language header, since it is very unlikely that a reader
     understands British English, but doesn't understand English in
     general.  Unfortunately, many current clients have default
-    configurations that resemble this.)  With the
-    <code>ForceLanguagePriority</code> header, the server can be
-    configured to ignore the subset specification and match
-    <code>en-GB</code> against <code>en</code> documents.  But note
-    that if the client requests "en-GB; qs=0.9, fr; qs=0.8", and the
-    server has documents designated "en" and "fr", then the "fr"
-    document will be returned regardless of the
-    <code>ForceLanguagePriority</code> directive.  This is necessary
-    to maintain compliance with the HTTP/1.1 specification.</p>
+    configurations that resemble this.)  However, if no other language
+    match is possible and the server is about to return a "No
+    Acceptable Variants" error or fallback to the
+    <code>LanguagePriority</code>, the server will ignore the subset
+    specification and match <code>en-GB</code> against <code>en</code>
+    documents.  Implicitly, Apache will add the parent language to
+    the client's acceptable language list with a very low quality
+    value.  But note that if the client requests "en-GB; qs=0.9, fr;
+    qs=0.8", and the server has documents designated "en" and "fr",
+    then the "fr" document will be returned.  This is necessary to
+    maintain compliance with the HTTP/1.1 specification and to work
+    effectively with properly configured clients.</p>
 
 
     <h2>Extensions to Transparent Content Negotiation</h2>

@@ -180,7 +180,7 @@ cached by proxy servers</description>
 <description>Action to take if a single acceptable document is not 
 found</description>
 <syntax>ForceLanguagePriority None|Prefer|Fallback [Prefer|Fallback]</syntax>
-<default>ForceLanguagePriority None</default>
+<default>ForceLanguagePriority Prefer</default>
 <contextlist><context>server config</context>
 <context>virtual host</context>
 <context>directory</context>
