@@ -370,8 +370,8 @@ API_EXPORT(void) ap_add_version_component(const char *component)
          * pointer on pool destruction.
          */
         if (server_version == NULL) {
-	    ap_register_cleanup(pconf, NULL, (void (*)(void *))reset_version, 
-				NULL);
+	    ap_register_cleanup(pconf, NULL, reset_version, 
+				ap_null_cleanup);
 	    server_version = ap_pstrdup(pconf, component);
 	}
 	else {

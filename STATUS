@@ -11,11 +11,6 @@ Release:
 
 FINAL RELEASE SHOWSTOPPERS:
 
-    * mod_cgi is broken; working scripts are currently resulting in
-      'premature end of script headers.'  (See DougM's message
-      <35523DAC.84F487DF@telebusiness.co.nz>).  Maybe Ben's change to the
-      script Status checking?
-
     * Someone other than Dean has to do a security/correctness review on
       psprintf(), bprintf(), and ap_snprintf().  In particular these routines
       do lots of fun pointer manipulations and such and possibly have overflow
