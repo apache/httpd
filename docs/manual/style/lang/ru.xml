@@ -26,10 +26,10 @@
 
 <!-- No CHM so far (no sitemap)
     <chm>
-        <lang>0x409 English (United States)</lang>
-        <toc-font>,8,0</toc-font>
-        <charset>windows-1252</charset>
-        <settings>English (USA)</settings>
+        <lang>0x419 Russian</lang>
+        <toc-font>,8,204</toc-font>
+        <charset>windows-1251</charset>
+        <settings>Russian</settings>
     </chm>
 -->
 
