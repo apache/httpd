@@ -249,8 +249,8 @@ extern const char *ap_mpm_set_max_mem_free(cmd_parms *cmd, void *dummy,
 #endif
 
 #ifdef AP_MPM_WANT_SET_STACKSIZE
-extern apr_size_t ap_worker_stacksize;
-extern const char *ap_mpm_set_worker_stacksize(cmd_parms *cmd, void *dummy,
+extern apr_size_t ap_thread_stacksize;
+extern const char *ap_mpm_set_thread_stacksize(cmd_parms *cmd, void *dummy,
                                                const char *arg);
 #endif
 

@@ -3240,7 +3240,7 @@ AP_INIT_TAKE1("MaxMemFree", ap_mpm_set_max_mem_free, NULL, RSRC_CONF,
               "Maximum number of 1k blocks a particular childs allocator may hold."),
 #endif
 #ifdef AP_MPM_WANT_SET_STACKSIZE
-AP_INIT_TAKE1("WorkerStackSize", ap_mpm_set_worker_stacksize, NULL, RSRC_CONF,
+AP_INIT_TAKE1("ThreadStackSize", ap_mpm_set_thread_stacksize, NULL, RSRC_CONF,
               "Size in bytes of stack used by threads handling client connections"),
 #endif
 #if AP_ENABLE_EXCEPTION_HOOK

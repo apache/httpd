@@ -928,7 +928,7 @@ void child_main(apr_pool_t *pconf)
                 continue;
             }
             ap_update_child_status_from_indexes(0, i, SERVER_STARTING, NULL);
-            child_handles[i] = (HANDLE) _beginthreadex(NULL, (unsigned)ap_worker_stacksize,
+            child_handles[i] = (HANDLE) _beginthreadex(NULL, (unsigned)ap_thread_stacksize,
                                                        (LPTHREAD_START_ROUTINE) worker_main,
                                                        (void *) i, 0, &tid);
             if (child_handles[i] == 0) {
