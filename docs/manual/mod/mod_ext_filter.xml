@@ -220,7 +220,8 @@ delivery to the client</description>
     run and its arguments.</p>
 
     <p><var>filtername</var> specifies the name of the filter being
-    defined. This name can then be used in SetOutputFilter
+    defined. This name can then be used in <directive module="core"
+    >SetOutputFilter</directive>
     directives. It must be unique among all registered filters.
     <em>At the present time, no error is reported by the
     register-filter API, so a problem with duplicate names isn't
