@@ -112,20 +112,6 @@ PATCHES TO BACKPORT FROM 2.1
        svn rev 124556
        +1: wrowe
 
-    *) Fix the RPM spec file so that an RPM build now works. An RPM
-       build now requires system installations of APR and APR-util.
-       http://svn.apache.org/~minfrin/httpd-2.0.53-rpm.diff
-       svn rev 122711
-       +1: minfrin, pquerna
-       -0: jorton: users could rely on it working as-is; make it conditional?
-       minfrin: The existing spec file in the tree does not work, so not
-                applying this patch means we have no RPMs at all.
-
-                I am strongly against making this conditional - a bundled APR
-                prevents other packages from being installed correctly, or
-                it leads to stupid situations like the sunfreeware packaged
-                subversion client depending on httpd. This mess must end.
-
     *) several changes to improve logging of connection-oriented errors, including
        ap_log_cerror() API (needs minor bump in addition to changes below)
          http://cvs.apache.org/viewcvs.cgi/httpd-2.0/server/core.c?r1=1.289&r2=1.291

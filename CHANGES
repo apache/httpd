@@ -1,5 +1,11 @@
 Changes with Apache 2.0.53
 
+  *) Fix the RPM spec file so that an RPM build now works. An RPM
+     build now requires system installations of APR and APR-util.
+     Remove some arbitrary moving around of binaries - the RPM now
+     maps to the ASF build of httpd.
+     [Graham Leggett]
+
   *) mod_dumpio, an I/O logging/dumping module, added to the
      modules/expermimental subdirectory.  [Jim Jagielski]
 

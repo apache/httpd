@@ -17,8 +17,9 @@ Source0: http://www.apache.org/dist/httpd/httpd-%{version}.tar.gz
 License: Apache License, Version 2.0
 Group: System Environment/Daemons
 BuildRoot: %{_tmppath}/%{name}-root
-BuildPrereq: openldap-devel, db4-devel, expat-devel, findutils, perl, pkgconfig
-Requires: gawk, /usr/share/magic.mime, /usr/bin/find, openldap
+BuildPrereq: apr-devel, apr-util-devel, openldap-devel, db4-devel, expat-devel, findutils, perl, pkgconfig
+BuildPrereq: /usr/bin/apr-config, /usr/bin/apu-config
+Requires: apr >= 0.9.5, apr-util >= 0.9.5, gawk, /usr/share/magic.mime, /usr/bin/find, openldap
 Prereq: /sbin/chkconfig, /bin/mktemp, /bin/rm, /bin/mv
 Prereq: sh-utils, textutils, /usr/sbin/useradd
 Provides: webserver
@@ -36,6 +37,7 @@ Group: Development/Libraries
 Summary: Development tools for the Apache HTTP server.
 Obsoletes: secureweb-devel, apache-devel
 Requires: libtool, httpd = %{version}
+Requires: apr-devel >= 0.9.5, apr-util-devel >= 0.9.5
 
 %description devel
 The httpd-devel package contains the APXS binary and other files
@@ -109,7 +111,9 @@ ac_cv_func_sem_open=no
 EOF
 ../configure -C \
  	--prefix=%{_sysconfdir}/httpd \
- 	--exec-prefix=%{_prefix} \
+ 	--with-apr=/usr/bin/apr-config \
+	--with-apr-util=/usr/bin/apu-config \
+	--exec-prefix=%{_prefix} \
  	--bindir=%{_bindir} \
  	--sbindir=%{_sbindir} \
  	--mandir=%{_mandir} \
@@ -156,17 +160,11 @@ fi
 %install
 rm -rf $RPM_BUILD_ROOT
 
-# Classify ab and logresolve as section 1 commands, as they are in /usr/bin
-mv docs/man/ab.8 docs/man/ab.1
-sed -e "1s/logresolve 8/logresolve 1/" \
-  < docs/man/logresolve.8 > docs/man/logresolve.1
-rm docs/man/logresolve.8
-
 pushd prefork
 make DESTDIR=$RPM_BUILD_ROOT install
 popd
 # install worker binary
-install -m 755 worker/.libs/httpd $RPM_BUILD_ROOT%{_sbindir}/httpd.worker
+install -m 755 worker/httpd $RPM_BUILD_ROOT%{_sbindir}/httpd.worker
 
 # mod_ssl bits
 for suffix in crl crt csr key prm; do
@@ -187,20 +185,14 @@ mkdir -p $RPM_BUILD_ROOT%{_localstatedir}/lib/dav
 mkdir -p $RPM_BUILD_ROOT%{_localstatedir}/cache/mod_ssl
 touch $RPM_BUILD_ROOT%{_localstatedir}/cache/mod_ssl/scache.{dir,pag,sem}
 
-# move utilities to /usr/bin
-mv $RPM_BUILD_ROOT%{_sbindir}/{ab,htdbm,logresolve,htpasswd,htdigest} \
-   $RPM_BUILD_ROOT%{_bindir}
-
-# make libtool a symlink
+# move the build directory to within the library directory
 mv $RPM_BUILD_ROOT%{contentdir}/build $RPM_BUILD_ROOT%{_libdir}/httpd/build
-rm $RPM_BUILD_ROOT%{_libdir}/httpd/build/libtool
-ln -s ../../../..%{_bindir}/libtool $RPM_BUILD_ROOT%{_libdir}/httpd/build/libtool
 
 # fix up config_vars file: relocate the build directory into libdir;
-# reference correct libtool; remove references to RPM build root.
+# reference correct libtool from apr; remove references to RPM build root.
 sed -e "s|%{contentdir}/build|%{_libdir}/httpd/build|g" \
     -e "/AP_LIBS/d" -e "/abs_srcdir/d" \
-    -e "/^LIBTOOL/s|/[^ ]*/libtool|%{_bindir}/libtool|" \
+    -e "/^LIBTOOL/s|/[^ ]*/libtool|`apr-config --apr-libtool`|" \
     -e "/^EXTRA_INCLUDES/s|-I$RPM_BUILD_DIR[^ ]* ||g" \
   < prefork/build/config_vars.mk \
   > $RPM_BUILD_ROOT%{_libdir}/httpd/build/config_vars.mk
@@ -236,11 +228,7 @@ install -m644 ./build/rpm/httpd.logrotate \
 	$RPM_BUILD_ROOT/etc/logrotate.d/httpd
 
 # Remove unpackaged files
-rm -rf $RPM_BUILD_ROOT%{_libdir}/libapr{,util}.{a,la} \
-       $RPM_BUILD_ROOT%{_libdir}/APRVARS $RPM_BUILD_ROOT%{_libdir}/*.exp \
-       $RPM_BUILD_ROOT%{_libdir}/httpd/modules/*.exp \
-       $RPM_BUILD_ROOT%{_bindir}/ap?-config \
-       $RPM_BUILD_ROOT%{_sbindir}/{checkgid,dbmmanage,envvars*} \
+rm -rf $RPM_BUILD_ROOT%{_libdir}/httpd/modules/*.exp \
        $RPM_BUILD_ROOT%{contentdir}/htdocs/* \
        $RPM_BUILD_ROOT%{contentdir}/cgi-bin/* 
 
@@ -309,17 +297,16 @@ rm -rf $RPM_BUILD_ROOT
 
 #%dir %{_sysconfdir}/httpd/conf
 
-%{_bindir}/ab
-%{_bindir}/ht*
-%{_bindir}/logresolve
+%{_sbindir}/ab
+%{_sbindir}/htdbm
+%{_sbindir}/htdigest
+%{_sbindir}/htpasswd
+%{_sbindir}/logresolve
 %{_sbindir}/httpd
 %{_sbindir}/httpd.worker
 %{_sbindir}/apachectl
 %{_sbindir}/rotatelogs
 %attr(4510,root,%{suexec_caller}) %{_sbindir}/suexec
-
-%{_libdir}/libapr-0.so.*
-%{_libdir}/libaprutil-0.so.*
 
 %dir %{_libdir}/httpd
 %dir %{_libdir}/httpd/modules
@@ -344,9 +331,10 @@ rm -rf $RPM_BUILD_ROOT
 %attr(0700,apache,apache) %dir %{_localstatedir}/lib/dav
 
 %{_mandir}/man1/*
-
+%{_mandir}/man8/ab*
 %{_mandir}/man8/apachectl*
 %{_mandir}/man8/httpd*
+%{_mandir}/man8/logresolve*
 %{_mandir}/man8/rotatelogs*
 %{_mandir}/man8/suexec*
 
@@ -368,23 +356,22 @@ rm -rf $RPM_BUILD_ROOT
 
 %files devel
 %defattr(-,root,root)
-%{_libdir}/libapr-0.so
-%{_libdir}/libapr-0.a
-%{_libdir}/libapr-0.la
-%{_libdir}/libaprutil-0.so
-%{_libdir}/libaprutil-0.a
-%{_libdir}/libaprutil-0.la
 %{_includedir}/httpd
 %{_sysconfdir}/httpd/build
 %{_sbindir}/apxs
+%{_sbindir}/checkgid
+%{_sbindir}/dbmmanage
+%{_sbindir}/envvars*
 %{_mandir}/man8/apxs.8*
 %dir %{_libdir}/httpd/build
 %{_libdir}/httpd/build/*.mk
 %{_libdir}/httpd/build/config.nice
 %{_libdir}/httpd/build/instdso.sh
-%{_libdir}/httpd/build/libtool
 
 %changelog
+* Thu Dec 16 2004 Graham Leggett <minfrin@apache.org> 2.0.53-dev
+- Changed build to use external apr and apr-util
+
 * Sat Apr 5 2003 Graham Leggett <minfrin@apache.org> 2.0.46-dev
 - Moved mime.types back to the default location.
 - Added mod_ldap and friends, mod_cache and friends.
