@@ -56,7 +56,7 @@
 
 /*
  * conf.h: system-dependant #defines and includes...
- * See README for a listing of what they mean
+ * See PORTING for a listing of what they mean
  */
 
 
