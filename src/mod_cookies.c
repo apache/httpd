@@ -81,6 +81,10 @@
  *
  * 18.3.96 MJC Generate cookies for EVERY request no matter what the 
  * browser.
+ *
+ * 96/03/31 -JimC Allow the log to be sent to a pipe.  Copies the relevant
+ * code from mod_log_agent.c.
+ *
  */
 
 #include "httpd.h"
@@ -166,6 +170,19 @@ command_rec cookie_log_cmds[] = {
 { NULL }
 };
 
+void cookie_log_child (void *cmd)
+{
+    /* Child process code for 'CookieLog "|..."';
+     * may want a common framework for this, since I expect it will
+     * be common for other foo-loggers to want this sort of thing...
+     */
+    
+    cleanup_for_exec();
+    signal (SIGHUP, SIG_IGN);
+    execl (SHELL_PATH, SHELL_PATH, "-c", (char *)cmd, NULL);
+    exit (1);
+}
+
 void open_cookie_log (server_rec *s, pool *p)
 {
     cookie_log_state *cls = get_module_config (s->module_config,
@@ -173,7 +190,21 @@ void open_cookie_log (server_rec *s, pool *p)
     char *fname = server_root_relative (p, cls->fname);
 
     if (cls->log_fd > 0) return; 
-    if(*cls->fname != '\0') {
+
+    if (*cls->fname == '|') {
+      FILE *dummy;
+      
+      spawn_child(p, cookie_log_child, (void *)(cls->fname+1),
+                kill_after_timeout, &dummy, NULL);
+      
+      if (dummy == NULL) {
+      fprintf (stderr, "Couldn't fork child for CookieLog process\n");
+      exit (1);
+      }
+      
+      cls->log_fd = fileno (dummy);
+    }
+    else if(*cls->fname != '\0') {
       if((cls->log_fd = popenf(p, fname, cookie_flags, cookie_mode)) < 0) {
 	fprintf(stderr, "httpd: could not open cookie log file %s.\n", fname);
 	perror("open");

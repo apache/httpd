@@ -52,9 +52,7 @@
   *) Long overdue revamp of the Cookies module to stop Apache cookies
      colliding with other cookies a site may be using.  Cookies are now
      always generated for every browser, not just Netscape (and clones)
-     [Mark Cox]
-
-  *) Clean up strings.h warning for SGI [Mark Cox]
+     and the cookie log can be a pipe just like the other logs [Mark Cox]
 
   *) Add HAVE_MMAP to SCO 5. [Ben Laurie]
 
