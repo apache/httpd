@@ -44,7 +44,7 @@ application/news-message-id
 application/news-transmission
 application/ocsp-request
 application/ocsp-response
-application/octet-stream	bin dms lha lzh exe class
+application/octet-stream	bin dms lha lzh exe class so dll
 application/oda			oda
 application/pdf			pdf
 application/pgp-encrypted
