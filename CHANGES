@@ -2,6 +2,11 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) Enable ap_sock_disable_nagle for Windows. This along with the  
+     addition of  APR_TCP_NODELAY_INHERITED to apr.hw will cause Nagle 
+     to be disabled for Windows.
+     [Allan Edwards]
+
   *) ssl_toolkit_compat.h and code fixes to build clean on SSLC.
      [William Rowe, Madhusudan Mathihalli]
 
