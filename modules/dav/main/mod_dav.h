@@ -1454,7 +1454,7 @@ void dav_prop_rollback(dav_prop_ctx *ctx);
 enum {
     DAV_CALLTYPE_MEMBER = 1,	/* called for a member resource */
     DAV_CALLTYPE_COLLECTION,	/* called for a collection */
-    DAV_CALLTYPE_LOCKNULL,	/* called for a locknull resource */
+    DAV_CALLTYPE_LOCKNULL 	/* called for a locknull resource */
 };
 
 typedef struct
