@@ -97,6 +97,8 @@ void ssl_log_open(server_rec *s_main, server_rec *s, apr_pool_t *p)
             return;
         else if (sc->log_file_name[0] == '|') {
             szLogFile = sc->log_file_name + 1;
+            while (*szLogFile == ' ' || *szLogFile == '\t')
+                szLogFile++;
             if ((pl = ap_open_piped_log(p, szLogFile)) == NULL) {
                 ssl_log(s, SSL_LOG_ERROR|SSL_ADD_ERRNO,
                         "Cannot open reliable pipe to SSL logfile filter %s", szLogFile);
