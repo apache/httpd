@@ -29,6 +29,9 @@ Changes with Apache 1.3
   *) We now determine and display the time spent processing a
      request if desired.
 
+  *) mod_status: PID field of "dead" child slots no longer displays
+     main httpd process's PID.
+
   *) CGI: Add a select() loop so that CGI scripts don't have to be
      nph in order to be "unbuffered". [Sameer Parekh]
 
