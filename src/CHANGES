@@ -1,5 +1,9 @@
 Changes with Apache 1.3b4
 
+  *) WIN32: Fix a call to os_canonical_filename so it doesn't try to 
+     mess with fake filenames.  This fixes proxy caching on 
+     win32. PR#1265
+
   *) SECURITY: General mod_include cleanup, including fixing several
      possible buffer overflows and a possible infinite loop.
      [Dean Gaudet, Marc Slemko]

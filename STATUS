@@ -72,6 +72,7 @@ Committed Code Changes:
     * Ken's [PATCH] for copyright year update
     * Dean's [PATCH] 1.3: security updates for mod_imap and mod_include
     * Dean's [PATCH] make mod_include use ap_cpystrn
+    * fix proxy caching on win32
 
 Available Patches:
 
@@ -231,3 +232,5 @@ Open issues:
     * Ken's PR#1053: an error when accessing a negotiated document
       explicitly names the variant selected.  Should it do so, or should
       the base input name be referenced?
+
+    * bad use of chdir in some places; it isn't thread-specific
