@@ -75,6 +75,7 @@
 #include "http_log.h"           /* For errors detected in basic auth common
                                  * support code... */
 #include "util_date.h"          /* For parseHTTPdate and BAD_DATE */
+#include "util_charset.h"
 #include "mpm_status.h"
 #include <stdarg.h>
 
@@ -89,28 +90,6 @@ AP_HOOK_STRUCT(
   do { if (r->sent_bodyct) \
           ap_bgetopt (r->connection->client, BO_BYTECT, &r->bytes_sent); \
   } while (0)
-
-#ifdef CHARSET_EBCDIC
-/* Save & Restore the current conversion settings
- * "input"  means: ASCII -> EBCDIC (when reading MIME Headers and PUT/POST data)
- * "output" means: EBCDIC -> ASCII (when sending MIME Headers and Chunks)
- */
-
-#define PUSH_EBCDIC_INPUTCONVERSION_STATE(_buff, _onoff) \
-        int _convert_in = ap_bgetflag(_buff, B_ASCII2EBCDIC); \
-        ap_bsetflag(_buff, B_ASCII2EBCDIC, _onoff);
-
-#define POP_EBCDIC_INPUTCONVERSION_STATE(_buff) \
-        ap_bsetflag(_buff, B_ASCII2EBCDIC, _convert_in);
-
-#define PUSH_EBCDIC_OUTPUTCONVERSION_STATE(_buff, _onoff) \
-        int _convert_out = ap_bgetflag(_buff, B_EBCDIC2ASCII); \
-        ap_bsetflag(_buff, B_EBCDIC2ASCII, _onoff);
-
-#define POP_EBCDIC_OUTPUTCONVERSION_STATE(_buff) \
-        ap_bsetflag(_buff, B_EBCDIC2ASCII, _convert_out);
-
-#endif /*CHARSET_EBCDIC*/
 
 /*
  * Builds the content-type that should be sent to the client from the
@@ -281,13 +260,14 @@ static int internal_byterange(int realreq, long *tlength, request_rec *r,
 {
     long range_start, range_end;
     char *range;
-#ifdef CHARSET_EBCDIC
-    /* determine current setting of conversion flag,
-     * set to ON (protocol strings MUST be converted)
-     * and reset to original setting before returning
+#ifdef APACHE_XLATE
+    /* determine current translation handle, set to the one for
+     * protocol strings, and reset to original setting before
+     * returning
      */
-    PUSH_EBCDIC_OUTPUTCONVERSION_STATE(r->connection->client, 1);
-#endif /*CHARSET_EBCDIC*/
+    AP_PUSH_OUTPUTCONVERSION_STATE(r->connection->client,
+                                   ap_hdrs_to_ascii);
+#endif /*APACHE_XLATE*/
 
     if (!**r_range) {
         if (r->byterange > 1) {
@@ -296,17 +276,17 @@ static int internal_byterange(int realreq, long *tlength, request_rec *r,
             else
                 *tlength += 4 + strlen(r->boundary) + 4;
         }
-#ifdef CHARSET_EBCDIC
-        POP_EBCDIC_OUTPUTCONVERSION_STATE(r->connection->client);
-#endif /*CHARSET_EBCDIC*/
+#ifdef APACHE_XLATE
+        AP_POP_OUTPUTCONVERSION_STATE(r->connection->client);
+#endif /*APACHE_XLATE*/
         return 0;
     }
 
     range = ap_getword(r->pool, r_range, ',');
     if (!parse_byterange(range, r->clength, &range_start, &range_end))
-#ifdef CHARSET_EBCDIC
-        POP_EBCDIC_OUTPUTCONVERSION_STATE(r->connection->client);
-#endif /*CHARSET_EBCDIC*/
+#ifdef APACHE_XLATE
+        AP_POP_OUTPUTCONVERSION_STATE(r->connection->client);
+#endif /*APACHE_XLATE*/
         /* Skip this one */
         return internal_byterange(realreq, tlength, r, r_range, offset,
                                   length);
@@ -333,9 +313,9 @@ static int internal_byterange(int realreq, long *tlength, request_rec *r,
     else {
         *tlength += range_end - range_start + 1;
     }
-#ifdef CHARSET_EBCDIC
-    POP_EBCDIC_OUTPUTCONVERSION_STATE(r->connection->client);
-#endif /*CHARSET_EBCDIC*/
+#ifdef APACHE_XLATE
+    AP_POP_OUTPUTCONVERSION_STATE(r->connection->client);
+#endif /*APACHE_XLATE*/
     return 1;
 }
 
@@ -750,17 +730,17 @@ static int getline(char *s, int n, BUFF *in, int fold)
     char *pos, next;
     int retval;
     int total = 0;
-#ifdef CHARSET_EBCDIC
+#ifdef APACHE_XLATE
     /* When getline() is called, the HTTP protocol is in a state
      * where we MUST be reading "plain text" protocol stuff,
      * (Request line, MIME headers, Chunk sizes) regardless of
      * the MIME type and conversion setting of the document itself.
-     * Save the current setting of the ASCII-EBCDIC conversion flag
-     * for uploads, then temporarily set it to ON
+     * Save the current setting of the translation handle for
+     * uploads, then temporarily set it to the one used for headers
      * (and restore it before returning).
      */
-    PUSH_EBCDIC_INPUTCONVERSION_STATE(in, 1);
-#endif /*CHARSET_EBCDIC*/
+    AP_PUSH_INPUTCONVERSION_STATE(in, ap_hdrs_from_ascii);
+#endif /*APACHE_XLATE*/
 
     pos = s;
 
@@ -804,10 +784,10 @@ static int getline(char *s, int n, BUFF *in, int fold)
                   && (next = ap_blookc(in))
                   && ((next == ' ') || (next == '\t')));
 
-#ifdef CHARSET_EBCDIC
-    /* restore ASCII->EBCDIC conversion state */
-    POP_EBCDIC_INPUTCONVERSION_STATE(in);
-#endif /*CHARSET_EBCDIC*/
+#ifdef APACHE_XLATE
+    /* restore translation handle */
+    AP_POP_INPUTCONVERSION_STATE(in);
+#endif /*APACHE_XLATE*/
 
     return total;
 }
@@ -1049,8 +1029,12 @@ request_rec *ap_read_request(conn_rec *conn)
     r->status          = HTTP_REQUEST_TIME_OUT;  /* Until we get a request */
     r->the_request     = NULL;
 
-#ifdef CHARSET_EBCDIC
-    ap_bsetflag(r->connection->client, B_ASCII2EBCDIC|B_EBCDIC2ASCII, 1);
+#ifdef APACHE_XLATE
+    r->rrx = ap_pcalloc(p, sizeof(struct ap_rr_xlate));
+    r->rrx->to_net = ap_locale_to_ascii;
+    r->rrx->from_net = ap_locale_from_ascii;
+    ap_bsetopt(r->connection->client, BO_WXLATE, &ap_hdrs_to_ascii);
+    ap_bsetopt(r->connection->client, BO_RXLATE, &ap_hdrs_from_ascii);
 #endif
 
     ap_bsetopt(conn->client, BO_TIMEOUT,
@@ -1263,7 +1247,7 @@ API_EXPORT(int) ap_get_basic_auth_pw(request_rec *r, const char **pw)
         return AUTH_REQUIRED;
     }
 
-    /* CHARSET_EBCDIC Issue's here ?!? Compare with 32/9 instead
+    /* APACHE_XLATE Issue's here ?!? Compare with 32/9 instead
      * as we are operating on an octed stream ?
      */
     while (*auth_line== ' ' || *auth_line== '\t')
@@ -1422,9 +1406,10 @@ API_EXPORT(void) ap_basic_http_header(request_rec *r)
     else
         protocol = AP_SERVER_PROTOCOL;
 
-#ifdef CHARSET_EBCDIC
-    { PUSH_EBCDIC_OUTPUTCONVERSION_STATE(r->connection->client, 1);
-#endif /*CHARSET_EBCDIC*/
+#ifdef APACHE_XLATE
+    { AP_PUSH_OUTPUTCONVERSION_STATE(r->connection->client,
+                                     ap_hdrs_to_ascii);
+#endif /*APACHE_XLATE*/
 
     /* Output the HTTP/1.x Status-Line and the Date and Server fields */
 
@@ -1437,9 +1422,9 @@ API_EXPORT(void) ap_basic_http_header(request_rec *r)
 
     ap_table_unset(r->headers_out, "Date");        /* Avoid bogosity */
     ap_table_unset(r->headers_out, "Server");
-#ifdef CHARSET_EBCDIC
-    POP_EBCDIC_OUTPUTCONVERSION_STATE(r->connection->client); }
-#endif /*CHARSET_EBCDIC*/
+#ifdef APACHE_XLATE
+    AP_POP_OUTPUTCONVERSION_STATE(r->connection->client); }
+#endif /*APACHE_XLATE*/
 }
 
 /* Navigator versions 2.x, 3.x and 4.0 betas up to and including 4.0b2
@@ -1673,9 +1658,10 @@ API_EXPORT(void) ap_send_http_header(request_rec *r)
 
     ap_basic_http_header(r);
 
-#ifdef CHARSET_EBCDIC
-    { PUSH_EBCDIC_OUTPUTCONVERSION_STATE(r->connection->client, 1);
-#endif /*CHARSET_EBCDIC*/
+#ifdef APACHE_XLATE
+    { AP_PUSH_OUTPUTCONVERSION_STATE(r->connection->client,
+                                     ap_hdrs_to_ascii);
+#endif /*APACHE_XLATE*/
 
     ap_set_keepalive(r);
 
@@ -1727,9 +1713,9 @@ API_EXPORT(void) ap_send_http_header(request_rec *r)
     /* Set buffer flags for the body */
     if (r->chunked)
         ap_bsetflag(r->connection->client, B_CHUNK, 1);
-#ifdef CHARSET_EBCDIC
-    POP_EBCDIC_OUTPUTCONVERSION_STATE(r->connection->client); }
-#endif /*CHARSET_EBCDIC*/
+#ifdef APACHE_XLATE
+    AP_POP_OUTPUTCONVERSION_STATE(r->connection->client); }
+#endif /*APACHE_XLATE*/
 }
 
 /* finalize_request_protocol is called at completion of sending the
@@ -1740,8 +1726,9 @@ API_EXPORT(void) ap_send_http_header(request_rec *r)
 API_EXPORT(void) ap_finalize_request_protocol(request_rec *r)
 {
     if (r->chunked && !r->connection->aborted) {
-#ifdef CHARSET_EBCDIC
-	PUSH_EBCDIC_OUTPUTCONVERSION_STATE(r->connection->client, 1);
+#ifdef APACHE_XLATE
+	AP_PUSH_OUTPUTCONVERSION_STATE(r->connection->client,
+                                       ap_hdrs_to_ascii);
 #endif
         /*
          * Turn off chunked encoding --- we can only do this once.
@@ -1753,9 +1740,9 @@ API_EXPORT(void) ap_finalize_request_protocol(request_rec *r)
         /* If we had footer "headers", we'd send them now */
         ap_rputs(CRLF, r);
 
-#ifdef CHARSET_EBCDIC
-	POP_EBCDIC_OUTPUTCONVERSION_STATE(r->connection->client);
-#endif /*CHARSET_EBCDIC*/
+#ifdef APACHE_XLATE
+	AP_POP_OUTPUTCONVERSION_STATE(r->connection->client);
+#endif /*APACHE_XLATE*/
     }
 }
 
@@ -1864,9 +1851,9 @@ API_EXPORT(int) ap_setup_client_block(request_rec *r, int read_policy)
                           strncasecmp(typep, "multipart/", 10) == 0 ||
                           strcasecmp (typep, "application/x-www-form-urlencoded") == 0
                          );
-        ap_bsetflag(r->connection->client, B_ASCII2EBCDIC, convert_in);
+        ap_bsetopt(r->connection->client, BO_RXLATE, ap_locale_from_ascii);
     }
-#endif
+#endif /*CHARSET_EBCDIC*/
 
     return OK;
 }
@@ -2056,19 +2043,20 @@ API_EXPORT(long) ap_get_client_block(request_rec *r, char *buffer, int bufsiz)
     r->remaining -= len_read;
 
     if (r->remaining == 0) {    /* End of chunk, get trailing CRLF */
-#ifdef CHARSET_EBCDIC
+#ifdef APACHE_XLATE
         /* Chunk end is Protocol stuff! Set conversion = 1 to read CR LF: */
-        PUSH_EBCDIC_INPUTCONVERSION_STATE(r->connection->client, 1);
-#endif /*CHARSET_EBCDIC*/
+        AP_PUSH_INPUTCONVERSION_STATE(r->connection->client,
+                                      ap_hdrs_from_ascii);
+#endif /*APACHE_XLATE*/
 
         if ((c = ap_bgetc(r->connection->client)) == CR) {
             c = ap_bgetc(r->connection->client);
         }
 
-#ifdef CHARSET_EBCDIC
-        /* restore ASCII->EBCDIC conversion state */
-        POP_EBCDIC_INPUTCONVERSION_STATE(r->connection->client);
-#endif /*CHARSET_EBCDIC*/
+#ifdef APACHE_XLATE
+        /* restore previous input translation handle */
+        AP_POP_INPUTCONVERSION_STATE(r->connection->client);
+#endif /*APACHE_XLATE*/
 
         if (c != LF) {
             r->connection->keepalive = -1;
