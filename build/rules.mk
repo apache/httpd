@@ -176,7 +176,7 @@ install-p: $(targets) $(install_targets)
 distclean-p depend-p clean-p:
 
 depend: depend-recursive
-	if test -n "`ls $(srcdir)/*.c 2> /dev/null`"; then \
+	if test "`echo $(srcdir)/*.c`" != "$(srcdir)'/*.c'"; then \
 	    gcc -MM $(INCLUDES) $(EXTRA_INCLUDES) $(DEFS) $(CPPFLAGS) $(srcdir)/*.c | sed 's/\.o:/.lo:/' > $(builddir)/.deps || true;           \
 	fi
 #	    test "`echo *.c`" = '*.c' || perl $(top_srcdir)/build/mkdep.perl $(CPP) $(INCLUDES) $(EXTRA_INCLUDES) *.c > .deps
