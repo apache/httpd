@@ -1,5 +1,8 @@
 Changes with Apache 2.0.33-dev
 
+  *) Fix DEBUG_CGI support in mod_cgi.  PR 9670, 9671.
+     [David MacKenzie <djm@pix.net>]
+
   *) Fix incorrect check for script_in in mod_cgi.  PR 9669.
      [David MacKenzie <djm@pix.net>]
 
