@@ -351,6 +351,14 @@ AP_DECLARE(ap_filter_t *) ap_add_output_filter(const char *name, void *ctx,
 					       request_rec *r, conn_rec *c);
 
 /**
+ * Remove an input filter from either the request or connection stack
+ * it is associated with.
+ * @param f The filter to remove
+ */
+
+AP_DECLARE(void) ap_remove_input_filter(ap_filter_t *f);
+
+/**
  * Remove an output filter from either the request or connection stack
  * it is associated with.
  * @param f The filter to remove

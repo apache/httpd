@@ -283,6 +283,9 @@ static apr_status_t churn(SSLFilterRec *pRec,
             /* if this is the case, ssl connection has been shutdown
              * and pRec->pssl has been freed
              */
+            if (ret == HTTP_BAD_REQUEST) {
+                return APR_SUCCESS;
+            }
             return ret;
         }
 
