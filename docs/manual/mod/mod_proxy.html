@@ -48,6 +48,7 @@ and other protocols.
 <LI><A HREF="#proxyreceivebuffersize">ProxyReceiveBufferSize</A>
 <LI><A HREF="#noproxy">NoProxy</A>
 <LI><A HREF="#proxydomain">ProxyDomain</A>
+<LI><A HREF="#proxyvia">ProxyVia</A>
 <LI><A HREF="#cacheroot">CacheRoot</A>
 <LI><A HREF="#cachesize">CacheSize</A>
 <LI><A HREF="#cachemaxexpire">CacheMaxExpire</A>
@@ -549,6 +550,58 @@ Example:
   NoProxy         .mycompany.com 192.168.112.0/21 
   ProxyDomain     .mycompany.com
 </PRE>
+
+<HR>
+
+<H2><A NAME="proxyvia">ProxyVia</A></H2>
+<A
+ HREF="directive-dict.html#Syntax"
+ REL="Help"
+><STRONG>Syntax:</STRONG></A> ProxyVia { <EM>off</EM>
+                                       | <EM>on</EM>
+				       | <EM>full</EM>
+				       | <EM>block</EM>
+				       }<BR>
+<A
+ HREF="directive-dict.html#Default"
+ REL="Help"
+><STRONG>Default:</STRONG></A> <EM>ProxyVia off</EM><BR>
+<A
+ HREF="directive-dict.html#Context"
+ REL="Help"
+><STRONG>Context:</STRONG></A> server config, virtual host<BR>
+<A
+ HREF="directive-dict.html#Override"
+ REL="Help"
+><STRONG>Override:</STRONG></A> <EM>Not applicable</EM><BR>
+<A
+ HREF="directive-dict.html#Status"
+ REL="Help"
+><STRONG>Status:</STRONG></A> Base<BR>
+<A
+ HREF="directive-dict.html#Module"
+ REL="Help"
+><STRONG>Module:</STRONG></A> mod_proxy<BR>
+<A
+ HREF="directive-dict.html#Compatibility"
+ REL="Help"
+><STRONG>Compatibility:</STRONG></A> ProxyVia is only available in
+Apache 1.3.2 and later.<P>
+
+This directive controls the use of the <SAMP>Via:</SAMP> HTTP header
+by the proxy. Its intended use is to control the flow of of proxy
+requests along a chain of proxy servers.
+See RFC2068 (HTTP/1.1) for an explanation of <SAMP>Via:</SAMP> header lines.<UL>
+<LI>If set to <EM>off</EM>, which is the default, no special
+processing is performed. If a request or reply contains a <SAMP>Via:</SAMP> header,
+it is passed through unchanged.
+<LI>If set to <EM>on</EM>, each request and reply will get a <SAMP>Via:</SAMP> header
+line added for the current host.
+<LI>If set to <EM>full</EM>, each generated <SAMP>Via:</SAMP> header line will
+additionally have the Apache server version shown as a <SAMP>Via:</SAMP> comment field.
+<LI>If set to <EM>block</EM>, every proxy request will have all its
+<SAMP>Via:</SAMP> header lines removed. No new <SAMP>Via:</SAMP> header will be generated.
+</UL>
 
 <HR>
 
