@@ -380,8 +380,8 @@ static int  cgi_child(struct cgi_child_stuff *child_stuff,
             exit(0);
         }
 
-        rc = ap_create_process(&procnew, child_context, r->filename, args,
-                               env, procattr);
+        rc = ap_create_process(&procnew, r->filename, args,
+                               env, procattr, child_context);
     
         if (rc != APR_SUCCESS) {
             /* Bad things happened. Everyone should have cleaned up. */
@@ -394,7 +394,7 @@ static int  cgi_child(struct cgi_child_stuff *child_stuff,
              *       stages. ap_note_subprocess and free_proc need to be redone
              *       to make use of ap_proc_t instead of pid.
              */
-            ap_get_os_proc(procnew, &fred);
+            ap_get_os_proc(&fred, procnew);
             ap_note_subprocess(child_context, fred, kill_after_timeout);
 #endif
             if (script_in) {
