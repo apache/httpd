@@ -143,6 +143,7 @@ MaxRequestsPerChild 30
 #CacheMaxExpire 24
 #CacheLastModifiedFactor 0.1
 #CacheDefaultExpire 1
+#NoCache adomain.com anotherdomain.edu joes.garage.com
 
 # Listen: Allows you to bind Apache to specific IP addresses and/or
 # ports, in addition to the default. See also the VirtualHost command
