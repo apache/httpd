@@ -54,17 +54,22 @@ EXTRA_INCLUDES=
 # Makefile configuration (Shared Object support)
 #
 # There is experimental support for compiling Apache Modules as
-# shared objects. This feature can be enabled for each module
+# shared objects and loading them under runtime without
+# recompilation when the module mod_so is enabled (see below).
+# The shared object feature then can be enabled for each module
 # individually by replacing the `AddModule' command of the
 # corresponding module line below with `SharedModule' and
-# changing the filename extension from `.o' to `.so'.
+# changing the filename extension from `.o' to `.so'. 
 #
 # The Configure script currently has only limited built-in
 # knowledge on how to compile shared objects because this is
 # heavily platform-dependend. Currently only Linux, FreeBSD,
 # Solaris, SunOS and IRIX are supported out-of-the-box. For other
 # platforms where you want to use the `SharedModule' directive
-# you have to provide the appropriate flags here.
+# you first have to make sure it supports the dlopen() system
+# call and then you have to provide the appropriate compiler and
+# linker flags here to create the shared object files on your
+# particular platform.
 #
 #CFLAGS_SHLIB=
 #LDFLAGS_SHLIB=
