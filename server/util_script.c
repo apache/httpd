@@ -32,9 +32,9 @@
 #include "http_log.h"
 #include "http_core.h"
 #include "http_protocol.h"
-#include "http_request.h"	/* for sub_req_lookup_uri() */
+#include "http_request.h"       /* for sub_req_lookup_uri() */
 #include "util_script.h"
-#include "apr_date.h"		/* For apr_date_parse_http() */
+#include "apr_date.h"           /* For apr_date_parse_http() */
 #include "util_ebcdic.h"
 
 #ifdef OS2
@@ -88,27 +88,27 @@ AP_DECLARE(char **) ap_create_environment(apr_pool_t *p, apr_table_t *t)
 
     j = 0;
     if (!apr_table_get(t, "TZ")) {
-	tz = getenv("TZ");
-	if (tz != NULL) {
-	    env[j++] = apr_pstrcat(p, "TZ=", tz, NULL);
-	}
+        tz = getenv("TZ");
+        if (tz != NULL) {
+            env[j++] = apr_pstrcat(p, "TZ=", tz, NULL);
+        }
     }
     for (i = 0; i < env_arr->nelts; ++i) {
         if (!elts[i].key) {
-	    continue;
-	}
-	env[j] = apr_pstrcat(p, elts[i].key, "=", elts[i].val, NULL);
-	whack = env[j];
-	if (apr_isdigit(*whack)) {
-	    *whack++ = '_';
-	}
-	while (*whack != '=') {
-	    if (!apr_isalnum(*whack) && *whack != '_') {
-		*whack = '_';
-	    }
-	    ++whack;
-	}
-	++j;
+            continue;
+        }
+        env[j] = apr_pstrcat(p, elts[i].key, "=", elts[i].val, NULL);
+        whack = env[j];
+        if (apr_isdigit(*whack)) {
+            *whack++ = '_';
+        }
+        while (*whack != '=') {
+            if (!apr_isalnum(*whack) && *whack != '_') {
+                *whack = '_';
+            }
+            ++whack;
+        }
+        ++j;
     }
 
     env[j] = NULL;
@@ -137,10 +137,10 @@ AP_DECLARE(void) ap_add_common_vars(request_rec *r)
      * write directly into it)
      */
     if (apr_is_empty_table(r->subprocess_env)) {
-      e = r->subprocess_env;
+        e = r->subprocess_env;
     }
     else {
-      e = apr_table_make(r->pool, 25 + hdrs_arr->nelts);
+        e = apr_table_make(r->pool, 25 + hdrs_arr->nelts);
     }
 
     /* First, add environment vars from headers... this is as per
@@ -150,38 +150,38 @@ AP_DECLARE(void) ap_add_common_vars(request_rec *r)
 
     for (i = 0; i < hdrs_arr->nelts; ++i) {
         if (!hdrs[i].key) {
-	    continue;
-	}
+            continue;
+        }
 
-	/* A few headers are special cased --- Authorization to prevent
-	 * rogue scripts from capturing passwords; content-type and -length
-	 * for no particular reason.
-	 */
+        /* A few headers are special cased --- Authorization to prevent
+         * rogue scripts from capturing passwords; content-type and -length
+         * for no particular reason.
+         */
 
-	if (!strcasecmp(hdrs[i].key, "Content-type")) {
-	    apr_table_addn(e, "CONTENT_TYPE", hdrs[i].val);
-	}
-	else if (!strcasecmp(hdrs[i].key, "Content-length")) {
-	    apr_table_addn(e, "CONTENT_LENGTH", hdrs[i].val);
-	}
-	/*
-	 * You really don't want to disable this check, since it leaves you
-	 * wide open to CGIs stealing passwords and people viewing them
-	 * in the environment with "ps -e".  But, if you must...
-	 */
+        if (!strcasecmp(hdrs[i].key, "Content-type")) {
+            apr_table_addn(e, "CONTENT_TYPE", hdrs[i].val);
+        }
+        else if (!strcasecmp(hdrs[i].key, "Content-length")) {
+            apr_table_addn(e, "CONTENT_LENGTH", hdrs[i].val);
+        }
+        /*
+         * You really don't want to disable this check, since it leaves you
+         * wide open to CGIs stealing passwords and people viewing them
+         * in the environment with "ps -e".  But, if you must...
+         */
 #ifndef SECURITY_HOLE_PASS_AUTHORIZATION
-	else if (!strcasecmp(hdrs[i].key, "Authorization") 
-		 || !strcasecmp(hdrs[i].key, "Proxy-Authorization")) {
-	    continue;
-	}
+        else if (!strcasecmp(hdrs[i].key, "Authorization") 
+                 || !strcasecmp(hdrs[i].key, "Proxy-Authorization")) {
+            continue;
+        }
 #endif
-	else {
-	    apr_table_addn(e, http2env(r->pool, hdrs[i].key), hdrs[i].val);
-	}
+        else {
+            apr_table_addn(e, http2env(r->pool, hdrs[i].key), hdrs[i].val);
+        }
     }
 
     if (!(env_path = getenv("PATH"))) {
-	env_path = DEFAULT_PATH;
+        env_path = DEFAULT_PATH;
     }
     apr_table_addn(e, "PATH", apr_pstrdup(r->pool, env_path));
 
@@ -225,23 +225,23 @@ AP_DECLARE(void) ap_add_common_vars(request_rec *r)
     apr_table_addn(e, "SERVER_SOFTWARE", ap_get_server_version());
     apr_table_addn(e, "SERVER_NAME",
                    ap_escape_html(r->pool, ap_get_server_name(r)));
-    apr_table_addn(e, "SERVER_ADDR", r->connection->local_ip);	/* Apache */
+    apr_table_addn(e, "SERVER_ADDR", r->connection->local_ip);  /* Apache */
     apr_table_addn(e, "SERVER_PORT",
-		  apr_psprintf(r->pool, "%u", ap_get_server_port(r)));
+                  apr_psprintf(r->pool, "%u", ap_get_server_port(r)));
     host = ap_get_remote_host(c, r->per_dir_config, REMOTE_HOST, NULL);
     if (host) {
-	apr_table_addn(e, "REMOTE_HOST", host);
+        apr_table_addn(e, "REMOTE_HOST", host);
     }
     apr_table_addn(e, "REMOTE_ADDR", c->remote_ip);
-    apr_table_addn(e, "DOCUMENT_ROOT", ap_document_root(r));	/* Apache */
-    apr_table_addn(e, "SERVER_ADMIN", s->server_admin);	/* Apache */
-    apr_table_addn(e, "SCRIPT_FILENAME", r->filename);	/* Apache */
+    apr_table_addn(e, "DOCUMENT_ROOT", ap_document_root(r));    /* Apache */
+    apr_table_addn(e, "SERVER_ADMIN", s->server_admin); /* Apache */
+    apr_table_addn(e, "SCRIPT_FILENAME", r->filename);  /* Apache */
 
     rport = c->remote_addr->port;
     apr_table_addn(e, "REMOTE_PORT", apr_itoa(r->pool, rport));
 
     if (r->user) {
-	apr_table_addn(e, "REMOTE_USER", r->user);
+        apr_table_addn(e, "REMOTE_USER", r->user);
     }
     else if (r->prev) {
         request_rec *back = r->prev;
@@ -255,22 +255,22 @@ AP_DECLARE(void) ap_add_common_vars(request_rec *r)
         }
     }
     if (r->ap_auth_type) {
-	apr_table_addn(e, "AUTH_TYPE", r->ap_auth_type);
+        apr_table_addn(e, "AUTH_TYPE", r->ap_auth_type);
     }
     rem_logname = ap_get_remote_logname(r);
     if (rem_logname) {
-	apr_table_addn(e, "REMOTE_IDENT", apr_pstrdup(r->pool, rem_logname));
+        apr_table_addn(e, "REMOTE_IDENT", apr_pstrdup(r->pool, rem_logname));
     }
 
     /* Apache custom error responses. If we have redirected set two new vars */
 
     if (r->prev) {
         if (r->prev->args) {
-	    apr_table_addn(e, "REDIRECT_QUERY_STRING", r->prev->args);
-	}
-	if (r->prev->uri) {
-	    apr_table_addn(e, "REDIRECT_URL", r->prev->uri);
-	}
+            apr_table_addn(e, "REDIRECT_QUERY_STRING", r->prev->args);
+        }
+        if (r->prev->uri) {
+            apr_table_addn(e, "REDIRECT_URL", r->prev->uri);
+        }
     }
 
     if (e != r->subprocess_env) {
@@ -291,7 +291,7 @@ AP_DECLARE(int) ap_find_path_info(const char *uri, const char *path_info)
     while (lu-- && lp-- && uri[lu] == path_info[lp]);
 
     if (lu == -1) {
-	lu = 0;
+        lu = 0;
     }
 
     while (uri[lu] != '\0' && uri[lu] != '/') {
@@ -308,21 +308,21 @@ static char *original_uri(request_rec *r)
     char *first, *last;
 
     if (r->the_request == NULL) {
-	return (char *) apr_pcalloc(r->pool, 1);
+        return (char *) apr_pcalloc(r->pool, 1);
     }
 
-    first = r->the_request;	/* use the request-line */
+    first = r->the_request;     /* use the request-line */
 
     while (*first && !apr_isspace(*first)) {
-	++first;		/* skip over the method */
+        ++first;                /* skip over the method */
     }
     while (apr_isspace(*first)) {
-	++first;		/*   and the space(s)   */
+        ++first;                /*   and the space(s)   */
     }
 
     last = first;
     while (*last && !apr_isspace(*last)) {
-	++last;			/* end at next whitespace */
+        ++last;                 /* end at next whitespace */
     }
 
     return apr_pstrmemdup(r->pool, first, last - first);
@@ -345,44 +345,44 @@ AP_DECLARE(void) ap_add_cgi_vars(request_rec *r)
      */
 
     if (!strcmp(r->protocol, "INCLUDED")) {
-	apr_table_setn(e, "SCRIPT_NAME", r->uri);
-	if (r->path_info && *r->path_info) {
-	    apr_table_setn(e, "PATH_INFO", r->path_info);
-	}
+        apr_table_setn(e, "SCRIPT_NAME", r->uri);
+        if (r->path_info && *r->path_info) {
+            apr_table_setn(e, "PATH_INFO", r->path_info);
+        }
     }
     else if (!r->path_info || !*r->path_info) {
-	apr_table_setn(e, "SCRIPT_NAME", r->uri);
+        apr_table_setn(e, "SCRIPT_NAME", r->uri);
     }
     else {
-	int path_info_start = ap_find_path_info(r->uri, r->path_info);
+        int path_info_start = ap_find_path_info(r->uri, r->path_info);
 
-	apr_table_setn(e, "SCRIPT_NAME",
-		      apr_pstrndup(r->pool, r->uri, path_info_start));
+        apr_table_setn(e, "SCRIPT_NAME",
+                      apr_pstrndup(r->pool, r->uri, path_info_start));
 
-	apr_table_setn(e, "PATH_INFO", r->path_info);
+        apr_table_setn(e, "PATH_INFO", r->path_info);
     }
 
     if (r->path_info && r->path_info[0]) {
-	/*
-	 * To get PATH_TRANSLATED, treat PATH_INFO as a URI path.
-	 * Need to re-escape it for this, since the entire URI was
-	 * un-escaped before we determined where the PATH_INFO began.
-	 */
-	request_rec *pa_req;
+        /*
+         * To get PATH_TRANSLATED, treat PATH_INFO as a URI path.
+         * Need to re-escape it for this, since the entire URI was
+         * un-escaped before we determined where the PATH_INFO began.
+         */
+        request_rec *pa_req;
 
-	pa_req = ap_sub_req_lookup_uri(ap_escape_uri(r->pool, r->path_info), r,
+        pa_req = ap_sub_req_lookup_uri(ap_escape_uri(r->pool, r->path_info), r,
                                        NULL);
 
-	if (pa_req->filename) {
-	    char *pt = apr_pstrcat(r->pool, pa_req->filename, pa_req->path_info,
-				  NULL);
+        if (pa_req->filename) {
+            char *pt = apr_pstrcat(r->pool, pa_req->filename, pa_req->path_info,
+                                  NULL);
 #ifdef WIN32
-	    /* We need to make this a real Windows path name */
-	    apr_filepath_merge(&pt, "", pt, APR_FILEPATH_NATIVE, r->pool);
+            /* We need to make this a real Windows path name */
+            apr_filepath_merge(&pt, "", pt, APR_FILEPATH_NATIVE, r->pool);
 #endif
-	    apr_table_setn(e, "PATH_TRANSLATED", pt);
-	}
-	ap_destroy_sub_req(pa_req);
+            apr_table_setn(e, "PATH_TRANSLATED", pt);
+        }
+        ap_destroy_sub_req(pa_req);
     }
 }
 
@@ -394,8 +394,8 @@ static int set_cookie_doo_doo(void *v, const char *key, const char *val)
 }
 
 AP_DECLARE(int) ap_scan_script_header_err_core(request_rec *r, char *buffer,
-				       int (*getsfunc) (char *, int, void *),
-				       void *getsfunc_data)
+                                       int (*getsfunc) (char *, int, void *),
+                                       void *getsfunc_data)
 {
     char x[MAX_STRING_LEN];
     char *w, *l;
@@ -405,7 +405,7 @@ AP_DECLARE(int) ap_scan_script_header_err_core(request_rec *r, char *buffer,
     apr_table_t *cookie_table;
 
     if (buffer) {
-	*buffer = '\0';
+        *buffer = '\0';
     }
     w = buffer ? buffer : x;
 
@@ -423,156 +423,156 @@ AP_DECLARE(int) ap_scan_script_header_err_core(request_rec *r, char *buffer,
 
     while (1) {
 
-	if ((*getsfunc) (w, MAX_STRING_LEN - 1, getsfunc_data) == 0) {
-	    ap_log_rerror(APLOG_MARK, APLOG_ERR|APLOG_TOCLIENT, 0, r,
-			  "Premature end of script headers: %s", 
+        if ((*getsfunc) (w, MAX_STRING_LEN - 1, getsfunc_data) == 0) {
+            ap_log_rerror(APLOG_MARK, APLOG_ERR|APLOG_TOCLIENT, 0, r,
+                          "Premature end of script headers: %s", 
                           apr_filepath_name_get(r->filename));
-	    return HTTP_INTERNAL_SERVER_ERROR;
-	}
+            return HTTP_INTERNAL_SERVER_ERROR;
+        }
 
-	/* Delete terminal (CR?)LF */
+        /* Delete terminal (CR?)LF */
 
-	p = strlen(w);
-	     /* Indeed, the host's '\n':
-	        '\012' for UNIX; '\015' for MacOS; '\025' for OS/390
-	         -- whatever the script generates.
-	     */                                  
-	if (p > 0 && w[p - 1] == '\n') {
-	    if (p > 1 && w[p - 2] == CR) {
-		w[p - 2] = '\0';
-	    }
-	    else {
-		w[p - 1] = '\0';
-	    }
-	}
+        p = strlen(w);
+             /* Indeed, the host's '\n':
+                '\012' for UNIX; '\015' for MacOS; '\025' for OS/390
+                 -- whatever the script generates.
+             */                                  
+        if (p > 0 && w[p - 1] == '\n') {
+            if (p > 1 && w[p - 2] == CR) {
+                w[p - 2] = '\0';
+            }
+            else {
+                w[p - 1] = '\0';
+            }
+        }
 
-	/*
-	 * If we've finished reading the headers, check to make sure any
-	 * HTTP/1.1 conditions are met.  If so, we're done; normal processing
-	 * will handle the script's output.  If not, just return the error.
-	 * The appropriate thing to do would be to send the script process a
-	 * SIGPIPE to let it know we're ignoring it, close the channel to the
-	 * script process, and *then* return the failed-to-meet-condition
-	 * error.  Otherwise we'd be waiting for the script to finish
-	 * blithering before telling the client the output was no good.
-	 * However, we don't have the information to do that, so we have to
-	 * leave it to an upper layer.
-	 */
-	if (w[0] == '\0') {
-	    int cond_status = OK;
+        /*
+         * If we've finished reading the headers, check to make sure any
+         * HTTP/1.1 conditions are met.  If so, we're done; normal processing
+         * will handle the script's output.  If not, just return the error.
+         * The appropriate thing to do would be to send the script process a
+         * SIGPIPE to let it know we're ignoring it, close the channel to the
+         * script process, and *then* return the failed-to-meet-condition
+         * error.  Otherwise we'd be waiting for the script to finish
+         * blithering before telling the client the output was no good.
+         * However, we don't have the information to do that, so we have to
+         * leave it to an upper layer.
+         */
+        if (w[0] == '\0') {
+            int cond_status = OK;
 
-	    if ((cgi_status == HTTP_OK) && (r->method_number == M_GET)) {
-		cond_status = ap_meets_conditions(r);
-	    }
-	    apr_table_overlap(r->err_headers_out, merge,
-		APR_OVERLAP_TABLES_MERGE);
-	    if (!apr_is_empty_table(cookie_table)) {
-		/* the cookies have already been copied to the cookie_table */
-		apr_table_unset(r->err_headers_out, "Set-Cookie");
-		r->err_headers_out = apr_table_overlay(r->pool,
-		    r->err_headers_out, cookie_table);
-	    }
-	    return cond_status;
-	}
+            if ((cgi_status == HTTP_OK) && (r->method_number == M_GET)) {
+                cond_status = ap_meets_conditions(r);
+            }
+            apr_table_overlap(r->err_headers_out, merge,
+                APR_OVERLAP_TABLES_MERGE);
+            if (!apr_is_empty_table(cookie_table)) {
+                /* the cookies have already been copied to the cookie_table */
+                apr_table_unset(r->err_headers_out, "Set-Cookie");
+                r->err_headers_out = apr_table_overlay(r->pool,
+                    r->err_headers_out, cookie_table);
+            }
+            return cond_status;
+        }
 
-	/* if we see a bogus header don't ignore it. Shout and scream */
+        /* if we see a bogus header don't ignore it. Shout and scream */
 
 #if APR_CHARSET_EBCDIC
-	    /* Chances are that we received an ASCII header text instead of
-	     * the expected EBCDIC header lines. Try to auto-detect:
-	     */
-	if (!(l = strchr(w, ':'))) {
-	    int maybeASCII = 0, maybeEBCDIC = 0;
-	    unsigned char *cp, native;
+            /* Chances are that we received an ASCII header text instead of
+             * the expected EBCDIC header lines. Try to auto-detect:
+             */
+        if (!(l = strchr(w, ':'))) {
+            int maybeASCII = 0, maybeEBCDIC = 0;
+            unsigned char *cp, native;
             apr_size_t inbytes_left, outbytes_left;
 
-	    for (cp = w; *cp != '\0'; ++cp) {
+            for (cp = w; *cp != '\0'; ++cp) {
                 native = apr_xlate_conv_byte(ap_hdrs_from_ascii, *cp);
-		if (apr_isprint(*cp) && !apr_isprint(native))
-		    ++maybeEBCDIC;
-		if (!apr_isprint(*cp) && apr_isprint(native))
-		    ++maybeASCII;
+                if (apr_isprint(*cp) && !apr_isprint(native))
+                    ++maybeEBCDIC;
+                if (!apr_isprint(*cp) && apr_isprint(native))
+                    ++maybeASCII;
             }
-	    if (maybeASCII > maybeEBCDIC) {
-		ap_log_error(APLOG_MARK, APLOG_ERR, 0, r->server,
+            if (maybeASCII > maybeEBCDIC) {
+                ap_log_error(APLOG_MARK, APLOG_ERR, 0, r->server,
                              "CGI Interface Error: Script headers apparently ASCII: (CGI = %s)",
                              r->filename);
                 inbytes_left = outbytes_left = cp - w;
                 apr_xlate_conv_buffer(ap_hdrs_from_ascii,
                                       w, &inbytes_left, w, &outbytes_left);
-	    }
-	}
+            }
+        }
 #endif /*APR_CHARSET_EBCDIC*/
-	if (!(l = strchr(w, ':'))) {
-	    char malformed[(sizeof MALFORMED_MESSAGE) + 1
-			   + MALFORMED_HEADER_LENGTH_TO_SHOW];
+        if (!(l = strchr(w, ':'))) {
+            char malformed[(sizeof MALFORMED_MESSAGE) + 1
+                           + MALFORMED_HEADER_LENGTH_TO_SHOW];
 
-	    strcpy(malformed, MALFORMED_MESSAGE);
-	    strncat(malformed, w, MALFORMED_HEADER_LENGTH_TO_SHOW);
+            strcpy(malformed, MALFORMED_MESSAGE);
+            strncat(malformed, w, MALFORMED_HEADER_LENGTH_TO_SHOW);
 
-	    if (!buffer) {
-		/* Soak up all the script output - may save an outright kill */
-	        while ((*getsfunc) (w, MAX_STRING_LEN - 1, getsfunc_data)) {
-		    continue;
-		}
-	    }
+            if (!buffer) {
+                /* Soak up all the script output - may save an outright kill */
+                while ((*getsfunc) (w, MAX_STRING_LEN - 1, getsfunc_data)) {
+                    continue;
+                }
+            }
 
-	    ap_log_rerror(APLOG_MARK, APLOG_ERR|APLOG_TOCLIENT, 0, r,
-			  "%s: %s", malformed, 
+            ap_log_rerror(APLOG_MARK, APLOG_ERR|APLOG_TOCLIENT, 0, r,
+                          "%s: %s", malformed, 
                           apr_filepath_name_get(r->filename));
-	    return HTTP_INTERNAL_SERVER_ERROR;
-	}
+            return HTTP_INTERNAL_SERVER_ERROR;
+        }
 
-	*l++ = '\0';
-	while (*l && apr_isspace(*l)) {
-	    ++l;
-	}
+        *l++ = '\0';
+        while (*l && apr_isspace(*l)) {
+            ++l;
+        }
 
-	if (!strcasecmp(w, "Content-type")) {
-	    char *tmp;
+        if (!strcasecmp(w, "Content-type")) {
+            char *tmp;
 
-	    /* Nuke trailing whitespace */
+            /* Nuke trailing whitespace */
 
-	    char *endp = l + strlen(l) - 1;
-	    while (endp > l && apr_isspace(*endp)) {
-		*endp-- = '\0';
-	    }
+            char *endp = l + strlen(l) - 1;
+            while (endp > l && apr_isspace(*endp)) {
+                *endp-- = '\0';
+            }
 
-	    tmp = apr_pstrdup(r->pool, l);
-	    ap_content_type_tolower(tmp);
-	    ap_set_content_type(r, tmp);
-	}
-	/*
-	 * If the script returned a specific status, that's what
-	 * we'll use - otherwise we assume 200 OK.
-	 */
-	else if (!strcasecmp(w, "Status")) {
-	    r->status = cgi_status = atoi(l);
-	    r->status_line = apr_pstrdup(r->pool, l);
-	}
-	else if (!strcasecmp(w, "Location")) {
-	    apr_table_set(r->headers_out, w, l);
-	}
-	else if (!strcasecmp(w, "Content-Length")) {
-	    apr_table_set(r->headers_out, w, l);
-	}
-	else if (!strcasecmp(w, "Transfer-Encoding")) {
-	    apr_table_set(r->headers_out, w, l);
-	}
-	/*
-	 * If the script gave us a Last-Modified header, we can't just
-	 * pass it on blindly because of restrictions on future values.
-	 */
-	else if (!strcasecmp(w, "Last-Modified")) {
-	    ap_update_mtime(r, apr_date_parse_http(l));
-	    ap_set_last_modified(r);
-	}
-	else if (!strcasecmp(w, "Set-Cookie")) {
-	    apr_table_add(cookie_table, w, l);
-	}
-	else {
-	    apr_table_add(merge, w, l);
-	}
+            tmp = apr_pstrdup(r->pool, l);
+            ap_content_type_tolower(tmp);
+            ap_set_content_type(r, tmp);
+        }
+        /*
+         * If the script returned a specific status, that's what
+         * we'll use - otherwise we assume 200 OK.
+         */
+        else if (!strcasecmp(w, "Status")) {
+            r->status = cgi_status = atoi(l);
+            r->status_line = apr_pstrdup(r->pool, l);
+        }
+        else if (!strcasecmp(w, "Location")) {
+            apr_table_set(r->headers_out, w, l);
+        }
+        else if (!strcasecmp(w, "Content-Length")) {
+            apr_table_set(r->headers_out, w, l);
+        }
+        else if (!strcasecmp(w, "Transfer-Encoding")) {
+            apr_table_set(r->headers_out, w, l);
+        }
+        /*
+         * If the script gave us a Last-Modified header, we can't just
+         * pass it on blindly because of restrictions on future values.
+         */
+        else if (!strcasecmp(w, "Last-Modified")) {
+            ap_update_mtime(r, apr_date_parse_http(l));
+            ap_set_last_modified(r);
+        }
+        else if (!strcasecmp(w, "Set-Cookie")) {
+            apr_table_add(cookie_table, w, l);
+        }
+        else {
+            apr_table_add(merge, w, l);
+        }
     }
 
     return OK;
@@ -584,7 +584,7 @@ static int getsfunc_FILE(char *buf, int len, void *f)
 }
 
 AP_DECLARE(int) ap_scan_script_header_err(request_rec *r, apr_file_t *f,
-					  char *buffer)
+                                          char *buffer)
 {
     return ap_scan_script_header_err_core(r, buffer, getsfunc_FILE, f);
 }
