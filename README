@@ -39,14 +39,14 @@
  - ssl_engine_pphrase.c .... pass-phrase handling
  - ssl_engine_rand.c ....... PRNG support
  - ssl_engine_vars.c ....... Variable Expansion support
- - ssl_expr.c .............. expression handling main source
- - ssl_expr.h .............. expression handling common header
+ # ssl_expr.c .............. expression handling main source
+ # ssl_expr.h .............. expression handling common header
  - ssl_expr_scan.c ......... expression scanner automaton (pre-generated)
  - ssl_expr_scan.l ......... expression scanner source
  - ssl_expr_parse.c ........ expression parser automaton  (pre-generated)
  - ssl_expr_parse.h ........ expression parser header     (pre-generated)
  - ssl_expr_parse.y ........ expression parser source
- - ssl_expr_eval.c ......... expression machine evaluation
+ # ssl_expr_eval.c ......... expression machine evaluation
  - ssl_scache.c ............ session cache abstraction layer
  - ssl_scache_dbm.c ........ session cache via DBM file
  - ssl_scache_shmcb.c ...... session cache via shared memory cyclic buffer
