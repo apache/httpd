@@ -1371,8 +1371,6 @@ long send_fd_length(FILE *f, request_rec *r, long length)
 	    o+=w;
         }
     }
-
-    if (length > 0) bflush(c->client);
     
     SET_BYTES_SENT(r);
     return total_bytes_sent;

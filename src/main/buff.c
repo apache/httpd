@@ -402,6 +402,37 @@ int blookc(char *buff, BUFF *fb)
 }
 
 /*
+ * Tests if there is data to be read.  Returns 0 if there is data,
+ * -1 otherwise.
+ */
+int
+btestread(BUFF *fb)
+{
+    fd_set fds;
+    struct timeval tv;
+    int rv;
+
+    /* the simple case, we've already got data in the buffer */
+    if( fb->incnt ) {
+	return( 0 );
+    }
+
+    /* otherwise see if the descriptor would block if we try to read it */
+    do {
+	FD_ZERO( &fds );
+	FD_SET( fb->fd_in, &fds );
+	tv.tv_sec = 0;
+	tv.tv_usec = 0;
+#ifdef HPUX
+	rv = select( fb->fd_in + 1, (int *)&fds, NULL, NULL, &tv );
+#else
+	rv = select( fb->fd_in + 1, &fds, NULL, NULL, &tv );
+#endif
+    } while( rv < 0 && errno == EINTR );
+    return( rv == 1 ? 0 : -1 );
+}
+
+/*
  * Skip data until a linefeed character is read
  * Returns 1 on success, 0 if no LF found, or -1 on error
  */
@@ -469,6 +500,34 @@ bfilbuf(BUFF *fb)
     else return buf[0];
 }
 
+
+/*
+ * When doing chunked encodings we really have to write everything in the
+ * chunk before proceeding onto anything else.  This routine either writes
+ * nbytes and returns 0 or returns -1 indicating a failure.
+ *
+ * This is *seriously broken* if used on a non-blocking fd.  It will poll.
+ */
+static int
+write_it_all( int fd, const void *buf, int nbyte ) {
+
+    int i;
+
+    while( nbyte > 0 ) {
+	i = write( fd, buf, nbyte );
+	if( i == -1 ) {
+	    if( errno != EAGAIN && errno != EINTR ) {
+		return( -1 );
+	    }
+	} else {
+	    nbyte -= i;
+	    buf = i + (const char *)buf;
+	}
+    }
+    return( 0 );
+}
+
+
 /*
  * A hook to write() that deals with chunking. This is really a protocol-
  * level issue, but we deal with it here because it's simpler; this is
@@ -476,18 +535,23 @@ bfilbuf(BUFF *fb)
  * 2.0, using something like sfio stacked disciplines or BSD's funopen().
  */
 int bcwrite(BUFF *fb, const void *buf, int nbyte) {
-    int r;
 
     if (fb->flags & B_CHUNK) {
 	char chunksize[16];	/* Big enough for practically anything */
 
 	ap_snprintf(chunksize, sizeof(chunksize), "%x\015\012", nbyte);
-	write(fb->fd, chunksize, strlen(chunksize));
+	if( write_it_all(fb->fd, chunksize, strlen(chunksize)) == -1 ) {
+	    return( -1 );
+	}
+	if( write_it_all(fb->fd, buf, nbyte) == -1 ) {
+	    return( -1 );
+	}
+	if( write_it_all(fb->fd, "\015\012", 2) == -1 ) {
+	    return( -1 );
+	}
+	return( nbyte );
     }
-    r = write(fb->fd, buf, nbyte);
-    if ((r > 0) && (fb->flags & B_CHUNK))
-	write(fb->fd, "\015\012", 2);
-    return r;
+    return( write(fb->fd, buf, nbyte) );
 }
 
 /*
@@ -573,7 +637,7 @@ bwrite(BUFF *fb, const void *buf, int nbyte)
 /* we have emptied the file buffer. Now try to write the data from the
  * original buffer until there is less than bufsiz left
  */
-    while (nbyte > fb->bufsiz)
+    while (nbyte >= fb->bufsiz)
     {
 	do i = bcwrite(fb, buf, nbyte);
 	while (i == -1 && errno == EINTR);
@@ -611,7 +675,7 @@ bwrite(BUFF *fb, const void *buf, int nbyte)
 int
 bflush(BUFF *fb)
 {
-    int i, j;
+    int i;
 
     if (!(fb->flags & B_WR) || (fb->flags & B_EOUT)) return 0;
 
@@ -620,7 +684,6 @@ bflush(BUFF *fb)
     while (fb->outcnt > 0)
     {
 /* the buffer must be full */
-	j = fb->outcnt;
 	do i = bcwrite(fb, fb->outbase, fb->outcnt);
 	while (i == -1 && errno == EINTR);
 	if (i > 0) fb->bytes_sent += i;

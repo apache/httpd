@@ -120,6 +120,7 @@ extern int bputs(const char *x, BUFF *fb);
 extern int bvputs(BUFF *fb, ...);
 extern int bprintf(BUFF *fb,const char *fmt,...);
 extern int vbprintf(BUFF *fb,const char *fmt,va_list vlist);
+extern int btestread(BUFF *fb);
 
 /* Internal routines */
 extern int bflsbuf(int c, BUFF *fb);
