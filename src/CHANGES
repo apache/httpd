@@ -18,6 +18,9 @@ Changes with Apache 1.3.5
 
   *) Fixed a few compiler nits.  [John Bley <jbb6@acpub.duke.edu>]
 
+  *) Added informative error messages for failed munmap() and fseek() calls
+     in http_core.c. [John Bley, Roy Fielding]
+
   *) Added some informative error messages for some failed malloc()
      calls. [John Bley <jbb6@acpub.duke.edu>, Jim Jagielski]
 

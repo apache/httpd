@@ -1070,7 +1070,7 @@ static const char *set_error_document(cmd_parms *cmd, core_dir_config *conf,
 
     if (error_number == 401 &&
 	line[0] != '/' && line[0] != '"') { /* Ignore it... */
-	ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_NOTICE, NULL,
+	ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_NOTICE, cmd->server,
 		     "cannot use a full URL in a 401 ErrorDocument "
 		     "directive --- ignoring!");
     }
@@ -2937,7 +2937,11 @@ static void mmap_cleanup(void *mmv)
 {
     struct mmap *mmd = mmv;
 
-    munmap(mmd->mm, mmd->length);
+    if (munmap(mmd->mm, mmd->length) == -1) {
+        ap_log_error(APLOG_MARK, APLOG_ERR, NULL,
+                     "Failed to munmap memory of length %ld at 0x%lx",
+                     (long) mmd->length, (long) mmd->mm);
+    }
 }
 #endif
 
@@ -3066,8 +3070,14 @@ static int default_handler(request_rec *r)
 	    else {
 		long offset, length;
 		while (ap_each_byterange(r, &offset, &length)) {
-		    fseek(f, offset, SEEK_SET);
-		    ap_send_fd_length(f, r, length);
+		    if (fseek(f, offset, SEEK_SET) == -1) {
+			ap_log_error(APLOG_MARK, APLOG_ERR, r->server,
+			      "Failed to fseek for byterange (%ld, %ld)",
+			      offset, length);
+		    }
+		    else {
+			ap_send_fd_length(f, r, length);
+		    }
 		}
 	    }
 	}
