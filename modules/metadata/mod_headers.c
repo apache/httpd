@@ -192,7 +192,7 @@ static const char *header_request_time(request_rec *r, char *a)
 static const char *header_request_env_var(request_rec *r, char *a)
 {
     const char *s = apr_table_get(r->subprocess_env,a);
-		 
+
     if (s)
         return s;
     else
@@ -237,7 +237,7 @@ static char *parse_misc_string(apr_pool_t *p, format_tag *tag, const char **sa)
 
     s = *sa;
     while (*s && *s != '%') {
-	s++;
+        s++;
     }
     /*
      * This might allocate a few chars extra if there's a backslash
@@ -248,39 +248,39 @@ static char *parse_misc_string(apr_pool_t *p, format_tag *tag, const char **sa)
     d = tag->arg;
     s = *sa;
     while (*s && *s != '%') {
-	if (*s != '\\') {
-	    *d++ = *s++;
-	}
-	else {
-	    s++;
-	    switch (*s) {
-	    case '\\':
-		*d++ = '\\';
-		s++;
-		break;
-	    case 'r':
-		*d++ = '\r';
-		s++;
-		break;
-	    case 'n':
-		*d++ = '\n';
-		s++;
-		break;
-	    case 't':	
-		*d++ = '\t';
-		s++;
-		break;
-	    default:
-		/* copy verbatim */
-		*d++ = '\\';
-		/*
-		 * Allow the loop to deal with this *s in the normal
-		 * fashion so that it handles end of string etc.
-		 * properly.
-		 */
-		break;
-	    }
-	}
+        if (*s != '\\') {
+            *d++ = *s++;
+        }
+        else {
+            s++;
+            switch (*s) {
+            case '\\':
+                *d++ = '\\';
+                s++;
+                break;
+            case 'r':
+                *d++ = '\r';
+                s++;
+                break;
+            case 'n':
+                *d++ = '\n';
+                s++;
+                break;
+            case 't':	
+                *d++ = '\t';
+                s++;
+                break;
+            default:
+                /* copy verbatim */
+                *d++ = '\\';
+                /*
+                 * Allow the loop to deal with this *s in the normal
+                 * fashion so that it handles end of string etc.
+                 * properly.
+                 */
+                break;
+            }
+        }
     }
     *d = '\0';
 
@@ -292,7 +292,7 @@ static char *parse_format_tag(apr_pool_t *p, format_tag *tag, const char **sa)
 { 
     const char *s = *sa;
     const char * (*tag_handler)(request_rec *,char *);
-    
+
     /* Handle string literal/conditionals */
     if (*s != '%') {
         return parse_misc_string(p, tag, sa);
@@ -410,14 +410,14 @@ static const char *header_inout_cmd(hdr_inout inout, cmd_parms *cmd, void *indir
         if (inout != hdr_out) {
             return "error: envclause (env=...) only valid on Header directive";
         }
-	if (strncasecmp(envclause, "env=", 4) != 0) {
-	    return "error: envclause should be in the form env=envar";
-	}
-	if ((envclause[4] == '\0')
-	    || ((envclause[4] == '!') && (envclause[5] == '\0'))) {
-	    return "error: missing environment variable name. envclause should be in the form env=envar ";
-	}
-	condition_var = apr_pstrdup(cmd->pool, &envclause[4]);
+        if (strncasecmp(envclause, "env=", 4) != 0) {
+            return "error: envclause should be in the form env=envar";
+        }
+        if ((envclause[4] == '\0')
+            || ((envclause[4] == '!') && (envclause[5] == '\0'))) {
+            return "error: missing environment variable name. envclause should be in the form env=envar ";
+        }
+        condition_var = apr_pstrdup(cmd->pool, &envclause[4]);
     }
     
     if ((colon = strchr(hdr, ':')))
@@ -549,7 +549,7 @@ static void ap_headers_insert_output_filter(request_rec *r)
                                                  &headers_module);
 
     if (serverconf->fixup_out->nelts || dirconf->fixup_out->nelts) {
-	ap_add_output_filter("FIXUP_HEADERS_OUT", NULL, r, r->connection);
+        ap_add_output_filter("FIXUP_HEADERS_OUT", NULL, r, r->connection);
     }
 }
 
@@ -562,7 +562,7 @@ static apr_status_t ap_headers_output_filter(ap_filter_t *f,
                                                  &headers_module);
 
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, f->r->server,
-		 "headers: ap_headers_output_filter()");
+                 "headers: ap_headers_output_filter()");
 
     /* do the fixup */
     do_headers_fixup(f->r, hdr_out, serverconf->fixup_out);
