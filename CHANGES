@@ -1,5 +1,8 @@
 Changes with Apache 2.0.35
 
+  *) Update the Redhat Layout to match Redhat version 7. PR BZ-7422
+     [Joe Orton] 
+
   *) add compat layer to support RSA SSLC 1.x and 2.x in mod_ssl
      [Jon Travis, John Barbee, William Rowe, Ryan Bloom, Doug MacEachern]
 

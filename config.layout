@@ -125,7 +125,7 @@
     proxycachedir: ${runtimedir}/proxy
 </Layout>
 
-#   RedHat 5.x layout
+#   RedHat 7.x layout
 <Layout RedHat>
     prefix:        /usr
     exec_prefix:   ${prefix}
@@ -134,7 +134,7 @@
     libexecdir:    ${prefix}/lib/apache
     mandir:        ${prefix}/man
     sysconfdir:    /etc/httpd/conf
-    datadir:       /home/httpd
+    datadir:       /var/www
     installbuilddir: ${datadir}/build
     errordir:      ${datadir}/error
     iconsdir:      ${datadir}/icons
