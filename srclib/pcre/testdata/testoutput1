@@ -1819,8 +1819,7 @@ No match
 No match
 
 /^a	b
-  
-    c/x
+      c/x
     abc
  0: abc
 
