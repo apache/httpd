@@ -2756,7 +2756,7 @@ static int core_input_filter(ap_filter_t *f, apr_bucket_brigade *b, ap_input_mod
     apr_bucket *e;
     apr_status_t rv;
     core_ctx_t *ctx = f->ctx;
-    char *buff, *pos;
+    const char *str;
     apr_size_t len;
 
     if (!ctx)
@@ -2769,10 +2769,12 @@ static int core_input_filter(ap_filter_t *f, apr_bucket_brigade *b, ap_input_mod
         APR_BRIGADE_INSERT_TAIL(ctx->b, e);
     }
 
+    /* ### AP_MODE_PEEK is a horrific name for this mode because we also
+     * eat any CRLFs that we see.  That's not the obvious intention of
+     * this mode.  Determine whether anyone actually uses this or not. */
     if (mode == AP_MODE_PEEK) {
         apr_bucket *e;
-        const char *str, *c;
-        apr_size_t length;
+        const char *c;
 
         /* The purpose of this loop is to ignore any CRLF (or LF) at the end
          * of a request.  Many browsers send extra lines at the end of POST
@@ -2790,13 +2792,13 @@ static int core_input_filter(ap_filter_t *f, apr_bucket_brigade *b, ap_input_mod
 
             e = APR_BRIGADE_FIRST(ctx->b);
 
-            rv = apr_bucket_read(e, &str, &length, APR_NONBLOCK_READ);
+            rv = apr_bucket_read(e, &str, &len, APR_NONBLOCK_READ);
 
             if (rv != APR_SUCCESS)
                 return rv;
 
             c = str;
-            while (c < str + length) {
+            while (c < str + len) {
                 if (*c == APR_ASCII_LF)
                     c++;
                 else if (*c == APR_ASCII_CR && *(c + 1) == APR_ASCII_LF)
@@ -2816,21 +2818,17 @@ static int core_input_filter(ap_filter_t *f, apr_bucket_brigade *b, ap_input_mod
      * do this, we loop through the entire brigade, until the socket is
      * exhausted, at which point, it will automagically remove itself from
      * the brigade.
+     * ### No one in their right mind should be calling this with -1.
+     *     This is just an all-around bad idea.  We may be better off by 
+     *     just closing the socket.  Determine whether anyone uses this.
      */
     if (*readbytes == -1) {
         apr_bucket *e;
         apr_off_t total;
-        const char *str;
-        apr_size_t len;
-        APR_BRIGADE_FOREACH(e, ctx->b) {
-            /* We don't care about these values.  We just want to force the
-             * lower level to just read it. */
-            apr_bucket_read(e, &str, &len, APR_BLOCK_READ);
-        }
-        APR_BRIGADE_CONCAT(b, ctx->b);
 
-        /* Force a recompute of the length */
-        apr_brigade_length(b, 1, &total);
+        /* Force a recompute of the length and force a read-all */
+        apr_brigade_length(ctx->b, 1, &total);
+        APR_BRIGADE_CONCAT(b, ctx->b);
         *readbytes = total;
         /* We have read until the brigade was empty, so we know that we 
          * must be EOS. */
@@ -2844,19 +2842,12 @@ static int core_input_filter(ap_filter_t *f, apr_bucket_brigade *b, ap_input_mod
         apr_bucket *e;
         apr_bucket_brigade *newbb;
 
-        newbb = NULL;
-
         apr_brigade_partition(ctx->b, *readbytes, &e);
         /* Must do split before CONCAT */
-        if (e != APR_BRIGADE_SENTINEL(ctx->b)) {
-            newbb = apr_brigade_split(ctx->b, e);
-        }
+        newbb = apr_brigade_split(ctx->b, e);
         APR_BRIGADE_CONCAT(b, ctx->b);
-
-        /* FIXME: Is this really needed?  Due to pointer use in sentinels,
-         * I think so. */
-        if (newbb)
-            APR_BRIGADE_CONCAT(ctx->b, newbb);
+        /* Take what was originally there and place it back on ctx->b */
+        APR_BRIGADE_CONCAT(ctx->b, newbb);
 
         apr_brigade_length(b, 1, &total);
         *readbytes = total;
@@ -2866,16 +2857,17 @@ static int core_input_filter(ap_filter_t *f, apr_bucket_brigade *b, ap_input_mod
 
     /* we are reading a single LF line, e.g. the HTTP headers */
     while (!APR_BRIGADE_EMPTY(ctx->b)) {
+        const char *pos;
+
         e = APR_BRIGADE_FIRST(ctx->b);
-        if ((rv = apr_bucket_read(e, (const char **)&buff, &len, 
-                                  mode)) != APR_SUCCESS) {
+        if ((rv = apr_bucket_read(e, &str, &len, mode)) != APR_SUCCESS) {
             return rv;
         }
 
-        pos = memchr(buff, APR_ASCII_LF, len);
+        pos = memchr(str, APR_ASCII_LF, len);
         /* We found a match. */
         if (pos != NULL) {
-            apr_bucket_split(e, pos - buff + 1);
+            apr_bucket_split(e, pos - str + 1);
             APR_BUCKET_REMOVE(e);
             APR_BRIGADE_INSERT_TAIL(b, e);
             return APR_SUCCESS;
