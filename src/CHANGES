@@ -1,5 +1,8 @@
 Changes with Apache 1.3.28
 
+  *) In configure always assume suexec-umask to be an octal value by
+     prepending a "0". PR 16984.  [André Malo]
+
   *) Fix typo in suexec -V output. PR 9034.
      [Youichirou Koga <y-koga@apache.or.jp>]
 

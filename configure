@@ -1000,7 +1000,7 @@ do
             ;;
         --suexec-umask=*)
             suexec_umask_val="$apc_optarg"
-            suexec_umask="-DSUEXEC_UMASK=$apc_optarg"
+            suexec_umask="-DSUEXEC_UMASK=0$apc_optarg"
             suexec_ok=1
             ;;
         --server-uid=*)
