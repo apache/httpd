@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/08/29 19:40:43 $]
+Last modified at [$Date: 2003/08/29 19:51:39 $]
 
 Release:
 
@@ -324,7 +324,7 @@ PATCHES TO PORT FROM 2.1
       token and to skip token parameters. PR 21523.
       Don't compress if there was *any* non-identity endoding applied before.
         modules/filters/mod_deflate.c: r1.37, r1.38
-      +1: nd
+      +1: nd, striker
 
     * Fix mod_log_config's %b format to write "-" in case of bytes_sent == 0.
         modules/loggers/mod_log_config.c: r1.106
@@ -362,7 +362,7 @@ PATCHES TO PORT FROM 2.1
         server/mpm/netware/prefork.c: r1.279
         server/mpm/netware/mpm_winnt.c: r1.300
         server/mpm/worker/worker.c: r1.136, r1.137
-      +1: jwoolley, bnicholes
+      +1: jwoolley, bnicholes, striker
 
     * mod_ssl: fix check for the plain-HTTP-request error
         modules/ssl/ssl_engine_io.c r1.111
