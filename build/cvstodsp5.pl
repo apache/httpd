@@ -8,7 +8,7 @@ sub tovc5 {
 
     if (m|.dsp$|) {
 	$tname = '.#' . $_;
-	print "Convert project " . $_ . " to CVS standard VC5 in " . $File::Find::dir . "\n"; 
+	print "Convert VC6 project " . $_ . " to VC5 in " . $File::Find::dir . "\n"; 
 	$srcfl = new IO::File $_, "r" || die;
 	$dstfl = new IO::File $tname, "w" || die;
 	while ($src = <$srcfl>) {
