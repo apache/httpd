@@ -407,12 +407,13 @@ static const char *log_request_duration(request_rec *r, char *a)
  */
 static const char *log_virtual_host(request_rec *r, char *a)
 {
-    return ap_get_server_name(r);
+    return r->server->server_hostname;
 }
 
 static const char *log_server_port(request_rec *r, char *a)
 {
-    return ap_psprintf(r->pool, "%u", ap_get_server_port(r));
+    return ap_psprintf(r->pool, "%u",
+	r->server->port ? r->server->port : ap_default_port(r));
 }
 
 static const char *log_child_pid(request_rec *r, char *a)

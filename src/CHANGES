@@ -1,5 +1,8 @@
 Changes with Apache 1.3.4
 
+  *) For %v log ServerName regardless of the UseCanonicalName
+     setting (similarly for %p).  [Dean Gaudet]
+
   *) Configure was initializing the variables $OSDIR, $INCDIR and $SHELL
      rather late (too late for some invocations of TestCompile).
      This improves the make environment available to TestCompile and
