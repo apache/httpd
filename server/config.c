@@ -874,8 +874,10 @@ static const char * ap_build_config_sub(ap_pool_t *p, ap_pool_t *temp_pool,
             }
             else {
                 (*current) = sub_tree;
-                (*curr_parent)->first_child = (*current);
-                (*current)->parent = (*curr_parent);
+                if (*curr_parent) {
+                    (*curr_parent)->first_child = (*current);
+                    (*current)->parent = (*curr_parent);
+                }
             }
             if (*current) {
                 while ((*current)->next != NULL) {
