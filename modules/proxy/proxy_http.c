@@ -1091,7 +1091,13 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
              */
             int status = r->status;
             r->status = HTTP_OK;
-            ap_discard_request_body(rp);
+            /* Discard body, if one is expected */
+            if ((status > 199) && /* not any 1xx response */
+                (status != HTTP_NO_CONTENT) && /* not 204 */
+                (status != HTTP_RESET_CONTENT) && /* not 205 */
+                (status != HTTP_NOT_MODIFIED)) { /* not 304 */
+               ap_discard_request_body(rp);
+           }
             return status;
         }
     } else 
