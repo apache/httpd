@@ -67,6 +67,10 @@
 #define modssl_set_cipher_list(ssl, l) \
    SSL_set_cipher_list(ssl, (char *)l)
 
+#ifndef PEM_F_DEF_CALLBACK
+#define PEM_F_DEF_CALLBACK PEM_F_DEF_CB
+#endif
+
 #if SSLC_VERSION < 0x2000
 
 #define X509_STORE_CTX_set_depth(st, d)    
