@@ -181,6 +181,12 @@ Server on HPUX</page>
   <modulefile>perchild.xml</modulefile>
   <modulefile>prefork.xml</modulefile>
   <modulefile>worker.xml</modulefile>
+
+  <modulefile>obs_mod_access.xml</modulefile>
+  <modulefile>obs_mod_auth.xml</modulefile>
+  <modulefile>obs_mod_auth_anon.xml</modulefile>
+  <modulefile>obs_mod_auth_dbm.xml</modulefile>
+  <modulefile>obs_mod_auth_digest.xml</modulefile>
 </modulefilelist>
 </category>
 
