@@ -71,6 +71,7 @@ extern "C" {
 #endif
 
 #include "mpm_default.h"	/* For HARD_.*_LIMIT */
+#include "apr_thread_proc.h"
 
 /*The optimized timeout code only works if we're not using a scoreboard file*/
 #if defined(AP_USE_MEM_BASED_SCOREBOARD)
