@@ -63,6 +63,7 @@
 #include "apr_lib.h"
 
 #define APR_WANT_STDIO
+#define APR_WANT_STRFUNC
 #include "apr_want.h"
 
 #define CORE_PRIVATE
