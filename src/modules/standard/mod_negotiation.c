@@ -2064,7 +2064,7 @@ static int handle_map_file(request_rec *r)
      * HTTP/1.0, we can't allow caching at all. NB that we merge the
      * header in case some other module negotiates on something else.
      */
-    if (!do_cache_negotiated_docs(r->server) && (r->proto_num < 1001)) {
+    if (!do_cache_negotiated_docs(r->server) && (r->proto_num < HTTP_VERSION(1,1))) {
         r->no_cache = 1;
     }
 
@@ -2170,7 +2170,7 @@ static int handle_multi(request_rec *r)
 
     /* Otherwise, use it. */
 
-    if ((!do_cache_negotiated_docs(r->server) && (r->proto_num < 1001))
+    if ((!do_cache_negotiated_docs(r->server) && (r->proto_num < HTTP_VERSION(1,1)))
         && neg->count_multiviews_variants != 1) {
         r->no_cache = 1;
     }
