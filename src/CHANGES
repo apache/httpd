@@ -1,5 +1,9 @@
 Changes with Apache 1.3.28
 
+  *) mod_rewrite: Allow "RewriteEngine Off" even if no
+     "Options FollowSymlinks" (or SymlinksIfOwnermatch) is set.
+     PR 12395.  [André Malo]
+
   *) Change the log messages for setsockopt(TCP_NODELAY) and
      getsockname() failures to log the client IP address and to
      change the log level to debug.  [Jeff Trawick]
