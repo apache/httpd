@@ -3358,12 +3358,12 @@ static void core_insert_filter(request_rec *r)
 						   &core_module); 
     const char *filter, *filters = conf->output_filters;
 
-    while (filter = ap_getword(r->pool, &filters, ';')) {
+    while ((filter = ap_getword(r->pool, &filters, ';'))) {
         ap_add_output_filter(filter, NULL, r, r->connection);
     }
 
     filters = conf->input_filters;
-    while (filter = ap_getword(r->pool, &filters, ';')) {
+    while ((filter = ap_getword(r->pool, &filters, ';'))) {
         ap_add_input_filter(filter, NULL, r, r->connection);
     }
 }
