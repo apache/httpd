@@ -135,7 +135,7 @@ LanguagePriority en fr de
 # require it to be present in the URL.  So "/icons" isn't aliased in this
 # example.
 
-#Alias /icons/ @@ServerRoot@@/icons/
+Alias /icons/ @@ServerRoot@@/icons/
 
 # ScriptAlias: This controls which directories contain server scripts.
 # Format: ScriptAlias fakename realname
