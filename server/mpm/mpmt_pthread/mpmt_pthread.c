@@ -72,6 +72,7 @@
 
 #include <netinet/tcp.h> 
 #include <pthread.h>
+#include <signal.h>
 
 /*
  * Actual definitions of config globals
