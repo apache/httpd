@@ -1,5 +1,9 @@
 Changes with Apache 2.0.36
 
+  *) Trigger an error when a LoadModule directive attempts to
+     load a module which is built-in.  This is a common error when
+     switching from a DSO build to a static build.  [Jeff Trawick]
+
   *) Change instdso.sh to use libtool --install everywhere and then
      clean up some stray files and symlinks that libtool leaves around
      on some platforms.  This gets subversion building properly since
