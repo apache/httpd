@@ -63,12 +63,12 @@
  * default. We still want the server to run on Win95/98 so use 
  * runtime checks before calling NT specific functions to verify we are 
  * really running on an NT system.
+ *
+ * Delegate windows include to the apr.h header, if USER or GDI declarations
+ * are required (for a window rather than console application), include
+ * windows.h prior to any other Apache header files.
  */
-#define _WIN32_WINNT 0x0400
 #include "apr_general.h"
-#include <windows.h>
-#include <winsock2.h>
-#include <mswsock.h>
 #include <process.h>
 #include <malloc.h>
 #include <io.h>
