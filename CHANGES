@@ -1,5 +1,8 @@
 Changes with Apache 2.0b1
 
+  *) Allow SuExec to be configured from the ./configure command line.
+     [Ryan Bloom]
+
   *) Update some of the docs in README and INSTALL to reflect some of
      the changes in Apache 2.0 [Cliff Woolley <cliffwoolley@yahoo.com>]
 

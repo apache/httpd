@@ -66,24 +66,24 @@
  *               runs.  This is the only user allowed to execute
  *               this program.
  */
-#ifndef HTTPD_USER
-#define HTTPD_USER "www"
+#ifndef AP_HTTPD_USER
+#define AP_HTTPD_USER "www"
 #endif
 
 /*
  * UID_MIN -- Define this as the lowest UID allowed to be a target user
  *            for suEXEC.  For most systems, 500 or 100 is common.
  */
-#ifndef UID_MIN
-#define UID_MIN 100
+#ifndef AP_UID_MIN
+#define AP_UID_MIN 100
 #endif
 
 /*
  * GID_MIN -- Define this as the lowest GID allowed to be a target group
  *            for suEXEC.  For most systems, 100 is common.
  */
-#ifndef GID_MIN
-#define GID_MIN 100
+#ifndef AP_GID_MIN
+#define AP_GID_MIN 100
 #endif
 
 /*
@@ -107,8 +107,8 @@
  *                   See the suEXEC documentation for more detailed
  *                   information.
  */
-#ifndef USERDIR_SUFFIX
-#define USERDIR_SUFFIX "public_html"
+#ifndef AP_USERDIR_SUFFIX
+#define AP_USERDIR_SUFFIX "public_html"
 #endif
 
 /*
@@ -116,8 +116,8 @@
  *             transactions and errors logged for auditing and
  *             debugging purposes.
  */
-#ifndef LOG_EXEC
-#define LOG_EXEC "/usr/local/apache/logs/cgi.log"	/* Need me? */
+#ifndef AP_LOG_EXEC
+#define AP_LOG_EXEC "/usr/local/apache/logs/cgi.log"	/* Need me? */
 #endif
 
 /*
@@ -125,16 +125,16 @@
  *             will be the only hierarchy (aside from UserDirs)
  *             that can be used for suEXEC behavior.
  */
-#ifndef DOC_ROOT
-#define DOC_ROOT "/usr/local/apache/htdocs"
+#ifndef AP_DOC_ROOT
+#define AP_DOC_ROOT "/usr/local/apache/htdocs"
 #endif
 
 /*
  * SAFE_PATH -- Define a safe PATH environment to pass to CGI executables.
  *
  */
-#ifndef SAFE_PATH
-#define SAFE_PATH "/usr/local/bin:/usr/bin:/bin"
+#ifndef AP_SAFE_PATH
+#define AP_SAFE_PATH "/usr/local/bin:/usr/bin:/bin"
 #endif
 
 #endif /* _SUEXEC_H */
