@@ -61,8 +61,8 @@ content-type</td></tr>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_actions</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>The <code>virtual</code> modifier was introduced in Apache
-2.1</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>The <code>virtual</code> modifier and handler passing were
+introduced in Apache 2.1</td></tr>
 </table>
     <p>This directive adds an action, which will activate
     <var>cgi-script</var> when <var>action-type</var> is triggered by the
@@ -70,8 +70,9 @@ content-type</td></tr>
     that has been designated as a CGI script using <code class="directive"><a href="../mod/mod_alias.html#scriptalias">ScriptAlias</a></code> or <code class="directive"><a href="../mod/mod_mime.html#addhandler">AddHandler</a></code>.  The
     <var>action-type</var> can be either a <a href="../handler.html">handler</a> or a MIME content type. It
     sends the URL and file path of the requested document using the
-    standard CGI PATH_INFO and PATH_TRANSLATED environment
-    variables.</p>
+    standard CGI <code>PATH_INFO</code> and <code>PATH_TRANSLATED</code>
+    environment variables. The handler used for the particular request is
+    passed using the <code>REDIRECT_HANDLER</code> variable.</p>
 
     <div class="example"><h3>Examples</h3><p><code>
       # Requests for files of a particular type:<br />

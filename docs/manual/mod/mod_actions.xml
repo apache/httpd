@@ -36,8 +36,8 @@ content-type</description>
 <context>directory</context><context>.htaccess</context>
 </contextlist>
 <override>FileInfo</override>
-<compatibility>The <code>virtual</code> modifier was introduced in Apache
-2.1</compatibility>
+<compatibility>The <code>virtual</code> modifier and handler passing were
+introduced in Apache 2.1</compatibility>
 
 <usage>
     <p>This directive adds an action, which will activate
@@ -49,8 +49,9 @@ content-type</description>
     <var>action-type</var> can be either a <a
     href="../handler.html">handler</a> or a MIME content type. It
     sends the URL and file path of the requested document using the
-    standard CGI PATH_INFO and PATH_TRANSLATED environment
-    variables.</p>
+    standard CGI <code>PATH_INFO</code> and <code>PATH_TRANSLATED</code>
+    environment variables. The handler used for the particular request is
+    passed using the <code>REDIRECT_HANDLER</code> variable.</p>
 
     <example><title>Examples</title>
       # Requests for files of a particular type:<br />
