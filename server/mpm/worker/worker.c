@@ -1551,17 +1551,17 @@ static int worker_pre_config(apr_pool_t *pconf, apr_pool_t *plog,
             }
         }
         else if (!max_clients
-                && strncasecmp(pdir->directive, "MaxClients", 10) == 0) {
+                 && strncasecmp(pdir->directive, "MaxClients", 10) == 0) {
             max_clients = pdir;
         }
     }
 
     debug = ap_exists_config_define("DEBUG");
 
-    if (debug)
+    if (debug) {
         no_detach = one_process = 1;
-    else
-    {
+    }
+    else {
         one_process = ap_exists_config_define("ONE_PROCESS");
         no_detach = ap_exists_config_define("NO_DETACH");
     }
@@ -1570,8 +1570,9 @@ static int worker_pre_config(apr_pool_t *pconf, apr_pool_t *plog,
     if (restart_num++ == 1) {
         is_graceful = 0;
 
-        if (!one_process && !no_detach) {
-            rv = apr_proc_detach();
+        if (!one_process) {
+            rv = apr_proc_detach(no_detach ? APR_PROC_DETACH_FOREGROUND
+                                           : APR_PROC_DETACH_DAEMONIZE);
             if (rv != APR_SUCCESS) {
                 ap_log_error(APLOG_MARK, APLOG_CRIT, rv, NULL,
                              "apr_proc_detach failed");
