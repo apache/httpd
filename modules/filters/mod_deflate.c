@@ -350,19 +350,9 @@ static apr_status_t deflate_out_filter(ap_filter_t *f,
             }
         }
 
-        /* Deflating a zero-length response would make it longer; the
-         * proxy may pass through an empty response for a 304 too.
-         * So we just need to fix up the headers as if we had a body.
-         */
-        if (APR_BUCKET_IS_EOS(APR_BRIGADE_FIRST(bb))) {
-            if (!encoding || !strcasecmp(encoding, "identity")) {
-                apr_table_set(r->headers_out, "Content-Encoding", "gzip");
-            }
-            else {
-                apr_table_merge(r->headers_out, "Content-Encoding", "gzip");
-            }
-            apr_table_unset(r->headers_out, "Content-Length");
-
+        /* For a 304 or 204 response there is no entity included in
+         * the response and hence nothing to deflate. */
+        if (r->status == HTTP_NOT_MODIFIED || r->status == HTTP_NO_CONTENT) {
             ap_remove_output_filter(f);
             return ap_pass_brigade(f->next, bb);
         }
