@@ -97,7 +97,7 @@
  *   only an issue for loopback usage
  */
 
-#define VERSION "1.3a"
+#define VERSION "1.3b"
 
 /*  -------------------------------------------------------------------- */
 
