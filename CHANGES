@@ -2,6 +2,16 @@ Changes with Apache 2.1.3
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) Add support for use of an external PCRE library; pass the
+     --with-pcre flag to configure.  PR 27550.  [Joe Orton,
+     Andres Salomon <dilinger voxel.net>]
+
+  *) Renamed regex interfaces to be namespace-safe, and moved from
+     pcreposix.h header to ap_regex.h: regex_t->ap_regex_t,
+     regmatch_t->ap_regmatch_t; REG_*->AP_REG_*; functions
+     reg*->ap_reg*.  PR 27550.  [Andres Salomon <dilinger voxel.net>,
+     Joe Orton]
+
   *) Only recompile buildmark.c when we have to relink httpd.
      [Justin Erenkrantz]
 
