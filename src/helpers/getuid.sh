@@ -32,7 +32,7 @@ fi
 if AP_WHOAMI=`./src/helpers/PrintPath whoami` ; then
     AP_LOGNAME=`$AP_WHOAMI`
 else
-    if AP_LOGNAME=`who am i | sed -e 's/[ 	]*.*$//'` ; then
+    if AP_LOGNAME=`who am i | tail -1 | sed -e 's/[ 	]*.*$//'` ; then
 	:
     else
 	AP_LOGNAME=$LOGNAME
