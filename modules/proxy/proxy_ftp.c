@@ -135,7 +135,7 @@ int ap_proxy_ftp_canon(request_rec *r, char *url)
     else {
 	return DECLINED;
     }
-    def_port = ap_default_port_for_scheme("ftp");
+    def_port = apr_uri_default_port_for_scheme("ftp");
 
     ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r->server,
 		 "proxy: FTP: canonicalising URL %s", url);
@@ -289,9 +289,9 @@ apr_status_t ap_proxy_send_dir_filter(ap_filter_t *f, apr_bucket_brigade *in)
     if (HEADER == ctx->state) {
 
 	/* Save "scheme://site" prefix without password */
-	site = ap_unparse_uri_components(p, &f->r->parsed_uri, UNP_OMITPASSWORD|UNP_OMITPATHINFO);
+	site = apr_uri_unparse_components(p, &f->r->parsed_uri, UNP_OMITPASSWORD|UNP_OMITPATHINFO);
 	/* ... and path without query args */
-	path = ap_unparse_uri_components(p, &f->r->parsed_uri, UNP_OMITSITEPART|UNP_OMITQUERY);
+	path = apr_uri_unparse_components(p, &f->r->parsed_uri, UNP_OMITSITEPART|UNP_OMITQUERY);
 	(void)decodeenc(path);
 
 	/* Copy path, strip (all except the last) trailing slashes */
@@ -510,12 +510,12 @@ static int ftp_unauthorized (request_rec *r, int log_it)
     if (log_it)
 	ap_log_rerror(APLOG_MARK, APLOG_INFO|APLOG_NOERRNO, 0, r,
 		      "proxy: missing or failed auth to %s",
-		      ap_unparse_uri_components(r->pool,
+		      ap_uri_unparse_components(r->pool,
 		      &r->parsed_uri, UNP_OMITPATHINFO));
 
     apr_table_setn(r->err_headers_out, "WWW-Authenticate",
                   apr_pstrcat(r->pool, "Basic realm=\"",
-		  ap_unparse_uri_components(r->pool, &r->parsed_uri,
+		  ap_uri_unparse_components(r->pool, &r->parsed_uri,
 		    UNP_OMITPASSWORD|UNP_OMITPATHINFO),
 		    "\"", NULL));
 
@@ -602,7 +602,7 @@ int ap_proxy_ftp_handler(request_rec *r, proxy_server_conf *conf,
     connectname = r->parsed_uri.hostname;
     connectport = (r->parsed_uri.port != 0)
 	           ? r->parsed_uri.port
-	           : ap_default_port_for_request(r);
+	           : apr_uri_default_port_for_scheme("ftp");
     path = apr_pstrdup(p, r->parsed_uri.path);
     path = (path != NULL && path[0] != '\0') ? &path[1] : "";
 

@@ -90,6 +90,7 @@
 #include "apr_md5.h"
 #include "apr_pools.h"
 #include "apr_strings.h"
+#include "apr_uri.h"
 
 #include "httpd.h"
 #include "http_config.h"
@@ -103,7 +104,6 @@
 #include "http_connection.h"
 #include "util_filter.h"
 #include "util_date.h"
-#include "util_uri.h"
 #include "mod_core.h"
 
 
