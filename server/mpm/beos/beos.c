@@ -66,6 +66,11 @@
  
 #define CORE_PRIVATE 
  
+#include <kernel/OS.h>
+#include <unistd.h>
+#include <sys/socket.h>
+#include <signal.h>
+
 #include "apr_strings.h"
 #include "apr_portable.h"
 #include "httpd.h" 
@@ -78,13 +83,10 @@
 #include "beosd.h"
 #include "ap_listen.h"
 #include "scoreboard.h" 
-#include <kernel/OS.h>
 #include "mpm_common.h"
 #include "mpm.h"
 #include "mpm_default.h"
-#include <unistd.h>
-#include <sys/socket.h>
-#include <signal.h>
+#include "apr_thread_mutex.h"
 
 extern int _kset_fd_limit_(int num);
 
@@ -129,7 +131,7 @@ static int max_spare_threads=0;
 static int ap_thread_limit=0;
 static int num_listening_sockets = 0;
 static apr_socket_t ** listening_sockets;
-apr_lock_t *accept_mutex = NULL;
+apr_thread_mutex_t *accept_mutex = NULL;
 
 static apr_pool_t *pconf;		/* Pool for config stuff */
 static apr_pool_t *pchild;		/* Pool for httpd child stuff */
@@ -138,7 +140,7 @@ static int server_pid;
 
 /* Keep track of the number of worker threads currently active */
 static int worker_thread_count;
-apr_lock_t *worker_thread_count_mutex;
+apr_thread_mutex_t *worker_thread_count_mutex;
 
 /* The structure used to pass unique initialization info to each thread */
 typedef struct {
@@ -344,7 +346,9 @@ static void process_socket(apr_pool_t *p, apr_socket_t *sock,
     }
 
     ap_create_sb_handle(&sbh, p, 0, my_child_num);
-    current_conn = ap_run_create_connection(p, ap_server_conf, sock, conn_id, sbh);
+    current_conn = ap_run_create_connection(p, ap_server_conf,
+                                            sock, conn_id, sbh,
+                                            bucket_alloc);
 
     if (current_conn) {
         ap_process_connection(current_conn, sock);
@@ -380,13 +384,13 @@ static int32 worker_thread(void * dummy)
 
     apr_allocator_create(&allocator);
     apr_pool_create_ex(&ptrans, tpool, NULL, allocator);
-    apr_allocator_set_owner(ptrans);
+    apr_allocator_set_owner(allocator, ptrans);
 
     apr_pool_tag(ptrans, "transaction");
 
-    apr_lock_acquire(worker_thread_count_mutex);
+    apr_thread_mutex_lock(worker_thread_count_mutex);
     worker_thread_count++;
-    apr_lock_release(worker_thread_count_mutex);
+    apr_thread_mutex_unlock(worker_thread_count_mutex);
 
     (void) ap_update_child_status_from_indexes(0, child_slot, SERVER_STARTING,
                                                (request_rec*)NULL);
@@ -410,7 +414,7 @@ static int32 worker_thread(void * dummy)
         (void) ap_update_child_status_from_indexes(0, child_slot, SERVER_READY,
                                                    (request_rec*)NULL);
 
-        apr_lock_acquire(accept_mutex);
+        apr_thread_mutex_lock(accept_mutex);
 
         while (!this_worker_should_exit) {
             apr_int16_t event;
@@ -479,7 +483,7 @@ static int32 worker_thread(void * dummy)
         if (!this_worker_should_exit) {
             rv = apr_accept(&csd, sd, ptrans);
 
-            apr_lock_release(accept_mutex);
+            apr_thread_mutex_unlock(accept_mutex);
             if (rv != APR_SUCCESS) {
                 ap_log_error(APLOG_MARK, APLOG_ERR, rv, ap_server_conf,
                   "apr_accept");
@@ -489,7 +493,7 @@ static int32 worker_thread(void * dummy)
             }
         }
         else {
-            apr_lock_release(accept_mutex);
+            apr_thread_mutex_unlock(accept_mutex);
             break;
         }
         apr_pool_clear(ptrans);
@@ -499,12 +503,12 @@ static int32 worker_thread(void * dummy)
 
     apr_bucket_alloc_destroy(bucket_alloc);
 
-ap_log_error(APLOG_MARK, APLOG_NOTICE | APLOG_NOERRNO, 0, NULL,
-             "worker_thread %ld exiting", find_thread(NULL));
+    ap_log_error(APLOG_MARK, APLOG_NOTICE | APLOG_NOERRNO, 0, NULL,
+                 "worker_thread %ld exiting", find_thread(NULL));
     
-    apr_lock_acquire(worker_thread_count_mutex);
+    apr_thread_mutex_lock(worker_thread_count_mutex);
     worker_thread_count--;
-    apr_lock_release(worker_thread_count_mutex);
+    apr_thread_mutex_unlock(worker_thread_count_mutex);
 
     return (0);
 }
@@ -817,8 +821,8 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
      * used to lock around select so we only have one thread
      * in select at a time
      */
-    if ((rv = apr_lock_create(&accept_mutex, APR_MUTEX, APR_CROSS_PROCESS,
-                              APR_LOCK_DEFAULT, NULL, pconf)) != APR_SUCCESS) {
+    rv = apr_thread_mutex_create(&accept_mutex, 0, pconf);
+    if (rv != APR_SUCCESS) {
         /* tsch tsch, can't have more than one thread in the accept loop
            at a time so we need to fall on our sword... */
         ap_log_error(APLOG_MARK, APLOG_EMERG, rv, s,
@@ -829,8 +833,8 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
     /* worker_thread_count_mutex
      * locks the worker_thread_count so we have ana ccurate count...
      */
-    if ((rv = apr_lock_create(&worker_thread_count_mutex, APR_MUTEX, APR_CROSS_PROCESS,
-                              APR_LOCK_DEFAULT, NULL, pconf)) != APR_SUCCESS) {
+    rv = apr_thread_mutex_create(&worker_thread_count_mutex, 0, pconf);
+    if (rv != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_EMERG, rv, s,
                      "Couldn't create worker thread count lock");
         return 1;
@@ -991,8 +995,8 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
     
     /* just before we go, tidy up the locks we've created to prevent a 
      * potential leak of semaphores... */
-    apr_lock_destroy(worker_thread_count_mutex);
-    apr_lock_destroy(accept_mutex);
+    apr_thread_mutex_destroy(worker_thread_count_mutex);
+    apr_thread_mutex_destroy(accept_mutex);
     
     return 0;
 }
