@@ -1,5 +1,10 @@
 Changes with Apache 2.0.31-dev
 
+  *) Clear the output socket descriptor in unixd_accept() to make sure
+     we don't supply a bogus socket to the caller if the accept fails.
+     This caused problems with the worker MPM, which tried to process
+     the returned socket if it was non-NULL.  [Brian Pane]
+
   *) Move a check for an empty brigade to the start of core input filter
      to avoid segfaults.  [Justin Erenkrantz, Jeff Trawick]
 
