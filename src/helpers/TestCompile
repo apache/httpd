@@ -58,7 +58,7 @@ esac
 
 case "$1" in
     "lib")
-	if [ "$2" = "" ]; then
+	if [ "x$2" = "x" ]; then
 	    exit
 	fi
 	TLIB="-l$2"
@@ -67,7 +67,7 @@ case "$1" in
 	else
 	    ERRDIR='2>/dev/null'
 	fi
-	if [ "$3" = "" ]; then
+	if [ "x$3" = "x" ]; then
 	    TARGET='dummy'
 	else
 	    TARGET='testfunc'
@@ -84,7 +84,7 @@ case "$1" in
 	TARGET='dummy'
 	;;
     "func")
-	if [ "$2" = "" ]; then
+	if [ "x$2" = "x" ]; then
 	    exit
 	fi
 	TLIB=""
@@ -102,7 +102,7 @@ int main(void) {
 EOF
 	;;
     "header")
-	if [ "$2" = "" ]; then
+	if [ "x$2" = "x" ]; then
 	    exit
 	fi
 	TLIB=""

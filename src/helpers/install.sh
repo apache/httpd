@@ -36,7 +36,7 @@ rmcmd="$rmprog -f"
 mvcmd="$mvprog"
 src=""
 dst=""
-while [ "$1" != "" ]; do
+while [ ".$1" != . ]; do
     case $1 in
         -c) instcmd="$cpprog"
             shift; continue
@@ -52,7 +52,7 @@ while [ "$1" != "" ]; do
             ;;
         -s) stripcmd="$stripprog"
             shift; continue;;
-        *)  if [ "$src" = "" ]; then
+        *)  if [ ".$src" = . ]; then
                 src=$1
             else
                 dst=$1
@@ -61,11 +61,11 @@ while [ "$1" != "" ]; do
             ;;
     esac
 done
-if [ "$src" = "" ]; then
+if [ ".$src" = . ]; then
      echo "install.sh: no input file specified"
      exit 1
 fi
-if [ "$dst" = "" ]; then
+if [ ".$dst" = . ]; then
      echo "install.sh: no destination specified"
      exit 1
 fi
@@ -87,10 +87,10 @@ dsttmp=$dstdir/#inst.$$#
 $instcmd $src $dsttmp
 
 #  And set any options; do chmod last to preserve setuid bits
-if [ "$chowncmd" != "" ]; then $chowncmd $dsttmp; fi
-if [ "$chgrpcmd" != "" ]; then $chgrpcmd $dsttmp; fi
-if [ "$stripcmd" != "" ]; then $stripcmd $dsttmp; fi
-if [ "$chmodcmd" != "" ]; then $chmodcmd $dsttmp; fi
+if [ ".$chowncmd" != . ]; then $chowncmd $dsttmp; fi
+if [ ".$chgrpcmd" != . ]; then $chgrpcmd $dsttmp; fi
+if [ ".$stripcmd" != . ]; then $stripcmd $dsttmp; fi
+if [ ".$chmodcmd" != . ]; then $chmodcmd $dsttmp; fi
 
 #  Now rename the file to the real destination.
 $rmcmd $dst

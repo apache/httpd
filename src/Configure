@@ -82,7 +82,7 @@ SUBDIRS="ap main modules"
 ## Now handle any arguments, which, for now, is -file
 ## to select an alternate Configuration file
 ##
-while [ "$1" != "" ]; do
+while [ "x$1" != "x" ]; do
   if [ "x$1" = "x-file" ] ; then
     shift 1; file=$1; shift 1
     if [ ! -r $file ]; then
@@ -143,7 +143,7 @@ sed 's/#.*//' $file | \
 using_shlib=`grep  '^SharedModule' $tmpfile >/dev/null && echo 1`
 
 # But perhaps later via apxs when just mod_so is compiled in!
-if [ "$using_shlib" = "" ]; then
+if [ "x$using_shlib" = "x" ]; then
     using_shlib=`grep  '^AddModule modules/standard/mod_so.o' $tmpfile >/dev/null && echo 1`
 fi
 
@@ -172,7 +172,7 @@ fi
 ## that the user was using the old default root directory
 ## and issue a notice about it.
 ##
-if [ "$file" != "Configuration.apaci" ]
+if [ $file != "Configuration.apaci" ]
 then
   if [ -d /usr/local/etc/httpd/ ]
   then
@@ -757,7 +757,7 @@ esac
 ####################################################################
 ## set this if we haven't
 ##
-if [ "${MAKE}" = "" ]; then
+if [ "x${MAKE}" = "x" ]; then
     MAKE='make'; export MAKE
 fi
 
@@ -780,7 +780,7 @@ echo >>Makefile.config "SHELL=$SHELL"
 ## And adjust/override WANTHSREGEX as needed
 ##
 if [ "$RULE_WANTHSREGEX" = "default" ]; then
-	if [ "$DEF_WANTHSREGEX" = "" ]; then
+	if [ "x$DEF_WANTHSREGEX" = "x" ]; then
 		RULE_WANTHSREGEX=yes
 	else
 		RULE_WANTHSREGEX=$DEF_WANTHSREGEX
@@ -801,8 +801,8 @@ fi
 # If $TCC is null, then no such line exists in Configuration
 #
 TCC=`egrep '^CC=' Makefile.config | tail -1 | awk -F= '{print $2}'`
-if [ "$TCC" = "" ]; then
-    if [ "$CC" = "" ]; then
+if [ "x$TCC" = "x" ]; then
+    if [ "x$CC" = "x" ]; then
 	# At this point, CC is not set in Configuration or above, so we
 	# try to find one
 	for compilers in "gcc" "cc" "acc" "c89"
@@ -813,7 +813,7 @@ if [ "$TCC" = "" ]; then
 		break
 	    fi
 	done
-	if [ "$COMPILER" = "" ]; then
+	if [ "x$COMPILER" = "x" ]; then
 	    echo "Error: could not find any of these C compilers"
 	    echo " anywhere in your PATH: $lookedfor"
 	    echo "Configure terminated"
@@ -831,7 +831,7 @@ fi
 ## If there was an entry for it, then set $CC for our own internal
 ## use.
 ##
-if [ "$TCC" = "" ]; then
+if [ "x$TCC" = "x" ]; then
     echo "CC=$CC" >> Makefile.config
 else
     CC=$TCC
@@ -841,12 +841,12 @@ fi
 ## Now check how we can _directly_ run the C pre-processor
 ##
 TCPP=`egrep '^CPP=' Makefile.config | tail -1 | awk -F= '{print $2}'`
-if [ "$TCPP" != "" ]; then
+if [ "x$TCPP" != "x" ]; then
     CPP=`CC=$CC CPP=$TCPP ./helpers/findcpp.sh`
 else
     CPP=`CC=$CC ./helpers/findcpp.sh`
 fi
-if [ "$TCPP" = "" ]; then
+if [ "x$TCPP" = "x" ]; then
     echo "CPP=$CPP" >> Makefile.config
 fi 
 echo " + setting C pre-processor to $CPP"
@@ -912,13 +912,13 @@ TCFLAGS_SHLIB=`egrep '^CFLAGS_SHLIB=' Makefile.config | tail -1 | awk -F= '{prin
 ####################################################################
 ## Handle TARGET name
 ##
-if [ "$TTARGET" = "" ]; then
+if [ "x$TTARGET" = "x" ]; then
     TARGET=httpd
     echo "TARGET=$TARGET" >> Makefile.config
 else
     TARGET=$TTARGET
 fi
-if [ "$TARGET" != "httpd" ]; then
+if [ "x$TARGET" != "xhttpd" ]; then
     echo " + using custom target name: $TARGET"
     CFLAGS="$CFLAGS -DTARGET=\\\"$TARGET\\\""
 fi
@@ -927,7 +927,7 @@ fi
 ## We adjust now CFLAGS_SHLIB, LDFLAGS_SHLIB and LDFLAGS_SHLIB_EXPORT as
 ## required.  For more platforms just add the required lines below.
 ##
-if [ "$using_shlib" = "1" ] ; then
+if [ "x$using_shlib" = "x1" ] ; then
     LD_SHLIB="ld"
     DEF_SHARED_CORE=no
     DEF_SHARED_CHAIN=no
@@ -956,7 +956,7 @@ if [ "$using_shlib" = "1" ] ; then
 	    CFLAGS_SHLIB="-fpic"
 	    LDFLAGS_SHLIB="-Bshareable"
 	    OBJFORMAT=`test -x /usr/bin/objformat && /usr/bin/objformat || echo aout` 
-	    if [ "$OBJFORMAT" = "elf" ]; then
+	    if [ "x$OBJFORMAT" = "xelf" ]; then
 		LDFLAGS_SHLIB_EXPORT="-Wl,-E"
 		SHLIB_SUFFIX_DEPTH=0
 	    else
@@ -1170,9 +1170,9 @@ if [ "$using_shlib" = "1" ] ; then
 		    break
 		fi
 	    done
-	    if [ "$PERL" != "" ]; then
+	    if [ "x$PERL" != "x" ]; then
 		#   cool, Perl is installed on this platform...
-		if [ "`$PERL -V:dlsrc 2>/dev/null | grep dlopen`" != "" ]; then
+		if [ "x`$PERL -V:dlsrc 2>/dev/null | grep dlopen`" != "x" ]; then
 		    #   ...and actually uses the dlopen-style interface,
 		    #   so we can guess the flags from its knowledge
 		    CFLAGS_SHLIB="`$PERL -V:cccdlflags | cut -d\' -f2`"
@@ -1203,9 +1203,9 @@ fi
 ## Check if we really have some information to compile
 ## the shared objects if SharedModule was used.
 ##
-if [ "$using_shlib" = "1" ] ; then
-    if [ "$TCFLAGS_SHLIB"  = "" -a "$CFLAGS_SHLIB"  = ""  -a \
-	 "$TLDFLAGS_SHLIB" = "" -a "$LDFLAGS_SHLIB" = "" ]; then
+if [ "x$using_shlib" = "x1" ] ; then
+    if [ "x$TCFLAGS_SHLIB"  = "x" -a "x$CFLAGS_SHLIB"  = "x"  -a \
+	 "x$TLDFLAGS_SHLIB" = "x" -a "x$LDFLAGS_SHLIB" = "x" ]; then
 	echo ""
 	echo "** FAILURE: Sorry, no shared object support available."
 	echo "** Either compile all modules statically (use AddModule instead"
@@ -1285,15 +1285,15 @@ esac
 ####################################################################
 ## OK, now we can write OPTIM
 ##
-if [ "$TOPTIM" = "" ]; then
+if [ "x$TOPTIM" = "x" ]; then
     echo "OPTIM=$OPTIM" >> Makefile.config
 fi
 
 ####################################################################
 ## OK, now handle RANLIB
 ##
-if [ "$RANLIB" = "" ]; then
-    if [ "$TRANLIB" != "" ]; then
+if [ "x$RANLIB" = "x" ]; then
+    if [ "x$TRANLIB" != "x" ]; then
 	RANLIB=$TRANLIB
     else
 	if ./helpers/PrintPath -s ranlib; then
@@ -1338,7 +1338,7 @@ if [ "$RULE_SOCKS4" = "yes" ]; then
     CFLAGS="$CFLAGS -DSOCKS -DSOCKS4"
     CFLAGS="$CFLAGS -Dconnect=Rconnect -Dselect=Rselect"
     CFLAGS="$CFLAGS -Dgethostbyname=Rgethostbyname"
-    if [ "`egrep '^EXTRA_L' Makefile.config | grep lsocks`" = "" ]; then
+    if [ "x`egrep '^EXTRA_L' Makefile.config | grep lsocks`" = "x" ]; then
 	LIBS="$LIBS -L/usr/local/lib -lsocks"
     fi
     case $PLAT in
@@ -1357,7 +1357,7 @@ if [ "$RULE_SOCKS5" = "yes" ]; then
     CFLAGS="$CFLAGS -DSOCKS -DSOCKS5"
     CFLAGS="$CFLAGS -Dconnect=SOCKSconnect -Dselect=SOCKSselect"
     CFLAGS="$CFLAGS -Dgethostbyname=SOCKSgethostbyname -Dclose=SOCKSclose"
-    if [ "`egrep '^EXTRA_L' Makefile.config | grep lsocks5`" = "" ]; then
+    if [ "x`egrep '^EXTRA_L' Makefile.config | grep lsocks5`" = "x" ]; then
 	LIBS="$LIBS -L/usr/local/lib -lsocks5"
     fi
     case $PLAT in
@@ -1464,9 +1464,9 @@ for modfile in $MODFILES ; do
 
 	ext=`echo $modfile | sed 's/^.*\.//'`
 	modbase=`echo $modfile | sed 's/\.[^.]*$//'`
-	if [ "$ext" = "$modfile" ]; then ext=o; modbase=$modfile; modfile=$modbase.o; fi
-	if [ "$ext" = "" ] ; then ext=o; modbase=$modfile; fi
-	if [ "$ext" = "c" ] ; then ext=o; fi
+	if [ "x$ext" = "x$modfile" ]; then ext=o; modbase=$modfile; modfile=$modbase.o; fi
+	if [ "x$ext" = "x" ] ; then ext=o; modbase=$modfile; fi
+	if [ "x$ext" = "xc" ] ; then ext=o; fi
 
 	# modbase is the path+filename without extension, ext is the
 	# extension given, or if none, o
@@ -1505,7 +1505,7 @@ for modfile in $MODFILES ; do
 		    ext=o
 		fi
 	fi
-	if [ "$modname" = "" ] ; then
+	if [ "x$modname" = "x" ] ; then
 		modname=`echo $modbase | sed 's/^.*\///' | \
 			sed 's/^mod_//' | sed 's/^lib//' | sed 's/$/_module/'`
 	fi
@@ -1533,7 +1533,7 @@ fi
 ## Now the SHARED_CHAIN stuff
 ##
 LIBS_SHLIB=''
-if [ "$using_shlib" = "1" ] ; then
+if [ "x$using_shlib" = "x1" ] ; then
     if [ "$RULE_SHARED_CHAIN" = "default" ] ; then
 	RULE_SHARED_CHAIN=$DEF_SHARED_CHAIN
     fi
@@ -1551,7 +1551,7 @@ fi
 ####################################################################
 ## Now the SHARED_CORE stuff
 ##
-if [ "$using_shlib" = "1" ] ; then
+if [ "x$using_shlib" = "x1" ] ; then
     if [ "$RULE_SHARED_CORE" = "default" ] ; then
 	RULE_SHARED_CORE=$DEF_SHARED_CORE
     fi
@@ -1588,17 +1588,17 @@ fi
 ## Set the value of the shared libary flags, if they aren't explicitly
 ## set in the configuration file
 ##
-if [ "$using_shlib" = "1" ] ; then
-    if [ "$TCFLAGS_SHLIB" = "" ]; then
+if [ "x$using_shlib" = "x1" ] ; then
+    if [ "x$TCFLAGS_SHLIB" = "x" ]; then
 	echo "CFLAGS_SHLIB=$CFLAGS_SHLIB -DSHARED_MODULE" >> Makefile.config
     fi
-    if [ "$TLD_SHLIB" = "" ]; then
+    if [ "x$TLD_SHLIB" = "x" ]; then
 	echo "LD_SHLIB=$LD_SHLIB" >> Makefile.config
     fi
-    if [ "$TLDFLAGS_SHLIB" = "" ]; then
+    if [ "x$TLDFLAGS_SHLIB" = "x" ]; then
 	echo "LDFLAGS_SHLIB=$LDFLAGS_SHLIB" >> Makefile.config
     fi
-    if [ "$TLDFLAGS_SHLIB_EXPORT" = "" ]; then
+    if [ "x$TLDFLAGS_SHLIB_EXPORT" = "x" ]; then
 	echo "LDFLAGS_SHLIB_EXPORT=$LDFLAGS_SHLIB_EXPORT" >> Makefile.config
     fi
 fi
@@ -1752,7 +1752,7 @@ echo "" >> Makefile
 ## it uses ugly looking built-in directory walk messages
 ## while we are already using our own messages
 ##
-if [ "`${MAKE} -v 2>/dev/null | grep 'GNU Make'`" = "" ]; then
+if [ "x`${MAKE} -v 2>/dev/null | grep 'GNU Make'`" = "x" ]; then
 	MFLAGS_STATIC=
 else
 	MFLAGS_STATIC=--no-print-directory
@@ -1775,7 +1775,7 @@ echo "RANLIB=$RANLIB" >>Makefile.config
 ## Some OS-related stuff for the DSO mechanism:
 ## Finding the vendor DSO functions
 ##
-if [ "$using_shlib" = "1" ] ; then
+if [ "x$using_shlib" = "x1" ] ; then
     DL_LIB=""
     case $PLAT in
 	*-ibm-aix* )
@@ -1800,7 +1800,7 @@ if [ "$using_shlib" = "1" ] ; then
 	    fi
 	    ;;
     esac
-    if [ "$DL_LIB" != "" ]; then
+    if [ "x$DL_LIB" != "x" ]; then
 	LIBS="$LIBS $DL_LIB"
 	echo " + using $DL_LIB for vendor DSO support"
     fi
@@ -1954,7 +1954,7 @@ EOF
 		} 
 		'`
 	    echo "OBJS=$OBJS" >> $moddir/Makefile
-	    if [ "$OBJS" != "" ]; then
+	    if [ "x$OBJS" != "x" ]; then
 		echo "LIB=lib$basedir.a" >> $moddir/Makefile
 	    else
 		#   essential!

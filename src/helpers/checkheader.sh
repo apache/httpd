@@ -10,10 +10,10 @@
 
 header=$1
 rc=1
-if [ "$CPP" = "" ]; then
+if [ ".$CPP" = . ]; then
     CPP='NOT-AVAILABLE'
 fi
-if [ "$CPP" != "NOT-AVAILABLE" ]; then
+if [ ".$CPP" != ".NOT-AVAILABLE" ]; then
     #   create a test C source
     cat >conftest.c <<EOF
 #include <$header>
@@ -21,7 +21,7 @@ Syntax Error
 EOF
     (eval "$CPP conftest.c >/dev/null") 2>conftest.out
     my_error=`grep -v '^ *+' conftest.out`
-    if [ "$my_error" = "" ]; then
+    if [ ".$my_error" = . ]; then
         rc=0
     fi
 else

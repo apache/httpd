@@ -16,7 +16,7 @@
 list=`
 IFS=:
 for entry in $*; do
-    if [ "$entry" != "" ]; then
+    if [ ".$entry" != . ]; then
         echo $entry
     fi
 done |\
