@@ -1071,12 +1071,12 @@ API_EXPORT(int) unescape_url(char *url)
 }
 
 API_EXPORT(char *) construct_server(pool *p, const char *hostname,
-				    unsigned port)
+				    unsigned port, const request_rec *r)
 {
     char portnum[22];
     /* Long enough, even if port > 16 bits for some reason */
 
-    if (port == DEFAULT_PORT)
+    if (is_default_port(port, r))
 	return pstrdup(p, hostname);
     else {
 	ap_snprintf(portnum, sizeof(portnum), "%u", port);

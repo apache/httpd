@@ -1225,7 +1225,7 @@ server_rec *init_server_config(pool *p)
 {
     server_rec *s = (server_rec *) pcalloc(p, sizeof(server_rec));
 
-    s->port = DEFAULT_PORT;
+    s->port = 0;
     s->server_admin = DEFAULT_ADMIN;
     s->server_hostname = NULL;
     s->error_fname = DEFAULT_ERRORLOG;

@@ -622,11 +622,11 @@ API_EXPORT(char *) construct_url(pool *p, const char *uri, const request_rec *r)
 			    : r->server->port;
 	host = r->hostname ? r->hostname : r->server->server_hostname;
     }
-    if (port == DEFAULT_PORT) {
-	return pstrcat(p, "http://", host, uri, NULL);
+    if (is_default_port(port, r)) {
+	return pstrcat(p, http_method(r), "://", host, uri, NULL);
     }
     ap_snprintf(portnum, sizeof(portnum), "%u", port);
-    return pstrcat(p, "http://", host, ":", portnum, uri, NULL);
+    return pstrcat(p, http_method(r), "://", host, ":", portnum, uri, NULL);
 }
 
 /*****************************************************************

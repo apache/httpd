@@ -625,14 +625,17 @@ void parse_uri(request_rec *r, const char *uri)
 
 const char *check_fulluri(request_rec *r, const char *uri)
 {
-    char *name, *host;
-    int i;
+    char *name, *host, *proto;
+    int i, plen;
     unsigned port;
 
     /* This routine parses full URLs, if they match the server */
-    if (strncasecmp(uri, "http://", 7))
+    proto = http_method(r);
+    plen = strlen(proto);
+    
+    if (strncasecmp(uri, proto, plen) || strncasecmp(uri + plen, "://", 3))
         return uri;
-    name = pstrdup(r->pool, uri + 7);
+    name = pstrdup(r->pool, uri + plen);
 
     /* Find the hostname, assuming a valid request */
     i = ind(name, '/');
@@ -643,7 +646,7 @@ const char *check_fulluri(request_rec *r, const char *uri)
     if (*name)
         port = atoi(name);
     else
-        port = 80;
+        port = default_port(r);
 
     /* Make sure ports patch */
     if (port != r->server->port)
@@ -651,7 +654,7 @@ const char *check_fulluri(request_rec *r, const char *uri)
 
     /* Save it for later use */
     r->hostname = pstrdup(r->pool, host);
-    r->hostlen = 7 + i;
+    r->hostlen = plen + 3 + i;
 
     /* The easy cases first */
     if (!strcasecmp(host, r->server->server_hostname)) {

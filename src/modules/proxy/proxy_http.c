@@ -181,7 +181,7 @@ int proxy_http_handler(request_rec *r, struct cache_req *c, char *url,
     if (urlptr == NULL)
 	return BAD_REQUEST;
     urlptr += 3;
-    destport = DEFAULT_PORT;
+    destport = DEFAULT_HTTP_PORT;
     strp = strchr(urlptr, '/');
     if (strp == NULL) {
 	desthost = pstrdup(p, urlptr);
@@ -280,7 +280,7 @@ int proxy_http_handler(request_rec *r, struct cache_req *c, char *url,
     bvputs(f, r->method, " ", proxyhost ? url : urlptr, " HTTP/1.0\015\012",
 	   NULL);
     bvputs(f, "Host: ", desthost, NULL);
-    if (destportstr != NULL && destport != DEFAULT_PORT)
+    if (destportstr != NULL && destport != DEFAULT_HTTP_PORT)
 	bvputs(f, ":", destportstr, "\015\012", NULL);
     else
 	bputs("\015\012", f);

@@ -923,12 +923,7 @@ static int hook_uri2file(request_rec *r)
 
     /* add the canonical URI of this URL */
     thisserver = r->server->server_hostname;
-#ifdef APACHE_SSL
-    if (((!r->connection->client->ssl) && (r->server->port == DEFAULT_PORT)) ||
-         ((r->connection->client->ssl) && (r->server->port == 443)))
-#else
-    if (r->server->port == DEFAULT_PORT)
-#endif 
+    if (is_default_port(r->server->port, r))
         thisport = "";
     else {
         ap_snprintf(buf, sizeof(buf), ":%u", r->server->port);
@@ -937,14 +932,9 @@ static int hook_uri2file(request_rec *r)
     thisurl = table_get(r->subprocess_env, ENVVAR_SCRIPT_URL);
 
     /* set the variable */
-#ifdef APACHE_SSL
     var = pstrcat(r->pool, http_method(r), "://", thisserver, thisport,
                   thisurl, NULL);
-#else
-    var = pstrcat(r->pool, "http://", thisserver, thisport, thisurl, NULL);
-#endif
     table_setn(r->subprocess_env, ENVVAR_SCRIPT_URI, var);
-
 
     /* if filename was not initially set,
      * we start with the requested URI
@@ -2108,11 +2098,7 @@ static void reduce_uri(request_rec *r)
         olduri = pstrdup(r->pool, r->filename); /* save for logging */
 
         /* cut the hostname and port out of the URI */
-#ifdef APACHE_SSL
         ap_cpystrn(buf, r->filename+strlen(http_method(r))+3, sizeof(buf));
-#else
-        ap_cpystrn(buf, r->filename+7, sizeof(buf));
-#endif
         hostp = buf;
         for (cp = hostp; *cp != '\0' && *cp != '/' && *cp != ':'; cp++)
             ;
@@ -2137,7 +2123,7 @@ static void reduce_uri(request_rec *r)
             ap_cpystrn(host, hostp, sizeof(host));
             *cp = '/';
             /* set port */
-            port = DEFAULT_PORT;
+            port = default_port(r);
             /* set remaining url */
             url = cp;
         }
@@ -2145,7 +2131,7 @@ static void reduce_uri(request_rec *r)
             /* set host */
             ap_cpystrn(host, hostp, sizeof(host));
             /* set port */
-            port = DEFAULT_PORT;
+            port = default_port(r);
             /* set remaining url */
             url = "/";
         }
@@ -2179,32 +2165,21 @@ static void fully_qualify_uri(request_rec *r)
           || (i > 8 && strncasecmp(r->filename, "https://", 8)  == 0)
           || (i > 9 && strncasecmp(r->filename, "gopher://", 9) == 0)
           || (i > 6 && strncasecmp(r->filename, "ftp://", 6)    == 0))) {
-#ifdef APACHE_SSL
+
         if (is_default_port(r->server->port,r))
-#else
-        if (r->server->port == DEFAULT_PORT)
-#endif
             port[0] = '\0';
         else 
             ap_snprintf(port, sizeof(port), ":%u", r->server->port);
+
         if (r->filename[0] == '/')
-#ifdef APACHE_SSL
             ap_snprintf(newuri, sizeof(newuri), "%s://%s%s%s",
                         http_method(r), r->server->server_hostname,
                         port, r->filename);
-#else
-            ap_snprintf(newuri, sizeof(newuri), "http://%s%s%s",
-                        r->server->server_hostname, port, r->filename);
-#endif
         else
-#ifdef APACHE_SSL
             ap_snprintf(newuri, sizeof(newuri), "%s://%s%s/%s",
                         http_method(r), r->server->server_hostname,
                         port, r->filename);
-#else
-            ap_snprintf(newuri, sizeof(newuri), "http://%s%s/%s",
-                        r->server->server_hostname, port, r->filename);
-#endif
+
         r->filename = pstrdup(r->pool, newuri);
     }
     return;

@@ -60,7 +60,7 @@ static struct proxy_services defports[] =
 {
     {"ftp", DEFAULT_FTP_PORT},
     {"gopher", DEFAULT_GOPHER_PORT},
-    {"http", DEFAULT_PORT},
+    {"http", DEFAULT_HTTP_PORT},
     {"nntp", DEFAULT_NNTP_PORT},
     {"wais", DEFAULT_WAIS_PORT},
     {"https", DEFAULT_HTTPS_PORT},
@@ -177,7 +177,7 @@ static int proxy_fixup(request_rec *r)
 
 /* canonicalise each specific scheme */
     if (strncmp(url, "http:", 5) == 0)
-	return proxy_http_canon(r, url + 5, "http", DEFAULT_PORT);
+	return proxy_http_canon(r, url + 5, "http", DEFAULT_HTTP_PORT);
     else if (strncmp(url, "ftp:", 4) == 0)
 	return proxy_ftp_canon(r, url + 4);
     else

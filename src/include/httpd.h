@@ -116,7 +116,11 @@
 
 /* -------------- Port number for server running standalone --------------- */
 
-#define DEFAULT_PORT 80
+#define DEFAULT_HTTP_PORT	80
+#define DEFAULT_HTTPS_PORT	443
+#define is_default_port(port,r)	((port) == default_port(r))
+#define http_method(r)	"http"
+#define	default_port(r)	DEFAULT_HTTP_PORT
 
 /* --------- Default user name and group name running standalone ---------- */
 /* --- These may be specified as numbers by placing a # before a number --- */
@@ -802,7 +806,7 @@ API_EXPORT(char *) os_escape_path(pool *p, const char *path, int partial);
 #define escape_uri(ppool,path) os_escape_path(ppool,path,1)
 API_EXPORT(char *) escape_html(pool *p, const char *s);
 API_EXPORT(char *) construct_server(pool *p, const char *hostname,
-				    unsigned port);
+				    unsigned port, const request_rec *r);
 API_EXPORT(char *) escape_shell_cmd(pool *p, const char *s);
 
 API_EXPORT(int) count_dirs(const char *path);
