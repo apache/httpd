@@ -168,11 +168,11 @@ static void *so_sconf_create(ap_context_t *p, server_rec *s)
  * This is called as a cleanup function from the core.
  */
 
-static void unload_module(moduleinfo *modi)
+static ap_status_t unload_module(moduleinfo *modi)
 {
     /* only unload if module information is still existing */
     if (modi->modp == NULL)
-        return;
+        return APR_SUCCESS;
 
     /* remove the module pointer from the core structure */
     ap_remove_loaded_module(modi->modp);
@@ -183,6 +183,7 @@ static void unload_module(moduleinfo *modi)
     /* destroy the module information */
     modi->modp = NULL;
     modi->name = NULL;
+    return APR_SUCCESS;
 }
 
 /* 
@@ -192,9 +193,10 @@ static void unload_module(moduleinfo *modi)
  * or include the filename in error message.
  */
 
-static void unload_file(void *handle)
+static ap_status_t unload_file(void *handle)
 {
     ap_os_dso_unload((ap_os_dso_handle_t)handle);
+    return APR_SUCCESS;
 }
 
 /* 
@@ -238,7 +240,7 @@ static const char *load_module(cmd_parms *cmd, void *dummy,
 			my_error ? my_error : "(reason unknown)",
 			NULL);
     }
-    ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, NULL,
+    ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, NULL,
 		"loaded module %s", modname);
 
     /*
@@ -274,7 +276,7 @@ static const char *load_module(cmd_parms *cmd, void *dummy,
      * shared object to be unloaded.
      */
     ap_register_cleanup(cmd->pool, modi, 
-		     (void (*)(void*))unload_module, ap_null_cleanup);
+		     (ap_status_t (*)(void*))unload_module, ap_null_cleanup);
 
     /* 
      * Finally we need to run the configuration process for the module
@@ -292,7 +294,7 @@ static const char *load_module(cmd_parms *cmd, void *dummy,
 static const char *load_file(cmd_parms *cmd, void *dummy, char *filename)
 {
     ap_os_dso_handle_t handle;
-    char *file;
+    const char *file;
 
     file = ap_server_root_relative(cmd->pool, filename);
     
@@ -304,7 +306,7 @@ static const char *load_file(cmd_parms *cmd, void *dummy, char *filename)
 			NULL);
     }
     
-    ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, NULL,
+    ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, NULL,
 		"loaded file %s", filename);
 
     ap_register_cleanup(cmd->pool, (void *)handle, unload_file, ap_null_cleanup);
@@ -338,23 +340,12 @@ static const command_rec so_cmds[] = {
 };
 
 module MODULE_VAR_EXPORT so_module = {
-   STANDARD_MODULE_STUFF,
-   NULL,			/* initializer */
+   STANDARD20_MODULE_STUFF,
    NULL,			/* create per-dir config */
    NULL,			/* merge per-dir config */
    so_sconf_create,		/* server config */
    NULL,			/* merge server config */
    so_cmds,			/* command ap_table_t */
    NULL,			/* handlers */
-   NULL,			/* filename translation */
-   NULL,			/* check_user_id */
-   NULL,			/* check auth */
-   NULL,			/* check access */
-   NULL,			/* type_checker */
-   NULL,			/* fixer_upper */
-   NULL,			/* logger */
-   NULL,			/* header parser */
-   NULL,			/* child_init */
-   NULL,			/* child_exit */
-   NULL				/* post read-request */
+   NULL				/* register hooks */
 };
