@@ -464,13 +464,13 @@ typedef int rlim_t;
 #ifndef __MACHTEN_68K__
 #define __MACHTEN_68K__
 #endif
-#define FLOCK_SERIALIZED_ACCEPT
+#define USE_FLOCK_SERIALIZED_ACCEPT
 #define NO_USE_SIGACTION
 #define USE_LONGJMP
 #undef NEED_STRDUP
 #else
 #define HAVE_SHMGET
-#define FCNTL_SERIALIZED_ACCEPT
+#define USE_FCNTL_SERIALIZED_ACCEPT
 #endif
 
 /* Convex OS v11 */
