@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/05/20 19:09:03 $]
+Last modified at [$Date: 2004/05/20 22:44:41 $]
 
 Release:
 
@@ -71,6 +71,17 @@ RELEASE SHOWSTOPPERS:
 PATCHES TO BACKPORT FROM 2.1
   [ please place file names and revisions from HEAD here, so it is easy to
     identify exactly what the proposed changes are! ]
+
+    *) Overhaul handling of LDAP error conditions, so that the util_ldap_*
+       functions leave the connections in a sane state after errors have
+       occurred.
+       include/util_ldap.h
+       modules/experimental/NWGNUauthldap
+       modules/experimental/NWGNUutilldap
+       modules/experimental/mod_auth_ldap.c
+       modules/experimental/util_ldap.c
+       PR 27748, 17274, 17599, 18661, 21787, 24595, 24683, 27134, 27271       
+       +1: minfrin
 
     *) RPM spec file changes: changed default dependancy to link to db4
        instead of db3. Fixed complaints about unpackaged files.
