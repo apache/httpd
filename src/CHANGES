@@ -1,5 +1,7 @@
 Changes with Apache 1.2
 
+  *) Add mod_example (illustration of API techniques).  [Ken Coar]
+
   *) Add macro for memmove to conf.h for SUNOS4. [Marc Slemko]
 
   *) Improve handling of directories when filenames have spaces in them.
