@@ -512,7 +512,7 @@ static int status_handler(request_rec *r)
                     int indx = (i * thread_limit) + j;
 
                     if (stat_buffer[indx] != '.') {
-                        ap_rprintf(r, "   %" APR_OS_PROC_T_FMT
+                        ap_rprintf(r, "   %" APR_PID_T_FMT
                                    " in state: %c ", pid_buffer[i],
                                    stat_buffer[indx]);
 
@@ -581,7 +581,7 @@ static int status_handler(request_rec *r)
                     else
                         ap_rprintf(r,
                                    "<b>Server %d-%d</b> (%"
-                                   APR_OS_PROC_T_FMT "): %d|%lu|%lu [",
+                                   APR_PID_T_FMT "): %d|%lu|%lu [",
                                    i, (int) ps_record.generation,
                                    ps_record.pid,
                                    (int)conn_lres, my_lres, lres);
@@ -664,7 +664,7 @@ static int status_handler(request_rec *r)
                     else
                         ap_rprintf(r,
                                    "<tr><td><b>%d-%d</b></td><td>%"
-                                   APR_OS_PROC_T_FMT
+                                   APR_PID_T_FMT
                                    "</td><td>%d/%lu/%lu",
                                    i, (int)ps_record.generation,
                                    ps_record.pid, (int)conn_lres,

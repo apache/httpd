@@ -262,7 +262,7 @@ int ap_process_child_status(apr_proc_t *pid, apr_exit_why_e why, int status)
         if (status == APEXIT_CHILDFATAL) {
             ap_log_error(APLOG_MARK, APLOG_ALERT|APLOG_NOERRNO,
                          0, ap_server_conf,
-                         "Child %" APR_OS_PROC_T_FMT
+                         "Child %" APR_PID_T_FMT
                          " returned a Fatal error..." APR_EOL_STR
                          "Apache is exiting!",
                          pid->pid);
