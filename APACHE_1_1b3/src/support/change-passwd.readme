@@ -1,0 +1,89 @@
+Subject: The form for change-passwd
+Newsgroups: comp.infosystems.www
+Organization: NCSA
+Summary: 
+Keywords: 
+
+
+I've gotten a number of requests for the form that corresponds to the
+change-passwd program that accidentally found itself in the NCSA httpd 1.0
+distribution.
+
+A brief introduction: change-passwd is a way for remote users to change
+their password for user authentication on your system without going through
+you. 
+
+To use this form, you must set up user authentication on your system
+(there's a short tutorial at
+http://wintermute.ncsa.uiuc.edu:8080/auth-tutorial/tutorial.html). You will
+want to leave the form unprotected, and the script protected with ``require
+valid-user'' so that any valid user may log in.
+
+Compile change-passwd with USER_FILE set to the location of the
+AuthUserFile, and WIZARD set to the user id you would like to use to perform
+administration (as the wizard, you can change other people's passwords, and
+add new users).
+
+To install the script, place the executable somewhere on your system,
+preferably not in DocumentRoot and not in cgi-bin. Let's say you put it in
+/foo/bar/change-passwd. Add a line to srm.conf which says:
+
+ScriptAlias /change-passwd /foo/bar/change-passwd
+
+A common setup would be to have the following as /foo/bar/.htaccess:
+
+AuthType Basic
+AuthName PasswordAdmin
+AuthUserFile /usr/local/httpd/conf/.htpasswd
+
+<Limit POST>
+require valid-user
+</Limit>
+
+
+At this point, you should try the form. If the change-passwd script core
+dumps, or Mosaic does not prompt you for a user name or password after you
+click on the submit button, you have not set up user authenitcation properly.
+
+
+--
+Rob McCool, robm@ncsa.uiuc.edu
+Software Development Group, National Center for Supercomputing Applications
+It was working ten minutes ago, I swear...
+<A HREF="http://hoohoo.ncsa.uiuc.edu/~robm/sg.html">A must see.</A>
+
+
+Here's the form:
+
+
+<TITLE>Change your password</TITLE>
+<H1>Change your password</H1>
+
+<FORM ACTION="/change-passwd" METHOD="POST">
+
+This is an HTML form used to change your password for HTTP user
+authentication on this system. <P>
+<HR>
+To use this form, you must know your user name on this system, and you must
+know your current password. <P>
+
+First, enter your user name below. If you are defined to be the wizard on
+this server, and wish to change or add a user, enter their name below. <P>
+
+User name: <P><INPUT TYPE="text" NAME="user"><P> 
+
+Now, enter what you want to change your password to. <P>
+
+New password: <P><INPUT
+TYPE="password" NAME="newpasswd1"><P> Re-type new password: <P><INPUT
+TYPE="password" NAME="newpasswd2"><P>
+
+When you click on the Change password button below, you will be asked to
+authenticate yourself. If you are changing your own password, use your user
+id and your <EM>old</EM> password to log on. If you are the wizard on this
+server, use your own user id and password to log in.<P>
+
+<INPUT TYPE="submit" VALUE="Change password"><P>
+<INPUT TYPE="reset" VALUE="Reset these fields"><P>
+</FORM>
+

@@ -1,0 +1,71 @@
+# access.conf: Global access configuration
+# Online docs at http://www.apache.org/
+
+# This file defines server settings which affect which types of services
+# are allowed, and in what circumstances. 
+
+# Each directory to which Apache has access, can be configured with respect
+# to which services and features are allowed and/or disabled in that
+# directory (and its subdirectories). 
+
+# Originally by Rob McCool
+
+# /usr/local/etc/httpd/ should be changed to whatever you set ServerRoot to.
+<Directory /usr/local/etc/httpd/cgi-bin>
+Options Indexes FollowSymLinks
+</Directory>
+
+# This should be changed to whatever you set DocumentRoot to.
+
+<Directory /usr/local/etc/httpd/htdocs>
+
+# This may also be "None", "All", or any combination of "Indexes",
+# "Includes", "FollowSymLinks", "ExecCGI", or "MultiViews".
+
+# Note that "MultiViews" must be named *explicitly* --- "Options All"
+# doesn't give it to you (or at least, not yet).
+
+Options Indexes FollowSymLinks
+
+# This option allows you to turn on the XBitHack behavior, which allows you
+# to make text/html server-parsed by activating the owner x bit with chmod. 
+# This directive may be used wherever Options may, and has three
+# possible arguments: Off, On or Full. If set to full, Apache will also
+# add a Last-Modified header to the document if the group x bit is set.
+
+# Unless the server has been compiled with -DXBITHACK, this function is
+# off by default. To use, uncomment the following line:
+
+#XBitHack Full
+
+# This controls which options the .htaccess files in directories can
+# override. Can also be "None", or any combination of "Options", "FileInfo", 
+# "AuthConfig", and "Limit"
+
+AllowOverride All
+
+# Controls who can get stuff from this server.
+
+<Limit GET>
+order allow,deny
+allow from all
+</Limit>
+
+</Directory>
+
+# Allow server status reports, with the URL of http://servername/status
+# Change the ".nowhere.com" to match your domain to enable.
+
+<Location /status>
+SetHandler server-status
+
+<Limit GET>
+order deny,allow
+deny from all
+allow from .nowhere.com
+</Limit>
+</Location>
+
+# You may place any other directories or locations you wish to have
+# access information for after this one.
+
