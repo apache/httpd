@@ -738,6 +738,7 @@ API_EXPORT(configfile_t *) ap_pcfg_openfile(pool *p, const char *name)
     poolfile_t *new_pfile;
     FILE *file;
     struct stat stbuf;
+    int saved_errno;
 
     if (name == NULL) {
         ap_log_error(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, NULL,
@@ -747,9 +748,11 @@ API_EXPORT(configfile_t *) ap_pcfg_openfile(pool *p, const char *name)
 
     file = ap_pfopen(p, name, "r");
 #ifdef DEBUG
+    saved_errno = errno;
     ap_log_error(APLOG_MARK, APLOG_DEBUG | APLOG_NOERRNO, NULL,
                 "Opening config file %s (%s)",
                 name, (file == NULL) ? strerror(errno) : "successful");
+    errno = saved_errno;
 #endif
     if (file == NULL)
         return NULL;
@@ -761,10 +764,12 @@ API_EXPORT(configfile_t *) ap_pcfg_openfile(pool *p, const char *name)
 #else
         strcmp(name, "/dev/null") != 0) {
 #endif
+	saved_errno = errno;
         ap_log_error(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, NULL,
                     "Access to file %s denied by server: not a regular file",
                     name);
         ap_pfclose(p, file);
+	errno = saved_errno;
         return NULL;
     }
 

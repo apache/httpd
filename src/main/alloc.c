@@ -1744,6 +1744,7 @@ API_EXPORT(FILE *) ap_pfopen(pool *a, const char *name, const char *mode)
     FILE *fd = NULL;
     int baseFlag, desc;
     int modeFlags = 0;
+    int saved_errno;
 
 #ifdef WIN32
     modeFlags = _S_IREAD | _S_IWRITE;
@@ -1766,22 +1767,26 @@ API_EXPORT(FILE *) ap_pfopen(pool *a, const char *name, const char *mode)
     else {
 	fd = fopen(name, mode);
     }
-
+    saved_errno = errno;
     if (fd != NULL)
 	ap_note_cleanups_for_file(a, fd);
     ap_unblock_alarms();
+    errno = saved_errno;
     return fd;
 }
 
 API_EXPORT(FILE *) ap_pfdopen(pool *a, int fd, const char *mode)
 {
     FILE *f;
+    int saved_errno;
 
     ap_block_alarms();
     f = ap_fdopen(fd, mode);
+    saved_errno = errno;
     if (f != NULL)
 	ap_note_cleanups_for_file(a, f);
     ap_unblock_alarms();
+    errno = saved_errno;
     return f;
 }
 
