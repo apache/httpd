@@ -437,9 +437,6 @@ void call_exec (request_rec *r, char *argv0, char **env, int shellcmd)
     struct passwd *pw;
     struct group *gr;
     
-
-    conf = (core_dir_config *)pcalloc(r->pool, sizeof(core_dir_config));
-    
     conf = (core_dir_config *)get_module_config(r->per_dir_config, &core_module);
 
 #ifdef RLIMIT_CPU
