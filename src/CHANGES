@@ -1,4 +1,8 @@
 Changes with Apache 1.3.7
+
+  *) apxs: Add "-S var=val" option which allows for override of CFG_*
+     built-in values.  [Wilfredo Sanchez]
+
   *) Win32: Update the server to use Winsock 2. Specifically, link with
      ws2_32.lib rather than wsock32.lib.  This gives us access to 
      WSADuplcateSocket() in addition to some other enhanced comm APIs.
