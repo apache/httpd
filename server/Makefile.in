@@ -14,11 +14,10 @@ LTLIBRARY_SOURCES = \
 	util_script.c util_md5.c util_cfgtree.c util_ebcdic.c \
 	rfc1413.c connection.c listen.c \
         mpm_common.c util_charset.c util_debug.c util_xml.c \
-	util_filter.c exports.c buildmark.c scoreboard.c \
+        util_filter.c exports.c buildmark.c scoreboard.c \
 	error_bucket.c protocol.c core.c request.c
 
-TARGETS = delete-exports $(LTLIBRARY_NAME) $(CORE_IMPLIB_FILE) export_vars.h \
-	httpd.exp
+TARGETS = $(LTLIBRARY_NAME) $(CORE_IMPLIB_FILE) export_vars.h httpd.exp
 
 include $(top_srcdir)/build/rules.mk
 include $(top_srcdir)/build/library.mk
@@ -32,28 +31,12 @@ test_char.h: gen_test_char
 
 util.lo: test_char.h
 
-EXPORT_FILES = $(top_builddir)/srclib/apr/apr.exports \
-	$(top_builddir)/srclib/apr-util/aprutil.exports \
-	$(TARGET_EXPORTS)
-
-delete-exports:
-	@if test -f $(TARGET_EXPORTS); then \
-		    headers="`find $(top_srcdir)/include/*.h -newer $(TARGET_EXPORTS)`" ; \
-		    if test -n "$$headers"; then \
-		        echo Found newer headers. Will rebuild $(TARGET_EXPORTS). ; \
-		        echo rm -f $(TARGET_EXPORTS) ; \
-		        rm -f $(TARGET_EXPORTS) ; \
-		    fi \
-	fi
-
-
-$(TARGET_EXPORTS):
-	$(AWK) -f $(top_srcdir)/srclib/apr/build/make_export.awk \
-		$(top_srcdir)/include/*.h \
-		$(top_srcdir)/os/$(OS_DIR)/*.h > $@
+EXPORT_FILES = $(top_srcdir)/include/*.h \
+       $(top_srcdir)/srclib/apr/include/*.h \
+       $(top_srcdir)/srclib/apr-util/include/*.h
 
 exports.c: $(EXPORT_FILES)
-	(cat $(EXPORT_FILES) | $(top_srcdir)/build/buildexports.sh $(top_srcdir)) > $@
+	$(AWK) -f $(top_srcdir)/build/make_exports.awk $(EXPORT_FILES) > $@
 
 export_vars.h:
 	$(AWK) -f $(top_srcdir)/build/make_var_export.awk \
