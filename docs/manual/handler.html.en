@@ -33,7 +33,6 @@
 <A HREF="mod/mod_cgi.html">mod_cgi</A><br>
 <A HREF="mod/mod_imap.html">mod_imap</A><br>
 <A HREF="mod/mod_info.html">mod_info</A><br>
-<A HREF="mod/mod_include.html">mod_include</A><br>
 <a href="mod/mod_mime.html">mod_mime</a><br>
 <A HREF="mod/mod_negotiation.html">mod_negotiation</A><br>
 <A HREF="mod/mod_status.html">mod_status</A><br>
@@ -85,9 +84,6 @@ handlers in the standard distribution are as follows:</P>
 <LI><STRONG>server-info</STRONG>:
     Get the server's configuration information.
     (<A HREF="mod/mod_info.html">mod_info</A>)
-<LI><STRONG>server-parsed</STRONG>:
-    Parse for server-side includes.
-    (<A HREF="mod/mod_include.html">mod_include</A>)
 <LI><STRONG>server-status</STRONG>:
     Get the server's status report.
     (<A HREF="mod/mod_status.html">mod_status</A>)

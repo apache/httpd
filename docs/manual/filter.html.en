@@ -32,30 +32,27 @@
 </td>
 </tr></table>
 
-
 <p>A <em>filter</em> is a process which is applied to data that is
 sent or received by the server.  Data sent by clients to the server
 is processed by <em>input filters</em> while data sent by the
 server to the client is processed by <em>output filters</em>.
 Multiple filters can be applied to the data, and the order
-of the filters can be explicitly specified.  In addition,
-since filters apply to all content, they allow for flexible
-manipulation of data such as processing the output of 
-CGI scripts for Server Side Includes.</p>
+of the filters can be explicitly specified.</p>
 
-<p>The set of filters which apply to data can be manipulated
+<p>Filters are used internally by Apache to perform functions such as
+chunking and byte-range request handling.  In addition, modules can
+provide filters which are selectable using run-time configuration
+directives.  The set of filters which apply to data can be manipulated
 with the <code>SetInputFilter</code> and <code>SetOutputFilter</code>
 directives.</p>
 
-<p>The only filter currently included with the Apache distribution
-is the <code>INCLUDE</code> filter which is provided by 
-<a href="mod/mod_include.html">mod_include</a> to process output
-for Server Side Includes.  There is also an experimental module
-called <a href="mod/mod_ext_filter.html">mod_ext_filter</a>
-which allows for external programs to be defined as filters.</p>
-
+<p>The only configurable filter currently included with the Apache
+distribution is the <code>INCLUDES</code> filter which is provided by
+<a href="mod/mod_include.html">mod_include</a> to process output for
+Server Side Includes.  There is also an experimental module called <a
+href="mod/mod_ext_filter.html">mod_ext_filter</a> which allows for
+external programs to be defined as filters.</p>
 
 <!--#include virtual="footer.html" -->
 </BODY>
 </HTML>
-
