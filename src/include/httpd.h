@@ -529,7 +529,8 @@ API_EXPORT(const char *) ap_get_server_built(void);
 #define ap_is_HTTP_CLIENT_ERROR(x) (((x) >= 400)&&((x) < 500))
 #define ap_is_HTTP_SERVER_ERROR(x) (((x) >= 500)&&((x) < 600))
 
-#define status_drops_connection(x) (((x) == HTTP_BAD_REQUEST)           || \
+#define ap_status_drops_connection(x) \
+                                   (((x) == HTTP_BAD_REQUEST)           || \
                                     ((x) == HTTP_REQUEST_TIME_OUT)      || \
                                     ((x) == HTTP_LENGTH_REQUIRED)       || \
                                     ((x) == HTTP_REQUEST_ENTITY_TOO_LARGE) || \

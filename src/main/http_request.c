@@ -978,7 +978,7 @@ API_EXPORT(void) ap_die(int type, request_rec *r)
      * (if any) has been read.
      */
     if ((r->status != HTTP_NOT_MODIFIED) && (r->status != HTTP_NO_CONTENT)
-        && !status_drops_connection(r->status)
+        && !ap_status_drops_connection(r->status)
         && r->connection && (r->connection->keepalive != -1)) {
 
         (void) ap_discard_request_body(r);

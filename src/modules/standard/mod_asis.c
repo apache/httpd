@@ -85,7 +85,7 @@ static int asis_handler(request_rec *r)
 	return FORBIDDEN;
     }
 
-    scan_script_header(r, f);
+    ap_scan_script_header_err(r, f, NULL);
     location = ap_table_get(r->headers_out, "Location");
 
     if (location && location[0] == '/' &&

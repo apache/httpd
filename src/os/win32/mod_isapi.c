@@ -463,7 +463,7 @@ BOOL WINAPI ServerSupportFunction (HCONN hConn, DWORD dwHSERequest,
 	    while (*value && ap_isspace(*value)) ++value;
 
 	    /* Check all the special-case headers. Similar to what
-	     * scan_script_header() does (see that function for
+	     * ap_scan_script_header_err() does (see that function for
 	     * more detail)
 	     */
 

@@ -305,7 +305,7 @@ API_EXPORT(int) ap_set_keepalive(request_rec *r)
         (r->server->keep_alive_timeout > 0) &&
         ((r->server->keep_alive_max == 0) ||
          (r->server->keep_alive_max > r->connection->keepalives)) &&
-        !status_drops_connection(r->status) &&
+        !ap_status_drops_connection(r->status) &&
         !wimpy &&
         !ap_find_token(r->pool, conn, "close") &&
         (!ap_table_get(r->subprocess_env, "nokeepalive") ||

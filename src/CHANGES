@@ -1,5 +1,9 @@
 Changes with Apache 1.3.4
 
+  *) Renamed macros status_drops_connection to ap_status_drops_connection
+     and vestigial scan_script_header to ap_scan_script_header_err,
+     mostly for aesthetic reasons. [Roy Fielding]
+
   *) The query switch "httpd -S" didn't exit after showing the
      vhost settings. That was inconsistent with the other query functions.
      [Martin Kraemer]

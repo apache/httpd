@@ -325,6 +325,7 @@ extern "C" {
 #define rvputs                         ap_rvputs
 #define rwrite                         ap_rwrite
 #define satisfies                      ap_satisfies
+#define scan_script_header(a1,a2)      ap_scan_script_header_err(a1,a2,NULL)
 #define scan_script_header_err         ap_scan_script_header_err
 #define scan_script_header_err_buff    ap_scan_script_header_err_buff
 #define scoreboard_fname               ap_scoreboard_fname
@@ -372,6 +373,7 @@ extern "C" {
 #define standalone                     ap_standalone
 #define start_restart                  ap_start_restart
 #define start_shutdown                 ap_start_shutdown
+#define status_drops_connection        ap_status_drops_connection
 #define str_tolower                    ap_str_tolower
 #define strcasecmp_match               ap_strcasecmp_match
 #define strcmp_match                   ap_strcmp_match

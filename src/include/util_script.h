@@ -74,7 +74,6 @@ API_EXPORT(char **) ap_create_environment(pool *p, table *t);
 API_EXPORT(int) ap_find_path_info(const char *uri, const char *path_info);
 API_EXPORT(void) ap_add_cgi_vars(request_rec *r);
 API_EXPORT(void) ap_add_common_vars(request_rec *r);
-#define scan_script_header(a1,a2) ap_scan_script_header_err(a1,a2,NULL)
 API_EXPORT(int) ap_scan_script_header_err(request_rec *r, FILE *f, char *buffer);
 API_EXPORT(int) ap_scan_script_header_err_buff(request_rec *r, BUFF *f,
                                                char *buffer);
