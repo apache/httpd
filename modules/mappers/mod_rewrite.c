@@ -1082,7 +1082,6 @@ static int hook_uri2file(request_rec *r)
     const char *thisserver;
     char *thisport;
     const char *thisurl;
-    char buf[512];
     unsigned int port;
     int rulestatus;
 
@@ -1141,8 +1140,7 @@ static int hook_uri2file(request_rec *r)
         thisport = "";
     }
     else {
-        apr_snprintf(buf, sizeof(buf), ":%u", port);
-        thisport = buf;
+        thisport = apr_psprintf(r->pool, ":%u", port);
     }
     thisurl = apr_table_get(r->subprocess_env, ENVVAR_SCRIPT_URL);
 
