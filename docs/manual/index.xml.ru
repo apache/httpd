@@ -2,7 +2,7 @@
 <!DOCTYPE indexpage SYSTEM "./style/sitemap.dtd">
 
 <!--***************************************************-->
-<!-- English revision: 1.1.4.2                         -->
+<!-- English revision: 1.1.2.4                         -->
 <!--***************************************************-->
 <!-- Translator: Ilia Soldis (rkai@tversu.ru)          -->
 <!-- Reviewers:                                        -->
@@ -17,13 +17,13 @@
 
 <title>Докуменатция к HTTP серверу Apache версии 2.0</title>
 
-<category id="release"><title>Release Notes</title>
+<category id="release"><title>О версии 2.0</title>
     <page href="new_features_2_0.html">Обзор новых возможностей в Apache 2.0</page>
     <page href="upgrading.html">Переход от версии 1.3 к версии 2.0</page>
     <page href="license.html">Лицензия Apache</page>
 </category>
 
-<category id="manual"><title>Reference Manual</title>
+<category id="manual"><title>Справочные материалы</title>
     <page href="install.html">Компилирование и установка</page>
     <page href="invoking.html">Запуск Apache</page>
     <page href="stopping.html">Останов и перезапуск</page>
@@ -32,8 +32,8 @@
     <page href="mod/">Modules</page>
     <page href="mpm.html">Мульти-процессные модули (МП-модули)</page>
     <page href="filter.html">Фильтры</page>
-    <page href="handler.html">Handlers</page>
-    <page href="programs/">Server and Supporting Programs</page>
+    <page href="handler.html">Обработчики</page>
+    <page href="programs/">Сервер и вспомогательные программы</page>
     <page href="glossary.html">Glossary</page>
 </category>    
 
