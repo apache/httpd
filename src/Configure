@@ -708,6 +708,12 @@ case "$PLAT" in
         DEF_WANTHSREGEX=yes
         LIBS="$LIBS -lsocket -lnsl -lc -L/usr/ucblib -lucb"
         ;;
+    drs6000*)
+        OS='DRS6000'
+        CFLAGS="$CFLAGS -DSVR4"
+        DEF_WANTHSREGEX=yes
+        LIBS="$LIBS -lsocket -lnsl -lc -L/usr/ucblib -lucb"
+        ;;
     *) # default: Catch systems we don't know about
         OS='Unknown and unsupported OS'
     	echo Sorry, but we cannot grok \"$PLAT\"
