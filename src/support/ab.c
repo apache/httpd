@@ -1098,8 +1098,14 @@ static void read_connection(struct connection * c)
 
 	    /* check response code */
 	    part = strstr(c->cbuff, "HTTP");	/* really HTTP/1.x_ */
-	    strncpy(respcode, (part + strlen("HTTP/1.x_")), 3);
-	    respcode[3] = '\0';
+            if (part && strlen(part) > strlen("HTTP/1.x_")) {
+                strncpy(respcode, (part + strlen("HTTP/1.x_")), 3);
+                respcode[3] = '\0';
+            }
+            else {
+                strcpy(respcode, "500");
+            }
+
 	    if (respcode[0] != '2') {
 		err_response++;
 		if (verbosity >= 2)
@@ -1352,14 +1358,14 @@ static void test(void)
 static void copyright(void)
 {
     if (!use_html) {
-	printf("This is ApacheBench, Version %s\n", VERSION " <$Revision: 1.68 $> apache-1.3");
+	printf("This is ApacheBench, Version %s\n", VERSION " <$Revision: 1.69 $> apache-1.3");
 	printf("Copyright (c) 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/\n");
 	printf("Copyright (c) 1998-2002 The Apache Software Foundation, http://www.apache.org/\n");
 	printf("\n");
     }
     else {
 	printf("<p>\n");
-	printf(" This is ApacheBench, Version %s <i>&lt;%s&gt;</i> apache-1.3<br>\n", VERSION, "$Revision: 1.68 $");
+	printf(" This is ApacheBench, Version %s <i>&lt;%s&gt;</i> apache-1.3<br>\n", VERSION, "$Revision: 1.69 $");
 	printf(" Copyright (c) 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/<br>\n");
 	printf(" Copyright (c) 1998-2002 The Apache Software Foundation, http://www.apache.org/<br>\n");
 	printf("</p>\n<p>\n");
