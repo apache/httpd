@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="iso-2022-jp"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
-<!-- English Revision: 1.16 (outdated: 1.20) -->
+<!-- English Revision: 1.20 -->
 
 <!--
  Copyright 2002-2004 The Apache Software Foundation
@@ -44,35 +44,91 @@
     ディレクティブの中に <directive type="section" module="core">Limit</directive>
     節を入れるとよいかもしれません。</p>
 
-    <p>一旦設定すると、<code>http://your.host.dom/server-info</code>
+    <p>一旦設定すると、<code>http://your.host.example.com/server-info</code>
     をアクセスすることでサーバの情報を得られるようになります。</p>
-
-    <note>
-      <p>このモジュールは実行時に設定ファイルを読み込みます。
-      サーバの設定ファイルが最後にサーバに読み込まれた後に変更されている
-      場合には、表示されている内容は実行されているサーバの設定を反映して
-      <em>いない</em>かもしれないことに注意してください。
-      また、設定ファイルはサーバが実行されているユーザの権限で
-      読み込み許可が与えられている必要があります
-      (<directive module="mpm_common">User</directive>
-      ディレクティブを参照してください)。
-      でなければ、ディレクティブの設定は表示されません。</p>
-
-      <p><module>mod_info</module>
-      がサーバに組み込まれている場合は、ディレクトリ毎のファイル
-      (例えば、<code>.htaccess</code>) を含むすべての設定ファイルで
-      ハンドラを使用可能であるということにも注意してください。
-      これは、あなたのサイトではセキュリティに関連した問題があるかもしれません。
-      </p>
-
-      <p>特に、このモジュールはシステムパス、ユーザ名/パスワード、
-      データベース名など、他の Apache モジュールの設定ディレクティブから
-      セキュリティ上微妙な情報を漏らす可能性があります。
-      このモジュールの動作方法のせいで、情報の流出を防ぐ方法はありません。
-      ですから、このモジュールはきちんとアクセス制御された環境で<strong>のみ</strong>、
-      注意して使ってください。</p>
-    </note>
 </summary>
+<section id="security"><title>Security Issues</title>
+    <p>一旦 <module>mod_info</module> がサーバに読み込まれると、
+    提供しているハンドラ機能はディレクトリ毎の設定ファイル (<em>例えば</em>
+    .htaccess) を含む <em>すべて</em>の設定ファイルで有効になります。
+    このモジュールを有効にするときはセキュリティの問題を考慮する必要が
+    あるでしょう。</p>
+
+    <p>特に、このモジュールはシステムパス、ユーザ名/パスワード、
+    データベース名など、他の Apache モジュールの設定ディレクティブから
+    セキュリティ上微妙な情報を漏らす可能性があります。
+    ですから、このモジュールはきちんとアクセス制御された環境で<strong>のみ</strong>、
+    注意して使ってください。</p>
+
+    <p>設定情報へのアクセスを制限するために、<module>mod_authz_host</module> を
+    使うのが良いでしょう。</p>
+      
+    <example><title>アクセス制御</title>
+      &lt;Location /server-info&gt;<br />
+      <indent>
+        SetHandler server-info<br />
+        Order allow,deny<br />
+        # Allow access from server itself<br />
+        Allow from 127.0.0.1<br />
+        # Additionally, allow access from local workstation<br />
+        Allow from 192.168.1.17<br />
+      </indent>
+      &lt;/Location&gt;
+    </example>
+</section>
+
+<section id="queries"><title>表示される情報の選択</title>
+    <p>デフォルトでは、サーバ情報はすべての有効なモジュールと、
+    各モジュールについて、モジュールが理解するディレクティブ、
+    実装している、フック、現時点での設定の関連するディレクティブに
+    なっています。</p>
+
+    <p><code>server-info</code> リクエストへクエリーを追加することで、
+    設定情報の他の表示形式を選ぶことができます。例えば、
+    <code>http://your.host.example.com/server-info?config</code> は
+    すべての設定ディレクティブを表示します。</p>
+    
+    <dl>
+        <dt><code>?&lt;module-name&gt;</code></dt>
+            <dd>指定されたモジュールに関連する情報のみ</dd>
+        <dt><code>?config</code></dt>
+            <dd>モジュールでソートせずに、設定ディレクティブのみ</dd>
+        <dt><code>?hooks</code></dt>
+            <dd>各モジュールが使用するフックのみ</dd>
+        <dt><code>?list</code></dt>
+            <dd>有効なモジュールの簡単なリストのみ</dd>
+        <dt><code>?server</code></dt>
+            <dd>基本サーバ情報のみ</dd>
+    </dl>
+</section>
+
+<section id="limitations"><title>既知の制限</title>
+    <p><module>mod_info</module> は、元の設定ファイルを読むのではなく、
+    既にパースされた設定を読み込むことで情報を提供します。従って、
+    パース済みの設定情報の木が生成される方法による制限がいくつかあります:</p>
+    <ul>
+      <li>パースされた設定に保存されずに、すぐに実行されるディレクティブは
+          一覧に現れません。これには
+          <directive module="core">ServerRoot</directive>,
+          <directive module="mod_so">LoadModule</directive>,
+          <directive module="mod_so">LoadFile</directive> があります。</li>
+      <li><directive module="core">Include</directive>,
+          <directive module="core">&lt;IfModule&gt;</directive>,
+          <directive module="core">&lt;IfDefine&gt;</directive>,
+          のような設定ファイル自身を制御するディレクティブは表示されません。
+          そのディレクティブの中にあり、有効になっているディレクティブは
+          表示されます。</li>
+      <li>コメントは表示されません。(これは仕様だと思ってください。)</li>
+      <li><code>.htaccess</code> ファイルの設定ディレクティブは表示されません
+          (永久的なサーバ設定の一部ではないからです)。</li>
+      <li><directive module="core">&lt;Directory&gt;</directive>
+          のようなコンテナディレクティブは普通に表示されますが、
+          <module>mod_info</module> は閉じタグの <directive module="core"
+          >&lt;/Directory&gt;</directive> などの数を知ることはできません。</li>
+      <li><module>mod_perl</module> のようなサードパーティモジュール
+           のディレクティブは表示されないかもしれません。</li>
+    </ul>
+</section>
 
 <directivesynopsis>
 <name>AddModuleInfo</name>
@@ -91,8 +147,8 @@
     <example>
       AddModuleInfo mod_deflate.c 'See &lt;a \<br />
       <indent>
-      href="http://www.apache.org/docs-2.1/mod/mod_deflate.html"&gt;\<br />
-      http://www.apache.org/docs-2.1/mod/mod_deflate.html&lt;/a&gt;'
+        href="http://www.apache.org/docs-2.1/mod/mod_deflate.html"&gt;\<br />
+        http://www.apache.org/docs-2.1/mod/mod_deflate.html&lt;/a&gt;'
       </indent>
     </example>
 </usage>
