@@ -13,8 +13,8 @@ LTLIBRARY_SOURCES = \
 	util_script.c util_md5.c util_cfgtree.c util_ebcdic.c util_time.c \
 	rfc1413.c connection.c listen.c \
 	mpm_common.c util_charset.c util_debug.c util_xml.c \
-	util_filter.c $(top_srcdir)/server/exports.c buildmark.c scoreboard.c \
-	error_bucket.c protocol.c core.c request.c provider.c
+	util_filter.c $(top_builddir)/server/exports.c buildmark.c \
+	scoreboard.c error_bucket.c protocol.c core.c request.c provider.c
 
 TARGETS = delete-exports $(LTLIBRARY_NAME) $(CORE_IMPLIB_FILE) export_vars.h httpd.exp
 
@@ -47,7 +47,7 @@ delete-exports:
 	fi
 
 # full path required to keep BSD make happy
-$(top_srcdir)/server/exports.c:
+$(top_builddir)/server/exports.c:
 	$(AWK) -f $(top_srcdir)/build/make_exports.awk $(EXPORT_FILES) > $@
 
 export_vars.h:
