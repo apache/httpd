@@ -85,7 +85,7 @@ static apr_status_t queue_info_cleanup(void *data_)
         if (first_pool == NULL) {
             break;
         }
-        if (apr_atomic_casptr(&(qi->recycled_pools), first_pool->next,
+        if (apr_atomic_casptr((volatile void**)&(qi->recycled_pools), first_pool->next,
                               first_pool) == first_pool) {
             apr_pool_destroy(first_pool->pool);
         }
@@ -138,7 +138,7 @@ apr_status_t ap_queue_info_set_idle(fd_queue_info_t *queue_info,
         new_recycle->pool = pool_to_recycle;
         for (;;) {
             new_recycle->next = queue_info->recycled_pools;
-            if (apr_atomic_casptr(&(queue_info->recycled_pools),
+            if (apr_atomic_casptr((volatile void**)&(queue_info->recycled_pools),
                                   new_recycle, new_recycle->next) ==
                 new_recycle->next) {
                 break;
@@ -228,7 +228,7 @@ apr_status_t ap_queue_info_wait_for_idler(fd_queue_info_t *queue_info,
         if (first_pool == NULL) {
             break;
         }
-        if (apr_atomic_casptr(&(queue_info->recycled_pools), first_pool->next,
+        if (apr_atomic_casptr((volatile void**)&(queue_info->recycled_pools), first_pool->next,
                               first_pool) == first_pool) {
             *recycled_pool = first_pool->pool;
             break;
