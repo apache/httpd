@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='EUC-KR' ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ko.xsl"?>
-<!-- English Revision: 1.8 (outdated: 1.9) -->
+<!-- English Revision: 1.9 -->
 
 <!--
  Copyright 2004 The Apache Software Foundation
@@ -55,6 +55,9 @@
 
       <dd>basic authentication에 사용할 DBM 형식의 사용자
       인증파일을 만들고 수정한다</dd>
+
+      <dt><a href="htcacheclean.html">htcacheclean</a></dt>
+      <dd>디스크 캐쉬를 청소한다</dd>
 
       <dt><a href="htdigest.html">htdigest</a></dt>
 

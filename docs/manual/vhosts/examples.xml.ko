@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='EUC-KR' ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ko.xsl"?>
-<!-- English Revision: 1.11 (outdated: 1.12) -->
+<!-- English Revision: 1.12 -->
 
 <!--
  Copyright 2003-2004 The Apache Software Foundation
@@ -487,8 +487,10 @@
     <code>www.example.org</code>에 대한 이름기반 가상호스트는
     자신의 IP 주소를 가져야 한다. 이름기반 가상호스트의 이전
     IP 주소를 캐싱하는 네임서버나 프록시와의 문제를 피하기위해
-    옮기는 동안 둘 모두를 서비스하고 싶다.<br /> 방법은
-    <code>VirtualHost</code> 지시어에 새 IP 주소만을
+    옮기는 동안 둘 모두를 서비스하고 싶다.</p>
+
+    <p>
+     방법은 <code>VirtualHost</code> 지시어에 새 IP 주소만을
     (<code>172.20.30.50</code>) 추가하면되므로 쉽다.</p>
 
     <example>
@@ -582,11 +584,14 @@
     URL <code>http://www.sub1.domain.tld/</code>에 대한 요청은
     subl-가상호스트에서만 서비스한다. 만약 <code>Host:</code> 헤더를
     보내지않으면 클라이언트는 최초의 호스트에 있는 정보페이지를
-    보게된다.<br /> 여기에 문제가 있음을 주의하라: 클라이언트가
+    보게된다.</p>
+
+    <p>여기에 문제가 있음을 주의하라: 클라이언트가
     <code>Host:</code> 헤더를 보내지않으면
     <code>http://www.sub2.domain.tld/sub1/</code>에 대한 요청도
-    subl-가상호스트가 서비스한다.<br />
-    <directive module="mod_rewrite">RewriteRule</directive>
+    subl-가상호스트가 서비스한다.</p>
+
+    <p><directive module="mod_rewrite">RewriteRule</directive>
     지시어를 사용하여 올바른 <code>Host:</code> 헤더를 보내는
     클라이언트는 (<em>예를 들어</em>, URL 전치사가 있거나 없는)
     두 URL을 모두 사용할 수 있다.</p>

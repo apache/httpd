@@ -22,8 +22,6 @@
 <a href="../es/programs/" hreflang="es" rel="alternate" title="Espa&#241;ol">&nbsp;es&nbsp;</a> |
 <a href="../ko/programs/" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<div class="outofdate">이 문서는 최신판 번역이 아닙니다.
-            최근에 변경된 내용은 영어 문서를 참고하세요.</div>
 
     <p>아파치 웹서버에 포함된 프로그램들이다.</p>
 </div>
@@ -56,6 +54,9 @@
 
       <dd>basic authentication에 사용할 DBM 형식의 사용자
       인증파일을 만들고 수정한다</dd>
+
+      <dt><a href="htcacheclean.html">htcacheclean</a></dt>
+      <dd>디스크 캐쉬를 청소한다</dd>
 
       <dt><a href="htdigest.html">htdigest</a></dt>
 
