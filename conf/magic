@@ -288,8 +288,11 @@
 #
 
 0	string		\376\067\0\043			application/msword
-0	string		\320\317\021\340\241\261	application/msword
 0	string		\333\245-\0\0\0			application/msword
+
+# disable this one because it applies also to other
+# Office/OLE documents for which msword is not correct. See PR#2608.
+#0	string		\320\317\021\340\241\261	application/msword
 
 
 
