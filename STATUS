@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/07/14 21:45:40 $]
+Last modified at [$Date: 2004/07/16 20:55:14 $]
 
 Release:
 
@@ -80,7 +80,7 @@ PATCHES TO BACKPORT FROM 2.1
        The HTTP and the APR patches are available at:
        <http://www.apache.org/~clar/detach-addrspace_HTTP_2_0.patch>
        <http://www.apache.org/~clar/detach-addrspace_APR_0_9.patch>
-       +1: jjclar
+       +1: jjclar, bnicholes
 
     *) mod_dir: Backport DirectorySlash directive to work around problems
        with <Location>-SetHandler combinations and trailing slash redirects.
@@ -150,6 +150,12 @@ PATCHES TO BACKPORT FROM 2.1
          modules/mappers/mod_actions.c: r1.32, r1.34
        +1: nd
 
+    *) Allocate buffer memory from the temp_pool rather than the stack to
+       avoid over-running a fixed length stack while evaluating nested
+       include directives.
+         server/config.c: r1.180
+       +1: bnicholes	
+       
     *) allow symlinks on directories to be processed by Include directives
        and stop possible recursion by a counter. PR 28492
          server/config.c: r1.175
@@ -158,14 +164,15 @@ PATCHES TO BACKPORT FROM 2.1
     *) detect Include directive recursion by counting the nesting level.
        PR 28370.
          server/core.c: r1.275
-       +1: nd
+         os/netware/pre_nw.h: r1.7
+       +1: nd, bnicholes
 
     *) mod_headers: Regression from 1.3: There's no ErrorHeader directive.
        Since this was always a misnomer, it was dropped in 2.1 and
        Header was extended instead. Backport this from 2.1 and document
        this in the upgrading docs. A 2.0 patch is here:
          http://www.apache.org/~nd/header_always_2.0.diff
-       +1: nd
+       +1: nd, bnicholes
 
     *) mod_rewrite: Fix confused map cache (with maps in different VHs using
        the same name). PR 26462. (2.0 + 1.3)
@@ -206,7 +213,7 @@ PATCHES TO BACKPORT FROM 2.1
     *) Fixed mean and median calculations in ab, also changed where time values
        are set for start and connect when doing keep alive benchmarking.
            support/ab.c: r1.143
-       +1: jjclar, nd
+       +1: jjclar, nd, bnicholes
 
     *) mod_dav: Send an EOS at the end of the multistatus brigade.
        http://cvs.apache.org/viewcvs.cgi/httpd-2.0/modules/dav/main/mod_dav.c?r1=1.105&r2=1.106
