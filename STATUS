@@ -81,6 +81,12 @@ Available Patches:
 	Status: Dean +1, Martin +0 (duplicates /server-info?server),
 		Alexei -1 (shared lib concerns)
 
+    * Mark Cox's [PATCH] Fix for broken ProxyPass/ProxyRequest
+        <Pine.LNX.3.96.980303132830.27987D-100000@ecstasy.localnet>
+        not commited immediately since it's involved with the new uri
+        stuff that I've not been closely following
+        Status: Mark +1
+
 Concepts:
 
     * Ralf's [CONTRIB] AutoConf Interface Emulation
