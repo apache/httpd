@@ -650,6 +650,12 @@ apr_status_t ap_proxy_http_request(apr_pool_t *p, request_rec *r,
     return APR_SUCCESS;
 }
 
+static int addit_dammit(void *v, const char *key, const char *val)
+{
+    apr_table_addn(v, key, val);
+    return 1;
+}
+
 static
 apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
                                             proxy_http_conn_t *p_conn,
@@ -669,6 +675,7 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
                                 * in the case that the origin told us
                                 * to HTTP_CONTINUE
                                 */
+    apr_table_t *save_table;
 
     /* Get response from the remote server, and pass it up the
      * filter chain
@@ -740,8 +747,14 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
             /* N.B. for HTTP/1.0 clients, we have to fold line-wrapped headers*/
             /* Also, take care with headers with multiple occurences. */
 
+            /* First, tuck away all already existing cookies */
+            save_table = apr_table_make(r->pool, 2);
+            apr_table_do(addit_dammit, save_table, r->err_headers_out, "Set-Cookie", NULL);
+            apr_table_do(addit_dammit, save_table, r->headers_out, "Set-Cookie", NULL);
+
             r->headers_out = ap_proxy_read_headers(r, rp, buffer,
                                                    sizeof(buffer), origin);
+
             if (r->headers_out == NULL) {
                 ap_log_error(APLOG_MARK, APLOG_WARNING, 0,
                              r->server, "proxy: bad HTTP/%d.%d header "
@@ -759,8 +772,19 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
                 return r->status;
 
             } else {
-                /* strip connection listed hop-by-hop headers from response */
                 const char *buf;
+
+                /* Now, add in the just read cookies */
+                apr_table_do(addit_dammit, save_table, r->headers_out, "Set-Cookie", NULL);
+
+                /* and now load 'em all in */
+                if (!apr_is_empty_table(save_table)) {
+                    apr_table_unset(r->headers_out, "Set-Cookie");
+                    r->headers_out = apr_table_overlay(r->pool,
+                                                           r->headers_out, save_table);
+                }
+                
+                /* strip connection listed hop-by-hop headers from response */
                 p_conn->close += ap_proxy_liststr(apr_table_get(r->headers_out,
                                                                 "Connection"),
                                                   "close");
