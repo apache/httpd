@@ -177,7 +177,8 @@ Open issues:
       apache-1.3/src/test/rename/rename.cf file as the configuration for the
       renaming. The used prefix or prefixes are configureable in the file,
       too. But we have to additionally vote on them in the next point.
-      Votes: Ralf +1
+      Votes: Ralf +1, Jim +1 (on the source-level renaming for
+      1.3b6 and 1.3.0; how is still up for debate :) )
 
     * Use consistant prefixes for the renaming; suggestions:
 
@@ -255,15 +256,14 @@ Open issues:
               keep this straight far outweighs any gain this
               could give. 
             - Jim: We should make some sort of logical effort to
-              keep things straight and organized. Taken to it's
-              logical conclusion, this argument could be used to
-              keep all variable and function names to 6 chars or
-              less to cut down on all that nasty typing. So
-              instead of something like 'lingering_close', we
-              would use something like 'lcs' :) We should make
-              some effort to make our code reader and maintainer
-              friendly, because we aren't, and won't be, the only
-              one's to maintain this.
+              keep things straight and organized. This does nothing
+	      to indicate in the code what is API, and what
+	      isn't. In my mind, we should use prefixed not JUST
+	      to prevent namespace collisions, but also to
+	      "define" the type function. The very fact that we
+	      _have_ the above different "types" of functions
+	      indicates to me that we should have some logical
+	      namespace for them.
             - Ralf: I agree with Jim that although the short ap_
               prefix is good for API functions, it shouldn't be
               used for all functions. That's too less. Some
