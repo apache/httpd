@@ -18,3 +18,16 @@ A/UX:
   Jim Jagielski (jim@apache.org) if you need a precompiled build for
   A/UX 3.1.x.
 
+-----
+AIX:
+-----
+  If compiling Apache on AIX (any version) using the xlC compiler version
+  3.6.X and you receive an error such as:
+
+    "Expected </Directory> but saw </Directory>"
+
+  then you have a encountered a bug in xlC.  This is a problem with the
+  3.6.X versions of xlC, and is not a problem with the Apache code.
+  A patch for this version is to be provided by IBM in the coming days.
+  (Oct 98)  When this patch is made available the URL will be provided here.
+  For a precompiled build please check: <http://www.apache.org/dist/binaries/>
