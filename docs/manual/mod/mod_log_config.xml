@@ -111,9 +111,9 @@
         <td>The process ID of the child that serviced the request.</td></tr>
 
     <tr><td><code>%...{<var>format</var>}P</code></td>
-        <td>The process ID and or thread id of the child that serviced the 
-        request.  Valid formats are <code>pid</code>, <code>tid</code>,
-        and <code>pid/tid</code>.</td></tr>
+        <td>The process ID or thread id of the child that serviced the 
+        request.  Valid formats are <code>pid</code> and <code>tid</code>.
+        </td></tr>
 
     <tr><td><code>%...q</code></td>
         <td>The query string (prepended with a <code>?</code> if a query
