@@ -25,8 +25,6 @@
 <a href="./ja/install.html" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="./ko/install.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<div class="outofdate">This translation may be out of date. Check the
-            English version for recent changes.</div>
 
 
     <p>この文書で扱う範囲は、Unix や Unix に類似したシステムでの
@@ -255,7 +253,7 @@ $ tar xvf httpd-2_1_<em>NN</em>.tar
     コンパイラ、ライブラリ、ヘッダファイルの位置を追加情報として渡す
     必要がある場合があります。このような場合には、環境変数あるいは
     コマンドラインオプションで <code class="program"><a href="./programs/configure.html">configure</a></code> に渡します。
-    詳細に関しては <a href="programs/configure.html">configure マニュアルページ</a>
+    詳細に関しては <code class="program"><a href="./programs/configure.html">configure</a></code> マニュアルページ
     をご覧ください。</p>
 
     <p>ちょっとどんなことができるかを見せましょう。
@@ -277,7 +275,7 @@ $ tar xvf httpd-2_1_<em>NN</em>.tar
     を生成したりするのに数分間かかるでしょう。</p>
 
     <p>個々の <code class="program"><a href="./programs/configure.html">configure</a></code> オプションの詳細に関しては
-    <a href="programs/configure.html">configure マニュアルページ</a>
+    <code class="program"><a href="./programs/configure.html">configure</a></code> マニュアルページ
     をご覧ください。</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
