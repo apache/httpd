@@ -68,6 +68,7 @@
 #include "apr_buckets.h"
 #include "apr_lib.h"
 #include "apr_signal.h"
+#include "apr_strmatch.h"
 
 #define APR_WANT_STDIO          /* for sscanf */
 #define APR_WANT_STRFUNC
@@ -107,6 +108,30 @@ APR_HOOK_STRUCT(
 
 AP_DECLARE_DATA ap_filter_rec_t *ap_old_write_func = NULL;
 
+
+/* Patterns to match in ap_make_content_type() */
+static const char *needcset[] = {
+    "text/plain",
+    "text/html",
+    NULL
+};
+static const apr_strmatch_pattern **needcset_patterns;
+static const apr_strmatch_pattern *charset_pattern;
+
+AP_DECLARE(void) ap_setup_make_content_type(apr_pool_t *pool)
+{
+    int i;
+    for (i = 0; needcset[i]; i++) {
+        continue;
+    }
+    needcset_patterns = (const apr_strmatch_pattern **)
+        apr_palloc(pool, (i + 1) * sizeof(apr_strmatch_pattern *));
+    for (i = 0; needcset[i]; i++) {
+        needcset_patterns[i] = apr_strmatch_precompile(pool, needcset[i], 0);
+    }
+    charset_pattern = apr_strmatch_precompile(pool, "charset=", 0);
+}
+
 /*
  * Builds the content-type that should be sent to the client from the
  * content-type specified.  The following rules are followed:
@@ -117,14 +142,11 @@ AP_DECLARE_DATA ap_filter_rec_t *ap_old_write_func = NULL;
  */
 AP_DECLARE(const char *)ap_make_content_type(request_rec *r, const char *type)
 {
-    static const char *needcset[] = {
-        "text/plain",
-        "text/html",
-        NULL };
-    const char **pcset;
+    const apr_strmatch_pattern **pcset;
     core_dir_config *conf =
         (core_dir_config *)ap_get_module_config(r->per_dir_config,
                                                 &core_module);
+    apr_size_t type_len;
 
     if (!type) {
         type = ap_default_type(r);
@@ -134,7 +156,9 @@ AP_DECLARE(const char *)ap_make_content_type(request_rec *r, const char *type)
         return type;
     }
 
-    if (ap_strcasestr(type, "charset=") != NULL) {
+    type_len = strlen(type);
+
+    if (apr_strmatch(charset_pattern, type, type_len) != NULL) {
         /* already has parameter, do nothing */
         /* XXX we don't check the validity */
         ;
@@ -143,8 +167,8 @@ AP_DECLARE(const char *)ap_make_content_type(request_rec *r, const char *type)
         /* see if it makes sense to add the charset. At present,
          * we only add it if the Content-type is one of needcset[]
          */
-        for (pcset = needcset; *pcset ; pcset++) {
-            if (ap_strcasestr(type, *pcset) != NULL) {
+        for (pcset = needcset_patterns; *pcset ; pcset++) {
+            if (apr_strmatch(*pcset, type, type_len) != NULL) {
                 type = apr_pstrcat(r->pool, type, "; charset=",
                                    conf->add_default_charset_name, NULL);
                 break;
