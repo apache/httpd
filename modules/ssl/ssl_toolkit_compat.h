@@ -97,7 +97,11 @@
 
 #define modssl_X509_verify_cert X509_verify_cert
 
-#define modssl_PEM_read_bio_X509 PEM_read_bio_X509
+#if (OPENSSL_VERSION_NUMBER < 0x00904000)
+#define modssl_PEM_read_bio_X509(b, x, cb, arg) PEM_read_bio_X509(b, x, cb)
+#else
+#define modssl_PEM_read_bio_X509(b, x, cb, arg) PEM_read_bio_X509(b, x, cb, arg)
+#endif
 
 #define modssl_PEM_X509_INFO_read_bio PEM_X509_INFO_read_bio 
 
