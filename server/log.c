@@ -312,7 +312,8 @@ API_EXPORT(void) ap_error_log2stderr(server_rec *s) {
 
 static void log_error_core(const char *file, int line, int level, 
                            ap_status_t status, const server_rec *s, 
-                           const request_rec *r, const char *fmt, va_list args)
+                           const request_rec *r, ap_pool_t *pool,
+                           const char *fmt, va_list args)
 {
     char errstr[MAX_STRING_LEN + 1];    /* + 1 to have room for '\n' */
     size_t len;
@@ -408,11 +409,20 @@ static void log_error_core(const char *file, int line, int level,
 	len += ap_snprintf(errstr + len, MAX_STRING_LEN - len,
 		"[client %s] ", r->connection->remote_ip);
     }
-    /* XXX - need an APRized strerror() */
     if (!(level & APLOG_NOERRNO)
 	&& (status != 0)) {
+        ap_pool_t *p;
+        if (r) {
+            p = r->pool;
+        }
+        else if (s) {
+            p = s->process->pool;
+        }
+        else {
+            p = pool;
+        }
 	len += ap_snprintf(errstr + len, MAX_STRING_LEN - len,
-		"(%d)%s: ", status, strerror(status));
+		"(%d)%s: ", status, ap_strerror(status, p));
     }
 
     len += ap_vsnprintf(errstr + len, MAX_STRING_LEN - len, fmt, args);
@@ -441,7 +451,18 @@ API_EXPORT(void) ap_log_error(const char *file, int line, int level,
     va_list args;
 
     va_start(args, fmt);
-    log_error_core(file, line, level, status, s, NULL, fmt, args);
+    log_error_core(file, line, level, status, s, NULL, NULL, fmt, args);
+    va_end(args);
+}
+
+API_EXPORT(void) ap_log_perror(const char *file, int line, int level,
+			      ap_status_t status, ap_pool_t *p, 
+                              const char *fmt, ...)
+{
+    va_list args;
+
+    va_start(args, fmt);
+    log_error_core(file, line, level, status, NULL, NULL, p, fmt, args);
     va_end(args);
 }
 
@@ -452,7 +473,7 @@ API_EXPORT(void) ap_log_rerror(const char *file, int line, int level,
     va_list args;
 
     va_start(args, fmt);
-    log_error_core(file, line, level, status, r->server, r, fmt, args);
+    log_error_core(file, line, level, status, r->server, r, NULL, fmt, args);
     /*
      * IF the error level is 'warning' or more severe,
      * AND there isn't already error text associated with this request,
@@ -537,7 +558,7 @@ API_EXPORT(void) ap_log_printf(const server_rec *s, const char *fmt, ...)
     va_list args;
     
     va_start(args, fmt);
-    log_error_core(APLOG_MARK, APLOG_ERR, errno, s, NULL, fmt, args);
+    log_error_core(APLOG_MARK, APLOG_ERR, errno, s, NULL, NULL, fmt, args);
     va_end(args);
 }
 

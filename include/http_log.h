@@ -111,16 +111,20 @@ extern "C" {
 
 void ap_open_logs (server_rec *, ap_pool_t *p);
 
-/* The two primary logging functions, ap_log_error and ap_log_rerror,
- * use a printf style format string to build the log message.  It is
- * VERY IMPORTANT that you not include any raw data from the network,
- * such as the request-URI or request header fields, within the format
- * string.  Doing so makes the server vulnerable to a denial-of-service
- * attack and other messy behavior.  Instead, use a simple format string
+/* The three primary logging functions, ap_log_error, ap_log_rerror, and 
+ * ap_log_perror use a printf style format string to build the log message.  
+ * It is VERY IMPORTANT that you not include any raw data from the network, 
+ * such as the request-URI or request header fields, within the format 
+ * string.  Doing so makes the server vulnerable to a denial-of-service 
+ * attack and other messy behavior.  Instead, use a simple format string 
  * like "%s", followed by the string containing the untrusted data.
  */
 API_EXPORT(void) ap_log_error(const char *file, int line, int level, 
                              ap_status_t status, const server_rec *s, 
+                             const char *fmt, ...)
+			    __attribute__((format(printf,6,7)));
+API_EXPORT(void) ap_log_perror(const char *file, int line, int level, 
+                             ap_status_t status, ap_pool_t *p, 
                              const char *fmt, ...)
 			    __attribute__((format(printf,6,7)));
 API_EXPORT(void) ap_log_rerror(const char *file, int line, int level, 
