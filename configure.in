@@ -116,10 +116,6 @@ AC_CHECK_LIB(nsl, gethostname)
 AC_CHECK_LIB(socket, socket)
 AC_CHECK_LIB(resolv, sethostent)
 
-AC_CHECK_FUNCS(inet_addr inet_network, break, [
-  AC_MSG_ERROR(inet_addr function not found)
-])
-
 APACHE_INADDR_NONE
 
 APACHE_EBCDIC
