@@ -271,6 +271,19 @@ static apr_status_t churn_input(SSLFilterRec *pRec, ap_input_mode_t eMode,
     /* Flush the output buffers. */
     churn_output(pRec);
 
+    /* Note: ssl_engine_kernel.c calls ap_get_brigade when it wants to 
+     * renegotiate.  Therefore, we must handle this by reading from
+     * the socket and *NOT* reading into ctx->b from the BIO.  This is a 
+     * very special case and needs to be treated as such.
+     *
+     * We need to tell all of the higher level filters that we didn't
+     * return anything.  OpenSSL will know that we did anyway and try to
+     * read directly via our BIO.
+     */
+    if (bio_is_renegotiating(pRec->pbioRead)) {
+        return APR_SUCCESS;
+    }
+
     /* Before we actually read any unencrypted data, go ahead and
      * let ssl_hook_process_connection have a shot at it. 
      */
@@ -436,14 +449,14 @@ static apr_status_t ssl_io_filter_Input(ap_filter_t *f,
     {
         apr_bucket_brigade *newbb;
 
+        /* ### This is bad. */
+        APR_BRIGADE_NORMALIZE(ctx->b);
+
         /* churn the state machine */
         ret = churn_input(ctx, mode, readbytes);
 
         if (ret != APR_SUCCESS)
 	        return ret;
-
-        /* ### This is bad. */
-        APR_BRIGADE_NORMALIZE(ctx->b);
 
         apr_brigade_length(ctx->b, 0, &tempread);
 
