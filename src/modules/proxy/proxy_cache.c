@@ -788,8 +788,7 @@ int ap_proxy_cache_conditional(request_rec *r, cache_req *c, BUFF *cachefp)
         /* if cache file is being updated */
         if (c->origfp) {
             ap_proxy_write_headers(c, c->resp_line, c->hdrs);
-            ap_proxy_send_fb(c->origfp, r, c, c->len, 1);
-            ap_pclosef(r->pool, ap_bfileno(c->origfp, B_WR));
+            ap_proxy_send_fb(c->origfp, r, c, c->len, 1, IOBUFSIZE);
             ap_proxy_cache_tidy(c);
         }
         else
@@ -859,8 +858,7 @@ int ap_proxy_cache_conditional(request_rec *r, cache_req *c, BUFF *cachefp)
         /* are we updating the cache file? */
         if (c->origfp) {
             ap_proxy_write_headers(c, c->resp_line, c->hdrs);
-            ap_proxy_send_fb(c->origfp, r, c, c->len, 1);
-            ap_pclosef(r->pool, ap_bfileno(c->origfp, B_WR));
+            ap_proxy_send_fb(c->origfp, r, c, c->len, 1, IOBUFSIZE);
             ap_proxy_cache_tidy(c);
         }
         else
@@ -893,17 +891,19 @@ int ap_proxy_cache_conditional(request_rec *r, cache_req *c, BUFF *cachefp)
     /* are we rewriting the cache file? */
     if (c->origfp) {
         ap_proxy_write_headers(c, c->resp_line, c->hdrs);
-        ap_proxy_send_fb(c->origfp, r, c, c->len, r->header_only);
-        ap_pclosef(r->pool, ap_bfileno(c->origfp, B_WR));
+        ap_proxy_send_fb(c->origfp, r, c, c->len, r->header_only, IOBUFSIZE);
         ap_proxy_cache_tidy(c);
         return OK;
     }
 
     /* no, we not */
-    if (!r->header_only)
-        ap_proxy_send_fb(cachefp, r, NULL, c->len, 0);
+    if (!r->header_only) {
+        ap_proxy_send_fb(cachefp, r, NULL, c->len, 0, IOBUFSIZE);
+    }
+    else {
+        ap_pclosef(r->pool, ap_bfileno(cachefp, B_WR));
+    }
 
-    ap_pclosef(r->pool, ap_bfileno(cachefp, B_WR));
     return OK;
 }
 

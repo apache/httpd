@@ -582,12 +582,12 @@ int ap_proxy_http_handler(request_rec *r, cache_req *c, char *url,
  * content length is not known. We need to make 100% sure c->len is always
  * set correctly before we get here to correctly do keepalive.
  */
-        ap_proxy_send_fb(f, r, c, c->len, 0);
+        ap_proxy_send_fb(f, r, c, c->len, 0, conf->recv_buffer_size);
     }
 
-    ap_proxy_cache_tidy(c);
+    /* ap_proxy_send_fb() closes the socket f for us */
 
-    ap_bclose(f);
+    ap_proxy_cache_tidy(c);
 
     ap_proxy_garbage_coll(r);
     return OK;

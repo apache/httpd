@@ -264,8 +264,8 @@ static int ftp_getrc_msg(BUFF *ctrl, char *msgbuf, int msglen)
 
 static long int send_dir(BUFF *data, request_rec *r, cache_req *c, char *cwd)
 {
-    char buf[IOBUFSIZE];
-    char buf2[IOBUFSIZE];
+    char *buf, *buf2;
+    size_t buf_size;
     char *filename;
     int searchidx = 0;
     char *searchptr = NULL;
@@ -276,6 +276,11 @@ static long int send_dir(BUFF *data, request_rec *r, cache_req *c, char *cwd)
     pool *p = r->pool;
     char *dir, *path, *reldir, *site, *type = NULL;
     char *basedir = ""; /* By default, path is relative to the $HOME dir */
+
+    /* create default sized buffers for the stuff below */
+    buf_size = IOBUFSIZE;
+    buf = ap_palloc(r->pool, buf_size);
+    buf2 = ap_palloc(r->pool, buf_size);
 
     /* Save "scheme://site" prefix without password */
     site = ap_unparse_uri_components(p, &r->parsed_uri, UNP_OMITPASSWORD|UNP_OMITPATHINFO);
@@ -303,7 +308,7 @@ static long int send_dir(BUFF *data, request_rec *r, cache_req *c, char *cwd)
         path[n-1] = '\0';
 
     /* print "ftp://host/" */
-    n = ap_snprintf(buf, sizeof(buf), DOCTYPE_HTML_3_2
+    n = ap_snprintf(buf, buf_size, DOCTYPE_HTML_3_2
                 "<html><head><title>%s%s%s</title>\n"
                 "<base href=\"%s%s%s\"></head>\n"
                 "<body><h2>Directory of "
@@ -327,7 +332,7 @@ static long int send_dir(BUFF *data, request_rec *r, cache_req *c, char *cwd)
         else
             ++reldir;
         /* print "path/" component */
-        ap_snprintf(buf, sizeof(buf), "<a href=\"%s%s/\">%s</a>/",
+        ap_snprintf(buf, buf_size, "<a href=\"%s%s/\">%s</a>/",
                     basedir,
                     ap_escape_uri(p, path),
                     ap_escape_html(p, reldir));
@@ -340,15 +345,15 @@ static long int send_dir(BUFF *data, request_rec *r, cache_req *c, char *cwd)
     /* If the caller has determined the current directory, and it differs */
     /* from what the client requested, then show the real name */
     if (cwd == NULL || strncmp (cwd, path, strlen(cwd)) == 0) {
-        ap_snprintf(buf, sizeof(buf), "</h2>\n<hr /><pre>");
+        ap_snprintf(buf, buf_size, "</h2>\n<hr /><pre>");
     } else {
-        ap_snprintf(buf, sizeof(buf), "</h2>\n(%s)\n<hr /><pre>",
+        ap_snprintf(buf, buf_size, "</h2>\n(%s)\n<hr /><pre>",
                     ap_escape_html(p, cwd));
     }
     total_bytes_sent += ap_proxy_bputs2(buf, con->client, c);
 
     while (!con->aborted) {
-        n = ap_bgets(buf, sizeof buf, data);
+        n = ap_bgets(buf, buf_size, data);
         if (n == -1) {          /* input error */
             if (c != NULL) {
                 ap_log_rerror(APLOG_MARK, APLOG_ERR, c->req,
@@ -375,12 +380,12 @@ static long int send_dir(BUFF *data, request_rec *r, cache_req *c, char *cwd)
             if (filename != buf)
                 *(filename++) = '\0';
             *(link_ptr++) = '\0';
-            ap_snprintf(buf2, sizeof(buf2), "%s <a href=\"%s\">%s %s</a>\n",
+            ap_snprintf(buf2, buf_size, "%s <a href=\"%s\">%s %s</a>\n",
                         ap_escape_html(p, buf),
                         ap_escape_uri(p,filename),
                         ap_escape_html(p, filename),
                         ap_escape_html(p, link_ptr));
-            ap_cpystrn(buf, buf2, sizeof(buf));
+            ap_cpystrn(buf, buf2, buf_size);
             n = strlen(buf);
         }
         /* Handle unix style or DOS style directory  */
@@ -410,23 +415,23 @@ static long int send_dir(BUFF *data, request_rec *r, cache_req *c, char *cwd)
 
             /* Special handling for '.' and '..': append slash to link */
             if (!strcmp(filename, ".") || !strcmp(filename, "..") || buf[0] == 'd') {
-                ap_snprintf(buf2, sizeof(buf2), "%s <a href=\"%s/\">%s</a>\n",
+                ap_snprintf(buf2, buf_size, "%s <a href=\"%s/\">%s</a>\n",
                             ap_escape_html(p, buf), ap_escape_uri(p,filename),
                             ap_escape_html(p, filename));
             }
             else {
-                ap_snprintf(buf2, sizeof(buf2), "%s <a href=\"%s\">%s</a>\n",
+                ap_snprintf(buf2, buf_size, "%s <a href=\"%s\">%s</a>\n",
                             ap_escape_html(p, buf),
                             ap_escape_uri(p,filename),
                             ap_escape_html(p, filename));
             }
-            ap_cpystrn(buf, buf2, sizeof(buf));
+            ap_cpystrn(buf, buf2, buf_size);
             n = strlen(buf);
         }
         /* else??? What about other OS's output formats? */
         else {
             strcat(buf, "\n"); /* re-append the newline char */
-            ap_cpystrn(buf, ap_escape_html(p, buf), sizeof(buf));
+            ap_cpystrn(buf, ap_escape_html(p, buf), buf_size);
         }
 
         total_bytes_sent += ap_proxy_bputs2(buf, con->client, c);
@@ -437,6 +442,8 @@ static long int send_dir(BUFF *data, request_rec *r, cache_req *c, char *cwd)
     total_bytes_sent += ap_proxy_bputs2("</pre><hr />\n", con->client, c);
     total_bytes_sent += ap_proxy_bputs2(ap_psignature("", r), con->client, c);
     total_bytes_sent += ap_proxy_bputs2("</body></html>\n", con->client, c);
+
+    ap_bclose(data);
 
     ap_bflush(con->client);
 
@@ -1341,10 +1348,12 @@ int ap_proxy_ftp_handler(request_rec *r, cache_req *c, char *url)
 /* we need to set this for ap_proxy_send_fb()... */
             if (c != NULL)
                 c->cache_completion = 0;
-            ap_proxy_send_fb(data, r, c, -1, 0);
-        } else
+            ap_proxy_send_fb(data, r, c, -1, 0, conf->recv_buffer_size);
+        }
+        else {
             send_dir(data, r, c, cwd);
-        ap_bclose(data);
+        }
+        /* ap_proxy_send_fb() closes the socket */
         data = NULL;
         dsock = -1;
 

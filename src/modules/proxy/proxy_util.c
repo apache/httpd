@@ -497,14 +497,20 @@ table *ap_proxy_read_headers(request_rec *r, char *buffer, int size, BUFF *f)
  * - r->connection->client, if nowrite == 0
  */
 
-long int ap_proxy_send_fb(BUFF *f, request_rec *r, cache_req *c, off_t len, int nowrite)
+long int ap_proxy_send_fb(BUFF *f, request_rec *r, cache_req *c, off_t len, int nowrite, size_t recv_buffer_size)
 {
     int  ok;
-    char buf[IOBUFSIZE];
+    char *buf;
+    size_t buf_size;
     long total_bytes_rcvd;
     register int n, o, w;
     conn_rec *con = r->connection;
     int alternate_timeouts = 1; /* 1 if we alternate between soft & hard timeouts */
+
+    /* allocate a buffer to store the bytes in */
+    /* make sure it is at least IOBUFSIZE, as recv_buffer_size may be zero for system default */
+    buf_size = MAX(recv_buffer_size, IOBUFSIZE);
+    buf = ap_palloc(r->pool, buf_size);
 
     total_bytes_rcvd = 0;
     if (c != NULL)
@@ -554,10 +560,10 @@ long int ap_proxy_send_fb(BUFF *f, request_rec *r, cache_req *c, off_t len, int 
 
         /* Read block from server */
         if (-1 == len) {
-            n = ap_bread(f, buf, IOBUFSIZE);
+            n = ap_bread(f, buf, buf_size);
         }
         else {
-            n = ap_bread(f, buf, MIN(IOBUFSIZE, len - total_bytes_rcvd));
+            n = ap_bread(f, buf, MIN(buf_size, len - total_bytes_rcvd));
         }
 
         if (alternate_timeouts)
@@ -577,6 +583,18 @@ long int ap_proxy_send_fb(BUFF *f, request_rec *r, cache_req *c, off_t len, int 
             break;                /* EOF */
         o = 0;
         total_bytes_rcvd += n;
+
+        /* if we've received everything... */
+        /* in the case of slow frontends and expensive backends,
+         * we want to avoid leaving a backend connection hanging
+         * while the frontend takes it's time to absorb the bytes.
+         * so: if we just read the last block, we close the backend
+         * connection now instead of later - it's no longer needed.
+         */
+        if (total_bytes_rcvd == len) {
+            ap_bclose(f);
+            f = NULL;
+        }
 
         /* Write to cache first. */
         /*@@@ XXX FIXME: Assuming that writing the cache file won't time out?!!? */
@@ -634,8 +652,14 @@ long int ap_proxy_send_fb(BUFF *f, request_rec *r, cache_req *c, off_t len, int 
 
     } /* loop and ap_bread while "ok" */
 
-    if (!con->aborted)
+    /* if the backend connection is still open, close it */
+    if (f) {
+        ap_bclose(f);
+    }
+
+    if (!con->aborted) {
         ap_bflush(con->client);
+    }
 
     ap_kill_timeout(r);
     return total_bytes_rcvd;

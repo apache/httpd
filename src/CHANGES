@@ -1,5 +1,18 @@
 Changes with Apache 1.3.24
 
+  *) When proxy enabled a slow frontend client to read from an
+     expensive backend server, it would wait until it had delivered
+     the response to the slow frontend client completely before
+     closing the backend connection. The backend connection is now
+     closed as soon as the last byte is read from it, freeing up
+     resources that would have been tied up unnecessarily.
+     [Graham Leggett, Igor Sysoev <is@rambler-co.ru>]
+
+  *) The proxy code read chunks from the backend server in a
+     hardcoded amount of 8k. The existing ProxyReceiveBufferSize
+     parameter has been overloaded to specify the size of this buffer.
+     [Graham Leggett, Igor Sysoev <is@rambler-co.ru>]
+
   *) [Security] Prevent invalid client hostnames from appearing in
      the log file. If a double-reverse lookup was performed (e.g.,
      for an "Allow from .my.domain" directive) but failed, then
