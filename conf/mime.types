@@ -213,6 +213,7 @@ image/vnd.net-fpx
 image/vnd.svf
 image/vnd.xiff
 image/x-cmu-raster		ras
+image/x-ms-bmp			bmp
 image/x-portable-anymap		pnm
 image/x-portable-bitmap		pbm
 image/x-portable-graymap	pgm
