@@ -147,6 +147,15 @@ FARPROC ap_load_dll_func(ap_dlltoken_e fnLib, char *fnName, int ordinal);
             ap_winapi_pfn_##fn = (ap_winapi_fpt_##fn) ap_load_dll_func(lib, #fn, ord); \
         return (*(ap_winapi_pfn_##fn)) names; }; \
 
+/* Win2K kernel only */
+AP_DECLARE_LATE_DLL_FUNC(DLL_WINADVAPI, BOOL, WINAPI, ChangeServiceConfig2A, 0, (
+    SC_HANDLE hService, 
+    DWORD dwInfoLevel, 
+    LPVOID lpInfo),
+    (hService, dwInfoLevel, lpInfo));
+#undef ChangeServiceConfig2
+#define ChangeServiceConfig2 ap_winapi_ChangeServiceConfig2A
+
 /* WinNT kernel only */
 AP_DECLARE_LATE_DLL_FUNC(DLL_WINBASEAPI, BOOL, WINAPI, CancelIo, 0, (
     IN HANDLE hFile),
