@@ -296,6 +296,7 @@ API_EXPORT(int)        main(int argc, char *argv[])
     ap_pool_t *ptemp; /* Pool for temporary config stuff, reset often */
     ap_pool_t *pcommands; /* Pool for -D, -C and -c switches */
     module **mod;
+    ap_directive_t *conftree = NULL;
 
 #ifndef WIN32 /* done in main_win32.c */
     ap_initialize();
@@ -379,8 +380,9 @@ API_EXPORT(int)        main(int argc, char *argv[])
        for example, to settle down. */
 
     ap_server_root = def_server_root;
+    server_conf = ap_read_config(process, ptemp, confname, &conftree);
     ap_run_pre_config(pconf, plog, ptemp);
-    server_conf = ap_read_config(process, ptemp, confname);
+    ap_process_config_tree(server_conf, conftree, process->pconf, ptemp); 
     if (configtestonly) {
 	ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, "Syntax OK\n");
 	destroy_and_exit_process(process, 0);
@@ -396,10 +398,16 @@ API_EXPORT(int)        main(int argc, char *argv[])
 	for (mod = ap_prelinked_modules; *mod != NULL; mod++) {
 		ap_register_hooks(*mod);
 	}
+        /* This is a hack until we finish the code so that it only reads
+         * the config file once and just operates on the tree already in
+         * memory.  rbb
+         */
+        conftree = NULL;
 	ap_create_pool(&ptemp, pconf);
 	ap_server_root = def_server_root;
+        server_conf = ap_read_config(process, ptemp, confname, &conftree);
 	ap_run_pre_config(pconf, plog, ptemp);
-	server_conf = ap_read_config(process, ptemp, confname);
+        ap_process_config_tree(server_conf, conftree, process->pconf, ptemp); 
 	ap_clear_pool(plog);
 	ap_run_open_logs(pconf, plog, ptemp, server_conf);
 	ap_post_config_hook(pconf, plog, ptemp, server_conf);
