@@ -1123,7 +1123,7 @@ void restart() {
     signal (SIGALRM, SIG_IGN);
     alarm (0);
     is_graceful=0;
-#ifdef NEXT
+#if defined(NEXT)  || defined(USE_LONGJMP)
     longjmp(restart_buffer,1);
 #else
     siglongjmp(restart_buffer,1);
@@ -1715,7 +1715,7 @@ void standalone_main(int argc, char **argv)
 
 	/*
 	if(scoreboard_image->global.please_exit && !count_live_servers())
-#ifdef NEXT
+#if defined(NEXT)  || defined(USE_LONGJMP)
 	    longjmp(restart_buffer,1);
 #else
 	    siglongjmp(restart_buffer,1);
