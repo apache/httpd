@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/01/09 03:08:11 $]
+Last modified at [$Date: 2004/01/09 20:44:10 $]
 
 Release:
 
@@ -90,7 +90,7 @@ PATCHES TO BACKPORT FROM 2.1
       http://cvs.apache.org/viewcvs.cgi/httpd-2.0/server/mpm/winnt/child.c?r1=1.19&r2=1.20
       http://cvs.apache.org/viewcvs.cgi/httpd-2.0/server/mpm/winnt/mpm_winnt.c?r1=1.301&r2=1.302
       http://cvs.apache.org/viewcvs.cgi/httpd-2.0/server/mpm/winnt/mpm_winnt.h?r1=1.42&r2=1.43
-      +1: stoddard
+      +1: stoddard, trawick (with subsequent change to messages)
 
     * If large file support is enabled, allow any file that is greater than
       AP_MAX_SENDFILE to be split into multiple buckets. This allows Apache
