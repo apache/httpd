@@ -425,11 +425,14 @@ int main(int argc, const char * const argv[])
 	ap_run_open_logs(pconf, plog, ptemp, server_conf);
 	ap_run_post_config(pconf, plog, ptemp, server_conf);
 	apr_pool_destroy(ptemp);
+	apr_pool_lock(pconf, 1);
 
 	ap_run_optional_fn_retrieve();
 
 	if (ap_mpm_run(pconf, plog, server_conf)) break;
+	apr_pool_lock(pconf, 0);
     }
+    apr_pool_lock(pconf, 0);
     destroy_and_exit_process(process, 0);
     return 0; /* Supress compiler warning. */
 }
