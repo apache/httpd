@@ -172,7 +172,7 @@ int ap_proxy_connect_handler(request_rec *r, char *url,
             "CONNECT to %s on port %d", host, port);
     }
 
-    if ((apr_create_tcp_socket(&sock, r->pool)) != APR_SUCCESS) {
+    if ((apr_create_socket(&sock, APR_INET, SOCK_STREAM, r->pool)) != APR_SUCCESS) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
             "proxy: error creating socket");
         return HTTP_INTERNAL_SERVER_ERROR;

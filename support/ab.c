@@ -492,11 +492,16 @@ static void start_connect(struct connection *c)
     c->cbx = 0;
     c->gotheader = 0;
 
-    if ((rv = apr_getaddrinfo(&destsa, hostname, AF_INET, port, 0, cntxt))
+    if ((rv = apr_getaddrinfo(&destsa, hostname, APR_UNSPEC, port, 0, cntxt))
          != APR_SUCCESS) {
-        apr_err("apr_getaddrinfo()", rv);
+        char buf[120];
+
+        apr_snprintf(buf, sizeof(buf), 
+                     "apr_getaddrinfo() for %s", hostname);
+        apr_err(buf, rv);
     }
-    if ((rv = apr_create_tcp_socket(&c->aprsock, cntxt)) != APR_SUCCESS) {
+    if ((rv = apr_create_socket(&c->aprsock, destsa->sa.sin.sin_family, 
+                                SOCK_STREAM, cntxt)) != APR_SUCCESS) {
         apr_err("Socket:", rv);
     }
     c->start = apr_now();
@@ -878,14 +883,14 @@ static void test(void)
 static void copyright(void)
 {
     if (!use_html) {
-        printf("This is ApacheBench, Version %s\n", AB_VERSION " <$Revision: 1.33 $> apache-2.0");
+        printf("This is ApacheBench, Version %s\n", AB_VERSION " <$Revision: 1.34 $> apache-2.0");
         printf("Copyright (c) 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/\n");
         printf("Copyright (c) 1998-2000 The Apache Software Foundation, http://www.apache.org/\n");
         printf("\n");
     }
     else {
         printf("<p>\n");
-        printf(" This is ApacheBench, Version %s <i>&lt;%s&gt;</i> apache-2.0<br>\n", AB_VERSION, "$Revision: 1.33 $");
+        printf(" This is ApacheBench, Version %s <i>&lt;%s&gt;</i> apache-2.0<br>\n", AB_VERSION, "$Revision: 1.34 $");
         printf(" Copyright (c) 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/<br>\n");
         printf(" Copyright (c) 1998-2000 The Apache Software Foundation, http://www.apache.org/<br>\n");
         printf("</p>\n<p>\n");
