@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:						-*-text-*-
-Last modified at [$Date: 2000/12/20 16:35:22 $]
+Last modified at [$Date: 2000/12/20 16:55:37 $]
 
 Release:
 
@@ -55,9 +55,6 @@ RELEASE SHOWSTOPPERS:
         Status: The best known candidate would be something from
 	BIND v9.
         Status: Greg asks, "why? doesn't gethostbyname_r() handle this?"
-
-    * Modify mod_cgi and mod_cgid to deal with directories.  This allows
-      a lot of directives to be removed from the core.
 
     * The AddInputFilter and AddOutputFilter directives do not allow the
       administrator to remove or reorder filters.  Once a filter is added
