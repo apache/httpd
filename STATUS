@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/06/15 05:44:09 $]
+Last modified at [$Date: 2003/06/17 15:20:02 $]
 
 Release:
 
@@ -227,6 +227,23 @@ PATCHES TO PORT FROM 2.1
 
     * Ignore the Server header field as set by modules and CGIs.
         modules/http/http_protocol.c 1.470
+        +1: trawick
+
+    * mod_rewrite: Perform child initialization on the rewrite log
+      lock.  This fixes a log corruption issue when flock-based 
+      serialization is used (e.g., FreeBSD).
+        modules/mappers/mod_rewrite.c 1.152
+        +1: trawick
+
+    * Unix: Handle permissions settings for flock-based mutexes in 
+      unixd_set_global|proc_mutex_perms().  Allow the functions to
+      be called for any type of mutex.  PR 20312
+        modules/mappers/mod_rewrite.c 1.153
+        modules/ssl/mod_ssl.h 1.136
+        modules/ssl/ssl_engine_config.c 1.181
+        modules/ssl/ssl_engine_mutex.c 1.126
+        os/unix/unixd.c 1.158
+        os/unix/unixd.h 1.138
         +1: trawick
 
 CURRENT RELEASE NOTES:
