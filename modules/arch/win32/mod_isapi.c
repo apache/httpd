@@ -293,7 +293,7 @@ static apr_status_t cleanup_isapi(void *isa_)
     return isapi_unload(isa, 1);
 }
 
-static apr_status_t isapi_load(apr_pool_t *p, server_rec *s, request_rec *r, isapi_loaded *isa)
+static apr_status_t isapi_load(apr_pool_t *p, server_rec *s, isapi_loaded *isa)
 {
     apr_status_t rv;
 
@@ -433,7 +433,7 @@ apr_status_t isapi_lookup(apr_pool_t *p, server_rec *s, request_rec *r,
              */
             if (check_time == (*isa)->last_load_time) {
 
-                rv = isapi_load(loaded.pool, r->server, r, *isa);
+                rv = isapi_load(loaded.pool, s, *isa);
 
                 apr_thread_mutex_lock(loaded.lock);
                 (*isa)->last_load_rv = rv;
@@ -485,7 +485,7 @@ apr_status_t isapi_lookup(apr_pool_t *p, server_rec *s, request_rec *r,
      */
     apr_thread_mutex_unlock(loaded.lock);
 
-    rv = isapi_load(loaded.pool, r->server, r, *isa);
+    rv = isapi_load(loaded.pool, s, *isa);
     (*isa)->last_load_time = apr_time_now();
     (*isa)->last_load_rv = rv;
 
