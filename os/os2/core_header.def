@@ -1,6 +1,5 @@
 LIBRARY httpd INITINSTANCE
 DESCRIPTION "Apache Server Core"
-DATA NONSHARED
 
 EXPORTS
   "main"
