@@ -276,11 +276,7 @@ static void sig_term(int sig)
 
 static void restart(int sig)
 {
-#ifndef WIN32
     ap_start_restart(sig == SIGWINCH);
-#else
-    ap_start_restart(1);
-#endif
 }
 
 static void set_signals(void)
