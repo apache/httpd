@@ -1966,64 +1966,88 @@ static apr_status_t handle_config(include_ctx_t *ctx, ap_filter_t *f,
     return APR_SUCCESS;
 }
 
+/*
+ * <!--#fsize virtual|file="..." [virtual|file="..."] ... -->
+ */
 static apr_status_t handle_fsize(include_ctx_t *ctx, ap_filter_t *f,
                                  apr_bucket_brigade *bb)
 {
-    char *tag     = NULL;
-    char *tag_val = NULL;
-    apr_finfo_t  finfo;
-    apr_size_t  s_len;
-    apr_bucket   *tmp_buck;
-    char *parsed_string;
     request_rec *r = f->r;
 
-    if (ctx->flags & SSI_FLAG_PRINTING) {
-        while (1) {
-            ap_ssi_get_tag_and_value(ctx, &tag, &tag_val, SSI_VALUE_DECODED);
-            if (!tag || !tag_val) {
-                return APR_SUCCESS;
+    if (!ctx->argc) {
+        ap_log_rerror(APLOG_MARK,
+                      (ctx->flags & SSI_FLAG_PRINTING)
+                          ? APLOG_ERR : APLOG_WARNING,
+                      0, r, "missing argument for fsize element in %s",
+                      r->filename);
+    }
+
+    if (!(ctx->flags & SSI_FLAG_PRINTING)) {
+        return APR_SUCCESS;
+    }
+
+    if (!ctx->argc) {
+        SSI_CREATE_ERROR_BUCKET(ctx, f, bb);
+        return APR_SUCCESS;
+    }
+
+    while (1) {
+        char *tag     = NULL;
+        char *tag_val = NULL;
+        apr_finfo_t finfo;
+        char *parsed_string;
+
+        ap_ssi_get_tag_and_value(ctx, &tag, &tag_val, SSI_VALUE_DECODED);
+        if (!tag || !tag_val) {
+            break;
+        }
+
+        parsed_string = ap_ssi_parse_string(r, ctx, tag_val, NULL,
+                                            MAX_STRING_LEN,
+                                            SSI_EXPAND_DROP_NAME);
+
+        if (!find_file(r, "fsize", tag, parsed_string, &finfo)) {
+            char *buf;
+            apr_size_t len;
+
+            if (!(ctx->flags & SSI_FLAG_SIZE_IN_BYTES)) {
+                buf = apr_strfsize(finfo.size, apr_palloc(ctx->pool, 5));
+                len = 4; /* omit the \0 terminator */
             }
             else {
-                parsed_string = ap_ssi_parse_string(r, ctx, tag_val, NULL, 
-                                                    MAX_STRING_LEN,
-                                                    SSI_EXPAND_DROP_NAME);
-                if (!find_file(r, "fsize", tag, parsed_string, &finfo)) {
-                    /* XXX: if we *know* we're going to have to copy the
-                     * thing off of the stack anyway, why not palloc buff
-                     * instead of sticking it on the stack; then we can just
-                     * use a pool bucket and skip the copy
-                     */
-                    char buff[50];
+                apr_size_t l, x, pos;
+                char *tmp;
 
-                    if (!(ctx->flags & SSI_FLAG_SIZE_IN_BYTES)) {
-                        apr_strfsize(finfo.size, buff);
-                        s_len = strlen (buff);
+                tmp = apr_psprintf(ctx->dpool, "%" APR_OFF_T_FMT, finfo.size);
+                len = l = strlen(tmp);
+
+                for (x = 0; x < l; ++x) {
+                    if (x && !((l - x) % 3)) {
+                        ++len;
                     }
-                    else {
-                        int l, x, pos = 0;
-                        char tmp_buff[50];
+                }
 
-                        apr_snprintf(tmp_buff, sizeof(tmp_buff), 
-                                     "%" APR_OFF_T_FMT, finfo.size);
-                        l = strlen(tmp_buff);    /* grrr */
-                        for (x = 0; x < l; x++) {
-                            if (x && (!((l - x) % 3))) {
-                                buff[pos++] = ',';
-                            }
-                            buff[pos++] = tmp_buff[x];
-                        }
-                        buff[pos] = '\0';
-                        s_len = pos;
-                    }
-
-                    tmp_buck = apr_bucket_heap_create(buff, s_len, NULL,
-                                                  r->connection->bucket_alloc);
-                    APR_BRIGADE_INSERT_TAIL(bb, tmp_buck);
+                if (len == l) {
+                    buf = apr_pstrmemdup(ctx->pool, tmp, len);
                 }
                 else {
-                    SSI_CREATE_ERROR_BUCKET(ctx, f, bb);
+                    buf = apr_palloc(ctx->pool, len);
+
+                    for (pos = x = 0; x < l; ++x) {
+                        if (x && !((l - x) % 3)) {
+                            buf[pos++] = ',';
+                        }
+                        buf[pos++] = tmp[x];
+                    }
                 }
             }
+
+            APR_BRIGADE_INSERT_TAIL(bb, apr_bucket_pool_create(buf, len,
+                                    ctx->pool, f->c->bucket_alloc));
+        }
+        else {
+            SSI_CREATE_ERROR_BUCKET(ctx, f, bb);
+            break;
         }
     }
 
