@@ -1,5 +1,9 @@
 Changes with Apache 1.3b7
 
+  *) PORT: Make sure some AWK's don't fail in src/Configure with "string too
+     long" errors when generating the MODULES entry for src/Makefile
+     [Ben Hyde, Ralf S. Engelschall]
+
   *) Make sure src/Configure doesn't complain about the old directory
      /usr/local/etc/httpd/ when APACI is used.  [Lars Eilebrecht]
    

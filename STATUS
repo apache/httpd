@@ -58,6 +58,7 @@ Showstoppers:
 Committed Code Changes:
 
     * Lars' Configure fix to avoid confusing message under APACI control
+    * Ralf's Configure fix for AWK's failing with "string to long" error
 
 Available Patches:
 

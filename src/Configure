@@ -1362,12 +1362,10 @@ awk -f $awkfile >>Makefile <$tmpfile
 ## Now add the auto-generated library targets.  Need to use awk so we
 ## don't hang a continuation on the last line.
 ##
-$CAT > $awkfile <<EOF3
-    BEGIN {
-	split ("$AUTOLIBS", libs)
-EOF3
-$CAT >> $awkfile <<'EOF4'
+$CAT > $awkfile <<'EOF4'
+    {
 	z = 0
+	split ($0, libs)
 	for ( lib in libs ) {
 	    if (z != 0)
 		printf (" \\\n")
@@ -1379,7 +1377,7 @@ $CAT >> $awkfile <<'EOF4'
 	printf ("\n")
     }
 EOF4
-awk -f $awkfile >>Makefile </dev/null
+echo "$AUTOLIBS" | awk -f $awkfile >>Makefile
 echo "" >>Makefile
 
 ####################################################################
