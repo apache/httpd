@@ -7,6 +7,8 @@
 # to controlling Apache.  Written by Marc Slemko, 1997/08/23
 # 
 # The exit codes returned are:
+#   XXX this doc is no longer correct now that the interesting
+#   XXX functions are handled by httpd
 #	0 - operation completed successfully
 #	1 - 
 #	2 - usage error
@@ -25,9 +27,6 @@ ARGV="$@"
 # |||||||||||||||||||| START CONFIGURATION SECTION  ||||||||||||||||||||
 # --------------------                              --------------------
 # 
-# the path to your PID file
-PIDFILE=@exp_runtimedir@/@progname@.pid
-#
 # the path to your httpd binary, including options if necessary
 HTTPD='@exp_sbindir@/@progname@'
 #
@@ -50,146 +49,32 @@ STATUSURL="http://localhost:@PORT@/server-status"
 
 ERROR=0
 if [ "x$ARGV" = "x" ] ; then 
-    ARGS="help"
+    ARGV="-h"
 fi
 
-for ARG in $ARGV $ARGS
-do
-    # check for pidfile
-    if [ -f $PIDFILE ] ; then
-	PID=`cat $PIDFILE`
-	if [ "x$PID" != "x" ] && kill -0 $PID 2>/dev/null ; then
-	    STATUS="@progname@ (pid $PID) running"
-	    RUNNING=1
-	else
-	    STATUS="@progname@ (pid $PID?) not running"
-	    RUNNING=0
-	fi
-    else
-	STATUS="@progname@ (no pid file) not running"
-	RUNNING=0
-    fi
-
-    case $ARG in
-    start)
-	if [ $RUNNING -eq 1 ]; then
-	    echo "$0 $ARG: @progname@ (pid $PID) already running"
-	    continue
-	fi
-	if $HTTPD ; then
-	    echo "$0 $ARG: @progname@ started"
-	else
-	    echo "$0 $ARG: @progname@ could not be started"
-	    ERROR=3
-	fi
-	;;
-    startssl|sslstart|start-SSL)
-        if [ $RUNNING -eq 1 ]; then
-            echo "$0 $ARG: @progname@ (pid $PID) already running"
-            continue
-        fi
-        if $HTTPD -DSSL; then
-            echo "$0 $ARG: @progname@ started"
-        else
-            echo "$0 $ARG: @progname@ could not be started"
-            ERROR=3
-        fi
-        ;;
-    stop)
-	if [ $RUNNING -eq 0 ]; then
-	    echo "$0 $ARG: $STATUS"
-	    continue
-	fi
-	if kill $PID ; then
-	    echo "$0 $ARG: @progname@ stopped"
-	else
-	    echo "$0 $ARG: @progname@ could not be stopped"
-	    ERROR=4
-	fi
-	;;
-    restart)
-	if [ $RUNNING -eq 0 ]; then
-	    echo "$0 $ARG: @progname@ not running, trying to start"
-	    if $HTTPD ; then
-		echo "$0 $ARG: @progname@ started"
-	    else
-		echo "$0 $ARG: @progname@ could not be started"
-		ERROR=5
-	    fi
-	else
-	    if $HTTPD -t >/dev/null 2>&1; then
-		if kill -HUP $PID ; then
-		    echo "$0 $ARG: @progname@ restarted"
-		else
-		    echo "$0 $ARG: @progname@ could not be restarted"
-		    ERROR=6
-		fi
-	    else
-		echo "$0 $ARG: configuration broken, ignoring restart"
-		echo "$0 $ARG: (run 'apachectl configtest' for details)"
-		ERROR=6
-	    fi
-	fi
-	;;
-    graceful)
-	if [ $RUNNING -eq 0 ]; then
-	    echo "$0 $ARG: @progname@ not running, trying to start"
-	    if $HTTPD ; then
-		echo "$0 $ARG: @progname@ started"
-	    else
-		echo "$0 $ARG: @progname@ could not be started"
-		ERROR=5
-	    fi
-	else
-	    if $HTTPD -t >/dev/null 2>&1; then
-		if kill -@AP_SIG_GRACEFUL_SHORT@ $PID ; then
-		    echo "$0 $ARG: @progname@ gracefully restarted"
-		else
-		    echo "$0 $ARG: @progname@ could not be restarted"
-		    ERROR=7
-		fi
-	    else
-		echo "$0 $ARG: configuration broken, ignoring restart"
-		echo "$0 $ARG: (run 'apachectl configtest' for details)"
-		ERROR=7
-	    fi
-	fi
-	;;
-    status)
-	$LYNX $STATUSURL | awk ' /process$/ { print; exit } { print } '
-	;;
-    fullstatus)
-	$LYNX $STATUSURL
-	;;
-    configtest)
-	if $HTTPD -t; then
-	    :
-	else
-	    ERROR=8
-	fi
-	;;
-    *)
-	echo "usage: $0 (start|stop|restart|fullstatus|status|graceful|configtest|help)"
-	cat <<EOF
-
-start      - start @progname@
-startssl   - start @progname@ with SSL enabled
-stop       - stop @progname@
-restart    - restart @progname@ if running by sending a SIGHUP or start if 
-             not running
-fullstatus - dump a full status screen; requires lynx and mod_status enabled
-status     - dump a short status screen; requires lynx and mod_status enabled
-graceful   - do a graceful restart by sending a @AP_SIG_GRACEFUL@ or start if not running
-configtest - do a configuration syntax test
-help       - this screen
-
-EOF
-	ERROR=2
+case $ARGV in
+start|stop|restart|graceful)
+    $HTTPD -k $ARGV
+    ERROR=$?
     ;;
-
-    esac
-
-done
+startssl|sslstart|start-SSL)
+    $HTTPD -k start -DSSL
+    ERROR=$?
+    ;;
+configtest)
+    $HTTPD -t
+    ERROR=$?
+    ;;
+status)
+    $LYNX $STATUSURL | awk ' /process$/ { print; exit } { print } '
+    ;;
+fullstatus)
+    $LYNX $STATUSURL
+    ;;
+*)
+    $HTTPD $ARGV
+    ERROR=$?
+esac
 
 exit $ERROR
 

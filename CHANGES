@@ -1,3 +1,10 @@
+Changes with Apache 2.0.38
+
+  *) apachectl passes through any httpd options.  Note: apachectl
+     should be used in preference to httpd since it ensures that any
+     appropriate environment variables have been set up.
+     [Jeff Trawick]
+
 Changes with Apache 2.0.37
 
   *) Fix the combination of mod_cgid, mod_setuexec, and mod_userdir.
