@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2002/06/02 06:16:20 $]
+Last modified at [$Date: 2002/06/02 09:13:43 $]
 
 Release:
 
@@ -74,10 +74,28 @@ RELEASE SHOWSTOPPERS:
     * Find a better name for ap_signal_server()
       Message-ID: <m37kltilb3.fsf@rdu88-251-253.nc.rr.com>
       BrianP says:  how about "ap_apachectl()"?
+      Justin says to BrianP: "Eww."
 
     * server pushed CGI's not working.  (Is this a showstopper??)
       PR: 8482
       Message-ID: <3CE15B85.2FF45121@apache.org>
+
+    * Chunked trailer support is broken.
+      Message-ID: <20020531142047.W19485@apache.org>
+      Justin says: Without Ryan's commit that breaks trailers, we need a
+                   way to enforce that ap_discard_request_body can not be
+                   called twice.  I have some rough patches in my tree
+                   that attempt to resolve this by relocating the discard
+                   calls to the latest possible place for all handlers, but
+                   they don't yet pass all httpd-test cases.  More work is
+                   needed, and it won't fix third-party modules that are
+                   written incorrectly.  Another potential solution is to add
+                   r->eos_received to request_rec and HTTP_IN can set this
+                   whenever it returns EOS and if it receives another call
+                   after returning EOS, it can return EOS again.  However,
+                   where possible, I'd prefer to remove duplicate calls to
+                   ap_discard_request_body.  So, maybe both strategies are
+                   needed.
 
 CURRENT VOTES:
 
