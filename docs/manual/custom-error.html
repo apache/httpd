@@ -65,7 +65,11 @@ REDIRECT_URL=/cgi-bin/buggy.pl <br>
 
   <P>At least <code>REDIRECT_URL</code> and <code>REDIRECT_QUERY_STRING</code> will
      be passed to the new URL (assuming it's a cgi-script or a cgi-include). The
-     other variables will exist only if they existed prior to the error/problem.<p>
+     other variables will exist only if they existed prior to the error/problem.
+     <b>None</b> of these will be set if your ErrorDocument is an
+     <i>external</i> redirect (i.e. anything starting with a protocol name
+     like <code>http:</code>, even if it refers to the same host as the
+     server).<p>
 
 <DT>Configuration
 
