@@ -20,7 +20,7 @@ AC_DEFUN(APACHE_CHECK_STANDARD_MODULE, [
     AC_MSG_RESULT([$enable_$1])
 ])
 
-APACHE_CHECK_STANDARD_MODULE(env, , no)
+APACHE_CHECK_STANDARD_MODULE(env, , yes)
 APACHE_CHECK_STANDARD_MODULE(log_config, config_log, yes)
 
 dnl ## mod_usertrack.c
