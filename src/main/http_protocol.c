@@ -216,7 +216,7 @@ int set_keepalive(request_rec *r)
     else if (r->server->keep_alive && (!r->server->keep_alive_max ||
 	(r->server->keep_alive_max > r->connection->keepalives)) &&
 	(r->server->keep_alive_timeout > 0) &&
-	(r->header_only || length || tenc ||
+	(r->status == USE_LOCAL_COPY || r->header_only || length || tenc ||
 	 ((r->proto_num >= 1001) && (r->byterange > 1 || (r->chunked = 1)))) &&
 	(!find_token(r->pool, conn, "close")) &&
 	((ka_sent = find_token(r->pool, conn, "keep-alive")) ||

@@ -1,5 +1,9 @@
 Changes with Apache 1.2b6
 
+  *) Continue persistent connection after 304 response. [Dean Gaudet]
+
+Changes with Apache 1.2b6
+
   *) Allow whitespace in imagemap mapfile coordinates. [Marc Slemko]
 
   *) Fix typo introduced in fix for potential infinite loop around
