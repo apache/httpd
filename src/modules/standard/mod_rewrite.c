@@ -935,8 +935,9 @@ static int hook_uri2file(request_rec *r)
             /* check if the proxy module is enabled, so
                we can actually use it! */
             if (!proxy_available) {
-		log_reason("attempt to make remote request from mod_rewrite "
-    	    	    "without proxy enabled", r->filename, r);
+		aplog_error(APLOG_MARK, APLOG_ERR, r->server,
+			    "attempt to make remote request from mod_rewrite "
+			    "without proxy enabled", r->filename);
                 return FORBIDDEN;
     	    }
 
@@ -1144,7 +1145,10 @@ static int hook_fixup(request_rec *r)
      */
     if (!(allow_options(r) & (OPT_SYM_LINKS | OPT_SYM_OWNER))) {
         /* FollowSymLinks is mandatory! */
-        log_reason("Options FollowSymLinks or SymLinksIfOwnerMatch is off which implies that RewriteRule directive is forbidden", r->filename, r);
+        aplog_error(APLOG_MARK, APLOG_ERR, r->server,
+		    "Options FollowSymLinks or SymLinksIfOwnerMatch is off "
+		    "which implies that RewriteRule directive is forbidden: %s",
+		    r->filename);
         return FORBIDDEN;
     }
     else {
@@ -2115,7 +2119,8 @@ static void expand_map_lookups(request_rec *r, char *uri, int uri_len)
             if (cpT != NULL) {
                 n = strlen(cpT);
                 if (cpO + n >= newuri + sizeof(newuri)) {
-                    log_printf(r->server, "insufficient space in expand_map_lookups, aborting");
+                    aplog_error(APLOG_MARK, APLOG_ERR, r->server,
+				"insufficient space in expand_map_lookups, aborting");
                     return;
                 }
                 memcpy(cpO, cpT, n);
@@ -2124,7 +2129,8 @@ static void expand_map_lookups(request_rec *r, char *uri, int uri_len)
             else {
                 n = strlen(defaultvalue);
                 if (cpO + n >= newuri + sizeof(newuri)) {
-                    log_printf(r->server, "insufficient space in expand_map_lookups, aborting");
+                    aplog_error(APLOG_MARK, APLOG_ERR, r->server,
+				"insufficient space in expand_map_lookups, aborting");
                     return;
                 }
                 memcpy(cpO, defaultvalue, n);
@@ -2137,7 +2143,8 @@ static void expand_map_lookups(request_rec *r, char *uri, int uri_len)
                 cpT = cpI+strlen(cpI);
             n = cpT-cpI;
             if (cpO + n >= newuri + sizeof(newuri)) {
-                log_printf(r->server, "insufficient space in expand_map_lookups, aborting");
+                aplog_error(APLOG_MARK, APLOG_ERR, r->server,
+			    "insufficient space in expand_map_lookups, aborting");
                 return;
             }
             memcpy(cpO, cpI, n);
