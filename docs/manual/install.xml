@@ -153,14 +153,13 @@
     version of the Apache HTTP Server. This can be accomplished by
     testing the downloaded tarball against the PGP signature. This,
     in turn, is a two step procedure. First, you must obtain the
-    <code>KEYS</code> file from the <a
-    href="http://httpd.apache.org/download.cgi">Apache HTTP
-    Server download site</a>, too. (To assure that the <code>KEYS</code>
-    file itself has not been modified, it may be a good idea to use a
-    file from a previous distribution of Apache or import the keys from a
-    public key server.) The keys are imported into your personal
-    key ring using one of the following commands (depending on your
-    pgp version):</p>
+    <a href="http://www.apache.org/dist/httpd/KEYS"><code>KEYS</code></a>
+    file from the Apache distribution site, too. (To assure that the
+    <code>KEYS</code> file itself has not been modified, it may be a good
+    idea to use a file from a previous distribution of Apache or import
+    the keys from a public key server.) The keys are imported into
+    your personal key ring using one of the following commands (depending
+    on your pgp version):</p>
 
 <example>$ pgp &lt; KEYS</example>
 
@@ -171,10 +170,13 @@
     <p>The next step is to test the tarball against the PGP
     signature, which should always be obtained from the <a
     href="http://httpd.apache.org/download.cgi">main Apache
-    website</a>. The signature file has a filename identical to the
-    source tarball with the addition of <code>.asc</code>. Then you
-    can check the distribution with one of the following commands
-    (again, depending on your pgp version):</p>
+    website</a>. A link to the signature file is placed behind the
+    corresponding download link or may be found in the particular
+    directory at the <a href="http://www.apache.org/dist/httpd/">Apache
+    distribution site</a>. Its filename is identical to the source
+    tarball with the addition of <code>.asc</code>. Then you can check
+    the distribution with one of the following commands (again,
+    depending on your pgp version):</p>
 
 <example>$ pgp httpd-2_1_<em>NN</em>.tar.gz.asc</example>
 
