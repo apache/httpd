@@ -1,6 +1,5 @@
- 
 /* ====================================================================
- * Copyright (c) 1996 The Apache Group.  All rights reserved.
+ * Copyright (c) 1996,1997 The Apache Group.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -81,7 +80,6 @@
 **  The documentation and latest release can be found on
 **  http://www.engelschall.com/sw/mod_rewrite/
 **
-**  Copyright (c) 1996 The Apache Group,    All rights reserved.
 **  Copyright (c) 1996 Ralf S. Engelschall, All rights reserved.
 **
 **  Written for The Apache Group by
