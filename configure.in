@@ -279,8 +279,8 @@ if test "$apache_need_shared" = "yes"; then
   fi
   case $host in
     *-ibm-aix*)
-      HTTPD_LDFLAGS="$HTTPD_LDFLAGS -Wl,-bE:$abs_srcdir/server/httpd.exp"
-      SH_LDFLAGS="$SH_LDFLAGS -Wl,-bI:$abs_srcdir/server/httpd.exp"
+      HTTPD_LDFLAGS="$HTTPD_LDFLAGS -Wl,-bE:$abs_blddir/server/httpd.exp"
+      SH_LDFLAGS="$SH_LDFLAGS -Wl,-bI:$abs_blddir/server/httpd.exp"
       ;;
     *beos)
       SH_LDFLAGS='$(top_builddir)/_APP_'
