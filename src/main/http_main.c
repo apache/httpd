@@ -309,7 +309,12 @@ static void lingering_close (int sd, server_rec *server_conf)
      * slurp up any data that arrives...
      */
 
+#ifdef HPUX
+    while ((select_rv = select (sd + 1, (int*)&fds_read, NULL, (int*)&fds_err,
+				&tv)) > 0) {
+#else
     while ((select_rv = select (sd + 1, &fds_read, NULL, &fds_err, &tv)) > 0) {
+#endif
 	if ((read_rv = read (sd, dummybuf, sizeof(dummybuf))) <= 0)
 	    break;
 	else {
@@ -1393,7 +1398,11 @@ void child_main(int child_num_arg)
 	    FD_SET(sd,&fds);
 	    
 	    do
+#ifdef HPUX
+		csd = select(sd+1, (int*)&fds, NULL, NULL, NULL);
+#else
 		csd = select(sd+1, &fds, NULL, NULL, NULL);
+#endif
 	    while(csd < 0 && errno == EINTR);
 
 	    if(csd < 0)
