@@ -506,10 +506,6 @@ static int check_speling(request_rec *r)
 			     : "Spelling fix: %s: %d candidates",
 			 r->uri, candidates->nelts, ref);
 
-            /* The log entry above will be sent to the client instead of the
-             * page we've constructed unless we take it out of error-notes */
-            ap_table_unset(r->notes, "error-notes");
-
             return HTTP_MULTIPLE_CHOICES;
         }
     }
