@@ -209,7 +209,7 @@ LoadModule cache_module modules/mod_cache.so <br />
 
 <directivesynopsis>
 <name>CacheForceCompletion</name>
-<description>Percentage of download to arrive for the cache to force complete transfert</description>
+<description>Percentage of download to arrive for the cache to force complete transfer</description>
 <syntax>CacheForceCompletion <em>Percentage</em></syntax>
 <default>CacheForceCompletion 60</default>
 <contextlist><context>server config</context></contextlist>
@@ -223,8 +223,8 @@ LoadModule cache_module modules/mod_cache.so <br />
 <note type="warning">
 This feature is currently <em>not</em> implemented.
 </note>
- </usage>
- </directivesynopsis>
+</usage>
+</directivesynopsis>
 
 <directivesynopsis>
 <name>CacheMaxStreamingBuffer</name>
@@ -234,15 +234,25 @@ This feature is currently <em>not</em> implemented.
 <contextlist><context>server config</context></contextlist>
 
 <usage>
-    <p>Maximum number of bytes of a streamed response (i.e., a response where the entire content is not available all at once, such as a proxy or CGI response) to buffer before deciding if the response is cacheable.  By default, a streamed response will <em>not</em> be cached unless it has a Content-Length header.  The reason for this is to avoid using a large amount of memory to buffer a partial response that might end up being too large to fit in the cache anyway.  To enable caching of streamed responses, use CacheMaxStreamingBuffer to specify the maximum amount of buffer space to use per request.</p>
-    <p>Note: Using a nonzero value for CacheMaxStreamingBuffer will not delay the transmission of the response to the client.  As soon as mod_cache copies a
-    block of streamed content into a buffer, it sends the block on to the next
-    output filter for delivery to the client.</p>
+<p>Maximum number of bytes of a streamed response (i.e., a response where
+the entire content is not available all at once, such as a proxy or CGI
+response) to buffer before deciding if the response is cacheable.  By
+default, a streamed response will <em>not</em> be cached unless it has a
+Content-Length header.  The reason for this is to avoid using a large amount
+of memory to buffer a partial response that might end up being too large
+to fit in the cache anyway.  To enable caching of streamed responses, use
+CacheMaxStreamingBuffer to specify the maximum amount of buffer space to use
+per request.</p>
 
-    <example>
-    # Enable caching of streamed responses up to 64KB:
-    CacheMaxStreamingBuffer  65536
-    </example>
+<p>Note: Using a nonzero value for CacheMaxStreamingBuffer will not delay the
+transmission of the response to the client.  As soon as mod_cache copies a
+block of streamed content into a buffer, it sends the block on to the next
+output filter for delivery to the client.</p>
+
+<example>
+# Enable caching of streamed responses up to 64KB:<br />
+CacheMaxStreamingBuffer  65536
+</example>
 </usage>
 </directivesynopsis>
 

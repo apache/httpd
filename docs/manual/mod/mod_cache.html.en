@@ -103,7 +103,7 @@ LoadModule cache_module modules/mod_cache.so <br />
   CacheEnable  fd    /images <br />
 </code></p></div>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="CacheForceCompletion" id="CacheForceCompletion">CacheForceCompletion</a> <a name="cacheforcecompletion" id="cacheforcecompletion">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
-              </a></th><td>Percentage of download to arrive for the cache to force complete transfert</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
+              </a></th><td>Percentage of download to arrive for the cache to force complete transfer</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
               </a></th><td>CacheForceCompletion <em>Percentage</em></td></tr><tr><th><a href="directive-dict.html#Default">Default: 
               </a></th><td><code>CacheForceCompletion 60</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>server config</td></tr><tr><th><a href="directive-dict.html#Status">Status:
@@ -117,7 +117,7 @@ LoadModule cache_module modules/mod_cache.so <br />
 <div class="warning">
 This feature is currently <em>not</em> implemented.
 </div>
- </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="CacheIgnoreCacheControl" id="CacheIgnoreCacheControl">CacheIgnoreCacheControl</a> <a name="cacheignorecachecontrol" id="cacheignorecachecontrol">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="CacheIgnoreCacheControl" id="CacheIgnoreCacheControl">CacheIgnoreCacheControl</a> <a name="cacheignorecachecontrol" id="cacheignorecachecontrol">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
               </a></th><td>Ignore requests from the client for uncached content</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
               </a></th><td>CacheIgnoreCacheControl</td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>server config</td></tr><tr><th><a href="directive-dict.html#Status">Status:
@@ -170,13 +170,23 @@ This feature is currently <em>not</em> implemented.
               </a></th><td>server config</td></tr><tr><th><a href="directive-dict.html#Status">Status:
               </a></th><td>Experimental</td></tr><tr><th><a href="directive-dict.html#Module">Module:
               </a></th><td>mod_cache</td></tr></table>
-    <p>Maximum number of bytes of a streamed response (i.e., a response where the entire content is not available all at once, such as a proxy or CGI response) to buffer before deciding if the response is cacheable.  By default, a streamed response will <em>not</em> be cached unless it has a Content-Length header.  The reason for this is to avoid using a large amount of memory to buffer a partial response that might end up being too large to fit in the cache anyway.  To enable caching of streamed responses, use CacheMaxStreamingBuffer to specify the maximum amount of buffer space to use per request.</p>
-    <p>Note: Using a nonzero value for CacheMaxStreamingBuffer will not delay the transmission of the response to the client.  As soon as mod_cache copies a
-    block of streamed content into a buffer, it sends the block on to the next
-    output filter for delivery to the client.</p>
+<p>Maximum number of bytes of a streamed response (i.e., a response where
+the entire content is not available all at once, such as a proxy or CGI
+response) to buffer before deciding if the response is cacheable.  By
+default, a streamed response will <em>not</em> be cached unless it has a
+Content-Length header.  The reason for this is to avoid using a large amount
+of memory to buffer a partial response that might end up being too large
+to fit in the cache anyway.  To enable caching of streamed responses, use
+CacheMaxStreamingBuffer to specify the maximum amount of buffer space to use
+per request.</p>
 
-    <div class="example"><p><code>
-    # Enable caching of streamed responses up to 64KB:
-    CacheMaxStreamingBuffer  65536
-    </code></p></div>
+<p>Note: Using a nonzero value for CacheMaxStreamingBuffer will not delay the
+transmission of the response to the client.  As soon as mod_cache copies a
+block of streamed content into a buffer, it sends the block on to the next
+output filter for delivery to the client.</p>
+
+<div class="example"><p><code>
+# Enable caching of streamed responses up to 64KB:<br />
+CacheMaxStreamingBuffer  65536
+</code></p></div>
 </div></div><div id="footer"><p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p><p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div></body></html>
