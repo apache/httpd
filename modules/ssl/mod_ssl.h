@@ -420,6 +420,7 @@ typedef struct {
     apr_rmm_t      *pSessionCacheDataRMM;
     apr_table_t    *tSessionCacheDataTable;
     ssl_mutexmode_t nMutexMode;
+    apr_lockmech_e  nMutexMech;
     const char     *szMutexFile;
     apr_global_mutex_t   *pMutex;
     apr_array_header_t   *aRandSeed;
@@ -528,6 +529,9 @@ typedef struct {
 
 /*  API glue structures  */
 extern module AP_MODULE_DECLARE_DATA ssl_module;
+
+/* "global" stuff */
+extern const char ssl_valid_ssl_mutex_string[];
 
 /*  configuration handling   */
 SSLModConfigRec *ssl_config_global_create(server_rec *);
