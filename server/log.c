@@ -188,7 +188,7 @@ static int log_child(apr_pool_t *p, const char *progname,
      * may want a common framework for this, since I expect it will
      * be common for other foo-loggers to want this sort of thing...
      */
-    int rc = -1;
+    apr_status_t rc;
     apr_procattr_t *procattr;
     apr_proc_t *procnew;
 
@@ -197,15 +197,11 @@ static int log_child(apr_pool_t *p, const char *progname,
     apr_signal(SIGHUP, SIG_IGN);
 #endif /* ndef SIGHUP */
 
-    if ((apr_createprocattr_init(&procattr, p) != APR_SUCCESS) ||
-        (apr_setprocattr_io(procattr,
-                           APR_FULL_BLOCK,
-                           APR_NO_PIPE,
-                           APR_NO_PIPE) != APR_SUCCESS)) {
-        /* Something bad happened, give up and go away. */
-        rc = -1;
-    }
-    else {
+    if (((rc = apr_createprocattr_init(&procattr, p)) == APR_SUCCESS) &&
+        ((rc = apr_setprocattr_io(procattr,
+                                  APR_FULL_BLOCK,
+                                  APR_NO_PIPE,
+                                  APR_NO_PIPE)) == APR_SUCCESS)) {
         char **args;
         const char *pname;
         
@@ -235,10 +231,9 @@ static void open_error_log(server_rec *s, apr_pool_t *p)
         /* This starts a new process... */
         rc = log_child (p, s->error_fname+1, &dummy);
         if (rc != APR_SUCCESS) {
-	    perror("ap_spawn_child");
-	    ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
-                         "Couldn't fork child for ErrorLog process");
-	                 exit(1);
+	    ap_log_error(APLOG_MARK, APLOG_STARTUP, rc, NULL, 
+                         "Couldn't start ErrorLog process");
+            exit(1);
 	}
 
         s->error_log = dummy;
@@ -735,9 +730,8 @@ AP_DECLARE(piped_log *) ap_open_piped_log(apr_pool_t *p, const char *program)
 
     rc = log_child(p, program, &dummy);
     if (rc != APR_SUCCESS) {
-	perror("ap_spawn_child");
-	ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
-                     "Couldn't fork child for piped log process");
+	ap_log_error(APLOG_MARK, APLOG_STARTUP, rc, NULL, 
+                     "Couldn't start piped log process");
 	exit (1);
     }
 
