@@ -20,18 +20,8 @@ FINAL RELEASE SHOWSTOPPERS:
 
     * The DoS issue about symlinks to /dev/zero is still present.
       A device checker patch had been sent to the list a while ago.
-      PATCH: Make the code wrapped by unvoted_DISALLOW_DEVICE_ACCESS
-             the default in ap_pcfg_openfile()
-      Status: Martin +1, Jim +1
-        Brian: This still doesn't fix it for htpasswd files...
-               how about other files like the mime types file?
-        Jim: It looks like it does fix it for htpasswd (assuming
-	     htpasswd files are accessed via get_pw()), and group
-	     files (assuming accessed by groups_for_user()), the
-	     mod_mime MIME-file, IMAP handler imap-file and digest
-	     password file. What others are we concerned about?
-        Dean: ap_pcfg_openfile() should use pfopen() instead of
-              fopen().
+      PATCH: <199805081628.MAA12929@devsys.jaguNET.com>
+      Status: Jim +1
 
 WIN32 1.3 FINAL RELEASE SHOWSTOPPERS:
 
