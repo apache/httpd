@@ -1,4 +1,4 @@
-# $Id: Configuration.tmpl,v 1.39 1996/09/27 08:55:50 mjc Exp $
+# $Id: Configuration.tmpl,v 1.40 1996/09/27 22:11:13 brian Exp $
 # Config file for the Apache httpd.
 
 # Configuration.tmpl is the template for Configuration. Configuration should
@@ -224,6 +224,13 @@ Module browser_module      mod_browser.o
 ## to use Cookies.  This module is for user tracking only
 
 # Module usertrack_module      mod_usertrack.o
+
+## FastCGI is a high-performance alternative to CGI.  For more information
+## consult http://www.fastcgi.com/.  Note that you still need to get the
+## FastCGI Developers' Kit for the fastcgi daemon; mod_fastcgi is simply
+## the Apache interface to that.
+
+# Module fastcgi_module       mod_fastcgi.o
 
 ## Finally, the proxy module.  It's not as complete as it could
 ## be yet, so use at your own risk.
