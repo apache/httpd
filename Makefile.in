@@ -30,7 +30,7 @@ include $(top_srcdir)/build/program.mk
 install-conf:
 	@echo Installing configuration files
 	@test -d $(sysconfdir) || $(MKINSTALLDIRS) $(sysconfdir)
-	@cd docs/conf; \
+	@cd $(top_srcdir)/docs/conf; \
 	for i in mime.types magic; do \
 		$(INSTALL_DATA) $$i $(sysconfdir); \
 	done; \
@@ -59,39 +59,39 @@ install-build:
 	    cp srclib/apr/shlibtool $(installbuilddir); \
 	fi
 
-htdocs-srcdir = docs/docroot
+htdocs-srcdir = $(top_srcdir)/docs/docroot
 
 docs::
 	mkdir -p ./docs/api
 	srclib/apr/build/scandoc.pl -i./build/default.pl -p./docs/api/ ./include/*.h
 
 dox::
-	doxygen docs/doxygen.conf
+	doxygen $(top_srcdir)/docs/doxygen.conf
 
 install-htdocs:
 	@echo Installing HTML documents
 	@test -d $(htdocsdir) || $(MKINSTALLDIRS) $(htdocsdir)
 	@test -d $(htdocs-srcdir) && (cd $(htdocs-srcdir) && cp -rp * $(htdocsdir))
 	@test -d $(prefix)/manual || $(MKINSTALLDIRS) $(prefix)/manual
-	@test -d docs/manual && (cd docs/manual && cp -rp * $(prefix)/manual)
+	@test -d $(top_srcdir)/docs/manual && (cd $(top_srcdir)/docs/manual && cp -rp * $(prefix)/manual)
 	@(cd $(htdocsdir) && find . -name "CVS" -print | xargs rm -rf {} \;)
 
 install-error:
 	@echo Installing error documents
 	@test -d $(errordir) || $(MKINSTALLDIRS) $(errordir)
-	@(cd docs/error && cp -rp * $(errordir))
+	@(cd $(top_srcdir)/docs/error && cp -rp * $(errordir))
 	@(cd $(errordir) && find . -name "CVS" -print | xargs rm -rf {} \;)
 
 install-icons:
 	@echo Installing icons
 	@test -d $(iconsdir) || $(MKINSTALLDIRS) $(iconsdir)
-	@(cd docs/icons && cp -rp * $(iconsdir))
+	@(cd $(top_srcdir)/docs/icons && cp -rp * $(iconsdir))
 	@(cd $(iconsdir) && find . -name "CVS" -print | xargs rm -rf {} \;)
 
 install-cgi:
 	@echo Installing CGIs
 	@test -d $(cgidir) || $(MKINSTALLDIRS) $(cgidir)
-	@(cd docs/cgi-examples && cp -rp * $(cgidir))
+	@(cd $(top_srcdir)/docs/cgi-examples && cp -rp * $(cgidir))
 	@(cd $(cgidir) && find . -name "CVS" -print | xargs rm -rf {} \;)
 
 install-other:
@@ -131,8 +131,8 @@ install-man:
 	@test -d $(mandir)      || $(MKINSTALLDIRS) $(mandir)
 	@test -d $(mandir)/man1 || $(MKINSTALLDIRS) $(mandir)/man1
 	@test -d $(mandir)/man8 || $(MKINSTALLDIRS) $(mandir)/man8
-	@cp -p docs/man/*.1 $(mandir)/man1
-	@cp -p docs/man/*.8 $(mandir)/man8
+	@cp -p $(top_srcdir)/docs/man/*.1 $(mandir)/man1
+	@cp -p $(top_srcdir)/docs/man/*.8 $(mandir)/man8
 
 install-suexec:
 	@if test -f $(builddir)/support/suexec; then \

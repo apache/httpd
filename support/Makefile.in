@@ -13,7 +13,7 @@ include $(top_builddir)/build/rules.mk
 
 install:
 	@test -d $(bindir) || $(MKINSTALLDIRS) $(bindir)
-	@cp -p $(top_srcdir)/server/httpd.exp $(libexecdir)
+	@cp -p $(top_builddir)/server/httpd.exp $(libexecdir)
 	@cp -p apachectl $(sbindir)
 	chmod 755 $(sbindir)/apachectl
 	@if test -f $(builddir)/apxs; then \
