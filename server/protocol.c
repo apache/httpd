@@ -642,6 +642,7 @@ static int read_request_line(request_rec *r, apr_bucket_brigade *bb)
     conn_rec *conn = r->connection;
 #endif
     int major = 1, minor = 0;   /* Assume HTTP/1.0 if non-"HTTP" protocol */
+    char http[5];
     apr_size_t len;
 
     /* Read past empty lines until we get a real request line,
@@ -732,8 +733,9 @@ static int read_request_line(request_rec *r, apr_bucket_brigade *bb)
         && apr_isdigit(pro[7])) {
         r->proto_num = HTTP_VERSION(pro[5] - '0', pro[7] - '0');
     }
-    else if (2 == sscanf(r->protocol, "HTTP/%u.%u", &major, &minor)
-             && minor < HTTP_VERSION(1, 0)) /* don't allow HTTP/0.1000 */
+    else if (3 == sscanf(r->protocol, "%4s/%u.%u", http, &major, &minor)
+             && (strcasecmp("http", http) == 0)
+             && (minor < HTTP_VERSION(1, 0)) ) /* don't allow HTTP/0.1000 */
         r->proto_num = HTTP_VERSION(major, minor);
     else
         r->proto_num = HTTP_VERSION(1, 0);
