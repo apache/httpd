@@ -377,7 +377,7 @@ static apr_status_t send_downstream(ap_filter_t *f, const char *tmp, apr_ssize_t
     ap_bucket_brigade *bb;
 
     bb = ap_brigade_create(f->r->pool);
-    ap_brigade_append_buckets(bb, ap_bucket_create_transient(tmp, len));
+    AP_BRIGADE_INSERT_TAIL(bb, ap_bucket_create_transient(tmp, len));
     return ap_pass_brigade(f->next, bb);
 }
 
@@ -386,19 +386,8 @@ static apr_status_t send_eos(ap_filter_t *f)
     ap_bucket_brigade *bb;
 
     bb = ap_brigade_create(f->r->pool);
-    ap_brigade_append_buckets(bb, ap_bucket_create_eos());
+    AP_BRIGADE_INSERT_TAIL(bb, ap_bucket_create_eos());
     return ap_pass_brigade(f->next, bb);
-}
-
-static void remove_and_destroy(ap_bucket_brigade *bb, ap_bucket *b)
-{
-    if (bb->head == b) {
-        bb->head = b->next;
-    }
-    if (bb->tail == b) {
-        bb->tail = b->prev;
-    }
-    ap_bucket_destroy(b);
 }
 
 static apr_status_t set_aside_partial_char(ap_filter_t *f, const char *partial,
@@ -526,7 +515,7 @@ static apr_status_t xlate_filter(ap_filter_t *f, ap_bucket_brigade *bb)
                      dc && dc->charset_default ? dc->charset_default : "(none)");
     }
 
-    dptr = bb->head;
+    dptr = AP_BRIGADE_FIRST(bb);
     done = 0;
     cur_len = 0;
     space_avail = sizeof(tmp);
@@ -534,13 +523,14 @@ static apr_status_t xlate_filter(ap_filter_t *f, ap_bucket_brigade *bb)
     while (!done) {
         if (!cur_len) { /* no bytes left to process in the current bucket... */
             if (consumed_bucket) {
-                remove_and_destroy(bb, consumed_bucket);
+                AP_BUCKET_REMOVE(consumed_bucket);
+                ap_bucket_destroy(consumed_bucket);
                 consumed_bucket = NULL;
             }
-            if (!dptr ||
+            if (dptr == AP_BRIGADE_SENTINEL(bb) ||
                 dptr->read(dptr, &cur_str, &cur_len, 0) == AP_END_OF_BRIGADE) {
                 done = 1;
-                if (dptr && ctx->saved) {
+                if (dptr != AP_BRIGADE_SENTINEL(bb) && ctx->saved) {
                     /* Oops... we have a partial char from the previous bucket
                      * that won't be completed because there's no more data.
                      */
@@ -550,7 +540,8 @@ static apr_status_t xlate_filter(ap_filter_t *f, ap_bucket_brigade *bb)
                 break;
             }
             consumed_bucket = dptr; /* for axing when we're done reading it */
-            dptr = dptr->next; /* get ready for when we access the next bucket */
+            dptr = AP_BUCKET_NEXT(dptr); /* get ready for when we access the 
+                                          * next bucket */
         }
         /* Try to fill up our tmp buffer with translated data. */
         cur_avail = cur_len;
