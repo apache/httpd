@@ -91,6 +91,8 @@ Committed Code Changes:
     * Performance tweak to mod_log_config
     * Marc's cfg_getline() fix for lines without the termination char
     * Ralf's Various cleanups to the command line interface and manual pages
+    * Marc's mod_proxy was not clearing the Proxy-Connection header
+    * Dean's API_EXPORT and CORE_EXPORT cleanup for core functions
 
 Available Patches:
 
