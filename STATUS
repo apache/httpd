@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:						-*-text-*-
-Last modified at [$Date: 2001/09/17 11:22:52 $]
+Last modified at [$Date: 2001/09/28 17:53:02 $]
 
 Release:
 
@@ -41,19 +41,11 @@ RELEASE SHOWSTOPPERS:
       authors of older modules better compatibility, while still improving
       the security and robustness of 2.0.  This does not remove the new
       map_to_storage hook itself, but makes it optional for some cases.
-
-    * There is an observation that svn + ssl has a significant interaction
-      in dir_merge sections with the new location_walk optimization.  This
-      could reflect a bug in retrieving the cached location_walk, or some
-      other nasty mis-config.  Core dump post to httpd-dev;
-      Message-ID: <JLEGKKNELMHCJPNMOKHOIENKEIAA.striker@apache.org>
-
-    * There is an interesting problem with directory_walk, now that it is
-      optional (may be overridden by a map_to_storage hook.)  The change
-      of per_dir_default for a vhost switch doesn't happen until dir_walk.
-      This switch needs to be pushed out of directory_walk, perhaps the
-      burden is put on the 'switcher' of the ->server entry, such as 
-      mod_vhost_alias itself.
+        Status: still need to decide where this goes, OtherBill comments...
+        Message-ID: <065701c14526$495203b0$96c0b0d0@roweclan.net>
+        we need to look at halting this in the 'default handler' case,
+        and that implies pushing the 'handler election' into the request
+        internal processing phase from the run request phase.
 
     * There is a bug in how we sort some hooks, at least the pre-config
       hook.  The first time we call the hooks, they are in the correct 
@@ -90,6 +82,8 @@ RELEASE SHOWSTOPPERS:
     * mod_negotiation needs a new option or directive, something like
       ForceLanguagePriority, to fall back to the LanguagePriority
       directive instead of returning a "no acceptable variant" error.
+        Status: Bill has some code in his tree that accomplishes
+                this, and will commit it Friday after it's tested.
 
     * Usability: Sanitize the MPM config directives.  MaxClients in 
       the threaded MPM is totally misleading now as it has little to
