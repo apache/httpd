@@ -7,6 +7,9 @@ AC_DEFUN(APACHE_CONFIG_NICE,[
 # Created by configure
 
 EOF
+  if test -n "$OPTIM"; then
+    echo "OPTIM=\"$OPTIM\"; export OPTIM" >> $1
+  fi
 
   for arg in [$]0 "[$]@"; do
     echo "\"[$]arg\" \\" >> $1

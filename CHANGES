@@ -1,5 +1,10 @@
 Changes with Apache 2.0b1
 
+  *) Replace configure --with-optim option by using and saving the
+     environment variable OPTIM instead.  This is needed because configure
+     options do not support multiple flags separated by spaces.
+     [Roy Fielding]
+
   *) Fix some byterange handling.  If we get a byte range that looks like
      "-999999" where that is past the end of the file, we should return 
      a PARTIAL CONTENT status code, and return the whole file as one big
