@@ -1364,6 +1364,37 @@ static apr_status_t connection_destructor(void *resource, void *params,
     return APR_SUCCESS;
 }
 
+/* low level connection acquire/release functions
+ * they are hiding apr_reslist for nothreaded or prefork servers.
+ */
+static apr_status_t acquire_connection_low(proxy_conn_rec **conn, proxy_worker *worker)
+{
+    apr_status_t rv;
+#if APR_HAS_THREADS
+    if (worker->hmax) {
+        rv = apr_reslist_acquire(worker->cp->res, (void **)conn);
+    }
+    else
+#endif
+    {
+        *conn = worker->cp->conn;
+        rv = APR_SUCCESS;
+    }
+    return rv;
+}
+
+static apr_status_t release_connection_low(proxy_conn_rec *conn, proxy_worker *worker)
+{
+    apr_status_t rv = APR_SUCCESS;
+#if APR_HAS_THREADS
+    if (worker->hmax) {
+        rv = apr_reslist_release(worker->cp->res, (void *)conn);
+    }
+#endif
+    return rv;
+}
+
+
 static apr_status_t init_conn_worker(proxy_worker *worker, server_rec *s)
 {
     apr_status_t rv;
@@ -1374,6 +1405,11 @@ static apr_status_t init_conn_worker(proxy_worker *worker, server_rec *s)
                                 worker->hmax, worker->ttl,
                                 connection_constructor, connection_destructor,
                                 s, worker->cp->pool);
+#if (APR_MAJOR_VERSION > 0)
+        /* Set the acquire timeout */
+        if (rv == APR_SUCCESS && worker->acquire_set)
+            apr_reslist_timeout_set(worker->cp->res, worker->acquire);
+#endif
     }
     else
 #endif

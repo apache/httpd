@@ -92,7 +92,7 @@ static const char *set_worker_param(proxy_worker *worker,
     else if (!strcasecmp(key, "ttl")) {
         ival = atoi(val);
         if (ival < 1)
-            return "ttl must be al least one second";
+            return "ttl must be at least one second";
         worker->ttl = apr_time_from_sec(ival);
     }
     else if (!strcasecmp(key, "min")) {
@@ -114,6 +114,13 @@ static const char *set_worker_param(proxy_worker *worker,
             return "smax must be a positive number";
         worker->smax = ival;
     }
+    else if (!strcasecmp(key, "acquire")) {
+        ival = atoi(val);
+        if (ival < 1)
+            return "acquire must be at least one mili second";
+        worker->acquire = apr_time_make(0, ival * 1000);
+        worker->acquire_set = 1;
+     }
     else {
         return "unknown parameter";
     }
