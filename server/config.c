@@ -1611,7 +1611,7 @@ AP_DECLARE(void) ap_process_resource_config(server_rec *s, const char *fname,
             if (strcmp(dirent.name, ".")
                 && strcmp(dirent.name, "..")
                 && (apr_fnmatch(pattern, dirent.name,
-                                FNM_PERIOD) == APR_SUCCESS)) {
+                                APR_FNM_PERIOD) == APR_SUCCESS)) {
                 fnew = (fnames *) apr_array_push(candidates);
                 fnew->fname = ap_make_full_path(p, path, dirent.name);
             }
