@@ -400,6 +400,12 @@ are interpreted, it is important to understand how this works.</p>
     the virtual host definition. This allows virtual hosts to
     override the main server configuration.</p>
 
+    <p>When the request is served by <module>mod_proxy</module>, the
+    <directive module="mod_proxy" type="section">Proxy</directive>
+    container takes the place of the <directive module="core"
+    type="section">Directory</directive> container in the processing
+    order.</p>
+
     <p>Later sections override earlier ones.</p>
 
 <note><title>Technical Note</title>

@@ -376,6 +376,11 @@ are interpreted, it is important to understand how this works.</p>
     the virtual host definition. This allows virtual hosts to
     override the main server configuration.</p>
 
+    <p>When the request is served by <code class="module"><a href="./mod/mod_proxy.html">mod_proxy</a></code>, the
+    <code class="directive"><a href="./mod/mod_proxy.html#proxy">&lt;Proxy&gt;</a></code>
+    container takes the place of the <code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code> container in the processing
+    order.</p>
+
     <p>Later sections override earlier ones.</p>
 
 <div class="note"><h3>Technical Note</h3>
