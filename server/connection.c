@@ -100,14 +100,14 @@ IMPLEMENT_VOID_HOOK(pre_connection,(conn_rec *c),(c),1)
 #ifdef USE_SO_LINGER
 #define NO_LINGCLOSE		/* The two lingering options are exclusive */
 
-static void sock_enable_linger(int s) // ZZZZZ abstract the socket, s
+static void sock_enable_linger(int s) /* // ZZZZZ abstract the socket, s */
 {
-    struct linger li;                 // ZZZZZ SocketOptions...
+    struct linger li;                 /* // ZZZZZ SocketOptions... */
 
     li.l_onoff = 1;
     li.l_linger = MAX_SECS_TO_LINGER;
 
-    if (setsockopt(s, SOL_SOCKET, SO_LINGER, // ZZZZZ abstract, return SUCCESS or not
+    if (setsockopt(s, SOL_SOCKET, SO_LINGER, /* // ZZZZZ abstract, return SUCCESS or not */
 		   (char *) &li, sizeof(struct linger)) < 0) {
 	ap_log_error(APLOG_MARK, APLOG_WARNING, server_conf,
 	            "setsockopt: (SO_LINGER)");
