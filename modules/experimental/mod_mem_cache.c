@@ -953,6 +953,8 @@ static apr_status_t write_body(cache_handle_t *h, request_rec *r, apr_bucket_bri
             apr_os_file_get(&(mobj->fd), tmpfile);
 
             /* Open for business */
+            ap_log_error(APLOG_MARK, APLOG_INFO, 0, r->server,
+                         "mem_cache: Cached file: %s with key: %s", name, obj->key);
             obj->complete = 1;
             return APR_SUCCESS;
         }
@@ -1009,6 +1011,8 @@ static apr_status_t write_body(cache_handle_t *h, request_rec *r, apr_bucket_bri
                 }
             }
             /* Open for business */
+            ap_log_error(APLOG_MARK, APLOG_INFO, 0, r->server,
+                         "mem_cache: Cached url: %s", obj->key);
             obj->complete = 1;
             break;
         }
