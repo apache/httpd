@@ -2468,8 +2468,13 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_byterange_filter(
             apr_size_t len;
 
             if (apr_bucket_copy(ec, &foo) != APR_SUCCESS) {
+                /* we assume here that if copy failed we can morph
+                 * the bucket into a copyable one by reading it... normally
+                 * copy won't return anything but APR_SUCCESS or APR_ENOTIMPL
+                 */
+                /* XXX: check for failure? */
                 apr_bucket_read(ec, &str, &len, APR_BLOCK_READ);
-                foo = apr_bucket_heap_create(str, len, 0, NULL);
+                apr_bucket_copy(ec, &foo);
             }
             APR_BRIGADE_INSERT_TAIL(bsend, foo);
             ec = APR_BUCKET_NEXT(ec);
