@@ -754,37 +754,6 @@ static int setup_listeners(pool *pconf, server_rec *s)
  * Here follows a long bunch of generic server bookkeeping stuff...
  */
 
-/*****************************************************************
- * Connection structures and accounting...
- */
-
-
-static conn_rec *new_connection(pool *p, server_rec *server, BUFF *inout,
-                                const struct sockaddr_in *remaddr,   /* ZZZ */
-                                const struct sockaddr_in *saddr,     /* ZZZ */
-			     int child_num, int thread_num)
-{
-    conn_rec *conn = (conn_rec *) ap_pcalloc(p, sizeof(conn_rec));
-
-    /* Got a connection structure, so initialize what fields we can
-     * (the rest are zeroed out by pcalloc).
-     */
-
-    conn->child_num = child_num;
-    conn->thread_num = thread_num;
-
-    conn->pool = p;
-    conn->local_addr = *saddr;
-    conn->base_server = server;
-    conn->client = inout;
-
-    conn->remote_addr = *remaddr;
-    conn->remote_ip = ap_pstrdup(conn->pool,
-			      inet_ntoa(conn->remote_addr.sin_addr));
-
-    return conn;
-}
-
 #if defined(TCP_NODELAY) && !defined(MPE) && !defined(TPF)
 static void sock_disable_nagle(int s) /* ZZZ abstract */
 {
@@ -857,7 +826,7 @@ static void process_socket(pool *p, struct sockaddr *sa_client, int csd, int my_
     conn_io = ap_bcreate(p, B_RDWR);
     ap_bpush_iol(conn_io, iol);
 
-    current_conn = new_connection(p, server_conf, conn_io,
+    current_conn = ap_new_connection(p, server_conf, conn_io,
                                   (const struct sockaddr_in *) sa_client, 
                                   (const struct sockaddr_in *) &sa_server, 
                                   my_child_num, my_thread_num);
