@@ -971,24 +971,20 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
     return 0;
 }
 
-/* GetCurrentAddressSpace - this should be replaced with the correct header file when available! */
-struct _BogusAddressSpace { int a; int b; int c; char name[]; };
-typedef struct _BogusAddressSpace BogusAddressSpace;
-extern BogusAddressSpace* GetCurrentAddressSpace(void);
-/* GetCurrentAddressSpace */
-
 static int netware_pre_config(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp)
 {
     int debug;
-    BogusAddressSpace *addrspace = NULL;
+    char *addrname = NULL;
 
     debug = ap_exists_config_define("DEBUG");
 
     is_graceful = 0;
     ap_my_pid = getpid();
-    addrspace = GetCurrentAddressSpace();
-    if (addrspace)
-        ap_my_addrspace = apr_pstrdup (p, addrspace->name);
+    addrname = getaddressspacename (NULL, NULL);
+    if (addrname) {
+        ap_my_addrspace = apr_pstrdup (p, addrname);
+        free (addrname);
+    }
 
     ap_listen_pre_config();
     ap_threads_to_start = DEFAULT_START_THREADS;
@@ -1100,7 +1096,10 @@ static int CommandLineInterpreter(scr_t screenID, const char *commandLine)
 
         /* If we got an instance id but it doesn't match this 
             instance of the nlm, pass it on. */
-        if (pID && ap_my_addrspace && strnicmp(&pID[2], ap_my_addrspace, strlen(ap_my_addrspace)))
+        pID = &pID[2];
+        while (*pID && (*pID == ' '))
+            pID++;
+        if (*pID && ap_my_addrspace && strnicmp(pID, ap_my_addrspace, strlen(ap_my_addrspace)))
             return NOTMYCOMMAND;
 
         /* If we have determined that this command belongs to this
