@@ -1,5 +1,5 @@
   1.3 STATUS:
-  Last modified at [$Date: 2001/01/13 00:10:32 $]
+  Last modified at [$Date: 2001/01/16 21:41:14 $]
 
 Release:
 
@@ -36,7 +36,7 @@ RELEASE SHOWSTOPPERS:
     * protocol/6973: http_protocol.c isn't compatible with HTTP RFC.
       Message-Id: <E14Fkx2-0004ww-00@hand.dotat.at>
       Message-ID: <20010108231501.E19106@hand.dotat.at>
-      Status: Jim +1
+      Status: Jim +1, Bill S. +1
 
 RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
 
