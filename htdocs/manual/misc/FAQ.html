@@ -8,7 +8,7 @@
   <!--#include virtual="header.html" -->
   <H1>Apache Server Frequently Asked Questions</H1>
   <P>
-  $Revision: 1.49 $ ($Date: 1997/05/01 05:59:51 $)
+  $Revision: 1.50 $ ($Date: 1997/05/04 14:43:08 $)
   </P>
   <P>
   The latest version of this FAQ is always available from the main
@@ -58,8 +58,6 @@
 <!-- - How do I setup an access restriction so that people from     -->
 <!--   this domain don't have to authenticate, and all others can   -->
 <!--   do so via a username and password?                           -->
-<!-- - How do I get Apache to send a MIDI file so the browser can   -->
-<!--   play it? (e.g., PR#514)                                      -->
 <!-- - Why do I get "send lost connection" messages in my error     -->
 <!--   log?                                                         -->
 <!-- - Why won't Apache compile using the (SunOS|HPUX|etc...)       -->
@@ -165,6 +163,9 @@
    </LI>
    <LI><A HREF="#HPUX-core">Why do I get core dumps under HPUX using
     HP's ANSI C compiler?</A>
+   </LI>
+   <LI><A HREF="#midi">How do I get Apache to send a MIDI file so the
+    browser can play it?</A>
    </LI>
   </OL>
  </LI>
@@ -1182,6 +1183,39 @@
   with HP's ANSI C compiler using optimization.  Disabling the compiler
   optimiation has fixed these problems.
   </P>
+  <HR>
+ </LI>
+ <LI><A NAME="midi">
+      <STRONG>How do I get Apache to send a MIDI file so the browser can
+      play it?</STRONG>
+     </A>
+  <P>
+  Even though the registered MIME type for MIDI files is
+  <SAMP>audio/midi</SAMP>, some browsers are not set up to recognize it
+  as such; instead, they look for <SAMP>audio/x-midi</SAMP>.  There are
+  two things you can do to address this:
+  </P>
+  <OL>
+   <LI>Configure your browser to treat documents of type
+    <SAMP>audio/midi</SAMP> correctly.  This is the type that Apache
+    sends by default.  This may not be workable, however, if you have
+    many client installations to change, or if some or many of the
+    clients are not under your control.
+   </LI>
+   <LI>Instruct Apache to send a different <SAMP>Content-type</SAMP>
+    header for these files by adding the following line to your server's
+    configuration files:
+    <DL>
+     <DD><CODE>AddType audio/x-midi .mid .midi .kar</CODE>
+     </DD>
+    </DL>
+    <P>
+    Note that this may break browsers that <EM>do</EM> recognize the
+    <SAMP>audio/midi</SAMP> MIME type unless they're prepared to also
+    handle <SAMP>audio/x-midi</SAMP> the same way.
+    </P>
+   </LI>
+  </OL>
   <HR>
   <!-- Don't forget to add HR tags at the end of each list item.. -->
  </LI>
