@@ -97,8 +97,13 @@
 #include "http_protocol.h"
 #include <db.h>
 
-#if defined(DB_VERSION_MAJOR) && (DB_VERSION_MAJOR == 2)
+#if defined(DB_VERSION_MAJOR)
+#if (DB_VERSION_MAJOR == 2)
 #define DB2
+#endif
+#if (DB_VERSION_MAJOR == 3)
+#define DB3
+#endif
 #endif
 
 typedef struct {
@@ -161,7 +166,10 @@ static char *get_db_pw(request_rec *r, char *user, const char *auth_dbpwfile)
     q.data = user;
     q.size = strlen(q.data);
 
-#ifdef DB2
+#if defined(DB3)
+    if (   db_create(&f, NULL, 0) != 0 
+        || f->open(f, auth_dbpwfile, NULL, DB_HASH, DB_RDONLY, 0664) != 0) {
+#elif defined(DB2)
     if (db_open(auth_dbpwfile, DB_HASH, DB_RDONLY, 0664, NULL, NULL, &f) != 0) {
 #else
     if (!(f = dbopen(auth_dbpwfile, O_RDONLY, 0664, DB_HASH, NULL))) {
@@ -171,7 +179,7 @@ static char *get_db_pw(request_rec *r, char *user, const char *auth_dbpwfile)
 	return NULL;
     }
 
-#ifdef DB2
+#if defined(DB2) || defined(DB3)
     if (!((f->get) (f, NULL, &q, &d, 0))) {
 #else
     if (!((f->get) (f, &q, &d, 0))) {
@@ -181,7 +189,7 @@ static char *get_db_pw(request_rec *r, char *user, const char *auth_dbpwfile)
 	pw[d.size] = '\0';	/* Terminate the string */
     }
 
-#ifdef DB2
+#if defined(DB2) || defined(DB3)
     (f->close) (f, 0);
 #else
     (f->close) (f);
