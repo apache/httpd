@@ -4,7 +4,6 @@
 <!-- English revision: 1.8 -->
 
 <manualpage metafile="logs.xml.meta">
-  <relativepath href="."/>
 
   <title>ログファイル</title>
 

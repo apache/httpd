@@ -3,7 +3,6 @@
 <?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
 
 <manualpage metafile="debugging.xml.meta">
-<relativepath href=".."/>
 <parentdocument href="./">Developer Documentation</parentdocument>
 
 <title>Debugging Memory Allocation in APR</title>

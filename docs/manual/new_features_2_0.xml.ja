@@ -2,7 +2,6 @@
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.ja.xsl"?>
 <manualpage metafile="new_features_2_0.xml.meta">
-<relativepath href="."/>
 <!-- English revision: 1.5 -->
 
 <title>Apache 2.0 の新機能の概要</title>

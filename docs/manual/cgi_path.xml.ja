@@ -4,7 +4,6 @@
 <!-- English revision: 1.1 -->
 
 <manualpage metafile="cgi_path.xml.meta">
-  <relativepath href="."/>
 
   <title>CGI 環境での PATH_INFO の変更</title>
 

@@ -4,7 +4,6 @@
 <!-- English revision: 1.1 -->
 
 <manualpage metafile="custom-error.xml.meta">
-  <relativepath href="."/>
   
   <title>カスタムエラーレスポンス</title>
   

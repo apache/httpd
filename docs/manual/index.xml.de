@@ -4,7 +4,6 @@
 <!-- English Revision: 1.2 -->
 
 <indexpage metafile="index.xml.meta">
-<relativepath href="."/>
 <parentdocument href="http://httpd.apache.org/docs-project/" />
 
 <title>Dokumentation zum Apache HTTP Server Version 2.1</title>
