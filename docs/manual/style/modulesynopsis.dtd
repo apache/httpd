@@ -7,6 +7,8 @@
 identifier? , compatibility? , summary? , seealso* , section*,
 directivesynopsis*)>
 
+<!ATTLIST modulesynopsis metafile CDATA  #REQUIRED>
+
 <!ELEMENT directivesynopsis (name , description? , syntax? , default?
 , contextlist? , override? , modulelist?, status?, compatibility? ,
 usage?, seealso*)>
@@ -43,9 +45,15 @@ usage?, seealso*)>
 <!-- Used in index.xml -->
 <!ELEMENT moduleindex (title, summary, seealso*, sitemap)>
 
+<!ATTLIST moduleindex metafile CDATA  #REQUIRED>
+
 <!-- Used in directive.xml -->
 <!ELEMENT directiveindex (title | summary | sitemap)+>
 
+<!ATTLIST directiveindex metafile CDATA  #REQUIRED>
+
 <!-- Used in quickreference.xml -->
 <!ELEMENT quickreference (title | summary | legend | sitemap)+>
+<!ATTLIST quickreference metafile CDATA  #REQUIRED>
+
 <!ELEMENT legend (table, table)>
