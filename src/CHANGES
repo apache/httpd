@@ -6,7 +6,7 @@ Changes with Apache 1.3.26
      been there for 5 years. [Justin Erenkrantz]
 
   *) Ensure that we set the result value in ap_strtol before
-     we return it. [The whole gang again]
+     we return it. [Justin Erenkrantz, Jim Jagielski]
 
 Changes with Apache 1.3.25
 
@@ -14,7 +14,8 @@ Changes with Apache 1.3.25
      security issues in CAN-2002-0392 (cve.mitre.org) [CERT VU#944335].
      To support this, we utilize the ANSI functionality of
      strtol, and provide ap_strtol for completeness.
-     [The whole gang]
+     [Aaron Bannert, Justin Erenkrantz, Jim Jagielski, Brian Pane,
+      William Rowe, Cliff Woolley]
      
   *) PORT: With OpenBSD 3.1 and up, allow modules to work on their
      ELF-based architectures. [Brad <brad@openbsd.org>]
