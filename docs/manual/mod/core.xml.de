@@ -1589,7 +1589,7 @@ au&szlig;er den genannten</description>
 <default>LimitInternalRecursion 10</default>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
-<compatibility>Verf&uuml;gbar ab Apache 2.1</compatibility>
+<compatibility>Verf&uuml;gbar ab Apache 2.0.47</compatibility>
 
 <usage>
     <p>Eine interne Umleitung erfolgt beispielsweise, wenn die Direktive

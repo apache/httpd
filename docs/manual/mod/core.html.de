@@ -1638,7 +1638,7 @@ außer den genannten</td></tr>
 <tr><th><a href="directive-dict.html#Context">Kontext:</a></th><td>Serverkonfiguration, Virtual Host</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Modul:</a></th><td>core</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Kompatibilität:</a></th><td>Verfügbar ab Apache 2.1</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Kompatibilität:</a></th><td>Verfügbar ab Apache 2.0.47</td></tr>
 </table>
     <p>Eine interne Umleitung erfolgt beispielsweise, wenn die Direktive
     <code class="directive"><a href="../mod/mod_actions.html#action">Action</a></code> verwendet wird, welche
