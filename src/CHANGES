@@ -27,7 +27,7 @@ Changes with Apache 1.3.28
      system internally looked for the case-sensitive header.* pattern.)
      PR 7300 [William Rowe]
 
-  *) Correction to mod_autoindex so that only text/* files (perfering
+  *) Correction to mod_autoindex so that only text/* files (prefering
      /html, then /plain, then some other flavor) can be recovered
      from a multiview-based HEADER or README subrequest.
      [William Rowe]
