@@ -1,5 +1,5 @@
 Apache 2.0 STATUS:
-Last modified at [$Date: 2000/05/07 00:40:38 $]
+Last modified at [$Date: 2000/05/15 19:20:07 $]
 
 Release:
 
@@ -25,12 +25,6 @@ RELEASE SHOWSTOPPERS:
 
     * Fix SAFEREAD.
 	see <Pine.LNX.4.21.0004101511380.7822-100000@twinlark.arctic.org>
-
-    * MPMs should have responsibility for closing sockets and
-        registering the socket cleanup. Stop registering multiple
-        cleanups for each socket. Move socket close code out of
-        http_connection.c and into the MPMs.
-	Status:
 
     * Put back resource limit code
 
@@ -65,6 +59,9 @@ RELEASE SHOWSTOPPERS:
 	BIND v9.
 
 RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
+    * Build scripts do not recognise AIX 4.2.1 pthreads, so the
+      pthread MPMs will not build.
+
     * the top-level configure.in appears to use $USE_MAINTAINER_MODE = yes
 	to set -Wall/etc. flags, and the APR configure.in appears to use
 	--with-debug.  both seem like more of a hardwired pain compaired
