@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
-<!-- $Revision: 1.89 $ -->
+<!-- $Revision: 1.90 $ -->
 
 <!--
  Copyright 2002-2004 The Apache Software Foundation
@@ -362,8 +362,8 @@ be passed through</description>
       features (<directive module="core">Options</directive> and
       <directive module="mod_include">XBitHack</directive>).
       An equal sign may be given followed by a comma (but no spaces)
-      separated lists of options that may be set using the Options
-      command.</dd>
+      separated lists of options that may be set using the <directive
+      module="core">Options</directive> command.</dd>
     </dl>
 
     <p>Example:</p>

@@ -410,8 +410,7 @@ be passed through</td></tr>
       features (<code class="directive"><a href="#options">Options</a></code> and
       <code class="directive"><a href="../mod/mod_include.html#xbithack">XBitHack</a></code>).
       An equal sign may be given followed by a comma (but no spaces)
-      separated lists of options that may be set using the Options
-      command.</dd>
+      separated lists of options that may be set using the <code class="directive"><a href="#options">Options</a></code> command.</dd>
     </dl>
 
     <p>Example:</p>
