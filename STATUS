@@ -1,5 +1,5 @@
 APACHE 1.3 STATUS:						-*-text-*-
-  Last modified at [$Date: 2004/03/30 13:51:57 $]
+  Last modified at [$Date: 2004/04/02 14:10:44 $]
 
 Release:
 
@@ -47,12 +47,10 @@ Release:
 
 RELEASE SHOWSTOPPERS:
 
-  *  PR: 27023 Cookie could not delivered if the cookie made before
-         proxy module. Jim will wait 24 hours but not hold
-         off on 1.3.30 after that to address this. Will be
-         placed in 'NON-SHOWSTOPPERS' at that point.
-
 RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
+
+  *  PR: 27023 Cookie could not delivered if the cookie made before
+         proxy module.
 
    * isn't ap_die() broken with recognizing recursive errors
        Message-Id: <3F8C56E3.8050501@attglobal.net>
