@@ -516,6 +516,7 @@ typedef struct {
     apr_lock_t     *pMutex;
     apr_array_header_t   *aRandSeed;
     int             nScoreboardSize; /* used for builtin random seed */
+    apr_hash_t     *tVHostKeys;
     apr_hash_t     *tTmpKeys;
     void           *pTmpKeys[SSL_TKPIDX_MAX];
     apr_hash_t     *tPublicCert;

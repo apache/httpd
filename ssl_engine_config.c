@@ -101,6 +101,7 @@ SSLModConfigRec *ssl_config_global_create(server_rec *s)
         mc->szMutexFile            = NULL;
         mc->pMutex                 = NULL;
         mc->aRandSeed              = apr_array_make(pPool, 4, sizeof(ssl_randseed_t));
+        mc->tVHostKeys             = apr_hash_make(pPool);
         mc->tPrivateKey            = apr_hash_make(pPool);
         mc->tPublicCert            = apr_hash_make(pPool);
         mc->tTmpKeys               = apr_hash_make(pPool);
