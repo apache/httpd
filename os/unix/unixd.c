@@ -485,6 +485,18 @@ AP_DECLARE(apr_status_t) unixd_accept(void **accepted, ap_listen_rec *lr,
      * to just exit in most cases.
      */
     switch (status) {
+#if defined(HPUX11) && defined(ENOBUFS)
+        /* On HPUX 11.x, the 'ENOBUFS, No buffer space available'
+         * error occures because the accept() cannot complete.
+         * You will not see ENOBUFS at 10.20 because the kernel
+         * hides any occurrence from being returned from user space.
+         * ENOBUFS at 11.0 TCP/IP is quite possible, and could
+         * occur intermittently. As a work-around, we are going to
+         * ingnore ENOBUFS.
+         */
+        case ENOBUFS:
+#endif
+
 #ifdef EPROTO
         /* EPROTO on certain older kernels really means
          * ECONNABORTED, so we need to ignore it for them.
