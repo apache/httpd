@@ -82,7 +82,7 @@ trap 'rm -f Makefile dummy ../dummy.o dummy.exe testfunc.c testfunc ../testfunc.
 #  $TLIB (additional libraries; default=empty)
 #    If set to a list of additional libraries, these libs will be used
 #    in addition to the one tested by the "TestCompile lib" call.
-#    For the other TextCompile tests, it is ignored.
+#    For the other TestCompile tests, it is ignored.
 #
 #
 # Initially written by Jim Jagielski for the Apache configuration mechanism
