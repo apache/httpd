@@ -60,6 +60,7 @@
 #define _MOD_INCLUDE_H 1
 
 #include "apr_pools.h"
+#include "apr_optional.h"
 
 #define STARTING_SEQUENCE "<!--#"
 #define ENDING_SEQUENCE "-->"
