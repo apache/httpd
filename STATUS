@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:						-*-text-*-
-Last modified at [$Date: 2001/10/09 03:11:08 $]
+Last modified at [$Date: 2001/10/09 19:29:19 $]
 
 Release:
 
@@ -36,9 +36,11 @@ RELEASE SHOWSTOPPERS:
 
     * Handler and Filter filetypes in mod_mime now trigger mod_negotiation 
       recognition of files, but no mechanism exists to prioritize which of
-      several mod_negotation files aught to be served by handler or filter.
+      several mod_negotation files ought to be served by handler or filter.
       There needs to be a mechanism, or the change to reenable this match
       behavior must be reverted [OtherBill's veto of 1.3 behavior].
+    
+      gregames says:  why is this a showstopper?  
 
     * If any request gets to the core handler, without a flag that this 
       r->filename was tested by dir/file_walk, we need to 500 at the very 
