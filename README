@@ -83,9 +83,5 @@
   the University of Cambridge.  Please see the file called 
   srclib/pcre/COPYING. 
 
-  The NT port was started with code provided to the Apache Group
-  by Ambarish Malpani of ValiCert, Inc. (http://www.valicert.com/).
-
   Apache 2.0 relies heavily on the use of autoconf and libtool to provide
   a build environment.
-
