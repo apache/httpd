@@ -172,19 +172,6 @@
     </target>
     &lf;
 
-    <target name="maf-all"
-            description="- builds all maf download packages">
-        <xsl:attribute name="depends">
-            <xsl:for-each select="lang[document(concat('../lang/', .,
-                                       '.xml'))/language/messages]">
-                <xsl:text>maf-</xsl:text>
-                <xsl:value-of select="." />
-                <xsl:if test="position() != last()">, </xsl:if>
-            </xsl:for-each>
-        </xsl:attribute>
-    </target>
-    &lf;
-
     <!-- single language targets -->
     <!-- ======================= -->
     <xsl:for-each select="lang">
@@ -224,13 +211,6 @@
                     description="- builds the {$file/name} Konqueror Web Archive">&lf;
                 <xsl:text>    </xsl:text>
                 <war.generic lang="{.}" />&lf;
-            </target>
-            &lf;
-
-            <target name="maf-{.}"
-                    description="- builds the {$file/name} Mozilla Web Archive">&lf;
-                <xsl:text>    </xsl:text>
-                <maf.generic lang="{.}" />&lf;
             </target>
             &lf;
 
