@@ -629,8 +629,9 @@ case "$PLAT" in
 	;;
     *-uts*)
 	OS='Amdahl UTS'
-	CFLAGS="$CFLAGS -Xa -eft -DUTS21"
+	CFLAGS="$CFLAGS -Xa -eft -DUTS21 -DUSEBCOPY"
 	LIBS="$LIBS -lsocket -lbsd -la"
+	DEF_WANTHSREGEX=yes
 	;;
     *-ultrix)
 	OS='ULTRIX'

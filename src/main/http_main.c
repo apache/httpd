@@ -2129,29 +2129,26 @@ static void reclaim_child_processes(int terminate)
 }
 
 
-#if defined(BROKEN_WAIT) || defined(NEED_WAITPID)
+#if defined(NEED_WAITPID)
 /*
-   Some systems appear to fail to deliver dead children to wait() at times.
-   This sorts them out. In fact, this may have been caused by a race condition
-   in wait_or_timeout(). But this routine is still useful for systems with no
-   waitpid().
+   Systems without a real waitpid sometimes lose a child's exit while waiting
+   for another.  Search through the scoreboard for missing children.
  */
-int reap_children(void)
+int reap_children(ap_wait_t *status)
 {
-    int status, n;
-    int ret = 0;
+    int n, pid;
 
     for (n = 0; n < max_daemons_limit; ++n) {
-	if (ap_scoreboard_image->servers[n].status != SERVER_DEAD
-	    && waitpid(ap_scoreboard_image->parent[n].pid, &status, WNOHANG)
-	    == -1
-	    && errno == ECHILD) {
-	    ap_sync_scoreboard_image();
+        ap_sync_scoreboard_image();
+	if (ap_scoreboard_image->servers[n].status != SERVER_DEAD &&
+		kill((pid = ap_scoreboard_image->parent[n].pid), 0) == -1) {
 	    ap_update_child_status(n, SERVER_DEAD, NULL);
-	    ret = 1;
+	    /* just mark it as having a successful exit status */
+	    *status = 0; 
+	    return(pid);
 	}
     }
-    return ret;
+    return 0;
 }
 #endif
 
@@ -2214,6 +2211,11 @@ static int wait_or_timeout(ap_wait_t *status)
     if (ret > 0) {
 	return ret;
     }
+#ifdef NEED_WAITPID
+    if ((ret = reap_children(status)) > 0) {
+	return ret;
+    }
+#endif
     tv.tv_sec = SCOREBOARD_MAINTENANCE_INTERVAL / 1000000;
     tv.tv_usec = SCOREBOARD_MAINTENANCE_INTERVAL % 1000000;
     ap_select(0, NULL, NULL, NULL, &tv);

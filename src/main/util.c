@@ -1397,7 +1397,35 @@ int strncasecmp(const char *a, const char *b, int n)
 }
 #endif
 
-
+/* The following routine was donated for UTS21 by dwd@bell-labs.com */
+#ifdef NEED_STRSTR
+char *strstr(char *s1, char *s2)
+{
+    char *p1, *p2;
+    if (*s2 == '\0') {
+	/* an empty s2 */
+        return(s1);
+    }
+    while((s1 = strchr(s1, *s2)) != NULL) {
+	/* found first character of s2, see if the rest matches */
+        p1 = s1;
+        p2 = s2;
+        while (*++p1 == *++p2) {
+            if (*p1 == '\0') {
+                /* both strings ended together */
+                return(s1);
+            }
+        }
+        if (*p2 == '\0') {
+            /* second string ended, a match */
+            break;
+        }
+	/* didn't find a match here, try starting at next character in s1 */
+        s1++;
+    }
+    return(s1);
+}
+#endif
 
 #ifdef NEED_INITGROUPS
 int initgroups(const char *name, gid_t basegid)
@@ -1433,7 +1461,8 @@ int initgroups(const char *name, gid_t basegid)
 #ifdef NEED_WAITPID
 /* From ikluft@amdahl.com
  * this is not ideal but it works for SVR3 variants
- * httpd does not use the options so this doesn't implement them
+ * Modified by dwd@bell-labs.com to call wait3 instead of wait because
+ *   apache started to use the WNOHANG option.
  */
 int waitpid(pid_t pid, int *statusp, int options)
 {
@@ -1442,7 +1471,9 @@ int waitpid(pid_t pid, int *statusp, int options)
 	errno = ECHILD;
 	return -1;
     }
-    while (((tmp_pid = wait(statusp)) != pid) && (tmp_pid != -1));
+    while (((tmp_pid = wait3(statusp, options, 0)) != pid) &&
+		(tmp_pid != -1) && (tmp_pid != 0) && (pid != -1))
+	;
     return tmp_pid;
 }
 #endif

@@ -573,13 +573,24 @@ extern char *crypt();
 #undef NO_KILLPG
 #define NO_SETSID
 #define NEED_WAITPID
-#define NO_OTHER_CHILD
 #define STDIN_FILENO 0
 #define STDOUT_FILENO 1
 #define STDERR_FILENO 2
 #define HAVE_SYSLOG 1
+#define USE_LONGJMP
+#define JMP_BUF jmp_buf
+#define NO_USE_SIGACTION
+#define NEED_STRERROR
+#define NEED_STRSTR
+#define NEED_HASHBANG_EMUL
+#define NDELAY_PIPE_RETURNS_ZERO
+#define NO_DATA NO_ADDRESS
+#define	ap_wait_t		union wait
+#define WEXITSTATUS(status)	(int)((status).w_retcode)
+#define WTERMSIG(status)	(int)((status).w_termsig)
 #define strftime(buf,bufsize,fmt,tm)    ascftime(buf,fmt,tm)
 #include <sys/types.h>
+#include <sys/time.h>     
 
 #elif defined(APOLLO)
 #undef HAVE_GMTOFF

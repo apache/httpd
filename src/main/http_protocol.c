@@ -1721,6 +1721,15 @@ API_EXPORT(long) ap_send_fb_length(BUFF *fb, request_rec *r, long length)
 
     FD_ZERO(&fds);
     while (!r->connection->aborted) {
+#ifdef NDELAY_PIPE_RETURNS_ZERO
+	/* Contributed by dwd@bell-labs.com for UTS 2.1.2, where the fcntl */
+	/*   O_NDELAY flag causes read to return 0 when there's nothing */
+	/*   available when reading from a pipe.  That makes it tricky */
+	/*   to detect end-of-file :-(.  This stupid bug is even documented */
+	/*   in the read(2) man page where it says that everything but */
+	/*   pipes return -1 and EAGAIN.  That makes it a feature, right? */
+	int afterselect = 0;
+#endif
         if ((length > 0) && (total_bytes_sent + IOBUFSIZE) > length)
             len = length - total_bytes_sent;
         else
@@ -1728,7 +1737,14 @@ API_EXPORT(long) ap_send_fb_length(BUFF *fb, request_rec *r, long length)
 
         do {
             n = ap_bread(fb, buf, len);
-            if (n >= 0 || r->connection->aborted)
+#ifdef NDELAY_PIPE_RETURNS_ZERO
+	    if ((n > 0) || (n == 0 && afterselect))
+		break;
+#else
+            if (n >= 0)
+                break;
+#endif
+            if (r->connection->aborted)
                 break;
             if (n < 0 && errno != EAGAIN)
                 break;
@@ -1742,6 +1758,9 @@ API_EXPORT(long) ap_send_fb_length(BUFF *fb, request_rec *r, long length)
              * around and try another read
              */
             ap_select(fd + 1, &fds, NULL, NULL, NULL);
+#ifdef NDELAY_PIPE_RETURNS_ZERO
+	    afterselect = 1;
+#endif
         } while (!r->connection->aborted);
 
         if (n < 1 || r->connection->aborted) {
