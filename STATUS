@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2002/04/19 18:21:45 $]
+Last modified at [$Date: 2002/04/19 23:31:35 $]
 
 Release:
 
@@ -49,8 +49,12 @@ CURRENT RELEASE NOTES:
 
 RELEASE SHOWSTOPPERS:
 
-    * Daedalus segfaults with 2.0.35
-      Greg and Cliff are working on this.
+    * Did daedalus's 416 problems get fixed?  Greg, I think you had a patch,
+      but did it get committed?  Is there still a known condition (related
+      to this or not) that will cause the byterange filter to segv?
+
+    * Is the 416 problem different from the C-L / byterange filter
+      misordering problem?  If not, is this one fixed?
 
     * worker MPM segfaults because the apr_bucket_alloc_t is cleaned
       up twice.
