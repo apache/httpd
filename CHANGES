@@ -2,6 +2,10 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) mod_actions: Introduce the "virtual" modifier to the Action directive,
+     which allows the use of handlers for virtual locations. PR 8431.
+     [André Malo]
+
   *) mod_speling: Recognize AcceptPathInfo setting for the particular
      location. Default is to reject path information. PR 21059.
      [André Malo]

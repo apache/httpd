@@ -130,11 +130,20 @@ static void *merge_action_dir_configs(apr_pool_t *p, void *basev, void *addv)
 }
 
 static const char *add_action(cmd_parms *cmd, void *m_v, 
-                              const char *type, const char *script)
+                              const char *type, const char *script,
+                              const char *option)
 {
     action_dir_config *m = (action_dir_config *)m_v;
-    apr_table_setn(m->action_types, type, script);
+
+    if (option && strcasecmp(option, "virtual")) {
+        return apr_pstrcat(cmd->pool,
+                           "unrecognized option '", option, "'", NULL);
+    }
+
+    apr_table_setn(m->action_types, type,
+                   apr_pstrcat(cmd->pool, option ? "1" : "0", script, NULL));
     m->configured = 1;
+
     return NULL;
 }
 
@@ -164,7 +173,7 @@ static const char *set_script(cmd_parms *cmd, void *m_v,
 
 static const command_rec action_cmds[] =
 {
-    AP_INIT_TAKE2("Action", add_action, NULL, OR_FILEINFO,
+    AP_INIT_TAKE23("Action", add_action, NULL, OR_FILEINFO,
                   "a media type followed by a script name"),
     AP_INIT_TAKE2("Script", set_script, NULL, ACCESS_CONF | RSRC_CONF,
                   "a method followed by a script name"),
@@ -208,15 +217,17 @@ static int action_handler(request_rec *r)
 
     /* Second, check for actions (which override the method scripts) */
     action = r->handler ? r->handler :
-	ap_field_noparam(r->pool, r->content_type);
-    if ((t = apr_table_get(conf->action_types,
-		       action ? action : ap_default_type(r)))) {
-	script = t;
-	if (r->finfo.filetype == 0) {
-	    ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
-			"File does not exist: %s", r->filename);
-	    return HTTP_NOT_FOUND;
-	}
+        ap_field_noparam(r->pool, r->content_type);
+    action = action ? action : ap_default_type(r);
+
+    if ((t = apr_table_get(conf->action_types, action))) {
+        if (*t++ == '0' && r->finfo.filetype == 0) {
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+                          "File does not exist: %s", r->filename);
+            return HTTP_NOT_FOUND;
+        }
+
+        script = t;
     }
 
     if (script == NULL)
