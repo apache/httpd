@@ -1,6 +1,11 @@
 Changes with Apache 1.3b6
 
-  *) Various cleanups to the command line interface and manual pages
+  *) mod_proxy was not clearing the Proxy-Connection header from
+     requests; now it does.  This did not violate any spec, however 
+     causes poor interactions when you are talking to remote proxies.  
+     [Marc Slemko] PR#1741
+
+  *) Various cleanups to the command line interface and manual pages.
      [Ralf S. Engelschall]
 
   *) cfg_getline() was not properly handling lines that did not end

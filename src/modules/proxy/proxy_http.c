@@ -135,6 +135,7 @@ static void clear_connection(table *headers)
     char *name;
     char *next = table_get(headers, "Connection");
 
+    table_unset(headers, "Proxy-Connection");
     if (!next)
 	return;
 
