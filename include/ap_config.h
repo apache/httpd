@@ -186,7 +186,7 @@
 /**
  * Implement an Apache core hook that has no return code, and
  * therefore runs all of the registered functions. The implementation
- * is called ap_run_<I>name</I>.
+ * is called ap_run_<i>name</i>.
  *
  * @param name The name of the hook
  * @param args_decl The declaration of the arguments for the hook, for example
@@ -205,7 +205,7 @@
  * then returned from the hook runner. If the hooks run to completion,
  * then ok is returned. Note that if no hook runs it would probably be
  * more correct to return decline, but this currently does not do
- * so. The implementation is called ap_run_<I>name</I>.
+ * so. The implementation is called ap_run_<i>name</i>.
  *
  * @param ret The return type of the hook (and the hook runner)
  * @param name The name of the hook
@@ -227,7 +227,7 @@
  * Implement a hook that runs until the first function that returns
  * something other than decline. If all functions return decline, the
  * hook runner returns decline. The implementation is called
- * ap_run_<I>name</I>.
+ * ap_run_<i>name</i>.
  *
  * @param ret The return type of the hook (and the hook runner)
  * @param name The name of the hook
