@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
-<!-- $Revision: 1.30 $ -->
+<!-- $Revision: 1.31 $ -->
 
 <!--
  Copyright 2002-2004 The Apache Software Foundation
@@ -196,6 +196,10 @@
       <example>
 <pre>application/octet-stream   bin dms lha lzh exe class tgz taz</pre>
       </example>
+	<p>Alternatively you may prefer to default everything to binary:</p>
+      <example>
+<pre>DefaultType application/octet-stream</pre>
+      </example>
     </section> <!-- /mimetypes -->
 
     <section id="type"><title>How can I force an FTP ASCII download of
@@ -207,6 +211,11 @@
       ASCII transfer. (FTP Directory listings are always executed in ASCII mode,
       however.)</p>
     </section> <!-- /type -->
+
+    <section id="ftpnonget"><title>How can I do FTP upload?</title>
+	<p>Currently, only GET is supported for FTP in mod_proxy.  You can
+	of course use HTTP upload (POST or PUT) through an Apache proxy.</p>
+    </section>
 
     <section id="percent2fhck"><title>How can I access FTP files outside
     of my home directory?</title>
