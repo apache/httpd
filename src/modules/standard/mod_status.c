@@ -236,7 +236,6 @@ int status_handler (request_rec *r)
      }
     r->allowed = (1 << M_GET) | (1 << M_TRACE);
     if (r->method_number != M_GET) return HTTP_METHOD_NOT_ALLOWED;
-    if (!exists_scoreboard_image()) return HTTP_NOT_IMPLEMENTED;
 
     r->content_type = "text/html";
 
