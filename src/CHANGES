@@ -1,5 +1,9 @@
 Changes with Apache 1.3b3
 
+  *) Directives owned by http_core can now use the new check_cmd_context()
+     routine to ensure that they're not being used within a container
+     (e.g., <Directory>) where they're invalid.  [Martin Kraemer]
+
   *) PORT: SUNOS now always defines SUNOS_LIB_PROTOTYPES because a
      recent change elsewhere left us without definitions for fgetc()
      and fgets() breaking compilation.  [Martin Kraemer, Ben Hyde]
@@ -21,7 +25,7 @@ Changes with Apache 1.3b3
   *) http_core was mmap()ing even in cases where it wasn't going to
      read the file.  [Ben Hyde <bhyde@gensym.com>]
 
-  *) Complete rewrite ;_) of mod_rewrite's URL rewriting engine:
+  *) Complete rewrite ;-) of mod_rewrite's URL rewriting engine:
      Now the rewriting engine (the heart of mod_rewrite) is organized more
      straight-forward, first time well documented and reduced to the really
      essential parts. All redundant cases were stripped off and processing now

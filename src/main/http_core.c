@@ -667,8 +667,10 @@ const char *set_override (cmd_parms *cmd, core_dir_config *d, const char *l)
 {
     char *w;
   
-    const char *err = check_cmd_context(cmd, NOT_IN_VIRTUALHOST|NOT_IN_LIMIT);
-    if (err != NULL) return err;
+    const char *err = check_cmd_context(cmd, NOT_IN_LIMIT);
+    if (err != NULL) {
+        return err;
+    }
 
     d->override = OR_NONE;
     while(l[0]) {
