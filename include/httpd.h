@@ -991,35 +991,6 @@ API_EXPORT(int) ap_rind(const char *, char);
 
 API_EXPORT(char *) ap_escape_quotes (ap_pool_t *p, const char *instring);
 
-/* Common structure for reading of config files / passwd files etc. */
-typedef struct {
-    int (*getch) (void *param);	/* a getc()-like function */
-    void *(*getstr) (void *buf, size_t bufsiz, void *param); /* a fgets()-like function */
-    int (*close) (void *param);	/* a close hander function */
-    void *param;		/* the argument passed to getch/getstr/close */
-    const char *name;		/* the filename / description */
-    unsigned line_number;	/* current line number, starting at 1 */
-} configfile_t;
-
-/* Open a configfile_t as FILE, return open configfile_t struct pointer */
-API_EXPORT(ap_status_t) ap_pcfg_openfile(configfile_t **, ap_pool_t *p, const char *name);
-
-/* Allocate a configfile_t handle with user defined functions and params */
-API_EXPORT(configfile_t *) ap_pcfg_open_custom(ap_pool_t *p, const char *descr,
-    void *param,
-    int(*getc_func)(void*),
-    void *(*gets_func) (void *buf, size_t bufsiz, void *param),
-    int(*close_func)(void *param));
-
-/* Read one line from open configfile_t, strip LF, increase line number */
-API_EXPORT(int) ap_cfg_getline(char *buf, size_t bufsize, configfile_t *cfp);
-
-/* Read one char from open configfile_t, increase line number upon LF */
-API_EXPORT(int) ap_cfg_getc(configfile_t *cfp);
-
-/* Detach from open configfile_t, calling the close handler */
-API_EXPORT(int) ap_cfg_closefile(configfile_t *cfp);
-
 /* Misc system hackery */
 
 API_EXPORT(uid_t) ap_uname2id(const char *name);

@@ -58,10 +58,16 @@
 typedef struct ap_directive_t {
     const char *directive;
     const char *args;
-    int line_num;
     struct ap_directive_t *next;
     struct ap_directive_t *first_child;
     struct ap_directive_t *parent;
+
+    void *data;		/* directive's module can store add'l data here */
+
+    /* ### these may go away in the future, but are needed for now */
+    const char *filename;
+    int line_num;
+
 } ap_directive_t;
 
 ap_directive_t *ap_add_node(ap_directive_t **parent, ap_directive_t *current, 
