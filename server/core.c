@@ -60,6 +60,7 @@
 #include "apr_strings.h"
 #include "apr_lib.h"
 #include "apr_fnmatch.h"
+#include "apr_hash.h"
 #include "apr_thread_proc.h"    /* for RLIMIT stuff */
 
 #define APR_WANT_IOVEC
@@ -93,6 +94,15 @@
 #define AP_DEFAULT_LIMIT_XML_BODY       ((size_t)1000000)
 
 #define AP_MIN_SENDFILE_BYTES           (256)
+
+APR_HOOK_STRUCT(
+    APR_HOOK_LINK(get_mgmt_items)
+)
+
+AP_IMPLEMENT_HOOK_RUN_ALL(int, get_mgmt_items,
+                          (apr_pool_t *p, const char *val, apr_hash_t *ht),
+                          (p, val, ht), OK, DECLINED)
+
 
 /* Server core module... This module provides support for really basic
  * server operations, including options and commands which control the
