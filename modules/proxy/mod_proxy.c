@@ -465,9 +465,11 @@ static int proxy_handler(request_rec *r)
                  "Trying to run scheme_handler");
     access_status = proxy_run_scheme_handler(r, conf, url, NULL, 0);
     if (DECLINED == access_status) {
-        ap_log_error(APLOG_MARK, APLOG_DEBUG | APLOG_NOERRNO, 0, r->server,
-                     "Neither CONNECT, HTTP or FTP for %s",
-                     r->uri);
+        ap_log_error(APLOG_MARK, APLOG_WARNING | APLOG_NOERRNO, 0, r->server,
+                    "proxy: No protocol handler was valid for the URL %s. "
+                    "If you are using a DSO version of mod_proxy, make sure "
+                    "the proxy submodules are included in the configuration "
+                    "using LoadModule.", r->uri);
         return HTTP_FORBIDDEN;
     }
     return access_status;
