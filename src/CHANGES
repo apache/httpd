@@ -7669,18 +7669,19 @@ Changes with Shambhala 0.1                                       12 Jun 1995
 
    This release included modified versions of a lot of code from the
    Apache 0.6.4 public release, plus an early pre-forking patch
-   codeveloped by Thau and Rob Hartill.
+   codeveloped by Robert Thau and Rob Hartill.
 
 Changes with Apache 0.7.3                                        20 Jun 1995
 
    *) There were a bunch of changes between Apache 0.6.4 and 0.7.3 that
       were incorporated by Rob Hartill on the main branch while Robert Thau
       worked on the Shambhala rewrite above.  Most were merged into the
-      Shambala architecture prior to Apache 0.8.0.
+      Shambala architecture after Apache 0.8.0.
 
 Changes with Apache 0.6.4                                        13 May 1995
 
-   *) Patches by Hartill, Skolnick, Terbush, Thau, and others
+   *) Patches by Rob Hartill, Cliff Skolnick, Randy Terbush, Robert Thau,
+      and others.
 
 Changes with Apache 0.5.1                                        10 Apr 1995
 
@@ -7692,10 +7693,10 @@ Changes with Apache 0.4                                          02 Apr 1995
 Changes with Apache 0.3                                          24 Mar 1995
 
   *) Patches by Robert Thau, David Robinson, Rob Hartill, and
-     Carlos Varela
+     Carlos Varela.
 
 Changes with Apache 0.2                                          18 Mar 1995
 
   *) Based on NCSA httpd 1.3 by Rob McCool and patches by CERT,
      Roy Fielding, Robert Thau, Nicolas Pioch, David Robinson,
-     Brian Behlendorf, Rob Hartill, and Cliff Skolnick
+     Brian Behlendorf, Rob Hartill, and Cliff Skolnick.
