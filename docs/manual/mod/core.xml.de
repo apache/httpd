@@ -236,6 +236,36 @@ zuordnen</description>
 </directivesynopsis>
 
 <directivesynopsis>
+<name>AllowEncodedSlashes</name>
+<description>Legt fest, ob kodierte Pfadtrennzeichen durchgereicht werden
+d&uuml;rfen</description>
+<syntax>AllowEncodedSlashes On|Off</syntax>
+<default>AllowEncodedSlashes Off</default>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
+<compatibility>Verf&uuml;gbar ab Apache 2.0.46</compatibility>
+
+<usage>
+    <p>Die <directive>AllowEncodedSlashes</directive>-Direktive erlaubt die
+    Verwendung von URLs, welche kodierte Pfadtrennzeichen (<code>%2F</code>
+    f&uuml;r <code>/</code> und auf entsprechenden Systemen zus&auml;tzlich
+    <code>%5C</code> f&uuml;r <code>\</code>) enthalten. Normalerweise werden
+    derartige URLs mit einem 404-Fehler (Nicht gefunden) abgewiesen.</p>
+
+    <p><directive>AllowEncodedSlashes</directive> <code>On</code> ist
+    vor allem in Verbindung mit <code>PATH_INFO</code> hilfreich.</p>
+
+    <note><title>Anmerkung</title>
+      <p>Das Erlauben von Schr&auml;gstrichen impliziert <em>nicht</em> die 
+      <em>Dekodierung</em>. Vorkommen von <code>%2F</code> oder <code>%5C</code>
+      (<em>nur</em> auf entsprechenden Systemen) werden unver&auml;ndert in der
+      ansonsten dekodierten URL belassen.</p>
+    </note>
+</usage>
+<seealso><directive module="core">AcceptPathInfo</directive></seealso>
+</directivesynopsis>
+
+<directivesynopsis>
 <name>AllowOverride</name>
 <description>Direktiven-Typen, die in <code>.htaccess</code>-Dateien
 erlaubt sind.</description>
