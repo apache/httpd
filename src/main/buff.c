@@ -149,8 +149,9 @@ bpushfd(BUFF *fb, int fd_in, int fd_out)
 {
     fb->fd = fd_out;
     fb->fd_in = fd_in;
-    note_cleanups_for_fd(fb->pool,fb->fd);
-    if(fb->fd != fb->fd_in)
+    if(fb->fd >= 0)
+	note_cleanups_for_fd(fb->pool,fb->fd);
+    if(fb->fd != fb->fd_in && fb->fd_in >= 0)
 	note_cleanups_for_fd(fb->pool,fb->fd_in);
 }
 
