@@ -1,4 +1,7 @@
 Changes with Apache 2.0.41
+
+  *) thread safety & proxy-ftp [Alexey Panchenko alexey@liwest.ru, Ian Holsman]
+
   *) mod_disk_cache works much better. This module should still
      be considered experimental. [Eric Prud'hommeaux]
 

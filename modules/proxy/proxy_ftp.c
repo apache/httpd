@@ -672,12 +672,9 @@ proxy_ftp_command(const char *cmd, request_rec *r, conn_rec *ftp_ctrl,
 static int ftp_set_TYPE(char xfer_type, request_rec *r, conn_rec *ftp_ctrl,
                   apr_bucket_brigade *bb, char **pmessage)
 {
-    static char old_type[2] = { 'A', '\0' }; /* After logon, mode is ASCII */
+    char old_type[2] = { 'A', '\0' }; /* After logon, mode is ASCII */
     int ret = HTTP_OK;
     int rc;
-
-    if (xfer_type == old_type[0])
-        return ret;
 
     /* set desired type */
     old_type[0] = xfer_type;
