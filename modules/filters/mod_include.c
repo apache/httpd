@@ -1147,7 +1147,6 @@ static int parse_expr(include_ctx_t *ctx, const char *expr, int *was_error)
         if (!current) {
             switch (new->token.type) {
             case TOKEN_STRING:
-            case TOKEN_RE:
             case TOKEN_NOT:
             case TOKEN_LBRACE:
                 root = current = new;
@@ -1192,10 +1191,6 @@ static int parse_expr(include_ctx_t *ctx, const char *expr, int *was_error)
             switch (current->token.type) {
             case TOKEN_EQ:
             case TOKEN_NE:
-            case TOKEN_AND:
-            case TOKEN_OR:
-            case TOKEN_LBRACE:
-            case TOKEN_NOT:
                 new->parent = current;
                 current = current->right = new;
                 ++regex;
