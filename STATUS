@@ -13,7 +13,7 @@ Release:
            o HPUX 10.20 ......................... Ok (Ralf S. Engelschall)
            o AIX 4.1.5 .......................... Ok (Jens-Uwe Mager)
            o AIX (general)....................... Ok (Bill Stoddard)
-           o Solaris 2.6 ........................ ?? (??)
+           o Solaris 2.6 ........................ Ok (Ralf S. Engelschall)
            o SunOS 4.1.3 ........................ ?? (??)
            o Digital Unix 4.0 ................... ?? (??)
            o IRIX 6.2 ........................... ?? (??)
