@@ -86,8 +86,8 @@ SSLRandomSeed connect builtin
 
 #  General setup for the virtual host
 DocumentRoot "@exp_htdocsdir@"
-ServerName new.host.name:443
-ServerAdmin you@your.address
+ServerName www.example.com:443
+ServerAdmin you@example.com
 ErrorLog @exp_logfiledir@/error_log
 TransferLog @exp_logfiledir@/access_log
 

@@ -274,7 +274,7 @@ Group #-1
 # e-mailed.  This address appears on some server-generated pages, such
 # as error documents.  e.g. admin@your-domain.com
 #
-ServerAdmin you@your.address
+ServerAdmin you@example.com
 
 #
 # ServerName gives the name and port that the server uses to identify itself.
@@ -288,7 +288,7 @@ ServerAdmin you@your.address
 # You will have to access it by its address anyway, and this will make 
 # redirections work in a sensible way.
 #
-#ServerName new.host.name:80
+#ServerName www.example.com:80
 
 #
 # UseCanonicalName: Determines how Apache constructs self-referencing 
