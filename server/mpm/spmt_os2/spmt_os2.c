@@ -246,9 +246,6 @@ static int wait_or_timeout(apr_wait_t *status)
     ++wait_or_timeout_counter;
     if (wait_or_timeout_counter == INTERVAL_OF_WRITABLE_PROBES) {
 	wait_or_timeout_counter = 0;
-#if APR_HAS_OTHER_CHILD
-	apr_proc_probe_writable_fds();
-#endif
     }
 
     tid = 0;
