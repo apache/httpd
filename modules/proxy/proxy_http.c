@@ -330,7 +330,7 @@ apr_status_t ap_proxy_http_create_connection(apr_pool_t *p, request_rec *r,
         apr_socket_timeout_get(p_conn->sock, &current_timeout);
         /* set no timeout */
         apr_socket_timeout_set(p_conn->sock, 0);
-        socket_status = apr_recv(p_conn->sock, test_buffer, &buffer_len);
+        socket_status = apr_socket_recv(p_conn->sock, test_buffer, &buffer_len);
         /* put back old timeout */
         apr_socket_timeout_set(p_conn->sock, current_timeout);
         if ( APR_STATUS_IS_EOF(socket_status) ) {

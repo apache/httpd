@@ -672,7 +672,7 @@ static int create_process(apr_pool_t *p, HANDLE *child_proc, HANDLE *child_exit_
     char *cmd;
     char *cwd;
 
-    apr_pool_sub_make(&ptemp, p, NULL);
+    apr_pool_create_ex(&ptemp, p, NULL, NULL);
 
     /* Build the command line. Should look something like this:
      * C:/apache/bin/apache.exe -f ap_server_confname 
@@ -1190,10 +1190,10 @@ void winnt_rewrite_args(process_rec *process)
     /* WARNING: There is an implict assumption here that the
      * executable resides in ServerRoot or ServerRoot\bin
      */
-    def_server_root = (char *) apr_filename_of_pathname(binpath);
+    def_server_root = (char *) apr_filepath_name_get(binpath);
     if (def_server_root > binpath) {
         *(def_server_root - 1) = '\0';
-        def_server_root = (char *) apr_filename_of_pathname(binpath);
+        def_server_root = (char *) apr_filepath_name_get(binpath);
         if (!strcasecmp(def_server_root, "bin"))
             *(def_server_root - 1) = '\0';
     }

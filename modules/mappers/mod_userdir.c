@@ -325,7 +325,7 @@ static int translate_userdir(request_rec *r)
 #if APR_HAS_USER
             char *homedir;
 
-            if (apr_get_home_directory(&homedir, w, r->pool) == APR_SUCCESS) {
+            if (apr_uid_homepath_get(&homedir, w, r->pool) == APR_SUCCESS) {
                 filename = apr_pstrcat(r->pool, homedir, "/", userdir, NULL);
             }
 #else
@@ -376,7 +376,7 @@ static ap_unix_identity_t *get_suexec_id_doer(const request_rec *r)
         return NULL;
     }
 
-    if (apr_get_userid(&ugid->uid, &ugid->gid, username, r->pool) != APR_SUCCESS) {
+    if (apr_uid_get(&ugid->uid, &ugid->gid, username, r->pool) != APR_SUCCESS) {
         return NULL;
     }
 

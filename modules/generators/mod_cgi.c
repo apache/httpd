@@ -482,7 +482,7 @@ static apr_status_t run_cgi_child(apr_file_t **script_out,
             /* Bad things happened. Everyone should have cleaned up. */
             ap_log_rerror(APLOG_MARK, APLOG_ERR|APLOG_TOCLIENT, rc, r,
                           "couldn't create child process: %d: %s", rc,
-                          apr_filename_of_pathname(r->filename));
+                          apr_filepath_name_get(r->filename));
         }
         else {
             apr_pool_note_subprocess(p, procnew, APR_KILL_AFTER_TIMEOUT);
@@ -607,7 +607,7 @@ static int cgi_handler(request_rec *r)
         return DECLINED;
     }
 
-    argv0 = apr_filename_of_pathname(r->filename);
+    argv0 = apr_filepath_name_get(r->filename);
     nph = !(strncmp(argv0, "nph-", 4));
     conf = ap_get_module_config(r->server->module_config, &cgi_module);
 

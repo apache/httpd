@@ -461,7 +461,7 @@ void worker_main(void *arg)
             wouldblock_retry = MAX_WB_RETRIES;
 
             while (wouldblock_retry) {
-                if ((stat = apr_accept(&csd, sd, ptrans)) == APR_SUCCESS) {
+                if ((stat = apr_socket_accept(&csd, sd, ptrans)) == APR_SUCCESS) {
                     break;
                 }
                 else {
@@ -523,13 +523,13 @@ void worker_main(void *arg)
                         * occur in mobile IP.
                         */
                         ap_log_error(APLOG_MARK, APLOG_EMERG, stat, ap_server_conf,
-                            "apr_accept: giving up.");
+                            "apr_socket_accept: giving up.");
                         clean_child_exit(APEXIT_CHILDFATAL, my_worker_num, ptrans, 
                                          bucket_alloc);
                 }
                 else {
                         ap_log_error(APLOG_MARK, APLOG_ERR, stat, ap_server_conf,
-                            "apr_accept: (client socket)");
+                            "apr_socket_accept: (client socket)");
                         clean_child_exit(1, my_worker_num, ptrans, bucket_alloc);
                 }
             }

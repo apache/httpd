@@ -469,7 +469,7 @@ AP_DECLARE(int) ap_scan_script_header_err_core(request_rec *r, char *buffer,
 	if ((*getsfunc) (w, MAX_STRING_LEN - 1, getsfunc_data) == 0) {
 	    ap_log_rerror(APLOG_MARK, APLOG_ERR|APLOG_TOCLIENT, 0, r,
 			  "Premature end of script headers: %s", 
-                          apr_filename_of_pathname(r->filename));
+                          apr_filepath_name_get(r->filename));
 	    return HTTP_INTERNAL_SERVER_ERROR;
 	}
 
@@ -562,7 +562,7 @@ AP_DECLARE(int) ap_scan_script_header_err_core(request_rec *r, char *buffer,
 
 	    ap_log_rerror(APLOG_MARK, APLOG_ERR|APLOG_TOCLIENT, 0, r,
 			  "%s: %s", malformed, 
-                          apr_filename_of_pathname(r->filename));
+                          apr_filepath_name_get(r->filename));
 	    return HTTP_INTERNAL_SERVER_ERROR;
 	}
 

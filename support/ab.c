@@ -103,9 +103,9 @@
    ** Version 2.0.36-dev
    **    Improvements to concurrent processing:
    **      - Enabled non-blocking connect()s.
-   **      - Prevent blocking calls to apr_recv() (thereby allowing AB to
+   **      - Prevent blocking calls to apr_socket_recv() (thereby allowing AB to
    **        manage its entire set of socket descriptors).
-   **      - Any error returned from apr_recv() that is not EAGAIN or EOF
+   **      - Any error returned from apr_socket_recv() that is not EAGAIN or EOF
    **        is now treated as fatal.
    **      Contributed by Aaron Bannert, April 24, 2002
    **
@@ -775,7 +775,7 @@ static void write_request(struct connection * c)
         }
         else
 #endif
-	e = apr_send(c->aprsock, request + c->rwrote, &l);
+	e = apr_socket_send(c->aprsock, request + c->rwrote, &l);
 
 	/*
 	 * Bail early on the most common case
@@ -1257,7 +1257,7 @@ static void start_connect(struct connection * c)
     apr_pool_create(&c->ctx, cntxt);
 
     if ((rv = apr_socket_create(&c->aprsock, destsa->family,
-				SOCK_STREAM, c->ctx)) != APR_SUCCESS) {
+				SOCK_STREAM, 0, c->ctx)) != APR_SUCCESS) {
 	apr_err("socket", rv);
     }
     if ((rv = apr_socket_opt_set(c->aprsock, APR_SO_NONBLOCK, 1))
@@ -1265,7 +1265,7 @@ static void start_connect(struct connection * c)
         apr_err("socket nonblock", rv);
     }
     c->start = apr_time_now();
-    if ((rv = apr_connect(c->aprsock, destsa)) != APR_SUCCESS) {
+    if ((rv = apr_socket_connect(c->aprsock, destsa)) != APR_SUCCESS) {
 	if (APR_STATUS_IS_EINPROGRESS(rv)) {
             apr_pollfd_t new_pollfd;
 	    c->state = STATE_CONNECTING;
@@ -1287,7 +1287,7 @@ static void start_connect(struct connection * c)
 	    if (bad++ > 10) {
 		fprintf(stderr,
 			"\nTest aborted after 10 failures\n\n");
-		apr_err("apr_connect()", rv);
+		apr_err("apr_socket_connect()", rv);
 	    }
 	    c->state = STATE_UNCONNECTED;
 	    start_connect(c);
@@ -1387,7 +1387,7 @@ static void read_connection(struct connection * c)
     }
     else {
 #endif
-    status = apr_recv(c->aprsock, buffer, &r);
+    status = apr_socket_recv(c->aprsock, buffer, &r);
     if (APR_STATUS_IS_EAGAIN(status))
 	return;
     else if (r == 0 && APR_STATUS_IS_EOF(status)) {
@@ -1395,12 +1395,12 @@ static void read_connection(struct connection * c)
 	close_connection(c);
 	return;
     }
-    /* catch legitimate fatal apr_recv errors */
+    /* catch legitimate fatal apr_socket_recv errors */
     else if (status != APR_SUCCESS) {
         err_except++; /* XXX: is this the right error counter? */
         /* XXX: Should errors here be fatal, or should we allow a
          * certain number of them before completely failing? -aaron */
-        apr_err("apr_recv", status);
+        apr_err("apr_socket_recv", status);
     }
 #ifdef USE_SSL
     }
@@ -1758,7 +1758,7 @@ static void test(void)
 	    if (rv & APR_POLLOUT) {
                 if (c->state == STATE_CONNECTING) {
                     apr_pollfd_t remove_pollfd;
-                    rv = apr_connect(c->aprsock, destsa);
+                    rv = apr_socket_connect(c->aprsock, destsa);
                     remove_pollfd.desc_type = APR_POLL_SOCKET;
                     remove_pollfd.desc.s = c->aprsock;
                     apr_pollset_remove(readbits, &remove_pollfd);
@@ -1768,7 +1768,7 @@ static void test(void)
                         if (bad++ > 10) {
                             fprintf(stderr,
                                     "\nTest aborted after 10 failures\n\n");
-                            apr_err("apr_connect()", rv);
+                            apr_err("apr_socket_connect()", rv);
                         }
                         c->state = STATE_UNCONNECTED;
                         start_connect(c);
@@ -1822,14 +1822,14 @@ static void test(void)
 static void copyright(void)
 {
     if (!use_html) {
-	printf("This is ApacheBench, Version %s\n", AP_AB_BASEREVISION " <$Revision: 1.130 $> apache-2.0");
+	printf("This is ApacheBench, Version %s\n", AP_AB_BASEREVISION " <$Revision: 1.131 $> apache-2.0");
 	printf("Copyright (c) 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/\n");
 	printf("Copyright (c) 1998-2002 The Apache Software Foundation, http://www.apache.org/\n");
 	printf("\n");
     }
     else {
 	printf("<p>\n");
-	printf(" This is ApacheBench, Version %s <i>&lt;%s&gt;</i> apache-2.0<br>\n", AP_AB_BASEREVISION, "$Revision: 1.130 $");
+	printf(" This is ApacheBench, Version %s <i>&lt;%s&gt;</i> apache-2.0<br>\n", AP_AB_BASEREVISION, "$Revision: 1.131 $");
 	printf(" Copyright (c) 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/<br>\n");
 	printf(" Copyright (c) 1998-2002 The Apache Software Foundation, http://www.apache.org/<br>\n");
 	printf("</p>\n<p>\n");

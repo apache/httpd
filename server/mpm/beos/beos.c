@@ -267,7 +267,7 @@ static void tell_workers_to_exit(void)
     int i = 0;
     for (i = 0 ; i < ap_max_child_assigned; i++){
         len = 4;
-        if (apr_sendto(udp_sock, udp_sa, 0, "die!", &len) != APR_SUCCESS)
+        if (apr_socket_sendto(udp_sock, udp_sa, 0, "die!", &len) != APR_SUCCESS)
             break;
     }   
 }
@@ -443,7 +443,7 @@ static int32 worker_thread(void * dummy)
                     char *tmpbuf = apr_palloc(ptrans, sizeof(char) * 5);
                     apr_sockaddr_info_get(&rec_sa, "127.0.0.1", APR_UNSPEC, 7772, 0, ptrans);
                     
-                    if ((ret = apr_recvfrom(rec_sa, listening_sockets[0], 0, tmpbuf, &len))
+                    if ((ret = apr_socket_recvfrom(rec_sa, listening_sockets[0], 0, tmpbuf, &len))
                         != APR_SUCCESS){
                         ap_log_error(APLOG_MARK, APLOG_ERR, ret, NULL, 
                             "error getting data from UDP!!");
@@ -483,12 +483,12 @@ static int32 worker_thread(void * dummy)
     got_fd:
 
         if (!this_worker_should_exit) {
-            rv = apr_accept(&csd, sd, ptrans);
+            rv = apr_socket_accept(&csd, sd, ptrans);
 
             apr_thread_mutex_unlock(accept_mutex);
             if (rv != APR_SUCCESS) {
                 ap_log_error(APLOG_MARK, APLOG_ERR, rv, ap_server_conf,
-                  "apr_accept");
+                  "apr_socket_accept");
             } else {
                 process_socket(ptrans, csd, child_slot, bucket_alloc);
                 requests_this_child--;
@@ -795,13 +795,13 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
             "couldn't create control socket information, shutting down");
         return 1;
     }
-    if (apr_socket_create(&udp_sock, udp_sa->family, SOCK_DGRAM,
-                      _pconf) != APR_SUCCESS){
+    if (apr_socket_create(&udp_sock, udp_sa->family, SOCK_DGRAM, 0,
+                          _pconf) != APR_SUCCESS){
         ap_log_error(APLOG_MARK, APLOG_ALERT, errno, s,
             "couldn't create control socket, shutting down");
         return 1;
     }
-    if (apr_bind(udp_sock, udp_sa) != APR_SUCCESS){
+    if (apr_socket_bind(udp_sock, udp_sa) != APR_SUCCESS){
         ap_log_error(APLOG_MARK, APLOG_ALERT, errno, s,
             "couldn't bind UDP socket!");
         return 1;

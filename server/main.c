@@ -281,7 +281,7 @@ static process_rec *create_process(int argc, const char * const *argv)
     apr_pool_tag(process->pconf, "pconf");
     process->argc = argc;
     process->argv = argv;
-    process->short_name = apr_filename_of_pathname(argv[0]);
+    process->short_name = apr_filepath_name_get(argv[0]);
     return process;
 }
 

@@ -81,7 +81,7 @@ static DWORD WINAPI service_stderr_thread(LPVOID hPipe)
     apr_status_t rv;
     apr_pool_t *p;
     
-    apr_pool_sub_make(&p, NULL, NULL);
+    apr_pool_create_ex(&p, NULL, NULL, NULL);
 
     errarg[0] = "The Apache service named";
     errarg[1] = display_name;

@@ -1167,7 +1167,7 @@ PROXY_DECLARE(int) ap_proxy_connect_to_backend(apr_socket_t **newsock,
     
     while (backend_addr && !connected) {
         if ((rv = apr_socket_create(newsock, backend_addr->family,
-                                    SOCK_STREAM, p)) != APR_SUCCESS) {
+                                    SOCK_STREAM, 0, p)) != APR_SUCCESS) {
             loglevel = backend_addr->next ? APLOG_DEBUG : APLOG_ERR;
             ap_log_error(APLOG_MARK, loglevel, rv, s,
                          "proxy: %s: error creating fam %d socket for target %s",
@@ -1205,7 +1205,7 @@ PROXY_DECLARE(int) ap_proxy_connect_to_backend(apr_socket_t **newsock,
                      proxy_function, backend_addr->family, backend_name);
 
         /* make the connection out of the socket */
-        rv = apr_connect(*newsock, backend_addr);
+        rv = apr_socket_connect(*newsock, backend_addr);
 
         /* if an error occurred, loop round and try again */
         if (rv != APR_SUCCESS) {

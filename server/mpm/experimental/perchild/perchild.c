@@ -605,7 +605,7 @@ static apr_status_t check_pipe_of_death(void **csd, ap_listen_rec *lr,
         char pipe_read_char;
         apr_size_t n = 1;
 
-        ret = apr_recv(lr->sd, &pipe_read_char, &n);
+        ret = apr_socket_recv(lr->sd, &pipe_read_char, &n);
         if (APR_STATUS_IS_EAGAIN(ret)) {
             /* It lost the lottery. It must continue to suffer
              * through a life of servitude. */

@@ -949,7 +949,7 @@ static apr_status_t write_body(cache_handle_t *h, request_rec *r, apr_bucket_bri
             if (rv != APR_SUCCESS) {
                 return rv;
             }
-            apr_file_unset_inherit(tmpfile);
+            apr_file_inherit_unset(tmpfile);
             apr_os_file_get(&(mobj->fd), tmpfile);
 
             /* Open for business */

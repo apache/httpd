@@ -79,7 +79,7 @@ extern "C" {
  * @param tm the exploded time
  * @param t the time to explode: MUST be within the last
  *          AP_TIME_RECENT_THRESHOLD seconds
- * @note This is a faster alternative to apr_explode_localtime that uses
+ * @note This is a faster alternative to apr_time_exp_lt that uses
  *       a cache of pre-exploded time structures.  It is useful for things
  *       that need to explode the current time multiple times per second,
  *       like loggers.

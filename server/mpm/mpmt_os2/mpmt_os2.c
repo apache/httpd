@@ -182,7 +182,7 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s )
             apr_sockaddr_info_get(&lr->bind_addr, "0.0.0.0", APR_UNSPEC,
                                   DEFAULT_HTTP_PORT, 0, s->process->pool);
             apr_socket_create(&lr->sd, lr->bind_addr->family,
-                              SOCK_STREAM, s->process->pool);
+                              SOCK_STREAM, 0, s->process->pool);
         }
 
         for (lr = ap_listeners; lr; lr = lr->next) {

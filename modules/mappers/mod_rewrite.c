@@ -3376,7 +3376,7 @@ static int apply_rewrite_cond(rewritecond_entry *p, rewrite_ctx *ctx)
 
     case CONDPAT_FILE_LINK:
 #if !defined(OS2)
-        if (   apr_lstat(&sb, input, APR_FINFO_MIN, r->pool) == APR_SUCCESS
+        if (   apr_stat(&sb, input, APR_FINFO_MIN | APR_FINFO_LINK, r->pool) == APR_SUCCESS
             && sb.filetype == APR_LNK) {
             rc = 1;
         }

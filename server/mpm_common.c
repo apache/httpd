@@ -414,8 +414,8 @@ AP_DECLARE(apr_status_t) ap_mpm_pod_open(apr_pool_t *p, ap_pod_t **pod)
                           APR_UNSPEC, ap_listeners->bind_addr->port, 0, p);
 
     /* close these before exec. */
-    apr_file_unset_inherit((*pod)->pod_in);
-    apr_file_unset_inherit((*pod)->pod_out);
+    apr_file_inherit_unset((*pod)->pod_in);
+    apr_file_inherit_unset((*pod)->pod_out);
 
     return APR_SUCCESS;
 }
@@ -488,7 +488,7 @@ static apr_status_t dummy_connection(ap_pod_t *pod)
         return rv;
     }
 
-    rv = apr_socket_create(&sock, pod->sa->family, SOCK_STREAM, p);
+    rv = apr_socket_create(&sock, pod->sa->family, SOCK_STREAM, 0, p);
     if (rv != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_WARNING, rv, ap_server_conf,
                      "get socket to connect to listener");
@@ -509,7 +509,7 @@ static apr_status_t dummy_connection(ap_pod_t *pod)
         return rv;
     }
 
-    rv = apr_connect(sock, pod->sa);
+    rv = apr_socket_connect(sock, pod->sa);
     if (rv != APR_SUCCESS) {
         int log_level = APLOG_WARNING;
 

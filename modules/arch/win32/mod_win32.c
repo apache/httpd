@@ -447,7 +447,7 @@ static apr_status_t ap_cgi_build_command(const char **cmd, const char ***argv,
      * win32 parsing here, therefore the final extension is the only one
      * we will consider.
      */
-    ext = strrchr(apr_filename_of_pathname(*cmd), '.');
+    ext = strrchr(apr_filepath_name_get(*cmd), '.');
     
     /* If the file has an extension and it is not .com and not .exe and
      * we've been instructed to search the registry, then do so.
