@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/08/26 16:48:23 $]
+Last modified at [$Date: 2004/08/26 16:58:28 $]
 
 Release:
 
@@ -75,7 +75,7 @@ PATCHES TO BACKPORT FROM 2.1
     *) Win32: Orderly shutdown of the command process after apache -k start,restart,config,
        install to prevent stranded piped logger processes.
        http://cvs.apache.org/viewcvs.cgi/httpd-2.0/server/mpm/winnt/mpm_winnt.c?r1=1.311&r2=1.312
-       +1: stoddard
+       +1: stoddard, trawick
 
     *) Escape errfn strings before sending them to the log file (and
        analogus patch to mod_cgid)
@@ -85,9 +85,7 @@ PATCHES TO BACKPORT FROM 2.1
     *) util_ldap: Validate the file path of the trusted certificate file 
        at the time the LDAPTrushedCA directive is handled. PR#30782
          modules/ldap/util_ldap.c: 1.9, 1.11
-       +1: bnicholes
-       trawick: why toss the rv?  logging it might show that there is
-                a permissions problem instead of simple file-not-found
+       +1: bnicholes, trawick
        
     *) [SECURITY] mod_ssl: Fix potential input filter segfaults in SPECULATIVE mode.
        http://cvs.apache.org/viewcvs.cgi/httpd-2.0/modules/ssl/ssl_engine_io.c?r1=1.125&r2=1.126
@@ -100,11 +98,11 @@ PATCHES TO BACKPORT FROM 2.1
 
     *) Prevent byterange filter doing its thang for a CGI which returns a Content-Range
        http://cvs.apache.org/viewcvs.cgi/httpd-2.0/server/util_script.c?r1=1.89&r2=1.90
-       +1: jorton
+       +1: jorton, trawick
 
     *) mod_ssl: Add ssl_is_https optional hook.
        http://www.apache.org/~jorton/mod_ssl-2.0-ishttps.diff
-       +1: jorton, stoddard
+       +1: jorton, stoddard, trawick
 
     *) mod_rewrite: Add %{SSL:...} and %{HTTPS} support (regression from 1.3/mod_ssl).
        http://www.apache.org/~jorton/mod_rewrite-2.0-sslvar.diff
