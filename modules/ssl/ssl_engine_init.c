@@ -67,6 +67,44 @@
 **  _________________________________________________________________
 */
 
+static char * ssl_add_version_component(apr_pool_t *p,
+                                        server_rec *s,
+                                        char *name)
+{
+    char *val = ssl_var_lookup(p, s, NULL, NULL, name);
+
+    if (val && *val) {
+        ap_add_version_component(p, val);
+    }
+
+    return val;
+}
+
+static char *version_components[] = {
+    "SSL_VERSION_PRODUCT",
+    "SSL_VERSION_INTERFACE",
+    "SSL_VERSION_LIBRARY",
+    NULL
+};
+
+static void ssl_add_version_components(apr_pool_t *p,
+                                       server_rec *s)
+{
+    char *vals[sizeof(version_components)/sizeof(char *)];
+    int i;
+
+    for (i=0; version_components[i]; i++) {
+        vals[i] = ssl_add_version_component(p, s,
+                                            version_components[i]);
+    }
+
+    ssl_log(s, SSL_LOG_INFO,
+            "Server: %s, Interface: %s, Library: %s",
+            AP_SERVER_BASEVERSION,
+            vals[1],  /* SSL_VERSION_INTERFACE */
+            vals[2]); /* SSL_VERSION_LIBRARY */
+}
+
 /*
  *  Per-module initialization
  */
@@ -77,7 +115,6 @@ int ssl_init_Module(apr_pool_t *p, apr_pool_t *plog,
     SSLModConfigRec *mc = myModConfig(base_server);
     SSLSrvConfigRec *sc;
     server_rec *s;
-    char *cp;
 
     /*
      * Let us cleanup on restarts and exists
@@ -129,17 +166,6 @@ int ssl_init_Module(apr_pool_t *p, apr_pool_t *plog,
         /* Open the dedicated SSL logfile */
         ssl_log_open(base_server, s, p);
     }
-
-    /*
-     * Identification
-     */
-    ssl_log(base_server, SSL_LOG_INFO,
-            "Server: %s, Interface: %s, Library: %s",
-            AP_SERVER_BASEVERSION,
-            ssl_var_lookup(p, base_server,
-                           NULL, NULL, "SSL_VERSION_INTERFACE"),
-            ssl_var_lookup(p, base_server,
-                           NULL, NULL, "SSL_VERSION_LIBRARY"));
 
     ssl_log(base_server, SSL_LOG_INFO,
             "Init: Initializing %s library", SSL_LIBRARY_NAME);
@@ -229,16 +255,7 @@ int ssl_init_Module(apr_pool_t *p, apr_pool_t *plog,
      *  Announce mod_ssl and SSL library in HTTP Server field
      *  as ``mod_ssl/X.X.X OpenSSL/X.X.X''
      */
-    cp = ssl_var_lookup(p, base_server,
-                        NULL, NULL, "SSL_VERSION_PRODUCT");
-    if (cp && *cp) {
-        ap_add_version_component(p, cp);
-    }
-
-    ap_add_version_component(p, ssl_var_lookup(p, base_server, NULL, NULL,
-                                               "SSL_VERSION_INTERFACE"));
-    ap_add_version_component(p, ssl_var_lookup(p, base_server, NULL, NULL,
-                                               "SSL_VERSION_LIBRARY"));
+    ssl_add_version_components(p, base_server);
 
     SSL_init_app_data2_idx(); /* for SSL_get_app_data2() at request time */
 
