@@ -108,31 +108,23 @@ SOURCE=.\mod_proxy.h
 # PROP Default_Filter ""
 # Begin Source File
 
-SOURCE=.\ajp\ajp.h
+SOURCE=.\ajp.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\ajp\ajp_header.c
+SOURCE=.\ajp_header.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\ajp\ajp_header.h
+SOURCE=.\ajp_header.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\ajp\ajp_link.c
+SOURCE=.\ajp_link.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\ajp\ajp_logon.c
-# End Source File
-# Begin Source File
-
-SOURCE=.\ajp\ajp_logon.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\ajp\ajp_msg.c
+SOURCE=.\ajp_msg.c
 # End Source File
 # End Group
 # Begin Source File
