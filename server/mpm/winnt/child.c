@@ -520,7 +520,7 @@ static void winnt_accept(void *lr_)
                     if (listen_rv == APR_SUCCESS) {
                         ap_log_error(APLOG_MARK,APLOG_ERR, listen_rv, ap_server_conf,
                                      "AcceptEx error: If this occurs constantly and NO requests are being served "
-                                     "try using the WindowsSocketsWorkaround directive set to 'on'.");
+                                     "try using the Win32DisableAcceptEx directive.");
                         err_count = 0;
                     }
                     else {
