@@ -293,7 +293,7 @@ int main(int argc, char *argv[])
     const char *optarg;
 
     apr_initialize();
-    process = create_process(argc, (char *const *)argv);
+    process = create_process(argc, argv);
     pglobal = process->pool;
     pconf = process->pconf;
     ap_server_argv0 = process->short_name;
