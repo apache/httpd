@@ -1,5 +1,11 @@
 Changes with Apache 1.3.13
 
+  *) Fix a security problem that affects some configurations of
+     mod_rewrite. If the result of a RewriteRule is a filename that
+     contains expansion specifiers, especially regexp backreferences
+     $0..$9 and %0..%9, then it may have been possible for an attacker
+     to access any file on the web server. [Tony Finch]
+
   *) Add mod_auth_dbm (sdbm flavor) binary build for Win32.
      [William Rowe]
 
