@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="iso-2022-jp"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
-<!-- English Revision: 1.19 (outdated: 1.25) -->
+<!-- English Revision: 1.25 -->
 
 <!--
  Copyright 2002-2004 The Apache Software Foundation
@@ -20,8 +20,8 @@
 -->
 
 <modulesynopsis metafile="mod_autoindex.xml.meta">
-<name>mod_autoindex</name>
 
+<name>mod_autoindex</name>
 <description>Unix の <code>ls</code> コマンドや
     Win32 の <code>dir</code> シェルコマンドに似た
     ディレクトリインデックスを生成する</description>
@@ -548,14 +548,14 @@ MIME タイプによって選択</description>
 <usage>
     <p><directive>IndexIgnore</directive> ディレクティブは、
     ディレクトリの一覧を行う際に無視すべきファイルリストに追加します。
-    <var>file</var> は、無視するファイル名のファイル拡張子か、ファイル名の一部か、
-    ワイルドカード表現か完全なファイル名です。
+    <var>file</var> は、
+    シェル形式のワイルドカード表現か完全なファイル名です。
     IndexIgnore が複数ある場合は、無視するリストに追加が行われ、
     置換は行われません。デフォルトではリストには <code>.</code>
     (カレントディレクトリ) が含まれています。</p>
 
     <example>
-      IndexIgnore README .htaccess *~
+      IndexIgnore README .htaccess *.bak *~
     </example>
 </usage>
 </directivesynopsis>
@@ -711,6 +711,13 @@ MIME タイプによって選択</description>
       httpd は <code>title</code> タグの値を読むためにドキュメントを読み始めます。
       これは CPU や disk に負荷をかけます。</dd>
 
+      <dt><a name="indexoptions.showforbidden"
+               id="indexoptions.showforbidden">ShowForbidden</a></dt>
+
+      <dd>指定した場合であっても、サブリクエストの結果が HTTP_UNAUTHORIZED や
+      HTTP_FORBIDDEN のファイルは通常通り隠された状態のまま、
+      ファイル一覧が生成されます。</dd>
+
       <dt><a name="indexoptions.suppresscolumnsorting"
                id="indexoptions.suppresscolumnsorting"
 	       >SuppressColumnSorting</a></dt>
@@ -848,10 +855,10 @@ MIME タイプによって選択</description>
 
       <dt><a name="indexoptions.xhtml"
                id="indexoptions.xhtml">XHTML</a>
-      (<em>Apache 2.1.0 以降</em>)</dt>
+      (<em>Apache 2.0.49 以降</em>)</dt>
 
       <dd><code>XHTML</code> キーワードを指定すると、<module>mod_autoindex</module>
-      はHTML 3.2 の代わりに XHTML 1.0 のコードを出力するようになります。</dd>
+      は HTML 3.2 の代わりに XHTML 1.0 のコードを出力するようになります。</dd>
     </dl>
 
    <!--
