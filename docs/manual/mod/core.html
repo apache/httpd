@@ -49,6 +49,10 @@ always available.
 <LI><A HREF="#keepalive">KeepAlive</A>
 <LI><A HREF="#keepalivetimeout">KeepAliveTimeout</A>
 <LI><A HREF="#limit">&lt;Limit&gt;</A>
+<LI><A HREF="#limitrequestbody">LimitRequestBody</A>
+<LI><A HREF="#limitrequestfields">LimitRequestFields</A>
+<LI><A HREF="#limitrequestfieldsize">LimitRequestFieldsize</A>
+<LI><A HREF="#limitrequestline">LimitRequestLine</A>
 <LI><A HREF="#listen">Listen</A>
 <LI><A HREF="#listenbacklog">ListenBacklog</A>
 <LI><A HREF="#location">&lt;Location&gt;</A>
@@ -1324,7 +1328,201 @@ listed can be one or more of: GET, POST, PUT, DELETE, CONNECT or
 OPTIONS. <STRONG>The method name is case-sensitive.</STRONG>
 If GET is used it will also restrict HEAD requests.
 <STRONG>If you wish to limit all methods, do not include any
-&lt;Limit&gt; directive at all.</STRONG> <P><HR>
+&lt;Limit&gt; directive at all.</STRONG>
+
+<P><HR>
+
+<H2><A NAME="limitrequestbody">LimitRequestBody directive</A></H2>
+<!--%plaintext &lt;?INDEX {\tt LimitRequestBody} directive&gt; -->
+<A
+ HREF="directive-dict.html#Syntax"
+ REL="Help"
+><STRONG>Syntax:</STRONG></A> LimitRequestBody <EM>number</EM><BR>
+<A
+ HREF="directive-dict.html#Default"
+ REL="Help"
+><STRONG>Default:</STRONG></A> <CODE>LimitRequestBody 0</CODE><BR>
+<A
+ HREF="directive-dict.html#Context"
+ REL="Help"
+><STRONG>Context:</STRONG></A> server config<BR>
+<A
+ HREF="directive-dict.html#Status"
+ REL="Help"
+><STRONG>Status:</STRONG></A> core<BR>
+<A
+ HREF="directive-dict.html#Compatibility"
+ REL="Help"
+><STRONG>Compatibility:</STRONG></A> LimitRequestBody is only available in
+Apache 1.3.2 and later.
+<P>
+
+<EM>Number</EM> is a long integer from 0 (meaning unlimited) to 2147483647
+(2GB).  The default value is defined by the compile-time constant
+<CODE>DEFAULT_LIMIT_REQUEST_BODY</CODE> (0 as distributed).
+<P>
+
+The LimitRequestBody directive allows the user to set a
+limit on the allowed size of an HTTP request message body within
+the context in which the directive is given (server, per-directory,
+per-file or per-location).  If the client request exceeds that limit,
+the server will return an error response instead of servicing the request.
+The size of a normal request message body will vary greatly depending
+on the nature of the resource and the methods allowed on that resource.
+CGI scripts typically use the message body for passing form information
+to the server.  Implementations of the PUT method will require a value
+at least as large as any representation that the server wishes
+to accept for that resource.
+<P>
+
+This directive gives the server administrator greater control over abnormal
+client request behavior, which may be useful for avoiding some forms
+of denial-of-service attacks.
+<P>
+
+<P><HR>
+
+<H2><A NAME="limitrequestfields">LimitRequestFields directive</A></H2>
+<!--%plaintext &lt;?INDEX {\tt LimitRequestFields} directive&gt; -->
+<A
+ HREF="directive-dict.html#Syntax"
+ REL="Help"
+><STRONG>Syntax:</STRONG></A> LimitRequestFields <EM>number</EM><BR>
+<A
+ HREF="directive-dict.html#Default"
+ REL="Help"
+><STRONG>Default:</STRONG></A> <CODE>LimitRequestFields 100</CODE><BR>
+<A
+ HREF="directive-dict.html#Context"
+ REL="Help"
+><STRONG>Context:</STRONG></A> server config<BR>
+<A
+ HREF="directive-dict.html#Status"
+ REL="Help"
+><STRONG>Status:</STRONG></A> core<BR>
+<A
+ HREF="directive-dict.html#Compatibility"
+ REL="Help"
+><STRONG>Compatibility:</STRONG></A> LimitRequestFields is only available in
+Apache 1.3.2 and later.
+<P>
+
+<EM>Number</EM> is an integer from 0 (meaning unlimited) to 32767.
+The default value is defined by the compile-time constant
+<CODE>DEFAULT_LIMIT_REQUEST_FIELDS</CODE> (100 as distributed).
+<P>
+
+The LimitRequestFields directive allows the server administrator to modify
+the limit on the number of request header fields allowed in an HTTP request.
+A server needs this value to be larger than the number of fields that a
+normal client request might include.  The number of request header fields
+used by a client rarely exceeds 20, but this may vary among different
+client implementations, often depending upon the extent to which a user
+has configured their browser to support detailed content negotiation.
+Optional HTTP extensions are often expressed using request header fields.
+<P>
+
+This directive gives the server administrator greater control over abnormal
+client request behavior, which may be useful for avoiding some forms
+of denial-of-service attacks.  The value should be increased if normal
+clients see an error response from the server that indicates too many
+fields were sent in the request.<P>
+
+<P><HR>
+
+<H2><A NAME="limitrequestfieldsize">LimitRequestFieldsize directive</A></H2>
+<!--%plaintext &lt;?INDEX {\tt LimitRequestFieldsize} directive&gt; -->
+<A
+ HREF="directive-dict.html#Syntax"
+ REL="Help"
+><STRONG>Syntax:</STRONG></A> LimitRequestFieldsize <EM>number</EM><BR>
+<A
+ HREF="directive-dict.html#Default"
+ REL="Help"
+><STRONG>Default:</STRONG></A> <CODE>LimitRequestFieldsize 8190</CODE><BR>
+<A
+ HREF="directive-dict.html#Context"
+ REL="Help"
+><STRONG>Context:</STRONG></A> server config<BR>
+<A
+ HREF="directive-dict.html#Status"
+ REL="Help"
+><STRONG>Status:</STRONG></A> core<BR>
+<A
+ HREF="directive-dict.html#Compatibility"
+ REL="Help"
+><STRONG>Compatibility:</STRONG></A> LimitRequestFieldsize is only available in
+Apache 1.3.2 and later.
+<P>
+
+<EM>Number</EM> is an integer size in bytes from 0 to the value of the
+compile-time constant <CODE>DEFAULT_LIMIT_REQUEST_FIELDSIZE</CODE>
+(8190 as distributed).
+<P>
+
+The LimitRequestFieldsize directive allows the server administrator to reduce
+the limit on the allowed size of an HTTP request header field below the
+normal input buffer size compiled with the server.  A server needs this
+value to be large enough to hold any one header field from a normal client
+request.  The size of a normal request header field will vary greatly
+among different client implementations, often depending upon the extent
+to which a user has configured their browser to support detailed
+content negotiation.
+<P>
+
+This directive gives the server administrator greater control over abnormal
+client request behavior, which may be useful for avoiding some forms
+of denial-of-service attacks.  Under normal conditions, the value should
+not be changed from the default.<P>
+
+<P><HR>
+
+<H2><A NAME="limitrequestline">LimitRequestLine directive</A></H2>
+<!--%plaintext &lt;?INDEX {\tt LimitRequestLine} directive&gt; -->
+<A
+ HREF="directive-dict.html#Syntax"
+ REL="Help"
+><STRONG>Syntax:</STRONG></A> LimitRequestLine <EM>number</EM><BR>
+<A
+ HREF="directive-dict.html#Default"
+ REL="Help"
+><STRONG>Default:</STRONG></A> <CODE>LimitRequestLine 8190</CODE><BR>
+<A
+ HREF="directive-dict.html#Context"
+ REL="Help"
+><STRONG>Context:</STRONG></A> server config<BR>
+<A
+ HREF="directive-dict.html#Status"
+ REL="Help"
+><STRONG>Status:</STRONG></A> core<BR>
+<A
+ HREF="directive-dict.html#Compatibility"
+ REL="Help"
+><STRONG>Compatibility:</STRONG></A> LimitRequestLine is only available in
+Apache 1.3.2 and later.
+<P>
+
+<EM>Number</EM> is an integer size in bytes from 0 to the value of the
+compile-time constant <CODE>DEFAULT_LIMIT_REQUEST_LINE</CODE>
+(8190 as distributed).
+<P>
+
+The LimitRequestLine directive allows the server administrator to reduce
+the limit on the allowed size of a client's HTTP request-line below the
+normal input buffer size compiled with the server.  Since the request-line
+consists of the HTTP method, URI, and protocol version, the
+LimitRequestLine directive places a restriction on the length of a
+request-URI allowed for a request on the server.  A server needs this
+value to be large enough to hold any of its resource names, including
+any information that might be passed in the query part of a GET request.
+<P>
+
+This directive gives the server administrator greater control over abnormal
+client request behavior, which may be useful for avoiding some forms
+of denial-of-service attacks.  Under normal conditions, the value should
+not be changed from the default.<P>
+
+<P><HR>
 
 <H2><A NAME="listen">Listen directive</A></H2>
 <A
