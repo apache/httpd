@@ -21,7 +21,7 @@
 # ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #
 ##############################################################################
-# $Id: rules.mk,v 1.1 2000/01/11 13:10:59 sascha Exp $ 
+# $Id: rules.mk,v 1.2 2000/02/16 00:55:51 rbb Exp $ 
 #
 
 include $(DEPTH)/config_vars.mk
@@ -117,7 +117,7 @@ depend: depend-recursive
 clean: clean-recursive clean-x
 
 clean-x:
-	rm -f $(targets) *.lo *.la *.o $(CLEANFILES)
+	rm -f $(targets) *.slo *.lo *.la *.o $(CLEANFILES)
 	rm -rf .libs
 
 distclean: distclean-recursive clean-x
