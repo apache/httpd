@@ -1,5 +1,5 @@
 Apache 2.0 STATUS:
-Last modified at [$Date: 2000/07/09 17:28:16 $]
+Last modified at [$Date: 2000/07/10 11:23:12 $]
 
 Release:
 
@@ -138,9 +138,7 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
                 reports success with his "cadaver" tool.
         Some additional items remaining:
 	- case_preserved_filename stuff
-        - turn dav/fs/ into a true module; remove existing config hackery
         - fix and re-enable sdbm_lock.c
-        - move LimitXMLRequestBody, add ap_get_limit_xml_body()
 	- find a new home for ap_text(_header)
 	- is it possible to remove the DAV: namespace stuff from util_xml?
 
@@ -176,9 +174,11 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
 
       Ryan's patch:
         MsgID: <Pine.LNX.4.21.0007072059120.18877-100000@koj.rkbloom.net>
-	Status: Dirk +1, Ryan +1
-	note: alternate patch will be sent, which replaces hooks with
-	      an alternative solution
+	Status: Dirk +1, Ryan +1, Greg -1
+
+      Ryan's alternate patch:
+	MsgID: <Pine.LNX.4.21.0007091940440.16496-100000@koj.rkbloom.net>
+	Status: Ryan -0, Greg -1
 
 Other bugs that need fixing:
 
