@@ -644,4 +644,70 @@
     </xsl:copy>
   </xsl:template>
 
+
+  <!--                                                    -->
+  <!-- create a letter bar                                -->
+  <!-- used in several documents                          -->
+  <!--                                                    -->
+  <xsl:template name="letter-bar">
+  <xsl:param name="letters"/>
+  <xsl:param name="first"/>
+
+    <xsl:if test="not($first)">
+      <xsl:text> | </xsl:text>
+    </xsl:if>
+
+    <a href="#{substring($letters,1,1)}">
+      <xsl:text>&nbsp;</xsl:text>
+      <xsl:value-of select="substring($letters,1,1)"/>
+      <xsl:text>&nbsp;</xsl:text>
+    </a>
+
+    <xsl:if test="string-length($letters) &gt; 1">
+      <xsl:call-template name="letter-bar">
+        <xsl:with-param name="letters" select="substring($letters,2)"/>
+        <xsl:with-param name="first" select="false()"/>
+      </xsl:call-template>
+    </xsl:if>
+  </xsl:template>
+
+
+  <!--                                                    -->
+  <!-- template(s) for collecting all start letters       -->
+  <!-- of directives                                      -->
+  <!-- used in several documents                          -->
+  <!--                                                    -->
+  <xsl:template name="directive-startletters">
+
+    <xsl:call-template name="_squeeze-letters">
+      <xsl:with-param name="lastletter" select="''"/>
+
+      <xsl:with-param name="letters">
+        <xsl:for-each select="document(/*/modulefilelist/modulefile)/modulesynopsis/directivesynopsis[not(@location)]">
+        <xsl:sort select="name"/>
+          <xsl:value-of select="translate(substring(normalize-space(name),1,1),$lowercase,$uppercase)"/>
+        </xsl:for-each>
+      </xsl:with-param>
+    </xsl:call-template>
+
+  </xsl:template>
+  
+  <xsl:template name="_squeeze-letters">
+  <xsl:param name="letters"/>
+  <xsl:param name="lastletter"/>
+
+    <xsl:variable name="current" select="substring($letters,1,1)"/>
+
+    <xsl:if test="$lastletter != $current">
+      <xsl:value-of select="$current"/>
+    </xsl:if>
+    
+    <xsl:if test="string-length($letters) &gt; 1">
+      <xsl:call-template name="_squeeze-letters">
+        <xsl:with-param name="letters" select="substring($letters,2)"/>
+        <xsl:with-param name="lastletter" select="$current"/>
+      </xsl:call-template>
+    </xsl:if>
+  </xsl:template>
+
 </xsl:stylesheet>
