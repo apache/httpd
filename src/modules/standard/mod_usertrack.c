@@ -277,7 +277,7 @@ static const char *set_cookie_exp(cmd_parms *parms, void *dummy, const char *arg
     /* {<num> <type>}* */
     while (word[0]) {
         /* <num> */
-        if (strchr("0123456789", word[0]) != NULL)
+	if (isdigit(word[0]))
             num = atoi(word);
         else
             return "bad expires code, numeric value expected.";
