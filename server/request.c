@@ -802,6 +802,36 @@ static request_rec *make_sub_request(const request_rec *r)
     return rr;
 }
 
+static void fill_in_sub_req_vars(request_rec *rnew, const request_rec *r,
+                                 ap_filter_t *next_filter)
+{
+    rnew->hostname       = r->hostname;
+    rnew->request_time   = r->request_time;
+    rnew->connection     = r->connection;
+    rnew->server         = r->server;
+
+    rnew->request_config = ap_create_request_config(rnew->pool);
+
+    rnew->htaccess       = r->htaccess;
+    rnew->allowed_methods = ap_make_method_list(rnew->pool, 2);
+
+    /* make a copy of the allowed-methods list */
+    ap_copy_method_list(rnew->allowed_methods, r->allowed_methods);
+
+    /* start with the same set of output filters */
+    if (next_filter) {
+        rnew->output_filters = next_filter;
+    }
+    else {
+        rnew->output_filters = r->output_filters;
+    }
+    ap_add_output_filter("SUBREQ_CORE", NULL, rnew, rnew->connection); 
+
+    /* no input filters for a subrequest */
+
+    ap_set_sub_req_protocol(rnew, r);
+}
+
 AP_CORE_DECLARE_NONSTD(apr_status_t) ap_sub_req_output_filter(ap_filter_t *f,
                                                         apr_bucket_brigade *bb)
 {
@@ -852,7 +882,6 @@ AP_DECLARE(request_rec *) ap_sub_req_method_uri(const char *method,
     rnew->request_config = ap_create_request_config(rnew->pool);
 
     rnew->htaccess       = r->htaccess;
-    rnew->per_dir_config = r->server->lookup_defaults;
     rnew->allowed_methods = ap_make_method_list(rnew->pool, 2);
 
     /* make a copy of the allowed-methods list */
@@ -870,6 +899,8 @@ AP_DECLARE(request_rec *) ap_sub_req_method_uri(const char *method,
     /* no input filters for a subrequest */
 
     ap_set_sub_req_protocol(rnew, r);
+
+    rnew->per_dir_config = r->server->lookup_defaults;
 
     /* We have to run this after ap_set_sub_req_protocol, or the r->main
      * pointer won't be setup
@@ -964,7 +995,6 @@ AP_DECLARE(request_rec *) ap_sub_req_lookup_file(const char *new_file,
     rnew->request_config = ap_create_request_config(rnew->pool);
 
     rnew->htaccess       = r->htaccess;
-    rnew->chunked        = r->chunked;
     rnew->allowed_methods = ap_make_method_list(rnew->pool, 2);
 
     /* make a copy of the allowed-methods list */
@@ -982,6 +1012,8 @@ AP_DECLARE(request_rec *) ap_sub_req_lookup_file(const char *new_file,
     /* no input filters for a subrequest */
 
     ap_set_sub_req_protocol(rnew, r);
+
+    rnew->chunked        = r->chunked;
 
     /* We have to run this after ap_set_sub_req_protocol, or the r->main
      * pointer won't be setup
