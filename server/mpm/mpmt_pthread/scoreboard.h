@@ -70,6 +70,8 @@ extern "C" {
 #endif /* TPF */
 #endif
 
+#include "mpm_default.h"	/* For HARD_.*_LIMIT */
+
 /* Scoreboard info on a process is, for now, kept very brief --- 
  * just status value and pid (the latter so that the caretaker process
  * can properly update the scoreboard when a process dies).  We may want
