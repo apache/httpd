@@ -62,6 +62,11 @@
     root). To maintain the security of communications with CGI
     scripts, it is important that no other user has permission to
     write in the directory where the socket is located.</p>
+
+    <example><title>Example</title>
+    ScriptSock /var/run/cgid.sock
+    </example>
+
 </usage>
 </directivesynopsis>
 
