@@ -1,5 +1,5 @@
   1.3 STATUS:
-  Last modified at [$Date: 1999/05/05 20:49:36 $]
+  Last modified at [$Date: 1999/05/11 03:26:29 $]
 
 Release:
 
@@ -94,12 +94,6 @@ Available Patches:
       ReadmeName files to be negociated and SSI-parsed.
 	Message-ID: <372F5E40.2AD0902D@rsbx.net>
 	Status: 
-
-    * Fred's patch for changing the default layout on Mac OS and Mac
-      OS X Server.
-        Message-ID: <199905022228.PAA27808@scv2.apple.com>
-	Status: Ralf -1
-		Alexei, Randy, Greg +1
 
     * John Giannadrea's patch for ceiling on file size for mmap (PR#4122)
 	Message-ID: <19990325094501.5997.qmail@hyperreal.org>
