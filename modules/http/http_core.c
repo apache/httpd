@@ -3008,6 +3008,7 @@ static apr_status_t chunk_filter(ap_filter_t *f, ap_bucket_brigade *b)
     for (more = NULL; b; b = more, more = NULL) {
 	apr_off_t bytes = 0;
         ap_bucket *eos = NULL;
+        char chunk_hdr[20]; /* enough space for the snprintf below */
 
 	AP_BRIGADE_FOREACH(e, b) {
 	    if (e->type == AP_BUCKET_EOS) {
@@ -3055,7 +3056,6 @@ static apr_status_t chunk_filter(ap_filter_t *f, ap_bucket_brigade *b)
 
         /* if there are content bytes, then wrap them in a chunk */
         if (bytes > 0) {
-            char chunk_hdr[20]; /* enough space for the snprintf below */
             apr_size_t hdr_len;
 
             /*
