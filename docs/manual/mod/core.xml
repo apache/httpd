@@ -73,7 +73,7 @@ available</description>
       <indent>
         Options +Includes<br />
         SetOutputFilter INCLUDES<br />
-        AcceptPathInfo on<br />
+        AcceptPathInfo On<br />
       </indent>
       &lt;/Files&gt;
     </example>
@@ -882,8 +882,8 @@ ErrorLog logs/error.log (Windows and OS/2)</default>
 <usage>
     <p>The <directive>ErrorLog</directive> directive sets the name of
     the file to which the server will log any errors it encounters. If
-    the <var>file-path</var> does not begin with a slash (/) then it is
-    assumed to be relative to the <directive
+    the <var>file-path</var> is not absolute (in general: does not begin
+    with a slash (/)) then it is assumed to be relative to the <directive
     module="core">ServerRoot</directive>.</p>
 
     <example><title>Example</title>
@@ -986,10 +986,10 @@ filenames</description>
 <usage>
     <p>The <directive type="section">Files</directive> directive
     provides for access control by filename. It is comparable to the
-    <directive module="core" type="directive">Directory</directive>
+    <directive module="core" type="section">Directory</directive>
     directive and <directive module="core"
-    type="directive">Location</directive> directives. It should be
-    matched with a <code>&lt;/Files&gt;</code> directive. The
+    type="section">Location</directive> directives. It should be
+    matched with a <directive type="section">Files</directive> directive. The
     directives given within this section will be applied to any object
     with a basename (last component of filename) matching the
     specified filename. <directive type="section">Files</directive>
@@ -1298,7 +1298,7 @@ the server configuration files</description>
     <p>This directive allows inclusion of other configuration files
     from within the server configuration files.</p>
 
-    <p>Shell-style (fnmatch) wildcard characters can be used to
+    <p>Shell-style (<code>fnmatch()</code>) wildcard characters can be used to
     include several files at once, in alphabetical order. In
     addition, if <directive>Include</directive> points to a directory,
     rather than a file, Apache will read all files in that directory
@@ -1598,7 +1598,7 @@ client</description>
     <p>For example:</p>
 
     <example>
-      LimitRequestFieldSize 16380
+      LimitRequestFieldSize 4094
     </example>
 
     <note>Under normal conditions, the value should not be changed from
@@ -1639,7 +1639,7 @@ from the client</description>
     <p>For example:</p>
 
     <example>
-      LimitRequestLine 16380
+      LimitRequestLine 4094
     </example>
 
     <note>Under normal conditions, the value should not be changed from
@@ -2163,27 +2163,18 @@ a resource</description>
     <p>This directive selects which authenticated users can access
     a directory. The allowed syntaxes are:</p>
 
-    <ul>
-      <li>
-        Require user <var>userid</var> [<var>userid</var>] ...
+    <dl>
+      <dt><code>Require user <var>userid</var> [<var>userid</var>]
+      ...</code></dt>
+      <dd>Only the named users can access the resource.</dd>
 
-        <p>Only the named users can access the resource.</p>
-      </li>
+      <dt><code>Require group <var>group-name</var> [<var>group-name</var>]
+      ...</code></dt>
+      <dd>Only users in the named groups can access the  resource.</dd>
 
-      <li>
-        Require group <var>group-name</var> [<var>group-name</var>] ...
-
-
-        <p>Only users in the named groups can access the
-        resource.</p>
-      </li>
-
-      <li>
-        Require valid-user
-
-        <p>All valid users can access the resource.</p>
-      </li>
-    </ul>
+      <dt><code>Require valid-user</code></dt>
+      <dd>All valid users can access the resource.</dd>
+    </dl>
 
     <p><directive>Require</directive> must be accompanied by
     <directive module="core">AuthName</directive> and <directive
@@ -2216,7 +2207,7 @@ a resource</description>
 <name>RLimitCPU</name>
 <description>Limits the CPU consumption of processes launched
 by Apache children</description>
-<syntax>RLimitCPU <var>number</var>|max [<var>number</var>|max]</syntax>
+<syntax>RLimitCPU <var>seconds</var>|max [<var>seconds</var>|max]</syntax>
 <default>Unset; uses operating system defaults</default>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context></contextlist>
@@ -2229,7 +2220,7 @@ by Apache children</description>
     or <code>max</code> to indicate to the server that the limit should
     be set to the maximum allowed by the operating system
     configuration. Raising the maximum resource limit requires that
-    the server is running as root, or in the initial startup
+    the server is running as <code>root</code>, or in the initial startup
     phase.</p>
 
     <p>This applies to processes forked off from Apache children
@@ -2249,7 +2240,7 @@ by Apache children</description>
 <name>RLimitMEM</name>
 <description>Limits the memory consumption of processes launched
 by Apache children</description>
-<syntax>RLimitMEM <var>number</var>|max [<var>number</var>|max]</syntax>
+<syntax>RLimitMEM <var>bytes</var>|max [<var>bytes</var>|max]</syntax>
 <default>Unset; uses operating system defaults</default>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context></contextlist>
@@ -2262,7 +2253,7 @@ by Apache children</description>
     or <code>max</code> to indicate to the server that the limit should
     be set to the maximum allowed by the operating system
     configuration. Raising the maximum resource limit requires that
-    the server is running as root, or in the initial startup
+    the server is running as <code>root</code>, or in the initial startup
     phase.</p>
 
     <p>This applies to processes forked off from Apache children
@@ -2295,7 +2286,7 @@ processes launched by Apache children</description>
     or <code>max</code> to indicate to the server that the limit
     should be set to the maximum allowed by the operating system
     configuration. Raising the maximum resource limit requires that
-    the server is running as root, or in the initial startup
+    the server is running as <code>root</code>, or in the initial startup
     phase.</p>
 
     <p>This applies to processes forked off from Apache children
@@ -2370,7 +2361,8 @@ scripts</description>
 <context>directory</context><context>.htaccess</context></contextlist>
 <override>FileInfo</override>
 <compatibility>Win32 only<br />
-option Registry-Strict is available in Apache 2.0 and later</compatibility>
+option <code>Registry-Strict</code> is available in Apache 2.0 and
+later</compatibility>
 
 <usage>
     <p>This directive is used to control how Apache finds the
@@ -2481,7 +2473,8 @@ itself</description>
     </p>
 </usage>
 
-<seealso><a href="../dns-caveats.html">DNS Issues</a></seealso>
+<seealso><a href="../dns-caveats.html">Issues Regarding DNS and
+    Apache</a></seealso>
 <seealso><a href="../vhosts/">Apache virtual host
     documentation</a></seealso>
 <seealso><directive module="core">UseCanonicalName</directive></seealso>
@@ -2527,7 +2520,7 @@ is accessed by an incompatible browser</description>
     option to <code>httpd</code></a></seealso>
 <seealso><a href="../misc/security_tips.html#serverroot">the
     security tips</a> for information on how to properly set
-    permissions on the ServerRoot</seealso>
+    permissions on the <directive>ServerRoot</directive></seealso>
 </directivesynopsis>
 
 <directivesynopsis>
@@ -2547,7 +2540,9 @@ is accessed by an incompatible browser</description>
     listings, <module>mod_info</module> output, ...). The reason why you
     would want to enable such a footer line is that in a chain of proxies,
     the user often has no possibility to tell which of the chained servers
-    actually produced a returned error message.<br /> The <code>Off</code>
+    actually produced a returned error message.</p>
+
+    <p>The <code>Off</code>
     setting, which is the default, suppresses the footer line (and is
     therefore compatible with the behavior of Apache-1.2 and
     below). The <code>On</code> setting simply adds a line with the
@@ -2567,7 +2562,8 @@ is accessed by an incompatible browser</description>
 
 <directivesynopsis>
 <name>ServerTokens</name>
-<description>Configures the Server HTTP response header</description>
+<description>Configures the <code>Server</code> HTTP response
+header</description>
 <syntax>ServerTokens Major|Minor|Min[imal]|Prod[uctOnly]|OS|Full</syntax>
 <default>ServerTokens Full</default>
 <contextlist><context>server config</context></contextlist>
@@ -2730,7 +2726,7 @@ server</description>
 <name>TimeOut</name>
 <description>Amount of time the server will wait for
 certain events before failing a request</description>
-<syntax>TimeOut <var>number</var></syntax>
+<syntax>TimeOut <var>second</var></syntax>
 <default>TimeOut 300</default>
 <contextlist><context>server config</context></contextlist>
 
@@ -2924,8 +2920,8 @@ hostname or IP address</description>
     </note>
 </usage>
 <seealso><a href="../vhosts/">Apache Virtual Host documentation</a></seealso>
-<seealso><a href="../dns-caveats.html">Warnings about DNS and
-    Apache</a></seealso>
+<seealso><a href="../dns-caveats.html">Issues Regarding DNS and
+     Apache</a></seealso>
 <seealso><a href="../bind.html">Setting
     which addresses and ports Apache uses</a></seealso>
 <seealso><a href="../sections.html">How &lt;Directory&gt;, &lt;Location&gt;
