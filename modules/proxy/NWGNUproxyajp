@@ -53,7 +53,7 @@ ifeq "$(RELEASE)" "debug"
 XINCDIRS	+= \
 			$(EOLIST)
 
-XCFLAGS		+= \
+XCFLAGS		+= -relax_pointers \
 			$(EOLIST)
 
 XDEFINES	+= \
@@ -67,7 +67,7 @@ ifeq "$(RELEASE)" "noopt"
 XINCDIRS	+= \
 			$(EOLIST)
 
-XCFLAGS		+= \
+XCFLAGS		+= -relax_pointers \
 			$(EOLIST)
 
 XDEFINES	+= \
