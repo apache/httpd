@@ -1,5 +1,9 @@
 Changes with Apache 1.3b7
 
+  *) Fix discrepancy in proxy_ftp.c which was causing failures when 
+     trying to connect to certain ftpd's, such as anonftpd.  
+     [Rick Ohnemus <rick@ecompcon.com>]
+
   *) Make mod_rewrite use ap_open_piped_log() for RewriteLog directive's
      logfile instead of fiddling around itself with child spawning stuff.
      [Ralf S. Engelschall]

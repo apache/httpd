@@ -803,9 +803,14 @@ int ap_proxy_ftp_handler(request_rec *r, struct cache_req *c, char *url)
 	pstr = strtok(pasv, " ");	/* separate result code */
 	if (pstr != NULL) {
 	    presult = atoi(pstr);
-	    pstr = strtok(NULL, "(");	/* separate address & port params */
-	    if (pstr != NULL)
-		pstr = strtok(NULL, ")");
+	    if (*(pstr + strlen(pstr) + 1) == '=')
+	        pstr += strlen(pstr) + 2;
+	    else
+	    {
+	        pstr = strtok(NULL, "(");  /* separate address & port params */
+		if (pstr != NULL)
+		    pstr = strtok(NULL, ")");
+	    }
 	}
 	else
 	    presult = atoi(pasv);
