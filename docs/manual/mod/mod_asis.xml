@@ -25,13 +25,14 @@ HTTP headers</description>
 
 <seealso><module>mod_headers</module></seealso>
 <seealso><module>mod_cern_meta</module></seealso>
+<seealso><a href="../handler.html">Apache's Handler Use</a></seealso>
 
-<section><title>Usage</title>
+<section id="usage"><title>Usage</title>
 
     <p>In the server configuration file, associate files with the
     <code>send-as-is</code> handler <em>e.g.</em></p>
 
-<example>AddHandler send-as-is asis</example>
+    <example>AddHandler send-as-is asis</example>
 
     <p>The contents of any file with a <code>.asis</code> extension
     will then be sent by Apache to the client with almost no
@@ -45,29 +46,30 @@ HTTP headers</description>
     redirected.</p>
 
 
-<example>Status: 301 Now where did I leave that URL<br />
-       Location: http://xyz.abc.com/foo/bar.html<br />
-       Content-type: text/html<br />
+    <example>
+      Status: 301 Now where did I leave that URL<br />
+      Location: http://xyz.abc.com/foo/bar.html<br />
+      Content-type: text/html<br />
       <br />
-       &lt;HTML&gt;<br />
-       &lt;HEAD&gt;<br />
-       &lt;TITLE&gt;Lame excuses'R'us&lt;/TITLE&gt;<br />
-       &lt;/HEAD&gt;<br />
-       &lt;BODY&gt;<br />
-       &lt;H1&gt;Fred's exceptionally wonderful page has moved
-      to<br />
-       &lt;A
-      HREF="http://xyz.abc.com/foo/bar.html"&gt;Joe's&lt;/A&gt;
+      &lt;html&gt;<br />
+      &lt;head&gt;<br />
+      &lt;title&gt;Lame excuses'R'us&lt;/title&gt;<br />
+      &lt;/head&gt;<br />
+      &lt;body&gt;<br />
+      &lt;h1&gt;Fred's exceptionally wonderful page has moved to<br />
+      &lt;a href="http://xyz.abc.com/foo/bar.html"&gt;Joe's&lt;/a&gt;
       site.<br />
-       &lt;/H1&gt;<br />
-       &lt;/BODY&gt;<br />
-       &lt;/HTML&gt;
-</example>
+      &lt;/h1&gt;<br />
+      &lt;/body&gt;<br />
+      &lt;/html&gt;
+    </example>
 
-    <p>Notes: the server always adds a Date: and Server: header to
-    the data returned to the client, so these should not be
+    <note><title>Notes:</title>
+    <p>The server always adds a <code>Date:</code> and <code>Server:</code>
+    header to the data returned to the client, so these should not be
     included in the file. The server does <em>not</em> add a
-    Last-Modified header; it probably should. </p>
+    <code>Last-Modified</code> header; it probably should.</p>
+    </note>
 </section>
 
 </modulesynopsis>

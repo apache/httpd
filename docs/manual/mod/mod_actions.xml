@@ -22,14 +22,15 @@ media type or request method.</description>
     files.</p>
 </summary>
 
+<seealso><module>mod_cgi</module></seealso>
+<seealso><a href="../howto/cgi.html">Dynamic Content with CGI</a></seealso>
+<seealso><a href="../handler.html">Apache's Handler Use</a></seealso>
+
 <directivesynopsis>
-
 <name>Action</name>
-
 <description>Activates a CGI script for a particular handler or
 content-type</description>
-
-<syntax>Action <em>action-type cgi-script</em></syntax>
+<syntax>Action <var>action-type</var> <var>cgi-script</var></syntax>
 <contextlist>
 <context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context>
@@ -38,27 +39,25 @@ content-type</description>
 
 <usage>
     <p>This directive adds an action, which will activate
-    <em>cgi-script</em> when <em>action-type</em> is triggered by the
-    request.  The <em>cgi-script</em> is the URL-path to a resource
+    <var>cgi-script</var> when <var>action-type</var> is triggered by the
+    request.  The <var>cgi-script</var> is the URL-path to a resource
     that has been designated as a CGI script using <directive
     module="mod_alias">ScriptAlias</directive> or <directive
     module="mod_mime">AddHandler</directive>.  The
-    <em>action-type</em> can be either a <a
+    <var>action-type</var> can be either a <a
     href="../handler.html">handler</a> or a MIME content type. It
     sends the URL and file path of the requested document using the
     standard CGI PATH_INFO and PATH_TRANSLATED environment
     variables.</p>
 
-<example>
-<title>Examples</title>
-
-    # Requests for files of a particular type:<br />
-    Action image/gif /cgi-bin/images.cgi<br />
-<br />
-    # Files of a particular file extension<br />
-    AddHandler my-file-type .xyz<br />
-    Action my-file-type /cgi-bin/program.cgi<br />
-</example>
+    <example><title>Examples</title>
+      # Requests for files of a particular type:<br />
+      Action image/gif /cgi-bin/images.cgi<br />
+      <br />
+      # Files of a particular file extension<br />
+      AddHandler my-file-type .xyz<br />
+      Action my-file-type /cgi-bin/program.cgi<br />
+    </example>
 
     <p>In the first example, requests for files with a MIME content
     type of <code>image/gif</code> will instead be handled by the
@@ -70,35 +69,32 @@ content-type</description>
 </usage>
 
 <seealso><directive module="mod_mime">AddHandler</directive></seealso>
-
 </directivesynopsis>
 
 <directivesynopsis>
-
 <name>Script</name>
-
 <description>Activates a CGI script for a particular request
 method.</description>
-<syntax> Script <em>method cgi-script</em></syntax>
+<syntax> Script <var>method cgi-script</var></syntax>
 <contextlist>
 <context>server config</context><context>virtual host</context>
 <context>directory</context></contextlist>
 <usage>
     <p>This directive adds an action, which will activate
-    <em>cgi-script</em> when a file is requested using the method of
-    <em>method</em>. The <em>cgi-script</em> is the URL-path to a
+    <var>cgi-script</var> when a file is requested using the method of
+    <var>method</var>. The <var>cgi-script</var> is the URL-path to a
     resource that has been designated as a CGI script using <directive
     module="mod_alias">ScriptAliase</directive> or <directive
     module="mod_mime">AddHandler</directive>.  The URL and
     file path of the requested document is sent using the standard CGI
     PATH_INFO and PATH_TRANSLATED environment variables.</p>
 
-<note>
+    <note>
       Any arbitrary method name may be used. <strong>Method names are
-      case-sensitive</strong>, so <code>Script&nbsp;PUT</code> and
-      <code>Script&nbsp;put</code> have two entirely different
+      case-sensitive</strong>, so <code>Script PUT</code> and
+      <code>Script put</code> have two entirely different
       effects.
-</note>
+    </note>
 
     <p>Note that the Script command defines default actions only.
     If a CGI script is called, or some other resource that is
@@ -108,15 +104,14 @@ method.</description>
     (<em>e.g.</em>, foo.html?hi). Otherwise, the request will
     proceed normally.</p>
 
-<example>
-<title>Examples</title>
-    # For &lt;ISINDEX&gt;-style searching<br />
-    Script GET /cgi-bin/search<br />
-    # A CGI PUT handler<br />
-    Script PUT /~bob/put.cgi<br />
-</example>
+    <example><title>Examples</title>
+      # For &lt;ISINDEX&gt;-style searching<br />
+      Script GET /cgi-bin/search<br />
+      <br />
+      # A CGI PUT handler<br />
+      Script PUT /~bob/put.cgi<br />
+    </example>
 </usage>
-
 </directivesynopsis>
 
 </modulesynopsis>
