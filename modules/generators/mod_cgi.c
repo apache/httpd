@@ -243,7 +243,8 @@ static void log_script_err(request_rec *r, apr_file_t *script_err)
     char argsbuffer[HUGE_STRING_LEN];
     char *newline;
 
-    while (apr_file_gets(argsbuffer, HUGE_STRING_LEN, script_err) == 0) {
+    while (apr_file_gets(argsbuffer, HUGE_STRING_LEN,
+                         script_err) == APR_SUCCESS) {
         newline = strchr(argsbuffer, '\n');
         if (newline) {
             *newline = '\0';
@@ -273,7 +274,8 @@ static int log_script(request_rec *r, cgi_server_conf * conf, int ret,
          (apr_file_open(&f, conf->logname,
                   APR_APPEND|APR_WRITE|APR_CREATE, APR_OS_DEFAULT, r->pool) != APR_SUCCESS)) {
 	/* Soak up script output */
-	while (apr_file_gets(argsbuffer, HUGE_STRING_LEN, script_in) == 0)
+	while (apr_file_gets(argsbuffer, HUGE_STRING_LEN,
+	                     script_in) == APR_SUCCESS)
 	    continue;
 
         log_script_err(r, script_err);
@@ -311,18 +313,20 @@ static int log_script(request_rec *r, cgi_server_conf * conf, int ret,
     if (sbuf && *sbuf)
 	apr_file_printf(f, "%s\n", sbuf);
 
-    if (apr_file_gets(argsbuffer, HUGE_STRING_LEN, script_in) == 0) {
+    if (apr_file_gets(argsbuffer, HUGE_STRING_LEN, script_in) == APR_SUCCESS) {
 	apr_file_puts("%stdout\n", f);
 	apr_file_puts(argsbuffer, f);
-	while (apr_file_gets(argsbuffer, HUGE_STRING_LEN, script_in) == 0)
+	while (apr_file_gets(argsbuffer, HUGE_STRING_LEN,
+	                     script_in) == APR_SUCCESS)
 	    apr_file_puts(argsbuffer, f);
 	apr_file_puts("\n", f);
     }
 
-    if (apr_file_gets(argsbuffer, HUGE_STRING_LEN, script_err) == 0) {
+    if (apr_file_gets(argsbuffer, HUGE_STRING_LEN, script_err) == APR_SUCCESS) {
 	apr_file_puts("%stderr\n", f);
 	apr_file_puts(argsbuffer, f);
-	while (apr_file_gets(argsbuffer, HUGE_STRING_LEN, script_err) == 0)
+	while (apr_file_gets(argsbuffer, HUGE_STRING_LEN,
+	                     script_err) == APR_SUCCESS)
 	    apr_file_puts(argsbuffer, f);
 	apr_file_puts("\n", f);
     }
@@ -676,7 +680,8 @@ static int cgi_handler(request_rec *r)
 	if (location && location[0] == '/' && r->status == 200) {
 
 	    /* Soak up all the script output */
-	    while (apr_file_gets(argsbuffer, HUGE_STRING_LEN, script_in) == 0) {
+	    while (apr_file_gets(argsbuffer, HUGE_STRING_LEN,
+	                         script_in) == APR_SUCCESS) {
 		continue;
 	    }
             log_script_err(r, script_err);
