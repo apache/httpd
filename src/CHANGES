@@ -25,8 +25,9 @@ Changes with Apache 1.3.30
      [Ben Laurie]
 
   *) SECURITY: CAN-2003-0020 (cve.mitre.org)
-     Escape arbitrary data before writing into the errorlog.  
-     [André Malo]
+     Escape arbitrary data before writing into the errorlog. Unescaped
+     errorlogs are still possible using the compile time switch
+     "-DAP_UNSAFE_ERROR_LOG_UNESCAPED".  [Geoffrey Young, André Malo]
 
   *) '%X' is now accepted as an alias for '%c' in the
      LogFormat directive. This allows you to configure logging
