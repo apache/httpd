@@ -1,5 +1,11 @@
 Changes with Apache 1.3.1
 
+  *) Fix the Guess-DSO-flags-from-Perl stuff in src/Configure: "perl" was
+     used instead of "$PERL" which contains the correctly determined Perl
+     interpreter (important for instance on systems where "perl" and "perl5"
+     exists, like BSDI or FreeBSD, etc).
+     [Ralf S. Engelschall] PR#2505
+
   *) Move the initial suEXEC-related startup message from plain
      fprintf()/stderr to a delayed ap_log_error()-based one to avoid problems
      when Apache is started from inetd (instead of standalone). Under this

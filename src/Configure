@@ -999,9 +999,9 @@ if [ "x$using_shlib" = "x1" ] ; then
                 if [ ".`$PERL -V:dlsrc 2>/dev/null | grep dlopen`" != . ]; then
                     #   ...and actually uses the dlopen-style interface,
                     #   so we can guess the flags from its knowledge
-                    CFLAGS_SHLIB="`perl -V:cccdlflags | cut -d\' -f2`"
-                    LDFLAGS_SHLIB="`perl -V:lddlflags | cut -d\' -f2`"
-                    LDFLAGS_SHLIB_EXPORT="`perl -V:ccdlflags | cut -d\' -f2`"
+                    CFLAGS_SHLIB="`$PERL -V:cccdlflags | cut -d\' -f2`"
+                    LDFLAGS_SHLIB="`$PERL -V:lddlflags | cut -d\' -f2`"
+                    LDFLAGS_SHLIB_EXPORT="`$PERL -V:ccdlflags | cut -d\' -f2`"
                     #   but additionally we have to inform the
                     #   user that we are just guessing the flags
                     echo ""
