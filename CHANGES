@@ -2,6 +2,9 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) perchild MPM: Fix thread safety problem in the use of longjmp().
+     [Tsuyoshi SASAMOTO <nazonazo super.win.ne.jp>]
+
   *) Add load balancer support to the scoreboard in preparation for
      load balancing support in mod_proxy. [Mladen Turk]
 

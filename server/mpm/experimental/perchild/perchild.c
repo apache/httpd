@@ -137,7 +137,7 @@ static int workers_may_exit = 0;
 static int requests_this_child;
 static int num_listensocks = 0;
 static ap_pod_t *pod;
-static jmp_buf jmpbuffer;
+static jmp_buf *jmpbuffers;
 
 struct child_info_t {
     uid_t uid;
@@ -758,7 +758,7 @@ static void *worker_thread(apr_thread_t *thd, void *arg)
                 }
             }
             apr_thread_mutex_unlock(idle_thread_count_mutex);
-            if (setjmp(jmpbuffer) != 1) {
+            if (setjmp(jmpbuffers[thread_num]) != 1) {
                 process_socket(ptrans, csd, conn_id, bucket_alloc);
             }
             else {
@@ -1668,6 +1668,8 @@ static int perchild_post_config(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *pte
     }
     ap_child_table = (ap_ctable *)apr_pcalloc(p, server_limit * sizeof(ap_ctable));
 
+    jmpbuffers = (jmp_buf *)apr_palloc(p, thread_limit * sizeof(jmp_buf));
+
     return OK;
 }
 
@@ -1704,7 +1706,7 @@ static int perchild_post_read(request_rec *r)
                              ap_server_conf, "Could not pass request to proper "
                              "child, request will not be honored.");
             }
-            longjmp(jmpbuffer, 1); 
+            longjmp(jmpbuffers[thread_num], 1); 
         }
         return OK;
     }
