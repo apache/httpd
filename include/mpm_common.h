@@ -106,11 +106,11 @@ extern "C" {
  * @param terminate Either 1 or 0.  If 1, send the child processes SIGTERM
  *        each time through the loop.  If 0, give the process time to die
  *        on its own before signalling it.
- * @tip This function requires that some macros are defined by the MPM: <PRE>
+ * @tip This function requires that some macros are defined by the MPM: <pre>
  *  MPM_SYNC_CHILD_TABLE -- sync the scoreboard image between child and parent
  *  MPM_CHILD_PID -- Get the pid from the specified spot in the scoreboard
  *  MPM_NOTE_CHILD_KILLED -- Note the child died in the scoreboard
- * </PRE>
+ * </pre>
  */
 #if AP_MPM_NEEDS_RECLAIM_CHILD_PROCESSES
 void ap_reclaim_child_processes(int terminate);

@@ -90,7 +90,7 @@ AP_CORE_DECLARE(void) ap_flush_conn(conn_rec *c);
 
 /**
  * This function is responsible for the following cases:
- * <PRE>
+ * <pre>
  * we now proceed to read from the client until we get EOF, or until
  * MAX_SECS_TO_LINGER has passed.  the reasons for doing this are
  * documented in a draft:
@@ -100,7 +100,7 @@ AP_CORE_DECLARE(void) ap_flush_conn(conn_rec *c);
  * in a nutshell -- if we don't make this effort we risk causing
  * TCP RST packets to be sent which can tear down a connection before
  * all the response data has been sent to the client.
- * </PRE>
+ * </pre>
  * @param c The connection we are closing
  */
 void ap_lingering_close(conn_rec *);
