@@ -996,6 +996,7 @@ typedef struct header_struct {
 static int form_header_field(header_struct *h,
                              const char *fieldname, const char *fieldval)
 {
+#if APR_CHARSET_EBCDIC
     char *headfield;
     apr_size_t len;
     apr_size_t name_len;
@@ -1017,6 +1018,12 @@ static int form_header_field(header_struct *h,
     *next = 0;
     ap_xlate_proto_to_ascii(headfield, len);
     apr_brigade_write(h->bb, NULL, NULL, headfield, len);
+#else
+    apr_brigade_puts(h->bb, NULL, NULL, fieldname);
+    apr_brigade_write(h->bb, NULL, NULL, ": ", sizeof(": ") - 1);
+    apr_brigade_puts(h->bb, NULL, NULL, fieldval);
+    apr_brigade_write(h->bb, NULL, NULL, CRLF, sizeof(CRLF) - 1);
+#endif /* APR_CHARSET_EBCDIC */
     return 1;
 }
 
