@@ -729,7 +729,8 @@ struct request_rec {
     /** HTTP/0.9, "simple" request (e.g. GET /foo\n w/no headers) */
     int assbackwards;
     /** A proxy request (calculated during post_read_request/translate_name)
-     *  possible values PROXYREQ_NONE, PROXYREQ_PROXY, PROXYREQ_REVERSE
+     *  possible values PROXYREQ_NONE, PROXYREQ_PROXY, PROXYREQ_REVERSE,
+     *                  PROXYREQ_RESPONSE
      */
     int proxyreq;
     /** HEAD request, as opposed to GET */
@@ -945,6 +946,7 @@ struct request_rec {
 #define PROXYREQ_NONE 0		/**< No proxy */
 #define PROXYREQ_PROXY 1	/**< Standard proxy */
 #define PROXYREQ_REVERSE 2	/**< Reverse proxy */
+#define PROXYREQ_RESPONSE 3 /**< Origin response */
 
 /* @} */
 

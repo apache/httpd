@@ -663,6 +663,10 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
      */
 
     rp = ap_proxy_make_fake_req(origin, r);
+    /* In case anyone needs to know, this is a fake request that is really a
+     * response.
+     */
+    rp->proxyreq = PROXYREQ_RESPONSE;
 
     while (received_continue) {
         apr_brigade_cleanup(bb);
