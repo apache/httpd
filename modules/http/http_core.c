@@ -3074,34 +3074,36 @@ static int default_handler(request_rec *r)
     apr_close(fd);
     return OK;
 }
-/* Buffer filter 
- * This is a relatively simple filter to coalesce many small buckets into 
- * one large bucket. This implementation of buffer_filter will only coalesce
- * a single contiguous string of coalesable buckets. It will not coalesce 
- * multiple non-contiguous buckets. 
- * 
- * For example, if a brigade contains 10 small buckets followed by a 
- * large bucket (or a pipe or file bucket) followed by more small buckets, 
- * only the first 10 buckets will be coalesced.
+/*
+ * coalesce_filter()
+ * This is a simple filter to coalesce many small buckets into one large
+ * bucket. 
+ *
+ * Note:
+ * This implementation of coalesce_filter will only coalesce a single
+ * contiguous string of coalesable buckets. It will not coalesce multiple
+ * non-contiguous buckets. For example, if a brigade contains 10 small 
+ * buckets followed by a large bucket (or a pipe or file bucket) followed 
+ * by more small buckets, only the first 10 buckets will be coalesced.
  */
-typedef struct BUFFER_FILTER_CTX {
+typedef struct COALESCE_FILTER_CTX {
     char *buf;           /* Start of buffer */
     char *cur;           /* Pointer to next location to write */
     apr_ssize_t cnt;     /* Number of bytes put in buf */
     apr_ssize_t avail;   /* Number of bytes available in the buf */
-} buffer_filter_ctx_t;
+} coalesce_filter_ctx_t;
 #define FILTER_BUFF_SIZE 8192
 #define MIN_BUCKET_SIZE 200
-static apr_status_t buffer_filter(ap_filter_t *f, ap_bucket_brigade *b)
+static apr_status_t coalesce_filter(ap_filter_t *f, ap_bucket_brigade *b)
 {
     apr_status_t rv;
     apr_pool_t *p = f->r->pool;
     ap_bucket *e, *insert_before = NULL, *destroy_me = NULL;
-    buffer_filter_ctx_t *ctx = f->ctx;
+    coalesce_filter_ctx_t *ctx = f->ctx;
     int pass_the_brigade = 0, insert_first = 0;
 
     if (ctx == NULL) {
-        f->ctx = ctx = apr_pcalloc(p, sizeof(buffer_filter_ctx_t));
+        f->ctx = ctx = apr_pcalloc(p, sizeof(coalesce_filter_ctx_t));
         ctx->avail = FILTER_BUFF_SIZE;
     }
 
@@ -3205,7 +3207,7 @@ static apr_status_t buffer_filter(ap_filter_t *f, ap_bucket_brigade *b)
             ap_bucket_destroy(insert_before);
         }
         /* The brigade should be empty now because all the buckets
-         * were coalesced into the buffer_filter buf
+         * were coalesced into the coalesce_filter buf
          */
     }
 
@@ -3586,7 +3588,7 @@ static void register_hooks(void)
     ap_register_output_filter("SUBREQ_CORE", ap_sub_req_output_filter, 
                               AP_FTYPE_CONTENT);
     ap_register_output_filter("CHUNK", chunk_filter, AP_FTYPE_CONNECTION);
-    ap_register_output_filter("BUFFER", buffer_filter, AP_FTYPE_CONNECTION);
+    ap_register_output_filter("COALESCE", coalesce_filter, AP_FTYPE_CONNECTION);
 }
 
 AP_DECLARE_DATA module core_module = {
