@@ -288,7 +288,7 @@ DocumentRoot "sys:/apache/htdocs"
 # directory if a ~user request is received.
 #
 <IfModule mod_userdir.c>
-    UserDir public_html
+    UserDir /home/*/public_html
 </IfModule>
 
 #
