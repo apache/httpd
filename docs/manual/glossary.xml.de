@@ -46,7 +46,7 @@
       href="#module">Modul</a>-Quelltexten zu Dynamic-Shared-Objects
       (<glossary ref="dso">DSOs</glossary>)  und zur Installation dieser zum
       Apache-Webserver.<br />
-      Siehe: <a href="programs/apxs.html">apxs-Dokumentation</a>
+      Siehe: <program>apxs</program>-Dokumentation
     </dd>
 
     <dt><a name="authentication" id="authentication">Authentifizierung</a></dt> 
@@ -147,9 +147,9 @@
       <phonetic>dai&#x02C8;n&#x00E6;mik &#x0283;&#x025B;&#x0259;d
       &#x02C8;&#x0254;bd&#x0292;ikt</phonetic> <a name="dso"
       id="dso">(DSO)</a></dt>
-    <dd>Separat von der Apache-Bin&auml;rdatei kompilierte <glossary
-      ref="module">Module</glossary>, die bei Bedarf geladen werden
-      k&ouml;nnen.<br />
+    <dd>Separat von der Apache-Bin&auml;rdatei <program>httpd</program>
+      kompilierte <glossary ref="module">Module</glossary>, die bei Bedarf
+      geladen werden k&ouml;nnen.<br />
       Siehe: <a href="dso.html">Unterst&uuml;tzung f&uuml;r
       Dynamic-Shared-Objects</a>
     </dd>
@@ -295,10 +295,10 @@
     <dt><a name="module" id="module">Modul</a></dt>
     <dd>Ein selbstst&auml;ndiger Teil eines Programms. Ein Gro&szlig;teil der
       Funktionalit&auml;t des Apache ist in Modulen enthalten, die Sie einbinden
-      oder entfernen k&ouml;nnen. In die Apache-Bin&auml;rdatei httpd
-      einkompilierte Module werden <em>statische Module</em> genannt,
-      w&auml;hrend Module, die separat gespeichert sind und optional zur
-      Laufzeit geladen werden k&ouml;nnen, <em>dynamische Module</em> oder
+      oder entfernen k&ouml;nnen. In die Apache-Bin&auml;rdatei <program>httpd
+      </program> einkompilierte Module werden <em>statische Module</em>
+      genannt, w&auml;hrend Module, die separat gespeichert sind und optional
+      zur Laufzeit geladen werden k&ouml;nnen, <em>dynamische Module</em> oder
       <glossary ref="dso">DSOs</glossary> genannt werden.
       Standardm&auml;&szlig;ig eingebundene Module werden <em>Basismodule</em>
       genannt. F&uuml;r den Apache sind viele Module verf&uuml;gbar, die nicht

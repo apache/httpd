@@ -796,7 +796,7 @@
         libraries integrated. Otherwise the support binaries are linked
         dynamically by default.</dd>
 
-      <dt><code>--enable-suexec</code></dt> 
+      <dt><code>--enable-suexec</code></dt>
       <dd>Use this option to enable <code class="program"><a href="../programs/suexec.html">suexec</a></code>, which allows you to set
         uid and gid for spawned processes. <strong>Do not use this
         option unless you understand all the security implications of

@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.de.xsl"?>
-<!-- English Revision: 106803 -->
+<!-- English Revision: 106851 -->
 
 <!--
  Copyright 2002-2004 The Apache Software Foundation
@@ -258,8 +258,7 @@
     Ihres Compilers, Ihrer Bibliotheken oder Header-Dateien zu versorgen. Das
     tun Sie, indem Sie entweder Umgebungsvariablen oder Kommandozeilenoptionen
     an <program>configure</program> &uuml;bergeben. F&uuml;r mehr Informationen
-    lesen Sie bitte die <a href="programs/configure.html">Hilfeseite zu
-    configure</a>.</p>
+    lesen Sie bitte die Hilfeseite zu <program>configure</program>.</p>
 
     <p>Um einen kurzen Eindruck zu gewinnen, welche M&#246;glichkeiten Sie
     haben, folgt hier ein typisches Beispiel, das den Apache mit einem
@@ -281,9 +280,9 @@
     pr&#252;fen und ein Makefile zu generieren, das sp&#228;ter zur
     Kompilierung des Servers verwendet wird.</p>
 
-    <p>Einzelheiten zu den vielen verschiedenen Konfigurationsoptionen finden
-    Sie auf der <a href="programs/configure.html">Hilfeseite zu
-    configure</a>.</p>
+    <p>Einzelheiten zu den vielen verschiedenen <program>configure
+    </program>-Optionen finden Sie auf der Hilfeseite zu
+    <program>configure</program>.</p>
 
 </section>
 
