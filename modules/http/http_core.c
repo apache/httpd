@@ -2951,8 +2951,16 @@ static int default_handler(request_rec *r)
     int bld_content_md5 = 
         (d->content_md5 & 1) && r->output_filters->frec->ftype != AP_FTYPE_CONTENT;
 
-    ap_allow_methods(r, MERGE_ALLOW, "GET", "OPTIONS", NULL);
+    ap_allow_methods(r, MERGE_ALLOW, "GET", "OPTIONS", "POST", NULL);
 
+    if (r->method_number == M_POST) {
+        if ((errstatus = handle_request_body(r)) != APR_SUCCESS) {
+            return errstatus;
+        }
+    } else if ((errstatus = ap_discard_request_body(r)) != OK) {
+        return errstatus;
+    }
+    
     if (r->method_number == M_INVALID) {
 	ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
 		    "Invalid method in request %s", r->the_request);
@@ -2971,13 +2979,8 @@ static int default_handler(request_rec *r)
 		      : r->filename);
 	return HTTP_NOT_FOUND;
     }
-    if (r->method_number == M_POST) {
-        if ((errstatus = handle_request_body(r)) != APR_SUCCESS) {
-            return errstatus;
-        }
-    } else if ((errstatus = ap_discard_request_body(r)) != OK) {
-        return errstatus;
-    } else if (r->method_number != M_GET) {
+    
+    if (r->method_number != M_GET && r->method_number != M_POST) {
         return HTTP_METHOD_NOT_ALLOWED;
     }
 	
