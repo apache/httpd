@@ -530,16 +530,44 @@ void get_mime_headers(request_rec *r)
     char w[MAX_STRING_LEN];
     char *t;
     conn_rec *c = r->connection;
+    int len = 0;
+    char lookahead[2];
 
-    while(getline(w, MAX_STRING_LEN-1, c->client)) {
-        if(!w[0]) 
-            return;
-        if(!(t = strchr(w,':')))
-            continue;
-        *t++ = '\0';
-        while(isspace(*t)) ++t;
+    if (getline(w, MAX_STRING_LEN-1, c->client)) {
+        do {
+	    if(!w[len])
+	        return;
+	    /* w[] contains the _current_ line. Lets read the
+	     * first char of the _next_ line into lookahead[] and see
+	     * if it is a continuation line */
+	    if (!getline(lookahead, 2, c->client) ||
+		*lookahead == '\0' ||
+		(*lookahead != ' ' && *lookahead != '\t')) {
+ 	        /* Not a continuation line -- _next_ line is either
+		 * a read error, empty, or doesn't start with SPACE or TAB
+		 * -- so store the _current_ line now */
+		if(!(t = strchr(w,':')))
+		    continue;
+		*t++ = '\0';
+		while(isspace(*t)) ++t;
 
-	table_merge (r->headers_in, w, t);
+		table_merge (r->headers_in, w, t);
+
+		if (!*lookahead) /* did we read an empty line? */
+		    return;
+
+		/* Put what we read as the start of the new _current_ line */
+		w[0] = '\0';
+	    }
+	    /* To get here, here have got a lookahead character in
+	     * *lookahead, so append it onto the end of w[], then
+	     * read the next line onto the end of that. Move
+	     * len on to point to the first char read from the next
+	     * line of input... we use this at the top of the loop
+	     * to check whether we actually read anything. */
+ 	} while (len = strlen(w),
+		 w[len++] = *lookahead,
+		 getline (w+len, MAX_STRING_LEN-1-len, c->client));
     }
 }
 
