@@ -363,7 +363,7 @@ int ap_proxy_http_handler(request_rec *r, proxy_server_conf *conf,
 	backend->connection = NULL;
 
 	/* see memory note above */
-	if ((rv = apr_socket_create(&sock, APR_INET, SOCK_STREAM, c->pool)) != APR_SUCCESS) {
+	if ((rv = apr_socket_create(&sock, APR_INET, SOCK_STREAM, APR_INHERIT, c->pool)) != APR_SUCCESS) {
             ap_log_error(APLOG_MARK, APLOG_ERR, rv, r->server,
 			 "proxy: error creating socket");
 	    return HTTP_INTERNAL_SERVER_ERROR;
@@ -466,7 +466,7 @@ int ap_proxy_http_handler(request_rec *r, proxy_server_conf *conf,
     close += ap_proxy_liststr(apr_table_get(r->headers_in, "Connection"), "close");
     ap_proxy_clear_connection(p, r->headers_in);
     if (close) {
-	apr_table_mergen(r->headers_in, "Connection", "close");
+	apr_table_setn(r->headers_in, "Connection", "close");
 	origin->keepalive = 0;
     }
 
