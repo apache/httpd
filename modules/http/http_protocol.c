@@ -756,7 +756,7 @@ static void basic_http_header_check(request_rec *r,
 static void basic_http_header(request_rec *r, apr_bucket_brigade *bb,
                               const char *protocol)
 {
-    char *date = NULL;
+    char *date;
     char *tmp;
     header_struct h;
     apr_size_t len;
@@ -1007,7 +1007,6 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_http_header_filter(
     apr_bucket_brigade *b)
 {
     int i;
-    char *date = NULL;
     request_rec *r = f->r;
     const char *clheader;
     const char *protocol;
@@ -1108,7 +1107,7 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_http_header_filter(
      * some other part of the server configuration.
      */
     if (r->no_cache && !apr_table_get(r->headers_out, "Expires")) {
-	date = apr_palloc(r->pool, APR_RFC822_DATE_LEN);
+        char *date = apr_palloc(r->pool, APR_RFC822_DATE_LEN);
         apr_rfc822_date(date, r->request_time);
         apr_table_addn(r->headers_out, "Expires", date);
     }
