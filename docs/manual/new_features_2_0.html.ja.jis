@@ -1,0 +1,199 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+
+    <title>New features with Apache 2.0</title>
+  </head>
+  <!-- English revision: 1.20 -->
+  <!-- Background white, links blue (unvisited), navy (visited), red (active) -->
+
+  <body bgcolor="#FFFFFF" text="#000000" link="#0000FF"
+  vlink="#000080" alink="#FF0000">
+    <!--#include virtual="header.html" -->
+
+    <h1 align="CENTER">Apache 2.0 の新機能の概略</h1>
+
+    <p>拡張: <a href="#core">コア</a> | <a
+    href="#module">モジュール</a></p>
+    <hr />
+
+    <h2><a id="core" name="core">コアの拡張:</a></h2>
+
+    <dl>
+      <dt><strong>Unix のスレッド</strong></dt>
+
+      <dd>POSIX スレッドをサポートしている Unix システム上では、
+      Apache はマルチプロセス、マルチスレッドのハイブリッドモードで
+      実行できるようになりました。これにより
+      多くの設定においてスケーラビリティが向上します。</dd>
+
+      <dt><strong>新しいビルドシステム</strong></dt>
+
+      <dd>ビルドシステムは autoconf と libtool に基づいたものになるように、
+      新しく書き直されました。これにより、Apache の configure のシステムは
+      他のパッケージと似たものになりました。</dd>
+
+      <dt><strong>マルチプロトコルサポート</strong></dt>
+
+      <dd>Apache に複数のプロトコルを扱うための機構が備わりました。
+      例として mod_echo が書かれています。</dd>
+
+      <dt><strong>Unix 以外のプラットフォームのサポートの改善</strong></dt>
+
+      <dd>Apache 2.0 は BeOS、OS/2、Windows などの Unix 以外の
+      プラットフォームで、より速く、より安定して動作するようになりました。
+      プラットフォーム特有の <a
+      href="mpm.html">マルチプロセッシングモジュール</a> (MPM) と
+      Apache Portable Runtime (APR) の導入により、
+      ネイティヴの API で実装されるようになり、
+      バグが多く、性能の悪いことが多い POSIX エミュレーションレイヤの使用を
+      回避することができました。</dd>
+
+      <dt><strong>新しい Apache API</strong></dt>
+
+      <dd>2.0 ではモジュールの API が大きく変わりました。
+      1.3 にあったモジュールの順番/優先度の問題の多くは
+      なくなっているはずです。2.0 は優先度の選択をほとんどを自動的に行ない、
+      モジュールの順番はより柔軟性を高めるためにフック毎に行なわれるように
+      なりました。また、コア Apache サーバにパッチをあてることなく
+      追加のモジュール機能を提供することができるように新しい関数が
+      追加されました。</dd>
+
+      <dt><strong>IPv6 サポート</strong></dt>
+
+      <dd>Apache が使用している Apache Portable Runtime library が
+      IPv6 をサポートしているシステムでは Apache は デフォルトで
+      IPv6 のソケットを listen します。さらに、Listen、NameVirtualHost、
+      &lt;VirtualHost&gt; の各ディレクティブが IPv6 のアドレスを
+      サポートするようになりました (例えば、"Listen [fe80::1]:8080")。</dd>
+
+      <dt><strong>フィルタ</strong></dt>
+
+      <dd>Apache のモジュールはサーバから送られてきたり、サーバへ
+      送るストリームに対して動作するフィルタとして書くことができるように
+      なりました。これにより、例えば CGI スクリプトの出力を mod_include の
+      INCLUDES フィルタを使って Server Side Include のディレクティブを
+      解析する、というようなことが可能になりました。</dd>
+
+      <dt><strong>多言語エラー応答</strong></dt>
+
+      <dd>ブラウザへのエラー応答のメッセージが、SSI の文書を使って
+      複数の言語で提供されるようになりました。見ための一貫性を保つために
+      管理者がカスタマイズすることもできます。</dd>
+
+      <dt><strong>設定の簡素化</strong></dt>
+
+      <dd>多くの混乱を招きがちなディレクティブが簡素化されました。
+      よく混乱を引き起こしていた Port ディレクティブと Bind ディレクティブは
+      なくなりました。Listen ディレクティブのみが IP アドレスの
+      バインドに使われます。ServerName ディレクティブでは
+      リダイレクトと vhost の認識のためだけにサーバの名前とポート番号を
+      指定します。</dd>
+
+      <dt><strong>Windows NT のネイティヴ Unicode サポート</strong></dt>
+
+      <dd>Windows NT 上の Apache 2.0 はファイル名の符号化全てに
+      utf-8 を使うようになりました。そのファイル名は、Windows NT の Unicode
+      ファイルシステムに直接変換されて、Windows 2000 と Windows XP を
+      含む、全ての Windows NT で多言語サポートを提供します。
+      <em>このサポートは、ファイルシステムのアクセス時にローカルの
+      コードページを使う Windows 95, 98, ME には適用されません。</em>
+
+    </dl>
+    <hr />
+
+    <h2><a id="module" name="module">モジュールの拡張:</a></h2>
+
+    <dl>
+      <dt><strong>mod_ssl</strong></dt>
+
+      <dd>Apache 2.0 の新モジュール。このモジュールは OpenSSL が
+      提供する SSL/TLS 暗号プロトコルへのインタフェースです。</dd>
+
+      <dt><strong>mod_dav</strong></dt>
+
+      <dd>Apache 2.0 の新モジュール。このモジュールはウェブコンテンツを
+      送り、維持するための規格
+      HTTP Distributed Authoring and Versioning (DAV) を実装しています。</dd>
+
+      <dt><strong>mod_auth_digest</strong></dt>
+
+      <dd>このモジュールは共有メモリを使うことにより、プロセスをまたいだ
+      セッションのキャッシュをサポートするようになりました。</dd>
+
+      <dt><strong>mod_charset_lite</strong></dt>
+
+      <dd>Apache 2.0 の新モジュール。この実験的なモジュールは
+      キャラクタセットの変換や再符号化を可能にします。</dd>
+
+      <dt><strong>mod_file_cache</strong></dt>
+
+      <dd>Apache 2.0 の新モジュール。このモジュールは Apache 1.3 の
+      mod_mmap_static の機能と、さらに拡張されたキャッシュ機能を
+      提供します。</dd>
+
+      <dt><strong>mod_headers</strong></dt>
+
+      <dd>このモジュールは Apache 2.0 で非常に柔軟性が
+      高くなりました。mod_proxy で使われるリクエストのヘッダを
+      変更できるようになりましたし、応答ヘッダを条件に応じて
+      設定できるようになりました。</dd>
+
+      <dt><strong>mod_proxy</strong></dt>
+
+      <dd>proxy モジュールは新しいフィルタの機構を利用するためと、
+      より信頼できる、HTTP/1.1 に準拠した proxy を実装するために
+      完全に書き直されました。さらに、新しい &lt;Proxy&gt; 設定セクションが
+      proxy されるサイトのより読みやすく (内部的にもより速い) 設定を
+      提供します。オーバーロードされた &lt;Directory "proxy:... &gt;
+      設定はサポートされていません。このモジュールは proxy_connect,
+      proxy_ftp, proxy_http といった、特定のプロトコルをサポートする
+      モジュールに分割されるようになりました。</dd>
+
+      <dt><strong>mod_negotiation</strong></dt>
+
+      <dd>クライアントが NOT ACCEPTABLE や MULTIPLE CHOICES 応答の
+      代わりに常に単独の文書を受けとるようにするために、新しいディレクティブ
+      <a
+      href="mod/mod_negotiation.html#forcelanguagepriority"
+      >ForceLanguagePriority</a> を使うことができるようになりました。
+      さらに、より一貫性のある結果を提供するために
+      ネゴシエーションと MultiViews のアルゴリズムが改善され、
+      文書の内容を含めることのできる、新しい形式のタイプマップが
+      提供されるようになりました。</dd>
+
+      <dt><strong>mod_autoindex</strong></dt>
+
+      <dd>Autoindex されるディレクトリの内容一覧が、
+      きれいに表示されるために HTML のテーブルを使うように
+      設定できるようになりました。また、バージョンによるソーティングなど、
+      より細かいソーティングの制御ができるようになり、ディレクトリ
+      の内容一覧をワイルドカードにより選別することができるようにもなりました。
+
+      <dt><strong>mod_include</strong></dt>
+
+      <dd>新しいディレクティブにより、SSI のデフォルトの開始タグと終了タグを
+      変更できるようになりました。また、エラーと時刻の形式の設定が SSI の
+      文書中ではなく、主設定ファイル中で行なえるようになりました。
+      正規表現の解析とグループ化の結果 (Perl の正規表現の構文に
+      基づいたものになりました) を mod_include の変数 $0 .. $9 により
+      取得できるようになりました。</dd>
+
+      <dt><strong>mod_auth_dbm</strong></dt>
+
+      <dd><a href="mod/mod_auth_dbm.html#authdbmtype">AuthDBMType</a>
+      ディレクティブにより、複数の DBM 型のデータベースをサポートする
+      ようになりました。</dd>
+
+      <dt><strong>mod_auth_db</strong></dt>
+
+      <dd>mod_auth_dbm で AuthDBMType ディレクティブを使って
+      同等のことができるので、このモジュールは削除されました。</dd>
+
+    </dl>
+    <!--#include virtual="footer.html" -->
+  </body>
+</html>
+

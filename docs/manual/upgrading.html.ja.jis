@@ -1,0 +1,172 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+
+    <title>Upgrading to 2.0 from 1.3</title>
+  </head>
+  <!-- English revision: 1.22 -->
+  <!-- Background white, links blue (unvisited), navy (visited), red (active) -->
+
+  <body bgcolor="#FFFFFF" text="#000000" link="#0000FF"
+  vlink="#000080" alink="#FF0000">
+    <!--#include virtual="header.html" -->
+
+    <h1 align="CENTER">1.3 から 2.0 へのアップグレード</h1>
+
+    <p>アップグレードを簡単にするために、既存の Apache ユーザに
+    非常に重要な情報をこの文書にまとめています。これは短い
+    注意書きとして書かれています。より詳しい情報は
+    <a href="new_features_2_0.html">新機能</a>の文書や
+    <code>src/CHANGES</code> ファイルで見つけられると思います。
+
+    <h3>コンパイル時の設定の変更</h3>
+
+    <ul>
+      <li>Apache は <a href="install.html">ビルド処理の設定</a>
+      に <code>autoconf</code> と <code>libtool</code> を使うようになりました。
+      このシステムは Apache 1.3 の APACI システムと似ていますが、
+      まったく同じというわけではありません。</li>
+
+      <li>通常のコンパイルするかどうかを選択できるモジュール群に加えて、
+      Apache 2.0 は
+      リクエスト処理の主な部分を <a href="mpm.html">マルチプロセッシング
+      モジュール</a> (MPM) に移動しました。</li>
+    </ul>
+
+    <h3>実行時の設定の変更</h3>
+
+    <ul>
+      <li>Apache 1.3 の時にコアサーバにあった多くのディレクティブは
+      MPM に移動しました。サーバに Apache 1.3 とできるだけ同じ振る舞いを
+      させたい場合は、<a href="mod/prefork.html">prefork</a> MPM を
+      選んでください。他の MPM はプロセスの作成やリクエストの処理の
+      制御に異なったディレクティブを使います。</li>
+
+      <li><a href="mod/mod_proxy.html">Proxy モジュール</a> は
+      HTTP/1.1 に対応するために再構成されました。重要な変更としては、
+      プロキシのアクセス制御が &lt;Directory proxy:&gt; ブロックの
+      代わりに &lt;Proxy&gt; ブロックに置かれるようになった、というものが
+      あります。</li>
+
+      <li>モジュールの中には、PATH_INFO (本当のファイル名の後に続く
+      パス情報) の扱いが変わったものがあります。以前はハンドラとして
+      実装されていたものがフィルタとして実装されるようになったものは PATH_INFO
+      のあるリクエストを受け付けません。<a
+      href="mod/mod_include.html">INCLUDES</a> などのフィルタは
+      コアハンドラの上に実装されていますので、PATH_INFO 付きの
+      リクエストを拒否します。<a
+      href="mod/core.html#acceptpathinfo">AcceptPathInfo</a>
+      ディレクティブを使ってコアハンドラが PATH_INFO 付きのリクエストを
+      受け付けるようにでき、それによって SSI で PATH_INFO を使う
+      機能を復活させることができます。</li>
+
+      <li><code>CacheNegotiatedDocs</code> ディレクティブは
+      <code>on</code> もしくは <code>off</code> という引数を
+      取るようになりました。既に存在している
+      <code>CacheNegotiatedDocs</code> は <code>CacheNegotiatedDocs on</code>
+      に置き換えてください。</li>
+
+      <li>
+        <code>ErrorDocument</code> ディレクティブはテキストメッセージを
+        示すために引数の最初に使われていた引用符を使わないようになりました。
+        代わりに、メッセージを二重引用符で囲むようになっています。
+        例えば、既存の
+
+        <blockquote>
+          <code>ErrorDocument 403 "Some Message</code>
+        </blockquote>
+
+        は
+
+        <blockquote>
+          <code>ErrorDocument 403 "Some Message"</code>
+        </blockquote>
+
+        に置き換える必要があります。
+        二番目の引数は、有効な URL やパス名でない限り
+        テキストメッセージとして扱われます。
+      </li>
+
+      <li><code>AccessConfig</code> ディレクティブと
+      <code>ResourceConfig</code> ディレクティブは削除されました。
+      これらのディレクティブは同等の機能を持つ
+      <a href="mod/core.html#include"><code>Include</code></a> で
+      置き換えることができます。設定ファイルに取り込む代わりに、
+      上のディレクティブのデフォルト値を使っていた場合は、
+      httpd.conf に <code>Include conf/access.conf</code> と
+      <code>Include conf/srm.conf</code> を追加する必要があるでしょう。
+      以前のディレクティブによる順番のように Apache が設定ファイルを
+      読み込むようにするためには、httpd.conf の最後に
+      <code>srm.conf</code>、<code>access.conf</code> の順にそれぞれ
+      <code>Include</code> ディレクティブを書いてください。</li>
+
+      <li><code>BindAddress</code> ディレクティブと <code>Port</code>
+      ディレクティブは削除されました。同等の機能はより柔軟な
+      <code><a href="mod/mpm_common.html#listen">Listen</a></code>
+      ディレクティブにより提供されています。</li>
+
+      <li><code>Port</code> ディレクティブは Apache-1.3 には自己参照 URL で
+      使われるポート番号を設定する、という使用法もありました。
+      これは Apache-2.0 では新しい
+      <a href="mod/core.html#servername"><code>ServerName</code></a>
+      構文によって行ないます。一つのディレクティブでホスト名<em>と</em>
+      自己参照 URL の両方を設定できるように構文が変更されました。</li>
+
+      <li><code>ServerName</code> ディレクティブは削除されました。
+      リクエストを扱う方法は MPM の選択により決定されるようになりました。
+      現時点では inetd から起動されるように設計された MPM はありません。</li>
+
+      <li><code>AgentLog</code> ディレクティブ、
+      <code>RefererLog</code> ディレクティブ、
+      <code>RefererIgnore</code> ディレクティブを提供していた
+      mod_log_agent と mod_log_referer モジュールは削除されました。
+      Agent ログと refere ログは mod_log_config の <a
+      href="mod/mod_log_config.html#customlog">CustomLog</a>
+      ディレクティブにより実現可能です。</li>
+
+      <li><code>AddModule</code> ディレクティブと <code>ClearModuleList</code>
+      ディレクティブは削除されました。これらのディレクティブは、
+      モジュールが正しい順番で呼ばれるようにするために使われていました。
+      Apache 2.0 の新 API はモジュールが明示的に順番を指定できるように
+      なっており、これらのディレクティブは必要なくなりました。</li>
+
+      <li><code>FancyIndexing</code> ディレクティブは削除されました。
+      同じ機能は <a
+      href="mod/mod_autoindex.html#indexoptions">IndexOptions</a>
+      ディレクティブの <code>FancyIndexing</code> オプションで
+      実現できます。</li>
+
+    </ul>
+
+    <h3>その他の変更</h3>
+
+    <ul>
+      <li>バーチャルホストの設定を出力するために使われていた
+      <code>httpd</code> のコマンドラインオプション <code>-S</code> は
+      <code>-t -D DUMP_VHOSTS</code> に置き換えられました。</li>
+
+      <li>Apache 1.3 で実験的なモジュールだった mod_auth_digest は
+      標準モジュールになりました。</li>
+
+      <li>Apache 1.3 で実験的なモジュールだった mod_mmap_static は
+      mod_file_cache で置き換えられました。</li>
+
+      <li>Apache の配布は独立した <code>src</code> ディレクトリが
+      なくなるように、完全に再構成されました。その代わりに、
+      ソースは主ディレクトリに論理的に配置されるようになり、
+      コンパイルされたサーバのインストールは別ディレクトリへ
+      行なうようになりました。</li>
+    </ul>
+
+    <h3>サードパーティモジュール</h3>
+
+    <p>Apache 2.0 のサーバ API には多くの変更が加えられました。
+    Apache 1.3 用の既存のモジュールは Apache 2.0 では修正なしでは
+    動き<strong>ません</strong>。詳細は <a
+    href="developer/">開発者向け文書</a> にあります。</p>
+    <!--#include virtual="footer.html" -->
+  </body>
+</html>
+
