@@ -1,0 +1,302 @@
+<?xml version="1.0" encoding="iso-2022-jp"?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
+<modulesynopsis>
+<!-- English revision: 1.6 -->
+
+<name>mod_alias</name>
+<description>ホストファイルシステム上のいろいろな違う場所を
+    ドキュメントツリーにマップする機能と、
+    URL のリダイレクトを行なう機能を提供する</description>
+<status>Base</status>
+<sourcefile>mod_alias.c</sourcefile>
+<identifier>alias_module</identifier>
+
+<summary>
+    <p>このモジュールのディレクティブはサーバにリクエストが到着したときに
+    URL の操作や制御をすることを可能にします。<directive
+    module="mod_alias">Alias</directive>
+    ディレクティブと <directive module="mod_alias">ScriptAlias</directive>
+    ディレクティブは
+    URL とファイルシステムのパスをマップするために使用されます。これは
+    <directive module="core">DocumentRoot</directive>
+    の下にないドキュメントをウェブのドキュメントツリーの一部として
+    送られるようにします。<directive module="mod_alias">ScriptAlias</directive>
+    ディレクティブにはマップ先のディレクトリが CGI
+    スクリプトのみであることを示すという追加の効果があります。
+    </p>
+
+    <p><directive module="mod_alias">Redirect</directive> ディレクティブは
+    クライアントに違った
+    URL に新しいリクエストを送るように指示します。これは、
+    リソースが新しい場所に移動したときによく使用されます。</p>
+</summary>
+
+<seealso><module>mod_rewrite</module></seealso> <seealso><a
+href="../urlmapping.html">URL からファイルシステム上の位置へのマッピング</a></seealso>
+
+<directivesynopsis>
+<name>Alias</name>
+<description>URL をファイルシステムの位置にマップする</description>
+<syntax> Alias <em>URL-path
+    file-path</em>|<em>directory-path</em></syntax>
+<contextlist><context>サーバ設定ファイル</context>
+<context>バーチャルホスト</context>
+</contextlist>
+
+<usage>
+    <p><directive>Alias</directive> ディレクティブはドキュメントを
+    ローカルファイルシステムの
+    <directive module="core">DocumentRoot</directive>
+    以外の場所に保管することを可能にします。
+    URL の (% が復号された) パスが <em>url-path</em> で始まるものは
+    <em>directory-filename</em>
+    で始まるローカルファイルにマップされます。</p>
+
+    <p>例:</p>
+
+<example>Alias /image /ftp/pub/image</example>
+
+    <p>http://myserver/image/foo.gif へのリクエストに対して、サーバは
+    ファイル /ftp/pub/image/foo.gif を返します。</p>
+
+    <p>もし <em>url-path</em> の最後に /
+    を書いたなら、サーバはエイリアスを展開するために最後の /
+    を要求するということに注意してください。すなわち、<code>Alias /icons/
+     /usr/local/apache/icons/</code> というものを使用していると、
+    <code>/icons</code> という url はエイリアスされません。</p>
+
+    <p>エイリアスの<em>行き先</em>を含んでいる <directive
+    module="core">&lt;Directory&gt;</directive>
+    セクションを追加する必要があるかもしれないことに注意してください。
+    エイリアスの展開は <directive module="core">&lt;Directory&gt;</directive>
+    セクションを調べる前に行なわれますので、
+    エイリアスの行き先の <code>&lt;Directory&gt;</code> セクションのみ
+    効果があります。
+    (しかし、<directive
+    module="core">&lt;Location&gt;</directive>
+    セクションはエイリアスが処理される前に実行されますので、
+    こちらは適用されます。)</p>
+
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>AliasMatch</name>
+<description>正規表現を使って URL をファイルシステムの位置にマップする</description>
+<syntax>AliasMatch <em>regex
+    file-path</em>|<em>directory-path</em></syntax>
+<contextlist><context>サーバ設定ファイル</context>
+<context>バーチャルホスト</context>
+</contextlist>
+
+<usage>
+    <p>このディレクティブは <directive module="mod_alias">Alias</directive>
+    とほとんど同じですが、簡単な先頭からのマッチを行なうのではなく、
+    標準正規表現を利用します。ここで指定された正規表現と URL のパス
+    が合うかどうかを調べ、合う場合は括弧で括られたマッチを
+    与えられた文字列で置き換え、それをファイル名として使用します。たとえば、
+    <code>/icons</code> ディレクトリを使う
+    ためには以下のようなものが使用できます:</p>
+<example>
+    AliasMatch ^/icons(.*) /usr/local/apache/icons$1
+</example>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>Redirect</name>
+<description>クライアントが違う URL を取得するように外部へのリダイレクトを
+送る</description>
+<syntax>Redirect [<em>status</em>] <em>URL-path URL</em></syntax>
+<contextlist><context>サーバ設定ファイル</context>
+<context>バーチャルホスト</context>
+<context>ディレクトリ</context><context>.htaccess</context></contextlist>
+<override>FileInfo</override>
+
+<usage>
+    <p>Redirect ディレクティブは古い URL を新しいものへマップします。
+    新しい URL がクライアントに返されます。そして、
+    クライアントは新しいアドレスをもう一回取得しようとします。
+    <em>URL-path</em> (% が復号された) パスで始まるドキュメントへの
+    すべてのリクエストは <em>URL</em> で始まる新しい
+    (% が符号化された) URL へのリダイレクトエラーが返されます。</p>
+
+    <p>例:</p>
+
+<example>Redirect /service http://foo2.bar.com/service</example>
+
+    <p>クライアントは http://myserver/service/foo.txt
+    へのリクエストを行なうと、代わりに http://foo2.bar.com/service/foo.txt
+    をアクセスするように告げられます。</p>
+
+<note><title>注意:</title><p>設定ファイル中の順番に関わらず、
+Redirect 系のディレクティブは Alias
+ディレクティブと ScriptAlias ディレクティブよりも優先されます。
+また、.htaccess ファイルや <directive module="core">&lt;Directory&gt;</directive>
+セクションの中で使われていたとしても、<em>URL-path</em>
+は相対パスではなく、絶対パスでなければなりません。</p></note>
+
+    <p>もし <em>status</em> 引数が与えられていなければ、リダイレクトは
+    "temporary" (HTTP ステータス 302) になります。これはクライアントに
+    リソースが一時的に移動したということを示します。<em>Status</em>
+    引数は 他の HTTP のステータスコードを返すために使用することができます:</p>
+
+    <dl>
+      <dt>permanent</dt>
+
+      <dd>永久にリダイレクトをするステータス (301) を返します。
+      これはリソースが永久に移動したということを意味します。</dd>
+
+      <dt>temp</dt>
+
+      <dd>一時的なリダイレクトステータス (302)
+      を返します。これがデフォルトです。</dd>
+
+      <dt>seeother</dt>
+
+      <dd>"See Other" ステータス (303) を返します。
+      これはリソースが他のもので置き換えられたことを意味します。</dd>
+
+    <dt>gone</dt>
+
+      <dd>"Gone" ステータス (410) を返します。これはリソースが永久に
+      削除されたことを意味します。このステータスが使用された場合、
+      <em>url</em> 引数は省略されなければなりません。</dd>
+    </dl>
+
+    <p><em>Status</em> の値にステータスコードを数値で与えることで
+    他のステータスコードも返すことができます。ステータスが 300 と 399
+    の間にある場合、<em>url</em> 引数は存在していなければいけません。
+    その他の場合は省略されていなければなりません。ただし、
+    ステータスは Apache のコードが知っているものである必要があります
+    (http_protocol.c の関数 <code>send_error_response</code>
+    を見てください)。</p>
+    <p>例:</p>
+
+    <example>
+        Redirect permanent /one http://example.com/two<br />
+        Redirect 303 /three http://example.com/other
+    </example>
+
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>RedirectMatch</name>
+<description>現在の URL への正規表現のマッチにより
+クライアントが違う URL を取得するように外部へのリダイレクトを
+送る</description>
+<syntax>RedirectMatch [<em>status</em>] <em>regex URL</em></syntax>
+<contextlist><context>サーバ設定ファイル</context>
+<context>バーチャルホスト</context>
+<context>ディレクトリ</context><context>.htaccess</context></contextlist>
+<override>FileInfo</override>
+
+<usage>
+    <p>このディレクティブは <directive module="mod_alias">Redirect</directive>
+    とほとんど同じですが、簡単な先頭からのマッチを行なうのではなく、
+    標準正規表現を利用します。ここで指定された正規表現と URL-path
+    が合うかどうかを調べ、合う場合は括弧で括られたマッチを
+    与えられた文字列で置き換え、それをファイル名として使用します。
+    たとえば、すべての GIF ファイルを別サーバの同様な名前の JPEG
+    ファイルにリダイレクトするには、以下のようなものを使います:
+    </p>
+<example>
+    RedirectMatch (.*)\.gif$ http://www.anotherserver.com$1.jpg
+</example>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>RedirectTemp</name>
+<description>クライアントが違う URL を取得するように外部への一時的な
+リダイレクトを送る</description>
+<syntax>RedirectTemp <em>URL-path URL</em></syntax>
+<contextlist><context>サーバ設定ファイル</context>
+<context>バーチャルホスト</context>
+<context>ディレクトリ</context><context>.htaccess</context></contextlist>
+<override>FileInfo</override>
+
+<usage>
+    <p>このディレクティブはクライアントに Redirect
+    が一時的なものである (ステータス 302) ことを知らせます。
+    <code>Redirect temp</code> とまったく同じです。</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>RedirectPermanent</name>
+<description>クライアントが違う URL を取得するように外部への永久的な
+リダイレクトを送る</description>
+<syntax>RedirectPermanent <em>URL-path URL</em></syntax>
+<contextlist><context>サーバ設定ファイル</context>
+<context>バーチャルホスト</context>
+<context>ディレクトリ</context><context>.htaccess</context></contextlist>
+<override>FileInfo</override>
+
+<usage>
+    <p>このディレクティブはクライアントに Redirect が永久的なもの
+    (ステータス 301) であることを知らせます。
+    <code>Redirect premanent</code> とまったく同じです。</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>ScriptAlias</name>
+<description>URL をファイルシステムの位置へマップし、マップ先を
+CGI スクリプトに指定</description>
+<syntax>ScriptAlias 
+<em>URL-path file-path</em>|<em>directory-path</em></syntax>
+<contextlist><context>サーバ設定ファイル</context>
+<context>バーチャルホスト</context>
+</contextlist>
+
+<usage>
+    <p><directive>ScriptAlias</directive> ディレクティブは、対象ディレクトリに
+    <module>mod_cgi</module> の cgi-script
+    ハンドラで処理される CGI
+    スクリプトがあることを示す以外は
+    <directive module="mod_alias">Alias</directive>
+    ディレクティブと同じ振る舞いをします。
+    URL の (% が復号された) パスが <em>URL-path</em> で始まるものは
+    ローカルのファイルシステムの
+    フルパスである二番目の引数にマップされます。</p>
+
+    <p>例:</p>
+
+<example>ScriptAlias /cgi-bin/ /web/cgi-bin/</example>
+
+    <p><code>http://myserver/cgi-bin/foo</code>
+    へのリクエストに対してサーバはスクリプト
+    <code>/web/cgi-bin/foo</code> を実行します。</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>ScriptAliasMatch</name>
+<description>URL を正規表現を使ってファイルシステムの位置へマップし、マップ先を
+CGI スクリプトに指定</description>
+<syntax>ScriptAliasMatch
+<em>regex file-path</em>|<em>directory-path</em></syntax>
+<contextlist><context>サーバ設定ファイル</context>
+<context>バーチャルホスト</context>
+</contextlist>
+
+<usage>
+    <p>このディレクティブは <directive module="mod_alias">ScriptAlias</directive>
+    とほとんど同じですが、簡単な先頭からのマッチを行なうのではなく、
+    標準正規表現を利用します。ここで指定された正規表現と URL-path
+    が合うかどうかを調べ、合う場合は括弧で括られたマッチを
+    与えられた文字列で置き換え、それをファイル名として使用します。
+    たとえば、標準の <code>/cgi-bin</code>
+    を使用するようにするためには、以下のようなものを使います:
+    </p>
+<example>
+    ScriptAliasMatch ^/cgi-bin(.*) /usr/local/apache/cgi-bin$1
+</example>
+</usage>
+</directivesynopsis>
+
+</modulesynopsis>
+

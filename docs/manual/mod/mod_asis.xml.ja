@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="iso-2022-jp"?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
+<modulesynopsis>
+<!-- English revision: 1.4 -->
+
+<name>mod_asis</name>
+<description>自分用の HTTP ヘッダの書かれているファイルを送信する</description>
+<status>Base</status>
+<sourcefile>mod_asis.c</sourcefile>
+<identifier>asis_module</identifier>
+
+<summary>
+    <p>このモジュールはハンドラ <code>send-as-is</code>
+    を提供します。このハンドラは通常の HTTP
+    ヘッダをほとんど追加することなくドキュメントを送信します。</p>
+
+    <p>これはサーバからどんな種類のデータを送るときにも使用できます。
+    Cgi スクリプトや nph スクリプトが無くてもリダイレクトや他の特別な
+    HTTP 応答を送ることができます。</p>
+
+    <p>歴史的な理由により、このモジュールは mime タイプ
+    <code>httpd/send-as-is</code> のファイルも処理します。</p>
+</summary>
+
+<seealso><module>mod_headers</module></seealso>
+<seealso><module>mod_cern_meta</module></seealso>
+
+<section><title>使用法</title>
+
+    <p>サーバ設定ファイルで、ファイルと <code>send-as-is</code>
+    ハンドラを例えば以下のように関連付けてください。</p>
+
+<example>AddHandler send-as-is asis</example>
+
+    <p>拡張子が <code>.asis</code> のすべてのファイルの内容は Apache
+    からクライアントへほとんど変更無く送られます。クライアントには
+    HTTP ヘッダが必要ですので、ファイルに書くことを忘れないでください。
+    Status: ヘッダも必要です。データは 3 桁の HTTP
+    応答コードと、その後にテキストメッセージが続いたものでなければなりません。</p>
+
+    <p>これはクライアントにファイルが移動したことを知らせるために
+    <em>as is</em> (そのまま) で送られるファイルの内容の例です。
+    </p>
+
+<example>Status: 301 Now where did I leave that URL<br />
+       Location: http://xyz.abc.com/foo/bar.html<br />
+       Content-type: text/html<br />
+      <br />
+       &lt;HTML&gt;<br />
+       &lt;HEAD&gt;<br />
+       &lt;TITLE&gt;Lame excuses'R'us&lt;/TITLE&gt;<br />
+       &lt;/HEAD&gt;<br />
+       &lt;BODY&gt;<br />
+       &lt;H1&gt;Fred's exceptionally wonderful page has moved
+      to<br />
+       &lt;A
+      HREF="http://xyz.abc.com/foo/bar.html"&gt;Joe's&lt;/A&gt;
+      site.<br />
+       &lt;/H1&gt;<br />
+       &lt;/BODY&gt;<br />
+       &lt;/HTML&gt;
+</example>
+
+    <p>注意: サーバはクライアントに返されるデータに常に Date: と Server:
+    ヘッダを追加しますので、それらがファイルに書かれていてはいけません。
+    サーバは Last-Modified ヘッダを追加<em>しません</em>。
+    おそらくはそうすべきでしょうけれど。
+    </p>
+</section>
+
+</modulesynopsis>

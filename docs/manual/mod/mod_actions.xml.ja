@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="iso-2022-jp"?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
+<modulesynopsis>
+<!-- English revision: 1.5 -->
+
+<name>mod_actions</name> 
+
+<description>メディアタイプやリクエストメソッドに応じて
+CGI スクリプトを実行する機能を提供</description>
+
+<status>Base</status>
+<sourcefile>mod_actions.c</sourcefile>
+<identifier>actions_module</identifier>
+
+<summary>
+    <p>このモジュールには二つのディレクティブがあります。<directive
+    module="mod_actions">Action</directive>
+    ディレクティブは特定のタイプのファイルをリクエストされた場合に
+    CGI スクリプトが実行されるようにします。<directive
+    module="mod_actions">Script</directive>
+    ディレクティブはリクエストで特定のメソッドが使用されたときに CGI
+    スクリプトが実行されるようにします。
+    これはファイルを処理するスクリプトの実行をずっと簡単にします。</p>
+</summary>
+
+<directivesynopsis>
+
+<name>Action</name>
+
+<description>特定のハンドラやコンテントタイプに対して CGI を実行するように
+設定</description>
+
+<syntax>Action <em>action-type cgi-script</em></syntax>
+<contextlist>
+<context>サーバ設定ファイル</context><context>バーチャルホスト</context>
+<context>ディレクトリ</context><context>.htaccess</context>
+</contextlist>
+<override>FileInfo</override>
+
+<usage>
+    <p>このディレクティブは <em>action-type</em>
+    がリクエストされたときに <em>cgi-script</em>
+    が実行されるという動作を追加します。<em>cgi-script</em> は
+    <directive module="mod_alias">ScriptAlias</directive> や
+    <directive module="mod_mime">AddHandler</directive> によって
+    CGI スクリプトに設定されたリソースへの URL-path です。
+    <em>Action-type</em> には
+    <a href="../handler.html">handler</a> か MIME
+    コンテントタイプを指定できます。リクエストされたドキュメントの URL
+    とファイルのパスは標準 CGI 環境変数 PATH_INFO と PATH_TRANSLATED
+    を使って伝えられます。</p>
+
+<example>
+<title>例</title>
+
+    # Requests for files of a particular type:<br />
+    Action image/gif /cgi-bin/images.cgi<br />
+<br />
+    # Files of a particular file extension<br />
+    AddHandler my-file-type .xyz<br />
+    Action my-file-type /cgi-bin/program.cgi<br />
+</example>
+
+    <p>最初の例では、MIME コンテントタイプが <code>image/gif</code>
+    のファイルへのリクエストは、そのファイルの代わりに指定されたスクリプト
+    <code>/cgi-bin/images.cgi</code> が呼ばれます。</p>
+
+    <p>2 番目の例では、拡張子が <code>.xyz</code> のファイルへのリクエストは、
+    そのファイルの代わりに指定されたスクリプト
+    <code>/cgi-bin/program.cgi</code> が呼ばれます。</p>
+</usage>
+
+<seealso><directive module="mod_mime">AddHandler</directive></seealso>
+
+</directivesynopsis>
+
+<directivesynopsis>
+
+<name>Script</name>
+
+<description>特定のリクエストメソッドに対して CGI スクリプトを
+実行するように設定</description>
+<syntax> Script <em>method cgi-script</em></syntax>
+<contextlist>
+<context>サーバ設定ファイル</context><context>バーチャルホスト</context>
+<context>ディレクトリ</context></contextlist>
+<usage>
+    <p>このディレクティブは <em>method</em>
+    というメソッドを使ってリクエストが行なわれたときに
+    <em>cgi-script</em> を実行するという動作を追加します。
+    <em>cgi-script</em> は
+    <directive module="mod_alias">ScriptAlias</directive> や
+    <directive module="mod_mime">AddHandler</directive> によって
+    CGI スクリプトに設定されたリソースへの URL-path です。
+    リクエストされたドキュメントの URL とファイルのパスは標準 CGI
+    環境変数 PATH_INFO と PATH_TRANSLATED を使って伝えられます。</p>
+
+<note>
+      任意のメソッド名を使用することができます。
+      <strong>メソッド名は大文字小文字を区別します</strong>。ですから、
+      <code>Script&nbsp;PUT</code> と <code>Script&nbsp;put</code>
+      はまったく違った効果になります。
+</note>
+
+    <p>Script コマンドはデフォルトの動作を追加するだけであることに
+    注意してください。もし CGI スクリプトが呼ばれたり、リクエストされた
+    メソッドを内部で扱うことのできる他のリソースがあれば、それが行なわれます。
+    <code>GET</code> メソッドの Script は問合せ引数がある場合にのみ
+    (<em>たとえば</em>、foo.html?hi) 呼ばれるということにも注意してください。
+    そうでない場合は、リクエストは通常通り処理されます。</p>
+
+<example>
+<title>例</title>
+    # For &lt;ISINDEX&gt;-style searching<br />
+    Script GET /cgi-bin/search<br />
+    # A CGI PUT handler<br />
+    Script PUT /~bob/put.cgi<br />
+</example>
+</usage>
+
+</directivesynopsis>
+
+</modulesynopsis>
