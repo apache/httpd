@@ -24,7 +24,7 @@ content-type</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Synta
     <p>This directive adds an action, which will activate
     <em>cgi-script</em> when <em>action-type</em> is triggered by the
     request.  The <em>cgi-script</em> is the URL-path to a resource
-    that has been designated as a CGI script using <a href="../mod/mod_alias.html#scriptaliase" class="directive"><code class="directive">ScriptAliase</code></a> or <a href="../mod/mod_mime.html#addhandler" class="directive"><code class="directive">AddHandler</code></a>.  The
+    that has been designated as a CGI script using <a href="../mod/mod_alias.html#scriptalias" class="directive"><code class="directive">ScriptAlias</code></a> or <a href="../mod/mod_mime.html#addhandler" class="directive"><code class="directive">AddHandler</code></a>.  The
     <em>action-type</em> can be either a <a href="../handler.html">handler</a> or a MIME content type. It
     sends the URL and file path of the requested document using the
     standard CGI PATH_INFO and PATH_TRANSLATED environment

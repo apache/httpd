@@ -17,9 +17,13 @@
     <a href="../filter.html">filter</a>.  The following directive
     will enable compression for documents in the container where it
     is placed:</p>
-    <p><strong>Most popular browsers can not handle compression of all content
-        so you may want to enable the 'gzip-only-text/html' note (see below)
-    </strong></p>
+    <strong>
+    <p>Most popular browsers can not handle compression of all content
+        so you may want to set the 'gzip-only-text/html' note to 1 to only 
+        allow html files to be compressed (see below)</p>
+    <p>if you set this to anything but '1' it will be ignored, so you can do
+       negative matches</p>
+    </strong>
 
 <blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>SetEnv gzip-only-text/html 1<br>
 SetOutputFilter DEFLATE
