@@ -2,6 +2,9 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) mod_ssl: Remove the shmht session cache, shmcb should be used
+     instead.  [Joe Orton]
+
   *) mod_ssl: SSL_VERSION_LIBRARY is set to the version string from the
      SSL library used at run-time, rather than at compile-time.
      PR: 23956  [Eric Seidel <eseidel apple.com>]

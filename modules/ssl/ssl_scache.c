@@ -87,8 +87,7 @@ void ssl_scache_init(server_rec *s, apr_pool_t *p)
 
     if (mc->nSessionCacheMode == SSL_SCMODE_DBM)
         ssl_scache_dbm_init(s, p);
-    else if ((mc->nSessionCacheMode == SSL_SCMODE_SHMHT) ||
-             (mc->nSessionCacheMode == SSL_SCMODE_SHMCB)) {
+    else if (mc->nSessionCacheMode == SSL_SCMODE_SHMCB) {
         void *data;
         const char *userdata_key = "ssl_scache_init";
 
@@ -98,10 +97,7 @@ void ssl_scache_init(server_rec *s, apr_pool_t *p)
                                   apr_pool_cleanup_null, s->process->pool);
             return;
         }
-        if (mc->nSessionCacheMode == SSL_SCMODE_SHMHT)
-            ssl_scache_shmht_init(s, p);
-        else if (mc->nSessionCacheMode == SSL_SCMODE_SHMCB)
-            ssl_scache_shmcb_init(s, p);
+        ssl_scache_shmcb_init(s, p);
     }
 }
 
@@ -111,8 +107,6 @@ void ssl_scache_kill(server_rec *s)
 
     if (mc->nSessionCacheMode == SSL_SCMODE_DBM)
         ssl_scache_dbm_kill(s);
-    else if (mc->nSessionCacheMode == SSL_SCMODE_SHMHT)
-        ssl_scache_shmht_kill(s);
     else if (mc->nSessionCacheMode == SSL_SCMODE_SHMCB)
         ssl_scache_shmcb_kill(s);
     return;
@@ -125,8 +119,6 @@ BOOL ssl_scache_store(server_rec *s, UCHAR *id, int idlen, time_t expiry, SSL_SE
 
     if (mc->nSessionCacheMode == SSL_SCMODE_DBM)
         rv = ssl_scache_dbm_store(s, id, idlen, expiry, sess);
-    else if (mc->nSessionCacheMode == SSL_SCMODE_SHMHT)
-        rv = ssl_scache_shmht_store(s, id, idlen, expiry, sess);
     else if (mc->nSessionCacheMode == SSL_SCMODE_SHMCB)
         rv = ssl_scache_shmcb_store(s, id, idlen, expiry, sess);
     return rv;
@@ -139,8 +131,6 @@ SSL_SESSION *ssl_scache_retrieve(server_rec *s, UCHAR *id, int idlen)
 
     if (mc->nSessionCacheMode == SSL_SCMODE_DBM)
         sess = ssl_scache_dbm_retrieve(s, id, idlen);
-    else if (mc->nSessionCacheMode == SSL_SCMODE_SHMHT)
-        sess = ssl_scache_shmht_retrieve(s, id, idlen);
     else if (mc->nSessionCacheMode == SSL_SCMODE_SHMCB)
         sess = ssl_scache_shmcb_retrieve(s, id, idlen);
     return sess;
@@ -152,8 +142,6 @@ void ssl_scache_remove(server_rec *s, UCHAR *id, int idlen)
 
     if (mc->nSessionCacheMode == SSL_SCMODE_DBM)
         ssl_scache_dbm_remove(s, id, idlen);
-    else if (mc->nSessionCacheMode == SSL_SCMODE_SHMHT)
-        ssl_scache_shmht_remove(s, id, idlen);
     else if (mc->nSessionCacheMode == SSL_SCMODE_SHMCB)
         ssl_scache_shmcb_remove(s, id, idlen);
     return;
@@ -165,8 +153,6 @@ void ssl_scache_status(server_rec *s, apr_pool_t *p, void (*func)(char *, void *
 
     if (mc->nSessionCacheMode == SSL_SCMODE_DBM)
         ssl_scache_dbm_status(s, p, func, arg);
-    else if (mc->nSessionCacheMode == SSL_SCMODE_SHMHT)
-        ssl_scache_shmht_status(s, p, func, arg);
     else if (mc->nSessionCacheMode == SSL_SCMODE_SHMCB)
         ssl_scache_shmcb_status(s, p, func, arg);
     return;
@@ -178,8 +164,6 @@ void ssl_scache_expire(server_rec *s)
 
     if (mc->nSessionCacheMode == SSL_SCMODE_DBM)
         ssl_scache_dbm_expire(s);
-    else if (mc->nSessionCacheMode == SSL_SCMODE_SHMHT)
-        ssl_scache_shmht_expire(s);
     else if (mc->nSessionCacheMode == SSL_SCMODE_SHMCB)
         ssl_scache_shmcb_expire(s);
     return;

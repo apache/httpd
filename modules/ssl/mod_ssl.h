@@ -101,7 +101,6 @@
 #include "ssl_toolkit_compat.h"
 #include "ssl_expr.h"
 #include "ssl_util_ssl.h"
-#include "ssl_util_table.h"
 
 /* The #ifdef macros are only defined AFTER including the above
  * therefore we cannot include these system files at the top  :-(
@@ -307,7 +306,6 @@ typedef enum {
     SSL_SCMODE_UNSET = UNSET,
     SSL_SCMODE_NONE  = 0,
     SSL_SCMODE_DBM   = 1,
-    SSL_SCMODE_SHMHT = 2,
     SSL_SCMODE_SHMCB = 3
 } ssl_scmode_t;
 
@@ -391,7 +389,7 @@ typedef struct {
     int             nSessionCacheDataSize;
     apr_shm_t      *pSessionCacheDataMM;
     apr_rmm_t      *pSessionCacheDataRMM;
-    apr_table_t    *tSessionCacheDataTable;
+    void           *tSessionCacheDataTable;
     ssl_mutexmode_t nMutexMode;
     apr_lockmech_e  nMutexMech;
     const char     *szMutexFile;

@@ -164,10 +164,6 @@ SOURCE=.\ssl_scache_shmcb.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\ssl_scache_shmht.c
-# End Source File
-# Begin Source File
-
 SOURCE=.\ssl_util.c
 # End Source File
 # Begin Source File
@@ -175,11 +171,6 @@ SOURCE=.\ssl_util.c
 SOURCE=.\ssl_util_ssl.c
 # End Source File
 # Begin Source File
-
-SOURCE=.\ssl_util_table.c
-# End Source File
-# End Group
-# Begin Group "Header Files"
 
 # PROP Default_Filter "*.h"
 # Begin Source File
