@@ -725,10 +725,8 @@ int ap_graceful_stop_signalled(void)
  * Child process main loop.
  */
 
-static void process_socket(ap_context_t *p, struct sockaddr *sa_client, ap_socket_t *sock, int my_child_num, int my_thread_num)
+static void process_socket(ap_context_t *p, ap_socket_t *sock, int my_child_num, int my_thread_num)
 {
-    struct sockaddr sa_server; /* ZZZZ */
-    size_t len = sizeof(struct sockaddr);
     BUFF *conn_io;
     conn_rec *current_conn;
     ap_iol *iol;
@@ -736,12 +734,6 @@ static void process_socket(ap_context_t *p, struct sockaddr *sa_client, ap_socke
     int csd;
 
     (void) ap_get_os_sock(&csd, sock);
-
-    if (getsockname(csd, &sa_server, &len) < 0) { 
-	ap_log_error(APLOG_MARK, APLOG_ERR, errno, server_conf, "getsockname");
-	close(csd);
-	return;
-    }
 
     sock_disable_nagle(csd);
 
@@ -800,7 +792,6 @@ static void * worker_thread(void * dummy)
     int process_slot = ti->pid;
     int thread_slot = ti->tid;
     ap_context_t *tpool = ti->tpool;
-    struct sockaddr sa_client;
     ap_socket_t *csd = NULL;
     ap_context_t *ptrans;		/* Pool for per-transaction stuff */
     ap_socket_t *sd = NULL;
@@ -894,7 +885,7 @@ static void * worker_thread(void * dummy)
             SAFE_ACCEPT(intra_mutex_off(0));
             break;
         }
-        process_socket(ptrans, &sa_client, csd, process_slot, thread_slot);
+        process_socket(ptrans, csd, process_slot, thread_slot);
         ap_clear_pool(ptrans);
         requests_this_child--;
     }
@@ -919,6 +910,7 @@ static void child_main(int child_num_arg)
 {
     sigset_t sig_mask;
     int signal_received;
+    pthread_t thread;
     pthread_attr_t thread_attr;
     int i;
     int my_child_num = child_num_arg;
