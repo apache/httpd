@@ -66,7 +66,7 @@ struct ap_filter_provider_t {
     /** The dispatch match itself - union member depends on match_type */
     union {
         const char *string;
-        regex_t    *regex;
+        ap_regex_t *regex;
         int         number;
     } match;
 
@@ -232,7 +232,7 @@ static int filter_lookup(ap_filter_t *f, ap_filter_rec_t *filter)
                 break;
             case REGEX_MATCH:
                 if (ap_regexec(provider->match.regex, str, 0, NULL, 0)
-                    == REG_NOMATCH) {
+                    == AP_REG_NOMATCH) {
                 match = 0;
                 }
                 break;
@@ -590,10 +590,10 @@ static const char *filter_provider(cmd_parms *cmd, void *CFG, const char *args)
         if (!rxend) {
               return "Bad regexp syntax";
         }
-        flags = REG_NOSUB;        /* we're not mod_rewrite:-) */
+        flags = AP_REG_NOSUB;        /* we're not mod_rewrite:-) */
         for (c = rxend+1; *c; ++c) {
             switch (*c) {
-            case 'i': flags |= REG_ICASE; break;
+            case 'i': flags |= AP_REG_ICASE; break;
             }
         }
         provider->match.regex = ap_pregcomp(cmd->pool,

@@ -425,11 +425,11 @@ static apr_status_t proxy_send_dir_filter(ap_filter_t *f,
         int found = 0;
         int eos = 0;
 
-        regex_t *re = NULL;
-        regmatch_t re_result[LS_REG_MATCH];
+        ap_regex_t *re = NULL;
+        ap_regmatch_t re_result[LS_REG_MATCH];
 
         /* Compile the output format of "ls -s1" as a fallback for non-unix ftp listings */
-        re = ap_pregcomp(p, LS_REG_PATTERN, REG_EXTENDED);
+        re = ap_pregcomp(p, LS_REG_PATTERN, AP_REG_EXTENDED);
         ap_assert(re != NULL);
 
         /* get a complete line */

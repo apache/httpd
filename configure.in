@@ -512,6 +512,7 @@ APACHE_HELP_STRING(--with-suexec-umask,umask for suexec'd process),[
 
 dnl AP_LIBS specifies the actual libraries. note we have some required libs.
 AP_LIBS="$abs_builddir/srclib/pcre/libpcre.la $AP_LIBS"
+APR_ADDTO(CPPFLAGS, [-I$abs_builddir/srclib/pcre])
 
 dnl APR should go after the other libs, so the right symbols can be picked up
 AP_LIBS="$AP_LIBS `$apu_config --link-libtool --libs` `$apr_config --link-libtool --libs`"

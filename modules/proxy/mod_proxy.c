@@ -795,7 +795,7 @@ static const char *
     struct proxy_remote *new;
     char *p, *q;
     char *r, *f, *scheme;
-    regex_t *reg = NULL;
+    ap_regex_t *reg = NULL;
     int port;
 
     r = apr_pstrdup(cmd->pool, r1);
@@ -825,7 +825,7 @@ static const char *
         port = -1;
     *p = '\0';
     if (regex) {
-        reg = ap_pregcomp(cmd->pool, f, REG_EXTENDED);
+        reg = ap_pregcomp(cmd->pool, f, AP_REG_EXTENDED);
         if (!reg)
             return "Regular expression for ProxyRemoteMatch could not be compiled.";
     }
@@ -1441,7 +1441,7 @@ static const char *proxysection(cmd_parms *cmd, void *mconfig, const char *arg)
     char *old_path = cmd->path;
     proxy_dir_conf *conf;
     ap_conf_vector_t *new_dir_conf = ap_create_per_dir_config(cmd->pool);
-    regex_t *r = NULL;
+    ap_regex_t *r = NULL;
     const command_rec *thiscmd = cmd->cmd;
 
     const char *err = ap_check_cmd_context(cmd,
@@ -1475,7 +1475,7 @@ static const char *proxysection(cmd_parms *cmd, void *mconfig, const char *arg)
      * scheme?  See proxy_fixup()
      */
     if (thiscmd->cmd_data) { /* <ProxyMatch> */
-        r = ap_pregcomp(cmd->pool, cmd->path, REG_EXTENDED);
+        r = ap_pregcomp(cmd->pool, cmd->path, AP_REG_EXTENDED);
         if (!r) {
             return "Regex could not be compiled";
         }
@@ -1486,7 +1486,7 @@ static const char *proxysection(cmd_parms *cmd, void *mconfig, const char *arg)
             return "<Proxy ~ > block must specify a path";
         if (strncasecmp(cmd->path, "proxy:", 6))
             cmd->path += 6;
-        r = ap_pregcomp(cmd->pool, cmd->path, REG_EXTENDED);
+        r = ap_pregcomp(cmd->pool, cmd->path, AP_REG_EXTENDED);
         if (!r) {
             return "Regex could not be compiled";
         }

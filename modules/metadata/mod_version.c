@@ -141,11 +141,11 @@ static int compare_version(char *version_string, const char **error)
 static int match_version(apr_pool_t *pool, char *version_string,
                          const char **error)
 {
-    regex_t *compiled;
+    ap_regex_t *compiled;
     const char *to_match;
     int rc;
 
-    compiled = ap_pregcomp(pool, version_string, REG_EXTENDED);
+    compiled = ap_pregcomp(pool, version_string, AP_REG_EXTENDED);
     if (!compiled) {
         *error = "Unable to compile regular expression";
         return 0;

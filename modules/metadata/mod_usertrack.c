@@ -84,7 +84,7 @@ typedef struct {
     char *cookie_name;
     char *cookie_domain;
     char *regexp_string;  /* used to compile regexp; save for debugging */
-    regex_t *regexp;  /* used to find usertrack cookie in cookie header */
+    ap_regex_t *regexp;  /* used to find usertrack cookie in cookie header */
 } cookie_dir_rec;
 
 /* Make Cookie: Now we have to generate something that is going to be
@@ -200,7 +200,7 @@ static void set_and_comp_regexp(cookie_dir_rec *dcfg,
                                       cookie_name,
                                       "=([^;,]+)", NULL);
 
-    dcfg->regexp = ap_pregcomp(p, dcfg->regexp_string, REG_EXTENDED);
+    dcfg->regexp = ap_pregcomp(p, dcfg->regexp_string, AP_REG_EXTENDED);
     ap_assert(dcfg->regexp != NULL);
 }
 
@@ -209,7 +209,7 @@ static int spot_cookie(request_rec *r)
     cookie_dir_rec *dcfg = ap_get_module_config(r->per_dir_config,
 						&usertrack_module);
     const char *cookie_header;
-    regmatch_t regm[NUM_SUBS];
+    ap_regmatch_t regm[NUM_SUBS];
 
     /* Do not run in subrequests */
     if (!dcfg->enabled || r->main) {

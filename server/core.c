@@ -1730,7 +1730,7 @@ AP_CORE_DECLARE_NONSTD(const char *) ap_limit_section(cmd_parms *cmd,
  */
 
 #ifdef WIN32
-#define USE_ICASE REG_ICASE
+#define USE_ICASE AP_REG_ICASE
 #else
 #define USE_ICASE 0
 #endif
@@ -1743,7 +1743,7 @@ static const char *dirsection(cmd_parms *cmd, void *mconfig, const char *arg)
     char *old_path = cmd->path;
     core_dir_config *conf;
     ap_conf_vector_t *new_dir_conf = ap_create_per_dir_config(cmd->pool);
-    regex_t *r = NULL;
+    ap_regex_t *r = NULL;
     const command_rec *thiscmd = cmd->cmd;
 
     const char *err = ap_check_cmd_context(cmd,
@@ -1776,13 +1776,13 @@ static const char *dirsection(cmd_parms *cmd, void *mconfig, const char *arg)
         cmd->path = ap_getword_conf(cmd->pool, &arg);
         if (!cmd->path)
             return "<Directory ~ > block must specify a path";
-        r = ap_pregcomp(cmd->pool, cmd->path, REG_EXTENDED|USE_ICASE);
+        r = ap_pregcomp(cmd->pool, cmd->path, AP_REG_EXTENDED|USE_ICASE);
         if (!r) {
             return "Regex could not be compiled";
         }
     }
     else if (thiscmd->cmd_data) { /* <DirectoryMatch> */
-        r = ap_pregcomp(cmd->pool, cmd->path, REG_EXTENDED|USE_ICASE);
+        r = ap_pregcomp(cmd->pool, cmd->path, AP_REG_EXTENDED|USE_ICASE);
         if (!r) {
             return "Regex could not be compiled";
         }
@@ -1847,7 +1847,7 @@ static const char *urlsection(cmd_parms *cmd, void *mconfig, const char *arg)
     int old_overrides = cmd->override;
     char *old_path = cmd->path;
     core_dir_config *conf;
-    regex_t *r = NULL;
+    ap_regex_t *r = NULL;
     const command_rec *thiscmd = cmd->cmd;
     ap_conf_vector_t *new_url_conf = ap_create_per_dir_config(cmd->pool);
     const char *err = ap_check_cmd_context(cmd,
@@ -1870,14 +1870,14 @@ static const char *urlsection(cmd_parms *cmd, void *mconfig, const char *arg)
     cmd->override = OR_ALL|ACCESS_CONF;
 
     if (thiscmd->cmd_data) { /* <LocationMatch> */
-        r = ap_pregcomp(cmd->pool, cmd->path, REG_EXTENDED);
+        r = ap_pregcomp(cmd->pool, cmd->path, AP_REG_EXTENDED);
         if (!r) {
             return "Regex could not be compiled";
         }
     }
     else if (!strcmp(cmd->path, "~")) {
         cmd->path = ap_getword_conf(cmd->pool, &arg);
-        r = ap_pregcomp(cmd->pool, cmd->path, REG_EXTENDED);
+        r = ap_pregcomp(cmd->pool, cmd->path, AP_REG_EXTENDED);
         if (!r) {
             return "Regex could not be compiled";
         }
@@ -1915,7 +1915,7 @@ static const char *filesection(cmd_parms *cmd, void *mconfig, const char *arg)
     int old_overrides = cmd->override;
     char *old_path = cmd->path;
     core_dir_config *conf;
-    regex_t *r = NULL;
+    ap_regex_t *r = NULL;
     const command_rec *thiscmd = cmd->cmd;
     core_dir_config *c = mconfig;
     ap_conf_vector_t *new_file_conf = ap_create_per_dir_config(cmd->pool);
@@ -1942,14 +1942,14 @@ static const char *filesection(cmd_parms *cmd, void *mconfig, const char *arg)
     }
 
     if (thiscmd->cmd_data) { /* <FilesMatch> */
-        r = ap_pregcomp(cmd->pool, cmd->path, REG_EXTENDED|USE_ICASE);
+        r = ap_pregcomp(cmd->pool, cmd->path, AP_REG_EXTENDED|USE_ICASE);
         if (!r) {
             return "Regex could not be compiled";
         }
     }
     else if (!strcmp(cmd->path, "~")) {
         cmd->path = ap_getword_conf(cmd->pool, &arg);
-        r = ap_pregcomp(cmd->pool, cmd->path, REG_EXTENDED|USE_ICASE);
+        r = ap_pregcomp(cmd->pool, cmd->path, AP_REG_EXTENDED|USE_ICASE);
         if (!r) {
             return "Regex could not be compiled";
         }

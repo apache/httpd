@@ -1,5 +1,5 @@
 LTLIBRARY_NAME = libpcre.la
-LTLIBRARY_SOURCES = maketables.c get.c study.c pcre.c pcreposix.c
+LTLIBRARY_SOURCES = maketables.c get.c study.c pcre.c
 
 CLEAN_TARGETS = dftables chartables.c
 DISTCLEAN_TARGETS = pcre.h pcre-config config.h config.log config.status $(CLEAN_TARGETS)

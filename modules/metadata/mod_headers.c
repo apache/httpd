@@ -117,7 +117,7 @@ typedef struct {
     hdr_actions action;
     const char *header;
     apr_array_header_t *ta;   /* Array of format_tag structs */
-    regex_t *regex;
+    ap_regex_t *regex;
     const char *condition_var;
 } header_entry;
 
@@ -406,7 +406,7 @@ static APR_INLINE const char *header_inout_cmd(cmd_parms *cmd,
         }
     }
     else if (new->action == hdr_echo) {
-        regex_t *regex;
+        ap_regex_t *regex;
 
         if (value) {
             if (envclause) {
@@ -419,7 +419,7 @@ static APR_INLINE const char *header_inout_cmd(cmd_parms *cmd,
             return "Header echo only valid on Header "
                    "directives";
         else {
-            regex = ap_pregcomp(cmd->pool, hdr, REG_EXTENDED | REG_NOSUB);
+            regex = ap_pregcomp(cmd->pool, hdr, AP_REG_EXTENDED | AP_REG_NOSUB);
             if (regex == NULL) {
                 return "Header echo regex could not be compiled";
             }
