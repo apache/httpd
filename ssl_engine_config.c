@@ -190,7 +190,7 @@ void *ssl_config_server_merge(apr_pool_t *p, void *basev, void *addv)
     int i;
     SSLSrvConfigRec *base = (SSLSrvConfigRec *)basev;
     SSLSrvConfigRec *add  = (SSLSrvConfigRec *)addv;
-    SSLSrvConfigRec *new  = (SSLSrvConfigRec *)apr_palloc(p, sizeof(*new));
+    SSLSrvConfigRec *mrg  = (SSLSrvConfigRec *)apr_palloc(p, sizeof(*mrg));
 
     cfgMerge(mc, NULL);
     cfgMergeString(szVHostID);
@@ -232,7 +232,7 @@ void *ssl_config_server_merge(apr_pool_t *p, void *basev, void *addv)
     cfgMerge(pSSLProxyCtx, NULL);
 #endif
 
-    return new;
+    return mrg;
 }
 
 /*
@@ -265,23 +265,23 @@ void *ssl_config_perdir_merge(apr_pool_t *p, void *basev, void *addv)
 {
     SSLDirConfigRec *base = (SSLDirConfigRec *)basev;
     SSLDirConfigRec *add  = (SSLDirConfigRec *)addv;
-    SSLDirConfigRec *new  = (SSLDirConfigRec *)apr_palloc(p, sizeof(*new));
+    SSLDirConfigRec *mrg  = (SSLDirConfigRec *)apr_palloc(p, sizeof(*mrg));
 
     cfgMerge(bSSLRequired, FALSE);
     cfgMergeArray(aRequirement);
 
     if (add->nOptions & SSL_OPT_RELSET) {
-        new->nOptionsAdd =
+        mrg->nOptionsAdd =
             (base->nOptionsAdd & ~(add->nOptionsDel)) | add->nOptionsAdd;
-        new->nOptionsDel =
+        mrg->nOptionsDel =
             (base->nOptionsDel & ~(add->nOptionsAdd)) | add->nOptionsDel;
-        new->nOptions    =
-            (base->nOptions    & ~(new->nOptionsDel)) | new->nOptionsAdd;
+        mrg->nOptions    =
+            (base->nOptions    & ~(mrg->nOptionsDel)) | mrg->nOptionsAdd;
     }
     else {
-        new->nOptions    = add->nOptions;
-        new->nOptionsAdd = add->nOptionsAdd;
-        new->nOptionsDel = add->nOptionsDel;
+        mrg->nOptions    = add->nOptions;
+        mrg->nOptionsAdd = add->nOptionsAdd;
+        mrg->nOptionsDel = add->nOptionsDel;
     }
 
     cfgMergeString(szCipherSuite);
@@ -291,7 +291,7 @@ void *ssl_config_perdir_merge(apr_pool_t *p, void *basev, void *addv)
     cfgMergeString(szCACertificatePath);
     cfgMergeString(szCACertificateFile);
 
-    return new;
+    return mrg;
 }
 
 /*
