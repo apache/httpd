@@ -28,10 +28,15 @@ To do this:
 
       % ./Configure
       Using config file: Configuration
-      Using Makefile template file: Makefile.tmpl
+      Creating Makefile
        + configured for <whatever> platform
-       + setting C compiler to <whatever> *
+       + setting C compiler to <whatever>
+       + Adding selected modules
        + doing sanity check on compiler and options
+      Creating Makefile in support
+      Creating Makefile in main
+      Creating Makefile in os/unix
+      Creating Makefile in modules/standard
       %
 
    This generates new versions of the Makefile and of modules.c.  (If
@@ -39,14 +44,17 @@ To do this:
 
       % ./Configure -file Configuration.ai
       Using config file: Configuration.ai
-      Using Makefile template file: Makefile.tmpl
+      Creating Makefile
        + configured for <whatever> platform
-       + setting C compiler to <whatever> *
+       + setting C compiler to <whatever>
+       + Adding selected modules
        + doing sanity check on compiler and options
+      Creating Makefile in support
+      Creating Makefile in main
+      Creating Makefile in os/unix
+      Creating Makefile in modules/standard
       % 
 
-   (*: Depending on Configuration and your system, Configure
-       may not print these lines. That's OK)
 
 3) Type "make".
 

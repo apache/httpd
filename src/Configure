@@ -24,12 +24,11 @@ file=Configuration
 tmpfile=htconf.$$
 tmpfile2=$tmpfile.2
 tmpfile3=$tmpfile.3
-makefile_tmpl=Makefile.tmpl
 SRCDIR=`pwd`
 
 ####################################################################
-## Now handle any arguments, which, for now, are -file and -make
-## to select alternate Configuration and Makefile.tmpl files
+## Now handle any arguments, which, for now, is -file
+## to select an alternate Configuration file
 ##
 while [ "x$1" != "x" ]; do
   if [ "x$1" = "x-file" ] ; then
@@ -38,19 +37,12 @@ while [ "x$1" != "x" ]; do
       echo "$file does not exist or is not readable."
       exit 1
     fi
-  elif [ "x$1" = "x-make" ] ; then
-    shift 1; makefile_tmpl=$1; shift 1
-    if [ ! -r $makefile_tmpl ]; then
-      echo "$makefile_tmpl does not exist or is not readable."
-      exit 1
-    fi
   else
     echo "Ignoring command line option '$1'"
     shift 1
   fi
 done
 echo "Using config file: $file"
-echo "Using Makefile template file: $makefile_tmpl"
 
 if [ ! -r $file ]; then
   echo "Can't see or read \"$file\""
@@ -104,8 +96,9 @@ if [ -f modules.c ] ; then mv modules.c modules.c.bak; fi
 # Start creating the Makefile. We add some comments and
 # then fold in the modules that were included in Configuration
 #
+echo "Creating Makefile"
 echo "#" > Makefile
-echo "# Makefile automatically generated from $makefile_tmpl" >> Makefile
+echo "# Makefile automatically generated from Makefile.tmpl" >> Makefile
 echo "# and configuration file by Apache config script." >> Makefile
 echo "# Hand-edited changes will be lost if the config script" >> Makefile
 echo "# is re-run" >> Makefile
@@ -893,7 +886,7 @@ fi
 # ./Makefile
 #
 cat Makefile.config >> Makefile
-sed -e "s#@@Configuration@@#$file#" "$makefile_tmpl" >>Makefile
+sed -e "s#@@Configuration@@#$file#" "Makefile.tmpl" >>Makefile
 awk >>Makefile <$tmpfile \
    '($1 == "Module" && $3 ~ /modules\//) { printf "%s: modules/last-built ; @cat /dev/null\n\n", $3, $3}'
 

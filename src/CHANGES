@@ -1,5 +1,8 @@
 Changes with Apache 1.3a2
 
+  *) Configure no longer accepts the -make option, since it creates
+     Makefile on the fly based on Makefile.tmpl and Configuration.
+
   *) Apache now gracefully shuts down when it receives a SIGTERM, instead
      of forcibly killing off all its processes and exiting without
      cleaning up. [Alexei Kosut]
