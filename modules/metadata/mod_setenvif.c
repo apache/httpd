@@ -340,14 +340,14 @@ static const char *add_browser(cmd_parms *cmd, void *mconfig, const char *args)
 
 static const command_rec setenvif_module_cmds[] =
 {
-    { "SetEnvIf", add_setenvif, NULL,
-      OR_FILEINFO, RAW_ARGS, "A header-name, regex and a list of variables." },
-    { "SetEnvIfNoCase", add_setenvif, ICASE_MAGIC,
-      OR_FILEINFO, RAW_ARGS, "a header-name, regex and a list of variables." },
-    { "BrowserMatch", add_browser, NULL,
-      OR_FILEINFO, RAW_ARGS, "A browser regex and a list of variables." },
-    { "BrowserMatchNoCase", add_browser, ICASE_MAGIC,
-      OR_FILEINFO, RAW_ARGS, "A browser regex and a list of variables." },
+    AP_INIT_RAW_ARGS("SetEnvIf", add_setenvif, NULL,
+                     OR_FILEINFO, "A header-name, regex and a list of variables."),
+    AP_INIT_RAW_ARGS("SetEnvIfNoCase", add_setenvif, ICASE_MAGIC,
+                     OR_FILEINFO, "a header-name, regex and a list of variables."),
+    AP_INIT_RAW_ARGS("BrowserMatch", add_browser, NULL,
+                     OR_FILEINFO, "A browser regex and a list of variables."),
+    AP_INIT_RAW_ARGS("BrowserMatchNoCase", add_browser, ICASE_MAGIC,
+                     OR_FILEINFO, "A browser regex and a list of variables."),
     { NULL },
 };
 
