@@ -98,14 +98,16 @@ PATCHES TO BACKPORT FROM TRUNK:
        existing brigade instead of calling brigade_split which creates a 
        new brigade. PR 33382. r154200
        Patch for 2.0: http://www.apache.org/~pquerna/c-i-f-leak.patch
-       +1: pquerna, trawick
+       +1: pquerna, trawick, jerenkrantz
 
     *) mod_ssl: Set r->user from SSLUsername earlier so that it's
        actually useful.
        http://svn.apache.org/viewcvs.cgi?rev=153280&view=rev
        http://svn.apache.org/viewcvs.cgi?rev=151493&view=rev
        PR: 31418
-       +1: jorton
+       jerenkrantz comments: 151493 deletes a chunk and adds a chunk,
+          with 153280 moving that added hunk elsewhere.  My brain hurts.
+       +1: jorton, jerenkrantz
 
     *) Add a build script to create a solaris package.
        svn rev 124104
