@@ -178,7 +178,7 @@ typedef struct {
     long maxfwd;
     char maxfwd_set;
     /** 
-     * the following setting masks the error  page
+     * the following setting masks the error page
      * returned from the 'proxied server' and just 
      * forwards the status code upwards.
      * This allows the main server (us) to generate
