@@ -663,7 +663,7 @@ void output_directories(struct ent **ar, int n,
             }
         }
         else
-            rvputs(r, "<LI> ", anchor," ", t2);
+            rvputs(r, "<LI> ", anchor," ", t2, NULL);
         rputc('\n', r);
     }
     if(dir_opts & FANCY_INDEXING) {
