@@ -1226,38 +1226,30 @@ static int rewrite_rand(int l, int h)
 
 static char *select_random_value_part(request_rec *r, char *value)
 {
-    char *buf;
-    int n, i, k;
+    char *p = value;
+    unsigned n = 1;
 
-    /*  count number of distinct values  */
-    for (n = 1, i = 0; value[i] != '\0'; i++) {
-        if (value[i] == '|') {
-            n++;
+    /* count number of distinct values */
+    while ((p = ap_strchr(p, '|')) != NULL) {
+        ++n;
+        ++p;
+    }
+
+    if (n > 1) {
+        n = rewrite_rand(1, n);
+        while (--n && (value = ap_strchr(value, '|')) != NULL) {
+            ++value;
+        }
+
+        if (value) { /* should not be NULL, but ... */
+            p = ap_strchr(value, '|');
+            if (p) {
+                *p = '\0';
+            }
         }
     }
 
-    /*  when only one value we have no option to choose  */
-    if (n == 1) {
-        return value;
-    }
-
-    /*  else randomly select one  */
-    k = rewrite_rand(1, n);
-
-    /*  and grep it out  */
-    for (n = 1, i = 0; value[i] != '\0'; i++) {
-        if (n == k) {
-            break;
-        }
-        if (value[i] == '|') {
-            n++;
-        }
-    }
-    buf = apr_pstrdup(r->pool, &value[i]);
-    for (i = 0; buf[i] != '\0' && buf[i] != '|'; i++)
-        ;
-    buf[i] = '\0';
-    return buf;
+    return value;
 }
 
 /* child process code */
