@@ -1,6 +1,6 @@
 
 CLEAN_TARGETS = gen_test_char test_char.h gen_uri_delims uri_delims.h \
-	ApacheCoreOS2.def buildmarked.c httpd.exp export_files \
+	ApacheCoreOS2.def httpd.exp export_files \
 	exports.c export_vars.h
 
 SUBDIRS = mpm
