@@ -23,6 +23,7 @@
 
 <name>mod_disk_cache</name>
 <description>Content cache storage manager keyed to URIs</description>
+<status>Extension</status>
 <sourcefile>mod_disk_cache.c</sourcefile>
 <identifier>disk_cache_module</identifier>
 
