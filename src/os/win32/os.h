@@ -70,4 +70,4 @@ every configuration function as __stdcall.
 /* Unknown system - Edit these to match */
 
 
-API_EXPORT(int)ap_is_path_absolute(char *f);
+API_EXPORT(int)os_is_path_absolute(char *f);
