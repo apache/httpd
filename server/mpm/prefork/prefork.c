@@ -138,6 +138,7 @@ static int ap_max_requests_per_child=0;
 static const char *ap_pid_fname=NULL;
 static apr_lock_t *accept_lock;
 static const char *ap_lock_fname;
+static apr_lockmech_e_np accept_lock_mech = APR_LOCK_DEFAULT;
 static int ap_daemons_to_start=0;
 static int ap_daemons_min_free=0;
 static int ap_daemons_max_free=0;
@@ -274,7 +275,8 @@ static void accept_mutex_init(apr_pool_t *p)
     apr_status_t rv;
 
     expand_lock_fname(p);
-    rv = apr_lock_create(&accept_lock, APR_MUTEX, APR_CROSS_PROCESS, ap_lock_fname, p);
+    rv = apr_lock_create_np(&accept_lock, APR_MUTEX, APR_CROSS_PROCESS, 
+                            accept_lock_mech, ap_lock_fname, p);
     if (rv) {
 	ap_log_error(APLOG_MARK, APLOG_EMERG, rv, NULL, "couldn't create accept mutex");
         exit(APEXIT_INIT);
@@ -1469,6 +1471,56 @@ static const char *set_coredumpdir (cmd_parms *cmd, void *dummy, const char *arg
     return NULL;
 }
 
+static const char *set_accept_lock_mech(cmd_parms *cmd, void *dummy, const char *arg) 
+{
+    const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
+    if (err != NULL) {
+        return err;
+    }
+
+    if (!strcasecmp(arg, "default")) {
+        accept_lock_mech = APR_LOCK_DEFAULT;
+    }
+#if APR_HAS_FLOCK_SERIALIZE
+    else if (!strcasecmp(arg, "flock")) {
+        accept_lock_mech = APR_LOCK_FLOCK;
+    }
+#endif
+#if APR_HAS_FCNTL_SERIALIZE
+    else if (!strcasecmp(arg, "fcntl")) {
+        accept_lock_mech = APR_LOCK_FCNTL;
+    }
+#endif
+#if APR_HAS_SYSVSEM_SERIALIZE
+    else if (!strcasecmp(arg, "sysvsem")) {
+        accept_lock_mech = APR_LOCK_SYSVSEM;
+    }
+#endif
+#if APR_HAS_PROC_PTHREAD_SERIALIZE
+    else if (!strcasecmp(arg, "proc_pthread")) {
+        accept_lock_mech = APR_LOCK_PROC_PTHREAD;
+    }
+#endif
+    else {
+        return apr_pstrcat(cmd->pool, arg, " is an invalid mutex mechanism; valid "
+                           "ones for this platform are: default"
+#if APR_HAS_FLOCK_SERIALIZE
+                           ", flock"
+#endif
+#if APR_HAS_FCNTL_SERIALIZE
+                           ", fcntl"
+#endif
+#if APR_HAS_SYSVSEM_SERIALIZE
+                           ", sysvsem"
+#endif
+#if APR_HAS_PROC_PTHREAD_SERIALIZE
+                           ", proc_pthread"
+#endif
+                           , NULL);
+    }
+    return NULL;
+}
+
 static const command_rec prefork_cmds[] = {
 UNIX_DAEMON_COMMANDS
 LISTEN_COMMANDS
@@ -1490,6 +1542,8 @@ AP_INIT_TAKE1("MaxRequestsPerChild", set_max_requests, NULL, RSRC_CONF,
               "Maximum number of requests a particular child serves before dying."),
 AP_INIT_TAKE1("CoreDumpDirectory", set_coredumpdir, NULL, RSRC_CONF,
               "The location of the directory Apache changes to before dumping core"),
+AP_INIT_TAKE1("AcceptMutex", set_accept_lock_mech, NULL, RSRC_CONF,
+              "The system mutex implementation to use for the accept mutex"),
 { NULL }
 };
 
