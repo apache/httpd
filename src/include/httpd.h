@@ -50,7 +50,7 @@
  *
  */
 
-/* $Id: httpd.h,v 1.48 1996/08/24 16:33:29 ben Exp $ */
+/* $Id: httpd.h,v 1.49 1996/09/03 00:31:27 akosut Exp $ */
 
 /*
  * httpd.h: header for simple (ha! not anymore) http daemon
@@ -245,7 +245,7 @@
 
 #define SERVER_VERSION "Apache/1.2-dev" /* SEE COMMENTS ABOVE */
 
-#define SERVER_PROTOCOL "HTTP/1.0"
+#define SERVER_PROTOCOL "HTTP/1.1"
 #define SERVER_SUPPORT "http://www.apache.org/"
 
 #define DECLINED -1		/* Module declines to handle */

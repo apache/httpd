@@ -50,7 +50,7 @@
  *
  */
   
-/* $Id: http_protocol.c,v 1.44 1996/08/24 16:04:54 ben Exp $ */
+/* $Id: http_protocol.c,v 1.45 1996/09/03 00:31:26 akosut Exp $ */
 
 /*
  * http_protocol.c --- routines which directly communicate with the
@@ -284,33 +284,28 @@ int set_keepalive(request_rec *r)
 {
     char *conn = table_get (r->headers_in, "Connection");
     char *length = table_get (r->headers_out, "Content-length");
+    int ka_sent;
 
     if ((r->server->keep_alive > r->connection->keepalives) &&
 	(r->server->keep_alive_timeout > 0) &&
 	(r->header_only || length ||
 	 ((r->proto_num >= 1001) && (r->byterange > 1 || (r->chunked = 1)))) &&
 	(!find_token(r->pool, conn, "close")) &&
-#ifdef FORHTTP11
-	((proto_num >= 1001) || find_token(r->pool, conn, "keep-alive"))) {
-#else
-	(find_token(r->pool, conn, "keep-alive"))) {
-#endif
+	((ka_sent = find_token(r->pool, conn, "keep-alive")) ||
+	 r->proto_num >= 1001)) {
 	char header[26];
 	int left = r->server->keep_alive - r->connection->keepalives;
 	
 	r->connection->keepalive = 1;
 	r->connection->keepalives++;
 	
-#ifdef FORHTTP11
-	if (r->proto_num < 1001) {
-#endif
+	/* If they sent a Keep-Alive token, send one back */
+	if (ka_sent) {
 	    sprintf(header, "timeout=%d, max=%d",
 		    r->server->keep_alive_timeout, left);
-	    table_merge (r->headers_out, "Connection", "Keep-Alive");
-	    table_set (r->headers_out, "Keep-Alive", pstrdup(r->pool, header));
-#ifdef FORHTTP11
+	    rputs("Connection: Keep-Alive\015\012", r);
+	    rvputs(r, "Keep-Alive: ", header, "\015\012", NULL);
 	}
-#endif	
 
 	return 1;
     }
@@ -320,7 +315,7 @@ int set_keepalive(request_rec *r)
      * as HTTP/1.0, but pass our request along with our HTTP/1.1 tag
      * to a HTTP/1.1 client. Better safe than sorry.
      */
-    table_merge (r->headers_out, "Connection", "close");
+    rputs("Connection: close\015\012", r);
 
     return 0;
 }
@@ -1274,20 +1269,15 @@ void send_error_response (request_rec *r, int recursive_error)
 	    if (etag) bvputs(c->client, "ETag: ", etag, "\015\012", NULL);
 	    if (cloc) bvputs(c->client, "Content-Location: ", cloc,
 			     "\015\012", NULL);
-	    if (set_keepalive(r)) {
-#ifdef FORHTTP11
-		if (r->proto_num < 1001)
-#endif
-		    bputs("Connection: Keep-Alive\015\012", c->client);
-	    }
-	    else bputs("Connection: close\015\012", c->client);
+	    set_keepalive(r);
 	    bputs("\015\012", c->client);
 	    return;
 	}
 
-	/* We don't want persistent connections here, for several reasons.
-	 * Most importantly, if there's been an error, we don't want
-	 * it screwing up the next request.
+	/* Someday, we'd like to have persistent connections here.
+	 * They're especially useful for redirects, multiple choices
+	 * and auth requests. But we need to rewrite the rest of thi
+	 * section, so for now, we don't use it.
 	 */
 	bputs("Connection: close\015\012", c->client);
 	
