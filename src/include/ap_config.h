@@ -590,6 +590,9 @@ extern char *crypt();
 #define bzero(a,b) memset(a,0,b)
 /* A lot of SVR4 systems need this */
 #define HAVE_FCNTL_SERIALIZED_ACCEPT
+#ifdef SNI
+#define HAVE_SYSVSEM_SERIALIZED_ACCEPT
+#endif
 #ifndef USE_SYSVSEM_SERIALIZED_ACCEPT
 #define USE_FCNTL_SERIALIZED_ACCEPT
 #endif
