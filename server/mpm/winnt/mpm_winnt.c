@@ -1589,13 +1589,3 @@ module MODULE_VAR_EXPORT mpm_winnt_module = {
     NULL,			/* handlers */
     winnt_hooks 		/* register_hooks */
 };
-
-/* force Expat to be linked into the server executable */
-#if defined(USE_EXPAT) && !defined(SHARED_CORE_BOOTSTRAP)
-#include "xmlparse.h"
-const XML_LChar *suck_in_expat(void);
-const XML_LChar *suck_in_expat(void)
-{
-    return XML_ErrorString(XML_ERROR_NONE);
-}
-#endif /* USE_EXPAT */
