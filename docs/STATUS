@@ -1,10 +1,17 @@
 Apache HTTP Server 2.0 Documentation Status File.
-Last modified: $Date: 2001/05/21 20:53:41 $
+Last modified: $Date: 2001/07/11 07:12:53 $
 
 If you are interested in helping accomplish some of the tasks on this
 list or otherwise improving the documentation, please join the
 apache-docs mailing list by mailing to 
 apache-docs-subscribe@apache.org
+
+For more information on how to contribute to the Apache Documentation
+Project, please see http://httpd.apache.org/docs-project/, and
+http://apache-server.com/tutorials/ATdocs-project.html for an excellent
+tutorial on how to get started with making your contribution.
+
+              ------------------------------
 
 - modules docs
     - mod_suexec: no documentation yet.
@@ -84,11 +91,13 @@ apache-docs-subscribe@apache.org
     rest.. :-)  Note that this list is NOT identical to that for the
     1.3 documentation project..!
 
+  [Should we attempt to get a known-current authorlist together? --jsl]
+
     - Catalan (.ca)
-    - Czech [?] (.cz)
+    - Czech Republic (.cz)
     - German (.de)
     - Danish (.dk)
-    - ? (.ee)
+    - Estonia (.ee)
     - Greek (.el)
     - Spanish (.es)
     - Estonian (.et)
@@ -109,3 +118,50 @@ apache-docs-subscribe@apache.org
     - Twi (.tw, .tw.big5)
       (is that supposed to be Chinese/Taiwanese?  Because if so, it is using
       the code reserved for Twi..)
+    [Need this clarified --jsl]
+
+
+
+Things to be done in both the 1.3 and 2.0 trees
+===============================================
+
+
+Tutorials
+=========
+
+* Tutorial on user authentication with Apache.  Rich Bowen has contributed
+  his tutorial from ApacheToday, but it needs to be cleaned up and put in
+  a good format for the docs.
+
+  - Rich has kindy donated the "4-part logging article on Apache Today"
+    articles that will need a little massaging.
+
+* Tutorial on "log files in apache"
+
+  - Chris Pepper <pepper@reppep.com> has offered to look into this.
+
+
+New User documentation
+======================
+
+* Adding more documentation for new users
+
+  - I believe that we'll need to get more info on what is missing, ie.
+    user feedback and whatnot. --jsl
+
+
+Documentation improvements
+==========================
+
+* Improving the "security docs"
+
+  - More content and better organisation.
+
+* General cleaning and improving of module docs
+
+* Making the directive definitions "less terse" (i.e., adding more
+  examples and details to the definitions of the directives)
+
+  - We'll need to audit these and find out which ones need munging, as
+    some of it looks ok.  --jsl
+
