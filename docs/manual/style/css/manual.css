@@ -358,6 +358,16 @@ td.centered {
     text-align: center;
 }
 
+td.data {
+    font-family: monospace;
+    text-align: right;
+    padding-left: 1em;
+}
+
+th.data {
+    text-align: right;
+}
+
 tr.odd { /* for large tables alternating colors */
     background-color: #f2f2f2;
 }
