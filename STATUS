@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/12/14 17:32:03 $]
+Last modified at [$Date: 2003/12/15 23:34:10 $]
 
 Release:
 
@@ -328,6 +328,11 @@ PATCHES TO BACKPORT FROM 2.1
         modules/generators/mod_status.c r1.173
         modules/generators/mod_status.h r1.2
       +1: trawick, ianh
+
+   * PR 22951: incorrect mod-proxy behavior for redirects 
+     when ProxyErrorOverride is On
+        modules/proxy/proxy_http.c 1.175
+      +1: ianh
 
 CURRENT RELEASE NOTES:
 
