@@ -15,7 +15,6 @@ APFULLDIR=`pwd`
 CONFIGPARAM="--enable-layout=Apache --prefix=$BUILD_DIR --enable-mods-shared=most --with-expat=$APFULLDIR/srclib/apr-util/xml/expat --enable-static-support"
 VER=`echo $APDIR |sed s/httpd-//`
 TAR="`srclib/apr/build/PrintPath tar`"
-GTAR="`srclib/apr/build/PrintPath gtar`"
 GZIP="`srclib/apr/build/PrintPath gzip`"
 
 if [ x$1 != x ]; then
@@ -149,26 +148,25 @@ then
   echo "ERROR: Failed to build Apache. See \"build.log\" for details."
   exit 1;
 else
-  if [ "x$GTAR" != "x" ]
+  if [ "x$TAR" != "x" ]
   then
-    $GTAR -zcf ../httpd-$VER-$OS.tar.gz -C .. httpd-$VER
-  else
-    if [ "x$TAR" != "x" ]
+    case "x$OS" in
+      x*os390*) $TAR -cfU ../httpd-$VER-$OS.tar -C .. httpd-$VER;;
+      *) (cd .. && $TAR -cf httpd-$VER-$OS.tar httpd-$VER);;
+    esac
+    if [ "x$GZIP" != "x" ]
     then
-      case "x$OS" in
-        x*os390*) $TAR -cfU ../httpd-$VER-$OS.tar -C .. httpd-$VER;;
-	    *) (cd .. && $TAR -cf httpd-$VER-$OS.tar httpd-$VER);;
-      esac
-      if [ "x$GZIP" != "x" ]
-      then
-        $GZIP ../httpd-$VER-$OS.tar
-      fi
+      $GZIP -9 ../httpd-$VER-$OS.tar
     else
-      echo "ERROR: Could not find a 'tar' program!"
-      echo "       Please execute the following commands manually:"
-      echo "         tar -cf ../httpd-$VER-$OS.tar ."
-      echo "         gzip ../httpd-$VER-$OS.tar"
+      echo "WARNING: Could not find a 'gzip' program!"
+      echo "       Please execute the following command manually:"
+      echo "         gzip -9 ../httpd-$VER-$OS.tar"
     fi
+  else
+    echo "ERROR: Could not find a 'tar' program!"
+    echo "       Please execute the following commands manually:"
+    echo "         tar -cf ../httpd-$VER-$OS.tar ."
+    echo "         gzip -9 ../httpd-$VER-$OS.tar"
   fi
 
   if [ -f ../httpd-$VER-$OS.tar.gz ] && [ -f ../httpd-$VER-$OS.README ]
