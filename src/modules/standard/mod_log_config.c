@@ -138,7 +138,8 @@
  * %...T:  the time taken to serve the request, in seconds.
  * %...u:  remote user (from auth; may be bogus if return status (%s) is 401)
  * %...U:  the URL path requested.
- * %...v:  the name of the server (i.e. which virtual host?)
+ * %...v:  the configured name of the server (i.e. which virtual host?)
+ * %...V:  the server name according to the UseCanonicalName setting
  *
  * The '...' can be nothing at all (e.g. "%h %u %r %s %b"), or it can
  * indicate conditions for inclusion of the item (which will cause it
@@ -417,6 +418,14 @@ static const char *log_server_port(request_rec *r, char *a)
 	r->server->port ? r->server->port : ap_default_port(r));
 }
 
+/* This respects the setting of UseCanonicalName so that
+ * the dynamic mass virtual hosting trick works better.
+ */
+static const char *log_server_name(request_rec *r, char *a)
+{
+    return ap_get_server_name(r);
+}
+
 static const char *log_child_pid(request_rec *r, char *a)
 {
     return ap_psprintf(r->pool, "%ld", (long) getpid());
@@ -479,6 +488,9 @@ static struct log_item_list {
         'e', log_env_var, 0
     },
     {
+        'V', log_server_name, 0
+    },
+    {
         'v', log_virtual_host, 0
     },
     {
@@ -504,30 +516,61 @@ static struct log_item_list *find_log_func(char k)
     return NULL;
 }
 
-static char *log_format_substring(pool *p, const char *start,
-                                  const char *end)
-{
-    char *res = ap_palloc(p, end - start + 1);
-
-    strncpy(res, start, end - start);
-    res[end - start] = '\0';
-    return res;
-}
-
 static char *parse_log_misc_string(pool *p, log_format_item *it,
                                    const char **sa)
 {
-    const char *s = *sa;
+    const char *s;
+    char *d;
 
     it->func = constant_item;
     it->conditions = NULL;
 
+    s = *sa;
     while (*s && *s != '%') {
-        ++s;
+	s++;
     }
-    it->arg = log_format_substring(p, *sa, s);
-    *sa = s;
+    /*
+     * This might allocate a few chars extra if there's a backslash
+     * escape in the format string.
+     */
+    it->arg = ap_palloc(p, s - *sa + 1);
 
+    d = it->arg;
+    s = *sa;
+    while (*s && *s != '%') {
+	if (*s != '\\') {
+	    *d++ = *s++;
+	}
+	else {
+	    s++;
+	    switch (*s) {
+	    case '\\':
+		*d++ = '\\';
+		s++;
+		break;
+	    case 'n':
+		*d++ = '\n';
+		s++;
+		break;
+	    case 't':	
+		*d++ = '\t';
+		s++;
+		break;
+	    default:
+		/* copy verbatim */
+		*d++ = '\\';
+		/*
+		 * Allow the loop to deal with this *s in the normal
+		 * fashion so that it handles end of string etc.
+		 * properly.
+		 */
+		break;
+	    }
+	}
+    }
+    *d = '\0';
+
+    *sa = s;
     return NULL;
 }
 

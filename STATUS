@@ -1,5 +1,5 @@
   1.3 STATUS:
-  Last modified at [$Date: 1999/03/03 12:58:50 $]
+  Last modified at [$Date: 1999/03/04 19:28:36 $]
 
 Release:
 
@@ -55,11 +55,6 @@ Available Patches:
 	MID: <36C1EE94.E1E0D54E@Golux.Com>
 	Status: Ken +1, Lars +1 (untested)
 
-    * Tony Finch's [PATCH] mod_log_config: support for reliably parsable logs
-      Allows use of C-style backslash escapes in mod_log_config format strings
-        MID: <E108UEU-0000FX-00@fanf.noc.demon.net>
-        Status: 
-
     * Ralf's [PATCH] Shared Memory Pools
         Message-ID: <19990124134912.A29193@engelschall.com>
         Status: Roy?: Not sure if this is intended for 1.3.x or just feedback
@@ -80,11 +75,6 @@ Available Patches:
       ftp://ftp.kame.net/pub/kame/misc/apache-134-v6-19990118.diff.gz
         Message-ID: <18586.916662926@coconut.itojun.org>
         Status: Lars +1 (on concept)
-
-    * Tony Finch's [PATCH] to mod_log_config.c to get both the 1.3.3
-      behaviour of %v and the 1.3.4 behaviour as %V.
-        Message-ID: <E101ZDU-00004m-00@fanf.noc.demon.net>
-        Status: 
 
     * Ralf's patch to fix append of target name to layout paths
         Message-ID: <19990114114248.A14406@engelschall.com>

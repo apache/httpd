@@ -1,5 +1,12 @@
 Changes with Apache 1.3.5
 
+  *) Add %V to mod_log_config, this logs the hostname according to the
+     UseCanonicalName setting (this is the pre-1.3.4 behaviour of
+     %v).  Useful for mass vhosting.  [Tony Finch <dot@dotat.at>]
+
+  *) Add support for \n and \t to mod_log_config, can be used to produce
+     more reliable logs with multiline entries.  [Tony Finch <dot@dotat.at>]
+
   *) Fixed a few compiler nits.  [John Bley <jbb6@acpub.duke.edu>]
 
   *) Added some informative error messages for some failed malloc()
