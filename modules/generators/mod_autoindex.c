@@ -207,8 +207,8 @@ static APR_INLINE int is_parent(const char *name)
 static void emit_preamble(request_rec *r, char *title)
 {
     ap_rvputs(r, DOCTYPE_HTML_3_2,
-	      "<HTML>\n <HEAD>\n  <TITLE>Index of ", title,
-	      "</TITLE>\n </HEAD>\n <BODY>\n", NULL);
+	      "<html>\n <head>\n  <title>Index of ", title,
+	      "</title>\n </head>\n <body>\n", NULL);
 }
 
 static void push_item(apr_array_header_t *arr, char *type, const char *to,
@@ -917,7 +917,7 @@ static void do_emit_plain(request_rec *r, apr_file_t *f)
     apr_size_t i, c, n;
     apr_status_t stat;
 
-    ap_rputs("<PRE>\n", r);
+    ap_rputs("<pre>\n", r);
     while (!apr_file_eof(f)) {
 	do {
             n = sizeof(char) * AP_IOBUFSIZE;
@@ -951,7 +951,7 @@ static void do_emit_plain(request_rec *r, apr_file_t *f)
 	    c = i + 1;
 	}
     }
-    ap_rputs("</PRE>\n", r);
+    ap_rputs("</pre>\n", r);
 }
 
 /*
@@ -1010,7 +1010,7 @@ static void emit_head(request_rec *r, char *header_fname, int suppress_amble,
 	    else if (!strncasecmp("text/", rr->content_type, 5)) {
 		/*
 		 * If we can open the file, prefix it with the preamble
-		 * regardless; since we'll be sending a <PRE> block around
+		 * regardless; since we'll be sending a <pre> block around
 		 * the file's contents, any HTML header it had won't end up
 		 * where it belongs.
 		 */
@@ -1030,7 +1030,7 @@ static void emit_head(request_rec *r, char *header_fname, int suppress_amble,
 	emit_preamble(r, title);
     }
     if (emit_H1) {
-	ap_rvputs(r, "<H1>Index of ", title, "</H1>\n", NULL);
+	ap_rvputs(r, "<h1>Index of ", title, "</h1>\n", NULL);
     }
     if (rr != NULL) {
 	ap_destroy_sub_req(rr);
@@ -1096,7 +1096,7 @@ static void emit_tail(request_rec *r, char *readme_fname, int suppress_amble)
 	ap_rputs(ap_psignature("", r), r);
     }
     if (!suppress_post) {
-	ap_rputs("</BODY></HTML>\n", r);
+	ap_rputs("</body></html>\n", r);
     }
     if (rr != NULL) {
 	ap_destroy_sub_req(rr);
@@ -1106,7 +1106,7 @@ static void emit_tail(request_rec *r, char *readme_fname, int suppress_amble)
 
 static char *find_title(request_rec *r)
 {
-    char titlebuf[MAX_STRING_LEN], *find = "<TITLE>";
+    char titlebuf[MAX_STRING_LEN], *find = "<title>";
     apr_file_t *thefile = NULL;
     int x, y, p;
     apr_size_t n;
@@ -1131,7 +1131,7 @@ static char *find_title(request_rec *r)
 	}
 	titlebuf[n] = '\0';
 	for (x = 0, p = 0; titlebuf[x]; x++) {
-	    if (apr_toupper(titlebuf[x]) == find[p]) {
+	    if (apr_tolower(titlebuf[x]) == find[p]) {
 		if (!find[++p]) {
 		    if ((p = ap_ind(&titlebuf[++x], '<')) != -1) {
 			titlebuf[x + p] = '\0';
@@ -1291,7 +1291,7 @@ static void emit_link(request_rec *r, char *anchor, char fname, char curkey,
 	qvalue[4] = '\0';
 	reverse = ((curkey == fname) && (curdirection == D_ASCENDING));
 	qvalue[3] = reverse ? D_DESCENDING : D_ASCENDING;
-	ap_rvputs(r, "<A HREF=\"", qvalue, "\">", anchor, "</A>", NULL);
+	ap_rvputs(r, "<a href=\"", qvalue, "\">", anchor, "</a>", NULL);
     }
     else {
         ap_rputs(anchor, r);
@@ -1332,20 +1332,15 @@ static void output_directories(struct ent **ar, int n,
     pad_scratch[name_width] = '\0';
 
     if (autoindex_opts & FANCY_INDEXING) {
-	ap_rputs("<PRE>", r);
+	ap_rputs("<pre>", r);
 	if ((tp = find_default_icon(d, "^^BLANKICON^^"))) {
-	    ap_rvputs(r, "<IMG SRC=\"", ap_escape_html(scratch, tp),
-		   "\" ALT=\"     \"", NULL);
-	    if (d->icon_width && d->icon_height) {
-		ap_rprintf
-		    (
-			r,
-			" HEIGHT=\"%d\" WIDTH=\"%d\"",
-			d->icon_height,
-			d->icon_width
-		    );
-	    }
-	    ap_rputs("> ", r);
+	    ap_rvputs(r, "<img src=\"", ap_escape_html(scratch, tp),
+		   "\" alt=\"     \"", NULL);
+	    if (d->icon_width)
+		ap_rprintf(r, " width=\"%d\"", d->icon_width);
+            if (d->icon_height)
+	        ap_rprintf(r, " height=\"%d\"", d->icon_height);
+	    ap_rputs(" /> ", r);
 	}
         emit_link(r, "Name", K_NAME, keyid, direction, static_columns);
 	ap_rputs(pad_scratch + 4, r);
@@ -1366,10 +1361,10 @@ static void output_directories(struct ent **ar, int n,
             emit_link(r, "Description", K_DESC, keyid, direction,
                       static_columns);
 	}
-	ap_rputs("\n<HR>\n", r);
+	ap_rputs("\n<hr />\n", r);
     }
     else {
-	ap_rputs("<UL>", r);
+	ap_rputs("<ul>", r);
     }
 
     for (x = 0; x < n; x++) {
@@ -1395,23 +1390,23 @@ static void output_directories(struct ent **ar, int n,
 
 	if (autoindex_opts & FANCY_INDEXING) {
 	    if (autoindex_opts & ICONS_ARE_LINKS) {
-		ap_rvputs(r, "<A HREF=\"", anchor, "\">", NULL);
+		ap_rvputs(r, "<a href=\"", anchor, "\">", NULL);
 	    }
 	    if ((ar[x]->icon) || d->default_icon) {
-		ap_rvputs(r, "<IMG SRC=\"",
+		ap_rvputs(r, "<img src=\"",
 			  ap_escape_html(scratch,
 					 ar[x]->icon ? ar[x]->icon
 					             : d->default_icon),
-			  "\" ALT=\"[", (ar[x]->alt ? ar[x]->alt : "   "),
+			  "\" alt=\"[", (ar[x]->alt ? ar[x]->alt : "   "),
 			  "]\"", NULL);
-		if (d->icon_width && d->icon_height) {
-		    ap_rprintf(r, " HEIGHT=\"%d\" WIDTH=\"%d\"",
-			       d->icon_height, d->icon_width);
-		}
-		ap_rputs(">", r);
+	        if (d->icon_width)
+		    ap_rprintf(r, " width=\"%d\"", d->icon_width);
+                if (d->icon_height)
+                    ap_rprintf(r, " height=\"%d\"", d->icon_height);
+		ap_rputs(" />", r);
 	    }
 	    if (autoindex_opts & ICONS_ARE_LINKS) {
-		ap_rputs("</A>", r);
+		ap_rputs("</a>", r);
 	    }
 
 	    nwidth = strlen(t2);
@@ -1424,8 +1419,8 @@ static void output_directories(struct ent **ar, int n,
 	      t2 = name_scratch;
 	      nwidth = name_width;
 	    }
-	    ap_rvputs(r, " <A HREF=\"", anchor, "\">",
-	      ap_escape_html(scratch, t2), "</A>", pad_scratch + nwidth,
+	    ap_rvputs(r, " <a href=\"", anchor, "\">",
+	      ap_escape_html(scratch, t2), "</a>", pad_scratch + nwidth,
 	      NULL);
 	    /*
 	     * The blank before the storm.. er, before the next field.
@@ -1458,16 +1453,16 @@ static void output_directories(struct ent **ar, int n,
 	    }
 	}
 	else {
-	    ap_rvputs(r, "<LI><A HREF=\"", anchor, "\"> ", t2,
-		      "</A>", NULL);
+	    ap_rvputs(r, "<li /><a href=\"", anchor, "\"> ", t2,
+		      "</a>", NULL);
 	}
 	ap_rputc('\n', r);
     }
     if (autoindex_opts & FANCY_INDEXING) {
-	ap_rputs("</PRE>", r);
+	ap_rputs("</pre>", r);
     }
     else {
-	ap_rputs("</UL>", r);
+	ap_rputs("</ul>", r);
     }
 }
 
@@ -1651,7 +1646,7 @@ static int index_directory(request_rec *r,
     apr_dir_close(thedir);
 
     if (autoindex_opts & FANCY_INDEXING) {
-	ap_rputs("<HR>\n", r);
+	ap_rputs("<hr />\n", r);
     }
     emit_tail(r, find_readme(autoindex_conf, r),
 	      autoindex_opts & SUPPRESS_PREAMBLE);
