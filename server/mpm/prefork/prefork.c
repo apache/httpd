@@ -1182,7 +1182,7 @@ static int wait_or_timeout(ap_wait_t *status)
 static void sig_coredump(int sig)
 {
     chdir(ap_coredump_dir);
-    signal(sig, SIG_DFL);
+    ap_signal(sig, SIG_DFL);
     kill(getpid(), sig);
     /* At this point we've got sig blocked, because we're still inside
      * the signal handler.  When we leave the signal handler it will
@@ -1311,36 +1311,36 @@ static void set_signals(void)
 	ap_log_error(APLOG_MARK, APLOG_WARNING, errno, server_conf, "sigaction(SIGUSR1)");
 #else
     if (!one_process) {
-	signal(SIGSEGV, sig_coredump);
+	ap_signal(SIGSEGV, sig_coredump);
 #ifdef SIGBUS
-	signal(SIGBUS, sig_coredump);
+	ap_signal(SIGBUS, sig_coredump);
 #endif /* SIGBUS */
 #ifdef SIGABORT
-	signal(SIGABORT, sig_coredump);
+	ap_signal(SIGABORT, sig_coredump);
 #endif /* SIGABORT */
 #ifdef SIGABRT
-	signal(SIGABRT, sig_coredump);
+	ap_signal(SIGABRT, sig_coredump);
 #endif /* SIGABRT */
 #ifdef SIGILL
-	signal(SIGILL, sig_coredump);
+	ap_signal(SIGILL, sig_coredump);
 #endif /* SIGILL */
 #ifdef SIGXCPU
-	signal(SIGXCPU, SIG_DFL);
+	ap_signal(SIGXCPU, SIG_DFL);
 #endif /* SIGXCPU */
 #ifdef SIGXFSZ
-	signal(SIGXFSZ, SIG_DFL);
+	ap_signal(SIGXFSZ, SIG_DFL);
 #endif /* SIGXFSZ */
     }
 
-    signal(SIGTERM, sig_term);
+    ap_signal(SIGTERM, sig_term);
 #ifdef SIGHUP
-    signal(SIGHUP, restart);
+    ap_signal(SIGHUP, restart);
 #endif /* SIGHUP */
 #ifdef SIGUSR1
-    signal(SIGUSR1, restart);
+    ap_signal(SIGUSR1, restart);
 #endif /* SIGUSR1 */
 #ifdef SIGPIPE
-    signal(SIGPIPE, SIG_IGN);
+    ap_signal(SIGPIPE, SIG_IGN);
 #endif /* SIGPIPE */
 
 #endif
@@ -1436,8 +1436,8 @@ static void child_main(int child_num_arg)
 
     (void) ap_update_child_status(my_child_num, SERVER_READY, (request_rec *) NULL);
 
-    signal(SIGHUP, just_die);
-    signal(SIGTERM, just_die);
+    ap_signal(SIGHUP, just_die);
+    ap_signal(SIGTERM, just_die);
 
 #ifdef OS2
 /* Stop Ctrl-C/Ctrl-Break signals going to child processes */
@@ -1454,7 +1454,7 @@ static void child_main(int child_num_arg)
 	 * we can exit cleanly.
 	 */
 	usr1_just_die = 1;
-	signal(SIGUSR1, usr1_handler);
+	ap_signal(SIGUSR1, usr1_handler);
 
 	/*
 	 * (Re)initialize this child to a pre-connection state.
@@ -1662,7 +1662,7 @@ static void child_main(int child_num_arg)
 	 * the signal to ignore because we don't want to disturb any
 	 * third party code.
 	 */
-	signal(SIGUSR1, SIG_IGN);
+	ap_signal(SIGUSR1, SIG_IGN);
 	/*
 	 * We now have a connection, so set it up with the appropriate
 	 * socket options, file descriptors, and read/write buffers.
@@ -1719,12 +1719,12 @@ static int make_child(server_rec *s, int slot, time_t now)
     }
 
     if (one_process) {
-	signal(SIGHUP, just_die);
-	signal(SIGINT, just_die);
+	ap_signal(SIGHUP, just_die);
+	ap_signal(SIGINT, just_die);
 #ifdef SIGQUIT
-	signal(SIGQUIT, SIG_DFL);
+	ap_signal(SIGQUIT, SIG_DFL);
 #endif
-	signal(SIGTERM, just_die);
+	ap_signal(SIGTERM, just_die);
 	child_main(slot);
     }
 
@@ -1772,9 +1772,9 @@ static int make_child(server_rec *s, int slot, time_t now)
 	 * Note that since restart() just notes that a restart has been
 	 * requested there's no race condition here.
 	 */
-	signal(SIGHUP, just_die);
-	signal(SIGUSR1, just_die);
-	signal(SIGTERM, just_die);
+	ap_signal(SIGHUP, just_die);
+	ap_signal(SIGUSR1, just_die);
+	ap_signal(SIGTERM, just_die);
 	child_main(slot);
     }
 
@@ -2190,8 +2190,8 @@ int ap_mpm_run(ap_context_t *_pconf, ap_context_t *plog, server_rec *s)
     }
 
     /* we've been told to restart */
-    signal(SIGHUP, SIG_IGN);
-    signal(SIGUSR1, SIG_IGN);
+    ap_signal(SIGHUP, SIG_IGN);
+    ap_signal(SIGUSR1, SIG_IGN);
     if (one_process) {
 	/* not worth thinking about */
 	return 1;
