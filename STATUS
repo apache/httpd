@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/01/12 14:13:16 $]
+Last modified at [$Date: 2004/01/12 14:30:13 $]
 
 Release:
 
@@ -110,11 +110,6 @@ PATCHES TO BACKPORT FROM 2.1
     * mod_ssl: Determine library version string at run-time rather than compile-time.
       http://cvs.apache.org/viewcvs.cgi/httpd-2.0/modules/ssl/ssl_engine_vars.c?r1=1.25&r2=1.26
       PR: 23956
-      +1: jorton, nd, trawick
-
-    * Fix parallel make (e.g. GNU make -j<N>).
-      http://cvs.apache.org/viewcvs.cgi/httpd-2.0/server/Makefile.in?r1=1.86&r2=1.87
-      PR: 24643
       +1: jorton, nd, trawick
 
     * mod_dav: Reject requests including fragment part in the Request-URI.

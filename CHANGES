@@ -1,5 +1,7 @@
 Changes with Apache 2.0.49
 
+  *) Fix build with parallel make.  PR 24643.  [Joe Orton]
+
   *) mod_rewrite: In external rewrite maps lookup keys containing
      a newline now cause a lookup failure. PR 14453.
      [Cedric Gavage <cedric.gavage unixtech.be>, André Malo]
