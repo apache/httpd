@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="EUC-KR" ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.ko.xsl"?>
-<!-- English Revision: 1.8 (outdated: 1.12) -->
+<!-- English Revision: 1.12 -->
 
 <!--
  Copyright 2003-2004 The Apache Software Foundation
@@ -100,7 +100,7 @@
     지시어의 강력한 정규표현식기반 대응과 대치를 사용하여 더
     유연한 설정이 가능하다. 예를 들어,</p>
 
-<example>ScriptAliasMatch ^/~([a-zA-Z0-9]*)/cgi-bin/(.*)
+<example>ScriptAliasMatch ^/~([a-zA-Z0-9]+)/cgi-bin/(.+)
       /home/$1/cgi-bin/$2</example>
 
     <p>는 <code>http://example.com/~user/cgi-bin/script.cgi</code>로의
@@ -140,7 +140,7 @@
     <code>http://www.example.com/upages/user/file.html</code>이
     <code>/home/user/public_html/file.html</code>에 대응한다:</p>
 
-<example>AliasMatch ^/upages/([a-zA-Z0-9]*)/?(.*)
+<example>AliasMatch ^/upages/([a-zA-Z0-9]+)/?(.*)
       /home/$1/public_html/$2</example>
 </section>
 

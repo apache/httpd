@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='EUC-KR' ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.ko.xsl"?>
-<!-- English Revision: 1.3 (outdated: 1.7) -->
+<!-- English Revision: 1.7 -->
 
 <!--
  Copyright 2003-2004 The Apache Software Foundation
@@ -92,7 +92,7 @@
         <directive module="core">RLimitCPU</directive>
         <directive module="core">RLimitMEM</directive>
         <directive module="core">RLimitNPROC</directive>
-        <directive module="mpm_netware">ThreadStackSize</directive>
+        <directive module="mpm_common">ThreadStackSize</directive>
       </directivelist>
     </related>
 
@@ -105,7 +105,7 @@
     생성하는 프로세스가 사용할 자원량을 제한한다. 특히 CGI
     스크립트나 SSI exec 명령어가 사용할 자원을 제한한다.</p>
 
-    <p><directive module="mpm_netware">ThreadStackSize</directive>
+    <p><directive module="mpm_common">ThreadStackSize</directive>
     지시어는 스택 크기를 조절하기위해 Netware에서만 사용한다.</p>
   </section>
 </manualpage>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="EUC-KR" ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.ko.xsl"?>
-<!-- English Revision: 1.7 (outdated: 1.14) -->
+<!-- English Revision: 1.14 -->
 
 <!--
  Copyright 2003-2004 The Apache Software Foundation
@@ -32,7 +32,7 @@
     <p>이 기능을 적절히 사용하면 사용자가 직접 CGI나 SSI 프로그램을
     개발하고 실행할때 발생할 수 있는 보안위험을 상당히 줄일
     수 있다. 그러나 suEXEC가 부적절하게 설정되면 많은 문제와
-    컴퓨터에 새로운 보안 허점을 만들 수 있다. 만약 setuid root
+    컴퓨터에 새로운 보안 허점을 만들 수 있다. 만약 <em>setuid root</em>
     프로그램과 이런 프로그램의 보안 문제에 생소하다면 suEXEC를
     사용하지않길 진심으로 바란다.</p>
   </summary>
@@ -91,6 +91,16 @@
 
     <ol>
       <li>
+        <strong>wrapper를 실행하는 사용자가 시스템의 정상적인
+        사용자인가?</strong> 
+
+        <p class="indent">
+          wrapper를 실행하는 사용자가 실제로 시스템의 사용자인지
+          확인한다.
+        </p>
+     </li>
+
+     <li>
         <strong>적절한 수의 아규먼트로 wrapper를 실행하는가?</strong>
 
         <p class="indent">
@@ -98,16 +108,6 @@
           아파치 웹서버가 이 개수를 안다. wrapper가 적절한 수의
           아규먼트를 받지못하면 해킹되었거나 아파치의 suEXEC에
           뭔가 문제가 있는 것이다.
-        </p>
-      </li>
-
-      <li>
-        <strong>wrapper를 실행하는 사용자가 시스템의 정상적인
-        사용자인가?</strong> 
-
-        <p class="indent">
-          wrapper를 실행하는 사용자가 실제로 시스템의 사용자인지
-          확인한다.
         </p>
       </li>
 
@@ -122,12 +122,15 @@
       </li>
 
       <li>
-        <strong>지정한 프로그램이 안전하지않은 계층참조를 가지는가?</strong>
+        <strong>지정한 CGI나 SSI 프로그램이 안전하지않은 계층참조를
+        가지는가?</strong>
 
         <p class="indent">
-          지정한 프로그램이 '/'로 시작하거나 뒷참조 '..'을 가지는가?
-          이들을 사용할 수 없다. 지정한 프로그램은 아파치 웹공간내에
-          있어야 한다.
+          지정한 CGI나 SSI 프로그램이 '/'로 시작하거나 뒷참조
+          '..'을 가지는가? 이들을 사용할 수 없다. 지정한 CGI/SSI
+          프로그램은 suEXEC 문서 root (아래
+          <code>--with-suexec-docroot=<em>DIR</em></code> 참고)
+          내에 있어야 한다.
         </p>
       </li>
 
@@ -152,8 +155,8 @@
         
 
         <p class="indent">
-          현재 suEXEC는 'root'가 CGI/SSI 프로그램을 실행할 수
-          없도록 한다.
+          현재 suEXEC는 <code><em>root</em></code>가 CGI/SSI
+          프로그램을 실행할 수 없도록 한다.
         </p>
       </li>
 
@@ -171,8 +174,8 @@
         <strong>지정한 그룹이 superuser 그룹이 <em>아닌가</em>?</strong> 
 
         <p class="indent">
-          현재 suEXEC는 'root' 그룹이 CGI/SSI 프로그램을 실행할
-          수 없도록 한다.
+          현재 suEXEC는 <code><em>root</em></code> 그룹이 CGI/SSI
+          프로그램을 실행할 수 없도록 한다.
         </p>
       </li>
 
@@ -198,10 +201,13 @@
       </li>
 
       <li>
-        <strong>프로그램이 있는 디렉토리가 존재하나?</strong> 
+        <strong>CGI/SSI 프로그램이 있는 디렉토리로 디렉토리를
+        변경할 수 있는가?</strong>
 
         <p class="indent">
-          존재하지 않다면 파일이 있을 수 없다.
+          디렉토리가 존재하지 않다면 파일이 있을 수 없다. 이곳으로
+          디렉토리를 변경할 수 없다면 디렉토리는 존재하지 않을
+          것이다.
         </p>
       </li>
 
@@ -210,8 +216,10 @@
 
         <p class="indent">
           서버의 일반적인 부분을 요청할 경우 요청하는 디렉토리가
-          서버의 문서 root 아래 있는가? UserDir을 요청할 경우
-          요청하는 디렉토리가 사용자 문서 root 아래 있는가?
+          suEXEC 문서 root 아래 있는가? UserDir을 요청할 경우
+          요청하는 디렉토리가 suEXEC userdir로 설정한 (<a
+          href="#install">suEXEC 설정 옵션</a> 참고) 디렉토리
+          아래에 있는가?
         </p>
       </li>
 
@@ -225,7 +233,7 @@
       </li>
 
       <li>
-        <strong>지정한 프로그램이 존재하는가?</strong> 
+        <strong>지정한 CGI/SSI 프로그램이 존재하는가?</strong> 
 
         <p class="indent">
           존재하지않다면 실행할 수도 없다.
@@ -233,16 +241,17 @@
       </li>
 
       <li>
-        <strong>다른 누구도 지정한 프로그램에 쓰기권한이
+        <strong>다른 누구도 지정한 CGI/SSI 프로그램에 쓰기권한이
         <em>없는가</em>?</strong>
 
         <p class="indent">
-          소유자외 누구도 프로그램을 변경하길 원하지않는다.
+          소유자외 누구도 CGI/SSI 프로그램을 변경하길 원하지않는다.
         </p>
       </li>
 
       <li>
-        <strong>지정한 프로그램이 setuid나 setgid가 <em>아닌가</em>?</strong>
+        <strong>지정한 CGI/SSI 프로그램이 setuid나 setgid가
+        <em>아닌가</em>?</strong>
 
         <p class="indent">
           우리는 프로그램이 다시 UID/GID를 변경하길 원하지않는다.
@@ -269,10 +278,11 @@
       </li>
 
       <li>
-        <strong>성공적으로 지정한 프로그램을 실행할 수 있는가?</strong> 
+        <strong>성공적으로 지정한 CGI/SSI 프로그램을 실행할
+        수 있는가?</strong> 
 
         <p class="indent">
-          여기서 suEXEC가 끝나고 지정한 프로그램이 시작한다.
+          여기서 suEXEC가 끝나고 지정한 CGI/SSI 프로그램이 시작한다.
         </p>
       </li>
     </ol>
@@ -299,14 +309,16 @@
 
       <dd>이 옵션은 기본적으로 설치되거나 활성화되지않는 suEXEC
       기능을 활성화한다. APACI가 suEXEC를 받아들이려면
-      --enable-suexec 옵션외에 --with-suexec-xxxxx 옵션이 최소한
-      한개 필요하다.</dd>
+      <code>--enable-suexec</code> 옵션외에
+      <code>--with-suexec-xxxxx</code> 옵션이 최소한 한개
+      필요하다.</dd>
 
       <dt><code>--with-suexec-bin=<em>PATH</em></code></dt>
 
-      <dd>suexec 바이너리 경로는 보안상 이유로 서버에 기록되야
-      한다. 경로 기본값을 무시하려면 이 옵션을 사용한다. <em>예를
-      들어</em> <code>--with-suexec-bin=/usr/sbin/suexec</code></dd>
+      <dd><code>suexec</code> 바이너리 경로는 보안상 이유로
+      서버에 기록되야 한다. 경로 기본값을 무시하려면 이 옵션을
+      사용한다. <em>예를 들어</em>
+      <code>--with-suexec-bin=/usr/sbin/suexec</code></dd>
 
       <dt><code>--with-suexec-caller=<em>UID</em></code></dt>
 
@@ -332,10 +344,10 @@
 
       <dd>아파치의 DocumentRoot를 정의한다. 이는 suEXEC가 사용할
       수 있는 (UserDirs을 제외한) 유일한 공간이다. 기본 디렉토리는
-      --datadir 값에 "/htdocs"을 붙인 것이다. <em>예를 들어</em>
-      "<code>--datadir=/home/apache</code>"로 구성했다면 suEXEC
-      wrapper는 document root로 "/home/apache/htdocs" 디렉토리를
-      사용한다.</dd>
+      <code>--datadir</code> 값에 "/htdocs"을 붙인 것이다.
+      <em>예를 들어</em> "<code>--datadir=/home/apache</code>"로
+      구성했다면 suEXEC wrapper는 document root로
+      "/home/apache/htdocs" 디렉토리를 사용한다.</dd>
 
       <dt><code>--with-suexec-uidmin=<em>UID</em></code></dt>
 
@@ -352,8 +364,8 @@
 
       <dd>모든 suEXEC 작동과 오류를 (감시나 디버깅 목적에 유용한)
       기록할 로그파일명을 지정한다. 기본적으로 로그파일의 이름은
-      "suexec_log"이고 표준 로그파일 디렉토리에 (--logfiledir)
-      위치한다.</dd>
+      "suexec_log"이고 표준 로그파일 디렉토리에
+      (<code>--logfiledir</code>) 위치한다.</dd>
 
       <dt><code>--with-suexec-safepath=<em>PATH</em></code></dt>
 
@@ -362,16 +374,16 @@
     </dl>
 
     <p><strong>suEXEC 구성을 점검하라</strong><br />
-     suEXEC wrapper를 컴파일하고 설치하기 전에 --layout 옵션을
-    사용하여 설정을 점검할 수 있다.<br />
+     suEXEC wrapper를 컴파일하고 설치하기 전에 <code>--layout</code>
+    옵션을 사용하여 설정을 점검할 수 있다.<br />
      출력예:</p>
 
 <example>
     suEXEC setup:<br />
-            suexec binary: /usr/local/apache/sbin/suexec<br />
-            document root: /usr/local/apache/share/htdocs<br />
+            suexec binary: /usr/local/apache2/sbin/suexec<br />
+            document root: /usr/local/apache2/share/htdocs<br />
            userdir suffix: public_html<br />
-                  logfile: /usr/local/apache/var/log/suexec_log<br />
+                  logfile: /usr/local/apache2/var/log/suexec_log<br />
                 safe path: /usr/local/bin:/usr/bin:/bin<br />
                 caller ID: www<br />
           minimum user ID: 100<br />
@@ -379,29 +391,57 @@
 </example>
 
     <p><strong>suEXEC wrapper를 컴파일하고 설치하기</strong><br />
-    --enable-suexec 옵션으로 suEXEC 기능을 가능하게한 경우
-    "make" 명령어를 실행하면 suexec 실행파일이 (아파치와 함께)
-    자동으로 만들어진다.<br />
-    모든것을 컴파일한 후 "make install" 명령어를 실행하여 설치할
-    수 있다. 바이너리파일 "suexec"는 --sbindir 옵션으로 지정한
-    디렉토리에 설치된다. 기본 위치는
-    "/usr/local/apache/sbin/suexec"이다.<br />
+    <code>--enable-suexec</code> 옵션으로 suEXEC 기능을 가능하게한
+    경우 <code>make</code> 명령어를 실행하면 <code>suexec</code>
+    실행파일이 (아파치와 함께) 자동으로 만들어진다.<br />
+    모든것을 컴파일한 후 <code>make install</code> 명령어를
+    실행하여 설치할 수 있다. 바이너리파일 <code>suexec</code>는
+    <code>--sbindir</code> 옵션으로 지정한 디렉토리에 설치된다.
+    기본 위치는 "/usr/local/apache2/sbin/suexec"이다.<br />
     설치 과정에 <strong><em>root 권한</em></strong>이 필요함을
     주의하라. wrapper가 사용자 ID를 설정하기위해서는 소유자가
     <code><em>root</em></code>이고 파일모드로 setuserid 실행비트가
     설정되야 한다.</p>
 
+    <p><strong>편집증적인 권한설정</strong><br />
+    suEXEC wrapper는 자신을 실행한 사용자가 구성 옵션
+    <code>--with-suexec-caller</code>로 지정한 올바른 사용자인지
+    확인을 하지만, 이 검사 이전에 suEXEC가 사용하는 시스템호출
+    혹은 라이브러리 함수가 조작되었을 수 있다. 이를 대비하며
+    일반적으로 좋은 습관이므로 오직 아파치를 실행하는 그룹만이
+    suEXEC를 실행할 수 있도록 파일시스템 권한을 지정해야 한다.</p>
+
+    <p>예를 들어, 웹서버를 다음과 같이 설정하고:</p>
+
+<example>
+    User www<br />
+    Group webgroup<br />
+</example>
+
+    <p><code>suexec</code>를 "/usr/local/apache2/sbin/suexec"에
+    설치하였다면, 다음을 실행해야 한다:</p>
+
+<example>
+    chgrp webgroup /usr/local/apache2/bin/suexec<br />
+    chmod 4750 /usr/local/apache2/bin/suexec<br />
+</example>
+
+    <p>그러면 오직 아파치를 실행하는 그룹만이 suEXEC wrapper를
+    실행할 수 있다.</p>
 </section>
 
 <section id="enable"><title>suEXEC 키고 끄기</title>
 
-    <p>아파치는 시작할때 "sbin" 디렉토리에서 "suexec" 파일을
-    (기본값 "/usr/local/apache/sbin/suexec") 찾는다. 아파치가
-    정상적으로 구성된 suEXEC wrapper를 발견하면 error log에
-    다음과 같이 출력한다:</p>
+    <p>아파치는 시작할때 <code>--sbindir</code> 옵션으로 지정한
+    디렉토리에서 <code>suexec</code> 파일을 (기본값
+    "/usr/local/apache2/sbin/suexec") 찾는다. 아파치가
+    정상적으로 구성된 suEXEC wrapper를 발견하면 오류 로그(error
+    log)에 다음과 같이 출력한다:</p>
+
 <example>
     [notice] suEXEC mechanism enabled (wrapper: <em>/path/to/suexec</em>)
 </example>
+
     <p>서버 시작중에 이런 문구를 없다면 서버는 기대한 장소에서
     wrapper 프로그램을 찾지 못했거나, 실행파일이 <em>setuid
     root</em>로 설치되지않았기 때문일 것이다.</p>
@@ -409,11 +449,16 @@
      <p>처음으로 suEXEC 기능을 사용하고 싶고 이미 아파치 서버가
      실행중이라면, 아파치를 죽이고 다시 시작해야 한다. 간단히
      HUP이나 USR1 시그널로 재시작하는 것으로는 충분하지 않다. </p>
-     <p>suEXEC를 안사용하려면 "suexec" 파일을 지운후 아파치를
-     죽이고 재시작해야 한다. </p>
+     <p>suEXEC를 안사용하려면 <code>suexec</code> 파일을 지운후
+     아파치를 죽이고 재시작해야 한다. </p>
 </section>
 
 <section id="usage"><title>suEXEC 사용하기</title>
+
+    <p>CGI 프로그램 요청의 경우 <directive
+    module="mod_suexec">SuexecUserGroup</directive> 지시어를
+    사용한 가상호스트에 요청을 하였거나 <module>mod_userdir</module>이
+    요청을 처리하는 경우에만 suEXEC wrapper를 호출한다.</p>
 
     <p><strong>가상호스트:</strong><br /> suEXEC wrapper를
     사용하는 한가지 방법은 <directive
@@ -428,18 +473,19 @@
     userid를 사용한다.</p>
 
     <p><strong>사용자 디렉토리:</strong><br />
-    suEXEC wrapper는 CGI 프로그램을 요청을 받은 사용자가 실행하도록
-    할 수 있다. 이를 위해 실행하길 원하는 사용자 ID 앞에
-    "<strong><code>~</code></strong>" 문자를 붙이면 된다. 실행을
-    위해 해당 사용자는 CGI를 실행할 수 있어야 하고, 스크립트가
-    위의 <a href="#model">보안 검사</a> 항목을 만족해야 한다.</p>
-</section>
+     <module>mod_userdir</module>이 요청을 처리한다면 suEXEC
+     wrapper를 호출하여, 요청한 사용자 디렉토리에 해당하는 사용자
+     ID로 CGI 프로그램을 실행한다. 이 기능이 동작하려면 사용자
+     ID로 CGI를 실행할 수 있고 스크립트가 위의 <a href="#model">보안
+     검사</a> 항목을 만족해야 한다. <a href="#install">구성
+     옵션</a> <code>--with-suexec-userdir</code>을 참고하라.</p> </section>
 
 <section id="debug"><title>suEXEC 디버깅하기</title>
 
-    <p>suEXEC wrapper는 로그 정보를 위에서 다룬 --with-suexec-logfile
-    옵션으로 지정한 파일에 쓴다. wrapper를 올바로 구성하고 설치했다면
-    어디서 잘못되었는지 이 로그파일와 서버의 error_log를 살펴봐라.</p>
+    <p>suEXEC wrapper는 로그 정보를 위에서 다룬
+    <code>--with-suexec-logfile</code> 옵션으로 지정한 파일에
+    쓴다. wrapper를 올바로 구성하고 설치했다면 어디서 잘못되었는지
+    이 로그파일와 서버의 error_log를 살펴봐라.</p>
 
 </section>
 
@@ -460,7 +506,7 @@
         디렉토리 구조 제한
 
         <p class="indent">
-          보안과 효율성을 위해 모든 suexec 요청은 가상호스트의
+          보안과 효율성을 위해 모든 suEXEC 요청은 가상호스트의
           경우 최상위 document root 혹은 userdir 요청의 경우
           최상위 개인 document root 안에서 발생해야 한다. 예를
           들어, 가상호스트 네개를 설정했다면 가상호스트에서
