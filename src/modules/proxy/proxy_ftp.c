@@ -578,10 +578,12 @@ int proxy_ftp_handler(request_rec *r, struct cache_req *c, char *url)
 
     if (setsockopt(sock, SOL_SOCKET, SO_REUSEADDR, (void *) &one,
 		   sizeof(one)) == -1) {
+#ifndef _OSD_POSIX /* BS2000 has this option "always on" */
 	proxy_log_uerror("setsockopt", NULL,
 			 "proxy: error setting reuseaddr option", r->server);
 	pclosesocket(p, sock);
 	return SERVER_ERROR;
+#endif /*_OSD_POSIX*/
     }
 
 #ifdef SINIX_D_RESOLVER_BUG
@@ -847,12 +849,14 @@ int proxy_ftp_handler(request_rec *r, struct cache_req *c, char *url)
 
 	if (setsockopt(dsock, SOL_SOCKET, SO_REUSEADDR, (void *) &one,
 		       sizeof(one)) == -1) {
+#ifndef _OSD_POSIX /* BS2000 has this option "always on" */
 	    proxy_log_uerror("setsockopt", NULL,
 			"proxy: error setting reuseaddr option", r->server);
 	    pclosesocket(p, dsock);
 	    bclose(f);
 	    kill_timeout(r);
 	    return SERVER_ERROR;
+#endif /*_OSD_POSIX*/
 	}
 
 	if (bind(dsock, (struct sockaddr *) &server,
