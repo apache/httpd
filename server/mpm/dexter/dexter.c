@@ -835,8 +835,7 @@ static void process_socket(pool *p, struct sockaddr *sa_client, int csd)
 
     current_conn = ap_new_connection(p, server_conf, conn_io,
                                   (const struct sockaddr_in *) sa_client, 
-                                  (const struct sockaddr_in *) &sa_server, 
-                                  0, 0);
+                                  (const struct sockaddr_in *) &sa_server);
 
     ap_process_connection(current_conn);
 }
