@@ -52,7 +52,8 @@ static int init_runtime_score(apr_pool_t *pool, proxy_balancer *balancer)
     for (i = 0; i < balancer->workers->nelts; i++) {
 #if PROXY_HAS_SCOREBOARD
         /* Get scoreboard slot */
-        score = ap_get_scoreboard_lb(workers[i].id);
+        if (ap_scoreboard_image)
+            score = ap_get_scoreboard_lb(workers[i].id);
 #endif
         if (!score)
             score = apr_pcalloc(pool, sizeof(proxy_runtime_stat));
