@@ -84,9 +84,10 @@ PATCHES TO BACKPORT FROM 2.1
 
        +1: stoddard
 
-    *) LimitRequestFieldSize directive: Remove upper limit on the request field size.    
+    *) LimitRequestFieldSize directive: Remove upper limit on the request
+       field size.
        http://svn.apache.org/viewcvs.cgi?rev=149269&view=rev
-       +1: stoddard
+       +1: stoddard, jerenkrantz
 
     *) util_ldap: Add the directive LDAPConnectionTimeout to control
        the socket timeout value when binding to an LDAP server
@@ -396,7 +397,7 @@ PATCHES TO BACKPORT FROM 2.1
         modules/experimental/mod_mem_cache.c: 1.119
       +1: jerenkrantz
       +0: sounds like a nice 'feature' v.s. rfc-required behavior, great for 2.2
-    
+
     * support/check_forensic: Fix tempfile usage
       svn rev 125495, 126224
       jerenkrantz says: r126224 fixes brokenness with r125495 on Solaris.
