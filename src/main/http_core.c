@@ -1004,6 +1004,9 @@ const char *set_server_limit (cmd_parms *cmd, void *dummy, char *arg) {
        fprintf(stderr, " Adjusting as required (to increase, please read\n");
        fprintf(stderr, " the documentation)\n");
        daemons_limit = HARD_SERVER_LIMIT;
+    } else if (daemons_limit < 1) {
+	fprintf (stderr, "WARNING: Require MaxClients > 0, setting to 1\n");
+	daemons_limit = 1;
     }
     return NULL;
 }

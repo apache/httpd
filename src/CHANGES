@@ -1,5 +1,7 @@
 Changes with Apache 1.2
 
+  *) MaxClients should be at least 1. [Eilebrecht Lars] PR#375
+
   *) The default handler now logs invalid methods or URIs (i.e. PUT on an
      object that can't be PUT, or FOOBAR for some method FOOBAR that
      apache doesn't know about at all).  Log 404s that occur in mod_include.
