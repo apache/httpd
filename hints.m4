@@ -5,7 +5,12 @@ dnl  Preload various ENV/makefile paramsm such as CC, CFLAGS, etc
 dnl  based on outside knowledge
 dnl
 AC_DEFUN(APACHE_PRELOAD, [
-if test "$DID_APACHE_PRELOAD" != "yes" ; then
+if test "$DID_APACHE_PRELOAD" == "yes" ; then
+
+  echo "Apache hints file rules for $host already applied"
+
+else
+
   DID_APACHE_PRELOAD="yes"; export DID_APACHE_PRELOAD
 
   echo "Applying Apache hints file rules for $host"
