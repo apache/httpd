@@ -2,6 +2,10 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) mod_rewrite: Introduce the RewriteCond -x check, which returns
+     true if the pattern is a file with execution permissions.
+     [André Malo]
+
   *) mod_ssl: Fix streaming output from an nph- CGI script. PR 21944
      [Joe Orton]
 
