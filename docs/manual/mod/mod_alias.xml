@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
-<!-- $Revision: 1.18 $ -->
+<!-- $Revision: 1.19 $ -->
 
 <!--
  Copyright 2002-2004 The Apache Software Foundation
@@ -45,6 +45,12 @@
     directives are used to instruct clients to make a new request with
     a different URL. They are often used when a resource has moved to
     a new location.</p>
+
+    <p><module>mod_alias</module> is designed to handle simple URL
+    manipulation tasks.  For more complicated tasks such as
+    manipulating the query string, use the tools provided by
+    <module>mod_rewrite</module>.</p>
+
 </summary>
 
 <seealso><module>mod_rewrite</module></seealso> <seealso><a
