@@ -14,9 +14,6 @@
 <compatibility>Known as mod_cookies prior to Apache 1.3.</compatibility>
 
 <summary>
-
-    <h2>Summary</h2>
-
     <p>Previous releases of Apache have included a module which
     generates a 'clickstream' log of user activity on a site using
     cookies. This was called the "cookies" module, mod_cookies. In
@@ -30,20 +27,20 @@
 <title>Logging</title>
 
     <p>Previously, the cookies module (now the user tracking
-    module) did its own logging, using the <tt>CookieLog</tt>
+    module) did its own logging, using the <directive>CookieLog</directive>
     directive. In this release, this module does no logging at all.
     Instead, a configurable log format file should be used to log
     user click-streams. This is possible because the logging module
     now allows multiple log files. The cookie itself is logged by
-    using the text <tt>%{cookie}n</tt> in the log file format. For
+    using the text <code>%{cookie}n</code> in the log file format. For
     example:</p>
 <example>
 CustomLog logs/clickstream "%{cookie}n %r %t"
 </example>
 
     <p>For backward compatibility the configurable log module
-    implements the old <tt>CookieLog</tt> directive, but this
-    should be upgraded to the above <tt>CustomLog</tt> directive. </p>
+    implements the old <directive>CookieLog</directive> directive, but this
+    should be upgraded to the above <directive>CustomLog</directive> directive. </p>
 </section>
 
 <section>
@@ -51,7 +48,7 @@ CustomLog logs/clickstream "%{cookie}n %r %t"
 
     <p>(the following is from message
     &lt;022701bda43d$9d32bbb0$1201a8c0@christian.office.sane.com&gt;
-    in the new-httpd archives) 
+    in the new-httpd archives) </p>
 <pre>
 From: "Christian Allen" &lt;christian@sane.com&gt;
 Subject: Re: Apache Y2K bug in mod_usertrack.c
@@ -84,12 +81,13 @@ form, but also understands 4-digit years, which can probably reach up until
 9999.  Your best bet for sending a long-life cookie is to send it for some
 time late in the year "37".
 </pre>
-</p>
+
 </section>
 
 <directivesynopsis>
 <name>CookieDomain</name>
-<syntax>CookieDomain <i>domain</i></syntax>
+<description>controls the setting of the domain to which the tracking cookie applies.</description>
+<syntax>CookieDomain <em>domain</em></syntax>
 <default>None</default>
 <contextlist>
 <context>server config</context>
@@ -97,8 +95,6 @@ time late in the year "37".
 <context>directory</context>
 <context>.htaccess</context>
 </contextlist>
-<description>controls the setting of the domain to which
-    the tracking cookie applies.</description>
 
 <usage>
 
@@ -106,8 +102,8 @@ time late in the year "37".
     the tracking cookie applies. If not present, no domain is
     included in the cookie header field.</p>
 
-    <p>The domain string <b>must</b> begin with a dot, and
-    <b>must</b> include at least one embedded dot. That is,
+    <p>The domain string <strong>must</strong> begin with a dot, and
+    <strong>must</strong> include at least one embedded dot. That is,
     ".foo.com" is legal, but "foo.bar.com" and ".com" are not.</p>
 </usage>
 </directivesynopsis>
@@ -165,8 +161,9 @@ time late in the year "37".
 
 <directivesynopsis>
 <name>CookieStyle</name>
+<description>Controls the format of the cookie header field</description>
 <syntax>CookieStyle
-    <i>Netscape|Cookie|Cookie2|RFC2109|RFC2965</i></syntax>
+    <em>Netscape|Cookie|Cookie2|RFC2109|RFC2965</em></syntax>
 <default></default>
 <contextlist>
 <context>server config</context>
@@ -174,22 +171,20 @@ time late in the year "37".
 <context>directory</context>
 <context>.htaccess</context>
 </contextlist>
-<description>Controls the format of the cookie header
-    field</description>
 
 <usage>
     <p>This directive controls the format of the cookie header
     field. The three formats allowed are:</p>
 
     <ul>
-      <li><b>Netscape</b>, which is the original but now deprecated
+      <li><strong>Netscape</strong>, which is the original but now deprecated
       syntax. This is the default, and the syntax Apache has
       historically used.</li>
 
-      <li><b>Cookie</b> or <b>RFC2109</b>, which is the syntax that
+      <li><strong>Cookie</strong> or <strong>RFC2109</strong>, which is the syntax that
       superseded the Netscape syntax.</li>
 
-      <li><b>Cookie2</b> or <b>RFC2965</b>, which is the most
+      <li><strong>Cookie2</strong> or <strong>RFC2965</strong>, which is the most
       current cookie syntax.</li>
     </ul>
 
