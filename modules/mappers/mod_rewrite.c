@@ -3316,7 +3316,7 @@ static apr_status_t rewritelock_create(server_rec *s, apr_pool_t *p)
 
     /* only operate if a lockfile is used */
     if (lockname == NULL || *(lockname) == '\0') {
-        return APR_EINVAL;
+        return APR_SUCCESS;
     }
 
     /* create the lockfile */
