@@ -363,7 +363,7 @@ static void *config_perdir_merge(pool *p, void *basev, void *overridesv)
 */
 
 static const char *cmd_rewriteengine(cmd_parms *cmd, 
-		                             rewrite_perdir_conf *dconf, int flag)
+                                     rewrite_perdir_conf *dconf, int flag)
 {
     rewrite_server_conf *sconf;
 
@@ -404,7 +404,7 @@ static const char *cmd_rewriteoptions_setoption(pool *p, int *options,
         *options |= OPTION_INHERIT;
     else
         return pstrcat(p, "RewriteOptions: unknown option '", 
-				       name, "'\n", NULL);
+                       name, "'\n", NULL);
     return NULL;
 }
 
@@ -722,12 +722,12 @@ static const char *cmd_rewriterule(cmd_parms *cmd, rewrite_perdir_conf *dconf,
     if (cmd->path == NULL) {  /* is server command */
         new->rewriteconds   = sconf->rewriteconds;
         sconf->rewriteconds = make_array(cmd->pool, 2,
-				                         sizeof(rewritecond_entry));
+                                         sizeof(rewritecond_entry));
     }
     else {                    /* is per-directory command */
         new->rewriteconds   = dconf->rewriteconds;
         dconf->rewriteconds = make_array(cmd->pool, 2,
-				                         sizeof(rewritecond_entry));
+                                         sizeof(rewritecond_entry));
     }
 
     return NULL;
@@ -1223,7 +1223,7 @@ static int hook_fixup(request_rec *r)
         aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r->server,
                     "Options FollowSymLinks or SymLinksIfOwnerMatch is off "
                     "which implies that RewriteRule directive is forbidden: "
-					"%s", r->filename);
+                    "%s", r->filename);
         return FORBIDDEN;
     }
     else {
@@ -1264,7 +1264,7 @@ static int hook_fixup(request_rec *r)
             r->handler  = "proxy-server";
 
             rewritelog(r, 1, "[per-dir %s] go-ahead with proxy request "
-					   "%s [OK]", dconf->directory, r->filename);
+                       "%s [OK]", dconf->directory, r->filename);
             return OK;
         }
         else if (  (strlen(r->filename) > 7 &&
@@ -1528,7 +1528,7 @@ static int apply_rewrite_list(request_rec *r, array_header *rewriterules,
             if (p->flags & RULEFLAG_FORBIDDEN) {
                 rewritelog(r, 2, "forcing '%s' to be forbidden", r->filename);
                 r->filename = pstrcat(r->pool, "forbidden:", 
-						              r->filename, NULL);
+                                      r->filename, NULL);
                 changed = 1;
                 break;
             }
@@ -1993,7 +1993,7 @@ static int apply_rewrite_cond(request_rec *r, rewritecond_entry *p,
 
             /* log it */
             rewritelog(r, 5, "RewriteCond URI (-U) check: "
-					   "path=%s -> status=%d", input, rsub->status);
+                       "path=%s -> status=%d", input, rsub->status);
 
             /* cleanup by destroying the subrequest */
             destroy_sub_req(rsub);
@@ -2043,7 +2043,7 @@ static int apply_rewrite_cond(request_rec *r, rewritecond_entry *p,
     else {
         /* it is really a regexp pattern, so apply it */
         rc = (regexec(p->regexp, input, 
-				      p->regexp->re_nsub+1, regmatch,0) == 0);
+                      p->regexp->re_nsub+1, regmatch,0) == 0);
 
         /* if it isn't a negated pattern and really matched
            we update the passed-through regex subst info structure */
@@ -3054,7 +3054,7 @@ static void run_rewritemap_programs(server_rec *s, pool *p)
         if (rc == 0 || fpin == NULL || fpout == NULL) {
             perror("spawn_child");
             fprintf(stderr, "mod_rewrite: "
-					"could not fork child for RewriteMap process\n");
+                    "could not fork child for RewriteMap process\n");
             exit(1);
         }
         map->fpin  = fileno(fpin);
