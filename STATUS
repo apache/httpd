@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/12/11 02:02:08 $]
+Last modified at [$Date: 2003/12/11 05:23:50 $]
 
 Release:
 
@@ -179,9 +179,19 @@ PATCHES TO BACKPORT FROM 2.1
         oops, 2 problems to deal with:
         a) patch relies on worker MPM behavior of
            ap_graceful_stop_signalled(), which is to return true if
-           MPM is exiting (whether stop or restart or graceful)
+           MPM is exiting (whether stop or restart or graceful);
+           need MPM state query function working in Unix MPMs first
+           in order to support this without making the broken
+           ap_graceful_stop_signalled() more pervasive
         b) maybe not the fault of this patch, but on Linux the parent
            gets knocked out after a couple of segfaults in cgid
+           Update: false alarm...  due to confusion about pid in
+           sig_coredump(), a message is written to error log saying
+           that parent crashed, but it isn't true... bogus message
+           seems to be due to a kludge to avoid calling getpid() (to 
+           support linuxthreads) not working for
+           mod_cgid->sig_coredump() when mod_cgid got restarted after
+           a crash
 
     * ab: catch out of memory (reasoning report ID 29)
         support/ab.c: r1.125
