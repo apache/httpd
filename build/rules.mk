@@ -61,8 +61,8 @@ include $(top_builddir)/config_vars.mk
 # Note that includes are listed after the flags because -I options have
 # left-to-right precedence and CPPFLAGS may include user-defined overrides.
 #
-ALL_CPPFLAGS = $(DEFS) $(EXTRA_CPPFLAGS) $(NOTEST_CPPFLAGS) $(CPPFLAGS)
 ALL_CFLAGS   = $(EXTRA_CFLAGS) $(NOTEST_CFLAGS) $(CFLAGS)
+ALL_CPPFLAGS = $(DEFS) $(EXTRA_CPPFLAGS) $(NOTEST_CPPFLAGS) $(CPPFLAGS)
 ALL_CXXFLAGS = $(EXTRA_CXXFLAGS) $(NOTEST_CXXFLAGS) $(CXXFLAGS)
 ALL_LDFLAGS  = $(EXTRA_LDFLAGS) $(NOTEST_LDFLAGS) $(LDFLAGS)
 ALL_LIBS     = $(EXTRA_LIBS) $(NOTEST_LIBS) $(LIBS)
@@ -70,8 +70,8 @@ ALL_INCLUDES = $(INCLUDES) $(EXTRA_INCLUDES)
 
 # Compile commands
 
-COMPILE      = $(CC)  $(ALL_CPPFLAGS) $(ALL_CFLAGS) $(ALL_INCLUDES)
-CXX_COMPILE  = $(CXX) $(ALL_CPPFLAGS) $(ALL_CXXFLAGS) $(ALL_INCLUDES)
+COMPILE      = $(CC)  $(ALL_CFLAGS) $(ALL_CPPFLAGS) $(ALL_INCLUDES)
+CXX_COMPILE  = $(CXX) $(ALL_CXXFLAGS) $(ALL_CPPFLAGS) $(ALL_INCLUDES)
 
 SH_COMPILE     = $(SH_LIBTOOL) --mode=compile $(COMPILE) -c $< && touch $@
 SH_CXX_COMPILE = $(SH_LIBTOOL) --mode=compile $(CXX_COMPILE) -c $< && touch $@
