@@ -114,10 +114,6 @@ URI: index.html.sv
 Content-language: sv
 Content-type: text/html
 
-URI: index.html.tw
-Content-language: zh-tw
-Content-type: text/html
-
-URI: index.html.tw.Big5
-Content-language: tw, zh-tw
+URI: index.html.zh-tw.big5
+Content-language: tw, zh-TW
 Content-type: text/html;charset=Big5
