@@ -1,7 +1,10 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
 Last modified at [$Date$]
 
-Release:
+The current version of this file can be found at:
+http://svn.apache.org/repos/asf/httpd/httpd/branches/2.0.x/STATUS
+
+Release history:
 
     2.0.53  : in development
     2.0.52  : released September 28, 2004 as GA.
@@ -53,27 +56,42 @@ Release:
     2.0a2   : released March 31, 2000
     2.0a1   : released March 10, 2000
 
-Please consult the following STATUS files for information
-on related projects:
+Please consult the following STATUS files for information on related projects:
 
-    * srclib/apr/STATUS
-    * srclib/apr-util/STATUS
-    * docs/STATUS
+    * http://svn.apache.org/repos/asf/apr/apr/branches/0.9.x/STATUS
+    * http://svn.apache.org/repos/asf/apr/apr-util/branches/0.9.x/STATUS
+    * http://svn.apache.org/repos/asf/httpd/httpd/branches/2.0.x/docs/STATUS
 
 Contributors looking for a mission:
 
     * Just do an egrep on "TODO" or "XXX" in the source.
 
-    * Review the "PatchAvailable" bugs in the bug database.
-      Append a comment saying "Reviewed and tested".
+    * Review the bug database at: http://issues.apache.org/bugzilla/
+
+    * Review the "PatchAvailable" bugs in the bug database:
+
+      http://issues.apache.org/bugzilla/buglist.cgi?bug_status=NEW&bug_status=ASSIGNED&bug_status=REOPENED&product=Apache+httpd-2.0&keywords=PatchAvailable
+
+      After testing, you can append a comment saying "Reviewed and tested".
 
     * Open bugs in the bug database.
 
+CURRENT RELEASE NOTES:
+
+    * Forward binary compatibility is expected of Apache 2.0.x releases, such
+      that no MMN major number changes will occur.  Such changes can only be
+      made in the trunk.
+
+    * All commits to branches/2.0.x must be reflected in SVN trunk,
+      as well, if they apply.  Logical progression is commit to trunk,
+      get feedback and votes in STATUS, and then merge into branches/2.0.x.
+
 RELEASE SHOWSTOPPERS:
 
-PATCHES TO BACKPORT FROM 2.1
-  [ please place file names and revisions from HEAD here, so it is easy to
+PATCHES TO BACKPORT FROM TRUNK:
+  [ please place SVN revisions from trunk here, so it is easy to
     identify exactly what the proposed changes are! ]
+  [ please append new backports at the end of this list not the top. ]
 
     *) Add a build script to create a solaris package.
        svn rev 124104
@@ -139,6 +157,89 @@ PATCHES TO BACKPORT FROM 2.1
        jorton: ssl_var_lookup() returns "" in place of NULL, that was really
           a deliberate choice... but maybe you're right.
 
+    *) mod_cgi: Added API call and overload of detached field in
+       cgi_exec_info_t structure to support loading in current or new address
+       space for CGIs.  The patch change how NetWare use cmdtype for
+       processes. It was made necessary by changes done to log.c r1.145.
+       The HTTP and the APR patches are available at:
+       <http://www.apache.org/~clar/detach-addrspace_HTTP_2_0.patch>
+       <http://www.apache.org/~clar/detach-addrspace_APR_0_9.patch>
+       +1: jjclar, bnicholes, trawick
+       trawick notes: some folks want feature checks for uses of new APR
+                      functions in httpd 2.0; I dunno how to check for
+                      availability of apr_procattr_addrspace_set()
+       jerenkrantz: I'm confused as to the status of this backport.
+
+    *) mod_actions: Regression from 1.3: the file referred to must exist.
+       Solve this by introducing the "virtual" modifier to the Action
+       directive. PR 28553.
+         modules/mappers/mod_actions.c: r1.32, r1.34
+       jerenkrantz: Icky side-effect of the *t == '0' check.
+       +1: nd, jerenkrantz, wrowe, jim
+       -0: by rbb (inconsistent to 1.3, discussion on dev@)
+          nd: I'm going to reverse the default
+          jerenkrantz: I'm confused as to the status of this backport.
+
+    *) mod_log_config: Cleanup log_header_out function to allow multiple headers
+       like Set-Cookie to be logged properly. PR 27787 (2.0 + 1.3)
+         modules/loggers/mod_log_config.c: r1.116
+       jerenkrantz asks: Isn't this what apr_table_merge is for?
+       nd replies: yep. But cookies won't be merged, because browsers don't
+                   support it.
+       jerenkrantz: Couldn't we copy the table and merge the values somehow?
+                    This just seems like a lot of code to duplicate what we
+                    have already.  *shrug*  Regardless, patch looks okay...
+       +1: nd, jerenkrantz
+
+    *) mod_dav: Send an EOS at the end of the multistatus brigade.
+       http://cvs.apache.org/viewcvs.cgi/httpd-2.0/modules/dav/main/mod_dav.c?r1=1.105&r2=1.106
+       +1: jorton, jerenkrantz
+         nd asks: Sure, you want to drop the return code of ap_pass_brigade?
+         jerenkrantz: They already did drop it.  Note that this really isn't
+                      a correctness fix; just a perf. fix.  We'd send the EOS
+                      later without it.
+
+    * Rewrite how proxy sends its request to allow input bodies to 
+      morph the request bodies.  Previously, if an input filter
+      changed the request body, the original C-L would be sent which
+      would be incorrect.
+
+      Due to HTTP compliance, we must either send the body T-E: chunked
+      or include a C-L for the request body.  Connection: Close is not
+      an option. [jerenkrantz    2002/12/08 21:37:27]
+      +1: stoddard, striker, jim
+      -1: brianp (we need a more robust solution than what's in 2.1 right now),
+          jerenkrantz (should be fixed, but I don't have time to do this)
+      trawick: A fix has been committed to 2.1-dev.  The equivalent patch
+        for 2.0.x is at www.apache.org/~trawick/20reqbody.txt
+        (That patch doesn't show a recent change to comments, but that
+        change is in my 2.0.x tree.)
+      +1 for 20reqbody.txt: trawick
+
+    * mod_cache: Add CacheIgnoreHeaders directive.
+      PR: 30399
+        docs/manual/mod/mod_cache.xml: r1.18
+        modules/experimental/cache_util.c: 1.36
+        modules/experimental/mod_cache.c: 1.95
+        modules/experimental/mod_cache.h: 1.52
+        modules/experimental/mod_disk_cache.c: 1.67
+        modules/experimental/mod_mem_cache.c: 1.119
+      +1: jerenkrantz
+      +0: sounds like a nice 'feature' v.s. rfc-required behavior, great for 2.2
+
+    * support/check_forensic: Fix tempfile usage
+      svn rev 125495, 126224
+      jerenkrantz says: r126224 fixes brokenness with r125495 on Solaris.
+      +1: thommay, jerenkrantz
+      trawick: "which" isn't portable; I've suggested a work-around on dev@
+      jorton said: NetBSD's which isn't sufficient either.
+      jerenkrantz: Since it's not in the critical path (and depends on
+                   mod_log_forensic), I think it's still worth it to backport
+                   it as-is.  For the one or two platforms that don't like 
+                   which, they can write their own version of the script.
+
+PATCHES TO BACKPORT THAT ARE ON HOLD OR NOT GOING ANYWHERE SOON:
+
     *) Remove LDAP toolkit specific code from util_ldap and mod_auth_ldap.
          modules/experimental/mod_auth_ldap.c: 1.28
          modules/experimental/util_ldap.c: 1.36
@@ -166,18 +267,6 @@ PATCHES TO BACKPORT FROM 2.1
        -1: wrowe (make this a private score to the module and you would be fine;
                   we don't need to keep overloading a single scoreboard.)
 
-    *) mod_cgi: Added API call and overload of detached field in cgi_exec_info_t 
-       structure to support loading in current or new address space for CGIs.
-       The patch change how NetWare use cmdtype for processes. It was made
-       necessary by changes done to log.c r1.145.
-       The HTTP and the APR patches are available at:
-       <http://www.apache.org/~clar/detach-addrspace_HTTP_2_0.patch>
-       <http://www.apache.org/~clar/detach-addrspace_APR_0_9.patch>
-       +1: jjclar, bnicholes, trawick
-       trawick notes: some folks want feature checks for uses of new APR
-                      functions in httpd 2.0; I dunno how to check for
-                      availability of apr_procattr_addrspace_set()
-
     *) mod_ssl: Remove some unused functions (after CAN-2004-0488 fix is applied)
        http://cvs.apache.org/viewcvs.cgi/httpd-2.0/modules/ssl/ssl_util.c?r1=1.46&r2=1.47
        +1: jorton
@@ -185,34 +274,6 @@ PATCHES TO BACKPORT FROM 2.1
        0: nd: IMHO that's a public API change then and not applicable for
               2.0, just let 'em in
        -1: wrowe (as nd suggests, leave the dead horse in peace.)
-
-    *) mod_actions: Regression from 1.3: the file referred to must exist.
-       Solve this by introducing the "virtual" modifier to the Action
-       directive. PR 28553.
-         modules/mappers/mod_actions.c: r1.32, r1.34
-       jerenkrantz: Icky side-effect of the *t == '0' check.
-       +1: nd, jerenkrantz, wrowe, jim
-       -0: by rbb (inconsistent to 1.3, discussion on dev@)
-          nd: I'm going to reverse the default
-
-    *) mod_log_config: Cleanup log_header_out function to allow multiple headers
-       like Set-Cookie to be logged properly. PR 27787 (2.0 + 1.3)
-         modules/loggers/mod_log_config.c: r1.116
-       jerenkrantz asks: Isn't this what apr_table_merge is for?
-       nd replies: yep. But cookies won't be merged, because browsers don't
-                   support it.
-       jerenkrantz: Couldn't we copy the table and merge the values somehow?
-                    This just seems like a lot of code to duplicate what we
-                    have already.  *shrug*  Regardless, patch looks okay...
-       +1: nd, jerenkrantz
-
-    *) mod_dav: Send an EOS at the end of the multistatus brigade.
-       http://cvs.apache.org/viewcvs.cgi/httpd-2.0/modules/dav/main/mod_dav.c?r1=1.105&r2=1.106
-       +1: jorton, jerenkrantz
-         nd asks: Sure, you want to drop the return code of ap_pass_brigade?
-         jerenkrantz: They already did drop it.  Note that this really isn't
-                      a correctness fix; just a perf. fix.  We'd send the EOS
-                      later without it.
 
     *) Provide TLS/SSL upgrade functionality in mod_ssl allowing an unsecure
        connection to be upgraded to a secure connection upon request by the
@@ -244,23 +305,6 @@ PATCHES TO BACKPORT FROM 2.1
                for different platforms? At this point I would 
                favour waiting for 2.2.
       -0: stoddard (at least until the performance implications are clarified)
-
-    * Rewrite how proxy sends its request to allow input bodies to 
-      morph the request bodies.  Previously, if an input filter
-      changed the request body, the original C-L would be sent which
-      would be incorrect.
-
-      Due to HTTP compliance, we must either send the body T-E: chunked
-      or include a C-L for the request body.  Connection: Close is not
-      an option. [jerenkrantz    2002/12/08 21:37:27]
-      +1: stoddard, striker, jim
-      -1: brianp (we need a more robust solution than what's in 2.1 right now),
-          jerenkrantz (should be fixed, but I don't have time to do this)
-      trawick: A fix has been committed to 2.1-dev.  The equivalent patch
-        for 2.0.x is at www.apache.org/~trawick/20reqbody.txt
-        (That patch doesn't show a recent change to comments, but that
-        change is in my 2.0.x tree.)
-      +1 for 20reqbody.txt: trawick
 
     * Allow mod_dav to do weak entity comparison functions.
       modules/dav/main/util.c: r1.45
@@ -338,36 +382,6 @@ PATCHES TO BACKPORT FROM 2.1
       trawick will eventually put together a patch for httpd 2.0.next
       +1 concept: trawick, nd, stoddard, wrowe
 
-    * mod_cache: Add CacheIgnoreHeaders directive.
-      PR: 30399
-        docs/manual/mod/mod_cache.xml: r1.18
-        modules/experimental/cache_util.c: 1.36
-        modules/experimental/mod_cache.c: 1.95
-        modules/experimental/mod_cache.h: 1.52
-        modules/experimental/mod_disk_cache.c: 1.67
-        modules/experimental/mod_mem_cache.c: 1.119
-      +1: jerenkrantz
-      +0: sounds like a nice 'feature' v.s. rfc-required behavior, great for 2.2
-
-    * support/check_forensic: Fix tempfile usage
-      svn rev 125495, 126224
-      jerenkrantz says: r126224 fixes brokenness with r125495 on Solaris.
-      +1: thommay, jerenkrantz
-      trawick: "which" isn't portable; I've suggested a work-around on dev@
-      jorton said: NetBSD's which isn't sufficient either.
-      jerenkrantz: Since it's not in the critical path (and depends on
-                   mod_log_forensic), I think it's still worth it to backport
-                   it as-is.  For the one or two platforms that don't like 
-                   which, they can write their own version of the script.
-
-CURRENT RELEASE NOTES:
-
-    * Backwards compatibility is expected of future Apache 2.0 releases,
-      such that no MMN major number changes will occur until 2.1.
-
-    * All commits to APACHE_2_0_BRANCH must be reflected in cvs HEAD
-      as well, if they apply.  Logical progression is commit to HEAD,
-      get feedback and then commit to APACHE_2_0_BRANCH.
 
 CURRENT VOTES:
 
@@ -375,11 +389,6 @@ CURRENT VOTES:
       non experimental status.
       +1: bnicholes, wrowe
       +0: minfrin (wait till the last cache bugs are ironed out)
-
-    * Promote mod_cache from experimental to non-experimental
-      status (keep issues noted below in EXPERIMENTAL MODULES as
-      items to be addressed as a supported module).
-      +1: jim, stoddard, bnicholes, fielding, wrowe
 
     * Develop in Review-Then-Commit or Commit-Then-Review mode 
       on APACHE_2_0_BRANCH (no vetoes, this is a straight vote.)
@@ -680,45 +689,6 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
       in security.  Putting this change into 2.1 development now (with
       strong warnings!) will give authors a chance to vet their code.
 
-    * FreeBSD, threads, and worker MPM.  All seems to work fine 
-      if you only have one worker process with many threads.  Add 
-      a second worker process and the accept lock seems to be
-      lost.  This might be an APR issue with how it deals with
-      the child_init hook (i.e. the fcntl lock needs to be resynced).
-      More examination and analysis is required.
-        Status: This has also been reported on Cygwin.  
-                FreeBSD 4.7 was reputed to have 'fixed' threads.  Not.
-        Message-ID: <3C2CC514.8EF3BED1@wapme-systems.de> (cygnus)
-
-      Aaron says: I spent some time disecting this and have come to
-              the conclusion that it is not a problem in the worker MPM
-              (or at least, it is not isolated to a problem in worker).
-              I'll list some of the problems I'm seeing in case someone
-              else wants to pick up where I've left off:
-               - Delivery of just about any signal to one of the child
-                 processes will send it into an infinite loop as well.
-               - Even though the parent is spinning out of control,
-                 at first the child or children will appear to work
-                 properly. At times it is possible to get it into a state,
-                 however, where a request will hang until another concurrent
-                 request "kicks" the first, at which point the second will
-                 hang. My theory is that this has to do with the
-                 pthread_cond_*() implementation in FreeBSD, but it's still
-                 possible that it is in APR.
-      
-      Justin adds: Oh, FreeBSD threads are implemented entirely with 
-                   select()/poll()/longjmp().  Welcome to the nightmare.
-                   So, that means a ktrace output also has the thread 
-                   scheduling internals in it (since it is all the same to 
-                   the kernel).  Which makes it hard to distinguish between 
-                   our select() calls and their select() calls.  
-                   *bangs head on wall repeatedly*  But, some of the libc_r 
-                   files have a DBG_MSG #define.  This is moderately helpful
-                   when used with -DNO_DETACH.  The kernel scheduler isn't 
-                   waking up the threads on a select().  Yum.  And, I bet 
-                   those decrementing select calls have to do with the 
-                   scheduler.  Time to brush up on our OS fundamentals.
-
     * There is increasing demand from module writers for an API
       that will allow them to control the server à la apachectl.
       Reasons include sole-function servers that need to die if
@@ -861,43 +831,6 @@ TODO ISSUES REMAINING IN MOD_SSL:
 
 
 EXPERIMENTAL MODULES:
-
-    Experimental modules should eventually be be promoted to fully supported
-    status or removed from the repository entirely (ie, the 'experiment' 
-    failed). This section tracks what needs to happen to get the modules 
-    promoted to fully supported status.
-
-    mod_cache/mod_mem_cache/mod_disk_cache:
-    * mod_cache: handle cache_control: no_cache "field_name" to enable 
-      cacheing the response w/o header "field_name"
-      See RFC2616 section 14.9.1
-
-    * mod_cache: CacheEnable/CacheDisable should accept regular expressions.
-
-    * mod_cache: Fix dependency on ATOMIC operators. Need
-      APR_HAS_ATOMIC_* feature macros.
-
-    * mod_disk_cache: Implement garbage collection
-
-    * mod_mem_cache/mod_disk_cache: Need to be able to query cache
-      status (num of entries, cache object properties, etc.).
-      mod_status could be extended to query optional hooks defined
-      by modules for the purpose of reporting module status.
-      mod_cache (et. al.) could define optional hooks that are called
-      to collect status.  Status should be queryable by
-      HTTP or SNMP?
-
-    * Enable mod_cache/mod_mem_cache/mod_disk_cache to handle
-      multiviews
-
-    * mod_mem_cache/mod_disk_cache: Complete implementing config
-      directives (mod_disk_cache: CacheExpiryCheck and GC directives
-      including CacheGc*, CacheSize, and, CacheTimeMargin)
-      (mod_mem_cache: MCacheMaxObjectCount) and
-      (mod_cache: CacheForceCompletion). 
-
-    * Fix RFC 2616 compliance issues. Including PRs: 15852, 15866,
-      15868, 15869, 15870, 16133, 16135, 16136, 16521, 19441.
 
     mod_auth_ldap/util_ldap:
     * General stabilization and testing
