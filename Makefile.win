@@ -170,6 +170,10 @@ _build:
 	 $(MAKE) $(MAKEOPT) -f logresolve.mak CFG="logresolve - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f rotatelogs.mak CFG="rotatelogs - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	cd ..
+	cd support\win32
+         $(MAKE) $(MAKEOPT) -f ApacheMonitor.mak CFG="ApacheMonitor - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+         $(MAKE) $(MAKEOPT) -f wintty.mak CFG="wintty - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+	cd ..\..
 
 _install:
 	-mkdir "$(INSTDIR)"
@@ -219,6 +223,8 @@ _install:
 	copy support\$(LONG)\htdigest.exe "$(INSTDIR)\bin"
 	copy support\$(LONG)\logresolve.exe "$(INSTDIR)\bin"
 	copy support\$(LONG)\rotatelogs.exe "$(INSTDIR)\bin"
+        copy support\win32\$(LONG)\ApacheMonitor.exe "$(INSTDIR)\bin"
+        copy support\win32\$(LONG)\wintty.exe "$(INSTDIR)\bin"
         copy docs\cgi-examples\printenv "$(INSTDIR)\cgi-bin\printenv.pl"
 	-awk -f <<script.awk "docs\cgi-examples\printenv" "$(INSTDIR)\cgi-bin\printenv.pl"
     BEGIN { 

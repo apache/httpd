@@ -1,5 +1,38 @@
-Microsoft Developer Studio Workspace File, Format Version 5.00
+Microsoft Developer Studio Workspace File, Format Version 6.00
 # WARNING: DO NOT EDIT OR DELETE THIS WORKSPACE FILE!
+
+###############################################################################
+
+Project: "Apache"=".\Apache.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name libapr
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libaprutil
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libhttpd
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "ApacheMonitor"=".\support\win32\ApacheMonitor.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
 
 ###############################################################################
 
@@ -15,19 +48,22 @@ Package=<4>
     Project_Dep_Name Apache
     End Project Dependency
     Begin Project Dependency
+    Project_Dep_Name ApacheMonitor
+    End Project Dependency
+    Begin Project Dependency
     Project_Dep_Name mod_auth_anon
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name mod_auth_dbm
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name mod_auth_digest
     End Project Dependency
     Begin Project Dependency
     Project_Dep_Name mod_cern_meta
     End Project Dependency
     Begin Project Dependency
     Project_Dep_Name mod_dav_fs
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name mod_auth_dbm
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name mod_auth_digest
     End Project Dependency
     Begin Project Dependency
     Project_Dep_Name mod_expires
@@ -37,6 +73,9 @@ Package=<4>
     End Project Dependency
     Begin Project Dependency
     Project_Dep_Name mod_headers
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name mod_info
     End Project Dependency
     Begin Project Dependency
     Project_Dep_Name mod_rewrite
@@ -66,28 +105,7 @@ Package=<4>
     Project_Dep_Name rotatelogs
     End Project Dependency
     Begin Project Dependency
-    Project_Dep_Name mod_info
-    End Project Dependency
-}}}
-
-###############################################################################
-
-Project: "Apache"=".\Apache.dsp" - Package Owner=<4>
-
-Package=<5>
-{{{
-}}}
-
-Package=<4>
-{{{
-    Begin Project Dependency
-    Project_Dep_Name libapr
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name libaprutil
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name libhttpd
+    Project_Dep_Name wintty
     End Project Dependency
 }}}
 
@@ -640,6 +658,18 @@ Package=<4>
 ###############################################################################
 
 Project: "rotatelogs"=".\support\rotatelogs.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "wintty"=".\support\win32\wintty.dsp" - Package Owner=<4>
 
 Package=<5>
 {{{
