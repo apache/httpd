@@ -132,16 +132,6 @@ extern const dav_hooks_locks dav_hooks_locks_fs;
 static const dav_hooks_repository dav_hooks_repository_fs;
 
 /*
-** The Provider ID is used to differentiate "logical" providers that use
-** the same set of hook functions. Essentially, the ID is an instance
-** handle and the hooks are a vtable.
-**
-** In this module, we only have a single provider for each type, so we
-** actually ignore the Provider ID.
-*/
-#define DAV_FS_PROVIDER_ID	0
-
-/*
 ** The namespace URIs that we use. This list and the enumeration must
 ** stay in sync.
 */
