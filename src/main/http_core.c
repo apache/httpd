@@ -1485,7 +1485,7 @@ command_rec core_cmds[] = {
 { "</Directory>", end_dirsection, NULL, ACCESS_CONF, NO_ARGS, "Marks end of <Directory>" },
 { "<Location", urlsection, NULL, RSRC_CONF, RAW_ARGS, "Container for directives affecting resources accessed through the specified URL paths" },
 { "</Location>", end_urlsection, NULL, ACCESS_CONF, NO_ARGS, "Marks end of <Location>" },
-{ "<VirtualHost", virtualhost_section, NULL, RSRC_CONF, RAW_ARGS, "Container to map directives to a particular virtual host" },
+{ "<VirtualHost", virtualhost_section, NULL, RSRC_CONF, RAW_ARGS, "Container to map directives to a particular virtual host, takes one or more host addresses" },
 { "</VirtualHost>", end_virtualhost_section, NULL, RSRC_CONF, NO_ARGS, "Marks end of <Directory>" },
 { "<Files", filesection, NULL, OR_ALL, RAW_ARGS, "Container for directives affecting files matching specified patterns" },
 { "</Files>", end_filesection, NULL, OR_ALL, NO_ARGS, "Marks end of <Files>" },
@@ -1601,7 +1601,7 @@ command_rec core_cmds[] = {
 { "Include", include_config, NULL, RSRC_CONF, TAKE1, "config file to be included" },
 { "LogLevel", set_loglevel, NULL, RSRC_CONF, TAKE1, "set level of verbosity in error logging" },
 { "NameVirtualHost", set_name_virtual_host, NULL, RSRC_CONF, TAKE1,
-  "a numeric ip address:port, or the name of a host with a single address" },
+  "a numeric ip address:port, or the name of a host" },
 { NULL },
 };
 
