@@ -1005,7 +1005,7 @@ static apr_status_t inflate_out_filter(ap_filter_t *f,
                 zlib_method = data[2] ;
                 zlib_flags = data[3] ;
                 if ( zlib_method != Z_DEFLATED ) {
-                    ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+                    ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
                         "inflate: data not deflated!") ;
                     ap_remove_output_filter(f) ;
                     return ap_pass_brigade(f->next, bb) ;
