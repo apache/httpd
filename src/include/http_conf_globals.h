@@ -70,13 +70,13 @@ extern int daemons_to_start;
 extern int daemons_min_free;
 extern int daemons_max_free;
 extern int daemons_limit;
-MODULE_VAR_EXPORT int suexec_enabled;
+extern MODULE_VAR_EXPORT int suexec_enabled;
 extern int listenbacklog;
 
 extern char *pid_fname;
 extern char *scoreboard_fname;
 extern char *lock_fname;
-MODULE_VAR_EXPORT char *server_argv0;
+extern MODULE_VAR_EXPORT char *server_argv0;
 
 /* Trying to allocate these in the config pool gets us into some *nasty*
  * chicken-and-egg problems in http_main.c --- where do you stick them
