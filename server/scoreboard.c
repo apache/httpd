@@ -143,7 +143,7 @@ void ap_init_scoreboard(void *shared_score)
     char *more_storage;
     int i;
     
-	ap_calc_scoreboard_size();
+    ap_calc_scoreboard_size();
     ap_scoreboard_image = 
         calloc(1, sizeof(scoreboard) + server_limit * sizeof(worker_score *));
     more_storage = shared_score;
