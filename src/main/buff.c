@@ -319,6 +319,17 @@ static int ap_write(BUFF *fb, const void *buf, int nbyte)
 #if defined (B_SFIO)
 	rv = sfwrite(fb->sf_out, buf, nbyte);
 #else
+#ifdef _OSD_POSIX
+        /* Sorry, but this is a hack: On BS2000, currently the send() call
+         * has slightly better performance, and it doesn't have a maximum
+	 * transfer size of 16kB per write. Both write() and writev()
+	 * currently have such a limit and therefore don't work
+	 * too well with MMAP files.
+	 */
+	if (fb->flags & B_SOCKET)
+	    rv = send(fb->fd, buf, nbyte, 0);
+	else
+#endif
 	rv = write(fb->fd, buf, nbyte);
 #endif
     
