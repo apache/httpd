@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2002/04/08 14:04:16 $]
+Last modified at [$Date: 2002/04/08 15:09:16 $]
 
 Release:
 
@@ -783,7 +783,7 @@ Binaries (2.0.35):
  Mandrake 8.1                  no      Ryan Bloom
  FreeBSD 4.1                   yes     Ryan Bloom
  OS X 10.1.3/Darwin 5.3        no      Jim Jagielski
- Solaris 8.x/sparc             no      Jim Jagielski
+ Solaris 8.x/sparc             yes     Jim Jagielski
  RedHat 7.2                    no      Jim Jagielski
  i686-pc-linux-gnu             no      Aaron Bannert
  Solaris 8.x/i386              no      Aaron Bannert
