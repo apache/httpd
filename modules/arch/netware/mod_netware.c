@@ -99,7 +99,6 @@ static apr_status_t ap_cgi_build_command(const char **cmd, const char ***argv,
     char *ext = NULL;
     char *cmd_only, *ptr;
     const char *new_cmd;
-    const char *detached = NULL;
     netware_dir_config *d;
     apr_file_t *fh;
     const char *args = "";
@@ -153,13 +152,8 @@ static apr_status_t ap_cgi_build_command(const char **cmd, const char ***argv,
         *cmd = apr_pstrcat (p, new_cmd, " ", cmd_only, NULL);
 
         /* Run in its own address space if specified */
-        detached = apr_table_get(d->file_handler_mode, ext);
-        if (detached) {
-            e_info->cmd_type = APR_PROGRAM_ADDRSPACE;
-        }
-        else {
-            e_info->cmd_type = APR_PROGRAM;
-        }
+        if(apr_table_get(d->file_handler_mode, ext))
+            e_info->addrspace = 1;
     }
 
     /* Tokenize the full command string into its arguments */
