@@ -3176,7 +3176,7 @@ void worker_main()
             clen = sizeof(sa_client);
             csd  = accept(sd, (struct sockaddr *)&sa_client, &clen);
 #ifdef WIN32
-            if(csd == SOCKET_ERROR)
+            if(csd == INVALID_SOCKET)
             {
                 csd = -1;
                 errno = WSAGetLastError() - WSABASEERR;
