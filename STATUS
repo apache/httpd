@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:						-*-text-*-
-Last modified at [$Date: 2002/02/05 06:16:03 $]
+Last modified at [$Date: 2002/02/05 22:13:20 $]
 
 Release:
 
@@ -48,7 +48,7 @@ RELEASE SHOWSTOPPERS:
         for beta
             +1 : Justin, Jeff Trawick, BrianP, Aaron, Jim
             +0 : Lars
-            -1 : BillS, BillR, Ian
+            -1 : BillS, BillR, Ian, gregames
         bumps since original tag:
             * mod-dir patch
             * scoreboard x2 : 1 to fix gracefull restarts
@@ -71,6 +71,9 @@ RELEASE SHOWSTOPPERS:
 			   beta roll or putting a patch in the README for
                            use by people who want to do binbuild but
 			   have expat installed locally.
+                gregames:  why can't we roll a second tarball with the
+                           appropriate libtool version?  doesn't
+                           Darwin need it as well as AIX? 
 
             * erroneous check in an AP_DEBUG_ASSERT() call.  Only happens
               in maintainer mode.  Fixed in modules/http/http_protocol.c
@@ -79,10 +82,15 @@ RELEASE SHOWSTOPPERS:
                 +0:
                 -1:
 
+            * seg faults in core_input_filter when the client goes away
+              before any POST body bytes are received.
+
             * FirstBill reports problem [re]starting as-a-service, shared
               score is suspect.  OtherBill is investigating, definately
               a showstopper for a .31/.32 beta.  Progress report later today.
 
+            * mod_auth_dbm can't open a Berkely DB password file on Unix
+            
             * Madhu reports that the worker MPM doesn't shutdown nicely
               after a stress test.
 
