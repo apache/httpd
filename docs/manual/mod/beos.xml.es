@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.es.xsl"?>
-<!-- English Revision: 1.6  -->
+<!-- English Revision: 1.1.2.6  -->
 
 <!--
  Copyright 2004 The Apache Software Foundation

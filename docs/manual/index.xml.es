@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE indexpage SYSTEM "./style/sitemap.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.es.xsl"?>
-<!-- English Revision:  1.7  -->
+<!-- English Revision:  1.1.2.7  -->
 
 <!--
  Copyright 2004 The Apache Software Foundation
@@ -22,7 +22,7 @@
 <indexpage metafile="index.xml.meta">
 <parentdocument href="http://httpd.apache.org/docs-project/" />
 
-<title>Versi&#243;n 2.1 de la documentaci&#243;n del Servidor de HTTP Apache</title>
+<title>Versi&#243;n 2.0 de la documentaci&#243;n del Servidor de HTTP Apache</title>
 
 <category id="release"><title>Notas de la Versi&#243;n</title> 
     <page href="new_features_2_0.html">Nuevas funcionalidades en
