@@ -1,7 +1,7 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
 <HTML>
  <HEAD>
-  <TITLE>Test Page for Apache Installation on Web Site</TITLE>
+  <TITLE>Test Page for Apache Installation</TITLE>
  </HEAD>
 <!-- Background white, links blue (unvisited), navy (visited), red (active) -->
  <BODY
@@ -11,41 +11,29 @@
   VLINK="#000080"
   ALINK="#FF0000"
  >
-  <H1 ALIGN="CENTER">
-   It Worked!  The Apache Web Server is Installed on this Web Site!
-  </H1>
-  <P>
-  If you can see this page, then the people who own this domain have just
-  installed the <A HREF="http://www.apache.org/httpd">Apache Web server</A>
-  software successfully.  They now have to add content to this directory
-  and replace this placeholder page, or else point the server at their real
-  content.
-  </P>
-  <HR>
-  <BLOCKQUOTE>
-   If you are seeing this page instead of the site you expected, please
-   <STRONG>contact the administrator of the site involved.</STRONG>
-   (Try sending mail to <SAMP>&lt;Webmaster@<EM>domain</EM>&gt;</SAMP>.)
-   Although this site is
-   running the Apache software it almost certainly has no other connection
-   to the Apache Group, so please do not send mail about this site or its
-   contents to the Apache authors.  If you do, your message will be
-   <STRONG><BIG>ignored</BIG></STRONG>.
-  </BLOCKQUOTE>
-  <HR>
-  <P>
-  The Apache
-  <A
-   HREF="manual/index.html"
-  >documentation</A>
-  has been included with this distribution.
-  </P>
-  <P>
-  The Webmaster of this site is free to use the image below on
-  an Apache-powered Web server.  Thanks for using Apache!
-  </P>
-  <DIV ALIGN="CENTER">
-   <IMG SRC="apache_pb.gif" ALT="">
-  </DIV>
- </BODY>
+
+
+<P>
+If you can see this, it means that the installation of the <A HREF="http://www.apache.org/">Apache</A> web server software on this system was successful.  You may now add content to this directory and replace this page.
+
+<P><HR WIDTH="50%" SIZE="8">
+
+<H2 ALIGN="CENTER">Seeing this instead of the website you expected?</H2>
+
+<P>
+This page is here because the site administrator has changed the configuration of this web server.  
+Please  <STRONG>contact the person responsible for maintaining this server with questions.</STRONG>   The Apache Software Foundation, which wrote the web server software this site administrator is using, has nothing to do with maintaining this site and cannot help resolve configuration issues.
+
+<P><HR WIDTH="50%" SIZE="8">
+
+
+<P>
+The Apache <A HREF="manual/index.html">documentation</A> has been included with this distribution.
+
+<P>
+You are free to use the image below on an Apache-powered web server.  Thanks for using Apache!
+
+<P ALIGN="CENTER">
+<IMG SRC="apache_pb.gif" ALT="">
+</BODY>
 </HTML>
