@@ -189,7 +189,8 @@ static BOOL CALLBACK ap_control_handler(DWORD ctrl_type)
 
         case CTRL_LOGOFF_EVENT:
             if (!die_on_logoff)
-                return FALSE;
+                return TRUE;
+            /* or fall through... */
 
         case CTRL_CLOSE_EVENT:
         case CTRL_SHUTDOWN_EVENT:
@@ -234,8 +235,7 @@ static BOOL CALLBACK EnumttyWindow(HWND wnd, LPARAM retwnd)
 
 void stop_child_monitor(void)
 {
-    if (!isWindowsNT())
-        FixConsoleCtrlHandler(ap_control_handler, 0);
+    FixConsoleCtrlHandler(ap_control_handler, 0);
 }
 
 /*
@@ -255,8 +255,8 @@ void ap_start_child_console(int is_child_of_service)
     /* Prevent holding open the (hidden) console */
     real_exit_code = 0;
 
-    if (!is_child_of_service)
-        die_on_logoff = TRUE;
+    /* We only die on logoff if we not a service's child */
+    die_on_logoff = !is_child_of_service;
 
     if (isWindowsNT()) {
         if (!is_child_of_service) {
@@ -285,34 +285,37 @@ void ap_start_child_console(int is_child_of_service)
         return;
     }
 
-    FreeConsole();
-    AllocConsole();
-    while (maxwait-- > 0) { 
+    if (!is_child_of_service) {
+        FreeConsole();
+        AllocConsole();
+    }
+    while (!console_wnd && maxwait-- > 0) { 
         EnumWindows(EnumttyWindow, (long)(&console_wnd));
-        if (console_wnd) {
-            ShowWindow(console_wnd, SW_HIDE);
-            break;
-        }
         Sleep(100);
     }
-    
-    FixConsoleCtrlHandler(ap_control_handler, die_on_logoff ? 1 : 2);
+    if (console_wnd) {
+        FixConsoleCtrlHandler(ap_control_handler, die_on_logoff ? 1 : 2);
+        ShowWindow(console_wnd, SW_HIDE);
+        atexit(stop_child_monitor);
+    }
 }
 
 
 void stop_console_monitor(void)
 {
-    if (!isWindowsNT)
-        FixConsoleCtrlHandler(ap_control_handler, 0);
-
     /* Remove the control handler at the end of the day. */
     SetConsoleCtrlHandler(ap_control_handler, FALSE);
+
+    if (!isWindowsNT())
+        FixConsoleCtrlHandler(ap_control_handler, 0);
 }
 
 void ap_start_console_monitor(void)
 {
     HANDLE console_input;
- 
+
+    die_on_logoff = TRUE;
+
     is_service = 0;
 
     console_input = GetStdHandle(STD_INPUT_HANDLE);
@@ -341,10 +344,10 @@ void ap_start_console_monitor(void)
         }
     }
     
-    SetConsoleCtrlHandler(ap_control_handler, TRUE);
-
     if (!isWindowsNT())
         FixConsoleCtrlHandler(ap_control_handler, die_on_logoff ? 1 : 2);
+
+    SetConsoleCtrlHandler(ap_control_handler, TRUE);
 
     atexit(stop_console_monitor);
 }
@@ -361,6 +364,7 @@ int service95_main(int (*main_fn)(int, char **), int argc, char **argv,
     char *service_name;
 
     is_service = 1;
+    die_on_logoff = FALSE;
 
     /* Set up the Win9x server name, as WinNT would */
     ap_server_argv0 = globdat.name = display_name;

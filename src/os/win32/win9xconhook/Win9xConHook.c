@@ -94,15 +94,22 @@ static UINT hookwndmsg = 0;
 static LPCTSTR origwndprop;
 static LPCTSTR hookwndprop;
 static BOOL is_service = 0;
+//static HMODULE hmodThis = NULL;
 
 /* Variables used within the tty processes' context:
  *  is_tty flags this process;  -1 == unknown, 1 == if tty, 0 == if not
  *  hw_tty is the handle of the top level tty in this process context
  *  is_subclassed is toggled to assure DllMain removes the subclass on unload
+ *  hmodLock is there to try and prevent this dll from being unloaded if the
+ *           hook is removed while we are subclassed
  */
 static int is_tty = -1;
 static HWND hwtty = NULL;
 static BOOL is_subclassed = 0;
+
+// This simply causes a gpfault the moment it tries to FreeLibrary within
+// the subclass procedure ... not good.
+//static HMODULE hmodLock = NULL;
 
 /* Variables used within the service or console app's context:
  *  hmodHook is the instance handle of this module for registering the hooks
@@ -113,13 +120,14 @@ static BOOL is_subclassed = 0;
  */
 static HMODULE hmodHook = NULL;
 static HHOOK hhkGetMessage;
-static HHOOK hhkCallWndProc;
+//static HHOOK hhkCallWndProc;
 static HWND monitor_hwnd = NULL;
 
 typedef struct {
     PHANDLER_ROUTINE phandler;
     HINSTANCE instance;
     HWND parent;
+    INT type;
     LPCSTR name;
 } tty_info;
 
@@ -134,10 +142,13 @@ typedef struct {
  */
 static BOOL CALLBACK EnumttyWindow(HWND wnd, LPARAM retwnd);
 static LRESULT WINAPI RegisterWindows9xService(BOOL set_service);
-static LRESULT CALLBACK ttyConsoleCtrlWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
+static LRESULT CALLBACK ttyConsoleCtrlWndProc(HWND hwnd, UINT msg, 
+                                              WPARAM wParam, LPARAM lParam);
 static DWORD WINAPI ttyConsoleCtrlThread(LPVOID tty);
-static LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
-static int HookProc(int hc, HWND *hwnd, UINT *msg, WPARAM *wParam, LPARAM *lParam);
+static LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, 
+                                WPARAM wParam, LPARAM lParam);
+static int HookProc(int hc, HWND *hwnd, UINT *msg, 
+                    WPARAM *wParam, LPARAM *lParam);
 #ifdef DBG
 static VOID DbgPrintf(LPTSTR fmt, ...);
 #endif
@@ -147,50 +158,41 @@ static VOID DbgPrintf(LPTSTR fmt, ...);
  * by our window hooks, notably the tty processes' context, and by the user
  * who wants tty messages (the app).  Keep it light and simple.
  */
-BOOL __declspec(dllexport) APIENTRY DllMain(PVOID hModule, ULONG ulReason, PCONTEXT pctx)
+BOOL __declspec(dllexport) APIENTRY DllMain(HINSTANCE hModule, ULONG ulReason, 
+                                            LPVOID pctx)
 {
     if (ulReason == DLL_PROCESS_ATTACH) 
     {
+        //hmodThis = hModule;
         if (!hookwndmsg) {
             origwndprop = MAKEINTATOM(GlobalAddAtom("Win9xConHookOrigProc"));
             hookwndprop = MAKEINTATOM(GlobalAddAtom("Win9xConHookThunkWnd"));
             hookwndmsg = RegisterWindowMessage("Win9xConHookMsg");
         }
 #ifdef DBG
-        DbgPrintf("H ProcessAttach:%8.8x\r\n", GetCurrentProcessId());
+//        DbgPrintf("H ProcessAttach:%8.8x\r\n", 
+//                  GetCurrentProcessId());
 #endif
     }
     else if ( ulReason == DLL_PROCESS_DETACH ) 
     {
 #ifdef DBG
-        DbgPrintf("H ProcessDetach:%8.8x\r\n", GetCurrentProcessId());                
+//        DbgPrintf("H ProcessDetach:%8.8x\r\n", GetCurrentProcessId());                
 #endif
         if (monitor_hwnd)
             SendMessage(monitor_hwnd, WM_DESTROY, 0, 0);
         if (is_subclassed) 
-        {
-            WNDPROC origproc = (WNDPROC) GetProp(hwtty, origwndprop);
-            HWND child = (HWND) GetProp(hwtty, hookwndprop);
-            if (child) {
-                RemoveProp(hwtty, hookwndprop);
-                PostMessage(child, WM_DESTROY, 0, 0);
-            }
-            if (origproc) {
-                SetWindowLong(hwtty, GWL_WNDPROC, (LONG)origproc);
-                RemoveProp(hwtty, origwndprop);
-                is_subclassed = 0;
-            }
-        }
+            SendMessage(hwtty, hookwndmsg, 0, (LPARAM)hwtty);
         if (hmodHook)
         {
             if (hhkGetMessage) {
                 UnhookWindowsHookEx(hhkGetMessage);
                 hhkGetMessage = NULL;
             }
-            if (hhkCallWndProc) {
-                UnhookWindowsHookEx(hhkCallWndProc);
-                hhkCallWndProc = NULL;
-            }
+            //if (hhkCallWndProc) {
+            //    UnhookWindowsHookEx(hhkCallWndProc);
+            //    hhkCallWndProc = NULL;
+            //}
             FreeLibrary(hmodHook);
             hmodHook = NULL;
         }
@@ -233,6 +235,7 @@ BOOL __declspec(dllexport) WINAPI Windows9xServiceCtrlHandler(
         tty.phandler = phandler;
         tty.parent = NULL;
         tty.name = name;
+        tty.type = 2;
         RegisterWindows9xService(TRUE);
         hThread = CreateThread(NULL, 0, ttyConsoleCtrlThread,
                                (LPVOID)&tty, 0, &tid);
@@ -273,41 +276,40 @@ BOOL __declspec(dllexport) WINAPI FixConsoleCtrlHandler(
          */
         static tty_info tty;
         EnumWindows(EnumttyWindow, (LPARAM)&parent);
-        if (!parent)
+        if (!parent) {
+#ifdef DBG
+            DbgPrintf("A EnumttyWindow failed (%d)\r\n", GetLastError());
+#endif
             return FALSE;
+        }
         tty.instance = GetModuleHandle(NULL);
         tty.phandler = phandler;
         tty.parent = parent;
+        tty.type = add;
         if (add == 2) {
             tty.name = "ttyService";
             RegisterWindows9xService(TRUE);
         }
         else 
             tty.name = "ttyMonitor";
+        hThread = CreateThread(NULL, 0, ttyConsoleCtrlThread,
+                               (LPVOID)&tty, 0, &tid);
+        if (!hThread)
+            return FALSE;        
+        CloseHandle(hThread);
         hmodHook = LoadLibrary("Win9xConHook.dll");
         if (hmodHook)
         {
             hhkGetMessage = SetWindowsHookEx(WH_GETMESSAGE,
-                (HOOKPROC)GetProcAddress(hmodHook, "GetMsgProc"), hmodHook, 0);
-            hhkCallWndProc = SetWindowsHookEx(WH_CALLWNDPROC,
-                (HOOKPROC)GetProcAddress(hmodHook, "CallWndProc"), hmodHook, 0);
+              (HOOKPROC)GetProcAddress(hmodHook, "GetMsgProc"), hmodHook, 0);
+            //hhkCallWndProc = SetWindowsHookEx(WH_CALLWNDPROC,
+            //  (HOOKPROC)GetProcAddress(hmodHook, "CallWndProc"), hmodHook, 0);
         }        
-        hThread = CreateThread(NULL, 0, ttyConsoleCtrlThread,
-                               (LPVOID)&tty, 0, &tid);
-        if (hThread)
-        {
-            CloseHandle(hThread);
-            /* All is set ... wake up the tty window */
-            PostMessage(parent, hookwndmsg, add, 0);
-            return TRUE;
-        }
+        return TRUE;
     }
     else /* remove */
     {
         if (monitor_hwnd) {
-            parent = (HWND) GetWindowLong(monitor_hwnd, gwltty_ttywnd);
-            if (parent)
-                PostMessage(parent, hookwndmsg, add, 0);
             SendMessage(monitor_hwnd, WM_DESTROY, 0, 0);
         }
         if (hmodHook)
@@ -316,10 +318,10 @@ BOOL __declspec(dllexport) WINAPI FixConsoleCtrlHandler(
                 UnhookWindowsHookEx(hhkGetMessage);
                 hhkGetMessage = NULL;
             }
-            if (hhkCallWndProc) {
-                UnhookWindowsHookEx(hhkCallWndProc);
-                hhkCallWndProc = NULL;
-            }
+            //if (hhkCallWndProc) {
+            //    UnhookWindowsHookEx(hhkCallWndProc);
+            //    hhkCallWndProc = NULL;
+            //}
             FreeLibrary(hmodHook);
             hmodHook = NULL;
         }
@@ -361,7 +363,8 @@ static DWORD WINAPI ttyConsoleCtrlThread(LPVOID tty)
         
     if (!RegisterClass(&wc)) { 
 #ifdef DBG
-        DbgPrintf("S Created ttyConHookChild class\r\n");
+        DbgPrintf("A proc %8.8x Error creating class %s (%d)\r\n", 
+                  GetCurrentProcessId(), wc.lpszClassName, GetLastError());
 #endif
         return 0;
     }
@@ -376,7 +379,9 @@ static DWORD WINAPI ttyConsoleCtrlThread(LPVOID tty)
 
     if (!monitor_hwnd) {
 #ifdef DBG
-        DbgPrintf("S Error Creating ttyConHookChild:%d\r\n", GetLastError());
+        DbgPrintf("A proc %8.8x Error creating window %s %s (%d)\r\n", 
+                  GetCurrentProcessId(), wc.lpszClassName, 
+                  ((tty_info*)tty)->name, GetLastError());
 #endif
         return 0;
     }
@@ -399,7 +404,8 @@ static DWORD WINAPI ttyConsoleCtrlThread(LPVOID tty)
  * window (this message process), and we call the installed HandlerRoutine 
  * that was registered by the app.
  */
-static LRESULT CALLBACK ttyConsoleCtrlWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
+static LRESULT CALLBACK ttyConsoleCtrlWndProc(HWND hwnd, UINT msg, 
+                                              WPARAM wParam, LPARAM lParam)
 {
     if (msg == WM_CREATE)
     {
@@ -407,50 +413,69 @@ static LRESULT CALLBACK ttyConsoleCtrlWndProc(HWND hwnd, UINT msg, WPARAM wParam
         SetWindowLong(hwnd, gwltty_phandler, (LONG)tty->phandler);
         SetWindowLong(hwnd, gwltty_ttywnd, (LONG)tty->parent);
 #ifdef DBG
-        DbgPrintf("S Created ttyConHookChild:%8.8x\r\n", hwnd);
+        DbgPrintf("A proc %8.8x created %8.8x %s for tty wnd %8.8x\r\n", 
+                  GetCurrentProcessId(), hwnd, 
+                  tty->name, tty->parent);
 #endif
-        if (((tty_info*)tty)->parent)
-            SetProp(((tty_info*)tty)->parent, hookwndprop, hwnd);
+        if (tty->parent) {
+            SetProp(tty->parent, hookwndprop, hwnd);
+            PostMessage(tty->parent, hookwndmsg, 
+                        tty->type, (LPARAM)tty->parent); 
+        }
         return 0;
     }
     else if (msg == WM_DESTROY)
     {
         HWND parent = (HWND)GetWindowLong(hwnd, gwltty_ttywnd);
-        if (parent)
+#ifdef DBG
+        DbgPrintf("A proc %8.8x destroyed %8.8x ttyConHookChild\r\n",
+                  GetCurrentProcessId(), hwnd);
+#endif
+        if (parent) {
             RemoveProp(parent, hookwndprop);
+            SendMessage(parent, hookwndmsg, 0, (LPARAM)parent); 
+        }
         monitor_hwnd = NULL;
     }
     else if (msg == WM_CLOSE)
     {
         PHANDLER_ROUTINE phandler = 
             (PHANDLER_ROUTINE)GetWindowLong(hwnd, gwltty_phandler);
+        LRESULT rv = phandler(CTRL_CLOSE_EVENT);
 #ifdef DBG
-        DbgPrintf("S Invoking CTRL_CLOSE_EVENT:%8.8x\r\n",
-                  GetCurrentProcessId());
+        DbgPrintf("A proc %8.8x invoked CTRL_CLOSE_EVENT "
+                  "returning %d\r\n",
+                  GetCurrentProcessId(), rv);
 #endif
-        return !phandler(CTRL_CLOSE_EVENT);
+        if (rv)
+            return !rv;
     }
-    else if (msg == WM_QUERYENDSESSION)
+    else if ((msg == WM_QUERYENDSESSION) || (msg == WM_ENDSESSION))
     {
         if (lParam & ENDSESSION_LOGOFF) 
         {
             PHANDLER_ROUTINE phandler = 
                 (PHANDLER_ROUTINE)GetWindowLong(hwnd, gwltty_phandler);
+            LRESULT rv = phandler(CTRL_LOGOFF_EVENT);
 #ifdef DBG
-            DbgPrintf("S Invoking CTRL_LOGOFF_EVENT:%8.8x\r\n",
-                      GetCurrentProcessId());
+            DbgPrintf("A proc %8.8x invoked CTRL_LOGOFF_EVENT "
+                      "returning %d\r\n",
+                      GetCurrentProcessId(), rv);
 #endif
-            return !phandler(CTRL_LOGOFF_EVENT);
+            if (rv)
+                return ((msg == WM_QUERYENDSESSION) ? rv : !rv);
         }
         else
         {
             PHANDLER_ROUTINE phandler = 
                 (PHANDLER_ROUTINE)GetWindowLong(hwnd, gwltty_phandler);
+            LRESULT rv = phandler(CTRL_SHUTDOWN_EVENT);
 #ifdef DBG
-            DbgPrintf("S Invoking CTRL_SHUTDOWN_EVENT:%8.8x\r\n",
-                      GetCurrentProcessId());
+            DbgPrintf("A proc %8.8x invoked CTRL_SHUTDOWN_EVENT "
+                      "returning %d\r\n", GetCurrentProcessId(), rv);
 #endif
-            return !phandler(CTRL_SHUTDOWN_EVENT);
+            if (rv)
+                return ((msg == WM_QUERYENDSESSION) ? rv : !rv);
         }
     }
     return (DefWindowProc(hwnd, msg, wParam, lParam));
@@ -473,6 +498,12 @@ static LRESULT WINAPI RegisterWindows9xService(BOOL set_service)
 
     if (set_service == is_service)
         return 1;
+
+#ifdef DBG
+            DbgPrintf("R %s proc %8.8x as a service\r\n",
+                      set_service ? "installing" : "removing",
+                      GetCurrentProcessId());
+#endif
 
     /* Obtain a handle to the kernel library */
     hkernel = LoadLibrary("KERNEL32.DLL");
@@ -505,7 +536,7 @@ static LRESULT WINAPI RegisterWindows9xService(BOOL set_service)
  */
 static BOOL CALLBACK EnumttyWindow(HWND wnd, LPARAM retwnd)
 {
-    char tmp[4];
+    char tmp[8];
     if (GetClassName(wnd, tmp, sizeof(tmp)) && !strcmp(tmp, "tty")) 
     {
         DWORD wndproc, thisproc = GetCurrentProcessId();
@@ -532,37 +563,43 @@ static BOOL CALLBACK EnumttyWindow(HWND wnd, LPARAM retwnd)
  * to origwndprop property atom we set against the window when we
  * injected this subclass.  This trick did not work with simply a hook.
  */
-static LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
+static LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, 
+                                WPARAM wParam, LPARAM lParam)
 {
     WNDPROC origproc = (WNDPROC) GetProp(hwnd, origwndprop);
     if (!origproc)
         return 0;
 
-    if (msg == WM_NCDESTROY || msg == hookwndmsg)
+    if (msg == WM_NCDESTROY 
+        || (msg == hookwndmsg && !LOWORD(wParam) && (HWND)lParam == hwnd))
     {
-#ifdef DBG
-        DbgPrintf("W Proc %08x hwnd:%08x Subclass removed\r\n", 
-                  GetCurrentProcessId(), hwnd);
-#endif
         if (is_subclassed) {
+#ifdef DBG
+            DbgPrintf("W proc %08x hwnd:%08x Subclass removed\r\n", 
+                      GetCurrentProcessId(), hwnd);
+#endif
             if (is_service)
                 RegisterWindows9xService(FALSE);
             SetWindowLong(hwnd, GWL_WNDPROC, (LONG)origproc);
             RemoveProp(hwnd, origwndprop);
             RemoveProp(hwnd, hookwndprop);
             is_subclassed = FALSE;
+            //if (hmodLock)
+            //    FreeLibrary(hmodLock);
+            //hmodLock = NULL;
         }
     }
     else if (msg == WM_CLOSE || msg == WM_ENDSESSION 
                              || msg == WM_QUERYENDSESSION)
     {
         HWND child = (HWND)GetProp(hwnd, hookwndprop);
+        if (child) {
 #ifdef DBG
-        DbgPrintf("W Proc %08x hwnd:%08x msg:%d\r\n", 
-                  GetCurrentProcessId(), hwnd, msg);
+            DbgPrintf("W proc %08x hwnd:%08x forwarded msg:%d\r\n", 
+                      GetCurrentProcessId(), hwnd, msg);
 #endif
-        if (child)
             return SendMessage(child, msg, wParam, lParam);
+        }
     }
     return CallWindowProc(origproc, hwnd, msg, wParam, lParam);
 }
@@ -580,7 +617,7 @@ int HookProc(int hc, HWND *hwnd, UINT *msg, WPARAM *wParam, LPARAM *lParam)
 {
     if (is_tty == -1 && *hwnd) 
     {
-        char ttybuf[4];
+        char ttybuf[8];
         HWND htty;
         hwtty = *hwnd;
         while (htty = GetParent(hwtty))
@@ -588,22 +625,26 @@ int HookProc(int hc, HWND *hwnd, UINT *msg, WPARAM *wParam, LPARAM *lParam)
         is_tty = (GetClassName(hwtty, ttybuf, sizeof(ttybuf)) 
                   && !strcmp(ttybuf, "tty"));
 #ifdef DBG
-        DbgPrintf("H Proc %08x %s %08x\r\n", GetCurrentProcessId(), 
-                  is_tty ? "tracking" : "ignoring", hwtty);
+        if (is_tty)
+            DbgPrintf("H proc %08x tracking hwnd %08x\r\n", 
+                      GetCurrentProcessId(), hwtty);
 #endif
     }
 
-    if (*msg == hookwndmsg && is_tty)
+    if (*msg == hookwndmsg && *wParam && *lParam == (LPARAM)hwtty && is_tty)
     {
         WNDPROC origproc = (WNDPROC)GetWindowLong(hwtty, GWL_WNDPROC);
+        //char myname[MAX_PATH];
+        //if (GetModuleFileName(hmodThis, myname, sizeof(myname)))
+        //    hmodLock = LoadLibrary(myname);        
         SetProp(hwtty, origwndprop, origproc);
         SetWindowLong(hwtty, GWL_WNDPROC, (LONG)WndProc);
         is_subclassed = TRUE;
 #ifdef DBG
-        DbgPrintf("W Proc %08x hwnd:%08x Subclassed\r\n", 
+        DbgPrintf("H proc %08x hwnd:%08x Subclassed\r\n", 
                   GetCurrentProcessId(), hwtty);
 #endif
-        if (*wParam == 2)
+        if (LOWORD(*wParam) == 2)
             RegisterWindows9xService(TRUE);
     }
 
@@ -614,14 +655,16 @@ int HookProc(int hc, HWND *hwnd, UINT *msg, WPARAM *wParam, LPARAM *lParam)
 /*
  * PostMessage Hook:
  */
-LRESULT __declspec(dllexport) CALLBACK GetMsgProc(INT hc, WPARAM wParam, LPARAM lParam)
+LRESULT __declspec(dllexport) CALLBACK GetMsgProc(INT hc, WPARAM wParam, 
+                                                  LPARAM lParam)
 {
     PMSG pmsg;
 
     pmsg = (PMSG)lParam;
 
     if (pmsg) {
-        int rv = HookProc(hc, &pmsg->hwnd, &pmsg->message, &pmsg->lParam, &pmsg->wParam);
+        int rv = HookProc(hc, &pmsg->hwnd, &pmsg->message, 
+                          &pmsg->wParam, &pmsg->lParam);
         if (rv != -1)
             return rv;
     }
@@ -635,12 +678,14 @@ LRESULT __declspec(dllexport) CALLBACK GetMsgProc(INT hc, WPARAM wParam, LPARAM 
 /*
  * SendMessage Hook:
  */
-LRESULT __declspec(dllexport) CALLBACK CallWndProc(INT hc, WPARAM wParam, LPARAM lParam)
+LRESULT __declspec(dllexport) CALLBACK CallWndProc(INT hc, WPARAM wParam, 
+                                                   LPARAM lParam)
 {
     PCWPSTRUCT pcwps = (PCWPSTRUCT)lParam;
     
     if (pcwps) {
-        int rv = HookProc(hc, &pcwps->hwnd, &pcwps->message, &pcwps->wParam, &pcwps->lParam);
+        int rv = HookProc(hc, &pcwps->hwnd, &pcwps->message, 
+                          &pcwps->wParam, &pcwps->lParam);
         if (rv != -1)
             return rv;
     }
@@ -657,6 +702,7 @@ VOID DbgPrintf(
     ...
     )
 {
+    static HANDLE mutex;
     va_list marker;
     TCHAR szBuf[256];
     DWORD t;
@@ -666,11 +712,14 @@ VOID DbgPrintf(
     wvsprintf(szBuf, fmt, marker);
     va_end(marker);
 
-    gDbgOut = CreateFile("COM1", GENERIC_READ | GENERIC_WRITE, 
-                         FILE_SHARE_READ | FILE_SHARE_WRITE,
+    if (!mutex)
+        mutex = CreateMutex(NULL, FALSE, "Win9xConHookDbgOut");
+    WaitForSingleObject(mutex, INFINITE);
+    gDbgOut = CreateFile("COM1", GENERIC_READ | GENERIC_WRITE, 0,
                          NULL, OPEN_EXISTING, FILE_FLAG_WRITE_THROUGH, NULL);
     WriteFile(gDbgOut, szBuf, strlen(szBuf), &t, NULL);
     CloseHandle(gDbgOut);
+    ReleaseMutex(mutex);
 }
 #endif
 
