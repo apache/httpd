@@ -1032,7 +1032,7 @@ RewriteRule    ^<strong>foo</strong>\.html$  <strong>bar</strong>.html
 
         <dd>
           <p>Assume again that we have recently renamed the page
-          <code>bar.html</code> to <code>foo.html</code> and now want
+          <code>foo.html</code> to <code>bar.html</code> and now want
           to provide the old URL for backward compatibility. But this
           time we want that the users of the old URL get hinted to
           the new one, i.e. their browsers Location field should
