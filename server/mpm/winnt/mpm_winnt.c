@@ -73,6 +73,7 @@
 #include "mpm_default.h"
 #include "mpm_winnt.h"
 #include "mpm_common.h"
+#include <malloc.h>
 
 typedef HANDLE thread;
 #ifdef CONTAINING_RECORD
