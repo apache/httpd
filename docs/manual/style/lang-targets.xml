@@ -21,9 +21,9 @@
 <!-- ==================================================================== -->
 <project name="lang-targets">
 
-<target description="- builds all HTML files and nroff man pages" name="all" depends="de, en, es, fr, ja, ko, ru"/>
-<target description="- builds all zip download packages" name="zip-all" depends="zip-de, zip-en, zip-es, zip-fr, zip-ja, zip-ko, zip-ru"/>
-<target description="- builds all war download packages" name="war-all" depends="war-de, war-en, war-es, war-fr, war-ja, war-ko, war-ru"/>
+<target description="- builds all HTML files and nroff man pages" name="all" depends="de, en, es, fr, ja, ko, pt-br, ru"/>
+<target description="- builds all zip download packages" name="zip-all" depends="zip-de, zip-en, zip-es, zip-fr, zip-ja, zip-ko, zip-pt-br, zip-ru"/>
+<target description="- builds all war download packages" name="war-all" depends="war-de, war-en, war-es, war-fr, war-ja, war-ko, war-pt-br, war-ru"/>
 
 <!-- German                                                               -->
 <!-- ==================================================================== -->
@@ -167,6 +167,26 @@
     <chm.generic lang="ko"/>
 </target>
 
+<!-- Portuguese                                                           -->
+<!-- ==================================================================== -->
+<property value=".xml.pt-br" name="inputext.pt-br"/>
+<property value=".html.pt-br" name="outputext.pt-br"/>
+
+<target description="- builds Portuguese HTML files" name="pt-br">
+    <html.generic lang="pt-br"/>
+</target>
+<target unless="-off.pt-br.done" depends="metafiles" name="-off-pt-br">
+    <dependencies.offline dir="_off" style="zip" lang="pt-br"/>
+    <offline.generic dir="_off" style="zip" lang="pt-br"/>
+    <property value="yes" name="-off.pt-br.done"/>
+</target>
+<target description="- builds the Portuguese zipped download package" depends="-off-pt-br" name="zip-pt-br">
+    <zip.generic lang="pt-br"/>
+</target>
+<target description="- builds the Portuguese Konqueror Web Archive" depends="-off-pt-br" name="war-pt-br">
+    <war.generic lang="pt-br"/>
+</target>
+
 <!-- Russian                                                              -->
 <!-- ==================================================================== -->
 <property value=".xml.ru" name="inputext.ru"/>
@@ -201,6 +221,7 @@
             <include name="**/*.xml.fr"/>
             <include name="**/*.xml.ja"/>
             <include name="**/*.xml.ko"/>
+            <include name="**/*.xml.pt-br"/>
             <include name="**/*.xml.ru"/>
 
             <patternset refid="excludes"/>
