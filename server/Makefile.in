@@ -44,8 +44,8 @@ delete-exports:
 		    headers="`find ../include/*.h -newer $(TARGET_EXPORTS)`" ; \
 		    if test -n "$$headers"; then \
 		        echo Found newer headers. Will rebuild $(TARGET_EXPORTS). ; \
-		        echo $(RM) -f $(TARGET_EXPORTS) ; \
-		        $(RM) -f $(TARGET_EXPORTS) ; \
+		        echo rm -f $(TARGET_EXPORTS) ; \
+		        rm -f $(TARGET_EXPORTS) ; \
 		    fi \
 	fi
 
