@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/03/25 02:40:17 $]
+Last modified at [$Date: 2004/03/27 00:08:40 $]
 
 Release:
 
@@ -87,11 +87,6 @@ PATCHES TO BACKPORT FROM 2.1
        locks on some platforms. (especially Sparc!!!)
            modules/dav/fs/lock.c: r1.31
        +1: trawick
-
-    *) Limit the concurrency in 'ab' to MAX_CONCURRENCY to prevent a 
-       segmentation fault.
-           support/ab.c: r1.140, r1.141
-       +1: madhum, trawick, jjclar
 
     *) Fix the comment delimiter so that it correctly parses the username
         comment.  Also add a terminate function to allow NetWare to pause
