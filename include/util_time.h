@@ -70,6 +70,7 @@ extern "C" {
 
 /* Maximum delta from the current time, in seconds, for a past time
  * to qualify as "recent" for use in the ap_explode_recent_*() functions:
+ * (Must be a power of two minus one!)
  */
 #define AP_TIME_RECENT_THRESHOLD 15
 
