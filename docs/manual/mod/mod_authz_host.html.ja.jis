@@ -85,7 +85,7 @@
     <p><code class="directive">Allow</code> ディレクティブはどのホストが
     サーバのある領域をアクセスできるかに影響を与えます。
     アクセスはホスト名、IP アドレス、IP アドレスの範囲や、
-    環境変数として取得された、その他のクライアントのリクエストの
+    環境変数として取得された、その他のクライアントのリクエストの
     特徴によって制御することができます。</p> 
 
     <p>このディレクティブの最初の引数は常に <code>from</code> です。
@@ -140,7 +140,7 @@
       <div class="example"><h3>例</h3><p><code>
         Allow from 10.1.0.0/255.255.0.0
       </code></p></div>
-      <p>ネットワーク a.b.c.d とネットマスク w.x.y.z です。
+      <p>ネットワーク a.b.c.d とネットマスク w.x.y.z です。
       より細粒度のサブネット制限用です。</p></dd>
 
       <dt>ネットワーク/nnn CIDR 指定</dt>
@@ -191,7 +191,7 @@
 
     <p>この場合、user-agent の文字列が <code>KnockKnock/2.0</code>
     で始まるブラウザのみがアクセスを許可され、
-    他のものはアクセスを拒否されます。</p>
+    他のものはアクセスを拒否されます。</p>
 
 
 </div>
@@ -260,7 +260,7 @@ Deny が評価される順番を制御する</td></tr>
     </dl>
 
     <p>キーワードはコンマで分離することだけが可能です。
-    間に<em>空白があってはいけません</em>。どの場合でも、<code class="directive"><a href="#allow">Allow</a></code> と
+    間に<em>空白があってはいけません</em>。どの場合でも、<code class="directive"><a href="#allow">Allow</a></code> と
     <code class="directive"><a href="#deny">Deny</a></code> 文は
     全て評価されるということに注意してください。
     </p>

@@ -145,7 +145,7 @@ accept $B$7$h$&$H$7$F$$$k$H$-$K!"(BApache $B$,$=$l$i$N;R%W%m%;%9$rD>Ns2=$9$k$
 
     <div class="note"><h3>Linux $B$G$N%3%"%@%s%W(B</h3>
       <p>Apache $B$,(B root $B$H$7$F5/F0$5$l$F!"JL$N%f!<%6$N8"8B$K0J9_$7$?>l9g$O(B
-      Linux $B$N%+!<%M%k$O%G%#%l%/(B$B%H%j$,%W%m%;%9$N8"8B$G=q$-9~$_2DG=$J>l9g$G$5$($b(B
+      Linux $B$N%+!<%M%k$O%G%#%l%/%H(B$B%j$,%W%m%;%9$N8"8B$G=q$-9~$_2DG=$J>l9g$G$5$($b(B
       $B%3%"%@%s%W$r(B<em>$BL58z(B</em>$B$K$7$^$9!#(BApache (2.0.46 $B0J9_(B) $B$O(B
       Linux 2.4 $B0J9_$G$O%3%"%@%s%W$r9T$J$&$h$&$K:F;XDj$7$^$9$,!"$=$l$O(B
       <code class="directive">CoreDumpDirectory</code> $B$rL@<(E*$K@_Dj$7$?$H$-$K(B
@@ -280,7 +280,7 @@ accept $B$7$h$&$H$7$F$$$k$H$-$K!"(BApache $B$,$=$l$i$N;R%W%m%;%9$rD>Ns2=$9$k$
 <tr><th><a href="directive-dict.html#Status">$B%9%F!<%?%9(B:</a></th><td>MPM</td></tr>
 <tr><th><a href="directive-dict.html#Module">$B%b%8%e!<%k(B:</a></th><td><code class="module"><a href="../mod/beos.html">beos</a></code>, <code class="module"><a href="../mod/leader.html">leader</a></code>, <code class="module"><a href="../mod/mpm_netware.html">mpm_netware</a></code>, <code class="module"><a href="../mod/mpm_winnt.html">mpm_winnt</a></code>, <code class="module"><a href="../mod/mpmt_os2.html">mpmt_os2</a></code>, <code class="module"><a href="../mod/perchild.html">perchild</a></code>, <code class="module"><a href="../mod/prefork.html">prefork</a></code>, <code class="module"><a href="../mod/threadpool.html">threadpool</a></code>, <code class="module"><a href="../mod/worker.html">worker</a></code></td></tr>
 </table>
-    <p>$BJ]N1>uBV$N%3%M%/(B$B%7%g%s$N%-%e!<$N:GBgD9$G$9!#(B
+    <p>$BJ]N1>uBV$N%3%M%/%7(B$B%g%s$N%-%e!<$N:GBgD9$G$9!#(B
     $B0lHLE*$K$OD4@0$9$kI,MW$O$"$j$^$;$s$7!"D4@0$OK>$^$7$/$"$j$^$;$s!#(B
     $B$7$+$7!"(BTCP SYN $B%U%i%C%I%"%?%C%/$N>u672<$K$*$+$l$k>l9g$K!"(B
     $BA}$d$7$?J}$,K>$^$7$$%7%9%F%`$b$"$j$^$9!#(B
@@ -444,7 +444,7 @@ accept $B$7$h$&$H$7$F$$$k$H$-$K!"(BApache $B$,$=$l$i$N;R%W%m%;%9$rD>Ns2=$9$k$
     $B%G%U%)%k%H$O(B <code>MaxSpareThreads 10</code> $B$G$9!#(B
     $B$3$N(B MPM $B$O%"%$%I%k%9%l%C%I?t$r!"$=$l$>$l$N;R%W%m%;%9$4$H$K4F;k$7$^$9!#(B
     $B;R%W%m%;%9$K%"%$%I%k%9%l%C%I$,B?$9$.$k>l9g$O!"(B
-    $B%5!<%P$O$=$N;R%W%m%;(B$B%9$K4^$^$l$k%9%l%C%I$r=*N;$7;O$a$^$9!#(B</p>
+    $B%5!<%P$O$=$N;R%W%m%;%9(B$B$K4^$^$l$k%9%l%C%I$r=*N;$7;O$a$^$9!#(B</p>
 
     <p><code class="module"><a href="../mod/worker.html">worker</a></code>, <code class="module"><a href="../mod/leader.html">leader</a></code>,
     <code class="module"><a href="../mod/threadpool.html">threadpool</a></code> $B$G$O!"(B
@@ -502,7 +502,7 @@ accept $B$7$h$&$H$7$F$$$k$H$-$K!"(BApache $B$,$=$l$i$N;R%W%m%;%9$rD>Ns2=$9$k$
 <tr><th><a href="directive-dict.html#Status">$B%9%F!<%?%9(B:</a></th><td>MPM</td></tr>
 <tr><th><a href="directive-dict.html#Module">$B%b%8%e!<%k(B:</a></th><td><code class="module"><a href="../mod/beos.html">beos</a></code>, <code class="module"><a href="../mod/leader.html">leader</a></code>, <code class="module"><a href="../mod/mpm_netware.html">mpm_netware</a></code>, <code class="module"><a href="../mod/mpmt_os2.html">mpmt_os2</a></code>, <code class="module"><a href="../mod/perchild.html">perchild</a></code>, <code class="module"><a href="../mod/threadpool.html">threadpool</a></code>, <code class="module"><a href="../mod/worker.html">worker</a></code></td></tr>
 </table>
-    <p>$B%j%/%(%9%H$K(B$B1~Ez$9$k%9%l%C%I?t$N:G>.CM$G$9!#(B
+    <p>$B%j%/%(%9%H$K1~(B$BEz$9$k%9%l%C%I?t$N:G>.CM$G$9!#(B
     $B0[$J$k(B MPM $B$G$O$=$l$>$l!"(B
     $B$3$N%G%#%l%/%F%#%V$O0[$J$k<h$j07$o$lJ}$r$7$^$9!#(B</p>
 
@@ -770,7 +770,7 @@ accept $B$7$h$&$H$7$F$$$k$H$-$K!"(BApache $B$,$=$l$i$N;R%W%m%;%9$rD>Ns2=$9$k$
     $B$K@_Dj2DG=$J>e8BCM$r@_Dj$7$^$9!#:F5/F0;~$K$3$N%G%#%l%/%F%#%V$NCM$r(B
     $BJQ99$7$F$bL5;k$5$l$^$9$,!"(B
     <code class="directive"><a href="#threadsperchild">ThreadsPerChild</a></code>
-    $B$O:F5/F0Cf$K!"$3$N%G%#%l%/%F%#%V$G;X(B$BDj$5$l$?>e8BCM$^$G(B
+    $B$O:F5/F0Cf$K!"$3$N%G%#%l%/%F%#%V$G;XDj(B$B$5$l$?>e8BCM$^$G(B
     $BJQ99$9$k$3$H$,$G$-$^$9!#(B</p>
 
     <p>$B$3$N%G%#%l%/%F%#%V$r;HMQ$9$k:]$OFC$KCm0U$7$F$/$@$5$$!#(B
@@ -821,7 +821,7 @@ accept $B$7$h$&$H$7$F$$$k$H$-$K!"(BApache $B$,$=$l$i$N;R%W%m%;%9$rD>Ns2=$9$k$
     <em>$B%9%l%C%IAm?t(B</em>$B$,B?$/$J$1$l$P$J$j$^$;$s!#(B</p>
 
     <p><code class="module"><a href="../mod/mpm_winnt.html">mpm_winnt</a></code>$B$G$N(B <code class="directive">ThreadsPerChild</code>
-    $B$N%G%U%)(B$B%k%HCM$O(B <code>64</code> $B$G!"B>$N>l9g$O(B
+    $B$N%G%U%)%k(B$B%HCM$O(B <code>64</code> $B$G!"B>$N>l9g$O(B
     <code>25</code> $B$G$9!#(B</p>
 
 </div>
@@ -875,7 +875,7 @@ accept $B$7$h$&$H$7$F$$$k$H$-$K!"(BApache $B$,$=$l$i$N;R%W%m%;%9$rD>Ns2=$9$k$
 
     <p><code class="module"><a href="../mod/perchild.html">perchild</a></code> MPM $B$G$O!"0[$J$k%f!<%6(B ID
     $B$GJ#?t$N%P!<%A%c%k%[%9%H$rF0$+$9$3$H$rL\E*$H$7$F$$$^$9$,!"(B
-    <code class="directive">User</code> $B$O!"<g%5!<%P$N%f!<(B$B%6(B ID 
+    <code class="directive">User</code> $B$O!"<g%5!<%P$N%f!<%6(B ID 
     $B$H!"(B<code class="directive"><a href="../mod/perchild.html#assignuserid">AssignUserID</a></code>
     $B%G%#%l%/%F%#%V$r;}$?$J$$(B <code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code> $B%;%/%7%g%s$X$N(B
     $B%U%)!<%k%P%C%/$H$rDj5A$9$k$3$H$K$J$j$^$9!#(B</p>
