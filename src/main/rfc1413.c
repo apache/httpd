@@ -100,6 +100,12 @@ int ap_rfc1413_timeout = RFC1413_TIMEOUT;	/* Global so it can be changed */
 
 static JMP_BUF timebuf;
 
+/* ident_timeout - handle timeouts */
+static void ident_timeout(int sig)
+{
+    ap_longjmp(timebuf, sig);
+}
+
 /* bind_connect - bind both ends of a socket */
 /* Ambarish fix this. Very broken */
 static int get_rfc1413(int sock, const struct sockaddr_in *our_sin,
@@ -178,6 +184,21 @@ static int get_rfc1413(int sock, const struct sockaddr_in *our_sin,
      */
     while((cp = strchr(buffer, '\012')) == NULL && i < sizeof(buffer) - 1) {
         int j;
+  
+#ifdef TPF
+        /*
+         * socket read on TPF doesn't get interrupted by
+         * signals so additional processing is needed
+         */
+        j = ap_set_callback_and_alarm(NULL, 0);
+        ap_set_callback_and_alarm(ident_timeout, j);
+        j = select(&sock, 1, 0, 0, j * 1000);
+        if (j < 1) {
+            ap_set_callback_and_alarm(NULL, 0);
+            ap_check_signals();
+            return -1;
+        }
+#endif /* TPF */
 	j = read(sock, buffer+i, (sizeof(buffer) - 1) - i);
 	if (j < 0 && errno != EINTR) {
 	   ap_log_error(APLOG_MARK, APLOG_CRIT, srv,
@@ -207,12 +228,6 @@ static int get_rfc1413(int sock, const struct sockaddr_in *our_sin,
 	*cp = '\0';
 
     return 0;
-}
-
-/* ident_timeout - handle timeouts */
-static void ident_timeout(int sig)
-{
-    ap_longjmp(timebuf, sig);
 }
 
 /* rfc1413 - return remote user name, given socket structures */
