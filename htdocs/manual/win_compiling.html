@@ -20,7 +20,7 @@
    See <A HREF="windows.html">Using Apache with Microsoft Windows</A>
    before you begin.</P>
 
-<P>Compiling Apache requires Microsoft Visual C++ 5.0 to be properly
+<P>Compiling Apache requires Microsoft Visual C++ 5.0 (or 6.0) to be properly
    installed. It is easiest to compile with the command-line tools
    (nmake, <EM>etc.</EM>..). Consult the VC++ manual to determine how 
    to install them.  Be especially aware that the vcvars32.bat file
@@ -42,6 +42,12 @@
 <P>These will both compile Apache. The latter will include debugging
    information in the resulting files, making it easier to find bugs and
    track down problems.</P>
+
+<P>If you get an error such as "the name specified is not recognized..."
+ then you need to run vcvars32.bat first. Enter the following command;<br>
+  "c:\Program Files\Microsoft Visual Studio\VC98\Bin\VCVARS32.BAT"<br>
+ (you will need to adjust this so it matches where your VC was installed) then
+ try the nmake command again.</P>
 
 <P>Apache can also be compiled using VC++'s Visual Studio development
    environment.  To simplify this process, a Visual Studio workspace,
@@ -95,28 +101,28 @@
    root directory. The default is the <CODE>\Apache</CODE>
    directory, on the current hard drive.</P>
 
-<P>To install the files into the <CODE>\Apache</CODE> directory
+<P>To install the files into the <CODE>c:\ServerRoot</CODE> directory
    automatically, use one the following nmake commands (see above):</P>
 <UL>
-<LI><CODE>nmake /f Makefile.win installr INSTDIR=<EM>dir</EM></CODE>
+<LI><CODE>nmake /f Makefile.win installr INSTDIR=<EM>c:\ServerRoot</EM></CODE>
  (for release build)
-<LI><CODE>nmake /f Makefile.win installd INSTDIR=<EM>dir</EM></CODE>
+<LI><CODE>nmake /f Makefile.win installd INSTDIR=<EM>c:\ServerRoot</EM></CODE>
  (for debug build)
 </UL>
 
-The <EM>dir</EM> argument to INSTDIR gives the installation directory; it can
-be omitted if Apache is to be installed into <SAMP>\Apache</SAMP>.
+The <EM>c:\ServerRoot</EM> argument to INSTDIR gives the installation directory (it can
+be omitted if Apache is to be installed into <SAMP>\Apache</SAMP>).
 
 <P>This will install the following:</P>
 
 <UL>
-  <LI><CODE><EM>dir</EM>\Apache.exe</CODE> - Apache executable
-  <LI><CODE><EM>dir</EM>\ApacheCore.dll</CODE> - Main Apache shared library
-  <LI><CODE><EM>dir</EM>\modules\ApacheModule*.dll</CODE> - Loadable Apache
+  <LI><CODE><EM>c:\ServerRoot</EM>\Apache.exe</CODE> - Apache executable
+  <LI><CODE><EM>c:\ServerRoot</EM>\ApacheCore.dll</CODE> - Main Apache shared library
+  <LI><CODE><EM>c:\ServerRoot</EM>\modules\ApacheModule*.dll</CODE> - Loadable Apache
       modules
-  <LI><CODE><EM>dir</EM>\bin\*.exe</CODE> - Administrator support executables
-  <LI><CODE><EM>dir</EM>\conf</CODE> - Empty configuration directory
-  <LI><CODE><EM>dir</EM>\logs</CODE> - Empty logging directory
+  <LI><CODE><EM>c:\ServerRoot</EM>\bin\*.exe</CODE> - Administrator support executables
+  <LI><CODE><EM>c:\ServerRoot</EM>\conf</CODE> - Empty configuration directory
+  <LI><CODE><EM>c:\ServerRoot</EM>\logs</CODE> - Empty logging directory
 </UL>
 
 <P>If you do not have nmake, or wish to install in a different directory,
@@ -140,10 +146,29 @@ be omitted if Apache is to be installed into <SAMP>\Apache</SAMP>.
 <P>
 Before running the server you must fill out the conf directory.
 Copy the *.conf-dist-win from the distribution conf directory
-and rename *.conf.  Edit the @@ServerRoot@@ entries to your
-actual server root (for example "C:\apache").  Copy over
-the conf/magic and conf/mime.types files as well.
+and rename them to *.conf.  You will need to copy over the conf/magic
+and conf/mime.types files as well. In order to serve documents
+you will need to create a htdocs\index.html or just copy over the standard Apache
+ones (This is a good idea as then you get the full Apache documentation on line).
+If you have previously run Apache from the c:\ServerRoot directory then please make
+sure you backup any files you wish to retain or only copy the files you want replaced.
+The following commands will copy all the required files to your
+c:\ServerRoot directory (***over-writing any that were there***);<br><br>
+
+<UL>
+<LI><CODE>xcopy ..\conf\*.conf-dist-win c:\ServerRoot\conf\*.conf</CODE><br>
+<LI><CODE>xcopy ..\conf\magic c:\ServerRoot\conf\</CODE><br>
+<LI><CODE>xcopy ..\conf\mime.types c:\ServerRoot\conf\</CODE><br>
+<LI><CODE>xcopy ..\htdocs\*.* c:\ServerRoot\htdocs\ /E</CODE><br>
+</UL>
+(adjust these so c:\ServerRoot matches the INSTDIR used above)
+
+<P>
+Edit the @@ServerRoot@@ entries in c:\ServerRoot\conf\httpd.conf to your
+actual server root (for example "c:/ServerRoot" Note: you must use forward
+slashes in Apache configuration files).<br>
 
 <!--#include virtual="footer.html" -->
 </BODY>
 </HTML>
+

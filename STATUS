@@ -1,5 +1,5 @@
   1.3 STATUS:
-  Last modified at [$Date: 2000/06/08 14:30:09 $]
+  Last modified at [$Date: 2000/06/09 18:32:56 $]
 
 Release:
 
@@ -33,14 +33,8 @@ RELEASE SHOWSTOPPERS:
     * Assure the windows.html reflects reality, today.
         - running the service as a user other than SYSTEM (NT/2000).
         - Document cvstodsp6.pl in win_compiling.html.
-        Andrew Braund/OtherBill are working up Win32 doc revisions
-        to commit Friday.
-
-    * Hybrid of OtherBill's and JJK's Win9x services patches.
-        - 2 more Win95/98 users must step up to test this new patch 
-          service9x.06070011.zip (with diffs in that message)
-        - Keith has issues with the proposed patch, details to follow.
-        - Andrew Braund has tested, is working up Win32 doc revisions.
+        - CGI's cannot be unbuffered on the 1.3.13 Win32 port.
+        OtherBill is working up these final Win32 doc revisions
 
     * Close the security hole in stat() by testing for anything other 
         than conventional file-not-found, permission-denied errors and
@@ -71,15 +65,6 @@ Available Patches:
       tokenisation
 	PR: 5898
 	Status: 
-
-    * JJ Keijser's patch (99/10/06) to: 
-	- Run Apache as a service on Win9x (PR2208)
-	- Making sure that Apache is shut down when the system is shutdown. 
-           under Win95 (PR1643, PR2472)
-	- Use apache -i/-u to install/uninstalling Apache on Win9x
-	- Make Apache shut down cleanly when run on Windows 95 (PR4125)
-	PR#: PR2472, PR4125, PR1643 (suspended) and PR2208 (suspended).
-	Status: Martin +1(untested)
 
     * Gerd Knorr <gknorr@berlinonline.de>'s patch to enable mod_auth_digest
       to handle both Digest *and* Basic authentication modes.
@@ -444,40 +429,7 @@ Win32 specific issues:
     * the mutex should be critical-regions, since the current design
       is creating a mess of SO calls that are unnecessary
 
-    * CGIs
-	- docs on how they work w/scripts
-	- WTF is the buffering coming from?
-	    - we don't have a way to make non-blocking files on NT!
-
     * performance
-
-    * documentation:
-	- running the server without admin
-	- how CGIs work
-	- update README.NT
-	- short/long name handling
-	- better status page on current state of NT for users
-
-    * who should run the service?  Who exactly is the "system account"?
-
-      docs say:
-
-      Localsystem is a very privileged account locally, so you shouldn't run
-      any shareware applications there. However, it has no network privileges
-      and cannot leave the machine via any NT-secured mechanism, including
-      file system, named pipes, DCOM, or secure RPC.
-
-      and:
-
-      A service that runs in the context of the LocalSystem account
-      inherits the security context of the SCM. It is not associated with
-      any logged-on user account and does not have credentials (domain
-      name, user name, and password) to be used for verification. This
-      has several implications: [... removed ...]
-
-
-      That _really_ sucks.  Can we recommend running Apache as some 
-      other user?
 
     * modules that need to be made to work on win32
         - mod_example isn't multithreadreded

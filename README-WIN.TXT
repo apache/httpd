@@ -1,4 +1,3 @@
-
                                  Apache
                              Version 1.3 (and up)
 
@@ -58,14 +57,23 @@
   to run and configure Apache, or select the "Apache Documentation"
   icon read the local copy installed with Apache.
 
+  If you have downloaded a tar.gz file, extract it to your hard drive
+  using WinZip or similar and look in the apache-1.3\htdocs\manual
+  folder of the archive for windows.html for instructions on using 
+  Apache with Windows, win_service.html for instructions on using the
+  Apache server as a Windows 'service', and win_compiling.html for
+  help with compiling Apache.
+
   Known Problems
   --------------
 
   To get information about the current set of known problems, see the
   online bug reporting database at
-  http://www.apache.org/bug_report.html.  Bugs which affect Apache on
-  Windows and not Apache on Unix can be found under the category
-  "os-windows".
+
+      http://www.apache.org/bug_report.html
+
+  Bugs which affect Apache on Windows and not Apache on Unix can be 
+  found under the category "os-windows".
 
   Licensing
   ---------
@@ -92,4 +100,5 @@
 
   The NT port was started with code provided to the Apache Group
   by Ambarish Malpani of ValiCert, Inc. (http://www.valicert.com/).
+
 
