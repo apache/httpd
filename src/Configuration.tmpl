@@ -1,4 +1,4 @@
-# $Id: Configuration.tmpl,v 1.33 1996/09/08 13:52:39 ben Exp $
+# $Id: Configuration.tmpl,v 1.34 1996/09/08 13:55:08 ben Exp $
 # Config file for the Apache httpd.
 
 # Configuration.tmpl is the template for Configuration. Configuration should
@@ -84,14 +84,16 @@ RANLIB=ranlib
 #  If you find that your OS can't cope with mmap (compiles OKAY but refuses
 #  to run and moans "httpd: Could not mmap memory" .. or similar) set
 #  this to 'yes'.
-#  
-#
+
 Rule STATUS=yes
 Rule SOCKS=no
 
 # The following rules should be set automatically by Configure. However, if
 # they are not set by Configure (because we don't know the correct value for
-# your platform) you may override them here.
+# your platform), or are set incorrectly, you may override them here.
+# If you have to do this, please let us know what you set and what your
+# platform is, by sending mail to apache-bugs@apache.org.
+
 Rule HSREGEX=default
 Rule BADMMAP=default
 
