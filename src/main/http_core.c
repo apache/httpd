@@ -595,14 +595,17 @@ API_EXPORT(const char *) get_server_name(const request_rec *r)
 
 API_EXPORT(unsigned) get_server_port(const request_rec *r)
 {
+    unsigned port;
     core_dir_config *d =
       (core_dir_config *)get_module_config(r->per_dir_config, &core_module);
     
+    port = r->server->port ? r->server->port : default_port(r);
+
     if (d->use_canonical_name & 1) {
-	return r->server->port;
+	return port;
     }
     return r->hostname ? ntohs(r->connection->local_addr.sin_port)
-			: r->server->port;
+			: port;
 }
 
 API_EXPORT(char *) construct_url(pool *p, const char *uri, const request_rec *r)
@@ -614,12 +617,17 @@ API_EXPORT(char *) construct_url(pool *p, const char *uri, const request_rec *r)
       (core_dir_config *)get_module_config(r->per_dir_config, &core_module);
 
     if (d->use_canonical_name & 1) {
-	port = r->server->port;
+	port = r->server->port ? r->server->port : default_port(r);
 	host = r->server->server_hostname;
     }
     else {
-	port = r->hostname ? ntohs(r->connection->local_addr.sin_port)
-			    : r->server->port;
+        if (r->hostname)
+            port = ntohs(r->connection->local_addr.sin_port);
+        else if (r->server->port)
+            port = r->server->port;
+        else
+            port = default_port(r);
+
 	host = r->hostname ? r->hostname : r->server->server_hostname;
     }
     if (is_default_port(port, r)) {
