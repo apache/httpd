@@ -1,5 +1,5 @@
 /* ====================================================================
- * Copyright (c) 1995 The Apache Group.  All rights reserved.
+ * Copyright (c) 1995, 1996 The Apache Group.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -51,18 +51,15 @@
  */
 
 /*
- * str.c: string utility things
+ * util.c: string utility things
  * 
  * 3/21/93 Rob McCool
+ * 1995-96 Many changes by the Apache Group
  * 
  */
 
-
 #include "httpd.h"
 #include "http_conf_globals.h"	/* for user_id & group_id */
-#ifdef QNX
-#include <time.h>
-#endif
 
 char *get_time() {
     time_t t;
