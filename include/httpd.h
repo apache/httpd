@@ -969,14 +969,6 @@ API_EXPORT(char *) ap_pbase64encode(ap_pool_t *p, char *string);
 API_EXPORT(char *) ap_uudecode(ap_pool_t *p, const char *bufcoded);
 API_EXPORT(char *) ap_uuencode(ap_pool_t *p, char *string); 
 
-#ifndef HAVE_STRCASECMP
-int strcasecmp(const char *a, const char *b);
-#endif
-
-#ifndef HAVE_STRNCASECMP
-int strncasecmp(const char *a, const char *b, size_t n);
-#endif
-
 #include "pcreposix.h"
 
 API_EXPORT(regex_t *) ap_pregcomp(ap_pool_t *p, const char *pattern,

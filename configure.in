@@ -100,10 +100,6 @@ dnl ## Check for library functions
 dnl See Comment #Spoon
 
 AC_CHECK_FUNCS( \
-strdup \
-strcasecmp \
-strncasecmp \
-strstr \
 initgroups \
 waitpid \
 memmove \
