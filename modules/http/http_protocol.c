@@ -1311,8 +1311,6 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_http_header_filter(
 
     terminate_header(b2);
 
-    r->sent_bodyct = 1;         /* Whatever follows is real body stuff... */
-
     ap_pass_brigade(f->next, b2);
 
     if (r->header_only) {
@@ -1320,6 +1318,8 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_http_header_filter(
         ctx->headers_sent = 1;
         return OK;
     }
+
+    r->sent_bodyct = 1;         /* Whatever follows is real body stuff... */
 
     if (r->chunked) {
         /* We can't add this filter until we have already sent the headers.
