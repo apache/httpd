@@ -233,6 +233,8 @@ _build:
 	 $(MAKE) $(MAKEOPT) -f mod_charset_lite.mak CFG="mod_charset_lite - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f mod_mem_cache.mak   CFG="mod_mem_cache - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f mod_disk_cache.mak  CFG="mod_disk_cache - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+	 $(MAKE) $(MAKEOPT) -f util_ldap.mak       CFG="util_ldap - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+	 $(MAKE) $(MAKEOPT) -f mod_auth_ldap.mak   CFG="mod_auth_ldap - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	cd ..\..
 	cd modules\filters
 !IF EXIST("srclib\zlib")
@@ -396,6 +398,8 @@ _install:
 	copy modules\experimental\$(LONG)\mod_charset_lite.so "$(INSTDIR)\modules" <.y
 	copy modules\experimental\$(LONG)\mod_mem_cache.so "$(INSTDIR)\modules" <.y
 	copy modules\experimental\$(LONG)\mod_disk_cache.so "$(INSTDIR)\modules" <.y
+	copy modules\experimental\$(LONG)\util_ldap.so "$(INSTDIR)\modules" <.y
+	copy modules\experimental\$(LONG)\mod_auth_ldap.so "$(INSTDIR)\modules" <.y
 	copy modules\filters\$(LONG)\mod_ext_filter.so "$(INSTDIR)\modules" <.y
 	copy modules\filters\$(LONG)\mod_include.so "$(INSTDIR)\modules" <.y
 	copy modules\generators\$(LONG)\mod_asis.so "$(INSTDIR)\modules" <.y
@@ -445,6 +449,8 @@ _install:
 	copy modules\experimental\$(LONG)\mod_charset_lite.pdb "$(INSTDIR)\modules" <.y
 	copy modules\experimental\$(LONG)\mod_mem_cache.pdb "$(INSTDIR)\modules" <.y
 	copy modules\experimental\$(LONG)\mod_disk_cache.pdb "$(INSTDIR)\modules" <.y
+	copy modules\experimental\$(LONG)\util_ldap.pdb "$(INSTDIR)\modules" <.y
+	copy modules\experimental\$(LONG)\mod_auth_ldap.pdb "$(INSTDIR)\modules" <.y
 	copy modules\filters\$(LONG)\mod_ext_filter.pdb "$(INSTDIR)\modules" <.y
 	copy modules\filters\$(LONG)\mod_include.pdb "$(INSTDIR)\modules" <.y
 	copy modules\generators\$(LONG)\mod_asis.pdb "$(INSTDIR)\modules" <.y
