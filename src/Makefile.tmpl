@@ -32,7 +32,10 @@ all: @@Configuration@@ os-dir core-dir modules/last-built httpd
 	@false
 
 httpd: $(REGLIB) $(OBJS)
-	$(CC) $(LDFLAGS)  -o httpd $(OBJS) $(REGLIB) $(LIBS)
+	rm -f buildmark.c
+	echo 'const char SERVER_BUILT[] = "'`/bin/date`'";' > buildmark.c
+	$(CC) -c buildmark.c
+	$(CC) $(LDFLAGS)  -o httpd buildmark.o $(OBJS) $(REGLIB) $(LIBS)
 
 regex/libregex.a:
 	(cd regex; $(MAKE) lib CC='$(CC)' AUX_CFLAGS='$(CFLAGS)' RANLIB='$(RANLIB)')

@@ -1,5 +1,11 @@
 Changes with Apache 1.3a2
 
+  *) Add the server version (SERVER_VERSION macro) to the "server
+     configured and running" entry in the error_log.  Also build an
+     object file at link-time that contains the current time
+     (SERVER_BUILT global const char[]), and include that in the
+     message.  [Ken Coar]
+
   *) Set r->headers_out when sending responses from the proxy.
      This fixes things such as the logging of headers sent from
      the proxy.  PR#659  [Marc Slemko]

@@ -3126,6 +3126,7 @@ void standalone_main(int argc, char **argv)
 
 	log_printf (server_conf, "Apache HTTP Server version: %s",
 	            SERVER_VERSION);
+	log_printf (server_conf, "Server built: %s", SERVER_BUILT);
 	log_error ("Server configured -- resuming normal operations",
 	           server_conf);
 	restart_pending = 0;

@@ -359,6 +359,7 @@
 #else
 #define SERVER_VERSION	SERVER_BASEVERSION
 #endif
+extern MODULE_VAR_EXPORT const char SERVER_BUILT[];
 
 /* Numeric release version identifier: major minor bugfix betaseq
  * Always increases along the same track as the source branch.
