@@ -775,6 +775,54 @@ else
 fi
 
 ##
+##  determine special configuration parameters
+##
+conf_group="#-1"
+if [ ".`egrep ^nobody: /etc/group`" != . ]; then
+    conf_group="nobody"
+fi
+conf_port="80"
+if [ ".`id | grep root`" = . ]; then
+    conf_port="8080"
+fi
+username="$LOGNAME"
+if [ ".$username" = . ]; then
+    username="$USER"
+    if [ ".$username" = . ]; then
+        username="`whoami 2>/dev/null | sed -e 's/\n$//'`"
+        if [ ".$username" = . ]; then
+            username="`who am i 2>/dev/null | cut '-d ' -f1`"
+            if [ ".$username" = . ]; then
+                username="unknown"
+            fi
+        fi
+    fi
+fi
+hostname="`uname -n | sed -e 's/\n$//'`"
+if [ ".$hostname" = . ]; then
+    hostname="`hostname | sed -e 's/\n$//'`"
+    if [ ".$hostname" = . ]; then
+        hostname="hostname"
+    fi
+fi
+hostname="`echo $hostname | sed -e 's/\..*//'`"
+domainname="";
+if [ -f /etc/resolv.conf ]; then
+    domainname="`egrep '^[  ]*domain' /etc/resolv.conf |\
+                 sed -e 's/.*domain//' -e 's/^[     ]*//' \
+                     -e 's/^ *//' -e 's/^   *//' \
+                     -e 's/^\.//' -e 's/^/./'`"
+    if [ ".$domainname" = . ]; then
+        domainname="`egrep '^[ 	]*search' /etc/resolv.conf |\
+		             sed -e 's/.*search//' -e 's/^[ 	]*//' \
+					     -e 's/^ *//' -e 's/^	*//' \
+						 -e 's/ .*//' -e 's/^\.//' -e 's/^/./'`"
+    fi
+fi
+conf_serveradmin="$username@$hostname$domainname"
+conf_servername="$hostname$domainname"
+
+##
 ##  determine prefix-relative paths for directories
 ##  because Apache supports them for the -d and -f 
 ##  options, the LoadModule directive, etc.
@@ -854,6 +902,10 @@ sed <Makefile.tmpl >$mkf \
 -e "s%@suexec@%$suexec%g" \
 -e "s%@suexec_caller@%$suexec_caller%g" \
 -e "s%@suexec_userdir@%$suexec_userdir%g" \
+-e "s%@conf_group@%$conf_group%g" \
+-e "s%@conf_port@%$conf_port%g" \
+-e "s%@conf_serveradmin@%$conf_serveradmin%g" \
+-e "s%@conf_servername@%$conf_servername%g" \
 -e "s%@suexec_uidmin@%$suexec_uidmin%g" \
 -e "s%@suexec_gidmin@%$suexec_gidmin%g" \
 -e "s%@suexec_safepath@%$suexec_safepath%g" \

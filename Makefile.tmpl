@@ -118,6 +118,12 @@ suexec_uidmin   = @suexec_uidmin@
 suexec_gidmin   = @suexec_gidmin@
 suexec_safepath = @suexec_safepath@
 
+#   some substituted configuration parameters
+conf_group       = @conf_group@
+conf_port        = @conf_port@
+conf_serveradmin = @conf_serveradmin@
+conf_servername  = @conf_servername@
+
 #   usage of src/support stuff
 build-support     = @build_support@
 install-support   = @install_support@
@@ -382,6 +388,10 @@ install-config:
 			-e 's;logs/referer_log;$(logfiledir)/referer_log;' \
 			-e 's;logs/agent_log;$(logfiledir)/agent_log;' \
 			-e 's;conf/magic;$(sysconfdir)/magic;' \
+			-e 's;Group #-1;Group $(conf_group);' \
+			-e 's;Port 80;Port $(conf_port);' \
+			-e 's;ServerAdmin you@your.address;ServerAdmin $(conf_serveradmin);' \
+			-e 's;ServerName new.host.name;ServerName $(conf_servername);' \
         	> $(TOP)/$(SRC)/.apaci.install.tmp && \
 		echo "$(INSTALL_DATA) $(TOP)/conf/$${conf}-dist[*] $(root)$(sysconfdir)/$${conf}.default"; \
 		$(INSTALL_DATA) $(TOP)/$(SRC)/.apaci.install.tmp $(root)$(sysconfdir)/$${conf}.default; \

@@ -44,14 +44,6 @@ Available Patches:
       <19980611171746.A23845@engelschall.com>
       Status: Ralf +1
 
-    * Ralf's "substitute some more configuration parameters":
-      This patch lets APACI's configure script determine more configuration
-      parameters (Group, Port, ServerAdmin, ServerName) via some intelligent
-      tests to remove some of the classical hurdles for new users when setting
-      up Apache.
-      See: http://www.engelschall.com/sw/apache/ [substconfparam]
-      Status (for 1.3.1-dev): Ralf +1, Jim +1
-
     * Ralf's "linking DSO modules against possible libraries from $(LIBS)":
       This patch is a first step for a more powerful and less restrictive DSO
       mechanism: We allow DSO modules to be linked against other DSO libraries
