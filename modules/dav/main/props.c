@@ -856,7 +856,7 @@ static dav_datum dav_gdbm_key(dav_propdb *propdb, const dav_xml_elem *elem)
     return key;
 }
 
-dav_error *dav_really_open_db(dav_propdb *propdb, int ro)
+static dav_error *dav_really_open_db(dav_propdb *propdb, int ro)
 {
     dav_error *err;
     dav_datum key;

@@ -1279,7 +1279,7 @@ static dav_error * dav_fs_remove_resource(dav_resource *resource,
 /* ### move this to dav_util? */
 /* Walk recursively down through directories, *
  * including lock-null resources as we go.    */
-dav_error * dav_fs_walker(dav_fs_walker_context *fsctx, int depth)
+static dav_error * dav_fs_walker(dav_fs_walker_context *fsctx, int depth)
 {
     dav_error *err = NULL;
     dav_walker_ctx *wctx = fsctx->wctx;

@@ -151,6 +151,7 @@ static void dav_start_handler(void *userdata, const char *name, const char **att
     dav_xml_attr *prev;
     char *colon;
     const char *quoted;
+    char *elem_name;
 
     /* punt once we find an error */
     if (ctx->error)
@@ -159,7 +160,7 @@ static void dav_start_handler(void *userdata, const char *name, const char **att
     elem = ap_pcalloc(ctx->p, sizeof(*elem));
 
     /* prep the element */
-    elem->name = ap_pstrdup(ctx->p, name);
+    elem->name = elem_name = ap_pstrdup(ctx->p, name);
 
     /* fill in the attributes (note: ends up in reverse order) */
     while (*attrs) {
@@ -258,7 +259,7 @@ static void dav_start_handler(void *userdata, const char *name, const char **att
 	elem->lang = elem->parent->lang;
 
     /* adjust the element's namespace */
-    colon = strchr(elem->name, ':');
+    colon = ap_strchr(elem_name, ':');
     if (colon == NULL) {
 	/*
 	 * The element is using the default namespace, which will always
@@ -283,7 +284,14 @@ static void dav_start_handler(void *userdata, const char *name, const char **att
 
     /* adjust all remaining attributes' namespaces */
     for (attr = elem->attr; attr; attr = attr->next) {
-	colon = strchr(attr->name, ':');
+        /*
+         * dav_xml_attr defines this as "const" but we dup'd it, so we
+         * know that we can change it. a bit hacky, but the existing
+         * structure def is best.
+         */
+        char *attr_name = (char *)attr->name;
+
+	colon = ap_strchr(attr_name, ':');
 	if (colon == NULL) {
 	    /*
 	     * Attributes do NOT use the default namespace. Therefore,

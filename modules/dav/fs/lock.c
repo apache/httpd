@@ -282,7 +282,7 @@ static dav_error * dav_fs_parse_locktoken(
 {
     dav_locktoken *locktoken;
 
-    if (strstr(char_token, "opaquelocktoken:") != char_token) {
+    if (ap_strstr_c(char_token, "opaquelocktoken:") != char_token) {
 	return dav_new_error(p,
 			     HTTP_BAD_REQUEST, DAV_ERR_LOCK_UNK_STATE_TOKEN,
 			     "The lock token uses an unknown State-token "
