@@ -409,7 +409,7 @@ static int cache_in_filter(ap_filter_t *f, apr_bucket_brigade *in)
     const char *cc_out = apr_table_get(r->headers_out, "Cache-Control");
     const char *exps, *lastmods, *dates, *etag;
     apr_time_t exp, date, lastmod, now;
-    apr_size_t size;
+    apr_off_t size;
     cache_info *info;
     void *sconf = r->server->module_config;
     cache_server_conf *conf =

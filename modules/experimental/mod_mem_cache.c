@@ -431,7 +431,7 @@ static void *create_cache_config(apr_pool_t *p, server_rec *s)
 static int create_entity(cache_handle_t *h, request_rec *r,
                          const char *type, 
                          const char *key, 
-                         apr_size_t len) 
+                         apr_off_t len) 
 {
     cache_object_t *obj, *tmp_obj;
     mem_cache_object_t *mobj;
