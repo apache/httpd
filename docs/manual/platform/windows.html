@@ -55,9 +55,13 @@
    "Winsock2" for Windows 95 is available 
    <A HREF="http://www.microsoft.com/windows95/downloads/">here</A>.</P>
 
-<P>If running on NT 4.0, installing Service Pack 3 is recommended, and
+<P>If running on NT 4.0, installing Service Pack 3 or 6 is recommended, and
    Service Pack 4 created known issues with Tcpip/winsock integrety that
    were resolved in Service Pack 5.</P>
+
+<P><STRONG>Warning, as of alpha 2.0a4 Windows 95 (and possibly 98) do not
+   run at all.  Please don't let that stop you, however, from contributing
+   the fixes required to make that platform run successfully.</STRONG></P>
 
 <H2><A NAME="down">Downloading Apache for Windows</A></H2>
 
@@ -76,6 +80,12 @@
    will have to convert at least the <SAMP>.mak</SAMP> and
    <SAMP>.dsp</SAMP> files to have DOS line endings before MSVC will
    understand them).</P>
+
+<P><STRONG>Notice: alpha versions are not distributed in binary form (as
+   an .exe ready-to-run version).  You must use the Microsoft Visual C++
+   compiler version 5 or 6 (bundled in VisualStudio 97 or 2000).  Read 
+   <A HREF="win_compiling.html">Compiling Apache for Microsoft Windows</A>
+   for compilation/installation instructions.</STRONG></P>
 
 <H2><A NAME="inst">Installing Apache for Windows</A></H2>
 
@@ -297,20 +307,20 @@ There are two ways you can run Apache:
 <P>You can install Apache as a Windows NT service as follows:
 
 <PRE>
-    apache -i -n "service name"
+    apache -k install -n "service name"
 </PRE>
 
   To install a service to use a particular configuration, specify the
   configuration file when the service is installed:
 
 <PRE>
-    apache -i -n "service name" -f "\my server\conf\my.conf"
+    apache -k install -n "service name" -f "\my server\conf\my.conf"
 </PRE>
 
   To remove an Apache service, use
 
 <PRE>
-    apache -u -n "service name"
+    apache -k uninstall -n "service name"
 </PRE>
 
   The default "service name", if one is not specified, is "Apache".</P>
