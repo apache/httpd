@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2002/04/08 19:51:12 $]
+Last modified at [$Date: 2002/04/08 19:52:26 $]
 
 Release:
 
@@ -47,7 +47,7 @@ CURRENT RELEASE NOTES:
 
     * 36 status:
 
-FINAL RELEASE SHOWSTOPPERS:
+RELEASE SHOWSTOPPERS:
     * Daedalus segfaults with 2.0.35
       Greg and Cliff are working on this.
 
