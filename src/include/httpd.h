@@ -362,7 +362,7 @@
  * Example: "Apache/1.1.0 MrWidget/0.1-alpha" 
  */
 
-#define SERVER_BASEVERSION "Apache/1.3b6"	/* SEE COMMENTS ABOVE */
+#define SERVER_BASEVERSION "Apache/1.3b7-dev"	/* SEE COMMENTS ABOVE */
 #ifdef SERVER_SUBVERSION
 #define SERVER_VERSION	SERVER_BASEVERSION " " SERVER_SUBVERSION
 #else
@@ -375,7 +375,7 @@ API_EXPORT(const char *) ap_get_server_built(void);
 /* Numeric release version identifier: major minor bugfix betaseq
  * Always increases along the same track as the source branch.
  */
-#define APACHE_RELEASE 1030006
+#define APACHE_RELEASE 1030007
 
 #define SERVER_PROTOCOL "HTTP/1.1"
 #ifndef SERVER_SUPPORT
