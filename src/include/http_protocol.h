@@ -61,7 +61,8 @@ request_rec *read_request (conn_rec *c);
 
 /* Send a single HTTP header field */
 
-int send_header_field (request_rec *r, char *fieldname, char *fieldval);
+int send_header_field (request_rec *r, const char *fieldname,
+                                       const char *fieldval);
 
 /* Send the Status-Line and header fields for HTTP response */
 

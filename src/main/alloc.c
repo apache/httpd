@@ -670,7 +670,8 @@ table* overlay_tables (pool *p, const table *overlay, const table *base)
  * Note that rec is simply passed-on to the comp function, so that the
  * caller can pass additional info for the task.
  */
-void table_do (int (*comp)(void *, char *, char *), void *rec, table *t, ...)
+void table_do (int (*comp)(void *, const char *, const char *), void *rec,
+               const table *t, ...)
 {
     va_list vp;
     char *argp;

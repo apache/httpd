@@ -149,7 +149,8 @@ void table_set (table *, const char *name, const char *val);
 void table_merge (table *, const char *name, const char *more_val);
 void table_unset (table *, const char *key);
 void table_add (table *, const char *name, const char *val);
-void table_do (int (*comp)(void *, char *, char *), void *rec, table *t, ...);
+void table_do (int (*comp)(void *, const char *, const char *), void *rec,
+               const table *t, ...);
 
 table *overlay_tables (pool *p, const table *overlay, const table *base);     
 

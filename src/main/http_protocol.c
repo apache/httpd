@@ -1019,7 +1019,8 @@ int index_of_response(int status)
  * In other words, don't change this one without checking table_do in alloc.c.
  * It returns true unless there was a write error of some kind.
  */
-int send_header_field (request_rec *r, char *fieldname, char *fieldval)
+int send_header_field (request_rec *r, const char *fieldname,
+                                       const char *fieldval)
 {
     return (0 < bvputs(r->connection->client,
                        fieldname, ": ", fieldval, "\015\012", NULL));
@@ -1088,7 +1089,7 @@ int send_http_trace (request_rec *r)
 
     rvputs( r, r->the_request, "\015\012", NULL );
 
-    table_do((int (*)(void *, char *, char *))send_header_field,
+    table_do((int (*)(void *, const char *, const char *))send_header_field,
              (void *)r, r->headers_in, NULL);
     bputs("\015\012", r->connection->client);
 
@@ -1110,7 +1111,7 @@ int send_http_options(request_rec *r)
     table_set(r->headers_out, "Allow", make_allow(r));
     set_keepalive(r);
 
-    table_do((int (*)(void *, char *, char *))send_header_field,
+    table_do((int (*)(void *, const char *, const char *))send_header_field,
              (void *)r, r->headers_out, NULL);
     bputs("\015\012", r->connection->client);
 
@@ -1203,7 +1204,7 @@ void send_http_header(request_rec *r)
 
     /* Send the entire table of header fields, terminated by an empty line. */
 
-    table_do((int (*)(void *, char *, char *))send_header_field,
+    table_do((int (*)(void *, const char *, const char *))send_header_field,
              (void *)r, r->headers_out, NULL);
     bputs("\015\012", r->connection->client);
 
@@ -1616,7 +1617,7 @@ void send_error_response (request_rec *r, int recursive_error)
 	    basic_http_header(r);
 	    set_keepalive(r);
 
-	    table_do((int (*)(void *, char *, char *))send_header_field,
+	    table_do((int (*)(void *, const char *, const char *))send_header_field,
 	             (void *)r, r->headers_out,
 	             "Connection",
 	             "Keep-Alive",
