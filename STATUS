@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/08/27 09:03:22 $]
+Last modified at [$Date: 2004/08/27 11:33:36 $]
 
 Release:
 
@@ -83,6 +83,11 @@ PATCHES TO BACKPORT FROM 2.1
        +1: stoddard, trawick
        nd: I'd like to add 1.169
 
+    *) Add -l option to rotatelogs to let it use local time rather than
+       UTC.  PR 24417.  [Ken Coar, Uli Zappe <uli ritual.org>]
+         support/rotatelogs.c: r1.33, r1.34, r1.35
+       +1: trawick
+    
     *) Remove LDAP toolkit specific code from util_ldap and mod_auth_ldap.
          modules/experimental/mod_auth_ldap.c: 1.28
          modules/experimental/util_ldap.c: 1.36
