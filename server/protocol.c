@@ -1100,9 +1100,9 @@ AP_DECLARE(void) ap_note_digest_auth_failure(request_rec *r)
     apr_table_setn(r->err_headers_out,
                    (PROXYREQ_PROXY == r->proxyreq) ? "Proxy-Authenticate"
                                                    : "WWW-Authenticate",
-                   /* need APR_TIME_T_FMT_HEX */
-                   apr_psprintf(r->pool, "Digest realm=\"%s\", nonce=\"%llx\"",
-                                ap_auth_name(r), r->request_time));
+                   apr_psprintf(r->pool, "Digest realm=\"%s\", nonce=\""
+                                "%" APR_UINT64_T_HEX_FMT "\"",
+                                ap_auth_name(r), (apr_uint64_t)r->request_time));
 }
 
 AP_DECLARE(int) ap_get_basic_auth_pw(request_rec *r, const char **pw)
