@@ -182,6 +182,19 @@ INSTALL = $(AP_WORK)\Dist
 INSTDIRS = $(AP_WORK)\Dist
 endif
 
+# Add support for building IPV6 alongside
+ifneq "$(IPV6)" ""
+DEFINES += -DNW_BUILD_IPV6
+
+ifneq "$(IPV6)" "SET"
+OBJDIR := $(OBJDIR)_IPV6
+INSTALL := $(INSTALL)_IPV6
+INSTDIRS := $(INSTDIRS)_IPV6
+IPV6=SET
+endif
+
+endif
+
 INSTDEVDIRS := \
     $(INSTDIRS) \
 	$(INSTALL)\Apache2\include \
