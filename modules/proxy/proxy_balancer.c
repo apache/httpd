@@ -42,27 +42,20 @@ static int init_runtime_score(apr_pool_t *pool, proxy_balancer *balancer)
     double median, ffactor = 0.0;
     proxy_runtime_worker *workers;    
 #if PROXY_HAS_SCOREBOARD
-    lb_score *score;
-    int mpm_daemons;
+    lb_score *score = NULL;
 #else
-    void *score;
+    void *score = NULL;
 #endif
 
     workers = (proxy_runtime_worker *)balancer->workers->elts;
 
     for (i = 0; i < balancer->workers->nelts; i++) {
 #if PROXY_HAS_SCOREBOARD
-        ap_mpm_query(AP_MPMQ_HARD_LIMIT_DAEMONS, &mpm_daemons);
-        /* Check if we are prefork or single child */
-        if (workers[i].w->hmax && mpm_daemons > 1) {
-            score = ap_get_scoreboard_lb(getpid(), workers[i].id);
-        }
-        else
+        /* Get scoreboard slot */
+        score = ap_get_scoreboard_lb(workers[i].id);
 #endif
-        {
-            /* Use the plain memory */
+        if (!score)
             score = apr_pcalloc(pool, sizeof(proxy_runtime_stat));
-        }
         workers[i].s = (proxy_runtime_stat *)score;
     }
 
