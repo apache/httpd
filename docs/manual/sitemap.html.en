@@ -123,7 +123,6 @@ Server on HPUX</a></li>
 
 <li><a href="mod/">Apache modules</a>
 <ul>
-<li><a href="mod/index-bytype.html">Apache modules - By Type</a></li>
 <li><a href="mod/directives.html">Apache directives</a></li>
 <li><a href="mod/module-dict.html">Definitions of terms used to describe Apache modules</a></li>
 <li><a href="mod/directive-dict.html">Definitions of terms used to describe Apache directives</a></li>

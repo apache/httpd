@@ -465,7 +465,7 @@
     are available in various modules. During the configuration
     process, you must select which modules to compile for use with
     your server. You can view a <a
-    href="mod/index-bytype.html">list of modules</a> included in
+    href="mod/index.html">list of modules</a> included in
     the documentation. Those modules with a <a
     href="mod/module-dict.html#Status">status</a> of "Base" are
     included by default and must be specifically disabled if you do
