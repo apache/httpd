@@ -1,5 +1,5 @@
 Apache 2.0 STATUS:
-Last modified at [$Date: 2000/07/02 00:39:06 $]
+Last modified at [$Date: 2000/07/03 12:13:23 $]
 
 Release:
 
@@ -134,12 +134,15 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
 
     * Integrate mod_dav.
         Message-id: <20000625173247.M29590@lyra.org>
-        Status: in process. (it compiles/links, but doesn't work yet)
-        - APR does not provide a couple needed things: chmod()
-          and ap_finfo_t.st_dev.
+        Status: works. passes initial regression testing. Joe Orton
+                reports success with his "cadaver" tool.
+        Some additional items remaining:
 	- APR-ization of the dav/fs/ stuff
 	- case_preserved_filename stuff
         - turn dav/fs/ into a true module; remove existing config hackery
+        - fix and re-enable sdbm_lock.c
+        - torch the dav_ prefix for all code outside of modules/dav/
+          (patch coming soon from Joe Orton)
 
     * ap_core_translate() and its use by mod_mmap_static are a bit wonky.
       The function should probably be exposed as a utility function (such
