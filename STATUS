@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/07/28 20:05:49 $]
+Last modified at [$Date: 2004/07/28 22:55:15 $]
 
 Release:
 
@@ -72,6 +72,12 @@ RELEASE SHOWSTOPPERS:
 PATCHES TO BACKPORT FROM 2.1
   [ please place file names and revisions from HEAD here, so it is easy to
     identify exactly what the proposed changes are! ]
+
+    *) Add load balancer support to the scoreboard in preparation for
+       load balancing support in mod_proxy.
+         include/scoreboard.h: 1.52
+         server/scoreboard.c: 1.75
+       +1: minfrin
 
     *) mod_cgi: Added API call and overload of detached field in cgi_exec_info_t 
        structure to support loading in current or new address space for CGIs.
