@@ -1268,6 +1268,7 @@ static void fixup_vary(request_rec *r)
                        apr_array_pstrcat(r->pool, varies, ','));
     }
 }
+
 AP_DECLARE(void) ap_set_content_type(request_rec *r, const char *ct)
 {
     r->content_type = ct;
