@@ -164,6 +164,8 @@ server_rec *ap_server_conf;
 
 /* *Non*-shared http_main globals... */
 
+int hold_screen_on_exit = 0; /* Indicates whether the screen should be held open */
+
 static fd_set listenfds;
 static int listenmaxfd;
 
@@ -907,6 +909,9 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
 
     startup_workers(ap_threads_to_start);
 
+     /* Allow the Apache screen to be closed normally on exit()*/
+    hold_screen_on_exit = 0;
+
     ap_log_error(APLOG_MARK, APLOG_NOTICE, 0, ap_server_conf,
 		"%s configured -- resuming normal operations",
 		ap_get_server_version());
@@ -1008,6 +1013,9 @@ void netware_rewrite_args(process_rec *process)
 
     atexit (mpm_term);
     InstallConsoleHandler();
+
+    /* Make sure to hold the Apache screen open if exit() is called */
+    hold_screen_on_exit = 1;
 
     /* Rewrite process->argv[]; 
      *

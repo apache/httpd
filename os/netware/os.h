@@ -65,12 +65,14 @@
 
 #include <screen.h>
 
+extern int hold_screen_on_exit; /* Indicates whether the screen should be held open on exit*/
+
 #define CASE_BLIND_FILESYSTEM
 #define NO_WRITEV
 
 #define APACHE_MPM_DIR  "server/mpm/netware" /* generated on unix */
 
 #define getpid NXThreadGetId
-#define exit(s) if(s){pressanykey();apr_terminate();}exit(s);
+#define exit(s) if(s||hold_screen_on_exit){pressanykey();apr_terminate();}exit(s);
 
 #endif   /* ! APACHE_OS_H */
