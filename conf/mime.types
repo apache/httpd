@@ -346,6 +346,7 @@ audio/vnd.qcelp
 audio/vnd.rhetorex.32kadpcm
 audio/vnd.vmx.cvsd
 audio/x-aiff			aif aiff aifc
+audio/x-mpegurl			m3u
 audio/x-pn-realaudio		ram rm
 audio/x-pn-realaudio-plugin	rpm
 audio/x-realaudio		ra
@@ -459,7 +460,7 @@ video/quicktime			qt mov
 video/vnd.fvt
 video/vnd.motorola.video
 video/vnd.motorola.videop
-video/vnd.mpegurl
+video/vnd.mpegurl		mxu
 video/vnd.mts
 video/vnd.nokia.interleaved-multimedia
 video/vnd.vivo

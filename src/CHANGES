@@ -1,4 +1,9 @@
 Changes with Apache 1.3.21
+
+  *) Update the mime.types file to map video/vnd.mpegurl to mxu
+     and add commonly used audio/x-mpegurl for m3u extensions.
+     [Heiko Recktenwald <uzs106@uni-bonn.de>, Lars Eilebrecht]
+
   *) Modified mod_mime and mod_negotiation to prevent mod_negotiation 
      from serving any multiview variant containing one or more 
      'unknown' filename extensions. In PR #8130, mod_negotiation was 
