@@ -3322,7 +3322,7 @@ static int core_output_filter(ap_filter_t *f, ap_bucket_brigade *b)
 {
     apr_status_t rv;
     ap_bucket_brigade *more = NULL;
-    apr_ssize_t bytes_sent = 0, nbytes = 0;
+    apr_ssize_t bytes_sent = 0, nbytes;
     ap_bucket *e;
     conn_rec *c = f->c;
 
@@ -3352,6 +3352,7 @@ static int core_output_filter(ap_filter_t *f, ap_bucket_brigade *b)
 
     /* Iterate over the brigade collecting iovecs */
     while (b) {
+        nbytes = 0; /* in case more points to another brigade */
         more = NULL;
         AP_BRIGADE_FOREACH(e, b) {
             if (e->type == AP_BUCKET_EOS) {
@@ -3447,7 +3448,6 @@ static int core_output_filter(ap_filter_t *f, ap_bucket_brigade *b)
             rv = writev_it_all(c->client->bsock, 
                                vec, nvec, 
                                nbytes, &bytes_sent);
-            nbytes = 0; /* in case more points to another brigade */
         }
 
         ap_brigade_destroy(b);
