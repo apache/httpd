@@ -2,10 +2,14 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) mod_ssl: Add "SSLUserName" directive to set r->user based on a
+     chosen SSL environment variable.  PR 20957. 
+     [Martin v. Loewis <martin v.loewis.de>]
+
   *) mod_ssl: Add "SSLHonorCipherOrder" directive to enable the
      OpenSSL 0.9.7 flag which uses the server's cipher order rather
-     than the client's.  
-     PR 28665.  [Jim Schneider <jschneid netilla.com>]
+     than the client's.  PR 28665.
+     [Jim Schneider <jschneid netilla.com>]
 
   *) mod_ssl: Drop support for the CompatEnvVars argument to
      SSLOptions, which was never actually implemented in 2.0.
