@@ -19,9 +19,7 @@ be nice too.
 
 To use:
 
-    cd conf
-    perl -pi.orig -e "s#/home/dgaudet/ap/vhtest#`pwd`#" *.conf
-    cd ..
+    perl -pi.orig -e "s#/home/dgaudet/ap/vhtest#`pwd`#" conf/*.conf
     ./runtest /path/to/httpd
 
 Or to run a specific test:
