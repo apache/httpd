@@ -1,6 +1,10 @@
 Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
+  *) Win32: Tweak worker thread accounting routines to eliminate
+     server hang when number of Listen directives in httpd.conf
+     is greater than or equal to the setting of ThreadsPerChild.
+     [Bill Stoddard]
 
   *) mod_rewrite: Support for recognizing SSL variables in RewriteCond
      using the new "SSL:" format.  [Joe Orton, Madhusudan Mathihalli]

@@ -63,6 +63,7 @@ static apr_thread_mutex_t  *qlock;
 static PCOMP_CONTEXT qhead = NULL;
 static PCOMP_CONTEXT qtail = NULL;
 static int num_completion_contexts = 0;
+static int max_num_completion_contexts = 0;
 static HANDLE ThreadDispatchIOCP = NULL;
 static HANDLE qwait_event = NULL;
 
@@ -111,11 +112,12 @@ AP_DECLARE(PCOMP_CONTEXT) mpm_get_completion_context(void)
         apr_thread_mutex_unlock(qlock);
   
         if (!context) {
-            /* We failed to grab a context off the queue, consider allocating a
-             * new one out of the child pool. There may be up to ap_threads_per_child
-             * contexts in the system at once.
+            /* We failed to grab a context off the queue, consider allocating
+             * a new one out of the child pool. There may be up to 
+             * (ap_threads_per_child + num_listeners) contexts in the system 
+             * at once.
              */
-            if (num_completion_contexts >= ap_threads_per_child) {
+            if (num_completion_contexts >= max_num_completion_contexts) {
                 /* All workers are busy, need to wait for one */
                 static int reported = 0;
                 if (!reported) {
@@ -811,6 +813,7 @@ static void cleanup_thread(HANDLE *handles, int *thread_cnt, int thread_to_clean
 static void create_listener_thread()
 {
     int tid;
+    int num_listeners = 0;
     if (!use_acceptex) {
         _beginthreadex(NULL, 0, (LPTHREAD_START_ROUTINE) win9x_accept,
                        NULL, 0, &tid);
@@ -819,6 +822,20 @@ static void create_listener_thread()
          * XXX: Why would we have a NULL sd in our listeners?
          */
         ap_listen_rec *lr;
+
+        /* Number of completion_contexts allowed in the system is
+         * (ap_threads_per_child + num_listeners). We need the additional
+         * completion contexts to prevent server hangs when ThreadsPerChild
+         * is configured to something less than or equal to the number
+         * of listeners. This is not a usual case, but people have 
+         * encountered it.
+         * */
+        for (lr = ap_listeners; lr ; lr = lr->next) {
+            num_listeners++;
+        }
+        max_num_completion_contexts = ap_threads_per_child + num_listeners;
+
+        /* Now start a thread per listener */
         for (lr = ap_listeners; lr; lr = lr->next) {
             if (lr->sd != NULL) {
                 _beginthreadex(NULL, 1000, (LPTHREAD_START_ROUTINE) winnt_accept,
