@@ -15,10 +15,11 @@ Changes with Apache 2.1.0-dev
      "ProxyErrorOverride On" is configured.  PR 20183.
      [Marcus Janson <marcus.janson tre.se>, Joe Orton]
 
-  *) Threaded MPMs for Unix and Win32: Add WorkerStackSize directive
-     to override default thread stack size for threads which handle
-     client connections.  Required for some third-party modules on
-     platforms with small default thread stack size.  [Jeff Trawick]
+  *) Threaded MPMs for Unix and Win32: Add support for ThreadStackSize 
+     directive (previously NetWare-only) to override default thread 
+     stack size for threads which handle client connections.  Required 
+     for some third-party modules on platforms with small default 
+     thread stack size.  [Jeff Trawick]
 
   *) Win32: Tweak worker thread accounting routines to eliminate
      server hang when number of Listen directives in httpd.conf

@@ -982,8 +982,9 @@ static void child_main(int child_num_arg)
                     APR_THREAD_MUTEX_DEFAULT, pchild);
 
     apr_threadattr_create(&worker_thread_attr, pchild);
-    apr_threadattr_detach_set(worker_thread_attr, 1);                               if (ap_worker_stacksize != 0) {
-        apr_threadattr_stacksize_set(thread_attr, ap_worker_stacksize);
+    apr_threadattr_detach_set(worker_thread_attr, 1);
+    if (ap_thread_stacksize != 0) {
+        apr_threadattr_stacksize_set(thread_attr, ap_thread_stacksize);
     }
 
     /* We are creating worker threads right now */
