@@ -1,5 +1,5 @@
 Apache HTTP Server 2.1 Documentation Status File.
-Last modified: $Date: 2003/01/11 22:48:07 $
+Last modified: $Date: 2003/01/16 03:55:42 $
 
 For more information on how to contribute to the Apache Documentation
 Project, please see http://httpd.apache.org/docs-project/
@@ -11,14 +11,16 @@ Decisions pending
 
 - Where to put docs checkout on website
      - Leave it at /docs-x.y/
-       +1: Joshua, Erik
+       +1: Joshua, Erik, Kess
         0: nd
 
      - /manual/x.y/
        +1: nd
+       -0: Kess
 
      - /x.y/manual
        -1: Erik, nd
+        0: Kess
              though it's probably my suggestion, I don't like it
              very well ;-) -- nd
 
