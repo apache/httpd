@@ -44,8 +44,16 @@ dnl I think these are just used all over the place, so just check for
 dnl them at the base of the tree. If some are specific to a single
 dnl directory, they should be moved (Comment #Spoon)
 
+dnl Regarding standard header files: AC_HEADER_STDC doesn't set symbols
+dnl HAVE_STRING_H, HAVE_STDLIB_H, etc., so those are checked for
+dnl explicitly so that the normal HAVE_xxx_H symbol is defined.
+
 AC_HEADER_STDC
 AC_CHECK_HEADERS( \
+string.h \
+stdlib.h \
+ctype.h \
+limits.h \
 unistd.h \
 sys/stat.h \
 sys/time.h \
