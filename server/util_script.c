@@ -176,8 +176,15 @@ AP_DECLARE(void) ap_add_common_vars(request_rec *r)
 
     /* use a temporary apr_table_t which we'll overlap onto
      * r->subprocess_env later
+     * (exception: if r->subprocess_env is empty at the start,
+     * write directly into it)
      */
-    e = apr_table_make(r->pool, 25 + hdrs_arr->nelts);
+    if (apr_is_empty_table(r->subprocess_env)) {
+      e = r->subprocess_env;
+    }
+    else {
+      e = apr_table_make(r->pool, 25 + hdrs_arr->nelts);
+    }
 
     /* First, add environment vars from headers... this is as per
      * CGI specs, though other sorts of scripting interfaces see
@@ -297,7 +304,9 @@ AP_DECLARE(void) ap_add_common_vars(request_rec *r)
 	}
     }
 
-    apr_table_overlap(r->subprocess_env, e, APR_OVERLAP_TABLES_SET);
+    if (e != r->subprocess_env) {
+      apr_table_overlap(r->subprocess_env, e, APR_OVERLAP_TABLES_SET);
+    }
 }
 
 /* This "cute" little function comes about because the path info on
