@@ -361,6 +361,7 @@ API_EXPORT(int) ap_set_byterange(request_rec *r)
 	else {
 	    ap_table_setn(r->headers_out, "Content-Range",
 		ap_psprintf(r->pool, "bytes */%ld", r->clength));
+	    ap_set_content_length(r, 0);			  
 	    r->boundary = NULL;
 	    r->range = range;
 	    r->header_only = 1;
@@ -1040,16 +1041,43 @@ static int read_request_line(request_rec *r)
         r->protocol  = ap_pstrdup(r->pool, "HTTP/1.0");
         return 0;
     }
-
     r->assbackwards = (ll[0] == '\0');
     r->protocol = ap_pstrdup(r->pool, ll[0] ? ll : "HTTP/0.9");
 
-    if (2 == sscanf(r->protocol, "HTTP/%u.%u", &major, &minor)
-      && minor < HTTP_VERSION(1,0))	/* don't allow HTTP/0.1000 */
-	r->proto_num = HTTP_VERSION(major, minor);
-    else
-	r->proto_num = HTTP_VERSION(1,0);
+    /* The following test tries to skip past the "HTTP/nn.mm"
+     * protocol string, collecting major=nn and minor=mm.
+     * ll is advanced past "HTTP/nn.mm" so that it can be checked
+     * for proper string termination (only valid chars: \r\n).
+     */
+    if (memcmp(ll,"HTTP/",5) == 0 && isdigit(ll[5])) {
 
+        /* Read major protocol level: */
+        major = strtol(&ll[5], &ll, 10);
+        if (errno != ERANGE && ll[0] == '/' && isdigit(ll[1])) {
+
+            /* Read minor protocol level: */
+            minor = strtol(&ll[1], &ll, 10);
+
+	    if (errno != ERANGE) { 
+                if (minor < HTTP_VERSION(1,0))	/* don't allow HTTP/0.1000 */
+                    r->proto_num = HTTP_VERSION(major, minor);
+                else
+                    r->proto_num = HTTP_VERSION(1,0);
+	    }
+	}
+    }
+    /* If the request does not end after the "HTTP/x.y\r\n" (or after the
+     * URI in HTTP/0.9), then signal an error condition [400 Bad Request].
+     */
+    if (ll[strspn(ll," \r\n")] != '\0') {
+        ap_table_setn(r->notes, "error-notes",
+                      "Request line not ending properly after \"HTTP/x.y\":"
+                      "<PRE>\n", ap_escape_html(r->pool, r->protocol), "</PRE>");
+        r->status    = HTTP_BAD_REQUEST;
+        r->proto_num = HTTP_VERSION(1,0);
+        r->protocol  = ap_pstrdup(r->pool, "HTTP/1.0");
+        return 0;
+    }
     return 1;
 }
 
