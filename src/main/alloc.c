@@ -779,7 +779,7 @@ char *pstrcat(pool *a,...)
  */
 
 struct psprintf_data {
-    apapi_vformatter_buff vbuff;
+    ap_vformatter_buff vbuff;
 #ifdef ALLOC_USE_MALLOC
     char *base;
 #else
@@ -788,7 +788,7 @@ struct psprintf_data {
 #endif
 };
 
-static int psprintf_flush(apapi_vformatter_buff *vbuff)
+static int psprintf_flush(ap_vformatter_buff *vbuff)
 {
     struct psprintf_data *ps = (struct psprintf_data *)vbuff;
 #ifdef ALLOC_USE_MALLOC
@@ -857,7 +857,7 @@ API_EXPORT(char *) pvsprintf(pool *p, const char *fmt, va_list ap)
     /* need room at beginning for allocation_list */
     ps.vbuff.curpos = ps.base + CLICK_SZ;
     ps.vbuff.endpos = ps.base + 511;
-    apapi_vformatter(psprintf_flush, &ps.vbuff, fmt, ap);
+    ap_vformatter(psprintf_flush, &ps.vbuff, fmt, ap);
     *ps.vbuff.curpos++ = '\0';
     ptr = ps.base;
     /* shrink */
@@ -880,7 +880,7 @@ API_EXPORT(char *) pvsprintf(pool *p, const char *fmt, va_list ap)
     ps.vbuff.endpos = ps.blok->h.endp - 1;
     ps.got_a_new_block = 0;
 
-    apapi_vformatter(psprintf_flush, &ps.vbuff, fmt, ap);
+    ap_vformatter(psprintf_flush, &ps.vbuff, fmt, ap);
 
     strp = ps.vbuff.curpos;
     *strp++ = '\0';

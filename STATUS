@@ -119,7 +119,7 @@ Committed Code Changes:
     * Fix for symlink check in mod_rewrite's ``RewriteCond ... -l'', PR#2010
     * Fix: SIGXCPU and SIGXFSZ are now reset to SIG_DFL at boot-time
     * Dean's remove of HAVE_SNPRINTF
-    * Dean's mutation of ap_snprintf() code into apapi_vformatter()
+    * Dean's mutation of ap_snprintf() code into ap_vformatter()
     * Lars' fix for "Options +Includes" and "+IncludesNoExec" merging
     * Jim's fix for inconsistent usage of TCC and CC in Configure
     * Jim's fix for IRIX which needs the -n32 flag iff using 'cc', PR#1901
@@ -285,7 +285,7 @@ Open issues:
                    machine. Could be OS problems..
 
   * vformatter TODO:
-    - double check logic in apapi_vformatter(), and especially psprintf()
+    - double check logic in ap_vformatter(), and especially psprintf()
     - add in and use the inaddr formatting codes that started the whole
       debate last october
     - ... so that we can finally start fixing all the log messages that

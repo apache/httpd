@@ -77,21 +77,21 @@ int ap_execve(const char *, const char *argv[], const char *envp[]);
 #endif
 #endif /* WIN32 */
 
-/* apapi_vformatter() is a generic printf-style formatting routine
+/* ap_vformatter() is a generic printf-style formatting routine
  * with some extensions.
  *
- * The apapi_vformatter_buff has two elements curpos and endpos.
- * curpos is where apapi_vformatter will write the next byte of output.
+ * The ap_vformatter_buff has two elements curpos and endpos.
+ * curpos is where ap_vformatter will write the next byte of output.
  * It proceeds writing output to curpos, and updating curpos, until
  * either the end of output is reached, or curpos == endpos (i.e. the
  * buffer is full).
  *
- * If the end of output is reached, apapi_vformatter returns the
+ * If the end of output is reached, ap_vformatter returns the
  * number of bytes written.
  *
  * When the buffer is full, the flush_func is called.  The flush_func
  * can return -1 to indicate that no further output should be attempted,
- * and apapi_vformatter will return immediately with -1.  Otherwise
+ * and ap_vformatter will return immediately with -1.  Otherwise
  * the flush_func should flush the buffer in whatever manner is
  * appropriate, re-initialize curpos and endpos, and return 0.
  *
@@ -99,18 +99,18 @@ int ap_execve(const char *, const char *argv[], const char *envp[]);
  * write another byte at curpos when curpos == endpos.  So for
  * example, it's possible when the output exactly matches the buffer
  * space available that curpos == endpos will be true when
- * apapi_vformatter returns.
+ * ap_vformatter returns.
  */
 
 typedef struct {
     char *curpos;
     char *endpos;
-} apapi_vformatter_buff;
+} ap_vformatter_buff;
 
-API_EXPORT(int) apapi_vformatter(int (*flush_func)(apapi_vformatter_buff *),
-    apapi_vformatter_buff *, const char *fmt, va_list ap);
+API_EXPORT(int) ap_vformatter(int (*flush_func)(ap_vformatter_buff *),
+    ap_vformatter_buff *, const char *fmt, va_list ap);
 
-/* These are snprintf implementations based on apapi_vformatter().
+/* These are snprintf implementations based on ap_vformatter().
  *
  * Note that various standards and implementations disagree on the return
  * value of snprintf, and side-effects due to %n in the formatting string.

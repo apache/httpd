@@ -504,8 +504,8 @@ static char *conv_p2(register u_wide_int num, register int nbits,
 /*
  * Do format conversion placing the output in buffer
  */
-API_EXPORT(int) apapi_vformatter(int (*flush_func)(apapi_vformatter_buff *),
-    apapi_vformatter_buff *vbuff, const char *fmt, va_list ap)
+API_EXPORT(int) ap_vformatter(int (*flush_func)(ap_vformatter_buff *),
+    ap_vformatter_buff *vbuff, const char *fmt, va_list ap)
 {
     register char *sp;
     register char *bep;
@@ -878,7 +878,7 @@ API_EXPORT(int) apapi_vformatter(int (*flush_func)(apapi_vformatter_buff *),
 }
 
 
-static int snprintf_flush(apapi_vformatter_buff *vbuff)
+static int snprintf_flush(ap_vformatter_buff *vbuff)
 {
     return -1;
 }
@@ -888,7 +888,7 @@ API_EXPORT(int) ap_snprintf(char *buf, size_t len, const char *format,...)
 {
     int cc;
     va_list ap;
-    apapi_vformatter_buff vbuff;
+    ap_vformatter_buff vbuff;
 
     if (len == 0)
 	return 0;
@@ -897,7 +897,7 @@ API_EXPORT(int) ap_snprintf(char *buf, size_t len, const char *format,...)
     vbuff.curpos = buf;
     vbuff.endpos = buf + len - 1;
     va_start(ap, format);
-    cc = apapi_vformatter(snprintf_flush, &vbuff, format, ap);
+    cc = ap_vformatter(snprintf_flush, &vbuff, format, ap);
     va_end(ap);
     *vbuff.curpos = '\0';
     return (cc == -1) ? len : cc;
@@ -908,7 +908,7 @@ API_EXPORT(int) ap_vsnprintf(char *buf, size_t len, const char *format,
 			     va_list ap)
 {
     int cc;
-    apapi_vformatter_buff vbuff;
+    ap_vformatter_buff vbuff;
 
     if (len == 0)
 	return 0;
@@ -916,7 +916,7 @@ API_EXPORT(int) ap_vsnprintf(char *buf, size_t len, const char *format,
     /* save one byte for nul terminator */
     vbuff.curpos = buf;
     vbuff.endpos = buf + len - 1;
-    cc = apapi_vformatter(snprintf_flush, &vbuff, format, ap);
+    cc = ap_vformatter(snprintf_flush, &vbuff, format, ap);
     *vbuff.curpos = '\0';
     return (cc == -1) ? len : cc;
 }
