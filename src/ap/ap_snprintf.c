@@ -84,7 +84,6 @@ typedef enum {
 #define AP_LONGEST_LONG		long
 #endif
 #define NUL			'\0'
-#define INT_NULL		((int *)0)
 #define WIDE_INT		long
 #define WIDEST_INT		AP_LONGEST_LONG
 
