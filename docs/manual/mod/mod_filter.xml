@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
-<!-- $Revision: 1.8 $ -->
+<!-- $Revision: 1.9 $ -->
 
 <!--
  Copyright 2004 The Apache Software Foundation
@@ -99,18 +99,22 @@
     <dl>
     <dt>Declare Filters</dt>
     <dd>The <directive module="mod_filter">FilterDeclare</directive> directive
-    declares a filter, assigning it a name and a dispatch criterion.</dd>
+    declares a filter, assigning it a namen.</dd>
 
     <dt>Register Providers</dt>
     <dd>The <directive module="mod_filter">FilterProvider</directive>
-    directive registers a provider with a filter. The filter must have
+    directive registers a provider with a filter. The filter may have
     been registered with <directive module="mod_filter"
-    >FilterDeclare</directive>. The provider must have been
+    >FilterDeclare</directive>; if not, FilterProvider will implicitly
+    declare it with the default level AP_FTYPE_RESOURCE. The provider
+    must have been
     registered with <code>ap_register_output_filter</code> by some module.
-    The final argument to <directive module="mod_filter"
-    >FilterProvider</directive> is a match string, that will be checked
-    against the filter's dispatch criterion to determine whether to run
-    this provider.</dd>
+    The remaining arguments to <directive module="mod_filter"
+    >FilterProvider</directive> are a dispatch criterion and a match string.
+    The former may be an HTTP request or response header, an environment
+    variable, or the Handler used by this request.  The latter is matched
+    to it for each request, to determine whether this provider will be
+    used to implement the filter for this request.</dd>
 
     <dt>Configure the Chain</dt>
     <dd>The above directives build components of a smart filter chain,
@@ -127,8 +131,8 @@
     <dd>A simple case of using <module>mod_filter</module> in place of
     <directive module="core">AddOutputFilterByType</directive>
     <example>
-      FilterDeclare SSI Content-Type<br/>
-      FilterProvider SSI INCLUDES $text/html<br/>
+      FilterDeclare SSI<br/>
+      FilterProvider SSI INCLUDES resp=Content-Type $text/html<br/>
       FilterChain SSI
     </example>
     </dd>
@@ -137,18 +141,17 @@
     <dd>The same as the above but dispatching on handler (classic
     SSI behaviour; .shtml files get processed).
     <example>
-      FilterDeclare SSI Handler<br/>
-      FilterProvider SSI INCLUDES server-parsed<br/>
+      FilterProvider SSI INCLUDES Handler server-parsed<br/>
       FilterChain SSI
     </example>
     </dd>
 
     <dt>Emulating mod_gzip with mod_deflate</dt>
     <dd>Insert INFLATE filter only if "gzip" is NOT in the
-    Accept-Encoding header.
+    Accept-Encoding header.  This filter runs with ftype CONTENT_SET.
     <example>
-      FilterDeclare gzip req=Accept-Encoding<br/>
-      FilterProvider gzip inflate !$gzip<br/>
+      FilterDeclare gzip CONTENT_SET<br/>
+      FilterProvider gzip inflate req=Accept-Encoding !$gzip<br/>
       FilterChain gzip
     </example>
     </dd>
@@ -157,19 +160,16 @@
     <dd>Suppose we want to downsample all web images, and have filters
     for GIF, JPEG and PNG.
     <example>
-      FilterDeclare unpack Content-Type<br/>
-      FilterProvider unpack jpeg_unpack $image/jpeg<br/>
-      FilterProvider unpack gif_unpack $image/gif<br/>
-      FilterProvider unpack png_unpack $image/png<br/>
+      FilterProvider unpack jpeg_unpack Content-Type $image/jpeg<br/>
+      FilterProvider unpack gif_unpack Content-Type $image/gif<br/>
+      FilterProvider unpack png_unpack Content-Type $image/png<br/>
       <br />
-      FilterDeclare downsample Content-Type<br/>
-      FilterProvider downsample downsample_filter $image<br/>
+      FilterProvider downsample downsample_filter Content-Type $image<br/>
       FilterProtocol downsample "change=yes"<br/>
       <br />
-      FilterDeclare repack Content-Type<br/>
-      FilterProvider repack jpeg_pack $image/jpeg<br/>
-      FilterProvider repack gif_pack $image/gif<br/>
-      FilterProvider repack png_pack $image/png<br/>
+      FilterProvider repack jpeg_pack Content-Type $image/jpeg<br/>
+      FilterProvider repack gif_pack Content-Type $image/gif<br/>
+      FilterProvider repack png_pack Content-Type $image/png<br/>
       &lt;Location /image-filter&gt;<br/>
       <indent>
         FilterChain unpack downsample repack<br/>
@@ -217,8 +217,7 @@
 <directivesynopsis>
 <name>FilterDeclare</name>
 <description>Declare a smart filter</description>
-<syntax>FilterDeclare <var>filter-name</var> [req|resp|env]=<var>dispatch</var>
-    <var>[type]</var></syntax>
+<syntax>FilterDeclare <var>filter-name</var> <var>[type]</var></syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context></contextlist>
 <override>Options</override>
@@ -230,14 +229,6 @@
     for use in <directive module="mod_filter">FilterProvider</directive>,
     <directive module="mod_filter">FilterChain</directive> and
     <directive module="mod_filter">FilterProtocol</directive> directives.</p>
-
-    <p>The second is a string with optional <code>req=</code>,
-    <code>resp=</code> or <code>env=</code> prefix causing it
-    to dispatch on (respectively) the request header, response
-    header, or environment variable named.  In the absence of a
-    prefix, it defaults to a response header.  A special case is the
-    word <code>handler</code>, which causes <module>mod_filter</module>
-    to dispatch on the content handler.</p>
 
     <p>The final (optional) argument
     is the type of filter, and takes values of <code>ap_filter_type</code>
@@ -251,7 +242,7 @@
 <name>FilterProvider</name>
 <description>Register a content filter</description>
 <syntax>FilterProvider <var>filter-name</var> <var>provider-name</var>
-    <var>match</var></syntax>
+ [req|resp|env]=<var>dispatch</var> <var>match</var></syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context></contextlist>
 <override>Options</override>
@@ -260,15 +251,27 @@
     <p>This directive registers a <em>provider</em> for the smart filter.
     The provider will be called if and only if the <var>match</var> declared
     here matches the value of the header or environment variable declared
-    as <var>dispatch</var> in the <directive module="mod_filter"
-    >FilterDeclare</directive> directive that declared
-    <var>filter-name</var>.</p>
+    as <var>dispatch</var>.</p>
 
-    <p><var>filter-name</var> must have been declared with
-    <directive module="mod_filter">FilterDeclare</directive>.
+    <p>
     <var>provider-name</var> must have been registered by loading
     a module that registers the name with
-    <code>ap_register_output_filter</code>.</p>
+    <code>ap_register_output_filter</code>.
+<!-- Placeholder; this is totally broken as of now
+     , or declared with
+    <directive module="mod_filter">FilterDeclare</directive>
+    (or implicitly with another
+    <directive module="mod_filter">FilterProvider</directive>).
+-->
+    </p>
+
+    <p>The <var>dispatch</var> argument is a string with optional
+    <code>req=</code>, <code>resp=</code> or <code>env=</code> prefix
+    causing it to dispatch on (respectively) the request header, response
+    header, or environment variable named.  In the absence of a
+    prefix, it defaults to a response header.  A special case is the
+    word <code>handler</code>, which causes <module>mod_filter</module>
+    to dispatch on the content handler.</p>
 
     <p>The <var>match</var> argument specifies a match that will be applied to
     the filter's <var>dispatch</var> criterion.  The <var>match</var> may be
@@ -287,7 +290,7 @@
     <tr><th>Character</th><th>Description</th></tr>
     <tr><td><em>(none)</em></td><td>exact match</td></tr>
     <tr><td><code>$</code></td><td>substring match</td></tr>
-    <tr><td><code>/</code></td><td>regexp match</td></tr>
+    <tr><td><code>/</code></td><td>regexp match (delimited by a second <code>/</code></td></tr>
     <tr><td><code>=</code></td><td>integer equality</td></tr>
     <tr><td><code>&lt;</code></td><td>integer less-than</td></tr>
     <tr><td><code>&lt;=</code></td><td>integer less-than or equal</td></tr>
