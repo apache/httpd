@@ -775,7 +775,7 @@ AP_DECLARE(apr_port_t) ap_get_server_port(const request_rec *r)
     if (d->use_canonical_name == USE_CANONICAL_NAME_OFF
 	|| d->use_canonical_name == USE_CANONICAL_NAME_DNS) {
         if (r->hostname)
-           apr_get_local_port(&port, r->connection->client_socket);
+           apr_get_port(&port, APR_LOCAL, r->connection->client_socket);
     }
     /* default */
     return port;
