@@ -1,5 +1,5 @@
 
 LTLIBRARY_NAME    = libdexter.la
-LTLIBRARY_SOURCES = dexter.c scoreboard.c
+LTLIBRARY_SOURCES = dexter.c
 
 include $(top_srcdir)/build/ltlib.mk

@@ -71,6 +71,7 @@
 #define MPM_CHILD_PID(i) (ap_scoreboard_image->parent[i].pid)
 #define MPM_NOTE_CHILD_KILLED(i) (MPM_CHILD_PID(i) = 0)
 
+extern int ap_threads_per_child;
 extern int ap_max_daemons_limit;
 extern scoreboard *ap_scoreboard_image;
 extern server_rec *ap_server_conf;

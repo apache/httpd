@@ -70,7 +70,6 @@
 
 extern int ap_threads_per_child;
 extern int ap_max_requests_per_child;
-extern int ap_extended_status;
 extern int ap_max_daemons_limit;
 extern unsigned int ap_my_pid;
 extern server_rec *ap_server_conf;

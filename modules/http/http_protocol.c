@@ -91,7 +91,6 @@
 #include "util_date.h"          /* For parseHTTPdate and BAD_DATE */
 #include "util_charset.h"
 #include "util_ebcdic.h"
-#include "mpm_status.h"
 
 #include "mod_core.h"
 
@@ -1211,7 +1210,9 @@ static int read_request_line(request_rec *r)
     char l[DEFAULT_LIMIT_REQUEST_LINE + 2]; /* getline's two extra for \n\0 */
     const char *ll = l;
     const char *uri;
+#if 0
     conn_rec *conn = r->connection;
+#endif
     int major = 1, minor = 0;   /* Assume HTTP/1.0 if non-"HTTP" protocol */
     int len;
 
@@ -1277,7 +1278,12 @@ static int read_request_line(request_rec *r)
     r->request_time = apr_now();
     r->the_request = apr_pstrdup(r->pool, l);
     r->method = ap_getword_white(r->pool, &ll);
-    ap_update_connection_status(conn->id, "Method", r->method);
+#if 0
+/* XXX If we want to keep track of the Method, the protocol module should do
+ * it.  That support isn't in the scoreboard yet.  Hopefully next week 
+ * sometime.   rbb */
+    ap_update_connection_status(AP_CHILD_THREAD_FROM_ID(conn->id), "Method", r->method); 
+#endif
     uri = ap_getword_white(r->pool, &ll);
 
     /* Provide quick information about the request method as soon as known */
@@ -1302,7 +1308,11 @@ static int read_request_line(request_rec *r)
 
     r->assbackwards = (ll[0] == '\0');
     r->protocol = apr_pstrdup(r->pool, ll[0] ? ll : "HTTP/0.9");
-    ap_update_connection_status(conn->id, "Protocol", r->protocol);
+/* XXX If we want to keep track of the Method, the protocol module should do
+ * it.  That support isn't in the scoreboard yet.  Hopefully next week 
+ * sometime.   rbb
+    ap_update_connection_status(conn->id, "Protocol", r->protocol); 
+ */
 
     if (2 == sscanf(r->protocol, "HTTP/%u.%u", &major, &minor)
       && minor < HTTP_VERSION(1,0))	/* don't allow HTTP/0.1000 */

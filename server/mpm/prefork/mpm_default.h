@@ -59,6 +59,10 @@
 #ifndef APACHE_MPM_DEFAULT_H
 #define APACHE_MPM_DEFAULT_H
 
+#define AP_ID_FROM_CHILD_THREAD(c, t)    c
+#define AP_CHILD_THREAD_FROM_ID(i)       i, 0
+
+
 /* Number of servers to spawn off by default --- also, if fewer than
  * this free when the caretaker checks, it will spawn more.
  */
@@ -93,6 +97,10 @@
  */
 #ifndef HARD_SERVER_LIMIT
 #define HARD_SERVER_LIMIT 256
+#endif
+
+#ifndef HARD_THREAD_LIMIT
+#define HARD_THREAD_LIMIT 1
 #endif
 
 /* File used for accept locking, when we use a file */
