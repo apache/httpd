@@ -124,6 +124,7 @@ void clean_parent_exit(int code);
 
 inline int ap_os_is_path_absolute(const char *file)
 {
+    /* XXX: Should this test *(strchr(file, ':') + 1) == '/' ? */
     if ((file[0] == '/') || strchr(file, ':'))
         return 1;
     else
