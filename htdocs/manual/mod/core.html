@@ -16,12 +16,12 @@ always available.
 <ul>
 <li><A HREF="#accessconfig">AccessConfig</A>
 <li><A HREF="#accessfilename">AccessFileName</A>
-<li>AddModule
+<li><A HREF="#addmodule">AddModule</A>
 <li><A HREF="#allowoverride">AllowOverride</A>
 <li><A HREF="#authname">AuthName</A>
 <li><A HREF="#authtype">AuthType</A>
 <li><A HREF="#bindaddress">BindAdress</A>
-<li>ClearModuleList
+<li><A HREF="#clearmodulelist">ClearModuleList</A>
 <li><A HREF="#defaulttype">DefaultType</A>
 <li><A HREF="#directory">&lt;Directory&gt;</A>
 <li><A HREF="#documentroot">DocumentRoot</A>
@@ -48,7 +48,7 @@ always available.
 <li><A HREF="#rlimitcpu">RLimitCPU</A>
 <li><A HREF="#rlimitmem">RLimitMEM</A>
 <li><A HREF="#rlimitnproc">RLimitNPROC</A>
-<li>Satisfy
+<li><A HREF="#satisfy">Satisfy</A>
 <li><A HREF="#sendbuffersize">SendBufferSize</A>
 <li><A HREF="#serveradmin">ServerAdmin</A>
 <li><A HREF="#serveralias">ServerAlias</A>
@@ -162,6 +162,14 @@ Allow use of the directives controlling specific directory features
 <A HREF="mod_include.html#xbithack">XBitHack</A>).
 </dl><p><hr>
 
+<A name="addmodule"><h2>AddModule directive</h2></A>
+<!--%plaintext &lt;?INDEX {\tt AddModule} directive&gt; -->
+<strong>Syntax:</strong> <br>
+<strong>Default:</strong> <code></code><br>
+<strong>Context:</strong> <br>
+<strong>Status:</strong> core<br>
+<strong>Compatibility:</strong> AddModule is only available in Apache 1.2 and later<p><hr>
+
 <A name="authname"><h2>AuthName directive</h2></A>
 <!--%plaintext &lt;?INDEX {\tt AuthName} directive&gt; -->
 <strong>Syntax:</strong> AuthName <em>auth-domain</em><br>
@@ -192,6 +200,13 @@ It must be accompanied by <A HREF="#authname">AuthName</A> and
 <A HREF="mod_auth.html#authuserfile">AuthUserFile</A> and
 <A HREF="mod_auth.html#authgroupfile">AuthGroupFile</A> to work.<p><hr>
 
+<A name="clearmodulelist"><h2>ClearModuleList directive</h2></A>
+<!--%plaintext &lt;?INDEX {\tt ClearModuleList} directive&gt; -->
+<strong>Syntax:</strong> <br>
+<strong>Default:</strong> <code></code><br>
+<strong>Context:</strong> <br>
+<strong>Status:</strong> core<br>
+<strong>Compatibility:</strong> ClearModuleList is only available in Apache 1.2 and later<p><hr>
 
 <A name="bindaddress"><h2>BindAddress directive</h2></A>
 <!--%plaintext &lt;?INDEX {\tt BindAddress} directive&gt; -->
@@ -874,7 +889,8 @@ See also <A HREF="#accessconfig">AccessConfig</A>.<p><hr>
 <strong>Syntax:</strong> RLimitCPU <em># or 'max'</em> <em>[# or 'max']</em><br>
 <strong>Default:</strong> <code>Unset uses operating system defaults</code><br>
 <strong>Context:</strong> server config, virtual host<br>
-<strong>Status:</strong> core<p>
+<strong>Status:</strong> core<br>
+<strong>Compatibility:</strong> RLimitCPU is only available in Apache 1.2 and later<p>
 
 Takes 1 or 2 parameters. The first parameter sets the soft resource limit for all
 processes and the second parameter sets the maximum resource limit. Either parameter
@@ -892,7 +908,8 @@ See also <A HREF="#rlimitmem">RLimitMEM</A> or <A HREF="#rlimitnproc">RLimitNPRO
 <strong>Syntax:</strong> RLimitMEM <em># or 'max'</em> <em>[# or 'max']</em><br>
 <strong>Default:</strong> <code>Unset uses operating system defaults</code><br>
 <strong>Context:</strong> server config, virtual host<br>
-<strong>Status:</strong> core<p>
+<strong>Status:</strong> core<br>
+<strong>Compatibility:</strong> RLimitMEM is only available in Apache 1.2 and later<p>
 
 Takes 1 or 2 parameters. The first parameter sets the soft resource limit for all
 processes and the second parameter sets the maximum resource limit. Either parameter
@@ -910,7 +927,8 @@ See also <A HREF="#rlimitcpu">RLimitCPU</A> or <A HREF="#rlimitnproc">RLimitNPRO
 <strong>Syntax:</strong> RLimitNPROC <em># or 'max'</em> <em>[# or 'max']</em><br>
 <strong>Default:</strong> <code>Unset uses operating system defaults</code><br>
 <strong>Context:</strong> server config, virtual host<br>
-<strong>Status:</strong> core<p>
+<strong>Status:</strong> core<br>
+<strong>Compatibility:</strong> RLimitNPROC is only available in Apache 1.2 and later<p>
 
 Takes 1 or 2 parameters. The first parameter sets the soft resource limit for all
 processes and the second parameter sets the maximum resource limit. Either parameter
@@ -926,10 +944,21 @@ webserver userid, this directive will limit the number of processes that the
 server itself can create. Evidence of this situation will be indicated by
 <b><em>cannot fork</em></b> messages in the error_log.<p>
 
-See also <A HREF="#rlimitmem">RLimitMEM</A> or <A HREF="#rlimitcpu">RLimitCPU</A>.<p><hr>
+See also <A HREF="#rlimitmem">RLimitMEM</A> or <A HREF="#rlimitcpu">RLimitCPU</A>.
+
+<p><hr>
+
+<A name="satisfy"><h2>Satisfy</h2></A>
+<!--%plaintext &lt;?INDEX {\tt Satisfy} directive&gt; -->
+<strong>Syntax:</strong><br>
+<strong>Context:</strong> server config, virtual host, directory, .htaccess<br>
+<strong>Status:</strong> core<br>
+<strong>Compatibility:</strong> Satisfy is only available in Apache 1.2 and later<p>
+
+<p><hr>
 
 <A name="sendbuffersize"><h2>SendBufferSize</h2></A>
-<!--%plaintext &lt;?INDEX {\tt AccessConfig} directive&gt; -->
+<!--%plaintext &lt;?INDEX {\tt SendBufferSize} directive&gt; -->
 <strong>Syntax:</strong> SendBufferSize <em>bytes</em><br>
 <strong>Context:</strong> server config, virtual host<br>
 <strong>Status:</strong> core<p>
