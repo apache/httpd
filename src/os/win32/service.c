@@ -7,6 +7,7 @@
 #include <process.h>
 #include <direct.h>
 
+#include "../conf.h"
 #include "../multithread.h"
 #include "service.h"
 
