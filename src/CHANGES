@@ -22,13 +22,16 @@ Changes with Apache 1.3.7
   *) Fix apxs build issues on AIX 
      [Rasmus Lerdorf <rasmus@raleigh.ibm.com>]
 
-  *) STARTUP BEHAVIOR CHANGE: Under previous versions, when Apache
+  *) DocumentRoot Checking: Under previous versions, when Apache
      first started up, it used to do a stat of each DocumentRoot to
      see if it existed and was a directory. If not, then an error
      message was printed. THIS HAS BEEN DISABLED. If DocumentRoot
      does not exist, you will get error messages in error_log. If
      the '-t' command line option is used (to check the configuration)
-     the check of DocumentRoot IS performed.  [Jim Jagielski]
+     the check of DocumentRoot IS performed. An additional command
+     line option, '-T', has been added if you want to avoid the
+     DocumentRoot check even when checking the configuration.
+     [Jim Jagielski]
 
   *) Win32: The query switch "apache -S" didn't exit after showing the
      vhost settings. That was inconsistent with the other query functions.

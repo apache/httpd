@@ -231,6 +231,7 @@ void *ap_dummy_mutex = &ap_dummy_mutex;
 
 int ap_standalone=0;
 int ap_configtestonly=0;
+int ap_docrootcheck=1;
 uid_t ap_user_id=0;
 char *ap_user_name=NULL;
 gid_t ap_group_id=0;
@@ -4747,6 +4748,11 @@ int REALMAIN(int argc, char *argv[])
 	    break;
 	case 't':
 	    ap_configtestonly = 1;
+	    ap_docrootcheck = 1;
+	    break;
+	case 'T':
+	    ap_configtestonly = 1;
+	    ap_docrootcheck = 0;
 	    break;
 	case 'h':
 	    usage(argv[0]);
@@ -6255,6 +6261,11 @@ int REALMAIN(int argc, char *argv[])
 	    break;
 	case 't':
 	    ap_configtestonly = 1;
+	    ap_docrootcheck = 1;
+	    break;
+	case 'T':
+	    ap_configtestonly = 1;
+	    ap_docrootcheck = 0;
 	    break;
 	case 'h':
 	    usage(ap_server_argv0);
