@@ -11,7 +11,7 @@ CFG=mod_deflate - Win32 Release
 !MESSAGE NMAKE /f "mod_deflate.mak".
 !MESSAGE 
 !MESSAGE You can specify a configuration when running NMAKE
-!MESSAGE by defining the macro CFG on the command line. For deflate:
+!MESSAGE by defining the macro CFG on the command line. For example:
 !MESSAGE 
 !MESSAGE NMAKE /f "mod_deflate.mak" CFG="mod_deflate - Win32 Release"
 !MESSAGE 
@@ -87,43 +87,6 @@ LINK32=link.exe
 
 # Name "mod_deflate - Win32 Release"
 # Name "mod_deflate - Win32 Debug"
-# Begin Source File
-
-SOURCE=.\mod_deflate.c
-# End Source File
-# Begin Source File
-
-SOURCE=.\mod_deflate.rc
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\build\win32\win32ver.awk
-
-!IF  "$(CFG)" == "mod_deflate - Win32 Release"
-
-# PROP Ignore_Default_Tool 1
-# Begin Custom Build - Creating Version Resource
-InputPath=..\..\build\win32\win32ver.awk
-
-".\mod_deflate.rc" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	awk -f ../../build/win32/win32ver.awk mod_deflate.so "deflate_module for Apache" ../../include/ap_release.h > .\mod_deflate.rc
-
-# End Custom Build
-
-!ELSEIF  "$(CFG)" == "mod_deflate - Win32 Debug"
-
-# PROP Ignore_Default_Tool 1
-# Begin Custom Build - Creating Version Resource
-InputPath=..\..\build\win32\win32ver.awk
-
-".\mod_deflate.rc" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	awk -f ../../build/win32/win32ver.awk mod_deflate.so "deflate_module for Apache" ../../include/ap_release.h > .\mod_deflate.rc
-
-# End Custom Build
-
-!ENDIF 
-
-# End Source File
 # Begin Group "zlib"
 
 # PROP Default_Filter ""
@@ -172,5 +135,42 @@ SOURCE=..\..\srclib\zlib\trees.c
 SOURCE=..\..\srclib\zlib\zutil.c
 # End Source File
 # End Group
+# Begin Source File
+
+SOURCE=.\mod_deflate.c
+# End Source File
+# Begin Source File
+
+SOURCE=.\mod_deflate.rc
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\build\win32\win32ver.awk
+
+!IF  "$(CFG)" == "mod_deflate - Win32 Release"
+
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Creating Version Resource
+InputPath=..\..\build\win32\win32ver.awk
+
+".\mod_deflate.rc" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	awk -f ../../build/win32/win32ver.awk mod_deflate.so "deflate_module for Apache" ../../include/ap_release.h > .\mod_deflate.rc
+
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "mod_deflate - Win32 Debug"
+
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Creating Version Resource
+InputPath=..\..\build\win32\win32ver.awk
+
+".\mod_deflate.rc" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	awk -f ../../build/win32/win32ver.awk mod_deflate.so "deflate_module for Apache" ../../include/ap_release.h > .\mod_deflate.rc
+
+# End Custom Build
+
+!ENDIF 
+
+# End Source File
 # End Target
 # End Project
