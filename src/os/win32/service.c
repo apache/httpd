@@ -744,7 +744,7 @@ void service_set_status(int status)
                                            SERVICE_ALL_ACCESS);
         if (schService) {
             ret = ChangeServiceDescription(schService,
-                                           SERVICE_CONFIG_DESCRIPTION,
+                                           1 /* SERVICE_CONFIG_DESCRIPTION */,
                                            &full_description);
             CloseServiceHandle(schService);
         }
