@@ -283,10 +283,10 @@ AP_DECLARE(void) ap_add_common_vars(request_rec *r)
  * and find as much of the two that match as possible.
  */
 
-AP_DECLARE(apr_size_t) ap_find_path_info(const char *uri, const char *path_info)
+AP_DECLARE(int) ap_find_path_info(const char *uri, const char *path_info)
 {
-    apr_ssize_t lu = strlen(uri);
-    apr_size_t lp = strlen(path_info);
+    int lu = strlen(uri);
+    int lp = strlen(path_info);
 
     while (lu-- && lp-- && uri[lu] == path_info[lp]);
 
@@ -354,7 +354,7 @@ AP_DECLARE(void) ap_add_cgi_vars(request_rec *r)
         apr_table_setn(e, "SCRIPT_NAME", r->uri);
     }
     else {
-        apr_size_t path_info_start = ap_find_path_info(r->uri, r->path_info);
+        int path_info_start = ap_find_path_info(r->uri, r->path_info);
 
         apr_table_setn(e, "SCRIPT_NAME",
                       apr_pstrndup(r->pool, r->uri, path_info_start));
@@ -394,12 +394,12 @@ static int set_cookie_doo_doo(void *v, const char *key, const char *val)
 }
 
 AP_DECLARE(int) ap_scan_script_header_err_core(request_rec *r, char *buffer,
-                                       int (*getsfunc) (char *, apr_size_t, void *),
+                                       int (*getsfunc) (char *, int, void *),
                                        void *getsfunc_data)
 {
     char x[MAX_STRING_LEN];
     char *w, *l;
-    apr_size_t p;
+    int p;
     int cgi_status = HTTP_OK;
     apr_table_t *merge;
     apr_table_t *cookie_table;
@@ -581,10 +581,9 @@ AP_DECLARE(int) ap_scan_script_header_err_core(request_rec *r, char *buffer,
     return OK;
 }
 
-static int getsfunc_FILE(char *buf, apr_size_t len, void *f)
+static int getsfunc_FILE(char *buf, int len, void *f)
 {
-    /* Cast to eliminate 64 bit warning */
-    return apr_file_gets(buf, (int)len, (apr_file_t *) f) == APR_SUCCESS;
+    return apr_file_gets(buf, len, (apr_file_t *) f) == APR_SUCCESS;
 }
 
 AP_DECLARE(int) ap_scan_script_header_err(request_rec *r, apr_file_t *f,
@@ -593,7 +592,7 @@ AP_DECLARE(int) ap_scan_script_header_err(request_rec *r, apr_file_t *f,
     return ap_scan_script_header_err_core(r, buffer, getsfunc_FILE, f);
 }
 
-static int getsfunc_BRIGADE(char *buf, apr_size_t len, void *arg)
+static int getsfunc_BRIGADE(char *buf, int len, void *arg)
 {
     apr_bucket_brigade *bb = (apr_bucket_brigade *)arg;
     const char *dst_end = buf + len - 1; /* leave room for terminating null */
@@ -651,11 +650,11 @@ struct vastrs {
     const char *curpos;
 };
 
-static int getsfunc_STRING(char *w, apr_size_t len, void *pvastrs)
+static int getsfunc_STRING(char *w, int len, void *pvastrs)
 {
     struct vastrs *strs = (struct vastrs*) pvastrs;
     const char *p;
-    apr_size_t t;
+    int t;
     
     if (!strs->curpos || !*strs->curpos) 
         return 0;
@@ -675,7 +674,7 @@ static int getsfunc_STRING(char *w, apr_size_t len, void *pvastrs)
     }
     else
         strs->curpos += t;
-    return (int)t;    
+    return t;    
 }
 
 /* ap_scan_script_header_err_strs() accepts additional const char* args...

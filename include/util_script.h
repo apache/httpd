@@ -53,7 +53,7 @@ AP_DECLARE(char **) ap_create_environment(apr_pool_t *p, apr_table_t *t);
  * @return The length of the path info
  * @deffunc int ap_find_path_info(const char *uri, const char *path_info)
  */
-AP_DECLARE(apr_size_t) ap_find_path_info(const char *uri, const char *path_info);
+AP_DECLARE(int) ap_find_path_info(const char *uri, const char *path_info);
 
 /**
  * Add CGI environment variables required by HTTP/1.1 to the request's 
@@ -131,7 +131,7 @@ AP_DECLARE_NONSTD(int) ap_scan_script_header_err_strs(request_rec *r,
  * @deffunc int ap_scan_script_header_err_core(request_rec *r, char *buffer, int (*getsfunc)(char *, int, void *), void *getsfunc_data)
  */ 
 AP_DECLARE(int) ap_scan_script_header_err_core(request_rec *r, char *buffer,
-				       int (*getsfunc) (char *, apr_size_t, void *),
+				       int (*getsfunc) (char *, int, void *),
 				       void *getsfunc_data);
 
 #ifdef __cplusplus

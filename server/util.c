@@ -451,7 +451,7 @@ AP_DECLARE(char *) ap_pregsub(apr_pool_t *p, const char *input,
 AP_DECLARE(void) ap_getparents(char *name)
 {
     char *next;
-    apr_ssize_t l, w, first_dot;
+    int l, w, first_dot;
 
     /* Four paseses, as per RFC 1808 */
     /* a) remove ./ path segments */
@@ -480,7 +480,7 @@ AP_DECLARE(void) ap_getparents(char *name)
     while (name[l] != '\0') {
         if (name[l] == '.' && name[l + 1] == '.' && IS_SLASH(name[l + 2])
             && (l == 0 || IS_SLASH(name[l - 1]))) {
-            register apr_ssize_t m = l + 3, n;
+            register int m = l + 3, n;
 
             l = l - 2;
             if (l >= 0) {
@@ -592,7 +592,7 @@ AP_DECLARE(char *) ap_make_dirstr_parent(apr_pool_t *p, const char *s)
 {
     const char *last_slash = ap_strrchr_c(s, '/');
     char *d;
-    apr_size_t l;
+    int l;
 
     if (last_slash == NULL) {
         return apr_pstrdup(p, "");
@@ -623,7 +623,7 @@ AP_DECLARE(char *) ap_getword_nc(apr_pool_t *atrans, char **line, char stop)
 AP_DECLARE(char *) ap_getword(apr_pool_t *atrans, const char **line, char stop)
 {
     const char *pos = *line;
-    apr_size_t len;
+    int len;
     char *res;
 
     while ((*pos != stop) && *pos) {
@@ -653,7 +653,7 @@ AP_DECLARE(char *) ap_getword_white_nc(apr_pool_t *atrans, char **line)
 AP_DECLARE(char *) ap_getword_white(apr_pool_t *atrans, const char **line)
 {
     const char *pos = *line;
-    apr_size_t len;
+    int len;
     char *res;
 
     while (!apr_isspace(*pos) && *pos) {
@@ -705,12 +705,12 @@ AP_DECLARE(char *) ap_getword_nulls(apr_pool_t *atrans, const char **line,
  * all honored
  */
 
-static char *substring_conf(apr_pool_t *p, const char *start, apr_size_t len,
+static char *substring_conf(apr_pool_t *p, const char *start, int len,
                             char quote)
 {
     char *result = apr_palloc(p, len + 2);
     char *resp = result;
-    apr_size_t i;
+    int i;
 
     for (i = 0; i < len; ++i) {
         if (start[i] == '\\' && (start[i + 1] == '\\'
@@ -887,13 +887,11 @@ static int cfg_getch(void *param)
     return (int)EOF;
 }
 
-static void *cfg_getstr(void *buf, apr_size_t bufsiz, void *param)
+static void *cfg_getstr(void *buf, size_t bufsiz, void *param)
 {
     apr_file_t *cfp = (apr_file_t *) param;
     apr_status_t rv;
-
-    /* Cast to eliminate 64 bit warning */
-    rv = apr_file_gets(buf, (int)bufsiz, cfp);
+    rv = apr_file_gets(buf, bufsiz, cfp);
     if (rv == APR_SUCCESS) {
         return buf;
     }
@@ -973,7 +971,7 @@ AP_DECLARE(apr_status_t) ap_pcfg_openfile(ap_configfile_t **ret_cfg,
     new_cfg->param = file;
     new_cfg->name = apr_pstrdup(p, name);
     new_cfg->getch = (int (*)(void *)) cfg_getch;
-    new_cfg->getstr = (void *(*)(void *, apr_size_t, void *)) cfg_getstr;
+    new_cfg->getstr = (void *(*)(void *, size_t, void *)) cfg_getstr;
     new_cfg->close = (int (*)(void *)) cfg_close;
     new_cfg->line_number = 0;
     *ret_cfg = new_cfg;
@@ -1154,7 +1152,7 @@ AP_DECLARE(int) ap_cfg_getline(char *buf, size_t bufsize, ap_configfile_t *cfp)
  * of field is shifted to the next non-comma, non-whitespace character.
  * len is the length of the item excluding any beginning whitespace.
  */
-AP_DECLARE(const char *) ap_size_list_item(const char **field, apr_size_t *len)
+AP_DECLARE(const char *) ap_size_list_item(const char **field, int *len)
 {
     const unsigned char *ptr = (const unsigned char *)*field;
     const unsigned char *token;
@@ -1220,8 +1218,7 @@ AP_DECLARE(char *) ap_get_list_item(apr_pool_t *p, const char **field)
     const unsigned char *ptr;
     unsigned char *pos;
     char *token;
-    int addspace = 0, in_qpair = 0, in_qstr = 0, in_com = 0;
-    apr_size_t tok_len = 0;
+    int addspace = 0, in_qpair = 0, in_qstr = 0, in_com = 0, tok_len = 0;
 
     /* Find the beginning and maximum length of the list item so that
      * we can allocate a buffer for the new string and reset the field.
@@ -1414,7 +1411,7 @@ AP_DECLARE(char *) ap_get_token(apr_pool_t *p, const char **accept_line,
     const char *ptr = *accept_line;
     const char *tok_start;
     char *token;
-    apr_size_t tok_len;
+    int tok_len;
 
     /* Find first non-white byte */
 
@@ -1487,8 +1484,7 @@ AP_DECLARE(int) ap_find_token(apr_pool_t *p, const char *line, const char *tok)
 AP_DECLARE(int) ap_find_last_token(apr_pool_t *p, const char *line,
                                    const char *tok)
 {
-    apr_size_t llen, tlen;
-    apr_ssize_t lidx;
+    int llen, tlen, lidx;
 
     if (!line)
         return 0;
@@ -1973,7 +1969,7 @@ AP_DECLARE(int) ap_is_url(const char *u)
     return (x ? 1 : 0);                /* If the first character is ':', it's broken, too */
 }
 
-AP_DECLARE(apr_ssize_t) ap_ind(const char *s, char c)
+AP_DECLARE(int) ap_ind(const char *s, char c)
 {
     const char *p = ap_strchr_c(s, c);
 
@@ -1982,7 +1978,7 @@ AP_DECLARE(apr_ssize_t) ap_ind(const char *s, char c)
     return p - s;
 }
 
-AP_DECLARE(apr_ssize_t) ap_rind(const char *s, char c)
+AP_DECLARE(int) ap_rind(const char *s, char c)
 {
     const char *p = ap_strrchr_c(s, c);
 
@@ -2083,13 +2079,10 @@ AP_DECLARE(char *) ap_pbase64decode(apr_pool_t *p, const char *bufcoded)
 AP_DECLARE(char *) ap_pbase64encode(apr_pool_t *p, char *string) 
 { 
     char *encoded;
-    apr_size_t l = strlen(string);
+    int l = strlen(string);
 
-    /* Cast to eliminate 64 bit warning */
-    encoded = (char *) apr_palloc(p, 1 + apr_base64_encode_len((int)l));
-
-    /* Cast to eliminate 64 bit warning */
-    l = apr_base64_encode(encoded, string, (int)l);
+    encoded = (char *) apr_palloc(p, 1 + apr_base64_encode_len(l));
+    l = apr_base64_encode(encoded, string, l);
     encoded[l] = '\0'; /* make binary sequence into string */
 
     return encoded;

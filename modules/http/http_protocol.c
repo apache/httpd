@@ -662,7 +662,7 @@ static int lookup_builtin_method(const char *method, apr_size_t len)
  */
 AP_DECLARE(int) ap_method_number_of(const char *method)
 {
-    apr_size_t len = strlen(method);
+    int len = strlen(method);
     int which = lookup_builtin_method(method, len);
 
     if (which != UNKNOWN_METHOD)
@@ -1858,7 +1858,7 @@ static long get_chunk_size(char *b)
  * Returns 0 on End-of-body, -1 on error or premature chunk end.
  *
  */
-AP_DECLARE(apr_ssize_t) ap_get_client_block(request_rec *r, char *buffer,
+AP_DECLARE(long) ap_get_client_block(request_rec *r, char *buffer,
                                      apr_size_t bufsiz)
 {
     apr_status_t rv;
