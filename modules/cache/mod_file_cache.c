@@ -158,7 +158,7 @@ static void *create_server_config(ap_pool_t *p, server_rec *s)
     return sconf;
 }
 
-static ap_status_t open_file(ap_file_t **file, char* filename, int flg1, int flg2, 
+static ap_status_t open_file(ap_file_t **file, const char *filename, int flg1, int flg2, 
                              ap_pool_t *p)
 {
     ap_status_t rv;
@@ -189,7 +189,7 @@ static ap_status_t open_file(ap_file_t **file, char* filename, int flg1, int flg
 }
 
 #if APR_HAS_SENDFILE
-ap_status_t cleanup_file_cache(void *sconfv)
+static ap_status_t cleanup_file_cache(void *sconfv)
 {
     a_server_config *sconf = sconfv;
     size_t n;
@@ -223,7 +223,8 @@ static ap_status_t cleanup_mmap(void *sconfv)
 }
 #endif
 
-static const char *cachefile(cmd_parms *cmd, void *dummy, char *filename)
+static const char *cachefile(cmd_parms *cmd, void *dummy, const char *filename)
+
 {
 #if APR_HAS_SENDFILE
     a_server_config *sconf;
@@ -276,7 +277,7 @@ static const char *cachefile(cmd_parms *cmd, void *dummy, char *filename)
 #endif
 }
 
-static const char *mmapfile(cmd_parms *cmd, void *dummy, char *filename)
+static const char *mmapfile(cmd_parms *cmd, void *dummy, const char *filename)
 {
 #if APR_HAS_MMAP
     a_server_config *sconf;
@@ -511,10 +512,10 @@ static int file_cache_handler(request_rec *r)
 
 static command_rec file_cache_cmds[] =
 {
-    {"cachefile", cachefile, NULL, RSRC_CONF, ITERATE,
-     "A space seperated list of files to add to the file handle cache at config time"},
-    {"mmapfile", mmapfile, NULL, RSRC_CONF, ITERATE,
-     "A space seperated list of files to mmap at config time"},
+AP_INIT_ITERATE("cachefile", cachefile, NULL, RSRC_CONF,
+     "A space seperated list of files to add to the file handle cache at config time"),
+AP_INIT_ITERATE("mmapfile", mmapfile, NULL, RSRC_CONF,
+     "A space seperated list of files to mmap at config time"),
     {NULL}
 };
 
