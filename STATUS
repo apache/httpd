@@ -1,5 +1,5 @@
 Apache 2.0 STATUS:
-Last modified at [$Date: 2000/05/24 19:18:57 $]
+Last modified at [$Date: 2000/05/25 16:45:28 $]
 
 Release:
 
@@ -171,10 +171,6 @@ Documentation that needs writing:
       does not show the contents of new files until later.
 
 Available Patches:
-
-    * Ken's patch to make htpasswd a usable tool for other databases.
-	Message-ID: <392AFA06.716E8374@Golux.Com>
-	Status: 
 
    * Mike Abbott's <mja@trudge.engr.sgi.com> patches to improve
      performance
