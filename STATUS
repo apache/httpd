@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2002/02/06 20:02:22 $]
+Last modified at [$Date: 2002/02/06 20:05:49 $]
 
 Release:
 
@@ -136,7 +136,7 @@ BETA RELEASE SHOWSTOPPERS:
           Unless it's the code that permits 'null' merges, per module.
           Still, it's probably in SetOutputFilter's behavior.
         * BrianP notes: directory_walk's handling of trailing slashes
-          appears to be the cause: http://apachelabs.org/apache-mbox/200112.mbox/%3c3C1CF721.1090300@pacbell.net%3e
+          appears to be the cause: <3C1CF721.1090300@pacbell.net>
 
     * If any request gets to the core handler, without a flag that this 
       r->filename was tested by dir/file_walk, we need to 500 at the very 
