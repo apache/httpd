@@ -637,7 +637,7 @@ static int magic_rsl_printf(request_rec *r, char *str,...)
     va_end(ap);
 
     /* add the buffer to the list */
-    return magic_rsl_add(r, strdup(buf));
+    return magic_rsl_add(r, apr_pstrdup(r->pool, buf));
 }
 
 /* RSL hook for putchar-type functions */

@@ -1,5 +1,7 @@
 Changes with Apache 2.0.25-dev
 
+  *) Fix a storage leak (a strdup() call) in mod_mime_magic.  [Jeff Trawick]
+
   *) The prefork and OS/2 MPMs are overwriting the pid file when a second copy
      of httpd is started and shuts down due to socket conflict. Moving the
      call to ap_log_pid solves the problem.
