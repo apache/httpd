@@ -7,7 +7,7 @@
  * are met:
  *
  * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer. 
+ *    notice, this list of conditions and the following disclaimer.
  *
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in
@@ -57,8 +57,8 @@
 #define _MOD_REWRITE_H 1
 
 /*
-**                       _                            _ _ 
-**   _ __ ___   ___   __| |    _ __ _____      ___ __(_) |_ ___ 
+**                       _                            _ _
+**   _ __ ___   ___   __| |    _ __ _____      ___ __(_) |_ ___
 **  | '_ ` _ \ / _ \ / _` |   | '__/ _ \ \ /\ / / '__| | __/ _ \
 **  | | | | | | (_) | (_| |   | | |  __/\ V  V /| |  | | ||  __/
 **  |_| |_| |_|\___/ \__,_|___|_|  \___| \_/\_/ |_|  |_|\__\___|
@@ -67,21 +67,21 @@
 **  URL Rewriting Module
 **
 **  This module uses a rule-based rewriting engine (based on a
-**  regular-expression parser) to rewrite requested URLs on the fly. 
-**  
+**  regular-expression parser) to rewrite requested URLs on the fly.
+**
 **  It supports an unlimited number of additional rule conditions (which can
 **  operate on a lot of variables, even on HTTP headers) for granular
 **  matching and even external database lookups (either via plain text
 **  tables, DBM hash files or even external processes) for advanced URL
 **  substitution.
-**  
+**
 **  It operates on the full URLs (including the PATH_INFO part) both in
 **  per-server context (httpd.conf) and per-dir context (.htaccess) and even
 **  can generate QUERY_STRING parts on result.   The rewriting result finally
 **  can lead to internal subprocessing, external request redirection or even
 **  to internal proxy throughput.
 **
-**  This module was originally written in April 1996 and 
+**  This module was originally written in April 1996 and
 **  gifted exclusively to the The Apache Group in July 1997 by
 **
 **      Ralf S. Engelschall
@@ -91,7 +91,7 @@
 
 
     /* The NDBM support:
-     * We support only NDBM files. 
+     * We support only NDBM files.
      * But we have to stat the file for the mtime,
      * so we also need to know the file extension
      */
@@ -99,7 +99,7 @@
 #include <ndbm.h>
 #if (__FreeBSD__)
 #define NDBM_FILE_SUFFIX ".db"
-#else 
+#else
 #define NDBM_FILE_SUFFIX ".pag"
 #endif
 #endif
@@ -225,7 +225,7 @@ typedef struct {
     int   fpin;                    /* in  file pointer for program maps */
     int   fpout;                   /* out file pointer for program maps */
     char *(*func)(request_rec *,   /* function pointer for internal maps */
-                  char *);         
+                  char *);
 } rewritemap_entry;
 
 typedef struct {
@@ -321,40 +321,30 @@ static void *config_perdir_merge (pool *p, void *basev, void *overridesv);
     /* config directive handling */
 static const char *cmd_rewriteengine(cmd_parms *cmd,
                                      rewrite_perdir_conf *dconf, int flag);
-
 static const char *cmd_rewriteoptions(cmd_parms *cmd,
-                                      rewrite_perdir_conf *dconf, char *option);
-
+                                      rewrite_perdir_conf *dconf,
+                                      char *option);
 static const char *cmd_rewriteoptions_setoption(pool *p, int *options,
                                                 char *name);
-
 static const char *cmd_rewritelog     (cmd_parms *cmd, void *dconf, char *a1);
 static const char *cmd_rewriteloglevel(cmd_parms *cmd, void *dconf, char *a1);
 static const char *cmd_rewritemap     (cmd_parms *cmd, void *dconf, char *a1,
                                        char *a2);
-
 static const char *cmd_rewritelock(cmd_parms *cmd, void *dconf, char *a1);
-
 static const char *cmd_rewritebase(cmd_parms *cmd, rewrite_perdir_conf *dconf,
                                    char *a1);
-
 static const char *cmd_rewritecond(cmd_parms *cmd, rewrite_perdir_conf *dconf,
                                    char *str);
-
 static const char *cmd_rewritecond_parseflagfield(pool *p,
                                                   rewritecond_entry *new,
                                                   char *str);
-
 static const char *cmd_rewritecond_setflag(pool *p, rewritecond_entry *cfg,
                                            char *key, char *val);
-
 static const char *cmd_rewriterule(cmd_parms *cmd, rewrite_perdir_conf *dconf,
                                    char *str);
-
 static const char *cmd_rewriterule_parseflagfield(pool *p,
                                                   rewriterule_entry *new,
                                                   char *str);
-
 static const char *cmd_rewriterule_setflag(pool *p, rewriterule_entry *cfg,
                                            char *key, char *val);
 
@@ -371,10 +361,10 @@ static int handler_redirect(request_rec *r);
 static int apply_rewrite_list(request_rec *r, array_header *rewriterules,
                               char *perdir);
 static int apply_rewrite_rule(request_rec *r, rewriterule_entry *p,
-                              char *perdir); 
+                              char *perdir);
 static int apply_rewrite_cond(request_rec *r, rewritecond_entry *p,
                               char *perdir, backrefinfo *briRR,
-                              backrefinfo *briRC); 
+                              backrefinfo *briRC);
 
     /* URI transformation function */
 static void  splitout_queryargs(request_rec *r, int qsappend);
@@ -391,8 +381,11 @@ static char *lookup_map_txtfile(request_rec *r, char *file, char *key);
 #if HAS_NDBM_LIB
 static char *lookup_map_dbmfile(request_rec *r, char *file, char *key);
 #endif
-static char *lookup_map_program(request_rec *r, int fpin, int fpout, char *key);
-static char *lookup_map_internal(request_rec *r, char *(*func)(request_rec *r, char *key), char *key);
+static char *lookup_map_program(request_rec *r, int fpin,
+                                int fpout, char *key);
+static char *lookup_map_internal(request_rec *r,
+                                 char *(*func)(request_rec *r, char *key),
+                                 char *key);
 static char *rewrite_mapfunc_toupper(request_rec *r, char *key);
 static char *rewrite_mapfunc_tolower(request_rec *r, char *key);
 static char *select_random_value_part(request_rec *r, char *value);
@@ -403,10 +396,10 @@ static int   rewrite_rand(int l, int h);
 static void  open_rewritelog(server_rec *s, pool *p);
 static int   rewritelog_child(void *cmd);
 static void  rewritelog(request_rec *r, int level, const char *text, ...)
-			__attribute__((format(printf,3,4)));
+                        __attribute__((format(printf,3,4)));
 static char *current_logtime(request_rec *r);
 
-    /* rewritinf lockfile support */
+    /* rewriting lockfile support */
 static void open_rewritelock(server_rec *s, pool *p);
 static void rewritelock_alloc(request_rec *r);
 static void rewritelock_free(request_rec *r);
