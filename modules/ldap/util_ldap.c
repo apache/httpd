@@ -1223,7 +1223,7 @@ static int util_ldap_post_config(apr_pool_t *p, apr_pool_t *plog,
         apr_ldap_err_t *result = NULL;
         apr_ldap_info(p, &(result));
         if (result != NULL) {
-            ap_log_error(APLOG_MARK, APLOG_NOTICE, 0, s, result->reason);
+            ap_log_error(APLOG_MARK, APLOG_NOTICE, 0, s, "%s", result->reason);
         }
     }
 
@@ -1244,7 +1244,7 @@ static int util_ldap_post_config(apr_pool_t *p, apr_pool_t *plog,
             st->ssl_support = 1;
         }
         else if (NULL != result) {
-            ap_log_error(APLOG_MARK, APLOG_WARNING, 0, s, result->reason);
+            ap_log_error(APLOG_MARK, APLOG_WARNING, 0, s, "%s", result->reason);
             st->ssl_support = 0;
         }
 

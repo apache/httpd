@@ -99,6 +99,7 @@ void util_ldap_url_node_display(request_rec *r, util_ald_cache_t *cache, void *n
                 type_str = "Compares";
                 break;
             case 2:
+            default:
                 cache_node = node->dn_compare_cache;
                 type_str = "DN Compares";
                 break;
