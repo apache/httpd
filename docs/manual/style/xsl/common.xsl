@@ -34,11 +34,7 @@
   </xsl:variable>
 
   <!-- load outsourced page types -->
-  <xsl:include href="moduleindex.xsl"/>
-  <xsl:include href="directiveindex.xsl"/>
-  <xsl:include href="manualpage.xsl"/>
-  <xsl:include href="synopsis.xsl"/>
-  <xsl:include href="sitemap.xsl"/>
+  <xsl:include href="pagetypes.xsl"/>
 
   <!--                                                            -->
   <!--    Utility templates for constructing pages                -->
