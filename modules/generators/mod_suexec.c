@@ -127,18 +127,26 @@ static ap_unix_identity_t *get_suexec_id_doer(const request_rec *r)
     return cfg->active ? &cfg->ugid : NULL;
 }
 
+#define SUEXEC_POST_CONFIG_USERDATA "suexec_post_config_userdata"
 static int suexec_post_config(apr_pool_t *p, apr_pool_t *plog,
                               apr_pool_t *ptemp, server_rec *s)
 {
-    static int reported = 0;
-    if (!reported && unixd_config.suexec_enabled) {
+    void *reported;
+
+    apr_pool_userdata_get(&reported, SUEXEC_POST_CONFIG_USERDATA,
+                          s->process->pool);
+
+    if ((reported == NULL) && unixd_config.suexec_enabled) {
         ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_NOTICE, 0, s,
                      "suEXEC mechanism enabled (wrapper: %s)", SUEXEC_BIN);
-        reported = 1;
+
+        apr_pool_userdata_setn((void *)1, SUEXEC_POST_CONFIG_USERDATA,
+                               apr_pool_cleanup_null, s->process->pool);
     }
 
     return OK;
 }
+#undef SUEXEC_POST_CONFIG_USERDATA
 
 /*
  * Define the directives specific to this module.  This structure is referenced
