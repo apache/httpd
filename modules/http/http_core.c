@@ -3287,6 +3287,7 @@ static unsigned short core_port(const request_rec *r)
 static int core_post_read_req(request_rec *r)
 {
     ap_add_filter("CORE", NULL, r);
+    return DECLINED;
 }
 
 static void core_register_filter(request_rec *r)
