@@ -1454,6 +1454,33 @@ static int is_identity_encoding(const char *enc)
             || !strcmp(enc, "binary"));
 }
 
+/*
+ * set_encoding_quality determines whether the encoding for a particular
+ * variant is acceptable for the user-agent. There are no q-values on
+ * encodings, so this is set as an integer value variant->encoding_quality.
+ *
+ * The rules for encoding are that if the user-agent does not supply
+ * any Accept-Encoding header, then all encodings are allowed. If
+ * there is an empty Accept-Encoding header, then no encodings are 
+ * acceptable. If there is a non-empty Accept-Encoding header, then
+ * any of the listed encodings are acceptable, as well as no encoding.
+ *
+ * In the later case, we assume that it is preferable to return a
+ * suitable encoded variant in preference to an unencoded variant.
+ *
+ * The variant with the higher value should be prefered over variants
+ * with lower values. The values used are 0 if this variant is
+ * unacceptable (if it is encoded but the user-agent does not accept
+ * this encoding or any encodings), 1 if this variant is acceptable to
+ * the user-agent either because this variant is unencoded or the
+ * user-agent does not give an Accept-Encoding header, or 2 if this
+ * variant is encoding and the user-agent specifically asks for this
+ * encoding on its Accept-Encoding header. The effect of this is to
+ * prefer encoded variants when they user-agent explicitly says that
+ * the encoding is acceptable, otherwise encoded and unencoded
+ * variants get the same encoding_quality. 
+ */
+
 static void set_encoding_quality(negotiation_state *neg, var_rec *variant)
 {
     int i;
@@ -1487,7 +1514,7 @@ static void set_encoding_quality(negotiation_state *neg, var_rec *variant)
         }
 
         if (!strcmp(name, enc)) {
-            variant->encoding_quality = 1;
+            variant->encoding_quality = 2;
             return;
         }
     }
@@ -1667,9 +1694,17 @@ static int is_variant_better(negotiation_state *neg, var_rec *variant, var_rec *
         return 1;
     }
 
-    /* encoding -- can only be 1 or 0, and if 0 we eliminated this
-     * variant at the start of this function. However we 
-     * prefer variants with no encoding over those with encoding */
+    /* Prefer the highest value for encoding_quality. If they are 
+     * equal, prefer the variant without any encoding.
+     */
+    if (variant->encoding_quality < best->encoding_quality) {
+	return 0;
+    }
+    if (variant->encoding_quality > best->encoding_quality) {
+	*p_bestq = q;
+	return 1;
+    }
+
     if (best->content_encoding == NULL && variant->content_encoding) {
         return 0;
     }

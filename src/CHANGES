@@ -1,4 +1,10 @@
 Changes with Apache 1.3.4
+
+  *) Fix negotiation so that we prefer an encoded variant over an
+     unencoded variant if the user-agent explicitly says it can
+     accept that encoding. Previously we always preferred the unencoded
+     variant.
+     [Paul Ausbeck <paula@alumni.cse.ucsc.edu>, Paul Sutton] PR#3447
  
   *) Fix APXS tool: query variables LIBS_SHLIB and TARGET were not recognized
      and the usage page was inconsistent with the functionality and manpage.
