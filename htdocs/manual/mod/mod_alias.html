@@ -74,6 +74,15 @@ server will require a trailing / in order to expand the alias.  That is,
 if you use <CODE>Alias /icons/ /usr/local/apache/icons/</CODE> then
 the url <CODE>/icons</CODE> will not be aliased.
 </P>
+<p>
+Note that you may need to specify additional
+<a href="core.html#directory"><code>&lt;Directory&gt;</code></a> sections
+which cover the <i>destination</i> of aliases.  Aliasing occurs
+before <code>&lt;Directory&gt;</code> sections are checked, so only
+the destination of aliases are affected.  (Note however
+<a href="core.html#location"><code>&lt;Location&gt;</code></a>
+sections are run through once before aliases are performed, so they
+will apply.)
 <P>
 See also <A HREF="#scriptalias">ScriptAlias</A>.
 </P>
