@@ -2582,7 +2582,7 @@ static apr_status_t send_the_file(conn_rec *c, apr_file_t *fd,
                                   apr_hdtr_t *hdtr, apr_off_t offset, 
                                   apr_size_t length, apr_size_t *nbytes) 
 {
-    apr_status_t rv = APR_EINIT;
+    apr_status_t rv = APR_SUCCESS;
     apr_size_t n = length;
     apr_int32_t sendlen = 0;
     apr_int32_t togo;
