@@ -326,6 +326,10 @@ static apr_status_t deflate_out_filter(ap_filter_t *f,
         apr_table_setn(r->headers_out, "Vary", "Accept-Encoding");
         apr_table_unset(r->headers_out, "Content-Length");
     }
+    
+    /* initialize deflate output buffer */
+    ctx->stream.next_out = ctx->buffer;
+    ctx->stream.avail_out = c->bufferSize;
 
     APR_BRIGADE_FOREACH(e, bb) {
         const char *data;
@@ -436,8 +440,6 @@ static apr_status_t deflate_out_filter(ap_filter_t *f,
                                                       * but we'll just have to
                                                       * trust zlib */
         ctx->stream.avail_in = len;
-        ctx->stream.next_out = ctx->buffer;
-        ctx->stream.avail_out = c->bufferSize;
 
         while (ctx->stream.avail_in != 0) {
             if (ctx->stream.avail_out == 0) {
