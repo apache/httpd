@@ -1240,7 +1240,7 @@ static void basic_http_header_check(request_rec *r,
 static void basic_http_header(request_rec *r, apr_bucket_brigade *bb,
                               const char *protocol)
 {
-    const char *date;
+    char *date;
     const char *server;
     header_struct h;
     struct iovec vec[4];
@@ -1272,19 +1272,12 @@ static void basic_http_header(request_rec *r, apr_bucket_brigade *bb,
     apr_brigade_writev(bb, NULL, NULL, vec, 4);
 #endif
 
-    /* keep a previously set date header (possibly from proxy), otherwise
-     * generate a new date header */
-    if ((date = apr_table_get(r->headers_out, "Date")) != NULL) {
-        form_header_field(&h, "Date", date);
-    }
-    else {
-        char *now = apr_palloc(r->pool, APR_RFC822_DATE_LEN);
-        ap_recent_rfc822_date(now, r->request_time);
+    date = apr_palloc(r->pool, APR_RFC822_DATE_LEN);
+    ap_recent_rfc822_date(date, r->request_time);
 
-        h.pool = r->pool;
-        h.bb = bb;
-        form_header_field(&h, "Date", now);
-    }
+    h.pool = r->pool;
+    h.bb = bb;
+    form_header_field(&h, "Date", date);
 
     /* keep a previously set server header (possibly from proxy), otherwise
      * generate a new server header */
@@ -1296,7 +1289,7 @@ static void basic_http_header(request_rec *r, apr_bucket_brigade *bb,
     }
 
     /* unset so we don't send them again */
-    apr_table_unset(r->headers_out, "Date");
+    apr_table_unset(r->headers_out, "Date");        /* Avoid bogosity */
     apr_table_unset(r->headers_out, "Server");
 }
 
