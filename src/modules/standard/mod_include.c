@@ -760,12 +760,11 @@ int handle_config(FILE *in, request_rec *r, char *error, char *tf,
 int find_file(request_rec *r, char *directive, char *tag, 
               char *tag_val, struct stat *finfo, char *error)
 {
-    char dir[MAX_STRING_LEN];
+    char *dir = "./";
     char *to_send;
 
     if(!strcmp(tag,"file")) {
         getparents(tag_val); /* get rid of any nasties */
-        getwd(dir);
         to_send = make_full_path (r->pool, dir, tag_val);
         if(stat(to_send,finfo) == -1) {
             log_printf(r->server,
