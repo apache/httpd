@@ -127,6 +127,10 @@ Changes with Apache 2.1.0-dev
 
 Changes with Apache 2.0.45
 
+  *) Fixed a problem with mod_ldap which caused it to fault when caching
+     was disabled.  Needed to make sure that the code did not
+     attempt to use the cache if it didn't exist. [Brad Nicholes]
+     
   *) Hook mod_proxy's fixup before mod_rewrite's fixup, so that by
      mod_rewrite proxied URLs will not be escaped accidentally by
      mod_proxy's fixup. PR 16368  [André Malo]
