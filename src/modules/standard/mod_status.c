@@ -243,7 +243,7 @@ static int status_handler(request_rec *r)
     if (!exists_scoreboard_image()) {
 	aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r->server,
 		    "Server status unavailable in inetd mode");
-	return HTTP_NOT_IMPLEMENTED;
+	return HTTP_INTERNAL_SERVER_ERROR;
     }
     r->allowed = (1 << M_GET);
     if (r->method_number != M_GET)
