@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/02/18 05:18:33 $]
+Last modified at [$Date: 2003/02/18 20:59:31 $]
 
 Release:
 
@@ -135,8 +135,10 @@ PATCHES TO PORT FROM 2.1
       +1: jerenkrantz, nd, trawick
 
     * Rework ap_xml_parse_input to work with bucket brigades.  PR 16134.
-      server/util_xml.c: r1.22, r1.23
+      server/util_xml.c: r1.22, r1.23, r1.24
       +1: jerenkrantz, trawick, nd
+          nd: added 1.24, because of unused variable. assuming that it
+              doesn't break your +1s.
 
     * While processing filters on internal redirects, remember seen EOS
       buckets also in the request structure of the redirect issuer(s). This
@@ -144,6 +146,13 @@ PATCHES TO PORT FROM 2.1
       PR 14451.
       server/util_filter.c: r1.95
       +1: nd, trawick
+
+    * Hook mod_proxy's fixup before mod_rewrite's fixup, so that by
+      mod_rewrite proxied URLs will not be escaped accidentally by
+      mod_proxy's fixup. (PR 16368)
+      modules/mappers/mod_rewrite.c: r1.139
+      modules/proxy/mod_proxy.c: r1.92
+      +1: nd
 
 CURRENT RELEASE NOTES:
 
