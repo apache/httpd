@@ -564,6 +564,7 @@ static apr_status_t spool_reqbody_cl(apr_pool_t *p,
                 AP_DEBUG_ASSERT(bytes_read == bytes_written);
                 fsize += bytes_written;
             }
+            apr_brigade_cleanup(input_brigade);
         }
         else {
             APR_BRIGADE_CONCAT(body_brigade, input_brigade);
