@@ -194,6 +194,10 @@ API_EXPORT(void) register_cleanup(pool *p, void *data,
 API_EXPORT(void) kill_cleanup(pool *p, void *data, void (*plain_cleanup) (void *));
 API_EXPORT(void) run_cleanup(pool *p, void *data, void (*cleanup) (void *));
 
+/* A "do-nothing" cleanup, for register_cleanup; it's faster to do
+ * things this way than to test for NULL. */
+API_EXPORT(void) null_cleanup(void *data);
+
 /* The time between when a resource is actually allocated, and when it
  * its cleanup is registered is a critical section, during which the
  * resource could leak if we got interrupted or timed out.  So, anything

@@ -240,8 +240,9 @@ struct other_child_rec {
 static other_child_rec *other_children;
 #endif
 
-pool *pconf;			/* Pool for config stuff */
-pool *ptrans;			/* Pool for per-transaction stuff */
+static pool *pconf;		/* Pool for config stuff */
+static pool *ptrans;		/* Pool for per-transaction stuff */
+static pool *pchild;		/* Pool for httpd child stuff */
 
 int APACHE_TLS my_pid;		/* it seems silly to call getpid all the time */
 #ifndef MULTITHREAD
@@ -277,8 +278,6 @@ static void expand_lock_fname(pool *p)
 #include <ulocks.h>
 
 static ulock_t uslock = NULL;
-
-#define accept_mutex_cleanup()
 
 #define accept_mutex_child_init(x)
 
@@ -351,7 +350,7 @@ static int have_accept_mutex;
 static sigset_t accept_block_mask;
 static sigset_t accept_previous_mask;
 
-static void accept_mutex_child_cleanup(void *data)
+static void accept_mutex_child_cleanup(void *foo)
 {
     if (accept_mutex != (void *)(caddr_t)-1
 	&& have_accept_mutex) {
@@ -359,7 +358,12 @@ static void accept_mutex_child_cleanup(void *data)
     }
 }
 
-static void accept_mutex_cleanup(void)
+static void accept_mutex_child_init(pool *p)
+{
+    register_cleanup(p, NULL, accept_mutex_child_cleanup, null_cleanup);
+}
+
+static void accept_mutex_cleanup(void *foo)
 {
     if (accept_mutex != (void *)(caddr_t)-1
 	&& munmap((caddr_t) accept_mutex, sizeof(*accept_mutex))) {
@@ -367,8 +371,6 @@ static void accept_mutex_cleanup(void)
     }
     accept_mutex = (void *)(caddr_t)-1;
 }
-
-#define accept_mutex_child_init(x)
 
 static void accept_mutex_init(pool *p)
 {
@@ -403,8 +405,7 @@ static void accept_mutex_init(pool *p)
     sigdelset(&accept_block_mask, SIGHUP);
     sigdelset(&accept_block_mask, SIGTERM);
     sigdelset(&accept_block_mask, SIGUSR1);
-    register_cleanup(pconf, NULL, accept_mutex_child_cleanup,
-	accept_mutex_child_cleanup);
+    register_cleanup(p, NULL, accept_mutex_cleanup, null_cleanup);
 }
 
 static void accept_mutex_on()
@@ -462,25 +463,19 @@ union semun {
 
 #endif
 
-static int sem_cleanup_registered;
-static pid_t sem_cleanup_pid;
 static int sem_id = -1;
 static struct sembuf op_on;
 static struct sembuf op_off;
 
 /* We get a random semaphore ... the lame sysv semaphore interface
  * means we have to be sure to clean this up or else we'll leak
- * semaphores.  Note that this is registered via atexit, so we can't
- * do many things in here... especially nothing that would allocate
- * memory or use a FILE *.
+ * semaphores.
  */
-static void accept_mutex_cleanup(void)
+static void accept_mutex_cleanup(void *foo)
 {
     union semun ick;
 
     if (sem_id < 0)
-	return;
-    if (getpid() != sem_cleanup_pid)
 	return;
     /* this is ignored anyhow */
     ick.val = 0;
@@ -494,15 +489,6 @@ static void accept_mutex_init(pool *p)
     union semun ick;
     struct semid_ds buf;
 
-    if (!sem_cleanup_registered) {
-	/* only the parent will try to do cleanup */
-	sem_cleanup_pid = getpid();
-	if (atexit(accept_mutex_cleanup)) {
-	    perror("atexit");
-	    exit(1);
-	}
-	sem_cleanup_registered = 1;
-    }
     /* acquire the semaphore */
     sem_id = semget(IPC_PRIVATE, 1, IPC_CREAT | 0600);
     if (sem_id < 0) {
@@ -527,6 +513,7 @@ static void accept_mutex_init(pool *p)
 	    exit(1);
 	}
     }
+    register_cleanup(p, NULL, accept_mutex_cleanup, null_cleanup);
 
     /* pre-initialize these */
     op_on.sem_num = 0;
@@ -558,8 +545,6 @@ static struct flock lock_it;
 static struct flock unlock_it;
 
 static int lock_fd = -1;
-
-#define accept_mutex_cleanup()
 
 #define accept_mutex_child_init(x)
 
@@ -618,7 +603,7 @@ static void accept_mutex_off(void)
 
 static int lock_fd = -1;
 
-static void accept_mutex_cleanup(void)
+static void accept_mutex_cleanup(void *foo)
 {
     unlink(lock_fname);
 }
@@ -637,13 +622,13 @@ static void accept_mutex_child_init(pool *p)
 	exit(1);
     }
 }
+
 /*
  * Initialize mutex lock.
  * Must be safe to call this on a restart.
  */
 static void accept_mutex_init(pool *p)
 {
-
     expand_lock_fname(p);
     unlink(lock_fname);
     lock_fd = popenf(p, lock_fname, O_CREAT | O_WRONLY | O_EXCL, 0600);
@@ -652,6 +637,7 @@ static void accept_mutex_init(pool *p)
 		    "Parent cannot open lock file: %s\n", lock_fname);
 	exit(1);
     }
+    register_cleanup(p, NULL, accept_mutex_cleanup, null_cleanup);
 }
 
 static void accept_mutex_on(void)
@@ -685,7 +671,6 @@ static void accept_mutex_off(void)
 /* Multithreaded systems don't complete between processes for
  * the sockets. */
 #define NO_SERIALIZED_ACCEPT
-#define accept_mutex_cleanup()
 #define accept_mutex_child_init(x)
 #define accept_mutex_init(x)
 #define accept_mutex_on()
@@ -754,8 +739,8 @@ Sigfunc *signal(int signo, Sigfunc * func)
 /* a clean exit from a child with proper cleanup */
 static void __attribute__((noreturn)) clean_child_exit(int code)
 {
-    child_exit_modules(pconf, server_conf);
-    destroy_pool(pconf);
+    child_exit_modules(pchild, server_conf);
+    destroy_pool(pchild);
     exit(code);
 }
 
@@ -1293,7 +1278,14 @@ API_EXPORT(void) sync_scoreboard_image()
 #else /* MULTITHREAD */
 #if defined(HAVE_MMAP)
 
-static void setup_shared_mem(void)
+#ifdef QNX
+static void cleanup_shared_mem(void *d)
+{
+    shm_unlink(scoreboard_fname);
+}
+#endif
+
+static void setup_shared_mem(pool *p)
 {
     caddr_t m;
 
@@ -1360,6 +1352,7 @@ static void setup_shared_mem(void)
 	exit(1);
     }
     close(fd);
+    register_cleanup(p, NULL, cleanup_shared_mem, null_cleanup);
 
 #elif defined(MAP_ANON) || defined(MAP_FILE)
 /* BSD style */
@@ -1416,7 +1409,7 @@ static void setup_shared_mem(void)
 static key_t shmkey = IPC_PRIVATE;
 static int shmid = -1;
 
-static void setup_shared_mem(void)
+static void setup_shared_mem(pool *p)
 {
     struct shmid_ds shmbuf;
 #ifdef MOVEBREAK
@@ -1536,6 +1529,11 @@ static int force_read(int fd, void *buffer, int bufsz)
 
     return rv < 0 ? rv : orig_sz - bufsz;
 }
+
+static void cleanup_scoreboard_file(void *foo)
+{
+    unlink(scoreboard_fname);
+}
 #endif
 
 /* Called by parent process */
@@ -1547,7 +1545,7 @@ void reinit_scoreboard(pool *p)
 
 #ifndef SCOREBOARD_FILE
     if (scoreboard_image == NULL) {
-	setup_shared_mem();
+	setup_shared_mem(p);
     }
     memset(scoreboard_image, 0, SCOREBOARD_SIZE);
     scoreboard_image->global.exit_generation = exit_gen;
@@ -1561,6 +1559,7 @@ void reinit_scoreboard(pool *p)
 	fprintf(stderr, "Cannot open scoreboard file:\n");
 	exit(1);
     }
+    register_cleanup(p, NULL, cleanup_scoreboard_file, null_cleanup);
 
     memset((char *) scoreboard_image, 0, sizeof(*scoreboard_image));
     scoreboard_image->global.exit_generation = exit_gen;
@@ -1600,15 +1599,6 @@ void reopen_scoreboard(pool *p)
 #endif
 }
 
-void cleanup_scoreboard(void)
-{
-#ifdef SCOREBOARD_FILE
-    unlink(scoreboard_fname);
-#elif defined(QNX) && defined(HAVE_MMAP)
-    shm_unlink(scoreboard_fname);
-#endif
-}
-
 /* Routines called to deal with the scoreboard image
  * --- note that we do *not* need write locks, since update_child_status
  * only updates a *single* record in place, and only one process writes to
@@ -1642,6 +1632,14 @@ static ap_inline void put_scoreboard_info(int child_num,
     lseek(scoreboard_fd, (long) child_num * sizeof(short_score), 0);
     force_write(scoreboard_fd, new_score_rec, sizeof(short_score));
 #endif
+}
+
+/* a clean exit from the parent with proper cleanup */
+static void __attribute__((noreturn)) clean_parent_exit(int code)
+{
+    /* Clear the pool - including any registered cleanups */
+    destroy_pool(pconf);
+    exit(code);
 }
 
 int update_child_status(int child_num, int status, request_rec *r)
@@ -2695,9 +2693,14 @@ void child_main(int child_num_arg)
     my_child_num = child_num_arg;
     requests_this_child = 0;
 
+    /* Get a sub pool for global allocations in this child, so that
+     * we can have cleanups occur when the child exits.
+     */
+    pchild = make_sub_pool(pconf);
+
     /* needs to be done before we switch UIDs so we have permissions */
-    reopen_scoreboard(pconf);
-    SAFE_ACCEPT(accept_mutex_child_init(pconf));
+    reopen_scoreboard(pchild);
+    SAFE_ACCEPT(accept_mutex_child_init(pchild));
 
 #ifdef MPE
     /* Only try to switch if we're running as MANAGER.SYS */
@@ -2720,7 +2723,7 @@ void child_main(int child_num_arg)
     }
 #endif
 
-    child_init_modules(pconf, server_conf);
+    child_init_modules(pchild, server_conf);
 
     (void) update_child_status(my_child_num, SERVER_READY, (request_rec *) NULL);
 
@@ -3289,6 +3292,7 @@ void standalone_main(int argc, char **argv)
 	}
 #ifdef SCOREBOARD_FILE
 	else if (scoreboard_fd != -1) {
+	    kill_cleanup(pconf, NULL, cleanup_scoreboard_file);
 	    kill_cleanups_for_fd(pconf, scoreboard_fd);
 	}
 #endif
@@ -3420,12 +3424,7 @@ void standalone_main(int argc, char **argv)
 	    aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_NOTICE, server_conf,
 			"httpd: caught SIGTERM, shutting down");
 
-	    /* Clear the pool - including any registered cleanups */
-	    destroy_pool(pconf);
-	    cleanup_scoreboard();
-	    SAFE_ACCEPT(accept_mutex_cleanup());
-
-	    exit(0);
+	    clean_parent_exit(0);
 	}
 
 	/* we've been told to restart */
@@ -3434,7 +3433,7 @@ void standalone_main(int argc, char **argv)
 
 	if (one_process) {
 	    /* not worth thinking about */
-	    exit(0);
+	    clean_parent_exit(0);
 	}
 
 	if (is_graceful) {
@@ -3478,9 +3477,6 @@ void standalone_main(int argc, char **argv)
 			"SIGHUP received.  Attempting to restart");
 	}
 	++generation;
-
-	SAFE_ACCEPT(accept_mutex_cleanup());
-
     } while (restart_pending);
 
 }				/* standalone_main */
@@ -4167,8 +4163,6 @@ void worker_main()
 
     cleanup_scoreboard();
     exit(0);
-
-
 }				/* standalone_main */
 
 

@@ -936,6 +936,11 @@ API_EXPORT(void) cleanup_for_exec(void)
 #endif /* ndef WIN32 */
 }
 
+API_EXPORT(void) null_cleanup(void *data)
+{
+    /* do nothing cleanup routine */
+}
+
 /*****************************************************************
  *
  * Files and file descriptors; these are just an application of the

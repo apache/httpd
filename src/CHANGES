@@ -1,5 +1,13 @@
 Changes with Apache 1.3b3
 
+  *) It was necessary to distinguish between resources which are
+     allocated in the parent, for cleanup in the parent, and resources
+     which are allocated in each child, for cleanup in each child.
+     A new pool was created which is passed to the module child_init
+     and child_exit functions; modules are free to register per-child
+     cleanups there.  This fixes a bug with reliable piped logs.
+     [Dean Gaudet]
+
   *) mod_autoindex wasn't displaying the ReadmeName file at the bottom
      unless it was also doing FancyIndexes, but it displayed the
      HeaderName file at the top under all circumstances.  It now shows
