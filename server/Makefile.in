@@ -51,7 +51,7 @@ delete-exports:
 
 
 $(TARGET_EXPORTS):
-	$(AWK) -f $(top_srcdir)/srclib/apr/helpers/make_export.awk $(top_srcdir)/include/*.h > $@
+	$(AWK) -f $(top_srcdir)/srclib/apr/build/make_export.awk $(top_srcdir)/include/*.h > $@
 
 exports.c: $(EXPORT_FILES)
 	(cat $(EXPORT_FILES) | ../build/buildexports.sh ..) > $@
