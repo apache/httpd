@@ -385,7 +385,7 @@ _install:
 	copy modules\experimental\$(LONG)\mod_charset_lite.so "$(INSTDIR)\modules" <.y
 	copy modules\experimental\$(LONG)\mod_mem_cache.so "$(INSTDIR)\modules" <.y
 	copy modules\experimental\$(LONG)\mod_disk_cache.so "$(INSTDIR)\modules" <.y
-	copy modules\experimental\$(LONG)\mod_ext_filter.so "$(INSTDIR)\modules" <.y
+	copy modules\filters\$(LONG)\mod_ext_filter.so "$(INSTDIR)\modules" <.y
 	copy modules\filters\$(LONG)\mod_include.so "$(INSTDIR)\modules" <.y
 	copy modules\generators\$(LONG)\mod_asis.so "$(INSTDIR)\modules" <.y
 	copy modules\generators\$(LONG)\mod_autoindex.so "$(INSTDIR)\modules" <.y
@@ -441,7 +441,7 @@ _install:
 	copy modules\experimental\$(LONG)\mod_charset_lite.pdb "$(INSTDIR)\modules" <.y
 	copy modules\experimental\$(LONG)\mod_mem_cache.pdb "$(INSTDIR)\modules" <.y
 	copy modules\experimental\$(LONG)\mod_disk_cache.pdb "$(INSTDIR)\modules" <.y
-	copy modules\experimental\$(LONG)\mod_ext_filter.pdb "$(INSTDIR)\modules" <.y
+	copy modules\filters\$(LONG)\mod_ext_filter.pdb "$(INSTDIR)\modules" <.y
 	copy modules\filters\$(LONG)\mod_include.pdb "$(INSTDIR)\modules" <.y
 	copy modules\generators\$(LONG)\mod_asis.pdb "$(INSTDIR)\modules" <.y
 	copy modules\generators\$(LONG)\mod_autoindex.pdb "$(INSTDIR)\modules" <.y
