@@ -15,7 +15,7 @@
   <!--#include virtual="header.html" -->
   <H1 ALIGN="CENTER">Apache Server Frequently Asked Questions</H1>
   <P>
-  $Revision: 1.110 $ ($Date: 1998/03/27 01:56:34 $)
+  $Revision: 1.111 $ ($Date: 1998/04/11 06:34:23 $)
   </P>
   <P>
   The latest version of this FAQ is always available from the main
@@ -134,8 +134,8 @@
    <LI><A HREF="#freebsd-setsize">Can I increase <SAMP>FD_SETSIZE</SAMP>
         on FreeBSD?</A>
    </LI>
-   <LI><A HREF="#limitGET">Why do I keep getting &quot;access denied&quot; for
-        form POST requests?</A>
+   <LI><A HREF="#POSTnotallowed">Why do I keep getting &quot;Method Not 
+        Allowed&quot; for form POST requests?</A>
    </LI>
    <LI><A HREF="#passwdauth">Can I use my <SAMP>/etc/passwd</SAMP> file
         for Web page authentication?</A>
@@ -964,31 +964,17 @@
   <HR>
  </LI>
 
- <LI><A NAME="limitGET">
-      <STRONG>Why do I keep getting &quot;access denied&quot; for form POST
-      requests?</STRONG>
+ <LI><A NAME="POSTnotallowed">
+      <STRONG>Why do I keep getting &quot;Method Not Allowed&quot; for 
+      form POST requests?</STRONG>
      </A>
   <P>
-  The most common cause of this is a <SAMP>&lt;Limit&gt;</SAMP> section
-  that only names the <SAMP>GET</SAMP> method.  Look in your
-  configuration files for something that resembles the following and
-  would affect the location where the POST-handling script resides:
-  </P>
-  <P>
-  <DL>
-   <DD><CODE>&lt;Limit GET&gt;
-    <BR>&nbsp;&nbsp;&nbsp;&nbsp;:</CODE>
-   </DD>
-  </DL>
-  </P>
-  <P>
-  Change that to <CODE>&lt;Limit&nbsp;GET&nbsp;POST&gt;</CODE> and the problem
-  will probably go away.  Better yet, remove the
-  <CODE>&lt;Limit&gt;</CODE> and <CODE>&lt;/Limit&gt;</CODE> lines
-  altogether unless you're <EM>specifically</EM> trying to limit by
-  method (<SAMP>GET</SAMP>, <SAMP>PUT</SAMP>, <EM>et cetera</EM>).  If
-  you don't have a <CODE>&lt;Limit&gt;</CODE> container, the
-  restrictions apply equally to <EM>all</EM> methods.
+  This is almost always due to Apache not being configured to treat the
+  file you are trying to POST to as a CGI script.  You can not POST 
+  to a normal HTML file; the operation has no meaning.  See the FAQ 
+  entry on <A HREF="#CGIoutsideScriptAlias">CGIs outside ScriptAliased
+  directories</A> for details on how to configure Apache to treat the
+  file in question as a CGI.
   </P>
   <HR>
  </LI>
@@ -2143,10 +2129,10 @@
      </A>
 
   <P>
-  RedHat Linux versions 4.x (and possibly earlier) rpms contain
+  RedHat Linux versions 4.x (and possibly earlier) RPMs contain
   various nasty scripts which do not stop or restart Apache properly.
   These can affect you even if you're not running the RedHat supplied
-  rpms.
+  RPMs.
   </P>
   <P>
   If you're using the default install then you're probably running
@@ -2155,12 +2141,12 @@
   the problems.
   </P>
   <P>
-  If you're using a custom built Apache rather than the RedHat rpms
+  If you're using a custom built Apache rather than the RedHat RPMs
   then you should <CODE>rpm -e apache</CODE>.  In particular you want
   the mildly broken <CODE>/etc/logrotate.d/apache</CODE> script to be
   removed, and you want the broken <CODE>/etc/rc.d/init.d/httpd</CODE>
   (or <CODE>httpd.init</CODE>) script to be removed.  The latter is
-  actually fixed by the apache-1.2.5 rpms but if you're building your
+  actually fixed by the apache-1.2.5 RPMs but if you're building your
   own Apache then you probably don't want the RedHat files.
   </P>
   <P>
@@ -2250,12 +2236,12 @@
 
   <P>
   These are symptoms of a fine locking problem, which usually means that
-  the server is trying to use a synchronisation file on an NFS filesystem.
+  the server is trying to use a synchronization file on an NFS filesystem.
   </P>
   <P>
   Because of its parallel-operation model, the Apache Web server needs to
-  provide some form of synchronisation when accessing certain resources.
-  One of these synchronisation methods involves taking out locks on a file,
+  provide some form of synchronization when accessing certain resources.
+  One of these synchronization methods involves taking out locks on a file,
   which means that the filesystem whereon the lockfile resides must support
   locking.  In many cases this means it <EM>can't</EM> be kept on an
   NFS-mounted filesystem.
