@@ -163,13 +163,14 @@ static int log_scripterror(request_rec *r, cgi_server_conf * conf, int ret,
 			   int show_errno, char *error)
 {
     FILE *f;
+    struct stat finfo;
 
     aplog_error(APLOG_MARK, show_errno|APLOG_ERR, r->server, 
 		"%s, reason: %s", error, r->filename);
 
     if (!conf->logname ||
-	((stat(server_root_relative(r->pool, conf->logname), &r->finfo) == 0)
-	 &&   (r->finfo.st_size > conf->logbytes)) ||
+	((stat(server_root_relative(r->pool, conf->logname), &finfo) == 0)
+	 &&   (finfo.st_size > conf->logbytes)) ||
          ((f = pfopen(r->pool, server_root_relative(r->pool, conf->logname),
 		      "a")) == NULL)) {
 	return ret;
@@ -195,10 +196,11 @@ static int log_script(request_rec *r, cgi_server_conf * conf, int ret,
     char argsbuffer[HUGE_STRING_LEN];
     FILE *f;
     int i;
+    struct stat finfo;
 
     if (!conf->logname ||
-	((stat(server_root_relative(r->pool, conf->logname), &r->finfo) == 0)
-	 &&   (r->finfo.st_size > conf->logbytes)) ||
+	((stat(server_root_relative(r->pool, conf->logname), &finfo) == 0)
+	 &&   (finfo.st_size > conf->logbytes)) ||
          ((f = pfopen(r->pool, server_root_relative(r->pool, conf->logname),
 		      "a")) == NULL)) {
 	/* Soak up script output */
@@ -375,9 +377,6 @@ static int cgi_handler(request_rec *r)
 	return log_scripterror(r, conf, FORBIDDEN, APLOG_NOERRNO,
 			       "attempt to include NPH CGI script");
 
-    if (S_ISDIR(r->finfo.st_mode))
-	return log_scripterror(r, conf, FORBIDDEN, APLOG_NOERRNO,
-			       "attempt to invoke directory as script");
 #if defined(__EMX__) || defined(WIN32)
     /* Allow for cgi files without the .EXE extension on them under OS/2 */
     if (r->finfo.st_mode == 0) {
@@ -395,6 +394,9 @@ static int cgi_handler(request_rec *r)
 	return log_scripterror(r, conf, NOT_FOUND, APLOG_NOERRNO,
 			       "script not found or unable to stat");
 #endif
+    if (S_ISDIR(r->finfo.st_mode))
+	return log_scripterror(r, conf, FORBIDDEN, APLOG_NOERRNO,
+			       "attempt to invoke directory as script");
     if (!suexec_enabled) {
 	if (!can_exec(&r->finfo))
 	    return log_scripterror(r, conf, FORBIDDEN, APLOG_NOERRNO,
