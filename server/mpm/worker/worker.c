@@ -1424,6 +1424,11 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
         if (ap_run_pre_mpm(pconf, SB_SHARED) != OK) {
             return 1;
         }
+        /* fix the generation number in the global score; we just got a new,
+         * cleared scoreboard
+         */
+        ap_scoreboard_image->global->running_generation = ap_my_generation;
+        update_scoreboard_global();
     }
 
     set_signals();
