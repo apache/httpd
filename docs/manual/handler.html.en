@@ -90,7 +90,7 @@ program.</p>
 <strong>Module:</strong> mod_mime
 
 <p>When placed into an <code>.htaccess</code> file or a
-<code>&lt;Directory&gt;</code> or <code>&lt;Location</code> section,
+<code>&lt;Directory&gt;</code> or <code>&lt;Location&gt;</code> section,
 this directive forces all matching files to be parsed through the
 handler given by <em>handler-name</em>. For example, if you had a
 directory you wanted to be parsed entirely as imagemap rule files,
