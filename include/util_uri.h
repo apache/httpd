@@ -200,12 +200,6 @@ AP_DECLARE(int) ap_parse_uri_components(apr_pool_t *p, const char *uri, uri_comp
  */
 AP_DECLARE(int) ap_parse_hostinfo_components(apr_pool_t *p, const char *hostinfo, uri_components *uptr);
 
-/**
- * Setup everything necessary to parse uri's
- * @deffunc void ap_util_uri_init(void)
- */
-AP_DECLARE(void) ap_util_uri_init(void);
-
 #ifdef __cplusplus
 }
 #endif
