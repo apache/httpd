@@ -569,7 +569,7 @@ struct ent {
     char *icon;
     char *alt;
     char *desc;
-    size_t size;
+    off_t size;
     time_t lm;
     struct ent *next;
     int ascending;
@@ -859,7 +859,7 @@ static struct ent *make_autoindex_entry(char *name, int autoindex_opts,
 
     p = (struct ent *) ap_pcalloc(r->pool, sizeof(struct ent));
     p->name = ap_pstrdup(r->pool, name);
-    p->size = 0;
+    p->size = -1;
     p->icon = NULL;
     p->alt = NULL;
     p->desc = NULL;
@@ -879,7 +879,7 @@ static struct ent *make_autoindex_entry(char *name, int autoindex_opts,
 		if (!(p->alt = find_alt(d, rr, 1))) {
 		    p->alt = "DIR";
 		}
-		p->size = 0;
+		p->size = -1;
 		p->name = ap_pstrcat(r->pool, name, "/", NULL);
 	    }
 	    else {

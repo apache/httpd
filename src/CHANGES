@@ -1,5 +1,9 @@
 Changes with Apache 1.3.3
 
+  *) Fix mod_autoindex bug where directories got a size of "0k" instead
+     of "-".  [Martin Plechsmid <plechsmi@karlin.mff.cuni.cz>, Marc Slemko]
+     PR#3130
+
   *) PORT: DRS 6000 machine. [Paul Debleecker <pdebleecker@jetair.be>]
 
   *) Add the server signature text (from the core ServerSignature directive)
