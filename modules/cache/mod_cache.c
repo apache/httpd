@@ -688,22 +688,25 @@ static int cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
 
     /* Did we just update the cached headers on a revalidated response?
      *
-     * If so, we can now decide what to serve to the client:
-     * - If the original request was conditional and is satisified, send 304.
-     * - Otherwise, send the cached body.
-    */
+     * If so, we can now decide what to serve to the client.  This is done in
+     * the same way as with a regular response, but conditions are now checked
+     * against the cached or merged response headers.
+     */
     if (rv == APR_SUCCESS && cache->stale_handle) {
         apr_bucket_brigade *bb;
         apr_bucket *bkt;
+        int status;
 
         bb = apr_brigade_create(r->pool, r->connection->bucket_alloc);
 
-        /* Were we initially a conditional request? */
-        if (ap_cache_request_is_conditional(cache->stale_headers)) {
-            /* FIXME: We must ensure that the request meets conditions. */
-
-            /* Set the status to be a 304. */
-            r->status = HTTP_NOT_MODIFIED;
+        /* Restore the original request headers and see if we need to
+         * return anything else than the cached response (ie. the original
+         * request was conditional).
+         */
+        r->headers_in = cache->stale_headers;
+        status = ap_meets_conditions(r);
+        if (status != OK) {
+            r->status = status;
 
             bkt = apr_bucket_flush_create(bb->bucket_alloc);
             APR_BRIGADE_INSERT_TAIL(bb, bkt);
