@@ -1054,6 +1054,9 @@ void netware_rewrite_args(process_rec *process)
             apr_getopt_init(&opt, process->pool, process->argc, (char**) process->argv);
             while (apr_getopt(opt, AP_SERVER_BASEARGS, optbuf + 1, &opt_arg) == APR_SUCCESS) {
                 switch (optbuf[1]) {
+				case 'E':
+					/* Don't need to hold the screen open if the output is going to a file */
+					hold_screen_on_exit = -1;
                 default:
                     *(const char **)apr_array_push(mpm_new_argv) =
                         apr_pstrdup(process->pool, optbuf);

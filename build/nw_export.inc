@@ -13,6 +13,7 @@
 #define AP_CORE_DECLARE_NONSTD  AP_CORE_DECLARE_NONSTD
 #define AP_DECLARE_HOOK         AP_DECLARE_HOOK
 #define AP_DECLARE_DATA         AP_DECLARE_DATA
+#undef  APACHE_OS_H
 
 #include "httpd.h"
 
