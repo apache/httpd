@@ -841,10 +841,10 @@ static int cgid_handler(request_rec *r)
         argv0 = r->filename; 
 
     if (!(ap_allow_options(r) & OPT_EXECCGI) && !is_scriptaliased(r)) 
-        return log_scripterror(r, conf, FORBIDDEN, APLOG_NOERRNO, 
+        return log_scripterror(r, conf, HTTP_FORBIDDEN, APLOG_NOERRNO, 
                                "Options ExecCGI is off in this directory"); 
     if (nph && is_included) 
-        return log_scripterror(r, conf, FORBIDDEN, APLOG_NOERRNO, 
+        return log_scripterror(r, conf, HTTP_FORBIDDEN, APLOG_NOERRNO, 
                                "attempt to include NPH CGI script"); 
 
 #if defined(OS2) || defined(WIN32) 
@@ -856,7 +856,7 @@ static int cgid_handler(request_rec *r)
         newfile = ap_pstrcat(r->pool, r->filename, ".EXE", NULL); 
 
         if ((stat(newfile, &statbuf) != 0) || (!S_ISREG(statbuf.st_mode))) { 
-            return log_scripterror(r, conf, NOT_FOUND, 0, 
+            return log_scripterror(r, conf, HTTP_NOT_FOUND, 0, 
                                    "script not found or unable to stat"); 
         } else { 
             r->filename = newfile; 
@@ -864,16 +864,16 @@ static int cgid_handler(request_rec *r)
     } 
 #else 
     if (r->finfo.protection == 0) 
-        return log_scripterror(r, conf, NOT_FOUND, APLOG_NOERRNO, 
+        return log_scripterror(r, conf, HTTP_NOT_FOUND, APLOG_NOERRNO, 
                                "script not found or unable to stat"); 
 #endif 
     if (r->finfo.filetype == APR_DIR) 
-        return log_scripterror(r, conf, FORBIDDEN, APLOG_NOERRNO, 
+        return log_scripterror(r, conf, HTTP_FORBIDDEN, APLOG_NOERRNO, 
                                "attempt to invoke directory as script"); 
 /*
     if (!ap_suexec_enabled) { 
         if (!ap_can_exec(&r->finfo)) 
-            return log_scripterror(r, conf, FORBIDDEN, APLOG_NOERRNO, 
+            return log_scripterror(r, conf, HTTP_FORBIDDEN, APLOG_NOERRNO, 
                                    "file permissions deny server execution"); 
     } 
 */
@@ -882,7 +882,7 @@ static int cgid_handler(request_rec *r)
     env = ap_create_environment(r->pool, r->subprocess_env); 
 
     if ((sd = socket(AF_UNIX, SOCK_STREAM, 0)) < 0) {
-            return log_scripterror(r, conf, NOT_FOUND, 0, 
+            return log_scripterror(r, conf, HTTP_NOT_FOUND, 0, 
                                    "unable to create socket to cgi daemon");
     } 
     memset(&unix_addr, 0, sizeof(unix_addr));
@@ -890,7 +890,7 @@ static int cgid_handler(request_rec *r)
     strcpy(unix_addr.sun_path, conf->sockname);
 
     if (connect(sd, (struct sockaddr *)&unix_addr, sizeof(unix_addr)) < 0) {
-            return log_scripterror(r, conf, NOT_FOUND, 0, 
+            return log_scripterror(r, conf, HTTP_NOT_FOUND, 0, 
                                    "unable to connect to cgi daemon");
     } 
 
@@ -987,7 +987,7 @@ static int cgid_handler(request_rec *r)
             /* XX Note that if a script wants to produce its own Redirect 
              * body, it now has to explicitly *say* "Status: 302" 
              */ 
-            return REDIRECT; 
+            return HTTP_MOVED_TEMPORARILY; 
         } 
 
         ap_send_http_header(r); 

@@ -1021,7 +1021,7 @@ API_EXPORT(void) ap_die(int type, request_rec *r)
      * about proxy authentication.  They treat it like normal auth, and then
      * we tweak the status.
      */
-    if (r->status == AUTH_REQUIRED && r->proxyreq) {
+    if (r->status == HTTP_UNAUTHORIZED && r->proxyreq) {
         r->status = HTTP_PROXY_AUTHENTICATION_REQUIRED;
     }
 
@@ -1050,12 +1050,12 @@ API_EXPORT(void) ap_die(int type, request_rec *r)
              * But note that the client will ultimately see the wrong
              * status...
              */
-            r->status = REDIRECT;
+            r->status = HTTP_MOVED_TEMPORARILY;
             ap_table_setn(r->headers_out, "Location", custom_response);
         }
         else if (custom_response[0] == '/') {
             const char *error_notes;
-            r->no_local_copy = 1;       /* Do NOT send USE_LOCAL_COPY for
+            r->no_local_copy = 1;       /* Do NOT send HTTP_NOT_MODIFIED for
                                          * error documents! */
             /*
              * This redirect needs to be a GET no matter what the original
@@ -1081,7 +1081,7 @@ API_EXPORT(void) ap_die(int type, request_rec *r)
              * Dumb user has given us a bad url to redirect to --- fake up
              * dying with a recursive server error...
              */
-            recursive_error = SERVER_ERROR;
+            recursive_error = HTTP_INTERNAL_SERVER_ERROR;
             ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
                         "Invalid error redirection directive: %s",
                         custom_response);
@@ -1095,7 +1095,7 @@ static void decl_die(int status, char *phase, request_rec *r)
     if (status == DECLINED) {
         ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_CRIT, 0, r,
                     "configuration error:  couldn't %s: %s", phase, r->uri);
-        ap_die(SERVER_ERROR, r);
+        ap_die(HTTP_INTERNAL_SERVER_ERROR, r);
     }
     else
         ap_die(status, r);

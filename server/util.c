@@ -1485,11 +1485,11 @@ static char x2c(const char *what)
  * Unescapes a URL.
  * Returns 0 on success, non-zero on error
  * Failure is due to
- *   bad % escape       returns BAD_REQUEST
+ *   bad % escape       returns HTTP_BAD_REQUEST
  *
  *   decoding %00 -> \0
  *   decoding %2f -> /   (a special character)
- *                      returns NOT_FOUND
+ *                      returns HTTP_NOT_FOUND
  */
 API_EXPORT(int) ap_unescape_url(char *url)
 {
@@ -1522,9 +1522,9 @@ API_EXPORT(int) ap_unescape_url(char *url)
     }
     *x = '\0';
     if (badesc)
-	return BAD_REQUEST;
+	return HTTP_BAD_REQUEST;
     else if (badpath)
-	return NOT_FOUND;
+	return HTTP_NOT_FOUND;
     else
 	return OK;
 }

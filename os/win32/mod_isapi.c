@@ -145,13 +145,13 @@ int isapi_handler (request_rec *r)
     /* Use similar restrictions as CGIs */
 
     if (!(ap_allow_options(r) & OPT_EXECCGI))
-        return FORBIDDEN;
+        return HTTP_FORBIDDEN;
 
     if (r->finfo.protection == 0)
-            return NOT_FOUND;
+            return HTTP_NOT_FOUND;
 
     if (r->finfo.filetype == APR_DIR)
-            return FORBIDDEN;
+            return HTTP_FORBIDDEN;
 
     /* Load the module */
 
@@ -160,7 +160,7 @@ int isapi_handler (request_rec *r)
             rv = GetLastError();
         ap_log_rerror(APLOG_MARK, APLOG_ALERT, rv, r,
                               "Could not load DLL: %s", r->filename);
-            return SERVER_ERROR;
+            return HTTP_INTERNAL_SERVER_ERROR;
     }
 
     if (!(isapi_version =
@@ -170,7 +170,7 @@ int isapi_handler (request_rec *r)
                               "Could not load DLL %s symbol GetExtensionVersion()",
                       r->filename);
             FreeLibrary(isapi_handle);
-            return SERVER_ERROR;
+            return HTTP_INTERNAL_SERVER_ERROR;
     }
 
     if (!(isapi_entry =
@@ -180,7 +180,7 @@ int isapi_handler (request_rec *r)
                               "Could not load DLL %s symbol HttpExtensionProc()",
                       r->filename);
             FreeLibrary(isapi_handle);
-            return SERVER_ERROR;
+            return HTTP_INTERNAL_SERVER_ERROR;
     }
 
     /* TerminateExtension() is an optional interface */
@@ -190,10 +190,11 @@ int isapi_handler (request_rec *r)
     /* Run GetExtensionVersion() */
 
     if (!(*isapi_version)(pVer)) {
-        ap_log_rerror(APLOG_MARK, APLOG_ALERT, SERVER_ERROR, r,
+        /* ### euh... we're passing the wrong type of error code here */
+        ap_log_rerror(APLOG_MARK, APLOG_ALERT, HTTP_INTERNAL_SERVER_ERROR, r,
                     "ISAPI %s GetExtensionVersion() call failed", r->filename);
             FreeLibrary(isapi_handle);
-            return SERVER_ERROR;
+            return HTTP_INTERNAL_SERVER_ERROR;
     }
 
     /* Set up variables */
@@ -248,7 +249,7 @@ int isapi_handler (request_rec *r)
             if ((read = ap_get_client_block(r, ecb->lpbData, to_read)) < 0) {
                 if (isapi_term) (*isapi_term)(HSE_TERM_MUST_UNLOAD);
                 FreeLibrary(isapi_handle);
-                return SERVER_ERROR;
+                return HTTP_INTERNAL_SERVER_ERROR;
             }
 
             /* Although its not to spec, IIS seems to null-terminate
@@ -301,13 +302,13 @@ int isapi_handler (request_rec *r)
             return OK;
 
     case HSE_STATUS_PENDING:    /* We don't support this */
-        rv = APR_ENOTIMPL;
-            ap_log_rerror(APLOG_MARK, APLOG_WARNING, SERVER_ERROR, r,
-                    "ISAPI asynchronous I/O not supported: %s", r->filename);
+        ap_log_rerror(APLOG_MARK, APLOG_WARNING, APR_ENOTIMPL, r,
+                      "ISAPI asynchronous I/O not supported: %s", r->filename);
+        /* fallthrough */
     case HSE_STATUS_ERROR:
     default:
 
-        return SERVER_ERROR;
+        return HTTP_INTERNAL_SERVER_ERROR;
     }
 
 }
@@ -403,7 +404,8 @@ BOOL WINAPI ServerSupportFunction (HCONN hConn, DWORD dwHSERequest,
          * is done.
          */
         ap_table_set (r->headers_out, "Location", lpvBuffer);
-        cid->status = cid->r->status = cid->ecb->dwHttpStatusCode = REDIRECT;
+        cid->status = cid->r->status = cid->ecb->dwHttpStatusCode =
+            HTTP_MOVED_TEMPORARILY;
         return TRUE;
 
     case HSE_REQ_SEND_URL:
@@ -478,8 +480,11 @@ BOOL WINAPI ServerSupportFunction (HCONN hConn, DWORD dwHSERequest,
 
                 if (!(value = strchr(data, ':'))) {
                         SetLastError(TODO_ERROR);
-                        ap_log_rerror(APLOG_MARK, APLOG_ERR, SERVER_ERROR, r,
-                                          "ISA sent invalid headers", r->filename);
+                        /* ### euh... we're passing the wrong type of error
+                           ### code here */
+                        ap_log_rerror(APLOG_MARK, APLOG_ERR,
+                                      HTTP_INTERNAL_SERVER_ERROR, r,
+                                      "ISA sent invalid headers", r->filename);
                         return FALSE;
                 }
 
@@ -561,8 +566,11 @@ BOOL WINAPI ServerSupportFunction (HCONN hConn, DWORD dwHSERequest,
     /* We don't support all this async I/O, Microsoft-specific stuff */
     case HSE_REQ_IO_COMPLETION:
     case HSE_REQ_TRANSMIT_FILE:
-            ap_log_rerror(APLOG_MARK, APLOG_WARNING, SERVER_ERROR, r,
-                        "ISAPI asynchronous I/O not supported: %s", r->filename);
+        /* ### euh... we're passing the wrong type of error code here */
+        ap_log_rerror(APLOG_MARK, APLOG_WARNING,
+                      HTTP_INTERNAL_SERVER_ERROR, r,
+                      "ISAPI asynchronous I/O not supported: %s",
+                      r->filename);
     default:
             SetLastError(ERROR_INVALID_PARAMETER);
             return FALSE;

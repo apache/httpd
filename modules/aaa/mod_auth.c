@@ -188,9 +188,9 @@ static ap_table_t *groups_for_user(ap_pool_t *p, char *user, char *grpfile)
 }
 
 /* These functions return 0 if client is OK, and proper error status
- * if not... either AUTH_REQUIRED, if we made a check, and it failed, or
- * SERVER_ERROR, if things are so totally confused that we couldn't
- * figure out how to tell if the client is authorized or not.
+ * if not... either HTTP_UNAUTHORIZED, if we made a check, and it failed, or
+ * HTTP_INTERNAL_SERVER_ERROR, if things are so totally confused that we
+ * couldn't figure out how to tell if the client is authorized or not.
  *
  * If they return DECLINED, and all other modules also decline, that's
  * treated by the server core as a configuration error, logged and
@@ -222,7 +222,7 @@ static int authenticate_basic_user(request_rec *r)
 	ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
 		    "user %s not found: %s", r->user, r->uri);
 	ap_note_basic_auth_failure(r);
-	return AUTH_REQUIRED;
+	return HTTP_UNAUTHORIZED;
     }
     invalid_pw = ap_validate_password(sent_pw, real_pw);
     if (invalid_pw != APR_SUCCESS) {
@@ -231,7 +231,7 @@ static int authenticate_basic_user(request_rec *r)
                       "Password Mismatch",
 		      r->user, r->uri);
 	ap_note_basic_auth_failure(r);
-	return AUTH_REQUIRED;
+	return HTTP_UNAUTHORIZED;
     }
     return OK;
 }
@@ -314,7 +314,7 @@ static int check_user_access(request_rec *r)
 	r->uri, user);
 	
     ap_note_basic_auth_failure(r);
-    return AUTH_REQUIRED;
+    return HTTP_UNAUTHORIZED;
 }
 
 static void register_hooks(void)

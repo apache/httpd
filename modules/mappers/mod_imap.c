@@ -497,16 +497,19 @@ static char *imap_url(request_rec *r, const char *base, const char *value)
 static int imap_reply(request_rec *r, char *redirect)
 {
     if (!strcasecmp(redirect, "error")) {
-        return SERVER_ERROR;    /* they actually requested an error! */
+        /* they actually requested an error! */
+        return HTTP_INTERNAL_SERVER_ERROR;
     }
     if (!strcasecmp(redirect, "nocontent")) {
-        return HTTP_NO_CONTENT; /* tell the client to keep the page it has */
+        /* tell the client to keep the page it has */
+        return HTTP_NO_CONTENT;
     }
     if (redirect && *redirect) {
+        /* must be a URL, so redirect to it */
         ap_table_setn(r->headers_out, "Location", redirect);
-        return REDIRECT;        /* must be a URL, so redirect to it */
+        return HTTP_MOVED_TEMPORARILY;
     }
-    return SERVER_ERROR;
+    return HTTP_INTERNAL_SERVER_ERROR;
 }
 
 static void menu_header(request_rec *r, char *menu)
@@ -635,7 +638,7 @@ static int imap_handler(request_rec *r)
     status = ap_pcfg_openfile(&imap, r->pool, r->filename);
 
     if (status != APR_SUCCESS) {
-        return NOT_FOUND;
+        return HTTP_NOT_FOUND;
     }
 
     base = imap_url(r, NULL, imap_base);         /* set base according

@@ -113,7 +113,7 @@ API_EXPORT(void) ap_send_error_response(request_rec *r, int recursive_error);
 /* Set last modified header line from the lastmod date of the associated file.
  * Also, set content length.
  *
- * May return an error status, typically USE_LOCAL_COPY (that when the
+ * May return an error status, typically HTTP_NOT_MODIFIED (that when the
  * permit_cache argument is set to one).
  */
 
@@ -186,10 +186,10 @@ API_EXPORT(int) ap_each_byterange(request_rec *r, ap_off_t *offset,
  *
  * get_basic_auth_pw returns 0 (OK) if it set the 'pw' argument (and assured
  * a correct value in r->connection->user); otherwise it returns an error
- * code, either SERVER_ERROR if things are really confused, AUTH_REQUIRED
- * if no authentication at all seemed to be in use, or DECLINED if there
- * was authentication but it wasn't Basic (in which case, the caller should
- * presumably decline as well).
+ * code, either HTTP_INTERNAL_SERVER_ERROR if things are really confused,
+ * HTTP_UNAUTHORIZED if no authentication at all seemed to be in use, or
+ * DECLINED if there was authentication but it wasn't Basic (in which case,
+ * the caller should presumably decline as well).
  *
  * note_basic_auth_failure arranges for the right stuff to be scribbled on
  * the HTTP return so that the client knows how to authenticate itself the

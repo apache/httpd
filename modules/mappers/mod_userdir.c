@@ -289,7 +289,7 @@ static int translate_userdir(request_rec *r)
 		{
                     redirect = ap_pstrcat(r->pool, x, w, userdir, dname, NULL);
                     ap_table_setn(r->headers_out, "Location", redirect);
-                    return REDIRECT;
+                    return HTTP_MOVED_TEMPORARILY;
                 }
                 else
                     filename = ap_pstrcat(r->pool, x, w, userdir, NULL);
@@ -300,7 +300,7 @@ static int translate_userdir(request_rec *r)
         else if (ap_strchr_c(userdir, ':')) {
             redirect = ap_pstrcat(r->pool, userdir, "/", w, dname, NULL);
             ap_table_setn(r->headers_out, "Location", redirect);
-            return REDIRECT;
+            return HTTP_MOVED_TEMPORARILY;
         }
         else {
 #ifdef WIN32

@@ -195,7 +195,7 @@ static int action_handler(request_rec *r)
 	if (r->finfo.protection == 0) {
 	    ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
 			"File does not exist: %s", r->filename);
-	    return NOT_FOUND;
+	    return HTTP_NOT_FOUND;
 	}
     }
 

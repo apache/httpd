@@ -1401,7 +1401,7 @@ static int check_nonce(request_rec *r, digest_header_rec *resp,
 		      "Digest: invalid nonce %s received - length is not %d",
 		      resp->nonce, NONCE_LEN);
 	note_digest_auth_failure(r, conf, resp, 1);
-	return AUTH_REQUIRED;
+	return HTTP_UNAUTHORIZED;
     }
 
     tmp = resp->nonce[NONCE_TIME_LEN];
@@ -1416,7 +1416,7 @@ static int check_nonce(request_rec *r, digest_header_rec *resp,
 		      "Digest: invalid nonce %s received - hash is not %s",
 		      resp->nonce, hash);
 	note_digest_auth_failure(r, conf, resp, 1);
-	return AUTH_REQUIRED;
+	return HTTP_UNAUTHORIZED;
     }
 
     dt = r->request_time - nonce_time.time;
@@ -1425,7 +1425,7 @@ static int check_nonce(request_rec *r, digest_header_rec *resp,
 		      "Digest: invalid nonce %s received - user attempted "
 		      "time travel", resp->nonce);
 	note_digest_auth_failure(r, conf, resp, 1);
-	return AUTH_REQUIRED;
+	return HTTP_UNAUTHORIZED;
     }
 
     if (conf->nonce_lifetime > 0) {
@@ -1435,7 +1435,7 @@ static int check_nonce(request_rec *r, digest_header_rec *resp,
 			  r->user, ((double)dt)/AP_USEC_PER_SEC, 
 			  ((double)(conf->nonce_lifetime))/AP_USEC_PER_SEC);
 	    note_digest_auth_failure(r, conf, resp, 1);
-	    return AUTH_REQUIRED;
+	    return HTTP_UNAUTHORIZED;
 	}
     }
     else if (conf->nonce_lifetime == 0 && resp->client) {
@@ -1444,7 +1444,7 @@ static int check_nonce(request_rec *r, digest_header_rec *resp,
 			  "Digest: user %s: one-time-nonce mismatch - sending "
 			  "new nonce", r->user);
 	    note_digest_auth_failure(r, conf, resp, 1);
-	    return AUTH_REQUIRED;
+	    return HTTP_UNAUTHORIZED;
 	}
     }
     /* else (lifetime < 0) => never expires */
@@ -1533,9 +1533,9 @@ static void copy_uri_components(uri_components *dst, uri_components *src,
 }
 
 /* These functions return 0 if client is OK, and proper error status
- * if not... either AUTH_REQUIRED, if we made a check, and it failed, or
- * SERVER_ERROR, if things are so totally confused that we couldn't
- * figure out how to tell if the client is authorized or not.
+ * if not... either HTTP_UNAUTHORIZED, if we made a check, and it failed, or
+ * HTTP_INTERNAL_SERVER_ERROR, if things are so totally confused that we
+ * couldn't figure out how to tell if the client is authorized or not.
  *
  * If they return DECLINED, and all other modules also decline, that's
  * treated by the server core as a configuration error, logged and
@@ -1562,7 +1562,7 @@ static int authenticate_digest_user(request_rec *r)
     if (!ap_auth_name(r)) {
 	ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
 		      "Digest: need AuthName: %s", r->uri);
-	return SERVER_ERROR;
+	return HTTP_INTERNAL_SERVER_ERROR;
     }
 
 
@@ -1596,7 +1596,7 @@ static int authenticate_digest_user(request_rec *r)
 			  r->uri);
 	/* else (resp->auth_hdr_sts == NO_HEADER) */
 	note_digest_auth_failure(r, conf, resp, 0);
-	return AUTH_REQUIRED;
+	return HTTP_UNAUTHORIZED;
     }
 
     r->user         = (char *) resp->username;
@@ -1615,7 +1615,7 @@ static int authenticate_digest_user(request_rec *r)
 	    ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
 			  "Digest: invalid uri <%s> in Authorization header",
 			  resp->uri);
-	    return BAD_REQUEST;
+	    return HTTP_BAD_REQUEST;
 	}
 
 	if (d_uri.hostname)
@@ -1630,7 +1630,7 @@ static int authenticate_digest_user(request_rec *r)
 		ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
 			      "Digest: uri mismatch - <%s> does not match "
 			      "request-uri <%s>", resp->uri, r_uri.hostinfo);
-		return BAD_REQUEST;
+		return HTTP_BAD_REQUEST;
 	    }
 	}
 	else if (
@@ -1658,7 +1658,7 @@ static int authenticate_digest_user(request_rec *r)
 	    ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
 			  "Digest: uri mismatch - <%s> does not match "
 			  "request-uri <%s>", resp->uri, resp->raw_request_uri);
-	    return BAD_REQUEST;
+	    return HTTP_BAD_REQUEST;
 	}
     }
 
@@ -1667,7 +1667,7 @@ static int authenticate_digest_user(request_rec *r)
 		      "Digest: received invalid opaque - got `%s'",
 		      resp->opaque);
 	note_digest_auth_failure(r, conf, resp, 0);
-	return AUTH_REQUIRED;
+	return HTTP_UNAUTHORIZED;
     }
 
     if (strcmp(resp->realm, conf->realm)) {
@@ -1675,7 +1675,7 @@ static int authenticate_digest_user(request_rec *r)
 		      "Digest: realm mismatch - got `%s' but expected `%s'",
 		      resp->realm, conf->realm);
 	note_digest_auth_failure(r, conf, resp, 0);
-	return AUTH_REQUIRED;
+	return HTTP_UNAUTHORIZED;
     }
 
     if (resp->algorithm != NULL
@@ -1685,7 +1685,7 @@ static int authenticate_digest_user(request_rec *r)
 		      "Digest: unknown algorithm `%s' received: %s",
 		      resp->algorithm, r->uri);
 	note_digest_auth_failure(r, conf, resp, 0);
-	return AUTH_REQUIRED;
+	return HTTP_UNAUTHORIZED;
     }
 
     if (!conf->pwfile)
@@ -1696,7 +1696,7 @@ static int authenticate_digest_user(request_rec *r)
 		      "Digest: user `%s' in realm `%s' not found: %s",
 		      r->user, conf->realm, r->uri);
 	note_digest_auth_failure(r, conf, resp, 0);
-	return AUTH_REQUIRED;
+	return HTTP_UNAUTHORIZED;
     }
 
     
@@ -1707,7 +1707,7 @@ static int authenticate_digest_user(request_rec *r)
 			  "Digest: user %s: password mismatch: %s", r->user,
 			  r->uri);
 	    note_digest_auth_failure(r, conf, resp, 0);
-	    return AUTH_REQUIRED;
+	    return HTTP_UNAUTHORIZED;
 	}
     }
     else {
@@ -1727,26 +1727,26 @@ static int authenticate_digest_user(request_rec *r)
 			  "Digest: invalid qop `%s' received: %s",
 			  resp->message_qop, r->uri);
 	    note_digest_auth_failure(r, conf, resp, 0);
-	    return AUTH_REQUIRED;
+	    return HTTP_UNAUTHORIZED;
 	}
 
 	exp_digest = new_digest(r, resp, conf);
 	if (!exp_digest) {
 	    /* we failed to allocate a client struct */
-	    return SERVER_ERROR;
+	    return HTTP_INTERNAL_SERVER_ERROR;
 	}
 	if (strcmp(resp->digest, exp_digest)) {
 	    ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
 			  "Digest: user %s: password mismatch: %s", r->user,
 			  r->uri);
 	    note_digest_auth_failure(r, conf, resp, 0);
-	    return AUTH_REQUIRED;
+	    return HTTP_UNAUTHORIZED;
 	}
     }
 
     if (check_nc(r, resp, conf) != OK) {
 	note_digest_auth_failure(r, conf, resp, 0);
-	return AUTH_REQUIRED;
+	return HTTP_UNAUTHORIZED;
     }
 
     /* Note: this check is done last so that a "stale=true" can be
@@ -1880,7 +1880,7 @@ static int digest_check_auth(request_rec *r)
 	(digest_header_rec *) ap_get_module_config(r->request_config,
 						   &auth_digest_module),
 	0);
-    return AUTH_REQUIRED;
+    return HTTP_UNAUTHORIZED;
 }
 
 

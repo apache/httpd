@@ -512,10 +512,10 @@ static int cgi_handler(request_rec *r)
     nph = !(strncmp(argv0, "nph-", 4));
 
     if (!(ap_allow_options(r) & OPT_EXECCGI) && !is_scriptaliased(r))
-        return log_scripterror(r, conf, FORBIDDEN, APLOG_NOERRNO,
+        return log_scripterror(r, conf, HTTP_FORBIDDEN, APLOG_NOERRNO,
                                "Options ExecCGI is off in this directory");
     if (nph && is_included)
-        return log_scripterror(r, conf, FORBIDDEN, APLOG_NOERRNO,
+        return log_scripterror(r, conf, HTTP_FORBIDDEN, APLOG_NOERRNO,
                                "attempt to include NPH CGI script");
 
 #if defined(OS2) || defined(WIN32)
@@ -527,7 +527,7 @@ static int cgi_handler(request_rec *r)
         newfile = ap_pstrcat(r->pool, r->filename, ".EXE", NULL);
         if ((ap_stat(&finfo, newfile, r->pool) != APR_SUCCESS) || 
             (finfo.filetype != APR_REG)) {
-            return log_scripterror(r, conf, NOT_FOUND, 0,
+            return log_scripterror(r, conf, HTTP_NOT_FOUND, 0,
                                    "script not found or unable to stat");
         } else {
             r->filename = newfile;
@@ -535,17 +535,17 @@ static int cgi_handler(request_rec *r)
     }
 #else
     if (r->finfo.protection == 0)
-	return log_scripterror(r, conf, NOT_FOUND, APLOG_NOERRNO,
+	return log_scripterror(r, conf, HTTP_NOT_FOUND, APLOG_NOERRNO,
 			       "script not found or unable to stat");
 #endif
     if (r->finfo.filetype == APR_DIR)
-	return log_scripterror(r, conf, FORBIDDEN, APLOG_NOERRNO,
+	return log_scripterror(r, conf, HTTP_FORBIDDEN, APLOG_NOERRNO,
 			       "attempt to invoke directory as script");
 
 /*
     if (!ap_suexec_enabled) {
 	if (!ap_can_exec(&r->finfo))
-	    return log_scripterror(r, conf, FORBIDDEN, APLOG_NOERRNO,
+	    return log_scripterror(r, conf, HTTP_FORBIDDEN, APLOG_NOERRNO,
 				   "file permissions deny server execution");
     }
 
@@ -651,7 +651,7 @@ static int cgi_handler(request_rec *r)
 	    /* XX Note that if a script wants to produce its own Redirect
 	     * body, it now has to explicitly *say* "Status: 302"
 	     */
-	    return REDIRECT;
+	    return HTTP_MOVED_TEMPORARILY;
 	}
 
 	ap_send_http_header(r);

@@ -171,15 +171,18 @@ static int checked_bputs(const char *str, request_rec *r)
  *    - return type
  */
 static const char *make_content_type(request_rec *r, const char *type) {
-    char *needcset[] = {
+    static const char *needcset[] = {
 	"text/plain",
 	"text/html",
 	NULL };
-    char **pcset;
+    const char **pcset;
     core_dir_config *conf = (core_dir_config *)ap_get_module_config(
 	r->per_dir_config, &core_module);
-    if (!type) type = ap_default_type(r);
-    if (conf->add_default_charset != ADD_DEFAULT_CHARSET_ON) return type;
+
+    if (!type)
+        type = ap_default_type(r);
+    if (conf->add_default_charset != ADD_DEFAULT_CHARSET_ON)
+        return type;
 
     if (ap_strcasestr(type, "charset=") != NULL) {
 	/* already has parameter, do nothing */
@@ -303,7 +306,7 @@ API_EXPORT(int) ap_set_byterange(request_rec *r)
 	    ap_psprintf(r->pool, "%ld", tlength));
     }
 
-    r->status = PARTIAL_CONTENT;
+    r->status = HTTP_PARTIAL_CONTENT;
     r->range = range + 6;
 
     return 1;
@@ -1250,7 +1253,7 @@ void ap_set_sub_req_protocol(request_rec *rnew, const request_rec *r)
     rnew->the_request     = r->the_request;  /* Keep original request-line */
 
     rnew->assbackwards    = 1;   /* Don't send headers from this. */
-    rnew->no_local_copy   = 1;   /* Don't try to send USE_LOCAL_COPY for a
+    rnew->no_local_copy   = 1;   /* Don't try to send HTTP_NOT_MODIFIED for a
                                   * fragment. */
     rnew->method          = "GET";
     rnew->method_number   = M_GET;
@@ -1320,12 +1323,12 @@ API_EXPORT(int) ap_get_basic_auth_pw(request_rec *r, const char **pw)
     if (!ap_auth_name(r)) {
         ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR,
 		    0, r, "need AuthName: %s", r->uri);
-        return SERVER_ERROR;
+        return HTTP_INTERNAL_SERVER_ERROR;
     }
 
     if (!auth_line) {
         ap_note_basic_auth_failure(r);
-        return AUTH_REQUIRED;
+        return HTTP_UNAUTHORIZED;
     }
 
     if (strcasecmp(ap_getword(r->pool, &auth_line, ' '), "Basic")) {
@@ -1333,7 +1336,7 @@ API_EXPORT(int) ap_get_basic_auth_pw(request_rec *r, const char **pw)
         ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
                     "client used wrong authentication scheme: %s", r->uri);
         ap_note_basic_auth_failure(r);
-        return AUTH_REQUIRED;
+        return HTTP_UNAUTHORIZED;
     }
 
     /* APACHE_XLATE Issue's here ?!? Compare with 32/9 instead
@@ -2626,8 +2629,10 @@ API_EXPORT(void) ap_send_error_response(request_rec *r, int recursive_error)
         r->clength = 0;
         r->content_type = "text/html; charset=iso-8859-1";
 
-        if ((status == METHOD_NOT_ALLOWED) || (status == NOT_IMPLEMENTED))
+        if ((status == HTTP_METHOD_NOT_ALLOWED)
+            || (status == HTTP_NOT_IMPLEMENTED)) {
             ap_table_setn(r->headers_out, "Allow", make_allow(r));
+        }
 
         ap_send_http_header(r);
 
@@ -2720,7 +2725,7 @@ API_EXPORT(void) ap_send_error_response(request_rec *r, int recursive_error)
 		      "configure your client to use that proxy.<P>\n", NULL);
 	    break;
 	case HTTP_PROXY_AUTHENTICATION_REQUIRED:
-	case AUTH_REQUIRED:
+	case HTTP_UNAUTHORIZED:
 	    ap_rputs("This server could not verify that you\n"
 	             "are authorized to access the document\n"
 	             "requested.  Either you supplied the wrong\n"
@@ -2728,7 +2733,7 @@ API_EXPORT(void) ap_send_error_response(request_rec *r, int recursive_error)
 	             "browser doesn't understand how to supply\n"
 	             "the credentials required.<P>\n", r);
 	    break;
-	case BAD_REQUEST:
+	case HTTP_BAD_REQUEST:
 	    ap_rputs("Your browser sent a request that "
 	             "this server could not understand.<P>\n", r);
 	    if ((error_notes = ap_table_get(r->notes, "error-notes")) != NULL) {
@@ -2740,39 +2745,39 @@ API_EXPORT(void) ap_send_error_response(request_rec *r, int recursive_error)
 		      ap_escape_html(r->pool, r->uri),
 		      "\non this server.<P>\n", NULL);
 	    break;
-	case NOT_FOUND:
+	case HTTP_NOT_FOUND:
 	    ap_rvputs(r, "The requested URL ",
 		      ap_escape_html(r->pool, r->uri),
 		      " was not found on this server.<P>\n", NULL);
 	    break;
-	case METHOD_NOT_ALLOWED:
+	case HTTP_METHOD_NOT_ALLOWED:
 	    ap_rvputs(r, "The requested method ", r->method,
 		      " is not allowed "
 		      "for the URL ", ap_escape_html(r->pool, r->uri),
 		      ".<P>\n", NULL);
 	    break;
-	case NOT_ACCEPTABLE:
+	case HTTP_NOT_ACCEPTABLE:
 	    ap_rvputs(r,
 		      "An appropriate representation of the "
 		      "requested resource ",
 		      ap_escape_html(r->pool, r->uri),
 		      " could not be found on this server.<P>\n", NULL);
 	    /* fall through */
-	case MULTIPLE_CHOICES:
+	case HTTP_MULTIPLE_CHOICES:
 	    {
 		const char *list;
 		if ((list = ap_table_get(r->notes, "variant-list")))
 		    ap_rputs(list, r);
 	    }
 	    break;
-	case LENGTH_REQUIRED:
+	case HTTP_LENGTH_REQUIRED:
 	    ap_rvputs(r, "A request of the requested method ", r->method,
 		      " requires a valid Content-length.<P>\n", NULL);
 	    if ((error_notes = ap_table_get(r->notes, "error-notes")) != NULL) {
 		ap_rvputs(r, error_notes, "<P>\n", NULL);
 	    }
 	    break;
-	case PRECONDITION_FAILED:
+	case HTTP_PRECONDITION_FAILED:
 	    ap_rvputs(r, "The precondition on the request for the URL ",
 		      ap_escape_html(r->pool, r->uri),
 		      " evaluated to false.<P>\n", NULL);
@@ -2785,14 +2790,14 @@ API_EXPORT(void) ap_send_error_response(request_rec *r, int recursive_error)
 		ap_rvputs(r, error_notes, "<P>\n", NULL);
 	    }
 	    break;
-	case BAD_GATEWAY:
+	case HTTP_BAD_GATEWAY:
 	    ap_rputs("The proxy server received an invalid" CRLF
 	             "response from an upstream server.<P>" CRLF, r);
 	    if ((error_notes = ap_table_get(r->notes, "error-notes")) != NULL) {
 		ap_rvputs(r, error_notes, "<P>\n", NULL);
 	    }
 	    break;
-	case VARIANT_ALSO_VARIES:
+	case HTTP_VARIANT_ALSO_VARIES:
 	    ap_rvputs(r, "A variant for the requested resource\n<PRE>\n",
 		      ap_escape_html(r->pool, r->uri),
 		      "\n</PRE>\nis itself a negotiable resource. "

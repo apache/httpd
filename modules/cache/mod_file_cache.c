@@ -323,7 +323,7 @@ int core_translate_copy(request_rec *r)
     if ((r->uri[0] != '/') && strcmp(r->uri, "*")) {
         ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
                       "Invalid URI in request %s", r->the_request);
-        return BAD_REQUEST;
+        return HTTP_BAD_REQUEST;
     }
     
     if (r->server->path 

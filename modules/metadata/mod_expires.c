@@ -422,7 +422,7 @@ static int add_expires(request_rec *r)
     if (conf == NULL) {
         ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
                     "internal error: %s", r->filename);
-        return SERVER_ERROR;
+        return HTTP_INTERNAL_SERVER_ERROR;
     };
 
     if (conf->active != ACTIVE_ON)
@@ -479,7 +479,7 @@ static int add_expires(request_rec *r)
          */
         ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
                     "internal error: bad expires code: %s", r->filename);
-        return SERVER_ERROR;
+        return HTTP_INTERNAL_SERVER_ERROR;
     };
 
     expires = base + additional;
