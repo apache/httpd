@@ -578,6 +578,27 @@ struct request_rec {
 
     char *method;		/* GET, HEAD, POST, etc. */
     int method_number;		/* M_GET, M_POST, etc. */
+
+    /*
+	allowed is a bitvector of the allowed methods.
+
+	A handler must ensure that the request method is one that
+	it is capable of handling.  Generally modules should DECLINE
+	any request methods they do not handle.  Prior to aborting the
+	handler like this the handler should set r->allowed to the list
+	of methods that it is willing to handle.  This bitvector is used
+	to construct the "Allow:" header required for OPTIONS requests,
+	and METHOD_NOT_ALLOWED and NOT_IMPLEMENTED status codes.
+
+	Since the default_handler deals with OPTIONS, all modules can
+	usually decline to deal with OPTIONS.  TRACE is always allowed,
+	modules don't need to set it explicitly.
+
+	Since the default_handler will always handle a GET, a
+	module which does *not* implement GET should probably return
+	METHOD_NOT_ALLOWED.  Unfortunately this means that a Script GET
+	handler can't be installed by mod_actions.
+    */
     int allowed;		/* Allowed methods - for 405, OPTIONS, etc */
 
     int sent_bodyct;		/* byte count in stream is for body */
