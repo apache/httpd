@@ -1,5 +1,5 @@
   1.3 STATUS:
-  Last modified at [$Date: 1998/12/23 21:31:52 $]
+  Last modified at [$Date: 1998/12/25 22:51:17 $]
 
 Release:
 
@@ -125,8 +125,8 @@ Available Patches:
         Status: Lars +1 (on concept)
 
     * Koen Holtman's cleanup of negotiation
-	Message-ID: PR#3541
-	Status: 
+	Message-ID: <XFMail.981225234551.sfx@unix-ag.org>
+	Status: Lars +1
 
     * PR#2575 problem with ap_assert macro
         Message-ID: <36717557.21E4C4E3@jrc.it>
