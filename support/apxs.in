@@ -219,15 +219,23 @@ if (@opt_S) {
 ##
 ##  Initial shared object support check
 ##
-if (not -x "$CFG_SBINDIR/$CFG_TARGET") {
-	print STDERR "apxs:Error: $CFG_SBINDIR/$CFG_TARGET not found or not executable\n";
+my $httpd = "$CFG_SBINDIR/$CFG_TARGET";
+
+#allow apxs to be run from the source tree, before installation
+if ($0 =~ m:support/apxs$:) {
+    ($httpd = $0) =~ s:support/apxs$::;
+    $httpd .= $CFG_TARGET;
+}
+
+if (not -x $httpd) {
+	print STDERR "apxs:Error: $httpd not found or not executable\n";
 	exit(1);
 }
-if (not grep(/mod_so/, `$CFG_SBINDIR/$CFG_TARGET -l`)) {
+if (not grep(/mod_so/, `$httpd -l`)) {
     print STDERR "apxs:Error: Sorry, no shared object support for Apache\n";
     print STDERR "apxs:Error: available under your platform. Make sure\n";
     print STDERR "apxs:Error: the Apache module mod_so is compiled into\n";
-    print STDERR "apxs:Error: your server binary `$CFG_SBINDIR/$CFG_TARGET'.\n";
+    print STDERR "apxs:Error: your server binary `$httpd'.\n";
     exit(1);
 }
 
