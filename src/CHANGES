@@ -1,5 +1,9 @@
 Changes with Apache 1.3.5
 
+  *) proxy: The various calls to ap_proxyerror() can return HTTP/1.1 status
+     code different from 500. This allows the proxy to, e.g., return
+     "403 Forbidden" for ProxyBlock'ed URL's. [Martin Kraemer]
+
   *) Fix ordering of language variants for the case where the traditional
      negotiation algorithm is being used with multiple language variants
      and no Accept-Language. [James Treacy <treacy@debian.org>] PR#3299, 3688
