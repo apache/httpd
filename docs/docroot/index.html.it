@@ -9,12 +9,12 @@
 
 <center>
 <h1>
-Funziona! Il Server Web Apache e' stato installato su questo sito Web!</h1></center>
+Funziona! Il Server Web Apache &egrave; stato installato su questo sito Web!</h1></center>
 Se riuscite a vedere questa pagina, allora vuol dire che coloro che gestiscono
 questo dominio hanno appena installato il software
 Web&nbsp;Server
-Apache correttamente. Ora e' necessario aggiungere il vostro materiale
-in questo direttorio e sostituire questa pagina di prova, oppure configurare
+Apache correttamente. Ora &egrave; necessario aggiungere il vostro materiale
+in questo directory e sostituire questa pagina di prova, oppure configurare
 il server per far riferimento al vostro materiale se collocato altrove.
 <p>
 <hr>
@@ -23,14 +23,14 @@ vi preghiamo di <b>contattare l'amministratore del sito in questione.</b>
 (Provate ad inviare un email a <tt>&lt;Webmaster@<i>domain</i>&gt;</tt>.)&nbsp;
 Nonostante questo sito stia utilizzando il software Apache, questo non
 vi garantisce nessun tipo di contatto diretto al Gruppo Apache, quindi
-vi preghiamo di non inviare email riguardanti questo sito o al materiale
-in esso contenuto agli autori di Apache. Ogni messaggio del genere verra'
+vi preghiamo di non inviare email riguardanti questo sito o il materiale
+in esso contenuto agli autori di Apache. Ogni messaggio del genere verr&agrave;
 <b><font size="+1">ignorato</font></b>.</blockquote>
 
 <hr>
 <br>La <a href="manual/">documentazione</a> relativa di Apache
-e' inclusa nella distribuzione.
-<p>Il Webmaster di questo sito e' libero di utilizzare l'immagine qui sotto
+&egrave; inclusa nella distribuzione.
+<p>Il Webmaster di questo sito &egrave; libero di utilizzare l'immagine qui sotto
 su qualsiasi Web server potenziato con Apache. Grazie per aver scelto Apache!
 <center>
 <p><img SRC="apache_pb.gif" ALT="" ></center>
