@@ -233,8 +233,21 @@ by other LDAP modules</description>
 <contextlist><context>server config</context></contextlist>
 
 <usage>
-    <p>Specifies the number of bytes to specify for the shared
-    memory cache. The default is 100kb.</p>
+    <p>Specifies the number of bytes to allocate for the shared
+    memory cache. The default is 100kb. If set to 0, shared memory
+    caching will not be used.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>LDAPSharedCacheFile</name>
+<description>Sets the shared memory chache file</description>
+<syntax>LDAPSharedCacheFile <var>directory-path/filename</var></syntax>
+<contextlist><context>server config</context></contextlist>
+
+<usage>
+    <p>Specifies the directory path and file name of the shared memory
+    cache file. If not set, shared memory caching will not be used.</p>
 </usage>
 </directivesynopsis>
 
