@@ -1109,6 +1109,8 @@ API_EXPORT(char *) ap_os_systemcase_filename(pool *pPool, const char *szFile);
 API_EXPORT(char *) ap_os_case_canonical_filename(pool *pPool, const char *szFile);
 API_EXPORT(char *) ap_os_systemcase_filename(pool *pPool, const char *szFile);
 #else
+/* XXX: This makes little sense for NETWARE ... NETWARE is case insensitive?
+ */
 #define ap_os_case_canonical_filename(p,f) ap_os_canonical_filename(p,f)
 #define ap_os_systemcase_filename(p,f) ap_os_canonical_filename(p,f)
 #endif
