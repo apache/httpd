@@ -431,6 +431,8 @@ static const char *cmd_rewritemap(cmd_parms *cmd, void *dconf, const char *a1,
         int bad = 0;
         apr_status_t rv;
 
+        newmap->type = MAPTYPE_DBM;
+
         if (a2[3] == ':') {
             newmap->dbmtype    = "default";
             newmap->datafile   = a2+4;
