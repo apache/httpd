@@ -1,5 +1,9 @@
 Changes with Apache 1.3.3
 
+  *) Add the server signature text (from the core ServerSignature directive)
+     to the list of envariables available to scripts, SSI, and the like.
+     [Ken Coar]
+
   *) PORT: Fix sys/resource.h handling for SCO 3.x platform.
      [M. Laak <maert@proinv.ee>] PR#3108
  
