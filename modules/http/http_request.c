@@ -101,10 +101,7 @@ AP_DECLARE(void) ap_die(int type, request_rec *r)
     int error_index = ap_index_of_response(type);
     char *custom_response = ap_response_code_string(r, error_index);
     int recursive_error = 0;
-    /* There are some cases where we walk up the request hierarchy
-     * to obtain the original error, but when adding the required_filters,
-     * we need to do so against the one we came in with.  So, save it.
-     */
+
     if (type == AP_FILTER_ERROR) {
         return;
     }
