@@ -865,14 +865,28 @@ static void output_directories(struct ent **ar, int n,
 			       autoindex_config_rec * d, request_rec *r,
 			     int autoindex_opts, char keyid, char direction)
 {
-    int x, len;
+    int x;
     char *name = r->uri;
     char *tp;
     int static_columns = (autoindex_opts & SUPPRESS_COLSORT);
     pool *scratch = ap_make_sub_pool(r->pool);
+    int name_width;
+    char *name_scratch;
 
     if (name[0] == '\0')
 	name = "/";
+
+    name_width = 23;
+    for (x = 0; x < n; x++) {
+	int t = strlen(ar[x]->name);
+	if (t > name_width) {
+	    name_width = t;
+	}
+    }
+    ++name_width;
+    name_scratch = ap_palloc(r->pool, name_width + 1);
+    memset(name_scratch, ' ', name_width);
+    name_scratch[name_width] = 0;
 
     if (autoindex_opts & FANCY_INDEXING) {
 	ap_rputs("<PRE>", r);
@@ -891,7 +905,7 @@ static void output_directories(struct ent **ar, int n,
 	    ap_rputs("> ", r);
 	}
         emit_link(r, "Name", K_NAME, keyid, direction, static_columns);
-	ap_rputs("                   ", r);
+	ap_rputs(name_scratch + 4, r);
 	if (!(autoindex_opts & SUPPRESS_LAST_MOD)) {
             emit_link(r, "Last modified", K_LAST_MOD, keyid, direction,
                       static_columns);
@@ -912,7 +926,8 @@ static void output_directories(struct ent **ar, int n,
     }
 
     for (x = 0; x < n; x++) {
-	char *anchor = NULL, *t = NULL, *t2 = NULL;
+	char *anchor, *t, *t2;
+	char *pad;
 
 	ap_clear_pool(scratch);
 
@@ -922,40 +937,21 @@ static void output_directories(struct ent **ar, int n,
 	    if (t[0] == '\0') {
 		t = "/";
 	    }
-	    anchor = ap_pstrcat(scratch, "<A HREF=\"",
-				ap_escape_html(scratch,
-					       ap_os_escape_path(scratch, t,
-								 0)),
-				"\">", NULL);
-	    t2 = "Parent Directory</A>       ";
+	       /* 1234567890123456 */
+	    t2 = "Parent Directory";
+	    pad = name_scratch + 16;
+	    anchor = ap_escape_html(scratch, ap_os_escape_path(scratch, t, 0));
 	}
 	else {
 	    t = ar[x]->name;
-	    len = strlen(t);
-	    if (len > 23) {
-		t2 = ap_pstrdup(scratch, t);
-		t2[21] = '.';
-		t2[22] = '.';
-		t2[23] = '\0';
-		t2 = ap_escape_html(scratch, t2);
-		t2 = ap_pstrcat(scratch, t2, "</A>", NULL);
-	    }
-	    else {
-		char buff[24] = "                       ";
-		t2 = ap_escape_html(scratch, t);
-		buff[23 - len] = '\0';
-		t2 = ap_pstrcat(scratch, t2, "</A>", buff, NULL);
-	    }
-	    anchor = ap_pstrcat(scratch, "<A HREF=\"",
-				ap_escape_html(scratch,
-					       ap_os_escape_path(scratch, t,
-								 0)),
-				"\">", NULL);
+	    pad = name_scratch + strlen(t);
+	    t2 = ap_escape_html(scratch, t);
+	    anchor = ap_escape_html(scratch, ap_os_escape_path(scratch, t, 0));
 	}
 
 	if (autoindex_opts & FANCY_INDEXING) {
 	    if (autoindex_opts & ICONS_ARE_LINKS) {
-		ap_rputs(anchor, r);
+		ap_rvputs(r, "<A HREF=\"", anchor, "\">", NULL);
 	    }
 	    if ((ar[x]->icon) || d->default_icon) {
 		ap_rvputs(r, "<IMG SRC=\"",
@@ -974,7 +970,7 @@ static void output_directories(struct ent **ar, int n,
 		ap_rputs("</A>", r);
 	    }
 
-	    ap_rvputs(r, " ", anchor, t2, NULL);
+	    ap_rvputs(r, " <A HREF=\"", anchor, "\">", t2, "</A>", pad, NULL);
 	    if (!(autoindex_opts & SUPPRESS_LAST_MOD)) {
 		if (ar[x]->lm != -1) {
 		    char time_str[MAX_STRING_LEN];
@@ -998,7 +994,7 @@ static void output_directories(struct ent **ar, int n,
 	    }
 	}
 	else {
-	    ap_rvputs(r, "<LI> ", anchor, " ", t2, NULL);
+	    ap_rvputs(r, "<LI> <A HREF=\"", anchor, "\"> ", t2, "</A>", pad, NULL);
 	}
 	ap_rputc('\n', r);
     }
