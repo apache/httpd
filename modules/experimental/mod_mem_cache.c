@@ -110,9 +110,9 @@ typedef struct {
     apr_size_t object_cnt;
 
     /* Fields set by config directives */
-    apr_size_t min_cache_object_size;
-    apr_size_t max_cache_object_size;
-    apr_size_t max_cache_size;
+    apr_size_t min_cache_object_size;   /* in bytes */
+    apr_size_t max_cache_object_size;   /* in bytes */
+    apr_size_t max_cache_size;          /* in bytes */
     apr_size_t max_object_cnt;
 
 } mem_cache_conf;
@@ -290,7 +290,7 @@ static void *create_cache_config(apr_pool_t *p, server_rec *s)
     /* Number of objects in the cache */
     sconf->max_object_cnt = DEFAULT_MAX_OBJECT_CNT;
     sconf->object_cnt = 0;
-    /* Size of the cache in KB */
+    /* Size of the cache in bytes */
     sconf->max_cache_size = DEFAULT_MAX_CACHE_SIZE;
     sconf->cache_size = 0;
 
@@ -838,12 +838,12 @@ static apr_status_t write_body(cache_handle_t *h, request_rec *r, apr_bucket_bri
 static const char 
 *set_max_cache_size(cmd_parms *parms, void *in_struct_ptr, const char *arg)
 {
-    int val;
+    apr_size_t val;
 
     if (sscanf(arg, "%d", &val) != 1) {
-        return "CacheSize value must be an integer (kBytes)";
+        return "CacheSize argument must be an integer representing the max cache size in KBytes.";
     }
-    sconf->max_cache_size = val;
+    sconf->max_cache_size = val*1024;
     return NULL;
 }
 static const char 
@@ -863,7 +863,7 @@ static const char
     apr_size_t val;
 
     if (sscanf(arg, "%d", &val) != 1) {
-        return "CacheMaxObjectSize value must be an integer (KB)";
+        return "CacheMaxObjectSize value must be an integer (bytes)";
     }
     sconf->max_cache_object_size = val;
     return NULL;
@@ -883,13 +883,13 @@ static const char
 static const command_rec cache_cmds[] =
 {
     AP_INIT_TAKE1("CacheSize", set_max_cache_size, NULL, RSRC_CONF,
-     "The maximum space used by the cache in KB"),
+     "The maximum amount of memory used by the cache in KBytes"),
     AP_INIT_TAKE1("CacheMaxObjectCount", set_max_object_count, NULL, RSRC_CONF,
      "The maximum number of objects allowed to be placed in the cache"),
     AP_INIT_TAKE1("CacheMinObjectSize", set_min_cache_object_size, NULL, RSRC_CONF,
      "The minimum size (in bytes) of an object to be placed in the cache"),
     AP_INIT_TAKE1("CacheMaxObjectSize", set_max_cache_object_size, NULL, RSRC_CONF,
-     "The maximum size (in KB) of an object to be placed in the cache"),
+     "The maximum size (in bytes) of an object to be placed in the cache"),
     {NULL}
 };
 
@@ -912,4 +912,3 @@ module AP_MODULE_DECLARE_DATA mem_cache_module =
     cache_cmds,              /* command apr_table_t */
     register_hooks
 };
-
