@@ -2,6 +2,10 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) mod_cgid: Don't allow Scriptsock to be specified inside VirtualHost;
+     Don't place script socket inside default server root instead of
+     actual server root.  PR 27886.  [Jeff Trawick]
+
   *) mod_ssl: Disable the extra session caching in OpenSSL to prevent memory
      leak. PR 26562. [Madhusudan Mathihalli] 
 
