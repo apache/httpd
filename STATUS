@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/05/14 20:52:18 $]
+Last modified at [$Date: 2003/05/14 20:55:16 $]
 
 Release:
 
@@ -241,7 +241,7 @@ PATCHES TO PORT FROM 2.1
 
     * --enable-mods-shared=most and kin are currently broken. Port the
       simple fix from modules/mappers/config9.m4: r1.988.2.97?
-      +1: aaron, jerenkrantz
+      +1: aaron, jerenkrantz, thommay
 
 
     * htpasswd: add a delete flag.
