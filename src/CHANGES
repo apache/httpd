@@ -1,4 +1,7 @@
 Changes with Apache 1.3.7
+  *) Win32: Redirect CGI script stderr (script debug info) into the 
+     error.log when CGI scripts fail. This makes Apache on Win32 
+     behave more like Unix.
 
   *) Fixed `httpd' usage display: -D was missing.
      [Ralf S. Engelschall] PR#4614
