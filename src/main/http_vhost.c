@@ -587,6 +587,24 @@ void fini_vhost_config(pool *p, server_rec *main_s)
  * run-time vhost matching functions
  */
 
+/* Remove :port and optionally a single trailing . from the hostname, this
+ * canonicalizes it somewhat.
+ */
+static void fix_hostname(request_rec *r)
+{
+    const char *hostname = r->hostname;
+    char *host = getword(r->pool, &hostname, ':');	/* get rid of port */
+    size_t l;
+
+    /* trim a trailing . */
+    l = strlen(host);
+    if (l > 0 && host[l-1] == '.') {
+        host[l-1] = '\0';
+    }
+
+    r->hostname = host;
+}
+
 static void check_hostalias(request_rec *r)
 {
     /*
@@ -602,21 +620,12 @@ static void check_hostalias(request_rec *r)
      * - except for the addresses from the VirtualHost line, none of the other
      *   names we'll match have ports associated with them
      */
-    const char *hostname = r->hostname;
-    char *host = getword(r->pool, &hostname, ':');      /* Get rid of port */
+    const char *host = r->hostname;
     unsigned port = ntohs(r->connection->local_addr.sin_port);
     server_rec *s;
     server_rec *last_s;
-    size_t l;
     name_chain *src;
 
-    /* trim a trailing . */
-    l = strlen(host);
-    if (l > 0 && host[l-1] == '.') {
-        host[l-1] = '\0';
-    }
-
-    r->hostname = host;
     last_s = NULL;
 
     /* Recall that the name_chain is a list of server_addr_recs, some of
@@ -730,14 +739,17 @@ void update_vhost_from_headers(request_rec *r)
 {
     /* check if we tucked away a name_chain */
     if (r->connection->vhost_lookup_data) {
-        if (r->hostname || (r->hostname = table_get(r->headers_in, "Host")))
+        if (r->hostname || (r->hostname = table_get(r->headers_in, "Host"))) {
+	    fix_hostname(r);
             check_hostalias(r);
+	}
         else
             check_serverpath(r);
     }
     else if (!r->hostname) {
         /* must set this for HTTP/1.1 support */
         r->hostname = table_get(r->headers_in, "Host");
+	fix_hostname(r);
     }
 }
 

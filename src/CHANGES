@@ -1,5 +1,8 @@
 Changes with Apache 1.3b4
 
+  *) Fix a bug where r->hostname didn't have the :port stripped
+     from it.  [Dean Gaudet]
+
   *) Tweaked the headers_out table size, and the subprocess_env
      table size guess in rename_original_environment().  Added
      MAKE_TABLE_PROFILE which can help discover make_table()
