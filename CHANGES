@@ -1,4 +1,5 @@
 Changes with Apache 2.0.52
+
   *) mod_mem_cache: Fixed race condition causing segfault because of memory being
      freed twice, or reused after being freed.
      [J. Clar, W. Stoddard, G. Ames]
