@@ -1092,7 +1092,7 @@ AP_DECLARE(int) ap_directory_walk(request_rec *r)
  x symlink above into a real resource, and should have died up there.
  x Even if we keep this, it needs more thought (maybe an r->file_is_symlink)
  x perhaps it should actually happen in file_walk, so we catch more
- x obscure cases in autoindex sub requests, etc.
+ x obscure cases in autoindex subrequests, etc.
  x
  x    * Symlink permissions are determined by the parent.  If the request is
  x    * for a directory then applying the symlink test here would use the
