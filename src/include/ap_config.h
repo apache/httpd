@@ -605,12 +605,10 @@ extern char *crypt();
 #define HAVE_SHMGET 1
 #define USE_SHMGET_SCOREBOARD
 #ifdef _OSD_POSIX /* BS2000-POSIX mainframe needs initgroups */
-#define NEED_INITGROUPS
 #define NEED_HASHBANG_EMUL /* execve() doesn't start shell scripts by default */
-#undef HAVE_SHMGET
+#define _KMEMUSER          /* Enable SHM_R/SHM_W defines in <shm.h> */
 #undef NEED_STRCASECMP
 #undef NEED_STRNCASECMP
-#undef USE_SHMGET_SCOREBOARD
 #undef bzero
 #endif /*_OSD_POSIX*/
 

@@ -619,10 +619,9 @@ case "$PLAT" in
     BS2000*-siemens-sysv4*)
 	OS='BS2000'
 	OSDIR='os/bs2000'
-	CC='c89 -XLLML -XLLMK'
+	CC='c89 -XLLML -XLLMK -XL'
 	CFLAGS="$CFLAGS -DCHARSET_EBCDIC -DSVR4 -D_XPG_IV"
 	DEF_WANTHSREGEX=yes
-	LIBS="$LIBS -lsocket -lnsl -lc"
 	DBM_LIB=""
 	;;
     *-siemens-sysv4*)
@@ -1403,6 +1402,24 @@ case "$PLAT" in
 	fi
 	if TLIB=$TLIB ./helpers/TestCompile lib socket; then
 	    LIBS="-lsocket $LIBS"
+	fi
+	;;
+    BS2000*-siemens-sysv4*)
+	# Depending on the BS2000 OS and compiler/crte release,
+	# -lnsl may be available (or may be not).
+	# In standard SVR4 systems, -lsocket relies on some symbols
+	# from -lnsl, so the test for -lnsl must appear first.
+	if ./helpers/TestCompile lib nsl; then
+	    LIBS="$LIBS -lnsl"
+	    TLIB='-lnsl'
+	fi
+	if TLIB=$TLIB ./helpers/TestCompile lib socket; then
+	    LIBS="-lsocket $LIBS"
+	fi
+	if ./helpers/TestCompile func initgroups; then
+	    :
+	else
+	    CFLAGS="$CFLAGS -DNEED_INITGROUPS"
 	fi
 	;;
 esac
