@@ -381,4 +381,16 @@ EXPORTS
 	isProcessService @376
 	ap_registry_get_server_root @377
 	ap_registry_get_service_conf @378
-
+        ap_hook_pre_connection @379
+        ap_hook_post_read_request @380
+        ap_hook_log_transaction @381
+        ap_hook_http_method @382
+        ap_hook_default_port @383
+        ap_hook_translate_name @384
+        ap_hook_type_checker @385
+        ap_hook_access_checker @386
+        ap_hook_header_parser @387
+        ap_hook_pre_config @388
+        ap_hook_post_config @389
+        ap_hook_open_logs @390
+        ap_hook_child_init @391
