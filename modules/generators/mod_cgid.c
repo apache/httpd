@@ -238,10 +238,10 @@ static void cgid_maint(int reason, void *data, apr_wait_t status)
         case APR_OC_REASON_LOST:
             /* it would be better to restart just the cgid child
              * process but for now we'll gracefully restart the entire 
-             * server by sending SIGWINCH to ourself, the httpd parent
-             * process
+             * server by sending AP_SIG_GRACEFUL to ourself, the httpd 
+             * parent process
              */
-            kill(getpid(), SIGWINCH);
+            kill(getpid(), AP_SIG_GRACEFUL);
             break;
         case APR_OC_REASON_RESTART:
             apr_proc_other_child_unregister(data);

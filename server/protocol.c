@@ -406,17 +406,6 @@ static int read_request_line(request_rec *r)
     }
     /* we've probably got something to do, ignore graceful restart requests */
 
-    /* XXX - sigwait doesn't work if the signal has been SIG_IGNed (under
-     * linux 2.0 w/ glibc 2.0, anyway), and this step isn't necessary when
-     * we're running a sigwait thread anyway. If/when unthreaded mode is
-     * put back in, we should make sure to ignore this signal iff a sigwait
-     * thread isn't used. - mvsk
-
-#ifdef SIGWINCH
-    apr_signal(SIGWINCH, SIG_IGN);
-#endif
-    */
-
     r->request_time = apr_time_now();
     r->the_request = apr_pstrdup(r->pool, l);
     r->method = ap_getword_white(r->pool, &ll);

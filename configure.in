@@ -142,6 +142,8 @@ esac
 APACHE_SUBST(SHLTCFLAGS)
 APACHE_SUBST(LTCFLAGS)
 
+AP_SIG_GRACEFUL=SIGUSR1
+
 case $host in
   *-apple-aux3*)
       APR_SETVAR(APACHE_MPM, [prefork])
@@ -157,7 +159,11 @@ case $host in
       ;;
   *-linux-*)
       case `uname -r` in
-        2.[[2-9]]* ) APR_SETVAR(SINGLE_LISTEN_UNSERIALIZED_ACCEPT, [1])
+        2.0* ) 
+            AP_SIG_GRACEFUL=SIGWINCH
+            ;;
+        2.[[2-9]]* ) 
+            APR_SETVAR(SINGLE_LISTEN_UNSERIALIZED_ACCEPT, [1])
             ;;
         * )
             ;;
@@ -346,6 +352,10 @@ if test "$SINGLE_LISTEN_UNSERIALIZED_ACCEPT" = "1"; then
     AC_DEFINE(SINGLE_LISTEN_UNSERIALIZED_ACCEPT, 1, 
               [This platform doesn't suffer from the thundering herd problem])
 fi
+
+AC_DEFINE_UNQUOTED(AP_SIG_GRACEFUL, $AP_SIG_GRACEFUL, [Signal used to gracefully restart])
+AC_DEFINE_UNQUOTED(AP_SIG_GRACEFUL_STRING, "$AP_SIG_GRACEFUL", [Signal used to gracefully restart (as a quoted string)])
+AC_SUBST(AP_SIG_GRACEFUL)
 
 dnl check for endianness
 if test "$cross_compiling" = "no"; then

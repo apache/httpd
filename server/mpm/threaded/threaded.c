@@ -134,8 +134,8 @@ typedef struct {
 
 /*
  * The max child slot ever assigned, preserved across restarts.  Necessary
- * to deal with MaxClients changes across SIGWINCH restarts.  We use this
- * value to optimize routines that have to scan the entire scoreboard.
+ * to deal with MaxClients changes across AP_SIG_GRACEFUL restarts.  We use 
+ * this value to optimize routines that have to scan the entire scoreboard.
  */
 int ap_max_daemons_limit = -1;
 
@@ -332,7 +332,7 @@ static void sig_term(int sig)
 
 static void restart(int sig)
 {
-    ap_start_restart(sig == SIGWINCH);
+    ap_start_restart(sig == AP_SIG_GRACEFUL);
 }
 
 static void set_signals(void)
@@ -393,14 +393,15 @@ static void set_signals(void)
 	ap_log_error(APLOG_MARK, APLOG_WARNING, errno, ap_server_conf, "sigaction(SIGPIPE)");
 #endif
 
-    /* we want to ignore HUPs and WINCH while we're busy processing one */
+    /* we want to ignore HUPs and AP_SIG_GRACEFUL while we're busy 
+     * processing one */
     sigaddset(&sa.sa_mask, SIGHUP);
-    sigaddset(&sa.sa_mask, SIGWINCH);
+    sigaddset(&sa.sa_mask, AP_SIG_GRACEFUL);
     sa.sa_handler = restart;
     if (sigaction(SIGHUP, &sa, NULL) < 0)
 	ap_log_error(APLOG_MARK, APLOG_WARNING, errno, ap_server_conf, "sigaction(SIGHUP)");
-    if (sigaction(SIGWINCH, &sa, NULL) < 0)
-	ap_log_error(APLOG_MARK, APLOG_WARNING, errno, ap_server_conf, "sigaction(SIGWINCH)");
+    if (sigaction(AP_SIG_GRACEFUL, &sa, NULL) < 0)
+	ap_log_error(APLOG_MARK, APLOG_WARNING, errno, ap_server_conf, "sigaction(" AP_SIG_GRACEFUL_STRING ")");
 #else
     if (!one_process) {
 	apr_signal(SIGSEGV, sig_coredump);
@@ -428,9 +429,9 @@ static void set_signals(void)
 #ifdef SIGHUP
     apr_signal(SIGHUP, restart);
 #endif /* SIGHUP */
-#ifdef SIGWINCH
-    apr_signal(SIGWINCH, restart);
-#endif /* SIGWINCH */
+#ifdef AP_SIG_GRACEFUL
+    apr_signal(AP_SIG_GRACEFUL, restart);
+#endif /* AP_SIG_GRACEFUL */
 #ifdef SIGPIPE
     apr_signal(SIGPIPE, SIG_IGN);
 #endif /* SIGPIPE */
@@ -1254,9 +1255,9 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
 
     /* If we're doing a graceful_restart then we're going to see a lot
      * of children exiting immediately when we get into the main loop
-     * below (because we just sent them SIGWINCH).  This happens pretty
-     * rapidly... and for each one that exits we'll start a new one until
-     * we reach at least daemons_min_free.  But we may be permitted to
+     * below (because we just sent them AP_SIG_GRACEFUL).  This happens 
+     * pretty rapidly... and for each one that exits we'll start a new one 
+     * until we reach at least daemons_min_free.  But we may be permitted to
      * start more than that, so we'll just keep track of how many we're
      * supposed to start up without the 1 second penalty between each fork.
      */
@@ -1332,7 +1333,7 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
     
     if (is_graceful) {
 	ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_NOTICE, 0, ap_server_conf,
-		    "SIGWINCH received.  Doing graceful restart");
+		    AP_SIG_GRACEFUL_STRING " received.  Doing graceful restart");
 
 	/* This is mostly for debugging... so that we know what is still
          * gracefully dealing with existing request.

@@ -245,7 +245,7 @@ void ap_process_child_status(apr_proc_t *pid, apr_wait_t status)
         switch (signum) {
         case SIGTERM:
         case SIGHUP:
-        case SIGWINCH:
+        case AP_SIG_GRACEFUL:
         case SIGKILL:
             break;
         default:
