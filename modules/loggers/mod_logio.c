@@ -127,10 +127,8 @@ static apr_status_t logio_out_filter(ap_filter_t *f,
 
     /* End of data, make sure we flush */
     if (APR_BUCKET_IS_EOS(b)) {
-        APR_BRIGADE_INSERT_TAIL(bb,
-                                apr_bucket_flush_create(f->c->bucket_alloc));
-        APR_BUCKET_REMOVE(b);
-        apr_bucket_destroy(b);
+        APR_BUCKET_INSERT_BEFORE(b,
+                                 apr_bucket_flush_create(f->c->bucket_alloc));
     }
 
     return ap_pass_brigade(f->next, bb);

@@ -2,6 +2,9 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) mod_logio no longer removes the EOS bucket. PR 27928.
+     [Bojan Smojver <bojan rexursive.com>]
+
   *) mod_rewrite no longer turns forward proxy requests into reverse proxy
      requests. PR 28125  [ast domdv.de, André Malo]
 
