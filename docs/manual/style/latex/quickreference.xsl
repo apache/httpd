@@ -35,7 +35,7 @@
   <xsl:apply-templates select="legend"/>
 
   <xsl:variable name="directives"
-       select="document(modulefilelist/modulefile)
+       select="document(document($allmodules)/modulefilelist/modulefile)
          /modulesynopsis/directivesynopsis[not(@location)]" />
 
   <xsl:text>\footnotesize

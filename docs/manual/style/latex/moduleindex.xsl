@@ -40,31 +40,31 @@
 
 \begin{description}
 \item[</xsl:text>
-    <xsl:apply-templates select="document(modulefilelist/modulefile
+    <xsl:apply-templates select="document(document($allmodules)/modulefilelist/modulefile
                               [starts-with(., 'core.xml')])
                               /modulesynopsis/name"/>
     <xsl:text>] (p.\ \pageref{/mod/</xsl:text>
-    <xsl:value-of select="document(modulefilelist/modulefile
+    <xsl:value-of select="document(document($allmodules)/modulefilelist/modulefile
                               [starts-with(., 'core.xml')])
                               /modulesynopsis/name"/>
     <xsl:text>}) </xsl:text>
 
-    <xsl:apply-templates select="document(modulefilelist/modulefile
+    <xsl:apply-templates select="document(document($allmodules)/modulefilelist/modulefile
                                  [starts-with(., 'core.xml')])
                                  /modulesynopsis/description" />
 
     <xsl:text>
 \item[</xsl:text>
 
-    <xsl:apply-templates  select="document(modulefilelist/modulefile
+    <xsl:apply-templates  select="document(document($allmodules)/modulefilelist/modulefile
                                   [starts-with(., 'mpm_common.xml')])
                                   /modulesynopsis/name" />
     <xsl:text>] (p.\ \pageref{/mod/</xsl:text>
-    <xsl:value-of select="document(modulefilelist/modulefile
+    <xsl:value-of select="document(document($allmodules)/modulefilelist/modulefile
                                    [starts-with(., 'mpm_common.xml')])
                                    /modulesynopsis/name"/>
     <xsl:text>}) </xsl:text>
-    <xsl:apply-templates select="document(modulefilelist/modulefile
+    <xsl:apply-templates select="document(document($allmodules)/modulefilelist/modulefile
                                          [starts-with(., 'mpm_common.xml')])
                                          /modulesynopsis/description" />
 
@@ -72,7 +72,7 @@
 
     <!-- and now the remaining MPMs -->
     <xsl:variable name="mpmmodules"
-         select="document(modulefilelist/modulefile)
+         select="document(document($allmodules)/modulefilelist/modulefile)
                  /modulesynopsis[status='MPM' and name != 'mpm_common']" />
     <xsl:variable name="translist">
       <xsl:call-template name="module-translist">
@@ -109,7 +109,7 @@
 </xsl:text>
             
     <xsl:variable name="modules"
-         select="document(modulefilelist/modulefile)
+         select="document(document($allmodules)/modulefilelist/modulefile)
                  /modulesynopsis[status!='MPM' and status!='Core']" />
 
     <xsl:call-template name="mindex-of-letter">

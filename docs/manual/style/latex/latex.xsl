@@ -28,6 +28,8 @@
 <!-- Read the localized messages from the specified language file -->
 <xsl:variable name="message" select="document('../lang/en.xml')
                                      /language/messages/message"/>
+<xsl:variable name="allmodules" select="document('../xsl/util/allmodules.xml')
+                                        /items/item[@lang='en']"/>
 
 <!-- Get the guts of the stylesheets -->
 <xsl:include href="manualpage.xsl" />
