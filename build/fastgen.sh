@@ -106,6 +106,8 @@ top_builddir = $top_builddir
 srcdir       = $top_srcdir/$dir
 builddir     = $top_builddir/$dir
 VPATH        = $top_srcdir/$dir
+NONAC_CFLAGS  = "$NONAC_CFLAGS"
+NONAC_LDFLAGS = "$NONAC_LDFLAGS"
 EOF
   
     test -z "$dir" && dir="."
