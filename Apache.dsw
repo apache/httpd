@@ -42,10 +42,10 @@ Package=<4>
     Project_Dep_Name sdbmlib
     End Project Dependency
     Begin Project Dependency
-    Project_Dep_Name aprlib
+    Project_Dep_Name aprlibdll
     End Project Dependency
     Begin Project Dependency
-    Project_Dep_Name aprutil
+    Project_Dep_Name aprutildll
     End Project Dependency
 }}}
 
@@ -225,7 +225,7 @@ Package=<5>
 Package=<4>
 {{{
     Begin Project Dependency
-    Project_Dep_Name aprlib
+    Project_Dep_Name aprlibdll
     End Project Dependency
 }}}
 
@@ -241,6 +241,9 @@ Package=<4>
 {{{
     Begin Project Dependency
     Project_Dep_Name aprlibdll
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name aprutil
     End Project Dependency
 }}}
 
@@ -708,7 +711,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "pcre"=".\srclib\apr-util\src\misc\win32\lib\pcre\pcre.dsp" - Package Owner=<4>
+Project: "pcre"=".\srclib\pcre\pcre.dsp" - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -723,7 +726,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "pcreposix"=".\srclib\apr-util\src\misc\win32\lib\pcre\pcreposix.dsp" - Package Owner=<4>
+Project: "pcreposix"=".\srclib\pcre\pcreposix.dsp" - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -750,7 +753,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "sdbmlib"=".\srclib\apr-util\src\misc\win32\lib\sdbm\sdbmlib.dsp" - Package Owner=<4>
+Project: "sdbmlib"=".\srclib\sdbm\sdbmlib.dsp" - Package Owner=<4>
 
 Package=<5>
 {{{
