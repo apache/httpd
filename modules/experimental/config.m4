@@ -29,5 +29,9 @@ APACHE_MODULE(example, example and demo module, , , no)
 APACHE_MODULE(ext_filter, external filter module, , , no)
 APACHE_MODULE(case_filter, example uppercase conversion filter, , , no)
 APACHE_MODULE(case_filter_in, example uppercase conversion input filter, , , no)
+APACHE_MODULE(auth_ldap, LDAP based authentication, , , no)
+
+ldap_objects="util_ldap.lo util_ldap_cache.lo util_ldap_cache_mgr.lo"
+APACHE_MODULE(ldap, LDAP caching and connection pooling services, $ldap_objects, , no)
 
 APACHE_MODPATH_FINISH
