@@ -259,12 +259,11 @@ static int authenticate_basic_user(request_rec *r)
             return_code = HTTP_UNAUTHORIZED;
             break;
         case AUTH_GENERAL_ERROR:
+        default:
             /* We'll assume that the module has already said what its error 
              * was in the logs.
              */
             return_code = HTTP_INTERNAL_SERVER_ERROR;
-            break;
-        default:
             break;
         }
 
