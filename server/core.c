@@ -131,7 +131,7 @@ static void *create_core_dir_config(apr_pool_t *a, char *dir)
     conf->override = dir ? OR_UNSET : OR_UNSET|OR_ALL;
 
     conf->content_md5 = 2;
-    conf->accept_path_info = AP_REQ_DEFAULT_PATH_INFO;
+    conf->accept_path_info = 3;
 
     conf->use_canonical_name = USE_CANONICAL_NAME_UNSET;
 
