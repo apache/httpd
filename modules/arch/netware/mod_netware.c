@@ -141,6 +141,7 @@ static apr_status_t ap_cgi_build_command(const char **cmd, const char ***argv,
 
     /* check if we have a registered command for the extension*/
     new_cmd = apr_table_get(d->file_type_handlers, ext);
+    e_info->detached = 1;
     if (new_cmd == NULL) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                   "Could not find a command associated with the %s extension", ext);
@@ -153,12 +154,11 @@ static apr_status_t ap_cgi_build_command(const char **cmd, const char ***argv,
 
         /* Run in its own address space if specified */
         if(apr_table_get(d->file_handler_mode, ext))
-            e_info->addrspace = 1;
+            e_info->detached |= 2;
     }
 
     /* Tokenize the full command string into its arguments */
     apr_tokenize_to_argv(*cmd, (char***)argv, p);
-    e_info->detached = 1;
 
     /* The first argument should be the executible */
     *cmd = ap_server_root_relative(p, *argv[0]);
