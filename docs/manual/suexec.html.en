@@ -8,13 +8,14 @@
 <hr>
 
 <h3>What is suEXEC?</h3>
-The <b>suEXEC</b> feature, introduced in Apache 1.2 provides the ability to
-run <b>CGI</b> programs under user ids different from the user id of the
-calling web-server. Used properly, this feature can reduce considerably the
-insecurity of allowing users to run CGI programs. At the same time, improperly
-configured, this facility can crash your computer, burn your house down and
-steal all the money from your retirement fund. <b>:-)</b> If you aren't 
-familiar with managing setuid root programs and the security issues they
+The <STRONG>suEXEC</STRONG> feature, introduced in Apache 1.2 provides
+the ability to run <STRONG>CGI</STRONG> programs under user IDs
+different from the user ID of the calling web-server. Used properly,
+this feature can reduce considerably the insecurity of allowing users to
+run CGI programs. At the same time, improperly configured, this facility
+can crash your computer, burn your house down and steal all the money
+from your retirement fund. <STRONG>:-)</STRONG> If you aren't familiar
+with managing setuid root programs and the security issues they
 present, we highly recommend that you not consider using this feature.<p>
 
 <hr>
@@ -25,11 +26,11 @@ the intent that it will only be installed by users determined to use it and
 is not part of the normal install/compile process.<p>
 
 <h3>Configuring the suEXEC wrapper</h3>
-From the top-level of the Apache source tree, type:&nbsp;&nbsp;<b><code>cd support [ENTER]</code></b><p>
-Edit the <code>suexec.h</code> file and change the following macros to match your
-local Apache installation.<p>
-<i>From support/suexec.h</i>
-<code>
+From the top-level of the Apache source tree,
+type:&nbsp;&nbsp;<STRONG><code>cd support [ENTER]</code></STRONG><p>
+Edit the <code>suexec.h</code> file and change the following macros to
+match your local Apache installation.<p>
+<EM>From support/suexec.h</EM>
 <pre>
 /*
  * HTTPD_USER -- Define as the username under which Apache normally
@@ -58,95 +59,123 @@ local Apache installation.<p>
  */
 #define SAFE_PATH "/usr/local/bin:/usr/bin:/bin"
 </pre>
-</code>
 
 <h3>Compiling the suEXEC wrapper</h3>
-At the shell command prompt, type:&nbsp;&nbsp;<b><code>cc suexec.c -o suexec [ENTER]</code></b>.<p>
-This should create the <b><em>suexec</em></b> wrapper executable.
+At the shell command prompt, type:&nbsp;&nbsp;<STRONG><code>cc suexec.c
+-o suexec [ENTER]</code></STRONG>.<p>
+This should create the <STRONG><em>suexec</em></STRONG> wrapper executable.
 
 <h3>Compiling Apache for suEXEC support</h3>
 By default, Apache is compiled to look for the suEXEC wrapper in the following
 location.<p>
-<i>From src/httpd.h</i>
-<code>
+<EM>From src/httpd.h</EM>
 <pre>
 /* The path to the suEXEC wrapper */
 #ifndef SUEXEC_BIN
 #define SUEXEC_BIN "/usr/local/etc/httpd/sbin/suexec"
 #endif
 </pre>
-</code>
 <p>
 If your installation requires location of the wrapper program in a different
-directory, edit src/httpd.h and recompile your Apache server. See <a href="install.html">Compiling and Installing Apache</a> for more info on this process.<p>
+directory, edit src/httpd.h and recompile your Apache server.
+See <a href="install.html">Compiling and Installing Apache</a> for more
+info on this process.<p>
 
 <h3>Installing the suEXEC wrapper</h3>
-Copy the <b><em>suexec</em></b> executable created in the exercise above to the defined
-location for <b>SUEXEC_BIN</b>.<p>
-In order for the wrapper to set the user id for execution requests it must me installed
-as owner <b><em>root</em></b> and must have the setuserid execution bit set for file modes.
-If you are not running a <b><em>root</em></b> user shell, do so now and execute the following
-commands.<p>
+Copy the <STRONG><em>suexec</em></STRONG> executable created in the
+exercise above to the defined location for <STRONG>SUEXEC_BIN</STRONG>.<p>
+In order for the wrapper to set the user ID for execution requests it
+must me installed as owner <STRONG><em>root</em></STRONG> and must have
+the setuserid execution bit set for file modes.
+If you are not running a <STRONG><em>root</em></STRONG> user shell, do
+so now and execute the following commands.<p>
 
-<b><code>chown root /usr/local/etc/httpd/sbin/suexec [ENTER]</code></b><p>
-<b><code>chmod 4711 /usr/local/etc/httpd/sbin/suexec [ENTER]</code></b><p>
+<STRONG><code>chown root /usr/local/etc/httpd/sbin/suexec [ENTER]</code></STRONG><p>
+<STRONG><code>chmod 4711 /usr/local/etc/httpd/sbin/suexec [ENTER]</code></STRONG><p>
 
-<i>Change the path to the suEXEC wrapper to match your system installation.</i>
+<EM>Change the path to the suEXEC wrapper to match your system
+installation.</EM>
 
 <hr>
 
 <h3><a name="model">Security Model of suEXEC</a></h3>
-The <b>suEXEC</b> wrapper supplied with Apache performs the following security
-checks before it will execute any program passed to it for execution.
+The <STRONG>suEXEC</STRONG> wrapper supplied with Apache performs the
+following security checks before it will execute any program passed to
+it for execution.
 <ol>
-<li>User executing the wrapper <b>must be a valid user on this system</b>.
-<li>User executing the wrapper <b>must be the compiled in HTTPD_USER</b>.
-<li>The command that the request wishes to execute <b>must not contain a /</b>.
-<li>The command being executed <b>must reside under the compiled in DOC_ROOT</b>.
-<li>The current working directory <b>must be a directory</b>.
-<li>The current working directory <b>must not be writable by <em>group</em> or <em>other</em></b>.
-<li>The command being executed <b>cannot be a symbolic link</b>.
-<li>The command being executed <b>cannot be writable by <em>group</em> or <em>other</em></b>.
-<li>The command being executed <b>cannot be a <em>setuid</em> or <em>setgid</em> program</b>.
-<li>The target UID and GID <b>must be a valid user and group on this system</b>.
-<li>The target UID and GID to execute as, <b>must match the UID and GID of the directory</b>.
-<li>The target execution UID and GID <b>must not be the privileged ID 0</b>.
+<li>User executing the wrapper <STRONG>must be a valid user on this
+ system</STRONG>.
+<li>User executing the wrapper <STRONG>must be the compiled in
+ HTTPD_USER</STRONG>.
+<li>The command that the request wishes to execute <STRONG>must not
+ contain a leading / or ../, or the string &quot;/../&quot; anywhere</STRONG>.
+<li>The command being executed <STRONG>must reside under the compiled in
+ DOC_ROOT</STRONG>.
+<li>The current working directory <STRONG>must be a directory</STRONG>.
+<li>The current working directory <STRONG>must not be writable by
+ <em>group</em> or <em>other</em></STRONG>.
+<li>The command being executed <STRONG>cannot be a symbolic link</STRONG>.
+<li>The command being executed <STRONG>cannot be writable by
+ <em>group</em> or <em>other</em></STRONG>.
+<li>The command being executed <STRONG>cannot be a <em>setuid</em> or
+ <em>setgid</em> program</STRONG>.
+<li>The target UID and GID <STRONG>must be a valid user and group on
+ this system</STRONG>.
+<li>The target UID and GID to execute as, <STRONG>must match the UID and
+ GID of the directory</STRONG>.
+<li>The target execution UID and GID <STRONG>must not be the privileged
+ ID 0</STRONG>.
 </ol>
-If any of these issues are too restrictive, or do not seem restrictive enough, you are
-welcome to install your own version of the wrapper. We've given you the rope, now go
-have fun with it. <b>:-)</b>
+If any of these issues are too restrictive, or do not seem restrictive
+enough, you are welcome to install your own version of the wrapper.
+We've given you the rope, now go have fun with it. <STRONG>:-)</STRONG>
 
 <hr>
 
 <h3>Using suEXEC</h3>
-After properly installing the <b>suexec</b> wrapper executable, you must kill and restart
-the Apache server. A simple <code><b>kill -1 `cat httpd.pid`</b></code> will not be enough.
-Upon startup of the web-server, if Apache finds a properly configured <b>suexec</b> wrapper,
-it will print the following message to the console.<p>
+After properly installing the <STRONG>suexec</STRONG> wrapper
+executable, you must kill and restart the Apache server. A simple
+<code><STRONG>kill -1 `cat httpd.pid`</STRONG></code> will not be enough.
+Upon startup of the web-server, if Apache finds a properly configured
+<STRONG>suexec</STRONG> wrapper, it will print the following message to
+the console:<p>
 
 <code>Configuring Apache for use with suexec wrapper.</code><p>
 
-If you don't see this message at server startup, the server is most likely not finding the
-wrapper program where it expects it, or the executable is not installed <b><em>setuid root</em></b>. Check your installation and try again.<p>
+If you don't see this message at server startup, the server is most
+likely not finding the wrapper program where it expects it, or the
+executable is not installed <STRONG><em>setuid root</em></STRONG>. Check
+your installation and try again.<p>
 
-One way to use <b>suEXEC</b> is through the <a href="mod/core.html#user"><b>User</b></a> and <a href="mod/core.html#group"><b>Group</b></a> directives in <a href="mod/core.html#virtualhost"><b>VirtualHost</b></a> definitions. By setting these directives to values
-different from the main server user id, all requests for CGI resources will be executed as
-the <b>User</b> and <b>Group</b> defined for that <b>&lt;VirtualHost&gt;</b>. If only one or
-neither of these directives are specified for a <b>&lt;VirtualHost&gt;</b> then the main
+One way to use <STRONG>suEXEC</STRONG> is through the
+<a href="mod/core.html#user"><STRONG>User</STRONG></a> and
+<a href="mod/core.html#group"><STRONG>Group</STRONG></a> directives in
+<a href="mod/core.html#virtualhost"><STRONG>VirtualHost</STRONG></a>
+definitions. By setting these directives to values different from the
+main server user ID, all requests for CGI resources will be executed as
+the <STRONG>User</STRONG> and <STRONG>Group</STRONG> defined for that
+<STRONG>&lt;VirtualHost&gt;</STRONG>. If only one or
+neither of these directives are specified for a
+<STRONG>&lt;VirtualHost&gt;</STRONG> then the main
 server userid is assumed.<p>
 
-<b>suEXEC</b> can also be used to to execute CGI programs as the user to which the request
-is being directed. This is accomplished by using the <b>~</b> character prefixing the
-user id for whom execution is desired. The only requirement needed for this feature to work
-is for CGI execution to be enabled for the user and that the script must meet the scrutiny of the <a href="#model">security checks</a> above.
+<STRONG>suEXEC</STRONG> can also be used to to execute CGI programs as
+the user to which the request is being directed. This is accomplished by
+using the <STRONG>~</STRONG> character prefixing the user ID for whom
+execution is desired.
+The only requirement needed for this feature to work is for CGI
+execution to be enabled for the user and that the script must meet the
+scrutiny of the <a href="#model">security checks</a> above.
 
 <hr>
 
 <h3>Debugging suEXEC</h3>
-The suEXEC wrapper will write log information to the location defined in the <code>suexec.h</code> as indicated above. If you feel you have configured and installed the wrapper properly,
-have a look at this log and the error_log for the server to see where you may have gone astray.
+The suEXEC wrapper will write log information to the location defined in
+the <code>suexec.h</code> as indicated above. If you feel you have
+configured and installed the wrapper properly,
+have a look at this log and the error_log for the server to see where
+you may have gone astray.
 <!--#include virtual="footer.html" -->
 
 </BODY>
 </HTML>
-
