@@ -2,6 +2,10 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) Add fatal exception hook for use by debug modules.  The hook is only
+     available if the --enable-exception-hook configure parm is used.
+     [Jeff Trawick]
+
   *) mod_ssl/mod_status: Re-enable support for output of SSL session
      cache information in server-status page.  [Joe Orton]
 

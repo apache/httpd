@@ -919,11 +919,35 @@ const char *ap_mpm_set_max_mem_free(cmd_parms *cmd, void *dummy,
 static pid_t parent_pid, my_pid;
 apr_pool_t *pconf;
 
+#if AP_ENABLE_EXCEPTION_HOOK
+APR_HOOK_STRUCT(
+    APR_HOOK_LINK(fatal_exception)
+)
+
+AP_IMPLEMENT_HOOK_RUN_ALL(int, fatal_exception,
+                          (ap_exception_info_t *ei), (ei), OK, DECLINED)
+
+static void run_fatal_exception_hook(int sig)
+{
+    ap_exception_info_t ei = {0};
+
+    if (geteuid() != 0 && 
+        my_pid != parent_pid) {
+        ei.sig = sig;
+        ei.pid = my_pid;
+        ap_run_fatal_exception(&ei);
+    }
+}
+#endif /* AP_ENABLE_EXCEPTION_HOOK */
+
 /* handle all varieties of core dumping signals */
 static void sig_coredump(int sig)
 {
     apr_filepath_set(ap_coredump_dir, pconf);
     apr_signal(sig, SIG_DFL);
+#if AP_ENABLE_EXCEPTION_HOOK
+    run_fatal_exception_hook(sig);
+#endif
     if (my_pid == parent_pid) {
         ap_log_error(APLOG_MARK, APLOG_NOTICE,
                      0, ap_server_conf,

@@ -365,6 +365,12 @@ if test $v4mapped = "yes" -a $ac_cv_define_APR_HAVE_IPV6 = "yes"; then
               [Allow IPv4 connections on IPv6 listening sockets])
 fi
 
+AC_ARG_ENABLE(exception-hook,APACHE_HELP_STRING(--enable-exception-hook,Enable fatal exception hook),
+[
+    AC_DEFINE(AP_ENABLE_EXCEPTION_HOOK, 1,
+              [Allow modules to run hook after a fatal exception])
+])dnl
+
 AC_ARG_ENABLE(maintainer-mode,APACHE_HELP_STRING(--enable-maintainer-mode,Turn on debugging and compile time warnings),
 [
   APR_ADDTO(CPPFLAGS, -DAP_DEBUG)
