@@ -198,7 +198,7 @@ static int log_child(apr_pool_t *p, const char *progname,
         
         apr_tokenize_to_argv(progname, &args, p);
         pname = apr_pstrdup(p, args[0]);
-        procnew = (apr_proc_t *) apr_palloc(p, sizeof(*procnew));
+        procnew = (apr_proc_t *) apr_pcalloc(p, sizeof(*procnew));
         rc = apr_create_process(procnew, pname, args, NULL, procattr, p);
     
         if (rc == APR_SUCCESS) {
@@ -561,7 +561,7 @@ static int piped_log_spawn(piped_log *pl)
 {
     int rc;
     apr_procattr_t *procattr;
-    apr_proc_t *procnew;
+    apr_proc_t *procnew = NULL;
     apr_status_t status;
 
 #ifdef SIGHUP
@@ -583,7 +583,7 @@ static int piped_log_spawn(piped_log *pl)
 
         apr_tokenize_to_argv(pl->program, &args, pl->p);
         pname = apr_pstrdup(pl->p, args[0]);
-        procnew = (apr_proc_t *) apr_palloc(pl->p, sizeof(*procnew));
+        procnew = apr_pcalloc(pl->p, sizeof(apr_proc_t));
         rc = apr_create_process(procnew, pname, args, NULL, procattr, pl->p);
     
         if (rc == APR_SUCCESS) {            
