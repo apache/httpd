@@ -573,7 +573,7 @@ static int add_expires(request_rec *r)
      * do make a note of any ExpiresDefault value for its use.
      */
     if (! apr_is_empty_table(conf->expiresbytype)) {
-        ap_add_output_filter("EXPIRATION", NULL, r, r->connection);
+        ap_add_output_filter("MOD_EXPIRES", NULL, r, r->connection);
         rfields = notes->expfields;
     }
     else {
@@ -603,7 +603,7 @@ static int add_expires(request_rec *r)
 
 static void register_hooks(apr_pool_t *p)
 {
-    ap_register_output_filter("EXPIRATION", expires_by_type_filter, NULL,
+    ap_register_output_filter("MOD_EXPIRES", expires_by_type_filter, NULL,
                               AP_FTYPE_CONTENT_SET);
     ap_hook_fixups(add_expires,NULL,NULL,APR_HOOK_MIDDLE);
 }
