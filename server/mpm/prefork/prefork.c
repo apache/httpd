@@ -1378,8 +1378,8 @@ static const char *set_server_limit (cmd_parms *cmd, void *dummy, const char *ar
 }
 
 static const command_rec prefork_cmds[] = {
-UNIX_DAEMON_COMMANDS
-LISTEN_COMMANDS
+UNIX_DAEMON_COMMANDS,
+LISTEN_COMMANDS,
 AP_INIT_TAKE1("StartServers", set_daemons_to_start, NULL, RSRC_CONF,
               "Number of child processes launched at server startup"),
 AP_INIT_TAKE1("MinSpareServers", set_min_free_servers, NULL, RSRC_CONF,

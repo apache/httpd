@@ -92,6 +92,6 @@ AP_DECLARE(const char *) beosd_set_group(cmd_parms *cmd, void *dummy,
 AP_INIT_TAKE1("User", beosd_set_user, NULL, RSRC_CONF, \
   "Effective user id for this server (NO-OP)"), \
 AP_INIT_TAKE1("Group", beosd_set_group, NULL, RSRC_CONF, \
-  "Effective group id for this server (NO-OP)"),                  
+  "Effective group id for this server (NO-OP)")
 
 #endif /* BEOSD_H */
