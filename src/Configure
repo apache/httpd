@@ -1847,33 +1847,27 @@ if [ "x$RULE_WANTHSREGEX" = "xyes" ]; then
 fi
 
 ####################################################################
-## Add in the Expat library if needed/wanted.
+## Add in the Expat library. Choose whether we want the system's
+## version ('yes'), our version (expat-lite) ('no') or for Configure
+## to choose for us ('default' - system is prefered if available).
 ##
 
-# set the default, based on whether expat-lite is bundled. if it is present,
-# then we can always include expat.
-if [ "x$RULE_EXPAT" = "xdefault" ]; then
-    if [ -d ./lib/expat-lite/ ]; then
-        RULE_EXPAT=yes
-    else
-        RULE_EXPAT=no
-    fi
-fi
-
-if [ "x$RULE_EXPAT" = "xyes" ]; then
-    if ./helpers/TestCompile lib expat; then
+if ./helpers/TestCompile lib expat && [ "x$RULE_EXPAT" != "xno" ]; then
         echo " + using system Expat"
-        LIBS="$LIBS -lexpat"
-    else
-        if [ ! -d ./lib/expat-lite/ ]; then
-            echo "ERROR: RULE_EXPAT set to \"yes\" but is not available."
-	    exit 1
-        fi
-        echo " + using builtin Expat"
-        EXPATLIB="lib/expat-lite/libexpat.a"
-        APLIBDIRS="expat-lite $APLIBDIRS"
-        CFLAGS="$CFLAGS -DUSE_EXPAT -I\$(SRCDIR)/lib/expat-lite"
+	LIBS="$LIBS -lexpat"
+else
+    if [ "x$RULE_EXPAT" = "xyes" ]; then
+        echo "ERROR: RULE_EXPAT set to \"yes\" but is not available."
+        exit 1
     fi
+    if [ ! -d ./lib/expat-lite/ ]; then
+        echo "Bundled expat-lite package not available."
+	exit 1
+    fi
+    echo " + using builtin Expat"
+    EXPATLIB="lib/expat-lite/libexpat.a"
+    APLIBDIRS="expat-lite $APLIBDIRS"
+    CFLAGS="$CFLAGS -DUSE_EXPAT -I\$(SRCDIR)/lib/expat-lite"
 fi
 
 ####################################################################
