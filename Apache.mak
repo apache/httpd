@@ -338,9 +338,9 @@ DEP_CPP_MAIN_=\
 	".\include\util_cfgtree.h"\
 	".\include\util_charset.h"\
 	".\include\util_ebcdic.h"\
-	".\include\util_uri.h"\
 	".\os\win32\os.h"\
 	".\srclib\apr-util\include\apr_hooks.h"\
+	".\srclib\apr-util\include\apr_uri.h"\
 	".\srclib\apr-util\include\apu.h"\
 	".\srclib\apr\include\apr.h"\
 	".\srclib\apr\include\apr_errno.h"\
