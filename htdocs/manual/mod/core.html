@@ -2794,7 +2794,10 @@ files which are not intended to be visible to the outside world, and
 similarly, the user should not be able to execute code which is not
 meant for httpd requests. It is recommended that you set up a new user and
 group specifically for running the server. Some admins use user
-<CODE>nobody</CODE>, but this is not always possible or desirable.<P>
+<CODE>nobody</CODE>, but this is not always possible or desirable.
+For example mod_proxy's cache, when enabled, must be accessible to this user
+(see the <A href="mod_proxy.html#cacheroot"><CODE>CacheRoot</CODE></a> 
+directive</a>).<P>
 
 Notes: If you start the server as a non-root user, it will fail to change
 to the lesser privileged user, and will instead continue to run as
