@@ -15,12 +15,10 @@ include $(top_srcdir)/build/ltlib.mk
 
 gen_uri_delims_OBJECTS = gen_uri_delims.lo
 gen_uri_delims: $(gen_uri_delims_OBJECTS)
-	$(BUILD_LINK) $(EXTRA_LDFLAGS) $(foreach f,$(gen_uri_delims_OBJECTS),build-$(f:.lo=.o)) $(EXTRA_LIBS)
 	$(LINK) $(EXTRA_LDFLAGS) $(gen_uri_delims_OBJECTS) $(EXTRA_LIBS)
 
 gen_test_char_OBJECTS = gen_test_char.lo util_debug.lo
 gen_test_char: $(gen_test_char_OBJECTS)
-	$(BUILD_LINK) $(EXTRA_LDFLAGS) $(foreach f,$(gen_test_char_OBJECTS),build-$(f:.lo=.o)) $(EXTRA_LIBS)
 	$(LINK) $(EXTRA_LDFLAGS) $(gen_test_char_OBJECTS) $(EXTRA_LIBS)
 
 $(gen_uri_delims_OBJECTS) $(gen_test_char_OBJECTS): %.lo: %.c
