@@ -640,8 +640,11 @@ static const char *
     get_module_config(parms->server->module_config, &proxy_module);
     int val;
 
-    if (sscanf(arg, "%d", &val) != 1)
-	return "Value must be an integer";
+    val = atoi(arg);
+    if (val < 1)
+	return "Value must be an integer greater than 0";
+    if (val * psf->cache.dirlength > CACHEFILE_LEN)
+	return "CacheDirLevels*CacheDirLength value must not be higher than 20";
     psf->cache.dirlevels = val;
     return NULL;
 }
@@ -653,8 +656,11 @@ static const char *
     get_module_config(parms->server->module_config, &proxy_module);
     int val;
 
-    if (sscanf(arg, "%d", &val) != 1)
-	return "Value must be an integer";
+    val = atoi(arg);
+    if (val < 1)
+	return "Value must be an integer greater than 0";
+    if (val * psf->cache.dirlevels > CACHEFILE_LEN)
+	return "CacheDirLevels*CacheDirLength value must not be higher than 20";
     psf->cache.dirlength = val;
     return NULL;
 }

@@ -117,6 +117,10 @@ enum enctype {
 /* number of characters in the hash */
 #define HASH_LEN (22*2)
 
+/* maximum  'CacheDirLevels*CacheDirLength' value */
+#define CACHEFILE_LEN 20	/* must be less than HASH_LEN/2 */
+
+
 #define	SEC_ONE_DAY		86400	/* one day, in seconds */
 #define	SEC_ONE_HR		3600	/* one hour, in seconds */
 
