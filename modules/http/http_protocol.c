@@ -1168,7 +1168,8 @@ static apr_status_t send_all_header_fields(header_struct *h,
     }
     t_elt = (const apr_table_entry_t *)(elts->elts);
     t_end = t_elt + elts->nelts;
-    vec = (struct iovec *)apr_palloc(h->pool, 4 * elts->nelts);
+    vec = (struct iovec *)apr_palloc(h->pool, 4 * elts->nelts *
+                                     sizeof(struct iovec));
     vec_next = vec;
 
     /* For each field, generate
