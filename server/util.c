@@ -1788,11 +1788,7 @@ char *ap_get_local_host(apr_pool_t *a)
         if ((!(p = gethostbyname(str))) 
             || (!(server_hostname = find_fqdn(a, p)))) {
             /* Recovery - return the default servername by IP: */
-#ifndef BEOS
-            if (p->h_addr_list[0]) {
-#else
-            if (p) {
-#endif
+            if (p && p->h_addr_list[0]) {
                 apr_snprintf(str, sizeof(str), "%pA", p->h_addr_list[0]);
 	        server_hostname = apr_pstrdup(a, str);
                 /* We will drop through to report the IP-named server */
