@@ -794,9 +794,9 @@ API_EXPORT(int) call_exec(request_rec *r, char *argv0, char **env, int shellcmd)
 
 	    if ((gr = getgrgid(user_gid)) == NULL) {
 		if ((grpname = palloc(r->pool, 16)) == NULL)
-		         return (pid);
+		    return (pid);
 		else
-		    ap_snprintf(grpname, 16, "%d", user_gid);
+		    ap_snprintf(grpname, 16, "%ld", (long) user_gid);
 	    }
 	    else
 		grpname = gr->gr_name;
@@ -804,14 +804,16 @@ API_EXPORT(int) call_exec(request_rec *r, char *argv0, char **env, int shellcmd)
 	else {
 	    if ((pw = getpwuid(r->server->server_uid)) == NULL) {
 		aplog_error(APLOG_MARK, APLOG_ERR, r->server,
-		      "getpwuid: invalid userid %d", r->server->server_uid);
+		            "getpwuid: invalid userid %ld",
+		            (long) r->server->server_uid);
 		return (pid);
 	    }
 	    execuser = pstrdup(r->pool, pw->pw_name);
 
 	    if ((gr = getgrgid(r->server->server_gid)) == NULL) {
 		aplog_error(APLOG_MARK, APLOG_ERR, r->server,
-		     "getgrgid: invalid groupid %d", r->server->server_gid);
+		            "getgrgid: invalid groupid %ld",
+		            (long) r->server->server_gid);
 		return (pid);
 	    }
 	    grpname = gr->gr_name;
