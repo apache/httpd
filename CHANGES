@@ -1,5 +1,8 @@
 Changes with Apache 2.0.53
 
+) *) Start keeping track of time-taken-to-process-request again for
+     mod_status if ExtendedStatus is enabled. [Jim Jagielski]
+
   *) mod_proxy: Handle client-aborted connections correctly.  PR 32443.
      [Janne Hietamäki, Joe Orton]
 

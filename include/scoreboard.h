@@ -163,7 +163,7 @@ AP_DECLARE(int) find_child_by_pid(apr_proc_t *pid);
 AP_DECLARE(int) ap_update_child_status(ap_sb_handle_t *sbh, int status, request_rec *r);
 AP_DECLARE(int) ap_update_child_status_from_indexes(int child_num, int thread_num,
                                                     int status, request_rec *r);
-void ap_time_process_request(int child_num, int thread_num, int status);
+void ap_time_process_request(ap_sb_handle_t *sbh, int status);
 
 AP_DECLARE(worker_score *) ap_get_scoreboard_worker(int x, int y);
 AP_DECLARE(process_score *) ap_get_scoreboard_process(int x);
