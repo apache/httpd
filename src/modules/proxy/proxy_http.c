@@ -233,7 +233,8 @@ int ap_proxy_http_handler(request_rec *r, cache_req *c, char *url,
     for (i = 0; i < conf->noproxies->nelts; i++) {
 	if ((npent[i].name != NULL && strstr(desthost, npent[i].name) != NULL)
 	    || destaddr.s_addr == npent[i].addr.s_addr || npent[i].name[0] == '*')
-	    return ap_proxyerror(r, "Connect to remote machine blocked");
+	    return ap_proxyerror(r, HTTP_FORBIDDEN,
+				 "Connect to remote machine blocked");
     }
 
     if (proxyhost != NULL) {
@@ -246,7 +247,7 @@ int ap_proxy_http_handler(request_rec *r, cache_req *c, char *url,
 	server.sin_port = htons(destport);
 	err = ap_proxy_host2addr(desthost, &server_hp);
 	if (err != NULL)
-	    return ap_proxyerror(r, err);	/* give up */
+	    return ap_proxyerror(r, HTTP_INTERNAL_SERVER_ERROR, err);
     }
 
     sock = ap_psocket(p, PF_INET, SOCK_STREAM, IPPROTO_TCP);
@@ -291,7 +292,7 @@ int ap_proxy_http_handler(request_rec *r, cache_req *c, char *url,
 	if (proxyhost != NULL)
 	    return DECLINED;	/* try again another way */
 	else
-	    return ap_proxyerror(r, /*HTTP_BAD_GATEWAY*/ ap_pstrcat(r->pool,
+	    return ap_proxyerror(r, HTTP_BAD_GATEWAY, ap_pstrcat(r->pool,
 				"Could not connect to remote machine: ",
 				strerror(errno), NULL));
     }
@@ -369,7 +370,8 @@ int ap_proxy_http_handler(request_rec *r, cache_req *c, char *url,
 	ap_log_rerror(APLOG_MARK, APLOG_ERR, r,
 		     "ap_bgets() - proxy receive - Error reading from remote server %s",
 		     proxyhost ? proxyhost : desthost);
-	return ap_proxyerror(r, "Error reading from remote server");
+	return ap_proxyerror(r, HTTP_BAD_GATEWAY,
+			     "Error reading from remote server");
     }
 
 /* Is it an HTTP/1 response?  This is buggy if we ever see an HTTP/1.10 */

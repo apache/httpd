@@ -148,7 +148,8 @@ int ap_proxy_connect_handler(request_rec *r, cache_req *c, char *url,
     for (i = 0; i < conf->noproxies->nelts; i++) {
 	if ((npent[i].name != NULL && strstr(host, npent[i].name) != NULL)
 	    || destaddr.s_addr == npent[i].addr.s_addr || npent[i].name[0] == '*')
-	    return ap_proxyerror(r, "Connect to remote machine blocked");
+	    return ap_proxyerror(r, HTTP_FORBIDDEN,
+				 "Connect to remote machine blocked");
     }
 
     /* Check if it is an allowed port */
@@ -175,7 +176,9 @@ int ap_proxy_connect_handler(request_rec *r, cache_req *c, char *url,
     err = ap_proxy_host2addr(proxyhost ? proxyhost : host, &server_hp);
 
     if (err != NULL)
-	return ap_proxyerror(r, err);	/* give up */
+	return ap_proxyerror(r,
+			     proxyhost ? HTTP_BAD_GATEWAY : HTTP_INTERNAL_SERVER_ERROR,
+			     err);
 
     sock = ap_psocket(r->pool, PF_INET, SOCK_STREAM, IPPROTO_TCP);
     if (sock == -1) {
@@ -207,7 +210,7 @@ int ap_proxy_connect_handler(request_rec *r, cache_req *c, char *url,
     }
     if (i == -1) {
 	ap_pclosesocket(r->pool, sock);
-	return ap_proxyerror(r, ap_pstrcat(r->pool,
+	return ap_proxyerror(r, HTTP_INTERNAL_SERVER_ERROR, ap_pstrcat(r->pool,
 					"Could not connect to remote machine:<br>",
 					strerror(errno), NULL));
     }

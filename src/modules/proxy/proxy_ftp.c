@@ -533,7 +533,8 @@ int ap_proxy_ftp_handler(request_rec *r, cache_req *c, char *url)
     for (i = 0; i < conf->noproxies->nelts; i++) {
 	if ((npent[i].name != NULL && strstr(host, npent[i].name) != NULL)
 	    || destaddr.s_addr == npent[i].addr.s_addr || npent[i].name[0] == '*')
-	    return ap_proxyerror(r, /*HTTP_FORBIDDEN*/ "Connect to remote machine blocked");
+	    return ap_proxyerror(r, HTTP_FORBIDDEN,
+				 "Connect to remote machine blocked");
     }
 
     Explain2("FTP: connect to %s:%d", host, port);
@@ -547,7 +548,7 @@ int ap_proxy_ftp_handler(request_rec *r, cache_req *c, char *url)
     server.sin_port = htons(port);
     err = ap_proxy_host2addr(host, &server_hp);
     if (err != NULL)
-	return ap_proxyerror(r, err);	/* give up */
+	return ap_proxyerror(r, HTTP_INTERNAL_SERVER_ERROR, err);
 
     sock = ap_psocket(p, PF_INET, SOCK_STREAM, IPPROTO_TCP);
     if (sock == -1) {
@@ -598,7 +599,7 @@ int ap_proxy_ftp_handler(request_rec *r, cache_req *c, char *url)
 #endif
     if (i == -1) {
 	ap_pclosesocket(p, sock);
-	return ap_proxyerror(r, /*HTTP_BAD_GATEWAY*/ ap_pstrcat(r->pool,
+	return ap_proxyerror(r, HTTP_BAD_GATEWAY, ap_pstrcat(r->pool,
 				"Could not connect to remote machine: ",
 				strerror(errno), NULL));
     }
@@ -620,7 +621,8 @@ int ap_proxy_ftp_handler(request_rec *r, cache_req *c, char *url)
     Explain1("FTP: returned status %d", i);
     if (i == -1) {
 	ap_kill_timeout(r);
-	return ap_proxyerror(r, /*HTTP_BAD_GATEWAY*/ "Error reading from remote server");
+	return ap_proxyerror(r, HTTP_BAD_GATEWAY,
+			     "Error reading from remote server");
     }
 #if 0
     if (i == 120) {
@@ -636,12 +638,12 @@ int ap_proxy_ftp_handler(request_rec *r, cache_req *c, char *url)
 	 *     Retry-After  = "Retry-After" ":" ( HTTP-date | delta-seconds )
 	 */
 	ap_set_header("Retry-After", ap_psprintf(p, "%u", 60*wait_mins);
-	return ap_proxyerror(r, /*HTTP_SERVICE_UNAVAILABLE*/ resp);
+	return ap_proxyerror(r, HTTP_SERVICE_UNAVAILABLE, resp);
     }
 #endif
     if (i != 220) {
 	ap_kill_timeout(r);
-	return ap_proxyerror(r, /*HTTP_BAD_GATEWAY*/ resp);
+	return ap_proxyerror(r, HTTP_BAD_GATEWAY, resp);
     }
 
     Explain0("FTP: connected.");
@@ -664,7 +666,8 @@ int ap_proxy_ftp_handler(request_rec *r, cache_req *c, char *url)
     Explain1("FTP: returned status %d", i);
     if (i == -1) {
 	ap_kill_timeout(r);
-	return ap_proxyerror(r, /*HTTP_BAD_GATEWAY*/ "Error reading from remote server");
+	return ap_proxyerror(r, HTTP_BAD_GATEWAY,
+			     "Error reading from remote server");
     }
     if (i == 530) {
 	ap_kill_timeout(r);
@@ -694,11 +697,13 @@ int ap_proxy_ftp_handler(request_rec *r, cache_req *c, char *url)
 	Explain1("FTP: returned status %d", i);
 	if (i == -1) {
 	    ap_kill_timeout(r);
-	    return ap_proxyerror(r, /*HTTP_BAD_GATEWAY*/ "Error reading from remote server");
+	    return ap_proxyerror(r, HTTP_BAD_GATEWAY,
+				 "Error reading from remote server");
 	}
 	if (i == 332) {
 	    ap_kill_timeout(r);
-	    return ap_proxyerror(r, /*HTTP_UNAUTHORIZED*/ "Need account for login");
+	    return ap_proxyerror(r, HTTP_UNAUTHORIZED,
+				 "Need account for login");
 	}
 	/* @@@ questionable -- we might as well return a 403 Forbidden here */
 	if (i == 530) {
@@ -738,7 +743,8 @@ int ap_proxy_ftp_handler(request_rec *r, cache_req *c, char *url)
 	Explain1("FTP: returned status %d", i);
 	if (i == -1) {
 	    ap_kill_timeout(r);
-	    return ap_proxyerror(r, /*HTTP_BAD_GATEWAY*/ "Error reading from remote server");
+	    return ap_proxyerror(r, HTTP_BAD_GATEWAY,
+				 "Error reading from remote server");
 	}
 	if (i == 550) {
 	    ap_kill_timeout(r);
@@ -781,7 +787,8 @@ int ap_proxy_ftp_handler(request_rec *r, cache_req *c, char *url)
 	Explain1("FTP: returned status %d", i);
 	if (i == -1) {
 	    ap_kill_timeout(r);
-	    return ap_proxyerror(r, /*HTTP_BAD_GATEWAY*/ "Error reading from remote server");
+	    return ap_proxyerror(r, HTTP_BAD_GATEWAY,
+				 "Error reading from remote server");
 	}
 	if (i != 200 && i != 504) {
 	    ap_kill_timeout(r);
@@ -862,9 +869,10 @@ int ap_proxy_ftp_handler(request_rec *r, cache_req *c, char *url)
 
 	    if (i == -1) {
 		ap_kill_timeout(r);
-		return ap_proxyerror(r, /*HTTP_BAD_GATEWAY*/ ap_pstrcat(r->pool,
-				"Could not connect to remote machine: ",
-				strerror(errno), NULL));
+		return ap_proxyerror(r, HTTP_BAD_GATEWAY,
+				     ap_pstrcat(r->pool,
+						"Could not connect to remote machine: ",
+						strerror(errno), NULL));
 	    }
 	    else {
 		pasvmode = 1;
@@ -952,7 +960,8 @@ int ap_proxy_ftp_handler(request_rec *r, cache_req *c, char *url)
 		Explain1("FTP: returned status %d", i);
 		if (i == -1) {
 		    ap_kill_timeout(r);
-		    return ap_proxyerror(r, /*HTTP_BAD_GATEWAY*/ "Error reading from remote server");
+		    return ap_proxyerror(r, HTTP_BAD_GATEWAY,
+					 "Error reading from remote server");
 		}
 		if (i == 550) {
 		    ap_kill_timeout(r);
@@ -990,7 +999,8 @@ int ap_proxy_ftp_handler(request_rec *r, cache_req *c, char *url)
     Explain1("FTP: PWD returned status %d", i);
     if (i == -1 || i == 421) {
 	ap_kill_timeout(r);
-	return ap_proxyerror(r, /*HTTP_BAD_GATEWAY*/ "Error reading from remote server");
+	return ap_proxyerror(r, HTTP_BAD_GATEWAY,
+			     "Error reading from remote server");
     }
     if (i == 550) {
 	ap_kill_timeout(r);
@@ -1034,7 +1044,8 @@ int ap_proxy_ftp_handler(request_rec *r, cache_req *c, char *url)
     Explain1("FTP: returned status %d", rc);
     if (rc == -1) {
 	ap_kill_timeout(r);
-	return ap_proxyerror(r, /*HTTP_BAD_GATEWAY*/ "Error reading from remote server");
+	return ap_proxyerror(r, HTTP_BAD_GATEWAY,
+			     "Error reading from remote server");
     }
     if (rc == 550) {
 	Explain0("FTP: RETR failed, trying LIST instead");
@@ -1054,7 +1065,8 @@ int ap_proxy_ftp_handler(request_rec *r, cache_req *c, char *url)
 	Explain1("FTP: returned status %d", rc);
 	if (rc == -1) {
 	    ap_kill_timeout(r);
-	    return ap_proxyerror(r, /*HTTP_BAD_GATEWAY*/ "Error reading from remote server");
+	    return ap_proxyerror(r, HTTP_BAD_GATEWAY,
+				 "Error reading from remote server");
 	}
 	if (rc == 550) {
 	    ap_kill_timeout(r);
@@ -1080,7 +1092,8 @@ int ap_proxy_ftp_handler(request_rec *r, cache_req *c, char *url)
 	Explain1("FTP: PWD returned status %d", i);
 	if (i == -1 || i == 421) {
 	    ap_kill_timeout(r);
-	    return ap_proxyerror(r, /*HTTP_BAD_GATEWAY*/ "Error reading from remote server");
+	    return ap_proxyerror(r, HTTP_BAD_GATEWAY,
+				 "Error reading from remote server");
 	}
 	if (i == 550) {
 	    ap_kill_timeout(r);
@@ -1098,7 +1111,8 @@ int ap_proxy_ftp_handler(request_rec *r, cache_req *c, char *url)
 	rc = ftp_getrc(f);
 	Explain1("FTP: returned status %d", rc);
 	if (rc == -1)
-	    return ap_proxyerror(r, /*HTTP_BAD_GATEWAY*/ "Error reading from remote server");
+	    return ap_proxyerror(r, HTTP_BAD_GATEWAY,
+				 "Error reading from remote server");
     }
     ap_kill_timeout(r);
     if (rc != 125 && rc != 150 && rc != 226 && rc != 250)

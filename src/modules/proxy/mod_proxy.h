@@ -301,7 +301,7 @@ void ap_proxy_hash(const char *it, char *val, int ndepth, int nlength);
 int ap_proxy_hex2sec(const char *x);
 void ap_proxy_sec2hex(int t, char *y);
 cache_req *ap_proxy_cache_error(cache_req *r);
-int ap_proxyerror(request_rec *r, const char *message);
+int ap_proxyerror(request_rec *r, int statuscode, const char *message);
 const char *ap_proxy_host2addr(const char *host, struct hostent *reqhp);
 int ap_proxy_is_ipaddr(struct dirconn_entry *This, pool *p);
 int ap_proxy_is_domainname(struct dirconn_entry *This, pool *p);

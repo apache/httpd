@@ -832,7 +832,7 @@ cache_req *ap_proxy_cache_error(cache_req *c)
     return NULL;
 }
 
-int ap_proxyerror(request_rec *r, const char *message)
+int ap_proxyerror(request_rec *r, int statuscode, const char *message)
 {
     ap_table_setn(r->notes, "error-notes",
 		  ap_pstrcat(r->pool, 
@@ -840,8 +840,8 @@ int ap_proxyerror(request_rec *r, const char *message)
 			     "<EM><A HREF=\"", r->uri, "\">",
 			     r->method, "&nbsp;", r->uri, "</A></EM>.<P>\n"
 			     "Reason: <STRONG>", message, "</STRONG>", NULL));
-    r->status_line = "500 Proxy Error";
-    return HTTP_INTERNAL_SERVER_ERROR;
+    r->status_line = ap_psprintf(r->pool, "%3.3u Proxy Error", statuscode);
+    return statuscode;
 }
 
 /*
