@@ -35,7 +35,7 @@ module AP_MODULE_DECLARE_DATA proxy_balancer_module;
 #define PROXY_BALANCER_UNLOCK(b)    APR_SUCCESS
 #endif
 
-static int init_runtime_score(proxy_server_conf *conf, proxy_balancer *balancer)
+static int init_runtime_score(proxy_server_conf *conf, server_rec *s, proxy_balancer *balancer)
 {
     int i;
     int median, ffactor = 0;
@@ -45,6 +45,7 @@ static int init_runtime_score(proxy_server_conf *conf, proxy_balancer *balancer)
 
     for (i = 0; i < balancer->workers->nelts; i++) {
         ap_proxy_initialize_worker_share(conf, workers);
+	ap_proxy_initialize_worker(workers, s);
         workers->s->status = PROXY_WORKER_INITIALIZED; 
         ++workers;
     }
@@ -441,7 +442,7 @@ static int proxy_balancer_pre_request(proxy_worker **worker,
         apr_table_setn(r->notes, "session-route", route);
     }
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
-                 "proxy: BALANCER (%s) worker (%s) rewrritten to %s",
+                 "proxy: BALANCER (%s) worker (%s) rewritten to %s",
                  (*balancer)->name, (*worker)->name, *url);
 
     return access_status;
@@ -786,7 +787,7 @@ static void child_init(apr_pool_t *p, server_rec *s)
         /* Initialize shared scoreboard data */ 
         balancer = (proxy_balancer *)conf->balancers->elts;
         for (i = 0; i < conf->balancers->nelts; i++) {
-            init_runtime_score(conf, balancer);
+	    init_runtime_score(conf, s, balancer);
             balancer++;
         }
         s = s->next;
