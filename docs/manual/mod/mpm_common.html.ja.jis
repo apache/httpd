@@ -378,7 +378,7 @@ accept $B$7$h$&$H$7$F$$$k$H$-$K!"(BApache $B$,$=$l$i$N;R%W%m%;%9$rD>Ns2=$9$k$
 <tr><th><a href="directive-dict.html#Default">$B%G%U%)%k%H(B:</a></th><td><code>MaxMemFree 0</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">$B%3%s%F%-%9%H(B:</a></th><td>$B%5!<%P@_Dj%U%!%$%k(B</td></tr>
 <tr><th><a href="directive-dict.html#Status">$B%9%F!<%?%9(B:</a></th><td>MPM</td></tr>
-<tr><th><a href="directive-dict.html#Module">$B%b%8%e!<%k(B:</a></th><td><code class="module"><a href="../mod/beos.html">beos</a></code>, <code class="module"><a href="../mod/leader.html">leader</a></code>, <code class="module"><a href="../mod/mpm_netware.html">mpm_netware</a></code>, <code class="module"><a href="../mod/prefork.html">prefork</a></code>, <code class="module"><a href="../mod/threadpool.html">threadpool</a></code>, <code class="module"><a href="../mod/worker.html">worker</a></code></td></tr>
+<tr><th><a href="directive-dict.html#Module">$B%b%8%e!<%k(B:</a></th><td><code class="module"><a href="../mod/beos.html">beos</a></code>, <code class="module"><a href="../mod/leader.html">leader</a></code>, <code class="module"><a href="../mod/mpm_netware.html">mpm_netware</a></code>, <code class="module"><a href="../mod/prefork.html">prefork</a></code>, <code class="module"><a href="../mod/threadpool.html">threadpool</a></code>, <code class="module"><a href="../mod/worker.html">worker</a></code>, <code class="module"><a href="../mod/mpm_winnt.html">mpm_winnt</a></code></td></tr>
 </table>
     <p><code class="directive">MaxMemFree</code> $B%G%#%l%/%F%#%V$O(B
     <code>free()</code> $B$,8F$P$l$J$$8B$j!"(B
@@ -444,7 +444,7 @@ accept $B$7$h$&$H$7$F$$$k$H$-$K!"(BApache $B$,$=$l$i$N;R%W%m%;%9$rD>Ns2=$9$k$
     $B%G%U%)%k%H$O(B <code>MaxSpareThreads 10</code> $B$G$9!#(B
     $B$3$N(B MPM $B$O%"%$%I%k%9%l%C%I?t$r!"$=$l$>$l$N;R%W%m%;%9$4$H$K4F;k$7$^$9!#(B
     $B;R%W%m%;%9$K%"%$%I%k%9%l%C%I$,B?$9$.$k>l9g$O!"(B
-    $B%5!<%P$O$=$N;R%W%m%;%9$K4^$^$l$k%9%l%C(B$B%I$r=*N;$7;O$a$^$9!#(B</p>
+    $B%5!<%P$O$=$N;R%W%m%;(B$B%9$K4^$^$l$k%9%l%C%I$r=*N;$7;O$a$^$9!#(B</p>
 
     <p><code class="module"><a href="../mod/worker.html">worker</a></code>, <code class="module"><a href="../mod/leader.html">leader</a></code>,
     <code class="module"><a href="../mod/threadpool.html">threadpool</a></code> $B$G$O!"(B
@@ -502,7 +502,7 @@ accept $B$7$h$&$H$7$F$$$k$H$-$K!"(BApache $B$,$=$l$i$N;R%W%m%;%9$rD>Ns2=$9$k$
 <tr><th><a href="directive-dict.html#Status">$B%9%F!<%?%9(B:</a></th><td>MPM</td></tr>
 <tr><th><a href="directive-dict.html#Module">$B%b%8%e!<%k(B:</a></th><td><code class="module"><a href="../mod/beos.html">beos</a></code>, <code class="module"><a href="../mod/leader.html">leader</a></code>, <code class="module"><a href="../mod/mpm_netware.html">mpm_netware</a></code>, <code class="module"><a href="../mod/mpmt_os2.html">mpmt_os2</a></code>, <code class="module"><a href="../mod/perchild.html">perchild</a></code>, <code class="module"><a href="../mod/threadpool.html">threadpool</a></code>, <code class="module"><a href="../mod/worker.html">worker</a></code></td></tr>
 </table>
-    <p>$B%j%/%(%9%H$K1~Ez$9$k%9%l%C%I?t(B$B$N:G>.CM$G$9!#(B
+    <p>$B%j%/%(%9%H$K(B$B1~Ez$9$k%9%l%C%I?t$N:G>.CM$G$9!#(B
     $B0[$J$k(B MPM $B$G$O$=$l$>$l!"(B
     $B$3$N%G%#%l%/%F%#%V$O0[$J$k<h$j07$o$lJ}$r$7$^$9!#(B</p>
 
@@ -595,7 +595,7 @@ accept $B$7$h$&$H$7$F$$$k$H$-$K!"(BApache $B$,$=$l$i$N;R%W%m%;%9$rD>Ns2=$9$k$
     <p>Apache $B$O?F%W%m%;%9$H;R%W%m%;%94V$NDL?.$K%9%3%"%\!<%I$rMQ$$$^$9!#(B
     $B$3$NDL?.5!G=$K%U%!%$%k$rI,MW$H$9$k%"!<%-%F%/%A%c$b$"$j$^$9!#(B
     $B%U%!%$%k$,;XDj$5$l$F$$$J$1$l$P!"(BApache $B$O$^$:%a%b%j>e(B
-    ($BF?L>6&M-%a%b%j(B) $B$K%9%3%"%\!<%I(B$B$r:n$m$&$H$7!"$=$l$,<:GT$9$k$H(B
+    ($BF?L>6&M-%a%b%j(B) $B$K%9%3%"%\!<%I$r:n$m$&$H$7!"$=$l$,<:GT$9$k$H(B
     $B%G%#%9%/>e$K%U%!%$%k(B ($B%U%!%$%k%Y!<%9$N6&M-%a%b%j(B) $B$r:n$m$&$H$7$^$9!#(B
     $B$3$N%G%#%l%/%F%#%V$r;XDj$9$k$H!"(BApache
     $B$OI,$:%G%#%9%/$K%U%!%$%k$r@8@.$7$^$9!#(B</p>
@@ -654,7 +654,7 @@ accept $B$7$h$&$H$7$F$$$k$H$-$K!"(BApache $B$,$=$l$i$N;R%W%m%;%9$rD>Ns2=$9$k$
     <code class="module"><a href="../mod/worker.html">worker</a></code> MPM $B$N>l9g$K$O!"$3$N%G%#%l%/%F%#%V$O(B
     <code class="directive"><a href="#threadlimit">ThreadLimit</a></code>
     $B%G%#%l%/%F%#%V$HAH$_9g$o$;$F!"(B
-    Apache $B%W(B$B%m%;%92TF/Cf$K$*$1$k(B
+    Apache $B%W%m%;%92TF/Cf$K$*$1$k(B
     <code class="directive"><a href="#maxclients">MaxClients</a></code>
     $B$K@_Dj2DG=$J>e8BCM$r@_Dj$9$k$3$H$K$J$j$^$9!#(B
     $B:F5/F0Cf$K$3$N%G%#%l%/%F%#%V$rJQ99$7$F$bL5;k$5$l$^$9$,!"(B
@@ -770,7 +770,7 @@ accept $B$7$h$&$H$7$F$$$k$H$-$K!"(BApache $B$,$=$l$i$N;R%W%m%;%9$rD>Ns2=$9$k$
     $B$K@_Dj2DG=$J>e8BCM$r@_Dj$7$^$9!#:F5/F0;~$K$3$N%G%#%l%/%F%#%V$NCM$r(B
     $BJQ99$7$F$bL5;k$5$l$^$9$,!"(B
     <code class="directive"><a href="#threadsperchild">ThreadsPerChild</a></code>
-    $B$O:F5/F0Cf$K!"$3$N%G%#%l%/%F%#%V$G;XDj$5$l$?>e8BCM$^$G(B
+    $B$O:F5/F0Cf$K!"$3$N%G%#%l%/%F%#%V$G;X(B$BDj$5$l$?>e8BCM$^$G(B
     $BJQ99$9$k$3$H$,$G$-$^$9!#(B</p>
 
     <p>$B$3$N%G%#%l%/%F%#%V$r;HMQ$9$k:]$OFC$KCm0U$7$F$/$@$5$$!#(B
@@ -821,7 +821,7 @@ accept $B$7$h$&$H$7$F$$$k$H$-$K!"(BApache $B$,$=$l$i$N;R%W%m%;%9$rD>Ns2=$9$k$
     <em>$B%9%l%C%IAm?t(B</em>$B$,B?$/$J$1$l$P$J$j$^$;$s!#(B</p>
 
     <p><code class="module"><a href="../mod/mpm_winnt.html">mpm_winnt</a></code>$B$G$N(B <code class="directive">ThreadsPerChild</code>
-    $B$N%G%U%)%k%HCM$O(B <code>64</code> $B$G(B$B!"B>$N>l9g$O(B
+    $B$N%G%U%)(B$B%k%HCM$O(B <code>64</code> $B$G!"B>$N>l9g$O(B
     <code>25</code> $B$G$9!#(B</p>
 
 </div>
@@ -875,7 +875,7 @@ accept $B$7$h$&$H$7$F$$$k$H$-$K!"(BApache $B$,$=$l$i$N;R%W%m%;%9$rD>Ns2=$9$k$
 
     <p><code class="module"><a href="../mod/perchild.html">perchild</a></code> MPM $B$G$O!"0[$J$k%f!<%6(B ID
     $B$GJ#?t$N%P!<%A%c%k%[%9%H$rF0$+$9$3$H$rL\E*$H$7$F$$$^$9$,!"(B
-    <code class="directive">User</code> $B$O!"<g%5!<%P$N%f!<%6(B ID 
+    <code class="directive">User</code> $B$O!"<g%5!<%P$N%f!<(B$B%6(B ID 
     $B$H!"(B<code class="directive"><a href="../mod/perchild.html#assignuserid">AssignUserID</a></code>
     $B%G%#%l%/%F%#%V$r;}$?$J$$(B <code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code> $B%;%/%7%g%s$X$N(B
     $B%U%)!<%k%P%C%/$H$rDj5A$9$k$3$H$K$J$j$^$9!#(B</p>

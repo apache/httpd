@@ -121,14 +121,22 @@
     がコンテントタイプは <code>text/html</code>
     に、言語はフランス語にマップされる場合、<code>welcome.fr.html</code>
     もまったく同じ情報にマップされます。
-    同じメタ情報にマップされる拡張子が複数あるときには、
+    同じメタ情報にマップされる拡張子が複数あるときには、言語と
+    コンテントエンコーディングを除いて、
     右側にあるものが使用されます。たとえば、<code>.gif</code> が MIME
     タイプ <code>image/gif</code> にマップされ、<code>.html</code>
     が MIME タイプ <code>text/html</code>
     にマップされる場合は、ファイル <code>welcome.gif.html</code> は
     MIME タイプ <code>text/html</code> に関連付けられます。</p>
 
-    <p>複数の拡張子のあるファイルが MIME
+    <p>リソースに複数の言語やエンコーディングを関連付けること
+    ができるため、
+    <a href="#charset-lang">言語</a>と<a href="#contentencoding">コンテントエンコーディング</a>は前のものに追加されていきます。
+    たとえば、ファイル <code>welcome.html.en.de</code> は
+    <code>Content-Language: en, de</code> と <code>Content-Type:
+    text/html</code> として送信されます。</p>
+
+    <p>複数の拡張子のあるファイルが MIME
     タイプとハンドラの両方に関連付けられているときは注意する必要があります。
     その場合、普通はリクエストがハンドラに関連付けられた
     モジュールによって扱われることになります。たとえば、拡張子
@@ -195,7 +203,7 @@
     <code class="directive"><a href="#addencoding">AddEncoding</a></code>, <code class="directive"><a href="#addlanguage">AddLanguage</a></code>,
     <code class="directive"><a href="#addtype">AddType</a></code> の各ディレクティブで作成された
     拡張子の関連付け (と <code class="directive"><a href="../mod/mod_mime_magic.html#mimemagicfile">MimeMagicFile</a></code> でリストされている
-    拡張子) がこの選択に参加します。<code class="directive"><a href="#addhandler">AddHandler</a></code>,
+    拡張子) がこの選択に参加します。<code class="directive"><a href="#addhandler">AddHandler</a></code>,
     <code class="directive"><a href="#addinputfilter">AddInputFilter</a></code>,
     <code class="directive"><a href="#addoutputfilter">AddOutputFilter</a></code> の
     各ディレクティブでのみ関連付けられている拡張子は
@@ -243,7 +251,7 @@
     </code></p></div>
 
     <p>この場合、ドキュメント <code>xxxx.ja.jis</code> は charset が
-    <code>ISO-2022-JP</code> の日本語のドキュメントとして扱われます
+    <code>ISO-2022-JP</code> の日本語のドキュメントとして扱われます
     (<code>xxxx.jis.ja</code> も同様)。<code class="directive">AddCharset</code>
     ディレクティブは、ドキュメントが適切に解釈され表示されるように、
     ドキュメントの charset の情報をクライアントに教えるために役に立ちます。
@@ -294,7 +302,7 @@
     と等価であることになっています。Apache
     は、コンテントエンコーディングの比較をするときには、先頭にある
     <code>x-</code> を無視します。Apache
-    がエンコーディング付きで応答を返すときは、クライアントが要求した形式
+    がエンコーディング付きで応答を返すときは、クライアントが要求した形式
     (<em>すなわち</em>、<code>x-foo</code> や <code>foo</code>)
     を使用します。要するに、この二つのエンコーディングの場合は常に
     <code>x-gzip</code> と <code>x-compress</code>
@@ -303,7 +311,7 @@
     なしで指定してください。
     </p>
 
-    <p>引数 <var>extension</var> は大文字小文字を区別せず、
+    <p>引数 <var>extension</var> は大文字小文字を区別せず、
     最初のドットはあってもなくても構いません。</p>
 
 </div>
@@ -355,14 +363,14 @@
 <tr><th><a href="directive-dict.html#Compatibility">互換性:</a></th><td>2.0.26 以降で使用可能</td></tr>
 </table>
     <p><code class="directive">AddInputFilter</code> はファイルの拡張子
-    <var>extension</var> をクライアントのリクエストや POST がサーバに来たときに
+    <var>extension</var> をクライアントのリクエストや POST がサーバに来たときに
     処理をする<a href="../filter.html">フィルタ</a>にマップします。
     これは、<code class="directive"><a href="../mod/core.html#setinputfilter">SetInputFilter</a></code> ディレクティブも
     含め、他の場所で定義されているフィルタに加えられます。
     このマッピングはすでにあるものより優先されてマージされ、
     同じ <var>extension</var> に対する既存のマッピングを上書きします。</p>
 
-    <p>複数のフィルタを指定するときは、データを処理する順番にセミコロンで
+    <p>複数のフィルタを指定するときは、データを処理する順番にセミコロンで
     繋いで書く必要があります。フィルタと <var>extension</var> との
     両方の引数は大文字小文字を区別せず、拡張子の最初のドットは
     あってもなくても構いません。</p>
@@ -404,7 +412,7 @@
     ディレクティブは、サーバがクライアントの言語の優先度に基づいて複数の
     ドキュメントの中からドキュメントを選ぶ<a href="../content-negotiation.html">コンテントネゴシエーション</a>のためにより役に立ちます。</p>
 
-    <p>複数の言語が同じ拡張子に割り当てられているときは、
+    <p>複数の言語が同じ拡張子に割り当てられているときは、
     最後のものが使用されます。すなわち、次のような場合、</p>
 
     <div class="example"><p><code>
@@ -416,7 +424,7 @@
     <p>拡張子 <code>.en</code> のあるドキュメントは
     <code>en-us</code> として扱われます。</p>
 
-    <p>引数 <var>extension</var> は大文字小文字を区別せず、
+    <p>引数 <var>extension</var> は大文字小文字を区別せず、
     最初のドットはあってもなくても構いません。</p>
 
 <h3>参照</h3>
@@ -467,7 +475,7 @@
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="AddType" id="AddType">AddType</a> <a name="addtype" id="addtype">ディレクティブ</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">説明:</a></th><td>ファイル名の拡張子を指定されたコンテントタイプにマップ</td></tr>
+<tr><th><a href="directive-dict.html#Description">説明:</a></th><td>ファイル名の拡張子を指定されたコンテントタイプにマップ</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>AddType <var>MIME-type</var> <var>extension</var>
 [<var>extension</var>] ...</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル, バーチャルホスト, ディレクトリ, .htaccess</td></tr>
@@ -602,7 +610,7 @@ mod_mime に通知する</td></tr>
     <a href="mod_negotiation.html">mod_negotiation</a> の
     Multiviews に 3 種類の異なる挙動をさせることができます。
     Multiviews を使用すると、ファイル (例 <code>index.html</code>)
-    に対するリクエストに対して、ネゴシエーションする拡張子がベースに付いたもの
+    に対するリクエストに対して、ネゴシエーションする拡張子がベースに付いたもの
     (<code>index.html.en</code>, <code>index.html.fr</code> や
     <code>index.html.gz</code>)
     をマッチさせることができます。</p>
@@ -610,7 +618,7 @@ mod_mime に通知する</td></tr>
     <p><code>NegotiatedOnly</code> オプションでは、ベース名に続く拡張子全てが
     コンテントネゴシエーションで <code class="module"><a href="../mod/mod_mime.html">mod_mime</a></code>
     が認識する拡張子 (<em>例</em> 文字セット、コンテントタイプ、言語やエンコーディング)
-    に関連付けられていなければなりません。これは副作用の最も少ない
+    に関連付けられていなければなりません。これは副作用の最も少ない
     最も的確な実装で、デフォルトになっています。</p>
 
     <p>ハンドラとフィルタの両方もしくは片方と関連付けられた拡張子を含めるには、
@@ -701,7 +709,7 @@ mod_mime に通知する</td></tr>
     <p>これは、<code>foo.gz</code> は gzip
     でエンコードされていることを指定しますが、<code>foo.gz.asc</code>
     はエンコードされていないプレーンテキストの
-    ファイルであるということを指定します。</p>
+    ファイルであるということを指定します。</p>
 
     <div class="note"><h3>注意</h3>
       <p><code class="directive">RemoveEncoding</code> は
@@ -753,7 +761,7 @@ mod_mime に通知する</td></tr>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="RemoveInputFilter" id="RemoveInputFilter">RemoveInputFilter</a> <a name="removeinputfilter" id="removeinputfilter">ディレクティブ</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">説明:</a></th><td>ファイル拡張子に関連付けられた入力フィルタを解除する</td></tr>
+<tr><th><a href="directive-dict.html#Description">説明:</a></th><td>ファイル拡張子に関連付けられた入力フィルタを解除する</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>RemoveInputFilter <var>extension</var> [<var>extension</var>]
 ...</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>バーチャルホスト, ディレクトリ, .htaccess</td></tr>
@@ -764,7 +772,7 @@ mod_mime に通知する</td></tr>
 </table>
     <p><code class="directive">RemoveInputFilter</code> ディレクティブは
     指定されたファイル拡張子に関連付けられた入力フィルタを解除します。
-    これを利用することで、親ディレクトリやサーバ設定ファイルから
+    これを利用することで、親ディレクトリやサーバ設定ファイルから
     継承した関連付けを サブディレクトリ内において
     <code>.htaccess</code> ファイルで取り消すことができます。</p>
 
@@ -814,7 +822,7 @@ mod_mime に通知する</td></tr>
     <p><code class="directive">RemoveOutputFilter</code> ディレクティブは
     指定されたファイル拡張子に関連付けられた出力フィルタを解除します。
     これを利用することで、親ディレクトリやサーバ設定ファイルから
-    継承した関連付けを サブディレクトリ内において
+    継承した関連付けを サブディレクトリ内において
     <code>.htaccess</code> ファイルで取り消すことができます。</p>
 
     <p><var>extension</var> は大文字小文字を区別しません。
@@ -881,7 +889,7 @@ mod_mime に通知する</td></tr>
     <code class="directive"><a href="../mod/core.html#serverroot">ServerRoot</a></code> からの相対パスです。
     このファイルはファイルの拡張子からコンテントタイプへの
     デフォルトのマッピングを設定します。
-    ほとんどの管理者は、よく使われるファイル名の拡張子を
+    ほとんどの管理者は、よく使われるファイル名の拡張子を
     IANA に登録されたコンテントタイプに関連付けている、
     Apache の <code>mime.types</code> ファイルを使います。
     現在の一覧は <a href="http://www.isi.edu/in-notes/iana/assignments/media-types/media-types">http://www.isi.edu/in-notes/iana/assignments/media-types/media-types</a>

@@ -75,7 +75,12 @@
         BrowserMatch ^Mozilla/4\.0[678] no-gzip<br />
         <br />
         # MSIE masquerades as Netscape, but it is fine<br />
-        BrowserMatch \bMSIE             !no-gzip !gzip-only-text/html<br />
+        # BrowserMatch \bMSIE             !no-gzip !gzip-only-text/html<br />
+        <br />
+        # NOTE: Due to a bug in mod_setenvif up to Apache 2.0.48<br />
+        # the above regex won't work. You can use the following<br />
+        # workaround to get the desired effect:<br />
+        BrowserMatch \bMSI[E]           !no-gzip !gzip-only-text/html<br />
         <br />
         # Don't compress images<br />
         SetEnvIfNoCase Request_URI \<br />
@@ -121,7 +126,7 @@
         &lt;/Directory&gt;
       </code></p></div>
 
-      <p>全てのファイルタイプでの圧縮に問題を抱えているブラウザに対しては、
+      <p>全てのファイルタイプでの圧縮に問題を抱えているブラウザに対しては、
       <code class="directive"><a href="../mod/mod_setenvif.html#browsermatch">BrowserMatch</a></code>
       ディレクティブを使用して、特定のブラウザに <code>no-gzip</code>
       ノートをセットし、圧縮が行なわれないようにします。
@@ -158,7 +163,7 @@
       </div>
     
 
-    <h3><a name="input" id="input">入力の伸張</a></h3>
+    <h3><a name="input" id="input">入力の伸張</a></h3>
       <p><code class="module"><a href="../mod/mod_deflate.html">mod_deflate</a></code> モジュールは、gzip
       で圧縮されたリクエスト本体を伸張するフィルタも提供しています。
       この機能を有効にするには、<code class="directive"><a href="../mod/core.html#setinputfilter">SetInputFilter</a></code>
@@ -244,7 +249,7 @@
 <tr><th><a href="directive-dict.html#Compatibility">互換性:</a></th><td>This directive is available since Apache 2.0.45</td></tr>
 </table>
      <p><code class="directive">DeflateCompressionLevel</code> ディレクティブは
-         圧縮の程度を設定します。大きな値では、より圧縮が行なわれますが、
+         圧縮の程度を設定します。大きな値では、より圧縮が行なわれますが、
          CPU 資源を消費します。</p>
     <p>値は 1 (低圧縮) から 9 (高圧縮) です。</p>
 
