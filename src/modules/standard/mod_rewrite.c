@@ -2820,7 +2820,8 @@ static int rewrite_rand(int l, int h)
     char buf[50];
 
     rewrite_rand_init();
-    sprintf(buf, "%.0f", (((double)(rand()%RAND_MAX)/RAND_MAX)*(h-l)));
+    ap_snprintf(buf, sizeof(buf), "%.0f", 
+                (((double)(rand()%RAND_MAX)/RAND_MAX)*(h-l)));
     i = atoi(buf)+1;
     if (i < l) i = l;
     if (i > h) i = h;
@@ -3194,7 +3195,7 @@ static int rewritemap_program_child(void *cmd, child_info *pinfo)
         STARTUPINFO si;
         PROCESS_INFORMATION pi;
 
-        sprintf(pCommand, "%s /C %s", SHELL_PATH, cmd);
+        ap_snprintf(pCommand, sizeof(pCommand), "%s /C %s", SHELL_PATH, cmd);
 
         memset(&si, 0, sizeof(si));
         memset(&pi, 0, sizeof(pi));
