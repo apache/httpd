@@ -658,12 +658,12 @@ if [ "$RULE_SOCKS4" = "yes" ]; then
     # Set flag and check Makefile for -lsocks line
     CFLAGS="$CFLAGS -Dconnect=Rconnect -Dselect=Rselect"
     CFLAGS="$CFLAGS -Dgethostbyname=Rgethostbyname"
-    if [ "$OS" = "Solaris 2" ]; then
-	LIBS="$LIBS -lresolv"
-    fi
     if grep "EXTRA_" Makefile | grep "\-lsocks" > /dev/null; then : ;
     else
 	LIBS="$LIBS -L/usr/local/lib -lsocks"
+    fi
+    if [ "$OS" = "Solaris 2" ]; then
+	LIBS="$LIBS -lresolv"
     fi
 fi
 
