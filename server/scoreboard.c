@@ -164,6 +164,7 @@ static apr_status_t open_scoreboard(apr_pool_t *p)
     apr_status_t rv;
     char *fname = NULL;
 
+#ifndef WIN32
     rv = apr_shm_create(&scoreboard_shm, scoreboard_size, fname, p);
     if ((rv != APR_SUCCESS) && (rv != APR_ENOTIMPL)) {
         ap_log_error(APLOG_MARK, APLOG_CRIT, rv, NULL,
@@ -172,6 +173,9 @@ static apr_status_t open_scoreboard(apr_pool_t *p)
         return rv;
     }
     if (rv == APR_ENOTIMPL) {
+#else
+    {
+#endif
         if (ap_scoreboard_fname) {
             fname = ap_server_root_relative(p, ap_scoreboard_fname);
         }
