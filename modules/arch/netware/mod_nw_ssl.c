@@ -127,6 +127,8 @@ static int numcerts = 0;
 static seclisten_rec* ap_seclisteners = NULL;
 static seclistenup_rec* ap_seclistenersup = NULL;
 
+static ap_listen_rec *nw_old_listeners;
+
 #define get_nwssl_cfg(srv) (NWSSLSrvConfigRec *) ap_get_module_config(srv->module_config, &nwssl_module)
 
 
@@ -453,6 +455,9 @@ static const char *set_secure_listener(cmd_parms *cmd, void *dummy,
     char *ports, *addr;
     unsigned short port;
     seclisten_rec *new;
+    ap_listen_rec **walk;
+    apr_sockaddr_t *sa;
+    int found_listener = 0;
 
     
     if (err != NULL) 
@@ -461,34 +466,68 @@ static const char *set_secure_listener(cmd_parms *cmd, void *dummy,
     ports = strchr(ips, ':');
     
     if (ports != NULL) {    
-	    if (ports == ips)
-	        return "Missing IP address";
-	    else if (ports[1] == '\0')
-	        return "Address must end in :<port-number>";
-	        
-	    *(ports++) = '\0';
+        if (ports == ips)
+            return "Missing IP address";
+        else if (ports[1] == '\0')
+            return "Address must end in :<port-number>";
+            
+        *(ports++) = '\0';
     }
     else {
-	    ports = (char*)ips;
+        ports = (char*)ips;
     }
     
-    new = apr_pcalloc(cmd->pool, sizeof(seclisten_rec)); 
+    new = apr_pcalloc(cmd->server->process->pool, sizeof(seclisten_rec)); 
     new->local_addr.sin_family = AF_INET;
     
     if (ports == ips) {
-	    new->local_addr.sin_addr.s_addr = htonl(INADDR_ANY);
-        addr = apr_pstrdup(cmd->pool, "0.0.0.0");
+        new->local_addr.sin_addr.s_addr = htonl(INADDR_ANY);
+        addr = apr_pstrdup(cmd->server->process->pool, "0.0.0.0");
     }
     else {
-	    new->local_addr.sin_addr.s_addr = parse_addr(ips, NULL);
-        addr = apr_pstrdup(cmd->pool, ips);
+        new->local_addr.sin_addr.s_addr = parse_addr(ips, NULL);
+        addr = apr_pstrdup(cmd->server->process->pool, ips);
     }
     
     port = atoi(ports);
     
     if (!port) 
-	    return "Port must be numeric";
-	    
+        return "Port must be numeric";
+        
+    /* If the specified addr:port was created previously, put the listen
+       socket record back on the ap_listeners list so that the socket
+       will be reused rather than recreated */
+    for (walk = &nw_old_listeners; *walk;) {
+        sa = (*walk)->bind_addr;
+        if (sa) {
+            ap_listen_rec *new;
+            apr_port_t oldport;
+
+            oldport = sa->port;
+            /* If both ports are equivalent, then if their names are equivalent,
+             * then we will re-use the existing record.
+             */
+            if (port == oldport &&
+                ((!addr && !sa->hostname) ||
+                 ((addr && sa->hostname) && !strcmp(sa->hostname, addr)))) {
+                new = *walk;
+                *walk = new->next;
+                new->next = ap_listeners;
+                ap_listeners = new;
+                found_listener = 1;
+                continue;
+            }
+        }
+
+        walk = &(*walk)->next;
+    }
+
+    /* If we found a pre-existing listen socket record, then there
+       is no need to create a new secure listen socket record. */
+    if (found_listener) {
+        return NULL;
+    }
+
     apr_table_add(sc->sltable, ports, addr);
     
     new->local_addr.sin_port = htons(port);
@@ -519,15 +558,15 @@ static const char *set_secure_upgradeable_listener(cmd_parms *cmd, void *dummy,
     ports = strchr(ips, ':');
     
     if (ports != NULL) {    
-	    if (ports == ips)
-	        return "Missing IP address";
-	    else if (ports[1] == '\0')
-	        return "Address must end in :<port-number>";
-	        
-	    *(ports++) = '\0';
+        if (ports == ips)
+            return "Missing IP address";
+        else if (ports[1] == '\0')
+            return "Address must end in :<port-number>";
+            
+        *(ports++) = '\0';
     }
     else {
-	    ports = (char*)ips;
+        ports = (char*)ips;
     }
     
     if (ports == ips) {
@@ -540,7 +579,7 @@ static const char *set_secure_upgradeable_listener(cmd_parms *cmd, void *dummy,
     port = atoi(ports);
     
     if (!port) 
-	    return "Port must be numeric";
+        return "Port must be numeric";
 
     apr_table_set(sc->slutable, ports, addr);
 
@@ -586,9 +625,72 @@ static const char *set_trusted_certs(cmd_parms *cmd, void *dummy, char *arg)
 static int nwssl_pre_config(apr_pool_t *pconf, apr_pool_t *plog,
                          apr_pool_t *ptemp)
 {
-    ap_seclisteners = NULL;
+    seclisten_rec* ap_old_seclisteners;
+    char *ports, *addr;
+    unsigned short port;
+    ap_listen_rec **walk;
+    seclisten_rec **secwalk;
+    apr_sockaddr_t *sa;
+    int found;
+    
+  /* Pull all of the listeners that were created by mod_nw_ssl out of the 
+     ap_listeners list so that the normal listen socket processing does
+     automatically close them */
+    nw_old_listeners = NULL;
+    ap_old_seclisteners = NULL;
+
+    for (secwalk = &ap_seclisteners; *secwalk;) {
+        found = 0;
+        for (walk = &ap_listeners; *walk;) {
+            sa = (*walk)->bind_addr;
+            if (sa) {
+                ap_listen_rec *new;
+                seclisten_rec *secnew;
+                apr_port_t oldport;
+    
+                oldport = sa->port;
+                /* If both ports are equivalent, then if their names are equivalent,
+                 * then we will re-use the existing record.
+                 */
+                if ((*secwalk)->port == oldport &&
+                    ((!(*secwalk)->addr && !sa->hostname) ||
+                     (((*secwalk)->addr && sa->hostname) && !strcmp(sa->hostname, (*secwalk)->addr)))) {
+                    /* Move the listen socket from ap_listeners to nw_old_listeners */
+                    new = *walk;
+                    *walk = new->next;
+                    new->next = nw_old_listeners;
+                    nw_old_listeners = new;
+
+                    /* Move the secure socket record to ap_old_seclisterners */
+                    secnew = *secwalk;
+                    *secwalk = secnew->next;
+                    secnew->next = ap_old_seclisteners;
+                    ap_old_seclisteners = secnew;
+                    found = 1;
+                    break;
+                }
+            }
+    
+            walk = &(*walk)->next;
+        }
+        if (!found && &(*secwalk)->next) {
+            secwalk = &(*secwalk)->next;
+        }
+    }
+
+    /* Restore the secure socket records list so that the post config can
+       process all of the sockets normally */
+    ap_seclisteners = ap_old_seclisteners;
     ap_seclistenersup = NULL;
     certlist = apr_array_make(pconf, 1, sizeof(char *));
+
+    /* Now that we have removed all of the mod_nw_ssl created socket records, 
+       allow the normal listen socket handling to occur.
+       NOTE: If for any reason mod_nw_ssl is removed as a built-in module,
+       the following call must be put back into the pre-config handler of the 
+       MPM.  It is only here to ensure that mod_nw_ssl fixes up the listen
+       socket list before anything else looks at it. */
+    ap_listen_pre_config();
 
     return OK;
 }
@@ -619,12 +721,56 @@ static int nwssl_post_config(apr_pool_t *pconf, apr_pool_t *plog,
     apr_status_t status;
     seclistenup_rec *slu;
     int found;
+    ap_listen_rec *walk;
+    seclisten_rec *secwalk, *lastsecwalk;
+    apr_sockaddr_t *sa;
+    int found_listener = 0;
+
+    /* Walk the old listeners list and compare it to the secure
+       listeners list and remove any secure listener records that
+       are not being reused */
+    for (walk = nw_old_listeners; walk; walk = walk->next) {
+        sa = walk->bind_addr;
+        if (sa) {
+            ap_listen_rec *new;
+            apr_port_t oldport;
+
+            oldport = sa->port;
+            for (secwalk = ap_seclisteners, lastsecwalk = ap_seclisteners; secwalk; secwalk = lastsecwalk->next) {
+                unsigned short port = secwalk->port;
+                char *addr = secwalk->addr;
+                /* If both ports are equivalent, then if their names are equivalent,
+                 * then we will re-use the existing record.
+                 */
+                if (port == oldport &&
+                    ((!addr && !sa->hostname) ||
+                     ((addr && sa->hostname) && !strcmp(sa->hostname, addr)))) {
+                    if (secwalk == ap_seclisteners) {
+                        ap_seclisteners = secwalk->next;
+                    }
+                    else {
+                        lastsecwalk->next = secwalk->next;
+                    }
+                    apr_socket_close(walk->sd);
+                    walk->active = 0;
+                    break;
+                }
+                else {
+                    lastsecwalk = secwalk;
+                }
+            }
+        }
+    }
 
     for (sl = ap_seclisteners; sl != NULL; sl = sl->next) {
-        sl->fd = find_secure_listener(sl);
+        /* If we find a pre-existing listen socket and it has already been
+           created, then no neeed to go any further, just reuse it. */
+        if (((sl->fd = find_secure_listener(sl)) >= 0) && (sl->used)) {
+            continue;
+        }
 
         if (sl->fd < 0)
-            sl->fd = make_secure_socket(pconf, &sl->local_addr, sl->key, sl->mutual, s);            
+            sl->fd = make_secure_socket(s->process->pool, &sl->local_addr, sl->key, sl->mutual, s);            
             
         if (sl->fd >= 0) {
             apr_os_sock_info_t sock_info;
@@ -635,21 +781,21 @@ static int nwssl_post_config(apr_pool_t *pconf, apr_pool_t *plog,
             sock_info.family = APR_INET;
             sock_info.type = SOCK_STREAM;
 
-            apr_os_sock_make(&sd, &sock_info, pconf);
+            apr_os_sock_make(&sd, &sock_info, s->process->pool);
 
-            lr = apr_pcalloc(pconf, sizeof(ap_listen_rec));
+            lr = apr_pcalloc(s->process->pool, sizeof(ap_listen_rec));
         
             if (lr) {
-				lr->sd = sd;
+                lr->sd = sd;
                 if ((status = apr_sockaddr_info_get(&lr->bind_addr, sl->addr, APR_UNSPEC, sl->port, 0, 
-                                              pconf)) != APR_SUCCESS) {
+                                              s->process->pool)) != APR_SUCCESS) {
                     ap_log_perror(APLOG_MARK, APLOG_CRIT, status, pconf,
                                  "alloc_listener: failed to set up sockaddr for %s:%d", sl->addr, sl->port);
                     return HTTP_INTERNAL_SERVER_ERROR;
                 }
                 lr->next = ap_listeners;
                 ap_listeners = lr;
-                apr_pool_cleanup_register(pconf, lr, nwssl_socket_cleanup, apr_pool_cleanup_null);
+                apr_pool_cleanup_register(s->process->pool, lr, nwssl_socket_cleanup, apr_pool_cleanup_null);
             }
         } else {
             return HTTP_INTERNAL_SERVER_ERROR;
@@ -671,7 +817,7 @@ static int nwssl_post_config(apr_pool_t *pconf, apr_pool_t *plog,
         }
     }    
 
-    build_cert_list(pconf);
+    build_cert_list(s->process->pool);
 
     return OK;
 }
