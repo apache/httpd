@@ -91,10 +91,7 @@ generated_lists:
 		echo "libtoolize not found in path"; \
 		exit 1; \
 	fi; 
-	@echo config_m4_files = `find . -name "config*.m4" | \
-                             sed 's#\(.*\)\/config\(.*\)\.m4#\2config.m4\1#' | \
-                             sort -g | \
-                             sed 's#\(.*\)config.m4\(.*\)#\2/config\1.m4#'` > $@
+	@echo config_m4_files = `find . -name config.m4` > $@
 	@n=`build/PrintPath libtoolize`; echo libtool_prefix = `dirname $$n`/.. >> $@
 
 $(STAMP): build/buildcheck.sh
