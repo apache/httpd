@@ -51,6 +51,7 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#startthreads">StartThreads</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#threadlimit">ThreadLimit</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#threadsperchild">ThreadsPerChild</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#threadstacksize">ThreadStackSize</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#user">User</a></li>
 </ul>
 </div>
@@ -849,6 +850,53 @@ ablegt</td></tr>
     <p>Die Voreinstellung für <code class="directive">ThreadsPerChild</code> ist
     <code>64</code>, wenn <code class="module"><a href="../mod/mpm_winnt.html">mpm_winnt</a></code> verwendet wird, und
     <code>25</code> bei der Verwendung der anderen MPMs.</p>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="ThreadStackSize" id="ThreadStackSize">ThreadStackSize</a>-<a name="threadstacksize" id="threadstacksize">Direktive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Beschreibung:</a></th><td>Die Größe des Stacks in Bytes, der von Threads
+verwendet wird, die Client-Verbindungen bearbeiten.</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>ThreadStackSize <var>size</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Voreinstellung:</a></th><td><code>65536 unter NetWare; variiert bei anderen Betriebssystemen.</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Kontext:</a></th><td>Serverkonfiguration</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>MPM</td></tr>
+<tr><th><a href="directive-dict.html#Module">Modul:</a></th><td><code class="module"><a href="../mod/leader.html">leader</a></code>, <code class="module"><a href="../mod/mpm_netware.html">mpm_netware</a></code>, <code class="module"><a href="../mod/mpm_winnt.html">mpm_winnt</a></code>, <code class="module"><a href="../mod/perchild.html">perchild</a></code>, <code class="module"><a href="../mod/threadpool.html">threadpool</a></code>, <code class="module"><a href="../mod/worker.html">worker</a></code></td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Kompatibilität:</a></th><td>Verfügbar seit Version 2.1</td></tr>
+</table>
+    <p>Die Direktive <code class="directive">ThreadStackSize</code> legt die
+    Größe des Stacks (für Autodaten) der Threads fest, die
+    Client-Verbindungen bearbeiten und Module aufrufen, welche bei der
+    Verarbeitung dieser Verbindungen helfen. In den meisten Fällen ist die
+    Voreinstellung des Betriebssystems angemessen, doch unter bestimmten
+    Umständen kann es sinnvoll sein, den Wert anzupassen:</p>
+
+    <ul>
+      <li>Auf Plattformen mit einer relativ kleinen Voreingestellung für
+      die Größe des Thread-Stacks (z.B. HP-UX) kann der Apache bei
+      der Verwendung einiger Drittanbietermodule, die einen relativ hohen Bedarf
+      an Speicherplatz haben, abstürzen. Ebendiese Module arbeiten
+      möglicherweise problemlos auf anderen Plattformen, wo der
+      voreingestellte Thread-Stack größer ist. Derartige
+      Abstürze können Sie vermeiden, indem Sie
+      <code class="directive">ThreadStackSize</code> auf einen höheren Wert als die
+      Betriebssystemvoreinstellung setzen.  Eine solche Anpassung ist nur
+      notwendig, wenn es vom Anbieter des Moduls so spezifiziert wurde oder die
+      Diagnose eines Apache-Absturzes ergeben hat, das die
+      Thread-Stackgröße zu klein war.</li>
+
+      <li>Auf Plattformen, wo die voreingestellte Thread-Stackgröße
+      für die Webserverkonfiguration deutlich größer als
+      notwendig ist, kann eine größere Anzahl von Threads pro
+      Kindprozess erreicht werden, wenn <code class="directive">ThreadStackSize</code>
+      auf einen Wert kleiner als die Betriebssystemvoreinstellung gesetzt wird.
+      Da es einzelne Anfragen geben kann, die mehr Stack zur Verarbeitung
+      benötigen, sollte eine derartige Korrektur ausschließlich in
+      Testumgebungen zum Einsatz kommen, auf denen die gesamte
+      Webserververarbeitung ausprobiert werden kann. Eine Änderung der
+      Webserverkonfiguration kann den aktuellen Wert der
+      <code class="directive">ThreadStackSize</code> ungültig machen.</li>
+    </ul>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
