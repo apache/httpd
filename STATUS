@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/11/21 18:32:38 $]
+Last modified at [$Date: 2003/11/21 18:46:35 $]
 
 Release:
 
@@ -93,7 +93,7 @@ PATCHES TO BACKPORT FROM 2.1
 
     * Fix timezone handling in mod_log_config.  PR 23642
       modules/loggers/mod_log_config.c: r1.107
-      +1: jorton, stoddard
+      +1: jorton, stoddard, trawick
 
     * parsed_uri.port is only valid iff parsed_uri.port_str != NULL.
       Old code simply checked if it was non-zero, not if it
