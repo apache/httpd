@@ -1179,7 +1179,7 @@ static int make_child(server_rec *s, int slot, time_t now)
 
     ap_update_child_status(slot, SERVER_STARTING, (request_rec *) NULL);
 
-    if ((tid = _beginthread(child_main, NULL, 65536, (void *)slot)) == -1) {
+    if ((tid = _beginthread(child_main, NULL,  256*1024, (void *)slot)) == -1) {
 	ap_log_error(APLOG_MARK, APLOG_ERR|APLOG_NOERRNO, 0, s, "_beginthread: Unable to create new thread");
 
 	/* _beginthread didn't succeed. Fix the scoreboard or else
