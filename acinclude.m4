@@ -369,8 +369,12 @@ if test "x$ap_ssltk_configured" = "x"; then
     dnl so it's SSL-C - report, then test anything relevant
     echo "... SSL/TLS support configuring for SSL-C"
     AC_MSG_CHECKING(for SSL-C version)
-    dnl FIXME: we currently don't check anything for SSL-C
-    AC_MSG_RESULT([OK, but I didn't really check])
+    AC_TRY_COMPILE([#include <sslc.h>],
+[#if !defined(SSLC_VERSION_NUMBER) || SSLC_VERSION_NUMBER < 0x2100
+#error "invalid SSL-C version"
+#endif],
+    [AC_MSG_RESULT(OK)],
+    [AC_MSG_ERROR([SSL-C Versions < 2.1 has not been tested])])
   fi
   dnl restore
   CPPFLAGS=$saved_CPPFLAGS
@@ -389,8 +393,12 @@ if test "x$ap_ssltk_configured" = "x"; then
   dnl make sure "other" flags are available so libcrypto and libssl can link
   LIBS="$LIBS `$apr_config --libs`"
   liberrors=""
-  AC_CHECK_LIB(crypto, SSLeay_version, [], [liberrors="yes"])
-  AC_CHECK_LIB(ssl, SSL_CTX_new, [], [liberrors="yes"])
+  if test "$ap_ssltk_type" = "openssl"; then
+    AC_CHECK_LIB(crypto, SSLeay_version, [], [liberrors="yes"])
+    AC_CHECK_LIB(ssl, SSL_CTX_new, [], [liberrors="yes"])
+  else
+    AC_CHECK_LIB(sslc, SSL_CTX_new, [], [liberrors="yes"])
+  fi
   if test "x$liberrors" != "x"; then
     AC_MSG_ERROR([... Error, SSL/TLS libraries were missing or unusable])
   fi
@@ -416,9 +424,13 @@ if test "x$ap_ssltk_configured" = "x"; then
       APR_ADDTO(LDFLAGS, ["$ap_platform_runtime_link_flag$ap_ssltk_libdir"])
     fi
   fi
-  dnl (d) add "-lssl -lcrypto" to LIBS because restoring LIBS after
-  dnl AC_CHECK_LIB() obliterates any flags AC_CHECK_LIB() added.
-  APR_ADDTO(LIBS, [-lssl -lcrypto])
+  dnl (d) add "-lssl -lcrypto" OR "-lsslc" to LIBS because restoring LIBS
+  dnl after AC_CHECK_LIB() obliterates any flags AC_CHECK_LIB() added.
+  if test "$ap_ssltk_type" = "openssl"; then
+    APR_ADDTO(LIBS, [-lssl -lcrypto])
+  else
+    APR_ADDTO(LIBS, [-lsslc])
+  fi
 fi
 ])
 
