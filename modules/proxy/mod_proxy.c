@@ -1726,7 +1726,7 @@ static int proxy_status_hook(request_rec *r, int flags)
             ap_rprintf(r, "<td>%d</td><td>", (int)(worker->s->elected));
             ap_rputs(apr_strfsize(worker->s->transfered, fbuf), r);
             ap_rputs("</td><td>", r);
-            ap_rputs(apr_strfsize(worker->s->readed, fbuf), r);
+            ap_rputs(apr_strfsize(worker->s->read, fbuf), r);
             ap_rputs("</td>\n", r);
 
             /* TODO: Add the rest of dynamic worker data */
@@ -1748,7 +1748,7 @@ static int proxy_status_hook(request_rec *r, int flags)
              "<tr><th>F</th><td>Load Balancer Factor in %</td></tr>\n"
              "<tr><th>Acc</th><td>Number of requests</td></tr>\n"
              "<tr><th>Wr</th><td>Number of bytes transfered</td></tr>\n"
-             "<tr><th>Rd</th><td>Number of bytes readed</td></tr>\n"
+             "<tr><th>Rd</th><td>Number of bytes read</td></tr>\n"
              "</table>", r);
 
     return OK;

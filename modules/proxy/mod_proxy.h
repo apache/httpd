@@ -243,7 +243,7 @@ typedef struct {
     int             lbstatus;   /* Current lbstatus */
     int             lbfactor;   /* dynamic lbfactor */
     apr_off_t       transfered; /* Number of bytes transfered to remote */
-    apr_off_t       readed;     /* Number of bytes readed from remote */
+    apr_off_t       read;       /* Number of bytes read from remote */
     apr_size_t      elected;    /* Number of times the worker was elected */
     char            route[PROXY_WORKER_MAX_ROUTE_SIZ+1];
     char            redirect[PROXY_WORKER_MAX_ROUTE_SIZ+1];
