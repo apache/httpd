@@ -62,7 +62,7 @@
     位置を指定することもできます。例えば次のようにです。</p>
 
 <example>/usr/local/apache2/bin/apachectl -f
-      /usr/local/apache/conf/httpd.conf</example>
+      /usr/local/apache2/conf/httpd.conf</example>
 
     <p>スタートアップが万事上手くいったら、サーバはターミナルから
     切り離されて、コマンドプロンプトが即座に戻ってくるでしょう。

@@ -62,7 +62,7 @@
     Kommandozeilenoption <code>-f</code> wie folgt verwendet wird:</p>
 
     <example>/usr/local/apache2/bin/apachectl -f
-      /usr/local/apache/conf/httpd.conf</example>
+      /usr/local/apache2/conf/httpd.conf</example>
 
     <p>Wenn w&#228;hrend des Starts alles gutgeht, trennt sich der Server
     vom Terminal ab und die Eingabeaufforderung erscheint gleich darauf

@@ -662,7 +662,7 @@ Pass Phrase dialog is forced at startup time. This directive can be used up to
 two times (referencing different filenames) when both a RSA and a DSA based
 server certificate is used in parallel.</p>
 <example><title>Example</title>
-SSLCertificateFile /usr/local/apache/conf/ssl.crt/server.crt
+SSLCertificateFile /usr/local/apache2/conf/ssl.crt/server.crt
 </example>
 </usage>
 </directivesynopsis>
@@ -689,7 +689,7 @@ at startup time. This directive can be used up to two times
 (referencing different filenames) when both a RSA and a DSA based
 private key is used in parallel.</p>
 <example><title>Example</title>
-SSLCertificateKeyFile /usr/local/apache/conf/ssl.key/server.key
+SSLCertificateKeyFile /usr/local/apache2/conf/ssl.key/server.key
 </example>
 </usage>
 </directivesynopsis>
@@ -728,7 +728,7 @@ using a coupled RSA+DSA certificate pair, this will work only if actually both
 certificates use the <em>same</em> certificate chain. Else the browsers will be
 confused in this situation.</p>
 <example><title>Example</title>
-SSLCertificateChainFile /usr/local/apache/conf/ssl.crt/ca.crt
+SSLCertificateChainFile /usr/local/apache2/conf/ssl.crt/ca.crt
 </example>
 </usage>
 </directivesynopsis>
@@ -754,7 +754,7 @@ there: you also have to create symbolic links named
 contains the appropriate symbolic links. Use the <code>Makefile</code> which
 comes with mod_ssl to accomplish this task.</p>
 <example><title>Example</title>
-SSLCACertificatePath /usr/local/apache/conf/ssl.crt/
+SSLCACertificatePath /usr/local/apache2/conf/ssl.crt/
 </example>
 </usage>
 </directivesynopsis>
@@ -776,7 +776,7 @@ concatenation of the various PEM-encoded Certificate files, in order of
 preference. This can be used alternatively and/or additionally to 
 <directive module="mod_ssl">SSLCACertificatePath</directive>.</p>
 <example><title>Example</title>
-SSLCACertificateFile /usr/local/apache/conf/ssl.crt/ca-bundle-client.crt
+SSLCACertificateFile /usr/local/apache2/conf/ssl.crt/ca-bundle-client.crt
 </example>
 </usage>
 </directivesynopsis>
@@ -802,7 +802,7 @@ Additionally you have to create symbolic links named
 contains the appropriate symbolic links. Use the <code>Makefile</code> which
 comes with <module>mod_ssl</module> to accomplish this task.</p>
 <example><title>Example</title>
-SSLCARevocationPath /usr/local/apache/conf/ssl.crl/
+SSLCARevocationPath /usr/local/apache2/conf/ssl.crl/
 </example>
 </usage>
 </directivesynopsis>
@@ -825,7 +825,7 @@ the various PEM-encoded CRL files, in order of preference. This can be
 used alternatively and/or additionally to <directive
 module="mod_ssl">SSLCARevocationPath</directive>.</p>
 <example><title>Example</title>
-SSLCARevocationFile /usr/local/apache/conf/ssl.crl/ca-bundle-client.crl
+SSLCARevocationFile /usr/local/apache2/conf/ssl.crl/ca-bundle-client.crl
 </example>
 </usage>
 </directivesynopsis>
@@ -1190,7 +1190,7 @@ comes with mod_ssl to accomplish this task.
 <p>
 Example:</p>
 <example>
-SSLProxyMachineCertificatePath /usr/local/apache/conf/ssl.crt/
+SSLProxyMachineCertificatePath /usr/local/apache2/conf/ssl.crt/
 </example> 
 </usage> 
 </directivesynopsis>
@@ -1217,7 +1217,7 @@ or additionally to <code>SSLProxyMachineCertificatePath</code>.
 <p>
 Example:</p>
 <example>
-SSLProxyMachineCertificatePath /usr/local/apache/conf/ssl.crt/
+SSLProxyMachineCertificatePath /usr/local/apache2/conf/ssl.crt/
 </example> 
 </usage> 
 </directivesynopsis>
@@ -1385,7 +1385,7 @@ there: you also have to create symbolic links named
 contains the appropriate symbolic links. Use the <code>Makefile</code> which
 comes with mod_ssl to accomplish this task.</p>
 <example><title>Example</title>
-SSLProxyCACertificatePath /usr/local/apache/conf/ssl.crt/
+SSLProxyCACertificatePath /usr/local/apache2/conf/ssl.crt/
 </example>
 </usage>
 </directivesynopsis>
@@ -1407,7 +1407,7 @@ concatenation of the various PEM-encoded Certificate files, in order of
 preference. This can be used alternatively and/or additionally to 
 <directive module="mod_ssl">SSLProxyCACertificatePath</directive>.</p>
 <example><title>Example</title>
-SSLProxyCACertificateFile /usr/local/apache/conf/ssl.crt/ca-bundle-remote-server.crt
+SSLProxyCACertificateFile /usr/local/apache2/conf/ssl.crt/ca-bundle-remote-server.crt
 </example>
 </usage>
 </directivesynopsis>
@@ -1433,7 +1433,7 @@ Additionally you have to create symbolic links named
 contains the appropriate symbolic links. Use the <code>Makefile</code> which
 comes with <module>mod_ssl</module> to accomplish this task.</p>
 <example><title>Example</title>
-SSLProxyCARevocationPath /usr/local/apache/conf/ssl.crl/
+SSLProxyCARevocationPath /usr/local/apache2/conf/ssl.crl/
 </example>
 </usage>
 </directivesynopsis>
@@ -1456,7 +1456,7 @@ the various PEM-encoded CRL files, in order of preference. This can be
 used alternatively and/or additionally to <directive
 module="mod_ssl">SSLProxyCARevocationPath</directive>.</p>
 <example><title>Example</title>
-SSLProxyCARevocationFile /usr/local/apache/conf/ssl.crl/ca-bundle-remote-server.crl
+SSLProxyCARevocationFile /usr/local/apache2/conf/ssl.crl/ca-bundle-remote-server.crl
 </example>
 </usage>
 </directivesynopsis>
