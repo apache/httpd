@@ -321,6 +321,16 @@ static apr_status_t worker_stack_awaken_next(worker_stack *stack)
         if ((rv = apr_thread_mutex_unlock(stack->mutex)) != APR_SUCCESS) {
             return rv;
         }
+        /* Acquire and release the idle worker's mutex to ensure
+         * that it's actually waiting on its condition variable
+         */
+        if ((rv = apr_thread_mutex_lock(wakeup->mutex)) != APR_SUCCESS) {
+            return rv;
+        }
+        if ((rv = apr_thread_mutex_unlock(wakeup->mutex)) != APR_SUCCESS) {
+            return rv;
+        }
+        apr_thread_mutex_unlock(wakeup->mutex);
         if ((rv = apr_thread_cond_signal(wakeup->cond)) != APR_SUCCESS) {
             apr_thread_mutex_unlock(stack->mutex);
             return rv;
