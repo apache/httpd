@@ -97,7 +97,7 @@ static proxy_runtime_worker *find_route_worker(proxy_balancer *balancer,
     int i;
     proxy_runtime_worker *worker = (proxy_runtime_worker *)balancer->workers->elts;
     for (i = 0; i < balancer->workers->nelts; i++) {
-        if (worker->route && strcmp(worker->route, route) == 0) {
+        if (worker->w->route && strcmp(worker->w->route, route) == 0) {
             return worker;
         }
         worker++;
@@ -120,8 +120,13 @@ static proxy_runtime_worker *find_session_route(proxy_balancer *balancer,
         proxy_runtime_worker *worker =  find_route_worker(balancer, *route);
         /* TODO: make worker status codes */
         /* See if we have a redirection route */
-        if (worker && worker->w->status < 2 && worker->redirect)
-            worker = find_route_worker(balancer, worker->redirect);
+        if (worker && !PROXY_WORKER_IS_USABLE(worker->w)) {
+            if (worker->w->redirect)
+                worker = find_route_worker(balancer, worker->w->redirect);
+            /* Check if the redirect worker is usable */
+            if (worker && !PROXY_WORKER_IS_USABLE(worker->w))
+                worker = NULL;
+        }
         else
             worker = NULL;
         return worker;
@@ -145,7 +150,7 @@ static proxy_runtime_worker *find_best_worker(proxy_balancer *balancer,
          */
 
         /* TODO: read the scoreboard status */
-        if (worker->w->status < 2) {
+        if (PROXY_WORKER_IS_USABLE(worker->w)) {
             if (!candidate)
                 candidate = worker;
             else {
@@ -197,7 +202,7 @@ static proxy_runtime_worker *find_best_worker(proxy_balancer *balancer,
             /* If the worker is not error state
              * or not in disabled mode
              */
-            if (worker->w->status > 2) {
+            if (PROXY_WORKER_IS_USABLE(worker->w)) {
                 /* 1. Find the worker with higher lbstatus.
                  * Lbstatus is of higher importance then
                  * the number of empty slots.
@@ -212,7 +217,7 @@ static proxy_runtime_worker *find_best_worker(proxy_balancer *balancer,
             /* If the worker is not error state
              * or not in disabled mode
              */
-            if (worker->w->status > 2) {
+            if (PROXY_WORKER_IS_USABLE(worker->w)) {
                 /* XXX: The lbfactor can be update using bytes transfered
                  * Right now, use the round-robin scheme
                  */
@@ -226,12 +231,32 @@ static proxy_runtime_worker *find_best_worker(proxy_balancer *balancer,
     return candidate;
 }
 
+static int rewrite_url(request_rec *r, proxy_worker *worker,
+                        char **url)
+{
+    const char *path = strchr(*url, '/');
+    
+    /* we break the URL into host, port, uri */
+    if (!worker) {
+        return ap_proxyerror(r, HTTP_BAD_REQUEST, apr_pstrcat(r->pool,
+                             "missing worker. URI cannot be parsed: ", *url,
+                             NULL));
+    }
+
+    *url = apr_pstrcat(r->pool, worker->name, path, NULL);
+
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
+                 "proxy: BALANCER rewriting to %s", *url);
+   
+    return OK;
+}
+
 static int proxy_balancer_pre_request(proxy_worker **worker,
                                       proxy_balancer **balancer,
                                       request_rec *r,
                                       proxy_server_conf *conf, char **url)
 {
-    int access_status = OK;
+    int access_status;
     proxy_runtime_worker *runtime;
     char *route;
     apr_status_t rv;
@@ -253,8 +278,22 @@ static int proxy_balancer_pre_request(proxy_worker **worker,
         }
     }
     else {
+        int i;
+        proxy_runtime_worker *workers;
         /* We have a sticky load balancer */
         *worker = runtime->w;
+        /* Update the workers status 
+         * so that even session routes get
+         * into account.
+         */
+        workers = (proxy_runtime_worker *)(*balancer)->workers->elts;
+        for (i = 0; i < (*balancer)->workers->nelts; i++) {
+            /* For now assume that all workers are OK */
+            workers->lbstatus += workers->lbfactor;
+            if (workers->lbstatus >= 100.0)
+                workers->lbstatus = workers->lbfactor;
+            workers++;
+        }
     }
     /* Lock the LoadBalancer
      * XXX: perhaps we need the process lock here
@@ -274,8 +313,6 @@ static int proxy_balancer_pre_request(proxy_worker **worker,
             PROXY_BALANCER_UNLOCK(*balancer);
             return HTTP_SERVICE_UNAVAILABLE;
         }
-        /* TODO: rewrite the url to coresponds to worker scheme */
-
         *worker = runtime->w;
     }
     /* Decrease the free channels number */
@@ -283,7 +320,8 @@ static int proxy_balancer_pre_request(proxy_worker **worker,
         --(*worker)->cp->nfree;
 
     PROXY_BALANCER_UNLOCK(*balancer);
-
+    
+    access_status = rewrite_url(r, *worker, url);
     return access_status;
 } 
 
