@@ -52,11 +52,6 @@ BSC32=bscmake.exe
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /machine:I386
 # ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib /nologo /subsystem:console /machine:I386
-# Begin Special Build Tool
-SOURCE=$(InputPath)
-PostBuild_Desc=Create test_char.h
-PostBuild_Cmds=.\gen_test_char > test_char.h
-# End Special Build Tool
 
 !ELSEIF  "$(CFG)" == "gen_test_char - Win32 Debug"
 
@@ -81,11 +76,6 @@ BSC32=bscmake.exe
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /debug /machine:I386 /pdbtype:sept
 # ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib /nologo /subsystem:console /debug /machine:I386 /pdbtype:sept
-# Begin Special Build Tool
-SOURCE=$(InputPath)
-PostBuild_Desc=Create test_char.h
-PostBuild_Cmds=.\gen_test_char > test_char.h
-# End Special Build Tool
 
 !ENDIF 
 
