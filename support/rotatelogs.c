@@ -168,11 +168,9 @@ int main (int argc, const char * const argv[])
         nRead = sizeof(buf);
         if (apr_file_read(f_stdin, buf, &nRead) != APR_SUCCESS)
             exit(3);
-        if (nRead == 0)
-            exit(3);
         if (tRotation) {
             now = (int)(apr_time_now() / APR_USEC_PER_SEC) + utc_offset;
-            if (nLogFD != NULL && (now >= tLogEnd || nRead < 0)) {
+            if (nLogFD != NULL && now >= tLogEnd) {
                 nLogFDprev = nLogFD;
                 nLogFD = NULL;
             }
@@ -186,7 +184,7 @@ int main (int argc, const char * const argv[])
                 current_size = finfo.size;
             }
 
-            if (current_size > sRotation || nRead < 0) {
+            if (current_size > sRotation) {
                 nLogFDprev = nLogFD;
                 nLogFD = NULL;
             }
@@ -245,10 +243,8 @@ int main (int argc, const char * const argv[])
             }
             nMessCount = 0;
         }
-        do {
-            nWrite = nRead;
-            apr_file_write(nLogFD, buf, &nWrite);
-        } while (nWrite < 0 && errno == EINTR);
+        nWrite = nRead;
+        apr_file_write(nLogFD, buf, &nWrite);
         if (nWrite != nRead) {
             nMessCount++;
             sprintf(errbuf,
