@@ -1391,13 +1391,13 @@ API_EXPORT(int) setup_client_block(request_rec *r, int read_policy)
 
 API_EXPORT(int) should_client_block(request_rec *r)
 {
-    if (r->read_length || is_HTTP_ERROR(r->status))
+    /* First check if we have already read the request body */
+
+    if (r->read_length || (!r->read_chunked && (r->remaining <= 0)))
         return 0;
 
-    if (!r->read_chunked && (r->remaining <= 0))
-        return 0;
-
-    if (r->proto_num >= HTTP_VERSION(1,1)) { /* sending 100 Continue interim response */
+    if (r->proto_num >= HTTP_VERSION(1,1)) {
+        /* sending 100 Continue interim response */
         bvputs(r->connection->client,
                SERVER_PROTOCOL, " ", status_lines[0], "\015\012\015\012",
                NULL);
