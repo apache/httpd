@@ -30,7 +30,7 @@
 <li><img alt="" src="./images/down.gif" /> <a href="#errors">Fehler während des Hochfahrens</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#boot">Beim Bootvorgang starten</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#info">Weitere Informationen</a></li>
-</ul><h3>Siehe auch</h3><ul class="seealso"><li><a href="stopping.html">Apache stoppen</a></li><li><a href="programs/httpd.html">httpd</a></li><li><a href="programs/apachectl.html">apachectl</a></li></ul></div>
+</ul><h3>Siehe auch</h3><ul class="seealso"><li><a href="stopping.html">Beenden und Neustarten</a></li><li><a href="programs/httpd.html">httpd</a></li><li><a href="programs/apachectl.html">apachectl</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="startup" id="startup">Wie der Apache startet</a></h2>
