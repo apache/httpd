@@ -1889,7 +1889,7 @@ is accessed by an incompatible browser</td></tr><tr><td nowrap="nowrap"><a href=
     and the <code>EMail</code> setting additionally creates a
     "mailto:" reference to the <a href="#serveradmin" class="directive"><code class="directive">ServerAdmin</code></a> of the referenced
     document.</p>
-<hr><h2><a name="ServerTokens">ServerTokens</a> <a name="servertokens">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
+<p><strong>See also </strong></p><ul><li><a href="#servertokens" class="directive"><code class="directive">ServerTokens</code></a></li></ul><hr><h2><a name="ServerTokens">ServerTokens</a> <a name="servertokens">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
                   </strong></td><td>Configures the Server HTTP response header</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">Syntax:
                   </a></td><td>ServerTokens Minimal|ProductOnly|OS|Full</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Default" class="help">Default: 
                     </a></td><td><code>ServerTokens Full</code></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">Context:
@@ -1925,7 +1925,7 @@ is accessed by an incompatible browser</td></tr><tr><td nowrap="nowrap"><a href=
 
     <p>This setting applies to the entire server, and cannot be
     enabled or disabled on a virtualhost-by-virtualhost basis.</p>
-<hr><h2><a name="SetHandler">SetHandler</a> <a name="sethandler">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
+<p><strong>See also </strong></p><ul><li><a href="#serversignature" class="directive"><code class="directive">ServerSignature</code></a></li></ul><hr><h2><a name="SetHandler">SetHandler</a> <a name="sethandler">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
                   </strong></td><td>Forces all matching files to be processed by a
 handler</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">Syntax:
                   </a></td><td>SetHandler <em>handler-name</em></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">Context:
