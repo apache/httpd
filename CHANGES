@@ -1,6 +1,7 @@
 Changes with Apache 2.0.34-dev
 
-  *) remove sock_enable_linger from connection.c [ Ian Holsman]
+  *) remove sock_enable_linger from connection.c [Ian Holsman]
+
   *) Fix for virtual host processing where the requested hostname
      has a '.' at the end (PR 9187) [Ryan Cruse <ryan@estara.com>]
 
