@@ -240,10 +240,12 @@ static int status_handler(request_rec *r)
     unsigned long bcount = 0;
     unsigned long kbcount = 0;
     long req_time;
-#if defined(NEXT)
-    float tick = HZ;
-#elif !defined(NO_TIMES)
+#ifndef NO_TIMES
+#ifdef _SC_CLK_TCK
     float tick = sysconf(_SC_CLK_TCK);
+#else
+    float tick = HZ;
+#endif
 #endif
     int short_report = 0;
     int no_table_report = 0;

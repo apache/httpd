@@ -1,4 +1,9 @@
 Changes with Apache 1.3.3
+ 
+  *) Fallback from sysconf-based to plain HZ-based `ticks per second'
+     calculation in mod_status for all systems which don't have POSIX
+     sysconf() (like UTS 2.1) and not only for the NEXT platform.
+     [Dave Dykstra <dwd@bell-labs.com>] PR#3055
 
   *) Fix `require ...' directive parsing in mod_auth, mod_auth_dbm and
      mod_auth_db by using ap_getword_white() (which uses ap_isspace()) instead of
