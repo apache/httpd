@@ -1,5 +1,8 @@
 Changes with Apache 1.3.1
 
+  *) Fix yet another signal-based race condition involving nested timers.
+     Signals suck.  [Dean Gaudet]
+
   *) suexec's error messages have been clarified a little bit.  [Ken Coar]
 
   *) PORT: Apache is not 8-bit clean in many settings, a problem we're

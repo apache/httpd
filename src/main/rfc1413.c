@@ -229,9 +229,8 @@ char *ap_rfc1413(conn_rec *conn, server_rec *srv)
 
 	if (get_rfc1413(sock, &conn->local_addr, &conn->remote_addr, user, srv) >= 0)
 	    result = user;
-
-	ap_set_callback_and_alarm(NULL, 0);
     }
+    ap_set_callback_and_alarm(NULL, 0);
     ap_pclosesocket(conn->pool, sock);
     conn->remote_logname = result;
 

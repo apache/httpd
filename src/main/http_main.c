@@ -953,6 +953,12 @@ static void timeout(int sig)
 	 */
 
 	request_rec *log_req = timeout_req;
+	request_rec *save_req = timeout_req;
+
+	/* avoid looping... if ap_log_transaction started another
+	 * timer (say via rfc1413.c) we could loop...
+	 */
+	timeout_req = NULL;
 
 	while (log_req->main || log_req->prev) {
 	    /* Get back to original request... */
@@ -965,8 +971,8 @@ static void timeout(int sig)
 	if (!current_conn->keptalive)
 	    ap_log_transaction(log_req);
 
-	ap_bsetflag(timeout_req->connection->client, B_EOUT, 1);
-	ap_bclose(timeout_req->connection->client);
+	ap_bsetflag(save_req->connection->client, B_EOUT, 1);
+	ap_bclose(save_req->connection->client);
 
 	if (!ap_standalone)
 	    exit(0);
@@ -975,6 +981,7 @@ static void timeout(int sig)
     }
     else {			/* abort the connection */
 	ap_bsetflag(current_conn->client, B_EOUT, 1);
+	ap_bclose(current_conn->client);
 	current_conn->aborted = 1;
     }
 }
@@ -1045,9 +1052,11 @@ unsigned int ap_set_callback_and_alarm(void (*fn) (int), int x)
 	alarm_expiry_time = time(NULL) + x;
     }
 #else
-    if (x) {
-	alarm_fn = fn;
+    if (alarm_fn && x && fn != alarm_fn) {
+	ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_DEBUG, NULL,
+	    "ap_set_callback_and_alarm: possible nested timer!");
     }
+    alarm_fn = fn;
 #ifndef OPTIMIZE_TIMEOUTS
     old = alarm(x);
 #else
@@ -3390,7 +3399,6 @@ static void child_main(int child_num_arg)
 	 */
 
 	ap_kill_timeout(0);	/* Cancel any outstanding alarms. */
-	timeout_req = NULL;	/* No request in progress */
 	current_conn = NULL;
 
 	ap_clear_pool(ptrans);
