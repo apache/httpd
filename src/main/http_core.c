@@ -2333,6 +2333,73 @@ static const char *set_extended_status(cmd_parms *cmd, void *dummy, char *arg)
     return NULL;
 }
 
+static const char *set_limit_req_line(cmd_parms *cmd, void *dummy, char *arg)
+{
+    const char *err = ap_check_cmd_context(cmd,
+                                           NOT_IN_DIR_LOC_FILE|NOT_IN_LIMIT);
+    int lim;
+
+    if (err != NULL) {
+        return err;
+    }
+    lim = atoi(arg);
+    if (lim < 0) {
+        return ap_pstrcat(cmd->temp_pool, "LimitRequestLine \"", arg, 
+                          "\" must be a non-negative integer", NULL);
+    }
+    if (lim > DEFAULT_LIMIT_REQUEST_LINE) {
+        return ap_psprintf(cmd->temp_pool, "LimitRequestLine \"%s\" "
+                           "must not exceed the precompiled maximum of %d",
+                           arg, DEFAULT_LIMIT_REQUEST_LINE);
+    }
+    cmd->server->limit_req_line = lim;
+    return NULL;
+}
+
+static const char *set_limit_req_fieldsize(cmd_parms *cmd, void *dummy,
+                                           char *arg)
+{
+    const char *err = ap_check_cmd_context(cmd,
+                                           NOT_IN_DIR_LOC_FILE|NOT_IN_LIMIT);
+    int lim;
+
+    if (err != NULL) {
+        return err;
+    }
+    lim = atoi(arg);
+    if (lim < 0) {
+        return ap_pstrcat(cmd->temp_pool, "LimitRequestFieldsize \"", arg, 
+                          "\" must be a non-negative integer (0 = no limit)",
+                          NULL);
+    }
+    if (lim > DEFAULT_LIMIT_REQUEST_FIELDSIZE) {
+        return ap_psprintf(cmd->temp_pool, "LimitRequestFieldsize \"%s\" "
+                          "must not exceed the precompiled maximum of %d",
+                           arg, DEFAULT_LIMIT_REQUEST_FIELDSIZE);
+    }
+    cmd->server->limit_req_fieldsize = lim;
+    return NULL;
+}
+
+static const char *set_limit_req_fields(cmd_parms *cmd, void *dummy, char *arg)
+{
+    const char *err = ap_check_cmd_context(cmd,
+                                           NOT_IN_DIR_LOC_FILE|NOT_IN_LIMIT);
+    int lim;
+
+    if (err != NULL) {
+        return err;
+    }
+    lim = atoi(arg);
+    if (lim < 0) {
+        return ap_pstrcat(cmd->temp_pool, "LimitRequestFields \"", arg, 
+                          "\" must be a non-negative integer (0 = no limit)",
+                          NULL);
+    }
+    cmd->server->limit_req_fields = lim;
+    return NULL;
+}
+
 static const char *set_limit_req_body(cmd_parms *cmd, core_dir_config *conf,
                                       char *arg) 
 {
@@ -2553,6 +2620,12 @@ static const command_rec core_cmds[] = {
   "Determine tokens displayed in the Server: header - Min(imal), OS or Full" },
 { "ExtendedStatus", set_extended_status, NULL, RSRC_CONF, TAKE1,
   "\"On\" to enable extended status information, \"Off\" to disable" },
+{ "LimitRequestLine", set_limit_req_line, NULL, RSRC_CONF, TAKE1,
+  "Limit on maximum size of an HTTP request line"},
+{ "LimitRequestFieldsize", set_limit_req_fieldsize, NULL, RSRC_CONF, TAKE1,
+  "Limit on maximum size of an HTTP request header field"},
+{ "LimitRequestFields", set_limit_req_fields, NULL, RSRC_CONF, TAKE1,
+  "Limit (0 = unlimited) on max number of header fields in a request message"},
 { "LimitRequestBody", set_limit_req_body,
   (void*)XtOffsetOf(core_dir_config, limit_req_body),
   RSRC_CONF|ACCESS_CONF|OR_ALL, TAKE1,

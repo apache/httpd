@@ -626,7 +626,7 @@ CORE_EXPORT(void) ap_parse_uri(request_rec *r, const char *uri)
 
 static int read_request_line(request_rec *r)
 {
-    char l[AP_LIMIT_REQUEST_LINE + 2];  /* getline needs two extra for \n\0 */
+    char l[DEFAULT_LIMIT_REQUEST_LINE + 2]; /* getline's two extra for \n\0 */
     const char *ll = l;
     const char *uri;
     conn_rec *conn = r->connection;
@@ -694,7 +694,7 @@ static int read_request_line(request_rec *r)
      * buffer before finding the end-of-line.  This is only going to
      * happen if it exceeds the configured limit for a request-line.
      */
-    if (len >= sizeof(l) - 1) {
+    if (len > r->server->limit_req_line) {
         r->status    = HTTP_REQUEST_URI_TOO_LARGE;
         r->proto_num = HTTP_VERSION(1,0);
         r->protocol  = ap_pstrdup(r->pool, "HTTP/1.0");
@@ -738,7 +738,7 @@ static int sort_mime_headers(const void *va, const void *vb)
 /* XXX: could use ap_overlap_tables here... which generalizes this code */
 static void get_mime_headers(request_rec *r)
 {
-    char field[AP_LIMIT_REQUEST_FIELDSIZE + 2];  /* getline needs two extra */
+    char field[DEFAULT_LIMIT_REQUEST_FIELDSIZE + 2]; /* getline's two extra */
     conn_rec *c = r->connection;
     char *value;
     char *copy;
@@ -791,10 +791,12 @@ static void get_mime_headers(request_rec *r)
      */
     while ((len = getline(field, sizeof(field), c->client, 1)) > 0) {
 
-        if (++fields_read > AP_LIMIT_REQUEST_FIELDS) {
+        if (r->server->limit_req_fields &&
+            (++fields_read > r->server->limit_req_fields)) {
             r->status = HTTP_BAD_REQUEST;
             ap_table_setn(r->notes, "error-notes",
-                "Number of request header fields exceeds server limit.<P>\n");
+                          "The number of request header fields exceeds "
+                          "this server's limit.<P>\n");
             ap_destroy_pool(tmp);
             return;
         }
@@ -802,7 +804,7 @@ static void get_mime_headers(request_rec *r)
          * buffer before finding the end-of-line.  This is only going to
          * happen if it exceeds the configured limit for a field size.
          */
-        if (len >= sizeof(field) - 1) { 
+        if (len > r->server->limit_req_fieldsize) {
             r->status = HTTP_BAD_REQUEST;
             ap_table_setn(r->notes, "error-notes", ap_pstrcat(r->pool,
                 "Size of a request header field exceeds server limit.<P>\n"

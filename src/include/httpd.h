@@ -377,18 +377,23 @@ extern "C" {
  * smaller limits than we use below.  The request message body size can
  * be limited by the per-dir config directive LimitRequestBody.
  *
- * Internal buffer sizes are two bytes more than the AP_LIMIT_REQUEST_LINE
- * and AP_LIMIT_REQUEST_FIELDSIZE below, which explains the 8190.
+ * Internal buffer sizes are two bytes more than the DEFAULT_LIMIT_REQUEST_LINE
+ * and DEFAULT_LIMIT_REQUEST_FIELDSIZE below, which explains the 8190.
+ * These two limits can be lowered (but not raised) by the server config
+ * directives LimitRequestLine and LimitRequestFieldsize, respectively.
+ *
+ * DEFAULT_LIMIT_REQUEST_FIELDS can be modified or disabled (set = 0) by
+ * the server config directive LimitRequestFields.
  */
-#ifndef AP_LIMIT_REQUEST_LINE
-#define AP_LIMIT_REQUEST_LINE 8190
+#ifndef DEFAULT_LIMIT_REQUEST_LINE
+#define DEFAULT_LIMIT_REQUEST_LINE 8190
 #endif /* default limit on bytes in Request-Line (Method+URI+HTTP-version) */
-#ifndef AP_LIMIT_REQUEST_FIELDS
-#define AP_LIMIT_REQUEST_FIELDS 100
-#endif /* default limit on number of request header fields */
-#ifndef AP_LIMIT_REQUEST_FIELDSIZE
-#define AP_LIMIT_REQUEST_FIELDSIZE 8190
+#ifndef DEFAULT_LIMIT_REQUEST_FIELDSIZE
+#define DEFAULT_LIMIT_REQUEST_FIELDSIZE 8190
 #endif /* default limit on bytes in any one header field  */
+#ifndef DEFAULT_LIMIT_REQUEST_FIELDS
+#define DEFAULT_LIMIT_REQUEST_FIELDS 100
+#endif /* default limit on number of request header fields */
 
 /*
  * The below defines the base string of the Server: header. Additional
@@ -845,6 +850,10 @@ struct server_rec {
 
     uid_t server_uid;        /* effective user id when calling exec wrapper */
     gid_t server_gid;        /* effective group id when calling exec wrapper */
+
+    int limit_req_line;      /* limit on size of the HTTP request line    */
+    int limit_req_fieldsize; /* limit on size of any request header field */
+    int limit_req_fields;    /* limit on number of request header fields  */
 };
 
 /* These are more like real hosts than virtual hosts */
