@@ -64,7 +64,7 @@
 **  |_| |_| |_|\___/ \__,_|___|_|  \___| \_/\_/ |_|  |_|\__\___|
 **                       |_____|
 **
-**  URL Rewriting Module, Version 2.3.5 (09-10-1996)
+**  URL Rewriting Module, Version 2.3.9 (11-12-1996)
 **
 **  This module uses a rule-based rewriting engine (based on a
 **  regular-expression parser) to rewrite requested URLs on the fly. 
@@ -90,7 +90,7 @@
 **  Written for The Apache Group by
 **      Ralf S. Engelschall
 **      rse@engelschall.com
-**      http://www.engelschall.com/~rse
+**      http://www.engelschall.com/
 */
 
 
@@ -100,6 +100,17 @@
 #if (MODULE_MAGIC_NUMBER >= 19960725)
 #define IS_APACHE_12         1
 #define HAS_APACHE_REGEX_LIB 1
+#endif
+
+
+    /* The const problem:
+       The Apache Group changed some essential prototypes
+       to have an additional "const" qualifier. To be backward
+       compatible with Apache 1.1.1 we use a special define */
+#ifdef IS_APACHE_12
+#define _const const
+#else
+#define _const  
 #endif
 
 
@@ -278,10 +289,6 @@ typedef struct cache {
 **
 */
 
-    /* static config */
-extern module rewrite_module;
-extern cache *cachep;
-
     /* config structure handling */
 static void *config_server_create(pool *p, server_rec *s);
 static void *config_server_merge (pool *p, void *basev, void *overridesv);
@@ -289,22 +296,22 @@ static void *config_perdir_create(pool *p, char *path);
 static void *config_perdir_merge (pool *p, void *basev, void *overridesv);
 
     /* config directive handling */
-static const char *cmd_rewriteengine  (cmd_parms *cmd, rewrite_perdir_conf *dconf, int flag);
-static const char *cmd_rewriteoptions (cmd_parms *cmd, rewrite_perdir_conf *dconf, char *option);
-static char *cmd_rewriteoptions_setoption(pool *p, int *options, char *name);
-static const char *cmd_rewritelog     (cmd_parms *cmd, void *dconf, char *a1);
-static const char *cmd_rewriteloglevel(cmd_parms *cmd, void *dconf, char *a1);
-static const char *cmd_rewritemap     (cmd_parms *cmd, void *dconf, char *a1, char *a2);
+static _const char *cmd_rewriteengine  (cmd_parms *cmd, rewrite_perdir_conf *dconf, int flag);
+static _const char *cmd_rewriteoptions (cmd_parms *cmd, rewrite_perdir_conf *dconf, char *option);
+static _const char *cmd_rewriteoptions_setoption(pool *p, int *options, char *name);
+static _const char *cmd_rewritelog     (cmd_parms *cmd, void *dconf, char *a1);
+static _const char *cmd_rewriteloglevel(cmd_parms *cmd, void *dconf, char *a1);
+static _const char *cmd_rewritemap     (cmd_parms *cmd, void *dconf, char *a1, char *a2);
 
-static const char *cmd_rewritebase(cmd_parms *cmd, rewrite_perdir_conf *dconf, char *a1);
+static _const char *cmd_rewritebase(cmd_parms *cmd, rewrite_perdir_conf *dconf, char *a1);
 
-static const char *cmd_rewritecond    (cmd_parms *cmd, rewrite_perdir_conf *dconf, char *str);
-static char *cmd_rewritecond_parseflagfield(pool *p, rewritecond_entry *new, char *str);
-static char *cmd_rewritecond_setflag       (pool *p, rewritecond_entry *cfg, char *key, char *val);
+static _const char *cmd_rewritecond    (cmd_parms *cmd, rewrite_perdir_conf *dconf, char *str);
+static _const char *cmd_rewritecond_parseflagfield(pool *p, rewritecond_entry *new, char *str);
+static _const char *cmd_rewritecond_setflag       (pool *p, rewritecond_entry *cfg, char *key, char *val);
 
-extern const char *cmd_rewriterule    (cmd_parms *cmd, rewrite_perdir_conf *dconf, char *str);
-static char *cmd_rewriterule_parseflagfield(pool *p, rewriterule_entry *new, char *str);
-static char *cmd_rewriterule_setflag       (pool *p, rewriterule_entry *cfg, char *key, char *val);
+extern _const char *cmd_rewriterule    (cmd_parms *cmd, rewrite_perdir_conf *dconf, char *str);
+static _const char *cmd_rewriterule_parseflagfield(pool *p, rewriterule_entry *new, char *str);
+static _const char *cmd_rewriterule_setflag       (pool *p, rewriterule_entry *cfg, char *key, char *val);
 
     /* initialisation */
 static void init_module(server_rec *s, pool *p);
@@ -337,7 +344,7 @@ static char *lookup_map_program(request_rec *r, int fpin, int fpout, char *key);
     /* rewriting logfile support */
 static void  open_rewritelog(server_rec *s, pool *p);
 static void  rewritelog_child(void *cmd);
-static void  rewritelog(request_rec *r, int level, char *text, ...);
+static void  rewritelog(request_rec *r, int level, const char *text, ...);
 static char *current_logtime(request_rec *r);
 
     /* program map support */
@@ -348,12 +355,12 @@ static void  rewritemap_program_child(void *cmd);
 static void  expand_variables_inbuffer(request_rec *r, char *buf);
 static char *expand_variables(request_rec *r, char *str);
 static char *lookup_variable(request_rec *r, char *var);
-static char *lookup_header(request_rec *r, char *name);
+static char *lookup_header(request_rec *r, const char *name);
 
     /* caching functions */
 static cache      *init_cache(pool *p);
-static char       *get_cache_string(cache *c, char *res, int mode, time_t time, char *key);
-static void        set_cache_string(cache *c, char *res, int mode, time_t time, char *key, char *value);
+static char       *get_cache_string(cache *c, char *res, int mode, time_t mtime, char *key);
+static void        set_cache_string(cache *c, char *res, int mode, time_t mtime, char *key, char *value);
 static cacheentry *retrieve_cache_string(cache *c, char *res, char *key);
 static void        store_cache_string(cache *c, char *res, cacheentry *ce);
 
@@ -366,6 +373,9 @@ static int    prefix_stat(const char *path, struct stat *sb);
 static int    is_this_our_host(request_rec *r, char *testhost);
 static int    isaddr(char *host);
 static char **resolv_ipaddr_list(request_rec *r, char *name);
+
+    /* Proxy Module check */
+static int is_proxy_available(server_rec *s);
 
 #endif /* _MOD_REWRITE_H */
 

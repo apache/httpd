@@ -61,7 +61,7 @@
 **  |_| |_| |_|\___/ \__,_|___|_|  \___| \_/\_/ |_|  |_|\__\___|
 **                       |_____|
 **
-**  URL Rewriting Module, Version 2.3.5 (09-10-1996)
+**  URL Rewriting Module, Version 2.3.9 (11-12-1996)
 **
 **  This module uses a rule-based rewriting engine (based on a
 **  regular-expression parser) to rewrite requested URLs on the fly. 
@@ -87,7 +87,7 @@
 **  Written for The Apache Group by
 **      Ralf S. Engelschall
 **      rse@engelschall.com
-**      http://www.engelschall.com/~rse
+**      http://www.engelschall.com/
 */
 
 
@@ -97,6 +97,7 @@
 #include <string.h>
 #include <stdarg.h>
 #include <time.h>
+#include <signal.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <netinet/in.h>
@@ -111,8 +112,8 @@
     /* now our own stuff ... */
 #include "mod_rewrite.h"
 
-
  
+
 
 /*
 ** +-------------------------------------------------------+
@@ -216,8 +217,11 @@ module rewrite_module = {
    NULL                         /* [#8] log a transaction */
 };
 
-    /* the common cache */
+    /* the cache */
 cache *cachep;
+
+    /* whether proxy module is available or not */
+static int proxy_available;
 
     /* the txt mapfile parsing stuff */
 #define MAPFILE_PATTERN "^([^ ]+) +([^ ]+).*$"
@@ -349,7 +353,7 @@ static void *config_perdir_merge(pool *p, void *basev, void *overridesv)
 **
 */
 
-static const char *cmd_rewriteengine(cmd_parms *cmd, rewrite_perdir_conf *dconf, int flag)
+static _const char *cmd_rewriteengine(cmd_parms *cmd, rewrite_perdir_conf *dconf, int flag)
 {
     rewrite_server_conf *sconf;
 
@@ -362,10 +366,10 @@ static const char *cmd_rewriteengine(cmd_parms *cmd, rewrite_perdir_conf *dconf,
     return NULL;
 }
 
-static const char *cmd_rewriteoptions(cmd_parms *cmd, rewrite_perdir_conf *dconf, char *option)
+static _const char *cmd_rewriteoptions(cmd_parms *cmd, rewrite_perdir_conf *dconf, char *option)
 {
     rewrite_server_conf *sconf;
-    char *err;
+    _const char *err;
 
     sconf = (rewrite_server_conf *)get_module_config(cmd->server->module_config, &rewrite_module);
     if (cmd->path == NULL) /* is server command */
@@ -376,7 +380,7 @@ static const char *cmd_rewriteoptions(cmd_parms *cmd, rewrite_perdir_conf *dconf
     return err;
 }
 
-static char *cmd_rewriteoptions_setoption(pool *p, int *options, char *name)
+static _const char *cmd_rewriteoptions_setoption(pool *p, int *options, char *name)
 {
     if (strcasecmp(name, "inherit") == 0)
         *options |= OPTION_INHERIT;
@@ -385,7 +389,7 @@ static char *cmd_rewriteoptions_setoption(pool *p, int *options, char *name)
     return NULL;
 }
 
-static const char *cmd_rewritelog(cmd_parms *cmd, void *dconf, char *a1)
+static _const char *cmd_rewritelog(cmd_parms *cmd, void *dconf, char *a1)
 {
     rewrite_server_conf *sconf;
 
@@ -395,7 +399,7 @@ static const char *cmd_rewritelog(cmd_parms *cmd, void *dconf, char *a1)
     return NULL;
 }
 
-static const char *cmd_rewriteloglevel(cmd_parms *cmd, void *dconf, char *a1)
+static _const char *cmd_rewriteloglevel(cmd_parms *cmd, void *dconf, char *a1)
 {
     rewrite_server_conf *sconf;
 
@@ -405,7 +409,7 @@ static const char *cmd_rewriteloglevel(cmd_parms *cmd, void *dconf, char *a1)
     return NULL;
 }
 
-static const char *cmd_rewritemap(cmd_parms *cmd, void *dconf, char *a1, char *a2)
+static _const char *cmd_rewritemap(cmd_parms *cmd, void *dconf, char *a1, char *a2)
 {
     rewrite_server_conf *sconf;
     rewritemap_entry *new;
@@ -449,7 +453,7 @@ static const char *cmd_rewritemap(cmd_parms *cmd, void *dconf, char *a1, char *a
     return NULL;
 }
 
-static const char *cmd_rewritebase(cmd_parms *cmd, rewrite_perdir_conf *dconf, char *a1)
+static _const char *cmd_rewritebase(cmd_parms *cmd, rewrite_perdir_conf *dconf, char *a1)
 {
     if (cmd->path == NULL || dconf == NULL)
         return "RewriteBase: only valid in per-directory config files";
@@ -463,7 +467,7 @@ static const char *cmd_rewritebase(cmd_parms *cmd, rewrite_perdir_conf *dconf, c
     return NULL;
 }
 
-static const char *cmd_rewritecond(cmd_parms *cmd, rewrite_perdir_conf *dconf, char *str)
+static _const char *cmd_rewritecond(cmd_parms *cmd, rewrite_perdir_conf *dconf, char *str)
 {
     rewrite_server_conf *sconf;
     rewritecond_entry *new;
@@ -477,7 +481,7 @@ static const char *cmd_rewritecond(cmd_parms *cmd, rewrite_perdir_conf *dconf, c
     char *a2;
     char *a3;
     char *cp;
-    char *err;
+    _const char *err;
     int rc;
 
     sconf = (rewrite_server_conf *)get_module_config(cmd->server->module_config, &rewrite_module);
@@ -535,7 +539,7 @@ static const char *cmd_rewritecond(cmd_parms *cmd, rewrite_perdir_conf *dconf, c
     return NULL;
 }
 
-static char *cmd_rewritecond_parseflagfield(pool *p, rewritecond_entry *cfg, char *str)
+static _const char *cmd_rewritecond_parseflagfield(pool *p, rewritecond_entry *cfg, char *str)
 {
     char *cp;
     char *cp1;
@@ -543,7 +547,7 @@ static char *cmd_rewritecond_parseflagfield(pool *p, rewritecond_entry *cfg, cha
     char *cp3;
     char *key;
     char *val;
-    char *err;
+    _const char *err;
 
     if (str[0] != '[' || str[strlen(str)-1] != ']')
         return pstrdup(p, "RewriteCond: bad flag delimiters");
@@ -581,7 +585,7 @@ static char *cmd_rewritecond_parseflagfield(pool *p, rewritecond_entry *cfg, cha
     return NULL;
 }
 
-static char *cmd_rewritecond_setflag(pool *p, rewritecond_entry *cfg, char *key, char *val)
+static _const char *cmd_rewritecond_setflag(pool *p, rewritecond_entry *cfg, char *key, char *val)
 {
     if (   strcasecmp(key, "nocase") == 0
         || strcasecmp(key, "NC") == 0    ) {
@@ -597,7 +601,8 @@ static char *cmd_rewritecond_setflag(pool *p, rewritecond_entry *cfg, char *key,
     return NULL;
 }
 
-const char *cmd_rewriterule(cmd_parms *cmd, rewrite_perdir_conf *dconf, char *str)
+/* NON static */
+_const char *cmd_rewriterule(cmd_parms *cmd, rewrite_perdir_conf *dconf, char *str)
 {
     rewrite_server_conf *sconf;
     rewriterule_entry *new;
@@ -611,7 +616,7 @@ const char *cmd_rewriterule(cmd_parms *cmd, rewrite_perdir_conf *dconf, char *st
     char *a2;
     char *a3;
     char *cp;
-    char *err;
+    _const char *err;
 
     sconf = (rewrite_server_conf *)get_module_config(cmd->server->module_config, &rewrite_module);
 
@@ -676,7 +681,7 @@ const char *cmd_rewriterule(cmd_parms *cmd, rewrite_perdir_conf *dconf, char *st
     return NULL;
 }
 
-static char *cmd_rewriterule_parseflagfield(pool *p, rewriterule_entry *cfg, char *str)
+static _const char *cmd_rewriterule_parseflagfield(pool *p, rewriterule_entry *cfg, char *str)
 {
     char *cp;
     char *cp1;
@@ -684,7 +689,7 @@ static char *cmd_rewriterule_parseflagfield(pool *p, rewriterule_entry *cfg, cha
     char *cp3;
     char *key;
     char *val;
-    char *err;
+    _const char *err;
 
     if (str[0] != '[' || str[strlen(str)-1] != ']')
         return pstrdup(p, "RewriteRule: bad flag delimiters");
@@ -722,7 +727,7 @@ static char *cmd_rewriterule_parseflagfield(pool *p, rewriterule_entry *cfg, cha
     return NULL;
 }
 
-static char *cmd_rewriterule_setflag(pool *p, rewriterule_entry *cfg, char *key, char *val)
+static _const char *cmd_rewriterule_setflag(pool *p, rewriterule_entry *cfg, char *key, char *val)
 {
     if (   strcasecmp(key, "redirect") == 0
         || strcasecmp(key, "R") == 0       ) {
@@ -792,6 +797,8 @@ static void init_module(server_rec *s, pool *p)
     /* create the lookup cache */
     cachep = init_cache(p);
 
+    /* check if proxy module is available */
+    proxy_available = is_proxy_available(s);
 
     /* precompile a static pattern 
        for the txt mapfile parsing */
@@ -873,7 +880,12 @@ static int hook_uri2file(request_rec *r)
 
     /* add the canonical URI of this URL */
     thisserver = r->server->server_hostname;
-    if (r->server->port == 80) 
+#ifdef APACHE_SSL
+    if (((!r->connection->client->ssl) && (r->server->port == 80)) ||
+         ((r->connection->client->ssl) && (r->server->port == 443)))
+#else
+    if (r->server->port == 80)
+#endif 
         thisport = "";
     else {
         sprintf(buf, ":%d", r->server->port);
@@ -882,7 +894,11 @@ static int hook_uri2file(request_rec *r)
     thisurl = table_get(r->subprocess_env, ENVVAR_SCRIPT_URL);
 
     /* set the variable */
+#ifdef APACHE_SSL
+    var = pstrcat(r->pool, http_method(r), "://", thisserver, thisport, thisurl, NULL);
+#else
     var = pstrcat(r->pool, "http://", thisserver, thisport, thisurl, NULL);
+#endif
     table_set(r->subprocess_env, ENVVAR_SCRIPT_URI, pstrdup(r->pool, var));
 
 
@@ -902,6 +918,11 @@ static int hook_uri2file(request_rec *r)
             strncmp(r->filename, "proxy:", 6) == 0) {
             /* it should be go on as an internal proxy request */
 
+            /* check if the proxy module is enabled, so
+               we can actually use it! */
+            if (!proxy_available)
+                return FORBIDDEN; 
+
             /* make sure the QUERY_STRING and
                PATH_INFO parts get incorporated */
             r->filename = pstrcat(r->pool, r->filename, 
@@ -917,11 +938,24 @@ static int hook_uri2file(request_rec *r)
             rewritelog(r, 1, "go-ahead with proxy request %s [OK]", r->filename);
             return OK; 
         }
+#ifdef APACHE_SSL
+        else if (  (!r->connection->client->ssl &&
+                    strlen(r->filename) > 7     &&
+                    strncmp(r->filename, "http://", 7) == 0)
+                || (r->connection->client->ssl  &&
+                    strlen(r->filename) > 8     &&
+                    strncmp(r->filename, "https://", 8) == 0) ) {
+#else
         else if (strlen(r->filename) > 7 &&
                  strncmp(r->filename, "http://", 7) == 0) {
+#endif
             /* it was finally rewritten to a remote path */
 
+#ifdef APACHE_SSL
+            for (cp = r->filename+strlen(http_method(r))+3; *cp != '/' && *cp != '\0'; cp++)
+#else
             for (cp = r->filename+7; *cp != '/' && *cp != '\0'; cp++)
+#endif
                 ;
             if (*cp != '\0') {
                 rewritelog(r, 1, "escaping %s for redirect", r->filename);
@@ -1113,15 +1147,28 @@ static int hook_fixup(request_rec *r)
             rewritelog(r, 1, "[per-dir %s] go-ahead with proxy request %s [OK]", dconf->directory, r->filename);
             return OK; 
         }
+#ifdef APACHE_SSL
+        else if (  (!r->connection->client->ssl &&
+                    strlen(r->filename) > 7     &&
+                    strncmp(r->filename, "http://", 7) == 0)
+                || (r->connection->client->ssl  &&
+                    strlen(r->filename) > 8     &&
+                    strncmp(r->filename, "https://", 8) == 0) ) {
+#else
         else if (strlen(r->filename) > 7 &&
                  strncmp(r->filename, "http://", 7) == 0) {
+#endif
             /* it was finally rewritten to a remote path */
 
             /* because we are in a per-dir context
                first try to replace the directory with its base-URL
                if there is a base-URL available */
             if (dconf->baseurl != NULL) {
+#ifdef APACHE_SSL
+                if ((cp = strchr(r->filename+strlen(http_method(r))+3, '/')) != NULL) {
+#else
                 if ((cp = strchr(r->filename+7, '/')) != NULL) {
+#endif
                     rewritelog(r, 2, "[per-dir %s] trying to replace prefix %s with %s", dconf->directory, dconf->directory, dconf->baseurl);
                     cp2 = subst_prefix_path(r, cp, dconf->directory, dconf->baseurl);
                     if (strcmp(cp2, cp) != 0) {
@@ -1132,7 +1179,11 @@ static int hook_fixup(request_rec *r)
             }
 
             /* now prepare the redirect... */
+#ifdef APACHE_SSL
+            for (cp = r->filename+strlen(http_method(r))+3; *cp != '/' && *cp != '\0'; cp++)
+#else
             for (cp = r->filename+7; *cp != '/' && *cp != '\0'; cp++)
+#endif
                 ;
             if (*cp != '\0') {
                 rewritelog(r, 1, "[per-dir %s] escaping %s for redirect", dconf->directory, r->filename);
@@ -1440,7 +1491,14 @@ static int apply_rewrite_rule(request_rec *r, rewriterule_entry *p, char *perdir
         }
 
         /* if this is a implicit redirect in a per-dir rule */
+#ifdef APACHE_SSL
+        if (perdir != NULL && (  (!r->connection->client->ssl &&
+                                  strncmp(output, "http://", 7) == 0)
+                              || (r->connection->client->ssl &&
+                                  strncmp(output, "https://", 8) == 0) )) { 
+#else
         if (perdir != NULL && strncmp(output, "http://", 7) == 0) {
+#endif
             if (p->flags & RULEFLAG_NOTMATCH) {
                 strcpy(newuri, output);
                 expand_variables_inbuffer(r, newuri);                /* expand %{...} */
@@ -1509,15 +1567,35 @@ static int apply_rewrite_rule(request_rec *r, rewriterule_entry *p, char *perdir
         /* if we are forced to do a explicit redirect by [R] flag
            finally prefix the new URI with http://<ourname> explicitly */
         if (flags & RULEFLAG_FORCEREDIRECT) {
+#ifdef APACHE_SSL
+           if ( (!r->connection->client->ssl &&
+                 strncmp(r->filename, "http://", 7) != 0) ||
+                (r->connection->client->ssl &&
+                 strncmp(r->filename, "https://", 8) != 0)) {
+#else
             if (strncmp(r->filename, "http://", 7) != 0) {
+#endif
+#ifdef APACHE_SSL
+                if ((!r->connection->client->ssl && r->server->port == 80) ||
+                    ( r->connection->client->ssl && r->server->port == 443)  )
+#else
                 if (r->server->port == 80)
+#endif
                     strcpy(port, "");
                 else 
                     sprintf(port, ":%d", r->server->port);
                 if (r->filename[0] == '/')
+#ifdef APACHE_SSL
+                    sprintf(newuri, "%s://%s%s%s", http_method(r), r->server->server_hostname, port, r->filename);
+#else
                     sprintf(newuri, "http://%s%s%s", r->server->server_hostname, port, r->filename);
+#endif
                 else
+#ifdef APACHE_SSL
+                    sprintf(newuri, "%s://%s%s/%s", http_method(r), r->server->server_hostname, port, r->filename);
+#else
                     sprintf(newuri, "http://%s%s/%s", r->server->server_hostname, port, r->filename);
+#endif
                 if (perdir == NULL) 
                     rewritelog(r, 2, "prepare forced redirect %s -> %s", r->filename, newuri);
                 else
@@ -1648,13 +1726,24 @@ static void reduce_uri(request_rec *r)
     static char buf[MAX_STRING_LEN];
     static char olduri[MAX_STRING_LEN];
 
+#ifdef APACHE_SSL
+    if (   (!r->connection->client->ssl &&
+            strncmp(r->filename, "http://", 7) == 0)
+        || (r->connection->client->ssl &&
+            strncmp(r->filename, "https://", 8) == 0)) {
+#else
     if (strncmp(r->filename, "http://", 7) == 0) {
+#endif
         /* there was really a rewrite to a remote path */
 
         strcpy(olduri, r->filename); /* save for logging */
 
         /* cut the hostname and port out of the URI */
+#ifdef APACHE_SSL
+        strcpy(buf, r->filename+strlen(http_method(r))+3);
+#else
         strcpy(buf, r->filename+7);
+#endif
         hostp = buf;
         for (cp = hostp; *cp != '\0' && *cp != '/' && *cp != ':'; cp++)
             ;
@@ -2079,7 +2168,7 @@ static void rewritelog_child(void *cmd)
     exit(1);
 }
 
-static void rewritelog(request_rec *r, int level, char *text, ...)
+static void rewritelog(request_rec *r, int level, const char *text, ...)
 {
     rewrite_server_conf *conf;
     conn_rec *connect;
@@ -2134,7 +2223,11 @@ static void rewritelog(request_rec *r, int level, char *text, ...)
 
 static char *current_logtime(request_rec *r)
 {
+#ifdef IS_APACHE_12
     int timz;
+#else
+    long timz;
+#endif
     struct tm *t;
     static char tstr[MAX_STRING_LEN];
     char sign;
@@ -2146,7 +2239,11 @@ static char *current_logtime(request_rec *r)
 
     strftime(tstr, MAX_STRING_LEN,"[%d/%b/%Y:%H:%M:%S ",t);
 
+#ifdef IS_APACHE_12
     sprintf(tstr + strlen(tstr), "%c%.2d%.2d]", sign, timz/60, timz%60);
+#else
+    sprintf(tstr + strlen(tstr), "%c%02ld%02ld]", sign, timz/3600, timz%3600);
+#endif
 
     return pstrdup(r->pool, tstr);
 }
@@ -2243,7 +2340,7 @@ static char *expand_variables(request_rec *r, char *str)
     strcpy(input, str);
     output[0] = '\0';
     expanded = 0;
-    for (cp = input; cp < output+MAX_STRING_LEN; ) {
+    for (cp = input; cp < input+MAX_STRING_LEN; ) {
         if ((cp2 = strstr(cp, "%{")) != NULL) {
             if ((cp3 = strstr(cp2, "}")) != NULL) {
                 *cp2 = '\0';
@@ -2407,7 +2504,7 @@ static char *lookup_variable(request_rec *r, char *var)
         return pstrdup(r->pool, result);
 }
  
-static char *lookup_header(request_rec *r, char *name)
+static char *lookup_header(request_rec *r, const char *name)
 {
     array_header *hdrs_arr;
     table_entry *hdrs;
@@ -2711,7 +2808,7 @@ static int is_this_our_host(request_rec *r, char *testhost)
     char **cppHNLtest;
     char *ourhostname;
     char *ourhostip;
-    const char *names;
+    _const char *names;
     char *name;
     int i, j;
 
@@ -2825,6 +2922,45 @@ static char **resolv_ipaddr_list(request_rec *r, char *name)
     cppHNL[i] = NULL;
     return cppHNL;
 }
+
+
+/*
+**
+**  check if proxy module is available
+**  i.e. if it is compiled in and turned on
+**
+*/
+
+#ifdef IS_APACHE_12
+int is_proxy_available(server_rec *s)
+{
+    extern module *preloaded_modules[];
+    command_rec *c;
+    int n;
+    
+    for (n = 0; preloaded_modules[n] != NULL; n++) {
+        for (c = preloaded_modules[n]->cmds; c && c->name; ++c) {
+            if (strcmp(c->name, "ProxyRequests") == 0) {
+                return 1;
+            }
+        }
+    }
+    return 0;
+}
+#else
+int is_proxy_available(server_rec *s)
+{
+    extern char *module_names[];
+    int n;
+    
+    for (n = 0; module_names[n] != NULL; n++) {
+        if (strcmp(module_names[n], "proxy_module") == 0) {
+            return 1;
+        }
+    }
+    return 0;
+}
+#endif
 
 
 /*EOF*/
