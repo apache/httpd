@@ -1,4 +1,7 @@
 Changes with Apache 2.0.45
+  *) Win32: Avoid busy wait (consuming all the CPU idle cycles) when
+     all worker threads are busy. 
+     [Igor Nazarenko <igor_nazarenko@hotmail.com>]
 
   *) Keep the subrequest filter in place when a subrequest is 
      redirected.  PR 15423.  [Jeff Trawick]
