@@ -904,7 +904,7 @@ STACK_OF(X509_NAME) *ssl_init_FindCAList(server_rec *s, apr_pool_t *pp, char *cp
      * is remains in memory for the complete operation time of
      * the server.
      */
-    p = apr_pool_sub_make(pp, NULL);
+    apr_pool_sub_make(&p, pp, NULL);
 
     /*
      * Start with a empty stack/list where new
