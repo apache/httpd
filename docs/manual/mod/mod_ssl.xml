@@ -90,9 +90,9 @@ compatibility variables.</p>
 <tr><td><code>SSL_SERVER_A_KEY</code></td>              <td>string</td>    <td>Algorithm used for the public key of server's certificate</td></tr>
 <tr><td><code>SSL_SERVER_CERT</code></td>               <td>string</td>    <td>PEM-encoded server certificate</td></tr>
 </table>
-</section>
 <p>[ where <em>x509</em> is a component of a X.509 DN:
   <code>C,ST,L,O,OU,CN,T,I,G,S,D,UID,Email</code> ]</p>
+</section>
 
 <section id="logformats"><title>Custom Log Formats</title>
 
