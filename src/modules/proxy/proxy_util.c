@@ -1168,9 +1168,14 @@ proxy_doconnect(int sock, struct sockaddr_in *addr, request_rec *r)
             errno = WSAGetLastError() - WSABASEERR;
 #endif /* WIN32 */
     } while (i == -1 && errno == EINTR);
-    if (i == -1) proxy_log_uerror("connect", NULL, NULL, r->server);
+    if (i == -1) {
+	char details[128];
+
+	ap_snprintf(details, sizeof(details), "%s port %d",
+		    inet_ntoa(addr->sin_addr), ntohs(addr->sin_port));
+	proxy_log_uerror("connect", details, NULL, r->server);
+    }
     kill_timeout(r);
 
     return i;
 }
-
