@@ -1,5 +1,9 @@
 Changes with Apache 1.3.18
 
+  *) Trailing slashes (if they exist) are now removed from ServerRoot,
+     because there were known problems with them.
+     ["William A. Rowe, Jr." <wrowe@rowe-clan.net>]
+
   *) Changed ap_os_is_filename_valid on NetWare to accept 
      SERVER/VOLUME:/PATH/FILE as a valid filename pattern. 
      [Brad Nicholes <BNICHOLES@novell.com>]

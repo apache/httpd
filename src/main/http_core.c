@@ -2079,6 +2079,9 @@ static const char *set_server_root(cmd_parms *cmd, void *dummy, char *arg)
     if (!ap_is_directory(arg)) {
         return "ServerRoot must be a valid directory";
     }
+    /* ServerRoot is never '/' terminated */
+    while (strlen(ap_server_root) > 1 && ap_server_root[strlen(ap_server_root)-1] == '/')
+        ap_server_root[strlen(ap_server_root)-1] = '\0';
     ap_cpystrn(ap_server_root, arg,
 	       sizeof(ap_server_root));
     return NULL;
