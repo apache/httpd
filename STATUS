@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/11/15 21:14:12 $]
+Last modified at [$Date: 2003/11/15 21:44:12 $]
 
 Release:
 
@@ -314,7 +314,7 @@ PATCHES TO BACKPORT FROM 2.1
       +1: nd
 
     * EBCDIC: Translate the protocol data...  SHOWSTOPPER
-        modules/http/http_protocol.c: r1.469
+        modules/http/http_protocol.c: r1.469, r1.472
       +1: trawick
 
     * LDAP cache fixes from Matthieu Estrade; see PR 18756
