@@ -21,6 +21,12 @@ WIN32 1.3.2 RELEASE SHOWSTOPPERS:
     * fix O(n^2) attack in mod_isapi.c ... i.e. recopy the code from
       scan_script_headers_err_core.
 
+Unix 1.3.2 RELEASE SHOWSTOPPERS:
+
+    * header detection is broken; eg. sys/resource.h often requires 
+      other includes first, etc.  This breaks things like RLimit*
+      on many platforms.
+
 Documentation that needs writing:
 
     * Need a document explaining mod_rewrite/"UseCanonicalName off" based
