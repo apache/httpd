@@ -169,7 +169,8 @@ AC_ARG_WITH(program-name,
   progname="httpd"] )
 
 APACHE_FAST_OUTPUT(Makefile ap/Makefile lib/Makefile main/Makefile
-            modules/Makefile os/Makefile)
+            modules/Makefile os/Makefile support/Makefile)
+
 APACHE_FAST_GENERATE
 	
 dnl ## Build modules.c
