@@ -275,35 +275,35 @@
 <tr><td>
 <table bgcolor="#ffffff">
   <tr>
-    <td><strong><xsl:value-of select="$messages/message[@name='description']"/>: </strong></td>
+    <td nowrap="nowrap"><strong><xsl:value-of select="$messages/message[@name='description']"/>: </strong></td>
     <td><xsl:value-of select="description"/></td>
   </tr>
   <tr>
-    <td><a class="help" href="directive-dict.html#Syntax"><xsl:value-of select="$messages/message[@name='syntax']"/>:</a> </td>
+    <td nowrap="nowrap"><a class="help" href="directive-dict.html#Syntax"><xsl:value-of select="$messages/message[@name='syntax']"/>:</a> </td>
     <td><xsl:apply-templates select="syntax"/></td>
   </tr>
   <xsl:if test="default">
     <tr>
-      <td><a class="help" href="directive-dict.html#Default"><xsl:value-of select="$messages/message[@name='default']"/>:</a> </td>
+      <td nowrap="nowrap"><a class="help" href="directive-dict.html#Default"><xsl:value-of select="$messages/message[@name='default']"/>:</a> </td>
       <td><code><xsl:value-of select="default"/></code></td>
     </tr>
     </xsl:if>
       <tr>
-        <td><a class="help" href="directive-dict.html#Context"><xsl:value-of select="$messages/message[@name='context']"/>:</a> </td>
+        <td nowrap="nowrap"><a class="help" href="directive-dict.html#Context"><xsl:value-of select="$messages/message[@name='context']"/>:</a> </td>
         <td><xsl:apply-templates select="contextlist"/></td>
       </tr>
       <xsl:if test="override">
         <tr>
-          <td><a class="help" href="directive-dict.html#Override"><xsl:value-of select="$messages/message[@name='override']"/>:</a> </td>
+          <td nowrap="nowrap"><a class="help" href="directive-dict.html#Override"><xsl:value-of select="$messages/message[@name='override']"/>:</a> </td>
           <td><xsl:value-of select="override"/></td>
         </tr>
         </xsl:if>
         <tr>
-          <td><a class="help" href="directive-dict.html#Status"><xsl:value-of select="$messages/message[@name='status']"/>:</a> </td>
+          <td nowrap="nowrap"><a class="help" href="directive-dict.html#Status"><xsl:value-of select="$messages/message[@name='status']"/>:</a> </td>
           <td><xsl:value-of select="/modulesynopsis/status"/></td>
         </tr>
         <tr>
-          <td><a class="help" href="directive-dict.html#Module"><xsl:value-of select="$messages/message[@name='module']"/>:</a> </td>
+          <td nowrap="nowrap"><a class="help" href="directive-dict.html#Module"><xsl:value-of select="$messages/message[@name='module']"/>:</a> </td>
           <td>
             <xsl:if test="modulelist"><xsl:apply-templates select="modulelist"/></xsl:if>
             <xsl:if test="not(modulelist)">
@@ -313,7 +313,7 @@
           </tr>
           <xsl:if test="compatibility">
             <tr>
-              <td valign="top" align="left"><a class="help" href="directive-dict.html#Compatibility"><xsl:value-of select="$messages/message[@name='compatibility']"/>:</a> </td>
+              <td valign="top" align="left" nowrap="nowrap"><a class="help" href="directive-dict.html#Compatibility"><xsl:value-of select="$messages/message[@name='compatibility']"/>:</a> </td>
               <td><xsl:value-of select="compatibility"/></td>
             </tr>
           </xsl:if>
