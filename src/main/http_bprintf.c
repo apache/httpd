@@ -42,6 +42,10 @@
     /*
      * Max size of a format specifier is 1 + 5 + 7 + 7 + 2 + 1 + slop
      */
+#define NULL_STRING "(null)"
+    /*
+     * String displayed if given a NULL pointer.
+     */
 
 /*
  * Copy n characters from *srcPtr to *destPtr, then increment
@@ -277,6 +281,9 @@ int vbprintf(BUFF *bp, const char *format, va_list arg)
 
 		case 's':
 		    charPtrArg = va_arg(arg, char *);
+		    if (charPtrArg == NULL) {
+			charPtrArg = NULL_STRING;
+		    };
 		    if(precision == -1)
 			buffReqd = strlen(charPtrArg);
 		    else
@@ -444,6 +451,9 @@ int vbprintf(BUFF *bp, const char *format, va_list arg)
 		    if(fastPath)
 			{
 			buffPtr = va_arg(arg, char *);
+			if (buffPtr == NULL) {
+			    buffPtr = NULL_STRING;
+			};
 			buffCount = strlen(buffPtr);
 			buffLen = buffCount + 1;
 			}

@@ -1,5 +1,8 @@
 Changes with Apache 1.2b7
 
+  *) Stop vbprintf from crashing if given a NULL string pointer; 
+     print (null) instead.  [Ken Coar]
+
   *) Don't disable Nagle algorithm if system doesn't have TCP_NODELAY.
      [Marc Slemko and Roy Fielding]
 
