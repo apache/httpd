@@ -75,6 +75,8 @@
  * 09.4.96  Added message for non-STATUS compiled version
  * 18.4.96  Added per child and per slot counters [Jim Jagielski]
  * 01.5.96  Table format, cleanup, even more spiffy data [Chuck Murcko/Jim J.]
+ * 18.5.96  Adapted to use new rprintf() routine, incidentally fixing a missing
+ *          piece in short reports [Ben Laurie]
  * 21.5.96  Additional Status codes (DNS and LOGGING only enabled if
              extended STATUS is enabled) [George Burgyan/Jim J.]
  */
@@ -103,14 +105,13 @@ void format_byte_out(request_rec *r,unsigned long bytes)
     char ss[20];
 
     if (bytes < (5 * KBYTE))
-        sprintf(ss,"%dB",(int)bytes);
+	rprintf(r,"%d B",(int)bytes);
     else if (bytes < (MBYTE / 2))
-	sprintf(ss,"%.1fkB",(float)bytes/KBYTE);
+	rprintf(r,"%.1f kB",(float)bytes/KBYTE);
     else if (bytes < (GBYTE / 2))
-	sprintf(ss,"%.1fMB",(float)bytes/MBYTE);
+	rprintf(r,"%.1f MB",(float)bytes/MBYTE);
     else
-	sprintf(ss,"%.1fGB",(float)bytes/GBYTE);
-    rputs(ss,r);
+	rprintf(r,"%.1f GB",(float)bytes/GBYTE);
 }
 
 void show_time(request_rec *r,time_t tsecs)
@@ -128,26 +129,13 @@ void show_time(request_rec *r,time_t tsecs)
     s=buf;
     *s='\0';
     if(days)
-    {
-      sprintf(s," %ld day%s",days,days==1?"":"s");
-      s+=strlen(s);
-    }
+	rprintf(r," %ld day%s",days,days==1?"":"s");
     if(hrs)
-    {
-      sprintf(s," %ld hour%s",hrs,hrs==1?"":"s");
-      s+=strlen(s);
-    }
+	rprintf(r," %ld hour%s",hrs,hrs==1?"":"s");
     if(mins)
-    {
-      sprintf(s," %ld minute%s",mins,mins==1?"":"s");
-      s+=strlen(s);
-    }
+	rprintf(r," %ld minute%s",mins,mins==1?"":"s");
     if(secs)
-    {
-      sprintf(s," %ld second%s",secs,secs==1?"":"s");
-      s+=strlen(s);
-    }
-    rputs(buf,r);
+	rprintf(r," %ld second%s",secs,secs==1?"":"s");
 }
 
 /* Main handler for x-httpd-status requests */
@@ -194,7 +182,6 @@ int status_handler (request_rec *r)
     server_rec *server = r->server;
     short_score score_record;
     char status[]="??????????";
-    char buffer[200];
     char stat_buffer[HARD_SERVER_MAX];
     clock_t tu,ts,tcu,tcs;
 
@@ -297,62 +284,36 @@ int status_handler (request_rec *r)
 #if defined(STATUS)
     if (short_report)
     {
-        sprintf(buffer,"Total Accesses: %lu\nTotal Bytes: %lu\n",count,bcount);
-	rputs(buffer,r);
+        rprintf(r,"Total Accesses: %lu\nTotal Bytes: %lu\n",count,bcount);
 
 	if(ts || tu || tcu || tcs)
-	{
-	    sprintf(buffer,"CPULoad: %g\n",(tu+ts+tcu+tcs)/tick/up_time*100.);
-	    rputs(buffer,r);
-	}
+	    rprintf(r,"CPULoad: %g\n",(tu+ts+tcu+tcs)/tick/up_time*100.);
 
-	sprintf(buffer,"Uptime: %ld\n",(long)(up_time));
-	rputs(buffer,r);
+	rprintf(r,"Uptime: %ld\n",(long)(up_time));
 	if (up_time>0)
-	{ 
-	    sprintf(buffer,"ReqPerSec: %g\n",
-		    (float)count/(float)up_time);
-	    rputs(buffer,r);
-	}
+	    rprintf(r,"ReqPerSec: %g\n",(float)count/(float)up_time);
 
 	if (up_time>0)
-	{
-	    sprintf(buffer,"BytesPerSec: %g\n",
-		(float)bcount/(float)up_time);
-	    rputs(buffer,r);
-	}
+	    rprintf(r,"BytesPerSec: %g\n",(float)bcount/(float)up_time);
 
 	if (count>0)
-	{
-	    sprintf(buffer,"BytesPerReq: %g\n",
-		(float)bcount/(float)count);
-	    rputs(buffer,r);
-	}
+	    rprintf(r,"BytesPerReq: %g\n",(float)bcount/(float)count);
     } else /* !short_report */
     {
-        sprintf(buffer,"Total accesses: %lu - Total Traffic: ", count);
-	rputs(buffer,r);
+	rprintf(r,"Total accesses: %lu - Total Traffic: ", count);
 	format_byte_out(r,bcount);
 	rputs("<br>\n",r);
-        sprintf(buffer,"CPU Usage: u%g s%g cu%g cs%g",
+        rprintf(r,"CPU Usage: u%g s%g cu%g cs%g",
 		tu/tick,ts/tick,tcu/tick,tcs/tick);
-	rputs(buffer,r);
 
 	if(ts || tu || tcu || tcs)
-	{
-	    sprintf(buffer," - %.3g%% CPU load",
-		(tu+ts+tcu+tcs)/tick/up_time*100.);
-	    rputs(buffer,r);
-	}
+	    rprintf(r," - %.3g%% CPU load",(tu+ts+tcu+tcs)/tick/up_time*100.);
 
 	rputs("<br>\n",r);
 
 	if (up_time>0)
-	{
-	    sprintf(buffer,"%.3g requests/sec - ",
+	    rprintf(r,"%.3g requests/sec - ",
 		    (float)count/(float)up_time);
-	    rputs(buffer,r);
-	}
 
 	if (up_time>0)
 	{
@@ -388,7 +349,7 @@ int status_handler (request_rec *r)
 
     if (short_report)
     {
-        sprintf(buffer,"\nBusyServers: %d\nIdleServers: %d\n",busy,ready);
+        rprintf(r,"\nBusyServers: %d\nIdleServers: %d\n",busy,ready);
     }
     else 
     {
@@ -401,8 +362,13 @@ int status_handler (request_rec *r)
 	rputs("\"<code>K</code>\" Keepalive (read), \n",r);
 	rputs("\"<code>D</code>\" DNS Lookup, \n",r);
 	rputs("\"<code>L</code>\" Logging<p>\n",r);
+        rprintf(r,"\n%d requests currently being processed, %d idle servers\n"
+,busy,ready);
+
+#if 0
         sprintf(buffer,"\n%d requests currently being processed, %d idle servers\n",busy,ready);
 	rputs(buffer,r);
+#endif
     }
 
 #if defined(STATUS)
@@ -410,7 +376,7 @@ int status_handler (request_rec *r)
     	if(no_table_report)
             rputs("<p><hr><h2>Server Details</h2>\n\n",r);
 	else
-            rputs("<p>\n\n<table border=0><tr><th>Srv<th>PID<th>Acc<th>M<th>CPU\n<th>SS<th>B0<th>B1<th>B2<th>Host<th>Request</tr>\n\n",r);
+            rputs("<p>\n\n<table border=0><tr><th>Srv<th>PID<th>Acc<th>M<th>CPU\n<th>SS<th>Conn<th>Child<th>Slot<th>Host<th>Request</tr>\n\n",r);
 
 
     for (i = 0; i<HARD_SERVER_MAX; ++i)
@@ -429,9 +395,8 @@ int status_handler (request_rec *r)
 	    {
 		if (no_table_report)
 		{
-	            sprintf(buffer,"<b>Server %d</b> (%d): %d|%lu|%lu [",
+	            rprintf(r,"<b>Server %d</b> (%d): %d|%lu|%lu [",
 		     i,(int)score_record.pid,(int)conn_lres,my_lres,lres);
-		    rputs(buffer,r);
 
 		    switch (score_record.status)
 		    {
@@ -460,28 +425,25 @@ int status_handler (request_rec *r)
 		            rputs("Dead",r);
 		            break;
 		    }
-		    sprintf(buffer,"] u%g s%g cu%g cs%g\n %s (",
+		    rprintf(r,"] u%g s%g cu%g cs%g\n %s (",
 			    score_record.times.tms_utime/tick,
 			    score_record.times.tms_stime/tick,
 			    score_record.times.tms_cutime/tick,
 			    score_record.times.tms_cstime/tick,
 			    asctime(localtime(&score_record.last_used)));
-		    rputs(buffer,r);
 		    format_byte_out(r,(unsigned long)conn_bytes);
 		    rputs("|",r);
 		    format_byte_out(r,my_bytes);
 		    rputs("|",r);
 		    format_byte_out(r,bytes);
 		    rputs(")\n",r);
-		    sprintf(buffer," <i>%s {%s}</i><br>\n\n",
-			score_record.client, score_record.request);
-		    rputs(buffer,r);
+		    rprintf(r," <i>%s {%s}</i><br>\n\n",
+			    score_record.client, score_record.request);
 		}
 		else /* !no_table_report */
 		{
-	            sprintf(buffer,"<tr><td><b>%d</b><td>%d<td>%d/%lu/%lu",
+	            rprintf(r,"<tr><td><b>%d</b><td>%d<td>%d/%lu/%lu",
 		     i,(int)score_record.pid,(int)conn_lres,my_lres,lres);
-		    rputs(buffer,r);
 
 		    switch (score_record.status)
 		    {
@@ -510,20 +472,17 @@ int status_handler (request_rec *r)
 		            rputs("<td>.",r);
 		            break;
 		    }
-		    sprintf(buffer,"\n<td>%.2f<td>%.0f",
+		    rprintf(r,"\n<td>%.2f<td>%.0f",
 			    (score_record.times.tms_utime +
 			    score_record.times.tms_stime +
 			    score_record.times.tms_cutime +
 			    score_record.times.tms_cstime)/tick,
 			    difftime(nowtime, score_record.last_used));
-		    rputs(buffer,r);
-		    sprintf(buffer,"<td>%-1.1f<td>%-2.2f<td>%-2.2f\n",
+		    rprintf(r,"<td>%-1.1f<td>%-2.2f<td>%-2.2f\n",
 			(float)conn_bytes/KBYTE, (float)my_bytes/MBYTE,
 			(float)bytes/MBYTE);
-		    rputs(buffer,r);
-		    sprintf(buffer,"<td>%s<td>%s</tr>\n\n",
+		    rprintf(r,"<td>%s<td>%s</tr>\n\n",
 			score_record.client, score_record.request);
-		    rputs(buffer,r);
 		}	/* no_table_report */
 	    }		/* !short_report */
 	}		/* if (<active child>) */
@@ -532,17 +491,18 @@ int status_handler (request_rec *r)
     if (!(short_report || no_table_report))
     {
 	rputs("</table>\n \
-<ul>\n \
-  <li>SRV = \"Server number\"\n \
-  <li>PID = \"OS process ID\"\n \
-  <li>Acc = \"Number of accesses this connection / this child / this slot\"\n \
-  <li>M = \"Mode of operation\"\n \
-  <li>CPU = \"CPU usage, number of seconds\"\n \
-  <li>SS = \"Seconds since beginning of most recent request\"\n \
-  <li>B0 = \"Kilobytes transferred this connection\"\n \
-  <li>B1 = \"Megabytes transferred this child\"\n \
-  <li>B2 = \"Total megabytes transferred this slot\"\n \
-</ul>\n",r);
+<hr> \
+<table>\n \
+<tr><th>Srv<td>Server number\n \
+<tr><th>PID<td>OS process ID\n \
+<tr><th>Acc<td>Number of accesses this connection / this child / this slot\n \
+<tr><th>M<td>Mode of operation\n \
+<tr><th>CPU<td>CPU usage, number of seconds\n \
+<tr><th>SS<td>Seconds since beginning of most recent request\n \
+<tr><th>Conn<td>Kilobytes transferred this connection\n \
+<tr><th>Child<td>Megabytes transferred this child\n \
+<tr><th>Slot<td>Total megabytes transferred this slot\n \
+</table>\n",r);
     }
 
 #else /* !defined(STATUS) */

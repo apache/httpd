@@ -747,6 +747,18 @@ rputs(const char *str, request_rec *r)
     return bputs(str, r->connection->client);
 }
 
+int rprintf(request_rec *r,const char *fmt,...)
+    {
+    va_list vlist;
+    int n;
+
+    if(r->connection->aborted) return EOF;
+    va_start(vlist,fmt);
+    n=vbprintf(r->connection->client,fmt,vlist);
+    va_end(vlist);
+    return n;
+    }
+
 int
 rvputs(request_rec *r, ...)
 {

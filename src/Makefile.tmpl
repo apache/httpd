@@ -5,7 +5,7 @@
 
 OBJS= alloc.o http_main.o http_core.o http_config.o http_request.o \
   http_log.o http_protocol.o rfc1413.o util.o util_script.o modules.o buff.o\
-  md5c.o util_md5.o explain.o $(MODULES)
+  md5c.o util_md5.o explain.o http_bprintf.o $(MODULES)
 
 .c.o:
 	$(CC) -c $(CFLAGS) $(AUX_CFLAGS) $<
@@ -51,20 +51,21 @@ http_main.o: scoreboard.h
 http_core.o rfc1413.o: rfc1413.h
 
 #Modules
-$(MODULES): http_config.h
+$(MODULES): http_config.h httpd.h
 mod_dld.o: http_conf_globals.h
 mod_ai_backcompat.o mod_auth.o mod_auth_dbm.o mod_cgi.o mod_dir.o: http_core.h
 mod_access.o mod_imap.o mod_include.o mod_negotiation.o: http_core.h
 mod_asis.o mod_auth.o mod_auth_dbm.o mod_cgi.o mod_dir.o: http_core.h
-mod_cookies.o mod_log_common.o: http_core.h
+mod_status.o mod_cookies.o mod_log_common.o: http_core.h
 mod_access.o mod_proxy.o mod_imap.o mod_include.o mod_negotiation.o: http_log.h
 mod_proxy.o mod_asis.o mod_cgi.o mod_dir.o mod_imap.o: http_main.h
-mod_include.o: http_main.h
+mod_status.o mod_include.o: http_main.h
 mod_proxy.o mod_asis.o mod_auth.o mod_auth_dbm.o mod_cgi.o: http_protocol.h
-mod_dir.o: http_protocol.h
+mod_status.o mod_dir.o: http_protocol.h
 mod_imap.o mod_include.o: http_protocol.h
 mod_cgi.o mod_dir.o mod_imap.o mod_include.o mod_negotiation.o: http_request.h
 mod_proxy.o: md5.h
+mod_status.o: util_script.h
 mod_asis.o mod_cgi.o mod_dir.o mod_imap.o mod_include.o: util_script.h
 mod_digest.o: util_md5.h
 mod_status.o: scoreboard.h

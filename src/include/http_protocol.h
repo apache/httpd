@@ -108,8 +108,9 @@ long send_fd(FILE *f, request_rec *r);
 long rprintf (request_rec *r, char *s, ...);     
 #endif
 int rputc (int c, request_rec *r);     
-extern int rputs(const char *str, request_rec *r);
-extern int rvputs(request_rec *r, ...);
+int rputs(const char *str, request_rec *r);
+int rvputs(request_rec *r, ...);
+int rprintf(request_rec *r,const char *fmt,...);
      
 /*
  * Index used in custom_responses array for a specific error code

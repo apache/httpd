@@ -102,7 +102,9 @@ EXTRA_LIBS=
 #AUX_CFLAGS= -DSCO
 #AUX_LIBS= -lPW -lsocket -lmalloc -lcrypt_i
 # For SCO OpenServer Release 5
-#AUX_CFLAGS= -DSCO5
+# -K noinline is needed to work around an optimiser bug which appears in
+# mod_bprintf.c
+#AUX_CFLAGS= -DSCO5 -K noinline
 #AUX_LIBS=-lsocket -lmalloc -lprot
 # For SVR4
 #AUX_CFLAGS= -DSVR4

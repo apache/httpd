@@ -50,6 +50,8 @@
  *
  */
 
+#include <stdarg.h>
+
 /* Reading is buffered */
 #define B_RD     (1)
 /* Writing is buffered */
@@ -110,6 +112,8 @@ extern int bwrite(BUFF *fb, const void *buf, int nbyte);
 extern int bflush(BUFF *fb);
 extern int bputs(const char *x, BUFF *fb);
 extern int bvputs(BUFF *fb, ...);
+extern int bprintf(BUFF *fb,const char *fmt,...);
+extern int vbprintf(BUFF *fb,const char *fmt,va_list vlist);
 
 /* Internal routines */
 extern int bflsbuf(int c, BUFF *fb);
