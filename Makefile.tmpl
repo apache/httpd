@@ -267,7 +267,7 @@ install-mktree:
 		echo "chown $(conf_user) $(root)$(proxycachedir)"; \
 		chown $(conf_user) $(root)$(proxycachedir); \
 		echo "chgrp $(conf_group) $(root)$(proxycachedir)"; \
-		chgrp $(conf_group) $(root)$(proxycachedir); \
+		chgrp "$(conf_group)" $(root)$(proxycachedir); \
 	fi
 	@echo "<=== [mktree]"
 
