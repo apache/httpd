@@ -83,34 +83,35 @@ void ssl_log_open(server_rec *s_main, server_rec *s, apr_pool_t *p)
      * filedescriptors in mass-vhost situation. Be careful, this works
      * fine because the close happens implicitly by the pool facility.
      */
-    if (   s != s_main 
-        && sc_main->fileLogFile != NULL
-        && (   (sc->szLogFile == NULL)
-            || (   sc->szLogFile != NULL 
-                && sc_main->szLogFile != NULL 
-                && strEQ(sc->szLogFile, sc_main->szLogFile)))) {
-        sc->fileLogFile = sc_main->fileLogFile;
+    if ((s != s_main) &&
+        (sc_main->log_file != NULL) &&
+        ((sc->log_file_name == NULL) ||
+         ((sc->log_file_name != NULL) &&
+          (sc_main->log_file_name != NULL) &&
+          strEQ(sc->log_file_name, sc_main->log_file_name))))
+    {
+        sc->log_file = sc_main->log_file;
     }
-    else if (sc->szLogFile != NULL) {
-        if (strEQ(sc->szLogFile, "/dev/null"))
+    else if (sc->log_file_name != NULL) {
+        if (strEQ(sc->log_file_name, "/dev/null"))
             return;
-        else if (sc->szLogFile[0] == '|') {
-            szLogFile = sc->szLogFile + 1;
+        else if (sc->log_file_name[0] == '|') {
+            szLogFile = sc->log_file_name + 1;
             if ((pl = ap_open_piped_log(p, szLogFile)) == NULL) {
                 ssl_log(s, SSL_LOG_ERROR|SSL_ADD_ERRNO,
                         "Cannot open reliable pipe to SSL logfile filter %s", szLogFile);
                 ssl_die();
             }
-            sc->fileLogFile = ap_piped_log_write_fd(pl); 
+            sc->log_file = ap_piped_log_write_fd(pl); 
         }
         else {
-            szLogFile = ap_server_root_relative(p, sc->szLogFile);
+            szLogFile = ap_server_root_relative(p, sc->log_file_name);
             if (!szLogFile) {
                 ssl_log(s, SSL_LOG_ERROR|SSL_ADD_ERRNO,
-                        "Invalid SSL logfile path %s", sc->szLogFile);
+                        "Invalid SSL logfile path %s", sc->log_file_name);
                 ssl_die();
             }
-            if ((apr_file_open(&(sc->fileLogFile), szLogFile, 
+            if ((apr_file_open(&(sc->log_file), szLogFile, 
                                APR_WRITE|APR_APPEND|APR_CREATE, APR_OS_DEFAULT, p)) 
                                != APR_SUCCESS) {
                 ssl_log(s, SSL_LOG_ERROR|SSL_ADD_ERRNO,
@@ -200,10 +201,10 @@ void ssl_log(server_rec *s, int level, const char *msg, ...)
         add &= ~SSL_ADD_SSLERR;
 
     /*  we log only levels below, except for errors */
-    if (   sc->fileLogFile == NULL
+    if (   sc->log_file == NULL
         && !(level & SSL_LOG_ERROR))
         return;
-    if (   level > sc->nLogLevel
+    if (   level > sc->log_level
         && !(level & SSL_LOG_ERROR))
         return;
 
@@ -241,7 +242,7 @@ void ssl_log(server_rec *s, int level, const char *msg, ...)
     if (add & SSL_INIT) {
         len = strlen(lstr);
         apr_snprintf(&lstr[len], sizeof(lstr) - len,
-                     "Init: (%s) ", sc->szVHostID);
+                     "Init: (%s) ", sc->vhost_id);
     }
 
     /*  create custom message  */
@@ -258,10 +259,10 @@ void ssl_log(server_rec *s, int level, const char *msg, ...)
         astr = " (" SSL_LIBRARY_NAME " library error follows)";
     else
         astr = "";
-    if (level <= sc->nLogLevel && sc->fileLogFile != NULL) {
+    if (level <= sc->log_level && sc->log_file != NULL) {
         apr_snprintf(str, sizeof(str), "%s%s%s%s%s", 
                      tstr, lstr, vstr, astr, nstr);
-        apr_file_printf(sc->fileLogFile, "%s", str);
+        apr_file_printf(sc->log_file, "%s", str);
     }
     if (level & SSL_LOG_ERROR)
         ap_log_error(APLOG_MARK, APLOG_ERR|APLOG_NOERRNO, 0, s,
@@ -269,10 +270,10 @@ void ssl_log(server_rec *s, int level, const char *msg, ...)
 
     /*  write out additional attachment messages  */
     if (add & SSL_ADD_ERRNO) {
-        if (level <= sc->nLogLevel && sc->fileLogFile != NULL) {
+        if (level <= sc->log_level && sc->log_file != NULL) {
             apr_snprintf(str, sizeof(str), "%s%sSystem: %s (errno: %d)%s",
                          tstr, lstr, strerror(safe_errno), safe_errno, nstr);
-            apr_file_printf(sc->fileLogFile, "%s", str);
+            apr_file_printf(sc->log_file, "%s", str);
         }
         if (level & SSL_LOG_ERROR)
             ap_log_error(APLOG_MARK, APLOG_ERR|APLOG_NOERRNO, 0, s,
@@ -283,13 +284,13 @@ void ssl_log(server_rec *s, int level, const char *msg, ...)
         while ((e = ERR_get_error())) {
             cpE = ERR_error_string(e, NULL);
             cpA = ssl_log_annotation(cpE);
-            if (level <= sc->nLogLevel && sc->fileLogFile != NULL) {
+            if (level <= sc->log_level && sc->log_file != NULL) {
                 apr_snprintf(str, sizeof(str), "%s%s%s: %s%s%s%s%s",
                              tstr, lstr, SSL_LIBRARY_NAME, cpE,
                              cpA != NULL ? " [Hint: " : "",
                              cpA != NULL ? cpA : "", cpA != NULL ? "]" : "",
                              nstr);
-                apr_file_printf(sc->fileLogFile, "%s", str);
+                apr_file_printf(sc->log_file, "%s", str);
             }
             if (level & SSL_LOG_ERROR)
                 ap_log_error(APLOG_MARK, APLOG_ERR|APLOG_NOERRNO, 0, s,
@@ -302,8 +303,8 @@ void ssl_log(server_rec *s, int level, const char *msg, ...)
     /* ERR_clear_error(); */
 
     /*  cleanup and return  */
-    if (sc->fileLogFile != NULL)
-        apr_file_flush(sc->fileLogFile);
+    if (sc->log_file != NULL)
+        apr_file_flush(sc->log_file);
     errno = safe_errno;
     return;
 }

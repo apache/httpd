@@ -316,7 +316,7 @@ void ssl_scache_dbm_expire(server_rec *s)
      * cache entries is done only from time to time
      */
     tNow = time(NULL);
-    if (tNow < tLast+sc->nSessionCacheTimeout)
+    if (tNow < tLast+sc->session_cache_timeout)
         return;
     tLast = tNow;
 

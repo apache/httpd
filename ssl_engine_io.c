@@ -890,7 +890,7 @@ void ssl_io_filter_init(conn_rec *c, SSL *ssl)
     apr_pool_cleanup_register(c->pool, (void*)filter,
                               ssl_io_filter_cleanup, apr_pool_cleanup_null);
 
-    if (sc->nLogLevel >= SSL_LOG_DEBUG) {
+    if (sc->log_level >= SSL_LOG_DEBUG) {
         BIO_set_callback(SSL_get_rbio(ssl), ssl_io_data_cb);
         BIO_set_callback_arg(SSL_get_rbio(ssl), (void *)ssl);
     }

@@ -143,13 +143,13 @@ void *ssl_config_server_create(apr_pool_t *p, server_rec *s)
     SSLSrvConfigRec *sc = apr_palloc(p, sizeof(*sc));
 
     sc->mc                     = ssl_config_global_create(s);
-    sc->bEnabled               = UNSET;
-    sc->szVHostID              = NULL;
-    sc->nVHostID_length        = 0;
-    sc->szLogFile              = NULL;
-    sc->fileLogFile            = NULL;
-    sc->nLogLevel              = SSL_LOG_NONE;
-    sc->nSessionCacheTimeout   = UNSET;
+    sc->enabled                = UNSET;
+    sc->vhost_id               = NULL;
+    sc->vhost_id_len           = 0;
+    sc->log_file_name          = NULL;
+    sc->log_file               = NULL;
+    sc->log_level              = SSL_LOG_NONE;
+    sc->session_cache_timeout  = UNSET;
 
     sc->szCACertificatePath    = NULL;
     sc->szCACertificateFile    = NULL;
@@ -196,12 +196,12 @@ void *ssl_config_server_merge(apr_pool_t *p, void *basev, void *addv)
     SSLSrvConfigRec *mrg  = (SSLSrvConfigRec *)apr_palloc(p, sizeof(*mrg));
 
     cfgMerge(mc, NULL);
-    cfgMergeBool(bEnabled);
-    cfgMergeString(szVHostID);
-    cfgMergeString(szLogFile);
-    cfgMerge(fileLogFile, NULL);
-    cfgMerge(nLogLevel, SSL_LOG_NONE);
-    cfgMergeInt(nSessionCacheTimeout);
+    cfgMergeBool(enabled);
+    cfgMergeString(vhost_id);
+    cfgMergeString(log_file_name);
+    cfgMerge(log_file, NULL);
+    cfgMerge(log_level, SSL_LOG_NONE);
+    cfgMergeInt(session_cache_timeout);
 
     cfgMergeString(szCACertificatePath);
     cfgMergeString(szCACertificateFile);
@@ -518,7 +518,7 @@ const char *ssl_cmd_SSLEngine(cmd_parms *cmd, void *ctx, int flag)
 {
     SSLSrvConfigRec *sc = mySrvConfig(cmd->server);
 
-    sc->bEnabled = flag ? TRUE : FALSE;
+    sc->enabled = flag ? TRUE : FALSE;
 
     return NULL;
 }
@@ -957,9 +957,9 @@ const char *ssl_cmd_SSLSessionCacheTimeout(cmd_parms *cmd, void *ctx,
 {
     SSLSrvConfigRec *sc = mySrvConfig(cmd->server);
 
-    sc->nSessionCacheTimeout = atoi(arg);
+    sc->session_cache_timeout = atoi(arg);
 
-    if (sc->nSessionCacheTimeout < 0) {
+    if (sc->session_cache_timeout < 0) {
         return "SSLSessionCacheTimeout: Invalid argument";
     }
 
@@ -979,7 +979,7 @@ const char *ssl_cmd_SSLLog(cmd_parms *cmd, void *ctx,
         return err;
     }
 
-    sc->szLogFile = arg;
+    sc->log_file_name = arg;
 
     return NULL;
 }
@@ -995,22 +995,22 @@ const char *ssl_cmd_SSLLogLevel(cmd_parms *cmd, void *ctx,
     }
 
     if (strcEQ(level, "none")) {
-        sc->nLogLevel = SSL_LOG_NONE;
+        sc->log_level = SSL_LOG_NONE;
     }
     else if (strcEQ(level, "error")) {
-        sc->nLogLevel = SSL_LOG_ERROR;
+        sc->log_level = SSL_LOG_ERROR;
     }
     else if (strcEQ(level, "warn")) {
-        sc->nLogLevel = SSL_LOG_WARN;
+        sc->log_level = SSL_LOG_WARN;
     }
     else if (strcEQ(level, "info")) {
-        sc->nLogLevel = SSL_LOG_INFO;
+        sc->log_level = SSL_LOG_INFO;
     }
     else if (strcEQ(level, "trace")) {
-        sc->nLogLevel = SSL_LOG_TRACE;
+        sc->log_level = SSL_LOG_TRACE;
     }
     else if (strcEQ(level, "debug")) {
-        sc->nLogLevel = SSL_LOG_DEBUG;
+        sc->log_level = SSL_LOG_DEBUG;
     }
     else {
         return "SSLLogLevel: Invalid argument";

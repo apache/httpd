@@ -350,7 +350,7 @@ int ssl_hook_Access(request_rec *r)
     /*
      * Check to see if SSL protocol is on
      */
-    if (!(sc->bEnabled || ssl)) {
+    if (!(sc->enabled || ssl)) {
         return DECLINED;
     }
     /*
@@ -947,7 +947,7 @@ int ssl_hook_UserCheck(request_rec *r)
      * - ssl not enabled
      * - client did not present a certificate
      */
-    if (!(sc->bEnabled && sslconn->ssl && sslconn->client_cert) ||
+    if (!(sc->enabled && sslconn->ssl && sslconn->client_cert) ||
         !(dc->nOptions & SSL_OPT_FAKEBASICAUTH) || r->user)
     {
         return DECLINED;
@@ -1102,7 +1102,7 @@ int ssl_hook_Fixup(request_rec *r)
     /*
      * Check to see if SSL is on
      */
-    if (!(sc->bEnabled && sslconn && (ssl = sslconn->ssl))) {
+    if (!(sc->enabled && sslconn && (ssl = sslconn->ssl))) {
         return DECLINED;
     }
 
@@ -1274,7 +1274,7 @@ int ssl_callback_SSLVerify(int ok, X509_STORE_CTX *ctx)
     /*
      * Log verification information
      */
-    if (sc->nLogLevel >= SSL_LOG_TRACE) {
+    if (sc->log_level >= SSL_LOG_TRACE) {
         X509 *cert  = X509_STORE_CTX_get_current_cert(ctx);
         char *sname = X509_NAME_oneline(X509_get_subject_name(cert), NULL, 0);
         char *iname = X509_NAME_oneline(X509_get_issuer_name(cert),  NULL, 0);
@@ -1434,7 +1434,7 @@ int ssl_callback_SSLVerify_CRL(int ok, X509_STORE_CTX *ctx, server_rec *s)
          * Log information about CRL
          * (A little bit complicated because of ASN.1 and BIOs...)
          */
-        if (sc->nLogLevel >= SSL_LOG_TRACE) {
+        if (sc->log_level >= SSL_LOG_TRACE) {
             char buff[512]; /* should be plenty */
             BIO *bio = BIO_new(BIO_s_mem());
 
@@ -1519,7 +1519,7 @@ int ssl_callback_SSLVerify_CRL(int ok, X509_STORE_CTX *ctx, server_rec *s)
             ASN1_INTEGER *sn = X509_REVOKED_get_serialNumber(revoked);
 
             if (!ASN1_INTEGER_cmp(sn, X509_get_serialNumber(cert))) {
-                if (sc->nLogLevel >= SSL_LOG_INFO) {
+                if (sc->log_level >= SSL_LOG_INFO) {
                     char *cp = X509_NAME_oneline(issuer, NULL, 0);
                     long serial = ASN1_INTEGER_get(sn);
 
@@ -1555,7 +1555,7 @@ static void ssl_session_log(server_rec *s,
     char buf[SSL_SESSION_ID_STRING_LEN];
     char timeout_str[56] = {'\0'};
 
-    if (sc->nLogLevel < SSL_LOG_TRACE) {
+    if (sc->log_level < SSL_LOG_TRACE) {
         return;
     }
 
@@ -1583,7 +1583,7 @@ int ssl_callback_NewSessionCacheEntry(SSL *ssl, SSL_SESSION *session)
     conn_rec *conn      = (conn_rec *)SSL_get_app_data(ssl);
     server_rec *s       = conn->base_server;
     SSLSrvConfigRec *sc = mySrvConfig(s);
-    long timeout        = sc->nSessionCacheTimeout;
+    long timeout        = sc->session_cache_timeout;
     BOOL rc;
     unsigned char *id;
     unsigned int idlen;
@@ -1715,7 +1715,7 @@ void ssl_callback_LogTracingState(SSL *ssl, int where, int rc)
     /*
      * create the various trace messages
      */
-    if (sc->nLogLevel >= SSL_LOG_TRACE) {
+    if (sc->log_level >= SSL_LOG_TRACE) {
         if (where & SSL_CB_HANDSHAKE_START) {
             ssl_log(s, SSL_LOG_TRACE,
                     "%s: Handshake: start", SSL_LIBRARY_NAME);

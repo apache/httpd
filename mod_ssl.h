@@ -483,13 +483,13 @@ typedef struct {
  */
 typedef struct {
     SSLModConfigRec *mc;
-    BOOL         bEnabled;
-    const char  *szVHostID;
-    int          nVHostID_length;
-    const char  *szLogFile;
-    apr_file_t  *fileLogFile;
-    int          nLogLevel;
-    int          nSessionCacheTimeout;
+    BOOL         enabled;
+    const char  *vhost_id;
+    int          vhost_id_len;
+    const char  *log_file_name;
+    apr_file_t  *log_file;
+    int          log_level;
+    int          session_cache_timeout;
 
     const char  *szPublicCertFiles[SSL_AIDX_MAX];
     const char  *szPrivateKeyFiles[SSL_AIDX_MAX];
