@@ -127,6 +127,12 @@ typedef struct {
     int multimatch;       /* Extensions to include in multiview matching
                            * for filenames, e.g. Filters and Handlers 
                            */
+    int use_path_info;    /* If set to 0, only use filename.
+                           * If set to 1, append PATH_INFO to filename for
+                           *   lookups.
+                           * If set to 2, this value is unset and is
+                           *   effectively 0.  
+                           */
 } mime_dir_config;
 
 typedef struct param_s {
@@ -161,6 +167,8 @@ static void *create_mime_dir_config(apr_pool_t *p, char *dummy)
     new->default_language = NULL;
 
     new->multimatch = MULTIMATCH_UNSET;
+
+    new->use_path_info = 2;
 
     return new;
 }
@@ -266,6 +274,13 @@ static void *merge_mime_dir_configs(apr_pool_t *p, void *basev, void *addv)
 
     new->multimatch = (add->multimatch != MULTIMATCH_UNSET) ?
         add->multimatch : base->multimatch;
+
+    if ((add->use_path_info & 2) == 0) {
+        new->use_path_info = add->use_path_info;
+    }
+    else {
+        new->use_path_info = base->use_path_info;
+    }
 
     return new;
 }
@@ -430,6 +445,9 @@ static const command_rec mime_cmds[] =
         "one or more file extensions"),
     AP_INIT_TAKE1("TypesConfig", set_types_config, NULL, RSRC_CONF,
         "the MIME types config file"),
+    AP_INIT_FLAG("ModMimeUsePathInfo", ap_set_flag_slot,
+        (void *)APR_OFFSETOF(mime_dir_config, use_path_info), ACCESS_CONF,
+        "Set to 'yes' to allow mod_mime to use path info for type checking"),
     {NULL}
 };
 
@@ -764,7 +782,7 @@ static int find_ct(request_rec *r)
     mime_dir_config *conf;
     apr_array_header_t *exception_list;
     char *ext;
-    const char *fn, *type, *charset = NULL;
+    const char *fn, *type, *charset = NULL, *resource_name;
     int found_metadata = 0;
 
     if (r->finfo.filetype == APR_DIR) {
@@ -776,10 +794,18 @@ static int find_ct(request_rec *r)
                                                    &mime_module);
     exception_list = apr_array_make(r->pool, 2, sizeof(char *));
 
+    /* If use_path_info is explicitly set to on (value & 1 == 1), append. */
+    if (conf->use_path_info & 1) {
+        resource_name = apr_pstrcat(r->pool, r->filename, r->path_info, NULL);
+    }
+    else {
+        resource_name = r->filename;
+    }
+
     /* Always drop the path leading up to the file name.
      */
-    if ((fn = strrchr(r->filename, '/')) == NULL) {
-        fn = r->filename;
+    if ((fn = strrchr(resource_name, '/')) == NULL) {
+        fn = resource_name;
     }
     else {
         ++fn;

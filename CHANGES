@@ -1,5 +1,7 @@
 Changes with Apache 2.0.41
 
+  *) Add ModMimeUsePathInfo directive.  [Justin Erenkrantz]
+
   *) mod_cache: added support for caching streamed responses (proxy,
      CGI, etc) with optional CacheMaxStreamingBuffer setting [Brian Pane]
 
