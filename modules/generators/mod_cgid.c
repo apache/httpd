@@ -808,7 +808,7 @@ static int cgid_handler(request_rec *r)
     env = ap_create_environment(r->pool, r->subprocess_env); 
 
     if ((sd = socket(AF_UNIX, SOCK_STREAM, 0)) < 0) {
-            return log_scripterror(r, conf, HTTP_NOT_FOUND, 0, 
+            return log_scripterror(r, conf, HTTP_INTERNAL_SERVER_ERROR, 0, 
                                    "unable to create socket to cgi daemon");
     } 
     memset(&unix_addr, 0, sizeof(unix_addr));
@@ -816,7 +816,7 @@ static int cgid_handler(request_rec *r)
     strcpy(unix_addr.sun_path, conf->sockname);
 
     if (connect(sd, (struct sockaddr *)&unix_addr, sizeof(unix_addr)) < 0) {
-            return log_scripterror(r, conf, HTTP_NOT_FOUND, 0, 
+            return log_scripterror(r, conf, HTTP_INTERNAL_SERVER_ERROR, 0, 
                                    "unable to connect to cgi daemon");
     } 
 
