@@ -81,7 +81,7 @@
         <dd>On some webservers there are more than one URL for a
         resource. Usually there are canonical URLs (which should be
         actually used and distributed) and those which are just
-        shortcuts, internal ones, etc. Independed which URL the
+        shortcuts, internal ones, etc. Independent of which URL the
         user supplied with the request he should finally see the
         canonical one only.</dd>
 
@@ -191,7 +191,7 @@ RewriteRule   <strong>^/$</strong>  /e/www/  [<strong>R</strong>]
         <code>/~quux/foo</code> instead of <code>/~quux/foo/</code>
         then the server searches for a <em>file</em> named
         <code>foo</code>. And because this file is a directory it
-        complains. Actually is tries to fix it themself in most of
+        complains. Actually it tries to fix it itself in most of
         the cases, but sometimes this mechanism need to be emulated
         by you. For instance after you have done a lot of
         complicated URL rewritings to CGI scripts etc.</dd>
@@ -253,12 +253,12 @@ RewriteRule    ^(.+<strong>[^/]</strong>)$           $1<strong>/</strong>  [R]
       <dl>
         <dt><strong>Description:</strong></dt>
 
-        <dd>We want to create a homogenous and consistent URL
+        <dd>We want to create a homogeneous and consistent URL
         layout over all WWW servers on a Intranet webcluster, i.e.
         all URLs (per definition server local and thus server
-        dependent!) become actually server <em>independed</em>!
+        dependent!) become actually server <em>independent</em>!
         What we want is to give the WWW namespace a consistent
-        server-independend layout: no URL should have to include
+        server-independent layout: no URL should have to include
         any physically correct target server. The cluster itself
         should drive us automatically to the physical target
         host.</dd>
@@ -326,7 +326,7 @@ RewriteRule   ^/([uge])/([^/]+)/([^.]+.+)   /$1/$2/.www/$3\
       <dl>
         <dt><strong>Description:</strong></dt>
 
-        <dd>A lot of webmaster aksed for a solution to the
+        <dd>Many webmasters have asked for a solution to the
         following situation: They wanted to redirect just all
         homedirs on a webserver to another webserver. They usually
         need such things when establishing a newer webserver which
@@ -359,7 +359,7 @@ RewriteRule   ^/~(.+)  http://<strong>newserver</strong>/~$1  [R,L]
       <dl>
         <dt><strong>Description:</strong></dt>
 
-        <dd>Some sites with thousend of users usually use a
+        <dd>Some sites with thousands of users usually use a
         structured homedir layout, i.e. each homedir is in a
         subdirectory which begins for instance with the first
         character of the username. So, <code>/~foo/anypath</code>
@@ -387,7 +387,7 @@ RewriteRule   ^/~(<strong>([a-z])</strong>[a-z0-9]+)(.*)  /home/<strong>$2</stro
         </dd>
       </dl>
 
-      <h2>Filesystem Reorganisation</h2>
+      <h2>Filesystem Reorganization</h2>
 
       <dl>
         <dt><strong>Description:</strong></dt>
@@ -583,7 +583,7 @@ RewriteRule    ^/cgi-bin/imagemap(.*)  $1  [PT]
       <dl>
         <dt><strong>Description:</strong></dt>
 
-        <dd>Sometimes it is neccessary to let the webserver search
+        <dd>Sometimes it is necessary to let the webserver search
         for pages in more than one directory. Here MultiViews or
         other techniques cannot help.</dd>
 
@@ -730,14 +730,14 @@ RewriteRule   ^(/~.+)         http://www.somewhere.com/$1 [R,L]
         failing requests on webserver A to webserver B. Usually
         this is done via ErrorDocument CGI-scripts in Perl, but
         there is also a mod_rewrite solution. But notice that this
-        is less performant than using a ErrorDocument
+        performs more poorly than using an ErrorDocument
         CGI-script!</dd>
 
         <dt><strong>Solution:</strong></dt>
 
         <dd>
           The first solution has the best performance but less
-          flexibility and is less error safe: 
+          flexibility, and is less error safe: 
 
           <table bgcolor="#E0E5F5" border="0" cellspacing="0"
           cellpadding="5">
@@ -940,12 +940,12 @@ com       ftp://ftp.cxan.com/CxAN/
         </dd>
       </dl>
 
-      <h2>Time-Dependend Rewriting</h2>
+      <h2>Time-Dependent Rewriting</h2>
 
       <dl>
         <dt><strong>Description:</strong></dt>
 
-        <dd>When tricks like time-dependend content should happen a
+        <dd>When tricks like time-dependent content should happen a
         lot of webmasters still use CGI scripts which do for
         instance redirects to specialized pages. How can it be done
         via mod_rewrite?</dd>
@@ -956,7 +956,7 @@ com       ftp://ftp.cxan.com/CxAN/
           There are a lot of variables named <code>TIME_xxx</code>
           for rewrite conditions. In conjunction with the special
           lexicographic comparison patterns &lt;STRING, &gt;STRING
-          and =STRING we can do time-dependend redirects: 
+          and =STRING we can do time-dependent redirects: 
 
           <table bgcolor="#E0E5F5" border="0" cellspacing="0"
           cellpadding="5">
@@ -1092,13 +1092,13 @@ RewriteRule    ^<strong>foo</strong>\.html$  <strong>bar</strong>.html  [<strong
         </dd>
       </dl>
 
-      <h2>Browser Dependend Content</h2>
+      <h2>Browser Dependent Content</h2>
 
       <dl>
         <dt><strong>Description:</strong></dt>
 
         <dd>At least for important top-level pages it is sometimes
-        necesarry to provide the optimum of browser dependend
+        necessary to provide the optimum of browser dependent
         content, i.e. one has to provide a maximum version for the
         latest Netscape variants, a minimum version for the Lynx
         browsers and a average feature version for all others.</dd>
@@ -1220,7 +1220,7 @@ RewriteRule   ^http://www\.remotesite\.com/(.*)$ /mirror/of/remotesite/$1
       <dl>
         <dt><strong>Description:</strong></dt>
 
-        <dd>This is a tricky way of virtually running a corporates
+        <dd>This is a tricky way of virtually running a corporate
         (external) Internet webserver
         (<code>www.quux-corp.dom</code>), while actually keeping
         and maintaining its data on a (internal) Intranet webserver
@@ -1634,7 +1634,7 @@ RewriteRule ^/[uge]/<strong>([^/]+)</strong>/\.www/(.+)\.scgi(.*) ...
           <p>which is ugly. Because we have to hard-code
           <strong>both</strong> the location of the area
           <strong>and</strong> the location of the CGI inside the
-          hyperlink. When we have to reorganise or area, we spend a
+          hyperlink. When we have to reorganize the area, we spend a
           lot of time changing the various hyperlinks.</p>
         </dd>
 
@@ -1681,7 +1681,7 @@ HREF="*"
 
         <dd>How can we transform a static page
         <code>foo.html</code> into a dynamic variant
-        <code>foo.cgi</code> in a seemless way, i.e. without notice
+        <code>foo.cgi</code> in a seamless way, i.e. without notice
         by the browser/user.</dd>
 
         <dt><strong>Solution:</strong></dt>
@@ -1690,7 +1690,7 @@ HREF="*"
           We just rewrite the URL to the CGI-script and force the
           correct MIME-type so it gets really run as a CGI-script.
           This way a request to <code>/~quux/foo.html</code>
-          internally leads to the invokation of
+          internally leads to the invocation of
           <code>/~quux/foo.cgi</code>. 
 
           <table bgcolor="#E0E5F5" border="0" cellspacing="0"
@@ -2168,7 +2168,7 @@ bsdti1.sdm.de  -
           mod_proxy in the <code>Configuration</code> file when
           compiling the Apache webserver. This way it gets called
           _before_ mod_proxy. Then we configure the following for a
-          host-dependend deny... 
+          host-dependent deny... 
 
           <table bgcolor="#E0E5F5" border="0" cellspacing="0"
           cellpadding="5">
@@ -2182,7 +2182,7 @@ RewriteRule !^http://[^/.]\.mydomain.com.*  - [F]
             </tr>
           </table>
 
-          <p>...and this one for a user@host-dependend deny:</p>
+          <p>...and this one for a user@host-dependent deny:</p>
 
           <table bgcolor="#E0E5F5" border="0" cellspacing="0"
           cellpadding="5">
