@@ -228,14 +228,25 @@ static void cache_the_file(cmd_parms *cmd, const char *filename, int mmap)
 
 #if APR_HAS_MMAP
     if (mmap) {
+        apr_mmap_t *mm;
+
         /* MMAPFile directive. MMAP'ing the file
          * XXX: APR_HAS_LARGE_FILES issue; need to reject this request if
          * size is greater than MAX(apr_size_t) (perhaps greater than 1M?).
          */
-        if ((rc = apr_mmap_create(&new_file->mm, fd, 0, 
+        if ((rc = apr_mmap_create(&mm, fd, 0, 
                                   (apr_size_t)new_file->finfo.size,
                                   APR_MMAP_READ, cmd->pool)) != APR_SUCCESS) { 
             apr_file_close(fd);
+            /* We want to cache an apr_mmap_t that's marked as "non-owner"
+             * to pass to each request so that mmap_setaside()'s call to
+             * apr_mmap_dup() will never try to move the apr_mmap_t to a
+             * different pool.  This apr_mmap_t is already going to live
+             * longer than any request, but mmap_setaside() has no way to
+             * know that because it's allocated out of cmd->pool,
+             * which is disjoint from r->pool.
+             */
+            apr_mmap_dup(&new_file->mm, mm, cmd->pool, 0);
             ap_log_error(APLOG_MARK, APLOG_WARNING, rc, cmd->server,
                          "mod_file_cache: unable to mmap %s, skipping", filename);
             return;
@@ -333,20 +344,8 @@ static int mmap_handler(request_rec *r, a_file *file)
 #if APR_HAS_MMAP
     apr_bucket *b;
     apr_bucket_brigade *bb = apr_brigade_create(r->pool);
-    apr_mmap_t *mm;
 
-    /* Create a copy of the apr_mmap_t that's marked as
-     * a "non-owner."  The reason for this is that the
-     * mmap bucket setaside function might later try to
-     * transfer ownership of the mmap from a request
-     * pool to a parent pool.  For this particular mmap,
-     * though, we want the cache to retain ownership so
-     * that it never gets munmapped.  Thus we give the
-     * bucket code a non-owner copy to work with.
-     */
-    apr_mmap_dup(&mm, file->mm, r->pool, 0);
-
-    b = apr_bucket_mmap_create(mm, 0, (apr_size_t)file->finfo.size);
+    b = apr_bucket_mmap_create(file->mm, 0, (apr_size_t)file->finfo.size);
     APR_BRIGADE_INSERT_TAIL(bb, b);
     b = apr_bucket_eos_create();
     APR_BRIGADE_INSERT_TAIL(bb, b);
