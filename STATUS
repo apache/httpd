@@ -1,5 +1,5 @@
 Apache 2.0 STATUS:
-Last modified at [$Date: 2000/03/31 02:38:32 $]
+Last modified at [$Date: 2000/04/04 21:39:34 $]
 
 Release:
 
@@ -24,11 +24,6 @@ RELEASE SHOWSTOPPERS:
 	identical code to ap_register_other_child(), etc. Most of this code can
 	be moved out of the MPMs and into some common file (http_core.c?).
 	Dean says presumably you mean an os-specific file?
-
-    * DSO hooks registered during the preflight call to ap_read_config
-	are not 'unregistered' during the preflight clean-up. Thus, when 
-	Apache comes up, the hook tables contain two entries for each DSO hook,
-	one of which is bogus, leftover from the preflight. 
 
     * Pipes to CGI scripts are not being timed out
         Status: code has been added to APR to support timing out pipes.
