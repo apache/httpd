@@ -385,11 +385,14 @@ ap_xml_elem *dav_find_child(const ap_xml_elem *elem, const char *tagname);
 
 /* ### docco ... */
 
+/* ### add a repository friendly-name to the get_resource */
 AP_DECLARE_HOOK(int, get_resource, (request_rec *r, const char *root_dir,
                                     const char *workspace))
+
 AP_DECLARE_HOOK(const dav_hooks_locks *, get_lock_hooks, (request_rec *r))
 AP_DECLARE_HOOK(const dav_hooks_propdb *, get_propdb_hooks, (request_rec *r))
 AP_DECLARE_HOOK(const dav_hooks_vsn *, get_vsn_hooks, (request_rec *r))
+
 AP_DECLARE_HOOK(int, find_liveprop, (request_rec *r,
                                      const char *ns_uri, const char *name,
                                      const dav_hooks_liveprop **hooks))
@@ -424,23 +427,6 @@ void dav_add_all_liveprop_xmlns(ap_pool_t *p, ap_text_header *phdr);
 
 
 /*
-** This structure is used to define the runtime, per-directory/location
-** operating context for a single provider.
-*/
-typedef struct
-{
-    int id;		/* provider ID */
-
-    void *m_context;	/* module-level context (i.e. managed globals) */
-
-    void *d_context;	/* per-directory context */
-    ap_table_t *d_params;	/* per-directory DAV config parameters */
-
-    int *ns_map;	/* for LIVEPROP, map provider URI to global URI */
-
-} dav_dyn_context;
-
-/*
 ** This structure is used to specify a set of hooks and its associated
 ** context, on a per-directory/location basis.
 **
@@ -450,7 +436,6 @@ typedef struct
 */
 typedef struct dav_dyn_hooks
 {
-    dav_dyn_context ctx;	/* context for this set of hooks */
     const void *hooks;		/* the type-specific hooks */
 
     struct dav_dyn_hooks *next;	/* next set of hooks, if applicable */
@@ -499,11 +484,9 @@ typedef struct dav_dyn_provider
     int type;			/* provider's functionality type */
     const void *hooks;		/* pointer to type-specific hooks */
 
-    int (*is_active)(dav_dyn_context *ctx, int id);
-
 } dav_dyn_provider;
 
-#define DAV_DYN_END_MARKER	{ 0, DAV_DYN_TYPE_SENTINEL, NULL, NULL }
+#define DAV_DYN_END_MARKER	{ 0, DAV_DYN_TYPE_SENTINEL, NULL }
 
 /*
 ** This structure defines a module (a set of providers).
@@ -534,38 +517,9 @@ typedef struct
 
     const char *name;				/* friendly name */
 
-    int (*module_open)(dav_dyn_context *ctx);
-    int (*module_close)(dav_dyn_context *ctx);
-
-    int (*dir_open)(dav_dyn_context *ctx);
-    int (*dir_param)(dav_dyn_context *ctx, const char *param_name,
-		     const char *param_value);
-    int (*dir_merge)(dav_dyn_context *base, dav_dyn_context *overrides,
-		     dav_dyn_context *result);
-    int (*dir_close)(dav_dyn_context *ctx);
-
     const dav_dyn_provider *providers;		/* providers in this module */
 
 } dav_dyn_module;
-
-int dav_load_module(const char *name, const char *module_sym,
-		    const char *filename);
-const dav_dyn_module *dav_find_module(const char *name);
-
-/*
-** Various management functions.
-**
-** NOTE: the pool should be the "configuration pool"
-*/
-void dav_process_builtin_modules(ap_pool_t *p);
-void dav_process_module(ap_pool_t *p, const dav_dyn_module *mod);
-
-int * dav_collect_liveprop_uris(ap_pool_t *p, const dav_hooks_liveprop *hooks);
-
-void *dav_prepare_scan(ap_pool_t *p, const dav_dyn_module *mod);
-int dav_scan_providers(void *ctx,
-		       const dav_dyn_provider **provider,
-		       dav_dyn_hooks *output);
 
 /* ### deprecated */
 #define DAV_GET_HOOKS_PROPDB(r)         dav_get_propdb_hooks(r)
@@ -711,7 +665,7 @@ struct dav_hooks_liveprop
     */
     dav_prop_insert (*insert_prop)(const dav_resource *resource,
 				   int propid, int insvalue,
-				   const int *ns_map, ap_text_header *phdr);
+				   ap_text_header *phdr);
 
     /*
     ** Insert all known/defined property names (and values). This is
@@ -719,7 +673,7 @@ struct dav_hooks_liveprop
     ** rather than specific, individual properties.
     */
     void (*insert_all)(const dav_resource *resource, int insvalue,
-		       const int *ns_map, ap_text_header *phdr);
+		       ap_text_header *phdr);
 
     /*
     ** Determine whether a given property is writeable.
@@ -1714,7 +1668,6 @@ ap_size_t dav_get_limit_xml_body(const request_rec *r);
 typedef struct {
     int propid;				/* live property ID */
     const dav_hooks_liveprop *provider;	/* the provider defining this prop */
-    const int *ns_map;			/* ns map for this provider */
 } dav_elem_private;    
 
 #ifdef __cplusplus

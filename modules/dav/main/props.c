@@ -353,7 +353,6 @@ static void dav_find_liveprop(dav_propdb *propdb, ap_xml_elem *elem)
 	if (propid != 0) {
 	    priv->propid = propid;
 	    priv->provider = DAV_AS_HOOKS_LIVEPROP(ddh);
-	    priv->ns_map = ddh->ctx.ns_map;
 	    return;
 	}
     }
@@ -568,7 +567,7 @@ static dav_error * dav_insert_liveprop(dav_propdb *propdb,
 
     /* ask the provider (that defined this prop) to insert the prop */
     pi = (*priv->provider->insert_prop)(propdb->resource, priv->propid,
-					getvals, priv->ns_map, phdr);
+					getvals, phdr);
 #if DAV_DEBUG
     if (pi == DAV_PROP_INSERT_NOTME) {
 	/* ### the provider should have returned NOTDEF, at least */
@@ -1127,7 +1126,6 @@ dav_get_props_result dav_get_allprops(dav_propdb *propdb, int getvals)
     /* ask the liveprop providers to insert their properties */
     for (ddh = propdb->liveprop; ddh != NULL; ddh = ddh->next) {
 	(*DAV_AS_HOOKS_LIVEPROP(ddh)->insert_all)(propdb->resource, getvals,
-						  ddh->ctx.ns_map,
 						  &hdr);
     }
 

@@ -1684,7 +1684,6 @@ static int dav_fs_find_prop(const char *ns_uri, const char *name)
 
 static dav_prop_insert dav_fs_insert_prop(const dav_resource *resource,
 					  int propid, int insvalue,
-					  const int *ns_map,
 					  ap_text_header *phdr)
 {
     const char *value;
@@ -1784,8 +1783,7 @@ static dav_prop_insert dav_fs_insert_prop(const dav_resource *resource,
 
     /* assert: scan->name != NULL */
 
-    /* map our NS index into a global NS index */
-    /* ns = ns_map[scan->ns]; */
+    /* map our namespace into a global NS index */
     ns = dav_get_liveprop_ns_index(dav_fs_namespace_uris[scan->ns]);
 
     /* DBG3("FS: inserting lp%d:%s  (local %d)", ns, scan->name, scan->ns); */
@@ -1808,7 +1806,7 @@ static dav_prop_insert dav_fs_insert_prop(const dav_resource *resource,
 }
 
 static void dav_fs_insert_all(const dav_resource *resource, int insvalue,
-			      const int *ns_map, ap_text_header *phdr)
+			      ap_text_header *phdr)
 {
     if (!resource->exists) {
 	/* a lock-null resource */
@@ -1821,13 +1819,13 @@ static void dav_fs_insert_all(const dav_resource *resource, int insvalue,
     }
 
     (void) dav_fs_insert_prop(resource, DAV_PROPID_FS_creationdate,
-			      insvalue, ns_map, phdr);
+			      insvalue, phdr);
     (void) dav_fs_insert_prop(resource, DAV_PROPID_FS_getcontentlength,
-			      insvalue, ns_map, phdr);
+			      insvalue, phdr);
     (void) dav_fs_insert_prop(resource, DAV_PROPID_FS_getlastmodified,
-			      insvalue, ns_map, phdr);
+			      insvalue, phdr);
     (void) dav_fs_insert_prop(resource, DAV_PROPID_FS_getetag,
-			      insvalue, ns_map, phdr);
+			      insvalue, phdr);
 
 #ifndef WIN32
     /*
@@ -1836,7 +1834,7 @@ static void dav_fs_insert_all(const dav_resource *resource, int insvalue,
     **       well not even call it.
     */
     (void) dav_fs_insert_prop(resource, DAV_PROPID_FS_executable,
-			      insvalue, ns_map, phdr);
+			      insvalue, phdr);
 #endif
 
     /* ### we know the others aren't defined as liveprops */
@@ -2025,8 +2023,7 @@ static const dav_dyn_provider dav_dyn_providers_fs[] =
     {
 	DAV_FS_PROVIDER_ID,
         DAV_DYN_TYPE_LIVEPROP,
-        &dav_hooks_liveprop_fs,
-        NULL
+        &dav_hooks_liveprop_fs
     },
 
     /* must always be last */
@@ -2038,13 +2035,6 @@ const dav_dyn_module dav_dyn_module_default =
     DAV_DYN_MAGIC,
     DAV_DYN_VERSION,
     "filesystem",
-
-    NULL, /* module_open */
-    NULL, /* module_close */
-    NULL, /* dir_open */
-    NULL, /* dir_param */
-    NULL, /* dir_merge */
-    NULL, /* dir_close */
 
     dav_dyn_providers_fs
 };
