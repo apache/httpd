@@ -1,5 +1,14 @@
 Changes with Apache 1.3.10
 
+  *) EBCDIC: Fix Byte Ranges for EBCDIC platforms. The necessary switch
+     between implied conversion for protocol parts and configured
+     conversion for document data was missing. The effect of this was that
+     PDF files could not be read by Acrobat Reader (which sends long
+     lists of byte ranges in each request) when the server was apache
+     on ebcdic machines.
+     [Noted by Oliver Reh <Oliver.Reh@FAEDV-N.Bayern.de>, solved by
+     Martin Kraemer]
+
   *) Add IndexOptions FoldersFirst to allow fancy-indexed directory
      listings to have the subdirectories always listed at the top.
      [Ken Coar]

@@ -212,6 +212,14 @@ static int internal_byterange(int realreq, long *tlength, request_rec *r,
 {
     long range_start, range_end;
     char *range;
+#ifdef CHARSET_EBCDIC
+    /* determine current setting of conversion flag,
+     * set to ON (protocol strings MUST be converted)
+     * and reset to original setting before returning
+     */
+    int convert = ap_bgetflag(r->connection->client, B_EBCDIC2ASCII);
+    ap_bsetflag(r->connection->client, B_EBCDIC2ASCII, 1);
+#endif /*CHARSET_EBCDIC*/
 
     if (!**r_range) {
         if (r->byterange > 1) {
@@ -220,14 +228,23 @@ static int internal_byterange(int realreq, long *tlength, request_rec *r,
             else
                 *tlength += 4 + strlen(r->boundary) + 4;
         }
+#ifdef CHARSET_EBCDIC
+	if (!convert)
+	    ap_bsetflag(r->connection->client, B_EBCDIC2ASCII, convert);
+#endif /*CHARSET_EBCDIC*/
         return 0;
     }
 
     range = ap_getword(r->pool, r_range, ',');
-    if (!parse_byterange(range, r->clength, &range_start, &range_end))
+    if (!parse_byterange(range, r->clength, &range_start, &range_end)) {
+#ifdef CHARSET_EBCDIC
+	if (!convert)
+	    ap_bsetflag(r->connection->client, B_EBCDIC2ASCII, convert);
+#endif /*CHARSET_EBCDIC*/
         /* Skip this one */
         return internal_byterange(realreq, tlength, r, r_range, offset,
                                   length);
+    }
 
     if (r->byterange > 1) {
         const char *ct = r->content_type ? r->content_type : ap_default_type(r);
@@ -251,6 +268,10 @@ static int internal_byterange(int realreq, long *tlength, request_rec *r,
     else {
         *tlength += range_end - range_start + 1;
     }
+#ifdef CHARSET_EBCDIC
+    if (!convert)
+	ap_bsetflag(r->connection->client, B_EBCDIC2ASCII, convert);
+#endif /*CHARSET_EBCDIC*/
     return 1;
 }
 
