@@ -37,12 +37,19 @@ filename is set by the <A HREF="mod/mod_mime.html#typesconfig"
 
 <H2>Syntax of the Configuration Files</H2>
 
+<P>Apache configuration files contain one directive per line.  The
+back-slash "\" may be used as the last character on a line to indicate
+that the directive continues onto the next line.  There must be no
+other characters or white space between the back-slash and the end of
+the line.  To end a line with a literal back-slash, you can escape it
+by preceding it with a second back-slash "\\".
+
 <P>Directives in the configuration files are case-insensitive, but
 arguments to directives are often case sensitive.  Lines which begin
 with the hash character "#" are considered comments, and are ignored.
-Comments may <STRONG>not</STRONG> be included on a line after a configuration
-directive.  White space occurring before a directive
-is ignored, so you may indent directives for clarity.
+Comments may <STRONG>not</STRONG> be included on a line after a
+configuration directive.  Blank lines and white space occurring before
+a directive are ignored, so you may indent directives for clarity.
 
 <P>You can check your configuration files for syntax errors without
 starting the server by using <CODE>apachectl configtest</CODE>
@@ -59,7 +66,7 @@ included in the server at compile-time.  If the server is compiled to
 use <A HREF="dso.html">dynamically loaded</A> modules, then modules
 can be compiled separately and added at any time using the <A
 HREF="mod/mod_so.html#loadmodule">LoadModule</A> directive.
-Otherwise, apache must be recompiled to add or remove modules.
+Otherwise, Apache must be recompiled to add or remove modules.
 
 <P>To see which modules are currently compiled into the server,
 you can use the <CODE>-l</CODE> command line option.
