@@ -147,7 +147,6 @@ author.</p>
 <li><a href="#coredump">Core dumps for HTTPS requests?</a></li>
 <li><a href="#mutex">Permission problem on SSLMutex</a></li>
 <li><a href="#mm">Shared memory and process size?</a></li>
-<li><a href="#mmpath">Shared memory and pathname?</a></li>
 <li><a href="#entropy">PRNG and not enough entropy?</a></li>
 </ul>
 
@@ -184,16 +183,6 @@ author.</p>
     course. Instead the additional memory consumption is shared by
     all processes, i.e. the 1.5MB are allocated only once per Apache
     instance and not once per Apache server process.</p>
-
-
-<h3><a name="mmpath" id="mmpath">Apache creates files in a directory declared by the internal
-EAPI_MM_CORE_PATH define. Is there a way to override the path using a
-configuration directive?</a></h3>
-<p>No, there is not configuration directive, because for technical
-    bootstrapping reasons, a directive not possible at all. Instead
-    use ``<code>CFLAGS='-DEAPI_MM_CORE_PATH="/path/to/wherever/"'
-    ./configure ...</code>'' when building Apache or use option
-    <code>-d</code> when starting <code>httpd</code>.</p>
 
 
 <h3><a name="entropy" id="entropy">When I fire up the server, mod_ssl stops with the error
@@ -687,6 +676,8 @@ browsers complain that they cannot verify the server certificate?</a></h3>
 <li><a href="#adh">How to use Anonymous-DH ciphers</a></li>
 <li><a href="#sharedciphers">Why do I get 'no shared ciphers'?</a></li>
 <li><a href="#vhosts">HTTPS and name-based vhosts</a></li>
+<li><a href="#vhosts2">Why is it not possible to use Name-Based Virtual
+Hosting to identify different SSL virtual hosts?</a></li>
 <li><a href="#lockicon">The lock icon in Netscape locks very late</a></li>
 <li><a href="#msie">Why do I get I/O errors with MSIE clients?</a></li>
 <li><a href="#nn">Why do I get I/O errors with NS clients?</a></li>
@@ -774,6 +765,41 @@ I try to connect to my freshly installed server?</a></h3>
     HTTP request header has to be read. This cannot be done before the SSL
     handshake is finished. But the information is already needed at the SSL
     handshake phase. Bingo!</p>
+
+
+<h3><a name="vhosts2" id="vhosts2">Why is it not possible to use Name-Based
+Virtual Hosting to identify different SSL virtual hosts?</a></h3>
+    <p>Name-Based Virtual Hosting is a very popular method of identifying
+    different virtual hosts. It allows you to use the same IP address and
+    the same port number for many different sites. When people move on to
+    SSL, it seems natural to assume that the same method can be used to have
+    lots of different SSL virtual hosts on the same server.</p>
+
+    <p>It comes as rather a shock to learn that it is impossible.</p> 
+
+    <p>The reason is that the SSL protocol is a separate layer which
+    encapsulates the HTTP protocol. So the problem is that the SSL session
+    is a separate transaction that takes place before the HTTP session even
+    starts. Therefore all the server receives is an SSL request on IP
+    address X and port Y (usually 443). Since the SSL request does not
+    contain any Host: field, the server has no way to decide which SSL
+    virtual host to use. Usually, it will just use the first one it finds
+    that matches the port and IP address.</p> 
+
+    <p>You can, of course, use Name-Based Virtual Hosting to identify many
+    non-SSL virtual hosts (all on port 80, for example) and then you can
+    have no more than 1 SSL virtual host (on port 443). But if you do this,
+    you must make sure to put the non-SSL port number on the NameVirtualHost
+    directive, e.g.</p> 
+
+    <div class="example"><p><code>
+      NameVirtualHost 192.168.1.1:80
+    </code></p></div>
+    
+    <p>Other workaround solutions are: </p>
+
+    <p>Use separate IP addresses for different SSL hosts. 
+    Use different port numbers for different SSL hosts.</p> 
 
 
 <h3><a name="lockicon" id="lockicon">When I use Basic Authentication over HTTPS the lock icon in Netscape browsers
