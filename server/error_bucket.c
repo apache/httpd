@@ -67,6 +67,15 @@ static apr_status_t error_bucket_read(apr_bucket *b, const char **str,
     return APR_SUCCESS;
 }
 
+static void error_bucket_destroy(void *data)
+{
+    ap_bucket_error *h = data;
+
+    if (apr_bucket_shared_destroy(h)) {
+        apr_bucket_free(h);
+    }
+}
+
 AP_DECLARE(apr_bucket *) ap_bucket_error_make(apr_bucket *b, int error,
                                               const char *buf, apr_pool_t *p)
 {
@@ -76,10 +85,8 @@ AP_DECLARE(apr_bucket *) ap_bucket_error_make(apr_bucket *b, int error,
     h->status = error;
     h->data = (buf) ? apr_pstrdup(p, buf) : NULL;
 
-    b->length = 0;
-    b->start  = 0;
+    b = apr_bucket_shared_make(b, h, 0, 0);
     b->type = &ap_bucket_type_error;
-    b->data = h;
     return b;
 }
 
@@ -97,9 +104,9 @@ AP_DECLARE(apr_bucket *) ap_bucket_error_create(int error, const char *buf,
 
 AP_DECLARE_DATA const apr_bucket_type_t ap_bucket_type_error = {
     "ERROR", 5,
-    apr_bucket_free,
+    error_bucket_destroy,
     error_bucket_read,
     apr_bucket_setaside_notimpl,
     apr_bucket_split_notimpl,
-    apr_bucket_simple_copy
+    apr_bucket_shared_copy
 };
