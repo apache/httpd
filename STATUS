@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/04/26 19:03:40 $]
+Last modified at [$Date: 2004/04/26 22:04:58 $]
 
 Release:
 
@@ -167,16 +167,6 @@ PATCHES TO BACKPORT FROM 2.1
          modules/mappers/mod_rewrite.c: r1.255
        +1: nd, trawick
 
-    *) Update the ldc->binddn and ldc->bindpw associated with the LDAP 
-       connection to match the authenticating user DN and password after
-       ldap_simple_bind_s() is called to authenticate the user.  Otherwise 
-       the next time that this connection is reused, it will indicate that 
-       it is bound to the original user DN specified by ldc->binddn when in 
-       fact it is bound to a completely different user DN who may not have 
-       sufficient rights to complete the requested search.
-         modules/experimental/util_ldap.c: r1.22, r1.24
-       +1: bnicholes, minfrin, trawick
-    
     *) (re-)add support for RewriteRules in <Proxy> containers. PR 27985
          modules/mappers/mod_rewrite.c: r1.254
        +1: nd, trawick

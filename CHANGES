@@ -1,5 +1,10 @@
 Changes with Apache 2.0.50
 
+  *) Update the bind credentials for the cached LDAP connection to 
+     reflect the last bind.  This prevents util_ldap from creating 
+     unnecessary connections rather than reusing cached connections.
+     [Brad Nicholes]
+     
   *) mod_isapi: GetServerVariable returned improperly terminated header 
      fields given "ALL_HTTP" or "ALL_RAW".  PR 20656.
      [Jesse Pelton <jsp pkc.com>]

@@ -88,6 +88,20 @@ void *util_ldap_create_config(apr_pool_t *p, server_rec *s);
                           "\"http://www.w3.org/TR/REC-html40/frameset.dtd\">\n"
 #endif
 
+
+static void util_ldap_strdup (char **str, const char *newstr)
+{
+    if (*str) {
+        free(*str);
+        *str = NULL;
+    }
+
+    if (newstr) {
+        *str = calloc(1, strlen(newstr)+1);
+        strcpy (*str, newstr);
+    }
+}
+
 /*
  * Status Handler
  * --------------
@@ -179,25 +193,36 @@ LDAP_DECLARE_NONSTD(apr_status_t) util_ldap_connection_destroy(void *param)
 {
     util_ldap_connection_t *ldc = param;
 
-    /* unbinding from the LDAP server */
-    if (ldc->ldap) {
-        ldap_unbind_s(ldc->ldap);
-        ldc->bound = 0;
-        ldc->ldap = NULL;
-    }
+    if (ldc) {
 
-    /* release the lock we were using.  The lock should have
-       already been released in the close connection call.  
-       But just in case it wasn't, we first try to get the lock
-       before unlocking it to avoid unlocking an unheld lock. 
-       Unlocking an unheld lock causes problems on NetWare.  The
-       other option would be to assume that close connection did
-       its job. */
+        /* unbinding from the LDAP server */
+        if (ldc->ldap) {
+            ldap_unbind_s(ldc->ldap);
+            ldc->bound = 0;
+            ldc->ldap = NULL;
+        }
+
+        if (ldc->bindpw) {
+            free((void*)ldc->bindpw);
+        }
+    
+        if (ldc->binddn) {
+            free((void*)ldc->binddn);
+        }
+
+        /* release the lock we were using.  The lock should have
+           already been released in the close connection call.  
+           But just in case it wasn't, we first try to get the lock
+           before unlocking it to avoid unlocking an unheld lock. 
+           Unlocking an unheld lock causes problems on NetWare.  The
+           other option would be to assume that close connection did
+           its job. */
 #if APR_HAS_THREADS
-    apr_thread_mutex_trylock(ldc->lock);
-    apr_thread_mutex_unlock(ldc->lock);
+        apr_thread_mutex_trylock(ldc->lock);
+        apr_thread_mutex_unlock(ldc->lock);
 #endif
 
+    }
     return APR_SUCCESS;
 }
 
@@ -290,11 +315,6 @@ LDAP_DECLARE(int) util_ldap_connection_open(request_rec *r,
         /* always default to LDAP V3 */
         ldap_set_option(ldc->ldap, LDAP_OPT_PROTOCOL_VERSION, &version);
 
-
-        /* add the cleanup to the pool */
-        apr_pool_cleanup_register(ldc->pool, ldc,
-                                  util_ldap_connection_destroy,
-                                  apr_pool_cleanup_null);
     }
 
 
@@ -395,8 +415,8 @@ LDAP_DECLARE(util_ldap_connection_t *)util_ldap_connection_find(request_rec *r, 
 
                 /* the bind credentials have changed */
                 l->bound = 0;
-                l->binddn = apr_pstrdup(st->pool, binddn);
-                l->bindpw = apr_pstrdup(st->pool, bindpw);
+                util_ldap_strdup((char**)&(l->binddn), binddn);
+                util_ldap_strdup((char**)&(l->bindpw), bindpw);
                 break;
             }
 #if APR_HAS_THREADS
@@ -434,9 +454,14 @@ LDAP_DECLARE(util_ldap_connection_t *)util_ldap_connection_find(request_rec *r, 
         l->host = apr_pstrdup(st->pool, host);
         l->port = port;
         l->deref = deref;
-        l->binddn = apr_pstrdup(st->pool, binddn);
-        l->bindpw = apr_pstrdup(st->pool, bindpw);
+        util_ldap_strdup((char**)&(l->binddn), binddn);
+        util_ldap_strdup((char**)&(l->bindpw), bindpw);
         l->secure = secure;
+
+        /* add the cleanup to the pool */
+        apr_pool_cleanup_register(l->pool, l,
+                                  util_ldap_connection_destroy,
+                                  apr_pool_cleanup_null);
 
         if (p) {
             p->next = l;
@@ -817,7 +842,7 @@ start_over:
 
     /* Grab the dn, copy it into the pool, and free it again */
     dn = ldap_get_dn(ldc->ldap, entry);
-    *binddn = apr_pstrdup(st->pool, dn);
+    *binddn = apr_pstrdup(r->pool, dn);
     ldap_memfree(dn);
 
     /* 
@@ -852,6 +877,18 @@ start_over:
         ldap_msgfree(res);
         return result;
     }
+    else {
+        /*
+         * Since we just bound the connection to the authenticating user id, update the
+         * ldc->binddn and ldc->bindpw to reflect the change and also to allow the next 
+         * call to util_ldap_connection_open() to handle the connection reuse appropriately.
+         * Otherwise the next time that this connection is reused, it will indicate that
+         * it is bound to the original user id specified ldc->binddn when in fact it is 
+         * bound to a completely different user id.
+         */
+        util_ldap_strdup((char**)&(ldc->binddn), *binddn);
+        util_ldap_strdup((char**)&(ldc->bindpw), bindpw);
+    }
 
     /*
      * Get values for the provided attributes.
@@ -881,17 +918,17 @@ start_over:
     /* 		
      * Add the new username to the search cache.
      */
-    LDAP_CACHE_WRLOCK();
-    the_search_node.username = filter;
-    the_search_node.dn = *binddn;
-    the_search_node.bindpw = bindpw;
-    the_search_node.lastbind = apr_time_now();
-    the_search_node.vals = vals;
     if (curl) {
+        LDAP_CACHE_WRLOCK();
+        the_search_node.username = filter;
+        the_search_node.dn = *binddn;
+        the_search_node.bindpw = bindpw;
+        the_search_node.lastbind = apr_time_now();
+        the_search_node.vals = vals;
         util_ald_cache_insert(curl->search_cache, &the_search_node);
+        LDAP_CACHE_UNLOCK();
     }
     ldap_msgfree(res);
-    LDAP_CACHE_UNLOCK();
 
     ldc->reason = "Authentication successful";
     return LDAP_SUCCESS;
