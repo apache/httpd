@@ -1,6 +1,5 @@
 //Microsoft Developer Studio generated resource script.
 //
-#include "resource.h"
 
 #define APSTUDIO_READONLY_SYMBOLS
 /////////////////////////////////////////////////////////////////////////////
@@ -28,7 +27,7 @@ LANGUAGE LANG_NEUTRAL, SUBLANG_NEUTRAL
 
 // Icon with lowest ID value placed first to ensure application icon
 // remains consistent on all systems.
-IDI_APACHE              ICON    DISCARDABLE     "apache.ico"
+101                     ICON    DISCARDABLE     "apache.ico"
 #endif    // Neutral resources
 /////////////////////////////////////////////////////////////////////////////
 
@@ -47,11 +46,6 @@ LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_UK
 //
 // TEXTINCLUDE
 //
-
-1 TEXTINCLUDE DISCARDABLE 
-BEGIN
-    "resource.h\0"
-END
 
 2 TEXTINCLUDE DISCARDABLE 
 BEGIN
