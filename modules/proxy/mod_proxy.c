@@ -61,6 +61,8 @@
 #include "mod_proxy.h"
 #include "mod_core.h"
 
+#include "apr_optional.h"
+
 extern module AP_MODULE_DECLARE_DATA proxy_module;
 
 #ifndef MAX
@@ -1045,6 +1047,23 @@ static const command_rec proxy_cmds[] =
     {NULL}
 };
 
+APR_DECLARE_OPTIONAL_FN(int, ssl_proxy_enable, (conn_rec *));
+
+static APR_OPTIONAL_FN_TYPE(ssl_proxy_enable) *proxy_ssl_enable = NULL;
+
+int ap_proxy_ssl_enable(conn_rec *c)
+{
+    /* 
+     * if c == NULL just check if the optional function was imported
+     * else run the optional function so ssl filters are inserted
+     */
+    if (proxy_ssl_enable) {
+        return c ? proxy_ssl_enable(c) : 1;
+    }
+
+    return 0;
+}
+
 static void register_hooks(apr_pool_t *p)
 {
     /* handler */
@@ -1057,6 +1076,8 @@ static void register_hooks(apr_pool_t *p)
     ap_hook_fixups(proxy_fixup, NULL, NULL, APR_HOOK_FIRST);
     /* post read_request handling */
     ap_hook_post_read_request(proxy_detect, NULL, NULL, APR_HOOK_FIRST);
+
+    proxy_ssl_enable = APR_RETRIEVE_OPTIONAL_FN(ssl_proxy_enable);
 }
 
 module AP_MODULE_DECLARE_DATA proxy_module =

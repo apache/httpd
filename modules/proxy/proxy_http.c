@@ -391,6 +391,10 @@ apr_status_t ap_proxy_http_create_connection(apr_pool_t *p, request_rec *r,
         backend->hostname = apr_pstrdup(c->pool, p_conn->name);
         backend->port = p_conn->port;
 
+        if (backend->is_ssl) {
+            ap_proxy_ssl_enable(backend->connection);
+        }
+
         ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r->server,
                      "proxy: connection complete to %pI (%s)",
                      p_conn->addr, p_conn->name);
@@ -937,6 +941,7 @@ int ap_proxy_http_handler(request_rec *r, proxy_server_conf *conf,
     char server_portstr[32];
     conn_rec *origin = NULL;
     proxy_conn_rec *backend = NULL;
+    int is_ssl = 0;
 
     /* Note: Memory pool allocation.
      * A downstream keepalive connection is always connected to the existence
@@ -959,7 +964,16 @@ int ap_proxy_http_handler(request_rec *r, proxy_server_conf *conf,
                                            sizeof(*p_conn));
 
     /* is it for us? */
-    if (strncasecmp(url, "http:", 5)) {
+    if (strncasecmp(url, "https:", 6) == 0) {
+        if (!ap_proxy_ssl_enable(NULL)) {
+            ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r->server,
+                         "proxy: HTTPS: declining URL %s"
+                         " (mod_ssl not configured?)", url);
+            return DECLINED;
+        }
+        is_ssl = 1;
+    }
+    else if (strncasecmp(url, "http:", 5)) {
         ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r->server,
                      "proxy: HTTP: declining URL %s", url);
         return DECLINED; /* only interested in HTTP */
@@ -985,6 +999,8 @@ int ap_proxy_http_handler(request_rec *r, proxy_server_conf *conf,
             ap_set_module_config(c->conn_config, &proxy_http_module, backend);
         }
     }
+
+    backend->is_ssl = is_ssl;
 
     /* Step One: Determine Who To Connect To */
     status = ap_proxy_http_determine_connection(p, r, p_conn, c, conf, uri,
