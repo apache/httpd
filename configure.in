@@ -126,7 +126,7 @@ case "$host" in
       ;;
   *-linux-*)
       case `uname -r` in
-        2.2* ) APR_SETVAR(SINGLE_LISTEN_UNSERIALIZED_ACCEPT, [1])
+        2.[[2-9]]* ) APR_SETVAR(SINGLE_LISTEN_UNSERIALIZED_ACCEPT, [1])
             ;;
         * )
             ;;
