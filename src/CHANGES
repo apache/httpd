@@ -447,18 +447,22 @@ Changes with Apache 1.3b1
      setting.  The define MAX_SPAWN_RATE can be used to raise/lower
      the maximum.  [Dean Gaudet]
 
-  *) "nph-" CGIs were not compatible with HTTP/1.1 or SSL support because
-     they were passed a socket that connected directly to the client.
-     As such they would have to implement the transport level details
-     such as encryption or chunking in order to work properly.
-     This isn't part of the CGI spec so CGIs generally don't do this.
-     The most common use of nph- CGIs is when the programmer wants an
-     unbuffered connection to the client; regular CGIs have always been
-     fully buffered.  Apache now provides an unbuffered connection to
-     all CGIs.  Given that most CGIs are written in a language that by
-     default does buffering (i.e. perl) this shouldn't have a detrimental
-     effect on performance.  The programmer can still use nph- CGIs,
-     and they're still responsible for sending valid HTTP/1.1 responses.
+  *) Apache now provides an effectively unbuffered connection for
+     CGI scripts.  This means that data will be sent to the client
+     as soon as the CGI pauses or stops output; previously, Apache would
+     buffer the output up to a fixed buffer size before sending, which
+     could result in the user viewing an empty page until the CGI finished
+     or output a complete buffer.  It is no longer necessary to use an
+     "nph-" CGI to get unbuffered output.  Given that most CGIs are written
+     in a language that by default does buffering (e.g. perl) this
+     shouldn't have a detrimental effect on performance.
+
+     "nph-" CGIs, which formerly provided a direct socket to the client
+     without any server post-processing, were not fully compatible with
+     HTTP/1.1 or SSL support.  As such they would have had to implement
+     the transport details, such as encryption or chunking, in order
+     to work properly in certain situations.  Now, the only difference
+     between nph and non-nph scripts is "non-parsed headers".
      [Dean Gaudet, Sameer Parekh, Roy Fielding]
 
   *) If a BUFF is switched from buffered to unbuffered reading the first
