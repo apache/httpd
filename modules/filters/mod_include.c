@@ -99,6 +99,7 @@
 #include "http_main.h"
 #include "util_script.h"
 #include "http_core.h"
+#include "ap_mpm.h"
 #ifdef HAVE_STRING_H
 #include <string.h>
 #endif

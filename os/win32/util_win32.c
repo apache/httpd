@@ -501,3 +501,12 @@ AP_DECLARE(int) ap_os_is_filename_valid(const char *file)
 
     return 1;
 }
+
+AP_DECLARE(apr_status_t) ap_os_create_privileged_process(const request_rec *r,
+                              apr_proc_t *newproc, const char *progname,
+                              char *const *args, char **env,
+                              apr_procattr_t *attr, apr_pool_t *p)
+{
+    return APR_ENOTIMPL;
+}
+
