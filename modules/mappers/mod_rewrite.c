@@ -164,7 +164,7 @@
      * MODULE-DEFINITION-START
      * Name: rewrite_module
      * ConfigStart
-    . ./helpers/find-dbm-lib
+    . ./build/find-dbm-lib
     if [ "x$found_dbm" = "x1" ]; then
         echo "      enabling DBM support for mod_rewrite"
     else

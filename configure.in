@@ -21,7 +21,7 @@ dnl Absolute source/build directory
 abs_srcdir=`(cd $srcdir && pwd)`
 abs_builddir=`pwd`
 
-MKDIR=$abs_srcdir/srclib/apr/helpers/mkdir.sh
+MKDIR=$abs_srcdir/srclib/apr/build/mkdir.sh
 
 APACHE_CONFIG_NICE(config.nice)
 

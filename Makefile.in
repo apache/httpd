@@ -49,7 +49,7 @@ htdocs-srcdir = docs/docroot
 
 docs::
 	mkdir -p ./docs/api
-	srclib/apr/helpers/scandoc -isrclib/apr/helpers/default.pl -p./docs/api/ ./include/*.h
+	srclib/apr/build/scandoc -isrclib/apr/build/default.pl -p./docs/api/ ./include/*.h
 
 install-htdocs:
 	@echo Installing HTML documents

@@ -106,7 +106,7 @@
  * MODULE-DEFINITION-START
  * Name: auth_dbm_module
  * ConfigStart
-    . ./helpers/find-dbm-lib
+    . ./build/find-dbm-lib
  * ConfigEnd
  * MODULE-DEFINITION-END
  */
