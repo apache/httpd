@@ -1296,7 +1296,7 @@ static void child_main()
         }
     }
 
-    /* Setting is_graceful will close keep-alive connections 
+    /* Setting is_graceful will close keep-alive connections */
     is_graceful = 1;
 
     /* Shutdown the worker threads */
