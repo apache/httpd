@@ -567,7 +567,7 @@ int reap_children(apr_wait_t *status)
 		kill((pid = ap_scoreboard_image->parent[n].pid), 0) == -1) {
 	    ap_update_child_status(n, SERVER_DEAD, NULL);
 	    /* just mark it as having a successful exit status */
-	    bzero((char *) status, sizeof(apr_wait_t));
+	    memset(status, 0, sizeof(apr_wait_t));
 	    return(pid);
 	}
     }
