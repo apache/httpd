@@ -585,7 +585,7 @@ static char *substring_conf(pool *p, const char *start, int len, char quote)
     int i;
 
     for (i = 0; i < len; ++i) {
-	if (start[i] == '\\' && (start[i + 1] == '/'
+	if (start[i] == '\\' && (start[i + 1] == '\\'
 				 || (quote && start[i + 1] == quote)))
 	    *resp++ = start[++i];
 	else
