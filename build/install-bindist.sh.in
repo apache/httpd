@@ -82,7 +82,17 @@ lcopy bindist/include $SR/include 755 644
 lcopy bindist/icons $SR/icons 755 644
 lcopy bindist/manual $SR/manual 755 644
 lcopy bindist/cgi-bin $SR/cgi-bin 750 750
+if [ -f $SR/bin/envvars ]
+then
+  echo "[Preserving existing envvars settings.]"
+  cp -p $SR/bin/envvars ./envvars.orig
+fi
 lcopy bindist/bin $SR/bin 750 750
+if [ -f ./envvars.orig ]
+then
+  cp -p ./envvars.orig $SR/bin/envvars
+  rm ./envvars.orig
+fi
 lcopy bindist/lib $SR/lib 750 750
 if [ -d $SR/conf ]
 then
