@@ -12,15 +12,15 @@
 <h1>
 Et huet geklappt! Den Apache Web Server as op d&euml;ser 'Web Site' installeiert!</h1></center>
 Wann Dir die heiten Sait gesit, dann hun d'Proprietairen vun d&euml;ser 'domain'
-elo just d'<a href="http://www.apache.org/httpd/">Apache Web server</a> software
+elo just d'<a href="http://www.apache.org/httpd">Apache Web server</a> software
 mat succ&eacute;s installeiert. Sie mussen allerdengs nach des Decksait
 remplaceieren oder awer de Server op eng aner Sait mat dem richtigen contenu
 em-dirigeieren.
 <br>
 <hr>
 <blockquote>Wann Dir die heiten Sait anstell vun der site die Dir erw&acirc;rt
-hut gesitt, da contacteiert wannechglift den<b> administrator vun dem betraffener
-site.</b> (Versicht &eacute;n email no <tt>&lt;Webmaster@<i>domain</i>> </tt><font face="Times New Roman,Times">ze
+hut gesitt, da contacteiert wannechglift den <b>administrator vun dem betraffener
+site.</b> (Versicht &eacute;n email no <tt>&lt;Webmaster@<i>domain</i>&gt; </tt><font face="Times New Roman,Times">ze
 schecken.) Obwuel den heiten site </font>Apache software benotzt, as et
 ball secher datt keng Verbindung mat der Apache Group existeiert, also scheckt
 wannechglift keng email iwert desen site oder sein contenu zu den Apache
