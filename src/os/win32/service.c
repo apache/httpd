@@ -41,6 +41,71 @@ static int ap_start_service(SC_HANDLE);
 static int ap_stop_service(SC_HANDLE);
 static int ap_restart_service(SC_HANDLE);
 
+/* exit() for Win32 is macro mapped (horrible, we agree) that allows us 
+ * to catch the non-zero conditions and inform the console process that
+ * the application died, and hang on to the console a bit longer.
+ *
+ * The macro only maps for http_main.c and other sources that include
+ * the service.h header, so we best assume it's an error to exit from
+ * _any_ other module.
+ *
+ * If real_exit_code is reset to 0, it will not be set or trigger this
+ * behavior on exit.  All service and child processes are expected to
+ * reset this flag to zero to avoid undesireable side effects.
+ */
+int real_exit_code = 1;
+
+void hold_console_open_on_error(void)
+{
+    HANDLE hConIn;
+    HANDLE hConErr;
+    DWORD result;
+    time_t start;
+    time_t remains;
+    char *msg = "Note the errors or messages above, "
+                "and press the <ESC> key to exit.  ";
+    CONSOLE_SCREEN_BUFFER_INFO coninfo;
+    INPUT_RECORD in;
+    char count[16];
+    
+    if (!real_exit_code)
+        return;
+    hConIn = GetStdHandle(STD_INPUT_HANDLE);
+    hConErr = GetStdHandle(STD_ERROR_HANDLE);
+    if ((hConIn == INVALID_HANDLE_VALUE) || (hConErr == INVALID_HANDLE_VALUE))
+        return;
+    if (!WriteConsole(hConErr, msg, strlen(msg), &result, NULL) || !result)
+        return;
+    if (!GetConsoleScreenBufferInfo(hConErr, &coninfo))
+        return;
+    if (!SetConsoleMode(hConIn, ENABLE_MOUSE_INPUT | 0x80))
+        return;
+        
+    start = time(NULL);
+    do
+    {
+        while (PeekConsoleInput(hConIn, &in, 1, &result) && result)
+        {
+            if (!ReadConsoleInput(hConIn, &in, 1, &result) || !result)
+                return;
+            if ((in.EventType == KEY_EVENT) && in.Event.KeyEvent.bKeyDown 
+                    && (in.Event.KeyEvent.uChar.AsciiChar == 27))
+                return;
+            if (in.EventType == MOUSE_EVENT 
+                    && (in.Event.MouseEvent.dwEventFlags == DOUBLE_CLICK))
+                return;
+        }
+        remains = ((start + 30) - time(NULL)); 
+        sprintf (count, "%d...", remains);
+        if (!SetConsoleCursorPosition(hConErr, coninfo.dwCursorPosition))
+            return;
+        if (!WriteConsole(hConErr, count, strlen(count), &result, NULL) 
+                || !result)
+            return;
+    }
+    while ((remains > 0) && WaitForSingleObject(hConIn, 1000) != WAIT_FAILED);
+}
+
 int service_main(int (*main_fn)(int, char **), int argc, char **argv )
 {
     SERVICE_TABLE_ENTRY dispatchTable[] =
@@ -48,6 +113,9 @@ int service_main(int (*main_fn)(int, char **), int argc, char **argv )
         { "", service_main_fn },
         { NULL, NULL }
     };
+
+    /* Prevent holding open the (nonexistant) console */
+    real_exit_code = 0;
 
     globdat.main_fn = main_fn;
     globdat.stop_event = create_event(0, 0, "apache-signal");
@@ -171,7 +239,7 @@ int service95_main(int (*main_fn)(int, char **), int argc, char **argv,
     /* Windows 95/98 */
     char *service_name;
     HANDLE thread;
-    
+
     /* Remove spaces from display name to create service name */
     service_name = strdup(display_name);
     ap_remove_spaces(service_name, display_name);
@@ -191,12 +259,16 @@ int service95_main(int (*main_fn)(int, char **), int argc, char **argv,
     if (!RegisterServiceProcess((DWORD)NULL, 1))
         return -1;
 
+    /* Prevent holding open the (nonexistant) console */
+    real_exit_code = 0;
+
     /* Hide the console */
     FreeConsole();
 
     thread = CreateThread(NULL, 0, WatchWindow, (LPVOID) service_name, 0, 
 			  &monitor_thread_id);
-    CloseHandle(thread);
+    if (thread)
+        CloseHandle(thread);
 
     atexit(stop_service_monitor);
 
@@ -215,11 +287,87 @@ void service_cd()
     chdir(buf);
 }
 
+long __stdcall service_stderr_thread(LPVOID hPipe)
+{
+    HANDLE hPipeRead = (HANDLE) hPipe;
+    HANDLE hEventSource;
+    char errbuf[256];
+    char *errmsg = errbuf;
+    char *errarg[9];
+    DWORD errlen = 0;
+    DWORD errres;
+    HKEY hk;
+    
+    errarg[0] = "The Apache service named";
+    errarg[1] = ap_server_argv0;
+    errarg[2] = "reported the following error:\r\n>>>";
+    errarg[3] = errmsg;
+    errarg[4] = "<<<\r\n before the error.log file could be opened.\r\n";
+    errarg[5] = "More information may be available in the error.log file.";
+    errarg[6] = NULL;
+    errarg[7] = NULL;
+    errarg[8] = NULL;
+    
+    /* What are we going to do in here, bail on the user?  not. */
+    if (!RegCreateKey(HKEY_LOCAL_MACHINE, "SYSTEM\\CurrentControlSet\\Services"
+                      "\\EventLog\\Application\\Apache Service", &hk)) 
+    {
+        /* The stock message file */
+        char *netmsgkey = "%SystemRoot%\\System32\\netmsg.dll";
+        DWORD dwData = EVENTLOG_ERROR_TYPE | EVENTLOG_WARNING_TYPE | 
+                       EVENTLOG_INFORMATION_TYPE; 
+ 
+        RegSetValueEx(hk, "EventMessageFile", 0, REG_EXPAND_SZ,
+                          (LPBYTE) netmsgkey, strlen(netmsgkey) + 1);
+        
+        RegSetValueEx(hk, "TypesSupported", 0, REG_DWORD,
+                          (LPBYTE) &dwData, sizeof(dwData));
+        RegCloseKey(hk);
+    }
+
+    hEventSource = RegisterEventSource(NULL, "Apache Service");
+
+    while (ReadFile(hPipeRead, errmsg, 1, &errres, NULL) && (errres == 1))
+    {
+        if ((errmsg > errbuf) || !isspace(*errmsg))
+        {
+            ++errlen;
+            ++errmsg;
+            if ((*(errmsg - 1) == '\n') || (errlen == sizeof(errbuf) - 1))
+            {
+                while (errlen && isspace(errbuf[errlen - 1]))
+                    --errlen;
+                errbuf[errlen] = '\0';
+
+                /* Generic message: '%1 %2 %3 %4 %5 %6 %7 %8 %9'
+                 * The event code in netmsg.dll is 3299
+                 */
+                ReportEvent(hEventSource, EVENTLOG_ERROR_TYPE, 0, 
+                            3299, NULL, 9, 0, errarg, NULL);
+                errmsg = errbuf;
+                errlen = 0;
+            }
+        }
+    }
+
+    CloseHandle(hPipeRead);
+    return 0;
+}
+
 void __stdcall service_main_fn(DWORD argc, LPTSTR *argv)
 {
+    HANDLE hCurrentProcess;
+    HANDLE hPipeRead = NULL;
+    HANDLE hPipeWrite = NULL;
+    HANDLE hPipeReadDup;
+    HANDLE thread;
+    DWORD  threadid;
+    SECURITY_ATTRIBUTES sa = {0};  
+    
     ap_server_argv0 = globdat.name = argv[0];
-
-    if(!(globdat.hServiceStatus = RegisterServiceCtrlHandler( globdat.name, service_ctrl)))
+    
+    if(!(globdat.hServiceStatus = RegisterServiceCtrlHandler(globdat.name, 
+                                                             service_ctrl)))
     {
         ap_log_error(APLOG_MARK, APLOG_ERR|APLOG_WIN32ERROR, NULL,
         "Failure registering service handler");
@@ -231,11 +379,54 @@ void __stdcall service_main_fn(DWORD argc, LPTSTR *argv)
         NO_ERROR,              // exit code
         3000);                 // wait hint
 
+    /* Create a pipe to send stderr messages to the system error log */
+    hCurrentProcess = GetCurrentProcess();
+    if (CreatePipe(&hPipeRead, &hPipeWrite, &sa, 0)) 
+    {
+        if (DuplicateHandle(hCurrentProcess, hPipeRead, hCurrentProcess,
+                            &hPipeReadDup, 0, FALSE, DUPLICATE_SAME_ACCESS))
+        {
+            CloseHandle(hPipeRead);
+            hPipeRead = hPipeReadDup;
+            thread = CreateThread(NULL, 0, service_stderr_thread, 
+                                  (LPVOID) hPipeRead, 0, &threadid);
+            if (thread)
+            {
+                int fh;
+                FILE *fl;
+                CloseHandle(thread);
+            	fflush(stderr);
+		SetStdHandle(STD_ERROR_HANDLE, hPipeWrite);
+				
+                fh = _open_osfhandle((long) STD_ERROR_HANDLE, 
+                                     _O_WRONLY | _O_BINARY);
+                dup2(fh, STDERR_FILENO);
+                fl = _fdopen(STDERR_FILENO, "wcb");
+                memcpy(stderr, fl, sizeof(FILE));
+            }
+            else
+            {
+                CloseHandle(hPipeRead);
+                CloseHandle(hPipeWrite);
+                hPipeWrite = NULL;
+            }            
+        }
+        else
+        {
+            CloseHandle(hPipeRead);
+            CloseHandle(hPipeWrite);
+            hPipeWrite = NULL;
+        }            
+    }
+
     service_cd();
     if( service_init() ) 
         /* Arguments are ok except for \! */
         globdat.exit_status = (*globdat.main_fn)( argc, argv );
-    
+
+    if (hPipeWrite)
+        CloseHandle(hPipeWrite);
+
     ReportStatusToSCMgr(SERVICE_STOPPED, NO_ERROR, 0);
 
     return;
@@ -722,7 +913,8 @@ int send_signal_to_service(char *display_name, char *sig)
                  * will simply fall through and *THIS* process will fade into an
                  * invisible 'service' process, detaching from the user's console.
                  * We need to change the restart signal to "start", however,
-                 * if the service was not -yet- running.
+                 * if the service was not -yet- running, and we do return FALSE
+                 * to assure main() that we haven't done anything yet.
                  */
                 if (action == restart) 
                 {
@@ -731,7 +923,6 @@ int send_signal_to_service(char *display_name, char *sig)
                     else
                         ap_start_restart(1);
                 }
-                success = TRUE;
             }
         }
 
@@ -811,6 +1002,7 @@ static BOOL CALLBACK ap_control_handler(DWORD ctrl_type)
     {
         case CTRL_C_EVENT:
         case CTRL_BREAK_EVENT:
+            real_exit_code = 0;
             fprintf(stderr, "Apache server interrupted...\n");
             /* for Interrupt signals, shut down the server.
              * Tell the system we have dealt with the signal
@@ -827,6 +1019,7 @@ static BOOL CALLBACK ap_control_handler(DWORD ctrl_type)
              * after a reasonable time to tell the system
              * that we have already tried to shut down.
              */
+            real_exit_code = 0;
             fprintf(stderr, "Apache server shutdown initiated...\n");
             ap_start_shutdown();
             Sleep(30000);
@@ -884,7 +1077,8 @@ void ap_start_console_monitor(void)
         HANDLE thread;
         thread = CreateThread(NULL, 0, WatchWindow, NULL, 0, 
                               &monitor_thread_id);
-        CloseHandle(thread);
+        if (thread)
+            CloseHandle(thread);
     }
 
     atexit(stop_console_monitor);

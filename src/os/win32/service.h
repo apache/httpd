@@ -3,6 +3,19 @@
 #define SERVICE_H
 
 #ifdef WIN32
+
+/* BIG RED WARNING: exit() is mapped to allow us to capture the exit
+ * status.  This header must only be included from modules linked into
+ * the ApacheCore.dll - since it's a horrible behavior to exit() from
+ * any module outside the main() block, and we -will- assume it's a
+ * fatal error.  No dynamically linked module will ever be able to find
+ * the real_exit_code, and _will_ GP fault if it tries this macro.
+ */
+
+#define exit(status) ((exit)(real_exit_code ? (real_exit_code = (status)) : (status)))
+extern int real_exit_code;
+void hold_console_open_on_error(void);
+
 int service_main(int (*main_fn)(int, char **), int argc, char **argv);
 int service95_main(int (*main_fn)(int, char **), int argc, char **argv,
 		   char *display_name);

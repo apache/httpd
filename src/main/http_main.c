@@ -5677,7 +5677,7 @@ void worker_main(void)
         
         ap_destroy_pool(pchild);
         cleanup_scoreboard();
-        exit(0);
+        exit(1);
     }
     
     set_signals();
@@ -5879,7 +5879,7 @@ void worker_main(void)
 
 	ap_destroy_pool(pchild);
 	cleanup_scoreboard();
-	exit(0);
+	exit(1);
     }
     if (rv == WAIT_OBJECT_0 + 1) {
 	/* exit event signalled - exit now */
@@ -5904,7 +5904,7 @@ void worker_main(void)
 
 	ap_destroy_pool(pchild);
 	cleanup_scoreboard();
-	exit(0);
+	exit(1);
     }
     set_signals();
 
@@ -6118,6 +6118,8 @@ static int create_process(pool *p, HANDLE *handles, HANDLE *events,
     DWORD BytesWritten;
     HANDLE hPipeRead = NULL;
     HANDLE hPipeWrite = NULL;
+    HANDLE hPipeWriteDup;
+    HANDLE hCurrentProcess;
     SECURITY_ATTRIBUTES sa = {0};  
 
     sa.nLength = sizeof(sa);
@@ -6164,6 +6166,14 @@ static int create_process(pool *p, HANDLE *handles, HANDLE *events,
         ap_log_error(APLOG_MARK, APLOG_WIN32ERROR | APLOG_CRIT, server_conf,
                      "Parent: Unable to create pipe to child process.\n");
         return -1;
+    }
+
+    hCurrentProcess = GetCurrentProcess();
+    if (DuplicateHandle(hCurrentProcess, hPipeWrite, hCurrentProcess,
+                        &hPipeWriteDup, 0, FALSE, DUPLICATE_SAME_ACCESS))
+    {
+        CloseHandle(hPipeWrite);
+        hPipeWrite = hPipeWriteDup;
     }
 
     /* Give the read in of the pipe (hPipeRead) to the child as stdin. The 
@@ -6626,6 +6636,9 @@ int REALMAIN(int argc, char *argv[])
             clean_parent_exit(0);
         }
     }
+
+    /* This behavior is voided by setting real_exit_code to 0 */
+    atexit(hold_console_open_on_error);
 #endif
 
 #ifdef NETWARE
@@ -6679,6 +6692,8 @@ int REALMAIN(int argc, char *argv[])
 	    break;
 #ifdef WIN32
 	case 'Z':
+            /* Prevent holding open the (nonexistant) console */
+            real_exit_code = 0;
 	    exit_event = open_event(optarg);
 	    APD2("child: opened process event %s", optarg);
 	    cp = strchr(optarg, '_');
@@ -6735,20 +6750,36 @@ int REALMAIN(int argc, char *argv[])
 	    ap_set_version();
 	    printf("Server version: %s\n", ap_get_server_version());
 	    printf("Server built:   %s\n", ap_get_server_built());
+#ifdef NETWARE
             clean_parent_exit(0);
+#else
+            clean_parent_exit(1);
+#endif
 
-	case 'V':
+        case 'V':
 	    ap_set_version();
 	    show_compile_settings();
+#ifdef NETWARE
             clean_parent_exit(0);
+#else
+            clean_parent_exit(1);
+#endif
 
 	case 'l':
 	    ap_show_modules();
+#ifdef NETWARE
             clean_parent_exit(0);
+#else
+            clean_parent_exit(1);
+#endif
 
 	case 'L':
 	    ap_show_directives();
+#ifdef NETWARE
             clean_parent_exit(0);
+#else
+            clean_parent_exit(1);
+#endif
 
 	case 'X':
 	    ++one_process;	/* Weird debugging mode. */
@@ -6785,14 +6816,14 @@ int REALMAIN(int argc, char *argv[])
         if (install > 0) {
             ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, NULL,
                          "Service \"%s\" is already installed!", service_name);
-            clean_parent_exit(0);
+            clean_parent_exit(1);
         }
     }
     else if (service_name && (install <= 0))
     {
         ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, NULL,
                      "Service \"%s\" is not installed!", service_name);
-        clean_parent_exit(0);
+        clean_parent_exit(1);
     }
 #endif
 
@@ -6851,16 +6882,20 @@ int REALMAIN(int argc, char *argv[])
 
     if (service_name && !conf_specified) {
         printf("Unknown service: %s\n", service_name);
-        clean_parent_exit(0);
+        clean_parent_exit(1);
     }
 
     /* All NT signals, and all but the 9x start signal are handled entirely.
      * Die if we failed, are on NT, or are not "start"ing the service
      */
     if (service_name && signal_to_send) {
-        if (!send_signal_to_service(service_name, signal_to_send)
-                || isWindowsNT() || strcasecmp(signal_to_send, "start"))
+        if (send_signal_to_service(service_name, signal_to_send))
             clean_parent_exit(0);
+        if (isWindowsNT() || strcasecmp(signal_to_send, "start"))
+            clean_parent_exit(1);
+        /* Still here?  Then we are hanging around to detach the console 
+         * and use this process as the Windows 9x service.
+         */
     }
 #else /* ndef WIN32 */
     server_conf = ap_read_config(pconf, ptrans, ap_server_confname);
