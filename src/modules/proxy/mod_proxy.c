@@ -492,7 +492,6 @@ set_cache_exclude(cmd_parms *parms, void *dummy, char *arg)
 	/* Don't do name lookups on things that aren't dotted */
 	if (strchr(arg, '.') != NULL && proxy_host2addr(new->name, &hp) == NULL)
 	    memcpy(&new->addr, hp.h_addr, sizeof(struct in_addr));
-	}
 	else
 	    new->addr.s_addr= 0;
     }
