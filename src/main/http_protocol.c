@@ -1793,10 +1793,13 @@ API_EXPORT(int) rputc(int c, request_rec *r)
 
 API_EXPORT(int) rputs(const char *str, request_rec *r)
 {
+    int rcode;
+
     if (r->connection->aborted)
         return EOF;
+    rcode = bputs(str, r->connection->client);
     SET_BYTES_SENT(r);
-    return bputs(str, r->connection->client);
+    return rcode;
 }
 
 API_EXPORT(int) rwrite(const void *buf, int nbyte, request_rec *r)

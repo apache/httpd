@@ -1,5 +1,8 @@
 Changes with Apache 1.3b6
 
+  *) rputs() did not calculate r->sent_bodyct properly.
+     [Siegmund Stirnweiss <siegst@kat.ina.de>] PR#1900
+
   *) The CGI spec says that REMOTE_HOST should be set to the remote hosts's
      name, or left unset if this value is unavailable.  Apache was setting
      it to the IP address when unavailable.
