@@ -97,6 +97,9 @@ Committed Code Changes:
     * Ken's addition of src/ap/ap.h for prototypes of routines in libap.a
     * Ken's addition of #ifndef wrappers to src/main/*.h header files
     * Ken's removal of problem-causing "const"s from mod_imap.c
+    * os-next/1613: can't compile
+    * os-next/1614: can't compile
+    * os-os2/1482: I cannot add a user in an existing password file
 
 Available Patches:
 
