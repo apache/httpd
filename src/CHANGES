@@ -1,4 +1,5 @@
 Changes with Apache 1.3.7
+
   *) EBCDIC platforms: David submitted patches for two bugs in the
      MD5 digest port for EBCDIC machines:
      a) the htdigest utility overwrote the old contents of the digest file
@@ -60,6 +61,8 @@ Changes with Apache 1.3.7
      when the encoding is defined (by the AddEncoding directive).
      Because it was missing, it was almost impossible to browse compressed
      files using the FTP proxy (works now perfectly in Communicator).
+     The ftp proxy now also returns the Date: and Server: header lines (if not
+     much else... This code is "somewhat" broken) like normal requests do.
      [Martin Kraemer]
 
   *) Be more smart in APACI's configure script when determining the UID/GID

@@ -1125,15 +1125,18 @@ int ap_proxy_ftp_handler(request_rec *r, cache_req *c, char *url)
     resp_hdrs = ap_make_table(p, 2);
     c->hdrs = resp_hdrs;
 
+    ap_table_setn(resp_hdrs, "Date", ap_gm_timestr_822(r->pool, r->request_time));
+    ap_table_setn(resp_hdrs, "Server", ap_get_server_version());
+
     if (parms[0] == 'd')
-	ap_table_set(resp_hdrs, "Content-Type", "text/html");
+	ap_table_setn(resp_hdrs, "Content-Type", "text/html");
     else {
 	if (r->content_type != NULL) {
-	    ap_table_set(resp_hdrs, "Content-Type", r->content_type);
+	    ap_table_setn(resp_hdrs, "Content-Type", r->content_type);
 	    Explain1("FTP: Content-Type set to %s", r->content_type);
 	}
 	else {
-	    ap_table_set(resp_hdrs, "Content-Type", ap_default_type(r));
+	    ap_table_setn(resp_hdrs, "Content-Type", ap_default_type(r));
 	}
 	if (parms[0] != 'a' && size != NULL) {
 	    /* We "trust" the ftp server to really serve (size) bytes... */
@@ -1143,7 +1146,7 @@ int ap_proxy_ftp_handler(request_rec *r, cache_req *c, char *url)
     }
     if (r->content_encoding != NULL && r->content_encoding[0] != '\0') {
 	Explain1("FTP: Content-Encoding set to %s", r->content_encoding);
-	ap_table_set(resp_hdrs, "Content-Encoding", r->content_encoding);
+	ap_table_setn(resp_hdrs, "Content-Encoding", r->content_encoding);
     }
 
 /* check if NoCache directive on this host */
@@ -1186,10 +1189,6 @@ int ap_proxy_ftp_handler(request_rec *r, cache_req *c, char *url)
 	data = ap_bcreate(p, B_RDWR | B_SOCKET);
 	ap_bpushfd(data, dsock, dsock);
     }
-
-#ifdef CHARSET_EBCDIC
-/*    bsetflag(data, B_ASCII2EBCDIC|B_EBCDIC2ASCII, 0);*/
-#endif /*CHARSET_EBCDIC*/
 
     ap_hard_timeout("proxy receive", r);
 /* send response */
