@@ -208,10 +208,10 @@ typedef struct cache_handle cache_handle_t;
 struct cache_handle {
     cache_object_t *cache_obj;
     int (*remove_entity) (cache_handle_t *h);
-    int (*write_headers)(cache_handle_t *h, request_rec *r, cache_info *i);
-    int (*write_body)(cache_handle_t *h, request_rec *r, apr_bucket_brigade *b);
-    int (*read_headers) (cache_handle_t *h, request_rec *r);
-    int (*read_body) (cache_handle_t *h, apr_pool_t *p, apr_bucket_brigade *bb); 
+    apr_status_t (*write_headers)(cache_handle_t *h, request_rec *r, cache_info *i);
+    apr_status_t (*write_body)(cache_handle_t *h, request_rec *r, apr_bucket_brigade *b);
+    apr_status_t (*read_headers) (cache_handle_t *h, request_rec *r);
+    apr_status_t (*read_body) (cache_handle_t *h, apr_pool_t *p, apr_bucket_brigade *bb); 
 };
 
 /* per request cache information */

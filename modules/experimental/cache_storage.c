@@ -219,23 +219,23 @@ apr_status_t cache_write_entity_headers(cache_handle_t *h,
                                         request_rec *r, 
                                         cache_info *info)
 {
-    h->write_headers(h, r, info);
-    return APR_SUCCESS;
+    return (h->write_headers(h, r, info));
 }
 apr_status_t cache_write_entity_body(cache_handle_t *h, request_rec *r, apr_bucket_brigade *b) 
 {
-    apr_status_t rv = APR_SUCCESS;
-    if (h->write_body(h, r, b) != OK) {
-    }
-    return rv;
+    return (h->write_body(h, r, b));
 }
 
 apr_status_t cache_read_entity_headers(cache_handle_t *h, request_rec *r)
 {
+    apr_status_t rv;
     cache_info *info = &(h->cache_obj->info);
 
     /* Build the header table from info in the info struct */
-    h->read_headers(h, r);
+    rv = h->read_headers(h, r);
+    if (rv != APR_SUCCESS) {
+        return rv;
+    }
 
     r->content_type = apr_pstrdup(r->pool, info->content_type);
     r->filename = apr_pstrdup(r->pool, info->filename );
@@ -244,8 +244,7 @@ apr_status_t cache_read_entity_headers(cache_handle_t *h, request_rec *r)
 }
 apr_status_t cache_read_entity_body(cache_handle_t *h, apr_pool_t *p, apr_bucket_brigade *b) 
 {
-    h->read_body(h, p, b);
-    return APR_SUCCESS;
+    return (h->read_body(h, p, b));
 }
 
 apr_status_t cache_generate_key_default( request_rec *r, apr_pool_t*p, char**key ) 

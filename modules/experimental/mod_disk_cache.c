@@ -121,10 +121,10 @@ module AP_MODULE_DECLARE_DATA disk_cache_module;
 
 /* Forward declarations */
 static int remove_entity(cache_handle_t *h);
-static int write_headers(cache_handle_t *h, request_rec *r, cache_info *i);
-static int write_body(cache_handle_t *h, request_rec *r, apr_bucket_brigade *b);
-static int read_headers(cache_handle_t *h, request_rec *r);
-static int read_body(cache_handle_t *h, apr_pool_t *p, apr_bucket_brigade *bb);
+static apr_status_t write_headers(cache_handle_t *h, request_rec *r, cache_info *i);
+static apr_status_t write_body(cache_handle_t *h, request_rec *r, apr_bucket_brigade *b);
+static apr_status_t read_headers(cache_handle_t *h, request_rec *r);
+static apr_status_t read_body(cache_handle_t *h, apr_pool_t *p, apr_bucket_brigade *bb);
 
 /*
  * Local static functions
@@ -447,7 +447,7 @@ static int remove_entity(cache_handle_t *h)
  * @@@: XXX: FIXME: currently the headers are passed thru un-merged. 
  * Is that okay, or should they be collapsed where possible?
  */
-static int read_headers(cache_handle_t *h, request_rec *r) 
+static apr_status_t read_headers(cache_handle_t *h, request_rec *r) 
 {
     apr_status_t rv;
     char *temp;
@@ -499,7 +499,7 @@ static int read_headers(cache_handle_t *h, request_rec *r)
     return APR_SUCCESS;
 }
 
-static int read_body(cache_handle_t *h, apr_pool_t *p, apr_bucket_brigade *bb) 
+static apr_status_t read_body(cache_handle_t *h, apr_pool_t *p, apr_bucket_brigade *bb) 
 {
     apr_bucket *e;
     disk_cache_object_t *dobj = (disk_cache_object_t*) h->cache_obj->vobj;
@@ -510,10 +510,10 @@ static int read_body(cache_handle_t *h, apr_pool_t *p, apr_bucket_brigade *bb)
     e = apr_bucket_eos_create();
     APR_BRIGADE_INSERT_TAIL(bb, e);
 
-    return OK;
+    return APR_SUCCESS;
 }
 
-static int write_headers(cache_handle_t *h, request_rec *r, cache_info *info)
+static apr_status_t write_headers(cache_handle_t *h, request_rec *r, cache_info *info)
 {
     disk_cache_conf *conf = ap_get_module_config(r->server->module_config, 
                                                  &disk_cache_module);
@@ -549,7 +549,6 @@ static int write_headers(cache_handle_t *h, request_rec *r, cache_info *info)
                            APR_WRITE | APR_CREATE | APR_EXCL,
                            0, r->pool);
         if (rv != APR_SUCCESS) {
-            /* XXX */
             return rv;
         }
         hfd = dobj->hfd;
@@ -589,9 +588,9 @@ static int write_headers(cache_handle_t *h, request_rec *r, cache_info *info)
 
     ap_log_error(APLOG_MARK, APLOG_INFO|APLOG_NOERRNO, 0, r->server,
                  "disk_cache: Caching headers for URL %s",  dobj->name);
-    return OK;
+    return APR_SUCCESS;
 }
-static int write_body(cache_handle_t *h, request_rec *r, apr_bucket_brigade *b) 
+static apr_status_t write_body(cache_handle_t *h, request_rec *r, apr_bucket_brigade *b) 
 {
     apr_bucket *e;
     apr_status_t rv;
@@ -603,7 +602,7 @@ static int write_body(cache_handle_t *h, request_rec *r, apr_bucket_brigade *b)
                            APR_WRITE | APR_CREATE | APR_BINARY| APR_TRUNCATE | APR_BUFFERED,
                            APR_UREAD | APR_UWRITE, r->pool);
         if (rv != APR_SUCCESS) {
-            return DECLINED;
+            return rv;
         }
     }
     APR_BRIGADE_FOREACH(e, b) {
@@ -618,7 +617,7 @@ static int write_body(cache_handle_t *h, request_rec *r, apr_bucket_brigade *b)
                      "disk_cache: Cached body for URL %s",  dobj->name);
     }
 
-    return OK;	
+    return APR_SUCCESS;	
 }
 
 static void *create_config(apr_pool_t *p, server_rec *s)
