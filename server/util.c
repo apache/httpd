@@ -916,6 +916,29 @@ AP_DECLARE(apr_status_t) ap_pcfg_openfile(ap_configfile_t **ret_cfg, apr_pool_t 
         return APR_EBADF;
     }
 
+#ifdef WIN32
+    /* Some twisted character [no pun intended] at MS decided that a
+     * zero width joiner as the lead wide character would be ideal for
+     * describing Unicode text files.  This was further convoluted to
+     * another MSism that the same character mapped into utf-8, EF BB BF
+     * would signify utf-8 text files.
+     *
+     * Since MS configuration files are all protecting utf-8 encoded
+     * Unicode path, file and resource names, we already have the correct 
+     * WinNT encoding.  But at least eat the stupid three bytes up front.
+     */
+    {
+        unsigned char buf[4];
+        apr_size_t len = 3;
+        status = apr_file_read(file, buf, &len);
+        if ((status != APR_SUCCESS) || (len < 3) 
+              || memcmp(buf, "\xEF\xBB\xBF", 3) != 0) {
+            apr_off_t zero = 0;
+            apr_file_seek(file, APR_SET, &zero);
+        }
+    }
+#endif
+
     new_cfg = apr_palloc(p, sizeof(*new_cfg));
     new_cfg->param = file;
     new_cfg->name = apr_pstrdup(p, name);
