@@ -306,7 +306,7 @@ static int directory_walk(request_rec *r)
      * Fake filenames (i.e. proxy:) only match Directory sections.
      */
 
-    if (!ap_is_path_absolute(r->filename))
+    if (!ap_os_is_path_absolute(r->filename))
     {
         void *this_conf, *entry_config;
         core_dir_config *entry_core;
@@ -343,7 +343,7 @@ static int directory_walk(request_rec *r)
         return OK;
     }
 
-    r->filename   = ap_canonical_filename(r->pool, r->filename);
+    r->filename   = ap_os_canonical_filename(r->pool, r->filename);
     test_filename = ap_pstrdup(r->pool, r->filename);
 
     ap_no2slash(test_filename);
@@ -414,7 +414,7 @@ static int directory_walk(request_rec *r)
             entry_dir = entry_core->d;
 
             if (entry_core->r
-		|| !ap_is_path_absolute(entry_dir)
+		|| !ap_os_is_path_absolute(entry_dir)
                 || entry_core->d_components > i)
                 break;
 

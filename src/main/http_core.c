@@ -988,7 +988,7 @@ static const char *dirsection (cmd_parms *cmd, void *dummy, const char *arg)
     }
     else {
 	/* Ensure that the pathname is canonical */
-	cmd->path = ap_canonical_filename(cmd->pool, cmd->path);
+	cmd->path = ap_os_canonical_filename(cmd->pool, cmd->path);
     }
 
     old_end_token = cmd->end_token;
@@ -1104,7 +1104,7 @@ static const char *filesection (cmd_parms *cmd, core_dir_config *c, const char *
     }
     else {
 	/* Ensure that the pathname is canonical */
-	cmd->path = ap_canonical_filename(cmd->pool, cmd->path);
+	cmd->path = ap_os_canonical_filename(cmd->pool, cmd->path);
     }
 
     old_end_token = cmd->end_token;

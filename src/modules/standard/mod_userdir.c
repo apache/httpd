@@ -260,7 +260,7 @@ static int translate_userdir(request_rec *r)
         if (strchr(userdir, '*'))
             x = ap_getword(r->pool, &userdir, '*');
 
-	if (userdir[0] == '\0' || ap_is_path_absolute(userdir)) {
+	if (userdir[0] == '\0' || ap_os_is_path_absolute(userdir)) {
             if (x) {
 #ifdef WIN32
                 /*

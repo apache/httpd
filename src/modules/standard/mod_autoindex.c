@@ -851,7 +851,7 @@ static void output_directories(struct ent **ar, int n,
 	    if (t[0] == '\0')
 		t = "/";
 	    anchor = ap_pstrcat(scratch, "<A HREF=\"",
-			ap_escape_html(scratch, ap_escape_path(scratch, t, 0)),
+			ap_escape_html(scratch, ap_os_escape_path(scratch, t, 0)),
 			     "\">", NULL);
 	    t2 = "Parent Directory</A>       ";
 	}
@@ -873,7 +873,7 @@ static void output_directories(struct ent **ar, int n,
 		t2 = ap_pstrcat(scratch, t2, "</A>", buff, NULL);
 	    }
 	    anchor = ap_pstrcat(scratch, "<A HREF=\"",
-			ap_escape_html(scratch, ap_escape_path(scratch, t, 0)),
+			ap_escape_html(scratch, ap_os_escape_path(scratch, t, 0)),
 			     "\">", NULL);
 	}
 

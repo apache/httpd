@@ -19,7 +19,7 @@ void ap_is_not_here(void) {}
  *  dynamic shared object (DSO) mechanism
  */
 
-void *ap_dso_load(const char *path)
+void *ap_os_dso_load(const char *path)
 {
 #if defined(HPUX) || defined(HPUX10)
     shl_t handle;
@@ -30,7 +30,7 @@ void *ap_dso_load(const char *path)
 #endif
 }
 
-void ap_dso_unload(void *handle) 
+void ap_os_dso_unload(void *handle) 
 {
 #if defined(HPUX) || defined(HPUX10)
     shl_unload((shl_t)handle);
@@ -40,7 +40,7 @@ void ap_dso_unload(void *handle)
     return;
 }
 
-void *ap_dso_sym(void *handle, const char *symname)
+void *ap_os_dso_sym(void *handle, const char *symname)
 {
 #if defined(HPUX) || defined(HPUX10)
     void *symaddr = NULL;
@@ -62,7 +62,7 @@ void *ap_dso_sym(void *handle, const char *symname)
 #endif /* ndef HPUX */
 }
 
-const char *ap_dso_error(void)
+const char *ap_os_dso_error(void)
 {
 #if defined(HPUX) || defined(HPUX10)
     return strerror(errno);

@@ -1149,7 +1149,7 @@ API_EXPORT(char *) ap_escape_path_segment(pool *p, const char *segment)
     return copy;
 }
 
-API_EXPORT(char *) ap_escape_path(pool *p, const char *path, int partial)
+API_EXPORT(char *) ap_os_escape_path(pool *p, const char *path, int partial)
 {
     char *copy = ap_palloc(p, 3 * strlen(path) + 3);
     const unsigned char *s = (const unsigned char *)path;

@@ -76,7 +76,7 @@
 /* Compiler does not support inline, so prototype the inlineable functions
  * as normal
  */
-extern int ap_is_path_absolute(const char *f);
+extern int ap_os_is_path_absolute(const char *f);
 #endif
 
 /*
@@ -119,10 +119,10 @@ const char *dlerror(void);
 #define DLSYM_NEEDS_UNDERSCORE
 #endif
 
-#define     ap_dso_handle_t  void *
-void *      ap_dso_load(const char *);
-void        ap_dso_unload(void *);
-void *      ap_dso_sym(void *, const char *);
-const char *ap_dso_error(void);
+#define     ap_os_dso_handle_t  void *
+void *      ap_os_dso_load(const char *);
+void        ap_os_dso_unload(void *);
+void *      ap_os_dso_sym(void *, const char *);
+const char *ap_os_dso_error(void);
 
 #endif	/* !APACHE_OS_H */

@@ -20,7 +20,7 @@
 /* Compiler does not support inline, so prototype the inlineable functions
  * as normal
  */
-extern int ap_is_path_absolute(const char *f);
+extern int ap_os_is_path_absolute(const char *f);
 #endif
 
 /* Sorry if this is ugly, but the include order doesn't allow me

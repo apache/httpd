@@ -208,9 +208,9 @@
 #define open_logs                      ap_open_logs
 #define open_mutex                     ap_open_mutex
 #define open_piped_log                 ap_open_piped_log
-#define os_canonical_filename          ap_canonical_filename
-#define os_escape_path                 ap_escape_path
-#define os_is_path_absolute            ap_is_path_absolute
+#define os_canonical_filename          ap_os_canonical_filename
+#define os_escape_path                 ap_os_escape_path
+#define os_is_path_absolute            ap_os_is_path_absolute
 #define overlay_tables                 ap_overlay_tables
 #define palloc                         ap_palloc
 #define parseHTTPdate                  ap_parseHTTPdate
@@ -389,9 +389,9 @@
 #define util_uri_init                  ap_util_uri_init
 #define uudecode                       ap_uudecode
 #define vbprintf                       ap_vbprintf
-#define os_dl_load                     ap_dso_load
-#define os_dl_unload                   ap_dso_unload
-#define os_dl_sym                      ap_dso_sym
-#define os_dl_error                    ap_dso_error
+#define os_dl_load                     ap_os_dso_load
+#define os_dl_unload                   ap_os_dso_unload
+#define os_dl_sym                      ap_os_dso_sym
+#define os_dl_error                    ap_os_dso_error
 
 #endif /* APACHE_COMPAT_H */

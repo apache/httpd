@@ -983,7 +983,7 @@ API_EXPORT_NONSTD(const char *) ap_set_file_slot(cmd_parms *cmd, char *struct_pt
        so the server can be moved or mirrored with less pain.  */
     char *p;
     int offset = (int) (long) cmd->info;
-    if (ap_is_path_absolute(arg))
+    if (ap_os_is_path_absolute(arg))
 	p = arg;
     else
 	p = ap_make_full_path(cmd->pool, ap_server_root, arg);
@@ -1001,7 +1001,7 @@ static cmd_parms default_parms =
 
 API_EXPORT(char *) ap_server_root_relative(pool *p, char *file)
 {
-    if(ap_is_path_absolute(file))
+    if(ap_os_is_path_absolute(file))
 	return file;
     return ap_make_full_path(p, ap_server_root, file);
 }

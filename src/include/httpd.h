@@ -843,8 +843,8 @@ API_EXPORT(int) ap_unescape_url(char *url);
 API_EXPORT(void) ap_no2slash(char *name);
 API_EXPORT(void) ap_getparents(char *name);
 API_EXPORT(char *) ap_escape_path_segment(pool *p, const char *s);
-API_EXPORT(char *) ap_escape_path(pool *p, const char *path, int partial);
-#define escape_uri(ppool,path) ap_escape_path(ppool,path,1)
+API_EXPORT(char *) ap_os_escape_path(pool *p, const char *path, int partial);
+#define escape_uri(ppool,path) ap_os_escape_path(ppool,path,1)
 API_EXPORT(char *) ap_escape_html(pool *p, const char *s);
 API_EXPORT(char *) ap_construct_server(pool *p, const char *hostname,
 				    unsigned port, const request_rec *r);
@@ -913,9 +913,9 @@ API_EXPORT(int) ap_can_exec(const struct stat *);
 API_EXPORT(void) ap_chdir_file(const char *file);
 
 #ifndef HAVE_CANONICAL_FILENAME
-#define ap_canonical_filename(p,f)  (f)
+#define ap_os_canonical_filename(p,f)  (f)
 #else
-API_EXPORT(char *) ap_canonical_filename(pool *p, const char *file);
+API_EXPORT(char *) ap_os_canonical_filename(pool *p, const char *file);
 #endif
 
 char *ap_get_local_host(pool *);

@@ -54,7 +54,7 @@ static void sub_canonical_filename(char *szCanon, const char *szFile)
     }
 }
 
-API_EXPORT(char *) ap_canonical_filename(pool *pPool, const char *szFile)
+API_EXPORT(char *) ap_os_canonical_filename(pool *pPool, const char *szFile)
 {
     char buf[HUGE_STRING_LEN];
 

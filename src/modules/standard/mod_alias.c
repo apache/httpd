@@ -320,7 +320,7 @@ static char *try_alias_list(request_rec *r, array_header *aliases, int doesc, in
 	    if (l > 0) {
 		if (doesc) {
 		    char *escurl;
-		    escurl = ap_escape_path(r->pool, r->uri + l, 1);
+		    escurl = ap_os_escape_path(r->pool, r->uri + l, 1);
 
 		    found = ap_pstrcat(r->pool, p->real, escurl, NULL);
 		}
