@@ -1586,6 +1586,9 @@ static int perchild_post_read(request_rec *r)
         return OK;
     }
     else {
+        /* sconf is the server config for this vhost, so if our socket
+         * is not the same that was set in the config, then the request
+         * needs to be passed to another child. */
         if (sconf->sd != child_info_table[child_num].sd) {
             if (pass_request(r) == -1) {
                 ap_log_error(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0,
