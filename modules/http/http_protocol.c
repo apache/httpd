@@ -2284,19 +2284,18 @@ AP_DECLARE(void) ap_send_error_response(request_rec *r, int recursive_error)
          * as a text message, so first check the custom response
          * string to ensure that it is a text-string (using the
          * same test used in ap_die(), i.e. does it start with a ").
-         * If it doesn't, we've got a recursive error, so find
-         * the original error and output that as well.
+         * 
+         * If it's not a text string, we've got a recursive error or 
+         * an external redirect.  If it's a recursive error, ap_die passes
+         * us the second error code so we can write both, and has already 
+         * backed up to the original error.  If it's an external redirect, 
+         * it hasn't happened yet; we may never know if it fails.
          */
         if (custom_response[0] == '\"') {
             ap_rputs(custom_response + 1, r);
             ap_finalize_request_protocol(r);
             return;
         }
-        /*
-         * Redirect failed, so get back the original error
-         */
-        while (r->prev && (r->prev->status != HTTP_OK))
-            r = r->prev;
     }
     {
         const char *title = status_lines[idx];
