@@ -394,26 +394,16 @@ static request_rec *internal_internal_redirect(const char *new_uri,
     new->proto_output_filters  = r->proto_output_filters;
     new->proto_input_filters   = r->proto_input_filters;
 
-    if (new->main) {
-        new->output_filters = r->output_filters;
-        new->input_filters = r->input_filters;
+    new->output_filters  = new->proto_output_filters;
+    new->input_filters   = new->proto_input_filters;
 
+    if (new->main) {
         /* Add back the subrequest filter, which we lost when
          * we set output_filters to include only the protocol
          * output filters from the original request.
-         *
-         * XXX: This shouldn't be neccessary any longer, because the filter
-         * is still in place -- isn't it?
          */
         ap_add_output_filter_handle(ap_subreq_core_filter_handle,
                                     NULL, new, new->connection);
-    }
-    else {
-        /* In subrequests we _must_ point to the complete upper request's
-         * filter chain, so skip the filters _only_ within the main request.
-         */
-        new->output_filters  = new->proto_output_filters;
-        new->input_filters   = new->proto_input_filters;
     }
     
     update_r_in_filters(new->input_filters, r, new);
@@ -465,19 +455,10 @@ AP_DECLARE(void) ap_internal_fast_redirect(request_rec *rr, request_rec *r)
     r->subprocess_env = apr_table_overlay(r->pool, rr->subprocess_env,
                                           r->subprocess_env);
 
-    /* copy the filters _only_ within the main request. In subrequests
-     * we _must_ point to the upper requests' filter chain, so do not
-     * touch 'em!
-     */
-    if (!r->main) {
-        r->output_filters = rr->output_filters;
-        r->input_filters = rr->input_filters;
-    }
+    r->output_filters = rr->output_filters;
+    r->input_filters = rr->input_filters;
 
     if (r->main) {
-        /* XXX: This shouldn't be neccessary any longer, because the filter
-         * is still in place -- isn't it?
-         */
         ap_add_output_filter_handle(ap_subreq_core_filter_handle,
                                     NULL, r, r->connection);
     }
