@@ -2,6 +2,9 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) SECURITY: CAN-2004-0748 (cve.mitre.org)
+     mod_ssl: Fix a potential infinite loop.  PR 29964.  [Joe Orton]
+
   *) mod_disk_cache: Implement binary format for on-disk header files.
      [Brian Akins <bakins web.turner.com>, Justin Erenkrantz]
 
@@ -20,7 +23,7 @@ Changes with Apache 2.1.0-dev
   *) Add load balancer support to the scoreboard in preparation for
      load balancing support in mod_proxy. [Mladen Turk]
 
-  *) mod_ssl: Build on RHEL 3. (RedHat bug: 82369.)  [Justin Erenkrantz]
+  *) mod_ssl: Build on RHEL 3.  PR 18989.  [Justin Erenkrantz]
 
   *) mod_nw_ssl: Added the directive NWSSLUpgradeable to mod_nw_ssl to 
      allow a non-secure connection to be upgraded to secure connections
