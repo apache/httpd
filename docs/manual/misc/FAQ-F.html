@@ -31,7 +31,7 @@
   <!--#include virtual="header.html" -->
   <H1 ALIGN="CENTER">Apache Server Frequently Asked Questions</H1>
   <P>
-  $Revision: 1.7 $ ($Date: 2000/12/02 21:39:03 $)
+  $Revision: 1.8 $ ($Date: 2001/02/10 23:33:36 $)
   </P>
   <P>
   The latest version of this FAQ is always available from the main
@@ -383,22 +383,24 @@
     directive which permits <SAMP>Includes</SAMP>.
    </LI>
    <LI>Make sure that the directory where you want the SSI documents to
-    live is covered by the &quot;server-parsed&quot; content handler,
+    live is covered by the &quot;INCLUDES&quot; output filter,
     either explicitly or in some ancestral location.  That can be done
     with the following
-    <A HREF="../mod/mod_mime.html#addhandler"><SAMP>AddHandler</SAMP></A>
+    <A HREF="../mod/core.html#setoutputfilter"><SAMP>SetOutputFilter</SAMP></A>
     directive:
     <P>
-    <DL>
-     <DD><CODE>AddHandler server-parsed .shtml</CODE>
-     </DD>
-    </DL>
+    <blockquote><code>
+    &lt;FilesMatch "\.shtml[.$]"&gt;<br>
+    &nbsp;&nbsp;SetOutputFilter INCLUDES<br>
+    &lt;/FilesMatch&gt;
+    </code></blockquote>
     <P></P>
     <P>
-    This indicates that all files ending in &quot;.shtml&quot; in that
-    location (or its descendants) should be parsed.  Note that using
-    &quot;.html&quot; will cause all normal HTML files to be parsed,
-    which may put an inordinate load on your server.
+    This indicates that all files with the extension
+    &quot;.shtml&quot; in that location (or its descendants) should be
+    parsed.  Note that using &quot;.html&quot; will cause all normal
+    HTML files to be parsed, which may put an inordinate load on your
+    server.
     </P>
    </LI>
   </UL>

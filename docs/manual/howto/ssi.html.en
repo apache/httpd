@@ -143,7 +143,9 @@ such as <code>.shtml</code>, with the following directives:</p>
 
 <pre>
         AddType text/html .shtml
-        AddHandler server-parsed .shtml
+        &lt;FilesMatch "\.shtml[.$]"&gt;
+          SetOutputFilter INCLUDES<br>
+        &lt;/FilesMatch&gt;
 </pre>
 
 <p>One disadvantage to this approach is that if you wanted to add SSI

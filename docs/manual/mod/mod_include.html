@@ -61,34 +61,38 @@ and <a href="mod_mime.html#addhandler">AddHandler</a>.</p>
 
 <H2>Enabling Server-Side Includes</H2>
 
-Any document with handler of "server-parsed" will be parsed by this
-module, if the <CODE>Includes</CODE> option is set. If documents
-containing server-side include directives are given the extension
-.shtml, the following directives will make Apache parse them and
-assign the resulting document the mime type of <CODE>text/html</CODE>:
+<p>Server Side Includes are implemented by the <code>INCLUDES</code>
+<a href="../filter.html">filter</a>.  If documents containing
+server-side include directives are given the extension .shtml, the
+following directives will make Apache parse them and assign the
+resulting document the mime type of <CODE>text/html</CODE>:
+</p>
 
-<PRE>
-AddType text/html .shtml
-AddHandler server-parsed .shtml
-</PRE>
+<blockquote><code>
+AddType text/html .shtml<br>
+&lt;FilesMatch "\.shtml[.$]"&gt;<br>
+&nbsp;&nbsp;SetOutputFilter INCLUDES<br>
+&lt;/FilesMatch&gt;
+</code></blockquote>
 
-The following directive must be given for the directories containing
+<p>The following directive must be given for the directories containing
 the shtml files (typically in a <CODE>&lt;Directory&gt;</CODE> section,
 but this directive is also valid .htaccess files if <CODE>AllowOverride
-Options</CODE> is set):
+Options</CODE> is set):</p>
 
-<PRE>
+<blockquote><code>
 Options +Includes
-</PRE>
+</code></blockquote>
 
-Alternatively the <A HREF="#xbithack"><CODE>XBitHack</CODE></A>
+<p>Alternatively the <A HREF="#xbithack"><CODE>XBitHack</CODE></A>
 directive can be used to parse normal (<CODE>text/html</CODE>) files,
-based on file permissions.  <P>
+based on file permissions.</p>
 
-For backwards compatibility, documents with mime type
+<p>For backwards compatibility, documents with mime type
 <CODE>text/x-server-parsed-html</CODE> or
 <CODE>text/x-server-parsed-html3</CODE> will also be parsed
-(and the resulting output given the mime type <CODE>text/html</CODE>).
+(and the resulting output given the mime type <CODE>text/html</CODE>)
+as will documents with the handler <code>server-parsed</code>.
 
 <H2>Basic Elements</H2>
 

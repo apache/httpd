@@ -145,7 +145,9 @@ the contained directives- must be omitted.)</SMALL>
    AllowOverride none
    Options MultiViews IncludesNoExec FollowSymLinks
    AddType text/html .shtml
-   AddHandler server-parsed .shtml
+   &lt;FilesMatch "\.shtml[.$]"&gt;
+    SetOutputFilter INCLUDES
+   &lt;/FilesMatch&gt;
   &lt;/Directory&gt;
   #    "400 Bad Request",
   ErrorDocument  400  /errordocs/400
