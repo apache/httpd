@@ -25,99 +25,99 @@
 rotatelogs \- Piped logging program to rotate Apache logs
 
 .SH "SYNOPSIS"
-
+ 
 .PP
-\fBrotatelogs\fR\fIlogfile\fR [ \fIrotationtime\fR [ \fIoffset\fR ]] | [ \fIfilesize\fRM ]
-
+\fBrotatelogs\fR \fIlogfile\fR [ \fIrotationtime\fR [ \fIoffset\fR ]] | [ \fIfilesize\fRM ]
+ 
 
 .SH "SUMMARY"
-
+ 
 .PP
 rotatelogs is a simple program for use in conjunction with Apache's piped logfile feature\&. For example:
-
+ 
 .nf
 
      CustomLog "|bin/rotatelogs /var/logs/logfile 86400" common
 
 .fi
-
+ 
 .PP
 This creates the files /var/logs/logfile\&.nnnn where nnnn is the system time at which the log nominally starts (this time will always be a multiple of the rotation time, so you can synchronize cron scripts with it)\&. At the end of each rota- tion time (here after 24 hours) a new log is started\&.
-
+ 
 .nf
 	 
      CustomLog "|bin/rotatelogs /var/logs/logfile 5M" common
 
 .fi
-
+ 
 .PP
 This configuration will rotate the logfile whenever it reaches a size of 5 megabytes\&.
-
+ 
 
 .SH "OPTIONS"
-
+ 
 .RS
-
+ 
 .TP
 \fIlogfile\fR
-The path plus basename of the logfile\&. If \fIlogfile\fR includes any '%' characters, it is treated as a format string for strftime(3)\&. Otherwise, the suffix \fI\&.nnnnnnnnnn\fR is automatically added and is the time in seconds\&. Both formats compute the start time from the beginning of the current period\&.
+The path plus basename of the logfile\&. If \fIlogfile\fR includes any '%' characters, it is treated as a format string for strftime(3)\&. Otherwise, the suffix \fI\&.nnnnnnnnnn\fR is automatically added and is the time in seconds\&. Both formats compute the start time from the beginning of the current period\&.  
 .TP
 \fIrotationtime\fR
-The time between log file rotations in seconds\&.
+The time between log file rotations in seconds\&.  
 .TP
 \fIoffset\fR
-The number of minutes offset from UTC\&. If omitted, zero is assumed and UTC is used\&. For example, to use local time in the zone UTC -5 hours, specify a value of -300 for this argument\&.
+The number of minutes offset from UTC\&. If omitted, zero is assumed and UTC is used\&. For example, to use local time in the zone UTC -5 hours, specify a value of -300 for this argument\&.  
 .TP
 \fIfilesize\fRM
-The maximum file size in megabytes followed by the letter M to specify size rather than time\&. Use this parameter in place of both rotationtime and offset\&.
+The maximum file size in megabytes followed by the letter M to specify size rather than time\&. Use this parameter in place of both rotationtime and offset\&.  
 .RE
-
+ 
 .SH "PORTABILITY"
-
+ 
 .PP
 The following logfile format string substitutions should be supported by all strftime(3) implementations, see the strftime(3) man page for library-specific extensions\&.
-
+  
 .Ip "\(bu \s-1%A\s0 \- full weekday name (localized)
-
+ 
 .Ip "\(bu \s-1%a\s0 \- 3-character weekday name (localized)
-
+ 
 .Ip "\(bu \s-1%B\s0 \- full month name (localized)
-
+ 
 .Ip "\(bu \s-1%b\s0 \- 3-character month name (localized)
-
+ 
 .Ip "\(bu \s-1%c\s0 \- date and time (localized)
-
+ 
 .Ip "\(bu \s-1%d\s0 \- 2-digit day of month
-
+ 
 .Ip "\(bu \s-1%H\s0 \- 2-digit hour (24 hour clock)
-
+ 
 .Ip "\(bu \s-1%I\s0 \- 2-digit hour (12 hour clock)
-
+ 
 .Ip "\(bu \s-1%j\s0 \- 3-digit day of year
-
+ 
 .Ip "\(bu \s-1%M\s0 \- 2-digit minute
-
+ 
 .Ip "\(bu \s-1%m\s0 \- 2-digit month
-
+ 
 .Ip "\(bu \s-1%p\s0 \- am/pm of 12 hour clock (localized)
-
+ 
 .Ip "\(bu \s-1%S\s0 \- 2-digit second
-
+ 
 .Ip "\(bu \s-1%U\s0 \- 2-digit week of year (Sunday first day of week)
-
+ 
 .Ip "\(bu \s-1%W\s0 \- 2-digit week of year (Monday first day of week)
-
+ 
 .Ip "\(bu \s-1%w\s0 \- 1-digit weekday (Sunday first day of week)
-
+ 
 .Ip "\(bu \s-1%X\s0 \- time (localized)
-
+ 
 .Ip "\(bu \s-1%x\s0 \- date (localized)
-
+ 
 .Ip "\(bu \s-1%Y\s0 \- 4-digit year
-
+ 
 .Ip "\(bu \s-1%y\s0 \- 2-digit year
-
+ 
 .Ip "\(bu \s-1%Z\s0 \- time zone name
-
+ 
 .Ip "\(bu \s-1%%\s0 \- literal `%'
-
+  
