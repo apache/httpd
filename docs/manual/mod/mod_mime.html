@@ -72,8 +72,10 @@ copies may still be used by a client or proxy, with the previous headers.
 <li><a href="#addtype">AddType</a>
 <li><a href="#defaultlanguage">DefaultLanguage</a>
 <li><a href="#forcetype">ForceType</a>
+<li><a href="#removecharset">RemoveCharset</a>
 <li><a href="#removeencoding">RemoveEncoding</a>
 <li><a href="#removehandler">RemoveHandler</a>
+<li><a href="#removelanguage">RemoveLanguage</a>
 <li><a href="#removetype">RemoveType</a>
 <li><a href="#sethandler">SetHandler</a>
 <li><a href="#typesconfig">TypesConfig</a>
@@ -162,7 +164,7 @@ another important piece of information is
 what language a particular document is in, and in what character set
 the file should be displayed. For example, the document might be
 written in the Vietnamese alphabet, or in Cyrillic, and should be
-displayed as such. This information, also, is transmitted in MIME
+displayed as such. This information, also, is transmitted in HTTP
 headers.<p>
 
 While the character set is useful for the browser, in order to
@@ -580,6 +582,44 @@ had a directory full of GIF files, but did not want to label them all with
 <P>Note that this will override any filename extensions that might determine
 the media type.</P><hr>
 
+<h2><a name="removecharset">RemoveCharset</a> directive</h2>
+
+<a
+ href="directive-dict.html#Syntax"
+ rel="Help"
+><strong>Syntax:</strong></a> RemoveCharset <em>extension</em>
+     [<em>extension</em>] ...<br>
+<a
+ href="directive-dict.html#Context"
+ rel="Help"
+><strong>Context:</strong></a> directory, .htaccess<br>
+<a
+ href="directive-dict.html#Status"
+ rel="Help"
+><strong>Status:</strong></a> Base<br>
+<a
+ href="directive-dict.html#Module"
+ rel="Help"
+><strong>Module:</strong></a> mod_mime<br>
+<a
+ href="directive-dict.html#Compatibility"
+ rel="Help"
+><strong>Compatibility:</strong></a> RemoveCharset is only available in Apache
+2.0.24 and later.<P>
+
+<P>
+The <samp>RemoveCharset</samp> directive removes any
+character set associations for files with the given extensions.
+This allows <code>.htaccess</code> files in subdirectories to undo
+any associations inherited from parent directories or the server
+config files.
+</P>
+<p>The <em>extension</em> argument is case-insensitive, and can
+be specified with or without a leading dot.</p>
+
+<hr>
+
+
 <h2><a name="removeencoding">RemoveEncoding</a> directive</h2>
 
 <a
@@ -681,6 +721,43 @@ This has the effect of returning <samp>.html</samp> files in the
 <samp>/foo/bar</samp> directory to being treated as normal
 files, rather than as candidates for parsing (see the
 <a href="mod_include.html"><samp>mod_include</samp></a> module).
+</P>
+<p>The <em>extension</em> argument is case-insensitive, and can
+be specified with or without a leading dot.</p>
+
+<hr>
+
+<h2><a name="removelanguage">RemoveLanguage</a> directive</h2>
+
+<a
+ href="directive-dict.html#Syntax"
+ rel="Help"
+><strong>Syntax:</strong></a> RemoveLanguage <em>extension</em>
+     [<em>extension</em>] ...<br>
+<a
+ href="directive-dict.html#Context"
+ rel="Help"
+><strong>Context:</strong></a> directory, .htaccess<br>
+<a
+ href="directive-dict.html#Status"
+ rel="Help"
+><strong>Status:</strong></a> Base<br>
+<a
+ href="directive-dict.html#Module"
+ rel="Help"
+><strong>Module:</strong></a> mod_mime<br>
+<a
+ href="directive-dict.html#Compatibility"
+ rel="Help"
+><strong>Compatibility:</strong></a> RemoveLanguage is only available in 
+Apache 2.0.24 and later.<P>
+
+<P>
+The <samp>RemoveLanguage</samp> directive removes any
+language associations for files with the given extensions.
+This allows <code>.htaccess</code> files in subdirectories to undo
+any associations inherited from parent directories or the server
+config files.
 </P>
 <p>The <em>extension</em> argument is case-insensitive, and can
 be specified with or without a leading dot.</p>
