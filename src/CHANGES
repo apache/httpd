@@ -1,5 +1,8 @@
 Changes with Apache 1.3.2
 
+  *) PORT: NEC EWS4800 support.
+     [MATSUURA Takanori <t-matsuu@protein.osaka-u.ac.jp>]
+
   *) Fix a segfault in the proxy on OS/2.  [Brian Havard]
 
   *) Fix Win32 part of ap_spawn_child() by providing a reasonable child_info

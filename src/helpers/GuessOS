@@ -219,6 +219,12 @@ case "${SYSTEM}:${RELEASE}:${VERSION}:${MACHINE}" in
 	echo "${MACHINE}-ccur-sysv4"; exit 0;
 	;;
     
+    UNIX_SV:*)
+	if [ -d /usr/nec ];then
+		echo "mips-nec-sysv4"; exit 0;
+	fi
+	;;
+
     NonStop-UX:4.[02]*:[BC]*:*)
 	echo "${MACHINE}-tandem-sysv4"; exit 0;
 	;;

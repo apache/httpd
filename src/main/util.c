@@ -1570,7 +1570,7 @@ unsigned long ap_get_virthost_addr(const char *w, unsigned short *ports)
 	return htonl(INADDR_ANY);
     }
 
-    my_addr = ap_inet_addr(w);
+    my_addr = ap_inet_addr((char *)w);
     if (my_addr != INADDR_NONE) {
 	if (p != NULL)
 	    *p = ':';
