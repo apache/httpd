@@ -90,7 +90,7 @@
 
     <p>To create the file, use the <a
     href="../programs/htpasswd.html">htpasswd</a> utility that came
-    with Apache. This be located in the <code>bin</code> directory
+    with Apache. This will be located in the <code>bin</code> directory
     of wherever you installed Apache. To create the file, type:</p>
 
     <example>
