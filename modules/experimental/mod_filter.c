@@ -22,8 +22,7 @@
  *
  * 21/9/04: Unifying data structures with util_filter.
  * From now on, until and unless we backport, mod_filter requires
- * util_filter.h from CVS or httpd-2.1+ to compile.  Nevertheless,
- * the compiled code remains binary-compatible with httpd-2.0.
+ * util_filter.h from CVS or httpd-2.1+ to compile.
  * I'll keep a minimal patch for httpd-2.0 users to compile mod_filter
  * at http://www.apache.org/~niq/
  */
@@ -42,7 +41,6 @@
 module AP_MODULE_DECLARE_DATA filter_module ;
 
 typedef struct {
-    const char* name ;
     ap_out_filter_func func ;
     void* fctx ;
 } harness_ctx ;
@@ -108,11 +106,10 @@ static int filter_init(ap_filter_t* f)
 {
     ap_filter_provider_t* p ;
     int err = OK ;
-    harness_ctx* ctx = f->ctx ;
     mod_filter_cfg* cfg
         = ap_get_module_config(f->r->per_dir_config, &filter_module);
-    ap_filter_rec_t* filter
-        = apr_hash_get(cfg->live_filters, ctx->name, APR_HASH_KEY_STRING) ;
+    ap_filter_rec_t* filter = f->frec ;
+    f->ctx = apr_pcalloc(f->r->pool, sizeof(harness_ctx)) ;
     for ( p = filter->providers ; p ; p = p->next ) {
         if ( p->frec->filter_init_func ) {
             if ( err =  p->frec->filter_init_func(f), err != OK ) {
@@ -278,7 +275,7 @@ static apr_status_t filter_harness(ap_filter_t* f, apr_bucket_brigade* bb)
         ap_remove_output_filter(f) ;
         return ap_pass_brigade(f->next, bb) ;
     }
-    filter_trace(f->c->pool, filter->debug, ctx->name, bb) ;
+    filter_trace(f->c->pool, filter->debug, f->frec->name, bb) ;
 
 /* look up a handler function if we haven't already set it */
     if ( ! ctx->func ) {
@@ -449,8 +446,12 @@ static const char* filter_provider(cmd_parms* cmd, void* CFG,
     /* fname has been declared with DeclareFilter, so we can look it up */
     mod_filter_cfg* cfg = CFG ;
     ap_filter_rec_t* frec = apr_hash_get(cfg->live_filters, fname, APR_HASH_KEY_STRING) ;
-    /* provider has been registered, so we can look it up */
+    /* if provider has been registered, we can look it up */
     ap_filter_rec_t* provider_frec = ap_get_output_filter_handle(pname) ;
+    /* or if provider is mod_filter itself, we can also look it up */
+    if ( ! provider_frec ) {
+        provider_frec = apr_hash_get(cfg->live_filters, pname, APR_HASH_KEY_STRING) ;
+    }
     if ( ! frec ) {
         return apr_psprintf(cmd->pool, "Undeclared smart filter %s", fname) ;
     } else if ( !provider_frec ) {
@@ -598,7 +599,6 @@ static int filter_insert(request_rec* r)
 {
     mod_filter_chain* p ;
     ap_filter_rec_t* filter ;
-    harness_ctx* fctx ;
     mod_filter_cfg* cfg = ap_get_module_config(r->per_dir_config, &filter_module) ;
 #ifndef NO_PROTOCOL
     int ranges = 1 ;
@@ -606,9 +606,7 @@ static int filter_insert(request_rec* r)
 
     for ( p = cfg->chain ; p ; p = p->next ) {
         filter = apr_hash_get(cfg->live_filters, p->fname, APR_HASH_KEY_STRING) ;
-        fctx = apr_pcalloc(r->pool, sizeof(harness_ctx)) ;
-        fctx->name = p->fname ;
-        ap_add_output_filter_handle(filter, fctx, r, r->connection) ;
+        ap_add_output_filter_handle(filter, NULL, r, r->connection) ;
 #ifndef NO_PROTOCOL
         if ( ranges && (filter->proto_flags & (AP_FILTER_PROTO_NO_BYTERANGE|AP_FILTER_PROTO_CHANGE_LENGTH)) ) {
             filter->range = apr_table_get(r->headers_in, "Range") ;
