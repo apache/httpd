@@ -960,6 +960,7 @@ static int cgid_handler(request_rec *r)
                 break; 
             } 
         } 
+        shutdown(sd, 1); /* done writing; force EOF on child's stdin */
     } 
 
     /* Handle script return... */ 
