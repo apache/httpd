@@ -2190,6 +2190,41 @@ echo "#endif" >>$AP_CONFIG_AUTO_H
 ####################################################################
 ## More building ap_config_auto.h
 ##
+## Check for availability of isinf() and isnan()
+##
+if ./helpers/TestCompile func isinf ; then
+    echo "" >>$AP_CONFIG_AUTO_H
+    echo "/* determine: isinf() found in libc */ " >>$AP_CONFIG_AUTO_H
+    echo "#ifndef HAVE_ISINF" >>$AP_CONFIG_AUTO_H
+    echo "#define HAVE_ISINF 1" >>$AP_CONFIG_AUTO_H
+    echo "#endif" >>$AP_CONFIG_AUTO_H
+elif ./helpers/TestCompile lib m isinf ; then
+    echo "" >>$AP_CONFIG_AUTO_H
+    echo "/* determine: isinf() found in libm */ " >>$AP_CONFIG_AUTO_H
+    echo "#ifndef HAVE_ISINF" >>$AP_CONFIG_AUTO_H
+    echo "#define HAVE_ISINF 1" >>$AP_CONFIG_AUTO_H
+    echo "#endif" >>$AP_CONFIG_AUTO_H
+    LIBS="$LIBS -lm"
+    ADDED_LM="yes"
+fi
+
+if ./helpers/TestCompile func isnan ; then
+    echo "" >>$AP_CONFIG_AUTO_H
+    echo "/* determine: isnan() found in libc */ " >>$AP_CONFIG_AUTO_H
+    echo "#ifndef HAVE_ISNAN" >>$AP_CONFIG_AUTO_H
+    echo "#define HAVE_ISNAN 1" >>$AP_CONFIG_AUTO_H
+    echo "#endif" >>$AP_CONFIG_AUTO_H
+elif ./helpers/TestCompile lib m isnan ; then
+    echo "" >>$AP_CONFIG_AUTO_H
+    echo "/* determine: isnan() found in libm */ " >>$AP_CONFIG_AUTO_H
+    echo "#ifndef HAVE_ISNAN" >>$AP_CONFIG_AUTO_H
+    echo "#define HAVE_ISNAN 1" >>$AP_CONFIG_AUTO_H
+    echo "#endif" >>$AP_CONFIG_AUTO_H
+    if [ "x$ADDED_LM" != "xyes" ]; then
+        LIBS="$LIBS -lm"
+    fi
+fi
+
 ## We check for the endianess of the machine
 ##
 AP_BYTE_ORDER=`./helpers/TestCompile -r byteorder`
