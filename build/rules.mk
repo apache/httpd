@@ -67,7 +67,7 @@ INSTALL = $(abs_srcdir)/helpers/install.sh -c
 INSTALL_DATA = $(INSTALL) -m 644
 INSTALL_PROGRAM = $(INSTALL) -m 755
 SHLIBTOOL = $(SHELL) $(top_builddir)/shlibtool --silent
-APACHE_COMPILE = $(COMPILE) -c $< && touch $@
+APACHE_COMPILE = $(LTCOMPILE) -c $< && touch $@
 APACHE_SH_COMPILE = $(SHLIBTOOL) --mode=compile $(CC) $(DEFS) $(INCLUDES) $(EXTRA_INCLUDES) $(CPPFLAGS) $(CFLAGS) $(EXTRA_CFLAGS) -c $< && touch $@
 SHLINK = $(SHLIBTOOL) --mode=link $(CCLD) $(CFLAGS) $(EXTRA_CFLAGS) $(LDFLAGS) -o $@
 
