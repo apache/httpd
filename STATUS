@@ -1,5 +1,5 @@
 Apache 2.0 STATUS:
-Last modified at [$Date: 1999/08/28 03:25:04 $]
+Last modified at [$Date: 1999/08/31 21:46:35 $]
 
 Release:
 
@@ -55,8 +55,9 @@ Other bugs that need fixing:
 
     * Areas where APRFile is being used need to be cleaned-up
 
-    * mod_mmap_static hides ap_block_alarms() and ap_unblock_alarms()
-      This should really be done in some header file elsewhere.
+    * SIGSEGV on Linux seems to only kill a thread not a whole process;
+      we need to work around this, probably by bouncing the signal to
+      the sigwait thread. But this will hurt debugability.
 
 Other features that need writing:
 
