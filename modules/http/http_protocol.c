@@ -90,8 +90,6 @@
 #include "util_charset.h"
 #include "util_ebcdic.h"
 
-#include <limits.h>             /* for INT_MAX */
-
 #include "mod_core.h"
 
 #if APR_HAVE_STDARG_H
@@ -579,10 +577,11 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b, ap_input_mode
     }
 
     /* Ensure that the caller can not go over our boundary point. */
-    if ((ctx->state == BODY_LENGTH || ctx->state == BODY_CHUNK) && 
-        ctx->remaining < *readbytes) {
-        *readbytes = ctx->remaining;
-        AP_DEBUG_ASSERT(*readbytes); /* shouldn't be in getline mode */
+    if (ctx->state == BODY_LENGTH || ctx->state == BODY_CHUNK) { 
+        if (ctx->remaining < *readbytes) {
+            *readbytes = ctx->remaining;
+        }
+        AP_DEBUG_ASSERT(*readbytes > 0); /* shouldn't be in getline mode */
     }
 
     rv = ap_get_brigade(f->next, b, mode, readbytes);
@@ -1375,20 +1374,9 @@ AP_DECLARE(long) ap_get_client_block(request_rec *r, char *buffer, apr_size_t bu
                                                     &core_module);
     apr_bucket_brigade *bb = req_cfg->bb;
 
-    if (r->remaining) {   
-        len_read = r->remaining; /* Content-Length header, probably */ 
-    }
-    else {
-        len_read = INT_MAX;      /* Transfer-Encoding: chunked */
-    }
-
-    if (len_read > bufsiz) {
-        /* limit the resources we use for heap buckets etc */
-        len_read = bufsiz;      
-    }
-
     /* read until we get a non-empty brigade */
     while (APR_BRIGADE_EMPTY(bb)) {
+        len_read = bufsiz; 
         if (ap_get_brigade(r->input_filters, bb, AP_MODE_BLOCKING,
                            &len_read) != APR_SUCCESS) {
             /* if we actually fail here, we want to just return and
@@ -1398,7 +1386,6 @@ AP_DECLARE(long) ap_get_client_block(request_rec *r, char *buffer, apr_size_t bu
             apr_brigade_destroy(bb);
             return -1;
         }
-        r->remaining -= len_read; /* XXX  goes negative w/chunking */
     } 
 
     b = APR_BRIGADE_FIRST(bb);
