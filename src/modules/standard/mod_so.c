@@ -140,7 +140,7 @@
         fi
         LIBS="$LIBS $DL_LIB"
         if [ "X$DL_LIB" != "X" ]; then
- 	    echo " + using $DL_LIB for dynamic loading (mod_so)"
+ 	    echo " + using $DL_LIB for DSO support"
         fi
     fi
  * ConfigEnd

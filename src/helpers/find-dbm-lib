@@ -37,7 +37,7 @@ if [ "x$found_dbm" = "x" ]; then
 		;;
 	esac
 	if [ "X$found_dbm" = "X1" ]; then
-	    echo " + using $DBM_LIB"
+	    echo " + using $DBM_LIB for DBM support"
 	fi
     fi
 fi
