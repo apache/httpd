@@ -89,18 +89,14 @@
     platforms.  But even on systems where it is disallowed by default, a 
     special configure parameter can change this behavior for Apache.</p>
 
-    <p>If you want Apache to handle IPv4 and IPv6 connections with a 
-    minimum of sockets, which requires using IPv4-mapped IPv6 addresses, 
-    specify the <code>--enable-v4-mapped</code> configure option and use 
-    generic Listen directives like the following:</p>
+    <p>On the other hand, on some platforms such as Linux and Tru64 the 
+    <strong>only</strong> way to handle both IPv6 and IPv4 is to use 
+    mapped addresses. If you want Apache to handle IPv4 and IPv6 connections 
+    with a minimum of sockets, which requires using IPv4-mapped IPv6 
+    addresses, specify the <code>--enable-v4-mapped</code> configure 
+    option.</p>
 
-    <example>
-      Listen 80
-    </example>
-
-    <p>With <code>--enable-v4-mapped</code>, the Listen directives in the 
-    default configuration file created by Apache will use this form.  
-    <code>--enable-v4-mapped</code> is the default on all platforms but 
+    <p><code>--enable-v4-mapped</code> is the default on all platforms but 
     FreeBSD, NetBSD, and OpenBSD, so this is probably how your Apache was 
     built.</p>
 
@@ -113,21 +109,11 @@
       Listen 192.170.2.1:80
     </example>
 
-    <p>If you want Apache to handle IPv4 and IPv6 connections on separate 
-    sockets (i.e., to disable IPv4-mapped addresses), specify the 
-    <code>--disable-v4-mapped</code> configure option and use specific Listen 
-    directives like the following:</p>
-
-    <example>
-      Listen [::]:80<br />
-      Listen 0.0.0.0:80
-    </example>
-
-    <p>With <code>--disable-v4-mapped</code>, the Listen directives in the 
-    default configuration file created by Apache will use this form.  
-    <code>--disable-v4-mapped</code> is the default on FreeBSD, NetBSD, and 
-    OpenBSD.</p>
-
+    <p>If your platform supports it and you want Apache to handle IPv4 and 
+    IPv6  connections on separate sockets (i.e., to disable IPv4-mapped 
+    addresses), specify the <code>--disable-v4-mapped</code> configure 
+    option. <code>--disable-v4-mapped</code> is the default on FreeBSD, 
+    NetBSD, and OpenBSD.</p>
   </section>
 
   <section id="virtualhost">
