@@ -1,5 +1,5 @@
 Apache HTTP Server 2.0 Documentation Status File.
-Last modified: $Date: 2002/09/09 01:53:42 $
+Last modified: $Date: 2002/09/14 20:30:11 $
 
 If you are interested in helping accomplish some of the tasks on this
 list or otherwise improving the documentation, please join the
@@ -13,11 +13,9 @@ tutorial on how to get started with making your contribution.
               ------------------------------
 
 - XML
-    - The xsl transformations could be greatly improved to a) look better
-      and b) use proper CSS+html rather than the horrible hack that
-      Joshua did (in progress).
     - Rewriting of the remainder of the manual into xml is in
       progress.  See the bottom of this file for status info.
+    - Get mod/mod_auth_ldap.xml to validate against the current dtd.
 
 - modules docs
     - mod_suexec: very little documentation
@@ -195,7 +193,3 @@ programs/logresolve.html
 programs/other.html
 programs/rotatelogs.html
 programs/suexec.html
-
-
-
-
