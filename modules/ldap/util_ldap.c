@@ -239,9 +239,6 @@ LDAP_DECLARE(int) util_ldap_connection_open(request_rec *r,
     int failures = 0;
     int version  = LDAP_VERSION3;
 
-    util_ldap_state_t *st = (util_ldap_state_t *)ap_get_module_config(
-                                r->server->module_config, &ldap_module);
-
     /* If the connection is already bound, return
     */
     if (ldc->bound)
@@ -255,12 +252,9 @@ LDAP_DECLARE(int) util_ldap_connection_open(request_rec *r,
     if (NULL == ldc->ldap)
     {
         apr_ldap_err_t *result = NULL;
-        int rc = apr_ldap_init(r->pool,
-                               &(ldc->ldap),
-                               ldc->host,
-                               ldc->port,
-                               ldc->secure,
-                               &(result));
+
+        apr_ldap_init(r->pool, &(ldc->ldap), ldc->host, ldc->port,
+                      ldc->secure, &(result));
 
         if (result != NULL) {
             ldc->reason = result->reason;
@@ -1132,7 +1126,6 @@ static apr_status_t util_ldap_cleanup_module(void *data)
 static int util_ldap_post_config(apr_pool_t *p, apr_pool_t *plog, 
                                  apr_pool_t *ptemp, server_rec *s)
 {
-    int rc = LDAP_SUCCESS;
     apr_status_t result;
     char buf[MAX_STRING_LEN];
     server_rec *s_vhost;
