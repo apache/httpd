@@ -159,6 +159,9 @@
  *			  4. compat.h    -> ap_compat.h
  *			  5. apctype.h   -> ap_ctype.h
  * 19980806 (1.3.2-dev) - add ap_log_rerror()
+ *                      - add ap_scan_script_header_err_core()
+ *                      - add ap_uuencode()
+ *                      - add ap_custom_response()
  * 19980811 (1.3.2-dev)	- added limit_req_line, limit_req_fieldsize, and
  *			  limit_req_fields to server_rec.
  *			  added limit_req_body to core_dir_config and
