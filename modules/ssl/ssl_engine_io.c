@@ -378,6 +378,9 @@ static int char_buffer_write(char_buffer_t *buffer, char *in, int inl)
     return inl;
 }
 
+/* This function will read from a brigade and discard the read buckets as it
+ * proceeds.  It will read at most *len bytes.
+ */
 static apr_status_t brigade_consume(apr_bucket_brigade *bb,
                                     apr_read_type_e block,
                                     char *c, apr_size_t *len)
@@ -694,6 +697,7 @@ static apr_status_t ssl_io_input_read(bio_filter_in_ctx_t *inctx,
 
     *len = 0;
 
+    /* If we have something leftover from last time, try that first. */
     if ((bytes = char_buffer_read(&inctx->cbuf, buf, wanted))) {
         *len = bytes;
         if (inctx->mode == AP_MODE_SPECULATIVE) {
@@ -724,6 +728,7 @@ static apr_status_t ssl_io_input_read(bio_filter_in_ctx_t *inctx,
         if (rc > 0) {
             *len += rc;
             if (inctx->mode == AP_MODE_SPECULATIVE) {
+                /* We want to rollback this read. */
                 char_buffer_write(&inctx->cbuf, buf, rc);
             }
             return inctx->rc;
@@ -735,6 +740,7 @@ static apr_status_t ssl_io_input_read(bio_filter_in_ctx_t *inctx,
             if (APR_STATUS_IS_EAGAIN(inctx->rc)
                     || APR_STATUS_IS_EINTR(inctx->rc)) {
                 if (inctx->block == APR_NONBLOCK_READ) {
+                    /* Already read something, return APR_SUCCESS instead. */
                     if (*len > 0) {
                         inctx->rc = APR_SUCCESS;
                     }
@@ -761,6 +767,7 @@ static apr_status_t ssl_io_input_read(bio_filter_in_ctx_t *inctx,
                 inctx->rc = APR_EAGAIN;
 
                 if (inctx->block == APR_NONBLOCK_READ) {
+                    /* Already read something, return APR_SUCCESS instead. */
                     if (*len > 0) {
                         inctx->rc = APR_SUCCESS;
                     }
@@ -962,6 +969,7 @@ static apr_status_t ssl_io_filter_Input(ap_filter_t *f,
         return ssl_io_filter_error(f, bb, status);
     }
 
+    /* Create a transient bucket out of the decrypted data. */
     if (len > 0) {
         apr_bucket *bucket =
             apr_bucket_transient_create(inctx->buffer, len, f->c->bucket_alloc);
