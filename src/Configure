@@ -764,6 +764,16 @@ echo " + configured for $OS platform"
 SUBDIRS="$OSDIR $SUBDIRS"
 
 ####################################################################
+# Continue building the stub file
+# Set variables as soon as possible so that TestCompile can use them
+##
+echo >>Makefile.config "OSDIR=\$(SRCDIR)/$OSDIR"
+echo >>Makefile.config "INCDIR=\$(SRCDIR)/include"
+echo >>Makefile.config "INCLUDES0=-I\$(OSDIR) -I\$(INCDIR)"
+echo >>Makefile.config "INCLUDES1=$INCLUDES"
+echo >>Makefile.config "SHELL=$SHELL"
+
+####################################################################
 ## And adjust/override WANTHSREGEX as needed
 ##
 if [ "$RULE_WANTHSREGEX" = "default" ]; then
@@ -1374,7 +1384,7 @@ fi
 ## the module) is like this:
 ##
 ##  1 If extension is not given or is .c, assume .o was given and goto 3
-##  2 If extension if .module, go to D1
+##  2 If extension is .module, go to D1
 ##  3 If extension is .o, look for a corresponding .c file and if
 ##      found, go to C1
 ##  4 If no .c file was found, look for a .module file (Apache module
@@ -1461,7 +1471,7 @@ for modfile in $MODFILES ; do
 		$CAT $modbase.module > $tmpfile2
 	else
 	    if [ -f $modbase.c ] ; then
-		# Guess module structure name in case there is not
+		# Guess module structure name in case there is no
 		# module definition in this file
 		modname=`egrep '^module .*;' $modbase.c | head -1 |\
 			sed 's/^module.*[ 	][ 	]*//' | \
@@ -1751,16 +1761,11 @@ fi
 ## can only alter $LIBS
 ##
 echo "CFLAGS1=$CFLAGS">> Makefile.config
-echo "OSDIR=\$(SRCDIR)/$OSDIR">> Makefile.config
-echo "INCDIR=\$(SRCDIR)/include" >>Makefile.config
-echo "INCLUDES0=-I\$(OSDIR) -I\$(INCDIR)">> Makefile.config
-echo "INCLUDES1=$INCLUDES">> Makefile.config
 echo "LIBS_SHLIB=$LIBS_SHLIB">> Makefile.config
 echo "LDFLAGS1=$LDFLAGS">> Makefile.config
 echo "MFLAGS_STATIC=$MFLAGS_STATIC">> Makefile.config
 echo "REGLIB=$REGLIB">> Makefile.config
 echo "RANLIB=$RANLIB">> Makefile.config
-echo "SHELL=$SHELL">> Makefile.config
 
 ####################################################################
 ## Some OS-related stuff for the DSO mechanism:
