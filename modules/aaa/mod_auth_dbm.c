@@ -177,7 +177,7 @@ static char *get_dbm_pw(request_rec *r, char *user, char *auth_dbmpwfile)
 #endif
 
 #ifdef AP_AUTH_DBM_USE_APR
-    if (!(retval = dbm_open(&f, auth_dbmpwfile, APR_DBM_READONLY, r->pool))) {
+    if (!(retval = dbm_open(&f, auth_dbmpwfile, APR_DBM_READONLY, APR_OS_DEFAULT, r->pool))) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, retval, r,
 		    "could not open sdbm auth file: %s", auth_dbmpwfile);
 	return NULL;

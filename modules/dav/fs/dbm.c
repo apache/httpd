@@ -143,7 +143,8 @@ dav_error * dav_dbm_open_direct(apr_pool_t *p, const char *pathname, int ro,
     *pdb = NULL;
 
     if ((status = apr_dbm_open(&file, pathname,
-                               ro ? APR_DBM_READONLY : APR_DBM_RWCREATE, p))
+                               ro ? APR_DBM_READONLY : APR_DBM_RWCREATE, 
+                               APR_OS_DEFAULT, p))
                 != APR_SUCCESS
         && !ro) {
         /* ### do something with 'status' */
