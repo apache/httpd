@@ -145,6 +145,7 @@ static const char *add_alias_internal(cmd_parms *cmd, void *dummy,
 	new->regexp = ap_pregcomp(cmd->pool, f, REG_EXTENDED);
 	if (new->regexp == NULL)
 	    return "Regular expression could not be compiled.";
+        new->real = r;
     }
 #ifndef OS2
     else
