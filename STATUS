@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2002/02/06 22:19:57 $]
+Last modified at [$Date: 2002/02/06 22:23:48 $]
 
 Release:
 
@@ -193,6 +193,35 @@ FINAL RELEASE SHOWSTOPPERS:
                        complaints about not being able to execute 
                        httpd directly.
 
+CURRENT VOTES:
+
+    * Should we always build binaries statically unless otherwise
+      indicated?
+        Message-ID: <20020129210006.B23512@Lithium.MeepZor.Com>
+
+      +1:  Ken
+      -1:  Justin, Ian
+        
+    * If the parent process dies, should the remaining child processes
+      "gracefully" self-terminate. Or maybe we should make it a runtime
+      option, or have a concept of 2 parent processes (one being a 
+      "hot spare").
+      See: Message-ID: <3C58232C.FE91F19F@Golux.Com>
+
+      Self-destruct: Ken, Martin
+      Not self-destruct: BrianP, Ian, Cliff, BillS
+      Make it runtime configurable: Aaron, Jim, Justin
+      Have 2 parents: +1: Jim
+                      -1: Justin
+                      +0: Martin (while standing by, could it do
+                                  something useful?)
+      look at accept() error handling first: gregames
+
+    * Make the worker MPM the default MPM for threaded Unix boxes.
+      +1:   Justin, Jeff, Ian
+      -0:   Aaron (premature decision, needs more discussion), Lars
+      -0:   Cliff (I think the default config should be the safest possible)
+
 RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
 
     * Usage of APR_BRIGADE_NORMALIZE in core_input_filter should be
@@ -219,28 +248,6 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
         Justin says: "Could we delay this for a point release or 2.1?"
         Not a showstopper: justin, wrowe, trawick, stoddard, Jim, Ian, Aaron,
                            gregames
-
-    * Should we always build binaries statically unless otherwise
-      indicated?
-        Message-ID: <20020129210006.B23512@Lithium.MeepZor.Com>
-
-      +1:  Ken
-      -1:  Justin, Ian
-        
-    * If the parent process dies, should the remaining child processes
-      "gracefully" self-terminate. Or maybe we should make it a runtime
-      option, or have a concept of 2 parent processes (one being a 
-      "hot spare").
-      See: Message-ID: <3C58232C.FE91F19F@Golux.Com>
-
-      Self-destruct: Ken, Martin
-      Not self-destruct: BrianP, Ian, Cliff, BillS
-      Make it runtime configurable: Aaron, Jim, Justin
-      Have 2 parents: +1: Jim
-                      -1: Justin
-                      +0: Martin (while standing by, could it do
-                                  something useful?)
-      look at accept() error handling first: gregames
 
     * Make some modifications to the scoreboard creation routines,
       prefer anonymous shared memory, and allow a configuration
@@ -558,11 +565,6 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
       autoconf function or come up with some other autoconf checks to
       search for libssl and libcrypto and properly add them to mod_ssl's
       link flags.
-
-    * Make the worker MPM the default MPM for threaded Unix boxes.
-      +1:   Justin, Jeff, Ian
-      -0:   Aaron (premature decision, needs more discussion), Lars
-      -0:   Cliff (I think the default config should be the safest possible)
 
     * Fix the worker MPM to use POD to kill child processes instead
       of ap_os_killpg, regardless of how they should die. (Ryan Bloom)
