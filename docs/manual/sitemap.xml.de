@@ -3,7 +3,7 @@
   [ <!ENTITY allmodules SYSTEM "./mod/allmodules.xml.de"> ]
 >
 <?xml-stylesheet type="text/xsl" href="./style/manual.de.xsl"?>
-<!-- English Revision: 1.12.2.16 (outdated: 1.12.2.17) -->
+<!-- English Revision: 1.12.2.17 -->
 
 <!--
  Copyright 2002-2004 The Apache Software Foundation
@@ -122,6 +122,7 @@ HPUX betreiben</page>
 <page href="programs/ab.html">ab</page>
 <page href="programs/apachectl.html">apachectl</page>
 <page href="programs/apxs.html">apxs</page>
+<page href="programs/configure.html">configure</page>
 <page href="programs/dbmmanage.html">dbmmanage</page>
 <page href="programs/htdigest.html">htdigest</page>
 <page href="programs/htpasswd.html">htpasswd</page>

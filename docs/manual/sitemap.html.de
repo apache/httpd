@@ -25,8 +25,6 @@
 <a href="./ja/sitemap.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="./ko/sitemap.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<div class="outofdate">This translation may be out of date. Check the
- English version for recent changes.</div>
 
 <p>Diese Seite verzeichnet die zur Zeit verfügbaren Dokumente der
 <a href="./">Dokumentation zum Apache HTTP Server Version 2.0</a>.</p>
@@ -131,6 +129,7 @@ HPUX betreiben</a></li>
 <li><a href="programs/ab.html">ab</a></li>
 <li><a href="programs/apachectl.html">apachectl</a></li>
 <li><a href="programs/apxs.html">apxs</a></li>
+<li><a href="programs/configure.html">configure</a></li>
 <li><a href="programs/dbmmanage.html">dbmmanage</a></li>
 <li><a href="programs/htdigest.html">htdigest</a></li>
 <li><a href="programs/htpasswd.html">htpasswd</a></li>
