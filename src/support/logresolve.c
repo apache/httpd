@@ -41,10 +41,7 @@
 
 \***                                                                      ***/
 
-#ifdef __EMX__
-/* Need this include before any others under OS/2 */
 #include <sys/types.h>
-#endif
 
 #include <ctype.h>
 #include <netdb.h>
@@ -52,9 +49,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#ifndef __EMX__
-#include <sys/types.h>
-#endif
 #include <sys/socket.h>
 
 #include <netinet/in.h>
