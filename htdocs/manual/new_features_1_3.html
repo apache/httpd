@@ -29,6 +29,45 @@ enhancements, <a href="http://www.apache.org/dist/">Apache
 1.3</a> has the following specific new user features:</p>
 
 <ul>
+ <LI><A
+      HREF="mod/mod_setenvif.html"
+     ><STRONG>Enhanced Conditional Setting of Environment Variables</STRONG></A>
+  <BR>
+  The
+  <A
+   HREF="mod/mod_setenvif.html#BrowserMatch"
+  ><SAMP>BrowserMatch*</SAMP></A>
+  directives of Apache 1.2 have been joined by some more powerful
+  brethren:
+  <A
+   HREF="mod/mod_setenvif.html#SetEnvIf"
+  ><SAMP>SetEnvIf</SAMP></A>
+  and
+  <A
+   HREF="mod/mod_setenvif.html#SetEnvIfNoCase"
+  ><SAMP>SetEnvIfNoCase</SAMP></A>.  These allow you to set environment
+  variables for server and CGI use based upon all <EM>sorts</EM> of
+  attributes of the request.
+ </LI>
+ <LI><STRONG>Better Logging for Proxy Connect Errors</STRONG>
+  <BR>
+  In Apache 1.2 and earlier, when the proxy had difficulty connecting to
+  a system it would log the error but no details.  It now includes the
+  IP address and port to which it couldn't connect.
+ </LI>
+ <LI><A
+      HREF="mod/mod_include.html#flowctrl"
+     ><STRONG>Enhanced SSI String Comparisons</STRONG></A>
+  <BR>
+  The string-based server-side include (SSI) flow-control directives
+  provided by
+  <A
+   HREF="mod/mod_include.html"
+  ><SAMP>mod_include</SAMP></A>
+  now include comparison for less-than (&lt;), less-than-or-equal
+  (&lt;=), greater-than (&gt;), and greater-than-or-equal (&gt;=).
+  Previously comparisons could only be made for equality or inequality.
+ </LI>
 <LI><A
      HREF="sourcereorg.html"
     ><STRONG>Re-organised Sources</STRONG></A>
