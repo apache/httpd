@@ -1,10 +1,13 @@
-  *) Allow ScanHTMLTitles to work with lowercase <title> tags.
+  *) Allow ScanHTMLTitles to work with lowercase <title> tags. [Alexei Kosut]
+
+  *) Bugs which were fixed:
+	a) yet more mod_proxy bugs [Ben Laurie]
 
 Changes with Apache 1.1b4:
 
-  *) r->bytes_sent variable restored
+  *) r->bytes_sent variable restored. [Robert Thau]
 
-  *) Previously broken multi-method <Limit> parsing fixed.
+  *) Previously broken multi-method <Limit> parsing fixed. [Robert Thau]
 
   *) More possibly unsecure programs removed from the support directory.
 
@@ -13,7 +16,7 @@ Changes with Apache 1.1b4:
   *) VirtualHosts based on Host: headers no longer conflict with the
      Listen directive.
 
-  *) OS/2 compatibility enhancements.
+  *) OS/2 compatibility enhancements. [Gary Smiley]
 
   *) POST now allowed to directory index CGI scripts.
 
@@ -35,9 +38,10 @@ Changes with Apache 1.1b3:
      merge multiple instances, since certain popular browsers can not 
      handle multiple Set-Cookie instructions in a single header.
 
-  *) rprintf() added to buffer code, occurances of sprintf removed.
+  *) rprintf() added to buffer code, occurrences of sprintf removed.
+     [Ben Laurie]
 
-  *) CONNECT method for proxy module, which means tunning SSL should work.
+  *) CONNECT method for proxy module, which means tunneling SSL should work.
      (No crypto needed)  Also a NoCache config directive.
 
   *) Several API additions: pstrndup(), table_unset() and get_token()
@@ -47,27 +51,27 @@ Changes with Apache 1.1b3:
      URL's.
 
   *) New "info" module which reports on installed module set through a 
-     special URL, a la mod_status
+     special URL, a la mod_status.
 
   *) "ServerPath" directive added - allows for graceful transition
      for Host:-header-based virtual hosts.
 
-  *) Anonymous authentication module improvements
+  *) Anonymous authentication module improvements.
 
-  *) MSQL authentication module improvements
+  *) MSQL authentication module improvements.
 
-  *) Status module design improved - output now tables-based
+  *) Status module design improved - output now table-based. [Ben Laurie]
 
   *) htdigest utility included for use with digest authentication
      module.
  
   *) mod_negotiation: Accept values with wildcards to be treated with
      less priority than those without wildcards at the same quality
-     value.
+     value. [Alexei Kosut]
 
   *) Bugs which were fixed:
 	a) numerous mod_proxy bugs
-	b) CGI early-termination bug 
+	b) CGI early-termination bug [Ben Laurie]
 	c) Keepalives not working with virtual hosts
 	d) RefererIgnore problems
 	e) closing fd's twice in mod_include (causing core dumps on
