@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2002/06/07 00:59:03 $]
+Last modified at [$Date: 2002/06/07 21:25:49 $]
 
 Release:
 
@@ -51,12 +51,6 @@ CURRENT RELEASE NOTES:
       end of the week (ie, by Friday 6/7).  Doable?  We'll see.
 
 RELEASE SHOWSTOPPERS:
-
-    * Reverse proxy broken
-      Status: This comes down to the fact whether a subrequest can read input?
-              Yes or no?
-      Justin says: This is also related to the chunked input entry (see below).
-      Message-ID: <3CFA9315.4030003@apache.org>
 
     * CWD issues
       Message-ID: <5.1.0.14.2.20020524115533.02785e28@pop3.rowe-clan.net>
