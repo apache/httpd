@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
-<!-- $Revision: 1.9.2.5 $ -->
+<!-- $Revision: 1.9.2.6 $ -->
 
 <!--
  Copyright 2002-2004 The Apache Software Foundation
@@ -49,6 +49,7 @@
 <seealso><module>mod_mime</module></seealso>
 <seealso><a href="../content-negotiation.html">Content
 Negotiation</a></seealso>
+<seealso><a href="../env.html">Environment Variables</a></seealso>
 
 <section id="typemaps"><title>Type maps</title>
     <p>A type map has a format similar to RFC822 mail headers. It
@@ -155,6 +156,11 @@ Negotiation</a></seealso>
     content-encodings it would have if the client had asked for one
     of them by name. It then chooses the best match to the client's
     requirements, and returns that document.</p>
+
+    <p>The <directive module="mod_mime">MultiViewsMatch</directive>
+    directive configures whether Apache will consider files
+    that do not have content negotiation meta-information assigned
+    to them when choosing files.</p>
 </section>
 
 <directivesynopsis>
@@ -270,8 +276,8 @@ the client does not express a preference</description>
     <p>Note that this directive only has an effect if a 'best'
     language cannot be determined by any other means or the <directive
     module="mod_negotiation">ForceLanguagePriority</directive> directive
-    is not <code>None</code>. Correctly implemented HTTP/1.1 requests
-    will mean this directive has no effect.</p>
+    is not <code>None</code>. In general, the client determines the
+    language preference, not the server.</p>
 </usage>
 <seealso><directive module="mod_mime">AddLanguage</directive></seealso>
 </directivesynopsis>
