@@ -18,4 +18,4 @@ Makefile
 Makefile.config
 modules.c
 apaci
-.apaci.build.ok
+.apaci.*
