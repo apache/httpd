@@ -1,8 +1,7 @@
 #!/usr/local/bin/perl
-# $Id: dbmmanage.new,v 1.5 1996/12/01 20:13:59 randy Exp $
 
 # ====================================================================
-# Copyright (c) 1995,1996 The Apache Group.  All rights reserved.
+# Copyright (c) 1995-1997 The Apache Group.  All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions
