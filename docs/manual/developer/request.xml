@@ -1,0 +1,240 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
+
+<manualpage>
+<relativepath href=".."/>
+
+<title>Request Processing in Apache 2.0</title>
+
+<summary>
+    <note type="warning"><title>Warning</title>
+      <p>Warning - this is a first (fast) draft that needs further
+      revision!</p>
+    </note>
+
+    <p>Several changes in Apache 2.0 affect the internal request
+    processing mechanics. Module authors need to be aware of these
+    changes so they may take advantage of the optimizations and
+    security enhancements.</p>
+
+    <p>The first major change is to the subrequest and redirect
+    mechanisms. There were a number of different code paths in
+    Apache 1.3 to attempt to optimize subrequest or redirect
+    behavior. As patches were introduced to 2.0, these
+    optimizations (and the server behavior) were quickly broken due
+    to this duplication of code. All duplicate code has been folded
+    back into <code>ap_process_internal_request()</code> to prevent
+    the code from falling out of sync again.</p>
+
+    <p>This means that much of the existing code was 'unoptimized'.
+    It is the Apache HTTP Project's first goal to create a robust
+    and correct implementation of the HTTP server RFC. Additional
+    goals include security, scalability and optimization. New
+    methods were sought to optimize the server (beyond the
+    performance of Apache 1.3) without introducing fragile or
+    insecure code.</p>
+</summary>
+
+<section id="processing"><title>The Request Processing Cycle</title>
+    <p>All requests pass through <code>ap_process_request_internal()</code>
+    in <code>request.c</code>, including subrequests and redirects. If a module
+    doesn't pass generated requests through this code, the author is cautioned
+    that the module may be broken by future changes to request
+    processing.</p>
+
+    <p>To streamline requests, the module author can take advantage
+    of the hooks offered to drop out of the request cycle early, or
+    to bypass core Apache hooks which are irrelevant (and costly in
+    terms of CPU.)</p>
+</section>
+
+<section id="parsing"><title>The Request Parsing Phase</title>
+    <section id="unescape"><title>Unescapes the URL</title>
+      <p>The request's <code>parsed_uri</code> path is unescaped, once and only
+      once, at the beginning of internal request processing.</p>
+
+      <p>This step is bypassed if the proxyreq flag is set, or the
+      <code>parsed_uri.path</code> element is unset. The module has no further
+      control of this one-time unescape operation, either failing to
+      unescape or multiply unescaping the URL leads to security
+      reprecussions.</p>
+    </section>
+
+    <section id="strip"><title>Strips Parent and This Elements from the
+    URI</title>
+      <p>All <code>/../</code> and <code>/./</code> elements are
+      removed by <code>ap_getparents()</code>. This helps to ensure
+      the path is (nearly) absolute before the request processing
+      continues.</p>
+
+      <p>This step cannot be bypassed.</p>
+    </section>
+
+    <section id="inital-location-walk"><title>Initial URI Location Walk</title>
+      <p>Every request is subject to an
+      <code>ap_location_walk()</code> call. This ensures that
+      <directive type="section" module="core">Location</directive> sections
+      are consistently enforced for all requests. If the request is an internal
+      redirect or a sub-request, it may borrow some or all of the processing
+      from the previous or parent request's ap_location_walk, so this step
+      is generally very efficient after processing the main request.</p>
+    </section>
+
+    <section id="translate_name"><title>translate_name</title>
+      <p>Modules can determine the file name, or alter the given URI
+      in this step. For example, <module>mod_vhost_alias</module> will
+      translate the URI's path into the configured virtual host,
+      <module>mod_alias</module> will translate the path to an alias path,
+      and if the request falls back on the core, the <directive module="core"
+      >DocumentRoot</directive> is prepended to the request resource.</p>
+
+      <p>If all modules <code>DECLINE</code> this phase, an error 500 is
+      returned to the browser, and a "couldn't translate name" error is logged
+      automatically.</p>
+    </section>
+
+    <section id="map_to_storage"><title>Hook: map_to_storage</title>
+      <p>After the file or correct URI was determined, the
+      appropriate per-dir configurations are merged together. For
+      example, <module>mod_proxy</module> compares and merges the appropriate
+      <directive module="mod_proxy" type="section">Proxy</directive> sections.
+      If the URI is nothing more than a local (non-proxy) <code>TRACE</code>
+      request, the core handles the request and returns <code>DONE</code>.
+      If no module answers this hook with <code>OK</code> or <code>DONE</code>,
+      the core will run the request filename against the <directive
+      module="core" type="section">Directory</directive> and <directive
+      module="core" type="section">Files</directive> sections. If the request
+      'filename' isn't an absolute, legal filename, a note is set for
+      later termination.</p>
+    </section>
+
+    <section id="location-walk"><title>URI Location Walk</title>
+      <p>Every request is hardened by a second
+      <code>ap_location_walk()</code> call. This reassures that a
+      translated request is still subjected to the configured
+      <directive module="core" type="section">Location</directive> sections.
+      The request again borrows some or all of the processing from its previous
+      <code>location_walk</code> above, so this step is almost always very
+      efficient unless the translated URI mapped to a substantially different
+      path or Virtual Host.</p>
+    </section>
+
+    <section id="header_parser"><title>Hook: header_parser</title>
+      <p>The main request then parses the client's headers. This
+      prepares the remaining request processing steps to better serve
+      the client's request.</p>
+    </section>
+</section>
+
+<section id="security"><title>The Security Phase</title>
+    <p>Needs Documentation. Code is:</p>
+
+    <example><pre>
+switch (ap_satisfies(r)) {
+case SATISFY_ALL:
+case SATISFY_NOSPEC:
+    if ((access_status = ap_run_access_checker(r)) != 0) {
+        return decl_die(access_status, "check access", r);
+    }
+
+    if (ap_some_auth_required(r)) {
+        if (((access_status = ap_run_check_user_id(r)) != 0)
+            || !ap_auth_type(r)) {
+            return decl_die(access_status, ap_auth_type(r)
+                          ? "check user.  No user file?"
+                          : "perform authentication. AuthType not set!",
+                          r);
+        }
+
+        if (((access_status = ap_run_auth_checker(r)) != 0)
+            || !ap_auth_type(r)) {
+            return decl_die(access_status, ap_auth_type(r)
+                          ? "check access.  No groups file?"
+                          : "perform authentication. AuthType not set!",
+                          r);
+        }
+    }
+    break;
+
+case SATISFY_ANY:
+    if (((access_status = ap_run_access_checker(r)) != 0)) {
+        if (!ap_some_auth_required(r)) {
+            return decl_die(access_status, "check access", r);
+        }
+
+        if (((access_status = ap_run_check_user_id(r)) != 0)
+            || !ap_auth_type(r)) {
+            return decl_die(access_status, ap_auth_type(r)
+                          ? "check user.  No user file?"
+                          : "perform authentication. AuthType not set!",
+                          r);
+        }
+
+        if (((access_status = ap_run_auth_checker(r)) != 0)
+            || !ap_auth_type(r)) {
+            return decl_die(access_status, ap_auth_type(r)
+                          ? "check access.  No groups file?"
+                          : "perform authentication. AuthType not set!",
+                          r);
+        }
+    }
+    break;
+}</pre>
+    </example>
+</section>
+
+<section id="preparation"><title>The Preparation Phase</title>
+    <section id="type_checker"><title>Hook: type_checker</title>
+      <p>The modules have an opportunity to test the URI or filename
+      against the target resource, and set mime information for the
+      request. Both <module>mod_mime</module> and
+      <module>mod_mime_magic</module> use this phase to compare the file
+      name or contents against the administrator's configuration and set the
+      content type, language, character set and request handler. Some modules
+      may set up their filters or other request handling parameters at this
+      time.</p>
+
+      <p>If all modules <code>DECLINE</code> this phase, an error 500 is
+      returned to the browser, and a "couldn't find types" error is logged
+      automatically.</p>
+    </section>
+
+    <section id="fixups"><title>Hook: fixups</title>
+      <p>Many modules are 'trounced' by some phase above. The fixups
+      phase is used by modules to 'reassert' their ownership or force
+      the request's fields to their appropriate values. It isn't
+      always the cleanest mechanism, but occasionally it's the only
+      option.</p>
+    </section>
+</section>
+
+<section id="handler"><title>The Handler Phase</title>
+    <p>This phase is <strong>not</strong> part of the processing in
+    <code>ap_process_request_internal()</code>. Many
+    modules prepare one or more subrequests prior to creating any
+    content at all. After the core, or a module calls
+    <code>ap_process_request_internal()</code> it then calls
+    <code>ap_invoke_handler()</code> to generate the request.</p>
+
+    <section id="insert_filter"><title>Hook: insert_filter</title>
+      <p>Modules that transform the content in some way can insert
+      their values and override existing filters, such that if the
+      user configured a more advanced filter out-of-order, then the
+      module can move its order as need be.  There is no result code,
+      so actions in this hook better be trusted to always succeed.</p>
+    </section>
+
+    <section id="hook_handler"><title>Hook: handler</title>
+      <p>The module finally has a chance to serve the request in its
+      handler hook. Note that not every prepared request is sent to
+      the handler hook. Many modules, such as <module>mod_autoindex</module>,
+      will create subrequests for a given URI, and then never serve the
+      subrequest, but simply lists it for the user. Remember not to
+      put required teardown from the hooks above into this module,
+      but register pool cleanups against the request pool to free
+      resources as required.</p>
+    </section>
+</section>
+</manualpage>
+
