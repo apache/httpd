@@ -105,21 +105,22 @@ APR_HOOK_STRUCT(
 )
 
 AP_IMPLEMENT_HOOK_RUN_FIRST(int,translate_name,
-                            (request_rec *r),(r),DECLINED)
+                            (request_rec *r), (r), DECLINED)
 AP_IMPLEMENT_HOOK_RUN_FIRST(int,map_to_storage,
-                            (request_rec *r),(r),DECLINED)
+                            (request_rec *r), (r), DECLINED)
 AP_IMPLEMENT_HOOK_RUN_FIRST(int,check_user_id,
-                            (request_rec *r),(r),DECLINED)
+                            (request_rec *r), (r), DECLINED)
 AP_IMPLEMENT_HOOK_RUN_ALL(int,fixups,
-                          (request_rec *r),(r),OK,DECLINED)
+                          (request_rec *r), (r), OK, DECLINED)
 AP_IMPLEMENT_HOOK_RUN_FIRST(int,type_checker,
-                            (request_rec *r),(r),DECLINED)
+                            (request_rec *r), (r), DECLINED)
 AP_IMPLEMENT_HOOK_RUN_ALL(int,access_checker,
-                          (request_rec *r),(r),OK,DECLINED)
+                          (request_rec *r), (r), OK, DECLINED)
 AP_IMPLEMENT_HOOK_RUN_FIRST(int,auth_checker,
-                            (request_rec *r),(r),DECLINED)
+                            (request_rec *r), (r), DECLINED)
 AP_IMPLEMENT_HOOK_VOID(insert_filter, (request_rec *r), (r))
-AP_IMPLEMENT_HOOK_RUN_ALL(int,create_request,(request_rec *r),(r),OK,DECLINED)
+AP_IMPLEMENT_HOOK_RUN_ALL(int, create_request,
+                          (request_rec *r), (r), OK, DECLINED)
 
 
 static int decl_die(int status, char *phase, request_rec *r)
@@ -164,8 +165,8 @@ AP_DECLARE(int) ap_process_request_internal(request_rec *r)
 
     ap_getparents(r->uri);     /* OK --- shrinking transformations... */
 
-    /* All file subrequests are a huge pain... they cannot bubble through the 
-     * next several steps.  Only file subrequests are allowed an empty uri, 
+    /* All file subrequests are a huge pain... they cannot bubble through the
+     * next several steps.  Only file subrequests are allowed an empty uri,
      * otherwise let translate_name kill the request.
      */
     if (!file_req) {
@@ -178,7 +179,7 @@ AP_DECLARE(int) ap_process_request_internal(request_rec *r)
         }
     }
 
-    /* Reset to the server default config prior to running map_to_storage 
+    /* Reset to the server default config prior to running map_to_storage
      */
     r->per_dir_config = r->server->lookup_defaults;
 
@@ -210,11 +211,11 @@ AP_DECLARE(int) ap_process_request_internal(request_rec *r)
      * identical input.)  If the config changes, we must re-auth.
      */
     if (r->main && (r->main->per_dir_config == r->per_dir_config)) {
-        r->user = r->main->user;        
+        r->user = r->main->user;
         r->ap_auth_type = r->main->ap_auth_type;
-    } 
+    }
     else if (r->prev && (r->prev->per_dir_config == r->per_dir_config)) {
-        r->user = r->prev->user;        
+        r->user = r->prev->user;
         r->ap_auth_type = r->prev->ap_auth_type;
     }
     else {
@@ -224,6 +225,7 @@ AP_DECLARE(int) ap_process_request_internal(request_rec *r)
             if ((access_status = ap_run_access_checker(r)) != 0) {
                 return decl_die(access_status, "check access", r);
             }
+
             if (ap_some_auth_required(r)) {
                 if (((access_status = ap_run_check_user_id(r)) != 0)
                     || !ap_auth_type(r)) {
@@ -232,6 +234,7 @@ AP_DECLARE(int) ap_process_request_internal(request_rec *r)
                                   : "perform authentication. AuthType not set!",
                                   r);
                 }
+
                 if (((access_status = ap_run_auth_checker(r)) != 0)
                     || !ap_auth_type(r)) {
                     return decl_die(access_status, ap_auth_type(r)
@@ -241,15 +244,17 @@ AP_DECLARE(int) ap_process_request_internal(request_rec *r)
                 }
             }
             break;
+
         case SATISFY_ANY:
-            if (((access_status = ap_run_access_checker(r)) != 0) || 
-                !ap_auth_type(r)) {
+            if (((access_status = ap_run_access_checker(r)) != 0)
+                || !ap_auth_type(r)) {
                 if (!ap_some_auth_required(r)) {
                     return decl_die(access_status, ap_auth_type(r)
                                   ? "check access"
                                   : "perform authentication. AuthType not set!",
                                   r);
                 }
+
                 if (((access_status = ap_run_check_user_id(r)) != 0)
                     || !ap_auth_type(r)) {
                     return decl_die(access_status, ap_auth_type(r)
@@ -257,6 +262,7 @@ AP_DECLARE(int) ap_process_request_internal(request_rec *r)
                                   : "perform authentication. AuthType not set!",
                                   r);
                 }
+
                 if (((access_status = ap_run_auth_checker(r)) != 0)
                     || !ap_auth_type(r)) {
                     return decl_die(access_status, ap_auth_type(r)
@@ -269,7 +275,7 @@ AP_DECLARE(int) ap_process_request_internal(request_rec *r)
         }
     }
     /* XXX Must make certain the ap_run_type_checker short circuits mime
-     * in mod-proxy for r->proxyreq && r->parsed_uri.scheme 
+     * in mod-proxy for r->proxyreq && r->parsed_uri.scheme
      *                              && !strcmp(r->parsed_uri.scheme, "http")
      */
     if ((access_status = ap_run_type_checker(r)) != 0) {
@@ -289,7 +295,7 @@ AP_DECLARE(int) ap_process_request_internal(request_rec *r)
  *
  * Directive order in the httpd.conf file and its Includes significantly
  * impact this optimization.  Grouping common blocks at the front of the
- * config that are less likely to change between a request and 
+ * config that are less likely to change between a request and
  * its subrequests, or between a request and its redirects reduced
  * the work of these functions significantly.
  */
@@ -300,11 +306,11 @@ typedef struct walk_walked_t {
 } walk_walked_t;
 
 typedef struct walk_cache_t {
-    const char         *cached;         /* The identifier we matched */
-    ap_conf_vector_t  **dir_conf_tested;/* The sections we matched against */
-    ap_conf_vector_t   *dir_conf_merged;/* Base per_dir_config */
-    ap_conf_vector_t   *per_dir_result; /* per_dir_config += walked result */
-    apr_array_header_t *walked;         /* The list of walk_walked_t results */
+    const char         *cached;          /* The identifier we matched */
+    ap_conf_vector_t  **dir_conf_tested; /* The sections we matched against */
+    ap_conf_vector_t   *dir_conf_merged; /* Base per_dir_config */
+    ap_conf_vector_t   *per_dir_result;  /* per_dir_config += walked result */
+    apr_array_header_t *walked;          /* The list of walk_walked_t results */
 } walk_cache_t;
 
 static walk_cache_t *prep_walk_cache(apr_size_t t, request_rec *r)
@@ -322,14 +328,16 @@ static walk_cache_t *prep_walk_cache(apr_size_t t, request_rec *r)
     if (!note) {
         return NULL;
     }
+
     if (!(cache = *note)) {
         void **inherit_note;
-        if ((r->main &&
-             ((inherit_note = ap_get_request_note(r->main, t))) &&
-             *inherit_note) ||
-            (r->prev &&
-             ((inherit_note = ap_get_request_note(r->prev, t))) &&
-             *inherit_note)) {
+
+        if ((r->main
+             && ((inherit_note = ap_get_request_note(r->main, t)))
+             && *inherit_note)
+            || (r->prev
+                && ((inherit_note = ap_get_request_note(r->prev, t)))
+                && *inherit_note)) {
             cache = apr_pmemdup(r->pool, *inherit_note,
                                 sizeof(*cache));
             cache->walked = apr_array_copy(r->pool, cache->walked);
@@ -338,6 +346,7 @@ static walk_cache_t *prep_walk_cache(apr_size_t t, request_rec *r)
             cache = apr_pcalloc(r->pool, sizeof(*cache));
             cache->walked = apr_array_make(r->pool, 4, sizeof(walk_walked_t));
         }
+
         *note = cache;
     }
     return cache;
@@ -380,7 +389,7 @@ static int check_safe_file(request_rec *r)
 
 /*
  * resolve_symlink must _always_ be called on an APR_LNK file type!
- * It will resolve the actual target file type, modification date, etc, 
+ * It will resolve the actual target file type, modification date, etc,
  * and provide any processing required for symlink evaluation.
  * Path must already be cleaned, no trailing slash, no multi-slashes,
  * and don't call this on the root!
@@ -389,7 +398,7 @@ static int check_safe_file(request_rec *r)
  * to the number of times we had an extra lstat() since we 'weren't sure'.
  *
  * To optimize, we stat() anything when given (opts & OPT_SYM_LINKS), otherwise
- * we start off with an lstat().  Every lstat() must be dereferenced in case 
+ * we start off with an lstat().  Every lstat() must be dereferenced in case
  * it points at a 'nasty' - we must always rerun check_safe_file (or similar.)
  */
 static int resolve_symlink(char *d, apr_finfo_t *lfi, int opts, apr_pool_t *p)
@@ -406,7 +415,7 @@ static int resolve_symlink(char *d, apr_finfo_t *lfi, int opts, apr_pool_t *p)
     savename = (lfi->valid & APR_FINFO_NAME) ? lfi->name : NULL;
 
     if (opts & OPT_SYM_LINKS) {
-        if ((res = apr_stat(&fi, d, lfi->valid & ~(APR_FINFO_NAME), 
+        if ((res = apr_stat(&fi, d, lfi->valid & ~(APR_FINFO_NAME),
                             p)) != APR_SUCCESS) {
             return HTTP_FORBIDDEN;
         }
@@ -417,10 +426,11 @@ static int resolve_symlink(char *d, apr_finfo_t *lfi, int opts, apr_pool_t *p)
             lfi->name = savename;
             lfi->valid |= APR_FINFO_NAME;
         }
+
         return OK;
     }
 
-    /* OPT_SYM_OWNER only works if we can get the owner of 
+    /* OPT_SYM_OWNER only works if we can get the owner of
      * both the file and symlink.  First fill in a missing
      * owner of the symlink, then get the info of the target.
      */
@@ -431,7 +441,8 @@ static int resolve_symlink(char *d, apr_finfo_t *lfi, int opts, apr_pool_t *p)
         }
     }
 
-    if ((res = apr_stat(&fi, d, lfi->valid & ~(APR_FINFO_NAME), p)) != APR_SUCCESS) {
+    if ((res = apr_stat(&fi, d, lfi->valid & ~(APR_FINFO_NAME), p))
+        != APR_SUCCESS) {
         return HTTP_FORBIDDEN;
     }
 
@@ -445,6 +456,7 @@ static int resolve_symlink(char *d, apr_finfo_t *lfi, int opts, apr_pool_t *p)
         lfi->name = savename;
         lfi->valid |= APR_FINFO_NAME;
     }
+
     return OK;
 }
 
@@ -477,15 +489,15 @@ AP_DECLARE(int) ap_directory_walk(request_rec *r)
 
     /* XXX: Better (faster) tests needed!!!
      *
-     * "OK" as a response to a real problem is not _OK_, but to allow broken 
+     * "OK" as a response to a real problem is not _OK_, but to allow broken
      * modules to proceed, we will permit the not-a-path filename to pass the
      * following two tests.  This behavior may be revoked in future versions
-     * of Apache.  We still must catch it later if it's heading for the core 
+     * of Apache.  We still must catch it later if it's heading for the core
      * handler.  Leave INFO notes here for module debugging.
      */
     if (r->filename == NULL) {
         ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_INFO, 0, r,
-                      "Module bug?  Request filename is missing for URI %s", 
+                      "Module bug?  Request filename is missing for URI %s",
                       r->uri);
        return OK;
     }
@@ -494,12 +506,12 @@ AP_DECLARE(int) ap_directory_walk(request_rec *r)
      * so we can begin by checking the cache for a recent directory walk.
      * This call will ensure we have an absolute path in the same pass.
      */
-    if ((rv = apr_filepath_merge(&entry_dir, NULL, r->filename, 
-                                 APR_FILEPATH_NOTRELATIVE, r->pool)) 
+    if ((rv = apr_filepath_merge(&entry_dir, NULL, r->filename,
+                                 APR_FILEPATH_NOTRELATIVE, r->pool))
                   != APR_SUCCESS) {
         ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_INFO, 0, r,
                       "Module bug?  Request filename path %s is invalid or "
-                      "or not absolute for uri %s", 
+                      "or not absolute for uri %s",
                       r->filename, r->uri);
         return OK;
     }
@@ -512,7 +524,7 @@ AP_DECLARE(int) ap_directory_walk(request_rec *r)
 
     cache = prep_walk_cache(AP_NOTE_DIRECTORY_WALK, r);
 
-    /* If this is not a dirent subrequest with a preconstructed 
+    /* If this is not a dirent subrequest with a preconstructed
      * r->finfo value, then we can simply stat the filename to
      * save burning mega-cycles with unneeded stats - if this is
      * an exact file match.  We don't care about failure... we
@@ -534,34 +546,36 @@ AP_DECLARE(int) ap_directory_walk(request_rec *r)
     }
 
     /* If we have a file already matches the path of r->filename,
-     * and the vhost's list of directory sections hasn't changed, 
+     * and the vhost's list of directory sections hasn't changed,
      * we can skip rewalking the directory_walk entries.
      */
-    if (cache->cached 
+    if (cache->cached
         && ((r->finfo.filetype == APR_REG)
-         || ((r->finfo.filetype == APR_DIR) 
-          && (!r->path_info || !*r->path_info)))
-        && (cache->dir_conf_tested == sec_ent) 
+            || ((r->finfo.filetype == APR_DIR)
+                && (!r->path_info || !*r->path_info)))
+        && (cache->dir_conf_tested == sec_ent)
         && (strcmp(entry_dir, cache->cached) == 0)) {
         /* Well this looks really familiar!  If our end-result (per_dir_result)
-         * didn't change, we have absolutely nothing to do :)  
+         * didn't change, we have absolutely nothing to do :)
          * Otherwise (as is the case with most dir_merged/file_merged requests)
          * we must merge our dir_conf_merged onto this new r->per_dir_config.
          */
         if (r->per_dir_config == cache->per_dir_result) {
             return OK;
         }
+
         if (r->per_dir_config == cache->dir_conf_merged) {
             r->per_dir_config = cache->per_dir_result;
             return OK;
         }
+
         if (cache->walked->nelts) {
             now_merged = ((walk_walked_t*)cache->walked->elts)
                 [cache->walked->nelts - 1].merged;
         }
     }
     else {
-        /* We start now_merged from NULL since we want to build 
+        /* We start now_merged from NULL since we want to build
          * a locations list that can be merged to any vhost.
          */
         int sec_idx;
@@ -586,8 +600,9 @@ AP_DECLARE(int) ap_directory_walk(request_rec *r)
 #ifdef CASE_BLIND_FILESYSTEM
         apr_size_t canonical_len;
 #endif
+
         /*
-         * We must play our own mimi-merge game here, for the few 
+         * We must play our own mimi-merge game here, for the few
          * running dir_config values we care about within dir_walk.
          * We didn't start the merge from r->per_dir_config, so we
          * accumulate opts and override as we merge, from the globals.
@@ -599,24 +614,26 @@ AP_DECLARE(int) ap_directory_walk(request_rec *r)
         override = this_dir->override;
 
         /* Set aside path_info to merge back onto path_info later.
-         * If r->filename is a directory, we must remerge the path_info, 
+         * If r->filename is a directory, we must remerge the path_info,
          * before we continue!  [Directories cannot, by defintion, have
          * path info.  Either the next segment is not-found, or a file.]
          *
          * r->path_info tracks the unconsumed source path.
          * r->filename  tracks the path as we process it
          */
-        if ((r->finfo.filetype == APR_DIR) && r->path_info && *r->path_info) 
+        if ((r->finfo.filetype == APR_DIR) && r->path_info && *r->path_info)
         {
-            if ((rv = apr_filepath_merge(&r->path_info, r->filename, r->path_info,
+            if ((rv = apr_filepath_merge(&r->path_info, r->filename,
+                                         r->path_info,
                                          APR_FILEPATH_NOTABOVEROOT, r->pool))
-                      != APR_SUCCESS) {
+                != APR_SUCCESS) {
                 ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
                               "dir_walk error, path_info %s is not relative "
-                              "to the filename path %s for uri %s", 
+                              "to the filename path %s for uri %s",
                               r->path_info, r->filename, r->uri);
                 return HTTP_INTERNAL_SERVER_ERROR;
             }
+
             save_path_info = NULL;
         }
         else {
@@ -626,30 +643,30 @@ AP_DECLARE(int) ap_directory_walk(request_rec *r)
 
 #ifdef CASE_BLIND_FILESYSTEM
 
-        canonical_len = 0; 
+        canonical_len = 0;
         while (r->canonical_filename && r->canonical_filename[canonical_len]
-            && (r->canonical_filename[canonical_len]
-                      == r->path_info[canonical_len])) {
+               && (r->canonical_filename[canonical_len]
+                   == r->path_info[canonical_len])) {
              ++canonical_len;
         }
+
         while (canonical_len
-                 && ((r->canonical_filename[canonical_len - 1] != '/'
+               && ((r->canonical_filename[canonical_len - 1] != '/'
                    && r->canonical_filename[canonical_len - 1])
-                  || (r->path_info[canonical_len - 1] != '/'
-                   && r->path_info[canonical_len - 1]))) {
+                   || (r->path_info[canonical_len - 1] != '/'
+                       && r->path_info[canonical_len - 1]))) {
             --canonical_len;
         }
 
-        /* 
+        /*
          * Now build r->filename component by component, starting
          * with the root (on Unix, simply "/").  We will make a huge
-         * assumption here for efficiency, that any canonical path 
+         * assumption here for efficiency, that any canonical path
          * already given included a canonical root.
          */
         rv = apr_filepath_root((const char **)&r->filename,
                                (const char **)&r->path_info,
-                               canonical_len 
-                                   ? 0 : APR_FILEPATH_TRUENAME, 
+                               canonical_len ? 0 : APR_FILEPATH_TRUENAME,
                                r->pool);
         filename_len = strlen(r->filename);
 
@@ -658,8 +675,8 @@ AP_DECLARE(int) ap_directory_walk(request_rec *r)
          * than the canonical length, then it cannot be trusted as
          * a truename.  So try again, this time more seriously.
          */
-        if ((rv == APR_SUCCESS) && canonical_len 
-                                && (filename_len > canonical_len)) {
+        if ((rv == APR_SUCCESS) && canonical_len
+            && (filename_len > canonical_len)) {
             rv = apr_filepath_root((const char **)&r->filename,
                                    (const char **)&r->path_info,
                                    APR_FILEPATH_TRUENAME, r->pool);
@@ -679,7 +696,7 @@ AP_DECLARE(int) ap_directory_walk(request_rec *r)
         if (rv != APR_SUCCESS) {
             ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
                           "dir_walk error, could not determine the root "
-                          "path of filename %s%s for uri %s", 
+                          "path of filename %s%s for uri %s",
                           r->filename, r->path_info, r->uri);
             return HTTP_INTERNAL_SERVER_ERROR;
         }
@@ -696,14 +713,14 @@ AP_DECLARE(int) ap_directory_walk(request_rec *r)
         /*
          * seg keeps track of which segment we've copied.
          * sec_idx keeps track of which section we're on, since sections are
-         *     ordered by number of segments. See core_reorder_directories 
+         *     ordered by number of segments. See core_reorder_directories
          */
         startseg = seg = ap_count_dirs(r->filename);
         sec_idx = 0;
 
         /*
-         * Go down the directory hierarchy.  Where we have to check for 
-         * symlinks, do so.  Where a .htaccess file has permission to 
+         * Go down the directory hierarchy.  Where we have to check for
+         * symlinks, do so.  Where a .htaccess file has permission to
          * override anything, try to find one.
          */
         do {
@@ -711,7 +728,7 @@ AP_DECLARE(int) ap_directory_walk(request_rec *r)
             char *seg_name;
             char *delim;
             int temp_slash=0;
-        
+
             /* We have no trailing slash, but we sure would appreciate one.
              * However, we don't want to append a / our first time through.
              */
@@ -730,7 +747,7 @@ AP_DECLARE(int) ap_directory_walk(request_rec *r)
                 core_dir_config *entry_core;
                 entry_core = ap_get_module_config(entry_config, &core_module);
 
-                /* No more possible matches for this many segments? 
+                /* No more possible matches for this many segments?
                  * We are done when we find relative/regex/longer components.
                  */
                 if (entry_core->r || entry_core->d_components > seg) {
@@ -738,15 +755,15 @@ AP_DECLARE(int) ap_directory_walk(request_rec *r)
                 }
 
                 /* We will never skip '0' element components, e.g. plain old
-                 * <Directory >, and <Directory "/"> are classified as zero 
+                 * <Directory >, and <Directory "/"> are classified as zero
                  * so that Win32/Netware/OS2 etc all pick them up.
                  * Otherwise, skip over the mismatches.
                  */
                 if (entry_core->d_components
-                      && (entry_core->d_is_fnmatch
-                            ? (apr_fnmatch(entry_core->d, r->filename, 
-                                           FNM_PATHNAME) != APR_SUCCESS)
-                            : (strcmp(r->filename, entry_core->d) != 0))) {
+                    && (entry_core->d_is_fnmatch
+                        ? (apr_fnmatch(entry_core->d, r->filename,
+                                       FNM_PATHNAME) != APR_SUCCESS)
+                        : (strcmp(r->filename, entry_core->d) != 0))) {
                     continue;
                 }
 
@@ -759,6 +776,7 @@ AP_DECLARE(int) ap_directory_walk(request_rec *r)
                         --matches;
                         goto minimerge;
                     }
+
                     /* We fell out of sync.  This is our own copy of walked,
                      * so truncate the remaining matches and reset remaining.
                      */
@@ -767,7 +785,7 @@ AP_DECLARE(int) ap_directory_walk(request_rec *r)
                 }
 
                 if (now_merged) {
-                    now_merged = ap_merge_per_dir_configs(r->pool, 
+                    now_merged = ap_merge_per_dir_configs(r->pool,
                                                           now_merged,
                                                           sec_ent[sec_idx]);
                 }
@@ -781,7 +799,7 @@ AP_DECLARE(int) ap_directory_walk(request_rec *r)
 
                 /* Do a mini-merge to our globally-based running calculations of
                  * core_dir->override and core_dir->opts, since now_merged
-                 * never considered the global config.  Of course, if there is 
+                 * never considered the global config.  Of course, if there is
                  * no core config at this level, continue without a thought.
                  * See core.c::merge_core_dir_configs() for explanation.
                  */
@@ -793,10 +811,10 @@ minimerge:
                 }
 
                 if (this_dir->opts & OPT_UNSET) {
-                    opts_add = (opts_add & ~this_dir->opts_remove) 
+                    opts_add = (opts_add & ~this_dir->opts_remove)
                                | this_dir->opts_add;
                     opts_remove = (opts_remove & ~this_dir->opts_add)
-                                | this_dir->opts_remove;
+                                  | this_dir->opts_remove;
                     opts = (opts & ~opts_remove) | opts_add;
                 }
                 else {
@@ -804,6 +822,7 @@ minimerge:
                     opts_add = this_dir->opts_add;
                     opts_remove = this_dir->opts_remove;
                 }
+
                 if (!(this_dir->override & OR_UNSET)) {
                     override = this_dir->override;
                 }
@@ -826,7 +845,7 @@ minimerge:
 
                     /* If we merged this same htaccess last time, reuse it...
                      * this wouldn't work except that we cache the htaccess
-                     * sections for the lifetime of the request, so we match 
+                     * sections for the lifetime of the request, so we match
                      * the same conf.  Good planning (no, pure luck ;)
                      */
                     if (matches) {
@@ -836,8 +855,9 @@ minimerge:
                             --matches;
                             goto minimerge2;
                         }
+
                         /* We fell out of sync.  This is our own copy of walked,
-                         * so truncate the remaining matches and reset 
+                         * so truncate the remaining matches and reset
                          * remaining.
                          */
                         cache->walked->nelts -= matches;
@@ -845,7 +865,7 @@ minimerge:
                     }
 
                     if (now_merged) {
-                        now_merged = ap_merge_per_dir_configs(r->pool, 
+                        now_merged = ap_merge_per_dir_configs(r->pool,
                                                               now_merged,
                                                               htaccess_conf);
                     }
@@ -857,10 +877,10 @@ minimerge:
                     last_walk->matched = htaccess_conf;
                     last_walk->merged = now_merged;
 
-                    /* Do a mini-merge to our globally-based running 
+                    /* Do a mini-merge to our globally-based running
                      * calculations of core_dir->override and core_dir->opts,
                      * since now_merged never considered the global config.
-                     * Of course, if there is no core config at this level, 
+                     * Of course, if there is no core config at this level,
                      * continue without a thought.
                      * See core.c::merge_core_dir_configs() for explanation.
                      */
@@ -871,9 +891,9 @@ minimerge2:
                     if (this_dir) {
                         if (this_dir->opts & OPT_UNSET) {
                             opts_add = (opts_add & ~this_dir->opts_remove)
-                                | this_dir->opts_add;
+                                       | this_dir->opts_add;
                             opts_remove = (opts_remove & ~this_dir->opts_add)
-                                | this_dir->opts_remove;
+                                          | this_dir->opts_remove;
                             opts = (opts & ~opts_remove) | opts_add;
                         }
                         else {
@@ -881,6 +901,7 @@ minimerge2:
                             opts_add = this_dir->opts_add;
                             opts_remove = this_dir->opts_remove;
                         }
+
                         if (!(this_dir->override & OR_UNSET)) {
                             override = this_dir->override;
                         }
@@ -900,11 +921,11 @@ minimerge2:
                 break;
             }
 
-            /* Now it's time for the next segment... 
+            /* Now it's time for the next segment...
              * We will assume the next element is an end node, and fix it up
              * below as necessary...
              */
-        
+
             seg_name = r->filename + filename_len;
             delim = strchr(r->path_info + (*r->path_info == '/' ? 1 : 0), '/');
             if (delim) {
@@ -921,9 +942,9 @@ minimerge2:
                 filename_len += path_info_len;
                 r->path_info += path_info_len;
             }
-            if (*seg_name == '/') 
+            if (*seg_name == '/')
                 ++seg_name;
-        
+
             /* If nothing remained but a '/' string, we are finished
              */
             if (!*seg_name) {
@@ -937,11 +958,11 @@ minimerge2:
              * if...we have allowed symlinks
              * skip the lstat and dummy up an APR_DIR value for thisinfo.
              */
-            if (r->finfo.filetype 
+            if (r->finfo.filetype
 #ifdef CASE_BLIND_FILESYSTEM
                 && (filename_len <= canonical_len)
 #endif
-                && ((opts & (OPT_SYM_OWNER | OPT_SYM_LINKS)) == OPT_SYM_LINKS)) 
+                && ((opts & (OPT_SYM_OWNER | OPT_SYM_LINKS)) == OPT_SYM_LINKS))
             {
 
                 thisinfo.filetype = APR_DIR;
@@ -970,9 +991,9 @@ minimerge2:
                               "access to %s denied", r->uri);
                 return r->status = HTTP_FORBIDDEN;
             }
-            else if ((rv != APR_SUCCESS && rv != APR_INCOMPLETE) 
+            else if ((rv != APR_SUCCESS && rv != APR_INCOMPLETE)
                      || !(thisinfo.valid & APR_FINFO_TYPE)) {
-                /* If we hit ENOTDIR, we must have over-optimized, deny 
+                /* If we hit ENOTDIR, we must have over-optimized, deny
                  * rather than assume not found.
                  */
                 ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
@@ -987,7 +1008,7 @@ minimerge2:
 
             /* Fix up the path now if we have a name, and they don't agree
              */
-            if ((thisinfo.valid & APR_FINFO_NAME) 
+            if ((thisinfo.valid & APR_FINFO_NAME)
                 && strcmp(seg_name, thisinfo.name)) {
                 /* TODO: provide users an option that an internal/external
                  * redirect is required here?  We need to walk the URI and
@@ -1000,7 +1021,7 @@ minimerge2:
             if (thisinfo.filetype == APR_LNK) {
                 /* Is this a possibly acceptable symlink?
                  */
-                if ((res = resolve_symlink(r->filename, &thisinfo, 
+                if ((res = resolve_symlink(r->filename, &thisinfo,
                                            opts, r->pool)) != OK) {
                     ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
                                   "Symbolic link not allowed: %s",
@@ -1017,8 +1038,9 @@ minimerge2:
                 }
                 else if (thisinfo.filetype != APR_DIR) {
                     ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
-                             "symlink doesn't point to a file or directory: %s",
-                             r->filename);
+                                  "symlink doesn't point to a file or "
+                                  "directory: %s",
+                                  r->filename);
                     return r->status = HTTP_FORBIDDEN;
                 }
             }
@@ -1037,7 +1059,7 @@ minimerge2:
          */
         if (save_path_info) {
             if (r->path_info && *r->path_info) {
-                r->path_info = ap_make_full_path(r->pool, r->path_info, 
+                r->path_info = ap_make_full_path(r->pool, r->path_info,
                                                  save_path_info);
             }
             else {
@@ -1051,7 +1073,7 @@ minimerge2:
          */
         for (; sec_idx < num_sec; ++sec_idx) {
 
-            core_dir_config *entry_core; 
+            core_dir_config *entry_core;
             entry_core = ap_get_module_config(sec_ent[sec_idx], &core_module);
 
             if (!entry_core->r) {
@@ -1071,6 +1093,7 @@ minimerge2:
                     --matches;
                     goto minimerge;
                 }
+
                 /* We fell out of sync.  This is our own copy of walked,
                  * so truncate the remaining matches and reset remaining.
                  */
@@ -1079,7 +1102,7 @@ minimerge2:
             }
 
             if (now_merged) {
-                now_merged = ap_merge_per_dir_configs(r->pool, 
+                now_merged = ap_merge_per_dir_configs(r->pool,
                                                       now_merged,
                                                       sec_ent[sec_idx]);
             }
@@ -1158,13 +1181,13 @@ AP_DECLARE(int) ap_location_walk(request_rec *r)
     ap_conf_vector_t *now_merged = NULL;
     core_server_config *sconf = ap_get_module_config(r->server->module_config,
                                                      &core_module);
-    ap_conf_vector_t **sec_ent = (ap_conf_vector_t **) sconf->sec_url->elts;
+    ap_conf_vector_t **sec_ent = (ap_conf_vector_t **)sconf->sec_url->elts;
     int num_sec = sconf->sec_url->nelts;
     walk_cache_t *cache;
     const char *entry_uri;
 
     cache = prep_walk_cache(AP_NOTE_LOCATION_WALK, r);
-    
+
     /* No tricks here, there are no <Locations > to parse in this vhost.
      * We won't destroy the cache, just in case _this_ redirect is later
      * redirected again to a vhost with <Location > blocks to optimize.
@@ -1192,27 +1215,29 @@ AP_DECLARE(int) ap_location_walk(request_rec *r)
      * rewalking the location_walk entries.
      */
     if (cache->cached
-        && (cache->dir_conf_tested == sec_ent) 
+        && (cache->dir_conf_tested == sec_ent)
         && (strcmp(entry_uri, cache->cached) == 0)) {
         /* Well this looks really familiar!  If our end-result (per_dir_result)
-         * didn't change, we have absolutely nothing to do :)  
+         * didn't change, we have absolutely nothing to do :)
          * Otherwise (as is the case with most dir_merged/file_merged requests)
          * we must merge our dir_conf_merged onto this new r->per_dir_config.
          */
         if (r->per_dir_config == cache->per_dir_result) {
             return OK;
         }
+
         if (r->per_dir_config == cache->dir_conf_merged) {
             r->per_dir_config = cache->per_dir_result;
             return OK;
         }
+
         if (cache->walked->nelts) {
             now_merged = ((walk_walked_t*)cache->walked->elts)
                                             [cache->walked->nelts - 1].merged;
         }
     }
     else {
-        /* We start now_merged from NULL since we want to build 
+        /* We start now_merged from NULL since we want to build
          * a locations list that can be merged to any vhost.
          */
         int len, sec_idx;
@@ -1226,25 +1251,25 @@ AP_DECLARE(int) ap_location_walk(request_rec *r)
          */
         for (sec_idx = 0; sec_idx < num_sec; ++sec_idx) {
 
-            core_dir_config *entry_core; 
+            core_dir_config *entry_core;
             entry_core = ap_get_module_config(sec_ent[sec_idx], &core_module);
-            
+
             /* ### const strlen can be optimized in location config parsing */
             len = strlen(entry_core->d);
 
             /* Test the regex, fnmatch or string as appropriate.
-             * If it's a strcmp, and the <Location > pattern was 
+             * If it's a strcmp, and the <Location > pattern was
              * not slash terminated, then this uri must be slash
              * terminated (or at the end of the string) to match.
              */
-            if (entry_core->r 
+            if (entry_core->r
                 ? ap_regexec(entry_core->r, r->uri, 0, NULL, 0)
                 : (entry_core->d_is_fnmatch
                    ? apr_fnmatch(entry_core->d, cache->cached, FNM_PATHNAME)
                    : (strncmp(entry_core->d, cache->cached, len)
-                      ||   (entry_core->d[len - 1] != '/'
-                            && cache->cached[len] != '/' 
-                            && cache->cached[len] != '\0')))) {
+                      || (entry_core->d[len - 1] != '/'
+                          && cache->cached[len] != '/'
+                          && cache->cached[len] != '\0')))) {
                 continue;
             }
 
@@ -1257,6 +1282,7 @@ AP_DECLARE(int) ap_location_walk(request_rec *r)
                     --matches;
                     continue;
                 }
+
                 /* We fell out of sync.  This is our own copy of walked,
                  * so truncate the remaining matches and reset remaining.
                  */
@@ -1265,7 +1291,7 @@ AP_DECLARE(int) ap_location_walk(request_rec *r)
             }
 
             if (now_merged) {
-                now_merged = ap_merge_per_dir_configs(r->pool, 
+                now_merged = ap_merge_per_dir_configs(r->pool,
                                                       now_merged,
                                                       sec_ent[sec_idx]);
             }
@@ -1277,6 +1303,7 @@ AP_DECLARE(int) ap_location_walk(request_rec *r)
             last_walk->matched = sec_ent[sec_idx];
             last_walk->merged = now_merged;
         }
+
         /* Whoops - everything matched in sequence, but the original walk
          * found some additional matches.  Truncate them.
          */
@@ -1306,13 +1333,13 @@ AP_DECLARE(int) ap_file_walk(request_rec *r)
     ap_conf_vector_t *now_merged = NULL;
     core_dir_config *dconf = ap_get_module_config(r->per_dir_config,
                                                   &core_module);
-    ap_conf_vector_t **sec_ent = (ap_conf_vector_t **) dconf->sec_file->elts;
+    ap_conf_vector_t **sec_ent = (ap_conf_vector_t **)dconf->sec_file->elts;
     int num_sec = dconf->sec_file->nelts;
     walk_cache_t *cache;
     const char *test_file;
 
     /* To allow broken modules to proceed, we allow missing filenames to pass.
-     * We will catch it later if it's heading for the core handler.  
+     * We will catch it later if it's heading for the core handler.
      * directory_walk already posted an INFO note for module debugging.
      */
      if (r->filename == NULL) {
@@ -1329,7 +1356,7 @@ AP_DECLARE(int) ap_file_walk(request_rec *r)
         return OK;
     }
 
-    /* Get the basename .. and copy for the cache just 
+    /* Get the basename .. and copy for the cache just
      * in case r->filename is munged by another module
      */
     test_file = strrchr(r->filename, '/');
@@ -1341,31 +1368,33 @@ AP_DECLARE(int) ap_file_walk(request_rec *r)
     }
 
     /* If we have an cache->cached file name that matches test_file,
-     * and the directory's list of file sections hasn't changed, we 
+     * and the directory's list of file sections hasn't changed, we
      * can skip rewalking the file_walk entries.
      */
     if (cache->cached
-        && (cache->dir_conf_tested == sec_ent) 
+        && (cache->dir_conf_tested == sec_ent)
         && (strcmp(test_file, cache->cached) == 0)) {
         /* Well this looks really familiar!  If our end-result (per_dir_result)
-         * didn't change, we have absolutely nothing to do :)  
+         * didn't change, we have absolutely nothing to do :)
          * Otherwise (as is the case with most dir_merged requests)
          * we must merge our dir_conf_merged onto this new r->per_dir_config.
          */
         if (r->per_dir_config == cache->per_dir_result) {
             return OK;
         }
+
         if (r->per_dir_config == cache->dir_conf_merged) {
             r->per_dir_config = cache->per_dir_result;
             return OK;
         }
+
         if (cache->walked->nelts) {
             now_merged = ((walk_walked_t*)cache->walked->elts)
                 [cache->walked->nelts - 1].merged;
         }
     }
     else {
-        /* We start now_merged from NULL since we want to build 
+        /* We start now_merged from NULL since we want to build
          * a file section list that can be merged to any dir_walk.
          */
         int sec_idx;
@@ -1378,7 +1407,7 @@ AP_DECLARE(int) ap_file_walk(request_rec *r)
          * really try them with the most general first.
          */
         for (sec_idx = 0; sec_idx < num_sec; ++sec_idx) {
-        
+
             core_dir_config *entry_core;
             entry_core = ap_get_module_config(sec_ent[sec_idx], &core_module);
 
@@ -1399,6 +1428,7 @@ AP_DECLARE(int) ap_file_walk(request_rec *r)
                     --matches;
                     continue;
                 }
+
                 /* We fell out of sync.  This is our own copy of walked,
                  * so truncate the remaining matches and reset remaining.
                  */
@@ -1407,7 +1437,7 @@ AP_DECLARE(int) ap_file_walk(request_rec *r)
             }
 
             if (now_merged) {
-                now_merged = ap_merge_per_dir_configs(r->pool, 
+                now_merged = ap_merge_per_dir_configs(r->pool,
                                                       now_merged,
                                                       sec_ent[sec_idx]);
             }
@@ -1419,6 +1449,7 @@ AP_DECLARE(int) ap_file_walk(request_rec *r)
             last_walk->matched = sec_ent[sec_idx];
             last_walk->merged = now_merged;
         }
+
         /* Whoops - everything matched in sequence, but the original walk
          * found some additional matches.  Truncate them.
          */
@@ -1459,12 +1490,12 @@ AP_DECLARE(int) ap_file_walk(request_rec *r)
  * structure...
  */
 
-static request_rec *make_sub_request(const request_rec *r, 
+static request_rec *make_sub_request(const request_rec *r,
                                      ap_filter_t *next_filter)
 {
     apr_pool_t *rrp;
     request_rec *rnew;
-    
+
     apr_pool_create(&rrp, r->pool);
     rnew = apr_pcalloc(rrp, sizeof(request_rec));
     rnew->pool = rrp;
@@ -1479,12 +1510,12 @@ static request_rec *make_sub_request(const request_rec *r,
     /* Start a clean config from this subrequest's vhost.  Optimization in
      * Location/File/Dir walks from the parent request assure that if the
      * config blocks of the subrequest match the parent request, no merges
-     * will actually occur (and generally a minimal number of merges are 
+     * will actually occur (and generally a minimal number of merges are
      * required, even if the parent and subrequest aren't quite identical.)
      */
     rnew->per_dir_config = r->server->lookup_defaults;
 
-    rnew->htaccess       = r->htaccess;
+    rnew->htaccess = r->htaccess;
     rnew->allowed_methods = ap_make_method_list(rnew->pool, 2);
 
     /* make a copy of the allowed-methods list */
@@ -1496,12 +1527,12 @@ static request_rec *make_sub_request(const request_rec *r,
          * try to insert some, so if we don't have valid data, the code
          * will seg fault.
          */
-        rnew->input_filters  = r->input_filters;
-        rnew->proto_input_filters  = r->proto_input_filters;
+        rnew->input_filters = r->input_filters;
+        rnew->proto_input_filters = r->proto_input_filters;
         rnew->output_filters = next_filter;
-	rnew->proto_output_filters = r->proto_output_filters;
+        rnew->proto_output_filters = r->proto_output_filters;
         ap_add_output_filter_handle(ap_subreq_core_filter_handle,
-                                    NULL, rnew, rnew->connection); 
+                                    NULL, rnew, rnew->connection);
     }
     else {
         /* If NULL - we are expecting to be internal_fast_redirect'ed
@@ -1520,7 +1551,7 @@ static request_rec *make_sub_request(const request_rec *r,
 
     ap_set_sub_req_protocol(rnew, r);
 
-    /* We have to run this after we fill in sub req vars, 
+    /* We have to run this after we fill in sub req vars,
      * or the r->main pointer won't be setup
      */
     ap_run_create_request(rnew);
@@ -1536,37 +1567,37 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_sub_req_output_filter(ap_filter_t *f,
     if (APR_BUCKET_IS_EOS(e)) {
         apr_bucket_delete(e);
     }
+
     if (!APR_BRIGADE_EMPTY(bb)) {
         return ap_pass_brigade(f->next, bb);
     }
-    else {
-        return APR_SUCCESS;
-    }
+
+    return APR_SUCCESS;
 }
 
- 
+
 AP_DECLARE(int) ap_some_auth_required(request_rec *r)
 {
     /* Is there a require line configured for the type of *this* req? */
- 
+
     const apr_array_header_t *reqs_arr = ap_requires(r);
     require_line *reqs;
     int i;
- 
+
     if (!reqs_arr) {
         return 0;
     }
- 
+
     reqs = (require_line *) reqs_arr->elts;
- 
+
     for (i = 0; i < reqs_arr->nelts; ++i) {
         if (reqs[i].method_mask & (AP_METHOD_BIT << r->method_number)) {
             return 1;
         }
     }
- 
+
     return 0;
-} 
+}
 
 
 AP_DECLARE(request_rec *) ap_sub_req_method_uri(const char *method,
@@ -1619,13 +1650,13 @@ AP_DECLARE(request_rec *) ap_sub_req_lookup_dirent(const apr_finfo_t *dirent,
 
     rnew = make_sub_request(r, next_filter);
 
-    /* Special case: we are looking at a relative lookup in the same directory. 
+    /* Special case: we are looking at a relative lookup in the same directory.
      * This is 100% safe, since dirent->name just came from the filesystem.
      */
     if (r->path_info && *r->path_info) {
         /* strip path_info off the end of the uri to keep it in sync
          * with r->filename, which has already been stripped by directory_walk,
-         * merge the dirent->name, and then, if the caller wants us to remerge 
+         * merge the dirent->name, and then, if the caller wants us to remerge
          * the original path info, do so.  Note we never fix the path_info back
          * to r->filename, since dir_walk would do so (but we don't expect it
          * to happen in the usual cases)
@@ -1644,15 +1675,16 @@ AP_DECLARE(request_rec *) ap_sub_req_lookup_dirent(const apr_finfo_t *dirent,
         udir = ap_make_dirstr_parent(rnew->pool, r->uri);
         rnew->uri = ap_make_full_path(rnew->pool, udir, dirent->name);
     }
+
     fdir = ap_make_dirstr_parent(rnew->pool, r->filename);
     rnew->filename = ap_make_full_path(rnew->pool, fdir, dirent->name);
     if (r->canonical_filename == r->filename) {
         rnew->canonical_filename = rnew->filename;
     }
-    
+
     /* XXX This is now less relevant; we will do a full location walk
-     * these days for this case.  Preserve the apr_stat results, and 
-     * perhaps we also tag that symlinks were tested and/or found for 
+     * these days for this case.  Preserve the apr_stat results, and
+     * perhaps we also tag that symlinks were tested and/or found for
      * r->filename.
      */
     rnew->per_dir_config = r->server->lookup_defaults;
@@ -1661,8 +1693,8 @@ AP_DECLARE(request_rec *) ap_sub_req_lookup_dirent(const apr_finfo_t *dirent,
         /*
          * apr_dir_read isn't very complete on this platform, so
          * we need another apr_lstat (or simply apr_stat if we allow
-         * all symlinks here.)  If this is an APR_LNK that resolves 
-         * to an APR_DIR, then we will rerun everything anyways... 
+         * all symlinks here.)  If this is an APR_LNK that resolves
+         * to an APR_DIR, then we will rerun everything anyways...
          * this should be safe.
          */
         apr_status_t rv;
@@ -1689,7 +1721,7 @@ AP_DECLARE(request_rec *) ap_sub_req_lookup_dirent(const apr_finfo_t *dirent,
         /*
          * Resolve this symlink.  We should tie this back to dir_walk's cache
          */
-        if ((res = resolve_symlink(rnew->filename, &rnew->finfo, 
+        if ((res = resolve_symlink(rnew->filename, &rnew->finfo,
                                    ap_allow_options(rnew), rnew->pool))
             != OK) {
             rnew->status = res;
@@ -1707,10 +1739,11 @@ AP_DECLARE(request_rec *) ap_sub_req_lookup_dirent(const apr_finfo_t *dirent,
         }
     }
 
-    /* fill in parsed_uri values 
+    /* fill in parsed_uri values
      */
     if (r->args && *r->args && (subtype == AP_SUBREQ_MERGE_ARGS)) {
-        ap_parse_uri(rnew, apr_pstrcat(r->pool, rnew->uri, "?", r->args, NULL));
+        ap_parse_uri(rnew, apr_pstrcat(r->pool, rnew->uri, "?",
+                                       r->args, NULL));
     }
     else {
         ap_parse_uri(rnew, rnew->uri);
@@ -1742,23 +1775,25 @@ AP_DECLARE(request_rec *) ap_sub_req_lookup_file(const char *new_file,
     if (r->canonical_filename == r->filename) {
         rnew->canonical_filename = (char*)(1);
     }
+
     if (apr_filepath_merge(&rnew->filename, fdir, new_file,
                            APR_FILEPATH_TRUENAME, rnew->pool) != APR_SUCCESS) {
         rnew->status = HTTP_FORBIDDEN;
         return rnew;
     }
+
     if (rnew->canonical_filename) {
         rnew->canonical_filename = rnew->filename;
     }
 
     /*
      * Check for a special case... if there are no '/' characters in new_file
-     * at all, and the path was the same, then we are looking at a relative 
+     * at all, and the path was the same, then we are looking at a relative
      * lookup in the same directory.  Fixup the URI to match.
      */
 
     if (strncmp(rnew->filename, fdir, fdirlen) == 0
-        && rnew->filename[fdirlen] 
+        && rnew->filename[fdirlen]
         && ap_strchr_c(rnew->filename + fdirlen, '/') == NULL) {
         apr_status_t rv;
         if (ap_allow_options(rnew) & OPT_SYM_LINKS) {
@@ -1839,9 +1874,6 @@ AP_DECLARE(void) ap_update_mtime(request_rec *r, apr_time_t dependency_mtime)
  */
 AP_DECLARE(int) ap_is_initial_req(request_rec *r)
 {
-    return
-        (r->main == NULL)       /* otherwise, this is a sub-request */
-        &&
-        (r->prev == NULL);      /* otherwise, this is an internal redirect */
-} 
-
+    return (r->main == NULL)       /* otherwise, this is a sub-request */
+           && (r->prev == NULL);   /* otherwise, this is an internal redirect */
+}
