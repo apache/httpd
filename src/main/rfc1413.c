@@ -95,6 +95,8 @@ extern char *inet_ntoa();
 #define	ANY_PORT	0		/* Any old port will do */
 #define FROM_UNKNOWN  "unknown"
 
+int rfc1413_timeout = RFC1413_TIMEOUT;  /* Global so it can be changed */
+
 JMP_BUF timebuf;
 
 /* bind_connect - bind both ends of a socket */
@@ -208,7 +210,7 @@ rfc1413(conn_rec *conn, server_rec *srv)
     if (ap_setjmp(timebuf) == 0)
     {
 	signal(SIGALRM, ident_timeout);
-	alarm(RFC1413_TIMEOUT);
+	alarm(rfc1413_timeout);
 	
 	if (get_rfc1413(sock, &conn->local_addr, &conn->remote_addr, user,
 		      srv)
