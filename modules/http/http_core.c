@@ -3000,11 +3000,9 @@ static int default_handler(request_rec *r)
 	ap_send_http_header(r);
 	
 	if (!r->header_only) {
-            apr_size_t length = r->finfo.size;
-            apr_off_t  offset = 0;
-            apr_size_t nbytes = 0;
+            apr_size_t nbytes;
 
-            ap_send_fd(fd, r, offset, length, &nbytes);
+            ap_send_fd(fd, r, 0, r->finfo.size, &nbytes);
 	}
 
 #ifdef AP_USE_MMAP_FILES
