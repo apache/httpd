@@ -347,6 +347,9 @@ static int create_entity(cache_handle_t *h, request_rec *r,
     h->write_headers = &write_headers;
     h->remove_entity = &remove_entity;
 
+    ap_log_error(APLOG_MARK, APLOG_INFO|APLOG_NOERRNO, 0, r->server,
+                 "disk_cache: Caching URL %s",  key);
+
     return OK;
 }
 
@@ -418,6 +421,8 @@ static int open_entity(cache_handle_t *h, request_rec *r, const char *type, cons
     h->write_headers = &write_headers;
     h->remove_entity = &remove_entity;
 
+    ap_log_error(APLOG_MARK, APLOG_INFO|APLOG_NOERRNO, 0, r->server,
+                 "disk_cache: Serving Cached URL %s",  dobj->name);
     return OK;
 }
 
@@ -488,6 +493,9 @@ static int read_headers(cache_handle_t *h, request_rec *r)
     r->status_line = apr_pstrdup(r->pool, urlbuff);            /* Save status line into request rec  */
 
     apr_file_close(dobj->hfd);
+
+    ap_log_error(APLOG_MARK, APLOG_INFO|APLOG_NOERRNO, 0, r->server,
+                 "disk_cache: Served headers for URL %s",  dobj->name);
     return APR_SUCCESS;
 }
 
@@ -509,14 +517,14 @@ static int write_headers(cache_handle_t *h, request_rec *r, cache_info *info)
 {
     disk_cache_conf *conf = ap_get_module_config(r->server->module_config, 
                                                  &disk_cache_module);
-    apr_file_t *hfd = NULL;
     apr_status_t rv;
     char *buf;
     char statusbuf[8];
     apr_size_t amt;
     disk_cache_object_t *dobj = (disk_cache_object_t*) h->cache_obj->vobj;
+    apr_file_t *hfd = dobj->hfd;
 
-    if (!dobj->fd)  {
+    if (!hfd)  {
         if (!dobj->hdrsfile) {
             dobj->hdrsfile = header_file(r->pool, 
                                          conf->dirlevels, 
@@ -537,17 +545,17 @@ static int write_headers(cache_handle_t *h, request_rec *r, cache_info *info)
             mkdir_structure(conf, dobj->hdrsfile, r->pool);
         }
 
-        rv = apr_file_open(&hfd, dobj->hdrsfile,
-                           APR_WRITE | APR_CREATE | APR_BINARY | APR_EXCL,
+        rv = apr_file_open(&dobj->hfd, dobj->hdrsfile,
+                           APR_WRITE | APR_CREATE | APR_EXCL,
                            0, r->pool);
         if (rv != APR_SUCCESS) {
             /* XXX */
             return rv;
         }
-
+        hfd = dobj->hfd;
         dobj->name = h->cache_obj->key;
 
-        file_cache_write_mydata(hfd, h, r);
+        file_cache_write_mydata(dobj->hfd, h, r);
 
         if (r->headers_out) {
             int i;
@@ -578,6 +586,9 @@ static int write_headers(cache_handle_t *h, request_rec *r, cache_info *info)
     else {
         /* XXX log message */
     }
+
+    ap_log_error(APLOG_MARK, APLOG_INFO|APLOG_NOERRNO, 0, r->server,
+                 "disk_cache: Caching headers for URL %s",  dobj->name);
     return OK;
 }
 static int write_body(cache_handle_t *h, request_rec *r, apr_bucket_brigade *b) 
@@ -603,7 +614,10 @@ static int write_body(cache_handle_t *h, request_rec *r, apr_bucket_brigade *b)
     }
     if (APR_BUCKET_IS_EOS(APR_BRIGADE_LAST(b))) {
         file_cache_el_final(h, r);    /* Link to the perm file, and close the descriptor  */
+        ap_log_error(APLOG_MARK, APLOG_INFO|APLOG_NOERRNO, 0, r->server,
+                     "disk_cache: Cached body for URL %s",  dobj->name);
     }
+
     return OK;	
 }
 
