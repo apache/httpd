@@ -38,10 +38,22 @@ local URL to the document being referred to.
 
 <h2><A name="refererignore">RefererIgnore</A></h2>
 <!--%plaintext &lt;?INDEX {\tt RefererIgnore} directive&gt; -->
-<STRONG>Syntax:</STRONG> RefererIgnore <EM>string string ...</EM><BR>
-<Strong>Context:</STRONG> server config, virtual host<BR>
-<STRONG>Status:</STRONG> Extension<BR>
-<STRONG>Module:</STRONG> mod_log_referer<P>
+<A
+ HREF="directive-dict.html#Syntax"
+ REL="Help"
+><STRONG>Syntax:</STRONG></A> RefererIgnore <EM>string string ...</EM><BR>
+<A
+ HREF="directive-dict.html#Context"
+ REL="Help"
+><STRONG>Context:</STRONG></A> server config, virtual host<BR>
+<A
+ HREF="directive-dict.html#Status"
+ REL="Help"
+><STRONG>Status:</STRONG></A> Extension<BR>
+<A
+ HREF="directive-dict.html#Module"
+ REL="Help"
+><STRONG>Module:</STRONG></A> mod_log_referer<P>
 
 The RefererIgnore directive adds to the list of strings to ignore in
 Referer headers. If any of the strings in the list is contained in
@@ -54,11 +66,26 @@ This avoids logging references from www.ncsa.uiuc.edu.
 
 <h2><A name="refererlog">RefererLog</A></h2>
 <!--%plaintext &lt;?INDEX {\tt RefererLog} directive&gt; -->
-<STRONG>Syntax:</STRONG> RefererLog <EM>file-pipe</EM><BR>
-<STRONG>Default:</STRONG> <CODE>RefererLog logs/referer_log</CODE><BR>
-<Strong>Context:</STRONG> server config, virtual host<BR>
-<STRONG>Status:</STRONG> Extension<BR>
-<STRONG>Module:</STRONG> mod_log_referer<P>
+<A
+ HREF="directive-dict.html#Syntax"
+ REL="Help"
+><STRONG>Syntax:</STRONG></A> RefererLog <EM>file-pipe</EM><BR>
+<A
+ HREF="directive-dict.html#Default"
+ REL="Help"
+><STRONG>Default:</STRONG></A> <CODE>RefererLog logs/referer_log</CODE><BR>
+<A
+ HREF="directive-dict.html#Context"
+ REL="Help"
+><STRONG>Context:</STRONG></A> server config, virtual host<BR>
+<A
+ HREF="directive-dict.html#Status"
+ REL="Help"
+><STRONG>Status:</STRONG></A> Extension<BR>
+<A
+ HREF="directive-dict.html#Module"
+ REL="Help"
+><STRONG>Module:</STRONG></A> mod_log_referer<P>
 
 The RefererLog directive sets the name of the file to which the server will
 log the Referer header of incoming requests. <EM>File-pipe</EM> is one

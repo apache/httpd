@@ -31,11 +31,26 @@ textual files.
 
 <A name="authgroupfile"><h2>AuthGroupFile</h2></A>
 <!--%plaintext &lt;?INDEX {\tt AuthGroupFile} directive&gt; -->
-<STRONG>Syntax:</STRONG> AuthGroupFile <EM>filename</EM><BR>
-<Strong>Context:</STRONG> directory, .htaccess<BR>
-<Strong>Override:</STRONG> AuthConfig<BR>
-<STRONG>Status:</STRONG> Base<BR>
-<STRONG>Module:</STRONG> mod_auth<P>
+<A
+ HREF="directive-dict.html#Syntax"
+ REL="Help"
+><STRONG>Syntax:</STRONG></A> AuthGroupFile <EM>filename</EM><BR>
+<A
+ HREF="directive-dict.html#Context"
+ REL="Help"
+><STRONG>Context:</STRONG></A> directory, .htaccess<BR>
+<A
+ HREF="directive-dict.html#Override"
+ REL="Help"
+><STRONG>Override:</STRONG></A> AuthConfig<BR>
+<A
+ HREF="directive-dict.html#Status"
+ REL="Help"
+><STRONG>Status:</STRONG></A> Base<BR>
+<A
+ HREF="directive-dict.html#Module"
+ REL="Help"
+><STRONG>Module:</STRONG></A> mod_auth<P>
 
 The AuthGroupFile directive sets the name of a textual file containing the list
 of user groups for user authentication. <EM>Filename</EM> is the path
@@ -59,11 +74,26 @@ See also <A HREF="core.html#authname">AuthName</A>,
 
 <A name="authuserfile"><h2>AuthUserFile</h2></A>
 <!--%plaintext &lt;?INDEX {\tt AuthUserFile} directive&gt; -->
-<STRONG>Syntax:</STRONG> AuthUserFile <EM>filename</EM><BR>
-<Strong>Context:</STRONG> directory, .htaccess<BR>
-<Strong>Override:</STRONG> AuthConfig<BR>
-<STRONG>Status:</STRONG> Base<BR>
-<STRONG>Module:</STRONG> mod_auth<P>
+<A
+ HREF="directive-dict.html#Syntax"
+ REL="Help"
+><STRONG>Syntax:</STRONG></A> AuthUserFile <EM>filename</EM><BR>
+<A
+ HREF="directive-dict.html#Context"
+ REL="Help"
+><STRONG>Context:</STRONG></A> directory, .htaccess<BR>
+<A
+ HREF="directive-dict.html#Override"
+ REL="Help"
+><STRONG>Override:</STRONG></A> AuthConfig<BR>
+<A
+ HREF="directive-dict.html#Status"
+ REL="Help"
+><STRONG>Status:</STRONG></A> Base<BR>
+<A
+ HREF="directive-dict.html#Module"
+ REL="Help"
+><STRONG>Module:</STRONG></A> mod_auth<P>
 
 The AuthUserFile directive sets the name of a textual file containing
 the list of users and passwords for user
@@ -89,11 +119,26 @@ See also <A HREF="core.html#authname">AuthName</A>,
 <HR>
 <A name="authauthoritative"><h2>AuthAuthoritative</h2></A>
 <!--%plaintext &lt;?INDEX {\tt AuthAuthoritative} directive&gt; -->
-<STRONG>Syntax:</STRONG> AuthAuthoritative &lt; <STRONG> on</STRONG>(default) | off &gt; <BR>
-<Strong>Context:</STRONG> directory, .htaccess<BR>
-<Strong>Override:</STRONG> AuthConfig<BR>
-<STRONG>Status:</STRONG> Base<BR>
-<STRONG>Module:</STRONG> mod_auth<P>
+<A
+ HREF="directive-dict.html#Syntax"
+ REL="Help"
+><STRONG>Syntax:</STRONG></A> AuthAuthoritative &lt; <STRONG> on</STRONG>(default) | off &gt; <BR>
+<A
+ HREF="directive-dict.html#Context"
+ REL="Help"
+><STRONG>Context:</STRONG></A> directory, .htaccess<BR>
+<A
+ HREF="directive-dict.html#Override"
+ REL="Help"
+><STRONG>Override:</STRONG></A> AuthConfig<BR>
+<A
+ HREF="directive-dict.html#Status"
+ REL="Help"
+><STRONG>Status:</STRONG></A> Base<BR>
+<A
+ HREF="directive-dict.html#Module"
+ REL="Help"
+><STRONG>Module:</STRONG></A> mod_auth<P>
 
 Setting the AuthAuthoritative directive explicitly to <STRONG>'off'</STRONG>
 allows for both authentication and authorization to be passed on to
@@ -124,7 +169,10 @@ well protected AuthUserFile.
 
 <P>
 
-<STRONG>Default:</STRONG> By default; control is not passed on; and an unknown
+<A
+ HREF="directive-dict.html#Default"
+ REL="Help"
+><STRONG>Default:</STRONG></A> By default; control is not passed on; and an unknown
 userID or rule will result in an Authorization Required reply. Not
 setting it thus keeps the system secure; and forces an NSCA compliant
 behaviour.

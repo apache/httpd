@@ -37,10 +37,22 @@ and ports Apache listens to.
 </UL>
 
 <h3><A name="bindaddress">BindAddress</A></h3>
-<STRONG>Syntax:</STRONG> BindAddress <EM>[ * | IP-address | hostname ]</EM><BR>
-<STRONG>Default:</STRONG> <CODE>BindAddress *</CODE><BR>
-<STRONG>Context:</STRONG> server config<BR>
-<STRONG>Status:</STRONG> Core<P>
+<A
+ HREF="directive-dict.html#Syntax"
+ REL="Help"
+><STRONG>Syntax:</STRONG></A> BindAddress <EM>[ * | IP-address | hostname ]</EM><BR>
+<A
+ HREF="directive-dict.html#Default"
+ REL="Help"
+><STRONG>Default:</STRONG></A> <CODE>BindAddress *</CODE><BR>
+<A
+ HREF="directive-dict.html#Context"
+ REL="Help"
+><STRONG>Context:</STRONG></A> server config<BR>
+<A
+ HREF="directive-dict.html#Status"
+ REL="Help"
+><STRONG>Status:</STRONG></A> Core<P>
 
 Makes the server listen to just the specified address. If the argument
 is *, the server listens to all addresses. The port listened to
@@ -48,10 +60,22 @@ is set with the <TT>Port</TT> directive. Only one BindAddress
 should be used.
 
 <h3><A name="listen">Listen</A></h3>
-<STRONG>Syntax:</STRONG> Listen <EM>[ port | IP-address:port ]</EM><BR>
-<STRONG>Default:</STRONG> <CODE>none</CODE><BR>
-<STRONG>Context:</STRONG> server config<BR>
-<STRONG>Status:</STRONG> Core<P>
+<A
+ HREF="directive-dict.html#Syntax"
+ REL="Help"
+><STRONG>Syntax:</STRONG></A> Listen <EM>[ port | IP-address:port ]</EM><BR>
+<A
+ HREF="directive-dict.html#Default"
+ REL="Help"
+><STRONG>Default:</STRONG></A> <CODE>none</CODE><BR>
+<A
+ HREF="directive-dict.html#Context"
+ REL="Help"
+><STRONG>Context:</STRONG></A> server config<BR>
+<A
+ HREF="directive-dict.html#Status"
+ REL="Help"
+><STRONG>Status:</STRONG></A> Core<P>
 
 <TT>Listen</TT> can be used instead of <TT>BindAddress</TT> and
 <TT>Port</TT>. It tells the server to accept incoming requests on the
