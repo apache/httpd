@@ -58,7 +58,8 @@ dnl	;;
         APR_SETVAR(SINGLE_LISTEN_UNSERIALIZED_ACCEPT, [1])
         ;;
     *-solaris2*)
-        ap_platform_needs_R="yes"
+        dnl  This is a hack -- we should be using AC_TRY_RUN instead
+        ap_platform_runtime_link_flag="-R"
         ;;
   esac
 
