@@ -203,13 +203,6 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
         Jeff wonders if we still care about this.  It is no longer an
         API issue but simply an extra trip through the brigade.
 
-    * The Add...Filter and Set...Filter directives do not allow the
-      administrator to order filters, beyond the order of filename (mime)
-      extensions.  It isn't clear if Set...Filter(s) should be inserted 
-      before or after the Add...Filter(s) which are ordered by sequence of
-      filename extensions.  At minimum, some sort of +-[0-10] syntax seems
-      like a nice solution.  See ROADMAP.
-
     * Get perchild to work on platforms other than Linux. This
       will require a portable mechanism to pass data and file/socket
       descriptors between vhost child groups. An API was proposed
