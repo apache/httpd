@@ -460,7 +460,8 @@ AP_DECLARE_NONSTD(int) ap_fputstrs(ap_filter_t *f, apr_bucket_brigade *bb, ...);
  * @param ... The argumets to use to fill out the format string
  * @deffunc int ap_fprintf(ap_filter_t *f, apr_bucket_brigade *bb, const char *fmt, ...)
  */
-AP_DECLARE_NONSTD(int) ap_fprintf(ap_filter_t *f, apr_bucket_brigade *bb, const char *fmt, ...);
+AP_DECLARE_NONSTD(int) ap_fprintf(ap_filter_t *f, apr_bucket_brigade *bb, const char *fmt, ...)
+        __attribute__((format(printf,3,4)));                                    
 
 #ifdef __cplusplus
 }

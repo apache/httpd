@@ -1,5 +1,8 @@
 Changes with Apache 2.0.12-dev
 
+  *) Add a couple of GCC attribute tags to printf style functions.
+     [Jon Travis <jtravis@covalent.net>]
+
   *) Add the correct language tag for interoperation with the Taiwanese
      versions of MSIE and Netscape. [Clive Lin <clive@CirX.ORG>] PR#7142
 
