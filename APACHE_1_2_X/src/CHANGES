@@ -1,7 +1,11 @@
 Changes with Apache 1.2.1
-  
+
+  *) "HostnameLookups" now defaults to off because it is far better for
+     the net if we require people that actually need this data to
+     enable it.  [Linus Torvalds]
+
   *) "make clean" at the top level now removes *.o.  [Dean Gaudet] PR#752
-  
+
   *) Don't serve file system objects unless they are plain files, symlinks,
      or directories.  This prevents local users from using pipes or
      named sockets to invoke programs for an extremely crude form of
@@ -25,9 +29,9 @@ Changes with Apache 1.2.1
 
   *) Support for dec cc compiler under ultrix.
      ["P. Alejandro Lopez-Valencia" <alejolo@ideam.gov.co>] PR#388
-  
+
   *) Support for Maxion/OS SVR4.2 Real Time Unix. [no name given] PR#383
-  
+
   *) mod_status dumps core in inetd mode.  [Marc Slemko and Roy Fielding]
      PR#566
 

@@ -20,7 +20,9 @@ Port 80
 
 # HostnameLookups: Log the names of clients or just their IP numbers
 #   e.g.   www.apache.org (on) or 204.62.129.132 (off)
-HostnameLookups on
+# The default is off because it'd be overall better for the net if people
+# had to knowingly turn this feature on.
+HostnameLookups off
 
 # If you wish httpd to run as a different user or group, you must run
 # httpd as root initially and it will switch.  
