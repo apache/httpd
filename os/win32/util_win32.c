@@ -94,8 +94,6 @@ AP_DECLARE(char *) ap_os_systemcase_filename(apr_pool_t *pPool,
     char *p, *q, *t;
     BOOL bDone = FALSE;
     BOOL bFileExists = TRUE;
-    HANDLE hFind;
-    WIN32_FIND_DATA wfd;
 
     if (!szFile || strlen(szFile) == 0 || strlen(szFile) >= sizeof(buf))
         return apr_pstrdup(pPool, "");
@@ -178,18 +176,15 @@ AP_DECLARE(char *) ap_os_systemcase_filename(apr_pool_t *pPool,
          * Note: in the call to OnlyDots, we may have to skip
          *       a leading slash.
          */
-        if (bFileExists && !OnlyDots((*q == '.' ? q : q+1))) {            
-            hFind = FindFirstFile(pInputName, &wfd);
-            
-            if (hFind == INVALID_HANDLE_VALUE) {
+        if (bFileExists && !OnlyDots((*q == '.' ? q : q+1))) {
+            apr_finfo_t fs;
+            if (apr_stat(&fs, pInputName, APR_FINFO_NAME, pPool) != APR_SUCCESS) {
                 bFileExists = FALSE;
             }
             else {
-                FindClose(hFind);
-
                 if (*q == '\\')
                     *(t++) = '\\';
-                t = strchr(strcpy(t, wfd.cFileName), '\0');
+                t = strchr(strcpy(t, fs.name), '\0');
             }
         }
         
