@@ -2993,10 +2993,10 @@ static const command_rec core_cmds[] = {
 #endif
 #ifdef WIN32
 { "ScriptInterpreterSource", set_interpreter_source, NULL, OR_FILEINFO, TAKE1,
-  "Where to find interpreter to run Win32 scripts (Registry or script shebang line)" },
+  "Where to find interpreter to run Win32 scripts - Registry or Script (shebang line)" },
 #endif
 { "ServerTokens", set_serv_tokens, NULL, RSRC_CONF, TAKE1,
-  "Determine tokens displayed in the Server: header - Min(imal), OS or Full" },
+  "Tokens displayed in the Server: header - Min[imal], OS, Prod[uctOnly], Full" },
 { "LimitRequestLine", set_limit_req_line, NULL, RSRC_CONF, TAKE1,
   "Limit on maximum size of an HTTP request line"},
 { "LimitRequestFieldsize", set_limit_req_fieldsize, NULL, RSRC_CONF, TAKE1,
