@@ -176,17 +176,17 @@ static void *merge_mime_dir_configs(apr_pool_t *p, void *basev, void *addv)
 
     suffix = (attrib_info *) add->handlers_remove->elts;
     for (i = 0; i < add->handlers_remove->nelts; i++) {
-        apr_table_unset(base->handlers, suffix[i].name);
+        apr_table_unset(new->handlers, suffix[i].name);
     }
 
     suffix = (attrib_info *) add->types_remove->elts;
     for (i = 0; i < add->types_remove->nelts; i++) {
-        apr_table_unset(base->forced_types, suffix[i].name);
+        apr_table_unset(new->forced_types, suffix[i].name);
     }
 
     suffix = (attrib_info *) add->encodings_remove->elts;
     for (i = 0; i < add->encodings_remove->nelts; i++) {
-        apr_table_unset(base->encoding_types, suffix[i].name);
+        apr_table_unset(new->encoding_types, suffix[i].name);
     }
 
 
