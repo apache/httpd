@@ -1,5 +1,5 @@
   1.3 STATUS:
-  Last modified at [$Date: 1999/03/13 12:19:57 $]
+  Last modified at [$Date: 1999/03/14 21:59:19 $]
 
 Release:
 
@@ -26,19 +26,14 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
     * Randy's proposed changes for binbuild:
     
       1. Change to build binary only distribution
+         Lars: -0
 
-      2. Use standard Apache layout
-         [It is currently using the BinaryDistribution layout that mimics
-          the standard Apache layout _without_ any absolute paths in it
-          (apart from HTTPD_ROOT /usr/local/apache). This makes it possible
-          for a user to install it in _any_ directory.]
-         [Roy: I don't understand what Randy wants to change here.]
-
-      3. Add 'make dist' target to call binbuild.sh
+      2. Add 'make dist' target to call binbuild.sh
          [Roy: That would require a Makefile, which is what binbuild creates.
                I don't see any point in that.]
+         Lars: -1 (Roy explained why)
 
-      4. Create toplevel 'setup' script for install to mirror win32 name
+      3. Create toplevel 'setup' script for install to mirror win32 name
          [It is currently creating "install-bindist.sh"]
 
     * long pathnames with many components and no AllowOverride None
