@@ -1251,7 +1251,6 @@ if [ "x$show_layout" = "x1" ]; then
     echo "       DEFAULT_PIDLOG: ${runtimedir_relative}${thetarget}.pid"
     echo "   DEFAULT_SCOREBOARD: ${runtimedir_relative}${thetarget}.scoreboard"
     echo "     DEFAULT_LOCKFILE: ${runtimedir_relative}${thetarget}.lock"
-    echo "      DEFAULT_XFERLOG: ${logfiledir_relative}access_log"
     echo "     DEFAULT_ERRORLOG: ${logfiledir_relative}error_log"
     echo "    TYPES_CONFIG_FILE: ${sysconfdir_relative}mime.types"
     echo "   SERVER_CONFIG_FILE: ${sysconfdir_relative}${thetarget}.conf"
@@ -1350,7 +1349,6 @@ echo "echo '-DSHARED_CORE_DIR=\"$libexecdir\"'" >>$src/apaci
 echo "echo '-DDEFAULT_PIDLOG=\"${runtimedir_relative}${thetarget}.pid\"'" >>$src/apaci
 echo "echo '-DDEFAULT_SCOREBOARD=\"${runtimedir_relative}${thetarget}.scoreboard\"'" >>$src/apaci
 echo "echo '-DDEFAULT_LOCKFILE=\"${runtimedir_relative}${thetarget}.lock\"'" >>$src/apaci
-echo "echo '-DDEFAULT_XFERLOG=\"${logfiledir_relative}access_log\"'" >>$src/apaci
 echo "echo '-DDEFAULT_ERRORLOG=\"${logfiledir_relative}error_log\"'" >>$src/apaci
 echo "echo '-DTYPES_CONFIG_FILE=\"${sysconfdir_relative}mime.types\"'" >>$src/apaci
 echo "echo '-DSERVER_CONFIG_FILE=\"${sysconfdir_relative}${thetarget}.conf\"'" >>$src/apaci

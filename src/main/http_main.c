@@ -4112,9 +4112,6 @@ static void show_compile_settings(void)
 #ifdef DEFAULT_LOCKFILE
     printf(" -D DEFAULT_LOCKFILE=\"" DEFAULT_LOCKFILE "\"\n");
 #endif
-#ifdef DEFAULT_XFERLOG
-    printf(" -D DEFAULT_XFERLOG=\"" DEFAULT_XFERLOG "\"\n");
-#endif
 #ifdef DEFAULT_ERRORLOG
     printf(" -D DEFAULT_ERRORLOG=\"" DEFAULT_ERRORLOG "\"\n");
 #endif

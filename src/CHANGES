@@ -1,5 +1,11 @@
 Changes with Apache 1.3.25
 
+  *) Get rid of DEFAULT_XFERLOG as it is not used anywhere. It was
+     preserved by the build system, printed with "httpd -V", but
+     apart from that completely ignored: the default transfer log
+     is to not produce any transfer log.
+     [Martin Kraemer]
+
   *) Fixed sending of binary files under Cygwin.  PR 9185.
      [Cliff Woolley]
 

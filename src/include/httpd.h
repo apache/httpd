@@ -158,15 +158,6 @@ extern "C" {
 #define DEFAULT_GROUP "#-1"
 #endif
 
-/* The name of the log files */
-#ifndef DEFAULT_XFERLOG
-#if defined(OS2) || defined(WIN32)
-#define DEFAULT_XFERLOG "logs/access.log"
-#else
-#define DEFAULT_XFERLOG "logs/access_log"
-#endif
-#endif /* DEFAULT_XFERLOG */
-
 #ifndef DEFAULT_ERRORLOG
 #if defined(OS2) || defined(WIN32)
 #define DEFAULT_ERRORLOG "logs/error.log"
