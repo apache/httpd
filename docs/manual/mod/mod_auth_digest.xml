@@ -50,10 +50,12 @@
     authentication are <a href="http://www.opera.com/">Opera</a>, <a
     href="http://www.microsoft.com/windows/ie/">MS Internet
     Explorer</a> (fails when used with a query string), <a
-    href="http://www.w3.org/Amaya/">Amaya</a> and <a
-    href="http://www.mozilla.org">Mozilla</a>.  Since digest
-    authentication is not as widely implemented as basic
-    authentication, you should use it only in controlled settings.</p>
+    href="http://www.w3.org/Amaya/">Amaya</a>, <a
+    href="http://www.mozilla.org">Mozilla</a> and <a
+    href="http://channels.netscape.com/ns/browsers/download.jsp"
+    >Netscape</a> since version 7. Since digest authentication is not
+    as widely implemented as basic authentication, you should use it only
+    in controlled settings.</p>
     </note>
 </section>
 
