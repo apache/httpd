@@ -36,10 +36,6 @@ This module is experimental. Documentation is still under development...
     inserted in the cache and the maximum number of objects is reached, an entry 
     will be removed to allow the new entry be cached. </p>
 
-<div class="warning">
-    The size must be greater than <code class="directive">MCacheMinObjectSize</code>.
-</div>
-
 <div class="note">
     The value of <code class="directive">MCacheMaxObjectCount</code> is used to create
     the open hash table.
@@ -56,6 +52,10 @@ This module is experimental. Documentation is still under development...
               </a></th><td>mod_mem_cache</td></tr></table>
     <p>The <code class="directive">MCacheMaxObjectSize</code> directive sets the maximum
     size of an object to be cached.</p>
+
+<div class="warning">
+    The size must be greater than <code class="directive">MCacheMinObjectSize</code>.
+</div>
 
 <div class="example"><p><code>
   MCacheMaxObjectSize  6400000 <br />
