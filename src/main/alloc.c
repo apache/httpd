@@ -2027,7 +2027,7 @@ static void socket_cleanup(void *fdv)
 }
 static int socket_magic_cleanup(void *fpv)
 {
-    return ap_close_fd_on_exec(fileno((FILE *) fpv));
+    return ap_close_fd_on_exec((int) (long) fpv));
 }
 
 API_EXPORT(void) ap_note_cleanups_for_socket_ex(pool *p, int fd, int domagic)
