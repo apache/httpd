@@ -1,5 +1,11 @@
 Changes with Apache 1.2b7
 
+  *) mod_negotiation fixes [Petr Lampa]
+     - replace protocol response numbers with symbols
+     - save variant-list into main request notes
+     - free allocated memory from subrequests
+     - merge notes, headers_out and err_headers_out
+
   *) changed status check mask in proxy_http.c from "HTTP/#.# ### *" to
      "HTTP/#.# ###*" to be more lenient about what we accept.
      [Chuck Murcko]

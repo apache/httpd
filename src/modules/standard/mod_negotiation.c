@@ -763,7 +763,7 @@ int read_types_multi (negotiation_state *neg)
 	if (sub_req->handler && !sub_req->content_type)
 	  sub_req->content_type = CGI_MAGIC_TYPE;
 
-	if (sub_req->status != 200 || !sub_req->content_type) continue;
+	if (sub_req->status != HTTP_OK || !sub_req->content_type) continue;
 	
 	/* If it's a map file, we use that instead of the map
 	 * we're building...
@@ -1761,7 +1761,11 @@ char *make_variant_list (request_rec *r, negotiation_state *neg)
 
 void store_variant_list (request_rec *r, negotiation_state *neg)
 {
-  table_set (r->notes, "variant-list", make_variant_list (r, neg));
+  if (r->main == NULL) {
+     table_set (r->notes, "variant-list", make_variant_list (r, neg));
+  } else {
+     table_set (r->main->notes, "variant-list", make_variant_list (r->main, neg));
+  }
 }
 
 /* Called if we got a "Choice" response from the network algorithm.
@@ -1777,7 +1781,7 @@ int setup_choice_response(request_rec *r, negotiation_state *neg, var_rec *varia
 
     if (!variant->sub_req) {
         sub_req = sub_req_lookup_file(variant->file_name, r);
-        if (sub_req->status != 200 && sub_req->status != 300)
+        if (sub_req->status != HTTP_OK && sub_req->status != HTTP_MULTIPLE_CHOICES)
             return sub_req->status;
         variant->sub_req = sub_req;
     }
@@ -1793,7 +1797,7 @@ int setup_choice_response(request_rec *r, negotiation_state *neg, var_rec *varia
      * the normal variant handling 
      */
 
-    if ((sub_req->status == 300) ||
+    if ((sub_req->status == HTTP_MULTIPLE_CHOICES) ||
         (table_get(sub_req->headers_out, "Alternates")) ||
         (table_get(sub_req->headers_out, "Content-Location")))
         return VARIANT_ALSO_VARIES;
@@ -1870,9 +1874,10 @@ int handle_map_file (request_rec *r)
 int handle_multi (request_rec *r)
 {
     negotiation_state *neg;
-    var_rec *best;
+    var_rec *best, *avail_recs;
     request_rec *sub_req;
     int res;
+    int j;
     int na_result;              /* result of network algorithm */
     
     if (r->finfo.st_mode != 0 || !(allow_options (r) & OPT_MULTI))
@@ -1880,14 +1885,25 @@ int handle_multi (request_rec *r)
     
     neg = parse_accept_headers (r);
     
-    if ((res = read_types_multi (neg))) return res;
+    if ((res = read_types_multi (neg))) {
+return_from_multi:
+	/* free all allocated memory from subrequests */
+        avail_recs = (var_rec *)neg->avail_vars->elts;
+        for (j = 0; j < neg->avail_vars->nelts; ++j) {
+            var_rec *variant = &avail_recs[j];
+            if (variant->sub_req) {
+                destroy_sub_req(variant->sub_req);
+            }
+        }
+        return res;
+    }
     
     maybe_add_default_encodings(neg,
                                 r->method_number != M_GET
                                   || r->args || r->path_info);
     
     if (neg->avail_vars->nelts == 0) return DECLINED;
-    
+
     na_result = best_match(neg, &best);
     if (na_result == na_list) {
         /*
@@ -1899,7 +1915,8 @@ int handle_multi (request_rec *r)
         set_neg_headers(r, neg, na_list); /* set Alternates: and Vary: */
 
         store_variant_list (r, neg);
-        return MULTIPLE_CHOICES;
+        res = MULTIPLE_CHOICES;
+        goto return_from_multi;
     }
 
     if (!best) {
@@ -1907,12 +1924,14 @@ int handle_multi (request_rec *r)
 
       set_neg_headers (r, neg, na_result);
       store_variant_list (r, neg);
-      return NOT_ACCEPTABLE;
+      res = NOT_ACCEPTABLE;
+      goto return_from_multi;
     }
 
     if (na_result == na_choice)
-        if ((res = setup_choice_response(r, neg, best)) != 0)
-            return res;
+        if ((res = setup_choice_response(r, neg, best)) != 0) {
+            goto return_from_multi;
+        }
 
     if (! (sub_req = best->sub_req)) {
         /* We got this out of a map file, so we don't actually have
@@ -1920,12 +1939,18 @@ int handle_multi (request_rec *r)
          */
       
         sub_req = sub_req_lookup_file (best->file_name, r);
-        if (sub_req->status != 200) return sub_req->status;
+        if (sub_req->status != HTTP_OK) {
+           res = sub_req->status;
+           goto return_from_multi;
+        }
     }
       
     /* BLETCH --- don't multi-resolve non-ordinary files */
 
-    if (!S_ISREG(sub_req->finfo.st_mode)) return NOT_FOUND;
+    if (!S_ISREG(sub_req->finfo.st_mode)) {
+	res = NOT_FOUND;
+	goto return_from_multi;
+    }
     
     /* Otherwise, use it. */
     
@@ -1942,7 +1967,17 @@ int handle_multi (request_rec *r)
     r->content_languages = sub_req->content_languages;
     r->content_language = sub_req->content_language;
     r->finfo = sub_req->finfo;
-    
+    /* copy output headers from subrequest, but leave negotiation headers */
+    overlay_tables(r->pool, sub_req->notes, r->notes);
+    overlay_tables(r->pool, sub_req->headers_out, r->headers_out);
+    overlay_tables(r->pool, sub_req->err_headers_out, r->err_headers_out);
+    avail_recs = (var_rec *)neg->avail_vars->elts;
+    for (j = 0; j < neg->avail_vars->nelts; ++j) {
+        var_rec *variant = &avail_recs[j];
+        if (variant != best && variant->sub_req) {
+	    destroy_sub_req(variant->sub_req);
+        }
+    }
     return OK;
 }
 
