@@ -25,17 +25,11 @@
 <a href="../ja/mod/mod_mem_cache.html" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_mem_cache.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<div class="outofdate">This translation may be out of date. Check the
-            English version for recent changes.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">説明:</a></th><td>URI をキーにしたコンテンツのキャッシュ</td></tr>
-<tr><th><a href="module-dict.html#Status">ステータス:</a></th><td>Experimental</td></tr>
+<tr><th><a href="module-dict.html#Status">ステータス:</a></th><td>Extension</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">モジュール識別子:</a></th><td>mem_cache_module</td></tr>
 <tr><th><a href="module-dict.html#SourceFile">ソースファイル:</a></th><td>mod_mem_cache.c</td></tr></table>
 <h3>概要</h3>
-
-    <div class="warning">
-      これは実験的なモジュールです。ドキュメンテーションもまだ開発中です...
-    </div>
 
     <p>このモジュールは <code class="module"><a href="../mod/mod_cache.html">mod_cache</a></code> を<em>必要とします</em>。
     これは <code class="module"><a href="../mod/mod_cache.html">mod_cache</a></code> のサポートモジュールとして
@@ -71,7 +65,7 @@
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>MCacheMaxObjectCount <var>value</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">デフォルト:</a></th><td><code>MCacheMaxObjectCount 1009</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル</td></tr>
-<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Experimental</td></tr>
+<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_mem_cache</td></tr>
 </table>
     <p><code class="directive">MCacheMaxObjectCount</code> ディレクティブは
@@ -95,7 +89,7 @@
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>MCacheMaxObjectSize <var>bytes</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">デフォルト:</a></th><td><code>MCacheMaxObjectSize 10000</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル</td></tr>
-<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Experimental</td></tr>
+<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_mem_cache</td></tr>
 </table>
     <p><code class="directive">MCacheMaxObjectSize</code> はドキュメントを
@@ -119,7 +113,7 @@
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>MCacheMaxStreamingBuffer <var>size_in_bytes</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">デフォルト:</a></th><td><code>MCacheMaxStreamingBuffer of 100000 か MCacheMaxObjectSize の少い方</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル</td></tr>
-<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Experimental</td></tr>
+<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_mem_cache</td></tr>
 </table>
     <p><code class="directive">MCacheMaxStreamingBuffer</code> ディレクティブは、
@@ -159,7 +153,7 @@
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>MCacheMinObjectSize <var>bytes</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">デフォルト:</a></th><td><code>MCacheMinObjectSize 0</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル</td></tr>
-<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Experimental</td></tr>
+<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_mem_cache</td></tr>
 </table>
     <p><code class="directive">MCacheMinObjectSize</code> ディレクティブは、ドキュメントを
@@ -177,7 +171,7 @@
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>MCacheRemovalAlgorithm LRU|GDSF</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">デフォルト:</a></th><td><code>MCacheRemovalAlgorithm GDSF</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル</td></tr>
-<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Experimental</td></tr>
+<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_mem_cache</td></tr>
 </table>
     <p><code class="directive">MCacheRemovalAlgorithm</code> ディレクティブは、
@@ -208,7 +202,7 @@
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>MCacheSize <var>KBytes</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">デフォルト:</a></th><td><code>MCacheSize 100</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル</td></tr>
-<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Experimental</td></tr>
+<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_mem_cache</td></tr>
 </table>
     <p><code class="directive">MCacheSize</code> ディレクティブはキャッシュに

@@ -25,10 +25,8 @@
 <a href="../ja/mod/mod_cache.html" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_cache.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<div class="outofdate">This translation may be out of date. Check the
-            English version for recent changes.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">説明:</a></th><td>URI をキーにしたコンテンツのキャッシュ</td></tr>
-<tr><th><a href="module-dict.html#Status">ステータス:</a></th><td>Experimental</td></tr>
+<tr><th><a href="module-dict.html#Status">ステータス:</a></th><td>Extension</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">モジュール識別子:</a></th><td>cache_module</td></tr>
 <tr><th><a href="module-dict.html#SourceFile">ソースファイル:</a></th><td>mod_cache.c</td></tr></table>
 <h3>概要</h3>
@@ -82,7 +80,7 @@
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="related" id="related">関連モジュールとディレクティブ</a></h2>
-    <table class="related"><tr><th>関連モジュール</th><th>関連ディレクティブ</th></tr><tr><td><ul><li><code class="module"><a href="../mod/mod_disk_cache.html">mod_disk_cache</a></code></li><li><code class="module"><a href="../mod/mod_mem_cache.html">mod_mem_cache</a></code></li></ul></td><td><ul><li><code class="directive"><a href="../mod/mod_disk_cache.html#cacheroot">CacheRoot</a></code></li><li><code class="directive"><a href="../mod/mod_disk_cache.html#cachesize">CacheSize</a></code></li><li><code class="directive"><a href="../mod/mod_disk_cache.html#cachegcinterval">CacheGcInterval</a></code></li><li><code class="directive"><a href="../mod/mod_disk_cache.html#cachedirlevels">CacheDirLevels</a></code></li><li><code class="directive"><a href="../mod/mod_disk_cache.html#cachedirlength">CacheDirLength</a></code></li><li><code class="directive"><a href="../mod/mod_disk_cache.html#cacheexpirycheck">CacheExpiryCheck</a></code></li><li><code class="directive"><a href="../mod/mod_disk_cache.html#cacheminfilesize">CacheMinFileSize</a></code></li><li><code class="directive"><a href="../mod/mod_disk_cache.html#cachemaxfilesize">CacheMaxFileSize</a></code></li><li><code class="directive"><a href="../mod/mod_disk_cache.html#cachetimemargin">CacheTimeMargin</a></code></li><li><code class="directive"><a href="../mod/mod_disk_cache.html#cachegcdaily">CacheGcDaily</a></code></li><li><code class="directive"><a href="../mod/mod_disk_cache.html#cachegcunused">CacheGcUnused</a></code></li><li><code class="directive"><a href="../mod/mod_disk_cache.html#cachegcclean">CacheGcClean</a></code></li><li><code class="directive"><a href="../mod/mod_disk_cache.html#cachegcmemusage">CacheGcMemUsage</a></code></li><li><code class="directive"><a href="../mod/mod_mem_cache.html#mcachesize">MCacheSize</a></code></li><li><code class="directive"><a href="../mod/mod_mem_cache.html#mcachemaxobjectcount">MCacheMaxObjectCount</a></code></li><li><code class="directive"><a href="../mod/mod_mem_cache.html#mcacheminobjectsize">MCacheMinObjectSize</a></code></li><li><code class="directive"><a href="../mod/mod_mem_cache.html#mcachemaxobjectsize">MCacheMaxObjectSize</a></code></li><li><code class="directive"><a href="../mod/mod_mem_cache.html#mcacheremovalalgorithm">MCacheRemovalAlgorithm</a></code></li><li><code class="directive"><a href="../mod/mod_mem_cache.html#mcachemaxstreamingbuffer">MCacheMaxStreamingBuffer</a></code></li></ul></td></tr></table>
+    <table class="related"><tr><th>関連モジュール</th><th>関連ディレクティブ</th></tr><tr><td><ul><li><code class="module"><a href="../mod/mod_disk_cache.html">mod_disk_cache</a></code></li><li><code class="module"><a href="../mod/mod_mem_cache.html">mod_mem_cache</a></code></li></ul></td><td><ul><li><code class="directive"><a href="../mod/mod_disk_cache.html#cacheroot">CacheRoot</a></code></li><li><code class="directive"><a href="../mod/mod_disk_cache.html#cachesize">CacheSize</a></code></li><li><code class="directive"><a href="../mod/mod_disk_cache.html#cachedirlevels">CacheDirLevels</a></code></li><li><code class="directive"><a href="../mod/mod_disk_cache.html#cachedirlength">CacheDirLength</a></code></li><li><code class="directive"><a href="../mod/mod_disk_cache.html#cacheminfilesize">CacheMinFileSize</a></code></li><li><code class="directive"><a href="../mod/mod_disk_cache.html#cachemaxfilesize">CacheMaxFileSize</a></code></li><li><code class="directive"><a href="../mod/mod_mem_cache.html#mcachesize">MCacheSize</a></code></li><li><code class="directive"><a href="../mod/mod_mem_cache.html#mcachemaxobjectcount">MCacheMaxObjectCount</a></code></li><li><code class="directive"><a href="../mod/mod_mem_cache.html#mcacheminobjectsize">MCacheMinObjectSize</a></code></li><li><code class="directive"><a href="../mod/mod_mem_cache.html#mcachemaxobjectsize">MCacheMaxObjectSize</a></code></li><li><code class="directive"><a href="../mod/mod_mem_cache.html#mcacheremovalalgorithm">MCacheRemovalAlgorithm</a></code></li><li><code class="directive"><a href="../mod/mod_mem_cache.html#mcachemaxstreamingbuffer">MCacheMaxStreamingBuffer</a></code></li></ul></td></tr></table>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="sampleconf" id="sampleconf">サンプル設定</a></h2>
@@ -100,7 +98,6 @@
         &lt;IfModule mod_disk_cache.c&gt;<br />
         <span class="indent">
           CacheRoot c:/cacheroot<br />
-          CacheSize 256<br />
           CacheEnable disk  /<br />
           CacheDirLevels 5<br />
           CacheDirLength 3<br />
@@ -128,11 +125,11 @@
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>CacheDefaultExpire <var>seconds</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">デフォルト:</a></th><td><code>CacheDefaultExpire 3600 (1時間)</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル, バーチャルホスト</td></tr>
-<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Experimental</td></tr>
+<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_cache</td></tr>
 </table>
-    <p><code class="directive">CacheDefaultExpire</code> ディレクティブはドキュメントに
-    期日 (expiry) や最終修正時刻 (last-modified) が指定されていない場合の
+    <p><code class="directive">CacheDefaultExpire</code> ディレクティブは、ドキュメントに
+    有効期限 (expiry) や最終修正時刻 (last-modified) が指定されていない場合の
     デフォルトの時間を指定します。<code class="directive">CacheMaxExpire</code> 
     ディレクティブで指定された値はこの設定を上書き<em>しません</em>。</p>
 
@@ -147,7 +144,7 @@
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>特定の URL をキャッシュしない</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>CacheDisable <var> url-string</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル, バーチャルホスト</td></tr>
-<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Experimental</td></tr>
+<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_cache</td></tr>
 </table>
     <p><code class="directive">CacheDisable</code> ディレクティブで
@@ -165,7 +162,7 @@
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>指定したストレージ管理方式を使ってのキャッシュを有効にする</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>CacheEnable <var>cache_type</var> <var>url-string</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル, バーチャルホスト</td></tr>
-<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Experimental</td></tr>
+<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_cache</td></tr>
 </table>
     <p><code class="directive">CacheEnable</code> ディレクティブで <code class="module"><a href="../mod/mod_cache.html">mod_cache</a></code> 
@@ -202,7 +199,7 @@
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>CacheForceCompletion <var>Percentage</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">デフォルト:</a></th><td><code>CacheForceCompletion 60</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル, バーチャルホスト</td></tr>
-<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Experimental</td></tr>
+<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_cache</td></tr>
 </table>
     <p>通常、応答がキャッシュされてクライアントに送られている最中に
@@ -232,7 +229,7 @@
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>CacheIgnoreCacheControl On|Off</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">デフォルト:</a></th><td><code>CacheIgnoreCacheControl Off</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル, バーチャルホスト</td></tr>
-<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Experimental</td></tr>
+<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_cache</td></tr>
 </table>
     <p>no-cache ヘッダや no-store ヘッダのあるドキュメントは通常キャッシュ
@@ -256,7 +253,7 @@
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>CacheIgnoreHeaders <var>header-string</var> [<var>header-string</var>] ...</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">デフォルト:</a></th><td><code>CacheIgnoreHeaders None</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル, バーチャルホスト</td></tr>
-<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Experimental</td></tr>
+<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_cache</td></tr>
 </table>
     <p>RFC 2616 によると、hop-by-hop HTTP ヘッダはキャッシュには保管されません。
@@ -308,16 +305,16 @@
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>CacheIgnoreNoLastMod On|Off</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">デフォルト:</a></th><td><code>CacheIgnoreNoLastMod Off</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル, バーチャルホスト</td></tr>
-<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Experimental</td></tr>
+<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_cache</td></tr>
 </table>
     <p>通常、Last-Modified による最終修正時刻の無いドキュメントはキャッシュ
     されません。(例えば <code class="module"><a href="../mod/mod_include.html">mod_include</a></code> による処理のときなどに)
     Last-Modified 時刻が消去されたり、そもそも最初から提供されていない
-    状況があります。<code class="directive">CacheIgnoreNoLastMod</code> ディレクティブは
-    Last-Modified 日時が指定されていないドキュメントでも、それ無しで
-    キャッシュするように指定することができます。ドキュメントに
-    最終修正時刻 (Last-Modified) 期日 (expiry)  がない場合は、期日の
+    状況があります。<code class="directive">CacheIgnoreNoLastMod</code> 
+    ディレクティブを使うと、Last-Modified 日時が指定されていない
+    ドキュメントでもキャッシュするように指定できます。ドキュメントに
+    最終修正時刻 (Last-Modified) 有効期限 (expiry) がない場合は、有効期限の
     生成に <code class="directive">CacheDefaultExpire</code> が使われます。</p>
 
     <div class="example"><p><code>
@@ -328,18 +325,18 @@
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="CacheLastModifiedFactor" id="CacheLastModifiedFactor">CacheLastModifiedFactor</a> <a name="cachelastmodifiedfactor" id="cachelastmodifiedfactor">ディレクティブ</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">説明:</a></th><td>LastModified の日付に基づいて Expiry の日付を計算するための重みを
-指定する
+<tr><th><a href="directive-dict.html#Description">説明:</a></th><td>LastModified の日付に基づいて有効期限 (expiry) 
+を計算するための重みを指定する
 </td></tr>
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>CacheLastModifiedFactor <var>float</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">デフォルト:</a></th><td><code>CacheLastModifiedFactor 0.1</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル, バーチャルホスト</td></tr>
-<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Experimental</td></tr>
+<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_cache</td></tr>
 </table>
-    <p>ドキュメントに Last-Modified の日付が無いけれども Expiry の日付が
-    あるというときに、Expiry 日を最終修正時刻からの経過時間として計算する
-    ようにできます。Expiry 日を次の計算式に従って生成するのですが、
+    <p>ドキュメントに Last-Modified の日付が無いけれども有効期限 (expiry) 
+    の日付があるというときに、有効期限を最終修正時刻からの経過時間として
+    計算するようにできます。有効期限を次の計算式に従って生成するのですが、
     そのときに使われる <var>factor</var> を
     <code class="directive">CacheLastModifiedFactor</code> ディレクティブで指定します。
     </p>
@@ -368,12 +365,12 @@
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>CacheMaxExpire <var>seconds</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">デフォルト:</a></th><td><code>CacheMaxExpire 86400 (一日)</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル, バーチャルホスト</td></tr>
-<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Experimental</td></tr>
+<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_cache</td></tr>
 </table>
     <p><code class="directive">CacheMaxExpire</code> ディレクティブは、
-    キャッシュする HTTP ドキュメントを、元のサーバ問い合わせないまま最大何秒
-    保持してもよいかを指定します。つまり、ドキュメントは最大でこの秒数間分古く
+    キャッシュする HTTP ドキュメントを、元のサーバに問い合わせないまま最大何秒
+    保持してもよいかを指定します。つまり、ドキュメントは最大でこの秒数間ぶん古く
     なることになります。この最大値は、(訳注:レスポンス中で)ドキュメントと共に
     ドキュメントの期日が提供されている場合でも適用されます。</p>
 

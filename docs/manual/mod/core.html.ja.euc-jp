@@ -25,8 +25,6 @@
 <a href="../en/mod/core.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../ja/mod/core.html" title="Japanese">&nbsp;ja&nbsp;</a></p>
 </div>
-<div class="outofdate">This translation may be out of date. Check the
-            English version for recent changes.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">説明:</a></th><td>常に使用可能な Apache HTTP サーバのコア機能</td></tr>
 <tr><th><a href="module-dict.html#Status">ステータス:</a></th><td>Core</td></tr></table>
 </div>
@@ -757,7 +755,8 @@ Apache がファイルをアクセスするために使うファイルシステムのパスに
 <tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>core</td></tr>
 </table>
-    <p>このディレクティブは、<code>httpd</code> がファイルを提供するディレクトリを設定します。
+    <p>このディレクティブは、<code class="program"><a href="../programs/httpd.html">httpd</a></code>
+    がファイルを提供するディレクトリを設定します。
      <code class="directive"><a href="../mod/mod_alias.html#alias">Alias</a></code> のようなディレクティブにマッチしない場合には、
     ドキュメントの (訳注:ファイルシステム上の) パスを生成するために、
     リクエストされた URL のパス部分をドキュメントルートに付与します。
@@ -796,7 +795,8 @@ Apache がファイルをアクセスするために使うファイルシステムのパスに
 <tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>core</td></tr>
 </table>
     <p>このディレクティブは配送中にファイルの内容を読み込む必要があるときに
-    <code>httpd</code> がメモリマッピングを使うかどうかを制御します。デフォルトでは、
+    <code class="program"><a href="../programs/httpd.html">httpd</a></code> がメモリマッピングを使うかどうかを制御します。
+    デフォルトでは、
     例えば、<code class="module"><a href="../mod/mod_include.html">mod_include</a></code> を使って SSI ファイルを配送
     するときのように、ファイルの途中のデータをアクセスする必要があるときには
     Apache は OS がサポートしていればファイルをメモリにマップします。</p>
@@ -807,12 +807,12 @@ Apache がファイルをアクセスするために使うファイルシステムのパスに
     使用しないようにした方が良い場合もあります:</p>
 
     <ul>
-    <li>マルチプロセッサシステムの中にはメモリマッピングをすると <code>httpd</code> の
-    性能が落ちるものがあります。</li>
+    <li>マルチプロセッサシステムの中にはメモリマッピングをすると
+    <code class="program"><a href="../programs/httpd.html">httpd</a></code> の性能が落ちるものがあります。</li>
     <li>NFS マウントされた <code class="directive"><a href="#documentroot">DocumentRoot</a></code>
-    では、<code>httpd</code> がメモリマップしている間にファイルが削除されたり
+    では、<code class="program"><a href="../programs/httpd.html">httpd</a></code> がメモリマップしている間にファイルが削除されたり
     短くなったりしたときに起こるセグメンテーションフォールトのために
-    <code>httpd</code> がクラッシュする可能性があります。</li>
+    <code class="program"><a href="../programs/httpd.html">httpd</a></code> がクラッシュする可能性があります。</li>
     </ul>
 
     <p>これらの問題に当てはまるサーバの設定の場合は、以下のようにして
@@ -848,7 +848,7 @@ Apache がファイルをアクセスするために使うファイルシステムのパスに
 <tr><th><a href="directive-dict.html#Compatibility">互換性:</a></th><td>バージョン 2.0.44 以降で使用可能</td></tr>
 </table>
     <p>このディレクティブはクライアンにファイルの内容を送るときに
-    <code>httpd</code> がカーネルの
+    <code class="program"><a href="../programs/httpd.html">httpd</a></code> がカーネルの
     sendfile サポートを使うかどうかを制御します。デフォルトでは、
     例えば静的なファイルの配送のように、リクエストの処理にファイルの
     途中のデータのアクセスを必要としないときには、Apache は OS が
@@ -1268,7 +1268,7 @@ Apache がファイルをアクセスするために使うファイルシステムのパスに
     負荷の高いサイトではこのディレクティブは <code>Off</code> にすべきです。
     なお、<var>/support</var> ディレクトリに含まれ、デフォルトでは
     インストールディレクトリの <code>bin</code> サブディレクトリに
-    インストールされる <a href="../programs/logresolve.html">logresolve</a> ユーティリティにより、
+    インストールされる <code class="program"><a href="../programs/logresolve.html">logresolve</a></code> ユーティリティにより、
     Apache の動作とは別に、ログに残されている IP アドレスからホスト名を
     ルックアップすることが可能です。</p>
 
@@ -1310,7 +1310,7 @@ Apache がファイルをアクセスするために使うファイルシステムのパスに
     場合に処理されます。</p>
 
     <p><var>parameter-name</var> 引数は、サーバを起動する際に
-    <code>httpd</code> のコマンドラインに
+    <code class="program"><a href="../programs/httpd.html">httpd</a></code> のコマンドラインに
     <code>-D<var>parameter-</var></code> という形で指定すると定義されます。 </p>
 
     <p><code class="directive">&lt;IfDefine&gt;</code> セクションは
@@ -1442,7 +1442,7 @@ Apache がファイルをアクセスするために使うファイルシステムのパスに
 
 <h3>参照</h3>
 <ul>
-<li><a href="../programs/apachectl.html">apachectl</a></li>
+<li><code class="program"><a href="../programs/apachectl.html">apachectl</a></code></li>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -2730,7 +2730,8 @@ Apache がファイルをアクセスするために使うファイルシステムのパスに
     サーバが存在するディレクトリを設定します。
     通常、<code>conf/</code> や <code>logs/</code> といったサブディレクトリが
     存在します。
-    また、他の設定ファイルにおける相対パスは、このディレクトリからとなります。</p>
+    また、他の設定ディレクティブ (例えば <code class="directive"><a href="#include">Include</a></code> や <code class="directive"><a href="../mod/mod_so.html#loadmodule">LoadModule</a></code> など) における相対パスは、
+    このディレクトリからの相対位置となります。</p>
 
     <div class="example"><h3>例</h3><p><code>
       ServerRoot /home/httpd
