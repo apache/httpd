@@ -353,20 +353,20 @@ static int check_speling(request_rec *r)
          */
         else {
             char *t;
-            pool *pool;
+            pool *p;
             table *notes;
 
             if (r->main == NULL) {
-                pool = r->pool;
+                p = r->pool;
                 notes = r->notes;
             }
             else {
-                pool = r->main->pool;
+                p = r->main->pool;
                 notes = r->main->notes;
             }
 
             /* Generate the reponse text. */
-            t = pstrcat(pool, "The document name you requested (<code>",
+            t = pstrcat(p, "The document name you requested (<code>",
                      r->uri, "</code>) could not be found on this server.\n"
                         "However, we found documents with names similar to the one you requested.<p>"
                         "Available documents:\n<ul>\n", NULL);
@@ -374,7 +374,7 @@ static int check_speling(request_rec *r)
             for (i = 0; i < candidates->nelts; ++i) {
 
                 /* The format isn't very neat... */
-                t = pstrcat(pool, t, "<li><a href=\"", variant[i].name, "\">",
+                t = pstrcat(p, t, "<li><a href=\"", variant[i].name, "\">",
                             variant[i].name, "</a> (",
                     sp_reason_str[(int) (variant[i].quality)], ")\n", NULL);
 
@@ -388,14 +388,14 @@ static int check_speling(request_rec *r)
                 if (i > 0 && i < candidates->nelts - 1
                     && variant[i].quality != SP_VERYDIFFERENT
                     && variant[i + 1].quality == SP_VERYDIFFERENT) {
-                    t = pstrcat(pool, t, "</ul>\nFurthermore, the following related documents were found:\n<ul>\n", NULL);
+                    t = pstrcat(p, t, "</ul>\nFurthermore, the following related documents were found:\n<ul>\n", NULL);
                 }
             }
-            t = pstrcat(pool, t, "</ul>\n", NULL);
+            t = pstrcat(p, t, "</ul>\n", NULL);
 
             /* If we know there was a referring page, add a note: */
             if (ref != NULL)
-                t = pstrcat(pool, t, "Please consider informing the owner of the <a href=\"",
+                t = pstrcat(p, t, "Please consider informing the owner of the <a href=\"",
                 ref, "\">referring page</a> about the broken link.\n", NULL);
 
             /* Pass our table to http_protocol.c (see mod_negotiation): */
