@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/04/17 18:20:58 $]
+Last modified at [$Date: 2003/04/17 18:46:24 $]
 
 Release:
 
@@ -69,14 +69,14 @@ PATCHES TO PORT FROM 2.1
       branch won't build for Windows.
       CHANGES 1.1145 
       server/mpm_common.c 1.107
-      +1: ake, trawick, stoddard
-      -1: wrowe
-          wrowe notes: I don't dislike the patch - but the breakage illustrates
-                       breakage in APR.  Why?  Because APR is not in the business
-                       of exposing undecorated names.  I suggest we go back to
-                       square one, decorate the change to apr.hw, and when we
-                       start patching for 2.1-dev/2.0 - test for APR_TCP_NODELAY
-                       as well as TCP_NODELAY.
+      +1: ake, trawick, stoddard, wrowe
+          wrowe notes: /me misunderstood the breakage.  We explicitly excluded
+                       the implementation, but not the prototype(!), for the
+                       ap_sock_disable_nagle() function.  APR isn't implicated
+                       at all, this was a latent bug.  I'm just asking that we
+                       first commit a patch excluding the prototype in favor of
+                       the /*NOOP*/ define, just to document the progression
+                       from no-nagling to an implemented ap_sock_disable_nagle.
                        
 
     * AllowEncodedSlashes patch to permit %2f in path-info.
