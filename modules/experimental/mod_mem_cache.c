@@ -405,6 +405,7 @@ static int read_body(cache_handle_t *h, apr_bucket_brigade *bb)
 
 static int write_headers(cache_handle_t *h, request_rec *r, cache_info *info, apr_table_t *headers)
 {
+    cache_object_t *obj = h->cache_obj;
     mem_cache_object_t *mobj = (mem_cache_object_t*) h->cache_obj->vobj;
     apr_table_entry_t *elts = (apr_table_entry_t *) headers->a.elts;
     apr_ssize_t i;
@@ -445,7 +446,7 @@ static int write_headers(cache_handle_t *h, request_rec *r, cache_info *info, ap
         idx+=len;
     }
 
-#if 0
+    /* Init the info struct */
     if (info->date) {
         obj->info.date = info->date;
     }
@@ -456,11 +457,14 @@ static int write_headers(cache_handle_t *h, request_rec *r, cache_info *info, ap
         obj->info.expire = info->expire;
     }
     if (info->content_type) {
-        obj->info.content_type = (char*) malloc(strlen(info->content_type));
-        if (obj->info.content_type)
-            strcpy((char*) obj->info.content_type, info->content_type);
+        obj->info.content_type = (char*) malloc(strlen(info->content_type) + 1);
+        if (!obj->info.content_type) {
+            /* cleanup the object? */
+            return DECLINED;
+        }
+        strcpy((char*) obj->info.content_type, info->content_type);
     }
-#endif
+
     return OK;
 }
 

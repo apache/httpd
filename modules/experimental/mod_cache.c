@@ -634,6 +634,8 @@ int ap_cache_in_filter(ap_filter_t *f, apr_bucket_brigade *in)
     }
     info->expire = exp;
 
+    info->content_type = apr_pstrdup(r->pool, r->content_type);
+
     /*
      * Write away header information to cache.
      */
