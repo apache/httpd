@@ -192,6 +192,30 @@ API_EXPORT(void) ap_table_do(int (*comp) (void *, const char *, const char *), v
 
 API_EXPORT(table *) ap_overlay_tables(pool *p, const table *overlay, const table *base);
 
+/* Conceptually, ap_overlap_tables does this:
+
+    array_header *barr = ap_table_elts(b);
+    table_entry *belt = (table_entry *)barr->elts;
+    int i;
+
+    for (i = 0; i < barr->nelts; ++i) {
+	if (merge) {
+	    ap_table_mergen(a, belt[i].key, belt[i].val);
+	}
+	else {
+	    ap_table_setn(a, belt[i].key, belt[i].val);
+	}
+    }
+
+    Except that it is more efficient (less space and cpu-time) especially
+    when b has many elements.
+
+    Notice the assumptions on the keys and values in b -- they must be
+    in an ancestor of a's pool.  In practice b and a are usually from
+    the same pool.
+*/
+API_EXPORT(void) ap_overlap_tables(table *a, const table *b, int merge);
+
 /* XXX: these know about the definition of struct table in alloc.c.  That
  * definition is not here because it is supposed to be private, and by not
  * placing it here we are able to get compile-time diagnostics from modules

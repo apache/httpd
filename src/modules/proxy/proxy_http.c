@@ -425,6 +425,7 @@ int ap_proxy_http_handler(request_rec *r, struct cache_req *c, char *url,
 	    continue;
 	if (!r->assbackwards) {
 	    ap_rvputs(r, hdr[i].field, ": ", hdr[i].value, CRLF, NULL);
+	    /* XXX: can't this be ap_table_setn? -djg */
 	    ap_table_set(r->headers_out, hdr[i].field, hdr[i].value);
 	}
 	if (cache != NULL)

@@ -226,6 +226,7 @@ static const command_rec cern_meta_cmds[] =
     {NULL}
 };
 
+/* XXX: another O(n^2) attack here */
 static int scan_meta_file(request_rec *r, FILE *f)
 {
     char w[MAX_STRING_LEN];

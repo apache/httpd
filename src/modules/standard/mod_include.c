@@ -113,6 +113,7 @@ module MODULE_VAR_EXPORT includes_module;
 
 /* ------------------------ Environment function -------------------------- */
 
+/* XXX: could use ap_table_overlap here */
 static void add_include_vars(request_rec *r, char *timefmt)
 {
 #ifndef WIN32

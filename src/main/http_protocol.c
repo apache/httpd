@@ -739,6 +739,7 @@ static int sort_mime_headers(const void *va, const void *vb)
     return (signed)a->order - (signed)b->order;
 }
 
+/* XXX: could use ap_overlap_tables here... which generalizes this code */
 static void get_mime_headers(request_rec *r)
 {
     conn_rec *c = r->connection;

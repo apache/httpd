@@ -641,6 +641,7 @@ void ap_proxy_send_headers(request_rec *r, const char *respline, array_header *h
 	if (hdrs[i].field == NULL)
 	    continue;
 	ap_bvputs(fp, hdrs[i].field, ": ", hdrs[i].value, CRLF, NULL);
+	/* XXX: can't this be ap_table_setn? -djg */
 	ap_table_set(r->headers_out, hdrs[i].field, hdrs[i].value);
     }
 

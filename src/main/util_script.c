@@ -188,6 +188,7 @@ API_EXPORT(char **) ap_create_environment(pool *p, table *t)
     return env;
 }
 
+/* XXX: this could use ap_overlap_tables */
 API_EXPORT(void) ap_add_common_vars(request_rec *r)
 {
     table *e = r->subprocess_env;
@@ -546,6 +547,7 @@ API_EXPORT(int) ap_scan_script_header_err_core(request_rec *r, char *buffer,
 	    ap_table_add(r->err_headers_out, w, l);
 	}
 	else {
+	    /* XXX: there is an O(n^2) space attack possible here */
 	    ap_table_merge(r->err_headers_out, w, l);
 	}
     }
