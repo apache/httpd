@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2002/03/22 15:05:21 $]
+Last modified at [$Date: 2002/03/22 15:13:14 $]
 
 Release:
 
@@ -85,10 +85,7 @@ FINAL RELEASE SHOWSTOPPERS:
         Aaron says: This is not a showstopper, these problems have existed
                     for as long as I can remember. It would be nice to fix
                     them but they are not new.
-        Not a showstopper: Jeff, Aaron
-
-    * Address popular PRs
-        * Win32 doesn't install as service correctly [9863, 9914, 9961]
+        Not a showstopper: Jeff, Aaron, BillS
 
 CURRENT VOTES:
 
