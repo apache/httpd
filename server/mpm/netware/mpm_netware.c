@@ -1018,7 +1018,7 @@ void netware_rewrite_args(process_rec *process)
 
             for (i=len; i; i--) {
                 if (s[i] == '\\' || s[i] == '/') {
-                    s[i] = NULL;
+                    s[i] = '\0';
                     apr_filepath_merge(&def_server_root, NULL, s, 
                         APR_FILEPATH_TRUENAME, process->pool);
                     break;

@@ -418,7 +418,7 @@ int SSLize_Socket(SOCKET socketHnd, char *key, request_rec *r)
     sNWTLSOpts.numElementsInKeyList         = 0;
     sNWTLSOpts.reservedforfutureuse         = NULL;
     sNWTLSOpts.reservedforfutureCRL         = NULL;
-    sNWTLSOpts.reservedforfutureCRLLen      = NULL;
+    sNWTLSOpts.reservedforfutureCRLLen      = 0;
     sNWTLSOpts.reserved1                    = NULL;
     sNWTLSOpts.reserved2                    = NULL;
     sNWTLSOpts.reserved3                    = NULL;
