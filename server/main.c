@@ -379,14 +379,6 @@ int main(int argc, const char * const argv[])
         usage(process);
     }
 
-    /* 'extra' argument ignored?  then we die */
-    if (opt->ind < opt->argc) {
-        ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL,
-                     "%s: Unused argument -- %s\n",
-                     apr_filename_of_pathname(argv[0]), opt->argv[opt->ind]);
-        usage(process);
-    }
-
     apr_pool_create(&plog, pglobal);
     apr_pool_create(&ptemp, pconf);
 
