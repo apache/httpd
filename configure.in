@@ -147,7 +147,9 @@ if test "$apache_need_shared" = "yes"; then
   $SHELL $srcdir/ltconfig --output=shlibtool --disable-static --srcdir=$srcdir --cache-file=./config.cache $srcdir/ltmain.sh
 fi
 
-APACHE_FAST_OUTPUT(Makefile ap/Makefile lib/Makefile main/Makefile
+CFLAGS="$CFLAGS \`\$(abs_srcdir)/apaci\`"
+
+APACHE_FAST_OUTPUT(apaci Makefile ap/Makefile lib/Makefile main/Makefile
            modules/Makefile os/Makefile)
 APACHE_FAST_GENERATE
 	
@@ -155,4 +157,7 @@ dnl ## Build modules.c
 rm -f $srcdir/modules.c
 echo $MODLIST | $AWK -f $srcdir/helpers/build-modules-c.awk > $srcdir/modules.c
 
-AC_OUTPUT($APACHE_OUTPUT_FILES)
+AC_SUBST(prefix)
+
+AC_OUTPUT($APACHE_OUTPUT_FILES apaci)
+chmod 744 apaci
