@@ -412,6 +412,10 @@
         <li><code class="directive"><a href="../mod/mod_nw_ssl.html#nwssltrustedcerts">NWSSLTrustedCerts</a></code> -
         Adds trusted certificates that are used to create secure connections to proxied servers.</li>
       </ul>
+      <ul>
+        <li><code class="directive"><a href="../mod/mod_nw_ssl.html#nwsslupgradeable">NWSSLUpgradeable</a></code> -
+        Allow a connection created on the specified address/port to be upgraded to an SSL connection.</li>
+      </ul>
 
     
 
