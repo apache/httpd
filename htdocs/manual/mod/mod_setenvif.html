@@ -86,7 +86,8 @@
    HREF="directive-dict.html#Compatibility"
    REL="Help"
   ><STRONG>Compatibility:</STRONG></A> Apache 1.2 and above (in Apache 1.2
-  this directive was found in the now-obsolete mod_browser module)
+  this directive was found in the now-obsolete mod_browser module); use
+  in .htaccess files only supported with 1.3.13 and later
   </P>
   <P>
   The BrowserMatch directive defines environment variables based on the
@@ -265,7 +266,8 @@
    REL="Help"
   ><STRONG>Compatibility:</STRONG></A> Apache 1.3 and above; the
   Request_Protocol keyword and environment-variable matching are only
-  available with 1.3.7 and later
+  available with 1.3.7 and later; use in .htaccess files only supported
+  with 1.3.13 and later
   </P>
   <P>
   The <SAMP>SetEnvIf</SAMP> directive defines environment variables
@@ -375,7 +377,10 @@
   <A
    HREF="directive-dict.html#Compatibility"
    REL="Help"
-  ><STRONG>Compatibility:</STRONG></A> Apache 1.3 and above
+  ><STRONG>Compatibility:</STRONG></A> Apache 1.3 and above; the
+  Request_Protocol keyword and environment-variable matching are only
+  available with 1.3.7 and later; use in .htaccess files only supported
+  with 1.3.13 and later
   </P>
   <P>
   The <SAMP>SetEnvIfNoCase</SAMP> is semantically identical to the
