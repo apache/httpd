@@ -45,6 +45,9 @@ HostnameLookups off
 #  On SCO (ODT 3) use User nouser and Group nogroup
 #  On HPUX you may not be able to use shared memory as nobody, and the
 #  suggested workaround is to create a user www and use that user.
+#  NOTE that some kernels refuse to setgid(Group) or semctl(IPC_SET)
+#  when the value of (unsigned)Group is above 60000; 
+#  don't use Group #-1 on these systems!
 
 User nobody
 Group #-1
