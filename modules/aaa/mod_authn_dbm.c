@@ -156,6 +156,7 @@ static authn_status check_dbm_pw(request_rec *r, const char *user,
     apr_datum_t dbm_pw;
     apr_status_t rv;
     char *dbm_password = NULL;
+    char *colon_pw;
 
     rv = fetch_dbm(conf->dbmtype, conf->pwfile, user, &dbm_pw, r->pool);
 
@@ -172,6 +173,11 @@ static authn_status check_dbm_pw(request_rec *r, const char *user,
 
     if (!dbm_password) {
         return AUTH_USER_NOT_FOUND;
+    }
+
+    colon_pw = strchr(dbm_password, ':');
+    if (colon_pw) {
+        *colon_pw = '\0';
     }
 
     rv = apr_password_validate(password, dbm_password);
