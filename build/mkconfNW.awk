@@ -13,7 +13,12 @@ BEGIN {
     A["runtimedir"] = "logs"
     A["errordir"] = "error"
     A["proxycachedir"] = "proxy"
-    
+
+    B["htdocsdir"] = A["ServerRoot"]"/"A["htdocsdir"]
+    B["iconsdir"] = A["ServerRoot"]"/"A["iconsdir"]
+    B["manualdir"] = A["ServerRoot"]"/"A["manualdir"]
+    B["errordir"] = A["ServerRoot"]"/"A["errordir"]
+    B["proxycachedir"] = A["ServerRoot"]"/"A["proxycachedir"]
 }
 
 /@@LoadModule@@/ {
@@ -50,6 +55,11 @@ match ($0,/@@.*@@/) {
 match ($0,/@rel_.*@/) {
     s=substr($0,RSTART+5,RLENGTH-6)
     sub(/@rel_.*@/,A[s],$0)
+}
+
+match ($0,/@exp_.*@/) {
+    s=substr($0,RSTART+5,RLENGTH-6)
+    sub(/@exp_.*@/,B[s],$0)
 }
 
 {
