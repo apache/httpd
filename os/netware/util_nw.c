@@ -58,12 +58,10 @@
 
 #include "httpd.h"
 #include "http_log.h"
-#include "apr_strings.h"
 
-#include <stdarg.h>
-#include <time.h>
-#include <stdlib.h>
+#include <netware.h>
 
+int nlmUnloadSignaled();
 
 AP_DECLARE(apr_status_t) ap_os_create_privileged_process(
     const request_rec *r,
@@ -73,4 +71,9 @@ AP_DECLARE(apr_status_t) ap_os_create_privileged_process(
     apr_procattr_t *attr, apr_pool_t *p)
 {
     return APR_ENOTIMPL;
+}
+
+int  _NonAppCheckUnload( void )
+{
+	return nlmUnloadSignaled();
 }
