@@ -280,7 +280,7 @@ static int check_user_access(request_rec *r)
 	if (strcmp(w, "file-owner") == 0) {
 #if defined(WIN32) || defined(NETWARE) || defined(OS2)
             ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_INFO, r,
-                          "'Require file-user' not supported "
+                          "'Require file-owner' not supported "
                           "on this platform, ignored");
             continue;
 #else
