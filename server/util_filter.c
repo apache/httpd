@@ -271,7 +271,7 @@ static ap_filter_t *add_any_filter(const char *name, void *ctx,
 
         if (node && node->frec) {
             apr_pool_t* p = r ? r->pool : c->pool;
-            ap_filter_t *f = apr_pcalloc(p, sizeof(*f));
+            ap_filter_t *f = apr_palloc(p, sizeof(*f));
             ap_filter_t **outf = r ? r_filters : c_filters;
 
             f->frec = node->frec;
