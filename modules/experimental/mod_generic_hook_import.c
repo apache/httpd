@@ -65,7 +65,7 @@ static int ImportGenericHookTestHook(const char *szStr)
     return OK;
 }
 
-static void ImportRegisterHooks(void)
+static void ImportRegisterHooks(apr_pool_t *p)
 {
     AP_HOOK_GENERIC(generic_hook_test,ImportGenericHookTestHook,NULL,NULL,
 		    AP_HOOK_MIDDLE);

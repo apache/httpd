@@ -469,7 +469,7 @@ static int mva_translate(request_rec *r)
     return OK;
 }
 
-static void register_hooks(void)
+static void register_hooks(apr_pool_t *p)
 {
     ap_hook_translate_name(mva_translate, NULL, NULL, AP_HOOK_MIDDLE);
 }

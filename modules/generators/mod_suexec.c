@@ -141,7 +141,7 @@ static const command_rec suexec_cmds[] =
     { NULL }
 };
 
-static void suexec_hooks(void)
+static void suexec_hooks(apr_pool_t *p)
 {
     ap_hook_get_suexec_identity(get_suexec_id_doer,NULL,NULL,AP_HOOK_MIDDLE);
 }

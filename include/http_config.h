@@ -396,9 +396,10 @@ struct module_struct {
      *  In this function, modules should call the ap_hook_*() functions to
      *  register an interest in a specific step in processing the current
      *  request.
+     *  @param p the pool to use for all allocations
      *  @deffunc void register_hooks(void)
      */
-    void (*register_hooks) (void);
+    void (*register_hooks) (apr_pool_t *p);
 };
 
 /* Initializer for the first few module slots, which are only

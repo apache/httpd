@@ -54,9 +54,6 @@
 
 #include "apr_pools.h"
 #include "apr_hash.h"
-
-#include "ap_hooks.h"   /* ### for ap_global_hook_pool */
-
 #include "mod_dav.h"
 
 
@@ -72,9 +69,6 @@ static apr_status_t dav_cleanup_providers(void *ctx)
 DAV_DECLARE(void) dav_register_provider(apr_pool_t *p, const char *name,
                                         const dav_provider *provider)
 {
-    /* ### ignore the pool; it is NULL right now */
-    p = ap_global_hook_pool;
-
     if (dav_repos_providers == NULL) {
         dav_repos_providers = apr_make_hash(p);
         apr_register_cleanup(p, NULL, dav_cleanup_providers, apr_null_cleanup);

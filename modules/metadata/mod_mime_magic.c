@@ -2463,7 +2463,7 @@ static int magic_find_ct(request_rec *r)
     return magic_rsl_to_request(r);
 }
 
-static void register_hooks(void)
+static void register_hooks(apr_pool_t *p)
 {
     static const char * const aszPre[]={ "mod_mime.c", NULL };
 

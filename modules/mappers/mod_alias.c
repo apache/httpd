@@ -420,7 +420,7 @@ static int fixup_redir(request_rec *r)
     return DECLINED;
 }
 
-static void register_hooks(void)
+static void register_hooks(apr_pool_t *p)
 {
     static const char * const aszPre[]={ "mod_userdir.c",NULL };
 

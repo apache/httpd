@@ -720,7 +720,7 @@ static int cgi_handler(request_rec *r)
     return OK;			/* NOT r->status, even if it has changed. */
 }
 
-static void register_hooks(void)
+static void register_hooks(apr_pool_t *p)
 {
     ap_hook_handler(cgi_handler, NULL, NULL, AP_HOOK_MIDDLE);
 }

@@ -4005,7 +4005,7 @@ static int dav_type_checker(request_rec *r)
     return DECLINED;
 }
 
-static void register_hooks(void)
+static void register_hooks(apr_pool_t *p)
 {
     ap_hook_handler(dav_handler, NULL, NULL, AP_HOOK_MIDDLE);
     ap_hook_post_config(dav_init_handler, NULL, NULL, AP_HOOK_MIDDLE);
@@ -4015,8 +4015,7 @@ static void register_hooks(void)
     ap_hook_insert_all_liveprops(dav_core_insert_all_liveprops,
                                  NULL, NULL, AP_HOOK_MIDDLE);
 
-    /* ### damn. need a pool. */
-    dav_core_register_uris(NULL);
+    dav_core_register_uris(p);
 }
 
 /*---------------------------------------------------------------------------

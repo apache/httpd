@@ -395,7 +395,7 @@ static int db_check_auth(request_rec *r)
     return DECLINED;
 }
 
-static void register_hooks(void)
+static void register_hooks(apr_pool_t *p)
 {
     ap_hook_check_user_id(db_authenticate_basic_user,NULL,NULL,AP_HOOK_MIDDLE);
     ap_hook_auth_checker(db_check_auth,NULL,NULL,AP_HOOK_MIDDLE);

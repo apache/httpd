@@ -119,7 +119,7 @@ static const command_rec dav_fs_cmds[] =
     { NULL }
 };
 
-static void register_hooks(void)
+static void register_hooks(apr_pool_t *p)
 {
     ap_hook_gather_propsets(dav_fs_gather_propsets, NULL, NULL,
                             AP_HOOK_MIDDLE);
@@ -127,7 +127,7 @@ static void register_hooks(void)
     ap_hook_insert_all_liveprops(dav_fs_insert_all_liveprops, NULL, NULL,
                                  AP_HOOK_MIDDLE);
 
-    dav_fs_register(NULL /* ### pconf */);
+    dav_fs_register(p);
 }
 
 module AP_MODULE_DECLARE_DATA dav_fs_module =

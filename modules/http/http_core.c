@@ -1014,6 +1014,7 @@ AP_DECLARE (file_type_e) ap_get_win32_interpreter(const  request_rec *r,
     }        
 
     /* Need to peek into the file figure out what it really is... */
+    /* This is wrong for Unicode FS ... should move to APR */
     hFile = CreateFile(r->filename, GENERIC_READ, FILE_SHARE_READ, NULL,
                        OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
     if (hFile == INVALID_HANDLE_VALUE) {
@@ -3542,7 +3543,7 @@ static void core_insert_filter(request_rec *r)
     }
 }
 
-static void register_hooks(void)
+static void register_hooks(apr_pool_t *p)
 {
     ap_hook_pre_config(core_pre_config, NULL, NULL, AP_HOOK_REALLY_FIRST);
     ap_hook_post_config(core_post_config,NULL,NULL,AP_HOOK_REALLY_FIRST);

@@ -221,8 +221,7 @@ static int handle_dir(request_rec *r)
     return DECLINED;
 }
 
-
-static void register_hooks(void)
+static void register_hooks(apr_pool_t *p)
 {
     static const char * const aszSucc[]={ "mod_autoindex.c", NULL };
 

@@ -1090,7 +1090,7 @@ static int example_header_parser(request_rec *r)
  * The actual delivery of content to the browser [9] is not handled by
  * a hook; see the handler declarations below.
  */
-static void example_register_hooks(void)
+static void example_register_hooks(apr_pool_t *p)
 {
     /* module initializer */
     ap_hook_post_config(example_init,

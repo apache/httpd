@@ -107,7 +107,7 @@ static int cache_filter(ap_filter_t *f, ap_bucket_brigade *bb)
     return APR_SUCCESS;	
 }
 
-static void cache_register_hook(void)
+static void cache_register_hook(apr_pool_t *p)
 {
     ap_register_output_filter("CACHE", cache_filter, AP_FTYPE_HTTP_HEADER);
 }

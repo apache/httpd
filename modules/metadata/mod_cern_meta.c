@@ -385,10 +385,12 @@ static int add_cern_meta_data(request_rec *r)
 
     return rv;
 }
-static void register_hooks(void)
+
+static void register_hooks(apr_pool_t *p)
 {
     ap_hook_fixups(add_cern_meta_data,NULL,NULL,AP_HOOK_MIDDLE);
 }
+
 module AP_MODULE_DECLARE_DATA cern_meta_module =
 {
     STANDARD20_MODULE_STUFF,

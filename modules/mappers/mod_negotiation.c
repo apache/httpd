@@ -2745,7 +2745,7 @@ static int fix_encoding(request_rec *r)
     return DECLINED;
 }
 
-static void register_hooks(void)
+static void register_hooks(apr_pool_t *p)
 {
     ap_hook_fixups(fix_encoding,NULL,NULL,AP_HOOK_MIDDLE);
     ap_hook_type_checker(handle_multi,NULL,NULL,AP_HOOK_FIRST);

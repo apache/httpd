@@ -2049,7 +2049,7 @@ static int add_auth_info(request_rec *r)
 }
 
 
-static void register_hooks(void)
+static void register_hooks(apr_pool_t *p)
 {
     static const char * const cfgPost[]={ "http_core.c", NULL };
     static const char * const parsePre[]={ "mod_proxy.c", NULL };
