@@ -1049,9 +1049,11 @@ static int handle_fsize(FILE *in, request_rec *r, const char *error, int sizefmt
                 }
                 else {
                     int l, x;
-#if defined(BSD) && BSD > 199305
+#if defined(BSD)
+#if BSD > 199305
                     /* ap_snprintf can't handle %qd */
                     sprintf(tag, "%qd", finfo.st_size);
+#endif
 #else
                     ap_snprintf(tag, sizeof(tag), "%ld", finfo.st_size);
 #endif
