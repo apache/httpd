@@ -1668,7 +1668,7 @@ void winnt_rewrite_args(process_rec *process)
      */
     if (!GetModuleFileName(NULL, fnbuf, sizeof(fnbuf))) {
         rv = apr_get_os_error();
-        ap_log_error(APLOG_MARK,APLOG_EMERG, rv, NULL, 
+        ap_log_error(APLOG_MARK,APLOG_CRIT, rv, NULL, 
                      "Failed to get the path of Apache.exe");
         exit(1);
     }
@@ -1763,7 +1763,7 @@ void winnt_rewrite_args(process_rec *process)
         }
     }
 
-    if (service_set == SERVICE_UNSET && running_as_service) {
+    if (service_set == SERVICE_UNSET) {
         service_set = mpm_service_set_name(process->pool, &service_name,
                                            DEFAULT_SERVICE_NAME);
     }
@@ -1772,7 +1772,7 @@ void winnt_rewrite_args(process_rec *process)
     {
         if (service_set == APR_SUCCESS) 
         {
-            ap_log_error(APLOG_MARK,APLOG_EMERG, 0, NULL,
+            ap_log_error(APLOG_MARK,APLOG_ERR, 0, NULL,
                  "%s: Service is already installed.", service_name);
             exit(1);
         }
@@ -1789,17 +1789,23 @@ void winnt_rewrite_args(process_rec *process)
                              "\"%s\".", service_name);
             }
 	    else  {
-                ap_log_error(APLOG_MARK,APLOG_WARN, rv, NULL,
+                ap_log_error(APLOG_MARK,APLOG_WARNING, rv, NULL,
                              "No installed ConfigArgs for the service "
                              "\"%s\", using Apache defaults.", service_name);
 	    }
         }
         else
         {
-            ap_log_error(APLOG_MARK,APLOG_EMERG, service_set, NULL,
+            ap_log_error(APLOG_MARK,APLOG_ERR, service_set, NULL,
                  "No installed service named \"%s\".", service_name);
             exit(1);
         }
+    }
+    if (strcasecmp(signal_arg, "install") && service_set && service_set != SERVICE_UNSET) 
+    {
+        ap_log_error(APLOG_MARK,APLOG_ERR, service_set, NULL,
+             "No installed service named \"%s\".", service_name);
+        exit(1);
     }
     
     /* Track the args actually entered by the user.
@@ -1832,7 +1838,7 @@ static void winnt_pre_config(apr_pool_t *pconf, apr_pool_t *plog, apr_pool_t *pt
     if (!strcasecmp(signal_arg, "runservice")
             && (osver.dwPlatformId == VER_PLATFORM_WIN32_NT)
             && (service_to_start_success != APR_SUCCESS)) {
-        ap_log_error(APLOG_MARK,APLOG_EMERG, service_to_start_success, NULL, 
+        ap_log_error(APLOG_MARK,APLOG_CRIT, service_to_start_success, NULL, 
                      "%s: Unable to start the service manager.",
                      service_name);
         exit(1);
@@ -1910,7 +1916,7 @@ static void winnt_post_config(apr_pool_t *pconf, apr_pool_t *plog, apr_pool_t *p
              */
             shutdown_event = CreateEvent(sa, FALSE, FALSE, signal_shutdown_name);
             if (!shutdown_event) {
-                ap_log_error(APLOG_MARK, APLOG_EMERG, apr_get_os_error(), server_conf,
+                ap_log_error(APLOG_MARK, APLOG_CRIT, apr_get_os_error(), server_conf,
                              "Parent: Cannot create shutdown event %s", signal_shutdown_name);
                 CleanNullACL((void *)sa);
                 exit(1);
@@ -1922,7 +1928,7 @@ static void winnt_post_config(apr_pool_t *pconf, apr_pool_t *plog, apr_pool_t *p
             restart_event = CreateEvent(sa, FALSE, FALSE, signal_restart_name);
             if (!restart_event) {
                 CloseHandle(shutdown_event);
-                ap_log_error(APLOG_MARK, APLOG_EMERG, apr_get_os_error(), server_conf,
+                ap_log_error(APLOG_MARK, APLOG_CRIT, apr_get_os_error(), server_conf,
                              "Parent: Cannot create restart event %s", signal_restart_name);
                 CleanNullACL((void *)sa);
                 exit(1);
@@ -1940,7 +1946,7 @@ static void winnt_post_config(apr_pool_t *pconf, apr_pool_t *plog, apr_pool_t *p
                 {
                     rv = mpm_service_to_start(&service_name);
                     if (rv != APR_SUCCESS) {
-                        ap_log_error(APLOG_MARK,APLOG_EMERG, rv, server_conf,
+                        ap_log_error(APLOG_MARK,APLOG_ERR, rv, server_conf,
                                      "%s: Unable to start the service manager.",
                                      service_name);
                         exit(1);
@@ -2000,7 +2006,7 @@ AP_DECLARE(int) ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s )
     else { 
         /* Parent process */
         if (ap_setup_listeners(server_conf) < 1) {
-            ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_EMERG, 0, s,
+            ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, s,
                          "no listening sockets available, shutting down");
             return 1;
         }
