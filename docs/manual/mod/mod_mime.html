@@ -39,10 +39,13 @@
     href="mod_negotiation">mod_negotiation</a> for more information
     about content negotiation. 
 
-    <p>The directives <a href="#addhandler">AddHandler</a>, <a
-    href="#addoutputfilter">AddOutputFilter</a>, and <a
-    href="#addinputfilter">AddInputFilter</a> control the modules
-    or scripts that serve the document.</p>
+    <p>The directives <a href="#addcharset">AddCharset</a>, <a
+    href="#addencoding">AddEncoding</a>, <a
+    href="#addlanguage">AddLanguage</a> and <a
+    href="#addtype">AddType</a> are all used to map file extensions
+    onto the meta-information for that file. Respectively they set
+    the character set, content-encoding, content-language, and
+    MIME-type (content-type) of documents.</p>
 
     <p>In addition, mod_mime may define the "handler" for a
     document, which controls which module or script will serve the
@@ -53,13 +56,13 @@
     and POST content should be processed through (the input
     filters.)</p>
 
-    <p>The directives <a href="#addcharset">AddCharset</a>, <a
-    href="#addencoding">AddEncoding</a>, <a
-    href="#addlanguage">AddLanguage</a> and <a
-    href="#addtype">AddType</a> are all used to map file extensions
-    onto the meta-information for that file. Respectively they set
-    the character set, content-encoding, content-language, and
-    MIME-type (content-type) of documents.</p>
+    <p>The directives <a href="#addhandler">AddHandler</a>, <a
+    href="#addoutputfilter">AddOutputFilter</a>, and <a
+    href="#addinputfilter">AddInputFilter</a> control the modules
+    or scripts that serve the document.  The 
+    <a href="#multiviewsmatch">MultiviewsMatch</a> directive allows
+    <a href="mod_negotiation">mod_negotiation</a> to consider these
+    file extensions to included when testing Multiviews matches.</p>
 
     <p>The directive <a href="#typesconfig">TypesConfig</a> is used
     to specify a file which also maps extensions onto MIME types.
@@ -117,6 +120,8 @@
 
       <li><a href="#defaultlanguage">DefaultLanguage</a></li>
 
+      <li><a href="#multiviewsmatch">MultiviewsMatch</a></li>
+
       <li><a href="#removecharset">RemoveCharset</a></li>
 
       <li><a href="#removeencoding">RemoveEncoding</a></li>
@@ -137,23 +142,15 @@
     <p>See also: <a
     href="mod_mime_magic.html#mimemagicfile">MimeMagicFile</a>.</p>
 
-    <h2><a id="multipleext" name="multipleext">Files with Multiple
+<h2><a id="multipleext" name="multipleext">Files with Multiple
     Extensions</a></h2>
-    Files can have more than one extension, and the order of the
+
+    <p>Files can have more than one extension, and the order of the
     extensions is <em>normally</em> irrelevant. For example, if the
     file <code>welcome.html.fr</code> maps onto content type
-    text/html and language French then the file
-    <code>welcome.fr.html</code> will map onto exactly the same
-    information. The only exception to this is if an extension is
-    given which Apache does not know how to handle. In this case it
-    will "forget" about any information it obtained from extensions
-    to the left of the unknown extension. So, for example, if the
-    extensions fr and html are mapped to the appropriate language
-    and type but extension xxx is not assigned to anything, then
-    the file <code>welcome.fr.xxx.html</code> will be associated
-    with content-type text/html but <em>no</em> language. 
-
-    <p>If more than one extension is given which maps onto the same
+    text/html and language French then the file <code>welcome.fr.html</code> 
+    will map onto exactly the same information.  If more than one 
+    extension is given which maps onto the same
     type of meta-information, then the one to the right will be
     used. For example, if ".gif" maps to the MIME-type image/gif
     and ".html" maps to the MIME-type text/html, then the file
@@ -172,15 +169,15 @@
     be used, and so it will be treated as a mod_imap imagemap
     file.</p>
 
-    <h2><a id="contentencoding" name="contentencoding">Content
-    encoding</a></h2>
-    A file of a particular MIME type can additionally be encoded a
+<h2><a id="contentencoding" name="contentencoding">Content encoding</a></h2>
+
+    <p>A file of a particular MIME type can additionally be encoded a
     particular way to simplify transmission over the Internet.
     While this usually will refer to compression, such as
     <samp>gzip</samp>, it can also refer to encryption, such a
     <samp>pgp</samp> or to an encoding such as UUencoding, which is
     designed for transmitting a binary file in an ASCII (text)
-    format. 
+    format.</p>
 
     <p>The MIME RFC puts it this way:</p>
 
@@ -214,23 +211,32 @@
 
     <p><samp>Content-encoding: pkzip</samp></p>
 
-    <h2>Character sets and languages</h2>
-    Finally, in addition to file type, and the file encoding,
+<h2>Character sets and languages</h2>
+
+    <p>In addition to file type and the file encoding,
     another important piece of information is what language a
     particular document is in, and in what character set the file
     should be displayed. For example, the document might be written
     in the Vietnamese alphabet, or in Cyrillic, and should be
     displayed as such. This information, also, is transmitted in
-    HTTP headers. 
+    HTTP headers.</p>
 
-    <p>While the character set is useful for the browser, in order
-    to determine how to display the document, the language and the
-    character set are also used in the process of content
-    negotiation (See <a
+    <p>The character set, language encoding and mime type are all 
+    used in the process of content negotiation (See <a
     href="mod_negotiation.html">mod_negotiation</a>) to determine
     which document to give to the client, when there are
-    alternative documents in more than one language, or more than
-    one character set.</p>
+    alternative documents in more than one character set, language, 
+    encoding or mime type.  All filename extensions associations
+    created with <code>AddCharset</code>, <code>AddEncoding</code>, 
+    <code>AddLanguage</code> and <code>AddType</code> directives
+    (and extensions listed in the <code>MimeMagicFile</code>)
+    participate in this select process.  Filename extensions that
+    are only associated using the <code>AddHandler</code>,
+    <code>AddInputFilter</code> or <code>AddOutputFilter</code>
+    directives may be included or excluded from matching by using 
+    the <a href="#multiviewsmatch">MultiviewsMatch</a> directive.</p>
+
+Charset</p>
 
     <p>To convey this further information, Apache optionally sends
     a <samp>Content-Language</samp> header, to specify the language
@@ -572,6 +578,50 @@ Content-Type: text/plain; charset=ISO-8859-2
 
     <p><strong>See also</strong>: <a href="#multipleext">Files with
     multiple extensions</a></p>
+    <hr />
+
+    <h2><a id="multiviewsmatch"
+    name="multiviewsmatch">multiviewsmatch</a> directive</h2>
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>Syntax:</strong></a> MultiviewsMatch
+    <em>[NegotiatedOnly] [Handlers] [Filters] [All]</em><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Context:</strong></a> server config, virtual
+    host, directory, .htaccess<br />
+     <a href="directive-dict.html#Override"
+    rel="Help"><strong>Override:</strong></a> FileInfo<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>Status:</strong></a> Base<br />
+     <a href="directive-dict.html#Module"
+    rel="Help"><strong>Module:</strong></a> mod_mime<br />
+     <a href="directive-dict.html#Compatibility"
+    rel="Help"><strong>Compatibility:</strong></a> only available 
+    in Apache 2.0.26 and later. 
+
+    <p>MultiviewsMatch permits three different behaviors for
+    <a href="mod_negotiation.html">mod_negotiation<a>'s Multiviews 
+    feature.  Multiviews allows a request for a file, e.g. index.html,
+    to match any negotiated extensions following the base request,
+    e.g. index.html.en, index.html,fr, or index.html.gz.</p>
+
+    <p>The NegotiatedOnly option provides that every extension following
+    the base name must correlate to a recognized mod_mime extension for
+    content negotation, e.g. Charset, Content-Type, Language, or 
+    Encoding.  This is the strictest implementation with the fewest
+    unexpected side effects, and is the default behavior.</p>
+
+    <p>To include extensions associated with Handlers and/or Filters,
+    set the MultiviewsMatch directive to either Handlers, Filters, or
+    both option keywords.  If all other factors are equal, the smallest
+    file will be served, e.g. in deciding between index.html.cgi of 500
+    characters and index.html.pl of 1000 bytes, the .cgi file would win
+    in this example.  Users of .asis files might prefer to use the
+    Handler option, if .asis files are associated with the asis-handler.<p>
+
+    <p>You may finally allow All extensions to match, even if mod_mime 
+    doesn't recognize the extension.  This was the behavior in Apache 1.3,
+    and can cause unpredicatable results, such as serving .old or .bak
+    files the webmaster never expected to be served.</p>
     <hr />
 
     <h2><a id="defaultlanguage"
