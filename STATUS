@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2002/04/10 03:54:31 $]
+Last modified at [$Date: 2002/04/12 23:12:26 $]
 
 Release:
 
@@ -785,7 +785,7 @@ Binaries (2.0.35):
  i686-pc-linux-gnu-rh72        yes     Aaron Bannert
  i386-pc-solaris2.8            yes     Aaron Bannert
  powerpc-unknown-linux-gnu     yes     Graham Leggett
- NetWare                       no      Brad Nicholes
+ NetWare                       yes     Brad Nicholes
  Win32-x86                     yes     William Rowe
 
 Other features that need writing:
