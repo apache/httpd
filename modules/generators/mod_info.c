@@ -169,8 +169,6 @@ static void mod_info_module_cmds(request_rec * r, const command_rec * cmds,
 {
     const command_rec *cmd;
     ap_directive_t *tmptree = conftree;
-
-    char buf[MAX_STRING_LEN];
     char htmlstring[MAX_STRING_LEN];
     int block_start = 0;
     int nest = 0;
