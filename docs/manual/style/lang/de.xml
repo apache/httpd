@@ -8,7 +8,7 @@
 
 <!-- Some strings might be used in other contexts, than stated in the -->
 <!-- comments...                                                      -->
-<messages lang="de">
+<messages lang="de" langname="Deutsch">
  <!-- Used for the moduleindex -->
  <message name="corefeatures">Kernfunktionen und Multi-Processing-Module</message>
  <message name="othermodules">Andere Module</message>

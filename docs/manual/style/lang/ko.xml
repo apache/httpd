@@ -8,7 +8,7 @@
 
 <!-- Some strings might be used in other contexts, than stated in the -->
 <!-- comments...                                                      -->
-<messages lang="ko">
+<messages lang="ko" langname="Korean">
  <!-- Used for the moduleindex -->
  <message name="corefeatures">핵심 기능과 다중처리 모듈</message>
  <message name="othermodules">다른 모듈</message>
