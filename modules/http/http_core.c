@@ -250,7 +250,7 @@ static apr_status_t chunk_filter(ap_filter_t *f, apr_bucket_brigade *b)
 static const char *http_method(const request_rec *r)
     { return "http"; }
 
-static unsigned short http_port(const request_rec *r)
+static apr_port_t http_port(const request_rec *r)
     { return DEFAULT_HTTP_PORT; }
 
 static int ap_pre_http_connection(conn_rec *c)
