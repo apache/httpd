@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:						-*-text-*-
-Last modified at [$Date: 2001/01/13 04:26:04 $]
+Last modified at [$Date: 2001/01/18 19:16:38 $]
 
 Release:
 
@@ -106,9 +106,6 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
       directives aren't consistent with what we already have, and they don't
       always make good sense.
           Status:  rbb volunteers.
-
-    * FreeBSD has issues when sendfile is used.  Some images aren't sent
-      completely.  The work around is to turn off sendfile support.
 
     * release distros do not include a "test" dir.  It should be
       cleaned for the dev guys.  (Greg volunteers)
