@@ -61,7 +61,7 @@ if [ ! -d "$apr_src_dir" -o ! -f "$apr_src_dir/build/apr_common.m4" ]; then
     echo "   cd srclib"
     echo "   cvs -d :pserver:anoncvs@cvs.apache.org:/home/cvspublic login"
     echo "      (password 'anoncvs')"
-    echo "   cvs -d :pserver:anoncvs@cvs.apache.org:/home/cvspublic co apr"
+    echo "   cvs -d :pserver:anoncvs@cvs.apache.org:/home/cvspublic -z7 co apr"
     echo ""
     exit 1
 fi
@@ -75,7 +75,7 @@ if [ ! -d "$apu_src_dir" -o ! -f "$apu_src_dir/Makefile.in" ]; then
     echo "   cd srclib"
     echo "   cvs -d :pserver:anoncvs@cvs.apache.org:/home/cvspublic login"
     echo "      (password 'anoncvs')"
-    echo "   cvs -d :pserver:anoncvs@cvs.apache.org:/home/cvspublic co apr-util"
+    echo "   cvs -d :pserver:anoncvs@cvs.apache.org:/home/cvspublic -z7 co apr-util"
     echo ""
     exit 1
 fi
