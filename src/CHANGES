@@ -1,5 +1,9 @@
 Changes with Apache 1.3a2
 
+  *) Proxy errors on connect() are logged to the error_log (nothing
+     new); now they include the IP address and port that failed
+     (*that's* new).  PR#352  [Ken Coar, Marc Slemko]
+
   *) Various architectures now define USE_MMAP_FILES which causes
      the server to use mmap() for static files.  There are two
      compile-time tunables MMAP_THRESHOLD (minimum number of bytes
