@@ -187,9 +187,13 @@ typedef struct include_filter_ctx {
 if ((APR_BRIGADE_EMPTY(cntxt->ssi_tag_brigade)) &&                \
     (cntxt->head_start_bucket != NULL)) {                         \
     apr_bucket_brigade *tag_plus;                                 \
+    int rv;                                                       \
                                                                   \
     tag_plus = apr_brigade_split(brgd, cntxt->head_start_bucket); \
-    ap_pass_brigade(next, brgd);                                  \
+    rv = ap_pass_brigade(next, brgd);                             \
+    if (rv != APR_SUCCESS) {                                      \
+        return rv;                                                \
+    }                                                             \
     cntxt->bytes_parsed = 0;                                      \
     brgd = tag_plus;                                              \
 }
