@@ -1392,7 +1392,6 @@ module AP_MODULE_DECLARE_DATA mpm_dexter_module = {
     NULL,			/* create per-server config structure */
     NULL,			/* merge per-server config structures */
     dexter_cmds,		/* command apr_table_t */
-    NULL,			/* handlers */
     dexter_hooks 		/* register_hooks */
 };
 
