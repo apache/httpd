@@ -279,16 +279,16 @@ Open issues:
             ap_xxx:    +1: Ken, Brian, Ralf, Martin, Paul, Roy, Randy
 
         - Public API functions (e.g., palloc)
-            ap_xxx:    +1: Ralf, Roy, Dean, Randy, Martin, Brian
-            apapi_xxx: +1: Ken, Paul
+            ap_xxx:    +1: Ralf, Roy, Dean, Randy, Martin, Brian, Paul
+            apapi_xxx: +1: Ken
 
         - Private functions which we can't make static (because of
           cross-object usage) but should be (e.g., new_connection)
-            ap_xxx:    +1: Roy, Dean, Randy, Martin, Brian
+            ap_xxx:    +1: Roy, Dean, Randy, Martin, Brian, Paul
 	               -0: Ralf
 		       -1: Ken
             apx_xxx:   +1: Ralf
-            appri_xxx: +1: Paul, Ken
+            appri_xxx: +1: Ken
 	               +0: Ralf
 
         - Public API module structure variables (e.g.,
