@@ -643,6 +643,12 @@ static apr_status_t ssl_io_filter_Output(ap_filter_t *f,
     apr_status_t status = APR_SUCCESS;
     SSLFilterRec *filter_ctx = f->ctx;
 
+    if (f->c->aborted) {
+        /* XXX: This works in 2.0.43, but this will change soon */
+        apr_brigade_cleanup(bb);
+        return APR_ECONNABORTED;
+    }
+
     if (!filter_ctx->pssl) {
         /* ssl_abort() has been called */
         return ap_pass_brigade(f->next, bb);
@@ -949,6 +955,16 @@ static apr_status_t ssl_io_filter_Input(ap_filter_t *f,
 
     apr_size_t len = sizeof(inctx->buffer);
     int is_init = (mode == AP_MODE_INIT);
+
+    if (f->c->aborted) {
+        /* XXX: Ok, if we aborted, we ARE at the EOS.  We also have
+         * aborted.  This 'double protection' is probably redundant,
+         * but also effective against just about anything.
+         */
+        apr_bucket *bucket = apr_bucket_eos_create(f->c->bucket_alloc);
+        APR_BRIGADE_INSERT_TAIL(bb, bucket);
+        return APR_ECONNABORTED;
+    }
 
     if (!inctx->ssl) {
         return ap_get_brigade(f->next, bb, mode, block, readbytes);
