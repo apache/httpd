@@ -1,5 +1,9 @@
 Changes with Apache 2.0.26-dev
 
+  *) Normalize the primary request, redirects and sub-requests to
+     run the same ap_process_request_internal for consistency in
+     robustness, behavior and security.  [William Rowe]
+
   *) Fix a segfault with mod_include when r->path_info is not set
      (which is the case with mod_proxy).  [Ian Holsman <ianh@cnet.com>]
 

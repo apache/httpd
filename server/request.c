@@ -1684,8 +1684,6 @@ AP_DECLARE(int) ap_run_sub_req(request_rec *r)
 {
     int retval;
 
-    /* see comments in ap_process_request_internal() */
-    ap_run_insert_filter(r);
     retval = ap_invoke_handler(r);
     ap_finalize_sub_req_protocol(r);
     return retval;
