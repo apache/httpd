@@ -112,7 +112,6 @@ your own values in the kernel configuration file:
 # Network options. NMBCLUSTERS defines the number of mbuf clusters and
 # defaults to 256. This machine is a server that handles lots of traffic,
 # so we crank that value.
-options         SOMAXCONN=256           # max pending connects
 options         NMBCLUSTERS=4096        # mbuf clusters at 4096
 
 #
@@ -121,10 +120,6 @@ options         NMBCLUSTERS=4096        # mbuf clusters at 4096
 options         CHILD_MAX=512           # maximum number of child processes
 options         OPEN_MAX=512            # maximum fds (breaks RPC svcs)
 </PRE>
-
-SOMAXCONN is not derived from maxusers, so you'll always need to increase
-that yourself. We used a value guaranteed to be larger than Apache's
-default for the listen() of 128, currently.
 
 <P>
 
@@ -160,6 +155,27 @@ value if you've got modules or CGI scripts opening lots of connections or
 files). If you've got a lot of other activity besides httpd on the same
 machine, you'll have to set NPROC higher still. In this example, the NPROC
 value derived from maxusers proved sufficient for our load.
+
+<P>
+
+To increase the size of the <CODE>listen()</CODE> queue, you need to
+adjust the value of SOMAXCONN. SOMAXCONN is not derived from maxusers,
+so you'll always need to increase that yourself. We use a value guaranteed
+to be larger than Apache's default for the listen() of 128, currently.
+The actual value for SOMAXCONN is set in <CODE>sys/socket.h</CODE>.
+The best way to adjust this parameter is run-time, rather than changing
+it in this header file and thus hardcoding a value in the kernel and
+elsewhere.  To do this, edit <CODE>/etc/rc.local</CODE> and add the
+following line:
+<PRE>
+    /usr/sbin/sysctl -w kern.somaxconn=256
+</PRE>
+
+<P>
+
+We used <CODE>256</CODE> but you can tune it for your own setup. In
+many cases, however, even the default value of <CODE>128</CODE> (for
+later versions of FreeBSD) is OK.
 
 <P>
 
