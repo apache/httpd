@@ -257,7 +257,7 @@ static int ssl_hook_pre_connection(conn_rec *c, void *csd)
      * attach this to the socket. Additionally we register this attachment
      * so we can detach later.
      */
-    if (!(ssl = SSL_new(sc->pSSLCtx))) {
+    if (!(ssl = SSL_new(sc->server->ssl_ctx))) {
         ssl_log(c->base_server, SSL_LOG_ERROR|SSL_ADD_SSLERR,
                 "Unable to create a new SSL connection from the SSL context");
 
@@ -404,7 +404,7 @@ int ssl_hook_process_connection(SSLFilterRec *filter)
             sslconn->verify_error)
         {
             if (ssl_verify_error_is_optional(verify_result) &&
-                (sc->nVerifyClient == SSL_CVERIFY_OPTIONAL_NO_CA))
+                (sc->server->auth.verify_mode == SSL_CVERIFY_OPTIONAL_NO_CA))
             {
                 /* leaving this log message as an error for the moment,
                  * according to the mod_ssl docs:
@@ -444,7 +444,7 @@ int ssl_hook_process_connection(SSLFilterRec *filter)
          * Make really sure that when a peer certificate
          * is required we really got one... (be paranoid)
          */
-        if ((sc->nVerifyClient == SSL_CVERIFY_REQUIRE) &&
+        if ((sc->server->auth.verify_mode == SSL_CVERIFY_REQUIRE) &&
             !sslconn->client_cert)
         {
             ssl_log(c->base_server, SSL_LOG_ERROR,

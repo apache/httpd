@@ -135,6 +135,53 @@ BOOL ssl_config_global_isfixed(SSLModConfigRec *mc)
 **  _________________________________________________________________
 */
 
+static void modssl_ctx_init(modssl_ctx_t *ctx, SSLSrvConfigRec *sc)
+{
+    ctx->sc                  = sc;
+
+    ctx->ssl_ctx             = NULL;
+
+    ctx->pks                 = NULL;
+    ctx->pkp                 = NULL;
+
+    ctx->protocol            = SSL_PROTOCOL_ALL;
+
+    ctx->pphrase_dialog_type = SSL_PPTYPE_UNSET;
+    ctx->pphrase_dialog_path = NULL;
+
+    ctx->cert_chain          = NULL;
+
+    ctx->crl_path            = NULL;
+    ctx->crl_file            = NULL;
+    ctx->crl                 = NULL;
+
+    ctx->auth.ca_cert_path   = NULL;
+    ctx->auth.ca_cert_file   = NULL;
+    ctx->auth.cipher_suite   = NULL;
+    ctx->auth.verify_depth   = UNSET;
+    ctx->auth.verify_mode    = SSL_CVERIFY_UNSET;
+}
+
+static void modssl_ctx_init_server(SSLSrvConfigRec *sc,
+                                   apr_pool_t *p)
+{
+    modssl_ctx_t *ctx;
+
+    ctx = sc->server = apr_palloc(p, sizeof(*sc->server));
+
+    modssl_ctx_init(ctx, sc);
+
+    ctx->pks = apr_palloc(p, sizeof(*ctx->pks));
+
+    memset((void*)ctx->pks->cert_files, 0, sizeof(ctx->pks->cert_files));
+
+    memset((void*)ctx->pks->key_files, 0, sizeof(ctx->pks->key_files));
+
+    memset(ctx->pks->certs, 0, sizeof(ctx->pks->certs));
+
+    memset(ctx->pks->keys, 0, sizeof(ctx->pks->keys));
+}
+
 /*
  *  Create per-server SSL configuration
  */
@@ -151,24 +198,7 @@ void *ssl_config_server_create(apr_pool_t *p, server_rec *s)
     sc->log_level              = SSL_LOG_NONE;
     sc->session_cache_timeout  = UNSET;
 
-    sc->szCACertificatePath    = NULL;
-    sc->szCACertificateFile    = NULL;
-    sc->szCertificateChain     = NULL;
-    sc->szCipherSuite          = NULL;
-    sc->nVerifyDepth           = UNSET;
-    sc->nVerifyClient          = SSL_CVERIFY_UNSET;
-    sc->nPassPhraseDialogType  = SSL_PPTYPE_UNSET;
-    sc->szPassPhraseDialogPath = NULL;
-    sc->nProtocol              = SSL_PROTOCOL_ALL;
-    sc->pSSLCtx                = NULL;
-    sc->szCARevocationPath     = NULL;
-    sc->szCARevocationFile     = NULL;
-    sc->pRevocationStore       = NULL;
-
-    memset((void*)sc->szPublicCertFiles, 0, sizeof(sc->szPublicCertFiles));
-    memset((void*)sc->szPrivateKeyFiles, 0, sizeof(sc->szPrivateKeyFiles));
-    memset(sc->pPublicCert,       0, sizeof(sc->pPublicCert));
-    memset(sc->pPrivateKey,       0, sizeof(sc->pPrivateKey));
+    modssl_ctx_init_server(sc, p);
 
     return sc;
 }
@@ -183,6 +213,8 @@ void *ssl_config_server_merge(apr_pool_t *p, void *basev, void *addv)
     SSLSrvConfigRec *add  = (SSLSrvConfigRec *)addv;
     SSLSrvConfigRec *mrg  = (SSLSrvConfigRec *)apr_palloc(p, sizeof(*mrg));
 
+    modssl_ctx_init_server(mrg, p);
+
     cfgMerge(mc, NULL);
     cfgMergeBool(enabled);
     cfgMergeString(vhost_id);
@@ -191,25 +223,25 @@ void *ssl_config_server_merge(apr_pool_t *p, void *basev, void *addv)
     cfgMerge(log_level, SSL_LOG_NONE);
     cfgMergeInt(session_cache_timeout);
 
-    cfgMergeString(szCACertificatePath);
-    cfgMergeString(szCACertificateFile);
-    cfgMergeString(szCertificateChain);
-    cfgMergeString(szCipherSuite);
-    cfgMergeInt(nVerifyDepth);
-    cfgMerge(nVerifyClient, SSL_CVERIFY_UNSET);
-    cfgMerge(nPassPhraseDialogType, SSL_PPTYPE_UNSET);
-    cfgMergeString(szPassPhraseDialogPath);
-    cfgMerge(nProtocol, SSL_PROTOCOL_ALL);
-    cfgMerge(pSSLCtx, NULL);
-    cfgMerge(szCARevocationPath, NULL);
-    cfgMerge(szCARevocationFile, NULL);
-    cfgMerge(pRevocationStore, NULL);
+    cfgMergeString(server->auth.ca_cert_path);
+    cfgMergeString(server->auth.ca_cert_file);
+    cfgMergeString(server->cert_chain);
+    cfgMergeString(server->auth.cipher_suite);
+    cfgMergeInt(server->auth.verify_depth);
+    cfgMerge(server->auth.verify_mode, SSL_CVERIFY_UNSET);
+    cfgMerge(server->pphrase_dialog_type, SSL_PPTYPE_UNSET);
+    cfgMergeString(server->pphrase_dialog_path);
+    cfgMerge(server->protocol, SSL_PROTOCOL_ALL);
+    cfgMerge(server->ssl_ctx, NULL);
+    cfgMerge(server->crl_path, NULL);
+    cfgMerge(server->crl_file, NULL);
+    cfgMerge(server->crl, NULL);
 
     for (i = 0; i < SSL_AIDX_MAX; i++) {
-        cfgMergeString(szPublicCertFiles[i]);
-        cfgMergeString(szPrivateKeyFiles[i]);
-        cfgMerge(pPublicCert[i], NULL);
-        cfgMerge(pPrivateKey[i], NULL);
+        cfgMergeString(server->pks->cert_files[i]);
+        cfgMergeString(server->pks->key_files[i]);
+        cfgMerge(server->pks->certs[i], NULL);
+        cfgMerge(server->pks->keys[i], NULL);
     }
 
     return mrg;
@@ -330,33 +362,33 @@ const char *ssl_cmd_SSLPassPhraseDialog(cmd_parms *cmd, void *ctx,
     }
 
     if (strcEQ(arg, "builtin")) {
-        sc->nPassPhraseDialogType  = SSL_PPTYPE_BUILTIN;
-        sc->szPassPhraseDialogPath = NULL;
+        sc->server->pphrase_dialog_type  = SSL_PPTYPE_BUILTIN;
+        sc->server->pphrase_dialog_path = NULL;
     }
     else if ((arglen > 5) && strEQn(arg, "exec:", 5)) {
-        sc->nPassPhraseDialogType  = SSL_PPTYPE_FILTER;
+        sc->server->pphrase_dialog_type  = SSL_PPTYPE_FILTER;
         /* ### This is broken, exec: may contain args, no? */
-        sc->szPassPhraseDialogPath =
+        sc->server->pphrase_dialog_path =
             ap_server_root_relative(cmd->pool, arg+5);
-        if (!sc->szPassPhraseDialogPath) {
+        if (!sc->server->pphrase_dialog_path) {
             return apr_pstrcat(cmd->pool,
                                "Invalid SSLPassPhraseDialog exec: path ",
                                arg+5, NULL);
         }
         if (!ssl_util_path_check(SSL_PCM_EXISTS,
-                                 sc->szPassPhraseDialogPath,
+                                 sc->server->pphrase_dialog_path,
                                  cmd->pool))
         {
             return apr_pstrcat(cmd->pool,
                                "SSLPassPhraseDialog: file '",
-                               sc->szPassPhraseDialogPath,
+                               sc->server->pphrase_dialog_path,
                                "' does not exist", NULL);
         }
 
     }
     else if ((arglen > 1) && (arg[0] == '|')) {
-        sc->nPassPhraseDialogType  = SSL_PPTYPE_PIPE;
-        sc->szPassPhraseDialogPath = arg + 1;
+        sc->server->pphrase_dialog_type  = SSL_PPTYPE_PIPE;
+        sc->server->pphrase_dialog_path = arg + 1;
     }
     else {
         return "SSLPassPhraseDialog: Invalid argument";
@@ -509,7 +541,7 @@ const char *ssl_cmd_SSLCipherSuite(cmd_parms *cmd, void *ctx,
         dc->szCipherSuite = arg;
     }
     else {
-        sc->szCipherSuite = arg;
+        sc->server->auth.cipher_suite = arg;
     }
 
     return NULL;
@@ -581,11 +613,11 @@ static const char *ssl_cmd_check_aidx_max(cmd_parms *parms,
     switch (idx) {
       case SSL_AIDX_CERTS:
         desc = "certificates";
-        files = sc->szPublicCertFiles;
+        files = sc->server->pks->cert_files;
         break;
       case SSL_AIDX_KEYS:
         desc = "private keys";
-        files = sc->szPrivateKeyFiles;
+        files = sc->server->pks->key_files;
         break;
     }
 
@@ -637,7 +669,7 @@ const char *ssl_cmd_SSLCertificateChainFile(cmd_parms *cmd, void *ctx,
         return err;
     }
 
-    sc->szCertificateChain = arg;
+    sc->server->cert_chain = arg;
 
     return NULL;
 }
@@ -663,7 +695,7 @@ const char *ssl_cmd_SSLCertificateChainFile(cmd_parms *cmd, void *ctx,
 const char *ssl_cmd_SSLCACertificatePath(cmd_parms *cmd, void *ctx,
                                          const char *arg)
 {
-    SSLDirConfigRec *dc = (SSLDirConfigRec *)ctx;
+    /*SSLDirConfigRec *dc = (SSLDirConfigRec *)ctx;*/
     SSLSrvConfigRec *sc = mySrvConfig(cmd->server);
     const char *err;
 
@@ -671,7 +703,8 @@ const char *ssl_cmd_SSLCACertificatePath(cmd_parms *cmd, void *ctx,
         return err;
     }
 
-    MODSSL_SET_CA(szCACertificatePath);
+    /* XXX: bring back per-dir */
+    sc->server->auth.ca_cert_path = arg;
 
     return NULL;
 }
@@ -679,7 +712,7 @@ const char *ssl_cmd_SSLCACertificatePath(cmd_parms *cmd, void *ctx,
 const char *ssl_cmd_SSLCACertificateFile(cmd_parms *cmd, void *ctx,
                                          const char *arg)
 {
-    SSLDirConfigRec *dc = (SSLDirConfigRec *)ctx;
+    /*SSLDirConfigRec *dc = (SSLDirConfigRec *)ctx;*/
     SSLSrvConfigRec *sc = mySrvConfig(cmd->server);
     const char *err;
 
@@ -687,7 +720,8 @@ const char *ssl_cmd_SSLCACertificateFile(cmd_parms *cmd, void *ctx,
         return err;
     }
 
-    MODSSL_SET_CA(szCACertificateFile);
+    /* XXX: bring back per-dir */
+    sc->server->auth.ca_cert_file = arg;
 
     return NULL;
 }
@@ -702,7 +736,7 @@ const char *ssl_cmd_SSLCARevocationPath(cmd_parms *cmd, void *ctx,
         return err;
     }
 
-    sc->szCARevocationPath = arg;
+    sc->server->crl_path = arg;
 
     return NULL;
 }
@@ -717,7 +751,7 @@ const char *ssl_cmd_SSLCARevocationFile(cmd_parms *cmd, void *ctx,
         return err;
     }
 
-    sc->szCARevocationFile = arg;
+    sc->server->crl_file = arg;
 
     return NULL;
 }
@@ -763,7 +797,7 @@ const char *ssl_cmd_SSLVerifyClient(cmd_parms *cmd, void *ctx,
         dc->nVerifyClient = id;
     }
     else {
-        sc->nVerifyClient = id;
+        sc->server->auth.verify_mode = id;
     }
 
     return NULL;
@@ -798,7 +832,7 @@ const char *ssl_cmd_SSLVerifyDepth(cmd_parms *cmd, void *ctx,
         dc->nVerifyDepth = depth;
     }
     else {
-        sc->nVerifyDepth = depth;
+        sc->server->auth.verify_depth = depth;
     }
 
     return NULL;
@@ -1141,7 +1175,7 @@ const char *ssl_cmd_SSLProtocol(cmd_parms *cmd, void *ctx,
 {
     SSLSrvConfigRec *sc = mySrvConfig(cmd->server);
 
-    return ssl_cmd_protocol_parse(cmd, opt, &sc->nProtocol);
+    return ssl_cmd_protocol_parse(cmd, opt, &sc->server->protocol);
 }
 
 #ifdef SSL_EXPERIMENTAL_PROXY

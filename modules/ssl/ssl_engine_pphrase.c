@@ -213,7 +213,7 @@ void ssl_pphrase_Handle(server_rec *s, apr_pool_t *p)
          * Read in server certificate(s): This is the easy part
          * because this file isn't encrypted in any way.
          */
-        if (sc->szPublicCertFiles[0] == NULL) {
+        if (sc->server->pks->cert_files[0] == NULL) {
             ssl_log(pServ, SSL_LOG_ERROR|SSL_INIT,
                     "Server should be SSL-aware but has no certificate configured "
                     "[Hint: SSLCertificateFile]");
@@ -221,9 +221,9 @@ void ssl_pphrase_Handle(server_rec *s, apr_pool_t *p)
         }
         algoCert = SSL_ALGO_UNKNOWN;
         algoKey  = SSL_ALGO_UNKNOWN;
-        for (i = 0, j = 0; i < SSL_AIDX_MAX && sc->szPublicCertFiles[i] != NULL; i++) {
+        for (i = 0, j = 0; i < SSL_AIDX_MAX && sc->server->pks->cert_files[i] != NULL; i++) {
 
-            apr_cpystrn(szPath, sc->szPublicCertFiles[i], sizeof(szPath));
+            apr_cpystrn(szPath, sc->server->pks->cert_files[i], sizeof(szPath));
             if ( exists_and_readable(szPath, p, NULL) != APR_SUCCESS ) {
                 ssl_log(s, SSL_LOG_ERROR|SSL_ADD_ERRNO,
                         "Init: Can't open server certificate file %s", szPath);
@@ -282,8 +282,8 @@ void ssl_pphrase_Handle(server_rec *s, apr_pool_t *p)
              * phrase for all). When this is the case we can minimize the dialogs
              * by trying to re-use already known/entered pass phrases.
              */
-            if (sc->szPrivateKeyFiles[j] != NULL)
-                apr_cpystrn(szPath, sc->szPrivateKeyFiles[j++], sizeof(szPath));
+            if (sc->server->pks->key_files[j] != NULL)
+                apr_cpystrn(szPath, sc->server->pks->key_files[j++], sizeof(szPath));
 
             /*
              * Try to read the private key file with the help of
@@ -390,10 +390,10 @@ void ssl_pphrase_Handle(server_rec *s, apr_pool_t *p)
                  * chances...
                  */
 #ifndef WIN32
-                if ((sc->nPassPhraseDialogType == SSL_PPTYPE_BUILTIN
-                       || sc->nPassPhraseDialogType == SSL_PPTYPE_PIPE)
+                if ((sc->server->pphrase_dialog_type == SSL_PPTYPE_BUILTIN
+                       || sc->server->pphrase_dialog_type == SSL_PPTYPE_PIPE)
 #else
-                if (sc->nPassPhraseDialogType == SSL_PPTYPE_PIPE
+                if (sc->server->pphrase_dialog_type == SSL_PPTYPE_PIPE
 #endif
                     && cpPassPhraseCur != NULL
                     && nPassPhraseRetry < BUILTIN_DIALOG_RETRIES ) {
@@ -408,7 +408,7 @@ void ssl_pphrase_Handle(server_rec *s, apr_pool_t *p)
                     continue;
                 }
 #ifdef WIN32
-                if (sc->nPassPhraseDialogType == SSL_PPTYPE_BUILTIN) {
+                if (sc->server->pphrase_dialog_type == SSL_PPTYPE_BUILTIN) {
                     ssl_log(s, SSL_LOG_ERROR|SSL_ADD_SSLERR,
                             "Init: PassPhraseDialog BuiltIn not supported in server private key from file %s", szPath);
                     ssl_die();
@@ -429,16 +429,16 @@ void ssl_pphrase_Handle(server_rec *s, apr_pool_t *p)
                     else {
                         ssl_log(pServ, SSL_LOG_ERROR|SSL_ADD_SSLERR, "Init: Private key not found");
                     }
-                    if (sc->nPassPhraseDialogType == SSL_PPTYPE_BUILTIN
-                          || sc->nPassPhraseDialogType == SSL_PPTYPE_PIPE) {
+                    if (sc->server->pphrase_dialog_type == SSL_PPTYPE_BUILTIN
+                          || sc->server->pphrase_dialog_type == SSL_PPTYPE_PIPE) {
                         apr_file_printf(writetty, "Apache:mod_ssl:Error: Private key not found.\n");
                         apr_file_printf(writetty, "**Stopped\n");
                     }
                 }
                 else {
                     ssl_log(pServ, SSL_LOG_ERROR|SSL_ADD_SSLERR, "Init: Pass phrase incorrect");
-                    if (sc->nPassPhraseDialogType == SSL_PPTYPE_BUILTIN
-                          || sc->nPassPhraseDialogType == SSL_PPTYPE_PIPE) {
+                    if (sc->server->pphrase_dialog_type == SSL_PPTYPE_BUILTIN
+                          || sc->server->pphrase_dialog_type == SSL_PPTYPE_PIPE) {
                         apr_file_printf(writetty, "Apache:mod_ssl:Error: Pass phrase incorrect.\n");
                         apr_file_printf(writetty, "**Stopped\n");
                     }
@@ -524,8 +524,8 @@ void ssl_pphrase_Handle(server_rec *s, apr_pool_t *p)
      */
     if (nPassPhraseDialog > 0) {
         sc = mySrvConfig(s);
-        if (sc->nPassPhraseDialogType == SSL_PPTYPE_BUILTIN
-              || sc->nPassPhraseDialogType == SSL_PPTYPE_PIPE) {
+        if (sc->server->pphrase_dialog_type == SSL_PPTYPE_BUILTIN
+              || sc->server->pphrase_dialog_type == SSL_PPTYPE_PIPE) {
             apr_file_printf(writetty, "\n");
             apr_file_printf(writetty, "Ok: Pass Phrase Dialog successful.\n");
         }
@@ -667,21 +667,21 @@ int ssl_pphrase_Handle_CB(char *buf, int bufsize, int verify, void *srv)
     /*
      * Builtin or Pipe dialog
      */
-    if (sc->nPassPhraseDialogType == SSL_PPTYPE_BUILTIN
-          || sc->nPassPhraseDialogType == SSL_PPTYPE_PIPE) {
+    if (sc->server->pphrase_dialog_type == SSL_PPTYPE_BUILTIN
+          || sc->server->pphrase_dialog_type == SSL_PPTYPE_PIPE) {
         char *prompt;
         int i;
 
-        if (sc->nPassPhraseDialogType == SSL_PPTYPE_PIPE) {
+        if (sc->server->pphrase_dialog_type == SSL_PPTYPE_PIPE) {
             if (!readtty) {
                 ssl_log(s, SSL_LOG_INFO,
                         "Init: Creating pass phrase dialog pipe child '%s'",
-                        sc->szPassPhraseDialogPath);
-	        if (ssl_pipe_child_create(p, sc->szPassPhraseDialogPath)
+                        sc->server->pphrase_dialog_path);
+	        if (ssl_pipe_child_create(p, sc->server->pphrase_dialog_path)
                         != APR_SUCCESS) {
                     ssl_log(s, SSL_LOG_ERROR,
                             "Init: Failed to create pass phrase pipe '%s'",
-                            sc->szPassPhraseDialogPath);
+                            sc->server->pphrase_dialog_path);
                     PEMerr(PEM_F_DEF_CALLBACK,PEM_R_PROBLEMS_GETTING_PASSWORD);
                     memset(buf, 0, (unsigned int)bufsize);
                     return (-1);
@@ -690,7 +690,7 @@ int ssl_pphrase_Handle_CB(char *buf, int bufsize, int verify, void *srv)
             ssl_log(s, SSL_LOG_INFO,
                     "Init: Requesting pass phrase via piped dialog");
         }
-        else { /* sc->nPassPhraseDialogType == SSL_PPTYPE_BUILTIN */ 
+        else { /* sc->server->pphrase_dialog_type == SSL_PPTYPE_BUILTIN */ 
 #ifdef WIN32
             PEMerr(PEM_F_DEF_CALLBACK,PEM_R_PROBLEMS_GETTING_PASSWORD);
             memset(buf, 0, (unsigned int)bufsize);
@@ -735,10 +735,10 @@ int ssl_pphrase_Handle_CB(char *buf, int bufsize, int verify, void *srv)
         apr_file_puts(prompt, writetty);
 
         for (;;) {
-            if (sc->nPassPhraseDialogType == SSL_PPTYPE_PIPE) {
+            if (sc->server->pphrase_dialog_type == SSL_PPTYPE_PIPE) {
                 i = pipe_get_passwd_cb(buf, bufsize, "", FALSE); 
             }  
-            else { /* sc->nPassPhraseDialogType == SSL_PPTYPE_BUILTIN */
+            else { /* sc->server->pphrase_dialog_type == SSL_PPTYPE_BUILTIN */
                 i = EVP_read_pw_string(buf, bufsize, "", FALSE); 
             }  
             if (i != 0) {
@@ -757,8 +757,8 @@ int ssl_pphrase_Handle_CB(char *buf, int bufsize, int verify, void *srv)
     /*
      * Filter program
      */
-    else if (sc->nPassPhraseDialogType == SSL_PPTYPE_FILTER) {
-        const char *cmd = sc->szPassPhraseDialogPath;
+    else if (sc->server->pphrase_dialog_type == SSL_PPTYPE_FILTER) {
+        const char *cmd = sc->server->pphrase_dialog_path;
         const char **argv = apr_palloc(p, sizeof(char *) * 4);
         char *result;
 
