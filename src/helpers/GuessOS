@@ -189,12 +189,8 @@ case "${SYSTEM}:${RELEASE}:${VERSION}:${MACHINE}" in
 	echo "${MACHINE}-whatever-sysv4"; exit 0
 	;;
 
-    *:4.0:3.0:[345][0-9]?? | *:4.0:3.0:3[34]??[/,]*)
-	echo "i486-ncr-sysv4"; exit 0
-	;;
-
-    library:*)
-	echo "${MACHINE}-ncr-sysv4"; exit 0
+    *:4.0:3.0:[345][0-9]?? | *:4.0:3.0:3[34]??[/,]* | library:*)
+	echo "intel-ncr-sysv4"; exit 0
 	;;
 
     ULTRIX:*)
