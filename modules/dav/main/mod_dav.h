@@ -68,6 +68,7 @@
 #include "util_xml.h"
 
 #include <limits.h>     /* for INT_MAX */
+#include <time.h>       /* for time_t */
 
 #ifdef __cplusplus
 extern "C" {

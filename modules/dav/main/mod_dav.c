@@ -3542,7 +3542,7 @@ static int dav_method_update(request_rec *r)
     int is_label = 0;
     int depth;
     int result;
-    int tsize;
+    apr_size_t tsize;
     const char *target;
     dav_response *multi_response;
     dav_error *err;
