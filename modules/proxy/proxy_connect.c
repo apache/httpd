@@ -62,11 +62,6 @@
 
 #include "mod_proxy.h"
 
-#if 0
-#ifdef HAVE_BSTRING_H
-#include <bstring.h>		/* for IRIX, FD_SET calls bzero() */
-#endif
-#endif
 
 /*  
  * This handles Netscape CONNECT method secure proxy requests.
@@ -316,23 +311,6 @@ int ap_proxy_connect_handler(request_rec *r, char *url,
     }
 
     /* Add client side to the poll */
-#if 0
-/* FIXME !!!! SDM !!! If someone can figure out how to turn a conn_rec into a ap_sock_t or something
-   this code might work. However if we must we can change r->connection->client to non-blocking and
-   just see if a recv gives us anything and do the same to sock (server) side, I'll leave this as TBD so
-   one can decide the best path to take
-*/
-    if(apr_os_sock_put(&client_sock,
-        (apr_os_sock_t *)get_socket(r->connection->client),
-                      r->pool) != APR_SUCCESS)
-    {
-	apr_socket_close(sock);
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
-            "proxy: CONNECT: error creating client apr_socket_t");
-        return HTTP_INTERNAL_SERVER_ERROR;
-    }
-/*    apr_poll_socket_add(pollfd, client_sock, APR_POLLIN);*/
-#endif
     apr_poll_socket_add(pollfd, r->connection->client_socket, APR_POLLIN);
 
     /* Add the server side to the poll */
