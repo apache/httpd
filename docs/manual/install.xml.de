@@ -199,8 +199,8 @@ konfigurieren</a></seealso>
     aus einem simplen Dekomprimieren und danach "Ent-tarren":</p>
 
   <example>
-      $ gzip -d httpd-2_1_<em>NN</em>.tar.gz<br />
-      $ tar xvf httpd-2_1_<em>NN</em>.tar
+      $ gzip -d httpd-2_0_<em>NN</em>.tar.gz<br />
+      $ tar xvf httpd-2_0_<em>NN</em>.tar
   </example>
 
     <p>Dies erstellt unterhalb des aktuellen Verzeichnisses ein neues

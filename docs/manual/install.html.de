@@ -201,8 +201,8 @@ konfigurieren</a></li><li><a href="invoking.html">Apache starten</a></li><li><a 
     aus einem simplen Dekomprimieren und danach "Ent-tarren":</p>
 
   <div class="example"><p><code>
-      $ gzip -d httpd-2_1_<em>NN</em>.tar.gz<br />
-      $ tar xvf httpd-2_1_<em>NN</em>.tar
+      $ gzip -d httpd-2_0_<em>NN</em>.tar.gz<br />
+      $ tar xvf httpd-2_0_<em>NN</em>.tar
   </code></p></div>
 
     <p>Dies erstellt unterhalb des aktuellen Verzeichnisses ein neues
