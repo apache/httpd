@@ -1303,7 +1303,7 @@ interfaces and port numbers, use
 <STRONG>See Also:</STRONG>
 <A HREF="../bind.html">Setting which addresses and ports Apache uses</A><BR>
 <STRONG>See Also:</STRONG>
-<A HREF="../misc/known_bugs.html#listenbug">Known Bugs</A></P>
+<A HREF="http//www.apache.org/info/known_bugs.html#listenbug">Known Bugs</A></P>
 <HR>
 
 <H2><A NAME="listenbacklog">ListenBacklog directive</A></H2>
@@ -1590,7 +1590,8 @@ Using a level of at least <CODE>crit</CODE> is recommended.
 
 The MaxClients directive sets the limit on the number of simultaneous
 requests that can be supported; not more than this number of child server
-processes will be created.<P><HR>
+processes will be created.  To configure more than 256 clients, you must
+edit the HARD_SERVER_LIMIT entry in httpd.h and recompile.<P><HR>
 
 <H2><A name="maxkeepaliverequests">MaxKeepAliveRequests directive</A></H2>
 <A
