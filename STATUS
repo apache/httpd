@@ -15,7 +15,7 @@ Guidelines:
       or not, and if not, what changes are needed to make it right.
 
       Approve guidelines as written:
-         +1: Roy, Dean
+         +1: Roy, Dean, Paul
          +0:
          -1:
 
@@ -263,10 +263,10 @@ Available Patches:
       worth adding it by weighting on the advantages and disadvantages.
       
       Votes for including APACI (in general): 
-         Ralf +1, Dean +1, Roy +1
+         Ralf +1, Dean +1, Roy +1, Paul +1
 
       Votes for commit variants:
-         CV1: Ralf +1, Dean +1, Roy +1
+         CV1: Ralf +1, Dean +1, Roy +1, Paul +1
          CV2: Ralf +0
 
 Concepts:
@@ -320,7 +320,7 @@ Open issues:
       Private functions which we can't make static
       but should be (e.g., new_connection)
 	apprivate_xxx:
-	appri_xxx: Brian +1, Dean, Roy
+	appri_xxx: Brian +1, Dean, Roy, Paul
 	httpd_xxx: Ken +1
 	apint_xxx: Ralf +1 (int = internal)
 
