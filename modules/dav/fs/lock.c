@@ -66,7 +66,7 @@
 **    INDIRECT LOCK:   [char      (DAV_LOCK_INDIRECT),
 **			apr_uuid_t locktoken,
 **			time_t     expires,
-**			int        key_size,
+**			apr_size_t key_size,
 **			char[]     key]
 **       The key is to the collection lock that resulted in this indirect lock
 */
@@ -157,7 +157,7 @@ typedef struct dav_lock_indirect
 /* Stored indirect lock info - lock token and apr_datum_t */
 #define dav_size_indirect(a)	(1 + sizeof(apr_uuid_t) \
 				 + sizeof(time_t) \
-				 + sizeof(int) + (a)->key.dsize)
+				 + sizeof((a)->key.dsize) + (a)->key.dsize)
 
 /*
 ** The lockdb structure.
