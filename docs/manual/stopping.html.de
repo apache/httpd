@@ -45,9 +45,9 @@
     Elternprozess, dessen PID im <code class="directive"><a href="./mod/mpm_common.html#pidfile">PidFile</a></code> steht. Das heißt, Sie
     sollten es niemals nötig haben, einem anderen Prozess, als dem
     Elternprozess, ein Signal zu senden. Es gibt drei Signale, die Sie an den
-    Elternprozess senden können: <a href="#term"><code>TERM</code></a>,
-    <a href="#hup"><code>HUP</code></a> und
-    <a href="#graceful"><code>USR1</code></a>, die nachfolgend beschrieben
+    Elternprozess senden können: <code><a href="#term">TERM</a></code>,
+    <code><a href="#hup">HUP</a></code> und
+    <code><a href="#graceful">USR1</a></code>, die nachfolgend beschrieben
     werden.</p>
 
     <p>Um dem Elternprozess ein Signal zu senden, verwenden Sie einen
