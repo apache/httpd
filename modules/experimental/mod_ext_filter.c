@@ -69,6 +69,9 @@
 #include "util_filter.h"
 #include "apr_strings.h"
 #include "apr_hash.h"
+#if APR_HAVE_STRINGS_H
+#include <strings.h>
+#endif
 
 typedef struct ef_server_t {
     apr_pool_t *p;
@@ -544,7 +547,7 @@ static apr_status_t drain_available_output(ap_filter_t *f)
         if ((rv && !APR_STATUS_IS_EAGAIN(rv)) ||
             dc->debug >= DBGLVL_GORY) {
             ap_log_rerror(APLOG_MARK, APLOG_DEBUG, rv, f->r,
-                          "apr_read(child output), len %d",
+                          "apr_read(child output), len %" APR_SIZE_T_FMT,
                           !rv ? len : -1);
         }
         if (rv != APR_SUCCESS) {
@@ -582,7 +585,7 @@ static apr_status_t pass_data_to_filter(ap_filter_t *f, const char *data,
         bytes_written += tmplen;
         if (rv != APR_SUCCESS && !APR_STATUS_IS_EAGAIN(rv)) {
             ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, f->r,
-                          "apr_write(child input), len %d",
+                          "apr_write(child input), len %" APR_SIZE_T_FMT,
                           tmplen);
             return rv;
         }
@@ -702,7 +705,7 @@ static apr_status_t ef_output_filter(ap_filter_t *f, ap_bucket_brigade *bb)
         if ((rv && !APR_STATUS_IS_EOF(rv) && !APR_STATUS_IS_EAGAIN(rv)) ||
             dc->debug >= DBGLVL_GORY) {
             ap_log_rerror(APLOG_MARK, APLOG_DEBUG, rv, f->r,
-                          "apr_read(child output), len %d",
+                          "apr_read(child output), len %" APR_SIZE_T_FMT,
                           !rv ? len : -1);
         }
         if (APR_STATUS_IS_EAGAIN(rv)) {
