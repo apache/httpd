@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/02/19 11:53:24 $]
+Last modified at [$Date: 2004/02/19 14:47:43 $]
 
 Release:
 
@@ -170,7 +170,7 @@ PATCHES TO BACKPORT FROM 2.1
         server/mpm/winnt/mpm_winnt.c r1.303, r1.306
         server/mpm/winnt/mpm_winnt.h r1.44
         server/mpm/winnt/child.c r1.21
-      +1: trawick
+      +1: trawick, stoddard
 
     * piped log programs respawning after Apache is stopped. PR 24805
       bogus "piped log program '(null)' failed" messages during
@@ -240,23 +240,23 @@ PATCHES TO BACKPORT FROM 2.1
         http://cvs.apache.org/viewcvs.cgi/httpd-2.0/modules/loggers/mod_log_config.c?r1=1.109&r2=1.110
         [gosh nd, must have lost the commit message for that second one;
         I need to stop using silly gcc 3.2 I think]
-      +1: trawick
+      +1: trawick, stoddard
 
     * mod_isapi: GetServerVariable("ALL_RAW") returned the wrong buffer
       size.  PR 20617  [Jesse Pelton <jsp pkc.com>]
         http://cvs.apache.org/viewcvs.cgi/httpd-2.0/modules/arch/win32/mod_isapi.c?r1=1.96&r2=1.97
-      +1: trawick
+      +1: trawick, stoddard
 
     * mod_isapi: send_response_header() failed to copy status string's 
       last character.  PR 20619.  [Jesse Pelton <jsp pkc.com>]
       http://cvs.apache.org/viewcvs.cgi/httpd-2.0/modules/arch/win32/mod_isapi.c?r1=1.97&r2=1.98
-      +1: trawick
+      +1: trawick, stoddard
 
     * mod_isapi: GetServerVariable returned improperly terminated header 
       fields given "ALL_HTTP" or "ALL_RAW".  PR 20656.
       [Jesse Pelton <jsp pkc.com>]
       http://cvs.apache.org/viewcvs.cgi/httpd-2.0/modules/arch/win32/mod_isapi.c?r1=1.98&r2=1.99
-      +1: trawick
+      +1: trawick, stoddard
 
     * fatal exception hook and related signal handler cleanups
       This also fixes an issue for me on Solaris where the cgid daemon
@@ -265,7 +265,7 @@ PATCHES TO BACKPORT FROM 2.1
       this patch I can "kill -SEGV" the cgid daemon process a number
       of times and the daemon will be restarted each time.
       http://www.apache.org/~trawick/fatal_exception_20.patch
-      +1: trawick
+      +1: trawick, stoddard
 
 CURRENT RELEASE NOTES:
 
