@@ -244,7 +244,7 @@ API_EXPORT(void) add_common_vars(request_rec *r)
     table_setn(e, "SERVER_PORT", pstrdup(r->pool,port));
     host = get_remote_host(c, r->per_dir_config, REMOTE_HOST);
     if (host) {
-	table_setn(e, "REMOTE_HOST", pstrdup(r->pool, host));
+	table_setn(e, "REMOTE_HOST", host);
     }
     table_setn(e, "REMOTE_ADDR", c->remote_ip);
     table_setn(e, "DOCUMENT_ROOT", document_root(r));	/* Apache */
@@ -477,13 +477,13 @@ static int scan_script_header_err_core(request_rec *r, char *buffer,
 	    r->status_line = pstrdup(r->pool, l);
 	}
 	else if (!strcasecmp(w, "Location")) {
-	    table_setn(r->headers_out, pstrdup(r->pool,w), pstrdup(r->pool,l));
+	    table_set(r->headers_out, w, l);
 	}
 	else if (!strcasecmp(w, "Content-Length")) {
-	    table_setn(r->headers_out, pstrdup(r->pool,w), pstrdup(r->pool,l));
+	    table_set(r->headers_out, w, l);
 	}
 	else if (!strcasecmp(w, "Transfer-Encoding")) {
-	    table_setn(r->headers_out, pstrdup(r->pool,w), pstrdup(r->pool,l));
+	    table_set(r->headers_out, w, l);
 	}
 	/*
 	 * If the script gave us a Last-Modified header, we can't just
@@ -500,7 +500,7 @@ static int scan_script_header_err_core(request_rec *r, char *buffer,
 	 * we'll use - otherwise we assume 200 OK.
 	 */
 	else if (!strcasecmp(w, "Status")) {
-	    table_setn(r->headers_out, pstrdup(r->pool,w), pstrdup(r->pool,l));
+	    table_set(r->headers_out, w, l);
 	    cgi_status = atoi(l);
 	}
 
@@ -510,10 +510,10 @@ static int scan_script_header_err_core(request_rec *r, char *buffer,
 	 * separately.  Lets humour those browsers.
 	 */
 	else if (!strcasecmp(w, "Set-Cookie")) {
-	    table_addn(r->err_headers_out, pstrdup(r->pool,w), pstrdup(r->pool,l));
+	    table_add(r->err_headers_out, w, l);
 	}
 	else {
-	    table_mergen(r->err_headers_out, pstrdup(r->pool,w), pstrdup(r->pool,l));
+	    table_merge(r->err_headers_out, w, l);
 	}
     }
 }

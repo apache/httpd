@@ -1267,7 +1267,7 @@ static const char *set_server_string_slot (cmd_parms *cmd, void *dummy,
     const char *err = check_cmd_context(cmd, NOT_IN_DIR_LOC_FILE|NOT_IN_LIMIT);
     if (err != NULL) return err;
 
-    *(char **)(struct_ptr + offset) = pstrdup (cmd->pool, arg);
+    *(char **)(struct_ptr + offset) = arg;
     return NULL;
 }
 
@@ -1335,7 +1335,7 @@ static const char *set_user (cmd_parms *cmd, void *dummy, char *arg)
     if (err != NULL) return err;
 
     if (!cmd->server->is_virtual) {
-	user_name = pstrdup (cmd->pool, arg);
+	user_name = arg;
 	cmd->server->server_uid = user_id = uname2id(arg);
     }
     else {
@@ -1444,7 +1444,7 @@ static const char *set_pidfile (cmd_parms *cmd, void *dummy, char *arg)
 
     if (cmd->server->is_virtual)
 	return "PidFile directive not allowed in <VirtualHost>";
-    pid_fname = pstrdup (cmd->pool, arg);
+    pid_fname = arg;
     return NULL;
 }
 
@@ -1453,7 +1453,7 @@ static const char *set_scoreboard (cmd_parms *cmd, void *dummy, char *arg)
     const char *err = check_cmd_context(cmd, GLOBAL_ONLY);
     if (err != NULL) return err;
 
-    scoreboard_fname = pstrdup (cmd->pool, arg);
+    scoreboard_fname = arg;
     return NULL;
 }
 
@@ -1462,7 +1462,7 @@ static const char *set_lockfile (cmd_parms *cmd, void *dummy, char *arg)
     const char *err = check_cmd_context(cmd, GLOBAL_ONLY);
     if (err != NULL) return err;
 
-    lock_fname = pstrdup (cmd->pool, arg);
+    lock_fname = arg;
     return NULL;
 }
 
@@ -1498,7 +1498,7 @@ static const char *set_serverpath (cmd_parms *cmd, void *dummy, char *arg)
     const char *err = check_cmd_context(cmd, NOT_IN_DIR_LOC_FILE|NOT_IN_LIMIT);
     if (err != NULL) return err;
 
-    cmd->server->path = pstrdup (cmd->pool, arg);
+    cmd->server->path = arg;
     cmd->server->pathlen = strlen (arg);
     return NULL;
 }

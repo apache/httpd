@@ -1888,7 +1888,7 @@ void send_error_response(request_rec *r, int recursive_error)
     int status = r->status;
     int idx = index_of_response(status);
     char *custom_response;
-    char *location = pstrdup(r->pool, table_get(r->headers_out, "Location"));
+    char *location = table_get(r->headers_out, "Location");
 
     /* We need to special-case the handling of 204 and 304 responses,
      * since they have specific HTTP requirements and do not include a
