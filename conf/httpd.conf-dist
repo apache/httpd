@@ -241,10 +241,10 @@ Port 80
 #    suggested workaround is to create a user www and use that user.
 #  NOTE that some kernels refuse to setgid(Group) or semctl(IPC_SET)
 #  when the value of (unsigned)Group is above 60000; 
-#  don't use Group #-1 on these systems!
+#  don't use Group "#-1" on these systems!
 #
 User nobody
-Group #-1
+Group "#-1"
 
 #
 # ServerAdmin: Your address, where problems with the server should be
