@@ -754,6 +754,7 @@ int ap_proxy_ftp_handler(request_rec *r, proxy_server_conf *conf,
     char buffer[MAX_STRING_LEN];
     char *ftpmessage = NULL;
     char *path, *strp, *type_suffix, *cwd = NULL;
+    apr_uri_t uri; 
     char *user = NULL;
 /*    char *account = NULL; how to supply an account in a URL? */
     const char *password = NULL;
@@ -808,13 +809,23 @@ int ap_proxy_ftp_handler(request_rec *r, proxy_server_conf *conf,
     if (r->method_number != M_GET)
         return HTTP_NOT_IMPLEMENTED;
 
-
     /* We break the URL into host, port, path-search */
-    connectname = r->parsed_uri.hostname;
-    connectport = (r->parsed_uri.port != 0)
-        ? r->parsed_uri.port
-        : apr_uri_port_of_scheme("ftp");
-    path = apr_pstrdup(p, r->parsed_uri.path);
+    if(r->parsed_uri.hostname==NULL){
+        if (APR_SUCCESS != apr_uri_parse(p, url, &uri)) {
+            return ap_proxyerror(r, HTTP_BAD_REQUEST,
+                apr_psprintf(p, "URI cannot be parsed: %s", url));
+        }
+        connectname = uri.hostname;
+        connectport = uri.port;
+        path = apr_pstrdup(p, uri.path);
+    } else {
+        connectname = r->parsed_uri.hostname;
+        connectport = r->parsed_uri.port;
+        path = apr_pstrdup(p, r->parsed_uri.path);
+    }
+    if (connectport==0) {
+        connectport = apr_uri_port_of_scheme("ftp");
+    }
     path = (path != NULL && path[0] != '\0') ? &path[1] : "";
 
     type_suffix = strchr(path, ';');
