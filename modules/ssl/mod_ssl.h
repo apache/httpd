@@ -129,6 +129,7 @@
 #include "apr_strings.h"
 #include "apr_pools.h"
 #include "apr_tables.h"
+#include "apr_file_info.h"
 #undef CORE_PRIVATE
 
 /* mod_ssl headers */
