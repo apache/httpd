@@ -185,6 +185,7 @@ API_EXPORT(void) add_common_vars(request_rec *r)
 #ifdef WIN32
     char *env_temp;
 #endif
+    const char *host;
 
     array_header *hdrs_arr = table_elts(r->headers_in);
     table_entry *hdrs = (table_entry *) hdrs_arr->elts;
@@ -239,8 +240,10 @@ API_EXPORT(void) add_common_vars(request_rec *r)
     table_setn(e, "SERVER_NAME", get_server_name(r));
     ap_snprintf(port, sizeof(port), "%u", get_server_port(r));
     table_setn(e, "SERVER_PORT", pstrdup(r->pool,port));
-    table_setn(e, "REMOTE_HOST",
-        pstrdup(r->pool, get_remote_host(c, r->per_dir_config, REMOTE_NAME)));
+    host = get_remote_host(c, r->per_dir_config, REMOTE_HOST);
+    if (host) {
+	table_setn(e, "REMOTE_HOST", pstrdup(r->pool, host));
+    }
     table_setn(e, "REMOTE_ADDR", c->remote_ip);
     table_setn(e, "DOCUMENT_ROOT", document_root(r));	/* Apache */
     table_setn(e, "SERVER_ADMIN", s->server_admin);	/* Apache */
