@@ -257,6 +257,7 @@
 <li><a href="mpm_common.html#pidfile">PidFile</a></li>
 <li><a href="mod_echo.html#protocolecho">ProtocolEcho</a></li>
 <li><a href="mod_proxy.html#proxy">&lt;Proxy&gt;</a></li>
+<li><a href="mod_proxy.html#proxybadheader">ProxyBadHeader</a></li>
 <li><a href="mod_proxy.html#proxyblock">ProxyBlock</a></li>
 <li><a href="mod_proxy.html#proxydomain">ProxyDomain</a></li>
 <li><a href="mod_proxy.html#proxyerroroverride">ProxyErrorOverride</a></li>
