@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2002/06/03 22:10:58 $]
+Last modified at [$Date: 2002/06/05 05:35:30 $]
 
 Release:
 
@@ -54,6 +54,9 @@ CURRENT RELEASE NOTES:
 RELEASE SHOWSTOPPERS:
 
     * Reverse proxy broken
+      Status: This comes down to the fact whether a subrequest can read input?
+              Yes or no?
+      Justin says: This is also related to the chunked input entry (see below).
       Message-ID: <3CFA9315.4030003@apache.org>
 
     * Win32: httpd won't start.  There was a command line args problem
@@ -81,8 +84,13 @@ RELEASE SHOWSTOPPERS:
 
     * Chunked trailer support is broken.
       Message-ID: <20020531142047.W19485@apache.org>
-      Status: Justin posted a series of patches to fix this to dev@httpd
-              which are waiting for review:
+      Status: rbb committed a fix to http_protocol.c, but we still need to
+              figure out what to do with ap_discard_request_body.  Should
+              we still rearrange it like the patches below have it?  Or,
+              can we remove all callers of ap_discard_request_body and
+              only do it in ap_finalize_request_protocol?  (rbb hinted that
+              we can't do it in ap_finalize_request_protocol because of
+              potential 413 errors which would be detected too late.)
                 For the core and various modules:
                   <20020602164041.N19485@apache.org>
                 For mod_dav:
