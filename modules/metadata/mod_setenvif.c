@@ -92,6 +92,8 @@
  *
  * Special values for 'name' are:
  *
+ *   server_addr      	IP address of interface on which request arrived
+ *			(analogous to SERVER_ADDR set in ap_add_common_vars())
  *   remote_host        Remote host name (if available)
  *   remote_addr        Remote IP address
  *   remote_user        Remote authenticated user (if any)
@@ -143,7 +145,8 @@ enum special {
     SPECIAL_REMOTE_USER,
     SPECIAL_REQUEST_URI,
     SPECIAL_REQUEST_METHOD,
-    SPECIAL_REQUEST_PROTOCOL
+    SPECIAL_REQUEST_PROTOCOL,
+    SPECIAL_SERVER_ADDR
 };
 typedef struct {
     char *name;                 /* header name */
@@ -376,6 +379,9 @@ static const char *add_setenvif_core(cmd_parms *cmd, void *mconfig,
         else if (!strcasecmp(fname, "request_protocol")) {
             new->special_type = SPECIAL_REQUEST_PROTOCOL;
         }
+        else if (!strcasecmp(fname, "server_addr")) {
+            new->special_type = SPECIAL_SERVER_ADDR;
+        }
         else {
             new->special_type = SPECIAL_NOT;
             /* Handle fname as a regular expression.
@@ -508,6 +514,9 @@ static int match_headers(request_rec *r)
             switch (b->special_type) {
             case SPECIAL_REMOTE_ADDR:
                 val = r->connection->remote_ip;
+                break;
+            case SPECIAL_SERVER_ADDR:
+                val = r->connection->local_ip;
                 break;
             case SPECIAL_REMOTE_HOST:
                 val =  ap_get_remote_host(r->connection, r->per_dir_config,
