@@ -3080,7 +3080,7 @@ static apr_status_t core_output_filter(ap_filter_t *f, apr_bucket_brigade *b)
                     if (!fd) {
                         if (nvec == MAX_IOVEC_TO_WRITE) {
                             /* woah! too many. buffer them up, for use later. */
-                            apr_bucket *temp;
+                            apr_bucket *temp, *next;
                             apr_bucket_brigade *temp_brig;
 
                             temp_brig = apr_brigade_create(f->c->pool);
@@ -3097,9 +3097,16 @@ static apr_status_t core_output_filter(ap_filter_t *f, apr_bucket_brigade *b)
                             temp = APR_BRIGADE_FIRST(temp_brig);
                             APR_BUCKET_REMOVE(temp);
                             APR_BRIGADE_INSERT_HEAD(b, temp);
-                            apr_brigade_destroy(temp_brig);
                             e = temp;
                             last_e = e;
+                            for (next = APR_BRIGADE_FIRST(temp_brig);
+                                 next != APR_BRIGADE_SENTINEL(temp_brig);
+                                 next = APR_BRIGADE_FIRST(temp_brig)) {
+                                APR_BUCKET_REMOVE(next);
+                                APR_BUCKET_INSERT_AFTER(temp, next);
+                                temp = next;
+                            }
+                            apr_brigade_destroy(temp_brig);
                             nvec = 0;
                             apr_bucket_read(e, &str, &n, APR_BLOCK_READ);
                         }
