@@ -74,6 +74,7 @@
 #include <pwd.h>
 #include <grp.h>
 #include <sys/types.h>
+#include <sys/ipc.h>
 
 typedef struct {
     uid_t uid;
