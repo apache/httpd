@@ -1224,8 +1224,8 @@ static void test(void)
 	he = gethostbyname(connecthost);
 	if (!he) {
 	    char theerror[1024];
-	    snprintf(theerror, sizeof(theerror),
-		"Bad hostname: %s\n", connecthost);
+	    ap_snprintf(theerror, sizeof(theerror),
+                        "Bad hostname: %s\n", connecthost);
 	    err(theerror);
 	}
 	server.sin_family = he->h_addrtype;
@@ -1243,37 +1243,37 @@ static void test(void)
 
     /* setup request */
     if (posting <= 0) {
-	snprintf(request, sizeof(request), 
-		"%s %s HTTP/1.0\r\n"
-		"User-Agent: ApacheBench/%s\r\n"
-		"%s" "%s" "%s"
-		"Host: %s%s\r\n"
-		"Accept: */*\r\n"
-		"%s" "\r\n",
-		(posting == 0) ? "GET" : "HEAD",
-		url_on_request,
-		VERSION,
-		keepalive ? "Connection: Keep-Alive\r\n" : "",
-		cookie, auth, 
-		hostname,colonport, hdrs);
+	ap_snprintf(request, sizeof(request), 
+                    "%s %s HTTP/1.0\r\n"
+                    "User-Agent: ApacheBench/%s\r\n"
+                    "%s" "%s" "%s"
+                    "Host: %s%s\r\n"
+                    "Accept: */*\r\n"
+                    "%s" "\r\n",
+                    (posting == 0) ? "GET" : "HEAD",
+                    url_on_request,
+                    VERSION,
+                    keepalive ? "Connection: Keep-Alive\r\n" : "",
+                    cookie, auth, 
+                    hostname,colonport, hdrs);
     }
     else {
-	snprintf(request, sizeof(request),
-		"POST %s HTTP/1.0\r\n"
-		"User-Agent: ApacheBench/%s\r\n"
-		"%s" "%s" "%s"
-		"Host: %s%s\r\n"
-		"Accept: */*\r\n"
-		"Content-length: %d\r\n"
-		"Content-type: %s\r\n"
-		"%s"
-		"\r\n",
-		url_on_request,
-		VERSION,
-		keepalive ? "Connection: Keep-Alive\r\n" : "",
-		cookie, auth,
-		hostname, colonport, postlen,
-		(content_type[0]) ? content_type : "text/plain", hdrs);
+        ap_snprintf(request, sizeof(request),
+                    "POST %s HTTP/1.0\r\n"
+                    "User-Agent: ApacheBench/%s\r\n"
+                    "%s" "%s" "%s"
+                    "Host: %s%s\r\n"
+                    "Accept: */*\r\n"
+                    "Content-length: %d\r\n"
+                    "Content-type: %s\r\n"
+                    "%s"
+                    "\r\n",
+                    url_on_request,
+                    VERSION,
+                    keepalive ? "Connection: Keep-Alive\r\n" : "",
+                    cookie, auth,
+                    hostname, colonport, postlen,
+                    (content_type[0]) ? content_type : "text/plain", hdrs);
     }
 
     if (verbosity >= 2)
@@ -1346,14 +1346,14 @@ static void test(void)
 static void copyright(void)
 {
     if (!use_html) {
-	printf("This is ApacheBench, Version %s\n", VERSION " <$Revision: 1.62 $> apache-1.3");
+	printf("This is ApacheBench, Version %s\n", VERSION " <$Revision: 1.63 $> apache-1.3");
 	printf("Copyright (c) 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/\n");
 	printf("Copyright (c) 1998-2002 The Apache Software Foundation, http://www.apache.org/\n");
 	printf("\n");
     }
     else {
 	printf("<p>\n");
-	printf(" This is ApacheBench, Version %s <i>&lt;%s&gt;</i> apache-1.3<br>\n", VERSION, "$Revision: 1.62 $");
+	printf(" This is ApacheBench, Version %s <i>&lt;%s&gt;</i> apache-1.3<br>\n", VERSION, "$Revision: 1.63 $");
 	printf(" Copyright (c) 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/<br>\n");
 	printf(" Copyright (c) 1998-2002 The Apache Software Foundation, http://www.apache.org/<br>\n");
 	printf("</p>\n<p>\n");
@@ -1447,7 +1447,7 @@ static int parse_url(char * purl)
 #endif
 	(port != 80))) 
    {
-	snprintf(colonport,sizeof(colonport),":%d",port);
+	ap_snprintf(colonport,sizeof(colonport),":%d",port);
    } else {
 	colonport[0] = '\0';
    }
