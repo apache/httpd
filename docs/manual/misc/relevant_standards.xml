@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
+
+<manualpage metafile="relevant_standards.xml.meta">
+  <parentdocument href="./">Miscellaneous Documentation</parentdocument>
+
+  <title>Relevant Standards</title>
+  
+  <summary>
+    <p>This page documents all the relevant standards that the
+    Apache HTTP Server follows, along with brief descriptions.</p>
+
+    <p>In addition to the information listed below, the following resources
+    should be consulted:</p>
+
+    <ul>
+      <li>
+        <a href="http://purl.org/NET/http-errata">
+        http://purl.org/NET/http-errata</a> - HTTP/1.1 Specification Errata
+      </li>
+      <li>
+        <a href="http://www.rfc-editor.org/errata.html">
+        http://www.rfc-editor.org/errata.html</a> - RFC Errata
+      </li>
+      <li>
+        <a href="http://ftp.ics.uci.edu/pub/ietf/http/#RFC">
+        http://ftp.ics.uci.edu/pub/ietf/http/#RFC</a> - A pre-compiled list
+        of HTTP related RFCs
+      </li>
+    </ul>
+
+    <note type="warning"><title>Notice</title>
+    <p>This document is not yet complete.</p>
+    </note>
+
+  </summary>
+  
+  <section id="http_recommendations"><title>HTTP Recommendations</title>
+
+    <p>Regardless of what modules are compiled and used, Apache as a
+    basic web server complies with the following IETF recommendations:</p>
+
+    <dl>
+      <dt><a href="http://www.rfc-editor.org/rfc/rfc1945.txt">RFC 1945</a>
+      (Informational)</dt>
+
+      <dd>The Hypertext Transfer Protocol (HTTP) is an application-level
+      protocol with the lightness and speed necessary for distributed,
+      collaborative, hypermedia information systems.  This documents
+      HTTP/1.0.</dd>
+
+      <dt><a href="http://www.rfc-editor.org/rfc/rfc2616.txt">RFC 2616</a>
+      (Standards Track)</dt>
+
+      <dd>The Hypertext Transfer Protocol (HTTP) is an
+      application-level protocol for distributed, collaborative,
+      hypermedia information systems.  This documents HTTP/1.1.</dd>
+
+      <dt><a href="http://www.rfc-editor.org/rfc/rfc2396.txt">RFC 2396</a>
+      (Standards Track)</dt>
+
+      <dd>A Uniform Resource Identifier (URI) is a compact string of
+      characters for identifying an abstract or physical resource.</dd>
+    </dl>
+
+  </section>
+
+  <section id="html_recommendations"><title>HTML Recommendations</title>
+
+    <p>Regarding the Hypertext Markup Language, Apache complies with
+    the following IETF and W3C recommendations:</p>
+
+    <dl>
+      <dt><a href="http://www.rfc-editor.org/rfc/rfc2854.txt">RFC 2854</a>
+      (Informational)</dt>
+
+      <dd>This document summarizes the history of HTML development,
+      and defines the "text/html" MIME type by pointing to the relevant
+      W3C recommendations.</dd>
+
+      <dt><a href="http://www.w3.org/TR/html401">HTML 4.01 Specification</a>
+      (<a href="http://www.w3.org/MarkUp/html4-updates/errata">Errata</a>)
+      </dt>
+
+      <dd>This specification defines the HyperText Markup Language (HTML),
+      the publishing language of the World Wide Web. This specification
+      defines HTML 4.01, which is a subversion of HTML 4.</dd>
+
+      <dt><a href="http://www.w3.org/TR/REC-html32">HTML 3.2 Reference
+      Specification</a></dt>
+
+      <dd>The HyperText Markup Language (HTML) is a simple markup language
+      used to create hypertext documents that are portable from one
+      platform to another. HTML documents are SGML documents.</dd>
+
+      <dt><a href="http://www.w3.org/TR/xhtml11/">XHTML^(TM) 1.1 -
+      Module-based XHTML</a>
+      (<a href="http://www.w3.org/2001/04/REC-xhtml-modularization-20010410-errata">Errata</a>)
+      </dt>
+
+      <dd>This Recommendation defines a new XHTML document type
+      that is based upon the module framework and modules defined in
+      Modularization of XHTML.</dd>
+
+      <dt><a href="http://www.w3.org/TR/xhtml1">XHTML^(TM) 1.0 The
+      Extensible HyperText Markup Language (Second Edition)</a>
+      (<a href="http://www.w3.org/2002/08/REC-xhtml1-20020801-errata">Errata</a>)
+      </dt>
+
+      <dd>This specification defines the Second Edition of XHTML 1.0,
+      a reformulation of HTML 4 as an XML 1.0 application, and three
+      DTDs corresponding to the ones defined by HTML 4.</dd>
+    </dl>
+
+  </section>
+
+  <section id="authentication"><title>Authentication</title>
+
+    <p>Concerning the different methods of authentication, Apache
+    follows the following IETF recommendations:</p>
+
+    <dl>
+      <dt><a href="http://www.rfc-editor.org/rfc/rfc2617.txt">RFC 2617</a>
+      (Draft standard)</dt>
+
+      <dd>"HTTP/1.0", includes the specification for a Basic
+      Access Authentication scheme.</dd>
+
+    </dl>
+
+  </section>
+
+  <section id="language_country_codes"><title>Language/Country Codes</title>
+
+    <p>The following links document ISO and other language and country
+    code information:</p>
+
+    <dl>
+      <dt><a href="http://www.loc.gov/standards/iso639-2/">ISO 639-2</a></dt>
+
+      <dd>ISO 639 provides two sets of language codes, one as a two-letter
+      code set (639-1) and another as a three-letter code set (this part
+      of ISO 639) for the representation of names of languages.</dd>
+
+      <dt><a href="http://www.iso.ch/iso/en/prods-services/iso3166ma/02iso-3166-code-lists/index.html">
+      ISO 3166-1</a></dt>
+
+      <dd>These pages document the country names (official short names
+      in English) in alphabetical order as given in ISO 3166-1 and the
+      corresponding ISO 3166-1-alpha-2 code elements.</dd>
+
+      <dt><a href="http://www.rfc-editor.org/rfc/bcp/bcp47.txt">BCP 47</a>
+      (Best Current Practice),
+      <a href="http://www.rfc-editor.org/rfc/rfc3066.txt">RFC 3066</a></dt>
+
+      <dd>This document describes a language tag for use in cases where
+      it is desired to indicate the language used in an information
+      object, how to register values for use in this language tag,
+      and a construct for matching such language tags.</dd>
+
+      <dt><a href="http://www.rfc-editor.org/rfc/rfc3282.txt">RFC 3282</a>
+      (Standards Track)</dt>
+
+      <dd>This document defines a "Content-language:" header, for use in
+      cases where one desires to indicate the language of something that
+      has RFC 822-like headers, like MIME body parts or Web documents,
+      and an "Accept-Language:" header for use in cases where one wishes
+      to indicate one's preferences with regard to language.</dd>
+    </dl>
+
+  </section>
+
+</manualpage>
