@@ -131,6 +131,24 @@ static int asis_handler(request_rec *r)
         }
 
         bb = apr_brigade_create(r->pool);
+#if APR_HAS_LARGE_FILES
+        if (r->finfo.size - pos > AP_MAX_SENDFILE) {
+            /* APR_HAS_LARGE_FILES issue; must split into mutiple buckets, 
+             * no greater than MAX(apr_size_t), and more granular than that
+             * in case the brigade code/filters attempt to read it directly.
+             */
+            apr_off_t fsize = r->finfo.size - pos;
+            e = apr_bucket_file_create(fd, pos, AP_MAX_SENDFILE, r->pool);
+            while (fsize > AP_MAX_SENDFILE) {
+                APR_BRIGADE_INSERT_TAIL(bb, e);
+                apr_bucket_copy(e, &e);
+                e->start += AP_MAX_SENDFILE;
+                fsize -= AP_MAX_SENDFILE;
+            }
+            e->length = (apr_size_t)fsize; /* Resize just the last bucket */
+        }
+        else
+#endif
         b = apr_bucket_file_create(f, pos, (apr_size_t) (r->finfo.size - pos), r->pool);
         APR_BRIGADE_INSERT_TAIL(bb, b);
         b = apr_bucket_eos_create();
