@@ -193,6 +193,10 @@ case "${SYSTEM}:${RELEASE}:${VERSION}:${MACHINE}" in
 	echo "i486-ncr-sysv4"; exit 0
 	;;
 
+    library:*)
+	echo "${MACHINE}-ncr-sysv4"; exit 0
+	;;
+
     ULTRIX:*)
 	echo "${MACHINE}-unknown-ultrix"; exit 0
 	;;
@@ -208,10 +212,6 @@ case "${SYSTEM}:${RELEASE}:${VERSION}:${MACHINE}" in
     machten:*)
        echo "${MACHINE}-tenon-${SYSTEM}"; exit 0;
        ;;
-
-    library:*)
-	echo "${MACHINE}-ncr-sysv4"; exit 0
-	;;
 
     ConvexOS:*:11.*:*)
 	echo "${MACHINE}-v11-${SYSTEM}"; exit 0;
