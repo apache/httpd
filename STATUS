@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/04/07 16:44:50 $]
+Last modified at [$Date: 2003/04/16 08:55:49 $]
 
 Release:
 
@@ -263,7 +263,7 @@ CURRENT VOTES:
        R-T-C:   trawick, wrowe, jerenkrantz, stoddard, rederpj, striker, nd,
                 gregames(lazy consensus OK for mainline), jwoolley
        Abstain: 
-       C-T-R:   BrianP, aaron, jim, gstein, bnicholes
+       C-T-R:   BrianP, aaron, jim, gstein, bnicholes, minfrin
        
        gstein: we have an open branch, so there is an easy release
                valve for feature and API changes. we trust developers
@@ -333,6 +333,8 @@ CURRENT VOTES:
 
                Bleh.
 
+       minfrin: I see no point in adding any bureaucracy between a bug
+                and its fix.
 
     * httpd-std.conf and friends;
 
