@@ -667,7 +667,6 @@ BOOL ApacheManageService(LPCSTR szServiceName, LPCSTR szImagePath, LPSTR szCompu
     SC_HANDLE schService;
     SC_HANDLE schSCManager;    
     SERVICE_STATUS schSStatus;
-    LPSTR     *args;
     int       ticks;
 
     if (g_dwOSVersion == OS_VERSION_WIN9X)
@@ -717,17 +716,6 @@ BOOL ApacheManageService(LPCSTR szServiceName, LPCSTR szImagePath, LPSTR szCompu
     }
     else
     {
-        /* Apache 2.0 uses '-k runservice' as cmdline parameter */
-        sPos = strstr(szImagePath, "--ntservice");
-        if (!sPos)
-        {
-            sPos = strstr(szImagePath, "-k runservice");
-            serviceFlag = FALSE;
-        }
-        if (sPos)
-            lstrcpyn(szBuf, szImagePath, sPos - szImagePath);
-        else
-            return FALSE;
         schSCManager = OpenSCManager(
             szComputerName,
             NULL,
@@ -771,16 +759,8 @@ BOOL ApacheManageService(LPCSTR szServiceName, LPCSTR szImagePath, LPSTR szCompu
                 case SERVICE_CONTROL_CONTINUE:
                     sprintf(szMsg, g_lpMsg[IDS_MSG_SRVSTART-IDS_MSG_FIRST], szServiceName);
                     addListBoxString(g_hwndStdoutList, szMsg);
-                    args = (char **)malloc(3 * sizeof(char*));
-                    args[0] = szBuf;
-                    if (serviceFlag)
-                        args[1] = "--ntservice";
-                    else
-                    {
-                        args[1] = "-k";
-                        args[2] = "runservice";
-                    }
-                    if (StartService(schService, serviceFlag ? 2 : 3, args)) 
+
+                    if (StartService(schService, 0, NULL)) 
                     {
                         Sleep(1000);
                         while (QueryServiceStatus(schService, &schSStatus)) 
@@ -800,8 +780,6 @@ BOOL ApacheManageService(LPCSTR szServiceName, LPCSTR szImagePath, LPSTR szCompu
                             addListBoxString(g_hwndStdoutList, szMsg);
                         }
                     }
-                    /* is this OK to do? */
-                    free(args);
                 break;                
                 case SERVICE_APACHE_RESTART:
                     sprintf(szMsg, g_lpMsg[IDS_MSG_SRVRESTART-IDS_MSG_FIRST], szServiceName);
