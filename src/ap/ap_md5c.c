@@ -602,11 +602,10 @@ API_EXPORT(char *) ap_validate_password(const char *passwd, const char *hash)
 	 */
 #ifdef WIN32
 	return "crypt() unavailable on Win32, cannot validate password";
-    }
 #else
 	crypt_pw = crypt(passwd, hash);
 	ap_cpystrn(sample, crypt_pw, sizeof(sample) - 1);
-    }
 #endif
+    }
     return (strcmp(sample, hash) == 0) ? NULL : "password mismatch";
 }
