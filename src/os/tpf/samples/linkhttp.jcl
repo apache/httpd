@@ -1,4 +1,4 @@
-//LINKHTTP  JOB MSGLEVEL=(1,1),CLASS=G,MSGCLASS=S
+//LINKHTTP JOB MSGLEVEL=(1,1),CLASS=G,MSGCLASS=S
 /*ROUTE PRINT <your-id-here>
 /*ROUTE PUNCH <your-id-here>
 /*NOTIFY <your-id-here>
@@ -6,42 +6,41 @@
 //PRELINK EXEC EDCPL,COND.LKED=(0,NE),
 // PPARM='OMVS,DLLNAME(CHTA)',
 // LREGSIZ='2048K',
-// LPARM='AMODE=31,RMODE=ANY,LIST,XREF'
-//PLKED.SYSLIB DD DISP=SHR,DSN=ACP.STUB.RLSE40
-//             DD DISP=SHR,DSN=ACP.CLIB.RLSE40
-//PLKED.OBJLIB DD DISP=SHR,DSN=ACP.MAIN.SYST.OBBSS
-//             DD DISP=SHR,DSN=ACP.DF.MAIN.SYST.OBBSS
-//             DD DISP=SHR,DSN=ACP.OBJ.RLSE40.BSS
-//PLKED.OBJ01  DD PATH='/<your-path-here>/src/ap/ap_base64.o'
-//PLKED.OBJ02  DD PATH='/<your-path-here>/src/ap/ap_checkpass.o'
-//PLKED.OBJ03  DD PATH='/<your-path-here>/src/ap/ap_cpystrn.o'
-//PLKED.OBJ04  DD PATH='/<your-path-here>/src/ap/ap_ebcdic.o'
-//PLKED.OBJ05  DD PATH='/<your-path-here>/src/ap/ap_execve.o'
-//PLKED.OBJ06  DD PATH='/<your-path-here>/src/ap/ap_fnmatch.o'
-//PLKED.OBJ07  DD PATH='/<your-path-here>/src/ap/ap_getpass.o'
-//PLKED.OBJ08  DD PATH='/<your-path-here>/src/ap/ap_md5c.o'
-//PLKED.OBJ09  DD PATH='/<your-path-here>/src/ap/ap_sha1.o'
-//PLKED.OBJ10  DD PATH='/<your-path-here>/src/ap/ap_signal.o'
-//PLKED.OBJ11  DD PATH='/<your-path-here>/src/ap/ap_slack.o'
-//PLKED.OBJ12  DD PATH='/<your-path-here>/src/ap/ap_snprintf.o'
-//PLKED.OBJ13  DD PATH='/<your-path-here>/src/ap/ap_strtol.o'
-//PLKED.OBJ14  DD PATH='/<your-path-here>/src/buildmark.o'
-//PLKED.OBJ15  DD PATH='/<your-path-here>/src/main/alloc.o'
-//PLKED.OBJ16  DD PATH='/<your-path-here>/src/main/buff.o'
-//PLKED.OBJ17  DD PATH='/<your-path-here>/src/main/http_config.o'
-//PLKED.OBJ18  DD PATH='/<your-path-here>/src/main/http_core.o'
-//PLKED.OBJ19  DD PATH='/<your-path-here>/src/main/http_log.o'
-//PLKED.OBJ20  DD PATH='/<your-path-here>/src/main/http_main.o'
-//PLKED.OBJ21  DD PATH='/<your-path-here>/src/main/http_protocol.o'
-//PLKED.OBJ22  DD PATH='/<your-path-here>/src/main/http_request.o'
-//PLKED.OBJ23  DD PATH='/<your-path-here>/src/main/http_vhost.o'
-//PLKED.OBJ24  DD PATH='/<your-path-here>/src/main/rfc1413.o'
-//PLKED.OBJ25  DD PATH='/<your-path-here>/src/main/util.o'
-//PLKED.OBJ26  DD PATH='/<your-path-here>/src/main/util_date.o'
-//PLKED.OBJ27  DD PATH='/<your-path-here>/src/main/util_md5.o'
-//PLKED.OBJ28  DD PATH='/<your-path-here>/src/main/util_script.o'
-//PLKED.OBJ29  DD PATH='/<your-path-here>/src/main/util_uri.o'
-//PLKED.OBJ30  DD PATH='/<your-path-here>/src/modules.o'
+// LPARM='AMODE=31,RMODE=ANY,LIST,XREF,MAP'
+//PLKED.SYSLIB DD DISP=SHR,DSN=<your-first-syslib-dsn>
+//             DD DISP=SHR,DSN=<your-final-syslib-dsn>
+//PLKED.OBJLIB DD DISP=SHR,DSN=<your-first-objlib-dsn>
+//             DD DISP=SHR,DSN=<your-final-objlib-dsn>
+//PLKED.OBJ01  DD PATH='/<your-path-here>/src/buildmark.o'
+//PLKED.OBJ02  DD PATH='/<your-path-here>/src/modules.o'
+//PLKED.OBJ03  DD PATH='/<your-path-here>/src/ap/ap_base64.o'
+//PLKED.OBJ04  DD PATH='/<your-path-here>/src/ap/ap_checkpass.o'
+//PLKED.OBJ05  DD PATH='/<your-path-here>/src/ap/ap_cpystrn.o'
+//PLKED.OBJ06  DD PATH='/<your-path-here>/src/ap/ap_ebcdic.o'
+//PLKED.OBJ07  DD PATH='/<your-path-here>/src/ap/ap_execve.o'
+//PLKED.OBJ08  DD PATH='/<your-path-here>/src/ap/ap_fnmatch.o'
+//PLKED.OBJ09  DD PATH='/<your-path-here>/src/ap/ap_getpass.o'
+//PLKED.OBJ10  DD PATH='/<your-path-here>/src/ap/ap_md5c.o'
+//PLKED.OBJ11  DD PATH='/<your-path-here>/src/ap/ap_sha1.o'
+//PLKED.OBJ12  DD PATH='/<your-path-here>/src/ap/ap_signal.o'
+//PLKED.OBJ13  DD PATH='/<your-path-here>/src/ap/ap_slack.o'
+//PLKED.OBJ14  DD PATH='/<your-path-here>/src/ap/ap_snprintf.o'
+//PLKED.OBJ15  DD PATH='/<your-path-here>/src/ap/ap_strtol.o'
+//PLKED.OBJ16  DD PATH='/<your-path-here>/src/main/alloc.o'
+//PLKED.OBJ17  DD PATH='/<your-path-here>/src/main/buff.o'
+//PLKED.OBJ18  DD PATH='/<your-path-here>/src/main/http_config.o'
+//PLKED.OBJ19  DD PATH='/<your-path-here>/src/main/http_core.o'
+//PLKED.OBJ20  DD PATH='/<your-path-here>/src/main/http_log.o'
+//PLKED.OBJ21  DD PATH='/<your-path-here>/src/main/http_main.o'
+//PLKED.OBJ22  DD PATH='/<your-path-here>/src/main/http_protocol.o'
+//PLKED.OBJ23  DD PATH='/<your-path-here>/src/main/http_request.o'
+//PLKED.OBJ24  DD PATH='/<your-path-here>/src/main/http_vhost.o'
+//PLKED.OBJ25  DD PATH='/<your-path-here>/src/main/rfc1413.o'
+//PLKED.OBJ26  DD PATH='/<your-path-here>/src/main/util.o'
+//PLKED.OBJ27  DD PATH='/<your-path-here>/src/main/util_date.o'
+//PLKED.OBJ28  DD PATH='/<your-path-here>/src/main/util_md5.o'
+//PLKED.OBJ29  DD PATH='/<your-path-here>/src/main/util_script.o'
+//PLKED.OBJ30  DD PATH='/<your-path-here>/src/main/util_uri.o'
 //PLKED.OBJ31  DD PATH='/<your-path-here>/src/modules/standard/mod_acce\
 //             ss.o'
 //PLKED.OBJ32  DD PATH='/<your-path-here>/src/modules/standard/mod_acti\
@@ -142,6 +141,5 @@
  INCLUDE OBJ54
  INCLUDE OBJLIB(CINET640)
 /*
-//*** WARNING *** NEVER change .LK to .OB in SYSLMOD!!!
-//LKED.SYSLMOD DD DISP=OLD,DSN=<your-dsn-here>(CHTA<vv>)
+//LKED.SYSLMOD DD DISP=OLD,DSN=<your-target-dsn-here>(CHTA<vv>)
 //
