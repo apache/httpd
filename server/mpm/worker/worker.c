@@ -229,9 +229,6 @@ static apr_pool_t *pchild;                /* Pool for httpd child stuff */
 static pid_t ap_my_pid; /* Linux getpid() doesn't work except in main 
                            thread. Use this instead */
 static pid_t parent_pid;
-/* Keep track of the number of worker threads currently active */
-static int worker_thread_count;
-static apr_thread_mutex_t *worker_thread_count_mutex;
 
 /* Locks for accept serialization */
 static apr_proc_mutex_t *accept_mutex;
@@ -603,10 +600,6 @@ static void *listener_thread(apr_thread_t *thd, void * dummy)
 
     free(ti);
 
-    apr_thread_mutex_lock(worker_thread_count_mutex);
-    worker_thread_count++;
-    apr_thread_mutex_unlock(worker_thread_count_mutex);
-
     apr_poll_setup(&pollset, num_listensocks, tpool);
     for(lr = ap_listeners ; lr != NULL ; lr = lr->next)
         apr_poll_socket_add(pollset, lr->sd, APR_POLLIN);
@@ -784,9 +777,6 @@ static void * APR_THREAD_FUNC worker_thread(apr_thread_t *thd, void * dummy)
 
     ap_update_child_status_from_indexes(process_slot, thread_slot,
         (dying) ? SERVER_DEAD : SERVER_GRACEFUL, (request_rec *) NULL);
-    apr_thread_mutex_lock(worker_thread_count_mutex);
-    worker_thread_count--;
-    apr_thread_mutex_unlock(worker_thread_count_mutex);
 
     apr_thread_exit(thd, APR_SUCCESS);
     return NULL;
@@ -993,9 +983,6 @@ static void child_main(int child_num_arg)
                      "malloc: out of memory");
         clean_child_exit(APEXIT_CHILDFATAL);
     }
-    worker_thread_count = 0;
-    apr_thread_mutex_create(&worker_thread_count_mutex,
-                            APR_THREAD_MUTEX_DEFAULT, pchild);
 
     ts = (thread_starter *)apr_palloc(pchild, sizeof(*ts));
 
