@@ -130,6 +130,8 @@ typedef char * caddr_t;
 #define O_RDWR _O_RDWR
 /* Seems Windows is not a subgenius */
 #define NO_SLACK
+#define APACHE_MPM_DIR  "modules/mpm/winnt" /* generated on unix */
+
 #include <stddef.h>
 
 __inline int ap_os_is_path_absolute(const char *file)
