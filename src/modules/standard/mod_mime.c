@@ -114,7 +114,8 @@ static void *merge_mime_dir_configs(pool *p, void *basev, void *addv)
     return new;
 }
 
-static const char *add_type(cmd_parms *cmd, mime_dir_config * m, char *ct, char *ext)
+static const char *add_type(cmd_parms *cmd, mime_dir_config * m, char *ct,
+                            char *ext)
 {
     if (*ext == '.')
         ++ext;
@@ -173,10 +174,12 @@ static command_rec mime_cmds[] =
      "a language (e.g., fr), followed by one or more file extensions"},
     {"AddHandler", add_handler, NULL, OR_FILEINFO, ITERATE2,
      "a handler name followed by one or more file extensions"},
-  {"ForceType", set_string_slot_lower, (void *) XtOffsetOf(mime_dir_config, type),
-   OR_FILEINFO, TAKE1, "a media type"},
-    {"SetHandler", set_string_slot_lower, (void *) XtOffsetOf(mime_dir_config, handler),
-     OR_FILEINFO, TAKE1, "a handler name"},
+    {"ForceType", set_string_slot_lower, 
+     (void *)XtOffsetOf(mime_dir_config, type), OR_FILEINFO, TAKE1, 
+     "a media type"},
+    {"SetHandler", set_string_slot_lower, 
+     (void *)XtOffsetOf(mime_dir_config, handler), OR_FILEINFO, TAKE1, 
+     "a handler name"},
     {"TypesConfig", set_types_config, NULL, RSRC_CONF, TAKE1,
      "the MIME types config file"},
     {NULL}
@@ -248,7 +251,6 @@ static int find_ct(request_rec *r)
     }
 
     /* TM -- FIXME
-
      * if r->filename does not contain a '/', the following passes a null
      * pointer to getword, causing a SEGV ..
      */
@@ -332,11 +334,11 @@ module MODULE_VAR_EXPORT mime_module =
 {
     STANDARD_MODULE_STUFF,
     init_mime,                  /* initializer */
-    create_mime_dir_config,
-    merge_mime_dir_configs,
+    create_mime_dir_config,     /* dir config creator */
+    merge_mime_dir_configs,     /* dir config merger */
     NULL,                       /* server config */
     NULL,                       /* merge server config */
-    mime_cmds,
+    mime_cmds,                  /* command table */
     NULL,                       /* handlers */
     NULL,                       /* filename translation */
     NULL,                       /* check_user_id */
