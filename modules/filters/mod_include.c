@@ -831,7 +831,7 @@ static int include_cmd(char *s, request_rec *r)
     include_cmd_arg arg;
     BUFF *script_in;
     ap_procattr_t *procattr;
-    ap_proc_t procnew;
+    ap_proc_t *procnew;
     ap_status_t rc;
     ap_table_t *env = r->subprocess_env;
     char **argv;
@@ -896,7 +896,8 @@ static int include_cmd(char *s, request_rec *r)
     else {
         build_argv_list(&argv, r, r->pool);
         argv[0] = ap_pstrdup(r->pool, s);
-        rc = ap_create_process(&procnew, s, argv, ap_create_environment(r->pool, env), procattr, r->pool);
+        procnew = ap_pcalloc(r->pool, sizeof(*procnew));
+        rc = ap_create_process(procnew, s, argv, ap_create_environment(r->pool, env), procattr, r->pool);
 
         if (rc != APR_SUCCESS) {
             /* Bad things happened. Everyone should have cleaned up. */
@@ -904,9 +905,9 @@ static int include_cmd(char *s, request_rec *r)
                         "couldn't create child process: %d: %s", rc, s);
         }
         else {
-            ap_note_subprocess(r->pool, &procnew, kill_after_timeout);
+            ap_note_subprocess(r->pool, procnew, kill_after_timeout);
             /* Fill in BUFF structure for parents pipe to child's stdout */
-            file = procnew.out;
+            file = procnew->out;
             iol = ap_create_file_iol(file);
             if (!iol)
                 return APR_EBADF;

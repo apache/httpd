@@ -3421,7 +3421,7 @@ static int rewritemap_program_child(ap_pool_t *p, char *progname,
 {
     int rc = -1;
     ap_procattr_t *procattr;
-    ap_proc_t procnew;
+    ap_proc_t *procnew;
 
 #ifdef SIGHUP
     ap_signal(SIGHUP, SIG_IGN);
@@ -3439,21 +3439,22 @@ static int rewritemap_program_child(ap_pool_t *p, char *progname,
         rc = -1;
     }
     else {
-        rc = ap_create_process(&procnew, progname, NULL, NULL, procattr, p);
+        procnew = ap_pcalloc(p, sizeof(*procnew));
+        rc = ap_create_process(procnew, progname, NULL, NULL, procattr, p);
     
         if (rc == APR_SUCCESS) {
-            ap_note_subprocess(p, &procnew, kill_after_timeout);
+            ap_note_subprocess(p, procnew, kill_after_timeout);
 
             if (fpin) {
-                (*fpin) = procnew.in;
+                (*fpin) = procnew->in;
             }
 
             if (fpout) {
-                (*fpout) = procnew.out;
+                (*fpout) = procnew->out;
             }
 
             if (fperr) {
-                (*fperr) = procnew.err;
+                (*fperr) = procnew->err;
             }
         }
     }
