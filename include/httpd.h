@@ -1298,44 +1298,227 @@ API_EXPORT(char *) ap_make_dirstr_prefix(char *d, const char *s, int n);
  * @deffunc char *ap_make_dirstr_parent(apr_pool_t *p, const char *s)
  */
 API_EXPORT(char *) ap_make_dirstr_parent(apr_pool_t *p, const char *s);
+
 /* deprecated.  The previous two routines are preferred. */
 API_EXPORT(char *) ap_make_dirstr(apr_pool_t *a, const char *s, int n);
+
+/**
+ * Given a directory and filename, create a single path out of them.  This
+ * function is smart enough to ensure that there is a sinlge '/' between the
+ * directory and file names
+ * @param a The pool to allocate out of
+ * @param dir The directory name
+ * @param f The filename
+ * @return A copy of the full path
+ * @deffunc char *ap_make_full_path(apr_pool_t *a, const char *dir, const char *f)
+ */
 API_EXPORT(char *) ap_make_full_path(apr_pool_t *a, const char *dir, const char *f);
 
+/**
+ * Does the provided string contain wildcard characters?  This is useful
+ * for determining if the string should be passed to strcmp_match or to strcmp.
+ * The only wildcard characters recognized are '?' and '*'
+ * @param str The string to check
+ * @return 1 if the string has wildcards, 0 otherwise
+ * @deffunc int ap_is_matchexp(const char *str)
+ */
 API_EXPORT(int) ap_is_matchexp(const char *str);
+
+/**
+ * Determine if a string matches a patterm containing the wildcards '?' or '*'
+ * @param str The string to check
+ * @param exp The pattern to match against
+ * @return 1 if the two strings match, 0 otherwise
+ * @deffunc int ap_strcmp_match(const char *str, const char *exp)
+ */
 API_EXPORT(int) ap_strcmp_match(const char *str, const char *exp);
+/**
+ * Determine if a string matches a patterm containing the wildcards '?' or '*',
+ * ignoring case
+ * @param str The string to check
+ * @param exp The pattern to match against
+ * @return 1 if the two strings match, 0 otherwise
+ * @deffunc int ap_strcasecmp_match(const char *str, const char *exp)
+ */
 API_EXPORT(int) ap_strcasecmp_match(const char *str, const char *exp);
+
+/**
+ * Find the first occurrence of the substring s2 in s1, regardless of case
+ * @param s1 The string to search
+ * @param s2 The substring to search for
+ * @return A pointer to the beginning of the substring
+ * @deffunc char *ap_strcasestr(const char *s1, const char *s2)
+ */
 API_EXPORT(char *) ap_strcasestr(const char *s1, const char *s2);
+
+/**
+ * Decode a base64 encoded string into memory allocated out of a pool
+ * @param p The pool to allocate out of
+ * @param bufcoded The encoded string
+ * @return The decoded string
+ * @deffunc char *ap_pbase64decode(apr_pool_t *p, const char *bufcoded)
+ */
 API_EXPORT(char *) ap_pbase64decode(apr_pool_t *p, const char *bufcoded);
+
+/**
+ * Encode a string into memory allocated out of a pool in base 64 format
+ * @param p The pool to allocate out of
+ * @param strin The plaintext string
+ * @return The encoded string
+ * @deffunc char *ap_pbase64encode(apr_pool_t *p, char *string)
+ */
 API_EXPORT(char *) ap_pbase64encode(apr_pool_t *p, char *string); 
+
+/* The functions have been deprecated for the two above functions.
+ */
 API_EXPORT(char *) ap_uudecode(apr_pool_t *p, const char *bufcoded);
 API_EXPORT(char *) ap_uuencode(apr_pool_t *p, char *string); 
 
 #include "pcreposix.h"
 
+/**
+ * Compile a regular expression to be used later
+ * @param p The pool to allocate out of
+ * @param pattern the regular expression to compile
+ * @param cflags The bitwise or of one or more of the following:
+ * <PRE>
+ *       REG_EXTENDED - Use POSIX extended Regular Expressions
+ *       REG_ICASE    - Ignore case
+ *       REG_NOSUB    - Support for substring addressing of matches not required
+ *       REG_NEWLINE  - Match-any-character operators don't match new-line
+ * </PRE>
+ * @return The compiled regular expression
+ * @deffunc regex_t *ap_pregcomp(apr_pool_t *p, const char *pattern, int cflags)
+ */
 API_EXPORT(regex_t *) ap_pregcomp(apr_pool_t *p, const char *pattern,
 				   int cflags);
+/**
+ * Free the memory associated with a compiled regular expression
+ * @param p The pool the regex was allocated out of
+ * @param reg The regular expression to free
+ * @deffunc void ap_pregfree(apr_pool_t *p, regex_t *reg)
+ */
 API_EXPORT(void) ap_pregfree(apr_pool_t *p, regex_t *reg);
+
+/**
+ * Match a null-terminated string against a pre-compiled regex.
+ * @param preg The pre-compiled regex
+ * @param string The string to match
+ * @param nmatch Provide information regarding the location of any matches
+ * @param pmatch Provide information regarding the location of any matches
+ * @param eflags Bitwise or of one or both of:
+ * <PRE>
+ *        REG_NOTBOL - match-beginning-of-line operator always fails to match
+ *        REG_NOTEOL - match-end-of-line operator always fails to match
+ * </PRE>
+ * @return 0 for successful match, REG_NOMATCH otherwise
+ * @deffunc int ap_regexec(regex_t *preg, const char *string, size_t nmatch, regmatch_t pmatch[], int eflags)
+ */ 
 API_EXPORT(int)    ap_regexec(regex_t *preg, const char *string,
                               size_t nmatch, regmatch_t pmatch[], int eflags);
+
+/**
+ * Return the error code returned by regcomp or regexec into error messages
+ * @param errocode the error code returned by regexec or regcomp
+ * @param preg The precompiled regex
+ * @param errbuf A buffer to store the error in
+ * @param errbuf_size The size of the buffer
+ * @deffunc size_t ap_regerror(int errcode, const regex_t *preg, char *errbuf, size_t errbuf_size)
+ */
 API_EXPORT(size_t) ap_regerror(int errcode, const regex_t *preg, 
                                char *errbuf, size_t errbuf_size);
+
+/**
+ * After performing a successful regex match, you may use this function to 
+ * perform a series of string substitutions based on subexpressions that were
+ * matched during the call to ap_regexec
+ * @param p The pool to allocate out of
+ * @param input An arbitrary string containing $1 through $9.  These are 
+ *              replaced with the corresponding matched sub-expressions
+ * @param source The string that was originally matched to the regex
+ * @param nmatch the nmatch returned from ap_pregex
+ * @param pmatch the pmatch array returned from ap_pregex
+ * @deffunc char *ap_pregsub(apr_pool_t *p, const char *input, const char *source, size_t nmatch, regmatch_t pmatch[])
+ */
 API_EXPORT(char *) ap_pregsub(apr_pool_t *p, const char *input, const char *source,
                               size_t nmatch, regmatch_t pmatch[]);
 
-API_EXPORT(void) ap_content_type_tolower(char *);
-API_EXPORT(void) ap_str_tolower(char *);
-API_EXPORT(int) ap_ind(const char *, char);	/* Sigh... */
-API_EXPORT(int) ap_rind(const char *, char);
+/**
+ * we want to downcase the type/subtype for comparison purposes
+ * but nothing else because ;parameter=foo values are case sensitive.
+ * @param s The content-type to convert to lowercase
+ * @deffunc void ap_content_type_tolower(char *s)
+ */
+API_EXPORT(void) ap_content_type_tolower(char *s);
+/**
+ * convert a string to all lowercase
+ * @param s The string to convert to lowercase 
+ * @deffunc void ap_str_tolower(char *s) 
+ */
+API_EXPORT(void) ap_str_tolower(char *s);
 
-API_EXPORT(char *) ap_escape_quotes (apr_pool_t *p, const char *instring);
+/**
+ * Search a string from left to right for the first occurrence of a 
+ * specific character
+ * @param str The string to search
+ * @param c The character to search for
+ * @return The index of the first occurrence of c in str
+ * @deffunc int ap_ind(const char *str, char c)
+ */
+API_EXPORT(int) ap_ind(const char *str, char c);	/* Sigh... */
+
+/**
+ * Search a string from right to left for the first occurrence of a 
+ * specific character
+ * @param str The string to search
+ * @param c The character to search for
+ * @return The index of the first occurrence of c in str
+ * @deffunc int ap_rind(const char *str, char c)
+ */
+API_EXPORT(int) ap_rind(const char *str, char c);
+
+/**
+ * Given a string, replace any bare " with \" .
+ * @param p The pool to allocate memory out of
+ * @param instring The string to search for "
+ * @return A copy of the string with escaped quotes 
+ * @deffunc char * ap_escape_quotes(apr_pool_t *p, const char *instring) 
+ */
+API_EXPORT(char *) ap_escape_quotes(apr_pool_t *p, const char *instring);
 
 /* Misc system hackery */
-
+/**
+ * Convert a username to a numeric ID
+ * @param name The name to convert
+ * @return The user id corresponding to a name
+ * @deffunc uid_t ap_uname2id(const char *name) 
+ */
 API_EXPORT(uid_t) ap_uname2id(const char *name);
+/**
+ * Convert a group name to a numeric ID
+ * @param name The name to convert
+ * @return The group id corresponding to a name
+ * @deffunc gid_t ap_gname2id(const char *name) 
+ */
 API_EXPORT(gid_t) ap_gname2id(const char *name);
+/**
+ * Given the name of an object in the file system determine if it is a directory
+ * @param name The name of the object to check
+ * @return 1 if it is a directory, 0 otherwise
+ * @deffunc int ap_is_directory(const char *name)
+ */
 API_EXPORT(int) ap_is_directory(const char *name);
+/**
+ * Given a pathname in file, extract the directory and chdir to that directory
+ * @param file The file who's directory we wish to switch to
+ * @deffunc void ap_chdir_file(const char *file)
+ */
 API_EXPORT(void) ap_chdir_file(const char *file);
+/**
+ * Get the maximum number of daemons processes for this version of Apache
+ * @return The maximum number of daemon processes
+ * @deffunc int ap_get_max_daemons(void)
+ */
 API_EXPORT(int) ap_get_max_daemons(void);
 
 #ifdef _OSD_POSIX
@@ -1343,13 +1526,32 @@ extern const char *os_set_account(apr_pool_t *p, const char *account);
 extern int os_init_job_environment(server_rec *s, const char *user_name, int one_process);
 #endif /* _OSD_POSIX */
 
-char *ap_get_local_host(apr_pool_t *);
-unsigned long ap_get_virthost_addr(char *hostname, unsigned short *port);
+/**
+ * determine the local host name for the current machine
+ * @param p The pool to allocate out of
+ * @return A copy of the local host name
+ * @deffunc char *ap_get_local_host(apr_pool_t *p)
+char *ap_get_local_host(apr_pool_t *p);
 
-API_EXPORT(char *) ap_escape_quotes(apr_pool_t *p, const char *instr);
+/**
+ * Parses a host of the form <address>[:port] :port is permitted if 'port' 
+ * is not NULL
+ * @param hostname The hostname to parse
+ * @param port The port found in the hostname
+ * @return The address of the server
+ * @deffunc unsigned long ap_get_virthost_addr(char *hostname, unsigned shor *port)
+ */
+unsigned long ap_get_virthost_addr(char *hostname, unsigned short *port);
 
 /*
  * Redefine assert() to something more useful for an Apache...
+ */
+/**
+ * Log an assertion to the error log
+ * @param szExp The assertion that failed
+ * @param szFile The file the assertion is in
+ * @param nLine The line the assertion is defined on
+ * @deffunc void ap_log_assert(const char *szExp, const char *szFile, int nLine)
  */
 API_EXPORT(void) ap_log_assert(const char *szExp, const char *szFile, int nLine)
 			    __attribute__((noreturn));
