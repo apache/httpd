@@ -483,19 +483,24 @@ case "$PLAT" in
 	DBM_LIB=""
 	;;
     *-next-nextstep*)
-	OS='NeXT'
+	OS='NeXTStep'
 	OPTIM='-O'
 	CFLAGS="$CFLAGS -DNEXT"
 	DEF_WANTHSREGEX=yes
 	;;
     *-next-openstep*)
-	OS='Openstep for Mach'
+	OS='OpenStep/Mach'
 	CC='cc'
 	OPTIM='-O'
 	CFLAGS="$CFLAGS -DNEXT"
 	CFLAGS_SHLIB='-dynamic -fno-common'
 	LD_SHLIB='cc'
 	LDFLAGS_SHLIB='-dynamiclib -undefined warning'
+	DEF_WANTHSREGEX=yes
+	;;
+    *-apple-rhapsody*)
+	OS='Mac OS X Server'
+	CFLAGS="$CFLAGS -DRHAPSODY"
 	DEF_WANTHSREGEX=yes
 	;;
     *-dec-osf*)
@@ -853,6 +858,14 @@ if [ "x$using_shlib" = "x1" ] ; then
             LDFLAGS_SHLIB_EXPORT=""
             SHLIB_SUFFIX_DEPTH=2
             ;;
+	*-apple-rhapsody*)
+	    LD_SHLIB="cc"
+            CFLAGS_SHLIB=""
+            LDFLAGS_SHLIB="-bundle -undefined suppress"
+            LDFLAGS_SHLIB_EXPORT=""
+            SHLIB_SUFFIX_DEPTH=0
+	    #DEF_SHARED_CORE=yes
+	    ;;
         *-solaris2*)
             case $CC in
                 */gcc|gcc ) CFLAGS_SHLIB="-fpic" ;;

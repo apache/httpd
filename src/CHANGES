@@ -1,5 +1,11 @@
 Changes with Apache 1.3.2
 
+  *) PORT: Added RHAPSODY (Mac OS X Server) support. MAP_TMPFILE defined
+     as an alternate mechanism for mmap'd shared memory for RHAPSODY.
+     ap_private_extern defined to hide symbols that conflict with loaded
+     dynamic libraries on the NEXT and RHAPSODY platforms.
+     [Wilfredo Sanchez <wsanchez@apple.com>]
+
   *) Delete PID file on clean shutdowns.
      [Charles Randall <crandall@matchlogic.com>] PR#2947
 

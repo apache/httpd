@@ -10,6 +10,7 @@
  - regfree - free everything
  = API_EXPORT(void) regfree(regex_t *);
  */
+ap_private_extern
 API_EXPORT(void)
 regfree(preg)
 regex_t *preg;

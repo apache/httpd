@@ -229,6 +229,13 @@ case "${SYSTEM}:${RELEASE}:${VERSION}:${MACHINE}" in
 	echo "${MACHINE}-tandem-sysv4"; exit 0;
 	;;
 
+    Rhapsody:*:*:*)
+	case "${MACHINE}" in
+	    Power*) MACHINE=powerpc ;;
+	esac
+	echo "${MACHINE}-apple-rhapsody${RELEASE}"; exit 0
+	;;
+
     "RISC iX":*)
 	echo "arm-whatever-riscix"; exit 0;
 	;;

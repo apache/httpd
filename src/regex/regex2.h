@@ -8,6 +8,12 @@
  = #endif
  = #endif
  =
+ = #if defined(RHAPSODY) || defined(NEXT)
+ = #define ap_private_extern __private_extern__
+ = #else
+ = #define ap_private_extern
+ = #endif
+ =
  = typedef off_t regoff_t;
  = typedef struct {
  = 	int re_magic;

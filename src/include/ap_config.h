@@ -360,6 +360,43 @@ typedef int pid_t;
 #define NO_USE_SIGACTION
 #define HAVE_SYSLOG 1
 
+#elif defined(RHAPSODY) /* Mac OS X Server */
+#define HAVE_GMTOFF
+#define HAVE_MMAP
+#define USE_MMAP_FILES
+#define USE_MMAP_SCOREBOARD
+#define MAP_TMPFILE
+#define HAVE_RESOURCE
+#define HAVE_SYS_RESOURCE_H /* apaci should catch this but doesn't */
+#define HAVE_SNPRINTF
+#define JMP_BUF jmp_buf
+#define USE_LONGJMP
+#define USE_FLOCK_SERIALIZED_ACCEPT
+#define SINGLE_LISTEN_UNSERIALIZED_ACCEPT
+/*
+ * If you are using APACI, (you should be on Rhapsody) these
+ * values are set at configure time. These are here as reference;
+ * the apache that is built into Rhapsody is configured with
+ * these values.
+ */
+#if 0
+#define HTTPD_ROOT              "/Local/Library/WebServer"
+#define DOCUMENT_LOCATION       HTTPD_ROOT "/Documents"
+#define DEFAULT_XFERLOG         "Logs/Access"
+#define DEFAULT_ERRORLOG        "Logs/Errors"
+#define DEFAULT_PIDLOG          "Logs/Process"
+#define DEFAULT_SCOREBOARD      "Logs/Status"
+#define DEFAULT_LOCKFILE        "Logs/Lock"
+#define SERVER_CONFIG_FILE      "Configuration/Server"
+#define RESOURCE_CONFIG_FILE    "Configuration/Resources"
+#define TYPES_CONFIG_FILE       "Configuration/MIME"
+#define ACCESS_CONFIG_FILE      "Configuration/Access"
+#define DEFAULT_USER_DIR        "Library/Web Documents"
+#define DEFAULT_USER            "nobody"
+#define DEFAULT_GROUP           "nogroup"
+#define DEFAULT_PATH            "/bin:/usr/bin:/usr/local/bin"
+#endif
+
 #elif defined(LINUX)
 
 #if LINUX > 1
@@ -803,6 +840,17 @@ typedef int rlim_t;
 #endif
 #ifndef CORE_EXPORT_NONSTD
 #define CORE_EXPORT_NONSTD	API_EXPORT_NONSTD
+#endif
+
+/* On OpenStep and Rhapsody, symbols that conflict with loaded dylibs
+ * (eg. System framework) need to be declared as private symbols with
+ * __private_extern__.
+ * For other systems, make that a no-op.
+ */
+#if defined(RHAPSODY) || defined(NEXT)
+#define ap_private_extern __private_extern__
+#else
+#define ap_private_extern
 #endif
 
 /* So that we can use inline on some critical functions, and use

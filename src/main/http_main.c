@@ -451,7 +451,8 @@ static void chdir_for_gprof()
 #endif
 
 /* a clean exit from a child with proper cleanup */
-static void __attribute__((noreturn)) clean_child_exit(int code)
+static void clean_child_exit(int code) __attribute__ ((noreturn));
+static void clean_child_exit(int code)
 {
     if (pchild) {
 	ap_child_exit_modules(pchild, server_conf);
@@ -1725,6 +1726,25 @@ static void setup_shared_mem(pool *p)
 	m = mmap((caddr_t) 0xC0000000, &len,
 		 PROT_READ | PROT_WRITE, MAP_ANON | MAP_SHARED, NOFD, 0);
     }
+#elif defined(MAP_TMPFILE)
+    {
+	char mfile[] = "/tmp/apache_shmem_XXXX";
+	int fd = mkstemp(mfile);
+	if (fd == -1) {
+	    perror("open");
+	    fprintf(stderr, "httpd: Could not open %s\n", mfile);
+	    exit(APEXIT_INIT);
+	}
+	m = mmap((caddr_t) 0, SCOREBOARD_SIZE,
+		PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
+	if (m == (caddr_t) - 1) {
+	    perror("mmap");
+	    fprintf(stderr, "httpd: Could not mmap %s\n", mfile);
+	    exit(APEXIT_INIT);
+	}
+	close(fd);
+	unlink(mfile);
+    }
 #else
     m = mmap((caddr_t) 0, SCOREBOARD_SIZE,
 	     PROT_READ | PROT_WRITE, MAP_ANON | MAP_SHARED, -1, 0);
@@ -1976,7 +1996,8 @@ static ap_inline void put_scoreboard_info(int child_num,
 }
 
 /* a clean exit from the parent with proper cleanup */
-static void __attribute__((noreturn)) clean_parent_exit(int code)
+static void clean_parent_exit(int code) __attribute__((noreturn));
+static void clean_parent_exit(int code)
 {
     /* Clear the pool - including any registered cleanups */
     ap_destroy_pool(pconf);
