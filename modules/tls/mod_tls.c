@@ -109,7 +109,7 @@ static const char *tls_cert_file(cmd_parms *cmd, void *dummy, const char *arg)
 {
     TLSServerConfig *pConfig = ap_get_module_config(cmd->server->module_config,
 						    &tls_module);
-    pConfig->szCertificateFile = arg;
+    pConfig->szCertificateFile = ap_server_root_relative(cmd->pool, arg);
 
     /* temp */
     pConfig->szKeyFile=pConfig->szCertificateFile;
