@@ -1,4 +1,8 @@
 Changes with Apache 2.0.19-dev
+  *) New Header directive 'echo' option. "Header echo regex" will
+     cause any headers received on the request that match regex to be
+     echoed to (included in) the response headers.
+     [Bill Stoddard]
 
   *) include/ap_compat.h tested and set APR_COMPAT_H instead of AP_COMPAT_H.
      This prevented the inclusion of apr_compat.h.  PR #7773
