@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
+<modulesynopsis>
+
+<name>mod_proxy_ftp</name>
+<description>FTP support module for
+<module>mod_proxy</module></description>
+<status>Extension</status>
+<sourcefile>proxy_ftp.c</sourcefile>
+<identifier>proxy_ftp_module</identifier>
+
+<summary>
+    <p>This module <em>requires</em> the service of <module
+    >mod_proxy</module>. It provides support for the proxying
+    FTP sites.</p>
+
+    <p>Thus, in order to get the ability of handling FTP proxy requests,
+    <module>mod_proxy</module> and <module>mod_proxy_ftp</module>
+    have to be present in the server.</p>
+
+    <note type="warning"><title>Warning</title>
+      <p>Do not enable proxying until you have <a
+      href="mod_proxy.html#access">secured your server</a>. Open proxy
+      servers are dangerous both to your network and to the Internet at
+      large.</p>
+    </note>
+</summary>
+<seealso><module>mod_proxy</module></seealso>
+
+</modulesynopsis>
