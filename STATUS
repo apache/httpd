@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/08/27 18:58:43 $]
+Last modified at [$Date: 2004/08/27 19:11:20 $]
 
 Release:
 
@@ -144,11 +144,6 @@ PATCHES TO BACKPORT FROM 2.1
          modules/mappers/mod_actions.c: r1.32, r1.34
        jerenkrantz: Icky side-effect of the *t == '0' check.
        +1: nd, jerenkrantz
-
-    *) allow symlinks on directories to be processed by Include directives
-       and stop possible recursion by a counter. PR 28492
-         server/config.c: r1.175
-       +1: nd, jerenkrantz, jorton
 
     *) mod_log_config: Cleanup log_header_out function to allow multiple headers
        like Set-Cookie to be logged properly. PR 27787 (2.0 + 1.3)
