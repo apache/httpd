@@ -1,5 +1,5 @@
 /* ====================================================================
- * Copyright (c) 1998 The Apache Group.  All rights reserved.
+ * Copyright (c) 1995-1998 The Apache Group.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -49,21 +49,18 @@
  * For more information on the Apache Group and the Apache HTTP server
  * project, please see <http://www.apache.org/>.
  *
- * This code is based on, and used with the permission of, the
- * SIO stdio-replacement strx_* functions by Panos Tsirigotis
- * <panos@alumni.cs.colorado.edu> for xinetd.
  */
 
-#ifndef APACHE_AP_H
-#define APACHE_AP_H
+#include "httpd.h"
 
-API_EXPORT(int) ap_read(BUFF *fb, void *buf, int nbyte);
-API_EXPORT(int) ap_write(BUFF *fb, const void *buf, int nbyte);
-API_EXPORT(char *) ap_cpystrn(char *, const char *, size_t);
-int ap_slack(int, int);
-API_EXPORT(char *) ap_escape_quotes(pool *, const char *);
-API_EXPORT(int) ap_snprintf(char *, size_t, const char *, ...);
-API_EXPORT(int) ap_vsnprintf(char *, size_t, const char *, va_list ap);
-int ap_execle(const char *, const char *, ...);
-int ap_execve(const char *, const char *argv[], const char *envp[]);
-#endif	/* !APACHE_AP_H */
+/* the lowest level reading primitive */
+
+API_EXPORT(int) ap_read(BUFF *fb, void *buf, int nbyte)
+{
+    int rv;
+    
+    rv = read(fb->fd_in, buf, nbyte);
+    
+    return rv;
+}
+

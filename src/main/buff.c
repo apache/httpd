@@ -233,9 +233,9 @@ static ap_inline int buff_read(BUFF *fb, void *buf, int nbyte)
 	    errno = WSAGetLastError();
     }
     else
-	rv = read(fb->fd_in, buf, nbyte);
+	rv = ap_read(fb, buf, nbyte);
 #else
-    rv = read(fb->fd_in, buf, nbyte);
+    rv = ap_read(fb, buf, nbyte);
 #endif /* WIN32 */
     return rv;
 }
@@ -252,11 +252,9 @@ static ap_inline int buff_write(BUFF *fb, const void *buf, int nbyte)
 	    errno = WSAGetLastError();
     }
     else
-	rv = write(fb->fd, buf, nbyte);
-#elif defined (B_SFIO)
-    rv = sfwrite(fb->sf_out, buf, nbyte);
+	rv = ap_write(fb, buf, nbyte);
 #else
-    rv = write(fb->fd, buf, nbyte);
+    rv = ap_write(fb, buf, nbyte);
 #endif /* WIN32 */
     return rv;
 }
@@ -569,7 +567,7 @@ int bsfio_read(Sfio_t * f, char *buf, int nbyte, apache_sfio *disc)
 
 int bsfio_write(Sfio_t * f, char *buf, int nbyte, apache_sfio *disc)
 {
-    return write(disc->buff->fd, buf, nbyte);
+    return ap_write(disc->buff, buf, nbyte);
 }
 
 Sfdisc_t *bsfio_new(pool *p, BUFF *b)
