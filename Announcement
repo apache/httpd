@@ -1,39 +1,49 @@
 
-                            Apache 1.3.19 Released
+                            Apache 1.3.20 Released
                                        
    The Apache Software Foundation and The Apache Server Project are
-   pleased to announce the release of version 1.3.19 of the Apache HTTP
-   server. (Version 1.3.18 was not released due to an incorrect fix
-   addressing hostnames with url-escaped characters. A corrected fix will
-   be included in the next release)
+   pleased to announce the release of version 1.3.20 of the Apache HTTP
+   server.
    
-   This version of Apache is primarily a security fix release
+   This version of Apache is principally a security fix release
    addressing a problem which could lead to a directory listing being
-   displayed in place of an error message. Also, it fixes some broken
-   functionality present in the 1.3.17 release and various Win32 issues.
-   A summary of the new features is given at the end of this document.
+   displayed in place of an error message. Also, it fixes some potential
+   configuration quirks present in the 1.3.19 release.  A summary of the
+   new features is given at the end of this document.
    
-   We consider Apache 1.3.19 to be the best version of Apache available
+   We consider Apache 1.3.20 to be the best version of Apache available
    and we strongly recommend that users of older versions, especially of
-   the 1.1.x and 1.2.x family, upgrade as soon as possible. No further
+   the 1.1.x and 1.2.x family, upgrade as soon as possible.  No further
    releases will be made in the 1.2.x family.
    
-   Apache 1.3.19 is available for download from
+   Apache 1.3.20 is available for download from
    
-     http://httpd.apache.org/dist/
+     http://httpd.apache.org/dist/httpd/
      
    Please see the CHANGES_1.3 file in the same directory for a full list
    of changes.
    
    Binary distributions are available from
    
-     http://httpd.apache.org/dist/binaries/
+     http://httpd.apache.org/dist/httpd/binaries/
      
    The source and binary distributions are also available via any of the
    mirrors listed at
    
      http://www.apache.org/mirrors/
      
+   Apache 1.3.20 for Win32 and OS2 corrects a serious denial of service 
+   vulnerability, and users are strongly discouraged from using any 
+   previous versions on those platforms.
+   
+   As of Apache 1.3.17, Win32 binary distributions are now based on the
+   Microsoft Installer (.MSI) technology.  This change occured in order
+   to resolve the many problems WinME and Win2K users experienced with
+   the older InstallShield-based installer .exe file.  While development
+   continues to make this new installation method more robust, questions
+   should be directed at the news:comp.infosystems.www.servers.ms-windows
+   newsgroup.  
+
    As of Apache 1.3.12 binary distributions contain all standard Apache
    modules as shared objects (if supported by the platform) and include
    full source code. Installation is easily done by executing the
@@ -42,16 +52,6 @@
    distributions are only provided for your convenience and current
    distributions for specific platforms are not always available.
    
-   As of Apache 1.3.17 the Win32 binary distribution is now based on the
-   Microsoft Installer (.MSI) technology.  This change occured in order
-   to resolve the many problems WinME and Win2K users experienced with
-   the older InstallShield-based installer .exe file.  Development
-   continues to make this new installation method more robust, questions
-   should be directed at the news:comp.infosystems.www.servers.ms-windows
-   news group.  Apache 1.3.17 for Win32 also marked the first 'initial 
-   release quality' version available for Win32, and users are strongly
-   discouraged from using the older 'beta quality releases'.
-   
    For an overview of new features introduced after 1.2 please see
    
      http://httpd.apache.org/docs/new_features_1_3.html
@@ -59,7 +59,7 @@
    In general, Apache 1.3 offers several substantial improvements over
    version 1.2, including better performance, reliability and a wider
    range of supported platforms, including Windows 95/98 and NT (which
-   fall under the "Win32" label).
+   fall under the "Win32" label), OS2, Netware, and TPE threaded platforms.
    
    Apache is the most popular web server in the known universe; over half
    of the servers on the Internet are running Apache or one of its
@@ -70,42 +70,61 @@
    that the current Win32 code has not yet reached the levels of the Unix
    version, but is of acceptable quality. Any Win32 stability or security
    problems do not impact, in any way, Apache on other platforms.
-
    
-                         Apache 1.3.19  Major changes
+                         Apache 1.3.20  Major changes
 
    The primary security fix is:
-     * The default installation could lead mod_negotiation and mod_dir or
-       mod_autoindex to display a directory listing instead of the 
-       multiview'ed index.html.* files, if a very long path was created 
-       artificially by using many slashes.  Now 403 FORBIDDEN is returned.
+     * A carefully constructed URI could cause the server to segfault on
+       Win32 and OS2, denying access to users until the error was cleared.
+       This is resolved on both platforms, no server data vulnerability
+       was identified for this denial of service exploit.
                                             
-   The bug fixes are:
-     * The ServerRoot directive now removes trailing slashes.
-     * Restore functionality broken by the mod_rewrite security fix:
-       The mod_rewrite string arithmetic is corrected for rewrite map.
-     * Some possible segfault conditions have been fixed.
-     * Under certain circumstances, Apache did not supply the
-       right response headers when requiring authentication.
-       
-   The main new features include:
-     * New configuration error reporting if the UserDir argument is set
-       to a relative path on Win32 or Netware [which do not support home
-       directories], or a relative path on any platform if that path
-       includes the '*' username substitution.
+   The general bug fixes:
+     * Fix a possible segfault at startup in the detection of a default
+       ServerName or IP string when no ServerName was specified.
+     * Fixed mod_proxy to retain empty headers, as allowed by RFC2068.
+     * Properly resolve the location of ndbm on Linux and some glibc2
+       builds, where ndbm.h is in the nonstandard db1/ subdir.
 
-   Selected new features that relate to Windows platforms:
-     * Apache on Win9x now ensures the service is stopped before removal.
-     * Test httpd.conf (-t) now holds the console open on "SYNTAX OK".
-     * Apache/Win32 no longer holds open the console on error unless
-       it was invoked from a shortcut with the -w option.
-     * mod_user was significantly refactored to assure that the UserDir
-       directive is parsed effectively the same across platforms, fixing
-       a UserDir bug introduced in 1.3.17 on the Win32 platform.
-            
-   Selected new features relating to other platforms:
-     * Netware problems with file extension truncatation are resolved.
-     * Netware recognizes the SERVER/VOLUME:/PATH/FILE filename pattern.
-     * Netware mod_tls properly disables nagle for SSL connections,
-       and properly negotiates SSL based on the port.
-     * Startup and Shutdown issues were addressed on TPF.
+   Win32 bug fixes:
+     * Win32 now properly handles the SSI exec cmd tag.  Due to argument
+       parsing issues with spaces and slashes, cmd is interpreted as an 
+       executable file, not a long command line string.
+     * Resolved a threading problem with WinNT/2K services, allowing
+       modules such as mod_jserv and mod_perl to shut down cleanly.
+     * Resolved stdin and stdout pipes for the parent Win32 service 
+       process, solving bugs such as "dup2(stdin) failed" when trying 
+       to use piped logs.  
+
+   Netware specific bug fixes:
+     * Netware initial screen allows the -s parameter to switch to the 
+       system console screen, warning messages during startup are now 
+       displayed.
+     * Netware added '.' and '..' to the directory listing so mod_autoindex 
+       will now display the parent directory.
+     * NetWare now shuts down cleanly in error conditions, such as a failure
+       while reading the httpd.conf file.
+
+   The main new features include:
+     * Enhanced rotatelogs to allow a UTC offset to be specified, and
+       the format logfile names with human-readable date/time stamps.
+     * Added the NOESCAPE (NS) flag to RewriteRule, to disable *all* 
+       normal URI escaping.  Note incautious use can give unexpected 
+       results or introduce security risks.
+     * Added the '\' character to RewriteRule to allow escaping of 
+       special characters.  Allows embedding of both the '$' and '%' 
+       characters in the results, so 'foo\$1' translates to 'foo$1' 
+       rather than 'foo\<value of $1>'.
+     * The 'ab' support utility has fixed a number of overruns, added 
+       statistics, offers csv/gnuplot output, introduces rudimentary 
+       SSL support and other tweaks to make results more accurate.
+     * Added the -V flag to suexec, to display the compile-time settings
+       with which it was built.  (Only valid for root or the HTTPD_USER 
+       username.)          
+     * Introduced EBCDIC conversion configuration options, controlling the 
+       conversion based on MIME type or file suffix.
+     * Support for the Cygwin 1.x platform (a POSIX emulation layer for 
+       Win32 systems, see http://www.cygwin.com).  Note this is an entirely
+       different implementation than the native calls in the win32 port.
+     * Support for building modules with apxs under Win32.  cygwin builders 
+       must use a cygwin build of perl to avoid MSVC handling.
