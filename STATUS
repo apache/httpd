@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2002/04/26 17:43:30 $]
+Last modified at [$Date: 2002/04/26 22:45:47 $]
 
 Release:
 
@@ -83,7 +83,15 @@ CURRENT VOTES:
 
     * Make the worker MPM the default MPM for threaded Unix boxes.
       +1:   Justin, Ian, Cliff, BillS
-      -0:   Lars
+      -0:   Lars,
+            BrianP (according to the system call profiles, worker's main
+            bottleneck--and the reason why it underperforms compared to
+            prefork--is in mutex ops, and there's no easy way to fix
+            that without turning it into something that isn't really worker
+            any more...I think we need to either switch to leader/follower
+            (and do enough testing and debugging to make the L/F code
+            production-quality) or come up with another design that has
+            less mutex contention than worker)
       -1:   Aaron (premature decision, needs more discussion and bug fixes)
 
 RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
