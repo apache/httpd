@@ -2007,24 +2007,30 @@ static int index_directory(request_rec *r,
         qstring = r->args;
 
         while (qstring && *qstring) {
-            if (qstring[0] == 'C' && qstring[1] == '='
-                    && qstring[2] && strchr(K_VALID, qstring[2])
-                    && (qstring[3] == '&' || qstring[3] == ';'
-                        || !qstring[3])) {
+
+            /* C= First Sort key Column (N, M, S, D) */
+            if (   qstring[0] == 'C' && qstring[1] == '='
+                && qstring[2] && strchr(K_VALID, qstring[2])
+                && (   qstring[3] == '&' || qstring[3] == ';'
+                    || !qstring[3])) {
                 keyid = qstring[2];
                 qstring += qstring[3] ? 4 : 3;
             }
-            else if (qstring[0] == 'O' && qstring[1] == '='
-                     && ((qstring[2] == D_ASCENDING)
+
+            /* O= Sort order (A, D) */
+            else if (   qstring[0] == 'O' && qstring[1] == '='
+                     && (   (qstring[2] == D_ASCENDING)
                          || (qstring[2] == D_DESCENDING))
-                     && (qstring[3] == '&' || qstring[3] == ';'
+                     && (   qstring[3] == '&' || qstring[3] == ';'
                          || !qstring[3])) {
                 direction = qstring[2];
                 qstring += qstring[3] ? 4 : 3;
             }
-            else if (qstring[0] == 'F' && qstring[1] == '='
+
+            /* F= Output Format (0 plain, 1 fancy (pre), 2 table) */
+            else if (   qstring[0] == 'F' && qstring[1] == '='
                      && qstring[2] && strchr("012", qstring[2])
-                     && (qstring[3] == '&' || qstring[3] == ';'
+                     && (   qstring[3] == '&' || qstring[3] == ';'
                          || !qstring[3])) {
                 if (qstring[2] == '0') {
                     autoindex_opts &= ~(FANCY_INDEXING | TABLE_INDEXING);
@@ -2040,9 +2046,11 @@ static int index_directory(request_rec *r,
                 fval[3] = qstring[2];
                 qstring += qstring[3] ? 4 : 3;
             }
-            else if (qstring[0] == 'V' && qstring[1] == '='
+
+            /* V= Version sort (0, 1) */
+            else if (   qstring[0] == 'V' && qstring[1] == '='
                      && (qstring[2] == '0' || qstring[2] == '1')
-                     && (qstring[3] == '&' || qstring[3] == ';'
+                     && (   qstring[3] == '&' || qstring[3] == ';'
                          || !qstring[3])) {
                 if (qstring[2] == '0') {
                     autoindex_opts &= ~VERSION_SORT;
@@ -2054,6 +2062,8 @@ static int index_directory(request_rec *r,
                 vval[3] = qstring[2];
                 qstring += qstring[3] ? 4 : 3;
             }
+
+            /* P= wildcard pattern (*.foo) */
             else if (qstring[0] == 'P' && qstring[1] == '=') {
                 const char *eos = qstring + 2;
 
@@ -2077,7 +2087,9 @@ static int index_directory(request_rec *r,
                     pstring = NULL;
                 }
             }
-            else {              /* Syntax error?  Ignore the remainder! */
+
+            /* Syntax error?  Ignore the remainder! */
+            else {
                 qstring = NULL;
             }
         }
