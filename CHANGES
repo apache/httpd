@@ -2,6 +2,9 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) mod_rewrite: Fix some problems reporting errors with mapping
+     programs (RewriteMap prg:/something).  [Jeff Trawick]
+
   *) Win32: Avoid busy wait (consuming all the CPU idle cycles) when
      all worker threads are busy. 
     [Igor Nazarenko <igor_nazarenko@hotmail.com>]

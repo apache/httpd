@@ -3568,8 +3568,8 @@ static apr_status_t run_rewritemap_programs(server_rec *s, apr_pool_t *p)
                                       &fpout, &fpin);
         if (rc != APR_SUCCESS || fpin == NULL || fpout == NULL) {
             ap_log_error(APLOG_MARK, APLOG_ERR, rc, s,
-                         "mod_rewrite: could not startup RewriteMap "
-                         "program %s", map->datafile);
+                         "mod_rewrite: could not start RewriteMap "
+                         "program %s", map->checkfile);
             return rc;
         }
         map->fpin  = fpin;
@@ -3579,6 +3579,14 @@ static apr_status_t run_rewritemap_programs(server_rec *s, apr_pool_t *p)
 }
 
 /* child process code */
+
+static void rewrite_child_errfn(apr_pool_t *p, apr_status_t err,
+                                const char *desc)
+{
+    ap_log_error(APLOG_MARK, APLOG_ERR, err, NULL,
+                 "%s", desc);
+}
+
 static apr_status_t rewritemap_program_child(apr_pool_t *p,
                                              const char *progname, char **argv,
                                              apr_file_t **fpout,
@@ -3594,8 +3602,10 @@ static apr_status_t rewritemap_program_child(apr_pool_t *p,
         ((rc = apr_procattr_dir_set(procattr,
                                    ap_make_dirstr_parent(p, argv[0])))
          != APR_SUCCESS) ||
-        ((rc = apr_procattr_cmdtype_set(procattr, APR_PROGRAM))
-         != APR_SUCCESS)) {
+        ((rc = apr_procattr_cmdtype_set(procattr, APR_PROGRAM)) != APR_SUCCESS) ||
+        ((rc = apr_procattr_child_errfn_set(procattr, rewrite_child_errfn)) != APR_SUCCESS) ||
+        ((rc = apr_procattr_error_check_set(procattr, 1)) != APR_SUCCESS) ||
+        ((rc = apr_procattr_cmdtype_set(procattr, APR_PROGRAM)) != APR_SUCCESS)) {
         /* Something bad happened, give up and go away. */
     }
     else {
