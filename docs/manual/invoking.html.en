@@ -28,8 +28,16 @@ which executes continuously in the background to handle requests.
 A shell script called <code>apachectl</code> is provided which
 can be used to control the daemon process.  This shell script
 can often be used as an init script to start <code>httpd</code>
-on system boot, or it can be called directly with the following
-options.</p>
+on system boot, or it can be called directly with the options
+listed below.</p>
+
+<p>If the <a href="mod/core.html#port">Port</a> specified in the
+configuration file is the default of 80, then it is necessary to have
+root privileges in order to start apache.  If Apache will not start
+and no error messages are printed to the console, be sure to check the
+<a href="mod/core.html#errorlog">ErrorLog</a> for a report of
+the problem.  See also the debugging instructions outlined in
+the Apache <a href="misc/FAQ.html">FAQ</a>.</p>
 
 <h2>apachectl Command Line Options</h2>
 
