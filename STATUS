@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/05/16 13:30:29 $]
+Last modified at [$Date: 2003/05/16 14:12:29 $]
 
 Release:
 
@@ -127,21 +127,6 @@ PATCHES TO PORT FROM 2.1
          qvalues be returned as 1.0 or 0.0 (as atof() did)?
          1.0: nd
          0.0: 
-
-    * Do not bypass output filters when redirecting subrequests internally.
-      PR 17629.
-      modules/http/http_request.c: r1.155
-      +1: nd, stoddard, trawick
-
-      jerenkrantz asks: Do we even need subreq_core_filter anymore?  I'm sort
-                        of confused on the interaction.  subreq_core_filter
-                        should probably be the top-most output filter and it
-                        will have to eat the EOS (then return).  Is it?
-      nd replies: Yes, otherwise we still inject EOS buckets for every
-                  subrequest into the filter stream. But in fact it should be
-                  the bottom-most of the subreq filters, so that these filters
-                  may init and exit correctly. See also:
-                  <n2m-g.1kawv9rc0uyar$ndparker@news.perlig.de>
 
     * Keep the same SSLMutex for the lifetime of the parent process
       (instead of having children using different mutexes and failing
