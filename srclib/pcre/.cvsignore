@@ -19,3 +19,4 @@ pgrep
 LibD
 LibR
 .deps
+pcre.h
