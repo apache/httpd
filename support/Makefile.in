@@ -10,6 +10,16 @@ PROGRAM_DEPENDENCIES = \
 
 include $(top_srcdir)/build/rules.mk
 
+install:
+	@test -d $(bindir) || $(MKINSTALLDIRS) $(bindir)
+	@cp -p httpd.exp $(bindir)
+	@cp -p apachectl $(bindir)
+	chmod 755 $(bindir)/apachectl
+	@if test -f $(builddir)/apxs; then \
+	    cp -p apxs $(bindir); \
+	    chmod 755 $(bindir)/apxs; \
+	fi
+
 htpasswd_OBJECTS = htpasswd.lo
 htpasswd: $(htpasswd_OBJECTS)
 	$(LINK) $(htpasswd_OBJECTS) $(PROGRAM_LDADD)
