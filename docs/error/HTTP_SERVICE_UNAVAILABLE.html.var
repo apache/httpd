@@ -116,3 +116,16 @@ Body:-------pt-br--
 <!--#include virtual="include/bottom.html" -->
 -------pt-br--
 
+Content-language: ro
+Content-type: text/html; charset=ISO-8859-1
+Body:----------ro--
+<!--#set var="CONTENT_LANGUAGE" value="ro"
+--><!--#set var="TITLE" value="Serviciu indisponibil!"
+--><!--#include virtual="include/top.html" -->
+
+    Serverul nu poate, temporar, sa raspunda cererii
+    dumneavoastra datorita intretinerii acestuia sau a
+    unor probleme de capacitate. Va rugam incercati mai tarziu.
+
+<!--#include virtual="include/bottom.html" -->
+----------ro--

@@ -167,3 +167,22 @@ Body:-------pt-br--
 <!--#include virtual="include/bottom.html" -->
 -------pt-br--
 
+Content-language: ro
+Content-type: text/html; charset=ISO-8859-1
+Body:----------ro--
+<!--#set var="CONTENT_LANGUAGE" value="ro"
+--><!--#set var="TITLE" value="Autentificare necesara!"
+--><!--#include virtual="include/top.html" -->
+
+    Acest server nu a putut verifica daca sunteti autorizat sa accesati
+    URL-ul "<!--#echo encoding="url" var="REDIRECT_URL" -->".
+    Ati furnizat parametrii de acreditare gresiti (ex: parola gresita), sau browserul
+    dumneavoastra nu poate furniza aceste detalii de acreditare.
+
+  <!--#include virtual="include/spacer.html" -->
+
+    In cazul in care nu va este permis sa cereti un document, va rugam
+    sa va verificati numele de utilizator si parola si sa incercati din nou.
+
+<!--#include virtual="include/bottom.html" -->
+----------ro--

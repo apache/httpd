@@ -208,3 +208,28 @@ Body:-------pt-br--
 <!--#include virtual="include/bottom.html" -->
 -------pt-br--
 
+Content-language: ro
+Content-type: text/html; charset=ISO-8859-1
+Body:----------ro--
+<!--#set var="CONTENT_LANGUAGE" value="ro"
+--><!--#set var="TITLE" value="Resursa nu mai este disponibila!"
+--><!--#include virtual="include/top.html" -->
+
+    URL-ul cerut nu mai este disponibil pe acest server si nu
+    exista o adresa de inaintare.
+
+  <!--#if expr="$HTTP_REFERER" -->
+
+    Va rugam informati autorul
+    <a href="<!--#echo encoding="url" var="HTTP_REFERER" -->">paginii
+    referite</a> ca link-ul nu mai este de actualitate.
+
+  <!--#else -->
+
+    Va rugam contactati autorul acestei pagini daca ati urmat
+    un link dintr-o pagina externa.
+
+  <!--#endif -->
+
+<!--#include virtual="include/bottom.html" -->
+----------ro--

@@ -224,3 +224,30 @@ Body:-------pt-br--
 <!--#include virtual="include/bottom.html" -->
 -------pt-br--
 
+Content-language: ro
+Content-type: text/html; charset=ISO-8859-1
+Body:----------ro--
+<!--#set var="CONTENT_LANGUAGE" value="ro"
+--><!--#set var="TITLE" value="Eroare server!"
+--><!--#include virtual="include/top.html" -->
+
+  <!--#if expr="$REDIRECT_ERROR_NOTES" -->
+
+    Serverul a intalnit o eroare interna si nu a
+    putut rezolva cererea dumneavoastra.
+
+    <!--#include virtual="include/spacer.html" -->
+
+    Mesajul de eroare :
+    <br /><!--#echo encoding="none" var="REDIRECT_ERROR_NOTES" -->
+
+  <!--#else -->
+
+    Serverul a intalnit o eroare interna si nu a
+    putut rezolva cererea dumneavoastra. Serverul este
+    supraincarcat sau a fost o eroare intr-un script CGI.
+
+  <!--#endif -->
+
+<!--#include virtual="include/bottom.html" -->
+----------ro--

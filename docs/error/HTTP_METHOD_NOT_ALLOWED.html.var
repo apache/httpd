@@ -103,3 +103,15 @@ Body:-------pt-br--
 <!--#include virtual="include/bottom.html" -->
 -------pt-br--
 
+Content-language: ro
+Content-type: text/html; charset=ISO-8859-1
+Body:----------ro--
+<!--#set var="CONTENT_LANGUAGE" value="ro"
+--><!--#set var="TITLE" value="Metoda nepermisa!"
+--><!--#include virtual="include/top.html" -->
+
+    Metoda <!--#echo var="REDIRECT_REQUEST_METHOD" -->
+    nu este permisa pentru URL-ul cerut.
+
+<!--#include virtual="include/bottom.html" -->
+----------ro--

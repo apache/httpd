@@ -103,3 +103,15 @@ Body:-------pt-br--
 <!--#include virtual="include/bottom.html" -->
 -------pt-br--
 
+Content-language: ro
+Content-type: text/html; charset=ISO-8859-1
+Body:----------ro--
+<!--#set var="CONTENT_LANGUAGE" value="ro"
+--><!--#set var="TITLE" value="Nici un obiect acceptabil gasit!"
+--><!--#include virtual="include/top.html" -->
+
+    Nici o reprezentare potrivita a resursei cerute
+    nu a putut fi gasita pe acest server.
+
+<!--#include virtual="include/bottom.html" -->
+----------ro--

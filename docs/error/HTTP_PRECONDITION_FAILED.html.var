@@ -100,3 +100,14 @@ Body:-------pt-br--
 <!--#include virtual="include/bottom.html" -->
 -------pt-br--
 
+Content-language: ro
+Content-type: text/html; charset=ISO-8859-1
+Body:----------ro--
+<!--#set var="CONTENT_LANGUAGE" value="ro"
+--><!--#set var="TITLE" value="Precondition failed!"
+--><!--#include virtual="include/top.html" -->
+
+    Preconditionarea pentru cererea URL-ului nu a fost evaluata pozitiv.
+
+<!--#include virtual="include/bottom.html" -->
+----------ro--
