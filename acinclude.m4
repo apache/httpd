@@ -186,31 +186,6 @@ sinclude(srclib/apr/build/apr_threads.m4)
 sinclude(srclib/apr/build/apr_hints.m4)
 sinclude(hints.m4)
 
-AC_DEFUN(APACHE_CHECK_SIGWAIT_ONE_ARG,[
-  AC_CACHE_CHECK(whether sigwait takes one argument,ac_cv_sigwait_one_arg,[
-  AC_TRY_COMPILE([
-#ifdef __NETBSD__
-    /* When using the unproven-pthreads package, we need to pull in this 
-     * header to get a prototype for sigwait().  Else things will fail later
-     * on.  XXX Should probably be fixed in the unproven-pthreads package.
-     */
-#include <pthread.h>
-#endif
-#include <signal.h>
-],[
-  sigset_t set;
-
-  sigwait(&set);
-],[
-  ac_cv_sigwait_one_arg=yes
-],[
-  ac_cv_sigwait_one_arg=no
-])])
-  if test "$ac_cv_sigwait_one_arg" = "yes"; then
-    AC_DEFINE(SIGWAIT_TAKES_ONE_ARG,1,[ ])
-  fi
-])
-
 dnl APACHE_MODPATH_INIT(modpath)
 AC_DEFUN(APACHE_MODPATH_INIT,[
   current_dir=$1
