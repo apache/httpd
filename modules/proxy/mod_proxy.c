@@ -1731,7 +1731,7 @@ static int proxy_status_hook(request_rec *r, int flags)
                    apr_time_sec(balancer->timeout));
         ap_rputs("</table>\n", r);
         ap_rputs("\n\n<table border=\"0\"><tr>"
-                 "<th>Sch</th><th>Host</th>"
+                 "<th>Sch</th><th>Host</th><th>Stat</th>"
                  "<th>Route</th><th>Redir</th>"
                  "<th>F</th><th>Acc</th><th>Wr</th><th>Rd</th>"
                  "</tr>\n", r);
@@ -1740,8 +1740,16 @@ static int proxy_status_hook(request_rec *r, int flags)
         for (n = 0; n < balancer->workers->nelts; n++) {
 
             ap_rvputs(r, "<tr>\n<td>", worker->w->scheme, "</td>", NULL);
-            ap_rvputs(r, "<td>", worker->w->hostname, "</td>", NULL);
-            ap_rvputs(r, "<td>", worker->w->route, NULL);
+            ap_rvputs(r, "<td>", worker->w->hostname, "</td><td>", NULL);
+            if (worker->w->status & PROXY_WORKER_DISABLED)
+                ap_rputs("Dis", r);
+            else if (worker->w->status & PROXY_WORKER_IN_ERROR)
+                ap_rputs("Err", r);
+            else if (worker->w->status & PROXY_WORKER_INITIALIZED)
+                ap_rputs("Ok", r);
+            else
+                ap_rputs("-", r);
+            ap_rvputs(r, "</td><td>", worker->w->route, NULL);
             ap_rvputs(r, "</td><td>", worker->w->redirect, NULL);
             ap_rprintf(r, "</td><td>%.2f</td>", worker->s->lbfactor);
             ap_rprintf(r, "<td>%d</td><td>", (int)(worker->s->elected));
@@ -1763,6 +1771,7 @@ static int proxy_status_hook(request_rec *r, int flags)
              "<tr><th>Timeout</th><td>Balancer Timeout</td></tr>\n"
              "<tr><th>Sch</th><td>Connection scheme</td></tr>\n"
              "<tr><th>Host</th><td>Backend Hostname</td></tr>\n"
+             "<tr><th>Stat</th><td>Worker status</td></tr>\n"
              "<tr><th>Route</th><td>Session Route</td></tr>\n"
              "<tr><th>Redir</th><td>Session Route Redirection</td></tr>\n"
              "<tr><th>F</th><td>Load Balancer Factor in %</td></tr>\n"
