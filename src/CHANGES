@@ -1,5 +1,10 @@
 Changes with Apache 1.3b7
 
+  *) If a specific handler is set for a file yet the request still
+     ends up being handled by the default handler, log an error
+     message before handling it.  This catches things such as trying 
+     to use SSIs without mod_include enabled.  [Marc Slemko]
+
   *) Fix error logging for the startup case where ap_log_error() still uses
      stderr as the target. Now the default log level is honored here, too.
      [Ralf S. Engelschall]
