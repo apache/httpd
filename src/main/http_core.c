@@ -1917,7 +1917,7 @@ static const char *set_server_limit (cmd_parms *cmd, void *dummy, char *arg)
            "of %d servers,\n", ap_daemons_limit, HARD_SERVER_LIMIT);
        fprintf(stderr, " lowering MaxClients to %d.  To increase, please "
            "see the\n", HARD_SERVER_LIMIT);
-       fprintf(stderr, " HARD_SERVER_LIMIT define in src/httpd.h.\n");
+       fprintf(stderr, " HARD_SERVER_LIMIT define in src/include/httpd.h.\n");
        ap_daemons_limit = HARD_SERVER_LIMIT;
     } 
     else if (ap_daemons_limit < 1) {
