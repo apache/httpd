@@ -5888,7 +5888,7 @@ static PSECURITY_ATTRIBUTES GetNullACL()
     }
     /*
      * We can safely use GetLastError() here without presetting it;
-     * InitializeSecurityDescriptor() has been verified as clearing it
+     * {Initialize,Set}SecurityDescriptor() have been verified as clearing it
      * on successful completion.
      */
     if (!InitializeSecurityDescriptor(pSD, SECURITY_DESCRIPTOR_REVISION)

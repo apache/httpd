@@ -343,4 +343,7 @@ EXPORTS
 	ap_standalone   @337
 	ap_server_confname   @338
 	ap_sub_req_method_uri   @339
+	ap_field_noparam   @340
+	ap_table_merge_unique_token   @341
+	ap_table_mergen_unique_token   @342
 
