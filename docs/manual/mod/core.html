@@ -315,6 +315,30 @@ steps are:
 <li>Apply any FileInfo directives in <code>/home/web/.htaccess</code>
 </menu>
 
+<P>
+<STRONG>
+Note that the default Apache access for &lt;Directory /&gt; is
+<SAMP>Allow from All</SAMP>.  This means that Apache will serve any file
+mapped from an URL.  It is recommended that you change this with a block
+such as
+</STRONG>
+<PRE>
+ &lt;Directory /&gt;
+     Order Deny,Allow
+     Deny from All
+ &lt;/Directory&gt;
+</PRE>
+<P>
+<STRONG>
+and then override this for directories you <EM>want</EM> accessible.
+See the
+<A
+ HREF="../misc/security_tips.html"
+>Security Tips</A>
+page for more details.
+</STRONG>
+</P>
+
 The directory sections typically occur in the access.conf file, but they
 may appear in any configuration file. &lt;Directory&gt; directives cannot
 nest, and cannot appear in a <A HREF="#limit">&lt;Limit&gt;</A> section.
