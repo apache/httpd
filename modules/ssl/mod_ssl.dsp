@@ -213,5 +213,93 @@ SOURCE=.\ssl_util_ssl.h
 SOURCE=.\ssl_util_table.h
 # End Source File
 # End Group
+# Begin Group "Generated Files"
+
+# PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=.\ssl_expr_parse.y .\ssl_expr_parse.h
+
+!IF  "$(CFG)" == "mod_ssl - Win32 Release"
+
+# Begin Custom Build - Generating ssl_expr_parse.c/.h from ssl_expr_parse.y
+InputPath=.\ssl_expr_parse.y
+
+BuildCmds= \
+	bison -y -d ssl_expr_parse.y \
+	sed -e "s;yy;ssl_expr_yy;g" -e\
+ "/#if defined(c_plusplus) || defined(__cplusplus)/,/#endif/d" <y.tab.c\
+ >ssl_expr_parse.c \
+	del y.tab.c \
+	sed -e "s;yy;ssl_expr_yy;g" <y.tab.h >ssl_expr_parse.h \
+	del y.tab.h \
+	
+
+"ssl_expr_parse.c" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+
+"ssl_expr_parse.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "mod_ssl - Win32 Debug"
+
+# Begin Custom Build - Generating ssl_expr_parse.c/.h from ssl_expr_parse.y
+InputPath=.\ssl_expr_parse.y
+
+BuildCmds= \
+	bison -y -d ssl_expr_parse.y \
+	sed -e "s;yy;ssl_expr_yy;g" -e\
+ "/#if defined(c_plusplus) || defined(__cplusplus)/,/#endif/d" <y.tab.c\
+ >ssl_expr_parse.c \
+	del y.tab.c \
+	sed -e "s;yy;ssl_expr_yy;g" <y.tab.h >ssl_expr_parse.h \
+	del y.tab.h \
+	
+
+"ssl_expr_parse.c" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+
+"ssl_expr_parse.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+# End Custom Build
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
+SOURCE=.\ssl_expr_scan.l
+
+!IF  "$(CFG)" == "mod_ssl - Win32 Release"
+
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Generating ssl_expr_scan.c from ssl_expr_scan.l
+InputPath=.\ssl_expr_scan.l
+
+"ssl_expr_scan.c" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	flex -Pssl_expr_yy -s -B ssl_expr_scan.l 
+	sed -e "/$$Header:/d" <lex.ssl_expr_yy.c >ssl_expr_scan.c 
+	del lex.ssl_expr_yy.c 
+	
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "mod_ssl - Win32 Debug"
+
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Generating ssl_expr_scan.c from ssl_expr_scan.l
+InputPath=.\ssl_expr_scan.l
+
+"ssl_expr_scan.c" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	flex -Pssl_expr_yy -s -B ssl_expr_scan.l 
+	sed -e "/$$Header:/d" <lex.ssl_expr_yy.c >ssl_expr_scan.c 
+	del lex.ssl_expr_yy.c 
+	
+# End Custom Build
+
+!ENDIF 
+
+# End Source File
+# End Group
 # End Target
 # End Project
