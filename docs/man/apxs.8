@@ -19,7 +19,7 @@
 .el .ne 3
 .IP "\\$1" \\$2
 ..
-.TH "APXS" 8 "2004-09-28" "Apache HTTP Server" "apxs"
+.TH "APXS" 8 "2004-10-01" "Apache HTTP Server" "apxs"
 
 .SH NAME
 apxs \- APache eXtenSion tool
@@ -165,7 +165,7 @@ Assume you have an Apache module named mod_foo\&.c available which should extend
 
       $ apxs -c mod_foo\&.c
       /path/to/libtool --mode=compile gcc \&.\&.\&. -c mod_foo\&.c
-      /path/to/libtool --mode=link -o mod_foo\&.la mod_foo\&.slo
+      /path/to/libtool --mode=link gcc \&.\&.\&. -o mod_foo\&.la mod_foo\&.slo
       $ _
     
 .fi
