@@ -422,6 +422,7 @@ CORE_EXPORT(void) ap_add_file_conf(core_dir_config *conf, void *url_config)
 	|| ((entry_core)->d[0] != '/' \
             && strchr((entry_core)->d, ':') \
             && *(strchr((entry_core)->d, ':') + 1) != '/'))
+#else
 #define IS_SPECIAL(entry_core)	\
     ((entry_core)->r != NULL || (entry_core)->d[0] != '/')
 #endif
