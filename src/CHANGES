@@ -1,6 +1,10 @@
-$Id: CHANGES,v 1.61 1996/09/08 17:24:55 ben Exp $
+$Id: CHANGES,v 1.62 1996/09/08 17:31:33 jim Exp $
 
 Changes with Apache 1.2b1:
+
+  *) Status module updates: prevent rollover/overflow with heavily
+      used systems. Add additional information, such as time
+      to process request and additional "states" [Jim Jagielski]
 
   *) Fix a race condition which could cause the parent server to hang on
       heavily loaded systems. [Ben Laurie]
@@ -17,7 +21,7 @@ Changes with Apache 1.2b1:
   *) Somewhat cleaner Configure implementation
       Only a simple selection of PLATFORM is required for Configure/
       Configuration to work. Concept of "Rules" added to allow
-      for control of Configure's behavior.
+      for control of Configure's behavior. [Jim Jagielski]
 
   *) Add setuid/gid execution via setuid wrapper
       Apache can now execute CGI scripts as the User/Group of the
