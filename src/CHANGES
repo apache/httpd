@@ -1,5 +1,12 @@
 Changes with Apache 1.3b1
-  
+
+  *) Inetd mode (which is buggy) uses timeouts without having setup the
+     jmpbuffer. [Dean Gaudet] PR#1064
+
+  *) Work around problem under Linux where a child will start looping
+     reporting a select error over and over.
+     [Rick Franchuk <rickf@transpect.net>] PR#1107
+
   *) Fixed error in proxy_util.c when looping through multiple host IP
      addresses. [Lars Eilebrecht] PR#974
 

@@ -2851,8 +2851,18 @@ void child_main(int child_num_arg)
 		memcpy(&main_fds, &listenfds, sizeof(fd_set));
 		srv = ap_select(listenmaxfd+1, &main_fds, NULL, NULL, NULL);
 
-		if (srv < 0 && errno != EINTR)
+		if (srv < 0 && errno != EINTR) {
+#ifdef LINUX
+		    if (errno == EFAULT) {
+			aplog_error(APLOG_MARK, APLOG_ERR, server_conf,
+			    "select: (listen) fatal, exiting");
+			child_exit_modules (pconf, server_conf);
+			destroy_pool(pconf);
+			exit(1);
+		    }
+#endif
 		    aplog_error(APLOG_MARK, APLOG_ERR, server_conf, "select: (listen)");
+		}
 		
 		if (srv <= 0)
 		    continue;
@@ -3579,6 +3589,9 @@ main(int argc, char *argv[])
           GETUSERMODE();
       }
 #endif
+	if (ap_setjmp (jmpbuffer)) {
+	    exit (0);
+	}
 
 	l = sizeof(sa_client);
 	if ((getpeername(fileno(stdin), &sa_client, &l)) < 0)
