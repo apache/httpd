@@ -2205,23 +2205,22 @@ static pid_t spawn_child_core(pool *p, int (*func) (void *, child_info *),
             save_out = dup(STDOUT_FILENO);
             dup2(out_fds[1], STDOUT_FILENO);
             close(out_fds[1]);
+            DosSetFHState(out_fds[0], OPEN_FLAGS_NOINHERIT);
         }
 
         if (pipe_in) {
             save_in = dup(STDIN_FILENO);
             dup2(in_fds[0], STDIN_FILENO);
             close(in_fds[0]);
+            DosSetFHState(in_fds[1], OPEN_FLAGS_NOINHERIT);
         }
 
         if (pipe_err) {
             save_err = dup(STDERR_FILENO);
             dup2(err_fds[1], STDERR_FILENO);
             close(err_fds[1]);
+            DosSetFHState(err_fds[0], OPEN_FLAGS_NOINHERIT);
         }
-    
-        DosSetFHState(in_fds[1], OPEN_FLAGS_NOINHERIT);
-        DosSetFHState(out_fds[0], OPEN_FLAGS_NOINHERIT);
-        DosSetFHState(err_fds[0], OPEN_FLAGS_NOINHERIT);
         
         pid = func(data, NULL);
     
