@@ -168,7 +168,7 @@ ap_array_header_t *ap_get_connections(ap_pool_t *p)
     long *array_slot;
 
     connection_list = ap_make_array(p, 0, sizeof(long));
-    for (i = 0; i < max_daemons_limit*HARD_THREAD_LIMIT; i++) {
+    for (i = 0; i < ap_max_daemons_limit*HARD_THREAD_LIMIT; i++) {
 	if (ap_scoreboard_image->table[i][0].key[0] != '\0') {
             array_slot = ap_push_array(connection_list);
             *array_slot = i;
@@ -206,7 +206,7 @@ ap_array_header_t *ap_get_status_table(ap_pool_t *p)
 
     server_status = ap_make_array(p, 0, sizeof(ap_status_table_row_t));
 
-    for (i = 0; i < max_daemons_limit*HARD_THREAD_LIMIT; i++) {
+    for (i = 0; i < ap_max_daemons_limit*HARD_THREAD_LIMIT; i++) {
 	if (ap_scoreboard_image->table[i][0].key[0] == '\0')
 	    continue;
         array_slot = ap_push_array(server_status);
