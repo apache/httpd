@@ -107,6 +107,11 @@
 */
 
 #include "apr.h"
+
+#if !(APR_HAS_SENDFILE || APR_HAS_MMAP)
+#error mod_file_cache only works on systems with APR_HAS_SENDFILE or APR_HAS_MMAP
+#endif
+
 #include "apr_mmap.h"
 #include "apr_strings.h"
 #include "apr_hash.h"
@@ -212,6 +217,7 @@ static void cache_the_file(cmd_parms *cmd, const char *filename, int mmap)
     new_file = apr_pcalloc(cmd->pool, sizeof(a_file));
     new_file->finfo = tmp.finfo;
 
+#if APR_HAS_MMAP
     if (mmap) {
          /* MMAPFile directive. MMAP'ing the file */
         if ((rc = apr_mmap_create(&new_file->mm, fd, 0, new_file->finfo.size,
@@ -224,8 +230,9 @@ static void cache_the_file(cmd_parms *cmd, const char *filename, int mmap)
         apr_file_close(fd);
         new_file->is_mmapped = TRUE;
     }
+#endif
 #if APR_HAS_SENDFILE
-    else {
+    if (!mmap) {
         /* CacheFile directive. Caching the file handle */
         new_file->is_mmapped = FALSE;
         new_file->file = fd;
@@ -263,7 +270,7 @@ static const char *cachefilemmap(cmd_parms *cmd, void *dummy, const char *filena
 #else
     /* MMAP not supported by this OS */
     ap_log_error(APLOG_MARK, APLOG_WARNING|APLOG_NOERRNO, 0, cmd->server,
-                 "mod_file_cache: unable to cache file: %s. MMAP is not supported by this OS", fspec);
+                 "mod_file_cache: unable to cache file: %s. MMAP is not supported by this OS", filename);
 #endif
     return NULL;
 }
