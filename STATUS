@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2002/04/05 17:22:19 $]
+Last modified at [$Date: 2002/04/07 16:58:31 $]
 
 Release:
 
@@ -780,6 +780,14 @@ Other bugs that need fixing:
         Status: Greg volunteers to investigate (esp. since he was most 
                 likely the one to break it :-)
 
+Binaries needed:
+
+	Mandrake 8.1:  rbb volunteers
+	FreeBSD 4.1:   rbb volunteers
+	OS X 10.1.3:   jimjag volunteers
+	Solaris 8.x:   jimjag volunteers
+	RedHat 7.2:    jimjag volunteers
+
 Other features that need writing:
 
     * Finish infrastructure in core for async MPMs
@@ -788,11 +796,6 @@ Other features that need writing:
     * TODO in source -- just do an egrep on "TODO" and see what's there
 
 Available Patches:
-
-   * Jon Travis's <jtravis@covalent.net> patch to deal with thread-safe
-     issues with inet_ntoa.  See message <20001201163220.A12827@covalent.net>
-        Status:  This is being set aside until the IPv6 work is finished
-                 so that we know exactly what is required.
 
    * Martin Sojka <msojka@gmx.de>'s patch to add error reporting for failed 
      htpasswd actions due to a full /tmp volume (other programs may have
