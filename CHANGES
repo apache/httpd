@@ -1,5 +1,10 @@
 Changes with Apache 2.0.19-dev
 
+  *) modified mod_negotiation and mod_autoindex to speed up by almost a
+     factor of two on apr_dir_read()-enhanced platforms, such as Win32
+     and OS2, by calling ap_sub_request_lookup_dirent() with the results
+     already provided by apr_dir_read().  [William Rowe]
+
   *) mod_file_cache is now more robust to filtering and serves requests
      slightly more efficiently.  [Cliff Woolley]
 
