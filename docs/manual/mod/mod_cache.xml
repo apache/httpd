@@ -11,23 +11,30 @@
 
 <summary>
     <note type="warning">
-    This module is experimental. Documentation is still under development...
+      This module is experimental. Documentation is still under development...
     </note>
-    <p>mod_cache implements an RFC 2616 compliant HTTP content
-    cache that can be used to cache either local or proxied content.
-    mod_cache requires the services of one or more storage
+
+    <p><module>mod_cache</module> implements an <a
+    href="http://www.ietf.org/rfc/rfc2616.txt">RFC 2616</a> compliant HTTP
+    content cache that can be used to cache either local or proxied content.
+    <module>mod_cache</module> requires the services of one or more storage
     management modules. Two storage management modules are included in
     the base Apache distribution:</p>
     <dl>
     <dt><module>mod_disk_cache</module></dt>
-    <dd>implements a disk based storage manager for use with <module>mod_proxy</module></dd>
+    <dd>implements a disk based storage manager for use with
+    <module>mod_proxy</module></dd>
+
     <dt><module>mod_mem_cache</module></dt>
-    <dd>implements an in-memory based storage manager. mod_mem_cache
-    can be configured to operate in two modes: caching open file
-    descriptors or caching objects in heap storage. <em><module>mod_mem_cache</module></em>
-    is most useful when used to cache locally generated content or to cache 
-    backend server content for mod_proxy configured for ProxyPass (aka <em>reverse proxy</em>)</dd>
+    <dd>implements an in-memory based storage manager.
+    <module>mod_mem_cache</module> can be configured to operate in two
+    modes: caching open file descriptors or caching objects in heap storage.
+    <module>mod_mem_cache</module> is most useful when used to cache
+    locally generated content or to cache backend server content for
+    <module>mod_proxy</module> configured for <directive module="mod_proxy"
+    >ProxyPass</directive> (aka <dfn>reverse proxy</dfn>)</dd>
     </dl>
+
     <p>Content stored and retrived keyed to the URL. Content with
     access protections is not cached.</p>
 </summary>
@@ -61,198 +68,233 @@
     </related>
 </section>
 
-<section><title>Sample Configuration</title>
-<example><title>Sample httpd.conf</title>
-# <br />
-# Sample Cache Configuration <br />
-# <br />
-LoadModule cache_module modules/mod_cache.so <br />
-&lt;IfModule mod_cache.c&gt; <br />
-<br />
-#LoadModule disk_cache_module modules/mod_disk_cache.so <br />
-   &lt;IfModule mod_disk_cache.c&gt; <br />
-      CacheRoot c:/cacheroot <br />
-      CacheSize 256 <br /> 
-      CacheEnable disk  / <br />
-      CacheDirLevels 5 <br />
-      CacheDirLength 3 <br />
-   &lt;/IfModule&gt; <br />
-<br />
-   LoadModule mem_cache_module modules/mod_mem_cache.so <br />
-   &lt;IfModule mod_mem_cache.c&gt; <br />
-      MCacheEnable mem  / <br />
-      MCacheSize 4096 <br />
-      MCacheMaxObjectCount 100 <br />
-      MCacheMinObjectSize 1 <br />
-      MCacheMaxObjectSize 2048 <br />
-   &lt;/IfModule&gt; <br />
-<br />
-&lt;/IfModule&gt; <br />
-</example>
+<section id="sampleconf"><title>Sample Configuration</title>
+    <example><title>Sample httpd.conf</title>
+      #<br />
+      # Sample Cache Configuration<br />
+      #<br />
+      LoadModule cache_module modules/mod_cache.so<br />
+      <br />
+      &lt;IfModule mod_cache.c&gt;<br />
+      <indent>
+        #LoadModule disk_cache_module modules/mod_disk_cache.so<br />
+        &lt;IfModule mod_disk_cache.c&gt;<br />
+        <indent>
+          CacheRoot c:/cacheroot<br />
+          CacheSize 256<br />
+          CacheEnable disk  /<br />
+          CacheDirLevels 5<br />
+          CacheDirLength 3<br />
+        </indent>
+        &lt;/IfModule&gt; <br />
+        <br />
+        LoadModule mem_cache_module modules/mod_mem_cache.so<br />
+        &lt;IfModule mod_mem_cache.c&gt;<br />
+        <indent>
+          MCacheEnable mem  /<br />
+          MCacheSize 4096<br />
+          MCacheMaxObjectCount 100<br />
+          MCacheMinObjectSize 1<br />
+          MCacheMaxObjectSize 2048<br />
+        </indent>
+        &lt;/IfModule&gt;<br />
+      </indent>
+      &lt;/IfModule&gt;
+    </example>
 </section>
 
 <directivesynopsis>
 <name>CacheEnable</name>
-<description>Enable caching specified URLs in a specified storage manager</description>
-<syntax>CacheEnable <em>cache_type </em><em> url-string</em></syntax>
-<contextlist><context>server config</context></contextlist>
+<description>Enable caching specified URLs in a specified storage
+manager</description>
+<syntax>CacheEnable <var>cache_type</var> <var>url-string</var></syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
 
 <usage>
     <p>The <directive>CacheEnable</directive> directive instructs
-    mod_cache to cache urls at or below <em>url-string</em>.  
-    The cache store is specified with the <em>cache_type</em> argument.
-    <em>cache_type </em> <em> mem</em> instructs mod_cache to use the
-    in-memory cache storage manager implemented by <em>mod_mem_cache</em>. 
-    <em>cache_type </em> <em> disk</em> instructs mod_cache to use the
-    cache storage manager implemented by <em>mod_disk_cache </em>. </p>
+    <module>mod_cache</module> to cache urls at or below
+    <var>url-string</var>. The cache store is specified with the
+    <var>cache_type</var> argument. <var>cache_type</var> <code>mem</code>
+    instructs <module>mod_cache</module> to use the in-memory cache storage
+    manager implemented by <module>mod_mem_cache</module>.
+    <var>cache_type</var> <code>disk</code> instructs
+    <module>mod_cache</module> to use the cache storage manager implemented
+    by <module>mod_disk_cache</module>.</p>
 
-<example>
-  CacheEnable  disk  / <br />
-  CacheEnable  mem   /manual <br />
-  CacheEnable  fd    /images <br />
-</example>
+    <example>
+      CacheEnable  disk  /<br />
+      CacheEnable  mem   /manual<br />
+      CacheEnable  fd    /images<br />
+    </example>
 </usage>
-
 </directivesynopsis>
 
 <directivesynopsis>
 <name>CacheDisable</name>
-<description>Disable caching of specified URLs by specified storage manager</description>
-<syntax>CacheDisable <em>cache_type </em> <em> url-string</em></syntax>
-<contextlist><context>server config</context></contextlist>
+<description>Disable caching of specified URLs by specified storage
+manager</description>
+<syntax>CacheDisable <var>cache_type</var> <var>url-string</var></syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
 
 <usage>
     <p>The <directive>CacheDisable</directive> directive instructs
-    mod_cache to <em>not</em> cache urls at or above <em>url-string</em>.</p>
+    <module>mod_cache</module> to <em>not</em> cache urls at or below
+    <var>url-string</var>.</p>
 
-<example><title>Example</title>
-  CacheDisable disk /local_files
-</example>
+    <example><title>Example</title>
+      CacheDisable disk /local_files
+    </example>
 </usage>
 
 </directivesynopsis>
 <directivesynopsis>
 <name>CacheMaxExpire</name>
 <description>The maximum time in seconds to cache a document</description>
-<syntax>CacheMaxExpire <em>seconds</em></syntax>
+<syntax>CacheMaxExpire <var>seconds</var></syntax>
 <default>CacheMaxExpire 86400 (one day)</default>
-<contextlist><context>server config</context></contextlist>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
 
 <usage>
-    <p>The maximum time in seconds to cache a document. The <directive>CacheMaxExpire</directive>
-    takes precedence over the <em>Expire</em> field from the header.</p>
+    <p>The maximum time in seconds to cache a document. The
+    <directive>CacheMaxExpire</directive> takes precedence over the
+    <code>Expires</code> field from the header.</p>
+
     <example>
-    CacheMaxExpire 604800
+      CacheMaxExpire 604800
     </example>
 </usage>
 </directivesynopsis>
+
 <directivesynopsis>
 <name>CacheDefaultExpire</name>
-<syntax>CacheDefaultExpire <em>seconds</em></syntax>
+<description>The default time in seconds to cache a document</description>
+<syntax>CacheDefaultExpire <var>seconds</var></syntax>
 <default>CacheDefaultExpire 3600 (one hour)</default>
-<contextlist><context>server config</context></contextlist>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
 
 <usage>
     <p>The default time in seconds to cache a document if the page does not have
-    an expiry date in the <em>Expires</em> field.</p>
+    an expiry date in the <code>Expires</code> field.</p>
+
     <example>
-    CacheDefaultExpire 86400
+      CacheDefaultExpire 86400
     </example>
 </usage>
 </directivesynopsis>
 
 <directivesynopsis>
 <name>CacheIgnoreNoLastMod</name>
-<description>Ignore responses where there is no Last Modified Header</description>
-<syntax>CacheIgnoreNoLastMod</syntax>
-<contextlist><context>server config</context></contextlist>
+<description>Ignore responses where there is no Last Modified
+Header</description>
+<syntax>CacheIgnoreNoLastMod On|Off</syntax>
+<default>CacheIgnoreNoLastMod Off</default>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
 
 <usage>
-    <p>Ignore responses where there is no Last Modified Header</p>
+    <p>Ignore responses where there is no Last Modified Header.</p>
 
     <example>
-    CacheIgnoreNoLastMod 
+      CacheIgnoreNoLastMod On
     </example>
 </usage>
 </directivesynopsis>
 
 <directivesynopsis>
 <name>CacheIgnoreCacheControl</name>
-<description>Ignore requests from the client for uncached content</description>
-<syntax>CacheIgnoreCacheControl</syntax>
-<contextlist><context>server config</context></contextlist>
+<description>Ignore requests from the client for uncached
+content</description>
+<syntax>CacheIgnoreCacheControl On|Off</syntax>
+<default>CacheIgnoreCacheControl Off</default>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
 
 <usage>
     <p>Ignore requests from the client for uncached content</p>
 
     <example>
-    CacheIgnoreNoLastMod 
+      CacheIgnoreCacheControl On
     </example>
 </usage>
 </directivesynopsis>
 
 <directivesynopsis>
 <name>CacheLastModifiedFactor</name>
-<description>The factor used to estimate the Expires date from the LastModified date</description>
-<syntax>CacheLastModifiedFactor <em>float</em></syntax>
+<description>The factor used to estimate the Expires date from the
+LastModified date</description>
+<syntax>CacheLastModifiedFactor <var>float</var></syntax>
 <default>CacheLastModifiedFactor 0.1</default>
-<contextlist><context>server config</context></contextlist>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
 
 <usage>
     <p>The factor used to estimate the Expires date from the LastModified date.</p>
 
     <example>
-    CacheLastModifiedFactor 0.5
+      CacheLastModifiedFactor 0.5
     </example>
 </usage>
 </directivesynopsis>
 
 <directivesynopsis>
 <name>CacheForceCompletion</name>
-<description>Percentage of download to arrive for the cache to force complete transfer</description>
-<syntax>CacheForceCompletion <em>Percentage</em></syntax>
+<description>Percentage of download to arrive for the cache to force
+complete transfer</description>
+<syntax>CacheForceCompletion <var>Percentage</var></syntax>
 <default>CacheForceCompletion 60</default>
-<contextlist><context>server config</context></contextlist>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
 
 <usage>
-    <p>Percentage of download to arrive for the cache to force complete transfert.</p>
+    <p>Percentage of download to arrive for the cache to force complete transfer.</p>
 
     <example>
-    CacheForceCompletion 80
+      CacheForceCompletion 80
     </example>
-<note type="warning">
-This feature is currently <em>not</em> implemented.
-</note>
+
+    <note type="warning">
+      This feature is currently <em>not</em> implemented.
+    </note>
 </usage>
 </directivesynopsis>
 
 <directivesynopsis>
 <name>CacheMaxStreamingBuffer</name>
-<description>Maximum amount of a streamed response to buffer in memory before declaring the response uncacheable</description>
-<syntax>CacheMaxStreamingBuffer <em>size_in_bytes</em></syntax>
+<description>Maximum amount of a streamed response to buffer in memory
+before declaring the response uncacheable</description>
+<syntax>CacheMaxStreamingBuffer <var>size_in_bytes</var></syntax>
 <default>CacheMaxStreamingBuffer 0</default>
-<contextlist><context>server config</context></contextlist>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
 
 <usage>
-<p>Maximum number of bytes of a streamed response (i.e., a response where
-the entire content is not available all at once, such as a proxy or CGI
-response) to buffer before deciding if the response is cacheable.  By
-default, a streamed response will <em>not</em> be cached unless it has a
-Content-Length header.  The reason for this is to avoid using a large amount
-of memory to buffer a partial response that might end up being too large
-to fit in the cache anyway.  To enable caching of streamed responses, use
-CacheMaxStreamingBuffer to specify the maximum amount of buffer space to use
-per request.</p>
+    <p>Maximum number of bytes of a streamed response (<em>i.e.</em>, a
+    response where the entire content is not available all at once, such
+    as a proxy or CGI response) to buffer before deciding if the response
+    is cacheable. By default, a streamed response will <em>not</em> be
+    cached unless it has a <code>Content-Length</code> header. The reason
+    for this is to avoid using a large amount of memory to buffer a partial
+    response that might end up being too large to fit in the cache anyway.
+    To enable caching of streamed responses, use <directive
+    >CacheMaxStreamingBuffer</directive> to specify the maximum amount of
+    buffer space to use per request.</p>
 
-<p>Note: Using a nonzero value for CacheMaxStreamingBuffer will not delay the
-transmission of the response to the client.  As soon as mod_cache copies a
-block of streamed content into a buffer, it sends the block on to the next
-output filter for delivery to the client.</p>
+    <note><title>Note:</title>
+      <p>Using a nonzero value for <directive
+      >CacheMaxStreamingBuffer</directive> will not delay the transmission
+      of the response to the client.  As soon as <module>mod_cache</module>
+      copies a block of streamed content into a buffer, it sends the block
+      on to the next output filter for delivery to the client.</p>
+    </note>
 
-<example>
-# Enable caching of streamed responses up to 64KB:<br />
-CacheMaxStreamingBuffer  65536
-</example>
+    <example>
+      # Enable caching of streamed responses up to 64KB:<br />
+      CacheMaxStreamingBuffer 65536
+    </example>
 </usage>
 </directivesynopsis>
 
