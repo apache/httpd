@@ -3176,19 +3176,6 @@ static int default_handler(request_rec *r)
      */
     int bld_content_md5;
 
-    /*
-     * The old way of doing handlers meant that this handler would
-     * match literally anything - this way will require handler to
-     * have a / in the middle, which probably captures the original
-     * intent, but may cause problems at first - Ben 7th Jan 01
-     * Don't try to serve a dir.  Some OSs do weird things with
-     * raw I/O on a dir.
-     */
-    if ((strcmp(r->handler, "default-handler")
-        && !ap_strchr_c(r->handler, '/'))
-        || r->finfo.filetype == APR_DIR)
-        return DECLINED;
-
     d = (core_dir_config *)ap_get_module_config(r->per_dir_config,
                                                 &core_module);
     bld_content_md5 = (d->content_md5 & 1)
@@ -3209,6 +3196,15 @@ static int default_handler(request_rec *r)
         if (r->finfo.filetype == 0) {
             ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                           "File does not exist: %s", r->filename);
+            return HTTP_NOT_FOUND;
+        }
+
+        /* Don't try to serve a dir.  Some OSs do weird things with
+         * raw I/O on a dir.
+         */
+        if (r->finfo.filetype == APR_DIR) {
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+                          "Attempt to serve directory: %s", r->filename);
             return HTTP_NOT_FOUND;
         }
 
