@@ -661,8 +661,9 @@ static int cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
         r->status_line = NULL;
 
         /* RFC 2616 10.3.5 states that entity headers are not supposed
-         * to be in the 304 response.  Therefore, we need to load in the
-         * cached headers before we update the cached headers.
+         * to be in the 304 response.  Therefore, we need to combine the
+         * response headers with the cached headers *before* we update
+         * the cached headers.
          *
          * However, before doing that, we need to first merge in
          * err_headers_out and we also need to strip any hop-by-hop

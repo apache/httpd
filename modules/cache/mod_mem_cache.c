@@ -670,7 +670,7 @@ static apr_status_t store_headers(cache_handle_t *h, request_rec *r, cache_info 
     cache_object_t *obj = h->cache_obj;
     mem_cache_object_t *mobj = (mem_cache_object_t*) obj->vobj;
     int rc;
-    apr_table_t *headers_out, *err_headers_out;
+    apr_table_t *headers_out;
 
     /*
      * The cache needs to keep track of the following information: 
