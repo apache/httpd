@@ -4,25 +4,25 @@
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-      --><title>マルチプロセッシングモジュール (MPM) - Apache HTTP Server</title><link href="./style/css/manual-sbar-right-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="right sidebar - blue (font 100%)" /><link href="./style/css/manual-sbar-right-90pc.css" rel="alternate stylesheet" media="all" type="text/css" title="right sidebar - blue (font 90%)" /><link href="./style/css/manual-sbar-right-fix15.css" rel="stylesheet" media="all" type="text/css" title="right sidebar - blue (font fix 15)" /><link href="./style/css/manual-sbar-right-fix13.css" rel="alternate stylesheet" media="all" type="text/css" title="right sidebar - blue (font fix 13)" /><link href="./style/css/manual-sbar-right-100pc-b.css" rel="alternate stylesheet" media="all" type="text/css" title="right sidebar - black (font 100%)" /><link href="./style/css/manual-sbar-right-90pc-b.css" rel="alternate stylesheet" media="all" type="text/css" title="right sidebar - black (font 90%)" /><link href="./style/css/manual-sbar-right-fix15-b.css" rel="alternate stylesheet" media="all" type="text/css" title="right sidebar - black (font fix 15)" /><link href="./style/css/manual-sbar-right-fix13-b.css" rel="alternate stylesheet" media="all" type="text/css" title="right sidebar - black (font fix 13)" /><link href="./style/css/manual-sbar-left-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - blue (font 100%)" /><link href="./style/css/manual-sbar-left-90pc.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - blue (font 90%)" /><link href="./style/css/manual-sbar-left-fix15.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - blue (font fix 15)" /><link href="./style/css/manual-sbar-left-fix13.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - blue (font fix 13)" /><link href="./style/css/manual-sbar-left-100pc-b.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - black (font 100%)" /><link href="./style/css/manual-sbar-left-90pc-b.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - black (font 90%)" /><link href="./style/css/manual-sbar-left-fix15-b.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - black (font fix 15)" /><link href="./style/css/manual-sbar-left-fix13-b.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - black (font fix 13)" /><link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - blue (font 100%)" /><link href="./style/css/manual-loose-90pc.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - blue (font 90%)" /><link href="./style/css/manual-loose-fix15.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - blue (font fix 15)" /><link href="./style/css/manual-loose-fix13.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - blue (font fix 13)" /><link href="./style/css/manual-loose-100pc-b.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - black (font 100%)" /><link href="./style/css/manual-loose-90pc-b.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - black (font 90%)" /><link href="./style/css/manual-loose-fix15-b.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - black (font fix 15)" /><link href="./style/css/manual-loose-fix13-b.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - black (font fix 13)" /><link href="./images/favicon.ico" rel="shortcut icon" /></head><body id="manual-page"><div id="page-header"><p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/directives.html">Directives</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">Glossary</a> | <a href="./sitemap.html">Sitemap</a></p><p class="apache">Apache HTTP Server Version 2.0</p><img alt="" src="./images/feather.gif" /></div><div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="./images/left.gif" /></a></div><div id="path"><a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentation</a> &gt; <a href="./">Version 2.0</a></div><div id="page-content"><div id="preamble"><h1>マルチプロセッシングモジュール (MPM)</h1>
-<p>この文書ではマルチプロセッシングモジュールがどのようなもので、
-Apache HTTP サーバでどのように使用されるかについて解説しています。</p>
+      --><title>マルチプロセッシングモジュール (MPM) - Apache HTTP Server</title><link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" /><link href="./images/favicon.ico" rel="shortcut icon" /></head><body id="manual-page"><div id="page-header"><p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/directives.html">Directives</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">Glossary</a> | <a href="./sitemap.html">Sitemap</a></p><p class="apache">Apache HTTP Server Version 2.0</p><img alt="" src="./images/feather.gif" /></div><div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="./images/left.gif" /></a></div><div id="path"><a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentation</a> &gt; <a href="./">Version 2.0</a></div><div id="page-content"><div id="preamble"><h1>マルチプロセッシングモジュール (MPM)</h1>
+<p>この文書ではマルチプロセッシングモジュールがどのようなもので、
+Apache HTTP サーバでどのように使用されるかについて解説しています。</p>
 </div><div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#introduction">はじめに</a></li><li><img alt="" src="./images/down.gif" /> <a href="#choosing">MPM を選ぶ</a></li><li><img alt="" src="./images/down.gif" /> <a href="#defaults">MPM デフォルト値</a></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div><div class="section"><h2><a name="introduction" id="introduction">はじめに</a></h2>
 
-    <p>Apache HTTP サーバは異なる幅広い環境、多種多様なプラットホームで
+    <p>Apache HTTP サーバは異なる幅広い環境、多種多様なプラットホームで
     動作するように、パワフルで柔軟性に富んだ設計になっています。
     異なるプラットホーム・異なる環境ではしばしば、
     異なる機能が必要になったり、
-    同じ機能でも効率のために異なる実装が必要になったりします。
+    同じ機能でも効率のために異なる実装が必要になったりします。
     Apache ではモジュール化された設計により幅広い環境に適応してきました。
     この設計のおかげで、管理者は
     コンパイル時または実行時にどのモジュールをロードするか選ぶことによって、
-    どの機能をサーバに取り込むか選択することがができます。</p>
+    どの機能をサーバに取り込むか選択することがができます。</p>
 
     <p>Apache 2.0 では、
     このモジュール化された設計をサーバの基本機能にまで拡張しました。
     サーバには精選されたマルチプロセッシングモジュール (MPM) 
-    が付いてきて、これらはマシンのネットワークポートをバインドしたり、
+    が付いてきて、これらはマシンのネットワークポートをバインドしたり、
     リクエストを受け付けたり、リクエストを扱うよう子プロセスに割り当てたり、
     といった役割を持ちます。</p>
 
@@ -43,7 +43,7 @@ Apache HTTP サーバでどのように使用されるかについて解説しています。</p>
 
       <li>サーバは特定のサイト向けに、より上手にカスタマイズできます。
       例えば、非常に大きなスケーラビリティを必要とするサイトでは、
-      <code class="module"><a href="./mod/worker.html">worker</a></code> といったスレッド化された
+      <code class="module"><a href="./mod/worker.html">worker</a></code> といったスレッド化された
       MPM を利用できる一方で、安定性や古いソフトウェアとの互換性を
       必要とするサイトでは <code class="module"><a href="./mod/prefork.html">prefork</a></code>
       が利用できます。また、
@@ -67,7 +67,7 @@ Apache HTTP サーバでどのように使用されるかについて解説しています。</p>
     そもそもスレッドが使われているということを知る必要があります。
     MPM には Unix 上でスレッドを用いるものや、スレッドをまったく
     使わないものがあるので、
-    Apache は、MPM が設定中に選択されて Apache 内部に組み込まれた場合の方が
+    Apache は、MPM が設定中に選択されて Apache 内部に組み込まれた場合の方が
     常により良いパフォーマンスを発揮します。</p>
 
     <p>望みの MPM を実際に選ぶためには、./configure スクリプトで

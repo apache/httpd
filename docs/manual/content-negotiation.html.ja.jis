@@ -4,17 +4,17 @@
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-      --><title>コンテントネゴシエーション - Apache HTTP Server</title><link href="./style/css/manual-sbar-right-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="right sidebar - blue (font 100%)" /><link href="./style/css/manual-sbar-right-90pc.css" rel="alternate stylesheet" media="all" type="text/css" title="right sidebar - blue (font 90%)" /><link href="./style/css/manual-sbar-right-fix15.css" rel="stylesheet" media="all" type="text/css" title="right sidebar - blue (font fix 15)" /><link href="./style/css/manual-sbar-right-fix13.css" rel="alternate stylesheet" media="all" type="text/css" title="right sidebar - blue (font fix 13)" /><link href="./style/css/manual-sbar-right-100pc-b.css" rel="alternate stylesheet" media="all" type="text/css" title="right sidebar - black (font 100%)" /><link href="./style/css/manual-sbar-right-90pc-b.css" rel="alternate stylesheet" media="all" type="text/css" title="right sidebar - black (font 90%)" /><link href="./style/css/manual-sbar-right-fix15-b.css" rel="alternate stylesheet" media="all" type="text/css" title="right sidebar - black (font fix 15)" /><link href="./style/css/manual-sbar-right-fix13-b.css" rel="alternate stylesheet" media="all" type="text/css" title="right sidebar - black (font fix 13)" /><link href="./style/css/manual-sbar-left-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - blue (font 100%)" /><link href="./style/css/manual-sbar-left-90pc.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - blue (font 90%)" /><link href="./style/css/manual-sbar-left-fix15.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - blue (font fix 15)" /><link href="./style/css/manual-sbar-left-fix13.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - blue (font fix 13)" /><link href="./style/css/manual-sbar-left-100pc-b.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - black (font 100%)" /><link href="./style/css/manual-sbar-left-90pc-b.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - black (font 90%)" /><link href="./style/css/manual-sbar-left-fix15-b.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - black (font fix 15)" /><link href="./style/css/manual-sbar-left-fix13-b.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - black (font fix 13)" /><link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - blue (font 100%)" /><link href="./style/css/manual-loose-90pc.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - blue (font 90%)" /><link href="./style/css/manual-loose-fix15.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - blue (font fix 15)" /><link href="./style/css/manual-loose-fix13.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - blue (font fix 13)" /><link href="./style/css/manual-loose-100pc-b.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - black (font 100%)" /><link href="./style/css/manual-loose-90pc-b.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - black (font 90%)" /><link href="./style/css/manual-loose-fix15-b.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - black (font fix 15)" /><link href="./style/css/manual-loose-fix13-b.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - black (font fix 13)" /><link href="./images/favicon.ico" rel="shortcut icon" /></head><body id="manual-page"><div id="page-header"><p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/directives.html">Directives</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">Glossary</a> | <a href="./sitemap.html">Sitemap</a></p><p class="apache">Apache HTTP Server Version 2.0</p><img alt="" src="./images/feather.gif" /></div><div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="./images/left.gif" /></a></div><div id="path"><a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentation</a> &gt; <a href="./">Version 2.0</a></div><div id="page-content"><div id="preamble"><h1>コンテントネゴシエーション</h1>
+      --><title>コンテントネゴシエーション - Apache HTTP Server</title><link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" /><link href="./images/favicon.ico" rel="shortcut icon" /></head><body id="manual-page"><div id="page-header"><p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/directives.html">Directives</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">Glossary</a> | <a href="./sitemap.html">Sitemap</a></p><p class="apache">Apache HTTP Server Version 2.0</p><img alt="" src="./images/feather.gif" /></div><div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="./images/left.gif" /></a></div><div id="path"><a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentation</a> &gt; <a href="./">Version 2.0</a></div><div id="page-content"><div id="preamble"><h1>コンテントネゴシエーション</h1>
 
-    <p>Apache は HTTP/1.1 の規格に記述されているコンテントネゴシエーションを
+    <p>Apache は HTTP/1.1 の規格に記述されているコンテントネゴシエーションを
     サポートしています。
-    ブラウザにより提供されたメディアタイプ、
-    言語、文字セット、エンコーディングの優先傾向に基づいて、
+    ブラウザにより提供されたメディアタイプ、
+    言語、文字セット、エンコーディングの優先傾向に基づいて、
     最適なリソースの表現を選択できます。
     また、不完全なネゴシエーション情報を送ってくるブラウザからのリクエストを
     もっと賢く取り扱えるよう、いくつか機能も実装してあります。</p>
 
-    <p>コンテントネゴシエーションは
+    <p>コンテントネゴシエーションは
     <code class="module"><a href="./mod/mod_negotiation.html">mod_negotiation</a></code>
     モジュールによって
     提供されていて、デフォルトで組み込まれています。</p>
@@ -22,11 +22,11 @@
 の拡張</a></li><li><img alt="" src="./images/down.gif" /> <a href="#naming">リンクと名前の変換に関する注意点</a></li><li><img alt="" src="./images/down.gif" /> <a href="#caching">キャッシュに関する注意事項</a></li><li><img alt="" src="./images/down.gif" /> <a href="#more">追加情報</a></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div><div class="section"><h2><a name="about" id="about">コンテントネゴシエーションについて</a></h2>
 
     <p>リソースは、幾つか異なった表現で利用できる場合があります。
-    例えば、異なる言語や異なるメディアタイプ、
+    例えば、異なる言語や異なるメディアタイプ、
     またはそれらの組み合わせで利用できるかも知れません。
     もっとも適した選択をする方法の一つには、インデックスページを
     ユーザに見せて、ユーザに選んでもらう方法があります。
-    しかし、サーバが自動的に選ぶことができる場合が多くあります。
+    しかし、サーバが自動的に選ぶことができる場合が多くあります。
     これは、ブラウザがリクエスト情報毎の情報の一部に、
     どの表現を嗜好するかを送ることで動作しています。
     例えばブラウザは、可能ならフランス語で情報を見たい、
@@ -46,7 +46,7 @@
     そして様々なメディアタイプを受け付けるが、
     プレインテキストや他のタイプよりは HTML を好む、
     他のメディアタイプよりは GIF や JPEG を好む、しかし最終手段として
-    他のメディアタイプも受け付ける、と設定されています。</p>
+    他のメディアタイプも受け付ける、と設定されています。</p>
 
 <div class="example"><p><code>
   Accept-Language: fr; q=1.0, en; q=0.5<br />
@@ -63,7 +63,7 @@
     これらの RFCで定義されている 'feature negotiation'
     はサポートしていません。</p>
 
-    <p><strong>リソース</strong>とは URI
+    <p><strong>リソース</strong>とは URI
     で特定される概念上のもののことです (RFC 2396)。 Apache
     のような HTTP サーバは、その名前空間の中での
     リソースの<strong>表現</strong>へのアクセスを提供します。

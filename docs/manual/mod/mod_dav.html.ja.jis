@@ -4,14 +4,14 @@
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-      --><title>mod_dav - Apache HTTP Server</title><link href="../style/css/manual-sbar-right-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="right sidebar - blue (font 100%)" /><link href="../style/css/manual-sbar-right-90pc.css" rel="alternate stylesheet" media="all" type="text/css" title="right sidebar - blue (font 90%)" /><link href="../style/css/manual-sbar-right-fix15.css" rel="stylesheet" media="all" type="text/css" title="right sidebar - blue (font fix 15)" /><link href="../style/css/manual-sbar-right-fix13.css" rel="alternate stylesheet" media="all" type="text/css" title="right sidebar - blue (font fix 13)" /><link href="../style/css/manual-sbar-right-100pc-b.css" rel="alternate stylesheet" media="all" type="text/css" title="right sidebar - black (font 100%)" /><link href="../style/css/manual-sbar-right-90pc-b.css" rel="alternate stylesheet" media="all" type="text/css" title="right sidebar - black (font 90%)" /><link href="../style/css/manual-sbar-right-fix15-b.css" rel="alternate stylesheet" media="all" type="text/css" title="right sidebar - black (font fix 15)" /><link href="../style/css/manual-sbar-right-fix13-b.css" rel="alternate stylesheet" media="all" type="text/css" title="right sidebar - black (font fix 13)" /><link href="../style/css/manual-sbar-left-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - blue (font 100%)" /><link href="../style/css/manual-sbar-left-90pc.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - blue (font 90%)" /><link href="../style/css/manual-sbar-left-fix15.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - blue (font fix 15)" /><link href="../style/css/manual-sbar-left-fix13.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - blue (font fix 13)" /><link href="../style/css/manual-sbar-left-100pc-b.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - black (font 100%)" /><link href="../style/css/manual-sbar-left-90pc-b.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - black (font 90%)" /><link href="../style/css/manual-sbar-left-fix15-b.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - black (font fix 15)" /><link href="../style/css/manual-sbar-left-fix13-b.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - black (font fix 13)" /><link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - blue (font 100%)" /><link href="../style/css/manual-loose-90pc.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - blue (font 90%)" /><link href="../style/css/manual-loose-fix15.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - blue (font fix 15)" /><link href="../style/css/manual-loose-fix13.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - blue (font fix 13)" /><link href="../style/css/manual-loose-100pc-b.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - black (font 100%)" /><link href="../style/css/manual-loose-90pc-b.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - black (font 90%)" /><link href="../style/css/manual-loose-fix15-b.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - black (font fix 15)" /><link href="../style/css/manual-loose-fix13-b.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - black (font fix 13)" /><link href="../images/favicon.ico" rel="shortcut icon" /></head><body><div id="page-header"><p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p><p class="apache">Apache HTTP Server Version 2.0</p><img alt="" src="../images/feather.gif" /></div><div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div><div id="path"><a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentation</a> &gt; <a href="../">Version 2.0</a> &gt; <a href="./">Modules</a></div><div id="page-content"><div id="preamble"><h1>Apache モジュール mod_dav</h1><table class="module"><tr><th>説明:
+      --><title>mod_dav - Apache HTTP Server</title><link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" /><link href="../images/favicon.ico" rel="shortcut icon" /></head><body><div id="page-header"><p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p><p class="apache">Apache HTTP Server Version 2.0</p><img alt="" src="../images/feather.gif" /></div><div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div><div id="path"><a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentation</a> &gt; <a href="../">Version 2.0</a> &gt; <a href="./">Modules</a></div><div id="page-content"><div id="preamble"><h1>Apache モジュール mod_dav</h1><table class="module"><tr><th>説明:
                 </th><td>分散オーサリングとバージョン管理
 (<a href="http://www.webdav.org/">WebDAV</a>) 機能</td></tr><tr><th><a href="module-dict.html#Status">ステータス:
-                  </a></th><td>Extension</td></tr><tr><th><a href="module-dict.html#ModuleIdentifier">モジュール識別子:
+                  </a></th><td>Extension</td></tr><tr><th><a href="module-dict.html#ModuleIdentifier">モジュール識別子:
                   </a></th><td>dav_module</td></tr></table><h3>概要</h3>
     <p>このモジュールはクラス 1 とクラス 2 の
     <a href="http://www.webdav.org">WebDAV</a>
-    ('ウェブベースの分散オーサリングとバージョン管理')
+    ('ウェブベースの分散オーサリングとバージョン管理')
     機能を Apache に提供します。
     この HTTP プロトコルの拡張により、リモートのウェブサーバ上にある
     リソースやコレクションを
@@ -24,15 +24,15 @@
 
     <p>同時に <code>httpd.conf</code> ファイルの
     グローバルセクションに次を加えることによって、
-    DAV ロックデータベースのために使う
+    DAV ロックデータベースのために使う
     正当なファイル名を指定します:</p>
 
-<div class="example"><p><code>DavLockDB /tmp/DavLock????
+<div class="example"><p><code>DavLockDB /tmp/DavLock&#160;&#160;&#160;&#160;
       <em>(ウェブサーバの書き込めるファイル名で、
-      拡張子のないもの)</em>
+      拡張子のないもの)</em>
 </code></p></div>
 </div><div id="quickview"><h3 class="directives">ディレクティブ</h3><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#dav">Dav</a></li><li><img alt="" src="../images/down.gif" /> <a href="#davdepthinfinity">DavDepthInfinity</a></li><li><img alt="" src="../images/down.gif" /> <a href="#davlockdb">DavLockDB</a></li><li><img alt="" src="../images/down.gif" /> <a href="#davmintimeout">DavMinTimeout</a></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="Dav" id="Dav">Dav</a> <a name="dav" id="dav">ディレクティブ</a></h2><table class="directive"><tr><th>説明: 
-            </th><td>WebDAV HTTP メソッドを有効にします</td></tr><tr><th><a href="directive-dict.html#Syntax">構文:
+            </th><td>WebDAV HTTP メソッドを有効にします</td></tr><tr><th><a href="directive-dict.html#Syntax">構文:
               </a></th><td>Dav on|off</td></tr><tr><th><a href="directive-dict.html#Default">デフォルト: 
               </a></th><td><code>Dav off</code></td></tr><tr><th><a href="directive-dict.html#Context">コンテキスト:
               </a></th><td>directory</td></tr><tr><th><a href="directive-dict.html#Status">ステータス:
@@ -56,9 +56,9 @@
          AuthName DAV<br />
          AuthUserFile user.passwd<br />
         <br />
-         ??&lt;LimitExcept GET HEAD OPTIONS&gt;<br />
-         ??require user admin<br />
-         ??&lt;/LimitExcept&gt;<br />
+         &#160;&#160;&lt;LimitExcept GET HEAD OPTIONS&gt;<br />
+         &#160;&#160;require user admin<br />
+         &#160;&#160;&lt;/LimitExcept&gt;<br />
          &lt;/Location&gt;<br />
 </code></p></div>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="DavDepthInfinity" id="DavDepthInfinity">DavDepthInfinity</a> <a name="davdepthinfinity" id="davdepthinfinity">ディレクティブ</a></h2><table class="directive"><tr><th>説明: 
@@ -69,13 +69,13 @@
               </a></th><td>Extension</td></tr><tr><th><a href="directive-dict.html#Module">モジュール:
               </a></th><td>mod_dav</td></tr></table>
     <p>'Depth: Infinity' を含んでいる
-    PROPFIND リクエストを処理できるようにするには、
+    PROPFIND リクエストを処理できるようにするには、
     <code class="directive">DavDepthInfinity</code>
     ディレクティブを使います。このタイプのリクエストは
     denial-of-service アタックとなりうるので、
     デフォルトでは許可されていません。</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="DavLockDB" id="DavLockDB">DavLockDB</a> <a name="davlockdb" id="davlockdb">ディレクティブ</a></h2><table class="directive"><tr><th>説明: 
-            </th><td>DAV ロックデータベースの位置です</td></tr><tr><th><a href="directive-dict.html#Syntax">構文:
+            </th><td>DAV ロックデータベースの位置です</td></tr><tr><th><a href="directive-dict.html#Syntax">構文:
               </a></th><td>DavLockDB <em>file-path</em></td></tr><tr><th><a href="directive-dict.html#Context">コンテキスト:
               </a></th><td>server config, virtual host</td></tr><tr><th><a href="directive-dict.html#Status">ステータス:
               </a></th><td>Extension</td></tr><tr><th><a href="directive-dict.html#Module">モジュール:

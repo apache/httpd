@@ -4,14 +4,14 @@
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-      --><title>mod_userdir - Apache HTTP Server</title><link href="../style/css/manual-sbar-right-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="right sidebar - blue (font 100%)" /><link href="../style/css/manual-sbar-right-90pc.css" rel="alternate stylesheet" media="all" type="text/css" title="right sidebar - blue (font 90%)" /><link href="../style/css/manual-sbar-right-fix15.css" rel="stylesheet" media="all" type="text/css" title="right sidebar - blue (font fix 15)" /><link href="../style/css/manual-sbar-right-fix13.css" rel="alternate stylesheet" media="all" type="text/css" title="right sidebar - blue (font fix 13)" /><link href="../style/css/manual-sbar-right-100pc-b.css" rel="alternate stylesheet" media="all" type="text/css" title="right sidebar - black (font 100%)" /><link href="../style/css/manual-sbar-right-90pc-b.css" rel="alternate stylesheet" media="all" type="text/css" title="right sidebar - black (font 90%)" /><link href="../style/css/manual-sbar-right-fix15-b.css" rel="alternate stylesheet" media="all" type="text/css" title="right sidebar - black (font fix 15)" /><link href="../style/css/manual-sbar-right-fix13-b.css" rel="alternate stylesheet" media="all" type="text/css" title="right sidebar - black (font fix 13)" /><link href="../style/css/manual-sbar-left-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - blue (font 100%)" /><link href="../style/css/manual-sbar-left-90pc.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - blue (font 90%)" /><link href="../style/css/manual-sbar-left-fix15.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - blue (font fix 15)" /><link href="../style/css/manual-sbar-left-fix13.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - blue (font fix 13)" /><link href="../style/css/manual-sbar-left-100pc-b.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - black (font 100%)" /><link href="../style/css/manual-sbar-left-90pc-b.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - black (font 90%)" /><link href="../style/css/manual-sbar-left-fix15-b.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - black (font fix 15)" /><link href="../style/css/manual-sbar-left-fix13-b.css" rel="alternate stylesheet" media="all" type="text/css" title="left sidebar - black (font fix 13)" /><link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - blue (font 100%)" /><link href="../style/css/manual-loose-90pc.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - blue (font 90%)" /><link href="../style/css/manual-loose-fix15.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - blue (font fix 15)" /><link href="../style/css/manual-loose-fix13.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - blue (font fix 13)" /><link href="../style/css/manual-loose-100pc-b.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - black (font 100%)" /><link href="../style/css/manual-loose-90pc-b.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - black (font 90%)" /><link href="../style/css/manual-loose-fix15-b.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - black (font fix 15)" /><link href="../style/css/manual-loose-fix13-b.css" rel="alternate stylesheet" media="all" type="text/css" title="loose style - black (font fix 13)" /><link href="../images/favicon.ico" rel="shortcut icon" /></head><body><div id="page-header"><p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p><p class="apache">Apache HTTP Server Version 2.0</p><img alt="" src="../images/feather.gif" /></div><div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div><div id="path"><a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentation</a> &gt; <a href="../">Version 2.0</a> &gt; <a href="./">Modules</a></div><div id="page-content"><div id="preamble"><h1>Apache モジュール mod_userdir</h1><table class="module"><tr><th>説明:
+      --><title>mod_userdir - Apache HTTP Server</title><link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" /><link href="../images/favicon.ico" rel="shortcut icon" /></head><body><div id="page-header"><p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p><p class="apache">Apache HTTP Server Version 2.0</p><img alt="" src="../images/feather.gif" /></div><div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div><div id="path"><a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentation</a> &gt; <a href="../">Version 2.0</a> &gt; <a href="./">Modules</a></div><div id="page-content"><div id="preamble"><h1>Apache モジュール mod_userdir</h1><table class="module"><tr><th>説明:
                 </th><td>ユーザ専用のディレクトリを提供
   </td></tr><tr><th><a href="module-dict.html#Status">ステータス:
-                  </a></th><td>Base</td></tr><tr><th><a href="module-dict.html#ModuleIdentifier">モジュール識別子:
+                  </a></th><td>Base</td></tr><tr><th><a href="module-dict.html#ModuleIdentifier">モジュール識別子:
                   </a></th><td>userdir_module</td></tr></table><h3>概要</h3>
 <p>このモジュールは、
 <code>http://example.com/~user/</code>
-構文を使ってユーザ専用ディレクトリにアクセスできるようにします。</p>
+構文を使ってユーザ専用ディレクトリにアクセスできるようにします。</p>
 </div><div id="quickview"><h3 class="directives">ディレクティブ</h3><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#userdir">UserDir</a></li></ul><h3>参照</h3><ul class="seealso"><li><a href="../urlmapping.html">URL から
 ファイルシステムへのマッピング</a></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="UserDir" id="UserDir">UserDir</a> <a name="userdir" id="userdir">ディレクティブ</a></h2><table class="directive"><tr><th>説明: 
             </th><td>ユーザ専用ディレクトリの位置</td></tr><tr><th><a href="directive-dict.html#Syntax">構文:
@@ -25,7 +25,7 @@
     ユーザのドキュメントへのリクエストを受けた時に使う
     ユーザのホームディレクトリ中の、実際のディレクトリを
     設定します。
-    <em>directory-filename</em> には次のどれかを指定します:</p>
+    <em>directory-filename</em> には次のどれかを指定します:</p>
 
     <ul>
       <li>ディレクトリ名か下に示すようなパターン。</li>
@@ -33,7 +33,7 @@
       <li><code>disabled</code> キーワード。
       <code>enabled</code> キーワード (下記参照) で明示的に
       指定されたユーザ以外の
-      <em>全ての</em>ユーザ名-ディレクトリ変換を
+      <em>全ての</em>ユーザ名-ディレクトリ変換を
       しないようにします。</li>
 
       <li><code>disabled</code> キーワードと、スペース区切りのユーザ名リスト。
@@ -80,7 +80,7 @@ http://www.foo.com/~*/</td><td>http://www.foo.com/~bob/one/two.html</td></tr>
       <strong>このディレクティブを使うときは注意してください;
       "<code>UserDir ./</code>" は
       "<code>/~root</code>" から "<code>/</code>" へマップしますが、
-      これは望ましい動作ではないでしょう。
+      これは望ましい動作ではないでしょう。
       "<code>UserDir disabled root</code>" 宣言を
       設定の中に含めておくことを強くお薦めします。
       追加情報に <code class="directive"><a href="../mod/core.html#directory">Directory</a></code>
