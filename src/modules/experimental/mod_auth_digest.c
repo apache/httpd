@@ -166,7 +166,7 @@ typedef struct digest_config_struct {
 
 
 #define NONCE_TIME_LEN	(((sizeof(time_t)+2)/3)*4)
-#define NONCE_HASH_LEN	40
+#define NONCE_HASH_LEN	(2*SHA_DIGESTSIZE)
 #define NONCE_LEN	(NONCE_TIME_LEN + NONCE_HASH_LEN)
 
 #define	SECRET_LEN	20
@@ -178,7 +178,7 @@ typedef struct hash_entry {
     unsigned long      key;			/* the key for this entry    */
     struct hash_entry *next;			/* next entry in the bucket  */
     unsigned long      nonce_count;		/* for nonce-count checking  */
-    char               ha1[17];			/* for algorithm=MD5-sess    */
+    char               ha1[2*MD5_DIGESTSIZE+1];	/* for algorithm=MD5-sess    */
     char               last_nonce[NONCE_LEN+1];	/* for one-time nonce's      */
 } client_entry;
 
@@ -222,7 +222,7 @@ typedef struct digest_header_struct {
 
 typedef union time_union {
     time_t	  time;
-    unsigned char arr[sizeof(time_t)+1]; /* leave room for the NULL terminator */
+    unsigned char arr[sizeof(time_t)];
 } time_rec;
 
 
@@ -304,7 +304,7 @@ static void initialize_secret(server_rec *s)
 static void initialize_secret(server_rec *s)
 {
 #ifdef	DEV_RANDOM
-    FILE *rnd;
+    int rnd;
     size_t got, tot;
 #else
     extern int randbyte(void);	/* from the truerand library */
@@ -317,24 +317,19 @@ static void initialize_secret(server_rec *s)
 #ifdef	DEV_RANDOM
 #define	XSTR(x)	#x
 #define	STR(x)	XSTR(x)
-    if ((rnd = fopen(STR(DEV_RANDOM), "rb")) == NULL) {
+    if ((rnd = open(STR(DEV_RANDOM), O_RDONLY)) == NULL) {
 	ap_log_error(APLOG_MARK, APLOG_CRIT, s,
 		     "Digest: Couldn't open " STR(DEV_RANDOM));
 	exit(EXIT_FAILURE);
     }
-    if (setvbuf(rnd, NULL, _IONBF, 0) != 0) {
-	ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_CRIT, s,
-		     "Digest: Error trying to disable buffering for " STR(DEV_RANDOM));
-	exit(EXIT_FAILURE);
-    }
     for (tot=0; tot<sizeof(secret); tot += got) {
-	if ((got = fread(secret+tot, 1, sizeof(secret)-tot, rnd)) < 1) {
+	if ((got = read(rnd, secret+tot, sizeof(secret)-tot)) < 0) {
 	    ap_log_error(APLOG_MARK, APLOG_CRIT, s,
 			 "Digest: Error reading " STR(DEV_RANDOM));
 	    exit(EXIT_FAILURE);
 	}
     }
-    fclose(rnd);
+    close(rnd);
 #undef	STR
 #undef	XSTR
 #else	/* use truerand */
@@ -1106,12 +1101,12 @@ static const char *get_session(const request_rec *r,
     if (ha1 == NULL || ha1[0] == '\0') {
 	urp = get_userpw_hash(r, resp, conf);
 	ha1 = ap_md5(r->pool,
-		     (unsigned char *) ap_pstrcat(r->pool, ha1, ":", resp->nonce,
+		     (unsigned char *) ap_pstrcat(r->pool, urp, ":", resp->nonce,
 						  ":", resp->cnonce, NULL));
 	if (!resp->client)
 	    resp->client = gen_client(r);
 	if (resp->client)
-	    memcpy(resp->client->ha1, ha1, 17);
+	    memcpy(resp->client->ha1, ha1, sizeof(resp->client->ha1));
     }
 
     return ha1;
@@ -1272,14 +1267,16 @@ static void note_digest_auth_failure(request_rec *r,
      * unneccessarily (it's usually > 200 bytes!).
      */
 
-    if (conf->uri_list)
+    if (r->proxyreq)
+	domain = NULL;	/* don't send domain for proxy requests */
+    else if (conf->uri_list)
 	domain = conf->uri_list;
     else {
 	/* They didn't specify any domain, so let's guess at it */
 	domain = guess_domain(r->pool, resp->request_uri->path, r->filename,
 			      conf->dir_name);
 	if (domain[0] == '/' && domain[1] == '\0')
-	    domain = "";	/* "/" is the default, so no need to send it */
+	    domain = NULL;	/* "/" is the default, so no need to send it */
 	else
 	    domain = ap_pstrcat(r->pool, ", domain=\"", domain, "\"", NULL);
     }
@@ -1539,13 +1536,31 @@ static int authenticate_digest_user(request_rec *r)
 
     if (strcmp(resp->uri, resp->request_uri->path)) {
 	uri_components *r_uri = resp->request_uri, d_uri;
-	ap_parse_uri_components(r->pool, resp->uri, &d_uri);
+	int port;
+
+	if (ap_parse_uri_components(r->pool, resp->uri, &d_uri) != HTTP_OK) {
+	    ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r,
+			  "Digest: invalid uri <%s> in Authorization header",
+			  resp->uri);
+	    return BAD_REQUEST;
+	}
+
+	if (d_uri.hostname)
+	    ap_unescape_url(d_uri.hostname);
+	if (d_uri.path)
+	    ap_unescape_url(d_uri.path);
+	if (d_uri.query)
+	    ap_unescape_url(d_uri.query);
+	if (r_uri->query)
+	    ap_unescape_url(r_uri->query);
+	port = ap_get_server_port(r);
 
 	if ((d_uri.hostname && d_uri.hostname[0] != '\0'
-	     && strcasecmp(d_uri.hostname, r->server->server_hostname))
-	    || (d_uri.port_str && d_uri.port != r->server->port)
-	    || (!d_uri.port_str && r->server->port != 80)
-	    || strcmp(d_uri.path, r_uri->path)
+	     && strcasecmp(d_uri.hostname, ap_get_server_name(r)))
+	    || (d_uri.port_str && d_uri.port != port)
+	    || (d_uri.hostname && d_uri.hostname[0] != '\0'
+		&& !d_uri.port_str && port != ap_default_port(r))
+	    || !d_uri.path || strcmp(d_uri.path, r_uri->path)
 	    || (d_uri.query != r_uri->query
 		&& (!d_uri.query || !r_uri->query
 		    || strcmp(d_uri.query, r_uri->query)))

@@ -1,5 +1,17 @@
 Changes with Apache 1.3.10
 
+  *) mod_auth_digest fixes:
+     - Use unix-io instead of stdio to read /dev/random (fixes problems
+       on FreeBSD)
+       [Kano <tomo@crane-inc.co.jp>] PR#4967
+     - Correctly unescape all parts of the request uri and the uri
+       attribute of the Authorization header before doing comparison
+       [Joe Orton <joe@orton.demon.co.uk>, Ronald Tschalär]
+     - Fixes for MD5-sess
+       [Joe Orton <joe@orton.demon.co.uk>]
+     - Don't send a domain attribute in Proxy-Authenticate
+       [Ronald Tschalär]
+
   *) ap_base64decode_binary does not null-terminate the output anymore
      [Bill Stoddard, Ronald Tschalär]
 
