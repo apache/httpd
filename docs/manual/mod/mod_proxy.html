@@ -276,7 +276,7 @@ control block using the following example:<p>
 
 <pre>
 &lt;Directory proxy:*&gt;
-&lt;Limit&gt;
+&lt;Limit GET&gt;
 order allow,deny
 deny from [machines you'd like not to allow by IP address or name]
 allow from all
