@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="iso-2022-jp"?>
 <?xml-stylesheet type="text/xsl" href="./style/manual.ja.xsl"?>
-<!-- English revision: 1.7 -->
+<!-- English revision: 1.8 -->
 
 <sitemap>
   <relativepath href="."/>
@@ -183,6 +183,12 @@
   <modulefile>perchild.xml</modulefile>
   <modulefile>prefork.xml.ja</modulefile>
   <modulefile>worker.xml.ja</modulefile>
+
+  <modulefile>obs_mod_access.xml</modulefile>
+  <modulefile>obs_mod_auth.xml</modulefile>
+  <modulefile>obs_mod_auth_anon.xml</modulefile>
+  <modulefile>obs_mod_auth_dbm.xml</modulefile>
+  <modulefile>obs_mod_auth_digest.xml</modulefile>
 </modulefilelist>
 </category>
 

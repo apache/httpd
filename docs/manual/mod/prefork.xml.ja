@@ -2,7 +2,8 @@
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
 <modulesynopsis>
-<!-- English revision: 1.7 -->
+<!-- English revision: 1.8 -->
+
 <name>prefork</name>
 <description>$B%9%l%C%I$r;H$o$:!"@h9T$7$F(B fork $B$r9T$J$&%&%'%V%5!<%P$r<BAu(B
 </description>
@@ -31,10 +32,10 @@
 <seealso><a href="../bind.html">Apache
 $B$,;HMQ$9$k%"%I%l%9$H%]!<%H$N@_Dj(B</a></seealso>
 
-<section><title>$BF0:nJ}K!(B</title>
+<section id="how-it-works"><title>$BF0:nJ}K!(B</title>
     <p>$B0l$D$N%3%s%H%m!<%k%W%m%;%9$,!"(B
     $B%3%M%/%7%g%s$KBP$7$F(B listen $B$7$F!"$7$+$k$Y$-;~$K1~Ez$9$k(B
-    $B;R%W%m%;%9$r5/F0$7$^$9!#(BApache $B$O>o$K4v$D$+$N(B<em>$B%9%Z%"(B</em>
+    $B;R%W%m%;%9$r5/F0$7$^$9!#(BApache $B$O>o$K4v$D$+$N(B<dfn>$B%9%Z%"(B</dfn>
     $B$+%"%$%I%k$J%5!<%P%W%m%;%9$r0];}$7$F$$$F!"$=$l$i$OF~$C$F$-$?(B
     $B%j%/%(%9%H$K1~Ez$G$-$k$h$&$KBT5!$7$F$$$^$9!#(B
     $B$3$N$h$&$K$7$F%/%i%$%"%s%H$O!"%j%/%(%9%H$,1~Ez$5$l$kA0$K!"(B
@@ -137,7 +138,7 @@
 <description>$BJ#?t$N;R%W%m%;%9$,%M%C%H%o!<%/%=%1%C%H$G%j%/%(%9%H$r(B
 accept $B$7$h$&$H$7$F$$$k$H$-$K!"(BApache $B$,$=$l$i$N;R%W%m%;%9$rD>Ns2=$9$k$?$a$K(B
 $B;H$&J}K!(B</description>
-<syntax>AcceptMutex default|<em>method</em></syntax>
+<syntax>AcceptMutex default|<var>method</var></syntax>
 <default>AcceptMutex default</default>
 <contextlist><context>server config</context></contextlist>
 
@@ -188,7 +189,7 @@ accept $B$7$h$&$H$7$F$$$k$H$-$K!"(BApache $B$,$=$l$i$N;R%W%m%;%9$rD>Ns2=$9$k$
 <directivesynopsis>
 <name>MaxSpareServers</name>
 <description>$B%"%$%I%k$J;R%5!<%P%W%m%;%9$N:GBg8D?t(B</description>
-<syntax>MaxSpareServers <em>number</em><br /></syntax>
+<syntax>MaxSpareServers <var>number</var><br /></syntax>
 <default>MaxSpareServers 10</default>
 <contextlist><context>server config</context></contextlist>
 
@@ -209,7 +210,7 @@ accept $B$7$h$&$H$7$F$$$k$H$-$K!"(BApache $B$,$=$l$i$N;R%W%m%;%9$rD>Ns2=$9$k$
 <directivesynopsis>
 <name>MinSpareServers</name>
 <description>$B%"%$%I%k$J;R%5!<%P%W%m%;%9$N:G>.8D?t(B</description>
-<syntax>MinSpareServers <em>number</em></syntax>
+<syntax>MinSpareServers <var>number</var></syntax>
 <default>MinSpareServers  5</default>
 <contextlist><context>server config</context></contextlist>
 
