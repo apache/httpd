@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/01/24 16:29:02 $]
+Last modified at [$Date: 2003/01/24 16:43:38 $]
 
 Release:
 
@@ -57,6 +57,9 @@ Contributors looking for a mission:
     * just do an egrep on "TODO", "XXX" and see what's there
 
 PATCHES TO PORT FROM 2.1
+  [ please place file names and revisions from HEAD here, so it is easy to
+    identify exactly what the proposed changes are! ]
+
     * Port stoddard's patch to mod_file_cache to call apr_mmap_dup
       using the request pool on the cached apr_mmap_t prior to
       serving the response. This fixes segfault observed on
@@ -67,10 +70,12 @@ PATCHES TO PORT FROM 2.1
      +1: stoddard, orlikowski, striker
 
     * Allow RewriteEngine Off even if Options -FollowSymlinks. PR 12395.
-      +1: nd
+      modules/mappers/mod_rewrite.c r1.136
+      +1: nd, jerenkrantz
 
     * Use saner default config values for suexec. PR 15713.
-      +1: nd
+      support/suexec.h r1.8
+      +1: nd, jerenkrantz
 
     * Rewrite how proxy sends its request to allow input bodies to 
       morph the request bodies.  Previously, if an input filter
