@@ -101,7 +101,7 @@ SOURCE=..\build\win32\win32ver.awk
 InputPath=..\build\win32\win32ver.awk
 
 ".\rotatelogs.rc" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	awk -f ../build/win32/win32ver.awk rotatelogs "rotatelogs Utility"  ../include/ap_release.h > .\rotatelogs.rc
+	awk -f ../build/win32/win32ver.awk rotatelogs.exe "rotatelogs Utility"  ../include/ap_release.h > .\rotatelogs.rc
 
 # End Custom Build
 
@@ -112,7 +112,7 @@ InputPath=..\build\win32\win32ver.awk
 InputPath=..\build\win32\win32ver.awk
 
 ".\rotatelogs.rc" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	awk -f ../build/win32/win32ver.awk rotatelogs "rotatelogs Utility"  ../include/ap_release.h > .\rotatelogs.rc
+	awk -f ../build/win32/win32ver.awk rotatelogs.exe "rotatelogs Utility"  ../include/ap_release.h > .\rotatelogs.rc
 
 # End Custom Build
 
