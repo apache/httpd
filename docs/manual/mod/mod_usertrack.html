@@ -9,12 +9,11 @@
 <H1>Module mod_usertrack</h1>
 
 Previous releases of Apache have included a module which generates a
-'clickstream' log of user activity on a site, using cookies. This was
-called the "cookies" module, mod_cookies. In Apache 1.2 and later, this module
-has
-been renamed the "user tracking" module, mod_usertrack. This module
-has been
-simplified and new directives added.
+'clickstream' log of user activity on a site using cookies. This was
+called the "cookies" module, mod_cookies. In Apache 1.2 and later this
+module has been renamed the "user tracking" module,
+mod_usertrack. This module has been simplified and new directives
+added.
 
 <hr>
 
@@ -30,11 +29,11 @@ logged by using the text <tt>%{cookie}n </tt>
 
 in the log file format. For example:
 <pre>
-CustomLog logs/clickstream "%{cookie}i %r %t"
+CustomLog logs/clickstream "%{cookie}n %r %t"
 </pre>
 
 For backward compatibility the configurable log module implements the
-old <tt>CookieLog</tt> directive, but this should be upgrade to the
+old <tt>CookieLog</tt> directive, but this should be upgraded to the
 above <tt>CustomLog</tt> directive.
 
 <h2>Directives</h2>
