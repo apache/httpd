@@ -62,6 +62,7 @@
 int asis_handler (request_rec *r)
 {
     FILE *f;
+    char *location;
     
     if (r->method_number != M_GET) return DECLINED;
     if (r->finfo.st_mode == 0) {
@@ -77,6 +78,22 @@ int asis_handler (request_rec *r)
     }
       
     scan_script_header (r, f);
+    location = table_get (r->headers_out, "Location");
+
+    if (location && location[0] == '/' && 
+        (r->status == 200 || r->status == 301 || r->status == 302)) {
+
+        r->status = 200; /* Assume 200 status on whatever we're pointing to */
+
+	/* This redirect needs to be a GET no matter what the original
+	 * method was.
+	*/
+	r->method = pstrdup(r->pool, "GET");
+	r->method_number = M_GET;
+
+	internal_redirect_handler (location, r);
+	return OK;
+    }
     
     soft_timeout ("send", r);
     send_http_header (r);
