@@ -9,16 +9,19 @@ Release:
            announce as well.  Already known successful platform tests for the
            1.3.0 tarball follow:
 
-           o Linux / Red Hat 5.0, 5.1       Manoj Kasichainula
-           o Linux / Debian 2.0 (hamm)      Alvaro Martinez Echevarria
-           o Linux / Debian 1.3.1           Ralf S. Engelschall
-           o FreeBSD 2.2.6                  Ralf S. Engelschall
-           o FreeBSD 3.0-CURRENT            Ralf S. Engelschall
-           o Sparc-Linux                    Lars Eilebrecht
-           o Linux (glibc6)                 Lars Eilebrecht
-           o AIX 4.1                        Lars Eilebrecht
-           o Solaris 2.6                    Lars Eilebrecht
-           o Digital Unix 4.0               Lars Eilebrecht
+           o Linux / Red Hat 5.0, 5.1  Manoj Kasichainula
+           o Linux / Debian 2.0 (hamm) Alvaro Martinez Echevarria
+           o Linux / Debian 1.3.1      Ralf S. Engelschall
+           o FreeBSD 2.2.5             Dirk-Willem van Gulik
+           o FreeBSD 2.2.6             Ralf S. Engelschall, Dirk-Willem v.Gulik
+           o FreeBSD 3.0-CURRENT       Ralf S. Engelschall, Dirk-Willem v.Gulik
+           o Sparc-Linux               Lars Eilebrecht
+           o Linux (glibc6)            Lars Eilebrecht
+           o AIX 4.1                   Lars Eilebrecht, Dirk-Willem van Gulik
+           o Solaris 2.4, 2.5          Dirk-Willem van Gulik
+           o Solaris 2.6               Lars Eilebrecht
+           o Digital Unix 4.0          Lars Eilebrecht, Dirk-Willem van Gulik
+           o IRIX 5.3                  Dirk-Willem van Gulik
 
     1.3b7: Tagged and Released 26/5/98.
 
