@@ -112,6 +112,11 @@ void mpm_service_stopping(void);
 void mpm_start_console_handler(void);
 void mpm_start_child_console_handler(void);
 
+/* From nt_eventlog.c: */
+
+void mpm_nt_eventlog_stderr_open(char *display_name, apr_pool_t *p);
+void mpm_nt_eventlog_stderr_flush(void);
+
 /* From winnt.c: */
 
 extern OSVERSIONINFO osver;
