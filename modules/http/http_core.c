@@ -2938,7 +2938,7 @@ static int chunk_filter(ap_filter_t *f, ap_bucket_brigade *b)
     }
 
     apr_snprintf(lenstr, 6, "%x\r\n", len);
-    dptr = ap_bucket_transient_create(lenstr, 4, &tempint);
+    dptr = ap_bucket_transient_create(lenstr, strlen(lenstr), &tempint);
     b->head->prev = dptr;
     dptr->next = b->head;
     b->head = dptr;
@@ -3068,7 +3068,7 @@ static void register_hooks(void)
      * request-processing time.
      */
     ap_hook_insert_filter(core_register_filter, NULL, NULL, AP_HOOK_MIDDLE);
-    ap_register_filter("CORE", core_filter, AP_FTYPE_CONNECTION);
+    ap_register_filter("CORE", core_filter, AP_FTYPE_CONNECTION + 1);
     ap_register_filter("CHUNK", chunk_filter, AP_FTYPE_CONNECTION);
 }
 
