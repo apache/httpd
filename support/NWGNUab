@@ -111,7 +111,8 @@ NLM_THREAD_NAME	= ab
 # This is used by the '-screenname' directive.  If left blank,
 # 'Apache for NetWare' Thread will be used.
 #
-NLM_SCREEN_NAME = Apache Bench
+#NLM_SCREEN_NAME = Apache Bench
+NLM_SCREEN_NAME = DEFAULT
 
 #
 # If this is specified, it will override VERSION value in
