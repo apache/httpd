@@ -125,11 +125,6 @@
        matches
 
    New features that relate to specific platforms:
-     * On Win32 and NetWare the mod_unique_id and mod_vhost_alias modules
-       are now included
-     * On  Win32 the code to allow the server to run under Cygwin has had
-       a  number  of fixes and updates. Cygwin support was first added to
-       version 1.3.20
      * A  new  directive,  AcceptFilter,  has  been  added to control BSD
        accept  filters  at  run-time.  This should make it easier to move
        server  binaries  across  different BSD machines without requiring
@@ -138,6 +133,14 @@
        a  child  process to handle a new connection until an HTTP request
        has arrived, therefore increasing the number of connections that a
        given number of child processes can handle
+     * On  Win32  mod_unique_id,  mod_mime_magic, and the mod_vhost_alias
+       modules are now enabled
+     * On  Win32 the code to allow the server to run under Cygwin has had
+       a  number  of fixes and updates. Cygwin support was first added to
+       version 1.3.20
+     * On  Windows  NT  or  2000,  the  service  display names can now be
+       modified by the user (use the service control panel applet)
+     * On Win32 add a new option -W that can set up a service dependancy
      * The  server  will now take advantage of recent improvements to the
        TPF  operating  system  which  include an enhanced system fork and
        exec,  updates  to  allow  non-blocking  file  descriptors, and an
@@ -157,6 +160,10 @@
      * The   Multiviews   functionality   has   been   fixed  to  prevent
        mod_negotiation  from  serving any multiview variant that contains
        unknown filename extensions. PR#8130
+     * Apache will prefer installed version of the Expat library over the
+       bundled  version. This fixes conflicts when multiple copies of the
+       Expat   library  get  loaded  (notably  when  using  mod_perl  and
+       XML::Parsers::Expat)
      * UnsetEnv  now  works  from  the main body of a configuration file.
        PR#8254
      * When  used  as  a  reverse  proxy any headers set by other modules
@@ -167,8 +174,8 @@
        request is not to be cached. PR#5668
      * When  a  client  making a request via mod_proxy died unexpectedly,
        mod_proxy did not close its connection. PR#8090
-     * The   CacheForceCompletion   directive  has  been  fixed  PR#7383,
-       PR#8067, PR#6585
+     * The  CacheForceCompletion  directive  has  been  fixed  PR#7383  ,
+       PR#8067 , PR#6585
      * A memory leak has been fixed in the mod_mime_magic module
      * A  Satisfy  All  option  has  been  added to the default container
        designed   to   stop  access  to  .htaccess  files.  Without  this
@@ -188,3 +195,5 @@
        working
      * On  Win32,  mod_unique_id  did  not  guarantee  a unique ID due to
        threading
+     * The  Win32  Makefiles  are  now 100% compatible with the Microsoft
+       Visual C++ compiler versions 5,6,7
