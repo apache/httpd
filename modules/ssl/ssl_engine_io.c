@@ -680,16 +680,16 @@ static apr_status_t ssl_io_input_read(bio_filter_in_ctx_t *inctx,
                     continue;  /* Blocking and nothing yet?  Try again. */
                 }
                 else {
-                    ap_log_error(APLOG_MARK, APLOG_INFO, inctx->rc, c->base_server,
-                                "SSL input filter read failed.");
+                    ap_log_cerror(APLOG_MARK, APLOG_INFO, inctx->rc, c,
+                                  "SSL input filter read failed.");
                 }
             }
             else /* if (ssl_err == SSL_ERROR_SSL) */ {
                 /*
                  * Log SSL errors and any unexpected conditions.
                  */
-                ap_log_error(APLOG_MARK, APLOG_INFO, inctx->rc, c->base_server,
-                            "SSL library error %d reading data", ssl_err);
+                ap_log_cerror(APLOG_MARK, APLOG_INFO, inctx->rc, c,
+                              "SSL library error %d reading data", ssl_err);
                 ssl_log_ssl_error(APLOG_MARK, APLOG_INFO, c->base_server);
 
             }
@@ -785,15 +785,15 @@ static apr_status_t ssl_filter_write(ap_filter_t *f,
             outctx->rc = APR_EAGAIN;
         }
         else if (ssl_err == SSL_ERROR_SYSCALL) {
-            ap_log_error(APLOG_MARK, APLOG_INFO, outctx->rc, c->base_server,
-                        "SSL output filter write failed.");
+            ap_log_cerror(APLOG_MARK, APLOG_INFO, outctx->rc, c,
+                          "SSL output filter write failed.");
         }
         else /* if (ssl_err == SSL_ERROR_SSL) */ {
             /*
              * Log SSL errors
              */
-            ap_log_error(APLOG_MARK, APLOG_INFO, outctx->rc, c->base_server,
-                         "SSL library error %d writing data", ssl_err);
+            ap_log_cerror(APLOG_MARK, APLOG_INFO, outctx->rc, c,
+                          "SSL library error %d writing data", ssl_err);
             ssl_log_ssl_error(APLOG_MARK, APLOG_INFO, c->base_server);
         }
         if (outctx->rc == APR_SUCCESS) {
@@ -809,10 +809,10 @@ static apr_status_t ssl_filter_write(ap_filter_t *f,
             reason = "likely due to failed renegotiation";
         }
 
-        ap_log_error(APLOG_MARK, APLOG_INFO, outctx->rc, c->base_server,
-                     "failed to write %" APR_SSIZE_T_FMT 
-                     " of %" APR_SIZE_T_FMT " bytes (%s)",
-                     len - (apr_size_t)res, len, reason);
+        ap_log_cerror(APLOG_MARK, APLOG_INFO, outctx->rc, c,
+                      "failed to write %" APR_SSIZE_T_FMT 
+                      " of %" APR_SIZE_T_FMT " bytes (%s)",
+                      len - (apr_size_t)res, len, reason);
 
         outctx->rc = APR_EGENERAL;
     }
@@ -853,8 +853,7 @@ static apr_status_t ssl_io_filter_error(ap_filter_t *f,
     switch (status) {
       case HTTP_BAD_REQUEST:
             /* log the situation */
-            ap_log_error(APLOG_MARK, APLOG_INFO, 0,
-                         f->c->base_server,
+            ap_log_cerror(APLOG_MARK, APLOG_INFO, 0, f->c,
                          "SSL handshake failed: HTTP spoken on HTTPS port; "
                          "trying to send HTML error page");
             ssl_log_ssl_error(APLOG_MARK, APLOG_INFO, f->c->base_server);
@@ -967,12 +966,10 @@ static apr_status_t ssl_filter_io_shutdown(ssl_filter_ctx_t *filter_ctx,
 
     /* and finally log the fact that we've closed the connection */
     if (c->base_server->loglevel >= APLOG_INFO) {
-        ap_log_error(APLOG_MARK, APLOG_INFO, 0, c->base_server,
-                     "Connection to child %ld closed with %s shutdown"
-                     "(server %s, client %s)",
-                     c->id, type,
-                     ssl_util_vhostid(c->pool, c->base_server),
-                     c->remote_ip ? c->remote_ip : "unknown");
+        ap_log_cerror(APLOG_MARK, APLOG_INFO, 0, c,
+                      "Connection closed to child %ld with %s shutdown "
+                      "(server %s)", 
+                      c->id, type, ssl_util_vhostid(c->pool, c->base_server));
     }
 
     /* deallocate the SSL connection */
@@ -1000,7 +997,7 @@ static apr_status_t ssl_io_filter_cleanup(void *data)
         conn_rec *c = (conn_rec *)SSL_get_app_data(filter_ctx->pssl);
         SSLConnRec *sslconn = myConnConfig(c);
 
-        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, NULL,
+        ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, c,
                      "SSL connection destroyed without being closed");
 
         SSL_free(filter_ctx->pssl);
@@ -1033,9 +1030,8 @@ static int ssl_io_filter_connect(ssl_filter_ctx_t *filter_ctx)
 
     if (sslconn->is_proxy) {
         if ((n = SSL_connect(filter_ctx->pssl)) <= 0) {
-            ap_log_error(APLOG_MARK, APLOG_INFO, 0,
-                         c->base_server,
-                         "SSL Proxy connect failed");
+            ap_log_cerror(APLOG_MARK, APLOG_INFO, 0, c,
+                          "SSL Proxy connect failed");
             ssl_log_ssl_error(APLOG_MARK, APLOG_INFO, c->base_server);
             /* ensure that the SSL structures etc are freed, etc: */
             ssl_filter_io_shutdown(filter_ctx, c, 1);
@@ -1059,8 +1055,7 @@ static int ssl_io_filter_connect(ssl_filter_ctx_t *filter_ctx)
              * was transferred. That's not a real error and can occur
              * sporadically with some clients.
              */
-            ap_log_error(APLOG_MARK, APLOG_INFO, rc,
-                         c->base_server,
+            ap_log_cerror(APLOG_MARK, APLOG_INFO, rc, c,
                          "SSL handshake stopped: connection was closed");
         }
         else if (ssl_err == SSL_ERROR_WANT_READ) {
@@ -1083,19 +1078,18 @@ static int ssl_io_filter_connect(ssl_filter_ctx_t *filter_ctx)
             return HTTP_BAD_REQUEST;
         }
         else if (ssl_err == SSL_ERROR_SYSCALL) {
-            ap_log_error(APLOG_MARK, APLOG_INFO, rc, c->base_server,
-                         "SSL handshake interrupted by system "
-                         "[Hint: Stop button pressed in browser?!]");
+            ap_log_cerror(APLOG_MARK, APLOG_INFO, rc, c,
+                          "SSL handshake interrupted by system "
+                          "[Hint: Stop button pressed in browser?!]");
         }
         else /* if (ssl_err == SSL_ERROR_SSL) */ {
             /*
              * Log SSL errors and any unexpected conditions.
              */
-            ap_log_error(APLOG_MARK, APLOG_INFO, rc, c->base_server,
-                         "SSL library error %d in handshake "
-                         "(server %s, client %s)", ssl_err,
-                         ssl_util_vhostid(c->pool, c->base_server),
-                         c->remote_ip ? c->remote_ip : "unknown");
+            ap_log_cerror(APLOG_MARK, APLOG_INFO, rc, c,
+                          "SSL library error %d in handshake "
+                          "(server %s)", ssl_err,
+                          ssl_util_vhostid(c->pool, c->base_server));
             ssl_log_ssl_error(APLOG_MARK, APLOG_INFO, c->base_server);
 
         }
@@ -1125,12 +1119,11 @@ static int ssl_io_filter_connect(ssl_filter_ctx_t *filter_ctx)
              * optional_no_ca doesn't appear to work as advertised
              * in 1.x
              */
-            ap_log_error(APLOG_MARK, APLOG_INFO, 0,
-                         c->base_server,
-                         "SSL client authentication failed, "
-                         "accepting certificate based on "
-                         "\"SSLVerifyClient optional_no_ca\" "
-                         "configuration");
+            ap_log_cerror(APLOG_MARK, APLOG_INFO, 0, c,
+                          "SSL client authentication failed, "
+                          "accepting certificate based on "
+                          "\"SSLVerifyClient optional_no_ca\" "
+                          "configuration");
             ssl_log_ssl_error(APLOG_MARK, APLOG_INFO, c->base_server);
         }
         else {
@@ -1138,8 +1131,7 @@ static int ssl_io_filter_connect(ssl_filter_ctx_t *filter_ctx)
                 sslconn->verify_error :
                 X509_verify_cert_error_string(verify_result);
 
-            ap_log_error(APLOG_MARK, APLOG_INFO, 0,
-                         c->base_server,
+            ap_log_cerror(APLOG_MARK, APLOG_INFO, 0, c,
                          "SSL client authentication failed: %s",
                          error ? error : "unknown");
             ssl_log_ssl_error(APLOG_MARK, APLOG_INFO, c->base_server);
@@ -1166,8 +1158,8 @@ static int ssl_io_filter_connect(ssl_filter_ctx_t *filter_ctx)
     if ((sc->server->auth.verify_mode == SSL_CVERIFY_REQUIRE) &&
         !sslconn->client_cert)
     {
-        ap_log_error(APLOG_MARK, APLOG_INFO, 0, c->base_server,
-                     "No acceptable peer certificate available");
+        ap_log_cerror(APLOG_MARK, APLOG_INFO, 0, c,
+                      "No acceptable peer certificate available");
 
         return ssl_filter_io_shutdown(filter_ctx, c, 1);
     }
@@ -1252,7 +1244,7 @@ static apr_status_t ssl_io_filter_Upgrade(ap_filter_t *f,
 
     ssl_init_ssl_connection(f->c);
 
-    ap_log_error(APLOG_MARK, APLOG_INFO, 0, r->server,
+    ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r,
                  "Awaiting re-negotiation handshake");
 
     sslconn = myConnConfig(f->c);
@@ -1266,9 +1258,9 @@ static apr_status_t ssl_io_filter_Upgrade(ap_filter_t *f,
     SSL_do_handshake(ssl);
 
     if (SSL_get_state(ssl) != SSL_ST_OK) {
-        ap_log_error(APLOG_MARK, APLOG_ERR, 0, r->server,
-                     "TLS Upgrade handshake failed: "
-                "Not accepted by client!?");
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+                      "TLS Upgrade handshake failed: "
+                      "Not accepted by client!?");
 
         return AP_FILTER_ERROR;
     }
@@ -1435,8 +1427,8 @@ static apr_status_t ssl_io_filter_output(ap_filter_t *f,
             filter_ctx->nobuffer = 1;
             status = ssl_filter_io_shutdown(filter_ctx, f->c, 0);
             if (status != APR_SUCCESS) {
-                ap_log_error(APLOG_MARK, APLOG_INFO, status, NULL,
-                             "SSL filter error shutting down I/O");
+                ap_log_cerror(APLOG_MARK, APLOG_INFO, status, f->c,
+                              "SSL filter error shutting down I/O");
             }
             if ((status = ap_pass_brigade(f->next, bb)) != APR_SUCCESS) {
                 return status;

@@ -298,9 +298,9 @@ int ssl_proxy_enable(conn_rec *c)
     SSLConnRec *sslconn = ssl_init_connection_ctx(c);
 
     if (!sc->proxy_enabled) {
-        ap_log_error(APLOG_MARK, APLOG_ERR, 0, c->base_server,
-                     "SSL Proxy requested for %s but not enabled "
-                     "[Hint: SSLProxyEngine]", sc->vhost_id);
+        ap_log_cerror(APLOG_MARK, APLOG_ERR, 0, c,
+                      "SSL Proxy requested for %s but not enabled "
+                      "[Hint: SSLProxyEngine]", sc->vhost_id);
 
         return 0;
     }
@@ -353,9 +353,9 @@ int ssl_init_ssl_connection(conn_rec *c)
      * so we can detach later.
      */
     if (!(ssl = SSL_new(mctx->ssl_ctx))) {
-        ap_log_error(APLOG_MARK, APLOG_ERR, 0, c->base_server,
-                     "Unable to create a new SSL connection from the SSL "
-                     "context");
+        ap_log_cerror(APLOG_MARK, APLOG_ERR, 0, c,
+                      "Unable to create a new SSL connection from the SSL "
+                      "context");
         ssl_log_ssl_error(APLOG_MARK, APLOG_ERR, c->base_server);
 
         c->aborted = 1;
@@ -369,8 +369,8 @@ int ssl_init_ssl_connection(conn_rec *c)
     if (!SSL_set_session_id_context(ssl, (unsigned char *)vhost_md5,
                                     APR_MD5_DIGESTSIZE*2))
     {
-        ap_log_error(APLOG_MARK, APLOG_ERR, 0, c->base_server,
-                     "Unable to set session id context to `%s'", vhost_md5);
+        ap_log_cerror(APLOG_MARK, APLOG_ERR, 0, c,
+                      "Unable to set session id context to `%s'", vhost_md5);
         ssl_log_ssl_error(APLOG_MARK, APLOG_ERR, c->base_server);
 
         c->aborted = 1;
@@ -448,10 +448,9 @@ static int ssl_hook_pre_connection(conn_rec *c, void *csd)
      * later access inside callback functions
      */
 
-    ap_log_error(APLOG_MARK, APLOG_INFO, 0, c->base_server,
-                 "Connection to child %ld established "
-                 "(server %s, client %s)", c->id, sc->vhost_id, 
-                 c->remote_ip ? c->remote_ip : "unknown");
+    ap_log_cerror(APLOG_MARK, APLOG_INFO, 0, c,
+                  "Connection to child %ld established "
+                  "(server %s)", c->id, sc->vhost_id);
 
     return ssl_init_ssl_connection(c);
 }
