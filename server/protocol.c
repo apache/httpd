@@ -329,6 +329,13 @@ AP_DECLARE(apr_status_t) ap_rgetline_core(char **s, apr_size_t n,
                 return rv;
             }
 
+            /* XXX this code appears to be dead because the filter chain
+             * seems to read until it sees a LF or an error.  If it ever
+             * comes back to life, we need to make sure that:
+             * - we really alloc enough space for the trailing null
+             * - we don't allow the tail trimming code to run more than
+             *   once
+             */
             if (do_alloc && next_len > 0) {
                 char *new_buffer;
                 apr_size_t new_size = bytes_handled + next_len;
@@ -464,13 +471,13 @@ AP_DECLARE(apr_status_t) ap_rgetline_core(char **s, apr_size_t n,
 
                 if (do_alloc && next_len > 0) {
                     char *new_buffer;
-                    apr_size_t new_size = bytes_handled + next_len;
-                    /* Again we need to alloc an extra two bytes for LF, null */
+                    apr_size_t new_size = bytes_handled + next_len + 1;
+                    /* we need to alloc an extra byte for a null */
                     new_buffer = apr_palloc(r->pool, new_size);
                     /* Copy what we already had. */
                     memcpy(new_buffer, *s, bytes_handled);
-                    memcpy(new_buffer + bytes_handled, tmp, next_len);
-                    current_alloc = new_size;
+                    /* copy the new line, including the trailing null */
+                    memcpy(new_buffer + bytes_handled, tmp, next_len + 1);
                     *s = new_buffer;
                 }
 
