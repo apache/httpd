@@ -536,13 +536,21 @@ static apr_status_t init_filter_instance(ap_filter_t *f)
     }
     ctx->p = f->r->pool;
     if (ctx->filter->intype &&
-        ctx->filter->intype != INTYPE_ALL &&
-        (!f->r->content_type ||
-         strcasecmp(ctx->filter->intype, f->r->content_type))) {
-        /* wrong IMT for us; don't mess with the output */
-        ctx->noop = 1;
+        ctx->filter->intype != INTYPE_ALL) {
+        if (!f->r->content_type) {
+            ctx->noop = 1;
+        }
+        else {
+            const char *ctypes = f->r->content_type;
+            const char *ctype = ap_getword(f->r->pool, &ctypes, ';');
+
+            if (strcasecmp(ctx->filter->intype, ctype)) {
+                /* wrong IMT for us; don't mess with the output */
+                ctx->noop = 1;
+            }
+        }
     }
-    else {
+    if (!ctx->noop) {
         rv = init_ext_filter_process(f);
         if (rv != APR_SUCCESS) {
             return rv;
@@ -560,9 +568,10 @@ static apr_status_t init_filter_instance(ap_filter_t *f)
 
     if (dc->debug >= DBGLVL_SHOWOPTIONS) {
         ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, f->r,
-                      "%sfiltering `%s' through `%s', cfg %s",
-                      ctx->noop ? "skipping: " : "",
+                      "%sfiltering `%s' of type `%s' through `%s', cfg %s",
+                      ctx->noop ? "NOT " : "",
                       f->r->uri ? f->r->uri : f->r->filename,
+                      f->r->content_type ? f->r->content_type : "(unspecified)",
                       ctx->filter->command,
                       get_cfg_string(dc, ctx->filter, f->r->pool));
     }
