@@ -103,8 +103,8 @@ This module should be used with care. You can easily
 </code></td></tr></table></blockquote>
 </td></tr></table></blockquote>
 
-<hr/><h2><a name="CacheFile">CacheFile</a> <a name="cachefile">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td/></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td>CacheFile
-    <em>file-path</em> [<em>file-path</em>] ...</td></tr><tr><td><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config</td></tr><tr><td><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Experimental</td></tr><tr><td><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_file_cache</td></tr></table></td></tr></table>
+<hr/><h2><a name="CacheFile">CacheFile</a> <a name="cachefile">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: </strong></td><td/></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td>CacheFile
+    <em>file-path</em> [<em>file-path</em>] ...</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Experimental</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_file_cache</td></tr></table></td></tr></table>
     <p>The <code class="directive">CacheFile</code> directive opens handles to
     one or more files (given as whitespace separated arguments) and
     places these handles into the cache at server startup
@@ -124,7 +124,7 @@ This module should be used with care. You can easily
 <blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><p align="center"><strong>Example</strong></p><code>
   CacheFile /usr/local/apache/htdocs/index.html
 </code></td></tr></table></blockquote>
-<hr/><h2><a name="MMapFile">MMapFile</a> <a name="mmapfile">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td/></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td>MMapFile <em>file-path</em> [<em>file-path</em>] ...</td></tr><tr><td><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config</td></tr><tr><td><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Experimental</td></tr><tr><td><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_file_cache</td></tr></table></td></tr></table>
+<hr/><h2><a name="MMapFile">MMapFile</a> <a name="mmapfile">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: </strong></td><td/></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td>MMapFile <em>file-path</em> [<em>file-path</em>] ...</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Experimental</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_file_cache</td></tr></table></td></tr></table>
     <p>The <code class="directive">MMapFile</code> directive maps one or more files
     (given as whitespace separated arguments) into memory at server
     startup time. They are automatically unmapped on a server
