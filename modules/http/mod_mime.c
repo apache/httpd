@@ -286,7 +286,7 @@ static int find_ct(request_rec *r)
     const char *orighandler = r->handler;
     const char *type;
 
-    if (S_ISDIR(r->finfo.protection)) {
+    if (r->finfo.filetype == APR_DIR) {
         r->content_type = DIR_MAGIC_TYPE;
         return OK;
     }

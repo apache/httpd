@@ -756,7 +756,6 @@ API_EXPORT(ap_status_t) ap_pcfg_openfile(configfile_t **ret_cfg, ap_context_t *p
     ap_file_t *file = NULL;
     ap_finfo_t finfo;
     ap_status_t stat;
-    ap_filetype_e type;
 
     if (name == NULL) {
         ap_log_error(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0, NULL,
@@ -780,12 +779,11 @@ API_EXPORT(ap_status_t) ap_pcfg_openfile(configfile_t **ret_cfg, ap_context_t *p
     if (stat != APR_SUCCESS)
         return stat;
 
-    ap_getfileinfo(&finfo, file);
-    stat = ap_get_filetype(&type, finfo.protection);
+    stat = ap_getfileinfo(&finfo, file);
     if (stat != APR_SUCCESS)
         return stat;
 
-    if (type != APR_REG &&
+    if (finfo.filetype != APR_REG &&
 #if defined(WIN32) || defined(OS2)
         !(strcasecmp(name, "nul") == 0 ||
           (strlen(name) >= 4 &&
