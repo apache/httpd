@@ -9,3 +9,4 @@ Makefile
 modules.mk
 .deps
 .libs
+*.mak
