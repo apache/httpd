@@ -187,7 +187,7 @@
 #define DEFAULT_KEEPALIVE_TIMEOUT 15
 
 /* The number of requests to entertain per connection */
-#define DEFAULT_KEEPALIVE 5
+#define DEFAULT_KEEPALIVE 100
 
 /* The size of the server's internal read-write buffers */
 #define IOBUFSIZE 8192
@@ -594,7 +594,8 @@ struct server_rec {
     server_addr_rec *addrs;
     int timeout;		/* Timeout, in seconds, before we give up */
     int keep_alive_timeout;	/* Seconds we'll wait for another request */
-    int keep_alive;		/* Maximum requests per connection */
+    int keep_alive_max;		/* Maximum requests per connection */
+    int keep_alive;		/* Use persistent connections? */
     int send_buffer_size;       /* size of TCP send buffer (in bytes) */
 
     char *path;			/* Pathname for ServerPath */

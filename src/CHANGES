@@ -1,5 +1,8 @@
 Changes with Apache 1.2b5
 
+  *) Change KeepAlive semantics (On|Off instead of a number), add
+     MaxKeepAliveRequests directive. [Alexei Kosut]
+
   *) Various NeXT compilation patches, as well as a change in
      regex/regcomp.c since that file also used a NEXT define.
      [Andreas Koenig]

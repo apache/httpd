@@ -899,7 +899,18 @@ const char *set_keep_alive_timeout (cmd_parms *cmd, void *dummy, char *arg) {
 }
 
 const char *set_keep_alive (cmd_parms *cmd, void *dummy, char *arg) {
-    cmd->server->keep_alive = atoi (arg);
+    /* We've changed it to On/Off, but used to use numbers
+     * so we accept anything but "Off" or "0" as "On"
+     */
+    if (!strcasecmp(arg, "off") || !strcmp(arg, "0"))
+	cmd->server->keep_alive = 0;
+    else
+	cmd->server->keep_alive = 1;
+    return NULL;
+}
+
+const char *set_keep_alive_max (cmd_parms *cmd, void *dummy, char *arg) {
+    cmd->server->keep_alive_max = atoi (arg);
     return NULL;
 }
 
@@ -1172,7 +1183,8 @@ command_rec core_cmds[] = {
   "The pathname the server can be reached at" },
 { "Timeout", set_timeout, NULL, RSRC_CONF, TAKE1, "Timeout duration (sec)"},
 { "KeepAliveTimeout", set_keep_alive_timeout, NULL, RSRC_CONF, TAKE1, "Keep-Alive timeout duration (sec)"},
-{ "KeepAlive", set_keep_alive, NULL, RSRC_CONF, TAKE1, "Maximum Keep-Alive requests per connection (0 to disable)" },
+{ "MaxKeepAliveRequests", set_keep_alive_max, NULL, RSRC_CONF, TAKE1, "Maximum number of Keep-Alive requests per connection, or 0 for infinite" },
+{ "KeepAlive", set_keep_alive, NULL, RSRC_CONF, TAKE1, "Whether persistent connections should be On or Off" },
 { "IdentityCheck", set_idcheck, NULL, RSRC_CONF|ACCESS_CONF, FLAG, "Enable identd (RFC931) user lookups - SLOW" },
 { "ContentDigest", set_content_md5, NULL, RSRC_CONF|ACCESS_CONF|OR_AUTHCFG, FLAG, "whether or not to send a Content-MD5 header with each request" },
 { "StartServers", set_daemons_to_start, NULL, RSRC_CONF, TAKE1, "Number of child processes launched at server startup" },

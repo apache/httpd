@@ -936,6 +936,7 @@ server_rec *init_virtual_host (pool *p, const char *hostname,
     s->timeout = 0;
     s->keep_alive_timeout = 0;
     s->keep_alive = -1;
+    s->keep_alive_max = -1;
     /* start the list of addreses */
     addrs = &s->addrs;
     while( hostname[0] ) {
@@ -998,6 +999,9 @@ void fixup_virtual_hosts (pool *p, server_rec *main_server)
 	if (virt->keep_alive == -1)
 	    virt->keep_alive = main_server->keep_alive;
 
+	if (virt->keep_alive_max == -1)
+	    virt->keep_alive_max = main_server->keep_alive_max;
+
 	if (virt->send_buffer_size == 0)
 		virt->send_buffer_size = main_server->send_buffer_size;
     }
@@ -1040,7 +1044,8 @@ server_rec *init_server_config(pool *p)
     s->access_confname = ACCESS_CONFIG_FILE;
     s->timeout = DEFAULT_TIMEOUT;
     s->keep_alive_timeout = DEFAULT_KEEPALIVE_TIMEOUT;
-    s->keep_alive = DEFAULT_KEEPALIVE;
+    s->keep_alive_max = DEFAULT_KEEPALIVE;
+    s->keep_alive = 1;
     s->next = NULL;
     s->addrs = pcalloc(p, sizeof (server_addr_rec));
     s->addrs->host_addr.s_addr = htonl (INADDR_ANY); /* NOT virtual host;

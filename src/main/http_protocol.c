@@ -213,7 +213,8 @@ int set_keepalive(request_rec *r)
 
     if (r->connection->keepalive == -1)  /* Did we get bad input? */
         r->connection->keepalive = 0;
-    else if ((r->server->keep_alive > r->connection->keepalives) &&
+    else if (r->server->keep_alive && (!r->server->keep_alive_max ||
+	(r->server->keep_alive_max > r->connection->keepalives)) &&
 	(r->server->keep_alive_timeout > 0) &&
 	(r->header_only || length || tenc ||
 	 ((r->proto_num >= 1001) && (r->byterange > 1 || (r->chunked = 1)))) &&
@@ -226,15 +227,19 @@ int set_keepalive(request_rec *r)
 	 * length-delimited.  It is not a bug, though it is annoying.
 	 */
 	char header[256];
-	int left = r->server->keep_alive - r->connection->keepalives;
+	int left = r->server->keep_alive_max - r->connection->keepalives;
 	
 	r->connection->keepalive = 1;
 	r->connection->keepalives++;
 	
 	/* If they sent a Keep-Alive token, send one back */
 	if (ka_sent) {
-	    ap_snprintf(header, sizeof(header), "timeout=%d, max=%d",
-		    r->server->keep_alive_timeout, left);
+	    if (r->server->keep_alive_max)
+		ap_snprintf(header, sizeof(header), "timeout=%d, max=%d",
+			    r->server->keep_alive_timeout, left);
+	    else
+		ap_snprintf(header, sizeof(header), "timeout=%d",
+			    r->server->keep_alive_timeout);
 	    rputs("Connection: Keep-Alive\015\012", r);
 	    rvputs(r, "Keep-Alive: ", header, "\015\012", NULL);
 	}
