@@ -87,12 +87,18 @@ int
 proxy_connect_handler(request_rec *r, struct cache_req *c, char *url)
 {
     struct sockaddr_in server;
+    struct in_addr destaddr;
     const char *host, *err;
     char *p;
     int   port, sock;
     char buffer[HUGE_STRING_LEN];
     int  nbytes, i;
     fd_set fds;
+
+    void *sconf = r->server->module_config;
+    proxy_server_conf *conf =
+        (proxy_server_conf *)get_module_config(sconf, &proxy_module);
+    struct noproxy_entry *npent=(struct noproxy_entry *)conf->noproxies->elts;
 
     memset(&server, '\0', sizeof(server));
     server.sin_family=AF_INET;
@@ -101,13 +107,23 @@ proxy_connect_handler(request_rec *r, struct cache_req *c, char *url)
 
     host = url;
     p = strchr(url, ':');
-    if (p==NULL) port = DEFAULT_HTTPS_PORT;
+    if (p==NULL)
+	port = DEFAULT_HTTPS_PORT;
     else
     {
       port = atoi(p+1);
       *p='\0';
     }
  
+/* check if ProxyBlock directive on this host */
+    inet_aton(host, &destaddr);
+    for (i=0; i < conf->noproxies->nelts; i++)
+    {
+        if ((npent[i].name != NULL && strstr(host, npent[i].name) != NULL)
+          || destaddr.s_addr == npent[i].addr.s_addr || npent[i].name[0] == '*')
+            return proxyerror(r, "Connect to remote machine blocked");
+    }
+
     switch (port)
     {
 	case DEFAULT_HTTPS_PORT:
@@ -121,7 +137,8 @@ proxy_connect_handler(request_rec *r, struct cache_req *c, char *url)
  
     server.sin_port = htons(port);
     err = proxy_host2addr(host, &server.sin_addr);
-    if (err != NULL) return proxyerror(r, err); /* give up */
+    if (err != NULL)
+	return proxyerror(r, err); /* give up */
  
     sock = socket(PF_INET, SOCK_STREAM, IPPROTO_TCP);  
     if (sock == -1)
@@ -164,8 +181,10 @@ proxy_connect_handler(request_rec *r, struct cache_req *c, char *url)
            Explain0("sock was set");
            if((nbytes=read(sock,buffer,HUGE_STRING_LEN))!=0)
            {
-              if(nbytes==-1) break;
-              if(write(r->connection->client->fd, buffer, nbytes)==EOF)break;
+              if (nbytes==-1)
+		  break;
+              if (write(r->connection->client->fd, buffer, nbytes)==EOF)
+		  break;
               Explain1("Wrote %d bytes to client", nbytes);
            }
            else break;
@@ -176,8 +195,10 @@ proxy_connect_handler(request_rec *r, struct cache_req *c, char *url)
            if((nbytes=read(r->connection->client->fd,buffer,
 		HUGE_STRING_LEN))!=0)   
            {
-              if(nbytes==-1) break;
-              if(write(sock,buffer,nbytes)==EOF) break;
+              if (nbytes==-1)
+		  break;
+              if (write(sock,buffer,nbytes)==EOF)
+		  break;
               Explain1("Wrote %d bytes to server", nbytes);
            }
            else break;

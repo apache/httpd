@@ -256,6 +256,7 @@ create_proxy_config(pool *p, server_rec *s)
 
   ps->proxies = make_array(p, 10, sizeof(struct proxy_remote));
   ps->aliases = make_array(p, 10, sizeof(struct proxy_alias));
+  ps->noproxies = make_array(p, 10, sizeof(struct noproxy_entry));
   ps->nocaches = make_array(p, 10, sizeof(struct nocache_entry));
   ps->req = 0;
 
@@ -323,6 +324,37 @@ add_pass(cmd_parms *cmd, void *dummy, char *f, char *r)
     new = push_array (conf->aliases);
     new->fake = f;
     new->real = r;
+    return NULL;
+}
+
+static const char *
+set_proxy_exclude(cmd_parms *parms, void *dummy, char *arg)
+{
+    server_rec *s = parms->server;
+    proxy_server_conf *conf =
+	get_module_config (s->module_config, &proxy_module);
+    struct noproxy_entry *new;
+    struct noproxy_entry *list=(struct noproxy_entry*)conf->noproxies->elts;
+    int found = 0;
+    int i;
+
+    /* Don't duplicate entries */
+    for (i=0; i < conf->noproxies->nelts; i++)
+    {
+	if (strcmp(arg, list[i].name) == 0)
+	    found = 1;
+    }
+
+    if (!found)
+    {
+	new = push_array (conf->noproxies);
+	new->name = arg;
+	/* Don't do name lookups on things that aren't dotted */
+        if (strchr(arg, '.') != NULL)
+            proxy_host2addr(new->name, &new->addr);
+	else
+	    new->addr.s_addr = 0;
+    }
     return NULL;
 }
 
@@ -455,6 +487,11 @@ set_cache_exclude(cmd_parms *parms, void *dummy, char *arg)
     {
 	new = push_array (conf->nocaches);
 	new->name = arg;
+	/* Don't do name lookups on things that aren't dotted */
+	if (strchr(arg, '.') != NULL)
+	    proxy_host2addr(new->name, &new->addr);
+	else
+	    new->addr.s_addr= 0;
     }
     return NULL;
 }
@@ -471,6 +508,8 @@ static command_rec proxy_cmds[] = {
     "a scheme, partial URL or '*' and a proxy server"},
 { "ProxyPass", add_pass, NULL, RSRC_CONF, TAKE2,
     "a virtual path and a URL"},
+{ "ProxyBlock", set_proxy_exclude, NULL, RSRC_CONF, ITERATE,
+    "A list of names, hosts or domains to which the proxy will not connect" },
 { "CacheRoot", set_cache_root, NULL, RSRC_CONF, TAKE1,
       "The directory to store cache files"},
 { "CacheSize", set_cache_size, NULL, RSRC_CONF, TAKE1,
@@ -488,7 +527,7 @@ static command_rec proxy_cmds[] = {
 { "CacheDirLength", set_cache_dirlength, NULL, RSRC_CONF, TAKE1,
     "The number of characters in subdirectory names" },
 { "NoCache", set_cache_exclude, NULL, RSRC_CONF, ITERATE,
-    "A list of hosts or domains for which caching is *not* provided" },
+    "A list of names, hosts or domains for which caching is *not* provided" },
 { NULL }
 };
 

@@ -110,11 +110,12 @@ int
 proxy_ftp_canon(request_rec *r, char *url)
 {
     char *user, *password, *host, *path, *parms, *p, sport[7];
+    pool *pool=r->pool;
     const char *err;
     int port;
 
     port = DEFAULT_FTP_PORT;
-    err = proxy_canon_netloc(r->pool, &url, &user, &password, &host, &port);
+    err = proxy_canon_netloc(pool, &url, &user, &password, &host, &port);
     if (err) return BAD_REQUEST;
     if (user != NULL && !ftp_check_string(user)) return BAD_REQUEST;
     if (password != NULL && !ftp_check_string(password)) return BAD_REQUEST;
@@ -129,12 +130,12 @@ proxy_ftp_canon(request_rec *r, char *url)
     if (p != NULL)
     {
 	*(p++) = '\0';
-	parms = proxy_canonenc(r->pool, p, strlen(p), enc_parm, r->proxyreq);
+	parms = proxy_canonenc(pool, p, strlen(p), enc_parm, r->proxyreq);
 	if (parms == NULL) return BAD_REQUEST;
     } else
 	parms = "";
 
-    path = proxy_canonenc(r->pool, url, strlen(url), enc_path, r->proxyreq);
+    path = proxy_canonenc(pool, url, strlen(url), enc_path, r->proxyreq);
     if (path == NULL) return BAD_REQUEST;
     if (!ftp_check_string(path)) return BAD_REQUEST;
 
@@ -142,15 +143,15 @@ proxy_ftp_canon(request_rec *r, char *url)
     {
 	if (p != NULL)
 	{
-	    p = proxy_canonenc(r->pool, r->args, strlen(r->args), enc_parm, 1);
+	    p = proxy_canonenc(pool, r->args, strlen(r->args), enc_parm, 1);
 	    if (p == NULL) return BAD_REQUEST;
-	    parms = pstrcat(r->pool, parms, "?", p, NULL);
+	    parms = pstrcat(pool, parms, "?", p, NULL);
 	}
 	else
 	{
-	    p = proxy_canonenc(r->pool, r->args, strlen(r->args), enc_path, 1);
+	    p = proxy_canonenc(pool, r->args, strlen(r->args), enc_path, 1);
 	    if (p == NULL) return BAD_REQUEST;
-	    path = pstrcat(r->pool, path, "?", p, NULL);
+	    path = pstrcat(pool, path, "?", p, NULL);
 	}
 	r->args = NULL;
     }
@@ -160,7 +161,7 @@ proxy_ftp_canon(request_rec *r, char *url)
     if (port != DEFAULT_FTP_PORT) sprintf(sport, ":%d", port);
     else sport[0] = '\0';
 
-    r->filename = pstrcat(r->pool, "proxy:ftp://", (user != NULL) ? user : "",
+    r->filename = pstrcat(pool, "proxy:ftp://", (user != NULL) ? user : "",
 			  (password != NULL) ? ":" : "",
 			  (password != NULL) ? password : "",
 			  (user != NULL) ? "@" : "", host, sport, "/", path,
@@ -333,16 +334,24 @@ proxy_ftp_handler(request_rec *r, struct cache_req *c, char *url)
 {
     char *host, *path, *p, *user, *password, *parms;
     const char *err;
-    int port, userlen, passlen, i, len, sock, dsock, rc, nocache;
+    int port, userlen, i, len, sock, dsock, rc, nocache;
+    int passlen = 0;
     int csd = 0;
     struct sockaddr_in server;
     struct hdr_entry *hdr;
+    struct in_addr destaddr;
     array_header *resp_hdrs;
     BUFF *f, *cache;
     BUFF *data = NULL;
     pool *pool=r->pool;
     const int one=1;
     const long int zero=0L;
+
+    void *sconf = r->server->module_config;
+    proxy_server_conf *conf =
+        (proxy_server_conf *)get_module_config(sconf, &proxy_module);
+    struct noproxy_entry *npent=(struct noproxy_entry *)conf->noproxies->elts;
+    struct nocache_entry *ncent=(struct nocache_entry *)conf->nocaches->elts;
 
 /* stuff for PASV mode */
     unsigned int presult, h0, h1, h2, h3, p0, p1;
@@ -353,24 +362,22 @@ proxy_ftp_handler(request_rec *r, struct cache_req *c, char *url)
     char pasv[64];
     char *pstr;
  
-/* This appears to fix a bug(?) that generates an "Address family not
-    supported by protocol" error in proxy_doconnect() later (along with
-    making sure server.sin_family = AF_INET - cdm) */
-    memset(&server, 0, sizeof(struct sockaddr_in));
-
 /* we only support GET and HEAD */
+
     if (r->method_number != M_GET) return NOT_IMPLEMENTED;
 
-    host = pstrdup(r->pool, url+6);
 /* We break the URL into host, port, path-search */
+
+    host = pstrdup(pool, url + 6);
     port = DEFAULT_FTP_PORT;
     path = strchr(host, '/');
-    if (path == NULL) path = "";
-    else *(path++) = '\0';
+    if (path == NULL)
+	path = "";
+    else
+	*(path++) = '\0';
 
     user = password = NULL;
     nocache = 0;
-    passlen=0;	/* not actually needed, but it shuts the compiler up */
     p = strchr(host, '@');
     if (p != NULL)
     {
@@ -400,7 +407,17 @@ proxy_ftp_handler(request_rec *r, struct cache_req *c, char *url)
     if (p != NULL)
     {
 	*(p++) = '\0';
-	port = atoi(p);
+	if (isdigit(*p))
+	    port = atoi(p);
+    }
+
+/* check if ProxyBlock directive on this host */
+    inet_aton(host, &destaddr);
+    for (i=0; i < conf->noproxies->nelts; i++)
+    {
+        if ((npent[i].name != NULL && strstr(host, npent[i].name) != NULL)
+          || destaddr.s_addr == npent[i].addr.s_addr || npent[i].name[0] == '*')
+            return proxyerror(r, "Connect to remote machine blocked");
     }
 
     Explain2("FTP: connect to %s:%d",host,port);
@@ -408,6 +425,7 @@ proxy_ftp_handler(request_rec *r, struct cache_req *c, char *url)
     parms = strchr(path, ';');
     if (parms != NULL) *(parms++) = '\0';
 
+    memset(&server, 0, sizeof(struct sockaddr_in));
     server.sin_family = AF_INET;
     server.sin_port = htons(port);
     err = proxy_host2addr(host, &server.sin_addr);
@@ -752,7 +770,17 @@ proxy_ftp_handler(request_rec *r, struct cache_req *c, char *url)
 	    proxy_add_header(resp_hdrs, "Content-Type", "text/plain", HDR_REP);
 	}
     }
+
+/* check if NoCache directive on this host */ 
+    for (i=0; i < conf->nocaches->nelts; i++)
+    {
+        if ((ncent[i].name != NULL && strstr(host, ncent[i].name) != NULL)
+          || destaddr.s_addr == ncent[i].addr.s_addr || ncent[i].name[0] == '*')
+            nocache = 1;
+    }
+
     i = proxy_cache_update(c, resp_hdrs, "FTP", nocache);
+
     if (i != DECLINED)
     {
 	pclosef(pool, dsock);

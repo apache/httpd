@@ -147,6 +147,7 @@ proxy_http_handler(request_rec *r, struct cache_req *c, char *url,
     array_header *reqhdrs_arr, *resp_hdrs;
     table_entry *reqhdrs;
     struct sockaddr_in server;
+    struct in_addr destaddr;
     BUFF *f, *cache;
     struct hdr_entry *hdr;
     char buffer[HUGE_STRING_LEN], inprotocol[9], outprotocol[9];
@@ -158,7 +159,8 @@ proxy_http_handler(request_rec *r, struct cache_req *c, char *url,
     void *sconf = r->server->module_config;
     proxy_server_conf *conf =
         (proxy_server_conf *)get_module_config(sconf, &proxy_module);
-    struct nocache_entry *ent=(struct nocache_entry *)conf->nocaches->elts;
+    struct noproxy_entry *npent=(struct noproxy_entry *)conf->noproxies->elts;
+    struct nocache_entry *ncent=(struct nocache_entry *)conf->nocaches->elts;
     int nocache = 0;
 
     memset(&server, '\0', sizeof(server));
@@ -191,6 +193,15 @@ proxy_http_handler(request_rec *r, struct cache_req *c, char *url,
             destport = atoi(p);
             destportstr = p;
 	}
+    }
+
+/* check if ProxyBlock directive on this host */
+    inet_aton(desthost, &destaddr);
+    for (i=0; i < conf->noproxies->nelts; i++)
+    {
+        if ((npent[i].name != NULL && strstr(desthost, npent[i].name) != NULL)
+	  || destaddr.s_addr == npent[i].addr.s_addr || npent[i].name[0] == '*')
+	    return proxyerror(r, "Connect to remote machine blocked");
     }
 
     if (proxyhost != NULL)
@@ -323,8 +334,8 @@ proxy_http_handler(request_rec *r, struct cache_req *c, char *url,
 /* check if NoCache directive on this host */
     for (i=0; i < conf->nocaches->nelts; i++)
     {
-        if ((ent[i].name != NULL && strstr(desthost, ent[i].name) != NULL)
-	  || ent[i].name[0] == '*')
+        if ((ncent[i].name != NULL && strstr(desthost, ncent[i].name) != NULL)
+	  || destaddr.s_addr == ncent[i].addr.s_addr || ncent[i].name[0] == '*')
 	    nocache = 1; 
     }
 

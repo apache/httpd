@@ -84,17 +84,13 @@ More things to do:
 
 2. Add gopher & WAIS
 
-3. NoProxy directive for excluding sites to proxy
+3. Use protocol handler struct a la Apache module handlers (Dirk van Gulik)
  
-4. Use protocol handler struct a la Apache module handlers (Dirk van Gulik)
- 
-5. Use a cache expiry database for more efficient GC (Jeremy Wohl)
+4. Use a cache expiry database for more efficient GC (Jeremy Wohl)
 
-6. Handle multiple IPs for doconnect()
+5. Handle multiple IPs for doconnect()
 
-7. Bulletproof GC against SIGALRM
-
-8. Make HTTPS and SNEWS ports configurable from a list
+6. Bulletproof GC against SIGALRM
 
 Chuck Murcko <chuck@telebase.com> 1 Oct 96
 
@@ -157,8 +153,14 @@ struct proxy_alias {
     char *fake;
 };
 
+struct noproxy_entry {
+    char *name;
+    struct in_addr addr;
+};
+
 struct nocache_entry {
     char *name;
+    struct in_addr addr;
 };
 
 #define DEFAULT_CACHE_SPACE 5
@@ -184,6 +186,7 @@ typedef struct
     struct cache_conf cache;  /* cache configuration */
     array_header *proxies;
     array_header *aliases;
+    array_header *noproxies;
     array_header *nocaches;
     int req;                 /* true if proxy requests are enabled */
 } proxy_server_conf;
