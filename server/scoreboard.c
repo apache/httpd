@@ -65,7 +65,7 @@
 #include "http_core.h"
 #include "http_config.h"
 /* ToDo: Fix this right */
-#ifndef WIN32
+#if !defined(WIN32) && !defined(OS2)
 #include "unixd.h"
 #endif
 

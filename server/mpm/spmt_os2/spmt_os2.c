@@ -90,7 +90,6 @@ static int ap_daemons_to_start=0;
 static int ap_daemons_min_free=0;
 static int ap_daemons_max_free=0;
 static int ap_daemons_limit=0;
-static apr_time_t ap_restart_time=0;
 static int ap_extended_status = 0;
 
 /*
@@ -99,6 +98,8 @@ static int ap_extended_status = 0;
  * value to optimize routines that have to scan the entire scoreboard.
  */
 static int max_daemons_limit = -1;
+int ap_threads_per_child = HARD_THREAD_LIMIT;
+ap_generation_t volatile ap_my_generation=0; /* Used by the scoreboard */
 
 char ap_coredump_dir[MAX_STRING_LEN];
 
@@ -120,10 +121,9 @@ server_rec *ap_server_conf;
 static int one_process = 0;
 
 static apr_pool_t *pconf;		/* Pool for config stuff */
-static scoreboard *ap_scoreboard_image = NULL;
 
 struct thread_globals {
-    int child_num;
+    int thread_num;
     apr_pool_t *pchild;		/* Pool for httpd child stuff */
     int usr1_just_die;
 };
@@ -133,28 +133,6 @@ static struct thread_globals **ppthread_globals = NULL;
 #define THREAD_GLOBAL(gvar) ((*ppthread_globals)->gvar)
 
 
-void reinit_scoreboard(apr_pool_t *p)
-{
-    if (ap_scoreboard_image == NULL) {
-        ap_scoreboard_image = (scoreboard *) malloc(SCOREBOARD_SIZE);
-
-        if (ap_scoreboard_image == NULL) {
-            ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
-                         "Ouch! Out of memory reiniting scoreboard!");
-        }
-    }
-
-    memset(ap_scoreboard_image, 0, SCOREBOARD_SIZE);
-}
-
-void cleanup_scoreboard(void)
-{
-    ap_assert(ap_scoreboard_image);
-    free(ap_scoreboard_image);
-    ap_scoreboard_image = NULL;
-}
-
-
 /* a clean exit from a child with proper cleanup */
 static void clean_child_exit(int code)
 {
@@ -162,7 +140,7 @@ static void clean_child_exit(int code)
         apr_destroy_pool(THREAD_GLOBAL(pchild));
     }
 
-    ap_scoreboard_image->servers[THREAD_GLOBAL(child_num)].thread_retval = code;
+    ap_scoreboard_image->servers[0][THREAD_GLOBAL(thread_num)].thread_retval = code;
     _endthread();
 }
 
@@ -234,111 +212,17 @@ static void accept_mutex_off(void)
 #define SAFE_ACCEPT(stmt) do {stmt;} while(0)
 #endif
 
-AP_DECLARE(int) ap_exists_scoreboard_image(void)
-{
-    return (ap_scoreboard_image ? 1 : 0);
-}
-
 AP_DECLARE(int) ap_get_max_daemons(void)
 {
     return max_daemons_limit;
 }
 
-int ap_update_child_status(int child_num, int status, request_rec *r)
-{
-    int old_status;
-    short_score *ss;
-
-    if (child_num < 0)
-	return -1;
-
-    ss = &ap_scoreboard_image->servers[child_num];
-    old_status = ss->status;
-    ss->status = status;
-
-    if (ap_extended_status) {
-	if (status == SERVER_READY || status == SERVER_DEAD) {
-	    /*
-	     * Reset individual counters
-	     */
-	    if (status == SERVER_DEAD) {
-		ss->my_access_count = 0L;
-		ss->my_bytes_served = 0L;
-	    }
-	    ss->conn_count = (unsigned short) 0;
-	    ss->conn_bytes = (unsigned long) 0;
-	}
-	if (r) {
-	    conn_rec *c = r->connection;
-	    apr_cpystrn(ss->client, ap_get_remote_host(c, r->per_dir_config,
-				  REMOTE_NOLOOKUP), sizeof(ss->client));
-	    if (r->the_request == NULL) {
-		    apr_cpystrn(ss->request, "NULL", sizeof(ss->request));
-	    } else if (r->parsed_uri.password == NULL) {
-		    apr_cpystrn(ss->request, r->the_request, sizeof(ss->request));
-	    } else {
-		/* Don't reveal the password in the server-status view */
-		    apr_cpystrn(ss->request, apr_pstrcat(r->pool, r->method, " ",
-					       ap_unparse_uri_components(r->pool, &r->parsed_uri, UNP_OMITPASSWORD),
-					       r->assbackwards ? NULL : " ", r->protocol, NULL),
-				       sizeof(ss->request));
-	    }
-	    ss->vhostrec =  r->server;
-	}
-    }
-
-    if (status == SERVER_STARTING && r == NULL) {
-	/* clean up the slot's vhostrec pointer (maybe re-used)
-	 * and mark the slot as belonging to a new generation.
-	 */
-	ss->vhostrec = NULL;
-	ap_scoreboard_image->parent[child_num].generation = ap_scoreboard_image->global.running_generation;
-    }
-
-    return old_status;
-}
-
-void ap_time_process_request(int child_num, int status)
-{
-    short_score *ss;
-
-    if (child_num < 0)
-	return;
-
-    ss = &ap_scoreboard_image->servers[child_num];
-
-    if (status == START_PREQUEST) {
-	ss->start_time = apr_now();
-    }
-    else if (status == STOP_PREQUEST) {
-	ss->stop_time = apr_now();
-    }
-}
-
-/* TODO: call me some time */
-static void increment_counts(int child_num, request_rec *r)
-{
-    short_score *ss;
-
-    ss = &ap_scoreboard_image->servers[child_num];
-
-#ifdef HAVE_TIMES
-    times(&ss->times);
-#endif
-    ss->access_count++;
-    ss->my_access_count++;
-    ss->conn_count++;
-    ss->bytes_served += r->bytes_sent;
-    ss->my_bytes_served += r->bytes_sent;
-    ss->conn_bytes += r->bytes_sent;
-}
-
-static int find_child_by_tid(int tid)
+static int find_thread_by_tid(int tid)
 {
     int i;
 
     for (i = 0; i < max_daemons_limit; ++i)
-	if (ap_scoreboard_image->parent[i].tid == tid)
+	if (ap_scoreboard_image->servers[0][i].tid == tid)
 	    return i;
 
     return -1;
@@ -371,9 +255,9 @@ static int wait_or_timeout(apr_wait_t *status)
     ret = DosWaitThread(&tid, DCWW_NOWAIT);
 
     if (ret == 0) {
-        int child_num = find_child_by_tid(tid);
-        ap_assert( child_num > 0 );
-        *status = ap_scoreboard_image->servers[child_num].thread_retval;
+        int thread_num = find_thread_by_tid(tid);
+        ap_assert( thread_num > 0 );
+        *status = ap_scoreboard_image->servers[0][thread_num].thread_retval;
 	return tid;
     }
     
@@ -544,7 +428,7 @@ static void usr1_handler(int sig)
     if (THREAD_GLOBAL(usr1_just_die)) {
 	just_die(sig);
     }
-    ap_scoreboard_image->parent[THREAD_GLOBAL(child_num)].deferred_die = 1;
+    ap_scoreboard_image->servers[0][THREAD_GLOBAL(thread_num)].deferred_die = 1;
 }
 
 /* volatile just in case */
@@ -684,15 +568,15 @@ static void set_signals(void)
 AP_DECLARE(void) ap_child_terminate(request_rec *r)
 {
     r->connection->keepalive = 0;
-    ap_scoreboard_image->parent[THREAD_GLOBAL(child_num)].deferred_die = 1;
+    ap_scoreboard_image->servers[0][THREAD_GLOBAL(thread_num)].deferred_die = 1;
 }
 
 
 
 int ap_graceful_stop_signalled(void)
 {
-    if (ap_scoreboard_image->parent[THREAD_GLOBAL(child_num)].deferred_die ||
-	ap_scoreboard_image->global.running_generation != ap_scoreboard_image->parent[THREAD_GLOBAL(child_num)].generation) {
+    if (ap_scoreboard_image->servers[0][THREAD_GLOBAL(thread_num)].deferred_die ||
+	ap_scoreboard_image->global.running_generation != ap_scoreboard_image->servers[0][THREAD_GLOBAL(thread_num)].generation) {
 	return 1;
     }
     return 0;
@@ -703,8 +587,8 @@ int ap_graceful_stop_signalled(void)
 int ap_stop_signalled(void)
 {
     if (shutdown_pending || restart_pending ||
-        ap_scoreboard_image->parent[THREAD_GLOBAL(child_num)].deferred_die ||
-	ap_scoreboard_image->global.running_generation != ap_scoreboard_image->parent[THREAD_GLOBAL(child_num)].generation) {
+        ap_scoreboard_image->servers[0][THREAD_GLOBAL(thread_num)].deferred_die ||
+	ap_scoreboard_image->global.running_generation != ap_scoreboard_image->servers[0][THREAD_GLOBAL(thread_num)].generation) {
 	return 1;
     }
     return 0;
@@ -731,14 +615,13 @@ static int setup_listen_poll(apr_pool_t *pchild, apr_pollfd_t **listen_poll)
 
 
 
-static void child_main(void *child_num_arg)
+static void thread_main(void *thread_num_arg)
 {
     ap_listen_rec *lr = NULL;
     ap_listen_rec *first_lr = NULL;
     apr_pool_t *ptrans;
     conn_rec *current_conn;
     apr_pool_t *pchild;
-    parent_score *sc_parent_rec;
     int requests_this_child = 0;
     apr_pollfd_t *listen_poll;
     apr_socket_t *csd = NULL;
@@ -759,8 +642,7 @@ static void child_main(void *child_num_arg)
      */
     apr_create_pool(&pchild, pconf);
     *ppthread_globals = (struct thread_globals *)apr_palloc(pchild, sizeof(struct thread_globals));
-    THREAD_GLOBAL(child_num) = (int)child_num_arg;
-    sc_parent_rec = ap_scoreboard_image->parent + THREAD_GLOBAL(child_num);
+    THREAD_GLOBAL(thread_num) = (int)thread_num_arg;
     THREAD_GLOBAL(pchild) = pchild;
     apr_create_pool(&ptrans, pchild);
 
@@ -773,7 +655,7 @@ static void child_main(void *child_num_arg)
 
     ap_child_init_hook(pchild, ap_server_conf);
 
-    (void) ap_update_child_status(THREAD_GLOBAL(child_num), SERVER_READY, (request_rec *) NULL);
+    (void) ap_update_child_status(0, THREAD_GLOBAL(thread_num), SERVER_READY, (request_rec *) NULL);
     
 
     signal(SIGHUP, just_die);
@@ -802,7 +684,7 @@ static void child_main(void *child_num_arg)
 	    clean_child_exit(0);
 	}
 
-	(void) ap_update_child_status(THREAD_GLOBAL(child_num), SERVER_READY, (request_rec *) NULL);
+	(void) ap_update_child_status(0, THREAD_GLOBAL(thread_num), SERVER_READY, (request_rec *) NULL);
 
 	/*
 	 * Wait for an acceptable connection to arrive.
@@ -935,11 +817,12 @@ static void child_main(void *child_num_arg)
 
 	ap_sock_disable_nagle(csd);
 
-	(void) ap_update_child_status(THREAD_GLOBAL(child_num), SERVER_BUSY_READ,
+	(void) ap_update_child_status(0, THREAD_GLOBAL(thread_num), SERVER_BUSY_READ,
 				   (request_rec *) NULL);
 
 	current_conn = ap_new_connection(ptrans, ap_server_conf, csd,
-                                         THREAD_GLOBAL(child_num));
+                                         THREAD_GLOBAL(thread_num));
+
         if (current_conn) {
             ap_process_connection(current_conn);
             ap_lingering_close(current_conn);
@@ -966,19 +849,19 @@ static int make_child(server_rec *s, int slot, time_t now)
 	signal(SIGQUIT, SIG_DFL);
 #endif
 	signal(SIGTERM, just_die);
-        child_main((void *)slot);
+        thread_main((void *)slot);
         *ppthread_globals = parent_globals;
     }
 
-    ap_update_child_status(slot, SERVER_STARTING, (request_rec *) NULL);
+    ap_update_child_status(0, slot, SERVER_STARTING, (request_rec *) NULL);
 
-    if ((tid = _beginthread(child_main, NULL,  256*1024, (void *)slot)) == -1) {
+    if ((tid = _beginthread(thread_main, NULL,  256*1024, (void *)slot)) == -1) {
 	ap_log_error(APLOG_MARK, APLOG_ERR|APLOG_NOERRNO, 0, s, "_beginthread: Unable to create new thread");
 
 	/* _beginthread didn't succeed. Fix the scoreboard or else
 	 * it will say SERVER_STARTING forever and ever
 	 */
-	(void) ap_update_child_status(slot, SERVER_DEAD, (request_rec *) NULL);
+	(void) ap_update_child_status(0, slot, SERVER_DEAD, (request_rec *) NULL);
 
 	/* In case system resources are maxxed out, we don't want
 	   Apache running away with the CPU trying to _beginthread over and
@@ -988,7 +871,7 @@ static int make_child(server_rec *s, int slot, time_t now)
 	return -1;
     }
 
-    ap_scoreboard_image->parent[slot].tid = tid;
+    ap_scoreboard_image->servers[0][slot].tid = tid;
     return 0;
 }
 
@@ -1000,7 +883,7 @@ static void startup_children(int number_to_start)
     time_t now = time(0);
 
     for (i = 0; number_to_start && i < ap_daemons_limit; ++i) {
-	if (ap_scoreboard_image->servers[i].status != SERVER_DEAD) {
+	if (ap_scoreboard_image->servers[0][i].status != SERVER_DEAD) {
 	    continue;
 	}
 	if (make_child(ap_server_conf, i, now) < 0) {
@@ -1048,7 +931,7 @@ static void perform_idle_server_maintenance(void)
 
 	if (i >= max_daemons_limit && free_length == idle_spawn_rate)
 	    break;
-	ss = &ap_scoreboard_image->servers[i];
+	ss = &ap_scoreboard_image->servers[0][i];
 	status = ss->status;
 	if (status == SERVER_DEAD) {
 	    /* try to keep children numbers as low as possible */
@@ -1085,7 +968,7 @@ static void perform_idle_server_maintenance(void)
 	 * shut down gracefully, in case it happened to pick up a request
 	 * while we were counting
 	 */
-	ap_scoreboard_image->parent[to_kill].deferred_die = 1;
+	ap_scoreboard_image->servers[0][to_kill].deferred_die = 1;
 	idle_spawn_rate = 1;
     }
     else if (idle_count < ap_daemons_min_free) {
@@ -1154,7 +1037,7 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
     SAFE_ACCEPT(accept_mutex_init(pconf));
 
     if (!is_graceful) {
-	reinit_scoreboard(pconf);
+	ap_create_scoreboard(pconf, SB_NOT_SHARED);
     }
 
     set_signals();
@@ -1201,8 +1084,10 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
 		"Server built: %s", ap_get_server_built());
     restart_pending = shutdown_pending = 0;
 
+    printf("%s \n", ap_get_server_version());
+
     while (!restart_pending && !shutdown_pending) {
-	int child_slot;
+	int thread_slot;
 	apr_wait_t status;
 	int tid = wait_or_timeout(&status);
 
@@ -1215,16 +1100,16 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
             dummyproc.pid = tid;
             ap_process_child_status(&dummyproc, status);
 	    /* non-fatal death... note that it's gone in the scoreboard. */
-	    child_slot = find_child_by_tid(tid);
-	    if (child_slot >= 0) {
-		(void) ap_update_child_status(child_slot, SERVER_DEAD,
+	    thread_slot = find_thread_by_tid(tid);
+	    if (thread_slot >= 0) {
+		(void) ap_update_child_status(0, thread_slot, SERVER_DEAD,
 					    (request_rec *) NULL);
 		if (remaining_children_to_start
-		    && child_slot < ap_daemons_limit) {
+		    && thread_slot < ap_daemons_limit) {
 		    /* we're still doing a 1-for-1 replacement of dead
 			* children with new children
 			*/
-		    make_child(ap_server_conf, child_slot, time(0));
+		    make_child(ap_server_conf, thread_slot, time(0));
 		    --remaining_children_to_start;
 		}
 #if APR_HAS_OTHER_CHILD
@@ -1281,8 +1166,8 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
 
         /* Kill off running threads */
         for (slot=0; slot<max_daemons_limit; slot++) {
-            if (ap_scoreboard_image->servers[slot].status != SERVER_DEAD) {
-                tid = ap_scoreboard_image->parent[slot].tid;
+            if (ap_scoreboard_image->servers[0][slot].status != SERVER_DEAD) {
+                tid = ap_scoreboard_image->servers[0][slot].tid;
                 rc = DosKillThread(tid);
 
                 if (rc != ERROR_INVALID_THREADID) { // Already dead, ignore
@@ -1335,7 +1220,7 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
 
         /* kill off the idle ones */
         for (i = 0; i < ap_daemons_limit; ++i) {
-            ap_scoreboard_image->parent[i].deferred_die = 1;
+            ap_scoreboard_image->servers[0][i].deferred_die = 1;
         }
 
 	/* This is mostly for debugging... so that we know what is still
@@ -1344,15 +1229,15 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
 	    * corruption too easily.
 	    */
 	for (i = 0; i < ap_daemons_limit; ++i) {
-	    if (ap_scoreboard_image->servers[i].status != SERVER_DEAD) {
-		ap_scoreboard_image->servers[i].status = SERVER_GRACEFUL;
+	    if (ap_scoreboard_image->servers[0][i].status != SERVER_DEAD) {
+		ap_scoreboard_image->servers[0][i].status = SERVER_GRACEFUL;
 	    }
 	}
     }
     else {
 	/* Kill 'em off */
         for (i = 0; i < ap_daemons_limit; ++i) {
-            DosKillThread(ap_scoreboard_image->parent[i].tid);
+            DosKillThread(ap_scoreboard_image->servers[0][i].tid);
         }
 	ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_NOTICE, 0, ap_server_conf,
                      "SIGHUP received.  Attempting to restart");
@@ -1374,10 +1259,11 @@ static void spmt_os2_pre_config(apr_pool_t *pconf, apr_pool_t *plog, apr_pool_t 
     ap_daemons_to_start = DEFAULT_START_DAEMON;
     ap_daemons_min_free = DEFAULT_MIN_FREE_DAEMON;
     ap_daemons_max_free = DEFAULT_MAX_FREE_DAEMON;
-    ap_daemons_limit = HARD_SERVER_LIMIT;
+    ap_daemons_limit = HARD_THREAD_LIMIT;
     ap_pid_fname = DEFAULT_PIDLOG;
     ap_max_requests_per_child = DEFAULT_MAX_REQUESTS_PER_CHILD;
     ap_extended_status = 0;
+    ap_scoreboard_fname = NULL;
 
     apr_cpystrn(ap_coredump_dir, ap_server_root, sizeof(ap_coredump_dir));
 }
@@ -1455,17 +1341,17 @@ static const char *set_server_limit (cmd_parms *cmd, void *dummy, char *arg)
     }
 
     ap_daemons_limit = atoi(arg);
-    if (ap_daemons_limit > HARD_SERVER_LIMIT) {
+    if (ap_daemons_limit > HARD_THREAD_LIMIT) {
        ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
                     "WARNING: MaxClients of %d exceeds compile time limit "
-                    "of %d servers,", ap_daemons_limit, HARD_SERVER_LIMIT);
+                    "of %d servers,", ap_daemons_limit, HARD_THREAD_LIMIT);
        ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
                     " lowering MaxClients to %d.  To increase, please "
-                    "see the", HARD_SERVER_LIMIT);
+                    "see the", HARD_THREAD_LIMIT);
        ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
-                    " HARD_SERVER_LIMIT define in %s.",
+                    " HARD_THREAD_LIMIT define in %s.",
                     AP_MPM_HARD_LIMITS_FILE);
-       ap_daemons_limit = HARD_SERVER_LIMIT;
+       ap_daemons_limit = HARD_THREAD_LIMIT;
     } 
     else if (ap_daemons_limit < 1) {
 	ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 

@@ -70,8 +70,10 @@ extern "C" {
 #include <time.h>
 #endif
 
+#include "mpm.h"	        /* For MPM type */
 #include "mpm_default.h"	/* For HARD_.*_LIMIT */
 #include "apr_thread_proc.h"
+#include "apr_portable.h"
 
 /*The optimized timeout code only works if we're not using a scoreboard file*/
 #if defined(AP_USE_MEM_BASED_SCOREBOARD)
@@ -154,6 +156,7 @@ typedef struct {
     unsigned short timeout_len;	/* length of the timeout */
 #endif
     int thread_num;
+    apr_os_thread_t tid;
     unsigned char status;
     unsigned long access_count;
     unsigned long bytes_served;
@@ -168,6 +171,11 @@ typedef struct {
 #endif
 #ifndef OPTIMIZE_TIMEOUTS
     time_t last_used;
+#endif
+#ifdef SPMT_OS2_MPM
+    apr_wait_t thread_retval;
+    char deferred_die;
+    ap_generation_t generation;	/* generation of this thread */
 #endif
     char client[32];		/* Keep 'em small... */
     char request[64];		/* We just want an idea... */
