@@ -126,13 +126,13 @@
  *
  * If ppValue is NULL, allocate space for the value and return it in
  * *pValue. The return value is the number of bytes in the value.
- * The first argument is the ap_pool_t to use to allocate space for the value.
+ * The first argument is the pool to use to allocate space for the value.
  *
  * If pValue is not NULL, assume it is a buffer of nSizeValue bytes,
  * and write the value into the buffer. The return value is the number
  * of bytes in the value (so if the return value is greater than
  * the supplied nSizeValue, the caller knows that *pValue is truncated).
- * The ap_pool_t argument is ignored.
+ * The pool argument is ignored.
  *
  * The return value is the number of bytes in the successfully retreived
  * key if everything worked, or:
