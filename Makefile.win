@@ -54,17 +54,21 @@ tryssl:
 	cd modules\tls
         $(MAKE) $(MAKEOPT) -f mod_tls.mak CFG="mod_tls - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	cd ..\..
+	cd support
+        $(MAKE) $(MAKEOPT) -f abs.mak CFG="abs - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+	cd ..\..
 !ELSE
 	msdev Apache.dsw /MAKE\
 		"mod_ssl - Win32 $(LONG)"\
-		"mod_tls - Win32 $(LONG)" /NORECURSE $(CTARGET)
+		"mod_tls - Win32 $(LONG)"\
+		"abs - Win32 $(LONG)" /NORECURSE $(CTARGET)
 !ENDIF
 
 !ELSE
 tryssl:
-	echo mod_ssl and mod_tls will not build without openssl installed
-	echo in $(INSTDIR)\srclib\openssl.  They must be precompiled using
-	echo the ms/ntdll.mak file.  See INSTALL.W32 for details.
+	echo mod_ssl, mod_tls and ab/ssl will not build without openssl 
+	echo installed in $(INSTDIR)\srclib\openssl.  They must be precompiled 
+	echo using the ms/ntdll.mak file.  See INSTALL.W32 for details.
 !ENDIF
 
 !IF "$(INSTDIR)" == ""
@@ -169,6 +173,9 @@ _build:
 	cd modules\tls
         $(MAKE) $(MAKEOPT) -f mod_tls.mak CFG="mod_tls - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	cd ..\..
+	cd support
+         $(MAKE) $(MAKEOPT) -f abs.mak CFG="abs - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+	cd ..
 !ENDIF
 	cd support
          $(MAKE) $(MAKEOPT) -f ab.mak CFG="ab - Win32 $(LONG)" RECURSE=0 $(CTARGET)
@@ -230,7 +237,8 @@ _build:
 !IF EXIST("srclib\openssl")
 	msdev Apache.dsw /MAKE\
 		"mod_ssl - Win32 $(LONG)"\
-		"mod_tls - Win32 $(LONG)" /NORECURSE $(CTARGET)
+		"mod_tls - Win32 $(LONG)"\
+		"abs - Win32 $(LONG)" /NORECURSE $(CTARGET)
 !ENDIF
 
 !ENDIF
@@ -337,8 +345,10 @@ _install:
 
 --------------------------------------------------------------------------------
 <<
-!ENDIF
+        copy support\$(LONG)\abs.exe "$(INSTDIR)\bin\ab.exe"
+!ELSE
         copy support\$(LONG)\ab.exe "$(INSTDIR)\bin"
+!ENDIF
         copy support\$(LONG)\htpasswd.exe "$(INSTDIR)\bin"
 	copy support\$(LONG)\htdigest.exe "$(INSTDIR)\bin"
 	copy support\$(LONG)\logresolve.exe "$(INSTDIR)\bin"
