@@ -3,7 +3,7 @@
 # is important so they know how to handle the content of the file.
 # Extra types can either be added here or by using an AddType directive
 # in your config files. For more information about MIME types
-# please read RFC 2045,2046,2047,2048,2077.
+# please read RFC 2045, 2046, 2047, 2048, and 2077.
 
 # MIME type			Extension
 application/activemessage
@@ -106,3 +106,5 @@ video/quicktime			qt mov
 video/x-msvideo			avi
 video/x-sgi-movie		movie
 x-conference/x-cooltalk		ice
+
+# This is a comment. I love comments.
