@@ -169,8 +169,10 @@
 #define SHELL_PATH "/bin/sh"
 #endif
 
-/* The path to the suExec wrapper */
+/* The path to the suExec wrapper, can be overridden in Configuration */
+#ifndef SUEXEC_BIN
 #define SUEXEC_BIN "/usr/local/etc/httpd/sbin/suexec"
+#endif
 
 /* The default string lengths */
 #define MAX_STRING_LEN HUGE_STRING_LEN
