@@ -582,7 +582,7 @@ static const command_rec autoindex_cmds[] =
     AP_INIT_FLAG("FancyIndexing", fancy_indexing, NULL, DIR_CMD_PERMS,
                  "Limited to 'on' or 'off' (superseded by IndexOptions FancyIndexing)"),
     AP_INIT_TAKE1("DefaultIcon", ap_set_string_slot,
-                  (void *) XtOffsetOf(autoindex_config_rec, default_icon),
+                  (void *) APR_XtOffsetOf(autoindex_config_rec, default_icon),
                   DIR_CMD_PERMS, "an icon URL"),
     {NULL}
 };

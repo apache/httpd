@@ -63,7 +63,7 @@
  * UUencoding modified by: Alvaro Martinez Echevarria <alvaro@lander.es>
  */
 
-#include "apr_general.h"    /* for XtOffsetOf                */
+#include "apr_general.h"    /* for APR_XtOffsetOf                */
 
 #include "httpd.h"
 #include "http_config.h"
@@ -187,15 +187,15 @@ static void unique_id_global_init(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *p
     /*
      * Calculate the sizes and offsets in cur_unique_id.
      */
-    unique_id_rec_offset[0] = XtOffsetOf(unique_id_rec, stamp);
+    unique_id_rec_offset[0] = APR_XtOffsetOf(unique_id_rec, stamp);
     unique_id_rec_size[0] = sizeof(cur_unique_id.stamp);
-    unique_id_rec_offset[1] = XtOffsetOf(unique_id_rec, in_addr);
+    unique_id_rec_offset[1] = APR_XtOffsetOf(unique_id_rec, in_addr);
     unique_id_rec_size[1] = sizeof(cur_unique_id.in_addr);
-    unique_id_rec_offset[2] = XtOffsetOf(unique_id_rec, pid);
+    unique_id_rec_offset[2] = APR_XtOffsetOf(unique_id_rec, pid);
     unique_id_rec_size[2] = sizeof(cur_unique_id.pid);
-    unique_id_rec_offset[3] = XtOffsetOf(unique_id_rec, counter);
+    unique_id_rec_offset[3] = APR_XtOffsetOf(unique_id_rec, counter);
     unique_id_rec_size[3] = sizeof(cur_unique_id.counter);
-    unique_id_rec_offset[4] = XtOffsetOf(unique_id_rec, thread_index);
+    unique_id_rec_offset[4] = APR_XtOffsetOf(unique_id_rec, thread_index);
     unique_id_rec_size[4] = sizeof(cur_unique_id.thread_index);
     unique_id_rec_total_size = unique_id_rec_size[0] + unique_id_rec_size[1] +
                                unique_id_rec_size[2] + unique_id_rec_size[3] +
