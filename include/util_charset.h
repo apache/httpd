@@ -65,10 +65,27 @@
 extern "C" {
 #endif
 
+/**
+ * @package charset conversion
+ */
 #include "apr_xlate.h"
 
-extern apr_xlate_t *ap_hdrs_to_ascii, *ap_hdrs_from_ascii;
-extern apr_xlate_t *ap_locale_to_ascii, *ap_locale_from_ascii;
+/** On EBCDIC machine this is a translation handle used to translate the 
+ *  headers from the local machine format to ASCII for network transmission.
+ *  On an ASCII machine this is NULL */
+extern apr_xlate_t *ap_hdrs_to_ascii;
+/** On EBCDIC machine this is a translation handle used to translate the
+ *  headers from ASCII to the local machine format after network transmission.
+ *  On an ASCII machine this is NULL */
+extern apr_xlate_t *ap_hdrs_from_ascii;
+/** On EBCDIC machine this is a translation handle used to translate the 
+ *  content from the local machine format to ASCII for network transmission.
+ *  On an ASCII machine this is NULL */
+extern apr_xlate_t *ap_locale_to_ascii;
+/** On EBCDIC machine this is a translation handle used to translate the
+ *  content from ASCII to the local machine format after network transmission.
+ *  On an ASCII machine this is NULL */
+extern apr_xlate_t *ap_locale_from_ascii;
 
 /* Save & Restore the current conversion settings
  *
@@ -100,8 +117,12 @@ extern apr_xlate_t *ap_locale_to_ascii, *ap_locale_from_ascii;
 #define AP_POP_OUTPUTCONVERSION_STATE(_buff) \
         ap_bsetopt(_buff, BO_WXLATE, &saved_output_xlate)
 
-/* ap_set_content_xlate() is called by Apache core or a module to set
- * up character set translation (a.k.a. recoding) for content.
+/**
+ * set up character set translation (a.k.a. recoding) for content.
+ * @param r The current request
+ * @param output Is this content outgoing or incoming
+ * @param The translation handle to use for the actual work
+ * @deffunc apr_status_t ap_set_content_xlate(request_rec *r, int output, apr_xlate_t *xlate)
  */
 API_EXPORT(apr_status_t) ap_set_content_xlate(request_rec *r, int output,
                                              apr_xlate_t *xlate);
