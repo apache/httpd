@@ -879,16 +879,16 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
             }
         }
 
-      if ((r->status == 401) && (conf->error_override != 0)) {
-          const char *buf;
-          const char *wa = "WWW-Authenticate";
-          if ((buf = apr_table_get(r->headers_out, wa))) {
-              apr_table_set(r->err_headers_out, wa, buf);
-          } else {
-              ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
-                           "proxy: origin server sent 401 without w-a header");
-          }
-      }
+        if ((r->status == 401) && (conf->error_override != 0)) {
+            const char *buf;
+            const char *wa = "WWW-Authenticate";
+            if ((buf = apr_table_get(r->headers_out, wa))) {
+                apr_table_set(r->err_headers_out, wa, buf);
+            } else {
+                ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
+                             "proxy: origin server sent 401 without WWW-Authenticate header");
+            }
+        }
 
         r->sent_bodyct = 1;
         /* Is it an HTTP/0.9 response? If so, send the extra data */
@@ -992,7 +992,7 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
              */
             int status = r->status;
             r->status = HTTP_OK;
-          ap_discard_request_body(rp);
+            ap_discard_request_body(rp);
             return status;
         }
     } else 
