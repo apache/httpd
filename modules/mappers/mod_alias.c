@@ -283,10 +283,9 @@ static const command_rec alias_cmds[] =
 
 static int alias_matches(const char *uri, const char *alias_fakename)
 {
-    const char *end_fakename = alias_fakename + strlen(alias_fakename);
     const char *aliasp = alias_fakename, *urip = uri;
 
-    while (aliasp < end_fakename) {
+    while (*aliasp) {
 	if (*aliasp == '/') {
 	    /* any number of '/' in the alias matches any number in
 	     * the supplied URI, but there must be at least one...
