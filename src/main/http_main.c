@@ -1355,7 +1355,7 @@ void bus_error(void) {
     ap_snprintf
 	(
 	    emsg,
-	    sizeof(emsg) - 1,
+	    sizeof(emsg),
 	    "httpd: caught SIGBUS, attempting to dump core in %s",
 	    server_root
 	);
@@ -1371,7 +1371,7 @@ void seg_fault() {
     ap_snprintf
 	(
 	    emsg,
-	    sizeof(emsg) - 1,
+	    sizeof(emsg),
 	    "httpd: caught SIGSEGV, attempting to dump core in %s",
 	    server_root
 	);
