@@ -122,13 +122,15 @@ instead.</P>
 
 <P>The other thing to `fake' is the document root (configured
 with <CODE>DocumentRoot</CODE> and available to CGIs via the
-<CODE>DOCUMENT_ROOT</CODE> environment variable). This setting
-is used by the core module when mapping URIs to filenames, but
-when the server is configured to do dynamic virtual hosting that
-job is taken over by another module. If any CGIs or SSI documents
-make use of the <CODE>DOCUMENT_ROOT</CODE> environment variable
-they will therefore get a misleading value; there isn't any way to
-change <CODE>DOCUMENT_ROOT</CODE> dynamically.</P>
+<CODE>DOCUMENT_ROOT</CODE> environment variable). In a normal
+configuration this setting is used by the core module when mapping
+URIs to filenames, but when the server is configured to do dynamic
+virtual hosting that job is taken over by another module (either
+<CODE>mod_vhost_alias</CODE> or <CODE>mod_rewrite</CODE>) which has
+a different way of doing the mapping. Neither of these modules is
+responsible for setting the <CODE>DOCUMENT_ROOT</CODE> environment
+variable so if any CGIs or SSI documents make use of it they will
+get a misleading value.</P>
 
 
 <HR><H2><A NAME="simple">Simple dynamic virtual hosts</A></H2>
