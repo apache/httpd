@@ -10,9 +10,9 @@ Changes with Apache 1.3.5
      characters in the range 0x80 to 0xff (for example accented characters).
      [Paul Sutton] PR#3890
 
-  *) Added RefererIgnore and conditional logging based upon environment
-     variables to mod_log_config.  mod_log_referer and mod_log_agent
-     are now deprecated.[Ken Coar]
+  *) Added conditional logging based upon environment variables to
+     mod_log_config.  mod_log_referer and mod_log_agent
+     are now deprecated.  [Ken Coar]
 
   *) Allow apache acting as a proxy server to relay the real
      reason of a failure to a client rather than the "internal

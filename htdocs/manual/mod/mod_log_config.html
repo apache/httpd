@@ -54,13 +54,11 @@ defined or not.  This is settable on a <EM>per</EM>-logfile
 basis.
 
 <LI>Beginning with Apache 1.3.5, the mod_log_config module has
-also subsumed the <CODE>RefererIgnore</CODE> directive from
-<A HREF="mod_log_referer.html">mod_log_referer</A>.  The use
-of <CODE>RefererIgnore</CODE> is deprecated, and should be
-replaced by combinations of
+also subsumed the <CODE>RefererIgnore</CODE> functionality from
+<A HREF="mod_log_referer.html">mod_log_referer</A>.  The effect
+of <CODE>RefererIgnore</CODE> can be achieved by combinations of
 <A HREF="mod_setenvif.html"><CODE>SetEnvIf</CODE></A> directives
-and environment variable controlled <CODE>CustomLog</CODE>
-definitions.
+and conditional <CODE>CustomLog</CODE> definitions.
 
 </UL>
 
@@ -214,7 +212,6 @@ the user that starts the server.
 <LI><A HREF="#customlog">CustomLog</A>
 <LI><A HREF="#customlog-conditional">CustomLog (conditional)</A>
 <LI><A HREF="#logformat">LogFormat</A>
-<LI><A HREF="#refererignore">RefererIgnore</A>
 <LI><A HREF="#transferlog">TransferLog</A>
 </UL>
 <HR>
@@ -401,53 +398,6 @@ it doesn't actually apply the format and make it the default.
 </P>
 
 <HR>
-<H2><A NAME="refererignore">RefererIgnore</A></H2>
-<A
- HREF="directive-dict.html#Syntax"
- REL="Help"
-><STRONG>Syntax:</STRONG></A> RefererIgnore <EM>string string ...</EM><BR>
-<A
- HREF="directive-dict.html#Context"
- REL="Help"
-><STRONG>Context:</STRONG></A> server config, virtual host<BR>
-<A
- HREF="directive-dict.html#Status"
- REL="Help"
-><STRONG>Status:</STRONG></A> Base<BR>
-<A
- HREF="directive-dict.html#Compatibility"
- REL="Help"
-><STRONG>Compatibility:</STRONG></A>> Only available in Apache 1.3.5
-    or later
-<BR>
-<A
- HREF="directive-dict.html#Module"
- REL="Help"
-><STRONG>Module:</STRONG></A> mod_log_config
-
-<P>
-The RefererIgnore directive adds to the list of strings to ignore in
-Referer headers. If any of the strings in the list is contained in
-the Referer header, then no referrer information will be logged for the
-request. Example:
-</P>
-<PRE>
-    RefererIgnore www.ncsa.uiuc.edu
-</PRE>
-<P>
-will avoid logging references from www.ncsa.uiuc.edu.
-</P>
-<P>
-<STRONG>Note:</STRONG> <EM>All</EM> transaction logfiles
-(defined by <CODE>CustomLog</CODE> or <CODE>TransferLog</CODE>) in
-the same server scope as the <CODE>RefererIgnore</CODE> (<EM>e.g.</EM>,
-in the same <CODE>&lt;VirtualHost&gt;</CODE> container)
-are affected by
-this directive.  If you want to control this behaviour on a
-<EM>per</EM>-logfile basis, you should use the
-<A HREF="#customlog-conditional">conditional <SAMP>CustomLog</SAMP></A>
-capability.
-</P>
 <HR>
 
 <H2><A NAME="transferlog">TransferLog</A></H2>

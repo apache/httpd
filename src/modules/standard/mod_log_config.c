@@ -106,8 +106,8 @@
  *   CustomLog   logs/referer  "%{referer}i -> %U"
  *   CustomLog   logs/agent    "%{user-agent}i"
  *
- * Except: no RefererIgnore functionality
- *         logs '-' if no Referer or User-Agent instead of nothing
+ * RefererIgnore functionality can be obtained with conditional
+ * logging (SetEnvIf and CustomLog ... env=!VAR).
  *
  * But using this method allows much easier modification of the
  * log format, e.g. to log hosts along with UA:
@@ -219,8 +219,6 @@ typedef struct {
     array_header *config_logs;
     array_header *server_config_logs;
     table *formats;
-    int ignore_referers;
-    array_header *referer_list;
 } multi_log_state;
 
 /*
@@ -237,8 +235,7 @@ typedef struct {
     char *format_string;
     array_header *format;
     int log_fd;
-    int conditions;
-    array_header *condition_list;
+    char *condition_var;
 #ifdef BUFFERED_LOGS
     int outcnt;
     char outbuf[LOG_BUFSIZE];
@@ -693,6 +690,7 @@ static int config_log_transaction(request_rec *r, config_log_state *cls,
     int i;
     int len = 0;
     array_header *format;
+    char *envar;
 
     if (cls->fname == NULL) {
         return DECLINED;
@@ -702,19 +700,16 @@ static int config_log_transaction(request_rec *r, config_log_state *cls,
      * See if we've got any conditional envariable-controlled logging decisions
      * to make.
      */
-    if (cls->conditions != 0) {
-	char **candidates = (char **) cls->condition_list->elts;
-	for (i = 0; i < cls->condition_list->nelts; ++i) {
-	    char *envname = candidates[i];
-	    if (*envname != '!') {
-		if (ap_table_get(r->subprocess_env, envname) == NULL) {
-		    return DECLINED;
-		}
+    if (cls->condition_var != NULL) {
+	envar = cls->condition_var;
+	if (*envar != '!') {
+	    if (ap_table_get(r->subprocess_env, envar) == NULL) {
+		return DECLINED;
 	    }
-	    else {
-		if (ap_table_get(r->subprocess_env, &envname[1]) != NULL) {
-		    return DECLINED;
-		}
+	}
+	else {
+	    if (ap_table_get(r->subprocess_env, &envar[1]) != NULL) {
+		return DECLINED;
 	    }
 	}
     }
@@ -782,21 +777,7 @@ static int multi_log_transaction(request_rec *r)
     int i;
 
     /*
-     * See if there are any Referer: values we're supposed to ignore.
-     */
-    if (mls->ignore_referers != 0) {
-	const char *referer = ap_table_get(r->headers_in, "Referer");
-	if (referer != NULL) {
-	    char **candidate = (char **) mls->referer_list->elts;
-	    for (i = 0; i < mls->referer_list->nelts; ++i) {
-		if (strstr(referer, candidate[i]) != NULL) {
-		    return DECLINED;
-		}
-	    }
-	}
-    }
-    /*
-     * Continue and log this transaction..
+     * Log this transaction..
      */
     if (mls->config_logs->nelts) {
         clsarray = (config_log_state *) mls->config_logs->elts;
@@ -834,8 +815,6 @@ static void *make_config_log_state(pool *p, server_rec *s)
     mls->server_config_logs = NULL;
     mls->formats = ap_make_table(p, 4);
     ap_table_setn(mls->formats, "CLF", DEFAULT_LOG_FORMAT);
-    mls->ignore_referers = 0;
-    mls->referer_list = NULL;
 
     return mls;
 }
@@ -857,12 +836,6 @@ static void *merge_config_log_state(pool *p, void *basev, void *addv)
         add->default_format = base->default_format;
     }
     add->formats = ap_overlay_tables(p, base->formats, add->formats);
-    add->ignore_referers = (add->ignore_referers != 0)
-                           ? add->ignore_referers
-	                   : base->ignore_referers;
-    if (base->ignore_referers != 0) {
-	ap_array_cat(add->referer_list, base->referer_list);
-    }
 
     return add;
 }
@@ -895,21 +868,6 @@ static const char *log_format(cmd_parms *cmd, void *dummy, char *fmt,
     return err_string;
 }
 
-static const char *add_referer_ignore(cmd_parms *cmd, void *mconfig,
-				      char *word1)
-{
-    multi_log_state *mls = ap_get_module_config(cmd->server->module_config,
-						&config_log_module);
-    char **ignore_uri;
-
-    mls->ignore_referers++;
-    if (mls->referer_list == NULL) {
-	mls->referer_list = ap_make_array(cmd->pool, 4, sizeof(char *));
-    }
-    ignore_uri = (char **) ap_push_array(mls->referer_list);
-    *ignore_uri = ap_pstrdup(cmd->pool, word1);
-    return NULL;
-}
 
 static const char *add_custom_log(cmd_parms *cmd, void *dummy, char *fn,
                                   char *fmt, char *envclause)
@@ -920,17 +878,16 @@ static const char *add_custom_log(cmd_parms *cmd, void *dummy, char *fn,
     config_log_state *cls;
 
     cls = (config_log_state *) ap_push_array(mls->config_logs);
-    cls->conditions = 0;
+    cls->condition_var = NULL;
     if (envclause != NULL) {
-	char **env_condition;
-
 	if (strncasecmp(envclause, "env=", 4) != 0) {
 	    return "error in condition clause";
 	}
-	cls->condition_list = ap_make_array(cmd->pool, 4, sizeof(char *));
-	env_condition = (char **) ap_push_array(cls->condition_list);
-	*env_condition = ap_pstrdup(cmd->pool, &envclause[4]);
-	cls->conditions++;
+	if ((envclause[4] == '\0')
+	    || ((envclause[4] == '!') && (envclause[5] == '\0'))) {
+	    return "missing environment variable name";
+	}
+	cls->condition_var = ap_pstrdup(cmd->pool, &envclause[4]);
     }
 
     cls->fname = fn;
@@ -967,8 +924,6 @@ static const command_rec config_log_cmds[] =
      "a log format string (see docs) and an optional format name"},
     {"CookieLog", set_cookie_log, NULL, RSRC_CONF, TAKE1,
      "the filename of the cookie log"},
-    {"RefererIgnore", add_referer_ignore, NULL, RSRC_CONF, ITERATE,
-     "referer URLs to ignore"},
     {NULL}
 };
 
