@@ -3516,6 +3516,7 @@ static apr_status_t core_output_filter(ap_filter_t *f, apr_bucket_brigade *b)
 static void core_pre_config(apr_pool_t *pconf, apr_pool_t *plog, apr_pool_t *ptemp)
 {
     apr_init_bucket_types(pconf);
+    apr_insert_bucket_type(&ap_bucket_type_error);
 }
 
 static void core_post_config(apr_pool_t *pconf, apr_pool_t *plog, apr_pool_t *ptemp, server_rec *s)

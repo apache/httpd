@@ -59,9 +59,11 @@
 #ifndef APACHE_HTTP_PROTOCOL_H
 #define APACHE_HTTP_PROTOCOL_H
 
+#include "httpd.h"
 #include "apr_hooks.h"
 #include "apr_portable.h"
 #include "apr_mmap.h"
+#include "apr_buckets.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -549,6 +551,46 @@ AP_DECLARE_HOOK(const char *,http_method,(const request_rec *))
  * @deffunc apr_port_t ap_run_default_port(const request_rec *r)
  */
 AP_DECLARE_HOOK(apr_port_t,default_port,(const request_rec *))
+
+typedef struct ap_bucket_error ap_bucket_error;
+/**
+ * A bucket referring to an HTTP error
+ * This bucket can be passed down the filter stack to indicate that an
+ * HTTP error occurred while running a filter.  In order for this bucket
+ * to be used successfully, it MUST be sent as the first bucket in the
+ * first brigade to be sent from a given filter.
+ */
+struct ap_bucket_error {
+    /** The start of the data actually allocated.  This should never be
+     * modified, it is only used to free the bucket.
+     */
+    char    *start;
+};
+
+extern const apr_bucket_type_t ap_bucket_type_error;
+
+/**
+ * Make the bucket passed in an error bucket
+ * @param b The bucket to make into an error bucket
+ * @param error The HTTP error code to put in the bucket. 
+ * @param buf An optional error string to put in the bucket.
+ * @param p A pool to allocate out of.
+ * @return The new bucket, or NULL if allocation failed
+ * @deffunc apr_bucket *ap_bucket_make_error(apr_bucket *b, int error, const char *buf, apr_pool_t *p)
+ */
+AP_DECLARE(apr_bucket *) ap_bucket_make_error(apr_bucket *b, int error,
+                const char *buf, apr_pool_t *p);
+
+/**
+ * Create a bucket referring to an HTTP error.
+ * @param error The HTTP error code to put in the bucket. 
+ * @param buf An optional error string to put in the bucket.
+ * @param p A pool to allocate out of.
+ * @return The new bucket, or NULL if allocation failed
+ * @deffunc apr_bucket *ap_bucket_create_error(int error, const char *buf, apr_pool_t *p)
+ */
+AP_DECLARE(apr_bucket *) ap_bucket_create_error(int error,
+                const char *buf, apr_pool_t *p);
 
 #ifdef __cplusplus
 }

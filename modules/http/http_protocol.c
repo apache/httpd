@@ -2466,6 +2466,14 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_http_header_filter(ap_filter_t *f, apr_b
         return OK;
     }
 
+    if (APR_BRIGADE_FIRST(b)->type == &ap_bucket_type_error) {
+        const char *str;
+        apr_size_t length;
+        apr_bucket_read(APR_BRIGADE_FIRST(b), &str, &length, APR_NONBLOCK_READ);
+        ap_die(atoi(ap_getword_white(r->pool, &str)), r);
+        return AP_FILTER_ERROR;
+    }
+
     if (r->assbackwards) {
         r->bytes_sent = 0;
         r->sent_bodyct = 1;
