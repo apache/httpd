@@ -53,19 +53,10 @@ apr_status_t ajp_ilink_send(apr_socket_t *sock, ajp_msg_t *msg)
 static apr_status_t ilink_read(apr_socket_t *sock, char * buf,
                                apr_size_t len)
 {
-    apr_size_t   length;
+    apr_size_t   length = len;
+    apr_size_t   rdlen  = 0;
     apr_status_t status;
-    apr_size_t   rdlen;
 
-    if (sock == NULL) {
-        ap_log_error(APLOG_MARK, APLOG_ERR, 0, NULL,
-                      "ajp_ilink_readN(): NULL socket provided");
-        return AJP_EINVAL;
-    }
-
-    rdlen  = 0;
-    length = len;
-    
     while (rdlen < len) {
 
         status = apr_socket_recv(sock, buf + rdlen, &length);
