@@ -2,6 +2,11 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) SECURITY: CAN-2004-0751 (cve.mitre.org)
+     mod_ssl: Fix a segfault in the SSL input filter which could be
+     triggered if using "speculative" mode, for instance by a 
+     proxy request to an SSL server.  PR 30134  [Joe Orton]
+
   *) Add test_config hook, run only if httpd is invoked using -t.
      [Joe Orton]
 
