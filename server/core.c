@@ -2598,12 +2598,10 @@ static const char *set_limit_req_body(cmd_parms *cmd, void *conf_,
         return err;
     }
 
-    /* WTF: If strtoul is not portable, then write a replacement.
-     *      Instead we have an idiotic define in httpd.h that prevents
-     *      it from being used even when it is available. Sheesh.
-     */
-    conf->limit_req_body = (apr_off_t)strtol(arg, &errp, 10);
-    if (*errp != '\0') {
+    if (APR_SUCCESS != apr_strtoff(&conf->limit_req_body, arg, &errp, 10)) {
+        return "LimitRequestBody argument is not parsable.";
+    }
+    if (*errp || conf->limit_req_body < 0) {
         return "LimitRequestBody requires a non-negative integer.";
     }
 
