@@ -136,16 +136,17 @@ running with the specified user and group id.</p>
 <directivesynopsis>
 <name>ChildPerUserId</name>
 <syntax>ChildPerUserID <em>user_id</em>
-<em>group_id</em> <em>child_id</em></syntax>
+<em>group_id</em> <em>num_children</em></syntax>
 <contextlist><context>server config</context></contextlist>
 
 <usage>
-<p>Specify a user id and group id for a specific child process. The number of
-children is set by the <directive module="mpm_common">NumServers</directive>
-directive. For example, the default value for <directive
-module="mpm_common">NumServers</directive> is 5 and that means
-children ids 1,2,3,4 and 5 are available for assigment. If a child does not
-have an associated ChildPerUserID, it inherits the <directive
+<p>Specify a user id and group id for a number of child processes.  The third
+argument, num_children, is the number of child processes to start with the
+specified user and group.  It does <strong>not</strong> represent a specific
+child number.  If the total number of child processes, found by totaling all of
+the third arguments to all ChildPerUserId directives in the config file, is
+less than <directive module="mpm_common">NumServers</directive>, then all
+remaining children will inherit the <directive
 module="mpm_common">User</directive> and <directive
 module="mpm_common">Group</directive> settings from the main server </p> 
 </usage>
