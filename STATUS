@@ -1,5 +1,5 @@
 Apache 2.0 STATUS:
-Last modified at [$Date: 2000/07/01 14:24:47 $]
+Last modified at [$Date: 2000/07/02 00:39:06 $]
 
 Release:
 
@@ -165,11 +165,9 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
 
     * mod_info to use the configuration tree
 
-    * add output filtering. there are a couple variants for this.
-      - The "link-based" variant is ready to go:
-        MsgID: <20000627044436.N29590@lyra.org>   (patch)
-	MsgID: <20000627053302.O29590@lyra.org>   (demo usage)
-        Status: Greg +1, Jim +1
+    * add output filtering
+        MsgID: <20000701162857.D29590@lyra.org>   (patch)
+        Status: Greg +1, Jim +1(?)
         
 
 Other bugs that need fixing:
