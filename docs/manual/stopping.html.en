@@ -6,57 +6,63 @@
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       --><title>Stopping and Restarting - Apache HTTP Server</title><link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" /><link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" /><link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link href="./images/favicon.ico" rel="shortcut icon" /></head><body id="manual-page"><div id="page-header"><p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/directives.html">Directives</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">Glossary</a> | <a href="./sitemap.html">Sitemap</a></p><p class="apache">Apache HTTP Server Version 2.0</p><img alt="" src="./images/feather.gif" /></div><div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="./images/left.gif" /></a></div><div id="path"><a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentation</a> &gt; <a href="./">Version 2.0</a></div><div id="page-content"><div id="preamble"><h1>Stopping and Restarting</h1>
     <p>This document covers stopping and restarting Apache on
-    Unix-like systems. Windows users should see <a href="platform/windows.html#signal">Signalling Apache when
+    Unix-like systems. Windows users should see <a href="platform/windows.html#signal">Signaling Apache when
     running</a>.</p>
-</div><div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#introduction">Introduction</a></li><li><img alt="" src="./images/down.gif" /> <a href="#term">Stop Now</a></li><li><img alt="" src="./images/down.gif" /> <a href="#graceful">Graceful Restart</a></li><li><img alt="" src="./images/down.gif" /> <a href="#hup">Restart Now</a></li><li><img alt="" src="./images/down.gif" /> <a href="#race">Appendix: signals and race conditions</a></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div><div class="section"><h2><a name="introduction" id="introduction">Introduction</a></h2>
+</div><div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#introduction">Introduction</a></li><li><img alt="" src="./images/down.gif" /> <a href="#term">Stop Now</a></li><li><img alt="" src="./images/down.gif" /> <a href="#graceful">Graceful Restart</a></li><li><img alt="" src="./images/down.gif" /> <a href="#hup">Restart Now</a></li><li><img alt="" src="./images/down.gif" /> <a href="#race">Appendix: signals and race conditions</a></li></ul><h3>See also</h3><ul class="seealso"><li><a href="programs/httpd.html">httpd</a></li><li><a href="programs/apachectl.html">apachectl</a></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div><div class="section"><h2><a name="introduction" id="introduction">Introduction</a></h2>
 
-    <p>You will notice many <code>httpd</code> executables running on
-    your system, but you should not send signals to any of them except
-    the parent, whose pid is in the <code class="directive"><a href="./mod/mpm_common.html#pidfile">PidFile</a></code>. That is to say you shouldn't ever
-    need to send signals to any process except the parent. There are
-    three signals that you can send the parent: <code>TERM</code>,
-    <code>HUP</code>, and <code>USR1</code>, which will be described
-    in a moment.</p>
+    <p>In order to stop or restart Apache, you must send a signal to
+    the running <code>httpd</code> processes.  There are two ways to
+    send the signals.  First, you can use the unix <code>kill</code>
+    command to directly send signals to the processes.  You will
+    notice many <code>httpd</code> executables running on your system,
+    but you should not send signals to any of them except the parent,
+    whose pid is in the <code class="directive"><a href="./mod/mpm_common.html#pidfile">PidFile</a></code>. That is to say you
+    shouldn't ever need to send signals to any process except the
+    parent. There are three signals that you can send the parent:
+    <code>TERM</code>, <code>HUP</code>, and <code>USR1</code>, which
+    will be described in a moment.</p>
 
     <p>To send a signal to the parent you should issue a command
     such as:</p>
 
-<div class="example"><p><code>kill -TERM `cat /usr/local/apache/logs/httpd.pid`</code></p></div>
+<div class="example"><p><code>kill -TERM `cat /usr/local/apache2/logs/httpd.pid`</code></p></div>
 
-    <p>You can read about its progress by issuing:</p>
+    <p>The second method of signaling the <code>httpd</code> processes
+    is to use the <code>-k</code> command line options: stop, restart,
+    and graceful, as described below.  These are arguments to the <a href="programs/httpd.html">httpd</a> binary, but we recommend that
+    you send them using the <a href="programs/apachectl.html">apachectl</a> control script, which
+    will pass them through to <code>httpd</code>.</p>
 
-<div class="example"><p><code>tail -f /usr/local/apache/logs/error_log</code></p></div>
+    <p>After you have signaled <code>httpd</code>, you can read about
+    its progress by issuing:</p>
+
+<div class="example"><p><code>tail -f /usr/local/apache2/logs/error_log</code></p></div>
 
     <p>Modify those examples to match your <code class="directive"><a href="./mod/core.html#serverroot">ServerRoot</a></code> and <code class="directive"><a href="./mod/mpm_common.html#pidfile">PidFile</a></code> settings.</p>
-
-    <p>A shell script called <a href="programs/apachectl.html">apachectl</a> is provided which
-    automates the processing of signalling Apache. For details
-    about this script, see the documentation on <a href="invoking.html">starting Apache</a>.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div><div class="section"><h2><a name="term" id="term">Stop Now</a></h2>
 
 <dl><dt>Signal: TERM</dt>
-<dd><code>apachectl stop</code></dd>
+<dd><code>apachectl -k stop</code></dd>
 </dl>
 
-    <p>Sending the <code>TERM</code> signal to the parent causes it
-    to immediately attempt to kill off all of its children. It may
-    take it several seconds to complete killing off its children.
-    Then the parent itself exits. Any requests in progress are
-    terminated, and no further requests are served.</p>
+    <p>Sending the <code>TERM</code> or <code>stop</code> signal to
+    the parent causes it to immediately attempt to kill off all of its
+    children. It may take it several seconds to complete killing off
+    its children.  Then the parent itself exits. Any requests in
+    progress are terminated, and no further requests are served.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div><div class="section"><h2><a name="graceful" id="graceful">Graceful Restart</a></h2>
 
 <dl><dt>Signal: USR1</dt>
-<dd><code>apachectl graceful</code></dd>
+<dd><code>apachectl -k graceful</code></dd>
 </dl>
 
-    <p>The <code>USR1</code> signal causes the parent process to
-    <em>advise</em> the children to exit after their current
-    request (or to exit immediately if they're not serving
-    anything). The parent re-reads its configuration files and
-    re-opens its log files. As each child dies off the parent
-    replaces it with a child from the new <em>generation</em> of
-    the configuration, which begins serving new requests
-    immediately.</p>
+    <p>The <code>USR1</code> or <code>graceful</code> signal causes
+    the parent process to <em>advise</em> the children to exit after
+    their current request (or to exit immediately if they're not
+    serving anything). The parent re-reads its configuration files and
+    re-opens its log files. As each child dies off the parent replaces
+    it with a child from the new <em>generation</em> of the
+    configuration, which begins serving new requests immediately.</p>
 
     <div class="note">On certain platforms that do not allow USR1 to be used for a
     graceful restart, an alternative signal may be used (such as
@@ -118,14 +124,14 @@
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div><div class="section"><h2><a name="hup" id="hup">Restart Now</a></h2>
 
 <dl><dt>Signal: HUP</dt>
-<dd><code>apachectl restart</code></dd>
+<dd><code>apachectl -k restart</code></dd>
 </dl>
 
-    <p>Sending the <code>HUP</code> signal to the parent causes it
-    to kill off its children like in <code>TERM</code> but the
-    parent doesn't exit. It re-reads its configuration files, and
-    re-opens any log files. Then it spawns a new set of children
-    and continues serving hits.</p>
+    <p>Sending the <code>HUP</code> or <code>restart</code> signal to
+    the parent causes it to kill off its children like in
+    <code>TERM</code>, but the parent doesn't exit. It re-reads its
+    configuration files, and re-opens any log files. Then it spawns a
+    new set of children and continues serving hits.</p>
 
     <p>Users of <code class="module"><a href="./mod/mod_status.html">mod_status</a></code>
     will notice that the server statistics are set to zero when a
