@@ -1,4 +1,6 @@
-Changes with Apache 2.0.13-dev
+Changes with Apache 2.0.14-dev
+
+Changes with Apache 2.0.13
 
   *) Don't assume that there will always be multiple calls to the byterange 
      filter.  It is possible that we will need to do byteranges with only
