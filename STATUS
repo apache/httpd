@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:						-*-text-*-
-Last modified at [$Date: 2002/01/23 17:46:36 $]
+Last modified at [$Date: 2002/01/23 18:16:45 $]
 
 Release:
 
@@ -126,6 +126,7 @@ RELEASE SHOWSTOPPERS:
       changes.
 
       I was unable to recreate the problem with mod_cgi (yea!).
+        Message-ID: <20020123070827.GV28051@ebuilt.com> (dev@apr)
 
     * Aaron is working on an update to the scoreboard creation
       routines that will be more "correct" in terms of using
@@ -257,6 +258,12 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
 
       - proposal for getline rewrite:
           Message-ID: <20011231104019.GD3904@ebuilt.com>
+
+      - patch for getline rewrite:
+          Message-ID: <20020122072605.GF28051@ebuilt.com>
+
+      - Change ap_get_brigade prototype:
+          Message-ID: <20020120115136.GI17601@ebuilt.com>
 
     * Allow the DocumentRoot directive within <Location > scopes?  This
       allows the beloved (crusty) Alias /foo/ /somepath/foo/ followed
