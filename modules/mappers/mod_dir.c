@@ -116,13 +116,9 @@ static void *merge_dir_configs(apr_pool_t *p, void *basev, void *addv)
     return new;
 }
 
-static int handle_dir(request_rec *r)
+static int fixup_dir(request_rec *r)
 {
     dir_config_rec *d;
-    char *dummy_ptr[1];
-    char **names_ptr;
-    int num_names;
-    int error_notfound = 0;
 
     if (r->finfo.filetype != APR_DIR) {
 	return DECLINED;
@@ -144,6 +140,23 @@ static int handle_dir(request_rec *r)
                   ap_construct_url(r->pool, ifile, r));
         return HTTP_MOVED_PERMANENTLY;
     }
+    return OK;
+}
+
+static int handle_dir(request_rec *r)
+{
+    dir_config_rec *d;
+    char *dummy_ptr[1];
+    char **names_ptr;
+    int num_names;
+    int error_notfound = 0;
+
+    if (strcmp(r->handler,DIR_MAGIC_TYPE)) {
+        return DECLINED;
+    }
+
+    d = (dir_config_rec *) ap_get_module_config(r->per_dir_config,
+						&dir_module);
 
     /* KLUDGE --- make the sub_req lookups happen in the right directory.
      * Fixing this in the sub_req_lookup functions themselves is difficult,
@@ -224,7 +237,10 @@ static int handle_dir(request_rec *r)
 
 static void register_hooks(apr_pool_t *p)
 {
-    ap_hook_fixups(handle_dir,NULL,NULL,APR_HOOK_MIDDLE);
+    static const char * const aszSucc[]={"mod_autoindex.c", NULL};
+
+    ap_hook_fixups(fixup_dir,NULL,NULL,APR_HOOK_MIDDLE);
+    ap_hook_handler(handle_dir,NULL,aszSucc,APR_HOOK_MIDDLE);
 }
 
 module AP_MODULE_DECLARE_DATA dir_module = {
