@@ -56,6 +56,10 @@
 #include "http_log.h"
 #include "http_main.h"
 
+#ifdef HAVE_BSTRING_H
+#include <bstring.h>            /* for IRIX, FD_SET calls bzero() */
+#endif
+
 /*  
  * This handles Netscape CONNECT method secure proxy requests.
  * A connection is opened to the specified host and data is

@@ -1,4 +1,6 @@
 Changes with Apache 1.2
+
+  *) Fix IRIX warning about bzero undefined. [Marc Slemko]
   
   *) Fix problem with <Directory proxy:...>. [Martin Kraemer] PR#271
 
