@@ -371,6 +371,70 @@ void ssl_init_Engine(server_rec *s, apr_pool_t *p)
 }
 #endif
 
+static SSL_CTX *ssl_init_ctx(server_rec *s,
+                             apr_pool_t *p,
+                             apr_pool_t *ptemp,
+                             SSLSrvConfigRec *sc)
+{
+    SSL_CTX *ctx = NULL;
+    const char *vhost_id = sc->szVHostID;
+    char *cp;
+    int protocol = sc->nProtocol;
+
+    /*
+     *  Create the new per-server SSL context
+     */
+    if (protocol == SSL_PROTOCOL_NONE) {
+        ssl_log(s, SSL_LOG_ERROR,
+                "Init: (%s) No SSL protocols available [hint: SSLProtocol]",
+                vhost_id);
+        ssl_die();
+    }
+
+    cp = apr_pstrcat(p,
+                     (protocol & SSL_PROTOCOL_SSLV2 ? "SSLv2, " : ""),
+                     (protocol & SSL_PROTOCOL_SSLV3 ? "SSLv3, " : ""),
+                     (protocol & SSL_PROTOCOL_TLSV1 ? "TLSv1, " : ""),
+                     NULL);
+    cp[strlen(cp)-2] = NUL;
+
+    ssl_log(s, SSL_LOG_TRACE,
+            "Init: (%s) Creating new SSL context (protocols: %s)",
+            vhost_id, cp);
+
+    if (protocol == SSL_PROTOCOL_SSLV2) {
+        ctx = SSL_CTX_new(SSLv2_server_method());  /* only SSLv2 is left */
+    }
+    else {
+        ctx = SSL_CTX_new(SSLv23_server_method()); /* be more flexible */
+    }
+
+    sc->pSSLCtx = ctx;
+
+    SSL_CTX_set_options(ctx, SSL_OP_ALL);
+
+    if (!(protocol & SSL_PROTOCOL_SSLV2)) {
+        SSL_CTX_set_options(ctx, SSL_OP_NO_SSLv2);
+    }
+
+    if (!(protocol & SSL_PROTOCOL_SSLV3)) {
+        SSL_CTX_set_options(ctx, SSL_OP_NO_SSLv3);
+    }
+
+    if (!(protocol & SSL_PROTOCOL_TLSV1)) {
+        SSL_CTX_set_options(ctx, SSL_OP_NO_TLSv1);
+    }
+
+    SSL_CTX_set_app_data(ctx, s);
+
+    /*
+     * Configure additional context ingredients
+     */
+    SSL_CTX_set_options(ctx, SSL_OP_SINGLE_DH_USE);
+
+    return ctx;
+}
+
 static void ssl_init_verify(server_rec *s,
                             apr_pool_t *p,
                             apr_pool_t *ptemp,
@@ -501,56 +565,7 @@ void ssl_init_ConfigureServer(server_rec *s,
         ssl_die();
     }
 
-    /*
-     *  Create the new per-server SSL context
-     */
-    if (sc->nProtocol == SSL_PROTOCOL_NONE) {
-        ssl_log(s, SSL_LOG_ERROR,
-                "Init: (%s) No SSL protocols available [hint: SSLProtocol]",
-                vhost_id);
-        ssl_die();
-    }
-
-    cp = apr_pstrcat(p,
-                     (sc->nProtocol & SSL_PROTOCOL_SSLV2 ? "SSLv2, " : ""),
-                     (sc->nProtocol & SSL_PROTOCOL_SSLV3 ? "SSLv3, " : ""),
-                     (sc->nProtocol & SSL_PROTOCOL_TLSV1 ? "TLSv1, " : ""),
-                     NULL);
-    cp[strlen(cp)-2] = NUL;
-
-    ssl_log(s, SSL_LOG_TRACE,
-            "Init: (%s) Creating new SSL context (protocols: %s)",
-            vhost_id, cp);
-
-    if (sc->nProtocol == SSL_PROTOCOL_SSLV2) {
-        ctx = SSL_CTX_new(SSLv2_server_method());  /* only SSLv2 is left */
-    }
-    else {
-        ctx = SSL_CTX_new(SSLv23_server_method()); /* be more flexible */
-    }
-
-    sc->pSSLCtx = ctx;
-
-    SSL_CTX_set_options(ctx, SSL_OP_ALL);
-
-    if (!(sc->nProtocol & SSL_PROTOCOL_SSLV2)) {
-        SSL_CTX_set_options(ctx, SSL_OP_NO_SSLv2);
-    }
-
-    if (!(sc->nProtocol & SSL_PROTOCOL_SSLV3)) {
-        SSL_CTX_set_options(ctx, SSL_OP_NO_SSLv3);
-    }
-
-    if (!(sc->nProtocol & SSL_PROTOCOL_TLSV1)) {
-        SSL_CTX_set_options(ctx, SSL_OP_NO_TLSv1);
-    }
-
-    SSL_CTX_set_app_data(ctx, s);
-
-    /*
-     * Configure additional context ingredients
-     */
-    SSL_CTX_set_options(ctx, SSL_OP_SINGLE_DH_USE);
+    ctx = ssl_init_ctx(s, p, ptemp, sc);
 
     if (mc->nSessionCacheMode == SSL_SCMODE_NONE) {
         cache_mode = SSL_SESS_CACHE_OFF;
