@@ -697,7 +697,11 @@ static void *worker_thread(apr_thread_t *thd, void * dummy)
 
     free(ti);
 
+    (void) ap_update_child_status(process_slot, thread_slot,
+                                  SERVER_STARTING, (request_rec *)NULL);
     while (!workers_may_exit) {
+        (void) ap_update_child_status(process_slot, thread_slot,
+                                      SERVER_READY, (request_rec *)NULL);
         rv = ap_queue_pop(worker_queue, &csd, &ptrans);
         /* We get FD_QUEUE_EINTR whenever ap_queue_pop() has been interrupted
          * from an explicit call to ap_queue_interrupt_all(). This allows

@@ -1,5 +1,7 @@
 Changes with Apache 2.0.26-dev
 
+  *) Fix worker MPM's scoreboard logic.  [Aaron Bannert <aaron@clove.org>]
+
   *) Eliminate the wasteful run-time conversion of method names from strings 
      to numbers in places where the methods are known at compile time.  
      [Brian Pane <bpane@pacbell.net>]
