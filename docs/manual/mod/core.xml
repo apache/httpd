@@ -109,6 +109,7 @@ AccessFileName .acl
 </usage>
 <seealso><directive module="core">AllowOverride</directive></seealso>
 <seealso><a href="../configuring.html">Configuration Files</a></seealso>
+<seealso><a href="../howto/htaccess.html">.htaccess Files</a></seealso>
 </directivesynopsis>
 
 <directivesynopsis>

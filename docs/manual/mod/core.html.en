@@ -92,7 +92,7 @@ AccessFileName .acl
 &nbsp;&nbsp;AllowOverride None<br>
 &lt;/Directory&gt;
 </code></td></tr></table></blockquote>
-<p><strong>See also </strong></p><ul><li><a href="#allowoverride" class="directive"><code class="directive">AllowOverride</code></a></li><li><a href="../configuring.html">Configuration Files</a></li></ul><hr><h2><a name="AddDefaultCharset">AddDefaultCharset</a> <a name="adddefaultcharset">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
+<p><strong>See also </strong></p><ul><li><a href="#allowoverride" class="directive"><code class="directive">AllowOverride</code></a></li><li><a href="../configuring.html">Configuration Files</a></li><li><a href="../howto/htaccess.html">.htaccess Files</a></li></ul><hr><h2><a name="AddDefaultCharset">AddDefaultCharset</a> <a name="adddefaultcharset">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
                   </strong></td><td>Default character set to be added for a
 response without an explicit character set</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">Syntax:
                   </a></td><td>AddDefaultCharset On|Off|<em>charset</em></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Default" class="help">Default: 
