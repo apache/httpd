@@ -1457,7 +1457,9 @@ int update_child_status (int child_num, int status, request_rec *r)
     old_status = ss->status;
     ss->x.pid = my_pid;
     ss->status = status;
+#ifdef OPTIMIZE_TIMEOUTS
     ++ss->cur_vtime;
+#endif
 
 #if defined(STATUS)
 #ifdef OPTIMIZE_TIMEOUTS
