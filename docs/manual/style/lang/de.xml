@@ -49,7 +49,11 @@
 
  <!-- Used for directive lists -->
  <message name="directives">Direktiven</message>
- <message name="directive">Direktive</message>
+ <!-- the optional attribute replace-space-with takes a string.
+      if present, the space between <directive name> and 'Directive'
+      in directivesynopsis headings will be replaced by the given string.
+      (see de.xml for an example) -->
+ <message name="directive" replace-space-with="-">Direktive</message>
  <message name="nodirectives">Dieses Modul enth&#228;lt keine Direktiven.</message>
 
  <!-- Used in summaries -->

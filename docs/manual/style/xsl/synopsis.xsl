@@ -353,7 +353,14 @@
             <xsl:value-of select="name"/>
             <xsl:if test="@type='section'">&gt;</xsl:if>
           </a>
-          <xsl:text> </xsl:text>
+          <xsl:choose>
+            <xsl:when test="$messages/message[@name='directive']/@replace-space-with">
+              <xsl:value-of select="$messages/message[@name='directive']/@replace-space-with"/>
+            </xsl:when>
+            <xsl:otherwise>
+              <xsl:text> </xsl:text>
+            </xsl:otherwise>
+          </xsl:choose>
           <a id="{$lowername}" name="{$lowername}">
             <xsl:value-of select="$messages/message[@name='directive']"/>
           </a>
