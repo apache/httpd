@@ -1,5 +1,8 @@
 Changes with Apache 1.3.7
 
+  *) PORT: fixed a compilation problem on NEXT.
+     [Jacques Distler <distler@golem.ph.utexas.edu>] PR#4130
+
   *) r->request_time wasn't being set properly in certain error conditions.
      [Dean Gaudet] PR#4156
 

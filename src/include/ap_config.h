@@ -367,10 +367,6 @@ typedef unsigned short mode_t;
 #endif
 #ifndef S_IWOTH
 #define S_IWOTH 000002
-#ifndef rlim_t
-typedef int rlim_t;
-#endif
-typedef u_long n_long;
 #endif
 
 #define STDIN_FILENO  0
