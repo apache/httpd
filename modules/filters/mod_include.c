@@ -210,6 +210,10 @@ static ap_bucket *find_string(ap_bucket *dptr, const char *str, ap_bucket *end)
                      * on what we are searching for.
                      */
                     if (str[0] == '<') {
+                        if (c - buf - strlen(str) == 0) {
+                            /* first thing in bucket is tag; nothing to split */
+                            return dptr;
+                        }
                         dptr->split(dptr, c - buf - strlen(str));
                     }
                     else {
@@ -2294,12 +2298,17 @@ static void send_parsed_content(ap_bucket_brigade *bb, request_rec *r,
         if ((tagbuck = find_string(dptr, STARTING_SEQUENCE, AP_BRIGADE_LAST(bb))) != NULL) {
             dptr2 = tagbuck;
             dptr = tagbuck;
-            while (dptr2 && 
+            while (dptr2 != AP_BRIGADE_SENTINEL(bb) && 
                   (endsec = find_string(dptr2, ENDING_SEQUENCE, AP_BRIGADE_LAST(bb))) == NULL) {
                 dptr2 = AP_BUCKET_NEXT(dptr2);
             }
             if (endsec == NULL) {
-                /** No ending tag, needs to become an error bucket */
+                /** XXX No ending tag, needs to become an error bucket
+                 ** Tag could come in the next brigade (unless we've 
+                 ** received eos in this brigade).
+                 **
+                 ** We're about to segfault.
+                 **/
             }
              
             /* At this point, everything between tagbuck and endsec is an SSI
