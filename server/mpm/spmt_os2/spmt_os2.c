@@ -833,7 +833,7 @@ static void thread_main(void *thread_num_arg)
 }
 
 
-static int make_child(server_rec *s, int slot, time_t now)
+static int make_child(server_rec *s, int slot)
 {
     TID tid;
 
@@ -880,13 +880,12 @@ static int make_child(server_rec *s, int slot, time_t now)
 static void startup_children(int number_to_start)
 {
     int i;
-    time_t now = time(0);
 
     for (i = 0; number_to_start && i < ap_daemons_limit; ++i) {
 	if (ap_scoreboard_image->servers[0][i].status != SERVER_DEAD) {
 	    continue;
 	}
-	if (make_child(ap_server_conf, i, now) < 0) {
+	if (make_child(ap_server_conf, i) < 0) {
 	    break;
 	}
 	--number_to_start;
@@ -912,7 +911,6 @@ static void perform_idle_server_maintenance(void)
     int to_kill;
     int idle_count;
     short_score *ss;
-    time_t now = time(0);
     int free_length;
     int free_slots[MAX_SPAWN_RATE];
     int last_non_dead;
@@ -995,7 +993,7 @@ static void perform_idle_server_maintenance(void)
 		    idle_count, total_non_dead);
 	    }
 	    for (i = 0; i < free_length; ++i) {
-		make_child(ap_server_conf, free_slots[i], now);
+		make_child(ap_server_conf, free_slots[i]);
 	    }
 	    /* the next time around we want to spawn twice as many if this
 	     * wasn't good enough, but not if we've just done a graceful
@@ -1109,7 +1107,7 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
 		    /* we're still doing a 1-for-1 replacement of dead
 			* children with new children
 			*/
-		    make_child(ap_server_conf, thread_slot, time(0));
+		    make_child(ap_server_conf, thread_slot);
 		    --remaining_children_to_start;
 		}
 #if APR_HAS_OTHER_CHILD
