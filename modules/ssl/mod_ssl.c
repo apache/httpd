@@ -224,11 +224,12 @@ static int ssl_hook_pre_connection(conn_rec *c)
     SSL *ssl;
     unsigned char *cpVHostID;
     char *cpVHostMD5;
+    SSLConnRec *sslconn = apr_pcalloc(c->pool, sizeof(*sslconn));
 
     /*
      * Create SSL context
      */
-    apr_table_setn(c->notes, "ssl", NULL);
+    myConnConfigSet(c, sslconn);
 
     /*
      * Immediately stop processing if SSL is disabled for this connection
@@ -258,7 +259,6 @@ static int ssl_hook_pre_connection(conn_rec *c)
     if ((ssl = SSL_new(sc->pSSLCtx)) == NULL) {
         ssl_log(c->base_server, SSL_LOG_ERROR|SSL_ADD_SSLERR,
                 "Unable to create a new SSL connection from the SSL context");
-        apr_table_setn(c->notes, "ssl", NULL);
         c->aborted = 1;
         return DECLINED; /* XXX */
     }
@@ -268,7 +268,6 @@ static int ssl_hook_pre_connection(conn_rec *c)
             strlen(cpVHostMD5))) {
         ssl_log(c->base_server, SSL_LOG_ERROR|SSL_ADD_SSLERR,
                 "Unable to set session id context to `%s'", cpVHostMD5);
-        apr_table_setn(c->notes, "ssl", NULL);
         c->aborted = 1;
         return DECLINED; /* XXX */
     }
@@ -278,7 +277,7 @@ static int ssl_hook_pre_connection(conn_rec *c)
     apr_table_setn(apctx, "ssl::verify::depth", AP_CTX_NUM2PTR(0));
     SSL_set_app_data2(ssl, apctx);
 
-    apr_table_setn(c->notes, "ssl", (const char *)ssl);
+    sslconn->ssl = ssl;
 
     /*
      *  Configure callbacks for SSL connection
@@ -308,6 +307,7 @@ static int ssl_hook_pre_connection(conn_rec *c)
 
 static apr_status_t ssl_abort(SSLFilterRec *pRec, conn_rec *c)
 {
+    SSLConnRec *sslconn = myConnConfig(c);
     /*
      * try to gracefully shutdown the connection:
      * - send an own shutdown message (be gracefully)
@@ -320,7 +320,7 @@ static apr_status_t ssl_abort(SSLFilterRec *pRec, conn_rec *c)
     SSL_smart_shutdown(pRec->pssl);
     SSL_free(pRec->pssl);
     pRec->pssl = NULL; /* so filters know we've been shutdown */
-    apr_table_setn(c->notes, "ssl", NULL);
+    sslconn->ssl = NULL;
     c->aborted = 1;
 
     return APR_EGENERAL;

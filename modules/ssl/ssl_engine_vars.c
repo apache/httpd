@@ -89,6 +89,7 @@ void ssl_var_register(void)
 
 char *ssl_var_lookup(apr_pool_t *p, server_rec *s, conn_rec *c, request_rec *r, char *var)
 {
+    SSLConnRec *sslconn;
     SSLModConfigRec *mc = myModConfig(s);
     char *result;
     BOOL resdup;
@@ -169,6 +170,7 @@ char *ssl_var_lookup(apr_pool_t *p, server_rec *s, conn_rec *c, request_rec *r, 
      * Connection stuff
      */
     if (result == NULL && c != NULL) {
+        sslconn = myConnConfig(c);
         if (strcEQ(var, "REMOTE_ADDR"))
             result = c->remote_ip;
         else if (strcEQ(var, "REMOTE_USER"))
@@ -178,7 +180,7 @@ char *ssl_var_lookup(apr_pool_t *p, server_rec *s, conn_rec *c, request_rec *r, 
         else if (strlen(var) > 4 && strcEQn(var, "SSL_", 4))
             result = ssl_var_lookup_ssl(p, c, var+4);
         else if (strcEQ(var, "HTTPS")) {
-            if (apr_table_get(c->notes, "ssl") != NULL)
+            if (sslconn->ssl != NULL)
                 result = "on";
             else
                 result = "off";
@@ -264,6 +266,7 @@ static char *ssl_var_lookup_header(apr_pool_t *p, request_rec *r, const char *na
 
 static char *ssl_var_lookup_ssl(apr_pool_t *p, conn_rec *c, char *var)
 {
+    SSLConnRec *sslconn = myConnConfig(c);
     char *result;
     X509 *xs;
     STACK_OF(X509) *sk;
@@ -271,7 +274,7 @@ static char *ssl_var_lookup_ssl(apr_pool_t *p, conn_rec *c, char *var)
 
     result = NULL;
 
-    ssl = (SSL *)apr_table_get(c->notes, "ssl");
+    ssl = sslconn->ssl;
     if (strlen(var) > 8 && strcEQn(var, "VERSION_", 8)) {
         result = ssl_var_lookup_ssl_version(p, var+8);
     }
@@ -493,6 +496,7 @@ static char *ssl_var_lookup_ssl_cert_PEM(apr_pool_t *p, X509 *xs)
 
 static char *ssl_var_lookup_ssl_cert_verify(apr_pool_t *p, conn_rec *c)
 {
+    SSLConnRec *sslconn = myConnConfig(c);
     char *result;
     long vrc;
     char *verr;
@@ -501,7 +505,7 @@ static char *ssl_var_lookup_ssl_cert_verify(apr_pool_t *p, conn_rec *c)
     X509 *xs;
 
     result = NULL;
-    ssl   = (SSL *) apr_table_get(c->notes, "ssl");
+    ssl   = sslconn->ssl;
     verr  = (char *)apr_table_get(c->notes, "ssl::verify::error");
     vinfo = (char *)apr_table_get(c->notes, "ssl::verify::info");
     vrc   = SSL_get_verify_result(ssl);
@@ -524,6 +528,7 @@ static char *ssl_var_lookup_ssl_cert_verify(apr_pool_t *p, conn_rec *c)
 
 static char *ssl_var_lookup_ssl_cipher(apr_pool_t *p, conn_rec *c, char *var)
 {
+    SSLConnRec *sslconn = myConnConfig(c);    
     char *result;
     BOOL resdup;
     int usekeysize, algkeysize;
@@ -532,7 +537,7 @@ static char *ssl_var_lookup_ssl_cipher(apr_pool_t *p, conn_rec *c, char *var)
     result = NULL;
     resdup = TRUE;
 
-    ssl = (SSL *)apr_table_get(c->notes, "ssl");
+    ssl = sslconn->ssl;
     ssl_var_lookup_ssl_cipher_bits(ssl, &usekeysize, &algkeysize);
 
     if (strEQ(var, ""))
@@ -627,9 +632,10 @@ void ssl_var_log_config_register(apr_pool_t *p)
  */
 static const char *ssl_var_log_handler_c(request_rec *r, char *a)
 {
+    SSLConnRec *sslconn = myConnConfig(r->connection);
     char *result;
 
-    if (apr_table_get(r->connection->notes, "ssl") == NULL)
+    if (sslconn->ssl == NULL)
         return NULL;
     result = NULL;
     if (strEQ(a, "version"))
@@ -655,10 +661,11 @@ static const char *ssl_var_log_handler_c(request_rec *r, char *a)
  */
 static const char *ssl_var_log_handler_x(request_rec *r, char *a)
 {
+    SSLConnRec *sslconn = myConnConfig(r->connection);
     char *result;
 
     result = NULL;
-    if (apr_table_get(r->connection->notes, "ssl") != NULL)
+    if (sslconn->ssl != NULL)
         result = ssl_var_lookup(r->pool, r->server, r->connection, r, a);
     if (result != NULL && result[0] == NUL)
         result = NULL;

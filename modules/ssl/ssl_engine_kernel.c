@@ -146,7 +146,7 @@ apr_status_t ssl_hook_CloseConnection(SSLFilterRec *filter)
 
     /* deallocate the SSL connection */
     SSL_free(ssl);
-    apr_table_setn(conn->notes, "ssl", NULL);
+    sslconn->ssl = NULL;
     filter->pssl = NULL; /* so filters know we've been shutdown */
 
     return APR_SUCCESS;
@@ -157,6 +157,7 @@ apr_status_t ssl_hook_CloseConnection(SSLFilterRec *filter)
  */
 int ssl_hook_ReadReq(request_rec *r)
 {
+    SSLConnRec *sslconn = myConnConfig(r->connection);
     SSL *ssl;
     apr_table_t *apctx;
 
@@ -164,7 +165,7 @@ int ssl_hook_ReadReq(request_rec *r)
      * Get the SSL connection structure and perform the
      * delayed interlinking from SSL back to request_rec
      */
-    ssl = (SSL *)apr_table_get(r->connection->notes, "ssl");
+    ssl = sslconn->ssl;
     if (ssl != NULL) {
         apctx = (apr_table_t *)SSL_get_app_data2(ssl);
         apr_table_setn(apctx, "ssl::request_rec", (const char *)r);
@@ -191,7 +192,9 @@ int ssl_hook_ReadReq(request_rec *r)
  */
 int ssl_hook_Translate(request_rec *r)
 {
-    if (apr_table_get(r->connection->notes, "ssl") == NULL)
+    SSLConnRec *sslconn = myConnConfig(r->connection);
+
+    if (sslconn->ssl == NULL)
         return DECLINED;
 
     /*
@@ -289,13 +292,13 @@ static long ssl_renegotiate_hook(BIO *bio, int cmd, const char *argp,
                                  int argi, long argl, long rc)
 {
     request_rec *r = (request_rec *)BIO_get_callback_arg(bio);
-    SSL *ssl;
+    SSLConnRec *sslconn = myConnConfig(r->connection);
+    SSL *ssl = sslconn->ssl;
 
     int is_failed_read = (cmd == (BIO_CB_READ|BIO_CB_RETURN) && (rc == -1));
     int is_flush       = ((cmd == BIO_CB_CTRL) && (argi == BIO_CTRL_FLUSH));
 
     if (is_flush || is_failed_read) {
-        ssl = (SSL *)apr_table_get(r->connection->notes, "ssl");
         /* disable this callback to prevent recursion
          * and leave a "note" so the input filter leaves the rbio
          * as-as
@@ -340,6 +343,7 @@ int ssl_hook_Access(request_rec *r)
 {
     SSLDirConfigRec *dc;
     SSLSrvConfigRec *sc;
+    SSLConnRec *sslconn;
     SSL *ssl;
     SSL_CTX *ctx = NULL;
     apr_array_header_t *apRequirement;
@@ -373,7 +377,8 @@ int ssl_hook_Access(request_rec *r)
 
     dc  = myDirConfig(r);
     sc  = mySrvConfig(r->server);
-    ssl = (SSL *)apr_table_get(r->connection->notes, "ssl");
+    sslconn = myConnConfig(r->connection);
+    ssl = sslconn->ssl;
     if (ssl != NULL)
         ctx = SSL_get_SSL_CTX(ssl);
 
@@ -868,6 +873,7 @@ int ssl_hook_Access(request_rec *r)
  */
 int ssl_hook_UserCheck(request_rec *r)
 {
+    SSLConnRec *sslconn = myConnConfig(r->connection);
     SSLSrvConfigRec *sc = mySrvConfig(r->server);
     SSLDirConfigRec *dc = myDirConfig(r);
     char b1[MAX_STRING_LEN], b2[MAX_STRING_LEN];
@@ -907,7 +913,7 @@ int ssl_hook_UserCheck(request_rec *r)
      */
     if (!sc->bEnabled)
         return DECLINED;
-    if (apr_table_get(r->connection->notes, "ssl") == NULL)
+    if (sslconn->ssl == NULL)
         return DECLINED;
     if (!(dc->nOptions & SSL_OPT_FAKEBASICAUTH))
         return DECLINED;
@@ -1040,6 +1046,7 @@ static const char *ssl_hook_Fixup_vars[] = {
 
 int ssl_hook_Fixup(request_rec *r)
 {
+    SSLConnRec *sslconn = myConnConfig(r->connection);
     SSLSrvConfigRec *sc = mySrvConfig(r->server);
     SSLDirConfigRec *dc = myDirConfig(r);
     apr_table_t *e = r->subprocess_env;
@@ -1054,7 +1061,7 @@ int ssl_hook_Fixup(request_rec *r)
      */
     if (!sc->bEnabled)
         return DECLINED;
-    if ((ssl = (SSL *)apr_table_get(r->connection->notes, "ssl")) == NULL)
+    if ((ssl = sslconn->ssl) == NULL)
         return DECLINED;
 
     /*
