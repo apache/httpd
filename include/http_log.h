@@ -102,6 +102,9 @@ extern "C" {
 
 #endif
 
+/* APLOG_NOERRNO is ignored and should not be used.  It will be
+ * removed in a future release of Apache.
+ */
 #define APLOG_NOERRNO		(APLOG_LEVELMASK + 1)
 
 /* Use APLOG_TOCLIENT to cause ap_log_rerror() to send the message

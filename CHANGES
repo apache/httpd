@@ -1,5 +1,9 @@
 Changes with Apache 2.0.37
 
+  *) The APLOG_NOERRNO flag to ap_log_[r]error() is now deprecated.
+     It is currently ignored and it will be removed in a future release
+     of Apache.  [Jeff Trawick]
+
   *) Removed documentation references to the no-longer-supported
      "make certificate" feature of mod_ssl for Apache 1.3.x.  Test
      certificates, if truly desired, can be generated using openssl
