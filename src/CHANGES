@@ -1,5 +1,9 @@
 Changes with Apache 1.3b4
-  
+
+  *) It appears the "257th byte" bug (see
+     htdocs/manual/misc/known_client_problems.html#257th-byte) can happen
+     at the 256th byte as well.  Fixed.  [Dean Gaudet]
+
   *) Fix mod_mime_magic under OS/2, no support for block devices.
      [Brian Havard]
 

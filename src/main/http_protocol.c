@@ -1092,7 +1092,7 @@ void basic_http_header(request_rec *r)
 
 /* Navigator versions 2.x, 3.x and 4.0 betas up to and including 4.0b2
  * have a header parsing bug.  If the terminating \r\n occur starting
- * at the 256th or 257th byte of output then it will not properly parse
+ * at offset 256, 257 or 258 of output then it will not properly parse
  * the headers.  Curiously it doesn't exhibit this problem at 512, 513.
  * We are guessing that this is because their initial read of a new request
  * uses a 256 byte buffer, and subsequent reads use a larger buffer.
@@ -1112,7 +1112,7 @@ static void terminate_header(BUFF *client)
     long int bs;
 
     bgetopt(client, BO_BYTECT, &bs);
-    if (bs == 256 || bs == 257)
+    if (bs >= 255 && bs <= 257)
         bputs("X-Pad: avoid browser bug\015\012", client);
 
     bputs("\015\012", client);  /* Send the terminating empty line */

@@ -129,11 +129,11 @@ This workaround is available in 1.2.2, and in a
 
 <p>All versions of Navigator from 2.0 through 4.0b2 (and possibly later)
 have a problem if the trailing CRLF of the response header starts at
-the 256th or 257th byte of the response.  A BrowserMatch for this would
+offset 256, 257 or 258 of the response.  A BrowserMatch for this would
 match on nearly every hit, so the workaround is enabled automatically
 on all responses.  The workaround is to detect when this condition would
 occur in a response and add extra padding to the header to push the
-trailing CRLF past the 257th byte of the response.
+trailing CRLF past offset 258 of the response.
 
 <a name="boundary-string"><h3>Multipart responses and Quoted Boundary Strings</h3></a>
 
