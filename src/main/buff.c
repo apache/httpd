@@ -82,6 +82,11 @@
 #define CHUNK_HEADER_SIZE (5)
 #endif
 
+#ifdef CHARSET_EBCDIC
+#define ascii_CRLF "\015\012" /* A CRLF which won't pass the conversion machinery */
+#else
+#define ascii_CRLF CRLF
+#endif
 
 /* bwrite()s of greater than this size can result in a large_write() call,
  * which can result in a writev().  It's a little more work to set up the
@@ -1157,7 +1162,7 @@ static int bcwrite(BUFF *fb, const void *buf, int nbyte)
 	return -1;
     if (write_it_all(fb, buf, nbyte) == -1)
 	return -1;
-    if (write_it_all(fb, CRLF, 2) == -1)
+    if (write_it_all(fb, ascii_CRLF, 2) == -1)
 	return -1;
     return nbyte;
 #else
@@ -1170,7 +1175,7 @@ static int bcwrite(BUFF *fb, const void *buf, int nbyte)
 #endif /*CHARSET_EBCDIC*/
     vec[1].iov_base = (void *) buf;	/* cast is to avoid const warning */
     vec[1].iov_len = nbyte;
-    vec[2].iov_base = CRLF;
+    vec[2].iov_base = ascii_CRLF;
     vec[2].iov_len = 2;
 
     return writev_it_all(fb, vec, (sizeof(vec) / sizeof(vec[0]))) ? -1 : nbyte;
@@ -1211,7 +1216,7 @@ static int large_write(BUFF *fb, const void *buf, int nbyte)
 	vec[nvec].iov_base = (void *) buf;
 	vec[nvec].iov_len = nbyte;
 	++nvec;
-	vec[nvec].iov_base = CRLF;
+	vec[nvec].iov_base = ascii_CRLF;
 	vec[nvec].iov_len = 2;
 	++nvec;
     }
