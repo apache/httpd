@@ -1,8 +1,5 @@
 Changes with Apache 1.3b6
 
-  *) Have the mod_status Status page report server version and
-     built data [M.D. Parker <mdpc@netcom.com>] PR#1448
-
   *) [PORT] Recognize FreeBSD versions so we can use the OS regex as well
      as handling unsigned-chars for FreeBSD v3 and v2 [Andrey Chernov
      <ache@nagual.pp.ru> and Jim] PR#1450
