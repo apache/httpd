@@ -277,10 +277,13 @@ static apr_status_t deflate_out_filter(ap_filter_t *f,
          * other than text/html, so set gzip-only-text/html
          * (with browsermatch) for them
          */
-        if ((r->content_type == NULL
-             || strncmp(r->content_type, "text/html", 9))
-            && apr_table_get(r->subprocess_env, "gzip-only-text/html")) {
-            ap_remove_output_filter(f);
+        if (r->content_type == NULL
+             || strncmp(r->content_type, "text/html", 9)) {
+            const char *env_value = apr_table_get(r->subprocess_env,
+                                                  "gzip-only-text/html");
+            if ( env_value == NULL || strcmp(env_value,"1") ) {
+                ap_remove_output_filter(f);
+            }
             return ap_pass_brigade(f->next, bb);
         }
 
