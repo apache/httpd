@@ -517,9 +517,9 @@ static void output_results(void)
 	printf("Requests per second:    %.2f [#/sec] (mean)\n", 
                (float) (done / timetaken));
 	printf("Time per request:       %.3f [ms] (mean)\n", 
-               (float) (concurrency * timetaken / done));
+               (float) (1000 * concurrency * timetaken / done));
 	printf("Time per request:       %.3f [ms] (mean, across all concurrent requests)\n",
-	       (float) (timetaken / done));
+	       (float) (1000 * timetaken / done));
 	printf("Transfer rate:          %.2f [Kbytes/sec] received\n",
 	       (float) (totalread / 1024 / timetaken));
 	if (posting > 0) {
@@ -645,8 +645,8 @@ static void output_results(void)
 	printf("\nConnection Times (ms)\n");
 
 	if (confidence) {
-#define CONF_FMT_STRING "%" APR_TIME_T_FMT " %5d %6.1f %" APR_TIME_T_FMT " %" APR_TIME_T_FMT "\n"
-	    printf("            min  mean[+/-sd] median   max\n");
+#define CONF_FMT_STRING "%5" APR_TIME_T_FMT " %4d %5.1f %6" APR_TIME_T_FMT " %7" APR_TIME_T_FMT "\n"
+	    printf("              min  mean[+/-sd] median   max\n");
 	    printf("Connect:    " CONF_FMT_STRING, 
                    mincon, (int) (totalcon + 0.5), sdcon, meancon, maxcon);
 	    printf("Processing: " CONF_FMT_STRING,
@@ -1329,14 +1329,14 @@ static void test(void)
 static void copyright(void)
 {
     if (!use_html) {
-	printf("This is ApacheBench, Version %s\n", AP_AB_BASEREVISION " <$Revision: 1.99 $> apache-2.0");
+	printf("This is ApacheBench, Version %s\n", AP_AB_BASEREVISION " <$Revision: 1.100 $> apache-2.0");
 	printf("Copyright (c) 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/\n");
 	printf("Copyright (c) 1998-2002 The Apache Software Foundation, http://www.apache.org/\n");
 	printf("\n");
     }
     else {
 	printf("<p>\n");
-	printf(" This is ApacheBench, Version %s <i>&lt;%s&gt;</i> apache-2.0<br>\n", AP_AB_BASEREVISION, "$Revision: 1.99 $");
+	printf(" This is ApacheBench, Version %s <i>&lt;%s&gt;</i> apache-2.0<br>\n", AP_AB_BASEREVISION, "$Revision: 1.100 $");
 	printf(" Copyright (c) 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/<br>\n");
 	printf(" Copyright (c) 1998-2002 The Apache Software Foundation, http://www.apache.org/<br>\n");
 	printf("</p>\n<p>\n");
