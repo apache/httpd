@@ -1,34 +1,38 @@
 
-                   Apache HTTP Server 1.3.32 freigegeben
+                   Apache HTTP Server 1.3.33 freigegeben
 
    Wir, die Apache Software Foundation und das Apache HTTP Server Projekt, 
-   freuen uns, die Freigabe der Version 1.3.32 des Apache HTTP Servers 
+   freuen uns, die Freigabe der Version 1.3.33 des Apache HTTP Servers 
    ("Apache") bekannt zu geben. Diese Ankündigung führt die wesentlichen 
-   Änderungen von 1.3.32 gegenüber 1.3.31 auf. Die Ankündigung ist auch
-   in englischer Sprache sowie spanischer und japanischer Übersetzung unter
+   Änderungen von 1.3.33 gegenüber 1.3.31 (1.3.32 wurde nicht offiziell
+   freigegeben) auf. Die Ankündigung ist auch in englischer Sprache sowie
+   japanischer Übersetzung unter
 
-        http://www.apache.org/dist/httpd/Announcement.html
-        http://www.apache.org/dist/httpd/Announcement.html.es
-        http://www.apache.org/dist/httpd/Announcement.html.ja
+        http://www.apache.org/dist/httpd/Announcement.txt
+        http://www.apache.org/dist/httpd/Announcement.txt.ja
 
    verfügbar.
 
    Diese Version des Apache ist vornehmlich ein Bug-Fix- und Sicherheits-
    Update. Eine kurze Zusammenfassung der Bug-Fixes ist am Ende des Dokumentes
    aufgeführt. Die vollständige Liste der Änderungen ist in der CHANGES-
-   Datei zu finden. Apache 1.3.32 behebt insbesondere 1 mögliche
-   Sicherheitslücke:
+   Datei zu finden. Apache 1.3.33 behebt insbesondere 2 mögliche
+   Sicherheitslücken:
 
+     o CAN-2004-0940 (cve.mitre.org)
+       Behebung eines Pufferüberlaufs durch maskierte Zeichen in einem
+       SSI-Befehl.
+ 
      o CAN-2004-0492 (cve.mitre.org)
        Abweisen von Antworten eines entfernten Servers, wenn ein
        ungültiger (negativer) Content-Length-Header gesendet wurde.
 
-   Wir betrachten den Apache 1.3.32 als die beste verfügbare Version des
+   Wir betrachten den Apache 1.3.33 als die beste verfügbare Version des
    Apache 1.3 und wir empfehlen Benutzern älterer Versionen, insbesondere
    der Familien 1.1.x und 1.2.x, umgehend die Aufrüstung. Für die 1.2.x-
    Familie werden keine weiteren Releases mehr erstellt.
 
-   Apache 1.3.32 steht unter folgender Adresse zum Download bereit:
+   Apache 1.3.33 steht unter folgender Adresse zum Download bereit:
 
        http://httpd.apache.org/download.cgi
 
@@ -81,10 +85,14 @@
    besseren Performance, Stabilität und Sicherheit auf den Apache 2.0 zu
    wechseln.
 
-               Wesentliche Änderungen des Apache 1.3.32
+               Wesentliche Änderungen des Apache 1.3.33
 
    Sicherheitslücken
 
+     * CAN-2004-0940 (cve.mitre.org)
+       Behebung eines Pufferüberlaufs durch maskierte Zeichen in einem
+       SSI-Befehl.
+ 
      * CAN-2004-0492 (cve.mitre.org)
        Antworten eines entfernten Servers werden abgewiesen, wenn ein
        ungültiger (negativer) Content-Length-Header gesendet wurde.
@@ -110,7 +118,7 @@
    Behobene Fehler
 
     Die folgenden nennenswerten Fehler wurden im Apache 1.3.31 (oder
-    früher) gefunden und im Apache 1.3.32 behoben:
+    früher) gefunden und im Apache 1.3.33 behoben:
 
      * mod_rewrite: Die Query-String-Behandlung von Proxy-URLs wurde
        korrigiert. PR 14518.
