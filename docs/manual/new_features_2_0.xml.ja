@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.ja.xsl"?>
 <manualpage>
 <relativepath href="."/>
-<!-- English revision: 1.3 -->
+<!-- English revision: 1.4 -->
 
 <title>Apache 2.0 の新機能の概要</title>
 
@@ -27,7 +27,8 @@
 
       <dt>新しいビルドシステム</dt>
 
-      <dd>ビルドシステムは autoconf と libtool に基づいたものになるように、
+      <dd>ビルドシステムは <code>autoconf</code> と <code>libtool</code>
+      に基づいたものになるように、
       新しく書き直されました。これにより、Apache の configure のシステムは
       他のパッケージと似たものになりました。</dd>
 
@@ -66,15 +67,16 @@
       <directive module="core">NameVirtualHost</directive>,
       <directive module="core">VirtualHost</directive>
       の各ディレクティブが IPv6 のアドレスを
-      サポートするようになりました (例えば、"Listen [fe80::1]:8080")。</dd>
+      サポートするようになりました (例えば、
+      "<code>Listen [fe80::1]:8080</code>")。</dd>
 
       <dt>フィルタ</dt>
 
       <dd>Apache のモジュールはサーバから送られてきたり、サーバへ
       送るストリームに対して動作するフィルタとして書くことができるように
       なりました。これにより、例えば CGI スクリプトの出力を
-      <module>mod_include</module> の INCLUDES フィルタを使って Server
-      Side Include のディレクティブを解析する、
+      <module>mod_include</module> の <code>INCLUDES</code> フィルタを使って
+      Server Side Include のディレクティブを解析する、
       というようなことが可能になりました。<module>mod_ext_filter</module>
       で外部プログラムをフィルタとして動作させることができます。
       これは CGI プログラムをハンドラとして動作させるのと
@@ -89,7 +91,8 @@
       <dt>設定の簡素化</dt>
 
       <dd>多くの混乱を招きがちなディレクティブが簡素化されました。
-      よく混乱を引き起こしていた Port ディレクティブと Bind ディレクティブは
+      よく混乱を引き起こしていた <code>Port</code> ディレクティブと 
+      <code>Bind</code> ディレクティブは
       なくなりました。<directive module="mpm_common">Listen</directive>
       ディレクティブのみが IP アドレスのバインドに使われます。
       <directive module="core">ServerName</directive> ディレクティブでは
@@ -156,7 +159,7 @@
       <dt><module>mod_file_cache</module></dt>
 
       <dd>Apache 2.0 の新モジュール。このモジュールには、
-      Apache 1.3 における mod_mmap_static 機能が含まれ、
+      Apache 1.3 における <code>mod_mmap_static</code> 機能が含まれ、
       また、追加のキャッシュ機能が加わっています。</dd>
 
       <dt><module>mod_headers</module></dt>
@@ -173,9 +176,11 @@
       完全に書き直されました。さらに、新しい 
       <directive module="mod_proxy" type="section">Proxy</directive>
       設定セクションがproxy されるサイトのより読みやすく (内部的にもより速い)
-      設定を提供します。オーバーロードされた &lt;Directory "proxy:... &gt;
-      設定はサポートされていません。このモジュールは proxy_connect,
-      proxy_ftp, proxy_http といった、特定のプロトコルをサポートする
+      設定を提供します。オーバーロードされた
+      <code>&lt;Directory "proxy:... &gt;</code>
+      設定はサポートされていません。このモジュールは <code>proxy_connect</code>,
+      <code>proxy_ftp</code>, <code>proxy_http</code> 
+      といった、特定のプロトコルをサポートする
       モジュールに分割されるようになりました。</dd>
 
       <dt><module>mod_negotiation</module></dt>
@@ -203,8 +208,8 @@
       変更できるようになりました。また、エラーと時刻の形式の設定が SSI の
       文書中ではなく、主設定ファイル中で行なえるようになりました。
       正規表現の解析とグループ化の結果 (Perl の正規表現の構文に
-      基づいたものになりました) を mod_include の変数 $0 .. $9 により
-      取得できるようになりました。</dd>
+      基づいたものになりました) を <module>mod_include</module>
+      の変数 $0 .. $9 により取得できるようになりました。</dd>
 
       <dt><module>mod_auth_dbm</module></dt>
 
