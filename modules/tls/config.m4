@@ -15,6 +15,9 @@ APACHE_MODULE(tls, TLS/SSL support, $tls_objs, , no, [
                   break
               fi
           done
+          if test x"$withval" = x"yes"; then
+              AC_MSG_ERROR(Use --with-tls=DIR to specify the location of your SSL installation)
+          fi
       fi
       ssl_lib=unknown
       for params in \
