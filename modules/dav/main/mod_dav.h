@@ -807,6 +807,8 @@ struct dav_hooks_liveprop
 ** property is a live property. Its use is not part of the mandated liveprop
 ** interface, but can be used by liveprop providers in conjuction with the
 ** utility routines below.
+**
+** spec->name == NULL is the defined end-sentinel for a list of specs.
 */
 typedef struct {
     int ns;             /* provider-local namespace index */
@@ -889,10 +891,8 @@ void dav_core_register_uris(apr_pool_t *p);
 enum {
     DAV_PROPID_BEGIN = 20000,
 
-    /* Standard WebDAV properties (RFC 2518 and DeltaV I-D) */
-    DAV_PROPID_comment,                         /* from DeltaV I-D */
+    /* Standard WebDAV properties (RFC 2518) */
     DAV_PROPID_creationdate,
-    DAV_PROPID_creator_displayname,             /* from DeltaV I-D */
     DAV_PROPID_displayname,
     DAV_PROPID_getcontentlanguage,
     DAV_PROPID_getcontentlength,
@@ -904,38 +904,45 @@ enum {
     DAV_PROPID_source,
     DAV_PROPID_supportedlock,
 
-    /* DeltaV properties (from the I-D) */
-    DAV_PROPID_activity_collection_set,
+    /* DeltaV properties (from the I-D (#14)) */
+    DAV_PROPID_activity_checkout_set,
     DAV_PROPID_activity_set,
+    DAV_PROPID_activity_version_set,
     DAV_PROPID_auto_merge_set,
     DAV_PROPID_auto_version,
-    DAV_PROPID_baseline_selector,
-    DAV_PROPID_baselined_collection,
-    DAV_PROPID_baselined_collection_set,
+    DAV_PROPID_baseline_collection,
+    DAV_PROPID_baseline_controlled_collection,
+    DAV_PROPID_baseline_controlled_collection_set,
+    DAV_PROPID_checked_in,
     DAV_PROPID_checked_out,
-    DAV_PROPID_checkin_date,
     DAV_PROPID_checkin_fork,
     DAV_PROPID_checkout_fork,
     DAV_PROPID_checkout_set,
+    DAV_PROPID_comment,
+    DAV_PROPID_creator_displayname,
     DAV_PROPID_current_activity_set,
     DAV_PROPID_current_workspace_set,
-    DAV_PROPID_initial_version,
+    DAV_PROPID_default_variant,
+    DAV_PROPID_eclipsed_set,
     DAV_PROPID_label_name_set,
-    DAV_PROPID_latest_version,
     DAV_PROPID_merge_set,
-    DAV_PROPID_mutable,
+    DAV_PROPID_precursor_set,
     DAV_PROPID_predecessor_set,
+    DAV_PROPID_root_version,
     DAV_PROPID_subactivity_set,
+    DAV_PROPID_subbaseline_set,
     DAV_PROPID_successor_set,
-    DAV_PROPID_target,
+    DAV_PROPID_supported_method_set,
+    DAV_PROPID_supported_live_property_set,
+    DAV_PROPID_supported_report_set,
     DAV_PROPID_unreserved,
-    DAV_PROPID_version,
+    DAV_PROPID_variant_set,
+    DAV_PROPID_version_controlled_binding_set,
+    DAV_PROPID_version_controlled_configuration,
     DAV_PROPID_version_history,
     DAV_PROPID_version_name,
-    DAV_PROPID_version_set,
     DAV_PROPID_workspace,
     DAV_PROPID_workspace_checkout_set,
-    DAV_PROPID_workspace_collection_set,
 
     DAV_PROPID_END
 };
