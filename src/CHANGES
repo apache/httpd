@@ -1,4 +1,9 @@
-Changes with Apache 1.3b1
+Changes with Apache 1.3b2 (there is no 1.3b1)
+
+  *) TestCompile was not passing $LIBS [Dean Gaudet]
+
+  *) Makefile.tmpl was not using $CFLAGS in the link phase. 
+     [Martin Kraemer]
 
   *) Add debugging code to alloc.c.  Defining ALLOC_DEBUG provides a
      rudimentary memory debugger which can be used on live servers with
