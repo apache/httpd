@@ -906,11 +906,6 @@ server" What's the reason?</a></h3>
         modssl-users mailing list. Perhaps your problem popped up at least once for
         another user, too.
     </dd>
-    <dt>Problem Reports in the Bug Database <a href="http://www.modssl.org/support/bugdb/">http://www.modssl.org/support/bugdb/</a></dt>
-    <dd>Third look inside the mod_ssl Bug Database. Perhaps
-        someone else already has reported the problem.
-    </dd>
-
     </dl>
 
 
