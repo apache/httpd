@@ -325,7 +325,8 @@ API_EXPORT(int)        main(int argc, char *argv[])
     /* Maintain AP_SERVER_BASEARGS list in http_main.h to allow the MPM 
      * to safely pass on our args from its rewrite_args() handler.
      */
-    while (ap_getopt(argc, argv, AP_SERVER_BASEARGS, &c, pcommands) 
+    while (ap_getopt(process->argc, process->argv, 
+                     AP_SERVER_BASEARGS, &c, pcommands) 
             == APR_SUCCESS) {
         char **new;
         switch (c) {
