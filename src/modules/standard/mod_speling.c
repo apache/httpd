@@ -244,7 +244,7 @@ static int check_speling(request_rec *r)
     }
 
     /* We've already got a file of some kind or another */
-    if (r->proxyreq || (r->finfo.st_mode != 0)) {
+    if (r->proxyreq != NOT_PROXY || (r->finfo.st_mode != 0)) {
         return DECLINED;
     }
 

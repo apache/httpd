@@ -826,14 +826,14 @@ static client_entry *get_client(unsigned long key, const request_rec *r)
 /* Parse the Authorization header, if it exists */
 static int get_digest_rec(request_rec *r, digest_header_rec *resp)
 {
-    const char *auth_line = ap_table_get(r->headers_in,
-					 r->proxyreq ? "Proxy-Authorization"
-						     : "Authorization");
+    const char *auth_line;
     size_t l;
     int vk = 0, vv = 0;
     char *key, *value;
 
-
+    auth_line = ap_table_get(r->headers_in,
+			     r->proxyreq == STD_PROXY ? "Proxy-Authorization"
+						      : "Authorization");
     if (!auth_line) {
 	resp->auth_hdr_sts = NO_HEADER;
 	return !OK;
@@ -1270,7 +1270,7 @@ static void note_digest_auth_failure(request_rec *r,
      * unneccessarily (it's usually > 200 bytes!).
      */
 
-    if (r->proxyreq)
+    if (r->proxyreq != NOT_PROXY)
 	domain = NULL;	/* don't send domain for proxy requests */
     else if (conf->uri_list)
 	domain = conf->uri_list;
@@ -1285,7 +1285,8 @@ static void note_digest_auth_failure(request_rec *r,
     }
 
     ap_table_mergen(r->err_headers_out,
-		    r->proxyreq ? "Proxy-Authenticate" : "WWW-Authenticate",
+		    r->proxyreq == STD_PROXY ? "Proxy-Authenticate"
+					     : "WWW-Authenticate",
 		    ap_psprintf(r->pool, "Digest realm=\"%s\", nonce=\"%s\", "
 					 "algorithm=%s%s%s%s%s",
 				ap_auth_name(r), nonce, conf->algorithm,
@@ -1986,8 +1987,8 @@ static int add_auth_info(request_rec *r)
 
     if (ai && ai[0])
 	ap_table_mergen(r->headers_out,
-			r->proxyreq ? "Proxy-Authentication-Info" :
-				      "Authentication-Info",
+			r->proxyreq == STD_PROXY ? "Proxy-Authentication-Info"
+						 : "Authentication-Info",
 			ai);
     return OK;
 }
