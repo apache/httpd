@@ -1,0 +1,102 @@
+<?xml version='1.0' encoding='EUC-KR' ?>
+<!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.ko.xsl"?>
+<!-- English revision: 1.8 -->
+
+<manualpage metafile="fd-limits.xml.meta">
+<parentdocument href="./">가상호스트</parentdocument>
+  <title>파일기술자(file descriptor) 한계</title>
+
+<summary>
+
+    <p>가상호스트를 많이 사용하고 각 가상호스트에 서로 다른
+    로그파일을 지정하면, 아파치가 사용가능한 파일기술자(file
+    descriptor, 흔히 <cite>파일핸들(file handle)</cite>이라고
+    부름)를 다 써버릴 수 있다. 아파치가 사용하는 파일기술자의
+    총 개수는 오류 로그파일당 한개, 다른 로그파일 지시어당
+    한개, 추가로 내부용도로 10-20개를 더한 수다. 유닉스 운영체제는
+    프로세스가 사용할 수 있는 파일기술자 개수를 제한한다. 이 한계는
+    보통 64개로, 보통 이보다 큰 hard-limit까지 늘릴 수 있다.</p>
+
+    <p>아파치는 이 한계를 필요한만큼 늘리려고 하지만, 실패하는
+    경우가 있다:</p>
+
+    <ol>
+      <li>시스템이 <code>setrlimit()</code> 시스템호출을
+      제공하지 않는다.</li>
+
+      <li>(Solaris 2.3과 같이) 시스템에서
+      <code>setrlimit(RLIMIT_NOFILE)</code> 함수가 동작하지
+      않는다.</li>
+
+      <li>필요한 파일기술자 개수가 hard limit 보다 많다.</li>
+      
+      <li>(Solaris 2) 시스템이 stdio 스트림을 256이하의
+      파일기술자만을 사용하도록 제한하는 등 파일기술자에
+      제약을 가한다.</li>
+    </ol>
+
+	<p>이 경우 해결책은:</p>
+
+    <ul>
+      <li>로그파일 개수를 줄인다. <directive type="section"
+      module="core">VirtualHost</directive> 섹션에서 로그파일을
+      지정하지 않고 주 로그파일을 사용한다. (더 자세한 방법은
+      아래 <a href="#splitlogs">로그파일 나누기</a>를 참고하라.)</li>
+
+      <li>
+        사용하는 시스템이 (위의) 1번째나 2번째 경우에 해당한다면,
+        다음과 같은 스크립트로 아파치를 시작하기 전에 파일기술자
+        한계를 늘린다.
+
+        <example>
+          <code>#!/bin/sh<br />
+           ulimit -S -n 100<br />
+           exec httpd</code>
+        </example>
+      </li>
+    </ul>
+
+</summary>
+
+<section id="splitlogs"><title>로그파일 나누기</title>
+
+<p>여러 가상호스트가 같은 로그파일을 사용한다면 나중에 각
+가상호스트의 통계분석을 위해 로그파일을 나누고 싶을 것이다.
+이 작업은 다음과 같이 할 수 있다.</p>
+
+<p>먼저 로그 항목에 가상호스트 정보를 추가한다. 이를 위해
+<directive module="mod_log_config">LogFormat</directive>
+지시어와 <code>%v</code> 변수를 사용한다. 이 변수를 로그
+형식문자열 앞에 추가한다:</p>
+
+<example>
+LogFormat "%v %h %l %u %t \"%r\" %&gt;s %b" vhost<br />
+CustomLog logs/multiple_vhost_log vhost
+</example>
+
+<p>그러면 common 로그형식 앞에 (<directive
+module="core">ServerName</directive> 지시어에 나오는) 정규
+가상호스트를 포함하여 로그파일을 기록한다. (로그파일
+사용자정의에 관한 내용은 <directive
+module="mod_log_config">사용자정의 로그형식</directive>을
+참고하라.)</p>
+
+<p>로그파일을 (가상호스트당 한 파일씩) 나누고 싶다면 <code><a
+href="../programs/other.html">split-logfile</a></code> 프로그램을
+사용한다. 이 프로그램은 아파치 배포본의 <code>support</code>
+디렉토리에 있다.</p>
+
+<p>다음과 같이 프로그램을 실행한다:</p>
+
+<example>
+split-logfile &lt; /logs/multiple_vhost_log
+</example>
+
+<p>가상호스트 로그파일을 가지고 이 프로그램을 실행하면 로그파일에
+나오는 각 가상호스트당 파일을 하나씩 만든다. 각각의 파일명은
+<code>hostname.log</code>이다.</p>
+
+</section>
+</manualpage>
+

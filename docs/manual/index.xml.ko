@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="EUC-KR" ?>
+<!DOCTYPE indexpage SYSTEM "./style/sitemap.dtd">
+<?xml-stylesheet type="text/xsl" href="./style/manual.ko.xsl"?>
+<!-- English revision: 1.4 -->
+
+<indexpage metafile="index.xml.meta">
+<parentdocument href="http://httpd.apache.org/docs-project/" />
+
+<title>Apache HTTP Server Version 2.1 문서</title>
+
+<category id="release"><title>발표문</title>
+    <page href="new_features_2_0.html">버전 2.0의 새로운 기능</page>
+    <page href="upgrading.html">1.3에서 2.0 버전으로 업그레이드</page>
+    <page href="license.html">아파치 라이선스</page>
+</category>
+
+<category id="manual"><title>참조 설명서</title>
+    <page href="install.html">컴파일과 설치</page>
+    <page href="invoking.html">시작</page>
+    <page href="stopping.html">중단과 재시작</page>
+    <page href="mod/directives.html">설정 지시어</page>
+    <page href="mod/quickreference.html">지시어 빠른참조</page>
+    <page href="mod/">모듈</page>
+    <page href="mpm.html">다중처리모듈 (MPM)</page>
+    <page href="filter.html">필터</page>
+    <page href="handler.html">핸들러</page>
+    <page href="programs/">서버와 지원 프로그램</page>
+    <page href="glossary.html">용어</page>
+</category>    
+
+<category id="usersguide"><title>사용자 지침서</title>
+    <page href="bind.html">주소와 포트 지정</page>
+    <page href="configuring.html">설정파일</page>
+    <page href="sections.html">섹션 설정</page>
+    <page href="content-negotiation.html">내용협상 (content negotiation)</page>
+    <page href="dso.html">동적공유객체 (DSO)</page>
+    <page href="env.html">환경변수</page>
+    <page href="logs.html">로그파일</page>
+    <page href="urlmapping.html">URL을 파일시스템에 대응</page>
+    <page href="misc/perf-tuning.html">성능향상</page>
+    <page href="misc/security_tips.html">보안 팁</page>
+    <page href="server-wide.html">서버 전역 설정</page>
+    <page href="ssl/">SSL/TLS 암호화</page>
+    <page href="suexec.html">CGI의 Suexec 실행</page>
+    <page href="misc/rewriteguide.html">URL 재작성(rewriting) 지침서</page>
+    <page href="vhosts/">가상호스트</page>
+</category>
+
+<category id="howto"><title>How-To / 투토리얼</title>
+    <page href="howto/auth.html">인증, 권한부여,
+    접근제어</page>
+    <page href="howto/cgi.html">CGI: 동적 내용 생성</page>
+    <page href="howto/htaccess.html">.htaccess 파일</page>
+    <page href="howto/ssi.html">Server Side Includes (SSI)</page>
+    <page href="howto/public_html.html">사용자별 웹디렉토리
+    (public_html)</page>
+</category>
+
+<category id="platform"><title>플래폼별 설명</title>
+    <page href="platform/windows.html">Microsoft Windows</page>
+    <page href="platform/netware.html">Novell NetWare</page>
+    <page href="platform/ebcdic.html">EBCDIC 포팅</page>
+</category>
+
+<category id="other"><title>다른 주제</title>
+    <page href="faq/">자주 물어보는 질문 (FAQ)</page>
+    <page href="sitemap.html">사이트맵</page>
+    <page href="developer/">개발자를 위한 문서</page>
+    <page href="misc/">기타</page>
+</category>
+
+</indexpage>
+

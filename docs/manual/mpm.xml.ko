@@ -1,0 +1,88 @@
+<?xml version='1.0' encoding='EUC-KR' ?>
+<!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="./style/manual.ko.xsl"?>
+<!-- English revision: 1.4 -->
+<manualpage metafile="mpm.xml.meta">
+
+  <title>다중처리 모듈 (MPM)</title>
+
+<summary>
+<p>이 문서는 다중처리 모듈 (Multi-Processing Module)이 무엇이며,
+아파치 웹서버가 이를 어떻게 사용하는지 설명한다.</p>
+</summary>
+
+<section id="introduction"><title>소개</title>
+
+    <p>아파치 웹서버는 다양한 환경의 다양한 플래폼에서 동작할
+    수 있도록 강력하고 유연하게 설계되었다. 다른 플래폼과 다른
+    환경은 보통 다른 기능을 요구하며, 어떤 기능을 가장 효율적으로
+    구현하는 방법이 다를 수 있다. 아파치는 모듈화된 설계로 이런
+    다양한 환경에 항상 적응해왔다. 그래서 웹마스터는 컴파일시
+    혹은 실행시 어떤 모듈을 읽어들일지 선택하여 서버에 포함할
+    기능을 결정할 수 있다.</p>
+
+    <p>Apache 2.0은 이런 모듈화된 설계를 웹서버의 가장 기본적인
+    부분에까지 확장했다. 서버는 시스템의 네트웍 포트에 연결하고,
+    요청을 받아들이며, 받아들인 요청을 처리하기위해 자식들에게
+    분배하는 다중처리 모듈 (Multi-Processing Modules, MPMs)을
+    선택할 수 있다.</p>
+
+    <p>서버를 이 정도로 모듈화하면 두가지 중요한 장점이
+    있다:</p>
+
+    <ul>
+      <li><module>mpm_winnt</module>가 Apache 1.3에서 사용한
+      POSIX층 대신 자체 네트웍 기능을 사용할 수 있는 등,
+      아파치는 여러 다양한 운영체제를 더 깔끔하고 효율적으로
+      지원할 수 있다. 이 장점은 특화된 MPM을 구현한 다른
+      운영체제에도 적용된다.</li>
+
+      <li>서버는 특정 사이트의 요구조건에 더 특화될 수 있다.
+      예를 들어 높은 확장가능성(scalability)이 필요한 사이트는
+      <module>worker</module>와 같은 쓰레드 MPM을 사용하고,
+      안정성과 오래된 소프트웨어와의 호환성이 필요한 사이트는
+      <module>preforking MPM</module>을 사용할 수 있다.
+      추가로 다른 사용자아이디로 여러 호스트를 서비스하는
+      것(<module>perchild</module>)과 같은 특별한 기능도
+      제공된다.</li>
+    </ul>
+
+    <p>사용자가 보기에 MPM은 다른 아파치 모듈과 거의 비슷해
+    보인다. 주된 차이는 서버는 한번에 오직 한 MPM만을 사용해야
+    한다는 점이다. 사용가능한 MPM 목록은 <a href="mod/">모듈
+    목록 페이지</a>에 있다.</p>
+
+</section>
+
+<section id="choosing"><title>MPM 선택하기</title>
+
+    <p>MPMs는 구성중에 선택하여 서버에 컴파일되야 한다.
+    쓰레드를 사용하는 것을 컴파일러가 알면 많은 함수를
+    최적화할 수 있다. 유닉스에서 몇몇 MPM은 쓰레드를 쓰고
+    나머지는 아니므로, MPM이 구성중에 선택되어 아파치에
+    컴파일될때 아파치는 더 빠른 속도를 낸다.</p>
+
+    <p>원하는 MPM을 선택하려면 ./configure 스크립트에
+    with-mpm= <em>NAME</em> 아규먼트를 사용하라. <em>NAME</em>은
+    원하는 MPM 이름이다.</p>
+
+    <p>서버를 컴파일한후 <code>./httpd -l</code> 명령어로 선택한
+    MPM을 알 수 있다.  이 명령어는 MPM을 포함하여 서버에 컴파일된
+    모든 모듈을 알려준다.</p>
+</section>
+
+<section id="defaults"><title>MPM 기본값</title>
+
+<p>다음 표는 여러 운영체제의 기본 MPM을 보여준다. 컴파일시
+다르게 선택하지 않으면 이 MPM이 선택된다.</p>
+
+<table>
+<tr><td>BeOS</td><td><module>beos</module></td></tr>
+<tr><td>Netware</td><td><module>mpm_netware</module></td></tr>
+<tr><td>OS/2</td><td><module>mpmt_os2</module></td></tr>
+<tr><td>유닉스</td><td><module>prefork</module></td></tr>
+<tr><td>윈도우즈</td><td><module>mpm_winnt</module></td></tr>
+</table>
+</section>
+
+</manualpage>
