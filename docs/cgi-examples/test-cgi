@@ -3,7 +3,7 @@
 # disable filename globbing
 set -f
 
-echo Content-type: text/plain
+echo "Content-type: text/plain; charset=iso-8859-1"
 echo
 
 echo CGI/1.0 test script report:
