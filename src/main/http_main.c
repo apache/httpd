@@ -318,7 +318,7 @@ typedef struct other_child_rec other_child_rec;
 struct other_child_rec {
     other_child_rec *next;
     int pid;
-    void (*maintenance) (int, void *, int);
+    void (*maintenance) (int, void *, ap_wait_t);
     void *data;
     int write_fd;
 };
@@ -1298,7 +1298,7 @@ static void lingering_close(request_rec *r)
 
 #ifndef NO_OTHER_CHILD
 API_EXPORT(void) ap_register_other_child(int pid,
-		       void (*maintenance) (int reason, void *, int status),
+		       void (*maintenance) (int reason, void *, ap_wait_t status),
 			  void *data, int write_fd)
 {
     other_child_rec *ocr;
@@ -1384,7 +1384,7 @@ static void probe_writable_fds(void)
 }
 
 /* possibly reap an other_child, return 0 if yes, -1 if not */
-static int reap_other_child(int pid, int status)
+static int reap_other_child(int pid, ap_wait_t status)
 {
     other_child_rec *ocr, *nocr;
 
@@ -2165,7 +2165,7 @@ int reap_children(void)
 #endif
 static int wait_or_timeout_counter;
 
-static int wait_or_timeout(int *status)
+static int wait_or_timeout(ap_wait_t *status)
 {
 #ifdef WIN32
 #define MAXWAITOBJ MAXIMUM_WAIT_OBJECTS
@@ -3914,7 +3914,7 @@ static void perform_idle_server_maintenance(void)
 }
 
 
-static void process_child_status(int pid, int status)
+static void process_child_status(int pid, ap_wait_t status)
 {
     /* Child died... if it died due to a fatal error,
 	* we should simply bail out.
@@ -4063,7 +4063,7 @@ static void standalone_main(int argc, char **argv)
 
 	while (!restart_pending && !shutdown_pending) {
 	    int child_slot;
-	    int status;
+	    ap_wait_t status;
 	    int pid = wait_or_timeout(&status);
 
 	    /* XXX: if it takes longer than 1 second for all our children

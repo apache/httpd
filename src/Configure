@@ -484,10 +484,19 @@ case "$PLAT" in
 	;;
     *-next-nextstep*)
 	OS='NeXT'
+	OPTIM='-O'
 	CFLAGS="$CFLAGS -DNEXT"
 	DEF_WANTHSREGEX=yes
-	RANLIB="sleep 5; /bin/ranlib"
-	# ranlib on most NeXTs sets the time wrong. 5 secs wait does much good
+	;;
+    *-next-openstep*)
+	OS='Openstep for Mach'
+	CC='cc'
+	OPTIM='-O'
+	CFLAGS="$CFLAGS -DNEXT"
+	CFLAGS_SHLIB='-dynamic -fno-common'
+	LD_SHLIB='cc'
+	LDFLAGS_SHLIB='-dynamiclib -undefined warning'
+	DEF_WANTHSREGEX=yes
 	;;
     *-dec-osf*)
 	OS='DEC OSF/1'

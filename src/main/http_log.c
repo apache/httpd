@@ -479,7 +479,7 @@ API_EXPORT(void) ap_log_assert (const char *szExp, const char *szFile, int nLine
 
 #ifndef NO_RELIABLE_PIPED_LOGS
 /* forward declaration */
-static void piped_log_maintenance (int reason, void *data, int status);
+static void piped_log_maintenance (int reason, void *data, ap_wait_t status);
 
 static int piped_log_spawn (piped_log *pl)
 {
@@ -519,7 +519,7 @@ static int piped_log_spawn (piped_log *pl)
 }
 
 
-static void piped_log_maintenance (int reason, void *data, int status)
+static void piped_log_maintenance (int reason, void *data, ap_wait_t status)
 {
     piped_log *pl = data;
 

@@ -143,7 +143,7 @@ API_EXPORT(int) ap_check_alarm(void);
  * disable this feature, use -1 for write_fd.
  */
 API_EXPORT(void) ap_register_other_child(int pid,
-       void (*maintenance) (int reason, void *data, int status), void *data,
+       void (*maintenance) (int reason, void *data, ap_wait_t status), void *data,
 				      int write_fd);
 #define OC_REASON_DEATH		0	/* child has died, caller must call
 					 * unregister still */

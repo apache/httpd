@@ -356,7 +356,13 @@ typedef u_long n_long;
 #define STDIN_FILENO  0
 #define STDOUT_FILENO 1
 #define STDERR_FILENO 2
+
+/* PR#2293 fix */
+#define	ap_wait_t	union wait
 #define waitpid(a,b,c) wait4((a) == -1 ? 0 : (a),(union wait *)(b),c,NULL)
+#define WEXITSTATUS(status)     (int)( WIFEXITED(status) ? ( (status).w_retcode ) : -1)
+#define WTERMSIG(status)	(int)( (status).w_termsig )
+
 typedef int pid_t;
 #define USE_LONGJMP
 #define NO_USE_SIGACTION
@@ -1181,6 +1187,10 @@ extern char *strerror (int err);
 #endif
 #ifdef NEED_DIFFTIME
 extern double difftime(time_t time1, time_t time0);
+#endif
+
+#ifndef ap_wait_t
+#define ap_wait_t int
 #endif
 
 #ifdef __cplusplus

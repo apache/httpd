@@ -72,8 +72,12 @@ typedef enum {
     NO = 0, YES = 1
 } boolean_e;
 
+#ifndef FALSE
 #define FALSE			0
+#endif
+#ifndef TRUE
 #define TRUE			1
+#endif
 #define NUL			'\0'
 #define INT_NULL		((int *)0)
 #define WIDE_INT		long

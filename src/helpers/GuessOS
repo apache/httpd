@@ -252,7 +252,21 @@ fi
 ISNEXT=`hostinfo 2>/dev/null`
 case "$ISNEXT" in
     *NeXT*)
-	echo "whatever-next-nextstep"; exit 0
+#	echo "whatever-next-nextstep"; exit 0
+
+#	Swiped from a friendly uname clone for NEXT/OPEN Step.
+     	NEXTOSVER="`hostinfo | sed -n 's/.*NeXT Mach \([0-9\.]*\).*/\1/p'`"
+	if [ "$NEXTOSVER" -gt 3.3 ]
+     	then
+          NEXTOS="openstep"
+     	else
+          NEXTOS="nextstep"
+     	fi
+
+	NEXTREL="`hostinfo | sed -n 's/.*NeXT Mach \([0-9\.]*\).*/\1/p'`" 
+	NEXTARCH=`arch`
+	echo "${NEXTARCH}-next-${NEXTOS}${NEXTREL}" ; exit 0
+
 	;;
 esac
 

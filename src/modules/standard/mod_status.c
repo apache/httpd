@@ -119,8 +119,8 @@
 #include "http_log.h"
 
 #ifdef NEXT
-#if NX_CURRENT_COMPILER_RELEASE == 410
-#if __ARCHITECTURE__ == m68k
+#if (NX_CURRENT_COMPILER_RELEASE == 410)
+#ifdef m68k
 #define HZ 64
 #else
 #define HZ 100
@@ -128,7 +128,7 @@
 #else
 #include <machine/param.h>
 #endif
-#endif
+#endif /* NEXT */
 
 #define STATUS_MAXLINE		64
 
