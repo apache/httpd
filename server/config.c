@@ -985,10 +985,16 @@ AP_DECLARE(const char *) ap_build_cont_config(apr_pool_t *p,
                                               ap_directive_t **curr_parent,
                                               char *orig_directive)
 {
-    char l[MAX_STRING_LEN];
+    char *l;
     char *bracket;
     const char *retval;
     ap_directive_t *sub_tree = NULL;
+
+    /* Since this function can be called recursively, allocate
+     * the temporary 8k string buffer from the temp_pool rather 
+     * than the stack to avoid over-running a fixed length stack.
+     */
+    l = apr_palloc(temp_pool, MAX_STRING_LEN);
 
     bracket = apr_pstrcat(p, orig_directive + 1, ">", NULL);
     while (!(ap_cfg_getline(l, MAX_STRING_LEN, parms->config_file))) {
