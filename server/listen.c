@@ -137,7 +137,7 @@ static apr_status_t make_sock(apr_pool_t *p, ap_listen_rec *server)
 	}
     }
 
-#if DISABLE_NAGLE_INHERITED
+#if APR_TCP_NODELAY_INHERITED
     ap_sock_disable_nagle(s);
 #endif
 
