@@ -14,7 +14,7 @@ Changes with Apache 1.3.2
 
   *) Fix a problem with the new OS/2 mutexes.  [Brian Havard]
 
-  *) Enhance mod_spelling so that CheckSpelling can be used in
+  *) Enhance mod_speling so that CheckSpelling can be used in
      <Directory> containers and .htaccess files.  [Ken Coar]
 
   *) API: new ap_custom_response() function for hooking into the
