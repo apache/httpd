@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/06/06 12:55:44 $]
+Last modified at [$Date: 2004/06/06 13:23:26 $]
 
 Release:
 
@@ -101,11 +101,6 @@ PATCHES TO BACKPORT FROM 2.1
        modules/experimental/util_ldap_cache.c r1.17
        docs/manual/mod/mod_ldap.xml r1.12
        +1 minfrin, bnicholes
-
-    *) Allow LimitRequestBody to be reset to unlimited. PR 29106
-         server/core.c: r1.279
-       +1: nd, trawick, bnicholes
-       +1: kess (on concept)
 
     *) Small fix to allow reverse proxying to an ftp server. Previously
        an attempt to do this would try and connect to 0.0.0.0, regardless

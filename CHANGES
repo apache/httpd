@@ -1,5 +1,8 @@
 Changes with Apache 2.0.50
 
+  *) Allow LimitRequestBody to be reset to unlimited. PR 29106
+     [André Malo]
+
   *) Fix a bunch of cases where the return code of the regex compiler
      was not checked properly. This affects: mod_setenvif, mod_usertrack,
      mod_proxy, mod_proxy_ftp and core. PR 28218.  [André Malo]
