@@ -77,16 +77,13 @@
 APR_HOOK_STRUCT(
             APR_HOOK_LINK(create_connection)
 	    APR_HOOK_LINK(process_connection)
-            APR_HOOK_LINK(install_transport_filters)
 	    APR_HOOK_LINK(pre_connection)
 )
 AP_IMPLEMENT_HOOK_RUN_FIRST(conn_rec *,create_connection,
                             (apr_pool_t *p, server_rec *server, apr_socket_t *csd, long conn_id, void *sbh),
                             (p, server, csd, conn_id, sbh), NULL)
 AP_IMPLEMENT_HOOK_RUN_FIRST(int,process_connection,(conn_rec *c),(c),DECLINED)
-AP_IMPLEMENT_HOOK_RUN_FIRST(int, install_transport_filters, 
-                            (conn_rec *c, apr_socket_t *csd),(c, csd), DECLINED)
-AP_IMPLEMENT_HOOK_RUN_ALL(int,pre_connection,(conn_rec *c),(c),OK,DECLINED)
+AP_IMPLEMENT_HOOK_RUN_ALL(int,pre_connection,(conn_rec *c, void *csd),(c, csd),OK,DECLINED)
 /*
  * More machine-dependent networking gooo... on some systems,
  * you've got to be *really* sure that all the packets are acknowledged
@@ -221,13 +218,11 @@ AP_DECLARE(void) ap_lingering_close(conn_rec *c)
     return;
 }
 
-AP_CORE_DECLARE(void) ap_process_connection(conn_rec *c, apr_socket_t *csd)
+AP_CORE_DECLARE(void) ap_process_connection(conn_rec *c, void *csd)
 {
     ap_update_vhost_given_ip(c);
 
-    ap_run_install_transport_filters(c, csd);
-
-    ap_run_pre_connection(c);
+    ap_run_pre_connection(c, csd);
 
     if (!c->aborted) {
         ap_run_process_connection(c);

@@ -1044,7 +1044,7 @@ int ap_proxy_ftp_handler(request_rec *r, proxy_server_conf *conf,
      */
 
     /* set up the connection filters */
-    ap_run_install_transport_filters(origin, sock);
+    ap_run_pre_connection(origin, sock);
 
     /* possible results: */
     /* 120 Service ready in nnn minutes. */
@@ -1786,7 +1786,7 @@ int ap_proxy_ftp_handler(request_rec *r, proxy_server_conf *conf,
     }
 
     /* set up the connection filters */
-    ap_run_install_transport_filters(data, data_sock);
+    ap_run_pre_connection(data, data_sock);
 
     /*
      * VI: Receive the Response ------------------------

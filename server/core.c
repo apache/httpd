@@ -3651,7 +3651,7 @@ static conn_rec *core_create_conn(apr_pool_t *ptrans, server_rec *server,
     c->id = id;
     return c;
 }
-static int core_install_transport_filters(conn_rec *c, apr_socket_t *csd)
+static int core_pre_connection(conn_rec *c, void *csd)
 {
     core_net_rec *net = apr_palloc(c->pool, sizeof(*net));
 
@@ -3671,17 +3671,18 @@ static int core_install_transport_filters(conn_rec *c, apr_socket_t *csd)
     ap_set_module_config(net->c->conn_config, &core_module, csd);
     ap_add_input_filter("CORE_IN", net, NULL, net->c);
     ap_add_output_filter("CORE", net, NULL, net->c);
-    return OK;
+    return DONE;
 }
 
 static void register_hooks(apr_pool_t *p)
 {
-    /* create_connection and install_transport_filters are RUN_FIRST
+    /* create_connection and install_transport_filters are
      * hooks that should always be APR_HOOK_REALLY_LAST to give other 
      * modules the opportunity to install alternate network transports
+     * and stop other functions from being run.
      */
     ap_hook_create_connection(core_create_conn, NULL, NULL, APR_HOOK_REALLY_LAST);
-    ap_hook_install_transport_filters(core_install_transport_filters, NULL, 
+    ap_hook_pre_connection(core_pre_connection, NULL, 
                                       NULL, APR_HOOK_REALLY_LAST);
 
     ap_hook_post_config(core_post_config,NULL,NULL,APR_HOOK_REALLY_FIRST);
