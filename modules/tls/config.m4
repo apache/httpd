@@ -1,9 +1,9 @@
-AC_MSG_CHECKING(for TLS/SSL support)
 APACHE_MODPATH_INIT(tls)
 
 tls_objs="mod_tls.lo openssl_state_machine.lo"
 
 APACHE_MODULE(tls, TLS/SSL support, $tls_objs, , no, [
+  AC_MSG_CHECKING(for TLS/SSL library)
   AC_ARG_WITH(tls,   [  --with-tls=DIR          use a specific TLS/SSL library],
   [
       searchfile="$withval/inc/ssl.h"
