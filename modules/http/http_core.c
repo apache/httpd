@@ -2579,7 +2579,7 @@ static int default_handler(request_rec *r)
 	
 	if (!r->header_only) {
 	    if (!rangestatus) {
-		ap_send_fd(fd_os, r);
+		ap_send_fd(fd, r);
 	    }
 	    else {
 		long     length;
@@ -2592,7 +2592,7 @@ static int default_handler(request_rec *r)
 			ap_close(fd);
 			return HTTP_INTERNAL_SERVER_ERROR;
 		    }
-		    ap_send_fd_length(fd_os, r, length);
+		    ap_send_fd_length(fd, r, length);
 		}
 	    }
 	}

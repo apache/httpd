@@ -1999,16 +1999,18 @@ API_EXPORT(int) ap_discard_request_body(request_rec *r)
 /*
  * Send the body of a response to the client.
  */
-API_EXPORT(long) ap_send_fd(int fd, request_rec *r)
+API_EXPORT(long) ap_send_fd(ap_file_t *fd, request_rec *r)
 {
     return ap_send_fd_length(fd, r, -1);
 }
 
-API_EXPORT(long) ap_send_fd_length(int fd, request_rec *r, long length)
+API_EXPORT(long) ap_send_fd_length(ap_file_t *fd, request_rec *r, long length)
 {
     char buf[IOBUFSIZE];
     long total_bytes_sent = 0;
-    register int n, w, o;
+    register w, o;
+    int n;
+    ap_status_t status;
 
     if (length == 0)
         return 0;
@@ -2018,15 +2020,17 @@ API_EXPORT(long) ap_send_fd_length(int fd, request_rec *r, long length)
             o = length - total_bytes_sent;
         else
             o = IOBUFSIZE;
+        
+        n = o;
+        do {
+            status = ap_read(fd, buf, &n);
+        } while (status == APR_EINTR && !ap_is_aborted(r->connection) &&
+                 (n < 1));
 
-        while ((n = read(fd, buf, o)) < 0 && 
-                (errno == EINTR || errno == EAGAIN) && 
-                !ap_is_aborted(r->connection))
-            continue;
-            
         if (n < 1) {
             break;
         }
+
         o = 0;
 
         while (n && !ap_is_aborted(r->connection)) {
