@@ -96,7 +96,10 @@ int ap_proxy_ajp_canon(request_rec *r, char *url)
             "/", path, (search) ? "?" : "", (search) ? search : "", NULL);
     return OK;
 }
- 
+
+/*
+ * process the request and write the respnse.
+ */ 
 static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
                                 proxy_conn_rec *conn, 
                                 conn_rec *origin, 
@@ -106,11 +109,16 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
 {
     apr_status_t status;
     int result;
+    apr_bucket *e;
     apr_bucket_brigade *input_brigade;
+    apr_bucket_brigade *output_brigade;
     ajp_msg_t *msg;
     apr_size_t bufsiz;
     char *buff;
+    apr_uint16_t size;
     const char *tenc;
+    int havebody=1;
+    int isok=1;
 
     /*
      * Send the AJP request to the remote server
@@ -201,44 +209,95 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
 
     /* parse the reponse */
     result = ajp_parse_type(r, conn->data);
+    output_brigade = apr_brigade_create(p, r->connection->bucket_alloc);
     
     bufsiz = AJP13_MAX_SEND_BODY_SZ;
-    while (result == CMD_AJP13_GET_BODY_CHUNK && bufsiz != 0) {
-        if (APR_BUCKET_IS_EOS(APR_BRIGADE_LAST(input_brigade))) {
-            /* That is the end */
-            bufsiz = 0;
-            ap_log_error(APLOG_MARK, APLOG_DEBUG, status, r->server,
-                         "proxy: APR_BUCKET_IS_EOS");
-        } else {
-            status = ap_get_brigade(r->input_filters, input_brigade,
-                                    AP_MODE_READBYTES, APR_BLOCK_READ,
-                                    AJP13_MAX_SEND_BODY_SZ);
-            if (status != APR_SUCCESS) {
-                ap_log_error(APLOG_MARK, APLOG_DEBUG, status, r->server,
-                             "ap_get_brigade failed");
-                break;
-            }
-            bufsiz = AJP13_MAX_SEND_BODY_SZ;
-            status = apr_brigade_flatten(input_brigade, buff, &bufsiz);
-            apr_brigade_cleanup(input_brigade);
-            if (status != APR_SUCCESS) {
-                ap_log_error(APLOG_MARK, APLOG_DEBUG, status, r->server,
-                             "apr_brigade_flatten failed");
-                break;
-            }
-        }
+    // while (result == CMD_AJP13_GET_BODY_CHUNK && bufsiz != 0) {
+    while (isok) {
+        switch (result) {
+            case CMD_AJP13_GET_BODY_CHUNK:
+                if (havebody) {
+                    if (APR_BUCKET_IS_EOS(APR_BRIGADE_LAST(input_brigade))) {
+                        /* That is the end */
+                        bufsiz = 0;
+                        havebody = 0;
+                        ap_log_error(APLOG_MARK, APLOG_DEBUG, status, r->server,
+                                     "proxy: APR_BUCKET_IS_EOS");
+                    } else {
+                        status = ap_get_brigade(r->input_filters, input_brigade,
+                                                AP_MODE_READBYTES, APR_BLOCK_READ,
+                                                AJP13_MAX_SEND_BODY_SZ);
+                        if (status != APR_SUCCESS) {
+                            ap_log_error(APLOG_MARK, APLOG_DEBUG, status, r->server,
+                                         "ap_get_brigade failed");
+                            break;
+                        }
+                        bufsiz = AJP13_MAX_SEND_BODY_SZ;
+                        status = apr_brigade_flatten(input_brigade, buff, &bufsiz);
+                        apr_brigade_cleanup(input_brigade);
+                        if (status != APR_SUCCESS) {
+                            ap_log_error(APLOG_MARK, APLOG_DEBUG, status, r->server,
+                                         "apr_brigade_flatten failed");
+                            break;
+                        }
+                    }
 
-        ajp_msg_reset(msg); /* will go in ajp_send_data_msg */
-        status = ajp_send_data_msg(conn->sock, r, msg, bufsiz);
-        if (status != APR_SUCCESS) {
-            ap_log_error(APLOG_MARK, APLOG_DEBUG, status, r->server,
-                         "ajp_send_data_msg failed");
-            break;
+                    ajp_msg_reset(msg); /* will go in ajp_send_data_msg */
+                    status = ajp_send_data_msg(conn->sock, r, msg, bufsiz);
+                    if (status != APR_SUCCESS) {
+                        ap_log_error(APLOG_MARK, APLOG_DEBUG, status, r->server,
+                                     "ajp_send_data_msg failed");
+                        break;
+                    }
+                } else {
+                    /* something is wrong TC asks for more body but we are
+                     * already at the end of the body data
+                     */
+                    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
+                         "ap_proxy_ajp_request error read after end");
+                    isok = 0;
+                }
+                break;
+            case CMD_AJP13_SEND_HEADERS:
+                /* AJP13_SEND_HEADERS: process them */
+                status = ajp_parse_header(r, conn->data);
+                if (status != APR_SUCCESS) {
+                    isok=0;
+                }
+                break;
+            case CMD_AJP13_SEND_BODY_CHUNK:
+                /* AJP13_SEND_BODY_CHUNK: piece of data */
+                status = ajp_parse_data(r, conn->data, &size, &buff);
+                e = apr_bucket_transient_create(buff, size,
+                                                r->connection->bucket_alloc);
+                APR_BRIGADE_INSERT_TAIL(output_brigade, e);
+                if (status != APR_SUCCESS)
+                    isok = 0;
+                break;
+            case CMD_AJP13_END_RESPONSE:
+                e = apr_bucket_eos_create(r->connection->bucket_alloc);
+                APR_BRIGADE_INSERT_TAIL(output_brigade, e);
+                if (ap_pass_brigade(r->output_filters, output_brigade) != APR_SUCCESS) {
+                    ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+                                  "proxy: error processing body");
+                    isok=0;
+                }
+                break;
+            default:
+                isok=0;
+                break;
         }
+        if (!isok)
+            break;
+        
+        if (result == CMD_AJP13_END_RESPONSE)
+            break;
+
         /* read the response */
         status = ajp_read_header(conn->sock, r,
                                  (ajp_msg_t **)&(conn->data));
         if (status != APR_SUCCESS) {
+            isok=0;
             ap_log_error(APLOG_MARK, APLOG_DEBUG, status, r->server,
                          "ajp_read_header failed");
             break;
@@ -246,6 +305,8 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
     	result = ajp_parse_type(r, conn->data);
     }
     apr_brigade_destroy(input_brigade);
+    if (!isok)
+        apr_brigade_destroy(output_brigade);
 
     if (status != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_ERR, status, r->server,
@@ -256,7 +317,7 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
     }
 
     /* Nice we have answer to send to the client */
-    if (result == CMD_AJP13_SEND_HEADERS) {
+    if (result == CMD_AJP13_END_RESPONSE && isok) {
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
                      "proxy: got response from %pI (%s)",
                      conn->worker->cp->addr,
@@ -271,77 +332,6 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
                  conn->worker->hostname);
 
     return HTTP_SERVICE_UNAVAILABLE;
-}
-
-/*
- * Process the AJP response, data already contains the first part of it.
- */
-static int ap_proxy_ajp_process_response(apr_pool_t * p, request_rec *r,
-                                         conn_rec *origin,
-                                         proxy_conn_rec *backend,
-                                         proxy_server_conf *conf,
-                                         char *server_portstr) 
-{
-    conn_rec *c = r->connection;
-    apr_bucket *e;
-    apr_bucket_brigade *bb;
-    int type;
-    apr_status_t status;
-
-    bb = apr_brigade_create(p, c->bucket_alloc);
-    
-    type = ajp_parse_type(r, backend->data);
-    status = APR_SUCCESS;
-    while (type != CMD_AJP13_END_RESPONSE) {
-        if (type == CMD_AJP13_SEND_HEADERS) {
-            /* AJP13_SEND_HEADERS: process them */
-            status = ajp_parse_header(r, backend->data); 
-            if (status != APR_SUCCESS) {
-                break;
-            }
-        } 
-        else if  (type == CMD_AJP13_SEND_BODY_CHUNK) {
-            /* AJP13_SEND_BODY_CHUNK: piece of data */
-            apr_uint16_t size;
-            char *buff;
-
-            status = ajp_parse_data(r, backend->data, &size, &buff);
-            e = apr_bucket_transient_create(buff, size, c->bucket_alloc);
-            APR_BRIGADE_INSERT_TAIL(bb, e);
-        } 
-        else {
-            status = APR_EGENERAL;
-            break;
-        }
-        /* Read the next message */
-        status = ajp_read_header(backend->sock, r,
-                                 (ajp_msg_t **)&(backend->data));
-        if (status != APR_SUCCESS) {
-            break;
-        }
-        type = ajp_parse_type(r, backend->data);
-    }
-    if (status != APR_SUCCESS) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
-                      "proxy: error reading headers from remote "
-                      "server %pI:%s",
-                      backend->worker->cp->addr,
-                      backend->worker->hostname);
-        return ap_proxyerror(r, HTTP_BAD_GATEWAY,
-                             "Error reading from remote server");
-    }
-
-    /* The page is ready give it to the rest of the logic */
-    e = apr_bucket_eos_create(c->bucket_alloc);
-    APR_BRIGADE_INSERT_TAIL(bb, e);
-    if (ap_pass_brigade(r->output_filters, bb) != APR_SUCCESS) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
-                      "proxy: error processing body");
-        return ap_proxyerror(r, HTTP_BAD_GATEWAY,
-                             "Error reading from remote server");
-    } 
-
-    return OK;
 }
 
 /*
@@ -446,15 +436,12 @@ int ap_proxy_ajp_handler(request_rec *r, proxy_worker *worker,
 #endif
    
    
-    /* Step Four: Send the Request */
+    /* Step Four: Process the Request */
     status = ap_proxy_ajp_request(p, r, backend, origin, conf, uri, url,
                                   server_portstr);
     if (status != OK)
         goto cleanup;
 
-    /* Step Five: Receive the Response */
-    status = ap_proxy_ajp_process_response(p, r, origin, backend,
-                                           conf, server_portstr);
 cleanup:
 #if 0
     /* Clear the module config */
