@@ -71,6 +71,5 @@ API_VAR_EXPORT module echo_module = {
     echo_cmds,			/* command table */
     NULL,			/* handlers */
     NULL,			/* check auth */
-    NULL,			/* check access */
     register_hooks		/* register hooks */
 };
