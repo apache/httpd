@@ -558,16 +558,14 @@ int ap_proxy_http_handler(request_rec *r, char *url,
     /* send the request data, if any. */
     if (ap_should_client_block(r)) {
 	while ((i = ap_get_client_block(r, buffer, sizeof buffer)) > 0) {
-/* XXX FIXME: Only sends downstream when request is fully loaded */
             e = apr_bucket_pool_create(buffer, i, p);
             APR_BRIGADE_INSERT_TAIL(bb, e);
+	    e = apr_bucket_flush_create();
+	    APR_BRIGADE_INSERT_TAIL(bb, e);
+	    ap_pass_brigade(origin->output_filters, bb);
+	    apr_brigade_cleanup(bb);
         }
     }
-
-    /* Flush the data to the origin server */
-    e = apr_bucket_flush_create();
-    APR_BRIGADE_INSERT_TAIL(bb, e);
-    ap_pass_brigade(origin->output_filters, bb);
 
 
     /*
