@@ -1,5 +1,5 @@
   1.3 STATUS:
-  Last modified at [$Date: 1999/02/06 14:00:31 $]
+  Last modified at [$Date: 1999/02/06 14:14:35 $]
 
 Release:
 
@@ -55,11 +55,11 @@ Available Patches:
 
     * chaz@reliant.com's Configure(modules/Makefile) patch for no modules
         MID: <199902021944.LAA19314@user2.teleport.com>
-        Status: Roy +1
+        Status: Roy +1, Jim +1
 
     * John Bley's [PATCH] malloc checks
         MID: <Pine.SOL.3.91.990202065837.23002A-100000@soc11.acpub.duke.edu>
-        Status: 
+        Status: Jim -0 (maybe the messages could be more detailed?)
 
     * Tony Finch's [PATCH] <LimitExcept>
         Message-ID: <E107LTU-0005ap-00@fanf.noc.demon.net>
@@ -68,7 +68,7 @@ Available Patches:
 
     * Fred's Bug with graceful restarts? Ignore empty pid file
         Message-ID: <199901290045.QAA07490@scv3.apple.com>
-        Status: Roy +1
+        Status: Roy +1, Jim +1
 
     * Dean's [PATCH] etag continued (take 2)
       Adds strong comparison functions to other checks.
@@ -92,7 +92,7 @@ Available Patches:
 
     * Fred's [PATCH: srm.conf and access.conf refer to httpd.conf
         Message-ID: <199901192353.PAA15190@scv4.apple.com>
-        Status: 
+        Status: Jim +1
 
     * Jun-ichiro itojun Hagino's [PATCH] IPv6 enable patch
       ftp://ftp.kame.net/pub/kame/misc/apache-134-v6-19990118.diff.gz
@@ -110,7 +110,7 @@ Available Patches:
 
     * Ralf's adjusted version of Fred's Add strip flags variables
         Message-ID: <19990114084058.A9039@engelschall.com>
-        Status: Ralf +1, Dirkx +1, Fred +1
+        Status: Ralf +1, Dirkx +1, Fred +1, Jim +1
 
     * Fred's PATCH: man page section numbers
         Message-ID: <199901140041.QAA05676@scv3.apple.com>
