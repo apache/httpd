@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/08/29 19:51:39 $]
+Last modified at [$Date: 2003/08/31 16:20:34 $]
 
 Release:
 
@@ -333,6 +333,7 @@ PATCHES TO PORT FROM 2.1
     * Overhaul of mod_include's filter parser.
         modules/filters/mod_include.c: r1.235, r1.236
         modules/filters/mod_include.h: r1.35
+      jerenkrantz asks: Doesn't this require a MMN bump?
       +1: nd, brianp
 
     * Fix include_cmd in mod_cgid, not to treat the cmd output (partially)
@@ -367,6 +368,11 @@ PATCHES TO PORT FROM 2.1
     * mod_ssl: fix check for the plain-HTTP-request error
         modules/ssl/ssl_engine_io.c r1.111
       +1: jorton
+
+    * Fix EOS handling in ap_get_client_block.
+        modules/http/http_protocol.c: r1.471
+      See Message-ID: <3EC0B430.4010008@stason.org>
+      +1: jerenkrantz
 
 CURRENT RELEASE NOTES:
 
