@@ -422,7 +422,7 @@ typedef struct {
     interpreter_source_e script_interpreter_source;
 #endif    
 
-    apr_array_header_t *filters;
+    apr_array_header_t *output_filters;
     apr_array_header_t *input_filters;
     /* bucket brigade held by ap_get_client_block() between calls */
     struct ap_bucket_brigade *bb;
