@@ -369,11 +369,11 @@ request_rec *make_fake_req(conn_rec *c, request_rec *r)
     rp->pool            = c->pool;
     rp->status          = HTTP_OK;
 
-    rp->headers_in      = apr_table_make(r->pool, 50);
-    rp->subprocess_env  = apr_table_make(r->pool, 50);
-    rp->headers_out     = apr_table_make(r->pool, 12);
-    rp->err_headers_out = apr_table_make(r->pool, 5);
-    rp->notes           = apr_table_make(r->pool, 5);
+    rp->headers_in      = apr_table_make(c->pool, 50);
+    rp->subprocess_env  = apr_table_make(c->pool, 50);
+    rp->headers_out     = apr_table_make(c->pool, 12);
+    rp->err_headers_out = apr_table_make(c->pool, 5);
+    rp->notes           = apr_table_make(c->pool, 5);
 
     rp->server = r->server;
     rp->request_time = r->request_time;
@@ -381,9 +381,9 @@ request_rec *make_fake_req(conn_rec *c, request_rec *r)
     rp->output_filters  = c->output_filters;
     rp->input_filters   = c->input_filters;
 
-    rp->request_config  = ap_create_request_config(rp->pool);
+    rp->request_config  = ap_create_request_config(c->pool);
     req_cfg = apr_pcalloc(rp->pool, sizeof(core_request_config));
-    req_cfg->bb = apr_brigade_create(rp->pool);
+    req_cfg->bb = apr_brigade_create(c->pool);
     ap_set_module_config(rp->request_config, &core_module, req_cfg);
 
     return rp;
