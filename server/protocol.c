@@ -1087,9 +1087,7 @@ static apr_status_t buffer_output(request_rec *r,
         ctx->bb = apr_brigade_create(r->pool);
     }
 
-    ap_fwrite(f->next, ctx->bb, str, len);
-
-    return APR_SUCCESS;
+    return ap_fwrite(f->next, ctx->bb, str, len);
 }
 
 AP_DECLARE(int) ap_rputc(int c, request_rec *r)
