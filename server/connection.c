@@ -67,7 +67,7 @@
 HOOK_STRUCT(
 	    HOOK_LINK(pre_connection)
 	    HOOK_LINK(process_connection)
-);
+)
 
 IMPLEMENT_HOOK_VOID(pre_connection,(conn_rec *c),(c))
 IMPLEMENT_HOOK_RUN_FIRST(int,process_connection,(conn_rec *c),(c),DECLINED)

@@ -80,7 +80,7 @@ HOOK_STRUCT(
 	    HOOK_LINK(log_transaction)
 	    HOOK_LINK(http_method)
 	    HOOK_LINK(default_port)
-);
+)
 
 #define SET_BYTES_SENT(r) \
   do { if (r->sent_bodyct) \
