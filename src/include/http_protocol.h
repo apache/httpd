@@ -95,7 +95,9 @@ void send_error_response (request_rec *r, int recursive_error);
 
 API_EXPORT(int) set_content_length (request_rec *r, long length);
 int set_keepalive (request_rec *r);
-API_EXPORT(int) set_last_modified (request_rec *r, time_t mtime);
+API_EXPORT(time_t) rationalize_mtime(request_rec *r, time_t mtime);
+API_EXPORT(void) set_etag(request_rec *r);
+API_EXPORT(void) set_last_modified(request_rec *r);
 
 /* Other ways to send stuff at the client.  All of these keep track
  * of bytes_sent automatically.  This indirection is intended to make

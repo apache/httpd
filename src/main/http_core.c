@@ -1658,9 +1658,13 @@ int default_handler (request_rec *r)
         return FORBIDDEN;
     }
 	
-    if ((errstatus = set_last_modified (r, r->finfo.st_mtime))
-	|| (errstatus = set_content_length (r, r->finfo.st_size)))
-        return errstatus;
+    update_mtime (r, r->finfo.st_mtime);
+    set_last_modified(r);
+    set_etag(r);
+    if (((errstatus = meets_conditions(r)) != OK)
+	|| (errstatus = set_content_length (r, r->finfo.st_size))) {
+	    return errstatus;
+    }
 
 #ifdef USE_MMAP_FILES
     block_alarms();

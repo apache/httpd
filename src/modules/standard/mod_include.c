@@ -2008,13 +2008,18 @@ static int send_parsed_file (request_rec *r)
         return FORBIDDEN;
     }
 
-    if (*state == xbithack_full
+    if ((*state == xbithack_full)
 #if !defined(__EMX__) && !defined(WIN32)
     /*  OS/2 dosen't support Groups. */
         && (r->finfo.st_mode & S_IXGRP)
 #endif
-        && (errstatus = set_last_modified (r, r->finfo.st_mtime)))
-        return errstatus;
+       ) {
+	update_mtime(r, r->finfo.st_mtime);
+	set_last_modified(r);
+    }
+    if ((errstatus = meets_conditions(r)) != OK) {
+	return errstatus;
+    }
 
     send_http_header(r);
 

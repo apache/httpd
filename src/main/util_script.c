@@ -323,12 +323,13 @@ API_EXPORT(void) add_cgi_vars(request_rec *r)
 }
 
 
-static int scan_script_header_err_core (request_rec *r, char *buffer,
+static int scan_script_header_err_core(request_rec *r, char *buffer,
     int (*getsfunc)(char *, int, void *), void *getsfunc_data)
 {
     char x[MAX_STRING_LEN];
     char *w, *l;
     int p;
+    int cgi_status = HTTP_OK;
 
     if (buffer) *buffer = '\0';
     w = buffer ? buffer : x;
@@ -352,9 +353,26 @@ static int scan_script_header_err_core (request_rec *r, char *buffer,
 	    else w[p-1] = '\0';
 	}
 
+        /*
+	 * If we've finished reading the headers, check to make sure any
+	 * HTTP/1.1 conditions are met.  If so, we're done; normal processing
+	 * will handle the script's output.  If not, just return the error.
+	 * The appropriate thing to do would be to send the script process a
+	 * SIGPIPE to let it know we're ignoring it, close the channel to the
+	 * script process, and *then* return the failed-to-meet-condition
+	 * error.  Otherwise we'd be waiting for the script to finish
+	 * blithering before telling the client the output was no good.
+	 * However, we don't have the information to do that, so we have to
+	 * leave it to an upper layer.
+	 */
         if (w[0] == '\0') {
+	    int cond_status = OK;
+
 	    kill_timeout (r);
-	    return OK;
+	    if ((cgi_status == HTTP_OK) && (r->method_number == M_GET)) {
+		cond_status = meets_conditions(r);
+	    }
+	    return cond_status;
 	}
                                    
 	/* if we see a bogus header don't ignore it. Shout and scream */
@@ -399,6 +417,24 @@ static int scan_script_header_err_core (request_rec *r, char *buffer,
         }   
         else if(!strcasecmp(w,"Transfer-Encoding")) {
 	    table_set (r->headers_out, w, l);
+        }   
+/*
+ * If the script gave us a Last-Modified header, we can't just pass it on
+ * blindly because of restrictions on future values.
+ */
+        else if (!strcasecmp(w, "Last-Modified")) {
+	    time_t mtime = parseHTTPdate(l);
+
+	    update_mtime(r, mtime);
+	    set_last_modified(r);
+        }   
+/*
+ * If the script returned a specific status, that's what we'll use - otherwise
+ * we assume 200 OK.
+ */
+        else if (!strcasecmp(w, "Status")) {
+	    table_set (r->headers_out, w, l);
+	    cgi_status = atoi(l);
         }   
 
 /* The HTTP specification says that it is legal to merge duplicate

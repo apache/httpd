@@ -348,10 +348,15 @@ int set_keepalive(request_rec *r)
     return 0;
 }
 
-API_EXPORT(int) set_last_modified(request_rec *r, time_t mtime)
+/*
+ * Return the latest rational time from a request/mtime (modification time)
+ * pair.  We return the mtime unless it's in the future, in which case we
+ * return the current time.  We use the request time as a reference in order
+ * to limit the number of calls to time().  We don't check for futurosity
+ * unless the mtime is at least as new as the reference.
+ */
+API_EXPORT(time_t) rationalize_mtime(request_rec *r, time_t mtime)
 {
-    char *etag, weak_etag[MAX_STRING_LEN];
-    char *if_match, *if_modified_since, *if_unmodified, *if_nonematch;
     time_t now;
 
     /* For all static responses, it's almost certain that the file was
@@ -359,14 +364,126 @@ API_EXPORT(int) set_last_modified(request_rec *r, time_t mtime)
      * no reason to call time(NULL) again.  But if the response has been
      * created on demand, then it might be newer than the time the request
      * started.  In this event we really have to call time(NULL) again
-     * so that we can give the clients the most accurate Last-Modified.
+     * so that we can give the clients the most accurate Last-Modified.  If we
+     * were given a time in the future, we return the current time - the
+     * Last-Modified can't be in the future.
      */
-    now = (mtime <= r->request_time) ? r->request_time : time(NULL);
+    now = (mtime < r->request_time) ? r->request_time : time(NULL);
+    return (mtime > now) ? now : mtime;
+}
 
-    table_set(r->headers_out, "Last-Modified",
-              gm_timestr_822(r->pool, (mtime > now) ? now : mtime));
+API_EXPORT(int) meets_conditions(request_rec *r)
+{
+    char *etag = table_get(r->headers_out, "ETag");
+    char *if_match, *if_modified_since, *if_unmodified, *if_nonematch;
+    time_t mtime;
 
-    /* Make an ETag header out of various pieces of information. We use
+    /*
+     * Check for conditional requests --- note that we only want to do
+     * this if we are successful so far and we are not processing a
+     * subrequest or an ErrorDocument.
+     *
+     * The order of the checks is important, since ETag checks are supposed
+     * to be more accurate than checks relative to the modification time.
+     * However, not all documents are guaranteed to *have* ETags, and some
+     * might have Last-Modified values w/o ETags, so this gets a little
+     * complicated.
+     */
+
+    if (!is_HTTP_SUCCESS(r->status) || r->no_local_copy) {
+        return OK;
+    }
+
+    mtime = (r->mtime != 0) ? r->mtime : time(NULL);
+
+    /*
+     * If an If-Match request-header field was given
+     * AND if our ETag does not match any of the entity tags in that field
+     * AND the field value is not "*" (meaning match anything), then
+     *     respond with a status of 412 (Precondition Failed).
+     */
+
+    if ((if_match = table_get(r->headers_in, "If-Match")) != NULL) {
+	if ((etag == NULL) ||
+	    ((if_match[0] != '*') && !find_token(r->pool, if_match, etag))) {
+	    return HTTP_PRECONDITION_FAILED;
+	}
+    }
+
+    /*
+     * Else if a valid If-Unmodified-Since request-header field was given
+     * AND the requested resource has been modified since the time
+     * specified in this field, then the server MUST
+     *     respond with a status of 412 (Precondition Failed).
+     */
+
+    else {
+	if_unmodified = table_get(r->headers_in, "If-Unmodified-Since");
+	if (if_unmodified != NULL) {
+	    time_t ius = parseHTTPdate(if_unmodified);
+
+	    if ((ius != BAD_DATE) && (mtime > ius)) {
+		return HTTP_PRECONDITION_FAILED;
+	    }
+	}
+    }
+
+    /*
+     * If an If-None-Match request-header field was given
+     * AND if our ETag matches any of the entity tags in that field
+     * OR if the field value is "*" (meaning match anything), then
+     *    if the request method was GET or HEAD, the server SHOULD
+     *       respond with a 304 (Not Modified) response.
+     *    For all other request methods, the server MUST
+     *       respond with a status of 412 (Precondition Failed).
+     */
+
+    if_nonematch = table_get(r->headers_in, "If-None-Match");
+    if (if_nonematch != NULL) {
+	int rstatus;
+
+	if ((if_nonematch[0] == '*')
+	    || ((etag != NULL) && find_token(r->pool, if_nonematch, etag))) {
+	    rstatus = (r->method_number == M_GET)
+			? HTTP_NOT_MODIFIED
+			: HTTP_PRECONDITION_FAILED;
+	    return rstatus;
+	}
+    }
+
+    /*
+     * Else if a valid If-Modified-Since request-header field was given
+     * AND it is a GET or HEAD request
+     * AND the requested resource has not been modified since the time
+     * specified in this field, then the server MUST
+     *    respond with a status of 304 (Not Modified).
+     * A date later than the server's current request time is invalid.
+     */
+
+    else if ((r->method_number == M_GET) && ((if_modified_since =
+              table_get(r->headers_in, "If-Modified-Since")) != NULL)) {
+        time_t ims = parseHTTPdate(if_modified_since);
+
+        if ((ims >= mtime) && (ims <= r->request_time)) {
+            return HTTP_NOT_MODIFIED;
+	}
+    }
+    return OK;
+}
+
+/*
+ * Construct an entity tag (ETag) from resource information.  If it's a real
+ * file, build in some of the file characteristics.  If the modification time
+ * is newer than (request-time minus 1 second), mark the ETag as weak - it
+ * could be modified again in as short an interval.  We rationalize the
+ * modification time we're given to keep it from being in the future.
+ */
+API_EXPORT(void) set_etag(request_rec *r)
+{
+    char *etag, weak_etag[MAX_STRING_LEN];
+
+    /*
+     * Make an ETag header out of various pieces of information. We use
      * the last-modified date and, if we have a real file, the
      * length and inode number - note that this doesn't have to match
      * the content-length (i.e. includes), it just has to be unique
@@ -378,85 +495,32 @@ API_EXPORT(int) set_last_modified(request_rec *r, time_t mtime)
      * would be incorrect.
      */
 
-    if (r->finfo.st_mode != 0)
+    if (r->finfo.st_mode != 0) {
         ap_snprintf(weak_etag, sizeof(weak_etag), "W/\"%lx-%lx-%lx\"", 
-		(unsigned long)r->finfo.st_ino,
-		(unsigned long)r->finfo.st_size, (unsigned long)mtime);
-    else
+		    (unsigned long)r->finfo.st_ino,
+		    (unsigned long)r->finfo.st_size,
+		    (unsigned long)r->mtime);
+    }
+    else {
         ap_snprintf(weak_etag, sizeof(weak_etag), "W/\"%lx\"",
-		(unsigned long)mtime);
+		    (unsigned long)r->mtime);
+    }
 
-    etag = weak_etag + ((r->request_time - mtime > 1) ? 2 : 0);
+    etag = weak_etag + ((r->request_time - r->mtime > 1) ? 2 : 0);
     table_set(r->headers_out, "ETag", etag);
+}
 
-    /* Check for conditional requests --- note that we only want to do
-     * this if we are successful so far and we are not processing a
-     * subrequest or an ErrorDocument.
-     *
-     * The order of the checks is important, since etag checks are supposed
-     * to be more accurate than checks relative to the modification time.
-     */
-    
-    if (!is_HTTP_SUCCESS(r->status) || r->no_local_copy)
-        return OK;
+/*
+ * This function sets the Last-Modified output header field to the value
+ * of the mtime field in the request structure - rationalized to keep it from
+ * being in the future.
+ */
+API_EXPORT(void) set_last_modified(request_rec *r)
+{
+    time_t mod_time = rationalize_mtime(r, r->mtime);
 
-    /* If an If-Match request-header field was given and
-     * if our ETag does not match any of the entity tags in that field
-     * and the field value is not "*" (meaning match anything), then
-     *    respond with a status of 412 (Precondition Failed).
-     */
-
-    if ((if_match = table_get(r->headers_in, "If-Match")) != NULL) {
-        if ((if_match[0] != '*') && !find_token(r->pool, if_match, etag))
-            return HTTP_PRECONDITION_FAILED;
-    }
-
-    /* Else if a valid If-Unmodified-Since request-header field was given
-     * and the requested resource has been modified since the time
-     * specified in this field, then the server MUST
-     *    respond with a status of 412 (Precondition Failed).
-     */
-
-    else if ((if_unmodified = table_get(r->headers_in, "If-Unmodified-Since"))
-             != NULL) {
-        time_t ius = parseHTTPdate(if_unmodified);
-
-        if ((ius != BAD_DATE) && (mtime > ius))
-            return HTTP_PRECONDITION_FAILED;
-    }
-
-    /* If an If-None-Match request-header field was given and
-     * if our ETag matches any of the entity tags in that field or
-     * if the field value is "*" (meaning match anything), then
-     *    if the request method was GET or HEAD, the server SHOULD
-     *       respond with a 304 (Not Modified) response.
-     *    For all other request methods, the server MUST
-     *       respond with a status of 412 (Precondition Failed).
-     */
-
-    if ((if_nonematch = table_get(r->headers_in, "If-None-Match")) != NULL) {
-        if ((if_nonematch[0] == '*') || find_token(r->pool,if_nonematch,etag))
-            return (r->method_number == M_GET) ? HTTP_NOT_MODIFIED
-                                               : HTTP_PRECONDITION_FAILED;
-    }
-
-    /* Else if a valid If-Modified-Since request-header field was given
-     * and it is a GET or HEAD request
-     * and the requested resource has not been modified since the time
-     * specified in this field, then the server MUST
-     *    respond with a status of 304 (Not Modified).
-     * A date later than the server's current request time is invalid.
-     */
-
-    else if ((r->method_number == M_GET) && ((if_modified_since =
-              table_get(r->headers_in, "If-Modified-Since")) != NULL)) {
-        time_t ims = parseHTTPdate(if_modified_since);
-
-        if ((ims >= mtime) && (ims <= r->request_time))
-            return HTTP_NOT_MODIFIED;
-    }
-
-    return OK;
+    table_set(r->headers_out, "Last-Modified",
+	      gm_timestr_822(r->pool, mod_time));
 }
 
 /* Get a line of protocol input, including any continuation lines
