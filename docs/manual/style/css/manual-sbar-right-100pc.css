@@ -1,0 +1,81 @@
+/* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ * manual.css
+ * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+@import url(manual-loose-100pc.css);
+
+/* sidebar */
+div#quickview {
+    position: absolute;
+    top: 4.9em;
+    right: 1em;
+    margin-left: 0;
+    margin-top: 40px;
+    padding: 4px;
+    width: 13.5em;
+    background-color: #f0f0f0;
+    color: inherit;
+}
+
+div#quickview li {
+    font-size: smaller;
+}
+
+div#quickview a:hover,
+div#quickview a:active {
+    background-color: #fff;
+}
+
+div#quickview h3 {
+    margin: 1em 0 0.3em 0.5em;
+    font-size: 1em;
+}
+
+div#quickview h3.directives {
+    margin-top: 0.3em;
+}
+
+div#quickview ul {
+    margin: 0 0 15px 0;
+    padding: 0;
+}
+
+div#quickview ul#toc {
+    margin: 0 0 0 0.5em;
+    padding: 0;
+}
+
+div#quickview ul#toc li {
+    margin: 0;
+    padding: 0;
+    list-style-type: none;
+}
+
+div#quickview li img {
+    display: none;
+}
+
+#manual-page div#quickview ul#toc,
+div#quickview #topics,
+div#quickview .seealso {
+    padding-left: 15px;
+}
+
+#manual-page div#quickview ul#toc li,
+div#quickview #topics li,
+div#quickview .seealso li {
+    margin: 0 0 2px 0;
+    padding: 0;
+    list-style-type: square;
+    list-style-position: outside;
+}
+
+/* move content left */
+div#page-content {
+    padding-top: 0;
+    margin-right: 13em;
+    padding-right: 30px;
+}
+
+/* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ * -> The End <-
+ * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
