@@ -606,7 +606,12 @@ void reinit_scoreboard (pool *p)
 
     have_scoreboard_fname = 1;
     
+#ifdef __EMX__
+    /* OS/2 needs binary mode set. */
+    scoreboard_fd = popenf(p, scoreboard_fname, O_CREAT|O_BINARY|O_RDWR, 0644);
+#else
     scoreboard_fd = popenf(p, scoreboard_fname, O_CREAT|O_RDWR, 0644);
+#endif
     if (scoreboard_fd == -1)
     {
 	fprintf (stderr, "Cannot open scoreboard file:\n");
@@ -626,7 +631,12 @@ void reopen_scoreboard (pool *p)
 #if !defined(HAVE_MMAP) && !defined(HAVE_SHMGET)
     if (scoreboard_fd != -1) pclosef (p, scoreboard_fd);
     
+#ifdef __EMX__    
+    /* OS/2 needs binary mode set. */
+    scoreboard_fd = popenf(p, scoreboard_fname, O_CREAT|O_BINARY|O_RDWR, 0666);
+#else
     scoreboard_fd = popenf(p, scoreboard_fname, O_CREAT|O_RDWR, 0666);
+#endif
     if (scoreboard_fd == -1)
     {
 	fprintf (stderr, "Cannot open scoreboard file:\n");

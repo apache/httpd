@@ -1,3 +1,16 @@
+Changes with Apache 1.1.1:
+
+  *) Fixed bug where Redirect in .htaccess files would cause memory
+     leak. [Nathan Neulinger]
+
+  *) MultiViews now works correctly with AddHandler [Alexei Kosut]
+
+  *) Problems with mod_auth_msql fixed [Dirk vanGulik]
+
+  *) Fix mispelling of "Anonymous_Authorative" directive in mod_auth_anon.
+
+Changes with Apache 1.1.0:
+
   *) Bring NeXT support up to date. [Takaaki Matsumoto]
 
   *) Bring QNX support up to date. [Ben Laurie]

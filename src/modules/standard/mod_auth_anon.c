@@ -75,7 +75,7 @@
  * Anonymous_LogEmail		[ on | off ] default = on
  * Anonymous_VerifyEmail	[ on | off ] default = off
  * Anonymous_NoUserId		[ on | off ] default = off
- * Anonymous_Authorative        [ on | off ] default = off
+ * Anonymous_Authoritative      [ on | off ] default = off
  *
  * The magic user id is something like 'anonymous', it is NOT case sensitive. 
  * 

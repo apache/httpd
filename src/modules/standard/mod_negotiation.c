@@ -1089,6 +1089,7 @@ int handle_multi (request_rec *r)
     
     if (!do_cache_negotiated_docs(r->server)) r->no_cache = 1;
     r->filename = sub_req->filename;
+    r->handler = sub_req->handler;
     r->content_type = sub_req->content_type;
     r->content_encoding = sub_req->content_encoding;
     r->content_language = sub_req->content_language;

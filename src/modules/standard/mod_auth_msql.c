@@ -284,6 +284,12 @@
  *		Replaced some MAX_STRING_LENGTH claims. 
  *	   1.0  removed some error check as they where already done elsehwere
  *	        NumFields -> NumRows (Thanks Vitek). More stack memory.
+ *	   1.1	no logging of empty password strings.
+ * 	   1.2  Problem with the Backward vitek which cause it to check
+ *		even if msql_auth was not configured; Also more carefull
+ *		with the authorative stuff; caught by thomas@marvin.calvacom.fr.
+ *	   1.3  Even more changes to get it right; that BACKWARD thing was a bad
+ *		idea. 
  */
 
 
@@ -778,11 +784,10 @@ int msql_authenticate_basic_user (request_rec *r)
      * We do not check on dbase, group, userid or host name, as it is
      * perfectly possible to only do group control with mSQL and leave
      * user control to the next (dbm) guy in line.
+     * We no longer check on the user field name; to avoid problems
+     * with Backward VITEK.
      */
-    if (
-    	(!sec->auth_msql_pwd_table) &&
-    	(!sec->auth_msql_pwd_field)
-	 ) return DECLINED;
+    if (!sec->auth_msql_pwd_table) return DECLINED;
 
     if(!(real_pw = get_msql_pw(r, c->user, sec,msql_errstr ))) {
 	if ( msql_errstr[0] ) {
@@ -809,8 +814,10 @@ int msql_authenticate_basic_user (request_rec *r)
      */
 
     if ((sec->auth_msql_nopasswd) && (!strlen(real_pw))) {
+/*
         sprintf(msql_errstr,"mSQL: user %s: Empty/'any' password accepted",c->user);
 	log_reason (msql_errstr, r->uri, r);
+ */
 	return OK;
 	};
 
@@ -861,6 +868,9 @@ int msql_check_auth (request_rec *r) {
     register int x;
     char *t, *w;
     msql_errstr[0]='\0';
+
+    /* If we are not configured, ignore */
+    if (!sec->auth_msql_pwd_table) return DECLINED;
 
     if (!reqs_arr) {
 	if (sec->auth_msql_authorative) {
@@ -929,25 +939,23 @@ int msql_check_auth (request_rec *r) {
 	    };
         }
 
-    /* we do not have to check the valid-ness of the group result as
-     * have not (yet) a 'valid-group' token
+    /* Get serious if we are authorative, previous
+     * returns are only if msql yielded a correct result. 
+     * This really is not needed.
      */
-    if ( (user_result != OK) && (sec->auth_msql_authorative) ) {
-        sprintf(msql_errstr,"User %s denied, no access rules applied (MSQL-Authorative) ",user);
+    if (((group_result == AUTH_REQUIRED) || (user_result == AUTH_REQUIRED)) && (sec->auth_msql_authorative) ) {
+        sprintf(msql_errstr,"mSQL-Authorative: Access denied on %s %s rule(s) ", 
+		(group_result == AUTH_REQUIRED) ? "USER" : "", 
+		(user_result == AUTH_REQUIRED) ? "GROUP" : ""
+		);
 	log_reason (msql_errstr, r->uri, r);
-        note_basic_auth_failure(r);
 	return AUTH_REQUIRED;
 	};
 
+    if ( (user_result == OK) || (group_result == OK))
+	return OK;
 
-    /* if the user is DECLINED, it is up to the group_result to tip
-     * the balance. But if the group result is AUTH_REQUIRED it should
-     * always override. A SERVER_ERROR should not get here. 
-     */
-    if ( (user_result == DECLINED) || (group_result == AUTH_REQUIRED))
-	return group_result;
-
-    return user_result;
+    return DECLINED;
 }
 
 

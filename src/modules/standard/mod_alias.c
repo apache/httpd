@@ -74,6 +74,9 @@ typedef struct {
     array_header *redirects;
 } alias_server_conf;
 
+typedef struct {
+    array_header *redirects;
+} alias_dir_conf;
 module alias_module;
 
 void *create_alias_config (pool *p, server_rec *s)
@@ -86,6 +89,13 @@ void *create_alias_config (pool *p, server_rec *s)
     return a;
 }
 
+void *create_alias_dir_config (pool *p, char *d)
+{
+    alias_dir_conf *a =
+      (alias_dir_conf *)pcalloc (p, sizeof(alias_dir_conf));
+    a->redirects = make_array (p, 2, sizeof(alias_entry));
+    return a;
+}
 void *merge_alias_config (pool *p, void *basev, void *overridesv)
 {
     alias_server_conf *a =
@@ -98,6 +108,15 @@ void *merge_alias_config (pool *p, void *basev, void *overridesv)
     return a;
 }
 
+void *merge_alias_dir_config (pool *p, void *basev, void *overridesv)
+{
+    alias_dir_conf *a =
+      (alias_dir_conf *)pcalloc (p, sizeof(alias_dir_conf));
+    alias_dir_conf *base = (alias_dir_conf *)basev,
+      *overrides = (alias_dir_conf *)overridesv;
+    a->redirects = append_arrays (p, overrides->redirects, base->redirects);
+    return a;
+}
 char *add_alias(cmd_parms *cmd, void *dummy, char *f, char *r)
 {
     server_rec *s = cmd->server;
@@ -111,15 +130,22 @@ char *add_alias(cmd_parms *cmd, void *dummy, char *f, char *r)
     return NULL;
 }
 
-char *add_redirect(cmd_parms *cmd, void *dummy, char *f, char *url)
+char *add_redirect(cmd_parms *cmd, alias_dir_conf *dirconf, char *f, char *url)
 {
+    alias_entry *new;
     server_rec *s = cmd->server;
-    alias_server_conf *conf =
+    alias_server_conf *serverconf =
         (alias_server_conf *)get_module_config(s->module_config,&alias_module);
-    alias_entry *new = push_array (conf->redirects);
 
     if (!is_url (url)) return "Redirect to non-URL";
-    
+    if ( cmd->path )
+    {
+        new = push_array (dirconf->redirects);
+    }
+    else
+    {
+        new = push_array (serverconf->redirects);
+    }
     new->fake = f; new->real = url;
     return NULL;
 }
@@ -198,7 +224,7 @@ char *try_alias_list (request_rec *r, array_header *aliases, int doesc)
 int translate_alias_redir(request_rec *r)
 {
     void *sconf = r->server->module_config;
-    alias_server_conf *conf =
+    alias_server_conf *serverconf =
         (alias_server_conf *)get_module_config(sconf, &alias_module);
     char *ret;
 
@@ -210,12 +236,12 @@ int translate_alias_redir(request_rec *r)
 #endif    
         return BAD_REQUEST;
 
-    if ((ret = try_alias_list (r, conf->redirects, 1)) != NULL) {
+    if ((ret = try_alias_list (r, serverconf->redirects, 1)) != NULL) {
         table_set (r->headers_out, "Location", ret);
         return REDIRECT;
     }
     
-    if ((ret = try_alias_list (r, conf->aliases, 0)) != NULL) {
+    if ((ret = try_alias_list (r, serverconf->aliases, 0)) != NULL) {
         r->filename = ret;
         return OK;
     }
@@ -225,14 +251,14 @@ int translate_alias_redir(request_rec *r)
 
 int fixup_redir(request_rec *r)
 {
-    void *sconf = r->server->module_config;
-    alias_server_conf *conf =
-        (alias_server_conf *)get_module_config(sconf, &alias_module);
+    void *dconf = r->per_dir_config;
+    alias_dir_conf *dirconf =
+        (alias_dir_conf *)get_module_config(dconf, &alias_module);
     char *ret;
 
     /* It may have changed since last time, so try again */
 
-    if ((ret = try_alias_list (r, conf->redirects, 1)) != NULL) {
+    if ((ret = try_alias_list (r, dirconf->redirects, 1)) != NULL) {
         table_set (r->headers_out, "Location", ret);
         return REDIRECT;
     }
@@ -243,8 +269,8 @@ int fixup_redir(request_rec *r)
 module alias_module = {
    STANDARD_MODULE_STUFF,
    NULL,			/* initializer */
-   NULL,			/* dir config creater */
-   NULL,			/* dir merger --- default is to override */
+   create_alias_dir_config,	/* dir config creater */
+   merge_alias_dir_config,	/* dir merger --- default is to override */
    create_alias_config,		/* server config */
    merge_alias_config,		/* merge server configs */
    alias_cmds,			/* command table */
