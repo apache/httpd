@@ -121,6 +121,39 @@ static int alias_match(const char *uri, const char *alias_fakename)
     return urip - uri;
 }
 
+/* Detect if an absoluteURI should be proxied or not.  Note that we
+ * have to do this during this phase because later phases are
+ * "short-circuiting"... i.e. translate_names will end when the first
+ * module returns OK.  So for example, if the request is something like:
+ *
+ * GET http://othervhost/cgi-bin/printenv HTTP/1.0
+ *
+ * mod_alias will notice the /cgi-bin part and ScriptAlias it and
+ * short-circuit the proxy... just because of the ordering in the
+ * configuration file.
+ */
+static int proxy_detect(request_rec *r)
+{
+    void *sconf = r->server->module_config;
+    proxy_server_conf *conf;
+
+    conf = (proxy_server_conf *) get_module_config(sconf, &proxy_module);
+
+    if (conf->req && r->parsed_uri.scheme) {
+	/* but it might be something vhosted */
+       if (!(r->parsed_uri.hostname
+	    && !strcasecmp(r->parsed_uri.scheme, http_method(r))
+	    && matches_request_vhost(r, r->parsed_uri.hostname,
+               r->parsed_uri.port_str ? r->parsed_uri.port : default_port(r)))) {
+	    r->proxyreq = 1;
+	    r->uri = r->unparsed_uri;
+	    r->filename = pstrcat(r->pool, "proxy:", r->uri, NULL);
+	    r->handler = "proxy-server";
+        }
+    }
+    return DECLINED;
+}
+
 static int proxy_trans(request_rec *r)
 {
     void *sconf = r->server->module_config;
@@ -129,18 +162,11 @@ static int proxy_trans(request_rec *r)
     int i, len;
     struct proxy_alias *ent = (struct proxy_alias *) conf->aliases->elts;
 
-    if (conf->req && r->parsed_uri.scheme) {
-	/* but it might be something vhosted */
-       if (!(r->parsed_uri.hostname
-	    && !strcasecmp(r->parsed_uri.scheme, http_method(r))
-	    && matches_request_vhost(r, r->parsed_uri.hostname,
-               r->parsed_uri.port_str ? r->parsed_uri.port : default_port(r)))) {
-           r->proxyreq = 1;
-           r->uri = r->unparsed_uri;
-           r->filename = pstrcat(r->pool, "proxy:", r->uri, NULL);
-           r->handler = "proxy-server";
-           return OK;
-        }
+    if (r->proxyreq) {
+	/* someone has already set up the proxy, it was possibly ourselves
+	 * in proxy_detect
+	 */
+	return OK;
     }
 
     /* XXX: since r->uri has been manipulated already we're not really
@@ -774,5 +800,5 @@ module MODULE_VAR_EXPORT proxy_module =
     NULL,			/* header parser */
     NULL,			/* child_init */
     NULL,			/* child_exit */
-    NULL			/* post read-request */
+    proxy_detect		/* post read-request */
 };

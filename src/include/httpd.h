@@ -564,7 +564,8 @@ struct request_rec {
 
     char *the_request;		/* First line of request, so we can log it */
     int assbackwards;		/* HTTP/0.9, "simple" request */
-    int proxyreq;		/* A proxy request (calculated during translate_name) */
+    int proxyreq;		/* A proxy request (calculated during
+				 * post_read_request or translate_name) */
     int header_only;		/* HEAD request, as opposed to GET */
     char *protocol;		/* Protocol, as given to us, or HTTP/0.9 */
     int proto_num;		/* Number version of protocol; 1.1 = 1001 */

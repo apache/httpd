@@ -62,9 +62,13 @@ Changes with Apache 1.3b6
      In order to achieve this change subtle changes were made to the API.  In a
      request_rec, r->hostlen has been removed.  r->unparsed_uri now exists so
      that the unmodified uri can be retrieved easily.  r->proxyreq is not set
-     until the translate_names phase. 
+     by the core, modules must set it during the post_read_request or
+     translate_names phase.
 
      Plus changes to the virtualhost test suite for absoluteURI testing.
+
+     This fixes several bugs with the proxy proxying requests to vhosts
+     managed by the same httpd.
      [Dean Gaudet]
 
   *) Cleanup of code in http_vhost.c, and remove vhost matching code from
