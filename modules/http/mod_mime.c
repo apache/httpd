@@ -779,41 +779,54 @@ static content_type *analyze_ct(request_rec *r, char *s)
     return (ctp);
 }
 
+/*
+ * find_ct is the hook routine for determining content-type and other
+ * MIME-related metadata.  It assumes that r->filename has already been
+ * set and stat has been called for r->finfo.  It also assumes that the
+ * non-path base file name is not the empty string unless it is a dir.
+ */
 static int find_ct(request_rec *r)
 {
-    const char *fn = strrchr(r->filename, '/');
-    mime_dir_config *conf =
-    (mime_dir_config *) ap_get_module_config(r->per_dir_config, &mime_module);
+    mime_dir_config *conf;
+    apr_array_header_t *exception_list;
     char *ext;
-    const char *type;
-    const char *charset = NULL;
-    int found_any = 0;
-    apr_array_header_t *exception_list =
-        apr_array_make(r->pool, 2, sizeof(char *));
+    const char *fn, *type, *charset = NULL;
+    int found_metadata = 0;
 
     if (r->finfo.filetype == APR_DIR) {
         r->content_type = DIR_MAGIC_TYPE;
         return OK;
     }
 
-    /* Always drop the leading element
+    conf = (mime_dir_config *) ap_get_module_config(r->per_dir_config,
+                                                    &mime_module);
+    exception_list = apr_array_make(r->pool, 2, sizeof(char *));
+
+    /* Always drop the path leading up to the file name.
      */
-    if (fn == NULL)
-	fn = r->filename;
+    if ((fn = strrchr(r->filename, '/')) == NULL)
+        fn = r->filename;
     else
         ++fn;
 
-    /* always add a note that we have parsed exceptions,
-     * the base name is the first exception.
+    /* The exception list keeps track of those filename components that
+     * are not associated with extensions indicating metadata.
+     * The base name is always the first exception (i.e., "txt.html" has
+     * a basename of "txt" even though it might look like an extension).
      */
-    ext= ap_getword(r->pool, &fn, '.');
+    ext = ap_getword(r->pool, &fn, '.');
     *((const char **) apr_array_push(exception_list)) = ext;
 
     /* Parse filename extensions which can be in any order 
      */
-    while ((ext = ap_getword(r->pool, &fn, '.')) && *ext) {
-        int found = 0;
+    while (*fn && (ext = ap_getword(r->pool, &fn, '.'))) {
         extension_info *exinfo;
+        int found;
+
+        if (*ext == '\0')  /* ignore empty extensions "bad..html" */
+            continue;
+
+        found = 0;
 
 #ifdef CASE_BLIND_FILESYSTEM
         /* We have a basic problem that folks on case-crippled systems
@@ -821,57 +834,57 @@ static int find_ct(request_rec *r)
          */
         ap_str_tolower(ext);
 #endif
+
         exinfo = (extension_info*) apr_hash_get(conf->extension_mappings,
                                                 ext, APR_HASH_KEY_STRING);
         
-        /* Check for Content-Type */
-        if ((exinfo && ((type = exinfo->forced_type)))
-            || (type = apr_hash_get(mime_type_extensions, ext,
-                                    APR_HASH_KEY_STRING))) {
-            r->content_type = type;
-            found = 1;
+        if (exinfo == NULL) {
+            if ((type = apr_hash_get(mime_type_extensions, ext,
+                                     APR_HASH_KEY_STRING)) != NULL) {
+                r->content_type = type;
+                found = 1;
+            }
+        }
+        else {
+
+            if (exinfo->forced_type) {
+                r->content_type = exinfo->forced_type;
+                found = 1;
+            }
+            if (exinfo->charset_type) {
+                charset = exinfo->charset_type;
+                found = 1;
+            }
+            if (exinfo->language_type) {
+                r->content_language = exinfo->language_type; /* back compat. */
+                if (!r->content_languages)
+                    r->content_languages = apr_array_make(r->pool, 2,
+                                                          sizeof(char *));
+                *((const char **) apr_array_push(r->content_languages)) =
+                    exinfo->language_type;
+                found = 1;
+            }
+            if (exinfo->encoding_type) {
+                if (!r->content_encoding)
+                    r->content_encoding = exinfo->encoding_type;
+                else {
+                    /* XXX should eliminate duplicate entities */
+                    r->content_encoding = apr_pstrcat(r->pool,
+                                                      r->content_encoding,
+                                                      ", ",
+                                                      exinfo->encoding_type,
+                                                      NULL);
+                }
+                found = 1;
+            }
+            if (exinfo->handler && r->proxyreq == PROXYREQ_NONE) {
+                r->handler = exinfo->handler;
+                found = 1;
+            }
         }
 
-	/* Add charset to Content-Type */
-        if (exinfo && ((type = exinfo->charset_type))) {
-	    charset = type;
-	    found = 1;
-	}
-
-        /* Check for Content-Language */
-        if (exinfo && ((type = exinfo->language_type))) {
-            const char **new;
-
-            r->content_language = type;         /* back compat. only */
-            if (!r->content_languages)
-                r->content_languages = apr_array_make(r->pool, 2, sizeof(char *));
-            new = (const char **) apr_array_push(r->content_languages);
-            *new = type;
-            found = 1;
-        }
-
-        /* Check for Content-Encoding */
-        if (exinfo && ((type = exinfo->encoding_type))) {
-            if (!r->content_encoding)
-                r->content_encoding = type;
-            else
-                /* XXX should eliminate duplicate entities */
-                r->content_encoding = apr_pstrcat(r->pool, r->content_encoding,
-                                                  ", ", type, NULL);
-            found = 1;
-        }
-
-        /* Check for a special handler, but not for proxy request */
-        if ((exinfo && ((type = exinfo->handler)))
-            && (PROXYREQ_NONE == r->proxyreq)) {
-            r->handler = type;
-            found = 1;
-        }
-
-        /* Not good... nobody claims it.
-         */
         if (found)
-            found_any = 1;
+            found_metadata = 1;
         else
             *((const char **) apr_array_push(exception_list)) = ext;
     }
@@ -881,7 +894,7 @@ static int find_ct(request_rec *r)
      * Somebody better claim them!  If we did absolutely nothing,
      * skip the notes to alert mod_negotiation we are clueless.
      */
-    if (found_any) {
+    if (found_metadata) {
         apr_table_setn(r->notes, "ap-mime-exceptions-list", 
                        (void *)exception_list);
     }
