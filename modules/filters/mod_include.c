@@ -2390,7 +2390,7 @@ static int send_parsed_file(request_rec *r)
         return HTTP_NOT_FOUND;
     }
 
-    errstatus = ap_open(&f, r->filename, APR_READ, 0, r->pool);
+    errstatus = ap_open(&f, r->filename, APR_READ|APR_BUFFERED, 0, r->pool);
 
     if (errstatus != APR_SUCCESS) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, errstatus, r,
