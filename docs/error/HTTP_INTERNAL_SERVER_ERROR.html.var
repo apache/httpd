@@ -147,7 +147,7 @@ Body:----------sv--
 
   <!--#if expr="$REDIRECT_ERROR_NOTES" -->
 
-    Servern r&aring;kade ut f&ouml;r ett internt fel och var inte m&ouml;jlig
+    Servern r&aring;kade ut f&ouml;r ett internt fel och det var inte m&ouml;jligt
     att slutf&ouml;ra din beg&auml;ran.
 
     <!--#include virtual="include/spacer.html" -->
@@ -157,8 +157,8 @@ Body:----------sv--
 
   <!--#else -->
 
-    Servern r&aring;kade ut f&ouml;r ett internt fel och var inte m&ouml;jlig
-    att slutf&ouml;ra din beg&auml;ran. Server &auml;r antigen &ouml;verbelastad
+    Servern r&aring;kade ut f&ouml;r ett internt fel och det var inte m&ouml;jligt
+    att slutf&ouml;ra din beg&auml;ran. Servern &auml;r antingen &ouml;verbelastad
     eller s&aring; inneh&aring;ller CGI-skriptet fel.
 
   <!--#endif -->

@@ -69,7 +69,7 @@ Content-language: sv
 Content-type: text/html; charset=ISO-8859-1
 Body:----------sv--
 <!--#set var="CONTENT_LANGUAGE" value="sv" -->
-<!--#set var="TITLE" value="Submitted URI too large!" -->
+<!--#set var="TITLE" value="Efterfr&aring;gad URI f&ouml;r stor!" -->
 <!--#include virtual="include/top.html" -->
 
     L&auml;ngden p&aring; adressen som efterfr&aring;gas &ouml;verskrider
