@@ -523,11 +523,7 @@ int SSL_CTX_use_certificate_chain(
     }
     /* create new extra chain by loading the certs */
     n = 0;
-#if SSL_LIBRARY_VERSION < 0x00904000
-    while ((x509 = PEM_read_bio_X509(bio, NULL, cb)) != NULL) {
-#else
-    while ((x509 = PEM_read_bio_X509(bio, NULL, cb, NULL)) != NULL) {
-#endif
+    while ((x509 = modssl_PEM_read_bio_X509(bio, NULL, cb, NULL)) != NULL) {
         if (!SSL_CTX_add_extra_chain_cert(ctx, x509)) { 
             X509_free(x509);
             BIO_free(bio);
