@@ -85,7 +85,11 @@ int main (int argc, char **argv)
                             "new log file. %10d messages lost.\n",
                             nMessCount); 
                     nWrite = strlen(errbuf);
+#ifdef WIN32
+                    chsize(nLogFD, 0);
+#else
                     ftruncate(nLogFD, 0);
+#endif
                     write(nLogFD, errbuf, nWrite);
                 }
             }
@@ -104,7 +108,11 @@ int main (int argc, char **argv)
                     "%10d messages lost.\n",
                     nMessCount);
             nWrite = strlen(errbuf);
+#ifdef WIN32
+            chsize(nLogFD, 0);
+#else
             ftruncate(nLogFD, 0);
+#endif
             write (nLogFD, errbuf, nWrite);
         } 
         else {
