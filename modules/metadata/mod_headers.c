@@ -102,6 +102,7 @@
  *
  */
 
+#include "apr_strings.h"
 #include "httpd.h"
 #include "http_config.h"
 #include "http_request.h"
@@ -116,7 +117,7 @@ typedef enum {
 typedef struct {
     hdr_actions action;
     char *header;
-    char *value;
+    const char *value;
 } header_entry;
 
 /*
@@ -155,8 +156,11 @@ static void *merge_headers_config(ap_pool_t *p, void *basev, void *overridesv)
 }
 
 
-static const char *header_cmd(cmd_parms *cmd, headers_conf * dirconf, char *action, char *hdr, char *value)
+static const char *header_cmd(cmd_parms *cmd, void *indirconf,
+                              const char *action, const char *inhdr, const char *value)
 {
+    headers_conf *dirconf = indirconf;
+    char *hdr = ap_pstrdup(cmd->pool, inhdr);
     header_entry *new;
     server_rec *s = cmd->server;
     headers_conf *serverconf =
@@ -199,8 +203,8 @@ static const char *header_cmd(cmd_parms *cmd, headers_conf * dirconf, char *acti
 
 static const command_rec headers_cmds[] =
 {
-    {"Header", header_cmd, NULL, OR_FILEINFO, TAKE23,
-     "an action, header and value"},
+    AP_INIT_TAKE23("Header", header_cmd, NULL, OR_FILEINFO,
+                   "an action, header and value"),
     {NULL}
 };
 
