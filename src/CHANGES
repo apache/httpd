@@ -1,5 +1,11 @@
 Changes with Apache 1.3.1
 
+  *) Workaround for configure script and old `test' commands which do not
+     support the -x flag (for instance under platforms like Ultrix). This is
+     solved by another helper script findprg.sh which searches for Perl and
+     Awk like PrintPath but _via different names_.
+     [Ralf S. Engelschall]
+
   *) Remove the system() call from htpasswd.c, which eliminates a system
      dependancy.  ["M.D.Parker" <mdpc@netcom.com>] PR#2332
 

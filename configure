@@ -113,25 +113,14 @@ if [ $# -eq 0 ]; then
 fi
 
 ##
-##  determine optional Perl interpreter
+##  determine path to (optional) Perl interpreter
 ##
 
 PERL=no-perl-on-this-system
-OIFS="$IFS" IFS=':'
-for dir in $PATH; do
-    OIFS2="$IFS" IFS="$DIFS"
-    for exe in perl5 perl miniperl; do
-        if [ -f "$dir/$exe" ]; then
-            if [ -x "$dir/$exe" ]; then
-                PERL="$dir/$exe"
-                break 2
-            fi
-        fi
-    done
-    IFS="$OIFS2"
-done
-IFS="$OIFS"
-PERL="`echo $PERL | sed -e 's://:/:'`"
+perlpath="`$aux/findprg.sh perl5 perl miniperl`"
+if [ ".$perlpath" != . ]; then
+    PERL="$perlpath"
+fi
 
 ##
 ##  look for the best Awk we can find because some
@@ -140,20 +129,10 @@ PERL="`echo $PERL | sed -e 's://:/:'`"
 ##
 
 AWK=awk
-OIFS="$IFS" IFS=':'
-for dir in $PATH; do
-    OIFS2="$IFS" IFS="$DIFS"
-    if [ -x "$dir/nawk" ]; then
-        AWK="$dir/nawk"
-        break 2
-    fi
-    if [ -x "$dir/gawk" ]; then
-        AWK="$dir/gawk"
-        break 2
-    fi
-    IFS="$OIFS2"
-done
-IFS="$OIFS"
+awkpath="`$aux/findprg.sh nawk gawk awk`"
+if [ ".$awkpath" != . ]; then
+    AWK="$awkpath"
+fi
 
 ##
 ##  determine default parameters
