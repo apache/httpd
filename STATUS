@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/08/15 23:58:19 $]
+Last modified at [$Date: 2004/08/17 16:44:14 $]
 
 Release:
 
@@ -76,7 +76,7 @@ PATCHES TO BACKPORT FROM 2.1
     *) [SECURITY] mod_ssl: Fix potential infinite loop.
        http://cvs.apache.org/viewcvs.cgi/httpd-2.0/modules/ssl/ssl_engine_io.c?r1=1.124&r2=1.125
        PR: 29964
-       +1: jorton, nd
+       +1: jorton, nd, jerenkrantz
 
     *) mod_ssl: Use anon shm in shmcb by default.
        http://cvs.apache.org/viewcvs.cgi/httpd-2.0/modules/ssl/ssl_scache_shmcb.c?r1=1.23&r2=1.24
@@ -213,7 +213,7 @@ PATCHES TO BACKPORT FROM 2.1
     *) mod_usertrack: Escape the cookie_name before pasting into the regexp.
        (2.0 + 1.3)
          modules/metadata/mod_usertrack.c: r1.51
-       +1: nd, trawick
+       +1: nd, trawick, jerenkrantz
 
     *) Fix memory leak in mod_rewrite. PR 27862. (2.0 + 1.3)
          http://www.apache.org/~nd/mod_rewrite_fixleak.diff
@@ -223,7 +223,7 @@ PATCHES TO BACKPORT FROM 2.1
        from being logged for I_INSIST_ON_EXTRA_CYCLES_FOR_CLF_COMPLIANCE
        processing.  PR 29696.  [Alois Treindl <alois astro.ch>]
          http://cvs.apache.org/viewcvs.cgi/httpd-2.0/modules/loggers/mod_log_config.c?r1=1.118&r2=1.119
-       +1: trawick, nd
+       +1: trawick, nd, jerenkrantz
 
     *) (re-)add support for RewriteRules in <Proxy> containers. PR 27985
          modules/mappers/mod_rewrite.c: r1.254
@@ -236,8 +236,11 @@ PATCHES TO BACKPORT FROM 2.1
 
     *) mod_dav: Send an EOS at the end of the multistatus brigade.
        http://cvs.apache.org/viewcvs.cgi/httpd-2.0/modules/dav/main/mod_dav.c?r1=1.105&r2=1.106
-       +1: jorton
+       +1: jorton, jerenkrantz
          nd asks: Sure, you want to drop the return code of ap_pass_brigade?
+         jerenkrantz: They already did drop it.  Note that this really isn't
+                      a correctness fix; just a perf. fix.  We'd send the EOS
+                      later without it.
 
     *) Allow Satisfy directives to be influenced by <Limit>.
        PR: 14726
@@ -265,7 +268,7 @@ PATCHES TO BACKPORT FROM 2.1
     * mod_setenvif: remove support for remote_user variable which never
       worked at all. PR 25725 (2.0 + 1.3)
         modules/metadata/mod_setenvif.c: r1.50
-      +1: nd
+      +1: nd, jerenkrantz
 
     * Replace some of the mutex locking in the worker MPM with
       atomic operations for higher concurrency.
