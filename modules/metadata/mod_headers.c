@@ -342,7 +342,7 @@ static const char *header_inout_cmd(hdr_inout inout, cmd_parms *cmd, void *indir
                               const char *value, const char* envclause)
 {
     headers_conf *dirconf = indirconf;
-    const char *condition_var;
+    const char *condition_var = NULL;
     char *colon;
     char *hdr = apr_pstrdup(cmd->pool, inhdr);
     header_entry *new;
