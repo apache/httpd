@@ -91,6 +91,7 @@
 #include "http_log.h"
 #include "util_script.h"
 #include "ap_mpm.h"
+#include "mod_core.h"
 #include "../filters/mod_include.h"
 
 
