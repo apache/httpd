@@ -1,5 +1,8 @@
 Changes with Apache 2.0.24-dev
 
+  *) Added Win32 revision stamp resources to all http binaries
+     (including modules/ and support/ tools.)  PR7322  [William Rowe]
+
   *) Fix ap_rvprintf to support more than 4K of data at one time.
      [Cody Sherr <csherr@covalent.net>]
 
