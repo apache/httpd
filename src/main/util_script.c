@@ -236,6 +236,17 @@ void add_cgi_vars(request_rec *r)
 	table_set (e, "PATH_INFO", r->uri + path_info_start);
     }
 	
+    /* Some CGI apps need the old-style PATH_INFO (taken from the
+     * filename, not the URL), so we provide it in a different env
+     * variable. CGI scripts can use something like (in Perl)
+     * $path_info = $ENV{'FILEPATH_INFO'} || $ENV{'PATH_INFO'};
+     * to get the right information with both old and new
+     * versions of Apache (and other servers).
+     */
+
+    if (r->path_info && *r->path_info)
+	table_set (e, "FILEPATH_INFO", r->path_info);
+
     if (r->path_info && r->path_info[0]) {
 	/*
  	 * To get PATH_TRANSLATED, treat PATH_INFO as a URI path.

@@ -1,5 +1,9 @@
 Changes with Apache 1.2b3:
 
+  *) Add FILEPATH_INFO variable to CGI environment, which is equal to
+     PATH_INFO from previous versions of Apache (in certain situations,
+     Apache 1.2's PATH_INFO will be different than 1.1's). [Alexei Kosut]
+
   *) Add rwrite() function to API to allow for sending strings of
      arbitrary length. [Doug MacEachern]
 
