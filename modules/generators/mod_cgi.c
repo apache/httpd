@@ -605,31 +605,9 @@ static int cgi_handler(request_rec *r)
         return log_scripterror(r, conf, HTTP_FORBIDDEN, 0,
                                "attempt to include NPH CGI script");
 
-#if defined(OS2) || defined(WIN32)
-    /* XXX: This is wrong.  As an option, perhaps, but not by default...
-     *      we are back to the same argument that a url should be a unique
-     *      entity until the sysadmin overrides that behavior.
-     * Allow for cgi files without the .EXE extension on them under OS/2 
-     */
-    if (r->finfo.filetype == 0) {
-        apr_finfo_t finfo;
-        char *newfile;
-        apr_status_t rv;
-
-        newfile = apr_pstrcat(r->pool, r->filename, ".EXE", NULL);
-        if (((rv = apr_stat(&finfo, newfile, APR_FINFO_TYPE, r->pool))
-                != APR_SUCCESS) || (finfo.filetype != APR_REG)) {
-            return log_scripterror(r, conf, HTTP_NOT_FOUND, rv,
-                                   "script not found or unable to stat");
-        } else {
-            r->filename = newfile;
-        }
-    }
-#else
     if (r->finfo.filetype == 0)
 	return log_scripterror(r, conf, HTTP_NOT_FOUND, 0,
 			       "script not found or unable to stat");
-#endif
     if (r->finfo.filetype == APR_DIR)
 	return log_scripterror(r, conf, HTTP_FORBIDDEN, 0,
 			       "attempt to invoke directory as script");

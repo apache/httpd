@@ -1,5 +1,10 @@
 Changes with Apache 2.0.23-dev
 
+  *) Eliminate mod_cgi's handling of .exe files without the .exe file
+     extension.  This is already handled by multiviews, if the admin
+     wishes to AddHandler .exe or define a content type handler and 
+     associate .exe files with that content type.  [William Rowe]
+
   *) Speed up the server's response to a spike in incoming workload
      or restarts by assigning empty scoreboard slots to new processes
      when they are available.  [Greg Ames]
