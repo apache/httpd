@@ -33,18 +33,7 @@ href="http://www.apache.org/bugdb.cgi">let us know.</a>
 <LI>The basic mod_auth <CODE>AuthGroupFile</CODE>-specified group file 
     format allows commas between user names - Apache does not.<BR>
     <I>- added 12/1/96</I>
-
-<LI><CODE>AddType</CODE> only accepts one file extension per line, without
-any dots (<code>.</code>) in the extension, and does not take full filenames.
-If you need multiple extensions per type, use multiple lines, e.g.
-<blockquote><code>
-AddType application/foo foo<br>
-AddType application/foo bar
-</code></blockquote>
-To map <code>.foo</code> and <code>.bar</code> to <code>application/foo</code>
-<p>
-
-
+  <p>
 
   <LI><P>If you follow the NCSA guidelines for setting up access restrictions
   based on client domain, you may well have added entries for,
@@ -111,6 +100,9 @@ it added one automatically if the .asis file contained a Location header.
   files if the last line does not have a trailing newline. This affects
   configuration files (httpd.conf, access.conf and srm.conf), and
   htpasswd and htgroup files.
+  </LI>
+
+  <LI>Apache does not permit commas delimiting the methods in &lt;Limit&gt;.
  
 </OL>
 

@@ -15,7 +15,7 @@
   <!--#include virtual="header.html" -->
   <H1 ALIGN="CENTER">Apache Server Frequently Asked Questions</H1>
   <P>
-  $Revision: 1.63 $ ($Date: 1997/06/04 11:42:55 $)
+  $Revision: 1.63.2.8 $ ($Date: 1997/07/05 17:30:58 $)
   </P>
   <P>
   The latest version of this FAQ is always available from the main
@@ -35,6 +35,11 @@
 <!--    apache.org or apacheweek.com).                              -->
 <!--  - When adding items, make sure they're put in the right place -->
 <!--    - verify that the numbering matches up.                     -->
+<!--  - *Don't* use <PRE></PRE> blocks - they don't appear          -->
+<!--    correctly in a reliable way when this is converted to text  -->
+<!--    with Lynx.  Use <DL><DD><CODE>xxx<BR>xx</CODE></DD></DL>    -->
+<!--    blocks inside a <P></P> instead.  This is necessary to get  -->
+<!--    the horizontal and vertical indenting right.                -->
 <!--  - Don't forget to include an HR tag after the last /P tag     -->
 <!--    but before the /LI in an item.                              -->
   <P>
@@ -51,8 +56,8 @@
 <!-- - mod_auth & passwd lines "user:pw:.*" - ++1st colon onward is -->
 <!--   treated as pw, not just ++1st to --2nd.                      -->
 <!-- - SSL:                                                         -->
-<!--   Can I use Apache-SSL for free in Canada?                     -->
-<!--   Why can't I use Apache-SSL in the U.S.?                      -->
+<!--   - Can I use Apache-SSL for free in Canada?                   -->
+<!--   - Why can't I use Apache-SSL in the U.S.?                    -->
 <!-- - How can I found out how many visitors my site gets?          -->
 <!-- - How do I add a counter?                                      -->
 <!-- - How do I configure Apache as a proxy?                        -->
@@ -61,17 +66,17 @@
 <!--   HTTP/1.1 browsers?                                           -->
 <!-- - Is there an Apache for W95/WNT?                              -->
 <!-- - Why does Apache die when a vhost can't be DNS-resolved?      -->
-<!-- - How do I setup an access restriction so that people from     -->
-<!--   this domain don't have to authenticate, and all others can   -->
-<!--   do so via a username and password?                           -->
 <!-- - Why do I get "send lost connection" messages in my error     -->
 <!--   log?                                                         -->
 <!--   - specifically consider .pdf files which seem to cause this  -->
 <!--     a lot when accessed via the plugin ... and also mention    -->
 <!--     how range-requests can cause bytes served < file size      -->
-<!-- - Why does http://host/~user not work but http://host/~user/   -->
-<!--   works properly?                                              -->
+<!-- - Why do directory indexes appear as garbage?  (A: -lucb)      -->
 <!-- - How do I add a footer to all pages offered by my server?     -->
+<!-- - Fix midi question; a bigger problem than midi vs. x-midi is  -->
+<!--   the simple fact that older versions of Apache (and new ones  -->
+<!--   that have been upgraded without upgrading the mime.types     -->
+<!--   file) don't have the type listed at all.                     -->
 <UL>
  <LI><STRONG>Background</STRONG>
   <OL START=1>
@@ -126,6 +131,8 @@
    <LI><A HREF="#fdlim">Why can't I run more than &lt;<EM>n</EM>&gt;
     virtual hosts?</A>
    </LI>
+   <LI><A HREF="#freebsd-setsize">Can I increase FD_SETSIZE on FreeBSD?</A>
+   </LI>
    <LI><A HREF="#limitGET">Why do I keep getting &quot;access denied&quot; for
     form POST requests?</A>
    </LI>
@@ -155,11 +162,14 @@
    <LI><A HREF="#nodelay">Why am I getting &quot;<SAMP>httpd: could not
     set socket option TCP_NODELAY</SAMP>&quot; in my error log?</A>
    </LI>
+   <LI><A HREF="#peerreset">Why am I getting &quot;<SAMP>connection
+    reset by peer</SAMP>&quot; in my error log?</A>
+   </LI>
    <LI><A HREF="#nph-scripts">How can I get my script's output without
     Apache buffering it?</A>
    </LI>
    <LI><A HREF="#linuxiovec">Why do I get complaints about redefinition
-    of `struct iovec' when compiling under Linux?</A>
+    of &quot;<CODE>struct iovec</CODE>&quot; when compiling under Linux?</A>
    </LI>
    <LI><A HREF="#wheres-the-dump">The errorlog says Apache dumped core,
     but where's the dump file?</A>
@@ -180,6 +190,35 @@
    </LI>
    <LI><A HREF="#addlog">How do I add browsers and referrers to my
     logs?</A>
+   </LI>
+   <LI><A HREF="#bind8.1">Why do I get an error about an undefined 
+    reference to &quot;<SAMP>__inet_ntoa</SAMP>&quot; or other
+    <SAMP>__inet_*</SAMP> symbols?</A>
+   </LI>
+   <LI><A HREF="#set-servername">Why does accessing directories only work
+    when I include the trailing "/"
+    (<EM>e.g.</EM>,&nbsp;<SAMP>http://foo.domain.com/~user/</SAMP>) but
+    not when I omit it
+    (<EM>e.g.</EM>,&nbsp;<SAMP>http://foo.domain.com/~user</SAMP>)?</A>
+   </LI>
+   <LI><A HREF="#user-authentication">How do I set up Apache to require
+    a username and password to access certain documents?</A>
+   </LI>
+   <LI><A HREF="#remote-auth-only">How do I set up Apache to allow access
+    to certain documents only if a site is either a local site
+    <EM>or</EM> the user supplies a password and username?</A>
+   </LI>
+   <LI><A HREF="#no-info-directives">Why doesn't mod_info list any
+    directives?</A>
+   <LI><A HREF="#linux-shmget">When I run it under Linux I get "shmget:
+    function not found", what should I do?</A>
+   </LI>
+   <LI><A HREF="#authauthoritative">Why does my authentification give
+    me a server error?</A>
+   <LI><A HREF="#auth-on-same-machine">Do I have to keep the (mSQL)
+      authentification information on the same machine?</A>
+   </LI>
+   <LI><A HREF="#msql-slow">Why is my mSQL authentification terribly slow?</A>
    </LI>
   </OL>
  </LI>
@@ -222,8 +261,8 @@
   programmers that httpd didn't behave as they wanted it to behave.
   Apache is an entirely volunteer effort, completely funded by its 
   members, not by commercial sales.
-  <HR>
   </P>
+  <HR>
  </LI>
  <LI><A NAME="relate">
       <STRONG>How does The Apache Group's work relate to other
@@ -383,7 +422,7 @@
     the server error log.  Sometimes this is enough for you to diagnose 
     &amp; fix the problem yourself (such as file permissions or the like).
     The default location of the error log is 
-    <CODE>/usr/local/etc/httpd/logs/error_log</CODE>, but see the 
+    <SAMP>/usr/local/etc/httpd/logs/error_log</SAMP>, but see the 
     <A
      HREF="../mod/core.html#errorlog"
     ><SAMP>ErrorLog</SAMP></A>
@@ -446,16 +485,12 @@
     dump, please include a backtrace (if possible).  As an example,
     </P>
     <P>
-    <CODE>
-     <DL>
-      <DD># cd <EM>ServerRoot</EM>
-      </DD>
-      <DD># dbx httpd core
-      </DD>
-      <DD>(dbx) where
-      </DD>
-     </DL>
-    </CODE>
+    <DL>
+     <DD><CODE># cd <EM>ServerRoot</EM><BR>
+      # dbx httpd core<BR>
+      (dbx) where</CODE>
+     </DD>
+    </DL>
     </P>
     <P>
     (Substitute the appropriate locations for your
@@ -524,15 +559,19 @@
      </DD>
     </DL>
     </P>
+    <P>
     The server will then recognize that all files in that location (and
     its logical descendants) that end in &quot;<SAMP>.cgi</SAMP>&quot;
     are script files, not documents.
+    </P>
    </LI>
    <LI>Make sure that the directory location is covered by an
     <A
      HREF="../mod/core.html#options"
     ><SAMP>Options</SAMP></A>
     declaration that includes the <SAMP>ExecCGI</SAMP> option.
+    <P>
+    </P>
    </LI>
   </OL>
   <HR>
@@ -544,27 +583,48 @@
   <P>
   It means just what it says: the server was expecting a complete set of
   HTTP headers (one or more followed by a blank line), and didn't get
-  them.  The most common cause of this (aside from people not
-  outputting the required headers at all) a result of an interaction
-  with perl's output buffering.  To make perl flush its buffers 
-  after each output statement, insert the following statements before your
-  first <CODE>print</CODE> or <CODE>write</CODE> statement:
+  them.
   </P>
   <P>
-  <CODE>
-   <DL>
-    <DD>$cfh = select (STDOUT);
-    </DD>
-    <DD>$| = 1;
-    </DD>
-    <DD>select ($cfh);
-    </DD>
-   </DL>
-  </CODE>
+  The most common cause of this problem is the script dying before
+  sending the complete set of headers, or possibly any at all, to the
+  server.  To see if this is the case, try running the script standalone
+  from an interactive session, rather than as a script under the server.
+  If you get error messages, this is almost certainly the cause of the
+  &quot;premature end of script headers&quot; message.
+  </P>
+  <P>
+  The second most common cause of this (aside from people not
+  outputting the required headers at all) is a result of an interaction
+  with Perl's output buffering.  To make Perl flush its buffers 
+  after each output statement, insert the following statements around
+  the <CODE>print</CODE> or <CODE>write</CODE> statements that send your
+  HTTP headers:
+  </P>
+  <P>
+  <DL>
+   <DD><CODE>{<BR>
+    &nbsp;local ($oldbar) = $|;<BR>
+    &nbsp;$cfh = select (STDOUT);<BR>
+    &nbsp;$| = 1;<BR>
+    &nbsp;#<BR>
+    &nbsp;# print your HTTP headers here<BR>
+    &nbsp;#<BR>
+    &nbsp;$| = $oldbar;<BR>
+    &nbsp;select ($cfh);<BR>
+    }</CODE>
+   </DD>
+  </DL>
   </P>
   <P>
   This is generally only necessary when you are calling external 
-  programs from your script that send output to stdout.  
+  programs from your script that send output to stdout, or if there will
+  be a long delay between the time the headers are sent and the actual
+  content starts being emitted.  To maximise performance, you should
+  turn buffer-flushing back <EM>off</EM> (with <CODE>$| = 0</CODE> or the
+  equivalent) after the statements that send the headers, as displayed
+  above.
+  </P>
   <P>
   If your script isn't written in Perl, do the equivalent thing for
   whatever language you <EM>are</EM> using (<EM>e.g.</EM>, for C, call 
@@ -587,7 +647,13 @@
   Processing a document at run-time is called <EM>parsing</EM> it; hence
   the term &quot;parsed HTML&quot; sometimes used for documents that
   contain SSI instructions.  Parsing tends to be <EM>extremely</EM>
-  resource-consumptive, and is not enabled by default.
+  resource-consumptive, and is not enabled by default.  It can also
+  interfere with the cachability of your documents, which can put a
+  further load on your server.  (see the
+  <A
+   HREF="#ssi-part-ii"
+  >next question</A>
+  for more information about this.)
   </P>
   <P>
   To enable SSI processing, you need to
@@ -695,7 +761,11 @@
       <STRONG>Does or will Apache act as a Proxy server?</STRONG>
      </A>
   <P>
-  Apache version 1.1 and above comes with a proxy module. If compiled
+  Apache version 1.1 and above comes with a
+  <A
+   HREF="../mod/mod_proxy.html"
+  >proxy module</A>.
+  If compiled
   in, this will make Apache act as a caching-proxy server.  
   </P>
   <HR>
@@ -761,8 +831,9 @@
         HREF="../mod/core.html#listen"
        ><SAMP>Listen</SAMP></A>
        directives.  If there are no other servers running on the machine 
-       and all of them are running on the same port, you normally don't 
-       need any Listen directives at all.
+       on the same port then you normally don't
+       need any Listen directives at all.  By default Apache listens to
+       all addresses on port 80.
    </LI>
    <LI>Reduce the number of log files.  You can use 
        <A
@@ -780,7 +851,8 @@
        <A
         HREF="perf.html"
        >performance hints</A>
-       page.
+       page.  There is a specific note for
+       <a href="#freebsd-setsize">FreeBSD</a> below.
    </LI>
    <LI>&quot;Don't do that&quot; - try to run with fewer virtual hosts
    </LI>
@@ -794,8 +866,32 @@
   <P>
   Since this is an operating-system limitation, there's not much else
   available in the way of solutions.
+  <P>
+  As of 1.2.1 we have made attempts to work around various limitations
+  involving running with many descriptors.
+  <a href="descriptors.html">More information is available.</a>
   </P>
   <HR>
+ </LI>
+
+ <LI><A NAME="freebsd-setsize">
+      <STRONG>Can I increase <SAMP>FD_SETSIZE</SAMP> on FreeBSD?</STRONG>
+     </A>
+  <P>
+  On FreeBSD 2.2 and older <SAMP>FD_SETSIZE</SAMP>, which limits the
+  number of open 
+  files on the system, is limited to 256. This can restrict the number of
+  virtual hosts you can use; especially if they all use different log
+  files. Increasing this limit (and recompiling Apache) is not enough,
+  as it is on some platforms (such as Solaris), as you also will have
+  to recompile <SAMP>libc</SAMP> with the changed setting.
+  </P>
+  <P>
+  On FreeBSD 3.0 the default is 1024, so the problem is lessened.
+  </P>
+  <HR>
+ </LI>
+
  <LI><A NAME="limitGET">
       <STRONG>Why do I keep getting &quot;access denied&quot; for form POST
       requests?</STRONG>
@@ -807,17 +903,13 @@
   would affect the location where the POST-handling script resides:
   </P>
   <P>
-  <CODE>
-   <DL>
-    <DD>&lt;Limit GET&gt;
-    </DD>
-    <DD>&nbsp;&nbsp;&nbsp;&nbsp;:
-    </DD>
-   </DL>
-  </CODE>
+  <DL>
+   <DD><CODE>&lt;Limit GET&gt;<BR>&nbsp;&nbsp;&nbsp;&nbsp;:</CODE>
+   </DD>
+  </DL>
   </P>
   <P>
-  Change that to <SAMP>&lt;Limit GET POST&gt;</SAMP> and the problem
+  Change that to <CODE>&lt;Limit GET POST&gt;</CODE> and the problem
   will probably go away.
   </P>
   <HR>
@@ -875,12 +967,14 @@
   warranty, though, and you'll lose all accumulated UNIX guru points.
   </P>
   <HR>
+ </LI>
  <LI><A NAME="errordoc401">
       <STRONG>Why doesn't my <CODE>ErrorDocument 401</CODE> work?</STRONG>
      </A>
   <P>
-  You need to use it with a URL in the form "/foo/bar" and not one
-  with a method and hostname such as "http://host/foo/bar".  See the
+  You need to use it with a URL in the form
+  &quot;<SAMP>/foo/bar</SAMP>&quot; and not one with a method and
+  hostname such as &quot;<SAMP>http://host/foo/bar</SAMP>&quot;.  See the 
   <A
    HREF="../mod/core.html#errordocument"
   ><SAMP>ErrorDocument</SAMP></A>
@@ -986,7 +1080,7 @@
   </P>
   <P>
   <DL>
-   <DD><CODE>BrowserMatch Java/1.0 force-response-1.0</CODE>
+   <DD><CODE>BrowserMatch Java1.0 force-response-1.0</CODE>
    </DD>
   </DL>
   </P>
@@ -1014,7 +1108,7 @@
   ><CITE>Publishing Pages with PUT</CITE></A>.
   </P>
   <HR>
-  </LI>
+ </LI>
  <LI><A NAME="fastcgi">
       <STRONG>Why isn't FastCGI included with Apache any more?</STRONG>
      </A>
@@ -1042,6 +1136,20 @@
   before Apache reached the point of calling <CODE>setsockopt()</CODE>
   for the connection.  It shouldn't occur for more than about 1% of the
   requests your server handles, and it's advisory only in any case.
+  </P>
+  <HR>
+ </LI>
+ <LI><A NAME="peerreset">
+      <STRONG>Why am I getting &quot;<SAMP>connection reset by
+      peer</SAMP>&quot; in my error log?</STRONG>
+     </A> 
+  <P>
+  This is a normal message and nothing about which to be alarmed.  It simply
+  means that the client cancelled the connection before it had been
+  completely set up - such as by the end-user pressing the &quot;Stop&quot;
+  button.  People's patience being what it is, sites with response-time
+  problems or slow network links may experiences this more than
+  high-capacity ones or those with large pipes to the network.
   </P>
   <HR>
  </LI>
@@ -1079,25 +1187,25 @@
   <P>
   As an example how you might handle the former (in a Perl script):
   </P>
-  <CODE>
-   <DL>
-    <DD>if ($0 =~ m:/*nph-:) {
-        <BR>
-        &nbsp;&nbsp;&nbsp;&nbsp;
-        $HTTP_headers&nbsp;=&nbsp;
-        &quot;HTTP/1.1&nbsp;200&nbsp;OK\015\012&quot;;
-        <BR>
-        &nbsp;&nbsp;&nbsp;&nbsp;
-        $HTTP_headers&nbsp;.=&nbsp;
-        &quot;Connection:&nbsp;close\015\012&quot;;
-        <BR>
-        &nbsp;&nbsp;&nbsp;&nbsp;
-        printf&nbsp;($HTTP_headers);
-        <BR>
-        };
-    </DD>
-   </DL>
-  </CODE>
+  <P>
+  <DL>
+   <DD><CODE>if ($0 =~ m:^(.*/)*nph-[^/]*$:) {
+    <BR>
+    &nbsp;&nbsp;&nbsp;&nbsp;
+    $HTTP_headers&nbsp;=&nbsp;
+    &quot;HTTP/1.1&nbsp;200&nbsp;OK\015\012&quot;;
+    <BR>
+    &nbsp;&nbsp;&nbsp;&nbsp;
+    $HTTP_headers&nbsp;.=&nbsp;
+    &quot;Connection:&nbsp;close\015\012&quot;;
+    <BR>
+    &nbsp;&nbsp;&nbsp;&nbsp;
+    print&nbsp;$HTTP_headers;
+    <BR>
+    }</CODE>
+   </DD>
+  </DL>
+  </P>
   <P>
   and then follow with your normal non-<SAMP>nph</SAMP> headers.
   </P>
@@ -1105,13 +1213,15 @@
  </LI>
  <LI><A NAME="linuxiovec">
       <STRONG>Why do I get complaints about redefinition
-      of `struct iovec' when compiling under Linux?</STRONG>
+      of &quot;<CODE>struct iovec</CODE>&quot; when
+      compiling under Linux?</STRONG>
      </A>
   <P>
   This is a conflict between your C library includes and your kernel
   includes.  You need to make sure that the versions of both are matched
   properly.  There are two workarounds, either one will solve the problem:
   </P>
+  <P>
   <UL>
    <LI>Remove the definition of <CODE>struct iovec</CODE> from your C
     library includes.  It is located in <CODE>/usr/include/sys/uio.h</CODE>.  
@@ -1122,6 +1232,7 @@
     This hurts performance and should only be used as a last resort.
    </LI>
   </UL>
+  </P>
   <HR>
  </LI>
  <LI><A NAME="wheres-the-dump">
@@ -1129,7 +1240,7 @@
       file?</STRONG>
      </A>
   <P>
-  In Apache version 1.2 (beginning with 1.2b8), the error log message
+  In Apache version 1.2, the error log message
   about dumped core includes the directory where the dump file should be
   located.  However, many Unixes do not allow a process that has
   called <CODE>setuid()</CODE> to dump core for security reasons; 
@@ -1183,10 +1294,12 @@
     this by adding the <SAMP>-DMAXIMUM_DNS</SAMP> clause to the
     <SAMP>EXTRA_CFLAGS</SAMP> definition in your
     <SAMP>Configuration</SAMP> file.  For example:
+    <P>
     <DL>
      <DD><CODE>EXTRA_CFLAGS=-DMAXIMUM_DNS</CODE>
      </DD>
     </DL>
+    </P>
     <P>
     This will cause Apache to be very paranoid about making sure a
     particular host address is <EM>really</EM> assigned to the name it
@@ -1227,8 +1340,8 @@
   ><CITE>Apache and Secure Transactions</CITE></A>.
   </P>
   <HR>
-  </LI>
-  <LI><A NAME="HPUX-core">
+ </LI>
+ <LI><A NAME="HPUX-core">
        <STRONG>Why do I get core dumps under HPUX using HP's ANSI 
                C compiler?</STRONG>
       </A>
@@ -1259,10 +1372,12 @@
    <LI>Instruct Apache to send a different <SAMP>Content-type</SAMP>
     header for these files by adding the following line to your server's
     configuration files:
+    <P>
     <DL>
      <DD><CODE>AddType audio/x-midi .mid .midi .kar</CODE>
      </DD>
     </DL>
+    </P>
     <P>
     Note that this may break browsers that <EM>do</EM> recognize the
     <SAMP>audio/midi</SAMP> MIME type unless they're prepared to also
@@ -1275,7 +1390,7 @@
  <LI><A NAME="cantbuild">
        <STRONG>Why won't Apache compile with my system's
        <SAMP>cc</SAMP>?</STRONG>
-      </A>
+     </A>
   <P>
   If the server won't compile on your system, it is probably due to one
   of the following causes:
@@ -1368,29 +1483,280 @@
   </P>
   <HR>
  </LI>
- <LI><A NAME="jdk1.x">
-      <STRONG>Why do Java applets and applications not work
-      with documents on my Apache server?</A></STRONG>
+ <LI><A NAME="bind8.1">
+      <STRONG>Why do I get an error about an undefined reference to 
+      &quot;<SAMP>__inet_ntoa</SAMP>&quot; or other
+      <SAMP>__inet_*</SAMP> symbols?</STRONG>
      </A>
   <P>
-  The Java Development Kit (JDK) libraries versions 1.0.2 and 1.1 do not
-  correctly interpret the &quot;<SAMP>HTTP/1.1</SAMP>&quot; response
-  header that Apache 1.2 sends.  Instead, if they don't see an exact
-  match for &quot;<SAMP>HTTP/1.0</SAMP>&quot;, they assume the headers
-  are part of the document content.
+  If you have installed <A HREF="http://www.isc.org/bind.html">BIND-8</A>
+  then this is normally due to a conflict between your include files
+  and your libraries.  BIND-8 installs its include files and libraries 
+  <CODE>/usr/local/include/</CODE> and <CODE>/usr/local/lib/</CODE>, while
+  the resolver that comes with your system is probably installed in
+  <CODE>/usr/include/</CODE> and <CODE>/usr/lib/</CODE>.  If
+  your system uses the header files in <CODE>/usr/local/include/</CODE>
+  before those in <CODE>/usr/include/</CODE> but you do not use the new
+  resolver library, then the two versions will conflict.  
   </P>
   <P>
-  This is a known problem, and it has been reported to Sun's JavaSoft
-  unit.  In the meantime, Apache 1.2 servers can work around this by
-  adding the following lines to their configuration files:
+  To resolve this, you can either make sure you use the include files
+  and libraries that came with your system or make sure to use the
+  new include files and libraries.  Adding <CODE>-lbind</CODE> to the
+  <CODE>EXTRA_LDFLAGS</CODE> line in your <SAMP>Configuration</SAMP> 
+  file, then re-running <SAMP>Configure</SAMP>, should resolve the
+  problem.  (Apache versions 1.2.* and earlier use
+  <CODE>EXTRA_LFLAGS</CODE> instead.)
   </P>
+  <P>
+  <STRONG>Note:</STRONG>As of BIND 8.1.1, the bind libraries and files are
+  installed under <SAMP>/usr/local/bind</SAMP> by default, so you
+  should not run into this problem.  Should you want to use the bind
+  resolvers you'll have to add the following to the respective lines:
+  </P>
+  <P>
   <DL>
-   <DD>BrowserMatch&nbsp;Java1.0&nbsp;force-response-1.0</CODE>
+   <DD><CODE>EXTRA_CFLAGS=-I/usr/local/bind/include
+    <BR>
+    EXTRA_LDFLAGS=-L/usr/local/bind/lib
+    <BR>
+    EXTRA_LIBS=-lbind</CODE>
    </DD>
   </DL>
+  </P>
   <HR>
-  <!-- Don't forget to add HR tags at the end of each list item.. -->
  </LI>
+ <LI><A NAME="set-servername">
+      <STRONG>Why does accessing directories only work when I include 
+      the trailing "/"
+      (<EM>e.g.</EM>,&nbsp;<SAMP>http://foo.domain.com/~user/</SAMP>)
+      but not when I omit it 
+      (<EM>e.g.</EM>,&nbsp;<SAMP>http://foo.domain.com/~user</SAMP>)?</STRONG>
+     </A>
+  <P>
+  When you access a directory without a trailing "/", Apache needs
+  to send what is called a redirect to the client to tell it to
+  add the trailing slash.  If it did not do so, relative URLs would
+  not work properly.  When it sends the redirect, it needs to know 
+  the name of the server so that it can include it in the redirect.
+  There are two ways for Apache to find this out; either it can guess,
+  or you can tell it.  If your DNS is configured correctly, it can
+  normally guess without any problems.  If it is not, however, then
+  you need to tell it.  
+  </P>
+  <P>
+  Add a <A HREF="../mod/core.html#servername">ServerName</A> directive 
+  to the config file to tell it what the domain name of the server is.
+  </P>
+  <HR>
+ </LI>
+ <LI><A NAME="user-authentication">
+      <STRONG>How do I set up Apache to require a username and 
+      password to access certain documents?</STRONG>
+     </A>
+  <P>
+  There are several ways to do this; some of the more popular 
+  ones are to use the <A HREF="../mod/mod_auth.html">mod_auth</A>,
+  <A HREF="../mod/mod_auth_db.html">mod_auth_db</A>, or
+  <A HREF="../mod/mod_auth_dbm.html">mod_auth_dbm</A> modules.
+  </P>
+  <P>
+  For an explaination on how to implement these restrictions, see
+  <A
+   HREF="http://www.apacheweek.com/"
+  ><CITE>Apache Week</CITE></A>'s
+  articles on
+  <A
+   HREF="http://www.apacheweek.com/features/userauth"
+  ><CITE>Using User Authentication</CITE></A>
+  or 
+  <A
+   HREF="http://www.apacheweek.com/features/dbmauth"
+  ><CITE>DBM User Authentication</CITE></A>.
+  </P>
+  <HR>
+ </LI>
+ <LI><A NAME="remote-auth-only">
+      <STRONG>How do I set up Apache to allow access to certain 
+      documents only if a site is either a local site <EM>or</EM>
+      the user supplies a password and username?</STRONG>
+     </A>
+  <P>
+  Use the <A HREF="../mod/core.html#satisfy">Satisfy</A> directive,
+  in particular the <CODE>Satisfy Any</CODE> directive, to require
+  that only one of the access restrictions be met.  For example,
+  adding the following configuration to a <SAMP>.htaccess</SAMP>
+  or server configuration file would restrict access to people who
+  either are accessing the site from a host under domain.com or
+  who can supply a valid username and password:
+  </P>
+  <P>
+  <DL>
+   <DD><CODE>deny from all
+    <BR>
+    allow from .domain.com
+    <BR>
+    AuthType Basic
+    <BR>
+    AuthUserFile /usr/local/etc/httpd/conf/htpasswd.users
+    <BR>
+    AuthName special directory
+    <BR>
+    require valid-user
+    <BR>
+    satisfy any</CODE>
+   </DD>
+  </DL>
+  </P>
+  <P>
+  See the <A HREF="#user-authentication">user authentication</A>
+  question and the <A HREF="../mod/mod_access.html">mod_access</A>
+  module for details on how the above directives work.
+  </P>
+  <HR>
+ </LI>
+ <LI><A NAME="no-info-directives">
+      <STRONG>Why doesn't mod_info list any directives?</STRONG>
+     </A>
+  <P>
+  The
+  <A
+   HREF="../mod/mod_info.html"
+  ><SAMP>mod_info</SAMP></A>
+  module allows you to use a Web browser to see how your server is
+  configured.  Among the information it displays is the list modules and
+  their configuration directives.  The &quot;current&quot; values for
+  the directives are not necessarily those of the running server; they
+  are extracted from the configuration files themselves at the time of
+  the request.  If the files have been changed since the server was last
+  reloaded, the display will will not match the values actively in use.
+  If the files and the path to the files are not readable by the user as
+  which the server is running (see the
+  <A
+   HREF="../mod/core.html#user"
+  ><SAMP>User</SAMP></A>
+  directive), then <SAMP>mod_info</SAMP> cannot read them in order to
+  list their values.  An entry <EM>will</EM> be made in the error log in
+  this event, however.
+  </P>
+  <HR>
+ </LI>
+ <LI><A NAME="linux-shmget">
+      <STRONG>When I run it under Linux I get "shmget:
+      function not found", what should I do?</STRONG>
+     </A>
+  <P>
+  Your kernel has been built without SysV IPC support.  You will have to
+  rebuild the kernel with that support enabled (it's under the
+  &quot;General Setup&quot; submenu).  Documentation for
+  kernel building is beyond the scope of this FAQ; you should consult
+  the
+  <A HREF="http://www.linuxhq.com/HOWTO/Kernel-HOWTO.html"
+  >Kernel HOWTO</A>,
+  or the documentation provided with your distribution, or a
+  <A HREF="http://www.linuxhq.com/HOWTO/META-FAQ.html"
+  >Linux newsgroup/mailing list</A>.
+  As a last-resort workaround, you can
+  comment out the <CODE>#define HAVE_SHMGET</CODE> definition in the
+  <SAMP>LINUX</SAMP> section of
+  <SAMP>src/conf.h</SAMP> and rebuild the server.  This will produce
+  a server which is slower and less reliable.
+  </P>
+  <HR>
+ </LI>
+ <LI><A NAME="authauthoritative">
+      <STRONG>Why does my authentification give me a server error?</STRONG>
+     </A>
+  <P>
+  Under normal circumstances, the Apache access control modules will
+  pass unrecognized user IDs on to the next access control module in
+  line.  Only if the user ID is recognized and the password is validated
+  (or not) will it give the usual success or &quot;authentification
+  failed&quot; messages.
+  </P>
+  <P>
+  However, if the last access module in line 'declines' the validation
+  request (because it has never heard of the user ID or because it is not
+  configured), the <SAMP>http_request</SAMP> handler will give one of
+  the following, confusing, errors:
+  </P>
+  <UL>
+   <LI><SAMP>check access</SAMP>
+   </LI>
+   <LI><SAMP>check user.  No user file?</SAMP>
+   </LI>
+   <LI><SAMP>check access.  No groups file?</SAMP>
+   </LI>
+  </UL>
+  <P>
+  This does <EM>not</EM> mean that you have to add an
+  '<SAMP>AuthUserFile&nbsp;/dev/null</SAMP>' line as some magazines suggest!
+  </P>
+  <P>
+  The solution is to ensure that at least the last module is authoritative
+  and <STRONG>CONFIGURED</STRONG>. By default, <SAMP>mod_auth</SAMP> is
+  authoritative and will give an OK/Denied, but only if it is configured
+  with the proper <SAMP>AuthUserFile</SAMP>.  Likewise, if a valid group
+  is required.  (Remember that the modules are processed in the reverse
+  order from that in which they appear in your compile-time
+  <SAMP>Configuration</SAMP> file.)
+  </P>
+  <P>
+  A typical situation for this error is when you are using the
+  <SAMP>mod_auth_dbm</SAMP>, <SAMP>mod_auth_msql</SAMP>,
+  <SAMP>mod_auth_mysql</SAMP>, <SAMP>mod_auth_anon</SAMP> or
+  <SAMP>mod_auth_cookie</SAMP> modules on their own.  These are by
+  default <STRONG>not</STRONG> authoritative, and this will pass the
+  buck on to the (non-existent) next authentification module when the
+  user ID is not in their respective database.  Just add the appropriate
+  '<SAMP><EM>XXX</EM>Authoritative yes</SAMP>' line to the configuration.
+  </P>
+  <P>
+  In general it is a good idea (though not terribly efficient) to have the
+  file-based <SAMP>mod_auth</SAMP> a module of last resort. This allows
+  you to access the web server with a few special passwords even if the
+  databases are down or corrupted.  This does cost a
+  file open/seek/close for each request in a protected area.
+  </P>
+  <HR>
+ </LI>
+ <LI><A NAME="auth-on-same-machine">
+      <STRONG>Do I have to keep the (mSQL) authentification information
+      on the same machine?</STRONG>
+     </A>
+  <P>
+  Some organizations feel very strongly about keeping the authentification
+  information on a different machine than the webserver. With the
+  <SAMP>mod_auth_msql</SAMP>, <SAMP>mod_auth_mysql</SAMP>, and other SQL
+  modules connecting to (R)DBMses this is quite possible. Just configure
+  an explicit host to contact.
+  </P>
+  <P>
+  Be aware that with mSQL and Oracle, opening and closing these database
+  connections is very expensive and time consuming. You might want to
+  look at the code in the <SAMP>auth_*</SAMP> modules and play with the
+  compile time flags to alleviate this somewhat, if your RDBMS licences
+  allow for it.
+  </P>
+  <HR>
+ </LI>
+ <LI><A NAME="msql-slow">
+      <STRONG>Why is my mSQL authentification terribly slow?</STRONG>
+     </A>
+  <P>
+  You have probably configured the Host by specificing a FQHN,
+  and thus the libmsql will use a full blown tcp/ip socket to talk to
+  the database, rather than a fast internal device.  The
+  <SAMP>libmsql</SAMP>, the mSQL FAQ, and the <SAMP>mod_auth_msql</SAMP>
+  documentation warn you about this.  If you have to use different
+  hosts, check out the <SAMP>mod_auth_msql</SAMP> code for 
+  some compile time flags which might - or might not - suit you.
+  </P>
+  <HR>
+ </LI>
+
+  <!-- Don't forget to add HR tags at the end of each list item.. -->
+
 </OL>
  <!--#include virtual="footer.html" -->
 </BODY>
