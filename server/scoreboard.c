@@ -286,6 +286,7 @@ int ap_update_child_status(int child_num, int thread_num, int status, request_re
     }
 
     if (ap_extended_status) {
+    ss->last_used = apr_time_now();
 	if (status == SERVER_READY || status == SERVER_DEAD) {
 	    /*
 	     * Reset individual counters

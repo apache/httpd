@@ -254,7 +254,7 @@ static int status_handler(request_rec *r)
     short_score score_record;
     parent_score ps_record;
     char stat_buffer[HARD_SERVER_LIMIT * HARD_THREAD_LIMIT];
-    int pid_buffer[HARD_SERVER_LIMIT * HARD_THREAD_LIMIT];
+    pid_t pid_buffer[HARD_SERVER_LIMIT * HARD_THREAD_LIMIT];
     clock_t tu, ts, tcu, tcs;
     server_rec *vhost;
 
@@ -321,7 +321,7 @@ static int status_handler(request_rec *r)
 	    ps_record = ap_scoreboard_image->parent[i];
 	    res = score_record.status;
 	    stat_buffer[indx] = status_flags[res];
-	    pid_buffer[indx] = (int) ps_record.pid;
+	    pid_buffer[indx] = ps_record.pid;
 	    if (res == SERVER_READY)
 	        ready++;
 	    else if (res != SERVER_DEAD)
@@ -348,7 +348,7 @@ static int status_handler(request_rec *r)
     }
 
     /* up_time in seconds */
-    up_time = (apr_uint32_t) ((nowtime - ap_restart_time)/1000000);
+    up_time = (apr_uint32_t) ((nowtime - ap_restart_time)/APR_USEC_PER_SEC);
 
     if (!short_report) {
 	ap_rputs(DOCTYPE_HTML_3_2
@@ -479,8 +479,9 @@ static int status_handler(request_rec *r)
                     int indx = (i * HARD_THREAD_LIMIT) + j;
 
 		    if (stat_buffer[indx] != '.') {
-		        ap_rprintf(r, "   %d in state: %c ", pid_buffer[i],
-		        stat_buffer[indx]);
+		        ap_rprintf(r, "   %" APR_OS_PROC_T_FMT 
+                                   " in state: %c ", pid_buffer[i],
+                                   stat_buffer[indx]);
 		        if (++k >= 3) {
 		    	    ap_rputs("\n", r);
 			    k = 0;
@@ -556,9 +557,10 @@ static int status_handler(request_rec *r)
 				my_lres, lres);
 			else
 			    ap_rprintf(r,
-				"<b>Server %d-%d</b> (%d): %d|%lu|%lu [",
+				"<b>Server %d-%d</b> (%" APR_OS_PROC_T_FMT 
+                                "): %d|%lu|%lu [",
 				i, (int) ps_record.generation,
-				(int) ps_record.pid,
+				ps_record.pid,
 				(int) conn_lres, my_lres, lres);
 
 			switch (score_record.status) {
@@ -598,13 +600,13 @@ static int status_handler(request_rec *r)
 			ap_rprintf(r, "]\n %.0f %ld (",
 #else
 
-			ap_rprintf(r, "] u%g s%g cu%g cs%g\n %.0f %ld (",
+			ap_rprintf(r, "] u%g s%g cu%g cs%g\n %ld %ld (",
 			    score_record.times.tms_utime / tick,
 			    score_record.times.tms_stime / tick,
 			    score_record.times.tms_cutime / tick,
 			    score_record.times.tms_cstime / tick,
 #endif
-			    difftime(nowtime, score_record.last_used),
+			    (long)((nowtime - score_record.last_used) / APR_USEC_PER_SEC),
 			    (long) req_time);
 			format_byte_out(r, conn_bytes);
 			ap_rputs("|", r);
@@ -626,9 +628,10 @@ static int status_handler(request_rec *r)
 				(int) conn_lres, my_lres, lres);
 			else
 			    ap_rprintf(r,
-				"<tr><td><b>%d-%d</b><td>%d<td>%d/%lu/%lu",
+				"<tr><td><b>%d-%d</b><td>%" APR_OS_PROC_T_FMT 
+                                "<td>%d/%lu/%lu",
 				i, (int) ps_record.generation,
-				(int) ps_record.pid, (int) conn_lres,
+				ps_record.pid, (int) conn_lres,
 				my_lres, lres);
 
 			switch (score_record.status) {
@@ -667,13 +670,13 @@ static int status_handler(request_rec *r)
 			/* Allow for OS/2 not having CPU stats */
 			ap_rprintf(r, "\n<td>%.0f<td>%ld",
 #else
-			ap_rprintf(r, "\n<td>%.2f<td>%.0f<td>%ld",
+			ap_rprintf(r, "\n<td>%.2f<td>%ld<td>%ld",
 			    (score_record.times.tms_utime +
 			     score_record.times.tms_stime +
 			     score_record.times.tms_cutime +
 			     score_record.times.tms_cstime) / tick,
 #endif
-			    difftime(nowtime, score_record.last_used),
+			    (long)((nowtime - score_record.last_used) / APR_USEC_PER_SEC),
 			    (long) req_time);
 			ap_rprintf(r, "<td>%-1.1f<td>%-2.2f<td>%-2.2f\n",
 			   (float) conn_bytes / KBYTE, (float) my_bytes / MBYTE,

@@ -97,21 +97,6 @@ extern "C" {
 #define SERVER_IDLE_KILL 11     /* Server is cleaning up idle children. */
 #define SERVER_NUM_STATUS 12	/* number of status settings */
 
-/* A "virtual time" is simply a counter that indicates that a child is
- * making progress.  The parent checks up on each child, and when they have
- * made progress it resets the last_rtime element.  But when the child hasn't
- * made progress in a time that's roughly timeout_len seconds long, it is
- * sent a SIGALRM.
- *
- * vtime is an optimization that is used only when the scoreboard is in
- * shared memory (it's not easy/feasible to do it in a scoreboard file).
- * The essential observation is that timeouts rarely occur, the vast majority
- * of hits finish before any timeout happens.  So it really sucks to have to
- * ask the operating system to set up and destroy alarms many times during
- * a request.
- */
-typedef unsigned vtime_t;
-
 /* Type used for generation indicies.  Startup and every restart cause a
  * new generation of children to be spawned.  Children within the same
  * generation share the same configuration information -- pointers to stuff
@@ -166,7 +151,7 @@ typedef struct {
 #ifdef HAVE_TIMES
     struct tms times;
 #endif
-    time_t last_used;
+    apr_time_t last_used;
     char client[32];		/* Keep 'em small... */
     char request[64];		/* We just want an idea... */
     server_rec *vhostrec;	/* What virtual host is being accessed? */
