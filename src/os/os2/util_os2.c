@@ -63,3 +63,35 @@ int ap_os_kill(pid_t pid, int sig)
     
     return rc;
 }
+
+
+
+char *ap_os_error_message(int err)
+{
+  static char result[200];
+  char message[HUGE_STRING_LEN];
+  ULONG len;
+  char *pos;
+  int c;
+  
+  if (DosGetMessage(NULL, 0, message, HUGE_STRING_LEN, err, "OSO001.MSG", &len) == 0) {
+      len--;
+      message[len] = 0;
+      pos = result;
+  
+      if (len >= sizeof(result))
+        len = sizeof(result-1);
+
+      for (c=0; c<len; c++) {
+          while (isspace(message[c]) && isspace(message[c+1])) /* skip multiple whitespace */
+              c++;
+          *(pos++) = isspace(message[c]) ? ' ' : message[c];
+      }
+  
+      *pos = 0;
+  } else {
+      sprintf(result, "OS/2 error %d", err);
+  }
+  
+  return result;
+}

@@ -35,6 +35,9 @@ extern int ap_os_is_path_absolute(const char *file);
 /* Use a specialized kill() function */
 int ap_os_kill(int pid, int sig);
 
+/* Maps an OS error code to an error message */
+char *ap_os_error_message(int err);
+
 /* OS/2 doesn't have symlinks so S_ISLNK is always false */
 #define S_ISLNK(m) 0
 

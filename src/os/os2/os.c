@@ -54,7 +54,5 @@ void *ap_os_dso_sym(ap_os_dso_handle_t handle, const char *funcname)
 
 const char *ap_os_dso_error(void)
 {
-    static char message[30];
-    sprintf( message, "OS/2 error code %d", rc );
-    return message;
+    return ap_os_error_message(rc);
 }
