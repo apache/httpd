@@ -10,12 +10,14 @@
 <!-- comments...                                                      -->
 <messages lang="ru" langname="Russian">
  <!-- Used for the moduleindex -->
- <message name="corefeatures">Особенности ядра и мульти-процессные модули</message>
+ <message name="corefeatures">Ядро и мульти-процессные модули</message>
  <message name="othermodules">Другие модули</message>
+ <message name="obsoletemodules">Устаревшие модули</message>
 
  <!-- Used for the modulesynopsis and sitemap -->
+ <message name="obsoleteapachemodule">Устаревший модуль Apache</message>
  <message name="apachemodule">Модуль Apache</message>
- <message name="apachecore">Особенности ядра Apache</message>
+ <message name="apachecore">Ядро Apache</message>
  <message name="apachempmcommon">Общие для всех МП-модулей директивы Apache</message>
  <message name="apachempm">Мульти-процессные модули Apache</message>
 
@@ -39,7 +41,13 @@
  <message name="override">Разрешение</message>
  <message name="status">Статус</message>
  <message name="module">Модуль</message>
-
+ 
+ <!-- Used in directive context lists -->
+ <message name="serverconfig">server config</message>
+ <message name="virtualhost">virtual host</message>
+ <message name="directory">directory</message>
+ <message name="htaccess">.htaccess</message>
+ 
  <!-- Used for directive lists -->
  <message name="directives">Директивы</message>
  <message name="directive">Директива</message>
@@ -70,5 +78,5 @@
 
  <!-- footer line -->
  <message name="maintainedby">Поддержка осуществляется</message>
- <message name="langavail">Available Languages</message>
+ <message name="langavail">Доступные языки</message>
 </messages>
