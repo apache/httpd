@@ -2164,12 +2164,12 @@ static void child_main(int child_num_arg)
 		    if (!lr) {
 			lr = ap_listeners;
 		    }
-		    if (FD_ISSET(lr->fd, &main_fds)) break;
+		    if (FD_ISSET(lr->fd, &main_fds))
+			goto got_listener;
 		    lr = lr->next;
 		}
-		if (lr == last_lr) {
-		    continue;
-		}
+		continue;
+	got_listener:
 		last_lr = lr;
 		sd = lr->fd;
 	    }
