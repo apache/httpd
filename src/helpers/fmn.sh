@@ -14,7 +14,7 @@
 modfile=$1
 
 #   the part from the Configure script
-tmpfile=/tmp/fmn.tmp.$$
+tmpfile=${TMPDIR-/tmp}/fmn.tmp.$$
 rm -f $tmpfile
 modname=''
 ext=`echo $modfile | sed 's/^.*\.//'`
