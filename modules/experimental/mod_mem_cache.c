@@ -378,7 +378,11 @@ static int create_entity(cache_handle_t *h, request_rec *r,
     }
 
     /* Finish initing the cache object */
+#ifdef USE_ATOMICS
+    apr_atomic_set(&obj->refcount, 1);
+#else 
     obj->refcount = 1;
+#endif
     obj->complete = 0;
     obj->cleanup = 0;
     obj->vobj = mobj;
