@@ -413,58 +413,109 @@ int check_auth(request_rec *r)
     return run_method(r, offsets_into_method_ptrs.auth_checker, 0);
 }
 
-int invoke_handler(request_rec *r)
+/*
+ * For speed/efficiency we generate a compact list of all the handlers
+ * and wildcard handlers.  This means we won't have to scan the entire
+ * module list looking for handlers... where we'll find a whole whack
+ * of NULLs.
+ */
+typedef struct {
+    handler_rec hr;
+    size_t len;
+} fast_handler_rec;
+
+static fast_handler_rec *handlers;
+static fast_handler_rec *wildhandlers;
+
+static void init_handlers(pool *p)
 {
     module *modp;
+    int nhandlers = 0;
+    int nwildhandlers = 0;
     handler_rec *handp;
-    char *content_type = r->content_type ? r->content_type : default_type(r);
-    char *handler, *p;
-
-    if ((p = strchr(content_type, ';')) != NULL) {	/* MIME type arguments */
-	while (p > content_type && p[-1] == ' ')
-	    --p;		/* strip trailing spaces */
-	content_type = pstrndup(r->pool, content_type, p - content_type);
-    }
-    handler = r->handler ? r->handler : content_type;
-
-    /* Pass one --- direct matches */
+    fast_handler_rec *ph, *pw;
+    char *starp;
 
     for (modp = top_module; modp; modp = modp->next) {
 	if (!modp->handlers)
 	    continue;
-
 	for (handp = modp->handlers; handp->content_type; ++handp) {
-	    if (!strcmp(handler, handp->content_type)) {
-		int result = (*handp->handler) (r);
+	    if (strchr(handp->content_type, '*')) {
+                nwildhandlers ++;
+            } else {
+                nhandlers ++;
+            }
+        }
+    }
+    ph = handlers = palloc(p, sizeof(*ph)*(nhandlers + 1));
+    pw = wildhandlers = palloc(p, sizeof(*pw)*(nwildhandlers + 1));
+    for (modp = top_module; modp; modp = modp->next) {
+	if (!modp->handlers)
+	    continue;
+	for (handp = modp->handlers; handp->content_type; ++handp) {
+	    if ((starp = strchr(handp->content_type, '*'))) {
+                pw->hr.content_type = handp->content_type;
+                pw->hr.handler = handp->handler;
+		pw->len = starp - handp->content_type;
+                pw ++;
+            } else {
+                ph->hr.content_type = handp->content_type;
+                ph->hr.handler = handp->handler;
+		ph->len = strlen(handp->content_type);
+                ph ++;
+            }
+        }
+    }
+    pw->hr.content_type = NULL;
+    pw->hr.handler = NULL;
+    ph->hr.content_type = NULL;
+    ph->hr.handler = NULL;
+}
 
-		if (result != DECLINED)
-		    return result;
-	    }
+int invoke_handler(request_rec *r)
+{
+    fast_handler_rec *handp;
+    char *handler, *p;
+    size_t handler_len;
+
+    if (r->handler) {
+	handler = r->handler;
+	handler_len = strlen(handler);
+    }
+    else {
+	handler = r->content_type ? r->content_type : default_type(r);
+	if ((p = strchr(handler, ';')) != NULL) { /* MIME type arguments */
+	    while (p > handler && p[-1] == ' ')
+		--p;		/* strip trailing spaces */
+	    handler_len = p - handler;
 	}
+	else {
+	    handler_len = strlen(handler);
+	}
+    }
+
+    /* Pass one --- direct matches */
+
+    for (handp = handlers; handp->hr.content_type; ++handp) {
+	if (handler_len == handp->len
+	    && !strncmp(handler, handp->hr.content_type, handler_len)) {
+            int result = (*handp->hr.handler) (r);
+
+            if (result != DECLINED)
+                return result;
+        }
     }
 
     /* Pass two --- wildcard matches */
 
-    for (modp = top_module; modp; modp = modp->next) {
-	if (!modp->handlers)
-	    continue;
+    for (handp = wildhandlers; handp->hr.content_type; ++handp) {
+	if (handler_len >= handp->len
+	    && !strncmp(handler, handp->hr.content_type, handp->len)) {
+             int result = (*handp->hr.handler) (r);
 
-	for (handp = modp->handlers; handp->content_type; ++handp) {
-	    char *starp = strchr(handp->content_type, '*');
-	    int len;
-
-	    if (!starp)
-		continue;
-
-	    len = starp - handp->content_type;
-
-	    if (!len || !strncmp(handler, handp->content_type, len)) {
-		int result = (*handp->handler) (r);
-
-		if (result != DECLINED)
-		    return result;
-	    }
-	}
+             if (result != DECLINED)
+                 return result;
+         }
     }
 
     return NOT_IMPLEMENTED;
@@ -526,8 +577,6 @@ API_EXPORT(void) add_module(module *m)
 	m->name = tmp;
     }
 #endif /*_OSD_POSIX*/
-/** XXX: this will be slow if there's lots of add_modules */
-    build_method_shortcuts();
 }
 
 /* 
@@ -1356,6 +1405,8 @@ void init_modules(pool *p, server_rec *s)
     for (m = top_module; m; m = m->next)
 	if (m->init)
 	    (*m->init) (s, p);
+    build_method_shortcuts();
+    init_handlers(p);
 }
 
 void child_init_modules(pool *p, server_rec *s)

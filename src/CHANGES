@@ -1,5 +1,8 @@
 Changes with Apache 1.3b6
 
+  *) Performance improvements to invoke_handler().
+     [Dmitry Khrustalev <dima@bog.msu.su>]
+
   *) Added support for building shared objects even for library-style modules
      (which are build from more than one object file). This now provides the
      ability to build mod_proxy as a shared object module. Additionally
@@ -163,7 +166,7 @@ Changes with Apache 1.3b6
   *) Add the `%a' construct to LogFormat and CustomLog to log the client IP
      address. [Todd Eigenschink <eigenstr@mixi.net>, PR#1885]
 
-  *) A new source module main/util_uri.c; It contains a routine
+  *) API: A new source module main/util_uri.c; It contains a routine
      parse_uri_components() and friends which breaks a URI into its component
      parts.  These parts are stored in a uri_components structure called
      parsed_uri within each request_rec, and are available to all modules.
@@ -274,8 +277,8 @@ Changes with Apache 1.3b6
   *) ap_cpystrn() had an off-by-1 error.
      [Charles Fu <ccwf@klab.caltech.edu>] PR#1847
 
-  *) As Ken suggested the check_cmd_context() function and related defines
-     are non-static now so modules can use 'em.  [Martin Kraemer]
+  *) API: As Ken suggested the check_cmd_context() function and related
+     defines are non-static now so modules can use 'em.  [Martin Kraemer]
 
   *) mod_info would occasionally produce an unpaired <tt> in its
      output. Fixed. [Martin Kraemer]
@@ -309,7 +312,7 @@ Changes with Apache 1.3b6
 
   *) Removed bogus "dist.tar" target from Makefile.tmpl and make sure
      backup files are removed on "clean" target [Ralf S. Engelschall]
-     
+
   *) PORT: Add -lm to LIBS for HPUX.  [Dean Gaudet] PR#1639
 
   *) Various errors from select() and accept() in child_main() would
@@ -369,22 +372,22 @@ Changes with Apache 1.3b4
      (like mod_dld for Win32). This replaces mod_dld.c. Use SharedModule
      instead of AddModule in Configuration to build shared modules
      [Sameer Parekh, Paul Sutton]
-  
+
   *) Minor cleanups to r->finfo handling in some modules.
      [Dean Gaudet]
-  
+
   *) Abstract read()/write() to ap_read()/ap_write().
      Makes it easier to add other types of IO code such as SFIO.
      [Randy Terbush]
 
-  *) Generalize default_port manipulations to make support of
+  *) API: Generalize default_port manipulations to make support of
      different protocols easier. [Ben Laurie, Randy Terbush]
 
   *) There are many cases where users do not want Apache to form
      self-referential urls using the "canonical" ServerName and Port.
      The new UseCanonicalName directive (default on), if set to off
      will cause Apache to use the client-supplied hostname and port.
-     Part of this change required a change to the construct_url()
+     API: Part of this change required a change to the construct_url()
      prototype; and the addition of get_server_name() and
      get_server_port().
      [Michael Douglass <mikedoug@texas.net>, Dean Gaudet]
@@ -431,7 +434,7 @@ Changes with Apache 1.3b4
      an internal redirect occured.  Such redirects occur, for example,
      when processing a DirectoryIndex match.  [Dean Gaudet]
 
-  *) table_add, table_merge, and table_set include implicit pstrdup()
+  *) API: table_add, table_merge, and table_set include implicit pstrdup()
      of the key and value.  But in many cases this is not required
      because the key/value is a constant, or the value has been built
      by pstrcat() or other similar means.  New routines table_addn,
@@ -464,8 +467,8 @@ Changes with Apache 1.3b4
      [Martin Kraemer, with code from peter@zeus.dialix.oz.au (Peter Wemm)
      taken from tcsh]
 
-  *) "typedef array_header table" removed from alloc.h, folks should have
-     been writing to use table as if it were an opaque type, but even
+  *) API: "typedef array_header table" removed from alloc.h, folks should
+     have been writing to use table as if it were an opaque type, but even
      some standard modules got this wrong.  By changing the definition
      to "typedef struct table table" module authors will receive compile
      time warnings that they're doing the wrong thing.  This change
@@ -473,7 +476,7 @@ Changes with Apache 1.3b4
      structures.  Specifically, module authors should be using table_elts()
      to get access to an array_header * for the table. [Dean Gaudet]
 
-  *) Renamed new_connection() to avoid namespace collision with LDAP
+  *) API: Renamed new_connection() to avoid namespace collision with LDAP
      library routines.  [Ken Coar, Rasmus Lerdorf]
 
   *) WIN32: mod_speling is now available on the Win32 platform.
@@ -513,7 +516,7 @@ Changes with Apache 1.3b4
 
   *) Fix Y2K problem with date printing in suexec log.
      [Paul Eggert <eggert@twinsun.com>] PR#1343
-  
+
   *) WIN32 deserves a pid file.  [Ben Hyde]
 
   *) suexec errors now include the errno/description.  [Marc Slemko] PR#1543
@@ -568,7 +571,7 @@ Changes with Apache 1.3b4
   *) SECURITY: Eliminate possible buffer overflow in cfg_getline, which
      is used to read various types of files such as htaccess and
      htpasswd files.  [Marc Slemko]
-  
+
   *) SECURITY: Ensure that the buffer returned by ht_time is always
      properly null terminated.  [Marc Slemko]
 
@@ -591,7 +594,7 @@ Changes with Apache 1.3b4
      set with SetEnv/BrowserMatch and similar directives.
      [Dean Gaudet]
 
-  *) Mod_speling returned incorrect HREF's when an ambigous match
+  *) mod_speling returned incorrect HREF's when an ambigous match
      was found. Noticed by <robinton@amtrash.comlink.de> (Soeren Ziehe)
      [robinton@amtrash.comlink.de (Soeren Ziehe), Martin Kraemer]
 
@@ -651,7 +654,7 @@ Changes with Apache 1.3b4
   *) no2slash() was O(n^2) in the length of the input.  Make it O(n).
      [Dean Gaudet]
 
-  *) migration from strncpy() to our "enhanced" version called
+  *) API: migration from strncpy() to our "enhanced" version called
      ap_cpystrn() for performance and functionality reasons.
      Located in libap.a.  [Jim Jagielski]
 
@@ -659,8 +662,10 @@ Changes with Apache 1.3b4
      multiple occurrences of the same key. [Stephen Scheck
 	 <sscheck@infonex.net>, Ben Laurie] PR#1604
 
-  *) Correct handling of quotation marks in AuthName realm names; as a
-     byproduct, a new function: ap_escape_quotes().  [Ken Coar] PR#1195
+  *) The AuthName must now be enclosed in quotes if it is to contain
+     spaces.  [Ken Coar] PR#1195
+
+  *) API: new function: ap_escape_quotes(). [Ken Coar] PR#1195
 
   *) WIN32: Work around optimiser bug that killed ISAPI in release
      versions. [Ben Laurie] PR#1533
@@ -669,9 +674,9 @@ Changes with Apache 1.3b4
 
   *) Interim (slow) fix for p->sub_pool critical sections in
      alloc.c (affects win32 only).  [Ben Hyde]
-  
+
   *) non-WIN32 was missing destroy_mutex definition.  [Ben Hyde]
-  
+
   *) send_fd_length() did not calculate total_bytes_sent properly.
      [Ben Reser <breser@regnow.com>] PR#1366
 
@@ -688,7 +693,7 @@ Changes with Apache 1.3b4
      mod_autoindex, mod_php3 which all use bputc()/bputs() of smaller
      strings in some cases.  The result would be extra effort
      setting up writev(), and in many cases extra effort building
-     chunks.  The default is 31, it can be override at compile
+     chunks.  The default is 31, it can be overriden at compile
      time. [Dean Gaudet]
 
   *) Move the gid switching code into the child so that log files
@@ -709,13 +714,13 @@ Changes with Apache 1.3b4
   *) ap_snprintf() with a len of 0 behaved like sprintf().  This is not
      useful, and isn't what the standards require.  Now it returns 0
      and writes nothing.  [Dean Gaudet]
-  
+
   *) When an error occurs in fcntl() locking suggest the user look up
      the docs for LockFile.  [Dean Gaudet]
 
   *) Eliminate some dead code from writev_it_all().
      [Igor Tatarinov <tatarino@prairie.NoDak.edu>]
-  
+
   *) mod_autoindex had an fread() without checking the result code.
      It also wouldn't handle "AddIconByType (TXT,/icons/text.gif text/*"
      (note the missing closing paren) properly.  [Dean Gaudet]
@@ -892,7 +897,7 @@ Changes with Apache 1.3b3
 
   *) A sed command in the Configure script pushed the edge of POSIXness,
      breaking on some systems.  [Bhaba R.Misra <system@vt.edu>] PR#1368
-  
+
   *) Solaris >= 2.5 was totally broken due to a mess up using pthread
      mutexes.  [Roy Fielding, Dean Gaudet]
 
@@ -1332,7 +1337,7 @@ Changes with Apache 1.3b2 (there is no 1.3b1)
 	- Regex <Directory>s are applied after all non-regex <Directory>s.
 
     [Dean Gaudet]
-  
+
   *) Fix a bug introduced in 1.3a1 directory_walk regarding .htaccess files
      and corrupted paths.  [Dean Gaudet]
 
@@ -1449,7 +1454,7 @@ Changes with Apache 1.3b2 (there is no 1.3b1)
      once per "heavy-weight process" just before a server child exit()'s 
      e.g. when max_requests_per_child is reached, etc.
      [Doug MacEachern, Dean Gaudet]
-  
+
   *) mod_include cleanup showed that handle_else was being used to handle
      endif.  It didn't cause problems, but it was cleaned up too.
      [Howard Fear]
@@ -1538,7 +1543,7 @@ Changes with Apache 1.3a1
 
   *) added transport handle slot (t_handle) to the BUFF structure
      [Doug MacEachern]
-     
+
   *) get_client_block() returns wrong length if policy is
      REQUEST_CHUNKED_DECHUNK.
      [Kenichi Hori <ken@d2.bs1.fc.nec.co.jp>] PR#815
@@ -1546,7 +1551,7 @@ Changes with Apache 1.3a1
   *) Support the image map format of FrontPage.  For example:
         rect /url.hrm 10 20 30 40
      ["Chris O'Byrne" <obyrne@iol.ie>] PR#807
-  
+
   *) PORT: -lresolv and -lsocks were in the wrong order for Solaris.
      ["Darren O'Shaughnessy" <darren@aaii.oz.au>] PR#846
 
@@ -1561,7 +1566,7 @@ Changes with Apache 1.3a1
   *) Support Proxy Authentication, and don't pass the Proxy-Authorize
      header to the remote host in the proxy. [Sameer Parekh and
      Wallace]
-  
+
   *) Upgraded mod_rewrite from 3.0.6+ to latest officially available version
      3.0.9. This upgrade includes: fixed deadlooping on rewriting to same
      URLs, fixed rewritelog(), fixed forced response code handling on
@@ -1576,11 +1581,11 @@ Changes with Apache 1.3a1
      the author now has gifted mod_rewrite exclusively to the Apache Group and 
      no longer maintains an external version.
      [Ralf S. Engelschall]
-  
+
   *) API: Added child_init function to module structure.  This is called
      once per "heavy-weight process" before any requests are handled.
      See http_config.h for more details.  [Dean Gaudet]
-  
+
   *) Anonymous_LogEmail was logging on each subrequest.
      [Dean Gaudet] PR#421, 868
 
@@ -1647,7 +1652,7 @@ Changes with Apache 1.3a1
   *) CONFIG: "HostnameLookups" now defaults to off because it is far better
      for the net if we require people that actually need this data to
      enable it.  [Linus Torvalds]
-  
+
   *) directory_walk() is an expensive function, keep a little more state to
      avoid needless string counting.  Add two new functions make_dirstr_parent
      and make_dirstr_prefix which replace all existing uses of make_dirstr.
@@ -1661,7 +1666,7 @@ Changes with Apache 1.3a1
 
   *) run_method optimized to avoid needless scanning over NULLs in the
      module list.  [Dean Gaudet]
-  
+
   *) Revamp of (unix) scoreboard management code such that it avoids
      unnecessary traversals of the scoreboard on each hit.  This is
      particularly important for high volume sites with a large
@@ -1681,7 +1686,7 @@ Changes with Apache 1.3a1
      compile time.  The default sfio discipline will behave as apache
      would without sfio compiled in.
      [Doug MacEachern]
-                
+
   *) Enhance UserDir directive (mod_userdir) to accept a list of
      usernames for the 'disable' keyword, and add 'enable user...' to
      selectively *en*able userdirs if they're globally disabled.
@@ -1701,7 +1706,7 @@ Changes with Apache 1.3a1
 
   *) Turn off chunked encoding after sending terminating chunk/footer
      so that we can't do it twice by accident. [Roy Fielding]
-  
+
   *) mod_expire also issues Cache-Control: max-age headers.
      [Rob Hartill]
 
@@ -1755,7 +1760,7 @@ Changes with Apache 1.2.6
   *) table_set() and table_unset() did not deal correctly with
      multiple occurrences of the same key. [Stephen Scheck
      <sscheck@infonex.net>, Ben Laurie] PR#1604
-  
+
   *) send_fd_length() did not calculate total_bytes_sent properly in error
      cases.  [Ben Reser <breser@regnow.com>] PR#1366
 
@@ -2074,7 +2079,7 @@ Changes with Apache 1.2.1
 
   *) PORT: Workaround for AIX 3.x compiler bug in http_bprintf.c.  
      [Marc Slemko] PR#725
-  
+
   *) PORT: fix problem compiling http_bprintf.c with gcc under SCO
      [Marc Slemko] PR#695
 
