@@ -1,5 +1,8 @@
 Changes with Apache 1.3.3
 
+  *) PORT: Add Pyramid DC/OSx support to configuration mechanism.
+     [Earle Ake <akee@wpdiss1.wpafb.af.mil>]
+
   *) PORT: Fix sys/resource.h handling for Amdahl's UTS 2.1
      [Dave Dykstra <dwd@bell-labs.com>] PR#3054
 
