@@ -39,7 +39,7 @@ XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
     same header repeatedly toggles between ascending and descending
     order. These column header links are suppressed with
     <a href="autoindex.html#indexoptions" class="directive"><code class="directive">IndexOptions</code></a> directive's
-    <samp>SuppressColumnSorting</samp> option.</p>
+    <code>SuppressColumnSorting</code> option.</p>
 
     <p>Note that when the display is sorted by "Size", it's the
     <em>actual</em> size of the files that's used, not the
@@ -60,41 +60,41 @@ XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
     resource.</p>
 
     <ul>
-      <li><samp>C=N</samp> sorts the directory by file name</li>
+      <li><code>C=N</code> sorts the directory by file name</li>
 
-      <li><samp>C=M</samp> sorts the directory by last-modified
+      <li><code>C=M</code> sorts the directory by last-modified
       date, then file name</li>
 
-      <li><samp>C=S</samp> sorts the directory by size, then file
+      <li><code>C=S</code> sorts the directory by size, then file
       name</li>
 
-      <li><samp>C=D</samp> sorts the directory by description, then
+      <li><code>C=D</code> sorts the directory by description, then
       file name<br>
        &nbsp;</li>
 
-      <li><samp>O=A</samp> sorts the listing in Ascending
+      <li><code>O=A</code> sorts the listing in Ascending
       Order</li>
 
-      <li><samp>O=D</samp> sorts the listing in Descending
+      <li><code>O=D</code> sorts the listing in Descending
       Order<br>
        &nbsp;</li>
 
-      <li><samp>F=0</samp> formats the listing as a simple list
+      <li><code>F=0</code> formats the listing as a simple list
       (not FancyIndexed)</li>
 
-      <li><samp>F=1</samp> formats the listing as a FancyIndexed
+      <li><code>F=1</code> formats the listing as a FancyIndexed
       list</li>
 
-      <li><samp>F=2</samp> formats the listing as an HTMLTable
+      <li><code>F=2</code> formats the listing as an HTMLTable
       FancyIndexed list<br>
        &nbsp;</li>
 
-      <li><samp>V=0</samp> disables version sorting</li>
+      <li><code>V=0</code> disables version sorting</li>
 
-      <li><samp>V=1</samp> enables version sorting<br>
+      <li><code>V=1</code> enables version sorting<br>
        &nbsp;</li>
 
-      <li><samp>P=<em>pattern</em></samp> lists only files matching
+      <li><code>P=<em>pattern</em></code> lists only files matching
       the given <em>pattern</em></li>
     </ul>
 
@@ -324,7 +324,7 @@ indexing</td></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Synt
     of</p>
 
     <dl>
-      <dt><a id="indexoptions:descriptionwidth" name="indexoptions:descriptionwidth">DescriptionWidth=[<em>n</em>
+      <dt><a name="indexoptions:descriptionwidth">DescriptionWidth=[<em>n</em>
       | *] (<em>Apache 1.3.10 or 2.0.23 and later</em>)</a></dt>
 
       <dd>The <code>DescriptionWidth</code> keyword allows you to
@@ -341,19 +341,19 @@ indexing</td></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Synt
       width necessary to accommodate the longest description
       string.</dd>
 
-      <dd><b>See the section on <a href="#adddescription" class="directive"><code class="directive">AddDescription</code></a> for dangers
-      inherent in truncating descriptions.</b></dd>
+      <dd><strong>See the section on <a href="#adddescription" class="directive"><code class="directive">AddDescription</code></a> for dangers
+      inherent in truncating descriptions.</strong></dd>
 
-      <dt><a id="indexoptions:fancyindexing" name="indexoptions:fancyindexing">FancyIndexing</a></dt>
+      <dt><a name="indexoptions:fancyindexing">FancyIndexing</a></dt>
 
       <dd>
       This turns on fancy indexing of directories.</dd>
 
-      <dt><a id="indexoptions:foldersfirst" name="indexoptions:foldersfirst">FoldersFirst (<i>Apache
-      1.3.10 or 2.0.23 and later</i>)</a></dt>
+      <dt><a name="indexoptions:foldersfirst">FoldersFirst (<em>Apache
+      1.3.10 or 2.0.23 and later</em>)</a></dt>
 
       <dd>If this option is enabled, subdirectory listings will
-      <i>always</i> appear first, followed by normal files in the
+      <em>always</em> appear first, followed by normal files in the
       directory. The listing is basically broken into two
       components, the files and the subdirectories, and each is
       sorted separately and then displayed subdirectories-first.
@@ -361,12 +361,12 @@ indexing</td></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Synt
       <code>FoldersFirst</code> is enabled, subdirectory
       <code>Zed</code> will be listed before subdirectory
       <code>Beta</code>, which will be listed before normal files
-      <code>Gamma</code> and <code>Alpha</code>. <b>This option
+      <code>Gamma</code> and <code>Alpha</code>. <strong>This option
       only has an effect if <a href="#indexoptions:fancyindexing"><code>FancyIndexing</code></a>
-      is also enabled.</b></dd>
+      is also enabled.</strong></dd>
 
-      <dt><a id="indexoptions:htmltable" name="indexoptions:htmltable">HTMLTable</a> <i>(Experimental,
-      Apache 2.0.23 and later)</i></dt>
+      <dt><a name="indexoptions:htmltable">HTMLTable</a> <em>(Experimental,
+      Apache 2.0.23 and later)</em></dt>
 
       <dd>
       This experimental option with FancyIndexing constructs a
@@ -376,13 +376,13 @@ indexing</td></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Synt
       left-to-right and right-to-left reading order, as can happen
       on WinNT or other utf-8 enabled platforms.</dd>
 
-      <dt><a id="indexoptions:iconsarelinks" name="indexoptions:iconsarelinks">IconsAreLinks</a></dt>
+      <dt><a name="indexoptions:iconsarelinks">IconsAreLinks</a></dt>
 
       <dd>
       This makes the icons part of the anchor for the filename, for
       fancy indexing.</dd>
 
-      <dt><a id="indexoptions:iconheight" name="indexoptions:iconheight">IconHeight[=pixels]
+      <dt><a name="indexoptions:iconheight">IconHeight[=pixels]
       (<em>Apache 1.3 and later</em>)</a></dt>
 
       <dd>
@@ -395,7 +395,7 @@ indexing</td></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Synt
       the standard height of the icons supplied with the Apache
       software.</dd>
 
-      <dt><a id="indexoptions:iconwidth" name="indexoptions:iconwidth">IconWidth[=pixels] (<em>Apache
+      <dt><a name="indexoptions:iconwidth">IconWidth[=pixels] (<em>Apache
       1.3 and later</em>)</a></dt>
 
       <dd>
@@ -408,14 +408,14 @@ indexing</td></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Synt
       the standard width of the icons supplied with the Apache
       software.</dd>
 
-      <dt><a id="indexoptions:ignoreclient" name="indexoptions:ignoreclient">IgnoreClient</a></dt>
+      <dt><a name="indexoptions:ignoreclient">IgnoreClient</a></dt>
 
       <dd>
       This option causes mod_autoindex to ignore all query
       variables from the client, including sort order (implies
       <code><a href="#indexoptions:suppresscolumnsorting">SuppressColumnSorting</a></code>.)</dd>
 
-      <dt><a id="indexoptions:namewidth" name="indexoptions:namewidth">NameWidth=[<em>n</em> | *]
+      <dt><a name="indexoptions:namewidth">NameWidth=[<em>n</em> | *]
       (<em>Apache 1.3.2 and later</em>)</a></dt>
 
       <dd>The NameWidth keyword allows you to specify the width of
@@ -430,7 +430,7 @@ indexing</td></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Synt
       <dd><code>NameWidth=*</code> grows the column to the
       necessary width.</dd>
 
-      <dt><a id="indexoptions:scanhtmltitles" name="indexoptions:scanhtmltitles">ScanHTMLTitles</a></dt>
+      <dt><a name="indexoptions:scanhtmltitles">ScanHTMLTitles</a></dt>
 
       <dd>
       This enables the extraction of the title from HTML documents
@@ -439,7 +439,7 @@ indexing</td></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Synt
       httpd will read the document for the value of the TITLE tag.
       This is CPU and disk intensive.</dd>
 
-      <dt><a id="indexoptions:suppresscolumnsorting" name="indexoptions:suppresscolumnsorting">SuppressColumnSorting</a>
+      <dt><a name="indexoptions:suppresscolumnsorting">SuppressColumnSorting</a>
       (<em>Apache 1.3 and later</em>)</dt>
 
       <dd>
@@ -452,7 +452,7 @@ indexing</td></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Synt
       string.</strong> That behavior is now controlled by <a href="#indexoptions:ignoreclient">IndexOptions
       IgnoreClient</a> in Apache 2.0.23.</dd>
 
-      <dt><a id="indexoptions:suppressdescription" name="indexoptions:suppressdescription">SuppressDescription</a></dt>
+      <dt><a name="indexoptions:suppressdescription">SuppressDescription</a></dt>
 
       <dd>
       This will suppress the file description in fancy indexing
@@ -464,7 +464,7 @@ indexing</td></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Synt
       index option to limit the size of the description
       column.</dd>
 
-      <dt><a id="indexoptions:suppresshtmlpreamble" name="indexoptions:suppresshtmlpreamble">SuppressHTMLPreamble</a>
+      <dt><a name="indexoptions:suppresshtmlpreamble">SuppressHTMLPreamble</a>
       (<em>Apache 1.3 and later</em>)</dt>
 
       <dd>
@@ -478,7 +478,7 @@ indexing</td></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Synt
       HTML instructions in this case. If there is no header file, the
       preamble is generated as usual.</dd>
 
-      <dt><a id="indexoptions:suppressicon" name="indexoptions:suppressicon">SuppressIcon</a> (<em>Apache
+      <dt><a name="indexoptions:suppressicon">SuppressIcon</a> (<em>Apache
       2.0.23 and later</em>)</dt>
 
       <dd>
@@ -488,13 +488,13 @@ indexing</td></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Synt
       by the final specification prohibits IMG and HR tags from the
       PRE block (used to format FancyIndexed listings.)</dd>
 
-      <dt><a id="indexoptions:suppresslastmodified" name="indexoptions:suppresslastmodified">SuppressLastModified</a></dt>
+      <dt><a name="indexoptions:suppresslastmodified">SuppressLastModified</a></dt>
 
       <dd>
       This will suppress the display of the last modification date,
       in fancy indexing listings.</dd>
 
-      <dt><a id="indexoptions:suppressrules" name="indexoptions:suppressrules">SuppressRules</a>
+      <dt><a name="indexoptions:suppressrules">SuppressRules</a>
       (<em>Apache 2.0.23 and later</em>)</dt>
 
       <dd>
@@ -504,13 +504,13 @@ indexing</td></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Synt
       by the final specification prohibits IMG and HR tags from the
       PRE block (used to format FancyIndexed listings.)</dd>
 
-      <dt><a id="indexoptions:suppresssize" name="indexoptions:suppresssize">SuppressSize</a></dt>
+      <dt><a name="indexoptions:suppresssize">SuppressSize</a></dt>
 
       <dd>
       This will suppress the file size in fancy indexing
       listings.</dd>
 
-      <dt><a id="indexoptions:trackmodified" name="indexoptions:trackmodified">TrackModified (<em>Apache
+      <dt><a name="indexoptions:trackmodified">TrackModified (<em>Apache
       1.3.15 or 2.0.23 and later</em>)</a></dt>
 
       <dd>
@@ -528,7 +528,7 @@ indexing</td></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Synt
       Last-Modified header on all Unix platforms.</strong> If this
       is a concern, leave this option disabled.</dd>
 
-      <dt><a id="indexoptions:versionsort" name="indexoptions:versionsort">VersionSort (<em>Apache 2.0a3
+      <dt><a name="indexoptions:versionsort">VersionSort (<em>Apache 2.0a3
       and later</em>)</a></dt>
 
       <dd>
@@ -558,7 +558,7 @@ foo-1.04
       </dd>
 
       <dd>
-        <h3>Incremental IndexOptions</h3>
+        <strong>Incremental IndexOptions</strong>
       </dd>
 
       <dd>
