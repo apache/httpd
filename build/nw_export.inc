@@ -34,7 +34,6 @@
 #include "http_vhost.h"
 #include "mpm_common.h"
 #include "pcreposix.h"
-#include "rfc1413.h"
 #include "scoreboard.h"
 #include "util_cfgtree.h"
 #include "util_charset.h"

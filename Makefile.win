@@ -279,6 +279,7 @@ _build:
 	 $(MAKE) $(MAKEOPT) -f mod_env.mak         CFG="mod_env - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f mod_expires.mak     CFG="mod_expires - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f mod_headers.mak     CFG="mod_headers - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+	 $(MAKE) $(MAKEOPT) -f mod_ident.mak       CFG="mod_ident - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f mod_mime_magic.mak  CFG="mod_mime_magic - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f mod_setenvif.mak    CFG="mod_setenvif - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f mod_unique_id.mak   CFG="mod_unique_id - Win32 $(LONG)" RECURSE=0 $(CTARGET)
@@ -436,6 +437,7 @@ _install:
 	copy modules\metadata\$(LONG)\mod_env.so "$(INSTDIR)\modules" <.y
 	copy modules\metadata\$(LONG)\mod_expires.so "$(INSTDIR)\modules" <.y
 	copy modules\metadata\$(LONG)\mod_headers.so "$(INSTDIR)\modules" <.y
+	copy modules\metadata\$(LONG)\mod_ident.so "$(INSTDIR)\modules" <.y
 	copy modules\metadata\$(LONG)\mod_mime_magic.so "$(INSTDIR)\modules" <.y
 	copy modules\metadata\$(LONG)\mod_setenvif.so "$(INSTDIR)\modules" <.y
 	copy modules\metadata\$(LONG)\mod_unique_id.so "$(INSTDIR)\modules" <.y
@@ -494,6 +496,7 @@ _install:
 	copy modules\metadata\$(LONG)\mod_env.pdb "$(INSTDIR)\modules" <.y
 	copy modules\metadata\$(LONG)\mod_expires.pdb "$(INSTDIR)\modules" <.y
 	copy modules\metadata\$(LONG)\mod_headers.pdb "$(INSTDIR)\modules" <.y
+	copy modules\metadata\$(LONG)\mod_ident.pdb "$(INSTDIR)\modules" <.y
 	copy modules\metadata\$(LONG)\mod_mime_magic.pdb "$(INSTDIR)\modules" <.y
 	copy modules\metadata\$(LONG)\mod_setenvif.pdb "$(INSTDIR)\modules" <.y
 	copy modules\metadata\$(LONG)\mod_unique_id.pdb "$(INSTDIR)\modules" <.y
