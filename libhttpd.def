@@ -9,238 +9,238 @@ EXPORTS
 
 
 
-	ap_add_cgi_vars	  @5
-	ap_add_common_vars   @6
-	ap_add_loaded_module   @7
-	ap_add_module   @8
-	ap_add_named_module   @9
-	ap_add_per_dir_conf   @10
-	ap_add_per_url_conf   @11
-        ap_add_version_component @12
-	ap_allow_options   @13
-	ap_allow_overrides   @14
+	ap_add_cgi_vars
+	ap_add_common_vars
+	ap_add_loaded_module
+	ap_add_module
+	ap_add_named_module
+	ap_add_per_dir_conf
+	ap_add_per_url_conf
+        ap_add_version_component
+	ap_allow_options
+	ap_allow_overrides
 
 
-	ap_auth_name   @17
-	ap_auth_type   @18
-	ap_basic_http_header   @19
-	ap_bclose   @20
-	ap_bcreate   @21
-	ap_bfilbuf   @22
+	ap_auth_name
+	ap_auth_type
+	ap_basic_http_header
+	ap_bclose
+	ap_bcreate
+	ap_bfilbuf
 
-	ap_bflsbuf   @24
-	ap_bflush   @25
-	ap_bgetopt   @26
-	ap_bgets   @27
-
-
-	ap_blookc   @30
-
-	ap_bonerror   @32
+	ap_bflsbuf
+	ap_bflush
+	ap_bgetopt
+	ap_bgets
 
 
-	ap_bputs   @35
+	ap_blookc
 
-	ap_bsetflag   @37
-	ap_bsetopt   @38
-
+	ap_bonerror
 
 
+	ap_bputs
+
+	ap_bsetflag
+	ap_bsetopt
 
 
 
 
-	ap_cfg_closefile   @46
-	ap_cfg_getc   @47
-	ap_cfg_getline   @48
-	ap_chdir_file   @49
-
-	ap_check_cmd_context   @51
-	ap_checkmask   @52
-
-	ap_clear_module_list   @54
 
 
-	ap_close_piped_log   @57
-	ap_construct_server   @58
-	ap_construct_url   @59
-	ap_content_type_tolower   @60
+
+	ap_cfg_closefile
+	ap_cfg_getc
+	ap_cfg_getline
+	ap_chdir_file
+
+	ap_check_cmd_context
+	ap_checkmask
+
+	ap_clear_module_list
 
 
-	ap_core_translate   @63
-	ap_count_dirs   @64
-
-	ap_create_environment   @66
-
-	ap_create_per_dir_config   @68
-	ap_custom_response   @69
-	ap_default_port_for_request   @70
-	ap_default_port_for_scheme   @71
-	ap_default_type   @72
+	ap_close_piped_log
+	ap_construct_server
+	ap_construct_url
+	ap_content_type_tolower
 
 
-	ap_destroy_sub_req   @75
-	ap_die   @76
-	ap_discard_request_body   @77
-	ap_document_root   @78
+	ap_core_translate
+	ap_count_dirs
+
+	ap_create_environment
+
+	ap_create_per_dir_config
+	ap_custom_response
+	ap_default_port_for_request
+	ap_default_port_for_scheme
+	ap_default_type
+
+
+	ap_destroy_sub_req
+	ap_die
+	ap_discard_request_body
+	ap_document_root
 	
-	ap_error_log2stderr   @80
-	ap_escape_html   @81
-	ap_escape_path_segment   @82
-	ap_escape_quotes   @83
-	ap_escape_shell_cmd   @84
+	ap_error_log2stderr
+	ap_escape_html
+	ap_escape_path_segment
+	ap_escape_quotes
+	ap_escape_shell_cmd
 
-	ap_finalize_request_protocol   @86
-	ap_find_command   @87
-	ap_find_command_in_modules   @88
-	ap_find_last_token   @89
-	ap_find_linked_module   @90
-	ap_find_module_name   @91
-	ap_find_path_info   @92
-	ap_find_token   @93
-	ap_get_basic_auth_pw   @94
-	ap_get_client_block   @95
+	ap_finalize_request_protocol
+	ap_find_command
+	ap_find_command_in_modules
+	ap_find_last_token
+	ap_find_linked_module
+	ap_find_module_name
+	ap_find_path_info
+	ap_find_token
+	ap_get_basic_auth_pw
+	ap_get_client_block
 
-	ap_get_limit_req_body   @97
-	ap_get_remote_host   @98
-	ap_get_remote_logname   @99
-	ap_get_server_built   @100
-	ap_get_server_name   @101
-	ap_get_server_port   @102
-	ap_get_server_version   @103
+	ap_get_limit_req_body
+	ap_get_remote_host
+	ap_get_remote_logname
+	ap_get_server_built
+	ap_get_server_name
+	ap_get_server_port
+	ap_get_server_version
 
-	ap_get_token   @105
-	ap_getparents   @106
-	ap_getword   @107
-	ap_getword_conf   @108
-	ap_getword_conf_nc   @109
-	ap_getword_nc   @110
-	ap_getword_nulls   @111
-	ap_getword_nulls_nc   @112
-	ap_getword_white   @113
-	ap_getword_white_nc   @114
+	ap_get_token
+	ap_getparents
+	ap_getword
+	ap_getword_conf
+	ap_getword_conf_nc
+	ap_getword_nc
+	ap_getword_nulls
+	ap_getword_nulls_nc
+	ap_getword_white
+	ap_getword_white_nc
 
-	ap_gname2id   @116
-
-
-	ap_ht_time   @119
-	ap_ind   @120
-	ap_index_of_response   @121
-	ap_init_virtual_host   @122
-	ap_internal_redirect   @123
-	ap_internal_redirect_handler   @124
-	ap_is_directory   @125
-
-	ap_is_initial_req   @127
-	ap_is_matchexp   @128
-	ap_is_url   @129
+	ap_gname2id
 
 
+	ap_ht_time
+	ap_ind
+	ap_index_of_response
+	ap_init_virtual_host
+	ap_internal_redirect
+	ap_internal_redirect_handler
+	ap_is_directory
 
-
-	ap_log_assert   @134
+	ap_is_initial_req
+	ap_is_matchexp
+	ap_is_url
 
 
 
 
-
-	ap_make_dirstr_parent   @140
-	ap_make_dirstr_prefix   @141
-	ap_make_full_path   @142
-
-
-	ap_matches_request_vhost   @145
-	ap_md5   @146
-	ap_md5_binary   @147
-	ap_md5contextTo64   @148
-	ap_md5digest   @149
-	ap_meets_conditions   @150
-	ap_no2slash   @151
-	ap_note_auth_failure   @152
-	ap_note_basic_auth_failure   @153
-
-
-
-
-	ap_note_digest_auth_failure   @158
-
-
-	ap_open_piped_log   @161
-	ap_os_canonical_filename   @162
-	ap_os_case_canonical_filename   @163
-	ap_os_escape_path   @164
-
-
-	ap_parseHTTPdate   @167
-	ap_parse_hostinfo_components   @168
-	ap_parse_uri   @169
-	ap_parse_uri_components   @170
-
-	ap_pcfg_open_custom   @172
-	ap_pcfg_openfile   @173
-
-
-
-
-	ap_pduphostent   @178
-
-
-
-	ap_pgethostbyname   @182
-
-
-	ap_pregcomp   @185
-	ap_pregfree   @186
-	ap_pregsub   @187
-	ap_psignature   @188
+	ap_log_assert
 
 
 
 
 
-	ap_rationalize_mtime   @194
+	ap_make_dirstr_parent
+	ap_make_dirstr_prefix
+	ap_make_full_path
 
 
-	ap_remove_loaded_module   @197
-	ap_remove_module   @198
-	ap_requires   @199
+	ap_matches_request_vhost
+	ap_md5
+	ap_md5_binary
+	ap_md5contextTo64
+	ap_md5digest
+	ap_meets_conditions
+	ap_no2slash
+	ap_note_auth_failure
+	ap_note_basic_auth_failure
 
-	ap_rflush   @201
-	ap_rind   @202
-	ap_rputc   @203
-	ap_rputs   @204
 
-	ap_run_sub_req   @206
-	ap_rwrite   @207
-	ap_satisfies   @208
-	ap_scan_script_header_err   @209
 
-	ap_scan_script_header_err_core   @211
-	ap_scan_script_header_err_strs   @212
 
-	ap_send_fd   @214
+	ap_note_digest_auth_failure
 
-	ap_send_http_header   @216
-	ap_send_http_trace   @217
 
-	ap_send_size   @219
-	ap_server_root_relative   @220
+	ap_open_piped_log
+	ap_os_canonical_filename
+	ap_os_case_canonical_filename
+	ap_os_escape_path
+
+
+	ap_parseHTTPdate
+	ap_parse_hostinfo_components
+	ap_parse_uri
+	ap_parse_uri_components
+
+	ap_pcfg_open_custom
+	ap_pcfg_openfile
+
+
+
+
+	ap_pduphostent
+
+
+
+	ap_pgethostbyname
+
+
+	ap_pregcomp
+	ap_pregfree
+	ap_pregsub
+	ap_psignature
+
+
+
+
+
+	ap_rationalize_mtime
+
+
+	ap_remove_loaded_module
+	ap_remove_module
+	ap_requires
+
+	ap_rflush
+	ap_rind
+	ap_rputc
+	ap_rputs
+
+	ap_run_sub_req
+	ap_rwrite
+	ap_satisfies
+	ap_scan_script_header_err
+
+	ap_scan_script_header_err_core
+	ap_scan_script_header_err_strs
+
+	ap_send_fd
+
+	ap_send_http_header
+	ap_send_http_trace
+
+	ap_send_size
+	ap_server_root_relative
 	
-	ap_set_content_length   @222
-	ap_set_etag   @223
-	ap_set_keepalive   @224
-	ap_set_last_modified   @225
-	ap_setup_client_block   @226
-	ap_should_client_block   @227
+	ap_set_content_length
+	ap_set_etag
+	ap_set_keepalive
+	ap_set_last_modified
+	ap_setup_client_block
+	ap_should_client_block
 
-	ap_some_auth_required   @229
+	ap_some_auth_required
 
 
-	ap_str_tolower   @232
-	ap_strcasecmp_match   @233
-	ap_strcmp_match   @234
-	ap_sub_req_lookup_file   @235
-	ap_sub_req_lookup_uri   @236
+	ap_str_tolower
+	ap_strcasecmp_match
+	ap_strcmp_match
+	ap_sub_req_lookup_file
+	ap_sub_req_lookup_uri
 
 
 
@@ -251,14 +251,14 @@ EXPORTS
 
 
 
-	ap_uname2id   @247
+	ap_uname2id
 
-	ap_unescape_url   @249
-	ap_unparse_uri_components   @250
-	ap_update_mtime   @251
+	ap_unescape_url
+	ap_unparse_uri_components
+	ap_update_mtime
 
 
-	ap_vbprintf   @254
+	ap_vbprintf
 
 
 
@@ -267,173 +267,173 @@ EXPORTS
 
 
 
-	regcomp   @263
-	regexec   @264
-	regfree   @265
-	access_module @266
-	alias_module   @267
-	ap_bprintf   @268
-	ap_bputstrs  @269
+	regcomp
+	regexec
+	regfree
+	access_module
+	alias_module
+	ap_bprintf
+	ap_bputstrs
 
 
-	ap_limit_section   @272
-	ap_loaded_modules   @273
-	ap_log_error   @274
+	ap_limit_section
+	ap_loaded_modules
+	ap_log_error
 
-	ap_log_rerror   @276
+	ap_log_rerror
 
 
 
 
 
-	ap_rprintf   @282
-	ap_rvputs   @283
+	ap_rprintf
+	ap_rvputs
 
 
-	ap_server_argv0   @286
-	ap_server_root   @287
-	ap_set_file_slot  @288
-	ap_set_flag_slot   @289
-	ap_set_string_slot  @290
-	ap_set_string_slot_lower  @291 
+	ap_server_argv0
+	ap_server_root
+	ap_set_file_slot
+	ap_set_flag_slot
+	ap_set_string_slot
+	ap_set_string_slot_lower
 
 
 
 
-	asis_module   @296
-	auth_module   @297
-	autoindex_module  @298 
+	asis_module
+	auth_module
+	autoindex_module
 
-	config_log_module  @300 
-	core_module   @301
-	dir_module   @302
-	env_module   @303
-	imap_module   @304
+	config_log_module
+	core_module
+	dir_module
+	env_module
+	imap_module
 
-	mime_module   @306
-	negotiation_module @307  
+	mime_module
+	negotiation_module
 
-	setenvif_module  @309 
+	setenvif_module
 
-	top_module   @311
+	top_module
 
-	ap_method_number_of   @313
-	ap_exists_config_define   @314
-	ap_single_module_configure   @315
-	ap_make_etag   @317
+	ap_method_number_of
+	ap_exists_config_define
+	ap_single_module_configure
+	ap_make_etag
 
 
-	ap_find_list_item   @320
+	ap_find_list_item
 
 
-	ap_size_list_item   @323
-	ap_get_list_item   @324
-
-        ap_get_status_line @326
-
-
-
-
-
-
-
-
-
-
-
-	ap_sub_req_method_uri   @339
-	ap_regerror   @341
-	ap_regexec   @342
-	ap_field_noparam   @343
-	ap_pbase64decode   @344
-	ap_pbase64encode   @345
-	ap_base64encode   @346
-	ap_base64encode_binary   @347
-	ap_base64encode_len   @348
-	ap_base64decode   @349
-	ap_base64decode_binary   @350
-	ap_base64decode_len   @351
-	ap_SHA1Init   @352
-	ap_SHA1Update_binary   @353
-	ap_SHA1Update   @354
-	ap_SHA1Final   @355
-	ap_sha1_base64   @356
-	ap_show_hook @357
-	ap_hook_sort_register @358
-	ap_hook_process_connection @359
-	ap_process_http_connection @360
-	ap_hook_check_user_id @361
-	ap_hook_auth_checker @362
-	ap_hook_fixups @363
-        regerror @364
-        ap_send_error_response @365
-	ap_start_shutdown @366
-
-        ap_read_config   @368
-	ap_server_pre_read_config  @369
-	ap_server_post_read_config @370
-	ap_setup_prelinked_modules @371
-
-
-
-
-        ap_debug_module_hooks @376
-        ap_debug_module_name @377
-        ap_global_hook_pool @378 DATA
-        ap_hook_pre_connection @379
-        ap_hook_post_read_request @380
-        ap_hook_log_transaction @381
-        ap_hook_http_method @382
-        ap_hook_default_port @383
-        ap_hook_translate_name @384
-        ap_hook_type_checker @385
-        ap_hook_access_checker @386
-        ap_hook_header_parser @387
-        ap_hook_post_config @389
-        ap_hook_open_logs @390
-        ap_hook_child_init @391
-
-        ap_get_status_table @392
-        ap_run_default_port @393
-        ap_run_http_method @394
-        ap_bread_core @395
-        ap_bwrite_core @396
-        ap_vbputstrs @397
+	ap_size_list_item
+	ap_get_list_item
+
+        ap_get_status_line
+
+
+
+
+
+
+
+
+
+
+
+	ap_sub_req_method_uri
+	ap_regerror
+	ap_regexec
+	ap_field_noparam
+	ap_pbase64decode
+	ap_pbase64encode
+	ap_base64encode
+	ap_base64encode_binary
+	ap_base64encode_len
+	ap_base64decode
+	ap_base64decode_binary
+	ap_base64decode_len
+	ap_SHA1Init
+	ap_SHA1Update_binary
+	ap_SHA1Update
+	ap_SHA1Final
+	ap_sha1_base64
+	ap_show_hook
+	ap_hook_sort_register
+	ap_hook_process_connection
+	ap_process_http_connection
+	ap_hook_check_user_id
+	ap_hook_auth_checker
+	ap_hook_fixups
+        regerror
+        ap_send_error_response
+	ap_start_shutdown
+
+        ap_read_config
+	ap_server_pre_read_config
+	ap_server_post_read_config
+	ap_setup_prelinked_modules
+
+
+
+
+        ap_debug_module_hooks
+        ap_debug_module_name
+        ap_global_hook_pool
+        ap_hook_pre_connection
+        ap_hook_post_read_request
+        ap_hook_log_transaction
+        ap_hook_http_method
+        ap_hook_default_port
+        ap_hook_translate_name
+        ap_hook_type_checker
+        ap_hook_access_checker
+        ap_hook_header_parser
+        ap_hook_post_config
+        ap_hook_open_logs
+        ap_hook_child_init
+
+        ap_get_status_table
+        ap_run_default_port
+        ap_run_http_method
+        ap_bread_core
+        ap_bwrite_core
+        ap_vbputstrs
 
 ;       Exclusively provided for http_main.c
-        ap_register_hooks       @398 NONAME
-        ap_prelinked_modules    @399 NONAME
-        ap_preloaded_modules    @400 NONAME
-        ap_post_config_hook     @401 NONAME
-        ap_run_pre_config       @402 NONAME
-        ap_run_rewrite_args     @403 NONAME
-        ap_show_directives      @404 NONAME
-        ap_show_modules         @405 NONAME
-        ap_util_uri_init        @406 NONAME
-        ap_mpm_run              @407 NONAME
-        ap_hook_deregister_all  @408 NONAME
-        ap_run_open_logs        @409 NONAME
-        ap_process_config_tree  @410 NONAME
-        ap_server_config_defines @411 NONAME DATA
-        ap_sort_hooks		 @412
-	ap_fini_vhost_config	 @413
-	ap_fixup_virtual_hosts	 @414
+        ap_register_hooks
+        ap_prelinked_modules
+        ap_preloaded_modules
+        ap_post_config_hook
+        ap_run_pre_config
+        ap_run_rewrite_args
+        ap_show_directives
+        ap_show_modules
+        ap_util_uri_init
+        ap_mpm_run
+        ap_hook_deregister_all
+        ap_run_open_logs
+        ap_process_config_tree
+        ap_server_config_defines
+        ap_sort_hooks
+	ap_fini_vhost_config
+	ap_fixup_virtual_hosts
 
 ; 
 ; util_xml.h
-       ap_text_append      @416
-       ap_xml_parse_input  @451
-       ap_xml_to_text      @452
-       ap_xml_empty_elem   @453
-       ap_xml_quote_string @454
-       ap_xml_quote_elem   @455
-       ap_xml_insert_uri   @456
+       ap_text_append
+       ap_xml_parse_input
+       ap_xml_to_text
+       ap_xml_empty_elem
+       ap_xml_quote_string
+       ap_xml_quote_elem
+       ap_xml_insert_uri
 ;
 ; buckets
-       ap_bucket_create_transient @460
-       ap_bucket_split_shared @461
-       ap_bucket_make_shared  @462
-       ap_bucket_destroy_shared @463       
-       ap_bucket_create_pool @464
+       ap_bucket_create_transient
+       ap_bucket_split_shared
+       ap_bucket_make_shared
+       ap_bucket_destroy_shared
+       ap_bucket_create_pool
 
-       ap_os_create_privileged_process @465
+       ap_os_create_privileged_process
