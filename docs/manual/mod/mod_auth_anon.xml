@@ -181,7 +181,7 @@ error log</description>
 </directivesynopsis>
 
 <directivesynopsis>
-<name>AnonymousVerifyEmail</name>
+<name>Anonymous_VerifyEmail</name>
 <description>Sets whether to check the password field for a correctly
 formatted email address</description>
 <syntax>Anonymous_VerifyEmail on|off</syntax>
