@@ -1296,22 +1296,20 @@ static struct ent *make_autoindex_entry(const apr_finfo_t *dirent,
         || ((dirent->name[1] == '.') && !dirent->name[2])))
         return (NULL);
 
-#ifndef CASE_BLIND_FILESYSTEM
+    /*
+     * On some platforms, the match must be case-blind.  This is really
+     * a factor of the filesystem involved, but we can't detect that
+     * reliably - so we have to granularise at the OS level.
+     */
     if (pattern && (apr_fnmatch(pattern, dirent->name,
-                                APR_FNM_NOESCAPE | APR_FNM_PERIOD)
-                        != APR_SUCCESS))
+                                APR_FNM_NOESCAPE | APR_FNM_PERIOD
+#ifdef CASE_BLIND_FILESYSTEM
+                                | APR_FNM_CASE_BLIND
+#endif
+                                )
+                    != APR_SUCCESS)) {
         return (NULL);
-#else  /* !CASE_BLIND_FILESYSTEM */
-        /*
-         * On some platforms, the match must be case-blind.  This is really
-         * a factor of the filesystem involved, but we can't detect that
-         * reliably - so we have to granularise at the OS level.
-         */
-    if (pattern && (apr_fnmatch(pattern, dirent->name,
-                                APR_FNM_NOESCAPE | APR_FNM_PERIOD | APR_FNM_CASE_BLIND)
-                        != APR_SUCCESS))
-        return (NULL);
-#endif /* !CASE_BLIND_FILESYSTEM */
+    }
 
     if (ignore_entry(d, ap_make_full_path(r->pool,
                                           r->filename, dirent->name))) {
