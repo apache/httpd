@@ -69,7 +69,6 @@
 #include "iol_socket.h"
 #include "ap_listen.h"
 #include "scoreboard.h" 
-#include "acceptlock.h"
 
 #include <netinet/tcp.h> 
 #include <pthread.h>
@@ -100,12 +99,6 @@ typedef struct {
     int sd;
     ap_context_t *tpool; /* "pthread" would be confusing */
 } proc_info;
-
-#if 0
-#define SAFE_ACCEPT(stmt) do {if (ap_listeners->next != NULL) {stmt;}} while (0)
-#else
-#define SAFE_ACCEPT(stmt) do {stmt;} while (0)
-#endif
 
 /*
  * The max child slot ever assigned, preserved across restarts.  Necessary
@@ -161,6 +154,18 @@ static int my_pid; /* Linux getpid() doesn't work except in main thread. Use
 /* Keep track of the number of worker threads currently active */
 static int worker_thread_count;
 static pthread_mutex_t worker_thread_count_mutex;
+
+/* Locks for accept serialization */
+static pthread_mutex_t thread_accept_mutex = PTHREAD_MUTEX_INITIALIZER;
+static ap_lock_t *process_accept_mutex;
+static char *lock_fname;
+
+#ifdef NO_SERIALIZED_ACCEPT
+#define SAFE_ACCEPT(stmt) APR_SUCCESS
+#else
+#define SAFE_ACCEPT(stmt) (stmt)
+#endif
+
 
 /* Global, alas, so http_core can talk to us */
 enum server_token_type ap_server_tokens = SrvTk_FULL;
@@ -798,6 +803,7 @@ static void * worker_thread(void * dummy)
     int n;
     int curr_pollfd, last_pollfd = 0;
     ap_pollfd_t *pollset;
+    ap_status_t rv;
 
     free(ti);
 
@@ -819,12 +825,19 @@ static void * worker_thread(void * dummy)
 
         (void) ap_update_child_status(process_slot, thread_slot, SERVER_READY, 
                                       (request_rec *) NULL);
-        SAFE_ACCEPT(intra_mutex_on(0));
+        pthread_mutex_lock(&thread_accept_mutex);
         if (workers_may_exit) {
-            SAFE_ACCEPT(intra_mutex_off(0));
+            pthread_mutex_unlock(&thread_accept_mutex);
             break;
         }
-        SAFE_ACCEPT(accept_mutex_on(0));
+        if ((rv = SAFE_ACCEPT(ap_lock(process_accept_mutex)))
+            != APR_SUCCESS) {
+            ap_log_error(APLOG_MARK, APLOG_EMERG, rv, server_conf,
+                         "ap_lock failed. Attempting to shutdown "
+                         "process gracefully.");
+            workers_may_exit = 1;
+        }
+
         while (!workers_may_exit) {
 	    ap_status_t ret;
 	    ap_int16_t event;
@@ -877,14 +890,26 @@ static void * worker_thread(void * dummy)
     got_fd:
         if (!workers_may_exit) {
             ap_accept(&csd, sd, ptrans);
-            SAFE_ACCEPT(accept_mutex_off(0));
-            SAFE_ACCEPT(intra_mutex_off(0));
+            if ((rv = SAFE_ACCEPT(ap_unlock(process_accept_mutex)))
+                != APR_SUCCESS) {
+                ap_log_error(APLOG_MARK, APLOG_EMERG, rv, server_conf,
+                             "ap_unlock failed. Attempting to shutdown "
+                             "process gracefully.");
+                workers_may_exit = 1;
+            }
+            pthread_mutex_unlock(&thread_accept_mutex);
             process_socket(ptrans, csd, process_slot, thread_slot);
             requests_this_child--;
         }
         else {
-            SAFE_ACCEPT(accept_mutex_off(0));
-            SAFE_ACCEPT(intra_mutex_off(0));
+            if ((rv = SAFE_ACCEPT(ap_unlock(process_accept_mutex)))
+                != APR_SUCCESS) {
+                ap_log_error(APLOG_MARK, APLOG_EMERG, rv, server_conf,
+                             "ap_unlock failed. Attempting to shutdown "
+                             "process gracefully.");
+                workers_may_exit = 1;
+            }
+            pthread_mutex_unlock(&thread_accept_mutex);
             break;
         }
         ap_clear_pool(ptrans);
@@ -916,6 +941,8 @@ static void child_main(int child_num_arg)
     int my_child_num = child_num_arg;
     proc_info *my_info = NULL;
     ap_listen_rec *lr;
+    ap_status_t rv;
+
 
     my_pid = getpid();
     ap_create_context(&pchild, pconf);
@@ -923,8 +950,13 @@ static void child_main(int child_num_arg)
     /*stuff to do before we switch id's, so we have permissions.*/
     reopen_scoreboard(pchild);
 
-    SAFE_ACCEPT(intra_mutex_init(pchild, 1));
-    SAFE_ACCEPT(accept_mutex_child_init(pchild));
+    rv = SAFE_ACCEPT(ap_child_init_lock(&process_accept_mutex, lock_fname,
+                     pchild));
+    if (rv != APR_SUCCESS) {
+        ap_log_error(APLOG_MARK, APLOG_EMERG, rv, server_conf,
+                     "Couldn't initialize cross-process lock in child");
+        clean_child_exit(APEXIT_CHILDFATAL);
+    }
 
     if (unixd_setup_child()) {
 	clean_child_exit(APEXIT_CHILDFATAL);
@@ -1287,6 +1319,7 @@ static void server_main_loop(int remaining_children_to_start)
 int ap_mpm_run(ap_context_t *_pconf, ap_context_t *plog, server_rec *s)
 {
     int remaining_children_to_start;
+    ap_status_t rv;
 
     pconf = _pconf;
     server_conf = s;
@@ -1317,7 +1350,20 @@ int ap_mpm_run(ap_context_t *_pconf, ap_context_t *plog, server_rec *s)
         return 1;
     }
     ap_log_pid(pconf, ap_pid_fname);
-    SAFE_ACCEPT(accept_mutex_init(pconf, 1));
+
+    /* Initialize cross-process accept lock */
+    lock_fname = ap_psprintf(_pconf, "%s.%lu",
+                             ap_server_root_relative(_pconf, lock_fname),
+                             my_pid);
+    rv = ap_create_lock(&process_accept_mutex, APR_MUTEX, APR_CROSS_PROCESS,
+                   lock_fname, _pconf);
+    if (rv != APR_SUCCESS) {
+        ap_log_error(APLOG_MARK, APLOG_EMERG, rv, s,
+                     "Couldn't create cross-process lock");
+        return 1;
+    }
+
+
     if (!is_graceful) {
 	reinit_scoreboard(pconf);
     }
@@ -1472,7 +1518,7 @@ static void mpmt_pthread_pre_config(ap_context_t *pconf, ap_context_t *plog, ap_
     ap_threads_per_child = DEFAULT_THREADS_PER_CHILD;
     ap_pid_fname = DEFAULT_PIDLOG;
     ap_scoreboard_fname = DEFAULT_SCOREBOARD;
-    ap_lock_fname = DEFAULT_LOCKFILE;
+    lock_fname = DEFAULT_LOCKFILE;
     ap_max_requests_per_child = DEFAULT_MAX_REQUESTS_PER_CHILD;
     ap_extended_status = 0;
 
@@ -1519,7 +1565,7 @@ static const char *set_lockfile(cmd_parms *cmd, void *dummy, char *arg)
         return err;
     }
 
-    ap_lock_fname = arg;
+    lock_fname = arg;
     return NULL;
 }
 
