@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="iso-2022-jp"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -6,7 +7,7 @@
 
     <title>Apache が使用するアドレスとポートの設定</title>
   </head>
-  <!-- English revision: 1.19 -->
+  <!-- English revision: 1.20 -->
   <!-- Background white, links blue (unvisited), navy (visited), red (active) -->
 
   <body bgcolor="#ffffff" text="#000000" link="#0000ff"

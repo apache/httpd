@@ -73,7 +73,7 @@
 
     <table border="1">
       <tr>
-        <td align="top"><strong>関連ディレクティブ</strong><br />
+        <td valign="top"><strong>関連ディレクティブ</strong><br />
          <br />
          <a href="../mod/core.html#documentroot">DocumentRoot</a><br />
          <a
@@ -101,10 +101,10 @@
 
     <p>次は、扱いたいそれぞれのホストに対して <a
     href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a> ブロックを
-    作成してください。<code>&lt;VirtualHost&gt</code> ディレクティブの
+    作成してください。<code>&lt;VirtualHost&gt;</code> ディレクティブの
     引数は <code>NameVirtualHost</code> ディレクティブの引数と
     同じにしてください (すなわち、IP アドレス一つや全てのアドレスのための
-    <code>*</code>)。それぞれの <code>&lt;VirtualHost&gt</code> ディレクティブ
+    <code>*</code>)。それぞれの <code>&lt;VirtualHost&gt;</code> ディレクティブ
     の中には、最低限、どのホストが扱われるかを示す <a
     href="../mod/core.html#servername">ServerName</a> ディレクティブと、
     そのホスト用のコンテンツがファイルシステム上のどこにあるかを示す

@@ -9,7 +9,7 @@
     <!-- link rev="made" href="mailto:rbowen@rcbowen.com" -->
 
   </head>
-  <!-- English revision: 1.12 -->
+  <!-- English revision: 1.13 -->
   <!-- Background white, links blue (unvisited), navy (visited), red (active) -->
   <body bgcolor="#ffffff" text="#000000" link="#0000ff"
   vlink="#000080" alink="#ff0000">
@@ -34,7 +34,7 @@
         <a href="#basicssidirectives">基本的な SSI ディレクティブ</a>
 
         <ul>
-          <li><a href="#today'sdate">今日の日付</a></li>
+          <li><a href="#todaysdate">今日の日付</a></li>
 
           <li><a href="#modificationdateofthefile">ファイルの変更日</a></li>
 
