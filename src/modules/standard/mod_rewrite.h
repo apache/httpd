@@ -127,7 +127,7 @@
      */
 #ifndef NO_DBM_REWRITEMAP
 #include <ndbm.h>
-#if (__FreeBSD__)
+#if defined(__FreeBSD__) || (defined(DB_LOCK) && defined(DB_SHMEM))
 #define NDBM_FILE_SUFFIX ".db"
 #else
 #define NDBM_FILE_SUFFIX ".pag"

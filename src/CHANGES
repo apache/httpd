@@ -1,5 +1,10 @@
 Changes with Apache 1.3.5
 
+  *) Make NDBM file suffix determination for mod_rewrite more accurate, i.e.
+     use `.db' instead of `.pag' not only for FreeBSD, but also when
+     the NDBM library looks like Berkeley-DB based.
+     [Ralf S. Engelschall] PR#3773
+
   *) Fix checking of ETags and other opaque 'tokens' by adding
      ap_find_opaque_token().  PR#2065, 3657 [Ken Coar]
 
