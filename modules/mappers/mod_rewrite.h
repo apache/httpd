@@ -112,6 +112,9 @@
 #include <sys/types.h>
 #endif
 
+#if APR_HAS_THREADS
+#include "apr_lock.h"
+#endif
 #include "ap_config.h"
 
     /* Include from the Apache server ... */
@@ -322,6 +325,9 @@ typedef struct cachelist {
 typedef struct cache {
     apr_pool_t         *pool;
     apr_array_header_t *lists;
+#if APR_HAS_THREADS
+    apr_lock_t *lock;
+#endif
 } cache;
 
 

@@ -3665,6 +3665,9 @@ static cache *init_cache(apr_pool_t *p)
     if (apr_pool_create(&c->pool, p) != APR_SUCCESS)
 		return NULL;
     c->lists = apr_array_make(c->pool, 2, sizeof(cachelist));
+#if APR_HAS_THREADS
+    (void)apr_lock_create(&(c->lock), APR_MUTEX, APR_INTRAPROCESS, NULL, p);
+#endif
     return c;
 }
 
@@ -3755,6 +3758,10 @@ static void store_cache_string(cache *c, const char *res, cacheentry *ce)
     cachetlbentry *t;
     int found_list;
 
+#if APR_HAS_THREADS
+    apr_lock_acquire(c->lock);
+#endif
+
     found_list = 0;
     /* first try to edit an existing entry */
     for (i = 0; i < c->lists->nelts; i++) {
@@ -3767,6 +3774,9 @@ static void store_cache_string(cache *c, const char *res, cacheentry *ce)
             if (e != NULL) {
                 e->time  = ce->time;
                 e->value = apr_pstrdup(c->pool, ce->value);
+#if APR_HAS_THREADS
+                apr_lock_release(c->lock);
+#endif
                 return;
             }
 
@@ -3775,8 +3785,11 @@ static void store_cache_string(cache *c, const char *res, cacheentry *ce)
                 if (strcmp(e->key, ce->key) == 0) {
                     e->time  = ce->time;
                     e->value = apr_pstrdup(c->pool, ce->value);
-                  cache_tlb_replace((cachetlbentry *)l->tlb->elts,
-                                    (cacheentry *)l->entries->elts, e);
+                    cache_tlb_replace((cachetlbentry *)l->tlb->elts,
+                                      (cacheentry *)l->entries->elts, e);
+#if APR_HAS_THREADS
+                    apr_lock_release(c->lock);
+#endif
                     return;
                 }
             }
@@ -3807,11 +3820,17 @@ static void store_cache_string(cache *c, const char *res, cacheentry *ce)
             e->value = apr_pstrdup(c->pool, ce->value);
             cache_tlb_replace((cachetlbentry *)l->tlb->elts,
                               (cacheentry *)l->entries->elts, e);
+#if APR_HAS_THREADS
+            apr_lock_release(c->lock);
+#endif
             return;
         }
     }
 
     /* not reached, but when it is no problem... */
+#if APR_HAS_THREADS
+    apr_lock_release(c->lock);
+#endif
     return;
 }
 
@@ -3822,23 +3841,37 @@ static cacheentry *retrieve_cache_string(cache *c, const char *res, char *key)
     cachelist *l;
     cacheentry *e;
 
+#if APR_HAS_THREADS
+    apr_lock_acquire(c->lock);
+#endif
+
     for (i = 0; i < c->lists->nelts; i++) {
         l = &(((cachelist *)c->lists->elts)[i]);
         if (strcmp(l->resource, res) == 0) {
 
             e = cache_tlb_lookup((cachetlbentry *)l->tlb->elts,
                                  (cacheentry *)l->entries->elts, key);
-            if (e != NULL)
+            if (e != NULL) {
+#if APR_HAS_THREADS
+                apr_lock_release(c->lock);
+#endif
                 return e;
+            }
 
             for (j = 0; j < l->entries->nelts; j++) {
                 e = &(((cacheentry *)l->entries->elts)[j]);
                 if (strcmp(e->key, key) == 0) {
+#if APR_HAS_THREADS
+                    apr_lock_release(c->lock);
+#endif
                     return e;
                 }
             }
         }
     }
+#if APR_HAS_THREADS
+    apr_lock_release(c->lock);
+#endif
     return NULL;
 }
 
