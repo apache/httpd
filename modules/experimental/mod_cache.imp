@@ -1,6 +1,5 @@
  (MODCACHE)
  ap_cache_request_is_conditional,
- ap_cache_reset_output_filters,
  ap_cache_get_cachetype,
  ap_cache_liststr,
  ap_cache_tokstr,

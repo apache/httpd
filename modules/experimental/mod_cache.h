@@ -270,7 +270,6 @@ CACHE_DECLARE(char *) generate_name(apr_pool_t *p, int dirlevels,
                                     int dirlength, 
                                     const char *name);
 CACHE_DECLARE(int) ap_cache_request_is_conditional(request_rec *r);
-CACHE_DECLARE(void) ap_cache_reset_output_filters(request_rec *r);
 CACHE_DECLARE(const char *)ap_cache_get_cachetype(request_rec *r, cache_server_conf *conf, const char *url);
 CACHE_DECLARE(int) ap_cache_liststr(apr_pool_t *p, const char *list,
                                     const char *key, char **val);
