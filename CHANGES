@@ -123,12 +123,6 @@ Changes with Apache 2.1.0-dev
      ap_add_module, ap_add_loaded_module, ap_setup_prelinked_modules,
      and ap_process_resource_config.  [André Malo]
 
-  *) Include directives no longer refuse to process symlinks on
-     directories. Instead there's now a maximum nesting level
-     of included directories (128 as distributed). This is configurable
-     at compile time using the -DAP_MAX_INCLUDE_DIR_DEPTH switch.
-     PR 28492.  [André Malo]
-
   *) mod_headers: Allow %% in header values to represent a literal %.
      [André Malo]
 
@@ -390,6 +384,19 @@ Changes with Apache 2.1.0-dev
    Apache 2.0.xx tree as documented, and except as noted, below.]
 
 Changes with Apache 2.0.51
+
+  *) mod_include no longer checks for recursion, because that's done
+     in the core. This allows for carefully usage of recursive SSI.
+     [André Malo]
+
+  *) Fix memory leak in the cache handling of mod_rewrite. PR 27862.
+     [chunyan sheng <shengperson yahoo.com>, André Malo]
+
+  *) Include directives no longer refuse to process symlinks on
+     directories. Instead there's now a maximum nesting level
+     of included directories (128 as distributed). This is configurable
+     at compile time using the -DAP_MAX_INCLUDE_DIR_DEPTH switch.
+     PR 28492.  [André Malo]
 
   *) Win32: apache -k start|restart|install|config can leave stranded
      piped logger processes (eg, rotatelogs.exe) due to improper
