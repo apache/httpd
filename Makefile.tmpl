@@ -177,7 +177,9 @@ build-support:
 #   separate parts of the installation process.
 install:
 	@if [ ! -f $(TOP)/$(SRC)/.apaci.build.ok ]; then \
-	    $(MAKE) -f $(MKF) $(MFLAGS) $(MFWD) build; \
+		$(MAKE) -f $(MKF) $(MFLAGS) $(MFWD) build; \
+	else \
+		:; \
 	fi
 	@$(MAKE) -f $(MKF) $(MFLAGS) $(MFWD) \
 		install-mktree install-programs $(install-support) \

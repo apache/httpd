@@ -1,5 +1,10 @@
 Changes with Apache 1.3.1
 
+  *) Make sure the "install" target of the top-level Makefile doesn't break
+     because of a return code of 1 from an "if" (for instance under braindead
+     Ultrix the result code of an "if" construct is 1 if the "then" clause
+     didn't match). [Ralf S. Engelschall]
+
   *) Add an additional "dummy" target to the "$(LIB)" target in generated
      modules/xxx/Makefile's to avoid problems with SVR4 Make under "full-DSO"
      situation (no libxxx.a built, only mod_xxx.so's) where LIB and OBJS are
