@@ -406,6 +406,7 @@ dnl get the exported vars from APRUTIL
 . ./srclib/apr-util/export_vars.sh
 APR_ADDTO(LIBS, $APRUTIL_EXPORT_LIBS)
 APR_ADDTO(INCLUDES, $APRUTIL_EXPORT_INCLUDES)
+APR_ADDTO(LDFLAGS, $APRUTIL_LDFLAGS)
 AP_LIBS="$AP_LIBS $LIBTOOL_LIBS"
 
 dnl ## Finalize the variables
