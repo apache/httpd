@@ -633,24 +633,24 @@ int ap_proxy_ftp_handler(request_rec *r, char *url)
     }
 
 
-    if ((apr_socket_create(&sock, APR_INET, SOCK_STREAM, r->pool)) != APR_SUCCESS) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+    if ((rv = apr_socket_create(&sock, APR_INET, SOCK_STREAM, r->pool)) != APR_SUCCESS) {
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
                       "proxy: FTP: error creating socket");
         return HTTP_INTERNAL_SERVER_ERROR;
     }
 
 #if !defined(TPF) && !defined(BEOS)
     if (conf->recv_buffer_size > 0
-	&& apr_setsocketopt(sock, APR_SO_RCVBUF,
-	    conf->recv_buffer_size)) {
-	    ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+	&& (rv = apr_setsocketopt(sock, APR_SO_RCVBUF,
+	    conf->recv_buffer_size))) {
+	    ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
 			 "setsockopt(SO_RCVBUF): Failed to set ProxyReceiveBufferSize, using default");
     }
 #endif
 
-    if (apr_setsocketopt(sock, APR_SO_REUSEADDR, one)) {
+    if (APR_SUCCESS != (rv = apr_setsocketopt(sock, APR_SO_REUSEADDR, one))) {
 #ifndef _OSD_POSIX /* BS2000 has this option "always on" */
-	ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+	ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
 		     "proxy: FTP: error setting reuseaddr option: setsockopt(SO_REUSEADDR)");
 	return HTTP_INTERNAL_SERVER_ERROR;
 #endif /*_OSD_POSIX*/
@@ -678,11 +678,11 @@ int ap_proxy_ftp_handler(request_rec *r, char *url)
 	while (connect_addr) {
 
 	    /* make the connection out of the socket */
-	    err = apr_connect(sock, connect_addr);
+	    rv = apr_connect(sock, connect_addr);
 
 	    /* if an error occurred, loop round and try again */
-            if (err != APR_SUCCESS) {
-		ap_log_error(APLOG_MARK, APLOG_ERR, err, r->server,
+            if (rv != APR_SUCCESS) {
+		ap_log_error(APLOG_MARK, APLOG_ERR, rv, r->server,
 			     "proxy: FTP: attempt to connect to %pI (%s) failed", connect_addr, connectname);
 		connect_addr = connect_addr->next;
 		continue;
@@ -1131,8 +1131,8 @@ int ap_proxy_ftp_handler(request_rec *r, char *url)
 	apr_port_t local_port;
 	unsigned int h0, h1, h2, h3, p0, p1;
 
-	if ((apr_socket_create(&local_sock, APR_INET, SOCK_STREAM, r->pool)) != APR_SUCCESS) {
-	    ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+	if ((rv = apr_socket_create(&local_sock, APR_INET, SOCK_STREAM, r->pool)) != APR_SUCCESS) {
+	    ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
 			 "proxy: FTP: error creating local socket");
 	    return HTTP_INTERNAL_SERVER_ERROR;
 	}
@@ -1140,29 +1140,28 @@ int ap_proxy_ftp_handler(request_rec *r, char *url)
         apr_sockaddr_port_get(&local_port, local_addr);
         apr_sockaddr_ip_get(&local_ip, local_addr);
 
-	if (apr_setsocketopt(local_sock, APR_SO_REUSEADDR, one) != APR_SUCCESS) {
+	if ((rv = apr_setsocketopt(local_sock, APR_SO_REUSEADDR, one)) != APR_SUCCESS) {
 #ifndef _OSD_POSIX /* BS2000 has this option "always on" */
-	    ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+	    ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
 			 "proxy: FTP: error setting reuseaddr option");
 	    return HTTP_INTERNAL_SERVER_ERROR;
 #endif /*_OSD_POSIX*/
 	}
 
-        if (apr_sockaddr_info_get(&local_addr, local_ip, APR_UNSPEC,
-				  local_port, 0, r->pool) != APR_SUCCESS) {
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
-                          "proxy: FTP: error creating local socket address");
-            return HTTP_INTERNAL_SERVER_ERROR;
-        }
+        apr_sockaddr_info_get(&local_addr, local_ip, APR_UNSPEC, local_port, 0, r->pool);
 
-	if (apr_bind(local_sock, local_addr) != APR_SUCCESS) {
-	    ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
-			 "proxy: FTP: error binding to ftp data socket %s:%d", local_ip, local_port);
+	if ((rv = apr_bind(local_sock, local_addr)) != APR_SUCCESS) {
+	    ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
+			 "proxy: FTP: error binding to ftp data socket %pI", local_addr);
 	    return HTTP_INTERNAL_SERVER_ERROR;
 	}
 
 	/* only need a short queue */
-	apr_listen(local_sock, 2);
+	if ((rv = apr_listen(local_sock, 2)) != APR_SUCCESS) {
+	    ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
+			 "proxy: FTP: error listening to ftp data socket %pI", local_addr);
+	    return HTTP_INTERNAL_SERVER_ERROR;
+	}
 
 /* FIXME: Sent PORT here */
 
@@ -1473,8 +1472,8 @@ int ap_proxy_ftp_handler(request_rec *r, char *url)
 		 "proxy: FTP: Content-Length set to %s", size);
 	}
     }
-ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r->server,
-			 "proxy: FTP: Content-Type set to %s", r->content_type);
+    ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r->server,
+		 "proxy: FTP: Content-Type set to %s", r->content_type);
     if (r->content_encoding != NULL && r->content_encoding[0] != '\0') {
 		ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r->server,
 			     "proxy: FTP: Content-Encoding set to %s", r->content_encoding);
@@ -1486,14 +1485,14 @@ ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r->server,
         for(;;)
         {
 /* FIXME: this does not return, despite the incoming connection being accepted */
-            switch(apr_accept(&remote_sock, local_sock, r->pool))
+            switch(rv = apr_accept(&remote_sock, local_sock, r->pool))
             {
             case APR_EINTR:
                 continue;
             case APR_SUCCESS:
                 break;
             default:
-                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+                ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
                               "proxy: FTP: failed to accept data connection");
                 return HTTP_BAD_GATEWAY;
             }
