@@ -1201,8 +1201,8 @@ static int handle_echo(include_ctx_t *ctx, apr_bucket_brigade **bb,
                     }
 
                     e_len = strlen(echo_text);
-                    /* XXX: it'd probably be nice to use a pool bucket here */
-                    tmp_buck = apr_bucket_heap_create(echo_text, e_len, 1);
+                    tmp_buck = apr_bucket_pool_create(echo_text, e_len,
+                                                      r->pool);
                 }
                 else {
                     tmp_buck = apr_bucket_immortal_create("(none)", 
