@@ -43,3 +43,10 @@ if test "$enableval" = "yes" ; then
 fi
 ])
 APACHE_SUBST(ab_LTFLAGS)
+
+AC_ARG_ENABLE(static-checkgid,APACHE_HELP_STRING(--enable-static-checkgid,Build a statically linked version of checkgid),[
+if test "$enableval" = "yes" ; then
+  checkgid_LTFLAGS="-static"
+fi
+])
+APACHE_SUBST(checkgid_LTFLAGS)
