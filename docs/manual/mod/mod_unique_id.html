@@ -101,7 +101,7 @@ too far forward, is reset correctly, and then revisits the future time).
 In this case we can easily show that we can get pid and time stamp reuse.
 The choice of initializer for the counter is intended to help defeat this.
 Note that we really want a random number to initialize the counter,
-but there aren't any readily available numbers on most systems (i.e. you
+but there aren't any readily available numbers on most systems (<EM>i.e.</EM>, you
 can't use rand() because you need to seed the generator, and can't seed
 it with the time because time, at least at one second resolution, has
 repeated itself).  This is not a perfect defense.

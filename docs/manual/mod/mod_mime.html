@@ -39,7 +39,7 @@ directive <A HREF="#typesconfig">TypesConfig</A> is used to specify a
 file which also maps extensions onto mime types. The directives <A
 HREF="#forcetype">ForceType</A> and <A
 HREF="#sethandler">SetHandler</A> are used to associated all the files
-in a given location (e.g. a particular directory) onto a particular
+in a given location (<EM>e.g.</EM>, a particular directory) onto a particular
 mime type or handler.
 
 <P>
@@ -123,7 +123,7 @@ Old clients expect <CODE>x-gzip</CODE> and <CODE>x-compress</CODE>,
 however the standard dictates that they're equivalent to <CODE>gzip</CODE>
 and <CODE>compress</CODE> respectively.  Apache does content encoding
 comparisons by ignoring any leading <CODE>x-</CODE>.  When responding
-with an encoding Apache will use whatever form (i.e. <CODE>x-foo</CODE>
+with an encoding Apache will use whatever form (<EM>i.e.</EM>, <CODE>x-foo</CODE>
 or <CODE>foo</CODE>) the client requested.  If the client didn't
 specifically request a particular form Apache will use the form given by
 the <CODE>AddEncoding</CODE> directive.  To make this long story short,

@@ -65,7 +65,7 @@ directory of the Apache distribution. Change into this directory.
  <LI>
   Configure Apache for your operating system. Normally you can just
   type run the <CODE>Configure</CODE> script as given below. However
-  if this fails or you have any special requirements (e.g. to include
+  if this fails or you have any special requirements (<EM>e.g.</EM>, to include
   an additional library required by an optional module) you might need
   to edit one or more of the following options in the
   <CODE>Configuration</CODE> file:

@@ -14,7 +14,7 @@
   <!--#include virtual="header.html" -->
   <H1 ALIGN="CENTER">Apache Server Frequently Asked Questions</H1>
   <P>
-  $Revision: 1.127 $ ($Date: 1998/09/09 16:01:03 $)
+  $Revision: 1.128 $ ($Date: 1998/09/17 12:33:01 $)
   </P>
   <P>
   The latest version of this FAQ is always available from the main
@@ -418,7 +418,7 @@
     occasional users.
    </LI>
   </UL>
-  <p></P>
+  <P></P>
   <HR>
  </LI>
 
@@ -552,7 +552,7 @@
       (dbx) where</CODE>
      </DD>
     </DL>
-    <p></P>
+    <P></P>
     <P>
     (Substitute the appropriate locations for your
     <SAMP>ServerRoot</SAMP> and your <SAMP>httpd</SAMP> and
@@ -618,7 +618,7 @@
      <DD><CODE>AddHandler cgi-script .cgi</CODE>
      </DD>
     </DL>
-    <p></P>
+    <P></P>
     <P>
     The server will then recognize that all files in that location (and
     its logical descendants) that end in &quot;<SAMP>.cgi</SAMP>&quot;
@@ -630,7 +630,7 @@
     declaration that includes the <SAMP>ExecCGI</SAMP> option.
    </LI>
   </OL>
-  <p></P>
+  <P></P>
   <P>
   In some situations, you might not want to actually
   allow all files named &quot;<SAMP>*.cgi</SAMP>&quot; to be executable.
@@ -652,7 +652,7 @@
       RewriteRule   ^quux\.cgi$  -  [T=application/x-httpd-cgi]</CODE>
      </DD>
     </DL>
-    <p></P>
+    <P></P>
    </LI>
    <LI>Make sure that the directory location is covered by an
     <A HREF="../mod/core.html#options"><SAMP>Options</SAMP></A>
@@ -660,7 +660,7 @@
     <SAMP>FollowSymLinks</SAMP> option.
    </LI>
   </OL>
-  <p></P>
+  <P></P>
   <HR>
  </LI>
 
@@ -703,7 +703,7 @@
     }</CODE>
    </DD>
   </DL>
-  <p></P>
+  <P></P>
   <P>
   This is generally only necessary when you are calling external
   programs from your script that send output to stdout, or if there will
@@ -764,7 +764,7 @@
      <DD><CODE>AddHandler server-parsed .shtml</CODE>
      </DD>
     </DL>
-    <p></P>
+    <P></P>
     <P>
     This indicates that all files ending in &quot;.shtml&quot; in that
     location (or its descendants) should be parsed.  Note that using
@@ -1195,7 +1195,7 @@
     BrowserMatch JDK/1.0 force-response-1.0</CODE>
    </DD>
   </DL>
-  <p></P>
+  <P></P>
   <P>
   More information about this issue can be found in the
   <A HREF="http://www.apache.org/info/jdk-102.html"
@@ -1308,7 +1308,7 @@
     This hurts performance and should only be used as a last resort.
    </LI>
   </UL>
-  <p></P>
+  <P></P>
   <HR>
  </LI>
 
@@ -1381,7 +1381,7 @@
      <DD><CODE>EXTRA_CFLAGS=-DMAXIMUM_DNS</CODE>
      </DD>
     </DL>
-    <p></P>
+    <P></P>
     <P>
     This will cause Apache to be very paranoid about making sure a
     particular host address is <EM>really</EM> assigned to the name it
@@ -1459,7 +1459,7 @@
      <DD><CODE>AddType audio/x-midi .mid .midi .kar</CODE>
      </DD>
     </DL>
-    <p></P>
+    <P></P>
     <P>
     Note that this may break browsers that <EM>do</EM> recognize the
     <SAMP>audio/midi</SAMP> MIME type unless they're prepared to also
@@ -1600,7 +1600,7 @@
     EXTRA_LIBS=-lbind</CODE>
    </DD>
   </DL>
-  <p></P>
+  <P></P>
   <HR>
  </LI>
 
@@ -1710,7 +1710,7 @@
     satisfy any</CODE>
    </DD>
   </DL>
-  <p></P>
+  <P></P>
   <P>
   See the <A HREF="#user-authentication">user authentication</A>
   question and the <A HREF="../mod/mod_access.html">mod_access</A>
@@ -2299,7 +2299,7 @@
     <P>
     If you fail to do this, then it is very likely that Apache will fail
     to build.  One of the most common errors is with <CODE>readv</CODE>,
-    <CODE>writev</CODE>, or <CODE>uio.h</CODE>.  This is <B>not</B> a
+    <CODE>writev</CODE>, or <CODE>uio.h</CODE>.  This is <STRONG>not</STRONG> a
     bug with Apache.  You will need to re-install GCC.
    <HR>
   </LI>
@@ -2324,11 +2324,11 @@
    Improvements, modifications and additions should follow these instructions.
    <P>
    In general, the first course of action is to be a member of the
-   <code>new-httpd@apache.org</code> mailing list. This indicates to the Group that
+   <CODE>new-httpd@apache.org</CODE> mailing list. This indicates to the Group that
    you are closely following the latest Apache developments. Your patch file should be
-   generated using either '<code>diff -c</code>' or '<code>diff -u</code>' against the
-   latest CVS tree. To submit your patch, send Email to <code>new-httpd@apache.org</code>
-   with a <code>Subject:</code> line that starts with <code>[PATCH]</code> and
+   generated using either '<CODE>diff -c</CODE>' or '<CODE>diff -u</CODE>' against the
+   latest CVS tree. To submit your patch, send Email to <CODE>new-httpd@apache.org</CODE>
+   with a <CODE>Subject:</CODE> line that starts with <CODE>[PATCH]</CODE> and
    includes a general description of the patch. In the body of the message, the
    patch should be clearly described and then included at the end of the message.
    If the patch-file is long, you can note a URL to the file instead of the file

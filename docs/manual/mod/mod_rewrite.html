@@ -743,7 +743,7 @@ close(TXT)</PRE></TD></TR>
     <P>
     Here the source is a Unix program, not a map file. To create it you can use
     the language of your choice, but the result has to be a run-able Unix
-    executable (i.e. either object-code or a script with the
+    executable (<EM>i.e.</EM>, either object-code or a script with the
     magic cookie trick '<CODE>#!/path/to/interpreter</CODE>' as the first line).
     <P>
     This program gets started once at startup of the Apache servers and then
@@ -752,9 +752,9 @@ close(TXT)</PRE></TD></TR>
     receive the key to lookup as a newline-terminated string on
     <CODE>stdin</CODE>. It then has to give back the looked-up value as a
     newline-terminated string on <CODE>stdout</CODE> or the four-character string
-    ``<CODE>NULL</CODE>'' if it fails (i.e. there is no corresponding value
+    ``<CODE>NULL</CODE>'' if it fails (<EM>i.e.</EM>, there is no corresponding value
     for the given key). A trivial program which will implement a 1:1 map
-    (i.e. key == value) could be:
+    (<EM>i.e.</EM>, key == value) could be:
     <P>
 <TABLE BORDER=0 CELLSPACING=1 CELLPADDING=5 BGCOLOR="#F0F0F0">
 <TR><TD><PRE>
@@ -1491,9 +1491,9 @@ comma-separated list of the following flags:
 <P>
 <LI>'<STRONG><CODE>proxy|P</CODE></STRONG>' (force <STRONG>p</STRONG>roxy)<BR>
     This flag forces the substitution part to be internally forced as a proxy
-    request and immediately (i.e. rewriting rule processing stops here) put
+    request and immediately (<EM>i.e.</EM>, rewriting rule processing stops here) put
     through the <A HREF="mod_proxy.html">proxy module</A>. You have to make
-    sure that the substitution string is a valid URI (e.g.  typically starting
+    sure that the substitution string is a valid URI (<EM>e.g.</EM>,  typically starting
     with <CODE>http://</CODE><EM>hostname</EM>) which can be handled by the
     Apache proxy module. If not you get an error from the proxy module. Use
     this flag to achieve a more powerful implementation of the <A
@@ -1699,7 +1699,7 @@ for request ``<CODE>GET /somepath/pathinfo</CODE>'':</STRONG><BR>
 
 <P>
 <STRONG>Inside per-directory configuration for <CODE>/somepath</CODE><BR>
-(i.e. file <CODE>.htaccess</CODE> in dir <CODE>/physical/path/to/somepath</CODE> containing
+(<EM>i.e.</EM>, file <CODE>.htaccess</CODE> in dir <CODE>/physical/path/to/somepath</CODE> containing
 <CODE>RewriteBase /somepath</CODE>)<BR> for
 request ``<CODE>GET /somepath/localpath/pathinfo</CODE>'':</STRONG><BR>
 

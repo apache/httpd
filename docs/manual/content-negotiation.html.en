@@ -422,9 +422,9 @@ different naming conventions, because files can have more than one
 extension, and the order of the extensions is normally irrelevant
 (see <A HREF="mod/mod_mime.html">mod_mime</A> documentation for details).
 <P>
-A typical file has a MIME-type extension (e.g. <SAMP>html</SAMP>),
-maybe an encoding extension (e.g. <SAMP>gz</SAMP> and of course a
-language extension (e.g. <SAMP>en</SAMP>) when we have different
+A typical file has a MIME-type extension (<EM>e.g.</EM>, <SAMP>html</SAMP>),
+maybe an encoding extension (<EM>e.g.</EM>, <SAMP>gz</SAMP>), and of course a
+language extension (<EM>e.g.</EM>, <SAMP>en</SAMP>) when we have different
 language variants of this file.
 
 <P>
@@ -489,7 +489,7 @@ hyperlinks:
 
 <P>
 Looking at the table above you will notice that it is always possible to
-use the name without any extensions  in an hyperlink (e.g. <SAMP>foo</SAMP>).
+use the name without any extensions  in an hyperlink (<EM>e.g.</EM>, <SAMP>foo</SAMP>).
 The advantage is that you can hide the actual type of a
 document rsp. file and can change it later, e.g. from <SAMP>html</SAMP>
 to <SAMP>shtml</SAMP> or <SAMP>cgi</SAMP> without changing any
@@ -499,7 +499,7 @@ hyperlink references.
 If you want to continue to use a MIME-type in your hyperlinks (e.g.
 <SAMP>foo.html</SAMP>) the language extension (including an encoding extension
 if there is one) must be on the right hand side of the MIME-type extension
-(e.g. <SAMP>foo.html.en</SAMP>).
+(<EM>e.g.</EM>, <SAMP>foo.html.en</SAMP>).
 
 
 <H2>Note on Caching</H2>

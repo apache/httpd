@@ -359,7 +359,7 @@ mutex.  Unfortunately SysV-style semaphores have some bad side-effects.
 One is that it's possible Apache will die without cleaning up the semaphore
 (see the <CODE>ipcs(8)</CODE> man page).  The other is that the semaphore
 API allows for a denial of service attack by any CGIs running under the
-same uid as the webserver (i.e. all CGIs unless you use something
+same uid as the webserver (<EM>i.e.</EM>, all CGIs unless you use something
 like suexec or cgiwrapper).  For these reasons this method is not used
 on any architecture except IRIX (where the previous two are prohibitively
 expensive on most IRIX boxes).
@@ -447,13 +447,13 @@ timeout, but it doesn't prohibit it.  On systems without the timeout,
 Apache 1.2 induces many sockets stuck forever in the FIN_WAIT_2 state.
 In many cases this can be avoided by simply upgrading to the latest
 TCP/IP patches supplied by the vendor, in cases where the vendor has
-never released patches (i.e.  SunOS4 -- although folks with a source
+never released patches (<EM>i.e.</EM>,  SunOS4 -- although folks with a source
 license can patch it themselves) we have decided to disable this feature.
 
 <P>There are two ways of accomplishing this.  One is the
 socket option <CODE>SO_LINGER</CODE>.  But as fate would have it,
 this has never been implemented properly in most TCP/IP stacks.  Even
-on those stacks with a proper implementation (i.e. Linux 2.0.31) this
+on those stacks with a proper implementation (<EM>i.e.</EM>, Linux 2.0.31) this
 method proves to be more expensive (cputime) than the next solution.
 
 <P>For the most part, Apache implements this in a function called
@@ -610,7 +610,7 @@ connection.  If the connection was a keep-alive connection and the request
 being serviced was not the first request then the browser will quietly
 reissue the request on a new connection.  It has to do this because the
 server is always free to close a keep-alive connection in between requests
-(i.e. due to a timeout or because of a maximum number of requests).
+(<EM>i.e.</EM>, due to a timeout or because of a maximum number of requests).
 But, if the connection is closed before the first response has been
 received the typical browser will display a "document contains no data"
 dialogue (or a broken image icon).  This is done on the assumption that
@@ -750,7 +750,7 @@ can be deferred by defining <CODE>BUFFERED_LOGS</CODE>.  In this case
 up to <CODE>PIPE_BUF</CODE> bytes (a POSIX defined constant) of log entries
 are buffered before writing.  At no time does it split a log entry
 across a <CODE>PIPE_BUF</CODE> boundary because those writes may not
-be atomic.  (i.e. entries from multiple children could become mixed together).
+be atomic.  (<EM>i.e.</EM>, entries from multiple children could become mixed together).
 The code does it best to flush this buffer when a child dies.
 
 <P>The lingering close code causes four system calls:
