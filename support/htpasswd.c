@@ -92,10 +92,12 @@
 
 #include "apr_md5.h"
 #include "ap_sha1.h"
+#if APR_HAVE_SIGNAL_H
 #include <signal.h>
+#endif
 #include <time.h>
 
-#ifdef HAVE_CRYPT_H
+#if APR_HAVE_CRYPT_H
 #include <crypt.h>
 #endif
 

@@ -40,20 +40,22 @@
  */
 
 #include "apr_lib.h"
+#if APR_HAVE_STDIO_H
 #include <stdio.h>
-#ifdef HAVE_CTYPE_H
+#endif
+#if APR_HAVE_CTYPE_H
 #include <ctype.h>
 #endif
-#ifdef HAVE_NETDB_H
+#if APR_HAVE_NETDB_H
 #include <netdb.h>
 #endif
-#ifdef HAVE_NETINET_IN_H
+#if APR_HAVE_NETINET_IN_H
 #include <netinet/in.h>
 #endif
-#ifdef HAVE_SYS_SOCKET_H
+#if APR_HAVE_SYS_SOCKET_H
 #include <sys/socket.h>
 #endif
-#ifdef HAVE_ARPA_INET_H
+#if APR_HAVE_ARPA_INET_H
 #include <arpa/inet.h>
 #endif
 
@@ -77,7 +79,7 @@ static void stats(FILE *output);
 /* number of buckets in cache hash apr_table_t */
 #define BUCKETS 256
 
-#if defined(NEED_STRDUP)
+#if !APR_HAVE_STRDUP
 char *strdup (const char *str)
 {
     char *dup;
