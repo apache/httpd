@@ -1591,10 +1591,11 @@ int ap_proxy_ftp_handler(request_rec *r, proxy_server_conf *conf,
 	    ap_pass_brigade(r->output_filters, bb);
 	    apr_brigade_cleanup(bb);
 	}
+	ap_flush_conn(remote);
+	apr_socket_close(remote_sock);
 	apr_brigade_cleanup(bb);
 	ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r->server,
 		     "proxy: FTP: end body send");
-
     }
     else {
 
@@ -1637,7 +1638,13 @@ int ap_proxy_ftp_handler(request_rec *r, proxy_server_conf *conf,
     ap_pass_brigade(origin->output_filters, bb);
     ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r->server,
                  "proxy: FTP: QUIT");
-
+    /* responses: 221, 500 */
+    /* 221 Service closing control connection. */
+    /* 500 Syntax error, command unrecognized. */
+    i = ftp_getrc_msg(origin, cbb, buffer, sizeof(buffer));
+    ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r->server,
+                 "proxy: FTP: %d %s", i, buffer);
+    apr_socket_close(sock);
     apr_brigade_destroy(bb);
     return OK;
 }
