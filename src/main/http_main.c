@@ -3802,6 +3802,10 @@ static void standalone_main(int argc, char **argv)
 {
     int remaining_children_to_start;
 
+#ifdef __EMX__
+    printf("%s \n", ap_get_server_version());
+#endif
+
     ap_standalone = 1;
 
     is_graceful = 0;
@@ -4108,10 +4112,6 @@ int REALMAIN(int argc, char *argv[])
 	    usage(argv[0]);
 	}
     }
-
-#ifdef __EMX__
-    printf("%s \n", ap_get_server_version());
-#endif
 
     ap_suexec_enabled = init_suexec();
     server_conf = ap_read_config(pconf, ptrans, ap_server_confname);
