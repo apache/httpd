@@ -767,6 +767,16 @@ static void worker_main(long thread_num)
                 context->accept_socket = INVALID_SOCKET;
                 ap_lingering_close(c);
             }
+            else if (!use_acceptex) {
+                /* If the socket is disconnected but we are not using acceptex, 
+                 * we cannot reuse the socket. Disconnected sockets are removed
+                 * from the apr_socket_t struct by apr_sendfile() to prevent the
+                 * socket descriptor from being inadvertently closed by a call 
+                 * to apr_socket_close(), so close it directly.
+                 */
+                closesocket(context->accept_socket);
+                context->accept_socket = INVALID_SOCKET;
+            }
         }
         else {
             /* ap_run_create_connection closes the socket on failure */
