@@ -43,6 +43,10 @@ Committed:
 
 Available:
 
+    * Dean's [PATCH] two bugs in mod_autoindex
+	<Pine.LNX.3.95dg3.971218120427.6996O-100000@twinlark.arctic.org>
+	Status: Dean +1, Randy +1
+
     * Dean's [PATCH] fix Rasmus' chunking error
 	<Pine.LNX.3.95dg3.971220143033.544I-100000@twinlark.arctic.org>
 	Status: Dean +1
