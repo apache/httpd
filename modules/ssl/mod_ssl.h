@@ -470,13 +470,13 @@ typedef struct {
 typedef struct {
     BOOL         bEnabled;
     apr_table_t *ap_server_ctx;
-    char        *szPublicCertFile[SSL_AIDX_MAX];
-    char        *szPrivateKeyFile[SSL_AIDX_MAX];
-    char        *szCertificateChain;
-    char        *szCACertificatePath;
-    char        *szCACertificateFile;
-    char        *szLogFile;
-    char        *szCipherSuite;
+    const char  *szPublicCertFile[SSL_AIDX_MAX];
+    const char  *szPrivateKeyFile[SSL_AIDX_MAX];
+    const char  *szCertificateChain;
+    const char  *szCACertificatePath;
+    const char  *szCACertificateFile;
+    const char  *szLogFile;
+    const char  *szCipherSuite;
     apr_file_t  *fileLogFile;
     int          nLogLevel;
     int          nVerifyDepth;
@@ -486,21 +486,21 @@ typedef struct {
     SSL_CTX     *pSSLCtx;
     int          nSessionCacheTimeout;
     int          nPassPhraseDialogType;
-    char        *szPassPhraseDialogPath;
+    const char  *szPassPhraseDialogPath;
     ssl_proto_t  nProtocol;
-    char        *szCARevocationPath;
-    char        *szCARevocationFile;
+    const char  *szCARevocationPath;
+    const char  *szCARevocationFile;
     X509_STORE  *pRevocationStore;
 #ifdef SSL_EXPERIMENTAL_PROXY
     /* Configuration details for proxy operation */
     ssl_proto_t  nProxyProtocol;
     int          bProxyVerify;
     int          nProxyVerifyDepth;
-    char        *szProxyCACertificatePath;
-    char        *szProxyCACertificateFile;
-    char        *szProxyClientCertificateFile;
-    char        *szProxyClientCertificatePath;
-    char        *szProxyCipherSuite;
+    const char  *szProxyCACertificatePath;
+    const char  *szProxyCACertificateFile;
+    const char  *szProxyClientCertificateFile;
+    const char  *szProxyClientCertificatePath;
+    const char  *szProxyCipherSuite;
     SSL_CTX     *pSSLProxyCtx;
     STACK_OF(X509_INFO) *skProxyClientCerts;
 #endif
@@ -583,7 +583,7 @@ void         ssl_init_TmpKeysHandle(int, server_rec *, apr_pool_t *);
 void         ssl_init_ConfigureServer(server_rec *, apr_pool_t *, SSLSrvConfigRec *);
 void         ssl_init_CheckServers(server_rec *, apr_pool_t *);
 STACK_OF(X509_NAME) 
-            *ssl_init_FindCAList(server_rec *, apr_pool_t *, char *, char *);
+            *ssl_init_FindCAList(server_rec *, apr_pool_t *, const char *, const char *);
 void         ssl_init_Child(apr_pool_t *, server_rec *);
 apr_status_t ssl_init_ChildKill(void *data);
 apr_status_t ssl_init_ModuleKill(void *data);
@@ -713,7 +713,7 @@ void         ssl_util_uuencode_binary(unsigned char *, const unsigned char *, in
 apr_file_t  *ssl_util_ppopen(server_rec *, apr_pool_t *, char *);
 void         ssl_util_ppclose(server_rec *, apr_pool_t *, apr_file_t *);
 char        *ssl_util_readfilter(server_rec *, apr_pool_t *, char *);
-BOOL         ssl_util_path_check(ssl_pathcheck_t, char *, apr_pool_t *);
+BOOL         ssl_util_path_check(ssl_pathcheck_t, const char *, apr_pool_t *);
 ssl_algo_t   ssl_util_algotypeof(X509 *, EVP_PKEY *); 
 char        *ssl_util_algotypestr(ssl_algo_t);
 char        *ssl_util_ptxtsub(apr_pool_t *, const char *, const char *, char *);
