@@ -102,6 +102,7 @@ OSVERSIONINFO osver; /* VER_PLATFORM_WIN32_NT */
 static DWORD parent_pid;
 DWORD my_pid;
 
+int windows_sockets_workaround = 0;
 int ap_threads_per_child = 0;
 static int thread_limit = DEFAULT_THREAD_LIMIT;
 static int first_thread_limit = 0;
@@ -217,6 +218,24 @@ static const char *set_thread_limit (cmd_parms *cmd, void *dummy, const char *ar
     }
     return NULL;
 }
+static const char *set_sockets_workaround (cmd_parms *cmd, void *dummy, char *arg) 
+{
+    const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
+    if (err != NULL) {
+        return err;
+    }
+
+    windows_sockets_workaround = 0;
+    if (!strcasecmp(arg, "on")) {
+        windows_sockets_workaround = 1;
+    }
+    else if (strcasecmp(arg, "off")) {
+        ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL, 
+                         "WARNING: setting WindowsSocketsWorkaround to off");
+    }
+    return NULL;
+}
+
 
 static const command_rec winnt_cmds[] = {
 LISTEN_COMMANDS,
@@ -224,6 +243,9 @@ AP_INIT_TAKE1("ThreadsPerChild", set_threads_per_child, NULL, RSRC_CONF,
   "Number of threads each child creates" ),
 AP_INIT_TAKE1("ThreadLimit", set_thread_limit, NULL, RSRC_CONF,
   "Maximum worker threads in a server for this run of Apache"),
+AP_INIT_TAKE1("WindowsSocketsWorkaround", set_sockets_workaround, NULL, RSRC_CONF,
+  "Set \"on\" to work around buggy Winsock provider implementations of certain VPN or Firewall software"),
+
 { NULL }
 };
 
