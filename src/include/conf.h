@@ -119,6 +119,8 @@ typedef int rlim_t;
 #define HAVE_SYS_SELECT_H
 #define JMP_BUF sigjmp_buf
 #define HAVE_MMAP
+#define DEFAULT_USER "nobody"
+#define DEFAULT_GROUP "nobody"
 typedef int rlim_t;
 
 #elif defined(ULTRIX)

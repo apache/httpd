@@ -1,5 +1,7 @@
 Changes with Apache 1.2b3:
 
+  *) Define a sane set of DEFAULT_USER and DEFAULT_GROUP values for AIX.
+
   *) Improve the accuracy of request duration timings by setting
      r->request_time in read_request_line() instead of read_request().
      [Dean Gaudet]
