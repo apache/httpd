@@ -1012,6 +1012,7 @@ static void * APR_THREAD_FUNC start_threads(apr_thread_t *thd, void *dummy)
                 continue;
             }
 
+            wakeup = worker_wakeup_create(pchild);
             if (wakeup == NULL) {
                 ap_log_error(APLOG_MARK, APLOG_ALERT|APLOG_NOERRNO, 0,
                              ap_server_conf, "worker_wakeup_create failed");
