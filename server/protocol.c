@@ -198,11 +198,10 @@ AP_DECLARE(apr_time_t) ap_rationalize_mtime(request_rec *r, apr_time_t mtime)
  *        If no LF is detected on the last line due to a dropped connection 
  *        or a full buffer, that's considered an error.
  */
-AP_DECLARE(int) ap_getline(char *s, int n, request_rec *r, int fold)
+AP_DECLARE(int) ap_rgetline(char **s, int n, request_rec *r, int fold)
 {
-    char *pos = s;
+    char *pos;
     char *last_char;
-    char *beyond_buff = s + n;
     const char *temp;
     int retval;
     int total = 0;
@@ -258,8 +257,12 @@ AP_DECLARE(int) ap_getline(char *s, int n, request_rec *r, int fold)
             AP_DEBUG_ASSERT(!APR_BRIGADE_EMPTY(req_cfg->bb));
             break;
         }
-        last_char = pos + length - 1;
-        if (last_char < beyond_buff) {
+        if (length - 1 < n) {
+            if (!*s) {
+                *s = apr_palloc(r->pool, length + 2); /* +2 for LF, null */
+            }
+            pos = *s;
+            last_char = pos + length - 1;
             memcpy(pos, temp, length);
             apr_bucket_delete(e);
         }
@@ -279,7 +282,7 @@ AP_DECLARE(int) ap_getline(char *s, int n, request_rec *r, int fold)
 
         if (*pos == APR_ASCII_LF) { /* Did we get a full line of input?      */
                 
-            if (pos > s && *(pos - 1) == APR_ASCII_CR) {
+            if (pos > *s && *(pos - 1) == APR_ASCII_CR) {
                 --pos;          /* zap optional CR before LF             */
             }
                 
@@ -289,12 +292,12 @@ AP_DECLARE(int) ap_getline(char *s, int n, request_rec *r, int fold)
              * it much easier to check field values for exact matches, and
              * saves memory as well.  Terminate string at end of line.
              */
-            while (pos > (s + 1) && 
+            while (pos > ((*s) + 1) && 
                    (*(pos - 1) == APR_ASCII_BLANK || *(pos - 1) == APR_ASCII_TAB)) {
                 --pos;          /* trim extra trailing spaces or tabs    */
             }
             *pos = '\0';        /* zap end of string                     */
-            total = pos - s;    /* update total string length            */
+            total = pos - *s;   /* update total string length            */
 
             /* look ahead another line if line folding is desired 
              * and this line isn't empty
@@ -312,12 +315,18 @@ AP_DECLARE(int) ap_getline(char *s, int n, request_rec *r, int fold)
              * bump past last character read,   
              * and set total in case we bail before finding a LF   
              */
-            total = ++pos - s;    
+            total = ++pos - *s;
             looking_ahead = 0;  /* only appropriate right after LF       */ 
         }
     }
-    ap_xlate_proto_from_ascii(s, total);
+    ap_xlate_proto_from_ascii(*s, total);
     return total;
+}
+
+AP_DECLARE(int) ap_getline(char *s, int n, request_rec *r, int fold)
+{
+    char *tmp_s = s;
+    return ap_rgetline(&tmp_s, n, r, fold);
 }
 
 /* parse_uri: break apart the uri
@@ -375,8 +384,7 @@ AP_CORE_DECLARE(void) ap_parse_uri(request_rec *r, const char *uri)
 
 static int read_request_line(request_rec *r)
 {
-    char l[DEFAULT_LIMIT_REQUEST_LINE + 2]; /* getline's two extra for \n\0 */
-    const char *ll = l;
+    const char *ll;
     const char *uri;
     const char *pro;
 
@@ -401,7 +409,8 @@ static int read_request_line(request_rec *r)
      * have to block during a read.
      */
 
-    while ((len = ap_getline(l, sizeof(l), r, 0)) <= 0) {
+    while ((len = ap_rgetline(&(r->the_request),
+                              DEFAULT_LIMIT_REQUEST_LINE + 2, r, 0)) <= 0) {
         if (len < 0) {             /* includes EOF */
 	    /* this is a hack to make sure that request time is set,
 	     * it's not perfect, but it's better than nothing 
@@ -413,7 +422,7 @@ static int read_request_line(request_rec *r)
     /* we've probably got something to do, ignore graceful restart requests */
 
     r->request_time = apr_time_now();
-    r->the_request = apr_pstrdup(r->pool, l);
+    ll = r->the_request;
     r->method = ap_getword_white(r->pool, &ll);
 
 #if 0
@@ -474,7 +483,7 @@ static int read_request_line(request_rec *r)
 
 static void get_mime_headers(request_rec *r)
 {
-    char field[DEFAULT_LIMIT_REQUEST_FIELDSIZE + 2]; /* getline's two extra */
+    char* field;
     char *value;
     char *copy;
     int len;
@@ -488,7 +497,9 @@ static void get_mime_headers(request_rec *r)
      * Read header lines until we get the empty separator line, a read error,
      * the connection closes (EOF), reach the server limit, or we timeout.
      */
-    while ((len = ap_getline(field, sizeof(field), r, 1)) > 0) {
+    field = NULL;
+    while ((len = ap_rgetline(&field, DEFAULT_LIMIT_REQUEST_FIELDSIZE + 2,
+                              r, 1)) > 0) {
 
         if (r->server->limit_req_fields &&
             (++fields_read > r->server->limit_req_fields)) {
@@ -513,17 +524,15 @@ static void get_mime_headers(request_rec *r)
 				       "</pre>\n", NULL));
             return;
         }
-        copy = apr_palloc(r->pool, len + 1);
-        memcpy(copy, field, len + 1);
 
-        if (!(value = strchr(copy, ':'))) {     /* Find the colon separator */
+        if (!(value = strchr(field, ':'))) {    /* Find the colon separator */
             r->status = HTTP_BAD_REQUEST;       /* or abort the bad request */
             apr_table_setn(r->notes, "error-notes",
 			   apr_pstrcat(r->pool,
 				       "Request header field is missing "
 				       "colon separator.<br />\n"
 				       "<pre>\n",
-				       ap_escape_html(r->pool, copy),
+				       ap_escape_html(r->pool, field),
 				       "</pre>\n", NULL));
             return;
         }
@@ -534,7 +543,8 @@ static void get_mime_headers(request_rec *r)
             ++value;            /* Skip to start of value   */
 	}
 
-	apr_table_addn(tmp_headers, copy, value);
+	apr_table_addn(tmp_headers, field, value);
+        field = NULL; /* to cause ap_rgetline to allocate a new one */
     }
 
     apr_table_overlap(r->headers_in, tmp_headers, APR_OVERLAP_TABLES_MERGE);
