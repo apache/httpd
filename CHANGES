@@ -2,6 +2,10 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) Avoid an infinite recursion, which occured if the name of an included
+     config file or directory contained a wildcard character. PR 22194.
+     [André Malo]
+
   *) mod_dav: Use bucket brigades when reading PUT data. This avoids
      problems if the data stream is modified by an input filter. PR 22104.
      [Tim Robbins <tim@robbins.dropbear.id.au>, André Malo]
