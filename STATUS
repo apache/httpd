@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2002/05/22 05:56:43 $]
+Last modified at [$Date: 2002/05/23 19:46:09 $]
 
 Release:
 
@@ -47,8 +47,8 @@ on related projects:
 
 CURRENT RELEASE NOTES:
 
-    * 36 status: released on Monday, May 6, 2002.
-                 Awaiting the .zip files to complete the release.
+    * 37 status: Cliff proposes that 2.0.37 be tagged on Saturday, May 25,
+      with the aim of releasing by Friday, May 31, and volunteers to RM.
 
 RELEASE SHOWSTOPPERS:
 
