@@ -1446,6 +1446,59 @@ API_EXPORT(int) ap_find_last_token(pool *p, const char *line, const char *tok)
     return (strncasecmp(&line[lidx], tok, tlen) == 0);
 }
 
+
+/* escape a string for logging */
+API_EXPORT(char *) ap_escape_logitem(pool *p, const char *str)
+{
+    char *ret;
+    unsigned char *d;
+    const unsigned char *s;
+
+    if (str == NULL)
+        return NULL;
+
+    ret = ap_palloc(p, 4 * strlen(str) + 1);	/* Be safe */
+    d = (unsigned char *)ret;
+    s = (const unsigned char *)str;
+    for (; *s; ++s) {
+
+	if (TEST_CHAR(*s, T_ESCAPE_LOGITEM)) {
+	    *d++ = '\\';
+            switch(*s) {
+            case '\b':
+                *d++ = 'b';
+	        break;
+            case '\n':
+                *d++ = 'n';
+	        break;
+            case '\r':
+                *d++ = 'r';
+	        break;
+            case '\t':
+                *d++ = 't';
+	        break;
+            case '\v':
+                *d++ = 'v';
+	        break;
+            case '\\':
+            case '"':
+                *d++ = *s;
+	        break;
+	    default:
+                c2x(*s, d);
+	        *d = 'x';
+		d += 3;
+	    }
+	}
+	else
+            *d++ = *s;
+    }
+    *d = '\0';
+
+    return ret;
+}
+
+
 API_EXPORT(char *) ap_escape_shell_cmd(pool *p, const char *str)
 {
     char *cmd;

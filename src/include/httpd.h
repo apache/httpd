@@ -1023,6 +1023,7 @@ API_EXPORT(char *) ap_os_escape_path(pool *p, const char *path, int partial);
 API_EXPORT(char *) ap_escape_html(pool *p, const char *s);
 API_EXPORT(char *) ap_construct_server(pool *p, const char *hostname,
 				    unsigned port, const request_rec *r);
+API_EXPORT(char *) ap_escape_logitem(pool *p, const char *str);
 API_EXPORT(char *) ap_escape_shell_cmd(pool *p, const char *s);
 
 API_EXPORT(int) ap_count_dirs(const char *path);

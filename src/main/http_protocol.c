@@ -983,7 +983,7 @@ static int read_request_line(request_rec *r)
     const char *uri;
     conn_rec *conn = r->connection;
     unsigned int major = 1, minor = 0;   /* Assume HTTP/1.0 if non-"HTTP" protocol */
-    int len;
+    int len, n;
 
     /* Read past empty lines until we get a real request line,
      * a read error, the connection closes (EOF), or we timeout.
@@ -1045,11 +1045,25 @@ static int read_request_line(request_rec *r)
     r->assbackwards = (ll[0] == '\0');
     r->protocol = ap_pstrdup(r->pool, ll[0] ? ll : "HTTP/0.9");
 
-    if (2 == sscanf(r->protocol, "HTTP/%u.%u", &major, &minor)
+    if (2 == sscanf(r->protocol, "HTTP/%u.%u%n", &major, &minor, &n)
       && minor < HTTP_VERSION(1,0))	/* don't allow HTTP/0.1000 */
 	r->proto_num = HTTP_VERSION(major, minor);
     else
 	r->proto_num = HTTP_VERSION(1,0);
+
+    /* Check for a valid protocol, and disallow everything but whitespace
+     * after the protocol string */
+    while (ap_isspace(r->protocol[n]))
+        ++n;
+    if (r->protocol[n] != '\0') {
+        r->status    = HTTP_BAD_REQUEST;
+        r->proto_num = HTTP_VERSION(1,0);
+        r->protocol  = ap_pstrdup(r->pool, "HTTP/1.0");
+        ap_table_setn(r->notes, "error-notes",
+                      "The request line contained invalid characters "
+                      "following the protocol string.<P>\n");
+        return 0;
+    }
 
     return 1;
 }
@@ -1165,6 +1179,14 @@ API_EXPORT(request_rec *) ap_read_request(conn_rec *conn)
 
             ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r,
                          "request failed: URI too long");
+            ap_send_error_response(r, 0);
+            ap_log_transaction(r);
+            return r;
+        }
+        else if (r->status == HTTP_BAD_REQUEST) {
+            ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r,
+                         "request failed: erroneous characters after protocol string: %s",
+			 ap_escape_logitem(r->pool, r->the_request));
             ap_send_error_response(r, 0);
             ap_log_transaction(r);
             return r;

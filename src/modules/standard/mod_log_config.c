@@ -291,8 +291,8 @@ static const char *constant_item(request_rec *dummy, char *stuff)
 
 static const char *log_remote_host(request_rec *r, char *a)
 {
-    return ap_get_remote_host(r->connection, r->per_dir_config,
-                                    REMOTE_NAME);
+    return ap_escape_logitem(r->pool, ap_get_remote_host(r->connection, r->per_dir_config,
+                                    REMOTE_NAME));
 }
 
 static const char *log_remote_address(request_rec *r, char *a)
@@ -307,7 +307,7 @@ static const char *log_local_address(request_rec *r, char *a)
 
 static const char *log_remote_logname(request_rec *r, char *a)
 {
-    return ap_get_remote_logname(r);
+    return ap_escape_logitem(r->pool, ap_get_remote_logname(r));
 }
 
 static const char *log_remote_user(request_rec *r, char *a)
@@ -320,6 +320,8 @@ static const char *log_remote_user(request_rec *r, char *a)
     else if (strlen(rvalue) == 0) {
         rvalue = "\"\"";
     }
+    else
+        rvalue = ap_escape_logitem(r->pool, rvalue);
     return rvalue;
 }
 
@@ -330,10 +332,12 @@ static const char *log_request_line(request_rec *r, char *a)
 	     * (note the truncation before the protocol string for HTTP/0.9 requests)
 	     * (note also that r->the_request contains the unmodified request)
 	     */
-    return (r->parsed_uri.password) ? ap_pstrcat(r->pool, r->method, " ",
+    return ap_escape_logitem(r->pool,
+			     (r->parsed_uri.password) ? ap_pstrcat(r->pool, r->method, " ",
 					 ap_unparse_uri_components(r->pool, &r->parsed_uri, 0),
 					 r->assbackwards ? NULL : " ", r->protocol, NULL)
-					: r->the_request;
+					: r->the_request
+			     );
 }
 
 static const char *log_request_file(request_rec *r, char *a)
@@ -342,19 +346,20 @@ static const char *log_request_file(request_rec *r, char *a)
 }
 static const char *log_request_uri(request_rec *r, char *a)
 {
-    return r->uri;
+    return ap_escape_logitem(r->pool, r->uri);
 }
 static const char *log_request_method(request_rec *r, char *a)
 {
-    return r->method;
+    return ap_escape_logitem(r->pool, r->method);
 }
 static const char *log_request_protocol(request_rec *r, char *a)
 {
-    return r->protocol;
+    return ap_escape_logitem(r->pool, r->protocol);
 }
 static const char *log_request_query(request_rec *r, char *a)
 {
-    return (r->args != NULL) ? ap_pstrcat(r->pool, "?", r->args, NULL)
+    return (r->args != NULL) ? ap_pstrcat(r->pool, "?",
+					  ap_escape_logitem(r->pool, r->args), NULL)
                              : "";
 }
 static const char *log_status(request_rec *r, char *a)
@@ -389,7 +394,7 @@ static const char *log_bytes_sent(request_rec *r, char *a)
 
 static const char *log_header_in(request_rec *r, char *a)
 {
-    return ap_table_get(r->headers_in, a);
+    return ap_escape_logitem(r->pool, ap_table_get(r->headers_in, a));
 }
 
 static const char *log_header_out(request_rec *r, char *a)
@@ -470,6 +475,7 @@ static const char *log_child_pid(request_rec *r, char *a)
 {
     return ap_psprintf(r->pool, "%ld", (long) getpid());
 }
+
 static const char *log_connection_status(request_rec *r, char *a)
 {
     if (r->connection->aborted)
@@ -482,6 +488,7 @@ static const char *log_connection_status(request_rec *r, char *a)
 
     return "-";
 }
+
 /*****************************************************************
  *
  * Parsing the log format string
