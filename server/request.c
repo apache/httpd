@@ -285,7 +285,7 @@ AP_DECLARE(int) ap_process_request_internal(request_rec *r)
  * the work of these functions significantly.
  */
 
- typedef struct walk_walked_t {
+typedef struct walk_walked_t {
     ap_conf_vector_t *matched; /* A dir_conf sections we matched */
     ap_conf_vector_t *merged;  /* The dir_conf merged result */
 } walk_walked_t;
@@ -367,7 +367,6 @@ static int check_safe_file(request_rec *r)
     return HTTP_FORBIDDEN;
 }
 
-#ifdef REPLACE_PATH_INFO_METHOD
 /*
  * resolve_symlink must _always_ be called on an APR_LNK file type!
  * It will resolve the actual target file type, modification date, etc, 
@@ -415,7 +414,6 @@ static int resolve_symlink(char *d, apr_finfo_t *lfi, int opts, apr_pool_t *p)
     memcpy(lfi, &fi, sizeof(fi));
     return OK;
 }
-#endif /* REPLACE_PATH_INFO_METHOD */
 
 #ifndef REPLACE_PATH_INFO_METHOD
 
@@ -483,6 +481,7 @@ static int check_symlinks(char *d, int opts, apr_pool_t *p)
 
 #endif
 }
+
 
 /* Dealing with the file system to get PATH_INFO
  */
@@ -1172,24 +1171,35 @@ AP_DECLARE(int) ap_directory_walk(request_rec *r)
  x   }
  */
 
-    /* Save a dummy userdata element till we optimize this function.
-     * If this userdata is set, directory_walk has run.
-     */
-    apr_pool_userdata_set((void *)1, "ap_directory_walk::cache",
-                          apr_pool_cleanup_null, r->pool);
+    if (r->finfo.filetype == APR_DIR)
+        cache->cached = r->filename;
+    else
+        cache->cached = ap_make_dirstr_parent(r->pool, r->filename);
 
-    return OK;  /* 'no excuses' */
+    cache->dir_conf_tested = sec_ent;
+
+    /* Merge our cache->dir_conf_merged construct with the r->per_dir_configs,
+     * and note the end result to (potentially) skip this step next time.
+     */
+    if (now_merged)
+        r->per_dir_config = ap_merge_per_dir_configs(r->pool,
+                                                     r->per_dir_config,
+                                                     now_merged);
+    cache->per_dir_result = r->per_dir_config;
+
+    return OK;
 }
 
 #endif /* defined REPLACE_PATH_INFO_METHOD */
+
 
 AP_DECLARE(int) ap_location_walk(request_rec *r)
 {
     ap_conf_vector_t *now_merged = NULL;
     core_server_config *sconf = ap_get_module_config(r->server->module_config,
                                                      &core_module);
-    ap_conf_vector_t **locations = (ap_conf_vector_t **) sconf->sec_url->elts;
-    int num_loc = sconf->sec_url->nelts;
+    ap_conf_vector_t **sec_ent = (ap_conf_vector_t **) sconf->sec_url->elts;
+    int num_sec = sconf->sec_url->nelts;
     walk_cache_t *cache;
     const char *entry_uri;
 
@@ -1199,7 +1209,7 @@ AP_DECLARE(int) ap_location_walk(request_rec *r)
      * We won't destroy the cache, just in case _this_ redirect is later
      * redirected again to a vhost with <Location > blocks to optimize.
      */
-    if (!num_loc) {
+    if (!num_sec) {
 	return OK;
     }
 
@@ -1221,7 +1231,7 @@ AP_DECLARE(int) ap_location_walk(request_rec *r)
      * and the vhost's list of locations hasn't changed, we can skip
      * rewalking the location_walk entries.
      */
-    if (cache->cached && (cache->dir_conf_tested == locations) 
+    if (cache->cached && (cache->dir_conf_tested == sec_ent) 
                       && (strcmp(entry_uri, cache->cached) == 0)) {
         /* Well this looks really familiar!  If our end-result (per_dir_result)
          * didn't change, we have absolutely nothing to do :)  
@@ -1238,20 +1248,20 @@ AP_DECLARE(int) ap_location_walk(request_rec *r)
         /* We start now_merged from NULL since we want to build 
          * a locations list that can be merged to any vhost.
          */
-        int len, j;
+        int len, sec_idx;
         int matches = cache->walked->nelts;
         walk_walked_t *last_walk = (walk_walked_t*)cache->walked->elts;
         cache->cached = entry_uri;
-        cache->dir_conf_tested = locations;
+        cache->dir_conf_tested = sec_ent;
 
         /* Go through the location entries, and check for matches.
          * We apply the directive sections in given order, we should
          * really try them with the most general first.
          */
-        for (j = 0; j < num_loc; ++j) {
+        for (sec_idx = 0; sec_idx < num_sec; ++sec_idx) {
 
-	    core_dir_config *entry_core 
-                        = ap_get_module_config(locations[j], &core_module);
+	    core_dir_config *entry_core; 
+            entry_core = ap_get_module_config(sec_ent[sec_idx], &core_module);
 	    
             /* ### const strlen can be optimized in location config parsing */
 	    len = strlen(entry_core->d);
@@ -1275,7 +1285,7 @@ AP_DECLARE(int) ap_location_walk(request_rec *r)
             /* If we merged this same section last time, reuse it
              */
             if (matches) {
-                if (last_walk->matched == locations[j]) {
+                if (last_walk->matched == sec_ent[sec_idx]) {
                     now_merged = last_walk->merged;
                     ++last_walk;
                     --matches;
@@ -1291,12 +1301,12 @@ AP_DECLARE(int) ap_location_walk(request_rec *r)
             if (now_merged)
 	        now_merged = ap_merge_per_dir_configs(r->pool, 
                                                       now_merged,
-                                                      locations[j]);
+                                                      sec_ent[sec_idx]);
             else
-                now_merged = locations[j];
+                now_merged = sec_ent[sec_idx];
 
             last_walk = (walk_walked_t*)apr_array_push(cache->walked);
-            last_walk->matched = locations[j];
+            last_walk->matched = sec_ent[sec_idx];
             last_walk->merged = now_merged;
         }
         /* Whoops - everything matched in sequence, but the original walk
@@ -1323,8 +1333,8 @@ AP_DECLARE(int) ap_file_walk(request_rec *r)
     ap_conf_vector_t *now_merged = NULL;
     core_dir_config *dconf = ap_get_module_config(r->per_dir_config,
                                                   &core_module);
-    ap_conf_vector_t **file = (ap_conf_vector_t **) dconf->sec_file->elts;
-    int num_files = dconf->sec_file->nelts;
+    ap_conf_vector_t **sec_ent = (ap_conf_vector_t **) dconf->sec_file->elts;
+    int num_sec = dconf->sec_file->nelts;
     walk_cache_t *cache;
     const char *test_file;
 
@@ -1342,7 +1352,7 @@ AP_DECLARE(int) ap_file_walk(request_rec *r)
      * We won't destroy the cache, just in case _this_ redirect is later
      * redirected again to a context containing the same or similar <Files >.
      */
-    if (!num_files) {
+    if (!num_sec) {
 	return OK;
     }
 
@@ -1361,7 +1371,7 @@ AP_DECLARE(int) ap_file_walk(request_rec *r)
      * and the directory's list of file sections hasn't changed, we 
      * can skip rewalking the file_walk entries.
      */
-    if (cache->cached && (cache->dir_conf_tested == file) 
+    if (cache->cached && (cache->dir_conf_tested == sec_ent) 
                       && (strcmp(test_file, cache->cached) == 0)) {
         /* Well this looks really familiar!  If our end-result (per_dir_result)
          * didn't change, we have absolutely nothing to do :)  
@@ -1378,20 +1388,20 @@ AP_DECLARE(int) ap_file_walk(request_rec *r)
         /* We start now_merged from NULL since we want to build 
          * a file section list that can be merged to any dir_walk.
          */
-        int j;
+        int sec_idx;
         int matches = cache->walked->nelts;
         walk_walked_t *last_walk = (walk_walked_t*)cache->walked->elts;
         cache->cached = test_file;
-        cache->dir_conf_tested = file;
+        cache->dir_conf_tested = sec_ent;
 
         /* Go through the location entries, and check for matches.
          * We apply the directive sections in given order, we should
          * really try them with the most general first.
          */
-        for (j = 0; j < num_files; ++j) {
+        for (sec_idx = 0; sec_idx < num_sec; ++sec_idx) {
         
-            core_dir_config *entry_core 
-                                = ap_get_module_config(file[j], &core_module);
+            core_dir_config *entry_core;
+            entry_core = ap_get_module_config(sec_ent[sec_idx], &core_module);
 
             if (entry_core->r
                  ? ap_regexec(entry_core->r, cache->cached , 0, NULL, 0)
@@ -1404,7 +1414,7 @@ AP_DECLARE(int) ap_file_walk(request_rec *r)
             /* If we merged this same section last time, reuse it
              */
             if (matches) {
-                if (last_walk->matched == file[j]) {
+                if (last_walk->matched == sec_ent[sec_idx]) {
                     now_merged = last_walk->merged;
                     ++last_walk;
                     --matches;
@@ -1420,12 +1430,12 @@ AP_DECLARE(int) ap_file_walk(request_rec *r)
             if (now_merged)
 	        now_merged = ap_merge_per_dir_configs(r->pool, 
                                                       now_merged,
-                                                      file[j]);
+                                                      sec_ent[sec_idx]);
             else
-                now_merged = file[j];
+                now_merged = sec_ent[sec_idx];
 
             last_walk = (walk_walked_t*)apr_array_push(cache->walked);
-            last_walk->matched = file[j];
+            last_walk->matched = sec_ent[sec_idx];
             last_walk->merged = now_merged;
         }
         /* Whoops - everything matched in sequence, but the original walk
@@ -1628,11 +1638,8 @@ AP_DECLARE(request_rec *) ap_sub_req_lookup_dirent(const apr_finfo_t *dirent,
     
     ap_parse_uri(rnew, rnew->uri);    /* fill in parsed_uri values */
 
-#if 0
-    /* XXX When this is reenabled, the cache triggers need to be set to faux
-     * dir_walk/file_walk values.  We also need to preserve the apr_stat
-     * results into the new parser, which can't happen until the new dir_walk
-     * is taught to recognize the condition, and perhaps we also tag that
+#ifdef REPLACE_PATH_INFO_METHOD
+    /* Preserve the apr_stat results, and perhaps we also tag that
      * symlinks were tested and/or found for r->filename.  
      */
     rnew->per_dir_config = r->per_dir_config;
@@ -1661,7 +1668,7 @@ AP_DECLARE(request_rec *) ap_sub_req_lookup_dirent(const apr_finfo_t *dirent,
     else {
         memcpy (&rnew->finfo, dirent, sizeof(apr_finfo_t));
     }
-#endif
+#endif /* defined REPLACE_PATH_INFO_METHOD */
 
     if ((res = ap_process_request_internal(rnew))) {
         rnew->status = res;
@@ -1710,12 +1717,32 @@ AP_DECLARE(request_rec *) ap_sub_req_lookup_file(const char *new_file,
 
     if (strncmp(rnew->filename, fdir, fdirlen) == 0
            && rnew->filename[fdirlen] 
-           && ap_strchr_c(rnew->filename + fdirlen, '/') == NULL
-           && r->uri && *r->uri)
+           && ap_strchr_c(rnew->filename + fdirlen, '/') == NULL)
     {
-        char *udir = ap_make_dirstr_parent(rnew->pool, r->uri);
-        rnew->uri = ap_make_full_path(rnew->pool, udir, rnew->filename + fdirlen);
-        ap_parse_uri(rnew, rnew->uri);    /* fill in parsed_uri values */
+#ifdef REPLACE_PATH_INFO_METHOD
+        apr_status_t rv;
+        if (ap_allow_options(rnew) & OPT_SYM_LINKS) {
+            if (((rv = apr_stat(&rnew->finfo, rnew->filename,
+                                 APR_FINFO_MIN, rnew->pool)) != APR_SUCCESS)
+                                                      && (rv != APR_INCOMPLETE))
+                rnew->finfo.filetype = 0;
+        }
+        else {
+            if (((rv = apr_lstat(&rnew->finfo, rnew->filename,
+                                 APR_FINFO_MIN, rnew->pool)) != APR_SUCCESS)
+                                                      && (rv != APR_INCOMPLETE))
+                rnew->finfo.filetype = 0;
+        }
+#endif /* defined REPLACE_PATH_INFO_METHOD */
+        if (r->uri && *r->uri) {
+            char *udir = ap_make_dirstr_parent(rnew->pool, r->uri);
+            rnew->uri = ap_make_full_path(rnew->pool, udir, rnew->filename + fdirlen);
+            ap_parse_uri(rnew, rnew->uri);    /* fill in parsed_uri values */
+        }
+        else {
+	    ap_parse_uri(rnew, new_file);	/* fill in parsed_uri values */
+            rnew->uri = apr_pstrdup(rnew->pool, "");
+        }
     }
     else {
 	/* XXX: @@@: What should be done with the parsed_uri values?
