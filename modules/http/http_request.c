@@ -117,8 +117,7 @@ AP_DECLARE(void) ap_die(int type, request_rec *r)
      * error condition, we just report on the original error, and give up on
      * any attempt to handle the other thing "intelligently"...
      */
-
-    if (r->status != HTTP_OK) {
+    if (r->status != HTTP_OK && !ap_status_drops_connection(type)) {
         recursive_error = type;
 
         while (r->prev && (r->prev->status != HTTP_OK))
@@ -149,8 +148,13 @@ AP_DECLARE(void) ap_die(int type, request_rec *r)
     else if ((r->status != HTTP_NOT_MODIFIED) &&
              (r->status != HTTP_NO_CONTENT) &&
              r->connection && (r->connection->keepalive != -1)) {
-
-        (void) ap_discard_request_body(r);
+        /* If the discard returns AP_FILTER_ERROR, it means that we went
+         * recursive on ourselves and we should abort.
+         */
+        int errstatus = ap_discard_request_body(r);
+        if (errstatus == AP_FILTER_ERROR) {
+            return;
+        }
     }
 
     /*
