@@ -636,7 +636,7 @@ void no2slash(char *name);
 void getparents(char *name);
 char *escape_path_segment(pool *p, const char *s);
 char *os_escape_path(pool *p,const char *path,int partial);
-char *escape_uri (pool *p, const char *s);
+#define escape_uri(ppool,path) os_escape_path(ppool,path,1)
 extern char *escape_html(pool *p, const char *s);
 char *construct_server(pool *p, const char *hostname, int port);
 char *construct_url (pool *p, const char *path, const server_rec *s);     

@@ -841,23 +841,9 @@ char *os_escape_path(pool *p,const char *path,int partial) {
   return copy;
 }
 
-char *escape_uri(pool *p, const char *uri) {
-    register int x,y;
-    char *copy = palloc (p, 3 * strlen (uri) + 1);
-            
-    for (x=0,y=0; uri[x]; x++,y++) {
-        if ((uri[x] <= ' ') || (ind("\"%&+<=>?", uri[x]) != -1)) {
-            c2x(uri[x],&copy[y]);
-            y+=2;
-        }
-        else copy[y] = uri[x];
-    }
-    copy[y] = '\0';
-    return copy;
-}
+/* escape_uri is now a macro for os_escape_path */
 
-char *
-escape_html(pool *p, const char *s)
+char *escape_html(pool *p, const char *s)
 {
     int i, j;
     char *x;
