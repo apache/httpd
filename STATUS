@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/05/21 15:48:07 $]
+Last modified at [$Date: 2003/05/22 20:22:15 $]
 
 Release:
 
@@ -213,7 +213,9 @@ PATCHES TO PORT FROM 2.1
       modules/ssl/ssl_engine_config.c 1.78
       modules/ssl/ssl_engine_init.c 1.113
       modules/ssl/ssl_toolkit_compat.c 1.33
-      +1: wrowe
+      +0: wrowe {Pending research into how to get AC to use -lsockets et. al.,
+                 shows breakage on Solaris which can't -lcrypto -lssl without
+                 the extra pkgconfig/openssl.pc Libs: * foo }
 
     * mod_ssl: Quit twiddling status bits, and call SSL_renegotiate to unset
       the current negotiation status.
