@@ -30,20 +30,20 @@
     <p>This module provides for forensic logging of client
     requests. Logging is done before and after processing a request, so the
     forensic log contains two log lines for each request.
-    The forensic logger works very strict, which means:</p>
+    The forensic logger is very strict, which means:</p>
 
     <ul>
     <li>The format is fixed. You cannot modify the logging format at
     runtime.</li>
-    <li>If it cannot write its data, the particular child process
-    exits immediately and possibly dumps core (depends on your
+    <li>If it cannot write its data, the child process
+    exits immediately and may dump core (depending on your
     <directive module="mpm_common">CoreDumpDirectory</directive>
     configuration).</li>
     </ul>
 
-    <p>In order to evaluate the log output there's a script
-    <code>check_forensic</code>, which can be found in the support directory
-    of the distribution.</p>
+    <p>The <code>check_forensic</code> script, which can be found in the
+    distribution's support directory, may be helpful in evaluating the
+    forensic log output.</p>
 </summary>
 <seealso><a href="../logs.html">Apache Log Files</a></seealso>
 <seealso><module>mod_log_config</module></seealso>
@@ -55,9 +55,9 @@
     where normal logging occurs.</p>
 
     <p>In order to identify each request, a unique request ID is assigned.
-    This forensic id can be cross logged in the normal transfer log using the
+    This forensic ID can be cross logged in the normal transfer log using the
     <code>%{forensic-id}n</code> format string. If you're using
-    <module>mod_unique_id</module> its generated ID will be used.</p>
+    <module>mod_unique_id</module>, its generated ID will be used.</p>
 
     <p>The first line logs the forensic ID, the request line and all received
     headers, separated by pipe characters (<code>|</code>). A sample line
@@ -72,13 +72,13 @@
 
     <p>The plus character at the beginning indicates that this is first log
     line of this request. The second line just contains a minus character and
-    the id again:</p>
+    the ID again:</p>
 
     <example>
       -yQtJf8CoAB4AAFNXBIEAAAAA
     </example>
 
-    <p>The <code>check_forensic</code> script gets as its argument the name
+    <p>The <code>check_forensic</code> script takes as its argument the name
     of the logfile. It looks for those <code>+</code>/<code>-</code> ID pairs
     and complains if a request was not completed.</p>
 </section>
@@ -101,11 +101,11 @@
 
 <usage>
     <p>The <directive>ForensicLog</directive> directive is used to
-    log requests to the server for a forensic analysis. Each log entry
-    gets assigned unique id which can be associated with the request
+    log requests to the server for forensic analysis. Each log entry
+    is assigned a unique ID which can be associated with the request
     using the normal <directive module="mod_log_config">CustomLog</directive>
-    directive. <module>mod_log_forensic</module> leaves a note called
-    <code>forensic-id</code> which can be added to the transfer log by
+    directive. <module>mod_log_forensic</module> creates a token called
+    <code>forensic-id</code>, which can be added to the transfer log
     using the <code>%{forensic-id}n</code> format string.</p>
 
     <p>The argument, which specifies the location to which
