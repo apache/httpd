@@ -1,0 +1,29 @@
+bin/vhget 127.0.0.1 8080 '' '' vhost1
+bin/vhget 127.0.0.1 8080 vhost1:8080 '' vhost1
+bin/vhget 127.0.0.1 8080 vhost2:8080 '' vhost1
+bin/vhget 127.0.0.1 8080 vhost1:8080 'vhost1:8080' vhost1
+bin/vhget 127.0.0.1 8080 vhost1:8080 'vhost2:8080' vhost1
+bin/vhget 127.0.0.1 8080 vhost2:8080 'vhost2:8080' vhost1
+bin/vhget 127.0.0.1 8080 vhost2:8080 'vhost1:8080' vhost1
+
+bin/vhget 127.0.0.2 8080 '' '' vhost2
+bin/vhget 127.0.0.2 8080 vhost2:8080 '' vhost2
+bin/vhget 127.0.0.2 8080 vhost1:8080 '' vhost2
+bin/vhget 127.0.0.2 8080 vhost1:8080 'vhost1:8080' vhost2
+bin/vhget 127.0.0.2 8080 vhost1:8080 'vhost2:8080' vhost2
+bin/vhget 127.0.0.2 8080 vhost2:8080 'vhost2:8080' vhost2
+bin/vhget 127.0.0.2 8080 vhost2:8080 'vhost1:8080' vhost2
+
+bin/vhget 127.0.0.3 8080 '' '' vhost3
+bin/vhget 127.0.0.3 8080 vhost3:8080 '' vhost3
+bin/vhget 127.0.0.3 8080 vhost3:8080 'vhost3:8080' vhost3
+bin/vhget 127.0.0.3 8080 vhost3:8080 'vhost4:8080' vhost4
+bin/vhget 127.0.0.3 8080 vhost4:8080 '' vhost4
+bin/vhget 127.0.0.3 8080 vhost4:8080 'vhost3:8080' vhost3
+bin/vhget 127.0.0.3 8080 vhost4:8080 'vhost4:8080' vhost4
+
+bin/vhget 127.0.0.4 8080 '' '' default1
+bin/vhget 127.0.0.4 8080 'vhost1' '' default1
+bin/vhget 127.0.0.4 8080 'vhost1' 'vhost1:8080' default1
+bin/vhget 127.0.0.4 8080 'vhost2' '' default1
+bin/vhget 127.0.0.4 8080 'vhost2' 'vhost2:8080' default1

@@ -1,0 +1,62 @@
+Support files:
+
+ab
+	ABuse your server with this benchmarker. Rudimentary
+	command line testing tool.
+
+apachectl
+	Apache run-time Control script. To facilitate the
+	administrator and/or your rc.d scripts to control the 
+	functioning of the Apache httpd daemon.
+
+apxs
+	APache eXtenSion tool. Eases building and installing
+	DSO style modules.
+
+dbmmanage
+	Create and update user authentication files in the faster
+	DBM format used by mod_auth_db.
+
+htdigest
+	Create and update user authentication files used in
+	DIGEST authentification. See mod_auth_digest.
+
+htpasswd 
+	Create and update user authentication files used in
+	BASIC authentification. I.e. the htpasswd files.
+	See mod_auth.
+
+httpd.8
+	General apache man page.
+
+log_server_status
+	This script is designed to be run at a frequent interval by something
+	like cron.  It connects to the server and downloads the status
+	information.  It reformats the information to a single line and logs
+	it to a file. 
+
+logresolve
+	resolve hostnames for IP-adresses in Apache logfiles
+
+phf_abuse_log.cgi
+	This script can be used to detect people trying to abuse an ancient
+	and long plugged security hole which existed in a CGI script distributed
+	with Apache 1.0.3 and earlier versions.
+
+rotatelogs
+	rotate Apache logs without having to kill the server.
+
+split-logfile
+	This script will take a combined virtual hosts access
+	log file and break its contents into separate files.
+
+suexec
+	Switch User For Exec. Used internally by apache, 
+        see  the  document  `Apache  suEXEC  Support'
+	under http://www.apache.org/docs/suexec.html .
+
+SHA1
+	This directory includes some utilities to allow Apache 1.3.6 to 
+	recognize passwords in SHA1 format, as used by Netscape web 
+	servers. It is not installed by default.
+
