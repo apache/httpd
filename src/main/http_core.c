@@ -117,7 +117,7 @@ void *merge_core_dir_configs (pool *a, void *basev, void *newv)
     core_dir_config *base = (core_dir_config *)basev;
     core_dir_config *new = (core_dir_config *)newv;
     core_dir_config *conf =
-      (core_dir_config *)pcalloc (a, sizeof(core_dir_config));
+      (core_dir_config *)palloc (a, sizeof(core_dir_config));
     int i;
   
     memcpy ((char *)conf, (const char *)base, sizeof(core_dir_config));

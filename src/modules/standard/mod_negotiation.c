@@ -444,7 +444,7 @@ negotiation_state *parse_accept_headers (request_rec *r)
 
     new->pool = r->pool;
     new->r = r;
-    new->dir_name = make_dirstr(r->pool, r->filename, count_dirs(r->filename));
+    new->dir_name = make_dirstr_parent (r->pool, r->filename);
     
     new->accepts = do_header_line (r->pool, table_get (hdrs, "Accept"));
 
@@ -1899,7 +1899,7 @@ int handle_map_file (request_rec *r)
     if (r->path_info && *r->path_info) {
         r->uri[find_path_info(r->uri, r->path_info)] = '\0';
     }
-    udir = make_dirstr (r->pool, r->uri, count_dirs (r->uri));
+    udir = make_dirstr_parent (r->pool, r->uri);
     udir = escape_uri(r->pool, udir);
     internal_redirect(pstrcat(r->pool, udir, best->file_name, r->path_info,
                               NULL), r);

@@ -1,4 +1,11 @@
 Changes with Apache 1.3
+  
+  *) directory_walk() is an expensive function, keep a little more state to
+     avoid needless string counting.  Add two new functions make_dirstr_parent
+     and make_dirstr_prefix which replace all existing uses of make_dirstr.
+     The new functions are a little less general than make_dirstr, but
+     work more efficiently (less memory, less string counting).
+     [Dean Gaudet]
 
   *) EXTRA_LFLAGS was changed to EXTRA_LDFLAGS (and LFLAGS was changed
      to LDFLAGS) to avoid complications with lex rules in make files.

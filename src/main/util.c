@@ -339,6 +339,61 @@ void no2slash(char *name) {
 	else x++;
 }
 
+
+/*
+ * copy at most n leading directories of s into d
+ * d should be at least as large as s plus 1 extra byte
+ * assumes n > 0
+ * the return value is the ever useful pointer to the trailing \0 of d
+ *
+ * examples:
+ *    /a/b, 1  ==> /
+ *    /a/b, 2  ==> /a/
+ *    /a/b, 3  ==> /a/b/
+ *    /a/b, 4  ==> /a/b/
+ */
+char *make_dirstr_prefix (char *d, const char *s, int n)
+{
+    for(;;) {
+	*d = *s;
+	if (*d == '\0') {
+	    *d = '/';
+	    break;
+	}
+	if (*d == '/' && (--n) == 0 ) break;
+	++d;
+	++s;
+    }
+    *++d = 0;
+    return (d);
+}
+
+
+/*
+ * return the parent directory name including trailing / of the file s
+ */
+char *make_dirstr_parent (pool *p, const char *s)
+{
+    char *last_slash = strrchr (s, '/');
+    char *d;
+    int l;
+
+    if (last_slash == NULL) {
+	/* XXX: well this is really broken if this happens */
+	return (pstrdup (p,"/"));
+    }
+    l = (last_slash-s)+1;
+    d = palloc (p, l+1);
+    memcpy (d, s, l);
+    d[l] = 0;
+    return (d);
+}
+
+
+/*
+ * This function is deprecated.  Use one of the preceeding two functions
+ * which are faster.
+ */
 char *make_dirstr(pool *p, const char *s, int n) {
     register int x,f;
     char *res;

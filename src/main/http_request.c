@@ -251,9 +251,10 @@ int directory_walk (request_rec *r)
     core_dir_config **sec = (core_dir_config **)sec_array->elts;
     int num_sec = sec_array->nelts;
     char *test_filename = pstrdup (r->pool, r->filename);
+    char *test_dirname, *test_htaccess;
 
     int num_dirs, res;
-    int i;
+    int i, test_filename_len;
 
     /* Are we dealing with a file? If not, we can (hopefuly) safely assume
      * we have a handler that doesn't require one, but for safety's sake,
@@ -333,28 +334,34 @@ int directory_walk (request_rec *r)
 	return res;
     }
 
-    if (test_filename[strlen(test_filename)-1] == '/')
+    test_filename_len = strlen (test_filename);
+    if (test_filename[test_filename_len-1] == '/')
 	--num_dirs;
 
-    if (S_ISDIR (r->finfo.st_mode)) {
-	++num_dirs;
-    }
+    if (S_ISDIR (r->finfo.st_mode)) ++num_dirs;
 
+    /* we need somewhere to scratch while building directory names and
+     * htaccess names
+     */
+    test_dirname = palloc (r->pool, test_filename_len+1);
+    test_htaccess = NULL;
     for (i = 1; i <= num_dirs; ++i) {
         core_dir_config *core_dir =
 	  (core_dir_config *)get_module_config(per_dir_defaults, &core_module);
 	int overrides_here;
         void *this_conf = NULL, *htaccess_conf = NULL;
-	char *this_dir = make_dirstr (r->pool, test_filename, i);
+	char *test_dirname_tail;
 	int j;
-      
+
+	test_dirname_tail = make_dirstr_prefix (test_dirname, test_filename, i);
+
 	/* Do symlink checks first, because they are done with the
 	 * permissions appropriate to the *parent* directory...
 	 */
 	
-	if ((res = check_symlinks (this_dir, core_dir->opts)))
+	if ((res = check_symlinks (test_dirname, core_dir->opts)))
 	{
-	    log_reason("Symbolic link not allowed", this_dir, r);
+	    log_reason("Symbolic link not allowed", test_dirname, r);
 	    return res;
 	}
 	
@@ -374,7 +381,7 @@ int directory_walk (request_rec *r)
 	    entry_dir = entry_core->d;
 	
 	    if (entry_core->r) {
-		if (!regexec(entry_core->r, this_dir, 0, NULL,
+		if (!regexec(entry_core->r, test_dirname, 0, NULL,
 			     (j == num_sec) ? 0 : REG_NOTEOL)) {
 		    /* Don't try this wildcard again --- if it ends in '*'
 		     * it'll match again, and subdirectories won't be able to
@@ -385,11 +392,11 @@ int directory_walk (request_rec *r)
 		}
 	    }
 	    else if (entry_core->d_is_matchexp &&
-		     !strcmp_match(this_dir, entry_dir)) {
+		     !strcmp_match(test_dirname, entry_dir)) {
 		sec[j] = NULL;	
 	        this_conf = entry_config;
 	    }
-	    else if (!strcmp (this_dir, entry_dir))
+	    else if (!strcmp (test_dirname, entry_dir))
 	        this_conf = entry_config;
 
 	    if (this_conf) {
@@ -407,10 +414,18 @@ int directory_walk (request_rec *r)
 	 */
 	
 	if (overrides_here) {
-	    char *config_name = make_full_path(r->pool, this_dir,
-					   sconf->access_name);
+	    int len;
+
+	    if (test_htaccess == NULL) {
+		/* we delayed allocating this in case there wasn't a need */
+		test_htaccess = palloc (r->pool,
+		    test_filename_len + 1 + strlen (sconf->access_name));
+	    }
+	    len = test_dirname_tail - test_dirname;
+	    memcpy (test_htaccess, test_dirname, len);
+	    strcpy (test_htaccess + len, sconf->access_name);
 	    res = parse_htaccess (&htaccess_conf, r, overrides_here,
-				  this_dir, config_name);
+				  test_dirname, test_htaccess);
 	    if (res) return res;
 	}
 
@@ -615,7 +630,7 @@ request_rec *sub_req_lookup_uri (const char *new_file, const request_rec *r)
 	parse_uri(rnew, new_file);
     else
     {
-	udir = make_dirstr (rnew->pool, r->uri, count_dirs (r->uri));
+	udir = make_dirstr_parent (rnew->pool, r->uri);
 	udir = escape_uri(rnew->pool, udir); /* re-escape it */
 	parse_uri (rnew, make_full_path (rnew->pool, udir, new_file));
     }
@@ -684,7 +699,7 @@ request_rec *sub_req_lookup_file (const char *new_file, const request_rec *r)
     rnew->request_config = create_request_config (rnew->pool);
     rnew->htaccess = r->htaccess; /* copy htaccess cache */
     set_sub_req_protocol (rnew, r);
-    fdir = make_dirstr (rnew->pool, r->filename, count_dirs (r->filename));
+    fdir = make_dirstr_parent (rnew->pool, r->filename);
 
     /* Check for a special case... if there are no '/' characters in new_file
      * at all, then we are looking at a relative lookup in the same directory.
@@ -693,7 +708,7 @@ request_rec *sub_req_lookup_file (const char *new_file, const request_rec *r)
      */
 
     if (strchr (new_file, '/') == NULL) {
-	char *udir = make_dirstr(rnew->pool, r->uri, count_dirs(r->uri));
+	char *udir = make_dirstr_parent (rnew->pool, r->uri);
 
 	rnew->uri = make_full_path (rnew->pool, udir, new_file);
 	rnew->filename = make_full_path (rnew->pool, fdir, new_file);

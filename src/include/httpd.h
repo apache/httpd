@@ -712,6 +712,9 @@ char *construct_url (pool *p, const char *path, const server_rec *s);
 char *escape_shell_cmd (pool *p, const char *s);
      
 int count_dirs(const char *path);
+char *make_dirstr_prefix (char *d, const char *s, int n);
+char *make_dirstr_parent (pool *p, const char *s);
+/* deprecated.  The previous two routines are preferred. */
 char *make_dirstr(pool *a, const char *s, int n);
 char *make_full_path(pool *a, const char *dir, const char *f);
      
