@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='iso-2022-jp' ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.ja.xsl"?>
-<!-- English Revision: 155309:159149 (outdated) -->
+<!-- English Revision: 159149 -->
 
 <!--
  Copyright 2002-2005 The Apache Software Foundation or its licensors, as
@@ -87,15 +87,11 @@ Apache HTTP サーバでどのように使用されるかについて解説しています。</p>
 
     <p>MPM は設定中に選択して、サーバ内部にコンパイルされなければ
     なりません。
-    コンパイラは、スレッドが使用されていれば様々な機能を最適化できますが、
-    そもそもスレッドが使われているということを知る必要があります。
-    MPM には Unix 上でスレッドを用いるものや、スレッドをまったく
-    使わないものがあるので、
-    Apache は、MPM が設定中に選択されて Apache 内部に組み込まれた場合の方が
-    常により良いパフォーマンスを発揮します。</p>
+    コンパイラは、スレッドが使用されている場合に様々な機能を最適化できますが、
+    そのためにはそもそもスレッドが使われているということを知る必要があります。</p>
 
     <p>望みの MPM を実際に選ぶためには、<program>configure</program> スクリプトで
-    --with-mpm= <em>NAME</em> 引数を用いてください。
+    <code>--with-mpm=<em>NAME</em></code> 引数を用いてください。
     <em>NAME</em> は望みの MPM の名前です。</p>
 
     <p>サーバコンパイル後は、どの MPM が選択されたかを
