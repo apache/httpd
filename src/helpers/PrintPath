@@ -15,7 +15,7 @@ for path in `echo $PATH |
       s/:$/:./
       s/:/ /g' `
 do
-    if [ -x $path/$1 ]; then
+    if [ -r $path/$1 ]; then
         if [ "$echo" = "yes" ]; then
 	    echo $path/$1
 	fi
