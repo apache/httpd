@@ -483,10 +483,10 @@ static void set_service_description(void)
     if ((osver.dwPlatformId == VER_PLATFORM_WIN32_NT) 
           && (osver.dwMajorVersion > 4) 
           && (ChangeServiceConfig2)
-          && (schSCManager = OpenSCManager(NULL, NULL, SC_MANAGER_ALL_ACCESS)))
+          && (schSCManager = OpenSCManager(NULL, NULL, SC_MANAGER_CONNECT)))
     {    
         SC_HANDLE schService = OpenService(schSCManager, mpm_service_name,
-                                               SERVICE_ALL_ACCESS);
+                                           SERVICE_CHANGE_CONFIG);
         if (schService) {
             /* Cast is necessary, ChangeServiceConfig2 handles multiple
              * object types, some volatile, some not.
@@ -854,10 +854,9 @@ apr_status_t mpm_service_install(apr_pool_t *ptemp, int argc,
     {
         SC_HANDLE   schService;
         SC_HANDLE   schSCManager;
-    
-        // TODO: Determine the minimum permissions required for security
+
         schSCManager = OpenSCManager(NULL, NULL, /* local, default database */
-                                     SC_MANAGER_ALL_ACCESS);
+                                     SC_MANAGER_CREATE_SERVICE);
         if (!schSCManager) {
             rv = apr_get_os_error();
             ap_log_error(APLOG_MARK, APLOG_ERR | APLOG_STARTUP, rv, NULL,
@@ -870,7 +869,7 @@ apr_status_t mpm_service_install(apr_pool_t *ptemp, int argc,
         if (reconfig) {
             /* ###: utf-ize */
             schService = OpenService(schSCManager, mpm_service_name, 
-                                     SERVICE_ALL_ACCESS);
+                                     SERVICE_CHANGE_CONFIG);
             if (!schService) {
                 ap_log_error(APLOG_MARK, APLOG_ERR|APLOG_ERR, 
                              apr_get_os_error(), NULL,
@@ -1008,9 +1007,8 @@ apr_status_t mpm_service_uninstall(void)
 
         fprintf(stderr,"Removing the %s service\n", mpm_display_name);
 
-        // TODO: Determine the minimum permissions required for security
         schSCManager = OpenSCManager(NULL, NULL, /* local, default database */
-                                     SC_MANAGER_ALL_ACCESS);
+                                     SC_MANAGER_CONNECT);
         if (!schSCManager) {
             rv = apr_get_os_error();
             ap_log_error(APLOG_MARK, APLOG_ERR | APLOG_STARTUP, rv, NULL,
@@ -1019,7 +1017,7 @@ apr_status_t mpm_service_uninstall(void)
         }
         
         /* ###: utf-ize */
-        schService = OpenService(schSCManager, mpm_service_name, SERVICE_ALL_ACCESS);
+        schService = OpenService(schSCManager, mpm_service_name, DELETE);
 
         if (!schService) {
            rv = apr_get_os_error();
@@ -1123,9 +1121,8 @@ apr_status_t mpm_service_start(apr_pool_t *ptemp, int argc,
         SC_HANDLE   schService;
         SC_HANDLE   schSCManager;
 
-        // TODO: Determine the minimum permissions required for security
         schSCManager = OpenSCManager(NULL, NULL, /* local, default database */
-                                     SC_MANAGER_ALL_ACCESS);
+                                     SC_MANAGER_CONNECT);
         if (!schSCManager) {
             rv = apr_get_os_error();
             ap_log_error(APLOG_MARK, APLOG_ERR | APLOG_STARTUP, rv, NULL,
@@ -1265,7 +1262,7 @@ void mpm_signal_service(apr_pool_t *ptemp, int signal)
         SC_HANDLE   schSCManager;
 
         schSCManager = OpenSCManager(NULL, NULL, // default machine & database
-                                     SC_MANAGER_ALL_ACCESS);
+                                     SC_MANAGER_CONNECT);
         
         if (!schSCManager) {
             ap_log_error(APLOG_MARK, APLOG_ERR | APLOG_STARTUP, apr_get_os_error(), NULL,
@@ -1275,7 +1272,8 @@ void mpm_signal_service(apr_pool_t *ptemp, int signal)
 
         /* ###: utf-ize */
         schService = OpenService(schSCManager, mpm_service_name, 
-                                 SERVICE_ALL_ACCESS);
+                                 SERVICE_INTERROGATE | SERVICE_QUERY_STATUS | 
+                                 SERVICE_START | SERVICE_STOP);
 
         if (schService == NULL) {
             /* Could not open the service */
