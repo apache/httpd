@@ -923,7 +923,7 @@ static void do_emit_plain(request_rec *r, apr_file_t *f)
             n = sizeof(char) * AP_IOBUFSIZE;
 	    stat = apr_file_read(f, buf, &n);
 	}
-	while (stat != APR_SUCCESS && APR_STATUS_IS_EINTR(stat));
+	while (APR_STATUS_IS_EINTR(stat));
 	if (n == 0 || stat != APR_SUCCESS) {
             /* ###: better error here? */
 	    break;
