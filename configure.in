@@ -5,6 +5,7 @@ dnl     Use ./buildconf to produce a configure script
 dnl
 
 AC_PREREQ(2.13)
+AC_PREFIX_DEFAULT(/usr/local/apache2)
 AC_INIT(ABOUT_APACHE)
 
 AC_CONFIG_HEADER(include/ap_config_auto.h)
@@ -46,13 +47,6 @@ APR_CONFIG_NICE(config.nice)
 
 nl='
 '
-
-dnl XXX we can't just use AC_PREFIX_DEFAULT because that isn't subbed in
-dnl by configure until it is too late.  Is that how it should be or not?
-dnl Something seems broken here.
-AC_PREFIX_DEFAULT(/usr/local/apache2)
-test "$prefix" = "NONE" && prefix='/usr/local/apache2'
-test "$exec_prefix" = "NONE" && exec_prefix='${prefix}'
 
 dnl ## Run configure for packages Apache uses
 

@@ -282,8 +282,11 @@ dnl
 dnl APACHE_LAYOUT_DEFAULTS
 dnl
 AC_DEFUN(APACHE_LAYOUT_DEFAULTS,[
-  dnl We only need to check the non-autoconf variables.
-  test "x${cgidir}" = "x" && cgidir='${datadir}/error'
+  dnl Apache defaults for autoconf variables.
+  test "x${prefix}" = "xNONE" && prefix='/usr/local/apache2'
+  test "x${exec_prefix}" = "xNONE" && exec_prefix='${prefix}'
+  dnl Now we need to check the non-autoconf variables.
+  test "x${cgidir}" = "x" && cgidir='${datadir}/cgi-bin'
   test "x${logfiledir}" = "x" && logfiledir='${localstatedir}/logs'
   test "x${htdocsdir}" = "x" && htdocsdir='${datadir}/htdocs'
   test "x${manualdir}" = "x" && manualdir='${datadir}/manual'
