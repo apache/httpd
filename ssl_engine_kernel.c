@@ -67,6 +67,9 @@
  *  Close the SSL part of the socket connection
  *  (called immediately _before_ the socket is closed)
  */
+/* XXX: perhaps ssl_abort() should call us or vice-versa
+ * lot of the same happening in both places
+ */
 apr_status_t ssl_hook_CloseConnection(SSLFilterRec *filter)
 {
     SSL *ssl;
@@ -144,6 +147,7 @@ apr_status_t ssl_hook_CloseConnection(SSLFilterRec *filter)
     /* deallocate the SSL connection */
     SSL_free(ssl);
     apr_table_setn(conn->notes, "ssl", NULL);
+    filter->pssl = NULL; /* so filters know we've been shutdown */
 
     return APR_SUCCESS;
 }
