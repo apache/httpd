@@ -3,21 +3,12 @@
 # It contains the configuration directives to instruct the server how to
 # serve pages over an https connection. For detailing information about these 
 # directives see <URL:http://httpd.apache.org/docs-2.1/mod/mod_ssl.html>
-#
-#   For the moment, see <URL:http://www.modssl.org/docs/> for this info. 
-#   The documents are still being prepared from material donated by the
-#   modssl project.
 # 
 # Do NOT simply read the instructions in here without understanding
 # what they do.  They're here only as hints or reminders.  If you are unsure
 # consult the online docs. You have been warned.  
 #
 <IfDefine SSL>
-
-#   Until documentation is completed, please check http://www.modssl.org/
-#   for additional config examples and module docmentation.  Directives
-#   and features of mod_ssl are largely unchanged from the mod_ssl project
-#   for Apache 1.3.
 
 #
 # When we also provide SSL we have to listen to the 
@@ -84,7 +75,7 @@ SSLRandomSeed connect builtin
 
 <VirtualHost _default_:443>
 
-#  General setup for the virtual host
+#   General setup for the virtual host
 DocumentRoot "@exp_htdocsdir@"
 ServerName www.example.com:443
 ServerAdmin you@example.com
@@ -246,4 +237,3 @@ CustomLog @exp_logfiledir@/ssl_request_log \
 </VirtualHost>                                  
 
 </IfDefine>
-
