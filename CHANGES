@@ -2,6 +2,10 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) Bring ErrorHeader concept forward from 1.3, so that response
+     header fields can be set for return even on errors or external
+     redirects.  [Ken Coar]
+
   *) Fix some piped log problems: bogus "piped log program '(null)'
      failed" messages during restart and problem with the logger
      respawning again after Apache is stopped.  PR 21648, PR 24805.
