@@ -2610,7 +2610,7 @@ static const command_rec core_cmds[] = {
   "Maximum length of the queue of pending connections, as used by listen(2)" },
 { "CoreDumpDirectory", set_coredumpdir, NULL, RSRC_CONF, TAKE1,
   "The location of the directory Apache changes to before dumping core" },
-{ "Include", include_config, NULL, RSRC_CONF, TAKE1,
+{ "Include", include_config, NULL, (RSRC_CONF | ACCESS_CONF), TAKE1,
   "Name of the config file to be included" },
 { "LogLevel", set_loglevel, NULL, RSRC_CONF, TAKE1,
   "Level of verbosity in error logging" },

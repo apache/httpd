@@ -1,5 +1,8 @@
 Changes with Apache 1.3.2
 
+  *) Allow "Include" directives anywhere in the server config
+     files (but not .htaccess files).  [Ken Coar] PR#2727
+
   *) The proxy was refusing to serve CONNECT requests except to
      port 443 (https://) and 563 (snews://). The new AllowCONNECT
      directive allows the configuration of the ports to which a
