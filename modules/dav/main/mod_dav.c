@@ -515,14 +515,13 @@ static int dav_handle_err(request_rec *r, dav_error *err,
 }
 
 /* handy function for return values of methods that (may) create things */
-static int dav_created(request_rec *r, request_rec *rnew, 
-                       dav_resource *res, const char *what,
-		       int replaced)
+static int dav_created(request_rec *r, const char *locn, const char *what,
+                       int replaced)
 {
     const char *body;
 
-    if (rnew == NULL) {
-	rnew = r;
+    if (locn == NULL) {
+	locn = r->uri;
     }
 
     /* did the target resource already exist? */
@@ -534,11 +533,11 @@ static int dav_created(request_rec *r, request_rec *rnew,
     /* Per HTTP/1.1, S10.2.2: add a Location header to contain the
      * URI that was created. */
 
-    /* ### rnew->uri does not contain an absoluteURI. S14.30 states that
+    /* ### locn does not contain an absoluteURI. S14.30 states that
      * ### the Location header requires an absoluteURI. where to get it? */
     /* ### disable until we get the right value */
 #if 0
-    apr_table_setn(r->headers_out, "Location", rnew->uri);
+    apr_table_setn(r->headers_out, "Location", locn);
 #endif
 
     /* ### insert an ETag header? see HTTP/1.1 S10.2.2 */
@@ -546,8 +545,7 @@ static int dav_created(request_rec *r, request_rec *rnew,
     /* Apache doesn't allow us to set a variable body for HTTP_CREATED, so
      * we must manufacture the entire response. */
     body = apr_psprintf(r->pool, "%s %s has been created.",
-		       what,
-		       ap_escape_html(rnew->pool, rnew->uri));
+                        what, ap_escape_html(r->pool, locn));
     return dav_error_response(r, HTTP_CREATED, body);
 }
 
@@ -599,7 +597,8 @@ static int dav_get_overwrite(request_rec *r)
 }
 
 /* resolve a request URI to a resource descriptor */
-static int dav_get_resource(request_rec *r, dav_resource **res_p)
+static int dav_get_resource(request_rec *r, const char *target,
+                            dav_resource **res_p)
 {
     void *data;
 
@@ -612,7 +611,7 @@ static int dav_get_resource(request_rec *r, dav_resource **res_p)
         conf = ap_get_module_config(r->per_dir_config, &dav_module);
 
         /* have somebody store it into the request's user data... */
-        rv = ap_run_get_resource(r, conf->dir, dav_get_target_selector(r));
+        rv = ap_run_get_resource(r, conf->dir, target);
         if (rv == DECLINED) {
             /* Apache will supply a default error for this. */
             return HTTP_NOT_FOUND;
@@ -673,6 +672,46 @@ static int dav_parse_range(request_rec *r,
     return 1;
 }
 
+static int available_report(request_rec *r, const dav_resource *resource)
+{
+    const dav_hooks_vsn *vsn_hooks = DAV_GET_HOOKS_VSN(r);
+    dav_error *err;
+    const dav_report_elem *reports;
+
+    if ((err = (*vsn_hooks->avail_reports)(resource, &reports)) != NULL) {
+	err = dav_push_error(r->pool, HTTP_CONFLICT, 0,
+			     apr_psprintf(r->pool,
+                                          "Could not fetch a list of the "
+                                          "available reports."),
+			     err);
+        return dav_handle_err(r, err, NULL);
+    }
+
+    /* set the correct status and Content-Type */
+    r->status = 200;
+    r->content_type = DAV_XML_CONTENT_TYPE;
+
+    /* send all the headers now */
+    ap_send_http_header(r);
+
+    /* send the response... */
+    ap_rputs(DAV_XML_HEADER DEBUG_CR
+             "<D:report-set xmlns:D=\"DAV:\">" DEBUG_CR
+             "<D:available-report/>" DEBUG_CR,
+             r);
+
+    for (; reports->namespace != NULL; ++reports) {
+        /* Note: we presume reports->namespace is propertly XML/URL quoted */
+        ap_rprintf(r, "<%s xmlns=\"%s\"/>" DEBUG_CR,
+                   reports->name, reports->namespace);
+    }
+
+    ap_rputs("</D:report-set>" DEBUG_CR, r);
+
+    /* the response has been sent. */
+    return DONE;
+}
+
 /* handle the GET method */
 static int dav_method_get(request_rec *r)
 {
@@ -683,7 +722,7 @@ static int dav_method_get(request_rec *r)
      * visible to Apache. We will fetch the resource from the repository,
      * then create a subrequest for Apache to handle.
      */
-    result = dav_get_resource(r, &resource);
+    result = dav_get_resource(r, NULL, &resource);
     if (result != OK)
         return result;
     if (!resource->exists) {
@@ -876,7 +915,7 @@ static int dav_method_post(request_rec *r)
     int result;
 
     /* Ask repository module to resolve the resource */
-    result = dav_get_resource(r, &resource);
+    result = dav_get_resource(r, NULL, &resource);
     if (result != OK) {
         return result;
     }
@@ -917,7 +956,7 @@ static int dav_method_put(request_rec *r)
     }
 
     /* Ask repository module to resolve the resource */
-    result = dav_get_resource(r, &resource);
+    result = dav_get_resource(r, NULL, &resource);
     if (result != OK) {
         return result;
     }
@@ -1100,7 +1139,7 @@ static int dav_method_put(request_rec *r)
     /* NOTE: WebDAV spec, S8.7.1 states properties should be unaffected */
 
     /* return an appropriate response (HTTP_CREATED or HTTP_NO_CONTENT) */
-    return dav_created(r, NULL, resource, "Resource", resource_existed);
+    return dav_created(r, NULL, "Resource", resource_existed);
 }
 
 /* ### move this to dav_util? */
@@ -1140,7 +1179,7 @@ static int dav_method_delete(request_rec *r)
     }
 
     /* Ask repository module to resolve the resource */
-    result = dav_get_resource(r, &resource);
+    result = dav_get_resource(r, NULL, &resource);
     if (result != OK)
         return result;
     if (!resource->exists) {
@@ -1268,7 +1307,7 @@ static int dav_method_options(request_rec *r)
     ap_set_content_length(r, 0);
 
     /* resolve the resource */
-    result = dav_get_resource(r, &resource);
+    result = dav_get_resource(r, NULL, &resource);
     if (result != OK)
         return result;
 
@@ -1475,7 +1514,7 @@ static int dav_method_propfind(request_rec *r)
     dav_walker_ctx ctx = { 0 };
 
     /* Ask repository module to resolve the resource */
-    result = dav_get_resource(r, &resource);
+    result = dav_get_resource(r, NULL, &resource);
     if (result != OK)
         return result;
 
@@ -1739,7 +1778,7 @@ static int dav_method_proppatch(request_rec *r)
     dav_prop_ctx *ctx;
 
     /* Ask repository module to resolve the resource */
-    result = dav_get_resource(r, &resource);
+    result = dav_get_resource(r, NULL, &resource);
     if (result != OK)
         return result;
     if (!resource->exists) {
@@ -1940,7 +1979,7 @@ static int dav_method_mkcol(request_rec *r)
 						 &dav_module);
 
     /* Ask repository module to resolve the resource */
-    result = dav_get_resource(r, &resource);
+    result = dav_get_resource(r, NULL, &resource);
     if (result != OK)
         return result;
 
@@ -2036,7 +2075,7 @@ static int dav_method_mkcol(request_rec *r)
     }
 
     /* return an appropriate response (HTTP_CREATED) */
-    return dav_created(r, NULL, resource, "Collection", 0);
+    return dav_created(r, NULL, "Collection", 0);
 }
 
 /* handle the COPY and MOVE methods */
@@ -2064,7 +2103,7 @@ static int dav_method_copymove(request_rec *r, int is_move)
     int resource_state;
 
     /* Ask repository module to resolve the resource */
-    result = dav_get_resource(r, &resource);
+    result = dav_get_resource(r, NULL, &resource);
     if (result != OK)
         return result;
     if (!resource->exists) {
@@ -2118,7 +2157,7 @@ static int dav_method_copymove(request_rec *r, int is_move)
     }
 
     /* Resolve destination resource */
-    result = dav_get_resource(lookup.rnew, &resnew);
+    result = dav_get_resource(lookup.rnew, NULL, &resnew);
     if (result != OK)
         return result;
 
@@ -2414,7 +2453,7 @@ static int dav_method_copymove(request_rec *r, int is_move)
     }
 
     /* return an appropriate response (HTTP_CREATED or HTTP_NO_CONTENT) */
-    return dav_created(r, lookup.rnew, resnew, "Destination", replaced);
+    return dav_created(r, lookup.rnew->uri, "Destination", replaced);
 }
 
 /* dav_method_lock:  Handler to implement the DAV LOCK method
@@ -2428,7 +2467,7 @@ static int dav_method_lock(request_rec *r)
     int result;
     int depth;
     int new_lock_request = 0;
-    ap_xml_doc *doc = NULL;
+    ap_xml_doc *doc;
     dav_lock *lock;
     dav_response *multi_response = NULL;
     dav_lockdb *lockdb;
@@ -2450,7 +2489,7 @@ static int dav_method_lock(request_rec *r)
     }
 
     /* Ask repository module to resolve the resource */
-    result = dav_get_resource(r, &resource);
+    result = dav_get_resource(r, NULL, &resource);
     if (result != OK)
         return result;
 
@@ -2633,7 +2672,7 @@ static int dav_method_unlock(request_rec *r)
     }
 
     /* Ask repository module to resolve the resource */
-    result = dav_get_resource(r, &resource);
+    result = dav_get_resource(r, NULL, &resource);
     if (result != OK)
         return result;
 
@@ -2674,17 +2713,10 @@ static int dav_method_unlock(request_rec *r)
     return HTTP_NO_CONTENT;
 }
 
-/* handle the SEARCH method from DASL */
-static int dav_method_search(request_rec *r)
+static int dav_method_vsn_control(request_rec *r)
 {
-    /* ### we know this method, but we won't allow it yet */
-    /* Apache will supply a default error for this. */
+    /* ### */
     return HTTP_METHOD_NOT_ALLOWED;
-
-    /* Do some error checking, like if the querygrammar is
-     * supported by the content type, and then pass the
-     * request on to the appropriate query module.
-     */
 }
 
 /* handle the CHECKOUT method */
@@ -2694,18 +2726,35 @@ static int dav_method_checkout(request_rec *r)
     const dav_hooks_vsn *vsn_hooks = DAV_GET_HOOKS_VSN(r);
     dav_error *err;
     int result;
+    ap_xml_doc *doc;
+    const char *target;
+    const char *location;
 
     /* If no versioning provider, decline the request */
     if (vsn_hooks == NULL)
         return DECLINED;
 
-    /* ### eventually check body for DAV:checkin-policy */
-    if ((result = ap_discard_request_body(r)) != OK) {
+    if ((result = ap_xml_parse_input(r, &doc)) != OK)
 	return result;
+
+    if (doc != NULL) {
+        if (!dav_validate_root(doc, "checkout")) {
+            /* This supplies additional information for the default msg. */
+            ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0, r,
+                          "The request body, if present, must be a "
+                          "DAV:checkout element.");
+            return HTTP_BAD_REQUEST;
+        }
+
+        target = dav_get_target_selector(r, dav_find_child(doc->root,
+                                                           "version"));
+    }
+    else {
+        target = dav_get_target_selector(r, NULL);
     }
 
     /* Ask repository module to resolve the resource */
-    result = dav_get_resource(r, &resource);
+    result = dav_get_resource(r, target, &resource);
     if (result != OK)
         return result;
     if (!resource->exists) {
@@ -2734,7 +2783,7 @@ static int dav_method_checkout(request_rec *r)
     /* ### do lock checks, once behavior is defined */
 
     /* Do the checkout */
-    if ((err = (*vsn_hooks->checkout)(resource)) != NULL) {
+    if ((err = (*vsn_hooks->checkout)(resource, &location)) != NULL) {
 	err = dav_push_error(r->pool, HTTP_CONFLICT, 0,
 			     apr_psprintf(r->pool,
 					 "Could not CHECKOUT resource %s.",
@@ -2743,11 +2792,10 @@ static int dav_method_checkout(request_rec *r)
         return dav_handle_err(r, err, NULL);
     }
 
-    /* no body */
-    ap_set_content_length(r, 0);
-    ap_send_http_header(r);
-
-    return DONE;
+    /* set the Location and Cache-Control headers, per the spec */
+    apr_table_setn(r->headers_out, "Location", location);
+    apr_table_setn(r->headers_out, "Cache-Control", "no-cache");
+    return dav_created(r, location, "Working resource", 0);
 }
 
 /* handle the UNCHECKOUT method */
@@ -2767,7 +2815,7 @@ static int dav_method_uncheckout(request_rec *r)
     }
 
     /* Ask repository module to resolve the resource */
-    result = dav_get_resource(r, &resource);
+    result = dav_get_resource(r, NULL, &resource);
     if (result != OK)
         return result;
     if (!resource->exists) {
@@ -2829,7 +2877,7 @@ static int dav_method_checkin(request_rec *r)
     }
 
     /* Ask repository module to resolve the resource */
-    result = dav_get_resource(r, &resource);
+    result = dav_get_resource(r, NULL, &resource);
     if (result != OK)
         return result;
     if (!resource->exists) {
@@ -2872,6 +2920,79 @@ static int dav_method_checkin(request_rec *r)
     ap_send_http_header(r);
 
     return DONE;
+}
+
+static int dav_method_set_target(request_rec *r)
+{
+    /* ### */
+    return HTTP_METHOD_NOT_ALLOWED;
+}
+
+static int dav_method_label(request_rec *r)
+{
+    /* ### */
+    return HTTP_METHOD_NOT_ALLOWED;
+}
+
+static int dav_method_report(request_rec *r)
+{
+    dav_resource *resource;
+    const dav_hooks_vsn *vsn_hooks = DAV_GET_HOOKS_VSN(r);
+    int result;
+    ap_xml_doc *doc;
+
+    /* If no versioning provider, decline the request */
+    if (vsn_hooks == NULL)
+        return DECLINED;
+
+    if ((result = ap_xml_parse_input(r, &doc)) != OK)
+	return result;
+    if (doc == NULL) {
+        /* This supplies additional information for the default msg. */
+        ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0, r,
+                      "The request body must specify a report.");
+        return HTTP_BAD_REQUEST;
+    }
+
+    /* Ask repository module to resolve the resource */
+    result = dav_get_resource(r, NULL, &resource);
+    if (result != OK)
+        return result;
+    if (!resource->exists) {
+        /* Apache will supply a default error for this. */
+        return HTTP_NOT_FOUND;
+    }
+
+    if (dav_validate_root(doc, "available-report")) {
+        return available_report(r, resource);
+    }
+
+    /* ### run report hook */
+    return DECLINED;
+}
+
+static int dav_method_make_workspace(request_rec *r)
+{
+    /* ### */
+    return HTTP_METHOD_NOT_ALLOWED;
+}
+
+static int dav_method_make_activity(request_rec *r)
+{
+    /* ### */
+    return HTTP_METHOD_NOT_ALLOWED;
+}
+
+static int dav_method_baseline_control(request_rec *r)
+{
+    /* ### */
+    return HTTP_METHOD_NOT_ALLOWED;
+}
+
+static int dav_method_merge(request_rec *r)
+{
+    /* ### */
+    return HTTP_METHOD_NOT_ALLOWED;
 }
 
 
@@ -2993,8 +3114,8 @@ static int dav_handler(request_rec *r)
 	return DECLINED;
     }
 
-    if (!strcmp(r->method, "SEARCH")) {
-	return dav_method_search(r);
+    if (!strcmp(r->method, "VERSION-CONTROL")) {
+	return dav_method_vsn_control(r);
     }
 
     if (!strcmp(r->method, "CHECKOUT")) {
@@ -3009,15 +3130,33 @@ static int dav_handler(request_rec *r)
 	return dav_method_checkin(r);
     }
 
-#if 0
-    if (!strcmp(r->method, "MKRESOURCE")) {
-	return dav_method_mkresource(r);
+    if (!strcmp(r->method, "SET-TARGET")) {
+	return dav_method_set_target(r);
+    }
+
+    if (!strcmp(r->method, "LABEL")) {
+	return dav_method_label(r);
     }
 
     if (!strcmp(r->method, "REPORT")) {
 	return dav_method_report(r);
     }
-#endif
+
+    if (!strcmp(r->method, "MKWORKSPACE")) {
+	return dav_method_make_workspace(r);
+    }
+
+    if (!strcmp(r->method, "MKACTIVITY")) {
+	return dav_method_make_activity(r);
+    }
+
+    if (!strcmp(r->method, "BASELINE-CONTROL")) {
+	return dav_method_baseline_control(r);
+    }
+
+    if (!strcmp(r->method, "MERGE")) {
+	return dav_method_merge(r);
+    }
 
     /* ### add'l methods for Advanced Collections, ACLs, DASL */
 

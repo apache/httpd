@@ -1455,10 +1455,16 @@ struct dav_hooks_repository
 
 /* dav_get_target_selector:
  *
- * Returns any Target-Selector header in a request
+ * If a DAV:version element is provided, then it is assumed to provide the
+ * target version. If no element is provided (version==NULL), then the
+ * request headers are examined for a Target-Selector header.
+ *
+ * The target version, if any, is then returned.
+ *
  * (used by versioning clients)
  */
-const char *dav_get_target_selector(request_rec *r);
+const char *dav_get_target_selector(request_rec *r,
+                                    const ap_xml_elem *version);
 
 /* Ensure that a resource is writable. If there is no versioning
  * provider, then this is essentially a no-op. Versioning repositories
@@ -1504,6 +1510,18 @@ dav_error *dav_revert_resource_writability(request_rec *r,
 					   int resource_was_writable,
 					   int parent_was_writable);
 
+/*
+** This structure is used to describe available reports
+**
+** "namespace" should be valid XML and URL-quoted. mod_dav will place
+** double-quotes around it and use it in an xmlns declaration.
+*/
+typedef struct {
+    const char *namespace;      /* namespace of the XML report element */
+    const char *name;           /* element name for the XML report */
+} dav_report_elem;
+
+
 /* Versioning provider hooks */
 struct dav_hooks_vsn
 {
@@ -1519,8 +1537,10 @@ struct dav_hooks_vsn
 
     /* Checkout a resource. If successful, the resource
      * object state is updated appropriately.
+     *
+     * The location of the working resource should be returned in *location.
      */
-    dav_error * (*checkout)(dav_resource *resource);
+    dav_error * (*checkout)(dav_resource *resource, const char **location);
 
     /* Uncheckout a resource. If successful, the resource
      * object state is updated appropriately.
@@ -1542,6 +1562,19 @@ struct dav_hooks_vsn
      * Returns != 0 if auto-versioning is enabled.
      */
     int (*auto_version_enabled)(const dav_resource *resource);
+
+    /*
+    ** Return the set of reports available at this resource.
+    **
+    ** An array of report elements should be returned, with an end-marker
+    ** element containing namespace==NULL. The report response will be
+    ** constructed and returned.
+    **
+    ** DAV:available-report should not be returned; the mod_dav core will
+    ** handle that.
+    */
+    dav_error * (*avail_reports)(const dav_resource *resource,
+                                 const dav_report_elem **reports);
 };
 
 
