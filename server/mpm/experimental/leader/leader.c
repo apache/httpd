@@ -106,6 +106,7 @@
 #include "ap_listen.h"
 #include "scoreboard.h" 
 #include "mpm_default.h"
+#include "apr_poll.h"
 
 #include <signal.h>
 #include <limits.h>             /* for INT_MAX */
@@ -888,7 +889,7 @@ static void *worker_thread(apr_thread_t *thd, void * dummy)
                 apr_status_t ret;
                 apr_int16_t event;
 
-                ret = apr_poll(pollset, &n, -1);
+                ret = apr_poll(pollset, num_listensocks, &n, -1);
                 if (ret != APR_SUCCESS) {
                     if (APR_STATUS_IS_EINTR(ret)) {
                         continue;

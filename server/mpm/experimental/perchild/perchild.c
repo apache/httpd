@@ -95,6 +95,7 @@
 #include "mpm.h"
 #include "scoreboard.h"
 #include "util_filter.h"
+#include "apr_poll.h"
 
 /* ### should be APR-ized */
 #include <poll.h>
@@ -748,7 +749,7 @@ static void *worker_thread(apr_thread_t *thd, void *arg)
 
         while (!workers_may_exit) {
             apr_int16_t event;
-            srv = apr_poll(pollset, &n, -1);
+            srv = apr_poll(pollset, num_listensocks, &n, -1);
 
             if (srv != APR_SUCCESS) {
                 if (APR_STATUS_IS_EINTR(srv)) {

@@ -73,6 +73,7 @@
 #include "ap_mpm.h"
 #include "ap_listen.h"
 #include "apr_portable.h"
+#include "apr_poll.h"
 #include "mpm_common.h"
 #include "apr_strings.h"
 #include <os2.h>
@@ -250,7 +251,7 @@ void ap_mpm_child_main(apr_pool_t *pconf)
             rv = APR_FROM_OS_ERROR(rc);
 
             if (rv == APR_SUCCESS) {
-                rv = apr_poll(pollset, &nsds, -1);
+                rv = apr_poll(pollset, num_listeners, &nsds, -1);
                 DosReleaseMutexSem(ap_mpm_accept_mutex);
             }
 
