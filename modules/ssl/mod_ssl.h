@@ -699,7 +699,6 @@ void         ssl_init_ModuleKill(void *);
 /*  Apache API hooks  */
 void         ssl_hook_AddModule(module *);
 void         ssl_hook_RemoveModule(module *);
-char        *ssl_hook_RewriteCommand(cmd_parms *, void *, const char *);
 void         ssl_hook_NewConnection(conn_rec *);
 void         ssl_hook_TimeoutConnection(int);
 void         ssl_hook_CloseConnection(conn_rec *);
@@ -816,12 +815,6 @@ int          ssl_rand_seed(server_rec *, pool *, ssl_rsctx_t, char *);
 /*  Extensions  */
 void         ssl_ext_register(void);
 void         ssl_ext_unregister(void);
-
-/*  Compatibility  */
-#ifdef SSL_COMPAT
-char        *ssl_compat_directive(server_rec *, pool *, const char *);
-void         ssl_compat_variables(request_rec *);
-#endif
 
 /*  Utility Functions  */
 char        *ssl_util_vhostid(pool *, server_rec *);
