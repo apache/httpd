@@ -137,6 +137,14 @@
   specifically call them by other names, use the AccessConfig and
   ResourceConfig directives in httpd.conf.
 
+  Set your system time properly!
+
+  Proper operation of a public web server requires accurate time
+  keeping, since elements of the HTTP protocol are expressed as the time
+  of day.  So, it's time to investigate setting up NTP or some other
+  time synchronization system on your Unix box, or whatever the
+  equivalent on NT would be.
+
   Upgrading an Existing Apache Environment
   ----------------------------------------
 

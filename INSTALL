@@ -356,6 +356,15 @@
      http://www.apache.org/docs/ for a complete reference of available
      configuration directives.
 
+  9. Set your system time properly!
+     ------------------------------
+
+     Proper operation of a public web server requires accurate time
+     keeping, since elements of the HTTP protocol are expressed as the time
+     of day.  So, it's time to investigate setting up NTP or some other
+     time synchronization system on your Unix box, or whatever the
+     equivalent on NT would be.
+
   8. Contacts
      --------
 
