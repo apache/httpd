@@ -110,7 +110,11 @@ stat() properly */
 #define ENUM_BITFIELD(e,n,w)  e n : w
 #endif
 
+#ifdef WIN32
+#include "../os/win32/os.h"
+#else
 #include "os.h"
+#endif
 
 /* Define one of these according to your system. */
 #if defined(MINT)
