@@ -1039,18 +1039,23 @@ static int getline(char *s, int n, request_rec *r, int fold)
     const char *temp;
     int retval;
     int total = 0;
+    int looking_ahead = 0;
     apr_ssize_t length;
     conn_rec *c = r->connection;
+    core_request_config *req_cfg;
     ap_bucket_brigade *b;
     ap_bucket *e;
 
-    b = ap_brigade_create(c->pool);
+    req_cfg = (core_request_config *)
+                ap_get_module_config(r->request_config, &core_module);
+    b = req_cfg->bb;
+    /* make sure it's empty unless we're folding */ 
+    AP_DEBUG_ASSERT(fold || AP_BRIGADE_EMPTY(b));
 
     while (1) {
         if (AP_BRIGADE_EMPTY(b)) {
             if (ap_get_brigade(c->input_filters, b, AP_GET_LINE) != APR_SUCCESS ||
                 AP_BRIGADE_EMPTY(b)) {
-                ap_brigade_destroy(b);
                 return -1;
             }
         }
@@ -1067,6 +1072,12 @@ static int getline(char *s, int n, request_rec *r, int fold)
             break;
         }
 
+        if ((looking_ahead) && (*temp != ' ') && (*temp != '\t')) { 
+            /* just checking, but can't fold because next line isn't
+             * indented
+             */
+            break;
+        }
         last_char = pos + length - 1;
         if (last_char < beyond_buff) {
             memcpy(pos, temp, length);
@@ -1075,21 +1086,16 @@ static int getline(char *s, int n, request_rec *r, int fold)
         }
         else {
             /* input line was larger than the caller's buffer */
-            AP_BUCKET_REMOVE(e);
-            ap_bucket_destroy(e);
-            ap_brigade_destroy(b);
+            ap_brigade_destroy(b); 
+            
+            /* don't need to worry about req_cfg->bb being bogus.
+             * the request is about to die, and ErrorDocument
+             * redirects get a new req_cfg->bb
+             */
+            
             return -1;
         }
         
-/**** XXX
- *    Check for folding
- * Continue appending if line folding is desired and
- * the last line was not empty and we have room in the buffer and
- * the next line begins with a continuation character.
- *       if (!fold || (retval == 0) && (n > 1)
- *	     && (retval = e->read(e, ) 
- *	     && ((next == ' ') || (next == '\t')));
- */
         pos = last_char;        /* Point at the last character           */
 
         if (*pos == '\n') {     /* Did we get a full line of input?      */
@@ -1109,17 +1115,25 @@ static int getline(char *s, int n, request_rec *r, int fold)
                 --pos;          /* trim extra trailing spaces or tabs    */
             }
             *pos = '\0';        /* zap end of string                     */
-            total = pos - s; 
-            break;
+
+            /* look ahead another line if line folding is desired 
+             * and the last line wasn't empty
+             */
+            looking_ahead = (fold && ((pos - s) > total));
+            total = pos - s;    /* update total string length            */
+            if (!looking_ahead) {
+                AP_DEBUG_ASSERT(AP_BRIGADE_EMPTY(b));
+                break;          /* normal loop exit                      */
+            }
         }
         else {
-            /* bump past last character read,   
+            /* no LF yet...keep going
+             * bump past last character read,   
              * and set total in case we bail before finding a LF   
              */
             total = ++pos - s;    
         }
     }
-    ap_brigade_destroy(b);
     return total;
 }
 
