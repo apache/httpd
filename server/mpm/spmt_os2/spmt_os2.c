@@ -680,7 +680,7 @@ static void thread_main(void *thread_num_arg)
 
 	ap_sock_disable_nagle(csd);
 
-	current_conn = ap_new_connection(ptrans, ap_server_conf, csd,
+	current_conn = ap_run_create_connection(ptrans, csd,
                                          THREAD_GLOBAL(thread_num));
 
         if (current_conn) {

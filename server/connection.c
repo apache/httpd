@@ -76,10 +76,14 @@
 APR_HOOK_STRUCT(
 	    APR_HOOK_LINK(pre_connection)
 	    APR_HOOK_LINK(process_connection)
+            APR_HOOK_LINK(create_connection)
 )
 
 AP_IMPLEMENT_HOOK_RUN_ALL(int,pre_connection,(conn_rec *c),(c),OK,DECLINED)
 AP_IMPLEMENT_HOOK_RUN_FIRST(int,process_connection,(conn_rec *c),(c),DECLINED)
+AP_IMPLEMENT_HOOK_RUN_FIRST(conn_rec *,create_connection,
+                     (apr_pool_t *p, apr_socket_t *csd, int my_child_num),
+                     (p, csd, my_child_num), NULL)
 
 /*
  * More machine-dependent networking gooo... on some systems,
@@ -156,13 +160,13 @@ apr_status_t ap_lingering_close(void *dummy)
     apr_status_t rc;
     apr_int32_t timeout;
     apr_int32_t total_linger_time = 0;
-    conn_rec *c = dummy;
+    core_net_rec *net = dummy;
 
-    ap_update_child_status(AP_CHILD_THREAD_FROM_ID(c->id), SERVER_CLOSING, NULL);
+    ap_update_child_status(AP_CHILD_THREAD_FROM_ID(net->c->id), SERVER_CLOSING, NULL);
 
 #ifdef NO_LINGCLOSE
-    ap_flush_conn(c);	/* just close it */
-    apr_socket_close(c->client_socket);
+    ap_flush_conn(net->c);	/* just close it */
+    apr_socket_close(net->client_socket);
     return;
 #endif
 
@@ -172,21 +176,18 @@ apr_status_t ap_lingering_close(void *dummy)
      */
 
     /* Send any leftover data to the client, but never try to again */
-    ap_flush_conn(c);
+    ap_flush_conn(net->c);
 
-    if (c->aborted) {
-        apr_socket_close(c->client_socket);
+    if (net->c->aborted) {
+        apr_socket_close(net->client_socket);
         return APR_SUCCESS;
     }
 
     /* Shut down the socket for write, which will send a FIN
      * to the peer.
      */
-    
-    if (apr_shutdown(c->client_socket, APR_SHUTDOWN_WRITE) != APR_SUCCESS || 
-        c->aborted) {
-        apr_socket_close(c->client_socket);
-        return APR_SUCCESS;
+    if (apr_shutdown(net->client_socket, APR_SHUTDOWN_WRITE) != APR_SUCCESS || 
+        net->c->aborted) {
     }
 
     /* Read all data from the peer until we reach "end-of-file" (FIN
@@ -195,11 +196,11 @@ apr_status_t ap_lingering_close(void *dummy)
      * which seems to work well), close the connection.
      */
     timeout = SECONDS_TO_LINGER * APR_USEC_PER_SEC;
-    apr_setsocketopt(c->client_socket, APR_SO_TIMEOUT, timeout);
-    apr_setsocketopt(c->client_socket, APR_INCOMPLETE_READ, 1);
+    apr_setsocketopt(net->client_socket, APR_SO_TIMEOUT, timeout);
+    apr_setsocketopt(net->client_socket, APR_INCOMPLETE_READ, 1);
     for (;;) {
         nbytes = sizeof(dummybuf);
-        rc = apr_recv(c->client_socket, dummybuf, &nbytes);
+        rc = apr_recv(net->client_socket, dummybuf, &nbytes);
         if (rc != APR_SUCCESS || nbytes == 0) break;
 
         total_linger_time += SECONDS_TO_LINGER;
@@ -208,7 +209,7 @@ apr_status_t ap_lingering_close(void *dummy)
         }
     }
 
-    apr_socket_close(c->client_socket);
+    apr_socket_close(net->client_socket);
     return APR_SUCCESS;
 }
 
@@ -226,8 +227,9 @@ AP_CORE_DECLARE(void) ap_process_connection(conn_rec *c)
    structure, but for now...
 */
 
-AP_CORE_DECLARE(conn_rec *)ap_new_connection(apr_pool_t *p, server_rec *server, 
-                            apr_socket_t *inout, long id)
+AP_CORE_DECLARE(conn_rec *)ap_core_new_connection(apr_pool_t *p, 
+                            server_rec *server, apr_socket_t *inout, 
+                            core_net_rec *net, long id)
 {
     conn_rec *conn = (conn_rec *) apr_pcalloc(p, sizeof(conn_rec));
     apr_status_t rv;
@@ -260,11 +262,11 @@ AP_CORE_DECLARE(conn_rec *)ap_new_connection(apr_pool_t *p, server_rec *server,
     }
     apr_sockaddr_ip_get(&conn->remote_ip, conn->remote_addr);
     conn->base_server = server;
-    conn->client_socket = inout;
+    net->client_socket = inout;
 
     conn->id = id;
 
-    apr_pool_cleanup_register(p, conn, ap_lingering_close, apr_pool_cleanup_null);
+    apr_pool_cleanup_register(p, net, ap_lingering_close, apr_pool_cleanup_null);
 
     return conn;
 }

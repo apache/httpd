@@ -545,7 +545,7 @@ request_rec *ap_read_request(conn_rec *conn)
     request_rec *r;
     apr_pool_t *p;
     const char *expect;
-    int access_status, keptalive;
+    int access_status;
 
     apr_pool_create(&p, conn->pool);
     r = apr_pcalloc(p, sizeof(request_rec));
@@ -553,7 +553,6 @@ request_rec *ap_read_request(conn_rec *conn)
     r->connection      = conn;
     r->server          = conn->base_server;
 
-    keptalive          = conn->keepalive == 1;
     conn->keepalive    = 0;
 
     r->user            = NULL;
@@ -582,11 +581,6 @@ request_rec *ap_read_request(conn_rec *conn)
     r->status          = HTTP_REQUEST_TIME_OUT;  /* Until we get a request */
     r->the_request     = NULL;
 
-    apr_setsocketopt(conn->client_socket, APR_SO_TIMEOUT, 
-                     (int)(keptalive
-                     ? r->server->keep_alive_timeout * APR_USEC_PER_SEC
-                     : r->server->timeout * APR_USEC_PER_SEC));
-                     
     /* Get the request... */
     if (!read_request_line(r)) {
         if (r->status == HTTP_REQUEST_URI_TOO_LARGE) {
@@ -598,10 +592,7 @@ request_rec *ap_read_request(conn_rec *conn)
         }
         return NULL;
     }
-    if (keptalive) {
-        apr_setsocketopt(r->connection->client_socket, APR_SO_TIMEOUT,
-                         (int)(r->server->timeout * APR_USEC_PER_SEC));
-    }
+
     if (!r->assbackwards) {
         get_mime_headers(r);
         if (r->status != HTTP_REQUEST_TIME_OUT) {

@@ -506,7 +506,7 @@ got_listener:
         */
         ap_sock_disable_nagle(csd);
 
-        current_conn = ap_new_connection(ptrans, ap_server_conf, csd, my_worker_num);
+        current_conn = ap_run_create_connection(ptrans, csd, my_worker_num);
         if (current_conn) {
             ap_process_connection(current_conn);
         }

@@ -80,6 +80,7 @@
 #include "apr_pools.h"
 #include "apr_time.h"
 #include "apr_network_io.h"
+#include "apr_buckets.h"
 
 #include "pcreposix.h"
 
@@ -326,7 +327,6 @@ extern "C" {
  * ### 4mb is an invention, no idea if it is reasonable.
  */
 #define AP_MAX_SENDFILE 16777216
-
 
 /**
  * Special Apache error codes. These are basically used
@@ -914,15 +914,11 @@ struct conn_rec {
 
     /* Information about the connection itself */
 
-    /** Connection to the client */
-    apr_socket_t *client_socket;
-
-    /* Who is the client? */
-
     /** local address */
     apr_sockaddr_t *local_addr;
     /** remote address */
     apr_sockaddr_t *remote_addr;
+
     /** Client's IP address */
     char *remote_ip;
     /** Client's DNS name, if known.  NULL if DNS hasn't been checked,
@@ -1057,6 +1053,30 @@ struct server_rec {
     /** limit on number of request header fields  */
     int limit_req_fields; 
 };
+
+typedef struct core_output_filter_ctx {
+    apr_bucket_brigade *b;
+    apr_pool_t *subpool; /* subpool of c->pool used for data saved after a
+                          * request is finished
+                          */
+    int subpool_has_stuff; /* anything in the subpool? */
+} core_output_filter_ctx_t;
+ 
+typedef struct core_filter_ctx {
+    apr_bucket_brigade *b;
+    int first_line;
+} core_ctx_t;
+ 
+typedef struct core_net_rec {
+    /** Connection to the client */
+    apr_socket_t *client_socket;
+
+    /** connection record */
+    conn_rec *c;
+ 
+    core_output_filter_ctx_t *out_ctx;
+    core_ctx_t *in_ctx;
+} core_net_rec;
 
 /**
  * Examine a field value (such as a media-/content-type) string and return

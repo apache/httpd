@@ -896,11 +896,10 @@ static void check_hostalias(request_rec *r)
     server_rec *s;
     server_rec *last_s;
     name_chain *src;
-    apr_sockaddr_t *localsa;
 
     last_s = NULL;
-    apr_socket_addr_get(&localsa, APR_LOCAL, r->connection->client_socket);
-    apr_sockaddr_port_get(&port, localsa);
+
+    apr_sockaddr_port_get(&port, r->connection->local_addr);
 
     /* Recall that the name_chain is a list of server_addr_recs, some of
      * whose ports may not match.  Also each server may appear more than
@@ -955,11 +954,9 @@ static void check_serverpath(request_rec *r)
     server_rec *last_s;
     name_chain *src;
     apr_port_t port;
-    apr_sockaddr_t *localsa;
 
-    apr_socket_addr_get(&localsa, APR_LOCAL, r->connection->client_socket);
-    apr_sockaddr_port_get(&port, localsa);
-   
+    apr_sockaddr_port_get(&port, r->connection->local_addr);
+
     /*
      * This is in conjunction with the ServerPath code in http_core, so we
      * get the right host attached to a non- Host-sending request.
@@ -1022,6 +1019,7 @@ void ap_update_vhost_given_ip(conn_rec *conn)
 
     /* scan the hash apr_table_t for an exact match first */
     trav = find_ipaddr(conn->local_addr);
+
     if (trav) {
         /* save the name_chain for later in case this is a name-vhost */
         conn->vhost_lookup_data = trav->names;
@@ -1033,6 +1031,7 @@ void ap_update_vhost_given_ip(conn_rec *conn)
      * matching this port
      */
     apr_sockaddr_port_get(&port, conn->local_addr);
+
     trav = find_default_server(port);
     if (trav) {
         conn->vhost_lookup_data = trav->names;
