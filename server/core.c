@@ -131,7 +131,7 @@ static void *create_core_dir_config(apr_pool_t *a, char *dir)
     conf->override = dir ? OR_UNSET : OR_UNSET|OR_ALL;
 
     conf->content_md5 = 2;
-    conf->accept_path_info = 2;
+    conf->accept_path_info = AP_REQ_DEFAULT_PATH_INFO;
 
     conf->use_canonical_name = USE_CANONICAL_NAME_UNSET;
 
@@ -255,7 +255,7 @@ static void *merge_core_dir_configs(apr_pool_t *a, void *basev, void *newv)
     if ((new->content_md5 & 2) == 0) {
         conf->content_md5 = new->content_md5;
     }
-    if ((new->accept_path_info & 2) == 0) {
+    if (new->accept_path_info != 3) {
         conf->accept_path_info = new->accept_path_info;
     }
     if (new->use_canonical_name != USE_CANONICAL_NAME_UNSET) {
@@ -1774,11 +1774,23 @@ static const char *set_content_md5(cmd_parms *cmd, void *d_, int arg)
     return NULL;
 }
 
-static const char *set_accept_path_info(cmd_parms *cmd, void *d_, int arg)
+static const char *set_accept_path_info(cmd_parms *cmd, void *d_, const char *arg)
 {
     core_dir_config *d=d_;
-    
-    d->accept_path_info = arg != 0;
+
+    if (strcasecmp(arg, "on") == 0) {
+        d->accept_path_info = AP_REQ_ACCEPT_PATH_INFO;
+    }
+    else if (strcasecmp(arg, "off") == 0) {
+        d->accept_path_info = AP_REQ_REJECT_PATH_INFO;
+    }
+    else if (strcasecmp(arg, "default") == 0) {
+        d->accept_path_info = AP_REQ_DEFAULT_PATH_INFO;
+    }
+    else {
+        return "AcceptPathInfo must be set to on, off or default";
+    }
+
     return NULL;
 }
 
@@ -2437,8 +2449,8 @@ AP_INIT_TAKE1("GprofDir", set_gprof_dir, NULL, RSRC_CONF,
 #endif
 AP_INIT_TAKE1("AddDefaultCharset", set_add_default_charset, NULL, OR_FILEINFO, 
   "The name of the default charset to add to any Content-Type without one or 'Off' to disable"),
-AP_INIT_FLAG("AcceptPathInfo", set_accept_path_info, NULL, OR_FILEINFO,
-  "whether or not files with PATH_INFO will be served by the core handler"),
+AP_INIT_TAKE1("AcceptPathInfo", set_accept_path_info, NULL, OR_FILEINFO,
+  "Set to on or off for PATH_INFO to be accepted by handlers, or default for the per-handler preference"),
 
 /* Old resource config file commands */
   
@@ -2692,8 +2704,10 @@ static int core_override_type(request_rec *r)
      * if the value is no longer undefined (2), so any module changing
      * the value prior to the fixup phase OVERRIDES the user's choice.
      */
-    if (r->used_path_info == 2)
+    if ((r->used_path_info == AP_REQ_DEFAULT_PATH_INFO)
+            && (conf->accept_path_info != 3)) {
         r->used_path_info = conf->accept_path_info;
+    }
     return OK;
 }
 

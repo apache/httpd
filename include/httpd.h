@@ -593,7 +593,7 @@ struct ap_method_list_t {
 #endif /* APR_CHARSET_EBCDIC */                                   
 
 /**
- * @defgroup values_requet_rec_body Possible values for request_rec.read_body 
+ * @defgroup values_request_rec_body Possible values for request_rec.read_body 
  * @{
  * Possible values for request_rec.read_body (set by handling module):
  */
@@ -604,6 +604,20 @@ struct ap_method_list_t {
 #define REQUEST_CHUNKED_ERROR    1
 /** If chunked, remove the chunks for me. */
 #define REQUEST_CHUNKED_DECHUNK  2
+/** @} */
+
+/**
+ * @defgroup values_request_rec_used_path_info Possible values for request_rec.used_path_info 
+ * @{
+ * Possible values for request_rec.used_path_info:
+ */
+
+/** Accept request given path_info */
+#define AP_REQ_ACCEPT_PATH_INFO     0
+/** Send 404 error if path_info was given */
+#define AP_REQ_REJECT_PATH_INFO    1
+/** Module's choice for handling path_info */
+#define AP_REQ_DEFAULT_PATH_INFO   2
 /** @} */
 
 /*
@@ -854,9 +868,13 @@ struct request_rec {
     /** components of uri, dismantled */
     apr_uri_t parsed_uri;
 
-    /** Flag for the core handler to permit path_info on the current
-        filename, to be consumed by some filter.  Unless this is
-        toggled, path_info requests are rejected by the core */
+    /** Flag for the handler to accept or reject path_info on 
+     *  the current request.  All modules should respect the
+     *  AP_REQ_ACCEPT_PATH_INFO and AP_REQ_REJECT_PATH_INFO 
+     *  values, while AP_REQ_DEFAULT_PATH_INFO indicates they
+     *  may follow existing conventions.  This is set to the
+     *  user's preference upon HOOK_VERY_FIRST of the fixups.
+     */
     int used_path_info;
 
     /* Various other config info which may change with .htaccess files
