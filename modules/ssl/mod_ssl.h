@@ -483,24 +483,25 @@ typedef struct {
  */
 typedef struct {
     SSLModConfigRec *mc;
+    BOOL         bEnabled;
     const char  *szVHostID;
     int          nVHostID_length;
-    BOOL         bEnabled;
+    const char  *szLogFile;
+    apr_file_t  *fileLogFile;
+    int          nLogLevel;
+    int          nSessionCacheTimeout;
+
     const char  *szPublicCertFiles[SSL_AIDX_MAX];
     const char  *szPrivateKeyFiles[SSL_AIDX_MAX];
     const char  *szCertificateChain;
     const char  *szCACertificatePath;
     const char  *szCACertificateFile;
-    const char  *szLogFile;
     const char  *szCipherSuite;
-    apr_file_t  *fileLogFile;
-    int          nLogLevel;
     int          nVerifyDepth;
     ssl_verify_t nVerifyClient;
     X509        *pPublicCert[SSL_AIDX_MAX];
     EVP_PKEY    *pPrivateKey[SSL_AIDX_MAX];
     SSL_CTX     *pSSLCtx;
-    int          nSessionCacheTimeout;
     int          nPassPhraseDialogType;
     const char  *szPassPhraseDialogPath;
     ssl_proto_t  nProtocol;
