@@ -429,7 +429,7 @@ static char *ssl_var_lookup_ssl_cert_dn(apr_pool_t *p, X509_NAME *xsname, char *
                                             X509_NAME_ENTRY_get_data_ptr(xsne),
                                             X509_NAME_ENTRY_get_data_len(xsne));
 #if APR_CHARSET_EBCDIC
-                    ap_xlate_proto_from_ascii(result, data_len);
+                    ap_xlate_proto_from_ascii(result, X509_NAME_ENTRY_get_data_len(xsne));
 #endif /* APR_CHARSET_EBCDIC */
                     break;
                 }
