@@ -68,6 +68,7 @@
 #include "apr_strings.h"
 #include "apr_lib.h"
 #include "apr_shm.h"
+#include "apr_thread_mutex.h"
 #include "ap_mpm.h"
 #include "ap_config.h"
 #include "ap_listen.h"
@@ -126,7 +127,7 @@ static char const* signal_arg = NULL;
 
 OSVERSIONINFO osver; /* VER_PLATFORM_WIN32_NT */
 
-apr_lock_t *start_mutex;
+apr_proc_mutex_t *start_mutex;
 static DWORD my_pid;
 static DWORD parent_pid;
 
@@ -138,7 +139,7 @@ ap_generation_t volatile ap_my_generation=0;
 /* Queue for managing the passing of COMP_CONTEXTs between
  * the accept and worker threads.
  */
-static apr_lock_t  *qlock;
+static apr_thread_mutex_t  *qlock;
 static PCOMP_CONTEXT qhead = NULL;
 static PCOMP_CONTEXT qtail = NULL;
 static int num_completion_contexts = 0;
@@ -216,13 +217,13 @@ AP_DECLARE(void) mpm_recycle_completion_context(PCOMP_CONTEXT pCompContext)
         apr_pool_destroy(pCompContext->ptrans);
         pCompContext->ptrans = NULL;
         pCompContext->next = NULL;
-        apr_lock_acquire(qlock);
+        apr_thread_mutex_lock(qlock);
         if (qtail)
             qtail->next = pCompContext;
         else
             qhead = pCompContext;
         qtail = pCompContext;
-        apr_lock_release(qlock);
+        apr_thread_mutex_unlock(qlock);
     }
 }
 
@@ -231,14 +232,14 @@ AP_DECLARE(PCOMP_CONTEXT) mpm_get_completion_context(void)
     PCOMP_CONTEXT pCompContext = NULL;
 
     /* Grab a context off the queue */
-    apr_lock_acquire(qlock);
+    apr_thread_mutex_lock(qlock);
     if (qhead) {
         pCompContext = qhead;
         qhead = qhead->next;
         if (!qhead)
             qtail = NULL;
     }
-    apr_lock_release(qlock);
+    apr_thread_mutex_unlock(qlock);
 
     /* If we failed to grab a context off the queue, alloc one out of 
      * the child pool. There may be up to ap_threads_per_child contexts
@@ -669,7 +670,7 @@ typedef struct globals_s {
     HANDLE jobsemaphore;
     joblist *jobhead;
     joblist *jobtail;
-    apr_lock_t *jobmutex;
+    apr_thread_mutex_t *jobmutex;
     int jobcount;
 } globals;
 
@@ -689,7 +690,7 @@ static void add_job(int sock)
     new_job->next = NULL;
     new_job->sock = sock;
 
-    apr_lock_acquire(allowed_globals.jobmutex);
+    apr_thread_mutex_lock(allowed_globals.jobmutex);
 
     if (allowed_globals.jobtail != NULL)
 	allowed_globals.jobtail->next = new_job;
@@ -699,7 +700,7 @@ static void add_job(int sock)
     allowed_globals.jobcount++;
     ReleaseSemaphore(allowed_globals.jobsemaphore, 1, NULL);
 
-    apr_lock_release(allowed_globals.jobmutex);
+    apr_thread_mutex_unlock(allowed_globals.jobmutex);
 }
 
 static int remove_job(void)
@@ -708,10 +709,10 @@ static int remove_job(void)
     int sock;
 
     WaitForSingleObject(allowed_globals.jobsemaphore, INFINITE);
-    apr_lock_acquire(allowed_globals.jobmutex);
+    apr_thread_mutex_lock(allowed_globals.jobmutex);
 
     if (shutdown_in_progress && !allowed_globals.jobhead) {
-        apr_lock_release(allowed_globals.jobmutex);
+        apr_thread_mutex_unlock(allowed_globals.jobmutex);
 	return (-1);
     }
     job = allowed_globals.jobhead;
@@ -719,7 +720,7 @@ static int remove_job(void)
     allowed_globals.jobhead = job->next;
     if (allowed_globals.jobhead == NULL)
 	allowed_globals.jobtail = NULL;
-    apr_lock_release(allowed_globals.jobmutex);
+    apr_thread_mutex_unlock(allowed_globals.jobmutex);
     sock = job->sock;
     free(job);
 
@@ -1138,15 +1139,15 @@ static void child_main()
     child_events[1] = max_requests_per_child_event;
 
     allowed_globals.jobsemaphore = CreateSemaphore(NULL, 0, 1000000, NULL);
-    apr_lock_create(&allowed_globals.jobmutex, APR_MUTEX, APR_INTRAPROCESS, 
-                    APR_LOCK_DEFAULT, NULL, pchild);
+    apr_thread_mutex_create(&allowed_globals.jobmutex, 
+                            APR_THREAD_MUTEX_DEFAULT, pchild);
 
     /*
      * Wait until we have permission to start accepting connections.
      * start_mutex is used to ensure that only one child ever
      * goes into the listen/accept loop at once.
      */
-    status = apr_lock_acquire(start_mutex);
+    status = apr_proc_mutex_lock(start_mutex);
     if (status != APR_SUCCESS) {
         ap_log_error(APLOG_MARK,APLOG_ERR, status, ap_server_conf,
                      "Child %d: Failed to acquire the start_mutex. Process will exit.", my_pid);
@@ -1165,8 +1166,7 @@ static void child_main()
                                                     NULL,
                                                     0,
                                                     0); /* CONCURRENT ACTIVE THREADS */
-        apr_lock_create(&qlock, APR_MUTEX, APR_INTRAPROCESS, APR_LOCK_DEFAULT, 
-                        NULL, pchild);
+        apr_thread_mutex_create(&qlock, APR_THREAD_MUTEX_DEFAULT, pchild);
     }
 
     /* 
@@ -1267,7 +1267,7 @@ static void child_main()
      */
     ap_log_error(APLOG_MARK,APLOG_INFO, APR_SUCCESS, ap_server_conf, 
                  "Child %d: Releasing the start mutex", my_pid);
-    apr_lock_release(start_mutex);
+    apr_proc_mutex_unlock(start_mutex);
 
     /* Tell the worker threads they may exit when done handling
      * a connection.
@@ -1291,13 +1291,13 @@ static void child_main()
             Sleep(1000);
         }
         /* Empty the accept queue of completion contexts */
-        apr_lock_acquire(qlock);
+        apr_thread_mutex_lock(qlock);
         while (qhead) {
             CloseHandle(qhead->Overlapped.hEvent);
             closesocket(qhead->accept_socket);
             qhead = qhead->next;
         }
-        apr_lock_release(qlock);
+        apr_thread_mutex_unlock(qlock);
     }
 
     /* Give busy worker threads a chance to service their connections */
@@ -1324,9 +1324,9 @@ static void child_main()
                  "Child %d: All worker threads have ended.", my_pid);
 
     CloseHandle(allowed_globals.jobsemaphore);
-    apr_lock_destroy(allowed_globals.jobmutex);
+    apr_thread_mutex_destroy(allowed_globals.jobmutex);
     if (osver.dwPlatformId != VER_PLATFORM_WIN32_WINDOWS)
-    	apr_lock_destroy(qlock);
+    	apr_thread_mutex_destroy(qlock);
 
     apr_pool_destroy(pchild);
     CloseHandle(exit_event);
@@ -2274,9 +2274,10 @@ static int winnt_post_config(apr_pool_t *pconf, apr_pool_t *plog, apr_pool_t *pt
              * Ths start mutex is used during a restart to prevent more than one 
              * child process from entering the accept loop at once.
              */
-            apr_lock_create(&start_mutex,APR_MUTEX, APR_CROSS_PROCESS, 
-                            APR_LOCK_DEFAULT, signal_name_prefix, 
-                            ap_server_conf->process->pool);
+            apr_proc_mutex_create(&start_mutex, 
+                                  signal_name_prefix,
+                                  APR_LOCK_DEFAULT,
+                                  ap_server_conf->process->pool);
         }
     }
     else /* parent_pid != my_pid */
@@ -2322,12 +2323,12 @@ static void winnt_child_init(apr_pool_t *pchild, struct server_rec *ap_server_co
 
         ap_my_generation = atoi(getenv("AP_MY_GENERATION"));
 
-        apr_lock_child_init(&start_mutex, signal_name_prefix, pconf);
+        apr_proc_mutex_child_init(&start_mutex, signal_name_prefix, pconf);
     }
     else {
         /* Single process mode - this lock doesn't even need to exist */
-        apr_lock_create(&start_mutex, APR_MUTEX, APR_CROSS_PROCESS,
-                        APR_LOCK_DEFAULT, signal_name_prefix, pconf);
+        apr_proc_mutex_create(&start_mutex, signal_name_prefix, 
+                             APR_LOCK_DEFAULT, pconf);
         
         /* Borrow the shutdown_even as our _child_ loop exit event */
         exit_event = shutdown_event;
@@ -2375,7 +2376,7 @@ AP_DECLARE(int) ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s )
                              ap_server_conf, "removed PID file %s (pid=%ld)",
                              pidfile, GetCurrentProcessId());
             }
-            apr_lock_destroy(start_mutex);
+            apr_proc_mutex_destroy(start_mutex);
 
             CloseHandle(restart_event);
             CloseHandle(shutdown_event);
