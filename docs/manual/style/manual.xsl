@@ -20,11 +20,12 @@
 
     <html>
 
-<!-- XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-        This file is generated from xml source: DO NOT EDIT
-     XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX -->
-
 <head>
+<xsl:comment>
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+     This file is generated from xml source: DO NOT EDIT
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+</xsl:comment>
   <xsl:apply-templates select="meta"/>
   <title><xsl:value-of select="name"/> - Apache HTTP Server</title>
   <link rel="stylesheet" type="text/css" href="../style/manual.css" />
