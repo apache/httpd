@@ -968,10 +968,11 @@ typedef int rlim_t;
 #define NO_SETSID
 #define NO_SLACK
 #define NO_TIMES
+#ifndef TPF_HAVE_SIGACTION
 #define NO_USE_SIGACTION
+#endif
 #define USE_LONGJMP
 #define USE_SHMGET_SCOREBOARD
-/*#define USE_TPF_SCOREBOARD*/
 #define USE_TPF_ACCEPT
 #define HAVE_TPF_CORE_SERIALIZED_ACCEPT
 #define USE_TPF_SELECT

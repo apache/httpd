@@ -382,6 +382,7 @@ static int my_child_num;
 #endif
 
 #ifdef TPF
+pid_t tpf_parent_pid;
 int tpf_child = 0;
 char tpf_server_name[INETD_SERVNAME_LENGTH+1];
 char tpf_mutex_key[TPF_MUTEX_KEY_SIZE];
@@ -2375,37 +2376,6 @@ static void reopen_scoreboard(pool *p)
 {
 }
 
-#elif defined(USE_TPF_SCOREBOARD)
-
-static void cleanup_scoreboard_heap()
-{
-    int rv;
-    rv = rsysc(ap_scoreboard_image, SCOREBOARD_FRAMES, SCOREBOARD_NAME);
-    if(rv == RSYSC_ERROR) {
-        ap_log_error(APLOG_MARK, APLOG_ERR, server_conf,
-            "rsysc() could not release scoreboard system heap");
-    }
-}
-
-static void setup_shared_mem(pool *p)
-{
-    cinfc(CINFC_WRITE, CINFC_CMMCTK2);
-    ap_scoreboard_image = (scoreboard *) gsysc(SCOREBOARD_FRAMES, SCOREBOARD_NAME);
-
-    if (!ap_scoreboard_image) {
-        fprintf(stderr, "httpd: Could not create scoreboard system heap storage.\n");
-        exit(APEXIT_INIT);
-    }
-
-    ap_register_cleanup(p, NULL, cleanup_scoreboard_heap, ap_null_cleanup);
-    ap_scoreboard_image->global.running_generation = 0;
-}
-
-static void reopen_scoreboard(pool *p)
-{
-    cinfc(CINFC_WRITE, CINFC_CMMCTK2);
-}
-
 #else
 #define SCOREBOARD_FILE
 static scoreboard _scoreboard_image;
@@ -3260,6 +3230,9 @@ static void sig_term(int sig)
 
 static void restart(int sig)
 {
+#ifdef TPF
+    signal(sig, restart);
+#endif
 #if !defined (WIN32) && !defined(NETWARE)
     ap_start_restart(sig == SIGUSR1);
 #else
@@ -4473,13 +4446,16 @@ static void child_main(int child_num_arg)
 
 #ifdef TPF
 		case EINACT:
-		    ap_log_error(APLOG_MARK, APLOG_EMERG, server_conf,
-			"offload device inactive");
-		    clean_child_exit(APEXIT_CHILDFATAL);
+                    ap_log_error(APLOG_MARK, APLOG_ALERT|APLOG_NOERRNO,
+                                 server_conf, "offload device inactive");
+                    clean_child_exit(APEXIT_CHILDFATAL); 
 		    break;
 		default:
-		    ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, server_conf,
-			"select/accept error (%u)", errno);
+                    if (getppid() != 1) {
+                        ap_log_error(APLOG_MARK, APLOG_ALERT|APLOG_NOERRNO,
+                                     server_conf, "select/accept error (%u)",
+                                     errno);
+                    }
 		    clean_child_exit(APEXIT_CHILDFATAL);
 #else
 		default:
@@ -4919,6 +4895,9 @@ static void perform_idle_server_maintenance(void)
 	 */
 	kill(ap_scoreboard_image->parent[to_kill].pid, SIG_IDLE_KILL);
 	idle_spawn_rate = 1;
+#ifdef TPF
+        ap_update_child_status(to_kill, SERVER_DEAD, (request_rec *)NULL);
+#endif
     }
     else if (idle_count < ap_daemons_min_free) {
 	/* terminate the free list */
@@ -5146,6 +5125,11 @@ static void standalone_main(int argc, char **argv)
 	     * to start up and get into IDLE state then we may spawn an
 	     * extra child
 	     */
+#ifdef TPF
+            if (shutdown_pending += os_check_server(tpf_server_name)) {
+                break;
+            }
+#endif
 	    if (pid >= 0) {
 		process_child_status(pid, status);
 		/* non-fatal death... note that it's gone in the scoreboard. */
@@ -5199,17 +5183,6 @@ static void standalone_main(int argc, char **argv)
 	    }
 
 	    perform_idle_server_maintenance();
-#ifdef TPF
-            ap_check_signals();
-            if (!shutdown_pending) {
-                if (os_check_server(tpf_server_name)) {
-                    shutdown_pending++;
-                } else {
-                    sleep(1);
-                    ap_check_signals();
-                }
-            }
-#endif /*TPF */
 	}
 
 	if (shutdown_pending) {
@@ -5470,6 +5443,7 @@ int REALMAIN(int argc, char *argv[])
                INETD_SERVNAME_LENGTH);
         tpf_server_name[INETD_SERVNAME_LENGTH + 1] = '\0';
         sprintf(tpf_mutex_key, "%.*x", TPF_MUTEX_KEY_SIZE - 1, getpid());
+        tpf_parent_pid = getppid();
         ap_open_logs(server_conf, plog);
         ap_tpf_zinet_checks(ap_standalone, tpf_server_name, server_conf);
         ap_tpf_save_argv(argc, argv);    /* save argv parms for children */
@@ -5490,9 +5464,8 @@ int REALMAIN(int argc, char *argv[])
             copy_listeners(pconf);
             reset_tpf_listeners(&input_parms.child);
 #ifdef SCOREBOARD_FILE
-            scoreboard_fd = input_parms.child.scoreboard_fd;
             ap_scoreboard_image = &_scoreboard_image;
-#else /* must be USE_TPF_SCOREBOARD or USE_SHMGET_SCOREBOARD */
+#else /* must be USE_SHMGET_SCOREBOARD */
             ap_scoreboard_image =
                 (scoreboard *)input_parms.child.scoreboard_heap;
 #endif

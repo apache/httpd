@@ -72,6 +72,14 @@
 #include <sysapi.h>  
 #include "ap_config.h"
 
+#define WUNTRACED 0 /* TPF's waitpid() doesn't support WUNTRACED */
+
+/* TPF_ACCEPT_SECS_TO_BLOCK is the number of seconds to block while
+   waiting to accept a new request in the ap_accept/tpf_accept function */
+#ifndef TPF_ACCEPT_SECS_TO_BLOCK
+#define TPF_ACCEPT_SECS_TO_BLOCK 1
+#endif
+
 #ifdef HAVE_ISNAN
 #undef HAVE_ISNAN
 #endif
@@ -151,7 +159,6 @@ typedef struct tpf_fd_list {
 #include <i$netd.h>
 typedef struct apache_input {
     void                *scoreboard_heap;   /* scoreboard system heap address */
-    int                 scoreboard_fd;      /* scoreboard file descriptor */
     int                 slot;               /* child number */
     int                 generation;         /* server generation number */
     int                 listeners[10];
@@ -189,7 +196,6 @@ void show_os_specific_compile_settings(void);
 char *getpass(const char *prompt);
 int killpg(pid_t pgrp, int sig);
 extern char *ap_server_argv0;
-extern int scoreboard_fd;
 #include <signal.h>
 #ifndef SIGPIPE
 #define SIGPIPE 14

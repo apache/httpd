@@ -534,6 +534,16 @@ static int status_handler(request_rec *r)
 		if (!short_report) {
 		    if (no_table_report) {
 			if (score_record.status == SERVER_DEAD)
+#ifdef TPF
+                            if (kill(ps_record.pid, 0) == 0) {
+                                /* on TPF show PIDs of the living dead */
+                                ap_rprintf(r,
+                                "<b>Server %d-%d</b> (%d): %d|%lu|%lu [",
+                                i, (int) ps_record.generation,
+                                (int)ps_record.pid, (int) conn_lres,
+                                my_lres, lres);
+                            } else
+#endif /* TPF */
 			    ap_rprintf(r,
 				"<b>Server %d-%d</b> (-): %d|%lu|%lu [",
 				i, (int) ps_record.generation, (int) conn_lres,
@@ -608,6 +618,16 @@ static int status_handler(request_rec *r)
 		    }
 		    else {		/* !no_table_report */
 			if (score_record.status == SERVER_DEAD)
+#ifdef TPF
+                            if (kill(ps_record.pid, 0) == 0) {
+                                /* on TPF show PIDs of the living dead */
+                                ap_rprintf(r,
+                                    "<tr><td><b>%d-%d</b><td>%d<td>%d/%lu/%lu",
+                                    i, (int) ps_record.generation,
+                                    (int) ps_record.pid,
+                                    (int) conn_lres, my_lres, lres);
+                            } else
+#endif /* TPF */
 			    ap_rprintf(r,
 				"<tr><td><b>%d-%d</b><td>-<td>%d/%lu/%lu",
 				i, (int) ps_record.generation,

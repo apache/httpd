@@ -78,12 +78,15 @@ unsigned short zinet_model;
 char *argv_ptr = NULL;
 
 static FILE *sock_fp;
+static int   sock_sd;
 
-int tpf_select(int maxfds, fd_set *reads, fd_set *writes, fd_set *excepts, struct timeval *tv)
+int tpf_select(int maxfds, fd_set *reads, fd_set *writes, fd_set *excepts,
+               struct timeval *tv)
 {
-/* We're going to force our way through select.  We're only interested reads and TPF allows
-   2billion+ socket descriptors for we don't want an fd_set that big.  Just assume that maxfds-1
-   contains the socket descriptor we're interested in.  If it's 0, leave it alone. */
+/* We're going to force our way through select.  We're only interested reads
+   and TPF allows 2billion+ socket descriptors for we don't want an fd_set
+   that big.  Just assume that maxfds-1 contains the socket descriptor we're
+   interested in.  If it's 0, leave it alone. */
 
     int sockets[1];
     int no_reads = 0;
@@ -104,25 +107,31 @@ int tpf_select(int maxfds, fd_set *reads, fd_set *writes, fd_set *excepts, struc
     ap_check_signals();
     if ((no_reads + no_writes + no_excepts == 0) &&
         (tv) && (tv->tv_sec + tv->tv_usec != 0)) {
-#ifdef TPF_HAVE_SAWNC
         /* TPF's select immediately returns if the sum of
            no_reads, no_writes, and no_excepts is zero.
-           This means that the select calls in http_main.c
-           for shutdown don't actually wait while killing children.
            The following code makes TPF's select work a little closer
            to everyone else's select:
         */
+#ifdef TPF_HAVE_SAWNC
         struct ev0bk evnblock;
-
+#endif
         timeout = tv->tv_sec;
         if (tv->tv_usec) {
             timeout++; /* round up to seconds (like TPF's select does) */
         }
-        evnblock.evnpstinf.evnbkc1 = 1; /* nbr of posts needed */
-        evntc(&evnblock, EVENT_CNT, 'N', timeout, EVNTC_1052);
-        tpf_sawnc(&evnblock, EVENT_CNT);
+        if (timeout > 0) { /* paranoid check for valid timeout */
+#ifdef TPF_HAVE_SAWNC
+            evnblock.evnpstinf.evnbkc1 = 1; /* nbr of posts needed */
+            evntc(&evnblock, EVENT_CNT, 'N', timeout, EVNTC_1052);
+            tpf_sawnc(&evnblock, EVENT_CNT);
+#else
+            sleep(timeout);
 #endif
+        }
     } else {
+        if (timeout < 0) { /* paranoid check for valid timeout */
+            timeout = 0;
+        }
         rv = select(sockets, no_reads, no_writes, no_excepts, timeout);
     }
     ap_check_signals();
@@ -138,13 +147,13 @@ int tpf_accept(int sockfd, struct sockaddr *peer, int *paddrlen)
 
     ap_check_signals();
     socks[0] = sockfd;
-    rv = select(socks, 1, 0, 0, 1000);
+    rv = select(socks, 1, 0, 0, TPF_ACCEPT_SECS_TO_BLOCK * 1000);
     errno = sock_errno();
     if(rv>0) {
-        ap_check_signals();
         rv = accept(sockfd, peer, paddrlen);
         errno = sock_errno();
     }    
+    ap_check_signals();
     return rv;
 }
    
@@ -372,10 +381,8 @@ pid_t os_fork(server_rec *s, int slot)
         ap_log_error(APLOG_MARK, APLOG_CRIT, s,
         "unable to replace stdout with sock device driver");
     input_parms.generation = ap_my_generation;
-#if defined(USE_TPF_SCOREBOARD) || defined(USE_SHMGET_SCOREBOARD)
+#ifdef USE_SHMGET_SCOREBOARD
     input_parms.scoreboard_heap = ap_scoreboard_image;
-#else
-    input_parms.scoreboard_fd = scoreboard_fd;
 #endif
 
     lr = ap_listeners;
@@ -448,6 +455,8 @@ void ap_tpf_zinet_checks(int standalone,
 int os_check_server(char *server) {
     int *current_acn;
 
+    ap_check_signals();
+
     /* check that the program activation number hasn't changed */
         current_acn = (int *)cinfc_fast(CINFC_CMMACNUM);
         if (ecbp2()->ce2acn != *current_acn) {
@@ -476,8 +485,8 @@ void os_note_additional_cleanups(pool *p, int sd) {
     sprintf(sockfilename, "/dev/tpf.socket.file/%.8X", sd);
     sock_fp = fopen(sockfilename, "r+");
     /* arrange to close on exec or restart */
-    ap_note_cleanups_for_file(p, sock_fp);
-    fcntl(sd,F_SETFD,FD_CLOEXEC);
+    ap_note_cleanups_for_file_ex(p, sock_fp, 1);
+    sock_sd = sd;
 }
 
 void ap_tpf_save_argv(int argc, char **argv) {
@@ -498,6 +507,7 @@ void ap_tpf_save_argv(int argc, char **argv) {
 }
 
 void os_tpf_child(APACHE_TPF_INPUT *input_parms) {
+    extern pid_t tpf_parent_pid;
     extern char tpf_mutex_key[TPF_MUTEX_KEY_SIZE];
 
     tpf_child = 1;
@@ -505,7 +515,8 @@ void os_tpf_child(APACHE_TPF_INPUT *input_parms) {
     ap_restart_time = input_parms->restart_time;
     tpf_fds = input_parms->tpf_fds;
     tpf_shm_static_ptr = input_parms->shm_static_ptr;
-    sprintf(tpf_mutex_key, "%.*x", TPF_MUTEX_KEY_SIZE - 1, getppid());
+    tpf_parent_pid = getppid();
+    sprintf(tpf_mutex_key, "%.*x", TPF_MUTEX_KEY_SIZE - 1, tpf_parent_pid);
 }
 
 #ifndef __PIPE_
@@ -540,7 +551,7 @@ static void *ap_tpf_get_shared_mem(size_t size)
     void *result;
 
     if ((shmid = shmget(shmkey, size, IPC_CREAT | SHM_R | SHM_W)) == -1) {
-        perror("shmget failed in ap_tpf_get_shared_mem funciton");
+        perror("shmget failed in ap_tpf_get_shared_mem function");
         exit(1);
     }
 #define BADSHMAT ((void *)(-1))
@@ -777,6 +788,11 @@ int killpg(pid_t pgrp, int sig)
             kill(pid, sig);
         }
     }
+    /* allow time for the signals to get to the children */
+    sleep(1);
+    /* get idle children's attention by closing the socket */
+    closesocket(sock_sd);
+    sleep(1);
 
     return(0);
 }
@@ -788,9 +804,14 @@ int killpg(pid_t pgrp, int sig)
 */
 void show_os_specific_compile_settings(void)
 {
+int i;
 
 #ifdef USE_TPF_SCOREBOARD
-    printf(" -D USE_TPF_SCOREBOARD\n");
+   #error "USE_TPF_SCOREBOARD (system heap scoreboard)"
+   #error "is no longer supported."
+   #error "Replace with USE_SHMGET_SCOREBOARD to use"
+   #error "shared memory or remove entirely to use"
+   #error "scoreboard on file for pre-PUT10 systems"
 #endif
 
 #ifdef TPF_FORK_EXTENDED
@@ -819,6 +840,23 @@ void show_os_specific_compile_settings(void)
  
 #ifdef HAVE_SYSLOG
     printf(" -D HAVE_SYSLOG\n");
+#endif
+
+    printf(" -D TPF_ACCEPT_SECS_TO_BLOCK=%i\n", TPF_ACCEPT_SECS_TO_BLOCK);
+    /* round SCOREBOARD_MAINTENANCE_INTERVAL up to seconds */
+    i = (SCOREBOARD_MAINTENANCE_INTERVAL + 999999) / 1000000;
+    if (i == 1) {
+        printf(" -D SCOREBOARD_MAINTENANCE_INTERVAL=1 SECOND\n");
+    } else {
+        printf(" -D SCOREBOARD_MAINTENANCE_INTERVAL=%i SECONDS\n", i); 
+    }
+
+#ifdef TPF_HAVE_SIGACTION
+    printf(" -D TPF_HAVE_SIGACTION\n");
+#endif
+
+#ifdef NO_USE_SIGACTION
+    printf(" -D NO_USE_SIGACTION\n");
 #endif
 
 }
