@@ -1074,7 +1074,7 @@ ServerSignature On
 # The first VirtualHost section is used for requests without a known
 # server name.
 #
-#<VirtualHost *>
+#<VirtualHost *:80>
 #    ServerAdmin webmaster@dummy-host.example.com
 #    DocumentRoot /www/docs/dummy-host.example.com
 #    ServerName dummy-host.example.com
