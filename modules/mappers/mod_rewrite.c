@@ -3581,13 +3581,13 @@ static char *lookup_variable(request_rec *r, char *var)
     else if (strcasecmp(var, "SCRIPT_USER") == 0) {
         result = "<unknown>";
         if (r->finfo.valid & APR_FINFO_USER) {
-            apr_get_username(&(char*)result, r->finfo.user, r->pool);
+            apr_get_username((char **)&result, r->finfo.user, r->pool);
         }
     }
     else if (strcasecmp(var, "SCRIPT_GROUP") == 0) {
         result = "<unknown>";
         if (r->finfo.valid & APR_FINFO_GROUP) {
-            apr_get_groupname(&(char*)result, r->finfo.group, r->pool);
+            apr_get_groupname((char **)&result, r->finfo.group, r->pool);
         }
     }
 
