@@ -1,11 +1,12 @@
 #!/usr/local/bin/perl
 
-# This script can be used to detect people trying to abuse the security hole which
+# This script is used to detect people trying to abuse the security hole which
 # existed in A CGI script direstributed with Apache 1.0.3 and earlier versions.
-# You can redirect them to here using the "<Location /cgi-bin/phf*>" suggestion in
-# httpd.conf.  
+# You can redirect them to here using the "<Location /cgi-bin/phf*>" suggestion
+# in httpd.conf.  
 #
-# The format logged to is "[date] remote_addr remote_host [date] referrer user_agent".
+# The format logged to is
+#    "[date] remote_addr remote_host [date] referrer user_agent".
 
 $LOG = "/var/log/phf_log";
 
