@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:						-*-text-*-
-Last modified at [$Date: 2002/01/02 08:14:47 $]
+Last modified at [$Date: 2002/01/02 19:34:47 $]
 
 Release:
 
@@ -121,7 +121,6 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
       lost.  This might be an APR issue with how it deals with
       the child_init hook (i.e. the fcntl lock needs to be resynced).
       More examination and analysis is required.
-
       Status: This has also been reported on Cygwin.  
 
       Message-ID: <3C2CC514.8EF3BED1@wapme-systems.de> (cygnus)
@@ -129,6 +128,27 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
       Justin says: So, FreeBSD-CURRENT and Cywin have the same 
                    problem.  Yum.  If another platform has this
                    with worker, this becomes a showstopper.
+      Aaron says: I spent some time disecting this and have come to
+              the conclusion that it is not a problem in the worker MPM
+              (or at least, it is not isolated to a problem in worker).
+              I'll list some of the problems I'm seeing in case someone
+              else wants to pick up where I've left off:
+               - The parent process goes into a loop consuming lots of CPU.
+                 It has to do with how waitpid() and apr_sleep() are called
+                 from within server_main_loop(). ktrace/kdump output shows
+                 some weird stuff happening with poll() and suspiciously
+                 small timeout values (apr_sleep() is implemented with
+                 select() which is implemented with poll()).
+               - Delivery of just about any signal to one of the child
+                 processes will send it into an infinite loop as well.
+               - Even though the parent is spinning out of control,
+                 at first the child or children will appear to work
+                 properly. At times it is possible to get it into a state,
+                 however, where a request will hang until another concurrent
+                 request "kicks" the first, at which point the second will
+                 hang. My theory is that this has to do with the
+                 pthread_cond_*() implementation in FreeBSD, but it's still
+                 possible that it is in APR.
      
     * There is increasing demand from module writers for an API
       that will allow them to control the server à la apachectl.
