@@ -324,7 +324,7 @@ static int proxy_handler(request_rec *r)
     if (p == NULL)
         return HTTP_BAD_REQUEST;
 
-    /* Try serve the request from the cache. If we suceed, we leave. */
+    /* Try serve the request from the cache. If we succeed, we leave. */
     rc = ap_proxy_cache_check(r, url, &conf->cache, &cr);
     if (rc != DECLINED)
         return rc;
