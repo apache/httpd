@@ -6301,8 +6301,7 @@ Changes with Apache 1.2b5
 
   *) Added description of "." mode in server-status [Jim Jagielski]
 
-
-Changes with Apache 1.2b4:
+Changes with Apache 1.2b4
 
   *) Fix possible race condition in accept_mutex_init() that
      could leave a small security hole open allowing files to be
@@ -6478,11 +6477,11 @@ Changes with Apache 1.2b2:
         NCR Unix         (-ncr-sysv4)
      and fixed something in helpers/PrintPath  [Ben Laurie]
 
-Changes with Apache 1.2b1:
+Changes with Apache 1.2b1
 
   *) Not listed. See <http://www.apache.org/docs/new_features_1_2.html>
 
-Changes with Apache 1.1.1:
+Changes with Apache 1.1.1
 
   *) Fixed bug where Cookie module would make two entries in the
      logfile for each access [Mark Cox]
@@ -6496,7 +6495,7 @@ Changes with Apache 1.1.1:
 
   *) Fix misspelling of "Anonymous_Authorative" directive in mod_auth_anon.
 
-Changes with Apache 1.1.0:
+Changes with Apache 1.1.0
 
   *) Bring NeXT support up to date. [Takaaki Matsumoto]
 
@@ -6518,7 +6517,7 @@ Changes with Apache 1.1.0:
         c) Leading colons were stripped from passwords [osm@interguide.com]
         d) Another fix to multi-method Limit problem [jk@tools.de]
 
-Changes with Apache 1.1b4:
+Changes with Apache 1.1b4
 
   *) r->bytes_sent variable restored. [Robert Thau]
 
@@ -6543,7 +6542,7 @@ Changes with Apache 1.1b4:
         c) compile warnings on several systems
         d) problems when scripts stop reading output early
 
-Changes with Apache 1.1b3:
+Changes with Apache 1.1b3
 
   *) Much of cgi-bin and all of cgi-src has been removed, due to
      various security holes found and that we could no longer support
@@ -6592,18 +6591,18 @@ Changes with Apache 1.1b3:
         e) closing fd's twice in mod_include (causing core dumps on
            Linux and elsewhere).
 
-Changes with Apache 1.1b2:
+Changes with Apache 1.1b2
 
   *) Bugfixes:
         a) core dumps in mod_digest
         b) truncated hostnames/ip address in the logs
         c) relative URL's in mod_imap map files
 
-Changes with Apache 1.1b1:
+Changes with Apache 1.1b1
 
   *) Not listed. See <http://www.apache.org/docs/new_features_1_1.html>
 
-Changes with Apache 1.0.3:
+Changes with Apache 1.0.3
 
   *) Internal redirects which occur in mod_dir.c now preserve the
      query portion of a request (the bit after the question mark).
@@ -6921,7 +6920,6 @@ Changes with Apache 0.8.11
      NCSA code did not check Options ExecCGI in ScriptAlias directories).
      [Robert Thau]
 
-
 Changes with Apache 0.8.10
 
   *) AllowOverride applies to the named directory, and not just
@@ -7173,7 +7171,7 @@ Changes with Apache 0.8.1
   *) Don't mung directory listings with very long filenames.
      [Florent Guillaume]
 
-Changes with Apache 0.8.0 (nee Shambhala 0.6.2):
+Changes with Apache 0.8.0 (nee Shambhala 0.6.2)
 
   *) New config script.  See INSTALL for info.  [Robert Thau]
 
@@ -7233,7 +7231,7 @@ Changes with Apache 0.8.0 (nee Shambhala 0.6.2):
   *) Another acc-related fix.  (It doesn't like const char
      in some places...). [Mark Cox]
 
-Changes with 0.6.1
+Changes with Shambhala 0.6.1
 
   *) Fixed auth_name-related typos in http_core.c [Brian Behlendorf]
      Also, fixed auth typo in http_protocol.c unmasked by this fix.
@@ -7254,7 +7252,7 @@ Changes with 0.6.1
   *) No longer kills off nph- child processes before they are
      finished sending output. [Matthew Gray]
 
-Changes with 0.6.0
+Changes with Shambhala 0.6.0
 
   *) Two styles of timeout --- hard and soft.  soft_timeout()s just put
      the connection to the client in an "aborted" state, but otherwise
@@ -7301,7 +7299,7 @@ Changes with 0.6.0
      directories.  (On Linux, readdir() returns a pointer to the same
      memory area every time).  Fix is in mod_dir.c.  [Paul Sutton]
 
-Changes with 0.5.3 [not released]
+Changes with Shambhala 0.5.3 [not released]
 
   *) Default response handler notes "file not found" in the error log,
      if the file was not found.  [Cliff Skolnick].
@@ -7310,7 +7308,7 @@ Changes with 0.5.3 [not released]
      code no longer sets up bogus PATH_INFO which fakes out the directory
      handler). [Cliff Skolnick]
 
-Changes with 0.5.2
+Changes with Shambhala 0.5.2                                     06 Jul 1995
 
   *) Changes to http_main.c --- root server no longer plays silly
      games with SIGCHLD, and so now detects and replaces dying
@@ -7330,7 +7328,7 @@ Changes with 0.5.2
   *) More directory handling bugs (reported by Cox)
      Parent Directory link is now set correctly. [Robert Thau]
 
-Changes with 0.5.1: [Hopefully complete]                  10 Apr 1995
+Changes with Shambhala 0.5.1                                     04 Jul 1995
 
   *) Generalized cleanup interface in alloc.c --- any function can be
      registered with alloc.c as a cleanup for a resource pool;
@@ -7372,17 +7370,155 @@ Changes with 0.5.1: [Hopefully complete]                  10 Apr 1995
 
   *) CHANGES file added to distribution ;-).
 
-Changes with 0.4                                          02 Apr 1995
+Changes with Shambhala 0.4.5
+
+  *) mod_dld --- early dynamic loading support [rst]
+  *) Add wildcard content handlers for XBITHACK; default_hander now
+     invoked with that mechanism (as a handler hanging off mod_core) [rst]
+  *) XBITHACK supported as a wildcard content-handler, and 
+     configurable at run-time (not just at compile time, as in the
+     "patchy server" releases) [rst]
+
+Changes with Shambhala 0.4.4                                     30 Jun 1995
+
+  *) Fixed basic thinkos in mod_dbm_auth.c [rst, reported by Mark Cox]
+  *) Handle Addtype x/y .z [rst, reported by Cox]
+
+Changes with Shambhala 0.4.3
+
+  *) Fixed very dumb bug in mod_alias; "Alias" and "Redirect" are not
+     synonymous [rst, terbush]
+
+Changes with Shambhala 0.4.1                                     28 Jun 1995
+
+  *) First-cut virtual host implementation; some refit in the config
+     reading code, and log management, was necessary to support this [rst]
+  *) Sub-pool machinery, originally added to avoid excessive storage
+     allocation on listings of large directories (which turned out to
+     be the problem that the 0.3 storage accounting was added to
+     find).  Subrequests and mod_dir changed to use subpools.  [rst]
+  *) More memory debugging --- free list consistency checks. [rst]
+  *) Added err_headers to request_rec, with support elsewhere [rst]
+  *) Other fixes to minor bugs in mod_dir and mod_includes [rst, terbush]
+
+Changes with Shambhala 0.3                                       19 Jun 1995
+
+  *) Switch ONE_PROCESS to a runtime command-line option (-X)
+  *) Don't compile in mod_ai_backcompat by default
+  *) Switch name of server from Apache to Shambhala in Makefile
+  *) Add some accounting routines to track memory usage in the pools,
+     for debugging
+
+Changes with Shambhala 0.2
+
+  *) Set DOCUMENT_ROOT CGI variable
+  *) Add single-process debugging, as a compile-time option (ONE_PROCESS)
+  *) Add critical section protection to handling of cleanup structures 
+     in alloc.c [rst]
+  *) Significant code reorg within the server core to group related
+     functions together [rst]
+  *) Correctly handle clients that hang up before sending any request
+     [rst]
+  *) Replace dying child processes. [rst]
+
+Changes with Shambhala 0.1                                       12 Jun 1995
+
+   Major rewrite of the pre-existing "patchy server" codebase, by
+   Robert Thau (rst).  Significant portions of the server code, such
+   as configuration-file handling and HTTP authentication support,
+   were ripped out and rewritten from scratch.  Code that was not
+   completely rewritten was significantly altered.
+
+   Major changes with this release include:
+
+   *) Introduction of the module API; in request handling, the central 
+      machinery just dispatches to various modules, which actually do
+      most of the work.  Configuration handling is similar --- modules
+      declare their own commands, and the central machinery just
+      dispatches to them.  
+
+      API features from shambhala/0.1 were substantially unchanged in
+      Apache 1.0 and 1.1.  (1.0 API features not yet present in this
+      release, such as wildcard handlers and subpools, were added in
+      subsequent Shambhala releases, and were also generally rst's
+      work). 
+
+   *) This release included the following modules:
+
+      mod_access      (access control --- allow and deny directives),
+      mod_alias       (Alias and Redirect commands),
+      mod_auth        (straight HTTP authentication, based on flat-files)
+      mod_auth_dbm    (same, with dbm files)
+      mod_cgi         (CGI scripts and, in this release, ScriptAlias)
+      mod_common_log  (CLF access logs; later renamed mod_log_common)
+      mod_dir         (directory indexing)
+      mod_include     (server-side includes)
+      mod_mime        (AddType directives)
+      mod_negotiation (content negotiation)
+      mod_userdir     (support for users' public_html directories)
+
+      It also included a mod_ai_backcompat, which was a private hack
+      for back-compatibility with rst's own AI-lab servers.
+
+      All of these modules were substantially complete, and functional 
+      or nearly so (a few, which implemented features not in use at
+      Thau's site, required patches of a few lines).
+
+   *) sub-request machinery, to allow modules to determine how other
+      modules would assign MIME types to a given file, or optionally
+      serve its content (this is heavily used by mod_dir, mod_include
+      and mod_negotiation).
+
+   *) Resource pool system for keeping track of memory allocated and
+      files opened in service of a particular request.  Much of the
+      code in the modules (when they weren't rewrites) was adjusted to 
+      replace a pervasive convention of using fixed-size buffers on
+      the stack with an equally pervasive convention of using memory
+      allocated with palloc().
+
+   *) Reorganization of data structures associated with a given
+      request to eliminate use of global variables and the troublesome 
+      unmunge_name function (used in NCSA and early Apache releases to 
+      attempt to determine the URI which mapped to a given filename
+      --- a difficult proposition, given that it is easy to produce
+      setups in which multiple URIs map to the same file).
+
+   *) Source files renamed and rearranged
+
+   *) Very simple pre-forking behavior --- parent process forked off a 
+      fixed number of children, and then just waited for SIGHUP.
+
+   *) Other more minor changes too numerous to list.
+
+   This release included modified versions of a lot of code from the
+   Apache 0.6.4 public release, plus an early pre-forking patch
+   codeveloped by Thau and Rob Hartill.
+
+Changes with Apache 0.7.3                                        20 Jun 1995
+
+   *) There were a bunch of changes between Apache 0.6.4 and 0.7.3 that
+      were incorporated by Rob Hartill on the main branch while Robert Thau
+      worked on the Shambhala rewrite above.  Most were merged into the
+      Shambala architecture prior to Apache 0.8.0.
+
+Changes with Apache 0.6.4
+
+   *) Patches by Hartill, Skolnick, Terbush, Thau, and others
+
+Changes with Apache 0.5.1                                        10 Apr 1995
+
+
+Changes with Apache 0.4                                          02 Apr 1995
 
   *) Patches by Brian Behlendorf, Andrew Wilson, Robert Thau,
      and Rob Hartill.
 
-Changes with 0.3                                          24 Mar 1995
+Changes with Apache 0.3                                          24 Mar 1995
 
   *) Patches by Robert Thau, David Robinson, Rob Hartill, and
      Carlos Varela
 
-Changes with 0.2                                          18 Mar 1995
+Changes with Apache 0.2                                          18 Mar 1995
 
   *) Based on NCSA httpd 1.3 by Rob McCool and patches by CERT,
      Roy Fielding, Robert Thau, Nicolas Pioch, David Robinson,
