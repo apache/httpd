@@ -1,5 +1,6 @@
 Changes with Apache 2.0.19-dev
   *) Automatically generate httpd.exp for AIX.
+     DSOs now work again on AIX in 2.0
      [Victor J. Orlikowski]
 
   *) Add a new request hook, error_log.  This phase allows modules
