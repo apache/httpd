@@ -228,6 +228,10 @@ int ssl_init_Module(apr_pool_t *p, apr_pool_t *plog,
             sc->server->sc = sc;
         }
 
+        if (sc->proxy) {
+            sc->proxy->sc = sc;
+        }
+
         /*
          * Create the server host:port string because we need it a lot
          */
