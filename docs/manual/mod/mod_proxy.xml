@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
-<!-- $Revision: 1.33 $ -->
+<!-- $Revision: 1.34 $ -->
 
 <!--
  Copyright 2002-2004 The Apache Software Foundation
@@ -876,7 +876,7 @@ directly</description>
     (sometimes used in the netmask form <code>255.255.0.0</code>)</dd>
     <dt><code>192.168.112.0/21</code></dt>
     <dd>the subnet <code>192.168.112.0/21</code> with a netmask of 21
-    valid bits (also used in the form 255.255.248.0)</dd>
+    valid bits (also used in the form <code>255.255.248.0</code>)</dd>
     </dl>
 
     <p>As a degenerate case, a <em>SubNet</em> with 32 valid bits is the
@@ -983,7 +983,7 @@ header for proxied requests</description>
 
 <usage>
     <p>This directive controls the use of the <code>Via:</code> HTTP
-    header by the proxy. Its intended use is to control the flow of of
+    header by the proxy. Its intended use is to control the flow of
     proxy requests along a chain of proxy servers.  See <a
     href="http://www.ietf.org/rfc/rfc2616.txt">RFC 2616</a> (HTTP/1.1), section
     14.45 for an explanation of <code>Via:</code> header lines.</p>
