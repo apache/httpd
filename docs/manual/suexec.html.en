@@ -1,9 +1,11 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
 <html><head>
 <title>Apache SetUserID Support</title>
-</head><body>
+</head>
 
+<BODY BGCOLOR="white" TEXT="black" LINK="blue" VLINK="navy" ALINK="red">
 <!--#include virtual="header.html" -->
-<h1>Apache suEXEC Support</h1>
+<h1 ALIGN="CENTER">Apache suEXEC Support</h1>
 
 <hr>
 
