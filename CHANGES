@@ -6,11 +6,6 @@ Changes with Apache 2.1.0-dev
      bucket brigades containing multiple file buckets all referencing
      the same open file descriptor. [Bojan Smojver]
 
-  *) Fix memory corruption problem with ap_custom_response() function.
-     The core per-dir config would later point to request pool data
-     that would be reused for different purposes on different requests.
-     [Jeff Trawick, based on an old 1.3 patch submitted by Will Lowe]
-
   *) work around MSIE Digest auth bug - if AuthDigestEnableQueryStringHack
      is set in r->subprocess_env allow mismatched query strings to pass.
      PR 27758.  [Paul Querna <chip force-elite.com>, Geoffrey Young]
@@ -299,6 +294,13 @@ Changes with Apache 2.1.0-dev
 
   [Apache 2.1.0-dev includes those bug fixes and changes with the
    Apache 2.0.xx tree as documented, and except as noted, below.]
+
+Changes with Apache 2.0.50
+
+  *) Fix memory corruption problem with ap_custom_response() function.
+     The core per-dir config would later point to request pool data
+     that would be reused for different purposes on different requests.
+     [Jeff Trawick, based on an old 1.3 patch submitted by Will Lowe]
 
 Changes with Apache 2.0.49
 
