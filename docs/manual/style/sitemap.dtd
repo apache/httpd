@@ -6,8 +6,12 @@
 <!-- <sitemap> is the root element -->
 <!ELEMENT sitemap (relativepath, title, summary?, seealso*, category*)>
 
+<!ATTLIST sitemap metafile CDATA  #REQUIRED>
+
 <!-- <indexpage> is another root element -->
 <!ELEMENT indexpage (relativepath, parentdocument, title, category*)>
+
+<!ATTLIST indexpage metafile CDATA  #REQUIRED>
 
 <!ELEMENT category (title, page*, modulefilelist? )>
 <!ATTLIST category id ID #IMPLIED>
