@@ -536,10 +536,11 @@ int ap_proxy_ftp_handler(request_rec *r, cache_req *c, char *url)
 /* check if ProxyBlock directive on this host */
     destaddr.s_addr = ap_inet_addr(host);
     for (i = 0; i < conf->noproxies->nelts; i++) {
-	if ((npent[i].name != NULL && strstr(host, npent[i].name) != NULL)
-	    || destaddr.s_addr == npent[i].addr.s_addr || npent[i].name[0] == '*')
-	    return ap_proxyerror(r, HTTP_FORBIDDEN,
-				 "Connect to remote machine blocked");
+        if (destaddr.s_addr == npent[i].addr.s_addr ||
+            (npent[i].name != NULL &&
+              (npent[i].name[0] == '*' || strstr(host, npent[i].name) != NULL)))
+            return ap_proxyerror(r, HTTP_FORBIDDEN,
+                                 "Connect to remote machine blocked");
     }
 
     Explain2("FTP: connect to %s:%d", host, port);
@@ -1158,10 +1159,16 @@ int ap_proxy_ftp_handler(request_rec *r, cache_req *c, char *url)
     }
 
 /* check if NoCache directive on this host */
-    for (i = 0; i < conf->nocaches->nelts; i++) {
-	if ((ncent[i].name != NULL && strstr(host, ncent[i].name) != NULL)
-	    || destaddr.s_addr == ncent[i].addr.s_addr || ncent[i].name[0] == '*')
-	    nocache = 1;
+    if (nocache == 0) {
+	for (i = 0; i < conf->nocaches->nelts; i++) {
+	    if (destaddr.s_addr == ncent[i].addr.s_addr ||
+	        (ncent[i].name != NULL &&
+		  (ncent[i].name[0] == '*' ||
+		   strstr(host, ncent[i].name) != NULL))) {
+	       nocache = 1;
+	       break;
+	    }
+	}
     }
 
     i = ap_proxy_cache_update(c, resp_hdrs, 0, nocache);
