@@ -519,8 +519,8 @@ typedef struct {
     const char  *szVHostID;
     int          nVHostID_length;
     BOOL         bEnabled;
-    const char  *szPublicCertFile[SSL_AIDX_MAX];
-    const char  *szPrivateKeyFile[SSL_AIDX_MAX];
+    const char  *szPublicCertFiles[SSL_AIDX_MAX];
+    const char  *szPrivateKeyFiles[SSL_AIDX_MAX];
     const char  *szCertificateChain;
     const char  *szCACertificatePath;
     const char  *szCACertificateFile;

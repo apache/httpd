@@ -208,7 +208,7 @@ void ssl_pphrase_Handle(server_rec *s, apr_pool_t *p)
          * Read in server certificate(s): This is the easy part
          * because this file isn't encrypted in any way.
          */
-        if (sc->szPublicCertFile[0] == NULL) {
+        if (sc->szPublicCertFiles[0] == NULL) {
             ssl_log(pServ, SSL_LOG_ERROR,
                     "Init: Server %s should be SSL-aware but has no certificate configured "
                     "[Hint: SSLCertificateFile]", cpVHostID);
@@ -216,9 +216,9 @@ void ssl_pphrase_Handle(server_rec *s, apr_pool_t *p)
         }
         algoCert = SSL_ALGO_UNKNOWN;
         algoKey  = SSL_ALGO_UNKNOWN;
-        for (i = 0, j = 0; i < SSL_AIDX_MAX && sc->szPublicCertFile[i] != NULL; i++) {
+        for (i = 0, j = 0; i < SSL_AIDX_MAX && sc->szPublicCertFiles[i] != NULL; i++) {
 
-            apr_cpystrn(szPath, sc->szPublicCertFile[i], sizeof(szPath));
+            apr_cpystrn(szPath, sc->szPublicCertFiles[i], sizeof(szPath));
             if ( exists_and_readable(szPath, p, NULL) != APR_SUCCESS ) {
                 ssl_log(s, SSL_LOG_ERROR|SSL_ADD_ERRNO,
                         "Init: Can't open server certificate file %s", szPath);
@@ -277,8 +277,8 @@ void ssl_pphrase_Handle(server_rec *s, apr_pool_t *p)
              * phrase for all). When this is the case we can minimize the dialogs
              * by trying to re-use already known/entered pass phrases.
              */
-            if (sc->szPrivateKeyFile[j] != NULL)
-                apr_cpystrn(szPath, sc->szPrivateKeyFile[j++], sizeof(szPath));
+            if (sc->szPrivateKeyFiles[j] != NULL)
+                apr_cpystrn(szPath, sc->szPrivateKeyFiles[j++], sizeof(szPath));
 
             /*
              * Try to read the private key file with the help of
