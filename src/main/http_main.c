@@ -817,7 +817,7 @@ void reclaim_child_processes ()
  * a while...
  */
 
-static sigjmp_buf wait_timeout_buf;
+static JMP_BUF wait_timeout_buf;
 static int wait_or_timeout_retval = -1;
 
 static void longjmp_out_of_alarm (int sig) {
