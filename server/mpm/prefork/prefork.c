@@ -792,7 +792,6 @@ static void child_main(int child_num_arg)
                                          my_child_num);
         if (current_conn) {
             ap_process_connection(current_conn);
-            ap_lingering_close(current_conn);
         }
         
         /* Check the pod after processing a connection so that we'll go away

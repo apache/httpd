@@ -901,7 +901,6 @@ static void worker_main(int thread_num)
             apr_getsocketopt(context->sock, APR_SO_DISCONNECTED, &disconnected);
             if (!disconnected) {
                 context->accept_socket = INVALID_SOCKET;
-                ap_lingering_close(c);
             }
         }
         else {

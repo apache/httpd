@@ -685,7 +685,6 @@ static void thread_main(void *thread_num_arg)
 
         if (current_conn) {
             ap_process_connection(current_conn);
-            ap_lingering_close(current_conn);
         }
     }
 
