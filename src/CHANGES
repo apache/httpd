@@ -8,7 +8,7 @@ Changes with Apache 1.3b4
      other than kosher manner (e.g., the proxy including mod_mime.h).
      Module-private header files (the proxy, mod_mime, the regex library,
      and mod_rewrite) have not been moved to src/include; nor have
-     the OS-abstraction files.
+     the OS-abstraction files.  [Ken Coar]
 
   *) Fix a bug where r->hostname didn't have the :port stripped
      from it.  [Dean Gaudet]
