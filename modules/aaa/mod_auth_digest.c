@@ -516,6 +516,13 @@ static const char *add_authn_provider(cmd_parms *cmd, void *config,
                             newp->provider_name);
     }
 
+    if (!newp->provider->get_realm_hash) {
+        /* if it doesn't provide the appropriate function, reject it */
+        return apr_psprintf(cmd->pool,
+                            "The '%s' Authn provider doesn't support "
+                            "Digest Authentication", provider_name);
+    }
+
     /* Add it to the list now. */
     if (!conf->providers) {
         conf->providers = newp;
@@ -1477,6 +1484,13 @@ static const char *get_hash(request_rec *r, const char *user,
         if (!current_provider) {
             provider = ap_lookup_provider(AUTHN_PROVIDER_GROUP,
                                           AUTHN_DEFAULT_PROVIDER, "0");
+
+            if (!provider || !provider->get_realm_hash) {
+                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+                              "No Authn provider configured");
+                auth_result = AUTH_GENERAL_ERROR;
+                break;
+            }
         }
         else {
             provider = current_provider->provider;
