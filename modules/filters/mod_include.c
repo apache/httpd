@@ -1770,81 +1770,103 @@ static apr_status_t handle_include(include_ctx_t *ctx, ap_filter_t *f,
     return APR_SUCCESS;
 }
 
+/*
+ * <!--#echo [encoding="..."] var="..." [encoding="..."] var="..." ... -->
+ */
 static apr_status_t handle_echo(include_ctx_t *ctx, ap_filter_t *f,
                                 apr_bucket_brigade *bb)
 {
-    char       *tag       = NULL;
-    char       *tag_val   = NULL;
-    const char *echo_text = NULL;
-    apr_bucket  *tmp_buck;
-    apr_size_t e_len;
     enum {E_NONE, E_URL, E_ENTITY} encode;
     request_rec *r = f->r;
 
+    if (!ctx->argc) {
+        ap_log_rerror(APLOG_MARK,
+                      (ctx->flags & SSI_FLAG_PRINTING)
+                          ? APLOG_ERR : APLOG_WARNING,
+                      0, r, "missing argument for echo element in %s",
+                      r->filename);
+    }
+
+    if (!(ctx->flags & SSI_FLAG_PRINTING)) {
+        return APR_SUCCESS;
+    }
+
+    if (!ctx->argc) {
+        SSI_CREATE_ERROR_BUCKET(ctx, f, bb);
+        return APR_SUCCESS;
+    }
+
     encode = E_ENTITY;
 
-    if (ctx->flags & SSI_FLAG_PRINTING) {
-        while (1) {
-            ap_ssi_get_tag_and_value(ctx, &tag, &tag_val, SSI_VALUE_DECODED);
-            if (!tag || !tag_val) {
-                return APR_SUCCESS;
-            }
+    while (1) {
+        char *tag = NULL;
+        char *tag_val = NULL;
 
-            if (!strcmp(tag, "var")) {
-                conn_rec *c = r->connection;
-                const char *val =
-                    get_include_var(r, ctx,
-                                    ap_ssi_parse_string(r, ctx, tag_val, NULL,
-                                                        MAX_STRING_LEN,
-                                                        SSI_EXPAND_DROP_NAME));
-                if (val) {
-                    switch(encode) {
-                    case E_NONE:   
-                        echo_text = val;
-                        break;
-                    case E_URL:
-                        echo_text = ap_escape_uri(r->pool, val);  
-                        break;
-                    case E_ENTITY: 
-                        echo_text = ap_escape_html(r->pool, val); 
-                        break;
-                    }
+        ap_ssi_get_tag_and_value(ctx, &tag, &tag_val, SSI_VALUE_DECODED);
+        if (!tag || !tag_val) {
+            break;
+        }
 
-                    e_len = strlen(echo_text);
-                    tmp_buck = apr_bucket_pool_create(echo_text, e_len,
-                                                      r->pool, c->bucket_alloc);
+        if (!strcmp(tag, "var")) {
+            const char *val;
+            const char *echo_text = NULL;
+            apr_size_t e_len;
+
+            val = get_include_var(r, ctx,
+                                  ap_ssi_parse_string(r, ctx, tag_val, NULL,
+                                                      MAX_STRING_LEN,
+                                                      SSI_EXPAND_DROP_NAME));
+            if (val) {
+                switch(encode) {
+                case E_NONE:
+                    echo_text = val;
+                    break;
+                case E_URL:
+                    echo_text = ap_escape_uri(ctx->dpool, val);
+                    break;
+                case E_ENTITY:
+                    echo_text = ap_escape_html(ctx->dpool, val);
+                    break;
                 }
-                else {
-                    include_server_config *sconf= 
-                        ap_get_module_config(r->server->module_config,
-                                             &include_module);
-                    tmp_buck = apr_bucket_pool_create(apr_pstrmemdup(ctx->pool,
-                                                      sconf->undefined_echo, 
-                                                      sconf->undefined_echo_len),
-                                                      sconf->undefined_echo_len,
-                                                      ctx->pool,
-                                                      c->bucket_alloc);
-                }
-                APR_BRIGADE_INSERT_TAIL(bb, tmp_buck);
-            }
-            else if (!strcmp(tag, "encoding")) {
-                if (!strcasecmp(tag_val, "none")) encode = E_NONE;
-                else if (!strcasecmp(tag_val, "url")) encode = E_URL;
-                else if (!strcasecmp(tag_val, "entity")) encode = E_ENTITY;
-                else {
-                    ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
-                           "unknown value \"%s\" to parameter \"encoding\" of "
-                           "tag echo in %s", tag_val, r->filename);
-                    SSI_CREATE_ERROR_BUCKET(ctx, f, bb);
-                }
+
+                e_len = strlen(echo_text);
             }
             else {
-                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
-                            "unknown parameter \"%s\" in tag echo of %s",
-                            tag, r->filename);
-                SSI_CREATE_ERROR_BUCKET(ctx, f, bb);
+                include_server_config *sconf;
+
+                sconf = ap_get_module_config(r->server->module_config,
+                                             &include_module);
+                echo_text = sconf->undefined_echo;
+                e_len = sconf->undefined_echo_len;
             }
 
+            APR_BRIGADE_INSERT_TAIL(bb, apr_bucket_pool_create(
+                                    apr_pstrmemdup(ctx->pool, echo_text, e_len),
+                                    e_len, ctx->pool, f->c->bucket_alloc));
+        }
+        else if (!strcmp(tag, "encoding")) {
+            if (!strcasecmp(tag_val, "none")) {
+                encode = E_NONE;
+            }
+            else if (!strcasecmp(tag_val, "url")) {
+                encode = E_URL;
+            }
+            else if (!strcasecmp(tag_val, "entity")) {
+                encode = E_ENTITY;
+            }
+            else {
+                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, "unknown value "
+                              "\"%s\" to parameter \"encoding\" of tag echo in "
+                              "%s", tag_val, r->filename);
+                SSI_CREATE_ERROR_BUCKET(ctx, f, bb);
+                break;
+            }
+        }
+        else {
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, "unknown parameter "
+                          "\"%s\" in tag echo of %s", tag, r->filename);
+            SSI_CREATE_ERROR_BUCKET(ctx, f, bb);
+            break;
         }
     }
 
