@@ -799,10 +799,13 @@ AP_DECLARE(apr_port_t) ap_get_server_port(const request_rec *r)
 	 * Apache will use the hostname and port specified in the
 	 * ServerName directive to construct a canonical name for the
 	 * server. (If no port was specified in the ServerName
-         * directive, Apache implies port 80 for http:// and
-	 * port 443 for https://)
+         * directive, Apache uses the port supplied by the client if
+         * any is supplied, and finally the default port for the protocol
+         * used.
 	 */
-        port = r->server->port ? r->server->port : ap_default_port(r);
+        port = r->server->port ? r->server->port :
+               r->connection->local_addr->port ? r->connection->local_addr->port :
+               ap_default_port(r);
     }
 
     /* default */

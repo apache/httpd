@@ -1,5 +1,10 @@
 Changes with Apache 2.0.32-dev
 
+  *) Be a bit more sane with regard to CanonicalNames.  If the user has
+     specified they want to use the CanonicalName, but they have not
+     configured a port with the ServerName, then use the same port that 
+     the original request used. [Ryan Bloom and Ken Coar]
+
   *) In core_input_filter, check for an empty brigade after 
      APR_BRIGADE_NORMALIZE().  Otherwise, we can get segfaults if a
      client says it will post some data but we get FIN before any
