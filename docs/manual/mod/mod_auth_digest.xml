@@ -11,7 +11,7 @@
 <identifier>auth_digest_module</identifier>
 
 <summary>
-    <p>This module implements HTTP Digest Authentication.  However, it
+    <p>This module implements HTTP Digest Authentication. However, it
     has not been extensively tested and is therefore marked
     experimental.</p>
 </summary>
@@ -24,20 +24,26 @@
 <section id="using"><title>Using Digest Authentication</title>
 
     <p>Using MD5 Digest authentication is very simple. Simply set
-    up authentication normally, using "AuthType Digest" and
-    "AuthDigestFile" instead of the normal "AuthType Basic" and
-    "AuthUserFile"; also, replace any "AuthGroupFile" with
-    "AuthDigestGroupFile". Then add a "AuthDigestDomain" directive
-    containing at least the root URI(s) for this protection space.
-    Example:</p>
+    up authentication normally, using <code>AuthType Digest</code> and
+    <directive module="mod_auth_digest">AuthDigestProvider</directive>
+    instead of the normal <code>AuthType Basic</code> and
+    <directive module="mod_auth_basic">AuthBasicProvider</directive>.
+    Then add a <directive module="mod_auth_digest"
+    >AuthDigestDomain</directive> directive containing at least the root
+    URI(s) for this protection space.</p>
 
-    <example>
+    <p>Appropriate user (text) files can be created using the
+    <a href="../programs/htdigest.html">htdigest</a> tool.</p>
+
+    <example><title>Example:</title>
       &lt;Location /private/&gt;<br />
       <indent>
         AuthType Digest<br />
         AuthName "private area"<br />
         AuthDigestDomain /private/ http://mirror.my.dom/private2/<br />
-        AuthDigestFile /web/auth/.digest_pw<br />
+	<br />
+	AuthDigestProvider file<br />
+        AuthUserFile /web/auth/.digest_pw<br />
         Require valid-user<br />
       </indent>
       &lt;/Location&gt;
@@ -46,67 +52,40 @@
     <note><title>Note</title> 
     <p>Digest authentication provides a more secure password system
     than Basic authentication, but only works with supporting
-    browsers. As of July 2002, the major browsers that support digest
+    browsers. As of November 2002, the major browsers that support digest
     authentication are <a href="http://www.opera.com/">Opera</a>, <a
     href="http://www.microsoft.com/windows/ie/">MS Internet
     Explorer</a> (fails when used with a query string), <a
-    href="http://www.w3.org/Amaya/">Amaya</a> and <a
-    href="http://www.mozilla.org">Mozilla</a>.  Since digest
+    href="http://www.w3.org/Amaya/">Amaya</a>, <a
+    href="http://www.mozilla.org">Mozilla</a> and <a
+    href="http://channels.netscape.com/ns/browsers/download.jsp"
+    >Netscape</a> since version 7. Since digest
     authentication is not as widely implemented as basic
-    authentication, you should use it only in controlled settings.</p>
+    authentication, you should use it only in controlled environments.</p>
     </note>
 </section>
 
 <directivesynopsis>
-<name>AuthDigestFile</name>
-<description>Location of the text file containing the list
-of users and encoded passwords for digest authentication</description>
-<syntax>AuthDigestFile <var>file-path</var></syntax>
-<contextlist><context>directory</context><context>.htaccess</context>
-</contextlist>
-<override>AuthConfig</override>
+<name>AuthDigestProvider</name>
+<description>Sets the authentication provider(s) for this location</description>
+<syntax>AuthDigestProvider On|Off|<var>provider-name</var>
+[<var>provider-name</var>] ...</syntax>
+<default>AuthBasicProvider On</default>
+<contextlist><context>directory</context></contextlist>
 
 <usage>
-    <p>The <directive>AuthDigestFile</directive> directive sets the
-    name of a textual file containing the list of users and encoded
-    passwords for digest authentication. <var>File-path</var> is the
-    absolute path to the user file.</p>
+    <p>The <directive>AuthDigestProvider</directive> directive sets 
+    which provider is used to authenticate the users for this location.
+    Setting the value to <code>On</code> will choose the default provider
+    (<code>file</code>). Since the <code>file</code> provider is implemented
+    by the <module>mod_authn_file</module> module, you have to make sure,
+    that the module is present in the server.</p>
 
-    <p>The digest file uses a special format. Files in this format
-    can be created using the <a
-    href="../programs/htdigest.html">htdigest</a> utility found in
-    the support/ subdirectory of the Apache distribution.</p>
-</usage>
-</directivesynopsis>
+    <p>See <module>mod_authn_dbm</module> and <module>mod_authn_file</module>
+    for providers.</p>
 
-<directivesynopsis>
-<name>AuthDigestGroupFile</name>
-<description>Name of the text file containing the list of groups
-for digest authentication</description>
-<syntax>AuthDigestGroupFile <var>file-path</var></syntax>
-<contextlist><context>directory</context><context>.htaccess</context>
-</contextlist>
-<override>AuthConfig</override>
-
-<usage>
-    <p>The <directive>AuthDigestGroupFile</directive> directive sets
-    the name of a textual file containing the list of groups and their
-    members (user names). <var>File-path</var> is the absolute path to
-    the group file.</p>
-
-    <p>Each line of the group file contains a groupname followed by
-    a colon, followed by the member usernames separated by spaces.
-    Example:</p>
-
-    <example>mygroup: bob joe anne</example>
-
-    <p>Note that searching large text files is <em>very</em>
-    inefficient.</p>
-
-    <p>Security: make sure that the AuthGroupFile is stored outside
-    the document tree of the web-server; do <em>not</em> put it in
-    the directory that it protects. Otherwise, clients will be able
-    to download the AuthGroupFile.</p>
+    <p>The value <code>Off</code> clears the provider list and sets it back
+    to the default.</p>
 </usage>
 </directivesynopsis>
 
@@ -122,8 +101,8 @@ authentication</description>
 
 <usage>
     <p>The <directive>AuthDigestQop</directive> directive determines
-    the quality-of-protection to use. <code>auth</code> will only do
-    authentication (username/password); <code>auth-int</code> is
+    the <dfn>quality-of-protection</dfn> to use. <code>auth</code> will
+    only do authentication (username/password); <code>auth-int</code> is
     authentication plus integrity checking (an MD5 hash of the entity
     is also computed and checked); <code>none</code> will cause the module
     to use the old RFC-2069 digest algorithm (which does not include
@@ -155,7 +134,7 @@ authentication</description>
     greater than 0 then it specifies the amount of time for which the
     nonce is valid; this should probably never be set to less than 10
     seconds. If <var>seconds</var> is less than 0 then the nonce never
-    expires. <!-- Not implemented yet If <var>seconds</var> is 0 then
+    expires. <!-- Not implemented yet: If <var>seconds</var> is 0 then
     the nonce may be used exactly once by the client. Note that while
     one-time-nonces provide higher security against replay attacks,
     they also have significant performance implications, as the
@@ -181,11 +160,9 @@ authentication</description>
 <override>AuthConfig</override>
 
 <usage>
-    <p><strong>Not implemented yet.</strong> <!--
-            <P>The AuthDigestNonceFormat directive determines how the nonce is
-            generated.
-            -->
-    </p>
+    <note>Not implemented yet.</note>
+    <!-- The AuthDigestNonceFormat directive determines how the nonce is
+    generated. -->
 </usage>
 </directivesynopsis>
 
@@ -202,16 +179,16 @@ server</description>
       Not implemented yet.
     </note>
     <!--
-            <P>The AuthDigestNcCheck directive enables or disables the checking of the
-            nonce-count sent by the server.
+    <p>The AuthDigestNcCheck directive enables or disables the checking of the
+    nonce-count sent by the server.</p>
 
-            <P>While recommended from a security standpoint, turning this directive
-            On has one important performance implication. To check the nonce-count
-            *all* requests (which have an Authorization header, irrespective of
-            whether they require digest authentication) must be serialized through
-            a critical section. If the server is handling a large number of
-            requests which contain the Authorization header then this may noticeably
-            impact performance.
+    <p>While recommended from a security standpoint, turning this directive
+    On has one important performance implication. To check the nonce-count
+    *all* requests (which have an Authorization header, irrespective of
+    whether they require digest authentication) must be serialized through
+    a critical section. If the server is handling a large number of
+    requests which contain the Authorization header then this may noticeably
+    impact performance.</p>
      -->
 </usage>
 </directivesynopsis>
@@ -235,8 +212,9 @@ response hases in digest authentication</description>
       <code>MD5-sess</code> is not correctly implemented yet.
     </note>
     <!--
-            <P>To use <EM>MD5-sess</EM> you must first code up the
-            <VAR>get_userpw_hash()</VAR> function in <VAR>mod_auth_digest.c</VAR> .
+    <p>To use <code>MD5-sess</code> you must first code up the
+    <code>get_userpw_hash()</code> function in
+    <code>mod_auth_digest.c</code>.</p>
     -->
 </usage>
 </directivesynopsis>
@@ -271,6 +249,38 @@ authentication</description>
     which case clients (which understand this) will then share
     username/password info across multiple servers without
     prompting the user each time. </p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>AuthDigestShmemSize</name>
+<description>The amount of shared memory to allocate for keeping track
+of clients</description>
+<syntax>AuthDigestShmemSize <var>size</var></syntax>
+<default>AuthDigestShmemSize 1000</default>
+<contextlist><context>server config</context></contextlist>
+
+<usage>
+    <p>The <directive>AuthDigestShmemSize</directive> directive defines
+    the amount of shared memory, that will be allocated at the server
+    startup for keeping track of clients. Note that the shared memory
+    segment cannot be set less than the space that is neccessary for
+    tracking at least <em>one</em> client. This value is dependant on your
+    system. If you want to find out the exact value, you may simply
+    set <directive>AuthDigestShmemSize</directive> to the value of
+    <code>0</code> and read the error message after trying to start the
+    server.</p>
+
+    <p>The <var>size</var> is normally expressed in Bytes, but you
+    may let the number follow a <code>K</code> or an <code>M</code> to
+    express your value as KBytes or MBytes. For example, the following
+    directives are all equivalent:</p>
+
+    <example>
+      AuthDigestShmemSize 1048576<br />
+      AuthDigestShmemSize 1024K<br />
+      AuthDigestShmemSize 1M<br />
+    </example>
 </usage>
 </directivesynopsis>
 
