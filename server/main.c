@@ -296,7 +296,7 @@ API_EXPORT_NONSTD(int)        main(int argc, char *argv[])
     ap_server_post_read_config = ap_make_array(pcommands, 1, sizeof(char *));
     ap_server_config_defines   = ap_make_array(pcommands, 1, sizeof(char *));
 
-    while ((c = getopt(argc, argv, "C:c:d:f:vVlLth")) != -1) {
+    while (ap_getopt(pcommands, argc, argv, "C:c:d:f:vVlLth", &c) == APR_SUCCESS) {
         char **new;
         switch (c) {
  	case 'c':
