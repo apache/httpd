@@ -236,7 +236,7 @@
 #define LONG_STRING_LEN 2048
 #endif
 
-#define MAX_ENV_FLAGS 5
+#define MAX_ENV_FLAGS 15
 
 #define MAX_NMATCH    10
 
