@@ -2,6 +2,9 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) Fix NULL-pointer issue in ab when parsing an incomplete or non-HTTP
+     response. PR 21085. [Glenn Nielsen <glenn@apache.org>, André Malo]
+
   *) Added FreeBSD directory layout. PR 21100.
      [Sander Holthaus <info@orangexl.com>, André Malo]
 
