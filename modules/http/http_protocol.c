@@ -889,9 +889,15 @@ apr_status_t http_filter(ap_filter_t *f, ap_bucket_brigade *b, apr_ssize_t lengt
         }
     }
 
+    e = AP_BRIGADE_FIRST(b);
+    if (f->c->remain == 0 && e->type == ap_eos_type()) {
+        bb = ap_brigade_split(b, AP_BUCKET_NEXT(e));
+        ctx->b = bb;
+        return APR_SUCCESS;
+    }
+
     if (f->c->remain) {
         int total = 0;
-        e = AP_BRIGADE_FIRST(b);
         len = length;
         while (e != AP_BRIGADE_SENTINEL(b)) {
             const char *ignore;
@@ -907,15 +913,15 @@ apr_status_t http_filter(ap_filter_t *f, ap_bucket_brigade *b, apr_ssize_t lengt
         }
         if (e != AP_BRIGADE_SENTINEL(b)) {
             ap_bucket *eos_bucket;
-            if (total >= length) {
+            if (total > length) {
                 ap_bucket_split(e, len);
                 total = length;
             }
             bb = ap_brigade_split(b, AP_BUCKET_NEXT(e));
             ctx->b = bb;
-            if (f->c->remain == 0) { 
+            if (f->c->remain == total) { 
                 eos_bucket = ap_bucket_create_eos();
-                AP_BUCKET_INSERT_AFTER(e, eos_bucket);
+                AP_BRIGADE_INSERT_HEAD(bb, eos_bucket);
             }
             f->c->remain -= total;
             return APR_SUCCESS;
