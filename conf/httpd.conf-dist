@@ -72,6 +72,16 @@ PidFile logs/httpd.pid
 # no two invocations of Apache share the same scoreboard file.
 ScoreBoardFile logs/apache_status
 
+# The LockFile directive sets the path to the lockfile used when Apache
+# is compiled with either USE_FCNTL_SERIALIZED_ACCEPT or
+# USE_FLOCK_SERIALIZED_ACCEPT. This directive should normally be left at
+# its default value. The main reason for changing it is if the logs
+# directory is NFS mounted, since the lockfile MUST BE STORED ON A LOCAL
+# DISK. The PID of the main server process is automatically appended to
+# the filename. 
+#
+#LockFile logs/accept.lock
+
 # ServerName allows you to set a host name which is sent back to clients for
 # your server if it's different than the one the program would get (i.e. use
 # "www" instead of the host's real name).
