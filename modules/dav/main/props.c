@@ -268,7 +268,6 @@ struct dav_propdb {
     const dav_hooks_db *db_hooks;
     const dav_hooks_vsn *vsn_hooks;
 
-    const dav_dyn_hooks *liveprop;	/* head of list */
 };
 
 /* ### move these into a "core" liveprop provider? */
@@ -326,8 +325,8 @@ static void dav_find_liveprop(dav_propdb *propdb, ap_xml_elem *elem)
 {
     int propid;
     const char *ns_uri;
-    const dav_dyn_hooks *ddh;
     dav_elem_private *priv = elem->private;
+    const dav_hooks_liveprop *hooks;
 
     if (elem->ns == AP_XML_NS_DAV_ID) {
 	const char * const *p = dav_core_props;
@@ -346,25 +345,24 @@ static void dav_find_liveprop(dav_propdb *propdb, ap_xml_elem *elem)
 	return;
     }
 
+    /* get the URI for the element's namespace id */
     ns_uri = AP_XML_GET_URI_ITEM(propdb->ns_xlate, elem->ns);
 
-    for (ddh = propdb->liveprop; ddh != NULL; ddh = ddh->next) {
-	propid = (*DAV_AS_HOOKS_LIVEPROP(ddh)->find_prop)(ns_uri, elem->name);
-	if (propid != 0) {
-	    priv->propid = propid;
-	    priv->provider = DAV_AS_HOOKS_LIVEPROP(ddh);
-	    return;
-	}
+    /* is there a liveprop provider for this property? */
+    propid = ap_run_find_liveprop(propdb->r, ns_uri, elem->name, &hooks);
+    if (propid != 0) {
+        priv->propid = propid;
+        priv->provider = hooks;
+        return;
     }
 
     priv->propid = DAV_PROPID_CORE_UNKNOWN;
 }
 
 /* is the live property read/write? */
-static int dav_rw_liveprop(dav_propdb *propdb, int propid)
+static int dav_rw_liveprop(dav_propdb *propdb, dav_elem_private *priv)
 {
-    dav_prop_rw rw;
-    const dav_dyn_hooks *ddh;
+    int propid = priv->propid;
 
     /* these are defined as read-only */
     if (propid == DAV_PROPID_CORE_lockdiscovery
@@ -389,13 +387,14 @@ static int dav_rw_liveprop(dav_propdb *propdb, int propid)
     /*
     ** Check the liveprop providers
     */
-    for (ddh = propdb->liveprop; ddh != NULL; ddh = ddh->next) {
-	rw = (*DAV_AS_HOOKS_LIVEPROP(ddh)->is_writeable)(propdb->resource,
-							 propid);
-	if (rw == DAV_PROP_RW_YES)
-	    return 1;
-	if (rw == DAV_PROP_RW_NO)
-	    return 0;
+    if (priv->provider != NULL) {
+        dav_prop_rw rw;
+
+        rw = (*priv->provider->is_writeable)(propdb->resource, propid);
+        if (rw == DAV_PROP_RW_YES)
+            return 1;
+        if (rw == DAV_PROP_RW_NO)
+            return 0;
     }
 
     /*
@@ -971,9 +970,6 @@ dav_error *dav_open_propdb(request_rec *r, dav_lockdb *lockdb,
     propdb->db_hooks = DAV_GET_HOOKS_PROPDB(r);
     propdb->vsn_hooks = DAV_GET_HOOKS_VSN(r);
 
-    /* ### this will need to change */
-    propdb->liveprop = dav_get_liveprop_hooks(r);
-
     propdb->lockdb = lockdb;
 
     if (!ro) {
@@ -1030,7 +1026,6 @@ dav_get_props_result dav_get_allprops(dav_propdb *propdb, int getvals)
     int found_contenttype = 0;
     int found_contentlang = 0;
     int unused_inserted;
-    const dav_dyn_hooks *ddh;
 
     /* generate all the namespaces that are in the propdb */
     dav_get_propdb_xmlns(propdb, &hdr_ns);
@@ -1124,10 +1119,7 @@ dav_get_props_result dav_get_allprops(dav_propdb *propdb, int getvals)
     dav_add_all_liveprop_xmlns(propdb->p, &hdr_ns);
     
     /* ask the liveprop providers to insert their properties */
-    for (ddh = propdb->liveprop; ddh != NULL; ddh = ddh->next) {
-	(*DAV_AS_HOOKS_LIVEPROP(ddh)->insert_all)(propdb->resource, getvals,
-						  &hdr);
-    }
+    ap_run_insert_all_liveprops(propdb->r, propdb->resource, getvals, &hdr);
 
     /* insert the standard properties */
     /* ### should be handling the return errors here */
@@ -1374,7 +1366,7 @@ void dav_prop_validate(dav_prop_ctx *ctx)
 	ctx->is_liveprop = priv->provider != NULL;
     }
 
-    if (!dav_rw_liveprop(propdb, priv->propid)) {
+    if (!dav_rw_liveprop(propdb, priv)) {
 	ctx->err = dav_new_error(propdb->p, HTTP_CONFLICT,
 				 DAV_ERR_PROP_READONLY,
 				 "Property is read-only.");

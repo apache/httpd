@@ -125,6 +125,11 @@ static void register_hooks(void)
     ap_hook_get_lock_hooks(dav_fs_get_lock_hooks, NULL, NULL, AP_HOOK_MIDDLE);
     ap_hook_get_propdb_hooks(dav_fs_get_propdb_hooks, NULL, NULL,
                              AP_HOOK_MIDDLE);
+    ap_hook_gather_propsets(dav_fs_gather_propsets, NULL, NULL,
+                            AP_HOOK_MIDDLE);
+    ap_hook_find_liveprop(dav_fs_find_liveprop, NULL, NULL, AP_HOOK_MIDDLE);
+    ap_hook_insert_all_liveprops(dav_fs_insert_all_liveprops, NULL, NULL,
+                                 AP_HOOK_MIDDLE);
 
     dav_fs_register_uris(NULL /* ### pconf */);
 }
