@@ -1,10 +1,10 @@
 APACHE 2.0 STATUS:						-*-text-*-
-Last modified at [$Date: 2001/03/08 04:42:46 $]
+Last modified at [$Date: 2001/03/07 00:10:19 $]
 
 Release:
 
-    2.0.14  : rolled March 7, 2000
-              scheduled for release March 10, 2000
+    2.0b1   : Scheduled to release End of January, 2001
+	rbb volunteers to be RM
     2.0a9   : released December 12, 2000
     2.0a8   : released November 20, 2000
     2.0a7   : released October 8, 2000
@@ -125,9 +125,12 @@ RELEASE SHOWSTOPPERS:
 
 RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
 
-    * mod_status ExtendedStatus SS (seconds since last request) is
-      bogus because of an uninitialized field in the scoreboard.
-        Status: Cliff is working on this
+    * mod_include doesn't stream data when there are no SSI tags in
+      a file.  If the OS doesn't have MMAP, this means that the entire
+      file is read into memory before we send it down the filter
+      stack.  The includes_filter should only ever parse about 9K of
+      data at one time, so that we always look like we are streaming
+      the data.
 
     * All of our MPMs should use APR for threads/processes.  This 
       will allow us to error out if a threaded MPM is chosen on a
