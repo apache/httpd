@@ -104,7 +104,7 @@ static int num_daemons=0;
 static int workers_may_exit = 0;
 static int requests_this_child;
 static int num_listenfds = 0;
-static struct pollfd *listenfds;
+static ap_socket_t **listenfds;
 
 struct ap_ctable ap_child_table[HARD_SERVER_LIMIT];
 
@@ -572,9 +572,10 @@ static void check_pipe_of_death(void)
     if (!workers_may_exit) {
         int ret;
         char pipe_read_char;
+        ap_ssize_t n = 1;
 
-        ret = read(listenfds[0].fd, &pipe_read_char, 1);
-        if (ret == -1 && (errno == EAGAIN || errno == EWOULDBLOCK)) {
+        ret = ap_recv(listenfds[0], &pipe_read_char, &n);
+        if (ap_canonical_error(ret) == APR_EAGAIN) {
             /* It lost the lottery. It must continue to suffer
              * through a life of servitude. */
         }
@@ -600,12 +601,18 @@ static void *worker_thread(void *arg)
     int thread_just_started = 1;
     int thread_num = *((int *) arg);
     long conn_id = child_num * HARD_THREAD_LIMIT + thread_num;
+    ap_pollfd_t *pollset;
+    int n;
     ap_status_t rv;
 
     pthread_mutex_lock(&thread_pool_parent_mutex);
     ap_create_pool(&tpool, thread_pool_parent);
     pthread_mutex_unlock(&thread_pool_parent_mutex);
     ap_create_pool(&ptrans, tpool);
+
+    ap_setup_poll(&pollset, num_listenfds+1, tpool);
+    for(n=0 ; n <= num_listenfds ; ++n)
+        ap_add_poll_socket(pollset, listenfds[n], APR_POLLIN);
 
     while (!workers_may_exit) {
         workers_may_exit |= (max_requests_per_child != 0) && (requests_this_child <= 0);
@@ -638,10 +645,11 @@ static void *worker_thread(void *arg)
         }
 
         while (!workers_may_exit) {
-            srv = poll(listenfds, num_listenfds + 1, -1);
+            ap_int16_t event;
+            srv = ap_poll(pollset, &n, -1);
 
-            if (srv < 0) {
-                if (errno == EINTR) {
+            if (srv != APR_SUCCESS) {
+                if (errno == APR_EINTR) {
                     continue;
                 }
 
@@ -653,7 +661,8 @@ static void *worker_thread(void *arg)
             }
             if (workers_may_exit) break;
 
-            if (listenfds[0].revents & POLLIN) {
+            ap_get_revents(&event, listenfds[0], pollset);
+            if (event & APR_POLLIN) {
                 /* A process got a signal on the shutdown pipe. Check if we're
                  * the lucky process to die. */
                 check_pipe_of_death();
@@ -673,10 +682,10 @@ static void *worker_thread(void *arg)
                         curr_pollfd = 1;
                     }
                     /* XXX: Should we check for POLLERR? */
-                    if (listenfds[curr_pollfd].revents & POLLIN) {
+                    ap_get_revents(&event, listenfds[curr_pollfd], pollset);
+                    if (event & APR_POLLIN) {
                         last_pollfd = curr_pollfd;
-                        sd = NULL;
-                        ap_put_os_sock(&sd, &listenfds[curr_pollfd].fd, ptrans);
+                        sd = listenfds[curr_pollfd];
                         goto got_fd;
                     }
                 } while (curr_pollfd != last_pollfd);
@@ -787,15 +796,10 @@ static void child_main(int child_num_arg)
     requests_this_child = max_requests_per_child;
     
     /* Set up the pollfd array */
-    listenfds = ap_palloc(pchild, sizeof(struct pollfd) * (num_listenfds + 1));
-    listenfds[0].fd = pipe_of_death[0];
-    listenfds[0].events = POLLIN;
-    listenfds[0].revents = 0;
-    for (lr = ap_listeners, i = 1; i <= num_listenfds; lr = lr->next, ++i) {
-        ap_get_os_sock(&listenfds[i].fd, lr->sd);
-        listenfds[i].events = POLLIN; /* should we add POLLPRI ?*/
-        listenfds[i].revents = 0;
-    }
+    listenfds = ap_palloc(pchild, sizeof(*listenfds) * (num_listenfds + 1));
+    ap_put_os_sock(&listenfds[0], &pipe_of_death[0], pchild);
+    for (lr = ap_listeners, i = 1; i <= num_listenfds; lr = lr->next, ++i)
+        listenfds[i]=lr->sd;
 
     /* Setup worker threads */
 
