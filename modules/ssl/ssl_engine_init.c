@@ -224,6 +224,10 @@ int ssl_init_Module(apr_pool_t *p, apr_pool_t *plog,
     for (s = base_server; s; s = s->next) {
         sc = mySrvConfig(s);
 
+        if (sc->server) {
+            sc->server->sc = sc;
+        }
+
         /*
          * Create the server host:port string because we need it a lot
          */
@@ -368,13 +372,13 @@ void ssl_init_Engine(server_rec *s, apr_pool_t *p)
 static void ssl_init_server_check(server_rec *s,
                                   apr_pool_t *p,
                                   apr_pool_t *ptemp,
-                                  SSLSrvConfigRec *sc)
+                                  modssl_ctx_t *mctx)
 {
     /*
      * check for important parameters and the
      * possibility that the user forgot to set them.
      */
-    if (!sc->server->pks->cert_files[0]) {
+    if (!mctx->pks->cert_files[0]) {
         ssl_log(s, SSL_LOG_ERROR|SSL_INIT,
                 "No SSL Certificate set [hint: SSLCertificateFile]");
         ssl_die();
@@ -383,8 +387,8 @@ static void ssl_init_server_check(server_rec *s,
     /*
      *  Check for problematic re-initializations
      */
-    if (sc->server->pks->certs[SSL_AIDX_RSA] ||
-        sc->server->pks->certs[SSL_AIDX_DSA])
+    if (mctx->pks->certs[SSL_AIDX_RSA] ||
+        mctx->pks->certs[SSL_AIDX_DSA])
     {
         ssl_log(s, SSL_LOG_ERROR|SSL_INIT,
                 "Illegal attempt to re-initialise SSL for server "
@@ -393,14 +397,14 @@ static void ssl_init_server_check(server_rec *s,
     }
 }
 
-static SSL_CTX *ssl_init_ctx(server_rec *s,
-                             apr_pool_t *p,
-                             apr_pool_t *ptemp,
-                             SSLSrvConfigRec *sc)
+static void ssl_init_ctx(server_rec *s,
+                         apr_pool_t *p,
+                         apr_pool_t *ptemp,
+                         modssl_ctx_t *mctx)
 {
     SSL_CTX *ctx = NULL;
     char *cp;
-    int protocol = sc->server->protocol;
+    int protocol = mctx->protocol;
 
     /*
      *  Create the new per-server SSL context
@@ -428,7 +432,7 @@ static SSL_CTX *ssl_init_ctx(server_rec *s,
         ctx = SSL_CTX_new(SSLv23_server_method()); /* be more flexible */
     }
 
-    sc->server->ssl_ctx = ctx;
+    mctx->ssl_ctx = ctx;
 
     SSL_CTX_set_options(ctx, SSL_OP_ALL);
 
@@ -450,16 +454,14 @@ static SSL_CTX *ssl_init_ctx(server_rec *s,
      * Configure additional context ingredients
      */
     SSL_CTX_set_options(ctx, SSL_OP_SINGLE_DH_USE);
-
-    return ctx;
 }
 
 static void ssl_init_ctx_session_cache(server_rec *s,
                                        apr_pool_t *p,
                                        apr_pool_t *ptemp,
-                                       SSLSrvConfigRec *sc)
+                                       modssl_ctx_t *mctx)
 {
-    SSL_CTX *ctx = sc->server->ssl_ctx;
+    SSL_CTX *ctx = mctx->ssl_ctx;
     SSLModConfigRec *mc = myModConfig(s);
     long cache_mode = SSL_SESS_CACHE_OFF;
 
@@ -481,14 +483,14 @@ static void ssl_init_ctx_session_cache(server_rec *s,
 static void ssl_init_ctx_callbacks(server_rec *s,
                                    apr_pool_t *p,
                                    apr_pool_t *ptemp,
-                                   SSLSrvConfigRec *sc)
+                                   modssl_ctx_t *mctx)
 {
-    SSL_CTX *ctx = sc->server->ssl_ctx;
+    SSL_CTX *ctx = mctx->ssl_ctx;
 
     SSL_CTX_set_tmp_rsa_callback(ctx, ssl_callback_TmpRSA);
     SSL_CTX_set_tmp_dh_callback(ctx,  ssl_callback_TmpDH);
 
-    if (sc->log_level >= SSL_LOG_INFO) {
+    if (mctx->sc->log_level >= SSL_LOG_INFO) {
         /* this callback only logs if SSLLogLevel >= info */
         SSL_CTX_set_info_callback(ctx, ssl_callback_LogTracingState);
     }
@@ -497,30 +499,30 @@ static void ssl_init_ctx_callbacks(server_rec *s,
 static void ssl_init_ctx_verify(server_rec *s,
                                 apr_pool_t *p,
                                 apr_pool_t *ptemp,
-                                SSLSrvConfigRec *sc)
+                                modssl_ctx_t *mctx)
 {
-    SSL_CTX *ctx = sc->server->ssl_ctx;
+    SSL_CTX *ctx = mctx->ssl_ctx;
 
     int verify = SSL_VERIFY_NONE;
     STACK_OF(X509_NAME) *ca_list;
 
-    if (sc->server->auth.verify_mode == SSL_CVERIFY_UNSET) {
-        sc->server->auth.verify_mode = SSL_CVERIFY_NONE;
+    if (mctx->auth.verify_mode == SSL_CVERIFY_UNSET) {
+        mctx->auth.verify_mode = SSL_CVERIFY_NONE;
     }
 
-    if (sc->server->auth.verify_depth == UNSET) {
-        sc->server->auth.verify_depth = 1;
+    if (mctx->auth.verify_depth == UNSET) {
+        mctx->auth.verify_depth = 1;
     }
 
     /*
      *  Configure callbacks for SSL context
      */
-    if (sc->server->auth.verify_mode == SSL_CVERIFY_REQUIRE) {
+    if (mctx->auth.verify_mode == SSL_CVERIFY_REQUIRE) {
         verify |= SSL_VERIFY_PEER_STRICT;
     }
 
-    if ((sc->server->auth.verify_mode == SSL_CVERIFY_OPTIONAL) ||
-        (sc->server->auth.verify_mode == SSL_CVERIFY_OPTIONAL_NO_CA))
+    if ((mctx->auth.verify_mode == SSL_CVERIFY_OPTIONAL) ||
+        (mctx->auth.verify_mode == SSL_CVERIFY_OPTIONAL_NO_CA))
     {
         verify |= SSL_VERIFY_PEER;
     }
@@ -530,13 +532,13 @@ static void ssl_init_ctx_verify(server_rec *s,
     /*
      * Configure Client Authentication details
      */
-    if (sc->server->auth.ca_cert_file || sc->server->auth.ca_cert_path) {
+    if (mctx->auth.ca_cert_file || mctx->auth.ca_cert_path) {
         ssl_log(s, SSL_LOG_TRACE|SSL_INIT,
                 "Configuring client authentication");
 
         if (!SSL_CTX_load_verify_locations(ctx,
-                                           sc->server->auth.ca_cert_file,
-                                           sc->server->auth.ca_cert_path))
+                                           mctx->auth.ca_cert_file,
+                                           mctx->auth.ca_cert_path))
         {
             ssl_log(s, SSL_LOG_ERROR|SSL_ADD_SSLERR|SSL_INIT,
                     "Unable to configure verify locations "
@@ -545,8 +547,8 @@ static void ssl_init_ctx_verify(server_rec *s,
         }
 
         ca_list = ssl_init_FindCAList(s, ptemp,
-                                      sc->server->auth.ca_cert_file,
-                                      sc->server->auth.ca_cert_path);
+                                      mctx->auth.ca_cert_file,
+                                      mctx->auth.ca_cert_path);
         if (!ca_list) {
             ssl_log(s, SSL_LOG_ERROR|SSL_INIT,
                     "Unable to determine list of available "
@@ -561,7 +563,7 @@ static void ssl_init_ctx_verify(server_rec *s,
      * Give a warning when no CAs were configured but client authentication
      * should take place. This cannot work.
      */
-    if (sc->server->auth.verify_mode == SSL_CVERIFY_REQUIRE) {
+    if (mctx->auth.verify_mode == SSL_CVERIFY_REQUIRE) {
         ca_list = (STACK_OF(X509_NAME) *)SSL_CTX_get_client_CA_list(ctx);
 
         if (sk_X509_NAME_num(ca_list) == 0) {
@@ -576,10 +578,10 @@ static void ssl_init_ctx_verify(server_rec *s,
 static void ssl_init_ctx_cipher_suite(server_rec *s,
                                       apr_pool_t *p,
                                       apr_pool_t *ptemp,
-                                      SSLSrvConfigRec *sc)
+                                      modssl_ctx_t *mctx)
 {
-    SSL_CTX *ctx = sc->server->ssl_ctx;
-    const char *suite = sc->server->auth.cipher_suite;
+    SSL_CTX *ctx = mctx->ssl_ctx;
+    const char *suite = mctx->auth.cipher_suite;
 
     /*
      *  Configure SSL Cipher Suite
@@ -602,24 +604,24 @@ static void ssl_init_ctx_cipher_suite(server_rec *s,
 static void ssl_init_ctx_crl(server_rec *s,
                              apr_pool_t *p,
                              apr_pool_t *ptemp,
-                             SSLSrvConfigRec *sc)
+                             modssl_ctx_t *mctx)
 {
     /*
      * Configure Certificate Revocation List (CRL) Details
      */
 
-    if (!(sc->server->crl_file || sc->server->crl_path)) {
+    if (!(mctx->crl_file || mctx->crl_path)) {
         return;
     }
 
     ssl_log(s, SSL_LOG_TRACE|SSL_INIT,
             "Configuring certificate revocation facility");
 
-    sc->server->crl =
-        SSL_X509_STORE_create((char *)sc->server->crl_file,
-                              (char *)sc->server->crl_path);
+    mctx->crl =
+        SSL_X509_STORE_create((char *)mctx->crl_file,
+                              (char *)mctx->crl_path);
 
-    if (!sc->server->crl) {
+    if (!mctx->crl) {
         ssl_log(s, SSL_LOG_ERROR|SSL_ADD_SSLERR|SSL_INIT,
                 "Unable to configure X.509 CRL storage "
                 "for certificate revocation");
@@ -630,11 +632,11 @@ static void ssl_init_ctx_crl(server_rec *s,
 static void ssl_init_ctx_cert_chain(server_rec *s,
                                     apr_pool_t *p,
                                     apr_pool_t *ptemp,
-                                    SSLSrvConfigRec *sc)
+                                    modssl_ctx_t *mctx)
 {
     BOOL skip_first = TRUE;
     int i, n;
-    const char *chain = sc->server->cert_chain;
+    const char *chain = mctx->cert_chain;
 
     /* 
      * Optionally configure extra server certificate chain certificates.
@@ -654,14 +656,14 @@ static void ssl_init_ctx_cert_chain(server_rec *s,
         return;
     }
 
-    for (i = 0; (i < SSL_AIDX_MAX) && sc->server->pks->cert_files[i]; i++) {
-        if (strEQ(sc->server->pks->cert_files[i], chain)) {
+    for (i = 0; (i < SSL_AIDX_MAX) && mctx->pks->cert_files[i]; i++) {
+        if (strEQ(mctx->pks->cert_files[i], chain)) {
             skip_first = TRUE;
             break;
         }
     }
 
-    n = SSL_CTX_use_certificate_chain(sc->server->ssl_ctx,
+    n = SSL_CTX_use_certificate_chain(mctx->ssl_ctx,
                                       (char *)chain, 
                                       skip_first, NULL);
     if (n < 0) {
@@ -677,7 +679,7 @@ static void ssl_init_ctx_cert_chain(server_rec *s,
 }
 
 static int ssl_server_import_cert(server_rec *s,
-                                  SSLSrvConfigRec *sc,
+                                  modssl_ctx_t *mctx,
                                   const char *id,
                                   int idx)
 {
@@ -701,19 +703,19 @@ static int ssl_server_import_cert(server_rec *s,
         ssl_die();
     }
 
-    if (SSL_CTX_use_certificate(sc->server->ssl_ctx, cert) <= 0) {
+    if (SSL_CTX_use_certificate(mctx->ssl_ctx, cert) <= 0) {
         ssl_log(s, SSL_LOG_ERROR|SSL_ADD_SSLERR|SSL_INIT,
                 "Unable to configure %s server certificate", type);
         ssl_die();
     }
 
-    sc->server->pks->certs[idx] = cert;
+    mctx->pks->certs[idx] = cert;
 
     return TRUE;
 }
 
 static int ssl_server_import_key(server_rec *s,
-                                 SSLSrvConfigRec *sc,
+                                 modssl_ctx_t *mctx,
                                  const char *id,
                                  int idx)
 {
@@ -739,7 +741,7 @@ static int ssl_server_import_key(server_rec *s,
         ssl_die();
     }
 
-    if (SSL_CTX_use_PrivateKey(sc->server->ssl_ctx, pkey) <= 0) {
+    if (SSL_CTX_use_PrivateKey(mctx->ssl_ctx, pkey) <= 0) {
         ssl_log(s, SSL_LOG_ERROR|SSL_ADD_SSLERR|SSL_INIT,
                 "Unable to configure %s server private key", type);
         ssl_die();
@@ -749,8 +751,8 @@ static int ssl_server_import_key(server_rec *s,
      * XXX: wonder if this is still needed, this is old todo doc.
      * (see http://www.psy.uq.edu.au/~ftp/Crypto/ssleay/TODO.html)
      */
-    if ((pkey_type == EVP_PKEY_DSA) && sc->server->pks->certs[idx]) {
-        EVP_PKEY *pubkey = X509_get_pubkey(sc->server->pks->certs[idx]);
+    if ((pkey_type == EVP_PKEY_DSA) && mctx->pks->certs[idx]) {
+        EVP_PKEY *pubkey = X509_get_pubkey(mctx->pks->certs[idx]);
 
         if (pubkey && EVP_PKEY_missing_parameters(pubkey)) {
             EVP_PKEY_copy_parameters(pubkey, pkey);
@@ -759,7 +761,7 @@ static int ssl_server_import_key(server_rec *s,
         }
     }
 
-    sc->server->pks->keys[idx] = pkey;
+    mctx->pks->keys[idx] = pkey;
 
     return TRUE;
 }
@@ -827,18 +829,18 @@ static void ssl_check_public_cert(server_rec *s,
 static void ssl_init_server_certs(server_rec *s,
                                   apr_pool_t *p,
                                   apr_pool_t *ptemp,
-                                  SSLSrvConfigRec *sc)
+                                  modssl_ctx_t *mctx)
 {
     const char *rsa_id, *dsa_id;
-    const char *vhost_id = sc->vhost_id;
+    const char *vhost_id = mctx->sc->vhost_id;
     int i;
     int have_rsa, have_dsa;
 
     rsa_id = ssl_asn1_table_keyfmt(ptemp, vhost_id, SSL_AIDX_RSA);
     dsa_id = ssl_asn1_table_keyfmt(ptemp, vhost_id, SSL_AIDX_DSA);
 
-    have_rsa = ssl_server_import_cert(s, sc, rsa_id, SSL_AIDX_RSA);
-    have_dsa = ssl_server_import_cert(s, sc, dsa_id, SSL_AIDX_DSA);
+    have_rsa = ssl_server_import_cert(s, mctx, rsa_id, SSL_AIDX_RSA);
+    have_dsa = ssl_server_import_cert(s, mctx, dsa_id, SSL_AIDX_DSA);
 
     if (!(have_rsa || have_dsa)) {
         ssl_log(s, SSL_LOG_ERROR|SSL_INIT,
@@ -847,11 +849,11 @@ static void ssl_init_server_certs(server_rec *s,
     }
 
     for (i = 0; i < SSL_AIDX_MAX; i++) {
-        ssl_check_public_cert(s, ptemp, sc->server->pks->certs[i], i);
+        ssl_check_public_cert(s, ptemp, mctx->pks->certs[i], i);
     }
 
-    have_rsa = ssl_server_import_key(s, sc, rsa_id, SSL_AIDX_RSA);
-    have_dsa = ssl_server_import_key(s, sc, dsa_id, SSL_AIDX_DSA);
+    have_rsa = ssl_server_import_key(s, mctx, rsa_id, SSL_AIDX_RSA);
+    have_dsa = ssl_server_import_key(s, mctx, dsa_id, SSL_AIDX_DSA);
 
     if (!(have_rsa || have_dsa)) {
         ssl_log(s, SSL_LOG_ERROR|SSL_INIT,
@@ -868,23 +870,23 @@ void ssl_init_ConfigureServer(server_rec *s,
                               apr_pool_t *ptemp,
                               SSLSrvConfigRec *sc)
 {
-    ssl_init_server_check(s, p, ptemp, sc);
+    ssl_init_server_check(s, p, ptemp, sc->server);
 
-    ssl_init_ctx(s, p, ptemp, sc);
+    ssl_init_ctx(s, p, ptemp, sc->server);
 
-    ssl_init_ctx_session_cache(s, p, ptemp, sc);
+    ssl_init_ctx_session_cache(s, p, ptemp, sc->server);
 
-    ssl_init_ctx_callbacks(s, p, ptemp, sc);
+    ssl_init_ctx_callbacks(s, p, ptemp, sc->server);
 
-    ssl_init_ctx_verify(s, p, ptemp, sc);
+    ssl_init_ctx_verify(s, p, ptemp, sc->server);
 
-    ssl_init_ctx_cipher_suite(s, p, ptemp, sc);
+    ssl_init_ctx_cipher_suite(s, p, ptemp, sc->server);
 
-    ssl_init_ctx_crl(s, p, ptemp, sc);
+    ssl_init_ctx_crl(s, p, ptemp, sc->server);
 
-    ssl_init_ctx_cert_chain(s, p, ptemp, sc);
+    ssl_init_ctx_cert_chain(s, p, ptemp, sc->server);
 
-    ssl_init_server_certs(s, p, ptemp, sc);
+    ssl_init_server_certs(s, p, ptemp, sc->server);
 }
 
 void ssl_init_CheckServers(server_rec *base_server, apr_pool_t *p)
