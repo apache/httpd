@@ -204,6 +204,11 @@ Changes with Apache 2.0.44
      eliminate the need for explicitly coding MCacheMaxStreamingBuffer
      in most configurations. [Bill Stoddard]
 
+  *) mod_cache: Fix PR 15113, a core dump in cache_in_filter when
+     a redirect occurs. The code was passing a format string and
+     integer to apr_pstrcat. Changed to apr_psprintf.
+     [Paul J. Reder]
+
   *) Replace APU_HAS_LDAPSSL_CLIENT_INIT with APU_HAS_LDAP_NETSCAPE_SSL
      as set by apr-util in util_ldap.c. This should allow mod_ldap
      to work with the Netscape/Mozilla LDAP library. [Øyvin Sømme
