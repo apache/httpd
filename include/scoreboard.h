@@ -69,7 +69,9 @@ extern "C" {
 #include <time.h>
 #endif
 
+#include "ap_config.h"
 #include "mpm_default.h"	/* For HARD_.*_LIMIT */
+#include "apr_hooks.h"
 #include "apr_thread_proc.h"
 #include "apr_portable.h"
 
@@ -220,6 +222,15 @@ AP_DECLARE_DATA extern int ap_extended_status;
 AP_DECLARE_DATA extern apr_time_t ap_restart_time;
 
 AP_DECLARE_DATA extern ap_generation_t volatile ap_my_generation;
+
+/* Hooks */
+/**
+  * Hook for post scoreboard creation, pre mpm.
+  * @param p       Apache pool to allocate from.
+  * @param sb_type 
+  * @ingroup hooks
+  */  
+AP_DECLARE_HOOK(void, pre_mpm, (apr_pool_t *p, ap_scoreboard_e sb_type))
 
 /* for time_process_request() in http_main.c */
 #define START_PREQUEST 1

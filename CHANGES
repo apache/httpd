@@ -1,5 +1,10 @@
 Changes with Apache 2.0.21-dev
 
+  *) Make scoreboard creation a hook.  This allows management
+     modules to have access to the scoreboard at the time that it is
+     created, and at every restart request.  
+     [Cody Sherr <csherr@covalent.net>]
+
   *) Changed AP_MPMQ_MAX_DAEMONS to refer to MaxClients and
      added an AP_MPMQ_MAX_DAEMON_USED to refer to the highest
      daemon index actually used in the scoreboard. I also

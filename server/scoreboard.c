@@ -88,6 +88,15 @@ AP_DECLARE_DATA apr_time_t ap_restart_time = 0;
 #include "apr_shmem.h"
 static apr_shmem_t *scoreboard_shm = NULL;
 #endif
+
+APR_HOOK_STRUCT(
+    APR_HOOK_LINK(pre_mpm)
+)
+ 
+AP_IMPLEMENT_HOOK_VOID(pre_mpm,
+                       (apr_pool_t *p, ap_scoreboard_e sb_type),
+                       (p, sb_type))
+
 /*
  * ToDo:
  * This function should be renamed to cleanup_shared
