@@ -296,20 +296,44 @@ static void dav_format_time(int style, apr_time_t sec, char *buf)
            tms.tm_hour, tms.tm_min, tms.tm_sec);
 }
 
+/* Copy or move src to dst; src_finfo is used to propagate permissions
+ * bits across if non-NULL; dst_finfo must be non-NULL iff dst already
+ * exists. */
 static dav_error * dav_fs_copymove_file(
     int is_move,
     apr_pool_t * p,
     const char *src,
     const char *dst,
+    const apr_finfo_t *src_finfo,
+    const apr_finfo_t *dst_finfo,
     dav_buffer *pbuf)
 {
     dav_buffer work_buf = { 0 };
     apr_file_t *inf = NULL;
     apr_file_t *outf = NULL;
     apr_status_t status;
+    apr_fileperms_t perms;
 
     if (pbuf == NULL)
         pbuf = &work_buf;
+
+    /* Determine permissions to use for destination */
+    if (src_finfo && src_finfo->valid & APR_FINFO_PROT
+        && src_finfo->protection & APR_UEXECUTE) {
+        if (dst_finfo != NULL) {
+            /* chmod it if it already exist */
+            if (apr_file_perms_set(dst, src_finfo->protection)) {
+                return dav_new_error(p, HTTP_INTERNAL_SERVER_ERROR, 0,
+                                     "Could not set permissions on destination");
+            }
+        } 
+        else {
+            perms = src_finfo->protection;
+        }
+    } 
+    else {
+        perms = APR_OS_DEFAULT;
+    }
 
     dav_set_bufsize(p, pbuf, DAV_FS_COPY_BLOCKSIZE);
 
@@ -322,7 +346,7 @@ static dav_error * dav_fs_copymove_file(
 
     /* ### do we need to deal with the umask? */
     status = apr_file_open(&outf, dst, APR_WRITE | APR_CREATE | APR_TRUNCATE 
-                           | APR_BINARY, APR_OS_DEFAULT, p);
+                           | APR_BINARY, perms, p);
     if (status != APR_SUCCESS) {
         apr_file_close(inf);
 
@@ -477,7 +501,7 @@ static dav_error * dav_fs_copymove_state(
     else
     {
         /* gotta copy (and delete) */
-        return dav_fs_copymove_file(is_move, p, src, dst, pbuf);
+        return dav_fs_copymove_file(is_move, p, src, dst, NULL, NULL, pbuf);
     }
 
     return NULL;
@@ -1029,6 +1053,8 @@ static dav_error * dav_fs_copymove_walker(dav_walk_resource *wres,
     else {
         err = dav_fs_copymove_file(ctx->is_move, ctx->pool, 
                                    srcinfo->pathname, dstinfo->pathname, 
+                                   &srcinfo->finfo, 
+                                   ctx->res_dst->exists ? &dstinfo->finfo : NULL,
                                    &ctx->work_buf);
         /* ### push a higher-level description? */
     }
@@ -1110,6 +1136,8 @@ static dav_error *dav_fs_copymove_resource(
     /* not a collection */
     if ((err = dav_fs_copymove_file(is_move, src->info->pool,
                                     src->info->pathname, dst->info->pathname,
+                                    &src->info->finfo, 
+                                    dst->exists ? &dst->info->finfo : NULL,
                                     &work_buf)) != NULL) {
         /* ### push a higher-level description? */
         return err;
