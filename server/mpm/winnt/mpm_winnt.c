@@ -1559,25 +1559,6 @@ static int create_process(apr_pool_t *p, HANDLE *child_proc, HANDLE *child_exit_
     char *cmd;
     HANDLE hExitEvent;
     HANDLE hPipeWrite;
-#ifdef CP
-    char *pEnvVar;
-    char *pEnvBlock;
-    int i;
-    int iEnvBlockLen;
-    int rv;
-    char buf[1024];
-    STARTUPINFO si;           /* Filled in prior to call to CreateProcess */
-    PROCESS_INFORMATION pi;   /* filled in on call to CreateProcess */
-    HANDLE hDup;
-    HANDLE hPipeRead;
-    HANDLE hNullOutput;
-    HANDLE hShareError;
-    HANDLE hCurrentProcess = GetCurrentProcess();
-    SECURITY_ATTRIBUTES sa;
-    sa.nLength = sizeof(sa);
-    sa.bInheritHandle = TRUE;
-    sa.lpSecurityDescriptor = NULL;
-#else
     apr_status_t rv;
     apr_procattr_t *attr;
     apr_file_t *child_out;
@@ -1589,31 +1570,12 @@ static int create_process(apr_pool_t *p, HANDLE *child_proc, HANDLE *child_exit_
     static char **env = NULL;
     static char pidbuf[28];
     char *cwd;
-#endif
     apr_pool_sub_make(&ptemp, p, NULL);
 
     /* Build the command line. Should look something like this:
      * C:/apache/bin/apache.exe -f ap_server_confname 
      * First, get the path to the executable...
      */
-#ifdef CP
-    rv = GetModuleFileName(NULL, buf, sizeof(buf));
-    if (rv == sizeof(buf)) {
-        ap_log_error(APLOG_MARK, APLOG_CRIT, ERROR_BAD_PATHNAME, ap_server_conf,
-                     "Parent: Path to Apache process too long");
-        return -1;
-    } else if (rv == 0) {
-        ap_log_error(APLOG_MARK, APLOG_CRIT, apr_get_os_error(), ap_server_conf,
-                     "Parent: GetModuleFileName() returned NULL for current process.");
-        return -1;
-    }
-
-    /* Build the command line */
-    cmd = apr_psprintf(ptemp, "\"%s\"", buf);  
-    for (i = 1; i < ap_server_conf->process->argc; i++) {
-        cmd = apr_pstrcat(ptemp, cmd, " \"", ap_server_conf->process->argv[i], "\"", NULL);
-    }
-#else
     apr_procattr_create(&attr, ptemp);
     apr_procattr_cmdtype_set(attr, APR_PROGRAM);
     apr_procattr_detach_set(attr, 1);
@@ -1646,76 +1608,7 @@ static int create_process(apr_pool_t *p, HANDLE *child_proc, HANDLE *child_exit_
     else {
         cmd = args[0];
     }
-#endif
 
-#ifdef CP
-    /* Create a pipe to send socket info to the child */
-    if (!CreatePipe(&hPipeRead, &hPipeWrite, &sa, 0)) {
-        ap_log_error(APLOG_MARK, APLOG_CRIT, apr_get_os_error(), ap_server_conf,
-                     "Parent: Unable to create pipe to child process.");
-        return -1;
-    }
-
-    /* Make our end of the handle non-inherited */
-    if (DuplicateHandle(hCurrentProcess, hPipeWrite, hCurrentProcess,
-                        &hDup, 0, FALSE, DUPLICATE_SAME_ACCESS)) {
-        CloseHandle(hPipeWrite);
-        hPipeWrite = hDup;
-    }
-    else {
-        ap_log_error(APLOG_MARK, APLOG_CRIT, apr_get_os_error(), ap_server_conf,
-                     "Parent: Unable to duplicate pipe to child.\n");
-        CloseHandle(hPipeWrite);
-        CloseHandle(hPipeRead);
-        return -1;
-    }
-
-    /* Open a null handle to soak info from the child */
-    hNullOutput = CreateFile("nul", GENERIC_READ | GENERIC_WRITE, 
-                             FILE_SHARE_READ | FILE_SHARE_WRITE, 
-                             &sa, OPEN_EXISTING, 0, NULL);
-    if (hNullOutput == INVALID_HANDLE_VALUE) {
-        ap_log_error(APLOG_MARK, APLOG_CRIT, apr_get_os_error(), ap_server_conf,
-                     "Parent: Unable to create null output pipe for child process.\n");
-        CloseHandle(hPipeWrite);
-        CloseHandle(hPipeRead);
-        return -1;
-    }
-
-    /* Child's initial stderr -> our main server error log (or, failing that, stderr) */
-    if (ap_server_conf->error_log) { /* Is this check really necessary?*/
-        rv = apr_os_file_get(&hShareError, ap_server_conf->error_log);
-        if (rv == APR_SUCCESS && hShareError != INVALID_HANDLE_VALUE) {
-            if (DuplicateHandle(hCurrentProcess, hShareError, 
-                                hCurrentProcess, &hDup, 
-                                GENERIC_WRITE, TRUE, 0)) {
-                hShareError = hDup;
-            }
-            else {
-                rv = apr_get_os_error();
-            }
-        }
-        if (rv != APR_SUCCESS) {
-            ap_log_error(APLOG_MARK, APLOG_CRIT, rv, ap_server_conf,
-                         "Parent: Unable to share error log with child.\n");
-            CloseHandle(hPipeWrite);
-            CloseHandle(hPipeRead);
-            CloseHandle(hNullOutput);
-            return -1;
-        }
-        else if (hShareError == INVALID_HANDLE_VALUE) {
-            ap_log_error(APLOG_MARK, APLOG_CRIT, 0, ap_server_conf,
-                         "Parent: Failed to share error log with child.\n");
-            CloseHandle(hPipeWrite);
-            CloseHandle(hPipeRead);
-            CloseHandle(hNullOutput);
-            return -1;
-        }
-    }
-    else {
-        hShareError = GetStdHandle(STD_ERROR_HANDLE);
-    }
-#else
     /* Create a pipe to send handles to the child */
     if ((rv = apr_procattr_io_set(attr, APR_FULL_BLOCK, 
                                   APR_NO_PIPE, APR_NO_PIPE)) != APR_SUCCESS) {
@@ -1753,51 +1646,16 @@ static int create_process(apr_pool_t *p, HANDLE *child_proc, HANDLE *child_exit_
         apr_pool_destroy(ptemp);
         return -1;
     }
-#endif
 
     /* Create the child_exit_event */
     hExitEvent = CreateEvent(NULL, TRUE, FALSE, NULL);
     if (!hExitEvent) {
         ap_log_error(APLOG_MARK, APLOG_CRIT, apr_get_os_error(), ap_server_conf,
                      "Parent: Could not create exit event for child process");
-#ifdef CP
-        CloseHandle(hPipeWrite);
-        CloseHandle(hPipeRead);
-        CloseHandle(hNullOutput);
-        if (GetStdHandle(STD_ERROR_HANDLE) != hShareError) {
-            CloseHandle(hShareError);
-        }
-#else
         apr_pool_destroy(ptemp);
-#endif
         return -1;
     }
 
-#ifdef CP
-    /*
-     * Build the environment
-     * Win32's CreateProcess call requires that the environment
-     * be passed in an environment block, a null terminated block of
-     * null terminated strings.
-     */  
-    _putenv(apr_psprintf(p,"AP_PARENT_PID=%i", parent_pid));
-
-    i = 0;
-    iEnvBlockLen = 1;
-    while (_environ[i]) {
-        iEnvBlockLen += strlen(_environ[i]) + 1;
-        i++;
-    }
-    pEnvBlock = (char *)apr_pcalloc(p, iEnvBlockLen);
-    pEnvVar = pEnvBlock;
-    i = 0;
-    while (_environ[i]) {
-        strcpy(pEnvVar, _environ[i]);
-        pEnvVar = strchr(pEnvVar, '\0') + 1;
-        i++;
-    }
-    pEnvVar = '\0';
-#else
     if (!env) 
     {
         /* Build the env array, only once since it won't change 
@@ -1813,50 +1671,7 @@ static int create_process(apr_pool_t *p, HANDLE *child_proc, HANDLE *child_exit_
         env[envc] = pidbuf;
         env[envc + 1] = NULL;
     }
-#endif
 
-#ifdef CP
-    /* Give the read end of the pipe (hPipeRead) to the child as stdin. The 
-     * parent will write the socket data to the child on this pipe.
-     */
-    memset(&si, 0, sizeof(si));
-    memset(&pi, 0, sizeof(pi));
-    si.cb = sizeof(si);
-    si.dwFlags     = STARTF_USESHOWWINDOW | STARTF_USESTDHANDLES;
-    si.wShowWindow = SW_HIDE;
-    si.hStdInput   = hPipeRead;
-    si.hStdOutput  = hNullOutput;
-    si.hStdError   = hShareError;
-
-    rv = CreateProcess(NULL, pCommand, NULL, NULL, 
-                       TRUE,               /* Inherit handles */
-                       0,                  /* Creation flags */
-                       pEnvBlock,          /* Environment block */
-                       NULL,
-                       &si, &pi);
-
-    /* Undo everything created for the child alone
-     */
-    CloseHandle(pi.hThread);
-    CloseHandle(hPipeRead);
-    CloseHandle(hNullOutput);
-    if (GetStdHandle(STD_ERROR_HANDLE) != hShareError) {
-        /* Handles opened with GetStdHandle are psuedo handles
-         * and should not be closed else bad things will happen.
-         */
-        CloseHandle(hShareError);
-    }
-    _putenv("AP_PARENT_PID=");
-
-    if (!rv) {
-        ap_log_error(APLOG_MARK, APLOG_CRIT, apr_get_os_error(), ap_server_conf,
-                     "Parent: Failed to create the child process.");
-        CloseHandle(hExitEvent);
-        CloseHandle(hPipeWrite);
-        CloseHandle(pi.hProcess);
-        return -1;
-    }
-#else
     rv = apr_proc_create(&new_child, cmd, args, env, attr, ptemp);
     if (rv != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_CRIT, rv, ap_server_conf,
@@ -1866,54 +1681,7 @@ static int create_process(apr_pool_t *p, HANDLE *child_proc, HANDLE *child_exit_
         CloseHandle(new_child.hproc);
         return -1;
     }
-#endif
 
-#ifdef CP
-    ap_log_error(APLOG_MARK, APLOG_NOTICE, APR_SUCCESS, ap_server_conf,
-                 "Parent: Created child process %d", pi.dwProcessId);
-
-    if (send_handles_to_child(p, hExitEvent, pi.hProcess, hPipeWrite)) {
-        /*
-         * This error is fatal, mop up the child and move on
-         * We toggle the child's exit event to cause this child 
-         * to quit even as it is attempting to start.
-         */
-        SetEvent(hExitEvent);
-        CloseHandle(hExitEvent);
-        CloseHandle(hPipeWrite);
-        CloseHandle(pi.hProcess);
-        return -1;
-    }
-
-    /* Important:
-     * Give the child process a chance to run before dup'ing the sockets.
-     * We have already set the listening sockets noninheritable, but if 
-     * WSADuplicateSocket runs before the child process initializes
-     * the listeners will be inherited anyway.
-     *
-     * XXX: This is badness; needs some mutex interlocking
-     */
-    Sleep(1000);
-
-    if (send_listeners_to_child(p, pi.dwProcessId, hPipeWrite)) {
-        /*
-         * This error is fatal, mop up the child and move on
-         * We toggle the child's exit event to cause this child 
-         * to quit even as it is attempting to start.
-         */
-        SetEvent(hExitEvent);
-        CloseHandle(hExitEvent);
-        CloseHandle(hPipeWrite);        
-        CloseHandle(pi.hProcess);
-        return -1;
-    }
-
-    CloseHandle(hPipeWrite);        
-
-    *child_proc = pi.hProcess;
-    *child_exit_event = hExitEvent;
-    *child_pid = pi.dwProcessId;
-#else
     ap_log_error(APLOG_MARK, APLOG_NOTICE, APR_SUCCESS, ap_server_conf,
                  "Parent: Created child process %d", new_child.pid);
 
@@ -1959,7 +1727,6 @@ static int create_process(apr_pool_t *p, HANDLE *child_proc, HANDLE *child_exit_
     *child_exit_event = hExitEvent;
     *child_proc = new_child.hproc;
     *child_pid = new_child.pid;
-#endif
 
     return 0;
 }
