@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/03/17 02:11:11 $]
+Last modified at [$Date: 2004/03/17 19:57:10 $]
 
 Release:
 
@@ -70,6 +70,11 @@ RELEASE SHOWSTOPPERS:
 PATCHES TO BACKPORT FROM 2.1
   [ please place file names and revisions from HEAD here, so it is easy to
     identify exactly what the proposed changes are! ]
+
+    *) Limit the concurrency in 'ab' to MAX_CONCURRENCY to prevent a 
+       segmentation fault.
+           support/ab.c: r1.140
+       +1: madhum
 
     *) Fix the comment delimiter so that it correctly parses the username
         comment.  Also add a terminate function to allow NetWare to pause
