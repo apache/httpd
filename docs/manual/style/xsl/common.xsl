@@ -1,5 +1,7 @@
 <?xml version="1.0"?>
-<!DOCTYPE xsl:stylesheet [ <!ENTITY nbsp "&#160;"> ]>
+<!DOCTYPE xsl:stylesheet [
+    <!ENTITY nbsp SYSTEM "util/nbsp.xml">
+]>
 <xsl:stylesheet version="1.0"
               xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
                   xmlns="http://www.w3.org/1999/xhtml">
@@ -763,6 +765,31 @@
 
 
   <!--                                                    -->
+  <!-- Filter &#160; in text() nodes.                     -->
+  <!-- In some environments this character won't be       -->
+  <!-- transformed correctly, so we just write it         -->
+  <!-- explicitely as "&nbsp;"                            -->
+  <!--                                                    -->
+  <xsl:template match="text()" name="filter.nbsp">
+  <xsl:param name="text"><xsl:value-of select="."/></xsl:param>
+    <xsl:choose>
+        <xsl:when test="contains($text, '&#160;')">
+            <xsl:value-of select="substring-before($text, '&#160;')"/>
+            &nbsp;
+            <xsl:call-template name="filter.nbsp">
+                <xsl:with-param name="text"
+                              select="substring-after($text, '&#160;')"/>
+            </xsl:call-template>
+        </xsl:when>
+
+        <xsl:otherwise>
+            <xsl:value-of select="$text"/>
+        </xsl:otherwise>
+    </xsl:choose>
+  </xsl:template>
+
+
+  <!--                                                    -->
   <!-- Process everything else by just passing it through -->
   <!--                                                    -->
   <xsl:template match="*|@*">
@@ -785,9 +812,9 @@
     </xsl:if>
 
     <a href="#{substring($letters,1,1)}">
-      <xsl:text>&nbsp;</xsl:text>
+      &nbsp;
       <xsl:value-of select="substring($letters,1,1)"/>
-      <xsl:text>&nbsp;</xsl:text>
+      &nbsp;
     </a>
 
     <xsl:if test="string-length($letters) &gt; 1">
