@@ -1,5 +1,9 @@
 Changes with Apache 2.0.46
 
+  *) mod_auth_ldap: Use generic whitespace character class when parsing
+     "require" directives, instead of literal spaces only. PR 17135.
+     [André Malo]
+
   *) Hook mod_rewrite's type checker before mod_mime's one. That way the
      RewriteRule [T=...] Flag should work as expected now. PR 19626.
      [André Malo]

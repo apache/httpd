@@ -514,8 +514,8 @@ int mod_auth_ldap_auth_checker(request_rec *r)
         method_restricted = 1;
 	
         t = reqs[x].requirement;
-        w = ap_getword(r->pool, &t, ' ');
-    
+        w = ap_getword_white(r->pool, &t);    
+
         if (strcmp(w, "valid-user") == 0) {
             /*
              * Valid user will always be true if we authenticated with ldap,

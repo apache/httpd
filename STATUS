@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/05/13 22:49:38 $]
+Last modified at [$Date: 2003/05/13 23:09:19 $]
 
 Release:
 
@@ -195,11 +195,6 @@ PATCHES TO PORT FROM 2.1
       comfortable with doing)
       (the docs should explain the thing better. Currently it's not
        really understandable for users. If nobody else does, nd tries to.)
-
-    * mod_auth_ldap: Use generic whitespace character class when parsing
-      "require" directives, instead of literal spaces only. PR 17135.
-      modules/experimental/mod_auth_ldap.c r1.16
-      +1: nd, trawick, stoddard
 
     * Use appropriate language code for Czech (cs) in default config
       files. PR 9427. (2.0 + 1.3)
