@@ -67,55 +67,14 @@ beosd_config_rec beosd_config;
 
 /* Set group privileges.
  *
- * Note that we use the username as set in the config files, rather than
- * the lookup of to uid --- the same uid may have multiple passwd entries,
- * with different sets of groups for each.
+ * Note that until we get the multi-user situation sorted on beos,
+ * this is just a no-op to allow common configuration files!
  */
 
 #if B_BEOS_VERSION < 0x0460
 static int set_group_privs(void)
 {
-
-    if (!geteuid()) {
-	char *name;
-
-	/* Get username if passed as a uid */
-
-	if (beosd_config.user_name[0] == '#') {
-	    struct passwd *ent;
-	    uid_t uid = atoi(&beosd_config.user_name[1]);
-
-	    if ((ent = getpwuid(uid)) == NULL) {
-		ap_log_error(APLOG_MARK, APLOG_ALERT, errno, NULL,
-			 "getpwuid: couldn't determine user name from uid %u, "
-			 "you probably need to modify the User directive",
-			 (unsigned)uid);
-		return -1;
-	    }
-
-	    name = ent->pw_name;
-	}
-	else
-	    name = beosd_config.user_name;
-
-	if (setgid(beosd_config.group_id) == -1) {
-	    ap_log_error(APLOG_MARK, APLOG_ALERT, errno, NULL,
-			"setgid: unable to set group id to Group %u",
-			(unsigned)beosd_config.group_id);
-	    return -1;
-	}
-
-	/* Reset `groups' attributes. */
-
-#ifdef HAVE_INITGROUPS
-	if (initgroups(name, beosd_config.group_id) == -1) {
-	    ap_log_error(APLOG_MARK, APLOG_ALERT, errno, NULL,
-			"initgroups: unable to set groups for User %s "
-			"and Group %u", name, (unsigned)beosd_config.group_id);
-	    return -1;
-	}
-#endif
-    }
+    /* no-op */
     return 0;
 }
 #endif
@@ -131,33 +90,23 @@ int beosd_setup_child(void)
 }
 
 
-const char *beosd_set_user(cmd_parms *cmd, void *dummy, char *arg)
+AP_DECLARE(const char *) beosd_set_user(cmd_parms *cmd, 
+                                        void *dummy, const char *arg)
 {
-    const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
-    if (err != NULL) {
-        return err;
-    }
-
-    beosd_config.user_name = arg;
-    beosd_config.user_id = ap_uname2id(arg);
+    /* no-op */
     return NULL;
 }
 
-const char *beosd_set_group(cmd_parms *cmd, void *dummy, char *arg)
+AP_DECLARE(const char *) beosd_set_group(cmd_parms *cmd, 
+                                         void *dummy, const char *arg)
 {
-    const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
-    if (err != NULL) {
-        return err;
-    }
-
-    beosd_config.group_id = ap_gname2id(arg);
-
+    /* no-op */
     return NULL;
 }
 
 void beosd_pre_config(void)
 {
-    beosd_config.user_name = DEFAULT_USER;
-    beosd_config.user_id = ap_uname2id(DEFAULT_USER);
-    beosd_config.group_id = ap_gname2id(DEFAULT_GROUP);
+    /* Until the multi-user situation on BeOS is fixed,
+       simply have a no-op here to allow for common conf files
+     */
 }
