@@ -26,6 +26,11 @@ Documentation that needs writing:
 
 Available Patches:
 
+    * Manoj's [PATCH] mime.types update
+        Message-ID: <19980923190915.B15359@raleigh.ibm.com>
+        Status: Roy thinks we should put a common_mime_types.txt file in
+                the documentation and remove the unused entries from conf.
+
     * Wilfredo Sanchez's [PATCH] Build outside of source tree
         Message-ID: <199810020251.TAA20588@scv2.apple.com>
         Status: Ralf +1 (conceptual, with question)
