@@ -1,4 +1,4 @@
-#!@perlbin@
+#!@perlbin@ -w
 # ====================================================================
 # The Apache Software License, Version 1.1
 #
@@ -62,7 +62,12 @@ package apxs;
 ##
 
 my $prefix         = "@prefix@";
-my $CFG_PREFIX     = "$prefix";
+my $CFG_PREFIX     = $prefix;
+
+# read the configuration variables once
+my %config_vars = ();
+get_config_vars("$prefix/build/config_vars.mk",\%config_vars);
+
 my $exec_prefix    = get_vars("exec_prefix");
 my $CFG_TARGET     = get_vars("progname");
 my $CFG_SYSCONFDIR = get_vars("sysconfdir");
@@ -72,8 +77,12 @@ my $CFG_INCLUDEDIR = eval qq("$includedir");
 my $CFG_CC         = get_vars("CC");
 my $libexecdir     = get_vars("libexecdir");
 my $CFG_LIBEXECDIR = eval qq("$libexecdir");
-my $bindir        = get_vars("bindir");
+my $bindir         = get_vars("bindir");
 my $CFG_SBINDIR    = eval qq("$bindir");
+
+my %internal_vars = map {$_ => 1}
+    qw(TARGET CC CFLAGS CFLAGS_SHLIB LD_SHLIB LDFLAGS_SHLIB LIBS_SHLIB
+       PREFIX SBINDIR INCLUDEDIR LIBEXECDIR SYSCONFDIR);
 
 ##
 ##  parse argument line
@@ -95,43 +104,43 @@ my $opt_i = 0;
 my $opt_a = 0;
 my $opt_A = 0;
 my $opt_q = 0;
+my $opt_h = 0;
 
 #   this subroutine is derived from Perl's getopts.pl with the enhancement of
 #   the "+" metacharater at the format string to allow a list to be build by
 #   subsequent occurance of the same option.
 sub Getopts {
     my ($argumentative, @ARGV) = @_;
-    my (@args, $first, $rest, $pos);
-    my ($errs) = 0;
-    local ($_);
-    local ($[) = 0;
+    my $errs = 0;
+    local $_;
+    local $[ = 0;
 
-    @args = split( / */, $argumentative);
-    while(@ARGV && ($_ = $ARGV[0]) =~ /^-(.)(.*)/) {
-        ($first, $rest) = ($1,$2);
+    my @args = split / */, $argumentative;
+    while (@ARGV && ($_ = $ARGV[0]) =~ /^-(.)(.*)/) {
+        my ($first, $rest) = ($1,$2);
         if ($_ =~ m|^--$|) {
-            shift(@ARGV);
+            shift @ARGV;
             last;
         }
-        $pos = index($argumentative,$first);
-        if($pos >= $[) {
-            if($args[$pos+1] eq ':') {
-                shift(@ARGV);
-                if($rest eq '') {
+        my $pos = index($argumentative,$first);
+        if ($pos >= $[) {
+            if ($args[$pos+1] eq ':') {
+                shift @ARGV;
+                if ($rest eq '') {
                     unless (@ARGV) {
-                        print STDERR "apxs:Error: Incomplete option: $first (needs an argument)\n";
-                        ++$errs;
+                        error("Incomplete option: $first (needs an argument)");
+                        $errs++;
                     }
                     $rest = shift(@ARGV);
                 }
                 eval "\$opt_$first = \$rest;";
             }
             elsif ($args[$pos+1] eq '+') {
-                shift(@ARGV);
-                if($rest eq '') {
+                shift @ARGV;
+                if ($rest eq '') {
                     unless (@ARGV) {
-                        print STDERR "apxs:Error: Incomplete option: $first (needs an argument)\n";
-                        ++$errs;
+                        error("Incomplete option: $first (needs an argument)");
+                        $errs++;
                     }
                     $rest = shift(@ARGV);
                 }
@@ -139,7 +148,7 @@ sub Getopts {
             }
             else {
                 eval "\$opt_$first = 1";
-                if($rest eq '') {
+                if ($rest eq '') {
                     shift(@ARGV);
                 }
                 else {
@@ -148,9 +157,9 @@ sub Getopts {
             }
         }
         else {
-            print STDERR "apxs:Error: Unknown option: $first\n";
-            ++$errs;
-            if($rest ne '') {
+            error("Unknown option: $first");
+            $errs++;
+            if ($rest ne '') {
                 $ARGV[0] = "-$rest";
             }
             else {
@@ -208,68 +217,70 @@ if (@opt_S) {
 ##
 ##  Initial shared object support check
 ##
-my $exec_prefix = get_vars("exec_prefix");
 my $httpd = get_vars("bindir") . "/" . get_vars("progname");
-my $temp = eval qq("$httpd");
-my $httpd = eval qq("$temp");
+$httpd = eval qq("$httpd");
+$httpd = eval qq("$httpd");
 
 #allow apxs to be run from the source tree, before installation
 if ($0 =~ m:support/apxs$:) {
     ($httpd = $0) =~ s:support/apxs$::;
 }
 
-if (not -x "$httpd") {
-	print STDERR "apxs:Error: $httpd not found or not executable\n";
-	exit(1);
+unless (-x "$httpd") {
+	error("$httpd not found or not executable");
+	exit 1;
 }
-if (not grep(/mod_so/, `$httpd -l`)) {
-    print STDERR "apxs:Error: Sorry, no shared object support for Apache\n";
-    print STDERR "apxs:Error: available under your platform. Make sure\n";
-    print STDERR "apxs:Error: the Apache module mod_so is compiled into\n";
-    print STDERR "apxs:Error: your server binary `$httpd'.\n";
-    exit(1);
+
+unless (grep /mod_so/, `$httpd -l`) {
+    error("Sorry, no shared object support for Apache");
+    error("available under your platform. Make sure");
+    error("the Apache module mod_so is compiled into");
+    error("your server binary `$httpd'.");
+    exit 1;
+}
+
+sub get_config_vars{
+    my ($file, $rh_config) = @_;
+
+    open IN, $file or die "cannot open $file: $!";
+    while (<IN>){
+        if (/^\s*(.*?)\s*=\s*(.*)$/){
+            $rh_config->{$1} = $2;
+        }
+    }
+    close IN;
 }
 
 sub get_vars {
     my $result = '';
-    my $arg;
     my $ok = 0;
+    my $arg;
     foreach $arg (@_) {
-        open IN, "$prefix/build/config_vars.mk" or die "open $prefix/build/config_vars.mk: $!";
-        while (<IN>) {
-            my $var;
-            my $val;
-            if (/(.*) = (.*)$/) {
-                $var = $1;
-                $val = $2;
-            }
-            next unless $var;
-            if ($arg eq $var or $arg eq lc($var)) {
-                $result .= "$val;;";
-                $ok = 1;
-                last;
-            }
+        if (exists $config_vars{$arg} or exists $config_vars{lc $arg}) {
+            my $val = exists $config_vars{$arg}
+                ? $config_vars{$arg}
+                : $config_vars{lc $arg};
+            $result .= eval qq("$val");
+            $result .= ";;";
+            $ok = 1;
         }
         if (not $ok) {
-            foreach $name (qw(
-                TARGET CC CFLAGS CFLAGS_SHLIB LD_SHLIB LDFLAGS_SHLIB LIBS_SHLIB
-                PREFIX SBINDIR INCLUDEDIR LIBEXECDIR SYSCONFDIR
-                )) {
-                if ($arg eq $name or $arg eq lc($name)) {
-                    my $val = eval "\$CFG_$name";
-                    $result .= eval qq("${val}") . ";;";
-                    $ok = 1;
-                }
+            if (exists $internal_vars{$arg} or exists $internal_vars{lc $arg}) {
+                my $val = exists $internal_vars{$arg} ? $arg : lc $arg;
+                $val = eval "\$CFG_$val";
+                $result .= eval qq("$val");
+                $result .= ";;";
+                $ok = 1;
             }
             if (not $ok) {
-                printf(STDERR "apxs:Error: Invalid query string `%s'\n", $arg);
+                error("Invalid query string `$arg'");
                 exit(1);
             }
         }
     }
     $result =~ s|;;$||;
     $result =~ s|:| |;
-    return("$result");
+    return $result;
 }
 
 ##
@@ -283,11 +294,11 @@ sub execute_cmds {
     my ($cmd, $rc);
 
     foreach $cmd (@cmds) {
-        print STDERR "$cmd\n";
-        $rc = system("$cmd");
-        if ($rc != 0) {
-            printf(STDERR "apxs:Break: Command failed with rc=%d\n", $rc << 8);
-            exit(1);
+        notice($cmd);
+        $rc = system $cmd;
+        if ($rc) {
+            error(sprintf "Command failed with rc=%d\n", $rc << 8);
+            exit 1 ;
         }
     }
 }
@@ -298,7 +309,7 @@ if ($opt_g) {
     ##
 
     if (-d $name) {
-        print STDERR "apxs:Error: Directory `$name' already exists. Remove first\n";
+        error("Directory `$name' already exists. Remove first");
         exit(1);
     }
 
@@ -308,21 +319,21 @@ if ($opt_g) {
 
     my ($mkf, $mods, $src) = ($data =~ m|^(.+)-=#=-\n(.+)-=#=-\n(.+)|s);
 
-    print STDERR "Creating [DIR]  $name\n";
+    notice("Creating [DIR]  $name");
     system("mkdir $name");
-    print STDERR "Creating [FILE] $name/Makefile\n";
+    notice("Creating [FILE] $name/Makefile");
     open(FP, ">${name}/Makefile") || die;
     print FP $mkf;
     close(FP);
-    print STDERR "Creating [FILE] $name/modules.mk\n";
+    notice("Creating [FILE] $name/modules.mk");
     open(FP, ">${name}/modules.mk") || die;
     print FP $mods;
     close(FP);
-    print STDERR "Creating [FILE] $name/mod_$name.c\n";
+    notice("Creating [FILE] $name/mod_$name.c");
     open(FP, ">${name}/mod_${name}.c") || die;
     print FP $src;
     close(FP);
-    print STDERR "Creating [FILE] $name/.deps\n";
+    notice("Creating [FILE] $name/.deps");
     system("touch ${name}/.deps");
 
     exit(0);
@@ -448,7 +459,7 @@ if ($opt_i or $opt_e) {
     my $f;
     foreach $f (@args) {
         if ($f !~ m#(\.so$|\.la$)#) {
-            print STDERR "apxs:Error: file $f is not a shared object\n";
+            error("file $f is not a shared object");
             exit(1);
         }
         my $t = $f;
@@ -482,8 +493,8 @@ if ($opt_i or $opt_e) {
                 }
             }
             if ($name eq '') {
-                print "apxs:Error: Sorry, cannot determine bootstrap symbol name\n";
-                print "apxs:Error: Please specify one with option `-n'\n";
+                error("Sorry, cannot determine bootstrap symbol name");
+                error("Please specify one with option `-n'");
                 exit(1);
             }
         }
@@ -504,7 +515,7 @@ if ($opt_i or $opt_e) {
     #   activate module via LoadModule/AddModule directive
     if ($opt_a or $opt_A) {
         if (not -f "$CFG_SYSCONFDIR/$CFG_TARGET.conf") {
-            print "apxs:Error: Config file $CFG_SYSCONFDIR/$CFG_TARGET.conf not found\n";
+            error("Config file $CFG_SYSCONFDIR/$CFG_TARGET.conf not found");
             exit(1);
         }
 
@@ -514,8 +525,8 @@ if ($opt_i or $opt_e) {
         close(FP);
 
         if ($content !~ m|\n#?\s*LoadModule\s+|) {
-            print STDERR "apxs:Error: Activation failed for custom $CFG_SYSCONFDIR/$CFG_TARGET.conf file.\n";
-            print STDERR "apxs:Error: At least one `LoadModule' directive already has to exist.\n";
+            error("Activation failed for custom $CFG_SYSCONFDIR/$CFG_TARGET.conf file.");
+            error("At least one `LoadModule' directive already has to exist.");
             exit(1);
         }
 
@@ -530,7 +541,7 @@ if ($opt_i or $opt_e) {
                  $content =~ s|^(.*\n)#?\s*$lmd[^\n]*\n|$1$c$lmd\n|sg;
             }
             $lmd =~ m|LoadModule\s+(.+?)_module.*|;
-            print STDERR "[$what module `$1' in $CFG_SYSCONFDIR/$CFG_TARGET.conf]\n";
+            notice("[$what module `$1' in $CFG_SYSCONFDIR/$CFG_TARGET.conf]");
         }
         my $amd;
         foreach $amd (@amd) {
@@ -548,10 +559,18 @@ if ($opt_i or $opt_e) {
                        "cp $CFG_SYSCONFDIR/$CFG_TARGET.conf.new $CFG_SYSCONFDIR/$CFG_TARGET.conf && " .
                        "rm $CFG_SYSCONFDIR/$CFG_TARGET.conf.new");
             } else {
-                print STDERR "unable to open configuration file\n";
+                notice("unable to open configuration file");
             }
 	}
     }
+}
+
+sub error{
+    print STDERR "apxs:Error: $_[0].\n";
+}
+
+sub notice{
+    print STDERR "$_[0]\n";
 }
 
 ##EOF##
