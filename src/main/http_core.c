@@ -1135,6 +1135,10 @@ static const char *set_add_default_charset(cmd_parms *cmd,
     }
     return NULL;
 }
+static const char *set_accept_mutex(cmd_parms *cmd, void *dummy, char *arg)
+{
+	return ap_init_mutex_method(arg);
+}
 
 static const char *set_document_root(cmd_parms *cmd, void *dummy, char *arg)
 {
@@ -3215,6 +3219,34 @@ static const command_rec core_cmds[] = {
   (void*)XtOffsetOf(core_dir_config, limit_req_body),
   OR_ALL, TAKE1,
   "Limit (in bytes) on maximum size of request message body" },
+{ "AcceptMutex", set_accept_mutex, NULL, RSRC_CONF, TAKE1,
+  "Serialized Accept Mutex; the methods " 
+#ifdef HAVE_USLOCK_SERIALIZED_ACCEPT
+    "'uslock' "                           
+#endif
+#ifdef HAVE_PTHREAD_SERIALIZED_ACCEPT
+    "'pthread' "
+#endif
+#ifdef HAVE_SYSVSEM_SERIALIZED_ACCEPT
+    "'sysvsem' "
+#endif
+#ifdef HAVE_FCNTL_SERIALIZED_ACCEPT
+    "'fcntl' "
+#endif
+#ifdef HAVE_FLOCK_SERIALIZED_ACCEPT
+    "'flock' "
+#endif
+#ifdef HAVE_OS2SEM_SERIALIZED_ACCEPT
+    "'os2sem' "
+#endif
+#ifdef HAVE_TPF_CORE_SERIALIZED_ACCEPT
+    "'tpfcore' "
+#endif
+#ifdef HAVE_NONE_SERIALIZED_ACCEPT
+    "'none' "
+#endif
+    "are compiled in"
+},
 
 /* EBCDIC Conversion directives: */
 #ifdef CHARSET_EBCDIC

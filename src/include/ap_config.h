@@ -118,7 +118,7 @@ stat() properly */
 typedef int rlim_t;
 #define JMP_BUF sigjmp_buf
 #define NO_LONG_DOUBLE
-#define USE_FLOCK_SERIALIZED_ACCEPT
+#define HAVE_FLOCK_SERIALIZED_ACCEPT
 #define _BSD_SOURCE
 #define EAGAIN EWOULDBLOCK
 int initgroups (char *, int);     
@@ -154,7 +154,7 @@ extern char *inet_ntoa();
 #define S_IREAD  S_IRUSR
 #define S_IWRITE S_IWUSR
 #define PF_INET  AF_INET
-#define USE_FCNTL_SERIALIZED_ACCEPT
+#define HAVE_FCNTL_SERIALIZED_ACCEPT
 
 #elif defined(SUNOS4)
 #define HAVE_GMTOFF 1
@@ -170,7 +170,7 @@ char *mktemp(char *);
 typedef int rlim_t;
 #define memmove(a,b,c) bcopy(b,a,c)
 #define NO_LINGCLOSE
-#define USE_FLOCK_SERIALIZED_ACCEPT
+#define HAVE_FLOCK_SERIALIZED_ACCEPT
 #define NEED_DIFFTIME
 #define HAVE_SYSLOG 1
 
@@ -179,6 +179,8 @@ typedef int rlim_t;
 #define NO_KILLPG
 #undef NO_SETSID
 #define bzero(a,b) memset(a,0,b)
+#define HAVE_SYSVSEM_SERIALIZED_ACCEPT
+#define HAVE_FCNTL_SERIALIZED_ACCEPT
 #if !defined(USE_SYSVSEM_SERIALIZED_ACCEPT) && \
     !defined(USE_PTHREAD_SERIALIZED_ACCEPT)
 #define USE_FCNTL_SERIALIZED_ACCEPT
@@ -197,6 +199,10 @@ int gethostname(char *name, int namelen);
  * there's some weird conflict with non-BSD signals */
 #define NO_KILLPG
 #undef NO_SETSID
+#define HAVE_FLOCK_SERIALIZED_ACCEPT
+#define HAVE_FCNTL_SERIALIZED_ACCEPT
+#define HAVE_USLOCK_SERIALIZED_ACCEPT
+#define HAVE_SYSVSEM_SERIALIZED_ACCEPT
 #if !defined(USE_FLOCK_SERIALIZED_ACCEPT) && \
     !defined(USE_USLOCK_SERIALIZED_ACCEPT) && \
     !defined(USE_SYSVSEM_SERIALIZED_ACCEPT)
@@ -226,7 +232,7 @@ int gethostname(char *name, int namelen);
 #undef HAVE_GMTOFF
 #define NO_KILLPG
 #undef NO_SETSID
-#define USE_FCNTL_SERIALIZED_ACCEPT
+#define HAVE_FCNTL_SERIALIZED_ACCEPT
 #ifndef _HPUX_SOURCE
 #define _HPUX_SOURCE
 #endif
@@ -245,12 +251,12 @@ typedef int rlim_t;
 #define HAVE_SHMGET
 #define USE_SHMGET_SCOREBOARD
 #undef  HAVE_GMTOFF
-#define USE_FCNTL_SERIALIZED_ACCEPT
+#define HAVE_FCNTL_SERIALIZED_ACCEPT
 /* feeling brave?  want to try using POSIX mutexes? */
 /* #define HAVE_MMAP */
 /* #define USE_MMAP_SCOREBOARD */
 /* #define USE_MMAP_FILES */
-/* #define USE_PTHREAD_SERIALIZED_ACCEPT */
+/* #define HAVE_PTHREAD_SERIALIZED_ACCEPT */
 #define NO_KILLPG
 #undef  NO_SETSID
 #define HAVE_SYSLOG
@@ -274,6 +280,7 @@ typedef int rlim_t;
 #ifdef NEED_RLIM_T
 typedef int rlim_t;
 #endif
+#define HAVE_FCNTL_SERIALIZED_ACCEPT
 #if !defined(USE_PTHREAD_SERIALIZED_ACCEPT)
 #define USE_FCNTL_SERIALIZED_ACCEPT
 #endif
@@ -307,7 +314,7 @@ typedef int rlim_t;
 #define USE_MMAP_FILES
 #define NO_LONG_DOUBLE
 #define HAVE_SYSLOG 1
-#define USE_FLOCK_SERIALIZED_ACCEPT
+#define HAVE_FLOCK_SERIALIZED_ACCEPT
 #define SINGLE_LISTEN_UNSERIALIZED_ACCEPT
 
 #elif defined(PARAGON)
@@ -329,7 +336,7 @@ typedef int rlim_t;
 #define HAVE_SYSLOG 1
 #define USE_MMAP_FILES 1
 #define USE_MMAP_SCOREBOARD 1
-#define USE_FCNTL_SERIALIZED_ACCEPT 1
+#define HAVE_FCNTL_SERIALIZED_ACCEPT 1
 #define JMP_BUF sigjmp_buf
 #undef NO_SETSID
 #if SEQUENT < 40
@@ -432,6 +439,8 @@ typedef int pid_t;
 #define HAVE_SNPRINTF
 #define JMP_BUF jmp_buf
 #define USE_LONGJMP
+#define HAVE_FLOCK_SERIALIZED_ACCEPT
+#define HAVE_FCNTL_SERIALIZED_ACCEPT
 #define USE_FLOCK_SERIALIZED_ACCEPT
 #define SINGLE_LISTEN_UNSERIALIZED_ACCEPT
 
@@ -475,7 +484,8 @@ typedef int pid_t;
  * in new-httpd archives for performance numbers indicating these
  * are the right choices for linux 2.2.x and later
  */
-#define USE_SYSVSEM_SERIALIZED_ACCEPT
+#define HAVE_SYSVSEM_SERIALIZED_ACCEPT
+#define HAVE_FCNTL_SERIALIZED_ACCEPT
 #define SINGLE_LISTEN_UNSERIALIZED_ACCEPT 
 #include <sys/sem.h>
 #if _SEM_SEMUN_UNDEFINED
@@ -515,7 +525,7 @@ typedef int rlim_t;
 
 #elif defined(SCO5)
 
-#define USE_FCNTL_SERIALIZED_ACCEPT
+#define HAVE_FCNTL_SERIALIZED_ACCEPT
 #define HAVE_MMAP 1
 #define USE_MMAP_SCOREBOARD
 #define USE_MMAP_FILES
@@ -547,7 +557,7 @@ extern char *crypt();
 #undef NO_SETSID
 #define NEED_STRDUP
 /* fcntl() locking is expensive with NFS */
-#define USE_FLOCK_SERIALIZED_ACCEPT
+#define HAVE_FLOCK_SERIALIZED_ACCEPT
 #define SINGLE_LISTEN_UNSERIALIZED_ACCEPT
 #define HAVE_SHMGET 1
 #define USE_SHMGET_SCOREBOARD
@@ -576,6 +586,7 @@ extern char *crypt();
 #endif /* MPRAS */
 #define bzero(a,b) memset(a,0,b)
 /* A lot of SVR4 systems need this */
+#define HAVE_FCNTL_SERIALIZED_ACCEPT
 #ifndef USE_SYSVSEM_SERIALIZED_ACCEPT
 #define USE_FCNTL_SERIALIZED_ACCEPT
 #endif
@@ -593,7 +604,7 @@ extern char *crypt();
 
 #elif defined(UW)
 #if UW < 700
-#define USE_FCNTL_SERIALIZED_ACCEPT
+#define HAVE_FCNTL_SERIALIZED_ACCEPT
 #define NO_LINGCLOSE
 #define NO_KILLPG
 #endif
@@ -627,7 +638,7 @@ extern char *crypt();
 #endif
 #define bzero(a,b) memset(a,0,b)
 /* A lot of SVR4 systems need this */
-#define USE_FCNTL_SERIALIZED_ACCEPT
+#define HAVE_FCNTL_SERIALIZED_ACCEPT
 #define ap_inet_addr inet_network
 #define HAVE_SYSLOG 1
 
@@ -646,7 +657,7 @@ extern char *crypt();
 #define HAVE_MMAP 1
 #define USE_MMAP_SCOREBOARD
 #define USE_MMAP_FILES
-#define USE_FLOCK_SERIALIZED_ACCEPT
+#define HAVE_FLOCK_SERIALIZED_ACCEPT
 #define SINGLE_LISTEN_UNSERIALIZED_ACCEPT
 
 #elif defined(UTS21)
@@ -700,7 +711,7 @@ extern char *crypt();
 (defined(__FreeBSD_version) && (__FreeBSD_version < 220000))
 typedef quad_t rlim_t;
 #endif
-#define USE_FLOCK_SERIALIZED_ACCEPT
+#define HAVE_FLOCK_SERIALIZED_ACCEPT
 #define SINGLE_LISTEN_UNSERIALIZED_ACCEPT
 #define HAVE_SYSLOG 1
 #define SYS_SIGLIST sys_siglist
@@ -726,7 +737,7 @@ int initgroups(char *, int);
 #include <unix.h>
 #define HAVE_MMAP 1
 #define USE_POSIX_SCOREBOARD
-#define USE_FLOCK_SERIALIZED_ACCEPT
+#define HAVE_FLOCK_SERIALIZED_ACCEPT
 #define SINGLE_LISTEN_UNSERIALIZED_ACCEPT
 #define HAVE_SYSLOG 1
 
@@ -734,8 +745,9 @@ int initgroups(char *, int);
 #undef HAVE_GMTOFF
 #undef USE_MMAP_SCOREBOARD
 #undef USE_SHMGET_SCOREBOARD
-#undef USE_FCNTL_SERIALIZED_ACCEPT
-#undef USE_FLOCK_SERIALIZED_ACCEPT
+#undef HAVE_FCNTL_SERIALIZED_ACCEPT
+#undef HAVE_FLOCK_SERIALIZED_ACCEPT
+#define HAVE_NONE_SERIALIZED_ACCEPT
 #define USE_LONGJMP
 #undef NO_KILLPG
 #undef NO_SETSID
@@ -753,7 +765,7 @@ typedef int rlim_t;
 #define NO_KILLPG
 #undef NO_SETSID
 #define bzero(a,b) memset(a,0,b)
-#define USE_FCNTL_SERIALIZED_ACCEPT
+#define HAVE_FCNTL_SERIALIZED_ACCEPT
 #define HAVE_MMAP 1
 #define USE_MMAP_SCOREBOARD
 #define USE_MMAP_FILES
@@ -774,7 +786,7 @@ typedef int rlim_t;
 #define MAXSOCKETS 2048
 #define USE_OS2_SCOREBOARD
 #define NO_RELIABLE_PIPED_LOGS
-#define USE_OS2SEM_SERIALIZED_ACCEPT
+#define HAVE_OS2SEM_SERIALIZED_ACCEPT
 #define SINGLE_LISTEN_UNSERIALIZED_ACCEPT
 #define NO_SLACK
 #define FOPEN_REQUIRES_T
@@ -788,7 +800,7 @@ typedef int rlim_t;
 #ifndef __MACHTEN_68K__
 #define __MACHTEN_68K__
 #endif
-#define USE_FLOCK_SERIALIZED_ACCEPT
+#define HAVE_FLOCK_SERIALIZED_ACCEPT
 #define NO_USE_SIGACTION
 #define JMP_BUF sigjmp_buf
 #define USE_LONGJMP
@@ -796,7 +808,7 @@ typedef int rlim_t;
 #else
 #define HAVE_SHMGET 1
 #define USE_SHMGET_SCOREBOARD
-#define USE_FCNTL_SERIALIZED_ACCEPT
+#define HAVE_FCNTL_SERIALIZED_ACCEPT
 #endif
 
 /* Convex OS v11 */
@@ -821,7 +833,7 @@ typedef int rlim_t;
 #undef NO_SETSID
 #define HAVE_SHMGET 1
 #define USE_SHMGET_SCOREBOARD
-#define USE_FCNTL_SERIALIZED_ACCEPT
+#define HAVE_FCNTL_SERIALIZED_ACCEPT
 #define HAVE_SYSLOG 1
 
 #elif defined(NEWSOS)
@@ -909,7 +921,7 @@ typedef int rlim_t;
 #define USE_SHMGET_SCOREBOARD
 /*#define USE_TPF_SCOREBOARD*/
 #define USE_TPF_ACCEPT
-#define USE_TPF_CORE_SERIALIZED_ACCEPT
+#define HAVE_TPF_CORE_SERIALIZED_ACCEPT
 #define USE_TPF_SELECT
 #define S_IREAD S_IRUSR
 #define S_IWRITE S_IWUSR
@@ -931,7 +943,7 @@ typedef int rlim_t;
 #define USE_SHMGET_SCOREBOARD
 #define USE_MMAP_FILES
 #define NEED_UNION_SEMUN
-#define USE_SYSVSEM_SERIALIZED_ACCEPT
+#define HAVE_SYSVSEM_SERIALIZED_ACCEPT
 #define _POSIX_SOURCE
 #include <signal.h>
 #ifdef SIGDUMP  /* SIGDUMP is not defined by OS/390 v1r2 */
@@ -1157,6 +1169,32 @@ int setrlimit(int, struct rlimit *);
 
 #if defined(USE_SHMGET_SCOREBOARD) && (defined(NO_SHMGET) || !defined(HAVE_SHMGET))
 #undef USE_SHMGET_SCOREBOARD
+#endif
+
+/* A USE_FOO_SERIALIZED_ACCEPT implies a HAVE_FOO_SERIALIZED_ACCEPT */
+#if defined(USE_USLOCK_SERIALIZED_ACCEPT) && !defined(HAVE_USLOCK_SERIALIZED_ACCEPT)
+#define HAVE_USLOCK_SERIALIZED_ACCEPT
+#endif
+#if defined(USE_PTHREAD_SERIALIZED_ACCEPT) && !defined(HAVE_PTHREAD_SERIALIZED_ACCEPT)
+#define HAVE_PTHREAD_SERIALIZED_ACCEPT
+#endif
+#if defined(USE_SYSVSEM_SERIALIZED_ACCEPT) && !defined(HAVE_SYSVSEM_SERIALIZED_ACCEPT)
+#define HAVE_SYSVSEM_SERIALIZED_ACCEPT
+#endif
+#if defined(USE_FCNTL_SERIALIZED_ACCEPT) && !defined(HAVE_FCNTL_SERIALIZED_ACCEPT)
+#define HAVE_FCNTL_SERIALIZED_ACCEPT
+#endif
+#if defined(USE_FLOCK_SERIALIZED_ACCEPT) && !defined(HAVE_FLOCK_SERIALIZED_ACCEPT)
+#define HAVE_FLOCK_SERIALIZED_ACCEPT
+#endif
+#if defined(USE_OS2SEM_SERIALIZED_ACCEPT) && !defined(HAVE_OS2SEM_SERIALIZED_ACCEPT)
+#define HAVE_OS2SEM_SERIALIZED_ACCEPT
+#endif
+#if defined(USE_TPF_CORE_SERIALIZED_ACCEPT) && !defined(HAVE_TPF_CORE_SERIALIZED_ACCEPT)
+#define HAVE_TPF_CORE_SERIALIZED_ACCEPT
+#endif
+#if defined(USE_NONE_SERIALIZED_ACCEPT) && !defined(HAVE_NONE_SERIALIZED_ACCEPT)
+#define HAVE_NONE_SERIALIZED_ACCEPT
 #endif
 
 #ifndef LOGNAME_MAX

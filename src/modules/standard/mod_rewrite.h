@@ -144,12 +144,13 @@
     /* The locking support:
      * Try to determine whether we should use fcntl() or flock().
      * Would be better ap_config.h could provide this... :-(
+     * Small monkey business to ensure that fcntl is preferred,
+     * unless we specified USE_FLOCK_SERIALIZED_ACCEPT during compile.
      */
-#if defined(USE_FCNTL_SERIALIZED_ACCEPT)
+#if defined(HAVE_FCNTL_SERIALIZED_ACCEPT) && !defined(USE_FLOCK_SERIALIZED_ACCEPT)
 #define USE_FCNTL 1
 #include <fcntl.h>
-#endif
-#if defined(USE_FLOCK_SERIALIZED_ACCEPT)
+#elif defined(HAVE_FLOCK_SERIALIZED_ACCEPT)
 #define USE_FLOCK 1
 #include <sys/file.h>
 #endif

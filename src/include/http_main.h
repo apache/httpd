@@ -130,6 +130,10 @@ API_EXPORT(int) ap_check_alarm(void);
 
 void setup_signal_names(char *prefix);
 
+/* functions for determination and setting of accept() mutexing */
+char *ap_default_mutex_method(void);
+char *ap_init_mutex_method(char *t);
+
 #ifndef NO_OTHER_CHILD
 /*
  * register an other_child -- a child which the main loop keeps track of

@@ -244,13 +244,20 @@ build for your OS.
      USE_MMAP_FILES:
       Enable the use of mmap() for sending static files. If HAVE_MMAP
       is not #defined, this will automatically be unset.
+--
 
  USE_*_SERIALIZED_ACCEPT:
   See htdocs/manual/misc/perf-tuning.html for an in-depth discussion of
-  why these are required.  These are choices for implementing a semaphore
-  between children entering accept().  A complete port should define one
-  of these, many may work and it's worthwhile timing them.  Without these
-  the server will not implement multiple Listen directives reliably.
+  why these are required.  These are choices for implementing a mutex
+  between children entering accept().  A complete port should define at
+  least one of these, many may work and it's worthwhile timing them.
+  Without these the server will not implement multiple Listen directives
+  reliably.  Please note that as of 1.3.21, we can set the method at runtime.
+  To so do, we specify which methods are available at compile time
+  with the HAVE_FOO_SERIALIZED_ACCEPT #defines. The USE_FOO_SERIALIZED_ACCEPT
+  is used to pick the default version of all those available. These are
+  set at compile time usually in include/ap_config.h but can also be
+  done at the compile command line.
 
      USE_FCNTL_SERIALIZED_ACCEPT:
       Use fcntl() to implement the semaphore.
