@@ -2960,32 +2960,6 @@ static const char *set_coredumpdir (cmd_parms *cmd, void *dummy, char *arg)
     return NULL;
 }
 
-/* there are no threads in the prefork model, so the mutexes are
-   nops. */
-/* TODO: make these #defines to eliminate the function call */
-
-struct ap_thread_mutex {
-    int dummy;
-};
-
-API_EXPORT(ap_thread_mutex *) ap_thread_mutex_new(void)
-{
-    return malloc(sizeof(ap_thread_mutex));
-}
-
-API_EXPORT(void) ap_thread_mutex_lock(ap_thread_mutex *mtx)
-{
-}
-
-API_EXPORT(void) ap_thread_mutex_unlock(ap_thread_mutex *mtx)
-{
-}
-
-API_EXPORT(void) ap_thread_mutex_destroy(ap_thread_mutex *mtx)
-{
-    free(mtx);
-}
-
 /* Stub functions until this MPM supports the connection status API */
 
 API_EXPORT(void) ap_update_connection_status(long conn_id, const char *key, \

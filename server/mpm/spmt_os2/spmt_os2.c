@@ -1753,42 +1753,6 @@ static const char *set_coredumpdir (cmd_parms *cmd, void *dummy, char *arg)
     return NULL;
 }
 
-
-struct ap_thread_mutex {
-    HMTX mutex_handle;
-};
-
-API_EXPORT(ap_thread_mutex *) ap_thread_mutex_new(void)
-{
-    ULONG rc;
-    ap_thread_mutex *mutex = malloc(sizeof(ap_thread_mutex));
-
-    rc = DosCreateMutexSem(NULL, &mutex->mutex_handle, 0, 0);
-    ap_assert(rc == 0);
-    return mutex;
-}
-
-API_EXPORT(void) ap_thread_mutex_lock(ap_thread_mutex *mtx)
-{
-    ULONG rc;
-    rc = DosRequestMutexSem(mtx->mutex_handle, SEM_INDEFINITE_WAIT);
-    ap_assert(rc == 0);
-}
-
-API_EXPORT(void) ap_thread_mutex_unlock(ap_thread_mutex *mtx)
-{
-    ULONG rc;
-    rc = DosReleaseMutexSem(mtx->mutex_handle);
-    ap_assert(rc == 0 || rc == ERROR_NOT_OWNER);
-}
-
-API_EXPORT(void) ap_thread_mutex_destroy(ap_thread_mutex *mtx)
-{
-    ap_thread_mutex_unlock(mtx);
-    DosCloseMutexSem(mtx->mutex_handle);
-    free(mtx);
-}
-
 /* Stub functions until this MPM supports the connection status API */
 
 API_EXPORT(void) ap_update_connection_status(long conn_id, const char *key, \
