@@ -817,8 +817,8 @@ static request_rec *make_sub_request(const request_rec *r)
     return rr;
 }
 
-AP_CORE_DECLARE(apr_status_t) ap_sub_req_output_filter(ap_filter_t *f,
-                                                 ap_bucket_brigade *bb)
+AP_CORE_DECLARE_NONSTD(apr_status_t) ap_sub_req_output_filter(ap_filter_t *f,
+                                                        ap_bucket_brigade *bb)
 {
     ap_bucket *e = AP_BRIGADE_LAST(bb);
 
