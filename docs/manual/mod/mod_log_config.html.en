@@ -104,7 +104,9 @@
         <td>The contents of <code><var>Foobar</var>:</code> header line(s)
         in the request sent to the server.</td></tr>
 <tr><td><code>%...l</code></td>
-        <td>Remote logname (from identd, if supplied)</td></tr>
+        <td>Remote logname (from identd, if supplied). This will return a
+        dash unless <code class="directive"><a href="../mod/core.html#identitycheck">IdentityCheck</a></code> is set
+        <code>On</code>.</td></tr>
 <tr class="odd"><td><code>%...m</code></td>
         <td>The request method</td></tr>
 <tr><td><code>%...{<var>Foobar</var>}n</code></td>
@@ -193,7 +195,7 @@
     at the final request.  So for example, <code>%&gt;s</code> can be
     used to record the final status of the request and
     <code>%&lt;u</code> can be used to record the original
-    authenticated user on a request that is internally redirect to an
+    authenticated user on a request that is internally redirected to an
     unauthenticated resource.</p>
 
     <p>Note that in httpd 2.0 versions prior to 2.0.46, no escaping was performed
