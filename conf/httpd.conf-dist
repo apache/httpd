@@ -98,13 +98,6 @@ ScoreBoardFile logs/apache_runtime_status
 #AccessConfig conf/access.conf
 
 #
-# ExtendedStatus controls whether Apache will generate "full" status
-# information (ExtendedStatus On) or just basic information (ExtendedStatus
-# Off) when the "server-status" handler is called. The default is Off.
-#
-#ExtendedStatus On
-
-#
 # Timeout: The number of seconds before receives and sends time out.
 #
 Timeout 300
@@ -202,6 +195,13 @@ MaxRequestsPerChild 30
 #
 # Example:
 # LoadModule foo_module libexec/mod_foo.so
+
+#
+# ExtendedStatus controls whether Apache will generate "full" status
+# information (ExtendedStatus On) or just basic information (ExtendedStatus
+# Off) when the "server-status" handler is called. The default is Off.
+#
+#ExtendedStatus On
 
 ### Section 2: 'Main' server configuration
 #
