@@ -486,7 +486,7 @@ static void accept_mutex_init(ap_context_t *p)
     }
     ap_register_cleanup(p, NULL, accept_mutex_cleanup, ap_null_cleanup);
 
-    /* pre ap_context_t nitialize these */
+    /* preinitialize these */
     op_on.sem_num = 0;
     op_on.sem_op = -1;
     op_on.sem_flg = SEM_UNDO;
@@ -1954,7 +1954,7 @@ static void child_main(int child_num_arg)
     requests_this_child = 0;
     last_lr = NULL;
 
-    /* Get a sub ap_context_t for global allocations in this child, so that
+    /* Get a sub context for global allocations in this child, so that
      * we can have cleanups occur when the child exits.
      */
     ap_create_context(&pchild, pconf);

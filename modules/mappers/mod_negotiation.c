@@ -329,8 +329,8 @@ static const char *get_entry(ap_context_t *p, accept_rec *result,
      */
 
     result->name = ap_get_token(p, &accept_line, 0);
-    ap_str_tolower(result->name);     /* You want case ap_context_t nsensitive,
-                                       * you'll *get* case ap_context_t nsensitive.
+    ap_str_tolower(result->name);     /* You want case insensitive,
+                                       * you'll *get* case insensitive.
                                        */
 
     /* KLUDGE!!! Default HTML to level 2.0 unless the browser

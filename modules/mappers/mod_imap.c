@@ -100,7 +100,7 @@
 #include "http_log.h"
 #include "util_script.h"
 
-#define IMAP_MAGIC_TYPE "application/x-httpd ap_context_t map"
+#define IMAP_MAGIC_TYPE "application/x-httpd-imap"
 #define MAXVERTS 100
 #define X 0
 #define Y 1

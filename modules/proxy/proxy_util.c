@@ -273,7 +273,7 @@ char *
 		return "Port number in URL > 65535";
 	}
     }
-    ap_str_tolower(host);		/* DNS names are case ap_context_t nsensitive */
+    ap_str_tolower(host);		/* DNS names are case insensitive */
     if (*host == '\0')
 	return "Missing host in URL";
 /* check hostname syntax */
@@ -626,7 +626,7 @@ void ap_proxy_send_headers(request_rec *r, const char *respline, ap_table_t *t)
 
 
 /*
- * list is a comma-separated list of case ap_context_t nsensitive tokens, with
+ * list is a comma-separated list of case insensitive tokens, with
  * optional whitespace around the tokens.
  * The return returns 1 if the token val is found in the list, or 0
  * otherwise.

@@ -59,7 +59,7 @@
 /*
  * Get the data for registry key value. This is a generic function that
  * can either get a value into a caller-supplied buffer, or it can
- * allocate space for the value from the pass ap_context_t n pool. It will normally
+ * allocate space for the value from the pass in pool. It will normally
  * be used by other functions within this file to get specific key values
  * (e.g. registry_get_server_root()). This function returns a number of
  * different error statuses, allowing the caller to differentiate
