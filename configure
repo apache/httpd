@@ -69,7 +69,7 @@ DIFS='
 ##  the paths to the Apache source tree
 ##
 
-root=.
+top=.
 mkf=Makefile
 src=src
 aux=src/helpers
@@ -733,7 +733,7 @@ if [ .$quiet = .no ]; then
 fi
 sed <Makefile.tmpl >$mkf \
 -e "s%@PERL@%$PERL%g" \
--e "s%@ROOT@%$root%g" \
+-e "s%@TOP@%$top%g" \
 -e "s%@SRC@%$src%g" \
 -e "s%@MKF@%$mkf%g" \
 -e "s%@AUX@%$aux%g" \

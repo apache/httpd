@@ -70,6 +70,7 @@ Committed Code Changes:
     * Ralf's manual renaming of forgotten non-ap_-symbols because of #define
     * Ralf's fix for SOCKS4 and adding of additional SOCKS5 support, PR#2140
     * Ralf's workaround for sed limitation in configure script, PR#2136
+    * Ralf's support for making APACI install root overrideable by pkg authors
 
 Available Patches:
 

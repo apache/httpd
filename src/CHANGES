@@ -1,5 +1,13 @@
 Changes with Apache 1.3b7
 
+  *) Make the install root for "make install" in APACI's Makefile overrideable
+     by package authors.  This way we are even more friendly to package
+     maintainers (especially Debian and RedHat) who build for the real prefix
+     via "configure --prefix=/<real>" but use a different local prefix via
+     "make root=/tmp/apache install" for rolling the package without bristling
+     the target location on their system. 
+     [Ralf S. Engelschall]
+
   *) Workaround sed limitations in APACI's configure script by now
      substituting in chunks of 50 commands (because for instance HPUX's vendor
      sed has a limit of max. 98 commands)
