@@ -78,7 +78,7 @@ for HTTP Basic authentication.</dd>
 <dt><a href="mod_authn_anon.html">mod_authn_anon</a></dt><dd>Allows "anonymous" user access to authenticated
     areas</dd>
 <dt><a href="mod_authn_dbm.html">mod_authn_dbm</a></dt><dd>User authentication using DBM files</dd>
-<dt><a href="mod_authn_default.html">mod_authn_default</a></dt><dd>Authentication fallback module</dd>
+<dt><a href="mod_authn_default.html">mod_authn_default</a></dt><dd>認証フォールバックモジュール</dd>
 <dt><a href="mod_authn_file.html">mod_authn_file</a></dt><dd>テキストファイルを用いたユーザ認証</dd>
 <dt><a href="mod_authz_dbm.html">mod_authz_dbm</a></dt><dd>Group authorization using DBM files</dd>
 <dt><a href="mod_authz_default.html">mod_authz_default</a></dt><dd>Authorization fallback module</dd>
@@ -92,8 +92,7 @@ for HTTP Basic authentication.</dd>
 <dt><a href="mod_cache.html" id="C" name="C">mod_cache</a></dt><dd>Content cache keyed to URIs.</dd>
 <dt><a href="mod_cern_meta.html">mod_cern_meta</a></dt><dd>CERN httpd metafile semantics</dd>
 <dt><a href="mod_cgi.html">mod_cgi</a></dt><dd>CGI スクリプトの実行</dd>
-<dt><a href="mod_cgid.html">mod_cgid</a></dt><dd>Execution of CGI scripts using an
-    external CGI daemon</dd>
+<dt><a href="mod_cgid.html">mod_cgid</a></dt><dd>外部 CGI デーモンを使った CGI スクリプトの実行</dd>
 <dt><a href="mod_charset_lite.html">mod_charset_lite</a></dt><dd>Specify character set translation or recoding</dd>
 <dt><a href="mod_dav.html" id="D" name="D">mod_dav</a></dt><dd>分散オーサリングとバージョン管理
 (<a href="http://www.webdav.org/">WebDAV</a>) 機能</dd>
@@ -107,8 +106,7 @@ for HTTP Basic authentication.</dd>
 <dt><a href="mod_env.html">mod_env</a></dt><dd>CGI スクリプト及び SSI
 ページに渡される環境変数を変更する機能を提供する</dd>
 <dt><a href="mod_example.html">mod_example</a></dt><dd>Illustrates the Apache module API</dd>
-<dt><a href="mod_expires.html">mod_expires</a></dt><dd>Generation of <code>Expires</code> HTTP headers according to
-user-specified criteria</dd>
+<dt><a href="mod_expires.html">mod_expires</a></dt><dd>ユーザの指定した基準に基づいた <code>Expires</code> HTTP ヘッダの生成</dd>
 <dt><a href="mod_ext_filter.html">mod_ext_filter</a></dt><dd>Pass the response body through an external program before
 delivery to the client</dd>
 <dt><a href="mod_file_cache.html" id="F" name="F">mod_file_cache</a></dt><dd>Caches a static list of files in memory</dd>
