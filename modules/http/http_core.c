@@ -3289,8 +3289,7 @@ static apr_status_t core_output_filter(ap_filter_t *f, apr_bucket_brigade *b)
              * we want to process to second request fully.
              */
             if (APR_BUCKET_IS_EOS(e)) {
-                APR_BUCKET_REMOVE(e);
-                apr_bucket_destroy(e);
+                apr_bucket_delete(e);
             }
             ap_save_brigade(f, &ctx->b, &b);
             return APR_SUCCESS;

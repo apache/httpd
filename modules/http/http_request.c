@@ -806,8 +806,7 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_sub_req_output_filter(ap_filter_t *f,
     apr_bucket *e = APR_BRIGADE_LAST(bb);
 
     if (APR_BUCKET_IS_EOS(e)) {
-        APR_BUCKET_REMOVE(e);
-        apr_bucket_destroy(e);
+        apr_bucket_delete(e);
     }
     ap_pass_brigade(f->next, bb);
     return APR_SUCCESS;
