@@ -121,9 +121,9 @@
 #define ERR_EMPTY       7
 
 
-typedef struct apu_htdbm_t apu_htdbm_t;
+typedef struct htdbm_t htdbm_t;
 
-struct apu_htdbm_t {
+struct htdbm_t {
     apr_dbm_t               *dbm;
     apr_pool_t              *pool;
 #if APR_CHARSET_EBCDIC
@@ -139,17 +139,14 @@ struct apu_htdbm_t {
 };
 
 
-#define APU_HTDBM_DECLARE(x) static x
-#define APU_HTDBM_STANDALONE 1
+#define HTDBM_MAKE   0
+#define HTDBM_DELETE 1
+#define HTDBM_VERIFY 2
+#define HTDBM_LIST   3
+#define HTDBM_NOFILE 4
+#define HTDBM_STDIN  5
 
-#define APU_HTDBM_MAKE   0
-#define APU_HTDBM_DELETE 1
-#define APU_HTDBM_VERIFY 2
-#define APU_HTDBM_LIST   3
-#define APU_HTDBM_NOFILE 4
-#define APU_HTDBM_STDIN  5
-
-APU_HTDBM_DECLARE(void) apu_htdbm_terminate(apu_htdbm_t *htdbm) 
+static void htdbm_terminate(htdbm_t *htdbm) 
 {
     
     if (htdbm->dbm)
@@ -157,34 +154,28 @@ APU_HTDBM_DECLARE(void) apu_htdbm_terminate(apu_htdbm_t *htdbm)
     htdbm->dbm = NULL;
 }
 
-#if APU_HTDBM_STANDALONE
-
-static apu_htdbm_t *h;
+static htdbm_t *h;
   
-APU_HTDBM_DECLARE(void) apu_htdbm_interrupted(void) 
+static void htdbm_interrupted(void) 
 {
-    apu_htdbm_terminate(h);
+    htdbm_terminate(h);
     fprintf(stderr, "htdbm Interrupted !\n");
     exit(ERR_INTERRUPTED);
 }
-#endif
 
-APU_HTDBM_DECLARE(apr_status_t) apu_htdbm_init(apr_pool_t **pool, apu_htdbm_t **hdbm) 
+static apr_status_t htdbm_init(apr_pool_t **pool, htdbm_t **hdbm) 
 {
 
 #if APR_CHARSET_EBCDIC
     apr_status_t rv;
 #endif
 
-#if APU_HTDBM_STANDALONE    
     apr_initialize();
     atexit(apr_terminate);
     apr_pool_create( pool, NULL);
-    apr_signal(SIGINT, (void (*)(int)) apu_htdbm_interrupted);
+    apr_signal(SIGINT, (void (*)(int)) htdbm_interrupted);
 
-#endif
-
-    (*hdbm) = (apu_htdbm_t *)apr_pcalloc(*pool, sizeof(apu_htdbm_t));
+    (*hdbm) = (htdbm_t *)apr_pcalloc(*pool, sizeof(htdbm_t));
     (*hdbm)->pool = *pool;
 
 #if APR_CHARSET_EBCDIC
@@ -210,7 +201,7 @@ APU_HTDBM_DECLARE(apr_status_t) apu_htdbm_init(apr_pool_t **pool, apu_htdbm_t **
     return APR_SUCCESS;
 }
 
-APU_HTDBM_DECLARE(apr_status_t) apu_htdbm_open(apu_htdbm_t *htdbm) 
+static apr_status_t) htdbm_open(htdbm_t *htdbm) 
 {
     if (htdbm->create)
         return apr_dbm_open(&htdbm->dbm, htdbm->filename, APR_DBM_RWCREATE, 
@@ -221,7 +212,7 @@ APU_HTDBM_DECLARE(apr_status_t) apu_htdbm_open(apu_htdbm_t *htdbm)
                             APR_OS_DEFAULT, htdbm->pool);
 }
 
-APU_HTDBM_DECLARE(char *) ap_getword(apr_pool_t *atrans, char **line, char stop)
+static char * ap_getword(apr_pool_t *atrans, char **line, char stop)
 {
     char *pos = strrchr(*line, stop);
     char *res;
@@ -240,7 +231,7 @@ APU_HTDBM_DECLARE(char *) ap_getword(apr_pool_t *atrans, char **line, char stop)
     return res;
 }
 
-APU_HTDBM_DECLARE(apr_status_t) apu_htdbm_save(apu_htdbm_t *htdbm, int *changed) 
+static apr_status_t htdbm_save(htdbm_t *htdbm, int *changed) 
 {
     apr_datum_t key, val;
 
@@ -263,7 +254,7 @@ APU_HTDBM_DECLARE(apr_status_t) apu_htdbm_save(apu_htdbm_t *htdbm, int *changed)
     return apr_dbm_store(htdbm->dbm, key, val);
 }
 
-APU_HTDBM_DECLARE(apr_status_t) apu_htdbm_del(apu_htdbm_t *htdbm) 
+static apr_status_t htdbm_del(htdbm_t *htdbm) 
 {
     apr_datum_t key;
 
@@ -275,7 +266,7 @@ APU_HTDBM_DECLARE(apr_status_t) apu_htdbm_del(apu_htdbm_t *htdbm)
     return apr_dbm_delete(htdbm->dbm, key);
 }
 
-APU_HTDBM_DECLARE(apr_status_t) apu_htdbm_verify(apu_htdbm_t *htdbm) 
+static apr_status_t htdbm_verify(htdbm_t *htdbm) 
 {
     apr_datum_t key, val;
     char pwd[MAX_STRING_LEN] = {0};
@@ -296,7 +287,7 @@ APU_HTDBM_DECLARE(apr_status_t) apu_htdbm_verify(apu_htdbm_t *htdbm)
     return apr_password_validate(htdbm->userpass, pwd);
 }
 
-APU_HTDBM_DECLARE(apr_status_t) apu_htdbm_list(apu_htdbm_t *htdbm) 
+static apr_status_t htdbm_list(htdbm_t *htdbm) 
 {
     apr_status_t rv;
     apr_datum_t key, val;
@@ -349,7 +340,7 @@ static void to64(char *s, unsigned long v, int n)
     }
 }
 
-APU_HTDBM_DECLARE(apr_status_t) apu_htdbm_make(apu_htdbm_t *htdbm) 
+static apr_status_t htdbm_make(htdbm_t *htdbm) 
 {
     char cpw[MAX_STRING_LEN];
     char salt[9];
@@ -386,7 +377,7 @@ APU_HTDBM_DECLARE(apr_status_t) apu_htdbm_make(apu_htdbm_t *htdbm)
     return APR_SUCCESS;
 }
 
-APU_HTDBM_DECLARE(apr_status_t) apu_htdbm_valid_username(apu_htdbm_t *htdbm)
+static apr_status_t htdbm_valid_username(htdbm_t *htdbm)
 {
     if (!htdbm->username || (strlen(htdbm->username) > 64) || (strlen(htdbm->username) < 1)) {
         fprintf(stderr, "Invalid username length\n");
@@ -451,11 +442,11 @@ int main(int argc, const char *argv[])
     int  need_cmnt = 0;
     int  pwd_supplied = 0;
     int  changed;
-    int  cmd = APU_HTDBM_MAKE;
+    int  cmd = HTDBM_MAKE;
     int  i;
     int args_left = 2;
 
-    if ((rv = apu_htdbm_init(&pool, &h)) != APR_SUCCESS) {
+    if ((rv = htdbm_init(&pool, &h)) != APR_SUCCESS) {
         fprintf(stderr, "Unable to initialize htdbm terminating!\n");
         apr_strerror(rv, errbuf, sizeof(errbuf));
         exit(1);
@@ -488,13 +479,13 @@ int main(int argc, const char *argv[])
                 break;
             case 'n':
                 need_file = 0;
-                cmd = APU_HTDBM_NOFILE;
-                args_left--;
+                cmd = HTDBM_NOFILE;
+                    args_left--;
                 break;
             case 'l':
                 need_pwd = 0;
                 need_user = 0;
-                cmd = APU_HTDBM_LIST;
+                cmd = HTDBM_LIST;
                 h->rdonly = 1;
                 args_left--;
                 break;
@@ -504,11 +495,11 @@ int main(int argc, const char *argv[])
                 break;
             case 'v':
                 h->rdonly = 1;
-                cmd = APU_HTDBM_VERIFY;
+                cmd = HTDBM_VERIFY;
                 break;
             case 'x':
                 need_pwd = 0;
-                cmd = APU_HTDBM_DELETE;
+                cmd = HTDBM_DELETE;
                 break;
             case 'm':
                 h->alg = ALG_APMD5;
@@ -542,7 +533,7 @@ int main(int argc, const char *argv[])
         i--;
     else {
         h->filename = apr_pstrdup(h->pool, argv[i]);
-        if ((rv = apu_htdbm_open(h)) != APR_SUCCESS) {
+        if ((rv = htdbm_open(h)) != APR_SUCCESS) {
             fprintf(stderr, "Error oppening database %s\n", argv[i]);
             apr_strerror(rv, errbuf, sizeof(errbuf));
             exit(ERR_FILEPERM);
@@ -550,7 +541,7 @@ int main(int argc, const char *argv[])
     }
     if (need_user) {
         h->username = apr_pstrdup(pool, argv[i+1]);
-        if (apu_htdbm_valid_username(h) != APR_SUCCESS)
+        if (htdbm_valid_username(h) != APR_SUCCESS)
             exit(ERR_BADUSER);
     }
     if (pwd_supplied)
@@ -580,8 +571,8 @@ int main(int argc, const char *argv[])
         h->comment = apr_pstrdup(pool, argv[i+2]);
 
     switch (cmd) {
-        case APU_HTDBM_VERIFY:
-            if ((rv = apu_htdbm_verify(h)) != APR_SUCCESS) {
+        case HTDBM_VERIFY:
+            if ((rv = htdbm_verify(h)) != APR_SUCCESS) {
                 if(rv == APR_ENOENT) {
                     fprintf(stderr, "The user '%s' cold not be found in database\n", h->username);
                     exit(ERR_BADUSER);
@@ -594,33 +585,33 @@ int main(int argc, const char *argv[])
             else
                 fprintf(stderr, "Password validated for user '%s'\n", h->username);
             break;
-        case APU_HTDBM_DELETE:
-            if (apu_htdbm_del(h) != APR_SUCCESS) {
+        case HTDBM_DELETE:
+            if (htdbm_del(h) != APR_SUCCESS) {
                 fprintf(stderr, "Cannot find user '%s' in database\n", h->username);
                 exit(ERR_BADUSER);
             }
             h->username = NULL;
             changed = 1;
             break;
-        case APU_HTDBM_LIST:
-            apu_htdbm_list(h);
+        case HTDBM_LIST:
+            htdbm_list(h);
             break;
         default:
-            apu_htdbm_make(h);
+            htdbm_make(h);
             break;
 
     }    
     if (need_file && !h->rdonly) {
-        if ((rv = apu_htdbm_save(h, &changed)) != APR_SUCCESS) {
+        if ((rv = htdbm_save(h, &changed)) != APR_SUCCESS) {
             apr_strerror(rv, errbuf, sizeof(errbuf));
             exit(ERR_FILEPERM);
         }
         fprintf(stdout, "Database %s %s.\n", h->filename, 
                 h->create ? "created" : (changed ? "modified" : "updated"));
     }
-    if (cmd == APU_HTDBM_NOFILE)
+    if (cmd == HTDBM_NOFILE)
         fprintf(stderr, "%s:%s\n", h->username, h->userpass);
-    apu_htdbm_terminate(h);
+    htdbm_terminate(h);
     apr_terminate();
     
     return 0; /* Supress compiler warning. */
