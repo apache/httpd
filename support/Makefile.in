@@ -28,3 +28,7 @@ ab_OBJECTS = ab.lo
 ab: $(ab_OBJECTS)
 	$(LINK) $(ab_OBJECTS) $(PROGRAM_LDADD)
 
+suexec_OBJECTS = suexec.lo
+suexec: $(suexec_OBJECTS)
+	$(LINK) $(suexec_OBJECTS) $(PROGRAM_LDADD)
+

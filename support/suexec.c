@@ -68,7 +68,6 @@
  *
  */
 
-#include "ap_config_auto.h"
 #include "ap_config.h"
 #include <sys/param.h>
 #include <sys/stat.h>
@@ -80,6 +79,7 @@
 #include <stdarg.h>
 
 #include "suexec.h"
+#include "ap_config_auto.h"
 
 #if HAVE_PWD_H
 #include <pwd.h>
@@ -263,7 +263,6 @@ int main(int argc, char *argv[])
     struct group *gr;		/* group entry holder        */
     struct stat dir_info;	/* directory info holder     */
     struct stat prg_info;	/* program info holder       */
-    char buf[120];
 
     /*
      * If there are a proper number of arguments, set
