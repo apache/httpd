@@ -324,14 +324,11 @@ send_dir(BUFF *f, request_rec *r, BUFF *f2, struct cache_req *c, char *url)
             o+=w;
         }
     }
-    if (!r->connection->aborted) {
-        ap_snprintf(buf, sizeof(buf), "</PRE><HR><I><A HREF=\"http://www.apache.org\">%s</A></I></BODY></HTML>", SERVER_VERSION);
-        bwrite(con->client, buf, strlen(buf));
-        if (f2 != NULL) bwrite(f2, buf, strlen(buf));
-        total_bytes_sent+=strlen(buf);
-        bflush(con->client);
-    } else
-        f2 = proxy_cache_error(c);
+    ap_snprintf(buf, sizeof(buf), "</PRE><HR><I><A HREF=\"http://www.apache.org\">%s</A></I></BODY></HTML>", SERVER_VERSION);
+    bwrite(con->client, buf, strlen(buf));
+    if (f2 != NULL) bwrite(f2, buf, strlen(buf));
+    total_bytes_sent+=strlen(buf);
+    bflush(con->client);
     
     return total_bytes_sent;
 }

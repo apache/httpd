@@ -425,8 +425,6 @@ proxy_send_fb(BUFF *f, request_rec *r, BUFF *f2, struct cache_req *c)
     }
     if (!con->aborted)
         bflush(con->client);
-    else
-	f2 = proxy_cache_error(c);
     
     kill_timeout(r);
     return total_bytes_sent;
