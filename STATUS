@@ -1,5 +1,5 @@
 APACHE 1.3 STATUS:						-*-text-*-
-  Last modified at [$Date: 2001/10/29 06:20:47 $]
+  Last modified at [$Date: 2001/11/10 18:20:34 $]
 
 Release:
 
@@ -39,7 +39,10 @@ Release:
 
 RELEASE SHOWSTOPPERS:
 
-    * none at present
+    * The Multiviews fix in 1.3.22 has a bug: the Query string is
+      lost on multiviews-negotiated requests.
+        Message-ID: <064c01c1608e$aee154f0$93c0b0d0@roweclan.net>
+        PR: 8628, 8582, 8538 
 
 RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
 
