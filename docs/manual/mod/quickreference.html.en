@@ -228,45 +228,6 @@ authentication</td></tr>
                  
                Sets the name of a text file containing the list
 of user groups for authentication</td></tr>
-<tr class="odd"><td><a href="mod_auth_ldap.html#authldapauthoritative" style="text-decoration: none">AuthLDAPAuthoritative on|off</a></td><td> on </td><td>X</td><td>dh</td></tr><tr class="odd"><td colspan="4">
-                 
-               Prevent other authentication modules from
-authenticating the user if this one fails</td></tr>
-<tr class="even"><td><a href="mod_auth_ldap.html#authldapbinddn" style="text-decoration: none">AuthLDAPBindDN <em>distinguished-name</em></a></td><td /><td>X</td><td>dh</td></tr><tr class="even"><td colspan="4">
-                 
-               Optional DN to use in binding to the LDAP server</td></tr>
-<tr class="odd"><td><a href="mod_auth_ldap.html#authldapbindpassword" style="text-decoration: none">AuthLDAPBindPassword <em>password</em></a></td><td /><td>X</td><td>dh</td></tr><tr class="odd"><td colspan="4">
-                 
-               Password used in conjuction with the bind DN</td></tr>
-<tr class="even"><td><a href="mod_auth_ldap.html#authldapcomparednonserver" style="text-decoration: none">AuthLDAPCompareDNOnServer on|off</a></td><td> on </td><td>X</td><td>dh</td></tr><tr class="even"><td colspan="4">
-                 
-               Use the LDAP server to compare the DNs</td></tr>
-<tr class="odd"><td><a href="mod_auth_ldap.html#authldapdereferencealiases" style="text-decoration: none">AuthLDAPDereferenceAliases never|searching|finding|always</a></td><td> Always </td><td>X</td><td>dh</td></tr><tr class="odd"><td colspan="4">
-                 
-               When will the module de-reference aliases</td></tr>
-<tr class="even"><td><a href="mod_auth_ldap.html#authldapenabled" style="text-decoration: none"> AuthLDAPEnabled on|off</a></td><td> on </td><td>X</td><td>dh</td></tr><tr class="even"><td colspan="4">
-                 
-               Turn on or off LDAP authentication</td></tr>
-<tr class="odd"><td><a href="mod_auth_ldap.html#authldapfrontpagehack" style="text-decoration: none">AuthLDAPFrontPageHack on|off</a></td><td /><td>X</td><td>dh</td></tr><tr class="odd"><td colspan="4">
-                 
-               Allow LDAP authentication to work with MS FrontPage</td></tr>
-<tr class="even"><td><a href="mod_auth_ldap.html#authldapgroupattribute" style="text-decoration: none">AuthLDAPGroupAttribute <em>attribute</em></a></td><td /><td>X</td><td>dh</td></tr><tr class="even"><td colspan="4">
-                 
-               LDAP attributes used to check for group membership</td></tr>
-<tr class="odd"><td><a href="mod_auth_ldap.html#authldapgroupattributeisdn" style="text-decoration: none">AuthLDAPGroupAttributeIsDN on|off</a></td><td> on </td><td>X</td><td>dh</td></tr><tr class="odd"><td colspan="4">
-                 
-               Use the DN of the client username when checking for
-group membership</td></tr>
-<tr class="even"><td><a href="mod_auth_ldap.html#authldapremoteuserisdn" style="text-decoration: none">AuthLDAPRemoteUserIsDN on|off</a></td><td /><td>X</td><td>dh</td></tr><tr class="even"><td colspan="4">
-                 
-               Use the DN of the client username to set the REMOTE_USER
-environment variable</td></tr>
-<tr class="odd"><td><a href="mod_auth_ldap.html#authldapstarttls directive" style="text-decoration: none">AuthLDAPStartTLS on|off</a></td><td /><td>X</td><td>dh</td></tr><tr class="odd"><td colspan="4">
-                 
-               Use a secure TLS connection to the LDAP server</td></tr>
-<tr class="even"><td><a href="mod_auth_ldap.html#authldapurl" style="text-decoration: none">AuthLDAPUrl <em>url</em></a></td><td /><td>X</td><td>dh</td></tr><tr class="even"><td colspan="4">
-                 
-               URL specifying the LDAP search parameters</td></tr>
 <tr class="odd"><td><a href="core.html#authname" style="text-decoration: none">AuthName <em>auth-domain</em></a></td><td /><td>C</td><td>dh</td></tr><tr class="odd"><td colspan="4">
                  
                Authorization realm for use in HTTP

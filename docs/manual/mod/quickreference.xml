@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<!DOCTYPE directiveindex SYSTEM "../style/modulesynopsis.dtd"
+<!DOCTYPE quickreference SYSTEM "../style/modulesynopsis.dtd"
   [ <!ENTITY allmodules SYSTEM "allmodules.xml"> ]
 >
 <?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>

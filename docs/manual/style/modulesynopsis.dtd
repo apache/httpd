@@ -48,5 +48,8 @@ usage?, seealso*)>
 <!-- Used in directive.xml -->
 <!ELEMENT directiveindex (title | summary | modulefilelist | letters)+>
 
+<!-- Used in quickreference.xml -->
+<!ELEMENT quickreference (title | summary | modulefilelist | letters)+>
+
 <!ELEMENT letters (letter+)>
 <!ELEMENT letter (#PCDATA)>
