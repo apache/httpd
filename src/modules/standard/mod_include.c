@@ -431,7 +431,7 @@ static int get_directive(FILE *in, char *dest, size_t len, request_rec *r)
 	if (d == len + dest) {
             ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r,
                           "mod_include: directive length exceeds limit"
-                          " (%d) in %s", len+1, r->filename);
+                          " (%lu) in %s", (unsigned long)len+1, r->filename);
 	    return 1;
 	}
         *d++ = ap_tolower(c);
