@@ -5,4 +5,9 @@ export BUILD_BASE
 
 rm -f generated_lists
 
+case "`./config.guess`" in
+*bsdi*)
+    ./build/bsd_makefile;;
+esac
+
 ${MAKE:-make} -f build/build.mk ${1+"$@"}

@@ -209,11 +209,6 @@ RUN_SUBDIR_CONFIG_NOW(lib/pcre)
 
 APACHE_GEN_CONFIG_VARS
 
-dnl There needs to be a .deps file in the top build directory.
-dnl All others are created dynamically by rules.mk.
-
-touch .deps
-
 dnl ## Build modules.c
 rm -f $srcdir/modules.c
 echo $MODLIST | $AWK -f $srcdir/helpers/build-modules-c.awk > $srcdir/modules.c
@@ -246,6 +241,13 @@ AC_TYPE_RLIM_T
 
 perlbin=`$srcdir/helpers/PrintPath perl`
 AC_SUBST(perlbin)
+
+dnl If we are running on BSD/OS, we need to use the BSD .include syntax.
+
+case "$host_alias" in
+*bsdi*)
+    BSD_MAKEFILE=yes;;
+esac
 
 AC_OUTPUT($APACHE_OUTPUT_FILES support/apxs,,[
   APACHE_GEN_MAKEFILES

@@ -55,58 +55,17 @@
 # The build environment was provided by Sascha Schumann.
 #
 
-srcdir=$1
-shift
+# cwd must be top_srcdir
+test -f build/bsd_makefile || exit 2
 
-mkdir_p=$1
-shift
+test -f bsd_converted && exit 0
 
-bsd_makefile=$1
-shift
+tmpfile=`mktemp /tmp/$0.XXXXXX` || exit 1
+for i in build/*.mk; do
+    sed 's/^include \(.*\)/.include "\1"/' $i >$tmpfile \
+        && cp $tmpfile $i
+done
+rm -f $tmpfile
 
-top_srcdir=`(cd $srcdir; pwd)`
-top_builddir=`pwd`
-
-if test "$mkdir_p" = "yes"; then
-  mkdir_p="mkdir -p"
-else
-  mkdir_p="$top_srcdir/helpers/mkdir.sh"
-fi
-
-if test "$bsd_makefile" = "yes"; then
-  (cd $top_srcdir; ./build/bsd_makefile)  
-
-  for makefile in $@; do
-    echo "creating $makefile"
-    dir=`echo $makefile|sed 's%/*[^/][^/]*$%%'`
-    $mkdir_p "$dir/"
-
-    cat - $top_srcdir/$makefile.in <<EOF |sed 's/^include \(.*\)/.include "\1"/' >$makefile 
-top_srcdir   = $top_srcdir
-top_builddir = $top_builddir
-srcdir       = $top_srcdir/$dir
-builddir     = $top_builddir/$dir
-VPATH        = $top_srcdir/$dir
-EOF
-    
-    test -z "$dir" && dir="."
-    touch $dir/.deps
-  done
-else  
-  for makefile in $@; do
-    echo "creating $makefile"
-    dir=`echo $makefile|sed 's%/*[^/][^/]*$%%'`
-    $mkdir_p "$dir/"
-
-    cat - $top_srcdir/$makefile.in <<EOF >$makefile
-top_srcdir   = $top_srcdir
-top_builddir = $top_builddir
-srcdir       = $top_srcdir/$dir
-builddir     = $top_builddir/$dir
-VPATH        = $top_srcdir/$dir
-EOF
-  
-    test -z "$dir" && dir="."
-    touch $dir/.deps
-  done
-fi
+touch bsd_converted
+exit 0
