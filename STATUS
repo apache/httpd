@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/02/04 10:10:30 $]
+Last modified at [$Date: 2004/02/04 14:37:40 $]
 
 Release:
 
@@ -82,7 +82,7 @@ PATCHES TO BACKPORT FROM 2.1
 
     * mod_expires: Fix new warnings introduced by ExpiresByType change.
       http://cvs.apache.org/viewcvs.cgi/httpd-2.0/modules/metadata/mod_expires.c?r1=1.45&r2=1.46
-      +1: jorton
+      +1: jorton, rederpj
 
     * fix DECLINE_CMD interaction with ITERATE/ITERATE2
       http://cvs.apache.org/viewcvs.cgi/httpd-2.0/server/config.c?r1=1.168&r2=1.169
