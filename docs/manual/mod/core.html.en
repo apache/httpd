@@ -2735,7 +2735,7 @@ is accessed by an incompatible browser</td></tr>
     <p>The <code class="directive">ServerRoot</code> directive sets the
     directory in which the server lives. Typically it will contain the
     subdirectories <code>conf/</code> and <code>logs/</code>. Relative
-    paths in other configuration directives (such as <code class="directive"><a href="#include">Include</a></code> or <code class="directive"><a href="../mod/so.html#loadmodule">LoadModule</a></code>, for example) are taken as 
+    paths in other configuration directives (such as <code class="directive"><a href="#include">Include</a></code> or <code class="directive"><a href="../mod/mod_so.html#loadmodule">LoadModule</a></code>, for example) are taken as 
     relative to this directory.</p>
 
     <div class="example"><h3>Example</h3><p><code>
