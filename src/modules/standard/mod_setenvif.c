@@ -123,7 +123,6 @@ typedef struct {
 
 typedef struct {
     array_header *conditionals;
-    int zero_means_unset;
 } sei_cfg_rec;
 
 module MODULE_VAR_EXPORT setenvif_module;
@@ -133,7 +132,6 @@ static void *create_setenvif_config(pool *p, server_rec *dummy)
     sei_cfg_rec *new = (sei_cfg_rec *)palloc(p, sizeof(sei_cfg_rec));
 
     new->conditionals = make_array(p, 20, sizeof(sei_entry));
-    new->zero_means_unset = 0;
     return (void *)new;
 }
 
@@ -145,7 +143,6 @@ static void *merge_setenvif_config(pool *p, void *basev, void *overridesv)
 
     a->conditionals = append_arrays(p, base->conditionals, 
 				    overrides->conditionals);
-    a->zero_means_unset = overrides->zero_means_unset;
     return a;
 }
 
@@ -259,9 +256,6 @@ static command_rec setenvif_module_cmds[] = {
     RSRC_CONF, RAW_ARGS, "A header-name, regex and a list of variables." },
 { "SetEnvIfNoCase", add_setenvif, (void *)REG_ICASE,
     RSRC_CONF, RAW_ARGS, "a header-name, regex and a list of variables." },
-{ "UnSetEnvIfZero", set_flag_slot,
-    (void *)XtOffsetOf(sei_cfg_rec,zero_means_unset),
-    RSRC_CONF, FLAG, "On or Off" },
 { "BrowserMatch", add_browser, (void *)0,
     RSRC_CONF, ITERATE2, "A browser regex and a list of variables." },
 { "BrowserMatchNoCase", add_browser, (void *)REG_ICASE,
@@ -310,21 +304,11 @@ static int match_headers(request_rec *r)
 	    elts = (table_entry *)b->features->elts;
 
 	    for (j = 0; j < b->features->nelts; ++j) {
-		if ((!strcmp(elts[j].val, "!")) ||
-		    (sconf->zero_means_unset && (!strcmp(elts[j].val, "0")))) {
-
+		if (!strcmp(elts[j].val, "!")) {
 		    table_unset(r->subprocess_env, elts[j].key);
-#ifdef SETENV_DEBUG
-		    log_printf(r->server, "mod_setenvif: unsetting %s",
-			       elts[j].key);
-#endif
 		}
 		else {
 		    table_set(r->subprocess_env, elts[j].key, elts[j].val);
-#ifdef SETENV_DEBUG
-		    log_printf(r->server, "mod_setenvif: setting %s to %s",
-			       elts[j].key, elts[j].val);
-#endif
 		}
 	    }
 	}
