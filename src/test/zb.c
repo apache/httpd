@@ -191,9 +191,10 @@ void output_results()
   gettimeofday(&endtime,0);
   timetaken = timedif(endtime, start);
   
-  printf("\n---\n");
-  printf("Server:                 %s\n", server_name);
-  printf("Document Length:        %d\n", doclen);  
+  printf("Server Hostname:        %s\n", machine);
+  printf("Server Software:        %s\n", server_name);
+  printf("Document Path:          %s\n", file);  
+  printf("Document Length:        %d bytes\n", doclen);  
   printf("Concurency Level:       %d\n", concurrency);
   printf("Time taken for tests:   %d.%03d seconds\n", 
 	 timetaken/1000, timetaken%1000);
@@ -202,8 +203,8 @@ void output_results()
   if(bad) printf("   (Connect: %d, Length: %d, Exceptions: %d)\n",
 		 err_conn, err_length, err_except);
   if(keepalive) printf("Keep-Alive requests:    %d\n", doneka);
-  printf("Bytes transfered:       %d\n", totalread);
-  printf("HTML transfered:        %d\n", totalbread);
+  printf("Total transfered:       %d bytes\n", totalread);
+  printf("HTML transfered:        %d bytes\n", totalbread);
   
   /* avoid divide by zero */
   if(timetaken) {
@@ -232,7 +233,6 @@ void output_results()
     printf("           min   avg   max\n");
     printf("Connect: %5d %5d %5d\n",mincon, totalcon/requests, maxcon );
     printf("Total:   %5d %5d %5d\n", mintot, total/requests, maxtot);
-    printf("---\n\n");
   }
 
   exit(0);
@@ -453,7 +453,7 @@ int test()
   FD_ZERO(&writebits);
 
   /* setup request */
-  sprintf(request,"GET %s HTTP/1.0\r\nUser-Agent: ZeusBench/1.0\r\n"
+  sprintf(request,"GET %s HTTP/1.0\r\nUser-Agent: ZeusBench/1.01\r\n"
 	  "%sHost: %s\r\nAccept: */*\r\n\r\n", file, 
 	  keepalive?"Connection: Keep-Alive\r\n":"", machine );
     
@@ -509,10 +509,16 @@ int test()
 /* display usage information */
 
 void usage(char *progname) {
-  printf("\nZeusBench v1.0\n\n");
-  printf("Usage: %s <machine> <file> [-k] [-n requests | -t timelimit (sec)]"
-	 "\n\t\t[-c concurrency] [-p port] \n",progname);
-  printf("Filename should start with a '/' e.g. /index.html\n\n");
+  printf("This is ZeusBench, Version v1.01\n");
+  printf("\n");
+  printf("Usage: %s [options] <machine> <path>\n", progname);
+  printf("    -k              KeepAlive\n");
+  printf("    -n requests     Number of requests to peforms\n");
+  printf("    -t timelimit    Seconds to max. wait for responses\n");
+  printf("    -c concurrency  Number of multiple requests to make\n");
+  printf("    -p port         Port number to use\n");
+  printf("\n");
+  printf("Path should start with a '/' e.g. /index.html\n\n");
   exit(EINVAL);
 }
 
@@ -522,11 +528,7 @@ void usage(char *progname) {
 
 int main(int argc, char **argv) {
   int c;
-  if (argc < 3) usage(argv[0]);
-  
-  machine = argv[1]; 
-  file = argv[2];
-  optind = 3;
+  optind = 1;
   while ((c = getopt(argc,argv,"p:n:c:d:t:d:k"))>0) {
     switch(c) {
     case 'd':
@@ -556,6 +558,11 @@ int main(int argc, char **argv) {
       break;
     }
   }   
+  if (optind != argc-2) 
+      usage(argv[0]);
+  
+  machine = argv[optind++]; 
+  file = argv[optind++];
   test();
   return 0;
 }
