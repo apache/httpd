@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/05/06 09:34:26 $]
+Last modified at [$Date: 2003/05/08 14:21:11 $]
 
 Release:
 
@@ -71,7 +71,7 @@ PATCHES TO PORT FROM 2.1
       server/core.c r1.230
       server/request.c r1.123
       server/util.c r1.135
-      +1: coar, nd
+      +1: coar, nd, stoddard
       -0: wrowe
           nd: since it's inherited carefully (namely: not) and has to
               be explicitely turned on, I see no harm with that patch.
