@@ -97,6 +97,13 @@ API_EXPORT(char *) document_root (request_rec *); /* Don't use this!  If your re
 				      */
 API_EXPORT(const char *) get_remote_host(conn_rec *conn, void *dir_config, int type);
 API_EXPORT(const char *) get_remote_logname(request_rec *r);
+
+/* Used for constructing self-referencing URLs, and things like SERVER_PORT,
+ * and SERVER_NAME.
+ */
+API_EXPORT(char *) construct_url(pool *p, const char *uri, const request_rec *r);
+API_EXPORT(const char *) get_server_name(const request_rec *r);
+API_EXPORT(unsigned) get_server_port(const request_rec *r);
      
 /* Authentication stuff.  This is one of the places where compatibility
  * with the old config files *really* hurts; they don't discriminate at
@@ -175,6 +182,8 @@ typedef struct {
     int do_rfc1413 : 2;   /* See if client is advertising a username? */
 
     int content_md5 : 2;  /* calculate Content-MD5? */
+
+    unsigned use_canonical_name : 2; /* bit 0 = on/off, bit 1 = unset/set */
 
     /* since is_fnmatch(conf->d) was being called so frequently in
      * directory_walk() and its relatives, this field was created and

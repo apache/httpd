@@ -1,4 +1,11 @@
 Changes with Apache 1.3b4
+  
+  *) There are many cases where users do not want Apache to form
+     self-referential urls using the "canonical" ServerName and Port.
+     The new UseCanonicalName directive (default on), if set to off
+     will cause Apache to use the client-supplied hostname and port.
+     [Michael Douglass <mikedoug@texas.net>, Dean Gaudet]
+     PR#315, 459, 485, 1433
 
   *) Yet another rearrangement of the source tree.. now all the common
      header files are in the src/include directory.  The -Imain -Iap

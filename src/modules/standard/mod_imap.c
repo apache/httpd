@@ -406,7 +406,7 @@ static char *imap_url(request_rec *r, const char *base, const char *value)
     char *my_base;
 
     if (!strcasecmp(value, "map") || !strcasecmp(value, "menu")) {
-	return construct_url(r->pool, r->uri, r->server);
+	return construct_url(r->pool, r->uri, r);
     }
 
     if (!strcasecmp(value, "nocontent") || !strcasecmp(value, "error")) {
@@ -447,7 +447,7 @@ static char *imap_url(request_rec *r, const char *base, const char *value)
 	    return pstrdup(r->pool, value); /* no base: use what is given */
         }
 	/* no base, no value: pick a simple default */
-	return construct_url(r->pool, "/", r->server);
+	return construct_url(r->pool, "/", r);
     }
 
     /* must be a relative URL to be combined with base */

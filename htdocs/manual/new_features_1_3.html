@@ -480,6 +480,15 @@ Allows additional information to be listed along with a specified module.
     also some debugging support to ensure code uses them properly.
     See <code>src/CHANGES</code> for more information.
 
+    <li><strong><code>construct_url</code></strong><br>
+    The function prototype for this changed from taking a
+    <code>server_rec *</code> to taking a <code>request_rec *</code>.
+
+    <li><strong><code>get_server_name</code>, <code>get_server_port</code></strong><br>
+    These are wrappers which deal with the
+    <a href="mod/core.html#usecanonicalname">UseCanonicalName</a> directive
+    when retrieving the server name and port for a request.
+
     </UL>
 
  <LI><STRONG>Year-2000 Improvements</STRONG>
@@ -518,6 +527,16 @@ Allows additional information to be listed along with a specified module.
   to tell which server produced the error message, especially in a proxy
   chain (often found in intranet environments).
  </LI>
+
+ <li><strong>New <samp><a href="mod/core.html#usecanonicalname">UseCanonicalName</a></samp> directive</strong>
+  <br>
+  This directive gives control over how Apache creates self-referential URLs.
+  Previously Apache would always use the <a href="mod/core.html#servername">
+  ServerName</a> and <a href="mod/core.html#port">Port</a> directives to
+  construct a "canonical" name for the server.  With <samp>UseCanonicalName
+  off</samp> Apache will use the hostname and port supplied by the client,
+  if available.
+ </li>
 </UL>
 
 <!--#include virtual="footer.html" -->

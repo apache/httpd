@@ -221,8 +221,6 @@ API_EXPORT(void) add_common_vars(request_rec *r)
 	    table_setn(e, http2env(r->pool, hdrs[i].key), hdrs[i].val);
     }
 
-    ap_snprintf(port, sizeof(port), "%u", s->port);
-
     if (!(env_path = getenv("PATH")))
 	env_path = DEFAULT_PATH;
 
@@ -237,7 +235,8 @@ API_EXPORT(void) add_common_vars(request_rec *r)
 
     table_setn(e, "PATH", env_path);
     table_setn(e, "SERVER_SOFTWARE", SERVER_VERSION);
-    table_setn(e, "SERVER_NAME", s->server_hostname);
+    table_setn(e, "SERVER_NAME", get_server_name(r));
+    ap_snprintf(port, sizeof(port), "%u", get_server_port(r));
     table_setn(e, "SERVER_PORT", pstrdup(r->pool,port));
     table_setn(e, "REMOTE_HOST",
         pstrdup(r->pool, get_remote_host(c, r->per_dir_config, REMOTE_NAME)));

@@ -2945,7 +2945,7 @@ static char *expand_variables(request_rec *r, char *str)
 
 static char *lookup_variable(request_rec *r, char *var)
 {
-    char *result;
+    const char *result;
     char resultbuf[LONG_STRING_LEN];
     time_t tc;
     struct tm *tm;
@@ -3035,10 +3035,10 @@ static char *lookup_variable(request_rec *r, char *var)
         result = r->server->server_admin;
     }
     else if (strcasecmp(var, "SERVER_NAME") == 0) {
-        result = r->server->server_hostname;
+	result = get_server_name(r);
     }
     else if (strcasecmp(var, "SERVER_PORT") == 0) {
-        ap_snprintf(resultbuf, sizeof(resultbuf), "%u", r->server->port);
+        ap_snprintf(resultbuf, sizeof(resultbuf), "%u", get_server_port(r));
         result = resultbuf;
     }
     else if (strcasecmp(var, "SERVER_PROTOCOL") == 0) {
@@ -3128,7 +3128,7 @@ static char *lookup_variable(request_rec *r, char *var)
             rewritelog(r, 5, "lookahead: path=%s var=%s -> val=%s", \
                        r->filename, var+5, result); \
             /* return ourself to prevent re-pstrdup */ \
-            return result; \
+            return (char *)result; \
         }
 
     /* look-ahead for parameter through URI-based sub-request */

@@ -118,6 +118,8 @@ void *create_core_dir_config (pool *a, char *dir)
 
     conf->content_md5 = 2;
 
+    conf->use_canonical_name = 1 | 2;	/* 2 = unset, default on */
+
     conf->hostname_lookups = HOSTNAME_LOOKUP_UNSET;
     conf->do_rfc1413 = DEFAULT_RFC1413 | 2;  /* set bit 1 to indicate default */
     conf->satisfy = SATISFY_NOSPEC;
@@ -190,6 +192,9 @@ void *merge_core_dir_configs (pool *a, void *basev, void *newv)
 	conf->hostname_lookups = new->hostname_lookups;
     if ((new->do_rfc1413 & 2) == 0) conf->do_rfc1413 = new->do_rfc1413;
     if ((new->content_md5 & 2) == 0) conf->content_md5 = new->content_md5;
+    if ((new->use_canonical_name & 2) == 0) {
+	conf->use_canonical_name = new->use_canonical_name;
+    }
 
 #ifdef RLIMIT_CPU
     if (new->limit_cpu) conf->limit_cpu = new->limit_cpu;
@@ -561,6 +566,59 @@ API_EXPORT(const char *) get_remote_logname(request_rec *r)
 	return rfc1413(r->connection, r->server);
     else
 	return NULL;
+}
+
+/* There are two options regarding what the "name" of a server is.  The
+ * "canonical" name as defined by ServerName and Port, or the "client's
+ * name" as supplied by a possible Host: header or full URI.  We never
+ * trust the port passed in the client's headers, we always use the
+ * port of the actual socket.
+ */
+API_EXPORT(const char *) get_server_name(const request_rec *r)
+{
+    core_dir_config *d =
+      (core_dir_config *)get_module_config(r->per_dir_config, &core_module);
+    
+    if (d->use_canonical_name & 1) {
+	return r->server->server_hostname;
+    }
+    return r->hostname ? r->hostname : r->server->server_hostname;
+}
+
+API_EXPORT(unsigned) get_server_port(const request_rec *r)
+{
+    core_dir_config *d =
+      (core_dir_config *)get_module_config(r->per_dir_config, &core_module);
+    
+    if (d->use_canonical_name & 1) {
+	return r->server->port;
+    }
+    return r->hostname ? ntohs(r->connection->local_addr.sin_port)
+			: r->server->port;
+}
+
+API_EXPORT(char *) construct_url(pool *p, const char *uri, const request_rec *r)
+{
+    unsigned port;
+    const char *host;
+    char portnum[22];
+    core_dir_config *d =
+      (core_dir_config *)get_module_config(r->per_dir_config, &core_module);
+
+    if (d->use_canonical_name & 1) {
+	port = r->server->port;
+	host = r->server->server_hostname;
+    }
+    else {
+	port = r->hostname ? ntohs(r->connection->local_addr.sin_port)
+			    : r->server->port;
+	host = r->hostname ? r->hostname : r->server->server_hostname;
+    }
+    if (port == DEFAULT_PORT) {
+	return pstrcat(p, "http://", host, uri, NULL);
+    }
+    ap_snprintf(portnum, sizeof(portnum), "%u", port);
+    return pstrcat(p, "http://", host, ":", portnum, uri, NULL);
 }
 
 /*****************************************************************
@@ -1369,6 +1427,17 @@ const char *set_content_md5 (cmd_parms *cmd, core_dir_config *d, int arg) {
     return NULL;
 }
 
+const char *set_use_canonical_name (cmd_parms *cmd, core_dir_config *d, int arg)
+{
+    const char *err = check_cmd_context(cmd, NOT_IN_LIMIT);
+
+    if (err != NULL)
+	return err;
+    
+    d->use_canonical_name = arg != 0;
+    return NULL;
+}
+
 const char *set_daemons_to_start (cmd_parms *cmd, void *dummy, char *arg) {
     const char *err = check_cmd_context(cmd, GLOBAL_ONLY);
     if (err != NULL) return err;
@@ -1763,6 +1832,7 @@ command_rec core_cmds[] = {
 { "KeepAlive", set_keep_alive, NULL, RSRC_CONF, TAKE1, "Whether persistent connections should be On or Off" },
 { "IdentityCheck", set_idcheck, NULL, RSRC_CONF|ACCESS_CONF, FLAG, "Enable identd (RFC 1413) user lookups - SLOW" },
 { "ContentDigest", set_content_md5, NULL, RSRC_CONF|ACCESS_CONF|OR_AUTHCFG, FLAG, "whether or not to send a Content-MD5 header with each request" },
+{ "UseCanonicalName", set_use_canonical_name, NULL, RSRC_CONF|ACCESS_CONF|OR_AUTHCFG, FLAG, "whether or not to always use the canonical ServerName : Port when constructing URLs" },
 { "StartServers", set_daemons_to_start, NULL, RSRC_CONF, TAKE1, "Number of child processes launched at server startup" },
 { "MinSpareServers", set_min_free_servers, NULL, RSRC_CONF, TAKE1, "Minimum number of idle children, to handle request spikes" },
 { "MaxSpareServers", set_max_free_servers, NULL, RSRC_CONF, TAKE1, "Maximum number of idle children" },

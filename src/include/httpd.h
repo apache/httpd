@@ -803,8 +803,6 @@ API_EXPORT(char *) os_escape_path(pool *p, const char *path, int partial);
 API_EXPORT(char *) escape_html(pool *p, const char *s);
 API_EXPORT(char *) construct_server(pool *p, const char *hostname,
 				    unsigned port);
-API_EXPORT(char *) construct_url(pool *p, const char *path,
-				 const server_rec *s);
 API_EXPORT(char *) escape_shell_cmd(pool *p, const char *s);
 
 API_EXPORT(int) count_dirs(const char *path);

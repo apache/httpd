@@ -1084,13 +1084,6 @@ API_EXPORT(char *) construct_server(pool *p, const char *hostname,
     }
 }
 
-API_EXPORT(char *) construct_url(pool *p, const char *uri, const server_rec *s)
-{
-    return pstrcat(p, "http://",
-		   construct_server(p, s->server_hostname, s->port),
-		   uri, NULL);
-}
-
 #define c2x(what,where) sprintf(where,"%%%02x",(unsigned char)what)
 
 /*

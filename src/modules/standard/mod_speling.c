@@ -339,7 +339,7 @@ static int check_speling(request_rec *r)
                            r->path_info, NULL);
 
             table_setn(r->headers_out, "Location",
-                      construct_url(r->pool, nuri, r->server));
+                      construct_url(r->pool, nuri, r));
 
             aplog_error(APLOG_MARK, APLOG_NOERRNO | APLOG_INFO, r->server,
                         ref ? "Fixed spelling: %s to %s from %s"

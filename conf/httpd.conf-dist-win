@@ -79,6 +79,14 @@ ScoreBoardFile logs/apache_status
 
 #ServerName new.host.name
 
+# UseCanonicalName:  (new for 1.3)  With this setting turned on, whenever
+# Apache needs to construct a self-referencing URL (a url that refers back
+# to the server the response is coming from) it will use ServerName and
+# Port to form a "canonical" name.  With this setting off, Apache will
+# use the hostname:port that the client supplied, when possible.  This
+# also affects SERVER_NAME and SERVER_PORT in CGIs.
+UseCanonicalName on
+
 # CacheNegotiatedDocs: By default, Apache sends Pragma: no-cache with each
 # document that was negotiated on the basis of content. This asks proxy
 # servers not to cache the document. Uncommenting the following line disables
