@@ -342,6 +342,16 @@ typedef struct {
      * to add elements)
      */
     void **notes;
+
+    /* There is a script processor installed on the output filter chain,
+     * so it needs the default_handler to deliver a (script) file into
+     * the chain so it can process it. Normally, default_handler only
+     * serves files on a GET request (assuming the file is actual content),
+     * since other methods are not content-retrieval. This flag overrides
+     * that behavior, stating that the "content" is actually a script and
+     * won't actually be delivered as the response for the non-GET method.
+     */
+    int deliver_script;
 } core_request_config;
 
 /* Standard entries that are guaranteed to be accessible via

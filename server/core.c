@@ -3262,6 +3262,27 @@ static int default_handler(request_rec *r)
             return HTTP_NOT_FOUND;
         }
 
+        /* We understood the (non-GET) method, but it might not be legal for
+           this particular resource. Check to see if the 'deliver_script'
+           flag is set. If so, then we go ahead and deliver the file since
+           it isn't really content (only GET normally returns content).
+
+           Note: based on logic further above, the only possible non-GET
+           method at this point is POST. In the future, we should enable
+           script delivery for all methods.  */
+        if (r->method_number != M_GET) {
+            core_request_config *req_cfg;
+
+            req_cfg = ap_get_module_config(r->request_config, &core_module);
+            if (!req_cfg->deliver_script) {
+                /* The flag hasn't been set for this request. Punt. */
+                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+                              "This resource does not accept the %s method.",
+                              r->method);
+                return HTTP_METHOD_NOT_ALLOWED;
+            }
+        }
+
         if ((status = apr_file_open(&fd, r->filename, APR_READ | APR_BINARY, 0,
                                     r->pool)) != APR_SUCCESS) {
             ap_log_rerror(APLOG_MARK, APLOG_ERR, status, r,
@@ -4003,6 +4024,10 @@ static int core_create_req(request_rec *r)
     req_cfg = apr_pcalloc(r->pool, sizeof(core_request_config) +
                           sizeof(void *) * num_request_notes);
     req_cfg->notes = (void **)((char *)req_cfg + sizeof(core_request_config));
+
+    /* ### temporarily enable script delivery as the default */
+    req_cfg->deliver_script = 1;
+
     if (r->main) {
         core_request_config *main_req_cfg = (core_request_config *)
             ap_get_module_config(r->main->request_config, &core_module);
