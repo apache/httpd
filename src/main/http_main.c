@@ -5886,6 +5886,11 @@ static PSECURITY_ATTRIBUTES GetNullACL()
     if (pSD == NULL || sa == NULL) {
         return NULL;
     }
+    /*
+     * We can safely use GetLastError() here without presetting it;
+     * InitializeSecurityDescriptor() has been verified as clearing it
+     * on successful completion.
+     */
     if (!InitializeSecurityDescriptor(pSD, SECURITY_DESCRIPTOR_REVISION)
 	|| GetLastError()) {
         LocalFree( pSD );
