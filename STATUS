@@ -90,12 +90,12 @@ PATCHES TO BACKPORT FROM 2.1
     *) Add charset to the painfully old example CGI scripts.
        [These should really be replaced with proper encoding of the output.]
        svn rev 111580
-       +1: fielding
+       +1: fielding, erikabele
 
     *) conf: Remove AddDefaultCharset from the default configuration because
        setting a site-wide default does more harm than good. PR 23421.
        svn rev 111581
-       +1: fielding
+       +1: fielding, erikabele
 
     *) mpm/winnt/child.c: thread_num is long, aught to use %ld not %d for logs
        svn rev 106653
@@ -112,7 +112,7 @@ PATCHES TO BACKPORT FROM 2.1
        but makes it easier to statically build "external" modules by
        simply adding them to ./modules.
          modules/config5.m4: 1.4
-       +1: jim, jerenkrantz
+       +1: jim, jerenkrantz, erikabele
        +0: wrowe
            (would rather see --with-module-lib=foo --enable-bar=shared syntax to
             support multiple libs, module modules.  Might need to pass the
