@@ -1039,10 +1039,10 @@ API_EXPORT(const char *) ap_size_list_item(const char **field, int *len)
 }
 
 /* Retrieve an HTTP header field list item, as separated by a comma,
- * while stripping insignificant whitespace/comments and lowercasing anything
- * not in a quoted string.  The return value is a new string containing
- * the converted list item (empty if it was all comments or NULL if none)
- * and the address of field is shifted to the next non-comma, non-whitespace.
+ * while stripping insignificant whitespace and lowercasing anything not in
+ * a quoted string or comment.  The return value is a new string containing
+ * the converted list item (or NULL if none) and the address pointed to by
+ * field is shifted to the next non-comma, non-whitespace.
  */
 API_EXPORT(char *) ap_get_list_item(pool *p, const char **field)
 {
@@ -1061,9 +1061,9 @@ API_EXPORT(char *) ap_get_list_item(pool *p, const char **field)
     token = ap_palloc(p, tok_len + 1);
 
     /* Scan the token again, but this time copy only the good bytes.
-     * We skip extra whitespace and any whitespace around a '=' or ';',
-     * strip comments, and lowercase normal characters not within a
-     * quoted-string or quoted-pair.  The result may be an empty string.
+     * We skip extra whitespace and any whitespace around a '=', '/',
+     * or ';' and lowercase normal characters not within a comment,
+     * quoted-string or quoted-pair.
      */
     for (ptr = (const unsigned char *)tok_start, pos = (unsigned char *)token;
          *ptr && (in_qpair || in_qstr || in_com || *ptr != ',');
@@ -1071,57 +1071,53 @@ API_EXPORT(char *) ap_get_list_item(pool *p, const char **field)
 
         if (in_qpair) {
             in_qpair = 0;
-            if (!in_com)
-                *pos++ = *ptr;
+            *pos++ = *ptr;
         }
         else {
             switch (*ptr) {
                 case '\\': in_qpair = 1;
-                           if (in_com)
-                               break;
                            if (addspace == 1)
                                *pos++ = ' ';
                            *pos++ = *ptr;
                            addspace = 0;
                            break;
-                case '"' : if (in_com)
-                               break;
-                           in_qstr = !in_qstr;
+                case '"' : if (!in_com)
+                               in_qstr = !in_qstr;
                            if (addspace == 1)
                                *pos++ = ' ';
                            *pos++ = *ptr;
                            addspace = 0;
                            break;
-                case '(' : if (in_qstr)
-                               *pos++ = *ptr;
-                           else
+                case '(' : if (!in_qstr)
                                ++in_com;
+                           if (addspace == 1)
+                               *pos++ = ' ';
+                           *pos++ = *ptr;
+                           addspace = 0;
                            break;
                 case ')' : if (in_com)
                                --in_com;
-                           else
-                               *pos++ = *ptr;
+                           *pos++ = *ptr;
+                           addspace = 0;
                            break;
                 case ' ' :
-                case '\t': if (in_com || addspace)
+                case '\t': if (addspace)
                                break;
-                           if (in_qstr)
+                           if (in_com || in_qstr)
                                *pos++ = *ptr;
                            else
                                addspace = 1;
                            break;
                 case '=' :
-                case ';' : if (in_com)
-                               break;
-                           if (!in_qstr)
+                case '/' :
+                case ';' : if (!(in_com || in_qstr))
                                addspace = -1;
                            *pos++ = *ptr;
                            break;
-                default  : if (in_com)
-                               break;
-                           if (addspace == 1)
+                default  : if (addspace == 1)
                                *pos++ = ' ';
-                           *pos++ = in_qstr ? *ptr : ap_tolower(*ptr);
+                           *pos++ = (in_com || in_qstr) ? *ptr
+                                                        : ap_tolower(*ptr);
                            addspace = 0;
                            break;
             }

@@ -6,8 +6,7 @@
      gcc -g -O2 -I../os/unix -I../include -o test_parser \
             -DSOLARIS2=250 -Wall -DALLOC_DEBUG -DPOOL_DEBUG \
             ../main/alloc.o ../main/buff.o ../main/util.o \
-            ../main/http_log.o ../ap/libap.a \
-            -lsocket -lnsl test_parser.c
+            ../ap/libap.a -lsocket -lnsl test_parser.c
  * 
  * Roy Fielding, 1999
  */
