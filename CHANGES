@@ -1,5 +1,7 @@
 Changes with Apache 2.0.24-dev
 
+  *) Install the SSL headers.  [John Sterling <sterling@covalent.net>]
+
   *) Begin to sanitize the MPM configuration directives.  Now, all
      MPMs use the same functions for all common MPM directives.  This
      should make it easier to catch all bugs in these directives once.
