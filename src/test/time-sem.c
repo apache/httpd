@@ -59,6 +59,7 @@ accept_mutex_init(void)
     unlock_it.l_type   = F_UNLCK;  /* set exclusive/write lock */
     unlock_it.l_pid    = 0;        /* pid not actually interesting */
 
+    printf("opening test-lock-thing in current directory\n");
     fcntl_fd = open("test-lock-thing", O_CREAT | O_WRONLY | O_EXCL, 0644);
     if (fcntl_fd == -1)
     {
@@ -105,6 +106,7 @@ void
 accept_mutex_init(void)
 {
 
+    printf("opening test-lock-thing in current directory\n");
     flock_fd = open("test-lock-thing", O_CREAT | O_WRONLY | O_EXCL, 0644);
     if (flock_fd == -1)
     {
