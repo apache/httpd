@@ -3,7 +3,8 @@
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
 
 <manualpage metafile="index.xml.meta">
-<!-- English revision: 1.1 -->
+<parentdocument href="../"/>
+<!-- English revision: 1.10 -->
 
    <title>Apache バーチャルホスト説明書</title>
 
@@ -13,9 +14,9 @@
     (<code>www.company1.com</code> and <code>www.company2.com</code> のような)
     二つ以上のウェブサイトを扱う運用方法のことを指します。
     バーチャルホストには、各ウェブサイトに違う IP アドレスがある
-    「<a href="ip-based.html">IP ベース</a>」と、単一の IP アドレスに
+    「<a href="ip-based.html">IP ベース</a>」と、それぞれの IP アドレスに
     複数の名前がある「<a href="name-based.html">名前ベース</a>」とがあります。
-    複数のサイトが同じサーバで扱われている、ということはエンドユーザには
+    複数のサイトが物理的に同じサーバで扱われている、ということはエンドユーザには
     明らかではありません。</p>
 
     <p>Apache は、特に手を入れない状態で IP ベースのバーチャルホスト
@@ -29,9 +30,13 @@
 
 </summary>
 
-<seealso>
-    <module>mod_vhost_alias</module>
-</seealso>
+<seealso><module>mod_vhost_alias</module></seealso>
+<seealso><a href="name-based.html">ネームベースのバーチャルホスト</a></seealso>
+<seealso><a href="ip-based.html">IP ベースのバーチャルホスト</a></seealso>
+<seealso><a href="examples.html">バーチャルホストの一般的な設定例</a></seealso>
+<seealso><a href="fd-limits.html">ファイル記述子の限界</a></seealso>
+<seealso><a href="mass.html">大量のバーチャルホストの設定</a></seealso>
+<seealso><a href="details.html">バーチャルホストのマッチングについての詳細</a></seealso>
 
 <section id="support"><title>バーチャルホストのサポート</title>
 
@@ -43,7 +48,7 @@
       <li><a href="examples.html">バーチャルホストの一般的な設定例</a></li>
       <li><a href="fd-limits.html">ファイル記述子の限界</a>
       (または、<em>多過ぎるログファイル</em>)</li>
-      <li><a href="mass.html">大量のバーチャルホストの動的な設定</a></li>
+      <li><a href="mass.html">大量のバーチャルホストの設定</a></li>
       <li><a href="details.html">バーチャルホストのマッチングについての詳細</a></li>
     </ul>
 
@@ -61,11 +66,11 @@
     </ul>
 
     <p>バーチャルホストの設定のデバッグをするには
-    Apache のコマンドラインスイッチ <code>-t -D DUMP_VHOSTS</code> が便利です。
+    Apache のコマンドラインスイッチ <code>-S</code> が便利です。
     つまり、以下のコマンドを入力します:</p>
 
     <example>
-    /usr/local/apache/bin/httpd -t -D DUMP_VHOSTS
+    /usr/local/apache2/bin/httpd -S
     </example>
 
     <p>このコマンドは Apache が設定ファイルをどう解析したかについて出力します。
