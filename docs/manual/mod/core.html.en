@@ -1692,18 +1692,24 @@ hostname or IP address</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.
     ...&gt; ... &lt;/VirtualHost&gt;</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Core</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Module" class="help">Module:</a></td><td>core</td></tr></table></td></tr></table>
     <p><code class="directive">&lt;VirtualHost&gt;</code> and
     <code>&lt;/VirtualHost&gt;</code> are used to enclose a group of
-    directives which will apply only to a particular virtual host. Any
-    directive which is allowed in a virtual host context may be
+    directives that will apply only to a particular virtual host. Any
+    directive that is allowed in a virtual host context may be
     used. When the server receives a request for a document on a
     particular virtual host, it uses the configuration directives
     enclosed in the <code class="directive">&lt;VirtualHost&gt;</code>
     section. <em>Addr</em> can be</p>
 
     <ul>
-      <li>The IP address of the virtual host</li>
+      <li>The IP address of the virtual host;</li>
 
       <li>A fully qualified domain name for the IP address of the
-      virtual host.</li>
+      virtual host;</li>
+
+      <li>The character *, which is used only in combination with
+      <code>NameVirtualHost *</code> to match all IP addresses; or</li>
+
+      <li>The string <code>_default_</code>, which is used only
+      with IP virtual hosting to catch unmatched IP addresses.</li>
     </ul>
     
 
@@ -1738,14 +1744,18 @@ hostname or IP address</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.
     accept IP packets for multiple addresses. (If the machine does
     not have multiple network interfaces, then this can be
     accomplished with the <code>ifconfig alias</code> command (if
-    your OS supports it), or with kernel patches like <a href="../misc/vif-info.html">VIF</a> (for SunOS(TM) 4.1.x)).</p>
+    your OS supports it).</p>
 
-    <p>The special name <code>_default_</code> can be specified in
+    <p>When using IP-based virtual hosting, the special name
+    <code>_default_</code> can be specified in
     which case this virtual host will match any IP address that is
     not explicitly listed in another virtual host. In the absence
     of any _default_ virtual host the "main" server config,
     consisting of all those definitions outside any VirtualHost
-    section, is used when no match occurs.</p>
+    section, is used when no IP-match occurs.  (But note that any IP
+    address that matches a <a href="#namevirtualhost" class="directive"><code class="directive">NameVirtualHost</code></a> directive will never use
+    the "main" server config.  See the <a href="../vhosts/name-based.html">name-based virtual hosting</a>
+    documentation for further details.)</p>
 
     <p>You can specify a <code>:port</code> to change the port that is
     matched. If unspecified then it defaults to the same port as the
