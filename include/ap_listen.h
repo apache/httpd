@@ -73,7 +73,7 @@ struct ap_listen_rec {
 extern ap_listen_rec *ap_listeners;
 
 void ap_listen_pre_config(void);
-#if !defined(WIN32) && !defined(PREFORK_MPM)
+#if !defined(WIN32) && !defined(PREFORK_MPM) && !defined(SPMT_OS2_MPM)
 int ap_setup_listeners(server_rec *s);
 #else
 int ap_listen_open(process_rec *process, unsigned port);
