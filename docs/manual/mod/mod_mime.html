@@ -8,7 +8,7 @@
 <body
  bgcolor="#FFFFFF"
  text="#000000"
- LINK="#0000FF"
+ link="#0000FF"
  vlink="#000080"
  alink="#FF0000"
 >
@@ -118,6 +118,75 @@ extension is mapped to the MIME-type "text/html", then the file
 the "imap-file" handler will be used, and so it will be treated as a
 mod_imap imagemap file.
 
+<h2><a name="contentencoding">Content encoding</a></h2>
+
+A file of a particular MIME type can additionally be encoded a
+particular way to simplify transmission over the Internet. While this
+usually will refer to compression, such as <samp>gzip</samp>, it can 
+also refer to encryption, such a <samp>pgp</samp> or
+to an encoding such as UUencoding, which is designed for transmitting
+a binary file in an ASCII (text) format.<p>
+
+The MIME RFC puts it this way:
+<blockquote>
+The Content-Encoding entity-header field is used as a modifier to the
+media-type. When present, its value indicates what additional content
+coding has been applied to the resource, and thus what decoding mechanism
+must be applied in order to obtain the media-type referenced by the
+Content-Type header field. The Content-Encoding is primarily used to allow
+a document to be compressed without losing the identity of its underlying
+media type.
+</blockquote>
+
+By using more than one file extension (see 
+<a href="#multipleext">section above about multiple file 
+extensions</a>), you can indicate that a file is of a particular 
+<em>type</em>, and also has a particular <em>encoding</em>.<p>
+
+For example, you may have a file which is a Microsoft Word document,
+which is pkzipped to reduce its size. If the <samp>.doc</samp> extension is
+associated with the Microsoft Word file type, and the
+<samp>.zip</samp> extension is associated with the pkzip file
+encoding, then the file <samp>Resume.doc.zip</samp>would be known to
+be a pkzip'ed Word document.<p>
+
+Apache send a <samp>Content-encoding</samp> header with the resource,
+in order to tell the client browser about the encoding method.
+<p>
+<samp>Content-encoding: pkzip</samp>
+<p>
+<h2>Character sets and languages</h2>
+
+Finally, in addition to file type, and the file encoding,
+another important piece of information is
+what language a particular document is in, and in what character set
+the file should be displayed. For example, the document might be
+written in the Vietnamese alphabet, or in Cyrillic, and should be
+displayed as such. This information, also, is transmitted in MIME
+headers.<p>
+
+While the character set is useful for the browser, in order to
+determine how to display the document, the language and the
+character set are also used in the process of content negotiation
+(See <a href="mod_negotiation.html">mod_negotiation</a>)
+to determine which document to give to the client, when there are
+alternative documents in more than one language, or more than 
+one character set.<p>
+
+To convey this further information, Apache optionally sends a
+<samp>Content-Language</samp> header, to specify the language that the
+document is in, and can append additional information onto the
+<samp>Content-Type</samp> header to indicate the particular character
+set that should be used to correctly render the information.
+
+<pre>
+Content-Language: en, fr
+Content-Type: text/plain; charset=ISO-8859-2
+</pre>
+<p>
+The language specification is the two-letter abbreviation for the
+language. The <samp>charset</samp> is the name of the particular
+character set which should be used.
 
 <hr>
 
@@ -556,7 +625,7 @@ config files.  An example of its use might be:
      <code>&lt;/Files&gt;</code></dd>
 </DL>
 <P>
-This will cause <code>foo.gz</code> to mark as being encoded with the
+This will cause <code>foo.gz</code> to be marked as being encoded with the
 gzip method, but <code>foo.gz.asc</code> as an unencoded plaintext file.
 </P>
 <p>
