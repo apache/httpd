@@ -452,6 +452,7 @@ typedef struct {
 
 typedef struct {
     SSL *ssl;
+    const char *client_dn;
 } SSLConnRec;
 
 typedef struct {
