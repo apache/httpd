@@ -54,7 +54,9 @@
 #include <stdio.h>
 #include <stdarg.h>
 #include <string.h>
+#ifndef NEXT
 #include <unistd.h>
+#endif
 
 #include "conf.h"
 #include "alloc.h"
