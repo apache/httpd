@@ -113,66 +113,66 @@ _build:
 	cd ..\..
 
 _install:
-	-mkdir $(INSTDIR)
-	-mkdir $(INSTDIR)\modules
-        -mkdir $(INSTDIR)\htdocs
-	-mkdir $(INSTDIR)\proxy
-	-mkdir $(INSTDIR)\logs
-	-mkdir $(INSTDIR)\conf
-	-mkdir $(INSTDIR)\bin
-	copy Apache$(SHORT)\Apache.exe $(INSTDIR)
-	copy Core$(SHORT)\ApacheCore.dll $(INSTDIR)
-	copy os\win32\win9xconhook\$(LONG)\Win9xConHook.dll $(INSTDIR)
-	copy lib\expat-lite\$(LONG)\xmltok.dll $(INSTDIR)
-	copy lib\expat-lite\$(LONG)\xmlparse.dll $(INSTDIR)
-	copy os\win32\ApacheModuleStatus$(SHORT)\ApacheModuleStatus.dll $(INSTDIR)\modules
-	copy os\win32\ApacheModuleInfo$(SHORT)\ApacheModuleInfo.dll $(INSTDIR)\modules
-	copy os\win32\ApacheModuleAuthAnon$(SHORT)\ApacheModuleAuthAnon.dll $(INSTDIR)\modules
-	copy os\win32\ApacheModuleDigest$(SHORT)\ApacheModuleDigest.dll $(INSTDIR)\modules
-	copy os\win32\ApacheModuleCERNMeta$(SHORT)\ApacheModuleCERNMeta.dll $(INSTDIR)\modules
-	copy os\win32\ApacheModuleExpires$(SHORT)\ApacheModuleExpires.dll $(INSTDIR)\modules
-	copy os\win32\ApacheModuleHeaders$(SHORT)\ApacheModuleHeaders.dll $(INSTDIR)\modules
-	copy os\win32\ApacheModuleRewrite$(SHORT)\ApacheModuleRewrite.dll $(INSTDIR)\modules
-	copy os\win32\ApacheModuleSpeling$(SHORT)\ApacheModuleSpeling.dll $(INSTDIR)\modules
-	copy os\win32\ApacheModuleUserTrack$(SHORT)\ApacheModuleUserTrack.dll $(INSTDIR)\modules
-	copy os\win32\ApacheModuleAuthDigest$(SHORT)\ApacheModuleAuthDigest.dll $(INSTDIR)\modules
-	copy os\win32\ApacheModuleAuthDBM$(SHORT)\ApacheModuleAuthDBM.dll $(INSTDIR)\modules
-	copy modules\proxy\$(LONG)\ApacheModuleProxy.dll $(INSTDIR)\modules
-	copy support\$(LONG)\htpasswd.exe $(INSTDIR)\bin
-	copy support\$(LONG)\htdigest.exe $(INSTDIR)\bin
-	copy support\$(LONG)\logresolve.exe $(INSTDIR)\bin
-	copy support\$(LONG)\rotatelogs.exe $(INSTDIR)\bin
-        -xcopy ..\htdocs $(INSTDIR)\htdocs /sdy
-        copy ..\conf\magic $(INSTDIR)\conf\magic.default
-        if not exist $(INSTDIR)\conf\magic \
-            copy $(INSTDIR)\conf\magic.default $(INSTDIR)\conf\magic
-        copy ..\conf\mime.types $(INSTDIR)\conf\mime.types.default
-        if not exist $(INSTDIR)\conf\mime.types \
-            copy $(INSTDIR)\conf\mime.types.default $(INSTDIR)\conf\mime.types
-	copy ..\conf\access.conf-dist $(INSTDIR)\conf\access.default.conf
-	if not exist $(INSTDIR)\conf\access.conf \
-            copy $(INSTDIR)\conf\access.default.conf $(INSTDIR)\conf\access.conf
-	copy ..\conf\srm.conf-dist $(INSTDIR)\conf\srm.default.conf
-	if not exist $(INSTDIR)\conf\srm.conf \
-            copy $(INSTDIR)\conf\srm.default.conf $(INSTDIR)\conf\srm.conf
-	awk -f << ..\conf\httpd.conf-dist-win $(INSTDIR)\conf\httpd.default.conf $(INSTDIR)
+	-mkdir "$(INSTDIR)"
+	-mkdir "$(INSTDIR)\modules"
+        -mkdir "$(INSTDIR)\htdocs"
+	-mkdir "$(INSTDIR)\proxy"
+	-mkdir "$(INSTDIR)\logs"
+	-mkdir "$(INSTDIR)\conf"
+	-mkdir "$(INSTDIR)\bin"
+	copy Apache$(SHORT)\Apache.exe "$(INSTDIR)"
+	copy Core$(SHORT)\ApacheCore.dll "$(INSTDIR)"
+	copy os\win32\win9xconhook\$(LONG)\Win9xConHook.dll "$(INSTDIR)"
+	copy lib\expat-lite\$(LONG)\xmltok.dll "$(INSTDIR)"
+	copy lib\expat-lite\$(LONG)\xmlparse.dll "$(INSTDIR)"
+	copy os\win32\ApacheModuleStatus$(SHORT)\ApacheModuleStatus.dll "$(INSTDIR)\modules"
+	copy os\win32\ApacheModuleInfo$(SHORT)\ApacheModuleInfo.dll "$(INSTDIR)\modules"
+	copy os\win32\ApacheModuleAuthAnon$(SHORT)\ApacheModuleAuthAnon.dll "$(INSTDIR)\modules"
+	copy os\win32\ApacheModuleDigest$(SHORT)\ApacheModuleDigest.dll "$(INSTDIR)\modules"
+	copy os\win32\ApacheModuleCERNMeta$(SHORT)\ApacheModuleCERNMeta.dll "$(INSTDIR)\modules"
+	copy os\win32\ApacheModuleExpires$(SHORT)\ApacheModuleExpires.dll "$(INSTDIR)\modules"
+	copy os\win32\ApacheModuleHeaders$(SHORT)\ApacheModuleHeaders.dll "$(INSTDIR)\modules"
+	copy os\win32\ApacheModuleRewrite$(SHORT)\ApacheModuleRewrite.dll "$(INSTDIR)\modules"
+	copy os\win32\ApacheModuleSpeling$(SHORT)\ApacheModuleSpeling.dll "$(INSTDIR)\modules"
+	copy os\win32\ApacheModuleUserTrack$(SHORT)\ApacheModuleUserTrack.dll "$(INSTDIR)\modules"
+	copy os\win32\ApacheModuleAuthDigest$(SHORT)\ApacheModuleAuthDigest.dll "$(INSTDIR)\modules"
+	copy os\win32\ApacheModuleAuthDBM$(SHORT)\ApacheModuleAuthDBM.dll "$(INSTDIR)\modules"
+	copy modules\proxy\$(LONG)\ApacheModuleProxy.dll "$(INSTDIR)\modules"
+	copy support\$(LONG)\htpasswd.exe "$(INSTDIR)\bin"
+	copy support\$(LONG)\htdigest.exe "$(INSTDIR)\bin"
+	copy support\$(LONG)\logresolve.exe "$(INSTDIR)\bin"
+	copy support\$(LONG)\rotatelogs.exe "$(INSTDIR)\bin"
+        -xcopy ..\htdocs "$(INSTDIR)\htdocs" /sdy
+        copy ..\conf\magic "$(INSTDIR)\conf\magic.default"
+        if not exist "$(INSTDIR)\conf\magic" \
+            copy "$(INSTDIR)\conf\magic.default" "$(INSTDIR)\conf\magic"
+        copy ..\conf\mime.types "$(INSTDIR)\conf\mime.types.default"
+        if not exist "$(INSTDIR)\conf\mime.types" \
+            copy "$(INSTDIR)\conf\mime.types.default" "$(INSTDIR)\conf\mime.types"
+	copy ..\conf\access.conf-dist "$(INSTDIR)\conf\access.default.conf"
+	if not exist "$(INSTDIR)\conf\access.conf" \
+            copy "$(INSTDIR)\conf\access.default.conf" "$(INSTDIR)\conf\access.conf"
+	copy ..\conf\srm.conf-dist "$(INSTDIR)\conf\srm.default.conf"
+	if not exist "$(INSTDIR)\conf\srm.conf" \
+            copy "$(INSTDIR)\conf\srm.default.conf" "$(INSTDIR)\conf\srm.conf"
+	awk -f << ..\conf\httpd.conf-dist-win "$(INSTDIR)\conf\httpd.default.conf" "$(INSTDIR)"
     BEGIN { 
         srcfl = ARGV[1];
         dstfl = ARGV[2];
         serverroot = ARGV[3];
         gsub( /\\/, "/", serverroot );
-        print "" > dstfl;
         while ( ( getline < srcfl ) > 0 ) {
             gsub( /@@ServerRoot@@/, serverroot );
-            print $$0 >> dstfl;
+            print $$0 > dstfl;
         }
     }
 <<
-	if not exist $(INSTDIR)\conf\httpd.conf copy $(INSTDIR)\conf\httpd.default.conf $(INSTDIR)\conf\httpd.conf 
-	awk -f << support\dbmmanage >$(INSTDIR)\bin\dbmmanage.pl
+	if not exist "$(INSTDIR)\conf\httpd.conf" \
+            copy "$(INSTDIR)\conf\httpd.default.conf" "$(INSTDIR)\conf\httpd.conf" 
+	awk -f << support\dbmmanage >"$(INSTDIR)\bin\dbmmanage.pl"
     { if ( $$0 !~ /^#.*-lsdbm/) {
           gsub( /AnyDBM_File::ISA = qw\(.*\)/, "AnyDBM_File::ISA = qw(SDBM_File)" ); 
-          print $$0 
+          print $$0;
       } 
     }
 <<
