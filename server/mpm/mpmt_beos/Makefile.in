@@ -5,6 +5,6 @@ srcdir    = @srcdir@
 VPATH     = @srcdir@
 
 LTLIBRARY_NAME    = libmpmt_beos.la
-LTLIBRARY_SOURCES = mpmt_beos.c scoreboard.c acceptlock.c mutex.c poll.c
+LTLIBRARY_SOURCES = mpmt_beos.c scoreboard.c poll.c
 
 include $(top_srcdir)/build/ltlib.mk
