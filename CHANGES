@@ -2,6 +2,12 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) This fixes the cache code so that responses can be cached
+     if they have an Expires header but no Etag or Last-Modified
+     headers. PR 23130.
+     [Submitted by: <bjorn@exoweb.net>]
+     [Reviewed by: Paul J. Reder]
+
   *) Fix a couple of AIX xlc_r compiler issues in the code I just
      committed. [Paul J. Reder]
 
