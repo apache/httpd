@@ -1887,7 +1887,7 @@ static int dav_method_propfind(request_rec *r)
 	return HTTP_BAD_REQUEST;
     }
 
-    if (depth == DAV_INFINITY) {
+    if (depth == DAV_INFINITY && resource->collection) {
 	dav_dir_conf *conf;
 	conf = (dav_dir_conf *) ap_get_module_config(r->per_dir_config,
 						     &dav_module);
