@@ -67,7 +67,7 @@ void ssl_scache_dbm_init(server_rec *s, apr_pool_t *p)
 
     /* for the DBM we need the data file */
     if (mc->szSessionCacheDataFile == NULL) {
-        ap_log_error(APLOG_MARK, APLOG_ERR|APLOG_NOERRNO, 0, s,
+        ap_log_error(APLOG_MARK, APLOG_ERR, 0, s,
                      "SSLSessionCache required");
         ssl_die();
     }
@@ -413,7 +413,7 @@ void ssl_scache_dbm_expire(server_rec *s)
     }
     ssl_mutex_off(s);
 
-    ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, s,
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
                  "Inter-Process Session Cache (DBM) Expiry: "
                  "old: %d, new: %d, removed: %d",
                  nElements, nElements-nDeleted, nDeleted);

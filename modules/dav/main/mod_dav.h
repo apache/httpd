@@ -97,13 +97,13 @@ extern "C" {
 #define DAV_DEBUG 1
 #define DEBUG_CR	"\n"
 #define DBG0(f)		ap_log_error(APLOG_MARK, \
-				APLOG_ERR|APLOG_NOERRNO, 0, NULL, (f))
+				APLOG_ERR, 0, NULL, (f))
 #define DBG1(f,a1)	ap_log_error(APLOG_MARK, \
-				APLOG_ERR|APLOG_NOERRNO, 0, NULL, f, a1)
+				APLOG_ERR, 0, NULL, f, a1)
 #define DBG2(f,a1,a2)	ap_log_error(APLOG_MARK, \
-				APLOG_ERR|APLOG_NOERRNO, 0, NULL, f, a1, a2)
+				APLOG_ERR, 0, NULL, f, a1, a2)
 #define DBG3(f,a1,a2,a3) ap_log_error(APLOG_MARK, \
-			       APLOG_ERR|APLOG_NOERRNO, 0, NULL, f, a1, a2, a3)
+			       APLOG_ERR, 0, NULL, f, a1, a2, a3)
 #else
 #undef DAV_DEBUG
 #define DEBUG_CR	""

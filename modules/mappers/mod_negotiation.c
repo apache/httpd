@@ -652,7 +652,7 @@ static void parse_negotiate_header(request_rec *r, negotiation_state *neg)
     }
 
 #ifdef NEG_DEBUG
-    ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
+    ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL, 
             "dont_fiddle_headers=%d use_rvsa=%d ua_supports_trans=%d "
             "send_alternates=%d, may_choose=%d",
             neg->dont_fiddle_headers, neg->use_rvsa,  
@@ -877,7 +877,7 @@ static char *lcase_header_name_return_body(char *header, request_rec *r)
     }
 
     if (!*cp) {
-        ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                       "Syntax error in type map, no ':' in %s for header %s", 
                       r->filename, header);
         return NULL;
@@ -888,7 +888,7 @@ static char *lcase_header_name_return_body(char *header, request_rec *r)
     } while (*cp && apr_isspace(*cp));
 
     if (!*cp) {
-        ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                       "Syntax error in type map --- no header body: %s for %s",
                       r->filename, header);
         return NULL;
@@ -977,7 +977,7 @@ static int read_type_map(apr_file_t **map, negotiation_state *neg, request_rec *
                 while (--eol >= tag && apr_isspace(*eol)) 
                     *eol = '\0';
                 if ((mime_info.body = get_body(buffer, &len, tag, *map)) < 0) {
-                    ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
+                    ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                                   "Syntax error in type map, no end tag '%s'"
                                   "found in %s for Body: content.", 
                                   tag, r->filename);
@@ -1232,7 +1232,7 @@ static int read_types_multi(negotiation_state *neg)
      * request must die.
      */
     if (anymatch && !neg->avail_vars->nelts) {
-	ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
+	ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
 		      "Negotiation: discovered file(s) matching request: %s"
                       " (None could be negotiated).", 
                       r->filename);
@@ -2004,7 +2004,7 @@ static int is_variant_better_rvsa(negotiation_state *neg, var_rec *variant,
     */
 
 #ifdef NEG_DEBUG
-    ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
+    ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL, 
            "Variant: file=%s type=%s lang=%s sourceq=%1.3f "
            "mimeq=%1.3f langq=%1.3f charq=%1.3f encq=%1.3f "
            "q=%1.5f definite=%d",            
@@ -2075,7 +2075,7 @@ static int is_variant_better(negotiation_state *neg, var_rec *variant,
      */
 
 #ifdef NEG_DEBUG
-    ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
+    ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL, 
            "Variant: file=%s type=%s lang=%s sourceq=%1.3f "
            "mimeq=%1.3f langq=%1.3f langidx=%d charq=%1.3f encq=%1.3f ",
             (variant->file_name ? variant->file_name : ""),
@@ -2731,7 +2731,7 @@ static int do_negotiation(request_rec *r, negotiation_state *neg,
         }
         
         if (!*bestp) {
-            ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                           "no acceptable variant: %s", r->filename);
             return HTTP_NOT_ACCEPTABLE;
         }

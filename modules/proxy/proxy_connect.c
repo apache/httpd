@@ -112,7 +112,7 @@ int ap_proxy_connect_canon(request_rec *r, char *url)
     if (r->method_number != M_CONNECT) {
 	return DECLINED;
     }
-    ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r->server,
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
 		 "proxy: CONNECT: canonicalising URL %s", url);
 
     return OK;
@@ -141,11 +141,11 @@ int ap_proxy_connect_handler(request_rec *r, proxy_server_conf *conf,
 
     /* is this for us? */
     if (r->method_number != M_CONNECT) {
-        ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r->server,
+        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
 		     "proxy: CONNECT: declining URL %s", url);
 	return DECLINED;
     }
-    ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r->server,
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
 		 "proxy: CONNECT: serving URL %s", url);
 
 
@@ -161,7 +161,7 @@ int ap_proxy_connect_handler(request_rec *r, proxy_server_conf *conf,
 			     apr_pstrcat(p, "URI cannot be parsed: ", url, NULL));
     }
 
-    ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r->server,
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
 		 "proxy: CONNECT: connecting %s to %s:%d", url, uri.hostname, uri.port);
 
     /* do a DNS lookup for the destination host */
@@ -178,7 +178,7 @@ int ap_proxy_connect_handler(request_rec *r, proxy_server_conf *conf,
 	connectport = uri.port;
 	connect_addr = uri_addr;
     }
-    ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r->server,
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
 		 "proxy: CONNECT: connecting to remote proxy %s on port %d", connectname, connectport);
 
     /* check if ProxyBlock directive on this host */
@@ -262,7 +262,7 @@ int ap_proxy_connect_handler(request_rec *r, proxy_server_conf *conf,
     if (proxyport) {
 	/* FIXME: Error checking ignored.
 	 */
-        ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r->server,
+        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
 		     "proxy: CONNECT: sending the CONNECT request to the remote proxy");
         nbytes = apr_snprintf(buffer, sizeof(buffer),
 			      "CONNECT %s HTTP/1.0" CRLF, r->uri);
@@ -272,7 +272,7 @@ int ap_proxy_connect_handler(request_rec *r, proxy_server_conf *conf,
         apr_send(sock, buffer, &nbytes);
     }
     else {
-        ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r->server,
+        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
 		     "proxy: CONNECT: Returning 200 OK Status");
         nbytes = apr_snprintf(buffer, sizeof(buffer),
 			      "HTTP/1.0 200 Connection Established" CRLF);
@@ -293,7 +293,7 @@ int ap_proxy_connect_handler(request_rec *r, proxy_server_conf *conf,
 #endif
     }
 
-    ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r->server,
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
 		 "proxy: CONNECT: setting up poll()");
 
     /*
@@ -319,20 +319,20 @@ int ap_proxy_connect_handler(request_rec *r, proxy_server_conf *conf,
     apr_poll_socket_add(pollfd, sock, APR_POLLIN);
 
     while (1) { /* Infinite loop until error (one side closes the connection) */
-/*	ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r->server, "proxy: CONNECT: going to sleep (poll)");*/
+/*	ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server, "proxy: CONNECT: going to sleep (poll)");*/
         if ((rv = apr_poll(pollfd, &pollcnt, -1)) != APR_SUCCESS)
         {
 	    apr_socket_close(sock);
             ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, "proxy: CONNECT: error apr_poll()");
             return HTTP_INTERNAL_SERVER_ERROR;
         }
-/*	ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r->server,
+/*	ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
                      "proxy: CONNECT: woke from select(), i=%d", pollcnt);*/
 
         if (pollcnt) {
 	    apr_poll_revents_get(&pollevent, sock, pollfd);
             if (pollevent & APR_POLLIN) {
-/*		ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r->server,
+/*		ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
                              "proxy: CONNECT: sock was set");*/
                 nbytes = sizeof(buffer);
                 if (apr_recv(sock, buffer, &nbytes) == APR_SUCCESS) {
@@ -362,7 +362,7 @@ int ap_proxy_connect_handler(request_rec *r, proxy_server_conf *conf,
 
             apr_poll_revents_get(&pollevent, client_socket, pollfd);
             if (pollevent & APR_POLLIN) {
-/*		ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r->server,
+/*		ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
                              "proxy: CONNECT: client was set");*/
                 nbytes = sizeof(buffer);
                 if (apr_recv(client_socket, buffer, &nbytes) == APR_SUCCESS) {
@@ -387,7 +387,7 @@ int ap_proxy_connect_handler(request_rec *r, proxy_server_conf *conf,
             break;
     }
 
-    ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r->server,
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
 		 "proxy: CONNECT: finished with poll() - cleaning up");
 
     /*

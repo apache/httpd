@@ -1144,7 +1144,7 @@ static int hook_uri2file(request_rec *r)
              * we can actually use it!
              */
             if (!proxy_available) {
-                ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
+                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                              "attempt to make remote request from mod_rewrite "
                              "without proxy enabled: %s", r->filename);
                 return HTTP_FORBIDDEN;
@@ -1387,7 +1387,7 @@ static int hook_fixup(request_rec *r)
      */
     if (!(ap_allow_options(r) & (OPT_SYM_LINKS | OPT_SYM_OWNER))) {
         /* FollowSymLinks is mandatory! */
-        ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                      "Options FollowSymLinks or SymLinksIfOwnerMatch is off "
                      "which implies that RewriteRule directive is forbidden: "
                      "%s", r->filename);
@@ -3155,7 +3155,7 @@ static void open_rewritelog(server_rec *s, apr_pool_t *p)
 
     if (*conf->rewritelogfile == '|') {
         if ((pl = ap_open_piped_log(p, conf->rewritelogfile+1)) == NULL) {
-            ap_log_error(APLOG_MARK, APLOG_ERR|APLOG_NOERRNO, 0, s, 
+            ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, 
                          "mod_rewrite: could not open reliable pipe "
                          "to RewriteLog filter %s", conf->rewritelogfile+1);
             exit(1);
