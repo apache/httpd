@@ -55,3 +55,5 @@ mod_deflate          0x6FBA0000    0x00020000
 mod_ext_filter       0x6FB90000    0x00010000
 mod_charset_lite     0x6FB80000    0x00010000
 mod_logio            0x6FB70000    0x00010000
+util_ldap            0x6FB60000    0x00010000
+mod_auth_ldap        0x6FB50000    0x00010000
