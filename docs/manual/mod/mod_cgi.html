@@ -33,7 +33,7 @@ configuration variable.
 
 <h2>CGI Environment variables</h2>
 The server will set the CGI environment variables as described in the CGI
-specification, with the following provisons:
+specification, with the following provisions:
 <dl>
 <dt>REMOTE_HOST
 <dd>This will only be set if the server has not been compiled with
@@ -122,6 +122,12 @@ logged
 into the filename given as argument. If this is a relative file or
 path it is
 taken relative to the server root.
+
+<p>Note that script logging is meant to be a debugging feature when
+writing CGI scripts, and is not meant to be activated continuously on
+running servers. It is not optimized for speed or efficiency, and may
+have security problems if used in a manner other than that for which
+it was designed.</p>
 
 <a name="scriptloglength"><h3>ScriptLogLength</h3></a>
 
