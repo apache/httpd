@@ -89,7 +89,6 @@
 
 #include "ap_config.h"
 #include "apr_portable.h"
-#include "apr_config.h"		/* XXX: for ap_signal?? */
 #include "httpd.h"
 #include "mpm_default.h"
 #include "mpm_status.h"
