@@ -13,6 +13,9 @@
 /* char *crypt(const char *pw, const char *salt); */
 #define crypt(buf,salt)	    (buf)
 
+/* Use the Windows built-in spawnvp */
+#define ap_spawnvp(file, argv) (spawnvp(file, argv))
+
 /* Although DIR_TYPE is dirent (see nt/readdir.h) we need direct.h for
    chdir() */
 #include <direct.h>
@@ -79,9 +82,6 @@ every configuration function as __stdcall.
 /* Seems Windows is not a subgenius */
 #define NO_SLACK
 #include <stddef.h>
-
-#define NO_OTHER_CHILD
-#define NO_RELIABLE_PIPED_LOGS
 
 __inline int ap_os_is_path_absolute(const char *file)
 {
