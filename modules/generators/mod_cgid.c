@@ -898,7 +898,7 @@ static int cgid_handler(request_rec *r)
 
     ap_put_os_sock(&tempsock, &sd, pcgi);
 
-    iol = ap_iol_attach_socket(tempsock);
+    iol = ap_iol_attach_socket(pcgi, tempsock);
 
     ap_bpush_iol(script, iol); 
 
