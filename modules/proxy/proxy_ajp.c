@@ -97,13 +97,12 @@ int ap_proxy_ajp_canon(request_rec *r, char *url)
     return OK;
 }
  
-static
-apr_status_t ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
-                                   proxy_conn_rec *conn, 
-                                   conn_rec *origin, 
-                                   proxy_server_conf *conf,
-                                   apr_uri_t *uri,
-                                   char *url, char *server_portstr)
+static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
+                                proxy_conn_rec *conn, 
+                                conn_rec *origin, 
+                                proxy_server_conf *conf,
+                                apr_uri_t *uri,
+                                char *url, char *server_portstr)
 {
     apr_status_t status;
     int result;
@@ -118,10 +117,10 @@ apr_status_t ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
     if (status != APR_SUCCESS) {
         conn->close++;
         ap_log_error(APLOG_MARK, APLOG_ERR, status, r->server,
-                     "proxy: request failed to %pI (%s)",
+                     "proxy: AJP: request failed to %pI (%s)",
                      conn->worker->cp->addr,
                      conn->worker->hostname);
-        return status;
+        return HTTP_SERVICE_UNAVAILABLE;
     }
 
     /* read the first bloc of data */
@@ -134,7 +133,7 @@ apr_status_t ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
                      "proxy: ap_get_brigade failed");
         apr_brigade_destroy(input_brigade);
-        return status;
+        return HTTP_INTERNAL_SERVER_ERROR;
     }
 
     /* have something */
@@ -159,7 +158,7 @@ apr_status_t ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
         if (status != APR_SUCCESS) {
              ap_log_error(APLOG_MARK, APLOG_ERR, status, r->server,
                      "proxy: apr_brigade_flatten");
-            return status;
+            return HTTP_INTERNAL_SERVER_ERROR;
         }
 
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
@@ -171,7 +170,7 @@ apr_status_t ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
                              "proxy: request failed to %pI (%s)",
                              conn->worker->cp->addr,
                              conn->worker->hostname);
-                return status;
+                return HTTP_SERVICE_UNAVAILABLE;
             }
         }
     }
@@ -184,7 +183,7 @@ apr_status_t ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
                      "proxy: request failed to %pI (%s)",
                      conn->worker->cp->addr,
                      conn->worker->hostname);
-        return status;
+        return HTTP_SERVICE_UNAVAILABLE;
     }
 
     /* parse the reponse */
@@ -194,7 +193,7 @@ apr_status_t ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
                      "proxy: got response from %pI (%s)",
                      conn->worker->cp->addr,
                      conn->worker->hostname);
-        return APR_SUCCESS;
+        return HTTP_SERVICE_UNAVAILABLE;
     }
 
     /* XXXX: need logic to send the rest of the data */
@@ -208,18 +207,17 @@ apr_status_t ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
     }
  */
 
-    return APR_SUCCESS;
+    return OK;
 }
 
 /*
  * Process the AJP response, data already contains the first part of it.
  */
-static
-apr_status_t ap_proxy_ajp_process_response(apr_pool_t * p, request_rec *r,
-                                            conn_rec *origin,
-                                            proxy_conn_rec *backend,
-                                            proxy_server_conf *conf,
-                                            char *server_portstr) 
+static int ap_proxy_ajp_process_response(apr_pool_t * p, request_rec *r,
+                                         conn_rec *origin,
+                                         proxy_conn_rec *backend,
+                                         proxy_server_conf *conf,
+                                         char *server_portstr) 
 {
     conn_rec *c = r->connection;
     apr_bucket *e;
@@ -302,7 +300,7 @@ int ap_proxy_ajp_handler(request_rec *r, proxy_worker *worker,
     conn_rec *origin = NULL;
     proxy_conn_rec *backend = NULL;
     int is_ssl = 0;
-    const char *scheme = "ajp";
+    const char *scheme = "AJP";
 
     /* Note: Memory pool allocation.
      * A downstream keepalive connection is always connected to the existence
@@ -369,9 +367,10 @@ int ap_proxy_ajp_handler(request_rec *r, proxy_worker *worker,
     if (status != OK)
         goto cleanup;
     /* Step Two: Make the Connection */
-    status = ap_proxy_connect_backend(scheme, backend, worker, r->server);
-    if (status != OK)
+    if (ap_proxy_connect_backend(scheme, backend, worker, r->server)) {
+        status = HTTP_SERVICE_UNAVAILABLE;
         goto cleanup;
+    }
 #if 0
     /* XXX: we don't need to create the bound client connection */
 
