@@ -2,6 +2,10 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) <VirtualHost myhost> now applies to all IP addresses for myhost
+     instead of just the first one reported by the resolver.  This
+     corrects a regression since 1.3.  [Jeff Trawick]
+
   *) <IfModule> now recognizes the module identifier in addition to the
      file name. PR 29003.  [Edward Rudd <eddie omegaware.com>, André Malo]
 
