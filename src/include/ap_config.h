@@ -616,11 +616,13 @@ extern char *crypt();
 #endif
 #ifndef DEFAULT_GROUP
 #define DEFAULT_GROUP "nogroup"
+#endif
 #define HAVE_SHMGET 1
 #define HAVE_MMAP 1
 #define USE_MMAP_SCOREBOARD
 #define USE_MMAP_FILES
-#endif
+#define USE_FLOCK_SERIALIZED_ACCEPT
+#define SINGLE_LISTEN_UNSERIALIZED_ACCEPT
 
 #elif defined(UTS21)
 #undef HAVE_GMTOFF

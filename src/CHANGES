@@ -1,5 +1,14 @@
 Changes with Apache 1.3.4
 
+  *) PORT: Add defines for USE_FLOCK_SERIALIZED_ACCEPT and
+     SINGLE_LISTEN_UNSERIALIZED_ACCEPT to NetBSD/OpenBSD section
+     of ap_config.h to allow serialized accept for multiport listens.
+     [Roy Fielding, Curt Sampson] PR#3120
+
+  *) PORT: Fixed a misplaced #endif for NetBSD/OpenBSD section
+     of ap_config.h that would skip several defines if DEFAULT_GROUP
+     was overridden. [Roy Fielding]
+
   *) PORT: The I86 version of DGUX has support for strncasecmp and 
      strcasecmp, so allow it in ap_config.h. [Amiel Lee Yee] PR#3247
 
