@@ -22,11 +22,6 @@ Changes with Apache 2.1.0-dev
   *) Fix a compile failure with recent OpenSSL and picky compilers
      (e.g., OpenSSL 0.9.7a and xlc_r on AIX).  [Jeff Trawick]
 
-  *) Fix a build problem with passing unsupported --enable-layout
-     args to apr and apr-util.  This broke binbuild.sh as well as
-     user-specified layout parameters.  PR 18649 [Justin Erenkrantz,
-     Jeff Trawick]
-
   *) ap_get_mime_headers_core: allocate space for the trailing null
      when folding is in effect.
      PR 18170 [Peter Mayne <PeterMayne@SPAM_SUX.ap.spherion.com>]
@@ -167,6 +162,11 @@ Changes with Apache 2.1.0-dev
    Apache 2.0.xx tree as documented, and except as noted, below.]
 
 Changes with Apache 2.0.46
+
+  *) Fix a build problem with passing unsupported --enable-layout
+     args to apr and apr-util.  This broke binbuild.sh as well as
+     user-specified layout parameters.  PR 18649 [Justin Erenkrantz,
+     Jeff Trawick]
 
   *) If a Date response header was already set in the headers array,
      this value was ignored in favour of the current time. This meant
