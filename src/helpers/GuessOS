@@ -139,6 +139,10 @@ else
 	    echo "${MACHINE}-unknown-ultrix"; exit 0
 	    ;;
 
+	SINIX*)
+	    echo "${MACHINE}-whatever-sysv4"; exit 0
+	    ;;
+
     esac
 fi
 
