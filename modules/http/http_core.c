@@ -2478,13 +2478,18 @@ static int default_handler(request_rec *r)
     int convert_flag;
 #endif
 
+    if (r->handler) {
+        ap_log_error(APLOG_MARK, APLOG_NOERRNO | APLOG_WARNING,
+		     r->server, "handler \"%s\" not found, using default "
+		     "handler for : %s", r->handler, r->filename);
+    }
     /* This handler has no use for a request body (yet), but we still
      * need to read and discard it if the client sent one.
      */
     if ((errstatus = ap_discard_request_body(r)) != OK) {
         return errstatus;
     }
-
+    
     r->allowed |= (1 << M_GET) | (1 << M_OPTIONS);
 
     if (r->method_number == M_INVALID) {
