@@ -1993,13 +1993,6 @@ int ap_update_child_status(int child_num, int status, request_rec *r)
 				       sizeof(ss->request));
 	    }
 	    ap_cpystrn(ss->vhost, r->server->server_hostname, sizeof(ss->vhost));
-	} else if (status == SERVER_BUSY_READ) {
-	    /*
-	     * When reading a "new" request, we don't want to show the old 
-	     * info since that's confusing... so NULL it out quickly since
-	     * we want to hurry up and read the request.
-	     */
-	    *ss->vhost = *ss->request = *ss->client = '\0';
 	}
     }
     put_scoreboard_info(child_num, ss);

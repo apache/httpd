@@ -636,9 +636,14 @@ static int status_handler(request_rec *r)
 			ap_rprintf(r, "<td>%-1.1f<td>%-2.2f<td>%-2.2f\n",
 			   (float) conn_bytes / KBYTE, (float) my_bytes / MBYTE,
 			    (float) bytes / MBYTE);
-			ap_rprintf(r, "<td>%s<td nowrap>%s<td nowrap>%s</tr>\n\n",
-			    score_record.client, score_record.vhost,
-			    ap_escape_html(r->pool, score_record.request));
+			if (score_record.status == SERVER_BUSY_READ)
+			    ap_rprintf(r,
+			     "<td>?<td nowrap>?<td nowrap>..reading.. </tr>\n\n");
+			else
+			    ap_rprintf(r,
+			     "<td>%s<td nowrap>%s<td nowrap>%s</tr>\n\n",
+			     score_record.client, score_record.vhost,
+			     ap_escape_html(r->pool, score_record.request));
 		    }		/* no_table_report */
 		}			/* !short_report */
 	    }			/* if (<active child>) */
