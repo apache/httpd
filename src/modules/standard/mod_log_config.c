@@ -219,6 +219,8 @@ typedef struct {
     array_header *config_logs;
     array_header *server_config_logs;
     table *formats;
+    int ignore_referers;
+    array_header *referer_list;
 } multi_log_state;
 
 /*
@@ -235,6 +237,8 @@ typedef struct {
     char *format_string;
     array_header *format;
     int log_fd;
+    int conditions;
+    array_header *condition_list;
 #ifdef BUFFERED_LOGS
     int outcnt;
     char outbuf[LOG_BUFSIZE];
@@ -694,6 +698,27 @@ static int config_log_transaction(request_rec *r, config_log_state *cls,
         return DECLINED;
     }
 
+    /*
+     * See if we've got any conditional envariable-controlled logging decisions
+     * to make.
+     */
+    if (cls->conditions != 0) {
+	char **candidates = (char **) cls->condition_list->elts;
+	for (i = 0; i < cls->condition_list->nelts; ++i) {
+	    char *envname = candidates[i];
+	    if (*envname != '!') {
+		if (ap_table_get(r->subprocess_env, envname) == NULL) {
+		    return DECLINED;
+		}
+	    }
+	    else {
+		if (ap_table_get(r->subprocess_env, &envname[1]) != NULL) {
+		    return DECLINED;
+		}
+	    }
+	}
+    }
+
     format = cls->format ? cls->format : default_format;
 
     strs = ap_palloc(r->pool, sizeof(char *) * (format->nelts));
@@ -752,10 +777,27 @@ static int config_log_transaction(request_rec *r, config_log_state *cls,
 static int multi_log_transaction(request_rec *r)
 {
     multi_log_state *mls = ap_get_module_config(r->server->module_config,
-                                             &config_log_module);
+						&config_log_module);
     config_log_state *clsarray;
     int i;
 
+    /*
+     * See if there are any Referer: values we're supposed to ignore.
+     */
+    if (mls->ignore_referers != 0) {
+	const char *referer = ap_table_get(r->headers_in, "Referer");
+	if (referer != NULL) {
+	    char **candidate = (char **) mls->referer_list->elts;
+	    for (i = 0; i < mls->referer_list->nelts; ++i) {
+		if (strstr(referer, candidate[i]) != NULL) {
+		    return DECLINED;
+		}
+	    }
+	}
+    }
+    /*
+     * Continue and log this transaction..
+     */
     if (mls->config_logs->nelts) {
         clsarray = (config_log_state *) mls->config_logs->elts;
         for (i = 0; i < mls->config_logs->nelts; ++i) {
@@ -783,14 +825,17 @@ static int multi_log_transaction(request_rec *r)
 
 static void *make_config_log_state(pool *p, server_rec *s)
 {
-    multi_log_state *mls = (multi_log_state *) ap_palloc(p, sizeof(multi_log_state));
+    multi_log_state *mls;
 
+    mls = (multi_log_state *) ap_palloc(p, sizeof(multi_log_state));
     mls->config_logs = ap_make_array(p, 1, sizeof(config_log_state));
     mls->default_format_string = NULL;
     mls->default_format = NULL;
     mls->server_config_logs = NULL;
     mls->formats = ap_make_table(p, 4);
     ap_table_setn(mls->formats, "CLF", DEFAULT_LOG_FORMAT);
+    mls->ignore_referers = 0;
+    mls->referer_list = NULL;
 
     return mls;
 }
@@ -812,6 +857,12 @@ static void *merge_config_log_state(pool *p, void *basev, void *addv)
         add->default_format = base->default_format;
     }
     add->formats = ap_overlay_tables(p, base->formats, add->formats);
+    add->ignore_referers = (add->ignore_referers != 0)
+                           ? add->ignore_referers
+	                   : base->ignore_referers;
+    if (base->ignore_referers != 0) {
+	ap_array_cat(add->referer_list, base->referer_list);
+    }
 
     return add;
 }
@@ -824,7 +875,7 @@ static const char *log_format(cmd_parms *cmd, void *dummy, char *fmt,
 {
     const char *err_string = NULL;
     multi_log_state *mls = ap_get_module_config(cmd->server->module_config,
-                                             &config_log_module);
+						&config_log_module);
 
     /*
      * If we were given two arguments, the second is a name to be given to the
@@ -844,18 +895,47 @@ static const char *log_format(cmd_parms *cmd, void *dummy, char *fmt,
     return err_string;
 }
 
+static const char *add_referer_ignore(cmd_parms *cmd, void *mconfig,
+				      char *word1)
+{
+    multi_log_state *mls = ap_get_module_config(cmd->server->module_config,
+						&config_log_module);
+    char **ignore_uri;
+
+    mls->ignore_referers++;
+    if (mls->referer_list == NULL) {
+	mls->referer_list = ap_make_array(cmd->pool, 4, sizeof(char *));
+    }
+    ignore_uri = (char **) ap_push_array(mls->referer_list);
+    *ignore_uri = ap_pstrdup(cmd->pool, word1);
+    return NULL;
+}
+
 static const char *add_custom_log(cmd_parms *cmd, void *dummy, char *fn,
-                                  char *fmt)
+                                  char *fmt, char *envclause)
 {
     const char *err_string = NULL;
     multi_log_state *mls = ap_get_module_config(cmd->server->module_config,
-                                             &config_log_module);
+						&config_log_module);
     config_log_state *cls;
 
     cls = (config_log_state *) ap_push_array(mls->config_logs);
+    cls->conditions = 0;
+    if (envclause != NULL) {
+	char **env_condition;
+
+	if (strncasecmp(envclause, "env=", 4) != 0) {
+	    return "error in condition clause";
+	}
+	cls->condition_list = ap_make_array(cmd->pool, 4, sizeof(char *));
+	env_condition = (char **) ap_push_array(cls->condition_list);
+	*env_condition = ap_pstrdup(cmd->pool, &envclause[4]);
+	cls->conditions++;
+    }
+
     cls->fname = fn;
     cls->format_string = fmt;
-    if (!fmt) {
+    if (fmt != NULL) {
         cls->format = NULL;
     }
     else {
@@ -868,24 +948,27 @@ static const char *add_custom_log(cmd_parms *cmd, void *dummy, char *fn,
 
 static const char *set_transfer_log(cmd_parms *cmd, void *dummy, char *fn)
 {
-    return add_custom_log(cmd, dummy, fn, NULL);
+    return add_custom_log(cmd, dummy, fn, NULL, NULL);
 }
 
 static const char *set_cookie_log(cmd_parms *cmd, void *dummy, char *fn)
 {
-    return add_custom_log(cmd, dummy, fn, "%{Cookie}n \"%r\" %t");
+    return add_custom_log(cmd, dummy, fn, "%{Cookie}n \"%r\" %t", NULL);
 }
 
 static const command_rec config_log_cmds[] =
 {
-    {"CustomLog", add_custom_log, NULL, RSRC_CONF, TAKE2,
-     "a file name and a custom log format string or format name"},
+    {"CustomLog", add_custom_log, NULL, RSRC_CONF, TAKE23,
+     "a file name, a custom log format string or format name, "
+     "and an optional \"env=\" clause (see docs)"},
     {"TransferLog", set_transfer_log, NULL, RSRC_CONF, TAKE1,
      "the filename of the access log"},
     {"LogFormat", log_format, NULL, RSRC_CONF, TAKE12,
      "a log format string (see docs) and an optional format name"},
     {"CookieLog", set_cookie_log, NULL, RSRC_CONF, TAKE1,
      "the filename of the cookie log"},
+    {"RefererIgnore", add_referer_ignore, NULL, RSRC_CONF, ITERATE,
+     "referer URLs to ignore"},
     {NULL}
 };
 

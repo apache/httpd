@@ -14,22 +14,23 @@
 >
 <!--#include virtual="header.html" -->
 <H1 ALIGN="CENTER">Module mod_log_config</H1>
-
+<P>
 This module is contained in the <CODE>mod_log_config.c</CODE> file,
 and is compiled in by default in Apache 1.2. mod_log_config replaces
 mod_log_common in Apache 1.2. Prior to version 1.2, mod_log_config was
 an optional module. It provides for logging of the requests made to
 the server, using the Common Log Format or a user-specified format.
+</P>
 
 <H2>Summary</H2>
-
+<P>
 Three directives are provided by this module: <CODE>TransferLog</CODE>
 to create a log file, <CODE>LogFormat</CODE> to set a custom format,
 and <CODE>CustomLog</CODE> to define a log file and format in one go.
 The <CODE>TransferLog</CODE> and <CODE>CustomLog</CODE> directives can
 be used multiple times in each server to cause each request to be
 logged to multiple files.
-<P>
+</P>
 
 <H3>Compatibility notes</H3>
 
@@ -44,6 +45,22 @@ used to log user-tracking information created by <A
 HREF="mod_usertrack.html">mod_usertrack</A>. The use of
 <CODE>CookieLog</CODE> is deprecated, and a <CODE>CustomLog</CODE>
 should be defined to log user-tracking information instead.
+
+<LI>As of Apache 1.3.5, this module allows conditional logging
+based upon the setting of environment variables.  That is,
+you can control whether a request should be logged or not
+based upon whether an arbitrary environment variable is
+defined or not.  This is settable on a <EM>per</EM>-logfile
+basis.
+
+<LI>Beginning with Apache 1.3.5, the mod_log_config module has
+also subsumed the <CODE>RefererIgnore</CODE> directive from
+<A HREF="mod_log_referer.html">mod_log_referer</A>.  The use
+of <CODE>RefererIgnore</CODE> is deprecated, and should be
+replaced by combinations of
+<A HREF="mod_setenvif.html"><CODE>SetEnvIf</CODE></A> directives
+and environment variable controlled <CODE>CustomLog</CODE>
+definitions.
 
 </UL>
 
@@ -195,7 +212,9 @@ the user that starts the server.
 <UL>
 <LI><A HREF="#cookielog">CookieLog</A>
 <LI><A HREF="#customlog">CustomLog</A>
+<LI><A HREF="#customlog-conditional">CustomLog (conditional)</A>
 <LI><A HREF="#logformat">LogFormat</A>
+<LI><A HREF="#refererignore">RefererIgnore</A>
 <LI><A HREF="#transferlog">TransferLog</A>
 </UL>
 <HR>
@@ -223,8 +242,8 @@ the user that starts the server.
 The CookieLog directive sets the filename for logging of cookies.
 The filename is relative to the <A
 HREF="core.html#serverroot">ServerRoot</A>. This directive is included
-only for compatibility with <A
-HREF="mod_cookies.html">mod_cookies</A>, and is deprecated.
+only for compatibility with
+<A HREF="mod_cookies.html">mod_cookies</A>, and is deprecated.
 <P>
 
 <HR>
@@ -242,7 +261,10 @@ HREF="mod_cookies.html">mod_cookies</A>, and is deprecated.
  HREF="directive-dict.html#Status"
  REL="Help"
 ><STRONG>Status:</STRONG></A> Base<BR>
-<STRONG>Compatibility: </STRONG> Nickname only available in Apache 1.3
+<A
+ HREF="directive-dict.html#Compatibility"
+ REL="Help"
+><STRONG>Compatibility:</STRONG></A> Nickname only available in Apache 1.3
     or later
 <BR>
 <A
@@ -274,6 +296,57 @@ the
 ><SAMP>LogFormat</SAMP></A>
 directive.
 </P>
+
+<HR>
+<H2><A NAME="customlog-conditional">CustomLog (conditional)</A></H2>
+<A
+ HREF="directive-dict.html#Syntax"
+ REL="Help"
+><STRONG>Syntax:</STRONG></A> CustomLog <EM>file-pipe</EM>
+    <EM>format-or-nickname</EM>
+    env=[!]<EM>environment-variable</EM><BR>
+<A
+ HREF="directive-dict.html#Context"
+ REL="Help"
+><STRONG>Context:</STRONG></A> server config, virtual host<BR>
+<A
+ HREF="directive-dict.html#Status"
+ REL="Help"
+><STRONG>Status:</STRONG></A> Base<BR>
+<A
+ HREF="directive-dict.html#Compatibility"
+ REL="Help"
+><STRONG>Compatibility:</STRONG></A> Only available in Apache 1.3.5
+    or later
+<BR>
+<A
+ HREF="directive-dict.html#Module"
+ REL="Help"
+><STRONG>Module:</STRONG></A> mod_log_config
+<P>
+
+The behaviour of this form of the <SAMP>CustomLog</SAMP> directive is almost
+identical to the <A HREF="#customlog">standard <CODE>CustomLog</CODE></A>
+directive.  The difference is that the '<CODE>env=</CODE>' clause controls
+whether a particular request will be logged in the specified file or
+not.  If the specified environment variable is set for the
+request (or is not set, in the case of a '<CODE>env=!<EM>name</EM></SAMP>'
+clause), then the request will be logged.
+</P>
+<P>
+Environment variables can be set on a <EM>per</EM>-request basis
+using the <A HREF="mod_setenvif.html">mod_setenvif</A> and/or
+<A HREF="mod_rewrite.html">mod_rewrite</A> modules.  For example,
+if you don't want to record requests for all GIF images on
+your server in a separate logfile but not your main log, you
+can use:
+</P>
+<PRE>
+    SetEnvIf Request_URI \.gif$ gif-image
+    CustomLog gif-requests.log common env=gif-image
+    CustomLog nongif-requests.log common env=!gif-image
+</PRE>
+
 <HR>
 <H2><A NAME="logformat">LogFormat</A></H2>
 <!--%plaintext &lt;?INDEX {\tt LogFormat} directive&gt; -->
@@ -295,7 +368,10 @@ directive.
  HREF="directive-dict.html#Status"
  REL="Help"
 ><STRONG>Status:</STRONG></A> Base<BR>
-<STRONG>Compatibility: </STRONG> Nickname only available in Apache 1.3
+<A
+ HREF="directive-dict.html#Compatibility"
+ REL="Help"
+><STRONG>Compatibility:</STRONG></A> Nickname only available in Apache 1.3
     or later
 <BR>
 <A
@@ -314,9 +390,7 @@ arguments.
 <P>
 If you include a nickname for the format on the directive line, you can
 use it in other <SAMP>LogFormat</SAMP> and
-<A
- HREF="#customlog"
-><SAMP>CustomLog</SAMP></A>
+<A HREF="#customlog"><SAMP>CustomLog</SAMP></A>
 directives rather than repeating the entire format string.
 </P>
 <P>
@@ -327,6 +401,55 @@ it doesn't actually apply the format and make it the default.
 </P>
 
 <HR>
+<H2><A NAME="refererignore">RefererIgnore</A></H2>
+<A
+ HREF="directive-dict.html#Syntax"
+ REL="Help"
+><STRONG>Syntax:</STRONG></A> RefererIgnore <EM>string string ...</EM><BR>
+<A
+ HREF="directive-dict.html#Context"
+ REL="Help"
+><STRONG>Context:</STRONG></A> server config, virtual host<BR>
+<A
+ HREF="directive-dict.html#Status"
+ REL="Help"
+><STRONG>Status:</STRONG></A> Base<BR>
+<A
+ HREF="directive-dict.html#Compatibility"
+ REL="Help"
+><STRONG>Compatibility:</STRONG></A>> Only available in Apache 1.3.5
+    or later
+<BR>
+<A
+ HREF="directive-dict.html#Module"
+ REL="Help"
+><STRONG>Module:</STRONG></A> mod_log_config
+
+<P>
+The RefererIgnore directive adds to the list of strings to ignore in
+Referer headers. If any of the strings in the list is contained in
+the Referer header, then no referrer information will be logged for the
+request. Example:
+</P>
+<PRE>
+    RefererIgnore www.ncsa.uiuc.edu
+</PRE>
+<P>
+will avoid logging references from www.ncsa.uiuc.edu.
+</P>
+<P>
+<STRONG>Note:</STRONG> <EM>All</EM> transaction logfiles
+(defined by <CODE>CustomLog</CODE> or <CODE>TransferLog</CODE>) in
+the same server scope as the <CODE>RefererIgnore</CODE> (<EM>e.g.</EM>,
+in the same <CODE>&lt;VirtualHost&gt;</CODE> container)
+are affected by
+this directive.  If you want to control this behaviour on a
+<EM>per</EM>-logfile basis, you should use the
+<A HREF="#customlog-conditional">conditional <SAMP>CustomLog</SAMP></A>
+capability.
+</P>
+<HR>
+
 <H2><A NAME="transferlog">TransferLog</A></H2>
 <!--%plaintext &lt;?INDEX {\tt TransferLog} directive&gt; -->
 <A
