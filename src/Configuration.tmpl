@@ -156,7 +156,7 @@ Module browser_module      mod_browser.o
 
 # Module rewrite_module      mod_rewrite.o
 
-## cern_meta mimicks the behavior of the CERN web server with regards to 
+## cern_meta mimics the behavior of the CERN web server with regards to 
 ## metainformation files.  
 
 # Module cern_meta_module    mod_cern_meta.o
@@ -188,13 +188,13 @@ Module browser_module      mod_browser.o
 # Module db_auth_module      mod_auth_db.o
 # Module dbm_auth_module     mod_auth_dbm.o
 
-## msql_auth checks against an MSQL database.  You must have MSQL installed
+## msql_auth checks against an mSQL database.  You must have mSQL installed
 ## and an "msql.h" available for this to even compile.  Additionally,
 ## you may need to add a couple entries to the EXTRA_LIBS line, like
 ##
 ##  -lmsql -L/usr/local/lib -L/usr/local/Minerva/lib
 ##
-## This depends on your installation of MSQL. (This may be done by Configure
+## This depends on your installation of mSQL. (This may be done by Configure
 ## at a later date)
 
 # Module msql_auth_module    mod_auth_msql.o
