@@ -168,10 +168,10 @@ int status_handler (request_rec *r)
 {
     struct stat_opt options[] =        /* see #defines above */
     {
-	STAT_OPT_REFRESH, "refresh", "Refresh",
-        STAT_OPT_NOTABLE, "notable", NULL,
-        STAT_OPT_AUTO, "auto", NULL,
-	STAT_OPT_END, NULL, NULL
+	{ STAT_OPT_REFRESH, "refresh", "Refresh" },
+        { STAT_OPT_NOTABLE, "notable", NULL },
+        { STAT_OPT_AUTO, "auto", NULL },
+	{ STAT_OPT_END, NULL, NULL }
     };
     char *loc;
     time_t nowtime=time(NULL);
