@@ -129,39 +129,6 @@
 ** +-------------------------------------------------------+
 */
 
-
-/*
-**  Our interface to the Apache server kernel:
-**
-**  o  Runtime logic of a request is as following:
-**       while(request or subrequest)
-**           foreach(stage #0...#9)
-**               foreach(module) (**)
-**                   try to run hook
-**
-**  o  the order of modules at (**) is the inverted order as
-**     given in the "Configuration" file, i.e. the last module
-**     specified is the first one called for each hook!
-**     The core module is always the last!
-**
-**  o  there are two different types of result checking and
-**     continue processing:
-**     for hook #0,#1,#4,#5,#6,#8:
-**         hook run loop stops on first modules which gives
-**         back a result != DECLINED, i.e. it usually returns OK
-**         which says "OK, module has handled this _stage_" and for #1
-**         this have not to mean "Ok, the filename is now valid".
-**     for hook #2,#3,#7,#9:
-**         all hooks are run, independend of result
-**
-**  o  at the last stage, the core module always
-**       - says "HTTP_BAD_REQUEST" if r->filename does not begin with "/"
-**       - prefix URL with document_root or replaced server_root
-**         with document_root and sets r->filename
-**       - always return a "OK" independed if the file really exists
-**         or not!
-*/
-
     /* the module (predeclaration) */
 module AP_MODULE_DECLARE_DATA rewrite_module;
 
