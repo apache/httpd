@@ -1,5 +1,5 @@
 APACHE 1.3 STATUS:						-*-text-*-
-  Last modified at [$Date: 2001/10/26 14:42:10 $]
+  Last modified at [$Date: 2001/10/26 15:10:23 $]
 
 Release:
 
@@ -120,7 +120,8 @@ Available Patches (Most likely, will be ported to 2.0 as appropriate):
     * Brian Havard's patch to remove dependency of mod_auth_dbm on mod_auth.
       (PR#2598)
 	Message-ID: <199905170830.SAA31549@silk.apana.org.au>
-	Status: Lars +1 (on concept), Ken +1 (on concept), Martin +1(untested)
+	Status: Lars +1 (on concept), Ken +1 (on concept),
+                Martin +1(untested)
 
     * Aidan Cully's patch to allow assignment of 'ownership' of resources
       to either the server UID or the file's owner.
@@ -148,16 +149,16 @@ Needs patch:
       See: <Pine.LNX.3.96dg4.980427034301.16648P-100000@twinlark.arctic.org>
 
     * URI issues
-	- RFC2068 requires a server to recognize its own IP addr(s) in dot
-	notation, we do this fine if the user follows the dns-caveats
-	documentation... we should handle it in the case the user doesn't ever
-	supply a dot-notation address.
+	- RFC2068 requires a server to recognize its own IP addr(s) in
+	dot notation, we do this fine if the user follows the
+	dns-caveats documentation... we should handle it in the case
+	the user doesn't ever supply a dot-notation address.
 
-    * Problems dealing with .-rooted domain names such as "twinlark." versus
-	"twinlark.arctic.org.".  See the thread containing
-	Message-ID: <19980203211817.06723@deejai.mch.sni.de> for more details.
-	In particular this affects the correctness of the proxy and the
-	vhost mechanism.
+    * Problems dealing with .-rooted domain names such as "twinlark."
+        versus "twinlark.arctic.org.".  See the thread containing
+	Message-ID: <19980203211817.06723@deejai.mch.sni.de> for more
+	details.  In particular this affects the correctness of the
+	proxy and the vhost mechanism.
 
     * proxy_*_canon routines use r->proxyreq incorrectly.  See
 	<Pine.LNX.3.96dg4.980304030057.13656O-100000@twinlark.arctic.org>
@@ -271,11 +272,12 @@ Win32 specific issues:
 Binaries (1.3.22):
 
  Platform                      Avail.  Volunteer
- ------------------------------------------------------------------------------
+ ------------------------------------------------------------------
  000964804C00-ibm-aix4.3       no      Bill Stoddard
  9000_715-hp-hpux11.00         no      Jeff Trawick
  alpha-dec-osf3.0              no      Sameer Parekh
- alpha-dec-osf4.0              no      Lars Eilebrecht, Ken Coar, Randy Terbush
+ alpha-dec-osf4.0              no      Lars Eilebrecht, Ken Coar,
+                                       Randy Terbush
  alpha-whatever-linux2         no      Randy Terbush
  armv4l-whatever-linux2        no      Rasmus Lerdorf
  hppa1.1-hp-hpux-10.x          no      Rob Hartill, Randy Terbush
@@ -295,11 +297,11 @@ Binaries (1.3.22):
  i386-unknown-sco5             no      Ben Laurie
  i386-whatever-bsdi            no      David Reid
  i386-whatever-freebsd3.0      no      Dirk-Willem van Gulik
- i386-whatever-freebsd3.0      no      Ken Coar
  i386-whatever-freebsd3.3      no      Ask Bjoern Hansen
  i386-whatever-freebsd4.0      no      Ask Bjoern Hansen
  i386-whatever-freebsd4.4      yes     Martin Kraemer
- i586-unknown-linux2           no      Ralf S. Engelschall, Lars Eilebrecht, Randy Terbush
+ i586-unknown-linux2           no      Ralf S. Engelschall,
+                                       Lars Eilebrecht, Randy Terbush
  i686-pc-freebsd3.1            no      Ralf S. Engelschall
  i686-unknown-linux2           no      Lars Eilebrecht
  i686-whatever-cygwin          no      Stipe Tolj
@@ -329,6 +331,7 @@ Binaries (1.3.22):
  sparc-sun-sunos4.1.3_U1       no      Sameer Parekh
  sparc-unknown-linux           no      Lars Eilebrecht, Randy Terbush
  sun4u-sun-solaris2.280        no      Jeff Trawick
+ TPF                           no      David McCreedy, Carolyn Weiss
  win32                         yes     William Rowe
  x86-bsdos-3.x                 no      Randy Terbush
  x86-bsdos-4.x                 no      Randy Terbush
