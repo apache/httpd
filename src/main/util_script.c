@@ -649,6 +649,63 @@ API_EXPORT(int) ap_scan_script_header_err_buff(request_rec *r, BUFF *fb,
     return ap_scan_script_header_err_core(r, buffer, getsfunc_BUFF, fb);
 }
 
+struct vastrs {
+    va_list args;
+    int arg;
+    const char *curpos;
+};
+
+static int getsfunc_STRING(char *w, int len, void *pvastrs)
+{
+    struct vastrs *strs = (struct vastrs*) pvastrs;
+    char *p;
+    int t;
+    
+    if (!strs->curpos || !*strs->curpos) 
+        return 0;
+    p = strchr(strs->curpos, '\n');
+    if (p)
+        ++p;
+    else
+        p = strchr(strs->curpos, '\0');
+    t = p - strs->curpos;
+    if (t > len)
+        t = len;
+    strncpy (w, strs->curpos, t);
+    w[t] = '\0';
+    if (!strs->curpos[t]) {
+        ++strs->arg;
+        strs->curpos = va_arg(strs->args, const char *);
+    }
+    else
+        strs->curpos += t;
+    return t;    
+}
+
+/* ap_scan_script_header_err_strs() accepts additional const char* args...
+ * each is treated as one or more header lines, and the first non-header
+ * character is returned to **arg, **data.  (The first optional arg is
+ * counted as 0.)
+ */
+API_EXPORT_NONSTD(int) ap_scan_script_header_err_strs(request_rec *r, 
+                                                      char *buffer, 
+                                                      const char **termch,
+                                                      int *termarg, ...)
+{
+    struct vastrs strs;
+    int res;
+
+    va_start(strs.args, termarg);
+    strs.arg = 0;
+    strs.curpos = va_arg(strs.args, char*);
+    res = ap_scan_script_header_err_core(r, buffer, getsfunc_STRING, (void *) &strs);
+    if (termch)
+        *termch = strs.curpos;
+    if (termarg)
+        *termarg = strs.arg;
+    va_end(strs.args);
+    return res;
+}
 
 API_EXPORT(void) ap_send_size(size_t size, request_rec *r)
 {

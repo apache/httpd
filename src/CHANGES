@@ -1,5 +1,15 @@
 Changes with Apache 1.3.13
 
+  *) Radical surgery to improve mod_isapi support under Win32.
+     Includes a number of newer ServerSupportFunction calls, support
+     for ReadClient (in order to retrieve POSTs greater than 48KB),
+     and general bug fixes to more reliably load ISAPI .dll's and
+     prevent leaking handle resources.  Note: There are still 
+     discrepancies between IIS's and Apache's ServerVariables, and
+     async calls are still not supported.  Additional warnings are
+     logged to facilitate debugging of unsupported ISAPI calls.
+     [William Rowe]
+
   *) Update Configure script to allow building Apache on IBM's
      IA64 version of AIX. [Paul Reder]
 

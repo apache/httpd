@@ -80,6 +80,10 @@ API_EXPORT(int) ap_scan_script_header_err_buff(request_rec *r, BUFF *f,
 API_EXPORT(int) ap_scan_script_header_err_core(request_rec *r, char *buffer,
 				       int (*getsfunc) (char *, int, void *),
 				       void *getsfunc_data);
+API_EXPORT_NONSTD(int) ap_scan_script_header_err_strs(request_rec *r, 
+                                                      char *buffer, 
+                                                      const char **termch,
+                                                      int *termarg, ...);
 API_EXPORT(void) ap_send_size(size_t size, request_rec *r);
 API_EXPORT(int) ap_call_exec(request_rec *r, child_info *pinfo, char *argv0, char **env,
                           int shellcmd);
