@@ -19,7 +19,7 @@
 # permissions.  
 
 <Directory />
-Options None
+Options FollowSymLinks
 AllowOverride None
 </Directory>
 
