@@ -844,6 +844,8 @@ request_rec *ap_read_request(conn_rec *conn)
     const char *expect;
     int access_status;
 
+    AP_DEBUG_ASSERT(conn->remain == 0);
+
     apr_pool_create(&p, conn->pool);
     r = apr_pcalloc(p, sizeof(request_rec));
     r->pool            = p;
