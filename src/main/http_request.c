@@ -659,6 +659,25 @@ static void decl_die (int status, char *phase, request_rec *r)
     else die (status, r);
 }
 
+static int some_auth_required (request_rec *r)
+{
+    /* Is there a require line configured for the type of *this* req? */
+    
+    array_header *reqs_arr = requires (r);
+    require_line *reqs;
+    int i;
+    
+    if (!reqs_arr) return 0;
+    
+    reqs = (require_line *)reqs_arr->elts;
+
+    for (i = 0; i < reqs_arr->nelts; ++i)
+	if (reqs[i].method_mask & (1 << r->method_number))
+	    return 1;
+
+    return 0;
+}
+
 void process_request_internal (request_rec *r)
 {
     int access_status;
@@ -721,7 +740,7 @@ void process_request_internal (request_rec *r)
 	return;
     }
     
-    if (auth_type (r)) {
+    if (some_auth_required (r)) {
         if ((access_status = check_user_id (r)) != 0) {
 	    decl_die (access_status, "check user.  No user file?", r);
 	    return;
