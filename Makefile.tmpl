@@ -196,7 +196,7 @@ install:
 
 #   the non-verbose variant for package maintainers
 install-quiet:
-	@$(MAKE) -f $(MKF) QUIET=1 install
+	@$(MAKE) -f $(MKF) $(MFLAGS) QUIET=1 install
 
 #   create the installation tree
 install-mktree:
