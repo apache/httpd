@@ -130,7 +130,7 @@ char *get_pw(request_rec *r, char *user, char *auth_pwfile)
 
         if(!strcmp(user,w)) {
 	    pfclose(r->pool, f);
-            return pstrdup (r->pool, rpw);
+            return getword(r->pool, &rpw, ':');
 	}
     }
     pfclose(r->pool, f);
