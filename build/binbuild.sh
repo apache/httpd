@@ -9,7 +9,7 @@
 
 APDIR=`pwd`
 APDIR=`basename $APDIR`
-VER=`echo $APDIR |sed s/apache-//`
+VER=`echo $APDIR |sed s/apache_//`
 OS=`src/helpers/GuessOS`
 USER="`src/helpers/buildinfo.sh -n %u@%h%d`"
 TAR="`src/helpers/PrintPath tar`"
@@ -90,7 +90,7 @@ echo "Creating supplementary files..."
   ./bindist/bin/httpd -V && \
   echo "----------------------------------------------------------------------" \
 ) > README.bindist
-cp README.bindist ../apache-$VER-$OS.README
+cp README.bindist ../apache_$VER-$OS.README
 
 ( echo " " && \
   echo "Apache $VER binary installation" && \
@@ -192,28 +192,28 @@ then
 else
   if [ "x$GTAR" != "x" ]
   then
-    $GTAR -zcf ../apache-$VER-$OS.tar.gz -C .. --owner=root --group=root apache-$VER
+    $GTAR -zcf ../apache_$VER-$OS.tar.gz -C .. --owner=root --group=root apache_$VER
   else
     if [ "x$TAR" != "x" ]
     then
-      $TAR -cf ../apache-$VER-$OS.tar -C .. apache-$VER
+      $TAR -cf ../apache_$VER-$OS.tar -C .. apache_$VER
       if [ "x$GZIP" != "x" ]
       then
-        $GZIP ../apache-$VER-$OS.tar
+        $GZIP ../apache_$VER-$OS.tar
       fi
     else
       echo "ERROR: Could not find a 'tar' program!"
       echo "       Please execute the following commands manually:"
-      echo "         tar -cf ../apache-$VER-$OS.tar ."
-      echo "         gzip ../apache-$VER-$OS.tar"
+      echo "         tar -cf ../apache_$VER-$OS.tar ."
+      echo "         gzip ../apache_$VER-$OS.tar"
     fi
   fi
 
-  if [ -f ../apache-$VER-$OS.tar.gz ] && [ -f ../apache-$VER-$OS.README ]
+  if [ -f ../apache_$VER-$OS.tar.gz ] && [ -f ../apache_$VER-$OS.README ]
   then
     echo "Ready."
-    echo "You can find the binary archive (apache-$VER-$OS.tar.gz)"
-    echo "and the readme file (apache-$VER-$OS.README) in the"
+    echo "You can find the binary archive (apache_$VER-$OS.tar.gz)"
+    echo "and the readme file (apache_$VER-$OS.README) in the"
     echo "parent directory."
     exit 0;
   else
