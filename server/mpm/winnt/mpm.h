@@ -63,6 +63,9 @@
  * shared with non-mpm specific code in the server.  Hummm, perhaps we can
  * move most of this stuff to mpm_common.h?
  */
+
+#define MPM_NAME "WinNT"
+
 extern int ap_threads_per_child;
 
 #endif /* APACHE_MPM_H */

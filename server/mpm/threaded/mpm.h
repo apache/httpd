@@ -63,6 +63,8 @@
 
 #define THREADED_MPM
 
+#define MPM_NAME "Threaded"
+
 #define AP_MPM_NEEDS_RECLAIM_CHILD_PROCESSES 1
 #define MPM_SYNC_CHILD_TABLE() (ap_sync_scoreboard_image())
 #define MPM_CHILD_PID(i) (ap_scoreboard_image->parent[i].pid)

@@ -327,6 +327,7 @@ static int display_info(request_rec *r)
             ap_mpm_query(AP_MPMQ_MAX_DAEMONS, &max_daemons);
             ap_mpm_query(AP_MPMQ_IS_THREADED, &threaded);
             ap_mpm_query(AP_MPMQ_IS_FORKED, &forked);
+            ap_rprintf(r, "MPM used is %s<br>\n", ap_show_mpm());
             ap_rprintf(r, "<strong>MPM Information:</strong> "
 		       "<tt>Max Daemons: %d Threaded: %s Forked: %s</tt><br>\n",
                        max_daemons, threaded ? "yes" : "no",
