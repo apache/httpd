@@ -222,6 +222,9 @@ int ap_proxy_connect_handler(request_rec *r, proxy_server_conf *conf,
         return HTTP_INTERNAL_SERVER_ERROR;
     }
 
+    /* Set a timeout on the socket */
+    apr_setsocketopt(sock, APR_SO_TIMEOUT, (int)(r->server->timeout * APR_USEC_PER_SEC));
+
 	/*
 	 * At this point we have a list of one or more IP addresses of
 	 * the machine to connect to. If configured, reorder this
