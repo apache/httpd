@@ -67,6 +67,14 @@ struct exploded_time_cache_element {
 /* the "+ 1" is for the current second: */
 #define TIME_CACHE_SIZE (AP_TIME_RECENT_THRESHOLD + 1)
 
+/* Note that AP_TIME_RECENT_THRESHOLD is defined to
+ * be a power of two minus one in util_time.h, so that
+ * we can replace a modulo operation with a bitwise AND
+ * when hashing items into a cache of size
+ * AP_TIME_RECENT_THRESHOLD+1
+ */
+#define TIME_CACHE_MASK (AP_TIME_RECENT_THRESHOLD)
+
 static struct exploded_time_cache_element exploded_cache_localtime[TIME_CACHE_SIZE];
 static struct exploded_time_cache_element exploded_cache_gmt[TIME_CACHE_SIZE];
 
@@ -77,7 +85,7 @@ static apr_status_t cached_explode(apr_time_exp_t *xt, apr_time_t t,
 {
     apr_int64_t seconds = apr_time_sec(t);
     struct exploded_time_cache_element *cache_element =
-        &(cache[seconds % TIME_CACHE_SIZE]);
+        &(cache[seconds & TIME_CACHE_MASK]);
     struct exploded_time_cache_element cache_element_snapshot;
 
     /* The cache is implemented as a ring buffer.  Each second,
