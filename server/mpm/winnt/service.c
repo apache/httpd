@@ -86,7 +86,7 @@
 #include "http_conf_globals.h"
 #include "http_log.h"
 #include "ap_mpm.h"
-#include "winnt.h"
+#include "mpm_winnt.h"
 
 char *service_name = NULL;
 char *display_name = NULL;

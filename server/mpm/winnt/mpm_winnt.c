@@ -70,7 +70,7 @@
 #include "ap_listen.h"
 #include "mpm_default.h"
 #include "iol_socket.h"
-#include "winnt.h"
+#include "mpm_winnt.h"
 
 /*
  * Definitions of WINNT MPM specific config globals
