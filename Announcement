@@ -1,8 +1,8 @@
 
-Apache 2.0alpha2 Released
+Apache 2.0alpha3 Released
 ------------------------
 
-The Apache Group is pleased to announce the release of the second public
+The Apache Group is pleased to announce the release of the third public
 alpha release of Apache 2.0.  
 
 Apache 2.0 offers numerous enhancements, improvements and performance
@@ -15,7 +15,7 @@ improves the performance and robustness of Apache on Windows Operating
 Systems.  Lastly we are proud to announce support for BeOS in this 
 version of the server.
 
-Apache 2.0a2 under UNIX has undergone some testing, there are
+Apache 2.0a3 under UNIX has undergone some testing, there are
 known issues in the current release, including at least one small memory 
 leak.  This should be considered a ``developers version'' including only 
 the source and no pre-compiled binaries. It is anticipated that a 
@@ -23,7 +23,7 @@ binary-release will be available for the first beta release.  If you do
 not feel comfortable compiling code, the Apache Group strongly recommends
 that you wait for a more stable beta release before you try this version. 
 
-Apache 2.0a2 under Windows has undergone some testing as well.  There
+Apache 2.0a3 under Windows has undergone some testing as well.  There
 are known issues in the current release with regards to Apache on windows
 95 and 98.  We are working through those problems, and hope to have them
 fixed for future releases of the 2.0 alpha.
