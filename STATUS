@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/07/01 01:25:04 $]
+Last modified at [$Date: 2003/07/03 16:22:50 $]
 
 Release:
 
@@ -210,13 +210,13 @@ PATCHES TO PORT FROM 2.1
                      the origin server didn't include it.
                      BTW, with my patch Apache 2 and Apache 1.3 will behave
                      identically.  (That's how I read the code, anyway :) )
-        +1: trawick
+        +1: trawick, nd
 
     * mod_rewrite: Perform child initialization on the rewrite log
       lock.  This fixes a log corruption issue when flock-based 
       serialization is used (e.g., FreeBSD).
         modules/mappers/mod_rewrite.c 1.152
-        +1: trawick, jerenkrantz
+        +1: trawick, jerenkrantz, nd
 
     * Unix: Handle permissions settings for flock-based mutexes in 
       unixd_set_global|proc_mutex_perms().  Allow the functions to
@@ -253,6 +253,10 @@ PATCHES TO PORT FROM 2.1
     * ab: fix NULL-pointer issue when parsing incomplete response. PR 21085.
       (2.0 + 1.3)
         support/ab.c: r1.124
+      +1: nd
+
+    * ab: catch out of memory (reasoning report ID 29)
+        support/ab.c: r1.125
       +1: nd
 
 CURRENT RELEASE NOTES:
