@@ -1383,7 +1383,7 @@ static const char *end_nested_section(cmd_parms *cmd, void *dummy)
 	return ap_pstrcat(cmd->pool, "Expected ", cmd->end_token, " but saw ",
 			  cmd->cmd->name, NULL);
     }
-    return cmd->end_token;
+    return NULL;
 }
 
 /*
@@ -1436,16 +1436,9 @@ static const char *dirsection(cmd_parms *cmd, void *dummy, const char *arg)
 
     old_end_token = cmd->end_token;
     cmd->end_token = thiscmd->cmd_data ? end_directorymatch_section : end_directory_section;
-    errmsg = ap_srm_command_loop(cmd, new_dir_conf);
-    if (errmsg == NULL) {
-	errmsg = missing_endsection(cmd, 1);
-    }
+
+    ap_walk_config(NULL, cmd, new_dir_conf, 1);
     cmd->end_token = old_end_token;
-    if (errmsg != (thiscmd->cmd_data 
-		       ? end_directorymatch_section 
-		   : end_directory_section)) {
-	return errmsg;
-    }
 
     conf = (core_dir_config *)ap_get_module_config(new_dir_conf, &core_module);
     conf->r = r;
@@ -1502,16 +1495,9 @@ static const char *urlsection(cmd_parms *cmd, void *dummy, const char *arg)
     old_end_token = cmd->end_token;
     cmd->end_token = thiscmd->cmd_data ? end_locationmatch_section
                                        : end_location_section;
-    errmsg = ap_srm_command_loop(cmd, new_url_conf);
-    if (errmsg == NULL) {
-	errmsg = missing_endsection(cmd, 1);
-    }
-    cmd->end_token = old_end_token;
-    if (errmsg != (thiscmd->cmd_data 
-		       ? end_locationmatch_section 
-		       : end_location_section)) {
-	return errmsg;
-    }
+
+    ap_walk_config(NULL, cmd, new_url_conf, 1);
+    cmd->end_token = old_end_token; 
 
     conf = (core_dir_config *)ap_get_module_config(new_url_conf, &core_module);
     conf->d = ap_pstrdup(cmd->pool, cmd->path);	/* No mangling, please */
@@ -1576,16 +1562,9 @@ static const char *filesection(cmd_parms *cmd, core_dir_config *c,
 
     old_end_token = cmd->end_token;
     cmd->end_token = thiscmd->cmd_data ? end_filesmatch_section : end_files_section;
-    errmsg = ap_srm_command_loop(cmd, new_file_conf);
-    if (errmsg == NULL) {
-	errmsg = missing_endsection(cmd, 1);
-    }
+
+    ap_walk_config(NULL, cmd, new_file_conf, 1);
     cmd->end_token = old_end_token;
-    if (errmsg != (thiscmd->cmd_data 
-		       ? end_filesmatch_section 
-		   : end_files_section)) {
-	return errmsg;
-    }
 
     conf = (core_dir_config *)ap_get_module_config(new_file_conf,
 						   &core_module);
@@ -1637,23 +1616,9 @@ static const char *start_ifmod(cmd_parms *cmd, void *dummy, char *arg)
     found = ap_find_linked_module(arg);
 
     if ((!not && found) || (not && !found)) {
+        ap_walk_config(NULL, cmd, cmd->server->lookup_defaults, 1);
         return NULL;
     }
-
-    while (nest && !(ap_cfg_getline(l, MAX_STRING_LEN, cmd->config_file))) {
-        if (!strncasecmp(l, "<IfModule", 9)) {
-	    nest++;
-	}
-	if (!strcasecmp(l, "</IfModule>")) {
-	  nest--;
-	}
-    }
-
-    if (nest) {
-	cmd->end_token = end_ifmodule_section;
-	return missing_endsection(cmd, nest);
-    }
-    return NULL;
 }
 
 API_EXPORT(int) ap_exists_config_define(char *name)
@@ -1698,22 +1663,9 @@ static const char *start_ifdefine(cmd_parms *cmd, void *dummy, char *arg)
     defined = ap_exists_config_define(arg);
 
     if ((!not && defined) || (not && !defined)) {
-	return NULL;
+        ap_walk_config(NULL, cmd, dummy, 1);
+        return NULL;
     }
-
-    while (nest && !(ap_cfg_getline(l, MAX_STRING_LEN, cmd->config_file))) {
-        if (!strncasecmp(l, "<IfDefine", 9)) {
-	    nest++;
-	}
-	if (!strcasecmp(l, "</IfDefine>")) {
-	    nest--;
-	}
-    }
-    if (nest) {
-	cmd->end_token = end_ifdefine_section;
-	return missing_endsection(cmd, nest);
-    }
-    return NULL;
 }
 
 /* httpd.conf commands... beginning with the <VirtualHost> business */
@@ -1760,12 +1712,10 @@ static const char *virtualhost_section(cmd_parms *cmd, void *dummy, char *arg)
     old_end_token = cmd->end_token;
     cmd->end_token = end_virtualhost_section;
     cmd->server = s;
-    errmsg = ap_srm_command_loop(cmd, s->lookup_defaults);
-    cmd->server = main_server;
-    if (errmsg == NULL) {
-	errmsg = missing_endsection(cmd, 1);
-    }
+
+    ap_walk_config(NULL, cmd, s->lookup_defaults, 1);
     cmd->end_token = old_end_token;
+    cmd->server = main_server;
 
     if (errmsg == end_virtualhost_section) {
 	return NULL;

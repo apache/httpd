@@ -60,18 +60,12 @@
 #include "util_cfgtree.h"
 #include <stdlib.h>
 
-ap_directive_t *conf_tree;
-
 ap_directive_t *ap_add_node(ap_directive_t **parent, ap_directive_t *current, 
                             ap_directive_t *toadd, int child)
 {
     if (current == NULL) {
         /* we just started a new parent */
-        if (*parent == NULL) {
-            /* no parent, no current: root of tree */
-            conf_tree = toadd;
-        }
-        else {
+        if (*parent != NULL) {
             (*parent)->first_child = toadd;
             toadd->parent = *parent;
         }
