@@ -1,5 +1,5 @@
 Apache HTTP Server 2.0 Documentation Status File.
-Last modified: $Date: 2002/09/06 23:29:01 $
+Last modified: $Date: 2002/09/09 01:53:42 $
 
 If you are interested in helping accomplish some of the tasks on this
 list or otherwise improving the documentation, please join the
@@ -112,7 +112,6 @@ http://httpd.apache.org/docs-project/docsformat.html
 ebcdic.html                        # Perhaps move to platform/
 footer.html                        # delete after finishing manual/ 
 header.html                        # delete after finishing manual/ 
-custom-error.html.en
 index.html.en                      # leave in html?
 cgi_path.html.en
 howto/cgi.html.en
