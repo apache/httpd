@@ -2015,10 +2015,10 @@ API_EXPORT(int) ap_discard_request_body(request_rec *r)
  */
 API_EXPORT(long) ap_send_fd(ap_file_t *fd, request_rec *r)
 {
-    ap_status_t rv;
     long len = r->finfo.size;
 #ifdef HAVE_SENDFILE
     if (!r->chunked) {
+	ap_status_t rv;
         ap_bsetopt(r->connection->client, BO_TIMEOUT,
                    r->connection->keptalive
                    ? &r->server->keep_alive_timeout

@@ -67,6 +67,7 @@
 #include "ap_config.h"
 #include "apr_lib.h"
 #include "apr_portable.h"
+#include "apr_config.h"		/* XXX for ap_signal?? */
 #include "httpd.h"
 #include "http_config.h"
 #include "http_core.h"
