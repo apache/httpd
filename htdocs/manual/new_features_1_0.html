@@ -15,12 +15,12 @@ functionality (see also more detailed <code>CHANGES</code> file) in
 the source directory.  Because the core code has changed so
 significantly, there are certain liberties that earlier versions of
 Apache (and the NCSA daemon) took that Apache 1.0 is pickier about -
-please check the <a href="compat_notes.html">compatibility notes</a> if you have any problems.
+please check the <a href="misc/compat_notes.html">compatibility notes</a> if you have any problems.
 
 <UL>
 
 <LI> API for server extensions --- see below for a brief sermon on
-philosophy, or see <a href="API.html">src/API.html</a> for an actual
+philosophy, or see <a href="misc/API.html">src/API.html</a> for an actual
 overview.  Most server functionality (including includes, CGI, and
 most forms of access control) are actually implemented as
 API-conformant modules; you can also do other neat stuff (we've
@@ -28,7 +28,7 @@ included a sample module, for instance, which one of us is using to
 track click-trails using the <a
 href="http://home.netscape.com/newsref/std/cookie_spec.html">Netscape
 cookie mechanism</a>, for visitors who come in through Netscape
-clients).  <a href="mod_dld.html">Modules</a> can also be loaded dynamically using GNU DLD.
+clients).  <a href="mod/mod_dld.html">Modules</a> can also be loaded dynamically using GNU DLD.
 
 <P>
 The API is not yet quite stable (see src/TODO for some possible
@@ -94,7 +94,7 @@ commands (code written by Florent Guillaume, guillaum@clipper.ens.fr).
 
 <P>
 
-<LI> <a href="mod_log_config.html">Configurable logging module</a> --- this
+<LI> <a href="mod/mod_log_config.html">Configurable logging module</a> --- this
    is a replacement for the standard plane-jane Common Log Format code, which
    supports a LogFormat directive which allows you to control the formatting of
    entries in the TransferLog, and add some new items if you like (in
@@ -105,11 +105,11 @@ commands (code written by Florent Guillaume, guillaum@clipper.ens.fr).
 
 <H2>Other features of Apache</h2>
 <ul>
-<LI><A HREF="mod_dld.html">Dynamically loading modules using GNU DLD</A>
-<LI><A HREF="mod_imap.html">Imagemap Module</A>
-<li><A HREF="mod_dir.html#directoryindex">Multiple DirectoryIndex filenames</A>
-<LI><A HREF="mod_asis.html"> &quot;Send as is&quot; file types</A>
-<li><A HREF="mod_include.html#xbithack">XBITHACK last modified</A>
+<LI><A HREF="mod/mod_dld.html">Dynamically loading modules using GNU DLD</A>
+<LI><A HREF="mod/mod_imap.html">Imagemap Module</A>
+<li><A HREF="mod/mod_dir.html#directoryindex">Multiple DirectoryIndex filenames</A>
+<LI><A HREF="mod/mod_asis.html"> &quot;Send as is&quot; file types</A>
+<li><A HREF="mod/mod_include.html#xbithack">XBITHACK last modified</A>
 </ul>
 
 <!--#include virtual="footer.html" -->
