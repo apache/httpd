@@ -1163,7 +1163,7 @@ int parse_htaccess(void **result, request_rec *r, int override,
 	cfg_closefile(f);
 
 	if (errmsg) {
-            aplog_error(APLOG_MARK, APLOG_ALERT, r->server, "%s: %s",
+	    aplog_error(APLOG_MARK, APLOG_ALERT|APLOG_NOERRNO, r->server, "%s: %s",
                         filename, errmsg);
             return HTTP_INTERNAL_SERVER_ERROR;
 	}
