@@ -255,7 +255,7 @@
       Allowed" message</dt>
       <dd>That means that you have not properly configured Apache
       to process your CGI program. Reread the section on 
-      <a href="#configuringapachetopermitcgi">configuring
+      <a href="#configuring">configuring
       Apache</a> and try to find what you missed.</dd>
 
       <dt>A message starting with "Forbidden"</dt>
