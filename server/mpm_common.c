@@ -77,9 +77,6 @@
 #if HAVE_SYS_TIME_H
 #include <sys/time.h> /* for timeval definitions */
 #endif
-#ifdef BEOS_BONE
-#include <sys/socket.h>
-#endif
 
 #if defined(DEXTER_MPM) || defined(MPMT_BEOS_MPM) || defined(BEOS_MPM)
 #define CHILD_TABLE 1
