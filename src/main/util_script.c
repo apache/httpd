@@ -367,7 +367,7 @@ void send_size(size_t size, request_rec *r) {
 }
 
 #ifdef __EMX__
-char **create_argv_cmd(pool *p, char *av0, char *args, char *path) {
+char **create_argv_cmd(pool *p, char *av0, const char *args, char *path) {
     register int x,n;
     char **av;
     char *w;

@@ -375,6 +375,9 @@ typedef quad_t rlim_t;
 #define NO_SETSID
 /* Add some drive name support */
 #define chdir _chdir2
+#include <sys/time.h>     
+#define MAXSOCKETS 200
+    
 
 /* Unknown system - Edit these to match */
 #else

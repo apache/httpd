@@ -52,7 +52,7 @@
 
 char **create_argv(pool *p, char *av0, const char *args);
 #ifdef __EMX__
-char **create_argv_cmd(pool *p, char *av0, char *args, char *path);
+char **create_argv_cmd(pool *p, char *av0, const char *args, char *path);
 #endif
 char **create_environment(pool *p, table *t);
 void add_cgi_vars(request_rec *r);

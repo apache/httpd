@@ -158,9 +158,10 @@ case "$PLAT" in
 	OS='DG/UX 5.4'
 	CFLAGS="$CFLAGS -DDGUX"
 	;;
-    OS/2)
+    *OS/2*)
+        DEF_WANTHSREGEX=yes
 	OS='EMX OS/2'
-	CFLAGS="$CFLAGS -Zbsd-signals -Zbin-files -DNO_KILLPG -DNEED_STRCASECMP -DNO_SETSID -g"
+        CFLAGS="$CFLAGS -Zbsd-signals -Zbin-files -DTCPIPV4 -g"
 	LIBS="$LIBS -lsocket -llibufc -lgdbm -lbsd"
 	;;
     *-hp-hpux10.*)

@@ -142,7 +142,12 @@ int translate_userdir (request_rec *r)
       if (strchr(userdir, '*'))
 	x = getword(r->pool, &userdir, '*');
 
+#ifdef __EMX__
+      /* Add support for OS/2 drive letters */
+      if ((userdir[0] == '/') || (userdir[1] == ':')) {
+#else
       if (userdir[0] == '/') {
+#endif
 	if (x) {
 	  if (strchr(x, ':')) {
 	    redirect = pstrcat(r->pool, x, w, userdir, dname, NULL);
