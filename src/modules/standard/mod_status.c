@@ -264,7 +264,6 @@ int status_handler (request_rec *r)
         }
     }
 
-    soft_timeout ("send status info", r);
     send_http_header(r);
 
     if (r->header_only) 
@@ -303,6 +302,8 @@ int status_handler (request_rec *r)
     }
 
     up_time=nowtime-restart_time;
+
+    hard_timeout("send status info", r);
 
     if (!short_report)
     {
@@ -586,6 +587,8 @@ int status_handler (request_rec *r)
 
     if (!short_report)
         rputs("</BODY></HTML>\n",r);
+
+    kill_timeout(r);
     return 0;
 }
 

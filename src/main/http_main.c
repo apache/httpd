@@ -420,8 +420,6 @@ static char *timeout_name = NULL;
 static int alarms_blocked = 0;
 static int alarm_pending = 0;
 
-void abort_connection (conn_rec *);
-
 void timeout(sig)			/* Also called on SIGPIPE */
 int sig;
 {
@@ -473,6 +471,8 @@ int sig;
 	if (!current_conn->keptalive) 
             log_transaction(log_req);
 
+        if (sig == SIGPIPE)
+            bsetflag(timeout_req->connection->client, B_EOUT, 1);
 	bclose(timeout_req->connection->client);
     
 	if (!standalone) exit(0);
@@ -482,8 +482,12 @@ int sig;
 	siglongjmp(jmpbuffer,1);
 #endif
     }
-    else {
-	abort_connection (current_conn);
+    else {   /* abort the connection */
+        if (sig == SIGPIPE)
+            bsetflag(current_conn->client, B_EOUT, 1);
+        else
+            bflush(current_conn->client);
+        current_conn->aborted = 1;
     }
 }
 
@@ -1233,7 +1237,6 @@ void sig_term() {
 #else
     kill(-pgrp,SIGKILL);
 #endif
-    shutdown(sd,2);
     close(sd);
     exit(1);
 }
@@ -1521,14 +1524,6 @@ void default_server_hostnames(server_rec *s)
     }
 }
 
-void abort_connection (conn_rec *c)
-{
-    /* Make sure further I/O DOES NOT HAPPEN */
-    shutdown (c->client->fd, 2);
-    signal (SIGPIPE, SIG_IGN);	/* Ignore further complaints */
-    c->aborted = 1;
-}
-
 conn_rec *new_connection (pool *p, server_rec *server, BUFF *inout,
 			  const struct sockaddr_in *remaddr,
 			  const struct sockaddr_in *saddr,
@@ -1809,10 +1804,6 @@ void child_main(int child_num_arg)
             lingering_close(r);
         }
         else {
-            /* if the connection was aborted by a soft_timeout, it has
-             * already been shutdown() so we don't need to go through
-             * lingering_close
-             */
             bsetflag(conn_io, B_EOUT, 1);
             bclose(conn_io);
         }

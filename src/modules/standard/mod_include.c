@@ -1752,11 +1752,9 @@ int send_parsed_file(request_rec *r)
 	return FORBIDDEN;
     }
     
-    hard_timeout ("send", r);
     send_http_header(r);
 
     if (r->header_only) {
-        kill_timeout (r);
 	pfclose (r->pool, f);
 	return OK;
     }
@@ -1775,7 +1773,8 @@ int send_parsed_file(request_rec *r)
 	add_cgi_vars(r);
 	add_include_vars (r, DEFAULT_TIME_FORMAT);
     }
-    
+    hard_timeout("send SSI", r);
+
     send_parsed_content (f, r);
     
     kill_timeout (r);

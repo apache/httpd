@@ -518,13 +518,17 @@ int cgi_handler (request_rec *r)
 	    return REDIRECT;
 	}
 	
-	hard_timeout ("send script output", r);
 	send_http_header(r);
-        if(!r->header_only) send_fd (script_in, r);
+	if (!r->header_only)
+	    send_fd(script_in, r);
+
 	/* Soak up stderr */
-	while (fgets(argsbuffer, HUGE_STRING_LEN-1, script_err) != NULL)
-	  continue;
-	kill_timeout (r);
+	soft_timeout("soaking script stderr", r);
+	while ((fgets(argsbuffer, HUGE_STRING_LEN-1, script_err) != NULL) &&
+	       !r->connection->aborted)
+	    continue;
+	kill_timeout(r);
+
 	pfclose (r->main ? r->main->pool : r->pool, script_in);
 	pfclose (r->main ? r->main->pool : r->pool, script_err);
     }

@@ -1079,7 +1079,7 @@ int send_http_trace (request_rec *r)
     /* Get the original request */
     while (r->prev) r = r->prev;
 
-    soft_timeout ("send TRACE", r);
+    hard_timeout("send TRACE", r);
 
     r->content_type = "message/http";
     send_http_header(r);
@@ -1102,7 +1102,7 @@ int send_http_options(request_rec *r)
 
     if (r->assbackwards) return DECLINED;
 
-    soft_timeout("send OPTIONS", r);
+    hard_timeout("send OPTIONS", r);
 
     basic_http_header(r);
 
@@ -1156,7 +1156,7 @@ void send_http_header(request_rec *r)
      */
     r->headers_out=overlay_tables(r->pool, r->err_headers_out, r->headers_out);
     
-    soft_timeout("send headers", r);
+    hard_timeout("send headers", r);
 
     basic_http_header(r);
 
@@ -1221,7 +1221,7 @@ void finalize_request_protocol (request_rec *r)
     /* Turn off chunked encoding */
 
     if (r->chunked) {
-        soft_timeout("send ending chunk", r);
+        hard_timeout("send ending chunk", r);
         bsetflag(r->connection->client, B_CHUNK, 0);
 	bputs("0\015\012", r->connection->client);
 	/* If we had footer "headers", we'd send them now */
@@ -1485,13 +1485,14 @@ long send_fd(FILE *f, request_rec *r) { return send_fd_length(f, r, -1); }
 long send_fd_length(FILE *f, request_rec *r, long length)
 {
     char buf[IOBUFSIZE];
-    long total_bytes_sent;
+    long total_bytes_sent = 0;
     register int n, w, o, len;
     conn_rec *c = r->connection;
     
     if (length == 0) return 0;
 
-    total_bytes_sent = 0;
+    soft_timeout("send body", r);
+
     while (!r->connection->aborted) {
 	if ((length > 0) && (total_bytes_sent + IOBUFSIZE) > length)
 	    len = length - total_bytes_sent;
@@ -1517,6 +1518,7 @@ long send_fd_length(FILE *f, request_rec *r, long length)
         }
     }
     
+    kill_timeout(r);
     SET_BYTES_SENT(r);
     return total_bytes_sent;
 }
@@ -1609,7 +1611,7 @@ void send_error_response (request_rec *r, int recursive_error)
 	if (status == HTTP_NOT_MODIFIED) {
 	    r->headers_out = overlay_tables(r->pool, r->err_headers_out,
 	                                             r->headers_out);
-	    soft_timeout("send 304", r);
+	    hard_timeout("send 304", r);
 
 	    basic_http_header(r);
 	    set_keepalive(r);
@@ -1647,7 +1649,7 @@ void send_error_response (request_rec *r, int recursive_error)
 	}
     }
     
-    soft_timeout("send error body", r);
+    hard_timeout("send error body", r);
 
     if ((custom_response = response_code_string (r, idx))) {
         /*

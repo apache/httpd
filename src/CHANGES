@@ -47,7 +47,12 @@ Changes with Apache 1.2b8
 
   *) Added missing timeouts for sending header fields, error responses,
      and the last chunk of chunked encoding, each of which could have
-     resulted in a process being stuck in write forever. [Roy Fielding]
+     resulted in a process being stuck in write forever.  Using soft_timeout
+     requires that the sender check for an aborted connection rather than
+     continuing after an EINTR.  Timeouts that used to be initiated before
+     send_http_header (and never killed) are now initiated only within or
+     around the routines that actually do the sending, and not allowed to
+     propagate above the caller.  [Roy Fielding]
 
   *) mod_auth_anon required an @ or a . in the email address, not both.
      [Dirk vanGulik]

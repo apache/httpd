@@ -277,13 +277,12 @@ int display_info(request_rec *r) {
 	extern char server_root[MAX_STRING_LEN];
 	extern char server_confname[MAX_STRING_LEN];
 
-	/* Init timeout */
-	soft_timeout ("send server info", r);
 	r->content_type = "text/html";		
 	send_http_header(r);
 	if(r->header_only) {
 		return 0;
     }
+	hard_timeout("send server info", r);
 	
 	rputs("<html><head><title>Server Information</title></head>\n",r);
 	rputs("<body><h1 align=center>Apache Server Information</h1>\n",r);
@@ -418,6 +417,7 @@ int display_info(request_rec *r) {
 	}	
 	rputs("</dl></body></html>\n",r);
 	/* Done, turn off timeout, close file and return */
+	kill_timeout(r);
 	return 0;
 }
 

@@ -526,9 +526,11 @@ proxy_cache_check(request_rec *r, char *url, struct cache_conf *conf,
 	Explain0("Local copy modified, send it");
 	r->status_line = strchr(c->resp_line, ' ') + 1;
 	r->status = c->status;
-	soft_timeout ("send", r);
-	if (!r->assbackwards)
+	if (!r->assbackwards) {
+	    soft_timeout("proxy send headers", r);
 	    proxy_send_headers(r->connection->client, c->resp_line,  c->hdrs);
+	    kill_timeout(r);
+	}
 	bsetopt(r->connection->client, BO_BYTECT, &zero);
 	r->sent_bodyct = 1;
 	if (!r->header_only) proxy_send_fb (cachefp, r, NULL, NULL);
@@ -754,10 +756,12 @@ proxy_cache_update(struct cache_req *c, array_header *resp_hdrs,
 	    Explain0("Remote document updated, sending");
 	    r->status_line = strchr(c->resp_line, ' ') + 1;
 	    r->status = c->status;
-	    soft_timeout ("send", r);
-	    if (!r->assbackwards)
+	    if (!r->assbackwards) {
+		soft_timeout("proxy send headers", r);
 		proxy_send_headers(r->connection->client, c->resp_line,
 		    c->hdrs);
+		kill_timeout(r);
+	    }
 	    bsetopt(r->connection->client, BO_BYTECT, &zero);
 	    r->sent_bodyct = 1;
 	    if (!r->header_only) proxy_send_fb (c->fp, r, NULL, NULL);

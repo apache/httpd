@@ -700,13 +700,13 @@ int index_directory(request_rec *r, dir_config_rec *dir_conf)
 
     r->content_type = "text/html";
     
-    soft_timeout ("send directory", r);
     send_http_header(r);
 
     if (r->header_only) {
 	closedir (d);
 	return 0;
     }
+    hard_timeout("send directory", r);
 
     /* Spew HTML preamble */
     
@@ -766,6 +766,8 @@ int index_directory(request_rec *r, dir_config_rec *dir_conf)
     }
 
     rputs ("</BODY></HTML>\n", r);
+
+    kill_timeout(r);
     return 0;
 }
 

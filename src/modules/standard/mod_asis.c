@@ -97,7 +97,6 @@ int asis_handler (request_rec *r)
 	return OK;
     }
     
-    soft_timeout ("send", r);
     send_http_header (r);
     if (!r->header_only) send_fd (f, r);
 

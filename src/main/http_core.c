@@ -1333,8 +1333,6 @@ int default_handler (request_rec *r)
       table_set (r->headers_out, "Content-MD5", md5digest(r->pool, f));
     }
 
-    soft_timeout ("send", r);
-
     rangestatus = set_byterange(r);
     send_http_header (r);
     

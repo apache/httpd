@@ -303,7 +303,7 @@ proxy_date_canon(pool *p, char *x)
 }
 
 /*
- * Reads headers from a connection and returns an array of headers.
+ * Reads headers from a buffer and returns an array of headers.
  * Returns NULL on file error
  */
 array_header *
@@ -392,6 +392,8 @@ proxy_send_fb(BUFF *f, request_rec *r, BUFF *f2, struct cache_req *c)
     conn_rec *con = r->connection;
     
     total_bytes_sent = 0;
+    soft_timeout("proxy send body", r);
+
     while (!con->aborted) {
 	n = bread(f, buf, IOBUFSIZE);
 	if (n == -1) /* input error */
@@ -406,7 +408,7 @@ proxy_send_fb(BUFF *f, request_rec *r, BUFF *f2, struct cache_req *c)
 	if (f2 != NULL)
 	    if (bwrite(f2, buf, n) != n) f2 = proxy_cache_error(c);
 	
-        while(n && !r->connection->aborted) {
+        while(n && !con->aborted) {
             w = bwrite(con->client, &buf[o], n);
             if (w <= 0) {
                 if (f2 != NULL) {
@@ -416,13 +418,15 @@ proxy_send_fb(BUFF *f, request_rec *r, BUFF *f2, struct cache_req *c)
                 }
                 break;
             }
-	    reset_timeout(r); /* reset timeout after successfule write */
+	    reset_timeout(r); /* reset timeout after successful write */
             n-=w;
             o+=w;
         }
     }
-    bflush(con->client);
+    if (!con->aborted)
+        bflush(con->client);
     
+    kill_timeout(r);
     return total_bytes_sent;
 }
 
@@ -486,6 +490,7 @@ proxy_del_header(array_header *hdrs_arr, const char *field)
 
 /*
  * Sends response line and headers
+ * A timeout should be set before calling this routine.
  */
 void
 proxy_send_headers(BUFF *fp, const char *respline, array_header *hdrs_arr)
@@ -669,11 +674,15 @@ proxyerror(request_rec *r, const char *message)
     r->content_type = "text/html";
 
     send_http_header(r);
+    soft_timeout("proxy error", r);
+
     rvputs(r, "<!DOCTYPE HTML PUBLIC \"-//IETF//DTD HTML 2.0//EN\">\015\012\
 <html><head><title>Proxy Error</title><head>\015\012<body><h1>Proxy Error\
 </h1>\015\012The proxy server could not handle this request.\
 \015\012<p>\015\012Reason: <b>", message, "</b>\015\012</body><html>\015\012",
 	   NULL);
+
+    kill_timeout(r);
     return OK;
 }
 
@@ -711,7 +720,7 @@ proxy_doconnect(int sock, struct sockaddr_in *addr, request_rec *r)
 {
     int i;
 
-    hard_timeout ("proxy connect", r);
+    hard_timeout("proxy connect", r);
     do	i = connect(sock, (struct sockaddr *)addr, sizeof(struct sockaddr_in));
     while (i == -1 && errno == EINTR);
     if (i == -1) proxy_log_uerror("connect", NULL, NULL, r->server);

@@ -470,8 +470,14 @@ proxy_ftp_handler(request_rec *r, struct cache_req *c, char *url)
     hard_timeout ("proxy ftp", r);
     i = ftp_getrc(f);
     Explain1("FTP: returned status %d", i);
-    if (i == -1) return proxyerror(r, "Error reading from remote server");
-    if (i != 220) return BAD_GATEWAY;
+    if (i == -1) {
+	kill_timeout(r);
+	return proxyerror(r, "Error reading from remote server");
+    }
+    if (i != 220) {
+	kill_timeout(r);
+	return BAD_GATEWAY;
+    }
 
     Explain0("FTP: connected.");
 
@@ -485,9 +491,18 @@ proxy_ftp_handler(request_rec *r, struct cache_req *c, char *url)
 /* states: 1 - error, 2 - success; 3 - send password, 4,5 fail */
     i = ftp_getrc(f);
     Explain1("FTP: returned status %d",i);
-    if (i == -1) return proxyerror(r, "Error sending to remote server");
-    if (i == 530) return proxyerror(r, "Not logged in");
-    else if (i != 230 && i != 331) return BAD_GATEWAY;
+    if (i == -1) {
+	kill_timeout(r);
+	return proxyerror(r, "Error sending to remote server");
+    }
+    if (i == 530) {
+	kill_timeout(r);
+	return proxyerror(r, "Not logged in");
+    }
+    if (i != 230 && i != 331) {
+	kill_timeout(r);
+	return BAD_GATEWAY;
+    }
 	
     if (i == 331) /* send password */
     {
@@ -500,10 +515,22 @@ proxy_ftp_handler(request_rec *r, struct cache_req *c, char *url)
 /* possible results 202, 230, 332, 421, 500, 501, 503, 530 */
 	i = ftp_getrc(f);
         Explain1("FTP: returned status %d",i);
-	if (i == -1) return proxyerror(r, "Error sending to remote server");
-	if (i == 332) return proxyerror(r, "Need account for login");
-	else if (i == 530) return proxyerror(r, "Not logged in");
-	else if (i != 230 && i != 202) return BAD_GATEWAY;
+	if (i == -1) {
+	    kill_timeout(r);
+	    return proxyerror(r, "Error sending to remote server");
+	}
+	if (i == 332) {
+	    kill_timeout(r);
+	    return proxyerror(r, "Need account for login");
+	}
+	if (i == 530) {
+	    kill_timeout(r);
+	    return proxyerror(r, "Not logged in");
+	}
+	if (i != 230 && i != 202) {
+	    kill_timeout(r);
+	    return BAD_GATEWAY;
+	}
     }  
 
 /* set the directory */
@@ -526,9 +553,18 @@ proxy_ftp_handler(request_rec *r, struct cache_req *c, char *url)
 /* 1,3 error, 2 success, 4,5 failure */
 	i = ftp_getrc(f);
         Explain1("FTP: returned status %d",i);
-	if (i == -1) return proxyerror(r, "Error sending to remote server");
-	else if (i == 550) return NOT_FOUND;
-	else if (i != 250) return BAD_GATEWAY;
+	if (i == -1) {
+	    kill_timeout(r);
+	    return proxyerror(r, "Error sending to remote server");
+	}
+	if (i == 550) {
+	    kill_timeout(r);
+	    return NOT_FOUND;
+	}
+	if (i != 250) {
+	    kill_timeout(r);
+	    return BAD_GATEWAY;
+	}
 
 	path = p + 1;
     }
@@ -554,10 +590,17 @@ proxy_ftp_handler(request_rec *r, struct cache_req *c, char *url)
 /* responses: 200, 421, 500, 501, 504, 530 */
 	i = ftp_getrc(f);
         Explain1("FTP: returned status %d",i);
-	if (i == -1) return proxyerror(r, "Error sending to remote server");
-	else if (i != 200 && i != 504) return BAD_GATEWAY;
+	if (i == -1) {
+	    kill_timeout(r);
+	    return proxyerror(r, "Error sending to remote server");
+	}
+	if (i != 200 && i != 504) {
+	    kill_timeout(r);
+	    return BAD_GATEWAY;
+	}
 /* Allow not implemented */
-	else if (i == 504) parms[0] = '\0';
+	if (i == 504)
+	    parms[0] = '\0';
     }
 
 /* try to set up PASV data connection first */
@@ -567,6 +610,7 @@ proxy_ftp_handler(request_rec *r, struct cache_req *c, char *url)
 	proxy_log_uerror("socket", NULL, "proxy: error creating PASV socket",
 	    r->server);
 	pclosef(pool, sock);
+	kill_timeout(r);
         return SERVER_ERROR;
     }
     note_cleanups_for_fd(pool, dsock);
@@ -583,6 +627,7 @@ proxy_ftp_handler(request_rec *r, struct cache_req *c, char *url)
 	    r->server);
 	pclosef(pool, dsock);
 	pclosef(pool, sock);
+	kill_timeout(r);
 	return SERVER_ERROR;
     } else
     {
@@ -613,10 +658,11 @@ proxy_ftp_handler(request_rec *r, struct cache_req *c, char *url)
             data_addr.sin_port = htons(pport);
 	    i = proxy_doconnect(dsock, &data_addr, r);
 
-	    if (i == -1)
+	    if (i == -1) {
+		kill_timeout(r);
 		return proxyerror(r, "Could not connect to remote machine");
-	    else
-	    {
+	    }
+	    else {
 	        data = bcreate(pool, B_RDWR); 
 	        bpushfd(data, dsock, dsock);
 	        pasvmode = 1;
@@ -633,6 +679,7 @@ proxy_ftp_handler(request_rec *r, struct cache_req *c, char *url)
 	    proxy_log_uerror("getsockname", NULL,
 	        "proxy: error getting socket address", r->server);
 	    pclosef(pool, sock);
+	    kill_timeout(r);
 	    return SERVER_ERROR;
         }
 
@@ -642,6 +689,7 @@ proxy_ftp_handler(request_rec *r, struct cache_req *c, char *url)
 	    proxy_log_uerror("socket", NULL, "proxy: error creating socket",
 	        r->server);
 	    pclosef(pool, sock);
+	    kill_timeout(r);
 	    return SERVER_ERROR;
         }
         note_cleanups_for_fd(pool, dsock);
@@ -653,6 +701,7 @@ proxy_ftp_handler(request_rec *r, struct cache_req *c, char *url)
 	        "proxy: error setting reuseaddr option", r->server);
 	    pclosef(pool, dsock);
 	    pclosef(pool, sock);
+	    kill_timeout(r);
 	    return SERVER_ERROR;
         }
 
@@ -700,9 +749,18 @@ proxy_ftp_handler(request_rec *r, struct cache_req *c, char *url)
                 Explain1("FTP: CWD %s",path);
                 i = ftp_getrc(f);
                 Explain1("FTP: returned status %d", i);
-                if (i == -1) return proxyerror(r, "Error sending to remote server");
-                else if (i == 550) return NOT_FOUND;
-                else if (i != 250) return BAD_GATEWAY;
+                if (i == -1) {
+		    kill_timeout(r);
+		    return proxyerror(r, "Error sending to remote server");
+                }
+                if (i == 550) {
+		    kill_timeout(r);
+		    return NOT_FOUND;
+                }
+                if (i != 250) {
+		    kill_timeout(r);
+		    return BAD_GATEWAY;
+                }
                 path=""; len=0;
             }
         }
@@ -726,7 +784,10 @@ proxy_ftp_handler(request_rec *r, struct cache_req *c, char *url)
    NLST: 125, 150, 226, 250, 421, 425, 426, 450, 451, 500, 501, 502, 530 */
     rc = ftp_getrc(f);
     Explain1("FTP: returned status %d",rc);
-    if (rc == -1) return proxyerror(r, "Error sending to remote server");
+    if (rc == -1) {
+	kill_timeout(r);
+	return proxyerror(r, "Error sending to remote server");
+    }
     if (rc == 550)
     {
        Explain0("FTP: RETR failed, trying LIST instead");
@@ -738,9 +799,18 @@ proxy_ftp_handler(request_rec *r, struct cache_req *c, char *url)
        Explain1("FTP: CWD %s", path);
        rc = ftp_getrc(f);
        Explain1("FTP: returned status %d", rc);
-       if (rc == -1) return proxyerror(r, "Error sending to remote server");
-       if (rc == 550) return NOT_FOUND;
-       if (rc != 250) return BAD_GATEWAY;
+       if (rc == -1) {
+          kill_timeout(r);
+          return proxyerror(r, "Error sending to remote server");
+       }
+       if (rc == 550) {
+          kill_timeout(r);
+          return NOT_FOUND;
+       }
+       if (rc != 250) {
+          kill_timeout(r);
+          return BAD_GATEWAY;
+       }
 
        bputs("LIST -lag\015\012", f);
        bflush(f);
@@ -749,8 +819,8 @@ proxy_ftp_handler(request_rec *r, struct cache_req *c, char *url)
        Explain1("FTP: returned status %d", rc);
        if (rc == -1) return proxyerror(r, "Error sending to remote server");
     }   
-    if (rc != 125 && rc != 150 && rc != 226 && rc != 250) return BAD_GATEWAY;
     kill_timeout(r);
+    if (rc != 125 && rc != 150 && rc != 226 && rc != 250) return BAD_GATEWAY;
 
     r->status = 200;
     r->status_line = "200 OK";
@@ -802,6 +872,7 @@ proxy_ftp_handler(request_rec *r, struct cache_req *c, char *url)
 	        "proxy: failed to accept data connection", r->server);
 	    pclosef(pool, dsock);
 	    pclosef(pool, sock);
+	    kill_timeout(r);
 	    proxy_cache_error(c);
 	    return BAD_GATEWAY;
         }

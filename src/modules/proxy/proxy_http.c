@@ -272,6 +272,7 @@ proxy_http_handler(request_rec *r, struct cache_req *c, char *url,
     if (len == -1 || len == 0)
     {
 	pclosef(pool, sock);
+	kill_timeout(r);
 	return proxyerror(r, "Error reading from remote server");
     }
 
@@ -282,6 +283,7 @@ proxy_http_handler(request_rec *r, struct cache_req *c, char *url,
 	if (buffer[5] != '1' || buffer[len-1] != '\n')
 	{
 	    pclosef(pool, sock);
+	    kill_timeout(r);
 	    return BAD_GATEWAY;
 	}
 	buffer[--len] = '\0';
@@ -385,6 +387,7 @@ proxy_http_handler(request_rec *r, struct cache_req *c, char *url,
 	if (cache != NULL)
 	    if (bwrite(f, buffer, len) != len) cache = proxy_cache_error(c);
     }
+    kill_timeout(r);
 
 /* send body */
 /* if header only, then cache will be NULL */

@@ -500,10 +500,7 @@ int imap_reply(request_rec *r, char *redirect)
     return SERVER_ERROR;  /* they actually requested an error! */
   }
   if ( ! strcasecmp(redirect, "nocontent") ) {
-    r->status_line = pstrdup(r->pool, "204 No Content");
-    soft_timeout ("send no content", r);
-    send_http_header(r);
-    return OK;            /* tell the client to keep the page it has */
+    return HTTP_NO_CONTENT; /* tell the client to keep the page it has */
   }
   if (redirect && *redirect ) { 
     table_set(r->headers_out, "Location", redirect);
@@ -514,28 +511,17 @@ int imap_reply(request_rec *r, char *redirect)
 
 void menu_header(request_rec *r, char *menu)
 {
-  if (! strcasecmp(menu, "formatted")) {
-    r->content_type = "text/html";
-    soft_timeout ("send menu", r);
-    send_http_header(r);
-    rvputs(r, "<html>\n<head><title>Menu for ", r->uri,
-	   "</title></head>\n\n<body>\n", NULL);
+  r->content_type = "text/html";
+  send_http_header(r);
+  hard_timeout("send menu", r);   /* killed in menu_footer */
+
+  rvputs(r, "<html><head>\n<title>Menu for ", r->uri,
+	    "</title>\n</head><body>\n", NULL);
+
+  if (!strcasecmp(menu, "formatted")) {
     rvputs(r, "<h1>Menu for ", r->uri, "</h1>\n<hr>\n\n", NULL);
   } 
-  if (! strcasecmp(menu, "semiformatted")) {
-    r->content_type = "text/html";
-    soft_timeout ("send menu", r);
-    send_http_header(r);
-    rvputs(r, "<html>\n<head><title>Menu for ", r->uri,
-	   "</title></head>\n\n<body>\n", NULL);
-  } 
-  if (! strcasecmp(menu, "unformatted")) {
-    r->content_type = "text/html";
-    soft_timeout ("send menu", r);
-    send_http_header(r);
-    rvputs(r, "<html>\n<head><title>Menu for ", r->uri,
-	   "</title></head>\n\n<body>\n", NULL);
-  }
+
   return;
 }
 
@@ -608,6 +594,7 @@ void menu_directive(request_rec *r, char *menu, char *href, char *text)
 void menu_footer(request_rec *r)
 {
   rputs("\n\n</body>\n</html>\n", r);  /* finish the menu */
+  kill_timeout(r);
 }
 
 int imap_handler(request_rec *r)
