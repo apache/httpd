@@ -47,10 +47,10 @@
     各子プロセスで用意されるスレッド数を制御して、
     <code class="directive"><a href="../mod/mpm_common.html#maxclients">MaxClients</a></code> は
     起動されるスレッドの総数の最大値を制限します。</p>
-
 </div>
 <div id="quickview"><h3 class="directives">ディレクティブ</h3>
 <ul id="toc">
+<li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#acceptmutex">AcceptMutex</a></li>
 <li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#coredumpdirectory">CoreDumpDirectory</a></li>
 <li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#group">Group</a></li>
 <li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#listen">Listen</a></li>
@@ -132,7 +132,7 @@
     </code></p></div>
 
     <p>通常 Unix では親プロセスは 80 番ポートにバインドするために
-    root で起動されますが、子プロセスやスレッドは
+    <code>root</code> で起動されますが、子プロセスやスレッドは
     もっと低い権限のユーザで Apache によって起動されます。
     <code class="directive"><a href="../mod/mpm_common.html#user">User</a></code> と
     <code class="directive"><a href="../mod/mpm_common.html#group">Group</a></code> ディレクティブは
@@ -145,7 +145,7 @@
 
     <p><code class="directive"><a href="../mod/mpm_common.html#maxrequestsperchild">MaxRequestsPerChild</a></code>
     は、古いプロセスを停止して新しいプロセスを起動することによって、
-    どの程度の頻度でサーバがプロセスをリサイクルするかを制御します。</p>
+    どの程度の頻度でサーバがプロセスをリサイクルするかを制御します。</p>
 </div>
 </div>
 <div class="bottomlang">
