@@ -122,7 +122,7 @@ static const char *set_authz_groupfile_slot(cmd_parms *cmd, void *offset, const 
 
 static const command_rec authz_groupfile_cmds[] =
 {
-    AP_INIT_TAKE12("AuthzGroupFile", set_authz_groupfile_slot,
+    AP_INIT_TAKE12("AuthGroupFile", set_authz_groupfile_slot,
                    (void *)APR_OFFSETOF(authz_groupfile_config_rec, groupfile),
                    OR_AUTHCFG,
                    "text file containing group names and member user IDs"),
