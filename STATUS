@@ -1,5 +1,5 @@
-APACHE 2.0 STATUS:						-*-text-*-
-Last modified at [$Date: 2002/02/06 19:42:12 $]
+APACHE 2.0 STATUS:                                              -*-text-*-
+Last modified at [$Date: 2002/02/06 20:02:22 $]
 
 Release:
 
@@ -67,12 +67,12 @@ BETA RELEASE SHOWSTOPPERS:
                            needs a version that won't work on some
                            platforms.  Handle this in the README.
                            The binbuild issue isn't AIX.  It is
-			   something that could happen anywhere that
-			   the binbuild-er has their own expat.
-			   Handle this by patching binbuild.sh for a
-			   beta roll or putting a patch in the README for
+                           something that could happen anywhere that
+                           the binbuild-er has their own expat.
+                           Handle this by patching binbuild.sh for a
+                           beta roll or putting a patch in the README for
                            use by people who want to do binbuild but
-			   have expat installed locally.
+                           have expat installed locally.
                 gregames:  why can't we roll a second tarball with the
                            appropriate libtool version?  doesn't
                            Darwin need it as well as AIX? 
@@ -237,7 +237,7 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
       Have 2 parents: +1: Jim
                       -1: Justin
                       +0: Martin (while standing by, could it do
-		                  something useful?)
+                                  something useful?)
       look at accept() error handling first: gregames
 
     * Make some modifications to the scoreboard creation routines,
@@ -349,13 +349,13 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
       Reasons include sole-function servers that need to die if
       an external dependency (e.g., a database) fails, et cetera.
       Perhaps something in the (ever more abused) scoreboard?
-	rbb: I don't believe the scoreboard is the correct mechanism
-	     for this.  We already have a pipe that goes between parent
-	     and child for graceful shutdown events, along with an API that
-	     can be used to send a message down that pipe.  In threaded MPMs,
-	     it is easy enough to make that one pipe be used for graceful
-	     and graceless events, and it is also easy to open that pipe
-	     to both parent and child for writing.  Then we just need to
+        rbb: I don't believe the scoreboard is the correct mechanism
+             for this.  We already have a pipe that goes between parent
+             and child for graceful shutdown events, along with an API that
+             can be used to send a message down that pipe.  In threaded MPMs,
+             it is easy enough to make that one pipe be used for graceful
+             and graceless events, and it is also easy to open that pipe
+             to both parent and child for writing.  Then we just need to
              figure out how to do graceless on non-threaded MPMs.
 
     * revamp the input filter behavior, per discussions since
@@ -408,9 +408,9 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
       goes down hard.  FirstBill was looking at possibly tracking the 
       child's-child processes in the parent process.
         OtherBill asks, wasn't this fixed? 
-	stoddard: Not fixed. Shared scoreboard might offer a good
-	way for the parent to keep track of 'other child' processes
-	and whack them if the child goes down.
+        stoddard: Not fixed. Shared scoreboard might offer a good
+        way for the parent to keep track of 'other child' processes
+        and whack them if the child goes down.
 
     * Win32: Add a simple hold console open patch (wait for close or
         the ESC key, with a nice message) if the server died a bad 
@@ -502,16 +502,16 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
                     a userlist via dbm, which has to remain readable between
                     builds/machines, etc.  The use-multiple database schema
                     for apr-util would let us do this with just apr, though."
-	Ian says:  "multi-dbm is in, but it still has ndbm support hardcoded
-	            is this still required? isn't ndbm supported via gdbm?"
+        Ian says:  "multi-dbm is in, but it still has ndbm support hardcoded
+                    is this still required? isn't ndbm supported via gdbm?"
 
 
     * Integrate mod_dav.
         Some additional items remaining:
-	- case_preserved_filename stuff
-	    (use the new canonical name stuff?)
-	- find a new home for ap_text(_header)
-	- is it possible to remove the DAV: namespace stuff from util_xml?
+        - case_preserved_filename stuff
+            (use the new canonical name stuff?)
+        - find a new home for ap_text(_header)
+        - is it possible to remove the DAV: namespace stuff from util_xml?
 
     * ap_core_translate() and its use by mod_mmap_static and mod_file_cache
       are a bit wonky.  The function should probably be exposed as a utility 
@@ -538,10 +538,10 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
       for failure (Doug volunteers)
 
     * Win32: Get Apache working on Windows 95/98. The following work
-	(at least) needs to be done:
-	- winnt MPM: Fix 95/98 code paths in the winnt MPM. There is some NT
-	specific code that is still not in NT only code paths
-	- IOL binds to APR sendfile, implemented with TransmitFile, which 
+        (at least) needs to be done:
+        - winnt MPM: Fix 95/98 code paths in the winnt MPM. There is some NT
+        specific code that is still not in NT only code paths
+        - IOL binds to APR sendfile, implemented with TransmitFile, which 
         is not available on 95/98.
         - Document warning that OSR2 is required (for Crypt functions, in
         rand.c, at least.)  This could be resolved with an SSL library, or
@@ -570,371 +570,371 @@ put them into 'the next release':
 
     * PR#76: general
       missing call to "setlocale();"
-	Status: 
+        Status: 
 
     * PR#78: mod_include
       Additional status for XBitHack directive
-	Status: 
+        Status: 
 
     * PR#362: mod_proxy
       Mod_proxy doesn't allow change of error pages
-	Status: 
+        Status: 
 
     * PR#370: mod_env
       Modified PATH environemnt variable is not passed, instead
       system's is used
-	Status: 
+        Status: 
 
     * PR#440: mod_proxy
       Proxy doesn't deliver documents if not connected
-	Status: 
+        Status: 
 
     * PR#534: mod_proxy
       proxy converts ~name to %7Ename when name starts with a dot (.)
-	Status: 
+        Status: 
 
     * PR#537: mod_access
       mod_access syntax allows hosts that should be restricted
-	Status: 
+        Status: 
 
     * PR#557: mod_auth-any
       ~UserHome directories are not honored in absolute pathname
       requests (.htaccess)
-	Status: 
+        Status: 
 
     * PR#612: mod_proxy
       Proxy FTP Authentication Fails
-	Status: 
+        Status: 
 
     * PR#623: mod_include
       A smarter "Last Modified" value for SSI documents (see PR number 600)
-	Status: 
+        Status: 
 
     * PR#628: config
       Request of "Options SymLinksIfGroupMatch"
-	Status: 
+        Status: 
 
     * PR#700: mod_proxy
       Proxy doesn't do links right for OpenVMS files through ftp:
-	Status: 
+        Status: 
 
     * PR#759: mod_imap
       imap should read <MAP><AREA>*</MAP> too!
-	Status: 
+        Status: 
 
     * PR#793: general
       RLimitCPU and RLimitMEM don't apply to all children like they should
-	Status: 
+        Status: 
 
     * PR#921: suexec
       Uses cwd before filling it in, doesn't use syslog
-	Status: 
+        Status: 
 
     * PR#922: config
       it is useful to allow specifiction that root-owned symlinks
       should always be followed
-	Status: 
+        Status: 
 
     * PR#980: mod_proxy
       Controlling Access to Remote Proxies would be nice...
-	Status: 
+        Status: 
 
     * PR#994: mod_proxy
       Adding authentication "on the fly" through the proxy module
-	Status: 
+        Status: 
 
     * PR#1004: apache-api
       request_config field in request_rec is moderately bogus
-	Status: 
+        Status: 
 
     * PR#1028: other
       DoS attacks involving memory consumption
-	Status: 
+        Status: 
 
     * PR#1050: mod_log-any
       Logging of virtual server to error_log as well
-	Status: 
+        Status: 
 
     * PR#1085: mod_proxy
       ProxyRemote make a dead cycle.
-	Status: 
+        Status: 
 
     * PR#1117: mod_auth-any
       Using NIS passwd.byname dbm files with AuthDBMUserFile
-	Status: 
+        Status: 
 
     * PR#1120: suexec
       suexec does not parse arguments to #exec cmd
-	Status: 
+        Status: 
 
     * PR#1145: mod_include
       Allow for Last-Modified: without resorting to XBitHack
-	Status: 
+        Status: 
 
     * PR#1158: apache-api
       improvements to child spawning API
-	Status: 
+        Status: 
 
     * PR#1166: mod_proxy
       ``nph-'' not honored (no buffering) for ProxyRemote mapping
-	Status: 
+        Status: 
 
     * PR#1176: mod_cgi
       Apache cannot handle continuation line in headers
-	Status: 
+        Status: 
 
     * PR#1191: general
       setlogin() is not called, causing problems with e.g. identd
-	Status: 
+        Status: 
 
     * PR#1204: general
       regerror() exists, use it
-	Status: 
+        Status: 
 
     * PR#1233: apache-api
       there is no way to keep per-connection per-module state
-	Status: 
+        Status: 
 
     * PR#1263: mod_autoexec
       Add frame-safe anchor attribute to mod_autoindex links
-	Status: 
+        Status: 
 
     * PR#1268: suexec
       CGI scripts running as Apache user: security (suexec etc.)
-	Status: 
+        Status: 
 
     * PR#1285: suexec
       Error messages could be easier to spot in cgi.log file for suexec.c
-	Status: 
+        Status: 
 
     * PR#1287: mod_access
       add allow,deny/deny,allow warning to mod_access
-	Status: 
+        Status: 
 
     * PR#1290: mod_proxy
       Need to know "hit-rate" on proxy cache
-	Status: 
+        Status: 
 
     * PR#1358: mod_log-any
       Selective url-encode of log fields (or maybe a pseudo
       log_rewrite module?)
-	Status: 
+        Status: 
 
     * PR#1383: mod_headers
       I make mod_headers to modify request headers as well as
       response ones.
-	Status: 
+        Status: 
 
     * PR#1532: mod_proxy
       Proxy transfer logging
-	Status: 
+        Status: 
 
     * PR#1547: mod_proxy
       No HTTP_X_FORWARDED_FOR set...
-	Status: 
+        Status: 
 
     * PR#1567: mod_proxy
       ProxyRemote proxy requests fail authentication by firewall
-	Status: 
+        Status: 
 
     * PR#1582: mod_rewrite
       mod_rewrite forms REQUEST_URI different than mod_cgi does
-	Status: 
+        Status: 
 
     * PR#1677: mod_headers
       mod_headers should allow mod_log_config-style formats in
       header values
-	Status: 
+        Status: 
 
     * PR#1702: mod_proxy
       mod_proxy to support persistent conns?
-	Status: 
+        Status: 
 
     * PR#1803: mod_include
       patches to mod_include to allow for file tests
-	Status: 
+        Status: 
 
     * PR#1809: mod_auth-any
       Suggestion for improving authentication modules and core source
       code, problem with 401 and ErrorDocument
-	Status: 
+        Status: 
 
     * PR#1878: mod_proxy
       listing of proxy cache content
-	Status: 
+        Status: 
 
     * PR#1905: suexec
       Allow modules to set user:group for execution.
-	Status: 
+        Status: 
 
     * PR#2024: apache-api
       adding auth_why to conn_rec
-	Status: 
+        Status: 
 
     * PR#2073: mod_log-any
       pipelined connections are not logged correctly
-	Status: 
+        Status: 
 
     * PR#2074: mod_rewrite
       mod_rewrite doesn't pass Proxy Throughput on internal subrequests
-	Status: 
+        Status: 
 
     * PR#2113: config
       HTTP Server Rebuild Line Needs Changing for the better
-	Status: 
+        Status: 
 
     * PR#2138: mod_status
       mod_status always displays 256 possible connection slots
-	Status: 
+        Status: 
 
     * PR#2221: documentation
       Make online documentation search link back to my installation
-	Status: 
+        Status: 
 
     * PR#2284: general
       Can not POST to ErrorDocument - Apache/1.3b6
-	Status: 
+        Status: 
 
     * PR#2314: mod_proxy
       patterns in ProxyRemote
-	Status: 
+        Status: 
 
     * PR#2343: mod_status
       Status module averages are for entire uptime
-	Status: 
+        Status: 
 
     * PR#2360: suexec
       suexec for general access of user content?
-	Status: 
+        Status: 
 
     * PR#2396: general
       Proposal for TimeZone directive
-	Status: 
+        Status: 
 
     * PR#2415: mod_info
       /server-info doesn't check for the virtual host to list the info
-	Status: 
+        Status: 
 
     * PR#2421: config
       problem specifying ndbm library for build ?with autoconfigure
-	Status: 
+        Status: 
 
     * PR#2431: general
       A small addition to rotatelogs.c to improve program functionality.
-	Status: 
+        Status: 
 
     * PR#2446: config
       AllowOverride FileInfo is too coarse
-	Status: 
+        Status: 
 
     * PR#2460: mod_cgi
       TimeOut applies to output of CGI scripts
-	Status: 
+        Status: 
 
     * PR#2512: mod_access
       &lt;IfDenied&gt; directive wanted
-	Status: 
+        Status: 
 
     * PR#2573: suexec
       CGI's for general use still have to be run as another user
       with suExec
-	Status: 
+        Status: 
 
     * PR#2648: general
       Cache file names in Proxy module
-	Status: 
+        Status: 
 
     * PR#2760: config
       [PATCH] User/Group for <Directory> and <Location> i.e. not only
       in global and <Virtual>.
-	Status: 
+        Status: 
 
     * PR#2763: general
       mailto tags and bundling bug report script
-	Status: 
+        Status: 
 
     * PR#2785: os-aix
       Support for System Resource Controller
-	Status: 
+        Status: 
 
     * PR#2793: protocol
       When will Apache support P3P? Any Plans?
-	Status: 
+        Status: 
 
     * PR#2873: config
       Feedback/Comment on APACI
-	Status: 
+        Status: 
 
     * PR#2889: general
       Inclusion of RPM spec file in CVS/distributions
-	Status: 
+        Status: 
 
     * PR#2906: general
       Propose that Apache recommend $UNIQUE_ID for all "session id"
       algorithms
-	Status: 
+        Status: 
 
     * PR#2907: config
       suggestion: power up your Include directive :)
-	Status: 
+        Status: 
 
     * PR#3018: general
       cannot limit some HTTP methods
-	Status: 
+        Status: 
 
     * PR#3143: apache-api
       No module specific data hook for per-connection data
-	Status: 
+        Status: 
 
     * PR#3191: mod_negotiation
       no way to set global quality-of-source (qs) coneg values
       with multiviews
-	Status: 
+        Status: 
 
     * PR#3568: mod_proxy
       Accessing URL through proxy server corrupts data.
-	Status: 
+        Status: 
 
     * PR#3605: mod_proxy
       Some anonymous FTP URLs ask for authentication
-	Status: 
+        Status: 
 
     * PR#3677: general
       New ErrorDocumentMatch directive
-	Status: 
+        Status: 
 
     * PR#4241: config
       Need to be able to override shebang line to make CGI scripts
       more portable.
-	Status: 
+        Status: 
 
     * PR#4244: config
       "Files" and "FilesMatch" regexp does not recognize bang as
       negation operator
-	Status: 
+        Status: 
 
     * PR#4448: mod_log-any
       Please allow CGI env variables (QUERY_STRING, ...) to be logged
       with %{}e
-	Status: 
+        Status: 
 
     * PR#4459: mod_include
       Suggestion for better handling of Last-modified headers
-	Status: 
+        Status: 
 
     * PR#4490: mod_cgi
       mod_cgi prevents handling of OPTIONS requests
-	Status: 
+        Status: 
 
     * PR#5713: os-windows
       [PATCH] install as win32 service with domain account
-	Status: Cannot accept password-as-arg, we should prompt the
+        Status: Cannot accept password-as-arg, we should prompt the
                 user when -k install/-k config with a user argument.
 
     * PR#5993: general
       AllowOverride should have a 'CheckNone' and 'AllowNone' argument
       instead of only 'None'
-	Status: 
+        Status: 
 
 Other bugs that need fixing:
 
@@ -974,8 +974,8 @@ Available Patches:
 
    * Jon Travis's <jtravis@covalent.net> patch to deal with thread-safe
      issues with inet_ntoa.  See message <20001201163220.A12827@covalent.net>
-	Status:  This is being set aside until the IPv6 work is finished
-		 so that we know exactly what is required.
+        Status:  This is being set aside until the IPv6 work is finished
+                 so that we know exactly what is required.
 
    * Martin Sojka <msojka@gmx.de>'s patch to add error reporting for failed 
      htpasswd actions due to a full /tmp volume (other programs may have
@@ -998,4 +998,3 @@ Available Patches:
 Open issues:
 
    * Which MPMs will be included with Apache 2.0?
-
