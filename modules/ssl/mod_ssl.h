@@ -104,16 +104,16 @@
 #include <assert.h>
 
 /* OpenSSL headers */
-#include <openssl/ssl.h>
-#include <openssl/err.h>
-#include <openssl/x509.h>
-#include <openssl/x509v3.h>
-#include <openssl/pem.h>
-#include <openssl/crypto.h>
-#include <openssl/evp.h>
-#include <openssl/rand.h>
+#include <ssl.h>
+#include <err.h>
+#include <x509.h>
+#include <x509v3.h>
+#include <pem.h>
+#include <crypto.h>
+#include <evp.h>
+#include <rand.h>
 #ifdef SSL_EXPERIMENTAL_ENGINE
-#include <openssl/engine.h>
+#include <engine.h>
 #endif
 
 /* Apache headers */
