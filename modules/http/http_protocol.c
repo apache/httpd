@@ -152,22 +152,6 @@ static int checked_bflush(request_rec *r)
     return 0;
 }
 
-static int checked_bputs(const char *str, request_rec *r)
-{
-    int rcode;
-
-    if (r->connection->aborted)
-        return EOF;
-    
-    rcode = ap_bputs(str, r->connection->client);
-    if (rcode < 0) {
-        check_first_conn_error(r, "checked_bputs", 0);
-        return EOF;
-    }
-    SET_BYTES_SENT(r);
-    return rcode;
-}
-
 /*
  * Builds the content-type that should be sent to the client from the
  * content-type specified.  The following rules are followed:
