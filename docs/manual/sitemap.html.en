@@ -158,6 +158,9 @@ Server on HPUX</a></li>
 <li><a href="mod/mod_mime_magic.html">Apache Module mod_mime_magic</a></li>
 <li><a href="mod/mod_negotiation.html">Apache Module mod_negotiation</a></li>
 <li><a href="mod/mod_proxy.html">Apache Module mod_proxy</a></li>
+<li><a href="mod/mod_proxy_connect.html">Apache Module mod_proxy_connect</a></li>
+<li><a href="mod/mod_proxy_ftp.html">Apache Module mod_proxy_ftp</a></li>
+<li><a href="mod/mod_proxy_http.html">Apache Module mod_proxy_http</a></li>
 <li><a href="mod/mod_rewrite.html">Apache Module mod_rewrite</a></li>
 <li><a href="mod/mod_setenvif.html">Apache Module mod_setenvif</a></li>
 <li><a href="mod/mod_so.html">Apache Module mod_so</a></li>
