@@ -107,6 +107,10 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
     apr_status_t status;
     int result;
     apr_bucket_brigade *input_brigade;
+    ajp_msg_t *msg;
+    apr_size_t bufsiz;
+    char *buff;
+    const char *tenc;
 
     /*
      * Send the AJP request to the remote server
@@ -123,51 +127,59 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
         return HTTP_SERVICE_UNAVAILABLE;
     }
 
-    /* read the first bloc of data */
-    input_brigade = apr_brigade_create(p, r->connection->bucket_alloc);
-    status = ap_get_brigade(r->input_filters, input_brigade,
-                            AP_MODE_READBYTES, APR_BLOCK_READ,
-                            AJP13_MAX_SEND_BODY_SZ);
- 
+    /* allocate an AJP message to store the data of the buckets */
+    status = ajp_alloc_data_msg(r, &buff, &bufsiz, &msg);
     if (status != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
-                     "proxy: ap_get_brigade failed");
-        apr_brigade_destroy(input_brigade);
-        return HTTP_INTERNAL_SERVER_ERROR;
+                     "proxy: ajp_alloc_data_msg failed");
+        return status;
     }
-
-    /* have something */
-    if (APR_BUCKET_IS_EOS(APR_BRIGADE_LAST(input_brigade))) {
+    /* read the first bloc of data */
+    input_brigade = apr_brigade_create(p, r->connection->bucket_alloc);
+    tenc = apr_table_get(r->headers_in, "Transfer-Encoding");
+    if (tenc && strcasecmp(tenc, "chunked")==0) {
+         /* The AJP protocol does not want body data yet */
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
-                     "proxy: APR_BUCKET_IS_EOS");
-    }
-
-    if (1) { /* XXXX only when something to send ? */
-        ajp_msg_t *msg;
-        apr_size_t bufsiz;
-        char *buff;
-        status = ajp_alloc_data_msg(r, &buff, &bufsiz, &msg);
+                     "proxy: request is chunked");
+    } else {
+        status = ap_get_brigade(r->input_filters, input_brigade,
+                                AP_MODE_READBYTES, APR_BLOCK_READ,
+                                AJP13_MAX_SEND_BODY_SZ);
+ 
         if (status != APR_SUCCESS) {
-            return status;
+            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
+                         "proxy: ap_get_brigade failed");
+            apr_brigade_destroy(input_brigade);
+            return HTTP_INTERNAL_SERVER_ERROR;
         }
+
+        /* have something */
+        if (APR_BUCKET_IS_EOS(APR_BRIGADE_LAST(input_brigade))) {
+            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
+                         "proxy: APR_BUCKET_IS_EOS");
+        }
+
+        /* Try to send something */
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
                      "proxy: data to read (max %d at %08x)", bufsiz, buff);
 
-        /* XXXX calls apr_brigade_flatten... */
         status = apr_brigade_flatten(input_brigade, buff, &bufsiz);
         if (status != APR_SUCCESS) {
-             ap_log_error(APLOG_MARK, APLOG_ERR, status, r->server,
-                     "proxy: apr_brigade_flatten");
+            apr_brigade_destroy(input_brigade);
+            ap_log_error(APLOG_MARK, APLOG_ERR, status, r->server,
+                         "proxy: apr_brigade_flatten");
             return HTTP_INTERNAL_SERVER_ERROR;
         }
+        apr_brigade_cleanup(input_brigade);
 
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
                      "proxy: got %d byte of data", bufsiz);
         if (bufsiz > 0) {
             status = ajp_send_data_msg(conn->sock, r, msg, bufsiz);
             if (status != APR_SUCCESS) {
+                apr_brigade_destroy(input_brigade);
                 ap_log_error(APLOG_MARK, APLOG_ERR, status, r->server,
-                             "proxy: request failed to %pI (%s)",
+                             "proxy: send failed to %pI (%s)",
                              conn->worker->cp->addr,
                              conn->worker->hostname);
                 return HTTP_SERVICE_UNAVAILABLE;
@@ -179,8 +191,9 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
     status = ajp_read_header(conn->sock, r,
                              (ajp_msg_t **)&(conn->data));
     if (status != APR_SUCCESS) {
+        apr_brigade_destroy(input_brigade);
         ap_log_error(APLOG_MARK, APLOG_ERR, status, r->server,
-                     "proxy: request failed to %pI (%s)",
+                     "proxy: read response failed from %pI (%s)",
                      conn->worker->cp->addr,
                      conn->worker->hostname);
         return HTTP_SERVICE_UNAVAILABLE;
@@ -188,26 +201,76 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
 
     /* parse the reponse */
     result = ajp_parse_type(r, conn->data);
-    if (result == CMD_AJP13_SEND_HEADERS) {
-        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
-                     "proxy: got response from %pI (%s)",
+    
+    bufsiz = AJP13_MAX_SEND_BODY_SZ;
+    while (result == CMD_AJP13_GET_BODY_CHUNK && bufsiz != 0) {
+        if (APR_BUCKET_IS_EOS(APR_BRIGADE_LAST(input_brigade))) {
+            /* That is the end */
+            bufsiz = 0;
+            ap_log_error(APLOG_MARK, APLOG_DEBUG, status, r->server,
+                         "proxy: APR_BUCKET_IS_EOS");
+        } else {
+            status = ap_get_brigade(r->input_filters, input_brigade,
+                                    AP_MODE_READBYTES, APR_BLOCK_READ,
+                                    AJP13_MAX_SEND_BODY_SZ);
+            if (status != APR_SUCCESS) {
+                ap_log_error(APLOG_MARK, APLOG_DEBUG, status, r->server,
+                             "ap_get_brigade failed");
+                break;
+            }
+            bufsiz = AJP13_MAX_SEND_BODY_SZ;
+            status = apr_brigade_flatten(input_brigade, buff, &bufsiz);
+            apr_brigade_cleanup(input_brigade);
+            if (status != APR_SUCCESS) {
+                ap_log_error(APLOG_MARK, APLOG_DEBUG, status, r->server,
+                             "apr_brigade_flatten failed");
+                break;
+            }
+        }
+
+        ajp_msg_reset(msg); /* will go in ajp_send_data_msg */
+        status = ajp_send_data_msg(conn->sock, r, msg, bufsiz);
+        if (status != APR_SUCCESS) {
+            ap_log_error(APLOG_MARK, APLOG_DEBUG, status, r->server,
+                         "ajp_send_data_msg failed");
+            break;
+        }
+        /* read the response */
+        status = ajp_read_header(conn->sock, r,
+                                 (ajp_msg_t **)&(conn->data));
+        if (status != APR_SUCCESS) {
+            ap_log_error(APLOG_MARK, APLOG_DEBUG, status, r->server,
+                         "ajp_read_header failed");
+            break;
+        }
+    	result = ajp_parse_type(r, conn->data);
+    }
+    apr_brigade_destroy(input_brigade);
+
+    if (status != APR_SUCCESS) {
+        ap_log_error(APLOG_MARK, APLOG_ERR, status, r->server,
+                     "proxy: send body failed to %pI (%s)",
                      conn->worker->cp->addr,
                      conn->worker->hostname);
         return HTTP_SERVICE_UNAVAILABLE;
     }
 
-    /* XXXX: need logic to send the rest of the data */
-/*
-    status = ajp_send_data(p_conn->sock,r);
-    if (status != APR_SUCCESS) {
-        ap_log_error(APLOG_MARK, APLOG_ERR, status, r->server,
-                     "proxy: request failed to %pI (%s)",
-                     p_conn->addr, p_conn->name);
-        return status;
+    /* Nice we have answer to send to the client */
+    if (result == CMD_AJP13_SEND_HEADERS) {
+        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
+                     "proxy: got response from %pI (%s)",
+                     conn->worker->cp->addr,
+                     conn->worker->hostname);
+        return OK;
     }
- */
 
-    return OK;
+    ap_log_error(APLOG_MARK, APLOG_ERR, status, r->server,
+                 "proxy: got bad response (%d) from %pI (%s)",
+                 result,
+                 conn->worker->cp->addr,
+                 conn->worker->hostname);
+
+    return HTTP_SERVICE_UNAVAILABLE;
 }
 
 /*
