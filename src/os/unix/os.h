@@ -126,6 +126,7 @@ const char *dlerror(void);
 #endif
 
 #define     ap_os_dso_handle_t  void *
+void        ap_os_dso_init(void);
 void *      ap_os_dso_load(const char *);
 void        ap_os_dso_unload(void *);
 void *      ap_os_dso_sym(void *, const char *);

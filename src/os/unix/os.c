@@ -73,9 +73,9 @@ void linkEdit_symbol_handler (NSLinkEditErrors c, int errorNumber,
     abort();
 }
 
-#endif
+#endif /*RHAPSODY*/
 
-void ap_os_dso_init()
+void ap_os_dso_init(void)
 {
 #if defined(RHAPSODY)
     NSLinkEditErrorHandlers handlers;
@@ -146,7 +146,7 @@ void *ap_os_dso_sym(void *handle, const char *symname)
     free(symname2);
     return NSAddressOfSymbol(symbol);
 
-#elif DLSYM_NEEDS_UNDERSCORE
+#elif defined(DLSYM_NEEDS_UNDERSCORE)
     char *symbol = (char*)malloc(sizeof(char)*(strlen(symname)+2));
     void *retval;
     sprintf(symbol, "_%s", symname);
