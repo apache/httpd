@@ -59,10 +59,6 @@ Changes with Apache 2.1.0-dev
   *) Add forensic logging module (mod_log_forensic).
      [Ben Laurie]
 
-  *) Fix segfault in mod_mem_cache cache_insert() due to cache size
-     becoming negative.  PR: 21285, 21287
-     [Bill Stoddard, Massimo Torquati, Jean-Jacques Clar]
-
   *) mod_proxy with ProxyErrorOverride On in a reverse-proxy configuration attaches
      a body to the 302 response and a wrong Content-Length header. 
      PR: 22951 [Ermanno Scaglione scaglione ..at.. starnetone.de]
@@ -278,6 +274,10 @@ Changes with Apache 2.1.0-dev
    Apache 2.0.xx tree as documented, and except as noted, below.]
 
 Changes with Apache 2.0.49
+
+  *) Fix segfault in mod_mem_cache cache_insert() due to cache size
+     becoming negative.  PR: 21285, 21287
+     [Bill Stoddard, Massimo Torquati, Jean-Jacques Clar]
 
   *) core.c: If large file support is enabled, allow any file that is
      greater than AP_MAX_SENDFILE to be split into multiple buckets.
