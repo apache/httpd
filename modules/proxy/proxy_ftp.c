@@ -270,11 +270,8 @@ apr_status_t ap_proxy_send_dir_filter(ap_filter_t *f, apr_bucket_brigade *in)
 {
     request_rec *r = f->r;
     apr_pool_t *p = r->pool;
-    apr_bucket *e;
     apr_bucket_brigade *out = apr_brigade_create(p);
     apr_status_t rv;
-    regex_t *re = NULL; /* @@@ put this in the context */
-    regmatch_t re_result[3];
 
     register int n;
     char *dir, *path, *reldir, *site, *str, *type;
@@ -290,9 +287,6 @@ apr_status_t ap_proxy_send_dir_filter(ap_filter_t *f, apr_bucket_brigade *in)
         ctx->buffer[0] = 0;
         ctx->state = HEADER;
     }
-
-    /* Compile the output format of "ls -s1" as a fallback for non-unix ftp listings */
-    re = ap_pregcomp(p, "^ *([0-9]+) +([^ ]+)$", REG_EXTENDED);
 
     /* combine the stored and the new */
     APR_BRIGADE_CONCAT(ctx->in, in);
@@ -354,8 +348,7 @@ apr_status_t ap_proxy_send_dir_filter(ap_filter_t *f, apr_bucket_brigade *in)
                 site, basedir, ap_escape_uri(p, path),
                 site, str);
 
-        e = apr_bucket_pool_create(str, strlen(str), p);
-        APR_BRIGADE_INSERT_TAIL(out, e);
+        APR_BRIGADE_INSERT_TAIL(out, apr_bucket_pool_create(str, strlen(str), p));
 
         for (dir = path+1; (dir = strchr(dir, '/')) != NULL; )
         {
@@ -387,21 +380,18 @@ apr_status_t ap_proxy_send_dir_filter(ap_filter_t *f, apr_bucket_brigade *in)
             str = apr_psprintf(p, "</h2>\n\n(%s)\n\n  <hr />\n\n<pre>",
                                ap_escape_html(p, pwd));
         }
-        e = apr_bucket_pool_create(str, strlen(str), p);
-        APR_BRIGADE_INSERT_TAIL(out, e);
+        APR_BRIGADE_INSERT_TAIL(out, apr_bucket_pool_create(str, strlen(str), p));
 
         /* print README */
         if (readme) {
             str = apr_psprintf(p, "%s\n</pre>\n\n<hr />\n\n<pre>\n",
                                ap_escape_html(p, readme));
 
-            e = apr_bucket_pool_create(str, strlen(str), p);
-            APR_BRIGADE_INSERT_TAIL(out, e);
+            APR_BRIGADE_INSERT_TAIL(out, apr_bucket_pool_create(str, strlen(str), p));
         }
 
         /* make sure page intro gets sent out */
-        e = apr_bucket_flush_create();
-        APR_BRIGADE_INSERT_TAIL(out, e);
+        APR_BRIGADE_INSERT_TAIL(out, apr_bucket_flush_create());
         if (APR_SUCCESS != (rv = ap_pass_brigade(f->next, out))) {
             return rv;
         }
@@ -416,11 +406,19 @@ apr_status_t ap_proxy_send_dir_filter(ap_filter_t *f, apr_bucket_brigade *in)
         int found = 0;
         int eos = 0;
 
+        regex_t *re = NULL;
+        regmatch_t re_result[3];
+
+        /* Compile the output format of "ls -s1" as a fallback for non-unix ftp listings */
+        re = ap_pregcomp(p, "^ *([0-9]+) +([^ ]+)$", REG_EXTENDED);
+
         /* get a complete line */
         /* if the buffer overruns - throw data away */
         while (!found && !APR_BRIGADE_EMPTY(ctx->in)) {
             char *pos, *response;
             apr_size_t len, max;
+            apr_bucket *e;
+
             e = APR_BRIGADE_FIRST(ctx->in);
             if (APR_BUCKET_IS_EOS(e)) {
                 eos = 1;
@@ -544,10 +542,8 @@ apr_status_t ap_proxy_send_dir_filter(ap_filter_t *f, apr_bucket_brigade *in)
         /* erase buffer for next time around */
         ctx->buffer[0] = 0;
 
-        e = apr_bucket_pool_create(str, strlen(str), p);
-        APR_BRIGADE_INSERT_TAIL(out, e);
-        e = apr_bucket_flush_create();
-        APR_BRIGADE_INSERT_TAIL(out, e);
+        APR_BRIGADE_INSERT_TAIL(out, apr_bucket_pool_create(str, strlen(str), p));
+        APR_BRIGADE_INSERT_TAIL(out, apr_bucket_flush_create());
         if (APR_SUCCESS != (rv = ap_pass_brigade(f->next, out))) {
             return rv;
         }
@@ -557,15 +553,9 @@ apr_status_t ap_proxy_send_dir_filter(ap_filter_t *f, apr_bucket_brigade *in)
 
     if (FOOTER == ctx->state) {
         str = apr_psprintf(p, "</pre>\n\n  <hr />\n\n  %s\n\n </body>\n</html>\n", ap_psignature("", r));
-        e = apr_bucket_pool_create(str, strlen(str), p);
-        APR_BRIGADE_INSERT_TAIL(out, e);
-
-        e = apr_bucket_flush_create();
-        APR_BRIGADE_INSERT_TAIL(out, e);
-
-        e = apr_bucket_eos_create();
-        APR_BRIGADE_INSERT_TAIL(out, e);
-
+        APR_BRIGADE_INSERT_TAIL(out, apr_bucket_pool_create(str, strlen(str), p));
+        APR_BRIGADE_INSERT_TAIL(out, apr_bucket_flush_create());
+        APR_BRIGADE_INSERT_TAIL(out, apr_bucket_eos_create());
         if (APR_SUCCESS != (rv = ap_pass_brigade(f->next, out))) {
             return rv;
         }
@@ -809,6 +799,26 @@ int ap_proxy_ftp_handler(request_rec *r, proxy_server_conf *conf,
     if (type_suffix != NULL)
         *(type_suffix++) = '\0';
 
+    if (type_suffix != NULL && strncmp(type_suffix, "type=", 5) == 0
+        && ap_isalpha(type_suffix[5])) {
+        /* "type=d" forces a dir listing.
+         * The other types (i|a|e) are directly used for the ftp TYPE command
+         */
+        if ( ! (dirlisting = (ap_tolower(type_suffix[5]) == 'd')))
+            xfer_type = ap_toupper(type_suffix[5]);
+
+        /* Check valid types, rather than ignoring invalid types silently: */
+        if (strchr("AEI", xfer_type) == NULL)
+            return ap_proxyerror(r, HTTP_BAD_REQUEST, ap_pstrcat(r->pool,
+                                    "ftp proxy supports only types 'a', 'i', or 'e': \"",
+                                    type_suffix, "\" is invalid.", NULL));
+    }
+    else {
+        /* make binary transfers the default */
+        xfer_type = 'I';
+    }
+
+
     /*
      * The "Authorization:" header must be checked first. We allow the user
      * to "override" the URL-coded user [ & password ] in the Browsers'
@@ -1018,7 +1028,8 @@ int ap_proxy_ftp_handler(request_rec *r, proxy_server_conf *conf,
 
         /* Look for a number, preceded by whitespace */
         while (*secs_str)
-            if (apr_isspace(secs_str[-1]) && apr_isdigit(secs_str[0]))
+            if ((secs_str==ftpmessage || apr_isspace(secs_str[-1])) &&
+                apr_isdigit(secs_str[0]))
                 break;
         if (*secs_str != '\0') {
             secs = atol(secs_str);
@@ -1031,8 +1042,6 @@ int ap_proxy_ftp_handler(request_rec *r, proxy_server_conf *conf,
         return ap_proxyerror(r, HTTP_BAD_GATEWAY, ftpmessage);
     }
 
-    ap_log_error(APLOG_MARK, APLOG_DEBUG | APLOG_NOERRNO, 0, r->server,
-                 "proxy: FTP: connected.");
 
     rc = proxy_ftp_command(apr_pstrcat(p, "USER ", user, CRLF, NULL),
                            r, origin, bb, &ftpmessage);
@@ -1091,6 +1100,21 @@ int ap_proxy_ftp_handler(request_rec *r, proxy_server_conf *conf,
     }
     apr_table_set(r->notes, "Directory-README", ftpmessage);
 
+
+    /* Special handling for leading "%2f": this enforces a "cwd /"
+     * out of the $HOME directory which was the starting point after login
+     */
+    if (strncasecmp(path, "%2f", 3) == 0) {
+        path += 3;
+        while (*path == '/') /* skip leading '/' (after root %2f) */
+            ++path;
+
+        rc = proxy_ftp_command("CWD /" CRLF, r, origin, bb, &ftpmessage);
+        if (rc == -1 || rc == 421)
+            return ap_proxyerror(r, HTTP_BAD_GATEWAY,
+                                 "Error reading from remote server");
+    }
+
     /*
      * set the directory (walk directory component by component): this is
      * what we must do if we don't know the OS type of the remote machine
@@ -1101,7 +1125,12 @@ int ap_proxy_ftp_handler(request_rec *r, proxy_server_conf *conf,
             break;
         *strp = '\0';
 
-        len = decodeenc(path);
+        len = decodeenc(path); /* Note! This decodes a %2f -> "/" */
+
+        if (strchr(path, '/')) { /* are there now any '/' characters? */
+            return ap_proxyerror(r, HTTP_BAD_REQUEST,
+                                 "Use of /%2f is only allowed at the base directory");
+        }
 
         /* NOTE: FTP servers do globbing on the path.
          * So we need to escape the URI metacharacters.
@@ -1134,26 +1163,6 @@ int ap_proxy_ftp_handler(request_rec *r, proxy_server_conf *conf,
 
         path = strp + 1;
     }
-
-    if (type_suffix != NULL && strncmp(type_suffix, "type=", 5) == 0
-        && ap_isalpha(type_suffix[5])) {
-        /* "type=d" forces a dir listing.
-         * The other types (i|a|e) are directly used for the ftp TYPE command
-         */
-        if ( ! (dirlisting = (ap_tolower(type_suffix[5]) == 'd')))
-            xfer_type = ap_toupper(type_suffix[5]);
-
-        /* Check valid types, rather than ignoring invalid types silently: */
-        if (strchr("AEI", xfer_type) == NULL)
-            return ap_proxyerror(r, HTTP_BAD_REQUEST, ap_pstrcat(r->pool,
-                                    "ftp proxy supports only types 'a', 'i', or 'e': \"",
-                                    type_suffix, "\" is invalid.", NULL));
-    }
-    else {
-        /* make binary transfers the default */
-        xfer_type = 'I';
-    }
-
 
     /*
      * IV: Make Data Connection? -------------------------
@@ -1425,6 +1434,11 @@ int ap_proxy_ftp_handler(request_rec *r, proxy_server_conf *conf,
     /* set request; "path" holds last path component */
     len = decodeenc(path);
 
+    if (strchr(path, '/')) { /* are there now any '/' characters? */
+       return ap_proxyerror(r, HTTP_BAD_REQUEST,
+                            "Use of /%2f is only allowed at the base directory");
+    }
+
     /* If len == 0 then it must be a directory (you can't RETR nothing)
      * Also, don't allow to RETR by wildcard. Instead, create a dirlisting
      */
@@ -1432,7 +1446,15 @@ int ap_proxy_ftp_handler(request_rec *r, proxy_server_conf *conf,
         dirlisting = 1;
     }
     else {
-        rc = proxy_ftp_command(apr_pstrcat(p, "SIZE ", path, CRLF, NULL),
+        /* (from FreeBSD ftpd):
+         * SIZE is not in RFC959, but Postel has blessed it and
+         * it will be in the updated RFC.
+         *
+         * Return size of file in a format suitable for
+         * using with RESTART (we just count bytes).
+         */
+        rc = proxy_ftp_command(apr_pstrcat(p, "SIZE ",
+                           ap_escape_shell_cmd(p, path), CRLF, NULL),
                            r, origin, bb, &ftpmessage);
         if (rc == -1 || rc == 421) {
             return ap_proxyerror(r, HTTP_BAD_GATEWAY,
@@ -1500,6 +1522,11 @@ int ap_proxy_ftp_handler(request_rec *r, proxy_server_conf *conf,
     else {
         /* switch to binary if the user did not specify ";type=a" */
         ftp_set_TYPE(xfer_type, r, origin, bb, &ftpmessage);
+/* FIXME: we might as well do:
+        rc = proxy_ftp_command(apr_pstrcat(p, "MDTM ", ap_escape_shell_cmd(p, path), CRLF, NULL),
+                               r, origin, bb, &ftpmessage);
+        and extract the Last-Modified time from it (YYYYMMDDhhmmss or YYYYMMDDhhmmss.xxx GMT).
+*/
 /* FIXME: Handle range requests - send REST */
         buf = apr_pstrcat(p, "RETR ", ap_escape_shell_cmd(p, path), CRLF, NULL);
     }
@@ -1698,8 +1725,6 @@ int ap_proxy_ftp_handler(request_rec *r, proxy_server_conf *conf,
     /* Retrieve the final response for the RETR or LIST commands */
     rc = proxy_ftp_command(NULL, r, origin, bb, &ftpmessage);
     apr_brigade_cleanup(bb);
-    ap_log_error(APLOG_MARK, APLOG_DEBUG | APLOG_NOERRNO, 0, r->server,
-                 "proxy: FTP: end body send");
 
     /*
      * VII: Clean Up -------------
