@@ -83,6 +83,7 @@ const char *options =
 "\t-u{nprocessed} or -p{rocessed} input\n"
 "\t-n{owrap}      or -w{rap} output lines\n"
 "\t-f{ormatted}   or -r{aw} output lines\n"
+"\t-O{output} [number of seconds]\n"
 "\t-v{erbose} error reporting (for debugging)\n"
 "\t-? for this message\n\n";
 
@@ -120,6 +121,7 @@ int main(int argc, char** argv)
     DWORD newoutmode = 0, notoutmode = 0;
     DWORD tid;
     DWORD len;
+    DWORD timeout = INFINITE;
     BOOL isservice = FALSE;
     char *arg0 = argv[0];
 
@@ -147,6 +149,16 @@ int main(int argc, char** argv)
                     notoutmode |= ENABLE_PROCESSED_OUTPUT;   break;
                 case 'f':
                     newoutmode |= ENABLE_PROCESSED_OUTPUT;   break;
+                case 'o':
+                    if (*(argv + 1) && *(argv + 1)[0] != '-') {
+                        *(++argv);
+                        timeout = atoi(*argv) / 1000;
+                        --argc;
+                    }
+                    else {
+                        timeout = 0;
+                    }	
+                    break;
                 case 'v':
                     verbose = TRUE;
                     break;
@@ -358,7 +370,7 @@ int main(int argc, char** argv)
         }
     }
 
-    WaitForSingleObject(thread, INFINITE);
+    WaitForSingleObject(thread, timeout);
     FreeConsole();
     if (isservice) {
         if (!SetProcessWindowStation(hsavewinsta)) {
