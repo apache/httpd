@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.de.xsl"?>
-<!-- English Revision: 105989 (outdated: 106803) -->
+<!-- English Revision: 106803 -->
 
 <!--
  Copyright 2003-2004 The Apache Software Foundation
@@ -98,9 +98,8 @@
     <p>Diese Anweisung gibt eine Beschreibung aus, wie der Apache die
     Konfigurationsdatei analysiert hat. Eine sorgf&auml;ltige
     &Uuml;berpr&uuml;fung der IP-Adressen und Servernamen kann helfen,
-    Konfigurationsfehler aufzudecken. (Lesen Sie <a
-    href="../programs/httpd.html">die Dokumentation zum httpd-Programm</a>
-    f&uuml;r weitere Befehlszeilenoptionen.)</p>
-
+    Konfigurationsfehler aufzudecken. (Lesen Sie die Dokumentation zum
+    <program>httpd</program>-Programm f&uuml;r weitere
+    Befehlszeilenoptionen.)</p>
 </section>
 </manualpage>

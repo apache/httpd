@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.de.xsl"?>
-<!-- English Revision: 105989 (outdated: 106803) -->
+<!-- English Revision: 106803 -->
 
 <!--
  Copyright 2003-2004 The Apache Software Foundation
@@ -213,7 +213,7 @@ Ausnahmefehler behandeln lassen kann</description>
     <directive module="core" type="section">VirtualHost</directive>
     wird nicht l&auml;nger unterst&uuml;tzt. Benutzen Sie <directive
     module="mod_suexec">SuexecUserGroup</directive> um Ihren Server
-    f&uuml;r <a href="mod_suexec.html">suexec</a> einzurichten.</p>
+    f&uuml;r <program>suexec</program> einzurichten.</p>
 
     <note><title>Anmerkung</title>
       <p>Obwohl die Direktive <directive>Group</directive> in den MPMs
@@ -259,9 +259,9 @@ ablegt</description>
     und <a href="../misc/security_tips.html#serverroot">Sicherheit</a>.</p>
 
     <note><title>Anmerkung</title>
-      <p>Ab Apache 2 wird empfohlen, nur das Skript <a
-      href="../programs/apachectl.html">apachectl</a> zum (Neu-)Starten
-      und Stoppen des Servers zu verwenden.</p>
+      <p>Ab Apache 2 wird empfohlen, nur das Skript <program>
+      apachectl</program> zum (Neu-)Starten und Stoppen des Servers zu
+      verwenden.</p>
     </note>
 </usage>
 </directivesynopsis>
@@ -321,6 +321,12 @@ ablegt</description>
     <example>
       Listen [fe80::a00:20ff:fea7:ccea]:80
     </example>
+
+    <note type="warning"><title>Fehlerm&ouml;glichkeit</title>
+      Mehrere <code>Listen</code>-Direktiven f&uuml;r gleiche IP-Adresse und
+      Port f&uuml;hren zur Fehlermeldung "Address already in use"
+      <transnote>Adresse schon in Benutzung</transnote>.
+    </note>
 </usage>
 <seealso><a href="../dns-caveats.html">DNS-Probleme</a></seealso>
 <seealso><a href="../bind.html">Bestimmen, welche Adressen und Ports der
@@ -988,7 +994,7 @@ g&uuml;ltig</compatibility>
     <directive module="core" type="section">VirtualHost</directive> wird
     nicht mehr unterst&uuml;tzt. Benutzen Sie <directive
     module="mod_suexec">SuexecUserGroup</directive>, um Ihren Server
-    f&uuml;r <a href="../suexec.html">suexec</a> einzurichten.</p>
+    f&uuml;r <program>suexec</program> einzurichten.</p>
 
     <note><title>Anmerkung</title>
       <p>Obwohl die Direktive <directive>User</directive> in den MPMs

@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.de.xsl"?>
-<!-- English Revision: 105989 (outdated: 106803) -->
+<!-- English Revision: 106803 -->
 
 <!--
  Copyright 2003-2004 The Apache Software Foundation
@@ -765,7 +765,7 @@ Web sichtbar ist.</description>
 
 <usage>
     <p>Die Direktive setzt das Verzeichnis, von dem aus
-    <code>httpd</code> Dateien ausliefert. Sofern nicht eine Direktive
+    <program>httpd</program> Dateien ausliefert. Sofern nicht eine Direktive
     wie <directive module="mod_alias">Alias</directive> greift, h&auml;ngt
     der Server Pfade aus der angeforderten URL an das Wurzelverzeichnis
     an, um den Pfad zum Dokument zu bilden. Beispiel:</p>
@@ -799,8 +799,8 @@ Auslieferung zu lesen</description>
 <override>FileInfo</override>
 
 <usage>
-    <p>Die Direktive steuert, ob <code>httpd</code> Memory-Mapping verwenden
-    darf, wenn er w&auml;hrend der Auslieferung den Inhalt einer
+    <p>Die Direktive steuert, ob <program>httpd</program> Memory-Mapping
+    verwenden darf, wenn er w&auml;hrend der Auslieferung den Inhalt einer
     Datei lesen muss. Wenn die Bearbeitung einer Anfrage es erfordert,
     auf die Daten in einer Datei zuzugreifen -- zum Beispiel bei der
     Auslieferung einer mittels <module>mod_include</module> serverseitig
@@ -814,12 +814,12 @@ Auslieferung zu lesen</description>
 
     <ul>
     <li>Bei einigen Multiprozessorsystemen kann Memory-Mapping die
-    Performance von <code>httpd</code> reduzieren.</li>
+    Performance von <program>httpd</program> reduzieren.</li>
     <li>Bei einem per NFS eingebundenen <directive
-    module="core">DocumentRoot</directive> kann <code>httpd</code> mit einem
-    Segmentierungsfehler <transnote>ein sogenannter "segmentation
+    module="core">DocumentRoot</directive> kann <program>httpd</program> mit
+    einem Speicherzugriffsfehler <transnote>ein so genannter "segmentation
     fault"</transnote> abst&uuml;rzen, wenn eine Datei gel&ouml;scht oder
-    gek&uuml;rzt wird, w&auml;hrend <code>httpd</code> sie im Speicher
+    gek&uuml;rzt wird, w&auml;hrend <program>httpd</program> sie im Speicher
     abbildet.</li>
     </ul>
 
@@ -858,7 +858,7 @@ Dateien an den Client auszuliefern</description>
 <compatibility>Verf&uuml;gbar ab Apache Version 2.0.44</compatibility>
 
 <usage>
-    <p>Die Direktive steuert, ob <code>httpd</code> die
+    <p>Die Direktive steuert, ob <program>httpd</program> die
     sendfile-Unterst&uuml;tzung des Kernels verwenden kann, um
     Dateiinhalte an den Client zu &uuml;bermitteln. Wenn die Bearbeitung
     einer Anfrage keinen Zugriff auf die Daten in der Datei erfordert --
@@ -1304,12 +1304,11 @@ angegebenen MIME-Content-Type</description>
     ben&ouml;tigen. Es ist auch f&uuml;r die Endanwender besser, da sie nicht
     die zus&auml;tzliche Wartezeit ertragen m&uuml;ssen, die ein Lookup mit
     sich bringt. Hoch frequentierte Angebote sollten diese Direktive auf
-    <code>Off</code>lassen. Das Hilfsprogramm <a
-    href="../programs/logresolve.html">logresolve</a>, das
-    standardm&auml;&szlig;ig in das Unterverzeichnis <code>bin</code>
-    Ihres Installationsverzeichnisses kompiliert wird, kann dazu verwendet
-    werden, um offline Hostnamen zu protokollierten IP-Adressen
-    nachzuschlagen.</p>
+    <code>Off</code>lassen. Das Hilfsprogramm <program>
+    logresolve</program>, das standardm&auml;&szlig;ig in das
+    Unterverzeichnis <code>bin</code> Ihres Installationsverzeichnisses
+    kompiliert wird, kann dazu verwendet werden, um offline Hostnamen von
+    protokollierten IP-Adressen nachzuschlagen.</p>
 </usage>
 </directivesynopsis>
 
@@ -1349,8 +1348,8 @@ wenn eine Testbedingung beim Start wahr ist</description>
 
     <p>Das Argument <var>Parametername</var> ist ein sogenanntes
     "Define", das beim beim Start des Servers in der
-    <code>httpd</code>-Befehlszeile durch <code>-D<var>Parameter</var></code>
-    angegeben wird.</p>
+    <program>httpd</program>-Befehlszeile durch
+    <code>-D<var>Parameter</var></code> angegeben wird.</p>
 
     <p><directive type="section">IfDefine</directive>-Container k&ouml;nnen
     ineinander verschachtelt werden, um einfache Multi-Parameter-Tests
@@ -1453,7 +1452,7 @@ Server-Konfigurationsdatei ein</description>
     Unterverzeichnissen ein. Das Einf&uuml;gen ganzer Verzeichnisse ist
     jedoch nicht empfehlenswert, da tempor&auml;re Dateien sehr leicht
     versehentlich in einem Verzeichnis zur&uuml;ckgelassen werden, was
-    <code>httpd</code> scheitern lassen kann.</p>
+    <program>httpd</program> scheitern lassen kann.</p>
 
     <p>Der angegebene Dateiname kann ein absoluter Pfad sein oder relativ zum
     <directive module="core">ServerRoot</directive>-Verzeichnis angegeben
@@ -1487,7 +1486,7 @@ Server-Konfigurationsdatei ein</description>
     </example>
 </usage>
 
-<seealso><a href="../programs/apachectl.html">apachectl</a></seealso>
+<seealso><program>apachectl</program></seealso>
 </directivesynopsis>
 
 <directivesynopsis>
@@ -2835,8 +2834,10 @@ wird</description>
     <p>Die Direktive <directive>ServerRoot</directive> bestimmt das
     Verzeichnis, in dem der Server installiert ist. &Uuml;blicherweise
     enth&auml;lt es die Unterverzeichnisse <code>conf/</code> und
-    <code>logs/</code>. Relative Pfadangaben f&uuml;r andere
-    Konfigurationsdateien werden relativ zu diesem Verzeichnis betrachtet.</p>
+    <code>logs/</code>. Relative Pfadangaben anderer Direktiven (wie z.B.
+    <directive module="core">Include</directive> oder <directive module="so"
+    >LoadModule</directive>) werden relativ zu diesem Verzeichnis
+    betrachtet.</p>
 
     <example><title>Beispiel</title>
       ServerRoot /home/httpd

@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.de.xsl"?>
-<!-- English Revision: 105989 (outdated: 106803) -->
+<!-- English Revision: 106803 -->
 
 <!--
  Copyright 2002-2004 The Apache Software Foundation
@@ -31,15 +31,15 @@
     und <a href="platform/windows.html#wincons"
     >Apache als Konsolenanwendung betreiben</a>.</p>
 
-    <p>Unter Unix wird das <a
-    href="programs/httpd.html">httpd</a>-Programm als Daemon ausgef&#252;hrt,
-    der im Hintergrund fortlaufend aktiv ist, um Anfragen zu bearbeiten.
-    Dieses Dokument beschreibt, wie <code>httpd</code> aufgerufen wird.</p>
+    <p>Unter Unix wird das <program>httpd</program>-Programm als Daemon
+    ausgef&#252;hrt, der im Hintergrund fortlaufend aktiv ist, um
+    Anfragen zu bearbeiten. Dieses Dokument beschreibt, wie
+    <program>httpd</program> aufgerufen wird.</p>
 </summary>
 
 <seealso><a href="stopping.html">Beenden und Neustarten</a></seealso>
-<seealso><a href="programs/httpd.html">httpd</a></seealso>
-<seealso><a href="programs/apachectl.html">apachectl</a></seealso>
+<seealso><program>httpd</program></seealso>
+<seealso><program>apachectl</program></seealso>
 
 <section id="startup"><title>Wie der Apache startet</title>
 
@@ -57,18 +57,18 @@
     Benutzerkennungen ausgef&#252;hrt. Dies wird von dem ausgew&#228;hlten
     <a href="mpm.html">Multi-Processing-Modul</a> gesteuert.</p>
 
-    <p>Die Verwendung des Steuerskripts <a
-    href="programs/apachectl.html">apachectl</a> ist die empfohlene Methode,
-    das <code>httpd</code>-Programm zu starten. Dieses Skript setzt
-    verschiedene Umgebungsvariablen, die f&#252;r die korrekte Funktion von
-    <code>httpd</code> unter einigen Betriebssystemen notwendig sind, und
-    startet dann das <code>httpd</code>-Programm. <code>apachectl</code>
+    <p>Die Verwendung des Steuerskripts <program>apachectl</program> ist die
+    empfohlene Methode, das <program>httpd</program>-Programm zu starten.
+    Dieses Skript setzt verschiedene Umgebungsvariablen, die f&#252;r die
+    korrekte Funktion von <program>httpd</program> unter einigen
+    Betriebssystemen notwendig sind, und startet dann das
+    <program>httpd</program>-Programm. <program>apachectl</program>
     reicht alle Kommandozeilenargumente durch, so dass alle
-    <code>httpd</code>-Optionen auch mit <code>apachectl</code>
+    <program>httpd</program>-Optionen auch mit <program>apachectl</program>
     verwendet werden k&#246;nnen. Um den korrekten Ablageort des
-    <code>httpd</code>-Programms sowie einige Kommandozeilenargumente
+    <program>httpd</program>-Programms sowie einige Kommandozeilenargumente
     anzugeben, die Sie <em>immer</em> verwenden m&#246;chten, k&#246;nnen
-    Sie auch das Skript <code>apachectl</code> direkt editieren und die
+    Sie auch das Skript <program>apachectl</program> direkt editieren und die
     Variable <code>HTTPD</code> am Anfang &#228;ndern.</p>
 
     <p>Das Erste was <code>httpd</code> macht, wenn es startet, ist das
@@ -119,27 +119,27 @@
 
     <p>Wenn Sie m&#246;chten, dass Ihr Server direkt nach einem
     System-Neustart weiterl&#228;uft, sollten Sie einen Aufruf von
-    <code>apachectl</code> zu den Startdateien Ihres Systems hinzuf&#252;gen
-    (&#252;blicherweise <code>rc.local</code> oder eine Datei in einem
-    <code>rc.N</code>-Verzeichnis). Dies startet den Apache als root.
-    Stellen Sie zuvor jedoch sicher, dass Ihr Server hinsichtlich
-    Sicherheit und Zugriffsbeschr&#228;nkungen richtig konfiguriert ist.</p>
+    <program>apachectl</program> zu den Startdateien Ihres Systems
+    hinzuf&#252;gen (&#252;blicherweise <code>rc.local</code> oder
+    eine Datei in einem <code>rc.N</code>-Verzeichnis). Dies startet
+    den Apache als root. Stellen Sie zuvor jedoch sicher, dass Ihr
+    Server hinsichtlich Sicherheit und Zugriffsbeschr&#228;nkungen
+    richtig konfiguriert ist.</p>
 
-    <p>Das <code>apachectl</code>-Skript ist daf&#252;r ausgelegt, wie ein
-    Standard-SysV-init-Skript zu arbeiten. Es akzeptiert die Argumente
+    <p>Das <program>apachectl</program>-Skript ist daf&#252;r ausgelegt, wie
+    ein Standard-SysV-init-Skript zu arbeiten. Es akzeptiert die Argumente
     <code>start</code>, <code>restart</code> und <code>stop</code>
     und &#252;bersetzt sie in die entsprechenden Signale f&#252;r
-    <code>httpd</code>. Daher k&#246;nnen Sie oftmals
-    einfach <code>apachectl</code> in das entsprechende init-Verzeichnis
+    <program>httpd</program>. Daher k&#246;nnen Sie oftmals
+    einfach <program>apachectl</program> in das entsprechende init-Verzeichnis
     linken. &#220;berpr&#252;fen Sie bitte auf jeden Fall die genauen
     Anforderungen Ihres Systems.</p>
 </section>
 
 <section id="info"><title>Weitere Informationen</title>
 
-    <p>Weitere Informationen &#252;ber Kommandozeilenoptionen von <a
-    href="programs/httpd.html">httpd</a> und <a
-    href="programs/apachectl.html">apachectl</a> sowie anderen
+    <p>Weitere Informationen &#252;ber Kommandozeilenoptionen von <program>
+    httpd</program> und <program>apachectl</program> sowie anderen
     Hilfsprogrammen, die dem Server beigef&#252;gt sind, sind auf der
     Seite <a href="programs/">Server und Hilfsprogramme</a>
     verf&#252;gbar. Es existiert au&#223;erdem eine Dokumentation
