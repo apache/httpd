@@ -463,8 +463,8 @@ static int    prefix_stat(const char *path, struct stat *sb);
 static void   add_env_variable(request_rec *r, char *s);
 
     /* File locking */
-static void fd_lock(int fd);
-static void fd_unlock(int fd);
+static void fd_lock(request_rec *r, int fd);
+static void fd_unlock(request_rec *r, int fd);
 
     /* Lexicographic Comparison */
 static int compare_lexicography(char *cpNum1, char *cpNum2);

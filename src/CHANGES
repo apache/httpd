@@ -1,5 +1,9 @@
 Changes with Apache 1.3b8
 
+  *) Change usage of perror()+fprintf(stderr,...) in mod_rewrite to
+     more proper ap_log_error() variants.
+     [Ralf S. Engelschall]
+
   *) Make sure the argument for the --add-module option to APACI's configure
      script is of type [path/to/]mod_xxx.c because all calculations inside
      configure and src/Configure depend on this.

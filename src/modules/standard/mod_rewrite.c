@@ -2892,10 +2892,9 @@ static void open_rewritelog(server_rec *s, pool *p)
 
     if (*conf->rewritelogfile == '|') {
         if ((pl = ap_open_piped_log(p, conf->rewritelogfile+1)) == NULL) {
-            perror("ap_open_piped_log");
-            fprintf(stderr,
-                    "mod_rewrite: could not open reliable piped log for "
-                    "RewriteLog\n");
+            ap_log_error(APLOG_MARK, APLOG_ERR, s, 
+                         "mod_rewrite: could not open reliable pipe "
+                         "to RewriteLog filter %s", conf->rewritelogfile+1);
             exit(1);
         }
         conf->rewritelogfp = ap_piped_log_write_fd(pl);
@@ -2903,10 +2902,9 @@ static void open_rewritelog(server_rec *s, pool *p)
     else if (*conf->rewritelogfile != '\0') {
         if ((conf->rewritelogfp = ap_popenf(p, fname, rewritelog_flags,
                                          rewritelog_mode)) < 0) {
-            perror("open");
-            fprintf(stderr,
-                    "mod_rewrite: could not open RewriteLog file %s.\n",
-                    fname);
+            ap_log_error(APLOG_MARK, APLOG_ERR, s, 
+                         "mod_rewrite: could not open RewriteLog "
+                         "file %s", fname);
             exit(1);
         }
     }
@@ -2980,9 +2978,9 @@ static void rewritelog(request_rec *r, int level, const char *text, ...)
                 (unsigned long)(r->server), (unsigned long)r,
                 type, redir, level, str2);
 
-    fd_lock(conf->rewritelogfp);
+    fd_lock(r, conf->rewritelogfp);
     write(conf->rewritelogfp, str3, strlen(str3));
-    fd_unlock(conf->rewritelogfp);
+    fd_unlock(r, conf->rewritelogfp);
 
     va_end(ap);
     return;
@@ -3042,9 +3040,9 @@ static void rewritelock_create(server_rec *s, pool *p)
     if ((conf->rewritelockfp = ap_popenf(p, conf->rewritelockfile,
                                       O_WRONLY|O_CREAT,
                                       REWRITELOCK_MODE)) < 0) {
-        perror("open");
-        fprintf(stderr, "mod_rewrite: Parent could not create RewriteLock"
-                " file %s.\n", conf->rewritelockfile);
+        ap_log_error(APLOG_MARK, APLOG_ERR, s,
+                     "mod_rewrite: Parent could not create RewriteLock "
+                     "file %s", conf->rewritelockfile);
         exit(1);
     }
     return;
@@ -3065,9 +3063,9 @@ static void rewritelock_open(server_rec *s, pool *p)
     if ((conf->rewritelockfp = ap_popenf(p, conf->rewritelockfile,
                                       O_WRONLY,
                                       REWRITELOCK_MODE)) < 0) {
-        perror("open");
-        fprintf(stderr, "mod_rewrite: Child could not open RewriteLock"
-                " file %s.\n", conf->rewritelockfile);
+        ap_log_error(APLOG_MARK, APLOG_ERR, s,
+                     "mod_rewrite: Child could not open RewriteLock "
+                     "file %s", conf->rewritelockfile);
         exit(1);
     }
     return;
@@ -3098,7 +3096,7 @@ static void rewritelock_alloc(request_rec *r)
     conf = ap_get_module_config(r->server->module_config, &rewrite_module);
 
     if (conf->rewritelockfp != -1)
-        fd_lock(conf->rewritelockfp);
+        fd_lock(r, conf->rewritelockfp);
     return;
 }
 
@@ -3109,7 +3107,7 @@ static void rewritelock_free(request_rec *r)
     conf = ap_get_module_config(r->server->module_config, &rewrite_module);
 
     if (conf->rewritelockfp != -1)
-        fd_unlock(conf->rewritelockfp);
+        fd_unlock(r, conf->rewritelockfp);
     return;
 }
 
@@ -3159,9 +3157,9 @@ static void run_rewritemap_programs(server_rec *s, pool *p)
                             (void *)map->datafile, kill_after_timeout,
                             &fpin, &fpout, &fperr);
         if (rc == 0 || fpin == NULL || fpout == NULL) {
-            perror("ap_spawn_child");
-            fprintf(stderr, "mod_rewrite: "
-                    "could not fork child for RewriteMap process\n");
+            ap_log_error(APLOG_MARK, APLOG_ERR, s,
+                         "mod_rewrite: could not fork child for "
+                         "RewriteMap process");
             exit(1);
         }
         map->fpin  = fileno(fpin);
@@ -3846,7 +3844,7 @@ static struct flock   lock_it;
 static struct flock unlock_it;
 #endif
 
-static void fd_lock(int fd)
+static void fd_lock(request_rec *r, int fd)
 {
     int rc;
 
@@ -3875,22 +3873,14 @@ static void fd_lock(int fd)
 #endif
 
     if (rc < 0) {
-#ifdef USE_FLOCK
-        perror("flock");
-#endif
-#ifdef USE_FCNTL
-        perror("fcntl");
-#endif
-#ifdef USE_LOCKING
-        perror("_locking");
-#endif
-        fprintf(stderr, "mod_rewrite: Error getting lock. Exiting!");
+        ap_log_error(APLOG_MARK, APLOG_ERR, r->server,
+                     "mod_rewrite: failed to lock file descriptor");
         exit(1);
     }
     return;
 }
 
-static void fd_unlock(int fd)
+static void fd_unlock(request_rec *r, int fd)
 {
     int rc;
 
@@ -3913,16 +3903,8 @@ static void fd_unlock(int fd)
 #endif
 
     if (rc < 0) {
-#ifdef USE_FLOCK
-        perror("flock");
-#endif
-#ifdef USE_FCNTL
-        perror("fcntl");
-#endif
-#ifdef USE_LOCKING
-        perror("_locking");
-#endif
-        fprintf(stderr, "mod_rewrite: Error freeing lock. Exiting!");
+        ap_log_error(APLOG_MARK, APLOG_ERR, r->server,
+                     "mod_rewrite: failed to unlock file descriptor");
         exit(1);
     }
 }
