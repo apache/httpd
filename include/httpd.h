@@ -59,16 +59,13 @@
 #ifndef APACHE_HTTPD_H
 #define APACHE_HTTPD_H
 
-/*
- * httpd.h: header for simple (ha! not anymore) http daemon
+/**
+ * \file httpd.h
+ * \brief HTTP Daemon routines
  */
 
 /* XXX - We need to push more stuff to other .h files, or even .c files, to
  * make this file smaller
- */
-
-/**
- * @package HTTP Daemon routines
  */
 
 /* Headers in which EVERYONE has an interest... */
@@ -280,9 +277,24 @@ extern "C" {
 
 #define DEFAULT_HTTP_PORT	80
 #define DEFAULT_HTTPS_PORT	443
+/**
+ * Check whether @a port is the default port for the request @a r.
+ * @param port The port number
+ * @param r The request
+ * @see #ap_default_port
+ */
 #define ap_is_default_port(port,r)	((port) == ap_default_port(r))
-#define ap_http_method(r)	ap_run_http_method(r)
+/**
+ * Get the default port for a request (which depends on the scheme).
+ * @param r The request
+ */
 #define ap_default_port(r)	ap_run_default_port(r)
+/**
+ * Get the scheme for a request.
+ * @param r The request
+ * @bug This should be called ap_http_scheme!
+ */
+#define ap_http_method(r)	ap_run_http_method(r)
 
 /* The default string lengths */
 #define MAX_STRING_LEN HUGE_STRING_LEN
@@ -312,18 +324,53 @@ extern "C" {
 #define APEXIT_CHILDINIT	0x3
 #define APEXIT_CHILDFATAL	0xf
 
+
+#ifndef AP_DECLARE
+/**
+ * Stuff marked #AP_DECLARE is part of the API, and intended for use
+ * by modules. Its purpose is to allow us to add attributes that
+ * particular platforms or compilers require to every exported function.
+ */
+# define AP_DECLARE(type)    type
+#endif
+
+#ifndef AP_DECLARE_NONSTD
+/**
+ * Stuff marked #AP_DECLARE_NONSTD is part of the API, and intended for
+ * use by modules.  The difference between #AP_DECLARE and
+ * #AP_DECLARE_NONSTD is that the latter is required for any functions
+ * which use varargs or are used via indirect function call.  This
+ * is to accomodate the two calling conventions in windows dlls.
+ */
+# define AP_DECLARE_NONSTD(type)    type
+#endif
+
+#ifndef AP_MODULE_DECLARE_DATA
+# define AP_MODULE_DECLARE_DATA
+#endif
+#ifndef AP_DECLARE_DATA
+# define AP_DECLARE_DATA
+#endif
+
+/* modules should not used functions marked AP_CORE_DECLARE
+ * or AP_CORE_DECLARE_NONSTD */
+#ifndef AP_CORE_DECLARE
+# define AP_CORE_DECLARE	AP_DECLARE
+#endif
+#ifndef AP_CORE_DECLARE_NONSTD
+# define AP_CORE_DECLARE_NONSTD	AP_DECLARE_NONSTD
+#endif
+
 /**
  * Get the server version string
  * @return The server version string
- * @deffunc const char *ap_get_server_version(void)
  */
 AP_DECLARE(const char *) ap_get_server_version(void);
 
 /**
  * Add a component to the version string
- * @param pconf The pool to allocate the component out of
+ * @param pconf The pool to allocate the component from
  * @param component The string to add
- * @deffunc void ap_add_version_component(apr_pool_t *pconf, const char *component)
  */
 AP_DECLARE(void) ap_add_version_component(apr_pool_t *pconf, const char *component);
 
@@ -919,57 +966,22 @@ struct server_rec {
     int limit_req_fields; 
 };
 
-/* stuff marked AP_DECLARE is part of the API, and intended for use
- * by modules
- */
-#ifndef AP_DECLARE
-#define AP_DECLARE(type)    type
-#endif
-
-/* Stuff marked AP_DECLARE_NONSTD is part of the API, and intended for
- * use by modules.  The difference between AP_DECLARE and
- * AP_DECLARE_NONSTD is that the latter is required for any functions
- * which use varargs or are used via indirect function call.  This
- * is to accomodate the two calling conventions in windows dlls.
- */
-#ifndef AP_DECLARE_NONSTD
-#define AP_DECLARE_NONSTD(type)    type
-#endif
-
-#ifndef AP_MODULE_DECLARE_DATA
-#define AP_MODULE_DECLARE_DATA
-#endif
-#ifndef AP_DECLARE_DATA
-#define AP_DECLARE_DATA
-#endif
-
-/* modules should not used functions marked AP_CORE_DECLARE
- * or AP_CORE_DECLARE_NONSTD */
-#ifndef AP_CORE_DECLARE
-#define AP_CORE_DECLARE	AP_DECLARE
-#endif
-#ifndef AP_CORE_DECLARE_NONSTD
-#define AP_CORE_DECLARE_NONSTD	AP_DECLARE_NONSTD
-#endif
-
 /**
  * Examine a field value (such as a media-/content-type) string and return
  * it sans any parameters; e.g., strip off any ';charset=foo' and the like.
- * @param p Pool to allocate memory out of
+ * @param p Pool to allocate memory from
  * @param intype The field to examine
- * @return the field minus any parameters
- * @deffunc char *ap_field_noparam(apr_pool_t *p, const char *intype);
+ * @return A copy of the field minus any parameters
  */
 AP_DECLARE(char *) ap_field_noparam(apr_pool_t *p, const char *intype);
 
 /**
  * Convert a time from an integer into a string in a specified format
- * @param p The pool to allocate memory out of
+ * @param p The pool to allocate memory from
  * @param t The time to convert
  * @param fmt The format to use for the conversion
  * @param gmt Convert the time for GMT?
  * @return The string that represents the specified time
- * @deffunc char *ap_ht_time(apr_pool_t *p, apr_time_t t, const char *fmt, int gmt)
  */
 AP_DECLARE(char *) ap_ht_time(apr_pool_t *p, apr_time_t t, const char *fmt, int gmt);
 
@@ -979,21 +991,19 @@ AP_DECLARE(char *) ap_ht_time(apr_pool_t *p, apr_time_t t, const char *fmt, int 
 
 /**
  * Get the characters until the first occurance of a specified character
- * @param p The pool to allocate memory out of
+ * @param p The pool to allocate memory from
  * @param line The string to get the characters from
  * @param stop The character to stop at
  * @return A copy of the characters up to the first stop character
- * @deffunc char *ap_getword(apr_pool_t *p, const char **line, char stop);
  */
 AP_DECLARE(char *) ap_getword(apr_pool_t *p, const char **line, char stop);
 /**
  * Get the characters until the first occurance of a specified character
- * @param p The pool to allocate memory out of
+ * @param p The pool to allocate memory from
  * @param line The string to get the characters from
  * @param stop The character to stop at
  * @return A copy of the characters up to the first stop character
- * @tip This is the same as ap_getword, except it doesn't use const char **.
- * @deffunc char *ap_getword_nc(apr_pool_t *p, char **line, char stop);
+ * @note This is the same as ap_getword(), except it doesn't use const char **.
  */
 AP_DECLARE(char *) ap_getword_nc(apr_pool_t *p, char **line, char stop);
 
@@ -1002,8 +1012,7 @@ AP_DECLARE(char *) ap_getword_nc(apr_pool_t *p, char **line, char stop);
  * up to the first whitespace.
  * @param p The pool to allocate memory from
  * @param line The string to traverse
- * @retrn The first word in the line
- * @deffunc char *ap_getword_white(apr_pool_t *p, const char **line)
+ * @return The first word in the line
  */
 AP_DECLARE(char *) ap_getword_white(apr_pool_t *p, const char **line);
 /**
@@ -1011,49 +1020,45 @@ AP_DECLARE(char *) ap_getword_white(apr_pool_t *p, const char **line);
  * up to the first whitespace.
  * @param p The pool to allocate memory from
  * @param line The string to traverse
- * @retrn The first word in the line
- * @tip The same as ap_getword_white, except it doesn't use const char **.
- * @deffunc char *ap_getword_white_nc(apr_pool_t *p, const char **line)
+ * @return The first word in the line
+ * @note The same as ap_getword_white(), except it doesn't use const char **.
  */
 AP_DECLARE(char *) ap_getword_white_nc(apr_pool_t *p, char **line);
 
 /**
- * Get all characters from the first occurance of stop to the first '\0'
- * @param p The pool to allocate memory out of
+ * Get all characters from the first occurance of @a stop to the first '\0'
+ * @param p The pool to allocate memory from
  * @param line The line to traverse
  * @param stop The character to start at
  * @return A copy of all caracters after the first occurance of the specified
  *         character
- * @deffunc char *ap_getword_nulls(apr_pool_t *p, const char **line, char stop)
  */
-AP_DECLARE(char *) ap_getword_nulls(apr_pool_t *p, const char **line, char stop);
+AP_DECLARE(char *) ap_getword_nulls(apr_pool_t *p, const char **line,
+				    char stop);
 /**
- * Get all characters from the first occurance of stop to the first '\0'
- * @param p The pool to allocate memory out of
+ * Get all characters from the first occurance of @a stop to the first '\0'
+ * @param p The pool to allocate memory from
  * @param line The line to traverse
  * @param stop The character to start at
  * @return A copy of all caracters after the first occurance of the specified
  *         character
- * @tip The same as ap_getword_nulls, except it doesn't use const char **.
- * @deffunc char *ap_getword_nulls_nc(apr_pool_t *p, char **line, char stop)
+ * @note The same as ap_getword_nulls(), except it doesn't use const char **.
  */
 AP_DECLARE(char *) ap_getword_nulls_nc(apr_pool_t *p, char **line, char stop);
 
 /**
  * Get the second word in the string paying attention to quoting
- * @param p The pool to allocate out of
+ * @param p The pool to allocate from
  * @param line The line to traverse
  * @return A copy of the string
- * @deffunc char *ap_getword_conf(apr_pool_t *p, const char **line)
  */
 AP_DECLARE(char *) ap_getword_conf(apr_pool_t *p, const char **line);
 /**
  * Get the second word in the string paying attention to quoting
- * @param p The pool to allocate out of
+ * @param p The pool to allocate from
  * @param line The line to traverse
  * @return A copy of the string
- * @tip The same as ap_getword_conf, except it doesn't use const char **.
- * @deffunc char *ap_getword_conf_nc(apr_pool_t *p, char **line)
+ * @note The same as ap_getword_conf(), except it doesn't use const char **.
  */
 AP_DECLARE(char *) ap_getword_conf_nc(apr_pool_t *p, char **line);
 
@@ -1062,10 +1067,9 @@ AP_DECLARE(char *) ap_getword_conf_nc(apr_pool_t *p, char **line);
  * each them by the value of that environment variable, if it exists. If the 
  * environment value does not exist, leave the ${ENV} construct alone; it 
  * means something else.
- * @param p The pool to allocate out of
+ * @param p The pool to allocate from
  * @param word The string to check
  * @return The string with the replaced environment variables
- * @deffunc const char *ap_resolve_env(apr_pool_t *p, const char *word)
  */
 AP_DECLARE(const char *) ap_resolve_env(apr_pool_t *p, const char * word); 
 
@@ -1077,7 +1081,6 @@ AP_DECLARE(const char *) ap_resolve_env(apr_pool_t *p, const char * word);
  * list item within the original string (or NULL if there is none) and the 
  * address of field is shifted to the next non-comma, non-whitespace 
  * character.  len is the length of the item excluding any beginning whitespace.
- * @deffunc const char *ap_size_list_item(const char **field, int *len)
  */
 AP_DECLARE(const char *) ap_size_list_item(const char **field, int *len);
 
@@ -1085,56 +1088,51 @@ AP_DECLARE(const char *) ap_size_list_item(const char **field, int *len);
  * Retrieve an HTTP header field list item, as separated by a comma,
  * while stripping insignificant whitespace and lowercasing anything not in
  * a quoted string or comment.  
- * @param p The pool to allocate out of
+ * @param p The pool to allocate from
  * @param field The field to retrieve
  * @return The return value is a new string containing the converted list 
  *         item (or NULL if none) and the address pointed to by field is 
  *         shifted to the next non-comma, non-whitespace.
- * @deffunc char *ap_get_list_item(apr_pool_t *p, const char **field)
  */
 AP_DECLARE(char *) ap_get_list_item(apr_pool_t *p, const char **field);
 
 /**
  * Find an item in canonical form (lowercase, no extra spaces) within
  * an HTTP field value list.  
- * @param p The pool to allocate out of
+ * @param p The pool to allocate from
  * @param line The field value list to search
  * @param tok The token to search for
  * @return 1 if found, 0 if not found.
- * @deffunc int ap_find_list_item(apr_pool_t *p, const char *line, const char *tok)
  */
 AP_DECLARE(int) ap_find_list_item(apr_pool_t *p, const char *line, const char *tok);
 
 /**
  * Retrieve a token, spacing over it and returning a pointer to
  * the first non-white byte afterwards.  Note that these tokens
- * are delimited by semis and commas; and can also be delimited
+ * are delimited by semis and commas and can also be delimited
  * by whitespace at the caller's option.
- * @param p The pool to allocate out of
+ * @param p The pool to allocate from
  * @param accept_line The line to retrieve the token from
  * @param accept_white Is it delimited by whitespace
  * @return the first non-white byte after the token
- * @deffunc char *ap_get_token(apr_pool_t *p, const char **accept_line, int accept_white)
  */
 AP_DECLARE(char *) ap_get_token(apr_pool_t *p, const char **accept_line, int accept_white);
 
 /**
- * find http tokens, see the definition of token from RFC2068 
- * @param p The pool to allocate out of
+ * Find http tokens, see the definition of token from RFC2068 
+ * @param p The pool to allocate from
  * @param line The line to find the token
  * @param tok The token to find
  * @return 1 if the token is found, 0 otherwise
- * @deffunc int ap_find_token(apr_pool_t *p, const char *line, const char *tok)
  */
 AP_DECLARE(int) ap_find_token(apr_pool_t *p, const char *line, const char *tok);
 
 /**
  * find http tokens from the end of the line
- * @param p The pool to allocate out of
+ * @param p The pool to allocate from
  * @param line The line to find the token
  * @param tok The token to find
  * @return 1 if the token is found, 0 otherwise
- * @deffunc int ap_find_last_token(apr_pool_t *p, const char *line, const char *tok)
  */
 AP_DECLARE(int) ap_find_last_token(apr_pool_t *p, const char *line, const char *tok);
 
@@ -1142,7 +1140,6 @@ AP_DECLARE(int) ap_find_last_token(apr_pool_t *p, const char *line, const char *
  * Check for an Absolute URI syntax
  * @param u The string to check
  * @return 1 if URI, 0 otherwise
- * @deffunc int ap_is_url(const char *u)
  */
 AP_DECLARE(int) ap_is_url(const char *u);
 
@@ -1150,112 +1147,102 @@ AP_DECLARE(int) ap_is_url(const char *u);
  * Unescape a URL
  * @param url The url to unescapte
  * @return 0 on success, non-zero otherwise
- * @deffunc int ap_unescape_url(char *url)
  */
 AP_DECLARE(int) ap_unescape_url(char *url);
 /**
- * Remove all double slashes from a string
- * @param name The string to parse
- * @deffunc void ap_no2slash(char *name)
+ * Convert all double slashes to single slashes
+ * @param name The string to convert
  */
 AP_DECLARE(void) ap_no2slash(char *name);
 
 /**
- * Remove all ./ and ../ substrings from a file name
+ * Remove all ./ and xx/../ substrings from a file name. Also remove
+ * any leading ../ or /../ substrings.
  * @param name the file name to parse
- * @deffunc void ap_getparents(char *name)
  */
 AP_DECLARE(void) ap_getparents(char *name);
 
 /**
  * Escape a path segment, as defined in RFC 1808
- * @param p The pool to allocate out of
+ * @param p The pool to allocate from
  * @param s The path to convert
  * @return The converted URL
- * @deffunc char *ap_escape_path_segment(apr_pool_t *p, const char *s)
  */
 AP_DECLARE(char *) ap_escape_path_segment(apr_pool_t *p, const char *s);
 /**
  * convert an OS path to a URL in an OS dependant way.
- * @param p The pool to allocate out of
+ * @param p The pool to allocate from
  * @param path The path to convert
  * @param partial if set, assume that the path will be appended to something
  *        with a '/' in it (and thus does not prefix "./")
  * @return The converted URL
- * @deffunc char *ap_os_escape_path(apr_pool_t *p, const char *path, int partial)
  */
 AP_DECLARE(char *) ap_os_escape_path(apr_pool_t *p, const char *path, int partial);
 #define ap_escape_uri(ppool,path) ap_os_escape_path(ppool,path,1)
 
 /**
  * Escape an html string
- * @param p The pool to allocate out of
+ * @param p The pool to allocate from
  * @param s The html to escape
  * @return The escaped string
- * @deffunc char *ap_escape_html(apr_pool_t *p, const char *s)
  */
 AP_DECLARE(char *) ap_escape_html(apr_pool_t *p, const char *s);
 
 /**
  * Construct a full hostname
- * @param p The pool to allocate out of
+ * @param p The pool to allocate from
  * @param hostname The hostname of the server
  * @param port The port the server is running on
  * @param r The current request
  * @return The server's hostname
- * @deffunc char *ap_construct_server(apr_pool_t *p, const char *hostname, apr_port_t port, const request_rec *r)
  */
 AP_DECLARE(char *) ap_construct_server(apr_pool_t *p, const char *hostname,
 				    apr_port_t port, const request_rec *r);
 /**
  * Escape a shell command
- * @param p The pool to allocate out of
+ * @param p The pool to allocate from
  * @param s The command to escape
- * @return The escaped hostname
- * @deffunc char *ap_escape_shell_cmd(apr_pool_t *p, const char *s)
+ * @return The escaped shell command
  */
 AP_DECLARE(char *) ap_escape_shell_cmd(apr_pool_t *p, const char *s);
 
 /**
  * Count the number of directories in a path
- * @param The path to count
+ * @param path The path to count
  * @return The number of directories
- * @deffunc int ap_count_dirs(const char *path)
  */
 AP_DECLARE(int) ap_count_dirs(const char *path);
 
 /**
- * Copy at most n leading directories of s into d d should be at least as 
- * large as s plus 1 extra byte
+ * Copy at most @a n leading directories of @a s into @a d. @a d
+ * should be at least as large as @a s plus 1 extra byte
+ *
  * @param d The location to copy to
  * @param s The location to copy from
  * @param n The number of directories to copy
  * @return value is the ever useful pointer to the trailing \0 of d
- * @deffunc char *ap_make_dirstr_prefix(char *d, const char *s, int n)
- * @tip on platforms with drive letters, n = 0 returns the "/" root, 
+ * @note on platforms with drive letters, n = 0 returns the "/" root, 
  * whereas n = 1 returns the "d:/" root.  On all other platforms, n = 0
- * returns the empty string.
- */
+ * returns the empty string.  */
 AP_DECLARE(char *) ap_make_dirstr_prefix(char *d, const char *s, int n);
 
 /**
- * return the parent directory name including trailing / of the file s
- * @param p The pool to allocate out of
+ * Return the parent directory name (including trailing /) of the file
+ * @a s
+ * @param p The pool to allocate from
  * @param s The file to get the parent of
  * @return A copy of the file's parent directory
- * @deffunc char *ap_make_dirstr_parent(apr_pool_t *p, const char *s)
  */
 AP_DECLARE(char *) ap_make_dirstr_parent(apr_pool_t *p, const char *s);
 
 /**
- * Given a directory and filename, create a single path out of them.  This
+ * Given a directory and filename, create a single path from them.  This
  * function is smart enough to ensure that there is a sinlge '/' between the
  * directory and file names
- * @param a The pool to allocate out of
+ * @param a The pool to allocate from
  * @param dir The directory name
  * @param f The filename
  * @return A copy of the full path
- * @deffunc char *ap_make_full_path(apr_pool_t *a, const char *dir, const char *f)
  */
 AP_DECLARE(char *) ap_make_full_path(apr_pool_t *a, const char *dir, const char *f);
 
@@ -1265,7 +1252,6 @@ AP_DECLARE(char *) ap_make_full_path(apr_pool_t *a, const char *dir, const char 
  * The only wildcard characters recognized are '?' and '*'
  * @param str The string to check
  * @return 1 if the string has wildcards, 0 otherwise
- * @deffunc int ap_is_matchexp(const char *str)
  */
 AP_DECLARE(int) ap_is_matchexp(const char *str);
 
@@ -1274,7 +1260,6 @@ AP_DECLARE(int) ap_is_matchexp(const char *str);
  * @param str The string to check
  * @param exp The pattern to match against
  * @return 1 if the two strings match, 0 otherwise
- * @deffunc int ap_strcmp_match(const char *str, const char *exp)
  */
 AP_DECLARE(int) ap_strcmp_match(const char *str, const char *exp);
 /**
@@ -1283,7 +1268,6 @@ AP_DECLARE(int) ap_strcmp_match(const char *str, const char *exp);
  * @param str The string to check
  * @param exp The pattern to match against
  * @return 1 if the two strings match, 0 otherwise
- * @deffunc int ap_strcasecmp_match(const char *str, const char *exp)
  */
 AP_DECLARE(int) ap_strcasecmp_match(const char *str, const char *exp);
 
@@ -1292,7 +1276,6 @@ AP_DECLARE(int) ap_strcasecmp_match(const char *str, const char *exp);
  * @param s1 The string to search
  * @param s2 The substring to search for
  * @return A pointer to the beginning of the substring
- * @deffunc char *ap_strcasestr(const char *s1, const char *s2)
  */
 AP_DECLARE(char *) ap_strcasestr(const char *s1, const char *s2);
 
@@ -1301,52 +1284,46 @@ AP_DECLARE(char *) ap_strcasestr(const char *s1, const char *s2);
  * @param bigstring The input string
  * @param prefix The prefix to strip away
  * @return A pointer relative to bigstring after prefix
- * deffunc const char *ap_stripprefix(const char *bigstring, const char *prefix);
  */
 AP_DECLARE(const char *) ap_stripprefix(const char *bigstring,
                                         const char *prefix);
 
 /**
- * Decode a base64 encoded string into memory allocated out of a pool
- * @param p The pool to allocate out of
+ * Decode a base64 encoded string into memory allocated from a pool
+ * @param p The pool to allocate from
  * @param bufcoded The encoded string
  * @return The decoded string
- * @deffunc char *ap_pbase64decode(apr_pool_t *p, const char *bufcoded)
  */
 AP_DECLARE(char *) ap_pbase64decode(apr_pool_t *p, const char *bufcoded);
 
 /**
- * Encode a string into memory allocated out of a pool in base 64 format
- * @param p The pool to allocate out of
+ * Encode a string into memory allocated from a pool in base 64 format
+ * @param p The pool to allocate from
  * @param strin The plaintext string
  * @return The encoded string
- * @deffunc char *ap_pbase64encode(apr_pool_t *p, char *string)
  */
 AP_DECLARE(char *) ap_pbase64encode(apr_pool_t *p, char *string); 
 
 
 /**
  * Compile a regular expression to be used later
- * @param p The pool to allocate out of
+ * @param p The pool to allocate from
  * @param pattern the regular expression to compile
  * @param cflags The bitwise or of one or more of the following:
- * <PRE>
- *       REG_EXTENDED - Use POSIX extended Regular Expressions
- *       REG_ICASE    - Ignore case
- *       REG_NOSUB    - Support for substring addressing of matches not required
- *       REG_NEWLINE  - Match-any-character operators don't match new-line
- * </PRE>
+ *   @li #REG_EXTENDED - Use POSIX extended Regular Expressions
+ *   @li #REG_ICASE    - Ignore case
+ *   @li #REG_NOSUB    - Support for substring addressing of matches
+ *       not required
+ *   @li #REG_NEWLINE  - Match-any-character operators don't match new-line
  * @return The compiled regular expression
- * @deffunc regex_t *ap_pregcomp(apr_pool_t *p, const char *pattern, int cflags)
  */
 AP_DECLARE(regex_t *) ap_pregcomp(apr_pool_t *p, const char *pattern,
 				   int cflags);
 
 /**
  * Free the memory associated with a compiled regular expression
- * @param p The pool the regex was allocated out of
+ * @param p The pool the regex was allocated from
  * @param reg The regular expression to free
- * @deffunc void ap_pregfree(apr_pool_t *p, regex_t *reg)
  */
 AP_DECLARE(void) ap_pregfree(apr_pool_t *p, regex_t *reg);
 
@@ -1356,24 +1333,21 @@ AP_DECLARE(void) ap_pregfree(apr_pool_t *p, regex_t *reg);
  * @param string The string to match
  * @param nmatch Provide information regarding the location of any matches
  * @param pmatch Provide information regarding the location of any matches
- * @param eflags Bitwise or of one or both of:
- * <PRE>
- *        REG_NOTBOL - match-beginning-of-line operator always fails to match
- *        REG_NOTEOL - match-end-of-line operator always fails to match
- * </PRE>
- * @return 0 for successful match, REG_NOMATCH otherwise
- * @deffunc int ap_regexec(regex_t *preg, const char *string, size_t nmatch, regmatch_t pmatch[], int eflags)
+ * @param eflags Bitwise or of any of:
+ *   @li #REG_NOTBOL - match-beginning-of-line operator always
+ *     fails to match
+ *   @li #REG_NOTEOL - match-end-of-line operator always fails to match
+ * @return 0 for successful match, #REG_NOMATCH otherwise
  */ 
 AP_DECLARE(int)    ap_regexec(regex_t *preg, const char *string,
                               size_t nmatch, regmatch_t pmatch[], int eflags);
 
 /**
  * Return the error code returned by regcomp or regexec into error messages
- * @param errocode the error code returned by regexec or regcomp
+ * @param errcode the error code returned by regexec or regcomp
  * @param preg The precompiled regex
  * @param errbuf A buffer to store the error in
  * @param errbuf_size The size of the buffer
- * @deffunc size_t ap_regerror(int errcode, const regex_t *preg, char *errbuf, size_t errbuf_size)
  */
 AP_DECLARE(size_t) ap_regerror(int errcode, const regex_t *preg, 
                                char *errbuf, size_t errbuf_size);
@@ -1382,29 +1356,26 @@ AP_DECLARE(size_t) ap_regerror(int errcode, const regex_t *preg,
  * After performing a successful regex match, you may use this function to 
  * perform a series of string substitutions based on subexpressions that were
  * matched during the call to ap_regexec
- * @param p The pool to allocate out of
+ * @param p The pool to allocate from
  * @param input An arbitrary string containing $1 through $9.  These are 
  *              replaced with the corresponding matched sub-expressions
  * @param source The string that was originally matched to the regex
  * @param nmatch the nmatch returned from ap_pregex
  * @param pmatch the pmatch array returned from ap_pregex
- * @deffunc char *ap_pregsub(apr_pool_t *p, const char *input, const char *source, size_t nmatch, regmatch_t pmatch[])
  */
 AP_DECLARE(char *) ap_pregsub(apr_pool_t *p, const char *input, const char *source,
                               size_t nmatch, regmatch_t pmatch[]);
 
 /**
- * we want to downcase the type/subtype for comparison purposes
+ * We want to downcase the type/subtype for comparison purposes
  * but nothing else because ;parameter=foo values are case sensitive.
  * @param s The content-type to convert to lowercase
- * @deffunc void ap_content_type_tolower(char *s)
  */
 AP_DECLARE(void) ap_content_type_tolower(char *s);
 
 /**
  * convert a string to all lowercase
  * @param s The string to convert to lowercase 
- * @deffunc void ap_str_tolower(char *s) 
  */
 AP_DECLARE(void) ap_str_tolower(char *s);
 
@@ -1414,7 +1385,6 @@ AP_DECLARE(void) ap_str_tolower(char *s);
  * @param str The string to search
  * @param c The character to search for
  * @return The index of the first occurrence of c in str
- * @deffunc int ap_ind(const char *str, char c)
  */
 AP_DECLARE(int) ap_ind(const char *str, char c);	/* Sigh... */
 
@@ -1424,35 +1394,31 @@ AP_DECLARE(int) ap_ind(const char *str, char c);	/* Sigh... */
  * @param str The string to search
  * @param c The character to search for
  * @return The index of the first occurrence of c in str
- * @deffunc int ap_rind(const char *str, char c)
  */
 AP_DECLARE(int) ap_rind(const char *str, char c);
 
 /**
  * Given a string, replace any bare " with \" .
- * @param p The pool to allocate memory out of
+ * @param p The pool to allocate memory from
  * @param instring The string to search for "
  * @return A copy of the string with escaped quotes 
- * @deffunc char * ap_escape_quotes(apr_pool_t *p, const char *instring) 
  */
 AP_DECLARE(char *) ap_escape_quotes(apr_pool_t *p, const char *instring);
 
 /* Misc system hackery */
 /**
  * Given the name of an object in the file system determine if it is a directory
- * @param p The pool to allocate out of 
+ * @param p The pool to allocate from 
  * @param name The name of the object to check
  * @return 1 if it is a directory, 0 otherwise
- * @deffunc int ap_is_rdirectory(apr_pool_t *p, const char *name)
  */
 AP_DECLARE(int) ap_is_rdirectory(apr_pool_t *p, const char *name);
 
 /**
  * Given the name of an object in the file system determine if it is a directory - this version is symlink aware
- * @param p The pool to allocate out of 
+ * @param p The pool to allocate from 
  * @param name The name of the object to check
  * @return 1 if it is a directory, 0 otherwise
- * @deffunc int ap_is_directory(apr_pool_t *p, const char *name)
  */
 AP_DECLARE(int) ap_is_directory(apr_pool_t *p, const char *name);
 
@@ -1462,10 +1428,9 @@ extern int os_init_job_environment(server_rec *s, const char *user_name, int one
 #endif /* _OSD_POSIX */
 
 /**
- * determine the local host name for the current machine
- * @param p The pool to allocate out of
+ * Determine the local host name for the current machine
+ * @param p The pool to allocate from
  * @return A copy of the local host name
- * @deffunc char *ap_get_local_host(apr_pool_t *p)
  */
 char *ap_get_local_host(apr_pool_t *p);
 
@@ -1481,7 +1446,6 @@ char *ap_get_local_host(apr_pool_t *p);
  * @param szExp The assertion that failed
  * @param szFile The file the assertion is in
  * @param nLine The line the assertion is defined on
- * @deffunc void ap_log_assert(const char *szExp, const char *szFile, int nLine)
  */
 AP_DECLARE(void) ap_log_assert(const char *szExp, const char *szFile, int nLine)
 			    __attribute__((noreturn));
