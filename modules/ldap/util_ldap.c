@@ -264,7 +264,8 @@ LDAP_DECLARE(int) util_ldap_connection_open(request_rec *r,
 	   a host string that contains multiple hosts the ability to mix some
 	   hosts with ports and some without. All hosts which do not specify 
 	   a port will use the default port.*/
-        apr_ldap_init(r->pool, &(ldc->ldap), ldc->host, ldc->secure?LDAPS_PORT:LDAP_PORT,
+        apr_ldap_init(r->pool, &(ldc->ldap),
+                      ldc->host, ldc->secure?LDAPS_PORT:LDAP_PORT,
                       ldc->secure, &(result));
 
         if (result != NULL) {
@@ -298,7 +299,9 @@ LDAP_DECLARE(int) util_ldap_connection_open(request_rec *r,
       */
     for (failures=0; failures<10; failures++)
     {
-        result = ldap_simple_bind_s(ldc->ldap, ldc->binddn, ldc->bindpw);
+        result = ldap_simple_bind_s(ldc->ldap,
+                                    (char *)ldc->binddn,
+                                    (char *)ldc->bindpw);
         if (LDAP_SERVER_DOWN != result)
             break;
     }
@@ -529,7 +532,7 @@ start_over:
     }
 
     /* search for reqdn */
-    if ((result = ldap_search_ext_s(ldc->ldap, reqdn, LDAP_SCOPE_BASE, 
+    if ((result = ldap_search_ext_s(ldc->ldap, (char *)reqdn, LDAP_SCOPE_BASE, 
 				    "(objectclass=*)", NULL, 1, 
 				    NULL, NULL, NULL, -1, &res)) == LDAP_SERVER_DOWN) {
         ldc->reason = "DN Comparison ldap_search_ext_s() failed with server down";
@@ -661,8 +664,11 @@ start_over:
         return result;
     }
 
-    if ((result = ldap_compare_s(ldc->ldap, dn, attrib, value))
-        == LDAP_SERVER_DOWN) { 
+    if ((result = ldap_compare_s(ldc->ldap,
+                                 (char *)dn,
+                                 (char *)attrib,
+                                 (char *)value))
+                                               == LDAP_SERVER_DOWN) { 
         /* connection failed - try again */
         ldc->reason = "ldap_compare_s() failed with server down";
         util_ldap_connection_unbind(ldc);
@@ -790,8 +796,8 @@ start_over:
 
     /* try do the search */
     if ((result = ldap_search_ext_s(ldc->ldap,
-				    basedn, scope, 
-				    filter, attrs, 0, 
+				    (char *)basedn, scope, 
+				    (char *)filter, attrs, 0, 
 				    NULL, NULL, NULL, -1, &res)) == LDAP_SERVER_DOWN) {
         ldc->reason = "ldap_search_ext_s() for user failed with server down";
         util_ldap_connection_unbind(ldc);
@@ -844,10 +850,11 @@ start_over:
      * fails, it means that the password is wrong (the dn obviously
      * exists, since we just retrieved it)
      */
-    if ((result = 
-         ldap_simple_bind_s(ldc->ldap, *binddn, bindpw)) == 
-         LDAP_SERVER_DOWN) {
-        ldc->reason = "ldap_simple_bind_s() to check user credentials failed with server down";
+    if ((result = ldap_simple_bind_s(ldc->ldap,
+                                     (char *)*binddn,
+                                     (char *)bindpw)) == LDAP_SERVER_DOWN) {
+        ldc->reason = "ldap_simple_bind_s() to check user credentials "
+                      "failed with server down";
         ldap_msgfree(res);
         util_ldap_connection_unbind(ldc);
         goto start_over;
@@ -1017,8 +1024,10 @@ start_over:
 
     /* try do the search */
     if ((result = ldap_search_ext_s(ldc->ldap,
-				    basedn, scope, filter, attrs, 0, 
-				    NULL, NULL, NULL, -1, &res)) == LDAP_SERVER_DOWN) {
+				    (char *)basedn, scope,
+                                    (char *)filter, attrs, 0, 
+				    NULL, NULL,
+                                    NULL, -1, &res)) == LDAP_SERVER_DOWN) {
         ldc->reason = "ldap_search_ext_s() for user failed with server down";
         goto start_over;
     }
