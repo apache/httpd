@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.ja.xsl"?>
 <manualpage>
 <relativepath href="."/>
-<!-- English revision: 1.11 -->
+<!-- English revision: 1.15 -->
 
   <title>コンパイルとインストール</title>
 
@@ -26,8 +26,8 @@
 
 </summary>
 
-<seealso><a href="invoking.html">起動</a></seealso>
-<seealso><a href="stopping.html">停止と再起動</a></seealso>
+<seealso><a href="invoking.html">Apacheの起動</a></seealso>
+<seealso><a href="stopping.html">Apacheの停止と再起動</a></seealso>
 
 <section id="overview"><title>概要 (せっかちな人向け)</title>
 
@@ -142,19 +142,9 @@
 
     <p>Apache は <a
     href="http://www.apache.org/dist/httpd/">Apache Software
-    Foundation ダウンロードサイト</a>や<a
-    href="http://www.apache.org/dyn/closer.cgi/httpd/">近くの
-    ミラーサイト</a>からダウンロードできます。</p>
-
-    <p><code>alpha</code> で終わるバージョン番号は、
-    動くか動かないかよく分からない、
-    早期のプリテストバージョンであることを示しています。
-    <code>beta</code> で終わるバージョンはそれよりは信頼性のある
-    リリースですが、テストとバグフィックスを重ねる段階のものです。
-    Apache HTTP サーバの入手可能な中で最高の製品リリースを
-    ダウンロードしたいのであれば、ファイル名に <code>alpha</code>
-    も <code>beta</code>
-    も付かない最新のバージョンを選んでください。</p>
+    Foundation ダウンロードサイト</a>からダウンロードできますし、
+    同じ場所に幾つかのミラーサイトもリストしています。
+    ここから最新の安定版が手に入ります。</p>
 
     <p>ダウンロード後、特にミラーサイトを使った場合は、
     ダウンロードしたものが Apache HTTP 
@@ -162,8 +152,8 @@
     検証することが重要です。これはダウンロードした tarball の PGP 署名を
     テストすることによって検証します。
     これは二つの段階があります。
-    まず <code>KEYS</code> ファイルを <a
-    href="http://www.apache.org/dist/httpd/">Apache 配布サイト</a>
+    まず <a href="http://www.apache.org/dist/httpd/KEYS"><code>KEYS</code></a>
+    ファイルを <a href="http://www.apache.org/dist/httpd/">Apache 配布サイト</a>
     からダウンロードしてください。(<code>KEYS</code> ファイル自体が
     改竄されていないことを確実にするために、以前の Apache 
     配布から取り出したファイルを使ったり、
@@ -179,8 +169,11 @@
 
     <p>次のステップでは、tarball を PGP 署名でテストします。
     PGP 署名は必ず <a
-    href="http://www.apache.org/dist/httpd/">メインの Apache
+    href="http://httpd.apache.org/download.cgi">メインの Apache
     ウェブサイト</a>から取得してください。
+    署名ファイルへのリンクは対応するダウンロードリンクの隣にあり、また
+    <a href="http://www.apache.org/dist/httpd/">Apache
+    配布サイト</a>の特定のディレクトリで見つけることもできるでしょう。
     署名ファイルの名前は、ソースファイルの tarball と同じ名前に
     <code>.asc</code> を付加したものになっています。
     以下のコマンド (やっぱり pgp のバージョンに依存) のどれか一つで、
@@ -502,6 +495,13 @@
 
       <dd>MPM モジュール <em>NAME</em> を選択します。</dd>
     </dl>
+
+    <p><var>mpm_name</var> という MPM を有効にするには次のようにします。</p>
+
+<example>
+     ./configure --with-mpm=<var>mpm_name</var>
+</example>
+
 </section>
 
 <section id="dbm"><title>DBM</title>

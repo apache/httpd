@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.ja.xsl"?>
 <manualpage>
 <relativepath href="."/>
-<!-- English revision: 1.1 -->
+<!-- English revision: 1.3 -->
 
 <title>コンテントネゴシエーション</title>
 
@@ -179,10 +179,11 @@
 <section id="multiviews"><title>Multiviews</title>
 
     <p><code>MultiViews</code> はディレクトリ毎のオプションで、
+    <code>httpd.conf</code>ファイルの
     <directive module="core" type="section">Directory</directive>, 
     <directive module="core" type="section">Location</directive>, 
     <directive module="core" type="section">Files</directive>
-    や、(<directive module="core">AllowOverride</directive>
+    セクション中や、(<directive module="core">AllowOverride</directive>
     が適切な値に 設定されていると) <code>.htaccess</code>
     ファイルで <directive module="core">Options</directive>
     ディレクティブによって設定することができます。
@@ -500,6 +501,20 @@
     このような処理は、HTTP 1.1 規格との整合性を維持して、
     適切に設定されたクライアントともきちんと動作するために
     必要です。</p>
+
+    <p>より高度なテクニック (Cookie や特殊な URL パス等)
+    においてもユーザの言語選択をサポートするため、
+    Apache 2.1 からは、<module>mod_negotiation</module>
+    が<a href="env.html">環境変数</a> <code>prefer-language</code>
+    を認識するようになりました。
+    この変数が存在して、適切な言語タグが代入されているのであれば、
+    <module>mod_negotiation</module> は合致する variant
+    を選択しようとします。合致するものが無ければ、
+    通常のネゴシエーション手順が適用されます。</p>
+
+    <example><title>Example</title>
+      SetEnvIf Cookie "language=(.+)" prefer-language=$1
+    </example>
 </section>
 </section>
 

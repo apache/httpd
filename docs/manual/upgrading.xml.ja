@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.ja.xsl"?>
 <manualpage>
 <relativepath href="."/>
-<!-- English revision: 1.5 -->
+<!-- English revision: 1.9 -->
 
 <title>1.3 から 2.0 へのアップグレード</title>
 
@@ -14,7 +14,7 @@
   <a href="new_features_2_0.html">新機能</a>の文書や
   <code>src/CHANGES</code> ファイルで見つけられると思います。</p>
 </summary>
-<seealso><a href="new_features_2_0.html">Apache 2.0 の新機能</a></seealso>
+<seealso><a href="new_features_2_0.html">Apache 2.0 新機能の概要</a></seealso>
 
   <section id="compile-time">
     <title>コンパイル時の設定の変更</title>
@@ -52,12 +52,13 @@
       パス情報) の扱いが変わったものがあります。以前はハンドラとして
       実装されていたものがフィルタとして実装されるようになったものは
       <code>PATH_INFO</code> のあるリクエストを受け付けません。<a
-      href="mod/mod_include.html">INCLUDES</a> などのフィルタは
+      href="mod/mod_include.html">INCLUDES</a> や
+      <a href="http://www.php.net/">PHP</a> などのフィルタは
       コアハンドラの上に実装されていますので、<code>PATH_INFO</code>
       付きのリクエストを拒否します。
       <directive module="core">AcceptPathInfo</directive>
       ディレクティブを使ってコアハンドラが <code>PATH_INFO</code>
-      付きのリクエストを受け付けるようにでき、それによって SSI で
+      付きのリクエストを受け付けるようにでき、それによって SSI 等で
       <code>PATH_INFO</code> を使う機能を復活させることができます。</li>
 
       <li><directive module="mod_negotiation">CacheNegotiatedDocs</directive>
@@ -137,6 +138,14 @@
       同じ機能は <directive module="mod_autoindex">IndexOptions</directive>
       ディレクティブの <code>FancyIndexing</code> オプションで
       実現できます。</li>
+
+      <li><module>mod_negotiation</module> による MultiViews 
+      コンテントネゴシエーション技術は、
+      デフォルトのファイルマッチングがより厳密なものに変更されました。
+      <em>ネゴシエート可能な</em>ファイルの場合にのみ選択されます。
+      以前の挙動は、<directive module="mod_mime">MultiviewsMatch</directive>
+      ディレクティブを使用することで復活できます。</li>
+
     </ul>
   </section>
 
@@ -144,10 +153,6 @@
     <title>その他の変更</title>
 
     <ul>
-      <li>バーチャルホストの設定を出力するために使われていた
-      <code>httpd</code> のコマンドラインオプション <code>-S</code> は
-      <code>-t -D DUMP_VHOSTS</code> に置き換えられました。</li>
-
       <li>Apache 1.3 で実験的なモジュールだった
       <directive>mod_auth_digest</directive> は
       標準モジュールになりました。</li>
@@ -171,4 +176,5 @@
     動き<strong>ません</strong>。詳細は <a
     href="developer/">開発者向け文書</a> にあります。</p>
   </section>
+
 </manualpage>

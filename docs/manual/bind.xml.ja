@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="iso-2022-jp" ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.ja.xsl"?>
-<!-- English revision: 1.2 -->
+<!-- English revision: 1.4 -->
 
 <manualpage>
   <relativepath href="."/>
@@ -78,47 +78,69 @@
   <section id="ipv6">
     <title>IPv6 の特記事項</title>
 
-    <p>APR が IPv6 をサポートする場合は、Apache はデフォルトで IPv6
-    を listen するソケットを作ります (例えば Listen ディレクティブで
-    IP アドレスが無指定の場合)。
-    つまり、APR が IPv6 をサポートしている場合、</p>
+    <p>多くのプラットホームで IPv6 がサポートされてきていて、
+    APR はこれらのほとんどで IPv6 をサポートしているので、
+    Apache は IPv6 ソケットを割り当てて IPv6
+    経由で送られてきたリクエストを扱うことができます。</p>
+
+    <p>IPv6 ソケットが IPv4 と IPv6 コネクションの両方を扱うことができるか
+    どうかは、Apache 管理者にとって厄介な問題です。
+    IPv4 コネクションを IPv6 ソケットで扱う場合は、
+    IPv4 マップされた IPv6 アドレスを使用していて、
+    ほとんどのプラットホームではデフォルトで使用可能ですが、
+    FreeBSD, NetBSD, OpenBSD では、システム全体としてのポリシーとの整合性から、
+    デフォルトでは使用不可に設定されています。
+    これらのデフォルトで使用不可のプラットホームであっても、
+    特別な設定パラメータで Apache の挙動を変化させることができます。</p>
+
+    <p>IPv4 と IPv6 のコネクションを最小限のソケットで扱いたいのであれば、
+    IPv4 マップの IPv6 アドレスを使用する必要があり、
+    <code>--enable-v4-mapped</code> configure オプションを指定して、単純に
+    <directive module="mpm_common">Listen</directive> 
+    ディレクティブで次のように設定します。</p>
 
     <example>
       Listen 80
     </example>
 
-    <p>は、次と同じ意味になります。</p>
+    <p><code>--enable-v4-mapped</code> では、Apache
+    の生成するデフォルトの設定ファイル中の
+    <directive module="mpm_common">Listen</directive>
+    ディレクティブはこの形式を使用しています。
+    <code>--enable-v4-mapped</code> は、
+    FreeBSD, NetBSD, OpenBSD 以外の全てのプラットホームでのデフォルトです。
+    ですから、おそらくお手元の Apache はこの設定でビルドされているでしょう。</p>
 
-    <example>
-      Listen [::]:80
-    </example>
-
-    <p>APR が IPv6 をサポートしていない場合は、</p>
-
-    <example>
-      Listen 80
-    </example>
-
-    <p>は、次と同じ意味になります。</p>
-
-    <example>
-      Listen 0.0.0.0:80
-    </example>
-
-    <p>NetBSD 等のいくつかのプラットホームでは、IPv6
-    のワイルドカードアドレス (「::」) のバインドでは IPv4
-    インターフェースにコネクションを張れません。
-    このような状況では、次のように複数の Listen ディレクティブが必要になります。
-    </p>
+    <p>プラットフォームや APR が何をサポートするかに関わらず、
+    IPv4 コネクションのみを扱うようにしたい場合は、
+    次の例のように全ての
+    <directive module="mpm_common">Listen</directive> ディレクティブで
+    IPv4 アドレスを指定してください。</p>
 
     <example>
       Listen 0.0.0.0:80<br />
-      Listen [::]:0
+      Listen 192.170.2.1:80
     </example>
 
-    <p>Apache は現在これを自動検出することができないので、
-    そのような場合は
-    Listen 命令文は管理者が手動で編集しないといけません。</p>
+    <p>IPv4 と IPv6 のコネクションを個別のソケットで扱うようにしたい場合
+    (つまり IPv4 マップのアドレスを無効にしたい場合)
+    は、<code>--disable-v4-mapped</code> configure
+    オプションを指定して、次のように個別指定の
+    <directive module="mpm_common">Listen</directive>
+    ディレクティブを使用してください。
+
+    <example>
+       Listen [::]:80<br />
+       Listen 0.0.0.0:80
+    </example>
+
+    <p><code>--disable-v4-mapped</code> では、Apache
+    の生成するデフォルトの設定ファイル中の
+    <directive module="mpm_common">Listen</directive>
+    ディレクティブはこの形式を使用しています。
+    <code>--disable-v4-mapped</code> は、
+    FreeBSD, NetBSD, OpenBSD プラットホームでのデフォルトです。</p>
+
   </section>
 
   <section id="virtualhost">
