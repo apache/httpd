@@ -196,7 +196,7 @@ proxy_http_handler(request_rec *r, struct cache_req *c, char *url,
     }
 
 /* check if ProxyBlock directive on this host */
-    inet_aton(desthost, &destaddr);
+    destaddr.s_addr = inet_addr(desthost);
     for (i=0; i < conf->noproxies->nelts; i++)
     {
         if ((npent[i].name != NULL && strstr(desthost, npent[i].name) != NULL)

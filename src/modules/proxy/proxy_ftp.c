@@ -412,7 +412,7 @@ proxy_ftp_handler(request_rec *r, struct cache_req *c, char *url)
     }
 
 /* check if ProxyBlock directive on this host */
-    inet_aton(host, &destaddr);
+    destaddr.s_addr = inet_addr(host);
     for (i=0; i < conf->noproxies->nelts; i++)
     {
         if ((npent[i].name != NULL && strstr(host, npent[i].name) != NULL)
