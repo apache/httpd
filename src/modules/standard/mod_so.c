@@ -135,11 +135,18 @@
 	:
     else
         DL_LIB=""
-        if ./helpers/TestCompile lib dl; then
-	    DL_LIB="-ldl"
-        fi
-        LIBS="$LIBS $DL_LIB"
-        if [ "X$DL_LIB" != "X" ]; then
+        case $PLAT in
+             *-ibm-aix* )
+                 DL_LIB="-lld"
+                 ;;
+             * )
+                 if ./helpers/TestCompile lib dl; then
+	             DL_LIB="-ldl"
+                 fi
+                 ;;
+        esac 
+        if [ ".$DL_LIB" != . ]; then
+	    LIBS="$LIBS $DL_LIB"
  	    echo " + using $DL_LIB for DSO support"
         fi
     fi

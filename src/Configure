@@ -763,6 +763,7 @@ TCFLAGS_SHLIB=`egrep '^CFLAGS_SHLIB=' Makefile.config | tail -1 | awk -F= '{prin
 if [ "x$using_shlib" = "x1" ] ; then
     DEF_SHARED_CORE=no
     SHLIB_SUFFIX_DEPTH=all
+    SHLIB_EXPORT_FILES=no
     case "$PLAT" in
         *-linux1)
             CFLAGS_SHLIB="-fpic"
@@ -898,6 +899,25 @@ if [ "x$using_shlib" = "x1" ] ; then
             esac
             LDFLAGS_SHLIB="-b"
             LDFLAGS_SHLIB_EXPORT="-Wl,-E -Wl,-B,deferred"
+            ;;
+        *-ibm-aix*)
+            case $CC in
+                */gcc|gcc ) CFLAGS_SHLIB="-fpic" ;;
+                */cc|cc   ) CFLAGS_SHLIB="" ;;
+            esac
+            case $PLAT in
+                *-ibm-aix4*)
+                    LDFLAGS_SHLIB="-H512 -T512 -bhalt:4 -bM:SRE -bnoentry"
+                    ;;
+                *-ibm-aix*)
+                    LDFLAGS_SHLIB="-H512 -T512 -bhalt:4 -bM:SRE -e _nostart"
+                    ;;
+            esac
+            LDFLAGS_SHLIB="$LDFLAGS_SHLIB -bI:\$(SRCDIR)/support/httpd.exp "
+            LDFLAGS_SHLIB="$LDFLAGS_SHLIB -bE:\`echo \$@|sed -e 's:\.so\$\$:.exp:'\`"
+            LDFLAGS_SHLIB="$LDFLAGS_SHLIB -lc"
+            LDFLAGS_SHLIB_EXPORT="-Wl,-bE:\$(SRCDIR)/support/httpd.exp"
+            SHLIB_EXPORT_FILES=yes
             ;;
         *)
             ##  ok, no known explict support for shared objects
@@ -1248,6 +1268,10 @@ for modfile in $MODFILES ; do
 	fi
 	if [ $ext != so ]; then
 		echo "Module $modname $modbase.$ext" >>$tmpfile
+	fi
+	#   optionally generate export file for some linkers 
+	if [ $ext = so -a .$SHLIB_EXPORT_FILES = .yes ]; then
+		echo "$modname" >$modbase.exp
 	fi
 done
 # $tmpfile now contains Module lines for all the modules we want

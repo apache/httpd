@@ -150,6 +150,7 @@
    o  IRIX               (6.2)
    o  HP/UX              (10.20)
    o  UnixWare           (2.01, 2.1.2)
+   o  AIX                (4.2)
    o  ReliantUNIX/SINIX  (5.43)
    o  SVR4               (-)
 
@@ -157,10 +158,6 @@
 
    o  Ultrix: There is no dlopen-style interface under this platform.
 
-   o  AIX: Under AIX 3.x there is no dlopen-style interface and under AIX 4.2
-      although there is one the linker (ld) is such braindead that it is a
-      horrible mess to get the DSO mechanism working.
-   
  Usage Summary
  -------------
 

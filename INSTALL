@@ -75,13 +75,14 @@
         platform-dependend. The current state is this:
 
         o Out-of-the-box supported platforms are:
-           - Linux     - SunOS    - IRIX
-           - FreeBSD   - Solaris  - HPUX
-           - OpenBSD   - OSF1     - UnixWare
+           - Linux     - IRIX
+           - FreeBSD   - HPUX
+           - OpenBSD   - OSF1
+           - SunOS     - UnixWare
+           - Solaris   - AIX
 
         o Entirely unsupported platforms are:
            - Ultrix (because no dlopen-style interface)
-           - AIX    (although it has dlopen it is a braindead one)
 
         If your system is not on these lists but has the dlopen-style
         interface, you either have to provide the appropriate compiler and

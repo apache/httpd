@@ -14,6 +14,13 @@ extern void ap_is_not_here(void);
 void ap_is_not_here(void) {}
 
 /*
+ * Insert the DSO emulation code for AIX
+ */
+#ifdef AIX
+#include "os-aix-dso.c"
+#endif
+
+/*
  *  Abstraction layer for loading
  *  Apache modules under run-time via 
  *  dynamic shared object (DSO) mechanism

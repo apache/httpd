@@ -1,4 +1,10 @@
 Changes with Apache 1.3b7
+
+  *) Add Dynamic Shared Object (DSO) support for AIX (at least 4.2 but older
+     AIX variants should work fine, too. Even AIX 3.x should work). This is
+     accomplished by using the free DSO emulation code from Jens-Uwe Mager
+     which we put into a os/unix/os-dso-aix.c file.
+     [Ralf S. Engelschall]
   
   *) PORT: Fix compiler warnings under AIX >= 4.2 where the manual pages imply
      that we should use NET_SIZE_T == int but the include files force size_t.
