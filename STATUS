@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/03/30 20:49:07 $]
+Last modified at [$Date: 2004/03/30 20:53:05 $]
 
 Release:
 
@@ -294,10 +294,6 @@ PATCHES TO BACKPORT FROM 2.1
       build time (MAXLINE).  PR 27793.
       http://cvs.apache.org/viewcvs.cgi/httpd-2.0/support/logresolve.c?r1=1.22&r2=1.23
       +1: trawick, stoddard, nd
-
-    * Don't include newlines in strings passed to ap_log_error.
-      http://cvs.apache.org/viewcvs.cgi/httpd-2.0/server/main.c?r1=1.155&r2=1.156
-      +1: trawick, geoff, nd
 
 CURRENT RELEASE NOTES:
 
