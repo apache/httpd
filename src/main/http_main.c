@@ -4108,7 +4108,7 @@ static void child_main(int child_num_arg)
 
     /* needs to be done before we switch UIDs so we have permissions */
     reopen_scoreboard(pchild);
-    SAFE_ACCEPT((accept_mutex_child_init(pchild)));
+    SAFE_ACCEPT(accept_mutex_child_init(pchild));
 
     set_group_privs();
 #ifdef MPE
@@ -4206,7 +4206,7 @@ static void child_main(int child_num_arg)
 	 */
 
 	/* Lock around "accept", if necessary */
-	SAFE_ACCEPT((accept_mutex_on()));
+	SAFE_ACCEPT(accept_mutex_on());
 
 	for (;;) {
 	    if (ap_listeners->next != ap_listeners) {
