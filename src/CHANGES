@@ -1,4 +1,8 @@
 Changes with Apache 1.3.2
+ 
+  *) Fix `distclean' and `clean' targets in src/Makefile.tmpl to have same
+     behavior and to cleanup correctly even under enabled SHARED_CORE rule.
+     [Ralf S. Engelschall]
 
   *) Use a more straight forward and thus less problematic Sed command in
      src/helper/mkdir.sh script.  [Ralf S. Engelschall]

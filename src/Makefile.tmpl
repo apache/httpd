@@ -66,7 +66,7 @@ support-dir:
 	echo "<=== $(SDP)support"
 
 clean:
-	rm -f $(TARGET) libhttpd.* *.o
+	-rm -f $(TARGET) libhttpd.* *.o
 	@for i in $(SUBDIRS); do \
 		echo "===> $(SDP)$$i"; \
 		( cd $$i && $(MAKE) $(MFLAGS_STATIC) SDP='$(SDP)' $@ ) || exit 1; \
@@ -74,7 +74,7 @@ clean:
 	done
 
 distclean:
-	-rm -f $(TARGET) *.o
+	-rm -f $(TARGET) libhttpd.* *.o
 	@for i in $(SUBDIRS); do \
 		echo "===> $(SDP)$$i"; \
 		( cd $$i && $(MAKE) $(MFLAGS_STATIC) SDP='$(SDP)' $@ ) || exit 1; \
