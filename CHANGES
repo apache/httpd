@@ -418,6 +418,13 @@ Changes with Apache 2.0.51
   *) mod_disk_cache: Implement binary format for on-disk header files.
      [Brian Akins <bakins web.turner.com>, Justin Erenkrantz]
 
+  *) mod_disk_cache: Optimize network performance of disk cache subsystem by
+     allowing zero-copy (sendfile) writes and other miscellaneous fixes.
+     [Justin Erenkrantz]
+
+  *) mod_cache, mod_disk_cache, mod_mem_cache: Refactor cache modules, and
+     switch to the provider API instead of hooks.  [Justin Erenkrantz]
+
   *) mod_autoindex: Don't truncate the directory listing if a stat()
      call fails (for instance on a >2Gb file).  PR 17357.
      [Joe Orton]
