@@ -4,7 +4,13 @@ APACHE_MODPATH_INIT(dav/main)
 
 dav_objects="mod_dav.lo props.lo util.lo util_lock.lo liveprop.lo providers.lo std_liveprop.lo"
 
-APACHE_MODULE(dav, WebDAV protocol handling, $dav_objects, , most)
+if test "$enable_http" = "no"; then
+  dav_enable=no
+else
+  dav_enable=most
+fi
+
+APACHE_MODULE(dav, WebDAV protocol handling, $dav_objects, , $dav_enable)
 
 if test "$enable_dav" != "no"; then
   apache_need_expat=yes
