@@ -1,5 +1,8 @@
 Changes with Apache 1.3b8
 
+  *) Using a type map file as a custom error document was not possible.
+     [Lars Eilebrecht] PR#1031
+
   *) Avoid problems with braindead Awks by additionally searching for gawk 
      and nawk in APACI's configure script.
      [Dave Dykstra <dwd@bell-labs.com>, Ralf S. Engelschall] PR#2319

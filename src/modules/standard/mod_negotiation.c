@@ -711,9 +711,6 @@ static int read_type_map(negotiation_state *neg, request_rec *rr)
     /* We are not using multiviews */
     neg->count_multiviews_variants = 0;
 
-    if (rr->status != HTTP_OK) {
-        return rr->status;
-    }
     map = ap_pfopen(neg->pool, rr->filename, "r");
     if (map == NULL) {
         ap_log_error(APLOG_MARK, APLOG_ERR, r->server,
@@ -854,6 +851,9 @@ static int read_types_multi(negotiation_state *neg)
 
             ap_pclosedir(neg->pool, dirp);
             neg->avail_vars->nelts = 0;
+	    if (sub_req->status != HTTP_OK) {
+		return sub_req->status;
+	    }
             return read_type_map(neg, sub_req);
         }
 
