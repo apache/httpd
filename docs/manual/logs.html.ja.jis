@@ -68,7 +68,7 @@
     Unix システムではエラーを <code>syslog</code> や
     <a href="#piped">パイプでプログラムに送る</a> ことができます。</p>
 
-    <p>エラーログの書式は比較的自由度の高いもので、説明的に書かれています。
+    <p>エラーログの書式は比較的自由度の高いもので、説明的に書かれています。
     ただし、いくつかの情報はほとんどのエラーログのエントリにあります。
     例えば、代表的なものに次のようなメッセージがあります。</p>
 
@@ -189,7 +189,7 @@
 	<dd>これはサーバへリクエストをしたクライアント (リモートホスト)
 	の IP アドレスです。<code class="directive"><a href="./mod/core.html#hostnamelookups">HostnameLookups</a></code> が
 	<code>On</code> の場合は、サーバはホスト名を調べて、
-	IP アドレスが書かれているところに記録します。しかし、この設定は
+	IP アドレスが書かれているところに記録します。しかし、この設定は
 	サーバをかなり遅くするので、あまりお勧めできません。
 	そうではなく、<a href="programs/logresolve.html">logresolve</a> の
 	ようなログの後処理を行なうプログラムでホスト名を調べるのが良いでしょう。
@@ -235,7 +235,7 @@
 	       zone = (`+' | `-') 4*digit</code>
 	    </p>
 	  ログのフォーマット文字列に <code>%{format}t</code> を
-	  指定することで、別の形式で時刻を表示させることもできます。
+	  指定することで、別の形式で時刻を表示させることもできます。
 	  このとき、<code>format</code> は C の標準ライブラリの
 	  <code>strftime(3)</code> の形式になります。
 	</dd>
@@ -327,7 +327,7 @@
     二つ目と三つ目は referer とブラウザの情報です。最後二つの
     <code class="directive"><a href="./mod/mod_log_config.html#customlog">CustomLog</a></code> は
     <code>ReferLog</code> ディレクティブと
-    <code>AgentLog</code> ディレクティブの効果をまねる方法を示しています。</p>
+    <code>AgentLog</code> ディレクティブの効果をまねる方法を示しています。</p>
 
       <div class="example"><p><code>
         LogFormat "%h %l %u %t \"%r\" %&gt;s %b" common<br />
@@ -487,7 +487,7 @@
     </code></p></div>
 
     <p><code>%v</code> がリクエストを扱っているバーチャルホストの名前を
-    ログ収集するために使われています。そして、<a href="programs/other.html">split-logfile</a> のようなプログラムを
+    ログ収集するために使われています。そして、<a href="programs/other.html">split-logfile</a> のようなプログラムを
     使ってアクセスログを後処理することで、
     バーチャルホスト毎のファイルにログを分割することができます。</p>
 
@@ -531,7 +531,7 @@
       使っているときは、ほぼいつもデバッグを簡単にするために
       <code class="directive"><a href="./mod/mod_rewrite.html#rewritelog">RewriteLog</a></code> の使用が
       必要でしょう。このログファイルにはリライトエンジンがリクエストを
-      書き換える方法の詳細な解析が出力されます。詳しさの度合は <code class="directive"><a href="./mod/mod_rewrite.html#rewriteloglevel">RewriteLogLevel</a></code>
+      書き換える方法の詳細な解析が出力されます。詳しさの度合は <code class="directive"><a href="./mod/mod_rewrite.html#rewriteloglevel">RewriteLogLevel</a></code>
       で制御できます。</p>
     
   </div></div>

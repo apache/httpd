@@ -303,7 +303,7 @@
 </table>
     <p><code><a href="#indexoptions:fancyindexing">FancyIndexing</a></code>
     において、ファイルに対して表示する説明を設定します。
-    <var>file</var> は説明するファイルのファイル拡張子、
+    <var>file</var> は説明するファイルのファイル拡張子、
     ファイル名の一部、ワイルドカード表現、完全なファイル名の
     どれかになります。
     <var>string</var> は二重引用符 (<code>"</code>) で囲まれます。
@@ -596,7 +596,7 @@ MIME タイプによって選択</td></tr>
       (<em>2.0.23 以降</em>)</dt>
 
       <dd>このオプションが有効になった場合、サブディレクトリの一覧は
-      <em>必ず</em>最初に現われて、そのディレクトリの通常のファイルは
+      <em>必ず</em>最初に現われて、そのディレクトリの通常のファイルは
       その後に続きます。
       一覧は基本的には、ファイルとディレクトリの二つの部分に分けられて、
       それぞれは別々にソートされ、その後サブディレクトリを先にして
@@ -685,7 +685,7 @@ MIME タイプによって選択</td></tr>
       もしファイルに
       <code class="directive"><a href="#adddescription">AddDescription</a></code>
       で説明が与えられていなければ、
-      httpd は <code>title</code> タグの値を読むためにドキュメントを読み始めます。
+      httpd は <code>title</code> タグの値を読むためにドキュメントを読み始めます。
       これは CPU や disk に負荷をかけます。</dd>
 
       <dt><a name="indexoptions:suppresscolumnsorting" id="indexoptions:suppresscolumnsorting">SuppressColumnSorting</a></dt>
@@ -769,7 +769,7 @@ MIME タイプによって選択</td></tr>
       いくつかの UNIX システム、OS2 の JFS や Win32 の NTFS
       ボリュームはそうなっています。
       例えば、OS2 と Win32 FAT ボリュームはそうではありません。
-      この機能が有効になると、クライアントやプロキシは
+      この機能が有効になると、クライアントやプロキシは
       <code>HEAD</code> リクエストを行うことによって、
       ファイル一覧の変化を追跡することができるようになります。
       いくつかのオペレーティングシステムは、新規ファイルや

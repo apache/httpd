@@ -81,7 +81,7 @@
     <p><code class="directive">Allow</code> ディレクティブはどのホストが
     サーバのある領域をアクセスできるかに影響を与えます。
     アクセスはホスト名、IP アドレス、IP アドレスの範囲や、
-    環境変数として取得された、その他のクライアントのリクエストの
+    環境変数として取得された、その他のクライアントのリクエストの
     特徴によって制御することができます。</p> 
 
     <p>このディレクティブの最初の引数は常に <code>from</code> です。
@@ -312,7 +312,7 @@ Deny が評価される順番を制御する</td></tr>
     <p><code class="directive">Order</code>
     ディレクティブはサーバの設定処理の各段階でだけ
     アクセスディレクティブの処理の順番を変更します。これは、たとえば、
-    <code class="directive">Order</code> ディレクティブの設定に関わらず、
+    <code class="directive">Order</code> ディレクティブの設定に関わらず、
     <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code> セクションの
     <code class="directive"><a href="#allow">Allow</a></code> ディレクティブや
     <code class="directive"><a href="#deny">Deny</a></code> ディレクティブは、

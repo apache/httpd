@@ -67,7 +67,7 @@
     <code>httpd</code> に渡します。</p>
 
     <p><code>httpd</code> にシグナルを送った後、
-    実行状況を次のコマンドで読むことができます:</p>
+    実行状況を次のコマンドで読むことができます:</p>
 
 <div class="example"><p><code>tail -f /usr/local/apache2/logs/error_log</code></p></div>
     <p>ここに挙げた例は、各自の
@@ -120,7 +120,7 @@
     を守ります:
     少なくとも 1 秒後に <code class="directive"><a href="./mod/mpm_common.html#startservers">StartServers</a></code> 個の新しい子プロセスが
     生成されていなければ、その数になるように適宜プロセスを生成します。
-    この挙動は現在の負荷に対して適切な子プロセスの数と
+    この挙動は現在の負荷に対して適切な子プロセスの数と
     <code class="directive"><a href="./mod/mpm_common.html#startservers">StartServers</a></code> パラメータでの
     希望の数の両方を維持しようとしています。</p>
 
@@ -160,7 +160,7 @@
     (<a href="programs/httpd.html">httpd</a> をご覧下さい)
     を使って検証することができます。
     設定ファイルの意味的な内容を構文と同様に検証したい場合は、
-    非 root ユーザで <code>httpd</code> を起動しようとすればわかります。
+    非 root ユーザで <code>httpd</code> を起動しようとすればわかります。
     もしエラーがなければ、ソケットやログを開こうとして
     root でないため
     (もしくは実行中の <code>httpd</code>
@@ -211,7 +211,7 @@
     "bind: Address already in use" (<code>HUP</code> 後) や
     "long lost child came home!" (<code>USR1</code> 後)
     といった結果になります。
-    前者は致命的なエラーですが、
+    前者は致命的なエラーですが、
     後者はスコアボードスロットを失うだけです。
     ですから緩やかな再起動は、たまに確実な再起動 (HUP)
     も併用して使った方が良いでしょう。

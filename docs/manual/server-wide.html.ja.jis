@@ -61,7 +61,7 @@
     <code class="directive"><a href="./mod/core.html#serverroot">ServerRoot</a></code> からの相対パスとして
     探されます。root
     以外のユーザが書き込み可能なパスにファイルを置く場合は注意が必要です。
-    詳細は<a href="misc/security_tips.html#serverroot">「セキュリティ情報」</a>
+    詳細は<a href="misc/security_tips.html#serverroot">「セキュリティ情報」</a>
     を参照してください。</p>
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
