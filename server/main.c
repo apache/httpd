@@ -305,7 +305,7 @@ static void usage(process_rec *process)
 
 #ifdef WIN32
     ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
-                 "       %s [-k start|restart|stop|shutdown]", pad);
+                 "       %s [-w] [-k start|restart|stop|shutdown]", pad);
     ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
                  "       %s [-k install|config|uninstall] [-n service_name]",
                  pad);
@@ -359,6 +359,8 @@ static void usage(process_rec *process)
                  "service");
     ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
                  "  -k uninstall      : uninstall an Apache service");
+    ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
+                 "  -w                : hold open the console window on error");
 #endif
 
     ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
