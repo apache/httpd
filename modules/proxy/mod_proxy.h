@@ -110,6 +110,7 @@
 #include "http_config.h"
 #include "http_protocol.h"
 #include "ap_cache.h"
+#include "buff.h"
 
 #include "apr_compat.h"
 #include "apr_strings.h"
