@@ -38,7 +38,7 @@ CFG=InstallBin - Win32 Debug
 # PROP Use_Debug_Libraries 0
 # PROP Output_Dir "Release"
 # PROP Intermediate_Dir "Release"
-# PROP Cmd_Line "NMAKE /f makefile.win INSTDIR=.. SHORT=D LONG=Debug _install"
+# PROP Cmd_Line "NMAKE /f makefile.win INSTDIR=.. SHORT=R LONG=Release _install"
 # PROP Rebuild_Opt ""
 # PROP Target_File "..\Apache.exe"
 # PROP Bsc_Name ""
@@ -79,6 +79,10 @@ CFG=InstallBin - Win32 Debug
 # Begin Source File
 
 SOURCE=..\logs\access.log
+# End Source File
+# Begin Source File
+
+SOURCE=.\os\win32\BaseAddr.ref
 # End Source File
 # Begin Source File
 
