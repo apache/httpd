@@ -1,5 +1,9 @@
 Changes with Apache 1.2b5
 
+  *) Fix incorrect comparison which could allow number of children =
+     MaxClients + 1 if less than HARD_SERVER_LIMIT. Also fix potential
+     problem if StartServers > HARD_SERVER_LIMIT. [Ed Korthof]
+
   *) Replace instances of inet_ntoa() with inet_addr() for ProxyBlock.
      It's more portable. [Martin Kraemer]
 

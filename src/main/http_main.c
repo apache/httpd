@@ -1947,7 +1947,7 @@ void standalone_main(int argc, char **argv)
     if (daemons_max_free < daemons_min_free + 1) /* Don't thrash... */
 	daemons_max_free = daemons_min_free + 1;
 
-    while (num_children < daemons_to_start) {
+    while (num_children < daemons_to_start && num_children < daemons_limit) {
 	make_child(server_conf, num_children++);
     }
 
@@ -1970,7 +1970,7 @@ void standalone_main(int argc, char **argv)
 	sync_scoreboard_image();
 	if ((count_idle_servers() < daemons_min_free)
 	 && (child_slot = find_free_child_num()) >= 0
-	 && child_slot <= daemons_limit) {
+	 && child_slot < daemons_limit) {
 	    Explain1("Starting new child in slot %d",child_slot);
 	    (void)update_child_status(child_slot,SERVER_STARTING,
 	     (request_rec*)NULL);
