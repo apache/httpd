@@ -644,8 +644,9 @@ int read_request_line (request_rec *r)
 #endif /* SIGUSR1 */
     bsetflag( conn->client, B_SAFEREAD, 0 );
     if (len == (HUGE_STRING_LEN - 1)) {
-        log_printf(r->server, "request failed for %s, reason: URI too long",
-            get_remote_host(r->connection, r->per_dir_config, REMOTE_NAME));
+        aplog_error(APLOG_MARK, APLOG_ERR, r->server,
+		    "request failed for %s, reason: URI too long",
+		    get_remote_host(r->connection, r->per_dir_config, REMOTE_NAME));
         r->status = HTTP_REQUEST_URI_TOO_LARGE;
         return 0;
     }
@@ -963,7 +964,7 @@ API_EXPORT(void) note_digest_auth_failure(request_rec *r)
 
 API_EXPORT(int) get_basic_auth_pw (request_rec *r, char **pw)
 {
-    const char *auth_line = table_get (r->headers_in, r->proxyreq ? 
+    const char *auth_line = table_get(r->headers_in, r->proxyreq ? 
 				                      "Proxy-Authorization" :
 	                                              "Authorization");
     char *t;
@@ -971,25 +972,26 @@ API_EXPORT(int) get_basic_auth_pw (request_rec *r, char **pw)
     if(!(t = auth_type(r)) || strcasecmp(t, "Basic"))
         return DECLINED;
 
-    if (!auth_name (r)) {
-        log_reason ("need AuthName", r->uri, r);
+    if (!auth_name(r)) {
+        aplog_error(APLOG_MARK, APLOG_ERR, r->server, "need AuthName: %s", r->uri);
 	return SERVER_ERROR;
     }
     
-    if(!auth_line) {
+    if (!auth_line) {
         note_basic_auth_failure (r);
 	return AUTH_REQUIRED;
     }
 
     if (strcmp(getword (r->pool, &auth_line, ' '), "Basic")) {
         /* Client tried to authenticate using wrong auth scheme */
-        log_reason ("client used wrong authentication scheme", r->uri, r);
-        note_basic_auth_failure (r);
+        aplog_error(APLOG_MARK, APLOG_ERR, r->server,
+		    "client used wrong authentication scheme: %s", r->uri);
+        note_basic_auth_failure(r);
 	return AUTH_REQUIRED;
     }
 
-    t = uudecode (r->pool, auth_line);
-    r->connection->user = getword_nulls_nc (r->pool, &t, ':');
+    t = uudecode(r->pool, auth_line);
+    r->connection->user = getword_nulls_nc(r->pool, &t, ':');
     r->connection->auth_type = "Basic";
 
     *pw = t;
@@ -1380,11 +1382,13 @@ API_EXPORT(int) setup_client_block (request_rec *r, int read_policy)
 
     if (tenc) {
         if (strcasecmp(tenc, "chunked")) {
-            log_printf(r->server, "Unknown Transfer-Encoding %s", tenc);
+            aplog_error(APLOG_MARK, APLOG_ERR, r->server,
+			"Unknown Transfer-Encoding %s", tenc);
             return HTTP_BAD_REQUEST;
         }
         if (r->read_body == REQUEST_CHUNKED_ERROR) {
-            log_reason("chunked Transfer-Encoding forbidden", r->uri, r);
+            aplog_error(APLOG_MARK, APLOG_ERR, r->server,
+			"chunked Transfer-Encoding forbidden: %s", r->uri);
             return (lenp) ? HTTP_BAD_REQUEST : HTTP_LENGTH_REQUIRED;
         }
 
@@ -1395,7 +1399,8 @@ API_EXPORT(int) setup_client_block (request_rec *r, int read_policy)
 
         while (isdigit(*pos) || isspace(*pos)) ++pos;
         if (*pos != '\0') {
-            log_printf(r->server, "Invalid Content-Length %s", lenp);
+            aplog_error(APLOG_MARK, APLOG_ERR, r->server,
+			"Invalid Content-Length %s", lenp);
             return HTTP_BAD_REQUEST;
         }
 
@@ -1404,8 +1409,8 @@ API_EXPORT(int) setup_client_block (request_rec *r, int read_policy)
 
     if ((r->read_body == REQUEST_NO_BODY) &&
         (r->read_chunked || (r->remaining > 0))) {
-        log_printf(r->server, "%s with body is not allowed for %s",
-                   r->method, r->uri);
+        aplog_error(APLOG_MARK, APLOG_ERR, r->server,
+		    "%s with body is not allowed for %s", r->method, r->uri);
         return HTTP_REQUEST_ENTITY_TOO_LARGE;
     }
 
@@ -1666,10 +1671,10 @@ API_EXPORT(long) send_fd_length(FILE *f, request_rec *r, long length)
                 else if (errno == EAGAIN)
                     continue;
                 else {
-                    log_unixerr("send body lost connection to",
+                    aplog_error(APLOG_MARK, APLOG_NOTICE, r->server,
+				"send body lost connection to %s",
                                 get_remote_host(r->connection,
-                                    r->per_dir_config, REMOTE_NAME),
-                                NULL, r->server);
+						r->per_dir_config, REMOTE_NAME));
                     bsetflag(r->connection->client, B_EOUT, 1);
                     r->connection->aborted = 1;
                     break;
@@ -1745,10 +1750,10 @@ API_EXPORT(long) send_fb_length(BUFF *fb, request_rec *r, long length)
                 else if (errno == EAGAIN)
                     continue;
                 else {
-                    log_unixerr("send body lost connection to",
+                    aplog_error(APLOG_MARK, APLOG_NOTICE, r->server,
+				"send body lost connection to %s",
                                 get_remote_host(r->connection,
-                                    r->per_dir_config, REMOTE_NAME),
-                                NULL, r->server);
+						r->per_dir_config, REMOTE_NAME));
                     bsetflag(r->connection->client, B_EOUT, 1);
                     r->connection->aborted = 1;
                     break;
@@ -1807,10 +1812,10 @@ API_EXPORT(size_t) send_mmap(void * mm, request_rec *r, size_t offset,
                 else if (errno == EAGAIN)
                     continue;
                 else {
-                    log_unixerr("send mmap lost connection to",
+                    aplog_error(APLOG_MARK, APLOG_NOTICE, r->server,
+				"send mmap lost connection to %s",
                                 get_remote_host(r->connection,
-                                    r->per_dir_config, REMOTE_NAME),
-                                NULL, r->server);
+						r->per_dir_config, REMOTE_NAME));
                     bsetflag(r->connection->client, B_EOUT, 1);
                     r->connection->aborted = 1;
                     break;

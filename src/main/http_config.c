@@ -934,9 +934,9 @@ int parse_htaccess(void **result, request_rec *r, int override,
     while (!f && access_name[0]) {
 	char *w = getword_conf(r->pool, &access_name);
 	filename = make_full_path(r->pool, d, w);
-	f=pfopen(r->pool, filename, "r");
+	f = pfopen(r->pool, filename, "r");
     }
-    if(f) {
+    if (f) {
         dc = create_per_dir_config (r->pool);
 	
         parms.infile = f;
@@ -947,18 +947,19 @@ int parse_htaccess(void **result, request_rec *r, int override,
         pfclose(r->pool, f);
 
 	if (errmsg) {
-	    log_reason (errmsg, filename, r);
+	    aplog_error(APLOG_MARK, APLOG_ALERT, r->server, "%s: %s", filename, errmsg);
 	    return SERVER_ERROR;
 	}
 	
 	*result = dc;
-    } else {
+    }
+    else {
 	if (errno == ENOENT || errno == ENOTDIR)
 	    dc = NULL;
 	else {
-	    log_unixerr("pfopen", filename, 
-		"unable to check htaccess file, ensure it is readable",
-    	    	r->server);
+	    aplog_error(APLOG_MARK, APLOG_CRIT, r->server,
+			"%s pfopen: unable to check htaccess file, ensure it is readable",
+			filename);
 	    return HTTP_FORBIDDEN;
 	}
     }

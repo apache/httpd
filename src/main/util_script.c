@@ -339,27 +339,27 @@ static int scan_script_header_err_core (request_rec *r, char *buffer,
 
 	if ((*getsfunc)(w, MAX_STRING_LEN-1, getsfunc_data) == 0) {
 	    kill_timeout (r);
-	    log_reason ("Premature end of script headers", r->filename, r);
+	    aplog_error(APLOG_MARK, APLOG_ERR, r->server,
+			"Premature end of script headers: %s", r->filename);
 	    return SERVER_ERROR;
         }
 
 	/* Delete terminal (CR?)LF */
 	
 	p = strlen(w);
-	if (p > 0 && w[p-1] == '\n')
-	{
+	if (p > 0 && w[p-1] == '\n') {
 	    if (p > 1 && w[p-2] == '\015') w[p-2] = '\0';
 	    else w[p-1] = '\0';
 	}
 
-        if(w[0] == '\0') {
+        if (w[0] == '\0') {
 	    kill_timeout (r);
 	    return OK;
 	}
                                    
 	/* if we see a bogus header don't ignore it. Shout and scream */
 	
-        if(!(l = strchr(w,':'))) {
+        if (!(l = strchr(w,':'))) {
 	    char malformed[(sizeof MALFORMED_MESSAGE)+1+MALFORMED_HEADER_LENGTH_TO_SHOW];
             strcpy(malformed, MALFORMED_MESSAGE);
             strncat(malformed, w, MALFORMED_HEADER_LENGTH_TO_SHOW);
@@ -370,7 +370,8 @@ static int scan_script_header_err_core (request_rec *r, char *buffer,
 		continue;
 	    
 	    kill_timeout (r);
-	    log_reason (malformed, r->filename, r);
+	    aplog_error(APLOG_MARK, APLOG_ERR, r->server,
+			"%s: %s", malformed, r->filename);
 	    return SERVER_ERROR;
         }
 
@@ -505,26 +506,26 @@ API_EXPORT(int) call_exec (request_rec *r, char *argv0, char **env, int shellcmd
 #ifdef RLIMIT_CPU
     if (conf->limit_cpu != NULL)
 	if ((setrlimit (RLIMIT_CPU, conf->limit_cpu)) != 0)
-	    log_unixerr("setrlimit", NULL, "failed to set CPU usage limit",
-			r->server);
+	    aplog_error(APLOG_MARK, APLOG_ERR, r->server,
+			"setrlimit: failed to set CPU usage limit");
 #endif
 #ifdef RLIMIT_NPROC
     if (conf->limit_nproc != NULL)
 	if ((setrlimit (RLIMIT_NPROC, conf->limit_nproc)) != 0)
-	    log_unixerr("setrlimit", NULL, "failed to set process limit",
-			r->server);
+	    aplog_error(APLOG_MARK, APLOG_ERR, r->server,
+			"setrlimit: failed to set process limit");
 #endif
 #ifdef RLIMIT_DATA
     if (conf->limit_mem != NULL)
 	if ((setrlimit (RLIMIT_DATA, conf->limit_mem)) != 0)
-	    log_unixerr("setrlimit", NULL, "failed to set memory usage limit",
-			r->server);
+	    aplog_error(APLOG_MARK, APLOG_ERR, r->server,
+			"setrlimit: failed to set memory usage limit");
 #endif
 #ifdef RLIMIT_VMEM
     if (conf->limit_mem != NULL)
 	if ((setrlimit (RLIMIT_VMEM, conf->limit_mem)) != 0)
-	    log_unixerr("setrlimit", NULL, "failed to set memory usage limit",
-			r->server);
+	    aplog_error(APLOG_MARK, APLOG_ERR, r->server,
+			"setrlimit: failed to set memory usage limit");
 #endif
     
 #ifdef __EMX__    
@@ -536,21 +537,20 @@ API_EXPORT(int) call_exec (request_rec *r, char *argv0, char **env, int shellcmd
         program = fopen (r->filename, "r");
         if (!program) {
             char err_string[HUGE_STRING_LEN];
-            ap_snprintf(err_string, sizeof(err_string), 
-		 "open of %s failed, reason: fopen: %s (errno = %d)\n", 
-		 r->filename, strerror(errno), errno);
-
+            ap_snprintf(err_string, sizeof(err_string),	"open of %s failed", r->filename);
+	    
             /* write(2, err_string, strlen(err_string)); */
             /* exit(0); */
-            log_unixerr("fopen", NULL, err_string, r->server);
+            aplog_error(APLOG_MARK, APLOG_ERR, r->server, "fopen: %s", err_string);
             return(pid);
         }
-        fgets (interpreter, sizeof(interpreter), program);
-        fclose (program);
+        fgets(interpreter, sizeof(interpreter), program);
+        fclose(program);
         if (!strncmp (interpreter, "#!", 2)) {
             is_script = 1;
             interpreter[strlen(interpreter)-1] = '\0';
-        } else {
+        }
+	else {
             is_script = 0;
         }
 
@@ -629,22 +629,24 @@ API_EXPORT(int) call_exec (request_rec *r, char *argv0, char **env, int shellcmd
                 !strcasecmp(dot, ".COM"))
                 is_exe = 1;
         }
-        if(!is_exe)
-        {
+	
+        if (!is_exe) {
             program = fopen (r->filename, "rb");
             if (!program) {
                 char err_string[HUGE_STRING_LEN];
-                ap_snprintf(err_string, sizeof(err_string), "open of %s failed, errno is %d\n", r->filename, errno);
+                ap_snprintf(err_string, sizeof(err_string),
+			    "open of %s failed", r->filename);
                 /* write(2, err_string, strlen(err_string)); */
                 /* exit(0); */
-                log_unixerr("fopen", NULL, err_string, r->server);
+                aplog_error(APLOG_MARK, APLOG_ERR, r->server, "fopen: %s", err_string);
                 return(pid);
             }
-            sz = fread (interpreter, 1, sizeof(interpreter)-1, program);
-            if(sz < 0) {
+            sz = fread(interpreter, 1, sizeof(interpreter)-1, program);
+            if (sz < 0) {
                 char err_string[HUGE_STRING_LEN];
-                ap_snprintf(err_string, sizeof(err_string), "open of %s failed, errno is %d\n", r->filename, errno);
-                log_unixerr("fread", NULL, err_string, r->server);
+                ap_snprintf(err_string, sizeof(err_string),
+			    "open of %s failed", r->filename);
+                aplog_error(APLOG_MARK, APLOG_ERR, r->server, "fread: %s", err_string);
                 fclose(program);
                 return(pid);
             }
@@ -720,7 +722,8 @@ API_EXPORT(int) call_exec (request_rec *r, char *argv0, char **env, int shellcmd
 	    if (pos >= 0) username[pos] = '\0';
 
 	    if ((pw = getpwnam(username)) == NULL) {
-	        log_unixerr("getpwnam",username,"invalid username",r->server);
+	        aplog_error(APLOG_MARK, APLOG_ERR, r->server,
+			    "getpwnam: invalid username %s", username);
 	        return(pid);
 	    }
 	    execuser = pstrcat(r->pool, "~", pw->pw_name, NULL);
@@ -737,13 +740,15 @@ API_EXPORT(int) call_exec (request_rec *r, char *argv0, char **env, int shellcmd
 	}
 	else {
 	    if ((pw = getpwuid (r->server->server_uid)) == NULL) {
-		log_unixerr("getpwuid", NULL, "invalid userid", r->server);
+		aplog_error(APLOG_MARK, APLOG_ERR, r->server,
+			    "getpwuid: invalid userid %d", r->server->server_uid);
 		return(pid);
 	    }
 	    execuser = pstrdup(r->pool, pw->pw_name);
 
 	    if ((gr = getgrgid (r->server->server_gid)) == NULL) {
-		log_unixerr("getgrgid", NULL, "invalid groupid", r->server);
+		aplog_error(APLOG_MARK, APLOG_ERR, r->server,
+			    "getgrgid: invalid groupid %d", r->server->server_gid);
 		return(pid);
 	    }
 	    grpname = gr->gr_name;

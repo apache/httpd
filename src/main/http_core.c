@@ -1224,14 +1224,14 @@ static void set_rlimit(cmd_parms *cmd, struct rlimit **plimit, const char *arg,
     rlim_t cur = 0;
     rlim_t max = 0;
 
-    *plimit=(struct rlimit *)pcalloc(cmd->pool,sizeof **plimit);
-    limit=*plimit;
-    if ((getrlimit(type, limit)) != 0)
-	{
+    *plimit = (struct rlimit *)pcalloc(cmd->pool,sizeof **plimit);
+    limit = *plimit;
+    if ((getrlimit(type, limit)) != 0)	{
 	*plimit = NULL;
-	log_unixerr("getrlimit",cmd->cmd->name,"failed",cmd->server);
+	aplog_error(APLOG_MARK, APLOG_ERR, cmd->server,
+		    "%s: getrlimit failed", cmd->cmd->name);
 	return;
-	}
+    }
 
     if ((str = getword_conf(cmd->pool, &arg)))
 	if (!strcasecmp(str, "max"))
@@ -1239,7 +1239,8 @@ static void set_rlimit(cmd_parms *cmd, struct rlimit **plimit, const char *arg,
 	else
 	    cur = atol(str);
     else {
-	log_printf(cmd->server, "Invalid parameters for %s", cmd->cmd->name);
+	aplog_error(APLOG_MARK, APLOG_ERR, cmd->server,
+		    "Invalid parameters for %s", cmd->cmd->name);
 	return;
     }
     
@@ -1250,8 +1251,8 @@ static void set_rlimit(cmd_parms *cmd, struct rlimit **plimit, const char *arg,
     if (geteuid()) {
 	limit->rlim_cur = cur;
 	if (max)
-	    log_printf(cmd->server, "Must be uid 0 to raise maximum %s",
-		      cmd->cmd->name);
+	    aplog_error(APLOG_MARK, APLOG_ERR, cmd->server,
+			"Must be uid 0 to raise maximum %s", cmd->cmd->name);
     }
     else {
 	if (cur)
@@ -1266,8 +1267,8 @@ static void set_rlimit(cmd_parms *cmd, struct rlimit **plimit, const char *arg,
 static const char *no_set_limit (cmd_parms *cmd, core_dir_config *conf,
 				 char *arg, char *arg2)
 {
-    log_printf(cmd->server, "%s not supported on this platform",
-	       cmd->cmd->name);
+    aplog_error(APLOG_MARK, APLOG_ERR, cmd->server,
+		"%s not supported on this platform", cmd->cmd->name);
     return NULL;
 }
 #endif
@@ -1542,7 +1543,8 @@ int core_translate (request_rec *r)
   
     if (r->proxyreq) return HTTP_FORBIDDEN;
     if ((r->uri[0] != '/') && strcmp(r->uri, "*")) {
-	log_printf(r->server, "Invalid URI in request %s", r->the_request);
+	aplog_error(APLOG_MARK, APLOG_ERR, r->server,
+		    "Invalid URI in request %s", r->the_request);
 	return BAD_REQUEST;
     }
     
@@ -1603,16 +1605,17 @@ int default_handler (request_rec *r)
     r->allowed |= (1 << M_OPTIONS);
 
     if (r->method_number == M_INVALID) {
-	log_printf(r->server, "Invalid method in request %s", r->the_request);
+	aplog_error(APLOG_MARK, APLOG_ERR, r->server,
+		    "Invalid method in request %s", r->the_request);
 	return NOT_IMPLEMENTED;
     }
     if (r->method_number == M_OPTIONS) return send_http_options(r);
     if (r->method_number == M_PUT) return METHOD_NOT_ALLOWED;
 
     if (r->finfo.st_mode == 0 || (r->path_info && *r->path_info)) {
-	log_reason("File does not exist",
-	    r->path_info ? pstrcat(r->pool, r->filename, r->path_info, NULL)
-		: r->filename, r);
+	aplog_error(APLOG_MARK, APLOG_ERR, r->server, "File does not exist: %s",
+		    r->path_info ? pstrcat(r->pool, r->filename, r->path_info, NULL)
+		    : r->filename, r);
 	return NOT_FOUND;
     }
     if (r->method_number != M_GET) return METHOD_NOT_ALLOWED;
@@ -1625,7 +1628,8 @@ int default_handler (request_rec *r)
 #endif
 
     if (f == NULL) {
-        log_reason("file permissions deny server access", r->filename, r);
+        aplog_error(APLOG_MARK, APLOG_ERR, r->server,
+		    "file permissions deny server access: %s", r->filename);
         return FORBIDDEN;
     }
 	
@@ -1647,7 +1651,8 @@ int default_handler (request_rec *r)
     if (mm == (caddr_t)-1) {
 	unblock_alarms();
 
-	log_unixerr ("mmap_handler", r->filename, "mmap failed", r->server);
+	aplog_error(APLOG_MARK, APLOG_CRIT, r->server,
+		    "mmap_handler: mmap failed: %s", r->filename);
 #endif
 
 	if (d->content_md5 & 1) {

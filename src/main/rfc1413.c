@@ -73,7 +73,7 @@
 /* Rewritten by David Robinson */
 
 #include "httpd.h"    /* for server_rec, conn_rec, ap_longjmp, etc. */
-#include "http_log.h" /* for log_unixerr */
+#include "http_log.h" /* for aplog_error */
 #include "rfc1413.h"
 #include "http_main.h" /* set_callback_and_alarm */
 
@@ -124,7 +124,8 @@ get_rfc1413(int sock, const struct sockaddr_in *our_sin,
     if (bind(sock, (struct sockaddr *)&our_query_sin,
 	     sizeof(struct sockaddr_in)) < 0)
     {
-	log_unixerr("bind", NULL, "rfc1413: Error binding to local port", srv);
+	aplog_error(APLOG_MARK, APLOG_CRIT, srv,
+		    "bind: rfc1413: Error binding to local port", srv);
 	return -1;
     }
 
@@ -141,9 +142,9 @@ get_rfc1413(int sock, const struct sockaddr_in *our_sin,
 	    ntohs(our_sin->sin_port));
     do i = write(sock, buffer, strlen(buffer));
     while (i == -1 && errno == EINTR);
-    if (i == -1)
-    {
-	log_unixerr("write", NULL, "rfc1413: error sending request", srv);
+    if (i == -1) {
+	aplog_error(APLOG_MARK, APLOG_CRIT, srv,
+		    "write: rfc1413: error sending request");
 	return -1;
     }
 
@@ -154,9 +155,9 @@ get_rfc1413(int sock, const struct sockaddr_in *our_sin,
     
     do i = read(sock, buffer, RFC1413_MAXDATA);
     while (i == -1 && errno == EINTR);
-    if (i == -1)
-    {
-	log_unixerr("read", NULL, "rfc1413: error reading response", srv);
+    if (i == -1) {
+	aplog_error(APLOG_MARK, APLOG_CRIT, srv,
+		    "read: rfc1413: error reading response");
 	return -1;
     }
 
@@ -194,22 +195,19 @@ rfc1413(conn_rec *conn, server_rec *srv)
     result = FROM_UNKNOWN;
 
     sock = psocket(conn->pool, AF_INET, SOCK_STREAM, IPPROTO_TCP);
-    if (sock < 0)
-    {
-	log_unixerr("socket", NULL, "rfc1413: error creating socket", srv);
+    if (sock < 0) {
+	aplog_error(APLOG_MARK, APLOG_CRIT, srv,
+		    "socket: rfc1413: error creating socket");
 	conn->remote_logname = result;
     }
 
     /*
      * Set up a timer so we won't get stuck while waiting for the server.
      */
-    if (ap_setjmp(timebuf) == 0)
-    {
+    if (ap_setjmp(timebuf) == 0) {
         set_callback_and_alarm(ident_timeout, rfc1413_timeout);
 	
-	if (get_rfc1413(sock, &conn->local_addr, &conn->remote_addr, user,
-		      srv)
-	    >= 0)
+	if (get_rfc1413(sock, &conn->local_addr, &conn->remote_addr, user, srv) >= 0)
 	    result = user;
 
 	set_callback_and_alarm(NULL, 0);
