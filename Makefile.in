@@ -46,7 +46,7 @@ install-conf:
 	done
 
 htdocs-srcdir = $(srcdir)/../htdocs
-	
+
 docs: include/*.h
 	mkdir -p ./docs/api
 	lib/apr/helpers/scandoc -ihelpers/default.pl -p./docs/api/ ./include/*.h
