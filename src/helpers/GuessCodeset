@@ -1,0 +1,14 @@
+#!/bin/sh
+#a       0141     97     0x61
+#s       0163    115     0x73
+#c       0143     99     0x63
+#i       0151    105     0x69
+#i       0151    105     0x69
+case `awk 'BEGIN {printf("%c%c%c%c%c<->%c%c%c%c%c%c\n",97,115,99,105,105,133,130,131,132,137,131);}'` in
+    ascii*)     echo ASCII;;
+    *ebcdic)    echo EBCDIC;;
+    *)          echo >&2 "ERROR: Your platform codeset could not be detected correctly."
+		echo >&2 "Assuming ASCII. Please send an EMail to <martin@apache.org>"
+		echo >&2 "describing the platform in use. Is your AWK broken?"
+		;;
+esac
