@@ -141,4 +141,23 @@ AP_DECLARE(int) ap_graceful_stop_signalled(void);
 
 AP_DECLARE(void) ap_start_shutdown(void);
 
+/**
+ * Spawn a process with privileges that another module has requested
+ * @param r The request_rec of the current request
+ * @param newproc The resulting process handle.
+ * @param progname The program to run 
+ * @param const_args the arguments to pass to the new program.  The first 
+ *                   one should be the program name.
+ * @param env The new environment apr_table_t for the new process.  This 
+ *            should be a list of NULL-terminated strings.
+ * @param attr the procattr we should use to determine how to create the new
+ *         process
+ * @param p The pool to use. 
+ */
+extern apr_status_t ap_os_create_privileged_process(const request_rec *r,
+                              apr_proc_t *newproc, const char *progname,
+                              char *const *args, char **env,
+                              apr_procattr_t *attr, apr_pool_t *p);
+
+
 #endif

@@ -946,7 +946,7 @@ static int include_cmd(char *s, request_rec *r, ap_filter_t *next)
         build_argv_list(&argv, r, r->pool);
         argv[0] = apr_pstrdup(r->pool, s);
         procnew = apr_pcalloc(r->pool, sizeof(*procnew));
-        rc = apr_create_process(procnew, s, argv, ap_create_environment(r->pool, env), procattr, r->pool);
+        rc = ap_os_create_privileged_process(r, procnew, s, argv, ap_create_environment(r->pool, env), procattr, r->pool);
 
         if (rc != APR_SUCCESS) {
             /* Bad things happened. Everyone should have cleaned up. */

@@ -83,6 +83,7 @@
 #include "http_main.h"
 #include "http_log.h"
 #include "util_script.h"
+#include "ap_mpm.h"
 #include "http_conf_globals.h"
 #ifdef HAVE_STRING_H
 #include <string.h>
@@ -368,7 +369,7 @@ static apr_status_t run_cgi_child(apr_file_t **script_out, apr_file_t **script_i
 		      "couldn't set child process attributes: %s", r->filename);
     }
     else {
-        rc = apr_create_process(procnew, command, argv, env, procattr, p);
+        rc = ap_os_create_privileged_process(r, procnew, command, argv, env, procattr, p);
     
         if (rc != APR_SUCCESS) {
             /* Bad things happened. Everyone should have cleaned up. */
@@ -437,6 +438,14 @@ static apr_status_t build_argv_list(char ***argv, request_rec *r, apr_pool_t *p)
 
 static apr_status_t build_command_line(char **cmd, request_rec *r, apr_pool_t *p)
 {
+    char *argv0;
+
+    /* Allow suexec's "/" check to succeed */
+    if ((argv0 = strrchr(r->filename, '/')) != NULL)
+        argv0++;
+    else
+        argv0 = r->filename;
+
 #ifdef WIN32
     char *quoted_filename = NULL;
     char *interpreter = NULL;
@@ -455,9 +464,9 @@ static apr_status_t build_command_line(char **cmd, request_rec *r, apr_pool_t *p
     }
 
     /*
-     * Build the command string to pass to apr_create_process()
+     * Build the command string to pass to ap_os_create_privileged_process()
      */
-    quoted_filename = apr_pstrcat(p, "\"", r->filename, "\"", NULL);
+    quoted_filename = apr_pstrcat(p, "\"", argv0, "\"", NULL);
     if (interpreter && *interpreter) {
         if (arguments && *arguments)
             *cmd = apr_pstrcat(p, interpreter, " ", quoted_filename, " ", 
@@ -472,7 +481,7 @@ static apr_status_t build_command_line(char **cmd, request_rec *r, apr_pool_t *p
         *cmd = apr_pstrcat(p, quoted_filename, NULL);
     }
 #else
-    *cmd = apr_pstrcat(p, r->filename, NULL);
+    *cmd = argv0;
 #endif
     return APR_SUCCESS;
 }

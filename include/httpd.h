@@ -990,11 +990,6 @@ struct server_rec {
     /** Wildcarded names for ServerAlias servers */
     apr_array_header_t *wild_names;
 
-    /** effective user id when calling exec wrapper */
-    uid_t server_uid;
-    /** effective group id when calling exec wrapper */
-    gid_t server_gid;
-
     /** limit on size of the HTTP request line    */
     int limit_req_line;
     /** limit on size of any request header field */

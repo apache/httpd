@@ -1563,11 +1563,6 @@ AP_CORE_DECLARE(const char *) ap_init_virtual_host(apr_pool_t *p, const char *ho
     s->module_config = create_empty_config(p);
     s->lookup_defaults = ap_create_per_dir_config(p);
 
-#if 0
-    s->server_uid = ap_user_id;
-    s->server_gid = ap_group_id;
-#endif
-
     s->limit_req_line = main_server->limit_req_line;
     s->limit_req_fieldsize = main_server->limit_req_fieldsize;
     s->limit_req_fields = main_server->limit_req_fields;

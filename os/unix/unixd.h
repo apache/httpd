@@ -60,6 +60,7 @@
 #define UNIXD_H
 
 #include "httpd.h"
+#include "http_config.h"
 #ifdef HAVE_SYS_RESOURCE_H
 #include <sys/resource.h>
 #endif
@@ -80,6 +81,7 @@ typedef struct {
     const char *user_name;
     uid_t user_id;
     gid_t group_id;
+    int suexec_enabled;
 } unixd_config_rec;
 extern unixd_config_rec unixd_config;
 

@@ -96,6 +96,7 @@
 #include "httpd.h"
 #include "http_config.h"
 #include "http_request.h"
+#include "suexec.h"
 #ifdef HAVE_PWD_H
 #include <pwd.h>
 #endif
@@ -340,6 +341,10 @@ static int translate_userdir(request_rec *r)
 	     */
 	    if (*userdirs && dname[0] == 0)
 		r->finfo = statbuf;
+
+            /* For use in the get_suexec_identity phase */
+            apr_table_setn(r->notes, "mod_userdir_user", w);
+
             return OK;
         }
     }
@@ -347,11 +352,38 @@ static int translate_userdir(request_rec *r)
     return DECLINED;
 }
 
+static ap_unix_identity_t *get_suexec_id_doer(const request_rec *r)
+{
+    const char *username = apr_table_get(r->notes, "mod_userdir_user");
+    struct passwd *pw = NULL;
+    ap_unix_identity_t *ugid = NULL;
+
+    if (username == NULL) {
+        return NULL;
+    }
+
+    /* XXX - NOT thread-safe! Need APR version of this function */
+    if ((pw = getpwnam(username)) == NULL) {
+        /* This should never happen. */
+        return NULL;
+    }
+    
+    if ((ugid = apr_palloc(r->pool, sizeof(ap_unix_identity_t *))) == NULL) {
+        return NULL;
+    }
+
+    ugid->uid = pw->pw_uid;
+    ugid->gid = pw->pw_gid;
+    
+    return ugid;
+}
+
 static void register_hooks(void)
 {
     static const char * const aszSucc[]={ "mod_alias.c",NULL };
 
     ap_hook_translate_name(translate_userdir,NULL,aszSucc,AP_HOOK_MIDDLE);
+    ap_hook_get_suexec_identity(get_suexec_id_doer,NULL,NULL,AP_HOOK_MIDDLE);
 }
 
 module userdir_module = {
