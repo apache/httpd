@@ -449,10 +449,8 @@ typedef enum {
 typedef enum {
     SSL_RSSRC_BUILTIN = 1,
     SSL_RSSRC_FILE    = 2,
-    SSL_RSSRC_EXEC    = 3
-#if SSL_LIBRARY_VERSION >= 0x00905100
-   ,SSL_RSSRC_EGD     = 4
-#endif
+    SSL_RSSRC_EXEC    = 3,
+    SSL_RSSRC_EGD     = 4
 } ssl_rssrc_t;
 typedef struct {
     ssl_rsctx_t  nCtx;
