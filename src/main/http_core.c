@@ -94,7 +94,7 @@ void *create_core_dir_config (pool *a, char *dir)
 
     conf->hostname_lookups = 2;/* binary, but will use 2 as an "unset = on" */
     conf->do_rfc1413 = DEFAULT_RFC1413 | 2;  /* set bit 1 to indicate default */
-    conf->satisfy = SATISFY_ALL;
+    conf->satisfy = SATISFY_NOSPEC;
 
 #ifdef RLIMIT_CPU
     conf->limit_cpu = NULL;
@@ -165,7 +165,7 @@ void *merge_core_dir_configs (pool *a, void *basev, void *newv)
 
     conf->sec = append_arrays (a, base->sec, new->sec);
 
-    conf->satisfy = new->satisfy;
+    if (new->satisfy != SATISFY_NOSPEC) conf->satisfy = new->satisfy;
     return (void*)conf;
 }
 

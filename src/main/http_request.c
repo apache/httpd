@@ -658,7 +658,7 @@ request_rec *sub_req_lookup_uri (const char *new_file, const request_rec *r)
     if ((res = directory_walk (rnew))
 	|| (res = file_walk (rnew))
 	|| (res = location_walk (rnew))
-        || (satisfies(rnew) == SATISFY_ALL?
+        || ((satisfies(rnew)==SATISFY_ALL || satisfies(rnew)==SATISFY_NOSPEC)?
 	    ((res = check_access (rnew))
 	     || (some_auth_required (rnew) &&
 		 ((res = check_user_id (rnew)) || (res = check_auth (rnew))))):
@@ -707,7 +707,7 @@ request_rec *sub_req_lookup_file (const char *new_file, const request_rec *r)
 	
     if ((res = directory_walk (rnew))
 	|| (res = file_walk (rnew))
-	|| (satisfies(rnew) == SATISFY_ALL?
+        || ((satisfies(rnew)==SATISFY_ALL || satisfies(rnew)==SATISFY_NOSPEC)?
 	    ((res = check_access (rnew))
 	     || (some_auth_required (rnew) &&
 		 ((res = check_user_id (rnew)) || (res = check_auth (rnew))))):
@@ -916,7 +916,7 @@ void process_request_internal (request_rec *r)
     }
     
     switch (satisfies(r)) {
-    case SATISFY_ALL:
+    case SATISFY_ALL: case SATISFY_NOSPEC:
 	if ((access_status = check_access (r)) != 0) {
 	    decl_die (access_status, "check access", r);
 	    return;

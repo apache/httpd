@@ -80,6 +80,7 @@
 
 #define SATISFY_ALL 0
 #define SATISFY_ANY 1
+#define SATISFY_NOSPEC 2
 
 int allow_options (request_rec *);
 int allow_overrides (request_rec *);
