@@ -10,8 +10,3 @@
 <!ELEMENT relativepath EMPTY>
 <!ATTLIST relativepath href CDATA #REQUIRED >
 
-<!-- the lists of related modules and/or related directives -->
-<!ELEMENT related (modulelist | directivelist)+>
-
-<!-- list of related directives -->
-<!ELEMENT directivelist (directive)+>
