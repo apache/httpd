@@ -44,8 +44,10 @@
   <!-- make sure, we set relative anchors
        only, if we're actually transforming
        a modulefile (see <directive>) -->
-  <xsl:variable name="in-modulesynopsis">
-    <xsl:if test="/modulesynopsis">1</xsl:if>
+  <xsl:variable name="in-modulesynopsis"><xsl:choose>
+    <xsl:when test="/quickreference">0</xsl:when>
+
+    <xsl:otherwise>1</xsl:otherwise></xsl:choose>
   </xsl:variable>
 
   <!--                                                            -->
