@@ -91,7 +91,7 @@ ap_bucket_make_shared
 ap_bucket_split_shared
 ap_bwrite_core
 ap_cfg_closefile
-ap_cfg_getch
+ap_cfg_getc
 ap_cfg_getline
 ap_chdir_file
 ap_check_cmd_context
