@@ -1345,13 +1345,15 @@ dav_error * dav_validate_request(request_rec *r, dav_resource *resource,
 
     /* (2) Validate the parent resource if requested */
     if (err == NULL && (flags & DAV_VALIDATE_PARENT)) {
-        dav_resource *parent_resource = (*repos_hooks->get_parent_resource)(resource);
+        dav_resource *parent_resource;
 
-	if (parent_resource == NULL) {
+        err = (*repos_hooks->get_parent_resource)(resource, &parent_resource);
+
+	if (err == NULL && parent_resource == NULL) {
 	    err = dav_new_error(r->pool, HTTP_FORBIDDEN, 0,
 				"Cannot access parent of repository root.");
 	}
-	else {
+	else if (err == NULL) {
 	    err = dav_validate_resource_state(r->pool, parent_resource, lockdb,
 					      if_header,
                                               flags | DAV_VALIDATE_IS_PARENT,
@@ -1603,7 +1605,12 @@ dav_error *dav_ensure_resource_writable(request_rec *r,
 
     /* check parent resource if requested or if resource must be created */
     if (!resource->exists || parent_only) {
-	dav_resource *parent = (*resource->hooks->get_parent_resource)(resource);
+	dav_resource *parent;
+
+        if ((err = (*resource->hooks->get_parent_resource)(resource,
+                                                           &parent)) != NULL)
+            return err;
+
         if (parent == NULL || !parent->exists) {
 	    body = apr_psprintf(r->pool,
                                 "Missing one or more intermediate collections. "
