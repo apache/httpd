@@ -99,6 +99,11 @@
 #include <sys/uio.h>
 #endif
 
+#ifdef NETWARE
+#include <nwsemaph.h>
+static LONG locking_sem = 0;
+#endif
+
 /*
 ** +-------------------------------------------------------+
 ** |                                                       |
@@ -3261,6 +3266,10 @@ static void rewritelock_create(server_rec *s, pool *p)
         chown(lockname, ap_user_id, -1 /* no gid change */);
 #endif
 
+#ifdef NETWARE
+	locking_sem = OpenLocalSemaphore (1);
+#endif
+
     return;
 }
 
@@ -3293,6 +3302,10 @@ static void rewritelock_remove(void *data)
     unlink(lockname);
     lockname = NULL;
     lockfd = -1;
+#ifdef NETWARE
+	CloseLocalSemaphore (locking_sem);
+#endif
+
 }
 
 static void rewritelock_alloc(request_rec *r)
@@ -4140,6 +4153,12 @@ static void fd_lock(request_rec *r, int fd)
     rc = _locking(fd, _LK_LOCK, 1);
     lseek(fd, 0, SEEK_END);
 #endif
+#ifdef NETWARE
+	if ((locking_sem != 0) && (TimedWaitOnLocalSemaphore (locking_sem, 10000) != 0))
+		rc = -1;
+	else
+		rc = 1;
+#endif
 
     if (rc < 0) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, r,
@@ -4169,6 +4188,11 @@ static void fd_unlock(request_rec *r, int fd)
     lseek(fd, 0, SEEK_SET);
     rc = _locking(fd, _LK_UNLCK, 1);
     lseek(fd, 0, SEEK_END);
+#endif
+#ifdef NETWARE
+	if (locking_sem)
+		SignalLocalSemaphore (locking_sem);
+	rc = 1;
 #endif
 
     if (rc < 0) {
