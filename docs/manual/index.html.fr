@@ -23,7 +23,7 @@
     <table cellspacing="1" cellpadding="4" border="0" width="100%">
     <tr>
     <td align="center" bgcolor="#bebebe">
-    <a href="misc/FAQ.html"><strong>FAQ</strong></a>
+    <a href="faq/"><strong>FAQ</strong></a>
     </td>
     <td align="center" bgcolor="#bebebe">
     <a href="mod/directives.html"><strong>Directives</strong></a>
@@ -143,7 +143,7 @@ Modules <A HREF="mod/index-bytype.html">par type</A> ou
 <tr><td align="center" bgcolor="#e9e9e9">
 <strong>Autres sujets</strong>
 </td></tr><tr><td>
-<A HREF="misc/FAQ.html">Foires aux questions</A>
+<A HREF="faq/">Foires aux questions</A>
 </td></tr><tr><td>
 <A HREF="misc/tutorials.html">Tutoriels</A>
 </td></tr><tr><td>
