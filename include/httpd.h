@@ -897,8 +897,6 @@ struct server_rec {
 /* Prototypes for utilities... util.c.
  */
 
-extern void ap_util_init(void);
-
 /* Time */
 extern API_VAR_EXPORT const char ap_month_snames[12][4];
 extern API_VAR_EXPORT const char ap_day_snames[7][4];

@@ -264,7 +264,6 @@ int main(int argc, char **argv)
 	ap_server_argv0 = argv[0];
     }
 
-    ap_util_init();
     ap_util_uri_init();
 
     ap_create_context(&pglobal, NULL);
