@@ -660,7 +660,7 @@ API_EXPORT(int) call_exec(request_rec *r, char *argv0, char **env, int shellcmd)
 	    is_script = 0;
 	}
 
-	if ((!r->args) || (!r->args[0]) || (ind(r->args, '=') >= 0)) {
+	if ((!r->args) || (!r->args[0]) || strchr(r->args, '=')) {
 	    int emxloop;
 	    char *emxtemp;
 
@@ -772,7 +772,7 @@ API_EXPORT(int) call_exec(request_rec *r, char *argv0, char **env, int shellcmd)
 	    }
 	}
 
-	if ((!r->args) || (!r->args[0]) || (ind(r->args, '=') >= 0)) {
+	if ((!r->args) || (!r->args[0]) || strchr(r->args, '=')) {
 	    if (is_exe || is_binary) {
 		pid = spawnle(_P_NOWAIT, r->filename, r->filename, NULL, env);
 	    }
@@ -817,10 +817,10 @@ API_EXPORT(int) call_exec(request_rec *r, char *argv0, char **env, int shellcmd)
 	if (!strncmp("/~", r->uri, 2)) {
 	    gid_t user_gid;
 	    char *username = pstrdup(r->pool, r->uri + 2);
-	    int pos = ind(username, '/');
+	    char *pos = strchr(username, '/');
 
-	    if (pos >= 0)
-		username[pos] = '\0';
+	    if (pos)
+		*pos = '\0';
 
 	    if ((pw = getpwnam(username)) == NULL) {
 		aplog_error(APLOG_MARK, APLOG_ERR, r->server,
@@ -860,7 +860,7 @@ API_EXPORT(int) call_exec(request_rec *r, char *argv0, char **env, int shellcmd)
 	if (shellcmd)
 	    execle(SUEXEC_BIN, SUEXEC_BIN, execuser, grpname, argv0, NULL, env);
 
-	else if ((!r->args) || (!r->args[0]) || (ind(r->args, '=') >= 0))
+	else if ((!r->args) || (!r->args[0]) || strchr(r->args, '='))
 	    execle(SUEXEC_BIN, SUEXEC_BIN, execuser, grpname, argv0, NULL, env);
 
 	else {
@@ -874,7 +874,7 @@ API_EXPORT(int) call_exec(request_rec *r, char *argv0, char **env, int shellcmd)
 	if (shellcmd)
 	    execle(SHELL_PATH, SHELL_PATH, "-c", argv0, NULL, env);
 
-	else if ((!r->args) || (!r->args[0]) || (ind(r->args, '=') >= 0))
+	else if ((!r->args) || (!r->args[0]) || strchr(r->args, '='))
 	    execle(r->filename, argv0, NULL, env);
 
 	else

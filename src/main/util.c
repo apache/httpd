@@ -496,22 +496,22 @@ API_EXPORT(char *) getword_nc(pool *atrans, char **line, char stop)
 
 API_EXPORT(char *) getword(pool *atrans, const char **line, char stop)
 {
-    int pos = ind(*line, stop);
+    char *pos = strchr(*line, stop);
     char *res;
 
-    if (pos == -1) {
+    if (!pos) {
 	res = pstrdup(atrans, *line);
 	*line += strlen(*line);
 	return res;
     }
 
-    res = palloc(atrans, pos + 1);
-    ap_cpystrn(res, *line, pos + 1);
+    res = pstrndup(atrans, *line, pos - *line);
 
-    while ((*line)[pos] == stop)
+    while (*pos == stop) {
 	++pos;
+    }
 
-    *line += pos;
+    *line = pos;
 
     return res;
 }
@@ -557,21 +557,20 @@ API_EXPORT(char *) getword_nulls_nc(pool *atrans, char **line, char stop)
 
 API_EXPORT(char *) getword_nulls(pool *atrans, const char **line, char stop)
 {
-    int pos = ind(*line, stop);
+    char *pos = strchr(*line, stop);
     char *res;
 
-    if (pos == -1) {
+    if (!pos) {
 	res = pstrdup(atrans, *line);
 	*line += strlen(*line);
 	return res;
     }
 
-    res = palloc(atrans, pos + 1);
-    ap_cpystrn(res, *line, pos + 1);
+    res = pstrndup(atrans, *line, pos - *line);
 
     ++pos;
 
-    *line += pos;
+    *line = pos;
 
     return res;
 }
@@ -1036,7 +1035,7 @@ API_EXPORT(char *) escape_shell_cmd(pool *p, const char *s)
 	}
 #endif
 
-	if (ind("&;`'\"|*?~<>^()[]{}$\\\n", cmd[x]) != -1) {
+	if (strchr("&;`'\"|*?~<>^()[]{}$\\\n", cmd[x])) {
 	    for (y = l + 1; y > x; y--)
 		cmd[y] = cmd[y - 1];
 	    l++;		/* length has been increased */
@@ -1170,7 +1169,7 @@ API_EXPORT(char *) escape_path_segment(pool *p, const char *segment)
 #else /* CHARSET_EBCDIC*/
 	if (!isalnum(c)
 #endif /*CHARSET_EBCDIC*/
-	    && ind("$-_.+!*'(),:@&=~", c) == -1) {
+	    && !strchr("$-_.+!*'(),:@&=~", c)) {
 	    c2x(c, &copy[y]);
 	    y += 2;
 	}
@@ -1187,10 +1186,10 @@ API_EXPORT(char *) os_escape_path(pool *p, const char *path, int partial)
     char *s = copy;
 
     if (!partial) {
-	int colon = ind(path, ':');
-	int slash = ind(path, '/');
+	char *colon = strchr(path, ':');
+	char *slash = strchr(path, '/');
 
-	if (colon >= 0 && (colon < slash || slash < 0)) {
+	if (colon && (!slash || colon < slash)) {
 	    *s++ = '.';
 	    *s++ = '/';
 	}
@@ -1202,7 +1201,7 @@ API_EXPORT(char *) os_escape_path(pool *p, const char *path, int partial)
 #else /* CHARSET_EBCDIC*/
 	if (!isalnum(c)
 #endif /*CHARSET_EBCDIC*/
-	    && ind("$-_.+!*'(),:@&=/~", c) == -1) {
+	    && !strchr("$-_.+!*'(),:@&=/~", c)) {
 	    c2x(c, s);
 	    s += 3;
 	}
@@ -1574,9 +1573,9 @@ static char *find_fqdn(pool *a, struct hostent *p)
 {
     int x;
 
-    if (ind(p->h_name, '.') == -1) {
+    if (!strchr(p->h_name, '.')) {
 	for (x = 0; p->h_aliases[x]; ++x) {
-	    if ((ind(p->h_aliases[x], '.') != -1) &&
+	    if (strchr(p->h_aliases[x], '.') &&
 		(!strncasecmp(p->h_aliases[x], p->h_name, strlen(p->h_name))))
 		return pstrdup(a, p->h_aliases[x]);
 	}

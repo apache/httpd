@@ -155,7 +155,7 @@ char *
     for (i = 0, j = 0; i < len; i++, j++) {
 /* always handle '/' first */
 	ch = x[i];
-	if (ind(reserved, ch) != -1) {
+	if (strchr(reserved, ch)) {
 	    y[j] = ch;
 	    continue;
 	}
@@ -165,14 +165,14 @@ char *
 		return NULL;
 	    ch = proxy_hex2c(&x[i + 1]);
 	    i += 2;
-	    if (ch != 0 && ind(reserved, ch) != -1) {	/* keep it encoded */
+	    if (ch != 0 && strchr(reserved, ch)) {	/* keep it encoded */
 		proxy_c2hex(ch, &y[j]);
 		j += 2;
 		continue;
 	    }
 	}
 /* recode it, if necessary */
-	if (!isalnum(ch) && ind(allowed, ch) == -1) {
+	if (!isalnum(ch) && !strchr(allowed, ch)) {
 	    proxy_c2hex(ch, &y[j]);
 	    j += 2;
 	}
