@@ -190,16 +190,26 @@ response without an explicit character set</description>
     &lt;/Location&gt;
     </example>
 
-    <note><title>Note:</title>
-    <p>The output filters are not applied on proxy requests.</p>
+    <note type="warning"><title>Note:</title>
+      <p>Enabling filters with <directive>AddOutputFilterByType</directive>
+      may fail partially or completely in some cases. For expample, no
+      filters are applied if the content type falls back to the <directive
+      module="core">DefaultType</directive>, even if the <directive
+      module="core">DefaultType</directive> is the same.</p>
+
+      <p>However, if you want to make sure, that the filters will be
+      applied, assign the content type to a resource explicitely, for
+      example with <directive module="mod_mime">AddType</directive> or
+      <directive module="core">ForceType</directive>. Setting the
+      content type within a (non-nph) CGI script is also safe.</p>
+
+      <p>The output filters are never applied on proxy requests.</p>
     </note>
 </usage>
 
 <seealso><directive module="mod_mime">AddOutputFilter</directive></seealso>
 <seealso><directive module="core">SetOutputFilter</directive></seealso>
-<seealso><module>mod_include</module></seealso>
-<seealso><module>mod_deflate</module></seealso>
-<seealso><a href="../filter.html">The filters documentation</a></seealso>
+<seealso><a href="../filter.html">filters</a></seealso>
 </directivesynopsis>
 
 <directivesynopsis>
