@@ -102,7 +102,7 @@ SSLModConfigRec *ssl_config_global_create(server_rec *s)
         mc->pMutex                 = NULL;
         mc->aRandSeed              = apr_array_make(pPool, 4, sizeof(ssl_randseed_t));
         mc->tPrivateKey            = apr_hash_make(pPool);
-        mc->tPublicCert            = ssl_ds_table_make(pPool, sizeof(ssl_asn1_t));
+        mc->tPublicCert            = apr_hash_make(pPool);
         mc->tTmpKeys               = apr_hash_make(pPool);
 #ifdef SSL_EXPERIMENTAL_ENGINE
         mc->szCryptoDevice         = NULL;

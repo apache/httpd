@@ -200,10 +200,9 @@ void ssl_pphrase_Handle(server_rec *s, apr_pool_t *p)
              * configuration structures).
              */
             cp = apr_psprintf(mc->pPool, "%s:%s", cpVHostID, an);
-            asn1 = (ssl_asn1_t *)ssl_ds_table_push(mc->tPublicCert, cp);
-            asn1->nData  = i2d_X509(pX509Cert, NULL);
-            asn1->cpData = apr_palloc(mc->pPool, asn1->nData);
-            ucp = asn1->cpData; i2d_X509(pX509Cert, &ucp); /* 2nd arg increments */
+            length = i2d_X509(pX509Cert, NULL);
+            ucp = ssl_asn1_table_set(mc->tPublicCert, cp, length);
+            (void)i2d_X509(pX509Cert, &ucp); /* 2nd arg increments */
 
             /*
              * Free the X509 structure
