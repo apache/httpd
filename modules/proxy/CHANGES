@@ -1,6 +1,14 @@
 mod_proxy changes for httpd 2.0.25-dev
+
+  *) Split proxy: space using <Proxy[Match] > directive blocks from
+     the <Directory[Match] > and <Files[Match] > blocks.  Mod_proxy
+     now bypasses the directory and files testing phase (and skips 
+     the http TRACE default handler on it's own, as well).  Note that 
+     <Location > blocks continue to be processed for proxy: requests.
+     [William Rowe <wrowe@covalent.net>]
+
   *) apr_uri type/function namespace changes in apr_uri functions
-  	 [Doug MacEachern <dougm@covalent.net>]
+     [Doug MacEachern <dougm@covalent.net>]
 
 mod_proxy changes for httpd 2.0.23-dev
 

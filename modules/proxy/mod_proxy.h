@@ -93,6 +93,7 @@
 #include "apr_strings.h"
 #include "apr_uri.h"
 #include "apr_date.h"
+#include "apr_fnmatch.h"
 
 #include "httpd.h"
 #include "http_config.h"
@@ -156,6 +157,7 @@ struct noproxy_entry {
 
 typedef struct {
     apr_array_header_t *proxies;
+    apr_array_header_t *sec_proxy;
     apr_array_header_t *aliases;
     apr_array_header_t *raliases;
     apr_array_header_t *noproxies;
@@ -176,6 +178,12 @@ typedef struct {
     long maxfwd;
     char maxfwd_set;
 } proxy_server_conf;
+
+typedef struct {
+    const char *p;            /* The path */
+    int         p_is_fnmatch; /* Is this path an fnmatch candidate? */
+    regex_t    *r;            /* Is this a regex? */
+} proxy_dir_conf;
 
 typedef struct {
     conn_rec *connection;
