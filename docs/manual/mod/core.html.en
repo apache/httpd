@@ -99,7 +99,7 @@ available</td></tr>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in Apache 2.0.30 and later</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td><compatibility>Available in Apache 2.0.30 and later</compatibility></td></tr>
 </table>
 
     <p>This directive controls whether requests that contain trailing
@@ -151,7 +151,7 @@ available</td></tr>
       <span class="indent">
         Options +Includes<br />
         SetOutputFilter INCLUDES<br />
-        AcceptPathInfo on<br />
+        AcceptPathInfo On<br />
       </span>
       &lt;/Files&gt;
     </code></p></div>
@@ -237,7 +237,7 @@ response without an explicit character set</td></tr>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in Apache 2.0.33 and later</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td><compatibility>Available in Apache 2.0.33 and later</compatibility></td></tr>
 </table>
     <p>This directive activates a particular output <a href="../filter.html">filter</a> for a request depending on the
     response MIME-type.</p>
@@ -454,7 +454,7 @@ scripts</td></tr>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>NetWare only</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td><compatibility>NetWare only</compatibility></td></tr>
 </table>
     <p>This directive is used to control how Apache finds the
     interpreter used to run CGI scripts. For example, setting
@@ -800,7 +800,7 @@ Location</a></li>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in version 2.0.44 and later</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td><compatibility>Available in version 2.0.44 and later</compatibility></td></tr>
 </table>
     <p>This directive controls whether <code>httpd</code> may use the sendfile
     support from the kernel to transmit file contents to the client.
@@ -853,8 +853,8 @@ in case of an error</td></tr>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Quoting syntax for text messages is different in Apache
-2.0</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td><compatibility>Quoting syntax for text messages is different in Apache
+2.0</compatibility></td></tr>
 </table>
     <p>In the event of a problem or error, Apache can be configured
     to do one of four things,</p>
@@ -934,8 +934,8 @@ ErrorLog logs/error.log (Windows and OS/2)</code></td></tr>
 </table>
     <p>The <code class="directive">ErrorLog</code> directive sets the name of
     the file to which the server will log any errors it encounters. If
-    the <var>file-path</var> does not begin with a slash (/) then it is
-    assumed to be relative to the <code class="directive"><a href="#serverroot">ServerRoot</a></code>.</p>
+    the <var>file-path</var> is not absolute (in general: does not begin
+    with a slash (/)) then it is assumed to be relative to the <code class="directive"><a href="#serverroot">ServerRoot</a></code>.</p>
 
     <div class="example"><h3>Example</h3><p><code>
     ErrorLog /var/log/httpd/error_log
@@ -1037,9 +1037,9 @@ filenames</td></tr>
 </table>
     <p>The <code class="directive">&lt;Files&gt;</code> directive
     provides for access control by filename. It is comparable to the
-    <code class="directive"><a href="#directory">Directory</a></code>
-    directive and <code class="directive"><a href="#location">Location</a></code> directives. It should be
-    matched with a <code>&lt;/Files&gt;</code> directive. The
+    <code class="directive"><a href="#directory">&lt;Directory&gt;</a></code>
+    directive and <code class="directive"><a href="#location">&lt;Location&gt;</a></code> directives. It should be
+    matched with a <code class="directive">&lt;Files&gt;</code> directive. The
     directives given within this section will be applied to any object
     with a basename (last component of filename) matching the
     specified filename. <code class="directive">&lt;Files&gt;</code>
@@ -1113,7 +1113,7 @@ MIME content-type</td></tr>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Moved to the core in Apache 2.0</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td><compatibility>Moved to the core in Apache 2.0</compatibility></td></tr>
 </table>
     <p>When placed into an <code>.htaccess</code> file or a
     <code class="directive"><a href="#directory">&lt;Directory&gt;</a></code>, or
@@ -1333,12 +1333,12 @@ the server configuration files</td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Wildcard matching available in 2.0.41 and later</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td><compatibility>Wildcard matching available in 2.0.41 and later</compatibility></td></tr>
 </table>
     <p>This directive allows inclusion of other configuration files
     from within the server configuration files.</p>
 
-    <p>Shell-style (fnmatch) wildcard characters can be used to
+    <p>Shell-style (<code>fnmatch()</code>) wildcard characters can be used to
     include several files at once, in alphabetical order. In
     addition, if <code class="directive">Include</code> points to a directory,
     rather than a file, Apache will read all files in that directory
@@ -1637,7 +1637,7 @@ client</td></tr>
     <p>For example:</p>
 
     <div class="example"><p><code>
-      LimitRequestFieldSize 16380
+      LimitRequestFieldSize 4094
     </code></p></div>
 
     <div class="note">Under normal conditions, the value should not be changed from
@@ -1679,7 +1679,7 @@ from the client</td></tr>
     <p>For example:</p>
 
     <div class="example"><p><code>
-      LimitRequestLine 16380
+      LimitRequestLine 4094
     </code></p></div>
 
     <div class="note">Under normal conditions, the value should not be changed from
@@ -2194,27 +2194,18 @@ a resource</td></tr>
     <p>This directive selects which authenticated users can access
     a directory. The allowed syntaxes are:</p>
 
-    <ul>
-      <li>
-        Require user <var>userid</var> [<var>userid</var>] ...
+    <dl>
+      <dt><code>Require user <var>userid</var> [<var>userid</var>]
+      ...</code></dt>
+      <dd>Only the named users can access the resource.</dd>
 
-        <p>Only the named users can access the resource.</p>
-      </li>
+      <dt><code>Require group <var>group-name</var> [<var>group-name</var>]
+      ...</code></dt>
+      <dd>Only users in the named groups can access the  resource.</dd>
 
-      <li>
-        Require group <var>group-name</var> [<var>group-name</var>] ...
-
-
-        <p>Only users in the named groups can access the
-        resource.</p>
-      </li>
-
-      <li>
-        Require valid-user
-
-        <p>All valid users can access the resource.</p>
-      </li>
-    </ul>
+      <dt><code>Require valid-user</code></dt>
+      <dd>All valid users can access the resource.</dd>
+    </dl>
 
     <p><code class="directive">Require</code> must be accompanied by
     <code class="directive"><a href="#authname">AuthName</a></code> and <code class="directive"><a href="#authtype">AuthType</a></code> directives, and directives such
@@ -2249,7 +2240,7 @@ a resource</td></tr>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Limits the CPU consumption of processes launched
 by Apache children</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>RLimitCPU <var>number</var>|max [<var>number</var>|max]</code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>RLimitCPU <var>seconds</var>|max [<var>seconds</var>|max]</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>Unset; uses operating system defaults</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>All</td></tr>
@@ -2262,7 +2253,7 @@ by Apache children</td></tr>
     or <code>max</code> to indicate to the server that the limit should
     be set to the maximum allowed by the operating system
     configuration. Raising the maximum resource limit requires that
-    the server is running as root, or in the initial startup
+    the server is running as <code>root</code>, or in the initial startup
     phase.</p>
 
     <p>This applies to processes forked off from Apache children
@@ -2285,7 +2276,7 @@ by Apache children</td></tr>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Limits the memory consumption of processes launched
 by Apache children</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>RLimitMEM <var>number</var>|max [<var>number</var>|max]</code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>RLimitMEM <var>bytes</var>|max [<var>bytes</var>|max]</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>Unset; uses operating system defaults</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>All</td></tr>
@@ -2298,7 +2289,7 @@ by Apache children</td></tr>
     or <code>max</code> to indicate to the server that the limit should
     be set to the maximum allowed by the operating system
     configuration. Raising the maximum resource limit requires that
-    the server is running as root, or in the initial startup
+    the server is running as <code>root</code>, or in the initial startup
     phase.</p>
 
     <p>This applies to processes forked off from Apache children
@@ -2334,7 +2325,7 @@ processes launched by Apache children</td></tr>
     or <code>max</code> to indicate to the server that the limit
     should be set to the maximum allowed by the operating system
     configuration. Raising the maximum resource limit requires that
-    the server is running as root, or in the initial startup
+    the server is running as <code>root</code>, or in the initial startup
     phase.</p>
 
     <p>This applies to processes forked off from Apache children
@@ -2413,8 +2404,9 @@ scripts</td></tr>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Win32 only
-option Registry-Strict is available in Apache 2.0 and later</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td><compatibility>Win32 only<br />
+option <code>Registry-Strict</code> is available in Apache 2.0 and
+later</compatibility></td></tr>
 </table>
     <p>This directive is used to control how Apache finds the
     interpreter used to run CGI scripts. The default technique is to
@@ -2488,9 +2480,9 @@ itself</td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>In version 2.0, this
-     directive supersedes the functionality of the Port
-     directive from version 1.3.</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td><compatibility>In version 2.0, this
+     directive supersedes the functionality of the <code class="directive">Port</code>
+     directive from version 1.3.</compatibility></td></tr>
 </table>
     <p>The <code class="directive">ServerName</code> directive sets the hostname and
     port that the server uses to identify itself.  This is used when
@@ -2527,7 +2519,8 @@ itself</td></tr>
 
 <h3>See also</h3>
 <ul>
-<li><a href="../dns-caveats.html">DNS Issues</a></li>
+<li><a href="../dns-caveats.html">Issues Regarding DNS and
+    Apache</a></li>
 <li><a href="../vhosts/">Apache virtual host
     documentation</a></li>
 <li><code class="directive"><a href="#usecanonicalname">UseCanonicalName</a></code></li>
@@ -2580,7 +2573,7 @@ is accessed by an incompatible browser</td></tr>
     option to <code>httpd</code></a></li>
 <li><a href="../misc/security_tips.html#serverroot">the
     security tips</a> for information on how to properly set
-    permissions on the ServerRoot</li>
+    permissions on the <code class="directive">ServerRoot</code></li>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -2600,7 +2593,9 @@ is accessed by an incompatible browser</td></tr>
     listings, <code class="module"><a href="../mod/mod_info.html">mod_info</a></code> output, ...). The reason why you
     would want to enable such a footer line is that in a chain of proxies,
     the user often has no possibility to tell which of the chained servers
-    actually produced a returned error message.<br /> The <code>Off</code>
+    actually produced a returned error message.</p>
+
+    <p>The <code>Off</code>
     setting, which is the default, suppresses the footer line (and is
     therefore compatible with the behavior of Apache-1.2 and
     below). The <code>On</code> setting simply adds a line with the
@@ -2620,7 +2615,8 @@ is accessed by an incompatible browser</td></tr>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="ServerTokens" id="ServerTokens">ServerTokens</a> <a name="servertokens" id="servertokens">Directive</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Configures the Server HTTP response header</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Configures the Server HTTP response
+header</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>ServerTokens Major|Minor|Min[imal]|Prod[uctOnly]|OS|Full</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>ServerTokens Full</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
@@ -2685,7 +2681,7 @@ handler</td></tr>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Moved into the core in Apache 2.0</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td><compatibility>Moved into the core in Apache 2.0</compatibility></td></tr>
 </table>
     <p>When placed into an <code>.htaccess</code> file or a
     <code class="directive"><a href="#directory">&lt;Directory&gt;</a></code> or
@@ -2790,7 +2786,7 @@ server</td></tr>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Amount of time the server will wait for
 certain events before failing a request</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>TimeOut <var>number</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>TimeOut <var>second</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>TimeOut 300</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
@@ -2988,8 +2984,8 @@ hostname or IP address</td></tr>
 <h3>See also</h3>
 <ul>
 <li><a href="../vhosts/">Apache Virtual Host documentation</a></li>
-<li><a href="../dns-caveats.html">Warnings about DNS and
-    Apache</a></li>
+<li><a href="../dns-caveats.html">Issues Regarding DNS and
+     Apache</a></li>
 <li><a href="../bind.html">Setting
     which addresses and ports Apache uses</a></li>
 <li><a href="../sections.html">How &lt;Directory&gt;, &lt;Location&gt;
