@@ -108,7 +108,10 @@
   *   responses
   * - (performance problem) heavy use of strstr shows up top in profile
   *   only an issue for loopback usage
-  * - SSL implementation is a joke.
+  * - SSL implementation is a joke. Compile with:
+  *	CFLAGS="-DUSE_SSL -I/usr/local/include" \
+  *		LIBS="-L/usr/local/lib -lssl -lcrypto" \
+  *		configure --your-other-options
   */
 
 
@@ -227,6 +230,7 @@ struct data {
 
 #define ap_min(a,b) ((a)<(b))?(a):(b)
 #define ap_max(a,b) ((a)>(b))?(a):(b)
+#define _rnd(x) ((long)(x+0.5))
 
 /* --------------------- GLOBALS ---------------------------- */
 
@@ -307,7 +311,10 @@ struct sockaddr_in server;	/* server addr structure */
 #endif
 
 static void close_connection(struct connection * c);
+#if NO_WRITEV || USE_SSL
 static void s_write(struct connection * c, char *buff, int len);
+#endif
+
 /* --------------------------------------------------------- */
 
 /* simple little function to perror and exit */
@@ -318,9 +325,9 @@ static void err(char *s)
 	perror(s);
     }
     else {
-	printf("%s", s);
+	fprintf(stderr,"%s", s);
     }
-    exit(errno);
+    exit(errno ? errno : 1);
 }
 
 /* --------------------------------------------------------- */
@@ -369,6 +376,7 @@ static void write_request(struct connection * c)
 
 /*  Do actual data writing */
 
+#if NO_WRITEV || USE_SSL
 static void s_write(struct connection * c, char *buff, int len)
 {
     do {
@@ -399,7 +407,13 @@ static void s_write(struct connection * c, char *buff, int len)
 		close_connection(c);
 		return;
 	    default:
-		perror("write");
+#if USE_SSL
+		if (ssl) {
+			fprintf(stderr,"Error writing: ");
+	    		ERR_print_errors_fp(stderr);
+		} else
+#endif
+			perror("write");
 		exit(1);
 	    }
 	}
@@ -411,6 +425,7 @@ static void s_write(struct connection * c, char *buff, int len)
 	};
     } while (len > 0);
 }
+#endif
 
 /* --------------------------------------------------------- */
 
@@ -499,22 +514,22 @@ static void output_results(void)
     printf("Document Length:        %d bytes\n", doclen);
     printf("\n");
     printf("Concurrency Level:      %d\n", concurrency);
-    printf("Time taken for tests:   %d.%03d seconds\n",
+    printf("Time taken for tests:   %ld.%03ld seconds\n",
 	   timetaken / 1000, timetaken % 1000);
-    printf("Complete requests:      %d\n", done);
-    printf("Failed requests:        %d\n", bad);
+    printf("Complete requests:      %ld\n", done);
+    printf("Failed requests:        %ld\n", bad);
     if (bad)
 	printf("   (Connect: %d, Length: %d, Exceptions: %d)\n",
 	       err_conn, err_length, err_except);
-    printf("Broken pipe errors:     %d\n", epipe);
+    printf("Broken pipe errors:     %ld\n", epipe);
     if (err_response)
 	printf("Non-2xx responses:      %d\n", err_response);
     if (keepalive)
-	printf("Keep-Alive requests:    %d\n", doneka);
-    printf("Total transferred:      %d bytes\n", totalread);
+	printf("Keep-Alive requests:    %ld\n", doneka);
+    printf("Total transferred:      %ld bytes\n", totalread);
     if (posting > 0)
-	printf("Total POSTed:           %d\n", totalposted);
-    printf("HTML transferred:       %d bytes\n", totalbread);
+	printf("Total POSTed:           %ld\n", totalposted);
+    printf("HTML transferred:       %ld bytes\n", totalbread);
 
     /* avoid divide by zero */
     if (timetaken) {
@@ -582,20 +597,20 @@ static void output_results(void)
 	if (gnuplot) {
 	    FILE *out = fopen(gnuplot, "w");
 	    long i;
-	    time_t sttime;
-	    char *tmstring;
 	    if (!out) {
 		perror("Cannot open gnuplot output file");
 		exit(1);
 	    };
 	    fprintf(out, "starttime\tseconds\tctime\tdtime\tttime\twait\n");
 	    for (i = 0; i < requests; i++) {
+		time_t sttime;
+		char *tmstring;
 		sttime = stats[i].starttime;
 		tmstring = ctime(&sttime);
 		tmstring[strlen(tmstring) - 1] = '\0';	/* ctime returns a
 							 * string with a
 							 * trailing newline */
-		fprintf(out, "%s\t%d\t%d\t%d\t%d\t%d\n",
+		fprintf(out, "%s\t%ld\t%ld\t%ld\t%ld\t%ld\n",
 			tmstring,
 			sttime,
 			stats[i].ctime,
@@ -645,13 +660,13 @@ static void output_results(void)
 
 	if (confidence) {
 	    printf("              min  mean[+/-sd] median   max\n");
-	    printf("Connect:    %5d %5d %6.1f  %5d %5d\n",
-		   mincon, (int) (totalcon + 0.5), sdcon, meancon, maxcon);
-	    printf("Processing: %5d %5d %6.1f  %5d %5d\n",
-		   mind, (int) (totald + 0.5), sdd, meand, maxd);
-	    printf("Waiting:    %5d %5d %6.1f  %5d %5d\n",
-	       minwait, (int) (totalwait + 0.5), sdwait, meanwait, maxwait);
-	    printf("Total:      %5d %5d %6.1f  %5d %5d\n", mintot, (int) (total + 0.5), sdtot, meantot, maxtot);
+	    printf("Connect:    %5ld %5ld %6.1f  %5ld %5ld\n",
+		   mincon, _rnd(totalcon), sdcon, meancon, maxcon);
+	    printf("Processing: %5ld %5ld %6.1f  %5ld %5ld\n",
+		   mind, _rnd(totald), sdd, meand, maxd);
+	    printf("Waiting:    %5ld %5ld %6.1f  %5ld %5ld\n",
+		   minwait, _rnd(totalwait), sdwait, meanwait, maxwait);
+	    printf("Total:      %5ld %5ld %6.1f  %5ld %5ld\n", mintot, _rnd(total), sdtot, meantot, maxtot);
 
 #define     SANE(what,avg,mean,sd) \
             { \
@@ -671,30 +686,28 @@ static void output_results(void)
 	}
 	else {
 	    printf("              min   avg   max\n");
-	    printf("Connect:    %5d %5d %5d\n", mincon, (int) (totalcon + 0.5), maxcon);
-	    printf("Processing: %5d %5d %5d\n", mind, (int) (totald + 0.5), maxd);
-	    printf("Total:      %5d %5d %5d\n", mintot, (int) (0.5 + total), maxtot);
+	    printf("Connect:    %5ld %5ld %5ld\n", mincon, _rnd(totalcon), maxcon);
+	    printf("Processing: %5ld %5ld %5ld\n", mind, _rnd(totald), maxd);
+	    printf("Total:      %5ld %5ld %5ld\n", mintot, _rnd(total), maxtot);
 	};
 
 	/* Sorted on total connect times */
 	if (percentile && (requests > 1)) {
 	    printf("\nPercentage of the requests served within a certain time (ms)\n");
-	    printf("  50%%  %5d\n", stats[(int) (requests * 0.50)].time);
-	    printf("  66%%  %5d\n", stats[(int) (requests * 0.66)].time);
-	    printf("  75%%  %5d\n", stats[(int) (requests * 0.75)].time);
-	    printf("  80%%  %5d\n", stats[(int) (requests * 0.80)].time);
-	    printf("  90%%  %5d\n", stats[(int) (requests * 0.90)].time);
-	    printf("  95%%  %5d\n", stats[(int) (requests * 0.95)].time);
-	    printf("  98%%  %5d\n", stats[(int) (requests * 0.98)].time);
-	    printf("  99%%  %5d\n", stats[(int) (requests * 0.99)].time);
-	    printf(" 100%%  %5d (last request)\n", stats[(int) (requests - 1)].time);
+	    printf("  50%%  %5ld\n", stats[(int) (requests * 0.50)].time);
+	    printf("  66%%  %5ld\n", stats[(int) (requests * 0.66)].time);
+	    printf("  75%%  %5ld\n", stats[(int) (requests * 0.75)].time);
+	    printf("  80%%  %5ld\n", stats[(int) (requests * 0.80)].time);
+	    printf("  90%%  %5ld\n", stats[(int) (requests * 0.90)].time);
+	    printf("  95%%  %5ld\n", stats[(int) (requests * 0.95)].time);
+	    printf("  98%%  %5ld\n", stats[(int) (requests * 0.98)].time);
+	    printf("  99%%  %5ld\n", stats[(int) (requests * 0.99)].time);
+	    printf(" 100%%  %5ld (last request)\n", stats[(int) (requests - 1)].time);
 	    \
 	};
 	if (csvperc) {
 	    FILE *out = fopen(csvperc, "w");
 	    long i;
-	    time_t sttime;
-	    char *tmstring;
 	    if (!out) {
 		perror("Cannot open CSV output file");
 		exit(1);
@@ -708,7 +721,7 @@ static void output_results(void)
 		    d = stats[requests - 1].time;
 		else
 		    d = stats[(int) (0.5 + requests * i / 100.0)].time;
-		fprintf(out, "%d,%d\n", i, d);
+		fprintf(out, "%ld,%f\n", i, d);
 	    }
 	    fclose(out);
 	};
@@ -746,13 +759,13 @@ static void output_html_results(void)
 	   "<td colspan=2 %s>%d</td></tr>\n",
 	   trstring, tdstring, tdstring, concurrency);
     printf("<tr %s><th colspan=2 %s>Time taken for tests:</th>"
-	   "<td colspan=2 %s>%d.%03d seconds</td></tr>\n",
+	   "<td colspan=2 %s>%ld.%03ld seconds</td></tr>\n",
 	   trstring, tdstring, tdstring, timetaken / 1000, timetaken % 1000);
     printf("<tr %s><th colspan=2 %s>Complete requests:</th>"
-	   "<td colspan=2 %s>%d</td></tr>\n",
+	   "<td colspan=2 %s>%ld</td></tr>\n",
 	   trstring, tdstring, tdstring, done);
     printf("<tr %s><th colspan=2 %s>Failed requests:</th>"
-	   "<td colspan=2 %s>%d</td></tr>\n",
+	   "<td colspan=2 %s>%ld</td></tr>\n",
 	   trstring, tdstring, tdstring, bad);
     if (bad)
 	printf("<tr %s><td colspan=4 %s >   (Connect: %d, Length: %d, Exceptions: %d)</td></tr>\n",
@@ -763,17 +776,17 @@ static void output_html_results(void)
 	       trstring, tdstring, tdstring, err_response);
     if (keepalive)
 	printf("<tr %s><th colspan=2 %s>Keep-Alive requests:</th>"
-	       "<td colspan=2 %s>%d</td></tr>\n",
+	       "<td colspan=2 %s>%ld</td></tr>\n",
 	       trstring, tdstring, tdstring, doneka);
     printf("<tr %s><th colspan=2 %s>Total transferred:</th>"
-	   "<td colspan=2 %s>%d bytes</td></tr>\n",
+	   "<td colspan=2 %s>%ld bytes</td></tr>\n",
 	   trstring, tdstring, tdstring, totalread);
     if (posting > 0)
 	printf("<tr %s><th colspan=2 %s>Total POSTed:</th>"
-	       "<td colspan=2 %s>%d</td></tr>\n",
+	       "<td colspan=2 %s>%ld</td></tr>\n",
 	       trstring, tdstring, tdstring, totalposted);
     printf("<tr %s><th colspan=2 %s>HTML transferred:</th>"
-	   "<td colspan=2 %s>%d bytes</td></tr>\n",
+	   "<td colspan=2 %s>%ld bytes</td></tr>\n",
 	   trstring, tdstring, tdstring, totalbread);
 
     /* avoid divide by zero */
@@ -817,20 +830,20 @@ static void output_html_results(void)
 	    printf("<tr %s><th %s>&nbsp;</th> <th %s>min</th>   <th %s>avg</th>   <th %s>max</th></tr>\n",
 		   trstring, tdstring, tdstring, tdstring, tdstring);
 	    printf("<tr %s><th %s>Connect:</th>"
-		   "<td %s>%5d</td>"
-		   "<td %s>%5d</td>"
-		   "<td %s>%5d</td></tr>\n",
+		   "<td %s>%5ld</td>"
+		   "<td %s>%5ld</td>"
+		   "<td %s>%5ld</td></tr>\n",
 		   trstring, tdstring, tdstring, mincon, tdstring, totalcon / requests, tdstring, maxcon);
 	    printf("<tr %s><th %s>Processing:</th>"
-		   "<td %s>%5d</td>"
-		   "<td %s>%5d</td>"
-		   "<td %s>%5d</td></tr>\n",
+		   "<td %s>%5ld</td>"
+		   "<td %s>%5ld</td>"
+		   "<td %s>%5ld</td></tr>\n",
 		   trstring, tdstring, tdstring, mintot - mincon, tdstring,
 		   (total / requests) - (totalcon / requests), tdstring, maxtot - maxcon);
 	    printf("<tr %s><th %s>Total:</th>"
-		   "<td %s>%5d</td>"
-		   "<td %s>%5d</td>"
-		   "<td %s>%5d</td></tr>\n",
+		   "<td %s>%5ld</td>"
+		   "<td %s>%5ld</td>"
+		   "<td %s>%5ld</td></tr>\n",
 		   trstring, tdstring, tdstring, mintot, tdstring, total / requests, tdstring, maxtot);
 	}
 	printf("</table>\n");
@@ -897,7 +910,7 @@ again:
 	};
 	SSL_set_connect_state(c->ssl);
 	if ((e = SSL_set_fd(c->ssl, c->fd)) == -1) {
-	    fprintf(stderr, "SSL fd init failed ")l
+	    fprintf(stderr, "SSL fd init failed ");
 	    ERR_print_errors_fp(stderr);
 	    goto bad;
 	};
@@ -951,7 +964,7 @@ static void close_connection(struct connection * c)
 	if (done < requests) {
 	    struct data s;
 	    if ((done) && (heartbeatres) && (!(done % heartbeatres))) {
-		fprintf(stderr, "Completed %d requests\n", done);
+		fprintf(stderr, "Completed %ld requests\n", done);
 		fflush(stderr);
 	    }
 	    gettimeofday(&c->done, 0);
@@ -1130,7 +1143,7 @@ static void read_connection(struct connection * c)
 	if (done < requests) {
 	    struct data s;
 	    if ((done) && (heartbeatres) && (!(done % heartbeatres))) {
-		fprintf(stderr, "Completed %d requests\n", done);
+		fprintf(stderr, "Completed %ld requests\n", done);
 		fflush(stderr);
 	    }
 	    gettimeofday(&c->done, 0);
@@ -1159,7 +1172,7 @@ void pipehandler(int signal)
 {
     int i;			/* loop variable */
 
-    printf("Caught broken pipe signal after %d requests. ", done);
+    printf("Caught broken pipe signal after %ld requests. ", done);
 
     /* This means one of my connections is broken, but which one? */
     /* The safe route: close all our connections. */
@@ -1233,7 +1246,9 @@ static void test(void)
 		(isproxy) ? fullurl : path,
 		VERSION,
 		keepalive ? "Connection: Keep-Alive\r\n" : "",
-		cookie, auth, hostname, hdrs);
+		cookie, auth, 
+		proxyhost, 
+		hdrs);
     }
     else {
 	sprintf(request, "POST %s HTTP/1.0\r\n"
@@ -1245,11 +1260,11 @@ static void test(void)
 		"Content-type: %s\r\n"
 		"%s"
 		"\r\n",
-		(isproxy) ? fullurl : path,
+		(isproxy) ? fullurl : path, 
 		VERSION,
 		keepalive ? "Connection: Keep-Alive\r\n" : "",
 		cookie, auth,
-		hostname, postlen,
+		proxyhost, postlen,
 		(content_type[0]) ? content_type : "text/plain", hdrs);
     }
 
@@ -1307,7 +1322,7 @@ static void test(void)
     }
 
     if (heartbeatres)
-	fprintf(stderr, "Finished %d requests\n", done);
+	fprintf(stderr, "Finished %ld requests\n", done);
     else
 	printf("..done\n");
 
@@ -1323,14 +1338,14 @@ static void test(void)
 static void copyright(void)
 {
     if (!use_html) {
-	printf("This is ApacheBench, Version %s\n", VERSION " <$Revision: 1.52 $> apache-1.3");
+	printf("This is ApacheBench, Version %s\n", VERSION " <$Revision: 1.53 $> apache-1.3");
 	printf("Copyright (c) 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/\n");
 	printf("Copyright (c) 1998-1999 The Apache Group, http://www.apache.org/\n");
 	printf("\n");
     }
     else {
 	printf("<p>\n");
-	printf(" This is ApacheBench, Version %s <i>&lt;%s&gt;</i> apache-1.3<br>\n", VERSION, "$Revision: 1.52 $");
+	printf(" This is ApacheBench, Version %s <i>&lt;%s&gt;</i> apache-1.3<br>\n", VERSION, "$Revision: 1.53 $");
 	printf(" Copyright (c) 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/<br>\n");
 	printf(" Copyright (c) 1998-1999 The Apache Group, http://www.apache.org/<br>\n");
 	printf("</p>\n<p>\n");
@@ -1460,7 +1475,6 @@ int main(int argc, char **argv)
 {
     int c, r, l;
     char tmp[1024];
-
     /* table defaults  */
     tablestring = "";
     trstring = "";
@@ -1546,7 +1560,7 @@ int main(int argc, char **argv)
 	     * assume username passwd already to be in colon separated form.
 	     * Ready to be uu-encoded.
 	     */
-	    while (isspace(*optarg))
+	    while (isspace((int)*optarg))
 		optarg++;
 	    l = ap_base64encode(tmp, optarg, strlen(optarg));
 	    tmp[l] = '\0';
@@ -1559,7 +1573,7 @@ int main(int argc, char **argv)
 	    /*
 	     * assume username passwd already to be in colon separated form.
 	     */
-	    while (isspace(*optarg))
+	    while (isspace((int)*optarg))
 		optarg++;
 	    l = ap_base64encode(tmp, optarg, strlen(optarg));
 	    tmp[l] = '\0';
@@ -1574,7 +1588,7 @@ int main(int argc, char **argv)
 		/*
 		 * assume proxy-name[:port]
 		 */
-		if (p = strchr(optarg, ':')) {
+		if ((p = strchr(optarg, ':'))) {
 		    *p = '\0';
 		    p++;
 		    proxyport = atoi(p);
@@ -1631,23 +1645,26 @@ int main(int argc, char **argv)
     }
 
     if ((heartbeatres) && (requests > 150)) {
-	heartbeatres = requests / 10;	/* Print line every 10% of requests */
+	heartbeatres = requests / 10;	/* Print a line every 10% of requests */
 	if (heartbeatres < 100)
 	    heartbeatres = 100;	/* but never more often than once every 100
 				 * connections. */
     }
     else
+	/* if there are less than 150 requests; do not show
+	 * the little tick/tock dots.
+	 */
 	heartbeatres = 0;
 
 #ifdef USE_SSL
     SSL_library_init();
     if (!(ctx = SSL_CTX_new(SSLv2_client_method()))) {
-	fprintf(stderr, "Could not init SSL CTX");
+	fprintf(stderr, "Could not init SSL CTX: ");
 	ERR_print_errors_fp(stderr);
 	exit(1);
     }
 #endif
-    signal(SIGPIPE, SIG_IGN);	        /* Ignore writes to connections that
+    signal(SIGPIPE, SIG_IGN);	/* Ignore writes to connections that
 					 * have been closed at the other end.
 					 * These writes are dealt with in the
 					 * s_write() function. */

@@ -314,7 +314,7 @@ int main (int argc, char *argv[])
 	if (line[0] == '\0')
 	    continue;
 	entries++;
-	if (!isdigit(line[0])) {	/* short cut */
+	if (!isdigit((int)line[0])) {	/* short cut */
 	    puts(line);
 	    withname++;
 	    continue;
