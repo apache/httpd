@@ -457,7 +457,7 @@ int ssl_pphrase_Handle_CB(char *buf, int bufsize, int verify, void *srv)
     int *pnPassPhraseDialog;
     int *pnPassPhraseDialogCur;
     BOOL *pbPassPhraseDialogOnce;
-    int stderr_store;
+    apr_file_t *outfp = NULL;
     char **cpp;
     int len = -1;
 
@@ -494,33 +494,17 @@ int ssl_pphrase_Handle_CB(char *buf, int bufsize, int verify, void *srv)
     if (sc->nPassPhraseDialogType == SSL_PPTYPE_BUILTIN) {
         char *prompt;
         int i;
-#ifdef WIN32
-        FILE *con;
-#endif
 
         ssl_log(s, SSL_LOG_INFO,
                 "Init: Requesting pass phrase via builtin terminal dialog");
 
         /*
-         * Reconnect STDERR to terminal (here STDOUT) because
-         * at our init stage Apache already connected STDERR
-         * to the general error logfile.
+         * stderr has already been redirected to the error_log.
+         * rather than attempting to temporarily rehook it to the terminal,
+         * we print the prompt to stdout before EVP_read_pw_string turns
+         * off tty echo
          */
-#ifdef WIN32
-        stderr_store = STDERR_FILENO_STORE;
-#else
-        if ((stderr_store = open("/dev/null", O_WRONLY)) == -1)
-            stderr_store = STDERR_FILENO_STORE;
-#endif
-        dup2(STDERR_FILENO, stderr_store);
-#ifdef WIN32
-        if ((con = fopen("con", "w")) != NULL)
-            dup2(fileno(con), STDERR_FILENO);
-        else
-            dup2(STDOUT_FILENO, STDERR_FILENO);
-#else
-        dup2(STDOUT_FILENO, STDERR_FILENO);
-#endif
+        apr_file_open_stdout(&outfp, p);
 
         /*
          * The first time display a header to inform the user about what
@@ -529,15 +513,15 @@ int ssl_pphrase_Handle_CB(char *buf, int bufsize, int verify, void *srv)
          * something...
          */
         if (*pnPassPhraseDialog == 1) {
-            fprintf(stderr, "%s mod_ssl/%s (Pass Phrase Dialog)\n",
-                    AP_SERVER_BASEVERSION, MOD_SSL_VERSION);
-            fprintf(stderr, "Some of your private key files are encrypted for security reasons.\n");
-            fprintf(stderr, "In order to read them you have to provide us with the pass phrases.\n");
+            apr_file_printf(outfp, "%s mod_ssl/%s (Pass Phrase Dialog)\n",
+                            AP_SERVER_BASEVERSION, MOD_SSL_VERSION);
+            apr_file_printf(outfp, "Some of your private key files are encrypted for security reasons.\n");
+            apr_file_printf(outfp, "In order to read them you have to provide us with the pass phrases.\n");
         }
         if (*pbPassPhraseDialogOnce) {
             *pbPassPhraseDialogOnce = FALSE;
-            fprintf(stderr, "\n");
-            fprintf(stderr, "Server %s (%s)\n", cpVHostID, cpAlgoType);
+            apr_file_printf(outfp, "\n");
+            apr_file_printf(outfp, "Server %s (%s)\n", cpVHostID, cpAlgoType);
         }
 
         /*
@@ -545,28 +529,20 @@ int ssl_pphrase_Handle_CB(char *buf, int bufsize, int verify, void *srv)
          * (see crypto/pem/pem_lib.c:def_callback() for details)
          */
         prompt = "Enter pass phrase:";
+        apr_file_puts(prompt, outfp);
+
         for (;;) {
-            if ((i = EVP_read_pw_string(buf, bufsize, prompt, FALSE)) != 0) {
+            if ((i = EVP_read_pw_string(buf, bufsize, "", FALSE)) != 0) {
                 PEMerr(PEM_F_DEF_CALLBACK,PEM_R_PROBLEMS_GETTING_PASSWORD);
                 memset(buf, 0, (unsigned int)bufsize);
                 return (-1);
             }
             len = strlen(buf);
             if (len < 1)
-                fprintf(stderr, "Apache:mod_ssl:Error: Pass phrase empty (needs to be at least 1 character).\n");
+                apr_file_printf(outfp, "Apache:mod_ssl:Error: Pass phrase empty (needs to be at least 1 character).\n");
             else
                 break;
         }
-
-        /*
-         * Restore STDERR to Apache error logfile
-         */
-        dup2(stderr_store, STDERR_FILENO);
-        close(stderr_store);
-#ifdef WIN32
-        if (con != NULL)
-            fclose(con);
-#endif
     }
 
     /*
