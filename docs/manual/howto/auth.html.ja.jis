@@ -7,7 +7,7 @@
     <title>認証</title>
     <link rev="made" href="mailto:rbowen@rcbowen.com" />
   </head>
-  <!-- English revision: 1.7 -->
+  <!-- English revision: 1.8 -->
   <!-- Background white, links blue (unvisited), navy (visited), red (active) -->
 
   <body bgcolor="#FFFFFF" text="#000000" link="#0000FF"
@@ -138,7 +138,7 @@
     ディレクトリに置かれます。ファイルを作るには、次のように
     タイプしてください:</p>
 <pre>
-        htpasswd -c /usr/local/apache/passwd/password rbowen
+        htpasswd -c /usr/local/apache/passwd/passwords rbowen
 </pre>
 
     <p><code>htpasswd</code> は、パスワードを要求し、その後
