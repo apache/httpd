@@ -306,7 +306,11 @@ extern "C" {
  * the overhead.
  */
 #ifndef HARD_SERVER_LIMIT
+#ifdef WIN32
+#define HARD_SERVER_LIMIT 1500
+#else
 #define HARD_SERVER_LIMIT 256
+#endif
 #endif
 
 /*
