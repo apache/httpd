@@ -46,4 +46,12 @@ depend:
 	    && rm Makefile.new
 
 # DO NOT REMOVE
-os.o:	os.c os-inline.c
+os-inline.o: os-inline.c $(INCDIR)/ap_config.h \
+ $(INCDIR)/ap_mmn.h $(INCDIR)/ap_config_auto.h \
+ $(INCDIR)/os.h $(INCDIR)/ap_ctype.h $(INCDIR)/hsregex.h
+os.o: os.c os.h os-inline.c
+util_os2.o: util_os2.c $(INCDIR)/httpd.h $(INCDIR)/ap_config.h \
+ $(INCDIR)/ap_mmn.h $(INCDIR)/ap_config_auto.h \
+ $(INCDIR)/os.h $(INCDIR)/os-inline.c $(INCDIR)/ap_ctype.h \
+ $(INCDIR)/hsregex.h $(INCDIR)/alloc.h $(INCDIR)/buff.h \
+ $(INCDIR)/ap.h $(INCDIR)/util_uri.h $(INCDIR)/http_log.h
