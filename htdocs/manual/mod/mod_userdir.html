@@ -66,15 +66,15 @@ treated as a filename pattern, and is used to turn the name into a
 directory specification.  A request for
 <code>http://www.foo.com/~bob/one/two.html</code> will be translated to:
 <pre>
-UserDir public_html     -> ~bob/public_html/one/two.html
-UserDir /usr/web        -> /usr/web/bob/one/two.html
-UserDir /home/*/www     -> /home/bob/www/one/two.html
+UserDir public_html     -&gt; ~bob/public_html/one/two.html
+UserDir /usr/web        -&gt; /usr/web/bob/one/two.html
+UserDir /home/*/www     -&gt; /home/bob/www/one/two.html
 </pre>
 The following directives will send redirects to the client:
 <pre>
-UserDir http://www.foo.com/users   -> http//www.foo.com/users/bob/one/two.html
-UserDir http://www.foo.com/*/usr   -> http://www.foo.com/bob/usr/one/two.html
-UserDir http://www.foo.com/~*/     -> http://www.foo.com/~bob/one/two.html
+UserDir http://www.foo.com/users   -&gt; http//www.foo.com/users/bob/one/two.html
+UserDir http://www.foo.com/*/usr   -&gt; http://www.foo.com/bob/usr/one/two.html
+UserDir http://www.foo.com/~*/     -&gt; http://www.foo.com/~bob/one/two.html
 </pre>
 </P>
 <BLOCKQUOTE>

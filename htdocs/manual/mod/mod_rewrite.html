@@ -44,7 +44,6 @@ substitution.
 It operates on the full URLs (including the PATH_INFO part) both in
 per-server context (httpd.conf) and per-dir context (.htaccess) and even
 can generate QUERY_STRING parts on result.   The rewritten result can lead to internal sub-processing, external request redirection or to internal proxy throughput.
-</b>
 
 <p>
 The latest version can be found on<br>
@@ -147,7 +146,7 @@ with a slash ('<tt>/</tt>') then it is assumed to be relative to the
 config. 
 
 <p>
-<table width=70% border=2 bgcolor="#c0c0e0" cellspacing=0 cellpadding=10>
+<table width="70%" border=2 bgcolor="#c0c0e0" cellspacing=0 cellpadding=10>
 <tr><td>
 To disable the logging of rewriting actions it is not recommended
 to set <em>Filename</em>
@@ -161,7 +160,7 @@ To disable logging either remove or comment out the
 </table>
 
 <p>
-<table width=70% border=2 bgcolor="#c0c0e0" cellspacing=0 cellpadding=10>
+<table width="70%" border=2 bgcolor="#c0c0e0" cellspacing=0 cellpadding=10>
 <tr><td>
 SECURITY: See the <a
 href="../misc/security_tips.html">Apache Security
@@ -198,7 +197,7 @@ To disable the logging of rewriting actions simply set <em>Level</em> to 0.
 This disables all rewrite action logs.
 
 <p>
-<table width=70% border=2 bgcolor="#c0c0e0" cellspacing=0 cellpadding=10>
+<table width="70%" border=2 bgcolor="#c0c0e0" cellspacing=0 cellpadding=10>
 <tr><td>
 <b>Notice:</b> Using a high value for <i>Level</i> will slow down your Apache
 server dramatically! Use the rewriting logfile only for debugging or at least
@@ -289,7 +288,7 @@ RewriteMap real-to-host txt:/path/to/file/map.real-to-user
 <li><b>DBM Hashfile Format</b>
     <p>
     This is a binary NDBM format file containing the
-    same contents as the <em>Plain Text Format</b> files. You can create
+    same contents as the <em>Plain Text Format</em> files. You can create
     such a file with any NDBM tool or with the <tt>dbmmanage</tt> program
     from the <tt>support</tt> directory of the Apache distribution.
     <p>
@@ -346,7 +345,7 @@ context it is of course possible to <b>use</b> this map in per-directory
 context.  
 
 <p>
-<table width=70% border=2 bgcolor="#c0c0e0" cellspacing=0 cellpadding=10>
+<table width="70%" border=2 bgcolor="#c0c0e0" cellspacing=0 cellpadding=10>
 <tr><td>
 For plain text and DBM format files the looked-up keys are cached in-core
 until the <tt>mtime</tt> of the mapfile changes or the server does a
@@ -384,7 +383,7 @@ will be usually be wrong!</b> There you have to use the <tt>RewriteBase</tt>
 directive to specify the correct URL-prefix. 
 
 <p>
-<table width=70% border=2 bgcolor="#c0c0e0" cellspacing=0 cellpadding=10>
+<table width="70%" border=2 bgcolor="#c0c0e0" cellspacing=0 cellpadding=10>
 <tr><td>
 So, if your webserver's URLs are <b>not</b> directly
 related to physical file paths, you have to use <tt>RewriteBase</tt> in every
@@ -424,7 +423,7 @@ In the above example, a request to <tt>/xyz/oldstuff.html</tt> gets correctly
 rewritten to the physical file <tt>/abc/def/newstuff.html</tt>. 
 
 <p>
-<table width=70% border=2 bgcolor="#c0c0e0" cellspacing=0 cellpadding=10>
+<table width="70%" border=2 bgcolor="#c0c0e0" cellspacing=0 cellpadding=10>
 <tr><td>
 <font size=-1>
 <b>For the Apache hackers:</b><br>
@@ -437,10 +436,10 @@ Request:
   /xyz/oldstuff.html
 
 Internal Processing:
-  /xyz/oldstuff.html     -> /abc/def/oldstuff.html    (per-server Alias)
-  /abc/def/oldstuff.html -> /abc/def/newstuff.html    (per-dir    RewriteRule)
-  /abc/def/newstuff.html -> /xyz/newstuff.html        (per-dir    RewriteBase)
-  /xyz/newstuff.html     -> /abc/def/newstuff.html    (per-server Alias)
+  /xyz/oldstuff.html     -&gt; /abc/def/oldstuff.html    (per-server Alias)
+  /abc/def/oldstuff.html -&gt; /abc/def/newstuff.html    (per-dir    RewriteRule)
+  /abc/def/newstuff.html -&gt; /xyz/newstuff.html        (per-dir    RewriteBase)
+  /xyz/newstuff.html     -&gt; /abc/def/newstuff.html    (per-server Alias)
 
 Result:
   /abc/def/newstuff.html
@@ -471,7 +470,7 @@ sure the design and implementation is correct.
 <p>
 
 The <tt>RewriteCond</tt> directive defines a rule condition. Precede a
-<tt>RewriteRule</tt> directive with one or more <t>RewriteCond</tt>
+<tt>RewriteRule</tt> directive with one or more <tt>RewriteCond</tt>
 directives.
 
 The following rewriting rule is only used if its pattern matches the current
@@ -562,7 +561,7 @@ IS_SUBREQ<br>
 
 
 <p>
-<table width=70% border=2 bgcolor="#c0c0e0" cellspacing=0 cellpadding=10>
+<table width="70%" border=2 bgcolor="#c0c0e0" cellspacing=0 cellpadding=10>
 <tr><td>
 These variables all correspond to the similar named HTTP MIME-headers, C
 variables of the Apache server or <tt>struct tm</tt> fields of the Unix
@@ -770,7 +769,7 @@ for special cases where it is better to match the negative pattern or as a
 last default rule.
 
 <p>
-<table width=70% border=2 bgcolor="#c0c0e0" cellspacing=0 cellpadding=10>
+<table width="70%" border=2 bgcolor="#c0c0e0" cellspacing=0 cellpadding=10>
 <tr><td>
 <b>Notice!</b> When using the NOT character to negate a pattern you cannot
 have grouped wildcard parts in the pattern. This is impossible because when
@@ -814,7 +813,7 @@ conjunction with the <b>C</b> (chain) flag to be able to have more than one
 pattern to be applied before a substitution occurs.
 
 <p>
-<table width=70% border=2 bgcolor="#c0c0e0" cellspacing=0 cellpadding=10>
+<table width="70%" border=2 bgcolor="#c0c0e0" cellspacing=0 cellpadding=10>
 <tr><td>
 <b>Notice</b>: There is a special feature. When you prefix a substitution
 field with <tt>http://</tt><em>thishost</em>[<em>:thisport</em>] then
@@ -962,7 +961,7 @@ comma-separated list of the following flags:
     typical example is the use of <tt>mod_alias</tt> and
     <tt>mod_rewrite</tt>..
 <p>
-<table width=70% border=2 bgcolor="#c0c0e0" cellspacing=0 cellpadding=10>
+<table width="70%" border=2 bgcolor="#c0c0e0" cellspacing=0 cellpadding=10>
 <tr><td>
 <font size=-1>
     <b>For the Apache hackers:</b><br>
@@ -995,7 +994,7 @@ comma-separated list of the following flags:
 </ul>
 
 <p>
-<table width=70% border=2 bgcolor="#c0c0e0" cellspacing=0 cellpadding=10>
+<table width="70%" border=2 bgcolor="#c0c0e0" cellspacing=0 cellpadding=10>
 <tr><td>
 Remember: Never forget that <em>Pattern</em> gets applied to a complete URL
 in per-server configuration files. <b>But in per-directory configuration
@@ -1012,7 +1011,7 @@ external redirect or proxy throughput (if flag <b>P</b> is used!) is forced!
 </table>
 
 <p>
-<table width=70% border=2 bgcolor="#c0c0e0" cellspacing=0 cellpadding=10>
+<table width="70%" border=2 bgcolor="#c0c0e0" cellspacing=0 cellpadding=10>
 <tr><td>
 Notice!  To enable the rewriting engine for per-directory configuration files
 you need to set ``<tt>RewriteEngine On</tt>'' in these files <b>and</b>
@@ -1119,10 +1118,6 @@ request ``<tt>GET /somepath/localpath/pathinfo</tt>'':</b><br>
 </tr>
 </table>
 
-
-</td>
-</tr>
-</table>
 
 <p>
 <b>Example:</b>
