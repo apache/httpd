@@ -2235,7 +2235,7 @@ static int uncompress(request_rec *r, int method,
     if (n == 0) {
 	apr_pool_destroy(sub_context);
 	ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
-	    MODNAME ": read failed %s", r->filename);
+	    MODNAME ": read failed from uncompress of %s", r->filename);
 	return -1;
     }
     apr_pool_destroy(sub_context);
