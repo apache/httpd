@@ -1533,6 +1533,36 @@ API_EXPORT(int) ap_pclosef(pool *a, int fd)
     return res;
 }
 
+#ifdef WIN32
+static void h_cleanup(void *fdv)
+{
+    CloseHandle((HANDLE) fdv);
+}
+
+API_EXPORT(void) ap_note_cleanups_for_h(pool *p, HANDLE hDevice)
+{
+    ap_register_cleanup(p, (void *) hDevice, h_cleanup, h_cleanup);
+}
+
+API_EXPORT(int) ap_pcloseh(pool *a, HANDLE hDevice)
+{
+    int res=0;
+    int save_errno;
+
+    ap_block_alarms();
+    
+    if (!CloseHandle(hDevice)) {
+        res = GetLastError();
+    }
+    
+    save_errno = errno;
+    ap_kill_cleanup(a, (void *) hDevice, h_cleanup);
+    ap_unblock_alarms();
+    errno = save_errno;
+    return res;
+}
+#endif
+
 /* Note that we have separate plain_ and child_ cleanups for FILE *s,
  * since fclose() would flush I/O buffers, which is extremely undesirable;
  * we just close the descriptor.
@@ -2012,11 +2042,138 @@ API_EXPORT(int) ap_spawn_child_err(pool *p, int (*func) (void *), void *data,
     return pid;
 }
 
-
-API_EXPORT(int) ap_spawn_child_err_buff(pool *p, int (*func) (void *), void *data,
-				     enum kill_conditions kill_how,
-			   BUFF **pipe_in, BUFF **pipe_out, BUFF **pipe_err)
+API_EXPORT(int) ap_spawn_child_err_buff(pool *p, int (*func) (void *, child_info *), void *data,
+					enum kill_conditions kill_how,
+					BUFF **pipe_in, BUFF **pipe_out, BUFF **pipe_err)
 {
+#ifdef WIN32
+    SECURITY_ATTRIBUTES sa = {0};  
+    HANDLE hPipeOutputRead  = NULL;
+    HANDLE hPipeOutputWrite = NULL;
+    HANDLE hPipeInputRead   = NULL;
+    HANDLE hPipeInputWrite  = NULL;
+    HANDLE hPipeErrorRead   = NULL;
+    HANDLE hPipeErrorWrite  = NULL;
+    int pid = 0;
+    child_info info;
+
+
+    ap_block_alarms();
+
+    /*
+     *  First thing to do is to create the pipes that we will use for stdin, stdout, and
+     *  stderr in the child process.
+     */      
+    sa.nLength = sizeof(sa);
+    sa.bInheritHandle = TRUE;
+    sa.lpSecurityDescriptor = NULL;
+
+
+    /* Create pipes for standard input/output/error redirection. */
+    if (pipe_in && !CreatePipe(&hPipeInputRead, &hPipeInputWrite, &sa, 0))
+	return 0;
+
+    if (pipe_out && !CreatePipe(&hPipeOutputRead, &hPipeOutputWrite, &sa, 0)) {
+	if(pipe_in) {
+	    CloseHandle(hPipeInputRead);
+	    CloseHandle(hPipeInputWrite);
+	}
+	return 0;
+    }
+
+    if (pipe_err && !CreatePipe(&hPipeErrorRead, &hPipeErrorWrite, &sa, 0)) {
+	if(pipe_in) {
+	    CloseHandle(hPipeInputRead);
+	    CloseHandle(hPipeInputWrite);
+	}
+	if(pipe_out) {
+	    CloseHandle(hPipeOutputRead);
+	    CloseHandle(hPipeOutputWrite);
+	}
+	return 0;
+    }
+
+    /* The script writes stdout to this pipe handle */
+    info.hPipeOutputWrite = hPipeOutputWrite;  
+
+    /* The script reads stdin from this pipe handle */
+    info.hPipeInputRead = hPipeInputRead;
+
+    /* The script writes stderr to this pipe handle */
+    info.hPipeErrorWrite = hPipeErrorWrite;    
+     
+    /*
+     *  Try to launch the CGI.  Under the covers, this call 
+     *  will try to pick up the appropriate interpreter if 
+     *  one is needed.
+     */
+    pid = func(data, &info);
+    if (pid == -1) {
+        /* Things didn't work, so cleanup */
+        pid = 0;   /* map Win32 error code onto Unix default */
+        CloseHandle(hPipeOutputRead);
+        CloseHandle(hPipeInputWrite);
+        CloseHandle(hPipeErrorRead);
+    }
+    else {
+        if (pipe_out) {
+            /*
+             *  This pipe represents stdout for the script, 
+             *  so we read from this pipe.
+             */
+	    /* Create a read buffer */
+            *pipe_out = ap_bcreate(p, B_RD);
+
+	    /* Setup the cleanup routine for the handle */
+            ap_note_cleanups_for_h(p, hPipeOutputRead);   
+
+	    /* Associate the handle with the new buffer */
+            ap_bpushh(*pipe_out, hPipeOutputRead);
+        }
+        
+        if (pipe_in) {
+            /*
+             *  This pipe represents stdin for the script, so we 
+             *  write to this pipe.
+             */
+	    /* Create a write buffer */
+            *pipe_in = ap_bcreate(p, B_WR);             
+
+	    /* Setup the cleanup routine for the handle */
+            ap_note_cleanups_for_h(p, hPipeInputWrite);
+
+	    /* Associate the handle with the new buffer */
+            ap_bpushh(*pipe_in, hPipeInputWrite);
+
+        }
+      
+        if (pipe_err) {
+            /*
+             *  This pipe represents stderr for the script, so 
+             *  we read from this pipe.
+             */
+	    /* Create a read buffer */
+            *pipe_err = ap_bcreate(p, B_RD);
+
+	    /* Setup the cleanup routine for the handle */
+            ap_note_cleanups_for_h(p, hPipeErrorRead);
+
+	    /* Associate the handle with the new buffer */
+            ap_bpushh(*pipe_err, hPipeErrorRead);
+        }
+    }  
+
+
+    /*
+     * Now that handles have been inherited, close them to be safe.
+     * You don't want to read or write to them accidentally, and we
+     * sure don't want to have a handle leak.
+     */
+    CloseHandle(hPipeOutputWrite);
+    CloseHandle(hPipeInputRead);
+    CloseHandle(hPipeErrorWrite);
+
+#else
     int fd_in, fd_out, fd_err;
     int pid, save_errno;
 
@@ -2051,6 +2208,7 @@ API_EXPORT(int) ap_spawn_child_err_buff(pool *p, int (*func) (void *), void *dat
 	ap_note_cleanups_for_fd(p, fd_err);
 	ap_bpushfd(*pipe_err, fd_err, fd_err);
     }
+#endif
 
     ap_unblock_alarms();
     return pid;

@@ -235,7 +235,14 @@ static int ap_read(BUFF *fb, void *buf, int nbyte)
 {
     int rv;
     
-    rv = read(fb->fd_in, buf, nbyte);
+#ifdef WIN32
+    if (fb->hFH != INVALID_HANDLE_VALUE) {
+        if (!ReadFile(fb->hFH,buf,nbyte,&rv,NULL))
+            rv = -1;
+    }
+    else
+#endif
+	rv = read(fb->fd_in, buf, nbyte);
     
     return rv;
 }
@@ -263,10 +270,17 @@ static int ap_write(BUFF *fb, const void *buf, int nbyte)
 {
     int rv;
     
+#ifdef WIN32
+    if (fb->hFH != INVALID_HANDLE_VALUE) {
+        if (!WriteFile(fb->hFH,buf,nbyte,&rv,NULL))
+          rv = -1;
+    }
+    else
+#endif
 #if defined (B_SFIO)
-    rv = sfwrite(fb->sf_out, buf, nbyte);
+	rv = sfwrite(fb->sf_out, buf, nbyte);
 #else
-    rv = write(fb->fd, buf, nbyte);
+	rv = write(fb->fd, buf, nbyte);
 #endif
     
     return rv;
@@ -340,6 +354,9 @@ API_EXPORT(BUFF *) ap_bcreate(pool *p, int flags)
 
     fb->fd = -1;
     fb->fd_in = -1;
+#ifdef WIN32
+    fb->hFH = INVALID_HANDLE_VALUE;
+#endif
 
 #ifdef B_SFIO
     fb->sf_in = NULL;
@@ -361,6 +378,16 @@ API_EXPORT(void) ap_bpushfd(BUFF *fb, int fd_in, int fd_out)
     fb->fd = fd_out;
     fb->fd_in = fd_in;
 }
+
+#ifdef WIN32
+/*
+ * Push some Win32 handles onto the stream.
+ */
+API_EXPORT(void) ap_bpushh(BUFF *fb, HANDLE hFH)
+{
+    fb->hFH = hFH;
+}
+#endif
 
 API_EXPORT(int) ap_bsetopt(BUFF *fb, int optname, const void *optval)
 {
@@ -1373,6 +1400,10 @@ API_EXPORT(int) ap_bclose(BUFF *fb)
 	else {
 	    rc3 = 0;
 	}
+    }
+    else if (fb->hFH != INVALID_HANDLE_VALUE) {
+	    rc2 = ap_pcloseh(fb->pool, fb->hFH);
+	    rc3 = 0;
     }
     else {
 #endif

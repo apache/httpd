@@ -1,5 +1,10 @@
 Changes with Apache 1.3b7
 
+  *) WIN32: CGIs could cause a hang (because of a deadlock in the standard C
+     library), so CGI handling has been changed to use Win32 native handles
+	 instead of C file descriptors.
+	 [Ben Laurie and Bill Stoddard <wgstodda@us.ibm.com>] PR#1129, 1607
+
   *) The proxy cache would store an incorrect content-length in the cached
      file copy after a cache update. That resulted in repeated fetching
      of the original copy instead of using the cached copy.

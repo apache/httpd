@@ -281,7 +281,7 @@ struct cgi_child_stuff {
     char *argv0;
 };
 
-static int cgi_child(void *child_stuff)
+static int cgi_child(void *child_stuff, child_info *pinfo)
 {
     struct cgi_child_stuff *cld = (struct cgi_child_stuff *) child_stuff;
     request_rec *r = cld->r;
@@ -327,7 +327,7 @@ static int cgi_child(void *child_stuff)
 
     ap_cleanup_for_exec();
 
-    child_pid = ap_call_exec(r, argv0, env, 0);
+    child_pid = ap_call_exec(r, pinfo, argv0, env, 0);
 #ifdef WIN32
     return (child_pid);
 #else
@@ -429,9 +429,9 @@ static int cgi_handler(request_rec *r)
      * SSI request -djg
      */
     if (!ap_spawn_child_err_buff(r->main ? r->main->pool : r->pool, cgi_child,
-			            (void *) &cld,
-			       kill_after_timeout,
-			       &script_out, &script_in, &script_err)) {
+			         (void *) &cld,
+			         kill_after_timeout,
+			         &script_out, &script_in, &script_err)) {
 	ap_log_error(APLOG_MARK, APLOG_ERR, r->server,
 		    "couldn't spawn child process: %s", r->filename);
 	return SERVER_ERROR;

@@ -651,7 +651,7 @@ API_EXPORT(piped_log *) ap_open_piped_log (pool *p, const char *program)
 {
     piped_log *pl;
     FILE *dummy;
-    
+
     if (!spawn_child (p, piped_log_child, (void *)program,
 		kill_after_timeout, &dummy, NULL)) {
 	perror ("spawn_child");
@@ -661,6 +661,7 @@ API_EXPORT(piped_log *) ap_open_piped_log (pool *p, const char *program)
     pl = ap_palloc (p, sizeof (*pl));
     pl->p = p;
     pl->write_f = dummy;
+
     return pl;
 }
 

@@ -729,6 +729,7 @@ static int handle_include(FILE *in, request_rec *r, const char *error, int noexe
     }
 }
 
+#ifndef WIN32
 typedef struct {
     request_rec *r;
     char *s;
@@ -825,7 +826,7 @@ static int include_cmd(char *s, request_rec *r)
                                  */
     return 0;
 }
-
+#endif
 
 static int handle_exec(FILE *in, request_rec *r, const char *error)
 {
@@ -839,6 +840,10 @@ static int handle_exec(FILE *in, request_rec *r, const char *error)
             return 1;
         }
         if (!strcmp(tag, "cmd")) {
+#ifdef WIN32
+            ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r->server,
+                        "cmd in SSI temporarily disabled");
+#else
             parse_string(r, tag_val, parsed_string, sizeof(parsed_string), 1);
             if (include_cmd(parsed_string, r) == -1) {
                 ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r->server,
@@ -850,6 +855,7 @@ static int handle_exec(FILE *in, request_rec *r, const char *error)
             /* just in case some stooge changed directories */
 #ifndef WIN32
             ap_chdir_file(r->filename);
+#endif
 #endif
         }
         else if (!strcmp(tag, "cgi")) {

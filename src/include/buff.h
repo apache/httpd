@@ -117,6 +117,9 @@ struct buff_struct {
 /* could also put pointers to the basic I/O routines here */
     int fd;			/* the file descriptor */
     int fd_in;			/* input file descriptor, if different */
+#ifdef WIN32
+    HANDLE hFH;			/* Windows filehandle */
+#endif
 
     /* transport handle, for RPC binding handle or some such */
     void *t_handle;
@@ -142,6 +145,9 @@ extern Sfdisc_t *bsfio_new(pool *p, BUFF *b);
 /* Stream creation and modification */
 API_EXPORT(BUFF *) ap_bcreate(pool *p, int flags);
 API_EXPORT(void) ap_bpushfd(BUFF *fb, int fd_in, int fd_out);
+#ifdef WIN32
+API_EXPORT(void) ap_bpushh(BUFF *fb, HANDLE hFH);
+#endif
 API_EXPORT(int) ap_bsetopt(BUFF *fb, int optname, const void *optval);
 API_EXPORT(int) ap_bgetopt(BUFF *fb, int optname, void *optval);
 API_EXPORT(int) ap_bsetflag(BUFF *fb, int flag, int value);
@@ -191,9 +197,20 @@ API_EXPORT(int) ap_bfilbuf(BUFF *fb);
 		     ?os_toascii[(unsigned char)c]:(c), 0))
 
 #endif /*CHARSET_EBCDIC*/
-API_EXPORT(int) ap_spawn_child_err_buff(pool *, int (*)(void *), void *,
-		      enum kill_conditions, BUFF **pipe_in, BUFF **pipe_out,
-				     BUFF **pipe_err);
+typedef struct {
+#ifdef WIN32
+    /*
+     *  These handles are used by ap_call_exec to call 
+     *  create process with pipe handles.
+     */
+    HANDLE hPipeInputRead;
+    HANDLE hPipeOutputWrite;
+    HANDLE hPipeErrorWrite;
+#endif
+} child_info;
+API_EXPORT(int) ap_spawn_child_err_buff(pool *, int (*)(void *, child_info *), void *,
+					enum kill_conditions, BUFF **pipe_in, BUFF **pipe_out,
+					BUFF **pipe_err);
 
 /* enable non-blocking operations */
 API_EXPORT(int) ap_bnonblock(BUFF *fb, int direction);

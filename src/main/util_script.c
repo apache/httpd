@@ -586,7 +586,7 @@ static char **create_argv_cmd(pool *p, char *av0, const char *args, char *path)
 #endif
 
 
-API_EXPORT(int) ap_call_exec(request_rec *r, char *argv0, char **env, int shellcmd)
+API_EXPORT(int) ap_call_exec(request_rec *r, child_info *pinfo, char *argv0, char **env, int shellcmd)
 {
     int pid = 0;
 #if defined(RLIMIT_CPU)  || defined(RLIMIT_NPROC) || \
@@ -715,6 +715,12 @@ API_EXPORT(int) ap_call_exec(request_rec *r, char *argv0, char **env, int shellc
 	char *dot;
 	char *exename;
 	int is_exe = 0;
+	STARTUPINFO si;
+	PROCESS_INFORMATION pi;
+	char *pCommand;
+
+	memset(&si, 0, sizeof(si));
+	memset(&pi, 0, sizeof(pi));
 
 	interpreter[0] = 0;
 
@@ -770,6 +776,108 @@ API_EXPORT(int) ap_call_exec(request_rec *r, char *argv0, char **env, int shellc
 	    }
 	}
 
+	/*
+	 * Make child process use hPipeOutputWrite as standard out,
+	 * and make sure it does not show on screen.
+	 */
+	si.cb = sizeof(si);
+	si.dwFlags     = STARTF_USESHOWWINDOW | STARTF_USESTDHANDLES;
+	si.wShowWindow = SW_HIDE;
+	si.hStdInput   = pinfo->hPipeInputRead;
+	si.hStdOutput  = pinfo->hPipeOutputWrite;
+	si.hStdError   = pinfo->hPipeErrorWrite;
+	
+	pid = -1;      
+	if ((!r->args) || (!r->args[0]) || strchr(r->args, '=')) { 
+	    if (is_exe || is_binary) {
+	        /*
+	         * When the CGI is a straight binary executable, 
+		 * we can run it as is
+	         */
+	        pCommand = r->filename;
+	    }
+	    else if (is_script) {
+                /* When an interpreter is needed, we need to create 
+                 * a command line that has the interpreter name
+                 * followed by the CGI script name.  
+		 */
+	        pCommand = ap_pstrcat(r->pool, interpreter + 2, " ", 
+				      r->filename, NULL);
+	    }
+	    else {
+	        /* If not an executable or script, just execute it
+                 * from a command prompt.  
+                 */
+	        pCommand = ap_pstrcat(r->pool, "CMD.EXE", " /C ", 
+				      r->filename, NULL);
+	    }
+	}
+	else {
+
+            /* If we are in this leg, there are some other arguments
+             * that we must include in the execution of the CGI.
+             * Because CreateProcess is the way it is, we have to
+             * create a command line like format for the execution
+             * of the CGI.  This means we need to create on long
+             * string with the executable and arguments.
+             *
+             * The arguments string comes in the request structure,
+             * and each argument is separated by a '+'.  We'll replace
+             * these pluses with spaces.
+	     */
+	    char *arguments=NULL;
+	    int iStringSize = 0;
+	    int x;
+	    
+	    /*
+	     *  Duplicate the request structure string so we don't change it.
+	     */                                   
+	    arguments = ap_pstrdup(r->pool, r->args);
+       
+	    /*
+	     *  Change the '+' to ' '
+	     */
+	    for (x=0; arguments[x]; x++) {
+	        if ('+' == arguments[x]) {
+		  arguments[x] = ' ';
+		}
+	    }
+       
+	    /*
+	     * We need to unescape any characters that are 
+             * in the arguments list.
+	     */
+	    ap_unescape_url(arguments);
+	    arguments = ap_escape_shell_cmd(r->pool, arguments);
+           
+	    /*
+	     * The argument list should now be good to use, 
+	     * so now build the command line.
+	     */
+	    if (is_exe || is_binary) {
+	        pCommand = ap_pstrcat(r->pool, r->filename, " ", 
+				      arguments, NULL);
+	    }
+	    else if (is_script) {
+	        pCommand = ap_pstrcat(r->pool, interpreter + 2, " ", 
+				      r->filename, " ", arguments, NULL);
+	    }
+	    else {
+	        pCommand = ap_pstrcat(r->pool, "CMD.EXE", " /C ", 
+				      r->filename, " ", arguments, NULL);
+	    }
+	}
+	
+	if (CreateProcess(NULL, pCommand, NULL, NULL, TRUE, 0, env, NULL, &si, &pi)) {
+	  pid = pi.dwProcessId;
+	  /*
+	   * We must close the handles to the new process and its main thread
+	   * to prevent handle and memory leaks.
+	   */ 
+	  CloseHandle(pi.hProcess);
+	  CloseHandle(pi.hThread);
+	}
+#if 0
 	if ((!r->args) || (!r->args[0]) || strchr(r->args, '=')) {
 	    if (is_exe || is_binary) {
 		pid = spawnle(_P_NOWAIT, r->filename, r->filename, NULL, env);
@@ -800,6 +908,7 @@ API_EXPORT(int) ap_call_exec(request_rec *r, char *argv0, char **env, int shellc
 					      r->filename), env);
 	    }
 	}
+#endif
 	return (pid);
     }
 #else
