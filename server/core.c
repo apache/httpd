@@ -3306,7 +3306,7 @@ AP_DECLARE_NONSTD(int) ap_core_translate(request_rec *r)
                                    | APR_FILEPATH_SECUREROOT, r->pool))
                     != APR_SUCCESS) {
             ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
-                         "URI in request %s maps to invalid filename", r->the_request);
+                         "Cannot map %s to file", r->the_request);
             return HTTP_FORBIDDEN;
         }
         r->canonical_filename = r->filename;
@@ -3329,7 +3329,7 @@ AP_DECLARE_NONSTD(int) ap_core_translate(request_rec *r)
                                    | APR_FILEPATH_SECUREROOT, r->pool))
                     != APR_SUCCESS) {
             ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
-                         "URI in request %s maps to invalid filename", r->the_request);
+                         "Cannot map %s to file", r->the_request);
             return HTTP_FORBIDDEN;
         }
         r->canonical_filename = r->filename;
