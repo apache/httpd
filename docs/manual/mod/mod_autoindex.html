@@ -62,7 +62,7 @@ The two functions are separated so that you can completely remove
 <Strong>Context:</strong> server config, virtual host, directory, .htaccess<br>
 <Strong>Override:</strong> Indexes<br>
 <strong>Status:</strong> Base<br>
-<strong>Module:</strong> mod_dir<p>
+<strong>Module:</strong> mod_autoindex<p>
 
 This sets the alternate text to display for a file, instead of an icon, for
 <A HREF="#fancyindexing">FancyIndexing</A>. <em>File</em> is a file
@@ -79,7 +79,7 @@ image-incapable or has image loading disabled.
 <Strong>Context:</strong> server config, virtual host, directory, .htaccess<br>
 <Strong>Override:</strong> Indexes<br>
 <strong>Status:</strong> Base<br>
-<strong>Module:</strong> mod_dir<p>
+<strong>Module:</strong> mod_autoindex<p>
 
 This sets the alternate text to display for a file, instead of an icon, for
 <A HREF="#fancyindexing">FancyIndexing</A>. <em>MIME-encoding</em> is a
@@ -95,7 +95,7 @@ image-incapable or has image loading disabled.
 <Strong>Context:</strong> server config, virtual host, directory, .htaccess<br>
 <Strong>Override:</strong> Indexes<br>
 <strong>Status:</strong> Base<br>
-<strong>Module:</strong> mod_dir<p>
+<strong>Module:</strong> mod_autoindex<p>
 
 This sets the alternate text to display for a file, instead of an icon, for
 <A HREF="#fancyindexing">FancyIndexing</A>. <em>MIME-type</em> is a
@@ -112,7 +112,7 @@ image-incapable or has image loading disabled.
 <Strong>Context:</strong> server config, virtual host, directory, .htaccess<br>
 <Strong>Override:</strong> Indexes<br>
 <strong>Status:</strong> Base<br>
-<strong>Module:</strong> mod_dir<p>
+<strong>Module:</strong> mod_autoindex<p>
 
 This sets the description to display for a file, for
 <A HREF="#fancyindexing">FancyIndexing</A>. <em>File</em> is a file
@@ -128,7 +128,7 @@ to describe. <em>String</em> is enclosed in double quotes
 <Strong>Context:</strong> server config, virtual host, directory, .htaccess<br>
 <Strong>Override:</strong> Indexes<br>
 <strong>Status:</strong> Base<br>
-<strong>Module:</strong> mod_dir<p>
+<strong>Module:</strong> mod_autoindex<p>
 
 This sets the icon to display next to a file ending in <em>name</em> for
 <A HREF="#fancyindexing">FancyIndexing</A>. <em>Icon</em> is either a
@@ -154,7 +154,7 @@ AddIcon, when possible.<p><hr>
 <Strong>Context:</strong> server config, virtual host, directory, .htaccess<br>
 <Strong>Override:</strong> Indexes<br>
 <strong>Status:</strong> Base<br>
-<strong>Module:</strong> mod_dir<p>
+<strong>Module:</strong> mod_autoindex<p>
 
 This sets the icon to display next to files with
 <em>mime-encoding</em> for <A HREF="#fancyindexing">FancyIndexing</A>.
@@ -174,7 +174,7 @@ AddIconByEncoding /icons/compress.xbm x-compress
 <Strong>Context:</strong> server config, virtual host, directory, .htaccess<br>
 <Strong>Override:</strong> Indexes<br>
 <strong>Status:</strong> Base<br>
-<strong>Module:</strong> mod_dir<p>
+<strong>Module:</strong> mod_autoindex<p>
 
 This sets the icon to display next to files of type <em>mime-type</em> for
 <A HREF="#fancyindexing">FancyIndexing</A>. <em>Icon</em> is either a
@@ -193,7 +193,7 @@ AddIconByType (IMG,/icons/image.xbm) image/*
 <Strong>Context:</strong> server config, virtual host, directory, .htaccess<br>
 <Strong>Override:</strong> Indexes<br>
 <strong>Status:</strong> Base<br>
-<strong>Module:</strong> mod_dir<p>
+<strong>Module:</strong> mod_autoindex<p>
 
 The DefaultIcon directive sets the icon to display for files when no
 specific icon is known, for <A HREF="#fancyindexing">FancyIndexing</A>.
@@ -208,7 +208,7 @@ DefaultIcon /icon/unknown.xbm
 <Strong>Context:</strong> server config, virtual host, directory, .htaccess<br>
 <Strong>Override:</strong> Indexes<br>
 <strong>Status:</strong> Base<br>
-<strong>Module:</strong> mod_dir<p>
+<strong>Module:</strong> mod_autoindex<p>
 
 The FancyIndexing directive sets the FancyIndexing option for a directory.
 <em>Boolean</em> can be <code>on</code> or <code>off</code>. The
@@ -221,7 +221,7 @@ preference.<p><hr>
 <Strong>Context:</strong> server config, virtual host, directory, .htaccess<br>
 <Strong>Override:</strong> Indexes<br>
 <strong>Status:</strong> Base<br>
-<strong>Module:</strong> mod_dir<p>
+<strong>Module:</strong> mod_autoindex<p>
 
 The HeaderName directive sets the name of the file that will be inserted
 at the top of the index listing. <em>Filename</em> is the name of the file
@@ -242,7 +242,7 @@ it will include the plain text file <code>/web/HEADER</code>, if it exists.
 <Strong>Context:</strong> server config, virtual host, directory, .htaccess<br>
 <Strong>Override:</strong> Indexes<br>
 <strong>Status:</strong> Base<br>
-<strong>Module:</strong> mod_dir<p>
+<strong>Module:</strong> mod_autoindex<p>
 
 The IndexIgnore directive adds to the list of files to hide when listing
 a directory. <em>File</em> is a file extension, partial filename,
@@ -259,7 +259,7 @@ IndexIgnore README .htaccess *~
 <Strong>Context:</strong> server config, virtual host, directory, .htaccess<br>
 <Strong>Override:</strong> Indexes<br>
 <strong>Status:</strong> Base<br>
-<strong>Module:</strong> mod_dir<p>
+<strong>Module:</strong> mod_autoindex<p>
 
 The IndexOptions directive specifies the behavior of the directory indexing.
 <em>Option</em> can be one of
@@ -332,7 +332,7 @@ directory.<p><hr>
 <Strong>Context:</strong> server config, virtual host, directory, .htaccess<br>
 <Strong>Override:</strong> Indexes<br>
 <strong>Status:</strong> Base<br>
-<strong>Module:</strong> mod_dir<p>
+<strong>Module:</strong> mod_autoindex<p>
 
 The ReadmeName directive sets the name of the file that will be appended
 to the end of the index listing. <em>Filename</em> is the name of the file
