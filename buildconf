@@ -115,14 +115,14 @@ echo rebuilding $aprutil_configure
 }
 
 echo rebuilding $pcre_configure
-(cd srclib/pcre && autoconf)
+(cd srclib/pcre && ${AUTOCONF:-autoconf})
 
 echo rebuilding $config_h_in
 rm -f $config_h_in
-autoheader 2>&1 | grep -v "$cross_compile_warning"
+${AUTOHEADER:-autoheader} 2>&1 | grep -v "$cross_compile_warning"
 
 echo rebuilding configure
 rm -f config.cache
-autoconf 2>&1 | grep -v "$cross_compile_warning"
+${AUTOCONF:-autoconf} 2>&1 | grep -v "$cross_compile_warning"
 
 exit 0
