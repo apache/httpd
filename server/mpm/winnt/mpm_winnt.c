@@ -914,8 +914,6 @@ static apr_inline apr_status_t reset_acceptex_context(PCOMP_CONTEXT context)
     SOCKET nsd;
     int rc;
 
-    context->lr->count++;
-
     /* recreate and initialize the accept socket if it is not being reused */
     apr_get_os_sock(&nsd, context->lr->sd);
     if (context->accept_socket == INVALID_SOCKET) {
@@ -959,6 +957,8 @@ static apr_inline apr_status_t reset_acceptex_context(PCOMP_CONTEXT context)
             return rc;
         }
     }
+
+    context->lr->count++;
 
     return APR_SUCCESS;
 }
