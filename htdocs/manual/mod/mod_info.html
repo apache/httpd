@@ -27,6 +27,11 @@ file, and rebuild the server:
 Module info_module   mod_info.o
 </PRE>
 
+<H2>Directives</H2>
+<UL>
+<LI><A HREF="#addmoduleinfo">AddModuleInfo</A>
+</UL>
+
 <HR>
 <P>
 To configure it, add the following to your <code>access.conf</code> file.
@@ -68,6 +73,26 @@ Once configured, the server information is obtained by accessing
   </P>
  </STRONG>
 </BLOCKQUOTE>
+
+<HR>
+
+<H2><A NAME="addmoduleinfo">AddModuleInfo</A></H2>
+<STRONG>Syntax:</STRONG> AddModuleInfo <EM>module-name string</EM><BR>
+<STRONG>Context:</STRONG> server config, virtual host<BR>
+<STRONG>Status:</STRONG> base<BR>
+<STRONG>Module:</STRONG> mod_browser<BR>
+<STRONG>Compatibility:</STRONG> Apache 1.3 and above<P>
+
+This allows the content of <EM>string</EM> to be shown as
+HTML interpreted,
+<STRONG>Additional Information</STRONG> for the module <EM>module-name</EM>.
+Example:
+<BLOCKQUOTE>
+<PRE>
+AddModuleInfo mod_auth.c 'See &lt;A HREF="http://www.apache.org/docs/mod/mod_auth.html"&gt;http://www.apache.org/docs/mod/mod_auth.html&lt;/A&gt;'
+</PRE>
+</BLOCKQUOTE>
+
 <!--#include virtual="footer.html" -->
 </BODY>
 </HTML>
