@@ -1,5 +1,5 @@
   1.3 STATUS:
-  Last modified at [$Date: 1999/12/09 16:16:57 $]
+  Last modified at [$Date: 1999/12/09 17:21:35 $]
 
 Release:
 
@@ -48,7 +48,7 @@ Available Patches:
 
     * Andrew Ford's patch (1999/12/05) to add absolute times to mod_expires
 	Message-ID: <m3wvqtcoqx.fsf@icarus.demon.co.uk>
-	Status: Martin +1
+	Status: Martin +1, Jim +1
 
     * Raymond S Brand's path to mod_autoindex to fix the header/readme
       include processing so the envariables are correct for the included
@@ -118,7 +118,7 @@ Available Patches:
 
     * Ralf's [PATCH] to add EAPI (ctx, hook, mm, etc.) to the base package
 	Message-ID: <19990414134729.A93825@engelschall.com>
-	Status: Jim +1, Mark +1, Dean +1, BenH +1,
+	Status: Jim -1 (alternatives?), Mark +1, Dean +1, BenH +1,
 		Randy +1 (please choose name other than "hook")
                 Doug +1 on concept (untested), Lars +1 on concept,
 		Martin +1 (untested), Ken -1 for 1.3.7 (too controversial,
