@@ -8,3 +8,4 @@ httpd_monitor
 suexec
 logresolve
 ab
+apxs

@@ -156,6 +156,11 @@ sed 's/#.*//' $file | \
 # Determine if shared objects are used
 using_shlib=`grep  '^SharedModule' $tmpfile >/dev/null && echo 1`
 
+# But perhaps later via apxs when just mod_so is compiled in!
+if [ ".$using_shlib" = . ]; then
+    using_shlib=`grep  '^AddModule modules/standard/mod_so.o' $tmpfile >/dev/null && echo 1`
+fi
+
 # Only "assignment" ("=") statements and Module lines
 # should be left at this point. If there is other stuff
 # we bail out
