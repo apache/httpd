@@ -227,7 +227,7 @@ int set_byterange (request_rec *r)
 	
 	r->byterange = 2;
 	table_unset(r->headers_out, "Content-Length");
-	sprintf(boundary, "%lx%lx", r->request_time, getpid());
+	sprintf(boundary, "%lx%lx", r->request_time, (long)getpid());
 	r->boundary = pstrdup(r->pool, boundary);
     }
     

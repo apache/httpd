@@ -328,7 +328,7 @@ char *log_server_port (request_rec *r, char *a) {
 
 char *log_child_pid (request_rec *r, char *a) {
     char pidnum[10];
-    sprintf(pidnum, "%ld", getpid());
+    sprintf(pidnum, "%ld", (long)getpid());
     return pstrdup(r->pool, pidnum);
 }
 /*****************************************************************
