@@ -1,6 +1,0 @@
-#!/bin/sh
-
-BUILD_BASE=`pwd`
-export BUILD_BASE
-
-${MAKE:-make} -f build/build.mk ${1+"$@"}
