@@ -139,7 +139,7 @@ static int get_rfc1413(apr_socket_t *sock, apr_pool_t *p,
 	return -1;
     }
 
-    if ((status = apr_getaddrinfo(&destsa, rmt_ip, AF_INET, RFC1413_PORT, 0,
+    if ((status = apr_getaddrinfo(&destsa, rmt_ip, APR_INET, RFC1413_PORT, 0,
                                   p)) != APR_SUCCESS) {
         /* This should not fail since we have a numeric address string
          * as the host. */

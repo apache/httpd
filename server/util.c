@@ -1876,7 +1876,7 @@ unsigned long ap_get_virthost_addr(char *w, apr_port_t *ports)
 
     hep = gethostbyname(w);
 
-    if ((!hep) || (hep->h_addrtype != AF_INET || !hep->h_addr_list[0])) {
+    if ((!hep) || (hep->h_addrtype != APR_INET || !hep->h_addr_list[0])) {
 	ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, "Cannot resolve host name %s --- exiting!", w);
 	exit(1);
     }
