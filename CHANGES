@@ -22,7 +22,7 @@ Changes with Apache 2.0.24-dev
      should make it easier to catch all bugs in these directives once.
      [Cody Sherr <csherr@covalent.net>]
 
-  *) Close a major resource leak.  Everytime we had issued a
+  *) Close a major resource leak.  Every time we had issued a
      graceful restart, we leaked a socket descriptor.
      [Ryan Bloom]
 
@@ -41,7 +41,7 @@ Changes with Apache 2.0.24-dev
      [Ryan Bloom]
 
   *) The worker MPM now handles shutdown and restart requests.  It
-     definately isn't perfect, but we do stop the servers correctly.
+     definitely isn't perfect, but we do stop the servers correctly.
      The biggest problem right now is that SIGHUP causes the server to
      just die.  [Ryan Bloom]
 
