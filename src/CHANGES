@@ -1,5 +1,8 @@
 Changes with Apache 1.3b7
 
+  *) PORT: Dynamic Shared Object (DSO) support for OpenBSD 2.x
+     [Peter Galbavy, Ralf S. Engelschall] PR#2109
+
   *) Fix the path to the ScoreBoardFile in the install-config target, too.
      [Ralf S. Engelschall] PR#2105
 

@@ -61,6 +61,7 @@ Committed Code Changes:
     * Ralf's back-compat in configure for EXTRA_xxx parameter names
     * Ralf's configure fix to avoid side-effects in Configure on exported vars
     * Ralf's fix for the install-config target to get correct ScoreBoardFile
+    * Dynamic Shared Object (DSO) support for OpenBSD 2.x
 
 Available Patches:
 
