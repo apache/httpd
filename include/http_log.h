@@ -62,6 +62,8 @@
 extern "C" {
 #endif
 
+#include "apr_thread_proc.h"
+
 #ifdef HAVE_SYSLOG
 #include <syslog.h>
 
