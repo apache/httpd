@@ -223,12 +223,16 @@ void mod_auth_ldap_build_filter(char *filtbuf,
     filtbuf_end = filtbuf + FILTER_LENGTH - 1;
     for (p = user, q=filtbuf + strlen(filtbuf);
          *p && q < filtbuf_end; *q++ = *p++) {
+#if APR_HAS_MICROSOFT_LDAPSDK
+        /* Note: The Microsoft SDK escapes for us, so is not necessary */
+#elif
         if (strchr("*()\\", *p) != NULL) {
             *q++ = '\\';
             if (q >= filtbuf_end) {
 	        break;
 	    }
         }
+#endif
     }
     *q = '\0';
 
