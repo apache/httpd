@@ -50,6 +50,7 @@ application/ocsp-request
 application/ocsp-response
 application/octet-stream	bin dms lha lzh exe class so dll
 application/oda			oda
+application/ogg			ogg
 application/parityfec
 application/pdf			pdf
 application/pgp-encrypted
