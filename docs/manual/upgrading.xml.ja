@@ -45,7 +45,7 @@
       <li><a href="mod/mod_proxy.html">Proxy モジュール</a> は
       HTTP/1.1 に対応するために再構成されました。重要な変更点としては、
       プロキシのアクセス制御が <code>&lt;Directory proxy:&gt;</code> ブロックの
-      代わりに <directive module="mod_proxy"type="section">Proxy</directive>
+      代わりに <directive module="mod_proxy" type="section">Proxy</directive>
       ブロックに置かれるようになった、というものがあります。</li>
 
       <li>モジュールの中には、<code>PATH_INFO</code> (本当のファイル名の後に続く
