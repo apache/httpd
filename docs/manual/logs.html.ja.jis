@@ -4,29 +4,54 @@
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-      --><title>ログファイル - Apache HTTP サーバ</title><link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" /><link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" /><link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link href="./images/favicon.ico" rel="shortcut icon" /></head><body id="manual-page"><div id="page-header"><p class="menu"><a href="./mod/">モジュール</a> | <a href="./mod/directives.html">ディレクティブ</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">用語</a> | <a href="./sitemap.html">サイトマップ</a></p><p class="apache">Apache HTTP サーバ バージョン 2.0</p><img alt="" src="./images/feather.gif" /></div><div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="./images/left.gif" /></a></div><div id="path"><a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP サーバ</a> &gt; <a href="http://httpd.apache.org/docs-project/">ドキュメンテーション</a> &gt; <a href="./">バージョン 2.0</a></div><div id="page-content"><div id="preamble"><h1>ログファイル</h1>
-    <p>ウェブサーバを効果的に管理するためには、サーバの活動やパフォーマンス、
-    今発生しているかもしれない問題に関するフィードバックを得ることが必要です。
-    Apache HTTP サーバには非常に包括的で柔軟なロギング機能があります。
+      -->
+<title>ログファイル - Apache HTTP サーバ</title>
+<link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
+<link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
+<link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
+<link href="./images/favicon.ico" rel="shortcut icon" /></head>
+<body id="manual-page"><div id="page-header">
+<p class="menu"><a href="./mod/">モジュール</a> | <a href="./mod/directives.html">ディレクティブ</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">用語</a> | <a href="./sitemap.html">サイトマップ</a></p>
+<p class="apache">Apache HTTP サーバ バージョン 2.1</p>
+<img alt="" src="./images/feather.gif" /></div>
+<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="./images/left.gif" /></a></div>
+<div id="path">
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP サーバ</a> &gt; <a href="http://httpd.apache.org/docs-project/">ドキュメンテーション</a> &gt; <a href="./">バージョン 2.1</a></div><div id="page-content"><div id="preamble"><h1>ログファイル</h1>
+    <p>ウェブサーバを効果的に管理するためには、サーバの活動やパフォーマンス、
+    今発生しているかもしれない問題に関するフィードバックを得ることが必要です。
+    Apache HTTP サーバには非常に包括的で柔軟なロギング機能があります。
     この文書はロギング機能の設定の仕方と、ログに何が書かれているかを
     理解するための方法を説明します。</p>
-  </div><div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#security">
-    セキュリティに関する警告</a></li><li><img alt="" src="./images/down.gif" /> <a href="#errorlog">エラーログ</a></li><li><img alt="" src="./images/down.gif" /> <a href="#accesslog">アクセスログ</a></li><li><img alt="" src="./images/down.gif" /> <a href="#rotation">ログの交替</a></li><li><img alt="" src="./images/down.gif" /> <a href="#piped">パイプ経由のログ</a></li><li><img alt="" src="./images/down.gif" /> <a href="#virtualhosts">バーチャルホスト</a></li><li><img alt="" src="./images/down.gif" /> <a href="#other">他のログファイル</a></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div><div class="section"><h2><a name="security" id="security">
+  </div>
+<div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#security">
+    セキュリティに関する警告</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#errorlog">エラーログ</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#accesslog">アクセスログ</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#rotation">ログの交替</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#piped">パイプ経由のログ</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#virtualhosts">バーチャルホスト</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#other">他のログファイル</a></li>
+</ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="security" id="security">
     セキュリティに関する警告</a></h2>
 
-    <p>Apache がログファイルを書いているディレクトリに書き込める人は、
+    <p>Apache がログファイルを書いているディレクトリに書き込める人は、
     ほぼ確実にサーバが起動された uid へのアクセスを手に入れることができます。
     そして、それは通常は root ユーザです。
     ちゃんと結果を考えることなく、そのディレクトリへの
-    書き込み権限を与え<em>ない</em>でください。詳しくは
+    書き込み権限を与え<em>ない</em>でください。詳しくは
     <a href="misc/security_tips.html">セキュリティのこつ</a>の文書を
     読んでください。</p>
 
     <p>加えて、ログファイルにはクライアントからの情報がそのまま、
     エスケープされることなく書かれています。ですから、悪意のある
-    クライアントがログファイルに制御文字を挿入することができます。
+    クライアントがログファイルに制御文字を挿入することができます。
     生のログを扱うときは注意してください。</p>
-  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div><div class="section"><h2><a name="errorlog" id="errorlog">エラーログ</a></h2>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="errorlog" id="errorlog">エラーログ</a></h2>
     
     <table class="related"><tr><th>関連モジュール</th><th>関連ディレクティブ</th></tr><tr><td /><td><ul><li><code class="directive"><a href="./mod/core.html#errorlog">ErrorLog</a></code></li><li><code class="directive"><a href="./mod/core.html#loglevel">LogLevel</a></code></li></ul></td></tr></table>
 
@@ -43,7 +68,7 @@
     Unix システムではエラーを <code>syslog</code> や
     <a href="#piped">パイプでプログラムに送る</a> ことができます。</p>
 
-    <p>エラーログの書式は比較的自由度の高いもので、説明的に書かれています。
+    <p>エラーログの書式は比較的自由度の高いもので、説明的に書かれています。
     ただし、いくつかの情報はほとんどのエラーログのエントリにあります。
     例えば、代表的なものに次のようなメッセージがあります。</p>
 
@@ -83,7 +108,9 @@
     <div class="example"><p><code>
       tail -f error_log
     </code></p></div>
-  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div><div class="section"><h2><a name="accesslog" id="accesslog">アクセスログ</a></h2>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="accesslog" id="accesslog">アクセスログ</a></h2>
     
 
     <table class="related"><tr><th>関連モジュール</th><th>関連ディレクティブ</th></tr><tr><td><ul><li><code class="module"><a href="./mod/mod_log_config.html">mod_log_config</a></code></li><li><code class="module"><a href="./mod/mod_setenvif.html">mod_setenvif</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/mod_log_config.html#customlog">CustomLog</a></code></li><li><code class="directive"><a href="./mod/mod_log_config.html#logformat">LogFormat</a></code></li><li><code class="directive"><a href="./mod/mod_setenvif.html#setenvif">SetEnvIf</a></code></li></ul></td></tr></table>
@@ -162,7 +189,7 @@
 	<dd>これはサーバへリクエストをしたクライアント (リモートホスト)
 	の IP アドレスです。<code class="directive"><a href="./mod/core.html#hostnamelookups">HostnameLookups</a></code> が
 	<code>On</code> の場合は、サーバはホスト名を調べて、
-	IP アドレスが書かれているところに記録します。しかし、この設定は
+	IP アドレスが書かれているところに記録します。しかし、この設定は
 	サーバをかなり遅くするので、あまりお勧めできません。
 	そうではなく、<a href="programs/logresolve.html">logresolve</a> の
 	ようなログの後処理を行なうプログラムでホスト名を調べるのが良いでしょう。
@@ -350,7 +377,9 @@
     サーバの活動の完全な記録である方がより役に立ちます。単純にログファイルを
     後処理して、考慮したくないログを削除する方が簡単であることがよくあります。</p>
     
-  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div><div class="section"><h2><a name="rotation" id="rotation">ログの交替</a></h2>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="rotation" id="rotation">ログの交替</a></h2>
     
 
     <p>普通の負荷のサーバでさえ、ログファイルに保存される情報の量は
@@ -380,7 +409,9 @@
     </code></p></div>
 
     <p>ログの交替をするもう一つの方法は<a href="#piped">パイプ経由のログ</a>を使うもので、次の節で説明されています。</p>
-  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div><div class="section"><h2><a name="piped" id="piped">パイプ経由のログ</a></h2>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="piped" id="piped">パイプ経由のログ</a></h2>
     
 
     <p>Apache httpd はエラーログとアクセスログをファイルに直接書く代わりに、
@@ -431,7 +462,9 @@
     <p>条件付きロギングと同様、パイプ経由のログは非常に強力な
     道具ですが、オフラインの後処理のような、より簡単な解決方法があるときは
     使わない方が良いでしょう。</p>
-  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div><div class="section"><h2><a name="virtualhosts" id="virtualhosts">バーチャルホスト</a></h2>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="virtualhosts" id="virtualhosts">バーチャルホスト</a></h2>
     
 
     <p>多くの <a href="vhosts/">バーチャルホスト</a> のあるサーバを実行している
@@ -472,7 +505,9 @@
     <p>残念ながら、エラーログには同様の手法はありません。ですから、
     すべてのバーチャルホストを同じエラーログの中に混ぜるか、
     バーチャルホスト毎にエラーログを使うかを選ばなければなりません。</p>
-  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div><div class="section"><h2><a name="other" id="other">他のログファイル</a></h2>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="other" id="other">他のログファイル</a></h2>
     
 
     <table class="related"><tr><th>関連モジュール</th><th>関連ディレクティブ</th></tr><tr><td><ul><li><code class="module"><a href="./mod/mod_cgi.html">mod_cgi</a></code></li><li><code class="module"><a href="./mod/mod_rewrite.html">mod_rewrite</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/mpm_common.html#pidfile">PidFile</a></code></li><li><code class="directive"><a href="./mod/mod_rewrite.html#rewritelog">RewriteLog</a></code></li><li><code class="directive"><a href="./mod/mod_rewrite.html#rewriteloglevel">RewriteLogLevel</a></code></li><li><code class="directive"><a href="./mod/mod_cgi.html#scriptlog">ScriptLog</a></code></li><li><code class="directive"><a href="./mod/mod_cgi.html#scriptlogbuffer">ScriptLogBuffer</a></code></li><li><code class="directive"><a href="./mod/mod_cgi.html#scriptloglength">ScriptLogLength</a></code></li></ul></td></tr></table>
@@ -510,4 +545,8 @@
       書き換える方法の詳細な解析が出力されます。詳しさの度合は <code class="directive"><a href="./mod/mod_rewrite.html#rewriteloglevel">RewriteLogLevel</a></code>
       で制御できます。</p>
     
-  </div></div><div id="footer"><p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p><p class="menu"><a href="./mod/">モジュール</a> | <a href="./mod/directives.html">ディレクティブ</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">用語</a> | <a href="./sitemap.html">サイトマップ</a></p></div></body></html>
+  </div></div>
+<div id="footer">
+<p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p>
+<p class="menu"><a href="./mod/">モジュール</a> | <a href="./mod/directives.html">ディレクティブ</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">用語</a> | <a href="./sitemap.html">サイトマップ</a></p></div>
+</body></html>

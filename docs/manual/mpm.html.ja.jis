@@ -4,25 +4,44 @@
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-      --><title>マルチプロセッシングモジュール (MPM) - Apache HTTP サーバ</title><link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" /><link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" /><link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link href="./images/favicon.ico" rel="shortcut icon" /></head><body id="manual-page"><div id="page-header"><p class="menu"><a href="./mod/">モジュール</a> | <a href="./mod/directives.html">ディレクティブ</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">用語</a> | <a href="./sitemap.html">サイトマップ</a></p><p class="apache">Apache HTTP サーバ バージョン 2.0</p><img alt="" src="./images/feather.gif" /></div><div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="./images/left.gif" /></a></div><div id="path"><a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP サーバ</a> &gt; <a href="http://httpd.apache.org/docs-project/">ドキュメンテーション</a> &gt; <a href="./">バージョン 2.0</a></div><div id="page-content"><div id="preamble"><h1>マルチプロセッシングモジュール (MPM)</h1>
-<p>この文書ではマルチプロセッシングモジュールがどのようなもので、
-Apache HTTP サーバでどのように使用されるかについて解説しています。</p>
-</div><div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#introduction">はじめに</a></li><li><img alt="" src="./images/down.gif" /> <a href="#choosing">MPM を選ぶ</a></li><li><img alt="" src="./images/down.gif" /> <a href="#defaults">MPM デフォルト値</a></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div><div class="section"><h2><a name="introduction" id="introduction">はじめに</a></h2>
+      -->
+<title>マルチプロセッシングモジュール (MPM) - Apache HTTP サーバ</title>
+<link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
+<link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
+<link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
+<link href="./images/favicon.ico" rel="shortcut icon" /></head>
+<body id="manual-page"><div id="page-header">
+<p class="menu"><a href="./mod/">モジュール</a> | <a href="./mod/directives.html">ディレクティブ</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">用語</a> | <a href="./sitemap.html">サイトマップ</a></p>
+<p class="apache">Apache HTTP サーバ バージョン 2.1</p>
+<img alt="" src="./images/feather.gif" /></div>
+<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="./images/left.gif" /></a></div>
+<div id="path">
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP サーバ</a> &gt; <a href="http://httpd.apache.org/docs-project/">ドキュメンテーション</a> &gt; <a href="./">バージョン 2.1</a></div><div id="page-content"><div id="preamble"><h1>マルチプロセッシングモジュール (MPM)</h1>
+<p>この文書ではマルチプロセッシングモジュールがどのようなもので、
+Apache HTTP サーバでどのように使用されるかについて解説しています。</p>
+</div>
+<div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#introduction">はじめに</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#choosing">MPM を選ぶ</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#defaults">MPM デフォルト値</a></li>
+</ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="introduction" id="introduction">はじめに</a></h2>
 
-    <p>Apache HTTP サーバは異なる幅広い環境、多種多様なプラットホームで
+    <p>Apache HTTP サーバは異なる幅広い環境、多種多様なプラットホームで
     動作するように、パワフルで柔軟性に富んだ設計になっています。
     異なるプラットホーム・異なる環境ではしばしば、
     異なる機能が必要になったり、
-    同じ機能でも効率のために異なる実装が必要になったりします。
+    同じ機能でも効率のために異なる実装が必要になったりします。
     Apache ではモジュール化された設計により幅広い環境に適応してきました。
     この設計のおかげで、管理者は
     コンパイル時または実行時にどのモジュールをロードするか選ぶことによって、
-    どの機能をサーバに取り込むか選択することがができます。</p>
+    どの機能をサーバに取り込むか選択することがができます。</p>
 
     <p>Apache 2.0 では、
     このモジュール化された設計をサーバの基本機能にまで拡張しました。
     サーバには精選されたマルチプロセッシングモジュール (MPM) 
-    が付いてきて、これらはマシンのネットワークポートをバインドしたり、
+    が付いてきて、これらはマシンのネットワークポートをバインドしたり、
     リクエストを受け付けたり、リクエストを扱うよう子プロセスに割り当てたり、
     といった役割を持ちます。</p>
 
@@ -43,7 +62,7 @@ Apache HTTP サーバでどのように使用されるかについて解説しています。</
 
       <li>サーバは特定のサイト向けに、より上手にカスタマイズできます。
       例えば、非常に大きなスケーラビリティを必要とするサイトでは、
-      <code class="module"><a href="./mod/worker.html">worker</a></code> といったスレッド化された
+      <code class="module"><a href="./mod/worker.html">worker</a></code> といったスレッド化された
       MPM を利用できる一方で、安定性や古いソフトウェアとの互換性を
       必要とするサイトでは <code class="module"><a href="./mod/prefork.html">prefork</a></code>
       が利用できます。また、
@@ -59,7 +78,9 @@ Apache HTTP サーバでどのように使用されるかについて解説しています。</
     利用可能な MPM は 
     <a href="mod/">module インデックス</a>にあります。</p>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div><div class="section"><h2><a name="choosing" id="choosing">MPM を選ぶ</a></h2>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="choosing" id="choosing">MPM を選ぶ</a></h2>
 
     <p>MPM は設定中に選択して、サーバ内部にコンパイルされなければ
     なりません。
@@ -67,7 +88,7 @@ Apache HTTP サーバでどのように使用されるかについて解説しています。</
     そもそもスレッドが使われているということを知る必要があります。
     MPM には Unix 上でスレッドを用いるものや、スレッドをまったく
     使わないものがあるので、
-    Apache は、MPM が設定中に選択されて Apache 内部に組み込まれた場合の方が
+    Apache は、MPM が設定中に選択されて Apache 内部に組み込まれた場合の方が
     常により良いパフォーマンスを発揮します。</p>
 
     <p>望みの MPM を実際に選ぶためには、./configure スクリプトで
@@ -79,7 +100,9 @@ Apache HTTP サーバでどのように使用されるかについて解説しています。</
     このコマンドは、MPM
     を含め、サーバにコンパイルで組み込まれたモジュール全てを
     列挙します。</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div><div class="section"><h2><a name="defaults" id="defaults">MPM デフォルト値</a></h2>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="defaults" id="defaults">MPM デフォルト値</a></h2>
 
 <p>次表に様々な OS 向けのデフォルトの MPM 一覧を掲載しています。
 コンパイル時に意図的に他を選択しなければ、自動的にこれらの MPM
@@ -91,4 +114,8 @@ Apache HTTP サーバでどのように使用されるかについて解説しています。</
 <tr><td>Unix</td><td><code class="module"><a href="./mod/prefork.html">prefork</a></code></td></tr>
 <tr><td>Windows</td><td><code class="module"><a href="./mod/mpm_winnt.html">mpm_winnt</a></code></td></tr>
 </table>
-</div></div><div id="footer"><p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p><p class="menu"><a href="./mod/">モジュール</a> | <a href="./mod/directives.html">ディレクティブ</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">用語</a> | <a href="./sitemap.html">サイトマップ</a></p></div></body></html>
+</div></div>
+<div id="footer">
+<p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p>
+<p class="menu"><a href="./mod/">モジュール</a> | <a href="./mod/directives.html">ディレクティブ</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">用語</a> | <a href="./sitemap.html">サイトマップ</a></p></div>
+</body></html>
