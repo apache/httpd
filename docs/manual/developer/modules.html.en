@@ -13,6 +13,8 @@
  ALINK="#FF0000"
 >
 
+<!--#include virtual="header.html" -->
+
 <H1 ALIGN="CENTER">From Apache 1.3 to Apache 2.0<br>Modules</H1>
 
 <p>
@@ -190,6 +192,7 @@ ap_hook_process_connection
 ap_hook_child_init_hook
 </li>
 
+<!--#include virtual="footer.html" -->
 
 </body>
 </html>
