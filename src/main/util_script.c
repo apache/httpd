@@ -50,7 +50,7 @@
  *
  */
 
-/* $Id: util_script.c,v 1.21 1996/08/20 11:51:25 paul Exp $ */
+/* $Id: util_script.c,v 1.22 1996/08/20 20:18:13 akosut Exp $ */
 
 
 #define CORE_PRIVATE
@@ -352,9 +352,11 @@ void send_size(size_t size, request_rec *r) {
     else if(size < 1024) 
         strcpy(ss, "   1k");
     else if(size < 1048576)
-        sprintf(ss, "%4dk", size / 1024);
+        sprintf(ss, "%4dk", (size + 512) / 1024);
+    else if(size < 103809024)
+	sprintf(ss, "%4.1fM", size / 1048576.0);
     else
-        sprintf(ss, "%4dM", size / 1048576);
+        sprintf(ss, "%4dM", (size + 524288) / 1048576);
     rputs(ss, r);
 }
 
