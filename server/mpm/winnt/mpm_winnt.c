@@ -66,7 +66,6 @@
 #include "ap_mpm.h"
 #include "ap_config.h"
 #include "ap_listen.h"
-#include "../os/win32/getopt.h"
 #include "mpm_default.h"
 #include "../os/win32/iol_socket.h"
 #include "winnt.h"
@@ -1583,7 +1582,11 @@ die_now:
 static void winnt_pre_config(ap_context_t *pconf, ap_context_t *plog, ap_context_t *ptemp) 
 {
     char *pid;
-    one_process=1;//!!getenv("ONE_PROCESS");
+#if 0
+    one_process=1;
+#else
+    one_process = !!getenv("ONE_PROCESS");
+#endif
 
     osver.dwOSVersionInfoSize = sizeof(OSVERSIONINFO);
     GetVersionEx(&osver);

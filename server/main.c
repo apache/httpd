@@ -263,7 +263,7 @@ static void usage(process_rec *process)
 
 ap_context_t *g_pHookPool;
 
-extern char *optarg;
+API_VAR_IMPORT char *optarg;
 
 #ifdef WIN32
 API_EXPORT_NONSTD(int) apache_main(int argc, char *argv[])
