@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/01/01 00:24:17 $]
+Last modified at [$Date: 2003/01/01 00:57:01 $]
 
 Release:
 
@@ -57,9 +57,6 @@ Contributors looking for a mission:
 
 PATCHES TO PORT FROM 2.1
     * Use saner default config values for suexec. PR 15713.
-
-    * mod_mime: Workaround to prevent a segfault if r->filename=NULL
-      +1: brianp, jim, jerenkrantz
 
     * Rewrite how proxy sends its request to allow input bodies to 
       morph the request bodies.  Previously, if an input filter

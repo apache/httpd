@@ -1,5 +1,8 @@
 Changes with Apache 2.0.45
 
+  *) mod_mime: Workaround to prevent a segfault if r->filename=NULL
+     [Brian Pane]
+ 
   *) Reorder the definitions for mod_ldap and mod_auth_ldap within
      config.m4 to make sure the parent mod_ldap is defined first.
      This ensures that mod_ldap comes before mod_auth_ldap in the
