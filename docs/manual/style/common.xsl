@@ -27,35 +27,15 @@
   </xsl:variable>
 
 
-
   <!--                              -->
   <!-- Builds the moduleindex page  -->
   <!--                              -->
   <xsl:template match="moduleindex">
     <html>
-      <head>
-        <title>
-          <xsl:value-of select="title"/>
-          <xsl:value-of select="$messages/message[@name='apachetitle']"/>
-        </title>
-        
-        <link rel="stylesheet" type="text/css" href="../style/manual.css" />
-      </head>
-      
+      <xsl:call-template name="head"/>
       <body>
         <blockquote>
-          <div align="center">
-            <img src="../images/sub.gif">
-              <xsl:attribute name="alt">
-                <xsl:value-of select="$messages/message[@name='apachedocalt']"/>
-              </xsl:attribute>
-            </img>
-            
-            <h3>
-              <xsl:value-of select="$messages/message[@name='apachehttpserver']"/>
-            </h3>
-          </div>
-          
+          <xsl:call-template name="top"/>  
           <h1 align="center">
             <xsl:value-of select="title"/>
           </h1>
@@ -104,28 +84,8 @@
             </xsl:for-each>
           </dl>
         </blockquote>
-          
-        <!-- Page footer -->
         <hr />
-          
-        <h3 align="center">
-          <xsl:value-of select="$messages/message[@name='apachehttpserver']"/>
-        </h3>
-          
-        <a href="./">
-          <img src="../images/index.gif">
-            <xsl:attribute name="alt">
-              <xsl:value-of select="$messages/message[@name='index']"/>
-            </xsl:attribute>
-          </img>
-        </a>
-        <a href="../">
-          <img src="../images/home.gif">
-            <xsl:attribute name="alt">
-              <xsl:value-of select="$messages/message[@name='home']"/>
-            </xsl:attribute>
-          </img>
-        </a>
+        <xsl:call-template name="bottom"/>
       </body>
     </html>
   </xsl:template> 
@@ -139,29 +99,10 @@
   <!--                                                    -->
   <xsl:template match="directiveindex">
     <html>
-      <head>
-        <title>
-          <xsl:value-of select="title"/>
-          <xsl:value-of select="$messages/message[@name='apachetitle']"/>
-        </title>
-        
-        <link rel="stylesheet" type="text/css" href="../style/manual.css" />
-      </head>
-      
+      <xsl:call-template name="head"/>
       <body>
         <blockquote>
-          <div align="center">
-            <img src="../images/sub.gif">
-              <xsl:attribute name="alt">
-                <xsl:value-of select="$messages/message[@name='apachedocalt']"/>
-              </xsl:attribute>
-            </img>
-            
-            <h3>
-              <xsl:value-of select="$messages/message[@name='apachehttpserver']"/>
-            </h3>
-          </div>
-          
+          <xsl:call-template name="top"/>
           <h1 align="center">
             <xsl:value-of select="title"/>
           </h1>
@@ -182,34 +123,12 @@
             </xsl:for-each>
           </ul>
         </blockquote>
-        
-        <!-- Page footer -->
         <hr />
-        
-        <h3 align="center">
-          <xsl:value-of select="$messages/message[@name='apachehttpserver']"/>
-        </h3>
-        
-        <a href="./">
-          <img src="../images/index.gif">
-            <xsl:attribute name="alt">
-              <xsl:value-of select="$messages/message[@name='index']"/>
-            </xsl:attribute>
-          </img>
-        </a>
-        <a href="../">
-          <img src="../images/home.gif">
-            <xsl:attribute name="alt">
-              <xsl:value-of select="$messages/message[@name='home']"/>
-            </xsl:attribute>
-          </img>
-        </a>
+        <xsl:call-template name="bottom"/>
       </body>
     </html>
   </xsl:template> 
   <!-- /directiveindex -->
-
-
 
   <!--                                                    -->
   <!-- <manualpage>                                       -->
@@ -217,35 +136,10 @@
   <!--                                                    -->
   <xsl:template match="manualpage">
     <html>
-      <head>
-        <xsl:comment> 
-          XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-                This file is generated from xml source: DO NOT EDIT
-          XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-        </xsl:comment>
-        
-        <title>
-          <xsl:value-of select="title"/>
-          <xsl:value-of select="$messages/message[@name='apachetitle']"/>
-        </title>
-        
-        <link rel="stylesheet" type="text/css" href="{$path}/style/manual.css" />
-      </head>
-     
+      <xsl:call-template name="head"/>
       <body>
         <blockquote>
-          <div align="center">
-            <img src="{$path}/images/sub.gif">
-              <xsl:attribute name="alt">
-                <xsl:value-of select="$messages/message[@name='apachedocalt']"/>
-              </xsl:attribute>
-            </img>
-            
-            <h3>
-              <xsl:value-of select="$messages/message[@name='apachehttpserver']"/>
-            </h3>
-          </div>
-          
+          <xsl:call-template name="top"/>          
           <h1 align="center">
             <xsl:value-of select="title"/>
           </h1>
@@ -275,29 +169,9 @@
           </xsl:if>
           
           <xsl:apply-templates select="section"/>
+          <hr />
         </blockquote>
-       
-        <!-- Page footer -->
-        <hr/>
-        
-        <h3 align="center">
-          <xsl:value-of select="$messages/message[@name='apachehttpserver']"/>
-        </h3>
-        
-        <a href="./">
-          <img src="{$path}/images/index.gif">
-            <xsl:attribute name="alt">
-              <xsl:value-of select="$messages/message[@name='index']"/>
-            </xsl:attribute>
-          </img>
-        </a>
-        <a href="{$path}/">
-          <img src="{$path}/images/home.gif">
-            <xsl:attribute name="alt">
-              <xsl:value-of select="$messages/message[@name='home']"/>
-            </xsl:attribute>
-          </img>
-        </a>
+        <xsl:call-template name="bottom"/>
       </body>
     </html>
   </xsl:template>
@@ -311,35 +185,10 @@
   <!--                                                    -->
   <xsl:template match="modulesynopsis">
     <html>
-      <head>
-        <xsl:comment> 
-          XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-                This file is generated from xml source: DO NOT EDIT
-          XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-        </xsl:comment>
-        
-        <title>
-          <xsl:value-of select="name"/>
-          <xsl:value-of select="$messages/message[@name='apachetitle']"/>
-        </title>
-        
-        <link rel="stylesheet" type="text/css" href="../style/manual.css" />
-      </head>
-      
+      <xsl:call-template name="head"/>
       <body>
         <blockquote>
-          <div align="center">
-            <img src="../images/sub.gif">
-              <xsl:attribute name="alt">
-                <xsl:value-of select="$messages/message[@name='apachedocalt']"/>
-              </xsl:attribute>
-            </img>
-            
-            <h3>
-              <xsl:value-of select="$messages/message[@name='apachehttpserver']"/>
-            </h3>
-          </div>
-          
+          <xsl:call-template name="top"/>
           <h1 align="center">
             <xsl:value-of select="$messages/message[@name='apachemodule']"/>
             <xsl:text> </xsl:text> 
@@ -485,31 +334,66 @@
             <xsl:sort select="name"/>
           </xsl:apply-templates> 
         </blockquote>
-        
-        <!-- Page footer -->
-        <h3 align="center">
-          <xsl:value-of select="$messages/message[@name='apachehttpserver']"/>
-        </h3>
-        
-        <a href="./">
-          <img src="../images/index.gif">
-            <xsl:attribute name="alt">
-              <xsl:value-of select="$messages/message[@name='index']"/>
-            </xsl:attribute>
-          </img>
-        </a>
-        <a href="../">
-          <img src="../images/home.gif">
-            <xsl:attribute name="alt">
-              <xsl:value-of select="$messages/message[@name='home']"/>
-            </xsl:attribute>
-          </img>
-        </a>
+        <xsl:call-template name="bottom"/>
       </body>
     </html>
   </xsl:template>
   <!-- /modulesynopsis -->
 
+
+  <!--                                                            -->
+  <!--    Utility templates for constructing pages                -->
+  <!--                                                            -->
+
+  <xsl:template name="head">
+    <head>
+      <title>
+        <xsl:value-of select="title"/>
+        <xsl:value-of select="$messages/message[@name='apachetitle']"/>
+      </title>
+      
+      <link rel="stylesheet" type="text/css" href="{$path}/style/manual.css" />
+    </head>
+  </xsl:template>
+
+  <xsl:template name="top">
+    <div align="center">
+      <img src="{$path}/images/sub.gif">
+        <xsl:attribute name="alt">
+          <xsl:value-of select="$messages/message[@name='apachedocalt']"/>
+        </xsl:attribute>
+      </img>
+            
+      <h3>
+        <xsl:value-of select="$messages/message[@name='apachehttpserver']"/>
+      </h3>
+    </div>
+  </xsl:template>
+
+  <xsl:template name="bottom">
+    <h3 align="center">
+      <xsl:value-of select="$messages/message[@name='apachehttpserver']"/>
+    </h3>
+    
+    <a href="./">
+      <img src="{$path}/images/index.gif">
+        <xsl:attribute name="alt">
+          <xsl:value-of select="$messages/message[@name='index']"/>
+        </xsl:attribute>
+      </img>
+    </a>
+    <a href="{$path}/">
+      <img src="{$path}/images/home.gif">
+        <xsl:attribute name="alt">
+          <xsl:value-of select="$messages/message[@name='home']"/>
+        </xsl:attribute>
+      </img>
+    </a>
+  </xsl:template>
+
+  <!--                                                            -->
+  <!--    Sections and Subsections                                -->
+  <!--                                                            -->
 
 
   <!-- Subsections: get a lower level heading -->
@@ -596,6 +480,9 @@
     </li>
   </xsl:template>
 
+  <!--                                                            -->
+  <!--    Directivesynopsis                                       -->
+  <!--                                                            -->
 
 
   <xsl:template match="directivesynopsis">
@@ -784,10 +671,12 @@
   <!-- Passes through content                             -->
   <!--                                                    -->
   <xsl:template match="modulelist">
-    <xsl:apply-templates select="module"/>
+    <xsl:for-each select="module">
+      <xsl:call-template name="module"/>
+      <xsl:if test="not(position()=last())">, </xsl:if>
+    </xsl:for-each>
   </xsl:template> 
   <!-- /modulelist -->
-
 
 
   <!--                                                    -->
@@ -941,10 +830,6 @@
         <xsl:value-of select="."/>
       </a>
     </code>
-    
-    <xsl:if test="parent::modulelist">
-      <xsl:if test="not(position()=last())">, </xsl:if>
-    </xsl:if>
   </xsl:template> 
   <!-- /module -->
 
