@@ -275,6 +275,7 @@ int invoke_handler (request_rec *r)
    module *modp;
    handler_rec *handp;
    char *content_type = r->content_type ? r->content_type : default_type (r);
+   char *handler = r->handler ? r->handler : r->content_type;
   
    /* Pass one --- direct matches */
    
@@ -283,7 +284,7 @@ int invoke_handler (request_rec *r)
        if (!modp->handlers) continue;
        
        for (handp = modp->handlers; handp->content_type; ++handp) {
-	   if (!strcasecmp (content_type, handp->content_type)) {
+	   if (!strcasecmp (handler, handp->content_type)) {
 	       int result = (*handp->handler)(r);
 
 	       if (result != DECLINED) return result;
@@ -305,7 +306,7 @@ int invoke_handler (request_rec *r)
 
 	   len = starp - handp->content_type;
 	   
-	   if (!len || !strncasecmp (content_type, handp->content_type, len))
+	   if (!len || !strncasecmp (handler, handp->content_type, len))
 	   {
 	       int result = (*handp->handler)(r);
 

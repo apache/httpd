@@ -347,6 +347,8 @@ struct request_rec {
   table *notes;
 
   char *content_type;		/* Break these out --- we dispatch on 'em */
+  char *handler;		/* What we *really* dispatch on           */
+
   char *content_encoding;
   char *content_language;
   
