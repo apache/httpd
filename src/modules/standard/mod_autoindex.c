@@ -961,7 +961,8 @@ static int index_directory(request_rec *r, autoindex_config_rec *autoindex_conf)
     char direction;
 
     if (!(d = popendir(r->pool, name))) {
-        log_reason ("Can't open directory for index", r->filename, r);
+        aplog_error(APLOG_MARK, APLOG_ERR, r->server,
+		    "Can't open directory for index: %s", r->filename);
         return HTTP_FORBIDDEN;
     }
 
@@ -1037,10 +1038,10 @@ static int index_directory(request_rec *r, autoindex_config_rec *autoindex_conf)
             p = p->next;
         }
     
-        qsort((void *)ar, num_ent, sizeof(struct ent *),
 #ifdef ULTRIX_BRAIN_DEATH
-              (int (*))dsortf);
+        qsort((void *)ar, num_ent, sizeof(struct ent *), (int (*))dsortf);
 #else
+        qsort((void *)ar, num_ent, sizeof(struct ent *),
               (int (*)(const void *, const void *))dsortf);
 #endif
     }
@@ -1048,13 +1049,13 @@ static int index_directory(request_rec *r, autoindex_config_rec *autoindex_conf)
 		       direction);
     pclosedir(r->pool, d);
 
-    if (autoindex_opts & FANCY_INDEXING)
+    if (autoindex_opts & FANCY_INDEXING) {
         if ((tmp = find_readme(autoindex_conf, r)))
             insert_readme(name, tmp, "", HRULE, END_MATTER, r);
-    else {
-        rputs("</UL>", r);
+	else {
+	    rputs("</UL>", r);
+	}
     }
-
     rputs ("</BODY></HTML>\n", r);
 
     kill_timeout(r);
@@ -1066,8 +1067,8 @@ static int index_directory(request_rec *r, autoindex_config_rec *autoindex_conf)
 static int handle_autoindex (request_rec *r)
 {
     autoindex_config_rec *d =
-      (autoindex_config_rec *)get_module_config (r->per_dir_config,
-      &autoindex_module);
+	(autoindex_config_rec *)get_module_config(r->per_dir_config,
+						  &autoindex_module);
     int allow_opts = allow_options (r);
 
     if (r->method_number != M_GET) return NOT_IMPLEMENTED;
@@ -1084,8 +1085,10 @@ static int handle_autoindex (request_rec *r)
             r->filename = pstrcat (r->pool, r->filename, "/", NULL);
         }
         return index_directory (r, d);
-    } else {
-        log_reason ("Directory index forbidden by rule", r->filename, r);
+    }
+     else {
+        aplog_error(APLOG_MARK, APLOG_ERR, r->server,
+		    "Directory index forbidden by rule: %s", r->filename);
         return HTTP_FORBIDDEN;
     }
 }
