@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/05/22 16:19:39 $]
+Last modified at [$Date: 2004/05/23 22:20:12 $]
 
 Release:
 
@@ -71,6 +71,13 @@ RELEASE SHOWSTOPPERS:
 PATCHES TO BACKPORT FROM 2.1
   [ please place file names and revisions from HEAD here, so it is easy to
     identify exactly what the proposed changes are! ]
+
+    *) Fix a segfault when requests for shared memory fails and returns
+       NULL. Fix a segfault caused by a lack of bounds checking on the
+       cache.
+       modules/experimental/util_ldap_cache_mgr.c r1.16
+       PR 24801
+       +1: minfrin
 
     *) Throw an error message if an attempt is made to use the LDAPTrustedCA
        or LDAPTrustedCAType directives in a VirtualHost.
