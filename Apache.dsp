@@ -42,7 +42,7 @@ RSC=rc.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /YX /c
-# ADD CPP /nologo /MD /W3 /GX /O2 /I "./include" /I "./lib/apr/include" /D "NDEBUG" /D "WIN32" /D "_CONSOLE" /D "WIN32_LEAN_AND_MEAN" /FD /c
+# ADD CPP /nologo /MD /W3 /GX /O2 /I "./include" /I "./os/win32" /I "./lib/apr/include" /D "NDEBUG" /D "WIN32" /D "_CONSOLE" /D "SHARED_MODULE" /FD /c
 # SUBTRACT CPP /YX
 # ADD BASE RSC /l 0x809 /d "NDEBUG"
 # ADD RSC /l 0x809 /d "NDEBUG"
@@ -67,7 +67,7 @@ LINK32=link.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /YX /c
-# ADD CPP /nologo /MDd /W3 /Gm /GX /ZI /Od /I "./include" /I "./lib/apr/include" /D "_DEBUG" /D "WIN32" /D "_CONSOLE" /D "WIN32_LEAN_AND_MEAN" /FD /c
+# ADD CPP /nologo /MDd /W3 /Gm /GX /ZI /Od /I "./include" /I "./os/win32" /I "./lib/apr/include" /D "_DEBUG" /D "WIN32" /D "_CONSOLE" /D "SHARED_MODULE" /FD /c
 # SUBTRACT CPP /YX
 # ADD BASE RSC /l 0x809 /d "_DEBUG"
 # ADD RSC /l 0x809 /d "_DEBUG"
@@ -88,6 +88,10 @@ LINK32=link.exe
 # Begin Group "Source Files"
 
 # PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;hpj;bat;for;f90"
+# Begin Source File
+
+SOURCE=.\main\http_main.c
+# End Source File
 # Begin Source File
 
 SOURCE=.\os\win32\main_win32.c
@@ -127,6 +131,13 @@ SOURCE=.\os\win32\apache.ico
 # Begin Source File
 
 SOURCE=.\os\win32\apache.rc
+
+!IF  "$(CFG)" == "Apache - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "Apache - Win32 Debug"
+
+!ENDIF 
+
 # End Source File
 # End Group
 # End Target
