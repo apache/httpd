@@ -1629,6 +1629,11 @@ AP_DECLARE(int) ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s )
     else 
     {
         /* A real-honest to goodness parent */
+        ap_log_error(APLOG_MARK, APLOG_NOTICE, 0, ap_server_conf,
+                     "%s configured -- resuming normal operations",
+                     ap_get_server_version());
+        ap_log_error(APLOG_MARK, APLOG_NOTICE, 0, ap_server_conf,
+                     "Server built: %s", ap_get_server_built());
 
         restart = master_main(ap_server_conf, shutdown_event, restart_event);
 
