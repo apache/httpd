@@ -1,5 +1,5 @@
 Apache HTTP Server 2.0 Documentation Status File.
-Last modified: $Date: 2001/11/16 18:57:06 $
+Last modified: $Date: 2001/12/07 19:45:10 $
 
 If you are interested in helping accomplish some of the tasks on this
 list or otherwise improving the documentation, please join the
@@ -15,18 +15,15 @@ tutorial on how to get started with making your contribution.
 
 - modules docs
     - mod_suexec: very little documentation
+    - mod_proxy: updates for 2.0
     - mod_status: updates for 2.0
     - mod_example: updates for 2.0
-
-
+    
 - man pages
     - Some of the man pages need to be updated for 2.0.  At least
       the httpd man page appears to be outdated, and perhaps other.
       After this is done, the manual/programs/ versions can be
       regenerated.
-
-- XHTML conversion
-        Status: Completed Sat, 22 Sep
 
 - MPM documentation
    - Each MPM needs to have a documentation file in manual/mod/
@@ -44,7 +41,6 @@ tutorial on how to get started with making your contribution.
                  - misc/perf-tuning.html - needs major rewrite for 2.0
                  - misc/tutorials.html - mostly not relevant to 2.0
                  - misc/stopping.html
-                 - dso.html
                  - misc/rewriteguide.html - needs cleaning in 1.3 and 2.0
                  - misc/known_client_problems.html - mostly ancient
 
@@ -98,17 +94,6 @@ tutorial on how to get started with making your contribution.
     [Need this clarified --jsl]
 
 
-
-Things to be done in both the 1.3 and 2.0 trees
-===============================================
-
-
-Tutorials
-=========
-
-* Tutorial on user authentication with Apache.  Rich Bowen has contributed
-  his tutorial from ApacheToday, but it needs to be cleaned up and put in
-  a good format for the docs.
 
 New User documentation
 ======================
