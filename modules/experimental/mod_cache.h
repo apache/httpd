@@ -179,9 +179,6 @@ typedef struct {
     /** ignore client's requests for uncached responses */
     int ignorecachecontrol;
     int ignorecachecontrol_set;
-    /* maximum amount of data to buffer on a streamed response where
-     * we haven't yet seen EOS */
-    apr_off_t max_streaming_buffer_size;
 } cache_server_conf;
 
 /* cache info information */
