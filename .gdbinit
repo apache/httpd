@@ -19,6 +19,10 @@ define rh
 	run -f /home/dgaudet/ap2/conf/mpm.conf
 end
 
+define ro
+	run -DONE_PROCESS
+end
+
 define dump_string_array
     set $a = (char **)((apr_array_header_t *)$arg0)->elts
     set $n = (int)((apr_array_header_t *)$arg0)->nelts
