@@ -164,10 +164,10 @@ CLEAN :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
 CPP=cl.exe
-CPP_PROJ=/nologo /MDd /W3 /GX /Od /I "../../include" /I "../../os/win32" /I\
+CPP_PROJ=/nologo /MDd /W3 /GX /Zi /Od /I "../../include" /I "../../os/win32" /I\
  "../../srclib/apr/include" /I "../../srclib/apr-util/include" /I\
  "../../srclib/openssl/inc32" /D "_DEBUG" /D "WIN32" /D "_WINDOWS"\
- /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\mod_tls" /FD /ZI /c 
+ /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\mod_tls" /FD /c 
 CPP_OBJS=.\Debug/
 CPP_SBRS=.
 
