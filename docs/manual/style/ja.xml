@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="iso-2022-jp"?>
-<!-- English revision: 1.4 -->
+<!DOCTYPE translations [ <!ENTITY nbsp "&#160;"> ]>
+<!-- English revision: 1.6 -->
 
-<!-- Japanese -->
+<!--                    -->
+<!-- Language: Japanese -->
+<!--                    -->
 <messages>
  <!-- Used for the moduleindex -->
  <message name="corefeatures">コア機能と MPM</message>
@@ -17,6 +20,10 @@
  <message name="moduleidentifier">モジュール識別子</message>
  <message name="compatibility">互換性</message>
 
+ <!-- Used in manualpage -->
+ <message name="relatedmodules">関連モジュール</message>
+ <message name="relateddirectives">関連ディレクティブ</message>
+
  <!-- Used in description box for directives -->
  <message name="syntax">構文</message>
  <message name="default">デフォルト</message>
@@ -28,7 +35,7 @@
  <!-- Used for directive lists -->
  <message name="directives">ディレクティブ</message>
  <message name="directive">ディレクティブ</message>
- <message name="nodirective">このモジュールにディレクティブはありません。</message>
+ <message name="nodirectives">このモジュールにディレクティブはありません。</message>
 
  <!-- Used in summaries -->
  <message name="summary">概要</message>
