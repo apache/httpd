@@ -2595,11 +2595,13 @@ ftp_handler(request_rec *r, struct cache_req *c, char *url)
 }
 
 /*  
- * This handles Netscape-SSL style "CONNECT" proxy requests.
+ * This handles Netscape CONNECT method secure proxy requests.
  * A connection is opened to the specified host and data is
  * passed through between the WWW site and the browser.
- * This code is based on the IETF document at
- * http://www.netscape.com/docs/std/tunnelling_ssl.html.
+ *
+ * This code is based on the INTERNET-DRAFT document
+ * "Tunneling SSL Through a WWW Proxy" currently at
+ * http://www.mcom.com/newsref/std/tunneling_ssl.html.
  *
  * FIXME: this is bad, because it does its own socket I/O
  *        instead of using the I/O in buff.c.  However,
