@@ -5,6 +5,7 @@
 */
 
 #include "ap_config.h"
+#include "sdbm_tune.h"   /* include the prototypes */
 
     /* The locking support:
      * Try to determine whether we should use fcntl() or flock().
