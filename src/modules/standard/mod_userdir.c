@@ -161,13 +161,10 @@ const char *set_user_dir (cmd_parms *cmd, void *dummy, char *arg)
         usertable = s_cfg->enabled_users;
     }
     else {
-        optype = O_DEFAULT;
-    }
-    /*
-     * If the first (only?) value isn't one of our keywords, just copy the
-     * string to the userdir string.
-     */
-    if (optype == O_DEFAULT) {
+	/*
+	 * If the first (only?) value isn't one of our keywords, just copy the
+	 * string to the userdir string.
+	 */
         s_cfg->userdir = pstrdup (cmd->pool, arg);
         return NULL;
     }
