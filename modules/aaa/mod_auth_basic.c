@@ -85,7 +85,7 @@
 typedef struct {
     char *auth_pwfile;
     char *auth_grpfile;
-    int auth_authoritative;
+    int authoritative;
 } auth_config_rec;
 
 static void *create_auth_dir_config(apr_pool_t *p, char *d)
@@ -94,7 +94,7 @@ static void *create_auth_dir_config(apr_pool_t *p, char *d)
 
     conf->auth_pwfile = NULL;     /* just to illustrate the default really */
     conf->auth_grpfile = NULL;    /* unless you have a broken HP cc */
-    conf->auth_authoritative = 1; /* keep the fortress secure by default */
+    conf->authoritative = 1; /* keep the fortress secure by default */
     return conf;
 }
 
@@ -108,7 +108,7 @@ static const char *set_auth_slot(cmd_parms *cmd, void *offset, const char *f,
     return ap_set_file_slot(cmd, offset, f);
 }
 
-static const command_rec auth_cmds[] =
+static const command_rec auth_basic_cmds[] =
 {
     AP_INIT_TAKE12("AuthUserFile", set_auth_slot,
                    (void *)APR_OFFSETOF(auth_config_rec, auth_pwfile),
@@ -118,14 +118,14 @@ static const command_rec auth_cmds[] =
                    OR_AUTHCFG,
                    "text file containing group names and member user IDs"),
     AP_INIT_FLAG("AuthAuthoritative", ap_set_flag_slot,
-                 (void *)APR_OFFSETOF(auth_config_rec, auth_authoritative),
+                 (void *)APR_OFFSETOF(auth_config_rec, authoritative),
                  OR_AUTHCFG,
                  "Set to 'no' to allow access control to be passed along to "
                  "lower modules if the UserID is not known to this module"),
     {NULL}
 };
 
-module AP_MODULE_DECLARE_DATA auth_module;
+module AP_MODULE_DECLARE_DATA auth_basic_module;
 
 static char *get_pw(request_rec *r, char *user, char *auth_pwfile)
 {
@@ -211,7 +211,7 @@ static apr_table_t *groups_for_user(apr_pool_t *p, char *user, char *grpfile)
 static int authenticate_basic_user(request_rec *r)
 {
     auth_config_rec *conf = ap_get_module_config(r->per_dir_config,
-                                                 &auth_module);
+                                                 &auth_basic_module);
     const char *sent_pw;
     char *real_pw;
     apr_status_t invalid_pw;
@@ -226,7 +226,7 @@ static int authenticate_basic_user(request_rec *r)
     }
 
     if (!(real_pw = get_pw(r, r->user, conf->auth_pwfile))) {
-        if (!(conf->auth_authoritative)) {
+        if (!conf->authoritative) {
             return DECLINED;
         }
         ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
@@ -251,7 +251,7 @@ static int authenticate_basic_user(request_rec *r)
 static int check_user_access(request_rec *r)
 {
     auth_config_rec *conf = ap_get_module_config(r->per_dir_config,
-                                                 &auth_module);
+                                                 &auth_basic_module);
     char *user = r->user;
     int m = r->method_number;
     int method_restricted = 0;
@@ -309,7 +309,7 @@ static int check_user_access(request_rec *r)
                 }
             }
         }
-        else if (conf->auth_authoritative) {
+        else if (conf->authoritative) {
             /* if we aren't authoritative, any require directive could be
              * valid even if we don't grok it.  However, if we are 
              * authoritative, we can warn the user they did something wrong.
@@ -326,7 +326,7 @@ static int check_user_access(request_rec *r)
         return OK;
     }
 
-    if (!(conf->auth_authoritative)) {
+    if (!conf->authoritative) {
         return DECLINED;
     }
 
@@ -344,13 +344,13 @@ static void register_hooks(apr_pool_t *p)
     ap_hook_auth_checker(check_user_access,NULL,NULL,APR_HOOK_MIDDLE);
 }
 
-module AP_MODULE_DECLARE_DATA auth_module =
+module AP_MODULE_DECLARE_DATA auth_basic_module =
 {
     STANDARD20_MODULE_STUFF,
     create_auth_dir_config,     /* dir config creater */
     NULL,                       /* dir merger --- default is to override */
     NULL,                       /* server config */
     NULL,                       /* merge server config */
-    auth_cmds,                  /* command apr_table_t */
+    auth_basic_cmds,            /* command apr_table_t */
     register_hooks              /* register hooks */
 };
