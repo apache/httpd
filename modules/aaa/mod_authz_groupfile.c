@@ -95,6 +95,8 @@
 #include "http_protocol.h"
 #include "http_request.h"
 
+#include "mod_auth.h"
+
 typedef struct {
     char *groupfile;
     int authoritative;
@@ -186,33 +188,26 @@ static int check_user_access(request_rec *r)
     char *user = r->user;
     int m = r->method_number;
     int required_group = 0;
-    register int x,has_entries;
+    register int x;
     const char *t, *w;
-    apr_table_t *grpstatus;
+    apr_table_t *grpstatus = NULL;
     const apr_array_header_t *reqs_arr = ap_requires(r);
     require_line *reqs;
-    apr_status_t status;
+    const char *filegroup = NULL;
+    char *reason = NULL;
+
+    /* If there is no group file - then we are not
+     * configured. So decline. 
+     */
+    if (!(conf->groupfile)) {
+        return DECLINED;
+    }
 
     if (!reqs_arr) {
         return DECLINED; /* XXX change from legacy */
     } 
     
     reqs = (require_line *)reqs_arr->elts;
-
-    /* If there is no group file - then we are not
-     * configured. So decline. 
-     */
-    if (!(conf->groupfile))
-         return DECLINED; 
-
-    if ((status = groups_for_user(r->pool, user, conf->groupfile,
-                                  &grpstatus)) != APR_SUCCESS) {
-         ap_log_rerror(APLOG_MARK, APLOG_ERR, status, r,
-                       "Could not open group file: %s", conf->groupfile);
-         return HTTP_INTERNAL_SERVER_ERROR;
-    };
-
-    has_entries = apr_table_elts(grpstatus)->nelts;
 
     for (x = 0; x < reqs_arr->nelts; x++) {
 
@@ -223,43 +218,92 @@ static int check_user_access(request_rec *r)
         t = reqs[x].requirement;
         w = ap_getword_white(r->pool, &t);
 
-        if (!strcmp(w, "group")) {
-            required_group = 1;
+        /* needs mod_authz_owner to be present */
+        if (!strcmp(w, "file-group")) {
+            filegroup = apr_table_get(r->notes, AUTHZ_GROUP_NOTE);
+            
+            if (!filegroup) {
+                /* mod_authz_owner is not present or not
+                 * authoritative. We are just a helper module for testing
+                 * group membership, so we don't care and decline.
+                 */
+                continue;
+            }
+        }
 
-            if (!has_entries) {
-                /* we will never match, so exit immediately */
-                break;
+        if (!strcmp(w, "group") || filegroup) {
+            required_group = 1; /* remember the requirement */
+
+            /* create group table only if actually needed. */
+            if (!grpstatus) {
+                apr_status_t status;
+
+                status = groups_for_user(r->pool, user, conf->groupfile,
+                                         &grpstatus);
+
+                if (status != APR_SUCCESS) {
+                    ap_log_rerror(APLOG_MARK, APLOG_ERR, status, r,
+                                  "Could not open group file: %s",
+                                  conf->groupfile);
+                    return HTTP_INTERNAL_SERVER_ERROR;
+                }
+
+                if (apr_table_elts(grpstatus)->nelts == 0) {
+                    /* no groups available, so exit immediately */
+                    reason = apr_psprintf(r->pool,
+                                          "user doesn't appear in group file "
+                                          "(%s).", conf->groupfile);
+                    break;
+                }
             }
 
-            while (t[0]) {
-                w = ap_getword_conf(r->pool, &t);
-                if (apr_table_get(grpstatus, w)) {
+            if (filegroup) {
+                if (apr_table_get(grpstatus, filegroup)) {
                     return OK;
+                }
+
+                if (conf->authoritative) {
+                    reason = apr_psprintf(r->pool,
+                                          "file group '%s' does not match.",
+                                          filegroup);
+                    break;
+                }
+
+                /* now forget the filegroup, thus alternatively require'd
+                   groups get a real chance */
+                filegroup = NULL;
+            }
+            else {
+                while (t[0]) {
+                    w = ap_getword_conf(r->pool, &t);
+                    if (apr_table_get(grpstatus, w)) {
+                        return OK;
+                    }
                 }
             }
         }
     }
 
-    /* No applicable "requires group" for this method seen */
-    if (!required_group) {
-        return DECLINED;
-    }
-
-    if (!(conf->authoritative)) {
+    /* No applicable "require group" for this method seen */
+    if (!required_group || !conf->authoritative) {
         return DECLINED;
     }
 
     ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
-                  "access to %s failed, reason: user %s not part of the "
-                  "'require'ed group(s).", r->uri, user);
-        
+                  "Authorization of user %s to access %s failed, reason: %s",
+                  r->user, r->uri,
+                  reason ? reason : "user is not part of the "
+                                    "'require'ed group(s).");
+
     ap_note_auth_failure(r);
     return HTTP_UNAUTHORIZED;
 }
 
 static void register_hooks(apr_pool_t *p)
 {
-    ap_hook_auth_checker(check_user_access,NULL,NULL,APR_HOOK_MIDDLE);
+    static const char * const aszPre[]={ "mod_authz_owner.c", NULL };
+
+    ap_hook_auth_checker(check_user_access, aszPre, NULL, APR_HOOK_MIDDLE);
 }
 
 module AP_MODULE_DECLARE_DATA authz_groupfile_module =
