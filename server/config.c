@@ -1247,7 +1247,7 @@ static void init_config_globals(ap_context_t *p)
 
 static server_rec *init_server_config(process_rec *process, ap_context_t *p)
 {
-    int errfile = STDERR_FILENO;
+    ap_os_file_t errfile = STDERR_FILENO;
     server_rec *s = (server_rec *) ap_pcalloc(p, sizeof(server_rec));
 
     s->process = process;

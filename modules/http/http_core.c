@@ -2475,7 +2475,7 @@ static int default_handler(request_rec *r)
 	    (core_dir_config *)ap_get_module_config(r->per_dir_config, &core_module);
     int rangestatus, errstatus;
     ap_file_t *fd = NULL;
-    int fd_os;
+    ap_os_file_t fd_os;
     ap_status_t status;
 #ifdef USE_MMAP_FILES
     caddr_t mm;

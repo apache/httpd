@@ -274,7 +274,7 @@ void ap_open_logs(server_rec *s_main, ap_context_t *p)
 {
     server_rec *virt, *q;
     int replace_stderr;
-    int errfile;
+    ap_os_file_t errfile;
 
     open_error_log(s_main, p);
 
@@ -316,7 +316,7 @@ void ap_open_logs(server_rec *s_main, ap_context_t *p)
 }
 
 API_EXPORT(void) ap_error_log2stderr(server_rec *s) {
-    int errfile;
+    ap_os_file_t errfile;
 
     ap_get_os_file(&errfile, s->error_log);
     if (   s->error_log != NULL
@@ -331,7 +331,7 @@ static void log_error_core(const char *file, int line, int level,
     char errstr[MAX_STRING_LEN + 1];    /* + 1 to have room for '\n' */
     size_t len;
     ap_file_t *logf = NULL;
-    int errfileno = STDERR_FILENO;
+    ap_os_file_t errfileno = STDERR_FILENO;
 
     if (s == NULL) {
 	/*
