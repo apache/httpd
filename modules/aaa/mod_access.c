@@ -175,18 +175,17 @@ static const char *allow_cmd(cmd_parms *cmd, void *dv, const char *from,
     else if ((s = strchr(where, '/'))) {
         *s++ = '\0';
         rv = apr_ipsubnet_create(&a->x.ip, where, s, cmd->pool);
-        switch(rv) {
-        case APR_SUCCESS:
-            break;
-        case APR_EINVAL: /* looked nothing like an IP address */
+        if(APR_STATUS_IS_EINVAL(rv)) {
+            /* looked nothing like an IP address */
             return "An IP address was expected";
-        default:
+        }
+        else if (rv != APR_SUCCESS) {
             apr_strerror(rv, msgbuf, sizeof msgbuf);
             return apr_pstrdup(cmd->pool, msgbuf);
         }
         a->type = T_IP;
     }
-    else if ((rv = apr_ipsubnet_create(&a->x.ip, where, NULL, cmd->pool)) != APR_EINVAL) {
+    else if (!APR_STATUS_IS_EINVAL(rv = apr_ipsubnet_create(&a->x.ip, where, NULL, cmd->pool))) {
         if (rv != APR_SUCCESS) {
             apr_strerror(rv, msgbuf, sizeof msgbuf);
             return apr_pstrdup(cmd->pool, msgbuf);
