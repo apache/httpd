@@ -626,6 +626,11 @@ indexing</td></tr>
       then httpd will read the document for the value of the
       <code>title</code> element. This is CPU and disk intensive.</dd>
 
+      <dt><a name="indexoptions.showforbidden" id="indexoptions.showforbidden">ShowForbidden</a></dt>
+
+      <dd>If specified, Apache will show files normally hidden because
+      the subrequest returned HTTP_UNAUTHORIZED or HTTP_FORBIDDEN</dd>
+
       <dt><a name="indexoptions.suppresscolumnsorting" id="indexoptions.suppresscolumnsorting">SuppressColumnSorting</a></dt>
 
       <dd>If specified, Apache will not make the column headings in a
