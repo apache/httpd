@@ -240,22 +240,18 @@ static int status_handler(request_rec *r)
     apr_time_t nowtime;
     apr_interval_time_t up_time;
     int j, i, res;
-    int ready = 0;
-    int busy = 0;
-    unsigned long count = 0;
+    int ready;
+    int busy;
+    unsigned long count;
     unsigned long lres, my_lres, conn_lres;
     apr_off_t bytes, my_bytes, conn_bytes;
-    apr_off_t bcount = 0, kbcount = 0;
+    apr_off_t bcount, kbcount;
     long req_time;
 #ifdef HAVE_TIMES
-#ifdef _SC_CLK_TCK
-    float tick = sysconf(_SC_CLK_TCK);
-#else
-    float tick = HZ;
+    float tick;
 #endif
-#endif
-    int short_report = 0;
-    int no_table_report = 0;
+    int short_report;
+    int no_table_report;
     worker_score *ws_record;
     process_score *ps_record;
     char *stat_buffer;
@@ -266,6 +262,22 @@ static int status_handler(request_rec *r)
         strcmp(r->handler, "server-status")) {
         return DECLINED;
     }
+
+#ifdef HAVE_TIMES
+#ifdef _SC_CLK_TCK
+    tick = sysconf(_SC_CLK_TCK);
+#else
+    tick = HZ;
+#endif
+#endif
+
+    ready = 0;
+    busy = 0;
+    count = 0;
+    bcount = 0;
+    kbcount = 0;
+    short_report = 0;
+    no_table_report = 0;
 
     pid_buffer = apr_palloc(r->pool, server_limit * sizeof(pid_t));
     stat_buffer = apr_palloc(r->pool, server_limit * thread_limit * sizeof(char));
