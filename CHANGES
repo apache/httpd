@@ -2,6 +2,10 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) The whole codebase was relicensed and is now available under
+     the Apache License, Version 2.0 (http://www.apache.org/licenses).
+     [Apache Software Foundation]
+
   *) FreeBSD: Use the httpready accept filter instead of dataready on
      newer levels of the OS.  [Paul Querna <chip force-elite.com>]
 
