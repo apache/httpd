@@ -1,4 +1,4 @@
-# $Id: Configuration.tmpl,v 1.32 1996/08/21 18:40:00 akosut Exp $
+# $Id: Configuration.tmpl,v 1.33 1996/09/08 13:52:39 ben Exp $
 # Config file for the Apache httpd.
 
 # Configuration.tmpl is the template for Configuration. Configuration should
@@ -86,10 +86,14 @@ RANLIB=ranlib
 #  this to 'yes'.
 #  
 #
-Rule HSREGEX=yes
 Rule STATUS=yes
 Rule SOCKS=no
-Rule BADMMAP=no
+
+# The following rules should be set automatically by Configure. However, if
+# they are not set by Configure (because we don't know the correct value for
+# your platform) you may override them here.
+Rule HSREGEX=default
+Rule BADMMAP=default
 
 ###############
 #

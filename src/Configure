@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: Configure,v 1.13 1996/08/21 18:40:02 akosut Exp $
+# $Id: Configure,v 1.14 1996/09/08 13:52:39 ben Exp $
 trap 'rm $tmpfile; exit' 0 1 2 3 15
 
 # Apache configuration script, first cut --- rst.
@@ -105,11 +105,19 @@ awk >>Makefile <$tmpfile '\
 # options) as required. Setting CC and OPTIM here has no effect
 # if they were set in Configure.
 #
+# Also, we set DEF_HSREGEX and DEF_BADMMAP to the appropriate value for each
+# platform.
+#
 # As more PLATFORMs are added to Configuration.tmpl, be sure to
 # add the required lines below.
 #
 
 PLAT=`grep "PLATFORM=" Makefile | awk '{ print $1 }' | awk -F= '{ print $2 }'`
+
+if [ "$PLAT" = "" ]; then
+	echo "PLATFORM has not been set!"
+	exit 1
+fi
 
 case "$PLAT" in
     A/UX)
@@ -199,6 +207,8 @@ case "$PLAT" in
 	CFLAGS="$CFLAGS -DSCO5"
 	LIBS="$LIBS -lsocket -lmalloc -lprot"
 	OSBPRINTF=" -K noinline"
+	DEF_HSREGEX=no
+	DEF_BADMMAP=no
 	;;
     SOLARIS2)
 	OS='Solaris 2'
@@ -233,12 +243,44 @@ case "$PLAT" in
 	;;
 esac
 
+# Extract the rules
+
+RULE_HSREGEX=`CutRule HSREGEX`
+RULE_STATUS=`CutRule STATUS`
+RULE_SOCKS=`CutRule SOCKS`
+RULE_BADMMAP=`CutRule BADMMAP`
+
+if [ "$RULE_HSREGEX" = "default" ]; then
+	if [ "$DEF_HSREGEX" = "" ]; then
+		RULE_HSREGEX=no
+	else
+		RULE_HSREGEX=$DEF_HSREGEX
+	fi
+fi
+
+if [ "$RULE_BADMMAP" = "default" ]; then
+	if [ "$DEF_BADMMAP" = "" ]; then
+		RULE_BADMMAP=no
+	else
+		RULE_BADMMAP=$DEF_BADMMAP
+	fi
+fi
+
+# Show the final values of the rules
+
+echo "# Platform: $OS" >> Makefile
+echo "# Final Rules:" >> Makefile
+echo "# Rule HSREGEX=$RULE_HSREGEX" >> Makefile
+echo "# Rule BADMMAP=$RULE_BADMMAP" >> Makefile
+echo "###############" >> Makefile
+
 #
 # Now that _that's_ done, get on with it
 #
 
 echo "Configured for $OS platform"
 echo
+
 #
 # Handle the setting of CC and OPTIM. The values in Configure
 # have priority. If not set there, then we check if they were
@@ -266,7 +308,7 @@ fi
 #
 STAT_MOD="mod_status"
 if grep "$STAT_MOD" Makefile > /dev/null; then
-    if grep "Rule:STATUS=yes" Makefile > /dev/null; then
+    if [ "$RULE_STATUS" = "yes" ]; then
 	CFLAGS="$CFLAGS -DSTATUS"
     fi
 fi
@@ -274,7 +316,7 @@ fi
 #
 # Now HS's POSIX regex implementation if needed/wanted
 #
-if grep "Rule:HSREGEX=yes" Makefile > /dev/null; then
+if [ "$RULE_HSREGEX" = "yes" ]; then
     REGLIB="regex/libregex.a"
     INCLUDES="$INCLUDES -Iregex"
 fi
@@ -282,7 +324,7 @@ fi
 #
 # Broken mmap?
 #
-if grep "Rule:BADMMAP=yes" Makefile > /dev/null; then
+if [ "$RULE_BADMMAP" = "yes" ]; then
     CFLAGS="$CFLAGS -DNO_MMAP"
 fi
 
@@ -292,7 +334,7 @@ fi
 #   adjusted EXTRA_LIBS and/or EXTRA_LFLAGS as required,
 #   otherwise we assume "-L/usr/local/lib -lsocks"
 #
-if grep "Rule:SOCKS=yes" Makefile > /dev/null; then
+if [ "$RULE_SOCKS" = "yes" ]; then
     # Set flag and check Makefile for -lsocks line
     CFLAGS="$CFLAGS -Dconnect=Rconnect -Dselect=Rselect"
     CFLAGS="$CFLAGS -Dgethostbyname=Rgethostbyname"
