@@ -180,7 +180,7 @@ struct ap_filter_t {
     ap_filter_func filter_func;
 
     /** A place to store any data associated with the current filter */
-    ap_bucket_brigade *ctx;
+    void *ctx;
 
     /** The type of filter, either AP_FTYPE_CONTENT or AP_FTYPE_CONNECTION.  
      * An AP_FTYPE_CONTENT filter modifies the data based on information 
@@ -188,8 +188,10 @@ struct ap_filter_t {
      * data based on the type of connection.
      */
     ap_filter_type ftype;
+
     /** The next filter in the chain */
     ap_filter_t *next;
+
     /** The request_rec associated with the current filter.  If a sub-request
      *  adds filters, then the sub-request is the request associated with the
      * filter.
