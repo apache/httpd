@@ -543,7 +543,7 @@ static void child_main(int child_num_arg)
 {
     apr_pool_t *ptrans;
     conn_rec *current_conn;
-    apr_status_t stat = APR_EINIT;
+    apr_status_t status = APR_EINIT;
     int sockdes, i;
     ap_listen_rec *lr;
     int curr_pollfd, last_pollfd = 0;
@@ -658,12 +658,12 @@ static void child_main(int child_num_arg)
 	 */
 	for (;;) {
             ap_sync_scoreboard_image();
-	    stat = apr_accept(&csd, sd, ptrans);
-   	    if (stat == APR_SUCCESS || !APR_STATUS_IS_EINTR(stat))
+	    status = apr_accept(&csd, sd, ptrans);
+   	    if (status == APR_SUCCESS || !APR_STATUS_IS_EINTR(status))
 	        break;
 	    }
 
-	    if (stat == APR_SUCCESS)
+	    if (status == APR_SUCCESS)
 		break;		/* We have a socket ready for reading */
 	    else {
 		/* Our old behaviour here was to continue after accept()
@@ -676,7 +676,7 @@ static void child_main(int child_num_arg)
 		 * lead to never-ending loops here.  So it seems best
 		 * to just exit in most cases.
 		 */
-                switch (stat) {
+                switch (status) {
 #ifdef EPROTO
 		    /* EPROTO on certain older kernels really means
 		     * ECONNABORTED, so we need to ignore it for them.
@@ -733,24 +733,24 @@ static void child_main(int child_num_arg)
 		      * Ben Hyde noted that temporary ENETDOWN situations
 		      * occur in mobile IP.
 		      */
-		    ap_log_error(APLOG_MARK, APLOG_EMERG, stat, ap_server_conf,
+		    ap_log_error(APLOG_MARK, APLOG_EMERG, status, ap_server_conf,
 			"apr_accept: giving up.");
 		    clean_child_exit(APEXIT_CHILDFATAL);
 #endif /*ENETDOWN*/
 
 #ifdef TPF
 		case EINACT:
-		    ap_log_error(APLOG_MARK, APLOG_EMERG, stat, ap_server_conf,
+		    ap_log_error(APLOG_MARK, APLOG_EMERG, status, ap_server_conf,
 			"offload device inactive");
 		    clean_child_exit(APEXIT_CHILDFATAL);
 		    break;
 		default:
 		    ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, ap_server_conf,
-			"select/accept error (%d)", stat);
+			"select/accept error (%d)", status);
 		    clean_child_exit(APEXIT_CHILDFATAL);
 #else
 		default:
-		    ap_log_error(APLOG_MARK, APLOG_ERR, stat, ap_server_conf,
+		    ap_log_error(APLOG_MARK, APLOG_ERR, status, ap_server_conf,
 				"apr_accept: (client socket)");
 		    clean_child_exit(1);
 #endif
