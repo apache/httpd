@@ -242,7 +242,11 @@ void add_cgi_vars(request_rec *r)
      * come with the script URI in the include command.  Ugh.
      */
     
-    if (!r->path_info || !*r->path_info || !strcmp (r->protocol, "INCLUDED")) {
+    if (!strcmp (r->protocol, "INCLUDED")) {
+        table_set (e, "SCRIPT_NAME", r->uri);
+	if (r->path_info && *r->path_info)
+	    table_set (e, "PATH_INFO", r->path_info);
+    } else if (!r->path_info || !*r->path_info) {
         table_set (e, "SCRIPT_NAME", r->uri);
     } else {
 	int path_info_start = find_path_info (r->uri, r->path_info);
