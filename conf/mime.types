@@ -89,6 +89,7 @@ multipart/appledouble
 multipart/digest
 multipart/mixed
 multipart/parallel
+text/css			css
 text/html			html htm
 text/plain			txt
 text/richtext			rtx
