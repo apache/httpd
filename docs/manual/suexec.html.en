@@ -54,18 +54,10 @@ local Apache installation.<p>
 #define DOC_ROOT "/usr/local/etc/httpd/htdocs"
 
 /*
- * NNAME -- Define this as the name for the nobody account
- *          on your operating system.  Most systems will just
- *          need the default 'nobody'.
+ * SAFE_PATH -- Define a safe PATH environment to pass to CGI executables.
+ *
  */
-#define NNAME "nobody"
-
-/* NGID -- Define this as the *number* for the nogroup group
- *         on your operating system.  Most systems will have
- *         a -1 or -2.  Others might have something above
- *         65000.
- */
-#define NGID -1
+#define SAFE_PATH "/usr/local/bin:/usr/bin:/bin"
 </pre>
 </code>
 
@@ -122,7 +114,6 @@ checks before it will execute any program passed to it for execution.
 <li>The target UID and GID <b>must be a valid user and group on this system</b>.
 <li>The target UID and GID to execute as, <b>must match the UID and GID of the directory</b>.
 <li>The target execution UID and GID <b>must not be the privledged ID 0</b>.
-<li>Group access list is set to NOGROUP and the command is executed.
 </ol>
 If any of these issues are too restrictive, or do not seem restrictive enough, you are
 welcome to install your own version of the wrapper. We've given you the rope, now go
