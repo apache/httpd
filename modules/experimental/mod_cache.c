@@ -61,6 +61,7 @@
 #include "mod_cache.h"
 
 module AP_MODULE_DECLARE_DATA cache_module;
+APR_OPTIONAL_FN_TYPE(ap_cache_generate_key) *cache_generate_key;
 
 /* -------------------------------------------------------------- */
 
@@ -147,14 +148,20 @@ static int cache_url_handler(request_rec *r)
                      "cache: URL exceeds length threshold: %s", url);
         return DECLINED;
     }
-    if (ap_cache_liststr(cc_in, "no-store", NULL) ||
-        ap_cache_liststr(pragma, "no-cache", NULL) || (auth != NULL)) {
-        /* delete the previously cached file */
-        cache_remove_url(r, cache->types, url);
-
+    if (conf->ignorecachecontrol_set == 1 && conf->ignorecachecontrol == 1 && auth == NULL) {
         ap_log_error(APLOG_MARK, APLOG_DEBUG | APLOG_NOERRNO, 0, r->server,
-                     "cache: no-store forbids caching of %s", url);
-        return DECLINED;
+            "incoming request is asking for a uncached version of %s, but we know better and are ignoring it", url);
+    }
+    else {
+        if (ap_cache_liststr(cc_in, "no-store", NULL) ||
+            ap_cache_liststr(pragma, "no-cache", NULL) || (auth != NULL)) {
+            /* delete the previously cached file */
+            cache_remove_url(r, cache->types, url);
+
+            ap_log_error(APLOG_MARK, APLOG_DEBUG | APLOG_NOERRNO, 0, r->server,
+                        "cache: no-store forbids caching of %s", url);
+            return DECLINED;
+        }
     }
 
     /*
@@ -396,7 +403,7 @@ static int cache_in_filter(ap_filter_t *f, apr_bucket_brigade *in)
 
     /* check first whether running this filter has any point or not */
     if(r->no_cache) {
-	ap_remove_output_filter(f);
+	    ap_remove_output_filter(f);
         return ap_pass_brigade(f->next, in);
     }
 
@@ -738,6 +745,8 @@ static void * create_cache_config(apr_pool_t *p, server_rec *s)
     ps->complete_set = 0;
     ps->no_last_mod_ignore_set = 0;
     ps->no_last_mod_ignore = 0;
+    ps->ignorecachecontrol = 0;
+    ps->ignorecachecontrol_set = 0 ;
     return ps;
 }
 
@@ -772,6 +781,11 @@ static void * merge_cache_config(apr_pool_t *p, void *basev, void *overridesv)
         (overrides->no_last_mod_ignore_set) ? 
                     base->no_last_mod_ignore : 
                     overrides->no_last_mod_ignore;
+    ps->ignorecachecontrol  =
+        (overrides->ignorecachecontrol_set) ? 
+                    base->ignorecachecontrol : 
+                    overrides->ignorecachecontrol;
+
     return ps;
 }
 static const char
@@ -785,6 +799,7 @@ static const char
     return NULL;
 
 }
+
 static const char
 *set_cache_on(cmd_parms *parms, void *dummy, int flag)
 {
@@ -794,6 +809,17 @@ static const char
     conf->cacheon = 1;
     conf->cacheon_set = 1;
     return NULL;
+}
+static const char
+*set_cache_ignore_cachecontrol( cmd_parms *parms, void *dummy, int flag)
+{
+    cache_server_conf *conf = ap_get_module_config(parms->server->module_config, 
+                                                   &cache_module);
+
+    conf->ignorecachecontrol = 1;
+    conf->ignorecachecontrol_set = 1;
+    return NULL;
+
 }
 
 static const char
@@ -905,6 +931,18 @@ static const char
     conf->complete_set = 1;
     return NULL;
 }
+static cache_post_config(apr_pool_t *p, apr_pool_t *plog,
+                                apr_pool_t *ptemp, server_rec *s)
+{
+     /* This is the means by which unusual (non-unix) os's may find alternate
+     * means to run a given command (e.g. shebang/registry parsing on Win32)
+     */
+    cache_generate_key    = APR_RETRIEVE_OPTIONAL_FN(ap_cache_generate_key);
+    if (!cache_generate_key) {
+        cache_generate_key = cache_generate_key_default;
+    }
+    return OK;
+}
 
 static const command_rec cache_cmds[] =
 {
@@ -935,7 +973,9 @@ static const command_rec cache_cmds[] =
      AP_INIT_FLAG("CacheIgnoreNoLastMod", set_cache_ignore_no_last_mod, NULL, 
              RSRC_CONF, 
              "Ignore Responses where there is no Last Modified Header"),
-
+     AP_INIT_FLAG("CacheIgnoreCacheControl", set_cache_ignore_cachecontrol, NULL, 
+            RSRC_CONF, 
+            "Ignore requests from the client for uncached content"),
     AP_INIT_TAKE1("CacheLastModifiedFactor", set_cache_factor, NULL, RSRC_CONF,
      "The factor used to estimate Expires date from LastModified date"),
     AP_INIT_TAKE1("CacheForceCompletion", set_cache_complete, NULL, RSRC_CONF,
@@ -964,6 +1004,7 @@ register_hooks(apr_pool_t *p)
     ap_register_output_filter("CACHE_CONDITIONAL", 
                               cache_conditional_filter, 
                               AP_FTYPE_CONTENT+1);
+    ap_hook_post_config(cache_post_config, NULL, NULL, APR_HOOK_REALLY_FIRST);
 }
 
 module AP_MODULE_DECLARE_DATA cache_module =
