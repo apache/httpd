@@ -1,5 +1,5 @@
 Apache 2.0 STATUS:
-Last modified at [$Date: 2000/10/25 11:15:01 $]
+Last modified at [$Date: 2000/10/26 11:36:10 $]
 
 Release:
 
@@ -20,9 +20,9 @@ RELEASE SHOWSTOPPERS:
 
     * Remove Buff from the code.  Convert the remaining calls to ap_b***().
 
-    * Some buff functionality is currently missing: translation of protocol 
-      data for EBCDIC machines
-        Status: Jeff is working on this
+    * Error messages are filtered according to the needs of the original 
+      URI.  Nothing ensures that they are translated on EBCDIC machines
+      and *not* translated on ASCII machines.
 
     * Win32: Enable the Windows MPM to honor max_requests_per_child
         Status: Bill will fix this.
