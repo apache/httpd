@@ -89,6 +89,7 @@
 
 #include "ap_config.h"
 #include "apr_portable.h"
+#include "apr_config.h"		/* XXX: for ap_signal?? */
 #include "httpd.h"
 #include "mpm_default.h"
 #include "mpm_status.h"
@@ -909,9 +910,10 @@ static ap_shmem_t *scoreboard_shm = NULL;
 
 static ap_status_t cleanup_shared_mem(void *d)
 {
-    mm_free(scoreboard_shm, ap_scoreboard_image);
+    ap_shm_free(scoreboard_shm, ap_scoreboard_image);
     ap_scoreboard_image = NULL;
     ap_shm_destroy(scoreboard_shm);
+    return APR_SUCCESS;
 }
 
 static void setup_shared_mem(ap_context_t *p)
@@ -1379,7 +1381,7 @@ static void restart(int sig)
 	return;
     }
     restart_pending = 1;
-    if (is_graceful = sig == SIGUSR1) {
+    if ((is_graceful = (sig == SIGUSR1))) {
         ap_kill_cleanup(pconf, NULL, cleanup_shared_mem);
     }
 }
