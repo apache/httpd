@@ -176,10 +176,9 @@ static void alloc_listener(process_rec *process, char *addr, unsigned int port)
     }
 
     /* this has to survive restarts */
-    /* XXX - We need to deal with freeing this structure properly. */
     new = ap_palloc(process->pool, sizeof(ap_listen_rec));
     new->active = 0;
-    if ((status = ap_create_tcp_socket(&new->sd, NULL)) != APR_SUCCESS) {
+    if ((status = ap_create_tcp_socket(&new->sd, process->pool)) != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_CRIT, status, NULL,
                  "make_sock: failed to get a socket for %s", addr);
         return;
