@@ -197,7 +197,10 @@ if test -n "$GCC"; then
     ],[
     APACHE_CHECK_GCC_ARG(-pthreads, [
         CFLAGS="$CFLAGS -pthreads"
-        ])])
+        ],[
+        APACHE_CHECK_GCC_ARG(-mthreads, [
+            CFLAGS="$CFLAGS -mthreads"
+        ])])])
 fi
 
 APACHE_THREAD_TEST
