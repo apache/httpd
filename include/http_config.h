@@ -385,6 +385,7 @@ API_EXPORT(void) ap_pre_config_hook(ap_pool_t *pconf, ap_pool_t *plog, ap_pool_t
 API_EXPORT(void) ap_post_config_hook(ap_pool_t *pconf, ap_pool_t *plog, ap_pool_t *ptemp, server_rec *s);
 API_EXPORT(void) ap_run_rewrite_args(process_rec *process);
 API_EXPORT(void) ap_register_hooks(module *m);
+API_EXPORT(void) ap_fixup_virtual_hosts(ap_pool_t *p, server_rec *main_server);
 
 /* For http_request.c... */
 

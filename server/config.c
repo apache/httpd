@@ -1479,7 +1479,7 @@ CORE_EXPORT(const char *) ap_init_virtual_host(ap_pool_t *p, const char *hostnam
 }
 
 
-static void fixup_virtual_hosts(ap_pool_t *p, server_rec *main_server)
+API_EXPORT(void) ap_fixup_virtual_hosts(ap_pool_t *p, server_rec *main_server)
 {
     server_rec *virt;
 
@@ -1575,10 +1575,6 @@ API_EXPORT(server_rec*) ap_read_config(process_rec *process, ap_pool_t *ptemp,
 
     process_command_config(s, ap_server_post_read_config, conftree,
                                       p, ptemp);
-
-    fixup_virtual_hosts(p, s);
-    ap_fini_vhost_config(p, s);
-    ap_sort_hooks();
 
     return s;
 }
