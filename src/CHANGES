@@ -1,4 +1,7 @@
 Changes with Apache 1.2b8
+    
+  *) suexec.c doesn't close the log file, allowing CGIs to continue writing
+     to it.  [Marc Slemko]
 
   *) The addition of <Location> and <File> directives made the
      sub_req_lookup_simple() function bogus, so we now handle
