@@ -157,7 +157,7 @@ static command_rec imap_cmds[] =
     {NULL}
 };
 
-static int pointinrect(const double point[2], const double coords[MAXVERTS][2])
+static int pointinrect(const double point[2], double coords[MAXVERTS][2])
 {
     double max[2], min[2];
     if (coords[0][X] > coords[1][X]) {
@@ -182,7 +182,7 @@ static int pointinrect(const double point[2], const double coords[MAXVERTS][2])
             (point[Y] >= min[1] && point[Y] <= max[1]));
 }
 
-static int pointincircle(const double point[2], const double coords[MAXVERTS][2])
+static int pointincircle(const double point[2], double coords[MAXVERTS][2])
 {
     double radius1, radius2;
 
@@ -195,7 +195,7 @@ static int pointincircle(const double point[2], const double coords[MAXVERTS][2]
     return (radius2 <= radius1);
 }
 
-static int pointinpoly(const double point[2], const double pgon[MAXVERTS][2])
+static int pointinpoly(const double point[2], double pgon[MAXVERTS][2])
 {
     int i, numverts, inside_flag, xflag0;
     int crossings;
@@ -270,7 +270,7 @@ static int pointinpoly(const double point[2], const double pgon[MAXVERTS][2])
 }
 
 
-static int is_closer(const double point[2], const double coords[MAXVERTS][2], double *closest)
+static int is_closer(const double point[2], double coords[MAXVERTS][2], double *closest)
 {
     double dist_squared = ((point[X] - coords[0][X]) * (point[X] - coords[0][X]))
     + ((point[Y] - coords[0][Y]) * (point[Y] - coords[0][Y]));

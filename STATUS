@@ -96,6 +96,7 @@ Committed Code Changes:
       misplacement.
     * Ken's addition of src/ap/ap.h for prototypes of routines in libap.a
     * Ken's addition of #ifndef wrappers to src/main/*.h header files
+    * Ken's removal of problem-causing "const"s from mod_imap.c
 
 Available Patches:
 

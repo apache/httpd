@@ -1,5 +1,9 @@
 Changes with Apache 1.3b4
 
+  *) Some const declarations in mod_imap.c that were added for debugging
+     purposes caused some compilers heartburn without adding any
+     significant value, so they've been removed.  [Ken Coar]
+
   *) The src/main/*.h header files have had #ifndef wrappers added to
      insulate them against duplicate calls if they get included through
      multiple paths (e.g., in .c files as well as other .h files).
