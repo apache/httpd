@@ -73,6 +73,18 @@ void ssl_scache_init(server_rec *s, apr_pool_t *p)
 {
     SSLModConfigRec *mc = myModConfig(s);
 
+    /*
+     * Warn the user that he should use the session cache.
+     * But we can operate without it, of course.
+     */
+    if (mc->nSessionCacheMode == SSL_SCMODE_UNSET) {
+        ssl_log(s, SSL_LOG_WARN,
+                "Init: Session Cache is not configured "
+                "[hint: SSLSessionCache]");
+        mc->nSessionCacheMode = SSL_SCMODE_NONE;
+        return;
+    }
+
     if (mc->nSessionCacheMode == SSL_SCMODE_DBM)
         ssl_scache_dbm_init(s, p);
     else if ((mc->nSessionCacheMode == SSL_SCMODE_SHMHT) ||
@@ -91,7 +103,6 @@ void ssl_scache_init(server_rec *s, apr_pool_t *p)
         else if (mc->nSessionCacheMode == SSL_SCMODE_SHMCB)
             ssl_scache_shmcb_init(s, p);
     }
-    return;
 }
 
 void ssl_scache_kill(server_rec *s)
