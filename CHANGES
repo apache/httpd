@@ -1,5 +1,13 @@
 Changes with Apache 2.0.44
 
+  *) Add --[enable|disable]-v4-mapped configure option to control
+     whether or not Apache expects to handle IPv4 connections
+     on IPv6 listening sockets.  Either setting will work on 
+     systems with the IPV6_V6ONLY socket option.  --enable-v4-mapped
+     must be used on systems that always allow IPv4 connections on
+     IPv6 listening sockets.  PR 14037 (Bugzilla), PR 7492 (Gnats)
+     [Jeff Trawick]
+
   *) This fixes a problem where the underlying cache code
      indicated that there was one more element on the cache
      than there actually was. This happened since element 0

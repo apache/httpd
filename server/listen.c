@@ -88,6 +88,13 @@ static apr_status_t make_sock(apr_pool_t *p, ap_listen_rec *server)
 {
     apr_socket_t *s = server->sd;
     int one = 1;
+#if APR_HAVE_IPV6
+#ifdef AP_ENABLE_V4_MAPPED
+    int v6only_setting = 0;
+#else
+    int v6only_setting = 1;
+#endif
+#endif
     apr_status_t stat;
 
 #ifndef WIN32
@@ -109,6 +116,18 @@ static apr_status_t make_sock(apr_pool_t *p, ap_listen_rec *server)
         apr_socket_close(s);
         return stat;
     }
+
+#if APR_HAVE_IPV6
+    stat = apr_socket_opt_set(s, APR_IPV6_V6ONLY, v6only_setting);
+    if (stat != APR_SUCCESS && stat != APR_ENOTIMPL) {
+        ap_log_perror(APLOG_MARK, APLOG_CRIT, stat, p,
+                      "make_sock: for address %pI, apr_socket_opt_set: "
+                      "(IPV6_V6ONLY)",
+                      server->bind_addr);
+        apr_socket_close(s);
+        return stat;
+    }
+#endif
 
     /*
      * To send data over high bandwidth-delay connections at full
