@@ -1,5 +1,9 @@
 Changes with Apache 1.3a2
 
+  *) Some of the MD5 names defined in Apache have been renamed to have
+     an `ap_' prefix to avoid conflicts with routines supplied by
+     external libraries.  [Ken Coar]
+
   *) Removal of mod_auth_msql.c from the distribution. There are many
      other options for databases today. Rather than offer one option,
      offer none at this time. mod_auth_msql and other SQL database
