@@ -71,11 +71,6 @@
 #endif
 #include <apr_errno.h>
 
-#define FD_QUEUE_SUCCESS 0
-#define FD_QUEUE_FAILURE -1 /* Needs to be an invalid file descriptor because
-                               of queue_pop semantics */
-#define FD_QUEUE_EINTR APR_EINTR
-
 struct fd_queue_elem_t {
     apr_socket_t      *sd;
     apr_pool_t        *p;
@@ -96,10 +91,9 @@ struct fd_queue_t {
 };
 typedef struct fd_queue_t fd_queue_t;
 
-/* FIXME: APRize these -- return values should be apr_status_t */
-int ap_queue_init(fd_queue_t *queue, int queue_capacity, apr_pool_t *a);
-int ap_queue_push(fd_queue_t *queue, apr_socket_t *sd, apr_pool_t *p,
-                  apr_pool_t **recycled_pool);
+apr_status_t ap_queue_init(fd_queue_t *queue, int queue_capacity, apr_pool_t *a);
+apr_status_t ap_queue_push(fd_queue_t *queue, apr_socket_t *sd, apr_pool_t *p,
+                           apr_pool_t **recycled_pool);
 apr_status_t ap_queue_pop(fd_queue_t *queue, apr_socket_t **sd, apr_pool_t **p,
                           apr_pool_t *recycled_pool);
 apr_status_t ap_queue_interrupt_all(fd_queue_t *queue);

@@ -1,5 +1,8 @@
 Changes with Apache 2.0.33-dev
 
+  *) worker MPM: Improve logging of errors with the interface between
+     the listener thread and worker threads.  [Jeff Trawick]
+
   *) Some browsers ignore cookies that have been merged into a
      single Set-Cookie header. Set-Cookie and Set-Cookie2 headers
      are now unmerged in the http proxy before being sent to the

@@ -706,9 +706,8 @@ static void *listener_thread(apr_thread_t *thd, void * dummy)
                      * socket to a worker 
                      */
                     apr_socket_close(csd);
-                    ap_log_error(APLOG_MARK, APLOG_CRIT, 0, ap_server_conf,
-                                 "ap_queue_push failed with error code %d",
-                                 rv);
+                    ap_log_error(APLOG_MARK, APLOG_CRIT, rv, ap_server_conf,
+                                 "ap_queue_push failed");
                 }
             }
         }
@@ -753,11 +752,11 @@ static void * APR_THREAD_FUNC worker_thread(apr_thread_t *thd, void * dummy)
         rv = ap_queue_pop(worker_queue, &csd, &ptrans, last_ptrans);
         last_ptrans = NULL;
 
-        /* We get FD_QUEUE_EINTR whenever ap_queue_pop() has been interrupted
+        /* We get APR_EINTR whenever ap_queue_pop() has been interrupted
          * from an explicit call to ap_queue_interrupt_all(). This allows
          * us to unblock threads stuck in ap_queue_pop() when a shutdown
          * is pending. */
-        if (rv == FD_QUEUE_EINTR || !csd) {
+        if (rv == APR_EINTR || !csd) {
             continue;
         }
         process_socket(ptrans, csd, process_slot, thread_slot);
@@ -802,7 +801,12 @@ static void * APR_THREAD_FUNC start_threads(apr_thread_t *thd, void *dummy)
     /* We must create the fd queues before we start up the listener
      * and worker threads. */
     worker_queue = apr_pcalloc(pchild, sizeof(*worker_queue));
-    ap_queue_init(worker_queue, ap_threads_per_child, pchild);
+    rv = ap_queue_init(worker_queue, ap_threads_per_child, pchild);
+    if (rv != APR_SUCCESS) {
+        ap_log_error(APLOG_MARK, APLOG_ALERT, rv, ap_server_conf,
+                     "ap_queue_init() failed");
+        clean_child_exit(APEXIT_CHILDFATAL);
+    }
 
     my_info = (proc_info *)malloc(sizeof(proc_info));
     my_info->pid = my_child_num;
@@ -815,7 +819,10 @@ static void * APR_THREAD_FUNC start_threads(apr_thread_t *thd, void *dummy)
                      "apr_thread_create: unable to create worker thread");
         /* In case system resources are maxxed out, we don't want
          * Apache running away with the CPU trying to fork over and
-         * over and over again if we exit. */
+         * over and over again if we exit.
+         * XXX Jeff doesn't see how Apache is going to try to fork again since
+         * the exit code is APEXIT_CHILDFATAL
+         */
         apr_sleep(10 * APR_USEC_PER_SEC);
         clean_child_exit(APEXIT_CHILDFATAL);
     }
