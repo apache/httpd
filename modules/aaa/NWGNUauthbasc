@@ -166,7 +166,6 @@ TARGET_lib = \
 #
 FILES_nlm_objs = \
 	$(OBJDIR)/mod_auth_basic.o \
-	$(OBJDIR)/auth_provider.o \
 	$(EOLIST)
 
 #
