@@ -223,8 +223,9 @@ AP_DECLARE(int) ap_rgetline(char **s, int n, request_rec *r, int fold)
         if (APR_BRIGADE_EMPTY(b)) {
             apr_off_t zero = 0;
             if ((retval = ap_get_brigade(r->input_filters, b,
-                                         AP_MODE_BLOCKING,
-                                         &zero /* readline */)) != APR_SUCCESS ||
+                                         AP_MODE_GETLINE,
+                                         APR_BLOCK_READ,
+                                         &zero)) != APR_SUCCESS ||
                 APR_BRIGADE_EMPTY(b)) {
                 apr_brigade_destroy(b);
                 return -1;

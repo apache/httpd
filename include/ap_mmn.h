@@ -92,6 +92,7 @@
  * 20020111 (2.0.31-dev) bump for ETag fields added at end of cor_dir_config
  * 20020114 (2.0.31-dev) mod_dav changed how it asks its provider to fulfill
  *                       a GET request
+ * 20020118 (2.0.31-dev) Input filtering split of blocking and mode
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503230UL /* "AP20" */

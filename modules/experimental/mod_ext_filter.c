@@ -749,7 +749,8 @@ static apr_status_t ef_output_filter(ap_filter_t *f, apr_bucket_brigade *bb)
 
 #if 0
 static int ef_input_filter(ap_filter_t *f, apr_bucket_brigade *bb, 
-                           ap_input_mode_t mode, apr_off_t *readbytes)
+                           ap_input_mode_t mode, apr_read_type_e block,
+                           apr_off_t *readbytes)
 {
     apr_status_t rv;
     apr_bucket *b;
@@ -757,7 +758,7 @@ static int ef_input_filter(ap_filter_t *f, apr_bucket_brigade *bb,
     apr_ssize_t len;
     char *zero;
 
-    rv = ap_get_brigade(f->next, bb, mode, readbytes);
+    rv = ap_get_brigade(f->next, bb, mode, block, readbytes);
     if (rv != APR_SUCCESS) {
         return rv;
     }

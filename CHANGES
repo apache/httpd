@@ -1,5 +1,8 @@
 Changes with Apache 2.0.31-dev
 
+  *) Split out blocking from the mode in the input filters.
+     [Justin Erenkrantz]
+
   *) Fix a segfault in mod_include.  [Justin Erenkrantz, Jeff Trawick]
 
   *) Cause Win32 to capture all child-worker process errors in

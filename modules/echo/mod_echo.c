@@ -106,8 +106,8 @@ static int process_echo_connection(conn_rec *c)
 
     for ( ; ; ) {
         /* Get a single line of input from the client */
-        if ((rv = ap_get_brigade(c->input_filters, bb,
-                                 AP_MODE_BLOCKING, &zero) != APR_SUCCESS || 
+        if ((rv = ap_get_brigade(c->input_filters, bb, AP_MODE_GETLINE,
+                                 APR_BLOCK_READ, &zero) != APR_SUCCESS || 
              APR_BRIGADE_EMPTY(bb))) {
             apr_brigade_destroy(bb);
             break;

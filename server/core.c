@@ -2973,7 +2973,9 @@ static int default_handler(request_rec *r)
     return ap_pass_brigade(r->output_filters, bb);
 }
 
-static int net_time_filter(ap_filter_t *f, apr_bucket_brigade *b, ap_input_mode_t mode, apr_off_t *readbytes)
+static int net_time_filter(ap_filter_t *f, apr_bucket_brigade *b, 
+                           ap_input_mode_t mode, apr_read_type_e block,
+                           apr_off_t *readbytes)
 {
     int keptalive = f->c->keepalive == 1;
     apr_socket_t *csd = ap_get_module_config(f->c->conn_config, &core_module);
@@ -2984,7 +2986,7 @@ static int net_time_filter(ap_filter_t *f, apr_bucket_brigade *b, ap_input_mode_
         *first_line = 1;
     }
 
-    if (mode != AP_MODE_INIT && mode != AP_MODE_PEEK) {
+    if (mode != AP_MODE_INIT && mode != AP_MODE_EATCRLF) {
         if (*first_line) {
             apr_setsocketopt(csd, APR_SO_TIMEOUT,
                              (int)(keptalive
@@ -2999,10 +3001,12 @@ static int net_time_filter(ap_filter_t *f, apr_bucket_brigade *b, ap_input_mode_
             }
         }
     }
-    return ap_get_brigade(f->next, b, mode, readbytes);
+    return ap_get_brigade(f->next, b, mode, block, readbytes);
 }
 
-static int core_input_filter(ap_filter_t *f, apr_bucket_brigade *b, ap_input_mode_t mode, apr_off_t *readbytes)
+static int core_input_filter(ap_filter_t *f, apr_bucket_brigade *b, 
+                             ap_input_mode_t mode, apr_read_type_e block,
+                             apr_off_t *readbytes)
 {
     apr_bucket *e;
     apr_status_t rv;
@@ -3046,7 +3050,7 @@ static int core_input_filter(ap_filter_t *f, apr_bucket_brigade *b, ap_input_mod
     /* ### AP_MODE_PEEK is a horrific name for this mode because we also
      * eat any CRLFs that we see.  That's not the obvious intention of
      * this mode.  Determine whether anyone actually uses this or not. */
-    if (mode == AP_MODE_PEEK) {
+    if (mode == AP_MODE_EATCRLF) {
         apr_bucket *e;
         const char *c;
 
@@ -3096,7 +3100,7 @@ static int core_input_filter(ap_filter_t *f, apr_bucket_brigade *b, ap_input_mod
      *     This is just an all-around bad idea.  We may be better off by 
      *     just closing the socket.  Determine whether anyone uses this.
      */
-    if (*readbytes == -1) {
+    if (mode == AP_MODE_EXHAUSTIVE) {
         apr_bucket *e;
         apr_off_t total;
 
@@ -3110,8 +3114,8 @@ static int core_input_filter(ap_filter_t *f, apr_bucket_brigade *b, ap_input_mod
         APR_BRIGADE_INSERT_TAIL(b, e);
         return APR_SUCCESS;
     }
-    /* readbytes == 0 is "read a single line". otherwise, read a block. */
-    if (*readbytes) {
+    /* read up to the amount they specified. */
+    if (mode == AP_MODE_READBYTES) {
         apr_off_t total;
         apr_bucket *e;
         apr_bucket_brigade *newbb;
@@ -3119,7 +3123,7 @@ static int core_input_filter(ap_filter_t *f, apr_bucket_brigade *b, ap_input_mod
         AP_DEBUG_ASSERT(*readbytes > 0);
         
         e = APR_BRIGADE_FIRST(ctx->b);
-        rv = apr_bucket_read(e, &str, &len, mode);
+        rv = apr_bucket_read(e, &str, &len, block);
 
         if (APR_STATUS_IS_EAGAIN(rv)) {
             *readbytes = 0;
@@ -3153,7 +3157,7 @@ static int core_input_filter(ap_filter_t *f, apr_bucket_brigade *b, ap_input_mod
         const char *pos;
 
         e = APR_BRIGADE_FIRST(ctx->b);
-        rv = apr_bucket_read(e, &str, &len, mode);
+        rv = apr_bucket_read(e, &str, &len, block);
 
         /* We should treat EAGAIN here the same as we do for EOF (brigade is
          * empty).  We do this by returning whatever we have read.  This may 

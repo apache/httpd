@@ -84,23 +84,27 @@ extern "C" {
 
 /**
  * input filtering modes
- * @see apr_read_type_e in apr_buckets.h -- this is a superset of it
  */
 typedef enum {
-    /** The filter shouldn't return until data is received or EOF is hit
-     *  or an error occurs. */
-    AP_MODE_BLOCKING = APR_BLOCK_READ,
-    /** The filter should process any available data/status as normal,
-     *  but will not wait for additional data. */
-    AP_MODE_NONBLOCKING = APR_NONBLOCK_READ,
-    /** The filter should return ::APR_SUCCESS if data is available or
-     *  ::APR_EOF otherwise.  The filter must not return any buckets of
-     *  data.  Data returned on a subsequent call, when mode is
-     *  ::AP_MODE_BLOCKING or ::AP_MODE_NONBLOCKING. */
-    AP_MODE_PEEK,
-    /*
-     * the filter should initialize the connection if needed,
-     * NNTP or FTP over SSL for example.
+    /** The filter should return at most *readbytes data. */
+    AP_MODE_READBYTES,
+    /** The filter should return at most one line of CRLF data.
+     *  (If a potential line is too long or no CRLF is found, the 
+     *   filter may return partial data).
+     */
+    AP_MODE_GETLINE,
+    /** The filter should implicitly eat any CRLF pairs that it sees. */
+    AP_MODE_EATCRLF,
+    /** The filter read should be treated as speculative and any returned
+     *  data should be stored for later retrieval in another mode. */
+    AP_MODE_SPECULATIVE,
+    /** The filter read should be exhaustive and read until it can not
+     *  read any more.
+     *  Use this mode with extreme caution.
+     */
+    AP_MODE_EXHAUSTIVE,
+    /** The filter should initialize the connection if needed,
+     *  NNTP or FTP over SSL for example.
      */
     AP_MODE_INIT
 } ap_input_mode_t;
@@ -161,7 +165,7 @@ typedef struct ap_filter_t ap_filter_t;
  */
 typedef apr_status_t (*ap_out_filter_func)(ap_filter_t *f, apr_bucket_brigade *b);
 typedef apr_status_t (*ap_in_filter_func)(ap_filter_t *f, apr_bucket_brigade *b, 
-                                          ap_input_mode_t mode, apr_off_t *readbytes);
+                                          ap_input_mode_t mode, apr_read_type_e block, apr_off_t *readbytes);
 
 typedef union ap_filter_func {
     ap_out_filter_func out_func;
@@ -277,12 +281,16 @@ struct ap_filter_t {
  * filter doesn't read from the network, then ::AP_NOBODY_READ is returned.
  * @param filter The next filter in the chain
  * @param bucket The current bucket brigade
- * @param mode   ::AP_MODE_BLOCKING, ::AP_MODE_NONBLOCKING, or ::AP_MODE_PEEK
- * @param readbytes How many bytes to read from the next filter.  0 means that
- *                  a single line should be read.
+ * @param mode   The way in which the data should be read
+ * @param block  How the operations should be performed
+ *               ::APR_BLOCK_READ, ::APR_NONBLOCK_READ
+ * @param readbytes How many bytes to read from the next filter.
  */
-AP_DECLARE(apr_status_t) ap_get_brigade(ap_filter_t *filter, apr_bucket_brigade *bucket, 
-                                        ap_input_mode_t mode, apr_off_t *readbytes);
+AP_DECLARE(apr_status_t) ap_get_brigade(ap_filter_t *filter, 
+                                        apr_bucket_brigade *bucket, 
+                                        ap_input_mode_t mode,
+                                        apr_read_type_e block, 
+                                        apr_off_t *readbytes);
 
 /**
  * Pass the current bucket brigade down to the next filter on the filter
