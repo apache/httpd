@@ -1148,9 +1148,6 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
 	ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_NOTICE, 0, ap_server_conf,
 		    "SIGHUP received.  Attempting to restart");
     }
-    if (!is_graceful) {
-        ap_restart_time = apr_now();
-    }
     return 0;
 }
 
