@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/08/26 01:03:20 $]
+Last modified at [$Date: 2004/08/26 12:12:00 $]
 
 Release:
 
@@ -80,31 +80,34 @@ PATCHES TO BACKPORT FROM 2.1
     *) Escape errfn strings before sending them to the log file (and
        analogus patch to mod_cgid)
        http://cvs.apache.org/viewcvs.cgi/httpd-2.0/modules/generators/mod_cgi.c?r1=1.167&r2=1.168
-       +1: stoddard
+       +1: stoddard, trawick
 
     *) util_ldap: Validate the file path of the trusted certificate file 
        at the time the LDAPTrushedCA directive is handled. PR#30782
          modules/ldap/util_ldap.c: 1.9
        +1: bnicholes
+       trawick: why toss the rv?  logging it might show that there is
+                a permissions problem instead of simple file-not-found
        
     *) [SECURITY] mod_ssl: Fix potential input filter segfaults in SPECULATIVE mode.
        http://cvs.apache.org/viewcvs.cgi/httpd-2.0/modules/ssl/ssl_engine_io.c?r1=1.125&r2=1.126
        PR: 30134
-       +1: jorton
+       +1: jorton, trawick
 
     *) Build fix: ensure httpd is linked against user-supplied LIBS during make.
        http://cvs.apache.org/viewcvs.cgi/httpd-2.0/Makefile.in?r1=1.138&r2=1.139
        PR: 7882
-       +1: jorton, stoddard
+       +1: jorton, stoddard, trawick
 
     *) mod_autoindex: Don't truncate directory listing when a stat call fails.
        http://cvs.apache.org/viewcvs.cgi/httpd-2.0/modules/generators/mod_autoindex.c?r1=1.132&r2=1.133
        PR: 17357
-       +1: jorton, stoddard (stat fails when file size > 2GB even if large file support is enabled)
+       +1: jorton, stoddard (stat fails when file size > 2GB even if
+           large file support is enabled), trawick
 
     *) unixd_accept: Eliminate now-unnecessary apr_os_sock_get() call.
        http://cvs.apache.org/viewcvs.cgi/httpd-2.0/os/unix/unixd.c?r1=1.66&r2=1.67
-       +1: jorton
+       +1: jorton, trawick
 
     *) Prevent byterange filter doing its thang for a CGI which returns a Content-Range
        http://cvs.apache.org/viewcvs.cgi/httpd-2.0/server/util_script.c?r1=1.89&r2=1.90
