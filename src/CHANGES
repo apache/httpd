@@ -63,6 +63,7 @@ Changes with Apache 1.2b7
      - Make wrapper work for files on NFS filesystem.
      - Fix portability problem of MAXPATHLEN.
      - Fix array overrun problem in clean_env().
+     - Fix allocation of PATH environment variable
 
   *) Removed extraneous blank line is description of mod_status chars.
      [Kurt Kohler]

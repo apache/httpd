@@ -203,7 +203,7 @@ void clean_env()
     }
 
     sprintf(pathbuf, "PATH=%s", SAFE_PATH);
-    cleanenv[cidx] = pathbuf;
+    cleanenv[cidx] = strdup(pathbuf);
     cleanenv[++cidx] = NULL;
 	    
     environ = cleanenv;
