@@ -12,7 +12,7 @@
 
 This module is contained in the <code>mod_auth_db.c</code> file, and
 is not compiled in by default. It provides for user authentication using
-Berkeley DB files. It is an alternative to <A HREF="../auth_dbm.html">DBM</A>
+Berkeley DB files. It is an alternative to <A HREF="mod_auth_dbm.html">DBM</A>
 files for those systems which support DB and not DBM. It is only
 available in Apache 1.1 and later.
 
@@ -43,7 +43,30 @@ be no whitespace within the value, and it must never contain any colons.<p>
 Security: make sure that the AuthDBGroupFile is stored outside the
 document tree of the webserver; do <em>not</em> put it in the directory that
 it protects. Otherwise, clients will be able to download the
-AuthDBGroupFile.<p>
+AuthDBGroupFile unless otherwise protected.<p>
+
+Combining Group and Password DB files: In some cases it is easier to
+manage a single database which contains both the password and group
+details for each user. This simplifies any support programs that need
+to be written: they now only have to deal with writing to and locking
+a single DBM file. This can be accomplished by first setting the group
+and password files to point to the same DB file:<p>
+
+<blockquote><code>
+AuthDBGroupFile /www/userbase<br>
+AuthDBUserFile /www/userbase
+</code></blockquote>
+
+The key for the single DB record is the username. The value consists of <p>
+
+<blockquote><code>
+Unix Crypted Password : List of Groups [ : (ignored) ]
+</code></blockquote>
+
+The password section contains the Unix crypt() password as before. This is
+followed by a colon and the comma separated list of groups. Other data may
+optionally be left in the DB file after another colon; it is ignored by the
+authentication module. <p>
 
 See also <A HREF="core.html#authname">AuthName</A>,
 <A HREF="core.html#authtype">AuthType</A> and
@@ -60,14 +83,24 @@ See also <A HREF="core.html#authname">AuthName</A>,
 The AuthDBUserFile directive sets the name of a DB file containing the list
 of users and passwords for user authentication. <em>Filename</em> is the
 absolute path to the user file.<p>
-The user file is keyed on the username. The value for a user is the crypt()
-encrypted password, optionally followed by a colon and arbitrary data.
-The colon and the data following it will be ignored by the server.<p>
+
+The user file is keyed on the username. The value for a user is the
+crypt() encrypted password, optionally followed by a colon and
+arbitrary data.  The colon and the data following it will be ignored
+by the server.<p>
 
 Security: make sure that the AuthDBUserFile is stored outside the
 document tree of the webserver; do <em>not</em> put it in the directory that
 it protects. Otherwise, clients will be able to download the
 AuthDBUserFile.<p>
+
+Important compatibility note: The implementation of "dbmopen" in the
+apache modules reads the string length of the hashed values from the
+DB data structures, rather than relying upon the string being
+NULL-appended. Some applications, such as the Netscape web server,
+rely upon the string being NULL-appended, so if you are having trouble
+using DB files interchangeably between applications this may be a
+part of the problem. <p>
 
 See also <A HREF="core.html#authname">AuthName</A>,
 <A HREF="core.html#authtype">AuthType</A> and
