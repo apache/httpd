@@ -135,24 +135,19 @@ module MODULE_VAR_EXPORT status_module;
  *command-related code. This is here to prevent use of ExtendedStatus
  * without status_module included.
  */
-static const char *set_extended_status(cmd_parms *cmd, void *dummy, char *arg) 
+static const char *set_extended_status(cmd_parms *cmd, void *dummy, int arg) 
 {
     const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
     if (err != NULL) {
         return err;
     }
-    if (!strcasecmp(arg, "off") || !strcmp(arg, "0")) {
-	ap_extended_status = 0;
-    }
-    else {
-	ap_extended_status = 1;
-    }
+    ap_extended_status = arg;
     return NULL;
 }
 
 static const command_rec status_module_cmds[] =
 {
-    { "ExtendedStatus", set_extended_status, NULL, RSRC_CONF, TAKE1,
+    { "ExtendedStatus", set_extended_status, NULL, RSRC_CONF, FLAG,
       "\"On\" to enable extended status information, \"Off\" to disable" },
     {NULL}
 };

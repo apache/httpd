@@ -169,7 +169,7 @@ module MODULE_VAR_EXPORT cern_meta_module;
 typedef struct {
     char *metadir;
     char *metasuffix;
-    char *metafiles;
+    int metafiles;
 } cern_meta_dir_config;
 
 static void *create_cern_meta_dir_config(pool *p, char *dummy)
@@ -210,7 +210,7 @@ static const char *set_metasuffix(cmd_parms *parms, cern_meta_dir_config * dconf
     return NULL;
 }
 
-static const char *set_metafiles(cmd_parms *parms, cern_meta_dir_config * dconf, char *arg)
+static const char *set_metafiles(cmd_parms *parms, cern_meta_dir_config * dconf, int arg)
 {
     dconf->metafiles = arg;
     return NULL;

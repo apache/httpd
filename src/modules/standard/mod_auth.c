@@ -110,7 +110,7 @@ static const command_rec auth_cmds[] =
     {"AuthAuthoritative", ap_set_flag_slot,
      (void *) XtOffsetOf(auth_config_rec, auth_authoritative),
      OR_AUTHCFG, FLAG,
-     "Set to 'no' to allow access control to be passed along to lower modules if the UserID is not known to this module"},
+     "Set to 'off' to allow access control to be passed along to lower modules if the UserID is not known to this module"},
     {NULL}
 };
 

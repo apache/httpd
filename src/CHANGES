@@ -1,5 +1,10 @@
 Changes with Apache 1.3.12
 
+  *) Make implementation/descriptions of the FLAG directives
+     AuthAuthoritative, MetaFiles and ExtendedStatus consistent with
+     documentation and the standard way of implementation those directives.
+     [David MacKenzie <djm@web.us.uu.net>, Ralf S. Engelschall] PR#5642
+
   *) Cast integer ap_wait_t values in http_main.c to get rid of compile
      time errors on platforms where "ap_wait_t" is not defined as "int"
      (currently only the NEXT and UTS21 platforms).
