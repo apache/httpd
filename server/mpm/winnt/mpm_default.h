@@ -60,7 +60,7 @@
 #define APACHE_MPM_DEFAULT_H
 
 /* AP_CHILD_THREAD_FROM_ID is used by the scoreboard.  */
-#define AP_CHILD_THREAD_FROM_ID(i)       i, 0
+#define AP_CHILD_THREAD_FROM_ID(i)       0, i
 
 /* Number of threads to spawn off by default --- also, if fewer than
  * this free when the caretaker checks, it will spawn more.
