@@ -93,7 +93,16 @@ select="$metafile/basename"/>
 <!-- ==================================================================== -->
 <xsl:template match="note">
 <xsl:text>\par\smallskip
-{\Huge $\Longrightarrow$}\begin{minipage}[t]{.8\textwidth}
+{\Huge </xsl:text>
+<xsl:choose>
+<xsl:when test="@type='warning'">
+  <xsl:text>\fbox{!} </xsl:text>
+</xsl:when>
+<xsl:otherwise>
+  <xsl:text>$\Longrightarrow$</xsl:text>
+</xsl:otherwise>
+</xsl:choose>
+<xsl:text>}\begin{minipage}[t]{.8\textwidth}
 \noindent </xsl:text>
 <xsl:apply-templates select="title" mode="print" />
 <xsl:apply-templates/>

@@ -23,13 +23,23 @@
 <xsl:text>
 \documentclass[11pt]{book}
 \usepackage{times}
-\usepackage{fullpage}
 \usepackage{style/latex/atbeginend}
+%\usepackage[pdftex]{color}
 \usepackage[colorlinks=true,letterpaper=true]{hyperref}
 
 % Let LaTeX be lenient about very-bad line wrapping.
 \tolerance=9999 
 \emergencystretch=60pt
+
+% Adjust margins to a reasonable level
+\topmargin 0pt
+\advance \topmargin by -\headheight
+\advance \topmargin by -\headsep
+\textheight 8.9in
+\oddsidemargin 0pt
+\evensidemargin \oddsidemargin
+\marginparwidth 0.5in
+\textwidth 6.5in
 
 % Keep paragraphs flush left (rather than the default of indenting
 % the first line) and put a space between paragraphs.
@@ -40,6 +50,19 @@
 \AfterBegin{itemize}{\addtolength{\itemsep}{-.6\baselineskip}}
 
 \pagestyle{headings}
+
+\hypersetup{
+    pdftitle={</xsl:text>
+<xsl:value-of select="$messages/message[@name='apache']" />
+<xsl:text> </xsl:text>
+<xsl:value-of select="$messages/message[@name='http-server']" />
+<xsl:text> </xsl:text>
+<xsl:value-of select="$messages/message[@name='documentation']" />
+<xsl:text> </xsl:text>
+<xsl:value-of select="$messages/message[@name='version']" />
+<xsl:text>},
+    pdfauthor={Apache Software Foundation}
+  }
 
 \title{</xsl:text>
 <xsl:value-of select="$messages/message[@name='apache']" />
