@@ -961,8 +961,7 @@ AP_DECLARE_HOOK(int,header_parser,(request_rec *r))
  * @param ptemp The temporary pool
  * @deffunc void ap_run_pre_config(apr_pool_t *pconf,apr_pool_t *plog,apr_pool_t *ptemp)
  */
-AP_DECLARE_HOOK(void,pre_config,
-	     (apr_pool_t *pconf,apr_pool_t *plog,apr_pool_t *ptemp))
+AP_DECLARE_HOOK(void,pre_config,(apr_pool_t *pconf,apr_pool_t *plog,apr_pool_t *ptemp))
 
 /**
  * Run the post_config function for each module
@@ -972,8 +971,7 @@ AP_DECLARE_HOOK(void,pre_config,
  * @param s The list of server_recs
  * @deffunc void ap_run_post_config(apr_pool_t *pconf,apr_pool_t *plog,apr_pool_t *ptemp, server_rec *s)
  */
-AP_DECLARE_HOOK(void,post_config,
-	     (apr_pool_t *pconf,apr_pool_t *plog,apr_pool_t *ptemp,server_rec *s))
+AP_DECLARE_HOOK(void,post_config,(apr_pool_t *pconf,apr_pool_t *plog,apr_pool_t *ptemp,server_rec *s))
 
 /**
  * Run the open_logs functions for each module
@@ -983,8 +981,7 @@ AP_DECLARE_HOOK(void,post_config,
  * @param s The list of server_recs
  * @deffunc void ap_run_open_logs(apr_pool_t *pconf,apr_pool_t *plog,apr_pool_t *ptemp, server_rec *s)
  */
-AP_DECLARE_HOOK(void,open_logs,
-	     (apr_pool_t *pconf,apr_pool_t *plog,apr_pool_t *ptemp,server_rec *s))
+AP_DECLARE_HOOK(void,open_logs,(apr_pool_t *pconf,apr_pool_t *plog,apr_pool_t *ptemp,server_rec *s))
 
 /**
  * Run the child_init functions for each module
