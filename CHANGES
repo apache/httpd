@@ -163,9 +163,6 @@ Changes with Apache 2.1.0-dev
   *) mod_log_config now logs all Set-Cookie headers if the %{Set-Cookie}o
      format is used.  PR 27787.  [André Malo]
 
-  *) mod_usertrack: Escape the cookie name before pasting into the
-     regexp.  [André Malo]
-
   *) Allow Digest providers to return AUTH_DENIED to propagate a 401
      status and terminate the provider chain prior to checking the password.
      [Geoffrey Young]
@@ -424,6 +421,9 @@ Changes with Apache 2.1.0-dev
    Apache 2.0.xx tree as documented, and except as noted, below.]
 
 Changes with Apache 2.0.51
+
+  *) mod_usertrack: Escape the cookie name before pasting into the
+     regexp.  [André Malo]
 
   *) Extend the SetEnvIf directive to capture subexpressions of the
      matched value.  [André Malo]
