@@ -774,6 +774,14 @@ proxied server</td></tr>
     by-passing the reverse proxy because of HTTP redirects on the backend
     servers which stay behind the reverse proxy.</p>
 
+    <p>Only the HTTP response headers specifically mentioned above
+    will be rewritten.  Apache will not rewrite other response
+    headers, nor will it rewrite URL references inside HTML pages.
+    This means that if the proxied content contains absolute URL
+    references, they will by-pass the proxy.  A third-party module
+    that will look inside the HTML and rewrite URL references is Nick
+    Kew's <a href="http://www.webthing.com/software/mod_proxy_html/">mod_proxy_html</a>.</p>
+
     <p><var>path</var> is the name of a local virtual path. <var>url</var> is a
     partial URL for the remote server - the same way they are used for the
     <code class="directive"><a href="#proxypass">ProxyPass</a></code> directive.</p>
