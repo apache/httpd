@@ -1981,7 +1981,7 @@ AP_DECLARE(int) ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s )
                      "Child %d: Child process is running", my_pid);
 
         /* Set up the scoreboard. */
-        ap_create_scoreboard(pconf, SB_NOT_SHARED);
+        ap_run_pre_mpm(pconf, SB_NOT_SHARED);
         if (one_process) {
             if (ap_setup_listeners(server_conf) < 1) {
                 return 1;

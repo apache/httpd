@@ -3319,6 +3319,7 @@ static void register_hooks(apr_pool_t *p)
     ap_hook_type_checker(do_nothing,NULL,NULL,APR_HOOK_REALLY_LAST);
     ap_hook_access_checker(do_nothing,NULL,NULL,APR_HOOK_REALLY_LAST);
     ap_hook_create_request(core_create_req, NULL, NULL, APR_HOOK_MIDDLE);
+    ap_hook_pre_mpm(ap_create_scoreboard, NULL, NULL, APR_HOOK_MIDDLE);
 
     /* register the core's insert_filter hook and register core-provided
      * filters

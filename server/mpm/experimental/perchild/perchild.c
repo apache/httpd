@@ -1211,7 +1211,7 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
     }
 
     if (!is_graceful) {
-        ap_create_scoreboard(pconf, SB_SHARED);
+        ap_run_pre_mpm(pconf, SB_SHARED);
     }
     /* Initialize the child table */
     if (!is_graceful) {
