@@ -1552,7 +1552,7 @@ char *get_local_host(pool *a)
 }
 
 /* aaaack but it's fast and const should make it shared text page. */
-const int pr2six[256] =
+static const unsigned char pr2six[256] =
 {
     64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64,
     64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64,
