@@ -265,7 +265,7 @@ struct command_struct {
 #define ACCESS_CONF 64       /**< *.conf inside <Directory> or <Location> */
 #define RSRC_CONF 128	     /**< *.conf outside <Directory> or <Location> */
 #define EXEC_ON_READ 256     /**< force directive to execute a command 
-                which would modify the conifguration (like including another
+                which would modify the configuration (like including another
                 file, or IFModule */
 /** this directive can be placed anywhere */
 #define OR_ALL (OR_LIMIT|OR_OPTIONS|OR_FILEINFO|OR_AUTHCFG|OR_INDEXES)
