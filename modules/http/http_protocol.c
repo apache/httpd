@@ -2109,8 +2109,14 @@ int ap_send_http_options(request_rec *r)
     if (r->assbackwards)
         return DECLINED;
 
-    buff = apr_pcalloc(r->pool, HUGE_STRING_LEN);
-    len = HUGE_STRING_LEN;
+    apr_table_do((int (*) (void *, const char *, const char *)) compute_header_len,
+                 (void *) &len, r->headers_out, NULL);
+    
+    /* Need to add a fudge factor so that the CRLF at the end of the headers
+     * and the basic http headers don't overflow this buffer.
+     */
+    len += strlen(ap_get_server_version()) + 100;
+    buff = apr_pcalloc(r->pool, len);
     ap_basic_http_header(r, buff);
 
     apr_table_setn(r->headers_out, "Content-Length", "0");
@@ -2128,7 +2134,7 @@ int ap_send_http_options(request_rec *r)
     ap_bsetopt(r->connection->client, BO_BYTECT, &zero);
 
     bb = ap_brigade_create(r->pool);
-    b = ap_bucket_create_pool(buff, len, r->pool);
+    b = ap_bucket_create_pool(buff, strlen(buff), r->pool);
     AP_BRIGADE_INSERT_TAIL(bb, b);
     ap_pass_brigade(r->output_filters, bb);
 
@@ -3243,7 +3249,7 @@ AP_DECLARE(void) ap_send_error_response(request_rec *r, int recursive_error)
      * message body.  Note that being assbackwards here is not an option.
      */
     if (status == HTTP_NOT_MODIFIED) {
-        char *buff = apr_pcalloc(r->pool, HUGE_STRING_LEN);
+        char *buff;
         header_struct h;
         ap_bucket *e;
         ap_bucket_brigade *bb;
@@ -3252,7 +3258,15 @@ AP_DECLARE(void) ap_send_error_response(request_rec *r, int recursive_error)
             r->headers_out = apr_overlay_tables(r->pool, r->err_headers_out,
 						r->headers_out);
 
-        e = ap_bucket_create_pool(buff, HUGE_STRING_LEN, r->pool);
+        apr_table_do((int (*) (void *, const char *, const char *)) compute_header_len,
+                     (void *) &len, r->headers_out, NULL);
+     
+        /* Need to add a fudge factor so that the CRLF at the end of the headers
+         * and the basic http headers don't overflow this buffer.
+         */
+        len += strlen(ap_get_server_version()) + 100;
+        buff = apr_pcalloc(r->pool, len);
+        e = ap_bucket_create_pool(buff, len, r->pool);
         ap_basic_http_header(r, buff);
         ap_set_keepalive(r);
 
@@ -3274,7 +3288,7 @@ AP_DECLARE(void) ap_send_error_response(request_rec *r, int recursive_error)
                     NULL);
 
         terminate_header(buff);
-
+       
         bb = ap_brigade_create(r->pool);
         AP_BRIGADE_INSERT_HEAD(bb, e);
         ap_pass_brigade(r->connection->output_filters, bb);
