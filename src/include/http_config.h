@@ -1,5 +1,5 @@
 /* ====================================================================
- * Copyright (c) 1995 The Apache Group.  All rights reserved.
+ * Copyright (c) 1995, 1996 The Apache Group.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -50,7 +50,7 @@
  *
  */
 
-/* $Id: http_config.h,v 1.11 1996/08/20 11:50:43 paul Exp $ */
+/* $Id: http_config.h,v 1.12 1996/10/06 02:25:02 fielding Exp $ */
 
 /*
  * The central data structures around here...
@@ -86,8 +86,22 @@ typedef struct command_struct {
   char *errmsg;			/* 'usage' message, in case of syntax errors */
 } command_rec;
 
-/* Values for the req_override slot */
-
+/* The allowed locations for a configuration directive are the union of
+ * those indicated by each set bit in the req_override mask.
+ *
+ * (req_override & RSRC_CONF)   => *.conf outside <Directory> or <Location>
+ * (req_override & ACCESS_CONF) => *.conf inside <Directory> or <Location>
+ * (req_override & OR_AUTHCFG)  => *.conf inside <Directory> or <Location>
+ *                                 and .htaccess when AllowOverride AuthConfig
+ * (req_override & OR_LIMIT)    => *.conf inside <Directory> or <Location>
+ *                                 and .htaccess when AllowOverride Limit
+ * (req_override & OR_OPTIONS)  => *.conf anywhere
+ *                                 and .htaccess when AllowOverride Options
+ * (req_override & OR_FILEINFO) => *.conf anywhere
+ *                                 and .htaccess when AllowOverride FileInfo
+ * (req_override & OR_INDEXES)  => *.conf anywhere
+ *                                 and .htaccess when AllowOverride Indexes
+ */
 #define OR_NONE 0
 #define OR_LIMIT 1
 #define OR_OPTIONS 2
@@ -95,8 +109,8 @@ typedef struct command_struct {
 #define OR_AUTHCFG 8
 #define OR_INDEXES 16
 #define OR_UNSET 32
-#define ACCESS_CONF 64		/* command valid in access.conf */
-#define RSRC_CONF 128		/* command valid in srm.conf */
+#define ACCESS_CONF 64
+#define RSRC_CONF 128
 #define OR_ALL (OR_LIMIT|OR_OPTIONS|OR_FILEINFO|OR_AUTHCFG|OR_INDEXES)
 
 /*
@@ -232,6 +246,7 @@ void add_module (module *m);
 
 server_rec *read_config (pool *conf_pool, pool *temp_pool, char *config_name);
 void setup_prelinked_modules();
+void show_directives();
 
 /* For http_request.c... */
 

@@ -1,5 +1,5 @@
 /* ====================================================================
- * Copyright (c) 1995 The Apache Group.  All rights reserved.
+ * Copyright (c) 1995, 1996 The Apache Group.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -50,7 +50,7 @@
  *
  */
 
-/* $Id: http_config.c,v 1.23 1996/09/23 03:01:03 brian Exp $ */
+/* $Id: http_config.c,v 1.24 1996/10/06 02:25:03 fielding Exp $ */
 
 /*
  * http_config.c: once was auxillary functions for reading httpd's config
@@ -82,8 +82,7 @@ DEF_Explain
 /****************************************************************
  *
  * We begin with the functions which deal with the linked list
- * of modules which control just about all of server operation in
- * Shambhala.
+ * of modules which control just about all of the server operation.
  */
 
 static int num_modules = 0;    
@@ -915,5 +914,98 @@ server_rec *read_config(pool *p, pool *ptemp, char *confname)
 	    (*m->init) (s, p);
     
     return s;
+}
+
+/********************************************************************
+ * Configuration directives are restricted in terms of where they may
+ * appear in the main configuration files and/or .htaccess files according
+ * to the bitmask req_override in the command_rec structure.
+ * If any of the overrides set in req_override are also allowed in the
+ * context in which the command is read, then the command is allowed.
+ * The context is determined as follows:
+ *
+ *    inside *.conf --> override = (RSRC_CONF|OR_ALL)&~(OR_AUTHCFG|OR_LIMIT);
+ *    within <Directory> or <Location> --> override = OR_ALL|ACCESS_CONF;
+ *    within .htaccess --> override = AllowOverride for current directory;
+ *
+ * the result is, well, a rather confusing set of possibilities for when
+ * a particular directive is allowed to be used.  This procedure prints
+ * in English where the given (pc) directive can be used.
+ */
+void show_overrides(command_rec *pc, module *pm)
+{
+    int n = 0;
+    
+    printf("\tAllowed in *.conf ");
+    if ((pc->req_override & (OR_OPTIONS|OR_FILEINFO|OR_INDEXES)) ||
+        ((pc->req_override & RSRC_CONF) &&
+         ((pc->req_override & (ACCESS_CONF|OR_AUTHCFG|OR_LIMIT)))))
+        printf("anywhere");
+    else if (pc->req_override & RSRC_CONF)
+        printf("only outside <Directory> or <Location>");
+    else 
+        printf("only inside <Directory> or <Location>");
+
+    /* Warn if the directive is allowed inside <Directory> or .htaccess
+     * but module doesn't support per-dir configuration */
+
+    if ((pc->req_override & (OR_ALL|ACCESS_CONF)) && !pm->create_dir_config)
+        printf(" [no per-dir config]");
+
+    if (pc->req_override & OR_ALL) {
+        printf(" and in .htaccess\n\twhen AllowOverride");
+
+        if ((pc->req_override & OR_ALL) == OR_ALL)
+            printf(" isn't None");
+        else {
+            printf(" includes ");
+
+            if (pc->req_override & OR_AUTHCFG) {
+                if (n++) printf(" or ");
+                printf("AuthConfig");
+            }
+            if (pc->req_override & OR_LIMIT) {
+                if (n++) printf(" or ");
+                printf("Limit");
+            }
+            if (pc->req_override & OR_OPTIONS) {
+                if (n++) printf(" or ");
+                printf("Options");
+            }
+            if (pc->req_override & OR_FILEINFO) {
+                if (n++) printf(" or ");
+                printf("FileInfo");
+            }
+            if (pc->req_override & OR_INDEXES) {
+                if (n++) printf(" or ");
+                printf("Indexes");
+            }
+        }
+    }
+    printf("\n");
+}
+
+/* Show the prelinked configuration directives, the help string explaining
+ * the directive arguments, in what module they are handled, and in
+ * what parts of the configuration they are allowed.  Used for httpd -h.
+ */
+void show_directives()
+{
+    extern module *prelinked_modules[];
+    extern char *module_names[];
+    command_rec *pc;
+    int n;
+    int t;
+    
+    for(t=0 ; prelinked_modules[t] ; ++t)
+        ;
+    for(n=0 ; prelinked_modules[n] ; ++n)
+        for(pc=prelinked_modules[n]->cmds ; pc && pc->name ; ++pc) {
+            printf("%s\n", pc->name);
+            if (pc->errmsg)
+                printf("\t%s\n", pc->errmsg);
+            printf("\t%s\n", module_names[t-n-1]);
+            show_overrides(pc, prelinked_modules[n]);
+        }
 }
 

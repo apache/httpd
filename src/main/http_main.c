@@ -1,5 +1,5 @@
 /* ====================================================================
- * Copyright (c) 1995 The Apache Group.  All rights reserved.
+ * Copyright (c) 1995, 1996 The Apache Group.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -50,7 +50,7 @@
  *
  */
 
-/* $Id: http_main.c,v 1.75 1996/10/02 00:31:52 jim Exp $ */
+/* $Id: http_main.c,v 1.76 1996/10/06 02:25:03 fielding Exp $ */
 
 /*
  * httpd.c: simple http daemon for answering WWW file requests
@@ -1847,53 +1847,6 @@ void standalone_main(int argc, char **argv)
     }
 
 } /* standalone_main */
-
-void show_overrides(command_rec *pc,module *pm)
-    {
-    int n;
-    struct
-	{
-	int override;
-	char letter;
-	} aOvers[]= {
-	{ OR_LIMIT, 'L' },
-	{ OR_OPTIONS, 'O' },
-	{ OR_FILEINFO, 'F' },
-	{ OR_AUTHCFG, 'A' },
-	{ OR_INDEXES, 'I' },
-	{ ACCESS_CONF, 'a' },
-	{ RSRC_CONF, 'r' },
-	{ (OR_ALL|RSRC_CONF)&~(OR_LIMIT|OR_AUTHCFG), 'd' }, /* outside <Directory> */
-	{ OR_ALL|ACCESS_CONF, 'D' }, /* inside <Directory> */
-	{ 0, '\0' }
-	};
-	
-    for(n=0 ; aOvers[n].override ; ++n)
-	if(pc->req_override&aOvers[n].override)
-	    putchar(aOvers[n].letter);
-    if((pc->req_override&(OR_ALL|ACCESS_CONF)) && !pm->create_dir_config)
-	putchar('!');	/* Directive allowed inside <Directory> but module doesn't support per-dir config */
-    }
-
-void show_directives()
-    {
-    extern module *prelinked_modules[];
-    extern char *module_names[];
-    command_rec *pc;
-    int n;
-    int t;
-    
-    for(t=0 ; prelinked_modules[t] ; ++t)
-	;
-    for(n=0 ; prelinked_modules[n] ; ++n)
-	for(pc=prelinked_modules[n]->cmds ; pc && pc->name ; ++pc)
-	    {
-	    printf("%s\t%s\t%s\t", pc->name, pc->errmsg ? pc->errmsg : "",
-	           module_names[t-n-1]);
-	    show_overrides(pc,prelinked_modules[n]);
-	    putchar('\n');
-	    }
-    }
 
 extern char *optarg;
 extern int optind;
