@@ -627,7 +627,8 @@ case "$PLAT" in
     BS2000*-siemens-sysv4*)
 	OS='BS2000'
 	OSDIR='os/bs2000'
-	CC='c89 -XLLML -XLLMK -XL'
+	# If you are using a CPP before V3.0, delete the -Kno_integer_overflow flag
+	CC='c89 -XLLML -XLLMK -XL -Kno_integer_overflow'
 	CFLAGS="$CFLAGS -DCHARSET_EBCDIC -DSVR4 -D_XPG_IV"
 	DEF_WANTHSREGEX=yes
 	DBM_LIB=""
