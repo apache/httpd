@@ -2362,8 +2362,22 @@ API_EXPORT(long) ap_get_client_block(request_rec *r, char *buffer, int bufsiz)
     apr_status_t rv;
 
     if (!r->read_chunked) {     /* Content-length read */
+        ap_bucket *b;
+        const char *tempbuf;
+
         len_to_read = (r->remaining > bufsiz) ? bufsiz : r->remaining;
-        rv = ap_bread(r->connection->client, buffer, len_to_read, &len_read);
+        if (AP_BRIGADE_EMPTY(r->connection->input_data)) {
+            ap_get_brigade(r->connection->input_filters, r->connection->input_data); 
+        }
+        b = AP_BRIGADE_FIRST(r->connection->input_data);
+        len_read = len_to_read;
+        rv = b->read(b, &tempbuf, &len_read, 0);
+        if (len_read < b->length) {
+            b->split(b, len_read);
+        }
+        memcpy(buffer, tempbuf, len_read);
+        AP_BUCKET_REMOVE(b);
+        b->destroy(b);
         if (len_read == 0) {    /* error or eof */
             if (rv != APR_SUCCESS) {
                 r->connection->keepalive = -1;
