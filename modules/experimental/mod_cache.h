@@ -191,14 +191,6 @@ struct cache_info {
     apr_time_t request_time;
     apr_time_t response_time;
     apr_size_t len;
-
-    /* Field used by mod_disk_cache */
-    char *datafile;          /* where the data will go */
-    char *hdrsfile;          /* where the hdrs will go */
-    char *name;
-    int version;             /* update count of the file */
-    apr_file_t *fd;          /* pointer to apr_file_t structure for the data file  */
-    apr_off_t file_size;    /*  File size of the cached data file  */    
 };
 
 /* cache handle information */

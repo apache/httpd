@@ -406,7 +406,7 @@ static int cache_in_filter(ap_filter_t *f, apr_bucket_brigade *in)
 
     /* check first whether running this filter has any point or not */
     if(r->no_cache) {
-	    ap_remove_output_filter(f);
+        ap_remove_output_filter(f);
         return ap_pass_brigade(f->next, in);
     }
 
