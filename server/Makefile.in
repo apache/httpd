@@ -2,7 +2,7 @@
 CLEAN_TARGETS = gen_test_char test_char.h gen_uri_delims uri_delims.h \
 	ApacheCoreOS2.def
 DISTCLEAN_TARGETS = httpd.exp
-EXTRACLEAN_TARGETS = export_files exports.c export_vars.h
+EXTRACLEAN_TARGETS = exports.c export_vars.h
 
 SUBDIRS = mpm
 
@@ -30,34 +30,28 @@ test_char.h: gen_test_char
 
 util.lo: test_char.h
 
-EXPORT_DIRS = $(top_srcdir)/include $(top_srcdir)/os/$(OS_DIR) $(APR_INCLUDEDIR) $(APU_INCLUDEDIR) $(top_srcdir)/modules/http
+EXPORT_FILES = $(top_srcdir)/include/*.h \
+       $(top_srcdir)/os/$(OS_DIR)/*.h \
+       $(top_srcdir)/srclib/apr/include/*.h \
+       $(top_srcdir)/srclib/apr-util/include/*.h \
+       $(top_srcdir)/modules/http/*.h
 
-delete-exports: export_files
+delete-exports:
 	@if test -f exports.c; then \
-	    files=`cat export_files`; \
-	    headers="`find $$files -newer exports.c`"; \
-	    if test -n "$$headers"; then \
-	        echo Found newer headers. Will rebuild exports.c.; \
-	        echo rm -f exports.c; \
-	        rm -f exports.c; \
-	    fi; \
+		    headers="`find $(EXPORT_FILES) -newer exports.c`" ; \
+		    if test -n "$$headers"; then \
+		        echo Found newer headers. Will rebuild exports.c. ; \
+		        echo rm -f exports.c ; \
+		        rm -f exports.c ; \
+		    fi \
 	fi
 
-export_files:
-	tmp=export_files_unsorted.txt; \
-	rm -f $$tmp && touch $$tmp; \
-	for dir in $(EXPORT_DIRS); do \
-	    find $$dir -maxdepth 1 -type f -name '*.h' >> $$tmp; \
-	done; \
-	cat $$tmp | sort | uniq > $@; \
-	rm -f $$tmp
-
 # full path required to keep BSD make happy
-$(top_builddir)/server/exports.c: export_files
-	$(AWK) -f $(top_srcdir)/build/make_exports.awk `cat export_files` > $@
+$(top_builddir)/server/exports.c:
+	$(AWK) -f $(top_srcdir)/build/make_exports.awk $(EXPORT_FILES) > $@
 
-export_vars.h: export_files
-	$(AWK) -f $(top_srcdir)/build/make_var_export.awk `cat export_files` > $@
+export_vars.h:
+	$(AWK) -f $(top_srcdir)/build/make_var_export.awk $(EXPORT_FILES) > $@
 
 # wtf does this have to be explicit????
 exports.lo: exports.c
