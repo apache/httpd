@@ -28,25 +28,27 @@
   <H2>Summary</H2>
   <P>
   This is an <STRONG>experimental</STRONG> module and should be used with
-  care.  It maps a list of statically configured files (via
+  care.  You can easily create a broken site using this module, read this
+  document carefully.
+  <code>mod_mmap_static</code> maps a list of statically configured files (via
   <CODE>MMapFile</CODE> directives in the main server configuration) into
-  memory through the system call <CODE>mmap()</CODE>. Although this system
-  call is not available on every platform, most of the modern Unix derivates
-  provide it. At least those ones conforming to the POSIX.4 definition. The
-  size of the mapable files usually has to be less then 2GB.  But this is no
-  real restriction for documents on a webserver.
+  memory through the system call <CODE>mmap()</CODE>.  This system
+  call is available on most modern Unix derivates, but not on all.  There
+  are sometimes system-specific limits on the size and number of files that
+  can be mmap()d, experimentation is probably the easiest way to find out.
   </P>
   <P>
   This mmap()ing is done once at server start or restart, only. So whenever
   one of the mapped files changes on the filesystem you <EM>have</EM> to
-  restart the server by at least sending it a HUP or USR1 signal.  To
+  restart the server by at least sending it a HUP or USR1 signal (see the
+  <a href="../stopping.html">Stopping and Restarting</a> documentation).  To
   reiterate that point:  if the files are modified <EM>in place</EM> without
   restarting the server you may end up serving requests that are completely
   bogus.  You should update files by unlinking the old copy and putting a new
   copy in place. Most tools such as <CODE>rdist</CODE> and <CODE>mv</CODE> do
   this. The reason why this modules doesn't take care of changes to the files
   is that this check would need an extra <CODE>stat()</CODE> every time which
-  is a waste and against the intend of I/O reduction.
+  is a waste and against the intent of I/O reduction.
   </P>
 
   <H2>Directives</H2>
@@ -107,9 +109,11 @@
   match the filesystem path Apache's URL-to-filename translation handlers
   create. We cannot compare inodes or other stuff to match paths through
   symbolic links etc. because that again would cost extra <CODE>stat()</CODE>
-  system calls which is not acceptable.
+  system calls which is not acceptable.  This module may or may not work
+  with filenames rewritten by <code>mod_alias</code> or
+  <code>mod_rewrite</code>... it is an experiment after all.
   </P>
-  
+
   <P>
   Notice: You cannot use this for speeding up CGI programs or other files
   which are served by special content handlers. It can only be used for
@@ -121,6 +125,15 @@
   <PRE>
   MMapFile /usr/local/apache/htdocs/index.html
   </PRE>
+
+  <P>
+  <b>Note</b>: don't bother asking for a for a <code>MMapDir</code> directive which
+  recursively maps all the files in a directory.  Use Unix the way it was
+  meant to be used.  For example, see the
+  <a href="core.html#include">Include</a> directive, and consider this command:
+  <blockquote><pre>
+  find /www/htdocs -type f -print | sed -e 's/.*/mmapfile &/' > /www/conf/mmap.conf
+  </pre></blockquote>
 
 <!--#include virtual="footer.html" -->
  </BODY>
