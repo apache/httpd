@@ -6,3 +6,10 @@ aclocal.m4
 .deps
 generated_lists
 buildmk.stamp
+config.log
+Makefile
+libtool
+config.status
+modules.c
+config.cache
+config_vars.mk

@@ -1,4 +1,4 @@
 
-SUBDIRS = apr pcre aputil $(AP_LIB_DIRS)
+SUBDIRS = apr pcre $(AP_LIB_DIRS)
 
 include $(top_srcdir)/build/rules.mk
