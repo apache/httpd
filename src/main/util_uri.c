@@ -520,7 +520,7 @@ deal_with_host:
 	if (uri != s) {
 	    port = strtol(uptr->port_str, &endstr, 10);
 	    uptr->port = port;
-	    if (*endstr == '\0' && uptr->port == port) {
+	    if (endstr == uri) {
 		goto deal_with_path;
 	    }
 	    /* Invalid characters after ':' found */
