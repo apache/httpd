@@ -1,9 +1,10 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2002/09/28 18:20:43 $]
+Last modified at [$Date: 2002/10/03 14:38:11 $]
 
 Release:
 
-    2.0.43  : in development.
+    2.0.44  : in development
+    2.0.43  : rolled October 2, 2002
     2.0.42  : released September 24, 2002 as GA.
     2.0.41  : rolled September 16, 2002.  not released.
     2.0.40  : released August 9, 2002 as GA.
@@ -858,26 +859,26 @@ Other bugs that need fixing:
         Status: Greg volunteers to investigate (esp. since he was most 
                 likely the one to break it :-)
 
-Binaries (2.0.40):
+Binaries (2.0.43):
 
  Platform                      Avail.  Volunteer
  ------------------------------------------------------------------
  AIX 4.3.3                     no      Bill Stoddard
  Mandrake 8.1                  no      Ryan Bloom
  FreeBSD 4.1                   no      Ryan Bloom
- hppa2.0w-hp-hpux11.00         yes     Cliff Woolley
+ hppa2.0w-hp-hpux11.00         no      Cliff Woolley
  i386-pc-solaris2.8            no      Aaron Bannert
  i386-unknown-freebsd4.5       no
- i386-unknown-freebsd4.6       yes     Cliff Woolley
- i686-pc-linux-gnu-slackware81 yes     Cliff Woolley
+ i386-unknown-freebsd4.6       no      Cliff Woolley
+ i686-pc-linux-gnu-slackware81 no      Cliff Woolley
  i686-pc-linux-gnu-rh70        no      Aaron Bannert
- i686-pc-linux-gnu-rh73        yes     Cliff Woolley
+ i686-pc-linux-gnu-rh73        no      Cliff Woolley
  ia64-hp-hpux11.20             no
  powerpc-apple-darwin5.5       no      Aaron Bannert
  powerpc-unknown-linux-gnu     no      Graham Leggett
- s390-ibm-linux                yes     Greg Ames
+ s390-ibm-linux                no      Greg Ames
  sparc-sun-solaris2.8          no      Jim Jagielski
- NetWare                       yes     Brad Nicholes
+ NetWare                       no      Brad Nicholes
  OS/2                          no      Brian Havard
- OS/390                        yes     Greg Ames
+ OS/390                        no      Greg Ames
  Win32-x86                     yes     William Rowe
