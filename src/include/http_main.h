@@ -86,6 +86,8 @@
  * reset_timeout() resets the timeout in progress.
  */
 
+void start_shutdown(void);
+void start_restart(int);
 API_EXPORT(void) hard_timeout(char *, request_rec *);
 void keepalive_timeout(char *, request_rec *);
 API_EXPORT(void) soft_timeout(char *, request_rec *);

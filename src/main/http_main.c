@@ -108,6 +108,36 @@
 #include <bstring.h>		/* for IRIX, FD_SET calls bzero() */
 #endif
 
+#ifdef MULTITHREAD
+/* special debug stuff -- PCS */
+
+  /* APD1() to APD5() are macros to help us debug. Then can either
+   * log to the screen or the error_log file.
+   */
+
+# ifdef _DEBUG
+#  ifndef DEBUG_TO_ERROR_LOG
+#   define APD1(a) aplog_error(APLOG_MARK,APLOG_DEBUG|APLOG_NOERRNO,server_conf,a)
+#   define APD2(a,b) aplog_error(APLOG_MARK,APLOG_DEBUG|APLOG_NOERRNO,server_conf,a,b)
+#   define APD3(a,b,c) aplog_error(APLOG_MARK,APLOG_DEBUG|APLOG_NOERRNO,server_conf,a,b,c)
+#   define APD4(a,b,c,d) aplog_error(APLOG_MARK,APLOG_DEBUG|APLOG_NOERRNO,server_conf,a,b,c,d)
+#   define APD5(a,b,c,d,e) aplog_error(APLOG_MARK,APLOG_DEBUG|APLOG_NOERRNO,server_conf,a,b,c,d,e)
+#  else
+#   define APD1(a) printf("%s\n",a)
+#   define APD2(a,b) do { printf(a,b);putchar('\n'); } while(0);
+#   define APD3(a,b,c) do { printf(a,b,c);putchar('\n'); } while(0);
+#   define APD4(a,b,c,d) do { printf(a,b,c,d);putchar('\n'); } while(0);
+#   define APD5(a,b,c,d,e) do { printf(a,b,c,d,e);putchar('\n'); } while(0);
+#  endif
+# else /* !_DEBUG */
+#  define APD1(a) 
+#  define APD2(a,b) 
+#  define APD3(a,b,c) 
+#  define APD4(a,b,c,d) 
+#  define APD5(a,b,c,d,e) 
+# endif /* _DEBUG */
+#endif /* MULTITHREAD */
+
 #include "explain.h"
 
 #if !defined(max)
@@ -2073,21 +2103,91 @@ static int volatile restart_pending;
 static int volatile is_graceful;
 static int volatile generation;
 
+#ifdef WIN32
+static void signal_parent(void)
+{
+    HANDLE e;
+    /* after updating the shutdown_pending or restart flags, we need
+     * to wake up the parent process so it can see the changes. The
+     * parent will normally be waiting for either a child process
+     * to die, or for a signal on the "spache-signal" event. So set the
+     * "apache-signal" event here.
+     */
+
+    APD1("*** SIGNAL_PARENT SET ***");
+
+    e = OpenEvent(EVENT_ALL_ACCESS, FALSE, "apache-signal");
+    if (!e) {
+	/* Um, problem, can't signal the main loop, which means we can't
+	 * signal ourselves to die. Ignore for now...
+	 */
+	aplog_error(APLOG_MARK, APLOG_EMERG|APLOG_WIN32ERROR, server_conf,
+	    "OpenEvent on apache-signal event");
+	return;
+    }
+    if (SetEvent(e) == 0) {
+	/* Same problem as above */
+	aplog_error(APLOG_MARK, APLOG_EMERG|APLOG_WIN32ERROR, server_conf,
+	    "SetEvent on apache-signal event");
+	return;
+    }
+    CloseHandle(e);
+}
+#endif
+
+/*
+ * start_shutdown() and start_restart(), below, are a first stab at
+ * functions to initiate shutdown or restart without relying on signals. 
+ * Previously this was initiated in sig_term() and restart() signal handlers, 
+ * but we want to be able to start a shutdown/restart from other sources --
+ * e.g. on Win32, from the service manager. Now the service manager can
+ * call start_shutdown() or start_restart() as appropiate. 
+ */
+
+void start_shutdown(void)
+{
+    if (shutdown_pending == 1) {
+	/* Um, is this _probably_ not an error, if the user has
+	 * tried to do a shutdown twice quickly, so we won't
+	 * worry about reporting it.
+	 */
+	return;
+    }
+    shutdown_pending = 1;
+
+#ifdef WIN32
+    signal_parent();	    /* get the parent process to wake up */
+#endif
+}
+
+/* do a graceful restart if graceful == 1 */
+void start_restart(int graceful)
+{
+    if (restart_pending == 1) {
+	/* Probably not an error - don't bother reporting it */
+	return;
+    }
+    restart_pending = 1;
+    is_graceful = graceful;
+
+#ifdef WIN32
+    signal_parent();	    /* get the parent process to wake up */
+#endif /* WIN32 */
+}
+
 static void sig_term(int sig)
 {
-    shutdown_pending = 1;
+    start_shutdown();
 }
 
 static void restart(int sig)
 {
-#ifdef WIN32
-    is_graceful = 0;
+#ifndef WIN32
+    start_restart(sig == SIGUSR1);
 #else
-    is_graceful = (sig == SIGUSR1);
-#endif /* WIN32 */
-    restart_pending = 1;
+    start_restart(1);
+#endif
 }
-
 
 void set_signals(void)
 {
@@ -3474,6 +3574,7 @@ void standalone_main(int argc, char **argv)
 	++generation;
     } while (restart_pending);
 
+    /*add_common_vars(NULL);*/
 }				/* standalone_main */
 #else
 /* prototype */
@@ -3692,15 +3793,96 @@ caddr_t get_shared_heap(const char *Name)
 #else /* ndef MULTITHREAD */
 
 
+/**********************************************************************
+ * Multithreaded implementation
+ *
+ * This code is fairly specific to Win32.
+ *
+ * The model used to handle requests is a set of threads. One "main"
+ * thread listens for new requests. When something becomes
+ * available, it does a select and places the newly available socket
+ * onto a list of "jobs" (add_job()). Then any one of a fixed number
+ * of "worker" threads takes the top job off the job list with
+ * remove_job() and handles that connection to completion. After
+ * the connection has finished the thread is free to take another
+ * job from the job list.
+ *
+ * In the code, the "main" thread is running within the worker_main()
+ * function. The first thing this function does is create the
+ * worker threads, which operate in the child_sub_main() function. The
+ * main thread then goes into a loop within worker_main() where they
+ * do a select() on the listening sockets. The select times out once
+ * per second so that the thread can check for an "exit" signal
+ * from the parent process (see below). If this signal is set, the 
+ * thread can exit, but only after it has accepted all incoming
+ * connections already in the listen queue (since Win32 appears
+ * to through away listened but unaccepted connections when a 
+ * process dies).
+ *
+ * Because the main and worker threads exist within a single process
+ * they are vulnerable to crashes or memory leaks (crashes can also
+ * be caused within modules, of course). There also needs to be a 
+ * mechanism to perform restarts and shutdowns. This is done by
+ * creating the main & worker threads within a subprocess. A
+ * main process (the "parent process") creates one (or more) 
+ * processes to do the work, then the parent sits around waiting
+ * for the working process to die, in which case it starts a new
+ * one. The parent process also handles restarts (by creating
+ * a new working process then signalling the previous working process 
+ * exit ) and shutdowns (by signalling the working process to exit).
+ * The parent process operates within the master_main() function. This
+ * process also handles requests from the service manager (NT only).
+ *
+ * Signalling between the parent and working process uses a Win32
+ * event. Each child has a unique name for the event, which is
+ * passed to it with the -c argument when the child is spawned. The
+ * parent sets (signals) this event to tell the child to die.
+ * At present all children do a graceful die - they finish all
+ * current jobs _and_ empty the listen queue before they exit.
+ * A non-graceful die would need a second event.
+ *
+ * The code below starts with functions at the lowest level -
+ * worker threads, and works up to the top level - the main()
+ * function of the parent process.
+ *
+ * The scoreboard (in process memory) contains details of the worker
+ * threads (within the active working process). There is no shared
+ * "scoreboard" between processes, since only one is ever active
+ * at once (or at most, two, when one has been told to shutdown but
+ * is processes outstanding requests, and a new one has been started).
+ * This is controlled by a "start_mutex" which ensures only one working
+ * process is active at once.
+ **********************************************************************/
 
+/* The code protected by #ifdef UNGRACEFUL_RESTARTS/#endif sections
+ * could implement a sort-of ungraceful restart for Win32. instead of
+ * graceful restarts. 
+ *
+ * However it does not work too well because it does not intercept a
+ * connection already in progress (in child_sub_main()). We'd have to
+ * get that to poll on the exit event. 
+ */
+
+/*
+ * Definition of jobs, shared by main and worker threads.
+ */
 
 typedef struct joblist_s {
     struct joblist_s *next;
     int sock;
 } joblist;
 
+/*
+ * Globals common to main and worker threads. This structure is not
+ * used by the parent process.
+ */
+
 typedef struct globals_s {
+#ifdef UNGRACEFUL_RESTART
+    HANDLE thread_exit_event;
+#else
     int exit_now;
+#endif
     semaphore *jobsemaphore;
     joblist *jobhead;
     joblist *jobtail;
@@ -3708,10 +3890,14 @@ typedef struct globals_s {
     int jobcount;
 } globals;
 
-
 globals allowed_globals =
 {0, NULL, NULL, NULL, 0};
 
+/*
+ * add_job()/remove_job() - add or remove an accepted socket from the
+ * list of sockets connected to clients. allowed_globals.jobmutex protects
+ * against multiple concurrent access to the linked list of jobs.
+ */
 
 void add_job(int sock)
 {
@@ -3738,10 +3924,32 @@ int remove_job()
     joblist *job;
     int sock;
 
-    ap_assert(allowed_globals.jobmutex);
+#ifdef UNGRACEFUL_RESTART
+    HANDLE hObjects[2];
+    int rv;
+
+    hObjects[0] = allowed_globals.jobsemaphore;
+    hObjects[1] = allowed_globals.thread_exit_event;
+
+    rv = WaitForMultipleObjects(2, hObjects, FALSE, INFINITE);
+    ap_assert(rv != WAIT_FAILED);
+    if (rv == WAIT_OBJECT_0 + 1) {
+	/* thread_exit_now */
+	APD1("thread got exit now event");
+	return -1;
+    }
+    /* must be semaphore */
+#else
     acquire_semaphore(allowed_globals.jobsemaphore);
+#endif
+    ap_assert(allowed_globals.jobmutex);
+
+#ifdef UNGRACEFUL_RESTART
+    if (!allowed_globals.jobhead) {
+#else
     acquire_mutex(allowed_globals.jobmutex);
     if (allowed_globals.exit_now && !allowed_globals.jobhead) {
+#endif
 	release_mutex(allowed_globals.jobmutex);
 	return (-1);
     }
@@ -3756,19 +3964,37 @@ int remove_job()
     return (sock);
 }
 
+/*
+ * child_sub_main() - this is the main loop for the worker threads
+ *
+ * Each thread runs within this function. They wait within remove_job()
+ * for a job to become available, then handle all the requests on that
+ * connection until it is closed, then return to remove_job().
+ *
+ * The worker thread will exit when it removes a job which contains
+ * socket number -1. This provides a graceful thread exit, since
+ * it will never exit during a connection.
+ *
+ * This code in this function is basically equivalent to the child_main()
+ * from the multi-process (Unix) environment, except that we
+ *
+ *  - do not call child_init_modules (child init API phase)
+ *  - block in remove_job, and when unblocked we have an already
+ *    accepted socket, instead of blocking on a mutex or select().
+ */
 
-
-void child_sub_main(int child_num, int srv,
-		    int csd, int dupped_csd,
-		    int requests_this_child, pool *pchild)
+void child_sub_main(int child_num)
 {
     NET_SIZE_T clen;
     struct sockaddr sa_server;
     struct sockaddr sa_client;
+    pool *ptrans;
+    int requests_this_child = 0;
+    int csd = -1;
+    int dupped_csd = -1;
+    int srv = 0;
 
-    csd = -1;
-    dupped_csd = -1;
-    requests_this_child = 0;
+    ptrans = make_sub_pool(pconf);
 
     (void) update_child_status(child_num, SERVER_READY, (request_rec *) NULL);
 
@@ -3785,9 +4011,6 @@ void child_sub_main(int child_num, int srv,
     signal(SIGURG, timeout);
 #endif
 
-
-    pchild = make_sub_pool(NULL);
-
     while (1) {
 	BUFF *conn_io;
 	request_rec *r;
@@ -3803,16 +4026,19 @@ void child_sub_main(int child_num, int srv,
 	signal(SIGPIPE, timeout);
 #endif
 
-	clear_pool(pchild);
+	clear_pool(ptrans);
 
 	(void) update_child_status(child_num, SERVER_READY, (request_rec *) NULL);
 
+	/* Get job from the job list. This will block until a job is ready.
+	 * If -1 is returned then the main thread wants us to exit.
+	 */
 	csd = remove_job();
 	if (csd == -1)
 	    break;		/* time to exit */
 	requests_this_child++;
 
-	note_cleanups_for_socket(pchild, csd);
+	note_cleanups_for_socket(ptrans, csd);
 
 	/*
 	 * We now have a connection, so set it up with the appropriate
@@ -3836,7 +4062,7 @@ void child_sub_main(int child_num, int srv,
 	(void) update_child_status(child_num, SERVER_BUSY_READ,
 				   (request_rec *) NULL);
 
-	conn_io = bcreate(pchild, B_RDWR | B_SOCKET);
+	conn_io = bcreate(ptrans, B_RDWR | B_SOCKET);
 	dupped_csd = csd;
 #if defined(NEED_DUPPED_CSD)
 	if ((dupped_csd = dup(csd)) < 0) {
@@ -3844,11 +4070,11 @@ void child_sub_main(int child_num, int srv,
 			"dup: couldn't duplicate csd");
 	    dupped_csd = csd;	/* Oh well... */
 	}
-	note_cleanups_for_socket(pchild, dupped_csd);
+	note_cleanups_for_socket(ptrans, dupped_csd);
 #endif
 	bpushfd(conn_io, csd, dupped_csd);
 
-	current_conn = new_connection(pchild, server_conf, conn_io,
+	current_conn = new_connection(ptrans, server_conf, conn_io,
 				      (struct sockaddr_in *) &sa_client,
 				      (struct sockaddr_in *) &sa_server,
 				      child_num);
@@ -3882,7 +4108,7 @@ void child_sub_main(int child_num, int srv,
 	 * in our buffers.  If possible, try to avoid a hard close until the
 	 * client has ACKed our FIN and/or has stopped sending us data.
 	 */
-	kill_cleanups_for_socket(pchild, csd);
+	kill_cleanups_for_socket(ptrans, csd);
 
 #ifdef NO_LINGCLOSE
 	bclose(conn_io);	/* just close it */
@@ -3900,22 +4126,13 @@ void child_sub_main(int child_num, int srv,
 	}
 #endif
     }
-    destroy_pool(pchild);
+    destroy_pool(ptrans);
     (void) update_child_status(child_num, SERVER_DEAD, NULL);
 }
 
 
 void child_main(int child_num_arg)
 {
-
-    int srv = 0;
-    int csd = 0;
-    int dupped_csd = 0;
-    int requests_this_child = 0;
-    pool *ppool = NULL;
-
-    my_pid = getpid();
-
     /*
      * Only reason for this function, is to pass in
      * arguments to child_sub_main() on its stack so
@@ -3923,10 +4140,7 @@ void child_main(int child_num_arg)
      * variables and I don't need to make those
      * damn variables static/global
      */
-    child_sub_main(child_num_arg, srv,
-		   csd, dupped_csd,
-		   requests_this_child, ppool);
-
+    child_sub_main(child_num_arg);
 }
 
 
@@ -3945,8 +4159,12 @@ void cleanup_thread(thread **handles, int *thread_cnt, int thread_to_clean)
  * Executive routines.
  */
 
+extern void main_control_server(void *); /* in hellop.c */
+
 event *exit_event;
 mutex *start_mutex;
+
+#define MAX_SELECT_ERRORS 100
 
 void worker_main()
 {
@@ -3969,12 +4187,16 @@ void worker_main()
     time_t end_time;
     int i;
     struct timeval tv;
-    int wait_time = 100;
+    int wait_time = 1;
     int start_exit = 0;
-    int count_down = 0;
     int start_mutex_released = 0;
     int max_jobs_per_exe;
     int max_jobs_after_exit_request;
+    HANDLE hObjects[2];
+    int count_select_errors = 0;
+    pool *pchild;
+
+    pchild = make_sub_pool(pconf);
 
     standalone = 1;
     sd = -1;
@@ -4000,7 +4222,29 @@ void worker_main()
 
     reinit_scoreboard(pconf);
 
-    acquire_mutex(start_mutex);
+    //acquire_mutex(start_mutex);
+    hObjects[0] = (HANDLE)start_mutex;
+    hObjects[1] = (HANDLE)exit_event;
+    rv = WaitForMultipleObjects(2, hObjects, FALSE, INFINITE);
+    if (rv == WAIT_FAILED) {
+	aplog_error(APLOG_MARK,APLOG_ERR|APLOG_WIN32ERROR, server_conf,
+	    "Waiting for start_mutex or exit_event -- process will exit");
+
+	child_exit_modules(pconf, server_conf);
+	destroy_pool(pchild);
+
+	cleanup_scoreboard();
+	exit(0);
+    }
+    if (rv == WAIT_OBJECT_0 + 1) {
+	/* exit event signalled - exit now */
+	child_exit_modules(pconf, server_conf);
+	destroy_pool(pchild);
+
+	cleanup_scoreboard();
+	exit(0);
+    }
+    /* start_mutex obtained, continue into the select() loop */
 
     setup_listeners(pconf);
     set_signals();
@@ -4037,20 +4281,25 @@ void worker_main()
 	}
     }
 
-    /* main loop */
-    for (;;) {
-	if (max_jobs_per_exe && (total_jobs > max_jobs_per_exe) && !start_exit) {
+    while (1) {
+	APD4("child PID %d: thread_main total_jobs=%d start_exit=%d",
+		my_pid, total_jobs, start_exit);
+	if ((max_jobs_per_exe && (total_jobs > max_jobs_per_exe) && !start_exit)) {
 	    start_exit = 1;
 	    wait_time = 1;
-	    count_down = max_jobs_after_exit_request;
 	    release_mutex(start_mutex);
 	    start_mutex_released = 1;
+	    APD2("process PID %d: start mutex released\n", my_pid);
 	}
 	if (!start_exit) {
 	    rv = WaitForSingleObject(exit_event, 0);
 	    ap_assert((rv == WAIT_TIMEOUT) || (rv == WAIT_OBJECT_0));
-	    if (rv == WAIT_OBJECT_0)
-		break;
+	    if (rv == WAIT_OBJECT_0) {
+		APD1("child: exit event signalled, exiting");
+		start_exit = 1;
+		/* Lets not break yet - we may have threads to clean up */
+		/* break;*/
+	    }
 	    rv = WaitForMultipleObjects(nthreads, child_handles, 0, 0);
 	    ap_assert(rv != WAIT_FAILED);
 	    if (rv != WAIT_TIMEOUT) {
@@ -4060,23 +4309,45 @@ void worker_main()
 		break;
 	    }
 	}
+
+#if 0
+	/* Um, this made us exit before all the connections in our
+	 * listen queue were dealt with. 
+	 */
 	if (start_exit && max_jobs_after_exit_request && (count_down-- < 0))
 	    break;
+#endif
 	tv.tv_sec = wait_time;
 	tv.tv_usec = 0;
 
 	memcpy(&main_fds, &listenfds, sizeof(fd_set));
 	srv = ap_select(listenmaxfd + 1, &main_fds, NULL, NULL, &tv);
 #ifdef WIN32
-	if (srv == SOCKET_ERROR)
+	if (srv == SOCKET_ERROR) {
+	    /* Map the Win32 error into a standard Unix error condition */
 	    errno = WSAGetLastError();
+	    srv = -1;
+	}
 #endif /* WIN32 */
 
-	if (srv < 0 && errno != EINTR)
-	    aplog_error(APLOG_MARK, APLOG_ERR, server_conf, "select: (listen)");
-
-	if (srv < 0)
+	if (srv < 0) {
+	    /* Error occurred - if EINTR, loop around with problem */
+	    if (errno != EINTR) {
+		/* A "real" error occurred, log it and increment the count of
+		 * select errors. This count is used to ensure we don't go into
+		 * a busy loop of continuour errors.
+		 */
+		aplog_error(APLOG_MARK, APLOG_ERR, server_conf, "select: (listen)");
+		count_select_errors++;
+		if (count_select_errors > MAX_SELECT_ERRORS) {
+		    aplog_error(APLOG_MARK, APLOG_ERR|APLOG_NOERRNO, server_conf,
+			"Too many errors in select loop. Child process exiting.");
+		    break;
+		}
+	    }
 	    continue;
+	}
+	count_select_errors = 0;    /* reset count of errors */
 	if (srv == 0) {
 	    if (start_exit)
 		break;
@@ -4092,7 +4363,6 @@ void worker_main()
 		sd = lr->fd;
 	    }
 	}
-
 	do {
 	    clen = sizeof(sa_client);
 	    csd = accept(sd, (struct sockaddr *) &sa_client, &clen);
@@ -4105,22 +4375,23 @@ void worker_main()
 	} while (csd < 0 && errno == EINTR);
 
 	if (csd < 0) {
-
 #if defined(EPROTO) && defined(ECONNABORTED)
 	    if ((errno != EPROTO) && (errno != ECONNABORTED))
 #elif defined(EPROTO)
-		if (errno != EPROTO)
+	    if (errno != EPROTO)
 #elif defined(ECONNABORTED)
-		    if (errno != ECONNABORTED)
+	    if (errno != ECONNABORTED)
 #endif
-			aplog_error(APLOG_MARK, APLOG_ERR, server_conf,
-				    "accept: (client socket)");
+		aplog_error(APLOG_MARK, APLOG_ERR, server_conf,
+			    "accept: (client socket)");
 	}
 	else {
 	    add_job(csd);
 	    total_jobs++;
 	}
     }
+      
+    APD2("process PID %d exiting", my_pid);
 
     /* Get ready to shutdown and exit */
     allowed_globals.exit_now = 1;
@@ -4128,10 +4399,15 @@ void worker_main()
 	release_mutex(start_mutex);
     }
 
+#ifdef UNGRACEFUL_RESTART
+    SetEvent(allowed_globals.thread_exit_event);
+#else
     for (i = 0; i < nthreads; i++) {
 	add_job(-1);
     }
+#endif
 
+    APD2("process PID %d waiting for worker threads to exit", my_pid);
     /* Wait for all your children */
     end_time = time(NULL) + 180;
     while (nthreads) {
@@ -4145,16 +4421,23 @@ void worker_main()
 	break;
     }
 
+    APD2("process PID %d killing remaining worker threads", my_pid);
     for (i = 0; i < nthreads; i++) {
 	kill_thread(child_handles[i]);
 	free_thread(child_handles[i]);
     }
+#ifdef UNGRACEFUL_RESTART
+    ap_assert(CloseHandle(allowed_globals.thread_exit_event));
+#endif
     destroy_semaphore(allowed_globals.jobsemaphore);
     destroy_mutex(allowed_globals.jobmutex);
 
     child_exit_modules(pconf, server_conf);
+    destroy_pool(pchild);
 
     cleanup_scoreboard();
+
+    APD2("process PID %d exited", my_pid);
     exit(0);
 }				/* standalone_main */
 
@@ -4168,7 +4451,9 @@ int create_event_and_spawn(int argc, char **argv, event **ev, int *child_num, ch
 
     sprintf(buf, "%s_%d", prefix, ++(*child_num));
     _flushall();
-    *ev = create_event(0, 0, buf);
+    *ev = CreateEvent(NULL, TRUE, FALSE, buf);
+    APD2("create_event_and_spawn(): created process kill event %s", buf);
+
     ap_assert(*ev);
     pass_argv[0] = argv[0];
     pass_argv[1] = "-c";
@@ -4185,21 +4470,52 @@ int create_event_and_spawn(int argc, char **argv, event **ev, int *child_num, ch
     return (rv);
 }
 
+/**********************************************************************
+ * master_main - this is the parent (main) process. We create a
+ * child process to do the work, then sit around waiting for either
+ * the child to exit, or a restart or exit signal. If the child dies,
+ * we just respawn a new one. If we have a shutdown or graceful restart,
+ * tell the child to die when it is ready. If it is a non-graceful
+ * restart, force the child to die immediately.
+ **********************************************************************/
 
-static int service_pause = 0;
-static int service_stop = 0;
+#define MAX_PROCESSES 50 /* must be < MAX_WAIT_OBJECTS-1 */
 
+void cleanup_process(HANDLE *handles, HANDLE *events, int position, int *processes)
+{
+    int i;
+    int handle = 0;
+
+    CloseHandle(handles[position]);
+    CloseHandle(events[position]);
+
+    handle = (int)handles[position];
+
+    for (i = position; i < (*processes)-1; i++) {
+	handles[i] = handles[i + 1];
+	events[i] = events[i + 1];
+    }
+    (*processes)--;
+
+    APD4("cleanup_processes: removed child in slot %d handle %d, max=%d", position, handle, *processes);
+}
+
+void create_process(HANDLE *handles, HANDLE *events, int *processes, int *child_num, char *kill_event_name, int argc, char **argv)
+{
+    int i = *processes;
+    HANDLE kill_event;
+
+    handles[i] = (HANDLE)create_event_and_spawn(argc, argv, &kill_event, child_num, kill_event_name);
+    ap_assert(handles[i] >= 0);
+    events[i] = kill_event;
+    (*processes)++;
+
+    APD4("create_processes: created child in slot %d handle %d, max=%d", 
+	(*processes)-1, handles[(*processes)-1], *processes);
+}
 
 int master_main(int argc, char **argv)
 {
-    /*
-     * 1. Create exit events for children
-     * 2. Spawn children
-     * 3. Wait for either of your children to die
-     * 4. Close hand to dead child & its event
-     * 5. Respawn that child
-     */
-
     int nchild = daemons_to_start;
     event **ev;
     int *child;
@@ -4208,60 +4524,166 @@ int master_main(int argc, char **argv)
     char buf[100];
     int i;
     time_t tmstart;
+    HANDLE signal_event;	/* used to signal shutdown/restart to parent */
+    HANDLE process_handles[MAX_PROCESSES];
+    HANDLE process_kill_events[MAX_PROCESSES];
+    int current_live_processes = 0; /* number of child process we know about */
+    int processes_to_create = 0;    /* number of child processes to create */
+    pool *pparent;  /* pool for the parent process. Cleaned on each restart */
+
+    nchild = 1;	    /* only allowed one child process for current generation */
+    processes_to_create = nchild;
+
+    is_graceful = 0;
+    ++generation;
+
+    signal_event = OpenEvent(EVENT_ALL_ACCESS, FALSE, "apache-signal");
+    if (!signal_event) {
+	aplog_error(APLOG_MARK, APLOG_EMERG|APLOG_WIN32ERROR, server_conf,
+		    "Cannot open apache-signal event");
+	exit(1);
+    }
 
     sprintf(buf, "Apache%d", getpid());
     start_mutex = create_mutex(buf);
     ev = (event **) alloca(sizeof(event *) * nchild);
-    child = (int *) alloca(sizeof(int) * nchild);
-    for (i = 0; i < nchild; i++) {
+    child = (int *) alloca(sizeof(int) * (nchild+1));
+    while (processes_to_create--) {
 	service_set_status(SERVICE_START_PENDING);
-	child[i] = create_event_and_spawn(argc, argv, &ev[i], &child_num, buf);
-	ap_assert(child[i] >= 0);
+	create_process(process_handles, process_kill_events, &current_live_processes, &child_num, buf, argc, argv);
     }
+
     service_set_status(SERVICE_RUNNING);
 
-    for (; !service_stop;) {
-	rv = WaitForMultipleObjects(nchild, (HANDLE *) child, FALSE, 2000);
-	ap_assert(rv != WAIT_FAILED);
-	if (rv == WAIT_TIMEOUT)
-	    continue;
-	cld = rv - WAIT_OBJECT_0;
-	ap_assert(rv < nchild);
-	CloseHandle((HANDLE) child[rv]);
-	CloseHandle(ev[rv]);
-	child[rv] = create_event_and_spawn(argc, argv, &ev[rv], &child_num, buf);
-	ap_assert(child[rv]);
-    }
+    restart_pending = shutdown_pending = 0;
 
-    /*
-     * Tell all your kids to stop. Wait for them for some time
-     * Kill those that haven't yet stopped
-     */
-    for (i = 0; i < nchild; i++) {
-	SetEvent(ev[i]);
-    }
-
-    for (tmstart = time(NULL); nchild && (tmstart < (time(NULL) + 60));) {
-	service_set_status(SERVICE_STOP_PENDING);
-	rv = WaitForMultipleObjects(nchild, (HANDLE *) child, FALSE, 2000);
-	ap_assert(rv != WAIT_FAILED);
-	if (rv == WAIT_TIMEOUT)
-	    continue;
-	cld = rv - WAIT_OBJECT_0;
-	ap_assert(rv < nchild);
-	CloseHandle((HANDLE) child[rv]);
-	CloseHandle(ev[rv]);
-	for (i = rv; i < (nchild - 1); i++) {
-	    child[i] = child[i + 1];
-	    ev[i] = ev[i + 1];
+    do { /* restart-pending */
+	if (!is_graceful) {
+	    restart_time = time(NULL);
 	}
-	nchild--;
+	clear_pool(pconf);
+	pparent = make_sub_pool(pconf);
+
+	server_conf = read_config(pconf, pparent, server_confname);
+	open_logs(server_conf, pconf);
+	init_modules(pconf, server_conf);
+	if (!is_graceful)
+	    reinit_scoreboard(pconf);
+
+	restart_pending = shutdown_pending = 0;
+
+	/* Wait for either a child process to die, or for the stop_event
+	 * to be signalled by the service manager or rpc server */
+	while (1) {
+	    /* Next line will block forever until either a child dies, or we
+	     * get signalled on the "apache-signal" event (e.g. if the user is
+	     * requesting a shutdown/restart)
+	     */
+	    if (current_live_processes == 0) {
+		/* Shouldn't happen, but better safe than sorry */
+		aplog_error(APLOG_MARK,APLOG_ERR|APLOG_NOERRNO, server_conf,
+ 			"master_main: no child processes alive! creating one");
+		create_process(process_handles, process_kill_events, &current_live_processes, &child_num, buf, argc, argv);
+		if (processes_to_create) {
+		    processes_to_create--;
+		}
+	    }
+	    process_handles[current_live_processes] = signal_event;
+	    rv = WaitForMultipleObjects(current_live_processes+1, (HANDLE *)process_handles, 
+			FALSE, INFINITE);
+	    if (rv == WAIT_FAILED) {
+		/* Something serious is wrong */
+		aplog_error(APLOG_MARK,APLOG_CRIT|APLOG_WIN32ERROR, server_conf,
+		    "WaitForMultipeObjects on process handles and apache-signal -- doing shutdown");
+		shutdown_pending = 1;
+		break;
+	    }
+	    ap_assert(rv != WAIT_TIMEOUT);
+	    cld = rv - WAIT_OBJECT_0;
+	    APD4("main process: wait finished, cld=%d handle %d (max=%d)", cld, process_handles[cld], current_live_processes);
+	    if (cld == current_live_processes) {
+		/* stop_event is signalled, we should exit now */
+		if (ResetEvent(signal_event) == 0)
+		    APD1("main process: *** ERROR: ResetEvent(stop_event) failed ***");
+		APD3("main process: stop_event signalled: shutdown_pending=%d, restart_pending=%d",
+		    shutdown_pending, restart_pending);
+		break;
+	    }
+	    ap_assert(cld < current_live_processes);
+	    cleanup_process(process_handles, process_kill_events, cld, &current_live_processes);
+	    APD2("main_process: child in slot %d died", rv);
+	    if (processes_to_create) {
+		create_process(process_handles, process_kill_events, &current_live_processes, &child_num, buf, argc, argv);
+		processes_to_create--;
+	    }
+	}
+	if (!shutdown_pending && !restart_pending) {
+	    aplog_error(APLOG_MARK,APLOG_CRIT|APLOG_NOERRNO, server_conf,
+		"master_main: no shutdown or restart variables set -- doing shutdown");
+	    shutdown_pending = 1;
+	}
+	if (shutdown_pending) {
+	    /* tell all child processes to die */
+	    for (i = 0; i < current_live_processes; i++) {
+		APD3("main process: signalling child #%d handle %d to die", i, process_handles[i]);
+		if (SetEvent(process_kill_events[i]) == 0)
+		    aplog_error(APLOG_MARK,APLOG_WIN32ERROR, server_conf,
+			"SetEvent for child process in slot #%d", i);
+	    }
+
+	    break;
+	}
+	if (restart_pending) {
+	    int children_to_kill = current_live_processes;
+
+	    APD1("--- Doing graceful restart ---");
+
+	    processes_to_create = nchild;
+	    for (i = 0; i < nchild; ++i) {
+		if (current_live_processes >= MAX_PROCESSES)
+		    break;
+		create_process(process_handles, process_kill_events, &current_live_processes, &child_num, buf, argc, argv);
+		processes_to_create--;
+	    }
+	    for (i = 0; i < children_to_kill; i++) {
+		APD3("main process: signalling child #%d handle %d to die", i, process_handles[i]);
+		if (SetEvent(process_kill_events[i]) == 0)
+		    aplog_error(APLOG_MARK,APLOG_WIN32ERROR, server_conf,
+ 			"SetEvent for child process in slot #%d", i);
+	    }
+	}
+	++generation;
+    } while (restart_pending);
+
+    /* If we dropped out of the loop we definitly want to die completely. We need to
+     * make sure we wait for all the child process to exit first.
+     */
+
+    APD2("*** main process shutdown, processes=%d ***", current_live_processes);
+
+    CloseHandle(signal_event);
+
+    tmstart = time(NULL);
+    while (current_live_processes && ((tmstart+60) > time(NULL))) {
+	service_set_status(SERVICE_STOP_PENDING);
+	rv = WaitForMultipleObjects(current_live_processes, (HANDLE *)process_handles, FALSE, 2000);
+	if (rv == WAIT_TIMEOUT)
+	    continue;
+	ap_assert(rv != WAIT_FAILED);
+	cld = rv - WAIT_OBJECT_0;
+	ap_assert(rv < current_live_processes);
+	APD4("main_process: child in #%d handle %d died, left=%d", 
+	    rv, process_handles[rv], current_live_processes);
+	cleanup_process(process_handles, process_kill_events, cld, &current_live_processes);
     }
-    for (i = 0; i < nchild; i++) {
-	TerminateProcess((HANDLE) child[i], 1);
+    for (i = 0; i < current_live_processes; i++) {
+	aplog_error(APLOG_MARK,APLOG_ERR|APLOG_NOERRNO, server_conf,
+ 	    "forcing termination of child #%d (handle %d)", i, process_handles[i]);
+	TerminateProcess((HANDLE) process_handles[i], 1);
     }
     service_set_status(SERVICE_STOPPED);
 
+    destroy_pool(pparent);
 
     destroy_mutex(start_mutex);
     return (0);
@@ -4314,6 +4736,7 @@ int main(int argc, char *argv[])
 #ifdef WIN32
 	case 'c':
 	    exit_event = open_event(optarg);
+	    APD2("child: opened process event %s", optarg);
 	    cp = strchr(optarg, '_');
 	    ap_assert(cp);
 	    *cp = 0;
@@ -4393,7 +4816,7 @@ int main(int argc, char *argv[])
     }
     else {
 	service_main(master_main, argc, argv,
-	  &service_pause, &service_stop, "Apache", install, run_as_service);
+			"Apache", install, run_as_service);
     }
 
     return (0);
