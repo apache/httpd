@@ -1,12 +1,11 @@
 
-                   Apache HTTP Server 1.3.31 freigegeben
+                   Apache HTTP Server 1.3.32 freigegeben
 
    Wir, die Apache Software Foundation und das Apache HTTP Server Projekt, 
-   freuen uns, die Freigabe der Version 1.3.31 des Apache HTTP Servers 
+   freuen uns, die Freigabe der Version 1.3.32 des Apache HTTP Servers 
    ("Apache") bekannt zu geben. Diese Ankündigung führt die wesentlichen 
-   Änderungen von 1.3.31 gegenüber 1.3.29 auf (die Version 1.3.30 wurde nicht
-   freigegeben). Die Ankündigung ist auch in englischer Sprache sowie
-   spanischer und japanischer Übersetzung unter
+   Änderungen von 1.3.32 gegenüber 1.3.31 auf. Die Ankündigung ist auch
+   in englischer Sprache sowie spanischer und japanischer Übersetzung unter
 
         http://www.apache.org/dist/httpd/Announcement.html
         http://www.apache.org/dist/httpd/Announcement.html.es
@@ -17,38 +16,19 @@
    Diese Version des Apache ist vornehmlich ein Bug-Fix- und Sicherheits-
    Update. Eine kurze Zusammenfassung der Bug-Fixes ist am Ende des Dokumentes
    aufgeführt. Die vollständige Liste der Änderungen ist in der CHANGES-
-   Datei zu finden. Apache 1.3.31 behebt insbesondere 4 mögliche
-   Sicherheitslücken:
+   Datei zu finden. Apache 1.3.32 behebt insbesondere 1 mögliche
+   Sicherheitslücke:
 
-     o CAN-2003-0987 (cve.mitre.org)
-       Im mod_digest wird der vom Client verwendete "Nonce"-Wert nun
-       verifiziert, ob er mit dem vom Server erzeugten korrespondiert.
-       Dieses Problem betrifft nicht das mod_auth_digest-Modul.
+     o CAN-2004-0492 (cve.mitre.org)
+       Abweisen von Antworten eines entfernten Servers, wenn ein
+       ungültiger (negativer) Content-Length-Header gesendet wurde.
 
-     o CAN-2003-0020 (cve.mitre.org)
-       Daten beliebiger Herkunft werden maskiert, bevor sie ins
-       Fehlerprotokoll geschrieben werden.
-
-     o CAN-2004-0174 (cve.mitre.org)
-       Korrektur von "verhungernden" lauschenden Sockets, wo eine
-       kurzlebige Verbindung an einem selten verbundenen, lauschenden Socket
-       einen Kindprozess veranlasst, den Accept-Mutex nicht freizugeben und
-       neue Verbindungen solange zu blockieren, bis eine weitere Verbindung
-       auf dem selten verbundenen Socket eintrifft. Dieses Problem betrifft
-       nur bestimmte Plattformen, wie Solaris, AIX und IRIX. Linux ist nicht
-       betroffen.
-     
-     o CAN-2003-0993 (cve.mitre.org) 
-       Korrektur des Parsers für Allow-/Deny-Regeln, die IP-Adressen ohne
-       Angabe einer Netmask verwenden. Das Problem ist lediglich auf
-       Big-Endian-64-bit-Plattformen bekannt.
-     
-   Wir betrachten den Apache 1.3.31 als die beste verfügbare Version des
+   Wir betrachten den Apache 1.3.32 als die beste verfügbare Version des
    Apache 1.3 und wir empfehlen Benutzern älterer Versionen, insbesondere
    der Familien 1.1.x und 1.2.x, umgehend die Aufrüstung. Für die 1.2.x-
    Familie werden keine weiteren Releases mehr erstellt.
 
-   Apache 1.3.31 steht unter folgender Adresse zum Download bereit:
+   Apache 1.3.32 steht unter folgender Adresse zum Download bereit:
 
        http://httpd.apache.org/download.cgi
 
@@ -101,68 +81,53 @@
    besseren Performance, Stabilität und Sicherheit auf den Apache 2.0 zu
    wechseln.
 
-               Wesentliche Änderungen des Apache 1.3.31
+               Wesentliche Änderungen des Apache 1.3.32
 
    Sicherheitslücken
 
-     o CAN-2003-0987 (cve.mitre.org)
-       Im mod_digest wird der vom Client verwendete "Nonce"-Wert nun
-       verifiziert, ob er mit dem vom Server erzeugten korrespondiert.
-       Dieses Problem betrifft nicht das mod_auth_digest-Modul.
+     * CAN-2004-0492 (cve.mitre.org)
+       Antworten eines entfernten Servers werden abgewiesen, wenn ein
+       ungültiger (negativer) Content-Length-Header gesendet wurde.
 
-     o CAN-2003-0020 (cve.mitre.org)
-       Daten beliebiger Herkunft werden maskiert, bevor sie ins
-       Fehlerprotokoll geschrieben werden.
-
-     o CAN-2004-0174 (cve.mitre.org)
-       Korrektur von "verhungernden" lauschenden Sockets, wo eine
-       kurzlebige Verbindung an einem selten verbundenen, lauschenden Socket
-       einen Kindprozess veranlaßt, den Accept-Mutex festzuhalten und neue
-       Verbindungen solange zu blockieren, bis eine weitere Verbindung auf
-       auf dem selten verbundenen Socket eintrifft.
-     
-     o CAN-2003-0993 (cve.mitre.org) 
-       Korrektur des Parsers für Allow-/Deny-Regeln, die IP-Adressen ohne
-       Angabe einer Netmask verwenden. Das Problem ist lediglich auf
-       Big-Endian-64-bit-Plattformen bekannt.
-
-Neuerungen
+   Neuerungen
 
     Neue Funktionen, die sich auf bestimmte Plattformen beziehen:
 
-     * Linux 2.4+: Wenn der Apache als root startet und CoreDumpDirectory
-       gesetzt ist, sind Speicherauszüge mittels des Systemaufrufes
-       prctl() aktiviert.
+     * Win32: Verbesserte Fehlermeldung bei einem mißglückten Versuch, einen
+       Piped-Log- oder Rewrite-Map-Prozess zu starten. 
 
     Neue Funktionen für alle Plattformen:
 
-     * neue Zusatzmodule: mod_whatkilledus und mod_backtrace (experimentell)
-       zur Auswertung von Diagnosedaten nach dem Absturz eines Kindprozesses.
-
-     * Hinzufügen eines Hooks für schwere Ausnahmefehler zur Verwendung von 
-       Diagnosemodulen nach einem Absturz.
-
-     * Neues Modul zur forensischen Protokollierung (mod_log_forensic)
-
-     * '%X' wird von der Direktive LogFormat jetzt als Alias für '%c'
-       akzeptiert. Das ermöglicht nun auch mit mod_ssl die Protokollierung des
-       Verbindungsstatus.
+     * Neues Kompilierungs-Flag: UCN_OFF_HONOR_PHYSICAL_PORT.
+       Es bestimmt, wie UseCanonicalName Off den Port ermittelt, wenn der
+       Client keinen im Host-Header übermittelt hat. Falls zur
+       Kompilierung angegeben, verwendet UseCanonicalName Off die physische
+       Portnummer, um den kanonischen Namen zu bilden. Wird das Flag nicht
+       gesetzt, werden zunächst der aktuelle Port und dann der Standardport
+       für das aktuelle Schema versucht.
+      
             
    Behobene Fehler
 
-    Die folgenden nennenswerten Fehler wurden im Apache 1.3.29 (oder
-    früher) gefunden und im Apache 1.3.31 behoben:
+    Die folgenden nennenswerten Fehler wurden im Apache 1.3.31 (oder
+    früher) gefunden und im Apache 1.3.32 behoben:
 
-     * Korrektur von Speicherkorruptionen bei der Funktion
-       ap_custom_response(). Die per-dir-Grunkonfiguration würde später auf
-       Daten des Request-Pools zeigen, die für verschiedene Zwecke bei
-       verschiedenen Anfragen wieder benutzt würden.
+     * mod_rewrite: Die Query-String-Behandlung von Proxy-URLs wurde
+       korrigiert. PR 14518.
 
-     * mod_usertrack überprüft nicht länger den Cookie2-Header auf den 
-       Cookienamen. Es überschreibt auch keine anderen Cookies mehr.
+     * mod_rewrite: Korrektur von 0-Bytes-Schreibzugriffen auf zufällige
+       Speicherpositionen. PR 31036.
 
-     * Korrektur eines Fehlers, der einen Speicherauszug verursachte, wenn
-       CookieTracking ohne direkte Angabe eines Cookienamens verwendet wurde.
+     * mod_digest: Korrektur der Nonce-Berechnung (seit 1.3.31), die eine
+       Re-Authentisierung für jede Verbindung erforderte, wenn der 
+       AuthDigestRealmSeed nicht konfiguriert war.  PR 30920.
 
-     * UseCanonicalName off hatte den vom Client übermittelten Port ignoriert.
+     * Korrektur eines trivialen Fehlers in mod_log_forensic, der bei 
+       Kindprozessen zu Speicherzugriffsverletzungen führte, wenn bestimmte 
+       ungültige Anfragen an diesen geschickt wurden während die forensiche
+       Protokollierung aktiviert war. PR 29313.
 
+     * mod_dav, Frontpage und andere werden nicht mehr gestört. Korrektur
+       eines Patches in 1.3.31, welches die Löschung des Request-Bodies bei
+       Anfragen verhinderte, die für Keep-Alive vorgesehen waren, jedoch
+       während der Bearbeitung abgebrochen wurden. PR 29237.
