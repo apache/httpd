@@ -210,7 +210,7 @@ Open issues:
 
     * Maybe moving *all* of the *.h header files into a new
       src/include directory?
-	Status: Ken +1
+	Status: Ken +1, Dean +1
 
     * Renaming the "apache" CVS module to "apache-1.2" and the
       "apachen" module to "apache-1.3" - and, at some point,
