@@ -51,7 +51,7 @@ Content-language: it
 Content-type: text/html
 
 URI: index.html.ja.iso2022-jp
-Content-language: jp
+Content-language: ja
 Content-type: text/html;charset=ISO-2022-JP
 
 URI: index.html.kr.iso2022-kr
