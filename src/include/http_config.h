@@ -175,6 +175,11 @@ typedef struct module_struct {
 
     struct module_struct *next;
 
+    /* init() occurs after config parsing, but before any children are
+     * forked.
+     * Modules should not rely on the order in which create_server_config
+     * and create_dir_config are called.
+     */
 #ifdef ULTRIX_BRAIN_DEATH
     void (*init) ();
     void *(*create_dir_config) ();
