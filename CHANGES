@@ -159,6 +159,8 @@ Changes with Apache 2.1.0-dev
 
 Changes with Apache 2.0.45
 
+  *) Simpler, faster code path for request header scanning  [Brian Pane]
+
   *) SECURITY:  Eliminated leaks of several file descriptors to child
      processes, such as CGI scripts.  This fix depends on the latest
      APR library release 0.9.2, which is distributed with the httpd 
