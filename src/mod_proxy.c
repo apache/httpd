@@ -2342,6 +2342,8 @@ ftp_handler(request_rec *r, struct cache_req *c, char *url)
     parms = strchr(path, ';');
     if (parms != NULL) *(parms++) = '\0';
 
+    memset(&server,'\0',sizeof server);
+    server.sin_family=AF_INET;
     server.sin_port = htons(port);
     err = host2addr(host, &server.sin_addr);
     if (err != NULL) return proxyerror(r, err); /* give up */
@@ -2663,7 +2665,6 @@ connect_handler(request_rec *r, struct cache_req *c, char *url)
 	    break;
 	default:
 	    return SERVICE_UNAVAILABLE;
-	    break;
     }
 
     Explain2("CONNECT to %s on port %d", host, port);
