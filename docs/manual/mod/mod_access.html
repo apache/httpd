@@ -88,8 +88,8 @@ href="core.html#limit">&lt;Limit&gt;</a> section.</p>
  HREF="directive-dict.html#Syntax"
  REL="Help"
 ><STRONG>Syntax:</STRONG></A> Allow from 
-   all|<EM>host</em>|env=<em>variablename</em> 
-   [<em>host</em>|env=<em>variablename</em>] ...<BR>
+   all|<EM>host</em>|env=<em>env-variable</em> 
+   [<em>host</em>|env=<em>env-variable</em>] ...<BR>
 <A
  HREF="directive-dict.html#Context"
  REL="Help"
@@ -156,9 +156,9 @@ same set of hosts.</p>
 <p>The third format of the arguments to the <code>Allow</code>
 directive allows access to the server to be controlled based on the
 existence of an <a href="../env.html">environment variable</a>.  When
-<code>Allow from env=</code><em>variablename</em> is specified, then
+<code>Allow from env=</code><em>env-variable</em> is specified, then
 the request is allowed access if the environment variable
-<em>variablename</em> exists.  The server provides the ability to set
+<em>env-variable</em> exists.  The server provides the ability to set
 environment variables in a flexible way based on characteristics of
 the client request using the directives provided by <a
 href="mod_setenvif.html">mod_setenvif</a>.  Therefore, this directive
@@ -194,8 +194,8 @@ and <A HREF="mod_setenvif.html#SetEnvIf">SetEnvIf</A>.
  HREF="directive-dict.html#Syntax"
  REL="Help"
 ><STRONG>Syntax:</STRONG></A> Deny from 
-   all|<EM>host</em>|env=<em>variablename</em> 
-   [<em>host</em>|env=<em>variablename</em>] ...<BR>
+   all|<EM>host</em>|env=<em>env-variable</em> 
+   [<em>host</em>|env=<em>env-variable</em>] ...<BR>
 <A
  HREF="directive-dict.html#Context"
  REL="Help"

@@ -63,7 +63,7 @@ and <A HREF="core.html#satisfy">satisfy</A>.</P>
 <A
  HREF="directive-dict.html#Syntax"
  REL="Help"
-><STRONG>Syntax:</STRONG></A> AuthGroupFile <EM>filename</EM><BR>
+><STRONG>Syntax:</STRONG></A> AuthGroupFile <EM>file-path</EM><BR>
 <A
  HREF="directive-dict.html#Context"
  REL="Help"
@@ -82,7 +82,7 @@ and <A HREF="core.html#satisfy">satisfy</A>.</P>
 ><STRONG>Module:</STRONG></A> mod_auth<P>
 
 The AuthGroupFile directive sets the name of a textual file containing the list
-of user groups for user authentication. <EM>Filename</EM> is the path
+of user groups for user authentication. <EM>File-path</EM> is the path
 to the group file.  If it is not absolute (<EM>i.e.</EM>, if it
 doesn't begin with a slash), it is treated as relative to the ServerRoot.
 <P>
@@ -106,7 +106,7 @@ See also <A HREF="core.html#authname">AuthName</A>,
 <A
  HREF="directive-dict.html#Syntax"
  REL="Help"
-><STRONG>Syntax:</STRONG></A> AuthUserFile <EM>filename</EM><BR>
+><STRONG>Syntax:</STRONG></A> AuthUserFile <EM>file-path</EM><BR>
 <A
  HREF="directive-dict.html#Context"
  REL="Help"
@@ -126,7 +126,7 @@ See also <A HREF="core.html#authname">AuthName</A>,
 
 The AuthUserFile directive sets the name of a textual file containing
 the list of users and passwords for user
-authentication. <EM>Filename</EM> is the path to the user
+authentication. <EM>File-path</EM> is the path to the user
 file. If it is not absolute (<EM>i.e.</EM>, if it doesn't begin with a
 slash), it is treated as relative to the ServerRoot.
 <P> Each line of the user file file contains a username followed
