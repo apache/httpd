@@ -142,6 +142,7 @@ Committed Code Changes:
     * some rfc2068 case insensitivity issues
     * r->allowed cleanup
     * References to undefined 'cwd' cell fixed in suexec.c
+    * fix options/allowoverride merging
 
 Available Patches:
 

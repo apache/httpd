@@ -112,9 +112,9 @@ void *create_core_dir_config (pool *a, char *dir)
     conf->d_is_fnmatch = conf->d ? (is_fnmatch (conf->d) != 0) : 0;
     conf->d_components = conf->d ? count_dirs (conf->d) : 0;
 
-    conf->opts = dir ? OPT_UNSET : OPT_ALL;
+    conf->opts = dir ? OPT_UNSET : OPT_UNSET|OPT_ALL;
     conf->opts_add = conf->opts_remove = OPT_NONE;
-    conf->override = dir ? OR_UNSET : OR_ALL;
+    conf->override = dir ? OR_UNSET : OR_UNSET|OR_ALL;
 
     conf->content_md5 = 2;
 
@@ -158,11 +158,16 @@ void *merge_core_dir_configs (pool *a, void *basev, void *newv)
     conf->d_components = new->d_components;
     conf->r = new->r;
     
-    if (new->opts != OPT_UNSET) conf->opts = new->opts;
-    if (new->opts_add) conf->opts |= new->opts_add;
-    if (new->opts_remove) conf->opts &= ~(new->opts_remove);
+    if (!(new->opts & OPT_UNSET)) conf->opts = new->opts;
+    if (new->opts_add) {
+	conf->opts |= new->opts_add;
+	conf->opts &= ~OPT_UNSET;
+    }
+    if (new->opts_remove) {
+	conf->opts &= ~(new->opts_remove | OPT_UNSET);
+    }
 
-    if (new->override != OR_UNSET) conf->override = new->override;
+    if (!(new->override & OR_UNSET)) conf->override = new->override;
     if (new->default_type) conf->default_type = new->default_type;
     
     if (new->auth_type) conf->auth_type = new->auth_type;
@@ -692,6 +697,7 @@ const char *set_override (cmd_parms *cmd, core_dir_config *d, const char *l)
 	    d->override = OR_ALL;
 	else 
 	    return pstrcat (cmd->pool, "Illegal override option ", w, NULL);
+	d->override &= ~OR_UNSET;
     }
 
     return NULL;
@@ -737,12 +743,17 @@ const char *set_options (cmd_parms *cmd, core_dir_config *d, const char *l)
 	else 
 	    return pstrcat (cmd->pool, "Illegal option ", w, NULL);
 
-	if (action == '-')
+	if (action == '-') {
 	    d->opts_remove |= opt;
-	else if (action == '+')
+	    d->opts &= ~opt;
+	}
+	else if (action == '+') {
 	    d->opts_add |= opt;
-	else
-	  d->opts |= opt;
+	    d->opts |= opt;
+	}
+	else {
+	    d->opts |= opt;
+	}
     }
 
     return NULL;

@@ -1,5 +1,11 @@
 Changes with Apache 1.3b4
 
+  *) Options and AllowOverrides weren't properly merging in the main
+     server setting inside vhosts (only an issue when you have no
+     <Directory> or other section containing an Options that affects
+     a request).  Options +foo or -foo in the main_server wouldn't
+     affect the main_server's lookup defaults.  [Dean Gaudet]
+
   *) Variable 'cwd' was being used pointlessly before being set.
      [Ken Coar] PR#1738
 
