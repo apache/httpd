@@ -61,6 +61,7 @@
 
 #include "httpd.h"
 #include "http_config.h"
+#include "ap_listen.h"
 #ifdef HAVE_SYS_TIME_H
 #include <sys/time.h>
 #endif
@@ -120,6 +121,7 @@ AP_DECLARE(void) unixd_set_rlimit(cmd_parms *cmd, struct rlimit **plimit,
 #endif
 AP_DECLARE(apr_status_t) unixd_set_lock_perms(apr_lock_t *lock);
 AP_DECLARE(apr_status_t) unixd_set_proc_mutex_perms(apr_proc_mutex_t *pmutex);
+AP_DECLARE(apr_status_t) unixd_accept(void **accepted, ap_listen_rec *lr, apr_pool_t *ptrans);
 
 #ifdef HAVE_KILLPG
 #define unixd_killpg(x, y)	(killpg ((x), (y)))

@@ -527,10 +527,9 @@ static void set_signals(void)
  * they are really private to child_main.
  */
 
-static apr_socket_t *csd;
 static int requests_this_child;
 static int num_listensocks = 0;
-static apr_socket_t **listensocks;
+static ap_listen_rec *listensocks;
 
 int ap_graceful_stop_signalled(void)
 {
@@ -544,11 +543,12 @@ static void child_main(int child_num_arg)
     apr_pool_t *ptrans;
     conn_rec *current_conn;
     apr_status_t status = APR_EINIT;
-    int sockdes, i;
+    int i;
     ap_listen_rec *lr;
     int curr_pollfd, last_pollfd = 0;
     apr_pollfd_t *pollset;
-    apr_socket_t *sd;
+    int offset;
+    void *csd;
 
     my_child_num = child_num_arg;
     ap_my_pid = getpid();
@@ -579,12 +579,14 @@ static void child_main(int child_num_arg)
     /* Set up the pollfd array */
     listensocks = apr_pcalloc(pchild,
                             sizeof(*listensocks) * (num_listensocks));
-    for (lr = ap_listeners, i = 0; i < num_listensocks; lr = lr->next, i++)
-        listensocks[i]=lr->sd;
+    for (lr = ap_listeners, i = 0; i < num_listensocks; lr = lr->next, i++) {
+        listensocks[i].accept_func = lr->accept_func;
+        listensocks[i].sd = lr->sd;
+    }
 
     apr_poll_setup(&pollset, num_listensocks, pchild);
     for (i = 0; i < num_listensocks; i++)
-        apr_poll_socket_add(pollset, listensocks[i], APR_POLLIN);
+        apr_poll_socket_add(pollset, listensocks[i].sd, APR_POLLIN);
 
     while (!die_now) {
 	/*
@@ -630,7 +632,7 @@ static void child_main(int child_num_arg)
     	        clean_child_exit(1);
             }
             if (num_listensocks == 1) {
-                sd = ap_listeners->sd;
+                offset = 0;
                 goto got_fd;
             }
             else {
@@ -642,150 +644,40 @@ static void child_main(int child_num_arg)
                         curr_pollfd = 0;
                     }
                     /* XXX: Should we check for POLLERR? */
-                    apr_poll_revents_get(&event, listensocks[curr_pollfd], pollset);
+                    apr_poll_revents_get(&event, listensocks[curr_pollfd].sd, pollset);
                     if (event & APR_POLLIN) {
                         last_pollfd = curr_pollfd;
-                        sd=listensocks[curr_pollfd];
+                        offset = curr_pollfd;
                         goto got_fd;
                     }
                 } while (curr_pollfd != last_pollfd);
             }
 
             continue;
+        }
     got_fd:
 	/* if we accept() something we don't want to die, so we have to
 	 * defer the exit
 	 */
 	for (;;) {
             ap_sync_scoreboard_image();
-	    status = apr_accept(&csd, sd, ptrans);
-   	    if (status == APR_SUCCESS || !APR_STATUS_IS_EINTR(status))
-	        break;
-	    }
+            status = listensocks[offset].accept_func(&csd, 
+                                       &listensocks[offset], ptrans);
 
-	    if (status == APR_SUCCESS)
-		break;		/* We have a socket ready for reading */
-	    else {
-		/* Our old behaviour here was to continue after accept()
-		 * errors.  But this leads us into lots of troubles
-		 * because most of the errors are quite fatal.  For
-		 * example, EMFILE can be caused by slow descriptor
-		 * leaks (say in a 3rd party module, or libc).  It's
-		 * foolish for us to continue after an EMFILE.  We also
-		 * seem to tickle kernel bugs on some platforms which
-		 * lead to never-ending loops here.  So it seems best
-		 * to just exit in most cases.
-		 */
-                switch (status) {
-#ifdef EPROTO
-		    /* EPROTO on certain older kernels really means
-		     * ECONNABORTED, so we need to ignore it for them.
-		     * See discussion in new-httpd archives nh.9701
-		     * search for EPROTO.
-		     *
-		     * Also see nh.9603, search for EPROTO:
-		     * There is potentially a bug in Solaris 2.x x<6,
-		     * and other boxes that implement tcp sockets in
-		     * userland (i.e. on top of STREAMS).  On these
-		     * systems, EPROTO can actually result in a fatal
-		     * loop.  See PR#981 for example.  It's hard to
-		     * handle both uses of EPROTO.
-		     */
-                case EPROTO:
-#endif
-#ifdef ECONNABORTED
-                case ECONNABORTED:
-#endif
-		    /* Linux generates the rest of these, other tcp
-		     * stacks (i.e. bsd) tend to hide them behind
-		     * getsockopt() interfaces.  They occur when
-		     * the net goes sour or the client disconnects
-		     * after the three-way handshake has been done
-		     * in the kernel but before userland has picked
-		     * up the socket.
-		     */
-#ifdef ECONNRESET
-                case ECONNRESET:
-#endif
-#ifdef ETIMEDOUT
-                case ETIMEDOUT:
-#endif
-#ifdef EHOSTUNREACH
-		case EHOSTUNREACH:
-#endif
-#ifdef ENETUNREACH
-		case ENETUNREACH:
-#endif
-                    break;
-#ifdef ENETDOWN
-		case ENETDOWN:
-		     /*
-		      * When the network layer has been shut down, there
-		      * is not much use in simply exiting: the parent
-		      * would simply re-create us (and we'd fail again).
-		      * Use the CHILDFATAL code to tear the server down.
-		      * @@@ Martin's idea for possible improvement:
-		      * A different approach would be to define
-		      * a new APEXIT_NETDOWN exit code, the reception
-		      * of which would make the parent shutdown all
-		      * children, then idle-loop until it detected that
-		      * the network is up again, and restart the children.
-		      * Ben Hyde noted that temporary ENETDOWN situations
-		      * occur in mobile IP.
-		      */
-		    ap_log_error(APLOG_MARK, APLOG_EMERG, status, ap_server_conf,
-			"apr_accept: giving up.");
-		    clean_child_exit(APEXIT_CHILDFATAL);
-#endif /*ENETDOWN*/
-
-#ifdef TPF
-		case EINACT:
-		    ap_log_error(APLOG_MARK, APLOG_EMERG, status, ap_server_conf,
-			"offload device inactive");
-		    clean_child_exit(APEXIT_CHILDFATAL);
-		    break;
-		default:
-		    ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, ap_server_conf,
-			"select/accept error (%d)", status);
-		    clean_child_exit(APEXIT_CHILDFATAL);
-#else
-		default:
-		    ap_log_error(APLOG_MARK, APLOG_ERR, status, ap_server_conf,
-				"apr_accept: (client socket)");
-		    clean_child_exit(1);
-#endif
-		}
-	    }
-
+            if (status == APR_SUCCESS) {
+                break;
+            }
+            if (status == APR_EGENERAL) {
+                clean_child_exit(APEXIT_CHILDFATAL);
+            }
             ap_sync_scoreboard_image();
-	}
-
+        }
 	SAFE_ACCEPT(accept_mutex_off());	/* unlock after "accept" */
 
 	/*
 	 * We now have a connection, so set it up with the appropriate
 	 * socket options, file descriptors, and read/write buffers.
 	 */
-
-        apr_os_sock_get(&sockdes, csd);
-
-        if (sockdes >= FD_SETSIZE) {
-            ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_WARNING, 0, NULL,
-                         "new file descriptor %d is too large; you probably need "
-                         "to rebuild Apache with a larger FD_SETSIZE "
-                         "(currently %d)", 
-                         sockdes, FD_SETSIZE);
-	    apr_socket_close(csd);
-            ap_sync_scoreboard_image();
-	    continue;
-        }
-
-#ifdef TPF
-	if (sockdes == 0) {                  /* 0 is invalid socket for TPF */
-	    ap_sync_scoreboard_image();
-            continue;
-        }
-#endif
 
 	current_conn = ap_run_create_connection(ptrans, ap_server_conf, csd, my_child_num);
         if (current_conn) {

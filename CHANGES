@@ -1,5 +1,13 @@
 Changes with Apache 2.0.29-dev
 
+  *) Allow modules that add sockets to the ap_listeners list to
+     define the function that should be used to accept on that
+     socket.  Each MPM can define their own function to use for
+     the accept function with the MPM_ACCEPT_FUNC macro.  This
+     also abstracts out all of the Unix accept error handling
+     logic, which has become out of synch across Unix MPMs.
+     [Ryan Bloom]
+
   *) Fix a bug which would cause the response headers to be omitted
      when sending a negotiated ErrorDocument because the required
      filters were attached to the wrong request_rec.
