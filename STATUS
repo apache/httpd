@@ -132,9 +132,10 @@ PATCHES TO BACKPORT FROM 2.1
     *) modules: Include mod_dumpio to the modules/experimental
        tree. Module included in 2.1:modules/debug.
        http://www.apache.org/~jim/mod_dumpio.c
-       +1: jim, trawick
+       jerenkrantz notes: I won't merge this myself because of the build system
+                          tweaks required to add the module.
+       +1: jim, trawick, jerenkrantz
        -0: nd (suggests the experimental directory instead)
-           jerenkrantz (ditto)
 
     *) Fix the RPM spec file so that an RPM build now works. An RPM
        build now requires system installations of APR and APR-util.
@@ -411,6 +412,10 @@ PATCHES TO BACKPORT FROM 2.1
       jerenkrantz says: r126224 fixes brokenness with r125495 on Solaris.
       +1: thommay, jerenkrantz
       trawick: "which" isn't portable; I've suggested a work-around on dev@
+
+    * mod_proxy: Fix ProxyRemoteMatch.  PR 33170.
+      svn rev 151248
+      +1: jerenkrantz
 
 CURRENT RELEASE NOTES:
 
