@@ -231,10 +231,8 @@ static apr_status_t deflate_out_filter(ap_filter_t *f,
                                        apr_bucket_brigade *bb)
 {
     apr_bucket *e;
-    const char *accepts;
     request_rec *r = f->r;
     deflate_ctx *ctx = f->ctx;
-    char *token = NULL;
     int zRC;
     deflate_filter_config *c = ap_get_module_config(r->server->module_config,
                                                     &deflate_module);
@@ -246,7 +244,8 @@ static apr_status_t deflate_out_filter(ap_filter_t *f,
      * we're in better shape.
      */
     if (!ctx) {
-        char *buf;
+        char *buf, *token;
+        const char *encoding, *accepts;
 
         /* only work on main request/no subrequests */
         if (r->main) {
@@ -273,10 +272,23 @@ static apr_status_t deflate_out_filter(ap_filter_t *f,
             return ap_pass_brigade(f->next, bb);
         }
 
-        /* content is already encoded, so don't encode it again */
-        if (apr_table_get(r->headers_in, "Content-Encoding")) {
-            ap_remove_output_filter(f);
-            return ap_pass_brigade(f->next, bb);			
+        /* Let's see what our current Content-Encoding is.
+         * If gzip is present, don't gzip again.  (We could, but let's not.)
+         */
+        encoding = apr_table_get(r->headers_out, "Content-Encoding");
+        if (encoding) {
+            const char *tmp = encoding;
+
+            token = ap_get_token(r->pool, &tmp, 0);
+            while (token && token[0]) {
+                if (!strcasecmp(token, "gzip")) {
+                    ap_remove_output_filter(f);
+                    return ap_pass_brigade(f->next, bb);			
+                }
+                /* Otherwise, skip token */
+                tmp++;
+                token = ap_get_token(r->pool, &tmp, 0);
+            }
         }
 
         /* if they don't have the line, then they can't play */
@@ -287,7 +299,7 @@ static apr_status_t deflate_out_filter(ap_filter_t *f,
         }
 
         token = ap_get_token(r->pool, &accepts, 0);
-        while (token && token[0] && strcmp(token, "gzip")) {
+        while (token && token[0] && strcasecmp(token, "gzip")) {
             /* skip token */
             accepts++;
             token = ap_get_token(r->pool, &accepts, 0);
@@ -303,12 +315,7 @@ static apr_status_t deflate_out_filter(ap_filter_t *f,
         ctx = f->ctx = apr_pcalloc(r->pool, sizeof(*ctx));
         ctx->bb = apr_brigade_create(r->pool, f->c->bucket_alloc);
         ctx->buffer = apr_palloc(r->pool, c->bufferSize);
-/*
-        ctx->stream.zalloc = (alloc_func) 0;
-        ctx->stream.zfree = (free_func) 0;
-        ctx->stream.opaque = (voidpf) 0;
-        ctx->crc = 0L;
-*/
+
         zRC = deflateInit2(&ctx->stream, Z_BEST_SPEED, Z_DEFLATED,
                            c->windowSize, c->memlevel,
                            Z_DEFAULT_STRATEGY);
@@ -328,7 +335,13 @@ static apr_status_t deflate_out_filter(ap_filter_t *f,
         e = apr_bucket_pool_create(buf, 10, r->pool, f->c->bucket_alloc);
         APR_BRIGADE_INSERT_TAIL(ctx->bb, e);
 
-        apr_table_setn(r->headers_out, "Content-Encoding", "gzip");
+        /* If the entire Content-Encoding is "identity", we can replace it. */
+        if (!encoding || !strcasecmp(encoding, "identity")) {
+            apr_table_setn(r->headers_out, "Content-Encoding", "gzip");
+        }
+        else {
+            apr_table_mergen(r->headers_out, "Content-Encoding", "gzip");
+        }
         apr_table_setn(r->headers_out, "Vary", "Accept-Encoding");
         apr_table_unset(r->headers_out, "Content-Length");
     }
