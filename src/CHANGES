@@ -33,7 +33,7 @@ Changes with Apache 1.2b3:
   *) Add changes to improve the error message given for invalid
      ServerName parameters. [Dirk vanGulik]
 
-  *) Add "Authoratative" directive for Auth modules that don't
+  *) Add "Authoritative" directive for Auth modules that don't
      currently have it. This gives admin control to assign authoritative
      control to an authentication scheme and allow "fall through" for
      those authentication modules that aren't "Authoritative" thereby
