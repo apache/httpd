@@ -6846,9 +6846,9 @@ int REALMAIN(int argc, char *argv[])
             ap_cpystrn(ap_server_root, optarg, sizeof(ap_server_root));
             ap_getparents(ap_server_root);
             ap_no2slash(ap_server_root);
-            while (strlen(ap_server_root) 
-                    && ap_server_root[strlen(ap_server_root)-1] == '/')
-                ap_server_root[strlen(ap_server_root)-1] = '\0';
+            if (ap_server_root[0] 
+                    && ap_server_root[strlen(ap_server_root) - 1] == '/')
+                ap_server_root[strlen(ap_server_root) - 1] = '\0';
 	    break;
 	case 'f':
             ap_cpystrn(ap_server_confname,
