@@ -50,9 +50,9 @@
 <syntax>CheckSpelling on|off</syntax>
 <default>CheckSpelling Off</default>
 <contextlist>
-<context>サーバ設定ファイル</context>
-<context>バーチャルホスト</context>
-<context>ディレクトリ</context>
+<context>server config</context>
+<context>virtual host</context>
+<context>directory</context>
 <context>.htaccess</context>
 </contextlist>
 <override>Options</override>

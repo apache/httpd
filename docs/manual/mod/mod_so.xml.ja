@@ -108,7 +108,7 @@
 <description>指定されたオブジェクトファイルやライブラリをリンクする</description>
 <syntax>LoadFile <em>filename</em> [<em>filename</em>] ...</syntax>
 <contextlist>
-<context>サーバ設定ファイル</context>
+<context>server config</context>
 </contextlist>
 
 <usage>
@@ -132,7 +132,7 @@
 リストに追加する</description>
 <syntax>LoadModule <em>module filename</em></syntax>
 <contextlist>
-<context>サーバ設定ファイル</context>
+<context>server config</context>
 </contextlist>
 
 <usage>

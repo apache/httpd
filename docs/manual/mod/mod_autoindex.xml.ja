@@ -171,9 +171,9 @@
 <description>アイコンの代わりに
 表示される、ファイル名で選択された代替テキスト</description>
 <syntax>AddAlt <em>string file</em> [<em>file</em>] ...</syntax>
-<contextlist><context>サーバ設定ファイル</context>
-<context>バーチャルホスト</context>
-<context>ディレクトリ</context><context>.htaccess</context>
+<contextlist><context>server config</context>
+<context>virtual host</context>
+<context>directory</context><context>.htaccess</context>
 </contextlist>
 <override>Indexes</override>
 
@@ -204,9 +204,9 @@
 代替テキスト</description>
 <syntax>AddAltByEncoding <em>string MIME-encoding</em>
 [<em>MIME-encoding</em>] ...</syntax>
-<contextlist><context>サーバ設定ファイル</context>
-<context>バーチャルホスト</context>
-<context>ディレクトリ</context><context>.htaccess</context>
+<contextlist><context>server config</context>
+<context>virtual host</context>
+<context>directory</context><context>.htaccess</context>
 </contextlist>
 <override>Indexes</override>
 
@@ -236,9 +236,9 @@
 表示される、MIME タイプで選択された代替テキスト</description>
 <syntax>AddAltByType <em>string
     MIME-type</em> [<em>MIME-type</em>] ...</syntax>
-<contextlist><context>サーバ設定ファイル</context>
-<context>バーチャルホスト</context>
-<context>ディレクトリ</context><context>.htaccess</context>
+<contextlist><context>server config</context>
+<context>virtual host</context>
+<context>directory</context><context>.htaccess</context>
 </contextlist>
 <override>Indexes</override>
 
@@ -267,9 +267,9 @@
 <description>ファイルに対して表示する説明</description>
 <syntax>AddDescription
     <em>string file</em> [<em>file</em>] ...</syntax>
-<contextlist><context>サーバ設定ファイル</context>
-<context>バーチャルホスト</context>
-<context>ディレクトリ</context><context>.htaccess</context>
+<contextlist><context>server config</context>
+<context>virtual host</context>
+<context>directory</context><context>.htaccess</context>
 </contextlist>
 <override>Indexes</override>
 
@@ -321,9 +321,9 @@
 <description>ファイルに表示するアイコンを名前で選択</description>
 <syntax>AddIcon <em>icon
     name</em> [<em>name</em>] ...</syntax>
-<contextlist><context>サーバ設定ファイル</context>
-<context>バーチャルホスト</context>
-<context>ディレクトリ</context><context>.htaccess</context>
+<contextlist><context>server config</context>
+<context>virtual host</context>
+<context>directory</context><context>.htaccess</context>
 </contextlist>
 <override>Indexes</override>
 
@@ -362,9 +362,9 @@
 符号化方法で選択</description>
 <syntax>AddIconByEncoding
     <em>icon MIME-encoding</em> [<em>MIME-encoding</em>] ...</syntax>
-<contextlist><context>サーバ設定ファイル</context>
-<context>バーチャルホスト</context>
-<context>ディレクトリ</context><context>.htaccess</context>
+<contextlist><context>server config</context>
+<context>virtual host</context>
+<context>directory</context><context>.htaccess</context>
 </contextlist>
 <override>Indexes</override>
 
@@ -390,9 +390,9 @@
 MIME タイプによって選択</description>
 <syntax>AddIconByType
     <em>icon MIME-type</em> [<em>MIME-type</em>] ...</syntax>
-<contextlist><context>サーバ設定ファイル</context>
-<context>バーチャルホスト</context>
-<context>ディレクトリ</context><context>.htaccess</context>
+<contextlist><context>server config</context>
+<context>virtual host</context>
+<context>directory</context><context>.htaccess</context>
 </contextlist>
 <override>Indexes</override>
 
@@ -417,9 +417,9 @@ MIME タイプによって選択</description>
 <description>特定のアイコンが何も設定されていない時に
 ファイルに表示するアイコン</description>
 <syntax>DefaultIcon <em>url-path</em></syntax>
-<contextlist><context>サーバ設定ファイル</context>
-<context>バーチャルホスト</context>
-<context>ディレクトリ</context><context>.htaccess</context>
+<contextlist><context>server config</context>
+<context>virtual host</context>
+<context>directory</context><context>.htaccess</context>
 </contextlist>
 <override>Indexes</override>
 
@@ -438,9 +438,9 @@ MIME タイプによって選択</description>
 <description>
 インデックス一覧の先頭に挿入されるファイルの名前</description>
 <syntax>HeaderName <em>filename</em></syntax>
-<contextlist><context>サーバ設定ファイル</context>
-<context>バーチャルホスト</context>
-<context>ディレクトリ</context><context>.htaccess</context>
+<contextlist><context>server config</context>
+<context>virtual host</context>
+<context>directory</context><context>.htaccess</context>
 </contextlist>
 <override>Indexes</override>
 
@@ -501,9 +501,9 @@ HeaderName HEADER.html
 <description>ディレクトリ一覧を行なう際に無視すべき
 ファイルリストに追加</description>
 <syntax>IndexIgnore <em>file</em> [<em>file</em>] ...</syntax>
-<contextlist><context>サーバ設定ファイル</context>
-<context>バーチャルホスト</context>
-<context>ディレクトリ</context><context>.htaccess</context>
+<contextlist><context>server config</context>
+<context>virtual host</context>
+<context>directory</context><context>.htaccess</context>
 </contextlist>
 <override>Indexes</override>
 
@@ -525,9 +525,9 @@ HeaderName HEADER.html
 <description>ディレクトリインデックスの様々な設定項目
 </description>
 <syntax>IndexOptions  [+|-]<em>option</em> [[+|-]<em>option</em>] ...</syntax>
-<contextlist><context>サーバ設定ファイル</context>
-<context>バーチャルホスト</context>
-<context>ディレクトリ</context><context>.htaccess</context>
+<contextlist><context>server config</context>
+<context>virtual host</context>
+<context>directory</context><context>.htaccess</context>
 </contextlist>
 <override>Indexes</override>
 
@@ -862,9 +862,9 @@ foo-1.04
 <syntax>IndexOrderDefault
 Ascending|Descending Name|Date|Size|Description</syntax>
 <default>IndexOrderDefault Ascending Name</default>
-<contextlist><context>サーバ設定ファイル</context>
-<context>バーチャルホスト</context>
-<context>ディレクトリ</context><context>.htaccess</context>
+<contextlist><context>server config</context>
+<context>virtual host</context>
+<context>directory</context><context>.htaccess</context>
 </contextlist>
 <override>Indexes</override>
 
@@ -898,9 +898,9 @@ Ascending|Descending Name|Date|Size|Description</syntax>
 <name>ReadmeName</name>
 <description>インデックス一覧の最後に挿入されるファイルの名前</description>
 <syntax>ReadmeName <em>filename</em></syntax>
-<contextlist><context>サーバ設定ファイル</context>
-<context>バーチャルホスト</context>
-<context>ディレクトリ</context><context>.htaccess</context>
+<contextlist><context>server config</context>
+<context>virtual host</context>
+<context>directory</context><context>.htaccess</context>
 </contextlist>
 <override>Indexes</override>
 

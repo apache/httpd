@@ -15,7 +15,7 @@
 </description>
 <syntax>CoreDumpDirectory <em>directory</em></syntax>
 <default>デフォルトの設定は説明文を読んでください</default>
-<contextlist><context>サーバ設定ファイル</context></contextlist>
+<contextlist><context>server config</context></contextlist>
 <modulelist><module>worker</module><module>perchild</module>
 <module>prefork</module><module>mpm_winnt</module>
 </modulelist>
@@ -36,8 +36,8 @@
 <description>リクエストに応答する際に所属するグループ</description>
 <syntax>Group <em>unix-group</em></syntax>
 <default>Group #-1</default>
-<contextlist><context>サーバ設定ファイル</context>
-<context>バーチャルホスト</context>
+<contextlist><context>server config</context>
+<context>virtual host</context>
 </contextlist>
 <modulelist><module>worker</module><module>perchild</module>
 <module>prefork</module></modulelist>
@@ -83,7 +83,7 @@
 をサーバが記録するためのファイル</description>
 <syntax>PidFile <em>filename</em></syntax>
 <default>PidFile logs/httpd.pid</default>
-<contextlist><context>サーバ設定ファイル</context></contextlist>
+<contextlist><context>server config</context></contextlist>
 <modulelist><module>worker</module><module>perchild</module>
 <module>prefork</module><module>mpm_winnt</module>
 </modulelist>
@@ -116,7 +116,7 @@
 <name>Listen</name>
 <description>サーバが listen するIP アドレスとポート番号</description>
 <syntax>Listen [<em>IP-address</em>:]<em>portnumber</em></syntax>
-<contextlist><context>サーバ設定ファイル</context></contextlist>
+<contextlist><context>server config</context></contextlist>
 <modulelist><module>worker</module><module>perchild</module>
 <module>prefork</module><module>mpm_winnt</module>
 </modulelist>
@@ -172,7 +172,7 @@
 <description>保留状態のコネクションのキューの最大長</description>
 <syntax>ListenBacklog <em>backlog</em></syntax>
 <default>ListenBacklog 511</default>
-<contextlist><context>サーバ設定ファイル</context></contextlist>
+<contextlist><context>server config</context></contextlist>
 <modulelist><module>worker</module><module>perchild</module>
 <module>prefork</module><module>mpm_winnt</module>
 </modulelist>
@@ -198,7 +198,7 @@
 <description>受付を直列化するためのロックファイルの位置</description>
 <syntax>LockFile <em>filename</em></syntax>
 <default>LockFile logs/accept.lock</default>
-<contextlist><context>サーバ設定ファイル</context></contextlist>
+<contextlist><context>server config</context></contextlist>
 <modulelist><module>worker</module><module>perchild</module>
 <module>prefork</module></modulelist>
 
@@ -227,7 +227,7 @@
 <description>リクエストに応答するために作成される
 子プロセスの最大個数</description>
 <syntax>MaxClients <em>number</em></syntax>
-<contextlist><context>サーバ設定ファイル</context></contextlist>
+<contextlist><context>server config</context></contextlist>
 <modulelist><module>worker</module><module>prefork</module>
 </modulelist>
 
@@ -265,7 +265,7 @@
 <description>主メモリアロケータが free() を呼ばずに保持し続けられるメモリの
 最大量</description>
 <syntax>MaxMemFree <em>number</em></syntax>
-<contextlist><context>サーバ設定ファイル</context></contextlist>
+<contextlist><context>server config</context></contextlist>
 <modulelist><module>worker</module><module>prefork</module>
 <module>mpm_netware</module>
 </modulelist>
@@ -282,7 +282,7 @@
 <description>個々の子サーバが稼働中に扱うリクエスト数の上限</description>
 <syntax>MaxRequestsPerChild <em>number</em></syntax>
 <default>MaxRequestsPerChild 10000</default>
-<contextlist><context>サーバ設定ファイル</context></contextlist>
+<contextlist><context>server config</context></contextlist>
 <modulelist><module>worker</module><module>perchild</module>
 <module>prefork</module><module>mpm_winnt</module>
 </modulelist>
@@ -317,7 +317,7 @@
 <name>MaxSpareThreads</name>
 <description>アイドルスレッドの最大数</description>
 <syntax>MaxSpareThreads <em>number</em></syntax>
-<contextlist><context>サーバ設定ファイル</context></contextlist>
+<contextlist><context>server config</context></contextlist>
 <modulelist><module>mpm_netware</module>
 <module>perchild</module><module>worker</module>
 </modulelist>
@@ -353,7 +353,7 @@
 <description>子プロセス毎のスレッド数の最大数</description>
 <syntax>MaxThreadsPerChild <em>number</em></syntax>
 <default>MaxThreadsPerChild 64</default>
-<contextlist><context>サーバ設定ファイル</context></contextlist>
+<contextlist><context>server config</context></contextlist>
 <modulelist><module>worker</module><module>perchild</module>
 </modulelist>
 
@@ -372,7 +372,7 @@
 <description>リクエストに応答することのできる
 アイドルスレッド数の最小数</description>
 <syntax>MinSpareServers <em>number</em></syntax>
-<contextlist><context>サーバ設定ファイル</context></contextlist>
+<contextlist><context>server config</context></contextlist>
 <modulelist><module>mpm_netware</module>
 <module>perchild</module><module>worker</module>      
 </modulelist>
@@ -409,7 +409,7 @@
 <description>同時に起動している子プロセスの総数</description>
 <syntax>NumServers <em>number</em></syntax>
 <default>NumServers 2</default>
-<contextlist><context>サーバ設定ファイル</context></contextlist>
+<contextlist><context>server config</context></contextlist>
 <modulelist><module>perchild</module></modulelist>
 
 <usage>
@@ -426,7 +426,7 @@
 ファイルの位置</description>
 <syntax>ScoreBoardFile <em>file-path</em></syntax>
 <default>ScoreBoardFile logs/apache_status</default>
-<contextlist><context>サーバ設定ファイル</context></contextlist>
+<contextlist><context>server config</context></contextlist>
 <modulelist><module>worker</module><module>perchild</module>
 <module>prefork</module></modulelist>
 
@@ -460,7 +460,7 @@
 <name>SendBufferSize</name>
 <description>TCP バッファサイズ</description>
 <syntax>SendBufferSize <em>bytes</em></syntax>
-<contextlist><context>サーバ設定ファイル</context></contextlist>
+<contextlist><context>server config</context></contextlist>
 <modulelist><module>worker</module><module>perchild</module>
 <module>prefork</module><module>mpm_winnt</module>
 </modulelist>
@@ -478,7 +478,7 @@
 <description>設定可能なサーバプロセス数の上限</description>
 <syntax>ServerLimit <em>number</em></syntax>
 <default>ServerLimit 256 (prefork), ServerLimit 16 (worker)</default>
-<contextlist><context>サーバ設定ファイル</context></contextlist>
+<contextlist><context>server config</context></contextlist>
 <modulelist><module>worker</module><module>prefork</module>
 </modulelist>
 
@@ -529,7 +529,7 @@
 <description>起動時に生成される子サーバプロセスの数</description>
 <syntax>StartServers <em>number</em></syntax>
 <default>StartServers 5</default>
-<contextlist><context>サーバ設定ファイル</context></contextlist>
+<contextlist><context>server config</context></contextlist>
 <modulelist><module>worker</module></modulelist>
 
 <usage>
@@ -546,7 +546,7 @@
 <name>StartThreads</name>
 <description>起動時に生成されるスレッドの数</description>
 <syntax>StartThreads <em>number</em></syntax>
-<contextlist><context>サーバ設定ファイル</context></contextlist>
+<contextlist><context>server config</context></contextlist>
 <modulelist><module>mpm_netware</module><module>perchild</module></modulelist>
 
 <usage>
@@ -571,7 +571,7 @@
 <description>設定可能な子プロセス毎のスレッド数の上限を
 設定します</description>
 <syntax>ThreadLimit <em>number</em></syntax>
-<contextlist><context>サーバ設定ファイル</context></contextlist>
+<contextlist><context>server config</context></contextlist>
 <modulelist><module>mpm_winnt</module><module>worker</module></modulelist>
 
 <usage>
@@ -610,7 +610,7 @@
 <description>子プロセスそれぞれに生成されるスレッド数</description>
 <syntax>ThreadsPerChild <em>number</em></syntax>
 <default>ThreadsPerChild 50</default>
-<contextlist><context>サーバ設定ファイル</context></contextlist>
+<contextlist><context>server config</context></contextlist>
 <modulelist><module>worker</module><module>mpm_winnt</module>
 </modulelist>
 
@@ -633,8 +633,8 @@
 <description>リクエストに応答する際に用いるユーザ ID</description>
 <syntax>User <em>unix-userid</em></syntax>
 <default>User #-1</default>
-<contextlist><context>サーバ設定ファイル</context>
-<context>バーチャルホスト</context>
+<contextlist><context>server config</context>
+<context>virtual host</context>
 </contextlist>
 <modulelist><module>worker</module><module>perchild</module>
 <module>prefork</module></modulelist>
