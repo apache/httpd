@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:						-*-text-*-
-Last modified at [$Date: 2002/02/01 06:07:49 $]
+Last modified at [$Date: 2002/02/01 06:25:20 $]
 
 Release:
 
@@ -49,12 +49,6 @@ RELEASE SHOWSTOPPERS:
                       be using -DNO_DETACH and will look at the error
                       logs anyway."
 
-    * mod_rewrite's locks (win32) were broken by recent changes to the 
-      apr_lock_t api (which we were deprecating in the first place, so
-      I'm far from certain why it changed.)  It has to do with creating
-      the rewrite logs mutex.  The solution is to find the brokenness in 
-      apr_lock_t, but if it goes away, why waste the time?
-
     * ap_directory_walk skips some per-dir config merge functions
       if there is no "<Directory />" block in the configuration
         Message-ID: <m3itbdiijq.fsf@rdu163-40-092.nc.rr.com>
@@ -96,6 +90,7 @@ RELEASE SHOWSTOPPERS:
       filename extensions.  At minimum, some sort of +-[0-10] syntax seems
       like the quickest fix for a 2.0 gold release.
         Justin says: "Could we delay this for a point release or 2.1?"
+        Not a showstopper: justin, wrowe
 
     * Convert all instances of the old apr_lock_t type to the new
       types (once they are fully supported in APR).
