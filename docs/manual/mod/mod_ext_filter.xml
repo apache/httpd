@@ -132,6 +132,46 @@
 </example>
 </section>
 
+<section><title>Tracing another filter</title>
+<example>
+<pre>
+  # Trace the data read and written by mod_deflate for a particuar
+  # client (IP 192.168.1.31) experiencing compression problems.
+  # This filter will trace what goes into mod_deflate.
+  ExtFilterDefine tracebefore cmd="/bin/tracefilter.pl /tmp/tracebefore" \
+    EnableEnv=trace_this_client
+  # This filter will trace what goes after mod_deflate.  Note that without
+  # the ftype parameter, the default filter type of AP_FTYPE_RESOURCE would
+  # cause the filter to be placed *before* mod_deflate in the filter 
+  # chain.  Giving it a numeric value slightly higher than 
+  # AP_FTYPE_CONTENT_SET will ensure that it is placed after mod_deflate.
+  ExtFilterDefine traceafter  cmd="/bin/tracefilter.pl /tmp/traceafter" \
+    EnableEnv=trace_this_client ftype=21
+
+  &lt;Directory /usr/local/docs&gt;
+    SetEnvIf Remote_Addr 192.168.1.31 trace_this_client
+    SetOutputFilter tracebefore;deflate;traceafter
+  &lt;/Directory&gt;
+</pre>
+Here is the filter which traces the data:
+<pre>
+#!/usr/local/bin/perl -w
+
+use strict;
+
+open(SAVE, "&gt;$ARGV[0]") or die "can't open $ARGV[0]: $?";
+
+while (&lt;STDIN&gt;)
+{
+  print SAVE $_;
+  print $_;
+}
+
+close(SAVE);
+</pre>
+</example>
+</section>
+
 </section> <!-- Examples -->
 
 <directivesynopsis>
@@ -198,6 +238,27 @@
       default, as most filters change the content length. In the
       event that the filter doesn't modify the length, this keyword
       should be specified.</dd>
+
+      <dt>ftype=<em>filtertype</em></dt>
+
+      <dd>This parameter specifies the numeric value for filter type
+      that the filter should be registered as.  The default value,
+      AP_FTYPE_RESOURCE, is sufficient in most cases.  If the filter
+      needs to operate at a different point in the filter chain than
+      resource filters, then this parameter will be necessary.  See
+      the AP_FTYPE_foo definitions in util_filter.h for appropriate
+      values.</dd>
+
+      <dt>disableenv=<em>env</em></dt>
+
+      <dd>This parameter specifies the name of an environment variable
+      which, if set, will disable the filter.</dd>
+
+      <dt>enableenv=<em>env</em></dt>
+
+      <dd>This parameter specifies the name of an environment variable
+      which must be set, or the filter will be disabled.</dd>
+
     </dl>
 </usage>
 </directivesynopsis>
