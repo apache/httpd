@@ -206,16 +206,21 @@ static APR_INLINE ap_listen_rec *find_ready_listener(fd_set * main_fds)
     ap_listen_rec *lr;
     SOCKET nsd;
 
-    for (lr = head_listener; lr ; lr = lr->next) {
+    lr = head_listener;
+    do {
         apr_os_sock_get(&nsd, lr->sd);
-	if (FD_ISSET(nsd, main_fds)) {
-	    head_listener = lr->next;
-            if (head_listener == NULL)
+        if (FD_ISSET(nsd, main_fds)) {
+            head_listener = lr->next;
+            if (!head_listener) {
                 head_listener = ap_listeners;
-
-	    return (lr);
-	}
-    }
+            }
+            return lr;
+        }
+        lr = lr->next;
+        if (!lr) {
+            lr = ap_listeners;
+        }
+    } while (lr != head_listener);
     return NULL;
 }
 
@@ -333,6 +338,8 @@ static void win9x_accept(void * dummy)
             if (listenmaxfd == INVALID_SOCKET || nsd > listenmaxfd) {
                 listenmaxfd = nsd;
             }
+            ap_log_error(APLOG_MARK, APLOG_NOTICE, 0, ap_server_conf,
+                         "Child %d: Listening on port %d.", my_pid, lr->bind_addr->port);
         }
     }
 
