@@ -1323,14 +1323,14 @@ static void test(void)
 static void copyright(void)
 {
     if (!use_html) {
-	printf("This is ApacheBench, Version %s\n", VERSION " <$Revision: 1.49 $> apache-1.3");
+	printf("This is ApacheBench, Version %s\n", VERSION " <$Revision: 1.50 $> apache-1.3");
 	printf("Copyright (c) 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/\n");
 	printf("Copyright (c) 1998-1999 The Apache Group, http://www.apache.org/\n");
 	printf("\n");
     }
     else {
 	printf("<p>\n");
-	printf(" This is ApacheBench, Version %s <i>&lt;%s&gt;</i> apache-1.3<br>\n", VERSION, "$Revision: 1.49 $");
+	printf(" This is ApacheBench, Version %s <i>&lt;%s&gt;</i> apache-1.3<br>\n", VERSION, "$Revision: 1.50 $");
 	printf(" Copyright (c) 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/<br>\n");
 	printf(" Copyright (c) 1998-1999 The Apache Group, http://www.apache.org/<br>\n");
 	printf("</p>\n<p>\n");
@@ -1460,8 +1460,6 @@ int main(int argc, char **argv)
 {
     int c, r, l;
     char tmp[1024];
-    void *res;			/* Result pointer for signal handler
-				 * installation */
 
     /* table defaults  */
     tablestring = "";
@@ -1576,7 +1574,7 @@ int main(int argc, char **argv)
 		/*
 		 * assume proxy-name[:port]
 		 */
-		if (p = index(optarg, ':')) {
+		if (p = strchr(optarg, ':')) {
 		    *p = '\0';
 		    p++;
 		    proxyport = atoi(p);
@@ -1649,7 +1647,7 @@ int main(int argc, char **argv)
 	exit(1);
     }
 #endif
-    res = signal(SIGPIPE, SIG_IGN);	/* Ignore writes to connections that
+    signal(SIGPIPE, SIG_IGN);	        /* Ignore writes to connections that
 					 * have been closed at the other end.
 					 * These writes are dealt with in the
 					 * s_write() function. */
