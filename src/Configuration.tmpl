@@ -161,16 +161,16 @@ Rule SHARED_CHAIN=default
 #  actually print-out the code that the modules execute
 #
 # EXPAT:
-#  Include an Expat implementation into Apache, for use by the
+#  Include an Expat implementation into Apache for use by the
 #  modules. James Clark's Expat package (expat-lite) is bundled
-#  with Apache for the convenience of our users. EXPAT determines
-#  which EXPAT, if any, implementation to use as follows:
+#  with Apache for the convenience of our users. The EXPAT rule
+#  determines which Expat implementation, if any, to use as follows:
 #
-#  RULE_EXPAT=yes       : Use system Expat if available; otherwise
+#  Rule EXPAT=yes       : Use system Expat if available; otherwise
 #                         use bundled Expat (lib/expat-lite). If
 #                         neither exists the build will fail
-#  RULE_EXPAT=no        : Don't include Expat at all
-#  RULE_EXPAT=default   : If Expat can be found at the system or
+#  Rule EXPAT=no        : Don't include Expat at all
+#  Rule EXPAT=default   : If Expat can be found at the system or
 #                         in lib/expat-lite, use it; otherwise
 #                         skip it
 
