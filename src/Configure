@@ -428,6 +428,12 @@ case "$PLAT" in
 	CFLAGS="$CFLAGS -DLINUX=2"
 	LIBS="$LIBS -lm"
 	;;
+    *-GNU*)
+	DEF_WANTHSREGEX=yes
+	OS='GNU/Hurd'
+	CFLAGS="$CFLAGS -DHURD"
+	LIBS="$LIBS -lm -lcrypt"
+	;;
     *-linux1)
 	DEF_WANTHSREGEX=yes
 	OS='Linux'
