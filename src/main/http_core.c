@@ -1869,8 +1869,7 @@ int default_handler (request_rec *r)
     if ((errstatus = discard_request_body(r)) != OK)
         return errstatus;
 
-    r->allowed |= (1 << M_GET);
-    r->allowed |= (1 << M_OPTIONS);
+    r->allowed |= (1 << M_GET) | (1 << M_OPTIONS);
 
     if (r->method_number == M_INVALID) {
 	aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r->server,

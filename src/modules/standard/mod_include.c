@@ -2240,6 +2240,7 @@ static int send_parsed_file(request_rec *r)
     if (!(allow_options(r) & OPT_INCLUDES)) {
         return DECLINED;
     }
+    r->allowed |= (1 << M_GET);
     if (r->method_number != M_GET) {
         return DECLINED;
     }

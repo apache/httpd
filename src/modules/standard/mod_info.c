@@ -362,6 +362,10 @@ static int display_info(request_rec *r)
     info_cfg_lines *mod_info_cfg_srm = NULL;
     info_cfg_lines *mod_info_cfg_access = NULL;
 
+    r->allowed |= (1 << M_GET);
+    if (r->method_number != M_GET)
+	return DECLINED;
+
     r->content_type = "text/html";
     send_http_header(r);
     if (r->header_only) {

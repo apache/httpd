@@ -1132,6 +1132,7 @@ static int handle_autoindex(request_rec *r)
 					       &autoindex_module);
     int allow_opts = allow_options(r);
 
+    r->allowed |= (1 << M_GET);
     if (r->method_number != M_GET)
 	return DECLINED;
 

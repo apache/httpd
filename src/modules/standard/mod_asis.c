@@ -64,6 +64,7 @@ static int asis_handler(request_rec *r)
     FILE *f;
     char *location;
 
+    r->allowed |= (1 << M_GET);
     if (r->method_number != M_GET)
 	return DECLINED;
     if (r->finfo.st_mode == 0) {

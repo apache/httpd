@@ -237,9 +237,9 @@ static int status_handler(request_rec *r)
 		    "Server status unavailable in inetd mode");
 	return HTTP_NOT_IMPLEMENTED;
     }
-    r->allowed = (1 << M_GET) | (1 << M_TRACE);
+    r->allowed = (1 << M_GET);
     if (r->method_number != M_GET)
-	return HTTP_METHOD_NOT_ALLOWED;
+	return DECLINED;
 
     r->content_type = "text/html";
 
