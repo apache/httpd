@@ -617,10 +617,6 @@ ServerSignature On
     AddType application/x-compress .Z
     AddType application/x-gzip .gz .tgz
 
-</IfModule>
-
-<IfModule mime_module>
-
     #
     # AddHandler allows you to map certain file extensions to "handlers":
     # actions unrelated to filetype. These can be either built into the server
@@ -703,41 +699,6 @@ ServerSignature On
 </IfModule>
 
 
-### Section 3: Virtual Hosts
-#
-# VirtualHost: If you want to maintain multiple domains/hostnames on your
-# machine you can setup VirtualHost containers for them. Most configurations
-# use only name-based virtual hosts so the server doesn't need to worry about
-# IP addresses. This is indicated by the asterisks in the directives below.
-#
-# Please see the documentation at 
-# <URL:http://httpd.apache.org/docs-2.1/vhosts/>
-# for further details before you try to setup virtual hosts.
-#
-# You may use the command line option '-S' to verify your virtual host
-# configuration.
-
-#
-# Use name-based virtual hosting.
-#
-#NameVirtualHost *:80
-
-#
-# VirtualHost example:
-# Almost any Apache directive may go into a VirtualHost container.
-# The first VirtualHost section is used for requests without a known
-# server name.
-#
-#<VirtualHost *:80>
-#    ServerAdmin webmaster@dummy-host.example.com
-#    DocumentRoot /www/docs/dummy-host.example.com
-#    ServerName dummy-host.example.com
-#    ErrorLog @rel_logfiledir@/dummy-host.example.com-error_log
-#    CustomLog @rel_logfiledir@/dummy-host.example.com-access_log common
-#</VirtualHost>
-
-
-
 ##### Supplemental configuration
 #
 # The configuration files in the extra/ directory can be included
@@ -758,6 +719,9 @@ ServerSignature On
 
 # Real-time info on requests and configuration
 # Include @relsysconfdir@/extra/httpd-info.conf
+
+# Virtual hosts
+# Include @relsysconfdir@/extra/httpd-vhosts.conf
 
 #
 # Secure (SSL/TLS) connections
