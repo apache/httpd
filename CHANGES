@@ -1,5 +1,8 @@
 Changes with Apache 2.0.42
 
+  *) Allow AddOutputFilterByType to add multiple filters per directive.
+     [Justin Erenkrantz]
+
   *) Remove warnings with Sun's Forte compiler.  [Justin Erenkrantz]
 
   *) Fixed mod_disk_cache's generation of 304s
