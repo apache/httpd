@@ -1,0 +1,613 @@
+<?xml version="1.0"?>
+<?xml-stylesheet type="text/xsl" href="../style/manual.xsl"?>
+<modulesynopsis>
+
+<name>mpm_common</name>
+<description>A collection of directives that are implemented by
+more than one multi-processing module (MPM)</description>
+<status>MPM</status>
+
+<directivesynopsis>
+<name>CoreDumpDirectory</name>
+<description>Sets the directory where Apache attempts to
+switch before dumping core</description>
+<syntax>CoreDumpDirectory <em>directory</em></syntax>
+<default>CoreDumpDirectory <em>ServerRoot</em></default>
+<contextlist><context>server config</context></contextlist>
+<modulelist><module>worker</module><module>perchild</module>
+<module>prefork</module><module>mpm_winnt</module>
+</modulelist>
+
+<usage>
+
+    <p>This controls the directory to which Apache attempts to
+    switch before dumping core. The default is in the 
+    <directive module="core">ServerRoot</directive> directory, however
+    since this should not be writable by the user the server runs
+    as, core dumps won't normally get written. If you want a core
+    dump for debugging, you can use this directive to place it in a
+    different location.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>Group</name>
+<description>Sets the group under which the server will answer
+requests</description>
+<syntax>Group <em>unix-group</em></syntax>
+<default>Group #-1</default>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
+<modulelist><module>worker</module><module>perchild</module>
+<module>prefork</module></modulelist>
+
+<usage>
+    <p>The <directive>Group</directive> directive sets the group under
+    which the server will answer requests. In order to use this
+    directive, the stand-alone server must be run initially as root.
+    <em>Unix-group</em> is one of:</p>
+
+    <dl>
+      <dt>A group name</dt>
+
+      <dd>Refers to the given group by name.</dd>
+
+      <dt># followed by a group number.</dt>
+
+      <dd>Refers to a group by its number.</dd>
+    </dl>
+    <p>It is recommended that you set up a new group specifically for
+    running the server. Some admins use user <code>nobody</code>,
+    but this is not always possible or desirable.</p>
+
+    <p>Note: if you start the server as a non-root user, it will
+    fail to change to the specified group, and will instead
+    continue to run as the group of the original user.</p>
+
+    <p>Special note: Use of this directive in &lt;VirtualHost&lt; is
+    no longer supported. To implement the <a
+    href="../suexec.html">suEXEC wrapper</a> with Apache 2.0, use the
+    <directive module="mod_suexec">SuexecUserGroup</directive>
+    directive. SECURITY: See <directive
+    module="mpm_common">User</directive> for a discussion of the
+    security considerations.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>PidFile</name>
+<description>Sets the file where the server records the process ID
+of the daemon</description>
+<syntax>PidFile <em>filename</em></syntax>
+<default>PidFile logs/httpd.pid</default>
+<contextlist><context>server config</context></contextlist>
+<modulelist><module>worker</module><module>perchilde</module>
+<module>prefork</module><module>mpm_winnt</module>
+</modulelist>
+
+<usage>
+    <p>The <directive>PidFile</directive> directive sets the file to
+    which the server records the process id of the daemon. If the
+    filename does not begin with a slash (/) then it is assumed to be
+    relative to the <directive module="core">ServerRoot</directive>.</p>
+
+    <p>It is often useful to be able to send the server a signal,
+    so that it closes and then reopens its <directive
+    module="core">ErrorLog</directive> and TransferLog, and
+    re-reads its configuration files. This is done by sending a
+    SIGHUP (kill -1) signal to the process id listed in the
+    PidFile.</p>
+
+    <p>The PidFile is subject to the same warnings about log file
+    placement and <a
+    href="../misc/security_tips.html#serverroot">security</a>.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>Listen</name>
+<description>Sets the IP addresses and ports that the server
+listens to</description>
+<syntax>Listen [<em>IP-address</em>:]<em>portnumber</em></syntax>
+<contextlist><context>server config</context></contextlist>
+<modulelist><module>worker</module><module>perchild</module>
+<module>prefork</module><module>mpm_winnt</module>
+</modulelist>
+
+<usage>
+    <p>The <directive>Listen</directive> directive instructs Apache to
+    listen to only specific IP addresses or ports; by default it
+    responds to requests on all IP interfaces. The Listen directive is
+    now a required directive. If it is not in the config file, the
+    server will fail to start. This is a change from previous versions
+    of Apache.</p>
+
+    <p>The Listen directive tells the server to accept incoming
+    requests on the specified port or address-and-port combination.
+    If only a port number is specified, the server listens to the
+    given port on all interfaces. If an IP address is given as well 
+    as a port, the server will listen on the given port and
+    interface.</p>
+
+    <p>Multiple Listen directives may be used to specify a number
+    of addresses and ports to listen to. The server will respond to
+    requests from any of the listed addresses and ports.</p>
+
+    <p>For example, to make the server accept connections on both
+    port 80 and port 8000, use:</p>
+<example>
+   Listen 80<br />
+   Listen 8000
+</example>
+    To make the server accept connections on two specified
+    interfaces and port numbers, use 
+<example>
+   Listen 192.170.2.1:80<br />
+   Listen 192.170.2.5:8000
+</example>
+    IPv6 addresses must be surrounded in square brackets, as in the
+    following example:
+<example>
+   Listen [fe80::a00:20ff:fea7:ccea]:80
+</example>
+</usage>
+
+<seealso><a href="../dns-caveats.html">DNS Issues</a></seealso>
+<seealso><a href="../bind.html">Setting
+    which addresses and ports Apache uses</a></seealso>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>ListenBackLog</name>
+<description>Maximum length of the queue of pending connections</description>
+<syntax>ListenBacklog <em>backlog</em></syntax>
+<default>ListenBacklog 511</default>
+<contextlist><context>server config</context></contextlist>
+<modulelist><module>worker</module><module>perchild</module>
+<module>prefork</module><module>mpm_winnt</module>
+</modulelist>
+
+<usage>
+    <p>The maximum length of the queue of pending connections.
+    Generally no tuning is needed or desired, however on some
+    systems it is desirable to increase this when under a TCP SYN
+    flood attack. See the backlog parameter to the
+    <code>listen(2)</code> system call.</p>
+
+    <p>This will often be limited to a smaller number by the
+    operating system. This varies from OS to OS. Also note that
+    many OSes do not use exactly what is specified as the backlog,
+    but use a number based on (but normally larger than) what is
+    set.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>LockFile</name>
+<description>Location of the accept serialization lock file</description>
+<syntax>LockFile <em>filename</em></syntax>
+<default>LockFile logs/accept.lock</default>
+<contextlist><context>server config</context></contextlist>
+<modulelist><module>worker</module><module>perchild</module>
+<module>prefork</module></modulelist>
+
+<usage>
+    <p>The <directive>LockFile</directive> directive sets the path to
+    the lockfile used when Apache is compiled with either
+    USE_FCNTL_SERIALIZED_ACCEPT or USE_FLOCK_SERIALIZED_ACCEPT. This
+    directive should normally be left at its default value. The main
+    reason for changing it is if the <code>logs</code> directory is
+    NFS mounted, since <strong>the lockfile must be stored on a local
+    disk</strong>.  The PID of the main server process is
+    automatically appended to the filename.</p>
+
+    <p><strong>SECURITY:</strong> It is best to avoid putting this
+    file in a world writable directory such as
+    <code>/var/tmp</code> because someone could create a denial of
+    service attack and prevent the server from starting by creating
+    a lockfile with the same name as the one the server will try to
+    create.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>MaxClients</name>
+<description>Maximum number of child processes that will be created
+to serve requests</description>
+<syntax>MaxClients <em>number</em></syntax>
+<default>>MaxClients
+    8 (with threads) MaxClients 256</default>
+<contextlist><context>server config</context></contextlist>
+<modulelist><module>worker</module><module>prefork</module>
+</modulelist>
+
+<usage>
+    <p>The <directive>MaxClients</directive> directive sets the limit
+    on the number of child processes that will be created to serve
+    requests. When the server is built without threading, no more than
+    this number of clients can be served simultaneously. To configure
+    more than 256 clients with the prefork MPM, you must use the
+    <directive module="mpm_common">ServerLimit</directive> directive.
+    To configure more than 1024 clients with the worker MPM, you must
+    use the <directive module="mpm_common">ServerLimit</directive> and
+    <directive module="mpm_common">ThreadLimit</directive> directives.</p>
+
+    <p>Any connection attempts over the
+    <directive>MaxClients</directive> limit will normally be queued,
+    up to a number based on the <directive module="mpm_common"
+    >ListenBacklog</directive> directive. Once a child
+    process is freed at the end of a different request, the connection
+    will then be serviced.</p>
+
+    <p>When the server is compiled with threading, then the maximum
+    number of simultaneous requests that can be served is obtained
+    from the value of this directive multiplied by
+    <directive module="mpm_common">ThreadsPerChild</directive>.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>MaxRequestPerChild</name>
+<description>Limit on the number of requests that an individual child server
+will handle during its life</description>
+<syntax>MaxRequestsPerChild <em>number</em></syntax>
+<default>MaxRequestsPerChild 10000</default>
+<contextlist><context>server config</context></contextlist>
+<modulelist><module>worker</module><module>perchild</module>
+<module>prefork</module><module>mpm_winnt</module>
+</modulelist>
+
+<usage>
+    <p>The <directive>MaxRequestsPerChild</directive> directive sets
+    the limit on the number of requests that an individual child
+    server process will handle. After
+    <directive>MaxRequestsPerChild</directive> requests, the child
+    process will die. If <directive>MaxRequestsPerChild</directive> is
+    0, then the process will never expire.</p>
+
+    <p>Setting <directive>MaxRequestsPerChild</directive> to a
+    non-zero limit has two beneficial effects:</p>
+
+    <ul>
+      <li>it limits the amount of memory that process can consume
+      by (accidental) memory leakage;</li>
+
+      <li>by giving processes a finite lifetime, it helps reduce
+      the number of processes when the server load reduces.</li>
+    </ul>
+
+    <p><strong>NOTE:</strong> For <em>KeepAlive</em> requests, only
+    the first request is counted towards this limit. In effect, it
+    changes the behavior to limit the number of
+    <em>connections</em> per child.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>MaxSpareThreads</name>
+<description>Maximum number of idle threads</description>
+<syntax>MaxSpareThreads <em>number</em></syntax>
+<default>MaxSpareThreads 10 (Perchild) or 500 (worker)</default>
+<contextlist><context>server config</context></contextlist>
+<modulelist><module>worker</module><module>perchild</module>
+</modulelist>
+
+<usage>
+    <p>Maximum number of idle threads. Different MPMs deal with this
+    directive differently. <module>perchild</module> monitors the
+    number of idle threads on a per-child basis. If there are too many
+    idle threads in that child, the server will begin to kill threads
+    within that child.</p>
+
+    <p><module>worker</module> deals with idle threads on a
+    server-wide basis. If there are too many idle threads in the
+    server then child processes are killed until the number of idle
+    threads is less than this number.</p>
+
+</usage>
+<seealso><directive module="mpm_common">MinSpareThreads</directive></seealso>
+<seealso><directive module="mpm_common">StartServers</directive></seealso>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>MaxThreadsPerChild</name>
+<description>Maximum number of threads per child process</description>
+<syntax>MaxThreadsPerChild <em>number</em></syntax>
+<default>MaxThreadsPerChild 64</default>
+<contextlist><context>server config</context></contextlist>
+<modulelist><module>worker</module><module>perchild</module>
+</modulelist>
+
+<usage>
+    <p>Maximum number of threads per child. For MPMs with a
+    variable number of threads per child, this directive sets the
+    maximum number of threads that will be created in each child
+    process. To increase this value beyond its default, it is
+    necessary to change the value of the compile-time define
+    <code>HARD_THREAD_LIMIT</code> and recompile the server.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>MinSpareThreads</name>
+<description>Minimum number of idle threads available to handle request
+spikes</description>
+<syntax>MinSpareServers <em>number</em></syntax>
+<default>MinSpareThreads 5 (Perchild) or 250 (worker)</default>
+<contextlist><context>server config</context></contextlist>
+<modulelist><module>worker</module><module>perchild</module>
+</modulelist>
+
+<usage>
+    <p>Minimum number of idle threads to handle request spikes.
+    Different MPMs deal with this directive
+    differently. <module>perchild</module> monitors the number of idle
+    threads on a per-child basis. If there aren't enough idle threads
+    in that child, the server will begin to create new threads within
+    that child.</p>
+
+    <p><module>worker</module> deals with idle threads on a
+    server-wide basis. If there aren't enough idle threads in the
+    server then child processes are created until the number of idle
+    threads is greater than number.</p>
+</usage>
+<seealso><directive module="mpm_common">MaxSpareThreads</directive></seealso>
+<seealso><directive module="mpm_common">StartServers</directive></seealso>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>NumServers</name>
+<description>Total number of children alive at the same time</description>
+<syntax>NumServers <em>number</em></syntax>
+<default>NumServers 2</default>
+<contextlist><context>server config</context></contextlist>
+<modulelist><module>perchild</module></modulelist>
+
+<usage>
+    <p>Number of children alive at the same time. MPMs that use
+    this directive do not dynamically create new child processes so
+    this number should be large enough to handle the requests for
+    the entire site.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>ScoreBoardFile</name>
+<description>Location of the file used to store coordination data for
+the child processes</description>
+<syntax>ScoreBoardFile <em>file-path</em></syntax>
+<default>ScoreBoardFile logs/apache_status</default>
+<contextlist><context>server config</context></contextlist>
+<modulelist><module>worker</module><module>perchild</module>
+<module>prefork</module></modulelist>
+
+<usage>
+    <p>The <directive>ScoreBoardFile</directive> directive is required
+    on some architectures to place a file that the server will use to
+    communicate between its children and the parent. The easiest way
+    to find out if your architecture requires a scoreboard file is to
+    run Apache and see if it creates the file named by the
+    directive. If your architecture requires it then you must ensure
+    that this file is not used at the same time by more than one
+    invocation of Apache.</p>
+
+    <p>If you have to use a <directive>ScoreBoardFile</directive> then
+    you may see improved speed by placing it on a RAM disk. But be
+    careful that you heed the same warnings about log file placement
+    and <a href="../misc/security_tips.html">security</a>.</p>
+</usage>
+<seealso><a
+    href="../stopping.html">Stopping and Restarting Apache</a></seealso>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>SendBufferSize</name>
+<description>TCP buffer size</description>
+<syntax>SendBufferSize <em>bytes</em></syntax>
+<contextlist><context>server config</context></contextlist>
+<modulelist><module>worker</module><module>perchild</module>
+<module>prefork</module><module>mpm_winnt</module>
+</modulelist>
+
+<usage>
+    <p>The server will set the TCP buffer size to the number of bytes
+    specified. Very useful to increase past standard OS defaults on
+    high speed high latency (<em>i.e.</em>, 100ms or so, such as
+    transcontinental fast pipes).</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>ServerLimit</name>
+<description>Upper limit on configurable number of processes</description>
+<syntax>ServerLimit <em>number</em></syntax>
+<default>ServerLimit 256 (prefork), ServerLimit 16 (worker)</default>
+<contextlist><context>server config</context></contextlist>
+<modulelist><module>worker</module><module>prefork</module>
+</modulelist>
+
+<usage>
+    <p>For the <module>prefork</module> MPM, this directive sets the
+    maximum configured value for <directive
+    module="mpm_common">MaxClients</directive> for the lifetime of the
+    Apache process.  For the worker MPM, this directive in combination
+    with <directive module="mpm_common">ThreadLimit</directive> sets
+    the maximum configured value for <directive
+    module="mpm_common">MaxClients</directive> for the lifetime of the
+    Apache process.  Any attempts to change this directive during a
+    restart will be ignored, but <directive
+    module="mpm_common">MaxClients</directive> can be modified during
+    a restart.</p>
+
+    <p>Special care must be taken when using this directive.  If
+    <directive>ServerLimit</directive> is set to a value much higher
+    than necessary, extra, unused shared memory will be allocated.  If
+    both <directive>ServerLimit</directive> and <directive
+    module="mpm_common">MaxClients</directive> are set to values
+    higher than the system can handle, Apache may not start or the
+    system may become unstable.</p>
+
+    <p>With the <module>prefork</module> MPM, use this directive only
+    if you need to set <directive
+    module="mpm_common">MaxClients</directive> higher higher than 256.
+    Do not set the value of this directive any higher than what you
+    might want to set <directive
+    module="mpm_common">MaxClients</directive> to.</p>
+
+    <p>With the <module>worker</module> MPM, use this directive only
+    if your <directive module="mpm_common">MaxClients</directive> and
+    <directive module="mpm_common">ThreadsPerChild</directive>
+    settings require more than 16 server processes.  Do not set the
+    value of this directive any higher than the number of server
+    processes required by what you may want for <directive
+    module="mpm_common">MaxClients </directive> and <directive
+    module="mpm_common">ThreadsPerChild</directive>.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>StartServers</name>
+<description>Number of child server processes created at startup</description>
+<syntax>StartServers <em>number</em></syntax>
+<default>StartServers 5</default>
+<contextlist><context>server config</context></contextlist>
+<modulelist><module>worker</module></modulelist>
+
+<usage>
+    <p>The <directive>StartServers</directive> directive sets the
+    number of child server processes created on startup. As the number
+    of processes is dynamically controlled depending on the load,
+    there is usually little reason to adjust this parameter.</p>
+</usage>
+<seealso><directive module="mpm_common">MinSpareThreads</directive></seealso>
+<seealso><directive module="mpm_common">MaxSpareThreads</directive></seealso>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>StartThreads</name>
+<description>Nubmer of threads each child creates on startup</description>
+<syntax>StartThreads <em>number</em></syntax>
+<default>StartThreads 5</default>
+<contextlist><context>server config</context></contextlist>
+<modulelist><module>perchild</module></modulelist>
+
+<usage>
+    <p>Number of threads each child creates on startup. As the
+    number of threads is dynamically controlled depending on the
+    load, there is usually little reason to adjust this
+    parameter.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>ThreadLimit</name>
+<description>Sets the upper limit on the configurable number of threads
+per child process</description>
+<syntax>ThreadLimit <em>number</em></syntax>
+<default>ThreadLimit 64</default>
+<contextlist><context>server config</context></contextlist>
+<modulelist><module>worker</module></modulelist>
+
+<usage>
+    <p>This directive sets the maximum configured value for <directive
+    module="mpm_common">ThreadsPerChild</directive> for the lifetime
+    of the Apache process.  Any attempts to change this directive
+    during a restart will be ignored, but <directive
+    module="mpm_common">ThreadsPerChild</directive> can be modified
+    during a restart up to the value of this directive.</p>
+
+    <p>Special care must be taken when using this directive.  If
+    <directive>ThreadLimit</directive> is set to a value much higher
+    than <directive module="mpm_common">ThreadsPerChild</directive>,
+    extra unused shared memory will be allocated.  If both
+    <directive>ThreadLimit</directive> and <directive
+    module="mpm_common">ThreadsPerChild</directive> are set to values
+    higher than the system can handle, Apache may not start or the
+    system may become unstable.</p>
+
+    <p>Use this directive only if you need to set <directive
+    module="mpm_common">ThreadsPerChild</directive> higher than 64.  Do
+    not set the value of this directive any higher than what you might
+    want to set <directive
+    module="mpm_common">ThreadsPerChild</directive> to.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>ThreadsPerChild</name>
+<description>Number of threads created by each child process</description>
+<syntax>ThreadsPerChild <em>number</em></syntax>
+<default>ThreadsPerChild 50</default>
+<contextlist><context>server config</context></contextlist>
+<modulelist><module>worker</module><module>mpm_winnt</module>
+</modulelist>
+
+<usage>
+    <p>This directive sets the number of threads created by each
+    child process. The child creates these threads at startup and
+    never creates more. if using an MPM like mpmt_winnt, where
+    there is only one child process, this number should be high
+    enough to handle the entire load of the server. If using an MPM
+    like worker, where there are multiple child processes, the
+    total number of threads should be high enough to handle the
+    common load on the server.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>User</name>
+<description>The userid under which the server will answer
+requests</description>
+<syntax>User <em>unix-userid</em></syntax>
+<default>User #-1</default>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
+<modulelist><module>worker</module><module>perchild</module>
+<module>prefork</module></modulelist>
+
+<usage>
+    <p>The <directive>User</directive> directive sets the userid as
+    which the server will answer requests. In order to use this
+    directive, the standalone server must be run initially as
+    root. <em>Unix-userid</em> is one of:</p>
+
+    <dl>
+      <dt>A username</dt>
+
+      <dd>Refers to the given user by name.</dd>
+
+      <dt># followed by a user number.</dt>
+
+      <dd>Refers to a user by their number.</dd>
+    </dl>
+
+    <p>The user should have no privileges which result in it being
+    able to access files which are not intended to be visible to the
+    outside world, and similarly, the user should not be able to
+    execute code which is not meant for httpd requests. It is
+    recommended that you set up a new user and group specifically for
+    running the server. Some admins use user <code>nobody</code>, but
+    this is not always possible or desirable. For example
+    <module>mod_proxy</module>'s cache, when enabled, must be
+    accessible to this user (see <directive
+    module="mod_proxy">CacheRoot</directive>).</p>
+
+    <p>Notes: If you start the server as a non-root user, it will
+    fail to change to the lesser privileged user, and will instead
+    continue to run as that original user. If you do start the
+    server as root, then it is normal for the parent process to
+    remain running as root.</p>
+
+    <p>Special note: Use of this directive in <directive module="core"
+    type="section">VirtualHost</directive> is no longer supported. To
+    configure your server for <a href="mod_suexec.html">suexec</a> use
+    <directive module="mod_suexec">SuexecUserGroup</directive>.</p>
+
+<note><title>Security</title> <p>Don't set <directive>User</directive>
+(or <directive module="mpm_common">Group</directive>) to
+<code>root</code> unless you know exactly what you are doing, and what
+the dangers are.</p></note>
+</usage>
+</directivesynopsis>
+
+</modulesynopsis>
