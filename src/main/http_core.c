@@ -976,7 +976,7 @@ const char *set_max_requests (cmd_parms *cmd, void *dummy, char *arg) {
 
 #if defined(RLIMIT_CPU) || defined(RLIMIT_DATA) || defined(RLIMIT_VMEM) || defined(RLIMIT_NPROC)
 static void set_rlimit(cmd_parms *cmd, struct rlimit **plimit, const char *arg,
-		       int type)
+                       const char * arg2, int type)
 {
     char *str;
     struct rlimit *limit;
@@ -1003,7 +1003,7 @@ static void set_rlimit(cmd_parms *cmd, struct rlimit **plimit, const char *arg,
 	return;
     }
     
-    if ((str = getword_conf(cmd->pool, &arg)))
+    if ((str = getword_conf(cmd->pool, &arg2)))
 	max = atol(str);
 
     /* if we aren't running as root, cannot increase max */
@@ -1024,7 +1024,7 @@ static void set_rlimit(cmd_parms *cmd, struct rlimit **plimit, const char *arg,
 
 #if !defined (RLIMIT_CPU) || !(defined (RLIMIT_DATA) || defined (RLIMIT_VMEM)) || !defined (RLIMIT_NPROC)
 static const char *no_set_limit (cmd_parms *cmd, core_dir_config *conf,
-				 char *arg)
+				 char *arg, char *arg2)
 {
     log_printf(cmd->server, "%s not supported on this platform",
 	       cmd->cmd->name);
@@ -1033,29 +1033,29 @@ static const char *no_set_limit (cmd_parms *cmd, core_dir_config *conf,
 #endif
 
 #ifdef RLIMIT_CPU
-const char *set_limit_cpu (cmd_parms *cmd, core_dir_config *conf, char *arg)
+const char *set_limit_cpu (cmd_parms *cmd, core_dir_config *conf, char *arg, char *arg2)
 {
-    set_rlimit(cmd,&conf->limit_cpu,arg,RLIMIT_CPU);
+    set_rlimit(cmd,&conf->limit_cpu,arg,arg2,RLIMIT_CPU);
     return NULL;
 }
 #endif
 
 #if defined (RLIMIT_DATA) || defined (RLIMIT_VMEM)
-const char *set_limit_mem (cmd_parms *cmd, core_dir_config *conf, char *arg)
+const char *set_limit_mem (cmd_parms *cmd, core_dir_config *conf, char *arg, char * arg2)
 {
 #ifdef RLIMIT_DATA
-    set_rlimit(cmd,&conf->limit_mem,arg,RLIMIT_DATA);
+    set_rlimit(cmd,&conf->limit_mem,arg,arg2,RLIMIT_DATA);
 #else
-    set_rlimit(cmd,&conf->limit_mem,arg,RLIMIT_VMEM);
+    set_rlimit(cmd,&conf->limit_mem,arg,arg2,RLIMIT_VMEM);
 #endif
     return NULL;
 }
 #endif
 
 #ifdef RLIMIT_NPROC
-const char *set_limit_nproc (cmd_parms *cmd, core_dir_config *conf, char *arg)
+const char *set_limit_nproc (cmd_parms *cmd, core_dir_config *conf, char *arg, char * arg2)
 {
-    set_rlimit(cmd,&conf->limit_nproc,arg,RLIMIT_NPROC);
+    set_rlimit(cmd,&conf->limit_nproc,arg,arg2,RLIMIT_NPROC);
     return NULL;
 }
 #endif
