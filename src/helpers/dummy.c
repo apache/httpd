@@ -6,7 +6,7 @@ int foo ( const char *c )
 return *c;
 }
 int main(void) {
-    const char *c = '\0';
+    const char *c = "";
     (void)foo(c);
     return 0;
 }
