@@ -1,0 +1,211 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+<TITLE>Apache module mod_cgi</TITLE>
+</HEAD>
+
+<!-- Background white, links blue (unvisited), navy (visited), red (active) -->
+<BODY
+ BGCOLOR="#FFFFFF"
+ TEXT="#000000"
+ LINK="#0000FF"
+ VLINK="#000080"
+ ALINK="#FF0000"
+>
+<!--#include virtual="header.html" -->
+
+<H1 ALIGN="CENTER">Module mod_cgi</H1>
+
+This module is contained in the <CODE>mod_cgi.c</CODE> file, and
+is compiled in by default. It provides for execution of CGI scripts.
+Any file with mime type <CODE>application/x-httpd-cgi</CODE> will be
+processed by this module.
+<!--%plaintext &lt;?INDEX {\tt application/x-httpd-cgi} mime type&gt; -->
+<!--%plaintext &lt;?INDEX CGI scripts&gt; -->
+
+<H2>Summary</H2>
+Any file that has the mime type <CODE>application/x-httpd-cgi</CODE>
+or handler <CODE>cgi-script</CODE> (Apache 1.1 or later)
+will be treated as a CGI script, and run by the server, with its output
+being returned to the client. Files acquire this type either by
+having a name ending in an extension defined by the
+<A HREF="mod_mime.html#addtype">AddType</A> directive, or by being in
+a <A HREF="mod_alias.html#scriptalias">ScriptAlias</A> directory. <P>
+
+When the server invokes a CGI script, it will add a variable called
+<CODE>DOCUMENT_ROOT</CODE> to the environment. This variable will contain the
+value of the <A HREF="core.html#documentroot">DocumentRoot</A>
+configuration variable.
+
+<H2>CGI Environment variables</H2>
+The server will set the CGI environment variables as described in the
+<A HREF="http://hoohoo.ncsa.uiuc.edu/cgi/">CGI specification</A>, with the
+following provisions:
+<DL>
+<DT>REMOTE_HOST
+<DD>This will only be set if the server has not been compiled with
+<CODE>MINIMAL_DNS</CODE>.
+<DT>REMOTE_IDENT
+<DD>This will only be set if
+<A HREF="core.html#identitycheck">IdentityCheck</A> is set to <CODE>on</CODE>.
+<DT>REMOTE_USER
+<DD>This will only be set if the CGI script is subject to authentication.
+</DL>
+<P>
+
+<HR>
+
+<H2><A NAME="cgi_debug">CGI Debugging</A></H2>
+
+Debugging CGI scripts has traditionally been difficult, mainly because
+it has
+not
+been possible to study the output (standard output and error) for
+scripts
+which are failing to run properly. These directives, included in
+Apache 1.2 and later, provide
+more detailed logging of errors when they occur.
+
+<HR>
+
+<H2>CGI Logfile Format</H2>
+
+When configured, the CGI error log logs any CGI which does not execute
+properly.  Each CGI script which fails to operate causes several lines
+of information to be logged. The first two lines are always of the
+format:
+
+<PRE>
+  %% [<EM>time</EM>] <EM>request-line</EM>
+  %% <EM>HTTP-status</EM> <EM>CGI-script-filename</EM>
+</PRE>
+
+If the error is that CGI script cannot be run, the log file will
+contain
+an extra two lines:
+
+<PRE>
+  %%error
+  <EM>error-message</EM>
+</PRE>
+
+Alternatively, if the error is the result of the script returning
+incorrect header information (often due to a bug in the script), the
+following information is logged:
+
+<PRE>
+  %request
+  <EM>All HTTP request headers received</EM>
+  <EM>POST or PUT entity (if any)</EM>
+  %response
+  <EM>All headers output by the CGI script</EM>
+  %stdout
+  <EM>CGI standard output</EM>
+  %stderr
+  <EM>CGI standard error</EM>
+</PRE>
+
+(The %stdout and %stderr parts may  be missing if the script did not
+output
+anything on standard output or standard error).
+
+<HR>
+
+<H2>Directives</H2>
+
+<H3><A NAME="scriptlog">ScriptLog</A></H3>
+
+<A
+ HREF="directive-dict.html#Syntax"
+ REL="Help"
+><STRONG>Syntax:</STRONG></A> ScriptLog <EM>filename</EM><BR>
+<A
+ HREF="directive-dict.html#Default"
+ REL="Help"
+><STRONG>Default:</STRONG></A> none<BR>
+<A
+ HREF="directive-dict.html#Context"
+ REL="Help"
+><STRONG>Context:</STRONG></A> resource config<BR>
+<A
+ HREF="directive-dict.html#Status"
+ REL="Help"
+><STRONG>Status:</STRONG></A> mod_cgi
+<P>
+
+The <TT>ScriptLog</TT> directive sets the CGI script error logfile.
+If no ScriptLog is given, no error log is created. If given, any
+CGI errors are logged into the filename given as argument. If this
+is a relative file or path it is taken relative to the server root.
+
+<P>This log will be opened as the user the child processes run as,
+ie. the user specified in the main <A HREF="core.html#User">User</A>
+directive.  This means that either the directory the script log is
+in needs to be writable by that user or the file needs to be manually
+created and set to be writable by that user.  If you place the
+script log in your main logs directory, do <STRONG>NOT</STRONG>
+change the directory permissions to make it writable by the user
+the child processes run as.</P>
+
+<P>Note that script logging is meant to be a debugging feature when
+writing CGI scripts, and is not meant to be activated continuously on
+running servers. It is not optimized for speed or efficiency, and may
+have security problems if used in a manner other than that for which
+it was designed.</P>
+
+<H3><A NAME="scriptloglength">ScriptLogLength</A></H3>
+
+<A
+ HREF="directive-dict.html#Syntax"
+ REL="Help"
+><STRONG>Syntax:</STRONG></A> ScriptLogLength <EM>size</EM><BR>
+<A
+ HREF="directive-dict.html#Default"
+ REL="Help"
+><STRONG>Default:</STRONG></A> 10385760<BR>
+<A
+ HREF="directive-dict.html#Context"
+ REL="Help"
+><STRONG>Context:</STRONG></A> resource config<BR>
+<A
+ HREF="directive-dict.html#Status"
+ REL="Help"
+><STRONG>Status:</STRONG></A> mod_cgi
+<P>
+
+<TT>ScriptLogLength</TT> can be used to limit the size of the CGI
+script logfile.  Since the logfile logs a lot of information per CGI
+error (all request headers, all script output) it can grow to be a big
+file. To prevent problems due to unbounded growth, this directive can
+be used to set an maximum file-size for the CGI logfile. If the file
+exceeds this size, no more information will be written to it.
+
+<H3><A NAME="scriptlogbuffer">ScriptLogBuffer</A></H3>
+
+<A
+ HREF="directive-dict.html#Syntax"
+ REL="Help"
+><STRONG>Syntax:</STRONG></A> ScriptLogBuffer <EM>size</EM><BR>
+<A
+ HREF="directive-dict.html#Default"
+ REL="Help"
+><STRONG>Default:</STRONG></A> 1024<BR>
+<A
+ HREF="directive-dict.html#Context"
+ REL="Help"
+><STRONG>Context:</STRONG></A> resource config<BR>
+<A
+ HREF="directive-dict.html#Status"
+ REL="Help"
+><STRONG>Status:</STRONG></A> mod_cgi
+<P>
+
+The size of any PUT or POST entity body that is logged to the file is
+limited, to prevent the log file growing too big too quickly if large
+bodies are being received. By default, up to 1024 bytes are logged,
+but this can be changed with this directive.
+
+<!--#include virtual="footer.html" -->
+</BODY>
+</HTML>
+
