@@ -487,7 +487,7 @@ static int remove_entity(cache_handle_t *h)
     obj->cleanup = 1;
     obj = (cache_object_t *) apr_hash_get(sconf->cacheht, obj->key,
                                           APR_HASH_KEY_STRING);
-    if (obj) {
+    if (obj && obj->complete) {
         mem_cache_object_t *mobj = (mem_cache_object_t *) obj->vobj;
         apr_hash_set(sconf->cacheht, obj->key, strlen(obj->key), NULL);
         sconf->object_cnt--;
