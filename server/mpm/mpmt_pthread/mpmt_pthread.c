@@ -1391,7 +1391,8 @@ static const char *set_server_limit (cmd_parms *cmd, void *dummy,
                     " lowering MaxClients to %d.  To increase, please "
                     "see the", HARD_SERVER_LIMIT);
        ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
-                    " HARD_SERVER_LIMIT define in src/include/httpd.h.");
+                    " HARD_SERVER_LIMIT define in %s.",
+                    AP_MPM_HARD_LIMITS_FILE);
        ap_daemons_limit = HARD_SERVER_LIMIT;
     } 
     else if (ap_daemons_limit < 1) {
@@ -1417,9 +1418,10 @@ static const char *set_threads_per_child (cmd_parms *cmd, void *dummy,
                      HARD_THREAD_LIMIT);
         ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
                      " lowering ThreadsPerChild to %d. To increase, please"
-                     "see the", HARD_THREAD_LIMIT);
+                     " see the", HARD_THREAD_LIMIT);
         ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
-                     " HARD_THREAD_LIMIT define in src/include/httpd.h.");
+                     " HARD_THREAD_LIMIT define in %s.",
+                     AP_MPM_HARD_LIMITS_FILE);
     }
     else if (ap_threads_per_child < 1) {
 	ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 

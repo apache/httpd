@@ -1312,7 +1312,8 @@ static const char *set_num_daemons (cmd_parms *cmd, void *dummy, const char *arg
                     " lowering NumServers to %d.  To increase, please "
                     "see the", HARD_SERVER_LIMIT);
        ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
-                    " HARD_SERVER_LIMIT define in src/include/httpd.h.");
+                    " HARD_SERVER_LIMIT define in %s.",
+                    AP_MPM_HARD_LIMITS_FILE);
        num_daemons = HARD_SERVER_LIMIT;
     } 
     else if (num_daemons < 1) {
@@ -1334,13 +1335,14 @@ static const char *set_threads_to_start (cmd_parms *cmd, void *dummy, const char
     if (threads_to_start > HARD_THREAD_LIMIT) {
         ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
                      "WARNING: StartThreads of %d exceeds compile time"
-                     "limit of %d threads,", threads_to_start,
+                     " limit of %d threads,", threads_to_start,
                      HARD_THREAD_LIMIT);
         ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
-                     "lowering StartThreads to %d. To increase, please"
-                     "see the", HARD_THREAD_LIMIT);
+                     " lowering StartThreads to %d. To increase, please"
+                     " see the", HARD_THREAD_LIMIT);
         ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
-                     "HARD_THREAD_LIMIT define in src/include/httpd.h.");
+                     " HARD_THREAD_LIMIT define in %s.",
+                     AP_MPM_HARD_LIMITS_FILE);
     }
     else if (threads_to_start < 1) {
 	ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
