@@ -1227,7 +1227,7 @@ dav_get_props_result dav_get_props(dav_propdb *propdb, ap_xml_doc *doc)
 	}
 
 	if (elem->private == NULL) {
-	    elem->private = ap_pcalloc(propdb->p, sizeof(*elem->private));
+	    elem->private = ap_pcalloc(propdb->p, sizeof(*priv));
 	}
 	priv = elem->private;
 
