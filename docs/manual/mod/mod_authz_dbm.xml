@@ -90,7 +90,7 @@ of user groups for authorization</description>
     <p>The password section contains the encrypted
     password as before. This is followed by a colon and the comma
     separated list of groups. Other data may optionally be left in the
-    DBM file after another colon; it is ignored by the authentication
+    DBM file after another colon; it is ignored by the authorization
     module. This is what www.telescope.org uses for its combined
     password and group database.</p>
 </usage>
