@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/09/21 00:33:16 $]
+Last modified at [$Date: 2004/09/21 01:36:46 $]
 
 Release:
 
@@ -82,15 +82,18 @@ PATCHES TO BACKPORT FROM 2.1
     *) Fix the global mutex crash when the global mutex is never allocated
        due to disabled/empty caches.
          modules/ldap/util_ldap.c: 1.13
-       +1: minfrin
+       +1: minfrin, bnicholes
 
     *) Fix a segfault in the LDAP cache purge.
          modules/ldap/util_ldap_cache_mgr.c: 1.9
        +1: minfrin
+        0: bnicholes - backporting modules/ldap/util_ldap_cache_mgr.c: r1.7 below
+	    should eliminate the need to backport the "else" condition included
+	    in this patch.
 
     *) Fix a segfault in the LDAP cache when it is configured switched off.
          modules/ldap/util_ldap_cache_mgr.c: 1.7
-       +1: minfrin
+       +1: minfrin, bnicholes
 
     *) Use HTML 2.0 <hr> for error pages. PR 30732
          modules/http/http_protocol.c: r1.483
