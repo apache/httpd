@@ -18,8 +18,9 @@
 <H2>Base configuration</H2>
 
 <UL>
-<LI><A HREF="#ip">IP-based vhosts only</A>
-<LI><A HREF="#name">Name-based vhosts only</A>
+<LI><A HREF="#purename">Simple name-based vhosting</A>
+<LI><A HREF="#name">More complicated name-based vhosts</A>
+<LI><A HREF="#ip">IP-based vhosts</A>
 <LI><A HREF="#mixed">Mixed name-/IP-based vhosts</A>
 <LI><A HREF="#port">Port-based vhosts</A>
 </UL>
@@ -34,7 +35,206 @@
 
 <HR>
 
-<H3><A NAME="ip">IP-based vhosts only</A></H3>
+<H3><A NAME="purename">Simple name-based vhosting</A></H3>
+
+<UL>
+
+<LI><STRONG>Setup:</STRONG>
+    The server machine has a primary name <SAMP>server.domain.tld</SAMP>.
+    There are two aliases (CNAMEs) <SAMP>www.domain.tld</SAMP> and
+    <SAMP>www.sub.domain.tld</SAMP> for the address <SAMP>server.domain.tld</SAMP>.
+    <P>
+    <STRONG>Server configuration:</STRONG>
+
+    <BLOCKQUOTE><PRE>
+    ...
+    Port 80
+    ServerName server.domain.tld
+
+    NameVirtualHost *
+
+    &lt;VirtualHost *&gt;
+    DocumentRoot /www/domain
+    ServerName www.domain.tld
+    ...
+    &lt;/VirtualHost&gt;
+    
+    &lt;VirtualHost *&gt;
+    DocumentRoot /www/subdomain
+    ServerName www.sub.domain.tld
+    ...
+    &lt;/VirtualHost&gt; 
+    </PRE>
+    The asterisks match all addresses, so the main server serves no
+    requests. Due to the fact that <SAMP>www.domain.tld</SAMP> is first
+    in the configuration file, it has the highest priority and can be
+    seen as the <CITE>default</CITE> or <CITE>primary</CITE> server.
+    </BLOCKQUOTE>
+    <P>
+
+</UL>
+
+<HR>
+
+<H3><A NAME="name">More complicated name-based vhosts</A></H3>
+
+<UL>
+
+<LI><STRONG>Setup 1:</STRONG>
+    The server machine has one IP address (<SAMP>111.22.33.44</SAMP>)
+    which resolves to the name <SAMP>server.domain.tld</SAMP>.
+    There are two aliases (CNAMEs) <SAMP>www.domain.tld</SAMP> and
+    <SAMP>www.sub.domain.tld</SAMP> for the address <SAMP>111.22.33.44</SAMP>.
+    <P>
+    <STRONG>Server configuration:</STRONG>
+
+    <BLOCKQUOTE><PRE>
+    ...
+    Port 80
+    ServerName server.domain.tld
+
+    NameVirtualHost 111.22.33.44 
+
+    &lt;VirtualHost 111.22.33.44&gt;
+    DocumentRoot /www/domain
+    ServerName www.domain.tld
+    ...
+    &lt;/VirtualHost&gt;
+    
+    &lt;VirtualHost 111.22.33.44&gt;
+    DocumentRoot /www/subdomain
+    ServerName www.sub.domain.tld
+    ...
+    &lt;/VirtualHost&gt; 
+    </PRE>
+    Apart from <SAMP>localhost</SAMP> there are no unspecified
+    addresses/ports, therefore the main server only serves
+    <SAMP>localhost</SAMP> requests. Due to the fact
+    that <SAMP>www.domain.tld</SAMP> has the highest priority
+    it can be seen as the <CITE>default</CITE> or
+    <CITE>primary</CITE> server.
+    </BLOCKQUOTE>
+    <P>
+   
+<LI><STRONG>Setup 2:</STRONG>
+    The server machine has two IP addresses (<SAMP>111.22.33.44</SAMP>
+    and <SAMP>111.22.33.55</SAMP>)
+    which resolve to the names <SAMP>server1.domain.tld</SAMP> and
+    <SAMP>server2.domain.tld</SAMP> respectively.
+    The alias <SAMP>www.domain.tld</SAMP> should be used for the
+    main server which should also catch any unspecified addresses. 
+    We want to use a virtual host for the alias
+    <SAMP>www.otherdomain.tld</SAMP> and another virtual host, 
+    with server name <SAMP>www.sub.domain.tld</SAMP>, should
+    catch any request to hostnames of the form
+    <SAMP>*.sub.domain.tld</SAMP>. 
+    The address <SAMP>111.22.33.55</SAMP> should be
+    used for the virtual hosts.
+    <P>
+    <STRONG>Server configuration:</STRONG>
+
+    <BLOCKQUOTE><PRE>
+    ...
+    Port 80
+    ServerName www.domain.tld
+    DocumentRoot /www/domain
+
+    NameVirtualHost 111.22.33.55
+
+    &lt;VirtualHost 111.22.33.55&gt;
+    DocumentRoot /www/otherdomain
+    ServerName www.otherdomain.tld
+    ...
+    &lt;/VirtualHost&gt;
+   
+    &lt;VirtualHost 111.22.33.55&gt;
+    DocumentRoot /www/subdomain
+    ServerName www.sub.domain.tld
+    ServerAlias *.sub.domain.tld
+    ...
+    &lt;/VirtualHost&gt; 
+    </PRE>
+    Any request to an address other than <SAMP>111.22.33.55</SAMP>
+    will be served from the main server. A request to
+    <SAMP>111.22.33.55</SAMP> with an unknown or no <CODE>Host:</CODE>
+    header will be served from <SAMP>www.otherdomain.tld</SAMP>.
+    </BLOCKQUOTE>
+
+<LI><STRONG>Setup 3:</STRONG>
+       The server machine has two IP addresses (<SAMP>192.168.1.1</SAMP>
+       and <SAMP>111.22.33.55</SAMP>). The machine is sitting between
+       an internal (intranet) network and an external (internet) network.
+       Outside of the network, the name <SAMP>server1.domain.tld</SAMP>
+       resolves to the external address (<SAMP>111.22.33.55</SAMP>), but
+       inside the network, that same name resolves to the internal
+       address (<SAMP>192.168.1.1</SAMP>).<P>
+
+       The server can be made to respond to internal and external
+       requests with the same content, with just one <CODE>VirtualHost</CODE>
+       section.
+       <P>
+
+       <STRONG>Server configuration:</STRONG>
+
+       <BLOCKQUOTE><PRE>
+    ...
+    NameVirtualHost 192.168.1.1
+    NameVirtualHost 111.22.33.55
+
+    &lt;VirtualHost 192.168.1.1 111.22.33.55&gt;
+    DocumentRoot /www/server1
+    ServerName server1.domain.tld
+    ServerAlias server1
+    ...
+    &lt;/VirtualHost&gt;
+    </PRE></BLOCKQUOTE>
+
+       Now requests from both networks will be served from the same
+       <CODE>VirtualHost</CODE>
+
+<LI><STRONG>Setup 4:</STRONG>
+       You have multiple domains going to the same IP and also want
+       to serve multiple ports.  By defining the
+       ports in the "NameVirtualHost" tag, you can allow this to
+       work. If you try using <VirtualHost name:port> without the
+       NameVirtualHost name:port or you try to use the Port
+       directive, your configuration will not work.
+       <P>
+
+       <STRONG>Server configuration:</STRONG>
+
+       <BLOCKQUOTE><PRE>
+    ...   
+    NameVirtualHost 111.22.33.44:80
+    NameVirtualHost 111.22.33.44:8080
+
+    &lt;VirtualHost 111.22.33.44:80&gt;
+    ServerName www.domain.tld
+    DocumentRoot /www/domain-80
+    &lt;/VirtualHost&gt;
+
+    &lt;VirtualHost 111.22.33.44:8080&gt;
+    ServerName www.domain.tld
+    DocumentRoot /www/domain-8080
+    &lt;/VirtualHost&gt;
+
+    &lt;VirtualHost 111.22.33.44:80&gt;
+    ServerName www.otherdomain.tld
+    DocumentRoot /www/otherdomain-80
+    &lt;/VirtualHost&gt;
+
+    &lt;VirtualHost 111.22.33.44:8080&gt;
+    ServerName www.otherdomain.tld
+    DocumentRoot /www/otherdomain-8080
+    &lt;/VirtualHost&gt;
+
+    </PRE></BLOCKQUOTE>
+
+</UL>
+
+<HR>
+
+<H3><A NAME="ip">IP-based vhosts</A></H3>
 
 <UL>
 
@@ -138,92 +338,6 @@
     (apart from <SAMP>localhost</SAMP>) of our machine are in use for IP-based
     virtual hosts. The web server can only be reached on the first address
     through port 80 and the proxy only on the second address through port 8080.
-    </BLOCKQUOTE>
-</UL>
-<HR>
-
-<H3><A NAME="name">Name-based vhosts only</A></H3>
-
-<UL>
-
-<LI><STRONG>Setup 1:</STRONG>
-    The server machine has one IP address (<SAMP>111.22.33.44</SAMP>)
-    which resolves to the name <SAMP>server.domain.tld</SAMP>.
-    There are two aliases (CNAMEs) <SAMP>www.domain.tld</SAMP> and
-    <SAMP>www.sub.domain.tld</SAMP> for the address <SAMP>111.22.33.44</SAMP>.
-    <P>
-    <STRONG>Server configuration:</STRONG>
-
-    <BLOCKQUOTE><PRE>
-    ...
-    Port 80
-    ServerName server.domain.tld
-
-    NameVirtualHost 111.22.33.44 
-
-    &lt;VirtualHost 111.22.33.44&gt;
-    DocumentRoot /www/domain
-    ServerName www.domain.tld
-    ...
-    &lt;/VirtualHost&gt;
-    
-    &lt;VirtualHost 111.22.33.44&gt;
-    DocumentRoot /www/subdomain
-    ServerName www.sub.domain.tld
-    ...
-    &lt;/VirtualHost&gt; 
-    </PRE>
-    Apart from <SAMP>localhost</SAMP> there are no unspecified
-    addresses/ports, therefore the main server only serves
-    <SAMP>localhost</SAMP> requests. Due to the fact
-    that <SAMP>www.domain.tld</SAMP> has the highest priority
-    it can be seen as the <CITE>default</CITE> or
-    <CITE>primary</CITE> server.
-    </BLOCKQUOTE>
-    <P>
-   
-<LI><STRONG>Setup 2:</STRONG>
-    The server machine has two IP addresses (<SAMP>111.22.33.44</SAMP>
-    and <SAMP>111.22.33.55</SAMP>)
-    which resolve to the names <SAMP>server1.domain.tld</SAMP> and
-    <SAMP>server2.domain.tld</SAMP> respectively.
-    The alias <SAMP>www.domain.tld</SAMP> should be used for the
-    main server which should also catch any unspecified addresses. 
-    We want to use a virtual host for the alias
-    <SAMP>www.otherdomain.tld</SAMP> and another virtual host, 
-    with server name <SAMP>www.sub.domain.tld</SAMP>, should
-    catch any request to hostnames of the form
-    <SAMP>*.sub.domain.tld</SAMP>. 
-    The address <SAMP>111.22.33.55</SAMP> should be
-    used for the virtual hosts.
-    <P>
-    <STRONG>Server configuration:</STRONG>
-
-    <BLOCKQUOTE><PRE>
-    ...
-    Port 80
-    ServerName www.domain.tld
-    DocumentRoot /www/domain
-
-    NameVirtualHost 111.22.33.55
-
-    &lt;VirtualHost 111.22.33.55&gt;
-    DocumentRoot /www/otherdomain
-    ServerName www.otherdomain.tld
-    ...
-    &lt;/VirtualHost&gt;
-   
-    &lt;VirtualHost 111.22.33.55&gt;
-    DocumentRoot /www/subdomain
-    ServerName www.sub.domain.tld
-    ServerAlias *.sub.domain.tld
-    ...
-    &lt;/VirtualHost&gt; 
-    </PRE>
-    Any request to an address other than <SAMP>111.22.33.55</SAMP>
-    will be served from the main server. A request to
-    <SAMP>111.22.33.55</SAMP> with an unknown or no <CODE>Host:</CODE>
-    header will be served from <SAMP>www.otherdomain.tld</SAMP>.
     </BLOCKQUOTE>
 </UL>
 
@@ -508,6 +622,7 @@
 
 </UL> 
 
+<LI><STRONG>Setup:</STRONG>
 <!--#include virtual="footer.html" -->
 </BODY>
 </HTML>

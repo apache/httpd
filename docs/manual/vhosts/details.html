@@ -69,7 +69,8 @@ results from DNS lookups) are called the vhost's <EM>address set</EM>.
 
 <P>Unless a <A HREF="../mod/core.html#namevirtualhost">NameVirtualHost</A>
 directive is used for a specific IP address the first vhost with
-that address is treated as an IP-based vhost.
+that address is treated as an IP-based vhost. The IP address can also
+be the wildcard <CODE>*</CODE>.
 
 <P>If name-based vhosts should be used a <CODE>NameVirtualHost</CODE>
 directive <EM>must</EM> appear with the IP address set to be used for the
@@ -202,6 +203,11 @@ for the port to which the client sent the request. If there is no
 matching <SAMP>_default_</SAMP> vhost the request is served from the
 main_server.
 
+<P>If the IP address is not found in the hash table then the match
+against the port number may also result in an entry corresponding to a
+<CODE>NameVirtualHost *</CODE>, which is subsequently handled like
+other name-based vhosts.
+
 <P>If the lookup succeeded (a corresponding list for the IP address was
 found) the next step is to decide if we have to deal with an IP-based
 or a name-base vhost.
@@ -309,6 +315,7 @@ taken to be a proxy request.
     <CODE>_default_</CODE> vhost which is your standard <CODE>Port</CODE>
     by default. A wildcard port can be specified (<EM>i.e.</EM>,
     <CODE>_default_:*</CODE>) to catch requests to any available port.
+    This also applies to <CODE>NameVirtualHost *</CODE> vhosts.
     <P>
     
 <LI>The main_server is only used to serve a request if the IP address
