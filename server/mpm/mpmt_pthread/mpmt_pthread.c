@@ -83,8 +83,8 @@ int ap_max_requests_per_child=0;
 static char *ap_pid_fname=NULL;
 static char *ap_scoreboard_fname=NULL;
 static int ap_daemons_to_start=0;
-static int ap_daemons_min_free=0;
-static int ap_daemons_max_free=0;
+static int min_spare_threads=0;
+static int max_spare_threads=0;
 static int ap_daemons_limit=0;
 static time_t ap_restart_time=0;
 API_VAR_EXPORT int ap_extended_status = 0;
@@ -1169,7 +1169,7 @@ static int hold_off_on_exponential_spawning;
 static void perform_idle_server_maintenance(void)
 {
     int i, j;
-    int idle_count_ceil, idle_count_floor, idle_thread_count;
+    int idle_thread_count;
     thread_score *ss;
     time_t now = 0;
     int free_length;
@@ -1180,8 +1180,6 @@ static void perform_idle_server_maintenance(void)
     /* initialize the free_list */
     free_length = 0;
 
-    idle_count_ceil = 0;
-    idle_count_floor = 0;
     idle_thread_count = 0;
     last_non_dead = -1;
     total_non_dead = 0;
@@ -1230,13 +1228,8 @@ static void perform_idle_server_maintenance(void)
         }
     }
     max_daemons_limit = last_non_dead + 1;
-    idle_count_floor = idle_thread_count / ap_threads_per_child;
-    idle_count_ceil = idle_count_floor;
-    if (idle_thread_count % ap_threads_per_child) {
-        idle_count_ceil++;
-    }
 
-    if (idle_count_ceil > ap_daemons_max_free) {
+    if (idle_thread_count > max_spare_threads) {
         /* Kill off one child */
         char char_of_death = '!';
         if (write(pipe_of_death[1], &char_of_death, 1) == -1) {
@@ -1244,7 +1237,7 @@ static void perform_idle_server_maintenance(void)
         }
         idle_spawn_rate = 1;
     }
-    else if (idle_count_floor < ap_daemons_min_free) {
+    else if (idle_thread_count < min_spare_threads) {
         /* terminate the free list */
         if (free_length == 0) {
 	    /* only report this condition once */
@@ -1264,10 +1257,11 @@ static void perform_idle_server_maintenance(void)
 	    if (idle_spawn_rate >= 8) {
 	        ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_INFO, server_conf,
 			     "server seems busy, (you may need "
-			     "to increase StartServers, or Min/MaxSpareServers), "
-			     "spawning %d children, there are %d idle, and "
-			     "%d total children", idle_spawn_rate,
-			     idle_count_floor, total_non_dead);
+			     "to increase StartServers, ThreadsPerChild "
+                             "or Min/MaxSparetThreads), "
+			     "spawning %d children, there are around %d idle "
+                             "threads, and %d total children", idle_spawn_rate,
+			     idle_thread_count, total_non_dead);
 	    }
 	    for (i = 0; i < free_length; ++i) {
 	        make_child(server_conf, free_slots[i], now);
@@ -1388,10 +1382,10 @@ int ap_mpm_run(pool *_pconf, pool *plog, server_rec *s)
     }
 
     set_signals();
-    /* set up get_socket */
 
-    if (ap_daemons_max_free < ap_daemons_min_free + 1)	/* Don't thrash... */
-	ap_daemons_max_free = ap_daemons_min_free + 1;
+    /* Don't thrash... */
+    if (max_spare_threads < min_spare_threads + ap_threads_per_child)
+	max_spare_threads = min_spare_threads + ap_threads_per_child;
 
     /* If we're doing a graceful_restart then we're going to see a lot
      * of children exiting immediately when we get into the main loop
@@ -1530,8 +1524,8 @@ static void mpmt_pthread_pre_config(pool *pconf, pool *plog, pool *ptemp)
     unixd_pre_config();
     ap_listen_pre_config();
     ap_daemons_to_start = DEFAULT_START_DAEMON;
-    ap_daemons_min_free = DEFAULT_MIN_FREE_DAEMON;
-    ap_daemons_max_free = DEFAULT_MAX_FREE_DAEMON;
+    min_spare_threads = DEFAULT_MIN_FREE_DAEMON * DEFAULT_THREADS_PER_CHILD;
+    max_spare_threads = DEFAULT_MAX_FREE_DAEMON * DEFAULT_THREADS_PER_CHILD;
     ap_daemons_limit = HARD_SERVER_LIMIT;
     ap_threads_per_child = DEFAULT_THREADS_PER_CHILD;
     ap_pid_fname = DEFAULT_PIDLOG;
@@ -1598,32 +1592,32 @@ static const char *set_daemons_to_start(cmd_parms *cmd, void *dummy, char *arg)
     return NULL;
 }
 
-static const char *set_min_free_servers(cmd_parms *cmd, void *dummy, char *arg)
+static const char *set_min_spare_threads(cmd_parms *cmd, void *dummy, char *arg)
 {
     const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
     if (err != NULL) {
         return err;
     }
 
-    ap_daemons_min_free = atoi(arg);
-    if (ap_daemons_min_free <= 0) {
-       fprintf(stderr, "WARNING: detected MinSpareServers set to non-positive.\n");
+    min_spare_threads = atoi(arg);
+    if (min_spare_threads <= 0) {
+       fprintf(stderr, "WARNING: detected MinSpareThreads set to non-positive.\n");
        fprintf(stderr, "Resetting to 1 to avoid almost certain Apache failure.\n");
        fprintf(stderr, "Please read the documentation.\n");
-       ap_daemons_min_free = 1;
+       min_spare_threads = 1;
     }
        
     return NULL;
 }
 
-static const char *set_max_free_servers(cmd_parms *cmd, void *dummy, char *arg)
+static const char *set_max_spare_threads(cmd_parms *cmd, void *dummy, char *arg)
 {
     const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
     if (err != NULL) {
         return err;
     }
 
-    ap_daemons_max_free = atoi(arg);
+    max_spare_threads = atoi(arg);
     return NULL;
 }
 
@@ -1748,9 +1742,9 @@ LISTEN_COMMANDS
     "The lockfile used when Apache needs to lock the accept() call"},
 { "StartServers", set_daemons_to_start, NULL, RSRC_CONF, TAKE1,
   "Number of child processes launched at server startup" },
-{ "MinSpareServers", set_min_free_servers, NULL, RSRC_CONF, TAKE1,
+{ "MinSpareThreads", set_min_spare_threads, NULL, RSRC_CONF, TAKE1,
   "Minimum number of idle children, to handle request spikes" },
-{ "MaxSpareServers", set_max_free_servers, NULL, RSRC_CONF, TAKE1,
+{ "MaxSpareThreads", set_max_spare_threads, NULL, RSRC_CONF, TAKE1,
   "Maximum number of idle children" },
 { "MaxClients", set_server_limit, NULL, RSRC_CONF, TAKE1,
   "Maximum number of children alive at the same time" },
