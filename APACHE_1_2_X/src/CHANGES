@@ -1,5 +1,11 @@
 Changes with Apache 1.2.1
-  
+
+  *) Update mod_rewrite from 3.0.5 to 3.0.6.  New ruleflag
+     QSA=query_string_append.  Also fixed a nasty bug in per-dir context:
+     when a URL http://... was used in concunction with a special
+     redirect flag, e.g. R=permanent, the permanent status was lost.
+     [Ronald Tschalaer <Ronald.Tschalaer@psi.ch>, Ralf S. Engelschall]
+
   *) If an object has multiple variants that are otherwise equal Apache
      would prefer the last listed variant rather than the first.
      [Paul Sutton] PR#94

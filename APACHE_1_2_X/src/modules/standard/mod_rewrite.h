@@ -64,7 +64,7 @@
 **  |_| |_| |_|\___/ \__,_|___|_|  \___| \_/\_/ |_|  |_|\__\___|
 **                       |_____|
 **
-**  URL Rewriting Module, Version 3.0.5 (16-Apr-1997)
+**  URL Rewriting Module, Version 3.0.6 (15-Jun-1997)
 **
 **  This module uses a rule-based rewriting engine (based on a
 **  regular-expression parser) to rewrite requested URLs on the fly. 
@@ -171,6 +171,7 @@
 #define RULEFLAG_PASSTHROUGH        1<<8
 #define RULEFLAG_FORBIDDEN          1<<9
 #define RULEFLAG_GONE               1<<10
+#define RULEFLAG_QSAPPEND           1<<11
 
 #define MAPTYPE_TXT                 1<<0
 #define MAPTYPE_DBM                 1<<1
@@ -334,7 +335,7 @@ static int apply_rewrite_rule(request_rec *r, rewriterule_entry *p, char *perdir
 static int apply_rewrite_cond(request_rec *r, rewritecond_entry *p, char *perdir); 
 
     /* URI transformation function */
-static void  splitout_queryargs(request_rec *r);
+static void  splitout_queryargs(request_rec *r, int qsappend);
 static void  reduce_uri(request_rec *r);
 static char *expand_tildepaths(request_rec *r, char *uri);
 static void  expand_map_lookups(request_rec *r, char *uri, int uri_len);
