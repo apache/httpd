@@ -203,14 +203,11 @@ static apr_status_t open_scoreboard(apr_pool_t *p)
 apr_status_t reopen_scoreboard(apr_pool_t *p, int detached)
 {
 #if APR_HAS_SHARED_MEMORY
-    apr_status_t rv;
-    char *fname = NULL;
-
     if (!detached) {
         return APR_SUCCESS;
     }
     if (apr_shm_size_get(ap_scoreboard_shm) < scoreboard_size) {
-        ap_log_error(APLOG_MARK, APLOG_CRIT, rv, NULL,
+        ap_log_error(APLOG_MARK, APLOG_CRIT | APLOG_NOERRNO, 0, NULL,
                      "Fatal error: shared scoreboard too small for child!");
         apr_shm_detach(ap_scoreboard_shm);
         ap_scoreboard_shm = NULL;
