@@ -175,7 +175,13 @@ static apr_status_t churn_output(SSLFilterRec *pRec)
 		APR_BRIGADE_INSERT_TAIL(pbbOutput,pbkt);
 		done=1;
 	    }
-            assert (n > 0); /* XXX => Check if required */
+            else {
+                conn_rec *c = (conn_rec *)SSL_get_app_data(pRec->pssl);
+                ssl_log(c->base_server, SSL_LOG_ERROR|SSL_ADD_SSLERR,
+                        "attempting to read %d bytes from wbio, got %d",
+                        sizeof buf, n);
+                return APR_EINVAL;
+            }
 	}
     } while(done);
     
@@ -245,18 +251,34 @@ static apr_status_t churn (SSLFilterRec *pRec,
 		
 	    if(eReadType != APR_NONBLOCK_READ)
 		ap_log_error(APLOG_MARK,APLOG_ERR,ret,NULL,
-			     "Read failed in tls_in_filter");
-	    assert(eReadType == APR_NONBLOCK_READ);
-	    assert(ret == APR_SUCCESS || APR_STATUS_IS_EAGAIN(ret));
-	    /* In this case, we have data in the output bucket, or we were
-	     * non-blocking, so returning nothing is fine.
-	     */
-	    return APR_SUCCESS;
+			     "Read failed in ssl input filter");
+
+	    if ((eReadType == APR_NONBLOCK_READ) &&
+                (APR_STATUS_IS_SUCCESS(ret) || APR_STATUS_IS_EAGAIN(ret)))
+            {
+                /* In this case, we have data in the output bucket, or we were
+                 * non-blocking, so returning nothing is fine.
+                 */
+                return APR_SUCCESS;
+            }
+            else {
+                return ret;
+            }
 	}
 
 	n = BIO_write (pRec->pbioRead, data, len);
         
-        assert(n >= 0 && (apr_size_t)n == len);
+        if (n != len) {
+            conn_rec *c = (conn_rec *)SSL_get_app_data(pRec->pssl);
+            /* this should never really happen, since we're just writing
+             * into a memory buffer, unless, of course, we run out of 
+             * memory
+             */
+            ssl_log(c->base_server, SSL_LOG_ERROR|SSL_ADD_SSLERR,
+                    "attempting to write %d bytes to rbio, only wrote %d",
+                    len, n);
+            return APR_ENOMEM;
+        }
 
         if (bio_is_renegotiating(pRec->pbioRead)) {
             /* we're doing renegotiation in the access phase */
@@ -368,7 +390,9 @@ static apr_status_t ssl_io_filter_Input(ap_filter_t *f,apr_bucket_brigade *pbbOu
         (eMode == AP_MODE_BLOCKING) ? APR_BLOCK_READ : APR_NONBLOCK_READ;
 
     /* XXX: we don't currently support peek */
-    assert(eMode != AP_MODE_PEEK);
+    if (eMode == AP_MODE_PEEK) {
+        return APR_ENOTIMPL;
+    }
 
     /* churn the state machine */
     ret = churn(pRec,eReadType,readbytes);
