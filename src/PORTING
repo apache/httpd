@@ -23,11 +23,9 @@ basic controlling functions for them (like accept(), bind(), etc).
 The source for Apache is written in ANSI-C, so an ANSI-C compiler
 is required. However, Apache does not use or require ANSI-only
 functions or options (eg: the "%n" parameter in the scanf()
-family); the source basically uses ANSI function prototyping but
-no other specific ANSIisms. Thus, an ANSI-to-K&R filter _may_
-work, although as far as we know it has not yet been tried. If you
-attempt this, let the Apache team know (send mail to apache@Apache.Org
-or make a suggestion report at <http://bugs.apache.org/>).
+family) as much as possible to ease portability. Generally,
+an ANSI-C compiler (eg: gcc) even without a full-blown ANSI
+C library is usually sufficient.
 
 At present, the Apache source is not compatible with C++.
 
@@ -39,7 +37,7 @@ script. This is a simple script that attempts to determine the
 platform and OS you are running on. The output of this script
 is used by Configure to set some basic compilation parameters.
 
-The output of ./helpers/GuessOS was designed to be GNUconfig.guess
+The output of ./helpers/GuessOS was designed to be GNU 'config.guess'
 compatible (from GNU/autoconf). The format of the output string
 is:
 
@@ -47,7 +45,9 @@ is:
 
 This string is returned to the main Configure script as the
 shell variable $PLAT. If Configure is not "aware" of that platform
-(or cannot correctly parse it), it will complain and die.
+(or cannot correctly parse it), it will complain and die. We realize
+that this may not be the best solution; the intent is to get as
+much feedback as possible.
 
 ----------------------
 Configure cannot Grok:
@@ -124,7 +124,7 @@ DEF_WANTHSREGEX indicates the "default" setting of the WANTHSREGEX rule.
 If left undefined it'll default to yes.  Yes means the src/regex/
 directory, containing Henry Spencer's regex library will be used rather
 than any system supplied regex.  It's been our experience that system
-supplied regex libraries are generally buggy, and to be avoided.
+supplied regex libraries are generally buggy, and should be avoided.
 
 conf.h:
  =======
@@ -291,7 +291,9 @@ build for your OS.
 
       NO_LINGCLOSE:
        Do not use Apache's soft, "lingering" close feature to
-       terminate connections.
+       terminate connections. If you find that your server crashes
+       due to being choked by too many FIN_WAIT_2 network states, 
+       some reports indicate that #define'ing this will help.
 
       NO_SLACK:
        Do not use the "slack" fd feature which requires a working fcntl
