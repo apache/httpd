@@ -1915,9 +1915,6 @@ void winnt_rewrite_args(process_rec *process)
             /* TODO: warn of depreciated syntax, "use -k uninstall instead" */
             signal_arg = "uninstall";
             break;
-        case 'X':
-            one_process = -1;
-            break;
         default:
             new_arg = (char**) apr_push_array(mpm_new_argv);
             *new_arg = apr_pstrdup(process->pool, optbuf);
@@ -1978,16 +1975,21 @@ void winnt_rewrite_args(process_rec *process)
         {
             rv = mpm_merge_service_args(process->pool, mpm_new_argv, 
                                         fixed_args);
-            if (rv != APR_SUCCESS) {
-                ap_log_error(APLOG_MARK,APLOG_ERR, rv, NULL,
-                             "%s: ConfigArgs are missing from the registry.",
-                             display_name);
+            if (rv == APR_SUCCESS) {
+                ap_log_error(APLOG_MARK,APLOG_NOERRNO|APLOG_INFO, 0, NULL,
+                             "Using ConfigArgs of the installed service "
+                             "\"%s\".", display_name);
             }
+			else  {
+                ap_log_error(APLOG_MARK,APLOG_INFO, rv, NULL,
+                             "No installed ConfigArgs for the service "
+                             "\"%s\", using Apache defaults.", display_name);
+			}
         }
         else
         {
-            ap_log_error(APLOG_MARK,APLOG_ERR, 0, NULL,
-                 "%s: No installed service by that name.", display_name);
+            ap_log_error(APLOG_MARK,APLOG_INFO|APLOG_NOERRNO, 0, NULL,
+                 "No installed service named \"%s\".", display_name);
             exit(1);
         }
     }
