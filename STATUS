@@ -1,5 +1,5 @@
 Apache 2.0 STATUS:
-Last modified at [$Date: 1999/10/13 05:24:11 $]
+Last modified at [$Date: 1999/11/01 04:30:52 $]
 
 Release:
 
@@ -12,11 +12,7 @@ Plan:
 
 RELEASE SHOWSTOPPERS:
 
-    * CGI doesn't work
-        Status: Ben Laurie is working on this.
-
     * suEXEC doesn't work
-        Ben Laurie's work to fix CGIs will also fix this.
 
     * Windows NT port isn't done
         Status: Bill is working on this through his MPM work, and Ryan
@@ -67,9 +63,6 @@ Other features that need writing:
     * Odd comments in source (egrep for "ZZZ") need to be cleaned-up
 
     * Work on other MPMs. Possible MPMs discussed or in progress include:
-
-      - David Reid's <abb37@dial.pipex.com> Beos MPM
-          Status: in progress
 
       - Dean Gaudet's async MPM
           Status: ?
