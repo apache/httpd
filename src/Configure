@@ -206,6 +206,7 @@ case "$PLAT" in
 	DEF_WANTHSREGEX=yes
 	;;
     *OS/2*)
+	OSDIR="os/emx"
 	DEF_WANTHSREGEX=yes
 	OS='EMX OS/2'
 	CFLAGS="$CFLAGS -Zbsd-signals -Zbin-files -DTCPIPV4 -g"
