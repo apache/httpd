@@ -425,7 +425,7 @@ static int status_handler(request_rec *r)
     }
 
 #if defined(STATUS)
-    if (!short_report)
+    if (!short_report) {
 	if (no_table_report)
 	    rputs("<p><hr><h2>Server Details</h2>\n\n", r);
 	else
@@ -435,7 +435,7 @@ static int status_handler(request_rec *r)
 #else
 	    rputs("<p>\n\n<table border=0><tr><th>Srv<th>PID<th>Acc<th>M<th>CPU\n<th>SS<th>Req<th>Conn<th>Child<th>Slot<th>Host<th>VHost<th>Request</tr>\n\n", r);
 #endif
-
+    }
 
     for (i = 0; i < HARD_SERVER_LIMIT; ++i) {
 	score_record = scoreboard_image->servers[i];
