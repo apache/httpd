@@ -244,7 +244,7 @@ key used for <a name="cipher">Ciphers</a>.<br /> See: <a href="ssl/">SSL/TLS Enc
 <dd>The unencrypted text.</dd>
 
 <dt><a name="privatekey">Private Key</a></dt> <dd>The secret key in a
-<a name="publickeycryptography">Public Key Cryptography</a> system,
+<a href="#publickeycryptography">Public Key Cryptography</a> system,
 used to decrypt incoming messages and sign outgoing ones.<br />
 See: <a href="ssl/">SSL/TLS Encryption</a></dd>
 
@@ -258,7 +258,7 @@ from the origin server each time, thereby reducing response time.<br />
 See: <a href="mod/mod_proxy.html">mod_proxy</a></dd>
 
 <dt><a name="publickey">Public Key</a></dt> <dd>The publicly
-available key in a <a name="publickeycryptography">Public Key
+available key in a <a href="#publickeycryptography">Public Key
 Cryptography</a> system, used to encrypt messages bound for its owner
 and to decrypt signatures made by its owner.<br />
 See: <a href="ssl/">SSL/TLS Encryption</a></dd>
