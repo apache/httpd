@@ -218,6 +218,13 @@ static authn_status check_anonymous(request_rec *r, const char *user,
         }
     }
 
+    /* Now if the supplied user-ID was ok, grant access if:
+     * (a) no passwd was sent and no password and no verification
+     *     were configured.
+     * (b) password was sent and no verification was configured
+     * (c) verification was configured and the password (sent or not)
+     *     looks like an email address
+     */
     if (   (res == AUTH_USER_FOUND)
         && (!conf->mustemail || *sent_pw)
         && (   !conf->verifyemail
