@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:						-*-text-*-
-Last modified at [$Date: 2001/08/29 18:23:08 $]
+Last modified at [$Date: 2001/09/06 04:08:55 $]
 
 Release:
 
@@ -87,6 +87,12 @@ RELEASE SHOWSTOPPERS:
         as a compiled-in module (bad).
 
 RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
+
+    * add mod_gz to httpd-2.0
+      +1: Greg
+      -0: Ryan, Doug
+      
+      non-binding: Ian (+1)
 
     * daedalus: mod_cgid and suexec have a problem co-existing.  suexec 
       sees a null command string sometimes.  The problem happens when
