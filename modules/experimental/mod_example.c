@@ -1021,8 +1021,11 @@ static int x_quick_handler(request_rec *r, int lookup_uri)
 }
 
 /*
- * This routine is called to perform any module-specific fixing of header
- * fields, et cetera.  It is invoked just before any content-handler.
+ * This routine is called just after the server accepts the connection,
+ * but before it is handed off to a protocol module to be served.  The point
+ * of this hook is to allow modules an opportunity to modify the connection
+ * as soon as possible. The core server uses this phase to setup the
+ * connection record based on the type of connection that is being used.
  *
  * The return value is OK, DECLINED, or HTTP_mumble.  If we return OK, the
  * server will still call any remaining modules with an handler for this
@@ -1040,6 +1043,19 @@ static int x_pre_connection(conn_rec *c, void *csd)
     trace_add(r->server, NULL, cfg, "x_post_config()");
 #endif
     return OK;
+}
+
+/* This routine is used to actually process the connection that was received.
+ * Only protocol modules should implement this hook, as it gives them an
+ * opportunity to replace the standard HTTP processing with processing for
+ * some other protocol.  Both echo and POP3 modules are available as
+ * examples.
+ *
+ * The return VALUE is OK, DECLINED, or HTTP_mumble.  If we return OK, no 
+ * further modules are called for this phase.
+ */
+static int x_process_connection(conn_rec *c)
+{
 }
 
 /*
