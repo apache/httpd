@@ -460,7 +460,13 @@ typedef int pid_t;
 #define USE_MMAP_FILES
 
 /* flock is faster ... but hasn't been tested on 1.x systems */
-#define USE_FLOCK_SERIALIZED_ACCEPT
+/* PR#3531 indicates flock() may not be stable, probably depends on
+ * kernel version.  Go back to using fcntl, but provide a way for
+ * folks to tweak their Configuration to get flock.
+ */
+#ifndef USE_FLOCK_SERIALIZED_ACCEPT
+#define USE_FCNTL_SERIALIZED_ACCEPT
+#endif
 
 #define SYS_SIGLIST	_sys_siglist
 
