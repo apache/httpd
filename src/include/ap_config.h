@@ -662,6 +662,8 @@ typedef int rlim_t;
 #define NEED_STRNCASECMP
 #define NO_SETSID
 #define NO_TIMES
+/* ap_config_auto.h gets this wrong, force sys/select.h to be included */
+#define HAVE_SYS_SELECT_H
 #define CASE_BLIND_FILESYSTEM
 /* Add some drive name support */
 #define chdir _chdir2

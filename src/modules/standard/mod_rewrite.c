@@ -3213,7 +3213,7 @@ static void rewritelock_create(server_rec *s, pool *p)
                      "file %s", conf->rewritelockfile);
         exit(1);
     }
-#ifndef WIN32
+#if !defined(__EMX__) && !defined(WIN32)
     /* make sure the childs have access to this file */
     if (geteuid() == 0 /* is superuser */)
         chown(conf->rewritelockfile, ap_user_id, -1 /* no gid change */);

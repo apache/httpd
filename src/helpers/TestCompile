@@ -1,6 +1,6 @@
 #!/bin/sh
 exstat=1
-trap 'rm -f Makefile dummy testfunc.c testfunc; exit $exstat' 0 1 2 3 15
+trap 'rm -f Makefile dummy dummy.exe testfunc.c testfunc testfunc.exe; exit $exstat' 0 1 2 3 15
 #
 # Yet another Apache Configure helper script.
 # This script tests certain aspects of the compilation
