@@ -8,7 +8,7 @@
   <!--#include virtual="header.html" -->
   <H1>Apache Server Frequently Asked Questions</H1>
   <P>
-  $Revision: 1.40 $ ($Date: 1997/04/22 12:05:52 $)
+  $Revision: 1.41 $ ($Date: 1997/04/22 18:36:00 $)
   </P>
   <P>
   The latest version of this FAQ is always available from the main
@@ -48,17 +48,16 @@
 <!--   treated as pw, not just ++1st to --2nd.                      -->
 <!-- - SSL:                                                         -->
 <!--   Can I use Apache-SSL for free in Canada?                     -->
-<!--   Why doesn't Apache include SSL?                              -->
-<!--   Why can I use Apache-SSL in the U.S.?                        -->
+<!--   Why can't I use Apache-SSL in the U.S.?                      -->
 <!-- - How can I found out how many visitors my site gets?          -->
 <!-- - How do I add a counter?                                      -->
 <!-- - How do I configure Apache as a proxy?                        -->
 <!-- - What browsers support HTTP/1.1?                              -->
 <!-- - What's the point of vhosts-by-name is there aren't any       -->
-<!--   HTTP/1.1 brwsers?                                            -->
+<!--   HTTP/1.1 browsers?                                           -->
 <!-- - Is there an Apache for W95/WNT?                              -->
 <!-- - Why does Apache die when a vhost can't be DNS-resolved?      -->
-<!-- - How do I add browsers ands referrers to my logs?             -->
+<!-- - How do I add browsers and referrers to my logs?              -->
 <UL>
  <LI><STRONG>Background</STRONG>
   <OL START=1>
@@ -150,6 +149,8 @@
    </LI>
    <LI><A HREF="#wheres-the-dump">The errorlog says Apache dumped core,
     but where's the dump file?</A>
+   </LI>
+   <LI><A HREF="#SSL-i">Why doesn't Apache include SSL?</A>
    </LI>
   </OL>
  </LI>
@@ -1071,6 +1072,25 @@
    HREF="../mod/core.html#serverrot"
   >ServerRoot</A>
   directory.
+  </P>
+  <HR>
+ </LI>
+ <LI><A NAME="SSL-i">
+      <STRONG>Why doesn't Apache include SSL?</STRONG>
+     </A>
+  <P>
+  SSL (Secure Socket Layer) data transport requires encryption, and many
+  governments have restrictions upon the import, export, and use of
+  encryption technology.  If Apache included SSL in the base package,
+  its distribution would involve all sorts of legal and bureaucratic
+  issues., and it would no longer be freely available.
+  </P>
+  <P>
+  Some SSL implementations of Apache are available, however; see the
+  &quot;<A
+         HREF="http://www.apache.org/related_projects"
+        >related projects</A>&quot;
+  page at the main Apache web site.
   </P>
   <HR>
   <!-- Don't forget to add HR tags at the end of each list item.. -->
