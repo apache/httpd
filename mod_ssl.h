@@ -541,7 +541,7 @@ const char  *ssl_cmd_SSLMutex(cmd_parms *, void *, const char *);
 const char  *ssl_cmd_SSLPassPhraseDialog(cmd_parms *, void *, const char *);
 const char  *ssl_cmd_SSLCryptoDevice(cmd_parms *, void *, const char *);
 const char  *ssl_cmd_SSLRandomSeed(cmd_parms *, void *, const char *, const char *, const char *);
-const char  *ssl_cmd_SSLEngine(cmd_parms *, void *, int);
+const char  *ssl_cmd_SSLEngine(cmd_parms *, void *, const char *);
 const char  *ssl_cmd_SSLCipherSuite(cmd_parms *, void *, const char *);
 const char  *ssl_cmd_SSLCertificateFile(cmd_parms *, void *, const char *);
 const char  *ssl_cmd_SSLCertificateKeyFile(cmd_parms *, void *, const char *);
@@ -588,6 +588,7 @@ int          ssl_hook_UserCheck(request_rec *);
 int          ssl_hook_Access(request_rec *);
 int          ssl_hook_Fixup(request_rec *);
 int          ssl_hook_ReadReq(request_rec *);
+int          ssl_hook_Upgrade(request_rec *);
 
 /*  OpenSSL callbacks */
 RSA         *ssl_callback_TmpRSA(SSL *, int, int);
@@ -709,6 +710,8 @@ ssl_algo_t   ssl_util_algotypeof(X509 *, EVP_PKEY *);
 char        *ssl_util_algotypestr(ssl_algo_t);
 char        *ssl_util_ptxtsub(apr_pool_t *, const char *, const char *, char *);
 void         ssl_util_thread_setup(apr_pool_t *);
+int          ssl_init_ssl_connection(conn_rec *c);
+
 
 #define APR_SHM_MAXSIZE (64 * 1024 * 1024)
 #endif /* __MOD_SSL_H__ */
