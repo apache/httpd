@@ -1213,65 +1213,66 @@ int ssl_hook_Fixup(request_rec *r)
  * |    Whenever a new key is completed, the existing temporary key can be
  * |    replaced with the new one.
  *
+ * XXX: base on comment above, if thread support is enabled,
+ * we should spawn a low-priority thread to generate new keys
+ * on the fly.
+ *
  * So we generated 512 and 1024 bit temporary keys on startup
- * which we now just handle out on demand....
+ * which we now just hand out on demand....
  */
 
 RSA *ssl_callback_TmpRSA(SSL *ssl, int export, int keylen)
 {
     conn_rec *c = (conn_rec *)SSL_get_app_data(ssl);
     SSLModConfigRec *mc = myModConfig(c->base_server);
-    RSA *rsa = NULL;
+    int idx;
 
-    if (export) {
-        /* It's because an export cipher is used */
-        if (keylen == 512) {
-            rsa = (RSA *)mc->pTmpKeys[SSL_TMP_KEY_RSA_512];
-        }
-        else if (keylen == 1024) {
-            rsa = (RSA *)mc->pTmpKeys[SSL_TMP_KEY_RSA_1024];
-        }
-        else {
-            /* it's too expensive to generate on-the-fly, so keep 1024bit */
-            rsa = (RSA *)mc->pTmpKeys[SSL_TMP_KEY_RSA_1024];
-        }
-    }
-    else {
-        /* It's because a sign-only certificate situation exists */
-        rsa = (RSA *)mc->pTmpKeys[SSL_TMP_KEY_RSA_1024];
+    ssl_log(c->base_server, SSL_LOG_TRACE,
+            "handing out temporary %d bit RSA key", keylen);
+
+    /* doesn't matter if export flag is on,
+     * we won't be asked for keylen > 512 in that case.
+     * if we are asked for a keylen > 1024, it is too expensive
+     * to generate on the fly.
+     * XXX: any reason not to generate 2048 bit keys at startup?
+     */
+
+    switch (keylen) {
+      case 512:
+        idx = SSL_TMP_KEY_RSA_512;
+        break;
+
+      case 1024:
+      default:
+        idx = SSL_TMP_KEY_RSA_1024;
     }
 
-    return rsa;
+    return (RSA *)mc->pTmpKeys[idx];
 }
 
 /* 
- * Handle out the already generated DH parameters...
+ * Hand out the already generated DH parameters...
  */
 DH *ssl_callback_TmpDH(SSL *ssl, int export, int keylen)
 {
     conn_rec *c = (conn_rec *)SSL_get_app_data(ssl);
     SSLModConfigRec *mc = myModConfig(c->base_server);
-    DH *dh = NULL;
+    int idx;
 
-    if (export) {
-        /* It's because an export cipher is used */
-        if (keylen == 512) {
-            dh = (DH *)mc->pTmpKeys[SSL_TMP_KEY_DH_512];
-        }
-        else if (keylen == 1024) {
-            dh = (DH *)mc->pTmpKeys[SSL_TMP_KEY_DH_1024];
-        }
-        else {
-            /* it's too expensive to generate on-the-fly, so keep 1024bit */
-            dh = (DH *)mc->pTmpKeys[SSL_TMP_KEY_DH_1024];
-        }
-    }
-    else {
-        /* It's because a sign-only certificate situation exists */
-        dh = (DH *)mc->pTmpKeys[SSL_TMP_KEY_DH_1024];
+    ssl_log(c->base_server, SSL_LOG_TRACE,
+            "handing out temporary %d bit DH key", keylen);
+
+    switch (keylen) {
+      case 512:
+        idx = SSL_TMP_KEY_DH_512;
+        break;
+
+      case 1024:
+      default:
+        idx = SSL_TMP_KEY_DH_1024;
     }
 
-    return dh;
+    return (DH *)mc->pTmpKeys[idx];
 }
 
 /*
