@@ -2011,10 +2011,16 @@ API_EXPORT(int) ap_setup_client_block(request_rec *r, int read_policy)
         const char *pos = lenp;
         int conversion_error = 0;
 
-        while (ap_isdigit(*pos) || ap_isspace(*pos))
+        while (ap_isspace(*pos))
             ++pos;
 
         if (*pos == '\0') {
+            /* special case test - a C-L field NULL or all blanks is
+             * assumed OK and defaults to 0. Otherwise, we do a
+             * strict check of the field */
+            r->remaining = 0;
+        }
+        else {
             char *endstr;
             errno = 0;
             r->remaining = ap_strtol(lenp, &endstr, 10);
@@ -2023,7 +2029,7 @@ API_EXPORT(int) ap_setup_client_block(request_rec *r, int read_policy)
             }
         }
 
-        if (*pos != '\0' || conversion_error) {
+        if (conversion_error) {
             ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r,
                         "Invalid Content-Length");
             return HTTP_BAD_REQUEST;
