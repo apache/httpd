@@ -1,5 +1,8 @@
 Changes with Apache 2.0.49
 
+  *) ap_mpm.h: Fix include guard of ap_mpm.h to reference mpm
+     instead of mmn. [André Malo]
+
   *) mod_rewrite: Catch an edge case, where strange subsequent RewriteRules
      could lead to a 400 (Bad Request) response.  [André Malo]
 
