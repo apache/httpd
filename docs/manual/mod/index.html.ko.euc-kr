@@ -70,13 +70,13 @@ NT.</dd>
 <dt><a href="mod_asis.html">mod_asis</a></dt><dd>HTTP 헤더를 포함한 파일을 보낸다</dd>
 <dt><a href="mod_auth_basic.html">mod_auth_basic</a></dt><dd>Basic authentication</dd>
 <dt><a href="mod_auth_digest.html">mod_auth_digest</a></dt><dd>MD5 Digest Authentication을 사용한 사용자인증.</dd>
-<dt><a href="mod_auth_ldap.html">mod_auth_ldap</a></dt><dd>Allows an LDAP directory to be used to store the database
-for HTTP Basic authentication.</dd>
 <dt><a href="mod_authn_anon.html">mod_authn_anon</a></dt><dd>인증영역에 "익명(anonymous)" 사용자의 접근을
 허용한다</dd>
 <dt><a href="mod_authn_dbm.html">mod_authn_dbm</a></dt><dd>DBM 파일을 사용한 사용자 인증</dd>
 <dt><a href="mod_authn_default.html">mod_authn_default</a></dt><dd>최후 인증모듈</dd>
 <dt><a href="mod_authn_file.html">mod_authn_file</a></dt><dd>문자파일을 이용한 사용자 인증</dd>
+<dt><a href="mod_authnz_ldap.html">mod_authnz_ldap</a></dt><dd>Allows an LDAP directory to be used to store the database
+for HTTP Basic authentication.</dd>
 <dt><a href="mod_authz_dbm.html">mod_authz_dbm</a></dt><dd>DBM 파일을 사용한 그룹 인증</dd>
 <dt><a href="mod_authz_default.html">mod_authz_default</a></dt><dd>최후 권한부여모듈</dd>
 <dt><a href="mod_authz_groupfile.html">mod_authz_groupfile</a></dt><dd>일반 문자파일을 이용한 그룹 권한부여</dd>

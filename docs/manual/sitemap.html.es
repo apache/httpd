@@ -166,11 +166,11 @@ usados para describir las directivas de Apache</a></li>
 <li><a href="mod/mod_asis.html">Módulo Apache mod_asis</a></li>
 <li><a href="mod/mod_auth_basic.html">Módulo Apache mod_auth_basic</a></li>
 <li><a href="mod/mod_auth_digest.html">Módulo Apache mod_auth_digest</a></li>
-<li><a href="mod/mod_auth_ldap.html">Módulo Apache mod_auth_ldap</a></li>
 <li><a href="mod/mod_authn_anon.html">Módulo Apache mod_authn_anon</a></li>
 <li><a href="mod/mod_authn_dbm.html">Módulo Apache mod_authn_dbm</a></li>
 <li><a href="mod/mod_authn_default.html">Módulo Apache mod_authn_default</a></li>
 <li><a href="mod/mod_authn_file.html">Módulo Apache mod_authn_file</a></li>
+<li><a href="mod/mod_authnz_ldap.html">Módulo Apache mod_authnz_ldap</a></li>
 <li><a href="mod/mod_authz_dbm.html">Módulo Apache mod_authz_dbm</a></li>
 <li><a href="mod/mod_authz_default.html">Módulo Apache mod_authz_default</a></li>
 <li><a href="mod/mod_authz_groupfile.html">Módulo Apache mod_authz_groupfile</a></li>
