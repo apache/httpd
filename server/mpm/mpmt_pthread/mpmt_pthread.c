@@ -1266,6 +1266,7 @@ static void server_main_loop(int remaining_children_to_start)
             /* non-fatal death... note that it's gone in the scoreboard. */
             child_slot = find_child_by_pid(pid);
             if (child_slot >= 0) {
+                ap_mpmt_pthread_force_reset_connection_status(child_slot);
                 for (i = 0; i < ap_threads_per_child; i++)
                     ap_update_child_status(child_slot, i, SERVER_DEAD, (request_rec *) NULL);
                 
@@ -1329,12 +1330,6 @@ int ap_mpm_run(ap_context_t *_pconf, ap_context_t *plog, server_rec *s)
                      "pipe: (pipe_of_death)");
         exit(1);
     }
-/*  XXXXXX  Removed because these functions don't exist anymore.  When
-    These pipes are changed to apr_types, these functions won't be needed
-    anyway.
-    ap_note_cleanups_for_fd(pconf, pipe_of_death[0]);
-    ap_note_cleanups_for_fd(pconf, pipe_of_death[1]);
-*/
 
     if (fcntl(pipe_of_death[0], F_SETFD, O_NONBLOCK) == -1) {
         ap_log_error(APLOG_MARK, APLOG_ERR, errno,
