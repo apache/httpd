@@ -63,7 +63,8 @@
  * 3/23/93
  * 
  * Adapted to Apache by rst.
- */
+ *
+ * Version sort added by Martin Pool <mbp@humbug.org.au>. */
 
 #include "ap_config.h"
 #include "httpd.h"
@@ -75,6 +76,7 @@
 #include "http_main.h"
 #include "util_script.h"
 #include "apr_fnmatch.h"
+#include "apr_strnatcmp.h"
 #ifdef HAVE_STRING_H
 #include <string.h>
 #endif
@@ -100,6 +102,7 @@ module MODULE_VAR_EXPORT autoindex_module;
 #define SUPPRESS_PREAMBLE 64
 #define SUPPRESS_COLSORT 128
 #define NO_OPTIONS 256
+#define VERSION_SORT	512
 
 #define K_PAD 1
 #define K_NOPAD 0
@@ -405,6 +408,9 @@ static const char *add_opts(cmd_parms *cmd, void *d, const char *optstr)
         else if (!strcasecmp(w, "SuppressColumnSorting")) {
             option = SUPPRESS_COLSORT;
 	}
+        else if (!strcasecmp(w, "VersionSort")) {
+            option = VERSION_SORT;
+	}
 	else if (!strcasecmp(w, "None")) {
 	    if (action != '\0') {
 		return "Cannot combine '+' or '-' with 'None' keyword";
@@ -685,7 +691,7 @@ struct ent {
     off_t size;
     ap_time_t lm;
     struct ent *next;
-    int ascending;
+    int ascending, version_sort;
     char key;
 };
 
@@ -1162,6 +1168,7 @@ static struct ent *make_autoindex_entry(char *name, int autoindex_opts,
     p->lm = -1;
     p->key = ap_toupper(keyid);
     p->ascending = (ap_toupper(direction) == D_ASCENDING);
+    p->version_sort = autoindex_opts & VERSION_SORT;
 
     if (autoindex_opts & FANCY_INDEXING) {
         request_rec *rr = ap_sub_req_lookup_file(name, r);
@@ -1479,6 +1486,7 @@ static int dsortf(struct ent **e1, struct ent **e2)
         c1 = *e2;
         c2 = *e1;
     }
+
     switch (c1->key) {
     case K_LAST_MOD:
 	if (c1->lm > c2->lm) {
@@ -1497,13 +1505,19 @@ static int dsortf(struct ent **e1, struct ent **e2)
         }
         break;
     case K_DESC:
-        result = strcmp(c1->desc ? c1->desc : "", c2->desc ? c2->desc : "");
+	if (c1->version_sort)
+	    result = strnatcmp(c1->desc ? c1->desc : "", c2->desc ? c2->desc : "");
+	else
+	    result = strcmp(c1->desc ? c1->desc : "", c2->desc ? c2->desc : "");
         if (result) {
             return result;
         }
         break;
     }
-    return strcmp(c1->name, c2->name);
+    if (c1->version_sort)
+	return strnatcmp(c1->name, c2->name);
+    else
+	return strcmp(c1->name, c2->name);
 }
 
 

@@ -632,6 +632,31 @@ The NameWidth keyword allows you to specify the width of the
 filename column in bytes.  If the keyword value is '<SAMP>*</SAMP>',
 then the column is automatically sized to the length of the longest
 filename in the display.
+<DT><A NAME="indexoptions:versionsort">VersionSort (<EM>Apache 2.0a3 and later</EM>)</A>
+<DD>
+The VersionSort keyword causes files containing version numbers to
+sort in a natural way.  Strings are sorted as usual, except that
+substrings of digits in the name and description are compared
+according to their numeric value.
+
+For example:
+<BLOCKQUOTE><pre>
+foo-1.7
+foo-1.7.2
+foo-1.7.12
+foo-1.8.2
+foo-1.8.2a
+foo-1.12
+</pre></BLOCKQUOTE>
+
+If the number starts with a zero, then it is considered to be a
+	fraction:
+<BLOCKQUOTE><pre>
+foo-1.001
+foo-1.002
+foo-1.030
+foo-1.04
+</pre></BLOCKQUOTE>
 <DT><A NAME="indexoptions:scanhtmltitles">ScanHTMLTitles</A>
 <DD><!--%plaintext &lt;?INDEX {\tt ScanHTMLTitles} index option&gt; -->
 This enables the extraction of the title from HTML documents for fancy
