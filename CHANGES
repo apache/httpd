@@ -2,6 +2,10 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) Fix path handling of mod_rewrite, especially on non-unix systems.
+     There was some confusion between local paths and URL paths.
+     PR 12902.  [André Malo]
+
   *) Keep the subrequest filter in place when a subrequest is 
      redirected.  PR 15423.  [Jeff Trawick]
 
