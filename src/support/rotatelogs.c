@@ -66,7 +66,7 @@ void main(int argc,char **argv)
 	if(nLogFD < 0)
 	    {
 	    time_t tLogStart=(time(NULL)/tRotation)*tRotation;
-	    sprintf(buf2,"%s.%d",szLogRoot,(int)tLogStart);
+	    sprintf(buf2,"%s.%010d",szLogRoot,(int)tLogStart);
 	    tLogEnd=tLogStart+tRotation;
 	    nLogFD=open(buf2,O_WRONLY|O_CREAT|O_APPEND,0666);
 	    if(nLogFD < 0)
