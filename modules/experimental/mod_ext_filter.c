@@ -68,6 +68,7 @@
 #include "http_core.h"
 #include "apr_buckets.h"
 #include "util_filter.h"
+#include "util_script.h"
 #include "apr_strings.h"
 #include "apr_hash.h"
 #include "apr_lib.h"
@@ -395,6 +396,7 @@ static apr_status_t init_ext_filter_process(ap_filter_t *f)
     ef_ctx_t *ctx = f->ctx;
     apr_status_t rc;
     ef_dir_t *dc = ctx->dc;
+    const char * const *env;
 
     ctx->proc = apr_pcalloc(ctx->p, sizeof(*ctx->proc));
 
@@ -416,11 +418,28 @@ static apr_status_t init_ext_filter_process(ap_filter_t *f)
                                       NULL);
         ap_assert(rc == APR_SUCCESS);
     }
-                                  
+
+    /* add standard CGI variables as well as DOCUMENT_URI, DOCUMENT_PATH_INFO,
+     * and QUERY_STRING_UNESCAPED
+     */
+    ap_add_cgi_vars(f->r);
+    apr_table_setn(f->r->subprocess_env, "DOCUMENT_URI", f->r->uri);
+    apr_table_setn(f->r->subprocess_env, "DOCUMENT_PATH_INFO", f->r->path_info);
+    if (f->r->args) {
+            /* QUERY_STRING is added by ap_add_cgi_vars */
+        char *arg_copy = apr_pstrdup(f->r->pool, f->r->args);
+        ap_unescape_url(arg_copy);
+        apr_table_setn(f->r->subprocess_env, "QUERY_STRING_UNESCAPED",
+                       ap_escape_shell_cmd(f->r->pool, arg_copy));
+    }
+
+    env = (const char * const *) ap_create_environment(ctx->p,
+                                                       f->r->subprocess_env);
+
     rc = apr_proc_create(ctx->proc, 
                             ctx->filter->command, 
                             (const char * const *)ctx->filter->args, 
-                            NULL, /* environment */
+                            env, /* environment */
                             ctx->procattr, 
                             ctx->p);
     if (rc != APR_SUCCESS) {

@@ -1,5 +1,8 @@
 Changes with Apache 2.0.40
 
+  *) mod_ext_filter: Set up environment variables for external programs.
+     [Craig Sebenik <craig@netapp.com>]
+
   *) Modified the HTTP_IN filter to immediately append the EOS (end of
      stream) bucket for C-L POST bodies, saving a roundtrip and allowing
      the caller to determine that no content remains without prefetching
