@@ -58,7 +58,7 @@
     へのリクエストは次のように変換されます:</p>
 
 <table>
-<tr><th>UserDir ディレクティブ</th>
+<tr><th>UserDir ディレクティブ</th>
 <th>変換後のパス</th></tr>
 <tr><td>UserDir public_html</td><td>~bob/public_html/one/two.html</td></tr>
 <tr><td>UserDir /usr/web</td><td>/usr/web/bob/one/two.html</td></tr>
