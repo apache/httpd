@@ -786,15 +786,18 @@ static int include_cgi(char *s, request_rec *r, ap_filter_t *next,
     apr_bucket  *tmp_buck, *tmp2_buck;
 
     if (rr->status != HTTP_OK) {
+        ap_destroy_sub_req(rr);
         return -1;
     }
 
     /* No hardwired path info or query allowed */
 
     if ((rr->path_info && rr->path_info[0]) || rr->args) {
+        ap_destroy_sub_req(rr);
         return -1;
     }
     if (rr->finfo.filetype != APR_REG) {
+        ap_destroy_sub_req(rr);
         return -1;
     }
 
