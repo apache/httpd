@@ -1,5 +1,11 @@
 Changes with Apache 1.3b1
 
+  *) ap_inline can be used to force inlining.  GNUC __attribute__() can
+     be used for whatever reason is appropriate (i.e. format() warnings
+     for printf style functions).  Both are enabled only with
+     gcc >= 2.7.x (so that we have fewer support issues with older
+     versions).  [Dean Gaudet]
+
   *) Fix support for Proxy Authentication (we were testing the response
      status too early). [Marc Slemko]
 
