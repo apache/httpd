@@ -319,12 +319,12 @@ static void reclaim_child_processes(int terminate)
 	for (i = 0; i < max_daemons_limit; ++i) {
 	    int pid = ap_scoreboard_image[i].pid;
 
-	    if (pid == my_pid || pid == 0)
+	    if (ap_scoreboard_image[i].status == SERVER_DEAD)
 		continue;
 
 	    waitret = waitpid(pid, &status, WNOHANG);
 	    if (waitret == pid || waitret == -1) {
-		ap_scoreboard_image[i].pid = 0;
+		ap_scoreboard_image[i].status = SERVER_DEAD;
 		continue;
 	    }
 	    ++not_dead_yet;
