@@ -171,6 +171,9 @@ Open issues:
       Apache provided general functions (e.g., ap_cpystrn)
 	ap_xxx: +1: Ken, Brian, Ralf, Martin, Paul, Roy, Jim
 
+      OS-abstracting routines:
+        currently os_xxx, migrate to ap_xxx: Brian
+
       Public API functions (e.g., palloc)
 	apapi_xxx: +1: Ken, Brian, Ralf, Martin, Paul, Roy, Jim
 	appublic_xxx:
