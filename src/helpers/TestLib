@@ -1,5 +1,5 @@
 #!/bin/sh
-trap 'rm -rf Makefile dummy; exit' 0 1 2 3 15
+trap 'rm -f Makefile dummy; exit' 0 1 2 3 15
 #
 # Yet another Apache Configure helper script.
 # This one exists simply to test for the existance of
@@ -27,7 +27,7 @@ fi
 # Get makefile settings and build a basic Makefile
 #
 cd ./helpers
-rm -rf dummy
+rm -f dummy
 cat ../Makefile.config > Makefile
 cat <<EOF >> Makefile
 CFLAGS=$(OPTIM) $(CFLAGS1) $(EXTRA_CFLAGS)
