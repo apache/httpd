@@ -22,6 +22,8 @@
 <a href="./ko/new_features_2_2.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="./pt-br/new_features_2_2.html" title="Português (Brasil)">&nbsp;pt-br&nbsp;</a></p>
 </div>
+<div class="outofdate">Esta tradução pode estar desatualizada. 
+        Verifique a versão em Inglês para mudanças recentes.</div>
 
   <p>Esse documento descreve algumas das principais mudanças
      entre as versões 2.0 e 2.2 do Servidor HTTP Apache.
