@@ -610,7 +610,7 @@ API_EXPORT(int) ap_meets_conditions(request_rec *r)
                         return HTTP_NOT_MODIFIED;
                     }
                 }
-                else if (strstr(if_nonematch, etag)) {
+                else if (ap_strstr_c(if_nonematch, etag)) {
                     return HTTP_NOT_MODIFIED;
                 }
             }
@@ -1631,7 +1631,7 @@ static int use_range_x(request_rec *r)
     const char *ua;
     return (ap_table_get(r->headers_in, "Request-Range") ||
             ((ua = ap_table_get(r->headers_in, "User-Agent"))
-             && strstr(ua, "MSIE 3")));
+             && ap_strstr_c(ua, "MSIE 3")));
 }
 
 /* This routine is called by ap_table_do and merges all instances of

@@ -1035,11 +1035,15 @@ API_EXPORT(extern const char *) ap_psignature(const char *prefix, request_rec *r
 # define strchr(s, c)	ap_strchr(s,c)
 #undef strrchr
 # define strrchr(s, c)  ap_strrchr(s,c)
+#undef strstr
+# define strstr(s, c)  ap_strstr(s,c)
 
 char *ap_strchr(char *s, int c);
 const char *ap_strchr_c(const char *s, int c);
 char *ap_strrchr(char *s, int c);
 const char *ap_strrchr_c(const char *s, int c);
+char *ap_strstr(char *s, char *c);
+const char *ap_strstr_c(const char *s, const char *c);
 
 #else
 
@@ -1047,6 +1051,8 @@ const char *ap_strrchr_c(const char *s, int c);
 # define ap_strchr_c(s, c)	strchr(s, c)
 # define ap_strrchr(s, c)	strrchr(s, c)
 # define ap_strrchr_c(s, c)	strrchr(s, c)
+# define ap_strstr(s, c)	strstr(s, c)
+# define ap_strstr_c(s, c)	strstr(s, c)
 
 #endif
 

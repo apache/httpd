@@ -75,4 +75,12 @@ char *ap_strrchr(char *s, int c)
 const char *ap_strrchr_c(const char *s, int c)
 { return strrchr(s,c); }
 
+#undef strstr
+
+char *ap_strstr(char *s, char *c)
+{ return strstr(s,c); }
+
+const char *ap_strstr_c(const char *s, const char *c)
+{ return strstr(s,c); }
+
 #endif

@@ -818,7 +818,7 @@ static char *find_desc(autoindex_config_rec *dcfg, request_rec *r)
 	    found = (ap_fnmatch(tuple->pattern, filename, MATCH_FLAGS) == 0);
 	}
 	else {
-	    found = (strstr(filename, tuple->pattern) != NULL);
+	    found = (ap_strstr_c(filename, tuple->pattern) != NULL);
 	}
 	if (found) {
 	    return tuple->description;
