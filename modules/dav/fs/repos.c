@@ -402,7 +402,7 @@ static dav_error * dav_fs_copymove_state(
     /* ensure that it exists */
     rv = apr_make_dir(dst, APR_OS_DEFAULT, p);
     if (rv != APR_SUCCESS) {
-	if (APR_STATUS_IS_EEXIST(rv)) {
+	if (!APR_STATUS_IS_EEXIST(rv)) {
 	    /* ### use something besides 500? */
 	    return dav_new_error(p, HTTP_INTERNAL_SERVER_ERROR, 0,
 				 "Could not create internal state directory");
@@ -557,7 +557,9 @@ static dav_error *dav_fs_deleteset(apr_pool_t *p, const dav_resource *resource)
 static dav_resource * dav_fs_get_resource(
     request_rec *r,
     const char *root_dir,
-    const char *workspace)
+    const char *workspace,
+    const char *target,
+    int is_label)
 {
     dav_resource_private *ctx;
     dav_resource *resource;
@@ -881,20 +883,20 @@ static void dav_fs_free_file(void *free_handle)
     /* nothing to free ... */
 }
 
-static dav_error * dav_fs_create_collection(apr_pool_t *p, dav_resource *resource)
+static dav_error * dav_fs_create_collection(dav_resource *resource)
 {
     dav_resource_private *ctx = resource->info;
     apr_status_t status;
 
-    status = apr_make_dir(ctx->pathname, APR_OS_DEFAULT, p);
+    status = apr_make_dir(ctx->pathname, APR_OS_DEFAULT, ctx->pool);
     if (status == ENOSPC) {
-	return dav_new_error(p, HTTP_INSUFFICIENT_STORAGE, 0,
+        return dav_new_error(ctx->pool, HTTP_INSUFFICIENT_STORAGE, 0,
 			     "There is not enough storage to create "
 			     "this collection.");
     }
     else if (status != APR_SUCCESS) {
 	/* ### refine this error message? */
-	return dav_new_error(p, HTTP_FORBIDDEN, 0,
+        return dav_new_error(ctx->pool, HTTP_FORBIDDEN, 0,
                              "Unable to create collection.");
     }
 
