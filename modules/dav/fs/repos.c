@@ -1459,6 +1459,7 @@ static dav_error * dav_fs_walker(dav_fs_walker_context *fsctx, int depth)
     }
     while ((apr_dir_read(&dirent, APR_FINFO_DIRENT, dirp)) == APR_SUCCESS) {
 	apr_size_t len;
+        apr_status_t status;
 
 	len = strlen(dirent.name);
 
@@ -1488,8 +1489,9 @@ static dav_error * dav_fs_walker(dav_fs_walker_context *fsctx, int depth)
 
 
         /* ### Optimize me, dirent can give us what we need! */
-        if (apr_lstat(&fsctx->info1.finfo, fsctx->path1.buf, 
-                      APR_FINFO_NORM, pool) != APR_SUCCESS) {
+        status = apr_lstat(&fsctx->info1.finfo, fsctx->path1.buf, 
+                           APR_FINFO_NORM, pool);
+        if (status != APR_SUCCESS && status != APR_INCOMPLETE) {
 	    /* woah! where'd it go? */
 	    /* ### should have a better error here */
 	    err = dav_new_error(pool, HTTP_NOT_FOUND, 0, NULL);
