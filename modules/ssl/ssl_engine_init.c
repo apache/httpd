@@ -163,11 +163,7 @@ int ssl_init_Module(apr_pool_t *p, apr_pool_t *plog,
 
     /*
      * Seed the Pseudo Random Number Generator (PRNG)
-     *
-     * Note: scoreboard size must be fetched at init time because
-     * ap_calc_scoreboard_size() is not threadsafe
      */
-    mc->nScoreboardSize = ap_calc_scoreboard_size();
     ssl_rand_seed(s, p, SSL_RSCTX_STARTUP, "Init: ");
 
     /*
