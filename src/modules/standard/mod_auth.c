@@ -111,7 +111,8 @@ static const command_rec auth_cmds[] =
     {"AuthAuthoritative", ap_set_flag_slot,
      (void *) XtOffsetOf(auth_config_rec, auth_authoritative),
      OR_AUTHCFG, FLAG,
-     "Set to 'off' to allow access control to be passed along to lower modules if the UserID is not known to this module"},
+     "Set to 'off' to allow access control to be passed along to "
+     "lower modules if the UserID is not known to this module"},
     {NULL}
 };
 
@@ -247,43 +248,129 @@ static int check_user_access(request_rec *r)
     /* BUG FIX: tadc, 11-Nov-1995.  If there is no "requires" directive, 
      * then any user will do.
      */
-    if (!reqs_arr)
+    if (reqs_arr == NULL) {
 	return (OK);
+    }
     reqs = (require_line *) reqs_arr->elts;
 
-    if (sec->auth_grpfile)
+    if (sec->auth_grpfile) {
 	grpstatus = groups_for_user(r->pool, user, sec->auth_grpfile);
-    else
+    }
+    else {
 	grpstatus = NULL;
+    }
 
     for (x = 0; x < reqs_arr->nelts; x++) {
 
-	if (!(reqs[x].method_mask & (1 << m)))
-	    continue;
+        if (! (reqs[x].method_mask & (1 << m))) {
+            continue;
+        }
 
 	method_restricted = 1;
 
 	t = reqs[x].requirement;
 	w = ap_getword_white(r->pool, &t);
-	if (!strcmp(w, "valid-user"))
+	if (strcmp(w, "valid-user") == 0) {
 	    return OK;
-	if (!strcmp(w, "user")) {
-	    while (t[0]) {
+        }
+        /*
+         * If requested, allow access if the user is valid and the
+         * owner of the document.
+         */
+	if (strcmp(w, "file-owner") == 0) {
+            struct passwd *pwent;
+            ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_DEBUG, r,
+                          "checking for 'owner' access for file '%s'",
+                          r->filename);
+            if (r->finfo.st_ino == 0) {
+                ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_DEBUG, r,
+                              "no stat info for '%s'", r->filename);
+                continue;
+            }
+            pwent = getpwuid(r->finfo.st_uid);
+            if (pwent == NULL) {
+                ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_DEBUG, r,
+                              "no username for UID %d (owner of '%s')",
+                              r->finfo.st_uid, r->filename);
+            }
+            else {
+                ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_DEBUG, r,
+                              "checking authenticated user '%s' "
+                              "against owner '%s' of '%s'",
+                              user, pwent->pw_name, r->filename);
+                if (strcmp(user, pwent->pw_name) == 0) {
+                    return OK;
+                }
+                else {
+                    return HTTP_UNAUTHORIZED;
+                }
+            }
+        }
+	if (strcmp(w, "file-group") == 0) {
+            struct group *grent;
+            if (sec->auth_grpfile == NULL) {
+                ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_WARNING, r,
+                              "no AuthGroupFile, so 'file-group' "
+                              "requirement fails for file '%s'",
+                              r->filename);
+                return HTTP_UNAUTHORIZED;
+            }
+            if (grpstatus == NULL) {
+                ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_WARNING, r,
+                              "authenticated user '%s' not a member of "
+                              "any groups, so 'file-group' requirement "
+                              "fails for file '%s'",
+                              user, r->filename);
+                return HTTP_UNAUTHORIZED;
+            }
+            ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_DEBUG, r,
+                          "checking for 'group' access for file '%s'",
+                          r->filename);
+            if (r->finfo.st_ino == 0) {
+                ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_DEBUG, r,
+                              "no stat info for '%s'", r->filename);
+                continue;
+            }
+            grent = getgrgid(r->finfo.st_gid);
+            if (grent == NULL) {
+                ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_DEBUG, r,
+                              "no group name for GID %d (owner of '%s')",
+                              r->finfo.st_gid, r->filename);
+            }
+            else {
+                ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_DEBUG, r,
+                              "checking groups of authenticated user '%s' "
+                              "against owner group '%s' of '%s'",
+                              user, grent->gr_name, r->filename);
+                if (ap_table_get(grpstatus, grent->gr_name) != NULL) {
+                    return OK;
+                }
+                else {
+                    return HTTP_UNAUTHORIZED;
+                }
+            }
+        }
+	if (strcmp(w, "user") == 0) {
+	    while (t[0] != '\0') {
 		w = ap_getword_conf(r->pool, &t);
-		if (!strcmp(user, w))
+		if (strcmp(user, w) == 0) {
 		    return OK;
+                }
 	    }
 	}
-	else if (!strcmp(w, "group")) {
-	    if (!grpstatus)
+	else if (strcmp(w, "group") == 0) {
+	    if (grpstatus == NULL) {
 		return DECLINED;	/* DBM group?  Something else? */
+            }
 
 	    while (t[0]) {
 		w = ap_getword_conf(r->pool, &t);
-		if (ap_table_get(grpstatus, w))
+		if (ap_table_get(grpstatus, w)) {
 		    return OK;
+                }
 	    }
-	} else if (sec->auth_authoritative) {
+	}
+        else if (sec->auth_authoritative) {
 	    /* if we aren't authoritative, any require directive could be
 	     * valid even if we don't grok it.  However, if we are 
 	     * authoritative, we can warn the user they did something wrong.
@@ -291,20 +378,23 @@ static int check_user_access(request_rec *r)
 	     * more likely is a typo in the require directive.
 	     */
 	    ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r,
-		"access to %s failed, reason: unknown require directive:"
-		"\"%s\"", r->uri, reqs[x].requirement);
+                          "access to %s failed, "
+                          "reason: unknown require directive:"
+                          "\"%s\"", r->uri, reqs[x].requirement);
 	}
     }
 
-    if (!method_restricted)
+    if (! method_restricted) {
 	return OK;
+    }
 
-    if (!(sec->auth_authoritative))
+    if (! sec->auth_authoritative) {
 	return DECLINED;
+    }
 
     ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r,
-	"access to %s failed, reason: user %s not allowed access",
-	r->uri, user);
+                  "access to %s failed, reason: user %s not allowed access",
+                  r->uri, user);
 	
     ap_note_basic_auth_failure(r);
     return AUTH_REQUIRED;
