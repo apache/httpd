@@ -307,6 +307,7 @@
 <xsl:param name="position" select="'top'" />
 <xsl:variable name="metafile" select="document(/*/@metafile)/metafile" />
 
+<xsl:if test="not($is-chm)">
 <div class="{$position}lang">&lf;
     <p>
         <span>
@@ -333,6 +334,7 @@
         </xsl:for-each>
     </p>&lf;
 </div> <!-- /.{$position}lang -->
+</xsl:if>
 </xsl:template>
 <!-- /langavail -->
 
