@@ -265,16 +265,21 @@ static void *config_server_merge(pool *p, void *basev, void *overridesv)
          *  local directives override
          *  and anything else is inherited
          */
-        a->rewriteloglevel = overrides->rewriteloglevel != 0 ?
-                             overrides->rewriteloglevel : base->rewriteloglevel;
-        a->rewritelogfile  = overrides->rewritelogfile != NULL ?
-                             overrides->rewritelogfile : base->rewritelogfile;
-        a->rewritelogfp    = overrides->rewritelogfp != -1 ?
-                             overrides->rewritelogfp : base->rewritelogfp;
-        a->rewritelockfile = overrides->rewritelockfile != NULL ?
-                             overrides->rewritelockfile : base->rewritelockfile;
-        a->rewritelockfp   = overrides->rewritelockfp != -1 ?
-                             overrides->rewritelockfp : base->rewritelockfp;
+        a->rewriteloglevel = overrides->rewriteloglevel != 0 
+	                     ? overrides->rewriteloglevel
+	                     : base->rewriteloglevel;
+        a->rewritelogfile  = overrides->rewritelogfile != NULL 
+	                     ? overrides->rewritelogfile
+	                     : base->rewritelogfile;
+        a->rewritelogfp    = overrides->rewritelogfp != -1 
+	                     ? overrides->rewritelogfp 
+	                     : base->rewritelogfp;
+        a->rewritelockfile = overrides->rewritelockfile != NULL
+	                     ? overrides->rewritelockfile
+	                     : base->rewritelockfile;
+        a->rewritelockfp   = overrides->rewritelockfp != -1
+	                     ? overrides->rewritelockfp
+	                     : base->rewritelockfp;
         a->rewritemaps     = ap_append_arrays(p, overrides->rewritemaps,
                                               base->rewritemaps);
         a->rewriteconds    = ap_append_arrays(p, overrides->rewriteconds,
@@ -319,14 +324,17 @@ static void *config_perdir_create(pool *p, char *path)
     a->rewriteconds    = ap_make_array(p, 2, sizeof(rewritecond_entry));
     a->rewriterules    = ap_make_array(p, 2, sizeof(rewriterule_entry));
 
-    if (path == NULL)
+    if (path == NULL) {
         a->directory = NULL;
+    }
     else {
         /* make sure it has a trailing slash */
-        if (path[strlen(path)-1] == '/')
+        if (path[strlen(path)-1] == '/') {
             a->directory = ap_pstrdup(p, path);
-        else
+	}
+	else {
             a->directory = ap_pstrcat(p, path, "/", NULL);
+	}
     }
 
     return (void *)a;
@@ -336,7 +344,8 @@ static void *config_perdir_merge(pool *p, void *basev, void *overridesv)
 {
     rewrite_perdir_conf *a, *base, *overrides;
 
-    a         = (rewrite_perdir_conf *)ap_pcalloc(p, sizeof(rewrite_perdir_conf));
+    a         = (rewrite_perdir_conf *)ap_pcalloc(p,
+						  sizeof(rewrite_perdir_conf));
     base      = (rewrite_perdir_conf *)basev;
     overrides = (rewrite_perdir_conf *)overridesv;
 
@@ -371,13 +380,16 @@ static const char *cmd_rewriteengine(cmd_parms *cmd,
 {
     rewrite_server_conf *sconf;
 
-    sconf = (rewrite_server_conf *)
-            ap_get_module_config(cmd->server->module_config, &rewrite_module);
+    sconf = 
+        (rewrite_server_conf *)ap_get_module_config(cmd->server->module_config,
+						    &rewrite_module);
 
-    if (cmd->path == NULL) /* is server command */
+    if (cmd->path == NULL) { /* is server command */
         sconf->state = (flag ? ENGINE_ENABLED : ENGINE_DISABLED);
-    else                   /* is per-directory command */
+    }
+    else                   /* is per-directory command */ {
         dconf->state = (flag ? ENGINE_ENABLED : ENGINE_DISABLED);
+    }
 
     return NULL;
 }
@@ -391,12 +403,14 @@ static const char *cmd_rewriteoptions(cmd_parms *cmd,
     sconf = (rewrite_server_conf *)
             ap_get_module_config(cmd->server->module_config, &rewrite_module);
 
-    if (cmd->path == NULL) /* is server command */
+    if (cmd->path == NULL) { /* is server command */
         err = cmd_rewriteoptions_setoption(cmd->pool,
                                            &(sconf->options), option);
-    else                   /* is per-directory command */
+    }
+    else {                 /* is per-directory command */
         err = cmd_rewriteoptions_setoption(cmd->pool,
                                            &(dconf->options), option);
+    }
 
     return err;
 }
@@ -404,11 +418,13 @@ static const char *cmd_rewriteoptions(cmd_parms *cmd,
 static const char *cmd_rewriteoptions_setoption(pool *p, int *options,
                                                 char *name)
 {
-    if (strcasecmp(name, "inherit") == 0)
+    if (strcasecmp(name, "inherit") == 0) {
         *options |= OPTION_INHERIT;
-    else
+    }
+    else {
         return ap_pstrcat(p, "RewriteOptions: unknown option '",
-                       name, "'\n", NULL);
+			  name, "'\n", NULL);
+    }
     return NULL;
 }
 
@@ -479,13 +495,16 @@ static const char *cmd_rewritemap(cmd_parms *cmd, void *dconf, char *a1,
         new->type      = MAPTYPE_INT;
         new->datafile  = NULL;
         new->checkfile = NULL;
-        if (strcmp(a2+4, "tolower") == 0)
+        if (strcmp(a2+4, "tolower") == 0) {
             new->func = rewrite_mapfunc_tolower;
-        else if (strcmp(a2+4, "toupper") == 0)
+	}
+        else if (strcmp(a2+4, "toupper") == 0) {
             new->func = rewrite_mapfunc_toupper;
-        else if (sconf->state == ENGINE_ENABLED)
+	}
+        else if (sconf->state == ENGINE_ENABLED) {
             return ap_pstrcat(cmd->pool, "RewriteMap: internal map not found:",
                               a2+4, NULL);
+	}
     }
     else {
         new->type      = MAPTYPE_TXT;
@@ -496,9 +515,11 @@ static const char *cmd_rewritemap(cmd_parms *cmd, void *dconf, char *a1,
     new->fpout = -1;
 
     if (new->checkfile && (sconf->state == ENGINE_ENABLED)
-                       && (stat(new->checkfile, &st) == -1))
-        return ap_pstrcat(cmd->pool, "RewriteMap: map file or program not found:",
+	&& (stat(new->checkfile, &st) == -1)) {
+        return ap_pstrcat(cmd->pool,
+			  "RewriteMap: map file or program not found:",
                           new->checkfile, NULL);
+    }
 
     return NULL;
 }
@@ -518,12 +539,15 @@ static const char *cmd_rewritelock(cmd_parms *cmd, void *dconf, char *a1)
 static const char *cmd_rewritebase(cmd_parms *cmd, rewrite_perdir_conf *dconf,
                                    char *a1)
 {
-    if (cmd->path == NULL || dconf == NULL)
+    if (cmd->path == NULL || dconf == NULL) {
         return "RewriteBase: only valid in per-directory config files";
-    if (a1[0] == '\0')
+    }
+    if (a1[0] == '\0') {
         return "RewriteBase: empty URL not allowed";
-    if (a1[0] != '/')
+    }
+    if (a1[0] != '/') {
         return "RewriteBase: argument is not a valid URL";
+    }
 
     dconf->baseurl = a1;
 
@@ -547,15 +571,18 @@ static const char *cmd_rewritecond(cmd_parms *cmd, rewrite_perdir_conf *dconf,
             ap_get_module_config(cmd->server->module_config, &rewrite_module);
 
     /*  make a new entry in the internal temporary rewrite rule list */
-    if (cmd->path == NULL)   /* is server command */
+    if (cmd->path == NULL) {   /* is server command */
         new = ap_push_array(sconf->rewriteconds);
-    else                     /* is per-directory command */
+    }
+    else {                     /* is per-directory command */
         new = ap_push_array(dconf->rewriteconds);
+    }
 
     /*  parse the argument line ourself */
-    if (parseargline(str, &a1, &a2, &a3))
+    if (parseargline(str, &a1, &a2, &a3)) {
         return ap_pstrcat(cmd->pool, "RewriteCond: bad argument line '", str,
                           "'\n", NULL);
+    }
 
     /*  arg1: the input string */
     new->input = ap_pstrdup(cmd->pool, a1);
@@ -565,8 +592,10 @@ static const char *cmd_rewritecond(cmd_parms *cmd, rewrite_perdir_conf *dconf,
         know if the regex should be compiled with ICASE!) */
     new->flags = CONDFLAG_NONE;
     if (a3 != NULL) {
-        if ((err = cmd_rewritecond_parseflagfield(cmd->pool, new, a3)) != NULL)
+        if ((err = cmd_rewritecond_parseflagfield(cmd->pool, new,
+						  a3)) != NULL) {
             return err;
+	}
     }
 
     /*  arg2: the pattern
@@ -580,15 +609,18 @@ static const char *cmd_rewritecond(cmd_parms *cmd, rewrite_perdir_conf *dconf,
     /* now be careful: Under the POSIX regex library
        we can compile the pattern for case-insensitive matching,
        under the old V8 library we have to do it self via a hack */
-    if (new->flags & CONDFLAG_NOCASE)
+    if (new->flags & CONDFLAG_NOCASE) {
         rc = ((regexp = ap_pregcomp(cmd->pool, cp, REG_EXTENDED|REG_ICASE))
               == NULL);
-    else
+    }
+    else {
         rc = ((regexp = ap_pregcomp(cmd->pool, cp, REG_EXTENDED)) == NULL);
-    if (rc)
+    }
+    if (rc) {
         return ap_pstrcat(cmd->pool,
                           "RewriteCond: cannot compile regular expression '",
-              a2, "'\n", NULL);
+			  a2, "'\n", NULL);
+    }
 
     new->pattern = ap_pstrdup(cmd->pool, cp);
     new->regexp  = regexp;
@@ -608,8 +640,9 @@ static const char *cmd_rewritecond_parseflagfield(pool *p,
     char *val;
     const char *err;
 
-    if (str[0] != '[' || str[strlen(str)-1] != ']')
+    if (str[0] != '[' || str[strlen(str)-1] != ']') {
         return "RewriteCond: bad flag delimiters";
+    }
 
     cp = str+1;
     str[strlen(str)-1] = ','; /* for simpler parsing */
@@ -617,8 +650,9 @@ static const char *cmd_rewritecond_parseflagfield(pool *p,
         /* skip whitespaces */
         for ( ; (*cp == ' ' || *cp == '\t') && *cp != '\0'; cp++)
             ;
-        if (*cp == '\0')
+        if (*cp == '\0') {
             break;
+	}
         cp1 = cp;
         if ((cp2 = strchr(cp, ',')) != NULL) {
             cp = cp2+1;
@@ -634,11 +668,13 @@ static const char *cmd_rewritecond_parseflagfield(pool *p,
                 key = cp1;
                 val = "";
             }
-            if ((err = cmd_rewritecond_setflag(p, cfg, key, val)) != NULL)
+            if ((err = cmd_rewritecond_setflag(p, cfg, key, val)) != NULL) {
                 return err;
+	    }
         }
-        else
+        else {
             break;
+	}
     }
 
     return NULL;
@@ -677,15 +713,18 @@ static const char *cmd_rewriterule(cmd_parms *cmd, rewrite_perdir_conf *dconf,
             ap_get_module_config(cmd->server->module_config, &rewrite_module);
 
     /*  make a new entry in the internal rewrite rule list */
-    if (cmd->path == NULL)   /* is server command */
+    if (cmd->path == NULL) {   /* is server command */
         new = ap_push_array(sconf->rewriterules);
-    else                     /* is per-directory command */
+    }
+    else {                     /* is per-directory command */
         new = ap_push_array(dconf->rewriterules);
+    }
 
     /*  parse the argument line ourself */
-    if (parseargline(str, &a1, &a2, &a3))
+    if (parseargline(str, &a1, &a2, &a3)) {
         return ap_pstrcat(cmd->pool, "RewriteRule: bad argument line '", str,
                           "'\n", NULL);
+    }
 
     /*  arg1: the pattern
      *  try to compile the regexp to test if is ok
@@ -696,10 +735,11 @@ static const char *cmd_rewriterule(cmd_parms *cmd, rewrite_perdir_conf *dconf,
         new->flags |= RULEFLAG_NOTMATCH;
         cp++;
     }
-    if ((regexp = ap_pregcomp(cmd->pool, cp, REG_EXTENDED)) == NULL)
+    if ((regexp = ap_pregcomp(cmd->pool, cp, REG_EXTENDED)) == NULL) {
         return ap_pstrcat(cmd->pool,
                           "RewriteRule: cannot compile regular expression '",
-              a1, "'\n", NULL);
+			  a1, "'\n", NULL);
+    }
     new->pattern = ap_pstrdup(cmd->pool, cp);
     new->regexp  = regexp;
 
@@ -715,8 +755,10 @@ static const char *cmd_rewriterule(cmd_parms *cmd, rewrite_perdir_conf *dconf,
     new->env[0] = NULL;
     new->skip = 0;
     if (a3 != NULL) {
-        if ((err = cmd_rewriterule_parseflagfield(cmd->pool, new, a3)) != NULL)
+        if ((err = cmd_rewriterule_parseflagfield(cmd->pool, new,
+						  a3)) != NULL) {
             return err;
+	}
     }
 
     /* now, if the server or per-dir config holds an
@@ -749,8 +791,9 @@ static const char *cmd_rewriterule_parseflagfield(pool *p,
     char *val;
     const char *err;
 
-    if (str[0] != '[' || str[strlen(str)-1] != ']')
+    if (str[0] != '[' || str[strlen(str)-1] != ']') {
         return "RewriteRule: bad flag delimiters";
+    }
 
     cp = str+1;
     str[strlen(str)-1] = ','; /* for simpler parsing */
@@ -758,8 +801,9 @@ static const char *cmd_rewriterule_parseflagfield(pool *p,
         /* skip whitespaces */
         for ( ; (*cp == ' ' || *cp == '\t') && *cp != '\0'; cp++)
             ;
-        if (*cp == '\0')
+        if (*cp == '\0') {
             break;
+	}
         cp1 = cp;
         if ((cp2 = strchr(cp, ',')) != NULL) {
             cp = cp2+1;
@@ -775,11 +819,13 @@ static const char *cmd_rewriterule_parseflagfield(pool *p,
                 key = cp1;
                 val = "";
             }
-            if ((err = cmd_rewriterule_setflag(p, cfg, key, val)) != NULL)
+            if ((err = cmd_rewriterule_setflag(p, cfg, key, val)) != NULL) {
                 return err;
+	    }
         }
-        else
+        else {
             break;
+	}
     }
 
     return NULL;
@@ -795,17 +841,22 @@ static const char *cmd_rewriterule_setflag(pool *p, rewriterule_entry *cfg,
         || strcasecmp(key, "R") == 0       ) {
         cfg->flags |= RULEFLAG_FORCEREDIRECT;
         if (strlen(val) > 0) {
-            if (strcasecmp(val, "permanent") == 0)
+	    if (strcasecmp(val, "permanent") == 0) {
                 status = HTTP_MOVED_PERMANENTLY;
-            else if (strcasecmp(val, "temp") == 0)
+	    }
+            else if (strcasecmp(val, "temp") == 0) {
                 status = HTTP_MOVED_TEMPORARILY;
-            else if (strcasecmp(val, "seeother") == 0)
+	    }
+            else if (strcasecmp(val, "seeother") == 0) {
                 status = HTTP_SEE_OTHER;
-            else if (isdigit(*val))
+	    }
+            else if (isdigit(*val)) {
                 status = atoi(val);
-            if (!is_HTTP_REDIRECT(status))
+	    }
+            if (!is_HTTP_REDIRECT(status)) {
                 return "RewriteRule: invalid HTTP response code "
                        "for flag 'R'";
+	    }
             cfg->forced_responsecode = status;
         }
     }
@@ -834,8 +885,9 @@ static const char *cmd_rewriterule_setflag(pool *p, rewriterule_entry *cfg,
             cfg->env[i] = ap_pstrdup(p, val);
             cfg->env[i+1] = NULL;
         }
-        else
-            return "RewriteRule: to many environment flags 'E'";
+        else {
+            return "RewriteRule: too many environment flags 'E'";
+	}
     }
     else if (   strcasecmp(key, "nosubreq") == 0
              || strcasecmp(key, "NS") == 0      ) {
@@ -958,14 +1010,16 @@ static int hook_uri2file(request_rec *r)
      *  retrieve the config structures
      */
     sconf = r->server->module_config;
-    conf  = (rewrite_server_conf *)ap_get_module_config(sconf, &rewrite_module);
+    conf  = (rewrite_server_conf *)ap_get_module_config(sconf,
+							&rewrite_module);
 
     /*
      *  only do something under runtime if the engine is really enabled,
      *  else return immediately!
      */
-    if (conf->state == ENGINE_DISABLED)
+    if (conf->state == ENGINE_DISABLED) {
         return DECLINED;
+    }
 
     /*
      *  check for the ugly API case of a virtual host section where no
@@ -975,8 +1029,9 @@ static int hook_uri2file(request_rec *r)
      *  config has a disabled rewriting engine we are lucky because can
      *  just stop operating now.
      */
-    if (conf->server != r->server)
+    if (conf->server != r->server) {
         return DECLINED;
+    }
 
     /*
      *  add the SCRIPT_URL variable to the env. this is a bit complicated
@@ -986,10 +1041,12 @@ static int hook_uri2file(request_rec *r)
     if (r->main == NULL) {
          var = ap_pstrcat(r->pool, "REDIRECT_", ENVVAR_SCRIPT_URL, NULL);
          var = ap_table_get(r->subprocess_env, var);
-         if (var == NULL)
+         if (var == NULL) {
              ap_table_setn(r->subprocess_env, ENVVAR_SCRIPT_URL, r->uri);
-         else
+	 }
+         else {
              ap_table_setn(r->subprocess_env, ENVVAR_SCRIPT_URL, var);
+	 }
     }
     else {
          var = ap_table_get(r->main->subprocess_env, ENVVAR_SCRIPT_URL);
@@ -1003,8 +1060,9 @@ static int hook_uri2file(request_rec *r)
     /* add the canonical URI of this URL */
     thisserver = ap_get_server_name(r);
     port = ap_get_server_port(r);
-    if (ap_is_default_port(port, r))
+    if (ap_is_default_port(port, r)) {
         thisport = "";
+    }
     else {
         ap_snprintf(buf, sizeof(buf), ":%u", port);
         thisport = buf;
@@ -1047,11 +1105,16 @@ static int hook_uri2file(request_rec *r)
             /* make sure the QUERY_STRING and
              * PATH_INFO parts get incorporated
              */
-            if (r->path_info != NULL)
-                r->filename = ap_pstrcat(r->pool, r->filename, r->path_info, NULL);
+            if (r->path_info != NULL) {
+                r->filename = ap_pstrcat(r->pool, r->filename,
+					 r->path_info, NULL);
+	    }
             if (r->args != NULL &&
-                r->uri == r->unparsed_uri /* see proxy_http:proxy_http_canon() */)
-                r->filename = ap_pstrcat(r->pool, r->filename, "?", r->args, NULL);
+                r->uri == r->unparsed_uri) {
+	        /* see proxy_http:proxy_http_canon() */
+                r->filename = ap_pstrcat(r->pool, r->filename,
+					 "?", r->args, NULL);
+	    }
 
             /* now make sure the request gets handled by the proxy handler */
             r->proxyreq = 1;
@@ -1087,16 +1150,19 @@ static int hook_uri2file(request_rec *r)
             }
 
             /* append the QUERY_STRING part */
-            if (r->args != NULL)
-               r->filename = ap_pstrcat(r->pool, r->filename, "?", r->args, NULL);
+            if (r->args != NULL) {
+               r->filename = ap_pstrcat(r->pool, r->filename,
+					"?", r->args, NULL);
+	    }
 
             /* determine HTTP redirect response code */
             if (is_HTTP_REDIRECT(r->status)) {
                 n = r->status;
                 r->status = HTTP_OK; /* make Apache kernel happy */
             }
-            else
+            else {
                 n = REDIRECT;
+	    }
 
             /* now do the redirection */
             ap_table_setn(r->headers_out, "Location", r->filename);
@@ -1136,8 +1202,9 @@ static int hook_uri2file(request_rec *r)
             rewritelog(r, 2, "local path result: %s", r->filename);
 
             /* the filename has to start with a slash! */
-            if (r->filename[0] != '/')
+            if (r->filename[0] != '/') {
                 return BAD_REQUEST;
+	    }
 
             /* if there is no valid prefix, we have
              * to emulate the translator from the core and
@@ -1170,13 +1237,15 @@ static int hook_uri2file(request_rec *r)
                     }
                     if (r->server->path
                         && !strncmp(r->filename, r->server->path,
-                                    r->server->pathlen))
+                                    r->server->pathlen)) {
                         r->filename = ap_pstrcat(r->pool, docroot,
                                                  (r->filename +
-                          r->server->pathlen), NULL);
-                    else
+						  r->server->pathlen), NULL);
+		    }
+                    else {
                         r->filename = ap_pstrcat(r->pool, docroot, 
-                                 r->filename, NULL);
+						 r->filename, NULL);
+		    }
                     rewritelog(r, 2, "prefixed with document_root to %s",
                                r->filename);
                 }
@@ -1207,8 +1276,9 @@ static int hook_mimetype(request_rec *r)
 
     /* now check if we have to force a MIME-type */
     t = ap_table_get(r->notes, REWRITE_FORCED_MIMETYPE_NOTEVAR);
-    if (t == NULL)
+    if (t == NULL) {
         return DECLINED;
+    }
     else {
         rewritelog(r, 1, "force filename %s to have MIME-type '%s'",
                    r->filename, t);
@@ -1237,21 +1307,24 @@ static int hook_fixup(request_rec *r)
     int n;
     char *ofilename;
 
-    dconf = (rewrite_perdir_conf *)
-            ap_get_module_config(r->per_dir_config, &rewrite_module);
+    dconf = (rewrite_perdir_conf *)ap_get_module_config(r->per_dir_config,
+							&rewrite_module);
 
     /* if there is no per-dir config we return immediately */
-    if (dconf == NULL)
+    if (dconf == NULL) {
         return DECLINED;
+    }
 
     /* we shouldn't do anything in subrequests */
-    if (r->main != NULL)
+    if (r->main != NULL) {
         return DECLINED;
+    }
 
     /* if there are no real (i.e. no RewriteRule directives!)
        per-dir config of us, we return also immediately */
-    if (dconf->directory == NULL)
+    if (dconf->directory == NULL) {
         return DECLINED;
+    }
 
     /*
      *  only do something under runtime if the engine is really enabled,
@@ -1269,8 +1342,9 @@ static int hook_fixup(request_rec *r)
         /* FollowSymLinks is given, but the user can
          * still turn off the rewriting engine
          */
-        if (dconf->state == ENGINE_DISABLED)
-            return DECLINED;
+        if (dconf->state == ENGINE_DISABLED) {
+	    return DECLINED;
+	}
     }
 
     /*
@@ -1294,9 +1368,12 @@ static int hook_fixup(request_rec *r)
              * (r->path_info was already appended by the
              * rewriting engine because of the per-dir context!)
              */
-            if (r->args != NULL &&
-                r->uri == r->unparsed_uri /* see proxy_http:proxy_http_canon() */)
-                r->filename = ap_pstrcat(r->pool, r->filename, "?", r->args, NULL);
+            if (r->args != NULL
+		&& r->uri == r->unparsed_uri) {
+	        /* see proxy_http:proxy_http_canon() */
+                r->filename = ap_pstrcat(r->pool, r->filename,
+					 "?", r->args, NULL);
+	    }
 
             /* now make sure the request gets handled by the proxy handler */
             r->proxyreq = 1;
@@ -1327,14 +1404,17 @@ static int hook_fixup(request_rec *r)
                 /* skip '://' */
                 cp += 3;
                 if ((cp = strchr(cp, '/')) != NULL) {
-                    rewritelog(r, 2,
-                        "[per-dir %s] trying to replace prefix %s with %s",
-                        dconf->directory, dconf->directory, dconf->baseurl);
+		    rewritelog(r, 2,
+			       "[per-dir %s] trying to replace "
+			       "prefix %s with %s",
+			       dconf->directory, dconf->directory,
+			       dconf->baseurl);
                     cp2 = subst_prefix_path(r, cp, dconf->directory,
                                             dconf->baseurl);
                     if (strcmp(cp2, cp) != 0) {
                         *cp = '\0';
-                        r->filename = ap_pstrcat(r->pool, r->filename, cp2, NULL);
+                        r->filename = ap_pstrcat(r->pool, r->filename,
+						 cp2, NULL);
                     }
                 }
             }
@@ -1358,16 +1438,19 @@ static int hook_fixup(request_rec *r)
             }
 
             /* append the QUERY_STRING part */
-            if (r->args != NULL)
-               r->filename = ap_pstrcat(r->pool, r->filename, "?", r->args, NULL);
+            if (r->args != NULL) {
+	        r->filename = ap_pstrcat(r->pool, r->filename,
+					 "?", r->args, NULL);
+	    }
 
             /* determine HTTP redirect response code */
             if (is_HTTP_REDIRECT(r->status)) {
                 n = r->status;
                 r->status = HTTP_OK; /* make Apache kernel happy */
             }
-            else
+            else {
                 n = REDIRECT;
+	    }
 
             /* now do the redirection */
             ap_table_setn(r->headers_out, "Location", r->filename);
@@ -1377,15 +1460,15 @@ static int hook_fixup(request_rec *r)
         }
         else if (strlen(r->filename) > 10 &&
                  strncmp(r->filename, "forbidden:", 10) == 0) {
-            /* This URLs is forced to be forbidden for the requester */
+            /* This URL is forced to be forbidden for the requester */
             return FORBIDDEN;
         }
         else if (strlen(r->filename) > 5 &&
                  strncmp(r->filename, "gone:", 5) == 0) {
-            /* This URLs is forced to be gone */
+            /* This URL is forced to be gone */
             return HTTP_GONE;
         }
-        else {
+	else {
             /* it was finally rewritten to a local path */
 
             /* if someone used the PASSTHROUGH flag in per-dir
@@ -1398,8 +1481,9 @@ static int hook_fixup(request_rec *r)
             }
 
             /* the filename has to start with a slash! */
-            if (r->filename[0] != '/')
+            if (r->filename[0] != '/') {
                 return BAD_REQUEST;
+	    }
 
             /* Check for deadlooping:
              * At this point we KNOW that at least one rewriting
@@ -1445,16 +1529,18 @@ static int hook_fixup(request_rec *r)
                     }
                     if (strncmp(r->filename, prefix, l) == 0) {
                         rewritelog(r, 2,
-                          "[per-dir %s] strip document_root prefix: %s -> %s",
-                          dconf->directory, r->filename, r->filename+l);
-                          r->filename = ap_pstrdup(r->pool, r->filename+l);
+				   "[per-dir %s] strip document_root "
+				   "prefix: %s -> %s",
+				   dconf->directory, r->filename,
+				   r->filename+l);
+			r->filename = ap_pstrdup(r->pool, r->filename+l);
                     }
                 }
             }
 
             /* now initiate the internal redirect */
             rewritelog(r, 1, "[per-dir %s] internal redirect with %s "
-               "[INTERNAL REDIRECT]", dconf->directory, r->filename);
+		       "[INTERNAL REDIRECT]", dconf->directory, r->filename);
             r->filename = ap_pstrcat(r->pool, "redirect:", r->filename, NULL);
             r->handler = "redirect-handler";
             return OK;
@@ -1479,8 +1565,9 @@ static int hook_fixup(request_rec *r)
 static int handler_redirect(request_rec *r)
 {
     /* just make sure that we are really meant! */
-    if (strncmp(r->filename, "redirect:", 9) != 0)
+    if (strncmp(r->filename, "redirect:", 9) != 0) {
         return DECLINED;
+    }
 
     /* now do the internal redirect */
     ap_internal_redirect(ap_pstrcat(r->pool, r->filename+9,
@@ -1530,8 +1617,9 @@ static int apply_rewrite_list(request_rec *r, array_header *rewriterules,
         if (r->main != NULL &&
             (p->flags & RULEFLAG_IGNOREONSUBREQ ||
              p->flags & RULEFLAG_PROXY          ||
-             p->flags & RULEFLAG_FORCEREDIRECT    ))
+             p->flags & RULEFLAG_FORCEREDIRECT    )) {
             continue;
+	}
 
         /*
          *  Apply the current rule.
@@ -1541,8 +1629,9 @@ static int apply_rewrite_list(request_rec *r, array_header *rewriterules,
             /*
              *  Indicate a change if this was not a match-only rule.
              */
-            if (rc != 2)
+	    if (rc != 2) {
                 changed = 1;
+	    }
 
             /*
              *  Pass-Through Feature (`RewriteRule .. .. [PT]'):
@@ -1586,17 +1675,20 @@ static int apply_rewrite_list(request_rec *r, array_header *rewriterules,
              *  Stop processing also on proxy pass-through and
              *  last-rule and new-round flags.
              */
-            if (p->flags & RULEFLAG_PROXY)
+            if (p->flags & RULEFLAG_PROXY) {
                 break;
-            if (p->flags & RULEFLAG_LASTRULE)
+	    }
+            if (p->flags & RULEFLAG_LASTRULE) {
                 break;
+	    }
 
             /*
              *  On "new-round" flag we just start from the top of
              *  the rewriting ruleset again.
              */
-            if (p->flags & RULEFLAG_NEWROUND)
+            if (p->flags & RULEFLAG_NEWROUND) {
                 goto loop;
+	    }
 
             /*
              *  If we are forced to skip N next rules, do it now.
@@ -1686,16 +1778,19 @@ static int apply_rewrite_rule(request_rec *r, rewriterule_entry *p,
      *  Try to match the URI against the RewriteRule pattern
      *  and exit immeddiately if it didn't apply.
      */
-    if (perdir == NULL)
+    if (perdir == NULL) {
         rewritelog(r, 3, "applying pattern '%s' to uri '%s'",
                    p->pattern, uri);
-    else
+    }
+    else {
         rewritelog(r, 3, "[per-dir %s] applying pattern '%s' to uri '%s'",
                    perdir, p->pattern, uri);
+    }
     rc = (regexec(regexp, uri, regexp->re_nsub+1, regmatch, 0) == 0);
     if (! (( rc && !(p->flags & RULEFLAG_NOTMATCH)) ||
-           (!rc &&  (p->flags & RULEFLAG_NOTMATCH))   ) )
+           (!rc &&  (p->flags & RULEFLAG_NOTMATCH))   ) ) {
         return 0;
+    }
 
     /*
      *  Else create the RewriteRule `regsubinfo' structure which
@@ -1771,8 +1866,9 @@ static int apply_rewrite_rule(request_rec *r, rewriterule_entry *p,
         }
     }
     /*  if any condition fails the complete rule fails  */
-    if (failed)
+    if (failed) {
         return 0;
+    }
 
     /*
      *  If this is a pure matching rule (`RewriteRule <pat> -')
@@ -1840,10 +1936,12 @@ static int apply_rewrite_rule(request_rec *r, rewriterule_entry *p,
     /*  5. expand ${...} (RewriteMap lookups)  */
     expand_map_lookups(r, newuri, sizeof(newuri));
     /*  and log the result... */
-    if (perdir == NULL)
+    if (perdir == NULL) {
         rewritelog(r, 2, "rewrite %s -> %s", uri, newuri);
-    else
+    }
+    else {
         rewritelog(r, 2, "[per-dir %s] rewrite %s -> %s", perdir, uri, newuri);
+    }
 
     /*
      *  Additionally do expansion for the environment variable
@@ -1900,11 +1998,13 @@ static int apply_rewrite_rule(request_rec *r, rewriterule_entry *p,
      */
     if (p->flags & RULEFLAG_PROXY) {
         fully_qualify_uri(r);
-        if (perdir == NULL)
+        if (perdir == NULL) {
             rewritelog(r, 2, "forcing proxy-throughput with %s", r->filename);
-        else
+	}
+        else {
             rewritelog(r, 2, "[per-dir %s] forcing proxy-throughput with %s",
                        perdir, r->filename);
+	}
         r->filename = ap_pstrcat(r->pool, "proxy:", r->filename, NULL);
         return 1;
     }
@@ -1917,13 +2017,15 @@ static int apply_rewrite_rule(request_rec *r, rewriterule_entry *p,
      */
     if (p->flags & RULEFLAG_FORCEREDIRECT) {
         fully_qualify_uri(r);
-        if (perdir == NULL)
+        if (perdir == NULL) {
             rewritelog(r, 2,
                        "explicitly forcing redirect with %s", r->filename);
-        else
+	}
+        else {
             rewritelog(r, 2,
                        "[per-dir %s] explicitly forcing redirect with %s",
                        perdir, r->filename);
+	}
         r->status = p->forced_responsecode;
         return 1;
     }
@@ -1949,14 +2051,16 @@ static int apply_rewrite_rule(request_rec *r, rewriterule_entry *p,
         || (i > 8 && strncasecmp(r->filename, "https://", 8)  == 0)
         || (i > 9 && strncasecmp(r->filename, "gopher://", 9) == 0)
         || (i > 6 && strncasecmp(r->filename, "ftp://", 6)    == 0)) {
-        if (perdir == NULL)
+        if (perdir == NULL) {
             rewritelog(r, 2,
                        "implicitly forcing redirect (rc=%d) with %s",
                        p->forced_responsecode, r->filename);
-        else
+	}
+        else {
             rewritelog(r, 2, "[per-dir %s] implicitly forcing redirect "
                        "(rc=%d) with %s", perdir, p->forced_responsecode,
                        r->filename);
+	}
         r->status = p->forced_responsecode;
         return 1;
     }
@@ -1985,13 +2089,15 @@ static int apply_rewrite_rule(request_rec *r, rewriterule_entry *p,
     if (p->forced_mimetype != NULL) {
         ap_table_setn(r->notes, REWRITE_FORCED_MIMETYPE_NOTEVAR,
                       p->forced_mimetype);
-        if (perdir == NULL)
+        if (perdir == NULL) {
             rewritelog(r, 2, "remember %s to have MIME-type '%s'",
                        r->filename, p->forced_mimetype);
-        else
+	}
+        else {
             rewritelog(r, 2,
                        "[per-dir %s] remember %s to have MIME-type '%s'",
                        perdir, r->filename, p->forced_mimetype);
+	}
     }
 
     /*
@@ -2032,26 +2138,34 @@ static int apply_rewrite_cond(request_rec *r, rewritecond_entry *p,
 
     rc = 0;
     if (strcmp(p->pattern, "-f") == 0) {
-        if (stat(input, &sb) == 0)
-            if (S_ISREG(sb.st_mode))
+        if (stat(input, &sb) == 0) {
+	    if (S_ISREG(sb.st_mode)) {
                 rc = 1;
+	    }
+	}
     }
-    else if (strcmp(p->pattern, "-s") == 0) {
-        if (stat(input, &sb) == 0)
-            if (S_ISREG(sb.st_mode) && sb.st_size > 0)
+    else if (strcmp(p->pattern, "-s ") == 0) {
+        if (stat(input, &sb) == 0) {
+  	    if (S_ISREG(sb.st_mode) && sb.st_size > 0) {
                 rc = 1;
+	    }
+	}
     }
     else if (strcmp(p->pattern, "-l") == 0) {
 #if !defined(__EMX__) && !defined(WIN32)
-        if (lstat(input, &sb) == 0)
-            if (S_ISLNK(sb.st_mode))
+        if (lstat(input, &sb) == 0) {
+	    if (S_ISLNK(sb.st_mode)) {
                 rc = 1;
+	    }
+	}
 #endif
     }
     else if (strcmp(p->pattern, "-d") == 0) {
-        if (stat(input, &sb) == 0)
-            if (S_ISDIR(sb.st_mode))
+        if (stat(input, &sb) == 0) {
+	    if (S_ISDIR(sb.st_mode)) {
                 rc = 1;
+	    }
+	}
     }
     else if (strcmp(p->pattern, "-U") == 0) {
         /* avoid infinite subrequest recursion */
@@ -2094,8 +2208,9 @@ static int apply_rewrite_cond(request_rec *r, rewritecond_entry *p,
             /* file exists for any result up to 2xx, no redirects */
             if (rsub->status < 300 &&
                 /* double-check that file exists since default result is 200 */
-                stat(rsub->filename, &sb) == 0)
+                stat(rsub->filename, &sb) == 0) {
                 rc = 1;
+	    }
 
             /* log it */
             rewritelog(r, 5, "RewriteCond file (-F) check: path=%s "
@@ -2113,10 +2228,12 @@ static int apply_rewrite_cond(request_rec *r, rewritecond_entry *p,
         rc = (compare_lexicography(input, p->pattern+1) == -1 ? 1 : 0);
     }
     else if (strlen(p->pattern) > 1 && *(p->pattern) == '=') {
-        if (strcmp(p->pattern+1, "\"\"") == 0)
+        if (strcmp(p->pattern+1, "\"\"") == 0) {
             rc = (*input == '\0');
-        else
+	}
+        else {
             rc = (strcmp(input, p->pattern+1) == 0 ? 1 : 0);
+	}
     }
     else {
         /* it is really a regexp pattern, so apply it */
@@ -2134,8 +2251,9 @@ static int apply_rewrite_cond(request_rec *r, rewritecond_entry *p,
     }
 
     /* if this is a non-matching regexp, just negate the result */
-    if (p->flags & CONDFLAG_NOTMATCH)
+    if (p->flags & CONDFLAG_NOTMATCH) {
         rc = !rc;
+    }
 
     rewritelog(r, 4, "RewriteCond: input='%s' pattern='%s%s' => %s",
                input, (p->flags & CONDFLAG_NOTMATCH ? "!" : ""),
@@ -2170,18 +2288,21 @@ static void splitout_queryargs(request_rec *r, int qsappend)
     if (q != NULL) {
         olduri = ap_pstrdup(r->pool, r->filename);
         *q++ = '\0';
-        if (qsappend)
+        if (qsappend) {
             r->args = ap_pstrcat(r->pool, q, "&", r->args, NULL);
-        else
+	}
+        else {
             r->args = ap_pstrdup(r->pool, q);
+	}
         if (strlen(r->args) == 0) {
             r->args = NULL;
             rewritelog(r, 3, "split uri=%s -> uri=%s, args=<none>", olduri,
                        r->filename);
         }
         else {
-            if (r->args[strlen(r->args)-1] == '&')
+	    if (r->args[strlen(r->args)-1] == '&') {
                 r->args[strlen(r->args)-1] = '\0';
+	    }
             rewritelog(r, 3, "split uri=%s -> uri=%s, args=%s", olduri,
                        r->filename, r->args);
         }
@@ -2293,21 +2414,24 @@ static void fully_qualify_uri(request_rec *r)
 
         thisserver = ap_get_server_name(r);
         port = ap_get_server_port(r);
-        if (ap_is_default_port(port,r))
+        if (ap_is_default_port(port,r)) {
             thisport = "";
+	}
         else {
             ap_snprintf(buf, sizeof(buf), ":%u", port);
             thisport = buf;
         }
 
-        if (r->filename[0] == '/')
+        if (r->filename[0] == '/') {
             r->filename = ap_psprintf(r->pool, "%s://%s%s%s",
                                       ap_http_method(r), thisserver,
                                       thisport, r->filename);
-        else
+	}
+        else {
             r->filename = ap_psprintf(r->pool, "%s://%s%s/%s",
                                       ap_http_method(r), thisserver,
                                       thisport, r->filename);
+	}
     }
     return;
 }
@@ -2324,16 +2448,19 @@ static void expand_backref_inbuffer(pool *p, char *buf, int nbuf,
 {
     int i;
 
-    if (bri->nsub < 1)
+    if (bri->nsub < 1) {
         return;
+    }
 
     if (c != '$') {
         /* safe existing $N backrefs and replace <c>N with $N backrefs */
         for (i = 0; buf[i] != '\0' && i < nbuf; i++) {
-            if (buf[i] == '$' && (buf[i+1] >= '0' && buf[i+1] <= '9'))
+	    if (buf[i] == '$' && (buf[i+1] >= '0' && buf[i+1] <= '9')) {
                 buf[i++] = '\001';
-            else if (buf[i] == c && (buf[i+1] >= '0' && buf[i+1] <= '9'))
+	    }
+            else if (buf[i] == c && (buf[i+1] >= '0' && buf[i+1] <= '9')) {
                 buf[i++] = '$';
+	    }
         }
     }
 
@@ -2343,9 +2470,11 @@ static void expand_backref_inbuffer(pool *p, char *buf, int nbuf,
 
     if (c != '$') {
         /* restore the original $N backrefs */
-        for (i = 0; buf[i] != '\0' && i < nbuf; i++)
-            if (buf[i] == '\001' && (buf[i+1] >= '0' && buf[i+1] <= '9'))
+        for (i = 0; buf[i] != '\0' && i < nbuf; i++) {
+	    if (buf[i] == '\001' && (buf[i+1] >= '0' && buf[i+1] <= '9')) {
                 buf[i++] = '$';
+	    }
+	}
     }
 }
 
@@ -2368,9 +2497,10 @@ static char *expand_tildepaths(request_rec *r, char *uri)
     if (uri != NULL && strlen(uri) > 2 && uri[0] == '/' && uri[1] == '~') {
         /* cut out the username */
         for (j = 0, i = 2; j < sizeof(user)-1
-                           && uri[i] != '\0'
-                           && uri[i] != '/'  ; )
+	       && uri[i] != '\0'
+	       && uri[i] != '/'  ; ) {
             user[j++] = uri[i++];
+	}
         user[j] = '\0';
 
         /* lookup username in systems passwd file */
@@ -2378,8 +2508,9 @@ static char *expand_tildepaths(request_rec *r, char *uri)
             /* ok, user was found, so expand the ~user string */
             if (uri[i] != '\0') {
                 /* ~user/anything...  has to be expanded */
-                if (pw->pw_dir[strlen(pw->pw_dir)-1] == '/')
+	        if (pw->pw_dir[strlen(pw->pw_dir)-1] == '/') {
                     pw->pw_dir[strlen(pw->pw_dir)-1] = '\0';
+		}
                 newuri = ap_pstrcat(r->pool, pw->pw_dir, uri+i, NULL);
             }
             else {
@@ -2684,13 +2815,15 @@ static char *lookup_map_txtfile(request_rec *r, char *file, char *key)
     char *curkey;
     char *curval;
 
-    if ((fp = ap_pfopen(r->pool, file, "r")) == NULL)
+    if ((fp = ap_pfopen(r->pool, file, "r")) == NULL) {
         return NULL;
+    }
 
     ap_cpystrn(output, MAPFILE_OUTPUT, sizeof(output));
     while (fgets(line, sizeof(line), fp) != NULL) {
-        if (line[strlen(line)-1] == '\n')
+        if (line[strlen(line)-1] == '\n') {
             line[strlen(line)-1] = '\0';
+	}
         if (regexec(lookup_map_txtfile_regexp, line,
                     lookup_map_txtfile_regexp->re_nsub+1,
                     lookup_map_txtfile_regmatch, 0) == 0) {
@@ -2749,8 +2882,9 @@ static char *lookup_map_program(request_rec *r, int fpin, int fpout, char *key)
      * In this case using such a map (usually in per-dir context)
      * is useless because it is not available.
      */
-    if (fpin == -1 || fpout == -1)
+    if (fpin == -1 || fpout == -1) {
         return NULL;
+    }
 
     /* take the lock */
     rewritelock_alloc(r);
@@ -2762,8 +2896,9 @@ static char *lookup_map_program(request_rec *r, int fpin, int fpout, char *key)
     /* read in the response value */
     i = 0;
     while (read(fpout, &c, 1) == 1 && (i < LONG_STRING_LEN-1)) {
-        if (c == '\n')
+        if (c == '\n') {
             break;
+	}
         buf[i++] = c;
     }
     buf[i] = '\0';
@@ -2771,10 +2906,12 @@ static char *lookup_map_program(request_rec *r, int fpin, int fpout, char *key)
     /* give the lock back */
     rewritelock_free(r);
 
-    if (strcasecmp(buf, "NULL") == 0)
+    if (strcasecmp(buf, "NULL") == 0) {
         return NULL;
-    else
+    }
+    else {
         return ap_pstrdup(r->pool, buf);
+    }
 }
 
 static char *lookup_map_internal(request_rec *r,
@@ -2790,8 +2927,10 @@ static char *rewrite_mapfunc_toupper(request_rec *r, char *key)
 {
     char *value, *cp;
 
-    for (cp = value = ap_pstrdup(r->pool, key); cp != NULL && *cp != '\0'; cp++)
+    for (cp = value = ap_pstrdup(r->pool, key); cp != NULL && *cp != '\0';
+	 cp++) {
         *cp = toupper(*cp);
+    }
     return value;
 }
 
@@ -2799,8 +2938,10 @@ static char *rewrite_mapfunc_tolower(request_rec *r, char *key)
 {
     char *value, *cp;
 
-    for (cp = value = ap_pstrdup(r->pool, key); cp != NULL && *cp != '\0'; cp++)
+    for (cp = value = ap_pstrdup(r->pool, key); cp != NULL && *cp != '\0';
+	 cp++) {
         *cp = tolower(*cp);
+    }
     return value;
 }
 
@@ -2835,23 +2976,28 @@ static char *select_random_value_part(request_rec *r, char *value)
     int n, i, k;
 
     /*  count number of distinct values  */
-    for (n = 1, i = 0; value[i] != '\0'; i++)
-        if (value[i] == '|')
+    for (n = 1, i = 0; value[i] != '\0'; i++) {
+        if (value[i] == '|') {
             n++;
+	}
+    }
 
     /*  when only one value we have no option to choose  */
-    if (n == 1)
+    if (n == 1) {
         return value;
+    }
 
     /*  else randomly select one  */
     k = rewrite_rand(1, n);
 
     /*  and grep it out  */
     for (n = 1, i = 0; value[i] != '\0'; i++) {
-        if (n == k)
+        if (n == k) {
             break;
-        if (value[i] == '|')
+	}
+        if (value[i] == '|') {
             n++;
+	}
     }
     buf = ap_pstrdup(r->pool, &value[i]);
     for (i = 0; buf[i] != '\0' && buf[i] != '|'; i++)
@@ -2884,12 +3030,15 @@ static void open_rewritelog(server_rec *s, pool *p)
 
     conf = ap_get_module_config(s->module_config, &rewrite_module);
 
-    if (conf->rewritelogfile == NULL)
+    if (conf->rewritelogfile == NULL) {
         return;
-    if (*(conf->rewritelogfile) == '\0')
+    }
+    if (*(conf->rewritelogfile) == '\0') {
         return;
-    if (conf->rewritelogfp > 0)
+    }
+    if (conf->rewritelogfp > 0) {
         return; /* virtual log shared w/ main server */
+    }
 
     fname = ap_server_root_relative(p, conf->rewritelogfile);
 
@@ -2906,6 +3055,7 @@ static void open_rewritelog(server_rec *s, pool *p)
         if ((conf->rewritelogfp = ap_popenf(p, fname, rewritelog_flags,
                                             rewritelog_mode)) < 0) {
             ap_log_error(APLOG_MARK, APLOG_ERR, s, 
+
                          "mod_rewrite: could not open RewriteLog "
                          "file %s", fname);
             exit(1);
@@ -2933,15 +3083,19 @@ static void rewritelog(request_rec *r, int level, const char *text, ...)
     conf = ap_get_module_config(r->server->module_config, &rewrite_module);
     conn = r->connection;
 
-    if (conf->rewritelogfp < 0)
+    if (conf->rewritelogfp < 0) {
         return;
-    if (conf->rewritelogfile == NULL)
+    }
+    if (conf->rewritelogfile == NULL) {
         return;
-    if (*(conf->rewritelogfile) == '\0')
+    }
+    if (*(conf->rewritelogfile) == '\0') {
         return;
+    }
 
-    if (level > conf->rewriteloglevel)
+    if (level > conf->rewriteloglevel) {
         return;
+    }
 
     if (conn->user == NULL) {
         ruser = "-";
@@ -2954,9 +3108,10 @@ static void rewritelog(request_rec *r, int level, const char *text, ...)
     }
 
     rhost = ap_get_remote_host(conn, r->server->module_config, 
-			                   REMOTE_NOLOOKUP);
-    if (rhost == NULL)
+			       REMOTE_NOLOOKUP);
+    if (rhost == NULL) {
         rhost = "UNKNOWN-HOST";
+    }
 
     str1 = ap_pstrcat(r->pool, rhost, " ",
                       (conn->remote_logname != NULL ?
@@ -2964,17 +3119,22 @@ static void rewritelog(request_rec *r, int level, const char *text, ...)
                       ruser, NULL);
     ap_vsnprintf(str2, sizeof(str2), text, ap);
 
-    if (r->main == NULL)
+    if (r->main == NULL) {
         strcpy(type, "initial");
-    else
+    }
+    else {
         strcpy(type, "subreq");
+    }
 
-    for (i = 0, req = r; req->prev != NULL; req = req->prev)
+    for (i = 0, req = r; req->prev != NULL; req = req->prev) {
         i++;
-    if (i == 0)
+    }
+    if (i == 0) {
         redir[0] = '\0';
-    else
+    }
+    else {
         ap_snprintf(redir, sizeof(redir), "/redir#%d", i);
+    }
 
     ap_snprintf(str3, sizeof(str3),
                 "%s %s [%s/sid#%lx][rid#%lx/%s%s] (%d) %s\n", str1,
@@ -2999,8 +3159,9 @@ static char *current_logtime(request_rec *r)
 
     t = ap_get_gmtoff(&timz);
     sign = (timz < 0 ? '-' : '+');
-    if(timz < 0)
+    if (timz < 0) {
         timz = -timz;
+    }
 
     strftime(tstr, 80, "[%d/%b/%Y:%H:%M:%S ", t);
     ap_snprintf(tstr + strlen(tstr), 80-strlen(tstr), "%c%.2d%.2d]",
@@ -3033,8 +3194,9 @@ static void rewritelock_create(server_rec *s, pool *p)
 
     /* only operate if a lockfile is used */
     if (conf->rewritelockfile == NULL
-        || *(conf->rewritelockfile) == '\0')
+        || *(conf->rewritelockfile) == '\0') {
         return;
+    }
 
     /* fixup the path, especially for rewritelock_remove() */
     conf->rewritelockfile = ap_server_root_relative(p, conf->rewritelockfile);
@@ -3060,8 +3222,9 @@ static void rewritelock_open(server_rec *s, pool *p)
 
     /* only operate if a lockfile is used */
     if (conf->rewritelockfile == NULL
-        || *(conf->rewritelockfile) == '\0')
+        || *(conf->rewritelockfile) == '\0') {
         return;
+    }
 
     /* open the lockfile (once per child) to get a unique fd */
     if ((conf->rewritelockfp = ap_popenf(p, conf->rewritelockfile,
@@ -3086,8 +3249,9 @@ static void rewritelock_remove(void *data)
 
     /* only operate if a lockfile is used */
     if (conf->rewritelockfile == NULL
-        || *(conf->rewritelockfile) == '\0')
+        || *(conf->rewritelockfile) == '\0') {
         return;
+    }
 
     /* remove the lockfile */
     unlink(conf->rewritelockfile);
@@ -3099,8 +3263,9 @@ static void rewritelock_alloc(request_rec *r)
 
     conf = ap_get_module_config(r->server->module_config, &rewrite_module);
 
-    if (conf->rewritelockfp != -1)
+    if (conf->rewritelockfp != -1) {
         fd_lock(r, conf->rewritelockfp);
+    }
     return;
 }
 
@@ -3110,8 +3275,9 @@ static void rewritelock_free(request_rec *r)
 
     conf = ap_get_module_config(r->server->module_config, &rewrite_module);
 
-    if (conf->rewritelockfp != -1)
+    if (conf->rewritelockfp != -1) {
         fd_unlock(r, conf->rewritelockfp);
+    }
     return;
 }
 
@@ -3141,20 +3307,23 @@ static void run_rewritemap_programs(server_rec *s, pool *p)
     /*  If the engine isn't turned on,
      *  don't even try to do anything.
      */
-    if (conf->state == ENGINE_DISABLED)
+    if (conf->state == ENGINE_DISABLED) {
         return;
+    }
 
     rewritemaps = conf->rewritemaps;
     entries = (rewritemap_entry *)rewritemaps->elts;
     for (i = 0; i < rewritemaps->nelts; i++) {
         map = &entries[i];
-        if (map->type != MAPTYPE_PRG)
+        if (map->type != MAPTYPE_PRG) {
             continue;
+	}
         if (map->datafile == NULL
             || *(map->datafile) == '\0'
             || map->fpin  != -1
-            || map->fpout != -1        )
+            || map->fpout != -1        ) {
             continue;
+	}
         fpin  = NULL;
         fpout = NULL;
         rc = ap_spawn_child(p, rewritemap_program_child,
@@ -3241,8 +3410,9 @@ static void expand_variables_inbuffer(request_rec *r, char *buf, int buf_len)
 {
     char *newbuf;
     newbuf = expand_variables(r, buf);
-    if (strcmp(newbuf, buf) != 0)
+    if (strcmp(newbuf, buf) != 0) {
         ap_cpystrn(buf, newbuf, buf_len);
+    }
     return;
 }
 
@@ -3439,11 +3609,13 @@ static char *lookup_variable(request_rec *r, char *var)
         /* first try the internal Apache notes structure */
         result = ap_table_get(r->notes, var+4);
         /* second try the internal Apache env structure  */
-        if (result == NULL)
+        if (result == NULL) {
             result = ap_table_get(r->subprocess_env, var+4);
+	}
         /* third try the external OS env */
-        if (result == NULL)
+        if (result == NULL) {
             result = getenv(var+4);
+	}
     }
 
 #define LOOKAHEAD(subrecfunc) \
@@ -3517,10 +3689,12 @@ static char *lookup_variable(request_rec *r, char *var)
     }
 #endif /* ndef WIN32 */
 
-    if (result == NULL)
+    if (result == NULL) {
         return ap_pstrdup(r->pool, "");
-    else
+    }
+    else {
         return ap_pstrdup(r->pool, result);
+    }
 }
 
 static char *lookup_header(request_rec *r, const char *name)
@@ -3532,10 +3706,12 @@ static char *lookup_header(request_rec *r, const char *name)
     hdrs_arr = table_elts(r->headers_in);
     hdrs = (table_entry *)hdrs_arr->elts;
     for (i = 0; i < hdrs_arr->nelts; ++i) {
-       if (hdrs[i].key == NULL)
-          continue;
-       if (strcasecmp(hdrs[i].key, name) == 0)
-          return hdrs[i].val;
+        if (hdrs[i].key == NULL) {
+            continue;
+	}
+        if (strcasecmp(hdrs[i].key, name) == 0) {
+            return hdrs[i].val;
+	}
     }
     return NULL;
 }
@@ -3580,15 +3756,18 @@ static char *get_cache_string(cache *c, char *res, int mode,
     cacheentry *ce;
 
     ce = retrieve_cache_string(c, res, key);
-    if (ce == NULL)
+    if (ce == NULL) {
         return NULL;
+    }
     if (mode & CACHEMODE_TS) {
-        if (t != ce->time)
+        if (t != ce->time) {
             return NULL;
+	}
     }
     else if (mode & CACHEMODE_TTL) {
-        if (t > ce->time)
+        if (t > ce->time) {
             return NULL;
+	}
     }
     return ap_pstrdup(c->pool, ce->value);
 }
@@ -3729,8 +3908,9 @@ static int parseargline(char *str, char **a1, char **a2, char **a3)
     int isquoted;
 
 #define SKIP_WHITESPACE(cp) \
-    for ( ; *cp == ' ' || *cp == '\t'; ) \
-        cp++;
+    for ( ; *cp == ' ' || *cp == '\t'; ) { \
+        cp++; \
+    };
 
 #define CHECK_QUOTATION(cp,isquoted) \
     isquoted = 0; \
@@ -3747,8 +3927,9 @@ static int parseargline(char *str, char **a1, char **a2, char **a3)
             continue; \
         } \
         if (   (!isquoted && (*cp == ' ' || *cp == '\t')) \
-            || (isquoted  && *cp == '"')                  ) \
+            || (isquoted  && *cp == '"')                  ) { \
             break; \
+	} \
     }
 
     cp = str;
@@ -3758,8 +3939,9 @@ static int parseargline(char *str, char **a1, char **a2, char **a3)
     CHECK_QUOTATION(cp, isquoted);
     *a1 = cp;
     DETERMINE_NEXTSTRING(cp, isquoted);
-    if (*cp == '\0')
+    if (*cp == '\0') {
         return 1;
+    }
     *cp++ = '\0';
 
     SKIP_WHITESPACE(cp);
@@ -3825,14 +4007,18 @@ static int prefix_stat(const char *path, struct stat *sb)
     char *cp;
 
     ap_cpystrn(curpath, path, sizeof(curpath));
-    if (curpath[0] != '/')
+    if (curpath[0] != '/') {
         return 0;
-    if ((cp = strchr(curpath+1, '/')) != NULL)
+    }
+    if ((cp = strchr(curpath+1, '/')) != NULL) {
         *cp = '\0';
-    if (stat(curpath, sb) == 0)
+    }
+    if (stat(curpath, sb) == 0) {
         return 1;
-    else
+    }
+    else {
         return 0;
+    }
 }
 
 
@@ -3859,13 +4045,15 @@ static void fd_lock(request_rec *r, int fd)
     lock_it.l_pid    = 0;        /* pid not actually interesting */
 
     while (   ((rc = fcntl(fd, F_SETLKW, &lock_it)) < 0)
-           && (errno == EINTR)                               )
+	      && (errno == EINTR)                               ) {
         continue;
+    }
 #endif
 #ifdef USE_FLOCK
     while (   ((rc = flock(fd, LOCK_EX)) < 0)
-           && (errno == EINTR)               )
+	      && (errno == EINTR)               ) {
         continue;
+    }
 #endif
 #ifdef USE_LOCKING
     /* Lock the first byte, always, assume we want to append
@@ -3925,15 +4113,19 @@ static int compare_lexicography(char *cpNum1, char *cpNum2)
 
     n1 = strlen(cpNum1);
     n2 = strlen(cpNum2);
-    if (n1 > n2)
+    if (n1 > n2) {
         return 1;
-    if (n1 < n2)
+    }
+    if (n1 < n2) {
         return -1;
+    }
     for (i = 0; i < n1; i++) {
-        if (cpNum1[i] > cpNum2[i])
+        if (cpNum1[i] > cpNum2[i]) {
             return 1;
-        if (cpNum1[i] < cpNum2[i])
+	}
+        if (cpNum1[i] < cpNum2[i]) {
             return -1;
+	}
     }
     return 0;
 }
