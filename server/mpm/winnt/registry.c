@@ -52,8 +52,7 @@
  * Because this is common, let's have a macro.
  */
 #define do_error(rv,fmt,arg) do { \
-	SetLastError(rv); \
-	ap_log_error(APLOG_MARK, APLOG_WIN32ERROR|APLOG_ERR, NULL, fmt,arg); \
+	ap_log_error(APLOG_MARK, APLOG_WIN32ERROR|APLOG_ERR, rv, NULL, fmt, arg); \
     } while (0);
 
 /*
@@ -107,7 +106,7 @@ static int ap_registry_get_key_int(ap_context_t *p, char *key, char *name, char 
 		      &hKey);
 
     if (rv == ERROR_FILE_NOT_FOUND) {
-	ap_log_error(APLOG_MARK,APLOG_WARNING|APLOG_NOERRNO,NULL,
+	ap_log_error(APLOG_MARK,APLOG_WARNING|APLOG_NOERRNO,rv,NULL,
         "Registry does not contain key %s",key);
 	return -1;
     }
@@ -139,7 +138,7 @@ static int ap_registry_get_key_int(ap_context_t *p, char *key, char *name, char 
 	    /* Eek, out of memory, probably not worth trying to carry on,
 	     * but let's give it a go
 	     */
-	    ap_log_error(APLOG_MARK,APLOG_ERR|APLOG_NOERRNO,NULL,
+	    ap_log_error(APLOG_MARK,APLOG_ERR|APLOG_NOERRNO,APR_ENOMEM,NULL,
 		"Error getting registry key: out of memory");
 	    return -2;
 	}
@@ -160,7 +159,7 @@ static int ap_registry_get_key_int(ap_context_t *p, char *key, char *name, char 
     retval = 0;	    /* Return value */
 
     if (rv == ERROR_FILE_NOT_FOUND) {
-	ap_log_error(APLOG_MARK,APLOG_WARNING|APLOG_NOERRNO,NULL,
+	ap_log_error(APLOG_MARK,APLOG_WARNING|APLOG_NOERRNO,rv,NULL,
         "Registry does not contain value %s\\%s", key, name);
 	retval = -1;
     }
@@ -170,7 +169,7 @@ static int ap_registry_get_key_int(ap_context_t *p, char *key, char *name, char 
 	 * allocate a buffer if another process changed the length of the
 	 * value since we found out its length above. Umm.
 	 */
-	ap_log_error(APLOG_MARK,APLOG_ERR|APLOG_NOERRNO,NULL,
+	ap_log_error(APLOG_MARK,APLOG_ERR|APLOG_NOERRNO,rv,NULL,
 	    "Error getting registry value %s: buffer not big enough", key);
 	retval = -3;
     }
@@ -391,7 +390,7 @@ static int ap_registry_store_key_int(char *key, char *name, DWORD type, void *va
 		  &hKey);
 
 	if (rv == ERROR_FILE_NOT_FOUND) {
-            ap_log_error(APLOG_MARK,APLOG_WARNING|APLOG_NOERRNO,NULL,
+            ap_log_error(APLOG_MARK,APLOG_WARNING|APLOG_NOERRNO,rv,NULL,
                          "Registry does not contain key %s after creation",key);
 	    return -1;
 	}
@@ -417,7 +416,7 @@ static int ap_registry_store_key_int(char *key, char *name, DWORD type, void *va
 	retval = -4;
     }
     else {
-	ap_log_error(APLOG_MARK,APLOG_INFO|APLOG_NOERRNO,NULL,
+	ap_log_error(APLOG_MARK,APLOG_INFO|APLOG_NOERRNO,rv,NULL,
 	    "Registry stored HKLM\\" REGKEY "\\%s value %s", key, 
 	    type == REG_SZ ? value : "(not displayable)");
     }

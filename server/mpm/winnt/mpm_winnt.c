@@ -253,13 +253,13 @@ static void signal_parent(int type)
 	/* Um, problem, can't signal the parent, which means we can't
 	 * signal ourselves to die. Ignore for now...
 	 */
-	ap_log_error(APLOG_MARK, APLOG_EMERG|APLOG_WIN32ERROR, server_conf,
+	ap_log_error(APLOG_MARK, APLOG_EMERG, GetLastError(), server_conf,
 	    "OpenEvent on %s event", signal_name);
 	return;
     }
     if (SetEvent(e) == 0) {
 	/* Same problem as above */
-	ap_log_error(APLOG_MARK, APLOG_EMERG|APLOG_WIN32ERROR, server_conf,
+	ap_log_error(APLOG_MARK, APLOG_EMERG, GetLastError(), server_conf,
 	    "SetEvent on %s event", signal_name);
 	CloseHandle(e);
 	return;
@@ -338,7 +338,7 @@ static void sock_disable_nagle(int s) /* ZZZ abstract */
 
     if (setsockopt(s, IPPROTO_TCP, TCP_NODELAY, (char *) &just_say_no,
 		   sizeof(int)) < 0) {
-	ap_log_error(APLOG_MARK, APLOG_WARNING, server_conf,
+	ap_log_error(APLOG_MARK, APLOG_WARNING, APR_SUCCESS, server_conf,
 		    "setsockopt: (TCP_NODELAY)");
     }
 }
@@ -424,17 +424,17 @@ static int setup_inherited_listeners(server_rec *s)
     for (lr = ap_listeners; lr; lr = lr->next) {
         if (!ReadFile(pipe, &WSAProtocolInfo, sizeof(WSAPROTOCOL_INFO), 
                       &BytesRead, (LPOVERLAPPED) NULL)) {
-            ap_log_error(APLOG_MARK, APLOG_WIN32ERROR|APLOG_CRIT, server_conf,
+            ap_log_error(APLOG_MARK, APLOG_CRIT, GetLastError(), server_conf,
                          "setup_inherited_listeners: Unable to read socket data from parent");
             signal_parent(0);	/* tell parent to die */
             exit(1);
         }
-        ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_INFO, server_conf,
+        ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_INFO, APR_SUCCESS, server_conf,
                      "BytesRead = %d WSAProtocolInfo = %x20", BytesRead, WSAProtocolInfo);
         nsd = WSASocket(FROM_PROTOCOL_INFO, FROM_PROTOCOL_INFO, FROM_PROTOCOL_INFO,
                         &WSAProtocolInfo, 0, 0);
         if (nsd == INVALID_SOCKET) {
-            ap_log_error(APLOG_MARK, APLOG_WIN32ERROR|APLOG_CRIT, server_conf,
+            ap_log_error(APLOG_MARK, APLOG_CRIT, WSAGetLastError(), server_conf,
                          "setup_inherited_listeners: WSASocket failed to open the inherited socket.");
             signal_parent(0);	/* tell parent to die */
             exit(1);
@@ -659,11 +659,12 @@ static void accept_and_queue_connections(void * dummy)
              * select errors. This count is used to ensure we don't go into
              * a busy loop of continuous errors.
              */
-            ap_log_error(APLOG_MARK, APLOG_INFO|APLOG_WIN32ERROR, server_conf, "select failed with errno %d", h_errno);
+            ap_log_error(APLOG_MARK, APLOG_INFO, h_errno, server_conf, 
+                         "select failed with errno %d", h_errno);
             count_select_errors++;
             if (count_select_errors > MAX_SELECT_ERRORS) {
                 workers_may_exit = 1;
-                ap_log_error(APLOG_MARK, APLOG_ERR|APLOG_WIN32ERROR, server_conf,
+                ap_log_error(APLOG_MARK, APLOG_ERR, h_errno, server_conf,
                              "Too many errors in select loop. Child process exiting.");
                 break;
             }
@@ -686,7 +687,7 @@ static void accept_and_queue_connections(void * dummy)
 
 	if (csd < 0) {
             if (h_errno != WSAECONNABORTED) {
-		ap_log_error(APLOG_MARK, APLOG_ERR|APLOG_WIN32ERROR, server_conf,
+		ap_log_error(APLOG_MARK, APLOG_ERR, h_errno, server_conf,
 			    "accept: (client socket)");
             }
 	}
@@ -710,7 +711,7 @@ static PCOMP_CONTEXT win9x_get_connection(PCOMP_CONTEXT context)
         len = sizeof(struct sockaddr);
         if (getsockname(context->accept_socket, 
                         &context->sa_server, &len)== SOCKET_ERROR) {
-            ap_log_error(APLOG_MARK, APLOG_WARNING, server_conf, 
+            ap_log_error(APLOG_MARK, APLOG_WARNING, h_errno, server_conf, 
                          "getsockname failed with error %d\n", WSAGetLastError());
             continue;
         }
@@ -718,7 +719,7 @@ static PCOMP_CONTEXT win9x_get_connection(PCOMP_CONTEXT context)
         len = sizeof(struct sockaddr);
         if ((getpeername(context->accept_socket,
                          &context->sa_client, &len)) == SOCKET_ERROR) {
-            ap_log_error(APLOG_MARK, APLOG_WARNING, server_conf, 
+            ap_log_error(APLOG_MARK, APLOG_WARNING, h_errno, server_conf, 
                          "getpeername failed with error %d\n", WSAGetLastError());
             memset(&context->sa_client, '\0', sizeof(context->sa_client));
         }
@@ -900,7 +901,7 @@ static void child_main(int child_num)
 
         iol = win32_attach_socket(context->ptrans, context->accept_socket);
         if (iol == NULL) {
-            ap_log_error(APLOG_MARK, APLOG_ERR, server_conf,
+            ap_log_error(APLOG_MARK, APLOG_ERR, APR_ENOMEM, server_conf,
                          "error attaching to socket");
             closesocket(context->accept_socket);
             continue;
@@ -1023,7 +1024,7 @@ static void worker_main()
      */
     status = ap_lock(start_mutex);
     if (status != APR_SUCCESS) {
-	ap_log_error(APLOG_MARK,APLOG_ERR|APLOG_WIN32ERROR, server_conf,
+	ap_log_error(APLOG_MARK,APLOG_ERR, status, server_conf,
                      "Waiting for start_mutex or exit_event -- process will exit");
 
 	ap_destroy_context(pchild); // ap_destroy_pool(pchild):
@@ -1043,7 +1044,7 @@ static void worker_main()
 
     if (listenmaxfd == INVALID_SOCKET) {
 	/* Help, no sockets were made, better log something and exit */
-	ap_log_error(APLOG_MARK, APLOG_CRIT|APLOG_NOERRNO, NULL,
+	ap_log_error(APLOG_MARK, APLOG_CRIT, h_errno, NULL,
 		    "No sockets were created for listening");
 
 	signal_parent(0);	/* tell parent to die */
@@ -1226,11 +1227,11 @@ static int create_process(ap_context_t *p, HANDLE *handles, HANDLE *events, int 
      */
     rv = GetModuleFileName(NULL, buf, sizeof(buf));
     if (rv == sizeof(buf)) {
-        ap_log_error(APLOG_MARK, APLOG_WIN32ERROR | APLOG_CRIT, server_conf,
+        ap_log_error(APLOG_MARK, APLOG_CRIT, ERROR_BAD_PATHNAME, server_conf,
                      "Parent: Path to Apache process too long");
         return -1;
     } else if (rv == 0) {
-        ap_log_error(APLOG_MARK, APLOG_WIN32ERROR | APLOG_CRIT, server_conf,
+        ap_log_error(APLOG_MARK, APLOG_CRIT, GetLastError(), server_conf,
                      "Parent: GetModuleFileName() returned NULL for current process.");
         return -1;
     }
@@ -1240,7 +1241,7 @@ static int create_process(ap_context_t *p, HANDLE *handles, HANDLE *events, int 
 
     /* Create a pipe to send socket info to the child */
     if (!CreatePipe(&hPipeRead, &hPipeWrite, &sa, 0)) {
-        ap_log_error(APLOG_MARK, APLOG_WIN32ERROR | APLOG_CRIT, server_conf,
+        ap_log_error(APLOG_MARK, APLOG_CRIT, GetLastError(), server_conf,
                      "Parent: Unable to create pipe to child process.\n");
         return -1;
     }
@@ -1263,7 +1264,7 @@ static int create_process(ap_context_t *p, HANDLE *handles, HANDLE *events, int 
                        NULL,               /* Environment block */
                        NULL,
                        &si, &pi)) {
-        ap_log_error(APLOG_MARK, APLOG_WIN32ERROR | APLOG_CRIT, server_conf,
+        ap_log_error(APLOG_MARK, APLOG_CRIT, GetLastError(), server_conf,
                      "Parent: Not able to create the child process.");
         /*
          * We must close the handles to the new process and its main thread
@@ -1277,7 +1278,7 @@ static int create_process(ap_context_t *p, HANDLE *handles, HANDLE *events, int 
         HANDLE kill_event;
         LPWSAPROTOCOL_INFO  lpWSAProtocolInfo;
 
-        ap_log_error(APLOG_MARK, APLOG_NOERRNO | APLOG_INFO, server_conf,
+        ap_log_error(APLOG_MARK, APLOG_INFO, APR_SUCCESS, server_conf,
                      "Parent: Created child process %d", pi.dwProcessId);
 
         SetEnvironmentVariable("AP_PARENT_PID",NULL);
@@ -1286,7 +1287,7 @@ static int create_process(ap_context_t *p, HANDLE *handles, HANDLE *events, int 
         kill_event = create_exit_event(ap_psprintf(pconf,"apC%d", pi.dwProcessId));
 //CreateEvent(NULL, TRUE, TRUE, ap_psprintf(pconf,"apC%d", pi.dwProcessId)); // exit_event_name...
         if (!kill_event) {
-            ap_log_error(APLOG_MARK, APLOG_WIN32ERROR | APLOG_CRIT, server_conf,
+            ap_log_error(APLOG_MARK, APLOG_CRIT, GetLastError(), server_conf,
                          "Parent: Could not create exit event for child process");
             CloseHandle(pi.hProcess);
             CloseHandle(pi.hThread);
@@ -1308,13 +1309,13 @@ static int create_process(ap_context_t *p, HANDLE *handles, HANDLE *events, int 
         for (lr = ap_listeners; lr; lr = lr->next) {
             int nsd;
             lpWSAProtocolInfo = ap_pcalloc(p, sizeof(WSAPROTOCOL_INFO));
-            ap_log_error(APLOG_MARK, APLOG_NOERRNO | APLOG_INFO, server_conf,
+            ap_log_error(APLOG_MARK, APLOG_NOERRNO | APLOG_INFO, APR_SUCCESS, server_conf,
                          "Parent: Duplicating socket %d and sending it to child process %d", lr->sd, pi.dwProcessId);
             ap_get_os_sock(&nsd,lr->sd);
             if (WSADuplicateSocket(nsd, 
                                    pi.dwProcessId,
                                    lpWSAProtocolInfo) == SOCKET_ERROR) {
-                ap_log_error(APLOG_MARK, APLOG_WIN32ERROR | APLOG_CRIT, server_conf,
+                ap_log_error(APLOG_MARK, APLOG_CRIT, h_errno, server_conf,
                              "Parent: WSADuplicateSocket failed for socket %d.", lr->sd );
                 return -1;
             }
@@ -1322,11 +1323,11 @@ static int create_process(ap_context_t *p, HANDLE *handles, HANDLE *events, int 
             if (!WriteFile(hPipeWrite, lpWSAProtocolInfo, (DWORD) sizeof(WSAPROTOCOL_INFO),
                            &BytesWritten,
                            (LPOVERLAPPED) NULL)) {
-                ap_log_error(APLOG_MARK, APLOG_WIN32ERROR | APLOG_CRIT, server_conf,
+                ap_log_error(APLOG_MARK, APLOG_CRIT, GetLastError(), server_conf,
                              "Parent: Unable to write duplicated socket %d to the child.", lr->sd );
                 return -1;
             }
-            ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_INFO, server_conf,
+            ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_INFO, APR_SUCCESS, server_conf,
                          "BytesWritten = %d WSAProtocolInfo = %x20", BytesWritten, *lpWSAProtocolInfo);
         }
     }
@@ -1397,7 +1398,7 @@ static int master_main(server_rec *s, HANDLE shutdown_event, HANDLE restart_even
     while (remaining_children_to_start--) {
         if (create_process(pconf, process_handles, process_kill_events, 
                            &current_live_processes) < 0) {
-            ap_log_error(APLOG_MARK, APLOG_NOERRNO, server_conf,
+            ap_log_error(APLOG_MARK, APLOG_CRIT, GetLastError(), server_conf,
                          "master_main: create child process failed. Exiting.");
             shutdown_pending = 1;
             goto die_now;
@@ -1415,23 +1416,23 @@ static int master_main(server_rec *s, HANDLE shutdown_event, HANDLE restart_even
     cld = rv - WAIT_OBJECT_0;
     if (rv == WAIT_FAILED) {
         /* Something serious is wrong */
-        ap_log_error(APLOG_MARK,APLOG_CRIT|APLOG_WIN32ERROR, server_conf,
+        ap_log_error(APLOG_MARK,APLOG_CRIT, GetLastError(), server_conf,
                      "master_main: : WaitForMultipeObjects on process handles and apache-signal -- doing shutdown");
         shutdown_pending = 1;
     }
     else if (rv == WAIT_TIMEOUT) {
         /* Hey, this cannot happen */
-        ap_log_error(APLOG_MARK, APLOG_ERR, s,
+        ap_log_error(APLOG_MARK, APLOG_ERR, GetLastError(), s,
                      "master_main: WaitForMultipeObjects with INFINITE wait exited with WAIT_TIMEOUT");
         shutdown_pending = 1;
     }
     else if (cld == current_live_processes) {
         /* shutdown_event signalled */
         shutdown_pending = 1;
-        ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_INFO, s, 
+        ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_INFO, APR_SUCCESS, s, 
                      "master_main: Shutdown event signaled. Shutting the server down.");
         if (ResetEvent(shutdown_event) == 0) {
-            ap_log_error(APLOG_MARK, APLOG_ERR|APLOG_WIN32ERROR, s,
+            ap_log_error(APLOG_MARK, APLOG_ERR, GetLastError(), s,
                          "ResetEvent(shutdown_event)");
         }
 
@@ -1440,10 +1441,10 @@ static int master_main(server_rec *s, HANDLE shutdown_event, HANDLE restart_even
         /* restart_event signalled */
         int children_to_kill = current_live_processes;
         restart_pending = 1;
-        ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_INFO, s, 
+        ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_INFO, APR_SUCCESS, s, 
                      "master_main: Restart event signaled. Doing a graceful restart.");
         if (ResetEvent(restart_event) == 0) {
-            ap_log_error(APLOG_MARK, APLOG_ERR|APLOG_WIN32ERROR, s,
+            ap_log_error(APLOG_MARK, APLOG_ERR, GetLastError(), s,
                          "master_main: ResetEvent(restart_event) failed.");
         }
         /* Signal each child process to die 
@@ -1455,7 +1456,7 @@ static int master_main(server_rec *s, HANDLE shutdown_event, HANDLE restart_even
         for (i = 0; i < children_to_kill; i++) {
             /* APD3("master_main: signalling child #%d handle %d to die", i, process_handles[i]); */
             if (SetEvent(process_kill_events[i]) == 0)
-                ap_log_error(APLOG_MARK, APLOG_ERR|APLOG_WIN32ERROR, s,
+                ap_log_error(APLOG_MARK, APLOG_ERR, GetLastError(), s,
                              "master_main: SetEvent for child process in slot #%d failed", i);
             cleanup_process(process_handles, process_kill_events, i, &current_live_processes);
         }
@@ -1470,7 +1471,7 @@ static int master_main(server_rec *s, HANDLE shutdown_event, HANDLE restart_even
          * children. One option, create a parent thread which waits on child death and restarts it.
          */
         restart_pending = 1;
-        ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_INFO, server_conf, 
+        ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_INFO, APR_SUCCESS, server_conf, 
                      "master_main: Child processed exited (due to MaxRequestsPerChild?). Restarting the child process.");
         ap_assert(cld < current_live_processes);
         cleanup_process(process_handles, process_kill_events, cld, &current_live_processes);
@@ -1484,7 +1485,7 @@ die_now:
         /* Signal each child processes to die */
         for (i = 0; i < current_live_processes; i++) {
             if (SetEvent(process_kill_events[i]) == 0)
-                ap_log_error(APLOG_MARK,APLOG_ERR|APLOG_WIN32ERROR, server_conf,
+                ap_log_error(APLOG_MARK,APLOG_ERR, GetLastError(), server_conf,
                              "master_main: SetEvent for child process in slot #%d failed", i);
         }
 
@@ -1498,7 +1499,7 @@ die_now:
             cleanup_process(process_handles, process_kill_events, cld, &current_live_processes);
         }
         for (i = 0; i < current_live_processes; i++) {
-            ap_log_error(APLOG_MARK,APLOG_ERR|APLOG_NOERRNO, server_conf,
+            ap_log_error(APLOG_MARK,APLOG_ERR|APLOG_NOERRNO, APR_SUCCESS, server_conf,
                          "forcing termination of child #%d (handle %d)", i, process_handles[i]);
             TerminateProcess((HANDLE) process_handles[i], 1);
         }
@@ -1598,7 +1599,7 @@ API_EXPORT(int) ap_mpm_run(ap_context_t *_pconf, ap_context_t *plog, server_rec 
              */
             shutdown_event = CreateEvent(sa, TRUE, FALSE, signal_shutdown_name);
             if (!shutdown_event) {
-                ap_log_error(APLOG_MARK, APLOG_EMERG|APLOG_WIN32ERROR, s,
+                ap_log_error(APLOG_MARK, APLOG_EMERG, GetLastError(), s,
                              "master_main: Cannot create shutdown event %s", signal_shutdown_name);
                 CleanNullACL((void *)sa);
                 exit(1);
@@ -1610,7 +1611,7 @@ API_EXPORT(int) ap_mpm_run(ap_context_t *_pconf, ap_context_t *plog, server_rec 
             restart_event = CreateEvent(sa, TRUE, FALSE, signal_restart_name);
             if (!restart_event) {
                 CloseHandle(shutdown_event);
-                ap_log_error(APLOG_MARK, APLOG_EMERG|APLOG_WIN32ERROR, s,
+                ap_log_error(APLOG_MARK, APLOG_EMERG, GetLastError(), s,
                              "master_main: Cannot create restart event %s", signal_restart_name);
                 CleanNullACL((void *)sa);
                 exit(1);
@@ -1633,7 +1634,7 @@ API_EXPORT(int) ap_mpm_run(ap_context_t *_pconf, ap_context_t *plog, server_rec 
             /* Shutting down. Clean up... */
             pidfile = ap_server_root_relative (pconf, mpm_pid_fname);
             if ( pidfile != NULL && unlink(pidfile) == 0)
-                ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_INFO,
+                ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_INFO,APR_SUCCESS,
                              server_conf,
                              "removed PID file %s (pid=%ld)",
                              pidfile, (long)getpid());
