@@ -430,6 +430,7 @@ typedef struct {
     const char *verify_error;
     int verify_depth;
     int log_level; /* for avoiding expensive logging */
+    int is_proxy;
 } SSLConnRec;
 
 #define SSLConnLogApplies(sslconn, level) (sslconn->log_level >= level)
@@ -712,6 +713,11 @@ APR_DECLARE_OPTIONAL_FN(char *, ssl_var_lookup,
                         (apr_pool_t *, server_rec *,
                          conn_rec *, request_rec *,
                          char *));
+
+/* Proxy Support */
+int ssl_proxy_enable(conn_rec *c);
+
+APR_DECLARE_OPTIONAL_FN(int, ssl_proxy_enable, (conn_rec *));
 
 /*  I/O  */
 void         ssl_io_filter_init(conn_rec *, SSL *);
