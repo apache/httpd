@@ -614,8 +614,8 @@ directly</td></tr>
     <tr><td>loadfactor</td>
         <td>1</td>
         <td>Worker load factor. Used with BalancerMember.
-         It is a number between 1 and 100 and defines the load applied to
-         the worker.
+         It is a number between 1 and 100 and defines the normalized weighted
+         load applied to the worker.
     </td></tr>
     <tr><td>route</td>
         <td>-</td>
@@ -643,6 +643,13 @@ directly</td></tr>
     <tr><th>Parameter</th>
         <th>Default</th>
         <th>Description</th></tr>
+    <tr><td>lbmethod</td>
+        <td>-</td>
+        <td>Balancer load-balance method. Select the load-balancing scheduler
+        method to use. Either <code>requests</code>, to perform weighted
+        request counting or <code>traffic</code>, to perform weighted
+        traffic byte count balancing. Default is <code>requests</code>.
+    </td></tr>
     <tr><td>stickysession</td>
         <td>-</td>
         <td>Balancer sticky session name. The value is usually set to something

@@ -25,7 +25,7 @@
 </div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>LDAP connection pooling and result caching services for use
 by other LDAP modules</td></tr>
-<tr><th><a href="module-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
+<tr><th><a href="module-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">Module Identifier:</a></th><td>ldap_module</td></tr>
 <tr><th><a href="module-dict.html#SourceFile">Source File:</a></th><td>util_ldap.c</td></tr>
 <tr><th><a href="module-dict.html#Compatibility">Compatibility:</a></th><td>Available in version 2.0.41 and later</td></tr></table>
@@ -42,17 +42,23 @@ by other LDAP modules</td></tr>
     flag to the <code class="program"><a href="../programs/configure.html">configure</a></code> script when building
     Apache.</p>
 
-    <p>SSL support requires that <code class="module"><a href="../mod/mod_ldap.html">mod_ldap</a></code> be linked
-    with one of the following LDAP SDKs: <a href="http://www.openldap.org/">
-    OpenLDAP SDK</a> (both 1.x and 2.x), <a href="http://developer.novell.com/ndk/cldap.htm">
-    Novell LDAP SDK</a>, native Solaris LDAP SDK, native Microsoft LDAP SDK, or the <a href="http://www.iplanet.com/downloads/developer/">
-    iPlanet(Netscape)</a> SDK.</p>
+    <p>SSL/TLS support is dependant on which LDAP toolkit has been
+    linked to APR. As of this writing, APR-util supports:
+    <a href="http://www.openldap.org/">OpenLDAP SDK</a> (2.x or later),
+    <a href="http://developer.novell.com/ndk/cldap.htm">Novell LDAP
+    SDK</a>, <a href="http://www.mozilla.org/directory/csdk.html">
+    Mozilla LDAP SDK</a>, native Solaris LDAP SDK (Mozilla based),
+    native Microsoft LDAP SDK, or the
+    <a href="http://www.iplanet.com/downloads/developer/">iPlanet
+    (Netscape)</a> SDK. See the <a href="http://apr.apache.org">APR</a>
+    website for details.</p>
 
 </div>
 <div id="quickview"><h3 class="directives">Directives</h3>
 <ul id="toc">
 <li><img alt="" src="../images/down.gif" /> <a href="#ldapcacheentries">LDAPCacheEntries</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#ldapcachettl">LDAPCacheTTL</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#ldapconnectiontimeout">LDAPConnectionTimeout</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#ldapopcacheentries">LDAPOpCacheEntries</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#ldapopcachettl">LDAPOpCacheTTL</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#ldapsharedcachefile">LDAPSharedCacheFile</a></li>
@@ -259,8 +265,11 @@ by other LDAP modules</td></tr>
 <h2><a name="settingcerts" id="settingcerts">SSL/TLS Certificates</a></h2>
 
     <p>The different LDAP SDKs have widely different methods of setting
-    and handling both CA and client side certificates. Some of the
-    differences are described below:</p>
+    and handling both CA and client side certificates.</p>
+
+    <p>If you intend to use SSL or TLS, read this section CAREFULLY so as to
+    understand the differences between configurations on the different LDAP
+    toolkits supported.</p>
 
     <h3><a name="settingcerts-netscape" id="settingcerts-netscape">Netscape/Mozilla/iPlanet SDK</a></h3>
         <p>CA certificates are specified within a file called cert7.db.
@@ -269,13 +278,14 @@ by other LDAP modules</td></tr>
         client certificates are required, an optional key3.db file may
         be specified with an optional password. The secmod file can be
         specified if required. These files are in the same format as
-        used by Netscape Communicator / Mozilla web browser. The easiest
-        way to obtain these files is to grab them from a browser
+        used by the Netscape Communicator or Mozilla web browsers. The easiest
+        way to obtain these files is to grab them from your browser
         installation.</p>
 
-        <p>Client certificates are specified per connection by referring
-        to the certificate "nickname", and an optional password may be
-        specified.</p>
+        <p>Client certificates are specified per connection using the
+        LDAPTrustedClientCert directive by referring
+        to the certificate "nickname". An optional password may be
+        specified to unlock the certificate's private key.</p>
 
         <p>The SDK supports SSL only. An attempt to use STARTTLS will cause
         an error when an attempt is made to contact the LDAP server at
@@ -311,15 +321,15 @@ by other LDAP modules</td></tr>
         SDK to work correctly. These certificates can be specified as
         binary DER or Base64 (PEM) encoded files.</p>
 
-        <p>Client certificates are specified globally rather than per
-        connection, and so must be specified with the global certificate
-        option as below. Trying to set client certificates via the
-        LDAPTrustedClientCert option will cause an error to be thrown
-        when httpd starts up.</p>
+        <p>Note: Client certificates are specified globally rather than per
+        connection, and so must be specified with the LDAPTrustedGlobalCert
+        directive as below. Trying to set client certificates via the
+        LDAPTrustedClientCert directive will cause an error to be logged
+        when an attempt is made to connect to the LDAP server..</p>
 
         <p>The SDK supports both SSL and STARTTLS, set using the
         LDAPTrustedMode parameter. If an ldaps:// URL is specified,
-        SSL mode is forced.</p>
+        SSL mode is forced, override this directive.</p>
 
         <div class="example"><p><code>
              # Specify two CA certificate files<br />
@@ -328,6 +338,8 @@ by other LDAP modules</td></tr>
              # Specify a client certificate file and key<br />
              LDAPTrustedGlobalCert CERT_BASE64 /certs/cert1.pem<br />
              LDAPTrustedGlobalCert KEY_BASE64 /certs/key1.pem [password]<br />
+             # Do not use this directive, as it will throw an error<br />
+             #LDAPTrustedClientCert CERT_BASE64 /certs/cert1.pem<br />
         </code></p></div>
 
     
@@ -388,6 +400,9 @@ by other LDAP modules</td></tr>
         <p>Both SSL and TLS are supported by using the ldaps:// URL
         format, or by using the LDAPTrustedMode directive accordingly.</p>
 
+        <p>Note: The status of support for client certificates is not yet known
+        for this toolkit.</p>
+
     
 
 </div>
@@ -398,7 +413,7 @@ by other LDAP modules</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>LDAPCacheEntries <var>number</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>LDAPCacheEntries 1024</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
-<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ldap</td></tr>
 </table>
     <p>Specifies the maximum size of the primary LDAP cache. This
@@ -414,12 +429,28 @@ by other LDAP modules</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>LDAPCacheTTL <var>seconds</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>LDAPCacheTTL 600</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
-<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ldap</td></tr>
 </table>
     <p>Specifies the time (in seconds) that an item in the
     search/bind cache remains valid. The default is 600 seconds (10
     minutes).</p>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="LDAPConnectionTimeout" id="LDAPConnectionTimeout">LDAPConnectionTimeout</a> <a name="ldapconnectiontimeout" id="ldapconnectiontimeout">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Specifies the socket connection timeout in seconds</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>LDAPConnectionTimeout <var>seconds</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ldap</td></tr>
+</table>
+    <p>Specifies the timeout value (in seconds) in which the module will
+    attempt to connect to the LDAP server.  If a connection is not
+    successful with the timeout period, either an error will be 
+    returned or the module will attempt to connect to a secondary LDAP 
+    server if one is specified. The default is 10 seconds.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -430,7 +461,7 @@ operations</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>LDAPOpCacheEntries <var>number</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>LDAPOpCacheEntries 1024</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
-<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ldap</td></tr>
 </table>
     <p>This specifies the number of entries <code class="module"><a href="../mod/mod_ldap.html">mod_ldap</a></code>
@@ -446,7 +477,7 @@ valid</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>LDAPOpCacheTTL <var>seconds</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>LDAPOpCacheTTL 600</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
-<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ldap</td></tr>
 </table>
     <p>Specifies the time (in seconds) that entries in the
@@ -459,7 +490,7 @@ valid</td></tr>
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Sets the shared memory cache file</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>LDAPSharedCacheFile <var>directory-path/filename</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
-<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ldap</td></tr>
 </table>
     <p>Specifies the directory path and file name of the shared memory
@@ -474,7 +505,7 @@ valid</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>LDAPSharedCacheSize <var>bytes</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>LDAPSharedCacheSize 102400</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
-<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ldap</td></tr>
 </table>
     <p>Specifies the number of bytes to allocate for the shared
@@ -490,13 +521,18 @@ connection client certificate. Not all LDAP toolkits support per
 connection client certificates.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>LDAPTrustedClientCert <var>type</var> <var>directory-path/filename/nickname</var> <var>[password]</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ldap</td></tr>
 </table>
     <p>It specifies the directory path, file name or nickname of a
     per connection client certificate used when establishing an SSL
-    or TLS connection to an LDAP server. Not all LDAP toolkits support
-    per connection client certificates (See the toolkit guide for details).
+    or TLS connection to an LDAP server. Different locations or
+    directories may have their own independant client certificate
+    settings. Some LDAP toolkits (notably Novell)
+    do not support per connection client certificates, and will throw an
+    error on LDAP server connection if you try to use this directive
+    (Use the LDAPTrustedGlobalCert directive instead for Novell client
+    certificates - See the SSL/TLS certificate guide above for details).
     The type specifies the kind of certificate parameter being
     set, depending on the LDAP toolkit being used. Supported types are:</p>
     <ul>
@@ -515,13 +551,21 @@ connection client certificates.</td></tr>
 Certificate Authority or global client certificates</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>LDAPTrustedGlobalCert <var>type</var> <var>directory-path/filename</var> <var>[password]</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
-<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ldap</td></tr>
 </table>
     <p>It specifies the directory path and file name of the trusted CA
-    certificates and/or client certificates <code class="module"><a href="../mod/mod_ldap.html">mod_ldap</a></code>
+    certificates and/or system wide client certificates <code class="module"><a href="../mod/mod_ldap.html">mod_ldap</a></code>
     should use when establishing an SSL or TLS connection to an LDAP
-    server. The type specifies the kind of certificate parameter being
+    server. Note that all certificate information specified using this directive
+    is applied globally to the entire server installation. Some LDAP toolkits
+    (notably Novell) require all client certificates to be set globally using
+    this directive. Most other toolkits require clients certificates to be set
+    per Directory or per Location using LDAPTrustedClientCert. If you get this
+    wrong, an error may be logged when an attempt is made to contact the LDAP
+    server, or the connection may silently fail (See the SSL/TLS certificate
+    guide above for details).
+    The type specifies the kind of certificate parameter being
     set, depending on the LDAP toolkit being used. Supported types are:</p>
     <ul>
       <li>CA_DER - binary DER encoded CA certificate</li>
@@ -532,8 +576,10 @@ Certificate Authority or global client certificates</td></tr>
       <li>CERT_BASE64 - PEM encoded client certificate</li>
       <li>CERT_KEY3_DB - Netscape key3.db client certificate database file</li>
       <li>CERT_NICKNAME - Client certificate "nickname" (Netscape SDK)</li>
+      <li>CERT_PFX - PKCS#12 encoded client certificate (Novell SDK)</li>
       <li>KEY_DER - binary DER encoded private key</li>
       <li>KEY_BASE64 - PEM encoded private key</li>
+      <li>KEY_PFX - PKCS#12 encoded private key (Novell SDK)</li>
     </ul>
 
 </div>
@@ -543,7 +589,7 @@ Certificate Authority or global client certificates</td></tr>
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Specifies the SSL/TLS mode to be used when connecting to an LDAP server.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>LDAPTrustedMode <var>type</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ldap</td></tr>
 </table>
     <p>The following modes are supported:</p>
