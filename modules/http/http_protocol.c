@@ -2008,7 +2008,7 @@ API_EXPORT(int) ap_discard_request_body(request_rec *r)
  */
 API_EXPORT(long) ap_send_fd(ap_file_t *fd, request_rec *r)
 {
-    ap_ssize_t len =  r->finfo.st_size;
+    long len;
 #ifdef HAVE_SENDFILE
     ap_bflush(r->connection->client);
     if (ap_get_filesize(&len, fd) != APR_SUCCESS) {
