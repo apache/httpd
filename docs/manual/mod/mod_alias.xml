@@ -76,10 +76,12 @@ href="../urlmapping.html">Mapping URLs to the filesystem</a></seealso>
     permit access to the target directory.</p>
 
     <example><title>Example:</title>
-        Alias /image /ftp/pub/image
-        &lt;Directory /ftp/pub/image&gt;
-            Order allow,deny
-            Allow from all
+        Alias /image /ftp/pub/image<br />
+        &lt;Directory /ftp/pub/image&gt;<br />
+        <indent>
+            Order allow,deny<br />
+            Allow from all<br />
+        </indent>
         &lt;/Directory&gt;
     </example>
 
