@@ -275,7 +275,6 @@ static apr_bucket *find_end_sequence(apr_bucket *dptr, include_ctx_t *ctx, apr_b
                 if (ctx->state == PARSE_DIRECTIVE) {
                     /* gonna start over parsing the directive next time through */
                     ctx->directive_length = 0;
-                    ctx->tag_length       = 0;
                 }
                 return dptr;
             }
@@ -763,6 +762,7 @@ static int handle_include(include_ctx_t *ctx, apr_bucket_brigade **bb, request_r
     char *tag_val = NULL;
     apr_bucket  *tmp_buck;
     char parsed_string[MAX_STRING_LEN];
+    int loglevel = APLOG_ERR;
 
     *inserted_head = NULL;
     if (ctx->flags & FLAG_PRINTING) {
@@ -832,8 +832,8 @@ static int handle_include(include_ctx_t *ctx, apr_bucket_brigade **bb, request_r
                     for (p = r; p != NULL && !founddupe; p = p->main) {
     		    request_rec *q;
     		    for (q = p; q != NULL; q = q->prev) {
-    			if ((q->filename && rr->filename && (strcmp(q->filename, rr->filename) == 0)) ||
-                            (strcmp(q->uri, rr->uri) == 0)) {
+    			if ( (strcmp(q->filename, rr->filename) == 0) ||
+    			     (strcmp(q->uri, rr->uri) == 0) ){
     			    founddupe = 1;
     			    break;
     			}
@@ -853,14 +853,20 @@ static int handle_include(include_ctx_t *ctx, apr_bucket_brigade **bb, request_r
     		ap_set_module_config(rr->request_config, &include_module, r);
 
                 if (!error_fmt) {
+                    int rv;
+
                     SPLIT_AND_PASS_PRETAG_BUCKETS(*bb, ctx, f->next);
                     
-                    if (ap_run_sub_req(rr)) {
-                        error_fmt = "unable to include \"%s\" in parsed file %s";
+                    if ((rv = ap_run_sub_req(rr))) {
+                        if (APR_STATUS_IS_EPIPE(rv)) {
+                            /* let's not clutter the log on a busy server */
+                            loglevel = APLOG_INFO; 
+                        }
+                        error_fmt = "unable to include \"%s\" in parsed file %s"; 
                     }
                 }
                 if (error_fmt) {
-                    ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR,
+                    ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|loglevel,
     			    0, r, error_fmt, tag_val, r->filename);
                     CREATE_ERROR_BUCKET(ctx, tmp_buck, head_ptr, *inserted_head);
                 }
