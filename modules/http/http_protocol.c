@@ -414,13 +414,17 @@ AP_DECLARE(const char *) ap_method_name_of(int methnum)
 struct dechunk_ctx {
     apr_size_t chunk_size;
     apr_size_t bytes_delivered;
-    enum {WANT_HDR /* must have value zero */, WANT_BODY, WANT_TRL} state;
+    enum {
+        WANT_HDR /* must have value zero */,
+        WANT_BODY,
+        WANT_TRL
+    } state;
 };
 
 static long get_chunk_size(char *);
 
 apr_status_t ap_dechunk_filter(ap_filter_t *f, apr_bucket_brigade *bb,
-                               ap_input_mode_t mode, apr_size_t *readbytes)
+                               ap_input_mode_t mode, apr_size_t readbytes)
 {
     apr_status_t rv;
     struct dechunk_ctx *ctx = f->ctx;
@@ -440,7 +444,8 @@ apr_status_t ap_dechunk_filter(ap_filter_t *f, apr_bucket_brigade *bb,
              */
             char line[30];
             
-            if ((rv = ap_getline(line, sizeof(line), f->r, 0)) < 0) {
+            if ((rv = ap_getline(line, sizeof(line), f->r,
+                                 0 /* readline */)) < 0) {
                 return rv;
             }
             switch(ctx->state) {
@@ -460,6 +465,7 @@ apr_status_t ap_dechunk_filter(ap_filter_t *f, apr_bucket_brigade *bb,
                     /* bad trailer */
                 }
                 if (ctx->chunk_size == 0) { /* we just finished the last chunk? */
+                    /* ### woah... ap_http_filter() is doing this, too */
                     /* append eos bucket and get out */
                     b = apr_bucket_eos_create();
                     APR_BRIGADE_INSERT_TAIL(bb, b);
@@ -475,12 +481,21 @@ apr_status_t ap_dechunk_filter(ap_filter_t *f, apr_bucket_brigade *bb,
 
     if (ctx->state == WANT_BODY) {
         /* Tell ap_http_filter() how many bytes to deliver. */
-        apr_size_t readbytes = ctx->chunk_size - ctx->bytes_delivered;
-        if ((rv = ap_get_brigade(f->next, bb, mode, &readbytes)) != APR_SUCCESS) {
+        apr_size_t chunk_bytes = ctx->chunk_size - ctx->bytes_delivered;
+
+        if ((rv = ap_get_brigade(f->next, bb, mode,
+                                 chunk_bytes)) != APR_SUCCESS) {
             return rv;
         }
-        /* Walk through the body, accounting for bytes, and removing an eos bucket if
-         * ap_http_filter() delivered the entire chunk.
+
+        /* Walk through the body, accounting for bytes, and removing an eos
+         * bucket if ap_http_filter() delivered the entire chunk.
+         *
+         * ### this shouldn't be necessary. 1) ap_http_filter shouldn't be
+         * ### adding EOS buckets. 2) it shouldn't return more bytes than
+         * ### we requested, therefore the total len can be found with a
+         * ### simple call to apr_brigade_length(). no further munging
+         * ### would be needed.
          */
         b = APR_BRIGADE_FIRST(bb);
         while (b != APR_BRIGADE_SENTINEL(bb) && !APR_BUCKET_IS_EOS(b)) {
@@ -503,7 +518,7 @@ typedef struct http_filter_ctx {
     apr_bucket_brigade *b;
 } http_ctx_t;
 
-apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b, ap_input_mode_t mode, apr_size_t *readbytes)
+apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b, ap_input_mode_t mode, apr_size_t readbytes)
 {
     apr_bucket *e;
     char *buff;
@@ -561,7 +576,16 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b, ap_input_mode
         }
     }
 
-    if (*readbytes) {
+    /* readbytes == 0 is "read a single line". otherwise, read a block. */
+    if (readbytes) {
+
+        /* ### the code below, which moves bytes from one brigade to the
+           ### other is probably bogus. presuming the next filter down was
+           ### working properly, it should not have returned more than
+           ### READBYTES bytes, and we wouldn't have to do any work. further,
+           ### we could probably just use brigade_partition() in here.
+        */
+
         while (!APR_BRIGADE_EMPTY(ctx->b)) {
             const char *ignore;
 
@@ -580,12 +604,12 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b, ap_input_mode
                  * a time - don't assume that one call to apr_bucket_read()
                  * will return the full string.
                  */
-                if (*readbytes < len) {
-                    apr_bucket_split(e, *readbytes);
-                    *readbytes = 0;
+                if (readbytes < len) {
+                    apr_bucket_split(e, readbytes);
+                    readbytes = 0;
                 }
                 else {
-                    *readbytes -= len;
+                    readbytes -= len;
                 }
                 APR_BUCKET_REMOVE(e);
                 APR_BRIGADE_INSERT_TAIL(b, e);
@@ -593,7 +617,18 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b, ap_input_mode
             }
             apr_bucket_delete(e);
         }
-        if (*readbytes == 0) {
+
+        /* ### this is a hack. it is saying, "if we have read everything
+           ### that was requested, then we are at the end of the request."
+           ### it presumes that the next filter up will *only* call us
+           ### with readbytes set to the Content-Length of the request.
+           ### that may not always be true, and this code is *definitely*
+           ### too presumptive of the caller's intent. the point is: this
+           ### filter is not the guy that is parsing the headers or the
+           ### chunks to determine where the end of the request is, so we
+           ### shouldn't be monkeying with EOS buckets.
+        */
+        if (readbytes == 0) {
             apr_bucket *eos = apr_bucket_eos_create();
                 
             APR_BRIGADE_INSERT_TAIL(b, eos);
@@ -601,6 +636,7 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b, ap_input_mode
         return APR_SUCCESS;
     }
 
+    /* we are reading a single line, e.g. the HTTP headers */
     while (!APR_BRIGADE_EMPTY(ctx->b)) {
         e = APR_BRIGADE_FIRST(ctx->b);
         if ((rv = apr_bucket_read(e, (const char **)&buff, &len, mode)) != APR_SUCCESS) {
@@ -1366,7 +1402,8 @@ AP_DECLARE(long) ap_get_client_block(request_rec *r, char *buffer, int bufsiz)
 
     do {
         if (APR_BRIGADE_EMPTY(bb)) {
-            if (ap_get_brigade(r->input_filters, bb, AP_MODE_BLOCKING, &r->remaining) != APR_SUCCESS) {
+            if (ap_get_brigade(r->input_filters, bb, AP_MODE_BLOCKING,
+                               r->remaining) != APR_SUCCESS) {
                 /* if we actually fail here, we want to just return and
                  * stop trying to read data from the client.
                  */
@@ -1375,16 +1412,28 @@ AP_DECLARE(long) ap_get_client_block(request_rec *r, char *buffer, int bufsiz)
                 return -1;
             }
         }
-        b = APR_BRIGADE_FIRST(bb);
     } while (APR_BRIGADE_EMPTY(bb));
 
-    if (APR_BUCKET_IS_EOS(b)) {         /* reached eos on previous invocation */
+    b = APR_BRIGADE_FIRST(bb);
+    if (APR_BUCKET_IS_EOS(b)) { /* reached eos on previous invocation */
         apr_bucket_delete(b);
         return 0;
     }
 
+    /* ### it would be nice to replace the code below with "consume N bytes
+       ### from this brigade, placing them into that buffer." there are
+       ### other places where we do the same...
+       ###
+       ### alternatively, we could partition the brigade, then call a
+       ### function which serializes a given brigade into a buffer. that
+       ### semantic is used elsewhere, too...
+    */
+
     total = 0;
-    while (total < bufsiz &&  b != APR_BRIGADE_SENTINEL(bb) && !APR_BUCKET_IS_EOS(b)) {
+    while (total < bufsiz
+           && b != APR_BRIGADE_SENTINEL(bb)
+           && !APR_BUCKET_IS_EOS(b)) {
+
         if ((rv = apr_bucket_read(b, &tempbuf, &len_read, APR_BLOCK_READ)) != APR_SUCCESS) {
             return -1;
         }
