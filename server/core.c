@@ -3044,9 +3044,7 @@ static apr_status_t core_output_filter(ap_filter_t *f, apr_bucket_brigade *b)
 
         /* Iterate over the brigade: collect iovecs and/or a file */
         APR_BRIGADE_FOREACH(e, b) {
-            /* XXX: APR_BRIGADE_FOREACH breaks the value of e! 
-             * is that the expected behavior?
-             */
+            /* keep track of the last bucket processed */
             last_e = e;
             if (APR_BUCKET_IS_EOS(e) || APR_BUCKET_IS_FLUSH(e)) {
                 break;
