@@ -90,7 +90,7 @@ extern char *sys_errlist[];
 extern char **environ;
 static FILE *log = NULL;
 
-char *safe_env_lst[] =
+static const char *const safe_env_lst[] =
 {
     /* variable name starts with */
     "HTTP_",
