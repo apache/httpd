@@ -115,6 +115,7 @@ _build:
 _install:
 	-mkdir $(INSTDIR)
 	-mkdir $(INSTDIR)\modules
+	-mkdir $(INSTDIR)\proxy
 	-mkdir $(INSTDIR)\logs
 	-mkdir $(INSTDIR)\conf
 	-mkdir $(INSTDIR)\bin
