@@ -285,6 +285,11 @@ typedef struct module_struct {
 API_EXPORT(void *) ap_get_module_config(void *conf_vector, module *m);
 API_EXPORT(void) ap_set_module_config(void *conf_vector, module *m, void *val);
 
+#define ap_get_module_config(v,m)	\
+    (((void **)(v))[(m)->module_index])
+#define ap_set_module_config(v,m,val)	\
+    ((((void **)(v))[(m)->module_index]) = (val))
+
 /* Generic command handling function... */
 
 API_EXPORT_NONSTD(const char *) ap_set_string_slot(cmd_parms *, char *, char *);

@@ -115,17 +115,21 @@ typedef void *(*merger_func) (pool *, void *, void *);
  * overridden).
  */
 
+#ifndef ap_get_module_config
 API_EXPORT(void *) ap_get_module_config(void *conf_vector, module *m)
 {
     void **confv = (void **) conf_vector;
     return confv[m->module_index];
 }
+#endif
 
+#ifndef ap_set_module_config
 API_EXPORT(void) ap_set_module_config(void *conf_vector, module *m, void *val)
 {
     void **confv = (void **) conf_vector;
     confv[m->module_index] = val;
 }
+#endif
 
 static void *create_empty_config(pool *p)
 {
