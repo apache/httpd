@@ -1,5 +1,16 @@
 Changes with Apache 1.3.28
   
+  *) AIX: Change the default accept mechanism from pthread back to
+     fcntl.  Idle child cleanup doesn't work when the child selected
+     for termination by the parent is waiting on a pthread mutex, and 
+     because the AIX kernel's notion of hot process is apparently the 
+     same as Apache's, it is common for the Apache parent to continually
+     select a child for termination that the kernel will leave waiting
+     on the mutex for extended periods of time.  There are other 
+     concerns with pthread mutexes as well, such as the ability to 
+     deadlock the server if a child process segfaults while holding the 
+     mutex.  [Jeff Trawick]
+
   *) Fix a pair of potential buffer overflows in htdigest
      [Martin Schulze <joey@infodrom.org>, Thom May]
 
