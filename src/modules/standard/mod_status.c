@@ -274,7 +274,9 @@ static int status_handler(request_rec *r)
 	    if ((loc = strstr(r->args, status_options[i].form_data_str)) != NULL) {
 		switch (status_options[i].id) {
 		case STAT_OPT_REFRESH:
-		    if (*(loc + strlen(status_options[i].form_data_str)) == '=')
+		    if (*(loc + strlen(status_options[i].form_data_str)) == '='
+                        && (loc + strlen(status_options[i].form_data_str) 
+                                    + 1) > 0)
 			ap_table_set(r->headers_out,
 			      status_options[i].hdr_out_str,
 			      loc + strlen(status_options[i].hdr_out_str) + 1);
