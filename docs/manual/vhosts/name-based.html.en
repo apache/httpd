@@ -11,7 +11,7 @@
   vlink="#000080" alink="#FF0000">
     <!--#include virtual="header.html" -->
 
-    <h1 align="CENTER">Name-based Virtual Host Support</h1>
+    <h1 align="center">Name-based Virtual Host Support</h1>
 
 <p>This document describes when and how to use name-based virtual hosts.</p>
 
@@ -69,8 +69,8 @@ they are on separate IP addresses.</li>
 <h2><a name="using">Using Name-based Virtual Hosts</a></h2>
 
 <table border="1">
-<tr><td align="top">
-<strong>Related Directives</strong><br><br>
+<tr><td valign="top">
+<strong>Related Directives</strong><br /><br />
 
 <a href="../mod/core.html#documentroot">DocumentRoot</a><br />
 <a href="../mod/core.html#namevirtualhost">NameVirtualHost</a><br />

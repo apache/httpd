@@ -14,7 +14,7 @@
   vlink="#000080" alink="#FF0000">
     <!--#include virtual="header.html" -->
 
-    <h1 align="CENTER">Terms Used to Describe Apache
+    <h1 align="center">Terms Used to Describe Apache
     Directives</h1>
 
     <p>Each Apache configuration directive is described using a

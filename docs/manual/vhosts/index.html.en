@@ -13,7 +13,7 @@
   vlink="#000080" alink="#FF0000">
     <!--#include virtual="header.html" -->
 
-    <h1 align="CENTER">Apache Virtual Host documentation</h1>
+    <h1 align="center">Apache Virtual Host documentation</h1>
 
     <p>The term <cite>Virtual Host</cite> refers to the practice of
     running more than one web site (such as
@@ -74,7 +74,7 @@
       <li><a href="../mod/core.html#serverpath">ServerPath</a></li>
 
       <li><b>See also</b> <a 
-      href="../mod/mod_vhost_alias.html">mod_vhost_alias</a>
+      href="../mod/mod_vhost_alias.html">mod_vhost_alias</a></li>
     </ul>
 
     <p>If you are trying to debug your virtual host configuration, you

@@ -13,7 +13,7 @@
   vlink="#000080" alink="#FF0000">
     <!--#include virtual="header.html" -->
 
-    <h1 align="CENTER">Apache suEXEC Support</h1>
+    <h1 align="center">Apache suEXEC Support</h1>
 
     <ol>
       <li><big><strong>CONTENTS</strong></big></li>
@@ -43,14 +43,14 @@
 
     <h3><a id="what" name="what">What is suEXEC?</a></h3>
 
-    <p align="LEFT">The <strong>suEXEC</strong> feature provides
+    <p align="left">The <strong>suEXEC</strong> feature provides
     Apache users the ability
     to run <strong>CGI</strong> and <strong>SSI</strong> programs
     under user IDs different from the user ID of the calling
     web-server. Normally, when a CGI or SSI program executes, it
     runs as the same user who is running the web server.</p>
 
-    <p align="LEFT">Used properly, this feature can reduce
+    <p align="left">Used properly, this feature can reduce
     considerably the security risks involved with allowing users to
     develop and run private CGI or SSI programs. However, if suEXEC
     is improperly configured, it can cause any number of problems
@@ -59,30 +59,30 @@
     security issues they present, we highly recommend that you not
     consider using suEXEC.</p>
 
-    <p align="CENTER"><strong><a href="suexec.html">BACK TO
+    <p align="center"><strong><a href="suexec.html">BACK TO
     CONTENTS</a></strong></p>
 
     <h3><a id="before" name="before">Before we begin.</a></h3>
 
-    <p align="LEFT">Before jumping head-first into this document,
+    <p align="left">Before jumping head-first into this document,
     you should be aware of the assumptions made on the part of the
     Apache Group and this document.</p>
 
-    <p align="LEFT">First, it is assumed that you are using a UNIX
+    <p align="left">First, it is assumed that you are using a UNIX
     derivate operating system that is capable of
     <strong>setuid</strong> and <strong>setgid</strong> operations.
     All command examples are given in this regard. Other platforms,
     if they are capable of supporting suEXEC, may differ in their
     configuration.</p>
 
-    <p align="LEFT">Second, it is assumed you are familiar with
+    <p align="left">Second, it is assumed you are familiar with
     some basic concepts of your computer's security and its
     administration. This involves an understanding of
     <strong>setuid/setgid</strong> operations and the various
     effects they may have on your system and its level of
     security.</p>
 
-    <p align="LEFT">Third, it is assumed that you are using an
+    <p align="left">Third, it is assumed that you are using an
     <strong>unmodified</strong> version of suEXEC code. All code
     for suEXEC has been carefully scrutinized and tested by the
     developers as well as numerous beta testers. Every precaution
@@ -93,7 +93,7 @@
     particulars of security programming and are willing to share
     your work with the Apache Group for consideration.</p>
 
-    <p align="LEFT">Fourth, and last, it has been the decision of
+    <p align="left">Fourth, and last, it has been the decision of
     the Apache Group to <strong>NOT</strong> make suEXEC part of
     the default installation of Apache. To this end, suEXEC
     configuration requires of the administrator careful attention
@@ -107,20 +107,20 @@
     installation only to those who are careful and determined
     enough to use it.</p>
 
-    <p align="LEFT">Still with us? Yes? Good. Let's move on!</p>
+    <p align="left">Still with us? Yes? Good. Let's move on!</p>
 
-    <p align="CENTER"><strong><a href="suexec.html">BACK TO
+    <p align="center"><strong><a href="suexec.html">BACK TO
     CONTENTS</a></strong></p>
 
     <h3><a id="model" name="model">suEXEC Security Model</a></h3>
 
-    <p align="LEFT">Before we begin configuring and installing
+    <p align="left">Before we begin configuring and installing
     suEXEC, we will first discuss the security model you are about
     to implement. By doing so, you may better understand what
     exactly is going on inside suEXEC and what precautions are
     taken to ensure your system's security.</p>
 
-    <p align="LEFT"><strong>suEXEC</strong> is based on a setuid
+    <p align="left"><strong>suEXEC</strong> is based on a setuid
     "wrapper" program that is called by the main Apache web server.
     This wrapper is called when an HTTP request is made for a CGI
     or SSI program that the administrator has designated to run as
@@ -129,7 +129,7 @@
     program's name and the user and group IDs under which the
     program is to execute.</p>
 
-    <p align="LEFT">The wrapper then employs the following process
+    <p align="left">The wrapper then employs the following process
     to determine success or failure -- if any one of these
     conditions fail, the program logs the failure and exits with an
     error, otherwise it will continue:</p>
@@ -348,28 +348,28 @@
      <br />
      
 
-    <p align="LEFT">This is the standard operation of the the
+    <p align="left">This is the standard operation of the the
     suEXEC wrapper's security model. It is somewhat stringent and
     can impose new limitations and guidelines for CGI/SSI design,
     but it was developed carefully step-by-step with security in
     mind.</p>
 
-    <p align="LEFT">For more information as to how this security
+    <p align="left">For more information as to how this security
     model can limit your possibilities in regards to server
     configuration, as well as what security risks can be avoided
     with a proper suEXEC setup, see the <a
     href="#jabberwock">"Beware the Jabberwock"</a> section of this
     document.</p>
 
-    <p align="CENTER"><strong><a href="suexec.html">BACK TO
+    <p align="center"><strong><a href="suexec.html">BACK TO
     CONTENTS</a></strong></p>
 
     <h3><a id="install" name="install">Configuring &amp; Installing
     suEXEC</a></h3>
 
-    <p align="LEFT">Here's where we begin the fun.</p>
+    <p align="left">Here's where we begin the fun.</p>
 
-    <p align="LEFT"><strong>suEXEC configuration
+    <p align="left"><strong>suEXEC configuration
     options</strong><br />
     </p>
 
@@ -453,7 +453,7 @@
      <br />
      
 
-    <p align="LEFT"><strong>Checking your suEXEC
+    <p align="left"><strong>Checking your suEXEC
     setup</strong><br />
      Before you compile and install the suEXEC wrapper you can
     check the configuration with the --layout option.<br />
@@ -473,7 +473,7 @@
      <br />
      
 
-    <p align="LEFT"><strong>Compiling and installing the suEXEC
+    <p align="left"><strong>Compiling and installing the suEXEC
     wrapper</strong><br />
      If you have enabled the suEXEC feature with the
     --enable-suexec option the suexec binary (together with Apache
@@ -490,13 +490,13 @@
     owner <code><em>root</em></code> and must have the setuserid
     execution bit set for file modes.</p>
 
-    <p align="CENTER"><strong><a href="suexec.html">BACK TO
+    <p align="center"><strong><a href="suexec.html">BACK TO
     CONTENTS</a></strong></p>
 
     <h3><a id="enable" name="enable">Enabling &amp; Disabling
     suEXEC</a></h3>
 
-    <p align="LEFT">Upon startup of Apache, it looks for the file
+    <p align="left">Upon startup of Apache, it looks for the file
     "suexec" in the "sbin" directory (default is
     "/usr/local/apache/sbin/suexec"). If Apache finds a properly
     configured suEXEC wrapper, it will print the following message
@@ -517,12 +517,12 @@
      <br />
      
 
-    <p align="CENTER"><strong><a href="suexec.html">BACK TO
+    <p align="center"><strong><a href="suexec.html">BACK TO
     CONTENTS</a></strong></p>
 
     <h3><a id="usage" name="usage">Using suEXEC</a></h3>
 
-    <p align="LEFT"><strong>Virtual Hosts:</strong><br />
+    <p align="left"><strong>Virtual Hosts:</strong><br />
      One way to use the suEXEC wrapper is through the <a
     href="mod/mod_suexec.html#suexecusergroup">SuexecUserGroup</a>
     directive in <a
@@ -545,30 +545,30 @@
     meet the scrutiny of the <a href="#model">security checks</a>
     above.</p>
 
-    <p align="CENTER"><strong><a href="suexec.html">BACK TO
+    <p align="center"><strong><a href="suexec.html">BACK TO
     CONTENTS</a></strong></p>
 
     <h3><a id="debug" name="debug">Debugging suEXEC</a></h3>
 
-    <p align="LEFT">The suEXEC wrapper will write log information
+    <p align="left">The suEXEC wrapper will write log information
     to the file defined with the --with-suexec-logfile option as
     indicated above. If you feel you have configured and installed
     the wrapper properly, have a look at this log and the error_log
     for the server to see where you may have gone astray.</p>
 
-    <p align="CENTER"><strong><a href="suexec.html">BACK TO
+    <p align="center"><strong><a href="suexec.html">BACK TO
     CONTENTS</a></strong></p>
 
     <h3><a id="jabberwock" name="jabberwock">Beware the Jabberwock:
     Warnings &amp; Examples</a></h3>
 
-    <p align="LEFT"><strong>NOTE!</strong> This section may not be
+    <p align="left"><strong>NOTE!</strong> This section may not be
     complete. For the latest revision of this section of the
     documentation, see the Apache Group's <a
     href="http://www.apache.org/docs/suexec.html">Online
     Documentation</a> version.</p>
 
-    <p align="LEFT">There are a few points of interest regarding
+    <p align="left">There are a few points of interest regarding
     the wrapper that can cause limitations on server setup. Please
     review these before submitting any "bugs" regarding suEXEC.</p>
 
@@ -613,7 +613,7 @@
       </li>
     </ul>
 
-    <p align="CENTER"><strong><a href="suexec.html">BACK TO
+    <p align="center"><strong><a href="suexec.html">BACK TO
     CONTENTS</a></strong></p>
     <!--#include virtual="footer.html" -->
   </body>

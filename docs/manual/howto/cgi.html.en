@@ -14,7 +14,7 @@
   vlink="#000080" alink="#FF0000">
     <!--#include virtual="header.html" -->
 
-    <h1 align="CENTER">Dynamic Content with CGI</h1>
+    <h1 align="center">Dynamic Content with CGI</h1>
     <a id="__index__" name="__index__"></a> <!-- INDEX BEGIN -->
      
 

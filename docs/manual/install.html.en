@@ -13,7 +13,7 @@
   vlink="#000080" alink="#FF0000">
     <!--#include virtual="header.html" -->
 
-    <h1 align="CENTER">Compiling and Installing</h1>
+    <h1 align="center">Compiling and Installing</h1>
 
     <p>This document covers compilation and installation of Apache
     on Unix and Unix-like systems only. For compiling and

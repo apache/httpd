@@ -15,7 +15,7 @@
   vlink="#000080" alink="#FF0000">
     <!--#include virtual="header.html" -->
 
-    <h1 align="CENTER">Apache Tutorial: Introduction to Server Side
+    <h1 align="center">Apache Tutorial: Introduction to Server Side
     Includes</h1>
     <a id="__index__" name="__index__"></a> <!-- INDEX BEGIN -->
      
@@ -34,7 +34,7 @@
         <a href="#basicssidirectives">Basic SSI directives</a> 
 
         <ul>
-          <li><a href="#today'sdate">Today's date</a></li>
+          <li><a href="#todaysdate">Today's date</a></li>
 
           <li><a href="#modificationdateofthefile">Modification
           date of the file</a></li>
@@ -237,7 +237,7 @@
     series. For now, here are some examples of what you can do with
     SSI</p>
 
-    <h3><a id="today'sdate" name="today'sdate">Today's
+    <h3><a id="todaysdate" name="todaysdate">Today's
     date</a></h3>
 <pre>
         &lt;!--#echo var="DATE_LOCAL" --&gt;

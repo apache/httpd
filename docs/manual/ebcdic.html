@@ -20,7 +20,7 @@
       relevant, but please use it with care.
     </blockquote>
 
-    <h1 align="CENTER">Overview of the Apache EBCDIC Port</h1>
+    <h1 align="center">Overview of the Apache EBCDIC Port</h1>
 
     <p>Version 1.3 of the Apache HTTP Server is the first version
     which includes a port to a (non-ASCII) mainframe machine which
@@ -52,7 +52,7 @@
     <p>This document serves as a rationale to describe some of the
     design decisions of the port to this machine.</p>
 
-    <h2 align="CENTER">Design Goals</h2>
+    <h2 align="center">Design Goals</h2>
 
     <p>One objective of the EBCDIC port was to maintain enough
     backwards compatibility with the (EBCDIC) CERN server to make
@@ -68,7 +68,7 @@
     problem by defining an "ebcdic-handler" for all documents which
     must be converted.</p>
 
-    <h2 align="CENTER">Technical Solution</h2>
+    <h2 align="center">Technical Solution</h2>
 
     <p>Since all Apache input and output is based upon the BUFF
     data type and its methods, the easiest solution was to add the
@@ -100,7 +100,7 @@
      <br />
      
 
-    <h2 align="CENTER">Porting Notes</h2>
+    <h2 align="center">Porting Notes</h2>
 
     <ol>
       <li>
@@ -242,9 +242,9 @@
      <br />
      
 
-    <h2 align="CENTER">Document Storage Notes</h2>
+    <h2 align="center">Document Storage Notes</h2>
 
-    <h3 align="CENTER">Binary Files</h3>
+    <h3 align="center">Binary Files</h3>
 
     <p>All files with a <samp>Content-Type:</samp> which does not
     start with <samp>text/</samp> are regarded as <em>binary
@@ -258,22 +258,22 @@
     <samp>rcp&nbsp;-b</samp> command from the mainframe host (the
     -b switch is not supported in unix rcp's).</p>
 
-    <h3 align="CENTER">Text Documents</h3>
+    <h3 align="center">Text Documents</h3>
 
     <p>The default assumption of the server is that Text Files
     (<em>i.e.</em>, all files whose <samp>Content-Type:</samp>
     starts with <samp>text/</samp>) are stored in the native
     character set of the host, EBCDIC.</p>
 
-    <h3 align="CENTER">Server Side Included Documents</h3>
+    <h3 align="center">Server Side Included Documents</h3>
 
     <p>SSI documents must currently be stored in EBCDIC only. No
     provision is made to convert it from ASCII before
     processing.</p>
 
-    <h2 align="CENTER">Apache Modules' Status</h2>
+    <h2 align="center">Apache Modules' Status</h2>
 
-    <table border="1" align="middle">
+    <table border="1" align="center">
       <tr>
         <th>Module</th>
 
@@ -283,318 +283,318 @@
       </tr>
 
       <tr>
-        <td align="LEFT">http_core</td>
+        <td align="left">http_core</td>
 
-        <td align="CENTER">+</td>
-
-        <td>
-        </td>
-      </tr>
-
-      <tr>
-        <td align="LEFT">mod_access</td>
-
-        <td align="CENTER">+</td>
+        <td align="center">+</td>
 
         <td>
         </td>
       </tr>
 
       <tr>
-        <td align="LEFT">mod_actions</td>
+        <td align="left">mod_access</td>
 
-        <td align="CENTER">+</td>
-
-        <td>
-        </td>
-      </tr>
-
-      <tr>
-        <td align="LEFT">mod_alias</td>
-
-        <td align="CENTER">+</td>
+        <td align="center">+</td>
 
         <td>
         </td>
       </tr>
 
       <tr>
-        <td align="LEFT">mod_asis</td>
+        <td align="left">mod_actions</td>
 
-        <td align="CENTER">+</td>
-
-        <td>
-        </td>
-      </tr>
-
-      <tr>
-        <td align="LEFT">mod_auth</td>
-
-        <td align="CENTER">+</td>
+        <td align="center">+</td>
 
         <td>
         </td>
       </tr>
 
       <tr>
-        <td align="LEFT">mod_auth_anon</td>
+        <td align="left">mod_alias</td>
 
-        <td align="CENTER">+</td>
+        <td align="center">+</td>
 
         <td>
         </td>
       </tr>
 
       <tr>
-        <td align="LEFT">mod_auth_dbm</td>
+        <td align="left">mod_asis</td>
 
-        <td align="CENTER">?</td>
+        <td align="center">+</td>
+
+        <td>
+        </td>
+      </tr>
+
+      <tr>
+        <td align="left">mod_auth</td>
+
+        <td align="center">+</td>
+
+        <td>
+        </td>
+      </tr>
+
+      <tr>
+        <td align="left">mod_auth_anon</td>
+
+        <td align="center">+</td>
+
+        <td>
+        </td>
+      </tr>
+
+      <tr>
+        <td align="left">mod_auth_dbm</td>
+
+        <td align="center">?</td>
 
         <td>with own libdb.a</td>
       </tr>
 
       <tr>
-        <td align="LEFT">mod_autoindex</td>
+        <td align="left">mod_autoindex</td>
 
-        <td align="CENTER">+</td>
-
-        <td>
-        </td>
-      </tr>
-
-      <tr>
-        <td align="LEFT">mod_cern_meta</td>
-
-        <td align="CENTER">?</td>
+        <td align="center">+</td>
 
         <td>
         </td>
       </tr>
 
       <tr>
-        <td align="LEFT">mod_cgi</td>
+        <td align="left">mod_cern_meta</td>
 
-        <td align="CENTER">+</td>
-
-        <td>
-        </td>
-      </tr>
-
-      <tr>
-        <td align="LEFT">mod_digest</td>
-
-        <td align="CENTER">+</td>
+        <td align="center">?</td>
 
         <td>
         </td>
       </tr>
 
       <tr>
-        <td align="LEFT">mod_dir</td>
+        <td align="left">mod_cgi</td>
 
-        <td align="CENTER">+</td>
+        <td align="center">+</td>
 
         <td>
         </td>
       </tr>
 
       <tr>
-        <td align="LEFT">mod_so</td>
+        <td align="left">mod_digest</td>
 
-        <td align="CENTER">-</td>
+        <td align="center">+</td>
+
+        <td>
+        </td>
+      </tr>
+
+      <tr>
+        <td align="left">mod_dir</td>
+
+        <td align="center">+</td>
+
+        <td>
+        </td>
+      </tr>
+
+      <tr>
+        <td align="left">mod_so</td>
+
+        <td align="center">-</td>
 
         <td>no shared libs</td>
       </tr>
 
       <tr>
-        <td align="LEFT">mod_env</td>
+        <td align="left">mod_env</td>
 
-        <td align="CENTER">+</td>
+        <td align="center">+</td>
 
         <td>
         </td>
       </tr>
 
       <tr>
-        <td align="LEFT">mod_example</td>
+        <td align="left">mod_example</td>
 
-        <td align="CENTER">-</td>
+        <td align="center">-</td>
 
         <td>(test bed only)</td>
       </tr>
 
       <tr>
-        <td align="LEFT">mod_expires</td>
+        <td align="left">mod_expires</td>
 
-        <td align="CENTER">+</td>
-
-        <td>
-        </td>
-      </tr>
-
-      <tr>
-        <td align="LEFT">mod_headers</td>
-
-        <td align="CENTER">+</td>
+        <td align="center">+</td>
 
         <td>
         </td>
       </tr>
 
       <tr>
-        <td align="LEFT">mod_imap</td>
+        <td align="left">mod_headers</td>
 
-        <td align="CENTER">+</td>
-
-        <td>
-        </td>
-      </tr>
-
-      <tr>
-        <td align="LEFT">mod_include</td>
-
-        <td align="CENTER">+</td>
+        <td align="center">+</td>
 
         <td>
         </td>
       </tr>
 
       <tr>
-        <td align="LEFT">mod_info</td>
+        <td align="left">mod_imap</td>
 
-        <td align="CENTER">+</td>
-
-        <td>
-        </td>
-      </tr>
-
-      <tr>
-        <td align="LEFT">mod_log_agent</td>
-
-        <td align="CENTER">+</td>
+        <td align="center">+</td>
 
         <td>
         </td>
       </tr>
 
       <tr>
-        <td align="LEFT">mod_log_config</td>
+        <td align="left">mod_include</td>
 
-        <td align="CENTER">+</td>
-
-        <td>
-        </td>
-      </tr>
-
-      <tr>
-        <td align="LEFT">mod_log_referer</td>
-
-        <td align="CENTER">+</td>
+        <td align="center">+</td>
 
         <td>
         </td>
       </tr>
 
       <tr>
-        <td align="LEFT">mod_mime</td>
+        <td align="left">mod_info</td>
 
-        <td align="CENTER">+</td>
+        <td align="center">+</td>
 
         <td>
         </td>
       </tr>
 
       <tr>
-        <td align="LEFT">mod_mime_magic</td>
+        <td align="left">mod_log_agent</td>
 
-        <td align="CENTER">?</td>
+        <td align="center">+</td>
+
+        <td>
+        </td>
+      </tr>
+
+      <tr>
+        <td align="left">mod_log_config</td>
+
+        <td align="center">+</td>
+
+        <td>
+        </td>
+      </tr>
+
+      <tr>
+        <td align="left">mod_log_referer</td>
+
+        <td align="center">+</td>
+
+        <td>
+        </td>
+      </tr>
+
+      <tr>
+        <td align="left">mod_mime</td>
+
+        <td align="center">+</td>
+
+        <td>
+        </td>
+      </tr>
+
+      <tr>
+        <td align="left">mod_mime_magic</td>
+
+        <td align="center">?</td>
 
         <td>not ported yet</td>
       </tr>
 
       <tr>
-        <td align="LEFT">mod_negotiation</td>
+        <td align="left">mod_negotiation</td>
 
-        <td align="CENTER">+</td>
-
-        <td>
-        </td>
-      </tr>
-
-      <tr>
-        <td align="LEFT">mod_proxy</td>
-
-        <td align="CENTER">+</td>
+        <td align="center">+</td>
 
         <td>
         </td>
       </tr>
 
       <tr>
-        <td align="LEFT">mod_rewrite</td>
+        <td align="left">mod_proxy</td>
 
-        <td align="CENTER">+</td>
+        <td align="center">+</td>
+
+        <td>
+        </td>
+      </tr>
+
+      <tr>
+        <td align="left">mod_rewrite</td>
+
+        <td align="center">+</td>
 
         <td>untested</td>
       </tr>
 
       <tr>
-        <td align="LEFT">mod_setenvif</td>
+        <td align="left">mod_setenvif</td>
 
-        <td align="CENTER">+</td>
-
-        <td>
-        </td>
-      </tr>
-
-      <tr>
-        <td align="LEFT">mod_speling</td>
-
-        <td align="CENTER">+</td>
+        <td align="center">+</td>
 
         <td>
         </td>
       </tr>
 
       <tr>
-        <td align="LEFT">mod_status</td>
+        <td align="left">mod_speling</td>
 
-        <td align="CENTER">+</td>
-
-        <td>
-        </td>
-      </tr>
-
-      <tr>
-        <td align="LEFT">mod_unique_id</td>
-
-        <td align="CENTER">+</td>
+        <td align="center">+</td>
 
         <td>
         </td>
       </tr>
 
       <tr>
-        <td align="LEFT">mod_userdir</td>
+        <td align="left">mod_status</td>
 
-        <td align="CENTER">+</td>
+        <td align="center">+</td>
 
         <td>
         </td>
       </tr>
 
       <tr>
-        <td align="LEFT">mod_usertrack</td>
+        <td align="left">mod_unique_id</td>
 
-        <td align="CENTER">?</td>
+        <td align="center">+</td>
+
+        <td>
+        </td>
+      </tr>
+
+      <tr>
+        <td align="left">mod_userdir</td>
+
+        <td align="center">+</td>
+
+        <td>
+        </td>
+      </tr>
+
+      <tr>
+        <td align="left">mod_usertrack</td>
+
+        <td align="center">?</td>
 
         <td>untested</td>
       </tr>
     </table>
 
-    <h2 align="CENTER">Third Party Modules' Status</h2>
+    <h2 align="center">Third Party Modules' Status</h2>
 
-    <table border="1" align="middle">
+    <table border="1" align="center">
       <tr>
         <th>Module</th>
 
@@ -604,40 +604,40 @@
       </tr>
 
       <tr>
-        <td align="LEFT"><a
+        <td align="left"><a
         href="http://java.apache.org/">mod_jserv</a> </td>
 
-        <td align="CENTER">-</td>
+        <td align="center">-</td>
 
         <td>JAVA still being ported.</td>
       </tr>
 
       <tr>
-        <td align="LEFT"><a href="http://www.php.net/">mod_php3</a>
+        <td align="left"><a href="http://www.php.net/">mod_php3</a>
         </td>
 
-        <td align="CENTER">+</td>
+        <td align="center">+</td>
 
         <td>mod_php3 runs fine, with LDAP and GD and FreeType
         libraries</td>
       </tr>
 
       <tr>
-        <td align="LEFT"><a
+        <td align="left"><a
         href="http://hpwww.ec-lyon.fr/~vincent/apache/mod_put.html">
         mod_put</a> </td>
 
-        <td align="CENTER">?</td>
+        <td align="center">?</td>
 
         <td>untested</td>
       </tr>
 
       <tr>
-        <td align="LEFT"><a
+        <td align="left"><a
         href="ftp://hachiman.vidya.com/pub/apache/">mod_session</a>
         </td>
 
-        <td align="CENTER">-</td>
+        <td align="center">-</td>
 
         <td>untested</td>
       </tr>

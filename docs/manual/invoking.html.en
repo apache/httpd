@@ -13,7 +13,7 @@
   vlink="#000080" alink="#FF0000">
     <!--#include virtual="header.html" -->
 
-    <h1 align="CENTER">Starting Apache</h1>
+    <h1 align="center">Starting Apache</h1>
 
     <ul>
       <li><a href="#windows">Starting Apache on Windows</a></li>
