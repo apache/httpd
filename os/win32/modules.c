@@ -29,6 +29,7 @@ extern module setenvif_module;
 
 module *ap_prelinked_modules[] = {
   &core_module,
+  &mpm_winnt_module,
 //  &so_module,
   &mime_module,
   &access_module,
@@ -51,6 +52,7 @@ module *ap_prelinked_modules[] = {
 };
 module *ap_preloaded_modules[] = {
   &core_module,
+  &mpm_winnt_module,
 //  &so_module,
   &mime_module,
   &access_module,
