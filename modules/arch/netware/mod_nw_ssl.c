@@ -48,6 +48,8 @@
 #include "apr_portable.h"
 #include "apr_optional.h"
 
+#include <unilib.h>
+
 #ifndef SO_TLS_UNCLEAN_SHUTDOWN
 #define SO_TLS_UNCLEAN_SHUTDOWN 0
 #endif
@@ -86,6 +88,7 @@ module AP_MODULE_DECLARE_DATA nwssl_module;
 
 typedef struct NWSSLSrvConfigRec NWSSLSrvConfigRec;
 typedef struct seclisten_rec seclisten_rec;
+typedef struct seclistenup_rec seclistenup_rec;
 
 struct seclisten_rec {
     seclisten_rec *next;
@@ -95,11 +98,19 @@ struct seclisten_rec {
     char key[MAX_KEY];
     int mutual;
     char *addr;
-    int port;
+    apr_port_t port;
+};
+
+struct seclistenup_rec {
+    seclistenup_rec *next;
+    char key[MAX_KEY];
+    char *addr;
+    apr_port_t port;
 };
 
 struct NWSSLSrvConfigRec {
     apr_table_t *sltable;
+    apr_table_t *slutable;
 	apr_pool_t *pPool;
 };
 
@@ -107,6 +118,7 @@ static apr_array_header_t *certlist = NULL;
 static unicode_t** certarray = NULL;
 static int numcerts = 0;
 static seclisten_rec* ap_seclisteners = NULL;
+static seclistenup_rec* ap_seclistenersup = NULL;
 
 #define get_nwssl_cfg(srv) (NWSSLSrvConfigRec *) ap_get_module_config(srv->module_config, &nwssl_module)
 
@@ -193,6 +205,19 @@ static int find_secure_listener(seclisten_rec *lr)
         }
     }    
     return -1;
+}
+
+static char *get_port_key(conn_rec *c)
+{
+    seclistenup_rec *sl;
+
+    for (sl = ap_seclistenersup; sl; sl = sl->next) {
+        if ((sl->port == (c->local_addr)->port) && 
+            ((strcmp(sl->addr, "0.0.0.0") == 0) || (strcmp(sl->addr, c->local_ip) == 0))) {
+            return sl->key;
+        }
+    }    
+    return NULL;
 }
 
 static int make_secure_socket(apr_pool_t *pconf, const struct sockaddr_in *server,
@@ -338,6 +363,80 @@ int convert_secure_socket(conn_rec *c, apr_socket_t *csd)
 	return rcode;
 }
 
+int SSLize_Socket(SOCKET socketHnd, char *key, request_rec *r)
+{
+    int rcode;
+    struct tlsserveropts sWS2Opts;
+    struct nwtlsopts    sNWTLSOpts;
+    unicode_t SASKey[512];
+    unsigned long ulFlag;
+    
+    memset((char *)&sWS2Opts, 0, sizeof(struct tlsserveropts));
+    memset((char *)&sNWTLSOpts, 0, sizeof(struct nwtlsopts));
+    
+    
+    ulFlag = SO_TLS_ENABLE;
+    rcode = WSAIoctl(socketHnd, SO_TLS_SET_FLAGS, &ulFlag, sizeof(unsigned long), NULL, 0, NULL, NULL, NULL);
+    if(rcode)
+    {
+        ap_log_error(APLOG_MARK, APLOG_ERR, 0, r->server,
+                     "Error: %d with WSAIoctl(SO_TLS_SET_FLAGS, SO_TLS_ENABLE)", WSAGetLastError());
+        goto ERR;
+    }
+    
+    
+    ulFlag = SO_TLS_SERVER;
+    rcode = WSAIoctl(socketHnd, SO_TLS_SET_FLAGS, &ulFlag, sizeof(unsigned long),NULL, 0, NULL, NULL, NULL);
+    
+    if(rcode)
+    {
+        ap_log_error(APLOG_MARK, APLOG_ERR, 0, r->server,
+                     "Error: %d with WSAIoctl(SO_TLS_SET_FLAGS, SO_TLS_SERVER)", WSAGetLastError());
+        goto ERR;
+    }
+    
+    loc2uni(UNI_LOCAL_DEFAULT, SASKey, key, 0, 0);
+
+    //setup the tlsserveropts struct
+    sWS2Opts.wallet = SASKey;
+    sWS2Opts.walletlen = unilen(SASKey);
+    sWS2Opts.sidtimeout = 0;
+    sWS2Opts.sidentries = 0;
+    sWS2Opts.siddir = NULL;
+    sWS2Opts.options = &sNWTLSOpts;
+    
+    //setup the nwtlsopts structure
+    
+    sNWTLSOpts.walletProvider               = WAL_PROV_KMO;
+    sNWTLSOpts.keysList                     = NULL;
+    sNWTLSOpts.numElementsInKeyList         = 0;
+    sNWTLSOpts.reservedforfutureuse         = NULL;
+    sNWTLSOpts.reservedforfutureCRL         = NULL;
+    sNWTLSOpts.reservedforfutureCRLLen      = NULL;
+    sNWTLSOpts.reserved1                    = NULL;
+    sNWTLSOpts.reserved2                    = NULL;
+    sNWTLSOpts.reserved3                    = NULL;
+    
+    
+    rcode = WSAIoctl(socketHnd, 
+                     SO_TLS_SET_SERVER, 
+                     &sWS2Opts, 
+                     sizeof(struct tlsserveropts), 
+                     NULL, 
+                     0, 
+                     NULL, 
+                     NULL, 
+                     NULL);
+    if(SOCKET_ERROR == rcode) {
+        ap_log_error(APLOG_MARK, APLOG_ERR, 0, r->server,
+                     "Error: %d with WSAIoctl(SO_TLS_SET_SERVER)", WSAGetLastError());
+        goto ERR;
+    }
+    
+ERR:
+    return rcode;
+}
+
 static const char *set_secure_listener(cmd_parms *cmd, void *dummy, 
                                        const char *ips, const char* key, 
                                        const char* mutual)
@@ -383,7 +482,7 @@ static const char *set_secure_listener(cmd_parms *cmd, void *dummy,
     if (!port) 
 	    return "Port must be numeric";
 	    
-    apr_table_set(sc->sltable, ports, "T");
+    apr_table_set(sc->sltable, ports, addr);
     
     new->local_addr.sin_port = htons(port);
     new->fd = -1;
@@ -395,6 +494,57 @@ static const char *set_secure_listener(cmd_parms *cmd, void *dummy,
     new->port = port;
     ap_seclisteners = new;
     return NULL;
+}
+
+static const char *set_secure_upgradeable_listener(cmd_parms *cmd, void *dummy, 
+                                       const char *ips, const char* key)
+{
+    NWSSLSrvConfigRec* sc = get_nwssl_cfg(cmd->server);
+    seclistenup_rec *listen_node;
+    const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
+    char *ports, *addr;
+    unsigned short port;
+    seclistenup_rec *new;
+
+    if (err != NULL) 
+        return err;
+
+    ports = strchr(ips, ':');
+    
+    if (ports != NULL) {    
+	    if (ports == ips)
+	        return "Missing IP address";
+	    else if (ports[1] == '\0')
+	        return "Address must end in :<port-number>";
+	        
+	    *(ports++) = '\0';
+    }
+    else {
+	    ports = (char*)ips;
+    }
+    
+    if (ports == ips) {
+        addr = apr_pstrdup(cmd->pool, "0.0.0.0");
+    }
+    else {
+        addr = apr_pstrdup(cmd->pool, ips);
+    }
+
+    port = atoi(ports);
+    
+    if (!port) 
+	    return "Port must be numeric";
+
+    apr_table_set(sc->slutable, ports, addr);
+
+    new = apr_pcalloc(cmd->pool, sizeof(seclistenup_rec)); 
+    new->next = ap_seclistenersup;
+    strcpy(new->key, key);
+    new->addr = addr;
+    new->port = port;
+    ap_seclistenersup = new;
+
+    return err;
 }
 
 static apr_status_t nwssl_socket_cleanup(void *data)
@@ -430,6 +580,7 @@ static int nwssl_pre_config(apr_pool_t *pconf, apr_pool_t *plog,
                          apr_pool_t *ptemp)
 {
     ap_seclisteners = NULL;
+    ap_seclistenersup = NULL;
     certlist = apr_array_make(pconf, 1, sizeof(char *));
 
     return OK;
@@ -440,6 +591,9 @@ static int nwssl_pre_connection(conn_rec *c, void *csd)
     
     if (apr_table_get(c->notes, "nwconv-ssl")) {
         convert_secure_socket(c, (apr_socket_t*)csd);
+    }
+    else {
+        ap_set_module_config(c->conn_config, &nwssl_module, csd);
     }
     
     return OK;
@@ -452,7 +606,9 @@ static int nwssl_post_config(apr_pool_t *pconf, apr_pool_t *plog,
     ap_listen_rec* lr;
     apr_socket_t*  sd;
     apr_status_t status;
-    
+    seclistenup_rec *slu;
+    int found;
+
     for (sl = ap_seclisteners; sl != NULL; sl = sl->next) {
         sl->fd = find_secure_listener(sl);
 
@@ -488,6 +644,22 @@ static int nwssl_post_config(apr_pool_t *pconf, apr_pool_t *plog,
             return HTTP_INTERNAL_SERVER_ERROR;
         }
     } 
+
+    for (slu = ap_seclistenersup; slu; slu = slu->next) {
+        /* Check the listener list for a matching upgradeable listener */
+        found = 0;
+        for (lr = ap_listeners; lr; lr = lr->next) {
+            if (slu->port == lr->bind_addr->port) {
+                found = 1;
+                break;
+            }
+        }
+        if (!found) {
+            ap_log_perror(APLOG_MARK, APLOG_WARNING, 0, plog,
+                         "No Listen directive found for upgradeable listener %s:%d", slu->addr, slu->port);
+        }
+    }    
+
     build_cert_list(pconf);
 
     return OK;
@@ -497,6 +669,7 @@ static void *nwssl_config_server_create(apr_pool_t *p, server_rec *s)
 {
     NWSSLSrvConfigRec *new = apr_palloc(p, sizeof(NWSSLSrvConfigRec));
     new->sltable = apr_table_make(p, 5);
+    new->slutable = apr_table_make(p, 5);
     return new;
 }
 
@@ -508,7 +681,7 @@ static void *nwssl_config_server_merge(apr_pool_t *p, void *basev, void *addv)
     return merged;
 }
 
-static int isSecureConn (const server_rec *s, const conn_rec *c)
+static int isSecureConnEx (const server_rec *s, const conn_rec *c, const apr_table_t *t)
 {
     NWSSLSrvConfigRec *sc = get_nwssl_cfg(s);
     const char *s_secure = NULL;
@@ -516,16 +689,36 @@ static int isSecureConn (const server_rec *s, const conn_rec *c)
     int ret = 0;
 
     itoa((c->local_addr)->port, port, 10);
-    s_secure = apr_table_get(sc->sltable, port);    
-    if (s_secure)
+    s_secure = apr_table_get(t, port); 
+    if (s_secure && 
+        ((strcmp(s_secure, "0.0.0.0") == 0) || (strcmp(s_secure, c->local_ip) == 0)))
         ret = 1;
 
     return ret;
 }
 
+static int isSecureConn (const server_rec *s, const conn_rec *c)
+{
+    NWSSLSrvConfigRec *sc = get_nwssl_cfg(s);
+
+    return isSecureConnEx (s, c, sc->sltable);
+}
+
+static int isSecureConnUpgradeable (const server_rec *s, const conn_rec *c)
+{
+    NWSSLSrvConfigRec *sc = get_nwssl_cfg(s);
+
+    return isSecureConnEx (s, c, sc->slutable);
+}
+
 static int isSecure (const request_rec *r)
 {
 	return isSecureConn (r->server, r->connection);
+}
+
+static int isSecureUpgradeable (const request_rec *r)
+{
+	return isSecureConnUpgradeable (r->server, r->connection);
 }
 
 static int nwssl_hook_Fixup(request_rec *r)
@@ -764,12 +957,129 @@ char *ssl_var_lookup(apr_pool_t *p, server_rec *s, conn_rec *c, request_rec *r, 
     return (char *)result;
 }
 
+static apr_status_t ssl_io_filter_Upgrade(ap_filter_t *f,
+                                         apr_bucket_brigade *bb)
+
+{
+#define SWITCH_STATUS_LINE "HTTP/1.1 101 Switching Protocols"
+#define UPGRADE_HEADER "Upgrade: TLS/1.0, HTTP/1.1"
+#define CONNECTION_HEADER "Connection: Upgrade"
+    const char *upgrade;
+    const char *connection;
+    apr_bucket_brigade *upgradebb;
+    request_rec *r = f->r;
+    apr_socket_t *csd = NULL;
+    char *key;
+    unicode_t keyFileName[512];
+    int ret;
+    char *token_string;
+    char *token;
+    char *token_state;
+
+    /* Just remove the filter, if it doesn't work the first time, it won't
+     * work at all for this request.
+     */
+    ap_remove_output_filter(f);
+
+    /* No need to ensure that this is a server with optional SSL, the filter
+     * is only inserted if that is true.
+     */
+
+    upgrade = apr_table_get(r->headers_in, "Upgrade");
+    if (upgrade == NULL) {
+        return ap_pass_brigade(f->next, bb);
+    }
+    token_string = apr_pstrdup(r->pool,upgrade);
+    token = apr_strtok(token_string,", ",&token_state);
+    while (token && strcmp(token,"TLS/1.0")) {
+        apr_strtok(NULL,", ",&token_state);
+    }
+    // "Upgrade: TLS/1.0" header not found, don't do Upgrade
+    if (!token) {
+        return ap_pass_brigade(f->next, bb);
+    }
+
+    connection = apr_table_get(r->headers_in, "Connection");
+    token_string = apr_pstrdup(r->pool,connection);
+    token = apr_strtok(token_string,",",&token_state);
+    while (token && strcmp(token,"Upgrade")) {
+        apr_strtok(NULL,",",&token_state);
+    }
+    // "Connection: Upgrade" header not found, don't do Upgrade
+    if (!token) {
+        return ap_pass_brigade(f->next, bb);
+    }
+
+    apr_table_unset(r->headers_out, "Upgrade");
+
+    if (r) {
+        csd = (apr_socket_t*)ap_get_module_config(r->connection->conn_config, &nwssl_module);
+    }
+    else {
+        ap_log_error(APLOG_MARK, APLOG_ERR, 0, r->server,
+                     "Unable to get upgradeable socket handle");
+        return ap_pass_brigade(f->next, bb);
+    }
+
+
+    if (r->method_number == M_OPTIONS) {
+        apr_bucket *b = NULL;
+        /* This is a mandatory SSL upgrade. */
+
+        upgradebb = apr_brigade_create(r->pool, f->c->bucket_alloc);
+
+        ap_fputstrs(f->next, upgradebb, SWITCH_STATUS_LINE, CRLF,
+                    UPGRADE_HEADER, CRLF, CONNECTION_HEADER, CRLF, CRLF, NULL);
+
+        b = apr_bucket_flush_create(f->c->bucket_alloc);
+        APR_BRIGADE_INSERT_TAIL(upgradebb, b);
+        ap_pass_brigade(f->next, upgradebb);
+    }
+    else {
+        /* This is optional, and should be configurable, for now don't bother
+         * doing anything.
+         */
+        return ap_pass_brigade(f->next, bb);
+    }
+
+    key = get_port_key(r->connection);
+    
+    if (csd && key) {
+        int sockdes;
+        apr_os_sock_get(&sockdes, csd);
+
+
+        ret = SSLize_Socket(sockdes, key, r);
+    }
+    else {
+        ap_log_error(APLOG_MARK, APLOG_ERR, 0, r->server,
+                     "Upgradeable socket handle not found");
+        return ap_pass_brigade(f->next, bb);
+    }
+
+    ap_log_error(APLOG_MARK, APLOG_INFO, 0, r->server,
+                 "Awaiting re-negotiation handshake");
+
+    return ap_pass_brigade(f->next, bb);
+}
+
+static void ssl_hook_Insert_Filter(request_rec *r)
+{
+    NWSSLSrvConfigRec *sc = get_nwssl_cfg(r->server);
+
+    if (isSecureUpgradeable (r)) {
+        ap_add_output_filter("UPGRADE_FILTER", NULL, r, r->connection);
+    }
+}
 
 static const command_rec nwssl_module_cmds[] =
 {
     AP_INIT_TAKE23("SecureListen", set_secure_listener, NULL, RSRC_CONF,
       "specify an address and/or port with a key pair name.\n"
       "Optional third parameter of MUTUAL configures the port for mutual authentication."),
+    AP_INIT_TAKE2("NWSSLUpgradeable", set_secure_upgradeable_listener, NULL, RSRC_CONF,
+      "specify an address and/or port with a key pair name, that can be upgraded to an SSL connection.\n"
+      "The address and/or port must have already be defined using a Listen directive."),
     AP_INIT_ITERATE("NWSSLTrustedCerts", set_trusted_certs, NULL, RSRC_CONF,
         "Adds trusted certificates that are used to create secure connections to proxied servers"),
     {NULL}
@@ -777,12 +1087,15 @@ static const command_rec nwssl_module_cmds[] =
 
 static void register_hooks(apr_pool_t *p)
 {
+    ap_register_output_filter ("UPGRADE_FILTER", ssl_io_filter_Upgrade, NULL, AP_FTYPE_PROTOCOL + 5);
+
     ap_hook_pre_config(nwssl_pre_config, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_pre_connection(nwssl_pre_connection, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_post_config(nwssl_post_config, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_fixups(nwssl_hook_Fixup, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_http_method(nwssl_hook_http_method,   NULL,NULL, APR_HOOK_MIDDLE);
     ap_hook_default_port  (nwssl_hook_default_port,  NULL,NULL, APR_HOOK_MIDDLE);
+    ap_hook_insert_filter (ssl_hook_Insert_Filter, NULL,NULL, APR_HOOK_MIDDLE);
 
     APR_REGISTER_OPTIONAL_FN(ssl_is_https);
     APR_REGISTER_OPTIONAL_FN(ssl_var_lookup);
