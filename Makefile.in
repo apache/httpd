@@ -37,7 +37,7 @@ install-conf:
 	done; \
 	for j in $(top_srcdir)/docs/conf $(top_builddir)/docs/conf ; do \
 		cd $$j ; \
-	for i in *-std* ssl.conf; do \
+	for i in *-std*.conf ssl.conf; do \
 		[ -f $$i ] || continue; \
 		( \
 			n_lm=`awk 'BEGIN {n=0} /@@LoadModule@@/ {n+=1} END {print n}' < $$i`; \
