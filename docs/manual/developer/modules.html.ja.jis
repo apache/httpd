@@ -1,0 +1,240 @@
+<?xml version="1.0" encoding="iso-2022-jp"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+
+    <title>モジュールの Apache 1.3 から Apache 2.0 への移植</title>
+  </head>
+  <!-- English revision: 1.7 -->
+  <!-- Background white, links blue (unvisited), navy (visited), red (active) -->
+
+  <body bgcolor="#FFFFFF" text="#000000" link="#0000FF"
+  vlink="#000080" alink="#FF0000">
+    <!--#include virtual="header.html" -->
+
+    <h1 align="center">モジュールを Apache 1.3 から Apache 2.0 へ</h1>
+
+    <p>この文書は mod_mmap_static モジュールを Apache 2.0 用に移植した時に
+    学んだ経験をもとに書いた、最初の手引き書です。まだまだ完全じゃないし、
+    ひょっとすると間違っている部分もあるかもしれませんが、
+    取っ掛りにはなるでしょう。</p>
+    <hr />
+
+    <h2>簡単な変更点…</h2>
+
+    <h3>クリーンナップ ルーチン</h3>
+
+   <p>クリーンナップルーチンは apr_status_t 型である必要があります。
+   そして、apr_status_t 型の値を返さなくてはなりません。
+   クリーンナップ中のエラーを通知する必要がなければ、返り値は普通、
+   ARP_SUCCESS です。たとえエラーを通知したとしても、
+   すべてのコードがその通知をチェックしたり、
+   エラーに応じた動作をするわけではないことに気をつけてください。</p>
+
+    <h3>初期化ルーチン</h3>
+
+    <p>初期化ルーチンは処理全体から見てしっくりくるような意味を表すように、
+    名前が変更されました。ですから、mmap_init から mmap_post_config
+    のようにちょっと変更されました。
+    渡される引数は大幅に変更され、次のようになりました。</p>
+
+    <ul style="list-style:none">
+      <li>apr_pool_t *p,</li>
+
+      <li>apr_pool_t *plog,</li>
+
+      <li>apr_pool_t *ptemp,</li>
+
+      <li>server_rec *s</li>
+    </ul>
+
+    <h3>データ型</h3>
+
+    <p>データ型のほとんどは APR に移されました。つまり、
+   いくつかの名前が前述のように変更されています。
+   施すべき変更点の簡単な一覧を以下に示します。</p>
+
+    <ul style="list-style:none">
+      <li>pool は apr_pool_t になります</li>
+
+      <li>table は apr_table_t になります</li>
+    </ul>
+
+    <hr />
+
+    <h2><em>もっと厄介な</em>変更点…</h2>
+
+    <h3>フックの登録</h3>
+
+    <p>新しいアーキテクチャでは作成した関数を呼び出すのに
+    一連のフックを使用します。このフックは、新しい関数
+    static void register_hooks(void) を使って登録するよう、
+    モジュールに書き足さなくてはなりません。
+    この関数は、なにをすべきか一旦理解してしまえば、
+    十分にわかりやすいものです。
+    リクエストの処理のあるステージで呼び出さなくてはならない
+    関数は登録する必要があります。ハンドラは登録する必要はありません。
+    関数を登録できるフェーズはたくさんあります。
+    それぞれのフェーズで、関数を呼び出す相対的な順番は、
+    かなりの程度制御できます。</p>
+
+    <p>以下は、mod_mmap_static に追加したコードです:</p>
+
+<pre>
+static void register_hooks(void)
+{
+    static const char * const aszPre[]={ "http_core.c",NULL };
+    ap_hook_post_config(mmap_post_config,NULL,NULL,HOOK_MIDDLE);
+    ap_hook_translate_name(mmap_static_xlat,aszPre,NULL,HOOK_LAST);
+};
+</pre>
+
+    <p>ここでは呼びだすべき二つの関数を登録しています。一つは
+    post_config ステージ用 (ほとんどすべてのモジュールはこれが必要です) で、
+    もう一つは translate_name フェーズ用です。
+    それぞれの関数は名前は違うけれども形式は同じであることに注意してください。
+    それでは、形式はどのようになっているでしょうか?</p>
+
+    <p><code><strong>ap_hook_[フェーズ名](関数名, 先行, 後行, 位置);</strong></code></p>
+
+    <p>3つの位置が定義されています…</p>
+
+    <ul style="list-style:none">
+      <li>HOOK_FIRST</li>
+
+      <li>HOOK_MIDDLE</li>
+
+      <li>HOOK_LAST</li>
+    </ul>
+
+    <p>位置を定義するには、上記の「位置」を指定し、
+    修飾子である「先行」と「後行」で手を加えます。
+   「先行」「後行」は、呼ばれるべき関数のリストです。
+   「先行」は関数の実行前に呼ばれるもので、
+   「後行」は実行後に呼ばれるものです。</p>
+
+    <p>mod_mmap_static の場合、post_config ステージでは必要ありませんが、
+    mmap_static_xlat が core モジュールが名前の変換を実行した後に
+    呼ばれなければなりません。
+    そこで aszPre を使って HOOK_LAST の修飾子を定義しています。</p>
+
+    <h3>モジュールの定義</h3>
+
+    <p>モジュールの定義を作成する際に注意しなければならない
+    ステージの数は激減しています。古い定義は次のようになっていました。</p>
+
+<pre>
+module MODULE_VAR_EXPORT [モジュール名]_module =
+{
+    STANDARD_MODULE_STUFF,
+    /* 初期化関数 */
+    /* ディレクトリ設定作成関数 */
+    /* ディレクトリ設定マージ関数 ― デフォルトは「上書き」 */
+    /* サーバ設定作成関数 */
+    /* サーバ設定マージ関数 */
+    /* コマンド・ハンドラ */
+    /* ハンドラ */
+    /* ファイル名変換 */
+    /* check_user_id */
+    /* 認証チェック */
+    /* アクセス制限チェック */
+    /* MIME 型チェック */
+    /* 調整 */
+    /* ログ出力 */
+    /* ヘッダパーサ */
+    /* 子プロセス初期化 */
+    /* 子プロセス終了 */
+    /* read-request 後 */
+};
+</pre>
+
+    <p>新しい構造体はとってもシンプルです…</p>
+
+<pre>
+module MODULE_VAR_EXPORT [モジュール名]_module =
+{
+    STANDARD20_MODULE_STUFF,
+    /* ディレクトリ毎設定構造体作成 */
+    /* ディレクトリ毎設定構造体マージ */
+    /* サーバ毎設定構造体作成 */
+    /* サーバ毎設定構造体作成マージ */
+    /* コマンド・ハンドラ */
+    /* ハンドラ */
+    /* フック登録 */
+ };
+</pre>
+
+    <p>このうちのいくつかは古いものから新しいものに直接読み替えられるもので、
+    いくつかはそうではありません。どうすればいいのかを要約してみます。</p>
+
+    <p>直接読み替えられるステージ:</p>
+
+    <ul style="list-style:none">
+      <li>/* ディレクトリ設定作成関数 */ ==&gt;
+	/* ディレクトリ毎設定構造体作成 */</li>
+
+      <li>/* サーバ設定作成関数 */ ==&gt; /* サーバ毎設定構造体作成 */</li>
+
+      <li>/* ディレクトリ設定マージ関数 */ ==&gt;
+	/* ディレクトリ毎設定構造体マージ */</li>
+
+      <li>/* サーバ設定マージ関数 */ ==&gt;
+	/* サーバ毎設定構造体作成マージ */</li>
+
+      <li>/* コマンド・テーブル */ ==&gt; /* コマンド apr_table_t */</li>
+
+      <li>/* ハンドラ */ ==&gt; /* ハンドラ */</li>
+    </ul>
+
+    <p>古い関数の残りのものはフックとして登録されるべきです。
+    現時点で次のようなフック・ステージが定義されています…</p>
+
+    <ul style="list-style:none">
+      <li>ap_hook_post_config <em>(以前の _init ルーチンが登録されるべき場所です)</em></li>
+
+      <li>ap_hook_http_method <em>(リクエストから HTTP メソッドを取得します (互換用))</em></li>
+
+      <li>ap_hook_open_logs <em>(特定のログのオープン)</em></li>
+
+      <li>ap_hook_auth_checker <em>(リソースが権限を必要とするかどうかの確認)</em></li>
+
+      <li>ap_hook_access_checker <em>(モジュール固有の制約の確認)</em></li>
+
+      <li>ap_hook_check_user_id <em>(ユーザ ID とパスワードの確認)</em></li>
+
+      <li>ap_hook_default_port <em>(サーバのデフォルト・ポートの取得)</em></li>
+
+      <li>ap_hook_pre_connection <em>(処理の直前に必要なことを実行。ただし accept 直後に呼ばれる)</em></li>
+
+      <li>ap_hook_process_connection <em>(プロトコルの処理)</em></li>
+
+      <li>ap_hook_child_init <em>(子プロセル起動直後)</em></li>
+
+      <li>ap_hook_create_request <em>(??)</em></li>
+
+      <li>ap_hook_fixups <em>(応答内容の生成を変更するラスト・チャンス)</em></li>
+
+      <li>ap_hook_handler <em>(応答内容の生成)</em></li>
+
+      <li>ap_hook_header_parser <em>(モジュールにヘッダの照会をさせる。ほとんどのモジュールでは使われません。post_read_request を使います)</em></li>
+
+      <li>ap_hook_insert_filter <em>(フィルタ・チェインにフィルタを挿入)</em></li>
+
+      <li>ap_hook_log_transaction <em>(リクエストについての情報を記録する)</em></li>
+
+      <li>ap_hook_optional_fn_retrieve <em>(オプションとして登録された関数の取得)</em></li>
+
+      <li>ap_hook_post_read_request <em>(リクエストを読みこんだ後、他のフェーズの前に呼ばれる)</em></li>
+
+      <li>ap_hook_quick_handler <em>(??)</em></li>
+
+      <li>ap_hook_translate_name <em>(URI をファイル名に変換する)</em></li>
+
+      <li>ap_hook_type_checker <em>(文書型の決定と設定。あるいはその片方)</em></li>
+    </ul>
+    <!--#include virtual="footer.html" -->
+  </body>
+</html>
+
