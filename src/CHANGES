@@ -1,5 +1,9 @@
 Changes with Apache 1.3.27
 
+  *) NetWare: implemented file locking in mod_rewrite for the NetWare
+     CLib platform. This fixes a bug that prevented rewrite logging 
+	 from working. [Brad Nicholes]
+
 Changes with Apache 1.3.26
 
   *) Potential NULL referencing fixed in the CGI module. It had
