@@ -1233,7 +1233,7 @@ static void test(void)
 		(isproxy) ? fullurl : path,
 		VERSION,
 		keepalive ? "Connection: Keep-Alive\r\n" : "",
-		cookie, auth, proxyhost, hdrs);
+		cookie, auth, hostname, hdrs);
     }
     else {
 	sprintf(request, "POST %s HTTP/1.0\r\n"
@@ -1245,11 +1245,11 @@ static void test(void)
 		"Content-type: %s\r\n"
 		"%s"
 		"\r\n",
-		(!isproxy) ? path : url,
+		(isproxy) ? fullurl : path,
 		VERSION,
 		keepalive ? "Connection: Keep-Alive\r\n" : "",
 		cookie, auth,
-		proxyhost, postlen,
+		hostname, postlen,
 		(content_type[0]) ? content_type : "text/plain", hdrs);
     }
 
@@ -1323,14 +1323,14 @@ static void test(void)
 static void copyright(void)
 {
     if (!use_html) {
-	printf("This is ApacheBench, Version %s\n", VERSION " <$Revision: 1.48 $> apache-1.3");
+	printf("This is ApacheBench, Version %s\n", VERSION " <$Revision: 1.49 $> apache-1.3");
 	printf("Copyright (c) 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/\n");
 	printf("Copyright (c) 1998-1999 The Apache Group, http://www.apache.org/\n");
 	printf("\n");
     }
     else {
 	printf("<p>\n");
-	printf(" This is ApacheBench, Version %s <i>&lt;%s&gt;</i> apache-1.3<br>\n", VERSION, "$Revision: 1.48 $");
+	printf(" This is ApacheBench, Version %s <i>&lt;%s&gt;</i> apache-1.3<br>\n", VERSION, "$Revision: 1.49 $");
 	printf(" Copyright (c) 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/<br>\n");
 	printf(" Copyright (c) 1998-1999 The Apache Group, http://www.apache.org/<br>\n");
 	printf("</p>\n<p>\n");
