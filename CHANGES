@@ -2,6 +2,10 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) mod_dav: Use bucket brigades when reading PUT data. This avoids
+     problems if the data stream is modified by an input filter. PR 22104.
+     [Tim Robbins <tim@robbins.dropbear.id.au>, André Malo]
+
   *) mod_rewrite: RewriteRules in server context using the force
      type feature [T=...] no longer disable MultiViews.  [André Malo]
 
