@@ -16,9 +16,6 @@ Changes with Apache 2.1.0-dev
      is set in r->subprocess_env allow mismatched query strings to pass.
      PR 27758.  [Paul Querna <chip force-elite.com>, Geoffrey Young]
 
-  *) logresolve: Allow size of log line buffer to be overridden at
-     build time (MAXLINE).  PR 27793.  [Jeff Trawick]
-
   *) mod_dav: Fix a problem that could cause crashes when manipulating 
      locks on some platforms.  [Jeff Trawick]
 
@@ -294,6 +291,9 @@ Changes with Apache 2.1.0-dev
    Apache 2.0.xx tree as documented, and except as noted, below.]
 
 Changes with Apache 2.0.50
+
+  *) logresolve: Allow size of log line buffer to be overridden at
+     build time (MAXLINE).  PR 27793.  [Jeff Trawick]
 
   *) Fix the comment delimiter in htdbm so that it correctly parses the 
      username comment.  Also add a terminate function to allow NetWare 
