@@ -1,5 +1,5 @@
 Apache HTTP Server 2.0 Documentation Status File.
-Last modified: $Date: 2002/11/21 17:55:51 $
+Last modified: $Date: 2002/11/23 19:19:45 $
 
 If you are interested in helping accomplish some of the tasks on this
 list or otherwise improving the documentation, please join the
@@ -25,13 +25,7 @@ Things That Need Fixing
     - Bill Rowe and Bill Stoddard are good contacts for tech questions.
 
 - New Auth system
-    (Wait on this until the code has stabalized a little)
-    - With the new auth system, we have a bunch of directives that are
-      duplicated in multiple modules, where one of the modules is obsolete.
-      We probably need to mark the old modules as <status>obsolete</status>
-      and key on that to omit them from the directive index, etc.
-    - Much clean-up and enhancement of docs
-    - Independent note on how to upgrade to new auth system
+    - Roll back the changes for new auth that are deferred for release 2.2.
 
 - Figure out what to do about the 2.0 FAQ
     - Copy important stuff from 1.3?
