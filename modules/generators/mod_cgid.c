@@ -267,9 +267,9 @@ static void cgid_maint(int reason, void *data, apr_wait_t status)
 }
 #endif
 
-static void get_req(int fd, request_rec *r, char **argv0, char ***env, int *req_type) 
+static int get_req(int fd, request_rec *r, char **argv0, char ***env, int *req_type) 
 { 
-    int i, len, j; 
+    int i, len, j, rc; 
     unsigned char *data; 
     char **environ; 
     core_dir_config *temp_core; 
@@ -278,11 +278,24 @@ static void get_req(int fd, request_rec *r, char **argv0, char ***env, int *req_
 
     r->server = apr_pcalloc(r->pool, sizeof(server_rec)); 
 
-    read(fd, req_type, sizeof(int));
-    read(fd, &j, sizeof(int)); 
-    read(fd, &len, sizeof(int)); 
+    rc = read(fd, req_type, sizeof(int));
+    if (rc != sizeof(int)) {
+        return 1;
+    }
+    rc = read(fd, &j, sizeof(int));
+    if (rc != sizeof(int)) {
+        return 1;
+    }
+    rc = read(fd, &len, sizeof(int));
+    if (rc != sizeof(int)) {
+        return 1;
+    }
+
     data = apr_pcalloc(r->pool, len + 1); /* get a cleared byte for final '\0' */
-    i = read(fd, data, len); 
+    rc = read(fd, data, len); 
+    if (rc != len) {
+        return 1;
+    }
 
     r->filename = ap_getword(r->pool, (const char **)&data, '\n'); 
     *argv0 = ap_getword(r->pool, (const char **)&data, '\n'); 
@@ -297,7 +310,10 @@ static void get_req(int fd, request_rec *r, char **argv0, char ***env, int *req_
     *env = environ; 
     r->args = ap_getword(r->pool, (const char **)&data, '\n'); 
   
-    read(fd, &i, sizeof(int)); 
+    rc = read(fd, &i, sizeof(int)); 
+    if (rc != sizeof(int)) {
+        return 1;
+    }
      
     /* add 1, so that if i == 0, we still malloc something. */ 
 
@@ -310,10 +326,22 @@ static void get_req(int fd, request_rec *r, char **argv0, char ***env, int *req_
     if (suexec_mod) {
         suexec_config_t *suexec_cfg = apr_pcalloc(r->pool, sizeof(*suexec_cfg));
 
-        read(fd, &i, sizeof(int));
-        read(fd, &suexec_cfg->ugid.uid, sizeof(uid_t));
-        read(fd, &suexec_cfg->ugid.gid, sizeof(gid_t));
-        read(fd, &suexec_cfg->active, sizeof(int));
+        rc = read(fd, &i, sizeof(int));
+        if (rc != sizeof(int)) {
+            return 1;
+        }
+        rc = read(fd, &suexec_cfg->ugid.uid, sizeof(uid_t));
+        if (rc != sizeof(uid_t)) {
+            return 1;
+        }
+        rc = read(fd, &suexec_cfg->ugid.gid, sizeof(gid_t));
+        if (rc != sizeof(gid_t)) {
+            return 1;
+        }
+        rc = read(fd, &suexec_cfg->active, sizeof(int));
+        if (rc != sizeof(int)) {
+            return 1;
+        }
         dconf[i] = (void *)suexec_cfg;
     }
 
@@ -357,6 +385,8 @@ static void get_req(int fd, request_rec *r, char **argv0, char ***env, int *req_
      * seg fault.
      */
     r->notes = apr_table_make(r->pool, 1);
+
+    return 0;
 } 
 
 
@@ -543,7 +573,14 @@ static int cgid_server(void *data)
         r = apr_pcalloc(ptrans, sizeof(request_rec)); 
         procnew = apr_pcalloc(ptrans, sizeof(*procnew));
         r->pool = ptrans; 
-        get_req(sd2, r, &argv0, &env, &req_type); 
+        rc = get_req(sd2, r, &argv0, &env, &req_type); 
+        if (rc) {
+            ap_log_error(APLOG_MARK, APLOG_ERR|APLOG_NOERRNO, 0,
+                         main_server,
+                         "Error reading request on cgid socket");
+            close(sd2);
+            continue;
+        }
         apr_os_file_put(&r->server->error_log, &errfileno, 0, r->pool);
         apr_os_file_put(&inout, &sd2, 0, r->pool);
 
