@@ -808,45 +808,16 @@ static void ssl_check_public_cert(server_rec *s,
     }
 }
 
-/*
- * Configure a particular server
- */
-void ssl_init_ConfigureServer(server_rec *s,
-                              apr_pool_t *p,
-                              apr_pool_t *ptemp,
-                              SSLSrvConfigRec *sc)
+static void ssl_init_server_certs(server_rec *s,
+                                  apr_pool_t *p,
+                                  apr_pool_t *ptemp,
+                                  SSLSrvConfigRec *sc)
 {
     const char *rsa_id, *dsa_id;
     const char *vhost_id = sc->szVHostID;
-    SSL_CTX *ctx;
     int i;
     int have_rsa, have_dsa;
 
-    ssl_init_check_server(s, p, ptemp, sc);
-
-    ctx = ssl_init_ctx(s, p, ptemp, sc);
-
-    ssl_init_session_cache_ctx(s, p, ptemp, sc);
-
-    ssl_init_verify(s, p, ptemp, sc);
-
-    ssl_init_cipher_suite(s, p, ptemp, sc);
-
-    ssl_init_crl(s, p, ptemp, sc);
-
-    ssl_init_cert_chain(s, p, ptemp, sc);
-
-    SSL_CTX_set_tmp_rsa_callback(ctx, ssl_callback_TmpRSA);
-    SSL_CTX_set_tmp_dh_callback(ctx,  ssl_callback_TmpDH);
-
-    if (sc->nLogLevel >= SSL_LOG_INFO) {
-        /* this callback only logs if SSLLogLevel >= info */
-        SSL_CTX_set_info_callback(ctx, ssl_callback_LogTracingState);
-    }
-
-    /*
-     *  Configure server certificate(s)
-     */
     rsa_id = ssl_asn1_table_keyfmt(ptemp, vhost_id, SSL_AIDX_RSA);
     dsa_id = ssl_asn1_table_keyfmt(ptemp, vhost_id, SSL_AIDX_DSA);
 
@@ -874,6 +845,41 @@ void ssl_init_ConfigureServer(server_rec *s,
                 "Oops, no RSA or DSA server private key found?!");
         ssl_die();
     }
+}
+
+/*
+ * Configure a particular server
+ */
+void ssl_init_ConfigureServer(server_rec *s,
+                              apr_pool_t *p,
+                              apr_pool_t *ptemp,
+                              SSLSrvConfigRec *sc)
+{
+    SSL_CTX *ctx;
+
+    ssl_init_check_server(s, p, ptemp, sc);
+
+    ctx = ssl_init_ctx(s, p, ptemp, sc);
+
+    ssl_init_session_cache_ctx(s, p, ptemp, sc);
+
+    ssl_init_verify(s, p, ptemp, sc);
+
+    ssl_init_cipher_suite(s, p, ptemp, sc);
+
+    ssl_init_crl(s, p, ptemp, sc);
+
+    ssl_init_cert_chain(s, p, ptemp, sc);
+
+    SSL_CTX_set_tmp_rsa_callback(ctx, ssl_callback_TmpRSA);
+    SSL_CTX_set_tmp_dh_callback(ctx,  ssl_callback_TmpDH);
+
+    if (sc->nLogLevel >= SSL_LOG_INFO) {
+        /* this callback only logs if SSLLogLevel >= info */
+        SSL_CTX_set_info_callback(ctx, ssl_callback_LogTracingState);
+    }
+
+    ssl_init_server_certs(s, p, ptemp, sc);
 }
 
 void ssl_init_CheckServers(server_rec *base_server, apr_pool_t *p)
