@@ -1,5 +1,9 @@
 Changes with Apache 1.3b1
 
+  *) RedirectMatch was not properly escaping the result (PR#1155).  Also
+     "RedirectMatch /advertiser/(.*) $1" is now permitted.
+     [Dean Gaudet]
+
   *) mod_include now uses symbolic names to check for request success
      and return HTTP errors, and correctly handles all types of
      redirections (previously it only did temporary redirect correctly).

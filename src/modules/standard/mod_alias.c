@@ -188,7 +188,7 @@ static const char *add_redirect_internal(cmd_parms *cmd, alias_dir_conf * dircon
     if (is_HTTP_REDIRECT(status)) {
 	if (!url)
 	    return "URL to redirect to is missing";
-	if (!is_url(url))
+	if (!use_regex && !is_url(url))
 	    return "Redirect to non-URL";
     }
     else {
@@ -295,9 +295,13 @@ static char *try_alias_list(request_rec *r, array_header *aliases, int doesc, in
 	int l;
 
 	if (p->regexp) {
-	    if (!regexec(p->regexp, r->uri, p->regexp->re_nsub + 1, regm, 0))
+	    if (!regexec(p->regexp, r->uri, p->regexp->re_nsub + 1, regm, 0)) {
 		found = pregsub(r->pool, p->real, r->uri,
 				p->regexp->re_nsub + 1, regm);
+		if (found && doesc) {
+		    found = escape_uri(r->pool, found);
+		}
+	    }
 	}
 	else {
 	    l = alias_matches(r->uri, p->fake);
