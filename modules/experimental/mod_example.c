@@ -706,7 +706,7 @@ static void example_child_exit(server_rec *s, apr_pool_t *p)
 }
 
 /*
- * This function gets called to create up a per-directory configuration
+ * This function gets called to create a per-directory configuration
  * record.  This will be called for the "default" server environment, and for
  * each directory for which the parser finds any of our directives applicable.
  * If a directory doesn't have any of our directives involved (i.e., they
