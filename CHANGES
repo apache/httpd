@@ -1,5 +1,9 @@
 Changes with Apache 2.0.25-dev
 
+  *) The prefork and OS/2 MPMs are overwriting the pid file when a second copy
+     of httpd is started and shuts down due to socket conflict. Moving the
+     call to ap_log_pid solves the problem.
+
   *) Changed the late-1.3 log_config substitution %c to %X, to log the
      status of the closed connection, as it conflicts with the far more
      common, historical ssl logging directive %...{var}c.  [William Rowe]
