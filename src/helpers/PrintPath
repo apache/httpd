@@ -1,6 +1,7 @@
 #!/bin/sh
-# Look for $1 somewhere in $PATH
-#  will print out the full pathname unless
+# Look for $1 somewhere in $PATH. As an extra bonus,
+#  if $AP_PPSEARCHPATH is set, this will look for $i
+#  in there instead. Will print out the full pathname unless
 #  called with the '-s' option
 #
 # We do some funny stuff to check to see
@@ -29,7 +30,11 @@ else
     echo="yes"
 fi
 
-for path in `echo $PATH |
+if [ "x$AP_PPSEARCHPATH" = "x" ] ; then
+    AP_PPSEARCHPATH=$PATH
+fi
+
+for path in `echo $AP_PPSEARCHPATH |
  sed 's/^:/.:/
       s/::/:.:/g
       s/:$/:./
