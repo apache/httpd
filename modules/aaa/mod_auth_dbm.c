@@ -125,7 +125,7 @@ static void *create_dbm_auth_dir_config(apr_pool_t *p, char *d)
     return sec;
 }
 
-static const char *set_dbm_slot(cmd_parms *cmd, void *offset, char *f, char *t)
+static const char *set_dbm_slot(cmd_parms *cmd, void *offset, const char *f, const char *t)
 {
     if (!t || strcmp(t, "dbm"))
 	return DECLINE_CMD;
@@ -135,21 +135,21 @@ static const char *set_dbm_slot(cmd_parms *cmd, void *offset, char *f, char *t)
 
 static const command_rec dbm_auth_cmds[] =
 {
-    {"AuthDBMUserFile", ap_set_file_slot,
+    AP_INIT_TAKE1("AuthDBMUserFile", ap_set_file_slot,
      (void *) XtOffsetOf(dbm_auth_config_rec, auth_dbmpwfile),
-     OR_AUTHCFG, TAKE1, NULL},
-    {"AuthDBMGroupFile", ap_set_file_slot,
+     OR_AUTHCFG, NULL),
+    AP_INIT_TAKE1("AuthDBMGroupFile", ap_set_file_slot,
      (void *) XtOffsetOf(dbm_auth_config_rec, auth_dbmgrpfile),
-     OR_AUTHCFG, TAKE1, NULL},
-    {"AuthUserFile", set_dbm_slot,
+     OR_AUTHCFG, NULL),
+    AP_INIT_TAKE12("AuthUserFile", set_dbm_slot,
      (void *) XtOffsetOf(dbm_auth_config_rec, auth_dbmpwfile),
-     OR_AUTHCFG, TAKE12, NULL},
-    {"AuthGroupFile", set_dbm_slot,
+     OR_AUTHCFG, NULL),
+    AP_INIT_TAKE12("AuthGroupFile", set_dbm_slot,
      (void *) XtOffsetOf(dbm_auth_config_rec, auth_dbmgrpfile),
-     OR_AUTHCFG, TAKE12, NULL},
-    {"AuthDBMAuthoritative", ap_set_flag_slot,
+     OR_AUTHCFG, NULL),
+    AP_INIT_FLAG("AuthDBMAuthoritative", ap_set_flag_slot,
      (void *) XtOffsetOf(dbm_auth_config_rec, auth_dbmauthoritative),
-     OR_AUTHCFG, FLAG, "Set to 'no' to allow access control to be passed along to lower modules, if the UserID is not known in this module"},
+     OR_AUTHCFG, "Set to 'no' to allow access control to be passed along to lower modules, if the UserID is not known in this module"),
     {NULL}
 };
 
@@ -160,8 +160,9 @@ static char *get_dbm_pw(request_rec *r, char *user, char *auth_dbmpwfile)
     DBM *f;
     datum d, q;
     char *pw = NULL;
+#ifdef WIN32 /* this is only used on Windows, so only define it on Windows */
     apr_status_t retval;
-
+#endif
     q.dptr = user;
 #ifndef NETSCAPE_DBM_COMPAT
     q.dsize = strlen(q.dptr);
