@@ -256,7 +256,7 @@ install-mktree:
 	$(MKDIR) $(root)$(runtimedir)
 	$(MKDIR) $(root)$(logfiledir)
 	$(MKDIR) $(root)$(proxycachedir)
-	-@if [ "x`src/helpers/getuid.sh" = "x0" ]; then \
+	-@if [ "x`$(AUX)/getuid.sh`" = "x0" ]; then \
 		echo "chown $(conf_user) $(root)$(proxycachedir)"; \
 		chown $(conf_user) $(root)$(proxycachedir); \
 		echo "chgrp $(conf_group) $(root)$(proxycachedir)"; \
