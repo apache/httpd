@@ -1,3 +1,6 @@
+  *) Added Status module with preliminary documentation available
+     http://www.apache.org/docs/1.1/mod_status.html
+
   *) Added simple and complex instrumentation to Apache to allow a
      instantaneous status screen to be displayed.  Since the complex
      instrumentation makes the scoreboard file bigger it has been 

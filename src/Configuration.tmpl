@@ -41,6 +41,13 @@ CC= gcc
 # disabling use of shared memory for process management (scoreboard with
 # -DNO_MMAP
 
+# Status Instrumentation
+#  In order for the status module to obtain full statistics Apache must
+#  be modified to keep track of various information.  This is not
+#  turned on by default.
+# In order to enable full status details add -DSTATUS_INSTRUMENTATION to
+# the end of the CFLAGS line below
+
 # [Some other former Apache compile-time options are now treated differently;
 #  the virtual host code is always present; DBM auth is an optional module, and
 #  may be configured out by changing the module config below, though it still
@@ -178,10 +185,14 @@ Module digest_module      mod_digest.o
 # allows other modules to be loaded in at runtime, and mod_cookies
 # uses Netscape cookies to automatically construct and log accurate
 # click-trails from Netscape cookies, for Netscape-using clients who
-# aren't coming in via proxy.
+# aren't coming in via proxy.   The status module allows the server
+# to display current details about how well it is performing and what
+# it is doing.  Consider also enabling -DSTATUS_INSTRUMENTATION explained
+# near the start of this file
 
 # Module dld_module     mod_dld.o
 # Module cookies_module mod_cookies.o
+# Module status_module	mod_status.o
 
 # Finally, this is a *replacement* for mod_log_common which 
 # supports a LogFormat directive which allows you to specify what
