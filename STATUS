@@ -1,5 +1,5 @@
 Apache 2.0 STATUS:
-Last modified at [$Date: 2000/05/25 16:45:28 $]
+Last modified at [$Date: 2000/05/25 23:29:59 $]
 
 Release:
 
@@ -48,8 +48,6 @@ RELEASE SHOWSTOPPERS:
 	CRT calls or do we need to add region locking each time 
 	we access the logs?
 	Status: 
-
-    * The handler hook needs to use the new registration system
 
     * We need a thread-safe resolver, at least on Unix.
         Status: The best known candidate would be something from
