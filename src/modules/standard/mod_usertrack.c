@@ -50,7 +50,7 @@
  *
  */
 
-/* $Id: mod_usertrack.c,v 1.1 1996/09/27 08:46:50 mjc Exp $ */
+/* $Id: mod_usertrack.c,v 1.2 1996/10/31 00:13:23 brian Exp $ */
 
 /* User Tracking Module (Was mod_cookies.c)
  *
@@ -211,13 +211,13 @@ void *make_cookie_dir (pool *p, char *d) {
     return (void *)pcalloc(p, sizeof(int));
 }
 
-char *set_cookie_disable (cmd_parms *cmd, int *c, int arg)
+const char *set_cookie_disable (cmd_parms *cmd, int *c, int arg)
 {
     *c = !arg;
     return NULL;
 }
 
-char *set_cookie_exp (cmd_parms *parms, void *dummy, char *arg)
+const char *set_cookie_exp (cmd_parms *parms, void *dummy, const char *arg)
 {
     cookie_log_state *cls = get_module_config (parms->server->module_config,
                            &usertrack_module);
