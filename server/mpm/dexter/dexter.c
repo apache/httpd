@@ -78,12 +78,12 @@
  * Actual definitions of config globals
  */
 
-int ap_threads_per_child=0;         /* Worker threads per child */
-int ap_max_requests_per_child=0;
+static int threads_to_start=0;         /* Worker threads per child */
+static int min_spare_threads=0;
+static int max_spare_threads=HARD_THREAD_LIMIT;
+static int max_requests_per_child=0;
 static char *ap_pid_fname=NULL;
-static int ap_num_daemons=0;
-static time_t ap_restart_time=0;
-API_VAR_EXPORT int ap_extended_status = 0;
+static int num_daemons=0;
 static int workers_may_exit = 0;
 static int requests_this_child;
 static int num_listenfds = 0;
@@ -145,11 +145,21 @@ static other_child_rec *other_children;
 static pool *pconf;		/* Pool for config stuff */
 static pool *pchild;		/* Pool for httpd child stuff */
 
+typedef struct {
+    pool *pool;
+    pthread_mutex_t mutex;
+    pthread_attr_t attr;
+} worker_thread_info;
+
 static int my_pid; /* Linux getpid() doesn't work except in main thread. Use
                       this instead */
 /* Keep track of the number of worker threads currently active */
 static int worker_thread_count;
 static pthread_mutex_t worker_thread_count_mutex;
+
+/* Keep track of the number of idle worker threads */
+static int idle_thread_count;
+static pthread_mutex_t idle_thread_count_mutex;
 
 /* Global, alas, so http_core can talk to us */
 enum server_token_type ap_server_tokens = SrvTk_FULL;
@@ -830,11 +840,30 @@ static void process_socket(pool *p, struct sockaddr *sa_client, int csd)
     ap_process_connection(current_conn);
 }
 
-static void * worker_thread(void *thread_pool)
+static void *worker_thread(void *);
+
+static void start_thread(worker_thread_info *thread_info)
 {
-    pool *tpool = thread_pool;
+    pthread_t thread;
+
+    if (pthread_create(&thread, &(thread_info->attr), worker_thread, thread_info)) {
+        ap_log_error(APLOG_MARK, APLOG_ALERT, server_conf,
+                     "pthread_create: unable to create worker thread");
+        /* In case system resources are maxxed out, we don't want
+           Apache running away with the CPU trying to fork over and
+           over and over again if we exit. */
+        sleep(10);
+        workers_may_exit = 1;
+    }
+}
+
+/* idle_thread_count should be incremented before starting a worker_thread */
+
+static void *worker_thread(void *arg)
+{
     struct sockaddr sa_client;
     int csd = -1;
+    pool *tpool;		/* Pool for this thread           */
     pool *ptrans;		/* Pool for per-transaction stuff */
     int sd = -1;
     int srv;
@@ -842,7 +871,12 @@ static void * worker_thread(void *thread_pool)
     char pipe_read_char;
     int curr_pollfd, last_pollfd = 0;
     size_t len = sizeof(struct sockaddr);
+    worker_thread_info *thread_info = arg;
+    int thread_just_started = 1;
 
+    pthread_mutex_lock(&thread_info->mutex);
+    tpool = ap_make_sub_pool(thread_info->pool);
+    pthread_mutex_unlock(&thread_info->mutex);
     ptrans = ap_make_sub_pool(tpool);
 
     pthread_mutex_lock(&worker_thread_count_mutex);
@@ -852,9 +886,22 @@ static void * worker_thread(void *thread_pool)
     /* TODO: Switch to a system where threads reuse the results from earlier
        poll calls - manoj */
     while (!workers_may_exit) {
-        workers_may_exit |= (ap_max_requests_per_child != 0) && (requests_this_child <= 0);
+        workers_may_exit |= (max_requests_per_child != 0) && (requests_this_child <= 0);
         if (workers_may_exit) break;
-
+        if (!thread_just_started) {
+            pthread_mutex_lock(&idle_thread_count_mutex);
+            if (idle_thread_count < max_spare_threads) {
+                idle_thread_count++;
+                pthread_mutex_unlock(&idle_thread_count_mutex);
+            }
+            else {
+                pthread_mutex_unlock(&idle_thread_count_mutex);
+                break;
+            }
+        }
+        else {
+            thread_just_started = 0;
+        }
         SAFE_ACCEPT(intra_mutex_on(0));
         if (workers_may_exit) {
             SAFE_ACCEPT(intra_mutex_off(0));
@@ -863,6 +910,7 @@ static void * worker_thread(void *thread_pool)
         SAFE_ACCEPT(accept_mutex_on(0));
         while (!workers_may_exit) {
             srv = poll(listenfds, num_listenfds + 1, -1);
+
             if (srv < 0) {
                 if (errno == EINTR) {
                     continue;
@@ -874,7 +922,6 @@ static void * worker_thread(void *thread_pool)
                              ap_get_server_conf(), "poll: (listen)");
                 workers_may_exit = 1;
             }
-
             if (workers_may_exit) break;
 
             if (listenfds[0].revents & POLLIN) {
@@ -926,12 +973,22 @@ static void * worker_thread(void *thread_pool)
             csd = ap_accept(sd, &sa_client, &len);
             SAFE_ACCEPT(accept_mutex_off(0));
             SAFE_ACCEPT(intra_mutex_off(0));
+	    pthread_mutex_lock(&idle_thread_count_mutex);
+            if (idle_thread_count > min_spare_threads) {
+                idle_thread_count--;
+            }
+            else {
+                start_thread(thread_info);
+            }
+            pthread_mutex_unlock(&idle_thread_count_mutex);
 	} else {
             SAFE_ACCEPT(accept_mutex_off(0));
             SAFE_ACCEPT(intra_mutex_off(0));
+	    pthread_mutex_lock(&idle_thread_count_mutex);
+            idle_thread_count--;
+            pthread_mutex_unlock(&idle_thread_count_mutex);
 	    break;
 	}
-
         process_socket(ptrans, &sa_client, csd);
         ap_clear_pool(ptrans);
         requests_this_child--;
@@ -954,10 +1011,8 @@ static void child_main(void)
 {
     sigset_t sig_mask;
     int signal_received;
-    pthread_t thread;
-    pthread_attr_t thread_attr;
     int i;
-    pool *tpool;
+    worker_thread_info thread_info;
     ap_listen_rec *lr;
 
     my_pid = getpid();
@@ -983,7 +1038,7 @@ static void child_main(void)
         ap_log_error(APLOG_MARK, APLOG_ALERT, server_conf, "pthread_sigmask");
     }
 
-    requests_this_child = ap_max_requests_per_child;
+    requests_this_child = max_requests_per_child;
     
     /* Set up the pollfd array */
     listenfds = ap_palloc(pchild, sizeof(struct pollfd) * (num_listenfds + 1));
@@ -998,31 +1053,20 @@ static void child_main(void)
 
     /* Setup worker threads */
 
+    idle_thread_count = threads_to_start;
     worker_thread_count = 0;
+    thread_info.pool = ap_make_sub_pool(pconf);
+    pthread_mutex_init(&thread_info.mutex, NULL);
+    pthread_mutex_init(&idle_thread_count_mutex, NULL);
     pthread_mutex_init(&worker_thread_count_mutex, NULL);
     pthread_mutex_init(&pipe_of_death_mutex, NULL);
-    pthread_attr_init(&thread_attr);
-    pthread_attr_setdetachstate(&thread_attr, PTHREAD_CREATE_DETACHED);
-    for (i=0; i < ap_threads_per_child; i++) {
-	tpool = ap_make_sub_pool(pchild);
-	
-	/* We are creating threads right now */
-	if (pthread_create(&thread, &thread_attr, worker_thread, tpool)) {
-	    ap_log_error(APLOG_MARK, APLOG_ALERT, server_conf,
-			 "pthread_create: unable to create worker thread");
-            /* In case system resources are maxxed out, we don't want
-               Apache running away with the CPU trying to fork over and
-               over and over again if we exit. */
-            sleep(10);
-	    clean_child_exit(APEXIT_CHILDFATAL);
-	}
+    pthread_attr_init(&thread_info.attr);
+    pthread_attr_setdetachstate(&thread_info.attr, PTHREAD_CREATE_DETACHED);
 
-	/* We let each thread update it's own scoreboard entry.  This is done
-	 * because it let's us deal with tid better.
-	 */
+    /* We are creating worker threads right now */
+    for (i=0; i < threads_to_start; i++) {
+        start_thread(&thread_info);
     }
-
-    pthread_attr_destroy(&thread_attr);
 
     /* This thread will be the one responsible for handling signals */
     sigemptyset(&sig_mask);
@@ -1099,7 +1143,7 @@ static int startup_children(int number_to_start)
 {
     int i;
 
-    for (i = 0; number_to_start && i < ap_num_daemons; ++i) {
+    for (i = 0; number_to_start && i < num_daemons; ++i) {
 	if (ap_scoreboard_image[i].status != SERVER_DEAD) {
 	    continue;
 	}
@@ -1137,7 +1181,7 @@ static void perform_child_maintenance(void)
     
     ap_check_signals();
     
-    for (i = 0; i < ap_num_daemons; ++i) {
+    for (i = 0; i < num_daemons; ++i) {
         unsigned char status = ap_scoreboard_image[i].status;
 
         if (status == SERVER_DEAD) {
@@ -1187,7 +1231,7 @@ static void server_main_loop(int remaining_children_to_start)
                 ap_update_child_status(child_slot, SERVER_DEAD);
                 
 		if (remaining_children_to_start
-		    && child_slot < ap_num_daemons) {
+		    && child_slot < num_daemons) {
 		    /* we're still doing a 1-for-1 replacement of dead
                      * children with new children
                      */
@@ -1279,7 +1323,7 @@ int ap_mpm_run(pool *_pconf, pool *plog, server_rec *s)
      * start more than that, so we'll just keep track of how many we're
      * supposed to start up without the 1 second penalty between each fork.
      */
-    remaining_children_to_start = ap_num_daemons;
+    remaining_children_to_start = num_daemons;
     if (!is_graceful) {
 	remaining_children_to_start = \
 	    startup_children(remaining_children_to_start);
@@ -1344,13 +1388,13 @@ int ap_mpm_run(pool *_pconf, pool *plog, server_rec *s)
          * gracefully dealing with existing request.
          */
 	
-	for (i = 0; i < ap_num_daemons; ++i) {
+	for (i = 0; i < num_daemons; ++i) {
 	    if (ap_scoreboard_image[i].status != SERVER_DEAD) {
 	        ap_scoreboard_image[i].status = SERVER_DYING;
 	    } 
 	}
 	/* kill off the idle ones */
-        for (i = 0; i < ap_num_daemons; ++i) {
+        for (i = 0; i < num_daemons; ++i) {
             if (write(pipe_of_death[1], &char_of_death, 1) == -1) {
                 ap_log_error(APLOG_MARK, APLOG_WARNING, server_conf, "write pipe_of_death");
             }
@@ -1367,9 +1411,6 @@ int ap_mpm_run(pool *_pconf, pool *plog, server_rec *s)
         reclaim_child_processes(1);		/* Start with SIGTERM */
 	ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_NOTICE, server_conf,
 		    "SIGHUP received.  Attempting to restart");
-    }
-    if (!is_graceful) {
-        ap_restart_time = time(NULL); /* ZZZZZ */
     }
     return 0;
 }
@@ -1399,12 +1440,11 @@ static void dexter_pre_config(pool *pconf, pool *plog, pool *ptemp)
 
     unixd_pre_config();
     ap_listen_pre_config();
-    ap_num_daemons = HARD_SERVER_LIMIT;
-    ap_threads_per_child = DEFAULT_THREADS_PER_CHILD;
+    num_daemons = HARD_SERVER_LIMIT;
+    threads_to_start = DEFAULT_THREADS_PER_CHILD;
     ap_pid_fname = DEFAULT_PIDLOG;
     ap_lock_fname = DEFAULT_LOCKFILE;
-    ap_max_requests_per_child = DEFAULT_MAX_REQUESTS_PER_CHILD;
-    ap_extended_status = 0;
+    max_requests_per_child = DEFAULT_MAX_REQUESTS_PER_CHILD;
 
     ap_cpystrn(ap_coredump_dir, ap_server_root, sizeof(ap_coredump_dir));
 }
@@ -1441,42 +1481,71 @@ static const char *set_num_daemons (cmd_parms *cmd, void *dummy, char *arg)
         return err;
     }
 
-    ap_num_daemons = atoi(arg);
-    if (ap_num_daemons > HARD_SERVER_LIMIT) {
+    num_daemons = atoi(arg);
+    if (num_daemons > HARD_SERVER_LIMIT) {
        fprintf(stderr, "WARNING: MaxClients of %d exceeds compile time limit "
-           "of %d servers,\n", ap_num_daemons, HARD_SERVER_LIMIT);
+           "of %d servers,\n", num_daemons, HARD_SERVER_LIMIT);
        fprintf(stderr, " lowering MaxClients to %d.  To increase, please "
            "see the\n", HARD_SERVER_LIMIT);
        fprintf(stderr, " HARD_SERVER_LIMIT define in src/include/httpd.h.\n");
-       ap_num_daemons = HARD_SERVER_LIMIT;
+       num_daemons = HARD_SERVER_LIMIT;
     } 
-    else if (ap_num_daemons < 1) {
+    else if (num_daemons < 1) {
 	fprintf(stderr, "WARNING: Require MaxClients > 0, setting to 1\n");
-	ap_num_daemons = 1;
+	num_daemons = 1;
     }
     return NULL;
 }
 
-static const char *set_threads_per_child (cmd_parms *cmd, void *dummy, char *arg) 
+static const char *set_threads_to_start (cmd_parms *cmd, void *dummy, char *arg) 
 {
     const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
     if (err != NULL) {
         return err;
     }
 
-    ap_threads_per_child = atoi(arg);
-    if (ap_threads_per_child > HARD_THREAD_LIMIT) {
-        fprintf(stderr, "WARNING: ThreadsPerChild of %d exceeds compile time"
-                "limit of %d threads,\n", ap_threads_per_child,
+    threads_to_start = atoi(arg);
+    if (threads_to_start > HARD_THREAD_LIMIT) {
+        fprintf(stderr, "WARNING: StartThreads of %d exceeds compile time"
+                "limit of %d threads,\n", threads_to_start,
                 HARD_THREAD_LIMIT);
-        fprintf(stderr, " lowering ThreadsPerChild to %d. To increase, please"
+        fprintf(stderr, " lowering StartThreads to %d. To increase, please"
                 "see the\n", HARD_THREAD_LIMIT);
         fprintf(stderr, " HARD_THREAD_LIMIT define in src/include/httpd.h.\n");
     }
-    else if (ap_threads_per_child < 1) {
-	fprintf(stderr, "WARNING: Require ThreadsPerChild > 0, setting to 1\n");
-	ap_threads_per_child = 1;
+    else if (threads_to_start < 1) {
+	fprintf(stderr, "WARNING: Require StartThreads > 0, setting to 1\n");
+	threads_to_start = 1;
     }
+    return NULL;
+}
+
+static const char *set_min_free_threads(cmd_parms *cmd, void *dummy, char *arg)
+{
+    const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
+    if (err != NULL) {
+        return err;
+    }
+
+    min_spare_threads = atoi(arg);
+    if (min_spare_threads <= 0) {
+       fprintf(stderr, "WARNING: detected MinSpareThreads set to non-positive.\n");
+       fprintf(stderr, "Resetting to 1 to avoid almost certain Apache failure.\n");
+       fprintf(stderr, "Please read the documentation.\n");
+       min_spare_threads = 1;
+    }
+       
+    return NULL;
+}
+
+static const char *set_max_free_threads(cmd_parms *cmd, void *dummy, char *arg)
+{
+    const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
+    if (err != NULL) {
+        return err;
+    }
+
+    max_spare_threads = atoi(arg);
     return NULL;
 }
 
@@ -1487,7 +1556,7 @@ static const char *set_max_requests(cmd_parms *cmd, void *dummy, char *arg)
         return err;
     }
 
-    ap_max_requests_per_child = atoi(arg);
+    max_requests_per_child = atoi(arg);
 
     return NULL;
 }
@@ -1553,8 +1622,12 @@ LISTEN_COMMANDS
     "The lockfile used when Apache needs to lock the accept() call"},
 { "NumServers", set_num_daemons, NULL, RSRC_CONF, TAKE1,
   "Number of children alive at the same time" },
-{ "ThreadsPerChild", set_threads_per_child, NULL, RSRC_CONF, TAKE1,
+{ "StartThreads", set_threads_to_start, NULL, RSRC_CONF, TAKE1,
   "Number of threads each child creates" },
+{ "MinSpareThreads", set_min_free_threads, NULL, RSRC_CONF, TAKE1,
+  "Minimum number of idle threads per child, to handle request spikes" },
+{ "MaxSpareThreads", set_max_free_threads, NULL, RSRC_CONF, TAKE1,
+  "Maximum number of idle threads per child" },
 { "MaxRequestsPerChild", set_max_requests, NULL, RSRC_CONF, TAKE1,
   "Maximum number of requests a particular child serves before dying." },
 { "CoreDumpDirectory", set_coredumpdir, NULL, RSRC_CONF, TAKE1,
