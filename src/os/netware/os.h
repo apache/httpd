@@ -59,6 +59,7 @@
 #define APACHE_OS_H
 
 #define PLATFORM "NETWARE"
+#define HAVE_CANONICAL_FILENAME
 
 /*
  * This file in included in all Apache source code. It contains definitions
@@ -113,7 +114,6 @@ typedef int gid_t;
 /* Netware doesn't have symlinks so S_ISLNK is always false */
 #define S_ISLNK(m) 0
 #define lstat(x, y) stat(x, y)
-#define ap_os_is_filename_valid(f)          (1)
 #define strcasecmp(s1, s2) stricmp(s1, s2)
 #define strncasecmp(s1, s2, n) strnicmp(s1, s2, n)
 #define mktemp(s) tmpnam(s)
@@ -142,5 +142,6 @@ const char *ap_os_dso_error(void);
 char *remove_filename(char*);
 char *bslash2slash(char*);
 void init_name_space(void);
+int ap_os_is_filename_valid(const char *file);
 #endif /*! APACHE_OS_H*/
 

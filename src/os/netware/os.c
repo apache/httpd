@@ -55,6 +55,7 @@
  *
  */
 
+#include "httpd.h"
 #include "ap_config.h"
 #include <dirent.h>
 
@@ -129,4 +130,160 @@ void init_name_space()
     UnAugmentAsterisk(TRUE);
     SetCurrentNameSpace(NW_NS_LONG);
     SetTargetNameSpace(NW_NS_LONG);
+}
+
+/*  Perform complete canonicalization.  On NetWare we are just
+	lower casing the file name so that the comparisons will match.
+	NetWare assumes that all physical paths are fully qualified.  
+	Each file path must include a volume name.
+ */
+char *ap_os_canonical_filename(pool *pPool, const char *szFile)
+{
+    char *pNewName;
+    
+    pNewName = ap_pstrdup(pPool, szFile);
+    strlwr(pNewName);
+    return pNewName;
+}
+
+/*
+ * ap_os_is_filename_valid is given a filename, and returns 0 if the filename
+ * is not valid for use on this system. On NetWare, this means it fails any
+ * of the tests below. Otherwise returns 1.
+ *
+ * The tests are:
+ *
+ * 1) total path length greater than MAX_PATH
+ * 
+ * 2) the file path must contain a volume specifier and no / or \
+ *     can appear before the volume specifier.
+ *
+ * 3) anything using the octets 0-31 or characters " < > | :
+ *    (these are reserved for Windows use in filenames. In addition
+ *     each file system has its own additional characters that are
+ *     invalid. See KB article Q100108 for more details).
+ *
+ * 4) anything ending in "." (no matter how many)
+ *    (filename doc, doc. and doc... all refer to the same file)
+ *
+ * 5) any segment in which the basename (before first period) matches
+ *    one of the DOS device names
+ *    (the list comes from KB article Q100108 although some people
+ *     reports that additional names such as "COM5" are also special
+ *     devices).
+ *
+ * If the path fails ANY of these tests, the result must be to deny access.
+ */
+
+int ap_os_is_filename_valid(const char *file)
+{
+    const char *segstart;
+    unsigned int seglength;
+    const char *pos;
+	char *colonpos, *fslashpos, *bslashpos;
+    static const char * const invalid_characters = "?\"<>*|:";
+    static const char * const invalid_filenames[] = { 
+		"CON", "AUX", "COM1", "COM2", "COM3", 
+		"COM4", "LPT1", "LPT2", "LPT3", "PRN", "NUL", NULL 
+    };
+
+	// First check to make sure that we have a file so that we don't abend
+	if (file == NULL)
+		return 0;
+
+    /* Test 1 */
+    if (strlen(file) >= _MAX_PATH) {
+		/* Path too long for Windows. Note that this test is not valid
+		 * if the path starts with //?/ or \\?\. */
+		return 0;
+    }
+
+    pos = file;
+
+    /* Skip any leading non-path components. This can be either a
+     * drive letter such as C:, or a UNC path such as \\SERVER\SHARE\.
+     * We continue and check the rest of the path based on the rules above.
+     * This means we could eliminate valid filenames from servers which
+     * are not running NT (such as Samba).
+     */
+
+	colonpos = strchr (file, ':');
+	fslashpos = strchr (file, '/');
+	bslashpos = strchr (file, '\\');
+
+	// The path must contain a volume specifier and the volume
+	//  specifier must appear before in slashes.
+	if (colonpos) {
+		// If a slash appears before the colon then the path
+		//  is invalid until we support remotes server file
+		//  access
+		if (fslashpos && (fslashpos < colonpos))
+			return 0;
+		if (bslashpos && (bslashpos < colonpos))
+			return 0;
+	}
+	else {
+		return 0;
+	}
+
+	pos = ++colonpos;
+   	if (!*pos) {
+		/* No path information */
+		return 0;
+    }
+
+    while (*pos) {
+		unsigned int idx;
+		unsigned int baselength;
+
+		while (*pos == '/' || *pos == '\\') {
+    	    pos++;
+		}
+		if (*pos == '\0') {
+		    break;
+		}
+		segstart = pos;	/* start of segment */
+		while (*pos && *pos != '/' && *pos != '\\') {
+		    pos++;
+		}
+		seglength = pos - segstart;
+		/* 
+		 * Now we have a segment of the path, starting at position "segstart"
+		 * and length "seglength"
+		 */
+
+		/* Test 2 */
+		for (idx = 0; idx < seglength; idx++) {
+	    	if ((segstart[idx] > 0 && segstart[idx] < 32) ||
+				strchr(invalid_characters, segstart[idx])) {
+				return 0;
+	    	}
+		}
+
+		/* Test 3 */
+		if (segstart[seglength-1] == '.') {
+		    return 0;
+		}
+
+		/* Test 4 */
+		for (baselength = 0; baselength < seglength; baselength++) {
+		    if (segstart[baselength] == '.') {
+				break;
+		    }
+		}
+
+		/* baselength is the number of characters in the base path of
+		 * the segment (which could be the same as the whole segment length,
+		 * if it does not include any dot characters). */
+		if (baselength == 3 || baselength == 4) {
+	    	for (idx = 0; invalid_filenames[idx]; idx++) {
+				if (strlen(invalid_filenames[idx]) == baselength &&
+				    !strnicmp(invalid_filenames[idx], segstart, baselength)) {
+				    return 0;
+				}
+	    	}
+		}
+    }
+
+    return 1;
 }
