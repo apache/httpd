@@ -59,7 +59,6 @@
 #define CORE_PRIVATE 
  
 #include "ap_config.h"
-#include "apr_hash.h"
 #include "apr_strings.h"
 #include "apr_portable.h"
 #include "apr_file_io.h"
@@ -95,13 +94,6 @@
 
 typedef struct child_info_t child_info_t;
 
-struct child_info_t {
-    uid_t uid;
-    gid_t gid;
-};
-static int curr_child_num = 0;  /* how many children have been setup so
-                                   far */
-
 /*
  * Actual definitions of config globals
  */
@@ -119,8 +111,11 @@ static int requests_this_child;
 static int num_listenfds = 0;
 static ap_socket_t **listenfds;
 
-static ap_hash_t *child_hash;
-
+struct child_info_t {
+    uid_t uid;
+    gid_t gid;
+};
+static child_info_t child_info_table[HARD_SERVER_LIMIT];
 struct ap_ctable ap_child_table[HARD_SERVER_LIMIT];
 
 /*
@@ -716,11 +711,8 @@ static int set_group_privs(uid_t uid, gid_t gid)
 
 static int perchild_setup_child(int childnum)
 {
-    child_info_t *ug;
-    char child_num_str[5];
+    child_info_t *ug = &child_info_table[childnum];
 
-    ap_snprintf(child_num_str, 5, "%d", childnum); 
-    ug = ap_hash_get(child_hash, child_num_str, 1); 
     if (!ug) {
         return unixd_setup_child();
     }
@@ -1244,7 +1236,6 @@ static void perchild_pre_config(ap_pool_t *p, ap_pool_t *plog, ap_pool_t *ptemp)
     lock_fname = DEFAULT_LOCKFILE;
     max_requests_per_child = DEFAULT_MAX_REQUESTS_PER_CHILD;
     ap_perchild_set_maintain_connection_status(1);
-    child_hash = ap_make_hash(p);
 
     ap_cpystrn(ap_coredump_dir, ap_server_root, sizeof(ap_coredump_dir));
 }
@@ -1448,17 +1439,11 @@ static const char *set_coredumpdir (cmd_parms *cmd, void *dummy, const char *arg
     return NULL;
 }
 
-static ap_status_t reset_child_process(void *data)
+static const char *set_childprocess(cmd_parms *cmd, void *dummy, const char *p,
+                                    const char *u, const char *g) 
 {
-    curr_child_num = 0;
-    return APR_SUCCESS;	
-}
-
-static const char *set_childprocess(cmd_parms *cmd, void *dummy, const char *u,
-                                    const char *g) 
-{
-    child_info_t *ug = ap_palloc(cmd->pool, sizeof(*ug));
-    char child_num_str[5];
+    int curr_child_num = atoi(p);
+    child_info_t *ug = &child_info_table[curr_child_num];
 
     if (curr_child_num > num_daemons) {
         return "Trying to use more child ID's than NumServers.  Increase "
@@ -1467,10 +1452,6 @@ static const char *set_childprocess(cmd_parms *cmd, void *dummy, const char *u,
    
     ug->uid = atoi(u);
     ug->gid = atoi(g); 
-    ap_snprintf(child_num_str, 5, "%d", curr_child_num++); 
-    ap_hash_set(child_hash, ap_pstrdup(cmd->pool, child_num_str), 1, ug); 
-
-    ap_register_cleanup(cmd->pool, &curr_child_num, reset_child_process, ap_null_cleanup);
 
     return NULL;
 }
@@ -1529,8 +1510,8 @@ AP_INIT_FLAG("ConnectionStatus", set_maintain_connection_status, NULL, RSRC_CONF
              "Whether or not to maintain status information on current connections"),
 AP_INIT_TAKE1("CoreDumpDirectory", set_coredumpdir, NULL, RSRC_CONF,
               "The location of the directory Apache changes to before dumping core"),
-AP_INIT_TAKE2("ChildProcess", set_childprocess, NULL, RSRC_CONF,
-              "The User and Group this child Process should run as."),
+AP_INIT_TAKE3("ChildProcess", set_childprocess, NULL, RSRC_CONF,
+              "Specify a User and Group for a specific child process."),
 { NULL }
 };
 
