@@ -355,11 +355,11 @@ static int ap_listen_open(apr_pool_t *pool, apr_port_t port)
              */
             if (previous != NULL &&
                 lr->bind_addr->family == APR_INET &&
-                *((in_addr_t *)lr->bind_addr->ipaddr_ptr) == INADDR_ANY &&
+                lr->bind_addr->sa.sin.sin_addr.s_addr == INADDR_ANY &&
                 lr->bind_addr->port == previous->bind_addr->port &&
                 previous->bind_addr->family == APR_INET6 &&
                 IN6_IS_ADDR_UNSPECIFIED(
-                        (struct in6_addr*)(previous->bind_addr->ipaddr_ptr)) &&
+                    &previous->bind_addr->sa.sin6.sin6_addr) &&
                 apr_socket_opt_get(previous->sd, APR_IPV6_V6ONLY,
                                    &v6only_setting) == APR_SUCCESS &&
                 v6only_setting == 0) {
@@ -382,10 +382,10 @@ static int ap_listen_open(apr_pool_t *pool, apr_port_t port)
                  */
                 if (lr->next != NULL && lr->bind_addr->family == APR_INET6 &&
                     IN6_IS_ADDR_UNSPECIFIED(
-                        (struct in6_addr*)(previous->bind_addr->ipaddr_ptr)) &&
+                        &lr->bind_addr->sa.sin6.sin6_addr) &&
                     lr->bind_addr->port == lr->next->bind_addr->port &&
-                    *((in_addr_t *)lr->next->bind_addr->ipaddr_ptr)
-                    == INADDR_ANY) {
+                    lr->next->bind_addr->family == APR_INET && 
+                    lr->next->bind_addr->sa.sin.sin_addr.s_addr == INADDR_ANY) {
 
                     /* Remove the current listener from the list */
                     if (previous) {
