@@ -246,17 +246,17 @@ for HTTP Basic authentication.</description>
     is part of the just-fetched LDAP entry.  Multiple users can be
     granted access by putting multiple usernames on the line,
     separated with spaces. If a username has a space in it, then it
-    must be the only user on the line. In this case, multiple users
-    can be granted access by using multiple <code>require user</code>
+    must be surrounded with double quotes. Multiple users can also be
+    granted access by using multiple <code>require user</code>
     directives, with one user per line. For example, with a <directive
     module="mod_auth_ldap">AuthLDAPURL</directive> of
     <code>ldap://ldap/o=Airius?cn</code> (i.e., <code>cn</code> is
     used for searches), the following require directives could be used
     to restrict access:</p>
 <example>
-require user Barbara Jenson<br />
-require user Fred User<br />
-require user Joe Manager<br />
+require user "Barbara Jenson"<br />
+require user "Fred User"<br />
+require user "Joe Manager"<br />
 </example>
 
     <p>Because of the way that <module>mod_auth_ldap</module> handles this
@@ -287,7 +287,7 @@ uniqueMember: cn=Fred User, o=Airius<br />
 
     <p>The following directive would grant access to both Fred and
     Barbara:</p>
-<example>require group cn=Administrators, o=Airius</example>
+<example>require group "cn=Administrators, o=Airius"</example>
 
     <p>Behavior of this directive is modified by the <directive
     module="mod_auth_ldap">AuthLDAPGroupAttribute</directive> and
@@ -307,7 +307,7 @@ uniqueMember: cn=Fred User, o=Airius<br />
 
     <p>The following directive would grant access to a specific
     DN:</p>
-<example>require dn cn=Barbara Jenson, o=Airius</example>
+<example>require dn "cn=Barbara Jenson, o=Airius"</example>
 
     <p>Behavior of this directive is modified by the <directive
     module="mod_auth_ldap">AuthLDAPCompareDNOnServer</directive>
@@ -322,7 +322,7 @@ uniqueMember: cn=Fred User, o=Airius<br />
         Grant access to anyone who exists in the LDAP directory,
         using their UID for searches. 
 <example>
-AuthLDAPURL ldap://ldap1.airius.com:389/ou=People, o=Airius?uid?sub?(objectClass=*)<br />
+AuthLDAPURL "ldap://ldap1.airius.com:389/ou=People, o=Airius?uid?sub?(objectClass=*)"<br />
 require valid-user
 </example>
       </li>
@@ -331,7 +331,7 @@ require valid-user
         The next example is the same as above; but with the fields
         that have useful defaults omitted. Also, note the use of a
         redundant LDAP server. 
-<example>AuthLDAPURL ldap://ldap1.airius.com ldap2.airius.com/ou=People, o=Airius<br />
+<example>AuthLDAPURL "ldap://ldap1.airius.com ldap2.airius.com/ou=People, o=Airius"<br />
 require valid-user
 </example>
       </li>
@@ -346,7 +346,7 @@ require valid-user
         choose an attribute that is guaranteed unique in your
         directory, such as <code>uid</code>. 
 <example>
-AuthLDAPURL ldap://ldap.airius.com/ou=People, o=Airius?cn<br />
+AuthLDAPURL "ldap://ldap.airius.com/ou=People, o=Airius?cn"<br />
 require valid-user
 </example>
       </li>
@@ -355,7 +355,7 @@ require valid-user
         Grant access to anybody in the Administrators group. The
         users must authenticate using their UID. 
 <example>
-AuthLDAPURL ldap://ldap.airius.com/o=Airius?uid<br />
+AuthLDAPURL "ldap://ldap.airius.com/o=Airius?uid"<br />
 require group cn=Administrators, o=Airius
 </example>
       </li>
@@ -367,7 +367,7 @@ require group cn=Administrators, o=Airius
         only to people (authenticated via their UID) who have
         alphanumeric pagers: 
 <example>
-AuthLDAPURL ldap://ldap.airius.com/o=Airius?uid??(qpagePagerID=*)<br />
+AuthLDAPURL "ldap://ldap.airius.com/o=Airius?uid??(qpagePagerID=*)"<br />
 require valid-user
 </example>
       </li>
@@ -383,7 +383,7 @@ require valid-user
         have a pager, but does need to access the same
         resource:</p>
 <example>
-AuthLDAPURL ldap://ldap.airius.com/o=Airius?uid??(|(qpagePagerID=*)(uid=jmanager))<br />
+AuthLDAPURL "ldap://ldap.airius.com/o=Airius?uid??(|(qpagePagerID=*)(uid=jmanager))"<br />
 require valid-user
 </example>
 
@@ -454,7 +454,7 @@ require valid-user
     directives to <em>every</em> <code>.htaccess</code> file
     that gets created in the web</p>
 <example><pre>
-AuthLDAPURL            the url
+AuthLDAPURL            "the url"
 AuthLDAPAuthoritative  off
 AuthLDAPFrontPageHack  on
 </pre></example>
