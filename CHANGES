@@ -1,5 +1,12 @@
 Changes with Apache 2.0.45
 
+   *) Added character set support to mod_auth_LDAP to allow it to 
+     convert extended characters used in the user ID to UTF-8 
+     before authenticating against the LDAP directory. The new
+     directive AuthLDAPCharsetConfig is used to specify the config
+     file that contains the character set conversion table.
+     [Brad Nicholes]
+
   *) Don't remove the Content-Length from responses in mod_proxy
      PR: 8677 [Brian Pane]
 
