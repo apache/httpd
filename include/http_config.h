@@ -135,6 +135,7 @@ typedef struct command_struct {
 #define OR_UNSET 32
 #define ACCESS_CONF 64
 #define RSRC_CONF 128
+#define EXEC_ON_READ 256
 #define OR_ALL (OR_LIMIT|OR_OPTIONS|OR_FILEINFO|OR_AUTHCFG|OR_INDEXES)
 
 /* This can be returned by a function if they don't wish to handle
@@ -143,6 +144,16 @@ typedef struct command_struct {
  */
 
 #define DECLINE_CMD "\a\b"
+
+/* Common structure for reading of config files / passwd files etc. */
+typedef struct {
+    int (*getch) (void *param);	/* a getc()-like function */
+    void *(*getstr) (void *buf, size_t bufsiz, void *param); /* a fgets()-like function */
+    int (*close) (void *param);	/* a close hander function */
+    void *param;		/* the argument passed to getch/getstr/close */
+    const char *name;		/* the filename / description */
+    unsigned line_number;	/* current line number, starting at 1 */
+} configfile_t;
 
 /*
  * This structure is passed to a command which is being invoked,
@@ -155,6 +166,7 @@ typedef struct {
     int override;		/* Which allow-override bits are set */
     int limited;		/* Which methods are <Limit>ed */
 
+    configfile_t *config_file;  /* Config file structure. */
     ap_directive_t *directive;	/* the directive specifying this command */
 
     ap_pool_t *pool;			/* Pool to allocate new storage in */
@@ -304,16 +316,6 @@ API_EXPORT(void) ap_clear_module_list(void);
 API_EXPORT(const char *) ap_find_module_name(module *m);
 API_EXPORT(module *) ap_find_linked_module(const char *name);
 
-/* Common structure for reading of config files / passwd files etc. */
-typedef struct {
-    int (*getch) (void *param);	/* a getc()-like function */
-    void *(*getstr) (void *buf, size_t bufsiz, void *param); /* a fgets()-like function */
-    int (*close) (void *param);	/* a close hander function */
-    void *param;		/* the argument passed to getch/getstr/close */
-    const char *name;		/* the filename / description */
-    unsigned line_number;	/* current line number, starting at 1 */
-} configfile_t;
-
 /* Open a configfile_t as FILE, return open configfile_t struct pointer */
 API_EXPORT(ap_status_t) ap_pcfg_openfile(configfile_t **, ap_pool_t *p, const char *name);
 
@@ -334,7 +336,13 @@ API_EXPORT(int) ap_cfg_getc(configfile_t *cfp);
 API_EXPORT(int) ap_cfg_closefile(configfile_t *cfp);
 
 /* for implementing subconfigs and customized config files */
-API_EXPORT(const char *) ap_build_config(configfile_t *cfp,
+API_EXPORT(const char *) ap_soak_end_container(cmd_parms *cmd, char *directive);
+const char * ap_build_cont_config(ap_pool_t *p, ap_pool_t *temp_pool,
+                                        cmd_parms *parms,
+                                        ap_directive_t **current,
+                                        ap_directive_t **curr_parent,
+                                        char *orig_directive);
+API_EXPORT(const char *) ap_build_config(cmd_parms *parms,
 					 ap_pool_t *conf_pool,
 					 ap_pool_t *temp_pool,
 					 ap_directive_t **conftree);

@@ -230,6 +230,12 @@ static const char *load_module(cmd_parms *cmd, void *dummy,
     moduleinfo *modie;
     int i;
 
+    /* we need to setup this value for dummy to make sure that we don't try
+     * to add a non-existant tree into the build when we return to
+     * execute_now.
+     */
+    *(ap_directive_t **)dummy = NULL;
+
     /* 
      * check for already existing module
      * If it already exists, we have nothing to do 
@@ -349,7 +355,7 @@ static const char *load_module(cmd_parms *cmd, void *dummy,
 #endif /* NO_DLOPEN */
 
 static const command_rec so_cmds[] = {
-    { "LoadModule", load_module, NULL, RSRC_CONF, TAKE2,
+    { "LoadModule", load_module, NULL, RSRC_CONF | EXEC_ON_READ, TAKE2,
       "a module name and the name of a shared object file to load it from"},
     { "LoadFile", load_file, NULL, RSRC_CONF, ITERATE,
       "shared object file or library to load into the server at runtime"},
