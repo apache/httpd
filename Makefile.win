@@ -65,11 +65,9 @@ _build:
 	 $(MAKE) $(MAKEOPT) -f apr.mak CFG="apr - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f libapr.mak CFG="libapr - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	cd ..\..
-	cd srclib\expat-lite
-	 $(MAKE) $(MAKEOPT) -f expat.mak CFG="expat - Win32 $(LONG)" RECURSE=0 $(CTARGET)
-	 $(MAKE) $(MAKEOPT) -f libexpat.mak CFG="libexpat - Win32 $(LONG)" RECURSE=0 $(CTARGET)
-	cd ..\..
-	cd srclib\apr-util
+	cd srclib\apr-util\xml\expat\lib
+	 $(MAKE) $(MAKEOPT) -f xml.mak CFG="xml - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+        cd ..\..\..
 	 $(MAKE) $(MAKEOPT) -f aprutil.mak CFG="aprutil - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f libaprutil.mak CFG="libaprutil - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	cd ..\..
@@ -144,7 +142,6 @@ _install:
 	copy $(LONG)\libhttpd.dll "$(INSTDIR)\bin"
 	copy srclib\apr\$(LONG)\libapr.dll "$(INSTDIR)\bin"
         copy srclib\apr-util\$(LONG)\libaprutil.dll "$(INSTDIR)\bin"
-        copy srclib\expat-lite\$(LONG)\libexpat.dll "$(INSTDIR)\bin"
         copy modules\aaa\$(LONG)\mod_auth_anon.so "$(INSTDIR)\modules"
 	copy modules\aaa\$(LONG)\mod_auth_dbm.so "$(INSTDIR)\modules"
 	copy modules\aaa\$(LONG)\mod_auth_digest.so "$(INSTDIR)\modules"
@@ -181,9 +178,6 @@ A
 	xcopy srclib\apr-util\include\*.h "$(INSTDIR)\include" /d < <<
 A
 <<
-	xcopy srclib\expat-lite\*.h "$(INSTDIR)\include\xml" /d < <<
-A
-<<
 	xcopy srclib\pcre\*.h "$(INSTDIR)\include\pcre" /d < <<
 A
 <<
@@ -198,8 +192,6 @@ A
 	copy srclib\apr\$(LONG)\libapr.exp "$(INSTDIR)\libexec"
 	copy srclib\apr-util\$(LONG)\libaprutil.lib "$(INSTDIR)\libexec"
 	copy srclib\apr-util\$(LONG)\libaprutil.exp "$(INSTDIR)\libexec"
-	copy srclib\expat-lite\$(LONG)\libexpat.lib "$(INSTDIR)\libexec"
-	copy srclib\expat-lite\$(LONG)\libexpat.exp "$(INSTDIR)\libexec"
 	copy $(LONG)\libhttpd.exp "$(INSTDIR)\libexec"
 	copy $(LONG)\libhttpd.lib "$(INSTDIR)\libexec"
 	copy modules\dav\main\$(LONG)\mod_dav.exp "$(INSTDIR)\libexec"
