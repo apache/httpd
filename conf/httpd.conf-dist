@@ -42,7 +42,10 @@ Group #-1
 ServerAdmin you@your.address
 
 # ServerRoot: The directory the server's config, error, and log files
-# are kept in
+# are kept in.
+# NOTE!  If you intend to place this on a NFS (or otherwise network)
+# mounted filesystem then please read the LockFile documentation,
+# you will save yourself a lot of trouble.
 
 ServerRoot @@ServerRoot@@
 
