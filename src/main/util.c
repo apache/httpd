@@ -469,7 +469,7 @@ API_EXPORT(void) ap_getparents(char *name)
 {
     int l, w;
 
-    /* Four paseses, as per RFC 1808 */
+    /* Four passes, as per RFC 1808 */
     /* a) remove ./ path segments */
 
     for (l = 0, w = 0; name[l] != '\0';) {
