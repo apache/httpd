@@ -762,7 +762,7 @@ static int make_child(server_rec *s, int slot)
         apr_signal(SIGTERM, just_die);
         child_main(slot);
 
-	return 0;
+        exit(0);
     }
     /* else */
     ap_scoreboard_image->parent[slot].pid = pid;
