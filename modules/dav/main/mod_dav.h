@@ -1220,38 +1220,72 @@ void dav_prop_rollback(dav_prop_ctx *ctx);
 ** WALKER STRUCTURE
 */
 
-/* private, opaque info structure for repository walking context */
-typedef struct dav_walker_private dav_walker_private;
+enum {
+    DAV_CALLTYPE_MEMBER = 1,	/* called for a member resource */
+    DAV_CALLTYPE_COLLECTION,	/* called for a collection */
+    DAV_CALLTYPE_LOCKNULL,	/* called for a locknull resource */
+    DAV_CALLTYPE_POSTFIX	/* postfix call for a collection */
+};
+
+typedef struct
+{
+    /* the client-provided context */
+    void *walk_ctx;
+
+    /* the current resource */
+    const dav_resource *resource;
+
+    /* the current secondary/tracking resource */
+    const dav_resource *res_dst;
+
+    /* OUTPUT: add responses to this */
+    dav_response *response;
+
+} dav_walk_resource;
+
+typedef struct
+{
+    int walk_type;
+#define DAV_WALKTYPE_AUTH	0x0001	/* limit to authorized files */
+#define DAV_WALKTYPE_NORMAL	0x0002	/* walk normal files */
+#define DAV_WALKTYPE_LOCKNULL	0x0004	/* walk locknull resources */
+
+#define DAV_WALKTYPE_POSTFIX    0x0100  /* do postfix call for collections */
+
+#define DAV_WALKTYPE_ALL	DAV_WALKTYPE_NORMAL     /* ### compat */
+#define DAV_WALKTYPE_HIDDEN	0x1000	/* walk hidden files */
+
+    /* callback function and a client context for the walk */
+    dav_error * (*func)(dav_walk_resource *wres, int calltype);
+    void *walk_ctx;
+
+    /* what pool to use for allocations needed by walk logic */
+    apr_pool_t *pool;
+
+    /* beginning root of the walk */
+    const dav_resource *root;
+
+    /* secondary, tracking resource */
+    const dav_resource *root_dst;
+
+    /* lock database to enable walking LOCKNULL resources */
+    dav_lockdb *lockdb;
+
+} dav_walk_params;
 
 /* directory tree walking context */
 typedef struct dav_walker_ctx
 {
-    int walk_type;
-#define DAV_WALKTYPE_AUTH	1	/* limit to authorized files */
-#define DAV_WALKTYPE_ALL	2	/* walk normal files */
-#define DAV_WALKTYPE_HIDDEN	4	/* walk hidden files */
-#define DAV_WALKTYPE_LOCKNULL	8	/* walk locknull resources */
+    /* input: */
+    dav_walk_params w;
 
-    int postfix;		/* call func for dirs after files */
+    /* output: */
+    dav_response *response;
 
-    dav_error * (*func)(struct dav_walker_ctx *ctx, int calltype);
-#define DAV_CALLTYPE_MEMBER	1	/* called for a member resource */
-#define DAV_CALLTYPE_COLLECTION	2	/* called for a collection */
-#define DAV_CALLTYPE_LOCKNULL	3	/* called for a locknull resource */
-#define DAV_CALLTYPE_POSTFIX	4	/* postfix call for a collection */
 
-    apr_pool_t *pool;
+    /* ### private data... phasing out this big glom */
 
     request_rec *r;			/* original request */
-    dav_buffer uri;			/* current URI */
-    const dav_resource *resource;	/* current resource */
-    const dav_resource *res2;		/* optional secondary resource */
-
-    const dav_resource *root;		/* RO: root resource of the walk */
-
-    dav_lockdb *lockdb;
-
-    dav_response *response;		/* OUT: multistatus responses */
 
     /* for PROPFIND operations */
     ap_xml_doc *doc;
@@ -1273,12 +1307,11 @@ typedef struct dav_walker_ctx
 
     int flags;
 
-    dav_walker_private *info;           /* for use by repository manager */
-
 } dav_walker_ctx;
 
-DAV_DECLARE(void) dav_add_response(dav_walker_ctx *ctx, const char *href, 
-                               int status, dav_get_props_result *propstats);
+DAV_DECLARE(void) dav_add_response(dav_walk_resource *wres,
+                                   int status,
+                                   dav_get_props_result *propstats);
 
 
 /* --------------------------------------------------------------------

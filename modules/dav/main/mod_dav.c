@@ -1174,21 +1174,22 @@ static int dav_method_put(request_rec *r)
 }
 
 /* ### move this to dav_util? */
-DAV_DECLARE(void) dav_add_response(dav_walker_ctx *ctx, const char *href, 
+DAV_DECLARE(void) dav_add_response(dav_walk_resource *wres,
                                    int status, dav_get_props_result *propstats)
 {
+    dav_walker_ctx *ctx = wres->walk_ctx;
     dav_response *resp;
 
     /* just drop some data into an dav_response */
-    resp = apr_pcalloc(ctx->pool, sizeof(*resp));
-    resp->href = apr_pstrdup(ctx->pool, href);
+    resp = apr_pcalloc(ctx->w.pool, sizeof(*resp));
+    resp->href = apr_pstrdup(ctx->w.pool, wres->resource->uri);
     resp->status = status;
     if (propstats) {
 	resp->propresult = *propstats;
     }
-    resp->next = ctx->response;
 
-    ctx->response = resp;
+    resp->next = wres->response;
+    wres->response = resp;
 }
 
 /* handle the DELETE method */
@@ -1451,16 +1452,17 @@ static void dav_cache_badprops(dav_walker_ctx *ctx)
 	return;
     }
 
-    ap_text_append(ctx->pool, &hdr,
+    ap_text_append(ctx->w.pool, &hdr,
 		   "<D:propstat>" DEBUG_CR
 		   "<D:prop>" DEBUG_CR);
 
     elem = dav_find_child(ctx->doc->root, "prop");
     for (elem = elem->first_child; elem; elem = elem->next) {
-	ap_text_append(ctx->pool, &hdr, ap_xml_empty_elem(ctx->pool, elem));
+	ap_text_append(ctx->w.pool, &hdr,
+                       ap_xml_empty_elem(ctx->w.pool, elem));
     }
 
-    ap_text_append(ctx->pool, &hdr,
+    ap_text_append(ctx->w.pool, &hdr,
 		   "</D:prop>" DEBUG_CR
 		   "<D:status>HTTP/1.1 404 Not Found</D:status>" DEBUG_CR
 		   "</D:propstat>" DEBUG_CR);
@@ -1468,8 +1470,9 @@ static void dav_cache_badprops(dav_walker_ctx *ctx)
     ctx->propstat_404 = hdr.first;
 }
 
-static dav_error * dav_propfind_walker(dav_walker_ctx *ctx, int calltype)
+static dav_error * dav_propfind_walker(dav_walk_resource *wres, int calltype)
 {
+    dav_walker_ctx *ctx = wres->walk_ctx;
     dav_error *err;
     dav_propdb *propdb;
     dav_get_props_result propstats = { 0 };
@@ -1482,8 +1485,8 @@ static dav_error * dav_propfind_walker(dav_walker_ctx *ctx, int calltype)
     ** Note: we cast to lose the "const". The propdb won't try to change
     ** the resource, however, since we are opening readonly.
     */
-    err = dav_open_propdb(ctx->r, ctx->lockdb,
-			  (dav_resource *)ctx->resource, 1,
+    err = dav_open_propdb(ctx->r, ctx->w.lockdb,
+			  (dav_resource *)wres->resource, 1,
 			  ctx->doc ? ctx->doc->namespaces : NULL, &propdb);
     if (err != NULL) {
 	/* ### do something with err! */
@@ -1494,11 +1497,11 @@ static dav_error * dav_propfind_walker(dav_walker_ctx *ctx, int calltype)
 	    /* some props were expected on this collection/resource */
 	    dav_cache_badprops(ctx);
 	    badprops.propstats = ctx->propstat_404;
-	    dav_add_response(ctx, ctx->uri.buf, 0, &badprops);
+	    dav_add_response(wres, 0, &badprops);
 	}
 	else {
 	    /* no props on this collection/resource */
-	    dav_add_response(ctx, ctx->uri.buf, HTTP_OK, NULL);
+	    dav_add_response(wres, HTTP_OK, NULL);
 	}
 	return NULL;
     }
@@ -1513,7 +1516,7 @@ static dav_error * dav_propfind_walker(dav_walker_ctx *ctx, int calltype)
     }
     dav_close_propdb(propdb);
 
-    dav_add_response(ctx, ctx->uri.buf, 0, &propstats);
+    dav_add_response(wres, 0, &propstats);
 
     return NULL;
 }
@@ -1527,7 +1530,7 @@ static int dav_method_propfind(request_rec *r)
     int result;
     ap_xml_doc *doc;
     const ap_xml_elem *child;
-    dav_walker_ctx ctx = { 0 };
+    dav_walker_ctx ctx = { { 0 } };
 
     /* Ask repository module to resolve the resource */
     result = dav_get_resource(r, 1 /*target_allowed*/, NULL, &resource);
@@ -1596,17 +1599,17 @@ static int dav_method_propfind(request_rec *r)
 	return HTTP_BAD_REQUEST;
     }
 
-    ctx.walk_type = DAV_WALKTYPE_ALL | DAV_WALKTYPE_AUTH;
-    ctx.func = dav_propfind_walker;
-    ctx.pool = r->pool;
+    ctx.w.walk_type = DAV_WALKTYPE_NORMAL | DAV_WALKTYPE_AUTH;
+    ctx.w.func = dav_propfind_walker;
+    ctx.w.walk_ctx = &ctx;
+    ctx.w.pool = r->pool;
+    ctx.w.root = resource;
+
     ctx.doc = doc;
     ctx.r = r;
-    ctx.resource = resource;
-
-    dav_buffer_init(r->pool, &ctx.uri, r->uri);
 
     /* ### should open read-only */
-    if ((err = dav_open_lockdb(r, 0, &ctx.lockdb)) != NULL) {
+    if ((err = dav_open_lockdb(r, 0, &ctx.w.lockdb)) != NULL) {
 	err = dav_push_error(r->pool, err->status, 0,
 			     "The lock database could not be opened, "
 			     "preventing access to the various lock "
@@ -1614,15 +1617,15 @@ static int dav_method_propfind(request_rec *r)
 			     err);
 	return dav_handle_err(r, err, NULL);
     }
-    if (ctx.lockdb != NULL) {
+    if (ctx.w.lockdb != NULL) {
 	/* if we have a lock database, then we can walk locknull resources */
-	ctx.walk_type |= DAV_WALKTYPE_LOCKNULL;
+	ctx.w.walk_type |= DAV_WALKTYPE_LOCKNULL;
     }
 
     err = (*resource->hooks->walk)(&ctx, depth);
 
-    if (ctx.lockdb != NULL) {
-	(*ctx.lockdb->hooks->close_lockdb)(ctx.lockdb);
+    if (ctx.w.lockdb != NULL) {
+	(*ctx.w.lockdb->hooks->close_lockdb)(ctx.w.lockdb);
     }
 
     if (err != NULL) {

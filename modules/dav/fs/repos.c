@@ -83,7 +83,11 @@ struct dav_resource_private {
 
 /* private context for doing a filesystem walk */
 typedef struct {
-    dav_walker_ctx *wctx;
+    /* the input walk parameters */
+    const dav_walk_params *params;
+
+    /* reused as we walk */
+    dav_walk_resource wres;
 
     dav_resource res1;
     dav_resource res2;
@@ -91,6 +95,8 @@ typedef struct {
     dav_resource_private info2;
     dav_buffer path1;
     dav_buffer path2;
+
+    dav_buffer uri_buf; /* URI for res1 */
 
     dav_buffer locknull_buf;
 
@@ -907,13 +913,15 @@ static dav_error * dav_fs_create_collection(dav_resource *resource)
     return NULL;
 }
 
-static dav_error * dav_fs_copymove_walker(dav_walker_ctx *ctx, int calltype)
+static dav_error * dav_fs_copymove_walker(dav_walk_resource *wres,
+                                          int calltype)
 {
-    dav_resource_private *srcinfo = ctx->resource->info;
-    dav_resource_private *dstinfo = ctx->res2->info;
+    dav_walker_ctx *ctx = wres->walk_ctx;
+    dav_resource_private *srcinfo = wres->resource->info;
+    dav_resource_private *dstinfo = wres->res_dst->info;
     dav_error *err = NULL;
 
-    if (ctx->resource->collection) {
+    if (wres->resource->collection) {
 	if (calltype == DAV_CALLTYPE_POSTFIX) {
 	    /* Postfix call for MOVE. delete the source dir.
 	     * Note: when copying, we do not enable the postfix-traversal.
@@ -923,16 +931,16 @@ static dav_error * dav_fs_copymove_walker(dav_walker_ctx *ctx, int calltype)
 	}
         else {
 	    /* copy/move of a collection. Create the new, target collection */
-            if (apr_make_dir(dstinfo->pathname, APR_OS_DEFAULT, ctx->pool) 
-		!= APR_SUCCESS) {
+            if (apr_make_dir(dstinfo->pathname, APR_OS_DEFAULT,
+                             ctx->w.pool) != APR_SUCCESS) {
 		/* ### assume it was a permissions problem */
 		/* ### need a description here */
-                err = dav_new_error(ctx->pool, HTTP_FORBIDDEN, 0, NULL);
+                err = dav_new_error(ctx->w.pool, HTTP_FORBIDDEN, 0, NULL);
             }
 	}
     }
     else {
-	err = dav_fs_copymove_file(ctx->is_move, ctx->pool, 
+	err = dav_fs_copymove_file(ctx->is_move, ctx->w.pool, 
 				   srcinfo->pathname, dstinfo->pathname, 
 				   &ctx->work_buf);
 	/* ### push a higher-level description? */
@@ -953,9 +961,9 @@ static dav_error * dav_fs_copymove_walker(dav_walker_ctx *ctx, int calltype)
     if (err != NULL
         && !ap_is_HTTP_SERVER_ERROR(err->status)
 	&& (ctx->is_move
-            || !dav_fs_is_same_resource(ctx->resource, ctx->root))) {
+            || !dav_fs_is_same_resource(wres->resource, ctx->w.root))) {
 	/* ### use errno to generate DAV:responsedescription? */
-	dav_add_response(ctx, ctx->resource->uri, err->status, NULL);
+	dav_add_response(wres, err->status, NULL);
 
         /* the error is in the multistatus now. do not stop the traversal. */
         return NULL;
@@ -980,18 +988,20 @@ static dav_error *dav_fs_copymove_resource(
      * including the state dirs
      */
     if (src->collection) {
-	dav_walker_ctx ctx = { 0 };
+	dav_walker_ctx ctx = { { 0 } };
 
-	ctx.walk_type = DAV_WALKTYPE_ALL | DAV_WALKTYPE_HIDDEN;
-	ctx.func = dav_fs_copymove_walker;
-	ctx.pool = src->info->pool;
-	ctx.resource = src;
-	ctx.res2 = dst;
+	ctx.w.walk_type = DAV_WALKTYPE_ALL | DAV_WALKTYPE_HIDDEN;
+	ctx.w.func = dav_fs_copymove_walker;
+        ctx.w.walk_ctx = &ctx;
+	ctx.w.pool = src->info->pool;
+	ctx.w.root = src;
+	ctx.w.root_dst = dst;
+
 	ctx.is_move = is_move;
-	ctx.postfix = is_move;	/* needed for MOVE to delete source dirs */
 
-	/* copy over the source URI */
-	dav_buffer_init(ctx.pool, &ctx.uri, src->uri);
+	/* postfix is needed for MOVE to delete source dirs */
+        if (is_move)
+            ctx.w.walk_type |= DAV_WALKTYPE_POSTFIX;
 
 	if ((err = dav_fs_walk(&ctx, depth)) != NULL) {
             /* on a "real" error, then just punt. nothing else to do. */
@@ -1167,19 +1177,19 @@ static dav_error * dav_fs_move_resource(
 			  err);
 }
 
-static dav_error * dav_fs_delete_walker(dav_walker_ctx *ctx, int calltype)
+static dav_error * dav_fs_delete_walker(dav_walk_resource *wres, int calltype)
 {
-    dav_resource_private *info = ctx->resource->info;
+    dav_resource_private *info = wres->resource->info;
 
     /* do not attempt to remove a null resource,
      * or a collection with children
      */
-    if (ctx->resource->exists &&
-        (!ctx->resource->collection || calltype == DAV_CALLTYPE_POSTFIX)) {
+    if (wres->resource->exists &&
+        (!wres->resource->collection || calltype == DAV_CALLTYPE_POSTFIX)) {
 	/* try to remove the resource */
 	int result;
 
-	result = ctx->resource->collection
+	result = wres->resource->collection
 	    ? rmdir(info->pathname)
 	    : remove(info->pathname);
 
@@ -1194,7 +1204,7 @@ static dav_error * dav_fs_delete_walker(dav_walker_ctx *ctx, int calltype)
             /* ### assume there is a permissions problem */
 
             /* ### use errno to generate DAV:responsedescription? */
-            dav_add_response(ctx, ctx->resource->uri, HTTP_FORBIDDEN, NULL);
+            dav_add_response(wres, HTTP_FORBIDDEN, NULL);
 	}
     }
 
@@ -1212,16 +1222,16 @@ static dav_error * dav_fs_remove_resource(dav_resource *resource,
      * including the state dirs
      */
     if (resource->collection) {
-	dav_walker_ctx ctx = { 0 };
+	dav_walker_ctx ctx = { { 0 } };
 	dav_error *err = NULL;
 
-	ctx.walk_type = DAV_WALKTYPE_ALL | DAV_WALKTYPE_HIDDEN;
-	ctx.postfix = 1;
-	ctx.func = dav_fs_delete_walker;
-	ctx.pool = info->pool;
-	ctx.resource = resource;
-
-	dav_buffer_init(info->pool, &ctx.uri, resource->uri);
+	ctx.w.walk_type = (DAV_WALKTYPE_ALL
+                           | DAV_WALKTYPE_HIDDEN
+                           | DAV_WALKTYPE_POSTFIX);
+	ctx.w.func = dav_fs_delete_walker;
+        ctx.w.walk_ctx = &ctx;
+	ctx.w.pool = info->pool;
+	ctx.w.root = resource;
 
 	if ((err = dav_fs_walk(&ctx, DAV_INFINITY)) != NULL) {
             /* on a "real" error, then just punt. nothing else to do. */
@@ -1261,16 +1271,17 @@ static dav_error * dav_fs_remove_resource(dav_resource *resource,
  * including lock-null resources as we go.    */
 static dav_error * dav_fs_walker(dav_fs_walker_context *fsctx, int depth)
 {
+    const dav_walk_params *params = fsctx->params;
+    apr_pool_t *pool = params->pool;
     dav_error *err = NULL;
-    dav_walker_ctx *wctx = fsctx->wctx;
-    int isdir = wctx->resource->collection;
+    int isdir = fsctx->res1.collection;
     apr_dir_t *dirp;
 
     /* ensure the context is prepared properly, then call the func */
-    err = (*wctx->func)(wctx,
-			isdir
-			? DAV_CALLTYPE_COLLECTION
-			: DAV_CALLTYPE_MEMBER);
+    err = (*params->func)(&fsctx->wres,
+                          isdir
+                          ? DAV_CALLTYPE_COLLECTION
+                          : DAV_CALLTYPE_MEMBER);
     if (err != NULL) {
 	return err;
     }
@@ -1281,13 +1292,13 @@ static dav_error * dav_fs_walker(dav_fs_walker_context *fsctx, int depth)
 
     /* put a trailing slash onto the directory, in preparation for appending
      * files to it as we discovery them within the directory */
-    dav_check_bufsize(wctx->pool, &fsctx->path1, DAV_BUFFER_PAD);
+    dav_check_bufsize(pool, &fsctx->path1, DAV_BUFFER_PAD);
     fsctx->path1.buf[fsctx->path1.cur_len++] = '/';
     fsctx->path1.buf[fsctx->path1.cur_len] = '\0';	/* in pad area */
 
     /* if a secondary path is present, then do that, too */
     if (fsctx->path2.buf != NULL) {
-	dav_check_bufsize(wctx->pool, &fsctx->path2, DAV_BUFFER_PAD);
+	dav_check_bufsize(pool, &fsctx->path2, DAV_BUFFER_PAD);
 	fsctx->path2.buf[fsctx->path2.cur_len++] = '/';
 	fsctx->path2.buf[fsctx->path2.cur_len] = '\0';	/* in pad area */
     }
@@ -1302,9 +1313,9 @@ static dav_error * dav_fs_walker(dav_fs_walker_context *fsctx, int depth)
     fsctx->res2.collection = 0;
 
     /* open and scan the directory */
-    if ((apr_opendir(&dirp, fsctx->path1.buf, wctx->pool)) != APR_SUCCESS) {
+    if ((apr_opendir(&dirp, fsctx->path1.buf, pool)) != APR_SUCCESS) {
 	/* ### need a better error */
-	return dav_new_error(wctx->pool, HTTP_NOT_FOUND, 0, NULL);
+	return dav_new_error(pool, HTTP_NOT_FOUND, 0, NULL);
     }
     while ((apr_readdir(dirp)) == APR_SUCCESS) {
 	char *name;
@@ -1318,7 +1329,7 @@ static dav_error * dav_fs_walker(dav_fs_walker_context *fsctx, int depth)
 	    continue;
 	}
 
-	if (wctx->walk_type & DAV_WALKTYPE_AUTH) {
+	if (params->walk_type & DAV_WALKTYPE_AUTH) {
 	    /* ### need to authorize each file */
 	    /* ### example: .htaccess is normally configured to fail auth */
 
@@ -1328,28 +1339,28 @@ static dav_error * dav_fs_walker(dav_fs_walker_context *fsctx, int depth)
 	    }
 	}
 	/* skip the state dir unless a HIDDEN is performed */
-	if (!(wctx->walk_type & DAV_WALKTYPE_HIDDEN)
+	if (!(params->walk_type & DAV_WALKTYPE_HIDDEN)
 	    && !strcmp(name, DAV_FS_STATE_DIR)) {
 	    continue;
 	}
 
 	/* append this file onto the path buffer (copy null term) */
-	dav_buffer_place_mem(wctx->pool, &fsctx->path1, name, len + 1, 0);
+	dav_buffer_place_mem(pool, &fsctx->path1, name, len + 1, 0);
 
-	if (apr_lstat(&fsctx->info1.finfo, fsctx->path1.buf, wctx->pool) != 0) {
+	if (apr_lstat(&fsctx->info1.finfo, fsctx->path1.buf, pool) != 0) {
 	    /* woah! where'd it go? */
 	    /* ### should have a better error here */
-	    err = dav_new_error(wctx->pool, HTTP_NOT_FOUND, 0, NULL);
+	    err = dav_new_error(pool, HTTP_NOT_FOUND, 0, NULL);
 	    break;
 	}
 
 	/* copy the file to the URI, too. NOTE: we will pad an extra byte
 	   for the trailing slash later. */
-	dav_buffer_place_mem(wctx->pool, &wctx->uri, name, len + 1, 1);
+	dav_buffer_place_mem(pool, &fsctx->uri_buf, name, len + 1, 1);
 
 	/* if there is a secondary path, then do that, too */
 	if (fsctx->path2.buf != NULL) {
-	    dav_buffer_place_mem(wctx->pool, &fsctx->path2, name, len + 1, 0);
+	    dav_buffer_place_mem(pool, &fsctx->path2, name, len + 1, 0);
 	}
 
 	/* set up the (internal) pathnames for the two resources */
@@ -1357,19 +1368,20 @@ static dav_error * dav_fs_walker(dav_fs_walker_context *fsctx, int depth)
 	fsctx->info2.pathname = fsctx->path2.buf;
 
 	/* set up the URI for the current resource */
-	fsctx->res1.uri = wctx->uri.buf;
+	fsctx->res1.uri = fsctx->uri_buf.buf;
 
 	/* ### for now, only process regular files (e.g. skip symlinks) */
 	if (fsctx->info1.finfo.filetype == APR_REG) {
 	    /* call the function for the specified dir + file */
-	    if ((err = (*wctx->func)(wctx, DAV_CALLTYPE_MEMBER)) != NULL) {
+	    if ((err = (*params->func)(&fsctx->wres,
+                                       DAV_CALLTYPE_MEMBER)) != NULL) {
 		/* ### maybe add a higher-level description? */
 		break;
 	    }
 	}
 	else if (fsctx->info1.finfo.filetype == APR_DIR) {
 	    size_t save_path_len = fsctx->path1.cur_len;
-	    size_t save_uri_len = wctx->uri.cur_len;
+	    size_t save_uri_len = fsctx->uri_buf.cur_len;
 	    size_t save_path2_len = fsctx->path2.cur_len;
 
 	    /* adjust length to incorporate the subdir name */
@@ -1377,9 +1389,9 @@ static dav_error * dav_fs_walker(dav_fs_walker_context *fsctx, int depth)
 	    fsctx->path2.cur_len += len;
 
 	    /* adjust URI length to incorporate subdir and a slash */
-	    wctx->uri.cur_len += len + 1;
-	    wctx->uri.buf[wctx->uri.cur_len - 1] = '/';
-	    wctx->uri.buf[wctx->uri.cur_len] = '\0';
+	    fsctx->uri_buf.cur_len += len + 1;
+	    fsctx->uri_buf.buf[fsctx->uri_buf.cur_len - 1] = '/';
+	    fsctx->uri_buf.buf[fsctx->uri_buf.cur_len] = '\0';
 
 	    /* switch over to a collection */
 	    fsctx->res1.collection = 1;
@@ -1395,7 +1407,7 @@ static dav_error * dav_fs_walker(dav_fs_walker_context *fsctx, int depth)
 	    /* put the various information back */
 	    fsctx->path1.cur_len = save_path_len;
 	    fsctx->path2.cur_len = save_path2_len;
-	    wctx->uri.cur_len = save_uri_len;
+	    fsctx->uri_buf.cur_len = save_uri_len;
 
 	    fsctx->res1.collection = 0;
 	    fsctx->res2.collection = 0;
@@ -1410,7 +1422,7 @@ static dav_error * dav_fs_walker(dav_fs_walker_context *fsctx, int depth)
     if (err != NULL)
 	return err;
 
-    if (wctx->walk_type & DAV_WALKTYPE_LOCKNULL) {
+    if (params->walk_type & DAV_WALKTYPE_LOCKNULL) {
 	size_t offset = 0;
 
 	/* null terminate the directory name */
@@ -1441,12 +1453,12 @@ static dav_error * dav_fs_walker(dav_fs_walker_context *fsctx, int depth)
 	    ** we don't have to pad the URI for a slash since a locknull
 	    ** resource is not a collection.
 	    */
-	    dav_buffer_place_mem(wctx->pool, &fsctx->path1,
+	    dav_buffer_place_mem(pool, &fsctx->path1,
 				 fsctx->locknull_buf.buf + offset, len + 1, 0);
-	    dav_buffer_place_mem(wctx->pool, &wctx->uri,
+	    dav_buffer_place_mem(pool, &fsctx->uri_buf,
 				 fsctx->locknull_buf.buf + offset, len + 1, 0);
 	    if (fsctx->path2.buf != NULL) {
-		dav_buffer_place_mem(wctx->pool, &fsctx->path2,
+		dav_buffer_place_mem(pool, &fsctx->path2,
 				     fsctx->locknull_buf.buf + offset,
                                      len + 1, 0);
 	    }
@@ -1456,7 +1468,7 @@ static dav_error * dav_fs_walker(dav_fs_walker_context *fsctx, int depth)
 	    fsctx->info2.pathname = fsctx->path2.buf;
 
 	    /* set up the URI for the current resource */
-	    fsctx->res1.uri = wctx->uri.buf;
+	    fsctx->res1.uri = fsctx->uri_buf.buf;
 
 	    /*
 	    ** To prevent a PROPFIND showing an expired locknull
@@ -1488,14 +1500,16 @@ static dav_error * dav_fs_walker(dav_fs_walker_context *fsctx, int depth)
 	       ### even the resolve func would probably fail when it
 	       ### tried to find a timed-out direct lock).
 	    */
-	    if ((err = dav_lock_query(wctx->lockdb, wctx->resource, &locks)) != NULL) {
+	    if ((err = dav_lock_query(params->lockdb, &fsctx->res1,
+                                      &locks)) != NULL) {
 		/* ### maybe add a higher-level description? */
 		return err;
 	    }
 
 	    /* call the function for the specified dir + file */
 	    if (locks != NULL &&
-		(err = (*wctx->func)(wctx, DAV_CALLTYPE_LOCKNULL)) != NULL) {
+		(err = (*params->func)(&fsctx->wres,
+                                       DAV_CALLTYPE_LOCKNULL)) != NULL) {
 		/* ### maybe add a higher-level description? */
 		return err;
 	    }
@@ -1507,10 +1521,10 @@ static dav_error * dav_fs_walker(dav_fs_walker_context *fsctx, int depth)
 	fsctx->res1.exists = 1;
     }
 
-    if (wctx->postfix) {
+    if (params->walk_type & DAV_WALKTYPE_POSTFIX) {
 	/* replace the dirs' trailing slashes with null terms */
 	fsctx->path1.buf[--fsctx->path1.cur_len] = '\0';
-	wctx->uri.buf[--wctx->uri.cur_len] = '\0';
+	fsctx->uri_buf.buf[--fsctx->uri_buf.cur_len] = '\0';
 	if (fsctx->path2.buf != NULL) {
 	    fsctx->path2.buf[--fsctx->path2.cur_len] = '\0';
 	}
@@ -1518,7 +1532,7 @@ static dav_error * dav_fs_walker(dav_fs_walker_context *fsctx, int depth)
 	/* this is a collection which exists */
 	fsctx->res1.collection = 1;
 
-	return (*wctx->func)(wctx, DAV_CALLTYPE_POSTFIX);
+	return (*params->func)(&fsctx->wres, DAV_CALLTYPE_POSTFIX);
     }
 
     return NULL;
@@ -1526,60 +1540,57 @@ static dav_error * dav_fs_walker(dav_fs_walker_context *fsctx, int depth)
 
 static dav_error * dav_fs_walk(dav_walker_ctx *wctx, int depth)
 {
+    const dav_walk_params *params = &wctx->w;
     dav_fs_walker_context fsctx = { 0 };
+    dav_error *err;
 
 #if DAV_DEBUG
-    if ((wctx->walk_type & DAV_WALKTYPE_LOCKNULL) != 0
-	&& wctx->lockdb == NULL) {
-	return dav_new_error(wctx->pool, HTTP_INTERNAL_SERVER_ERROR, 0,
+    if ((params->walk_type & DAV_WALKTYPE_LOCKNULL) != 0
+	&& params->lockdb == NULL) {
+	return dav_new_error(params->pool, HTTP_INTERNAL_SERVER_ERROR, 0,
 			     "DESIGN ERROR: walker called to walk locknull "
 			     "resources, but a lockdb was not provided.");
     }
-
-    /* ### an assertion that we have space for a trailing slash */
-    if (wctx->uri.cur_len + 1 > wctx->uri.alloc_len) {
-	return dav_new_error(wctx->pool, HTTP_INTERNAL_SERVER_ERROR, 0,
-			     "DESIGN ERROR: walker should have been called "
-			     "with padding in the URI buffer.");
-    }
 #endif
 
-    fsctx.wctx = wctx;
-
-    wctx->root = wctx->resource;
+    fsctx.params = params;
+    fsctx.wres.walk_ctx = params->walk_ctx;
 
     /* ### zero out versioned, working, baselined? */
 
-    fsctx.res1 = *wctx->resource;
+    fsctx.res1 = *params->root;
 
     fsctx.res1.info = &fsctx.info1;
-    fsctx.info1 = *wctx->resource->info;
+    fsctx.info1 = *params->root->info;
 
-    dav_buffer_init(wctx->pool, &fsctx.path1, fsctx.info1.pathname);
+    dav_buffer_init(params->pool, &fsctx.path1, fsctx.info1.pathname);
     fsctx.info1.pathname = fsctx.path1.buf;
 
-    if (wctx->res2 != NULL) {
-	fsctx.res2 = *wctx->res2;
+    if (params->root_dst != NULL) {
+	fsctx.res2 = *params->root_dst;
 	fsctx.res2.exists = 0;
 	fsctx.res2.collection = 0;
 
 	fsctx.res2.info = &fsctx.info2;
-	fsctx.info2 = *wctx->res2->info;
+	fsctx.info2 = *params->root_dst->info;
 
 	/* res2 does not exist -- clear its finfo structure */
 	memset(&fsctx.info2.finfo, 0, sizeof(fsctx.info2.finfo));
 
-	dav_buffer_init(wctx->pool, &fsctx.path2, fsctx.info2.pathname);
+	dav_buffer_init(params->pool, &fsctx.path2, fsctx.info2.pathname);
 	fsctx.info2.pathname = fsctx.path2.buf;
     }
 
+    /* prep the URI buffer */
+    dav_buffer_init(params->pool, &fsctx.uri_buf, params->root->uri);
+
     /* if we have a directory, then ensure the URI has a trailing "/" */
     if (fsctx.res1.collection
-	&& wctx->uri.buf[wctx->uri.cur_len - 1] != '/') {
+	&& fsctx.uri_buf.buf[fsctx.uri_buf.cur_len - 1] != '/') {
 
 	/* this will fall into the pad area */
-	wctx->uri.buf[wctx->uri.cur_len++] = '/';
-	wctx->uri.buf[wctx->uri.cur_len] = '\0';
+	fsctx.uri_buf.buf[fsctx.uri_buf.cur_len++] = '/';
+	fsctx.uri_buf.buf[fsctx.uri_buf.cur_len] = '\0';
     }
 
     /*
@@ -1587,14 +1598,16 @@ static dav_error * dav_fs_walk(dav_walker_ctx *wctx, int depth)
     ** to fetch it from res2. We will ensure that res1 and uri will remain
     ** synchronized.
     */
-    fsctx.res1.uri = wctx->uri.buf;
+    fsctx.res1.uri = fsctx.uri_buf.buf;
     fsctx.res2.uri = NULL;
 
     /* use our resource structures */
-    wctx->resource = &fsctx.res1;
-    wctx->res2 = &fsctx.res2;
+    fsctx.wres.resource = &fsctx.res1;
+    fsctx.wres.res_dst = &fsctx.res2;
 
-    return dav_fs_walker(&fsctx, depth);
+    err = dav_fs_walker(&fsctx, depth);
+    wctx->response = fsctx.wres.response;
+    return err;
 }
 
 /* dav_fs_etag:  Stolen from ap_make_etag.  Creates a strong etag
