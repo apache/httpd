@@ -1,234 +1,24 @@
-<html>
-<head>
-<title>mod_ssl: HowTo</title>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
-<!--
-  Copyright (c) 1998-2001 Ralf S. Engelschall. All rights reserved.
-
-  Redistribution and use in source and binary forms, with or without
-  modification, are permitted provided that the following conditions
-  are met:
-
-  1. Redistributions of source code must retain the above
-     copyright notice, this list of conditions and the following
-     disclaimer. 
- 
-  2. Redistributions in binary form must reproduce the above
-     copyright notice, this list of conditions and the following
-     disclaimer in the documentation and/or other materials
-     provided with the distribution.
- 
-  3. All advertising materials mentioning features or use of this
-     software must display the following acknowledgment: 
-     "This product includes software developed by 
-      Ralf S. Engelschall <rse@engelschall.com> for use in the
-      mod_ssl project (http://www.modssl.org/)."
- 
-  4. The name "mod_ssl" must not be used to endorse or promote
-     products derived from this software without prior written
-     permission.  
-
-  5. Redistributions of any form whatsoever must retain the
-     following acknowledgment:
-     "This product includes software developed by 
-      Ralf S. Engelschall <rse@engelschall.com> for use in the
-      mod_ssl project (http://www.modssl.org/)."
- 
-  THIS SOFTWARE IS PROVIDED BY RALF S. ENGELSCHALL ``AS IS'' AND ANY
-  EXPRESSED OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
-  IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
-  PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL RALF S. ENGELSCHALL OR
-  HIS CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
-  SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
-  NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
-  LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
-  HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
-  STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
-  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
-  OF THE POSSIBILITY OF SUCH DAMAGE.
--->
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+<title>Apache SSL/TLS Encryption: How-To</title>
 <style type="text/css"><!--
-A:link {
-    text-decoration: none;
-    color: #6666cc;
-}
-A:active {
-    text-decoration: none;
-    color: #6666cc;
-}
-A:visited {
-    text-decoration: none;
-    color: #6666cc;
-}
-#sf {
-    font-family: arial,helvetica;
-    font-variant: normal;
-    font-style: normal;
-}
-H1 {
-    font-weight: bold;
-    font-size: 24pt;
-    line-height: 24pt;
-    font-family: arial,helvetica;
-    font-variant: normal;
-    font-style: normal;
-}
-H2 {
-    font-weight: bold;
-    font-size: 18pt;
-    line-height: 18pt;
-    font-family: arial,helvetica;
-    font-variant: normal;
-    font-style: normal;
-}
-H3 {
-    font-weight: bold;
-    font-size: 14pt;
-    line-height: 14pt;
-    font-family: arial,helvetica;
-    font-variant: normal;
-    font-style: normal;
-}
-H4 {
-    font-weight: bold;
-    font-size: 12pt;
-    line-height: 12pt;
-    font-family: arial,helvetica;
-    font-variant: normal;
-    font-style: normal;
-}
 #H {
 }
 #D {
     background-color: #f0f0f0;
 }
-#faq {
-    font-weight: bold;
-    font-size: 16pt;
-    line-height: 16pt;
-    font-family: arial,helvetica;
-    font-variant: normal;
-    font-style: normal;
-}
-#howto {
-    font-weight: bold;
-    font-size: 16pt;
-    line-height: 16pt;
-    font-family: arial,helvetica;
-    font-variant: normal;
-    font-style: normal;
-}
-#term {
-    font-weight: bold;
-    font-size: 16pt;
-    line-height: 16pt;
-    font-family: arial,helvetica;
-    font-variant: normal;
-    font-style: normal;
-}
 --></style>
-<script type="text/javascript" language="JavaScript">
-<!-- Hiding the code
-function ro_imgNormal(imgName) {
-    if (document.images) {
-        document[imgName].src = eval(imgName + '_n.src');
-        self.status = '';
-    }
-}
-function ro_imgOver(imgName, descript) {
-    if (document.images) {
-        document[imgName].src = eval(imgName + '_o.src');
-        self.status = descript;
-    }
-}
-// done hiding -->
-</script>
-<script type="text/javascript" language="JavaScript">
-<!-- Hiding the code
-if (document.images) {
-    ro_img_prev_top_n = new Image();
-    ro_img_prev_top_n.src = 'ssl_template.navbut-prev-n.gif';
-    ro_img_prev_top_o = new Image();
-    ro_img_prev_top_o.src = 'ssl_template.navbut-prev-s.gif';
-}
-// done hiding -->
-</script>
-<script type="text/javascript" language="JavaScript">
-<!-- Hiding the code
-if (document.images) {
-    ro_img_prev_bot_n = new Image();
-    ro_img_prev_bot_n.src = 'ssl_template.navbut-prev-n.gif';
-    ro_img_prev_bot_o = new Image();
-    ro_img_prev_bot_o.src = 'ssl_template.navbut-prev-s.gif';
-}
-// done hiding -->
-</script>
-<script type="text/javascript" language="JavaScript">
-<!-- Hiding the code
-if (document.images) {
-    ro_img_next_top_n = new Image();
-    ro_img_next_top_n.src = 'ssl_template.navbut-next-n.gif';
-    ro_img_next_top_o = new Image();
-    ro_img_next_top_o.src = 'ssl_template.navbut-next-s.gif';
-}
-// done hiding -->
-</script>
-<script type="text/javascript" language="JavaScript">
-<!-- Hiding the code
-if (document.images) {
-    ro_img_next_bot_n = new Image();
-    ro_img_next_bot_n.src = 'ssl_template.navbut-next-n.gif';
-    ro_img_next_bot_o = new Image();
-    ro_img_next_bot_o.src = 'ssl_template.navbut-next-s.gif';
-}
-// done hiding -->
-</script>
 </head>
-<body bgcolor="#ffffff" text="#000000" link="#333399" alink="#9999ff" vlink="#000066">
-<div align="center">
-<table width="600" cellspacing="0" cellpadding="0" border="0" summary="">
-<tr>
-  <td>
-      <img src="ssl_template.imgdot-1x1-transp.gif" alt="" width="600" height="1" align="bottom" border="0"><br>
-      <table width="600" cellspacing="0" cellpadding="0" summary="">
-      <tr>
-        <td>
-        <table width="600" summary="">
-        <tr>
-            <td align="left" valign="bottom">
-            <font face="Arial,Helvetica" size="+2"><b>mod_ssl</b></font>
-            </td>
-            <td align="right">
-              <img src="ssl_template.head-chapter.gif" alt="Chapter" width="175" height="94"> <img src="ssl_template.head-num-5.gif" alt="5" width="74" height="89">
-            </td>
-        </tr>
-        </table>
-        </td>
-      </tr>
-      <tr>
-        <td><img src="ssl_template.imgdot-1x1-000000.gif" alt="" width="600" height="2" align="bottom" border="0"></td>
-      </tr>
-      <tr>
-        <td>
-           <table width="600" border="0" summary="">
-           <tr>
-            <td valign="top" align="left" width="250">
-<a href="ssl_compat.html" onmouseover="ro_imgOver('ro_img_prev_top', 'previous page'); return true" onmouseout="ro_imgNormal('ro_img_prev_top'); return true" onfocus="ro_imgOver('ro_img_prev_top', 'previous page'); return true" onblur="ro_imgNormal('ro_img_prev_top'); return true"><img name="ro_img_prev_top" src="ssl_template.navbut-prev-n.gif" alt="previous page" width="70" height="18" border="0"></a><br><font color="#000000">Compatibility</font>
-            </td>
-            <td valign="top" align="right" width="250">
-<a href="ssl_faq.html" onmouseover="ro_imgOver('ro_img_next_top', 'next page'); return true" onmouseout="ro_imgNormal('ro_img_next_top'); return true" onfocus="ro_imgOver('ro_img_next_top', 'next page'); return true" onblur="ro_imgNormal('ro_img_next_top'); return true"><img name="ro_img_next_top" src="ssl_template.navbut-next-n.gif" alt="next page" width="70" height="18" border="0"></a><br><font color="#000000">F.A.Q. List</font>
-            </td>
-           </tr>
-           </table>
-         </td>
-      </tr>
-      <tr>
-        <td>
-          <br>
-          <img src="ssl_template.title-howto.gif" alt="HowTo" width="456" height="60">
-        </td>
-      </tr>
-      </table>
+
+<body bgcolor="#FFFFFF" text="#000000" link="#0000FF" vlink="#000080" alink="#FF0000"> 
+<!--#include virtual="header.html" -->
+
+<h1 align="CENTER">SSL/TLS Strong Encryption: How-To</h1>
+
+
 <div align="right">
 <table cellspacing="0" cellpadding="0" width="200" summary="">
 <tr>
@@ -248,53 +38,29 @@ Standard textbook cookie
 </tr>
 </table>
 </div>
+
 <p>
-<table cellspacing="0" cellpadding="0" border="0" summary="">
-<tr valign="bottom">
-<td>
-<img src="ssl_howto.gfont000.gif" alt="H" width="40" height="34" border="0" align="left">
-ow to solve particular security constraints for an SSL-aware webserver
+How to solve particular security constraints for an SSL-aware webserver
 is not always obvious because of the coherences between SSL, HTTP and Apache's
 way of processing requests. This chapter gives instructions on how to solve
 such typical situations. Treat is as a first step to find out the final
 solution, but always try to understand the stuff before you use it. Nothing is
 worse than using a security solution without knowing it's restrictions and
 coherences.
-</td>
-<td>
-&nbsp;&nbsp;
-</td>
-<td>
-<div align="right">
-<table cellspacing="0" cellpadding="5" border="0" bgcolor="#ccccff" width="300" summary="">
-<tr>
-<td bgcolor="#333399">
-<font face="Arial,Helvetica" color="#ccccff">
-<b>Table Of Contents</b>
-</font>
-</td>
-</tr>
-<tr>
-<td>
-<font face="Arial,Helvetica" size="-1">
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#ToC1"><strong>Cipher Suites and Enforced Strong Security</strong></a><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#ToC2"><strong>SSLv2 only server</strong></a><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#ToC3"><strong>strong encryption only server</strong></a><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#ToC4"><strong>server gated cryptography</strong></a><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#ToC5"><strong>stronger per-directory requirements</strong></a><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#ToC6"><strong>Client Authentication and Access Control</strong></a><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#ToC7"><strong>simple certificate-based client authentication</strong></a><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#ToC8"><strong>selective certificate-based client authentication</strong></a><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#ToC9"><strong>particular certificate-based client authentication</strong></a><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#ToC10"><strong>intranet vs. internet authentication</strong></a><br>
-</font>
-</td>
-</tr>
-</table>
-</div>
-</td>
-</tr>
-</table>
+
+<ul>
+<li><a href="#ToC1">Cipher Suites and Enforced Strong Security</a></li>
+<li><a href="#ToC2">SSLv2 only server</a></li>
+<li><a href="#ToC3">strong encryption only server</a></li>
+<li><a href="#ToC4">server gated cryptography</a></li>
+<li><a href="#ToC5">stronger per-directory requirements</a></li>
+<li><a href="#ToC6">Client Authentication and Access Control</a></li>
+<li><a href="#ToC7">simple certificate-based client authentication</a></li>
+<li><a href="#ToC8">selective certificate-based client authentication</a></li>
+<li><a href="#ToC9">particular certificate-based client authentication</a></li>
+<li><a href="#ToC10">intranet vs. internet authentication</a></li>
+</ul>
+
 <h2><a name="ToC1">Cipher Suites and Enforced Strong Security</a></h2>
 <ul>
 <p>
@@ -303,7 +69,7 @@ coherences.
     <strong id="howto">
 How can I create a real SSLv2-only server?
 </strong>&nbsp;&nbsp;
-    [<a href="http://www.modssl.org/docs/2.8/ssl_howto.html#cipher-sslv2"><b>L</b></a>]
+    [<a href="http://httpd.apache.org/docs-2.0/ssl/ssl_howto.html#cipher-sslv2"><b>L</b></a>]
     <p>
 The following creates an SSL server which speaks only the SSLv2 protocol and
 its ciphers.
@@ -352,7 +118,7 @@ SSLCipherSuite SSLv2:+HIGH:+MEDIUM:+LOW:+EXP
     <strong id="howto">
 How can I create an SSL server which accepts strong encryption only?
 </strong>&nbsp;&nbsp;
-    [<a href="http://www.modssl.org/docs/2.8/ssl_howto.html#cipher-strong"><b>L</b></a>]
+    [<a href="http://httpd.apache.org/docs-2.0/ssl/ssl_howto.html#cipher-strong"><b>L</b></a>]
     <p>
 The following enables only the seven strongest ciphers:
 <p>
@@ -401,7 +167,7 @@ SSLCipherSuite HIGH:MEDIUM
 How can I create an SSL server which accepts strong encryption only,
 but allows export browsers to upgrade to stronger encryption?
 </strong>&nbsp;&nbsp;
-    [<a href="http://www.modssl.org/docs/2.8/ssl_howto.html#cipher-sgc"><b>L</b></a>]
+    [<a href="http://httpd.apache.org/docs-2.0/ssl/ssl_howto.html#cipher-sgc"><b>L</b></a>]
     <p>
 This facility is called Server Gated Cryptography (SGC) and details you can
 find in the <code>README.GlobalID</code> document in the mod_ssl distribution.
@@ -465,7 +231,7 @@ SSLRequire %{SSL_CIPHER_USEKEYSIZE} &gt;= 128
 How can I create an SSL server which accepts all types of ciphers in general,
 but requires a strong ciphers for access to a particular URL?
 </strong>&nbsp;&nbsp;
-    [<a href="http://www.modssl.org/docs/2.8/ssl_howto.html#cipher-perdir"><b>L</b></a>]
+    [<a href="http://httpd.apache.org/docs-2.0/ssl/ssl_howto.html#cipher-perdir"><b>L</b></a>]
     <p>
 Obviously you cannot just use a server-wide <code>SSLCipherSuite</code> which
 restricts the ciphers to the strong variants. But mod_ssl allows you to
@@ -525,7 +291,7 @@ SSLCipherSuite HIGH:MEDIUM
 How can I authenticate clients based on certificates when I know all my
 clients?
 </strong>&nbsp;&nbsp;
-    [<a href="http://www.modssl.org/docs/2.8/ssl_howto.html#auth-simple"><b>L</b></a>]
+    [<a href="http://httpd.apache.org/docs-2.0/ssl/ssl_howto.html#auth-simple"><b>L</b></a>]
     <p>
 When you know your user community (i.e. a closed user group situation), as
 it's the case for instance in an Intranet, you can use plain certificate
@@ -581,7 +347,7 @@ SSLCACertificateFile conf/ssl.crt/ca.crt
 How can I authenticate my clients for a particular URL based on certificates
 but still allow arbitrary clients to access the remaining parts of the server?
 </strong>&nbsp;&nbsp;
-    [<a href="http://www.modssl.org/docs/2.8/ssl_howto.html#auth-selective"><b>L</b></a>]
+    [<a href="http://httpd.apache.org/docs-2.0/ssl/ssl_howto.html#auth-selective"><b>L</b></a>]
     <p>
 For this we again use the per-directory reconfiguration feature of mod_ssl:
 <p>
@@ -635,7 +401,7 @@ How can I authenticate only particular clients for a some URLs based
 on certificates but still allow arbitrary clients to access the remaining
 parts of the server?
 </strong>&nbsp;&nbsp;
-    [<a href="http://www.modssl.org/docs/2.8/ssl_howto.html#auth-particular"><b>L</b></a>]
+    [<a href="http://httpd.apache.org/docs-2.0/ssl/ssl_howto.html#auth-particular"><b>L</b></a>]
     <p>
 The key is to check for various ingredients of the client certficate. Usually
 this means to check the whole or part of the Distinguished Name (DN) of the
@@ -797,7 +563,7 @@ certificates for access to a subarea on the Intranet website for clients
 coming from the Internet but still allow plain HTTP access for clients on the
 Intranet?
 </strong>&nbsp;&nbsp;
-    [<a href="http://www.modssl.org/docs/2.8/ssl_howto.html#auth-intranet"><b>L</b></a>]
+    [<a href="http://httpd.apache.org/docs-2.0/ssl/ssl_howto.html#auth-intranet"><b>L</b></a>]
     <p>
 Let us assume the Intranet can be distinguished through the IP network
 192.160.1.0/24 and the subarea on the Intranet website has the URL
@@ -875,6 +641,7 @@ Require              valid-user
                  </tr>
              </table>
          </td>
+
          <td bgcolor="#cccccc"><img src="ssl_template.imgdot-1x1-transp.gif" alt="" width="1" height="1" align="bottom" border="0"></td>
     </tr>
     <tr>
@@ -882,48 +649,7 @@ Require              valid-user
     </tr>
 </table>
 </ul>
-      <p>
-      <br>
-      <table summary="">
-      <tr>
-        <td>
-           <table width="600" border="0" summary="">
-           <tr>
-            <td valign="top" align="left" width="250">
-<a href="ssl_compat.html" onmouseover="ro_imgOver('ro_img_prev_bot', 'previous page'); return true" onmouseout="ro_imgNormal('ro_img_prev_bot'); return true" onfocus="ro_imgOver('ro_img_prev_bot', 'previous page'); return true" onblur="ro_imgNormal('ro_img_prev_bot'); return true"><img name="ro_img_prev_bot" src="ssl_template.navbut-prev-n.gif" alt="previous page" width="70" height="18" border="0"></a><br><font color="#000000">Compatibility</font>
-            </td>
-            <td valign="top" align="right" width="250">
-<a href="ssl_faq.html" onmouseover="ro_imgOver('ro_img_next_bot', 'next page'); return true" onmouseout="ro_imgNormal('ro_img_next_bot'); return true" onfocus="ro_imgOver('ro_img_next_bot', 'next page'); return true" onblur="ro_imgNormal('ro_img_next_bot'); return true"><img name="ro_img_next_bot" src="ssl_template.navbut-next-n.gif" alt="next page" width="70" height="18" border="0"></a><br><font color="#000000">F.A.Q. List</font>
-            </td>
-           </tr>
-           </table>
-         </td>
-      </tr>
-      <tr>
-        <td><img src="ssl_template.imgdot-1x1-000000.gif" alt="" width="600" height="2" align="bottom" border="0"></td>
-      </tr>
-      <tr>
-        <td><table width="598" summary="">
-        <tr>
-        <td align="left"><font face="Arial,Helvetica">
-        <a href="http://www.modssl.org/">mod_ssl</a> 2.8, User Manual<br>
-        The Apache Interface to OpenSSL
-        </font>
-        </td>
-        <td align="right"><font face="Arial,Helvetica">
-        Copyright &copy; 1998-2001
-        <a href="http://www.engelschall.com/">Ralf S. Engelschall</a><br>
-        All Rights Reserved<br>
-        </font>
-        </td>
-        </tr>
-        </table>
-        </td>
-      </tr>
-      </table>
-  </td>
-</tr>
-</table>
-</div>
-</body>
+
+<p><!--#include virtual="footer.html" --> </p>
+  </body>
 </html>
