@@ -4882,20 +4882,40 @@ void worker_main()
     exit(0);
 }				/* standalone_main */
 
+/* Spawn a child Apache process. The child process has the command
+ * line arguments from argc and argv[], plus a -Z argument giving the
+ * name of an event. The child should open and poll or wait on this
+ * event. When it is signalled, the child should die.  prefix is a
+ * prefix string for the event name.
+ * 
+ * The child_num argument on entry contains a serial number for this
+ * child (used to create a unique event name). On exit, this number
+ * will have been incremented by one, ready for the next call.
+ *
+ * On exit, the value pointed to be *ev will contain the event created
+ * to signal the new child process.
+ *
+ * The return value is the handle to the child process if successful,
+ * else -1. If -1 is returned the error will already have been logged
+ * by ap_log_error(). 
+ */
 
 int create_event_and_spawn(int argc, char **argv, event **ev, int *child_num, char *prefix)
 {
-    int pid = getpid();
     char buf[40], mod[200];
     int i, rv;
     char **pass_argv = (char **) alloca(sizeof(char *) * (argc + 3));
 
-    sprintf(buf, "%s_%d", prefix, ++(*child_num));
+    ap_snprintf(buf, sizeof(buf), "%s_%d", prefix, ++(*child_num));
     _flushall();
     *ev = CreateEvent(NULL, TRUE, FALSE, buf);
+    if (!*ev) {
+	ap_log_error(APLOG_MARK, APLOG_ERR|APLOG_WIN32ERROR, NULL,
+	    "could not create event for child process");
+	return -1;
+    }
     APD2("create_event_and_spawn(): created process kill event %s", buf);
 
-    ap_assert(*ev);
     pass_argv[0] = argv[0];
     pass_argv[1] = "-Z";
     pass_argv[2] = buf;
@@ -4904,11 +4924,26 @@ int create_event_and_spawn(int argc, char **argv, event **ev, int *child_num, ch
     }
     pass_argv[argc + 2] = NULL;
 
-
-    GetModuleFileName(NULL, mod, 200);
+    rv = GetModuleFileName(NULL, mod, sizeof(mod));
+    if (rv == sizeof(mod)) {
+	/* mod[] was not big enough for our pathname */
+	ap_log_error(APLOG_MARK, APLOG_ERR, NULL,
+	    "Internal error: path to Apache process too long");
+	return -1;
+    }
+    if (rv == 0) {
+	ap_log_error(APLOG_MARK, APLOG_ERR|APLOG_WIN32ERROR, NULL,
+	    "GetModuleFileName() for current process");
+	return -1;
+    }
     rv = spawnv(_P_NOWAIT, mod, pass_argv);
+    if (rv == -1) {
+	ap_log_error(APLOG_MARK, APLOG_ERR|APLOG_WIN32ERROR, NULL,
+	    "spawn of child process %s failed", mod);
+	return -1;
+    }
 
-    return (rv);
+    return rv;
 }
 
 /**********************************************************************
@@ -4941,18 +4976,24 @@ void cleanup_process(HANDLE *handles, HANDLE *events, int position, int *process
     APD4("cleanup_processes: removed child in slot %d handle %d, max=%d", position, handle, *processes);
 }
 
-void create_process(HANDLE *handles, HANDLE *events, int *processes, int *child_num, char *kill_event_name, int argc, char **argv)
+int create_process(HANDLE *handles, HANDLE *events, int *processes, int *child_num, char *kill_event_name, int argc, char **argv)
 {
     int i = *processes;
     HANDLE kill_event;
+    int child_handle;
 
-    handles[i] = (HANDLE)create_event_and_spawn(argc, argv, &kill_event, child_num, kill_event_name);
-    ap_assert(handles[i] >= 0);
+    child_handle = create_event_and_spawn(argc, argv, &kill_event, child_num, kill_event_name);
+    if (child_handle <= 0) {
+	return -1;
+    }
+    handles[i] = (HANDLE)child_handle;
     events[i] = kill_event;
     (*processes)++;
 
     APD4("create_processes: created child in slot %d handle %d, max=%d", 
 	(*processes)-1, handles[(*processes)-1], *processes);
+
+    return 0;
 }
 
 int master_main(int argc, char **argv)
@@ -4970,7 +5011,7 @@ int master_main(int argc, char **argv)
     HANDLE process_kill_events[MAX_PROCESSES];
     int current_live_processes = 0; /* number of child process we know about */
     int processes_to_create = 0;    /* number of child processes to create */
-    pool *pparent;  /* pool for the parent process. Cleaned on each restart */
+    pool *pparent = NULL;  /* pool for the parent process. Cleaned on each restart */
 
     nchild = 1;	    /* only allowed one child process for current generation */
     processes_to_create = nchild;
@@ -4989,9 +5030,13 @@ int master_main(int argc, char **argv)
     start_mutex = ap_create_mutex(buf);
     ev = (event **) alloca(sizeof(event *) * nchild);
     child = (int *) alloca(sizeof(int) * (nchild+1));
+
     while (processes_to_create--) {
 	service_set_status(SERVICE_START_PENDING);
-	create_process(process_handles, process_kill_events, &current_live_processes, &child_num, buf, argc, argv);
+	if (create_process(process_handles, process_kill_events, 
+	    &current_live_processes, &child_num, buf, argc, argv) < 0) {
+	    goto die_now;
+	}
     }
 
     service_set_status(SERVICE_RUNNING);
@@ -5025,7 +5070,10 @@ int master_main(int argc, char **argv)
 		/* Shouldn't happen, but better safe than sorry */
 		ap_log_error(APLOG_MARK,APLOG_ERR|APLOG_NOERRNO, server_conf,
  			"master_main: no child processes alive! creating one");
-		create_process(process_handles, process_kill_events, &current_live_processes, &child_num, buf, argc, argv);
+		if (create_process(process_handles, process_kill_events, 
+		    &current_live_processes, &child_num, buf, argc, argv) < 0) {
+		    goto die_now;
+		}
 		if (processes_to_create) {
 		    processes_to_create--;
 		}
@@ -5103,6 +5151,7 @@ int master_main(int argc, char **argv)
 
     APD2("*** main process shutdown, processes=%d ***", current_live_processes);
 
+die_now:
     CloseHandle(signal_event);
 
     tmstart = time(NULL);
@@ -5125,7 +5174,9 @@ int master_main(int argc, char **argv)
     }
     service_set_status(SERVICE_STOPPED);
 
-    ap_destroy_pool(pparent);
+    if (pparent) {
+	ap_destroy_pool(pparent);
+    }
 
     ap_destroy_mutex(start_mutex);
     return (0);
