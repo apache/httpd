@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/05/05 06:17:47 $]
+Last modified at [$Date: 2004/05/05 13:14:12 $]
 
 Release:
 
@@ -74,11 +74,11 @@ PATCHES TO BACKPORT FROM 2.1
 
     *) Readd suexec setuid and user check (now APR supports it)
          os/unix/unixd.c: r1.69
-       +1: nd
+       +1: nd, trawick
 
     *) Prevent Win32 pool corruption at startup
          server/mpm/winnt/child.c: r1.36 
-       +1: ake
+       +1: ake, trawick
 
     *) mod_log_forensic: Fix build on systems without unistd.h. PR 28572
          modules/loggers/mod_log_forensic.c: r1.19
