@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
-<manualpage metafile="httpd.xml.meta">
+<manualpage metafile="logresolve.xml.meta">
 <parentdocument href="./">Programs</parentdocument>
 
   <title>logresolve - Resolve IP-addresses to hostnames in Apache 
