@@ -55,6 +55,7 @@ Committed Code Changes:
     * Dean's httpd -S command line option to dump parsed vhost setup
     * HP-UX 11 port by Jeff Earickson
     * Ralf's fix for the install-config target to get correct MimeMagicFile
+    * PRs 2081 and 2082 closed
 
 Available Patches:
 

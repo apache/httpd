@@ -1,5 +1,9 @@
 Changes with Apache 1.3b7
 
+  *) PR2082: Closed... NeXT required strdup() in support/logresolve.c
+
+  *) PR2081: Closed... AIX required sys/select.h in support/ab.c
+
   *) Fix the path to the MimeMagicFile in the install-config target, too.
      [Ralf S. Engelschall, PR#2089]
 
