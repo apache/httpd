@@ -22,12 +22,12 @@
 /* -------------------------------------------------------------- */
 
 /* return true if the request is conditional */
-CACHE_DECLARE(int) ap_cache_request_is_conditional(request_rec *r)
+CACHE_DECLARE(int) ap_cache_request_is_conditional(apr_table_t *table)
 {
-    if (apr_table_get(r->headers_in, "If-Match") ||
-        apr_table_get(r->headers_in, "If-None-Match") ||
-        apr_table_get(r->headers_in, "If-Modified-Since") ||
-        apr_table_get(r->headers_in, "If-Unmodified-Since")) {
+    if (apr_table_get(table, "If-Match") ||
+        apr_table_get(table, "If-None-Match") ||
+        apr_table_get(table, "If-Modified-Since") ||
+        apr_table_get(table, "If-Unmodified-Since")) {
         return 1;
     }
     return 0;

@@ -693,6 +693,7 @@ static apr_status_t recall_headers(cache_handle_t *h, request_rec *r)
      * CACHE_IN runs before header filters....
      */
     h->content_type = h->cache_obj->info.content_type;
+    h->status = h->cache_obj->info.status;
 
     return rc;
 }
@@ -766,6 +767,7 @@ static apr_status_t store_headers(cache_handle_t *h, request_rec *r, cache_info 
     }
  
     /* Init the info struct */
+    obj->info.status = info->status;
     if (info->date) {
         obj->info.date = info->date;
     }
