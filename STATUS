@@ -1,5 +1,5 @@
 Apache 2.0 STATUS:
-Last modified at [$Date: 2000/07/20 21:31:19 $]
+Last modified at [$Date: 2000/07/27 14:28:40 $]
 
 Release:
 
@@ -89,10 +89,6 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
       that avoids initializing all the modules in the parent process on
       platforms that do not support fork.
 
-    * Clean the code.  There are a lot of places we used APR but didn't 
-      remove the hacks that were required for the cross-platform code in
-      1.3.  We need to make the code look like APR was supposed to be there. 
-
     * Go throught the 1.3 Bug DB and research the bugs marked "suspended".
       People were told these would be considered for inclusion in Apache 2.0,
       it would be nice to actually do so.
@@ -112,9 +108,6 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
 
     * Win32: Implement reliable piped logs on Windows
           
-    * Use APR to get rid of more platform dependancies.
-        Status: Ryan Bloom <rbb@covalenet.net> is working on this.
-
     * The connection status table is not very efficient. Also, very few stats
       are exported to the connection status table (easy to fix), and mod_status
       is ugly.
