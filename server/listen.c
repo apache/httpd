@@ -90,7 +90,7 @@ static apr_status_t make_sock(apr_pool_t *p, ap_listen_rec *server)
 
     stat = apr_setsocketopt(s, APR_SO_REUSEADDR, one);
     if (stat != APR_SUCCESS && stat != APR_ENOTIMPL) {
-	ap_log_error(APLOG_MARK, APLOG_CRIT, stat, NULL,
+	ap_log_perror(APLOG_MARK, APLOG_CRIT, stat, p,
 		    "make_sock: for address %pI, setsockopt: (SO_REUSEADDR)", 
                      server->bind_addr);
 	apr_close_socket(s);
@@ -99,7 +99,7 @@ static apr_status_t make_sock(apr_pool_t *p, ap_listen_rec *server)
     
     stat = apr_setsocketopt(s, APR_SO_KEEPALIVE, one);
     if (stat != APR_SUCCESS && stat != APR_ENOTIMPL) {
-	ap_log_error(APLOG_MARK, APLOG_CRIT, stat, NULL,
+	ap_log_perror(APLOG_MARK, APLOG_CRIT, stat, p,
 		    "make_sock: for address %pI, setsockopt: (SO_KEEPALIVE)", 
                      server->bind_addr);
 	apr_close_socket(s);
@@ -128,7 +128,7 @@ static apr_status_t make_sock(apr_pool_t *p, ap_listen_rec *server)
     if (send_buffer_size) {
 	stat = apr_setsocketopt(s, APR_SO_SNDBUF,  send_buffer_size);
         if (stat != APR_SUCCESS && stat != APR_ENOTIMPL) {
-            ap_log_error(APLOG_MARK, APLOG_WARNING, stat, NULL,
+            ap_log_perror(APLOG_MARK, APLOG_WARNING, stat, p,
 			"make_sock: failed to set SendBufferSize for "
                          "address %pI, using default", 
                          server->bind_addr);
@@ -141,7 +141,7 @@ static apr_status_t make_sock(apr_pool_t *p, ap_listen_rec *server)
 #endif
 
     if ((stat = apr_bind(s, server->bind_addr)) != APR_SUCCESS) {
-	ap_log_error(APLOG_MARK, APLOG_CRIT, stat, NULL,
+	ap_log_perror(APLOG_MARK, APLOG_CRIT, stat, p,
                      "make_sock: could not bind to address %pI", 
                      server->bind_addr);
 	apr_close_socket(s);
@@ -149,7 +149,7 @@ static apr_status_t make_sock(apr_pool_t *p, ap_listen_rec *server)
     }
 
     if ((stat = apr_listen(s, ap_listenbacklog)) != APR_SUCCESS) {
-	ap_log_error(APLOG_MARK, APLOG_ERR, stat, NULL,
+	ap_log_perror(APLOG_MARK, APLOG_ERR, stat, p,
 	    "make_sock: unable to listen for connections on address %pI", 
                      server->bind_addr);
 	apr_close_socket(s);
@@ -242,13 +242,13 @@ static void alloc_listener(process_rec *process, char *addr, apr_port_t port)
     new->active = 0;
     if ((status = apr_getaddrinfo(&new->bind_addr, addr, APR_UNSPEC, port, 0, 
                                   process->pool)) != APR_SUCCESS) {
-        ap_log_error(APLOG_MARK, APLOG_CRIT, status, NULL,
+        ap_log_perror(APLOG_MARK, APLOG_CRIT, status, process->pool,
                      "alloc_listener: failed to set up sockaddr for %s", addr);
         return;
     }
     if ((status = apr_create_socket(&new->sd, new->bind_addr->sa.sin.sin_family, 
                                     SOCK_STREAM, process->pool)) != APR_SUCCESS) {
-        ap_log_error(APLOG_MARK, APLOG_CRIT, status, NULL,
+        ap_log_perror(APLOG_MARK, APLOG_CRIT, status, process->pool,
                      "alloc_listener: failed to get a socket for %s", addr);
         return;
     }
