@@ -59,8 +59,11 @@ beginning with <em>url</em>. Example:
 http://foo2.bar.com/service</code></blockquote>
 If the client requests http://myserver/service/foo.txt, it will be told to
 access http://foo2.bar.com/service/foo.txt instead.<p>
+
 Note: Redirect directives take precedence over Alias and ScriptAlias
-directives, irrespective of their ordering in the configuration file.<p>
+directives, irrespective of their ordering in the configuration file.  Also,
+<em>Url-path</em> must be an absolute path, not a relative path, even when used with
+.htaccess files or inside of &lt;Directory&gt; sections.<p>
 
 If no <em>status</em> argument is given, the redirect will be
 "temporary" (HTTP status 302). This indicates to the client that the
