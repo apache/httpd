@@ -533,6 +533,10 @@ static int x_handler(request_rec *r)
 {
     x_cfg *dcfg;
 
+    if (strcmp(r->handler, "example-handler")) {
+        return DECLINED;
+    }
+
     dcfg = our_dconfig(r);
     trace_add(r->server, r, dcfg, "x_handler()");
     /*
