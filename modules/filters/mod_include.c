@@ -1159,26 +1159,19 @@ static int parse_expr(include_ctx_t *ctx, const char *expr, int *was_error)
                                 new->token.value, NULL);
                 break;
 
-            case TOKEN_EQ:
-            case TOKEN_NE:
-            case TOKEN_AND:
-            case TOKEN_OR:
-            case TOKEN_LBRACE:
-            case TOKEN_NOT:
-            case TOKEN_GE:
-            case TOKEN_GT:
-            case TOKEN_LE:
-            case TOKEN_LT:
-                new->parent = current;
-                current = current->right = new;
-                break;
-
-            default:
+            case TOKEN_RE:
+            case TOKEN_RBRACE:
+            case TOKEN_GROUP:
                 ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                               "Invalid expression \"%s\" in file %s",
                               expr, r->filename);
                 *was_error = 1;
                 return retval;
+
+            default:
+                new->parent = current;
+                current = current->right = new;
+                break;
             }
             break;
 
@@ -1221,30 +1214,19 @@ static int parse_expr(include_ctx_t *ctx, const char *expr, int *was_error)
             /* Percolate upwards */
             while (current) {
                 switch (current->token.type) {
-                case TOKEN_STRING:
-                case TOKEN_RE:
-                case TOKEN_GROUP:
-                case TOKEN_NOT:
-                case TOKEN_EQ:
-                case TOKEN_NE:
-                case TOKEN_AND:
-                case TOKEN_OR:
-                case TOKEN_GE:
-                case TOKEN_GT:
-                case TOKEN_LE:
-                case TOKEN_LT:
-                    current = current->parent;
-                    continue;
-
                 case TOKEN_LBRACE:
                     break;
 
-                default:
+                case TOKEN_RBRACE:
                     ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                                   "Invalid expression \"%s\" in file %s",
                                   expr, r->filename);
                     *was_error = 1;
                     return retval;
+
+                default:
+                    current = current->parent;
+                    continue;
                 }
                 break;
             }
