@@ -399,7 +399,7 @@ void ap_core_reorder_directories(ap_context_t *p, server_rec *s)
     elts = (void **)sec->elts;
 
     /* we have to allocate tmp space to do a stable sort */
-    ap_create_context(p, NULL, &tmp);
+    ap_create_context(p, &tmp);
     sortbin = ap_palloc(tmp, sec->nelts * sizeof(*sortbin));
     for (i = 0; i < nelts; ++i) {
 	sortbin[i].orig_index = i;

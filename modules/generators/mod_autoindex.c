@@ -1280,7 +1280,7 @@ static void output_directories(struct ent **ar, int n,
     char *name_scratch;
     char *pad_scratch;
 
-    ap_create_context(r->pool, NULL, &scratch);
+    ap_create_context(r->pool, &scratch);
     if (name[0] == '\0') {
 	name = "/";
     }

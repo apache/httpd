@@ -1957,9 +1957,9 @@ static void child_main(int child_num_arg)
     /* Get a sub ap_context_t for global allocations in this child, so that
      * we can have cleanups occur when the child exits.
      */
-    ap_create_context(pconf, NULL, &pchild);
+    ap_create_context(pconf, &pchild);
 
-    ap_create_context(pchild, NULL, &ptrans);
+    ap_create_context(pchild, &ptrans);
 
     /* needs to be done before we switch UIDs so we have permissions */
     reopen_scoreboard(pchild);

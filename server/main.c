@@ -267,10 +267,10 @@ int main(int argc, char **argv)
     ap_util_init();
     ap_util_uri_init();
 
-    ap_create_context(NULL, NULL, &pglobal);
+    ap_create_context(NULL, &pglobal);
     g_pHookPool=pglobal;
 
-    ap_create_context(pglobal, NULL, &pcommands);
+    ap_create_context(pglobal, &pcommands);
     ap_server_pre_read_config  = ap_make_array(pcommands, 1, sizeof(char *));
     ap_server_post_read_config = ap_make_array(pcommands, 1, sizeof(char *));
     ap_server_config_defines   = ap_make_array(pcommands, 1, sizeof(char *));
@@ -317,9 +317,9 @@ int main(int argc, char **argv)
 	}
     }
 
-    ap_create_context(pglobal, NULL, &pconf);
-    ap_create_context(pglobal, NULL, &plog);
-    ap_create_context(pconf, NULL, &ptemp);
+    ap_create_context(pglobal, &pconf);
+    ap_create_context(pglobal, &plog);
+    ap_create_context(pconf, &ptemp);
 
     /* for legacy reasons, we read the configuration twice before
 	we actually serve any requests */
@@ -340,7 +340,7 @@ int main(int argc, char **argv)
 
     for (;;) {
 	ap_clear_pool(pconf);
-	ap_create_context(pconf, NULL, &ptemp);
+	ap_create_context(pconf, &ptemp);
 	ap_server_root = def_server_root;
 	ap_run_pre_config(pconf, plog, ptemp);
 	server_conf = ap_read_config(pconf, ptemp, confname);

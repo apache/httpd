@@ -740,7 +740,7 @@ static request_rec *make_sub_request(const request_rec *r)
     ap_context_t *rrp;
     request_rec *rr;
     
-    ap_create_context(r->pool, NULL, &rrp);
+    ap_create_context(r->pool, &rrp);
     rr = ap_pcalloc(rrp, sizeof(request_rec));
     rr->pool = rrp;
     return rr;
