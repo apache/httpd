@@ -527,15 +527,32 @@ static int set_listeners_noninheritable(apr_pool_t *p)
 
     for (lr = ap_listeners; lr; lr = lr->next) {
         apr_os_sock_get(&nsd,lr->sd);
-        if (!DuplicateHandle(hProcess, (HANDLE) nsd, hProcess, &dup, 
-                             0, FALSE, DUPLICATE_SAME_ACCESS)) {
-            ap_log_error(APLOG_MARK, APLOG_ERR, apr_get_os_error(), ap_server_conf,
-                         "set_listeners_noninheritable: DuplicateHandle failed.");
+        if (osver.dwPlatformId == VER_PLATFORM_WIN32_WINDOWS) {
+            if (!DuplicateHandle(hProcess, (HANDLE) nsd, hProcess, &dup, 
+                                 0, FALSE, DUPLICATE_SAME_ACCESS)) {
+                ap_log_error(APLOG_MARK, APLOG_ERR, apr_get_os_error(), ap_server_conf,
+                             "set_listeners_noninheritable: DuplicateHandle failed.");
+            }
+            else {
+                closesocket(nsd);
+                nsd = (SOCKET) dup;
+                apr_os_sock_put(&lr->sd, &nsd, p);
+            }
         }
         else {
-            closesocket(nsd);
-            nsd = (SOCKET) dup;
-            apr_os_sock_put(&lr->sd, &nsd, p);
+            /* A different approach.  Many users report errors such as 
+             * (32538)An operation was attempted on something that is not 
+             * a socket.  : Parent: WSADuplicateSocket failed...
+             *
+             * This appears that the duplicated handle is no longer recognized
+             * as a socket handle.  SetHandleInformation should overcome that
+             * problem by not altering the handle identifier.  But this won't
+             * work on 9x - it's unsupported.
+             */
+            if (!SetHandleInformation(nsd, HANDLE_FLAG_INHERIT, 0)) {
+                ap_log_error(APLOG_MARK, APLOG_ERR, apr_get_os_error(), ap_server_conf,
+                             "set_listeners_noninheritable: SetHandleInformation failed.");
+            }
         }
     }
 
