@@ -181,4 +181,21 @@ echo rebuilding configure
 rm -f config.cache
 ${AUTOCONF:-autoconf} 2>&1 | grep -v "$cross_compile_warning"
 
+if [ -f `which cut` ]; then
+  echo rebuilding rpm spec file
+  ( VMMN=`build/get-version.sh mmn include/ap_mmn.h MODULE_MAGIC_NUMBER`
+    REVISION=`build/get-version.sh all include/ap_release.h AP_SERVER`
+    VERSION=`echo $REVISION | cut -d- -s -f1`
+    RELEASE=`echo $REVISION | cut -d- -s -f2`
+    if [ "x$VERSION" = "x" ]; then
+      VERSION=$REVISION
+      RELEASE=1
+    fi
+    cat ./build/rpm/httpd.spec.in | \
+    sed -e "s/APACHE_VERSION/$VERSION/" \
+        -e "s/APACHE_RELEASE/$RELEASE/" \
+        -e "s/APACHE_MMN/$VMMN/" \
+    > httpd.spec )
+fi
+
 exit 0

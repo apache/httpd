@@ -2,6 +2,10 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) Add code to buildconf that produces an httpd.spec file from
+     httpd.spec.in, using build/get-version.sh from APR.
+     [Graham Leggett]
+
   *) ssl_toolkit_compat.h and code fixes to build clean on SSLC.
      [William Rowe, Madhusudan Mathihalli]
 
