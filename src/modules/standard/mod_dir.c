@@ -693,7 +693,10 @@ int index_directory(request_rec *r, dir_config_rec *dir_conf)
     char *tmp;
     int dir_opts = find_opts(dir_conf, r);
 
-    if(!(d=opendir(name))) return HTTP_FORBIDDEN;
+    if(!(d=opendir(name))) {
+        log_reason ("Can't open directory for index", r->filename, r);
+        return HTTP_FORBIDDEN;
+    }
 
     r->content_type = "text/html";
     
@@ -833,8 +836,10 @@ int handle_dir (request_rec *r)
 
     if (allow_opts & OPT_INDEXES) 
         return index_directory (r, d);
-    else
+    else {
+        log_reason ("Directory index forbidden by rule", r->filename, r);
         return HTTP_FORBIDDEN;
+    }
 }
 
 

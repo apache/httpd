@@ -1,7 +1,11 @@
 Changes with Apache 1.2b5
 
+  *) Log reason when mod_dir returns access HTTP_FORBIDDEN
+     [Ken the Rodent]
+
   *) Properly check errno to prevent display of a directory index
      when server receives a long enough URL to confuse stat().
+     [Marc Slemko]
 
   *) Several security enhancements to suexec wrapper. It is _highly_
      recommended that previously installed versions of the wrapper
