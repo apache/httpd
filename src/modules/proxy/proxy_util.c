@@ -69,7 +69,6 @@ static int proxy_match_ipaddr(struct dirconn_entry *This, request_rec *r);
 static int proxy_match_domainname(struct dirconn_entry *This, request_rec *r);
 static int proxy_match_hostname(struct dirconn_entry *This, request_rec *r);
 static int proxy_match_word(struct dirconn_entry *This, request_rec *r);
-void ap_proxy_table_unmerge(pool *p, table *t, char *key);
 static struct per_thread_data *get_per_thread_data(void);
 /* already called in the knowledge that the characters are hex digits */
 int ap_proxy_hex2c(const char *x)

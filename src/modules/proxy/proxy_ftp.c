@@ -271,7 +271,7 @@ static long int send_dir(BUFF *data, request_rec *r, cache_req *c, char *cwd)
     char *searchptr = NULL;
     int firstfile = 1;
     unsigned long total_bytes_sent = 0;
-    register int n, o, w;
+    register int n;
     conn_rec *con = r->connection;
     pool *p = r->pool;
     char *dir, *path, *reldir, *site, *type = NULL;
