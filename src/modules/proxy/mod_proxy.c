@@ -524,7 +524,7 @@ static const char *
 	New = push_array(conf->dirconn);
 	New->name = arg;
 
-	if (proxy_is_ipaddr(New)) {
+	if (proxy_is_ipaddr(New, parms->pool)) {
 #if DEBUGGING
 	    fprintf(stderr, "Parsed addr %s\n", inet_ntoa(New->addr));
 	    fprintf(stderr, "Parsed mask %s\n", inet_ntoa(New->mask));
