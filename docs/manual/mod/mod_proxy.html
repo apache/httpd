@@ -200,15 +200,23 @@ override.
 <strong>Compatibility:</strong> NoCache is only available in
 Apache 1.1 and later.<p>
 
-The NoCache directive specifies a list of hosts and/or domains, separated
-by spaces. HTTP documents from hosts or domains in the list are <em>not</em>
+The NoCache directive specifies a list of words, hosts and/or domains, separated
+by spaces. HTTP documents from matched words, hosts or domains are <em>not</em>
 cached by the proxy server. Example:
 
 <pre>
   NoCache joes.garage.com some.host.co.uk wotsamattau.edu
 </pre>
 
-Note that 'wotsamattau' would also be sufficient to match 'wotsamattau.edu'.
+Note that 'wotsamattau' would also be sufficient to match 'wotsamattau.edu'.<p>
+
+Note also that
+
+<pre>
+NoCache *
+</pre>
+
+disables caching completely.<p>
 
 <hr>
 
