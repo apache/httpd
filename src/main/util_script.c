@@ -597,7 +597,7 @@ API_EXPORT(void) ap_send_size(size_t size, request_rec *r)
     }
 }
 
-#if defined(__EMX__) || defined(WIN32)
+#if defined(OS2) || defined(WIN32)
 static char **create_argv_cmd(pool *p, char *av0, const char *args, char *path)
 {
     register int x, n;
@@ -695,7 +695,7 @@ API_EXPORT(int) ap_call_exec(request_rec *r, child_info *pinfo, char *argv0,
     }
 #endif
 
-#ifdef __EMX__
+#ifdef OS2
     {
 	/* Additions by Alec Kloss, to allow exec'ing of scripts under OS/2 */
 	int is_script;

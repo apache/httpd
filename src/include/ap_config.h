@@ -655,7 +655,7 @@ typedef int rlim_t;
 #define USE_MMAP_FILES
 #define HAVE_SYSLOG 1
 
-#elif defined(__EMX__)
+#elif defined(OS2)
 /* Defines required for EMX OS/2 port. */
 #define NO_KILLPG
 #define NEED_STRCASECMP
@@ -907,7 +907,7 @@ int setrlimit(int, struct rlimit *);
 #endif
 #endif
 #ifdef USE_MMAP_SCOREBOARD
-#if !defined(__EMX__) && !defined(WIN32)
+#if !defined(OS2) && !defined(WIN32)
 /* This file is not needed for OS/2 */
 #include <sys/mman.h>
 #endif

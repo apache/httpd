@@ -1800,7 +1800,7 @@ API_EXPORT(void) ap_note_subprocess(pool *a, int pid, enum kill_conditions how)
 #endif /* WIN32 */
 
 /* for ap_fdopen, to get binary mode */
-#if defined (__EMX__) || defined (WIN32)
+#if defined (OS2) || defined (WIN32)
 #define BINMODE	"b"
 #else
 #define BINMODE

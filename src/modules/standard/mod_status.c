@@ -614,7 +614,7 @@ static int status_handler(request_rec *r)
     }				/* for () */
 
     if (!(short_report || no_table_report)) {
-#ifdef __EMX__
+#ifdef OS2
 	ap_rputs("</table>\n \
 <hr> \
 <table>\n \

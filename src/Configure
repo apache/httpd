@@ -342,10 +342,10 @@ case "$PLAT" in
 	DEF_WANTHSREGEX=yes
 	;;
     *OS/2*)
-	OSDIR="os/emx"
+	OSDIR="os/os2"
 	DEF_WANTHSREGEX=yes
 	OS='EMX OS/2'
-	CFLAGS="$CFLAGS -Zbsd-signals -Zbin-files -DTCPIPV4 -g"
+	CFLAGS="$CFLAGS -DOS2 -Zbsd-signals -Zbin-files -DTCPIPV4 -g"
 	LDFLAGS="$LDFLAGS -Zexe"
 	LIBS="$LIBS -lsocket -lufc -lbsd"
 	DBM_LIB="-lgdbm"

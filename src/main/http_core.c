@@ -332,7 +332,7 @@ static void add_file_conf(core_dir_config *conf, void *url_config)
  * See directory_walk().
  */
 
-#if defined(__EMX__) || defined(WIN32)
+#if defined(OS2) || defined(WIN32)
 #define IS_SPECIAL(entry_core)	\
     ((entry_core)->r != NULL \
 	|| ((entry_core)->d[0] != '/' && (entry_core)->d[1] != ':'))
@@ -1126,7 +1126,7 @@ static const char *dirsection(cmd_parms *cmd, void *dummy, const char *arg)
     }
 
     cmd->path = ap_getword_conf(cmd->pool, &arg);
-#ifdef __EMX__
+#ifdef OS2
     /* Fix OS/2 HPFS filename case problem. */
     cmd->path = strlwr(cmd->path);
 #endif    
@@ -1639,7 +1639,7 @@ static const char *set_user(cmd_parms *cmd, void *dummy, char *arg)
 		    "requires SUEXEC wrapper.\n");
 	}
     }
-#if !defined (BIG_SECURITY_HOLE) && !defined (__EMX__)
+#if !defined (BIG_SECURITY_HOLE) && !defined (OS2)
     if (cmd->server->server_uid == 0) {
 	fprintf(stderr,
 		"Error:\tApache has not been designed to serve pages while\n"
@@ -2594,7 +2594,7 @@ static int default_handler(request_rec *r)
         return METHOD_NOT_ALLOWED;
     }
 	
-#if defined(__EMX__) || defined(WIN32)
+#if defined(OS2) || defined(WIN32)
     /* Need binary mode for OS/2 */
     f = ap_pfopen(r->pool, r->filename, "rb");
 #else

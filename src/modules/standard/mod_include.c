@@ -754,7 +754,7 @@ static int include_cmd_child(void *arg, child_info *pinfo)
 #endif
 
 #ifdef DEBUG_INCLUDE_CMD
-#ifdef __EMX__
+#ifdef OS2
     /* under OS/2 /dev/tty is referenced as con */
     FILE *dbg = fopen("con", "w");
 #else
@@ -2309,7 +2309,7 @@ static int send_parsed_file(request_rec *r)
     }
 
     if ((*state == xbithack_full)
-#if !defined(__EMX__) && !defined(WIN32)
+#if !defined(OS2) && !defined(WIN32)
     /*  OS/2 dosen't support Groups. */
         && (r->finfo.st_mode & S_IXGRP)
 #endif
@@ -2380,7 +2380,7 @@ static int send_shtml_file(request_rec *r)
 
 static int xbithack_handler(request_rec *r)
 {
-#if defined(__EMX__) || defined(WIN32)
+#if defined(OS2) || defined(WIN32)
     /* OS/2 dosen't currently support the xbithack. This is being worked on. */
     return DECLINED;
 #else

@@ -28,7 +28,7 @@ int main (int argc, char **argv)
 	fprintf(stderr,
 		"%s <logfile> <rotation time in seconds>\n\n",
 		argv[0]);
-#ifdef __EMX__
+#ifdef OS2
 	fprintf(stderr,
 		"Add this:\n\nTransferLog \"|%s.exe /some/where 86400\"\n\n",
 		argv[0]);

@@ -64,7 +64,7 @@ module referer_log_module;
 
 static int xfer_flags = (O_WRONLY | O_APPEND | O_CREAT);
 
-#ifdef __EMX__
+#ifdef OS2
 /* OS/2 lacks support for users and groups */
 static mode_t xfer_mode = (S_IREAD | S_IWRITE);
 #else

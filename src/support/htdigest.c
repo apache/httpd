@@ -196,7 +196,7 @@ int main(int argc, char *argv[])
     }
     fclose(f);
     fclose(tfp);
-#if defined(__EMX__) || defined(WIN32)
+#if defined(OS2) || defined(WIN32)
     sprintf(command, "copy \"%s\" \"%s\"", tn, argv[1]);
 #else
     sprintf(command, "cp %s %s", tn, argv[1]);

@@ -79,7 +79,7 @@ extern "C" {
  * file with a relative pathname will have this added.
  */
 #ifndef HTTPD_ROOT
-#ifdef __EMX__
+#ifdef OS2
 /* Set default for OS/2 file system */
 #define HTTPD_ROOT "/os2httpd"
 #elif defined(WIN32)
@@ -94,7 +94,7 @@ extern "C" {
  * directive.
  */
 #ifndef DOCUMENT_LOCATION
-#ifdef __EMX__
+#ifdef OS2
 /* Set default for OS/2 file system */
 #define DOCUMENT_LOCATION  HTTPD_ROOT "/docs"
 #else
@@ -144,7 +144,7 @@ extern "C" {
 
 /* The name of the log files */
 #ifndef DEFAULT_XFERLOG
-#ifdef __EMX__
+#ifdef OS2
 /* Set default for OS/2 file system */
 #define DEFAULT_XFERLOG "logs/access.log"
 #else
@@ -153,7 +153,7 @@ extern "C" {
 #endif /* DEFAULT_XFERLOG */
 
 #ifndef DEFAULT_ERRORLOG
-#ifdef __EMX__
+#ifdef OS2
 /* Set default for OS/2 file system */
 #define DEFAULT_ERRORLOG "logs/error.log"
 #else
@@ -189,7 +189,7 @@ extern "C" {
 
 /* Define this to be what your per-directory security files are called */
 #ifndef DEFAULT_ACCESS_FNAME
-#ifdef __EMX__
+#ifdef OS2
 /* Set default for OS/2 file system */
 #define DEFAULT_ACCESS_FNAME "htaccess"
 #else
@@ -233,7 +233,7 @@ extern "C" {
 
 /* The path to the shell interpreter, for parsed docs */
 #ifndef SHELL_PATH
-#if defined(__EMX__) || defined(WIN32)
+#if defined(OS2) || defined(WIN32)
 /* Set default for OS/2 and Windows file system */
 #define SHELL_PATH "CMD.EXE"
 #else
@@ -889,7 +889,7 @@ API_EXPORT(int) ap_is_matchexp(const char *str);
 API_EXPORT(int) ap_strcmp_match(const char *str, const char *exp);
 API_EXPORT(int) ap_strcasecmp_match(const char *str, const char *exp);
 API_EXPORT(char *) ap_uudecode(pool *, const char *);
-#ifdef __EMX__
+#ifdef OS2
 void os2pathname(char *path);
 #endif
 

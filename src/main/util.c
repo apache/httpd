@@ -1064,7 +1064,7 @@ API_EXPORT(char *) ap_escape_shell_cmd(pool *p, const char *str)
     s = (const unsigned char *)str;
     for (; *s; ++s) {
 
-#if defined(__EMX__) || defined(WIN32)
+#if defined(OS2) || defined(WIN32)
 	/* Don't allow '&' in parameters under OS/2. */
 	/* This can be used to send commands to the shell. */
 	if (*s == '&') {
@@ -1323,7 +1323,7 @@ API_EXPORT(int) ap_can_exec(const struct stat *finfo)
 #ifdef MULTIPLE_GROUPS
     int cnt;
 #endif
-#if defined(__EMX__) || defined(WIN32)
+#if defined(OS2) || defined(WIN32)
     /* OS/2 dosen't have Users and Groups */
     return 1;
 #else
@@ -1734,7 +1734,7 @@ API_EXPORT(char *) ap_uudecode(pool *p, const char *bufcoded)
     return bufplain;
 }
 
-#ifdef __EMX__
+#ifdef OS2
 void os2pathname(char *path)
 {
     char newpath[MAX_STRING_LEN];

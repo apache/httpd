@@ -118,7 +118,7 @@ int ap_proxy_garbage_init(server_rec *r, pool *p)
 static int sub_garbage_coll(request_rec *r, array_header *files,
 			    const char *cachedir, const char *cachesubdir);
 static void help_proxy_garbage_coll(request_rec *r);
-#if !defined(WIN32) && !defined(MPE) && !defined(__EMX__)
+#if !defined(WIN32) && !defined(MPE) && !defined(OS2)
 static void detached_proxy_garbage_coll(request_rec *r);
 #endif
 
@@ -137,7 +137,7 @@ void ap_proxy_garbage_coll(request_rec *r)
     (void) ap_release_mutex(garbage_mutex);
 
     ap_block_alarms();		/* avoid SIGALRM on big cache cleanup */
-#if !defined(WIN32) && !defined(MPE) && !defined(__EMX__)
+#if !defined(WIN32) && !defined(MPE) && !defined(OS2)
     detached_proxy_garbage_coll(r);
 #else
     help_proxy_garbage_coll(r);
@@ -197,7 +197,7 @@ static int gcdiff(const void *ap, const void *bp)
 	return 0;
 }
 
-#if !defined(WIN32) && !defined(MPE) && !defined(__EMX__)
+#if !defined(WIN32) && !defined(MPE) && !defined(OS2)
 static void detached_proxy_garbage_coll(request_rec *r)
 {
     pid_t pid;
@@ -423,7 +423,7 @@ static int sub_garbage_coll(request_rec *r, array_header *files,
 	/*      if (strlen(ent->d_name) != HASH_LEN) continue; */
 
 /* under OS/2 use dirent's d_attr to identify a diretory */
-#ifdef __EMX__
+#ifdef OS2
 /* is it a directory? */
 	if (ent->d_attr & A_DIR) {
 	    char newcachedir[HUGE_STRING_LEN];
@@ -459,7 +459,7 @@ static int sub_garbage_coll(request_rec *r, array_header *files,
 	}
 
 /* In OS/2 this has already been done above */
-#ifndef __EMX__
+#ifndef OS2
 	if (S_ISDIR(buf.st_mode)) {
 	    char newcachedir[HUGE_STRING_LEN];
 	    close(fd);
@@ -1117,7 +1117,7 @@ void ap_proxy_cache_tidy(struct cache_req *c)
 	    *p = '/';
 	    ++p;
 	}
-#if defined(__EMX__) || defined(WIN32)
+#if defined(OS2) || defined(WIN32)
 	/* Under OS/2 use rename. */
 	if (rename(c->tempfile, c->filename) == -1)
 	    ap_log_error(APLOG_MARK, APLOG_ERR, s,

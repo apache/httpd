@@ -296,7 +296,7 @@ static int translate_userdir(request_rec *r)
 #else                           /* WIN32 */
             struct passwd *pw;
             if ((pw = getpwnam(w))) {
-#ifdef __EMX__
+#ifdef OS2
                 /* Need to manually add user name for OS/2 */
                 filename = ap_pstrcat(r->pool, pw->pw_dir, w, "/", userdir, NULL);
 #else

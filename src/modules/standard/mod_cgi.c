@@ -289,7 +289,7 @@ static int cgi_child(void *child_stuff, child_info *pinfo)
     int child_pid;
 
 #ifdef DEBUG_CGI
-#ifdef __EMX__
+#ifdef OS2
     /* Under OS/2 need to use device con. */
     FILE *dbg = fopen("con", "w");
 #else
@@ -382,7 +382,7 @@ static int cgi_handler(request_rec *r)
 	return log_scripterror(r, conf, FORBIDDEN, APLOG_NOERRNO,
 			       "attempt to include NPH CGI script");
 
-#if defined(__EMX__) || defined(WIN32)
+#if defined(OS2) || defined(WIN32)
     /* Allow for cgi files without the .EXE extension on them under OS/2 */
     if (r->finfo.st_mode == 0) {
 	struct stat statbuf;

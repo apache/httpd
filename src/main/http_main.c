@@ -2696,7 +2696,7 @@ static void detach(void)
     int x;
 
     chdir("/");
-#if !defined(MPE) && !defined(__EMX__)
+#if !defined(MPE) && !defined(OS2)
 /* Don't detach for MPE because child processes can't survive the death of
    the parent. */
     if ((x = fork()) > 0)
@@ -2720,7 +2720,7 @@ static void detach(void)
 	fprintf(stderr, "httpd: setpgrp or getpgrp failed\n");
 	exit(1);
     }
-#elif defined(__EMX__)
+#elif defined(OS2)
     /* OS/2 don't support process group IDs */
     pgrp = getpid();
 #elif defined(MPE)
@@ -2787,7 +2787,7 @@ static void set_group_privs(void)
 	else
 	    name = ap_user_name;
 
-#ifndef __EMX__
+#ifndef OS2
 	/* OS/2 dosen't support groups. */
 
 	/* Reset `groups' attributes. */
@@ -3432,7 +3432,7 @@ static void child_main(int child_num_arg)
      * a signal or a timeout (yeah, I know, same thing).
      */
     ap_setjmp(jmpbuffer);
-#ifndef __EMX__
+#ifndef OS2
 #ifdef SIGURG
     signal(SIGURG, timeout);
 #endif
@@ -3440,7 +3440,7 @@ static void child_main(int child_num_arg)
     signal(SIGPIPE, timeout);
     signal(SIGALRM, alrm_handler);
 
-#ifdef __EMX__
+#ifdef OS2
 /* Stop Ctrl-C/Ctrl-Break signals going to child processes */
     {
         unsigned long ulTimes;
@@ -4059,7 +4059,7 @@ static void standalone_main(int argc, char **argv)
 {
     int remaining_children_to_start;
 
-#ifdef __EMX__
+#ifdef OS2
     printf("%s \n", ap_get_server_version());
 #endif
 
@@ -5576,7 +5576,7 @@ int REALMAIN(int argc, char *argv[])
     ap_open_logs(server_conf, pconf);
     set_group_privs();
 
-#ifdef __EMX__
+#ifdef OS2
     printf("%s \n", ap_get_server_version());
 #endif
 #ifdef WIN32

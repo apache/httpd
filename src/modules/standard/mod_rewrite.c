@@ -2173,7 +2173,7 @@ static int apply_rewrite_cond(request_rec *r, rewritecond_entry *p,
         }
     }
     else if (strcmp(p->pattern, "-l") == 0) {
-#if !defined(__EMX__) && !defined(WIN32)
+#if !defined(OS2) && !defined(WIN32)
         if (lstat(input, &sb) == 0) {
             if (S_ISLNK(sb.st_mode)) {
                 rc = 1;
@@ -3232,7 +3232,7 @@ static void rewritelock_create(server_rec *s, pool *p)
                      "file %s", conf->rewritelockfile);
         exit(1);
     }
-#if !defined(__EMX__) && !defined(WIN32)
+#if !defined(OS2) && !defined(WIN32)
     /* make sure the childs have access to this file */
     if (geteuid() == 0 /* is superuser */)
         chown(conf->rewritelockfile, ap_user_id, -1 /* no gid change */);
@@ -3411,7 +3411,7 @@ static int rewritemap_program_child(void *cmd, child_info *pinfo)
             child_pid = pi.dwProcessId;
         }
     }
-#elif defined(__EMX__)
+#elif defined(OS2)
     /* IBM OS/2 */
     execl(SHELL_PATH, SHELL_PATH, "/c", (char *)cmd, NULL);
 #else

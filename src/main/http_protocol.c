@@ -599,7 +599,7 @@ CORE_EXPORT(void) ap_parse_uri(request_rec *r, const char *uri)
 	r->args = r->parsed_uri.query;
 	r->uri = r->parsed_uri.path ? r->parsed_uri.path
 				    : ap_pstrdup(r->pool, "/");
-#if defined(__EMX__) || defined(WIN32)
+#if defined(OS2) || defined(WIN32)
 	/* Handle path translations for OS/2 and plug security hole.
 	 * This will prevent "http://www.wherever.com/..\..\/" from
 	 * returning a directory for the root drive.
@@ -614,7 +614,7 @@ CORE_EXPORT(void) ap_parse_uri(request_rec *r, const char *uri)
 	    ap_str_tolower(r->uri);
 #endif
 	}
-#endif  /* __EMX__ || WIN32 */
+#endif  /* OS2 || WIN32 */
     }
     else {
 	r->args = NULL;

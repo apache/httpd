@@ -170,7 +170,7 @@ static int error_log_child (void *cmd, child_info *pinfo)
 #if defined(WIN32)
     child_pid = spawnl (_P_NOWAIT, SHELL_PATH, SHELL_PATH, "/c", (char *)cmd, NULL);
     return(child_pid);
-#elif defined(__EMX__)
+#elif defined(OS2)
     /* For OS/2 we need to use a '/' */
     execl (SHELL_PATH, SHELL_PATH, "/c", (char *)cmd, NULL);
 #else    
@@ -635,7 +635,7 @@ static int piped_log_child (void *cmd, child_info *pinfo)
 #if defined(WIN32)
     child_pid = spawnl (_P_NOWAIT, SHELL_PATH, SHELL_PATH, "/c", (char *)cmd, NULL);
     return(child_pid);
-#elif defined(__EMX__)
+#elif defined(OS2)
     /* For OS/2 we need to use a '/' */
     execl (SHELL_PATH, SHELL_PATH, "/c", (char *)cmd, NULL);
 #else

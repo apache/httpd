@@ -112,7 +112,7 @@ static int check_safe_file(request_rec *r)
 
 static int check_symlinks(char *d, int opts)
 {
-#if defined(__EMX__) || defined(WIN32)
+#if defined(OS2) || defined(WIN32)
     /* OS/2 doesn't have symlinks */
     return OK;
 #else
