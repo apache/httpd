@@ -1,5 +1,9 @@
 Changes with Apache 1.3.4
 
+  *) Fix negotiation so that a Vary response header is correctly 
+     generated when, for a particular dimension, variants only vary
+     in having or not having a value for that dimension. [Paul Sutton]
+
   *) Fix negotiation so that we prefer an encoded variant over an
      unencoded variant if the user-agent explicitly says it can
      accept that encoding. Previously we always preferred the unencoded

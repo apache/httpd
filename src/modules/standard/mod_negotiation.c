@@ -1847,6 +1847,7 @@ static void set_neg_headers(request_rec *r, negotiation_state *neg,
     char *sample_language = NULL;
     const char *sample_encoding = NULL;
     char *sample_charset = NULL;
+    int first_variant = 1;
     int vary_by_type = 0;
     int vary_by_language = 0;
     int vary_by_charset = 0;
@@ -1863,6 +1864,7 @@ static void set_neg_headers(request_rec *r, negotiation_state *neg,
         char qstr[6];
         long len;
         char lenstr[22];        /* enough for 2^64 */
+        char *lang;
 
         ap_snprintf(qstr, sizeof(qstr), "%1.3f", variant->type_quality);
 
@@ -1878,49 +1880,52 @@ static void set_neg_headers(request_rec *r, negotiation_state *neg,
         }
 
         rec = ap_pstrcat(r->pool, "{\"", variant->file_name, "\" ", qstr, NULL);
-        if (variant->type_name) {
-            if (*variant->type_name) {
-                rec = ap_pstrcat(r->pool, rec, " {type ",
-                              variant->type_name, "}", NULL);
-            }
-            if (!sample_type) {
-                sample_type = variant->type_name;
-            }
-            else if (strcmp(sample_type, variant->type_name)) {
-                vary_by_type = 1;
-            }
+
+        if (first_variant) {
+            sample_type = variant->type_name;
+        } else if (strcmp(sample_type ? sample_type : "", 
+                          variant->type_name ? variant->type_name : "")) {
+            vary_by_type = 1;
         }
+        if (variant->type_name && *variant->type_name) {
+            rec = ap_pstrcat(r->pool, rec, " {type ",
+                             variant->type_name, "}", NULL);
+        }
+
         if (variant->content_languages && variant->content_languages->nelts) {
-            char *langs = merge_string_array(r->pool,
-                                           variant->content_languages, ",");
-            rec = ap_pstrcat(r->pool, rec, " {language ", langs, "}", NULL);
-            if (!sample_language) {
-                sample_language = langs;
-            }
-            else if (strcmp(sample_language, langs)) {
-                vary_by_language = 1;
-            }
+            lang = merge_string_array(r->pool,
+                                      variant->content_languages, ",");
+            rec = ap_pstrcat(r->pool, rec, " {language ", lang, "}", NULL);
+        } else {
+            lang = NULL;
         }
-        if (variant->content_encoding) {
-            if (!sample_encoding) {
-                sample_encoding = variant->content_encoding;
-            }
-            else if (strcmp(sample_encoding, variant->content_encoding)) {
-                vary_by_encoding = 1;
-            }
+        if (first_variant) {
+            sample_language = lang;
+        } else if (strcmp(sample_language ? sample_language : "", 
+                          lang ? lang : "")) {
+            vary_by_language = 1;
         }
-        if (variant->content_charset) {
-            if (*variant->content_charset) {
-                rec = ap_pstrcat(r->pool, rec, " {charset ",
-                              variant->content_charset, "}", NULL);
-            }
-            if (!sample_charset) {
-                sample_charset = variant->content_charset;
-            }
-            else if (strcmp(sample_charset, variant->content_charset)) {
-                vary_by_charset = 1;
-            }
+
+        if (first_variant) {
+            sample_encoding = variant->content_encoding;
+        } else if (strcmp(sample_encoding ? sample_encoding : "",
+                          variant->content_encoding ? 
+                          variant->content_encoding : "")) {
+            vary_by_encoding = 1;
         }
+
+        if (first_variant) {
+            sample_charset = variant->content_charset;
+        } else if (strcmp(sample_charset ? sample_charset : "",
+                          variant->content_charset ? variant->content_charset
+                          : "")) {
+            vary_by_charset = 1;
+        }
+        if (variant->content_charset && *variant->content_charset) {
+            rec = ap_pstrcat(r->pool, rec, " {charset ",
+                             variant->content_charset, "}", NULL);
+        }
+
         if ((len = find_content_length(neg, variant)) != 0) {
             ap_snprintf(lenstr, sizeof(lenstr), "%ld", len);
             rec = ap_pstrcat(r->pool, rec, " {length ", lenstr, "}", NULL);
@@ -1931,6 +1936,8 @@ static void set_neg_headers(request_rec *r, negotiation_state *neg,
         if (na_result != na_not_applied) {
             ap_table_mergen(hdrs, "Alternates", rec);
         }
+
+        first_variant = 0;
     }
 
     if (na_result != na_not_applied) {
