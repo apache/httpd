@@ -3031,14 +3031,7 @@ static int default_handler(request_rec *r)
     caddr_t mm;
 #endif
 #ifdef CHARSET_EBCDIC
-    /* To make serving of "raw ASCII text" files easy (they serve faster
-     * since they don't have to be converted from EBCDIC), a new
-     * "magic" type prefix was invented: text/x-ascii-{plain,html,...}
-     * If we detect one of these content types here, we simply correct
-     * the type to the real text/{plain,html,...} type. Otherwise, we
-     * set a flag that translation is required later on.
-     */ 
-    int convert_flag = ap_checkconv(r);
+    int convert_flag;
 #endif
 
     /* This handler has no use for a request body (yet), but we still
@@ -3095,6 +3088,19 @@ static int default_handler(request_rec *r)
         return errstatus;
     }
 
+#ifdef CHARSET_EBCDIC
+    /* To make serving of "raw ASCII text" files easy (they serve faster
+     * since they don't have to be converted from EBCDIC), a new
+     * "magic" type prefix was invented: text/x-ascii-{plain,html,...}
+     * If we detect one of these content types here, we simply correct
+     * the type to the real text/{plain,html,...} type. Otherwise, we
+     * set a flag that translation is required later on.
+     *
+     * Note: convert_flag is not used in the MMAP path;
+     * ap_checkconv() sets a request_req flag based on content_type
+     */ 
+    convert_flag = ap_checkconv(r);
+#endif
 #ifdef USE_MMAP_FILES
     ap_block_alarms();
     if ((r->finfo.st_size >= MMAP_THRESHOLD)
