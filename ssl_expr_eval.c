@@ -61,8 +61,6 @@
                                         -- Unknown */
 #include "mod_ssl.h"
 
-#if 0 /* XXX */
-
 /*  _________________________________________________________________
 **
 **  Expression Evaluation
@@ -223,35 +221,39 @@ static char *ssl_expr_eval_word(request_rec *r, ssl_expr *node)
 
 static char *ssl_expr_eval_func_file(request_rec *r, char *filename)
 {
-    FILE *fp;
+    apr_file_t *fp;
     char *buf;
-    int len;
+    apr_off_t offset;
+    apr_size_t len;
+    apr_finfo_t finfo;
 
-    if ((fp = ap_pfopen(r->pool, filename, "r")) == NULL) {
+    if (apr_file_open(&fp, filename, APR_READ|APR_BUFFERED, 
+                      APR_OS_DEFAULT, r->pool) != APR_SUCCESS) {
         ssl_expr_error = "Cannot open file";
         return "";
     }
-    fseek(fp, 0, SEEK_END);
-    len = ftell(fp);
+    apr_file_info_get(&finfo, APR_FINFO_SIZE, fp);
+    len = finfo.size;
     if (len == 0) {
-        buf = (char *)ap_palloc(r->pool, sizeof(char) * 1);
+        buf = (char *)apr_palloc(r->pool, sizeof(char) * 1);
         *buf = NUL;
     }
     else {
-        if ((buf = (char *)ap_palloc(r->pool, sizeof(char) * len+1)) == NULL) {
+        if ((buf = (char *)apr_palloc(r->pool, sizeof(char)*(len+1))) == NULL) {
             ssl_expr_error = "Cannot allocate memory";
-            ap_pfclose(r->pool, fp);
+            apr_file_close(fp);
             return "";
         }
-        fseek(fp, 0, SEEK_SET);
-        if (fread(buf, len, 1, fp) == 0) {
+        offset = 0;
+        apr_file_seek(fp, APR_SET, &offset);
+        if (apr_file_read(fp, buf, &len) != APR_SUCCESS) {
             ssl_expr_error = "Cannot read from file";
-            fclose(fp);
-            return ("");
+            apr_file_close(fp);
+            return "";
         }
         buf[len] = NUL;
     }
-    ap_pfclose(r->pool, fp);
+    apr_file_close(fp);
     return buf;
 }
 
@@ -278,6 +280,3 @@ static int ssl_expr_eval_strcmplex(char *cpNum1, char *cpNum2)
     }
     return 0;
 }
-
-#endif /* XXX */
-
