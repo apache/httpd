@@ -428,7 +428,7 @@ static void setup_shared_mem(void)
     caddr_t m;
 #if defined(MAP_ANON) || defined(MAP_FILE)
 /* BSD style */
-    m = mmap((caddr_t)0, HARD_SERVER_MAX*sizeof(short_score),
+    m = mmap((caddr_t)0, HARD_SERVER_LIMIT*sizeof(short_score),
 	     PROT_READ | PROT_WRITE, MAP_ANON | MAP_SHARED, -1, 0);
     if (m == (caddr_t)-1)
     {
@@ -447,7 +447,7 @@ static void setup_shared_mem(void)
 	fprintf(stderr, "httpd: Could not open /dev/zero\n");
 	exit(1);
     }
-    m = mmap((caddr_t)0, HARD_SERVER_MAX*sizeof(short_score),
+    m = mmap((caddr_t)0, HARD_SERVER_LIMIT*sizeof(short_score),
 	     PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
     if (m == (caddr_t)-1)
     {
@@ -467,7 +467,7 @@ static int shmid = -1;
 
 static void setup_shared_mem(void)
 {
-    int score_size = HARD_SERVER_MAX*sizeof(short_score);
+    int score_size = HARD_SERVER_LIMIT*sizeof(short_score);
     char errstr[MAX_STRING_LEN];
     struct shmid_ds shmbuf;
 #ifdef MOVEBREAK
@@ -551,7 +551,7 @@ static void setup_shared_mem(void)
 }
 
 #else
-static short_score scoreboard_image[HARD_SERVER_MAX];
+static short_score scoreboard_image[HARD_SERVER_LIMIT];
 static int have_scoreboard_fname = 0;
 static int scoreboard_fd;
 
@@ -594,7 +594,7 @@ void reinit_scoreboard (pool *p)
     {
 	setup_shared_mem();
     }
-    memset(scoreboard_image, 0, HARD_SERVER_MAX*sizeof(short_score));
+    memset(scoreboard_image, 0, HARD_SERVER_LIMIT*sizeof(short_score));
 #else
     scoreboard_fname = server_root_relative (p, scoreboard_fname);
 
@@ -707,7 +707,7 @@ int update_child_status (int child_num, int status, request_rec *r)
 
 int get_child_status (int child_num)
 {
-    if (child_num<0 || child_num>=HARD_SERVER_MAX)
+    if (child_num<0 || child_num>=HARD_SERVER_LIMIT)
     	return -1;
     else
 	return scoreboard_image[child_num].status;
@@ -718,7 +718,7 @@ int count_busy_servers ()
     int i;
     int res = 0;
 
-    for (i = 0; i < HARD_SERVER_MAX; ++i)
+    for (i = 0; i < HARD_SERVER_LIMIT; ++i)
       if (scoreboard_image[i].status == SERVER_BUSY_READ ||
               scoreboard_image[i].status == SERVER_BUSY_WRITE ||
               scoreboard_image[i].status == SERVER_BUSY_KEEPALIVE ||
@@ -769,7 +769,7 @@ int count_idle_servers ()
     int i;
     int res = 0;
 
-    for (i = 0; i < HARD_SERVER_MAX; ++i)
+    for (i = 0; i < HARD_SERVER_LIMIT; ++i)
 	if (scoreboard_image[i].status == SERVER_READY
 	  || scoreboard_image[i].status == SERVER_STARTING)
 	    ++res;
@@ -781,7 +781,7 @@ int find_free_child_num ()
 {
     int i;
 
-    for (i = 0; i < HARD_SERVER_MAX; ++i)
+    for (i = 0; i < HARD_SERVER_LIMIT; ++i)
 	if (scoreboard_image[i].status == SERVER_DEAD)
 	    return i;
 
@@ -792,7 +792,7 @@ int find_child_by_pid (int pid)
 {
     int i;
 
-    for (i = 0; i < HARD_SERVER_MAX; ++i)
+    for (i = 0; i < HARD_SERVER_LIMIT; ++i)
 	if (scoreboard_image[i].pid == pid)
 	    return i;
 
@@ -805,7 +805,7 @@ void reclaim_child_processes ()
     int my_pid = getpid();
 
     sync_scoreboard_image();
-    for (i = 0; i < HARD_SERVER_MAX; ++i) {
+    for (i = 0; i < HARD_SERVER_LIMIT; ++i) {
 	int pid = scoreboard_image[i].pid;
 
 	if (pid != my_pid && pid != 0)

@@ -718,7 +718,7 @@ void init_config_globals (pool *p)
     daemons_to_start = DEFAULT_START_DAEMON;
     daemons_min_free = DEFAULT_MIN_FREE_DAEMON;
     daemons_max_free = DEFAULT_MAX_FREE_DAEMON;
-    daemons_limit = DEFAULT_SERVER_LIMIT;
+    daemons_limit = HARD_SERVER_LIMIT;
     pid_fname = DEFAULT_PIDLOG;
     scoreboard_fname = DEFAULT_SCOREBOARD;
     max_requests_per_child = DEFAULT_MAX_REQUESTS_PER_CHILD;

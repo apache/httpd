@@ -180,7 +180,7 @@ int status_handler (request_rec *r)
     server_rec *server = r->server;
     short_score score_record;
     char status[]="??????????";
-    char stat_buffer[HARD_SERVER_MAX];
+    char stat_buffer[HARD_SERVER_LIMIT];
     clock_t tu,ts,tcu,tcs;
 
     tu=ts=tcu=tcs=0;
@@ -237,7 +237,7 @@ int status_handler (request_rec *r)
 	return 0;
 
     sync_scoreboard_image();
-    for (i = 0; i<HARD_SERVER_MAX; ++i)
+    for (i = 0; i<HARD_SERVER_LIMIT; ++i)
     {
         score_record = get_scoreboard_info(i);
         res = score_record.status;
@@ -338,7 +338,7 @@ int status_handler (request_rec *r)
 
     rputs("\n",r);
 
-    for (i = 0; i<HARD_SERVER_MAX; ++i)
+    for (i = 0; i<HARD_SERVER_LIMIT; ++i)
     {
 	rputc(stat_buffer[i], r);
 	if(i%STATUS_MAXLINE == (STATUS_MAXLINE - 1))
@@ -372,7 +372,7 @@ int status_handler (request_rec *r)
             rputs("<p>\n\n<table border=0><tr><th>Srv<th>PID<th>Acc<th>M<th>CPU\n<th>SS<th>Conn<th>Child<th>Slot<th>Host<th>Request</tr>\n\n",r);
 
 
-    for (i = 0; i<HARD_SERVER_MAX; ++i)
+    for (i = 0; i<HARD_SERVER_LIMIT; ++i)
     {
         score_record=get_scoreboard_info(i);
         lres = score_record.access_count;

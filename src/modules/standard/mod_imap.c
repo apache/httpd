@@ -679,7 +679,7 @@ int imap_handler(request_rec *r)
     if (sscanf(input, "%s %s", directive, value) != 2) {
       continue;                           /* make sure we read two fields */
     }
-    /* Now skip what we just read */
+    /* Now skip what we just read... we can't use ANSIism %n */
     while (!(isspace(*string_pos)))	/* past directive */
 	string_pos++;
     while (isspace(*string_pos))	/* and whitespace */
@@ -709,16 +709,18 @@ int imap_handler(request_rec *r)
 
     vertex = 0;
     while ( vertex < MAXVERTS &&  
-	   sscanf(string_pos, "%lf,%lf", &pointarray[vertex][X], 
-		  &pointarray[vertex][Y])   == 2) {
-      while(isspace(*string_pos))	/* past whitespace */
-	string_pos++;
-      while(isdigit(*string_pos))	/* and the 1st number */
-	string_pos++;
-      string_pos++;			/* skip the ',' */
-      while(isdigit(*string_pos))	/* 2nd number */
-	string_pos++;
-      vertex++;
+     sscanf(string_pos, "%lf,%lf",
+     &pointarray[vertex][X], &pointarray[vertex][Y])   == 2)
+    {
+	/* Now skip what we just read... we can't use ANSIism %n */
+	while(isspace(*string_pos))	/* past whitespace */
+	    string_pos++;
+	while(isdigit(*string_pos))	/* and the 1st number */
+	    string_pos++;
+	string_pos++;			/* skip the ',' */
+	while(isdigit(*string_pos))	/* 2nd number */
+	    string_pos++;
+	vertex++;
     }                /* so long as there are more vertices to read, and
 			we have room, read them in.  We start where we left
 			off of the last sscanf, not at the beginning.*/

@@ -713,6 +713,8 @@ char *set_max_free_servers (cmd_parms *cmd, void *dummy, char *arg) {
 
 char *set_server_limit (cmd_parms *cmd, void *dummy, char *arg) {
     daemons_limit = atoi (arg);
+    if (daemons_limit > HARD_SERVER_LIMIT)
+    	daemons_limit = HARD_SERVER_LIMIT;
     return NULL;
 }
 
