@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='EUC-KR' ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ko.xsl"?>
-<!-- English Revision: 1.7 -->
+<!-- English Revision: 1.1.2.5 -->
 
 <!--
  Copyright 2004 The Apache Software Foundation
@@ -40,8 +40,7 @@
     볼 수 있는 아파치 설명서를 참고하라.</p>
 </summary>
 <seealso><a href="httpd.html">httpd</a></seealso>
-<seealso><module>mod_authn_dbm</module></seealso>
-<seealso><module>mod_authz_dbm</module></seealso>
+<seealso><module>mod_auth_dbm</module></seealso>
 
 <section id="synopsis"><title>개요</title>
     <p><code><strong>dbmmanage</strong> [ <var>encoding</var> ]

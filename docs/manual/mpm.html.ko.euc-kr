@@ -24,8 +24,6 @@
 <a href="./ko/mpm.html" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="./ru/mpm.html" hreflang="ru" rel="alternate" title="Russian">&nbsp;ru&nbsp;</a></p>
 </div>
-<div class="outofdate">This translation may be out of date. Check the
-            English version for recent changes.</div>
 
 <p>이 문서는 다중처리 모듈 (Multi-Processing Module)이 무엇이며,
 아파치 웹서버가 이를 어떻게 사용하는지 설명한다.</p>
@@ -102,6 +100,7 @@
 다르게 선택하지 않으면 이 MPM이 선택된다.</p>
 
 <table>
+
 <tr><td>BeOS</td><td><code class="module"><a href="./mod/beos.html">beos</a></code></td></tr>
 <tr><td>Netware</td><td><code class="module"><a href="./mod/mpm_netware.html">mpm_netware</a></code></td></tr>
 <tr><td>OS/2</td><td><code class="module"><a href="./mod/mpmt_os2.html">mpmt_os2</a></code></td></tr>

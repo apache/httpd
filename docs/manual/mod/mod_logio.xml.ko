@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding='EUC-KR' ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ko.xsl"?>
-<!-- English Revision: 1.7 -->
+<!-- English Revision: 1.2.2.4 -->
 
 <!--
  Copyright 2004 The Apache Software Foundation
@@ -23,7 +23,7 @@
 
 <name>mod_logio</name>
 <description>요청당 입출력 바이트수를 기록</description>
-<status>Extension</status>
+<status>Base</status>
 <sourcefile>mod_logio.c</sourcefile>
 <identifier>logio_module</identifier>
 

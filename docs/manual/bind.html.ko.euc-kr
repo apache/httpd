@@ -22,8 +22,6 @@
 <a href="./ja/bind.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="./ko/bind.html" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<div class="outofdate">This translation may be out of date. Check the
-            English version for recent changes.</div>
 
     <p>아파치가 특정 주소와 포트에서 서비스하도록 설정하기.</p>
   </div>
@@ -35,10 +33,10 @@
 <div class="section">
 <h2><a name="overview" id="overview">개요</a></h2>
     
-    
+
     <table class="related"><tr><th>관련된 모듈</th><th>관련된 지시어</th></tr><tr><td><ul><li><code class="module"><a href="./mod/core.html">core</a></code></li><li><code class="module"><a href="./mod/mpm_common.html">mpm_common</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code></li><li><code class="directive"><a href="./mod/mpm_common.html#listen">Listen</a></code></li></ul></td></tr></table>
-    
-    
+
+
     <p>아파치를 시작하면 아파치는 컴퓨터의 어떤 포트와 주소에
     연결하여, 들어오는 요청을 기다린다. 기본적으로 아파치는
     컴퓨터의 모든 주소에서 기다린다. 그러나 아파치가 특정 포트나

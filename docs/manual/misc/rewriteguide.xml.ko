@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="EUC-KR" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ko.xsl"?>
-<!-- English Revision: 1.12 -->
+<!-- English Revision: 1.4.2.10 -->
 
 <!--
  Copyright 2004 The Apache Software Foundation
@@ -1663,10 +1663,10 @@ RewriteMap    vhost        txt:/path/to/vhost.map
 #   가상호스트로 대응한다.
 #
 #   1. 가상호스트들이 같이 사용하는 위치는 대응하지 않는다
-RewriteCond   %{REQUEST_URL}  !^/commonurl1/.*
-RewriteCond   %{REQUEST_URL}  !^/commonurl2/.*
+RewriteCond   %{REQUEST_URI}  !^/commonurl1/.*
+RewriteCond   %{REQUEST_URI}  !^/commonurl2/.*
     :
-RewriteCond   %{REQUEST_URL}  !^/commonurlN/.*
+RewriteCond   %{REQUEST_URI}  !^/commonurlN/.*
 #
 #   2. 우리가 현재 사용하는 방법이 Host 헤더를
 #      가상호스트를 지원하므로
@@ -1869,7 +1869,7 @@ RewriteRule !^http://[^/.]\.mydomain.com.*  - [F]
         <dd>
           <p>가끔 매우 특별한 인증이 필요할 때가 있다. 예를
           들어, 미리 설정해둔 사용자인지 검사한다. 이들에게만
-          (<module>mod_auth_basic</module>의 Basic Auth를 사용한
+          (<module>mod_auth</module>의 Basic Auth를 사용한
           경우와 달리) 별다른 물음없이 접근을 허용한다.</p>
         </dd>
 

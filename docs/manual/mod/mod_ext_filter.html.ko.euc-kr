@@ -13,11 +13,11 @@
 <body>
 <div id="page-header">
 <p class="menu"><a href="../mod/">모듈</a> | <a href="../mod/directives.html">지시어들</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">용어</a> | <a href="../sitemap.html">사이트맵</a></p>
-<p class="apache">Apache HTTP Server Version 2.1</p>
+<p class="apache">Apache HTTP Server Version 2.0</p>
 <img alt="" src="../images/feather.gif" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentation</a> &gt; <a href="../">Version 2.1</a> &gt; <a href="./">모듈</a></div>
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentation</a> &gt; <a href="../">Version 2.0</a> &gt; <a href="./">모듈</a></div>
 <div id="page-content">
 <div id="preamble"><h1>아파치 모듈 mod_ext_filter</h1>
 <div class="toplang">
@@ -249,9 +249,9 @@
 
       <dt><code>mode=<var>mode</var></code></dt>
 
-      <dd>응답을 처리하는 필터는 (기본값인) <code>mode=output</code>을
-      사용한다. 요청을 처리하는 필터는 <code>mode=input</code>을
-      사용한다. <code>mode=input</code>은 아파치 2.1에 추가되었다.</dd>
+      <dd><code>mode</code>는 현재 (기본값인) <code>output</code>만
+      가능하다. 미래에는 <code>mode=input</code>을 사용하여
+      요청 내용을 처리하는 필터를 지정할 수 있을 것이다.</dd>
 
       <dt><code>intype=<var>imt</var></code></dt>
 

@@ -13,11 +13,11 @@
 <body>
 <div id="page-header">
 <p class="menu"><a href="../mod/">모듈</a> | <a href="../mod/directives.html">지시어들</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">용어</a> | <a href="../sitemap.html">사이트맵</a></p>
-<p class="apache">Apache HTTP Server Version 2.1</p>
+<p class="apache">Apache HTTP Server Version 2.0</p>
 <img alt="" src="../images/feather.gif" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentation</a> &gt; <a href="../">Version 2.1</a> &gt; <a href="./">모듈</a></div>
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentation</a> &gt; <a href="../">Version 2.0</a> &gt; <a href="./">모듈</a></div>
 <div id="page-content">
 <div id="preamble"><h1>아파치 모듈 mod_setenvif</h1>
 <div class="toplang">
@@ -150,6 +150,8 @@
       <li><code>Server_Addr</code> - 요청을 받는 서버의 IP 주소
       (2.0.43 버전 이후에만)</li>
 
+      <li><code>Remote_User</code> - (있다면) 인증한 사용자명</li>
+
       <li><code>Request_Method</code> - 사용한 메써드 이름
       (<code>GET</code>, <code>POST</code>, <em>등등</em>)</li>
 
@@ -187,9 +189,7 @@
 
     <p>첫번째 형태는 값으로 "1"을 사용한다. 두번째 형태는 변수가
     이미 정의된 경우 변수를 제거하고, 세번째는 변수의 값으로
-    <code><em>value</em></code>를 설정한다. 아파치 2.1부터
-    <var>value</var>에 있는 <code>$1</code>..<code>$9</code>를
-    <var>regex</var>의 괄호친 하위표현식으로 대체한다.</p>
+    <code><em>value</em></code>를 설정한다.</p>
 
 <div class="example"><h3>예제:</h3><p><code>
 

@@ -10,6 +10,7 @@
     <variant>en</variant>
     <variant>es</variant>
     <variant>ja</variant>
+    <variant>ko</variant>
     <variant outdated="yes">ru</variant>
   </variants>
 </metafile>

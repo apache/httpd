@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="EUC-KR" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ko.xsl"?>
-<!-- English Revision: 1.9 -->
+<!-- English Revision: 1.3.2.4 -->
 
 <!--
  Copyright 2004 The Apache Software Foundation
@@ -75,6 +75,7 @@
 사용장소에서만 사용할 수 있었다.</compatibility>
 
 <usage>
+
     <p>이 지시어는 맞춤법 모듈의 사용여부를 결정한다. 사용한다면
     다음을 주의하라</p>
 
@@ -94,16 +95,9 @@
       내용협상을 거친 "<code>/stats.html</code>" 파일로 오인할
       수 있다.</li>
     </ul>
-
-    <!-- XXX: is that really true?! -nd -->
-    <p><a href="mod_dav.html">DAV</a>를 사용하는 디렉토리에
-    mod_speling을 사용하면 안된다. 이유는 새로 업로드하려는
-    <code>doc43.html</code> 문서를 엉뚱하게 기존의
-    <code>doc34.html</code> 파일로 리다이렉트하는 등, DAV가
-    새로 만드는 리소스명을 기존의 파일명으로 "맞춤법 교정"을
-    시도하기 때문이다.
-    </p>
 </usage>
+
 </directivesynopsis>
 
 </modulesynopsis>
+

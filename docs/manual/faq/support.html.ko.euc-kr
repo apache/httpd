@@ -12,11 +12,11 @@
 <link href="../images/favicon.ico" rel="shortcut icon" /></head>
 <body id="manual-page" class="no-sidebar"><div id="page-header">
 <p class="menu"><a href="../mod/">모듈</a> | <a href="../mod/directives.html">지시어들</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">용어</a> | <a href="../sitemap.html">사이트맵</a></p>
-<p class="apache">Apache HTTP Server Version 2.1</p>
+<p class="apache">Apache HTTP Server Version 2.0</p>
 <img alt="" src="../images/feather.gif" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentation</a> &gt; <a href="../">Version 2.1</a> &gt; <a href="./">FAQ</a></div><div id="page-content"><div id="preamble"><h1>지원 - 자주 물어보는 질문 (FAQ)</h1>
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentation</a> &gt; <a href="../">Version 2.0</a> &gt; <a href="./">FAQ</a></div><div id="page-content"><div id="preamble"><h1>지원 - 자주 물어보는 질문 (FAQ)</h1>
 <div class="toplang">
 <p><span>가능한 언어: </span><a href="../en/faq/support.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../ko/faq/support.html" title="Korean">&nbsp;ko&nbsp;</a></p>
@@ -49,7 +49,7 @@
       <code>/usr/local/apache2/logs/error_log</code>이지만,
       정확한 위치는 설정파일의 <code class="directive"><a href="../mod/core.html#errorlog">ErrorLog</a></code> 지시어를 참고하라.</dd>
 
-      <dt><a href="http://httpd.apache.org/docs-2.1/faq/">FAQ</a>를
+      <dt><a href="http://httpd.apache.org/docs-2.0/faq/">FAQ</a>를
       확인하라!</dt>
       <dd>아파치 웹사이트에서 항상 아파치 FAQ 최신판을 볼 수
       있다.</dd>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="EUC-KR" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ko.xsl"?>
-<!-- English Revision: 1.9 -->
+<!-- English Revision: 1.3.2.6 -->
 
 <!--
  Copyright 2004 The Apache Software Foundation
@@ -425,13 +425,13 @@
       </tr>
 
       <tr>
-        <td><code>mod_log_config</code></td>
+        <td><module>mod_log_config</module></td>
         <td class="centered">+</td>
         <td></td>
       </tr>
 
       <tr>
-        <td><module>mod_log_referer</module></td>
+        <td><code>mod_log_referer</code></td>
         <td class="centered">+</td>
         <td></td>
       </tr>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="EUC-KR" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ko.xsl"?>
-<!-- English Revision: 1.12.2.4 (outdated: 1.12.2.9) -->
+<!-- English Revision: 1.12.2.9 -->
 
 <!--
  Copyright 2003-2004 The Apache Software Foundation
@@ -35,12 +35,14 @@
 <seealso><a href="../filter.html">필터</a></seealso>
 
 <section id="recommended"><title>권장하는 설정</title>
-    <p>급한 사람을 위한 견본 설정이다. 그러나 시간을 가지고
-    아래 자세한 설명을 읽길 바란다!</p>
+    <p>급한 사람을 위한 견본 설정이다.</p>
 
     <example><title>일부 type만 압축</title>
       AddOutputFilterByType DEFLATE text/html text/plain text/xml
     </example>
+
+    <p>아래 설정은 요약하였지만 그래도 복잡하다. 설정을 완전히
+    이해한 후 사용하라.</p>
 
     <example><title>이미지를 제외한 모든 것을 압축</title>
       &lt;Location /&gt;<br />
@@ -55,7 +57,12 @@
         BrowserMatch ^Mozilla/4\.0[678] no-gzip<br />
         <br />
         # MSIE은 Netscape라고 자신을 알리지만, 문제가 없다<br />
-        BrowserMatch \bMSIE             !no-gzip !gzip-only-text/html<br />
+        # BrowserMatch \bMSIE             !no-gzip !gzip-only-text/html<br />
+        <br />
+        # 주의: 아파치 2.0.48까지 mod_setenvif의 버그때문에<br />
+        # 위의 정규표현식은 동작하지 않는다. 원하는 효과를<br />
+        # 얻기위해 다음과 같이 수정하여 사용한다:<br />
+        BrowserMatch \bMSI[E]           !no-gzip !gzip-only-text/html<br />
         <br />
         # 이미지를 압축하지 않는다<br />
         SetEnvIfNoCase Request_URI \<br />
@@ -135,12 +142,12 @@
     </section>
 
     <section id="input"><title>입력 압축풀기</title>
-      <p><module>mod_deflate</module> 모듈은 요청의 gzip 압축된
+      <p><module>mod_deflate</module> 모듈은 gzip으로 압축된 요청
       내용을 푸는 필터도 제공한다. 이 기능을 사용하려면 다음과
       같이 <directive module="core">SetInputFilter</directive>나
       <directive module="mod_mime">AddInputFilter</directive>를
       사용하여 입력필터순서에 <code>DEFLATE</code> 필터를
-      추가해야한다:</p>
+      추가한다.</p>
 
       <example>
         &lt;Location /dav-area&gt;<br />
@@ -187,7 +194,7 @@
     <p>요청 헤더외의 다른 정보에 (<em>예를 들어</em>, HTTP 버전)
     따라 압축 여부가 결정된다면, <code>Vary</code> 헤더값을
     <code>*</code>로 설정해야 한다. 그러면 표준을 따르는 프록시는
-    캐싱을 하지 않게 된다.</p>
+    캐쉬를 하지 않게 된다.</p>
 
     <example><title>예제</title>
       Header set Vary *
@@ -291,7 +298,7 @@
 
 <directivesynopsis>
 <name>DeflateCompressionLevel</name>
-<description>출력을 얼만큼 압축하는가</description>
+<description>출력을 어느정도 압축하는가</description>
 <syntax>DeflateCompressionLevel <var>value</var></syntax>
 <default>Zlib's default</default>
 <contextlist><context>server config</context><context>virtual host</context>

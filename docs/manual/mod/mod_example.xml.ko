@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="EUC-KR" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ko.xsl"?>
-<!-- English Revision: 1.8 -->
+<!-- English Revision: 1.2.2.5 -->
 
 <!--
  Copyright 2004 The Apache Software Foundation
@@ -28,7 +28,13 @@
 <identifier>example_module</identifier>
 
 <summary>
-    <p>아파치 배포본 <code>modules/experimental</code> 디렉토리에
+<note type="warning">
+      이 문서는 아파치 웹서버 2.0 버전에서 변경된 내용을 담고
+      있지 않다. 아직도 유효한 정보가 있지만, 주의해서 사용하길
+      바란다.
+</note>
+
+    <p>아파치 배포본 <code>src/modules/example 디렉토리</code>에
     있는 파일들은 아파치 API를 사용하여 모듈을 작성하려는 사람들을
     돕기위한 예제다.</p>
 
@@ -48,54 +54,40 @@
 
     <ol>
       <li>
-        <code>--enable-example</code> 옵션과 함께
-        <code>configure</code>를 실행한다.</li>
+        <code>src/Configuration</code> 파일 아래 부분에 있는
+        "AddModule modules/example/mod_example" 줄의 주석처리를
+        없앤다. 이런 줄이 없다면, 다음과 같은 줄을 추가한다.
+<example>
+     AddModule modules/example/mod_example.o
+</example>
+      </li>
 
-      <li>서버를 컴파일한다 ("<code>make</code>"를 실행한다).</li>
+      <li><code>src/Configure</code> 스크립트를 실행한다
+      ("<code>cd&nbsp;src;&nbsp;./Configure</code>"). 그러면
+      서버 자체 Makefile을 만들고, 하위디렉토리에 있는 요청한
+      추가 모듈을 <code>src/modules/Makefile</code>에 추가한다.</li>
+
+      <li>서버를 컴파일한다 (<code>src</code> 디렉토리에 있는
+      "<code>make</code>"를 실행한다).</li>
     </ol>
 
     <p>자신이 만든 모듈을 추가하려면:</p>
 
     <ol type="A">
-      <li><code>cp modules/experimental/mod_example.c
-      modules/new_module/<em>mod_myexample.c</em></code></li>
+      <li><code>mkdir src/modules/<em>mymodule</em></code></li>
 
-      <li>파일을 수정한다.</li>
+      <li><code>cp src/modules/example/*
+      src/modules/<em>mymodule</em></code></li>
 
-      <li><code>modules/new_module/config.m4</code> 파일을 만든다.
-        <ol>
-          <li><code>APACHE_MODPATH_INIT(new_module)</code>을
-            추가한다.</li>
-          <li><code>modules/experimental/config.m4</code> 파일에서
-            "example"이 있는 APACHE_MODULE 줄을 복사해온다.</li>
-          <li>첫번째 아규먼트 "example"을 <em>myexample</em>로
-            변경한다.</li>
-          <li>두번째 아규먼트 자리에 자신이 만든 모듈에 대한
-            간단한 설명을 적는다. <code>configure --help</code>를
-            실행하면 여기에 기록한 설명을 보여준다.</li>
-          <li>모듈을 컴파일할때 특별한 C 컴파일러 옵션, 링커
-            옵션, 라이브러리가 필요하면 각각 CFLAGS, LDFLAGS,
-            LIBS에 추가한다. modules 디렉토리에 있는 다른
-            <code>config.m4</code> 파일들을 참고하라.</li>
-          <li><code>APACHE_MODPATH_FINISH</code>를 추가한다.</li>
-        </ol>
-      </li>
+      <li>새로 만든 디렉토리에 있는 파일을 수정한다.</li>
 
-      <li><code>module/new_module/Makefile.in</code> 파일을
-      만든다. 모듈을 컴파일하는데 특별한 명령어가 필요없다면,
-      파일에 <code>include $(top_srcdir)/build/special.mk</code>만
-      있어도 된다.</li>
-
-      <li>최상위 디렉토리에서 ./buildconf 를 실행한다.</li>
-
-      <li>--enable-myexample 옵션을 사용하여 서버를 컴파일한다</li>
-
+      <li>적절히 수정하여 위의 [1]에서 [3]까지 과정을 진행한다.</li>
     </ol>
 </section>
 
 <section id="using"><title><code>mod_example</code> 모듈 사용하기</title>
 
-    <p>example 모듈을 사용하려면 <code>httpd.conf</code> 파일에
+    <p>example 모듈을 사용하려면 <code>srm.conf</code> 파일에
     다음과 같은 설정을 추가하라:</p>
 <example>
    &lt;Location /example-info&gt;<br />

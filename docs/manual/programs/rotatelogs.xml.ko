@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='EUC-KR' ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ko.xsl"?>
-<!-- English Revision: 1.7 (outdated: 1.8) -->
+<!-- English Revision: 1.1.2.7 -->
 
 <!--
  Copyright 2004 The Apache Software Foundation
@@ -44,7 +44,14 @@
 
      <p>이 설정은 로그파일 크기가 5 메가바이트가 될때마다
      순환한다.</p>
-	 
+   
+<example>
+     ErrorLog "|bin/rotatelogs /var/logs/errorlog.%Y-%m-%d-%H_%M_%S 5M"
+</example>
+     <p>이 설정은 오류로그 파일 크기가 5 메가바이트가 될때마다
+     <code>errorlog.YYYY-mm-dd-HH_MM_SS</code>와 같은 파일을
+     만들어서 오류로그 파일을 순환한다.</p>
+
 </summary>
 
 <section id="synopsis"><title>개요</title>

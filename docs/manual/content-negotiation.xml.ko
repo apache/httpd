@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='EUC-KR' ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.ko.xsl"?>
-<!-- English Revision: 1.1.2.5 (outdated: 1.1.2.15) -->
+<!-- English Revision: 1.1.2.15 -->
 
 <!--
  Copyright 2003-2004 The Apache Software Foundation
@@ -63,10 +63,13 @@
 </example>
 
     <p>아파치는 HTTP/1.1 규약에 정의된 '서버 주도(server driven)'
-    내용협상을 지원한다. 아파치는 Accept, Accept-Language,
-    Accept-Charset, Accept-Encoding 요청 헤더를 모두 지원한다.
+    내용협상을 지원한다. 아파치는 <code>Accept</code>,
+    <code>Accept-Language</code>, <code>Accept-Charset</code>,
+    <code>Accept-Encoding</code> 요청 헤더를 모두 지원한다.
     또, 아파치는 RFC 2295와 RFC 2296에 정의된 실험적인 내용협상인
-    '자연스러운(transparent)' 요청 헤더도 지원한다.</p>
+    '자연스러운(transparent)' 요청 헤더도 지원한다. 그러나 이
+    RFC에 정의된 '기능 협상(feature negotiation)'은 지원하지
+    않는다.</p>
 
     <p><strong>자원(resource)</strong>은 (RFC 2396) URI로 구별하는
     개념적인 존재다. 아파치와 같은 웹서버는 자원의
@@ -96,11 +99,12 @@
    <section id="type-map"><title>type-map 파일 사용하기</title>
 
     <p>type map은 <code>type-map</code>이란 핸들러와 연결된
-    (혹은 이전 아파치 설정과 호환을 위해 mime type이
+    (혹은 이전 아파치 설정과 호환을 위해 MIME type이
     <code>application/x-type-map</code>인) 문서다. 이 기능을
     사용하려면 설정에서 <code>type-map</code> 핸들러에 대한
     파일 확장자를 지정해야 한다. 서버 설정파일에 다음과 같이
     설정하는 것이 좋다.</p>
+
 <example>AddHandler type-map .var</example>
 
     <p>Type map 파일은 해당하는 자원과 이름이 같아야 하고,
@@ -125,7 +129,7 @@
 </example>
     <p>typemap 파일이 파일명 확장자 보다, 심지어 Multiviews를
     사용하여도, 우선권을 가짐을 주의하라. 변형이 서로 다른 품질을
-    가진다면, 다음과 같이 (jpeg, gif, ASCII-art에 해당하는)
+    가진다면, 다음과 같이 (JPEG, GIF, ASCII-art에 해당하는)
     media type에 "qs" 파라미터로 품질(source quality)을 표시할
     수 있다:</p>
 
@@ -146,9 +150,9 @@
     절대 선택되지 않음을 주의하라. 'qs' 값이 없는 변형은 1.0으로
     취급된다. qs 값은 클라이언트의 능력과는 관계없이 다른 변형들과
     비교하여 그 변형의 상대적인 '품질'을 나타낸다. 예를 들어,
-    사진을 나타내려는 경우 jpeg 파일이 ascii 파일보다는 항상
-    높은 품질을 가진다. 그러나 자원이 원래 ascii art였다면
-    ascii 표현이 jpeg 표현보다 더 높은 품질을 가질 수 있다.
+    사진을 나타내려는 경우 JPEG 파일이 ASCII 파일보다는 항상
+    높은 품질을 가진다. 그러나 자원이 원래 ASCII art였다면
+    ASCII 표현이 JPEG 표현보다 더 높은 품질을 가질 수 있다.
     그러므로 어떤 변형의 qs 값은 표현하려는 자원의 성질에
     따라 다르다.</p>
 
@@ -226,6 +230,7 @@
 <section id="dimensions"><title>협상의 범위</title>
 
     <table>
+      <columnspec><column width=".15"/><column width=".85"/></columnspec>
       <tr valign="top">
         <th>범위</th>
 
@@ -235,32 +240,32 @@
       <tr valign="top">
         <td>Media Type</td>
 
-        <td>브라우저는 Accept 헤더로 선호를 나타낸다. 각 항목은
-        품질계수를 가질 수 있다. 변형의 설명도 품질계수를 ("qs"
-        파라미터) 가질 수 있다.</td>
+        <td>브라우저는 <code>Accept</code> 헤더로 선호를 나타낸다.
+        각 항목은 품질계수를 가질 수 있다. 변형의 설명도 품질계수를
+        ("qs" 파라미터) 가질 수 있다.</td>
       </tr>
 
       <tr valign="top">
         <td>Language</td>
 
-        <td>브라우저는 Accept-Language 헤더로 선호를 나타낸다.
-        각 항목은 품질계수를 가질 수 있다. 변형은 여러 언어를
-        가질 (혹은 아무 언어도 없을) 수 있다.</td>
+        <td>브라우저는 <code>Accept-Language</code> 헤더로 선호를
+        나타낸다. 각 항목은 품질계수를 가질 수 있다. 변형은
+        여러 언어를 가질 (혹은 아무 언어도 없을) 수 있다.</td>
       </tr>
 
       <tr valign="top">
         <td>Encoding</td>
 
-        <td>브라우저는 Accept-Encoding 헤더로 선호를 나타낸다.
-        각 항목은 품질계수를 가질 수 있다.</td>
+        <td>브라우저는 <code>Accept-Encoding</code> 헤더로 선호를
+        나타낸다. 각 항목은 품질계수를 가질 수 있다.</td>
       </tr>
 
       <tr valign="top">
         <td>Charset</td>
 
-        <td>브라우저는 Accept-Charset 헤더로 선호를 나타낸다.
-        각 항목은 품질계수를 가질 수 있다. 변형은 media type의
-        파라미터로 문자집합을 나타낼 수 있다.</td>
+        <td>브라우저는 <code>Accept-Charset</code> 헤더로 선호를
+        나타낸다. 각 항목은 품질계수를 가질 수 있다. 변형은
+        media type의 파라미터로 문자집합을 나타낼 수 있다.</td>
       </tr>
     </table>
 </section>
@@ -285,25 +290,27 @@
         다음 검사를 진행한다.
 
         <ol>
-          <li>Accept 헤더의 품질계수와 변형의 media type에 대한
-          품질값을 곱하여 가장 높은 값을 가진 변형을 선택한다.</li>
+          <li><code>Accept</code> 헤더의 품질계수와 변형의
+          media type에 대한 품질값을 곱하여 가장 높은 값을
+          가진 변형을 선택한다.</li>
 
           <li>가장 높은 언어(language) 품질계수를 가진 변형을
           선택한다.</li>
 
-          <li>Accept-Language 헤더에 (있다면) 나온 언어의 순서
-          혹은 <code>LanguagePriority</code> 지시어에 (있다면)
-          나온 언어의 순서를 가지고 가장 적합한 언어를 가진
-          변형을 선택한다.</li>
+          <li><code>Accept-Language</code> 헤더에 (있다면)
+          나온 언어의 순서 혹은 <code>LanguagePriority</code>
+          지시어에 (있다면) 나온 언어의 순서를 가지고 가장
+          적합한 언어를 가진 변형을 선택한다.</li>
 
           <li>가장 높은 (text/html media type의 버전을 나타내는)
           'level' media 파라미터를 가진 변형을 선택한다.</li>
 
-          <li>Accept-Charset 헤더를 가지고 가장 적합한 charset
-          media 파라미터를 가진 변형을 찾는다. 헤더가 없다면
-          ISO-8859-1 문자집합을 가장 선호한다. <code>text/*</code>
-          media type을 가지지만 명시적으로 특정 문자집합과
-          연결되지않은 변형은 ISO-8859-1로 가정한다.</li>
+          <li><code>Accept-Charset</code> 헤더를 가지고 가장
+          적합한 charset media 파라미터를 가진 변형을 찾는다.
+          헤더가 없다면 ISO-8859-1 문자집합을 가장 선호한다.
+          <code>text/*</code> media type을 가지지만 명시적으로
+          특정 문자집합과 연결되지않은 변형은 ISO-8859-1로
+          가정한다.</li>
 
           <li>ISO-8859-1이 <em>아닌</em> charset media 파라미터를
           가진 변형들을 선택한다. 그런 변형이 없다면, 대신 모든
@@ -325,15 +332,15 @@
       </li>
 
       <li>이제 알고리즘이 '최적의' 변형을 선택했다. 이것을 응답으로
-      보낸다. HTTP 응답 헤더 Vary는 협상의 범위를 나타내게 된다.
-      (브라우저와 캐쉬는 자원을 캐쉬할때 이 정보를 사용할 수
-      있다.) 끝.</li>
+      보낸다. HTTP 응답 헤더 <code>Vary</code>는 협상의 범위를
+      나타내게 된다. (브라우저와 캐쉬는 자원을 캐쉬할때 이 정보를
+      사용할 수 있다.) 끝.</li>
 
       <li>이 단계에 도달했다면 (모두 브라우저가 받지못하기 때문에)
       어떤 변형도 선택이 안된 경우다. ("No acceptable
       representation"를 뜻하는) 상태 406과 내용으로 사용가능한
       변형의 목록을 담은 HTML 문서를 응답을 보낸다. 또, HTML
-      Vary 헤더는 변형의 범위를 나타낸다.</li>
+      <code>Vary</code> 헤더는 변형의 범위를 나타낸다.</li>
     </ol>
 </section>
 </section>
@@ -344,14 +351,14 @@
     품질계수를 변경한다. 이유는 완전하고 정확한 정보를 보내지않는
     브라우저에게 (알고리즘의) 더 나은 결과를 보내기 위해서다.
     널리 쓰이는 브라우저중 일부는 자주 잘못된 변형을 선택하도록
-    Accept 헤더를 보낸다. 브라우저가 완전하고 올바른 정보를
-    보낸다면, 조작을 하지않는다.</p>
+    <code>Accept</code> 헤더를 보낸다. 브라우저가 완전하고 올바른
+    정보를 보낸다면, 조작을 하지않는다.</p>
 
 <section id="wildcards"><title>Media Type과 와일드카드</title>
 
-    <p>Accept: 요청 헤더는 media type에 대한 선호를 나타낸다.
-    또, *는 어떤 문자열이라도 가능하기때문에 "image/*"나 "*/*"
-    같이 '와일드카드' media type을 사용할 수도 있다. 그래서
+    <p><code>Accept:</code> 요청 헤더는 media type에 대한 선호를
+    나타낸다. 또, *는 어떤 문자열이라도 가능하기때문에 "image/*"나
+    "*/*" 같이 '와일드카드' media type을 사용할 수도 있다. 그래서
     다음과 같은 요청은:</p>
 
 <example>Accept: image/*, */*</example>
@@ -375,12 +382,13 @@
     직접 열거한 type에 맞는 변형이 없는 경우에만 다른 type들이
     사용된다.</p>
 
-    <p>Accept: 헤더에 q 계수가 전혀 <em>없고</em> "*/*"가 있다면,
-    아파치는 바람직한 행동을 위해 q 값으로 0.01을 지정한다.
-    또, "type/*" 형태의 와일드카드에는 ("*/*"보다는 더 선호하도록)
-    0.02를 지정한다. Accept: 헤더에서 q 계수를 가지는 media type이
-    있다면 이런 특별한 값을 추가하지 <em>않는다</em>. 그래서
-    명시적인 정보를 보내는 브라우저의 요청은 요청한데로 처리한다.</p>
+    <p><code>Accept:</code> 헤더에 q 계수가 전혀 <em>없고</em>
+    "*/*"가 있다면, 아파치는 바람직한 행동을 위해 q 값으로 0.01을
+    지정한다. 또, "type/*" 형태의 와일드카드에는 ("*/*"보다는
+    더 선호하도록) 0.02를 지정한다. <code>Accept:</code> 헤더에서
+    q 계수를 가지는 media type이 있다면 이런 특별한 값을 추가하지
+    <em>않는다</em>. 그래서 명시적인 정보를 보내는 브라우저의
+    요청은 요청한데로 처리한다.</p>
 </section>
 
 <section id="exceptions"><title>언어(language) 협상의 예외</title>
@@ -389,12 +397,12 @@
     협상 알고리즘에 새로 예외를 몇개 추가했다.</p>
 
     <p>클라이언트가 서버에 페이지를 요청했을때 서버가 브라우저가
-    보낸 Accept-language에 맞는 페이지를 단 한개만 찾으면 문제가
-    없지만, 그러지 않은 경우 서버는 클라이언트에게 "No Acceptable
-    Variant"나 "Multiple Choices" 응답을 보낸다. 이런 오류문을
-    피하기위해 이 경우 Accept-language를 무시하고 클라이언트의
-    요청에 명확히 맞지는 않지만 문서를 보내도록 아파치를 설정할
-    수 있다. <directive
+    보낸 <code>Accept-language</code>에 맞는 페이지를 단 한개만
+    찾으면 문제가 없지만, 그러지 않은 경우 서버는 클라이언트에게
+    "No Acceptable Variant"나 "Multiple Choices" 응답을 보낸다.
+    이런 오류문을 피하기위해 이 경우 <code>Accept-language</code>를
+    무시하고 클라이언트의 요청에 명확히 맞지는 않지만 문서를
+    보내도록 아파치를 설정할 수 있다. <directive
     module="mod_negotiation">ForceLanguagePriority</directive>
     지시어는 서버가 이런 오류문중 하나 혹은 둘다를 무시하고
     <directive module="mod_negotiation">LanguagePriority</directive>
@@ -405,7 +413,7 @@
     <code>en-GB</code> 언어로 문서를 요청한 경우, HTTP/1.1 표준에
     따르면 서버는 <code>en</code>으로만 표시된 문서를 일반적으로
     선택하지 못한다. (그래서 영국영어를 이해하는 독자가 일반적인
-    영어도 이해할 수 있으므로 Accept-Language 헤더에
+    영어도 이해할 수 있으므로 <code>Accept-Language</code> 헤더에
     <code>en-GB</code>만 포함하고 <code>en</code>을 포함하지않으면
     거의 확실히 잘못된 설정임을 유의하라. 불행히도 현재 많은
     클라이언트들은 이런 식으로 기본설정되있다.) 다른 언어를
@@ -419,6 +427,19 @@
     문서가 있다면, "fr" 문서가 선택됨을 주의하라. 이는 HTTP/1.1
     표준을 지키고, 올바로 설정된 클라이언트와 효율적으로
     동작하기위함이다.</p>
+
+    <p>사용자가 선호하는 언어를 알아내기위한 (쿠키나 특별한
+    URL-경로 같은) 고급 기법을 지원하기위해 아파치 2.0.47부터
+    <module>mod_negotiation</module>은 <code>prefer-language</code>라는
+    <a href="env.html">환경변수</a>를 인식한다. 이 환경변수가
+    존재하고 적절한 언어태그를 포함한다면,
+    <module>mod_negotiation</module>은 해당하는 변형을 선택하려고
+    시도한다. 그런 변형이 없다면 일반적인 협상과정을 시작한다.</p>
+
+    <example><title>예제</title>
+      SetEnvIf Cookie "language=en" prefer-language=en<br />
+      SetEnvIf Cookie "language=fr" prefer-language=fr
+   </example>
 </section>
 </section>
 
@@ -428,9 +449,10 @@
 확장한다. 변형 목록의 새로운 <code>{encoding ..}</code>는 특정
 content-encoding을 가진 변형만을 지칭한다. RVSA/1.0 알고리즘은
 (RFC 2296) 목록에서 인코딩된 변형을 인식할 수 있고, 인코딩이
-Accept-Encoding 요청 헤더에 맞는 경우 인코딩된 변형들도 후보로
-사용하도록 확장되었다. RVSA/1.0 구현은 최적의 변형을 찾기 전에
-계산된 품질계수를 소수점 5자리에서 반올림하지 않는다.</p>
+<code>Accept-Encoding</code> 요청 헤더에 맞는 경우 인코딩된
+변형들도 후보로 사용하도록 확장되었다. RVSA/1.0 구현은 최적의
+변형을 찾기 전에 계산된 품질계수를 소수점 5자리에서 반올림하지
+않는다.</p>
 </section>
 
 <section id="naming"><title>하이퍼링크와 이름규칙에 대하여</title>
@@ -461,6 +483,8 @@ Accept-Encoding 요청 헤더에 맞는 경우 인코딩된 변형들도 후보로
     하이퍼링크를 보인다:</p>
 
     <table border="1" cellpadding="8" cellspacing="0">
+      <columnspec><column width=".2"/><column width=".2"/>
+        <column width=".2"/></columnspec>
       <tr>
         <th>파일명</th>
 

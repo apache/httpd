@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='EUC-KR' ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ko.xsl"?>
-<!-- English Revision: 1.5 -->
+<!-- English Revision: 1.1.2.4 -->
 
 <!--
  Copyright 2004 The Apache Software Foundation
@@ -34,8 +34,8 @@
      다른 사용자가 쓰기권한을 가지면 안된다.</p>
 
      <p>suexec의 개념과 보안모델에 대한 정보는 suexec 문서를
-     (<a href="http://httpd.apache.org/docs-2.1/suexec.html"
-     >http://httpd.apache.org/docs-2.1/suexec.html</a>) 참고하라.</p>
+     (<a href="http://httpd.apache.org/docs-2.0/suexec.html"
+     >http://httpd.apache.org/docs-2.0/suexec.html</a>) 참고하라.</p>
 </summary>
 
 <section id="synopsis"><title>개요</title>

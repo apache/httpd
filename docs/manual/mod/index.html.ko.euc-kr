@@ -96,12 +96,12 @@ index 파일을 서비스한다</dd>
 <dt><a href="mod_echo.html" id="E" name="E">mod_echo</a></dt><dd>프로토콜 모듈을 설명하기위한 간단한 echo 서버</dd>
 <dt><a href="mod_env.html">mod_env</a></dt><dd>CGI 스크립트나 SSI 페이지에 전달할 환경변수를
 수정한다</dd>
-<dt><a href="mod_example.html">mod_example</a></dt><dd>Illustrates the Apache module API</dd>
-<dt><a href="mod_expires.html">mod_expires</a></dt><dd>Generation of <code>Expires</code> HTTP headers according to
-user-specified criteria</dd>
-<dt><a href="mod_ext_filter.html">mod_ext_filter</a></dt><dd>Pass the response body through an external program before
-delivery to the client</dd>
-<dt><a href="mod_file_cache.html" id="F" name="F">mod_file_cache</a></dt><dd>Caches a static list of files in memory</dd>
+<dt><a href="mod_example.html">mod_example</a></dt><dd>아파치 모듈 API를 설명한다</dd>
+<dt><a href="mod_expires.html">mod_expires</a></dt><dd>사용자가 지정한 기준에 따라 <code>Expires</code>
+HTTP 헤더를 생성한다</dd>
+<dt><a href="mod_ext_filter.html">mod_ext_filter</a></dt><dd>응답 내용을 외부 프로그램으로 처리한 후 클라이언트로
+보낸다</dd>
+<dt><a href="mod_file_cache.html" id="F" name="F">mod_file_cache</a></dt><dd>메모리에 정적 파일들을 캐쉬</dd>
 <dt><a href="mod_headers.html" id="H" name="H">mod_headers</a></dt><dd>Customization of HTTP request and response
 headers</dd>
 <dt><a href="mod_imap.html" id="I" name="I">mod_imap</a></dt><dd>Server-side imagemap processing</dd>
@@ -113,7 +113,7 @@ configuration</dd>
 by other LDAP modules</dd>
 <dt><a href="mod_log_config.html">mod_log_config</a></dt><dd>Logging of the requests made to the server</dd>
 <dt><a href="mod_log_forensic.html">mod_log_forensic</a></dt><dd>Forensic Logging of the requests made to the server</dd>
-<dt><a href="mod_logio.html">mod_logio</a></dt><dd>Logging of input and output bytes per request</dd>
+<dt><a href="mod_logio.html">mod_logio</a></dt><dd>요청당 입출력 바이트수를 기록</dd>
 <dt><a href="mod_mem_cache.html" id="M" name="M">mod_mem_cache</a></dt><dd>Content cache keyed to URIs</dd>
 <dt><a href="mod_mime.html">mod_mime</a></dt><dd>Associates the requested filename's extensions
     with the file's behavior (handlers and filters)
@@ -132,22 +132,18 @@ by other LDAP modules</dd>
 <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code></dd>
 <dt><a href="mod_rewrite.html" id="R" name="R">mod_rewrite</a></dt><dd>Provides a rule-based rewriting engine to rewrite requested
 URLs on the fly</dd>
-<dt><a href="mod_setenvif.html" id="S" name="S">mod_setenvif</a></dt><dd>Allows the setting of environment variables based
-on characteristics of the request</dd>
-<dt><a href="mod_so.html">mod_so</a></dt><dd>Loading of executable code and
-modules into the server at start-up or restart time</dd>
-<dt><a href="mod_speling.html">mod_speling</a></dt><dd>Attempts to correct mistaken URLs that
-users might have entered by ignoring capitalization and by
-allowing up to one misspelling</dd>
+<dt><a href="mod_setenvif.html" id="S" name="S">mod_setenvif</a></dt><dd>요청의 성격에 따라 환경변수 설정을 변경한다</dd>
+<dt><a href="mod_so.html">mod_so</a></dt><dd>시작할때 혹은 재시작할때 실행가능한 코드와 모듈을
+서버로 읽어들인다</dd>
+<dt><a href="mod_speling.html">mod_speling</a></dt><dd>사용자가 대소문자를 잘못 사용하거나 맞춤법이 틀리는
+것을 한번까지 허용하여 잘못된 URL을 고치려고 시도한다</dd>
 <dt><a href="mod_ssl.html">mod_ssl</a></dt><dd>Strong cryptography using the Secure Sockets
 Layer (SSL) and Transport Layer Security (TLS) protocols</dd>
-<dt><a href="mod_status.html">mod_status</a></dt><dd>Provides information on server activity and
-performance</dd>
-<dt><a href="mod_suexec.html">mod_suexec</a></dt><dd>Allows CGI scripts to run as a specified user
-and Group</dd>
-<dt><a href="mod_unique_id.html" id="U" name="U">mod_unique_id</a></dt><dd>Provides an environment variable with a unique
-identifier for each request</dd>
-<dt><a href="mod_userdir.html">mod_userdir</a></dt><dd>User-specific directories</dd>
+<dt><a href="mod_status.html">mod_status</a></dt><dd>서버 활동과 성능에 대한 정보를 제공한다</dd>
+<dt><a href="mod_suexec.html">mod_suexec</a></dt><dd>CGI 스크립트를 특정 사용자와 그룹 권한으로 실행한다</dd>
+<dt><a href="mod_unique_id.html" id="U" name="U">mod_unique_id</a></dt><dd>각 요청마다 유일한 식별자를 가지는 환경변수를
+제공한다</dd>
+<dt><a href="mod_userdir.html">mod_userdir</a></dt><dd>사용자별 디렉토리</dd>
 <dt><a href="mod_usertrack.html">mod_usertrack</a></dt><dd>
 <em>Clickstream</em> logging of user activity on a site
 </dd>

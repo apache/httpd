@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="EUC-KR" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ko.xsl"?>
-<!-- English Revision: 1.12.2.3 (outdated: 1.12.2.9) -->
+<!-- English Revision: 1.12.2.9 -->
 
 <!--
  Copyright 2003-2004 The Apache Software Foundation
@@ -468,13 +468,13 @@
 <usage>
     <p><directive>IndexIgnore</directive> 지시어는 디렉토리
     목록에서 감출 파일목록을 추가한다. <var>File</var>에는 감출
-    파일의 확장자, 파일명 일부, 화일드카드 표현, 전체 파일명을
+    (쉘에서 사용하는) 화일드카드 표현이나 전체 파일명을
     사용할 수 있다. 여러 IndexIgnore 지시어를 사용하면 기존의
     감출 파일목록을 대체하지않고 목록에 지정한 파일들을 추가한다.
     기본적으로 목록은 <code>.</code>을 (현재 디렉토리) 포함한다.</p>
 
     <example>
-      IndexIgnore README .htaccess *~
+      IndexIgnore README .htaccess *.bak *~
     </example>
 </usage>
 </directivesynopsis>
@@ -729,6 +729,14 @@
         foo-1.04
       </example>
       </dd>
+
+      <dt><a name="indexoptions.xhtml"
+               id="indexoptions.xhtml">XHTML</a>
+      (<em>아파치 2.0.49 이후</em>)</dt>
+
+      <dd><code>XHTML</code> 키워드를 사용하면
+      <module>mod_autoindex</module>는 HTML 3.2 대신 XHTML 1.0
+      코드를 생성한다.</dd>
     </dl>
 
    <!--

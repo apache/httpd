@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="EUC-KR" ?>
 <!DOCTYPE sitemap SYSTEM "./style/sitemap.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.ko.xsl"?>
-<!-- English Revision: 1.12.2.12 (outdated: 1.12.2.19) -->
+<!-- English Revision: 1.12.2.19 -->
 
 <!--
  Copyright 2003-2004 The Apache Software Foundation
@@ -76,8 +76,8 @@
 <category id="faq">
 <title>아파치 서버에 대해 자주 물어보는 질문</title>
 <page href="faq/">개요</page>
-<page separate="yes" href="faq/all_in_one.html">모두 한 페이지에</page>
 <page href="faq/support.html">지원</page>
+<page href="faq/error.html">오류문</page>
 </category>
 
 <category id="ssl">
@@ -121,6 +121,7 @@
 <page href="programs/ab.html">Manpage: ab</page>
 <page href="programs/apachectl.html">Manpage: apachectl</page>
 <page href="programs/apxs.html">Manpage: apxs</page>
+<page href="programs/configure.html">Manpage: configure</page>
 <page href="programs/dbmmanage.html">Manpage: dbmmanage</page>
 <page href="programs/htdigest.html">Manpage: htdigest</page>
 <page href="programs/htpasswd.html">Manpage: htpasswd</page>
@@ -139,13 +140,15 @@
 알려진 문제점</page>
 <page href="misc/descriptors.html">파일기술자와 아파치</page>
 <page href="cgi_path.html">CGI 환경에서 PATH_INFO의 변화</page>
+<page href="misc/relevant_standards.html">관련된 표준들</page>
 </category>
 
 <category id="modules">
 <title>아파치 모듈</title>
-<page href="mod/">모듈 목록</page>
-<page href="mod/directives.html">지시어 목록</page>
-<page href="mod/quickreference.html">지시어 빠른참조</page>
+<page href="mod/module-dict.html">아파치 모듈을 설명하는데 사용한
+용어정의</page>
+<page href="mod/directive-dict.html">아파치 지시어를 설명하는데
+사용한 용어정의</page>
 </category>
 
 <category id="developer">
@@ -161,14 +164,12 @@
 <page href="developer/filters.html">Apache 2.0의 필터 동작법</page>
 </category>
 
-<category id="descriptive">
-<title>설명 정보</title>
-<page href="mod/module-dict.html">아파치 모듈을 설명하는데 사용한
-용어정의</page>
-<page href="mod/directive-dict.html">아파치 지시어를 설명하는데
-사용한 용어정의</page>
+<category id="index">
+<title>용어와 색인</title>
 <page href="glossary.html">용어</page>
-<page>사이트맵 (이 문서)</page>
+<page href="mod/">모듈 목록</page>
+<page href="mod/directives.html">지시어 목록</page>
+<page href="mod/quickreference.html">지시어 빠른참조</page>
 </category>
 
 </sitemap>

@@ -12,11 +12,11 @@
 <link href="../images/favicon.ico" rel="shortcut icon" /></head>
 <body id="manual-page"><div id="page-header">
 <p class="menu"><a href="../mod/">모듈</a> | <a href="../mod/directives.html">지시어들</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">용어</a> | <a href="../sitemap.html">사이트맵</a></p>
-<p class="apache">Apache HTTP Server Version 2.1</p>
+<p class="apache">Apache HTTP Server Version 2.0</p>
 <img alt="" src="../images/feather.gif" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentation</a> &gt; <a href="../">Version 2.1</a> &gt; <a href="./">Platform Specific Notes</a></div><div id="page-content"><div id="preamble"><h1>Novell NetWare에서 아파치 사용하기</h1>
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentation</a> &gt; <a href="../">Version 2.0</a> &gt; <a href="./">Platform Specific Notes</a></div><div id="page-content"><div id="preamble"><h1>Novell NetWare에서 아파치 사용하기</h1>
 <div class="toplang">
 <p><span>가능한 언어: </span><a href="../en/platform/netware.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../ko/platform/netware.html" title="Korean">&nbsp;ko&nbsp;</a></p>
@@ -343,7 +343,7 @@
         이 지시어는 worker 쓰레드의 최대 개수를 제한한다. 권장하는
         기본값은 <code>ThreadsPerChild 250</code>이다.</p>
 
-        <p><code class="directive"><a href="../mod/mpm_common.html#threadstacksize">ThreadStackSize</a></code> -
+        <p><code class="directive"><a href="../mod/mpm_netware.html#threadstacksize">ThreadStackSize</a></code> -
         한 worker 쓰레드가 사용할 스택 크기를 지시한다. 권장하는
         기본값은 <code>ThreadStackSize 65536</code>이다.</p>
       </li>

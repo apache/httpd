@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="EUC-KR" ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.ko.xsl"?>
-<!-- English Revision: 1.2.2.4 (outdated: 1.2.2.8) -->
+<!-- English Revision: 1.2.2.8 -->
 
 <!--
  Copyright 2003-2004 The Apache Software Foundation
@@ -26,13 +26,13 @@
   <summary>
     <p>아파치가 특정 주소와 포트에서 서비스하도록 설정하기.</p>
   </summary>
-  
+
   <seealso><a href="vhosts/">가상호스트</a></seealso>
   <seealso><a href="dns-caveats.html">DNS 문제</a></seealso>
 
   <section id="overview">
     <title>개요</title>
-    
+
     <related>
       <modulelist>
         <module>core</module>
@@ -43,8 +43,8 @@
         <directive module="mpm_common">Listen</directive>
       </directivelist>
     </related>
-    
-    
+
+
     <p>아파치를 시작하면 아파치는 컴퓨터의 어떤 포트와 주소에
     연결하여, 들어오는 요청을 기다린다. 기본적으로 아파치는
     컴퓨터의 모든 주소에서 기다린다. 그러나 아파치가 특정 포트나

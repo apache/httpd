@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="EUC-KR"?>
-<!-- English revision: 1.6.2.3 -->
-<!DOCTYPE messages [ <!ENTITY nbsp "&#160;"> ]>
+<!DOCTYPE language [ <!ENTITY nbsp "&#160;"> ]>
+<!-- English Revision: 1.6.2.10 -->
 
 <!--
  Copyright 2003-2004 The Apache Software Foundation
@@ -31,13 +31,19 @@
         <settings>Korean</settings>
     </chm>
 
+    <!--
+    <man>
+        <charset>ISO-8859-1</charset>
+    </man>
+    -->
+
     <!-- Some strings might be used in other contexts, than stated in the -->
     <!-- comments...                                                      -->
     <messages>
         <!-- language link titles -->
         <message id="nativename">Korean</message>
 
-        <!-- Used for the moduleindex -->
+         <!-- Used for the moduleindex -->
         <message id="corefeatures">핵심 기능과 다중처리 모듈</message>
         <message id="othermodules">다른 모듈</message>
         <message id="obsoletemodules">이전 모듈</message>
@@ -116,7 +122,7 @@
         <message id="langavail">가능한 언어</message>
 
         <!-- not up to date -->
-        <message id="outofdate">This translation may be out of date. Check the
-            English version for recent changes.</message>
+        <message id="outofdate">이 문서는 최신판 번역이 아닙니다.
+            최근에 변경된 내용은 영어 문서를 참고하세요.</message>
     </messages>
 </language>

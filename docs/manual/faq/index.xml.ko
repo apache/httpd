@@ -3,7 +3,7 @@
     <!ENTITY categories SYSTEM "categories.xml.ko">
 ]>
 <?xml-stylesheet type="text/xsl" href="../style/manual.ko.xsl"?>
-<!-- English Revision: 1.4 -->
+<!-- English Revision: 1.1.2.4 -->
 
 <!--
  Copyright 2004 The Apache Software Foundation
@@ -28,8 +28,8 @@
 
 <summary>
     <p>FAQ 최신판은 아파치 웹사이트 &lt;<a
-    href="http://httpd.apache.org/docs-2.1/faq/"
-    >http://httpd.apache.org/docs-2.1/faq/</a>&gt;에서 볼 수
+    href="http://httpd.apache.org/docs-2.0/faq/"
+    >http://httpd.apache.org/docs-2.0/faq/</a>&gt;에서 볼 수
     있다. 또, 검색하고 출력하기 편하게 FAQ를 <a
     href="all_in_one.html">한 페이지로</a> 볼 수 있다.</p>
 

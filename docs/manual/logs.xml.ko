@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="EUC-KR" ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.ko.xsl"?>
-<!-- English Revision: 1.6.2.4 (outdated: 1.6.2.8) -->
+<!-- English Revision: 1.6.2.8 -->
 
 <!--
  Copyright 2003-2004 The Apache Software Foundation
@@ -32,7 +32,7 @@
 
   <section id="security">
     <title>보안 경고</title>
-    
+
     <p>누군가에게 아파치의 로그파일이 있는 디렉토리에 쓰기권한이
     있다면 (보통 root) 서버를 실행하는 uid를 거의 확실히 얻을
     수 있다. 이를 고려하지않고 로그가 저장된 디렉토리에 쓰기권한을
@@ -43,17 +43,17 @@
     기록된다. 그래서 악의가 있는 클라이언트가 로그파일에 제어문자를
     넣을 수 있으므로, 로그를 다룰때는 주의해야 한다.</p>
   </section>
-  
+
   <section id="errorlog">
     <title>오류 로그 (Error Log)</title>
-    
+
     <related>
       <directivelist>
         <directive module="core">ErrorLog</directive>
         <directive module="core">LogLevel</directive>
       </directivelist>
     </related>
-    
+
     <p><directive module="core">ErrorLog</directive> 지시어는
     가장 중요한 로그파일인 서버 오류 로그의 이름과 위치를 지정한다.
     아파치 웹서버는 이 파일에 진단정보와 요청을 처리하는 도중
@@ -66,17 +66,17 @@
     <code>error.log</code>) 파일에 기록된다. 유닉스 시스템에서
     서버는 오류를 <code>syslog</code>나 <a href="#piped">파이프를
     사용하여 다른 프로그램</a>으로 보낼 수도 있다.</p>
-    
+
     <p>오류 로그의 형식은 상대적으로 자유롭고 자세하다. 그러나
     대부분의 오류 로그 항목에 공통적으로 나오는 정보가 있다.
     예를 들어, 항목은 보통 다음과 같다.</p>
-    
+
     <example>
       [Wed Oct 11 14:32:52 2000] [error] [client 127.0.0.1]
       client denied by server configuration:
       /export/home/live/ap/htdocs/test
     </example>
-    
+
     <p>로그 항목에서 첫번째 항목은 날짜와 시간이다. 두번째
     항목은 보고하는 오류의 심각성을 나타낸다. <directive
     module="core">LogLevel</directive> 지시어로 오류 로그에
@@ -97,18 +97,18 @@
     상태코드가 403인 접근 로그 항목이 생긴다. 접근 로그는
     사용자정의할 수 있으므로 이 파일을 참고하여 오류 상황에
     대한 추가정보를 얻을 수 있다.</p>
-    
+
     <p>검사할때 어떤 문제가 생기는지 오류 로그를 계속 살펴보는
     것이 좋다. 유닉스 시스템에서 다음과 같이 한다:</p>
-    
+
     <example>
       tail -f error_log
     </example>
   </section>
-  
+
   <section id="accesslog">
     <title>접근 로그 (Access Log)</title>
-    
+
     <related>
       <modulelist>
         <module>mod_log_config</module>
@@ -120,7 +120,7 @@
         <directive module="mod_setenvif">SetEnvIf</directive>
       </directivelist>
     </related>
-    
+
     <p>서버 접근 로그는 서버가 처리하는 모든 요청을 기록한다.
     <directive module="mod_log_config">CustomLog</directive>
     지시어는 접근 로그의 위치와 내용을 지정한다. <directive
@@ -136,7 +136,7 @@
     href="http://dmoz.org/Computers/Software/Internet/Site_Management/Log_analysis/">Open Directory</a>나
     <a href="http://dir.yahoo.com/Computers_and_Internet/Software/Internet/World_Wide_Web/Servers/Log_Analysis_Tools/">Yahoo</a>를
     참고하라.</p>
-    
+
     <p>아파치 웹서버는 이전부터 mod_log_referer, mod_log_agent,
     <directive module="mod_log_config">CustomLog</directive>
     같은 모듈과 지시어를 사용하여 접근 로그를 다루었다. 지금은
@@ -149,17 +149,17 @@
     모든 내용을 알려면 <module>mod_log_config</module> <a
     href="mod/mod_log_config.html#formats">형식문자열</a>을
     참고하라.</p>
-    
+
     <section id="common">
       <title>Common 로그 형식</title>
-    
+
       <p>접근 로그의 전형적인 설정은 다음과 같다.</p>
 
       <example>
         LogFormat "%h %l %u %t \"%r\" %&gt;s %b" common<br />
          CustomLog logs/access_log common
       </example>
-    
+
       <p>그러면 지정한 로그 형식문자열을 <em>별명</em>
       <code>common</code>으로 정의한다. 형식문자열은 퍼센트
       지시어들로 구성되며, 각각은 어떤 정보를 기록할지 알린다.
@@ -173,7 +173,7 @@
       지시어는 정의한 <em>별명</em>을 사용하는 새로운 로그파일을
       만든다. 접근 로그의 파일명이 슬래쉬로 시작하지않으면
       <directive module="core">ServerRoot</directive>의 상대경로이다.</p>
- 
+
       <p>앞의 설정은 공통로그형식(Common Log Format, CLF)이라는
       형식으로 로그 항목을 기록한다. 여러 다른 웹서버들도 이런
       표준 형식으로 로그를 만들며, 여러 로그 분석 프로그램에서
@@ -183,9 +183,9 @@
         127.0.0.1 - frank [10/Oct/2000:13:55:36 -0700] "GET
         /apache_pb.gif HTTP/1.0" 200 2326
       </example>
-    
+
       <p>이제 로그 항목의 각 부분을 설명한다.</p>
-    
+
       <dl>
         <dt><code>127.0.0.1</code> (<code>%h</code>)</dt>
 
@@ -275,10 +275,10 @@
         <code>%B</code>를 사용한다.</dd>
       </dl>
     </section>
-    
+
     <section id="combined">
       <title>Combined 로그 형식</title>
-      
+
       <p>자주 사용되는 다른 형식문자열은 결합된로그형식(Combined
       Log Format)이다. 다음과 같이 사용한다.</p>
 
@@ -293,7 +293,7 @@
       <code>%{<em>header</em>}i</code>를 사용한다. 여기서
       <em>header</em> 자리에  HTTP 요청 헤더 이름이 나올 수
       있다. 이 형식의 접근 로그는 다음과 같다:</p>
-      
+
       <example>
         127.0.0.1 - frank [10/Oct/2000:13:55:36 -0700] "GET
         /apache_pb.gif HTTP/1.0" 200 2326
@@ -302,7 +302,7 @@
       </example>
 
       <p>추가된 항목은:</p>
-      
+
       <dl>
         <dt><code>"http://www.example.com/start.html"</code>
         (<code>\"%{Referer}i\"</code>)</dt>
@@ -319,10 +319,10 @@
         자신에 대해 알리는 식별정보이다.</dd>
       </dl>
     </section>
-    
+
     <section id="multiple">
       <title>여러 접근 로그</title>
-      
+
       <p>설정파일에 여러 <directive
       module="mod_log_config">CustomLog</directive> 지시어를
       사용하면 접근 로그가 여러개 만들어진다. 예를 들어, 다음
@@ -346,10 +346,10 @@
       module="mod_log_config">CustomLog</directive> 지시어에
       직접 로그 형식을 지정할 수 있다.</p>
     </section>
-    
+
     <section id="conditional">
       <title>조건부 로그</title>
-      
+
       <p>클라이언트 요청의 성격에 따라 해당 항목을 접근 로그에
       기록하지않고 싶을 때가 있다. <a href="env.html">환경변수</a>를
       사용하면 쉽게 해결된다. 먼저, 클라이언트가 특정 조건을
@@ -384,10 +384,10 @@
       제외하고 로그파일을 분석하는 것이 더 쉽다.</p>
     </section>
   </section>
-  
+
   <section id="rotation">
     <title>로그 순환 (Log Rotation)</title>
-    
+
     <p>조금 바쁜 서버조차도 로그파일에 저장되는 정보량은 매우
     많다. 접속 로그는 보통 만번 요청당 1MB 이상 증가한다. 결과적으로
     기존의 로그를 옮기거나 지우는 방법으로 로그를 주기적으로
@@ -416,10 +416,10 @@
     <p>로그를 순환하는 다른 방법은 다음 절에서 설명할 <a
     href="#piped">파이프 로그</a>를 사용하는 것이다.</p>
   </section>
-  
+
   <section id="piped">
     <title>로그를 파이프로 보내기</title>
-    
+
     <p>아파치 웹서버는 오류 로그와 접근 로그를 파일에 직접
     쓰지않고 파이프를 통해 다른 프로세스로 보낼 수 있다. 이
     기능을 사용하면 서버에 코드를 추가하지않고도 매우 유연하게
@@ -448,7 +448,7 @@
       CustomLog "|/usr/local/apache/bin/rotatelogs
       /var/log/access_log 86400" common
     </example>
-    
+
     <p>다른 사이트에 <a
     href="http://www.cronolog.org/">cronolog</a>라는 비슷하지만
     훨씬 더 유연한 로그 순환 프로그램이 있다.</p>
@@ -457,10 +457,10 @@
     나중에 처리하는 등의 더 간단한 방법이 가능한 경우 사용해서는
     안된다.</p>
   </section>
-  
+
   <section id="virtualhost">
     <title>가상호스트</title>
-    
+
     <p>많은 <a href="vhosts/">가상호스트</a>가 있는 서버를
     운영할때 여러가지 방법으로 로그파일을 다룰 수 있다. 먼저,
     호스트가 한개인 서버와 같이 로그를 사용할 수 있다. <directive
@@ -494,10 +494,10 @@
     기록한다. 나중에 <a href="programs/other.html">split-logfile</a>
     같은 프로그램으로 접근 로그를 가상호스별로 나눌 수 있다.</p>
   </section>
-  
+
   <section id="other">
     <title>다른 로그파일</title>
-    
+
     <related>
       <modulelist>
         <module>mod_cgi</module>
@@ -512,10 +512,10 @@
         <directive module="mod_cgi">ScriptLogLength</directive>
       </directivelist>
     </related>
-    
+
     <section id="pidfile">
       <title>PID 파일</title>
-    
+
       <p>아파치 웹서버는 시작할때 <code>logs/httpd.pid</code>
       파일에 부모 httpd 프로세스의 process id를 저장한다. 이
       파일명은 <directive module="mpm_common">PidFile</directive>
@@ -525,10 +525,10 @@
       정보는 <a href="stopping.html">중단과 재시작</a> 페이지를
       참고하라.</p>
     </section>
-    
+
     <section id="scriptlog">
       <title>스크립트 로그</title>
-      
+
       <p>디버깅을 돕기위해 <directive
       module="mod_cgi">ScriptLog</directive> 지시어를 사용하여
       CGI 스크립트의 입력과 출력을 기록할 수 있다. 이 지시어는
@@ -536,10 +536,10 @@
       사용하면 안된다. 더 자세한 정보는 <a
       href="mod/mod_cgi.html">mod_cgi</a> 문서를 참고하라.</p>
     </section>
-    
+
     <section id="rewritelog">
       <title>재작성 로그</title>
-      
+
       <p><a href="mod/mod_rewrite.html">mod_rewrite</a>의 강력하고
       복잡한 기능을 사용한다면 디버깅을 위해 거의 항상 <directive
       module="mod_rewrite">RewriteLog</directive>를 사용할 필요가

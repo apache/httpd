@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- English revision: 1.2.2.7 -->
 
 <!--
  Copyright 2002-2004 The Apache Software Foundation

@@ -22,8 +22,6 @@
 <a href="./ja/sections.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="./ko/sections.html" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<div class="outofdate">This translation may be out of date. Check the
-            English version for recent changes.</div>
  <p><a href="configuring.html">설정파일</a>에 있는
 지시어는 서버 전체에 적용되거나, 특정 디렉토리, 파일, 호스트,
 URL에만 적용될 수 있다. 이 문서는 다른 지시어의 적용범위를
@@ -319,9 +317,10 @@ Deny from all<br />
     <p>결합하는 순서는:</p>
 
     <ol>
-      <li> (정규표현식을 사용하지않는) <code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code>와 .htaccess는 동시에
-      일어난다 (경우에 따라 .htaccess이 <code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code>를 무시하도록 설정할
-      수 있다)</li>
+      <li> (정규표현식을 사용하지않는) <code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code>와 <code>.htaccess</code>는
+      동시에 일어난다 (경우에 따라 <code>.htaccess</code>이
+      <code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code>를
+      무시하도록 설정할 수 있다)</li>
 
       <li><code class="directive"><a href="./mod/core.html#directorymatch">&lt;DirectoryMatch&gt;</a></code> (그리고
       <code>&lt;Directory ~&gt;</code>)</li>

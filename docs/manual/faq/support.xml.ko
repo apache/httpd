@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="EUC-KR" ?>
 <!DOCTYPE faq SYSTEM "../style/faq.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ko.xsl"?>
-<!-- English Revision: 1.4 -->
+<!-- English Revision: 1.1.2.5 -->
 
 <!--
  Copyright 2004 The Apache Software Foundation
@@ -52,7 +52,7 @@
       module="core">ErrorLog</directive> 지시어를 참고하라.</dd>
 
       <dt><a
-      href="http://httpd.apache.org/docs-2.1/faq/">FAQ</a>를
+      href="http://httpd.apache.org/docs-2.0/faq/">FAQ</a>를
       확인하라!</dt>
       <dd>아파치 웹사이트에서 항상 아파치 FAQ 최신판을 볼 수
       있다.</dd>
