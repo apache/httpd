@@ -439,7 +439,8 @@ PROXY_DECLARE(apr_table_t *)ap_proxy_read_headers(request_rec *r, request_rec *r
 	for (end = &value[strlen(value)-1]; end > value && apr_isspace(*end); --end)
 	    *end = '\0';
 
-        apr_table_add(headers_out, buffer, value);
+        /* make sure we merge so as not to destroy duplicated headers */
+        apr_table_merge(headers_out, buffer, value);
 
 	/* the header was too long; at the least we should skip extra data */
 	if (len >= size - 1) { 
@@ -1070,4 +1071,33 @@ PROXY_DECLARE(void) ap_proxy_reset_output_filters(conn_rec *c)
             f = f->next;
         }
     }
+}
+
+/* unmerge an element in the table */
+void ap_proxy_table_unmerge(apr_pool_t *p, apr_table_t *t, char *key)
+{
+    apr_off_t offset = 0;
+    apr_off_t count = 0;
+    char *value = NULL;
+
+    /* get the value to unmerge */
+    const char *initial = apr_table_get(t, key);
+    if (!initial) {
+        return;
+    }
+    value = apr_pstrdup(p, initial);
+
+    /* remove the value from the headers */
+    apr_table_unset(t, key);
+
+    /* find each comma */
+    while (value[count]) {
+        if (value[count] == ',') {
+            value[count] = 0;
+            apr_table_add(t, key, value + offset);
+            offset = count + 1;
+        }
+        count++;
+    }
+    apr_table_add(t, key, value + offset);
 }

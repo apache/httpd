@@ -1,5 +1,16 @@
 Changes with Apache 2.0.33-dev
 
+  *) Some browsers ignore cookies that have been merged into a
+     single Set-Cookie header. Set-Cookie and Set-Cookie2 headers
+     are now unmerged in the http proxy before being sent to the
+     client. [Graham Leggett]
+
+  *) Fix a problem with proxy where each entry of a duplicated
+     header such as Set-Cookie would overwrite and obliterate the
+     previous value of the header, resulting in multiple header
+     values (like cookies) going missing.
+     [Graham Leggett, Joshua Slive]
+
   *) Add the server-limit and thread-limit values to the scoreboard
      for the sake of third-party applications.
      [Adam Sussman <myddryn@vishnu.vidya.com>]
