@@ -175,11 +175,12 @@ typedef struct var_rec {
     int is_pseudo_html;		/* text/html, *or* the INCLUDES_MAGIC_TYPEs */
 
     /* Above are all written-once properties of the variant.  The
-     * two fields below are changed during negotiation:
+     * three fields below are changed during negotiation:
      */
     
     float quality;	
     float level_matched;
+    int mime_stars;
 } var_rec;
 
 /* Something to carry around the state of negotiation (and to keep
@@ -216,6 +217,7 @@ void clean_var_rec (var_rec *mime_info)
     mime_info->quality = 0.0;
     mime_info->bytes = 0;
     mime_info->lang_index = -1;
+    mime_info->mime_stars = 0;
 }
 
 /* Initializing the relevant fields of a variant record from the
@@ -674,6 +676,9 @@ int read_types_multi (negotiation_state *neg)
  *
  * Note also that if we get an exact match on the media type, we update
  * level_matched for use in level_cmp below...
+ * 
+ * We also give a value for mime_stars, which is used later. It should
+ * be 1 for star/star, 2 for type/star and 3 for type/subtype.
  */
 
 int mime_match (accept_rec *accept, var_rec *avail)
@@ -682,16 +687,24 @@ int mime_match (accept_rec *accept, var_rec *avail)
     char *avail_type = avail->type_name;
     int len = strlen(accept_type);
   
-    if (accept_type[0] == '*')	/* Anything matches star/star */
+    if (accept_type[0] == '*')	{ /* Anything matches star/star */
+        if (avail->mime_stars < 1)
+	  avail->mime_stars = 1;
 	return 1; 
-    else if (accept_type[len - 1] == '*')
-	return !strncmp (accept_type, avail_type, len - 2);
+    }
+    else if ((accept_type[len - 1] == '*') &&
+	     !strncmp (accept_type, avail_type, len - 2)) {
+        if (avail->mime_stars < 2)
+	  avail->mime_stars = 2;
+	return 1;
+    }
     else if (!strcmp (accept_type, avail_type)
 	     || (!strcmp (accept_type, "text/html")
 		 && (!strcmp(avail_type, INCLUDES_MAGIC_TYPE)
 		     || !strcmp(avail_type, INCLUDES_MAGIC_TYPE3)))) {
 	if (accept->level >= avail->level) {
 	    avail->level_matched = avail->level;
+	    avail->mime_stars = 3;
 	    return 1;
 	}
     }
@@ -870,7 +883,7 @@ void do_encodings (negotiation_state *neg)
 	return;
 
     /* Lose any variant with an unacceptable content encoding */
-
+    
     for (i = 0; i < neg->avail_vars->nelts; ++i)
 	if (var_recs[i].quality > 0
 	    && !find_encoding (neg->accept_encodings,
@@ -960,6 +973,10 @@ var_rec *best_match(negotiation_state *neg)
 	     * tied variants by whatever means it likes.  This server
 	     * breaks ties as follows, in order:
 	     *
+	     * By perferring non-wildcard entries to those with
+	     * wildcards. The spec specifically says we should
+	     * do this, and it makes a lot of sense.
+	     *
 	     * By order of languages in Accept-language, to give the
 	     * client a way to specify a language preference.  I'd prefer
 	     * to give this precedence over media type, but the standard
@@ -979,15 +996,16 @@ var_rec *best_match(negotiation_state *neg)
 		
 	    if (q > best_quality
 		|| (q == best_quality
-		    && (variant->lang_index < best->lang_index
-			|| (variant->lang_index == best->lang_index
-			    && ((levcmp = level_cmp (variant, best)) == 1
-				|| (levcmp == 0
-				    && !strcmp (variant->type_name,
-						best->type_name)
-				    && (find_content_length(neg, variant)
-					<
-					find_content_length(neg, best))))))))
+		    && ((variant->mime_stars > best->mime_stars)
+			|| (variant->lang_index < best->lang_index
+			    || (variant->lang_index == best->lang_index
+				&& ((levcmp = level_cmp (variant, best)) == 1
+				    || (levcmp == 0
+					&& !strcmp (variant->type_name,
+						    best->type_name)
+					&& (find_content_length(neg, variant)
+					    <
+				find_content_length(neg, best)))))))))
 	    {
 		best = variant;
 		best_quality = q;
