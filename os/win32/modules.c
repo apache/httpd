@@ -13,17 +13,17 @@ extern module mime_module;
 extern module access_module;
 extern module auth_module;
 extern module negotiation_module;
-extern module includes_module;
+extern module include_module;
 extern module autoindex_module;
 extern module dir_module;
 extern module cgi_module;
 extern module userdir_module;
 extern module alias_module;
 extern module env_module;
-extern module config_log_module;
+extern module log_config_module;
 extern module asis_module;
 extern module imap_module;
-extern module action_module;
+extern module actions_module;
 extern module setenvif_module;
 extern module isapi_module;
 
@@ -35,17 +35,17 @@ AP_DECLARE_DATA module *ap_prelinked_modules[] = {
   &access_module,
   &auth_module,
   &negotiation_module,
-  &includes_module,
+  &include_module,
   &autoindex_module,
   &dir_module,
   &cgi_module,
   &userdir_module,
   &alias_module,
   &env_module,
-  &config_log_module,
+  &log_config_module,
   &asis_module,
   &imap_module,
-  &action_module,
+  &actions_module,
   &setenvif_module,
   &isapi_module,
   NULL
@@ -58,17 +58,17 @@ AP_DECLARE_DATA module *ap_preloaded_modules[] = {
   &access_module,
   &auth_module,
   &negotiation_module,
-  &includes_module,
+  &include_module,
   &autoindex_module,
   &dir_module,
   &cgi_module,
   &userdir_module,
   &alias_module,
   &env_module,
-  &config_log_module,
+  &log_config_module,
   &asis_module,
   &imap_module,
-  &action_module,
+  &actions_module,
   &setenvif_module,
   &isapi_module,
   NULL
