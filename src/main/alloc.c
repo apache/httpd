@@ -384,6 +384,16 @@ char *pstrdup(struct pool *a, const char *s)
   return res;
 }
 
+char *pstrndup(struct pool *a, const char *s, int n)
+{
+  char *res;
+  if (s == NULL) return NULL;
+  res = palloc (a, n + 1);
+  strncpy (res, s, n);
+  res[n] = '\0';
+  return res;
+}
+
 char *pstrcat(pool *a, ...)
 {
   char *cp, *argp, *res;
@@ -569,6 +579,34 @@ void table_set (table *t, const char *key, const char *val)
     elts->key = pstrdup (t->pool, key);
     elts->val = pstrdup (t->pool, val);
 }
+
+void table_unset( table *t, char *key ) 
+{
+    table_entry *elts = (table_entry *)t->elts;
+    int i;   
+    int j;   
+ 
+    for (i = 0; i < t->nelts; ++i)
+        if (!strcasecmp (elts[i].key, key)) {
+ 
+            /* found the element to skip over
+             * there are any number of ways to remove an element from
+             * a contiguous block of memory.  I've chosen one that
+             * doesn't do a memcpy/bcopy/array_delete, *shrug*...
+             */
+            j = i;
+            ++i;
+            for ( ; i < t->nelts; ) {
+                elts[j].key = elts[i].key;
+                elts[j].val = elts[i].val;
+                ++i;
+                ++j;
+            };
+            --t->nelts;
+
+            return;
+        }
+}     
 
 void table_merge (table *t, char *key, char *val)
 {

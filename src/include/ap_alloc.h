@@ -95,6 +95,7 @@ void cleanup_for_exec ();
 void *palloc(struct pool *, int nbytes);
 void *pcalloc(struct pool *, int nbytes);
 extern char *pstrdup(struct pool *, const char *s);
+extern char *pstrndup(struct pool *, const char *s, int n);
 char *pstrcat(struct pool *, ...); /* all '...' must be char* */
 
 /* array and alist management... keeping lists of things.
@@ -146,6 +147,7 @@ table *copy_table (pool *p, table *);
 char *table_get (table *, char *);
 void table_set (table *, const char *name, const char *val);
 void table_merge (table *, char *name, char *more_val);
+void table_unset (table *, char *key);
 
 table *overlay_tables (pool *p, table *overlay, table *base);     
 

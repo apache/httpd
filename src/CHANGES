@@ -1,3 +1,6 @@
+  *) Several API additions: pstrndup(), table_unset() and get_token()
+     functions now available to modules.
+
   *) htdigest utility included for use with digest authentication
      module.
 

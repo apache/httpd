@@ -96,40 +96,6 @@
 #include "httpd.h"
 #include "http_config.h"
 
-/* utility functions, in the module code for now, but could
- * be moved to alloc.c when they've been proofed.
- */
- 
-void mod_env_table_unset( table *t, char *key ) 
-{
-    table_entry *elts = (table_entry *)t->elts;
-    int i;   
-    int j;   
- 
-    for (i = 0; i < t->nelts; ++i)
-        if (!strcasecmp (elts[i].key, key)) {
- 
-            /* found the element to skip over
-             * there are any number of ways to remove an element from
-             * a contiguous block of memory.  I've chosen one that
-             * doesn't do a memcpy/bcopy/array_delete, *shrug*...
-             */
-            j = i;
-            ++i;
-            for ( ; i < t->nelts; ) {
-                elts[j].key = elts[i].key;
-                elts[j].val = elts[i].val;
-                ++i;
-                ++j;
-            };
-            --t->nelts;
-
-            return;
-        }
-}     
-
-/* end of utility functions */
-
 typedef struct {
     table *vars;
     char *unsetenv;
@@ -182,7 +148,7 @@ void *merge_env_server_configs (pool *p, void *basev, void *addv)
     copy = pstrdup( p, add->unsetenv );
     uenv = getword_conf( p, &copy );
     while ( uenv[0] != '\0' ) {
-	mod_env_table_unset( new_table, uenv );
+	table_unset( new_table, uenv );
 	uenv = getword_conf( p, &copy );
     };
 

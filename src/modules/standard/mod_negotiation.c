@@ -241,52 +241,6 @@ void set_mime_fields (var_rec *var, accept_rec *mime_info)
  * HTTPD header lines and elsewhere.
  */
 
-/* Retrieve a token, spacing over it and returning a pointer to
- * the first non-white byte afterwards.  Note that these tokens
- * are delimited by semis and commas; and can also be delimited
- * by whitespace at the caller's option.
- */
-
-char *get_token (pool *p, char **accept_line, int accept_white)
-{
-    char *ptr = *accept_line;
-    char *tok_start;
-    char *token;
-    int tok_len;
-  
-    /* Find first non-white byte */
-    
-    while (*ptr && isspace(*ptr))
-      ++ptr;
-
-    tok_start = ptr;
-    
-    /* find token end, skipping over quoted strings.
-     * (comments are already gone).
-     */
-    
-    while (*ptr && (accept_white || !isspace(*ptr))
-	   && *ptr != ';' && *ptr != ',')
-    {
-	if (*ptr++ == '"')
-	    while (*ptr)
-	        if (*ptr++ == '"') break;
-    }
-	  
-    tok_len = ptr - tok_start;
-    token = palloc (p, tok_len + 1);
-    strncpy (token, tok_start, tok_len);
-    token[tok_len] = '\0';
-    
-    /* Advance accept_line pointer to the next non-white byte */
-
-    while (*ptr && isspace(*ptr))
-      ++ptr;
-
-    *accept_line = ptr;
-    return token;
-}
-
 /*
  * Get a single mime type entry --- one media type and parameters;
  * enter the values we recognize into the argument accept_rec

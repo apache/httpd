@@ -197,7 +197,7 @@ typedef struct module_struct {
  * handle it back-compatibly, or at least signal an error).
  */
 
-#define MODULE_MAGIC_NUMBER 19960512
+#define MODULE_MAGIC_NUMBER 19960526
 #define STANDARD_MODULE_STUFF MODULE_MAGIC_NUMBER, 0, NULL
 
 /* Generic accessors for other modules to get at their own module-specific

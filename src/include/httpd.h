@@ -489,6 +489,8 @@ char *gm_timestr_822(pool *p, time_t t);
 char *getword(pool *p, char **line, char stop);
 char *getword_nulls (pool *p, char **line, char stop);
 char *getword_conf (pool *p, char **line);      
+
+char *get_token (pool *p, char **accept_line, int accept_white);
      
 int is_url(char *u);
 extern int unescape_url(char *url);
