@@ -192,7 +192,6 @@ int os_init_job_environment(server_rec *server, const char *user_name, int one_p
 {
     _rini_struct            inittask; 
     char                    username[USER_LEN+1];
-    int                     save_errno;
     bs2_ForkType            type = os_forktype();
 
     /* We can be sure that no change to uid==0 is possible because of

@@ -235,7 +235,7 @@ ebcdic2ascii(void *dest, const void *srce, size_t count)
     const unsigned char *usrce = srce;
 
     while (count-- != 0) {
-        *udest++ = os_toascii[*usrce++];
+        *udest++ = os_toascii_strictly[*usrce++];
     }
 }
 void
