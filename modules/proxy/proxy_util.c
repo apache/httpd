@@ -204,7 +204,7 @@ PROXY_DECLARE(char *)ap_proxy_canonenc(apr_pool_t *p, const char *x, int len, en
 	}
 /* decode it if not already done */
 	if (isenc && ch == '%') {
-	    if (!ap_isxdigit(x[i + 1]) || !ap_isxdigit(x[i + 2]))
+	    if (!apr_isxdigit(x[i + 1]) || !apr_isxdigit(x[i + 2]))
 		return NULL;
 	    ch = ap_proxy_hex2c(&x[i + 1]);
 	    i += 2;
@@ -370,7 +370,7 @@ PROXY_DECLARE(const char *)
 		   &min, &sec, &year) != 7)
 	    return x;
 	for (wk = 0; wk < 7; wk++)
-	    if (strcmp(week, ap_day_snames[wk]) == 0)
+	    if (strcmp(week, apr_day_snames[wk]) == 0)
 		break;
 	if (wk == 7)
 	    return x;
@@ -378,14 +378,14 @@ PROXY_DECLARE(const char *)
 
 /* check date */
     for (mon = 0; mon < 12; mon++)
-	if (strcmp(month, ap_month_snames[mon]) == 0)
+	if (strcmp(month, apr_month_snames[mon]) == 0)
 	    break;
     if (mon == 12)
 	return x;
 
     q = apr_palloc(p, 30);
-    apr_snprintf(q, 30, "%s, %.2d %s %d %.2d:%.2d:%.2d GMT", ap_day_snames[wk],
-       mday, ap_month_snames[mon], year, hour, min, sec);
+    apr_snprintf(q, 30, "%s, %.2d %s %d %.2d:%.2d:%.2d GMT", apr_day_snames[wk],
+       mday, apr_month_snames[mon], year, hour, min, sec);
     return q;
 }
 
@@ -434,7 +434,7 @@ PROXY_DECLARE(apr_table_t *)ap_proxy_read_headers(request_rec *r, request_rec *r
     char *value, *end;
     char field[MAX_STRING_LEN];
 
-    headers_out = ap_make_table(r->pool, 20);
+    headers_out = apr_table_make(r->pool, 20);
 
     /*
      * Read header lines until we get the empty separator line, a read error,

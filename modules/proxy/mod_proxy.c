@@ -477,15 +477,15 @@ static int proxy_handler(request_rec *r)
 
 static void * create_proxy_config(apr_pool_t *p, server_rec *s)
 {
-    proxy_server_conf *ps = ap_pcalloc(p, sizeof(proxy_server_conf));
+    proxy_server_conf *ps = apr_pcalloc(p, sizeof(proxy_server_conf));
 
-    ps->sec_proxy = ap_make_array(p, 10, sizeof(ap_conf_vector_t *));
-    ps->proxies = ap_make_array(p, 10, sizeof(struct proxy_remote));
-    ps->aliases = ap_make_array(p, 10, sizeof(struct proxy_alias));
-    ps->raliases = ap_make_array(p, 10, sizeof(struct proxy_alias));
-    ps->noproxies = ap_make_array(p, 10, sizeof(struct noproxy_entry));
-    ps->dirconn = ap_make_array(p, 10, sizeof(struct dirconn_entry));
-    ps->allowed_connect_ports = ap_make_array(p, 10, sizeof(int));
+    ps->sec_proxy = apr_array_make(p, 10, sizeof(ap_conf_vector_t *));
+    ps->proxies = apr_array_make(p, 10, sizeof(struct proxy_remote));
+    ps->aliases = apr_array_make(p, 10, sizeof(struct proxy_alias));
+    ps->raliases = apr_array_make(p, 10, sizeof(struct proxy_alias));
+    ps->noproxies = apr_array_make(p, 10, sizeof(struct noproxy_entry));
+    ps->dirconn = apr_array_make(p, 10, sizeof(struct dirconn_entry));
+    ps->allowed_connect_ports = apr_array_make(p, 10, sizeof(int));
     ps->domain = NULL;
     ps->viaopt = via_off; /* initially backward compatible with 1.3.1 */
     ps->viaopt_set = 0; /* 0 means default */
@@ -508,7 +508,7 @@ static void * create_proxy_config(apr_pool_t *p, server_rec *s)
 
 static void * merge_proxy_config(apr_pool_t *p, void *basev, void *overridesv)
 {
-    proxy_server_conf *ps = ap_pcalloc(p, sizeof(proxy_server_conf));
+    proxy_server_conf *ps = apr_pcalloc(p, sizeof(proxy_server_conf));
     proxy_server_conf *base = (proxy_server_conf *) basev;
     proxy_server_conf *overrides = (proxy_server_conf *) overridesv;
 

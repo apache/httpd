@@ -93,7 +93,7 @@ static int decodeenc(char *x)
     for (i = 0, j = 0; x[i] != '\0'; i++, j++) {
         /* decode it if not already done */
         ch = x[i];
-        if (ch == '%' && ap_isxdigit(x[i + 1]) && ap_isxdigit(x[i + 2])) {
+        if (ch == '%' && apr_isxdigit(x[i + 1]) && apr_isxdigit(x[i + 2])) {
             ch = ap_proxy_hex2c(&x[i + 1]);
             i += 2;
         }
@@ -153,7 +153,7 @@ static int ftp_check_string(const char *x)
 
     for (i = 0; x[i] != '\0'; i++) {
         ch = x[i];
-        if (ch == '%' && ap_isxdigit(x[i + 1]) && ap_isxdigit(x[i + 2])) {
+        if (ch == '%' && apr_isxdigit(x[i + 1]) && apr_isxdigit(x[i + 2])) {
             ch = ap_proxy_hex2c(&x[i + 1]);
             i += 2;
         }
@@ -643,7 +643,7 @@ proxy_ftp_command(const char *cmd, request_rec *r, conn_rec *ftp_ctrl,
         ap_pass_brigade(ftp_ctrl->output_filters, bb);
 
         /* strip off the CRLF for logging */
-        ap_cpystrn(message, cmd, sizeof message);
+        apr_cpystrn(message, cmd, sizeof(message));
         if ((crlf = strchr(message, '\r')) != NULL ||
             (crlf = strchr(message, '\n')) != NULL)
             *crlf = '\0';
@@ -663,7 +663,7 @@ proxy_ftp_command(const char *cmd, request_rec *r, conn_rec *ftp_ctrl,
                  "proxy:<FTP: %3.3u %s", rc, message);
 
     if (pmessage != NULL)
-        *pmessage = ap_pstrdup(r->pool, message);
+        *pmessage = apr_pstrdup(r->pool, message);
 
     return rc;
 }
@@ -807,7 +807,7 @@ int ap_proxy_ftp_handler(request_rec *r, proxy_server_conf *conf,
 
     /* stuff for PASV mode */
     int connect = 0, use_port = 0;
-    char dates[AP_RFC822_DATE_LEN];
+    char dates[APR_RFC822_DATE_LEN];
 
     /* is this for us? */
     if (proxyhost) {
@@ -826,7 +826,7 @@ int ap_proxy_ftp_handler(request_rec *r, proxy_server_conf *conf,
     /* create space for state information */
     backend = (proxy_conn_rec *) ap_get_module_config(c->conn_config, &proxy_ftp_module);
     if (!backend) {
-        backend = ap_pcalloc(c->pool, sizeof(proxy_conn_rec));
+        backend = apr_pcalloc(c->pool, sizeof(proxy_conn_rec));
         backend->connection = NULL;
         backend->hostname = NULL;
         backend->port = 0;
@@ -860,12 +860,12 @@ int ap_proxy_ftp_handler(request_rec *r, proxy_server_conf *conf,
         *(type_suffix++) = '\0';
 
     if (type_suffix != NULL && strncmp(type_suffix, "type=", 5) == 0
-        && ap_isalpha(type_suffix[5])) {
+        && apr_isalpha(type_suffix[5])) {
         /* "type=d" forces a dir listing.
          * The other types (i|a|e) are directly used for the ftp TYPE command
          */
-        if ( ! (dirlisting = (ap_tolower(type_suffix[5]) == 'd')))
-            xfer_type = ap_toupper(type_suffix[5]);
+        if ( ! (dirlisting = (apr_tolower(type_suffix[5]) == 'd')))
+            xfer_type = apr_toupper(type_suffix[5]);
 
         /* Check valid types, rather than ignoring invalid types silently: */
         if (strchr("AEI", xfer_type) == NULL)
@@ -1091,8 +1091,8 @@ int ap_proxy_ftp_handler(request_rec *r, proxy_server_conf *conf,
                 break;
         if (*secs_str != '\0') {
             secs = atol(secs_str);
-            ap_table_add(r->headers_out, "Retry-After",
-                         apr_psprintf(p, "%lu", (unsigned long)(60 * secs)));
+            apr_table_add(r->headers_out, "Retry-After",
+                          apr_psprintf(p, "%lu", (unsigned long)(60 * secs)));
         }
         return ap_proxyerror(r, HTTP_SERVICE_UNAVAILABLE, ftpmessage);
     }
