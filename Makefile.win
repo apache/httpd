@@ -160,7 +160,7 @@ clean:	_cleanr _cleand
 y
 <<
 
-!IF EXIST("Apache.mak")
+!IF EXIST("httpd.mak")
 
 _cleanr:
 	$(MAKE) $(MAKEOPT) -f Makefile.win SHORT=R LONG=Release CTARGET=CLEAN _build
@@ -207,7 +207,7 @@ _build:
 	 $(MAKE) $(MAKEOPT) -f gen_test_char.mak   CFG="gen_test_char - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	cd ..
 	 $(MAKE) $(MAKEOPT) -f libhttpd.mak        CFG="libhttpd - Win32 $(LONG)" RECURSE=0 $(CTARGET)
-	 $(MAKE) $(MAKEOPT) -f Apache.mak          CFG="Apache - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+	 $(MAKE) $(MAKEOPT) -f httpd.mak           CFG="httpd - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 # build ldap prior to authnz_ldap
 	cd modules\ldap
 	 $(MAKE) $(MAKEOPT) -f mod_ldap.mak        CFG="mod_ldap - Win32 $(LONG)" RECURSE=0 $(CTARGET)
@@ -373,7 +373,7 @@ _build:
 
 
 _copybin:
-	copy $(LONG)\Apache.$(src_exe) 				"$(inst_exe)" <.y
+	copy $(LONG)\httpd.$(src_exe) 				"$(inst_exe)" <.y
 	copy $(LONG)\libhttpd.$(src_dll) 			"$(inst_dll)" <.y
 	copy srclib\apr\$(LONG)\libapr-1.$(src_dll) 		"$(inst_dll)" <.y
 	copy srclib\apr-iconv\$(LONG)\libapriconv-1.$(src_dll) 	"$(inst_dll)" <.y
