@@ -277,6 +277,9 @@ int invoke_handler (request_rec *r)
    char *content_type = r->content_type ? r->content_type : default_type (r);
    char *handler = r->handler ? r->handler : r->content_type;
   
+   if (!handler)
+       handler = default_type(r);
+
    /* Pass one --- direct matches */
    
    for (modp = top_module; modp; modp = modp->next) 
