@@ -515,8 +515,8 @@ void ap_log_pid(ap_pool_t *p, const char *fname)
     }
 
 #ifndef WIN32
-    u = umask(022);
-    (void) umask(u | 022);
+    u = ap_set_default_fperms(022);
+    (void) ap_set_default_fperms(u | 022);
 #endif
     if (ap_open(&pid_file, fname, APR_WRITE | APR_CREATE | APR_TRUNCATE,
                 APR_OS_DEFAULT, p) != APR_SUCCESS) {
@@ -527,7 +527,7 @@ void ap_log_pid(ap_pool_t *p, const char *fname)
         exit(1);
     }
 #ifndef WIN32
-    (void) umask(u);
+    (void) ap_set_default_fperms(u);
 #endif
     ap_fprintf(pid_file, "%ld\n", (long)mypid);
     ap_close(pid_file);
