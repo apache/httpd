@@ -69,7 +69,8 @@ extern "C" {
 /* Headers in which EVERYONE has an interest... */
 
 #include "ap_config.h"
-#include "alloc.h"
+#include "apr_general.h"
+#include "apr_lib.h"
 #include "buff.h"
 #include "ap.h"
 #include "apr.h"
@@ -381,7 +382,7 @@ extern "C" {
 #define SERVER_BASEVERSION "Apache/2.0-dev"       /* SEE COMMENTS ABOVE */
 #define SERVER_VERSION  SERVER_BASEVERSION
 
-/* TODO: re-implement the server token/version stuff -- it's part of http_core
+/* TODO: re ap_context_t mplement the server token/version stuff -- it's part of http_core
  * it should be possible to do without touching http_main at all. (or else
  * we haven't got enough module hooks)
  */
@@ -423,7 +424,7 @@ API_EXPORT(const char *) ap_get_server_built(void);
 
 /* The size of the static array in http_protocol.c for storing
  * all of the potential response status-lines (a sparse table).
- * A future version should dynamically generate the table at startup.
+ * A future version should dynamically generate the ap_table_t at startup.
  */
 #define RESPONSE_CODES 55
 
@@ -542,7 +543,7 @@ API_EXPORT(const char *) ap_get_server_built(void);
 #define ASCIITEXT_MAGIC_TYPE_PREFIX "text/x-ascii-" /* Text files whose content-type starts with this are passed thru unconverted */
 #endif /*CHARSET_EBCDIC*/
 #define MAP_FILE_MAGIC_TYPE "application/x-type-map"
-#define ASIS_MAGIC_TYPE "httpd/send-as-is"
+#define ASIS_MAGIC_TYPE "httpd/send-as ap_context_t s"
 #define DIR_MAGIC_TYPE "httpd/unix-directory"
 #define STATUS_MAGIC_TYPE "application/x-httpd-status"
 
@@ -623,7 +624,7 @@ typedef struct request_rec request_rec;
 
 struct request_rec {
 
-    ap_pool *pool;
+    ap_context_t *pool;
     conn_rec *connection;
     server_rec *server;
 
@@ -711,15 +712,15 @@ struct request_rec {
      * latter are printed even on error, and persist across internal redirects
      * (so the headers printed for ErrorDocument handlers will have them).
      *
-     * The 'notes' table is for notes from one module to another, with no
+     * The 'notes' ap_table_t is for notes from one module to another, with no
      * other set purpose in mind...
      */
 
-    table *headers_in;
-    table *headers_out;
-    table *err_headers_out;
-    table *subprocess_env;
-    table *notes;
+    ap_table_t *headers_in;
+    ap_table_t *headers_out;
+    ap_table_t *err_headers_out;
+    ap_table_t *subprocess_env;
+    ap_table_t *notes;
 
     /* content_type, handler, content_encoding, content_language, and all
      * content_languages MUST be lowercased strings.  They may be pointers
@@ -730,7 +731,7 @@ struct request_rec {
 
     const char *content_encoding;
     const char *content_language;	/* for back-compat. only -- do not use */
-    array_header *content_languages;	/* array of (char*) */
+    ap_array_header_t *content_languages;	/* array of (char*) */
 
     char *vlist_validator;      /* variant list validator (if negotiated) */
     
@@ -783,7 +784,7 @@ struct request_rec {
 
 struct conn_rec {
 
-    ap_pool *pool;
+    ap_context_t *pool;
     server_rec *base_server;	/* Physical vhost this conn come in on */
     void *vhost_lookup_data;	/* used by http_vhost.c */
 
@@ -881,8 +882,8 @@ struct server_rec {
     char *path;			/* Pathname for ServerPath */
     int pathlen;		/* Length of path */
 
-    array_header *names;	/* Normal names for ServerAlias servers */
-    array_header *wild_names;	/* Wildcarded names for ServerAlias servers */
+    ap_array_header_t *names;	/* Normal names for ServerAlias servers */
+    ap_array_header_t *wild_names;	/* Wildcarded names for ServerAlias servers */
 
     uid_t server_uid;        /* effective user id when calling exec wrapper */
     gid_t server_gid;        /* effective group id when calling exec wrapper */
@@ -904,68 +905,68 @@ extern API_VAR_EXPORT const char ap_day_snames[7][4];
 
 API_EXPORT(struct tm *) ap_get_gmtoff(int *tz);
 API_EXPORT(char *) ap_get_time(void);
-API_EXPORT(char *) ap_field_noparam(pool *p, const char *intype);
-API_EXPORT(char *) ap_ht_time(pool *p, time_t t, const char *fmt, int gmt);
-API_EXPORT(char *) ap_gm_timestr_822(pool *p, time_t t);
+API_EXPORT(char *) ap_field_noparam(ap_context_t *p, const char *intype);
+API_EXPORT(char *) ap_ht_time(ap_context_t *p, time_t t, const char *fmt, int gmt);
+API_EXPORT(char *) ap_gm_timestr_822(ap_context_t *p, time_t t);
 
 /* String handling. The *_nc variants allow you to use non-const char **s as
    arguments (unfortunately C won't automatically convert a char ** to a const
    char **) */
 
-API_EXPORT(char *) ap_getword(pool *p, const char **line, char stop);
-API_EXPORT(char *) ap_getword_nc(pool *p, char **line, char stop);
-API_EXPORT(char *) ap_getword_white(pool *p, const char **line);
-API_EXPORT(char *) ap_getword_white_nc(pool *p, char **line);
-API_EXPORT(char *) ap_getword_nulls(pool *p, const char **line, char stop);
-API_EXPORT(char *) ap_getword_nulls_nc(pool *p, char **line, char stop);
-API_EXPORT(char *) ap_getword_conf(pool *p, const char **line);
-API_EXPORT(char *) ap_getword_conf_nc(pool *p, char **line);
+API_EXPORT(char *) ap_getword(ap_context_t *p, const char **line, char stop);
+API_EXPORT(char *) ap_getword_nc(ap_context_t *p, char **line, char stop);
+API_EXPORT(char *) ap_getword_white(ap_context_t *p, const char **line);
+API_EXPORT(char *) ap_getword_white_nc(ap_context_t *p, char **line);
+API_EXPORT(char *) ap_getword_nulls(ap_context_t *p, const char **line, char stop);
+API_EXPORT(char *) ap_getword_nulls_nc(ap_context_t *p, char **line, char stop);
+API_EXPORT(char *) ap_getword_conf(ap_context_t *p, const char **line);
+API_EXPORT(char *) ap_getword_conf_nc(ap_context_t *p, char **line);
 
 API_EXPORT(const char *) ap_size_list_item(const char **field, int *len);
-API_EXPORT(char *) ap_get_list_item(pool *p, const char **field);
-API_EXPORT(int) ap_find_list_item(pool *p, const char *line, const char *tok);
+API_EXPORT(char *) ap_get_list_item(ap_context_t *p, const char **field);
+API_EXPORT(int) ap_find_list_item(ap_context_t *p, const char *line, const char *tok);
 
-API_EXPORT(char *) ap_get_token(pool *p, const char **accept_line, int accept_white);
-API_EXPORT(int) ap_find_token(pool *p, const char *line, const char *tok);
-API_EXPORT(int) ap_find_last_token(pool *p, const char *line, const char *tok);
+API_EXPORT(char *) ap_get_token(ap_context_t *p, const char **accept_line, int accept_white);
+API_EXPORT(int) ap_find_token(ap_context_t *p, const char *line, const char *tok);
+API_EXPORT(int) ap_find_last_token(ap_context_t *p, const char *line, const char *tok);
 
 API_EXPORT(int) ap_is_url(const char *u);
 API_EXPORT(int) ap_unescape_url(char *url);
 API_EXPORT(void) ap_no2slash(char *name);
 API_EXPORT(void) ap_getparents(char *name);
-API_EXPORT(char *) ap_escape_path_segment(pool *p, const char *s);
-API_EXPORT(char *) ap_os_escape_path(pool *p, const char *path, int partial);
+API_EXPORT(char *) ap_escape_path_segment(ap_context_t *p, const char *s);
+API_EXPORT(char *) ap_os_escape_path(ap_context_t *p, const char *path, int partial);
 #define ap_escape_uri(ppool,path) ap_os_escape_path(ppool,path,1)
-API_EXPORT(char *) ap_escape_html(pool *p, const char *s);
-API_EXPORT(char *) ap_construct_server(pool *p, const char *hostname,
+API_EXPORT(char *) ap_escape_html(ap_context_t *p, const char *s);
+API_EXPORT(char *) ap_construct_server(ap_context_t *p, const char *hostname,
 				    unsigned port, const request_rec *r);
-API_EXPORT(char *) ap_escape_shell_cmd(pool *p, const char *s);
+API_EXPORT(char *) ap_escape_shell_cmd(ap_context_t *p, const char *s);
 
 API_EXPORT(int) ap_count_dirs(const char *path);
 API_EXPORT(char *) ap_make_dirstr_prefix(char *d, const char *s, int n);
-API_EXPORT(char *) ap_make_dirstr_parent(pool *p, const char *s);
+API_EXPORT(char *) ap_make_dirstr_parent(ap_context_t *p, const char *s);
 /* deprecated.  The previous two routines are preferred. */
-API_EXPORT(char *) ap_make_dirstr(pool *a, const char *s, int n);
-API_EXPORT(char *) ap_make_full_path(pool *a, const char *dir, const char *f);
+API_EXPORT(char *) ap_make_dirstr(ap_context_t *a, const char *s, int n);
+API_EXPORT(char *) ap_make_full_path(ap_context_t *a, const char *dir, const char *f);
 
 API_EXPORT(int) ap_is_matchexp(const char *str);
 API_EXPORT(int) ap_strcmp_match(const char *str, const char *exp);
 API_EXPORT(int) ap_strcasecmp_match(const char *str, const char *exp);
-API_EXPORT(char *) ap_pbase64decode(pool *p, const char *bufcoded);
-API_EXPORT(char *) ap_pbase64encode(pool *p, char *string); 
-API_EXPORT(char *) ap_uudecode(pool *p, const char *bufcoded);
-API_EXPORT(char *) ap_uuencode(pool *p, char *string); 
+API_EXPORT(char *) ap_pbase64decode(ap_context_t *p, const char *bufcoded);
+API_EXPORT(char *) ap_pbase64encode(ap_context_t *p, char *string); 
+API_EXPORT(char *) ap_uudecode(ap_context_t *p, const char *bufcoded);
+API_EXPORT(char *) ap_uuencode(ap_context_t *p, char *string); 
 
 #ifdef OS2
 void os2pathname(char *path);
-char *ap_double_quotes(pool *p, char *str);
+char *ap_double_quotes(ap_context_t *p, char *str);
 #endif
 
 API_EXPORT(int)    ap_regexec(const regex_t *preg, const char *string,
                               size_t nmatch, regmatch_t pmatch[], int eflags);
 API_EXPORT(size_t) ap_regerror(int errcode, const regex_t *preg, 
                                char *errbuf, size_t errbuf_size);
-API_EXPORT(char *) ap_pregsub(pool *p, const char *input, const char *source,
+API_EXPORT(char *) ap_pregsub(ap_context_t *p, const char *input, const char *source,
                               size_t nmatch, regmatch_t pmatch[]);
 
 API_EXPORT(void) ap_content_type_tolower(char *);
@@ -973,7 +974,7 @@ API_EXPORT(void) ap_str_tolower(char *);
 API_EXPORT(int) ap_ind(const char *, char);	/* Sigh... */
 API_EXPORT(int) ap_rind(const char *, char);
 
-API_EXPORT(char *) ap_escape_quotes (pool *p, const char *instring);
+API_EXPORT(char *) ap_escape_quotes (ap_context_t *p, const char *instring);
 
 /* Common structure for reading of config files / passwd files etc. */
 typedef struct {
@@ -986,10 +987,10 @@ typedef struct {
 } configfile_t;
 
 /* Open a configfile_t as FILE, return open configfile_t struct pointer */
-API_EXPORT(configfile_t *) ap_pcfg_openfile(pool *p, const char *name);
+API_EXPORT(configfile_t *) ap_pcfg_openfile(ap_context_t *p, const char *name);
 
 /* Allocate a configfile_t handle with user defined functions and params */
-API_EXPORT(configfile_t *) ap_pcfg_open_custom(pool *p, const char *descr,
+API_EXPORT(configfile_t *) ap_pcfg_open_custom(ap_context_t *p, const char *descr,
     void *param,
     int(*getc_func)(void*),
     void *(*gets_func) (void *buf, size_t bufsiz, void *param),
@@ -1019,16 +1020,16 @@ API_EXPORT(const server_rec *) ap_get_server_conf(void);
 
 #ifndef HAVE_CANONICAL_FILENAME
 /*
- *  We can't define these in os.h because of dependence on pool pointer.
+ *  We can't define these in os.h because of dependence on ap_context_t pointer.
  */
 #define ap_os_canonical_filename(p,f)  (f)
 #define ap_os_case_canonical_filename(p,f)  (f)
 #define ap_os_systemcase_filename(p,f)  (f)
 #else
-API_EXPORT(char *) ap_os_canonical_filename(pool *p, const char *file);
+API_EXPORT(char *) ap_os_canonical_filename(ap_context_t *p, const char *file);
 #ifdef WIN32
-API_EXPORT(char *) ap_os_case_canonical_filename(pool *pPool, const char *szFile);
-API_EXPORT(char *) ap_os_systemcase_filename(pool *pPool, const char *szFile);
+API_EXPORT(char *) ap_os_case_canonical_filename(ap_context_t *pPool, const char *szFile);
+API_EXPORT(char *) ap_os_systemcase_filename(ap_context_t *pPool, const char *szFile);
 #else
 #define ap_os_case_canonical_filename(p,f) ap_os_canonical_filename(p,f)
 #define ap_os_systemcase_filename(p,f) ap_os_canonical_filename(p,f)
@@ -1036,11 +1037,11 @@ API_EXPORT(char *) ap_os_systemcase_filename(pool *pPool, const char *szFile);
 #endif
 
 #ifdef _OSD_POSIX
-extern const char *os_set_account(pool *p, const char *account);
+extern const char *os_set_account(ap_context_t *p, const char *account);
 extern int os_init_job_environment(server_rec *s, const char *user_name, int one_process);
 #endif /* _OSD_POSIX */
 
-char *ap_get_local_host(pool *);
+char *ap_get_local_host(ap_context_t *);
 unsigned long ap_get_virthost_addr(char *hostname, unsigned short *port);
 
 extern API_VAR_EXPORT time_t ap_restart_time;
@@ -1077,7 +1078,7 @@ APRFile ap_slack(APRFile fd, int line);
 #define AP_SLACK_HIGH	2
 #endif
 
-API_EXPORT(char *) ap_escape_quotes(pool *p, const char *instr);
+API_EXPORT(char *) ap_escape_quotes(ap_context_t *p, const char *instr);
 
 /*
  * Redefine assert() to something more useful for an Apache...

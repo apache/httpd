@@ -157,9 +157,9 @@ struct other_child_rec {
 static other_child_rec *other_children;
 #endif
 
-static pool *pconf;		/* Pool for config stuff */
-static pool *pchild;		/* Pool for httpd child stuff */
-static pool *thread_pool_parent; /* Parent of per-thread pools */
+static ap_context_t *pconf;		/* Pool for config stuff */
+static ap_context_t *pchild;		/* Pool for httpd child stuff */
+static ap_context_t *thread_pool_parent; /* Parent of per-thread pools */
 static pthread_mutex_t thread_pool_create_mutex;
 
 static int child_num;
@@ -680,7 +680,7 @@ static void process_child_status(int pid, ap_wait_t status)
     }
 }
 
-static int setup_listeners(pool *p, server_rec *s)
+static int setup_listeners(ap_context_t *p, server_rec *s)
 {
     ap_listen_rec *lr;
     int num_listeners = 0;
@@ -733,7 +733,7 @@ int ap_graceful_stop_signalled(void)
  * Child process main loop.
  */
 
-static void process_socket(pool *p, struct sockaddr *sa_client, int csd,
+static void process_socket(ap_context_t *p, struct sockaddr *sa_client, int csd,
                            int conn_id)
 {
     struct sockaddr sa_server; /* ZZZZ */
@@ -846,8 +846,8 @@ static void *worker_thread(void *arg)
 {
     struct sockaddr sa_client;
     int csd = -1;
-    pool *tpool;		/* Pool for this thread           */
-    pool *ptrans;		/* Pool for per-transaction stuff */
+    ap_context_t *tpool;		/* Pool for this thread           */
+    ap_context_t *ptrans;		/* Pool for per-transaction stuff */
     int sd = -1;
     int srv;
     int curr_pollfd, last_pollfd = 0;
@@ -1261,7 +1261,7 @@ static void server_main_loop(int remaining_children_to_start)
     }
 }
 
-int ap_mpm_run(pool *_pconf, pool *plog, server_rec *s)
+int ap_mpm_run(ap_context_t *_pconf, ap_context_t *plog, server_rec *s)
 {
     int remaining_children_to_start;
     int i;
@@ -1401,7 +1401,7 @@ int ap_mpm_run(pool *_pconf, pool *plog, server_rec *s)
     return 0;
 }
 
-static void dexter_pre_config(pool *p, pool *plog, pool *ptemp)
+static void dexter_pre_config(ap_context_t *p, ap_context_t *plog, ap_context_t *ptemp)
 {
     static int restart_num = 0;
 
@@ -1653,7 +1653,7 @@ module MODULE_VAR_EXPORT mpm_dexter_module = {
     NULL,			/* merge per-directory config structures */
     NULL,			/* create per-server config structure */
     NULL,			/* merge per-server config structures */
-    dexter_cmds,		/* command table */
+    dexter_cmds,		/* command ap_table_t */
     NULL,			/* handlers */
     dexter_hooks 		/* register_hooks */
 };

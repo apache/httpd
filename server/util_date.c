@@ -57,7 +57,7 @@
 
 /*
  * util_date.c: date parsing utility routines
- *     These routines are (hopefully) platform-independent.
+ *     These routines are (hopefully) platform ap_context_t ndependent.
  * 
  * 27 Oct 1996  Roy Fielding
  *     Extracted (with many modifications) from mod_proxy.c and

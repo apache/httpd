@@ -218,10 +218,10 @@ static mode_t xfer_mode = (S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
 
 typedef struct {
     char *default_format_string;
-    array_header *default_format;
-    array_header *config_logs;
-    array_header *server_config_logs;
-    table *formats;
+    ap_array_header_t *default_format;
+    ap_array_header_t *config_logs;
+    ap_array_header_t *server_config_logs;
+    ap_table_t *formats;
 } multi_log_state;
 
 /*
@@ -236,7 +236,7 @@ typedef struct {
 typedef struct {
     char *fname;
     char *format_string;
-    array_header *format;
+    ap_array_header_t *format;
     int log_fd;
     char *condition_var;
 #ifdef BUFFERED_LOGS
@@ -257,15 +257,15 @@ typedef struct {
     char *arg;
     int condition_sense;
     int want_orig;
-    array_header *conditions;
+    ap_array_header_t *conditions;
 } log_format_item;
 
-static char *format_integer(pool *p, int i)
+static char *format_integer(ap_context_t *p, int i)
 {
     return ap_psprintf(p, "%d", i);
 }
 
-static char *pfmt(pool *p, int i)
+static char *pfmt(ap_context_t *p, int i)
 {
     if (i <= 0) {
         return "-";
@@ -524,7 +524,7 @@ static struct log_item_list *find_log_func(char k)
     return NULL;
 }
 
-static char *parse_log_misc_string(pool *p, log_format_item *it,
+static char *parse_log_misc_string(ap_context_t *p, log_format_item *it,
                                    const char **sa)
 {
     const char *s;
@@ -582,7 +582,7 @@ static char *parse_log_misc_string(pool *p, log_format_item *it,
     return NULL;
 }
 
-static char *parse_log_item(pool *p, log_format_item *it, const char **sa)
+static char *parse_log_item(ap_context_t *p, log_format_item *it, const char **sa)
 {
     const char *s = *sa;
 
@@ -667,9 +667,9 @@ static char *parse_log_item(pool *p, log_format_item *it, const char **sa)
     return "Ran off end of LogFormat parsing args to some directive";
 }
 
-static array_header *parse_log_string(pool *p, const char *s, const char **err)
+static ap_array_header_t *parse_log_string(ap_context_t *p, const char *s, const char **err)
 {
-    array_header *a = ap_make_array(p, 30, sizeof(log_format_item));
+    ap_array_header_t *a = ap_make_array(p, 30, sizeof(log_format_item));
     char *res;
 
     while (*s) {
@@ -731,7 +731,7 @@ static void flush_log(config_log_state *cls)
 #endif
 
 static int config_log_transaction(request_rec *r, config_log_state *cls,
-                                  array_header *default_format)
+                                  ap_array_header_t *default_format)
 {
     log_format_item *items;
     char *str, *s;
@@ -740,7 +740,7 @@ static int config_log_transaction(request_rec *r, config_log_state *cls,
     request_rec *orig;
     int i;
     int len = 0;
-    array_header *format;
+    ap_array_header_t *format;
     char *envar;
 
     if (cls->fname == NULL) {
@@ -855,7 +855,7 @@ static int multi_log_transaction(request_rec *r)
  * Module glue...
  */
 
-static void *make_config_log_state(pool *p, server_rec *s)
+static void *make_config_log_state(ap_context_t *p, server_rec *s)
 {
     multi_log_state *mls;
 
@@ -876,7 +876,7 @@ static void *make_config_log_state(pool *p, server_rec *s)
  * vhosts inherit any globally-defined format names.
  */
 
-static void *merge_config_log_state(pool *p, void *basev, void *addv)
+static void *merge_config_log_state(ap_context_t *p, void *basev, void *addv)
 {
     multi_log_state *base = (multi_log_state *) basev;
     multi_log_state *add = (multi_log_state *) addv;
@@ -978,9 +978,9 @@ static const command_rec config_log_cmds[] =
     {NULL}
 };
 
-static config_log_state *open_config_log(server_rec *s, pool *p,
+static config_log_state *open_config_log(server_rec *s, ap_context_t *p,
                                          config_log_state *cls,
-                                         array_header *default_format)
+                                         ap_array_header_t *default_format)
 {
     if (cls->log_fd > 0) {
         return cls;             /* virtual config shared w/main server */
@@ -1014,7 +1014,7 @@ static config_log_state *open_config_log(server_rec *s, pool *p,
     return cls;
 }
 
-static config_log_state *open_multi_logs(server_rec *s, pool *p)
+static config_log_state *open_multi_logs(server_rec *s, ap_context_t *p)
 {
     int i;
     multi_log_state *mls = ap_get_module_config(s->module_config,
@@ -1068,7 +1068,7 @@ static config_log_state *open_multi_logs(server_rec *s, pool *p)
     return NULL;
 }
 
-static void init_config_log(pool *pc, pool *p, pool *pt, server_rec *s)
+static void init_config_log(ap_context_t *pc, ap_context_t *p, ap_context_t *pt, server_rec *s)
 {
     /* First, do "physical" server, which gets default log fd and format
      * for the virtual servers, if they don't override...
@@ -1091,7 +1091,7 @@ static void init_config_log(pool *pc, pool *p, pool *pt, server_rec *s)
 static void flush_all_logs(server_rec *s)
 {
     multi_log_state *mls;
-    array_header *log_list;
+    ap_array_header_t *log_list;
     config_log_state *clsarray;
     int i;
 
@@ -1127,7 +1127,7 @@ module MODULE_VAR_EXPORT config_log_module =
     NULL,                       /* merge per-dir config */
     make_config_log_state,      /* server config */
     merge_config_log_state,     /* merge server config */
-    config_log_cmds,            /* command table */
+    config_log_cmds,            /* command ap_table_t */
     NULL,                       /* handlers */
     register_hooks              /* register hooks */
 };

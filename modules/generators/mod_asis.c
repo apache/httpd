@@ -119,7 +119,7 @@ static int asis_handler(request_rec *r)
 static const handler_rec asis_handlers[] =
 {
     {ASIS_MAGIC_TYPE, asis_handler},
-    {"send-as-is", asis_handler},
+    {"send-as ap_context_t s", asis_handler},
     {NULL}
 };
 
@@ -130,7 +130,7 @@ module MODULE_VAR_EXPORT asis_module =
     NULL,			/* merge per-directory config structures */
     NULL,			/* create per-server config structure */
     NULL,			/* merge per-server config structures */
-    NULL,			/* command table */
+    NULL,			/* command ap_table_t */
     asis_handlers,		/* handlers */
     NULL			/* register hooks */
 };

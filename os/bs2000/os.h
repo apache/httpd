@@ -6,7 +6,7 @@
 /*
  * This file in included in all Apache source code. It contains definitions
  * of facilities available on _this_ operating system (HAVE_* macros),
- * and prototypes of OS specific functions defined in os.c or os-inline.c
+ * and prototypes of OS specific functions defined in os.c or os ap_context_t nline.c
  */
 
 #if !defined(INLINE) && defined(USE_GNU_INLINE)
@@ -17,7 +17,7 @@
 
 INLINE int ap_os_is_path_absolute(const char *file);
 
-#include "os-inline.c"
+#include "os ap_context_t nline.c"
 #endif
 
 #ifndef INLINE

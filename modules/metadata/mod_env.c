@@ -67,7 +67,7 @@
  * 08.Dec.95 Now allows PassEnv directive to appear more than once in
  *           conf files.
  * 10.Dec.95 optimisation.  getenv() only called at startup and used 
- *           to build a fast-to-access table.  table used to build 
+ *           to build a fast-to-access table.  ap_table_t used to build 
  *           per-server environment for each request.
  *           robustness.  better able to handle errors in configuration
  *           files:
@@ -103,14 +103,14 @@
 #include "http_request.h"
 
 typedef struct {
-    table *vars;
+    ap_table_t *vars;
     char *unsetenv;
     int vars_present;
 } env_dir_config_rec;
 
 module MODULE_VAR_EXPORT env_module;
 
-static void *create_env_dir_config(pool *p, char *dummy)
+static void *create_env_dir_config(ap_context_t *p, char *dummy)
 {
     env_dir_config_rec *new =
     (env_dir_config_rec *) ap_palloc(p, sizeof(env_dir_config_rec));
@@ -120,16 +120,16 @@ static void *create_env_dir_config(pool *p, char *dummy)
     return (void *) new;
 }
 
-static void *merge_env_dir_configs(pool *p, void *basev, void *addv)
+static void *merge_env_dir_configs(ap_context_t *p, void *basev, void *addv)
 {
     env_dir_config_rec *base = (env_dir_config_rec *) basev;
     env_dir_config_rec *add = (env_dir_config_rec *) addv;
     env_dir_config_rec *new =
     (env_dir_config_rec *) ap_palloc(p, sizeof(env_dir_config_rec));
 
-    table *new_table;
-    table_entry *elts;
-    array_header *arr;
+    ap_table_t *new_table;
+    ap_table_entry_t *elts;
+    ap_array_header_t *arr;
 
     int i;
     const char *uenv, *unset;
@@ -147,7 +147,7 @@ static void *merge_env_dir_configs(pool *p, void *basev, void *addv)
     new_table = ap_copy_table(p, base->vars);
 
     arr = ap_table_elts(add->vars);
-    elts = (table_entry *)arr->elts;
+    elts = (ap_table_entry_t *)arr->elts;
 
     for (i = 0; i < arr->nelts; ++i) {
         ap_table_setn(new_table, elts[i].key, elts[i].val);
@@ -171,7 +171,7 @@ static const char *add_env_module_vars_passed(cmd_parms *cmd,
 					      env_dir_config_rec *sconf,
                                               const char *arg)
 {
-    table *vars = sconf->vars;
+    ap_table_t *vars = sconf->vars;
     char *env_var;
     char *name_ptr;
 
@@ -190,7 +190,7 @@ static const char *add_env_module_vars_set(cmd_parms *cmd,
 					   env_dir_config_rec *sconf,
                                            const char *arg)
 {
-    table *vars = sconf->vars;
+    ap_table_t *vars = sconf->vars;
     char *name, *value;
 
     name = ap_getword_conf(cmd->pool, &arg);
@@ -234,10 +234,10 @@ static const command_rec env_module_cmds[] =
 
 static int fixup_env_module(request_rec *r)
 {
-    table *e = r->subprocess_env;
+    ap_table_t *e = r->subprocess_env;
     env_dir_config_rec *sconf = ap_get_module_config(r->per_dir_config,
                                                      &env_module);
-    table *vars = sconf->vars;
+    ap_table_t *vars = sconf->vars;
 
     if (!sconf->vars_present)
         return DECLINED;
@@ -260,7 +260,7 @@ module MODULE_VAR_EXPORT env_module =
     merge_env_dir_configs,      /* dir merger --- default is to override */
     NULL,                       /* server config */
     NULL,                       /* merge server configs */
-    env_module_cmds,            /* command table */
+    env_module_cmds,            /* command ap_table_t */
     NULL,                       /* handlers */
     register_hooks              /* register hooks */
 };

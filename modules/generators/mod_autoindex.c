@@ -151,12 +151,12 @@ typedef struct autoindex_config_struct {
     int icon_height;
     char *default_order;
 
-    array_header *icon_list;
-    array_header *alt_list;
-    array_header *desc_list;
-    array_header *ign_list;
-    array_header *hdr_list;
-    array_header *rdme_list;
+    ap_array_header_t *icon_list;
+    ap_array_header_t *alt_list;
+    ap_array_header_t *desc_list;
+    ap_array_header_t *ign_list;
+    ap_array_header_t *hdr_list;
+    ap_array_header_t *rdme_list;
 
 } autoindex_config_rec;
 
@@ -197,7 +197,7 @@ static void emit_preamble(request_rec *r, char *title)
 	      "</TITLE>\n </HEAD>\n <BODY>\n", NULL);
 }
 
-static void push_item(array_header *arr, char *type, char *to, char *path,
+static void push_item(ap_array_header_t *arr, char *type, char *to, char *path,
 		      char *data)
 {
     struct item *p = (struct item *) ap_push_array(arr);
@@ -210,14 +210,14 @@ static void push_item(array_header *arr, char *type, char *to, char *path,
     }
 
     p->type = type;
-    p->data = data ? ap_pstrdup(arr->pool, data) : NULL;
-    p->apply_path = ap_pstrcat(arr->pool, path, "*", NULL);
+    p->data = data ? ap_pstrdup(arr->cont, data) : NULL;
+    p->apply_path = ap_pstrcat(arr->cont, path, "*", NULL);
 
     if ((type == BY_PATH) && (!ap_is_matchexp(to))) {
-	p->apply_to = ap_pstrcat(arr->pool, "*", to, NULL);
+	p->apply_to = ap_pstrcat(arr->cont, "*", to, NULL);
     }
     else if (to) {
-	p->apply_to = ap_pstrdup(arr->pool, to);
+	p->apply_to = ap_pstrdup(arr->cont, to);
     }
     else {
 	p->apply_to = NULL;
@@ -304,13 +304,13 @@ static const char *add_desc(cmd_parms *cmd, void *d, char *desc, char *to)
 			     || ap_is_fnmatch(to));
     if (desc_entry->wildcards) {
 	prefix = desc_entry->full_path ? "*/" : "*";
-	desc_entry->pattern = ap_pstrcat(dcfg->desc_list->pool,
+	desc_entry->pattern = ap_pstrcat(dcfg->desc_list->cont,
 					 prefix, to, "*", NULL);
     }
     else {
-	desc_entry->pattern = ap_pstrdup(dcfg->desc_list->pool, to);
+	desc_entry->pattern = ap_pstrdup(dcfg->desc_list->cont, to);
     }
-    desc_entry->description = ap_pstrdup(dcfg->desc_list->pool, desc);
+    desc_entry->description = ap_pstrdup(dcfg->desc_list->cont, desc);
     return NULL;
 }
 
@@ -563,7 +563,7 @@ static const command_rec autoindex_cmds[] =
     {NULL}
 };
 
-static void *create_autoindex_config(pool *p, char *dummy)
+static void *create_autoindex_config(ap_context_t *p, char *dummy)
 {
     autoindex_config_rec *new =
     (autoindex_config_rec *) ap_pcalloc(p, sizeof(autoindex_config_rec));
@@ -586,7 +586,7 @@ static void *create_autoindex_config(pool *p, char *dummy)
     return (void *) new;
 }
 
-static void *merge_autoindex_configs(pool *p, void *basev, void *addv)
+static void *merge_autoindex_configs(ap_context_t *p, void *basev, void *addv)
 {
     autoindex_config_rec *new;
     autoindex_config_rec *base = (autoindex_config_rec *) basev;
@@ -615,7 +615,7 @@ static void *merge_autoindex_configs(pool *p, void *basev, void *addv)
     }
     else {
 	/*
-	 * If there were any non-incremental options selected for
+	 * If there were any non ap_context_t ncremental options selected for
 	 * this directory, they dominate and we don't inherit *anything.*
 	 * Contrariwise, we *do* inherit if the only settings here are
 	 * incremental ones.
@@ -634,7 +634,7 @@ static void *merge_autoindex_configs(pool *p, void *basev, void *addv)
 	}
 	else {
 	    /*
-	     * There are local non-incremental settings, which clear
+	     * There are local non ap_context_t ncremental settings, which clear
 	     * all inheritance from above.  They *are* the new base settings.
 	     */
 	    new->opts = add->opts;;
@@ -684,7 +684,7 @@ struct ent {
     char key;
 };
 
-static char *find_item(request_rec *r, array_header *list, int path_only)
+static char *find_item(request_rec *r, ap_array_header_t *list, int path_only)
 {
     const char *content_type = r->content_type;
     const char *content_encoding = r->content_encoding;
@@ -809,7 +809,7 @@ static char *find_desc(autoindex_config_rec *dcfg, request_rec *r)
 
 static int ignore_entry(autoindex_config_rec *d, char *path)
 {
-    array_header *list = d->ign_list;
+    ap_array_header_t *list = d->ign_list;
     struct item *items = (struct item *) list->elts;
     char *tt;
     int i;
@@ -1269,11 +1269,12 @@ static void output_directories(struct ent **ar, int n,
     char *name = r->uri;
     char *tp;
     int static_columns = (autoindex_opts & SUPPRESS_COLSORT);
-    pool *scratch = ap_make_sub_pool(r->pool);
+    ap_context_t *scratch;
     int name_width;
     char *name_scratch;
     char *pad_scratch;
 
+    ap_create_context(r->pool, NULL, &scratch);
     if (name[0] == '\0') {
 	name = "/";
     }
@@ -1654,7 +1655,7 @@ module MODULE_VAR_EXPORT autoindex_module =
     merge_autoindex_configs,	/* dir merger --- default is to override */
     NULL,			/* server config */
     NULL,			/* merge server config */
-    autoindex_cmds,		/* command table */
+    autoindex_cmds,		/* command ap_table_t */
     autoindex_handlers,		/* handlers */
     NULL			/* register hooks */
 };

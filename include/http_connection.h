@@ -64,7 +64,7 @@
 extern "C" {
 #endif
 
-conn_rec *ap_new_connection(pool *p, server_rec *server, BUFF *inout,
+conn_rec *ap_new_connection(ap_context_t *p, server_rec *server, BUFF *inout,
 			    const struct sockaddr_in *remaddr,
 			    const struct sockaddr_in *saddr, long id);
 CORE_EXPORT(void) ap_process_connection(conn_rec *);

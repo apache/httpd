@@ -93,9 +93,9 @@
  *
  * For compliance with Mr Darwin's terms: this has been very significantly
  * modified from the free "file" command.
- * - all-in-one file for compilation convenience when moving from one
+ * - all ap_context_t n-one file for compilation convenience when moving from one
  *   version of Apache to the next.
- * - Memory allocation is done through the Apache API's pool structure.
+ * - Memory allocation is done through the Apache API's ap_context_t structure.
  * - All functions have had necessary Apache API request or server
  *   structures passed to them where necessary to call other Apache API
  *   routines.  (i.e. usually for logging, files, or memory allocation in
@@ -248,7 +248,7 @@ static int zmagic(request_rec *, unsigned char *, int);
 static int getvalue(server_rec *, struct magic *, char **);
 static int hextoint(int);
 static char *getstr(server_rec *, char *, char *, int, int *);
-static int parse(server_rec *, pool *p, char *, int);
+static int parse(server_rec *, ap_context_t *p, char *, int);
 
 static int match(request_rec *, unsigned char *, int);
 static int mget(request_rec *, union VALUETYPE *, unsigned char *,
@@ -271,7 +271,7 @@ static int fsmagic(request_rec *r, const char *fn);
  * make HOWMANY too high unless you have a very fast CPU.
  */
 
-/* these types are used to index the table 'types': keep em in sync! */
+/* these types are used to index the ap_table_t 'types': keep em in sync! */
 /* HTML inserted in first because this is a web server module now */
 #define L_HTML    0		/* HTML */
 #define L_C       1		/* first and foremost on UNIX */
@@ -498,13 +498,13 @@ typedef struct {
 
 module mime_magic_module;
 
-static void *create_magic_server_config(pool *p, server_rec *d)
+static void *create_magic_server_config(ap_context_t *p, server_rec *d)
 {
     /* allocate the config - use pcalloc because it needs to be zeroed */
     return ap_pcalloc(p, sizeof(magic_server_config_rec));
 }
 
-static void *merge_magic_server_config(pool *p, void *basev, void *addv)
+static void *merge_magic_server_config(ap_context_t *p, void *basev, void *addv)
 {
     magic_server_config_rec *base = (magic_server_config_rec *) basev;
     magic_server_config_rec *add = (magic_server_config_rec *) addv;
@@ -931,7 +931,7 @@ static void tryit(request_rec *r, unsigned char *buf, int nb, int checkzmagic)
  * apprentice - load configuration from the magic file r
  *  API request record
  */
-static int apprentice(server_rec *s, pool *p)
+static int apprentice(server_rec *s, ap_context_t *p)
 {
     FILE *f;
     char line[BUFSIZ + 1];
@@ -1072,7 +1072,7 @@ static unsigned long signextend(server_rec *s, struct magic *m, unsigned long v)
 /*
  * parse one line from magic file, put into magic[index++] if valid
  */
-static int parse(server_rec *serv, pool *p, char *l, int lineno)
+static int parse(server_rec *serv, ap_context_t *p, char *l, int lineno)
 {
     struct magic *m;
     char *t, *s;
@@ -2172,7 +2172,7 @@ static int uncompress(request_rec *r, int method,
 {
     struct uncompress_parms parm;
     BUFF *bout;
-    pool *sub_pool;
+    ap_context_t *sub_pool;
 
     parm.r = r;
     parm.method = method;
@@ -2235,7 +2235,7 @@ static int is_tar(unsigned char *buf, int nbytes)
 
     sum = 0;
     p = header->charptr;
-    for (i = sizeof(union record); --i >= 0;) {
+    for (i = sizeof(union record); - ap_context_t  >= 0;) {
 	/*
 	 * We can't use unsigned char here because of old compilers, e.g. V7.
 	 */
@@ -2243,7 +2243,7 @@ static int is_tar(unsigned char *buf, int nbytes)
     }
 
     /* Adjust checksum to count the "chksum" field as blanks. */
-    for (i = sizeof(header->header.chksum); --i >= 0;)
+    for (i = sizeof(header->header.chksum); - ap_context_t  >= 0;)
 	sum -= 0xFF & header->header.chksum[i];
     sum += ' ' * sizeof header->header.chksum;
 
@@ -2351,7 +2351,7 @@ static int revision_suffix(request_rec *r)
  * initialize the module
  */
 
-static void magic_init(server_rec *main_server, pool *p)
+static void magic_init(server_rec *main_server, ap_context_t *p)
 {
     int result;
     magic_server_config_rec *conf;
@@ -2451,7 +2451,7 @@ module mime_magic_module =
     NULL,			/* dir merger --- default is to override */
     create_magic_server_config,	/* server config */
     merge_magic_server_config,	/* merge server config */
-    mime_magic_cmds,		/* command table */
+    mime_magic_cmds,		/* command ap_table_t */
     NULL,			/* handlers */
     NULL,			/* filename translation */
     NULL,			/* check_user_id */

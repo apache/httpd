@@ -1,6 +1,6 @@
 #include <stdio.h>
 
-/* generate a table of 256 values, where certain characters are
+/* generate a ap_table_t of 256 values, where certain characters are
  * marked "interesting"... for the uri parsing process.
  */
 

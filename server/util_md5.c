@@ -87,7 +87,7 @@
 #include "httpd.h"
 #include "util_md5.h"
 
-API_EXPORT(char *) ap_md5_binary(pool *p, const unsigned char *buf, int length)
+API_EXPORT(char *) ap_md5_binary(ap_context_t *p, const unsigned char *buf, int length)
 {
     const char *hex = "0123456789abcdef";
     AP_MD5_CTX my_md5;
@@ -112,7 +112,7 @@ API_EXPORT(char *) ap_md5_binary(pool *p, const unsigned char *buf, int length)
     return ap_pstrdup(p, result);
 }
 
-API_EXPORT(char *) ap_md5(pool *p, const unsigned char *string)
+API_EXPORT(char *) ap_md5(ap_context_t *p, const unsigned char *string)
 {
     return ap_md5_binary(p, string, (int) strlen((char *)string));
 }
@@ -162,7 +162,7 @@ API_EXPORT(char *) ap_md5(pool *p, const unsigned char *string)
 static char basis_64[] =
 "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 
-API_EXPORT(char *) ap_md5contextTo64(pool *a, AP_MD5_CTX * context)
+API_EXPORT(char *) ap_md5contextTo64(ap_context_t *a, AP_MD5_CTX * context)
 {
     unsigned char digest[18];
     char *encodedDigest;
@@ -189,7 +189,7 @@ API_EXPORT(char *) ap_md5contextTo64(pool *a, AP_MD5_CTX * context)
 
 #ifdef CHARSET_EBCDIC
 
-API_EXPORT(char *) ap_md5digest(pool *p, APRFile infile, int convert)
+API_EXPORT(char *) ap_md5digest(ap_context_t *p, APRFile infile, int convert)
 {
     AP_MD5_CTX context;
     unsigned char buf[1000];
@@ -212,7 +212,7 @@ API_EXPORT(char *) ap_md5digest(pool *p, APRFile infile, int convert)
 
 #else
 
-API_EXPORT(char *) ap_md5digest(pool *p, APRFile infile)
+API_EXPORT(char *) ap_md5digest(ap_context_t *p, APRFile infile)
 {
     AP_MD5_CTX context;
     unsigned char buf[1000];

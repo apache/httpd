@@ -5,7 +5,7 @@
 #include "http_log.h"
 
 
-API_EXPORT(char *)ap_os_canonical_filename(pool *pPool, const char *szFile)
+API_EXPORT(char *)ap_os_canonical_filename(ap_context_t *pPool, const char *szFile)
 {
     char buf[HUGE_STRING_LEN];
     char buf2[HUGE_STRING_LEN];

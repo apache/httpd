@@ -74,11 +74,11 @@ typedef struct handlers_info {
 } handlers_info;
 
 typedef struct {
-    table *forced_types;        /* Additional AddTyped stuff */
-    table *encoding_types;      /* Added with AddEncoding... */
-    table *language_types;      /* Added with AddLanguage... */
-    table *handlers;            /* Added with AddHandler...  */
-    array_header *handlers_remove;     /* List of handlers to remove */
+    ap_table_t *forced_types;        /* Additional AddTyped stuff */
+    ap_table_t *encoding_types;      /* Added with AddEncoding... */
+    ap_table_t *language_types;      /* Added with AddLanguage... */
+    ap_table_t *handlers;            /* Added with AddHandler...  */
+    ap_array_header_t *handlers_remove;     /* List of handlers to remove */
 
     char *type;                 /* Type forced with ForceType  */
     char *handler;              /* Handler forced with SetHandler */
@@ -87,7 +87,7 @@ typedef struct {
 
 module MODULE_VAR_EXPORT mime_module;
 
-static void *create_mime_dir_config(pool *p, char *dummy)
+static void *create_mime_dir_config(ap_context_t *p, char *dummy)
 {
     mime_dir_config *new =
     (mime_dir_config *) ap_palloc(p, sizeof(mime_dir_config));
@@ -105,7 +105,7 @@ static void *create_mime_dir_config(pool *p, char *dummy)
     return new;
 }
 
-static void *merge_mime_dir_configs(pool *p, void *basev, void *addv)
+static void *merge_mime_dir_configs(ap_context_t *p, void *basev, void *addv)
 {
     mime_dir_config *base = (mime_dir_config *) basev;
     mime_dir_config *add = (mime_dir_config *) addv;
@@ -230,16 +230,16 @@ static const command_rec mime_cmds[] =
     {NULL}
 };
 
-/* Hash table  --- only one of these per daemon; virtual hosts can
+/* Hash ap_table_t  --- only one of these per daemon; virtual hosts can
  * get private versions through AddType...
  */
 
 #define MIME_HASHSIZE (32)
 #define hash(i) (ap_tolower(i) % MIME_HASHSIZE)
 
-static table *hash_buckets[MIME_HASHSIZE];
+static ap_table_t *hash_buckets[MIME_HASHSIZE];
 
-static void mime_post_config(pool *p, pool *plog, pool *ptemp, server_rec *s)
+static void mime_post_config(ap_context_t *p, ap_context_t *plog, ap_context_t *ptemp, server_rec *s)
 {
     configfile_t *f;
     char l[MAX_STRING_LEN];
@@ -391,7 +391,7 @@ module MODULE_VAR_EXPORT mime_module = {
     merge_mime_dir_configs,	/* merge per-directory config structures */
     NULL,			/* create per-server config structure */
     NULL,			/* merge per-server config structures */
-    mime_cmds,			/* command table */
+    mime_cmds,			/* command ap_table_t */
     NULL,			/* handlers */
     register_hooks		/* register hooks */
 };

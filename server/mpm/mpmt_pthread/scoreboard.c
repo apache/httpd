@@ -27,7 +27,7 @@ caddr_t get_shared_heap(const char *);
 
 scoreboard *ap_scoreboard_image = NULL;
 static char *ap_server_argv0=NULL;
-extern pool * pconf;
+extern ap_context_t * pconf;
 
 /*****************************************************************
  *
@@ -46,7 +46,7 @@ extern pool * pconf;
  * shared memory (so they use memcpy etc.)
  */
 
-void reinit_scoreboard(pool *p)
+void reinit_scoreboard(ap_context_t *p)
 {
     ap_assert(!ap_scoreboard_image);
     ap_scoreboard_image = (scoreboard *) malloc(SCOREBOARD_SIZE);
@@ -114,7 +114,7 @@ caddr_t get_shared_heap(const char *Name)
     return BaseAddress;
 }
 
-static void setup_shared_mem(pool *p)
+static void setup_shared_mem(ap_context_t *p)
 {
     caddr_t m;
 
@@ -137,7 +137,7 @@ static void setup_shared_mem(pool *p)
     ap_scoreboard_image->global.running_generation = 0;
 }
 
-API_EXPORT(void) reopen_scoreboard(pool *p)
+API_EXPORT(void) reopen_scoreboard(ap_context_t *p)
 {
     caddr_t m;
     int rc;
@@ -189,7 +189,7 @@ static void cleanup_shared_mem(void *d)
     shm_unlink(ap_scoreboard_fname);
 }
 
-static void setup_shared_mem(pool *p)
+static void setup_shared_mem(ap_context_t *p)
 {
     char buf[512];
     caddr_t m;
@@ -224,13 +224,13 @@ static void setup_shared_mem(pool *p)
     ap_scoreboard_image->global.running_generation = 0;
 }
 
-API_EXPORT(void) reopen_scoreboard(pool *p)
+API_EXPORT(void) reopen_scoreboard(ap_context_t *p)
 {
 }
 
 #elif defined(USE_MMAP_SCOREBOARD)
 
-static void setup_shared_mem(pool *p)
+static void setup_shared_mem(ap_context_t *p)
 {
     caddr_t m;
 
@@ -304,7 +304,7 @@ static void setup_shared_mem(pool *p)
     ap_scoreboard_image->global.running_generation = 0;
 }
 
-API_EXPORT(void) reopen_scoreboard(pool *p)
+API_EXPORT(void) reopen_scoreboard(ap_context_t *p)
 {
 }
 
@@ -312,7 +312,7 @@ API_EXPORT(void) reopen_scoreboard(pool *p)
 static key_t shmkey = IPC_PRIVATE;
 static int shmid = -1;
 
-static void setup_shared_mem(pool *p)
+static void setup_shared_mem(ap_context_t *p)
 {
     struct shmid_ds shmbuf;
     const server_rec * server_conf = ap_get_server_conf();
@@ -397,7 +397,7 @@ static void setup_shared_mem(pool *p)
     ap_scoreboard_image->global.running_generation = 0;
 }
 
-API_EXPORT(void) reopen_scoreboard(pool *p)
+API_EXPORT(void) reopen_scoreboard(ap_context_t *p)
 {
 }
 
@@ -444,7 +444,7 @@ static void cleanup_scoreboard_file(void *foo)
     unlink(ap_scoreboard_fname);
 }
 
-API_EXPORT(void) reopen_scoreboard(pool *p)
+API_EXPORT(void) reopen_scoreboard(ap_context_t *p)
 {
     if (scoreboard_fd != -1)
 	ap_pclosef(p, scoreboard_fd);
@@ -459,7 +459,7 @@ API_EXPORT(void) reopen_scoreboard(pool *p)
 #endif
 
 /* Called by parent process */
-void reinit_scoreboard(pool *p)
+void reinit_scoreboard(ap_context_t *p)
 {
     int running_gen = 0;
     if (ap_scoreboard_image)

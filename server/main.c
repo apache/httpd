@@ -66,9 +66,9 @@ char *ap_server_argv0;
 
 API_VAR_EXPORT const char *ap_server_root;
 
-array_header *ap_server_pre_read_config;
-array_header *ap_server_post_read_config;
-array_header *ap_server_config_defines;
+ap_array_header_t *ap_server_pre_read_config;
+ap_array_header_t *ap_server_post_read_config;
+ap_array_header_t *ap_server_config_defines;
 
 static void show_compile_settings(void)
 {
@@ -156,7 +156,7 @@ static void show_compile_settings(void)
     printf(" -D SHARED_CORE\n");
 #endif
 
-/* This list displays the compiled-in default paths: */
+/* This list displays the compiled ap_context_t n default paths: */
 #ifdef HTTPD_ROOT
     printf(" -D HTTPD_ROOT=\"" HTTPD_ROOT "\"\n");
 #endif
@@ -222,7 +222,7 @@ static void usage(char *bin)
     fprintf(stderr, "  -v               : show version number\n");
     fprintf(stderr, "  -V               : show compile settings\n");
     fprintf(stderr, "  -h               : list available command line options (this page)\n");
-    fprintf(stderr, "  -l               : list compiled-in modules\n");
+    fprintf(stderr, "  -l               : list compiled ap_context_t n modules\n");
     fprintf(stderr, "  -L               : list available configuration directives\n");
     /* TODOC: -S has been replaced by '-t -D DUMP_VHOSTS' */
     /* fprintf(stderr, "  -S               : show parsed settings (currently only vhost settings)\n"); */
@@ -232,7 +232,7 @@ static void usage(char *bin)
     exit(1);
 }
 
-pool *g_pHookPool;
+ap_context_t *g_pHookPool;
 
 extern char *optarg;
 
@@ -249,11 +249,11 @@ int main(int argc, char **argv)
     const char *confname = SERVER_CONFIG_FILE;
     const char *def_server_root = HTTPD_ROOT;
     server_rec *server_conf;
-    pool *pglobal;           	/* Global pool */
-    pool *pconf;		/* Pool for config stuff */
-    pool *plog;			/* Pool for error-logging files */
-    pool *ptemp;		/* Pool for temporart config stuff */
-    pool *pcommands;		/* Pool for -C and -c switches */
+    ap_context_t *pglobal;           	/* Global pool */
+    ap_context_t *pconf;		/* Pool for config stuff */
+    ap_context_t *plog;			/* Pool for error-logging files */
+    ap_context_t *ptemp;		/* Pool for temporart config stuff */
+    ap_context_t *pcommands;		/* Pool for -C and -c switches */
 
     /* TODO: PATHSEPARATOR should be one of the os defines */
 #define PATHSEPARATOR '/'
@@ -267,10 +267,10 @@ int main(int argc, char **argv)
     ap_util_init();
     ap_util_uri_init();
 
-    pglobal = ap_init_alloc();
+    ap_create_context(NULL, NULL, &pglobal);
     g_pHookPool=pglobal;
 
-    pcommands = ap_make_sub_pool(pglobal);
+    ap_create_context(pglobal, NULL, &pcommands);
     ap_server_pre_read_config  = ap_make_array(pcommands, 1, sizeof(char *));
     ap_server_post_read_config = ap_make_array(pcommands, 1, sizeof(char *));
     ap_server_config_defines   = ap_make_array(pcommands, 1, sizeof(char *));
@@ -317,9 +317,9 @@ int main(int argc, char **argv)
 	}
     }
 
-    pconf = ap_make_sub_pool(pglobal);
-    plog = ap_make_sub_pool(pglobal);
-    ptemp = ap_make_sub_pool(pconf);
+    ap_create_context(pglobal, NULL, &pconf);
+    ap_create_context(pglobal, NULL, &plog);
+    ap_create_context(pconf, NULL, &ptemp);
 
     /* for legacy reasons, we read the configuration twice before
 	we actually serve any requests */
@@ -340,7 +340,7 @@ int main(int argc, char **argv)
 
     for (;;) {
 	ap_clear_pool(pconf);
-	ptemp = ap_make_sub_pool(pconf);
+	ap_create_context(pconf, NULL, &ptemp);
 	ap_server_root = def_server_root;
 	ap_run_pre_config(pconf, plog, ptemp);
 	server_conf = ap_read_config(pconf, ptemp, confname);

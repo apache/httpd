@@ -153,7 +153,7 @@
      * MODULE-DEFINITION-END
      */
 
-    /* the table of commands we provide */
+    /* the ap_table_t of commands we provide */
 static const command_rec command_table[] = {
     { "RewriteEngine",   cmd_rewriteengine,   NULL, OR_FILEINFO, FLAG,
       "On or Off to enable or disable (default) the whole rewriting engine" },
@@ -177,7 +177,7 @@ static const command_rec command_table[] = {
     { NULL }
 };
 
-    /* the table of content handlers we provide */
+    /* the ap_table_t of content handlers we provide */
 static const handler_rec handler_table[] = {
     { "redirect-handler", handler_redirect },
     { NULL }
@@ -191,7 +191,7 @@ module MODULE_VAR_EXPORT rewrite_module = {
    config_perdir_merge,         /* merge  per-dir    config structures */
    config_server_create,        /* create per-server config structures */
    config_server_merge,         /* merge  per-server config structures */
-   command_table,               /* table of config file commands       */
+   command_table,               /* ap_table_t of config file commands       */
    handler_table,               /* [#8] MIME-typed-dispatched handlers */
    hook_uri2file,               /* [#1] URI to filename translation    */
    NULL,                        /* [#4] validate user id from request  */
@@ -229,7 +229,7 @@ static int lockfd = -1;
 **
 */
 
-static void *config_server_create(pool *p, server_rec *s)
+static void *config_server_create(ap_context_t *p, server_rec *s)
 {
     rewrite_server_conf *a;
 
@@ -248,7 +248,7 @@ static void *config_server_create(pool *p, server_rec *s)
     return (void *)a;
 }
 
-static void *config_server_merge(pool *p, void *basev, void *overridesv)
+static void *config_server_merge(ap_context_t *p, void *basev, void *overridesv)
 {
     rewrite_server_conf *a, *base, *overrides;
 
@@ -304,7 +304,7 @@ static void *config_server_merge(pool *p, void *basev, void *overridesv)
 **
 */
 
-static void *config_perdir_create(pool *p, char *path)
+static void *config_perdir_create(ap_context_t *p, char *path)
 {
     rewrite_perdir_conf *a;
 
@@ -332,7 +332,7 @@ static void *config_perdir_create(pool *p, char *path)
     return (void *)a;
 }
 
-static void *config_perdir_merge(pool *p, void *basev, void *overridesv)
+static void *config_perdir_merge(ap_context_t *p, void *basev, void *overridesv)
 {
     rewrite_perdir_conf *a, *base, *overrides;
 
@@ -407,7 +407,7 @@ static const char *cmd_rewriteoptions(cmd_parms *cmd,
     return err;
 }
 
-static const char *cmd_rewriteoptions_setoption(pool *p, int *options,
+static const char *cmd_rewriteoptions_setoption(ap_context_t *p, int *options,
                                                 char *name)
 {
     if (strcasecmp(name, "inherit") == 0) {
@@ -605,7 +605,7 @@ static const char *cmd_rewritecond(cmd_parms *cmd, rewrite_perdir_conf *dconf,
     }
 
     /* now be careful: Under the POSIX regex library
-       we can compile the pattern for case-insensitive matching,
+       we can compile the pattern for case ap_context_t nsensitive matching,
        under the old V8 library we have to do it self via a hack */
     if (new->flags & CONDFLAG_NOCASE) {
         rc = ((regexp = ap_pregcomp(cmd->pool, cp, REG_EXTENDED|REG_ICASE))
@@ -626,7 +626,7 @@ static const char *cmd_rewritecond(cmd_parms *cmd, rewrite_perdir_conf *dconf,
     return NULL;
 }
 
-static const char *cmd_rewritecond_parseflagfield(pool *p,
+static const char *cmd_rewritecond_parseflagfield(ap_context_t *p,
                                                   rewritecond_entry *cfg,
                                                   char *str)
 {
@@ -678,7 +678,7 @@ static const char *cmd_rewritecond_parseflagfield(pool *p,
     return NULL;
 }
 
-static const char *cmd_rewritecond_setflag(pool *p, rewritecond_entry *cfg,
+static const char *cmd_rewritecond_setflag(ap_context_t *p, rewritecond_entry *cfg,
                                            char *key, char *val)
 {
     if (   strcasecmp(key, "nocase") == 0
@@ -782,7 +782,7 @@ static const char *cmd_rewriterule(cmd_parms *cmd, rewrite_perdir_conf *dconf,
     return NULL;
 }
 
-static const char *cmd_rewriterule_parseflagfield(pool *p,
+static const char *cmd_rewriterule_parseflagfield(ap_context_t *p,
                                                   rewriterule_entry *cfg,
                                                   char *str)
 {
@@ -834,7 +834,7 @@ static const char *cmd_rewriterule_parseflagfield(pool *p,
     return NULL;
 }
 
-static const char *cmd_rewriterule_setflag(pool *p, rewriterule_entry *cfg,
+static const char *cmd_rewriterule_setflag(ap_context_t *p, rewriterule_entry *cfg,
                                            char *key, char *val)
 {
     int status = 0;
@@ -939,7 +939,7 @@ static const char *cmd_rewriterule_setflag(pool *p, rewriterule_entry *cfg,
 **
 */
 
-static void init_module(server_rec *s, pool *p)
+static void init_module(server_rec *s, ap_context_t *p)
 {
     /* check if proxy module is available */
     proxy_available = (ap_find_linked_module("mod_proxy.c") != NULL);
@@ -966,7 +966,7 @@ static void init_module(server_rec *s, pool *p)
 **
 */
 
-static void init_child(server_rec *s, pool *p)
+static void init_child(server_rec *s, ap_context_t *p)
 {
      /* open the rewriting lockfile */
      rewritelock_open(s, p);
@@ -1595,7 +1595,7 @@ static int handler_redirect(request_rec *r)
  *  Apply a complete rule set,
  *  i.e. a list of rewrite rules
  */
-static int apply_rewrite_list(request_rec *r, array_header *rewriterules,
+static int apply_rewrite_list(request_rec *r, ap_array_header_t *rewriterules,
                               char *perdir)
 {
     rewriterule_entry *entries;
@@ -1740,7 +1740,7 @@ static int apply_rewrite_rule(request_rec *r, rewriterule_entry *p,
     backrefinfo *briRC = NULL;
     int prefixstrip;
     int failed;
-    array_header *rewriteconds;
+    ap_array_header_t *rewriteconds;
     rewritecond_entry *conds;
     rewritecond_entry *c;
     int i;
@@ -1758,7 +1758,7 @@ static int apply_rewrite_rule(request_rec *r, rewriterule_entry *p,
      *  make sure we really match against the complete URL.
      */
     if (perdir != NULL && r->path_info != NULL && r->path_info[0] != '\0') {
-        rewritelog(r, 3, "[per-dir %s] add path-info postfix: %s -> %s%s",
+        rewritelog(r, 3, "[per-dir %s] add path ap_context_t nfo postfix: %s -> %s%s",
                    perdir, uri, uri, r->path_info);
         uri = ap_pstrcat(r->pool, uri, r->path_info, NULL);
     }
@@ -2467,7 +2467,7 @@ static void fully_qualify_uri(request_rec *r)
 **
 */
 
-static void expand_backref_inbuffer(pool *p, char *buf, int nbuf,
+static void expand_backref_inbuffer(ap_context_t *p, char *buf, int nbuf,
                                     backrefinfo *bri, char c)
 {
     int i;
@@ -2675,7 +2675,7 @@ static char *lookup_map(request_rec *r, char *name, char *key)
 {
     void *sconf;
     rewrite_server_conf *conf;
-    array_header *rewritemaps;
+    ap_array_header_t *rewritemaps;
     rewritemap_entry *entries;
     rewritemap_entry *s;
     char *value;
@@ -3081,7 +3081,7 @@ static char *select_random_value_part(request_rec *r, char *value)
 */
 
 
-static void open_rewritelog(server_rec *s, pool *p)
+static void open_rewritelog(server_rec *s, ap_context_t *p)
 {
     rewrite_server_conf *conf;
     char *fname;
@@ -3251,7 +3251,7 @@ static char *current_logtime(request_rec *r)
 #define REWRITELOCK_MODE ( S_IRUSR|S_IWUSR|S_IRGRP|S_IROTH )
 #endif
 
-static void rewritelock_create(server_rec *s, pool *p)
+static void rewritelock_create(server_rec *s, ap_context_t *p)
 {
     rewrite_server_conf *conf;
 
@@ -3283,7 +3283,7 @@ static void rewritelock_create(server_rec *s, pool *p)
     return;
 }
 
-static void rewritelock_open(server_rec *s, pool *p)
+static void rewritelock_open(server_rec *s, ap_context_t *p)
 {
     rewrite_server_conf *conf;
 
@@ -3343,13 +3343,13 @@ static void rewritelock_free(request_rec *r)
 ** +-------------------------------------------------------+
 */
 
-static void run_rewritemap_programs(server_rec *s, pool *p)
+static void run_rewritemap_programs(server_rec *s, ap_context_t *p)
 {
     rewrite_server_conf *conf;
     FILE *fpin;
     FILE *fpout;
     FILE *fperr;
-    array_header *rewritemaps;
+    ap_array_header_t *rewritemaps;
     rewritemap_entry *entries;
     rewritemap_entry *map;
     int i;
@@ -3689,7 +3689,7 @@ static char *lookup_variable(request_rec *r, char *var)
             rsub = subrecfunc(r->filename, r); \
             /* now recursively lookup the variable in the sub_req */ \
             result = lookup_variable(rsub, var+5); \
-            /* copy it up to our scope before we destroy sub_req's pool */ \
+            /* copy it up to our scope before we destroy sub_req's ap_context_t */ \
             result = ap_pstrdup(r->pool, result); \
             /* cleanup by destroying the subrequest */ \
             ap_destroy_sub_req(rsub); \
@@ -3756,7 +3756,7 @@ static char *lookup_variable(request_rec *r, char *var)
 
 static char *lookup_header(request_rec *r, const char *name)
 {
-    array_header *hdrs_arr;
+    ap_array_header_t *hdrs_arr;
     table_entry *hdrs;
     int i;
 
@@ -3786,7 +3786,7 @@ static char *lookup_header(request_rec *r, const char *name)
 */
 
 
-static cache *init_cache(pool *p)
+static cache *init_cache(ap_context_t *p)
 {
     cache *c;
 

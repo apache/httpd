@@ -56,6 +56,7 @@
  */
 
 #define CORE_PRIVATE
+#include "apr_lib.h"
 #include "httpd.h"
 #include "http_config.h"
 #include "http_core.h"
@@ -106,7 +107,7 @@
  * the http_conf_globals.
  */
 
-static void *create_core_dir_config(pool *a, char *dir)
+static void *create_core_dir_config(ap_context_t *a, char *dir)
 {
     core_dir_config *conf;
 
@@ -146,7 +147,7 @@ static void *create_core_dir_config(pool *a, char *dir)
     return (void *)conf;
 }
 
-static void *merge_core_dir_configs(pool *a, void *basev, void *newv)
+static void *merge_core_dir_configs(ap_context_t *a, void *basev, void *newv)
 {
     core_dir_config *base = (core_dir_config *)basev;
     core_dir_config *new = (core_dir_config *)newv;
@@ -257,7 +258,7 @@ static void *merge_core_dir_configs(pool *a, void *basev, void *newv)
     return (void*)conf;
 }
 
-static void *create_core_server_config(pool *a, server_rec *s)
+static void *create_core_server_config(ap_context_t *a, server_rec *s)
 {
     core_server_config *conf;
     int is_virtual = s->is_virtual;
@@ -274,7 +275,7 @@ static void *create_core_server_config(pool *a, server_rec *s)
     return (void *)conf;
 }
 
-static void *merge_core_server_configs(pool *p, void *basev, void *virtv)
+static void *merge_core_server_configs(ap_context_t *p, void *basev, void *virtv)
 {
     core_server_config *base = (core_server_config *)basev;
     core_server_config *virt = (core_server_config *)virtv;
@@ -382,15 +383,15 @@ static int reorder_sorter(const void *va, const void *vb)
     return a->orig_index - b->orig_index;
 }
 
-void ap_core_reorder_directories(pool *p, server_rec *s)
+void ap_core_reorder_directories(ap_context_t *p, server_rec *s)
 {
     core_server_config *sconf;
-    array_header *sec;
+    ap_array_header_t *sec;
     struct reorder_sort_rec *sortbin;
     int nelts;
     void **elts;
     int i;
-    pool *tmp;
+    ap_context_t *tmp;
 
     sconf = ap_get_module_config(s->module_config, &core_module);
     sec = sconf->sec;
@@ -398,7 +399,7 @@ void ap_core_reorder_directories(pool *p, server_rec *s)
     elts = (void **)sec->elts;
 
     /* we have to allocate tmp space to do a stable sort */
-    tmp = ap_make_sub_pool(p);
+    ap_create_context(p, NULL, &tmp);
     sortbin = ap_palloc(tmp, sec->nelts * sizeof(*sortbin));
     for (i = 0; i < nelts; ++i) {
 	sortbin[i].orig_index = i;
@@ -478,7 +479,7 @@ API_EXPORT(const char *) ap_document_root(request_rec *r) /* Don't use this! */
     return conf->ap_document_root;
 }
 
-API_EXPORT(const array_header *) ap_requires(request_rec *r)
+API_EXPORT(const ap_array_header_t *) ap_requires(request_rec *r)
 {
     core_dir_config *conf;
 
@@ -700,7 +701,7 @@ API_EXPORT(unsigned) ap_get_server_port(const request_rec *r)
     return port;
 }
 
-API_EXPORT(char *) ap_construct_url(pool *p, const char *uri,
+API_EXPORT(char *) ap_construct_url(ap_context_t *p, const char *uri,
 				    request_rec *r)
 {
     unsigned port = ap_get_server_port(r);
@@ -721,7 +722,7 @@ API_EXPORT(unsigned long) ap_get_limit_req_body(const request_rec *r)
 }
 
 #ifdef WIN32
-static char* get_interpreter_from_win32_registry(pool *p, const char* ext) 
+static char* get_interpreter_from_win32_registry(ap_context_t *p, const char* ext) 
 {
     char extension_path[] = "SOFTWARE\\Classes\\";
     char executable_path[] = "\\SHELL\\OPEN\\COMMAND";
@@ -739,7 +740,7 @@ static char* get_interpreter_from_win32_registry(pool *p, const char* ext)
     /* 
      * Future optimization:
      * When the registry is successfully searched, store the interpreter
-     * string in a table to make subsequent look-ups faster
+     * string in a ap_table_t to make subsequent look-ups faster
      */
 
     /* Open the key associated with the script extension */
@@ -1677,7 +1678,7 @@ static const char *virtualhost_section(cmd_parms *cmd, void *dummy, char *arg)
     server_rec *main_server = cmd->server, *s;
     const char *errmsg;
     char *endp = strrchr(arg, '>');
-    pool *p = cmd->pool, *ptemp = cmd->temp_pool;
+    ap_context_t *p = cmd->pool, *ptemp = cmd->temp_pool;
     const char *old_end_token;
 
     const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
@@ -2109,7 +2110,7 @@ static const char *set_serv_tokens(cmd_parms *cmd, void *dummy, char *arg)
         return err;
     }
 
-    /* TODO: re-implement the server token stuff. */
+    /* TODO: re ap_context_t mplement the server token stuff. */
 #if 0
     if (!strcasecmp(arg, "OS")) {
         ap_server_tokens = SrvTk_OS;
@@ -2447,7 +2448,7 @@ struct mmap_rec {
     size_t length;
 };
 
-static void mmap_cleanup(void *mmv)
+static ap_status_t mmap_cleanup(void *mmv)
 {
     struct mmap_rec *mmd = mmv;
 
@@ -2456,6 +2457,7 @@ static void mmap_cleanup(void *mmv)
                      "Failed to munmap memory of length %ld at 0x%lx",
                      (long) mmd->length, (long) mmd->mm);
     }
+    return APR_SUCCESS;
 }
 #endif
 
@@ -2644,7 +2646,7 @@ static const handler_rec core_handlers[] = {
 { NULL, NULL }
 };
 
-static void core_open_logs(pool *pconf, pool *plog, pool *ptemp, server_rec *s)
+static void core_open_logs(ap_context_t *pconf, ap_context_t *plog, ap_context_t *ptemp, server_rec *s)
 {
     ap_open_logs(s, pconf);
 }
@@ -2674,7 +2676,7 @@ API_VAR_EXPORT module core_module = {
     merge_core_dir_configs,	/* merge per-directory config structures */
     create_core_server_config,	/* create per-server config structure */
     merge_core_server_configs,	/* merge per-server config structures */
-    core_cmds,			/* command table */
+    core_cmds,			/* command ap_table_t */
     core_handlers,		/* handlers */
     register_hooks		/* register hooks */
 };

@@ -793,7 +793,7 @@ static int read_request_line(request_rec *r)
      * read().  B_SAFEREAD ensures that the BUFF layer flushes if it will
      * have to block during a read.
      */
-    /* TODO: re-implement SAFEREAD external to BUFF using a layer */
+    /* TODO: re ap_context_t mplement SAFEREAD external to BUFF using a layer */
     /* //ap_bsetflag(conn->client, B_SAFEREAD, 1); */
     ap_bflush(conn->client);
     while ((len = getline(l, sizeof(l), conn->client, 0)) <= 0) {
@@ -866,7 +866,7 @@ static void get_mime_headers(request_rec *r)
     char *copy;
     int len;
     unsigned int fields_read = 0;
-    table *tmp_headers;
+    ap_table_t *tmp_headers;
 
     /* We'll use ap_overlap_tables later to merge these into r->headers_in. */
     tmp_headers = ap_make_table(r->pool, 50);
@@ -921,11 +921,11 @@ static void get_mime_headers(request_rec *r)
 request_rec *ap_read_request(conn_rec *conn)
 {
     request_rec *r;
-    pool *p;
+    ap_context_t *p;
     const char *expect;
     int access_status;
 
-    p = ap_make_sub_pool(conn->pool);
+    ap_create_context(conn->pool, NULL, &p);
     r = ap_pcalloc(p, sizeof(request_rec));
     r->pool            = p;
     r->connection      = conn;
@@ -1469,15 +1469,15 @@ static int use_range_x(request_rec *r)
  */
 static int uniq_field_values(void *d, const char *key, const char *val)
 {
-    array_header *values;
+    ap_array_header_t *values;
     char *start;
     char *e;
     char **strpp;
     int  i;
 
-    values = (array_header *)d;
+    values = (ap_array_header_t *)d;
 
-    e = ap_pstrdup(values->pool, val);
+    e = ap_pstrdup(values->cont, val);
 
     do {
         /* Find a non-empty fieldname */
@@ -1520,7 +1520,7 @@ static int uniq_field_values(void *d, const char *key, const char *val)
  */
 static void fixup_vary(request_rec *r)
 {
-    array_header *varies;
+    ap_array_header_t *varies;
 
     varies = ap_make_array(r->pool, 5, sizeof(char *));
 
@@ -1531,7 +1531,7 @@ static void fixup_vary(request_rec *r)
     ap_table_do((int (*)(void *, const char *, const char *))uniq_field_values,
 		(void *) varies, r->headers_out, "Vary", NULL);
 
-    /* If we found any, replace old Vary fields with unique-ified value */
+    /* If we found any, replace old Vary fields with unique ap_context_t fied value */
 
     if (varies->nelts > 0) {
 	ap_table_setn(r->headers_out, "Vary",
@@ -1619,7 +1619,7 @@ API_EXPORT(void) ap_send_http_header(request_rec *r)
         ap_table_addn(r->headers_out, "Expires",
                   ap_gm_timestr_822(r->pool, r->request_time));
 
-    /* Send the entire table of header fields, terminated by an empty line. */
+    /* Send the entire ap_table_t of header fields, terminated by an empty line. */
 
     ap_table_do((int (*) (void *, const char *, const char *)) ap_send_header_field,
              (void *) r, r->headers_out, NULL);
@@ -2051,7 +2051,7 @@ API_EXPORT(long) ap_send_fd_length(APRFile fd, request_rec *r, long length)
 }
 
 
-/* TODO: re-implement ap_send_fb */
+/* TODO: re ap_context_t mplement ap_send_fb */
 #if 0
 /*
  * Send the body of a response to the client.
@@ -2441,7 +2441,7 @@ void ap_send_error_response(request_rec *r, int recursive_error)
     }
 
     if (!r->assbackwards) {
-        table *tmp = r->headers_out;
+        ap_table_t *tmp = r->headers_out;
 
         /* For all HTTP/1.x responses for which we generate the message,
          * we need to avoid inheriting the "normal status" header fields

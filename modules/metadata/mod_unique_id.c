@@ -161,7 +161,7 @@ static unsigned short unique_id_rec_offset[UNIQUE_ID_REC_MAX],
                       unique_id_rec_total_size,
                       unique_id_rec_size_uu;
 
-static void unique_id_global_init(server_rec *s, pool *p)
+static void unique_id_global_init(server_rec *s, ap_context_t *p)
 {
 #ifndef MAXHOSTNAMELEN
 #define MAXHOSTNAMELEN 256
@@ -245,7 +245,7 @@ static void unique_id_global_init(server_rec *s, pool *p)
 #endif
 }
 
-static void unique_id_child_init(server_rec *s, pool *p)
+static void unique_id_child_init(server_rec *s, ap_context_t *p)
 {
     pid_t pid;
 #ifndef NO_GETTIMEOFDAY
@@ -400,7 +400,7 @@ module MODULE_VAR_EXPORT unique_id_module = {
     NULL,                       /* dir merger --- default is to override */
     NULL,                       /* server config */
     NULL,                       /* merge server configs */
-    NULL,                       /* command table */
+    NULL,                       /* command ap_table_t */
     NULL,                       /* handlers */
     NULL,                       /* filename translation */
     NULL,                       /* check_user_id */

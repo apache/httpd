@@ -98,7 +98,7 @@ typedef struct {
  * bother to have such a function.
  */
 
-static void *mkconfig(pool *p)
+static void *mkconfig(ap_context_t *p)
 {
     spconfig *cfg = ap_pcalloc(p, sizeof(spconfig));
 
@@ -110,7 +110,7 @@ static void *mkconfig(pool *p)
  * Respond to a callback to create configuration record for a server or
  * vhost environment.
  */
-static void *create_mconfig_for_server(pool *p, server_rec *s)
+static void *create_mconfig_for_server(ap_context_t *p, server_rec *s)
 {
     return mkconfig(p);
 }
@@ -118,7 +118,7 @@ static void *create_mconfig_for_server(pool *p, server_rec *s)
 /*
  * Respond to a callback to create a config record for a specific directory.
  */
-static void *create_mconfig_for_directory(pool *p, char *dir)
+static void *create_mconfig_for_directory(ap_context_t *p, char *dir)
 {
     return mkconfig(p);
 }
@@ -231,7 +231,7 @@ static int check_speling(request_rec *r)
     int filoc, dotloc, urlen, pglen;
     DIR *dirp;
     struct DIR_TYPE *dir_entry;
-    array_header *candidates = NULL;
+    ap_array_header_t *candidates = NULL;
 
     cfg = ap_get_module_config(r->per_dir_config, &speling_module);
     if (!cfg->enabled) {
@@ -428,11 +428,11 @@ static int check_speling(request_rec *r)
          * returned.
          */
         else {
-            pool *p;
-            table *notes;
-	    pool *sub_pool;
-	    array_header *t;
-	    array_header *v;
+            ap_context_t *p;
+            ap_table_t *notes;
+	    ap_context_t *sub_pool;
+	    ap_array_header_t *t;
+	    ap_array_header_t *v;
 
 
             if (r->main == NULL) {
@@ -514,7 +514,7 @@ static int check_speling(request_rec *r)
 	    }
 
 
-            /* Pass our table to http_protocol.c (see mod_negotiation): */
+            /* Pass our ap_table_t to http_protocol.c (see mod_negotiation): */
             ap_table_setn(notes, "variant-list", ap_array_pstrcat(p, t, 0));
 
 	    ap_table_mergen(r->subprocess_env, "VARIANTS",
@@ -544,7 +544,7 @@ module MODULE_VAR_EXPORT speling_module =
     NULL,                       /* merge per-dir config */
     create_mconfig_for_server,  /* server config */
     NULL,                       /* merge server config */
-    speling_cmds,               /* command table */
+    speling_cmds,               /* command ap_table_t */
     NULL,                       /* handlers */
     register_hooks		/* register hooks */
 };

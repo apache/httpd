@@ -117,7 +117,7 @@ typedef struct excfg {
  * the same routine/environment.
  */
 static const char *trace = NULL;
-static table *static_calls_made = NULL;
+static ap_table_t *static_calls_made = NULL;
 
 /*
  * To avoid leaking memory from pools other than the per-request one, we
@@ -125,8 +125,8 @@ static table *static_calls_made = NULL;
  * freed each time we modify the trace.  That way previous layers of trace
  * data don't get lost.
  */
-static pool *example_pool = NULL;
-static pool *example_subpool = NULL;
+static ap_context_t *example_pool = NULL;
+static ap_context_t *example_subpool = NULL;
 
 /*
  * Declare ourselves so the configuration routines can find and know us.
@@ -297,7 +297,7 @@ static void setup_module_cells()
         example_pool = ap_make_sub_pool(NULL);
     };
     /*
-     * Likewise for the table of routine/environment pairs we visit outside of
+     * Likewise for the ap_table_t of routine/environment pairs we visit outside of
      * request context.
      */
     if (static_calls_made == NULL) {
@@ -314,11 +314,11 @@ static void setup_module_cells()
  * The list can be displayed by the example_handler() routine.
  *
  * If the call occurs within a request context (i.e., we're passed a request
- * record), we put the trace into the request pool and attach it to the
+ * record), we put the trace into the request ap_context_t and attach it to the
  * request via the notes mechanism.  Otherwise, the trace gets added
  * to the static (non-request-specific) list.
  *
- * Note that the r->notes table is only for storing strings; if you need to
+ * Note that the r->notes ap_table_t is only for storing strings; if you need to
  * maintain per-request data of any other type, you need to use another
  * mechanism.
  */
@@ -332,7 +332,7 @@ static void trace_add(server_rec *s, request_rec *r, excfg *mconfig,
     const char *sofar;
     char *addon;
     char *where;
-    pool *p;
+    ap_context_t *p;
     const char *trace_copy;
 
     /*
@@ -384,7 +384,7 @@ static void trace_add(server_rec *s, request_rec *r, excfg *mconfig,
     where = (where != NULL) ? where : "";
     /*
      * Now, if we're not in request context, see if we've been called with
-     * this particular combination before.  The table is allocated in the
+     * this particular combination before.  The ap_table_t is allocated in the
      * module's private pool, which doesn't get destroyed.
      */
     if (r == NULL) {
@@ -624,9 +624,9 @@ static int example_handler(request_rec *r)
  */
 
 /*
- * All our module-initialiser does is add its trace to the log.
+ * All our module ap_context_t nitialiser does is add its trace to the log.
  */
-static void example_init(server_rec *s, pool *p)
+static void example_init(server_rec *s, ap_context_t *p)
 {
 
     char *note;
@@ -648,16 +648,16 @@ static void example_init(server_rec *s, pool *p)
 /* 
  * This function is called during server initialisation when an heavy-weight
  * process (such as a child) is being initialised.  As with the
- * module-initialisation function, any information that needs to be recorded
+ * module ap_context_t nitialisation function, any information that needs to be recorded
  * must be in static cells, since there's no configuration record.
  *
  * There is no return value.
  */
 
 /*
- * All our process-initialiser does is add its trace to the log.
+ * All our process ap_context_t nitialiser does is add its trace to the log.
  */
-static void example_child_init(server_rec *s, pool *p)
+static void example_child_init(server_rec *s, ap_context_t *p)
 {
 
     char *note;
@@ -678,7 +678,7 @@ static void example_child_init(server_rec *s, pool *p)
 
 /* 
  * This function is called when an heavy-weight process (such as a child) is
- * being run down or destroyed.  As with the child-initialisation function,
+ * being run down or destroyed.  As with the child ap_context_t nitialisation function,
  * any information that needs to be recorded must be in static cells, since
  * there's no configuration record.
  *
@@ -688,7 +688,7 @@ static void example_child_init(server_rec *s, pool *p)
 /*
  * All our process-death routine does is add its trace to the log.
  */
-static void example_child_exit(server_rec *s, pool *p)
+static void example_child_exit(server_rec *s, ap_context_t *p)
 {
 
     char *note;
@@ -715,14 +715,14 @@ static void example_child_exit(server_rec *s, pool *p)
  * The return value is a pointer to the created module-specific
  * structure.
  */
-static void *example_create_dir_config(pool *p, char *dirspec)
+static void *example_create_dir_config(ap_context_t *p, char *dirspec)
 {
 
     excfg *cfg;
     char *dname = dirspec;
 
     /*
-     * Allocate the space for our record from the pool supplied.
+     * Allocate the space for our record from the ap_context_t supplied.
      */
     cfg = (excfg *) ap_pcalloc(p, sizeof(excfg));
     /*
@@ -756,7 +756,7 @@ static void *example_create_dir_config(pool *p, char *dirspec)
  * The return value is a pointer to the created module-specific structure
  * containing the merged values.
  */
-static void *example_merge_dir_config(pool *p, void *parent_conf,
+static void *example_merge_dir_config(ap_context_t *p, void *parent_conf,
                                       void *newloc_conf)
 {
 
@@ -801,7 +801,7 @@ static void *example_merge_dir_config(pool *p, void *parent_conf,
  * The return value is a pointer to the created module-specific
  * structure.
  */
-static void *example_create_server_config(pool *p, server_rec *s)
+static void *example_create_server_config(ap_context_t *p, server_rec *s)
 {
 
     excfg *cfg;
@@ -837,7 +837,7 @@ static void *example_create_server_config(pool *p, server_rec *s)
  * The return value is a pointer to the created module-specific structure
  * containing the merged values.
  */
-static void *example_merge_server_config(pool *p, void *server1_conf,
+static void *example_merge_server_config(ap_context_t *p, void *server1_conf,
                                          void *server2_conf)
 {
 
@@ -1122,7 +1122,7 @@ module example_module =
     example_merge_dir_config,   /* dir config merger */
     example_create_server_config,       /* server config creator */
     example_merge_server_config,        /* server config merger */
-    example_cmds,               /* command table */
+    example_cmds,               /* command ap_table_t */
     example_handlers,           /* [7] list of handlers */
     example_translate_handler,  /* [2] filename-to-URI translation */
     example_check_user_id,      /* [5] check/validate user_id */

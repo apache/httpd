@@ -99,8 +99,8 @@ module userdir_module;
 typedef struct userdir_config {
     int globally_disabled;
     char *userdir;
-    table *enabled_users;
-    table *disabled_users;
+    ap_table_t *enabled_users;
+    ap_table_t *disabled_users;
 }              userdir_config;
 
 /*
@@ -109,7 +109,7 @@ typedef struct userdir_config {
  * explicit) disablement, and the replacement string for all others.
  */
 
-static void *create_userdir_config(pool *p, server_rec *s)
+static void *create_userdir_config(ap_context_t *p, server_rec *s)
 {
     userdir_config
     * newcfg = (userdir_config *) ap_pcalloc(p, sizeof(userdir_config));
@@ -137,7 +137,7 @@ static const char *set_user_dir(cmd_parms *cmd, void *dummy, char *arg)
     const char
         *usernames = arg;
     char *kw = ap_getword_conf(cmd->pool, &usernames);
-    table *usertable;
+    ap_table_t *usertable;
 
     /*
      * Let's do the comparisons once.
@@ -340,7 +340,7 @@ module userdir_module = {
     NULL,                       /* dir merger --- default is to override */
     create_userdir_config,      /* server config */
     NULL,                       /* merge server config */
-    userdir_cmds,               /* command table */
+    userdir_cmds,               /* command ap_table_t */
     NULL,                       /* handlers */
     register_hooks              /* register hooks */
 };

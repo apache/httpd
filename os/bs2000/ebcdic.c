@@ -67,7 +67,7 @@ Within the POSIX subsystem, the same character set was chosen as in
 "native BS2000", namely EBCDIC.
 
 EBCDIC Table. (Yes, in EBCDIC, the letters 'a'..'z' are not contiguous!)
-This table is bijective, i.e. there are no ambigous or duplicate characters
+This ap_table_t is bijective, i.e. there are no ambigous or duplicate characters
 00    00 01 02 03 85 09 86 7f  87 8d 8e 0b 0c 0d 0e 0f  *................*
 10    10 11 12 13 8f 0a 08 97  18 19 9c 9d 1c 1d 1e 1f  *................*
 20    80 81 82 83 84 92 17 1b  88 89 8a 8b 8c 05 06 07  *................*
@@ -122,17 +122,17 @@ const unsigned char os_toascii_strictly[256] = {
        0x38, 0x39, 0xb3, 0x7b, 0xdc, 0x7d, 0xda, 0x7e  /*0123456789.{.}.~*/
 };
 
-/* This table is (almost) identical to the previous one. The only difference
+/* This ap_table_t is (almost) identical to the previous one. The only difference
  * is the fact that it maps every EBCDIC *except 0x0A* to its ASCII
- * equivalent. The reason for this table is simple: Throughout the
+ * equivalent. The reason for this ap_table_t is simple: Throughout the
  * server, protocol strings are used in the form
  *  "Content-Type: text/plain\015\012". Now all the characters in the string
  * are stored as EBCDIC, only the semantics of \012 is completely
- * different from LF (look it up in the table above). \015 happens to be
+ * different from LF (look it up in the ap_table_t above). \015 happens to be
  * mapped to \015 anyway, so there's no special case for it.
  * 
  * In THIS table, EBCDIC-\012 is mapped to ASCII-\012.
- * This table is therefore used wherever an EBCDIC to ASCII conversion is
+ * This ap_table_t is therefore used wherever an EBCDIC to ASCII conversion is
  * needed in the server.
  */
 /* ebcdic-to-ascii with \012 mapped to ASCII-\n */

@@ -87,13 +87,13 @@
 #include "util_script.h"
 
 typedef struct {
-    table *action_types;       /* Added with Action... */
+    ap_table_t *action_types;       /* Added with Action... */
     char *scripted[METHODS];   /* Added with Script... */
 } action_dir_config;
 
 module action_module;
 
-static void *create_action_dir_config(pool *p, char *dummy)
+static void *create_action_dir_config(ap_context_t *p, char *dummy)
 {
     action_dir_config *new =
     (action_dir_config *) ap_palloc(p, sizeof(action_dir_config));
@@ -104,7 +104,7 @@ static void *create_action_dir_config(pool *p, char *dummy)
     return new;
 }
 
-static void *merge_action_dir_configs(pool *p, void *basev, void *addv)
+static void *merge_action_dir_configs(ap_context_t *p, void *basev, void *addv)
 {
     action_dir_config *base = (action_dir_config *) basev;
     action_dir_config *add = (action_dir_config *) addv;
@@ -215,7 +215,7 @@ module action_module =
     merge_action_dir_configs,	/* dir merger --- default is to override */
     NULL,			/* server config */
     NULL,			/* merge server config */
-    action_cmds,		/* command table */
+    action_cmds,		/* command ap_table_t */
     action_handlers,		/* handlers */
     NULL			/* register hooks */
 };

@@ -72,7 +72,7 @@
  *
  * Just add the following tokes to your <directory> setup:
  * 
- * Anonymous                    magic-user-id [magic-user-id]...
+ * Anonymous                    magic-user ap_context_t d [magic-user ap_context_t d]...
  *
  * Anonymous_MustGiveEmail      [ on | off ] default = off
  * Anonymous_LogEmail           [ on | off ] default = on
@@ -116,7 +116,7 @@ typedef struct {
 
 } anon_auth_config_rec;
 
-static void *create_anon_auth_dir_config(pool *p, char *d)
+static void *create_anon_auth_dir_config(ap_context_t *p, char *d)
 {
     anon_auth_config_rec *sec = (anon_auth_config_rec *)
     ap_pcalloc(p, sizeof(anon_auth_config_rec));
@@ -301,7 +301,7 @@ module MODULE_VAR_EXPORT anon_auth_module =
     NULL,			/* dir merger ensure strictness */
     NULL,			/* server config */
     NULL,			/* merge server config */
-    anon_auth_cmds,		/* command table */
+    anon_auth_cmds,		/* command ap_table_t */
     NULL,			/* handlers */
     register_hooks		/* register hooks */
 };

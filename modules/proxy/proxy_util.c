@@ -136,7 +136,7 @@ void ap_proxy_c2hex(int ch, char *x)
  * those which must not be touched.
  */
 char *
-     ap_proxy_canonenc(pool *p, const char *x, int len, enum enctype t, int isenc)
+     ap_proxy_canonenc(ap_context_t *p, const char *x, int len, enum enctype t, int isenc)
 {
     int i, j, ch;
     char *y;
@@ -212,7 +212,7 @@ char *
  * Returns an error string.
  */
 char *
-     ap_proxy_canon_netloc(pool *p, char **const urlp, char **userp,
+     ap_proxy_canon_netloc(ap_context_t *p, char **const urlp, char **userp,
 			char **passwordp, char **hostp, int *port)
 {
     int i;
@@ -273,7 +273,7 @@ char *
 		return "Port number in URL > 65535";
 	}
     }
-    ap_str_tolower(host);		/* DNS names are case-insensitive */
+    ap_str_tolower(host);		/* DNS names are case ap_context_t nsensitive */
     if (*host == '\0')
 	return "Missing host in URL";
 /* check hostname syntax */
@@ -310,7 +310,7 @@ static const char * const lwday[7] =
  * formatted, then it exits very quickly.
  */
 const char *
-     ap_proxy_date_canon(pool *p, const char *x)
+     ap_proxy_date_canon(ap_context_t *p, const char *x)
 {
     int wk, mday, year, hour, min, sec, mon;
     char *q, month[4], zone[4], week[4];
@@ -431,7 +431,7 @@ static int proxy_getline(char *s, int n, BUFF *in, int fold)
  */
 table *ap_proxy_read_headers(request_rec *r, char *buffer, int size, BUFF *f)
 {
-    table *resp_hdrs;
+    ap_table_t *resp_hdrs;
     int len;
     char *value, *end;
     char field[MAX_STRING_LEN];
@@ -606,7 +606,7 @@ long int ap_proxy_send_fb(BUFF *f, request_rec *r, cache_req *c)
  * 
  * A timeout should be set before calling this routine.
  */
-void ap_proxy_send_headers(request_rec *r, const char *respline, table *t)
+void ap_proxy_send_headers(request_rec *r, const char *respline, ap_table_t *t)
 {
     int i;
     BUFF *fp = r->connection->client;
@@ -626,7 +626,7 @@ void ap_proxy_send_headers(request_rec *r, const char *respline, table *t)
 
 
 /*
- * list is a comma-separated list of case-insensitive tokens, with
+ * list is a comma-separated list of case ap_context_t nsensitive tokens, with
  * optional whitespace around the tokens.
  * The return returns 1 if the token val is found in the list, or 0
  * otherwise.
@@ -902,7 +902,7 @@ static const char *
 }
 
 /* Return TRUE if addr represents an IP address (or an IP network address) */
-int ap_proxy_is_ipaddr(struct dirconn_entry *This, pool *p)
+int ap_proxy_is_ipaddr(struct dirconn_entry *This, ap_context_t *p)
 {
     const char *addr = This->name;
     long ip_addr[4];
@@ -1083,7 +1083,7 @@ static int proxy_match_ipaddr(struct dirconn_entry *This, request_rec *r)
 }
 
 /* Return TRUE if addr represents a domain name */
-int ap_proxy_is_domainname(struct dirconn_entry *This, pool *p)
+int ap_proxy_is_domainname(struct dirconn_entry *This, ap_context_t *p)
 {
     char *addr = This->name;
     int i;
@@ -1107,7 +1107,7 @@ int ap_proxy_is_domainname(struct dirconn_entry *This, pool *p)
 	return 0;
 
     /* Strip trailing dots */
-    for (i = strlen(addr) - 1; i > 0 && addr[i] == '.'; --i)
+    for (i = strlen(addr) - 1; i > 0 && addr[i] == '.'; - ap_context_t )
 	addr[i] = '\0';
 
     This->matcher = proxy_match_domainname;
@@ -1136,7 +1136,7 @@ static int proxy_match_domainname(struct dirconn_entry *This, request_rec *r)
 }
 
 /* Return TRUE if addr represents a host name */
-int ap_proxy_is_hostname(struct dirconn_entry *This, pool *p)
+int ap_proxy_is_hostname(struct dirconn_entry *This, ap_context_t *p)
 {
     struct hostent host;
     char *addr = This->name;
@@ -1162,7 +1162,7 @@ int ap_proxy_is_hostname(struct dirconn_entry *This, pool *p)
     This->hostentry = ap_pduphostent (p, &host);
 
     /* Strip trailing dots */
-    for (i = strlen(addr) - 1; i > 0 && addr[i] == '.'; --i)
+    for (i = strlen(addr) - 1; i > 0 && addr[i] == '.'; - ap_context_t )
 	addr[i] = '\0';
 
     This->matcher = proxy_match_hostname;
@@ -1202,7 +1202,7 @@ static int proxy_match_hostname(struct dirconn_entry *This, request_rec *r)
 }
 
 /* Return TRUE if addr is to be matched as a word */
-int ap_proxy_is_word(struct dirconn_entry *This, pool *p)
+int ap_proxy_is_word(struct dirconn_entry *This, ap_context_t *p)
 {
     This->matcher = proxy_match_word;
     return 1;

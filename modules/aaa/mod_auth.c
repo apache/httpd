@@ -63,7 +63,7 @@
  * Adapted to Apache by rst.
  *
  * dirkx - Added Authoritative control to allow passing on to lower
- *         modules if and only if the user-id is not known to this
+ *         modules if and only if the user ap_context_t d is not known to this
  *         module. A known user with a faulty or absent password still
  *         causes an AuthRequired. The default is 'Authoritative', i.e.
  *         no control is passed along.
@@ -82,7 +82,7 @@ typedef struct auth_config_struct {
     int auth_authoritative;
 } auth_config_rec;
 
-static void *create_auth_dir_config(pool *p, char *d)
+static void *create_auth_dir_config(ap_context_t *p, char *d)
 {
     auth_config_rec *sec =
     (auth_config_rec *) ap_pcalloc(p, sizeof(auth_config_rec));
@@ -143,11 +143,11 @@ static char *get_pw(request_rec *r, char *user, char *auth_pwfile)
     return NULL;
 }
 
-static table *groups_for_user(pool *p, char *user, char *grpfile)
+static ap_table_t *groups_for_user(ap_context_t *p, char *user, char *grpfile)
 {
     configfile_t *f;
-    table *grps = ap_make_table(p, 15);
-    pool *sp;
+    ap_table_t *grps = ap_make_table(p, 15);
+    ap_context_t *sp;
     char l[MAX_STRING_LEN];
     const char *group_name, *ll, *w;
 
@@ -157,7 +157,7 @@ static table *groups_for_user(pool *p, char *user, char *grpfile)
 	return NULL;
     }
 
-    sp = ap_make_sub_pool(p);
+    ap_create_context(p, NULL, &sp);
 
     while (!(ap_cfg_getline(l, MAX_STRING_LEN, f))) {
 	if ((l[0] == '#') || (!l[0]))
@@ -239,8 +239,8 @@ static int check_user_access(request_rec *r)
     int method_restricted = 0;
     register int x;
     const char *t, *w;
-    table *grpstatus;
-    const array_header *reqs_arr = ap_requires(r);
+    ap_table_t *grpstatus;
+    const ap_array_header_t *reqs_arr = ap_requires(r);
     require_line *reqs;
 
     /* BUG FIX: tadc, 11-Nov-1995.  If there is no "requires" directive, 
@@ -322,7 +322,7 @@ module MODULE_VAR_EXPORT auth_module =
     NULL,			/* dir merger --- default is to override */
     NULL,			/* server config */
     NULL,			/* merge server config */
-    auth_cmds,			/* command table */
+    auth_cmds,			/* command ap_table_t */
     NULL,			/* handlers */
     register_hooks		/* register hooks */
 };

@@ -64,13 +64,13 @@ extern "C" {
 
 #include "ap_md5.h"
 
-API_EXPORT(char *) ap_md5(pool *a, const unsigned char *string);
-API_EXPORT(char *) ap_md5_binary(pool *a, const unsigned char *buf, int len);
-API_EXPORT(char *) ap_md5contextTo64(pool *p, AP_MD5_CTX * context);
+API_EXPORT(char *) ap_md5(ap_context_t *a, const unsigned char *string);
+API_EXPORT(char *) ap_md5_binary(ap_context_t *a, const unsigned char *buf, int len);
+API_EXPORT(char *) ap_md5contextTo64(ap_context_t *p, AP_MD5_CTX * context);
 #ifdef CHARSET_EBCDIC
-API_EXPORT(char *) ap_md5digest(pool *p, FILE *infile, int convert);
+API_EXPORT(char *) ap_md5digest(ap_context_t *p, FILE *infile, int convert);
 #else
-API_EXPORT(char *) ap_md5digest(pool *p, APRFile infile);
+API_EXPORT(char *) ap_md5digest(ap_context_t *p, APRFile infile);
 #endif /* CHARSET_EBCDIC */
 
 #ifdef __cplusplus

@@ -104,7 +104,7 @@ extern "C" {
 
 #define APLOG_MARK	__FILE__,__LINE__
 
-void ap_open_logs (server_rec *, pool *p);
+void ap_open_logs (server_rec *, ap_context_t *p);
 
 /* The two primary logging functions, ap_log_error and ap_log_rerror,
  * use a printf style format string to build the log message.  It is
@@ -122,7 +122,7 @@ API_EXPORT(void) ap_log_rerror(const char *file, int line, int level,
 			    __attribute__((format(printf,5,6)));
 API_EXPORT(void) ap_error_log2stderr (server_rec *);     
 
-void ap_log_pid (pool *p, const char *fname);
+void ap_log_pid (ap_context_t *p, const char *fname);
 /* These are for legacy code, new code should use ap_log_error,
  * or ap_log_rerror.
  */
@@ -135,7 +135,7 @@ API_EXPORT(void) ap_log_reason(const char *reason, const char *fname,
 			    request_rec *r);
 
 typedef struct piped_log {
-    pool *p;
+    ap_context_t *p;
 #ifndef NO_RELIABLE_PIPED_LOGS
     char *program;
     int pid;
@@ -145,7 +145,7 @@ typedef struct piped_log {
 #endif
 } piped_log;
 
-API_EXPORT(piped_log *) ap_open_piped_log (pool *p, const char *program);
+API_EXPORT(piped_log *) ap_open_piped_log (ap_context_t *p, const char *program);
 API_EXPORT(void) ap_close_piped_log (piped_log *);
 #ifndef NO_RELIABLE_PIPED_LOGS
 #define ap_piped_log_read_fd(pl)	((pl)->fds[0])

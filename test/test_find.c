@@ -13,7 +13,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "httpd.h"
-#include "alloc.h"
+#include "apr_general.h"
 
 /*
  * Dummy a bunch of stuff just to get a compile
@@ -41,7 +41,7 @@ API_EXPORT(void) ap_log_error(const char *file, int line, int level,
 
 int main (void)
 {
-    ap_pool *p;
+    ap_context_t *p;
     char line[512];
     char tok[512];
 

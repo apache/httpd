@@ -103,7 +103,7 @@ typedef struct {
     int bufbytes;
 } cgi_server_conf;
 
-static void *create_cgi_config(pool *p, server_rec *s)
+static void *create_cgi_config(ap_context_t *p, server_rec *s)
 {
     cgi_server_conf *c =
     (cgi_server_conf *) ap_pcalloc(p, sizeof(cgi_server_conf));
@@ -115,7 +115,7 @@ static void *create_cgi_config(pool *p, server_rec *s)
     return c;
 }
 
-static void *merge_cgi_config(pool *p, void *basev, void *overridesv)
+static void *merge_cgi_config(ap_context_t *p, void *basev, void *overridesv)
 {
     cgi_server_conf *base = (cgi_server_conf *) basev, *overrides = (cgi_server_conf *) overridesv;
 
@@ -195,7 +195,7 @@ static int log_scripterror(request_rec *r, cgi_server_conf * conf, int ret,
 static int log_script(request_rec *r, cgi_server_conf * conf, int ret,
 		  char *dbuf, const char *sbuf, BUFF *script_in, BUFF *script_err)
 {
-    array_header *hdrs_arr = ap_table_elts(r->headers_in);
+    ap_array_header_t *hdrs_arr = ap_table_elts(r->headers_in);
     table_entry *hdrs = (table_entry *) hdrs_arr->elts;
     char argsbuffer[HUGE_STRING_LEN];
     FILE *f;
@@ -581,7 +581,7 @@ module MODULE_VAR_EXPORT cgi_module =
     NULL,			/* dir merger --- default is to override */
     create_cgi_config,		/* server config */
     merge_cgi_config,		/* merge server config */
-    cgi_cmds,			/* command table */
+    cgi_cmds,			/* command ap_table_t */
     cgi_handlers,		/* handlers */
     NULL,			/* check auth */
     NULL,			/* check access */

@@ -76,17 +76,17 @@ typedef struct {
 } alias_entry;
 
 typedef struct {
-    array_header *aliases;
-    array_header *redirects;
+    ap_array_header_t *aliases;
+    ap_array_header_t *redirects;
 } alias_server_conf;
 
 typedef struct {
-    array_header *redirects;
+    ap_array_header_t *redirects;
 } alias_dir_conf;
 
 module MODULE_VAR_EXPORT alias_module;
 
-static void *create_alias_config(pool *p, server_rec *s)
+static void *create_alias_config(ap_context_t *p, server_rec *s)
 {
     alias_server_conf *a =
     (alias_server_conf *) ap_pcalloc(p, sizeof(alias_server_conf));
@@ -96,7 +96,7 @@ static void *create_alias_config(pool *p, server_rec *s)
     return a;
 }
 
-static void *create_alias_dir_config(pool *p, char *d)
+static void *create_alias_dir_config(ap_context_t *p, char *d)
 {
     alias_dir_conf *a =
     (alias_dir_conf *) ap_pcalloc(p, sizeof(alias_dir_conf));
@@ -104,7 +104,7 @@ static void *create_alias_dir_config(pool *p, char *d)
     return a;
 }
 
-static void *merge_alias_config(pool *p, void *basev, void *overridesv)
+static void *merge_alias_config(ap_context_t *p, void *basev, void *overridesv)
 {
     alias_server_conf *a =
     (alias_server_conf *) ap_pcalloc(p, sizeof(alias_server_conf));
@@ -115,7 +115,7 @@ static void *merge_alias_config(pool *p, void *basev, void *overridesv)
     return a;
 }
 
-static void *merge_alias_dir_config(pool *p, void *basev, void *overridesv)
+static void *merge_alias_dir_config(ap_context_t *p, void *basev, void *overridesv)
 {
     alias_dir_conf *a =
     (alias_dir_conf *) ap_pcalloc(p, sizeof(alias_dir_conf));
@@ -289,7 +289,7 @@ static int alias_matches(const char *uri, const char *alias_fakename)
     return urip - uri;
 }
 
-static char *try_alias_list(request_rec *r, array_header *aliases, int doesc, int *status)
+static char *try_alias_list(request_rec *r, ap_array_header_t *aliases, int doesc, int *status)
 {
     alias_entry *entries = (alias_entry *) aliases->elts;
     regmatch_t regm[10];
@@ -410,7 +410,7 @@ module MODULE_VAR_EXPORT alias_module =
     merge_alias_dir_config,	/* dir merger --- default is to override */
     create_alias_config,	/* server config */
     merge_alias_config,		/* merge server configs */
-    alias_cmds,			/* command table */
+    alias_cmds,			/* command ap_table_t */
     NULL,			/* handlers */
     register_hooks		/* register hooks */
 };

@@ -122,12 +122,12 @@ typedef struct {
  * a per-dir and per-server config
  */
 typedef struct {
-    array_header *headers;
+    ap_array_header_t *headers;
 } headers_conf;
 
 module MODULE_VAR_EXPORT headers_module;
 
-static void *create_headers_config(pool *p, server_rec *s)
+static void *create_headers_config(ap_context_t *p, server_rec *s)
 {
     headers_conf *a =
     (headers_conf *) ap_pcalloc(p, sizeof(headers_conf));
@@ -136,12 +136,12 @@ static void *create_headers_config(pool *p, server_rec *s)
     return a;
 }
 
-static void *create_headers_dir_config(pool *p, char *d)
+static void *create_headers_dir_config(ap_context_t *p, char *d)
 {
     return (headers_conf *) create_headers_config(p, NULL);
 }
 
-static void *merge_headers_config(pool *p, void *basev, void *overridesv)
+static void *merge_headers_config(ap_context_t *p, void *basev, void *overridesv)
 {
     headers_conf *a =
     (headers_conf *) ap_pcalloc(p, sizeof(headers_conf));
@@ -202,7 +202,7 @@ static const command_rec headers_cmds[] =
     {NULL}
 };
 
-static void do_headers_fixup(request_rec *r, array_header *headers)
+static void do_headers_fixup(request_rec *r, ap_array_header_t *headers)
 {
     int i;
 
@@ -251,7 +251,7 @@ module MODULE_VAR_EXPORT headers_module =
     merge_headers_config,       /* dir merger --- default is to override */
     create_headers_config,      /* server config */
     merge_headers_config,       /* merge server configs */
-    headers_cmds,               /* command table */
+    headers_cmds,               /* command ap_table_t */
     NULL,                       /* handlers */
     register_hooks		/* register hooks */
 };

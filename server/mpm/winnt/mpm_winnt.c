@@ -86,7 +86,7 @@ static struct pollfd *listenfds;
 static int num_listenfds = 0;
 int listenmaxfd = -1;
 
-static pool *pconf;		/* Pool for config stuff */
+static ap_context_t *pconf;		/* Pool for config stuff */
 
 static char ap_coredump_dir[MAX_STRING_LEN];
 
@@ -268,7 +268,7 @@ static ap_inline ap_listen_rec *find_ready_listener(fd_set * main_fds)
     }
     return NULL;
 }
-static int setup_listeners(pool *pconf, server_rec *s)
+static int setup_listeners(ap_context_t *pconf, server_rec *s)
 {
     ap_listen_rec *lr;
     int num_listeners = 0;
@@ -294,7 +294,7 @@ static int setup_listeners(pool *pconf, server_rec *s)
     return num_listeners;
 }
 
-static int setup_inherited_listeners(pool *p, server_rec *s)
+static int setup_inherited_listeners(ap_context_t *p, server_rec *s)
 {
     WSAPROTOCOL_INFO WSAProtocolInfo;
     HANDLE pipe;
@@ -761,7 +761,7 @@ static void child_main(int child_num)
 
     while (1) {
         BUFF *conn_io;
-        pool *ptrans;
+        ap_context_t *ptrans;
         int csd = -1;
         conn_rec *current_conn;
 
@@ -896,7 +896,7 @@ static void worker_main()
     int rv;
     time_t end_time;
     int i;
-    pool *pchild;
+    ap_context_t *pchild;
 
     pchild = ap_make_sub_pool(pconf);
 
@@ -1054,7 +1054,7 @@ static void cleanup_process(HANDLE *handles, HANDLE *events, int position, int *
     (*processes)--;
 }
 
-static int create_process(pool *p, HANDLE *handles, HANDLE *events, int *processes)
+static int create_process(ap_context_t *p, HANDLE *handles, HANDLE *events, int *processes)
 {
     int rv;
     char buf[1024];
@@ -1301,7 +1301,7 @@ static int master_main(server_rec *s, HANDLE shutdown_event, HANDLE restart_even
          * We are making a big assumption here that the child process, once signaled,
          * will REALLY go away. Since this is a restart, we do not want to hold the 
          * new child process up waiting for the old child to die. Remove the old 
-         * child out of the process_handles table and hope for the best...
+         * child out of the process_handles ap_table_t and hope for the best...
          */
         for (i = 0; i < children_to_kill; i++) {
             /* APD3("master_main: signalling child #%d handle %d to die", i, process_handles[i]); */
@@ -1314,7 +1314,7 @@ static int master_main(server_rec *s, HANDLE shutdown_event, HANDLE restart_even
     else {
         /* A child process must have exited because of MaxRequestPerChild being hit
          * or a fatal error condition (seg fault, etc.). Remove the dead process 
-         * from the process_handles and process_kill_events table and create a new
+         * from the process_handles and process_kill_events ap_table_t and create a new
          * child process.
          * TODO: Consider restarting the child immediately without looping through http_main
          * and without rereading the configuration. Will need this if we ever support multiple 
@@ -1362,7 +1362,7 @@ die_now:
 /* 
  * winnt_pre_config()
  */
-static void winnt_pre_config(pool *pconf, pool *plog, pool *ptemp) 
+static void winnt_pre_config(ap_context_t *pconf, ap_context_t *plog, ap_context_t *ptemp) 
 {
     char *pid;
     one_process=1;//!!getenv("ONE_PROCESS");
@@ -1393,12 +1393,12 @@ static void winnt_pre_config(pool *pconf, pool *plog, pool *ptemp)
 
 }
 
-static void winnt_post_config(pool *pconf, pool *plog, pool *ptemp, server_rec* server_conf)
+static void winnt_post_config(ap_context_t *pconf, ap_context_t *plog, ap_context_t *ptemp, server_rec* server_conf)
 {
     server_conf = server_conf;
 }
 
-API_EXPORT(int) ap_mpm_run(pool *_pconf, pool *plog, server_rec *s )
+API_EXPORT(int) ap_mpm_run(ap_context_t *_pconf, ap_context_t *plog, server_rec *s )
 {
 
     char* exit_event_name;
@@ -1662,7 +1662,7 @@ module MODULE_VAR_EXPORT mpm_winnt_module = {
     NULL,			/* merge per-directory config structures */
     NULL,			/* create per-server config structure */
     NULL,			/* merge per-server config structures */
-    winnt_cmds,		        /* command table */
+    winnt_cmds,		        /* command ap_table_t */
     NULL,			/* handlers */
     winnt_hooks 		/* register_hooks */
 };

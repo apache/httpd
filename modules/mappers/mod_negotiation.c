@@ -75,12 +75,12 @@
  */
 
 typedef struct {
-    array_header *language_priority;
+    ap_array_header_t *language_priority;
 } neg_dir_config;
 
 module MODULE_VAR_EXPORT negotiation_module;
 
-static void *create_neg_dir_config(pool *p, char *dummy)
+static void *create_neg_dir_config(ap_context_t *p, char *dummy)
 {
     neg_dir_config *new = (neg_dir_config *) ap_palloc(p, sizeof(neg_dir_config));
 
@@ -88,7 +88,7 @@ static void *create_neg_dir_config(pool *p, char *dummy)
     return new;
 }
 
-static void *merge_neg_dir_configs(pool *p, void *basev, void *addv)
+static void *merge_neg_dir_configs(ap_context_t *p, void *basev, void *addv)
 {
     neg_dir_config *base = (neg_dir_config *) basev;
     neg_dir_config *add = (neg_dir_config *) addv;
@@ -102,7 +102,7 @@ static void *merge_neg_dir_configs(pool *p, void *basev, void *addv)
 
 static const char *set_language_priority(cmd_parms *cmd, void *n, char *lang)
 {
-    array_header *arr = ((neg_dir_config *) n)->language_priority;
+    ap_array_header_t *arr = ((neg_dir_config *) n)->language_priority;
     char **langp = (char **) ap_push_array(arr);
 
     *langp = lang;
@@ -169,7 +169,7 @@ typedef struct var_rec {
     char *mime_type;            /* MUST be lowercase */
     char *file_name;
     const char *content_encoding;
-    array_header *content_languages;   /* list of languages for this variant */
+    ap_array_header_t *content_languages;   /* list of languages for this variant */
     char *content_charset;
     char *description;
 
@@ -208,7 +208,7 @@ typedef struct var_rec {
  */
 
 typedef struct {
-    pool *pool;
+    ap_context_t *pool;
     request_rec *r;
     char *dir_name;
     int accept_q;               /* 1 if an Accept item has a q= param */
@@ -217,12 +217,12 @@ typedef struct {
     /* the array pointers below are NULL if the corresponding accept
      * headers are not present
      */
-    array_header *accepts;            /* accept_recs */
-    array_header *accept_encodings;   /* accept_recs */
-    array_header *accept_charsets;    /* accept_recs */
-    array_header *accept_langs;       /* accept_recs */
+    ap_array_header_t *accepts;            /* accept_recs */
+    ap_array_header_t *accept_encodings;   /* accept_recs */
+    ap_array_header_t *accept_charsets;    /* accept_recs */
+    ap_array_header_t *accept_langs;       /* accept_recs */
 
-    array_header *avail_vars;         /* available variants */
+    ap_array_header_t *avail_vars;         /* available variants */
 
     int count_multiviews_variants;    /* number of variants found on disk */
 
@@ -310,7 +310,7 @@ static void set_vlist_validator(request_rec *r, request_rec *vlistr)
  * enter the values we recognize into the argument accept_rec
  */
 
-static const char *get_entry(pool *p, accept_rec *result,
+static const char *get_entry(ap_context_t *p, accept_rec *result,
                              const char *accept_line)
 {
     result->quality = 1.0f;
@@ -329,8 +329,8 @@ static const char *get_entry(pool *p, accept_rec *result,
      */
 
     result->name = ap_get_token(p, &accept_line, 0);
-    ap_str_tolower(result->name);     /* You want case-insensitive,
-                                       * you'll *get* case-insensitive.
+    ap_str_tolower(result->name);     /* You want case ap_context_t nsensitive,
+                                       * you'll *get* case ap_context_t nsensitive.
                                        */
 
     /* KLUDGE!!! Default HTML to level 2.0 unless the browser
@@ -417,9 +417,9 @@ static const char *get_entry(pool *p, accept_rec *result,
  * where charset is only valid in Accept.
  */
 
-static array_header *do_header_line(pool *p, const char *accept_line)
+static ap_array_header_t *do_header_line(ap_context_t *p, const char *accept_line)
 {
-    array_header *accept_recs;
+    ap_array_header_t *accept_recs;
 
     if (!accept_line) {
         return NULL;
@@ -439,9 +439,9 @@ static array_header *do_header_line(pool *p, const char *accept_line)
  * return an array containing the languages of this variant
  */
 
-static array_header *do_languages_line(pool *p, const char **lang_line)
+static ap_array_header_t *do_languages_line(ap_context_t *p, const char **lang_line)
 {
-    array_header *lang_recs = ap_make_array(p, 2, sizeof(char *));
+    ap_array_header_t *lang_recs = ap_make_array(p, 2, sizeof(char *));
 
     if (!lang_line) {
         return lang_recs;
@@ -469,7 +469,7 @@ static negotiation_state *parse_accept_headers(request_rec *r)
     negotiation_state *new =
         (negotiation_state *) ap_pcalloc(r->pool, sizeof(negotiation_state));
     accept_rec *elts;
-    table *hdrs = r->headers_in;
+    ap_table_t *hdrs = r->headers_in;
     int i;
 
     new->pool = r->pool;
@@ -1139,7 +1139,7 @@ static int level_cmp(var_rec *var1, var_rec *var2)
  * to set lang_index.  
  */
 
-static int find_lang_index(array_header *accept_langs, char *lang)
+static int find_lang_index(ap_array_header_t *accept_langs, char *lang)
 {
     accept_rec *accs;
     int i;
@@ -1166,7 +1166,7 @@ static int find_lang_index(array_header *accept_langs, char *lang)
 
 static int find_default_index(neg_dir_config *conf, char *lang)
 {
-    array_header *arr;
+    ap_array_header_t *arr;
     int nelts;
     char **elts;
     int i;
@@ -2030,7 +2030,7 @@ static int best_match(negotiation_state *neg, var_rec **pbest)
 static void set_neg_headers(request_rec *r, negotiation_state *neg,
                             int alg_result)
 {
-    table *hdrs;
+    ap_table_t *hdrs;
     var_rec *avail_recs = (var_rec *) neg->avail_vars->elts;
     const char *sample_type = NULL;
     const char *sample_language = NULL;
@@ -2040,7 +2040,7 @@ static void set_neg_headers(request_rec *r, negotiation_state *neg,
     char *qstr;
     char *lenstr;
     long len;
-    array_header *arr;
+    ap_array_header_t *arr;
     int max_vlist_array = (neg->avail_vars->nelts * 21);
     int first_variant = 1;
     int vary_by_type = 0;
@@ -2050,7 +2050,7 @@ static void set_neg_headers(request_rec *r, negotiation_state *neg,
     int j;
 
     /* In order to avoid O(n^2) memory copies in building Alternates,
-     * we preallocate a table with the maximum substrings possible,
+     * we preallocate a ap_table_t with the maximum substrings possible,
      * fill it with the variant list, and then concatenate the entire array.
      * Note that if you change the number of substrings pushed, you also
      * need to change the calculation of max_vlist_array above.
@@ -2216,12 +2216,12 @@ static void set_neg_headers(request_rec *r, negotiation_state *neg,
 
 static char *make_variant_list(request_rec *r, negotiation_state *neg)
 {
-    array_header *arr;
+    ap_array_header_t *arr;
     int i;
     int max_vlist_array = (neg->avail_vars->nelts * 15) + 2;
 
     /* In order to avoid O(n^2) memory copies in building the list,
-     * we preallocate a table with the maximum substrings possible,
+     * we preallocate a ap_table_t with the maximum substrings possible,
      * fill it with the variant list, and then concatenate the entire array.
      */
     arr = ap_make_array(r->pool, max_vlist_array, sizeof(char *));
@@ -2231,7 +2231,7 @@ static char *make_variant_list(request_rec *r, negotiation_state *neg)
     for (i = 0; i < neg->avail_vars->nelts; ++i) {
         var_rec *variant = &((var_rec *) neg->avail_vars->elts)[i];
         char *filename = variant->file_name ? variant->file_name : "";
-        array_header *languages = variant->content_languages;
+        ap_array_header_t *languages = variant->content_languages;
         char *description = variant->description ? variant->description : "";
 
         /* The format isn't very neat, and it would be nice to make
@@ -2677,7 +2677,7 @@ static int fix_encoding(request_rec *r)
 {
     const char *enc = r->content_encoding;
     char *x_enc = NULL;
-    array_header *accept_encodings;
+    ap_array_header_t *accept_encodings;
     accept_rec *accept_recs;
     int i;
 
@@ -2737,7 +2737,7 @@ module MODULE_VAR_EXPORT negotiation_module =
     merge_neg_dir_configs,      /* dir merger --- default is to override */
     NULL,                       /* server config */
     NULL,                       /* merge server config */
-    negotiation_cmds,           /* command table */
+    negotiation_cmds,           /* command ap_table_t */
     negotiation_handlers,       /* handlers */
     register_hooks              /* register hooks */
 };

@@ -101,7 +101,7 @@ typedef struct mva_sconf_t {
     mva_mode_e cgi_root_mode;
 } mva_sconf_t;
 
-static void *mva_create_server_config(pool *p, server_rec *s)
+static void *mva_create_server_config(ap_context_t *p, server_rec *s)
 {
     mva_sconf_t *conf;
 
@@ -113,7 +113,7 @@ static void *mva_create_server_config(pool *p, server_rec *s)
     return conf;
 }
 
-static void *mva_merge_server_config(pool *p, void *parentv, void *childv)
+static void *mva_merge_server_config(ap_context_t *p, void *parentv, void *childv)
 {
     mva_sconf_t *parent = (mva_sconf_t *) parentv;
     mva_sconf_t *child = (mva_sconf_t *) childv;
@@ -466,7 +466,7 @@ module MODULE_VAR_EXPORT vhost_alias_module =
     NULL,			/* dir merger --- default is to override */
     mva_create_server_config,	/* server config */
     mva_merge_server_config,	/* merge server configs */
-    mva_commands,		/* command table */
+    mva_commands,		/* command ap_table_t */
     NULL,			/* handlers */
     mva_translate,		/* filename translation */
     NULL,			/* check_user_id */

@@ -13,7 +13,7 @@
 /* char *crypt(const char *pw, const char *salt); */
 #define crypt(buf,salt)	    (buf)
 
-/* Use the Windows built-in spawnvp */
+/* Use the Windows built ap_context_t n spawnvp */
 #define ap_spawnvp(file, argv) (spawnvp(file, argv))
 
 /* Although DIR_TYPE is dirent (see nt/readdir.h) we need direct.h for

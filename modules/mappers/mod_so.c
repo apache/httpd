@@ -101,7 +101,7 @@
  * You can use this to dynamically change the capability of your server
  * without bringing it down.
  *
- * Because currently there is only limited built-in support in the Configure
+ * Because currently there is only limited built ap_context_t n support in the Configure
  * script for creating the shared library files (`.so'), please consult your
  * vendors cc(1), ld(1) and dlopen(3) manpages to find out the appropriate
  * compiler and linker flags and insert them manually into the Configuration
@@ -144,10 +144,10 @@ typedef struct moduleinfo {
 } moduleinfo;
 
 typedef struct so_server_conf {
-    array_header *loaded_modules;
+    ap_array_header_t *loaded_modules;
 } so_server_conf;
 
-static void *so_sconf_create(pool *p, server_rec *s)
+static void *so_sconf_create(ap_context_t *p, server_rec *s)
 {
     so_server_conf *soc;
 
@@ -269,7 +269,7 @@ static const char *load_module(cmd_parms *cmd, void *dummy,
     ap_add_loaded_module(modp);
 
     /* 
-     * Register a cleanup in the config pool (normally pconf). When
+     * Register a cleanup in the config ap_context_t (normally pconf). When
      * we do a restart (or shutdown) this cleanup will cause the
      * shared object to be unloaded.
      */
@@ -344,7 +344,7 @@ module MODULE_VAR_EXPORT so_module = {
    NULL,			/* merge per-dir config */
    so_sconf_create,		/* server config */
    NULL,			/* merge server config */
-   so_cmds,			/* command table */
+   so_cmds,			/* command ap_table_t */
    NULL,			/* handlers */
    NULL,			/* filename translation */
    NULL,			/* check_user_id */
