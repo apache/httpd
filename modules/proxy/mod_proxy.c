@@ -1051,7 +1051,7 @@ APR_DECLARE_OPTIONAL_FN(int, ssl_proxy_enable, (conn_rec *));
 
 static APR_OPTIONAL_FN_TYPE(ssl_proxy_enable) *proxy_ssl_enable = NULL;
 
-int ap_proxy_ssl_enable(conn_rec *c)
+PROXY_DECLARE(int) ap_proxy_ssl_enable(conn_rec *c)
 {
     /* 
      * if c == NULL just check if the optional function was imported
