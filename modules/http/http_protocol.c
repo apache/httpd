@@ -2684,14 +2684,8 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_byterange_filter(ap_filter_t *f,
         return APR_SUCCESS;
     }
 
-    /* If we have a saved brigade from a previous run, concat the passed
-     * brigade with our saved brigade.  Otherwise just continue.
-     */
-    if (!APR_BRIGADE_EMPTY(ctx->bb)) {
-        APR_BRIGADE_CONCAT(ctx->bb, bb);
-        bb = ctx->bb;
-    }
-    apr_brigade_destroy(ctx->bb);
+    /* Prepend any earlier saved brigades. */
+    APR_BRIGADE_PREPEND(bb, ctx->bb);
 
     /* It is possible that we won't have a content length yet, so we have to
      * compute the length before we can actually do the byterange work.
