@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
 <modulesynopsis metafile="mod_mime.xml.meta">
 
-<!-- English revision: 1.22 -->
+<!-- English revision: 1.23 -->
 
 <name>mod_mime</name>
 <description>リクエストされたファイルの拡張子とファイルの振る舞い
@@ -86,12 +86,21 @@ module="mod_mime_magic">MimeMagicFile</directive></seealso>
     がコンテントタイプは <code>text/html</code>
     に、言語はフランス語にマップされる場合、<code>welcome.fr.html</code>
     もまったく同じ情報にマップされます。
-    同じメタ情報にマップされる拡張子が複数あるときには、
+    同じメタ情報にマップされる拡張子が複数あるときには、言語と
+    コンテントエンコーディングを除いて、
     右側にあるものが使用されます。たとえば、<code>.gif</code> が MIME
     タイプ <code>image/gif</code> にマップされ、<code>.html</code>
     が MIME タイプ <code>text/html</code>
     にマップされる場合は、ファイル <code>welcome.gif.html</code> は
     MIME タイプ <code>text/html</code> に関連付けられます。</p>
+
+    <p>リソースに複数の言語やエンコーディングを関連付けること
+    ができるため、
+    <a href="#charset-lang">言語</a>と<a href="#contentencoding"
+    >コンテントエンコーディング</a>は前のものに追加されていきます。
+    たとえば、ファイル <code>welcome.html.en.de</code> は
+    <code>Content-Language: en, de</code> と <code>Content-Type:
+    text/html</code> として送信されます。</p>
 
     <p>複数の拡張子のあるファイルが MIME
     タイプとハンドラの両方に関連付けられているときは注意する必要があります。

@@ -2,7 +2,7 @@
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
 <modulesynopsis metafile="mpm_common.xml.meta">
-<!-- English revision: 1.31 -->
+<!-- English revision: 1.32 -->
 
 <name>mpm_common</name>
 <description>$BFs$D0J>e$N%^%k%A%W%m%;%C%7%s%0%b%8%e!<%k(B (MPM)
@@ -391,7 +391,7 @@ accept $B$7$h$&$H$7$F$$$k$H$-$K!"(BApache $B$,$=$l$i$N;R%W%m%;%9$rD>Ns2=$9$k$
 <contextlist><context>server config</context></contextlist>
 <modulelist><module>beos</module><module>leader</module>
 <module>mpm_netware</module><module>prefork</module>
-<module>threadpool</module><module>worker</module></modulelist>
+<module>threadpool</module><module>worker</module><module>mpm_winnt</module></modulelist>
 
 <usage>
     <p><directive>MaxMemFree</directive> $B%G%#%l%/%F%#%V$O(B
