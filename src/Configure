@@ -661,12 +661,15 @@ fi
 ## then we look for a known compiler somewhere in PATH
 ##
 
-# First, look for a CC=<whatever> setting in Configure (recall, we
+# First, look for a CC=<whatever> setting in Configuration (recall, we
 # copied these to Makefile.config)
+#
+# If $TCC is null, then no such line exists in Configuration
+#
 TCC=`egrep '^CC=' Makefile.config | tail -1 | awk -F= '{print $2}'`
 if [ "x$TCC" = "x" ]; then
     if [ "x$CC" = "x" ]; then
-        # At this point, CC is not set in Configure or above, so we
+        # At this point, CC is not set in Configuration or above, so we
         # try to find one
 	for compilers in "gcc" "cc" "acc" "c89"
 	do
@@ -689,16 +692,21 @@ if [ "x$TCC" = "x" ]; then
 fi
 
 ####################################################################
-## Look for OPTIM and save for later
-##
-TOPTIM=`egrep '^OPTIM=' Makefile.config | tail -1 | awk -F= '{print $2}'`
-
-####################################################################
-## Set the value of CC if need be
+## Write the value of $CC to Makefile.config... We only do this
+## is not done already (ie: a 'CC=' line was in Configuration).
+## If there was an entry for it, then set $CC for our own internal
+## use.
 ##
 if [ "x$TCC" = "x" ]; then
     echo "CC=$CC" >> Makefile.config
+else
+    CC=$TCC
 fi
+
+####################################################################
+## Look for OPTIM and save for later
+##
+TOPTIM=`egrep '^OPTIM=' Makefile.config | tail -1 | awk -F= '{print $2}'`
 
 ####################################################################
 ## Check for user provided flags for shared object support
@@ -823,24 +831,24 @@ fi
 ##
 case "$OS" in
     'ULTRIX')
-	if [ "$TCC" = "cc" ]; then
+	if [ "$CC" = "cc" ]; then
 	    CFLAGS="$CFLAGS -std"
 	fi
 	;;
     'SCO 5')
-	if [ "$TCC" = "cc" ]; then
+	if [ "$CC" = "cc" ]; then
 	    OSBPRINTF="-K noinline"
 	fi
 	;;
     'HI-UX')
-	if [ "$TCC" = "cc" ]; then
+	if [ "$CC" = "cc" ]; then
 	    CFLAGS="$CFLAGS -Aa -D_HIUX_SOURCE"
 	    OPTIM=" "
 	    TOPTIM=""
 	fi
 	;;
     'HP-UX'|'HP-UX 10')
-	if [ "$TCC" = "cc" ]; then
+	if [ "$CC" = "cc" ]; then
 	    CFLAGS="$CFLAGS -Aa -D_HPUX_SOURCE"
 	    OPTIM=" "
 	    TOPTIM=""
