@@ -1378,7 +1378,7 @@ RewriteRule    ^foo\.<b>html</b>$  foo.<b>cgi</b>  [T=<b>application/x-httpd-cgi
 <DT><STRONG>Description:</STRONG>
 <DD>
 Here comes a really esoteric feature: Dynamically generated but statically
-served pages, i.e. pages should be delivered as pur static pages (read from
+served pages, i.e. pages should be delivered as pure static pages (read from
 the filesystem and just passed through), but they have to be generated
 dynamically by the webserver if missing. This way you can have CGI-generated
 pages which are statically unless one (or a cronjob) removes the static
@@ -1391,7 +1391,7 @@ This is done via the following ruleset:
 
 <P><TABLE BGCOLOR="#E0E5F5" BORDER="0" CELLSPACING="0" CELLPADDING="5"><TR><TD><PRE>
 RewriteCond %{REQUEST_FILENAME}   <b>!-s</b>
-RewriteCond ^page\.<b>html</b>$          page.<b>cgi</b>   [T=application/x-httpd-cgi,L]
+RewriteRule ^page\.<b>html</b>$          page.<b>cgi</b>   [T=application/x-httpd-cgi,L]
 </PRE></TD></TR></TABLE>
 
 <P>
