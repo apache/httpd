@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="iso-2022-jp"?>
 <!DOCTYPE translations [ <!ENTITY nbsp "&#160;"> ]>
-<!-- English revision: 1.1 -->
+<!-- English revision: 1.3 -->
 
 <!--                    -->
 <!-- Language: Japanese -->
@@ -10,8 +10,11 @@
  <message name="corefeatures">コア機能と MPM</message>
  <message name="othermodules">他のモジュール</message>
 
- <!-- Title for modulesynopsis -->
+ <!-- Used for the modulesynopsis and sitemap -->
  <message name="apachemodule">Apache モジュール</message>
+ <message name="apachecore">Apache コア機能</message>
+ <message name="apachempmcommon">Apache MPM 共通ディレクティブ</message>
+ <message name="apachempm">Apache MPM</message>
 
  <!-- Used in description box for modulesynopsis -->
  <message name="description">説明</message>
@@ -19,6 +22,7 @@
  <message name="topics">トピック</message>
  <message name="status">ステータス</message>
  <message name="moduleidentifier">モジュール識別子</message>
+ <message name="sourcefile">ソースファイル</message>
  <message name="compatibility">互換性</message>
 
  <!-- Used in manualpage -->
