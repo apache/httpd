@@ -54,7 +54,7 @@ content-type</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
 <h3>See also</h3><ul><li><code class="directive"><a href="../mod/mod_mime.html#addhandler">AddHandler</a></code></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="Script" id="Script">Script</a> <a name="script" id="script">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
               </a></th><td>Activates a CGI script for a particular request
 method.</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td><code> Script <var>method cgi-script</var></code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
+              </a></th><td><code>Script <var>method</var> <var>cgi-script</var></code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>server config, virtual host, directory</td></tr><tr><th><a href="directive-dict.html#Status">Status:
               </a></th><td>Base</td></tr><tr><th><a href="directive-dict.html#Module">Module:
               </a></th><td>mod_actions</td></tr></table>

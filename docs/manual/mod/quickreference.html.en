@@ -479,7 +479,7 @@ processes launched by Apache children</td></tr>
 user authentication</td></tr>
 <tr><td><a href="mpm_common.html#scoreboardfile">ScoreBoardFile <var>file-path</var></a></td><td> logs/apache_status </td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">Location of the file used to store coordination data for
 the child processes</td></tr>
-<tr class="odd"><td><a href="mod_actions.html#script"> Script <var>method cgi-script</var></a></td><td /><td>svd</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Activates a CGI script for a particular request
+<tr class="odd"><td><a href="mod_actions.html#script">Script <var>method</var> <var>cgi-script</var></a></td><td /><td>svd</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Activates a CGI script for a particular request
 method.</td></tr>
 <tr><td><a href="mod_alias.html#scriptalias">ScriptAlias <var>URL-path</var>
 <var>file-path</var>|<var>directory-path</var></a></td><td /><td>sv</td><td>B</td></tr><tr><td class="descr" colspan="4">Maps a URL to a filesystem location and designates the

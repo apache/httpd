@@ -75,7 +75,7 @@ content-type</description>
 <name>Script</name>
 <description>Activates a CGI script for a particular request
 method.</description>
-<syntax> Script <var>method cgi-script</var></syntax>
+<syntax>Script <var>method</var> <var>cgi-script</var></syntax>
 <contextlist>
 <context>server config</context><context>virtual host</context>
 <context>directory</context></contextlist>
