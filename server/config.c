@@ -1618,7 +1618,8 @@ AP_DECLARE(server_rec*) ap_read_config(process_rec *process, apr_pool_t *ptemp,
     return s;
 }
 
-void ap_single_module_configure(apr_pool_t *p, server_rec *s, module *m)
+AP_DECLARE(void) ap_single_module_configure(apr_pool_t *p, server_rec *s, 
+                                            module *m)
 {
     if (m->create_server_config)
         ap_set_module_config(s->module_config, m,

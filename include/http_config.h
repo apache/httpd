@@ -750,7 +750,8 @@ AP_DECLARE_DATA extern module **ap_loaded_modules;
  *  @param s The server to configure for.
  *  @param m The module to configure
  */
-void ap_single_module_configure(apr_pool_t *p, server_rec *s, module *m);
+AP_DECLARE(void) ap_single_module_configure(apr_pool_t *p, server_rec *s, 
+                                            module *m);
 
 /* For http_main.c... */
 /**
