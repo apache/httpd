@@ -5839,7 +5839,14 @@ static void child_sub_main(int child_num)
 		increment_counts(child_num, r);
 	    if (!current_conn->keepalive || current_conn->aborted)
 		break;
-
+            /* If the server is shutting down, do not allow anymore requests 
+             * to be handled on the keepalive connection. Leave the thread 
+             * alive to drain the job queue. This check is particularly 
+             * important on the threaded server to allow the process to be 
+             * quickly taken down cleanly.
+             */
+            if (allowed_globals.exit_now)
+                break;
 	    ap_destroy_pool(r->pool);
 	    (void) ap_update_child_status(child_num, SERVER_BUSY_KEEPALIVE,
 				       (request_rec *) NULL);
@@ -6203,7 +6210,7 @@ void worker_main(void)
             add_job(csd);
         }
     }
-      
+
     APD2("process PID %d exiting", my_pid);
 
     /* Get ready to shutdown and exit */
@@ -6421,7 +6428,7 @@ void worker_main(void)
 	    total_jobs++;
 	}
     }
-      
+
     APD2("process PID %d exiting", my_pid);
 
     /* Get ready to shutdown and exit */
