@@ -106,9 +106,11 @@
  */
 
 #include "apr.h"
+#include "apr_lib.h"
 #include "apr_strings.h"
 #include "apr_buckets.h"
 
+#include "apr_hash.h"
 #define APR_WANT_STRFUNC
 #include "apr_want.h"
 
@@ -117,6 +119,9 @@
 #include "http_request.h"
 #include "http_log.h"
 #include "util_filter.h"
+
+/* format_tag_hash is initialized during pre-config */
+static apr_hash_t *format_tag_hash;
 
 typedef enum {
     hdr_add = 'a',              /* add header (could mean multiple hdrs) */
@@ -131,14 +136,26 @@ typedef enum {
     hdr_out = 1                 /* Header */
 } hdr_inout;
 
+/*
+ * There is an array of struct format_tag per Header/RequestHeader 
+ * config directive
+ */
+typedef struct {
+    const char* (*func)();
+    char *arg;
+} format_tag;
+
+/*
+ * There is one "header_entry" per Header/RequestHeader config directive
+ */
 typedef struct {
     hdr_actions action;
     char *header;
-    const char *value;
+    apr_array_header_t *ta;   /* Array of format_tag structs */
     regex_t *regex;
 } header_entry;
 
-/* echo_do is used only with Header echo */
+/* echo_do is used for Header echo to iterate through the request headers*/
 typedef struct {
     request_rec *r;
     header_entry *hdr;
@@ -155,6 +172,25 @@ typedef struct {
 
 module AP_MODULE_DECLARE_DATA headers_module;
 
+/*
+ * Tag formatting functions
+ */
+static const char *constant_item(request_rec *r, char *stuff)
+{
+    return stuff;
+}
+static const char *header_request_duration(request_rec *r, char *a)
+{
+    return apr_psprintf(r->pool, "D=%qd", (apr_time_now() - r->request_time)); 
+}
+static const char *header_request_time(request_rec *r, char *a)
+{
+    return apr_psprintf(r->pool, "t=%qd", r->request_time);
+}
+
+/*
+ * Config routines
+ */
 static void *create_headers_config(apr_pool_t *p, server_rec *s)
 {
     headers_conf *conf = apr_pcalloc(p, sizeof(*conf));
@@ -181,7 +217,123 @@ static void *merge_headers_config(apr_pool_t *p, void *basev, void *overridesv)
 
     return newconf;
 }
+ 
+static char *parse_misc_string(apr_pool_t *p, format_tag *tag, const char **sa)
+{
+    const char *s;
+    char *d;
 
+    tag->func = constant_item;
+
+    s = *sa;
+    while (*s && *s != '%') {
+	s++;
+    }
+    /*
+     * This might allocate a few chars extra if there's a backslash
+     * escape in the format string.
+     */
+    tag->arg = apr_palloc(p, s - *sa + 1);
+
+    d = tag->arg;
+    s = *sa;
+    while (*s && *s != '%') {
+	if (*s != '\\') {
+	    *d++ = *s++;
+	}
+	else {
+	    s++;
+	    switch (*s) {
+	    case '\\':
+		*d++ = '\\';
+		s++;
+		break;
+	    case 'r':
+		*d++ = '\r';
+		s++;
+		break;
+	    case 'n':
+		*d++ = '\n';
+		s++;
+		break;
+	    case 't':	
+		*d++ = '\t';
+		s++;
+		break;
+	    default:
+		/* copy verbatim */
+		*d++ = '\\';
+		/*
+		 * Allow the loop to deal with this *s in the normal
+		 * fashion so that it handles end of string etc.
+		 * properly.
+		 */
+		break;
+	    }
+	}
+    }
+    *d = '\0';
+
+    *sa = s;
+    return NULL;
+}
+
+static char *parse_format_tag(apr_pool_t *p, format_tag *tag, const char **sa)
+{ 
+    const char *s = *sa;
+    void *tag_handler;
+
+    /* Handle string literal/conditionals */
+    if (*s != '%') {
+        return parse_misc_string(p, tag, sa);
+    }
+    s++; /* skip the % */
+
+    tag_handler = apr_hash_get(format_tag_hash, s++, 1);
+
+    if (!tag_handler) {
+        char dummy[2];
+        dummy[0] = s[-1];
+        dummy[1] = '\0';
+        return apr_pstrcat(p, "Unrecognized Header or RequestHeader directive %",
+                           dummy, NULL);
+    }
+    tag->func = tag_handler;
+
+    *sa = s;
+    tag->arg = '\0';
+    return NULL;
+}
+
+/*
+ * A format string consists of white space, text and optional format 
+ * tags in any order. E.g., 
+ *
+ * Header add MyHeader "Free form text %D %t more text"
+ *
+ * Decompose the format string into its tags. Each tag (struct format_tag)
+ * contains a pointer to the function used to format the tag. Then save each 
+ * tag in the tag array anchored in the header_entry.
+ */
+static char *parse_format_string(apr_pool_t *p, header_entry *hdr, const char *s)
+{
+    char *res;
+
+    /* No string to parse with unset and copy commands */
+    if (hdr->action == hdr_unset ||
+        hdr->action == hdr_echo) {
+        return NULL;
+    }
+
+    hdr->ta = apr_array_make(p, 10, sizeof(format_tag));
+
+    while (*s) {
+        if ((res = parse_format_tag(p, (format_tag *) apr_array_push(hdr->ta), &s))) {
+            return res;
+        }
+    }
+    return NULL;
+}
 
 /* handle RequestHeader and Header directive */
 static const char *header_inout_cmd(hdr_inout inout, cmd_parms *cmd, void *indirconf,
@@ -241,12 +393,11 @@ static const char *header_inout_cmd(hdr_inout inout, cmd_parms *cmd, void *indir
         *colon = '\0';
 
     new->header = hdr;
-    new->value = value;
 
-    return NULL;
+    return parse_format_string(cmd->pool, new, value);
 }
 
-/* handle Header directive */
+/* Handle Header directive */
 static const char *header_cmd(cmd_parms *cmd, void *indirconf,
                               const char *action, const char *inhdr,
                               const char *value)
@@ -262,15 +413,40 @@ static const char *request_header_cmd(cmd_parms *cmd, void *indirconf,
     return header_inout_cmd(hdr_in, cmd, indirconf, action, inhdr, value);
 }
 
+/*
+ * Process the tags in the format string. Tags may be format specifiers 
+ * (%D, %t, etc.), whitespace or text strings. For each tag, run the handler
+ * (formatter) specific to the tag. Handlers return text strings.
+ * Concatenate the return from each handler into one string that is 
+ * returned from this call.
+ */
+static char* process_tags(header_entry *hdr, request_rec *r) 
+{
+    int i;
+    const char *s;
+    char *str = NULL;
+
+    format_tag *tag = (format_tag*) hdr->ta->elts;
+ 
+    for (i = 0; i < hdr->ta->nelts; i++) {
+        s = tag[i].func(r, tag[i].arg);
+        if (str == NULL) 
+            str = apr_pstrdup(r->pool, s);
+        else
+            str = apr_pstrcat(r->pool, str, s, NULL);
+    }
+    return str;
+}
+
 static int echo_header(echo_do *v, const char *key, const char *val)
 {
     /* If the input header (key) matches the regex, echo it intact to 
      * r->headers_out.
      */
     if (!ap_regexec(v->hdr->regex, key, 0, NULL, 0)) {
-        apr_table_addn(v->r->headers_out, key, val);
+        apr_table_add(v->r->headers_out, key, val);
     }
-    
+
     return 1;
 }
 
@@ -284,13 +460,13 @@ static void do_headers_fixup(request_rec *r, hdr_inout inout,
         header_entry *hdr = &((header_entry *) (fixup->elts))[i];
         switch (hdr->action) {
         case hdr_add:
-            apr_table_addn(headers, hdr->header, hdr->value);
+            apr_table_addn(headers, hdr->header, process_tags(hdr, r));
             break;
         case hdr_append:
-            apr_table_mergen(headers, hdr->header, hdr->value);
+            apr_table_mergen(headers, hdr->header, process_tags(hdr, r));
             break;
         case hdr_set:
-            apr_table_setn(headers, hdr->header, hdr->value);
+            apr_table_setn(headers, hdr->header, process_tags(hdr, r));
             break;
         case hdr_unset:
             apr_table_unset(headers, hdr->header);
@@ -367,8 +543,22 @@ static const command_rec headers_cmds[] =
     {NULL}
 };
 
+static void register_format_tag_handler(apr_pool_t *p, char *tag, void *tag_handler, int def)
+{
+    const void *h = apr_palloc(p, sizeof(h));
+    h = tag_handler;
+    apr_hash_set(format_tag_hash, tag, 1, h);
+}
+static void header_pre_config(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp)
+{
+    format_tag_hash = apr_hash_make(p);
+    register_format_tag_handler(p, "D", (void*) header_request_duration, 0);
+    register_format_tag_handler(p, "t", (void*) header_request_time, 0);
+}
+
 static void register_hooks(apr_pool_t *p)
 {
+    ap_hook_pre_config(header_pre_config,NULL,NULL,APR_HOOK_MIDDLE);
     ap_hook_insert_filter(ap_headers_insert_output_filter, NULL, NULL, APR_HOOK_LAST);
     ap_hook_fixups(ap_headers_fixup, NULL, NULL, APR_HOOK_LAST);
     ap_register_output_filter("FIXUP_HEADERS_OUT", ap_headers_output_filter, AP_FTYPE_HTTP_HEADER);
