@@ -229,7 +229,6 @@ FILES_nlm_objs = \
 	$(OBJDIR)/mpm_common.o \
 	$(OBJDIR)/mpm_netware.o \
 	$(OBJDIR)/pcre.o \
-	$(OBJDIR)/pcreposix.o \
 	$(OBJDIR)/protocol.o \
 	$(OBJDIR)/provider.o \
 	$(OBJDIR)/request.o \
@@ -241,6 +240,7 @@ FILES_nlm_objs = \
 	$(OBJDIR)/util_filter.o \
 	$(OBJDIR)/util_md5.o \
 	$(OBJDIR)/util_nw.o \
+	$(OBJDIR)/util_pcre.o \
 	$(OBJDIR)/util_script.o \
 	$(OBJDIR)/util_time.o \
 	$(OBJDIR)/util_xml.o \
