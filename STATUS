@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/05/21 04:47:24 $]
+Last modified at [$Date: 2003/05/21 06:58:15 $]
 
 Release:
 
@@ -229,6 +229,12 @@ PATCHES TO PORT FROM 2.1
       Submitted by: Ben Collins-Sussman <sussman@apache.org>
       modules/dav/main/mod_dav.c r1.93
       +1: striker, jerenkrantz
+
+    * Allow apxs to work with out-of-tree APRs.
+      support/apxs.in r1.54, r1.55
+      r1.54 adds libtool detection
+      r1.55 adds includes detection of apr and apr-util
+      +1: jerenkrantz
 
 CURRENT RELEASE NOTES:
 
