@@ -1,7 +1,9 @@
 Changes with Apache 1.3.13
 
   *) Add some more error reporting to htpasswd in the case of problems
-     generating or accessing the temporary file.  [Ken Coar]
+     generating or accessing the temporary file.  Also, pass in a
+     buffer if the implementation knows how to use it (i.e., if L_tmpnam
+     is defined).  [Ken Coar]  PR#3945, 5253, 5383, 5558
 
   *) PORT: Add recognition of the GNU/Hurd platform.
      [Adam Farrell <skate111@stampede.org>]
