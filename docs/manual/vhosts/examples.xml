@@ -29,9 +29,8 @@
     setting up virtual hosts. These scenarios are those involving multiple
     web sites running on a single server, via <a
     href="name-based.html">name-based</a> or <a
-    href="ip-based.html">IP-based</a> virtual hosts. A document should be
-    coming soon about running sites on several servers behind a single
-    proxy server.</p>
+    href="ip-based.html">IP-based</a> virtual hosts.
+    </p>
 
 </summary>
 
@@ -404,6 +403,28 @@
     </example>
 
 	</section>
+
+    <section id="proxy"><title>Using <code>Virtual_host</code> and
+    mod_proxy together</title>
+
+    <p>The following example allows a front-end machine to proxy a
+    virtual host through to a server running on another machine. In the
+    example, a virtual host of the same name is configured on a machine
+    at <code>192.168.111.2</code>. The <directive
+    module="mod_proxy">ProxyPreserveHost On</directive> directive is
+    used so that the desired hostname is passed through, in case we are
+    proxying multiple hostnames to a single machine.</p>
+
+    <example>
+    &lt;VirtualHost *:*&gt;<br />
+        ProxyPreserveHost On<br />
+        ProxyPass / http://192.168.111.2<br />
+        ProxyPassReverse / http://192.168.111.2/<br />
+        ServerName hostname.example.com<br />
+    &lt;/VirtualHost&gt;
+    </example>
+
+    </section>
 
 	<section id="default"><title>Using <code>_default_</code>
     vhosts</title>
