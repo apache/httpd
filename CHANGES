@@ -1,5 +1,9 @@
 Changes with Apache 2.0.37
 
+  *) allow POST method over SSL when per-directory client cert
+     authentication is used with 'SSLOptions +OptRenegotiate' enabled
+     and a client cert was found in the ssl session cache.
+
   *) 'SSLOptions +OptRengotiate' will use client cert in from the ssl
      session cache when there is no cert chain in the cache.  prior to
      the fix this situation would result in a FORBIDDEN response and
