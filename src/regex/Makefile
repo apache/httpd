@@ -126,7 +126,7 @@ tidy:
 	rm -f junk* core core.* *.core dtr *.tmp lint
 
 clean:	tidy
-	rm -f *.o *.s *.ih re libregex.a
+	rm -f *.o *.s re libregex.a
 
 # don't do this one unless you know what you're doing
 spotless:	clean
