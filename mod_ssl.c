@@ -488,20 +488,19 @@ static void ssl_register_hooks(apr_pool_t *p)
     ap_hook_default_port  (ssl_hook_default_port,  NULL,NULL, APR_HOOK_MIDDLE);
     ap_hook_handler       (ssl_hook_Handler,       NULL,NULL, APR_HOOK_MIDDLE);
     ap_hook_pre_config    (ssl_hook_pre_config,    NULL,NULL, APR_HOOK_MIDDLE);
-    ap_hook_fixups        (ssl_hook_Fixup,         NULL,NULL, APR_HOOK_MIDDLE);
-
 #if 0 /* XXX - Work in progress */
     ap_hook_child_init    (ssl_init_Child,         NULL,NULL, APR_HOOK_MIDDLE);
     ap_hook_process_connection (ssl_hook_process_connection, 
                                                    NULL,NULL, APR_HOOK_MIDDLE);
     ap_hook_post_read_request  (ssl_hook_post_read_request, 
                                                    NULL,NULL, APR_HOOK_MIDDLE);
+#endif
     ap_hook_translate_name(ssl_hook_Translate,     NULL,NULL, APR_HOOK_MIDDLE);
     ap_hook_check_user_id (ssl_hook_UserCheck,     NULL,NULL, APR_HOOK_MIDDLE);
     ap_hook_fixups        (ssl_hook_Fixup,         NULL,NULL, APR_HOOK_MIDDLE);
     ap_hook_access_checker(ssl_hook_Access,        NULL,NULL, APR_HOOK_MIDDLE);
     ap_hook_auth_checker  (ssl_hook_Auth,          NULL,NULL, APR_HOOK_MIDDLE);
-
+#if 0 /* XXX - Work in progress */
     ap_hook_open_logs     (ssl_hook_open_logs,     NULL,NULL, APR_HOOK_MIDDLE);
     ap_hook_quick_handler (ssl_hook_quick_handler, NULL,NULL, APR_HOOK_MIDDLE);
     ap_hook_log_transaction(ssl_hook_fixer_upper,  NULL,NULL, APR_HOOK_MIDDLE);
