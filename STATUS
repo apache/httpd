@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/04/04 01:07:32 $]
+Last modified at [$Date: 2003/04/04 04:10:52 $]
 
 Release:
 
@@ -179,6 +179,19 @@ PATCHES TO PORT FROM 2.1
       Allows Win32 and other non-unicies to use named locks.
       modules/ssl/ssl_engine_config.c r1.74, r1.75
       +1: wrowe
+
+    * mod_ssl compile failure (or maybe warning, depending on
+      compiler) with 0.9.7a and later
+      modules/ssl/mod_ssl.h r1.129
+      modules/ssl/ssl_engine_kernel.c r1.88
+      (See if it still compiles with your setup before you vote :) I
+      tried with 0.9.7a on AIX and 0.9.5a on Linux.)
+      +1: trawick
+
+    * Fix warnings on AIX for missing str[n]casecmp prototypes
+      modules/aaa/mod_authn_default r1.6
+      modules/ssl/mod_ssl.h r1.130
+      +1: trawick
 
 CURRENT RELEASE NOTES:
 
