@@ -942,7 +942,7 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
     }
 
     /* Initialize cross-process accept lock */
-    ap_lock_fname = apr_psprintf(_pconf, "%s.%" APR_OS_PROC_T_FMT,
+    ap_lock_fname = apr_psprintf(_pconf, "%s.%" APR_PID_T_FMT,
                                  ap_server_root_relative(_pconf, ap_lock_fname),
                                  ap_my_pid);
 
