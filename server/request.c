@@ -231,7 +231,7 @@ static int get_path_info(request_rec *r)
     char bStripSlash=1;
 #endif
 
-    if (r->finfo.filetype) {
+    if (r->finfo.filetype != APR_NOFILE) {
 	/* assume path_info already set */
 	return OK;
     }
@@ -810,8 +810,7 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_sub_req_output_filter(ap_filter_t *f,
     if (APR_BUCKET_IS_EOS(e)) {
         apr_bucket_delete(e);
     }
-    ap_pass_brigade(f->next, bb);
-    return APR_SUCCESS;
+    return ap_pass_brigade(f->next, bb);
 }
 
  
