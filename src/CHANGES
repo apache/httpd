@@ -1,5 +1,14 @@
 Changes with Apache 1.3.5
 
+  *) Win32: The compiled-in default filename for the error log is now
+     error.log, which matches the default in the distributed httpd.conf.
+     [Paul Sutton]
+
+  *) Win32: Any error messages from -i or -u command line options are now
+     displayed on the console output rather than sent to the error log.
+     Also the "Running Apache..." message is not output unless Apache is
+     going to serve requests. [Paul Sutton]
+
   *) Rework the MD5 authentication scheme to use FreeBSD's algorithm,
      and use a private significator ('$apr1$') to mark passwords as
      being smashed with our own algorithm.  Also abstract the password
