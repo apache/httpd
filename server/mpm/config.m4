@@ -14,6 +14,18 @@ AC_ARG_WITH(mpm,
   AC_MSG_RESULT(No MPM specified.  Using pthread)
 ])
 
+AC_MSG_CHECKING([for which threading library to use])
+APACHE_CHECK_THREADS('' -pthread -D_REENTRANT, '' -lpthread -lc_r)
+AC_MSG_RESULT("$threads_result")
+
+AC_MSG_CHECKING([to ensure I can compile the selected MPM]) 
+if test "$apache_threads_working" = "no" && "$apache_cv_mpm" != "prefork"; then
+AC_MSG_RESULT([can't compile selected MPM because there are no threads, defaulting to prefork])
+    apache_cv_mpm="prefork"
+else
+AC_MSG_RESULT([OK])
+fi
+
 APACHE_OUTPUT(modules/mpm/Makefile)
 MPM_NAME=$apache_cv_mpm
 MPM_DIR=modules/mpm/$MPM_NAME
