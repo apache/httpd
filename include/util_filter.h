@@ -168,28 +168,46 @@ typedef enum {
  * the state directly with the request. A callback should not change any of
  * the other fields.
  */
+
+typedef struct ap_filter_rec_t ap_filter_rec_t;
+
 /**
- * The internal representation of a filter chain.  Each request has a list
- * of these structures which are called in turn to filter the data.  Sub
- * requests get an exact copy of the main requests filter chain.
+ * This structure is used for recording information about the
+ * registered filters. It associates a name with the filter's callback
+ * and filter type.
+ *
+ * At the moment, these are simply linked in a chain, so a ->next pointer
+ * is available.
  */
-struct ap_filter_t {
-    /** The current filter function in the chain.  The prototype is:
-     * <PRE>  
-     * apr_status_t (*ap_filter_func)(ap_filter_t *f, ap_bucket_brigade *b);
-     * </PRE>
-     */
+struct ap_filter_rec_t {
+    /** The registered name for this filter */
+    const char *name;
+    /** The function to call when this filter is invoked. */
     ap_filter_func filter_func;
-
-    /** A place to store any data associated with the current filter */
-    void *ctx;
-
     /** The type of filter, either AP_FTYPE_CONTENT or AP_FTYPE_CONNECTION.  
      * An AP_FTYPE_CONTENT filter modifies the data based on information 
      * found in the content.  An AP_FTYPE_CONNECTION filter modifies the 
      * data based on the type of connection.
      */
     ap_filter_type ftype;
+
+    /** The next filter_rec in the list */
+    struct ap_filter_rec_t *next;
+};
+
+/**
+ * The representation of a filter chain.  Each request has a list
+ * of these structures which are called in turn to filter the data.  Sub
+ * requests get an exact copy of the main requests filter chain.
+ */
+struct ap_filter_t {
+     /** The internal representation of this filter.  This includes
+      *  the filter's name, type, and the actual function pointer.
+     */
+    ap_filter_rec_t *frec;
+
+    /** A place to store any data associated with the current filter */
+    void *ctx;
 
     /** The next filter in the chain */
     ap_filter_t *next;
