@@ -79,7 +79,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib /nologo /subsystem:windows /dll /incremental:no /map /debug /out:"Debug/mod_tls.so" /machine:I386 /base:@..\..\os\win32\BaseAddr.ref,mod_tls
-# ADD LINK32 kernel32.lib ssleay32.lib libeay32.lib /nologo /libpath:"../../srclib/openssl/out32dll" /subsystem:windows /dll /incremental:no /map /debug /out:"Debug/mod_tls.so" /machine:I386 /base:@..\..\os\win32\BaseAddr.ref,mod_tls
+# ADD LINK32 kernel32.lib ssleay32.lib libeay32.lib /nologo /libpath:"../../srclib/openssl/out32dll.dbg" /subsystem:windows /dll /incremental:no /map /debug /out:"Debug/mod_tls.so" /machine:I386 /base:@..\..\os\win32\BaseAddr.ref,mod_tls
 
 !ENDIF 
 
