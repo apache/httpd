@@ -328,6 +328,7 @@ API_EXPORT(void) ap_log_error (const char *file, int line, int level,
 		"%s(%d): ", file, line);
     }
     if (!(level & APLOG_NOERRNO)
+	&& (save_errno != 0)
 #ifdef WIN32
 	&& !(level & APLOG_WIN32ERROR)
 #endif

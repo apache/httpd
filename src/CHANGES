@@ -1,5 +1,9 @@
 Changes with Apache 1.3b7
 
+  *) Suppress "error(0)" messages for ap_log_error() when the APLOG_NOERRNO
+     is unset (as it is in situations like timeouts) where it is unclear
+     whether errno is set or not.  [Martin Kraemer]
+
   *) Just having APACI's localstatedir is too general and not enough for most
      of the systems. 1.3b6 again required manual APACI patches by package
      maintainers from RedHat and FreeBSD because for their filesystem layout a
