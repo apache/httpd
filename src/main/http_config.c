@@ -855,7 +855,7 @@ static void get_addresses (pool *p, char *w, server_addr_rec ***paddr, int port)
     unsigned long my_addr;
     server_addr_rec *sar;
     char *t;
-    int i;
+    int i, is_an_ip_addr;
 
     if( *w == 0 ) return;
 
@@ -871,23 +871,24 @@ static void get_addresses (pool *p, char *w, server_addr_rec ***paddr, int port)
 	*t = 0;
     }
 
+    is_an_ip_addr = 0;
     if (strcmp(w, "*") == 0) {
-	sar = pcalloc( p, sizeof( server_addr_rec ) );
-	**paddr = sar;
-	*paddr = &sar->next;
-	sar->host_addr.s_addr = htonl(INADDR_ANY);
-	sar->host_port = port;
-	sar->virthost = pstrdup(p, w);
-	if (t != NULL) *t = ':';
-	return;
-    }
-
+	my_addr = htonl(INADDR_ANY);
+	is_an_ip_addr = 1;
+    } else if( strcmp(w, "_default_") == 0
+	    || strcmp(w, "255.255.255.255") == 0 ) {
+	my_addr = DEFAULT_VHOST_ADDR;
+	is_an_ip_addr = 1;
+    } else if(
 #ifdef DGUX
-    my_addr = inet_network(w);
+	    ( my_addr = inet_network(w) )
 #else
-    my_addr = inet_addr(w);
+	    ( my_addr = inet_addr(w) )
 #endif
-    if (my_addr != INADDR_NONE) {
+	    != INADDR_NONE ) {
+	is_an_ip_addr = 1;
+    }
+    if( is_an_ip_addr ) {
 	sar = pcalloc( p, sizeof( server_addr_rec ) );
 	**paddr = sar;
 	*paddr = &sar->next;

@@ -52,6 +52,10 @@ Changes with Apache 1.2b8
 
   *) Clear memory allocated for listeners. [Randy Terbush]
 
+  *) Improved handling of IP address as a virtualhost address and
+     introduced "_default_" as a synonym for the default vhost config.
+     [Dean Gaudet] PR #212
+
 Changes with Apache 1.2b7
 
   *) Port to  UXP/DS(V20) [Toshiaki Nomura <nom@yk.fujitsu.co.jp>]

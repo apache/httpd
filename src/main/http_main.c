@@ -176,11 +176,6 @@ pid_t pgrp;
 
 int one_process = 0;
 
-/* The address 255.255.255.255, when used as a virtualhost address,
- * will become the "default" server when the ip doesn't match other vhosts.
- */
-#define DEFAULT_VHOST_ADDR 0xfffffffful
-
 #if defined(USE_FCNTL_SERIALIZED_ACCEPT)
 static struct flock lock_it = { F_WRLCK, 0, 0, 0 };
 static struct flock unlock_it = { F_UNLCK, 0, 0, 0 };

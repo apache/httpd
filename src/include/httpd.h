@@ -551,6 +551,11 @@ struct conn_rec {
 
 /* Per-vhost config... */
 
+/* The address 255.255.255.255, when used as a virtualhost address,
+ * will become the "default" server when the ip doesn't match other vhosts.
+ */
+#define DEFAULT_VHOST_ADDR 0xfffffffful
+
 typedef struct server_addr_rec server_addr_rec;
 struct server_addr_rec {
     server_addr_rec *next;
