@@ -1282,7 +1282,7 @@ AP_DECLARE(char *) ap_server_root_relative(apr_pool_t *p, const char *file)
                             APR_FILEPATH_TRUENAME, p);
     if (newpath && (rv == APR_SUCCESS || APR_STATUS_IS_EPATHWILD(rv) 
                                       || APR_STATUS_IS_ENOENT(rv)
-                                      || APR_STATUS_IS_ENOTDIR(rv)) {
+                                      || APR_STATUS_IS_ENOTDIR(rv))) {
         return newpath;
     }
     else {
