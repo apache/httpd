@@ -454,9 +454,9 @@ Negotiation</a></li>
     Variant" or "Multiple Choices" response to the client.  To avoid
     these error messages, it is possible to configure Apache to ignore
     the Accept-language in these cases and provide a document that
-    does not explictly match the client's request.  The <code class="directive"><a href="./mod/mod_negotiation.html#forcelanguagepriority">ForceLanguagePriority</a></code>
+    does not explicitly match the client's request.  The <code class="directive"><a href="./mod/mod_negotiation.html#forcelanguagepriority">ForceLanguagePriority</a></code>
     directive can be used to override one or both of these error
-    messages and subsitute the servers judgement in the form of the 
+    messages and substitute the servers judgement in the form of the 
     <code class="directive"><a href="./mod/mod_negotiation.html#languagepriority">LanguagePriority</a></code>
     directive.</p>
 
@@ -606,8 +606,8 @@ decimal places before choosing the best variant.</p>
       </tr>
     </table>
 
-    <p>Looking at the table above you will notice that it is always
-    possible to use the name without any extensions in an hyperlink
+    <p>Looking at the table above, you will notice that it is always
+    possible to use the name without any extensions in a hyperlink
     (<em>e.g.</em>, <code>foo</code>). The advantage is that you
     can hide the actual type of a document rsp. file and can change
     it later, <em>e.g.</em>, from <code>html</code> to
