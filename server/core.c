@@ -3389,11 +3389,13 @@ static int core_input_filter(ap_filter_t *f, apr_bucket_brigade *b,
      */
     if (mode == AP_MODE_EXHAUSTIVE) {
         apr_bucket *e;
-        apr_off_t total;
 
-        /* Force a recompute of the length and force a read-all */
-        apr_brigade_length(ctx->b, 1, &total);
+        /* Tack on any buckets that were set aside. */
         APR_BRIGADE_CONCAT(b, ctx->b);
+
+        /* Since we've just added all potential buckets (which will most
+         * likely simply be the socket bucket) we know this is the end,
+         * so tack on an EOS too. */
         /* We have read until the brigade was empty, so we know that we
          * must be EOS. */
         e = apr_bucket_eos_create();
@@ -3463,6 +3465,7 @@ static int core_input_filter(ap_filter_t *f, apr_bucket_brigade *b,
         /* Take what was originally there and place it back on ctx->b */
         APR_BRIGADE_CONCAT(ctx->b, newbb);
 
+        /* XXX: Why is this here? We never use 'total'! */
         apr_brigade_length(b, 1, &total);
 
         return APR_SUCCESS;
