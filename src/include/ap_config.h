@@ -541,6 +541,8 @@ extern char *crypt();
 #define NEED_INITGROUPS
 #define NEED_HASHBANG_EMUL /* execve() doesn't start shell scripts by default */
 #undef HAVE_SHMGET
+#undef NEED_STRCASECMP
+#undef NEED_STRNCASECMP
 #undef USE_SHMGET_SCOREBOARD
 #undef bzero
 #endif /*_OSD_POSIX*/
