@@ -4919,7 +4919,46 @@ void cleanup_thread(thread **handles, int *thread_cnt, int thread_to_clean)
 	handles[i] = handles[i + 1];
     (*thread_cnt)--;
 }
-
+#ifdef WIN32
+/*
+ * The Win32 call WaitForMultipleObjects will only allow you to wait for 
+ * a maximum of MAXIMUM_WAIT_OBJECTS (current 64).  Since the threading 
+ * model in the multithreaded version of apache wants to use this call, 
+ * we are restricted to a maximum of 64 threads.  This is a simplistic 
+ * routine that will increase this size.
+ */
+DWORD wait_for_many_objects(DWORD nCount, CONST HANDLE *lpHandles, 
+                            DWORD dwSeconds)
+{
+    time_t tStopTime;
+    DWORD dwRet = WAIT_TIMEOUT;
+    DWORD dwIndex=0;
+    BOOL bFirst = TRUE;
+  
+    tStopTime = time(NULL) + dwSeconds;
+  
+    do {
+        if (!bFirst)
+            Sleep(1000);
+        else
+            bFirst = FALSE;
+          
+        for (dwIndex = 0; dwIndex * MAXIMUM_WAIT_OBJECTS < nCount; dwIndex++) {
+            dwRet = WaitForMultipleObjects(
+                        min(MAXIMUM_WAIT_OBJECTS, 
+                            nCount - (dwIndex * MAXIMUM_WAIT_OBJECTS)),
+                        lpHandles + (dwIndex * MAXIMUM_WAIT_OBJECTS), 
+                        0, 0);
+                                           
+            if (dwRet != WAIT_TIMEOUT) {                                          
+              break;
+            }
+        }
+    } while((time(NULL) < tStopTime) && (dwRet == WAIT_TIMEOUT));
+    
+    return dwRet;
+}
+#endif
 /*****************************************************************
  * Executive routines.
  */
@@ -5074,7 +5113,7 @@ void worker_main()
 		/* Lets not break yet - we may have threads to clean up */
 		/* break;*/
 	    }
-	    rv = WaitForMultipleObjects(nthreads, child_handles, 0, 0);
+	    rv = wait_for_many_objects(nthreads, child_handles, 0);
 	    ap_assert(rv != WAIT_FAILED);
 	    if (rv != WAIT_TIMEOUT) {
 		rv = rv - WAIT_OBJECT_0;
@@ -5185,7 +5224,8 @@ void worker_main()
     /* Wait for all your children */
     end_time = time(NULL) + 180;
     while (nthreads) {
-	rv = WaitForMultipleObjects(nthreads, child_handles, 0, (end_time - time(NULL)) * 1000);
+        rv = wait_for_many_objects(nthreads, child_handles, 
+                                   end_time - time(NULL));
 	if (rv != WAIT_TIMEOUT) {
 	    rv = rv - WAIT_OBJECT_0;
 	    ap_assert((rv >= 0) && (rv < nthreads));
