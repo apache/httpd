@@ -23,18 +23,19 @@ There are three basic filter types (each of these is actually broken
 down into two categories, but that comes later).
 
 CONNECTION:  Filters of this type are valid for the lifetime of this
-             connection.
+             connection. (AP_FTYPE_CONNECTION, AP_FTYPE_NETWORK)
 
 PROTOCOL:    Filters of this type are valid for the lifetime of this
              request from the point of view of the client, this means
              that the request is valid from the time that the request
              is sent until the time that the response is received.
+             (AP_FTYPE_PROTOCOL, AP_FTYPE_TRANSCODE)
 
 RESOURCE:    Filters of this type are valid for the time that this
              content is used to satisfy a request.  For simple
              requests, this is identical to PROTOCOL, but internal redirects
              and sub-requests can change the content without ending
-             the request.
+             the request. (AP_FTYPE_RESOURCE, AP_FTYPE_CONTENT_SET)
 
 It is important to make the distinction between a protocol and a
 resource filter.  A resource filter is tied to a specific resource, it
