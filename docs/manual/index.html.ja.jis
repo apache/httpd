@@ -7,7 +7,7 @@
     <title>Apache HTTP サーバ バージョン 2.0 ドキュメント</title>
 
   </head>
-  <!-- English revision: 1.33 -->
+  <!-- English revision: 1.34 -->
   <body bgcolor="#ffffff" text="#000000" link="#0000ff"
   vlink="#000080" alink="#ff0000">
     <div align="center">
@@ -157,6 +157,11 @@
                  <td align="left"><a
                  href="programs/">サーバとサポートプログラム</a></td>
                </tr>
+
+              <tr>
+                <td align="left"><a href="glossary.html">用語集</a> </td>
+              </tr>
+
              </table>
 
              <table border="0" cellpadding="4" cellspacing="0"
