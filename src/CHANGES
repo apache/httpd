@@ -1,10 +1,14 @@
+
+  *) Made it so XBITHACK behavior only occurs for files of type text/html, as
+     any other file type doesn't really make sense. [Alexei Kosut]
+
+  *) Slightly modified the API to allow handlers by things other than
+     content type. Setting r->handler will override r->content_type in
+     invoke_handler(). [Alexei Kosut]
+
   *) Added FLOCK_SERIALIZED_ACCEPT for those systems, like A/UX,
      that need mutex-capability but using fcntl-locking is
      expensive. [Jim Jagielski]
-
-  *) Fixed translate_userdir(): return NOT_FOUND when at the end
-     of the UserDir list (was returning OK and junk in the filename).
-     [Jim Jagielski]
 
   *) Added in Cliff Skolnick's read_client_block patch (check for
      no reads and break) [Jim Jagielski]
@@ -30,6 +34,55 @@
   *) Clean code to warning level 3 under SCO 5. [Ben Laurie]
 
   *) Fix potential buffer overrun in mod_proxy.c. [Ben Laurie]
+
+  *) Internal redirects now preserve HTTP headers [Rob Hartil]
+
+  *) Adds SysV-based Shared Memory support for Apache [Jim Jagielski]
+
+  *) Use bread() etc instead of fread() for reading/writing to client.
+     Move the count of bytes sent into the buffering routines.
+     Rewrite the buffering routines to provide bputc(), bgetc() macros.
+     [David Robinson]
+
+  *) Make hostname_lookups a per-directory core configuration variable.
+     Replace all accesses to the connection.remote_host and remote_name
+     variables to calls to get_remote_host(), which is now in http_core.c.
+     [David Robinson]
+
+  *) Make do_rfc1413 a per-directory core configuration variable.
+     Replace all accesses to the connection.remote_logname
+     variables to calls to get_remote_logname(). Rewrite rfc931.c as
+     rfc1413.c to conform to new standard, avoid stdio and avoid syslog.
+     [David Robinson]
+
+  *) CGI variables are now available to server side include directives
+     as well as the QUERY_STRING_UNESCAPED variable, as required by
+     the NCSA server side include documentation. [Nathan Schrenk]
+
+  *) Better diagnostic info to enhance "malformed header from script"
+     [Rob Hartill]
+
+  *) Improvements and new features added to the UserDir directive:
+     Additional forms of specifiying user directories, and the ability to
+     specify multiple user directories, much like the DirectoryIndex
+     command. [Alexei Kosut]
+
+  *) Internal redirects no longer force the GET method, except when desired
+     (CGI scripts and error documents). [Adam Sussman and Rasmus Lerdorf]
+
+  *) Rewrite/reorganization of mod_imap.c.  New handling of default, base
+     and relative URLs. New Configuration directives. Support for creating
+     non-graphical menu added.  (backwards compatible). [Nathan Kurz]
+
+  *) New module which allows Apache's CGI and SSI environment to inherit
+     environment variables from the shell which invoked the httpd
+     process. CERN webservers are able to do this, so this module is
+     especially useful to webadmins who wish to migrate from CERN to Apache
+     without rewriting all their scripts [Andrew Wilson]
+
+  *) Updated /cgi-src to the latest NCSA version, including the IBM-ERS patch
+     to close a security hole, as well as other changes to the distribution
+     since it was last updated (Apache 0.8.5) [Alexei Kosut]
 
   *) Move Configuration to Configuration.tmpl for CVS development. Make CVS
      ignore Configuration, Makefile and modules.c. [Ben Laurie]
