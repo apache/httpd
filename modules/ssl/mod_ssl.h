@@ -492,7 +492,7 @@ typedef struct {
     apr_rmm_t      *pSessionCacheDataRMM;
     apr_table_t    *tSessionCacheDataTable;
     ssl_mutexmode_t nMutexMode;
-    char           *szMutexFile;
+    const char     *szMutexFile;
     apr_lock_t     *pMutex;
     apr_array_header_t   *aRandSeed;
     apr_hash_t     *tVHostKeys;
@@ -564,12 +564,12 @@ typedef struct {
     ssl_opt_t     nOptions;
     ssl_opt_t     nOptionsAdd;
     ssl_opt_t     nOptionsDel;
-    char         *szCipherSuite;
+    const char   *szCipherSuite;
     ssl_verify_t  nVerifyClient;
     int           nVerifyDepth;
 #ifdef SSL_EXPERIMENTAL_PERDIRCA
-    char         *szCACertificatePath;
-    char         *szCACertificateFile;
+    const char   *szCACertificatePath;
+    const char   *szCACertificateFile;
 #endif
 } SSLDirConfigRec;
 
