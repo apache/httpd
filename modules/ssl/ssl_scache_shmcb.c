@@ -357,17 +357,11 @@ static void shmcb_set_safe_time_ex(unsigned char *dest,
 **
 */
 
-static void *shmcb_malloc(SSLModConfigRec *mc, size_t size)
-{
-    apr_rmm_off_t off = apr_rmm_malloc(mc->pSessionCacheDataRMM, size);
-    return apr_rmm_addr_get(mc->pSessionCacheDataRMM, off);
-}
-
 void ssl_scache_shmcb_init(server_rec *s, apr_pool_t *p)
 {
     SSLModConfigRec *mc = myModConfig(s);
-    void *shm_segment = NULL;
-    int avail, avail_orig;
+    void *shm_segment;
+    apr_size_t shm_segsize;
     apr_status_t rv;
 
     /*
@@ -388,46 +382,12 @@ void ssl_scache_shmcb_init(server_rec *s, apr_pool_t *p)
                 apr_strerror(rv, buf, sizeof(buf)));
         ssl_die();
     }
+    shm_segment = apr_shm_baseaddr_get(mc->pSessionCacheDataMM);
+    shm_segsize = apr_shm_size_get(mc->pSessionCacheDataMM);
 
-    if ((rv = apr_rmm_init(&(mc->pSessionCacheDataRMM), NULL,
-                             apr_shm_baseaddr_get(mc->pSessionCacheDataMM),
-                             mc->nSessionCacheDataSize,
-                             mc->pPool)) != APR_SUCCESS) {
-        char buf[100];
-        ssl_log(s, SSL_LOG_ERROR,
-                "Cannot initialize rmm: (%d)%s", rv,
-                apr_strerror(rv, buf, sizeof(buf)));
-        ssl_die();
-    }
-
-    /*
-     * Create cache inside the shared memory segment
-     */
-    avail_orig = avail = mc->nSessionCacheDataSize - apr_rmm_overhead_get(0);
-    ssl_log(s, SSL_LOG_TRACE, "Shared-memory segment has %u available",
-            avail);
-
-    /* 
-     * For some reason to do with MM's internal management, I can't
-     * allocate the full amount. Implement a reasonable form of trial
-     * and error and output trace information.
-     */
-    while ((shm_segment == NULL) && ((avail_orig - avail) * 100 < avail_orig)) {
-        shm_segment = shmcb_malloc(mc, avail);
-        if (shm_segment == NULL) {
-            ssl_log(s, SSL_LOG_TRACE,
-                    "shmcb_malloc attempt for %u bytes failed", avail);
-            avail -= 4;
-        }
-    }
-    if (shm_segment == NULL) {
-        ssl_log(s, SSL_LOG_ERROR,
-                "Cannot allocate memory for the 'shmcb' session cache\n");
-        ssl_die();
-    }
     ssl_log(s, SSL_LOG_TRACE, "shmcb_init allocated %u bytes of shared "
-            "memory", avail);
-    if (!shmcb_init_memory(s, shm_segment, avail)) {
+            "memory", shm_segsize);
+    if (!shmcb_init_memory(s, shm_segment, shm_segsize)) {
         ssl_log(s, SSL_LOG_ERROR,
                 "Failure initialising 'shmcb' shared memory");
         ssl_die();
@@ -446,11 +406,6 @@ void ssl_scache_shmcb_init(server_rec *s, apr_pool_t *p)
 void ssl_scache_shmcb_kill(server_rec *s)
 {
     SSLModConfigRec *mc = myModConfig(s);
-
-    if (mc->pSessionCacheDataRMM != NULL) {
-        apr_rmm_destroy(mc->pSessionCacheDataRMM);
-        mc->pSessionCacheDataRMM = NULL;
-    }
 
     if (mc->pSessionCacheDataMM != NULL) {
         apr_shm_destroy(mc->pSessionCacheDataMM);
