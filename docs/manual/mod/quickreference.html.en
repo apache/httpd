@@ -368,7 +368,7 @@ using the specified magic file</td></tr>
 <tr class="odd"><td><a href="mpm_common.html#minsparethreads">MinSpareServers <em>number</em></a></td><td /><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Minimum number of idle threads available to handle request
 spikes</td></tr>
 <tr><td><a href="mod_file_cache.html#mmapfile">MMapFile <em>file-path</em> [<em>file-path</em>] ...</a></td><td /><td>s</td><td>X</td></tr><tr><td class="descr" colspan="4">-</td></tr>
-<tr class="odd"><td><a href="mod_mime.html#modmimeusepathinfo">ModMimeUsePathInfo On|Off</a></td><td /><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Tells mod_mime to treat path_info components as part of the filename</td></tr>
+<tr class="odd"><td><a href="mod_mime.html#modmimeusepathinfo">ModMimeUsePathInfo On|Off</a></td><td /><td>d</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Tells mod_mime to treat path_info components as part of the filename</td></tr>
 <tr><td><a href="mod_mime.html#multiviewsmatch">MultiviewsMatch
     <em>[NegotiatedOnly] [Handlers] [Filters] [Any]</em></a></td><td /><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">The types of files that will be included when 
 searching for a matching file with MultiViews</td></tr>
