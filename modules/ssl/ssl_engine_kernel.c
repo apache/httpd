@@ -209,6 +209,7 @@ int ssl_hook_Access(request_rec *r)
     int ok, i;
     BOOL renegotiate = FALSE, renegotiate_quick = FALSE;
     X509 *cert;
+    X509 *peercert;
     X509_STORE *cert_store = NULL;
     X509_STORE_CTX cert_store_ctx;
     STACK_OF(SSL_CIPHER) *cipher_list_old = NULL, *cipher_list = NULL;
@@ -446,10 +447,10 @@ int ssl_hook_Access(request_rec *r)
 
                 if ((dc->nOptions & SSL_OPT_OPTRENEGOTIATE) &&
                     (verify_old == SSL_VERIFY_NONE) &&
-                    ((cert = SSL_get_peer_certificate(ssl)) != NULL))
+                    ((peercert = SSL_get_peer_certificate(ssl)) != NULL))
                 {
                     renegotiate_quick = TRUE;
-                    X509_free(cert);
+                    X509_free(peercert);
                 }
 
                 ap_log_error(APLOG_MARK, APLOG_DEBUG, 0,
@@ -736,13 +737,16 @@ int ssl_hook_Access(request_rec *r)
                 return HTTP_FORBIDDEN;
             }
 
-            if (do_verify &&
-                ((cert = SSL_get_peer_certificate(ssl)) == NULL)) {
-                ap_log_error(APLOG_MARK, APLOG_ERR, 0, r->server,
-                             "Re-negotiation handshake failed: "
-                             "Client certificate missing");
+            if (do_verify) {
+                if ((peercert = SSL_get_peer_certificate(ssl)) == NULL) {
+                    ap_log_error(APLOG_MARK, APLOG_ERR, 0, r->server,
+                                 "Re-negotiation handshake failed: "
+                                 "Client certificate missing");
 
-                return HTTP_FORBIDDEN;
+                    return HTTP_FORBIDDEN;
+                }
+
+                X509_free(peercert);
             }
         }
     }
