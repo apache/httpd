@@ -7,8 +7,8 @@
 SHELL=/bin/sh
 INCLUDES2=
 MOD_CFLAGS=$(INCLUDES2) $(AUX_CFLAGS)
-MODULES=proxy example 
-CLEANERS=proxy_clean example_clean 
+MODULES=
+CLEANERS=
 
 default: $(MODULES)
 	@echo "Done building module subdirectories"
@@ -20,10 +20,4 @@ $(MODULES): ForceMe
 	(cd $@; $(MAKE) CC=$(CC) AUX_CFLAGS='$(MOD_CFLAGS)' RANLIB='$(RANLIB)')
 
 ForceMe:
-
-proxy_clean:
-	(cd proxy; $(MAKE) clean)
-
-example_clean:
-	(cd example; $(MAKE) clean)
 

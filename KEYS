@@ -1,0 +1,40 @@
+This file contains the PGP keys of various Apache developers.
+Please don't use them for email unless you have to. Their main
+purpose is code signing.
+
+Apache users: pgp < KEYS
+Apache developers: pgp -kxa <your name> and append it to this file.
+
+
+Type Bits/KeyID    Date       User ID
+pub  1024/2719AF35 1995/05/13 Ben Laurie <ben@algroup.co.uk>
+                              Ben Laurie <ben@gonzo.ben.algroup.co.uk>
+
+-----BEGIN PGP PUBLIC KEY BLOCK-----
+Version: 2.6.3ia
+
+mQCNAi+0jQEAAAEEAK7oX0FeNncaHfa1v+V7SMUviAm8qB8orWG0zvja4ZtSrHVg
+/PMwppUh44t5ERA9lltRBdHu30+YSh8a1dYt1XOD83nknzj9rhtpFAPqyywlLVhN
+VY3PVLyMbULw27aEAGc+StFqrDoUQ0+j9QU/YH/IyVN9rBaJyhsIDEUnGa81AAUR
+tB5CZW4gTGF1cmllIDxiZW5AYWxncm91cC5jby51az6JARUDBRAyb2Doc3AsNzyk
+Yh0BARa6CACUBnsP9Vb+T/PvNYKVQBIODz+90tz5GozWwCVfPVSaRd8Dz+oF1sFs
+YCz/KuxqBhL5PkiCuSMfOVlPA5nirjoktMF/af5saZqhPr5rvr67Z1OzZnVDvWe4
+DhFrn8EoLrY5YNJhUwfINnZqyKaQu8TW6p4caLkTCW0KM+4ztTe74xRG9NeE+K0+
+0RMpAF3jEY36LGRjq6miazt2bVZQDTl6CuWE+gAaFlX2ojV7e1xdxVvpBIEc34MP
+g9ORJ0evx1QilMt1VyGcS/pe4IQgjdJqjU/4fzqFZkT2nntQMbV9kQyNe2+qfqP7
+giTryIanmBAfd3oOCTsRz2VKPfdhCqCRiQB1AwUQMRdzEEyr2GZv4ALJAQEuhAL6
+A8I84BR+87uNAHD0ZJkTM73WdyMEGvAKBvrZK/g0VLYj0NtgkSuRJfrXnGkuh27I
+ZrjfL952Q/mXgMtHhJHJ9YfenGFWSEDHnolNzKOzTQJpE01IZ3nWv7ezA9N1LZVC
+iQCVAgUQMROrdRsIDEUnGa81AQEUNgQAlvyjt534RDQd2AYGoZriaFzjaL7dTCRH
+4b1zxuWBNWf3pI4W0iwU02Q5rEWEmY5DLl6/ie+vcQKOWSqXVgnM/s6EARdKEN56
+d6PzkwszgfEybDYrcAxReJcTCcV8ItJer/iqpBLgtaxyUpI77NvKcDGHp6BgYpnv
+1lNkH0FISK+JAJUDBRAwtzlWdGx7qH+PTVkBARFWA/99NTCMihlOZS7LmHDVic/q
+H1K1DVdMcv0iL39+7Pq4+AA/ET8dWIgcjaIreSqAZTpjwU1pMPaWgecDD1rEMCYX
+R+JoofLJ24BLcSlpXJ/gWMifYNxqdDeMRkw/aW/kaXQJWIz+oDYNuOyi5VvB6faF
+6Lm7P5cw1mX0I5rYc3woh7QoQmVuIExhdXJpZSA8YmVuQGdvbnpvLmJlbi5hbGdy
+b3VwLmNvLnVrPokAlQIFEDEXgCUbCAxFJxmvNQEBiL8D/3MLjfHGvuByqP1VFQrF
+QeMNd2aIQuC7ys3lkDvrLkkPJQANua0/MdDaZk6F5pCGcTmmmaJOjcOcCheD7FU5
+w9zxkQGR3Swr3opFHSr/CkEl83jRy3oq1MFydWoGajQjIr/c23X8zr+XntPyO6VX
+q5He4RrTiXeAEFBzz+J+R+EQ
+=zh1u
+-----END PGP PUBLIC KEY BLOCK-----
