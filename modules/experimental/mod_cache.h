@@ -146,7 +146,6 @@ typedef struct {
     int factor_set;
     int complete;			/* Force cache completion after this point */
     int complete_set;
-
 } cache_server_conf;
 
 /* cache info information */
@@ -165,21 +164,24 @@ struct cache_info {
 };
 
 /* cache handle information */
-typedef struct cache_handle cache_handle;
-struct cache_handle {
-    cache_info *info;
-    cache_handle *next;
-
-    void *cache_obj;     /* Pointer to cache specific object */
+typedef struct cache_object cache_object_t;
+struct cache_object {
+    char *key;
+    cache_object_t *next;
+    cache_info info;
+    void *vobj;         /* Opaque portion (specific to the cache implementation) of the cache object */
     apr_size_t count;   /* Number of body bytes written to the cache so far */
+    int complete;
+};
 
-    /* Cache call back functions */
-    int (*remove_entity) (cache_handle *h);
-    int (*write_headers)(cache_handle *h, request_rec *r, cache_info *i, apr_table_t *headers);
-    int (*write_body)(cache_handle *h, apr_bucket_brigade *b);
-    int (*read_headers) (cache_handle *h, request_rec *r, cache_info **i, apr_table_t *headers);
-    int (*read_body) (cache_handle *h, apr_bucket_brigade *bb); 
-
+typedef struct cache_handle cache_handle_t;
+struct cache_handle {
+    cache_object_t *cache_obj;
+    int (*remove_entity) (cache_handle_t *h);
+    int (*write_headers)(cache_handle_t *h, request_rec *r, cache_info *i, apr_table_t *headers);
+    int (*write_body)(cache_handle_t *h, apr_bucket_brigade *b);
+    int (*read_headers) (cache_handle_t *h, request_rec *r, apr_table_t *headers);
+    int (*read_body) (cache_handle_t *h, apr_bucket_brigade *bb); 
 };
 
 /* per request cache information */
@@ -187,7 +189,7 @@ typedef struct {
     const char *types;			/* the types of caches allowed */
     const char *type;			/* the type of cache selected */
     int fresh;				/* is the entitey fresh? */
-    cache_handle *handle;		/* current cache handle */
+    cache_handle_t *handle;		/* current cache handle */
     int in_checked;			/* CACHE_IN must cache the entity */
 } cache_request_rec;
 
@@ -204,15 +206,15 @@ const char *ap_cache_tokstr(apr_pool_t *p, const char *list, const char **str);
  */
 int cache_remove_url(request_rec *r, const char *types, char *url);
 int cache_create_entity(request_rec *r, const char *types, char *url, apr_size_t size);
-int cache_remove_entity(request_rec *r, const char *types, cache_handle *h);
+int cache_remove_entity(request_rec *r, const char *types, cache_handle_t *h);
 int cache_select_url(request_rec *r, const char *types, char *url);
 
-apr_status_t cache_write_entity_headers(cache_handle *h, request_rec *r, cache_info *info, 
+apr_status_t cache_write_entity_headers(cache_handle_t *h, request_rec *r, cache_info *info, 
                                         apr_table_t *headers);
-apr_status_t cache_write_entity_body(cache_handle *h, apr_bucket_brigade *bb);
+apr_status_t cache_write_entity_body(cache_handle_t *h, apr_bucket_brigade *bb);
 
-apr_status_t cache_read_entity_headers(cache_handle *h, request_rec *r, apr_table_t **headers);
-apr_status_t cache_read_entity_body(cache_handle *h, apr_bucket_brigade *bb);
+apr_status_t cache_read_entity_headers(cache_handle_t *h, request_rec *r, apr_table_t **headers);
+apr_status_t cache_read_entity_body(cache_handle_t *h, apr_bucket_brigade *bb);
 
 
 /* hooks */
@@ -239,10 +241,10 @@ apr_status_t cache_read_entity_body(cache_handle *h, apr_bucket_brigade *bb);
 #endif
 
 APR_DECLARE_EXTERNAL_HOOK(cache, CACHE, int, create_entity, 
-                          (cache_handle **hp, const char *type,
+                          (cache_handle_t *h, const char *type,
                            char *url, apr_size_t len))
 APR_DECLARE_EXTERNAL_HOOK(cache, CACHE, int, open_entity,  
-                          (cache_handle *h, const char *type,
+                          (cache_handle_t *h, const char *type,
                            char *url))
 APR_DECLARE_EXTERNAL_HOOK(cache, CACHE, int, remove_url, 
                           (const char *type, char *url))

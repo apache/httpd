@@ -85,16 +85,13 @@ typedef struct {
     char* val;
 } cache_header_tbl_t;
 
-typedef struct {
+typedef struct mem_cache_object {
     cache_type_e type;
-    char *key;
     apr_ssize_t num_headers;
     cache_header_tbl_t *tbl;
     apr_size_t m_len;
     void *m;
-    cache_info info;
-    int complete;
-} cache_object_t;
+} mem_cache_object_t;
 
 typedef struct {
     apr_lock_t *lock;
@@ -109,16 +106,17 @@ static mem_cache_conf *sconf;
 #define CACHEFILE_LEN 20
 
 /* Forward declarations */
-static int remove_entity(cache_handle *h);
-static int write_headers(cache_handle *h, request_rec *r, cache_info *i,
+static int remove_entity(cache_handle_t *h);
+static int write_headers(cache_handle_t *h, request_rec *r, cache_info *i,
                          apr_table_t *headers);
-static int write_body(cache_handle *h, apr_bucket_brigade *b);
-static int read_headers(cache_handle *h, request_rec *r, cache_info **info, 
-                        apr_table_t *headers);
-static int read_body(cache_handle *h, apr_bucket_brigade *bb);
+static int write_body(cache_handle_t *h, apr_bucket_brigade *b);
+static int read_headers(cache_handle_t *h, request_rec *r, apr_table_t *headers);
+static int read_body(cache_handle_t *h, apr_bucket_brigade *bb);
 
 static void cleanup_cache_object(cache_object_t *obj)
 {
+    mem_cache_object_t *mobj = obj->vobj;
+
     /* The cache object has been removed from the cache. Now clean
      * it up, freeing any storage, closing file descriptors, etc.
      */
@@ -149,18 +147,25 @@ static void cleanup_cache_object(cache_object_t *obj)
        }
     */
 
-    if (obj->info.content_type)
-        free((char*) obj->info.content_type);
-    if (obj->key)
+    /* Cleanup the cache_object_t */
+    if (obj->key) {
         free(obj->key);
-    if (obj->m)
-        free(obj->m);
-
-    /* XXX Cleanup the headers */
-    if (obj->num_headers) {
-        
     }
     free(obj);
+    
+    /* Cleanup the mem_cache_object_t */
+    if (!mobj) {
+        return;
+    }
+    if (mobj->m) {
+        free(mobj->m);
+    }
+
+    /* XXX Cleanup the headers */
+    if (mobj->num_headers) {
+        
+    }
+    free(mobj);
 }
 
 static apr_status_t cleanup_cache_mem(void *sconfv)
@@ -203,100 +208,88 @@ static void *create_cache_config(apr_pool_t *p, server_rec *s)
     return sconf;
 }
 
-static int create_entity(cache_handle **hp, const char *type, char *key, apr_size_t len) 
+static int create_entity(cache_handle_t *h, const char *type, char *key, apr_size_t len) 
 {
-    cache_object_t *obj, *eobj = NULL;
-    cache_handle *h;
+    cache_object_t *obj, *tmp_obj;
+    mem_cache_object_t *mobj;
 
-    /* Create the cache handle and begin populating it.
-     */
     if (strcasecmp(type, "mem")) {
         return DECLINED;
     }
 
-    /* Check len to see if it is withing acceptable bounds 
-     * XXX max cache check should be configurable variable.
+    /* XXX Check len to see if it is withing acceptable bounds 
+     * max cache check should be configurable variable.
      */
     if (len < 0 || len > MAX_CACHE) {
         return DECLINED;
     }
-    /* Check total cache size and number of entries. Are they within the
+    /* XXX Check total cache size and number of entries. Are they within the
      * configured limits? If not, kick off garbage collection thread.
      */
 
-    /* Allocate the cache_handle and set up call back functions specific to 
-     * this cache handler.
-     */
-    h = malloc(sizeof(cache_handle));
-    *hp = h;
-    if (!h) {
-        /* handle the error */
-        return DECLINED;
-    }
-    h->read_body = &read_body;
-    h->read_headers = &read_headers;
-    h->write_body = &write_body;
-    h->write_headers = &write_headers;
-
-    /* Allocate and initialize the cache object. The cache object is
-     * unique to this implementation.
-     */
+    /* Allocate and initialize cache_object_t */
     obj = malloc(sizeof(*obj));
     if (!obj) {
-        /* Handle ther error */
-        free(h);
         return DECLINED;
     }
     memset(obj,'\0', sizeof(*obj));
-
     obj->key = malloc(strlen(key) + 1);
     if (!obj->key) {
-        /* XXX Uuugh, there has got to be a better way to manage memory.
-         */
-        free(h);
         free(obj);
         return DECLINED;
     }
-    obj->m_len = len;     /* One of these len fields can go */
-    obj->info.len = len;
     strncpy(obj->key, key, strlen(key) + 1);
-    h->cache_obj = (void *) obj;
-    
-    /* Mark the cache object as incomplete and put it into the cache */
-    obj->complete = 0;
+    obj->info.len = len;
+    obj->complete = 0;   /* Cache object is not complete */
 
-    /* XXX Need a way to insert into the cache w/o such coarse grained locking */
+
+    /* Allocate and init mem_cache_object_t */
+    mobj = malloc(sizeof(*mobj));
+    if (!mobj) {
+        /* XXX: Cleanup */
+        cleanup_cache_object(obj);
+    }
+    memset(mobj,'\0', sizeof(*mobj));
+    obj->vobj = mobj;    /* Reference the mem_cache_object_t out of cache_object_t */
+    mobj->m_len = len;    /* Duplicates info in cache_object_t info */
+
+
+    /* Place the cache_object_t into the hash table
+     * XXX Need a way to insert into the cache w/o such coarse grained locking 
+     * XXX Need to enable caching multiple cache objects (representing different
+     * views of the same content) under a single search key
+     */
     if (sconf->lock) {
         apr_lock_acquire(sconf->lock);
     }
-    /* Do not allow the new cache object to replace an existing cache object.
-     * We should find eobj only when another thread is in the process of
-     * caching the same object as this thread. If we hit this case, decline
-     * the request.
-     */
-    eobj = (cache_object_t *) apr_hash_get(sconf->cacheht, key, APR_HASH_KEY_STRING);
-    if (!eobj) {
+    tmp_obj = (cache_object_t *) apr_hash_get(sconf->cacheht, key, APR_HASH_KEY_STRING);
+    if (!tmp_obj) {
         apr_hash_set(sconf->cacheht, obj->key, strlen(obj->key), obj);
     }
     if (sconf->lock) {
         apr_lock_release(sconf->lock);
     }
 
-    if (eobj) {
+    if (tmp_obj) {
         /* This thread collided with another thread loading the same object
          * into the cache at the same time. Defer to the other thread which 
          * is further along.
          */
         cleanup_cache_object(obj);
-        free(h);
-        *hp = NULL;
         return DECLINED;
     }
+
+    /* Populate the cache handle */
+    h->cache_obj = obj;
+    h->read_body = &read_body;
+    h->read_headers = &read_headers;
+    h->write_body = &write_body;
+    h->write_headers = &write_headers;
 
     return OK;
 }
 
-static int open_entity(cache_handle *h, const char *type, char *key) 
+static int open_entity(cache_handle_t *h, const char *type, char *key) 
 {
     cache_object_t *obj;
 
@@ -322,15 +315,13 @@ static int open_entity(cache_handle *h, const char *type, char *key)
     h->write_body = &write_body;
     h->write_headers = &write_headers;
     h->cache_obj = obj;
-    if (!obj || !(obj->complete)) {
-        return DECLINED;
-    }
+
     return OK;
 }
 
-static int remove_entity(cache_handle *h) 
+static int remove_entity(cache_handle_t *h) 
 {
-    cache_object_t *obj = (cache_object_t *) h->cache_obj;
+    cache_object_t *obj = h->cache_obj;
 
     if (sconf->lock) {
         apr_lock_acquire(sconf->lock);
@@ -342,9 +333,6 @@ static int remove_entity(cache_handle *h)
 
     cleanup_cache_object(obj);
     
-    /* Reinit the cache_handle fields? */
-    h->cache_obj = NULL;
-
     return OK;
 }
 
@@ -390,26 +378,24 @@ static int remove_url(const char *type, char *key)
     return OK;
 }
 
-static int read_headers(cache_handle *h, request_rec *r, cache_info **info, 
-                        apr_table_t *headers) 
+static int read_headers(cache_handle_t *h, request_rec *r, apr_table_t *headers) 
 {
-    cache_object_t *obj = (cache_object_t*) h->cache_obj;
+    mem_cache_object_t *mobj = (mem_cache_object_t*) h->cache_obj->vobj;
     int i;
 
-    for (i = 0; i < obj->num_headers; ++i) {
-        apr_table_setn(headers, obj->tbl[i].hdr, obj->tbl[i].val);
+    for (i = 0; i < mobj->num_headers; ++i) {
+        apr_table_setn(headers, mobj->tbl[i].hdr, mobj->tbl[i].val);
     } 
-    *info = &(obj->info);
 
     return OK;
 }
 
-static int read_body(cache_handle *h, apr_bucket_brigade *bb) 
+static int read_body(cache_handle_t *h, apr_bucket_brigade *bb) 
 {
     apr_bucket *b;
-    cache_object_t *obj = h->cache_obj;
+    mem_cache_object_t *mobj = (mem_cache_object_t*) h->cache_obj->vobj;
     
-    b = apr_bucket_immortal_create(obj->m, obj->m_len);
+    b = apr_bucket_immortal_create(mobj->m, mobj->m_len);
     APR_BRIGADE_INSERT_TAIL(bb, b);
     b = apr_bucket_eos_create();
     APR_BRIGADE_INSERT_TAIL(bb, b);
@@ -417,9 +403,9 @@ static int read_body(cache_handle *h, apr_bucket_brigade *bb)
     return OK;
 }
 
-static int write_headers(cache_handle *h, request_rec *r, cache_info *info, apr_table_t *headers)
+static int write_headers(cache_handle_t *h, request_rec *r, cache_info *info, apr_table_t *headers)
 {
-    cache_object_t *obj = (cache_object_t*) h->cache_obj;
+    mem_cache_object_t *mobj = (mem_cache_object_t*) h->cache_obj->vobj;
     apr_table_entry_t *elts = (apr_table_entry_t *) headers->a.elts;
     apr_ssize_t i;
     apr_size_t len = 0;
@@ -427,8 +413,9 @@ static int write_headers(cache_handle *h, request_rec *r, cache_info *info, apr_
     char *buf;
 
     /* Precompute how much storage we need to hold the headers */
-    obj->tbl = malloc(sizeof(cache_header_tbl_t) * headers->a.nelts);
-    if (NULL == obj->tbl) {
+    mobj->tbl = malloc(sizeof(cache_header_tbl_t) * headers->a.nelts);
+    if (NULL == mobj->tbl) {
+        /* cleanup_cache_obj(h->cache_obj); */
         return DECLINED;
     }
     for (i = 0; i < headers->a.nelts; ++i) {
@@ -440,18 +427,19 @@ static int write_headers(cache_handle *h, request_rec *r, cache_info *info, apr_
     /* Transfer the headers into a contiguous memory block */
     buf = malloc(len);
     if (!buf) {
-        free(obj->tbl);
-        obj->tbl = NULL;
+        free(mobj->tbl);
+        mobj->tbl = NULL;
+        /* cleanup_cache_obj(h->cache_obj); */
         return DECLINED;
     }
-    obj->num_headers = headers->a.nelts;
-    for (i = 0; i < obj->num_headers; ++i) {
-        obj->tbl[i].hdr = &buf[idx];
+    mobj->num_headers = headers->a.nelts;
+    for (i = 0; i < mobj->num_headers; ++i) {
+        mobj->tbl[i].hdr = &buf[idx];
         len = strlen(elts[i].key) + 1;              /* Include NULL terminator */
         strncpy(&buf[idx], elts[i].key, len);
         idx+=len;
 
-        obj->tbl[i].val = &buf[idx];
+        mobj->tbl[i].val = &buf[idx];
         len = strlen(elts[i].val) + 1;
         strncpy(&buf[idx], elts[i].val, len);
         idx+=len;
@@ -476,10 +464,10 @@ static int write_headers(cache_handle *h, request_rec *r, cache_info *info, apr_
     return OK;
 }
 
-static int write_body(cache_handle *h, apr_bucket_brigade *b) 
+static int write_body(cache_handle_t *h, apr_bucket_brigade *b) 
 {
     apr_status_t rv;
-    cache_object_t *obj = (cache_object_t *) h->cache_obj;
+    mem_cache_object_t *mobj = (mem_cache_object_t*) h->cache_obj->vobj;
     apr_read_type_e eblock = APR_BLOCK_READ;
     apr_bucket *e;
     char *cur;
@@ -488,15 +476,15 @@ static int write_body(cache_handle *h, apr_bucket_brigade *b)
      * Enable this decision to be configured....
      * XXX cache buckets...
      */
-    if (obj->m == NULL) {
-        obj->m = malloc(obj->m_len);
-        if (obj->m == NULL) {
+    if (mobj->m == NULL) {
+        mobj->m = malloc(mobj->m_len);
+        if (mobj->m == NULL) {
             /* Cleanup cache entry and return */
         }
-        obj->type = CACHE_TYPE_HEAP;
-        h->count = 0;
+        mobj->type = CACHE_TYPE_HEAP;
+        h->cache_obj->count = 0;
     }
-    cur = (char*) obj->m + h->count;
+    cur = (char*) mobj->m + h->cache_obj->count;
 
     /* Iterate accross the brigade and populate the cache storage */
     APR_BRIGADE_FOREACH(e, b) {
@@ -504,7 +492,7 @@ static int write_body(cache_handle *h, apr_bucket_brigade *b)
         apr_size_t len;
 
         if (APR_BUCKET_IS_EOS(e)) {
-            obj->complete = 1;
+            h->cache_obj->complete = 1;
             break;
         }
         rv = apr_bucket_read(e, &s, &len, eblock);
@@ -515,12 +503,12 @@ static int write_body(cache_handle *h, apr_bucket_brigade *b)
         if (len ) {
             memcpy(cur, s, len);
             cur+=len;
-            h->count+=len;
+            h->cache_obj->count+=len;
         }
         /* This should not happen, but if it does, we are in BIG trouble
          * cause we just stomped all over the heap.
          */
-        AP_DEBUG_ASSERT(h->count > obj->m_len);
+        AP_DEBUG_ASSERT(h->cache_object->count > mobj->m_len);
     }
 
     return OK;
