@@ -260,7 +260,7 @@ AP_DECLARE(void) ap_die(int type, request_rec *r);
 
 /* Hooks */
 
-/* XXX: doxygen grouping doesn't appear to work, but it should. Checking with
+/* ###: doxygen grouping doesn't appear to work, but it should. Checking with
  * doxygen (Ben).
  */
 
