@@ -1,9 +1,9 @@
 Content-language: de
 Content-type: text/html; charset=ISO-8859-1
 Body:----------de--
-<!--#set var="CONTENT_LANGUAGE" value="de" -->
-<!--#set var="TITLE" value="Variante ebenfalls ver&auml;nderlich!" -->
-<!--#include virtual="include/top.html" -->
+<!--#set var="CONTENT_LANGUAGE" value="de"
+--><!--#set var="TITLE" value="Variante ebenfalls ver&auml;nderlich!"
+--><!--#include virtual="include/top.html" -->
 
     Ein Zugriff auf das angeforderte Objekt bzw. einer
     Variante dieses Objektes ist nicht m&ouml;glich, da es ebenfalls
@@ -15,8 +15,8 @@ Body:----------de--
 Content-language: en
 Content-type: text/html; charset=ISO-8859-1
 Body:----------en--
-<!--#set var="TITLE" value="Variant also varies!" -->
-<!--#include virtual="include/top.html" -->
+<!--#set var="TITLE" value="Variant also varies!"
+--><!--#include virtual="include/top.html" -->
 
     A variant for the requested entity
     is itself a negotiable resource.
@@ -28,9 +28,9 @@ Body:----------en--
 Content-language: es
 Content-type: text/html; charset=ISO-8859-1
 Body:----------es--
-<!--#set var="CONTENT_LANGUAGE" value="es" -->
-<!--#set var="TITLE" value="Variant also varies!" -->
-<!--#include virtual="include/top.html" -->
+<!--#set var="CONTENT_LANGUAGE" value="es"
+--><!--#set var="TITLE" value="Variant also varies!"
+--><!--#include virtual="include/top.html" -->
 
 	No es posible tener acceso debido a que
 	una variante de la solicitud es por si 
@@ -42,9 +42,9 @@ Body:----------es--
 Content-language: fr
 Content-type: text/html; charset=ISO-8859-1
 Body:----------fr--
-<!--#set var="CONTENT_LANGUAGE" value="fr" -->
-<!--#set var="TITLE" value="La variante varie elle-m&ecirc;me!" -->
-<!--#include virtual="include/top.html" -->
+<!--#set var="CONTENT_LANGUAGE" value="fr"
+--><!--#set var="TITLE" value="La variante varie elle-m&ecirc;me!"
+--><!--#include virtual="include/top.html" -->
 
     Une variante pour l'entit&eacute; requise
     est elle-m&ecirc;me une ressource n&eacute;gociable.
@@ -56,9 +56,9 @@ Body:----------fr--
 Content-language: nl
 Content-type: text/html; charset=ISO-8859-1
 Body:----------nl--
-<!--#set var="CONTENT_LANGUAGE" value="nl" -->
-<!--#set var="TITLE" value="Variant varieert ook!" -->
-<!--#include virtual="include/top.html" -->
+<!--#set var="CONTENT_LANGUAGE" value="nl"
+--><!--#set var="TITLE" value="Variant varieert ook!"
+--><!--#include virtual="include/top.html" -->
 
     Een variant van het gevraagde object
     is op zich ook een te onderhandelen variant.
@@ -70,9 +70,9 @@ Body:----------nl--
 Content-language: sv
 Content-type: text/html; charset=ISO-8859-1
 Body:----------sv--
-<!--#set var="CONTENT_LANGUAGE" value="sv" -->
-<!--#set var="TITLE" value="Variant also varies!" -->
-<!--#include virtual="include/top.html" -->
+<!--#set var="CONTENT_LANGUAGE" value="sv"
+--><!--#set var="TITLE" value="Variant also varies!"
+--><!--#include virtual="include/top.html" -->
 
     En variant av den f&ouml;rfr&aring;gade enheten &auml;r i
     sig sj&auml;lv en giltig resurs. &Aring;tkomst &auml;r inte
@@ -84,9 +84,9 @@ Body:----------sv--
 Content-language: it
 Content-type: text/html; charset=ISO-8859-1
 Body:----------it--
-<!--#set var="CONTENT_LANGUAGE" value="it" -->
-<!--#set var="TITLE" value="La versione variante varia essa stessa!" -->
-<!--#include virtual="include/top.html" -->
+<!--#set var="CONTENT_LANGUAGE" value="it"
+--><!--#set var="TITLE" value="La versione variante varia essa stessa!"
+--><!--#include virtual="include/top.html" -->
 
     Non &egrave; possibile accedere all'entit&agrave;
     richiesta perch&eacute; &grave; essa stessa
@@ -98,8 +98,9 @@ Body:----------it--
 Content-language: pt-br
 Content-type: text/html; charset=ISO-8859-1
 Body:-------pt-br--
-<!--#set var="TITLE" value="Variante auto-negoci&aacute;vel!" -->
-<!--#include virtual="include/top.html" -->
+<!--#set var="CONTENT_LANGUAGE" value="pt-br"
+--><!--#set var="TITLE" value="Variante auto-negoci&aacute;vel!"
+--><!--#include virtual="include/top.html" -->
 
     Uma variante da entidade de requisi&ccedil;&atilde;o
 	&eacute; por si mesma um recurso negoci&aacute;vel.
@@ -107,3 +108,4 @@ Body:-------pt-br--
 
 <!--#include virtual="include/bottom.html" -->
 -------pt-br--
+
