@@ -667,7 +667,7 @@ authenticating the user if this one fails</description>
 <name>AuthLDAPFrontPageHack</name>
 <description>Allow LDAP authentication to work with MS FrontPage</description>
 <syntax>AuthLDAPFrontPageHack on|off</syntax>
-<default>AuthLDAPFronPageHack off</default>
+<default>AuthLDAPFrontPageHack off</default>
 <contextlist><context>directory</context><context>.htaccess</context>
 </contextlist>
 <override>AuthConfig</override>
@@ -724,7 +724,7 @@ group membership</description>
 <description>Use the DN of the client username to set the REMOTE_USER
 environment variable</description>
 <syntax>AuthLDAPRemoteUserIsDN on|off</syntax>
-<default>AuthLDAPUserIsDN off</default>
+<default>AuthLDAPRemoteUserIsDN off</default>
 <contextlist><context>directory</context><context>.htaccess</context>
 </contextlist>
 <override>AuthConfig</override>

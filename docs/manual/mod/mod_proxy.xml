@@ -418,7 +418,7 @@ server is hidden by another forward proxy.</p>
 <name>ProxyRemoteMatch</name>
 <description>Remote proxy used to handle requests
 matched by regular expressions</description>
-<syntax>ProxyRemote <em>regex remote-server</em></syntax>
+<syntax>ProxyRemoteMatch <em>regex remote-server</em></syntax>
 <contextlist><context>server config</context>
 <context>virtual host</context>
 </contextlist>
