@@ -93,7 +93,7 @@
 #include "apr_user.h"
 #include "apr_lib.h"
 #include "apr_signal.h"
-#include "apr_proc_mutex.h"
+#include "apr_global_mutex.h"
 
 #define APR_WANT_STRFUNC
 #define APR_WANT_IOVEC
@@ -187,7 +187,7 @@ static cache *cachep;
 static int proxy_available;
 
 static const char *lockname;
-static apr_proc_mutex_t *rewrite_mapr_lock_acquire = NULL;
+static apr_global_mutex_t *rewrite_mapr_lock_acquire = NULL;
 static apr_lock_t *rewrite_log_lock = NULL;
 
 /*
@@ -978,7 +978,7 @@ static void init_child(apr_pool_t *p, server_rec *s)
 
     if (lockname != NULL && *(lockname) != '\0')
     {
-        rv = apr_proc_mutex_child_init(&rewrite_mapr_lock_acquire,
+        rv = apr_global_mutex_child_init(&rewrite_mapr_lock_acquire,
                                        lockname, p);
         if (rv != APR_SUCCESS) {
             ap_log_error(APLOG_MARK, APLOG_CRIT, rv, s,
@@ -2931,7 +2931,7 @@ static char *lookup_map_program(request_rec *r, apr_file_t *fpin,
     /* take the lock */
 
     if (rewrite_mapr_lock_acquire) {
-        apr_proc_mutex_lock(rewrite_mapr_lock_acquire);
+        apr_global_mutex_lock(rewrite_mapr_lock_acquire);
     }
 
     /* write out the request key */
@@ -2966,7 +2966,7 @@ static char *lookup_map_program(request_rec *r, apr_file_t *fpin,
 
     /* give the lock back */
     if (rewrite_mapr_lock_acquire) {
-        apr_proc_mutex_unlock(rewrite_mapr_lock_acquire);
+        apr_global_mutex_unlock(rewrite_mapr_lock_acquire);
     }
 
     if (strcasecmp(buf, "NULL") == 0) {
@@ -3268,8 +3268,8 @@ static void rewritelock_create(server_rec *s, apr_pool_t *p)
     lockname = ap_server_root_relative(p, lockname);
 
     /* create the lockfile */
-    rc = apr_proc_mutex_create(&rewrite_mapr_lock_acquire, lockname,
-                               APR_LOCK_DEFAULT, p);
+    rc = apr_global_mutex_create(&rewrite_mapr_lock_acquire, lockname,
+                                 APR_LOCK_DEFAULT, p);
     if (rc != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_ERR, rc, s,
                      "mod_rewrite: Parent could not create RewriteLock "
@@ -3288,7 +3288,7 @@ static apr_status_t rewritelock_remove(void *data)
     }
 
     /* destroy the rewritelock */
-    apr_proc_mutex_destroy (rewrite_mapr_lock_acquire);
+    apr_global_mutex_destroy (rewrite_mapr_lock_acquire);
     rewrite_mapr_lock_acquire = NULL;
     lockname = NULL;
     return(0);
