@@ -92,6 +92,7 @@ void *create_core_dir_config (pool *a, char *dir)
 
     conf->hostname_lookups = 2;/* binary, but will use 2 as an "unset = on" */
     conf->do_rfc1413 = DEFAULT_RFC1413 | 2;  /* set bit 1 to indicate default */
+    conf->satisfy = SATISFY_ALL;
 
 #ifdef RLIMIT_CPU
     conf->limit_cpu = NULL;
@@ -152,6 +153,7 @@ void *merge_core_dir_configs (pool *a, void *basev, void *newv)
 
     conf->sec = append_arrays (a, base->sec, new->sec);
 
+    conf->satisfy = new->satisfy;
     return (void*)conf;
 }
 
@@ -279,6 +281,13 @@ array_header *requires (request_rec *r)
     return conf->requires;
 }
 
+int satisfies (request_rec *r)
+{
+    core_dir_config *conf =
+      (core_dir_config *)get_module_config(r->per_dir_config, &core_module);
+
+    return conf->satisfy;
+}
 
 /* Should probably just get rid of this... the only code that cares is
  * part of the core anyway (and in fact, it isn't publicised to other
@@ -517,6 +526,17 @@ const char *set_options (cmd_parms *cmd, core_dir_config *d, const char *l)
 	  d->opts |= opt;
     }
 
+    return NULL;
+}
+
+const char *satisfy (cmd_parms *cmd, core_dir_config *c, char *arg)
+{
+    if(!strcasecmp(arg,"all"))
+        c->satisfy = SATISFY_ALL;
+    else if(!strcasecmp(arg,"any"))
+        c->satisfy = SATISFY_ANY;
+    else
+        return "Satisfy either 'any' or 'all'.";
     return NULL;
 }
 
@@ -1088,7 +1108,9 @@ command_rec core_cmds[] = {
 { "AuthName", set_string_slot, (void*)XtOffsetOf(core_dir_config, auth_name),
     OR_AUTHCFG, RAW_ARGS, "The authentication realm (e.g. \"Members Only\")" },
 { "Require", require, NULL, OR_AUTHCFG, RAW_ARGS, "Selects which authenticated users or groups may access a protected space" },
-    
+{ "Satisfy", satisfy, NULL, OR_AUTHCFG, TAKE1,
+    "access policy if both allow and require used ('all' or 'any')" },    
+
 /* Old resource config file commands */
   
 { "AccessFileName", set_access_name, NULL, RSRC_CONF, TAKE1, "Name of per-directory config files (default: .htaccess)" },

@@ -78,6 +78,9 @@
 #define REMOTE_NAME (1)
 #define REMOTE_NOLOOKUP (2)
 
+#define SATISFY_ALL 0
+#define SATISFY_ANY 1
+
 int allow_options (request_rec *);
 int allow_overrides (request_rec *);
 char *default_type (request_rec *);     
@@ -103,6 +106,7 @@ typedef struct {
      
 char *auth_type (request_rec *);
 char *auth_name (request_rec *);     
+int satisfies (request_rec *r);
 array_header *requires (request_rec *);    
 
 #ifdef CORE_PRIVATE
@@ -138,6 +142,7 @@ typedef struct {
   
     /* Authentication stuff.  Groan... */
     
+    int satisfy;
     char *auth_type;
     char *auth_name;
     array_header *requires;

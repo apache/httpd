@@ -552,8 +552,6 @@ request_rec *sub_req_lookup_simple (const char *new_file, const request_rec *r)
 }
 
 
-static int some_auth_required (request_rec *r);
-
 request_rec *sub_req_lookup_uri (const char *new_file, const request_rec *r)
 {
     request_rec *rnew;
@@ -610,9 +608,14 @@ request_rec *sub_req_lookup_uri (const char *new_file, const request_rec *r)
     if ((res = directory_walk (rnew))
 	|| (res = file_walk (rnew))
 	|| (res = location_walk (rnew))
-	|| (!some_auth_required (rnew) ? 0 :
-	     ((res = check_user_id (rnew)) || (res = check_auth (rnew))))
-	|| (res = check_access (rnew))
+        || (satisfies(rnew) == SATISFY_ALL?
+	    ((res = check_access (rnew))
+	     || (some_auth_required (rnew) &&
+		 ((res = check_user_id (rnew)) || (res = check_auth (rnew))))):
+	    ((res = check_access (rnew))
+	     && (!some_auth_required (rnew) ||
+		 ((res = check_user_id (rnew)) || (res = check_auth (rnew)))))
+	    )
 	|| (res = find_types (rnew))
 	|| (res = run_fixups (rnew))
 	)
@@ -653,9 +656,14 @@ request_rec *sub_req_lookup_file (const char *new_file, const request_rec *r)
 	
     if ((res = directory_walk (rnew))
 	|| (res = file_walk (rnew))
-	|| (res = check_access (rnew))
-	|| (!some_auth_required (rnew) ? 0 :
-	     ((res = check_user_id (rnew)) && (res = check_auth (rnew))))
+	|| (satisfies(rnew) == SATISFY_ALL?
+	    ((res = check_access (rnew))
+	     || (some_auth_required (rnew) &&
+		 ((res = check_user_id (rnew)) || (res = check_auth (rnew))))):
+	    ((res = check_access (rnew))
+	     && (!some_auth_required (rnew) ||
+		 ((res = check_user_id (rnew)) || (res = check_auth (rnew)))))
+	    )
 	|| (res = find_types (rnew))
 	|| (res = run_fixups (rnew))
 	)
@@ -760,7 +768,7 @@ static void decl_die (int status, char *phase, request_rec *r)
     else die (status, r);
 }
 
-static int some_auth_required (request_rec *r)
+int some_auth_required (request_rec *r)
 {
     /* Is there a require line configured for the type of *this* req? */
     
@@ -850,21 +858,39 @@ void process_request_internal (request_rec *r)
 	return;
     }	
     
-    if ((access_status = check_access (r)) != 0) {
-        decl_die (access_status, "check access", r);
-	return;
-    }
-    
-    if (some_auth_required (r)) {
-        if ((access_status = check_user_id (r)) != 0) {
-	    decl_die (access_status, "check user.  No user file?", r);
+    switch (satisfies(r)) {
+    case SATISFY_ALL:
+	if ((access_status = check_access (r)) != 0) {
+	    decl_die (access_status, "check access", r);
 	    return;
 	}
-
-	if ((access_status = check_auth (r)) != 0) {
-	    decl_die (access_status, "check access.  No groups file?", r);
-	    return;
+	if (some_auth_required (r)) {
+	    if ((access_status = check_user_id (r)) != 0) {
+		decl_die (access_status, "check user.  No user file?", r);
+		return;
+	    }
+	    if ((access_status = check_auth (r)) != 0) {
+		decl_die (access_status, "check access.  No groups file?", r);
+		return;
+	    }
 	}
+	break;
+    case SATISFY_ANY:
+	if ((access_status = check_access (r)) != 0) {
+	    if (!some_auth_required (r)) {
+		decl_die (access_status, "check access", r);
+		return;
+	    }
+	    if ((access_status = check_user_id (r)) != 0) {
+		decl_die (access_status, "check user.  No user file?", r);
+		return;
+	    }
+	    if ((access_status = check_auth (r)) != 0) {
+		decl_die (access_status, "check access.  No groups file?", r);
+		return;
+	    }
+	}
+	break;
     }
 
     if ((access_status = find_types (r)) != 0) {

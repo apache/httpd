@@ -61,6 +61,7 @@
 #include "http_core.h"
 #include "http_config.h"
 #include "http_log.h"
+#include "http_request.h"
 
 typedef struct {
     char *from;
@@ -234,8 +235,11 @@ int check_dir_access (request_rec *r)
 	    ret = FORBIDDEN;
     }
 
-    if (ret == FORBIDDEN)
+    if (ret == FORBIDDEN && (
+        satisfies(r) != SATISFY_ANY || !some_auth_required(r)
+    )) {
 	log_reason ("Client denied by server configuration", r->filename, r);
+    }
 
     return ret;
 }
