@@ -71,6 +71,7 @@
 #include "mod_core.h"
 #include "apr_optional.h"
 #include "apr_lib.h"
+#include "mod_cgi.h"
 
 #ifdef NETWARE
 
@@ -113,141 +114,9 @@ static const char *set_extension_map(cmd_parms *cmd, netware_dir_config *m, char
     return NULL;
 }
 
-
-static apr_array_header_t *split_argv(apr_pool_t *p, const char *interp,
-                                      const char *cgiprg, const char *cgiargs)
-{
-    apr_array_header_t *args = apr_array_make(p, 8, sizeof(char*));
-    char *d = apr_palloc(p, strlen(interp)+1);
-    const char *ch = interp; 
-    const char **arg;
-    int prgtaken = 0;
-    int argtaken = 0;
-    int inquo;
-    int sl;
-
-    while (*ch) {
-        /* Skip on through Deep Space */
-        if (isspace(*ch)) {
-            ++ch; continue;
-        }
-        /* One Arg */
-        if (((*ch == '$') || (*ch == '%')) && (*(ch + 1) == '*')) {
-            const char *cgiarg = cgiargs;
-            argtaken = 1;
-            for (;;) {
-                char *w = ap_getword_nulls(p, &cgiarg, '+');
-                if (!*w) {
-                    break;
-                }
-                ap_unescape_url(w);
-                arg = (const char**)apr_array_push(args);
-                *arg = ap_escape_shell_cmd(p, w);
-            }
-            ch += 2;
-            continue;
-        }
-        if (((*ch == '$') || (*ch == '%')) && (*(ch + 1) == '1')) {
-            /* Todo: Make short name!!! */
-            prgtaken = 1;
-            arg = (const char**)apr_array_push(args);
-            if (*ch == '%') {
-                char *repl = apr_pstrdup(p, cgiprg);
-                *arg = repl;
-                while ((repl = strchr(repl, '/'))) {
-                    *repl++ = '\\';
-                }
-            }
-            else {
-                *arg = cgiprg;
-            }
-            ch += 2;
-            continue;
-        }
-        if ((*ch == '\"') && ((*(ch + 1) == '$') 
-                              || (*(ch + 1) == '%')) && (*(ch + 2) == '1') 
-            && (*(ch + 3) == '\"')) {
-            prgtaken = 1;
-            arg = (const char**)apr_array_push(args);
-            if (*(ch + 1) == '%') {
-                char *repl = apr_pstrdup(p, cgiprg);
-                *arg = repl;
-                while ((repl = strchr(repl, '/'))) {
-                    *repl++ = '\\';
-                }
-            }
-            else {
-                *arg = cgiprg;
-            }
-            ch += 4;
-            continue;
-        }
-        arg = (const char**)apr_array_push(args);
-        *arg = d;
-        inquo = 0;
-        while (*ch) {
-            if (isspace(*ch) && !inquo) {
-                ++ch; break;
-            }
-            /* Get 'em backslashes */
-            for (sl = 0; *ch == '\\'; ++sl) {
-                *d++ = *ch++;
-            }
-            if (sl & 1) {
-                /* last unmatched '\' + '"' sequence is a '"' */
-                if (*ch == '\"') {
-                    *(d - 1) = *ch++;
-                }
-                continue;
-            }
-            if (*ch == '\"') {
-                /* '""' sequence within quotes is a '"' */
-                if (*++ch == '\"' && inquo) {
-                    *d++ = *ch++; continue;
-                }
-                /* Flip quote state */
-                inquo = !inquo;
-                if (isspace(*ch) && !inquo) {
-                    ++ch; break;
-                }
-                /* All other '"'s are Munched */
-                continue;
-            }
-            /* Anything else is, well, something else */
-            *d++ = *ch++;
-        }
-        /* Term that arg, already pushed on args */
-        *d++ = '\0';
-    }
-
-    if (!prgtaken) {
-        arg = (const char**)apr_array_push(args);
-        *arg = cgiprg;
-    }
-
-    if (!argtaken) {
-        const char *cgiarg = cgiargs;
-        for (;;) {
-            char *w = ap_getword_nulls(p, &cgiarg, '+');
-            if (!*w) {
-                break;
-            }
-            ap_unescape_url(w);
-            arg = (const char**)apr_array_push(args);
-            *arg = ap_escape_shell_cmd(p, w);
-        }
-    }
-
-    arg = (const char**)apr_array_push(args);
-    *arg = NULL;
-
-    return args;
-}
-
-
 static apr_status_t ap_cgi_build_command(const char **cmd, const char ***argv,
                                          request_rec *r, apr_pool_t *p, 
-                                         int process_cgi, apr_cmdtype_e *type)
+                                         cgi_exec_info_t *e_info)
 {
     const char *ext = NULL;
     const char *interpreter = NULL;
@@ -258,7 +127,7 @@ static apr_status_t ap_cgi_build_command(const char **cmd, const char ***argv,
     d = (netware_dir_config *)ap_get_module_config(r->per_dir_config, 
                                                &netware_module);
 
-    if (process_cgi) {
+    if (e_info->process_cgi) {
         /* Handle the complete file name, we DON'T want to follow suexec, since
          * an unrooted command is as predictable as shooting craps in Win32.
          *
@@ -288,105 +157,10 @@ static apr_status_t ap_cgi_build_command(const char **cmd, const char ***argv,
     }
 
     apr_tokenize_to_argv(r->filename, (char***)argv, p);
-    *type = APR_PROGRAM;
+    e_info->cmd_type = APR_PROGRAM;
 
-//    /* If the file has an extension and it is not .com and not .exe and
-//     * we've been instructed to search the registry, then do so.
-//     * Let apr_proc_create do all of the .bat/.cmd dirty work.
-//     */
-//    if (ext && (!strcasecmp(ext,".exe") || !strcasecmp(ext,".com")
-//                || !strcasecmp(ext,".bat") || !strcasecmp(ext,".cmd"))) {
-//        interpreter = "";
-//    }
-//    if (!interpreter && ext 
-//          && (d->script_interpreter_source 
-//                     == INTERPRETER_SOURCE_REGISTRY
-//           || d->script_interpreter_source 
-//                     == INTERPRETER_SOURCE_REGISTRY_STRICT)) {
-//         /* Check the registry */
-//        int strict = (d->script_interpreter_source 
-//                      == INTERPRETER_SOURCE_REGISTRY_STRICT);
-//        interpreter = get_interpreter_from_win32_registry(r->pool, ext,
-//                                                          strict);
-//        if (interpreter && *type != APR_SHELLCMD) {
-//            *type = APR_PROGRAM_PATH;
-//        }
-//        else {
-//            ap_log_error(APLOG_MARK, APLOG_INFO, 0, r->server,
-//                 strict ? "No ExecCGI verb found for files of type '%s'."
-//                        : "No ExecCGI or Open verb found for files of type '%s'.", 
-//                 ext);
-//        }
-//    }
-//    if (!interpreter) {
-//        apr_status_t rv;
-//        char buffer[1024];
-//        apr_size_t bytes = sizeof(buffer);
-//        int i;
-//
-//        /* Need to peek into the file figure out what it really is... 
-//         * ### aught to go back and build a cache for this one of these days.
-//         */
-//        if (((rv = apr_file_open(&fh, *cmd, APR_READ | APR_BUFFERED,
-//                                 APR_OS_DEFAULT, r->pool)) != APR_SUCCESS) 
-//            || ((rv = apr_file_read(fh, buffer, &bytes)) != APR_SUCCESS)) {
-//            ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
-//                          "Failed to read cgi file %s for testing", *cmd);
-//            return rv;
-//        }
-//        apr_file_close(fh);
-//
-//        /* Script or executable, that is the question... */
-//        if ((buffer[0] == '#') && (buffer[1] == '!')) {
-//            /* Assuming file is a script since it starts with a shebang */
-//            for (i = 2; i < sizeof(buffer); i++) {
-//                if ((buffer[i] == '\r') || (buffer[i] == '\n')) {
-//                    buffer[i] = '\0';
-//                    break;
-//                }
-//            }
-//            if (i < sizeof(buffer)) {
-//                interpreter = buffer + 2;
-//                while (isspace(*interpreter)) {
-//                    ++interpreter;
-//                }
-//                if (*type != APR_SHELLCMD) {
-//                    *type = APR_PROGRAM_PATH;
-//                }
-//            }
-//        }
-//        else {
-//            /* Not a script, is it an executable? */
-//            IMAGE_DOS_HEADER *hdr = (IMAGE_DOS_HEADER*)buffer;    
-//            if ((bytes >= sizeof(IMAGE_DOS_HEADER))
-//                && (hdr->e_magic == IMAGE_DOS_SIGNATURE)) {
-//                if (hdr->e_lfarlc < 0x40) {
-//                    /* Ought to invoke this 16 bit exe by a stub, (cmd /c?) */
-//                    interpreter = "";
-//                }
-//                else {
-//                    interpreter = "";
-//                }
-//            }
-//        }
-//    }
-//    if (!interpreter) {
-//        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
-//                      "%s is not executable; ensure interpreted scripts have "
-//                      "\"#!\" first line", *cmd);
-//        return APR_EBADF;
-//    }
-//
-//    *argv = (const char **)(split_argv(p, interpreter, *cmd,
-//                                       args)->elts);
-//    *cmd = (*argv)[0];
     return APR_SUCCESS;
 }
-
-APR_DECLARE_OPTIONAL_FN(apr_status_t, ap_cgi_build_command,
-                        (const char **cmd, const char ***argv, 
-                         request_rec *r, apr_pool_t *p, 
-                         int replace_cmd, apr_cmdtype_e *type));
 
 static void register_hooks(apr_pool_t *p)
 {

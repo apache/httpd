@@ -93,7 +93,6 @@
 #include "util_script.h"
 #include "ap_mpm.h"
 #include "mod_core.h"
-#include "../filters/mod_include.h"
 #include "mod_cgi.h"
 
 module AP_MODULE_DECLARE_DATA cgi_module;
@@ -102,19 +101,6 @@ static APR_OPTIONAL_FN_TYPE(ap_register_include_handler) *cgi_pfn_reg_with_ssi;
 static APR_OPTIONAL_FN_TYPE(ap_ssi_get_tag_and_value) *cgi_pfn_gtv;
 static APR_OPTIONAL_FN_TYPE(ap_ssi_parse_string) *cgi_pfn_ps;
 static APR_OPTIONAL_FN_TYPE(ap_cgi_build_command) *cgi_build_command;
-
-typedef enum {RUN_AS_SSI, RUN_AS_CGI} prog_types;
-
-typedef struct {
-    apr_int32_t          in_pipe;
-    apr_int32_t          out_pipe;
-    apr_int32_t          err_pipe;
-    apr_cmdtype_e        cmd_type;
-    prog_types           prog_type;
-    apr_bucket_brigade **bb;
-    include_ctx_t       *ctx;
-    ap_filter_t         *next;
-} exec_info;
 
 /* Read and discard the data in the brigade produced by a CGI script */
 static void discard_script_output(apr_bucket_brigade *bb);
@@ -401,7 +387,7 @@ static apr_status_t run_cgi_child(apr_file_t **script_out,
                                   const char * const argv[],
                                   request_rec *r,
                                   apr_pool_t *p,
-                                  exec_info *e_info)
+                                  cgi_exec_info_t *e_info)
 {
     const char * const *env;
     apr_procattr_t *procattr;
@@ -471,7 +457,10 @@ static apr_status_t run_cgi_child(apr_file_t **script_out,
                                       conf->limit_nproc)) != APR_SUCCESS) ||
 #endif
         ((rc = apr_procattr_cmdtype_set(procattr,
-                                        e_info->cmd_type)) != APR_SUCCESS)) {
+                                        e_info->cmd_type)) != APR_SUCCESS) ||
+
+        ((rc = apr_procattr_detach_set(procattr,
+                                        e_info->detached)) != APR_SUCCESS)) {
         /* Something bad happened, tell the world. */
         ap_log_rerror(APLOG_MARK, APLOG_ERR, rc, r,
                       "couldn't set child process attributes: %s", r->filename);
@@ -530,13 +519,13 @@ static apr_status_t run_cgi_child(apr_file_t **script_out,
 
 static apr_status_t default_build_command(const char **cmd, const char ***argv,
                                           request_rec *r, apr_pool_t *p,
-                                          int process_cgi, apr_cmdtype_e * type)
+                                          cgi_exec_info_t *e_info)
 {
     int numwords, x, idx;
     char *w;
     const char *args = NULL;
 
-    if (process_cgi) {
+    if (e_info->process_cgi) {
         /* Allow suexec's "/" check to succeed */
         const char *argv0 = strrchr(r->filename, '/');
         if (argv0 != NULL)
@@ -613,7 +602,7 @@ static int cgi_handler(request_rec *r)
     apr_pool_t *p;
     cgi_server_conf *conf;
     apr_status_t rv;
-    exec_info e_info;
+    cgi_exec_info_t e_info;
 
     if(strcmp(r->handler, CGI_MAGIC_TYPE) && strcmp(r->handler, "cgi-script"))
         return DECLINED;
@@ -664,18 +653,19 @@ static int cgi_handler(request_rec *r)
 */
     ap_add_common_vars(r);
 
-    e_info.cmd_type  = APR_PROGRAM;
-    e_info.in_pipe   = APR_CHILD_BLOCK;
-    e_info.out_pipe  = APR_CHILD_BLOCK;
-    e_info.err_pipe  = APR_CHILD_BLOCK;
-    e_info.prog_type = RUN_AS_CGI;
-    e_info.bb        = NULL;
-    e_info.ctx       = NULL;
-    e_info.next      = NULL;
+    e_info.process_cgi = 1;
+    e_info.cmd_type    = APR_PROGRAM;
+    e_info.detached    = 0;
+    e_info.in_pipe     = APR_CHILD_BLOCK;
+    e_info.out_pipe    = APR_CHILD_BLOCK;
+    e_info.err_pipe    = APR_CHILD_BLOCK;
+    e_info.prog_type   = RUN_AS_CGI;
+    e_info.bb          = NULL;
+    e_info.ctx         = NULL;
+    e_info.next        = NULL;
 
     /* build the command line */
-    if ((rv = cgi_build_command(&command, &argv, r, p, 1, &e_info.cmd_type)) 
-            != APR_SUCCESS) {
+    if ((rv = cgi_build_command(&command, &argv, r, p, &e_info)) != APR_SUCCESS) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
                       "don't know how to spawn child process: %s", 
                       r->filename);
@@ -932,24 +922,25 @@ static int include_cgi(char *s, request_rec *r, ap_filter_t *next,
 static int include_cmd(include_ctx_t *ctx, apr_bucket_brigade **bb,
                        const char *command, request_rec *r, ap_filter_t *f)
 {
-    exec_info      e_info;
+    cgi_exec_info_t  e_info;
     const char   **argv;
     apr_file_t    *script_out = NULL, *script_in = NULL, *script_err = NULL;
     apr_bucket_brigade *bcgi;
     apr_bucket *b;
     apr_status_t rv;
 
-    e_info.cmd_type  = APR_SHELLCMD;
-    e_info.in_pipe   = APR_NO_PIPE;
-    e_info.out_pipe  = APR_FULL_BLOCK;
-    e_info.err_pipe  = APR_NO_PIPE;
-    e_info.prog_type = RUN_AS_SSI;
-    e_info.bb        = bb;
-    e_info.ctx       = ctx;
-    e_info.next      = f->next;
+    e_info.process_cgi = 0;
+    e_info.cmd_type    = APR_SHELLCMD;
+    e_info.detached    = 0;
+    e_info.in_pipe     = APR_NO_PIPE;
+    e_info.out_pipe    = APR_FULL_BLOCK;
+    e_info.err_pipe    = APR_NO_PIPE;
+    e_info.prog_type   = RUN_AS_SSI;
+    e_info.bb          = bb;
+    e_info.ctx         = ctx;
+    e_info.next        = f->next;
 
-    if ((rv = cgi_build_command(&command, &argv, r, r->pool, 0,
-                                &e_info.cmd_type)) != APR_SUCCESS) {
+    if ((rv = cgi_build_command(&command, &argv, r, r->pool, &e_info)) != APR_SUCCESS) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
                       "don't know how to spawn cmd child process: %s", 
                       r->filename);
