@@ -354,7 +354,6 @@ static int bio_bucket_in_read(BIO *bio, char *in, int inl)
 {
     BIO_bucket_in_t *inbio = BIO_bucket_in_ptr(bio);
     int len = 0;
-    apr_off_t readbytes = inl;
 
     /* XXX: flush here only required for SSLv2;
      * OpenSSL calls BIO_flush() at the appropriate times for
@@ -371,6 +370,7 @@ static int bio_bucket_in_read(BIO *bio, char *in, int inl)
         if ((len <= inl) || inbio->mode == AP_MODE_GETLINE) {
             return len;
         }
+        inl -= len;
     }
 
     while (1) {
@@ -390,7 +390,8 @@ static int bio_bucket_in_read(BIO *bio, char *in, int inl)
              * GETLINE.
              */
             inbio->rc = ap_get_brigade(inbio->f->next, inbio->bb,
-                                       AP_MODE_READBYTES, inbio->block, &readbytes);
+                                       AP_MODE_READBYTES, inbio->block, 
+                                       inl);
 
             if ((inbio->rc != APR_SUCCESS) || APR_BRIGADE_EMPTY(inbio->bb))
             {
@@ -736,13 +737,12 @@ static apr_status_t ssl_io_filter_Input(ap_filter_t *f,
                                         apr_bucket_brigade *bb,
                                         ap_input_mode_t mode,
                                         apr_read_type_e block,
-                                        apr_off_t *readbytes)
+                                        apr_off_t readbytes)
 {
     apr_status_t status;
     ssl_io_input_ctx_t *ctx = f->ctx;
 
     apr_size_t len = sizeof(ctx->buffer);
-    apr_off_t bytes = *readbytes;
     int is_init = (mode == AP_MODE_INIT);
 
     /* XXX: we don't currently support anything other than these modes. */
@@ -774,9 +774,10 @@ static apr_status_t ssl_io_filter_Input(ap_filter_t *f,
 
     if (ctx->inbio.mode == AP_MODE_READBYTES || 
         ctx->inbio.mode == AP_MODE_SPECULATIVE) {
-        /* Protected from truncation, bytes < MAX_SIZE_T */
-        if (bytes < len) {
-            len = (apr_size_t)bytes;
+        /* Protected from truncation, readbytes < MAX_SIZE_T 
+         * FIXME: No, it's *not* protected.  -- jre */
+        if (readbytes < len) {
+            len = (apr_size_t)readbytes;
         }
         status = ssl_io_input_read(ctx, ctx->buffer, &len);
     }
@@ -797,8 +798,6 @@ static apr_status_t ssl_io_filter_Input(ap_filter_t *f,
             apr_bucket_transient_create(ctx->buffer, len);
         APR_BRIGADE_INSERT_TAIL(bb, bucket);
     }
-
-    *readbytes = len;
 
     return APR_SUCCESS;
 }
