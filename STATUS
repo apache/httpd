@@ -1,5 +1,5 @@
   1.3 STATUS:
-  Last modified at [$Date: 1999/01/13 06:55:21 $]
+  Last modified at [$Date: 1999/01/14 17:13:37 $]
 
 Release:
 
@@ -57,7 +57,9 @@ Available Patches:
     * Peter Greis' new '%m' CustomLog option: the time taken to serve the
       request, in milli-seconds.
         Message-ID: PR#2838
-        Status: 
+        Status: Jim +0 (as is, the patch requires rework since it needs
+	  to be aware of NO_GETTIMEOFDAY and NO_TIMES as well as
+	  implement a times() alternative).
 
     * Ronald Tschalär's ap_uuencode() bugfix
         Message-ID: PR#3411
@@ -159,7 +161,7 @@ Open issues:
     * Official retirement of 1.2; when?  Ken suggests as of 1.3.4.
       'Retirement' to be interpreted as removing the verbiage from the
       main Apache page, but leaving the kits in /dist/.
-	Status: Ken +1, Randy +1, Dean +1, Ralf +1
+	Status: Ken +1, Randy +1, Dean +1, Ralf +1, Jim +1
 
     * Someone other than Dean has to do a security/correctness review on
       psprintf(), bprintf(), and ap_snprintf().  In particular these routines
