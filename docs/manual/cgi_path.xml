@@ -29,7 +29,7 @@
     <example>
       Alias /cgi-ralph /usr/local/httpd/cgi-bin/user.cgi/ralph
     </example>    
-    
+
     <p>In this case, <code>user.cgi</code> is the CGI script, the
     "/ralph" is information to be passed onto the CGI. If this
     configuration was in place, and a request came for
