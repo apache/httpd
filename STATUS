@@ -1,5 +1,5 @@
 APACHE 1.3 STATUS:						-*-text-*-
-  Last modified at [$Date: 2001/11/10 20:30:54 $]
+  Last modified at [$Date: 2001/12/18 15:31:57 $]
 
 Release:
 
@@ -39,10 +39,7 @@ Release:
 
 RELEASE SHOWSTOPPERS:
 
-    * The Multiviews fix in 1.3.22 has a bug: the Query string is
-      lost on multiviews-negotiated requests.
-        Message-ID: <064c01c1608e$aee154f0$93c0b0d0@roweclan.net>
-        PR: 8628, 8582, 8538 
+
 
 RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
 
@@ -70,10 +67,6 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
       set headers too (needed by mod_auth_digest)
         Message-ID: <199907080712.JAA28269@chill.innovation.ch>
         Status:
-
-    * Small patch to enable custom caching mechanisms.
-        Message-ID: <882CC83410624341AD0F775101849D3E082343@orion.spidercache.com>
-	Status: Greg +1
 
 
 Available Patches (Most likely, will be ported to 2.0 as appropriate):
