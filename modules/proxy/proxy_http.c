@@ -990,7 +990,7 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
              * if we are overriding the errors, we can't put the content
              * of the page into the brigade
              */
-            if ( (conf->error_override ==0) || r->status < 300 ) {
+            if (conf->error_override == 0 || ap_is_HTTP_SUCCESS(r->status)) {
 
                 /* read the body, pass it to the output filters */
                 int finish = FALSE;
@@ -1050,11 +1050,11 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
         }
     } while (interim_response);
 
-    if ( conf->error_override ) {
+    if (conf->error_override) {
         /* the code above this checks for 'OK' which is what the hook expects */
-        if ( r->status == HTTP_OK )
+        if (ap_is_HTTP_SUCCESS(r->status))
             return OK;
-        else  {
+        else {
             /* clear r->status for override error, otherwise ErrorDocument
              * thinks that this is a recursive error, and doesn't find the
              * custom error page

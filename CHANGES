@@ -2,6 +2,10 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) mod_proxy: Fix handling of non-200 success status codes when
+     "ProxyErrorOverride On" is configured.  PR 20183.
+     [Marcus Janson <marcus.janson tre.se>, Joe Orton]
+
   *) Threaded MPMs for Unix and Win32: Add WorkerStackSize directive
      to override default thread stack size for threads which handle
      client connections.  Required for some third-party modules on
