@@ -1,17 +1,17 @@
 <!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 2.0//EN">
 <HTML>
 <HEAD>
-<TITLE>Apache HTTP Server Documentation</TITLE>
+<TITLE>Apache HTTP Server: Security Tips</TITLE>
 </HEAD>
 
 <BODY>
 <!--#include virtual="header.html" -->
-<H1>Security tips for server configuration</H1>
+<H1>Security Tips for Server Configuration</H1>
 
 <hr>
 
 <P>Some hints and tips on security issues in setting up a web server. Some of
-the suggestions will be general, other, specific to Apache
+the suggestions will be general, others specific to Apache.
 
 <HR>
 
@@ -21,7 +21,7 @@ server before switching to the user defined in the
 <a href="../mod/core.html#user"><b>User</b></a> directive.  Anyone who
 has write permission for the directory where any log files are
 being written to can append pseudo-arbitrary data to any file on the
-system which is writable to the user who starts Apache.  Since the
+system which is writable by the user who starts Apache.  Since the
 server is normally started by root, you should <EM>NOT</EM> give anyone
 write permission to the directory where logs are stored unless you
 want them to have root access. 
@@ -95,6 +95,75 @@ Then setup for specific directories<P>
 
 This stops all overrides, Includes and accesses in all directories apart
 from those named.<p>
+<HR>
+<H2>
+ Protect server files by default
+</H2>
+<P>
+One aspect of Apache which is occasionally misunderstood is the feature
+of default access.  That is, unless you take steps to change it, if the
+server can find its way to a file through normal URL mapping rules, it
+can serve it to clients.
+</P>
+<P>
+For instance, consider the following example:
+</P>
+<OL>
+ <LI><SAMP># cd /; ln -s / public_html</SAMP>
+ </LI>
+ <LI>Accessing <SAMP>http://localhost/~root/</SAMP>
+ </LI>
+</OL>
+<P>
+This would allow clients to walk through the entire filesystem.  To work
+around this, add the following block to your server's configuration:
+</P>
+<PRE>
+ &lt;Directory /&gt;
+     Order deny,allow
+     Deny from all
+ &lt;/Directory&gt;
+</PRE>
+<P>
+This will forbid default access to filesystem locations.  Add
+appropriate
+<A
+ HREF="../mod/core.html#directory"
+><SAMP>&lt;Directory&gt;</SAMP></A>
+blocks to allow access only
+in those areas you wish.  For example,
+</P>
+<PRE>
+ &lt;Directory /usr/users/*/public_html&gt;
+     Order deny,allow
+     Allow from all
+ &lt;/Directory&gt;
+ &lt;Directory /usr/local/httpd&gt;
+     Order deny,allow
+     Allow from all
+ &lt;/Directory&gt;
+</PRE>
+<P>
+Pay particular attention to the interactions of
+<A
+ HREF="../mod/core.html#location"
+><SAMP>&lt;Location&gt;</SAMP></A>
+and
+<A
+ HREF="../mod/core.html#directory"
+><SAMP>&lt;Directory&gt;</SAMP></A>
+directives; for instance, even if <SAMP>&lt;Directory /&gt;</SAMP>
+denies access, a <SAMP>&lt;Location /&gt;</SAMP> directive might
+overturn it.
+</P>
+<P>
+Also be wary of playing games with the
+<A
+ HREF="../mod/mod_userdir.html#userdir"
+>UserDir</A>
+directive; setting it to something like <SAMP>&quot;./&quot;</SAMP>
+would have the same effect, for root, as the first example above.
+</P>
 
 <HR>
 <P>Please send any other useful security tips to
