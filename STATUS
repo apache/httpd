@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2002/05/07 19:21:49 $]
+Last modified at [$Date: 2002/05/07 22:31:38 $]
 
 Release:
 
@@ -88,7 +88,7 @@ CURRENT VOTES:
       to the config. Possibly go one step further and add a option
       to just report '2.0' instead of '2.0.x'
       +1:   IanH, BrianP
-      -1: Greg
+      -1: Greg, Cliff
          I use the default response all the time to verify that a
 	 module is present and at the proper version. This information
 	 is also very handy for the module surveys, to determine what
