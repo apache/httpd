@@ -12,6 +12,9 @@
   <!-- Defined parameters (overrideable) -->
   <xsl:param    name="relative-path" select="'.'"/>
 
+  <xsl:variable name="lowercase" select="'abcdefghijklmnopqrstuvwxyz'" />
+  <xsl:variable name="uppercase" select="'ABCDEFGHIJKLMNOPQRSTUVWXYZ'" />
+
   <!-- Process an entire document into an HTML page -->
   <xsl:template match="modulesynopsis">
 
@@ -72,15 +75,21 @@
 
 <h2>Directives</h2>
 
+<xsl:if test="directivesynopsis">
 <ul>
  <xsl:for-each select="directivesynopsis/name">
   <xsl:sort select="name"/>
   <xsl:variable name="name">
    <xsl:value-of select="."/>
   </xsl:variable>
-  <li><a href="#{$name}"><xsl:value-of select="."/></a></li>
+  <xsl:variable name="lowername" select="translate($name, $uppercase, $lowercase)" />
+  <li><a href="#{$lowername}"><xsl:value-of select="."/></a></li>
  </xsl:for-each>
 </ul>
+</xsl:if>
+<xsl:if test="not(directivesynopsis)">
+<p>This module provides no directives.</p>
+</xsl:if>
 
 <xsl:apply-templates select="section"/>
 
@@ -139,11 +148,13 @@
   <xsl:template match="section/title"></xsl:template>
 
   <xsl:template match="directivesynopsis">
+
   <xsl:variable name="name">
    <xsl:value-of select="./name"/>
   </xsl:variable>
-
-    <h2><a name="{$name}"><xsl:value-of select="./name"/> Directive</a></h2>
+  <xsl:variable name="lowername" select="translate($name, $uppercase, $lowercase)" />
+    <h2><a name="{$name}"><xsl:if test="./@type='section'">&lt;</xsl:if><xsl:value-of select="./name"/><xsl:if test="./@type='section'">&gt;</xsl:if></a>
+        <a name="{$lowername}">Directive</a></h2>
 <table bgcolor="#cccccc" border="0" cellspacing="0" cellpadding="1">
 <tr><td>
 <table bgcolor="#ffffff" width="100%">
@@ -228,11 +239,12 @@
       <xsl:variable name="directive">
         <xsl:value-of select="."/>
       </xsl:variable>
+      <xsl:variable name="lowerdirective" select="translate($directive, $uppercase, $lowercase)" />
       <xsl:if test="@module=/modulesynopsis/name">
-        <a class="directive" href="#{$directive}"><xsl:value-of select="."/></a>
+        <a class="directive" href="#{$lowerdirective}"><xsl:if test="./@type='section'">&lt;</xsl:if><xsl:value-of select="."/><xsl:if test="./@type='section'">&gt;</xsl:if></a>
       </xsl:if>
       <xsl:if test="@module!=/modulesynopsis/name">
-        <a class="directive" href="{$module}.html#{$directive}"><xsl:value-of select="."/></a>
+        <a class="directive" href="{$module}.html#{$lowerdirective}"><xsl:if test="./@type='section'">&lt;</xsl:if><xsl:value-of select="."/><xsl:if test="./@type='section'">&gt;</xsl:if></a>
       </xsl:if>
     </xsl:if>
     <xsl:if test="not(@module)">
