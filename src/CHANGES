@@ -1,5 +1,8 @@
 Changes with Apache 1.3b4
 
+  *) mod_rewrite's RewriteLog should behave like mod_log_config, it
+     shouldn't force hostname lookups.  [Dean Gaudet] PR#1684
+
   *) "basic" auth needs a case-insensitive comparison.
      [Ronald.Tschalaer@psi.ch] PR#1666
 

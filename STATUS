@@ -83,6 +83,7 @@ Committed Code Changes:
     * Martin's [PATCH] mod_speling [300] Multiple Choices bug (Take 2)
     * Dean's [PATCH] protect the environment
     * general/1666: Apache uses a case sensitive match for "Basic" auth scheme
+    * mod_rewrite/1684: RewriteLog directive does the equivalent of "HostnameLookups on"
 
 Available Patches:
 

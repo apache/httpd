@@ -2749,7 +2749,7 @@ static void rewritelog(request_rec *r, int level, const char *text, ...)
         ruser = "\"\"";
     }
 
-    rhost = get_remote_host(conn, r->server->module_config, REMOTE_NAME);
+    rhost = get_remote_host(conn, r->server->module_config, REMOTE_NOLOOKUP);
     if (rhost == NULL)
         rhost = "UNKNOWN-HOST";
 
