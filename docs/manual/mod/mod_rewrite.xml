@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
-<!-- $Revision: 1.11.2.9 $ -->
+<!-- $Revision: 1.11.2.10 $ -->
 
 <!--
  Copyright 2002-2004 The Apache Software Foundation
@@ -1343,16 +1343,22 @@ When using the NOT character
       able to have more than one pattern to be applied before a
       substitution occurs.</p>
 
-      <p>One more note: You can even create URLs in the
-      substitution string containing a query string part. Just use
-      a question mark inside the substitution string to indicate
-      that the following stuff should be re-injected into the
-      QUERY_STRING. When you want to erase an existing query
-      string, end the substitution string with just the question
-      mark.</p>
+<note><title>Query String</title>
+      <p>The <em>Pattern</em> will not match against the query string.
+      Instead, you must use a <directive
+      module="mod_rewrite">RewriteCond</directive> with the
+      <code>%{QUERY_STRING}</code> variable.  You can, however, create
+      URLs in the substitution string containing a query string
+      part. Just use a question mark inside the substitution string to
+      indicate that the following stuff should be re-injected into the
+      query string. When you want to erase an existing query string,
+      end the substitution string with just the question mark.  To
+      combine a new query string with an old one, use the
+      <code>[QSA]</code> flag (see below).</p>
+</note>
 
-<note><title>Note</title>
-There is a special feature:
+<note><title>Substitution of Absolute URLs</title>
+          <p>There is a special feature:
           When you prefix a substitution field with
           <code>http://</code><em>thishost</em>[<em>:thisport</em>]
           then <strong>mod_rewrite</strong> automatically strips it
@@ -1360,15 +1366,13 @@ There is a special feature:
           URLs is a useful and important feature when used in
           combination with a mapping-function which generates the
           hostname part. Have a look at the first example in the
-          example section below to understand this.
-</note>
+          example section below to understand this.</p>
 
-<note><title>Remember</title>
- An unconditional external
+          <p><strong>Remember:</strong> An unconditional external
           redirect to your own server will not work with the prefix
           <code>http://thishost</code> because of this feature. To
           achieve such a self-redirect, you have to use the
-          <strong>R</strong>-flag (see below).
+          <strong>R</strong>-flag (see below).</p>
 </note>
 
       <p>Additionally you can set special flags for
