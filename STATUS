@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/12/27 12:11:37 $]
+Last modified at [$Date: 2003/12/27 13:18:56 $]
 
 Release:
 
@@ -162,18 +162,10 @@ PATCHES TO BACKPORT FROM 2.1
       modules/metadata/mod_expires.c r1.45
       +1: ken, stoddard, rederpj
 
-    * PREREQ for a couple of fixes (mod_cgid daemon restart, stranded
-      piped logger processes) - ap_mpm_query(AP_MPMQ_MPM_STATE)
+    * PREREQ for another fix (stranded piped logger processes) - 
+      ap_mpm_query(AP_MPMQ_MPM_STATE)
       No updates are available at present for the BeOS or OS/2 MPMs,
       but that is not a showstopper for the other changes.
-
-        include/ap_mpm.h r1.36
-        server/mpm/prefork/prefork.c r1.284
-        server/mpm/worker/worker.c r1.142,r1.143
-        server/mpm/experimental/leader/leader.c r1.35
-        server/mpm/experimental/threadpool/threadpool.c r1.23
-        server/mpm/netware/mpm_netware.c r1.78
-      +1: trawick, stoddard, jerenkrantz
 
         server/mpm/winnt/mpm_winnt.c r1.303
         server/mpm/winnt/mpm_winnt.h r1.44
