@@ -773,7 +773,6 @@ void reopen_scoreboard (pool *p)
 #ifdef __EMX__
 #ifdef HAVE_MMAP
     caddr_t m;
-    char errstr[MAX_STRING_LEN];
     int rc;
 
     m = (caddr_t)get_shared_heap("\\SHAREMEM\\SCOREBOARD");
