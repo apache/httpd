@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/10/13 16:19:34 $]
+Last modified at [$Date: 2004/10/13 16:32:05 $]
 
 Release:
 
@@ -114,10 +114,6 @@ PATCHES TO BACKPORT FROM 2.1
        jerenkrantz comments: This needs the final patch posted to dev@httpd?
        jorton replies: it does indeed, hang on...
        +1: jorton
-
-    *) Correctly store cache content type. PR 30278
-         modules/experimental/mod_disk_cache.c?r1=1.62&r2=1.63
-       +1: stoddard, jerenkrantz, minfrin, jim
 
     *) Do not store aborted content. PR 21492.
          modules/experimental/mod_disk_cache.c?r1=1.63&r2=1.64
