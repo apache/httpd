@@ -1537,7 +1537,9 @@ static int create_process(apr_pool_t *p, HANDLE *child_proc, HANDLE *child_exit_
         CloseHandle(hPipeWrite);
         CloseHandle(hPipeRead);
         CloseHandle(hNullOutput);
-        CloseHandle(hShareError);
+        if (GetStdHandle(STD_ERROR_HANDLE) != hShareError) {
+            CloseHandle(hShareError);
+        }
         return -1;
     }
     
