@@ -220,6 +220,9 @@ static apr_status_t churn_output(SSLFilterRec *pRec)
     return APR_SUCCESS;
 }
 
+#define bio_is_renegotiating(bio) \
+(((int)BIO_get_callback_arg(bio)) == SSL_ST_RENEGOTIATE)
+
 static apr_status_t churn (SSLFilterRec *pRec,
         apr_read_type_e eReadType, apr_off_t *readbytes)
 {
@@ -282,13 +285,22 @@ static apr_status_t churn (SSLFilterRec *pRec,
         
         assert(n >= 0 && (apr_size_t)n == len);
 
+        if (bio_is_renegotiating(pRec->pbioRead)) {
+            /* we're doing renegotiation in the access phase */
+            if (len >= *readbytes) {
+                /* trick ap_http_filter into leaving us alone */
+                *readbytes = 0;
+                break; /* SSL_renegotiate will take it from here */
+            }
+        }
+
         if ((ret = ssl_hook_process_connection(pRec)) != APR_SUCCESS) {
             /* if this is the case, ssl connection has been shutdown
              * and pRec->pssl has been freed
              */
             return ret;
         }
-        
+
         /* pass along all of the current BIO */
         while ((n = ssl_io_hook_read(pRec->pssl,
                                      (unsigned char *)buf, sizeof(buf))) > 0)
@@ -334,23 +346,35 @@ apr_status_t ssl_io_filter_Output(ap_filter_t *f,apr_bucket_brigade *pbbIn)
                     APLOG_MARK,APLOG_ERR,ret,NULL, "Error in churn_output");
 		return ret;
             }
-
-            if ((ret = ssl_hook_CloseConnection (pRec)) != APR_SUCCESS)
-                ap_log_error(APLOG_MARK,APLOG_ERR,ret,NULL,
-                    "Error in ssl_hook_CloseConnection");
 	    break;
 	}
 
-	if(APR_BUCKET_IS_FLUSH(pbktIn)) {
-	    continue;
-	}
+	if (!APR_BUCKET_IS_FLUSH(pbktIn)) {
+            /* read filter */
+            apr_bucket_read(pbktIn,&data,&len,APR_BLOCK_READ);
 
-	/* read filter */
-	apr_bucket_read(pbktIn,&data,&len,APR_BLOCK_READ);
+            /* write SSL */
+            n = ssl_io_hook_write(pRec->pssl, (unsigned char *)data, len);
 
-	/* write SSL */
-        n = ssl_io_hook_write(pRec->pssl, (unsigned char *)data, len);
-        assert (n == len);
+            if (n != len) {
+                conn_rec *c = (conn_rec *)SSL_get_app_data(pRec->pssl);
+                char *reason = "reason unknown";
+
+                /* XXX: probably a better way to determine this */
+                if (SSL_total_renegotiations(pRec->pssl)) {
+                    reason = "likely due to failed renegotiation";
+                }
+
+                ssl_log(c->base_server, SSL_LOG_ERROR,
+                        "failed to write %d of %d bytes (%s)",
+                        n > 0 ? len - n : len, len, reason);
+
+                return APR_EINVAL;
+            }
+        }
+        /* else fallthrough to flush the current wbio
+         * likely triggered by renegotiation in ssl_hook_Access
+         */
 
 	/* churn the state machine */
 	ret=churn_output(pRec);
@@ -388,8 +412,15 @@ apr_status_t ssl_io_filter_Input(ap_filter_t *f,apr_bucket_brigade *pbbOut,
 
 apr_status_t ssl_io_filter_cleanup (void *data)
 {
-    SSL *ssl = (SSL *)data;
-    return APR_SUCCESS;
+    apr_status_t ret;
+    SSLFilterRec *pRec = (SSLFilterRec *)data;
+
+    if ((ret = ssl_hook_CloseConnection(pRec)) != APR_SUCCESS) {
+        ap_log_error(APLOG_MARK, APLOG_ERR, ret, NULL,
+                     "Error in ssl_hook_CloseConnection");
+    }
+
+    return ret;
 }
 
 void ssl_io_filter_init(conn_rec *c, SSL *ssl)
@@ -406,7 +437,7 @@ void ssl_io_filter_init(conn_rec *c, SSL *ssl)
     SSL_set_bio(ssl, filter->pbioRead, filter->pbioWrite);
     filter->pssl            = ssl;
 
-    apr_pool_cleanup_register(c->pool, (void*)ssl,
+    apr_pool_cleanup_register(c->pool, (void*)filter,
                               ssl_io_filter_cleanup, apr_pool_cleanup_null);
 
     return;
