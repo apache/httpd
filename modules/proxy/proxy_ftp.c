@@ -1595,9 +1595,9 @@ int ap_proxy_ftp_handler(request_rec *r, proxy_server_conf *conf,
 	apr_socket_close(remote_sock);
 	ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r->server,
 		     "proxy: FTP: Closing Data connection.");
-	i = ftp_getrc_msg(origin, cbb, buffer, sizeof(buffer));
+	rc = ftp_getrc_msg(origin, cbb, buffer, sizeof(buffer));
 	ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r->server,
-		     "proxy: FTP: %d %s", i, buffer);
+		     "proxy: FTP: %d %s", rc, buffer);
 	apr_brigade_cleanup(bb);
 	ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r->server,
 		     "proxy: FTP: end body send");
@@ -1620,9 +1620,9 @@ int ap_proxy_ftp_handler(request_rec *r, proxy_server_conf *conf,
 	/*   500 Syntax error, command unrecognized. */
 	/*   501 Syntax error in parameters or arguments. */
 	/*   502 Command not implemented. */
-	i = ftp_getrc_msg(origin, cbb, buffer, sizeof(buffer));
+	rc = ftp_getrc_msg(origin, cbb, buffer, sizeof(buffer));
 	ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r->server,
-		     "proxy: FTP: %d %s", i, buffer);
+		     "proxy: FTP: %d %s", rc, buffer);
     }
 
 
@@ -1647,9 +1647,9 @@ int ap_proxy_ftp_handler(request_rec *r, proxy_server_conf *conf,
     /* responses: 221, 500 */
     /* 221 Service closing control connection. */
     /* 500 Syntax error, command unrecognized. */
-    i = ftp_getrc_msg(origin, cbb, buffer, sizeof(buffer));
+    rc = ftp_getrc_msg(origin, cbb, buffer, sizeof(buffer));
     ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r->server,
-                 "proxy: FTP: %d %s", i, buffer);
+                 "proxy: FTP: %d %s", rc, buffer);
     apr_socket_close(sock);
     apr_brigade_destroy(bb);
     return OK;
