@@ -78,6 +78,18 @@ Body:----------nl--
 <!--#include virtual="include/bottom.html" -->
 ----------nl--
 
+Content-language: pl
+Content-type: text/html; charset=ISO-8859-2
+Body:----------pl--
+<!--#set var="TITLE" value="Brak akceptowalnego obiektu!"
+--><!--#include virtual="include/top.html" -->
+
+    Nie znaleziono akceptowalnego obiektu reprezentuj±cego
+    ¿±dany zasób.
+
+<!--#include virtual="include/bottom.html" -->
+----------pl--
+
 Content-language: sv
 Content-type: text/html; charset=ISO-8859-1
 Body:----------sv--

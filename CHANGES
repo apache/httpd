@@ -2,6 +2,9 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) Add Polish translation of error messages.  PR 25101.
+     [Tomasz Kepczynski <tomek jot23.org>]
+
   *) mod_proxy with ProxyErrorOverride On in a reverse-proxy configuration attaches
      a body to the 302 response and a wrong Content-Length header. 
      PR: 22951 [Ermanno Scaglione scaglione ..at.. starnetone.de]

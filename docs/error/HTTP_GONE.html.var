@@ -155,6 +155,31 @@ Body:----------nl--
 <!--#include virtual="include/bottom.html" -->
 ----------nl--
 
+Content-language: pl
+Content-type: text/html; charset=ISO-8859-2
+Body:----------pl--
+<!--#set var="TITLE" value="Zasób usuniêty!"
+--><!--#include virtual="include/top.html" -->
+
+    Poszukiwany zasób nie jest ju¿ dostêpny na tym serwerze i nie
+    podano nowego adresu zasobu.
+
+  <!--#if expr="$HTTP_REFERER" -->
+
+    Prosimy poinformowaæ autora
+    <a href="<!--#echo encoding="url" var="HTTP_REFERER" -->">referuj±cej
+    strony</a> o nieaktualnym linku.
+
+  <!--#else -->
+
+    Je¶li pod±¿y³e¶ za linkiem z innej strony skontaktuj siê z jej
+    autorem.
+
+  <!--#endif -->
+
+<!--#include virtual="include/bottom.html" -->
+----------pl--
+
 Content-language: sv
 Content-type: text/html; charset=ISO-8859-1
 Body:----------sv--

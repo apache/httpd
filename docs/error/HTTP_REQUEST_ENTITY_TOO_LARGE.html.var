@@ -82,6 +82,19 @@ Body:----------nl--
 <!--#include virtual="include/bottom.html" -->
 ----------nl--
 
+Content-language: pl
+Content-type: text/html; charset=ISO-8859-2
+Body:----------pl--
+<!--#set var="TITLE" value="¯±dany obiekt zbyt du¿y!"
+--><!--#include virtual="include/top.html" -->
+
+    Metoda <!--#echo var="REDIRECT_REQUEST_METHOD" -->
+    nie zezwala na typ przesy³anych danych lub rozmiar danych przekracza
+    ustalony limit.
+
+<!--#include virtual="include/bottom.html" -->
+----------pl--
+
 Content-language: sv
 Content-type: text/html; charset=ISO-8859-1
 Body:----------sv--
