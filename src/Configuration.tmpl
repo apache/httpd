@@ -37,9 +37,15 @@
 # will be added to whatever flags Configure determines as appropriate
 # and needed for your platform.
 #
-# You can also set the compiler and Optimization used here as well.
-# Settings here have priority; If not set, Configure will attempt to guess
-# the C compiler, looking for gcc first, then cc.
+# You can also set the compiler (CC) and optimization (OPTIM) used here as
+# well.  Settings here have priority; If not set, Configure will attempt to
+# guess the C compiler, looking for gcc first, then cc.
+#
+# Optimization note: 
+# Be careful when adding optimization flags (like -O3 or -O6) on the OPTIM
+# entry, especially when using some GCC variants. Experience showed that using
+# these for compiling Apache is risky. If you don't want to see Apache dumping
+# core regularly then at most use -O or -O2.
 #
 EXTRA_CFLAGS=
 EXTRA_LDFLAGS=
@@ -47,7 +53,7 @@ EXTRA_LIBS=
 EXTRA_INCLUDES=
 
 #CC=
-#OPTIM=-O2
+#OPTIM=
 #RANLIB=
 
 ################################################################
