@@ -1,5 +1,7 @@
 Changes with Apache 2.0.53
 
+  *) Win32 MPM: Correct typo in debugging output.  [William Rowe]
+
   *) conf: Remove AddDefaultCharset from the default configuration because
      setting a site-wide default does more harm than good. PR 23421.
      [Roy Fielding]

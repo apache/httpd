@@ -691,7 +691,7 @@ static void worker_main(long thread_num)
     ap_sb_handle_t *sbh;
 
     ap_log_error(APLOG_MARK, APLOG_DEBUG, APR_SUCCESS, ap_server_conf,
-                 "Child %d: Worker thread %d starting.", my_pid, thread_num);
+                 "Child %d: Worker thread %ld starting.", my_pid, thread_num);
     while (1) {
         conn_rec *c;
         apr_int32_t disconnected;
@@ -752,7 +752,7 @@ static void worker_main(long thread_num)
                                         (request_rec *) NULL);
 
     ap_log_error(APLOG_MARK, APLOG_DEBUG, APR_SUCCESS, ap_server_conf,
-                 "Child %d: Worker thread %d exiting.", my_pid, thread_num);
+                 "Child %d: Worker thread %ld exiting.", my_pid, thread_num);
 }
 
 
