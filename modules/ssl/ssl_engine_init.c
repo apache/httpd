@@ -127,11 +127,6 @@ void ssl_init_Module(server_rec *s, pool *p)
                 SERVER_BASEVERSION,
                 ssl_var_lookup(p, NULL, NULL, NULL, "SSL_VERSION_INTERFACE"),
                 ssl_var_lookup(p, NULL, NULL, NULL, "SSL_VERSION_LIBRARY"));
-#ifdef WIN32
-        ssl_log(s, SSL_LOG_WARN, "You are using mod_ssl under Win32. " 
-                "This combination is *NOT* officially supported. "
-                "Use it at your own risk!");
-#endif
     }
 
     /*
@@ -194,9 +189,7 @@ void ssl_init_Module(server_rec *s, pool *p)
     if (mc->nInitCount == 1) {
         ssl_pphrase_Handle(s, p);
         ssl_init_TmpKeysHandle(SSL_TKP_GEN, s, p);
-#ifndef WIN32
         return;
-#endif
     }
 
     /*

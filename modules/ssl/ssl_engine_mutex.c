@@ -140,7 +140,6 @@ void ssl_mutex_kill(server_rec *s)
 
 void ssl_mutex_file_create(server_rec *s, pool *p)
 {
-#ifndef WIN32
     SSLModConfigRec *mc = myModConfig();
 
     /* create the lockfile */
@@ -168,13 +167,11 @@ void ssl_mutex_file_create(server_rec *s, pool *p)
                 mc->szMutexFile);
         ssl_die();
     }
-#endif
     return;
 }
 
 void ssl_mutex_file_open(server_rec *s, pool *p)
 {
-#ifndef WIN32
     SSLModConfigRec *mc = myModConfig();
 
     /* open the lockfile (once per child) to get a unique fd */
@@ -185,32 +182,26 @@ void ssl_mutex_file_open(server_rec *s, pool *p)
                 mc->szMutexFile);
         ssl_die();
     }
-#endif
     return;
 }
 
 void ssl_mutex_file_remove(void *data)
 {
-#ifndef WIN32
     SSLModConfigRec *mc = myModConfig();
 
     /* remove the mutex lockfile */
     unlink(mc->szMutexFile);
-#endif
     return;
 }
 
-#ifndef WIN32
 #ifdef SSL_USE_FCNTL
 static struct flock   lock_it;
 static struct flock unlock_it;
-#endif
 #endif
 
 BOOL ssl_mutex_file_acquire(void)
 {
     int rc = -1;
-#ifndef WIN32
     SSLModConfigRec *mc = myModConfig();
 
 #ifdef SSL_USE_FCNTL
@@ -229,7 +220,6 @@ BOOL ssl_mutex_file_acquire(void)
            && (errno == EINTR)                         )
         ;
 #endif
-#endif
 
     if (rc < 0)
         return FALSE;
@@ -240,7 +230,6 @@ BOOL ssl_mutex_file_acquire(void)
 BOOL ssl_mutex_file_release(void)
 {
     int rc = -1;
-#ifndef WIN32
     SSLModConfigRec *mc = myModConfig();
 
 #ifdef SSL_USE_FCNTL
@@ -258,7 +247,6 @@ BOOL ssl_mutex_file_release(void)
     while (   (rc = flock(mc->nMutexFD, LOCK_UN)) < 0
            && (errno == EINTR)                       ) 
         ;
-#endif
 #endif
 
     if (rc < 0)

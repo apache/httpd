@@ -359,12 +359,8 @@ void ssl_hook_NewConnection(conn_rec *conn)
     /*
      * Improve I/O throughput by using
      * OpenSSL's read-ahead functionality
-     * (don't used under Win32, because
-     * there we use select())
      */
-#ifndef WIN32
     SSL_set_read_ahead(ssl, TRUE);
-#endif
     return;
 }
 
