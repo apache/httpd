@@ -1,5 +1,10 @@
 Changes with Apache 2.0.23
 
+  *) Add a single listener/multiple worker MPM.  This MPM is
+     definately not fully correct, but it allows us to solve many
+     of the problems that exist in the threaded MPM.  This is a 
+     modified version of the threaded MPM.  [Ryan Bloom]
+
   *) Improve content generation throughout Apache, providing closer
      compliance with HTML 3.2, HTML 4.01 Transitional and XHTML 1.0
      Transitional specifications.  [William Rowe]
