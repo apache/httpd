@@ -5,9 +5,12 @@ dnl  Preload various ENV/makefile paramsm such as CC, CFLAGS, etc
 dnl  based on outside knowledge
 dnl
 AC_DEFUN(APACHE_PRELOAD, [
-echo "Applying hints file rules for $host"
+if test "$DID_APACHE_PRELOAD" != "yes" ; then
+  DID_APACHE_PRELOAD="yes"; export DID_APACHE_PRELOAD
 
-case "$host" in
+  echo "Applying Apache hints file rules for $host"
+
+  case "$host" in
     *-apple-aux3*)
 	APR_SETVAR(APACHE_MPM, [prefork])
         APR_SETVAR(SINGLE_LISTEN_UNSERIALIZED_ACCEPT, [1])
@@ -49,6 +52,7 @@ dnl	;;
         APR_SETVAR(APACHE_MPM, [beos])
         APR_SETVAR(SINGLE_LISTEN_UNSERIALIZED_ACCEPT, [1])
         ;;
-esac
-APR_DOEXTRA
+  esac
+  APR_DOEXTRA
+fi
 ])
