@@ -26,11 +26,7 @@
 <syntax>AuthBasicProvider On|Off|<var>provider-name</var>
 [<var>provider-name</var>] ...</syntax>
 <default>AuthBasicProvider On</default>
-<contextlist><context>directory</context><context>.htaccess</context>
-<contextlist>
-  <context>directory</context>
-  <context>.htaccess</context>
-</contextlist>
+<contextlist><context>directory</context><context>.htaccess</context></contextlist>
 <override>AuthConfig</override>
 
 <usage>
@@ -68,8 +64,7 @@
 設定します。</description>
 <syntax>AuthBasicAuthoritative On|Off</syntax>
 <default>AuthBasicAuthoritative On</default>
-<contextlist><context>directory</context><context>.htaccess</context>
-</contextlist>
+<contextlist><context>directory</context><context>.htaccess</context></contextlist>
 <override>AuthConfig</override>
 
 <usage>
