@@ -404,7 +404,7 @@ int main(int argc, const char * const argv[])
 
     AP_MONCONTROL(0); /* turn of profiling of startup */
 
-    apr_initialize();
+    apr_app_initialize(&argc, &argv, NULL);
 
     process = create_process(argc, argv);
     pglobal = process->pool;

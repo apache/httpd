@@ -91,7 +91,7 @@
 #define MAX_PATH        1024
 #endif
 
-int main (int argc, char *argv[])
+int main (int argc, const char * const argv[])
 {
     char buf[BUFSIZE], buf2[MAX_PATH], errbuf[ERRMSGSZ];
     int tLogEnd = 0, tRotation, utc_offset = 0;
@@ -99,11 +99,11 @@ int main (int argc, char *argv[])
     apr_size_t nRead, nWrite;
     int use_strftime = 0;
     int now;
-    char *szLogRoot;
+    const char *szLogRoot;
     apr_file_t *f_stdin, *nLogFD = NULL, *nLogFDprev = NULL;
     apr_pool_t *pool;
 
-    apr_initialize();
+    apr_app_initialize(&argc, &argv, NULL);
     atexit(apr_terminate);
 
     apr_pool_create(&pool, NULL);

@@ -1302,14 +1302,14 @@ static void test(void)
 static void copyright(void)
 {
     if (!use_html) {
-	printf("This is ApacheBench, Version %s\n", AP_SERVER_BASEREVISION " <$Revision: 1.93 $> apache-2.0");
+	printf("This is ApacheBench, Version %s\n", AP_SERVER_BASEREVISION " <$Revision: 1.94 $> apache-2.0");
 	printf("Copyright (c) 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/\n");
 	printf("Copyright (c) 1998-2002 The Apache Software Foundation, http://www.apache.org/\n");
 	printf("\n");
     }
     else {
 	printf("<p>\n");
-	printf(" This is ApacheBench, Version %s <i>&lt;%s&gt;</i> apache-2.0<br>\n", AP_SERVER_BASEREVISION, "$Revision: 1.93 $");
+	printf(" This is ApacheBench, Version %s <i>&lt;%s&gt;</i> apache-2.0<br>\n", AP_SERVER_BASEREVISION, "$Revision: 1.94 $");
 	printf(" Copyright (c) 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/<br>\n");
 	printf(" Copyright (c) 1998-2002 The Apache Software Foundation, http://www.apache.org/<br>\n");
 	printf("</p>\n<p>\n");
@@ -1467,7 +1467,7 @@ static int open_postfile(const char *pfile)
 /* ------------------------------------------------------- */
 
 /* sort out command-line args and call test */
-int main(int argc, const char *const argv[])
+int main(int argc, const char * const argv[])
 {
     int r, l;
     char tmp[1024];
@@ -1485,7 +1485,7 @@ int main(int argc, const char *const argv[])
     proxyhost[0] = '\0';
     hdrs[0] = '\0';
 
-    apr_initialize();
+    apr_app_initialize(&argc, &argv, NULL);
     atexit(apr_terminate);
     apr_pool_create(&cntxt, NULL);
 

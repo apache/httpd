@@ -147,7 +147,7 @@ static void putline(apr_file_t *f, char *l)
 }
 
 
-static void add_password(char *user, char *realm, apr_file_t *f)
+static void add_password(const char *user, const char *realm, apr_file_t *f)
 {
     char *pw;
     apr_md5_ctx_t context;
@@ -214,7 +214,7 @@ static void terminate(void)
     apr_terminate();
 }
 
-int main(int argc, char *argv[])
+int main(int argc, const char * const argv[])
 {
     apr_file_t *f;
     apr_status_t rv;
@@ -228,12 +228,7 @@ int main(int argc, char *argv[])
     char command[MAX_STRING_LEN];
     int found;
    
-    rv = apr_initialize();
-    if (rv) {
-        fprintf(stderr, "apr_initialize(): %s (%d)\n",
-                apr_strerror(rv, line, sizeof(line)), rv);
-        exit(1);
-    }
+    apr_app_initialize(&argc, &argv, NULL);
     atexit(terminate); 
     apr_pool_create(&cntxt, NULL);
 
