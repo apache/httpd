@@ -487,7 +487,7 @@ typedef struct http_filter_ctx {
     int status;
     apr_size_t remaining;
     enum {
-        BODY_NONE   /* must have value of zero */,
+        BODY_NONE,
         BODY_LENGTH,
         BODY_CHUNK
     } state;
