@@ -1244,6 +1244,7 @@ request_rec *ap_read_request(conn_rec *conn)
 
     r->status          = HTTP_REQUEST_TIME_OUT;  /* Until we get a request */
     r->the_request     = NULL;
+    r->output_filters  = conn->output_filters;
 
 #ifdef APACHE_XLATE
     r->rrx = apr_pcalloc(p, sizeof(struct ap_rr_xlate));
@@ -2108,8 +2109,8 @@ API_EXPORT(void) ap_send_http_header(request_rec *r)
     if (r->chunked) {
         apr_table_mergen(r->headers_out, "Transfer-Encoding", "chunked");
         apr_table_unset(r->headers_out, "Content-Length");
-        ap_add_filter("BUFFER", NULL, r);
-        ap_add_filter("CHUNK", NULL, r);
+        ap_add_filter("BUFFER", NULL, r, r->connection);
+        ap_add_filter("CHUNK", NULL, r, r->connection);
     }
 
     if (r->byterange > 1) {

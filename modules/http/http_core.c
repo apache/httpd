@@ -2564,7 +2564,7 @@ static apr_status_t writev_it_all(apr_socket_t *s, struct iovec *vec, int nvec,
     return APR_SUCCESS;
 }
 /* XXX handle partial writes */
-static apr_status_t send_the_file(request_rec *r, apr_file_t *fd, 
+static apr_status_t send_the_file(conn_rec *c, apr_file_t *fd, 
                                   apr_hdtr_t *hdtr, apr_off_t offset, 
                                   apr_size_t length, apr_size_t *nbytes) 
 {
@@ -2573,11 +2573,11 @@ static apr_status_t send_the_file(request_rec *r, apr_file_t *fd,
     apr_size_t n = length;
 
 #if APR_HAS_SENDFILE
-    if (!r->connection->keepalive) {
+    if (!c->keepalive) {
         /* Prepare the socket to be reused */
         flags |= APR_SENDFILE_DISCONNECT_SOCKET;
     }
-    rv = apr_sendfile(r->connection->client->bsock, 
+    rv = apr_sendfile(c->client->bsock, 
                       fd,      /* The file to send */
                       hdtr,    /* Header and trailer iovecs */
                       &offset, /* Offset in file to begin sending from */
@@ -2592,6 +2592,7 @@ static apr_status_t send_the_file(request_rec *r, apr_file_t *fd,
 
     return APR_SUCCESS;
 }
+
 /* Note --- ErrorDocument will now work from .htaccess files.  
  * The AllowOverride of Fileinfo allows webmasters to turn it off
  */
@@ -3286,7 +3287,7 @@ static int core_output_filter(ap_filter_t *f, ap_bucket_brigade *b)
     ap_bucket_brigade *more = NULL;
     apr_ssize_t bytes_sent = 0, nbytes = 0;
     ap_bucket *e;
-    request_rec *r = f->r;
+    conn_rec *c = f->c;
     core_output_filter_ctx_t *ctx = f->ctx;
 
     apr_ssize_t nvec = 0;
@@ -3299,7 +3300,7 @@ static int core_output_filter(ap_filter_t *f, ap_bucket_brigade *b)
     apr_off_t foffset = 0;
 
     if (ctx == NULL) {
-        f->ctx = ctx = apr_pcalloc(r->pool, sizeof(core_output_filter_ctx_t));
+        f->ctx = ctx = apr_pcalloc(c->pool, sizeof(core_output_filter_ctx_t));
     }
     /* If we have a saved brigade, concatenate the new brigade to it */
     if (ctx->b) {
@@ -3309,10 +3310,10 @@ static int core_output_filter(ap_filter_t *f, ap_bucket_brigade *b)
     }
 
     /* Hijack any bytes in BUFF and prepend it to the brigade. */
-    if (r->connection->client->outcnt) {
-        e = ap_bucket_create_heap(r->connection->client->outbase,
-                                  r->connection->client->outcnt, 1, NULL);
-        r->connection->client->outcnt = 0;
+    if (c->client->outcnt) {
+        e = ap_bucket_create_heap(c->client->outbase,
+                                  c->client->outcnt, 1, NULL);
+        c->client->outcnt = 0;
         AP_BRIGADE_INSERT_HEAD(b, e);
     }
 
@@ -3376,10 +3377,10 @@ static int core_output_filter(ap_filter_t *f, ap_bucket_brigade *b)
                 hdtr.numtrailers = nvec_trailers;
                 hdtr.trailers = vec_trailers;
             }
-            rv = send_the_file(r, fd, &hdtr, foffset, flen, &bytes_sent);
+            rv = send_the_file(c, fd, &hdtr, foffset, flen, &bytes_sent);
         }
         else {
-            rv = writev_it_all(r->connection->client->bsock, 
+            rv = writev_it_all(c->client->bsock, 
                                vec, nvec, 
                                nbytes, &bytes_sent);
             nbytes = 0; /* in case more points to another brigade */
@@ -3423,12 +3424,6 @@ static const char *core_method(const request_rec *r)
 static unsigned short core_port(const request_rec *r)
     { return DEFAULT_HTTP_PORT; }
 
-static int core_post_read_req(request_rec *r)
-{
-    ap_add_filter("CORE", NULL, r);
-    return DECLINED;
-}
-
 static void core_register_filter(request_rec *r)
 {
     int i;
@@ -3439,7 +3434,7 @@ static void core_register_filter(request_rec *r)
 
     for (i = 0; i < conf->filters->nelts; i++) {
         char *foobar = items[i];
-        ap_add_filter(foobar, NULL, r);
+        ap_add_filter(foobar, NULL, r, r->connection);
     }
 }
 
@@ -3457,7 +3452,6 @@ static void register_hooks(void)
     /* FIXME: I suspect we can eliminate the need for these - Ben */
     ap_hook_type_checker(do_nothing,NULL,NULL,AP_HOOK_REALLY_LAST);
     ap_hook_access_checker(do_nothing,NULL,NULL,AP_HOOK_REALLY_LAST);
-    ap_hook_post_read_request(core_post_read_req, NULL, NULL, AP_HOOK_REALLY_FIRST);
 
     /* define the CORE filter, then register a hook to insert it at
      * request-processing time.
