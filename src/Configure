@@ -124,7 +124,7 @@ awk >>Makefile <$tmpfile '\
 #
 # Now add Makefile additions and Rules
 #
-awk >>Makefile <$tmpfile '\
+awk >Makefile.config <$tmpfile '\
     BEGIN { print "# Makefile options inherited from Configure"; \
 	    print "###############"; \
 	  } \
@@ -524,7 +524,7 @@ fi
 
 # Show the final values of the rules
 
-echo "###############" > Makefile.config
+echo "###############" >> Makefile.config
 echo "# Platform: $OS" >> Makefile.config
 echo "# Final Rules:" >> Makefile.config
 echo "#  Rule WANTHSREGEX=$RULE_WANTHSREGEX" >> Makefile.config
@@ -544,33 +544,28 @@ echo " + configured for $OS platform"
 # then we use the "found" location of COMPILERS above
 # and set a "safe" optimization level
 #
-
-if egrep "^CC[ 	]*=" Makefile > /dev/null; then
-    CC=""	# clear it just in case
-else
-    if [ "x$CC" = "x" ]; then
-    	if [ "x$COMPILER" = "x" ]; then
-	    echo "Error: could not find any of these C compilers"
-	    echo " anywhere in your PATH: $lookedfor"
-	    echo "Configure terminated"
-	    exit 1
-	fi
-	CC=$COMPILER
+TCC=`egrep '^CC[ 	]*=' Makefile.config | tail -1 | awk -F= '{print $2}'`
+if [ "x$CC" = "x" ]; then
+    if [ "x$COMPILER" = "x" ]; then
+	echo "Error: could not find any of these C compilers"
+	echo " anywhere in your PATH: $lookedfor"
+	echo "Configure terminated"
+	exit 1
     fi
-    echo " + setting C compiler to $CC"
+    CC=$COMPILER
 fi
+echo " + setting C compiler to $CC"
 
 #
 # Ditto for optimization
 #
-if  egrep "^OPTIM[ 	]*=" Makefile > /dev/null; then
-    OPTIM=""	# ditto
+TOPTIM=`egrep '^OPTIM[ 	]*=' Makefile.config | tail -1 | awk -F= '{print $2}'`
+if [ "x$TOPTIM" = "x" ]; then
+    OPTIM="-O2"
 else
-    if [ "x$OPTIM" = "x" ]; then
-	OPTIM="-O2"
-    fi
-    echo " + setting C compiler optimization-level to $OPTIM"
+    OPTIM=$TOPTIM
 fi
+echo " + setting C compiler optimization-level to $OPTIM"
 
 #
 # Are they using the status monitor module? If so, check
@@ -620,11 +615,14 @@ fi
 #
 # Good enough
 #
+# Add the CC and OPTIM values if they weren't specified in the
+# Configuration file and we had to calculate them.
+#
 echo  >> Makefile
-if [ "x$CC" != "x" ]; then
+if [ "x$TCC" = "x" ]; then
     echo "CC=$CC" >> Makefile.config
 fi
-if [ "x$OPTIM" != "x" ]; then
+if [ "x$TOPTIM" = "x" ]; then
     echo "OPTIM=$OPTIM" >> Makefile.config
 fi
 echo "CFLAGS1=$CFLAGS">> Makefile.config
