@@ -62,7 +62,7 @@ static int init_balancer_members(proxy_server_conf *conf, server_rec *s,
         if (z) {
             median = (100 - ffactor) / z;
             for (i = 0; i < balancer->workers->nelts; i++) {
-                if (workers[i].s->lbfactor == 0.0) 
+                if (workers[i].s->lbfactor == 0) 
                     workers[i].s->lbfactor = median;
             }
         }
