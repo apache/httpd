@@ -82,7 +82,7 @@
 <div class="section">
 <h2><a name="examples" id="examples">Configuration Examples</a></h2>
 
-    <h3><a name="examples:file-owner" id="examples:file-owner">Require file-owner</a></h3>
+    <h3><a name="examples.file-owner" id="examples.file-owner">Require file-owner</a></h3>
       <p>Consider a multi-user system running the Apache Web server, with
       each user having his or her own files in <code>~/public_html/private</code>. Assuming that there is a single
       <code class="directive"><a href="../mod/mod_authn_dbm.html#authdbmuserfile">AuthDBMUserFile</a></code> database
@@ -107,7 +107,7 @@
       </code></p></div>
     
 
-    <h3><a name="examples:file-group" id="examples:file-group">Require file-group</a></h3>
+    <h3><a name="examples.file-group" id="examples.file-group">Require file-group</a></h3>
       <p>Consider a system similar to the one described above, but with
       some users that share their project files in
       <code>~/public_html/project-foo</code>. The files are owned by the

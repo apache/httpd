@@ -89,31 +89,31 @@
 
     <table border="1">
     <tr><th>要素</th><th>説明</th></tr>
-    <tr><td><code><a href="#element:config">config</a></code></td>
+    <tr><td><code><a href="#element.config">config</a></code></td>
         <td>configure output formats</td></tr>
-    <tr><td><code><a href="#element:echo">echo</a></code></td>
+    <tr><td><code><a href="#element.echo">echo</a></code></td>
         <td>print variables</td></tr>
-    <tr><td><code><a href="#element:exec">exec</a></code></td>
+    <tr><td><code><a href="#element.exec">exec</a></code></td>
         <td>execute external programs</td></tr>
-    <tr><td><code><a href="#element:fsize">fsize</a></code></td>
+    <tr><td><code><a href="#element.fsize">fsize</a></code></td>
         <td>print size of a file</td></tr>
-    <tr><td><code><a href="#element:flastmod">flastmod</a></code></td>
+    <tr><td><code><a href="#element.flastmod">flastmod</a></code></td>
         <td>print last modification time of a file</td></tr>
-    <tr><td><code><a href="#element:include">include</a></code></td>
+    <tr><td><code><a href="#element.include">include</a></code></td>
         <td>include a file</td></tr>
-    <tr><td><code><a href="#element:printenv">printenv</a></code></td>
+    <tr><td><code><a href="#element.printenv">printenv</a></code></td>
         <td>print all available variables</td></tr>
-    <tr><td><code><a href="#element:set">set</a></code></td>
+    <tr><td><code><a href="#element.set">set</a></code></td>
         <td>set a value of a variable</td></tr>
     </table>
 
     <p>SSI 要素は <module>mod_include</module> 以外のモジュールで
     定義されることもあります。実際、
-    <code><a href="#element:exec">exec</a></code> 要素は
+    <code><a href="#element.exec">exec</a></code> 要素は
     <module>mod_cgi</module> で提供されていて、このモジュールが
     ロードされる場合にのみ利用可能となります。</p>
 
-    <section id="element_config"><title>config 要素</title>
+    <section id="element.config"><title>config 要素</title>
       <p>次のコマンドは解析の様々な側面を制御します。属性は次の通りです。</p>
 
       <dl>
@@ -134,7 +134,7 @@
       </dl>
     </section> <!-- /config -->
 
-    <section id="element_echo"><title>echo 要素</title>
+    <section id="element.echo"><title>echo 要素</title>
       <p>このコマンドは以下で定義されている <a href="#includevars">include
       変数</a> を表示します。変数が設定されていない場合は <directive 
       module="mod_include">SSIUndefinedEcho</directive> ディレクティブで
@@ -172,7 +172,7 @@
       </dl>
     </section> <!-- /echo -->
 
-    <section id="element_exec"><title>exec 要素</title>
+    <section id="element.exec"><title>exec 要素</title>
       <p><code>exec</code> コマンドは指定されたシェルコマンドや CGI スクリプトを
       実行します。<module>mod_cgi</module> がサーバに組み込まれているいなければ
       なりません。<directive module="core">Option</directive> 
@@ -241,7 +241,7 @@
       </dl>
     </section> <!-- /exec -->
 
-    <section id="element_fsize"><title>fsize 要素</title>
+    <section id="element.fsize"><title>fsize 要素</title>
       <p>このコマンドは指定されたファイルの大きさを <code>sizefmt</code> の
       書式指定に基づいて出力します。属性は次の通りです。</p>
 
@@ -258,13 +258,13 @@
       </dl>
     </section> <!-- /fsize -->
 
-    <section id="element_flastmod"><title>flastmod 要素</title>
+    <section id="element.flastmod"><title>flastmod 要素</title>
       <p>このコマンドは指定されたファイルの最終修正時刻を
       <code>timefmt</code> 書式指定に従って表示します。
       指定可能な属性は <code>fsize</code> コマンドと同じです。</p>
     </section> <!-- /flastmod -->
 
-    <section id="element_include"><title>include 要素</title>
+    <section id="element.include"><title>include 要素</title>
       <p>このコマンドは別の文書やファイルのテキストを解析しているファイルに
       挿入します。挿入されるファイルはアクセス制御の管理下にあります。
       解析しているファイルの存在するディレクトリに
@@ -314,10 +314,10 @@
       </dl>
     </section> <!-- /include -->
 
-    <section id="element_printenv"><title>printenv 要素</title>
+    <section id="element.printenv"><title>printenv 要素</title>
       <p>これは、存在するすべての変数とその値を表示します。Apache 1.3.12 から、
       特別な文字は出力される前にエンティティエンコード (詳細は <a
-      href="#element:echo"><code>echo</code></a> 要素を参照)
+      href="#element.echo"><code>echo</code></a> 要素を参照)
       されるようになりました。属性はありません。</p>
 
       <example><title>例</title>
@@ -325,7 +325,7 @@
       </example>
     </section> <!-- /printenv -->
 
-    <section id="element_set"><title>set 要素</title>
+    <section id="element.set"><title>set 要素</title>
       <p>これは変数の値を設定します。属性は次の通りです。</p>
 
       <dl>

@@ -55,7 +55,7 @@
 
 <section id="examples"><title>Configuration Examples</title>
 
-    <section id="examples:file-owner"><title>Require file-owner</title>
+    <section id="examples.file-owner"><title>Require file-owner</title>
       <p>Consider a multi-user system running the Apache Web server, with
       each user having his or her own files in <code
       >~/public_html/private</code>. Assuming that there is a single
@@ -81,7 +81,7 @@
       </example>
     </section>
 
-    <section id="examples:file-group"><title>Require file-group</title>
+    <section id="examples.file-group"><title>Require file-group</title>
       <p>Consider a system similar to the one described above, but with
       some users that share their project files in
       <code>~/public_html/project-foo</code>. The files are owned by the
