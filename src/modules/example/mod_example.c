@@ -1128,7 +1128,7 @@ module example_module =
     example_create_server_config,       /* server config creator */
     example_merge_server_config,        /* server config merger */
     example_cmds,               /* command table */
-    example_handlers,           /* [7] list of handlers */
+    example_handlers,           /* [9] list of handlers */
     example_translate_handler,  /* [2] filename-to-URI translation */
     example_check_user_id,      /* [5] check/validate user_id */
     example_auth_checker,       /* [6] check user_id is valid *here* */
