@@ -278,7 +278,7 @@ do
                 echo "##  Apache Makefile (shadow wrapper)" >> Makefile
                 echo "##" >> Makefile
                 echo "" >> Makefile
-                echo "GNUTRIPLE=\`$aux/GuessOS | $AWK '{ printf(\"%s\",\$\$1); }' | sed -e 's:/:-:g'\`" >> Makefile
+                echo "GNUTRIPLE=\`$aux/GuessOS | sed -e 's:/:-:g' | $AWK '{ printf(\"%s\",\$\$1); }'\`" >> Makefile
                 echo "" >> Makefile
                 echo "all build install install-quiet clean distclean:" >> Makefile
                 echo "	@\$(MAKE) -f Makefile.\$(GNUTRIPLE) \$(MFLAGS) \$@" >> Makefile
