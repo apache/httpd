@@ -51,22 +51,18 @@ tryssl:
 	cd modules\ssl
         $(MAKE) $(MAKEOPT) -f mod_ssl.mak CFG="mod_ssl - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	cd ..\..
-	cd modules\tls
-        $(MAKE) $(MAKEOPT) -f mod_tls.mak CFG="mod_tls - Win32 $(LONG)" RECURSE=0 $(CTARGET)
-	cd ..\..
 	cd support
         $(MAKE) $(MAKEOPT) -f abs.mak CFG="abs - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	cd ..
 !ELSE
 	msdev Apache.dsw /MAKE\
 		"mod_ssl - Win32 $(LONG)"\
-		"mod_tls - Win32 $(LONG)"\
 		"abs - Win32 $(LONG)" /NORECURSE $(CTARGET)
 !ENDIF
 
 !ELSE
 tryssl:
-	echo mod_ssl, mod_tls and ab/ssl will not build without openssl 
+	echo mod_ssl and ab/ssl will not build without openssl 
 	echo installed in $(INSTDIR)\srclib\openssl.  They must be precompiled 
 	echo using the ms/ntdll.mak file.  See INSTALL.W32 for details.
 !ENDIF
@@ -170,9 +166,6 @@ _build:
 	cd modules\ssl
         $(MAKE) $(MAKEOPT) -f mod_ssl.mak CFG="mod_ssl - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	cd ..\..
-	cd modules\tls
-        $(MAKE) $(MAKEOPT) -f mod_tls.mak CFG="mod_tls - Win32 $(LONG)" RECURSE=0 $(CTARGET)
-	cd ..\..
 	cd support
          $(MAKE) $(MAKEOPT) -f abs.mak CFG="abs - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	cd ..
@@ -237,7 +230,6 @@ _build:
 !IF EXIST("srclib\openssl")
 	msdev Apache.dsw /MAKE\
 		"mod_ssl - Win32 $(LONG)"\
-		"mod_tls - Win32 $(LONG)"\
 		"abs - Win32 $(LONG)" /NORECURSE $(CTARGET)
 !ENDIF
 
@@ -295,7 +287,6 @@ _install:
 #       copy modules\proxy\$(LONG)\mod_proxy.so "$(INSTDIR)\modules"
 !IF EXIST("srclib\openssl")
 	-copy modules\ssl\$(LONG)\mod_ssl.so "$(INSTDIR)\modules"
-	-copy modules\tls\$(LONG)\mod_tls.so "$(INSTDIR)\modules"
 	-copy srclib\openssl\$(SSLBIN)\openssl.exe "$(INSTDIR)\bin"
 	-copy srclib\openssl\$(SSLBIN)\libeay32.dll "$(INSTDIR)\bin"
 	-copy srclib\openssl\$(SSLBIN)\ssleay32.dll "$(INSTDIR)\bin"
@@ -305,9 +296,9 @@ _install:
  Apache HTTP Server 2.0 Limited OpenSSL Distribution  17 Aug 2001
 
  This binary distribution includes the minimal components of OpenSSL required
- to support mod_ssl and mod_tls for Apache HTTP Server version 2.0 (details 
- are listed in OPENSSL-README.txt.)  For the complete list of CHANGES to this 
- and later versions of OpenSSL, please refer to the definative source,
+ to support mod_ssl for Apache HTTP Server version 2.0 (details are listed 
+ in OPENSSL-README.txt.)  For the complete list of CHANGES to this and later 
+ versions of OpenSSL, please refer to the definative source,
  <http://www.openssl.org/news/changelog.html>, or see the CHANGES file in the
  full binary or source distribution package from <http://www.openssl.org/>.
 
@@ -327,8 +318,8 @@ _install:
    ssleay32.dll
    openssl.exe
 
- These are the minimal libraries and tools required to use mod_ssl or mod_tls
- as distributed with Apache HTTP Server version 2.0.  No library files, headers
+ These are the minimal libraries and tools required to use mod_ssl as 
+ distributed with Apache HTTP Server version 2.0.  No library files, headers
  or sources are distributed with this binary distribution.  Please refer to the
  <http://www.openssl.org/> site for complete source or binary distributions.
 
@@ -336,12 +327,12 @@ _install:
  support for the patented encryption methods IDEA, MDC-2 or RC5.
 
  The Apache HTTP Project only supports the binary distribution of these files
- and development of the mod_ssl and mod_tls modules.  We cannot provide support
- assistance for using or configuring the OpenSSL package or these modules.
- Please refer all installation and configuration questions to the appropriate
- forum, such as the user supported newsgroups comp.infosystems.www.servers.unix
- or comp.infosystems.www.servers.ms-windows, or see the support options listed
- at <http://www.openssl.org/support/>.
+ and development of the mod_ssl module.  We cannot provide support assistance
+ for using or configuring the OpenSSL package or these modules.  Please refer
+ all installation and configuration questions to the appropriate forum,
+ such as the user supported newsgroups comp.infosystems.www.servers.unix or
+ comp.infosystems.www.servers.ms-windows, or see the support options
+ listed at <http://www.openssl.org/support/>.
 
 --------------------------------------------------------------------------------
 <<
