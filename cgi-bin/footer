@@ -1,6 +1,5 @@
 #!/bin/sh
 
-echo Content-type: text/html
 echo
 
 /bin/cat $PATH_TRANSLATED

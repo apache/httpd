@@ -68,6 +68,7 @@ typedef struct {
     table *forced_types;	/* Additional AddTyped stuff */
     table *encoding_types;	/* Added with AddEncoding... */
     table *language_types;	/* Added with AddLanguage... */
+    table *handlers;		/* Added with AddHandler...  */
 } mime_dir_config;
 
 module mime_module;
@@ -80,6 +81,7 @@ void *create_mime_dir_config (pool *p, char *dummy)
     new->forced_types = make_table (p, 4);
     new->encoding_types = make_table (p, 4);
     new->language_types = make_table (p, 4);
+    new->handlers = make_table (p, 4);
     
     return new;
 }
@@ -97,6 +99,8 @@ void *merge_mime_dir_configs (pool *p, void *basev, void *addv)
 					  base->encoding_types);
     new->language_types = overlay_tables (p, add->language_types,
 					  base->language_types);
+    new->handlers = overlay_tables (p, add->handlers,
+					  base->handlers);
 
     return new;
 }
@@ -122,6 +126,13 @@ char *add_language(cmd_parms *cmd, mime_dir_config *m, char *lang, char *ext)
     return NULL;
 }
 
+char *add_handler(cmd_parms *cmd, mime_dir_config *m, char *hdlr, char *ext)
+{
+    if (*ext == '.') ++ext;
+    table_set (m->handlers, ext, hdlr);
+    return NULL;
+}
+
 /* The sole bit of server configuration that the MIME module has is
  * the name of its config file, so...
  */
@@ -140,6 +151,8 @@ command_rec mime_cmds[] = {
     "an encoding (e.g., gzip), followed by one or more file extensions" },
 { "AddLanguage", add_language, NULL, OR_FILEINFO, ITERATE2,
     "a language (e.g., fr), followed by one or more file extensions" },
+{ "AddHandler", add_handler, NULL, OR_FILEINFO, ITERATE2,
+    "a handler name followed by one or more file extensions" },
 { "TypesConfig", set_types_config, NULL, RSRC_CONF, TAKE1,
     "the MIME types config file" },
 { NULL }
@@ -217,6 +230,11 @@ int find_ct(request_rec *r)
       /* Check for Content-Encoding */
       if ((type = table_get (conf->encoding_types, ext)))
 	  r->content_encoding = type;
+
+      /* Check for a special handler, but not for proxy request */
+      if ((type = table_get (conf->handlers, ext)) && !r->proxyreq)
+	  r->handler = type;
+
     }
 
     return OK;

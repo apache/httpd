@@ -83,7 +83,7 @@
 int is_scriptaliased (request_rec *r)
 {
     char *t = table_get (r->notes, "alias-forced-type");
-    return t && (!strcmp (t, CGI_MAGIC_TYPE));
+    return t && (!strcmp (t, "cgi-script"));
 }
 
 /****************************************************************
@@ -346,7 +346,7 @@ int cgi_handler (request_rec *r)
 	    r->method = pstrdup(r->pool, "GET");
 	    r->method_number = M_GET;
 
-	    internal_redirect (location, r);
+	    internal_redirect_handler (location, r);
 	    return OK;
         }
 	else if (location && r->status == 200) {
@@ -376,6 +376,7 @@ int cgi_handler (request_rec *r)
 
 handler_rec cgi_handlers[] = {
 { CGI_MAGIC_TYPE, cgi_handler },
+{ "cgi-script", cgi_handler },
 { NULL }
 };
 

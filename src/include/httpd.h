@@ -252,7 +252,6 @@
 #define MAP_FILE_MAGIC_TYPE "application/x-type-map"
 #define ASIS_MAGIC_TYPE "httpd/send-as-is"
 #define DIR_MAGIC_TYPE "httpd/unix-directory"
-#define PROXY_MAGIC_TYPE "httpd/proxy"
 
 /* Just in case your linefeed isn't the one the other end is expecting. */
 #define LF 10

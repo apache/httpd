@@ -669,7 +669,8 @@ int read_types_multi (negotiation_state *neg)
 	 * we're building...
 	 */
 
-	if (!strcmp (sub_req->content_type, MAP_FILE_MAGIC_TYPE)) {
+	if (!strcmp (sub_req->content_type, MAP_FILE_MAGIC_TYPE) ||
+	    !strcmp (sub_req->handler, "type-map")) {
 	    closedir(dirp);
 	    
 	    neg->avail_vars->nelts = 0;
@@ -1117,6 +1118,7 @@ int handle_multi (request_rec *r)
 
 handler_rec negotiation_handlers[] = {
 { MAP_FILE_MAGIC_TYPE, handle_map_file },
+{ "type-map", handle_map_file },
 { NULL }
 };
 

@@ -66,7 +66,7 @@
 typedef struct {
     char *real;
     char *fake;
-    char *forced_type;
+    char *handler;
 } alias_entry;
 
 typedef struct {
@@ -107,7 +107,7 @@ char *add_alias(cmd_parms *cmd, void *dummy, char *f, char *r)
 
     /* XX r can NOT be relative to DocumentRoot here... compat bug. */
     
-    new->fake = f; new->real = r; new->forced_type = cmd->info;
+    new->fake = f; new->real = r; new->handler = cmd->info;
     return NULL;
 }
 
@@ -127,7 +127,7 @@ char *add_redirect(cmd_parms *cmd, void *dummy, char *f, char *url)
 command_rec alias_cmds[] = {
 { "Alias", add_alias, NULL, RSRC_CONF, TAKE2, 
     "a fakename and a realname"},
-{ "ScriptAlias", add_alias, CGI_MAGIC_TYPE, RSRC_CONF, TAKE2, 
+{ "ScriptAlias", add_alias, "cgi-script", RSRC_CONF, TAKE2, 
     "a fakename and a realname"},
 { "Redirect", add_redirect, NULL, OR_FILEINFO, TAKE2, 
     "a document to be redirected, then the destination URL" },
@@ -178,9 +178,11 @@ char *try_alias_list (request_rec *r, array_header *aliases, int doesc)
         int l = alias_matches (r->uri, p->fake);
 
         if (l > 0) {
-	    if (p->forced_type)
-		table_set (r->notes, "alias-forced-type", p->forced_type);
-			   
+	    if (p->handler) { /* Set handler, and leave a note for mod_cgi */
+	        r->handler = pstrdup(r->pool, p->handler);
+		table_set (r->notes, "alias-forced-type", p->handler);
+	    }
+
 	    if (doesc) {
 		char *escurl;
 		escurl = os_escape_path(r->pool, r->uri + l, 1);
@@ -238,14 +240,6 @@ int fixup_redir(request_rec *r)
     return DECLINED;
 }
 
-int type_forced_alias (request_rec *r)
-{
-    char *t = table_get (r->notes, "alias-forced-type");
-    if (!t) return DECLINED;
-    r->content_type = t;
-    return OK;
-}
-
 module alias_module = {
    STANDARD_MODULE_STUFF,
    NULL,			/* initializer */
@@ -259,7 +253,7 @@ module alias_module = {
    NULL,			/* check_user_id */
    NULL,			/* check auth */
    NULL,			/* check access */
-   type_forced_alias,		/* type_checker */
+   NULL,			/* type_checker */
    fixup_redir,			/* fixups */
    NULL				/* logger */
 };

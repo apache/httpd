@@ -84,6 +84,7 @@ void destroy_sub_req (request_rec *r);
  */
 
 void internal_redirect (char *new_uri, request_rec *);     
+void internal_redirect_handler (char *new_uri, request_rec *);
 
 #ifdef CORE_PRIVATE
 /* Function called by main.c to handle first-level request */

@@ -121,10 +121,11 @@ int action_handler (request_rec *r)
 {
     action_dir_config *conf =
       (action_dir_config *)get_module_config(r->per_dir_config,&action_module);
+    char *action = r->handler ? r->handler : r->content_type;
     char *t;
 
-    if (!r->content_type ||
-	!(t = table_get(conf->action_types,  r->content_type)))
+    if (!action ||
+	!(t = table_get(conf->action_types, action)))
       return DECLINED;
 
     if (r->finfo.st_mode == 0) {
@@ -132,8 +133,8 @@ int action_handler (request_rec *r)
       return NOT_FOUND;
     }
 
-    internal_redirect(pstrcat(r->pool, t, escape_uri(r->pool, r->uri),
-			      r->args ? "?" : NULL, r->args, NULL), r);
+    internal_redirect_handler(pstrcat(r->pool, t, escape_uri(r->pool, r->uri),
+				      r->args ? "?" : NULL, r->args, NULL), r);
     return OK;
 }
 

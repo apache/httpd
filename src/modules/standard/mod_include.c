@@ -820,8 +820,6 @@ int send_parsed_file(request_rec *r)
 	return FORBIDDEN;
     }
     
-    r->content_type = "text/html";
-    
     hard_timeout ("send", r);
     send_http_header(r);
 
@@ -852,6 +850,12 @@ int send_parsed_file(request_rec *r)
     return OK;
 }
 
+int send_shtml_file (request_rec *r)
+{
+    r->content_type = "text/html";
+    return send_parsed_file(r);
+}
+
 int xbithack_handler (request_rec *r)
 {
     enum xbithack *state;
@@ -877,8 +881,9 @@ command_rec includes_cmds[] = {
 };
 
 handler_rec includes_handlers[] = {
-{ INCLUDES_MAGIC_TYPE, send_parsed_file },
-{ INCLUDES_MAGIC_TYPE3, send_parsed_file },
+{ INCLUDES_MAGIC_TYPE, send_shtml_file },
+{ INCLUDES_MAGIC_TYPE3, send_shtml_file },
+{ "server-parsed", send_parsed_file },
 { "text/html", xbithack_handler },
 { NULL }
 };

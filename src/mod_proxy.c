@@ -255,6 +255,7 @@ proxy_trans(request_rec *r)
 	if (!conf->req) return DECLINED;
 	
 	r->filename = pstrcat(r->pool, "proxy:", r->uri, NULL);
+	r->handler = "proxy-server";
 	return OK;
     } else
     {
@@ -731,22 +732,6 @@ date_canon(pool *p, char *x)
     return x;
 }
 
-
-
-/* -------------------------------------------------------------- */
-/* Set handler */
-
-
-static int
-proxy_type(request_rec *r)
-{
-    if (strncmp(r->filename, "proxy:", 6) == 0)
-    {
-	r->content_type = PROXY_MAGIC_TYPE;
-	return OK;
-    } else
-	return DECLINED;
-}
 
 /* -------------------------------------------------------------- */
 /* Invoke handler */
@@ -2815,7 +2800,7 @@ http_handler(request_rec *r, struct cache_req *c, char *url,
 }
 
 static handler_rec proxy_handlers[] = {
-{ PROXY_MAGIC_TYPE, proxy_handler },
+{ "proxy-server", proxy_handler },
 { NULL }
 };
 
@@ -3043,7 +3028,7 @@ module proxy_module = {
    NULL,			/* check_user_id */
    NULL,			/* check auth */
    NULL,			/* check access */
-   proxy_type,			/* type_checker */
+   NULL,			/* type_checker */
    proxy_fixup,			/* pre-run fixups */
    NULL				/* logger */
 };

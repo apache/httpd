@@ -771,6 +771,7 @@ int imap_handler(request_rec *r)
 
 handler_rec imap_handlers[] = {
 { IMAP_MAGIC_TYPE, imap_handler },
+{ "imap-file", imap_handler },
 { NULL }
 };
 

@@ -87,6 +87,7 @@ int asis_handler (request_rec *r)
 
 handler_rec asis_handlers[] = {
 { ASIS_MAGIC_TYPE, asis_handler },
+{ "send-as-is", asis_handler },
 { NULL }
 };
 

@@ -563,11 +563,11 @@ void die(int type, request_rec *r)
 	    r->no_cache = 1;	/* Do NOT send USE_LOCAL_COPY for
 				 * error documents!
 				 */
-		/* This redirect needs to be a GET no matter what the original
-		 * method was.
-		 */
-		r->method = pstrdup(r->pool, "GET");
-		r->method_number = M_GET;
+	    /* This redirect needs to be a GET no matter what the original
+	     * method was.
+	     */
+	    r->method = pstrdup(r->pool, "GET");
+	    r->method_number = M_GET;
 	    internal_redirect (custom_response, r);
 	    return;
 	} else {
@@ -690,7 +690,7 @@ table *rename_original_env (pool *p, table *t)
     return new;
 }
 
-void internal_redirect (char *new_uri, request_rec *r)
+request_rec *internal_internal_redirect (char *new_uri, request_rec *r)
 {
     request_rec *new = (request_rec *)pcalloc(r->pool, sizeof(request_rec));
     char t[10];			/* Long enough... */
@@ -736,6 +736,24 @@ void internal_redirect (char *new_uri, request_rec *r)
     sprintf (t, "%d", r->status);
     table_set (new->subprocess_env, "REDIRECT_STATUS", pstrdup (r->pool, t));
 
+    return new;
+}
+
+void internal_redirect (char *new_uri, request_rec *r)
+{
+    request_rec *new = internal_internal_redirect(new_uri, r);
     process_request_internal (new);
 }
 
+/* This function is designed for things like actions or CGI scripts, when
+ * using AddHandler, and you want to preserve the content type across
+ * an internal redirect.
+ */
+
+void internal_redirect_handler (char *new_uri, request_rec *r)
+{
+    request_rec *new = internal_internal_redirect(new_uri, r);
+    if (r->handler)
+        new->content_type = r->content_type;
+    process_request_internal (new);
+}

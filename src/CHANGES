@@ -1,3 +1,8 @@
+  *) Add AddHandler command, which allows content-type-independent 
+     "handlers" to be defined for file extensions. These can be either
+     built into Apache (such as CGI scripts or server-side includes, or
+     added with the Action command). [Alexei Kosut]
+
   *) Added new Explain() function, intended to help trace execution. Currently
      only used in mod_proxy.c (and there not yet complete). Switch it on with
      -DEXPLAIN. See explain.h. [Ben Laurie]
@@ -11,7 +16,7 @@
      sent by some (but not all) new web browsers (e.g. Netscape 2.0). Those
      that do not support it will get the default documents. More names or
      name patters can be added using the ScriptAlias directive, e.g.
-     "ScriptAlias foo.bar.net *.foo.com foo.com"
+     "ScriptAlias foo.bar.net *.foo.com foo.com" [Alexei Kosut]
 
   *) Added Status module with preliminary documentation available
      http://www.apache.org/docs/1.1/mod_status.html

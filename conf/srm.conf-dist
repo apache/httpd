@@ -145,41 +145,41 @@ ScriptAlias /cgi-bin/ /usr/local/etc/httpd/cgi-bin/
 # make certain files to be certain types.
 # Format: AddType type/subtype ext1
 
-#AddType text/x-server-parsed-html .shtml
-#AddType application/x-httpd-cgi .cgi
+# AddHandler allows you to map certain file extensions to "handlers",
+# actions unrelated to filetype. These can be either built into the server
+# or added with the Action command (see below)
+# Format: AddHandler action-name ext1
 
-# For server-side includes which will be treated as HTML3
-# for purposes of content negotiation, use
+# To use CGI scripts:
+#AddHandler cgi-script .cgi
 
-#AddType text/x-server-parsed-html3 .shtml3
+# To use server-parsed HTML files
+#AddType text/html .shtml
+#AddHandler server-parsed .shtml
 
 # Uncomment the following line to enable Apache's send-asis HTTP file
 # feature
-
-#AddType httpd/send-as-is asis
-
-# To enable type maps, you might want to use
-
-#AddType application/x-type-map var
+#AddHandler send-as-is asis
 
 # If you wish to use server-parsed imagemap files, use
+#AddHandler imap-file map
 
-#AddType application/x-httpd-imap map
+# To enable type maps, you might want to use
+#AddHandler type-map var
 
 # Action lets you define media types that will execute a script whenever
 # a matching file is called. This eliminates the need for repeated URL
 # pathnames for oft-used CGI file processors.
-# Format: Action type/subtype /cgi-script/location
+# Format: Action media/type /cgi-script/location
+# Format: Action handler-name /cgi-script/location
 
-# For example, to add a footer (footer.html in your document root) to all
-# HTML files, uncomment the following:
+# For example to add a footer (footer.html in your document root) to
+# files with extension .foot (e.g. foo.html.foot), you could use:
+#AddHandler foot-action foot
+#Action foot-action /cgi-bin/footer
 
+# Or to do this for all HTML files, for example, use:
 #Action text/html /cgi-bin/footer
-
-# If you want to do this for only files with extension ".fhtml", use
-
-#AddType httpd/footer-html fhtml
-#Action httpd/footer-html /cgi-bin/footer
 
 # MetaDir: specifies the name of the directory in which Apache can find
 # meta information files. These files contain additional HTTP headers
