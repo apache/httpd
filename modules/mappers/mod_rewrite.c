@@ -941,8 +941,8 @@ static int init_module(apr_pool_t *p,
     proxy_available = (ap_find_linked_module("mod_proxy.c") != NULL);
 
     /* create the rewriting lockfiles in the parent */
-    if ((rv = apr_lock_create (&rewrite_log_lock, APR_MUTEX, APR_LOCKALL,
-                               NULL, p)) != APR_SUCCESS) {
+    if ((rv = apr_lock_create(&rewrite_log_lock, APR_MUTEX, APR_LOCKALL,
+                              APR_LOCK_DEFAULT, NULL, p)) != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_CRIT, rv, s,
                      "mod_rewrite: could not create rewrite_log_lock");
         return HTTP_INTERNAL_SERVER_ERROR;
@@ -3266,7 +3266,8 @@ static void rewritelock_create(server_rec *s, apr_pool_t *p)
     lockname = ap_server_root_relative(p, lockname);
 
     /* create the lockfile */
-    rc = apr_lock_create (&rewrite_mapr_lock_acquire, APR_MUTEX, APR_LOCKALL, lockname, p);
+    rc = apr_lock_create(&rewrite_mapr_lock_acquire, APR_MUTEX, APR_LOCKALL, 
+                         APR_LOCK_DEFAULT, lockname, p);
     if (rc != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_ERR, rc, s,
                      "mod_rewrite: Parent could not create RewriteLock "

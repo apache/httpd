@@ -1012,15 +1012,15 @@ static void child_main(int child_num_arg)
     }
     apr_pool_create(&thread_pool_parent, pchild);
     apr_lock_create(&thread_pool_parent_mutex, APR_MUTEX, APR_INTRAPROCESS, 
-                    NULL, pchild);
+                    APR_LOCK_DEFAULT, NULL, pchild);
     apr_lock_create(&idle_thread_count_mutex, APR_MUTEX, APR_INTRAPROCESS, 
-                    NULL, pchild);
+                    APR_LOCK_DEFAULT, NULL, pchild);
     apr_lock_create(&worker_thread_count_mutex, APR_MUTEX, APR_INTRAPROCESS,
-                    NULL, pchild);
+                    APR_LOCK_DEFAULT, NULL, pchild);
     apr_lock_create(&pipe_of_death_mutex, APR_MUTEX, APR_INTRAPROCESS,
-                    NULL, pchild);
+                    APR_LOCK_DEFAULT, NULL, pchild);
     apr_lock_create(&thread_accept_mutex, APR_MUTEX, APR_INTRAPROCESS,
-                    NULL, pchild);
+                    APR_LOCK_DEFAULT, NULL, pchild);
 
     apr_threadattr_create(&worker_thread_attr, pchild);
     apr_threadattr_detach_set(worker_thread_attr, 1);                                     
@@ -1295,9 +1295,9 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
     ap_lock_fname = apr_psprintf(_pconf, "%s.%u",
                                  ap_server_root_relative(_pconf, ap_lock_fname),
                                  my_pid);
-    rv = SAFE_ACCEPT(apr_lock_create_np(&process_accept_mutex, APR_MUTEX,
-                                        APR_CROSS_PROCESS, ap_accept_lock_mech,
-                                        ap_lock_fname, _pconf));
+    rv = SAFE_ACCEPT(apr_lock_create(&process_accept_mutex, APR_MUTEX,
+                                     APR_CROSS_PROCESS, ap_accept_lock_mech,
+                                     ap_lock_fname, _pconf));
     if (rv != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_EMERG, rv, s,
                      "Couldn't create cross-process lock");

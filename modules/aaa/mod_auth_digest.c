@@ -364,7 +364,7 @@ static void initialize_tables(server_rec *s, apr_pool_t *ctx)
 
     tmpnam(client_lock_name);
     sts = apr_lock_create(&client_lock, APR_READWRITE, APR_LOCKALL,
-                         client_lock_name, ctx);
+                          APR_LOCK_DEFAULT, client_lock_name, ctx);
     if (sts != APR_SUCCESS) {
         log_error_and_cleanup("failed to create lock", sts, s);
         return;
@@ -382,7 +382,7 @@ static void initialize_tables(server_rec *s, apr_pool_t *ctx)
 
     tmpnam(opaque_lock_name);
     sts = apr_lock_create(&opaque_lock, APR_MUTEX, APR_LOCKALL,
-                          opaque_lock_name, ctx);
+                          APR_LOCK_DEFAULT, opaque_lock_name, ctx);
     if (sts != APR_SUCCESS) {
         log_error_and_cleanup("failed to create lock", sts, s);
         return;
