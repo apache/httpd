@@ -1299,14 +1299,32 @@ void sig_term() {
 }
 
 void bus_error(void) {
-    log_error("httpd: caught SIGBUS, dumping core", server_conf);
+    char emsg[256];
+
+    ap_snprintf
+	(
+	    emsg,
+	    sizeof(emsg) - 1,
+	    "httpd: caught SIGBUS, attempting to dump core in %s",
+	    server_root
+	);
+    log_error(emsg, server_conf);
     chdir(server_root);
     abort();         
     exit(1);
 }
 
 void seg_fault() {
-    log_error("httpd: caught SIGSEGV, dumping core", server_conf);
+    char emsg[256];
+
+    ap_snprintf
+	(
+	    emsg,
+	    sizeof(emsg) - 1,
+	    "httpd: caught SIGSEGV, attempting to dump core in %s",
+	    server_root
+	);
+    log_error(emsg, server_conf);
     chdir(server_root);
     abort();
     exit(1);

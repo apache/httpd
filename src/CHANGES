@@ -1,5 +1,8 @@
 Changes with Apache 1.2b8
 
+  *) We now try to log where the server is dumping core when a fatal
+     signal is received.  [Ken Coar]
+
   *) Improved lingering_close by adding a special timeout, removing the
      spurious log messages, removing the nonblocking settings (they
      are not needed with the better timeout), and adding commentary
