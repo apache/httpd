@@ -118,6 +118,7 @@ Server on HPUX</page>
 <page href="programs/ab.html">Manual Page: ab</page>
 <page href="programs/apachectl.html">Manual Page: apachectl</page>
 <page href="programs/apxs.html">Manual Page: apxs</page>
+<page href="programs/configure.html">Manual Page: configure</page>
 <page href="programs/dbmmanage.html">Manual Page: dbmmanage</page>
 <page href="programs/htdigest.html">Manual Page: htdigest</page>
 <page href="programs/htpasswd.html">Manual Page: htpasswd</page>
