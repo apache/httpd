@@ -87,7 +87,7 @@
 #include "httpd.h"
 #include "util_md5.h"
 
-API_EXPORT(char *) ap_md5(pool *p, unsigned char *string)
+API_EXPORT(char *) ap_md5_binary(pool *p, const unsigned char *buf, int length)
 {
     AP_MD5_CTX my_md5;
     unsigned char hash[16];
@@ -99,7 +99,7 @@ API_EXPORT(char *) ap_md5(pool *p, unsigned char *string)
      */
 
     ap_MD5Init(&my_md5);
-    ap_MD5Update(&my_md5, string, strlen((const char *) string));
+    ap_MD5Update(&my_md5, buf, length);
     ap_MD5Final(hash, &my_md5);
 
     for (i = 0, r = result; i < 16; i++, r += 2)
@@ -107,6 +107,11 @@ API_EXPORT(char *) ap_md5(pool *p, unsigned char *string)
     *r = '\0';
 
     return ap_pstrdup(p, result);
+}
+
+API_EXPORT(char *) ap_md5(pool *p, const unsigned char *string)
+{
+    return ap_md5_binary(p, string, strlen(string));
 }
 
 /* these portions extracted from mpack, John G. Myers - jgm+@cmu.edu */
