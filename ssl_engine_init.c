@@ -1028,7 +1028,7 @@ void ssl_init_CheckServers(server_rec *base_server, apr_pool_t *p)
     for (s = base_server; s; s = s->next) {
         sc = mySrvConfig(s);
 
-        if (!sc->enabled) {
+        if (!(sc->enabled && s->addrs)) {
             continue;
         }
 
