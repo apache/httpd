@@ -104,7 +104,7 @@ void ssl_var_unregister(void)
 
 #if 0 /* XXX */
 
-char *ssl_var_lookup(pool *p, server_rec *s, conn_rec *c, request_rec *r, char *var)
+char *ssl_var_lookup(apr_pool_t *p, server_rec *s, conn_rec *c, request_rec *r, char *var)
 {
     SSLModConfigRec *mc = myModConfig();
     char *result;

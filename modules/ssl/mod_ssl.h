@@ -684,9 +684,11 @@ void         ssl_die(void);
 /*  Variables  */
 void         ssl_var_register(void);
 void         ssl_var_unregister(void);
-char        *ssl_var_lookup(pool *, server_rec *, conn_rec *, request_rec *, char *);
+#endif /* XXX */
+char        *ssl_var_lookup(apr_pool_t *, server_rec *, conn_rec *, request_rec *, char *);
 
 /*  I/O  */
+#if 0 /* XXX */
 void         ssl_io_register(void);
 void         ssl_io_unregister(void);
 long         ssl_io_data_cb(BIO *, int, const char *, int, long, long);
