@@ -1669,10 +1669,10 @@ static int is_variant_better(negotiation_state *neg, var_rec *variant, var_rec *
     /* encoding -- can only be 1 or 0, and if 0 we eliminated this
      * variant at the start of this function. However we 
      * prefer variants with no encoding over those with encoding */
-    if (!*best->content_encoding && *variant->content_encoding) {
+    if (best->content_encoding == NULL && variant->content_encoding) {
         return 0;
     }
-    if (*best->content_encoding && !*variant->content_encoding) {
+    if (best->content_encoding && variant->content_encoding == NULL) {
         *p_bestq = q;
         return 1;
     }
