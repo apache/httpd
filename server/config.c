@@ -984,6 +984,7 @@ static const char *ap_walk_config_sub(const ap_directive_t *current,
 	const command_rec *cmd;
 
 	if (!(cmd = ap_find_command_in_modules(current->directive, &mod))) {
+            parms->err_directive = current;
             return ap_pstrcat(parms->pool, "Invalid command '", 
 			      current->directive,
 			      "', perhaps mis-spelled or defined by a module "
@@ -995,8 +996,20 @@ static const char *ap_walk_config_sub(const ap_directive_t *current,
 	    const char *retval;
 
 	    retval = invoke_cmd(cmd, parms, mconfig, current->args);
-	    if (retval == NULL || strcmp(retval, DECLINE_CMD) != 0)
+	    if (retval == NULL) {
+                return NULL;
+            }
+            if (strcmp(retval, DECLINE_CMD) != 0) {
+                /* If the directive in error has already been set, don't
+                 * replace it.  Otherwise, an error inside a container 
+                 * will be reported as occuring on the first line of the
+                 * container.
+                 */
+                if (!parms->err_directive) {
+                    parms->err_directive = current;
+                }
 		return retval;
+            }
 
 	    mod = mod->next;	/* Next time around, skip this one */
 	}
@@ -1130,7 +1143,7 @@ API_EXPORT_NONSTD(const char *) ap_set_file_slot(cmd_parms *cmd, char *struct_pt
  */
 
 static cmd_parms default_parms =
-{NULL, 0, -1, NULL, NULL, NULL, NULL, NULL, NULL, NULL};
+{NULL, 0, -1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL};
 
 API_EXPORT(const char *) ap_server_root_relative(ap_pool_t *p, const char *file)
 {
@@ -1300,10 +1313,10 @@ void ap_process_resource_config(server_rec *s, const char *fname, ap_pool_t *p, 
 	errmsg = ap_walk_config(conftree, &parms, s->lookup_defaults);
 
     if (errmsg != NULL) {
-	/* ### wrong line number. need to pull from ap_directive_t */
 	ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL,
                      "Syntax error on line %d of %s:",
-		     cfp->line_number, cfp->name);
+                     parms.err_directive->line_num, 
+                     parms.err_directive->filename);
 	ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
                      "%s", errmsg);
 	exit(1);
