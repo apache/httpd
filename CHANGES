@@ -1,5 +1,8 @@
 Changes with Apache 2.0.37
 
+  *) Fix a file permissions problem which prevented mod_disk_cache
+     from working on Unix.  [Jeff Trawick]
+
   *) Add "-k start|startssl|restart|graceful|stop" support to httpd
      for the Unix MPMs.  These have semantics very similar to the
      old apachectl commands of the same name.
