@@ -153,7 +153,7 @@ $ make install
 <pre>
 $ cd /path/to/3rdparty
 $ apxs -c mod_foo.c
-$ apxs -i -a -n foo mod_foo.so
+$ apxs -i -a -n foo mod_foo.la
 </pre>
             </td>
           </tr>

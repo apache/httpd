@@ -95,7 +95,7 @@ $ make install
 <blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>
 $ cd /path/to/3rdparty<br>
 $ apxs -c mod_foo.c<br>
-$ apxs -i -a -n foo mod_foo.so
+$ apxs -i -a -n foo mod_foo.la
 </code></td></tr></table></blockquote>
       </li>
     </ol>
