@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
-<!-- $Revision: 1.7 $ -->
+<!-- $Revision: 1.8 $ -->
 
 <!--
  Copyright 2002-2004 The Apache Software Foundation
@@ -22,24 +22,34 @@
 <modulesynopsis metafile="mod_expires.xml.meta">
 
 <name>mod_expires</name>
-<description>Generation of <code>Expires</code> HTTP headers according to
-user-specified criteria</description>
+<description>Generation of <code>Expires</code> and
+<code>Cache-Control</code> HTTP headers according to user-specified
+criteria</description>
 <status>Extension</status>
 <sourcefile>mod_expires.c</sourcefile>
 <identifier>expires_module</identifier>
 
 <summary>
     <p>This module controls the setting of the <code>Expires</code>
-    HTTP header in server responses. The expiration date can set to
-    be relative to either the time the source file was last
-    modified, or to the time of the client access.</p>
+    HTTP header and the <code>max-age</code> directive of the
+    <code>Cache-Control</code> HTTP header in server responses. The
+    expiration date can set to be relative to either the time the
+    source file was last modified, or to the time of the client
+    access.</p>
 
-    <p>The <code>Expires</code> HTTP header is an instruction to
-    the client about the document's validity and persistence. If
-    cached, the document may be fetched from the cache rather than
-    from the source until this time has passed. After that, the
-    cache copy is considered "expired" and invalid, and a new copy
-    must be obtained from the source.</p>
+    <p>These HTTP headers are an instruction to the client about the
+    document's validity and persistence. If cached, the document may
+    be fetched from the cache rather than from the source until this
+    time has passed. After that, the cache copy is considered
+    "expired" and invalid, and a new copy must be obtained from the
+    source.</p> 
+
+    <p>To modify <code>Cache-Control</code> directives other than
+    <code>max-age</code> (see <a
+    href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.9">RFC
+    2616 section 14.9</a>), you can use the <directive
+    module="mod_headers">Header</directive> directive.</p>
+
 </summary>
 
 <section id="AltSyn"><title>Alternate Interval Syntax</title>
@@ -117,23 +127,25 @@ headers</description>
 
 <usage>
     <p>This directive enables or disables the generation of the
-    <code>Expires</code> header for the document realm in question.
-    (That is, if found in an <code>.htaccess</code> file, for
-    instance, it applies only to documents generated from that
-    directory.) If set to <code>Off</code>, no <code>Expires</code> header
-    will be generated for any document in the realm (unless overridden at
-    a lower level, such as an <code>.htaccess</code> file overriding a
-    server config file). If set to <code>On</code>, the header will be
-    added to served documents according to the criteria defined by the 
-    <directive module="mod_expires">ExpiresByType</directive> and 
-    <directive module="mod_expires">ExpiresDefault</directive> directives
-    (<em>q.v.</em>).</p>
+    <code>Expires</code> and <code>Cache-Control</code> headers for
+    the document realm in question.  (That is, if found in an
+    <code>.htaccess</code> file, for instance, it applies only to
+    documents generated from that directory.) If set to
+    <code>Off</code>, the headers will not be generated for any
+    document in the realm (unless overridden at a lower level, such as
+    an <code>.htaccess</code> file overriding a server config
+    file). If set to <code>On</code>, the headers will be added to
+    served documents according to the criteria defined by the
+    <directive module="mod_expires">ExpiresByType</directive> and
+    <directive module="mod_expires">ExpiresDefault</directive>
+    directives (<em>q.v.</em>).</p>
 
     <p>Note that this directive does not guarantee that an
-    <code>Expires</code> header will be generated. If the criteria
-    aren't met, no header will be sent, and the effect will be as
-    though this directive wasn't even specified.</p>
-</usage>
+    <code>Expires</code> or <code>Cache-Control</code> header will be
+    generated. If the criteria aren't met, no header will be sent, and
+    the effect will be as though this directive wasn't even
+    specified.</p>
+ </usage> 
 </directivesynopsis>
 
 <directivesynopsis>
@@ -148,10 +160,13 @@ by MIME type</description>
 
 <usage>
     <p>This directive defines the value of the <code>Expires</code>
-    header generated for documents of the specified type (<em>e.g.</em>,
-    <code>text/html</code>). The second argument sets the number of
-    seconds that will be added to a base time to construct the expiration
-    date.</p>
+    header and the <code>max-age</code> directive of the
+    <code>Cache-Control</code> header generated for documents of the
+    specified type (<em>e.g.</em>, <code>text/html</code>). The second
+    argument sets the number of seconds that will be added to a base
+    time to construct the expiration date.  The <code>Cache-Control:
+    max-age</code> is calculated by subtracting the request time from
+    the expiration date and expressing the result in seconds.</p>
 
     <p>The base time is either the last modification time of the
     file, or the time of the client's access to the document. Which
