@@ -298,9 +298,7 @@ static int ssl_hook_pre_connection(conn_rec *c)
      * working some time before this happens.
      */
     ssl_util_setmodconfig(c->base_server, "ssl::handshake::timeout", (void *)FALSE);
-#if 0 /* XXX */
-    ap_set_callback_and_alarm(ssl_hook_TimeoutConnection, c->base_server->timeout);
-#endif
+
     ssl_io_filter_init(c, ssl);
 
     return APR_SUCCESS;
