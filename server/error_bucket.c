@@ -86,7 +86,6 @@ AP_DECLARE(apr_bucket *) ap_bucket_error_make(apr_bucket *b, int error,
     h->data = (buf) ? apr_pstrdup(p, buf) : NULL;
 
     b = apr_bucket_shared_make(b, h, 0, 0);
-    b->is_metadata = 1;
     b->type = &ap_bucket_type_error;
     return b;
 }
@@ -104,7 +103,7 @@ AP_DECLARE(apr_bucket *) ap_bucket_error_create(int error, const char *buf,
 }
 
 AP_DECLARE_DATA const apr_bucket_type_t ap_bucket_type_error = {
-    "ERROR", 5,
+    "ERROR", 5, APR_BUCKET_METADATA,
     error_bucket_destroy,
     error_bucket_read,
     apr_bucket_setaside_notimpl,
