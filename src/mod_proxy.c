@@ -1246,7 +1246,7 @@ log_uerror(const char *routine, const char *file, const char *err,
     const char *p, *q;
 
     q = get_time();
-    p = strerror(errno);
+    (char *)p = strerror(errno);
 
     if (err != NULL)
     {
