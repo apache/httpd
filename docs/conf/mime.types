@@ -315,7 +315,7 @@ application/x-troff-ms		ms
 application/x-ustar		ustar
 application/x-wais-source	src
 application/x400-bp
-application/xhtml		xhtml xht
+application/xhtml+xml		xhtml xht
 application/xml
 application/xml-dtd
 application/xml-external-parsed-entity
