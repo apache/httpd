@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2002/04/19 23:31:35 $]
+Last modified at [$Date: 2002/04/19 23:32:58 $]
 
 Release:
 
@@ -54,7 +54,7 @@ RELEASE SHOWSTOPPERS:
       to this or not) that will cause the byterange filter to segv?
 
     * Is the 416 problem different from the C-L / byterange filter
-      misordering problem?  If not, is this one fixed?
+      misordering problem?  If so, is this one fixed?
 
     * worker MPM segfaults because the apr_bucket_alloc_t is cleaned
       up twice.
