@@ -1,5 +1,8 @@
 Changes with Apache 2.0.34-dev
 
+  *) Fix some restart/terminate problems in the worker MPM.  Don't
+     drop connections during graceful restart.  [Jeff Trawick]
+
   *) Change the header merging behaviour in proxy, as some headers
      (like Set-Cookie) cannot be unmerged due to stray commas in
      dates. [Graham Leggett]

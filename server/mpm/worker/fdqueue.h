@@ -86,6 +86,7 @@ struct fd_queue_t {
     apr_thread_cond_t  *not_full;
     apr_pool_t        **recycled_pools;
     int                 num_recycled;
+    int                 terminated;
 };
 typedef struct fd_queue_t fd_queue_t;
 
@@ -95,5 +96,6 @@ apr_status_t ap_queue_push(fd_queue_t *queue, apr_socket_t *sd, apr_pool_t *p,
 apr_status_t ap_queue_pop(fd_queue_t *queue, apr_socket_t **sd, apr_pool_t **p,
                           apr_pool_t *recycled_pool);
 apr_status_t ap_queue_interrupt_all(fd_queue_t *queue);
+apr_status_t ap_queue_term(fd_queue_t *queue);
 
 #endif /* FDQUEUE_H */
