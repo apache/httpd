@@ -1601,7 +1601,7 @@ au&szlig;er den genannten</description>
       <indent>
         Require valid-user<br />
       </indent>
-      &lt;LimitExcept&gt;
+      &lt;/LimitExcept&gt;
     </example>
 
 </usage>

@@ -1560,7 +1560,7 @@ except the named ones</td></tr>
       <span class="indent">
         Require valid-user<br />
       </span>
-      &lt;LimitExcept&gt;
+      &lt;/LimitExcept&gt;
     </code></p></div>
 
 

@@ -1510,7 +1510,7 @@ except the named ones</description>
       <indent>
         Require valid-user<br />
       </indent>
-      &lt;LimitExcept&gt;
+      &lt;/LimitExcept&gt;
     </example>
 
 </usage>
