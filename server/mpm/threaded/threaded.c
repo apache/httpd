@@ -1387,7 +1387,7 @@ static const char *set_threads_per_child (cmd_parms *cmd, void *dummy,
     ap_threads_per_child = atoi(arg);
     if (ap_threads_per_child > HARD_THREAD_LIMIT) {
         ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
-                     "WARNING: ThreadsPerChild of %d exceeds compile time"
+                     "WARNING: ThreadsPerChild of %d exceeds compile time "
                      "limit of %d threads,", ap_threads_per_child,
                      HARD_THREAD_LIMIT);
         ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
@@ -1396,6 +1396,7 @@ static const char *set_threads_per_child (cmd_parms *cmd, void *dummy,
         ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
                      " HARD_THREAD_LIMIT define in %s.",
                      AP_MPM_HARD_LIMITS_FILE);
+        ap_threads_per_child = HARD_THREAD_LIMIT;
     }
     else if (ap_threads_per_child < 1) {
 	ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 

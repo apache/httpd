@@ -1,4 +1,10 @@
 Changes with Apache 2.0.19-dev
+
+  *) Fix brokenness when ThreadsPerChild is higher than the built-in
+     limit.  We left ap_threads_per_child at the higher value which
+     led to segfaults when doing certain scoreboard operations.
+     [Jeff Trawick]
+
   *) Fix seg faults and/or missing output from mod_include.  The
      default_handler was using the subrequest pool for files and
      MMAPs, even though the associated APR structures typically 
