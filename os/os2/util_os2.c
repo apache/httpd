@@ -23,7 +23,7 @@ API_EXPORT(char *)ap_os_canonical_filename(ap_context_t *pPool, const char *szFi
 
     if (rc) {
         if ( rc != ERROR_INVALID_NAME ) {
-            ap_log_error(APLOG_MARK, APLOG_ERR|APLOG_NOERRNO, NULL, "OS/2 error %d for file %s", rc, szFile);
+            ap_log_error(APLOG_MARK, APLOG_ERR|APLOG_NOERRNO, 0, NULL, "OS/2 error %d for file %s", rc, szFile);
             return ap_pstrdup(pPool, "");
         } else {
             return ap_pstrdup(pPool, szFile);
