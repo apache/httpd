@@ -139,45 +139,6 @@ static void *create_anon_auth_dir_config(apr_pool_t *p, char *d)
     return conf;
 }
 
-static const char *anon_set_passwd_flag(cmd_parms *cmd,
-                                        void *my_config, int arg)
-{
-    anon_auth_config_rec *conf = my_config;
-    conf->anon_auth_mustemail = arg;
-    return NULL;
-}
-
-static const char *anon_set_userid_flag(cmd_parms *cmd,
-                                        void *my_config, int arg)
-{
-    anon_auth_config_rec *conf = my_config;
-    conf->anon_auth_nouserid = arg;
-    return NULL;
-}
-
-static const char *anon_set_logemail_flag(cmd_parms *cmd,
-                                          void *my_config, int arg)
-{
-    anon_auth_config_rec *conf = my_config;
-    conf->anon_auth_logemail = arg;
-    return NULL;
-}
-
-static const char *anon_set_verifyemail_flag(cmd_parms *cmd,
-                                             void *my_config, int arg)
-{
-    anon_auth_config_rec *conf = my_config;
-    conf->anon_auth_verifyemail = arg;
-    return NULL;
-}
-static const char *anon_set_authoritative_flag(cmd_parms *cmd,
-                                               void *my_config, int arg)
-{
-    anon_auth_config_rec *conf = my_config;
-    conf->anon_auth_authoritative = arg;
-    return NULL;
-}
-
 static const char *anon_set_string_slots(cmd_parms *cmd,
                                          void *my_config, const char *arg)
 {
@@ -204,15 +165,20 @@ static const command_rec anon_auth_cmds[] =
 {
     AP_INIT_ITERATE("Anonymous", anon_set_string_slots, NULL, OR_AUTHCFG, 
      "a space-separated list of user IDs"),
-    AP_INIT_FLAG("Anonymous_MustGiveEmail", anon_set_passwd_flag, NULL, 
+    AP_INIT_FLAG("Anonymous_MustGiveEmail", ap_set_flag_slot,
+     (void *)APR_XtOffsetOf(anon_auth_config_rec, anon_auth_mustemail),
      OR_AUTHCFG, "Limited to 'on' or 'off'"),
-    AP_INIT_FLAG("Anonymous_NoUserId", anon_set_userid_flag, NULL, OR_AUTHCFG, 
-     "Limited to 'on' or 'off'"),
-    AP_INIT_FLAG("Anonymous_VerifyEmail", anon_set_verifyemail_flag, NULL, 
+    AP_INIT_FLAG("Anonymous_NoUserId", ap_set_flag_slot,
+     (void *)APR_XtOffsetOf(anon_auth_config_rec, anon_auth_nouserid),
      OR_AUTHCFG, "Limited to 'on' or 'off'"),
-    AP_INIT_FLAG("Anonymous_LogEmail", anon_set_logemail_flag, NULL, OR_AUTHCFG,
-     "Limited to 'on' or 'off'"),
-    AP_INIT_FLAG("Anonymous_Authoritative", anon_set_authoritative_flag, NULL, 
+    AP_INIT_FLAG("Anonymous_VerifyEmail", ap_set_flag_slot,
+     (void *)APR_XtOffsetOf(anon_auth_config_rec, anon_auth_verifyemail),
+     OR_AUTHCFG, "Limited to 'on' or 'off'"),
+    AP_INIT_FLAG("Anonymous_LogEmail", ap_set_flag_slot,
+     (void *)APR_XtOffsetOf(anon_auth_config_rec, anon_auth_logemail),
+     OR_AUTHCFG, "Limited to 'on' or 'off'"),
+    AP_INIT_FLAG("Anonymous_Authoritative", ap_set_flag_slot,
+     (void *)APR_XtOffsetOf(anon_auth_config_rec, anon_auth_authoritative),
      OR_AUTHCFG, "Limited to 'on' or 'off'"),
     {NULL}
 };
