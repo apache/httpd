@@ -438,13 +438,23 @@ static apr_status_t deflate_out_filter(ap_filter_t *f,
         }
 
         if (APR_BUCKET_IS_FLUSH(e)) {
-            /* XXX FIX: do we need the Content-Size set, or can we stream?
-             * we should be able to stream
-             */
+            apr_bucket *bkt;
+            zRC = deflate(&(ctx->stream), Z_SYNC_FLUSH);
+            if (zRC != Z_OK) {
+                return APR_EGENERAL;
+            }
 
-            /* Ignore flush buckets for the moment.. we can't stream as we
-             * need the size ;(
-             */
+            ctx->stream.next_out = ctx->buffer;
+            len = c->bufferSize - ctx->stream.avail_out;
+
+            b = apr_bucket_heap_create((char *)ctx->buffer, len,
+                                       NULL, f->c->bucket_alloc);
+            APR_BRIGADE_INSERT_TAIL(ctx->bb, b);
+            ctx->stream.avail_out = c->bufferSize;
+
+            bkt = apr_bucket_flush_create(f->c->bucket_alloc);
+            APR_BRIGADE_INSERT_TAIL(ctx->bb, bkt);
+            ap_pass_brigade(f->next, ctx->bb);
             continue;
         }
 
