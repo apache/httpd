@@ -78,6 +78,7 @@ Committed Code Changes:
     * Corrections to the setup of the REMOTE_HOST variable. PR#1925 
     * Fix for rputs() which did not calculate r->sent_bodyct properly. PR#1900
     * Don't tweak TZ envvar if the user has specified an explicit one. PR#1888
+    * Ralf's mod_so changes to keep track of loaded modules ourself.
 
 Available Patches:
 

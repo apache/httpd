@@ -139,29 +139,54 @@ http://developer.netscape.com/library/documentation/enterprise/unix/svrplug.htm#
 #include "http_config.h"
 #include "http_log.h"
 
+module MODULE_VAR_EXPORT so_module;
+
+
+/*
+ * Server configuration to keep track of actually
+ * loaded modules and the corresponding module name.
+ */
+
+typedef struct moduleinfo {
+    char *name;
+    module *modp;
+} moduleinfo;
+
+typedef struct so_server_conf {
+    array_header *loaded_modules;
+} so_server_conf;
+
+static void *so_sconf_create(pool *p, server_rec *s)
+{
+    so_server_conf *soc;
+
+    soc = (so_server_conf *)pcalloc(p, sizeof(so_server_conf));
+    soc->loaded_modules = make_array(p, DYNAMIC_MODULE_LIMIT, 
+                                     sizeof(moduleinfo));
+    return (void *)soc;
+}
+
 #ifndef NO_DLOPEN
 
 /* This is the cleanup for a loaded DLL. It unloads the module.
  * This is called as a cleanup function.
  */
 
-void unload_module(module *modp)
+void unload_module(moduleinfo *modi)
 {
-    char mod_name[50];		/* Um, no pool, so make this static */
+    /* only unload if module information is still existing */
+    if (modi->modp == NULL)
+        return;
 
-    /* Take a copy of the module name so we can report that it has been
-     * unloaded (since modp itself will have been unloaded). */
-    strncpy(mod_name, modp->name, 49);
-    mod_name[49] = '\0';
+    /* remove the module pointer from the core structure */
+    remove_module(modi->modp);
 
-    remove_module(modp);
+    /* unload the module space itself */
+    os_dl_unload((os_dl_module_handle_type)modi->modp->dynamic_load_handle);
 
-    /* The Linux manpage doesn't give any way to check the success of
-     * dlclose() */
-    os_dl_unload((os_dl_module_handle_type)modp->dynamic_load_handle);
-
-    aplog_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, NULL,
-		"unloaded module %s", mod_name);
+    /* destroy the module information */
+    modi->modp = NULL;
+    modi->name = NULL;
 }
 
 /* unload_file is the cleanup routine for files loaded by
@@ -198,6 +223,24 @@ static const char *load_module (cmd_parms *cmd, void *dummy, char *modname, char
     void *modhandle;
     module *modp;
     const char *szModuleFile=server_root_relative(cmd->pool, filename);
+    so_server_conf *sconf;
+    moduleinfo *modi;
+    moduleinfo *modie;
+    int i;
+
+    /* check for already existing module
+     * If it already exists, we have nothing to do 
+     */
+    sconf = (so_server_conf *)get_module_config(cmd->server->module_config, 
+	                                        &so_module);
+    modie = (moduleinfo *)sconf->loaded_modules->elts;
+    for (i = 0; i < sconf->loaded_modules->nelts; i++) {
+        modi = &modie[i];
+        if (modi->name != NULL && strcmp(modi->name, modname) == 0)
+            return NULL;
+    }
+    modi = push_array(sconf->loaded_modules);
+    modi->name = pstrdup(cmd->pool, modname);
 
     if (!(modhandle = os_dl_load(szModuleFile)))
       {
@@ -219,7 +262,8 @@ static const char *load_module (cmd_parms *cmd, void *dummy, char *modname, char
 	return pstrcat (cmd->pool, "Can't find module ", modname,
 			" in file ", filename, ":", os_dl_error(), NULL);
     }
-	
+    modi->modp = modp;
+
     modp->dynamic_load_handle = modhandle;
 
     add_module(modp);
@@ -228,7 +272,7 @@ static const char *load_module (cmd_parms *cmd, void *dummy, char *modname, char
      * we do a restart (or shutdown) this cleanup will cause the
      * DLL to be unloaded.
      */
-    register_cleanup(cmd->pool, modp, 
+    register_cleanup(cmd->pool, modi, 
 		     (void (*)(void*))unload_module, mod_so_null_cleanup);
 
     /* Alethea Patch (rws,djw2) - need to run configuration functions
@@ -292,12 +336,12 @@ command_rec so_cmds[] = {
 { NULL }
 };
 
-module so_module = {
+module MODULE_VAR_EXPORT so_module = {
    STANDARD_MODULE_STUFF,
    NULL,			/* initializer */
    NULL,			/* create per-dir config */
    NULL,			/* merge per-dir config */
-   NULL,			/* server config */
+   so_sconf_create,		/* server config */
    NULL,			/* merge server config */
    so_cmds,			/* command table */
    NULL,			/* handlers */

@@ -1,5 +1,9 @@
 Changes with Apache 1.3b6
 
+  *) Now mod_so keeps track of which module shared objects with which names
+     are loaded and thus avoids multiple loading and unloading and irritating
+     error_log messages. [Ralf S. Engelschall]
+
   *) Prior to the existence of mod_setenv it was necessary to tweak the TZ
      environment variable in the apache core.  But that tweaking interferes
      with mod_setenv.  So don't tweak if the user has specified an explicit
