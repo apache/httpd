@@ -186,12 +186,13 @@ typedef struct {
     const char *dbmtype;           /* dbm type for dbm map data files */
     const char *checkfile;         /* filename to check for map existence */
     int   type;                    /* the type of the map */
-    apr_file_t *fpin;               /* in  file pointer for program maps */
-    apr_file_t *fpout;              /* out file pointer for program maps */
-    apr_file_t *fperr;              /* err file pointer for program maps */
+    apr_file_t *fpin;              /* in  file pointer for program maps */
+    apr_file_t *fpout;             /* out file pointer for program maps */
+    apr_file_t *fperr;             /* err file pointer for program maps */
     char *(*func)(request_rec *,   /* function pointer for internal maps */
                   char *);
     char **argv;
+    char *cachename;               /* name for the cache */
 } rewritemap_entry;
 
 typedef struct {

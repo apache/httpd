@@ -1,5 +1,9 @@
 Changes with Apache 2.0.51
 
+  *) mod_rewrite no longer confuses the RewriteMap caches if
+     different maps defined in different virtual hosts use the
+     same map name. PR 26462.  [André Malo]
+
   *) mod_setenvif: Remove "support" for Remote_User variable which
      never worked at all. PR 25725.  [André Malo]
 
