@@ -1287,9 +1287,9 @@ static void close_connection(struct connection * c)
 	    c->done = apr_time_now();
 	    s.read = c->read;
 	    s.starttime = c->start;
-	    s.ctime = (c->connect - c->start) / 1000;
-	    s.time = (c->done - c->start) / 1000;
-	    s.waittime = (c->beginread - c->endwrite) / 1000;
+	    s.ctime = ap_max(0, (c->connect - c->start) / 1000);
+	    s.time = ap_max(0, (c->done - c->start) / 1000);
+	    s.waittime = ap_max(0, (c->beginread - c->endwrite) / 1000);
 	    stats[done++] = s;
 	}
     }
@@ -1508,9 +1508,9 @@ static void read_connection(struct connection * c)
 	    c->done = apr_time_now();
 	    s.read = c->read;
 	    s.starttime = c->start;
-	    s.ctime = (c->connect - c->start) / 1000;
-	    s.waittime = (c->beginread - c->endwrite) / 1000;
-	    s.time = (c->done - c->start) / 1000;
+	    s.ctime = ap_max(0, (c->connect - c->start) / 1000);
+	    s.waittime = ap_max(0, (c->beginread - c->endwrite) / 1000);
+	    s.time = ap_max(0, (c->done - c->start) / 1000);
 	    stats[done++] = s;
 	}
 	c->keepalive = 0;
@@ -1786,14 +1786,14 @@ static void test(void)
 static void copyright(void)
 {
     if (!use_html) {
-	printf("This is ApacheBench, Version %s\n", AP_AB_BASEREVISION " <$Revision: 1.141 $> apache-2.0");
+	printf("This is ApacheBench, Version %s\n", AP_AB_BASEREVISION " <$Revision: 1.142 $> apache-2.0");
 	printf("Copyright (c) 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/\n");
 	printf("Copyright (c) 1998-2002 The Apache Software Foundation, http://www.apache.org/\n");
 	printf("\n");
     }
     else {
 	printf("<p>\n");
-	printf(" This is ApacheBench, Version %s <i>&lt;%s&gt;</i> apache-2.0<br>\n", AP_AB_BASEREVISION, "$Revision: 1.141 $");
+	printf(" This is ApacheBench, Version %s <i>&lt;%s&gt;</i> apache-2.0<br>\n", AP_AB_BASEREVISION, "$Revision: 1.142 $");
 	printf(" Copyright (c) 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/<br>\n");
 	printf(" Copyright (c) 1998-2002 The Apache Software Foundation, http://www.apache.org/<br>\n");
 	printf("</p>\n<p>\n");
