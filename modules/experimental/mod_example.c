@@ -1009,7 +1009,7 @@ static int x_quick_handler(request_rec *r, int lookup_uri)
     /*
      * Log the call and exit.
      */
-    trace_add(r->server, NULL, cfg, "x_post_config()");
+    trace_add(r->server, NULL, cfg, "x_quick_handler()");
     return DECLINED;
 }
 
@@ -1033,7 +1033,7 @@ static int x_pre_connection(conn_rec *c, void *csd)
     /*
      * Log the call and exit.
      */
-    trace_add(r->server, NULL, cfg, "x_post_config()");
+    trace_add(r->server, NULL, cfg, "x_pre_connection()");
 #endif
     return OK;
 }
