@@ -63,6 +63,7 @@
                                             -- Unknown                */
 #include "mod_ssl.h"
 
+#if 0 /* XXX */
 
 /*  _________________________________________________________________
 **
@@ -1856,4 +1857,6 @@ void ssl_callback_LogTracingState(SSL *ssl, int where, int rc)
 
     return;
 }
+
+#endif /* XXX */
 

@@ -65,6 +65,7 @@
 
 #include "mod_ssl.h"
 
+#if 0 /* XXX */
 
 /*  _________________________________________________________________
 **
@@ -505,5 +506,7 @@ void ssl_compat_variables(request_rec *r)
     }
     return;
 }
+
+#endif /* XXX */
 
 #endif /* SSL_COMPAT */

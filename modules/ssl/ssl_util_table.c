@@ -87,6 +87,8 @@
  *   o added support for MM library via ta_{malloc,calloc,realloc,free}
  */
 
+#if 0 /* XXX */
+
 #include <fcntl.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -2864,3 +2866,6 @@ int table_entry_info(table_t * table_p, table_entry_t * entry_p,
         *data_size_p = entry_p->te_data_size;
     return TABLE_ERROR_NONE;
 }
+
+#endif /* XXX */
+

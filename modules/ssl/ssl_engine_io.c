@@ -62,6 +62,8 @@
                                             -- Unknown    */
 #include "mod_ssl.h"
 
+#if 0 /* XXX */
+
 /*  _________________________________________________________________
 **
 **  I/O Request Body Sucking and Re-Injection
@@ -723,4 +725,6 @@ long ssl_io_data_cb(BIO *bio, int cmd, const char *argp, int argi, long argl, lo
     }
     return rc;
 }
+
+#endif /* XXX */
 

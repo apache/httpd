@@ -83,6 +83,8 @@
 #ifndef SSL_UTIL_TABLE_H
 #define SSL_UTIL_TABLE_H
 
+#if 0 /* XXX */
+
 #ifdef __cplusplus
 extern "C" {
 #endif /* __cplusplus */
@@ -183,5 +185,7 @@ extern int             table_entry_info(table_t *table_p, table_entry_t *entry_p
 #ifdef __cplusplus
 }
 #endif /* __cplusplus */
+
+#endif /* XXX */
 
 #endif /* ! SSL_UTIL_TABLE_H */

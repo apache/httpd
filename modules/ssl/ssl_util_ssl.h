@@ -60,6 +60,8 @@
 #ifndef SSL_UTIL_SSL_H
 #define SSL_UTIL_SSL_H
 
+#if 0 /* XXX */
+
 /*
  * Determine SSL library version number
  */
@@ -109,5 +111,7 @@ BOOL        SSL_load_CrtAndKeyInfo_path(pool *, STACK_OF(X509_INFO) *, char *);
 #endif /* SSL_EXPERIMENTAL_PROXY */
 int         SSL_CTX_use_certificate_chain(SSL_CTX *, char *, int, int (*)());
 char       *SSL_SESSION_id2sz(unsigned char *, int);
+
+#endif /* XXX */
 
 #endif /* SSL_UTIL_SSL_H */

@@ -68,6 +68,7 @@
 
 %{
 #include "mod_ssl.h"
+#if 0 /* XXX */
 
 #include "ssl_expr_parse.h"
 
@@ -255,4 +256,8 @@ int yyinput(char *buf, int max_size)
     ssl_expr_info.inputptr += n;
     return n;
 }
+
+%{
+#endif /* XXX */
+%}
 

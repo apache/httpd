@@ -59,6 +59,8 @@
 
 #include "mod_ssl.h"
 
+#if 0 /* XXX */
+
 /* 
  * This shared memory based SSL session cache implementation was
  * originally written by Geoff Thorpe <geoff@eu.c2.net> for C2Net Europe
@@ -1338,4 +1340,6 @@ end:
     ssl_log(s, SSL_LOG_TRACE, "leaving shmcb_remove_session_id");
     return to_return;
 }
+
+#endif /* XXX */
 

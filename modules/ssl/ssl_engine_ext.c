@@ -61,6 +61,7 @@
                                            -- Unknown             */
 #include "mod_ssl.h"
 
+#if 0 /* XXX */
 
 /*  _________________________________________________________________
 **
@@ -803,4 +804,6 @@ static void ssl_ext_ms_display(request_rec *r, int no_table_report, int short_re
     ap_rputs("</table>\n", r);
     return;
 }
+
+#endif /* XXX */
 

@@ -59,6 +59,8 @@
 
 #include "mod_ssl.h"
 
+#if 0 /* XXX */
+
 /*
  *  Wrapper functions for table library which resemble malloc(3) & Co 
  *  but use the variants from the MM shared memory library.
@@ -342,4 +344,6 @@ void ssl_scache_shmht_status(server_rec *s, pool *p, void (*func)(char *, void *
     func(ap_psprintf(p, "average session size: <b>%d</b> bytes<br>", nAverage), arg);
     return;
 }
+
+#endif /* XXX */
 
