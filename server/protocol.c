@@ -794,6 +794,7 @@ AP_DECLARE(void) ap_get_mime_headers_core(request_rec *r, apr_bucket_brigade *bb
                     ++value;            /* Skip to start of value   */
                 }
 
+                apr_table_addn(r->headers_in, last_field, value);
 
                 /* reset the alloc_len so that we'll allocate a new
                  * buffer if we have to do any more folding: we can't
