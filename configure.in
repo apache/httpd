@@ -140,8 +140,9 @@ case $host in
       if test "x$LTFLAGS" = "x"; then
           LTFLAGS='--silent'
       fi
-      LIBTOOL='$(SHELL) $(top_builddir)/srclib/apr/libtool $(LTFLAGS)'
-      libtoolversion=`$abs_builddir/srclib/apr/libtool --version`
+      my_libtool=`$apr_config --apr-libtool`
+      LIBTOOL="$my_libtool \$(LTFLAGS)"
+      libtoolversion=`$my_libtool --version`
       case $libtoolversion in
           *1.4*)
               SH_LIBTOOL='$(LIBTOOL)'
