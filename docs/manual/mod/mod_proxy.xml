@@ -81,7 +81,7 @@ forward proxy and the remote webserver.</p>
 using the <directive module="mod_proxy">ProxyRemote</directive>
 directive. In addition, caching of data can be achieved by configuring
 Apache <module>mod_cache</module>. Other dedicated forward proxy
-packages include <a href="http://www.squid.org">Squid</a>.</p>
+packages include <a href="http://www.squid-cache.org/">Squid</a>.</p>
 
 <p>A <em>reverse proxy</em> is a webserver system that is capable of serving webpages
 sourced from other webservers - in addition to webpages on disk or generated
