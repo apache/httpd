@@ -117,6 +117,7 @@
 
 module AP_MODULE_DECLARE_DATA cgid_module; 
 
+static int cgid_start(apr_pool_t *p, server_rec *main_server, apr_proc_t *procnew);
 static int cgid_init(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp, server_rec *main_server); 
 static int handle_exec(include_ctx_t *ctx, apr_bucket_brigade **bb, request_rec *r,
                        ap_filter_t *f, apr_bucket *head_ptr, apr_bucket **inserted_head);
@@ -125,10 +126,12 @@ static APR_OPTIONAL_FN_TYPE(ap_register_include_handler) *cgid_pfn_reg_with_ssi;
 static APR_OPTIONAL_FN_TYPE(ap_ssi_get_tag_and_value) *cgid_pfn_gtv;
 static APR_OPTIONAL_FN_TYPE(ap_ssi_parse_string) *cgid_pfn_ps;
 
-static apr_pool_t *pcgi; 
+static apr_pool_t *pcgi = NULL; 
 static int total_modules = 0;
 static pid_t daemon_pid;
 static int daemon_should_exit = 0;
+static server_rec *root_server = NULL;
+static apr_pool_t *root_pool = NULL;
 
 /* Read and discard the data in the brigade produced by a CGI script */
 static void discard_script_output(apr_bucket_brigade *bb);
@@ -267,27 +270,34 @@ static char **create_argv(apr_pool_t *p, char *path, char *user, char *group,
 #if APR_HAS_OTHER_CHILD
 static void cgid_maint(int reason, void *data, apr_wait_t status)
 {
-    pid_t *sd = data;
+    apr_proc_t *proc = data;
 
     switch (reason) {
         case APR_OC_REASON_DEATH:
+            apr_proc_other_child_unregister(data);
+            /* If apache is not terminating or restarting,
+             * restart the cgid daemon
+             */
+            if (!ap_graceful_stop_signalled()) {
+                 ap_log_error(APLOG_MARK, APLOG_ERR, 0, NULL,
+                              "cgid daemon process died, restarting");
+               cgid_start(root_pool, root_server, proc);
+            }
+            break;
         case APR_OC_REASON_RESTART:
             /* don't do anything; server is stopping or restarting */
             apr_proc_other_child_unregister(data);
             break;
         case APR_OC_REASON_LOST:
-            /* it would be better to restart just the cgid child
-             * process but for now we'll gracefully restart the entire 
-             * server by sending AP_SIG_GRACEFUL to ourself, the httpd 
-             * parent process
-             */
-            kill(getpid(), AP_SIG_GRACEFUL);
+            /* Restart the child cgid daemon process */
+            apr_proc_other_child_unregister(data);
+            cgid_start(root_pool, root_server, proc);
             break;
         case APR_OC_REASON_UNREGISTER:
             /* we get here when pcgi is cleaned up; pcgi gets cleaned
              * up when pconf gets cleaned up
              */
-            kill(*sd, SIGHUP); /* send signal to daemon telling it to die */
+            kill(proc->pid, SIGHUP); /* send signal to daemon telling it to die */
             break;
     }
 }
@@ -777,20 +787,52 @@ static int cgid_server(void *data)
     return -1; 
 } 
 
+static int cgid_start(apr_pool_t *p, server_rec *main_server,
+                      apr_proc_t *procnew)
+{
+
+    daemon_should_exit = 0; /* clear setting from previous generation */
+    if ((daemon_pid = fork()) < 0) {
+        ap_log_error(APLOG_MARK, APLOG_ERR, errno, main_server,
+                     "mod_cgid: Couldn't spawn cgid daemon process");
+        return DECLINED;
+    }
+    else if (daemon_pid == 0) {
+        if (pcgi == NULL) {
+            apr_pool_create(&pcgi, p);
+        }
+        cgid_server(main_server);
+        exit(-1);
+    }
+    procnew->pid = daemon_pid;
+    procnew->err = procnew->in = procnew->out = NULL;
+    apr_pool_note_subprocess(p, procnew, APR_KILL_AFTER_TIMEOUT);
+#if APR_HAS_OTHER_CHILD
+    apr_proc_other_child_register(procnew, cgid_maint, procnew, NULL, p);
+#endif
+    return OK;
+}
+
 static int cgid_init(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp, 
-                      server_rec *main_server) 
+                     server_rec *main_server) 
 { 
-    apr_proc_t *procnew;
-    void *data;
+    apr_proc_t *procnew = NULL;
     int first_time = 0;
     const char *userdata_key = "cgid_init";
     module **m;
+    int ret = OK;
 
-    apr_pool_userdata_get(&data, userdata_key, main_server->process->pool);
-    if (!data) {
+    root_server = main_server;
+    root_pool = p;
+
+    apr_pool_userdata_get((void **)&procnew, userdata_key, main_server->process->pool);
+    if (!procnew) {
         first_time = 1;
-        apr_pool_userdata_set((const void *)1, userdata_key,
-                         apr_pool_cleanup_null, main_server->process->pool);
+        procnew = apr_pcalloc(p, sizeof(*procnew));
+        procnew->pid = -1;
+        procnew->err = procnew->in = procnew->out = NULL;
+        apr_pool_userdata_set((const void *)procnew, userdata_key,
+                     apr_pool_cleanup_null, main_server->process->pool);
     }
 
     if (!first_time) {
@@ -798,25 +840,10 @@ static int cgid_init(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp,
         for (m = ap_preloaded_modules; *m != NULL; m++)
             total_modules++;
 
-        daemon_should_exit = 0; /* clear setting from previous generation */
-        if ((daemon_pid = fork()) < 0) {
-            ap_log_error(APLOG_MARK, APLOG_ERR, errno, main_server, 
-                         "mod_cgid: Couldn't spawn cgid daemon process"); 
-            return DECLINED;
+        ret = cgid_start(p, main_server, procnew);
+        if (ret != OK ) {
+            return ret;
         }
-        else if (daemon_pid == 0) {
-            apr_pool_create(&pcgi, p); 
-            cgid_server(main_server);
-            exit(-1);
-        } 
-        procnew = apr_pcalloc(p, sizeof(*procnew));
-        procnew->pid = daemon_pid;
-        procnew->err = procnew->in = procnew->out = NULL;
-        apr_pool_note_subprocess(p, procnew, APR_KILL_AFTER_TIMEOUT);
-#if APR_HAS_OTHER_CHILD
-        apr_proc_other_child_register(procnew, cgid_maint, &procnew->pid, NULL, p);
-#endif
-
         cgid_pfn_reg_with_ssi = APR_RETRIEVE_OPTIONAL_FN(ap_register_include_handler);
         cgid_pfn_gtv          = APR_RETRIEVE_OPTIONAL_FN(ap_ssi_get_tag_and_value);
         cgid_pfn_ps           = APR_RETRIEVE_OPTIONAL_FN(ap_ssi_parse_string);
@@ -828,7 +855,7 @@ static int cgid_init(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp,
             cgid_pfn_reg_with_ssi("exec", handle_exec);
         }
     }
-    return OK;
+    return ret;
 } 
 
 static void *create_cgid_config(apr_pool_t *p, server_rec *s) 
