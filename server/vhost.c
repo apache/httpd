@@ -636,7 +636,7 @@ void ap_fini_vhost_config(apr_pool_t *p, server_rec *main_s)
 		struct hostent *h;
 
 		if ((h = gethostbyaddr((char *) &(s->addrs->host_addr),
-					sizeof(struct in_addr), AF_INET))) {
+					sizeof(struct in_addr), APR_INET))) {
 		    s->server_hostname = apr_pstrdup(p, (char *) h->h_name);
 		}
 		else {
