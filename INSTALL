@@ -97,6 +97,10 @@
   3. Configuring the source tree
      ---------------------------
 
+     HINT: This is the reference which describes all configuration
+           possibilities. For real-life configuration examples please 
+           read the file `README.configure', too.
+
      The next step is to configure the Apache source tree for your particular
      system/platform and personal requirements. The most important setup here
      is the location prefix where Apache is to be installed later, because
