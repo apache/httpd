@@ -1,5 +1,5 @@
 Apache 2.0 STATUS:
-Last modified at [$Date: 2000/02/08 14:19:59 $]
+Last modified at [$Date: 2000/02/16 16:48:32 $]
 
 Release:
 
@@ -8,6 +8,10 @@ Release:
     2.0     : later in 2000
 
 RELEASE SHOWSTOPPERS:
+    * DSO hooks registered during the preflight call to ap_read_config
+	are not 'unregistered' during the preflight clean-up. Thus, when 
+	Apache comes up, the hook tables contain two entries for each DSO hook,
+	one of which is bogus, leftover from the preflight. 
 
     * Pipes to CGI scripts are not being timed out
         Status: code has been added to APR to support timing out pipes.
@@ -22,15 +26,18 @@ RELEASE SHOWSTOPPERS:
         Status: Manoj has posted an patch to fix this.
         <19991103003605.A20612@samosa.mindspring.com>
 
-    * Windows NT port isn't done
-        Status: Bill  <stoddard@raleigh.ibm.com> is working on MPM and APR. 
-	Remaining work:
-        - Fix Win9* specific code in the winnt MPM
-        - Test access logging with multiple threads. Will the native file I/O 
-          calls serialize automagically like the CRT calls or do we need to
-          add region locking each time we write to the access/error logs?
-	- Piped logging is broken
-	- DSO support is broken
+    * Win32: Fix Win9* specific code in the winnt MPM
+	Status:
+
+    * Win32: Test access logging with multiple threads. Will the 
+	native file I/O calls serialize automagically like the 
+	CRT calls or do we need to add region locking each time 
+	we access the logs?
+	Status: 
+
+    * Win32:  Smoke test all ported modules to make sure they work 
+	correctly under Windows.
+	Status: 
 
     * Current 2.0 code is not tested on many Unix platforms. Make 2.0
       work on most, if not all the systems 1.3 did
@@ -48,6 +55,10 @@ RELEASE SHOWSTOPPERS:
         resolver calls,
 
 RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
+
+    * Win32: Non-blocking CGI pipes
+
+    * Win32: Graceful restart of a service is broken (code does shutdown then start)
 
     * Dynamically loadable MPMs
       Enable users of the binary distributions of Apache to be able to 
@@ -77,11 +88,7 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
       loosing error status (i.e. throwing away the error returned by a
       system call and replacing it with a generic error code)
 
-    * APRize the stat function. CRT stat() is about 30% slower on Windows than
-      the equivalent native Windows call. The APR call should return the Unix
-      style stat structure, just to keep it familier.
-
-    * Implement reliable piped logs on Windows
+    * Win32: Implement reliable piped logs on Windows
         Status: Bill <stoddard@raleigh.ibm.com> has prototype code (not
         reliable) in 1.3.  Should be much cleaner with APR in 2.0.
 
