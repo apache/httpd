@@ -1,0 +1,68 @@
+<?xml version="1.0"?>
+<!DOCTYPE xml:manual [ <!ENTITY nbsp "&#160;"> ]>
+<?xml-stylesheet type="text/xsl" href="../style/manual.xsl"?>
+<modulesynopsis>
+
+<name>mod_cgid</name>
+<description>Execution of CGI scripts using an
+    external CGI daemon</description>
+<status>Base</status>
+<sourcefile>mod_cgid.c</sourcefile>
+<identifier>cgid_module</identifier>
+<compatibility>Unix threaded MPMs only</compatibility>
+
+<summary>
+    <p>Except for the optimizations and the additional <directive
+    module="mod_cgid">ScriptSock</directive> directive noted below,
+    mod_cgid behaves similarly to mod_cgi.  <strong>See the
+    <module>mod_cgi</module> Summary for additional details about
+    Apache and CGI.</strong></p>
+
+    <p>On certain unix operating systems, forking a process from a
+    multi-threaded server is a very expensive operation because the
+    new process will replicate all the threads of the parent
+    process. In order to avoid incurring this expense on each CGI
+    invocation, mod_cgid creates an external daemon that is
+    responsible for forking child processes to run CGI scripts. The
+    main server communicates with this daemon using a unix domain
+    socket.</p>
+
+    <p>This module is used by default whenever a multi-threaded MPM
+    is selected during the compilation process. At the user level,
+    this module is identical in configuration and operation to
+    <module>mod_cgi</module>. The only exception is the
+    additional directive <code>ScriptSock</code> which gives the
+    name of the socket to use for communication with the cgi
+    daemon.</p>
+</summary>
+
+<directivesynopsis location="mod_cgi">
+<name>ScriptLog</name>
+</directivesynopsis>
+
+<directivesynopsis location="mod_cgi">
+<name>ScriptLogLength</name>
+</directivesynopsis>
+
+<directivesynopsis location="mod_cgi">
+<name>ScriptLogBuffer</name>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>ScriptSock</name>
+<syntax>ScriptSock <em>file-path</em></syntax>
+<default>ScriptSock logs/cgisock</default>
+<contextlist><context>server config</context></contextlist>
+
+<usage>
+    <p>This directive sets the name of the socket to use for
+    communication with the CGI daemon. The socket will be opened
+    using the permissions of the user who starts Apache (usually
+    root). To maintain the security of communications with CGI
+    scripts, it is important that no other user has permission to
+    write in the directory where the socket is located.</p>
+</usage>
+</directivesynopsis>
+
+</modulesynopsis>
+
