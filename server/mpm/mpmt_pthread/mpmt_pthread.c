@@ -736,7 +736,19 @@ static void child_main(int child_num_arg)
     /* Set up the pollfd array */
     listensocks = ap_pcalloc(pchild,
 			    sizeof(*listensocks) * (num_listensocks + 1));
-    ap_put_os_sock(&listensocks[0], &pipe_of_death[0], pchild);
+
+    /* It is a horrible crime to use ap_create_tcp_socket() here, but it
+     * keeps ap_put_os_sock() from doing getsockname() on the pipe of death
+     * (which won't work).
+     * TODO - remove the need for such a hack!  Jeff owns this problem.
+     */
+    ap_create_tcp_socket(&listensocks[0], pchild);
+    rv = ap_put_os_sock(&listensocks[0], &pipe_of_death[0], pchild);
+    if (rv != APR_SUCCESS) {
+        ap_log_error(APLOG_MARK, APLOG_ALERT, rv, ap_server_conf,
+                     "ap_put_os_sock() failed for the pipe of death");
+        clean_child_exit(APEXIT_CHILDFATAL);
+    }
     for (lr = ap_listeners, i = 1; i <= num_listensocks; lr = lr->next, ++i)
 	listensocks[i]=lr->sd;
 
