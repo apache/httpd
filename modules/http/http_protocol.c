@@ -895,7 +895,7 @@ apr_status_t http_filter(ap_filter_t *f, ap_bucket_brigade *b, apr_ssize_t lengt
 
         e = AP_BRIGADE_FIRST(b);
         while (e != AP_BRIGADE_SENTINEL(b)) {
-            e->read(e, &ignore, &len, 0);
+            ap_bucket_read(e, &ignore, &len, 0);
             if (remain <= len) {
                 break;
             }
@@ -904,7 +904,7 @@ apr_status_t http_filter(ap_filter_t *f, ap_bucket_brigade *b, apr_ssize_t lengt
         }
         if (e != AP_BRIGADE_SENTINEL(b)) {
             if (remain <= len) {
-                e->split(e, remain);
+                ap_bucket_split(e, remain);
                 remain = 0;
             }
             bb = ap_brigade_split(b, AP_BUCKET_NEXT(e));
@@ -918,13 +918,13 @@ apr_status_t http_filter(ap_filter_t *f, ap_bucket_brigade *b, apr_ssize_t lengt
     }
 
     AP_BRIGADE_FOREACH(e, b) {
-        if ((rv = e->read(e, (const char **)&buff, &len, 0)) != APR_SUCCESS) {
+        if ((rv = ap_bucket_read(e, (const char **)&buff, &len, 0)) != APR_SUCCESS) {
             return rv;
         }
 
         pos = memchr(buff, ASCII_LF, len);
         if (pos != NULL) {
-            e->split(e, pos - buff + 1);
+            ap_bucket_split(e, pos - buff + 1);
             bb = ap_brigade_split(b, AP_BUCKET_NEXT(e));
             ctx->b = bb;
             return APR_SUCCESS;
@@ -970,7 +970,7 @@ static int getline(char *s, int n, conn_rec *c, int fold)
             ap_bucket_destroy(e);
             continue;
         }
-        retval = e->read(e, &temp, &length, 0);
+        retval = ap_bucket_read(e, &temp, &length, 0);
 
         if (retval != APR_SUCCESS) {
             total = ((length < 0) && (total == 0)) ? -1 : total;
@@ -2428,9 +2428,9 @@ API_EXPORT(long) ap_get_client_block(request_rec *r, char *buffer, int bufsiz)
 
         total = 0;
         do {
-            rv = b->read(b, &tempbuf, &len_read, 0);
+            rv = ap_bucket_read(b, &tempbuf, &len_read, 0);
             if (len_to_read < b->length) { /* shouldn't happen */
-                b->split(b, len_to_read);
+                ap_bucket_split(b, len_to_read);
             }
             else {
                 len_to_read = len_read;

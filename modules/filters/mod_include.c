@@ -190,10 +190,10 @@ static ap_bucket *find_string(ap_bucket *dptr, const char *str, ap_bucket *end)
     int state = 0;
 
     do {
-        if (dptr->type == AP_BUCKET_EOS) {
+        if (dptr->type == ap_eos_type()) {
             break;
         }
-        dptr->read(dptr, &buf, &len, 0);
+        ap_bucket_read(dptr, &buf, &len, 0);
         /* XXX handle retcodes */
         if (len == 0) { /* end of pipe? */
             break;
@@ -210,10 +210,10 @@ static ap_bucket *find_string(ap_bucket *dptr, const char *str, ap_bucket *end)
                      * on what we are searching for.
                      */
                     if (str[0] == '<') {
-                        dptr->split(dptr, c - buf - strlen(str));
+                        ap_bucket_split(dptr, c - buf - strlen(str));
                     }
                     else {
-                        dptr->split(dptr, c - buf);
+                        ap_bucket_split(dptr, c - buf);
                     }
                     return AP_BUCKET_NEXT(dptr);
                 }
@@ -348,7 +348,7 @@ static char *get_tag(apr_pool_t *p, ap_bucket *in, char *tag, int tagbuf_len, in
 
     /* Remove all whitespace */
     while (dptr) { 
-        dptr->read(dptr, &str, &length, 0);
+        ap_bucket_read(dptr, &str, &length, 0);
         c = str + *offset;
         while (c - str < length) {
             if (!apr_isspace(*c)) {
@@ -365,14 +365,14 @@ static char *get_tag(apr_pool_t *p, ap_bucket *in, char *tag, int tagbuf_len, in
     if (*c == '-') {
         c++;
         if (c == '\0') {
-            dptr->read(dptr, &str, &length, 0);
+            ap_bucket_read(dptr, &str, &length, 0);
             c = str;
         }
         if (*c == '-') {
             do {
                 c++;
                 if (c == '\0') {
-                    dptr->read(dptr, &str, &length, 0);
+                    ap_bucket_read(dptr, &str, &length, 0);
                     c = str;
                 }
             } while (apr_isspace(*c));
@@ -397,7 +397,7 @@ static char *get_tag(apr_pool_t *p, ap_bucket *in, char *tag, int tagbuf_len, in
         *(t++) = apr_tolower(*c);
         c++;
         if (c == '\0') {
-            dptr->read(dptr, &str, &length, 0);
+            ap_bucket_read(dptr, &str, &length, 0);
             c = str;
         }
     }
@@ -408,7 +408,7 @@ static char *get_tag(apr_pool_t *p, ap_bucket *in, char *tag, int tagbuf_len, in
     while (apr_isspace(*c)) {
         c++;
         if (c == '\0') {
-            dptr->read(dptr, &str, &length, 0);
+            ap_bucket_read(dptr, &str, &length, 0);
             c = str;
         }
     }
@@ -420,7 +420,7 @@ static char *get_tag(apr_pool_t *p, ap_bucket *in, char *tag, int tagbuf_len, in
     do {
         c++;
         if (c == '\0') {
-            dptr->read(dptr, &str, &length, 0);
+            ap_bucket_read(dptr, &str, &length, 0);
             c = str;
         }
     } while (apr_isspace(*c));
@@ -434,7 +434,7 @@ static char *get_tag(apr_pool_t *p, ap_bucket *in, char *tag, int tagbuf_len, in
     while (1) {
         c++;
         if (c == '\0') {
-            dptr->read(dptr, &str, &length, 0);
+            ap_bucket_read(dptr, &str, &length, 0);
             c = str;
         }
         if (t - tag == tagbuf_len) {
@@ -446,7 +446,7 @@ static char *get_tag(apr_pool_t *p, ap_bucket *in, char *tag, int tagbuf_len, in
             *(t++) = *c;         /* Add backslash */
             c++;
             if (c == '\0') {
-                dptr->read(dptr, &str, &length, 0);
+                ap_bucket_read(dptr, &str, &length, 0);
                 c = str;
             }
             if (*c == term) {    /* Only if */
@@ -478,7 +478,7 @@ static int get_directive(ap_bucket *in, char *dest, size_t len, apr_pool_t *p)
     --len;
 
     while (dptr) {
-        dptr->read(dptr, &str, &length, 0);
+        ap_bucket_read(dptr, &str, &length, 0);
         /* need to start past the <!--#
          */
         c = str + strlen(STARTING_SEQUENCE);
@@ -496,7 +496,7 @@ static int get_directive(ap_bucket *in, char *dest, size_t len, apr_pool_t *p)
     /* now get directive */
     while (dptr) {
         if (c - str >= length) {
-            dptr->read(dptr, &str, &length, 0);
+            ap_bucket_read(dptr, &str, &length, 0);
         }
         while (c - str < length) {
 	    if (d - dest == (int)len) {
