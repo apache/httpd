@@ -144,3 +144,17 @@ Body:----------ro--
 
 <!--#include virtual="include/bottom.html" -->
 ----------ro--
+
+Content-language: ko
+Content-type: text/html; charset=EUC-KR
+Body:----------ko--
+<!--#set var="CONTENT_LANGUAGE" value="ko"
+--><!--#set var="TITLE" value="잘못된 Content-Length!"
+--><!--#set var="CHARACTER_ENCODING" value="EUC-KR"
+--><!--#include virtual="include/top.html" -->
+
+    <!--#echo encoding="none" var="REDIRECT_REQUEST_METHOD"--> 방식을 쓰는
+    요청은 올바른 <code>Content-Length</code> 헤더도 함께 보내야만 합니다.
+
+<!--#include virtual="include/bottom.html" -->
+----------ko--

@@ -250,3 +250,26 @@ Body:----------ro--
 
 <!--#include virtual="include/bottom.html" -->
 ----------ro--
+
+Content-language: ko
+Content-type: text/html; charset=EUC-KR
+Body:----------ko--
+<!--#set var="CONTENT_LANGUAGE" value="ko"
+--><!--#set var="TITLE" value="접근이 거부됨!"
+--><!--#set var="CHARACTER_ENCODING" value="EUC-KR"
+--><!--#include virtual="include/top.html" -->
+
+  <!--#if expr="$REDIRECT_URL = /\/$/" -->
+
+   요청한 디렉토리에 접근할 수 있는 권한이 없습니다.
+   디렉토리에 첫 페이지가 없거나 아니면 읽기 보호가 되어 있습니다.
+
+  <!--#else -->
+
+   요청한 객체에 접근할 수 있는 권한이 없습니다.
+   읽기 보호가 되어 있거나 웹서버가 읽을 수 없도록 되어 있습니다.
+
+  <!--#endif -->
+
+<!--#include virtual="include/bottom.html" -->
+----------ko--

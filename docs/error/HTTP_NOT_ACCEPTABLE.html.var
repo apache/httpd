@@ -141,3 +141,16 @@ Body:----------ro--
 
 <!--#include virtual="include/bottom.html" -->
 ----------ro--
+
+Content-language: ko
+Content-type: text/html; charset=EUC-KR
+Body:----------ko--
+<!--#set var="CONTENT_LANGUAGE" value="ko"
+--><!--#set var="TITLE" value="적당한 객체 없음!"
+--><!--#set var="CHARACTER_ENCODING" value="EUC-KR"
+--><!--#include virtual="include/top.html" -->
+
+    요청한 객체의 적당한 형태를 이 서버에서 찾을 수 없습니다.
+
+<!--#include virtual="include/bottom.html" -->
+----------ko--

@@ -157,3 +157,17 @@ Body:----------ro--
 
 <!--#include virtual="include/bottom.html" -->
 ----------ro--
+
+Content-language: ko
+Content-type: text/html; charset=EUC-KR
+Body:----------ko--
+<!--#set var="CONTENT_LANGUAGE" value="ko"
+--><!--#set var="TITLE" value="서비스 일시중지!"
+--><!--#set var="CHARACTER_ENCODING" value="EUC-KR"
+--><!--#include virtual="include/top.html" -->
+
+    관리 작업이나 용량 문제로 서버가 잠시동안 요청을 처리할 수 없습니다.
+    나중에 다시 시도해주시기 바랍니다.
+
+<!--#include virtual="include/bottom.html" -->
+----------ko--

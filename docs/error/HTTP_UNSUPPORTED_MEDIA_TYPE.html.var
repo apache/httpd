@@ -133,3 +133,16 @@ Body:----------ro--
 
 <!--#include virtual="include/bottom.html" -->
 ----------ro--
+
+Content-language: ko
+Content-type: text/html; charset=EUC-KR
+Body:----------ko--
+<!--#set var="CONTENT_LANGUAGE" value="ko"
+--><!--#set var="TITLE" value="지원하지 않는 미디어 형식!"
+--><!--#set var="CHARACTER_ENCODING" value="EUC-KR"
+--><!--#include virtual="include/top.html" -->
+
+    요청으로 보내온 미디어 형식을 이 서버가 지원하지 않습니다. 
+
+<!--#include virtual="include/bottom.html" -->
+----------ko--
