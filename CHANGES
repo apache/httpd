@@ -1,5 +1,8 @@
 Changes with Apache 2.0.50
 
+  *) logresolve: Allow size of log line buffer to be overridden at
+     build time (MAXLINE).  PR 27793.  [Jeff Trawick]
+
   *) Fix the comment delimiter in htdbm so that it correctly parses the 
      username comment.  Also add a terminate function to allow NetWare 
      to pause the output before the screen is destroyed.

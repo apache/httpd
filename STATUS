@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/03/30 20:53:05 $]
+Last modified at [$Date: 2004/03/30 21:07:10 $]
 
 Release:
 
@@ -289,11 +289,6 @@ PATCHES TO BACKPORT FROM 2.1
       [Jesse Pelton <jsp pkc.com>]
       http://cvs.apache.org/viewcvs.cgi/httpd-2.0/modules/arch/win32/mod_isapi.c?r1=1.98&r2=1.99
       +1: trawick, stoddard
-
-    * logresolve: Allow size of log line buffer to be overridden at
-      build time (MAXLINE).  PR 27793.
-      http://cvs.apache.org/viewcvs.cgi/httpd-2.0/support/logresolve.c?r1=1.22&r2=1.23
-      +1: trawick, stoddard, nd
 
 CURRENT RELEASE NOTES:
 
