@@ -261,6 +261,9 @@ int status_handler (request_rec *r)
 		rputs("|",r);
 		format_byte_out(r,bytes);
 		rputs(")",r);
+		sprintf(buffer," %s {%s}", score_record.client,
+			score_record.request);
+		rputs(buffer,r);
 	    }
 	    tu+=score_record.times.tms_utime;
 	    ts+=score_record.times.tms_stime;

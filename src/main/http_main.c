@@ -656,7 +656,7 @@ void sync_scoreboard_image ()
 #endif
 }
 
-void update_child_status (int child_num, int status)
+void update_child_status (int child_num, int status, request_rec *r)
 {
     short_score new_score_rec;
     memcpy(&new_score_rec,&scoreboard_image[child_num],sizeof new_score_rec);
@@ -671,6 +671,18 @@ void update_child_status (int child_num, int status)
 	 */
 	new_score_rec.my_access_count = 0;
 	new_score_rec.my_bytes_served = 0;
+    }
+    if (r) {
+	int slot_size;
+	conn_rec *c = r->connection;
+	slot_size = sizeof(new_score_rec.client) - 1;
+	strncpy(new_score_rec.client, get_remote_host(c, r->per_dir_config,
+	 REMOTE_NAME), slot_size);
+	new_score_rec.client[slot_size] = '\0';
+	slot_size = sizeof(new_score_rec.request) - 1;
+	strncpy(new_score_rec.request, (r->the_request ? r->the_request :
+	 "NULL"), slot_size);
+	new_score_rec.request[slot_size] = '\0';
     }
 #endif
 
@@ -1068,7 +1080,7 @@ void child_main(int child_num_arg)
     child_num = child_num_arg;
     requests_this_child = 0;
     reopen_scoreboard (pconf);
-    update_child_status (child_num, SERVER_READY);
+    update_child_status (child_num, SERVER_READY, (request_rec*)NULL);
 
     /* Only try to switch if we're running as root */
     if(!geteuid() && setuid(user_id) == -1) {
@@ -1106,7 +1118,7 @@ void child_main(int child_num_arg)
 	}
 
 	clen=sizeof(sa_client);
-	update_child_status (child_num, SERVER_READY);
+	update_child_status (child_num, SERVER_READY, (request_rec*)NULL);
 	
 	accept_mutex_on();  /* Lock around "accept", if necessary */
 
@@ -1143,7 +1155,7 @@ void child_main(int child_num_arg)
 	    continue;
 	}
 	
-	update_child_status (child_num, SERVER_BUSY_READ);
+	update_child_status (child_num, SERVER_BUSY_READ, (request_rec*)NULL);
 	conn_io = bcreate(ptrans, B_RDWR);
 	dupped_csd = csd;
 #if defined(NEED_DUPPED_CSD)
@@ -1159,7 +1171,7 @@ void child_main(int child_num_arg)
 				       (struct sockaddr_in *)&sa_server);
 	
 	r = read_request (current_conn);
-	update_child_status (child_num, SERVER_BUSY_WRITE);
+	update_child_status (child_num, SERVER_BUSY_WRITE, r);
 	if (r) process_request (r); /* else premature EOF --- ignore */
 
 #if defined(STATUS_INSTRUMENTATION)
@@ -1168,9 +1180,9 @@ void child_main(int child_num_arg)
 	while (r && current_conn->keepalive) {
 	  bflush(conn_io);
 	  destroy_pool(r->pool);
-	  update_child_status (child_num, SERVER_BUSY_READ);
+	  update_child_status (child_num, SERVER_BUSY_READ, (request_rec*)NULL);
 	  r = read_request (current_conn);
-	  update_child_status (child_num, SERVER_BUSY_WRITE);
+	  update_child_status (child_num, SERVER_BUSY_WRITE, r);
 	  if (r) process_request (r);
 
 #if defined(STATUS_INSTRUMENTATION)
@@ -1347,7 +1359,8 @@ void standalone_main(int argc, char **argv)
 	    /* Child died... note that it's gone in the scoreboard. */
 	    sync_scoreboard_image();
 	    child_slot = find_child_by_pid (pid);
-	    if (child_slot >= 0) update_child_status (child_slot, SERVER_DEAD);
+	    if (child_slot >= 0) update_child_status (child_slot, SERVER_DEAD,
+	     (request_rec*)NULL);
         }
 
 	sync_scoreboard_image();
@@ -1355,7 +1368,7 @@ void standalone_main(int argc, char **argv)
 	    && (child_slot = find_free_child_num()) >= 0
 	    && child_slot <= daemons_limit)
 	    {
-	    update_child_status(child_slot,SERVER_STARTING);
+	    update_child_status(child_slot,SERVER_STARTING,(request_rec*)NULL);
 	    make_child(server_conf, child_slot);
 	    }
     }

@@ -79,6 +79,8 @@ typedef struct {
     long my_bytes_served;
     struct tms times;
     time_t last_used;
+    char client[32];	/* Keep 'em small... */
+    char request[64];	/* We just want an idea... */
 #endif
 } short_score;
 
