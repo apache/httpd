@@ -874,7 +874,8 @@ static const char *
             char *val = strchr(word, '=');
             if (!val) {
                 if (cmd->path)
-                    return "Invalid ProxyPass parameter. Paramet must be in the form 'key=value'";
+                    return "Invalid ProxyPass parameter.  Parameter must be "
+                           "in the form 'key=value'";
                 else
                     return "ProxyPass can not have a path when defined in a location"; 
             }
@@ -1290,7 +1291,8 @@ static const char *add_member(cmd_parms *cmd, void *dummy, const char *arg)
                 if (cmd->path)
                     return "BalancerMember can not have a balancer name when defined in a location";
                 else
-                    return "Invalid BalancerMember parameter. Paramet must be in the form 'key=value'";
+                    return "Invalid BalancerMember parameter. Parameter must "
+                           "be in the form 'key=value'";
             else
                 *val++ = '\0';
             apr_table_setn(params, word, val);
