@@ -121,11 +121,12 @@ struct item {
 typedef struct autoindex_config_struct {
 
     char *default_icon;
+    int opts;
     int icon_width;
     int icon_height;
 
     array_header *icon_list, *alt_list, *desc_list, *ign_list;
-    array_header *hdr_list, *rdme_list, *opts_list;
+    array_header *hdr_list, *rdme_list;
 
 } autoindex_config_rec;
 
@@ -271,17 +272,20 @@ static const char *add_readme(cmd_parms *cmd, void *d, char *name)
     return NULL;
 }
 
-
-static const char *add_opts_int(cmd_parms *cmd, void *d, int opts)
-{
-    push_item(((autoindex_config_rec *) d)->opts_list, (char *) (long) opts,
-	      NULL, cmd->path, NULL);
-    return NULL;
-}
-
+/* A legacy directive, FancyIndexing is superseded by the IndexOptions
+ * keyword.  But for compatibility..
+ */
 static const char *fancy_indexing(cmd_parms *cmd, void *d, int arg)
 {
-    return add_opts_int(cmd, d, arg ? FANCY_INDEXING : 0);
+    int curopts;
+    int newopts;
+    autoindex_config_rec *cfg;
+
+    cfg = (autoindex_config_rec *) d;
+    curopts = cfg->opts;
+    newopts = (arg ? (curopts | FANCY_INDEXING) : (curopts & !FANCY_INDEXING));
+    cfg->opts = newopts;
+    return NULL;
 }
 
 static const char *add_opts(cmd_parms *cmd, void *d, const char *optstr)
@@ -335,7 +339,8 @@ static const char *add_opts(cmd_parms *cmd, void *d, const char *optstr)
 	    return "Invalid directory indexing option";
 	}
     }
-    return add_opts_int(cmd, d, opts);
+    d_cfg->opts = opts;
+    return NULL;
 }
 
 #define DIR_CMD_PERMS OR_INDEXES
@@ -383,7 +388,7 @@ static void *create_autoindex_config(pool *p, char *dummy)
     new->ign_list = ap_make_array(p, 4, sizeof(struct item));
     new->hdr_list = ap_make_array(p, 4, sizeof(struct item));
     new->rdme_list = ap_make_array(p, 4, sizeof(struct item));
-    new->opts_list = ap_make_array(p, 4, sizeof(struct item));
+    new->opts = 0;
 
     return (void *) new;
 }
@@ -406,7 +411,7 @@ static void *merge_autoindex_configs(pool *p, void *basev, void *addv)
     new->desc_list = ap_append_arrays(p, add->desc_list, base->desc_list);
     new->icon_list = ap_append_arrays(p, add->icon_list, base->icon_list);
     new->rdme_list = ap_append_arrays(p, add->rdme_list, base->rdme_list);
-    new->opts_list = ap_append_arrays(p, add->opts_list, base->opts_list);
+    new->opts = add->opts;
 
     return new;
 }
@@ -482,7 +487,7 @@ static char *find_item(request_rec *r, array_header *list, int path_only)
 #define find_header(d,p) find_item(p,d->hdr_list,0)
 #define find_readme(d,p) find_item(p,d->rdme_list,0)
 
-static char *find_default_icon(autoindex_config_rec * d, char *bogus_name)
+static char *find_default_icon(autoindex_config_rec *d, char *bogus_name)
 {
     request_rec r;
 
@@ -497,7 +502,7 @@ static char *find_default_icon(autoindex_config_rec * d, char *bogus_name)
     return find_item(&r, d->icon_list, 1);
 }
 
-static int ignore_entry(autoindex_config_rec * d, char *path)
+static int ignore_entry(autoindex_config_rec *d, char *path)
 {
     array_header *list = d->ign_list;
     struct item *items = (struct item *) list->elts;
@@ -542,23 +547,6 @@ static int ignore_entry(autoindex_config_rec * d, char *path)
     return 0;
 }
 
-static int find_opts(autoindex_config_rec * d, request_rec *r)
-{
-    char *path = r->filename;
-    array_header *list = d->opts_list;
-    struct item *items = (struct item *) list->elts;
-    int i;
-
-    for (i = 0; i < list->nelts; ++i) {
-	struct item *p = &items[i];
-
-	if (!ap_strcmp_match(path, p->apply_path)) {
-	    return (int) (long) p->type;
-	}
-    }
-    return 0;
-}
-
 /*****************************************************************
  *
  * Actually generating output
@@ -581,7 +569,7 @@ static int insert_readme(char *name, char *readme_fname, char *title,
 
     cfg = (autoindex_config_rec *) ap_get_module_config(r->per_dir_config,
 							&autoindex_module);
-    autoindex_opts = find_opts(cfg, r);
+    autoindex_opts = cfg->opts;
     /* XXX: this is a load of crap, it needs to do a full sub_req_lookup_uri */
     fn = ap_make_full_path(r->pool, name, readme_fname);
     fn = ap_pstrcat(r->pool, fn, ".html", NULL);
@@ -714,7 +702,7 @@ static char *find_title(request_rec *r)
 }
 
 static struct ent *make_autoindex_entry(char *name, int autoindex_opts,
-					autoindex_config_rec * d,
+					autoindex_config_rec *d,
 					request_rec *r, char keyid,
 					char direction)
 {
@@ -780,7 +768,7 @@ static struct ent *make_autoindex_entry(char *name, int autoindex_opts,
     return (p);
 }
 
-static char *terminate_description(autoindex_config_rec * d, char *desc,
+static char *terminate_description(autoindex_config_rec *d, char *desc,
 				   int autoindex_opts)
 {
     int maxsize = 23;
@@ -850,8 +838,8 @@ static void emit_link(request_rec *r, char *anchor, char fname, char curkey,
 }
 
 static void output_directories(struct ent **ar, int n,
-			       autoindex_config_rec * d, request_rec *r,
-			     int autoindex_opts, char keyid, char direction)
+			       autoindex_config_rec *d, request_rec *r,
+			       int autoindex_opts, char keyid, char direction)
 {
     int x;
     char *name = r->uri;
@@ -1055,7 +1043,8 @@ static int dsortf(struct ent **e1, struct ent **e2)
 }
 
 
-static int index_directory(request_rec *r, autoindex_config_rec * autoindex_conf)
+static int index_directory(request_rec *r,
+			   autoindex_config_rec *autoindex_conf)
 {
     char *title_name = ap_escape_html(r->pool, r->uri);
     char *title_endp;
@@ -1068,7 +1057,7 @@ static int index_directory(request_rec *r, autoindex_config_rec * autoindex_conf
     struct ent **ar = NULL;
     char *tmp;
     const char *qstring;
-    int autoindex_opts = find_opts(autoindex_conf, r);
+    int autoindex_opts = autoindex_conf->opts;
     char keyid;
     char direction;
 

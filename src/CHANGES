@@ -1,5 +1,10 @@
 Changes with Apache 1.3.2
 
+  *) Simplify handling of IndexOptions in mod_autoindex -- and BTW
+     cause the standalone FancyIndexing directive to logically OR
+     into any existing IndexOptions settings rather than wiping
+     them out.  [Ken Coar]
+
   *) Changes in ftp proxy: make URL parsing simpler by using the
      parsed_uri stuff.
      + Add display of the "current directory" in cases where it's

@@ -72,6 +72,10 @@ document, or in the <CODE>src/CHANGES</CODE> file.
 <H3>Run-Time Configuration Changes</H3>
 
 <UL>
+  <LI>Standalone <STRONG><SAMP>FancyIndexing</SAMP></STRONG> directives
+    are now combined with the settings of any <SAMP>IndexOptions</SAMP>
+    directive already in effect, rather than replacing them.
+  </LI>
   <LI><STRONG><SAMP>AuthName</SAMP> strings will need to be quoted</STRONG>
     in <SAMP>.htaccess</SAMP> or server configuration files if they contain
     blank characters (like spaces). For example, if you use
