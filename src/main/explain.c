@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdarg.h>
+#include "httpd.h"
 #include "explain.h"
 
 void _Explain(const char *szFile, int nLine, const char *szFmt,...)

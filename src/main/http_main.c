@@ -984,7 +984,7 @@ static void linger_timeout(void)
  */
 static void lingering_close(request_rec *r)
 {
-    int dummybuf[512];
+    char dummybuf[2048];
     struct timeval tv;
     fd_set lfds, fds_read, fds_err;
     int select_rv = 0, read_rv = 0;
