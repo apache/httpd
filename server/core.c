@@ -3233,7 +3233,7 @@ static int core_create_req(request_rec *r)
 
 static int core_create_proxy_req(request_rec *r, request_rec *pr)
 {
-    core_create_req(pr);
+    return core_create_req(pr);
 }
 
 static void register_hooks(apr_pool_t *p)
