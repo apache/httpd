@@ -68,11 +68,11 @@ int ap_proxy_http_handler(request_rec *r, proxy_server_conf *conf,
                           apr_port_t proxyport);
 
 typedef struct {
-    const char *name;
-    int port;
+    const char     *name;
+    apr_port_t      port;
     apr_sockaddr_t *addr;
-    apr_socket_t *sock;
-    int close;
+    apr_socket_t   *sock;
+    int             close;
 } proxy_http_conn_t;
 
 /*
