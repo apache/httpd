@@ -279,16 +279,6 @@ LDAP_DECLARE(int) util_ldap_ssl_supported(request_rec *r);
  */
 apr_status_t util_ldap_cache_init(apr_pool_t *pool, util_ldap_state_t *st);
 
-/**
- * Display formatted stats for cache
- * @param The pool to allocate the returned string from
- * @tip This function returns a string allocated from the provided pool that describes
- *      various stats about the cache.
- * @deffunc char *util_ald_cache_display(apr_pool_t *pool, util_ldap_state_t *st)
- */
-char *util_ald_cache_display(apr_pool_t *pool, util_ldap_state_t *st);
-
-
 /* from apr_ldap_cache_mgr.c */
 
 /**
@@ -298,7 +288,7 @@ char *util_ald_cache_display(apr_pool_t *pool, util_ldap_state_t *st);
  *      various stats about the cache.
  * @deffunc char *util_ald_cache_display(apr_pool_t *pool, util_ldap_state_t *st)
  */
-char *util_ald_cache_display(apr_pool_t *pool, util_ldap_state_t *st);
+char *util_ald_cache_display(request_rec *r, util_ldap_state_t *st);
 
 #endif /* APU_HAS_LDAP */
 #endif /* UTIL_LDAP_H */
