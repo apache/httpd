@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: Configure,v 1.21 1996/09/24 14:33:57 mjc Exp $
+# $Id: Configure,v 1.22 1996/09/28 02:03:14 brian Exp $
 trap 'rm $tmpfile; exit' 0 1 2 3 15
 
 # Apache configuration script, first cut --- rst.
@@ -195,9 +195,11 @@ case "$PLAT" in
     *486-*-bsdi*)
 	OS='BSDI w/486'
 	CFLAGS="$CFLAGS -m486"
+	DBM_LIB=""
 	;;
     *-bsdi*)
 	OS='BSDI'
+	DBM_LIB=""
 	;;
     *486-*-freebsd*|*486-*-netbsd*)
 	OS='FreeBSD/NETBSD on 486'
