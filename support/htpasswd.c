@@ -273,32 +273,31 @@ static void usage(void)
  * Check to see if the specified file can be opened for the given
  * access.
  */
-static int accessible(char *fname, char *mode)
+static int accessible(apr_pool_t *pool, char *fname, int mode)
 {
-    FILE *s;
+    apr_file_t *f = NULL;
 
-    s = fopen(fname, mode);
-    if (s == NULL) {
+    if (apr_file_open(&f, fname, mode, APR_OS_DEFAULT, pool) != APR_SUCCESS) {
         return 0;
     }
-    fclose(s);
+    apr_file_close(f);
     return 1;
 }
 
 /*
  * Return true if a file is readable.
  */
-static int readable(char *fname)
+static int readable(apr_pool_t *pool, char *fname)
 {
-    return accessible(fname, "r");
+    return accessible(pool, fname, APR_READ);
 }
 
 /*
  * Return true if the specified file can be opened for write access.
  */
-static int writable(char *fname)
+static int writable(apr_pool_t *pool, char *fname)
 {
-    return accessible(fname, "a");
+    return accessible(pool, fname, APR_APPEND);
 }
 
 /*
@@ -320,8 +319,9 @@ void nwTerminate()
 }
 #endif
 
-static void check_args(int argc, const char *const argv[], int *alg, int *mask,
-                       int *num_args)
+static void check_args(apr_pool_t *pool, int argc, const char *const argv[], 
+                       int *alg, int *mask, char **user, char **pwfilename, 
+                       char **password)
 {
     const char *arg;
     int args_left = 2;
@@ -387,7 +387,36 @@ static void check_args(int argc, const char *const argv[], int *alg, int *mask,
     if ((argc - i) != args_left) {
         usage();
     }
-    *num_args = i;
+
+    if (*mask & NOFILE) {
+        i--;
+    }
+    else {
+        if (strlen(argv[i]) > (PATH_MAX - 1)) {
+            apr_file_printf(errfile, "%s: filename too long\n", argv[0]);
+            exit(ERR_OVERFLOW);
+        }
+        *pwfilename = apr_pstrdup(pool, argv[i]);
+        if (strlen(argv[i + 1]) > (MAX_STRING_LEN - 1)) {
+            apr_file_printf(errfile, "%s: username too long (>%" APR_SIZE_T_FMT ")\n",
+                argv[0], MAX_STRING_LEN - 1);
+            exit(ERR_OVERFLOW);
+        }
+    }
+    *user = apr_pstrdup(pool, argv[i + 1]);
+    if ((arg = strchr(*user, ':')) != NULL) {
+        apr_file_printf(errfile, "%s: username contains illegal character '%c'\n",
+                argv[0], *arg);
+        exit(ERR_BADUSER);
+    }
+    if (*mask & NONINTERACTIVE) {
+        if (strlen(argv[i + 2]) > (MAX_STRING_LEN - 1)) {
+            apr_file_printf(errfile, "%s: password too long (>%" APR_SIZE_T_FMT ")\n",
+                argv[0], MAX_STRING_LEN);
+            exit(ERR_OVERFLOW);
+        }
+        *password = apr_pstrdup(pool, argv[i + 2]);
+    }
 }
 
 /*
@@ -397,18 +426,18 @@ static void check_args(int argc, const char *const argv[], int *alg, int *mask,
 int main(int argc, const char * const argv[])
 {
     apr_file_t *fpw = NULL;
-    char user[MAX_STRING_LEN];
     char record[MAX_STRING_LEN];
     char line[MAX_STRING_LEN];
     char *password = NULL;
     char *pwfilename = NULL;
+    char *user = NULL;
     char tn[] = "htpasswd.tmp.XXXXXX";
     char scratch[MAX_STRING_LEN];
     char *str = NULL;
     int found = 0;
+    int i;
     int alg = ALG_CRYPT;
     int mask = 0;
-    int i;
     apr_pool_t *pool;
 #if APR_CHARSET_EBCDIC
     apr_status_t rv;
@@ -441,37 +470,8 @@ int main(int argc, const char * const argv[])
     }
 #endif /*APR_CHARSET_EBCDIC*/
 
-    check_args(argc, argv, &alg, &mask, &i);
+    check_args(pool, argc, argv, &alg, &mask, &user, &pwfilename, &password);
 
-    if (mask & NOFILE) {
-        i--;
-    }
-    else {
-        if (strlen(argv[i]) > (PATH_MAX - 1)) {
-            apr_file_printf(errfile, "%s: filename too long\n", argv[0]);
-            return ERR_OVERFLOW;
-        }
-        pwfilename = apr_pstrdup(pool, argv[i]);
-        if (strlen(argv[i + 1]) > (sizeof(user) - 1)) {
-            apr_file_printf(errfile, "%s: username too long (>%" APR_SIZE_T_FMT ")\n",
-                argv[0], sizeof(user) - 1);
-            return ERR_OVERFLOW;
-        }
-    }
-    strcpy(user, argv[i + 1]);
-    if ((str = strchr(user, ':')) != NULL) {
-        apr_file_printf(errfile, "%s: username contains illegal character '%c'\n",
-                argv[0], *str);
-        return ERR_BADUSER;
-    }
-    if (mask & NONINTERACTIVE) {
-        if (strlen(argv[i + 2]) > (MAX_STRING_LEN - 1)) {
-            apr_file_printf(errfile, "%s: password too long (>%" APR_SIZE_T_FMT ")\n",
-                argv[0], MAX_STRING_LEN);
-            return ERR_OVERFLOW;
-        }
-        password = apr_pstrdup(pool, argv[i + 2]);
-    }
 
 #if defined(WIN32) || defined(NETWARE)
     if (alg == ALG_CRYPT) {
@@ -497,38 +497,39 @@ int main(int argc, const char * const argv[])
             apr_file_printf(errfile,
                     "%s: cannot modify file %s; use '-c' to create it\n",
                     argv[0], pwfilename);
-            perror("fopen");
+            perror("apr_file_open");
             exit(ERR_FILEPERM);
         }
         /*
          * Verify that we can read the existing file in the case of an update
          * to it (rather than creation of a new one).
          */
-        if ((! mask & NEWFILE) && (! readable(pwfilename))) {
+        if ((! mask & NEWFILE) && (! readable(pool, pwfilename))) {
             apr_file_printf(errfile, "%s: cannot open file %s for read access\n",
                     argv[0], pwfilename);
-            perror("fopen");
+            perror("apr_file_open");
             exit(ERR_FILEPERM);
         }
         /*
          * Now check to see if we can preserve an existing file in case
          * of password verification errors on a -c operation.
          */
-        if ((mask & NEWFILE) && exists(pwfilename, pool) && (! readable(pwfilename))) {
+        if ((mask & NEWFILE) && exists(pwfilename, pool) && 
+            (! readable(pool, pwfilename))) {
             apr_file_printf(errfile, "%s: cannot open file %s for read access\n"
                     "%s: existing auth data would be lost on "
                     "password mismatch",
                     argv[0], pwfilename, argv[0]);
-            perror("fopen");
+            perror("apr_file_open");
             exit(ERR_FILEPERM);
         }
         /*
          * Now verify that the file is writable!
          */
-        if (! writable(pwfilename)) {
+        if (! writable(pool, pwfilename)) {
             apr_file_printf(errfile, "%s: cannot open file %s for write access\n",
                     argv[0], pwfilename);
-            perror("fopen");
+            perror("apr_file_open");
             exit(ERR_FILEPERM);
         }
     }
@@ -555,9 +556,7 @@ int main(int argc, const char * const argv[])
      * We can access the files the right way, and we have a record
      * to add or update.  Let's do it..
      */
-    if (apr_file_mktemp(&ftemp, tn, 
-                        APR_CREATE | APR_READ | APR_WRITE | APR_EXCL,
-                        pool) != APR_SUCCESS) {
+    if (apr_file_mktemp(&ftemp, tn, 0, pool) != APR_SUCCESS) {
         apr_file_printf(errfile, "%s: unable to create temporary file '%s'\n", 
                         argv[0], tn);
         exit(ERR_FILEPERM);

@@ -1,5 +1,8 @@
 Changes with Apache 2.0.38
 
+  *) Rewrite htpasswd to use APR.  The removes the annoying warning about
+     tmpnam being unsafe.   [Ryan Bloom]
+
   *) We must set the MIME-type for .shtml files to text/html if we want them
      to be parsed for SSI tags.  Add the config for that to the default 
      config file so that it is easier to enable .shtml parsing.
