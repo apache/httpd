@@ -230,13 +230,18 @@ static char **create_argv(apr_pool_t *p, char *path, char *user, char *group,
 static void cgid_maint(int reason, void *data, apr_wait_t status)
 {
     pid_t *sd = data;
+
     switch (reason) {
         case APR_OC_REASON_DEATH:
+            /* don't do anything; server is stopping or restarting */
+            break;
         case APR_OC_REASON_LOST:
-            /* stop gap to make sure everything else works.  In the end,
-             * we'll just restart the cgid server. */
-            apr_pool_destroy(pcgi);
-            kill(getpid(), SIGWINCH); /* yes, to ourself */
+            /* it would be better to restart just the cgid child
+             * process but for now we'll gracefully restart the entire 
+             * server by sending SIGWINCH to ourself, the httpd parent
+             * process
+             */
+            kill(getpid(), SIGWINCH);
             break;
         case APR_OC_REASON_RESTART:
             apr_proc_other_child_unregister(data);
