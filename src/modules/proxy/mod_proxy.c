@@ -290,9 +290,26 @@ static int proxy_handler(request_rec *r)
     int i, rc;
     struct cache_req *cr;
     int direct_connect = 0;
+    const char *maxfwd_str;
 
     if (!r->proxyreq || strncmp(r->filename, "proxy:", 6) != 0)
 	return DECLINED;
+
+    if (r->method_number == M_TRACE &&
+	(maxfwd_str = ap_table_get(r->headers_in, "Max-Forwards")) != NULL) {
+	int maxfwd = strtol(maxfwd_str, NULL, 10);
+	if (maxfwd < 1) {
+	    int access_status;
+	    r->proxyreq = 0;
+	    if ((access_status = ap_send_http_trace(r)))
+		ap_die(access_status, r);
+	    else
+		ap_finalize_request_protocol(r);
+	    return OK;
+	}
+	ap_table_setn(r->headers_in, "Max-Forwards", 
+		      ap_psprintf(r->pool, "%d", (maxfwd > 0) ? maxfwd-1 : 0));
+    }
 
     if ((rc = ap_setup_client_block(r, REQUEST_CHUNKED_ERROR)))
 	return rc;
