@@ -3329,19 +3329,6 @@ static conn_rec *core_create_conn(apr_pool_t *ptrans, apr_socket_t *csd,
     return net->c;
 }
 
-static int core_add_listeners(apr_pollfd_t *pollset, 
-                              apr_socket_t **listensocks, int num_listensocks)
-{
-    int i;
-    ap_listen_rec *lr;
-
-    for (lr = ap_listeners, i = 0; i < num_listensocks; lr = lr->next, i++) {
-        listensocks[i] = lr->sd;
-        apr_poll_socket_add(pollset, listensocks[i], APR_POLLIN);
-    }
-    return OK;
-}
-
 static void register_hooks(apr_pool_t *p)
 {
     ap_hook_post_config(core_post_config,NULL,NULL,APR_HOOK_REALLY_FIRST);
@@ -3355,7 +3342,6 @@ static void register_hooks(apr_pool_t *p)
     ap_hook_access_checker(do_nothing,NULL,NULL,APR_HOOK_REALLY_LAST);
     ap_hook_create_connection(core_create_conn, NULL, NULL, APR_HOOK_REALLY_LAST);
     ap_hook_create_request(core_create_req, NULL, NULL, APR_HOOK_MIDDLE);
-    ap_hook_add_listeners(core_add_listeners, NULL, NULL, APR_HOOK_MIDDLE);
     APR_OPTIONAL_HOOK(proxy, create_req, core_create_proxy_req, NULL, NULL, 
                       APR_HOOK_MIDDLE);
     ap_hook_pre_mpm(ap_create_scoreboard, NULL, NULL, APR_HOOK_MIDDLE);
