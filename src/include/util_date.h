@@ -62,6 +62,6 @@
 
 #define BAD_DATE (time_t)0
 
-int checkmask (const char *data, const char *mask);
+API_EXPORT(int) checkmask (const char *data, const char *mask);
 time_t tm2sec (const struct tm *t);
-time_t parseHTTPdate (const char *date);
+API_EXPORT(time_t) parseHTTPdate (const char *date);

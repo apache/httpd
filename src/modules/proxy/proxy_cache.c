@@ -52,6 +52,7 @@
 
 /* Cache and garbage collection routines for Apache proxy */
 
+#include "conf.h"
 #include "md5.h"
 
 #include "mod_proxy.h"

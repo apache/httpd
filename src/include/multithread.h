@@ -24,11 +24,11 @@ void exit_thread(int status);
 void free_thread(thread *thread_id);
 
 
-mutex *create_mutex(char *name);
-mutex *open_mutex(char *name);
-int acquire_mutex(mutex *mutex_id);
-int release_mutex(mutex *mutex_id);
-void destroy_mutex(mutex *mutex_id);
+API_EXPORT(mutex *) create_mutex(char *name);
+API_EXPORT(mutex *) open_mutex(char *name);
+API_EXPORT(int) acquire_mutex(mutex *mutex_id);
+API_EXPORT(int) release_mutex(mutex *mutex_id);
+API_EXPORT(void) destroy_mutex(mutex *mutex_id);
 
 
 semaphore *create_semaphore(int initial);

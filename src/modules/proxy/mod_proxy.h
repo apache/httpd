@@ -106,7 +106,7 @@ Chuck Murcko <chuck@topsail.org> 15 April 1997
 DEF_Explain
 
 
-extern module proxy_module;
+extern module MODULE_VAR_EXPORT proxy_module;
 
 
 /* for proxy_canonenc() */

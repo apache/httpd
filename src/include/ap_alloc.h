@@ -203,8 +203,8 @@ API_EXPORT(void) run_cleanup (pool *p, void *data, void (*cleanup)(void *));
  * up with timeout handling in general...
  */
 
-extern void block_alarms();
-extern void unblock_alarms();
+API_EXPORT(void) block_alarms();
+API_EXPORT(void) unblock_alarms();
 
 /* Common cases which want utility support..
  * the note_cleanups_for_foo routines are for 

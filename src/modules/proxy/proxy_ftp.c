@@ -54,8 +54,7 @@
 
 #include "mod_proxy.h"
 #include "http_main.h"
-
-extern int find_ct(request_rec *r);
+#include "mod_mime.h"
 
 /*
  * Decodes a '%' escaped string, and returns the number of characters
@@ -900,7 +899,7 @@ proxy_ftp_handler(request_rec *r, struct cache_req *c, char *url)
 	proxy_add_header(resp_hdrs, "Content-Type", "text/html", HDR_REP);
     else
     {
-        find_ct(r);
+        mime_find_ct(r);
         if(r->content_type != NULL)
         {
             proxy_add_header(resp_hdrs, "Content-Type", r->content_type,

@@ -61,6 +61,7 @@
 
 #include "httpd.h"
 #include "http_config.h"
+#include "mod_mime.h"
 
 typedef struct {
     table *forced_types;	/* Additional AddTyped stuff */
@@ -217,6 +218,7 @@ void init_mime (server_rec *s, pool *p)
     fclose(f);
 }
 
+/* note that the proxy module uses this */
 int find_ct(request_rec *r)
 {
     const char *fn = strrchr(r->filename, '/');
@@ -303,6 +305,8 @@ int find_ct(request_rec *r)
     return OK;
 }
 
+API_EXPORT(int) mime_find_ct(request_rec *r)
+    { return find_ct(r); }
 
 module MODULE_VAR_EXPORT mime_module = {
    STANDARD_MODULE_STUFF,

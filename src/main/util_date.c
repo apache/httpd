@@ -61,6 +61,7 @@
  * 
  */
 
+#include "conf.h"
 #include "util_date.h"
 #include <ctype.h>
 #include <string.h>
@@ -76,7 +77,7 @@
  *   * - swallow remaining characters 
  *  <x> - exact match for any other character
  */
-int checkmask(const char *data, const char *mask)
+API_EXPORT(int) checkmask(const char *data, const char *mask)
 {
     int i;
     char d;
@@ -193,7 +194,7 @@ time_t tm2sec(const struct tm *t)
  * but many changes since then.
  *
  */
-time_t parseHTTPdate(const char *date)
+API_EXPORT(time_t) parseHTTPdate(const char *date)
 {
     struct tm ds;
     int mint, mon;

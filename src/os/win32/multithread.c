@@ -72,20 +72,18 @@ free_thread(thread *thread_id)
 
 
 
-mutex *
-create_mutex(char *name)
+API_EXPORT(mutex *) create_mutex(char *name)
 {
     return(CreateMutex(NULL, FALSE, name));
 }
 
-mutex *
-open_mutex(char *name)
+API_EXPORT(mutex *) open_mutex(char *name)
 {
     return(OpenMutex(MUTEX_ALL_ACCESS, FALSE, name));
 }
 
 
-int acquire_mutex(mutex *mutex_id)
+API_EXPORT(int) acquire_mutex(mutex *mutex_id)
 {
     int rv;
     
@@ -94,12 +92,12 @@ int acquire_mutex(mutex *mutex_id)
     return(map_rv(rv));
 }
 
-int release_mutex(mutex *mutex_id)
+API_EXPORT(int) release_mutex(mutex *mutex_id)
 {
     return(ReleaseMutex(mutex_id));
 }
 
-void destroy_mutex(mutex *mutex_id)
+API_EXPORT(void) destroy_mutex(mutex *mutex_id)
 {
     CloseHandle(mutex_id);
 }

@@ -463,11 +463,11 @@ void timeout(int sig)			/* Also called on SIGPIPE */
  * which is itself being cleared); we have to support that here.
  */
 
-void block_alarms() {
+API_EXPORT(void) block_alarms() {
     ++alarms_blocked;
 }
 
-void unblock_alarms() {
+API_EXPORT(void) unblock_alarms() {
     --alarms_blocked;
     if (alarms_blocked == 0 && alarm_pending) {
 	alarm_pending = 0;

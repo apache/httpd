@@ -93,7 +93,7 @@ typedef struct {
   unsigned char buffer[64];                         /* input buffer */
 } MD5_CTX;
 
-extern void MD5Init(MD5_CTX *context);
-extern void MD5Update(MD5_CTX *context, const unsigned char *input,
+API_EXPORT(void) MD5Init(MD5_CTX *context);
+API_EXPORT(void) MD5Update(MD5_CTX *context, const unsigned char *input,
 		      unsigned int inputLen);
-extern void MD5Final(unsigned char digest[16], MD5_CTX *context);
+API_EXPORT(void) MD5Final(unsigned char digest[16], MD5_CTX *context);

@@ -721,7 +721,7 @@ static command_rec proxy_cmds[] = {
 { NULL }
 };
 
-module proxy_module = {
+module MODULE_VAR_EXPORT proxy_module = {
    STANDARD_MODULE_STUFF,
    proxy_init,                  /* initializer */
    NULL,                        /* create per-directory config structure */

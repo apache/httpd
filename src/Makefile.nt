@@ -7,18 +7,18 @@
 # Ben, 5 July 97
 
 _debug:
-    cd modules\proxy & set CFG=proxy - Win32 Debug& nmake -f proxy.mak
-    cd regex & set CFG=regex - Win32 Debug& nmake -f regex.mak
-	cd . & set CFG=ApacheCore - Win32 Debug& nmake -f ApacheCore.mak
-	cd . & set CFG=Apache - Win32 Debug& nmake -f Apache.mak
-	cd nt & set CFG=ApacheModuleStatus - Win32 Debug& nmake -f ApacheModuleStatus.mak
-#	cd nt & set CFG=ApacheModuleInfo - Win32 Debug& nmake -f ApacheModuleInfo.mak
-	cd nt & set CFG=ApacheModuleAuthAnon - Win32 Debug& nmake -f ApacheModuleAuthAnon.mak
-	cd nt & set CFG=ApacheModuleDigest - Win32 Debug& nmake -f ApacheModuleDigest.mak
-	cd nt & set CFG=ApacheModuleCERNMeta - Win32 Debug& nmake -f ApacheModuleCERNMeta.mak
-	cd nt & set CFG=ApacheModuleExpires - Win32 Debug& nmake -f ApacheModuleExpires.mak
-	cd nt & set CFG=ApacheModuleHeaders - Win32 Debug& nmake -f ApacheModuleHeaders.mak
-	cd nt & set CFG=ApacheModuleUserTrack - Win32 Debug& nmake -f ApacheModuleUserTrack.mak
+    cd regex & set CFG=regex - Win32 Debug& nmake /nologo -f regex.mak
+	cd . & set CFG=ApacheCore - Win32 Debug& nmake /nologo -f ApacheCore.mak
+	cd . & set CFG=Apache - Win32 Debug& nmake /nologo -f Apache.mak
+	cd nt & set CFG=ApacheModuleStatus - Win32 Debug& nmake /nologo -f ApacheModuleStatus.mak
+#	cd nt & set CFG=ApacheModuleInfo - Win32 Debug& nmake /nologo -f ApacheModuleInfo.mak
+	cd nt & set CFG=ApacheModuleAuthAnon - Win32 Debug& nmake /nologo -f ApacheModuleAuthAnon.mak
+	cd nt & set CFG=ApacheModuleDigest - Win32 Debug& nmake /nologo -f ApacheModuleDigest.mak
+	cd nt & set CFG=ApacheModuleCERNMeta - Win32 Debug& nmake /nologo -f ApacheModuleCERNMeta.mak
+	cd nt & set CFG=ApacheModuleExpires - Win32 Debug& nmake /nologo -f ApacheModuleExpires.mak
+	cd nt & set CFG=ApacheModuleHeaders - Win32 Debug& nmake /nologo -f ApacheModuleHeaders.mak
+	cd nt & set CFG=ApacheModuleUserTrack - Win32 Debug& nmake /nologo -f ApacheModuleUserTrack.mak
+	cd modules\proxy & set CFG=ApacheModuleProxy - Win32 Debug& nmake /nologo -f ApacheModuleProxy.mak
 
 
 installd: _debug
@@ -33,4 +33,5 @@ installd: _debug
 	copy nt\ApacheModuleCERNMetaD\ApacheModuleCERNMeta.dll \Apache\modules
 	copy nt\ApacheModuleExpiresD\ApacheModuleExpires.dll \Apache\modules
 	copy nt\ApacheModuleHeadersD\ApacheModuleHeaders.dll \Apache\modules
-	copy nt\ApacheModuleUserTrackD\ApacheModuleUserTrack.dll \Apache\moduleS
+	copy nt\ApacheModuleUserTrackD\ApacheModuleUserTrack.dll \Apache\modules
+	copy modules\proxy\Debug\ApacheModuleProxy.dll \Apache\modules

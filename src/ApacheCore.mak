@@ -997,18 +997,29 @@ NODEP_CPP_RFC14=\
 # Begin Source File
 
 SOURCE=.\md5c.c
-DEP_CPP_MD5C_=\
-	".\md5.h"\
-	
 
 !IF  "$(CFG)" == "ApacheCore - Win32 Release"
 
+DEP_CPP_MD5C_=\
+	".\conf.h"\
+	".\md5.h"\
+	".\regex\regex.h"\
+	{$(INCLUDE)}"\sys\STAT.H"\
+	{$(INCLUDE)}"\sys\TYPES.H"\
+	
 
 "$(INTDIR)\md5c.obj" : $(SOURCE) $(DEP_CPP_MD5C_) "$(INTDIR)"
 
 
 !ELSEIF  "$(CFG)" == "ApacheCore - Win32 Debug"
 
+DEP_CPP_MD5C_=\
+	".\conf.h"\
+	".\md5.h"\
+	".\regex\regex.h"\
+	{$(INCLUDE)}"\sys\STAT.H"\
+	{$(INCLUDE)}"\sys\TYPES.H"\
+	
 
 "$(INTDIR)\md5c.obj" : $(SOURCE) $(DEP_CPP_MD5C_) "$(INTDIR)"
 
@@ -1060,7 +1071,10 @@ NODEP_CPP_UTIL_M=\
 
 SOURCE=.\util_date.c
 DEP_CPP_UTIL_D=\
+	".\conf.h"\
+	".\regex\regex.h"\
 	".\util_date.h"\
+	{$(INCLUDE)}"\sys\STAT.H"\
 	{$(INCLUDE)}"\sys\TYPES.H"\
 	
 
@@ -1403,6 +1417,7 @@ DEP_CPP_MOD_M=\
 	".\conf.h"\
 	".\http_config.h"\
 	".\httpd.h"\
+	".\mod_mime.h"\
 	".\nt\readdir.h"\
 	".\regex\regex.h"\
 	{$(INCLUDE)}"\sys\STAT.H"\
