@@ -100,7 +100,10 @@ Changes with Apache 1.2b7
 
   *) Tweak byteserving code (e.g. serving PDF files) to work around
      bugs in Netscape Navigator and Microsoft Internet Explorer.
+     Emit Content-Length header when sending multipart/byteranges.
      [Alexei Kosut]
+
+  *) Port to HI-UX/WE2. [Nick Maclaren]
 
   *) Port to HP MPE operating system for HP 3000 machines
      [Mark Bixby <markb@cccd.edu>]
