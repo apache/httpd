@@ -425,6 +425,7 @@ apr_get_polldata
 apr_get_port
 apr_get_remote_name
 apr_get_revents
+apr_get_sockaddr
 apr_get_socket_inaddr
 apr_get_socketdata
 apr_get_thread_private
