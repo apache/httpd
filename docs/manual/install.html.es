@@ -12,17 +12,18 @@
 <link href="./images/favicon.ico" rel="shortcut icon" /></head>
 <body id="manual-page"><div id="page-header">
 <p class="menu"><a href="./mod/">Módulos</a> | <a href="./mod/directives.html">Directivas</a> | <a href="./faq/">Preguntas Frecuentes</a> | <a href="./glossary.html">Glosario</a> | <a href="./sitemap.html">Mapa de este sitio web</a></p>
-<p class="apache">Versión 2.1 del Servidor HTTP Apache</p>
+<p class="apache">Versión 2.0 del Servidor HTTP Apache</p>
 <img alt="" src="./images/feather.gif" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="./images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">Servidor HTTP</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentación</a> &gt; <a href="./">Versión 2.1</a></div><div id="page-content"><div id="preamble"><h1>Compilación e Instalación</h1>
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">Servidor HTTP</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentación</a> &gt; <a href="./">Versión 2.0</a></div><div id="page-content"><div id="preamble"><h1>Compilación e Instalación</h1>
 <div class="toplang">
 <p><span>Idiomas disponibles: </span><a href="./de/install.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
 <a href="./en/install.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="./es/install.html" title="Español">&nbsp;es&nbsp;</a> |
 <a href="./ja/install.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
-<a href="./ko/install.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
+<a href="./ko/install.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
+<a href="./ru/install.html" hreflang="ru" rel="alternate" title="Russian">&nbsp;ru&nbsp;</a></p>
 </div>
 
 
@@ -78,8 +79,8 @@ estructura de directorios</a></li><li><a href="invoking.html">Iniciar Apache</a>
       <tr>
         <td><a href="#extract">Descomprimir</a></td>
 
-        <td><code>$ gzip -d httpd-2_1_<em>NN</em>.tar.gz<br />
-         $ tar xvf httpd-2_1_<em>NN</em>.tar</code> </td>
+        <td><code>$ gzip -d httpd-2_0_<em>NN</em>.tar.gz<br />
+         $ tar xvf httpd-2_0_<em>NN</em>.tar</code> </td>
       </tr>
 
       <tr>
@@ -208,8 +209,8 @@ estructura de directorios</a></li><li><a href="invoking.html">Iniciar Apache</a>
     descargar es muy fácil. Ejecute los siguientes comandos:</p>
 
 <div class="example"><p><code>
-      $ gzip -d httpd-2_1_<em>NN</em>.tar.gz<br />
-       $ tar xvf httpd-2_1_<em>NN</em>.tar
+      $ gzip -d httpd-2_0_<em>NN</em>.tar.gz<br />
+       $ tar xvf httpd-2_0_<em>NN</em>.tar
 </code></p></div>
 
     <p>Estos comandos crearán un nuevo directorio dentro del
@@ -272,7 +273,7 @@ directorios</a></h2>
     su compilador, librerias o ficheros de cabecera.  Esto se puede
     hacer, tanto pasando variables de entorno, como pasandole opciones
     a <code>configure</code> a través de la línea de
-    comandos.  Para más información, consulte el <a href="programs/configure.html">Manual del script
+    comandos.  Para más información, consulte la <a href="programs/configure.html">página de ayuda del script
     configure</a>.</p>
 
     <p>Para que se haga una idea sobre las posibilidades que tiene,
@@ -336,7 +337,7 @@ directorios</a></h2>
 
 <div class="example"><p><code>$ vi <em>PREFIX</em>/conf/httpd.conf</code></p></div>
 
-    <p>échele un vistazo al Manual de Apache que está en <a href="./">docs/manual/</a> o consulte en <a href="http://httpd.apache.org/docs-2.1/">http://httpd.apache.org/docs-2.1/</a> la versión más
+    <p>échele un vistazo al Manual de Apache que está en <a href="./">docs/manual/</a> o consulte en <a href="http://httpd.apache.org/docs-2.0/">http://httpd.apache.org/docs-2.0/</a> la versión más
     reciente de este manual y la Guia de Referencia de todas las <a href="mod/directives.html">directivas de configuración</a>
     disponibles.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
@@ -425,7 +426,8 @@ prrevia</a></h2>
 <a href="./en/install.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="./es/install.html" title="Español">&nbsp;es&nbsp;</a> |
 <a href="./ja/install.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
-<a href="./ko/install.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
+<a href="./ko/install.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
+<a href="./ru/install.html" hreflang="ru" rel="alternate" title="Russian">&nbsp;ru&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 1999-2004 The Apache Software Foundation.<br />Licencia bajo los términos de la <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="./mod/">Módulos</a> | <a href="./mod/directives.html">Directivas</a> | <a href="./faq/">Preguntas Frecuentes</a> | <a href="./glossary.html">Glosario</a> | <a href="./sitemap.html">Mapa de este sitio web</a></p></div>

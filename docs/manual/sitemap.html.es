@@ -13,11 +13,11 @@
 <body id="manual-page">
 <div id="page-header">
 <p class="menu"><a href="./mod/">Módulos</a> | <a href="./mod/directives.html">Directivas</a> | <a href="./faq/">Preguntas Frecuentes</a> | <a href="./glossary.html">Glosario</a> | <a href="./sitemap.html">Mapa de este sitio web</a></p>
-<p class="apache">Versión 2.1 del Servidor HTTP Apache</p>
+<p class="apache">Versión 2.0 del Servidor HTTP Apache</p>
 <img alt="" src="./images/feather.gif" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="./images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">Servidor HTTP</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentación</a> &gt; <a href="./">Versión 2.1</a></div>
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">Servidor HTTP</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentación</a> &gt; <a href="./">Versión 2.0</a></div>
 <div id="page-content"><div id="preamble"><h1>Mapa de este sitio web</h1>
 <div class="toplang">
 <p><span>Idiomas disponibles: </span><a href="./de/sitemap.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
@@ -28,7 +28,7 @@
 </div>
 
 <p>Esta página contiene la lista con los documentos actualmente
-disponibles de la <a href="./">Versión 2.1 de la Documentación del
+disponibles de la <a href="./">Versión 2.0 de la Documentación del
 Servidor HTTP Apache</a>.</p>
 </div>
 <div id="quickview"><ul id="toc">
@@ -107,6 +107,7 @@ Servidor HTTP Apache</a>.</p>
 <li><a href="howto/cgi.html">Contenido Dinámico con CGIs</a></li>
 <li><a href="howto/ssi.html">Introducción a Server Side Includes</a></li>
 <li><a href="howto/htaccess.html">Archivos .htaccess</a></li>
+<li><a href="misc/tutorials.html">Tutoriales de Apache</a></li>
 <li><a href="howto/public_html.html">Directorios web para cada usuario</a></li>
 </ul>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
@@ -141,6 +142,10 @@ Apache</a></li>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section"><h2><a name="misc" id="misc">Documentación adicional sobre Apache</a></h2>
 <ul><li class="separate"><a href="misc/">Visión General</a></li>
+<li><a href="misc/custom_errordocs.html">Mensajes de error particulares para cada idioma</a></li>
+<li><a href="misc/fin_wait_2.html">Conexiones en FIN_WAIT_2 y Apache</a></li>
+<li><a href="misc/known_client_problems.html">Problemas conocidos de clientes</a></li>
+<li><a href="misc/descriptors.html">Descriptores y Apache</a></li>
 <li><a href="cgi_path.html">Cambios en PATH_INFO en el entorno CGI</a></li>
 <li><a href="misc/relevant_standards.html">Estándares Importantes</a></li>
 </ul>
@@ -161,22 +166,15 @@ usados para describir las directivas de Apache</a></li>
 <li><a href="mod/threadpool.html">MPM de Apache threadpool</a></li>
 <li><a href="mod/mpm_winnt.html">MPM de Apache winnt</a></li>
 <li><a href="mod/worker.html">MPM de Apache worker</a></li>
-</ul><ul><li><a href="mod/mod_actions.html">Módulo Apache mod_actions</a></li>
+</ul><ul><li><a href="mod/mod_access.html">Módulo Apache mod_access</a></li>
+<li><a href="mod/mod_actions.html">Módulo Apache mod_actions</a></li>
 <li><a href="mod/mod_alias.html">Módulo Apache mod_alias</a></li>
 <li><a href="mod/mod_asis.html">Módulo Apache mod_asis</a></li>
-<li><a href="mod/mod_auth_basic.html">Módulo Apache mod_auth_basic</a></li>
+<li><a href="mod/mod_auth.html">Módulo Apache mod_auth</a></li>
+<li><a href="mod/mod_auth_anon.html">Módulo Apache mod_auth_anon</a></li>
+<li><a href="mod/mod_auth_dbm.html">Módulo Apache mod_auth_dbm</a></li>
 <li><a href="mod/mod_auth_digest.html">Módulo Apache mod_auth_digest</a></li>
 <li><a href="mod/mod_auth_ldap.html">Módulo Apache mod_auth_ldap</a></li>
-<li><a href="mod/mod_authn_anon.html">Módulo Apache mod_authn_anon</a></li>
-<li><a href="mod/mod_authn_dbm.html">Módulo Apache mod_authn_dbm</a></li>
-<li><a href="mod/mod_authn_default.html">Módulo Apache mod_authn_default</a></li>
-<li><a href="mod/mod_authn_file.html">Módulo Apache mod_authn_file</a></li>
-<li><a href="mod/mod_authz_dbm.html">Módulo Apache mod_authz_dbm</a></li>
-<li><a href="mod/mod_authz_default.html">Módulo Apache mod_authz_default</a></li>
-<li><a href="mod/mod_authz_groupfile.html">Módulo Apache mod_authz_groupfile</a></li>
-<li><a href="mod/mod_authz_host.html">Módulo Apache mod_authz_host</a></li>
-<li><a href="mod/mod_authz_owner.html">Módulo Apache mod_authz_owner</a></li>
-<li><a href="mod/mod_authz_user.html">Módulo Apache mod_authz_user</a></li>
 <li><a href="mod/mod_autoindex.html">Módulo Apache mod_autoindex</a></li>
 <li><a href="mod/mod_cache.html">Módulo Apache mod_cache</a></li>
 <li><a href="mod/mod_cern_meta.html">Módulo Apache mod_cern_meta</a></li>
@@ -195,7 +193,6 @@ usados para describir las directivas de Apache</a></li>
 <li><a href="mod/mod_ext_filter.html">Módulo Apache mod_ext_filter</a></li>
 <li><a href="mod/mod_file_cache.html">Módulo Apache mod_file_cache</a></li>
 <li><a href="mod/mod_headers.html">Módulo Apache mod_headers</a></li>
-<li><a href="mod/mod_ident.html">Módulo Apache mod_ident</a></li>
 <li><a href="mod/mod_imap.html">Módulo Apache mod_imap</a></li>
 <li><a href="mod/mod_include.html">Módulo Apache mod_include</a></li>
 <li><a href="mod/mod_info.html">Módulo Apache mod_info</a></li>
@@ -223,7 +220,6 @@ usados para describir las directivas de Apache</a></li>
 <li><a href="mod/mod_unique_id.html">Módulo Apache mod_unique_id</a></li>
 <li><a href="mod/mod_userdir.html">Módulo Apache mod_userdir</a></li>
 <li><a href="mod/mod_usertrack.html">Módulo Apache mod_usertrack</a></li>
-<li><a href="mod/mod_version.html">Módulo Apache mod_version</a></li>
 <li><a href="mod/mod_vhost_alias.html">Módulo Apache mod_vhost_alias</a></li>
 </ul>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
