@@ -547,7 +547,7 @@ static void do_rewritelog(request_rec *r, int level, char *perdir,
                            redir ? "/redir#" : "",
                            redir ? apr_itoa(r->pool, redir) : "",
                            level,
-                           perdir ? " [perdir " : "",
+                           perdir ? "[perdir " : "",
                            perdir ? perdir : "",
                            perdir ? "] ": "",
                            text);
