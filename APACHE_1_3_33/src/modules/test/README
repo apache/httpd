@@ -1,0 +1,3 @@
+This directory is intended to house modules which are used for testing
+server functionality.  They're unsupported, and not guaranteed to remain
+consistant between releases.  You're on your own completely with these.
