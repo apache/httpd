@@ -1,5 +1,8 @@
 Changes with Apache 1.2
 
+  *) The OS/2 handling of process group was broken by a porting patch for
+     MPE, so restored prior code for OS/2.  [Roy Fielding and Garey Smiley]
+
   *) Inherit virtual server port from main server if none (or "*") is
      given for VirtualHost.  [Dean Gaudet] PR#576
 

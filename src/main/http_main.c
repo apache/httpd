@@ -1373,16 +1373,17 @@ void detach()
         fprintf(stderr,"httpd: setsid failed\n");
         exit(1);
     }
-#else
-#if defined(NEXT)
+#elif defined(NEXT)
     if(setpgrp(0,getpid()) == -1 || (pgrp = getpgrp(0)) == -1) {
         perror("setpgrp");
         fprintf(stderr,"httpd: setpgrp or getpgrp failed\n");
         exit(1);
     }
-#else
-#if defined(__EMX__) || defined(MPE)
-    /* OS/2 and MPE don't support process group IDs */
+#elif defined(__EMX__)
+    /* OS/2 doesn't support process group IDs */
+    pgrp=getpid();
+#elif defined(MPE)
+    /* MPE uses negative pid for process group */
     pgrp=-getpid();
 #else
     if((pgrp=setpgrp(getpid(),0)) == -1) {
@@ -1390,8 +1391,6 @@ void detach()
         fprintf(stderr,"httpd: setpgrp failed\n");
         exit(1);
     }
-#endif    
-#endif
 #endif
 }
 
