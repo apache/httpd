@@ -169,6 +169,11 @@ Changes with Apache 2.0.48
 
 Changes with Apache 2.0.47
 
+  *) SECURITY [CAN-2003-0253]: Fixed a bug in prefork MPM causing
+     temporary denial of service when accept() on a rarely accessed port
+     returns certain errors.  Reported by Saheed Akhtar
+     <S.Akhtar@talis.com>.  [Jeff Trawick]
+
   *) SECURITY [CAN-2003-0254]: Fixed a bug in ftp proxy causing denial
      of service when target host is IPv6 but proxy server can't create
      IPv6 socket.  Fixed by the reporter.  [Yoshioka Tsuneo
