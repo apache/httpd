@@ -655,8 +655,7 @@ static void parse_string(request_rec *r, const char *in, char *out,
 /* pjr hack     char var[MAX_STRING_LEN]; */
 		const char *start_of_var_name;
 		char *end_of_var_name;	/* end of var name + 1 */
-		const char *expansion;
-		const char *val;
+		const char *expansion, *temp_end, *val;
                 char        tmp_store;
 		size_t l;
 
@@ -673,7 +672,8 @@ static void parse_string(request_rec *r, const char *in, char *out,
                         *next = '\0';
                         return;
                     }
-		    (const char *)end_of_var_name = in;
+		    temp_end = in;
+                    end_of_var_name = (char *)temp_end;
 		    ++in;
 		}
 		else {
@@ -681,7 +681,8 @@ static void parse_string(request_rec *r, const char *in, char *out,
 		    while (apr_isalnum(*in) || *in == '_') {
 			++in;
 		    }
-		    (const char *)end_of_var_name = in;
+                    temp_end = in;
+		    end_of_var_name = (char *)temp_end;
 		}
 		/* what a pain, too bad there's no table_getn where you can
 		 * pass a non-nul terminated string */
