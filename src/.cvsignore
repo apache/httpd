@@ -1,8 +1,11 @@
 Makefile
 *.mdp
+*.plg
+*.vcproj
 Apache.ncb
 Apache.opt
-InstallBin.plg
+Apache.sln
+Apache.suo
 Configuration
 Configuration.default
 Configuration.lint
