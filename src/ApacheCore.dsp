@@ -264,15 +264,15 @@ SOURCE=.\os\win32\util_win32.c
 # PROP Default_Filter "h;hpp;hxx;hm;inl;fi;fd"
 # Begin Source File
 
-SOURCE=.\include\ap.h
-# End Source File
-# Begin Source File
-
 SOURCE=.\include\ap_alloc.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\include\ap_md5.h
+SOURCE=.\include\ap_config.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\include\ap_mmn.h
 # End Source File
 # Begin Source File
 
@@ -285,10 +285,6 @@ SOURCE=.\include\conf.h
 # Begin Source File
 
 SOURCE=.\include\explain.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\include\fnmatch.h
 # End Source File
 # Begin Source File
 
@@ -382,10 +378,6 @@ SOURCE=.\include\util_script.h
 
 SOURCE=.\include\util_uri.h
 # End Source File
-# End Group
-# Begin Group "Resource Files"
-
-# PROP Default_Filter "ico;cur;bmp;dlg;rc2;rct;bin;cnt;rtf;gif;jpg;jpeg;jpe"
 # End Group
 # Begin Group "Generated Files"
 

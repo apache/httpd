@@ -94,13 +94,9 @@ PostBuild_Cmds=.\gen_uri_delims > uri_delims.h
 
 # Name "gen_uri_delims - Win32 Release"
 # Name "gen_uri_delims - Win32 Debug"
-# Begin Group "Source Files"
-
-# PROP Default_Filter ""
 # Begin Source File
 
 SOURCE=.\gen_uri_delims.c
 # End Source File
-# End Group
 # End Target
 # End Project

@@ -94,13 +94,9 @@ PostBuild_Cmds=.\gen_test_char > test_char.h
 
 # Name "gen_test_char - Win32 Release"
 # Name "gen_test_char - Win32 Debug"
-# Begin Group "Source Files"
-
-# PROP Default_Filter ""
 # Begin Source File
 
 SOURCE=.\gen_test_char.c
 # End Source File
-# End Group
 # End Target
 # End Project

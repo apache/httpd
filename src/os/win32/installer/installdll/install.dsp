@@ -87,9 +87,6 @@ LINK32=link.exe
 
 # Name "install - Win32 Release"
 # Name "install - Win32 Debug"
-# Begin Group "Source Files"
-
-# PROP Default_Filter ""
 # Begin Source File
 
 SOURCE=..\..\..\..\ap\ap_snprintf.c
@@ -102,6 +99,5 @@ SOURCE=.\install.c
 
 SOURCE=.\install.def
 # End Source File
-# End Group
 # End Target
 # End Project

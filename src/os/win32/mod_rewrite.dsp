@@ -87,9 +87,6 @@ LINK32=link.exe
 
 # Name "ApacheModuleRewrite - Win32 Release"
 # Name "ApacheModuleRewrite - Win32 Debug"
-# Begin Group "Source Files"
-
-# PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;hpj;bat;for;f90"
 # Begin Source File
 
 SOURCE=..\..\modules\standard\mod_rewrite.c
@@ -98,18 +95,5 @@ SOURCE=..\..\modules\standard\mod_rewrite.c
 
 SOURCE=.\passwd.c
 # End Source File
-# End Group
-# Begin Group "Header Files"
-
-# PROP Default_Filter "h;hpp;hxx;hm;inl;fi;fd"
-# Begin Source File
-
-SOURCE=.\readdir.h
-# End Source File
-# End Group
-# Begin Group "Resource Files"
-
-# PROP Default_Filter "ico;cur;bmp;dlg;rc2;rct;bin;cnt;rtf;gif;jpg;jpeg;jpe"
-# End Group
 # End Target
 # End Project

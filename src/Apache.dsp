@@ -82,18 +82,6 @@ LINK32=link.exe
 
 # Name "Apache - Win32 Release"
 # Name "Apache - Win32 Debug"
-# Begin Group "Source Files"
-
-# PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;hpj;bat;for;f90"
-# Begin Source File
-
-SOURCE=.\os\win32\main_win32.c
-# End Source File
-# End Group
-# Begin Group "Header Files"
-
-# PROP Default_Filter "h;hpp;hxx;hm;inl;fi;fd"
-# End Group
 # Begin Group "Resource Files"
 
 # PROP Default_Filter "ico;cur;bmp;dlg;rc2;rct;bin;cnt;rtf;gif;jpg;jpeg;jpe"
@@ -104,14 +92,11 @@ SOURCE=.\os\win32\apache.ico
 # Begin Source File
 
 SOURCE=.\os\win32\apache.rc
-
-!IF  "$(CFG)" == "Apache - Win32 Release"
-
-!ELSEIF  "$(CFG)" == "Apache - Win32 Debug"
-
-!ENDIF 
-
 # End Source File
 # End Group
+# Begin Source File
+
+SOURCE=.\os\win32\main_win32.c
+# End Source File
 # End Target
 # End Project

@@ -127,9 +127,5 @@ SOURCE=.\proxy_util.c
 SOURCE=.\mod_proxy.h
 # End Source File
 # End Group
-# Begin Group "Resource Files"
-
-# PROP Default_Filter "ico;cur;bmp;dlg;rc2;rct;bin;cnt;rtf;gif;jpg;jpeg;jpe"
-# End Group
 # End Target
 # End Project
