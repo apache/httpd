@@ -17,9 +17,7 @@
 #else
 #include <sys/signal.h>
 #endif
-
-/* This is probably the easiest way to do it */
-#include "../main/md5c.c"
+#include "ap_md5.h"
 
 #define LF 10
 #define CR 13
