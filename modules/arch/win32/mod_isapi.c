@@ -136,7 +136,7 @@ typedef struct {
 
 typedef struct {
     const char *filename;
-    HINSTANCE handle;
+    apr_dso_handle_t *handle;
     HSE_VERSION_INFO *pVer;
     PFN_GETEXTENSIONVERSION GetExtensionVersion;
     PFN_HTTPEXTENSIONPROC   HttpExtensionProc;
@@ -225,8 +225,7 @@ static apr_status_t isapi_load(apr_pool_t *p, isapi_server_conf *sconf,
                                isapi_loaded** isa)
 {
     isapi_loaded **found = (isapi_loaded **)sconf->loaded->elts;
-    char *fspec;
-    char *ch;
+    apr_status_t rv;
     int n;
 
     for (n = 0; n < sconf->loaded->nelts; ++n) {
@@ -261,59 +260,43 @@ static apr_status_t isapi_load(apr_pool_t *p, isapi_server_conf *sconf,
         (*isa)->fakeasync = TRUE;
         (*isa)->reportversion = MAKELONG(0, 5); /* Revision 5.0 */
     }
-        
-    /* Per PR2555, the LoadLibraryEx function is very picky about slashes.
-     * Debugging on NT 4 SP 6a reveals First Chance Exception within NTDLL.
-     * LoadLibrary in the MS PSDK also reveals that it -explicitly- states
-     * that backslashes must be used.
-     *
-     * Transpose '\' for '/' in the filename.
-     */
-    ch = fspec = apr_pstrdup(p, fpath);
-    while (*ch) {
-        if (*ch == '/')
-            *ch = '\\';
-        ++ch;
-    }
-
-    (*isa)->handle = LoadLibraryEx(fspec, NULL, LOAD_WITH_ALTERED_SEARCH_PATH);
-
-    if (!(*isa)->handle)
+    
+    rv = apr_dso_load(&(*isa)->handle, fpath, p);
+    if (rv)
     {
-        apr_status_t rv = apr_get_os_error();
-        ap_log_rerror(APLOG_MARK, APLOG_ALERT, apr_get_os_error(), r,
+        ap_log_rerror(APLOG_MARK, APLOG_ALERT, rv, r,
                       "ISAPI %s failed to load", fpath);
         (*isa)->handle = NULL;
         return rv;
     }
 
-    if (!((*isa)->GetExtensionVersion = (void *)(GetProcAddress((*isa)->handle,
-                                                      "GetExtensionVersion"))))
+    rv = apr_dso_sym((void**)&(*isa)->GetExtensionVersion, (*isa)->handle,
+                     "GetExtensionVersion");
+    if (rv)
     {
-        apr_status_t rv = apr_get_os_error();
         ap_log_rerror(APLOG_MARK, APLOG_ALERT, rv, r,
                       "ISAPI %s is missing GetExtensionVersion()",
                       fpath);
-        FreeLibrary((*isa)->handle);
+        apr_dso_unload((*isa)->handle);
         (*isa)->handle = NULL;
         return rv;
     }
 
-    if (!((*isa)->HttpExtensionProc = (void *)(GetProcAddress((*isa)->handle,
-                                                       "HttpExtensionProc")))) 
+    rv = apr_dso_sym((void**)&(*isa)->HttpExtensionProc, (*isa)->handle,
+                     "HttpExtensionProc");
+    if (rv)
     {
-        apr_status_t rv = apr_get_os_error();
         ap_log_rerror(APLOG_MARK, APLOG_ALERT, rv, r,
                       "ISAPI %s is missing HttpExtensionProc()",
                       fpath);
-        FreeLibrary((*isa)->handle);
+        apr_dso_unload((*isa)->handle);
         (*isa)->handle = NULL;
         return rv;
     }
 
     /* TerminateExtension() is an optional interface */
-    (*isa)->TerminateExtension = (void *)(GetProcAddress((*isa)->handle, 
-                                                       "TerminateExtension"));
+    rv = apr_dso_sym((void**)&(*isa)->TerminateExtension, (*isa)->handle,
+                     "TerminateExtension");
     SetLastError(0);
 
     /* Run GetExtensionVersion() */
@@ -322,7 +305,7 @@ static apr_status_t isapi_load(apr_pool_t *p, isapi_server_conf *sconf,
         ap_log_rerror(APLOG_MARK, APLOG_ALERT, rv, r,
                       "ISAPI %s call GetExtensionVersion() failed", 
                       fpath);
-        FreeLibrary((*isa)->handle);
+        apr_dso_unload((*isa)->handle);
         (*isa)->handle = NULL;
         return rv;
     }
@@ -347,7 +330,7 @@ static int isapi_unload(isapi_loaded* isa, int force)
         else if (!(*isa->TerminateExtension)(HSE_TERM_ADVISORY_UNLOAD))
             return FALSE;
     }
-    FreeLibrary(isa->handle);
+    apr_dso_unload(isa->handle);
     isa->handle = NULL;
     return TRUE;
 }
