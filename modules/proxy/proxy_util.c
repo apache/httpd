@@ -1096,14 +1096,11 @@ apr_status_t ap_proxy_string_read(conn_rec *c, apr_bucket_brigade *bb,
     buff[0] = 0;
     *eos = 0;
 
-    /* get line-at-a-time */
-    c->remain = 0;
-
     /* loop through each brigade */
     while (!found) {
 
-	/* get brigade from network */
-	if (APR_SUCCESS != (rv = ap_get_brigade(c->input_filters, bb, AP_MODE_BLOCKING))) {
+	/* get brigade from network one line at a time */
+	if (APR_SUCCESS != (rv = ap_get_brigade(c->input_filters, bb, AP_MODE_BLOCKING, 0))) {
 	    return rv;
 	}
 
