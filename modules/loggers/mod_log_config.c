@@ -384,12 +384,13 @@ static const char *log_request_time(request_rec *r, char *a)
     ap_int32_t mday, year, hour, min, sec, month;
     ap_time_t *t;
     char tstr[MAX_STRING_LEN];
+    ap_int32_t retcode;
 
     ap_make_time(&t, r->pool);
     ap_get_gmtoff(&timz, t, r->pool);
 
     if (a && *a) {              /* Custom format */
-        ap_strftime(tstr, MAX_STRING_LEN, a, t);
+        ap_strftime(tstr, &retcode, MAX_STRING_LEN, a, t);
     }
     else {                      /* CLF format */
         char sign = (timz < 0 ? '-' : '+');
