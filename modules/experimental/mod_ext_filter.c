@@ -416,7 +416,7 @@ static apr_status_t init_ext_filter_process(ap_filter_t *f)
         return rc;
     }
 
-    apr_pool_note_subprocess(ctx->p, ctx->proc, kill_after_timeout);
+    apr_pool_note_subprocess(ctx->p, ctx->proc, APR_KILL_AFTER_TIMEOUT);
 
     /* We don't want the handle to the child's stdin inherited by any
      * other processes created by httpd.  Otherwise, when we close our

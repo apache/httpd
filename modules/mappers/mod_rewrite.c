@@ -3378,7 +3378,7 @@ static apr_status_t rewritemap_program_child(apr_pool_t *p, const char *progname
         rc = apr_proc_create(procnew, progname, NULL, NULL, procattr, p);
     
         if (rc == APR_SUCCESS) {
-            apr_pool_note_subprocess(p, procnew, kill_after_timeout);
+            apr_pool_note_subprocess(p, procnew, APR_KILL_AFTER_TIMEOUT);
 
             if (fpin) {
                 (*fpin) = procnew->in;

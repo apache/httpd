@@ -677,7 +677,7 @@ static int cgid_init(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp,
         procnew = apr_pcalloc(p, sizeof(*procnew));
         procnew->pid = daemon_pid;
         procnew->err = procnew->in = procnew->out = NULL;
-        apr_pool_note_subprocess(p, procnew, kill_after_timeout);
+        apr_pool_note_subprocess(p, procnew, APR_KILL_AFTER_TIMEOUT);
 #if APR_HAS_OTHER_CHILD
         apr_proc_other_child_register(procnew, cgid_maint, &procnew->pid, NULL, p);
 #endif

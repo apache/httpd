@@ -212,7 +212,7 @@ static int log_child(apr_pool_t *p, const char *progname,
                              NULL, procattr, p);
 
         if (rc == APR_SUCCESS) {
-            apr_pool_note_subprocess(p, procnew, kill_after_timeout);
+            apr_pool_note_subprocess(p, procnew, APR_KILL_AFTER_TIMEOUT);
             (*fpin) = procnew->in;
         }
     }

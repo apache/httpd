@@ -2195,7 +2195,7 @@ static int create_uncompress_child(struct uncompress_parms *parm, apr_pool_t *cn
                           compr[parm->method].argv[0]);
         }
         else {
-            apr_pool_note_subprocess(child_context, procnew, kill_after_timeout);
+            apr_pool_note_subprocess(child_context, procnew, APR_KILL_AFTER_TIMEOUT);
             *pipe_in = procnew->out;
         }
     }
