@@ -1,5 +1,8 @@
 Changes with Apache 2.0.26-dev
 
+  *) Added mod_mime_magic, mod_unique_id and mod_vhost_alias to the Win32
+     build, as loadable modules.  [William Rowe]
+
   *) Fix --enable-mods-shared processing.  If most is specified,
      then all modules that can be compiled as shared modules are.
      [Aaron Bannert <aaron@clove.org>]
