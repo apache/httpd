@@ -1,5 +1,9 @@
 Changes with Apache 2.0.31-dev
 
+  *) Allow mod_cgid to work from a binary distribution install by
+     using 755 for the permissions on the log directory instead of
+     750.  [Jeff Trawick]
+
   *) Fixed a segfault that happened during graceful shutdown (or when
      the httpd ran out of file descriptors) with the worker MPM [Brian Pane]
 
