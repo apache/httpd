@@ -1,4 +1,8 @@
 Changes with Apache 1.3.10
+ 
+  *) Made `tr' usage in top-level configure script more portable 
+     by always using square brackets consistently.
+     [Masashi Kizaki <kizaki@cpo.dnp.co.jp>] PR#5230
 
   *) Fixed ap_config_auto.h generation in src/Configure: there for the ``quad
      integer'' stuff ``#ifndef+#undef+#endif'' pairs were generated instead of

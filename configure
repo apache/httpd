@@ -257,7 +257,7 @@ IFS='
 for rule in `grep '^Rule' $src/Configuration.tmpl`; do
     rule=`echo "$rule" | sed -e 's/^Rule[ 	]*//'`
     name=`echo "$rule" | sed -e 's/=.*$//'`
-    namelow=`echo "$name" | tr 'A-Z' 'a-z'`
+    namelow=`echo "$name" | tr '[A-Z]' '[a-z]'`
     arg=`echo "$rule" | sed -e 's/^.*=//'`
     eval "rule_$namelow=$arg"
     rules="$rules:$namelow"
