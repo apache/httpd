@@ -2,6 +2,14 @@ Changes with Apache 2.0.34-dev
 
 Changes with Apache 2.0.33
 
+  *) Fix a problem in the new --enable-layout functionality where
+     it wouldn't allow overrides from variables like --prefix,
+     --bindir, etc.  [Thom May <thom@planetarytramp.net>]
+
+  *) Fix a bug in the core input filter for AP_MODE_EXHAUSTIVE. It
+     no longer hangs around waiting for the socket to close before
+     returning exhaustive data.  [Aaron Bannert]
+
   *) rename apr_exploded_time_t to apr_time_exp_t (as per renames pending)
      [Thom May <thom@planetarytramp.net>]
 
