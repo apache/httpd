@@ -24,7 +24,7 @@
 <description>エコーサーバの有効無効を設定します。</description>
 <syntax>ProtocolEcho <em>On|Off</em></syntax>
 <contextlist><context>server config</context>
-<context>バーチャルホスト</context></contextlist>
+<context>virtual host</context></contextlist>
 <compatibility>Apache 2.0 以降</compatibility>
 
 <usage>

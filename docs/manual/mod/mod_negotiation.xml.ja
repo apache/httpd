@@ -152,8 +152,8 @@ Body:----xyz----<br />
 キャッシュできるようにする</description>
 <syntax>CacheNegotiatedDocs on|off</syntax>
 <default>CacheNegotiatedDocs off</default>
-<contextlist><context>サーバ設定ファイル</context>
-<context>バーチャルホスト</context>
+<contextlist><context>server config</context>
+<context>virtual host</context>
 </contextlist>
 <compatibility>バージョン 2.0で構文が変わりました</compatibility>
 
@@ -180,9 +180,9 @@ Body:----xyz----<br />
 </description>
 <syntax>ForceLanguagePriority None|Prefer|Fallback [Prefer|Fallback]</syntax>
 <default>ForceLanguagePriority Prefer</default>
-<contextlist><context>サーバ設定ファイル</context>
-<context>バーチャルホスト</context>
-<context>ディレクトリ</context>
+<contextlist><context>server config</context>
+<context>virtual host</context>
+<context>directory</context>
 <context>.htaccess</context>
 </contextlist>
 <override>FileInfo</override>
@@ -229,9 +229,9 @@ Body:----xyz----<br />
 <description>クライアントが優先度を示さなかったときの言語の variant の優先度を
 指定</description>
 <syntax>LanguagePriority <em>MIME-lang</em> [<em>MIME-lang</em>] ...</syntax>
-<contextlist><context>サーバ設定ファイル</context>
-<context>バーチャルホスト</context>
-<context>ディレクトリ</context>
+<contextlist><context>server config</context>
+<context>virtual host</context>
+<context>directory</context>
 <context>.htaccess</context>
 </contextlist>
 <override>FileInfo</override>

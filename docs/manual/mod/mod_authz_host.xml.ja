@@ -57,7 +57,7 @@
 <syntax> Allow from
     all|<em>host</em>|env=<em>env-variable</em>
     [<em>host</em>|env=<em>env-variable</em>] ...</syntax>
-<contextlist><context>ディレクトリ</context><context>.htaccess</context>
+<contextlist><context>directory</context><context>.htaccess</context>
 </contextlist>
 <override>Limit</override>
 
@@ -168,7 +168,7 @@ SetEnvIf User-Agent ^KnockKnock/2.0 let_me_in<br />
 <syntax> Deny from
     all|<em>host</em>|env=<em>env-variable</em>
     [<em>host</em>|env=<em>env-variable</em>] ...</syntax>
-<contextlist><context>ディレクトリ</context><context>.htaccess</context>
+<contextlist><context>directory</context><context>.htaccess</context>
 </contextlist>
 <override>Limit</override>
 
@@ -191,7 +191,7 @@ SetEnvIf User-Agent ^KnockKnock/2.0 let_me_in<br />
 
 <syntax> Order <em>ordering</em></syntax>
 <default>Order Deny,Allow</default>
-<contextlist><context>ディレクトリ</context><context>.htaccess</context>
+<contextlist><context>directory</context><context>.htaccess</context>
 </contextlist>
 <override>Limit</override>
 

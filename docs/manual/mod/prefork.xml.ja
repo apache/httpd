@@ -139,7 +139,7 @@ accept $B$7$h$&$H$7$F$$$k$H$-$K!"(BApache $B$,$=$l$i$N;R%W%m%;%9$rD>Ns2=$9$k$
 $B;H$&J}K!(B</description>
 <syntax>AcceptMutex default|<em>method</em></syntax>
 <default>AcceptMutex default</default>
-<contextlist><context>$B%5!<%P@_Dj%U%!%$%k(B</context></contextlist>
+<contextlist><context>server config</context></contextlist>
 
 <usage>
     <p><directive>AcceptMutex</directive> $B%G%#%l%/%F%#%V$O!"(B
@@ -190,7 +190,7 @@ accept $B$7$h$&$H$7$F$$$k$H$-$K!"(BApache $B$,$=$l$i$N;R%W%m%;%9$rD>Ns2=$9$k$
 <description>$B%"%$%I%k$J;R%5!<%P%W%m%;%9$N:GBg8D?t(B</description>
 <syntax>MaxSpareServers <em>number</em><br /></syntax>
 <default>MaxSpareServers 10</default>
-<contextlist><context>$B%5!<%P@_Dj%U%!%$%k(B</context></contextlist>
+<contextlist><context>server config</context></contextlist>
 
 <usage>
     <p><directive>MaxSpareServers</directive> $B%G%#%l%/%F%#%V$O!"(B
@@ -211,7 +211,7 @@ accept $B$7$h$&$H$7$F$$$k$H$-$K!"(BApache $B$,$=$l$i$N;R%W%m%;%9$rD>Ns2=$9$k$
 <description>$B%"%$%I%k$J;R%5!<%P%W%m%;%9$N:G>.8D?t(B</description>
 <syntax>MinSpareServers <em>number</em></syntax>
 <default>MinSpareServers  5</default>
-<contextlist><context>$B%5!<%P@_Dj%U%!%$%k(B</context></contextlist>
+<contextlist><context>server config</context></contextlist>
 
 <usage>
     <p><directive>MaxSpareServers</directive> $B%G%#%l%/%F%#%V$O!"(B

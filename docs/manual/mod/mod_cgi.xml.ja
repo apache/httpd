@@ -130,8 +130,8 @@
 <name>ScriptLog</name>
 <description>CGI スクリプトのエラーログファイルの場所</description>
 <syntax>ScriptLog <em>file-path</em></syntax>
-<contextlist><context>サーバ設定ファイル</context>
-<context>バーチャルホスト</context>
+<contextlist><context>server config</context>
+<context>virtual host</context>
 </contextlist>
 <modulelist><module>mod_cgi</module><module>mod_cgid</module>
 </modulelist>
@@ -171,8 +171,8 @@
 <description>CGI スクリプトのログファイルの大きさの上限</description>
 <syntax>ScriptLogLength <em>bytes</em></syntax>
 <default>ScriptLogLength 10385760</default>
-<contextlist><context>サーバ設定ファイル</context>
-<context>バーチャルホスト</context>
+<contextlist><context>server config</context>
+<context>virtual host</context>
 </contextlist>
 <modulelist><module>mod_cgi</module><module>mod_cgid</module>
 </modulelist>
@@ -194,8 +194,8 @@
 <description>スクリプトログに記録される PUT や POST リクエストの内容の上限</description>
 <syntax>ScriptLogBuffer <em>bytes</em></syntax>
 <default>ScriptLogBuffer 1024</default>
-<contextlist><context>サーバ設定ファイル</context>
-<context>バーチャルホスト</context>
+<contextlist><context>server config</context>
+<context>virtual host</context>
 </contextlist>
 <modulelist><module>mod_cgi</module><module>mod_cgid</module>
 </modulelist>
