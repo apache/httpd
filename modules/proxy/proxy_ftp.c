@@ -1419,7 +1419,7 @@ int ap_proxy_ftp_handler(request_rec *r, proxy_server_conf *conf,
     /* If len == 0 then it must be a directory (you can't RETR nothing)
      * Also, don't allow to RETR by wildcard. Instead, create a dirlisting
      */
-    if (len == 0 || strpbrk(path, "*?") != NULL) {
+    if (len == 0 || strpbrk(path, "*?[]") != NULL) {
         dirlisting = 1;
     }
     else {
