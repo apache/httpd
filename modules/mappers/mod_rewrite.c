@@ -1290,8 +1290,13 @@ static char *lookup_map_program(request_rec *r, apr_file_t *fpin,
      * context then the rewritemap-programs were not spawned.
      * In this case using such a map (usually in per-dir context)
      * is useless because it is not available.
+     *
+     * newlines in the key leave bytes in the pipe and cause
+     * bad things to happen (next map lookup will use the chars
+     * after the \n instead of the new key etc etc - in other words,
+     * the Rewritemap falls out of sync with the requests).
      */
-    if (fpin == NULL || fpout == NULL) {
+    if (fpin == NULL || fpout == NULL || ap_strchr(key, '\n')) {
         return NULL;
     }
 
