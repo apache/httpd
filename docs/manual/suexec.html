@@ -3,11 +3,11 @@
 </head><body>
 
 <!--#include virtual="header.html" -->
-<h1>Apache SetUserID Support</h1>
+<h1>Apache suEXEC Support</h1>
 
 <hr>
 
-<h2>What is suEXEC?</h2>
+<h3>What is suEXEC?</h3>
 The <b>suEXEC</b> feature, introduced in Apache 1.2 provides the ability to
 run <b>CGI</b> programs under user ids different from the user id of the
 calling webserver. Used properly, this feature can reduce considerably the
@@ -17,7 +17,9 @@ steal all the money from your retirement fund. <b>:-)</b> If you aren't
 familar with managing setuid root programs and the security issues they
 present, we highly recommend that you not consider using this feature.<p>
 
-<h2>Enabling suEXEC Support</h2>
+<hr>
+
+<h3>Enabling suEXEC Support</h3>
 Having said all that, enabling this feature is purposefully difficult with
 the intent that it will only be installed by users determined to use it and
 is not part of the normal install/compile process.<p>
@@ -101,8 +103,10 @@ commands.<p>
 <i>Change the path to the suEXEC wrapper to match your system installation.</i>
 </ul>
 
+<hr>
+
 <a name="model"></a>
-<h2>Security Model of suEXEC</h2>
+<h3>Security Model of suEXEC</h3>
 The <b>suEXEC</b> wrapper supplied with Apache performs the following security
 checks before it will execute any program passed to it for execution.
 <ol>
@@ -124,7 +128,9 @@ If any of these issues are too restrictive, or do not seem restrictive enough, y
 welcome to install your own version of the wrapper. We've given you the rope, now go
 have fun with it. <b>:-)</b>
 
-<h2>Using suEXEC</h2>
+<hr>
+
+<h3>Using suEXEC</h3>
 After properly installing the <b>suexec</b> wrapper executable, you must kill and restart
 the Apache server. A simple <code><b>kill -1 `cat httpd.pid`</b></code> will not be enough.
 Upon startup of the webserver, if Apache finds a properly configured <b>suexec</b> wrapper,
@@ -146,7 +152,9 @@ is being directed. This is accomplished by using the <b>~</b> character prefixin
 user id for whom execution is desired. The only requirement needed for this feature to work
 is for CGI execution to be enabled for the user and that the script must meet the scrutiny of the <a href="#model">security checks</a> above.
 
-<h2>Debugging suEXEC</h2>
+<hr>
+
+<h3>Debugging suEXEC</h3>
 The suEXEC wrapper will write log information to the location defined in the <code>suexec.h</code> as indicated above. If you feel you have configured and installed the wrapper properly,
 have a look at this log and the error_log for the server to see where you may have gone astray.
 <!--#include virtual="footer.html" -->
