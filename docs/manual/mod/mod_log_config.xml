@@ -373,7 +373,7 @@ host</context></contextlist>
     exception that it does not allow the log format to be specified
     explicitly or for conditional logging of requests. Instead, the
     log format is determined by the most recently specified
-    specified <directive>LogFormat</directive> directive (which
+    <directive>LogFormat</directive> directive (which
     does not define a nickname). Common Log Format is used if no
     other format has been specified.</p>
 
