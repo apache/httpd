@@ -1,6 +1,14 @@
 
+# To compile the (experimental) SSL support into 'ab' use 
+# something like:
+#
+# SSLLOC=/usr/local
+# CFLAGS=-DUSE_SSL $(OPTIM) $(CFLAGS1) $(EXTRA_CFLAGS)
+# LIBS=-L$(SSLLOC)/lib -lssl -lcrypto -lm -lap -los $(EXTRA_LIBS) $(LIBS1)
+# INCLUDES=-I$(SSLLOC)/include $(INCLUDES1) $(INCLUDES0) $(EXTRA_INCLUDES)
+
 CFLAGS=$(OPTIM) $(CFLAGS1) $(EXTRA_CFLAGS)
-LIBS=-lap -los $(EXTRA_LIBS) $(LIBS1)
+LIBS=-lm -lap -los $(EXTRA_LIBS) $(LIBS1)
 INCLUDES=$(INCLUDES1) $(INCLUDES0) $(EXTRA_INCLUDES)
 LDFLAGS=$(LDFLAGS1) $(EXTRA_LDFLAGS) -L$(OSDIR) -L$(SRCDIR)/ap
 
