@@ -913,7 +913,9 @@ void ssl_io_filter_register(apr_pool_t *p)
 
 #define DUMP_WIDTH 16
 
-static void ssl_io_data_dump(server_rec *srvr, const char *s, long len)
+static void ssl_io_data_dump(server_rec *srvr,
+                             MODSSL_BIO_CB_ARG_TYPE *s,
+                             long len)
 {
     char buf[256];
     char tmp[64];
@@ -961,7 +963,9 @@ static void ssl_io_data_dump(server_rec *srvr, const char *s, long len)
     return;
 }
 
-long ssl_io_data_cb(BIO *bio, int cmd, const char *argp, int argi, long argl, long rc)
+long ssl_io_data_cb(BIO *bio, int cmd,
+                    MODSSL_BIO_CB_ARG_TYPE *argp,
+                    int argi, long argl, long rc)
 {
     SSL *ssl;
     conn_rec *c;
