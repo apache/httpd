@@ -1,5 +1,10 @@
 Changes with Apache 2.0.45
 
+  *) Allow SSLMutex to select/use the full range of APR locking
+     mechanisms available to it. Also, fix the bug that SSLMutex uses
+     APR_LOCK_DEFAULT no matter what.  PR 8122  [Jim Jagielski,
+     martin.t.kutschker@blackbox.net (Martin Kutschker)]
+
   *) Restore the ability of htdigest.exe to create files that contain
      more than one user. PR 12910.  [André Malo]
 
