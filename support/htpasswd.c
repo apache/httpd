@@ -178,8 +178,8 @@ static int mkrecord(char *user, char *record, apr_size_t rlen, char *passwd,
     else {
         bufsize = sizeof(pwin);
         if (apr_password_get("New password: ", pwin, &bufsize) != 0) {
-            apr_snprintf(record, (rlen - 1), "password too long (>%" APR_SIZE_T_FMT
-                ")", sizeof(pwin) - 1);
+            apr_snprintf(record, (rlen - 1), "password too long (>%" 
+                         APR_SIZE_T_FMT ")", sizeof(pwin) - 1);
             return ERR_OVERFLOW;
         }
         bufsize = sizeof(pwv);
@@ -244,11 +244,13 @@ static void usage(void)
 {
     apr_file_printf(errfile, "Usage:\n");
     apr_file_printf(errfile, "\thtpasswd [-cmdps] passwordfile username\n");
-    apr_file_printf(errfile, "\thtpasswd -b[cmdps] passwordfile username password\n\n");
+    apr_file_printf(errfile, "\thtpasswd -b[cmdps] passwordfile username "
+                    "password\n\n");
     apr_file_printf(errfile, "\thtpasswd -n[mdps] username\n");
     apr_file_printf(errfile, "\thtpasswd -nb[mdps] username password\n");
     apr_file_printf(errfile, " -c  Create a new file.\n");
-    apr_file_printf(errfile, " -n  Don't update file; display results on stdout.\n");
+    apr_file_printf(errfile, " -n  Don't update file; display results on "
+                    "stdout.\n");
     apr_file_printf(errfile, " -m  Force MD5 encryption of the password"
 #if defined(WIN32) || defined(TPF) || defined(NETWARE)
         " (default)"
@@ -261,10 +263,11 @@ static void usage(void)
             ".\n");
     apr_file_printf(errfile, " -p  Do not encrypt the password (plaintext).\n");
     apr_file_printf(errfile, " -s  Force SHA encryption of the password.\n");
-    apr_file_printf(errfile, " -b  Use the password from the command line rather "
-            "than prompting for it.\n");
+    apr_file_printf(errfile, " -b  Use the password from the command line "
+            "rather than prompting for it.\n");
     apr_file_printf(errfile,
-            "On Windows, NetWare and TPF systems the '-m' flag is used by default.\n");
+            "On Windows, NetWare and TPF systems the '-m' flag is used by "
+            "default.\n");
     apr_file_printf(errfile,
             "On all other systems, the '-p' flag will probably not work.\n");
     exit(ERR_SYNTAX);
@@ -406,8 +409,8 @@ static void check_args(apr_pool_t *pool, int argc, const char *const argv[],
     }
     *user = apr_pstrdup(pool, argv[i + 1]);
     if ((arg = strchr(*user, ':')) != NULL) {
-        apr_file_printf(errfile, "%s: username contains illegal character '%c'\n",
-                argv[0], *arg);
+        apr_file_printf(errfile, "%s: username contains illegal "
+                        "character '%c'\n", argv[0], *arg);
         exit(ERR_BADUSER);
     }
     if (*mask & APHTP_NONINTERACTIVE) {
@@ -482,8 +485,8 @@ int main(int argc, const char * const argv[])
 
 #if (!(defined(WIN32) || defined(TPF) || defined(NETWARE)))
     if (alg == ALG_PLAIN) {
-        apr_file_printf(errfile,"Warning: storing passwords as plain text might "
-                "just not work on this platform.\n");
+        apr_file_printf(errfile,"Warning: storing passwords as plain text "
+                        "might just not work on this platform.\n");
     }
 #endif
     if (! mask & APHTP_NOFILE) {
@@ -505,8 +508,8 @@ int main(int argc, const char * const argv[])
          * to it (rather than creation of a new one).
          */
         if ((! mask & APHTP_NEWFILE) && (! readable(pool, pwfilename))) {
-            apr_file_printf(errfile, "%s: cannot open file %s for read access\n",
-                    argv[0], pwfilename);
+            apr_file_printf(errfile, "%s: cannot open file %s for read "
+                            "access\n", argv[0], pwfilename);
             perror("apr_file_open");
             exit(ERR_FILEPERM);
         }
@@ -527,8 +530,8 @@ int main(int argc, const char * const argv[])
          * Now verify that the file is writable!
          */
         if (! writable(pool, pwfilename)) {
-            apr_file_printf(errfile, "%s: cannot open file %s for write access\n",
-                    argv[0], pwfilename);
+            apr_file_printf(errfile, "%s: cannot open file %s for write "
+                            "access\n", argv[0], pwfilename);
             perror("apr_file_open");
             exit(ERR_FILEPERM);
         }
