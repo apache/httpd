@@ -58,7 +58,7 @@ unsigned long hash(KEY s)
   return h;
 }
 
-NAMED *lookup(HASH_TABLE *table, KEY name, size_t createSize)
+NAMED *hashTableLookup(HASH_TABLE *table, KEY name, size_t createSize)
 {
   size_t i;
   if (table->size == 0) {
