@@ -79,6 +79,9 @@
 #include "apr_strings.h"
 #include "apr_file_io.h"
 #include "apr_fnmatch.h"
+#ifdef APR_HAVE_STDARG_H
+#include <stdarg.h>
+#endif
 
 AP_HOOK_STRUCT(
 	    AP_HOOK_LINK(translate_name)
@@ -1423,5 +1426,48 @@ API_EXPORT(void) ap_update_mtime(request_rec *r, apr_time_t dependency_mtime)
 {
     if (r->mtime < dependency_mtime) {
 	r->mtime = dependency_mtime;
+    }
+}
+
+API_EXPORT(void) ap_allow_methods(request_rec *r, int reset, ...) {
+    int mnum;
+    const char *method;
+    const char **xmethod;
+    va_list methods;
+
+    /*
+     * Get rid of any current settings if requested; not just the
+     * well-known methods but any extensions as well.
+     */
+    if (reset) {
+	r->allowed = 0;
+	if (r->allowed_xmethods != NULL) {
+	    r->allowed_xmethods->nelts = 0;
+	}
+    }
+
+    va_start(methods, reset);
+    while ((method = va_arg(methods, const char *)) != NULL) {
+	/*
+	 * Look up our internal number for this particular method.
+	 * Even if it isn't one of the ones we know about, the return
+	 * value is used in the same way.
+	 */
+	mnum = ap_method_number_of(method);
+	r->allowed |= (1 << mnum);
+	/*
+	 * Now, if we don't know about it, we regard it as an
+	 * extension method.  Add it to our array of such.  This means
+	 * that anything that checks for M_INVALID needs to make an
+	 * additional check of this array if it *is* invalid.
+	 */
+	if (mnum == M_INVALID) {
+	    if (r->allowed_xmethods == NULL) {
+		r->allowed_xmethods = apr_make_array(r->pool, 2,
+						     sizeof(char *));
+	    }
+	    xmethod = (const char **) apr_push_array(r->allowed_xmethods);
+	    *xmethod = method;
+	}
     }
 }
