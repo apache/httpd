@@ -44,21 +44,33 @@
 /* Translate the URL into a 'filename' */
 
 #ifdef FIX_15207
-#define x2c(x) ((x>='0')&&(x<='9'))?(x-'0'):(((x>='a')&&(x<='f'))?(10+x-'a'):((x>='A')&&(x<='F'))?(10+x-'A'):0)
+/* XXX: EBCDIC safe? --nd */
+#define x2c(x) (((x >= '0') && (x <= '9'))         \
+                   ? (x - '0')                     \
+                   : (((x >= 'a') && (x <= 'f'))   \
+                       ? (10 + x - 'a')            \
+                       : ((x >= 'A') && (x <='F')) \
+                           ? (10 + x - 'A')        \
+                           : 0                     \
+                     )                             \
+               )
+
 static unsigned char hex2c(const char* p) {
-  char c1 = p[1] ;
-  char c2 = p[2] ;
-  int i1 =  x2c(c1) ;
-  int i2 =  x2c(c2) ;
-  unsigned char ret = (i1<<4) | i2 ;
-  return ret ;
+  const char c1 = p[1];
+  const char c2 = p[2];
+  int i1 = x2c(c1);
+  int i2 = x2c(c2);
+  unsigned char ret = (i1 << 4) | i2;
+
+  return ret;
 }
 #endif
+
 static int alias_match(const char *uri, const char *alias_fakename)
 {
     const char *end_fakename = alias_fakename + strlen(alias_fakename);
     const char *aliasp = alias_fakename, *urip = uri;
-    unsigned char uric, aliasc ;
+    unsigned char uric, aliasc;
 
     while (aliasp < end_fakename) {
         if (*aliasp == '/') {
@@ -80,19 +92,19 @@ static int alias_match(const char *uri, const char *alias_fakename)
                 return 0;
 #else
             /* Other characters are canonicalised and compared literally */
-            if ( *urip == '%' ) {
-                uric = hex2c(urip) ;
-                urip += 3 ;
+            if (*urip == '%') {
+                uric = hex2c(urip);
+                urip += 3;
             } else {
-                uric = (unsigned char)*urip++ ;
+                uric = (unsigned char)*urip++;
             }
-            if ( *aliasp == '%' ) {
-                aliasc = hex2c(aliasp) ;
-                aliasp += 3 ;
+            if (*aliasp == '%') {
+                aliasc = hex2c(aliasp);
+                aliasp += 3;
             } else {
-                aliasc = (unsigned char)*aliasp++ ;
+                aliasc = (unsigned char)*aliasp++;
             }
-	    if ( uric != aliasc ) {
+            if (uric != aliasc) {
                 return 0;
             }
 #endif
@@ -127,7 +139,7 @@ static int proxy_detect(request_rec *r)
 {
     void *sconf = r->server->module_config;
     proxy_server_conf *conf =
-	(proxy_server_conf *) ap_get_module_config(sconf, &proxy_module);
+        (proxy_server_conf *) ap_get_module_config(sconf, &proxy_module);
 #ifdef FIX_15207
     int i, len;
     struct proxy_alias *ent = (struct proxy_alias *)conf->aliases->elts;
@@ -163,7 +175,7 @@ static int proxy_detect(request_rec *r)
             len = alias_match(r->unparsed_uri, ent[i].fake);
             if (len > 0) {
                 r->filename = apr_pstrcat(r->pool, "proxy:", ent[i].real,
-                                         r->unparsed_uri + len, NULL);
+                                          r->unparsed_uri + len, NULL);
                 r->handler = "proxy-server";
                 r->proxyreq = PROXYREQ_REVERSE;
                 r->uri = r->unparsed_uri;
@@ -184,12 +196,14 @@ static int proxy_trans(request_rec *r)
     int i, len;
     struct proxy_alias *ent = (struct proxy_alias *) conf->aliases->elts;
 #endif
+
     if (r->proxyreq) {
         /* someone has already set up the proxy, it was possibly ourselves
          * in proxy_detect
          */
         return OK;
     }
+
 #ifndef FIX_15207
     /* XXX: since r->uri has been manipulated already we're not really
      * compliant with RFC1945 at this point.  But this probably isn't
@@ -200,12 +214,12 @@ static int proxy_trans(request_rec *r)
         len = alias_match(r->uri, ent[i].fake);
 
        if (len > 0) {
-           if ((ent[i].real[0] == '!' ) && ( ent[i].real[1] == 0 )) {
+           if ((ent[i].real[0] == '!') && (ent[i].real[1] == 0)) {
                return DECLINED;
            }
 
            r->filename = apr_pstrcat(r->pool, "proxy:", ent[i].real,
-                                 (r->uri + len ), NULL);
+                                     r->uri + len, NULL);
            r->handler = "proxy-server";
            r->proxyreq = PROXYREQ_REVERSE;
            return OK;
@@ -502,8 +516,8 @@ static void * create_proxy_config(apr_pool_t *p, server_rec *s)
     ps->raliases = apr_array_make(p, 10, sizeof(struct proxy_alias));
     ps->cookie_paths = apr_array_make(p, 10, sizeof(struct proxy_alias));
     ps->cookie_domains = apr_array_make(p, 10, sizeof(struct proxy_alias));
-    ps->cookie_path_str = apr_strmatch_precompile(p, "path=", 0) ;
-    ps->cookie_domain_str = apr_strmatch_precompile(p, "domain=", 0) ;
+    ps->cookie_path_str = apr_strmatch_precompile(p, "path=", 0);
+    ps->cookie_domain_str = apr_strmatch_precompile(p, "domain=", 0);
     ps->noproxies = apr_array_make(p, 10, sizeof(struct noproxy_entry));
     ps->dirconn = apr_array_make(p, 10, sizeof(struct dirconn_entry));
     ps->allowed_connect_ports = apr_array_make(p, 10, sizeof(int));
@@ -542,7 +556,7 @@ static void * merge_proxy_config(apr_pool_t *p, void *basev, void *overridesv)
     ps->cookie_paths
         = apr_array_append(p, base->cookie_paths, overrides->cookie_paths);
     ps->cookie_domains
-        = apr_array_append(p, base->cookie_domains, overrides->cookie_domains) ;
+        = apr_array_append(p, base->cookie_domains, overrides->cookie_domains);
     ps->cookie_path_str = base->cookie_path_str;
     ps->cookie_domain_str = base->cookie_domain_str;
     ps->noproxies = apr_array_append(p, base->noproxies, overrides->noproxies);
@@ -719,10 +733,11 @@ static const char*
 
     conf = (proxy_server_conf *)ap_get_module_config(s->module_config,
                                                      &proxy_module);
-    new = apr_array_push(conf->cookie_paths) ;
+    new = apr_array_push(conf->cookie_paths);
     new->fake = f;
     new->real = r;
-    return NULL ;
+
+    return NULL;
 }
 static const char*
     cookie_domain(cmd_parms *cmd, void *dummy, const char *f, const char *r)
@@ -733,10 +748,11 @@ static const char*
 
     conf = (proxy_server_conf *)ap_get_module_config(s->module_config,
                                                      &proxy_module);
-    new = apr_array_push(conf->cookie_domains) ;
+    new = apr_array_push(conf->cookie_domains);
     new->fake = f;
     new->real = r;
-    return NULL ;
+
+    return NULL;
 }
 
 static const char *
@@ -1105,9 +1121,9 @@ static const command_rec proxy_cmds[] =
     AP_INIT_TAKE12("ProxyPassReverse", add_pass_reverse, NULL, RSRC_CONF|ACCESS_CONF,
      "a virtual path and a URL for reverse proxy behaviour"),
     AP_INIT_TAKE2("ProxyPassReverseCookiePath", cookie_path, NULL,
-       RSRC_CONF|ACCESS_CONF, "Path rewrite rule for proxying cookies") ,
+       RSRC_CONF|ACCESS_CONF, "Path rewrite rule for proxying cookies"),
     AP_INIT_TAKE2("ProxyPassReverseCookieDomain", cookie_domain, NULL,
-       RSRC_CONF|ACCESS_CONF, "Domain rewrite rule for proxying cookies") ,
+       RSRC_CONF|ACCESS_CONF, "Domain rewrite rule for proxying cookies"),
     AP_INIT_ITERATE("ProxyBlock", set_proxy_exclude, NULL, RSRC_CONF,
      "A list of names, hosts or domains to which the proxy will not connect"),
     AP_INIT_TAKE1("ProxyReceiveBufferSize", set_recv_buffer_size, NULL, RSRC_CONF,
