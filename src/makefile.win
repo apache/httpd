@@ -56,7 +56,6 @@ _cleand:
 	$(MAKE) $(MAKEOPT) -f Makefile.win SHORT=D LONG=Debug   CTARGET=CLEAN _build
 
 clean:	_cleanr _cleand
-	$(MAKE) $(MAKEOPT) -f Makefile.win SHORT=R LONG=Release CTARGET=CLEAN _installdll
 
 
 _build:
