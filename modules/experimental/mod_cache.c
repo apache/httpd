@@ -48,7 +48,7 @@ static ap_filter_rec_t *cache_conditional_filter_handle;
 static int cache_url_handler(request_rec *r, int lookup)
 {
     apr_status_t rv;
-    const char *cc_in, *pragma, *auth;
+    const char *pragma, *auth;
     apr_uri_t uri;
     char *url;
     apr_size_t urllen;
@@ -95,7 +95,6 @@ static int cache_url_handler(request_rec *r, int lookup)
      */
 
     /* find certain cache controlling headers */
-    cc_in = apr_table_get(r->headers_in, "Cache-Control");
     pragma = apr_table_get(r->headers_in, "Pragma");
     auth = apr_table_get(r->headers_in, "Authorization");
 
@@ -118,13 +117,14 @@ static int cache_url_handler(request_rec *r, int lookup)
                      "%s, but we know better and are ignoring it", url);
     }
     else {
-        if (ap_cache_liststr(NULL, cc_in, "no-store", NULL) ||
-            ap_cache_liststr(NULL, pragma, "no-cache", NULL) || (auth != NULL)) {
+        if (ap_cache_liststr(NULL, pragma, "no-cache", NULL) ||
+            auth != NULL) {
             /* delete the previously cached file */
             cache_remove_url(r, cache->types, url);
 
             ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
-                         "cache: no-store forbids caching of %s", url);
+                         "cache: no-cache or authorization forbids caching "
+                         "of %s", url);
             return DECLINED;
         }
     }
@@ -326,7 +326,7 @@ static int cache_in_filter(ap_filter_t *f, apr_bucket_brigade *in)
     cache_request_rec *cache;
     cache_server_conf *conf;
     char *url = r->unparsed_uri;
-    const char *cc_out, *cl;
+    const char *cc_in, *cc_out, *cl;
     const char *exps, *lastmods, *dates, *etag;
     apr_time_t exp, date, lastmod, now;
     apr_off_t size;
@@ -335,17 +335,20 @@ static int cache_in_filter(ap_filter_t *f, apr_bucket_brigade *in)
     apr_pool_t *p;
 
     /* check first whether running this filter has any point or not */
-    if(r->no_cache) {
+    /* If the user has Cache-Control: no-store from RFC 2616, don't store! */
+    cc_in = apr_table_get(r->headers_in, "Cache-Control");
+    if (r->no_cache || ap_cache_liststr(NULL, cc_in, "no-store", NULL)) {
         ap_remove_output_filter(f);
         return ap_pass_brigade(f->next, in);
     }
 
-    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
-                 "cache: running CACHE_IN filter");
-
     /* Setup cache_request_rec */
-    cache = (cache_request_rec *) ap_get_module_config(r->request_config, &cache_module);
+    cache = (cache_request_rec *) ap_get_module_config(r->request_config,
+                                                       &cache_module);
     if (!cache) {
+        /* user likely configured CACHE_IN manually; they should really use
+         * mod_cache configuration to do that
+         */
         cache = apr_pcalloc(r->pool, sizeof(cache_request_rec));
         ap_set_module_config(r->request_config, &cache_module, cache);
     }
