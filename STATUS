@@ -1,5 +1,5 @@
 APACHE 1.3 STATUS:						-*-text-*-
-  Last modified at [$Date: 2004/09/30 17:12:41 $]
+  Last modified at [$Date: 2004/10/13 17:37:51 $]
 
 Release:
 
@@ -50,9 +50,15 @@ RELEASE SHOWSTOPPERS:
 
 PROPOSED PATCHES FOR THIS RELEASE:
 
+    *) mod_rewrite: Fix 0 bytes write into random memory position. PR 31036.
+         http://www.apache.org/~nd/dbmmap_1.3.patch
+       minfrin: +1's in the v2.0 branch from nd, trawick, jerenkrantz, jim.
+                Waiting for them to agree here.
+       +1: minfrin
+
    *) mod_rewrite:Fix query string handling for proxied URLs. PR 14518.
         modules/mappers/mod_rewrite.c: r1.259 (2.x patch - need 1.3 version)
-      +1: nd
+      +1: nd, minfrin
 
    *) mod_log_config: Cleanup log_header_out function to allow multiple headers
       like Set-Cookie to be logged properly. PR 27787 
