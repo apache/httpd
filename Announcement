@@ -143,3 +143,4 @@
        the CGI script actually exited a fraction of a second into the 3
        second sleep, which effectively limited the server to serving one 
        CGI request every 3 seconds across a persistent connection.
+
