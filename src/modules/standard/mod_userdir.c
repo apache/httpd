@@ -144,9 +144,9 @@ int translate_userdir (request_rec *r)
 
 #ifdef __EMX__
       /* Add support for OS/2 drive letters */
-      if ((userdir[0] == '/') || (userdir[1] == ':')) {
+      if ((userdir[0] == '/') || (userdir[1] == ':') || (userdir[0] == '\0')) {
 #else
-      if (userdir[0] == '/') {
+      if ((userdir[0] == '/') || (userdir[0] == '\0')) {
 #endif
 	if (x) {
 	  if (strchr(x, ':')) {

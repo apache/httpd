@@ -1,5 +1,8 @@
 Changes with Apache 1.2b5
 
+  *) Allow * to terminate the end of a directory match in mod_dir.
+     Allows /~* to match for both /~joe and /~joe/. [David Bronder]
+
   *) Don't call can_exec() if suexec_enabled. Calling this requires
      scripts executed by the suexec wrapper to be world executable, which
      defeats one of the advantages of running the wrapper. [Randy Terbush]
