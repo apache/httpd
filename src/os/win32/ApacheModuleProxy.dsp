@@ -33,8 +33,8 @@ RSC=rc.exe
 
 # PROP BASE Use_MFC 0
 # PROP BASE Use_Debug_Libraries 0
-# PROP BASE Output_Dir ".\ApacheMo"
-# PROP BASE Intermediate_Dir ".\ApacheMo"
+# PROP BASE Output_Dir "Release"
+# PROP BASE Intermediate_Dir "Release"
 # PROP BASE Target_Dir ""
 # PROP Use_MFC 0
 # PROP Use_Debug_Libraries 0
@@ -42,9 +42,8 @@ RSC=rc.exe
 # PROP Intermediate_Dir "Release"
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
-# ADD BASE CPP /nologo /MT /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /YX /c
-# ADD CPP /nologo /MD /W3 /GX /O2 /I "..\..\include" /I "..\..\os\win32" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "SHARED_MODULE" /D "WIN32_LEAN_AND_MEAN" /FD /c
-# SUBTRACT CPP /YX
+# ADD BASE CPP /nologo /MD /W3 /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /FD /c
+# ADD CPP /nologo /MD /W3 /O2 /I "..\..\include" /I "..\..\modules\proxy" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "SHARED_MODULE" /D "WIN32_LEAN_AND_MEAN" /Fd"Release\ApacheModuleProxy" /FD /c
 # ADD BASE MTL /nologo /D "NDEBUG" /win32
 # ADD MTL /nologo /D "NDEBUG" /mktyplib203 /win32
 # ADD BASE RSC /l 0x809 /d "NDEBUG"
@@ -53,9 +52,8 @@ BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
 LINK32=link.exe
-# ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:windows /dll /machine:I386
-# ADD LINK32 kernel32.lib ws2_32.lib /nologo /subsystem:windows /dll /map /machine:I386 /base:@"../../os/win32/BaseAddr.ref",mod_proxy
-# SUBTRACT LINK32 /pdb:none
+# ADD BASE LINK32 kernel32.lib ws2_32.lib /nologo /subsystem:windows /dll /incremental:no /map /machine:I386  /base:@"BaseAddr.ref",mod_proxy
+# ADD LINK32 kernel32.lib ws2_32.lib /nologo /subsystem:windows /dll /incremental:no /map /machine:I386 /base:@"BaseAddr.ref",mod_proxy
 
 !ELSEIF  "$(CFG)" == "ApacheModuleProxy - Win32 Debug"
 
@@ -70,9 +68,8 @@ LINK32=link.exe
 # PROP Intermediate_Dir "Debug"
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
-# ADD BASE CPP /nologo /MTd /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /YX /c
-# ADD CPP /nologo /MDd /W3 /Gm /GX /ZI /Od /I "..\..\include" /I "..\..\os\win32" /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /D "SHARED_MODULE" /D "WIN32_LEAN_AND_MEAN" /FD /c
-# SUBTRACT CPP /YX
+# ADD BASE CPP /nologo /MDd /W3 /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /FD /c
+# ADD CPP /nologo /MDd /W3 /GX /ZI /Od /I "..\..\include" /I "..\..\modules\proxy" /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /D "SHARED_MODULE" /D "WIN32_LEAN_AND_MEAN" /Fd"Debug\ApacheModuleProxy" /FD /c
 # ADD BASE MTL /nologo /D "_DEBUG" /win32
 # ADD MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD BASE RSC /l 0x809 /d "_DEBUG"
@@ -81,9 +78,8 @@ BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
 LINK32=link.exe
-# ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:windows /dll /debug /machine:I386
-# ADD LINK32 kernel32.lib ws2_32.lib /nologo /subsystem:windows /dll /incremental:no /map /debug /machine:I386 /base:@"../../os/win32/BaseAddr.ref",mod_proxy
-# SUBTRACT LINK32 /pdb:none
+# ADD BASE LINK32 kernel32.lib ws2_32.lib /nologo /subsystem:windows /dll /incremental:no /map /debug /machine:I386 /base:@"BaseAddr.ref",mod_proxy
+# ADD LINK32 kernel32.lib ws2_32.lib /nologo /subsystem:windows /dll /incremental:no /map /debug /machine:I386 /base:@"BaseAddr.ref",mod_proxy
 
 !ENDIF 
 
@@ -96,27 +92,27 @@ LINK32=link.exe
 # PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;hpj;bat;for;f90"
 # Begin Source File
 
-SOURCE=.\mod_proxy.c
+SOURCE=..\..\modules\proxy\mod_proxy.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\proxy_cache.c
+SOURCE=..\..\modules\proxy\proxy_cache.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\proxy_connect.c
+SOURCE=..\..\modules\proxy\proxy_connect.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\proxy_ftp.c
+SOURCE=..\..\modules\proxy\proxy_ftp.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\proxy_http.c
+SOURCE=..\..\modules\proxy\proxy_http.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\proxy_util.c
+SOURCE=..\..\modules\proxy\proxy_util.c
 # End Source File
 # End Group
 # Begin Group "Header Files"
@@ -124,7 +120,7 @@ SOURCE=.\proxy_util.c
 # PROP Default_Filter "h;hpp;hxx;hm;inl;fi;fd"
 # Begin Source File
 
-SOURCE=.\mod_proxy.h
+SOURCE=..\..\modules\proxy\mod_proxy.h
 # End Source File
 # End Group
 # End Target

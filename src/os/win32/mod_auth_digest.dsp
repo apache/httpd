@@ -38,12 +38,12 @@ RSC=rc.exe
 # PROP BASE Target_Dir ""
 # PROP Use_MFC 0
 # PROP Use_Debug_Libraries 0
-# PROP Output_Dir "ApacheModuleAuthDigestR"
-# PROP Intermediate_Dir "ApacheModuleAuthDigestR"
+# PROP Output_Dir "Release"
+# PROP Intermediate_Dir "Release"
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
-# ADD BASE CPP /nologo /MT /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /FD /c
-# ADD CPP /nologo /MD /W3 /GX /O2 /I "..\..\include" /I "..\..\os\win32" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "SHARED_MODULE" /FD /c
+# ADD BASE CPP /nologo /MD /W3 /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /FD /c
+# ADD CPP /nologo /MD /W3 /O2 /I "..\..\include" /I "..\..\os\win32" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "SHARED_MODULE" /Fd"Release\ApacheModuleAuthDigest" /FD /c
 # ADD BASE MTL /nologo /D "NDEBUG" /mktyplib203 /o NUL /win32
 # ADD MTL /nologo /D "NDEBUG" /mktyplib203 /o NUL /win32
 # ADD BASE RSC /l 0x409 /d "NDEBUG"
@@ -52,8 +52,8 @@ BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
 LINK32=link.exe
-# ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:windows /dll /machine:I386 /base:@"BaseAddr.ref",mod_auth_digest
-# ADD LINK32 kernel32.lib advapi32.lib /nologo /subsystem:windows /dll /map /machine:I386 /base:@"BaseAddr.ref",mod_auth_digest
+# ADD BASE LINK32 kernel32.lib advapi32.lib /nologo /subsystem:windows /dll /incremental:no /map /machine:I386 /base:@"BaseAddr.ref",mod_auth_digest
+# ADD LINK32 kernel32.lib advapi32.lib /nologo /subsystem:windows /dll /incremental:no /map /machine:I386 /base:@"BaseAddr.ref",mod_auth_digest
 
 !ELSEIF  "$(CFG)" == "ApacheModuleAuthDigest - Win32 Debug"
 
@@ -64,12 +64,12 @@ LINK32=link.exe
 # PROP BASE Target_Dir ""
 # PROP Use_MFC 0
 # PROP Use_Debug_Libraries 1
-# PROP Output_Dir "ApacheModuleAuthDigestD"
-# PROP Intermediate_Dir "ApacheModuleAuthDigestD"
+# PROP Output_Dir "Debug"
+# PROP Intermediate_Dir "Debug"
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
-# ADD BASE CPP /nologo /MTd /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /FD /c
-# ADD CPP /nologo /MDd /W3 /Gm /GX /ZI /Od /I "..\..\include" /I "..\..\os\win32" /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /D "SHARED_MODULE" /FD /c
+# ADD BASE CPP /nologo /MDd /W3 /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /FD /c
+# ADD CPP /nologo /MDd /W3 /GX /ZI /Od /I "..\..\include" /I "..\..\os\win32" /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /D "SHARED_MODULE" /Fd"Debug\ApacheModuleAuthDigest" /FD /c
 # ADD BASE MTL /nologo /D "_DEBUG" /mktyplib203 /o NUL /win32
 # ADD MTL /nologo /D "_DEBUG" /mktyplib203 /o NUL /win32
 # ADD BASE RSC /l 0x409 /d "_DEBUG"
@@ -78,8 +78,8 @@ BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
 LINK32=link.exe
-# ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:windows /dll /debug /machine:I386 /pdbtype:sept /base:@"BaseAddr.ref",mod_auth_digest
-# ADD LINK32 kernel32.lib advapi32.lib /nologo /subsystem:windows /dll /incremental:no /map /debug /machine:I386 /pdbtype:sept /base:@"BaseAddr.ref",mod_auth_digest
+# ADD BASE LINK32 kernel32.lib advapi32.lib /nologo /subsystem:windows /dll /incremental:no /map /debug /machine:I386 /base:@"BaseAddr.ref",mod_auth_digest
+# ADD LINK32 kernel32.lib advapi32.lib /nologo /subsystem:windows /dll /incremental:no /map /debug /machine:I386 /base:@"BaseAddr.ref",mod_auth_digest
 
 !ENDIF 
 

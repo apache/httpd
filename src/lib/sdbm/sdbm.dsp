@@ -31,19 +31,19 @@ CPP=cl.exe
 
 # PROP BASE Use_MFC 0
 # PROP BASE Use_Debug_Libraries 0
-# PROP BASE Output_Dir "Release"
-# PROP BASE Intermediate_Dir "Release"
+# PROP BASE Output_Dir "LibR"
+# PROP BASE Intermediate_Dir "LibR"
 # PROP BASE Target_Dir ""
 # PROP Use_MFC 0
 # PROP Use_Debug_Libraries 0
-# PROP Output_Dir "Release"
-# PROP Intermediate_Dir "Release"
+# PROP Output_Dir "LibR"
+# PROP Intermediate_Dir "LibR"
 # PROP Target_Dir ""
 RSC=rc.exe
 # ADD BASE RSC /l 0x409
 # ADD RSC /l 0x409
-# ADD BASE CPP /nologo /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /YX /FD /c
-# ADD CPP /nologo /MD /W3 /GX /O2 /I "..\..\include" /I "..\..\os\win32" /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /FD /c
+# ADD BASE CPP /nologo /MD /W3 /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /FD /c
+# ADD CPP /nologo /MD /W3 /O2 /I "..\..\include" /I "..\..\os\win32" /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /Fd"LibR\sdbm" /FD /c
 BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
@@ -55,19 +55,19 @@ LIB32=link.exe -lib
 
 # PROP BASE Use_MFC 0
 # PROP BASE Use_Debug_Libraries 1
-# PROP BASE Output_Dir "Debug"
-# PROP BASE Intermediate_Dir "Debug"
+# PROP BASE Output_Dir "LibD"
+# PROP BASE Intermediate_Dir "LibD"
 # PROP BASE Target_Dir ""
 # PROP Use_MFC 0
 # PROP Use_Debug_Libraries 1
-# PROP Output_Dir "Debug"
-# PROP Intermediate_Dir "Debug"
+# PROP Output_Dir "LibD"
+# PROP Intermediate_Dir "LibD"
 # PROP Target_Dir ""
 RSC=rc.exe
 # ADD BASE RSC /l 0x409
 # ADD RSC /l 0x409
-# ADD BASE CPP /nologo /W3 /GX /Z7 /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /YX /FD /c
-# ADD CPP /nologo /MDd /W3 /Gm /GX /ZI /Od /I "..\..\include" /I "..\..\os\win32" /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "SHARED_MODULE" /FD /c
+# ADD BASE CPP /nologo /MDd /W3 /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /FD /c
+# ADD CPP /nologo /MDd /W3 /GX /ZI /Od /I "..\..\include" /I "..\..\os\win32" /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "SHARED_MODULE" /Fd"LibD\sdbm" /FD /c
 BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
