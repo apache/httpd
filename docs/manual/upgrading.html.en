@@ -138,7 +138,7 @@
       need for these directives.</li>
 
       <li>The <code>FancyIndexing</code> directive has been removed.
-      The same functionality is availble through the
+      The same functionality is available through the
       <code>FancyIndexing</code> option to the <a
       href="mod/mod_autoindex.html#indexoptions">IndexOptions</a>
       directive.</li>
