@@ -10,7 +10,7 @@ address)</td></tr><tr><th><a href="module-dict.html#Status">Status:
                   </a></th><td>Base</td></tr><tr><th><a href="module-dict.html#ModuleIdentifier">Module Identifier:
                   </a></th><td>authz_host_module</td></tr><tr><th><a href="module-dict.html#SourceFile">Source File:
                   </a></th><td>mod_authz_host.c</td></tr><tr><th><a href="module-dict.html#Compatibility">Compatibility:
-                  </a></th><td>Available in Apache 2.0.44 and later</td></tr></table><h3>Summary</h3>
+                  </a></th><td>Available in Apache 2.1 and later</td></tr></table><h3>Summary</h3>
     <p>The directives provided by <code class="module"><a href="../mod/mod_authz_host.html">mod_authz_host</a></code> are
     used in <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code>,
     <code class="directive"><a href="../mod/core.html#files">&lt;Files&gt;</a></code>, and

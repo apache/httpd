@@ -10,7 +10,7 @@
                   </a></th><td>Extension</td></tr><tr><th><a href="module-dict.html#ModuleIdentifier">Module Identifier:
                   </a></th><td>authn_anon_module</td></tr><tr><th><a href="module-dict.html#SourceFile">Source File:
                   </a></th><td>mod_authn_anon.c</td></tr><tr><th><a href="module-dict.html#Compatibility">Compatibility:
-                  </a></th><td>Available in Apache 2.0.44 and later</td></tr></table><h3>Summary</h3>
+                  </a></th><td>Available in Apache 2.1 and later</td></tr></table><h3>Summary</h3>
     <p>This module does access control in a manner similar to
     anonymous-ftp sites; <em>i.e.</em> have a 'magic' user id
     'anonymous' and the email address as a password. These email

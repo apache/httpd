@@ -9,7 +9,7 @@
                   </a></th><td>Base</td></tr><tr><th><a href="module-dict.html#ModuleIdentifier">Module Identifier:
                   </a></th><td>authn_file_module</td></tr><tr><th><a href="module-dict.html#SourceFile">Source File:
                   </a></th><td>mod_authn_file.c</td></tr><tr><th><a href="module-dict.html#Compatibility">Compatibility:
-                  </a></th><td>Available in Apache 2.0.44 and later</td></tr></table><h3>Summary</h3>
+                  </a></th><td>Available in Apache 2.1 and later</td></tr></table><h3>Summary</h3>
 
     <p>This module provides authentication front-ends such as
     <code class="module"><a href="../mod/mod_auth_digest.html">mod_auth_digest</a></code> and <code class="module"><a href="../mod/mod_auth_basic.html">mod_auth_basic</a></code>

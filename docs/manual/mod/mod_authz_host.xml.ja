@@ -11,7 +11,7 @@
 <status>Base</status>
 <sourcefile>mod_authz_host.c</sourcefile>
 <identifier>authz_host_module</identifier>
-<compatibility>Apache 2.0.44 以降</compatibility>
+<compatibility>Apache 2.1 以降</compatibility>
 
 <summary>
     <p><module>mod_authz_host</module> により提供されるディレクティブは
