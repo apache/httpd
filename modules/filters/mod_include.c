@@ -1542,7 +1542,7 @@ static int find_file(request_rec *r, const char *directive, const char *tag,
                                 APR_FILEPATH_SECUREROOTTEST |
                                 APR_FILEPATH_NOTABSOLUTE, r->pool);
 
-        if (!APR_STATUS_IS_SUCCESS(rv)) {
+        if (rv != APR_SUCCESS) {
             error_fmt = "unable to access file \"%s\" "
                         "in parsed file %s";
         }
@@ -1658,7 +1658,7 @@ static apr_status_t handle_include(include_ctx_t *ctx, ap_filter_t *f,
                                     APR_FILEPATH_SECUREROOTTEST |
                                     APR_FILEPATH_NOTABSOLUTE, ctx->dpool);
 
-            if (!APR_STATUS_IS_SUCCESS(rv)) {
+            if (rv != APR_SUCCESS) {
                 error_fmt = "unable to include file \"%s\" in parsed file %s";
             }
             else {
@@ -3143,7 +3143,7 @@ static apr_status_t send_parsed_content(ap_filter_t *f, apr_bucket_brigade *bb)
 
             if (!APR_BRIGADE_EMPTY(pass_bb)) {
                 rv = ap_pass_brigade(f->next, pass_bb);
-                if (!APR_STATUS_IS_SUCCESS(rv)) {
+                if (rv != APR_SUCCESS) {
                     apr_brigade_destroy(pass_bb);
                     return rv;
                 }
@@ -3164,11 +3164,11 @@ static apr_status_t send_parsed_content(ap_filter_t *f, apr_bucket_brigade *bb)
                 }
             }
 
-            if (!len || !APR_STATUS_IS_SUCCESS(rv)) {
+            if (!len || rv != APR_SUCCESS) {
                 rv = apr_bucket_read(b, &data, &len, APR_BLOCK_READ);
             }
 
-            if (!APR_STATUS_IS_SUCCESS(rv)) {
+            if (rv != APR_SUCCESS) {
                 apr_brigade_destroy(pass_bb);
                 return rv;
             }
@@ -3382,7 +3382,7 @@ static apr_status_t send_parsed_content(ap_filter_t *f, apr_bucket_brigade *bb)
                 if (handle_func) {
                     DEBUG_INIT(ctx, f, pass_bb);
                     rv = handle_func(ctx, f, pass_bb);
-                    if (!APR_STATUS_IS_SUCCESS(rv)) {
+                    if (rv != APR_SUCCESS) {
                         apr_brigade_destroy(pass_bb);
                         return rv;
                     }
