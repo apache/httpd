@@ -99,7 +99,7 @@ of user groups for authorization</description>
 <directivesynopsis>
 <name>AuthzDBMType</name>
 <description>Sets the type of database file that is used to
-store passwords</description>
+store list of user groups</description>
 <syntax>AuthzDBMType default|SDBM|GDBM|NDBM|DB</syntax>
 <default>AuthzDBMType default</default>
 <contextlist><context>directory</context><context>.htaccess</context>
@@ -107,12 +107,13 @@ store passwords</description>
 <override>AuthConfig</override>
 
 <usage>
-    <p>Sets the type of database file that is used to store the passwords.
+    <p>Sets the type of database file that is used to store the list
+    of user groups.
     The default database type is determined at compile time.  The
     availability of other types of database files also depends on
     <a href="../install.html#dbm">compile-time settings</a>.</p>
 
-    <p>It is crucial that whatever program you use to create your password
+    <p>It is crucial that whatever program you use to create your group
     files is configured to use the same type of database.</p>
 </usage>
 </directivesynopsis>
