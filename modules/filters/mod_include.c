@@ -2213,8 +2213,8 @@ static int parse_expr(request_rec *r, include_ctx_t *ctx, const char *expr,
             if (!current->left->done) {
                 switch (current->left->token.type) {
                 case token_string:
-                    ap_ssi_parse_string(r, ctx, current->left->token.value,
-                                        buffer, sizeof(buffer), 0);
+                    buffer = ap_ssi_parse_string(r, ctx, current->left->token.value,
+                                                 NULL, MAX_STRING_LEN, 0);
                     apr_cpystrn(current->left->token.value, buffer,
                                 sizeof(current->left->token.value));
                     current->left->value = 
@@ -2229,8 +2229,8 @@ static int parse_expr(request_rec *r, include_ctx_t *ctx, const char *expr,
             if (!current->right->done) {
                 switch (current->right->token.type) {
                 case token_string:
-                    ap_ssi_parse_string(r, ctx, current->right->token.value,
-                                        buffer, sizeof(buffer), 0);
+                    buffer = ap_ssi_parse_string(r, ctx, current->right->token.value,
+                                                 NULL, MAX_STRING_LEN, 0);
                     apr_cpystrn(current->right->token.value, buffer,
                                 sizeof(current->right->token.value));
                     current->right->value = 
@@ -2280,12 +2280,12 @@ static int parse_expr(request_rec *r, include_ctx_t *ctx, const char *expr,
                 *was_error = 1;
                 goto RETURN;
             }
-            ap_ssi_parse_string(r, ctx, current->left->token.value,
-                         buffer, sizeof(buffer), 0);
+            buffer = ap_ssi_parse_string(r, ctx, current->left->token.value,
+                                         NULL, MAX_STRING_LEN, 0);
             apr_cpystrn(current->left->token.value, buffer,
                         sizeof(current->left->token.value));
-            ap_ssi_parse_string(r, ctx, current->right->token.value,
-                         buffer, sizeof(buffer), 0);
+            buffer = ap_ssi_parse_string(r, ctx, current->right->token.value,
+                                         NULL, MAX_STRING_LEN, 0);
             apr_cpystrn(current->right->token.value, buffer,
                         sizeof(current->right->token.value));
             if (current->right->token.type == token_re) {
@@ -2339,12 +2339,12 @@ static int parse_expr(request_rec *r, include_ctx_t *ctx, const char *expr,
                 *was_error = 1;
                 goto RETURN;
             }
-            ap_ssi_parse_string(r, ctx, current->left->token.value,
-                         buffer, sizeof(buffer), 0);
+            buffer = ap_ssi_parse_string(r, ctx, current->left->token.value,
+                                         NULL, MAX_STRING_LEN, 0);
             apr_cpystrn(current->left->token.value, buffer,
                         sizeof(current->left->token.value));
-            ap_ssi_parse_string(r, ctx, current->right->token.value,
-                         buffer, sizeof(buffer), 0);
+            buffer = ap_ssi_parse_string(r, ctx, current->right->token.value,
+                                         NULL, MAX_STRING_LEN, 0);
             apr_cpystrn(current->right->token.value, buffer,
                         sizeof(current->right->token.value));
 #ifdef DEBUG_INCLUDE
