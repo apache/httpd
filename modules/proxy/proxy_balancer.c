@@ -150,7 +150,7 @@ static proxy_runtime_worker *find_best_worker(proxy_balancer *balancer,
          * for the workers flagged as IN_ERROR
          */
         if (!PROXY_WORKER_IS_USABLE(worker->w))
-            ap_proxy_retry_worker("BALANCER", worker->w, r->server)
+            ap_proxy_retry_worker("BALANCER", worker->w, r->server);
         /* If the worker is not in error state
          * or not disabled.
          */
@@ -202,6 +202,7 @@ static proxy_runtime_worker *find_best_worker(proxy_balancer *balancer,
          * error state or disabled.
          * Now calculate the appropriate one 
          */
+        worker = (proxy_runtime_worker *)balancer->workers->elts;
         for (i = 0; i < balancer->workers->nelts; i++) {
             /* If the worker is not error state
              * or not in disabled mode
@@ -217,6 +218,7 @@ static proxy_runtime_worker *find_best_worker(proxy_balancer *balancer,
             }
             worker++;
         }
+        worker = (proxy_runtime_worker *)balancer->workers->elts;
         for (i = 0; i < balancer->workers->nelts; i++) {
             /* If the worker is not error state
              * or not in disabled mode
@@ -238,8 +240,12 @@ static proxy_runtime_worker *find_best_worker(proxy_balancer *balancer,
 static int rewrite_url(request_rec *r, proxy_worker *worker,
                         char **url)
 {
-    const char *path = strchr(*url, '/');
+    const char *scheme = strstr(*url, "://");
+    const char *path = NULL;
     
+    if (scheme)
+        path = strchr(scheme + 3, '/');
+
     /* we break the URL into host, port, uri */
     if (!worker) {
         return ap_proxyerror(r, HTTP_BAD_REQUEST, apr_pstrcat(r->pool,
@@ -248,9 +254,6 @@ static int rewrite_url(request_rec *r, proxy_worker *worker,
     }
 
     *url = apr_pstrcat(r->pool, worker->name, path, NULL);
-
-    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
-                 "proxy: BALANCER rewriting to %s", *url);
    
     return OK;
 }
@@ -276,7 +279,7 @@ static int proxy_balancer_pre_request(proxy_worker **worker,
     if (!runtime) {
         if (route && (*balancer)->sticky_force) {
             ap_log_error(APLOG_MARK, APLOG_ERR, 0, r->server,
-                         "balancer: (%s). All workers in error state for route (%s)",
+                         "proxy: BALANCER: (%s). All workers are in error state for route (%s)",
                          (*balancer)->name, route);
             return HTTP_SERVICE_UNAVAILABLE;
         }
@@ -304,14 +307,14 @@ static int proxy_balancer_pre_request(proxy_worker **worker,
      */
     if ((rv = PROXY_BALANCER_LOCK(*balancer)) != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_ERR, rv, r->server,
-                     "proxy_balancer_pre_request: lock");
+                     "proxy: BALANCER: lock");
         return DECLINED;
     }
     if (!*worker) {
         runtime = find_best_worker(*balancer, r);
         if (!runtime) {
             ap_log_error(APLOG_MARK, APLOG_ERR, 0, r->server,
-                         "balancer: (%s). All workers in error state.",
+                         "proxy: BALANCER: (%s). All workers are in error state",
                          (*balancer)->name);
         
             PROXY_BALANCER_UNLOCK(*balancer);
@@ -326,6 +329,13 @@ static int proxy_balancer_pre_request(proxy_worker **worker,
     PROXY_BALANCER_UNLOCK(*balancer);
     
     access_status = rewrite_url(r, *worker, url);
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
+                 "proxy_balancer_pre_request rewriting to %s", *url);
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
+                 "proxy_balancer_pre_request worker (%s) free %d",
+                 (*worker)->name,
+                 (*worker)->cp->nfree);
+
     return access_status;
 } 
 
@@ -341,8 +351,8 @@ static int proxy_balancer_post_request(proxy_worker *worker,
         apr_status_t rv;
         if ((rv = PROXY_BALANCER_LOCK(balancer)) != APR_SUCCESS) {
             ap_log_error(APLOG_MARK, APLOG_ERR, rv, r->server,
-                     "proxy_balancer_post_request: lock");
-            return DECLINED;
+                         "proxy: BALANCER: lock");
+            return HTTP_INTERNAL_SERVER_ERROR;
         }
         /* increase the free channels number */
         if (worker->cp->nfree)
@@ -354,6 +364,8 @@ static int proxy_balancer_post_request(proxy_worker *worker,
         PROXY_BALANCER_UNLOCK(balancer);        
         access_status = OK;
     }
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
+             "proxy_balancer_post_request for (%s)", balancer->name);
 
     return access_status;
 } 
