@@ -2768,16 +2768,26 @@ with
  REL="Help"
 ><STRONG>Status:</STRONG></A> core<P>
 
-The ServerName directive sets the hostname of the server; this is only
+The ServerName directive sets the hostname of the server; this is
 used when creating redirection URLs. If it is not specified, then the
 server attempts to deduce it from its own IP address; however this may
 not work reliably, or may not return the preferred hostname. For example:
-<BLOCKQUOTE><CODE>ServerName www.wibble.com</CODE></BLOCKQUOTE>
+<BLOCKQUOTE><CODE>ServerName www.example.com</CODE></BLOCKQUOTE>
 would be used if the canonical (main) name of the actual machine
-were <CODE>monster.wibble.com</CODE>.<P>
+were <CODE>simple.example.com</CODE>.<P>
+
+If you are using <A HREF="../vhosts/name-based.html">name-based
+virtual hosts</A>, the <CODE>ServerName</CODE> inside a
+<A HREF="#virtualhost"><CODE>&lt;VirtualHost&gt;</CODE></A>
+section specifies what hostname must appear in the request's
+<CODE>Host:</CODE> header to match this virtual host.<P>
+
 <P><STRONG>See Also</STRONG>:<BR>
 <A HREF="../dns-caveats.html">DNS Issues</A><BR>
+<A HREF="../vhosts/index.html">Apache virtual host documentation</A><BR>
 <A HREF="#usecanonicalname">UseCanonicalName</A><BR>
+<A HREF="#namevirtualhost">NameVirtualHost</A><BR>
+<A HREF="#serveralias">ServerAlias</A><BR>
 </P>
 <HR>
 
