@@ -1150,8 +1150,8 @@ static int handle_autoindex(request_rec *r)
 
     if (allow_opts & OPT_INDEXES) {
 	/* KLUDGE --- make the sub_req lookups happen in the right directory.
-	   * Fixing this in the sub_req_lookup functions themselves is difficult,
-	   * and would probably break virtual includes...
+	 * Fixing this in the sub_req_lookup functions themselves is difficult,
+	 * and would probably break virtual includes...
 	 */
 
 	if (r->filename[strlen(r->filename) - 1] != '/') {
