@@ -2515,9 +2515,9 @@ static void send_parsed_content(apr_bucket_brigade **bb, request_rec *r,
             ctx->curr_tag_pos = &ctx->combined_tag[ctx->directive_length+1];
 
             handle_func = 
-                (int (*)(include_ctx_t *, apr_bucket_brigade **, request_rec *,
-                    ap_filter_t *, apr_bucket *, apr_bucket **))
-                apr_hash_get(include_hash, ctx->combined_tag, ctx->directive_length+1);
+                (include_handler_fn_t *)apr_hash_get(include_hash, 
+                                                     ctx->combined_tag, 
+                                                     ctx->directive_length+1);
             if (handle_func != NULL) {
                 ret = (*handle_func)(ctx, bb, r, f, dptr, &content_head);
             }
@@ -2790,7 +2790,7 @@ static int includes_filter(ap_filter_t *f, apr_bucket_brigade *b)
     return OK;
 }
 
-static void ap_register_include_handler(char *tag, include_handler *func)
+static void ap_register_include_handler(char *tag, include_handler_fn_t *func)
 {
     apr_hash_set(include_hash, tag, strlen(tag) + 1, (const void *)func);
 }
