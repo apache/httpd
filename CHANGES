@@ -35,15 +35,6 @@ Changes with Apache 2.1.0-dev
      was violated. This message appears in the error log and allows
      for easier debugging. PR 5381, 7638, 8255, 10773.  [André Malo]
 
-  *) Try to log an error if a piped log program fails.  Try to
-     restart a piped log program in more failure situations.  Fix an
-     existing problem with error handling in piped_log_spawn().  Use
-     new APR apr_proc_create() features to prevent Apache from starting
-     on Unix* in most cases where a piped log program can be started,
-     and add log messages for the other situations.  *Other platforms
-     already failed Apache initialization if a piped log program
-     couldn't be started.  PR 15761  [Jeff Trawick]
-
   *) Modify buildconf to copy all required files into httpd's tree.
      [Thom May <thom@planetarytramp.net>]
 
@@ -111,6 +102,15 @@ Changes with Apache 2.1.0-dev
    Apache 2.0.xx tree as documented, and except as noted, below.]
 
 Changes with Apache 2.0.45
+
+  *) Try to log an error if a piped log program fails.  Try to
+     restart a piped log program in more failure situations.  Fix an
+     existing problem with error handling in piped_log_spawn().  Use
+     new APR apr_proc_create() features to prevent Apache from starting
+     on Unix* in most cases where a piped log program can be started,
+     and add log messages for the other situations.  *Other platforms
+     already failed Apache initialization if a piped log program
+     couldn't be started.  PR 15761  [Jeff Trawick]
 
   *) Fix mod_cern_meta to not create empty metafiles when the
      metafile searched for does not exist.  PR 12353
