@@ -21,10 +21,6 @@
 #include "ap_mpm.h"
 #include "apr_version.h"
 
-#if APR_HAVE_UNISTD_H
-#include <unistd.h>         /* for getpid() */
-#endif
-
 module AP_MODULE_DECLARE_DATA proxy_balancer_module;
 
 #if APR_HAS_THREADS
@@ -35,7 +31,8 @@ module AP_MODULE_DECLARE_DATA proxy_balancer_module;
 #define PROXY_BALANCER_UNLOCK(b)    APR_SUCCESS
 #endif
 
-static int init_runtime_score(proxy_server_conf *conf, server_rec *s, proxy_balancer *balancer)
+static int init_balancer_members(proxy_server_conf *conf, server_rec *s,
+                                 proxy_balancer *balancer)
 {
     int i;
     int median, ffactor = 0;
@@ -44,9 +41,8 @@ static int init_runtime_score(proxy_server_conf *conf, server_rec *s, proxy_bala
     workers = (proxy_worker *)balancer->workers->elts;
 
     for (i = 0; i < balancer->workers->nelts; i++) {
-        ap_proxy_initialize_worker_share(conf, workers);
-    ap_proxy_initialize_worker(workers, s);
-        workers->s->status = PROXY_WORKER_INITIALIZED; 
+        ap_proxy_initialize_worker_share(conf, workers, s);
+        workers->s->status = PROXY_WORKER_INITIALIZED;
         ++workers;
     }
 
@@ -787,7 +783,7 @@ static void child_init(apr_pool_t *p, server_rec *s)
         /* Initialize shared scoreboard data */ 
         balancer = (proxy_balancer *)conf->balancers->elts;
         for (i = 0; i < conf->balancers->nelts; i++) {
-        init_runtime_score(conf, s, balancer);
+            init_balancer_members(conf, s, balancer);
             balancer++;
         }
         s = s->next;
@@ -799,9 +795,9 @@ static void ap_proxy_balancer_register_hook(apr_pool_t *p)
 {
     /* Only the mpm_winnt has child init hook handler.
      * make sure that we are called after the mpm
-     * initializes.
+     * initializes and after the mod_proxy
      */
-    static const char *const aszPred[] = { "mpm_winnt.c", NULL};
+    static const char *const aszPred[] = { "mpm_winnt.c", "mpm_proxy.c", NULL};
      /* manager handler */
     ap_hook_handler(balancer_handler, NULL, NULL, APR_HOOK_FIRST);
     ap_hook_child_init(child_init, aszPred, NULL, APR_HOOK_MIDDLE); 
