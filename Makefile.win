@@ -36,14 +36,19 @@ installd:
 	$(MAKE) /f Makefile.win SHORT=D LONG=Debug   _build _install
 
 _cleanr:  
-	$(MAKE) /f Makefile.win SHORT=R LONG=Release _clean
+	$(MAKE) /f Makefile.win SHORT=R LONG=Release CTARGET=CLEAN _build
 
 _cleand:  
-	$(MAKE) /f Makefile.win SHORT=D LONG=Debug   _clean
+	$(MAKE) /f Makefile.win SHORT=D LONG=Debug CTARGET=CLEAN _build
 
 clean:
-	$(MAKE) /f Makefile.win _cleanr
-	$(MAKE) /f Makefile.win _cleand
+	$(MAKE) /f Makefile.win SHORT=R LONG=Release CTARGET=CLEAN _build
+	$(MAKE) /f Makefile.win SHORT=D LONG=Debug   CTARGET=CLEAN _build
+	$(MAKE) /f Makefile.win SHORT=R LONG=Release CTARGET=CLEAN _installdll
+	cd main
+	 del uri_delims.h
+	 del test_char.h
+	cd ..
 
 installdll:
 	$(MAKE) /f Makefile.win SHORT=R LONG=Release _installdll
@@ -51,41 +56,43 @@ installdll:
 _build:
 	echo Building Win32 $(LONG) targets ($(SHORT) suffixes)
 	cd lib\apr
-	 nmake /nologo CFG="aprlib - Win32 $(LONG)" -f aprlib.mak
+#	 apr.lib will be a static library for exe's requring a minimal subset of the apr
+#	 nmake /nologo CFG="apr - Win32 $(LONG)" -f apr.mak RECURSE=0 $(CTARGET)
+	 nmake /nologo CFG="aprlib - Win32 $(LONG)" -f aprlib.mak RECURSE=0 $(CTARGET)
 	cd ..\..
 	cd regex
-	 nmake /nologo CFG="regex - Win32 $(LONG)" -f regex.mak
+	 nmake /nologo CFG="regex - Win32 $(LONG)" -f regex.mak RECURSE=0 $(CTARGET)
 	cd ..
 	cd ap
-	 nmake /nologo CFG="ap - Win32 $(LONG)" -f ap.mak
+	 nmake /nologo CFG="ap - Win32 $(LONG)" -f ap.mak RECURSE=0 $(CTARGET)
 	cd ..
 	cd support
-        nmake /nologo CFG="htpasswd - Win32 $(LONG)" -f htpasswd.mak
-#        nmake /nologo CFG="htdigest - Win32 $(LONG)" -f htdigest.mak
-	 nmake /nologo CFG="rotatelogs - Win32 $(LONG)" -f rotatelogs.mak
+         nmake /nologo CFG="htpasswd - Win32 $(LONG)" -f htpasswd.mak RECURSE=0 $(CTARGET)
+#        nmake /nologo CFG="htdigest - Win32 $(LONG)" -f htdigest.mak RECURSE=0 $(CTARGET)
+#	 nmake /nologo CFG="logresolve - Win32 $(LONG)" -f logresolve.mak RECURSE=0 $(CTARGET)
+	 nmake /nologo CFG="rotatelogs - Win32 $(LONG)" -f rotatelogs.mak RECURSE=0 $(CTARGET)
 	cd ..
 	cd main
-	 nmake /nologo CFG="gen_uri_delims - Win32 $(LONG)" -f gen_uri_delims.mak
-	 nmake /nologo CFG="gen_test_char - Win32 $(LONG)" -f gen_test_char.mak
+	 nmake /nologo CFG="gen_uri_delims - Win32 $(LONG)" -f gen_uri_delims.mak RECURSE=0 $(CTARGET)
+	 nmake /nologo CFG="gen_test_char - Win32 $(LONG)" -f gen_test_char.mak RECURSE=0 $(CTARGET)
 	cd ..
 	 -del Core$(SHORT)\buildmark.obj
-	 nmake /nologo CFG="ApacheCore - Win32 $(LONG)" -f ApacheCore.mak
-	 nmake /nologo CFG="Apache - Win32 $(LONG)" -f Apache.mak
+	 nmake /nologo CFG="ApacheCore - Win32 $(LONG)" -f ApacheCore.mak RECURSE=0 $(CTARGET)
+	 nmake /nologo CFG="Apache - Win32 $(LONG)" -f Apache.mak RECURSE=0 $(CTARGET)
 	cd os\win32
-#        set CFG=ApacheModuleStatus - Win32 $(LONG)
-         nmake /nologo CFG="ApacheModuleStatus - Win32 $(LONG)" -f ApacheModuleStatus.mak
-#        nmake /nologo CFG"=ApacheModuleInfo - Win32 $(LONG)" -f ApacheModuleInfo.mak
-	 nmake /nologo CFG="ApacheModuleAuthAnon - Win32 $(LONG)" -f ApacheModuleAuthAnon.mak
-	 nmake /nologo CFG="ApacheModuleDigest - Win32 $(LONG)" -f ApacheModuleDigest.mak
-	 nmake /nologo CFG="ApacheModuleCERNMeta - Win32 $(LONG)" -f ApacheModuleCERNMeta.mak
-	 nmake /nologo CFG="ApacheModuleExpires - Win32 $(LONG)" -f ApacheModuleExpires.mak
-	 nmake /nologo CFG="ApacheModuleHeaders - Win32 $(LONG)" -f ApacheModuleHeaders.mak
-	 nmake /nologo CFG="ApacheModuleSpeling - Win32 $(LONG)" -f ApacheModuleSpeling.mak
-	 nmake /nologo CFG="ApacheModuleUserTrack - Win32 $(LONG)" -f ApacheModuleUserTrack.mak
-         nmake /nologo CFG="ApacheModuleRewrite - Win32 $(LONG)" -f ApacheModuleRewrite.mak
+         nmake /nologo CFG="ApacheModuleStatus - Win32 $(LONG)" -f ApacheModuleStatus.mak RECURSE=0 $(CTARGET)
+#        nmake /nologo CFG"=ApacheModuleInfo - Win32 $(LONG)" -f ApacheModuleInfo.mak RECURSE=0 $(CTARGET)
+	 nmake /nologo CFG="ApacheModuleAuthAnon - Win32 $(LONG)" -f ApacheModuleAuthAnon.mak RECURSE=0 $(CTARGET)
+	 nmake /nologo CFG="ApacheModuleDigest - Win32 $(LONG)" -f ApacheModuleDigest.mak RECURSE=0 $(CTARGET)
+	 nmake /nologo CFG="ApacheModuleCERNMeta - Win32 $(LONG)" -f ApacheModuleCERNMeta.mak RECURSE=0 $(CTARGET)
+	 nmake /nologo CFG="ApacheModuleExpires - Win32 $(LONG)" -f ApacheModuleExpires.mak RECURSE=0 $(CTARGET)
+	 nmake /nologo CFG="ApacheModuleHeaders - Win32 $(LONG)" -f ApacheModuleHeaders.mak RECURSE=0 $(CTARGET)
+	 nmake /nologo CFG="ApacheModuleSpeling - Win32 $(LONG)" -f ApacheModuleSpeling.mak RECURSE=0 $(CTARGET)
+	 nmake /nologo CFG="ApacheModuleUserTrack - Win32 $(LONG)" -f ApacheModuleUserTrack.mak RECURSE=0 $(CTARGET)
+         nmake /nologo CFG="ApacheModuleRewrite - Win32 $(LONG)" -f ApacheModuleRewrite.mak RECURSE=0 $(CTARGET)
 	cd ..\..
 #       cd modules\proxy
-#        nmake /nologo CFG="ApacheModuleProxy - Win32 $(LONG)" -f ApacheModuleProxy.mak
+#        nmake /nologo CFG="ApacheModuleProxy - Win32 $(LONG)" -f ApacheModuleProxy.mak RECURSE=0 $(CTARGET)
 #       cd ..\..
 
 _install:
@@ -110,51 +117,10 @@ _install:
 #       copy modules\proxy\$(LONG)\ApacheModuleProxy.dll $(INSTDIR)\modules
         copy support\$(LONG)\htpasswd.exe $(INSTDIR)\bin
 #       copy support\$(LONG)\htdigest.exe $(INSTDIR)\bin
+#	copy support\$(LONG)\logresolve.exe $(INSTDIR)\bin
 	copy support\$(LONG)\rotatelogs.exe $(INSTDIR)\bin
-
-_clean:
-	cd lib\apr
-	 nmake /nologo CFG="aprlib - Win32 $(LONG)" -f aprlib.mak clean
-	cd ..\..
-	cd regex
-	 nmake /nologo CFG="regex - Win32 $(LONG)" -f regex.mak clean
-	cd ..
-        cd ap
-         nmake /nologo CFG="ap - Win32 $(LONG)" -f ap.mak clean
-        cd ..
-	cd support
-	 nmake /nologo CFG="htpasswd - Win32 $(LONG)" -f htpasswd.mak clean
-	 nmake /nologo CFG="htdigest - Win32 $(LONG)" -f htdigest.mak clean
-	 nmake /nologo CFG="rotatelogs - Win32 $(LONG)" -f rotatelogs.mak clean
-	cd ..
-	cd main
-	 nmake /nologo CFG="gen_uri_delims - Win32 $(LONG)" -f gen_uri_delims.mak clean
-	 del uri_delims.h
-	 nmake /nologo CFG="gen_test_char - Win32 $(LONG)" -f gen_test_char.mak clean
-	 del test_char.h
-	cd ..
-	 nmake /nologo CFG="ApacheCore - Win32 $(LONG)" -f ApacheCore.mak clean
-	 nmake /nologo CFG="Apache - Win32 $(LONG)" -f Apache.mak clean
-	cd os\win32
-         nmake /nologo CFG="ApacheModuleStatus - Win32 $(LONG)" -f ApacheModuleStatus.mak clean
-#        nmake /nologo CFG="ApacheModuleInfo - Win32 $(LONG)" -f ApacheModuleInfo.mak clean
-	 nmake /nologo CFG="ApacheModuleAuthAnon - Win32 $(LONG)" -f ApacheModuleAuthAnon.mak clean
-	 nmake /nologo CFG="ApacheModuleDigest - Win32 $(LONG)" -f ApacheModuleDigest.mak clean
-	 nmake /nologo CFG="ApacheModuleCERNMeta - Win32 $(LONG)" -f ApacheModuleCERNMeta.mak clean
-	 nmake /nologo CFG="ApacheModuleExpires - Win32 $(LONG)" -f ApacheModuleExpires.mak clean
-	 nmake /nologo CFG="ApacheModuleHeaders - Win32 $(LONG)" -f ApacheModuleHeaders.mak clean
-	 nmake /nologo CFG="ApacheModuleSpeling - Win32 $(LONG)" -f ApacheModuleSpeling.mak clean
-	 nmake /nologo CFG="ApacheModuleUserTrack - Win32 $(LONG)" -f ApacheModuleUserTrack.mak clean
-         nmake /nologo CFG="ApacheModuleRewrite - Win32 $(LONG)" -f ApacheModuleRewrite.mak clean
-	cd ..\..
-#       cd modules\proxy
-#        nmake /nologo CFG="ApacheModuleProxy - Win32 $(LONG)" -f ApacheModuleProxy.mak clean
-#       cd ..\..
-	cd os\win32\installer\installdll
-	 nmake /nologo CFG="install - Win32 $(LONG)" -f install.mak clean
-	cd ..\..\..
 
 _installdll:
 	cd os\win32\installer\installdll
-	 nmake /nologo CFG="install - Win32 $(LONG)" -f install.mak
+	 nmake /nologo CFG="install - Win32 $(LONG)" -f install.mak RECURSE=0 $(CTARGET)
 	cd ..\..\..
