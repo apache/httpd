@@ -388,6 +388,13 @@
       --enable-suexec option to let APACI accept your request for
       using the suEXEC feature.</dd>
 
+      <dt><code>--with-suexec-bin=<em>PATH</em></code></dt>
+
+      <dd>The path to the suexec binary must be hard-coded in
+      the server for security reasons. Use this option to override
+      the default path. <em>e.g.</em>
+      <code>--with-suexec-bin=/usr/sbin/suexec</code></dd>
+
       <dt><code>--with-suexec-caller=<em>UID</em></code></dt>
 
       <dd>The <a href="mod/mpm_common.html#user">username</a> under which
