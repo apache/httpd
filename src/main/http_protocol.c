@@ -2384,7 +2384,9 @@ void ap_send_error_response(request_rec *r, int recursive_error)
 	             ap_escape_html(r->pool, r->server->server_admin),
 	             " and inform them of the time the error occurred,\n"
 	             "and anything you might have done that may have\n"
-	             "caused the error.<P>\n", NULL);
+	             "caused the error.<P>\n"
+		     "More information about this error may be available\n"
+		     "in the server error log.<P>\n", NULL);
 	    if ((error_notes = ap_table_get(r->notes, "error-notes")) != NULL) {
 		ap_bvputs(fd, error_notes, "<P>\n", NULL);
 	    }
