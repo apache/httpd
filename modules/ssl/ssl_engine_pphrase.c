@@ -533,18 +533,20 @@ int ssl_pphrase_Handle_CB(char *buf, int bufsize, int verify, void *srv)
      * Filter program
      */
     else if (sc->nPassPhraseDialogType == SSL_PPTYPE_FILTER) {
-        char *cmd;
+        const char *cmd = sc->szPassPhraseDialogPath;
+        const char **argv = apr_palloc(p, sizeof(char *) * 4);
         char *result;
 
         ssl_log(s, SSL_LOG_INFO,
                 "Init: Requesting pass phrase from dialog filter program (%s)",
-                sc->szPassPhraseDialogPath);
+                cmd);
 
-        if (ap_strchr_c(sc->szPassPhraseDialogPath, ' ') != NULL)
-            cmd = apr_psprintf(p, "\"%s\" %s %s", sc->szPassPhraseDialogPath, cpVHostID, cpAlgoType);
-        else
-            cmd = apr_psprintf(p, "%s %s %s", sc->szPassPhraseDialogPath, cpVHostID, cpAlgoType);
-        result = ssl_util_readfilter(s, p, cmd);
+        argv[0] = cmd;
+        argv[1] = cpVHostID;
+        argv[2] = cpAlgoType;
+        argv[3] = NULL;
+
+        result = ssl_util_readfilter(s, p, cmd, argv);
         apr_cpystrn(buf, result, bufsize);
         len = strlen(buf);
     }
