@@ -6,6 +6,7 @@
   <relpath>..</relpath>
 
   <variants>
+    <variant>de</variant>
     <variant>en</variant>
     <variant>ko</variant>
   </variants>

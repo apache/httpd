@@ -31,8 +31,8 @@
      <p>This creates the files /var/logs/logfile.nnnn where nnnn  is
      the system time at which the log nominally starts (this time
      will always be a multiple of the rotation time, so  you  can
-     synchronize cron scripts with it).  At the end of each rota-
-     tion time (here after 24 hours) a new log is started.</p>
+     synchronize cron scripts with it).  At the end of each rotation
+     time (here after 24 hours) a new log is started.</p>
 
 <div class="example"><p><code>
      CustomLog "|bin/rotatelogs /var/logs/logfile 5M" common
