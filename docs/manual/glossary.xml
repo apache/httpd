@@ -29,6 +29,11 @@ See:  <a
 href="howto/auth.html">Authentication, Authorization, and Access
 Control</a></dd>
 
+<dt><a name="algorithm">Algorithm</a></dt>
+<dd>An unambiguous formula or set of rules for solving a problem in
+a finite number of steps. Algorithms for encryption are usually called
+<dfn>Ciphers</dfn>.</dd>
+
 <dt><a name="apacheextensiontool">APache eXtension Tool</a> <a
 name="apxs">(apxs)</a></dt> <dd>A perl script that aids in compiling <a
 href="#module">module</a> sources into Dynamic Shared Objects (<a
@@ -93,9 +98,9 @@ can be used to encapsulate other protocols, such as the SSL
 protocol.</dd>
 
 <dt><a name="context">Context</a></dt> <dd>An area in the <a
-href="configurationfile">configuration files</a> where certain types
-of <a href="directive">directives</a> are allowed.<br /> See: <a
-href="http://httpd.apache.org/docs-2.0/mod/directive-dict.html#Context">Terms
+href="#configurationfile">configuration files</a> where certain types
+of <a href="#directive">directives</a> are allowed.<br /> See: <a
+href="mod/directive-dict.html#Context">Terms
 Used to Describe Apache Directives</a></dd>
 
 <dt><a name="digitalsignature">Digital Signature</a></dt>
@@ -147,9 +152,8 @@ href="filter.html">Filters</a></dd>
 Domain-Name</a> <a name="fqdn">(FQDN)</a></dt> <dd>The unique name of
 a network entity, consisting of a hostname and a domain name that can
 resolve to an IP address. For example, <code>www</code> is a hostname,
-<code>whatever.com</code> is a domain name, and
-<code>www.whatever.com</code> is a fully-qualified domain name.<br
-/><br /></dd>
+<code>example.com</code> is a domain name, and
+<code>www.example.com</code> is a fully-qualified domain name.</dd>
 
 <dt><a name="handler">Handler</a></dt> <dd>An internal Apache
 representation of the action to be performed when a file is
@@ -183,8 +187,7 @@ See: <a href="configuring.html">Configuration Files</a></dd>
 Protocol</a> <a name="http">(HTTP)</a></dt> <dd>The standard
 transmission protocol used on the World Wide Web.  Apache implements
 version 1.1 of the protocol, refered to as HTTP/1.1 and defined by <a
-href="ftp://ftp.isi.edu/in-notes/rfc2616.txt">RFC 2616</a>.<br /><br
-/></dd>
+href="http://ietf.org/rfc/rfc2616.txt">RFC 2616</a>.</dd>
 
 <dt><a name="https">HTTPS</a></dt>
 <dd>The HyperText Transport Protocol (Secure), the standard encrypted
@@ -195,8 +198,7 @@ See: <a href="ssl/">SSL/TLS Encryption</a></dd>
 <dt><a name="method">Method</a></dt> <dd>In the context of <a
 href="#http">HTTP</a>, an action to perform on a resource, specified
 on the request line by the client.  Some of the methods available in
-HTTP are <code>GET</code>, <code>POST</code>, and <code>PUT</code>.<br
-/><br /></dd>
+HTTP are <code>GET</code>, <code>POST</code>, and <code>PUT</code>.</dd>
 
 <dt><a name="messagedigest">Message Digest</a></dt>
 <dd>A hash of a message, which can be used to verify that the contents of
@@ -292,8 +294,7 @@ Apache uses Perl Compatible Regular Expressions provided by the
 <dt><a name="reverseproxy">Reverse Proxy</a></dt> <dd>A <a
 href="#proxy">proxy</a> server that appears to the client as if it is
 an <em>origin server</em>.  This is useful to hide the real origin
-server from the client for security reasons, or to load balance.<br
-/><br /></dd>
+server from the client for security reasons, or to load balance.</dd>
 
 <dt><a name="securesocketslayer">Secure Sockets Layer</a> <a
 name="ssl">(SSL)</a></dt> <dd>A protocol created by Netscape
@@ -305,8 +306,10 @@ See: <a href="ssl/">SSL/TLS Encryption</a></dd>
 <dt><a name="serversideincludes">Server Side Includes</a> <a
 name="ssi">(SSI)</a></dt> <dd>A technique for embedding processing
 directives inside HTML files.<br /> See: <a
-href="howto/ssi.html">Introduction to Server Side Includes</a><br
-/><br /></dd>
+href="howto/ssi.html">Introduction to Server Side Includes</a></dd>
+
+<dt><a name="session">Session</a></dt>
+<dd>The context information of a communication in general.</dd>
 
 <dt><a name="ssleay">SSLeay</a></dt>
 <dd>The original SSL/TLS implementation library developed by
@@ -332,7 +335,7 @@ See: <a href="ssl/">SSL/TLS Encryption</a></dd>
 <dt><a name="uniformresourcelocator">Uniform Resource Locator</a> <a
 name="url">(URL)</a></dt> <dd>The name/address of a resource on the
 Internet.  This is the common informal term for what is formally
-called a <a href="#uniformresourcename">Uniform Resource
+called a <a href="#uniformresourceidentifier">Uniform Resource
 Identifier</a>.  URLs are usually made up of a scheme, like
 <code>http</code> or <code>https</code>, a hostname, and a path.  A
 URL for this page is
