@@ -50,7 +50,7 @@
  *
  */
 
-/* $Id: http_request.c,v 1.20 1996/10/19 14:20:20 ben Exp $ */
+/* $Id: http_request.c,v 1.21 1996/10/19 14:44:39 ben Exp $ */
 
 /*
  * http_request.c: functions to get and process requests
@@ -602,8 +602,8 @@ request_rec *sub_req_lookup_uri (char *new_file, request_rec *r)
      */
     
     if ((res = directory_walk (rnew))
-	|| (res = location_walk (rnew))
 	|| (res = file_walk (rnew))
+	|| (res = location_walk (rnew))
 	|| (!some_auth_required (rnew) ? 0 :
 	     ((res = check_user_id (rnew)) || (res = check_auth (rnew))))
 	|| (res = check_access (rnew))
@@ -826,15 +826,15 @@ void process_request_internal (request_rec *r)
 	return;
     }	
 
-    if ((access_status = location_walk (r))) {
-        die (access_status, r);
-	return;
-    }	
-    
     if ((access_status = file_walk (r))) {
 	die (access_status, r);
 	return;
     }
+    
+    if ((access_status = location_walk (r))) {
+        die (access_status, r);
+	return;
+    }	
     
     if ((access_status = check_access (r)) != 0) {
         decl_die (access_status, "check access", r);
