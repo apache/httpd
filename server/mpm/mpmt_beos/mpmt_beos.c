@@ -263,7 +263,7 @@ static int wait_or_timeout(ap_wait_t *status)
     if (wait_or_timeout_counter == INTERVAL_OF_WRITABLE_PROBES) {
 	wait_or_timeout_counter = 0;
 #ifdef APR_HAS_OTHER_CHILD
-	probe_writable_fds();
+	ap_probe_writable_fds();
 #endif
     }
     ret = waitpid(-1, status, WNOHANG);
@@ -512,7 +512,6 @@ static void process_socket(ap_pool_t *p, ap_socket_t *sock, int my_child_num, in
                                          conn_id);
 
     ap_process_connection(current_conn);
-    ap_lingering_close(current_conn);
 }
 
 static int32 worker_thread(void * dummy)
@@ -853,7 +852,7 @@ static void server_main_loop(int remaining_children_to_start)
 		}
 #ifdef APR_HAS_OTHER_CHILD
 	    }
-	    else if (reap_other_child(pid, status) == 0) {
+	    else if (ap_reap_other_child(pid, status) == 0) {
 		/* handled */
 #endif
 	    }
