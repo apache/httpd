@@ -2469,7 +2469,7 @@ static const char *set_interpreter_source(cmd_parms *cmd, core_dir_config *d,
     } else if (!strcasecmp(arg, "script")) {
         d->script_interpreter_source = INTERPRETER_SOURCE_SHEBANG;
     } else {
-        return ap_pstrcat(cmd->temp_pool, "ScriptInterpreterSource \"", arg, 
+        return apr_pstrcat(cmd->temp_pool, "ScriptInterpreterSource \"", arg, 
                           "\" must be \"registry\", \"registry-strict\" or "
                           "\"script\"", NULL);
     }
