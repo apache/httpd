@@ -231,10 +231,10 @@
   Apache and PHP
   --------------
 
-  The PHP language (http://www.php.net/) is an HTML-embedded scripting language 
+  The PHP language (http://www.php.net) is an HTML-embedded scripting language 
   which can be directly integrated into the Apache HTTP server for powerful HTML 
-  scripting.  The distribution php-3.0RC.tar.gz can be found at
-  http://www.php.net/download-php.php3. Here is how you can install Apache with PHP:
+  scripting.  The package can be found at http://www.php.net/download-php.php3. 
+  Here is how you can install Apache with PHP:
 
     $ cd php-3.0
     $ ./configure --with-apache=../apache-1.3
