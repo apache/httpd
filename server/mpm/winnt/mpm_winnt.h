@@ -61,10 +61,6 @@
 
 #include "ap_listen.h"
 
-/* Till we are freed in the mpm_winnt */
-
-#include "buff.h"
-
 /* From registry.c: */
 
 apr_status_t ap_registry_create_key(const char *key);
@@ -134,7 +130,6 @@ typedef struct CompContext {
     SOCKET accept_socket;
     apr_socket_t *sock;
     ap_listen_rec *lr;
-    BUFF *conn_io;
     char *recv_buf;
     int  recv_buf_size;
     apr_pool_t *ptrans;
