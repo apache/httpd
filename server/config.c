@@ -84,6 +84,9 @@
 #include "http_main.h"
 #include "http_vhost.h"
 #include "util_cfgtree.h"
+#ifdef HAVE_ARPA_INET_H
+#include <arpa/inet.h>
+#endif
 
 API_VAR_EXPORT const char *ap_server_argv0;
 
