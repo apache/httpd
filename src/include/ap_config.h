@@ -259,6 +259,12 @@ typedef int pid_t;
 
 #elif defined(LINUX)
 #if LINUX > 1
+#include <features.h>
+#if defined(__GNU_LIBRARY__) && __GNU_LIBRARY__ > 1
+/* it's a glibc host */
+#include <crypt.h>
+#define NET_SIZE_T size_t
+#endif
 #define HAVE_SHMGET
 #define HAVE_SYS_RESOURCE_H
 typedef int rlim_t;
@@ -362,6 +368,7 @@ extern char *crypt();
 #define HAVE_SYS_RESOURCE_H
 #include <sys/time.h>
 #define _POSIX_SOURCE
+#define NET_SIZE_T size_t
 
 #elif defined(DGUX)
 #define NO_KILLPG
@@ -814,6 +821,13 @@ Sigfunc *signal(int signo, Sigfunc *func);
 #define XtOffsetOf(s_type,field) offsetof(s_type,field)
 #else
 #define XtOffsetOf(s_type,field) XtOffset(s_type*,field)
+#endif
+
+/* some architectures require size_t * pointers where others require int *
+ * pointers in functions such as accept(), getsockname(), getpeername()
+ */
+#ifndef NET_SIZE_T
+#define NET_SIZE_T int
 #endif
 
 #ifdef SUNOS_LIB_PROTOTYPES

@@ -1,3 +1,3 @@
-void dummy()
+void main()
     {
     }

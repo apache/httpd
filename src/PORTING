@@ -245,6 +245,11 @@ build for your OS.
        Amount to move sbrk() breakpoint, if required, before attaching
        shared-memory segment.
 
+      NET_SIZE_T:
+       Some functions such as accept(), getsockname(), getpeername() take
+       an int *len on some architectures and a size_t *len on others.
+       If left undefined apache will default it to int.
+
 -----------
 Conclusion:
 -----------

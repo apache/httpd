@@ -279,22 +279,11 @@ case "$PLAT" in
 	    CFLAGS="$CFLAGS -DIRIX"
 	fi
 	;;
-    alpha-*-linux2)
-	DEF_WANTHSREGEX=yes
-	OS='Linux'
-	CFLAGS="$CFLAGS -DLINUX=2"
-	LIBS="$LIBS -lcrypt"
-	;;
-    sparc-*-linux2)
-	DEF_WANTHSREGEX=yes
-	OS='Linux'
-	CFLAGS="$CFLAGS -DLINUX=2"
-	LIBS="$LIBS -lm"
-	;;
     *-linux2)
 	DEF_WANTHSREGEX=yes
 	OS='Linux'
 	CFLAGS="$CFLAGS -DLINUX=2"
+	LIBS="$LIBS -lm"
 	;;
     *-linux1)
 	DEF_WANTHSREGEX=yes
@@ -684,14 +673,37 @@ echo "SHELL=$SHELL">> Makefile.config
 # before we actually write LIBS to Makefile.config.
 # Punt for now...
 
+case "$PLAT" in
+    *-linux*)
+	# newer systems using glibc 2.x need -lcrypt
+	if ./helpers/TestLib crypt; then
+	    LIBS="$LIBS -lcrypt"
+	fi
+	# many systems have -ldb installed
+	DB_LIB=""
+	if ./helpers/TestLib db; then
+	    DB_LIB="-ldb"
+	fi;
+	# many systems don't have -ldbm
+	DBM_LIB=""
+	if ./helpers/TestLib dbm; then
+	    DBM_LIB="-ldbm"
+	elif ./helpers/TestLib ndbm; then
+	    DBM_LIB="-lndbm"
+	fi
+	;;
+esac
+
 #
 # Are they using dbm/db auth? If so, add DBM/DB library.
 #
 if grep mod_auth_dbm Makefile > /dev/null; then
     LIBS="$LIBS $DBM_LIB"
+    echo " + using $DBM_LIB for mod_auth_dbm"
 fi
 if grep mod_auth_db Makefile > /dev/null; then
     LIBS="$LIBS $DB_LIB"
+    echo " + using $DB_LIB for mod_auth_db"
 fi
 
 ####################################################################

@@ -402,8 +402,9 @@ proxy_ftp_handler(request_rec *r, struct cache_req *c, char *url)
     BUFF *f, *cache;
     BUFF *data = NULL;
     pool *pool=r->pool;
-    const int one=1;
+    int one=1;
     const long int zero=0L;
+    NET_SIZE_T clen;
 
     void *sconf = r->server->module_config;
     proxy_server_conf *conf =
@@ -498,8 +499,8 @@ proxy_ftp_handler(request_rec *r, struct cache_req *c, char *url)
     }
     note_cleanups_for_socket(pool, sock);
 
-    if (setsockopt(sock, SOL_SOCKET, SO_REUSEADDR, (const char *)&one,
-		   sizeof(int)) == -1)
+    if (setsockopt(sock, SOL_SOCKET, SO_REUSEADDR, (void *)&one,
+		   sizeof(one)) == -1)
     {
 	proxy_log_uerror("setsockopt", NULL,
 	    "proxy: error setting reuseaddr option", r->server);
@@ -742,8 +743,8 @@ proxy_ftp_handler(request_rec *r, struct cache_req *c, char *url)
 
     if (!pasvmode)	/* set up data connection */
     {
-        len = sizeof(struct sockaddr_in);
-        if (getsockname(sock, (struct sockaddr *)&server, &len) < 0)
+        clen = sizeof(struct sockaddr_in);
+        if (getsockname(sock, (struct sockaddr *)&server, &clen) < 0)
         {
 	    proxy_log_uerror("getsockname", NULL,
 	        "proxy: error getting socket address", r->server);
@@ -763,8 +764,8 @@ proxy_ftp_handler(request_rec *r, struct cache_req *c, char *url)
         }
         note_cleanups_for_fd(pool, dsock);
 
-        if (setsockopt(dsock, SOL_SOCKET, SO_REUSEADDR, (const char *)&one,
-		   sizeof(int)) == -1)
+        if (setsockopt(dsock, SOL_SOCKET, SO_REUSEADDR, (void *)&one,
+		   sizeof(one)) == -1)
         {
 	    proxy_log_uerror("setsockopt", NULL,
 	        "proxy: error setting reuseaddr option", r->server);
@@ -932,8 +933,8 @@ proxy_ftp_handler(request_rec *r, struct cache_req *c, char *url)
     if (!pasvmode)	/* wait for connection */
     {
         hard_timeout ("proxy ftp data connect", r);
-        len = sizeof(struct sockaddr_in);
-        do csd = accept(dsock, (struct sockaddr *)&server, &len);
+        clen = sizeof(struct sockaddr_in);
+        do csd = accept(dsock, (struct sockaddr *)&server, &clen);
         while (csd == -1 && errno == EINTR);
         if (csd == -1)
         {

@@ -1,5 +1,13 @@
 Changes with Apache 1.3
 
+  *) PORT: Some architectures use size_t for various lengths in network
+     functions such as accept(), and getsockname().  The definition
+     NET_SIZE_T is used to control this. [Dean Gaudet]
+
+  *) PORT: Linux: Attempt to detect glibc based systems and include crypt.h
+     and -lcrypt.  Test for various db libraries (dbm, ndbm, db) when
+     mod_auth_dbm or mod_auth_db are included.  [Dean Gaudet]
+
   *) PORT: QNX doesn't have initgroups() which support/suexec.c uses.
      [Igor N Kovalenko <infoh@mail.wplus.net>]
 

@@ -2084,11 +2084,7 @@ static fd_set main_fds;
 
 void child_main(int child_num_arg)
 {
-#if defined(UW)
-    size_t clen;
-#else
-    int clen;
-#endif
+    NET_SIZE_T clen;
     struct sockaddr sa_server;
     struct sockaddr sa_client;
     listen_rec *lr;
@@ -2744,6 +2740,7 @@ main(int argc, char *argv[])
 	request_rec *r;
 	struct sockaddr sa_server, sa_client;
 	BUFF *cio;
+	NET_SIZE_T l;
       
 	open_logs(server_conf, pconf);
 	set_group_privs();
@@ -2767,16 +2764,16 @@ main(int argc, char *argv[])
       }
 #endif
 
-	c = sizeof(sa_client);
-	if ((getpeername(fileno(stdin), &sa_client, &c)) < 0)
+	l = sizeof(sa_client);
+	if ((getpeername(fileno(stdin), &sa_client, &l)) < 0)
 	{
 /* get peername will fail if the input isn't a socket */
 	    perror("getpeername");
 	    memset(&sa_client, '\0', sizeof(sa_client));
 	}
 
-	c = sizeof(sa_server);
-	if(getsockname(fileno(stdin), &sa_server, &c) < 0) {
+	l = sizeof(sa_server);
+	if(getsockname(fileno(stdin), &sa_server, &l) < 0) {
 	    perror("getsockname");
 	    fprintf(stderr, "Error getting local address\n");
 	    exit(1);
