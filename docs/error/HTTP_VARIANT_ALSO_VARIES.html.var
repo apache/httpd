@@ -42,7 +42,7 @@ Content-language: es
 Content-type: text/html; charset=ISO-8859-1
 Body:----------es--
 <!--#set var="CONTENT_LANGUAGE" value="es"
---><!--#set var="TITLE" value="Variant also varies!"
+--><!--#set var="TITLE" value="&iexcl;Variante negociable&excl;"
 --><!--#include virtual="include/top.html" -->
 
 	No es posible tener acceso debido a que

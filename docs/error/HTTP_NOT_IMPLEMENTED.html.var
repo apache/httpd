@@ -39,10 +39,10 @@ Content-language: es
 Content-type: text/html; charset=ISO-8859-1
 Body:----------es--
 <!--#set var="CONTENT_LANGUAGE" value="es"
---><!--#set var="TITLE" value="Cannot proceed request!"
+--><!--#set var="TITLE" value="&iexcl;Solicitud no procesada&excl;"
 --><!--#include virtual="include/top.html" -->
 
-	El buscador esta solicitando una acci&oacute;n 
+	El navegador est&aacute; solicitando una acci&oacute;n 
 	que no puede ser procesada.
     
 <!--#include virtual="include/bottom.html" -->

@@ -56,10 +56,10 @@ Content-language: es
 Content-type: text/html; charset=ISO-8859-1
 Body:----------es--
 <!--#set var="CONTENT_LANGUAGE" value="es"
---><!--#set var="TITLE" value="Bad Gateway!"
+--><!--#set var="TITLE" value="&iexcl;Puerta de enlace err&oacute;nea&excl;"
 --><!--#include virtual="include/top.html" -->
 
-	El servidor fuente recibio informaci&oacute;n 
+	El servidor origen recibi&oacute; informaci&oacute;n 
 	inv&aacute;lida por parte del servidor destino.
 
   <!--#if expr="$REDIRECT_ERROR_NOTES" -->

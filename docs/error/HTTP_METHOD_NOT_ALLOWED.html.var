@@ -41,12 +41,12 @@ Content-language: es
 Content-type: text/html; charset=ISO-8859-1
 Body:----------es--
 <!--#set var="CONTENT_LANGUAGE" value="es"
---><!--#set var="TITLE" value="Method not allowed!"
+--><!--#set var="TITLE" value="&iexcl;M&eacute;todo no permitido&excl;"
 --><!--#include virtual="include/top.html" -->
 
 	El <!--#echo var="REDIRECT_REQUEST_METHOD" -->
-	m&eacute;todo utilizado por su solicitud no esta 
-	permitido por el URL.
+	m&eacute;todo utilizado por su solicitud no est&aacute; 
+	permitido por el enlace.
     
 <!--#include virtual="include/bottom.html" -->
 ----------es--

@@ -42,11 +42,11 @@ Content-language: es
 Content-type: text/html; charset=ISO-8859-1
 Body:----------es--
 <!--#set var="CONTENT_LANGUAGE" value="es"
---><!--#set var="TITLE" value="Submitted URI too large!"
+--><!--#set var="TITLE" value="&iexcl;Direcci&oacute;n suministrada demasiado larga&excl;"
 --><!--#include virtual="include/top.html" -->
 
 	Su solicitud no puede procesarse debido a que la
-	longitud del URL excede la capacidad limite del 
+	longitud del enlace excede la capacidad l&iacute;mite del 
 	servidor. 
     
 <!--#include virtual="include/bottom.html" -->
