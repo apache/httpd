@@ -118,9 +118,12 @@ static void *merge_dir_configs(apr_pool_t *p, void *basev, void *addv)
 
 static int fixup_dir(request_rec *r)
 {
-    /* only (potentially) redirect for GET requests against directories */
-    if (r->method_number != M_GET || r->finfo.filetype != APR_DIR) {
-	return DECLINED;
+    /* only redirect for requests against directories or when we have
+     * a note that says that this browser can not handle redirs on
+     * non-GET requests (such as Microsoft's WebFolders). */
+    if (r->finfo.filetype != APR_DIR || (r->method_number != M_GET && 
+        apr_table_get(r->subprocess_env, "redirect-carefully"))) {
+	    return DECLINED;
     }
 
     if (r->uri[0] == '\0' || r->uri[strlen(r->uri) - 1] != '/') {

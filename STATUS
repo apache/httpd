@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:						-*-text-*-
-Last modified at [$Date: 2001/11/13 05:04:24 $]
+Last modified at [$Date: 2001/11/13 05:10:24 $]
 
 Release:
 
@@ -62,14 +62,6 @@ RELEASE SHOWSTOPPERS:
       before or after the Add...Filter(s) which are ordered by sequence of
       filename extensions.  Add...FilterByType will add to this quandry.
       Some sort of resolution needs to be proposed, 
-
-    * mod_dir should normally redirect ALL directory requests which do
-      not include a trailing slash on the URI. However, if a "notes"
-      flag is set (say, via BrowserMatch), this behavior will be
-      disabled for non-GET requests.
-        Status: Greg volunteers
-        MsgId: <20010227104646.E2297@lyra.org>
-        MsgId: <3A9C0097.9C83F07C@Golux.Com>
 
     * mod_negotiation needs a new option or directive, something like
       ForceLanguagePriority, to fall back to the LanguagePriority
