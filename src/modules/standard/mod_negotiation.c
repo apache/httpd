@@ -2710,8 +2710,19 @@ static int handle_multi(request_rec *r)
      */
     ap_pool_join(r->pool, sub_req->pool);
     r->mtime = 0; /* reset etag info for subrequest */
-    r->uri = sub_req->uri;
-    r->args = sub_req->args;
+    /* XXX: uri/args/path_info are all retained from the original request.
+     *      It is entirely possible, but not common, for a handler to choke
+     *      on some expectation based on the uri (or more commonly, args) that 
+     *      the file subrequest was prepared to handle, but a lookup_uri would
+     *      have considered an error.  This leaves an improbable possibility 
+     *      that the user might fail a mod_dir request later, and the server 
+     *      may respond with a mod_autoindex response.  However, this has been
+     *      the behavior throughout much of the Apache 1.3 era with minimal
+     *      side effects, mostly caused by obscure configuration bugs.
+     *  r->uri = sub_req->uri;
+     *  r->args = sub_req->args;
+     *  r->path_info = sub_req->path_info;  
+     */
     r->filename = sub_req->filename;
     r->handler = sub_req->handler;
     r->content_type = sub_req->content_type;
