@@ -85,7 +85,7 @@ BEGIN {
   print "      VALUE \"FileDescription\", \"" desc "\\0\"";
   print "      VALUE \"FileVersion\", \"" ver "\\0\"";
   print "      VALUE \"InternalName\", \"" file "\\0\"";
-  print "      VALUE \"LegalCopyright\", \"Copyright © 2001 "\
+  print "      VALUE \"LegalCopyright\", \"Copyright © 2000-2002 "\
         "The Apache Software Foundation.\\0\"";
   print "      VALUE \"OriginalFilename\", \"" file ".exe\\0\"";
   if (vendor) {
