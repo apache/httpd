@@ -903,7 +903,6 @@ apr_status_t dechunk_filter(ap_filter_t *f, ap_bucket_brigade *bb,
              */
             char line[30];
             
-            ap_debug_assert(!strcmp(f->next->frec->name, "HTTP_IN"));
             if ((rv = ap_get_brigade(f->next, bb, AP_GET_LINE)) != APR_SUCCESS) {
                 return rv;
             }
@@ -2363,11 +2362,6 @@ AP_DECLARE(int) ap_setup_client_block(request_rec *r, int read_policy)
 			  "Unknown Transfer-Encoding %s", tenc);
             return HTTP_NOT_IMPLEMENTED;
         }
-/*XXX hack to use mod_cgi[d] for testing chunked request bodies XXX
-        if (r->read_body == REQUEST_CHUNKED_ERROR) {
-            r->read_body = REQUEST_CHUNKED_DECHUNK;
-        }
-  XXX end of this particular hack :) */
         if (r->read_body == REQUEST_CHUNKED_ERROR) {
             ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
 			  "chunked Transfer-Encoding forbidden: %s", r->uri);
@@ -2500,13 +2494,6 @@ AP_DECLARE(long) ap_get_client_block(request_rec *r, char *buffer, int bufsiz)
             apr_setsocketopt(r->connection->client->bsock, APR_SO_TIMEOUT, timeout);
         }
         b = AP_BRIGADE_FIRST(bb);
-        while (!AP_BUCKET_IS_EOS(b) && b->length == 0 && 
-               b != AP_BRIGADE_SENTINEL(bb)) {
-            ap_bucket *e = b;
-            b = AP_BUCKET_NEXT(e);
-            AP_BUCKET_REMOVE(e);
-            ap_bucket_destroy(e);
-        }
     } while (AP_BRIGADE_EMPTY(bb));
 
     if (AP_BUCKET_IS_EOS(b)) {         /* reached eos on previous invocation */
