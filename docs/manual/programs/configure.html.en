@@ -131,11 +131,16 @@
 
     <h4><a name="layout" id="layout">Define a directory layout</a></h4>
       <dl>
-        
         <dt><code>--enable-layout=<var>LAYOUT</var></code></dt>
         <dd>Configure the source code and build scripts to assume an
-          installation tree based on the layout <var>LAYOUT</var>. The default
-          layout is <code>Apache</code>.</dd>
+          installation tree based on the layout <var>LAYOUT</var>. This allows
+          you to separately specify the locations for each type of file within
+          the Apache HTTP Server installation. The <code>config.layout</code>
+          file contains several example configurations, and you can also create
+          your own custom configuration following the examples. The different
+          layouts in this file are grouped into <code>&lt;Layout
+            FOO&gt;...&lt;/Layout&gt;</code> sections and referred to by name as
+          in <code>FOO</code>. The default layout is <code>Apache</code>.</dd>
       </dl>
     
 
