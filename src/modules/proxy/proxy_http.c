@@ -586,6 +586,7 @@ int ap_proxy_http_handler(request_rec *r, cache_req *c, char *url,
      * What we read/write after the header should not be modified (i.e., the
      * cache copy is ASCII, not EBCDIC, even for text/html)
      */
+    r->ebcdic.conv_in = r->ebcdic.conv_out = 0;
     ap_bsetflag(f, B_ASCII2EBCDIC | B_EBCDIC2ASCII, 0);
     ap_bsetflag(r->connection->client, B_ASCII2EBCDIC | B_EBCDIC2ASCII, 0);
 #endif

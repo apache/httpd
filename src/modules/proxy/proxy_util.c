@@ -453,7 +453,7 @@ long int ap_proxy_send_fb(BUFF *f, request_rec *r, cache_req *c, off_t len, int 
     size_t buf_size;
     size_t remaining = 0;
     long total_bytes_rcvd;
-    register int n, o, w;
+    register int n = 0, o, w;
     conn_rec *con = r->connection;
     int alternate_timeouts = 1; /* 1 if we alternate between soft & hard
                                  * timeouts */
@@ -553,13 +553,17 @@ long int ap_proxy_send_fb(BUFF *f, request_rec *r, cache_req *c, off_t len, int 
             /* soak up trailing CRLF */
             if (0 == remaining) {
                 char ch;
-/****/
-/* XXXX FIXME: Does this little "soak CRLF" work with EBCDIC???? */
-/****/
-                if ((ch = ap_bgetc(f)) == CR) {
+                /*
+		 * For EBCDIC, the proxy has configured the BUFF layer to
+		 * transparently pass the ascii characters thru (also writing
+		 * an ASCII copy to the cache, where appropriate).
+		 * Therefore, we see here an ASCII-CRLF (\015\012),
+		 * not an EBCDIC-CRLF (\r\n).
+		 */
+                if ((ch = ap_bgetc(f)) == '\015') { /* _ASCII_ CR */
                     ch = ap_bgetc(f);
                 }
-                if (ch != LF) {
+                if (ch != '\012') {
                     n = -1;
                 }
             }
@@ -1476,6 +1480,16 @@ void ap_proxy_clear_connection(pool *p, table *headers)
 
     /* unset hop-by-hop headers defined in RFC2616 13.5.1 */
     ap_table_unset(headers,"Keep-Alive");
+    /*
+     * XXX: @@@ FIXME: "Proxy-Authenticate" should IMO *not* be stripped
+     * because in a chain of proxies some "front" proxy might need
+     * proxy authentication, while a "back-end" proxy which needs none can
+     * simply pass the "Proxy-Authenticate" back to the client, and pass
+     * the client's "Proxy-Authorization" to the front-end proxy.
+     * (See the note in proxy_http.c for the "Proxy-Authorization" case.)
+     *
+     *   MnKr 04/2002
+     */
     ap_table_unset(headers,"Proxy-Authenticate");
     ap_table_unset(headers,"TE");
     ap_table_unset(headers,"Trailer");
