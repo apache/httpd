@@ -212,9 +212,11 @@ unsigned char *ssl_asn1_table_set(apr_hash_t *table,
      * reuse as much of the already malloc-ed data
      * as possible.
      */
-    if (asn1 && (asn1->nData != length)) {
-        free(asn1->cpData); /* XXX: realloc? */
-        asn1->cpData = NULL;
+    if (asn1) {
+        if (asn1->nData != length) {
+            free(asn1->cpData); /* XXX: realloc? */
+            asn1->cpData = NULL;
+        }
     }
     else {
         asn1 = malloc(sizeof(*asn1));
