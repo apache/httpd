@@ -20,7 +20,7 @@
       <tr>
         <td valign="top"><strong>関連モジュール</strong><br />
          <br />
-         <a href="mod/mod_deflate.html">mod_defalte</a><br />
+         <a href="mod/mod_deflate.html">mod_deflate</a><br />
          <a href="mod/mod_ext_filter.html">mod_ext_filter</a><br />
          <a href="mod/mod_include.html">mod_include</a><br />
         </td>
