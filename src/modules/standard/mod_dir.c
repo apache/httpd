@@ -783,8 +783,8 @@ int handle_dir (request_rec *r)
 			 "/", NULL);
 
 	table_set (r->headers_out, "Location",
-		   construct_url(r->pool, ifile, r->server));
-	return REDIRECT;
+		   construct_url(r->pool, ifile, r->server)); 
+	return HTTP_MOVED_PERMANENTLY;
     }
 
     /* KLUDGE --- make the sub_req lookups happen in the right directory.
