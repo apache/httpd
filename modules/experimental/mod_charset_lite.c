@@ -307,7 +307,16 @@ static int find_code_page(request_rec *r)
                           "mime type is %s; no translation selected",
                           mime_type);
         }
+#if #system(bs2000)
+/* We must not bail out here (i.e., the MIME test must be in the filter
+ * itself, not in the fixup, because only then is the final MIME type known.
+ * Examples for late changes to the MIME type include CGI handling (MIME
+ * type is set in the Content-Type header produced by the CGI script), or
+ * PHP (until PHP runs, the MIME type is set to application/x-httpd-php)
+ */
+#else
         return DECLINED;
+#endif
     }
 
     if (dc->debug >= DBGLVL_GORY) {
@@ -330,6 +339,16 @@ static int find_code_page(request_rec *r)
     ap_set_module_config(r->request_config, &charset_lite_module, reqinfo);
 
     reqinfo->output_ctx = output_ctx;
+
+#if #system(bs2000)
+/* We must not open the xlation table here yet, because the final MIME
+ * type is not known until we are actually called in the output filter.
+ * With POST or PUT request, the case is different, because their MIME
+ * type is set in the request headers, and their data are prerequisites
+ * for actually calling, e.g., the CGI handler later on.
+ */
+    output_ctx->xlate = NULL;
+#else
     rv = apr_xlate_open(&output_ctx->xlate, 
                         dc->charset_default, dc->charset_source, r->pool);
     if (rv != APR_SUCCESS) {
@@ -338,6 +357,7 @@ static int find_code_page(request_rec *r)
                       dc->charset_source, dc->charset_default);
         return HTTP_INTERNAL_SERVER_ERROR;
     }
+#endif
 
     switch (r->method_number) {
     case M_PUT:
@@ -857,6 +877,56 @@ static apr_status_t xlate_out_filter(ap_filter_t *f, apr_bucket_brigade *bb)
             ctx->noop = 1;
         }
     }
+
+#if #system(bs2000)
+    /* Opening the output translation (this used to be done in the fixup hook,
+     * but that was too early: a subsequent type modification, e.g., by a
+     * CGI script, would go unnoticed. Now we do it in the filter itself.)
+     */
+    if (!ctx->noop && ctx->xlate == NULL)
+    {
+        const char *mime_type = f->r->content_type ? f->r->content_type : ap_default_type(f->r);
+
+        /* XXX When we handle translation of the request body, watch out here as
+         *     1.3 allowed additional mime types: multipart and 
+         *     application/x-www-form-urlencoded
+         */
+        if (strncasecmp(mime_type, "text/", 5) == 0 ||
+#if APR_CHARSET_EBCDIC
+        /* On an EBCDIC machine, be willing to translate mod_autoindex-
+         * generated output.  Otherwise, it doesn't look too cool.
+         *
+         * XXX This isn't a perfect fix because this doesn't trigger us
+         * to convert from the charset of the source code to ASCII.  The
+         * general solution seems to be to allow a generator to set an
+         * indicator in the r specifying that the body is coded in the
+         * implementation character set (i.e., the charset of the source
+         * code).  This would get several different types of documents
+         * translated properly: mod_autoindex output, mod_status output,
+         * mod_info output, hard-coded error documents, etc.
+         */
+        strcmp(mime_type, DIR_MAGIC_TYPE) == 0 ||
+#endif
+        strncasecmp(mime_type, "message/", 8) == 0) {
+
+            rv = apr_xlate_open(&ctx->xlate, 
+                        dc->charset_default, dc->charset_source, f->r->pool);
+            if (rv != APR_SUCCESS) {
+                ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, f->r,
+                              "can't open translation %s->%s",
+                              dc->charset_source, dc->charset_default);
+                ctx->noop = 1;
+	    }
+        }
+        else {
+                ctx->noop = 1;
+                if (dc->debug >= DBGLVL_GORY) 
+                    ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, f->r,
+                                  "mime type is %s; no translation selected",
+                                  mime_type);
+            }
+    }
+#endif
 
     if (dc->debug >= DBGLVL_GORY) {
         ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, f->r,
