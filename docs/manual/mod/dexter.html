@@ -1,7 +1,7 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
 <HTML>
 <HEAD>
-<TITLE>Apache MPM mpmt_pthread</TITLE>
+<TITLE>Apache MPM dexter</TITLE>
 </HEAD>
 
 <!-- Background white, links blue (unvisited), navy (visited), red (active) -->
@@ -14,10 +14,11 @@
 >
 <!--#include virtual="header.html" -->
 
-<H1 ALIGN="CENTER">Multi-Processing Module mpmt_pthread</H1>
+<H1 ALIGN="CENTER">Multi-Processing Module dexter</H1>
 <P>
-This Multi-Processing Module controls process and thread creation
-using the pthread interface.
+This Multi-Processing Module implements a hybrid multi-process
+multi-threaded web server with a variable number of threads per
+process.
 </P>
 
 <P><A
@@ -38,11 +39,47 @@ REL="Help"
 
 <H2>Summary</H2>
 
-<p>This Multi-Processing Module (MPM) is the default for most
-unix-like operating systems.  It uses pthread system calls to create a
-hybrid multi-process multi-threaded server.  The server starts a fixed
-number of processes.  The server adjusts to handle load by increasing
-or decreasing the number of threads.</p>
+<p>This Multi-Processing Module (MPM) implements a hybrid
+multi-process, multi-threaded web server.  A fixed number of processes
+create threads to handle requests.  Fluctuations in load are handled
+by increasing or decreasing the number of threads in each process.</p>
+
+<p>A single control process launches the number of child processes
+indicated by the <code>NumServers</code> directive at server startup.
+Each child process creates threads as specified in the
+<code>StartThreads</code> directive.  The individual threads then
+listen for connections and serve them when they arrive.</p>
+
+<p>Apache always tries to maintain a pool of <em>spare</em> or idle
+server threads, which stand ready to serve incoming requests.  In this
+way, clients do not need to wait for new threads to be created.  For
+each child process, Apache assesses the number of idle threads and
+creates or destroys threads to keep this number within the boundaries
+specified by <code>MinSpareThreads</code> and
+<code>MaxSpareThreads</code>.  Since this process is very
+self-regulating, it is rarely necessary to modify these directives
+from their default values.  The maximum number of clients that may be
+served simultaneously is determined by multiplying the number
+of server processes that will be created (<code>NumServers</code>) by
+the maximum number of threads created in each process
+(<code>MaxThreadsPerChild</code>).</p>
+
+<p>While the parent process is usually started as root under Unix in
+order to bind to port 80, the child processes and threads are launched
+by Apache as a less-privileged user.  The <code>User</code> and
+<code>Group</code> directives are used to set the privileges of the
+Apache child processes.  The child processes must be able to read all
+the content that will be served, but should have as few privileges
+beyond that as possible.  In addition, unless <a
+href="../suexec.html">suexec</a> is used, these directives also set
+the privileges which will be inherited by CGI scripts.</p>
+
+<p><code>MaxRequestsPerChild</code> controls how frequently the server
+recycles processes by killing old ones and launching new ones.</p>
+
+<p>See also: <a href="../bind.html">Setting which addresses and ports
+Apache uses</a>.</p>
+
 
 
 <H2>Directives</H2>
@@ -56,6 +93,7 @@ or decreasing the number of threads.</p>
 <li><a href="mpm_common.html#lockfile">LockFile</a></li>
 <li><a href="mpm_common.html#maxrequestsperchild">MaxRequestsPerChild</a></li>
 <li><a href="mpm_common.html#maxsparethreads">MaxSpareThreads</a></li>
+<li><a href="mpm_common.html#maxthreadsperchild">MaxThreadsPerChild</a></li>
 <li><a href="mpm_common.html#minsparethreads">MinSpareThreads</a></li>
 <li><a href="mpm_common.html#numservers">NumServers</a></li>
 <li><a href="mpm_common.html#scoreboardfile">ScoreBoardFile</a></li>

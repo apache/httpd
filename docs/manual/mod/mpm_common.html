@@ -32,6 +32,7 @@ than one multi-processing module (MPM).
 <li><a href="#maxclients">MaxClients</a></li>
 <li><a href="#maxrequestsperchild">MaxRequestsPerChild</a></li>
 <li><a href="#maxsparethreads">MaxSpareThreads</a></li>
+<li><a href="#maxthreadsperchild">MaxThreadsPerChild</a></li>
 <li><a href="#minsparethreads">MinSpareThreads</a></li>
 <li><a href="#numservers">NumServers</a></li>
 <li><a href="#scoreboardfile">ScoreBoardFile</a></li>
@@ -416,7 +417,6 @@ behavior to limit the number of <EM>connections</EM> per child.
 
 
 <H2><A NAME="maxsparethreads">MaxSpareThreads directive</A></H2>
-<!--%plaintext &lt;?INDEX {\tt MaxSpareServers} directive&gt; -->
 <p><A
  HREF="directive-dict.html#Syntax"
  REL="Help"
@@ -448,6 +448,37 @@ until the number of idle threads is less than this number.</p>
 
 <p>See also <A HREF="#minsparethreads">MinSpareThreads</A> and
 <A HREF="#startservers">StartServers</A>.
+
+<P><HR>
+
+<H2><A NAME="maxthreadsperchild">MaxThreadsPerChild directive</A></H2>
+<p><A
+ HREF="directive-dict.html#Syntax"
+ REL="Help"
+><STRONG>Syntax:</STRONG></A> MaxThreadsPerChild <EM>number</EM><BR>
+<A
+ HREF="directive-dict.html#Default"
+ REL="Help"
+><STRONG>Default:</STRONG></A> <CODE>MaxThreadsPerChild 64</code>
+<A
+ HREF="directive-dict.html#Context"
+ REL="Help"
+><STRONG>Context:</STRONG></A> server config<BR>
+<A
+ HREF="directive-dict.html#Status"
+ REL="Help"
+><STRONG>Status:</STRONG></A> core<BR>
+<A
+ HREF="directive-dict.html#Module"
+ REL="Help"
+><STRONG>Module:</STRONG></A> mpmt_pthread, perchild</p>
+
+<P>Maximum number of threads per child.  For MPMs with a variable
+number of threads per child, this directive sets the maximum number of
+threads that will be created in each child process.  To increase this
+value beyond its default, it is necessary to to change the value of
+the compile-time define <code>HARD_THREAD_LIMIT</code> and recompile
+the server.</p>
 
 <P><HR>
 
