@@ -776,8 +776,8 @@ AP_DECLARE(unsigned) ap_get_server_port(const request_rec *r)
 
     if (d->use_canonical_name == USE_CANONICAL_NAME_OFF
 	|| d->use_canonical_name == USE_CANONICAL_NAME_DNS) {
-        return r->hostname ? ntohs(r->connection->local_addr.sin_port)
-			   : port;
+        if (r->hostname)
+           apr_get_local_port(&port, r->connection->client_socket);
     }
     /* default */
     return port;
