@@ -21,7 +21,9 @@ $(LIB): $(OBJS)
 	$(CC) -c $(INCLUDES) $(CFLAGS) $(SPACER) $<
 
 clean:
-	rm -f $(OBJS)
+	rm -f $(OBJS) $(LIB)
+
+$(OBJS): Makefile
 
 # DO NOT REMOVE
 os.o:	os.c

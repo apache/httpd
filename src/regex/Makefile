@@ -35,7 +35,9 @@ JUNKLINT=possible pointer alignment|null effect
 .c.ih:
 	sh ./mkh $(MKHFLAGS) -p $< >$@
 
-all lib:	purge $(OBJPRODN)
+all lib: libregex.a
+
+libregex.a: $(OBJPRODN)
 	rm -f libregex.a
 	ar cr libregex.a $(OBJPRODN)
 	$(RANLIB) libregex.a
@@ -49,9 +51,9 @@ purge:
 REGEXH=regex.h
 REGEXHSRC=regex2.h $(REGSRC)
 $(REGEXH):	$(REGEXHSRC) mkh
-	sh ./mkh $(MKHFLAGS) -i _REGEX_H_ $(REGEXHSRC) >regex.tmp
-	cmp -s regex.tmp regex.h 2>/dev/null || cp regex.tmp regex.h
-	rm -f regex.tmp
+	sh ./mkh $(MKHFLAGS) -i _REGEX_H_ $(REGEXHSRC) >regex.h
+	#cmp -s regex.tmp regex.h 2>/dev/null || cp regex.tmp regex.h
+	#rm -f regex.tmp
 
 # dependencies
 $(OBJPRODN) debug.o:	utils.h regex.h regex2.h

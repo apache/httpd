@@ -43,8 +43,8 @@ support-dir:
 	cd support; $(MAKE) CC='$(CC)' AUX_CFLAGS='$(CFLAGS)' RANLIB='$(RANLIB)'
 
 clean:
-	rm -f httpd *.o $(OBJS) 
-	for i in $(SUBDIRS) regex; do \
+	rm -f httpd *.o
+	for i in $(SUBDIRS); do \
 		( cd $$i; $(MAKE) $@ ) \
 	done
 
