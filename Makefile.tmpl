@@ -171,7 +171,7 @@ install:
 	fi
 	@$(MAKE) -f $(MKF) $(MFLAGS) \
 		install-mktree install-programs $(install-support) \
-		install-include install-docroot install-config
+		install-include install-data install-config
 	-@rm -f .install.tmp
 	-@rm -f .install.conf
 	-@if [ ".$(QUIET)" != .1 ]; then \
@@ -308,21 +308,32 @@ install-include:
 
 #   create an initial document root containing the Apache manual,
 #   icons and distributed CGI scripts.
-install-docroot:
-	@echo "===> [docroot: Installing initial DocumentRoot files]"
-	-(cd $(ROOT)/htdocs/ && $(TAR) cf - *) |\
-	 (cd $(datadir)/htdocs/ && $(TAR) xf -)
-	-find $(datadir)/htdocs/ -type d -exec chmod a+rx {} \;
-	-find $(datadir)/htdocs/ -type f -exec chmod a+r {} \;
-	-(cd $(ROOT)/icons/ && $(TAR) cf - *) |\
-	 (cd $(datadir)/icons/ && $(TAR) xf -)
-	-find $(datadir)/icons/ -type d -exec chmod a+rx {} \;
-	-find $(datadir)/icons/ -type f -exec chmod a+r {} \;
-	-(cd $(ROOT)/cgi-bin/ && $(TAR) cf - *) |\
-	 (cd $(datadir)/cgi-bin/ && $(TAR) xf -)
-	-find $(datadir)/cgi-bin/ -type d -exec chmod a+rx {} \;
-	-find $(datadir)/cgi-bin/ -type f -exec chmod a+r {} \;
-	@echo "<=== [docroot]"
+install-data:
+	@echo "===> [data: Installing initial data files]"
+	-@if [ -f $(datadir)/htdocs/index.html ]; then \
+		echo "[PRESERVING EXISTING DATA SUBDIR: $(datadir)/htdocs/]"; \
+	else \
+		echo "Copying tree $(ROOT)/htdocs/ -> $(datadir)/htdocs/"; \
+		(cd $(ROOT)/htdocs/ && $(TAR) cf - *) |\
+		(cd $(datadir)/htdocs/ && $(TAR) xf -); \
+		find $(datadir)/htdocs/ -type d -exec chmod a+rx {} \; ; \
+		find $(datadir)/htdocs/ -type f -exec chmod a+r {} \; ; \
+	fi
+	-@if [ -f $(datadir)/cgi-bin/printenv ]; then \
+		echo "[PRESERVING EXISTING DATA SUBDIR: $(datadir)/cgi-bin/]"; \
+	else \
+		echo "Copying tree $(ROOT)/cgi-bin/ -> $(datadir)/cgi-bin/"; \
+		(cd $(ROOT)/cgi-bin/ && $(TAR) cf - *) |\
+		(cd $(datadir)/cgi-bin/ && $(TAR) xf -); \
+		find $(datadir)/cgi-bin/ -type d -exec chmod a+rx {} \; ; \
+		find $(datadir)/cgi-bin/ -type f -exec chmod a+r {} \; ; \
+	fi
+	@echo "Copying tree $(ROOT)/icons/ -> $(datadir)/icons/"; \
+	(cd $(ROOT)/icons/ && $(TAR) cf - *) |\
+	(cd $(datadir)/icons/ && $(TAR) xf -); \
+	find $(datadir)/icons/ -type d -exec chmod a+rx {} \; ;\
+	find $(datadir)/icons/ -type f -exec chmod a+r {} \;
+	@echo "<=== [data]"
 
 #   create the initial configuration by providing default files
 #   and initial config files while preserving existing ones.

@@ -57,6 +57,7 @@ Committed Code Changes:
     * Ralf's fix for the install-config target to get correct MimeMagicFile
     * PRs 2081 and 2082 closed
     * Ralf's adjustments to `configure --compat' to be even more "compatible"
+    * Ralf/Jim's enhanced "make install" carefulness for DocRoot, PR#2084
 
 Available Patches:
 

@@ -1,5 +1,9 @@
 Changes with Apache 1.3b7
   
+  *) Make sure that "make install" doesn't overwrite the DocumentRoot and
+     CGI scripts from an existing Apache installation. 
+     [Ralf S. Engelschall, Jim Jagielski, PR#2084]
+
   *) Make `configure --compat' more "compatible" by first 
      let the libexecdir default to EPREFIX/libexec instead of EPREFIX/bin and
      second by making sure the "avoid-bristling-suffix" /apache is not
