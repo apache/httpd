@@ -1964,23 +1964,34 @@ API_EXPORT(char *) ap_puudecode(pool *p, const char *bufcoded)
     char *decoded;
     int l;
 
-    decoded = (char *) ap_palloc(p, 1+ap_uudecode_len(bufcoded));
-    l = ap_uudecode(decoded,bufcoded);
+    decoded = (char *) ap_palloc(p, 1+ap_base64decode_len(bufcoded));
+    l = ap_base64decode(decoded,bufcoded);
     decoded[l]='\0'; /* make binary sequence into string */
 
     return decoded;
 }
+
 
 API_EXPORT(char *) ap_puuencode(pool *p, char *string) 
 { 
     char *encoded;
     int l = strlen(string);
 
-    encoded = (char *) ap_palloc(p, 1+ap_uuencode_len(l));
-    l=ap_uuencode(encoded,string,l);
+    encoded = (char *) ap_palloc(p, 1+ap_base64encode_len(l));
+    l=ap_base64encode(encoded,string,l);
     encoded[l]='\0'; /* make binary sequence into string */
 
     return encoded;
+}
+
+API_EXPORT(char *) ap_uudecode(pool *p, const char *bufcoded)
+{
+    return ap_puudecode(p,bufcoded);
+}
+
+API_EXPORT(char *) ap_uuencode(pool *p, char *string) 
+{ 
+    return ap_puuencode(p,string);
 }
 
 #ifdef OS2

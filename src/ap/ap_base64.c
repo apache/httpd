@@ -111,7 +111,7 @@ static const unsigned char pr2six[256] =
 #endif /*CHARSET_EBCDIC*/
 };
 
-API_EXPORT(int) ap_uudecode_len(const char *bufcoded)
+API_EXPORT(int) ap_base64decode_len(const char *bufcoded)
 {
     int nbytesdecoded;
     register const unsigned char *bufin;
@@ -126,14 +126,14 @@ API_EXPORT(int) ap_uudecode_len(const char *bufcoded)
     return nbytesdecoded + 1;
 }
 
-API_EXPORT(int) ap_uudecode(char *bufplain, const char *bufcoded)
+API_EXPORT(int) ap_base64decode(char *bufplain, const char *bufcoded)
 {
 #ifdef CHARSET_EBCDIC
     int i;
 #endif				/* CHARSET_EBCDIC */
     int len;
     
-    len = ap_uudecode_binary((unsigned char *) bufplain, bufcoded);
+    len = ap_base64decode_binary((unsigned char *) bufplain, bufcoded);
 #ifdef CHARSET_EBCDIC
     for (i=0; i<len; i++)
 	bufplain[i] = os_toebcdic[bufplain[i]];
@@ -141,10 +141,10 @@ API_EXPORT(int) ap_uudecode(char *bufplain, const char *bufcoded)
     return len;
 }
 
-/* This is the same as ap_uudecode() except on EBCDIC machines, where
+/* This is the same as ap_base64udecode() except on EBCDIC machines, where
  * the conversion of the output to ebcdic is left out.
  */
-API_EXPORT(int) ap_uudecode_binary(unsigned char *bufplain,
+API_EXPORT(int) ap_base64decode_binary(unsigned char *bufplain,
 				   const char *bufcoded)
 {
     int nbytesdecoded;
@@ -193,15 +193,15 @@ API_EXPORT(int) ap_uudecode_binary(unsigned char *bufplain,
 static const char basis_64[] =
 "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 
-API_EXPORT(int) ap_uuencode_len(int len)
+API_EXPORT(int) ap_base64encode_len(int len)
 {
     return ((len + 2) / 3 * 4) + 1;
 }
 
-API_EXPORT(int) ap_uuencode(char *encoded, const char *string, int len)
+API_EXPORT(int) ap_base64encode(char *encoded, const char *string, int len)
 {
 #ifndef CHARSET_EBCDIC
-    return ap_uuencode_binary(encoded, (const unsigned char *) string, len);
+    return ap_base64encode_binary(encoded, (const unsigned char *) string, len);
 #else				/* CHARSET_EBCDIC */
     int i;
     char *p;
@@ -231,10 +231,10 @@ API_EXPORT(int) ap_uuencode(char *encoded, const char *string, int len)
 #endif				/* CHARSET_EBCDIC */
 }
 
-/* This is the same as ap_uuencode() except on EBCDIC machines, where
+/* This is the same as ap_base64encode() except on EBCDIC machines, where
  * the conversion of the input to ascii is left out.
  */
-API_EXPORT(int) ap_uuencode_binary(char *encoded, const unsigned char *string,
+API_EXPORT(int) ap_base64encode_binary(char *encoded, const unsigned char *string,
 				   int len)
 {
     int i;

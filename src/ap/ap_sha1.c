@@ -379,7 +379,7 @@ API_EXPORT(void) ap_sha1_base64(const char *clear, int len, char *out)
     strcpy(out, sha1_id);
 
     /* SHA1 hash is always 20 chars */
-    l = ap_uuencode_binary(out + strlen(sha1_id), digest, sizeof(digest));
+    l = ap_base64encode_binary(out + strlen(sha1_id), digest, sizeof(digest));
     out[l + strlen(sha1_id)] = '\0';
 
     /*

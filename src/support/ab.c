@@ -1027,7 +1027,7 @@ int main(int argc, char **argv)
 	     */
 	    while(isspace(*optarg))
 		optarg++;
-	    l=ap_uuencode(tmp,optarg,strlen(optarg));
+	    l=ap_base64encode(tmp,optarg,strlen(optarg));
 	    tmp[l]='\0';
 
 	    strncat(auth, "Authorization: basic ", sizeof(auth));
@@ -1040,7 +1040,7 @@ int main(int argc, char **argv)
 	     */
 	    while(isspace(*optarg))
 		optarg++;
-	    l=ap_uuencode(tmp,optarg,strlen(optarg));
+	    l=ap_base64encode(tmp,optarg,strlen(optarg));
 	    tmp[l]='\0';
 
 	    strncat(auth, "Proxy-Authorization: basic ", sizeof(auth));
