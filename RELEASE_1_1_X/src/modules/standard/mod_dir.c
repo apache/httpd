@@ -768,6 +768,7 @@ int handle_dir (request_rec *r)
       (dir_config_rec *)get_module_config (r->per_dir_config, &dir_module);
     char *names_ptr = d->index_names ? d->index_names : DEFAULT_INDEX;
     int allow_opts = allow_options (r);
+    int error_notfound = 0;
 
     if (r->uri[0] == '\0' || r->uri[strlen(r->uri)-1] != '/') {
 	char* ifile;
@@ -808,9 +809,24 @@ int handle_dir (request_rec *r)
 	    return OK;
 	}
 
-        destroy_sub_req (rr);
+       /* If the request returned something other than 404 (or 200),
+        * it means the module encountered some sort of problem. To be
+        * secure, we should return the error, rather than create
+        * along a (possibly unsafe) directory index.
+        *
+        * So we store the error, and if none of the listed files
+        * exist, we return the last error response we got, instead
+        * of a directory listing.
+        */
+       if (rr->status && rr->status != 404 && rr->status != 200)
+           error_notfound = rr->status;
+
+       destroy_sub_req (rr);
     }
 
+    if (error_notfound)
+       return error_notfound;
+ 
     if (r->method_number != M_GET) return NOT_IMPLEMENTED;
     
     /* OK, nothing easy.  Trot out the heavy artillery... */

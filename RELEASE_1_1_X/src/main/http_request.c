@@ -197,7 +197,7 @@ int get_path_info(request_rec *r)
 	} 
 #if defined(ENOENT)
 	else {
-	    log_reason("unable to determine if index file exists (stat() returned unexpected error)", r->filename, r);
+	    log_printf(r->server, "access to %s failed for client; unable to determine if index file exists (stat() returned unexpected error)", r->filename);
 	    return FORBIDDEN;
 	}
 #endif
