@@ -13,3 +13,7 @@ suexec
 logresolve
 ab
 apxs
+Debug
+Release
+vc*.idb
+*.pdb
