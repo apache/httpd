@@ -965,6 +965,7 @@ const char *dirsection (cmd_parms *cmd, void *dummy, const char *arg)
     void *new_dir_conf = create_per_dir_config (cmd->pool);
     regex_t *r = NULL;
     const char *old_end_token;
+    const command_rec *thiscmd = cmd->cmd;
 
     const char *err = check_cmd_context(cmd, NOT_IN_DIR_LOC_FILE|NOT_IN_LIMIT);
     if (err != NULL) return err;
@@ -978,7 +979,7 @@ const char *dirsection (cmd_parms *cmd, void *dummy, const char *arg)
 #endif    
     cmd->override = OR_ALL|ACCESS_CONF;
 
-    if (cmd->info) { /* <DirectoryMatch> */
+    if (thiscmd->cmd_data) { /* <DirectoryMatch> */
 	r = pregcomp(cmd->pool, cmd->path, REG_EXTENDED|USE_ICASE);
     }
     else if (!strcmp(cmd->path, "~")) {
@@ -991,13 +992,13 @@ const char *dirsection (cmd_parms *cmd, void *dummy, const char *arg)
     }
 
     old_end_token = cmd->end_token;
-    cmd->end_token = cmd->info ? end_directorymatch_section : end_directory_section;
+    cmd->end_token = thiscmd->cmd_data ? end_directorymatch_section : end_directory_section;
     errmsg = srm_command_loop (cmd, new_dir_conf);
     if (errmsg == NULL) {
 	errmsg = missing_endsection(cmd, 1);
     }
     cmd->end_token = old_end_token;
-    if (errmsg != (cmd->info ? end_directorymatch_section : end_directory_section))
+    if (errmsg != (thiscmd->cmd_data ? end_directorymatch_section : end_directory_section))
 	return errmsg;
 
     conf = (core_dir_config *)get_module_config(new_dir_conf, &core_module);
@@ -1006,7 +1007,7 @@ const char *dirsection (cmd_parms *cmd, void *dummy, const char *arg)
     add_per_dir_conf (cmd->server, new_dir_conf);
 
     if (*arg != '\0')
-	return pstrcat (cmd->pool, "Multiple <", (cmd->info) ? "DirectoryMatch" : "Directory",
+	return pstrcat (cmd->pool, "Multiple ", thiscmd->name,
 			"> arguments not (yet) supported.", NULL);
 
     cmd->path = old_path;
@@ -1024,6 +1025,7 @@ const char *urlsection (cmd_parms *cmd, void *dummy, const char *arg)
     core_dir_config *conf;
     regex_t *r = NULL;
     const char *old_end_token;
+    const command_rec *thiscmd = cmd->cmd;
 
     void *new_url_conf = create_per_dir_config (cmd->pool);
 
@@ -1035,7 +1037,7 @@ const char *urlsection (cmd_parms *cmd, void *dummy, const char *arg)
     cmd->path = getword_conf (cmd->pool, &arg);
     cmd->override = OR_ALL|ACCESS_CONF;
 
-    if (cmd->info) { /* <LocationMatch> */
+    if (thiscmd->cmd_data) { /* <LocationMatch> */
 	r = pregcomp(cmd->pool, cmd->path, REG_EXTENDED);
     }
     else if (!strcmp(cmd->path, "~")) {
@@ -1044,13 +1046,13 @@ const char *urlsection (cmd_parms *cmd, void *dummy, const char *arg)
     }
 
     old_end_token = cmd->end_token;
-    cmd->end_token = cmd->info ? end_locationmatch_section : end_location_section;
+    cmd->end_token = thiscmd->cmd_data ? end_locationmatch_section : end_location_section;
     errmsg = srm_command_loop (cmd, new_url_conf);
     if (errmsg == NULL) {
 	errmsg = missing_endsection(cmd, 1);
     }
     cmd->end_token = old_end_token;
-    if (errmsg != (cmd->info ? end_locationmatch_section : end_location_section))
+    if (errmsg != (thiscmd->cmd_data ? end_locationmatch_section : end_location_section))
 	return errmsg;
 
     conf = (core_dir_config *)get_module_config(new_url_conf, &core_module);
@@ -1061,7 +1063,7 @@ const char *urlsection (cmd_parms *cmd, void *dummy, const char *arg)
     add_per_url_conf (cmd->server, new_url_conf);
     
     if (*arg != '\0')
-	return pstrcat (cmd->pool, "Multiple <", (cmd->info) ? "LocationMatch" : "Location",
+	return pstrcat (cmd->pool, "Multiple ", thiscmd->name,
 			"> arguments not (yet) supported.", NULL);
 
     cmd->path = old_path;
@@ -1079,6 +1081,7 @@ const char *filesection (cmd_parms *cmd, core_dir_config *c, const char *arg)
     core_dir_config *conf;
     regex_t *r = NULL;
     const char *old_end_token;
+    const command_rec *thiscmd = cmd->cmd;
 
     void *new_file_conf = create_per_dir_config (cmd->pool);
 
@@ -1092,7 +1095,7 @@ const char *filesection (cmd_parms *cmd, core_dir_config *c, const char *arg)
     if (!old_path)
 	cmd->override = OR_ALL|ACCESS_CONF;
 
-    if (cmd->info) { /* <FilesMatch> */
+    if (thiscmd->cmd_data) { /* <FilesMatch> */
         r = pregcomp(cmd->pool, cmd->path, REG_EXTENDED|USE_ICASE);
     }
     else if (!strcmp(cmd->path, "~")) {
@@ -1105,13 +1108,13 @@ const char *filesection (cmd_parms *cmd, core_dir_config *c, const char *arg)
     }
 
     old_end_token = cmd->end_token;
-    cmd->end_token = cmd->info ? end_filesmatch_section : end_files_section;
+    cmd->end_token = thiscmd->cmd_data ? end_filesmatch_section : end_files_section;
     errmsg = srm_command_loop (cmd, new_file_conf);
     if (errmsg == NULL) {
 	errmsg = missing_endsection(cmd, 1);
     }
     cmd->end_token = old_end_token;
-    if (errmsg != (cmd->info ? end_filesmatch_section : end_files_section))
+    if (errmsg != (thiscmd->cmd_data ? end_filesmatch_section : end_files_section))
 	return errmsg;
 
     conf = (core_dir_config *)get_module_config(new_file_conf, &core_module);
@@ -1122,7 +1125,7 @@ const char *filesection (cmd_parms *cmd, core_dir_config *c, const char *arg)
     add_file_conf (c, new_file_conf);
 
     if (*arg != '\0')
-	return pstrcat (cmd->pool, "Multiple <", (cmd->info) ? "FilesMatch" : "Files",
+	return pstrcat (cmd->pool, "Multiple ", thiscmd->name,
 			"> arguments not (yet) supported.", NULL);
 
     cmd->path = old_path;
