@@ -262,7 +262,7 @@ static long shmem_size  = DEF_SHMEM_SIZE;
 static long num_buckets = DEF_NUM_BUCKETS;
 
 
-module AP_MODULE_DECLARE_DATA digest_auth_module;
+module AP_MODULE_DECLARE_DATA auth_digest_module;
 
 /*
  * initialization code
@@ -966,7 +966,7 @@ static int parse_hdr_and_update_nc(request_rec *r)
     resp->raw_request_uri = r->unparsed_uri;
     resp->psd_request_uri = &r->parsed_uri;
     resp->needed_auth = 0;
-    ap_set_module_config(r->request_config, &digest_auth_module, resp);
+    ap_set_module_config(r->request_config, &auth_digest_module, resp);
 
     res = get_digest_rec(r, resp);
     resp->client = get_client(resp->opaque_num, r);
@@ -1577,14 +1577,14 @@ static int authenticate_digest_user(request_rec *r)
     while (mainreq->main != NULL)  mainreq = mainreq->main;
     while (mainreq->prev != NULL)  mainreq = mainreq->prev;
     resp = (digest_header_rec *) ap_get_module_config(mainreq->request_config,
-						      &digest_auth_module);
+						      &auth_digest_module);
     resp->needed_auth = 1;
 
 
     /* get our conf */
 
     conf = (digest_config_rec *) ap_get_module_config(r->per_dir_config,
-						      &digest_auth_module);
+						      &auth_digest_module);
 
 
     /* check for existence and syntax of Auth header */
@@ -1813,7 +1813,7 @@ static int digest_check_auth(request_rec *r)
 {
     const digest_config_rec *conf =
 		(digest_config_rec *) ap_get_module_config(r->per_dir_config,
-							   &digest_auth_module);
+							   &auth_digest_module);
     const char *user = r->user;
     int m = r->method_number;
     int method_restricted = 0;
@@ -1883,7 +1883,7 @@ static int digest_check_auth(request_rec *r)
 
     note_digest_auth_failure(r, conf,
 	(digest_header_rec *) ap_get_module_config(r->request_config,
-						   &digest_auth_module),
+						   &auth_digest_module),
 	0);
     return HTTP_UNAUTHORIZED;
 }
@@ -1908,10 +1908,10 @@ static int add_auth_info(request_rec *r)
 {
     const digest_config_rec *conf =
 		(digest_config_rec *) ap_get_module_config(r->per_dir_config,
-							   &digest_auth_module);
+							   &auth_digest_module);
     digest_header_rec *resp =
 		(digest_header_rec *) ap_get_module_config(r->request_config,
-							   &digest_auth_module);
+							   &auth_digest_module);
     const char *ai = NULL, *digest = NULL, *nextnonce = "";
 
     if (resp == NULL || !resp->needed_auth || conf == NULL)
@@ -2065,7 +2065,7 @@ static void register_hooks(apr_pool_t *p)
     ap_hook_fixups(add_auth_info, NULL, NULL, APR_HOOK_MIDDLE);
 }
 
-module AP_MODULE_DECLARE_DATA digest_auth_module =
+module AP_MODULE_DECLARE_DATA auth_digest_module =
 {
     STANDARD20_MODULE_STUFF,
     create_digest_dir_config,	/* dir config creater */

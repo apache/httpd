@@ -217,13 +217,13 @@ static const command_rec anon_auth_cmds[] =
     {NULL}
 };
 
-module AP_MODULE_DECLARE_DATA anon_auth_module;
+module AP_MODULE_DECLARE_DATA auth_anon_module;
 
 static int anon_authenticate_basic_user(request_rec *r)
 {
     anon_auth_config_rec *sec =
     (anon_auth_config_rec *) ap_get_module_config(r->per_dir_config,
-					       &anon_auth_module);
+					       &auth_anon_module);
     const char *sent_pw;
     int res = DECLINED;
 
@@ -284,7 +284,7 @@ static int check_anon_access(request_rec *r)
     conn_rec *c = r->connection;
     anon_auth_config_rec *sec =
     (anon_auth_config_rec *) ap_get_module_config(r->per_dir_config,
-					       &anon_auth_module);
+					       &auth_anon_module);
 
     if (!sec->anon_auth)
 	return DECLINED;
@@ -303,7 +303,7 @@ static void register_hooks(apr_pool_t *p)
     ap_hook_auth_checker(check_anon_access,NULL,NULL,APR_HOOK_MIDDLE);
 }
 
-module AP_MODULE_DECLARE_DATA anon_auth_module =
+module AP_MODULE_DECLARE_DATA auth_anon_module =
 {
     STANDARD20_MODULE_STUFF,
     create_anon_auth_dir_config,/* dir config creater */

@@ -94,7 +94,7 @@ typedef struct {
     const char *scripted[METHODS];   /* Added with Script... */
 } action_dir_config;
 
-module action_module;
+module actions_module;
 
 static void *create_action_dir_config(apr_pool_t *p, char *dummy)
 {
@@ -161,7 +161,7 @@ static const command_rec action_cmds[] =
 static int action_handler(request_rec *r)
 {
     action_dir_config *conf = (action_dir_config *)
-        ap_get_module_config(r->per_dir_config, &action_module);
+        ap_get_module_config(r->per_dir_config, &actions_module);
     const char *t, *action = r->handler ? r->handler : 
 	ap_field_noparam(r->pool, r->content_type);
     const char *script;
@@ -214,7 +214,7 @@ static void register_hooks(apr_pool_t *p)
     ap_hook_handler(action_handler,NULL,NULL,APR_HOOK_LAST);
 }
 
-module action_module =
+module actions_module =
 {
     STANDARD20_MODULE_STUFF,
     create_action_dir_config,	/* dir config creater */
