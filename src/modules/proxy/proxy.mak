@@ -225,14 +225,11 @@ DEP_CPP_PROXY=\
 
 DEP_CPP_PROXY=\
 	"..\..\conf.h"\
-	".\../../regex\regex.h"\
 	".\../..\http_main.h"\
 	".\../..\httpd.h"\
 	".\../..\md5.h"\
 	".\../..\multithread.h"\
 	".\mod_proxy.h"\
-	{$(INCLUDE)}"\sys\STAT.H"\
-	{$(INCLUDE)}"\sys\TYPES.H"\
 	
 
 "$(INTDIR)\proxy_util.obj" : $(SOURCE) $(DEP_CPP_PROXY) "$(INTDIR)"
@@ -251,7 +248,6 @@ SOURCE=.\proxy_cache.c
 !IF  "$(CFG)" == "proxy - Win32 Release"
 
 DEP_CPP_PROXY_=\
-	"..\..\nt\readdir.h"\
 	".\../..\http_log.h"\
 	".\../..\http_main.h"\
 	".\../..\httpd.h"\
@@ -259,6 +255,7 @@ DEP_CPP_PROXY_=\
 	".\../..\multithread.h"\
 	".\../..\util_date.h"\
 	".\mod_proxy.h"\
+	{$(INCLUDE)}"\sys\TYPES.H"\
 	{$(INCLUDE)}"\sys\UTIME.H"\
 	
 
@@ -269,8 +266,6 @@ DEP_CPP_PROXY_=\
 
 DEP_CPP_PROXY_=\
 	"..\..\conf.h"\
-	"..\..\nt\readdir.h"\
-	".\../../regex\regex.h"\
 	".\../..\http_log.h"\
 	".\../..\http_main.h"\
 	".\../..\httpd.h"\
@@ -278,8 +273,6 @@ DEP_CPP_PROXY_=\
 	".\../..\multithread.h"\
 	".\../..\util_date.h"\
 	".\mod_proxy.h"\
-	{$(INCLUDE)}"\sys\STAT.H"\
-	{$(INCLUDE)}"\sys\TYPES.H"\
 	{$(INCLUDE)}"\sys\UTIME.H"\
 	
 
@@ -312,13 +305,10 @@ DEP_CPP_PROXY_C=\
 
 DEP_CPP_PROXY_C=\
 	"..\..\conf.h"\
-	".\../../regex\regex.h"\
 	".\../..\http_log.h"\
 	".\../..\http_main.h"\
 	".\../..\httpd.h"\
 	".\mod_proxy.h"\
-	{$(INCLUDE)}"\sys\STAT.H"\
-	{$(INCLUDE)}"\sys\TYPES.H"\
 	
 
 "$(INTDIR)\proxy_connect.obj" : $(SOURCE) $(DEP_CPP_PROXY_C) "$(INTDIR)"
@@ -349,12 +339,9 @@ DEP_CPP_PROXY_F=\
 
 DEP_CPP_PROXY_F=\
 	"..\..\conf.h"\
-	".\../../regex\regex.h"\
 	".\../..\http_main.h"\
 	".\../..\httpd.h"\
 	".\mod_proxy.h"\
-	{$(INCLUDE)}"\sys\STAT.H"\
-	{$(INCLUDE)}"\sys\TYPES.H"\
 	
 
 "$(INTDIR)\proxy_ftp.obj" : $(SOURCE) $(DEP_CPP_PROXY_F) "$(INTDIR)"
@@ -378,6 +365,7 @@ DEP_CPP_PROXY_H=\
 	".\../..\httpd.h"\
 	".\../..\util_date.h"\
 	".\mod_proxy.h"\
+	{$(INCLUDE)}"\sys\TYPES.H"\
 	
 
 "$(INTDIR)\proxy_http.obj" : $(SOURCE) $(DEP_CPP_PROXY_H) "$(INTDIR)"
@@ -387,14 +375,11 @@ DEP_CPP_PROXY_H=\
 
 DEP_CPP_PROXY_H=\
 	"..\..\conf.h"\
-	".\../../regex\regex.h"\
 	".\../..\http_log.h"\
 	".\../..\http_main.h"\
 	".\../..\httpd.h"\
 	".\../..\util_date.h"\
 	".\mod_proxy.h"\
-	{$(INCLUDE)}"\sys\STAT.H"\
-	{$(INCLUDE)}"\sys\TYPES.H"\
 	
 
 "$(INTDIR)\proxy_http.obj" : $(SOURCE) $(DEP_CPP_PROXY_H) "$(INTDIR)"
@@ -424,11 +409,8 @@ DEP_CPP_MOD_P=\
 
 DEP_CPP_MOD_P=\
 	"..\..\conf.h"\
-	".\../../regex\regex.h"\
 	".\../..\httpd.h"\
 	".\mod_proxy.h"\
-	{$(INCLUDE)}"\sys\STAT.H"\
-	{$(INCLUDE)}"\sys\TYPES.H"\
 	
 
 "$(INTDIR)\mod_proxy.obj" : $(SOURCE) $(DEP_CPP_MOD_P) "$(INTDIR)"

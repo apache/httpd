@@ -63,9 +63,6 @@
 #include "http_core.h"
 #include "http_log.h"
 #include "util_script.h"
-#ifdef WIN32
-#include "nt/readdir.h"
-#endif
 
 /* define TCN_02 to allow for Holtman I-D transparent negotiation.
  * This file currently implements the draft-02, except for

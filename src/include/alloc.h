@@ -72,6 +72,11 @@
  * alloc.c.  
  */
 
+ /* Need declaration of DIR on Win32 */
+#ifdef WIN32
+#include "nt/readdir.h"
+#endif
+
 typedef struct pool pool;
 
 extern pool *permanent_pool;

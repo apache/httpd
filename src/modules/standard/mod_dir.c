@@ -63,10 +63,6 @@
 #include "http_main.h"
 #include "util_script.h"
 
-#ifdef WIN32
-#include "nt/readdir.h"
-#endif
-
 module dir_module;
 
 typedef struct dir_config_struct {
