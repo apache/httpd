@@ -237,23 +237,26 @@
 #define MODULE_MAGIC_NUMBER_MAJOR 19990320
 #endif
 #define MODULE_MAGIC_NUMBER_MINOR 9                     /* 0...n */
-#define MODULE_MAGIC_NUMBER MODULE_MAGIC_NUMBER_MAJOR	/* backward compat */
 
 /* Useful for testing for features. */
-#define MODULE_MAGIC_AT_LEAST(major,minor)		\
-    ((major) > MODULE_MAGIC_NUMBER_MAJOR 		\
+#define AP_MODULE_MAGIC_AT_LEAST(major,minor)		\
+    ((major) < MODULE_MAGIC_NUMBER_MAJOR 		\
 	|| ((major) == MODULE_MAGIC_NUMBER_MAJOR 	\
-	    && (minor) >= MODULE_MAGIC_NUMBER_MINOR))
+	    && (minor) <= MODULE_MAGIC_NUMBER_MINOR))
 
 /* For example, suppose you wish to use the ap_overlap_tables
    function.  You can do this:
 
-#if MODULE_MAGIC_AT_LEAST(19980812,2)
+#if AP_MODULE_MAGIC_AT_LEAST(19980812,2)
     ... use ap_overlap_tables()
 #else
     ... alternative code which doesn't use ap_overlap_tables()
 #endif
 
 */
+
+/* deprecated. present for backwards compatibility */
+#define MODULE_MAGIC_NUMBER MODULE_MAGIC_NUMBER_MAJOR
+#define MODULE_MAGIC_AT_LEAST old_broken_macro_we_hope_you_are_not_using
 
 #endif /* !APACHE_AP_MMN_H */
