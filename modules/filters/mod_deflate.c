@@ -129,9 +129,9 @@ typedef struct deflate_filter_config_t
     int windowSize;
     int memlevel;
     apr_size_t bufferSize;
-    char *noteRatioName;
-    char *noteInputName;
-    char *noteOutputName;
+    char *note_ratio_name;
+    char *note_input_name;
+    char *note_output_name;
 } deflate_filter_config;
 
 /* windowsize is negative to suppress Zlib header */
@@ -210,16 +210,16 @@ static const char *deflate_set_note(cmd_parms *cmd, void *dummy,
                                                     &deflate_module);
     
     if (arg2 == NULL) {
-        c->noteRatioName = apr_pstrdup(cmd->pool, arg1);
+        c->note_ratio_name = apr_pstrdup(cmd->pool, arg1);
     }
     else if (!strcasecmp(arg1, "ratio")) {
-        c->noteRatioName = apr_pstrdup(cmd->pool, arg2);
+        c->note_ratio_name = apr_pstrdup(cmd->pool, arg2);
     }
     else if (!strcasecmp(arg1, "input")) {
-        c->noteInputName = apr_pstrdup(cmd->pool, arg2);
+        c->note_input_name = apr_pstrdup(cmd->pool, arg2);
     }
     else if (!strcasecmp(arg1, "output")) {
-        c->noteOutputName = apr_pstrdup(cmd->pool, arg2);
+        c->note_output_name = apr_pstrdup(cmd->pool, arg2);
     }
     else {
         return apr_psprintf(cmd->pool, "Unknown note type %s", arg1);
@@ -255,11 +255,6 @@ typedef struct deflate_ctx_t
     unsigned long crc;
     apr_bucket_brigade *bb, *proc_bb;
 } deflate_ctx;
-
-#define LeaveNote(type, value) \
-    if (c->note##type##Name) \
-        apr_table_setn(r->notes, c->note##type##Name, \
-                       (ctx->stream.total_in > 0) ? (value) : "-")
 
 static apr_status_t deflate_out_filter(ap_filter_t *f,
                                        apr_bucket_brigade *bb)
@@ -455,11 +450,32 @@ static apr_status_t deflate_out_filter(ap_filter_t *f,
                           "Zlib: Compressed %ld to %ld : URL %s",
                           ctx->stream.total_in, ctx->stream.total_out, r->uri);
 
-            LeaveNote(Input, apr_off_t_toa(r->pool, ctx->stream.total_in));
-            LeaveNote(Output, apr_off_t_toa(r->pool, ctx->stream.total_out));
-            LeaveNote(Ratio, apr_itoa(r->pool, (int)
-                                      (ctx->stream.total_out * 100 /
-                                       ctx->stream.total_in)));
+            /* leave notes for logging */
+            if (c->note_input_name) {
+                apr_table_setn(r->notes, c->note_input_name,
+                               (ctx->stream.total_in > 0)
+                                ? apr_off_t_toa(r->pool,
+                                                ctx->stream.total_in)
+                                : "-");
+            }
+
+            if (c->note_output_name) {
+                apr_table_setn(r->notes, c->note_output_name,
+                               (ctx->stream.total_in > 0)
+                                ? apr_off_t_toa(r->pool,
+                                                ctx->stream.total_out)
+                                : "-");
+            }
+
+            if (c->note_ratio_name) {
+                apr_table_setn(r->notes, c->note_ratio_name,
+                               (ctx->stream.total_in > 0)
+                                ? apr_itoa(r->pool,
+                                           (int)(ctx->stream.total_out
+                                                 * 100
+                                                 / ctx->stream.total_in))
+                                : "-");
+            }
 
             deflateEnd(&ctx->stream);
 
