@@ -387,8 +387,10 @@ int ap_proxy_http_handler(request_rec *r, cache_req *c, char *url,
 
     /* send the request data, if any. */
     if (ap_should_client_block(r)) {
-        while ((i = ap_get_client_block(r, buffer, sizeof buffer)) > 0)
+        while ((i = ap_get_client_block(r, buffer, sizeof buffer)) > 0) {
+            ap_reset_timeout(r);
             ap_bwrite(f, buffer, i);
+        }
     }
     ap_bflush(f);
     ap_kill_timeout(r);
