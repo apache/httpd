@@ -36,7 +36,7 @@
 <!-- Generic tag entities -->
 
 <!ENTITY % inlinetags "em | strong | code | a | br | directive | module |
-img | cite | q | dfn | var | transnote | glossary | phonetic">
+program | img | cite | q | dfn | var | transnote | glossary | phonetic">
 
 <!ENTITY % blocktags "p | example | note | table | ul | ol | dl | pre
 | blockquote">
@@ -72,6 +72,8 @@ img | cite | q | dfn | var | transnote | glossary | phonetic">
 <!ATTLIST directive  module CDATA  #IMPLIED
                      type   CDATA  #IMPLIED
                      status CDATA  #IMPLIED >
+
+<!ELEMENT program (#PCDATA)>
 
 <!ELEMENT p %Inline;>
 <!ATTLIST p class CDATA  #IMPLIED>

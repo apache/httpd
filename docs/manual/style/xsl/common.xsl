@@ -700,6 +700,20 @@
 
 
 <!-- ==================================================================== -->
+<!-- <program>                                                            -->
+<!-- Inserts a link to referred program                                   -->
+<!-- ==================================================================== -->
+<xsl:template match="program">
+<code class="program">
+    <a href="{$path}/programs/{normalize-space(.)}.html">
+        <xsl:value-of select="normalize-space(.)" />
+    </a>
+</code>
+</xsl:template>
+<!-- /program -->
+
+
+<!-- ==================================================================== -->
 <!-- <related>                                                            -->
 <!-- ==================================================================== -->
 <xsl:template match="related">
