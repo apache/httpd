@@ -503,6 +503,7 @@ static int set_listeners_noninheritable(apr_pool_t *p)
                          "set_listeners_noninheritable: DuplicateHandle failed.");
         }
         else {
+            closesocket(nsd);
             nsd = (SOCKET) dup;
             apr_os_sock_put(&lr->sd, &nsd, p);
         }
