@@ -95,33 +95,43 @@ extern "C" {
  * inspected to find information about the requested URI
  * @param new_file The URI to lookup
  * @param r The current request
+ * @param next_filter The first filter the sub_request should use.  If this is
+ *                    NULL, it defaults to the first filter for the main request
  * @return The new request record
  * @deffunc request_rec * ap_sub_req_lookup_uri(const char *new_file, const request_rec *r)
  */
 AP_DECLARE(request_rec *) ap_sub_req_lookup_uri(const char *new_file,
-                                             const request_rec *r);
+                                                const request_rec *r,
+                                                ap_filter_t *next_filter);
+
 /**
  * Create a sub request for the given file.  This sub request can be
  * inspected to find information about the requested file
  * @param new_file The URI to lookup
  * @param r The current request
+ * @param next_filter The first filter the sub_request should use.  If this is
+ *                    NULL, it defaults to the first filter for the main request
  * @return The new request record
  * @deffunc request_rec * ap_sub_req_lookup_file(const char *new_file, const request_rec *r)
  */
 AP_DECLARE(request_rec *) ap_sub_req_lookup_file(const char *new_file,
-                                              const request_rec *r);
+                                              const request_rec *r,
+                                              ap_filter_t *next_filter);
 /**
  * Create a sub request for the given URI using a specific method.  This
  * sub request can be inspected to find information about the requested URI
  * @param method The method to use in the new sub request
  * @param new_file The URI to lookup
  * @param r The current request
+ * @param next_filter The first filter the sub_request should use.  If this is
+ *                    NULL, it defaults to the first filter for the main request
  * @return The new request record
  * @deffunc request_rec * ap_sub_req_method_uri(const char *method, const char *new_file, const request_rec *r)
  */
 AP_DECLARE(request_rec *) ap_sub_req_method_uri(const char *method,
                                                 const char *new_file,
-                                                const request_rec *r);
+                                                const request_rec *r,
+                                                ap_filter_t *next_filter);
 /**
  * An output filter to strip EOS buckets from sub-requests.  This always
  * has to be inserted at the end of a sub-requests filter stack.

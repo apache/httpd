@@ -351,7 +351,8 @@ AP_DECLARE(void) ap_add_cgi_vars(request_rec *r)
 	 */
 	request_rec *pa_req;
 
-	pa_req = ap_sub_req_lookup_uri(ap_escape_uri(r->pool, r->path_info), r);
+	pa_req = ap_sub_req_lookup_uri(ap_escape_uri(r->pool, r->path_info), r,
+                                       NULL);
 
 	if (pa_req->filename) {
 #ifdef WIN32

@@ -974,7 +974,7 @@ static void emit_head(request_rec *r, char *header_fname, int suppress_amble,
      * pretend there's nothing there.
      */
     if ((header_fname != NULL)
-	&& (rr = ap_sub_req_lookup_uri(header_fname, r))
+	&& (rr = ap_sub_req_lookup_uri(header_fname, r, NULL))
 	&& (rr->status == HTTP_OK)
 	&& (rr->filename != NULL)
 	&& rr->finfo.filetype == APR_REG) {
@@ -1057,7 +1057,7 @@ static void emit_tail(request_rec *r, char *readme_fname, int suppress_amble)
      * pretend there's nothing there.
      */
     if ((readme_fname != NULL)
-	&& (rr = ap_sub_req_lookup_uri(readme_fname, r))
+	&& (rr = ap_sub_req_lookup_uri(readme_fname, r, NULL))
 	&& (rr->status == HTTP_OK)
 	&& (rr->filename != NULL)
 	&& rr->finfo.filetype == APR_REG) {
@@ -1184,7 +1184,7 @@ static struct ent *make_autoindex_entry(char *name, int autoindex_opts,
     p->version_sort = autoindex_opts & VERSION_SORT;
 
     if (autoindex_opts & FANCY_INDEXING) {
-        request_rec *rr = ap_sub_req_lookup_file(name, r);
+        request_rec *rr = ap_sub_req_lookup_file(name, r, NULL);
 
 	if (rr->finfo.protection != 0) {
 	    p->lm = rr->finfo.mtime;

@@ -3009,7 +3009,7 @@ static int default_handler(request_rec *r)
     ap_set_last_modified(r);
     ap_set_etag(r);
     apr_table_setn(r->headers_out, "Accept-Ranges", "bytes");
-    ap_set_content_length(r, r->finfo.size);
+    ap_set_content_length(r, r->finfo.size); 
     if ((errstatus = ap_meets_conditions(r)) != OK) {
         apr_close(fd);
         return errstatus;
