@@ -3885,10 +3885,10 @@ static char *lookup_variable(request_rec *r, char *var)
         }
     }
 
-#define LOOKAHEAD(subrecfunc) \
+#define LOOKAHEAD(subrecfunc, input) \
         if ( \
           /* filename is safe to use */ \
-          r->filename != NULL \
+          (input) != NULL \
               /* - and we're either not in a subrequest */ \
               && ( r->main == NULL \
                   /* - or in a subrequest where paths are non-NULL... */ \
@@ -3896,7 +3896,7 @@ static char *lookup_variable(request_rec *r, char *var)
                         /*   ...and sub and main paths differ */ \
                         && strcmp(r->main->uri, r->uri) != 0))) { \
             /* process a file-based subrequest */ \
-            rsub = subrecfunc(r->filename, r, NULL); \
+            rsub = subrecfunc((input), r, NULL); \
             /* now recursively lookup the variable in the sub_req */ \
             result = lookup_variable(rsub, var+5); \
             /* copy it up to our scope before we destroy sub_req's apr_pool_t */ \
@@ -3905,18 +3905,18 @@ static char *lookup_variable(request_rec *r, char *var)
             ap_destroy_sub_req(rsub); \
             /* log it */ \
             rewritelog(r, 5, "lookahead: path=%s var=%s -> val=%s", \
-                       r->filename, var+5, result); \
+                       (input), var+5, result); \
             /* return ourself to prevent re-pstrdup */ \
             return (char *)result; \
         }
 
     /* look-ahead for parameter through URI-based sub-request */
     else if (strlen(var) > 5 && strncasecmp(var, "LA-U:", 5) == 0) {
-        LOOKAHEAD(ap_sub_req_lookup_uri)
+        LOOKAHEAD(ap_sub_req_lookup_uri, r->uri)
     }
     /* look-ahead for parameter through file-based sub-request */
     else if (strlen(var) > 5 && strncasecmp(var, "LA-F:", 5) == 0) {
-        LOOKAHEAD(ap_sub_req_lookup_file)
+        LOOKAHEAD(ap_sub_req_lookup_file, r->filename)
     }
 
     /* file stuff */

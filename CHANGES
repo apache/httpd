@@ -2,6 +2,9 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) mod_rewrite: Fix LA-U variable look ahead which didn't work correctly
+     in directory context. Related to PR 8493.  [André Malo]
+
   *) Add a delete flag to htpasswd.
      [Thom May]
 
