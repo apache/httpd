@@ -1682,7 +1682,8 @@ void winnt_rewrite_args(process_rec *process)
         if (!strcasecmp(def_server_root, "bin"))
             *(def_server_root - 1) = '\0';
     }
-    def_server_root = ap_os_canonical_filename(process->pool, fnbuf);
+    apr_filepath_merge(&def_server_root, NULL, fnbuf, 
+                       APR_FILEPATH_TRUENAME, process->pool);
 
     /* Use process->pool so that the rewritten argv
      * lasts for the lifetime of the server process,
