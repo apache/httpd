@@ -81,6 +81,7 @@
 #endif 
 
 
+#ifdef CHILD_INFO_TABLE
 void ap_reclaim_child_processes(int terminate)
 {
     int i, status;
@@ -169,6 +170,7 @@ void ap_reclaim_child_processes(int terminate)
         }
     }
 }
+#endif
 
 /* number of calls to wait_or_timeout between writable probes */
 #ifndef INTERVAL_OF_WRITABLE_PROBES
