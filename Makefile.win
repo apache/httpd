@@ -365,9 +365,9 @@ _build:
 _copybin:
 	copy $(LONG)\Apache.$(src_exe) 				"$(inst_exe)" <.y
 	copy $(LONG)\libhttpd.$(src_dll) 			"$(inst_dll)" <.y
-	copy srclib\apr\$(LONG)\libapr.$(src_dll) 		"$(inst_dll)" <.y
-	copy srclib\apr-iconv\$(LONG)\libapriconv.$(src_dll) 	"$(inst_dll)" <.y
-	copy srclib\apr-util\$(LONG)\libaprutil.$(src_dll) 	"$(inst_dll)" <.y
+	copy srclib\apr\$(LONG)\libapr-1.$(src_dll) 		"$(inst_dll)" <.y
+	copy srclib\apr-iconv\$(LONG)\libapriconv-1.$(src_dll) 	"$(inst_dll)" <.y
+	copy srclib\apr-util\$(LONG)\libaprutil-1.$(src_dll) 	"$(inst_dll)" <.y
 	copy modules\aaa\$(LONG)\mod_auth_basic.$(src_so) 	"$(inst_so)" <.y
 	copy modules\aaa\$(LONG)\mod_auth_digest.$(src_so) 	"$(inst_so)" <.y
 	copy modules\aaa\$(LONG)\mod_authn_anon.$(src_so) 	"$(inst_so)" <.y
@@ -600,9 +600,9 @@ BEGIN {
 	xcopy srclib\apr\include\*.h 			"$(INSTDIR)\include" /d < .a
 	xcopy srclib\apr-util\include\*.h 		"$(INSTDIR)\include" /d < .a
 	xcopy include\*.h 				"$(INSTDIR)\include" /d < .a
-	copy srclib\apr\Lib$(SHORT)\apr.lib 		"$(INSTDIR)\lib" <.y
+	copy srclib\apr\Lib$(SHORT)\apr-1.lib 		"$(INSTDIR)\lib" <.y
 	copy srclib\apr\Lib$(SHORT)\apr_src.pdb 	"$(INSTDIR)\lib" <.y
-	copy srclib\apr-util\Lib$(SHORT)\aprutil.lib 	"$(INSTDIR)\lib" <.y
+	copy srclib\apr-util\Lib$(SHORT)\aprutil-1.lib 	"$(INSTDIR)\lib" <.y
 	copy srclib\apr-util\Lib$(SHORT)\aprutil_src.pdb "$(INSTDIR)\lib" <.y
 	copy srclib\pcre\Lib$(SHORT)\pcre.lib 		"$(INSTDIR)\lib" <.y
 	copy srclib\pcre\Lib$(SHORT)\pcre_src.pdb 	"$(INSTDIR)\lib" <.y
@@ -610,12 +610,12 @@ BEGIN {
 	copy srclib\pcre\Lib$(SHORT)\pcreposix_src.pdb 	"$(INSTDIR)\lib" <.y
 	copy srclib\apr-util\xml\expat\lib\Lib$(SHORT)\xml.lib "$(INSTDIR)\lib" <.y
 	copy srclib\apr-util\xml\expat\lib\Lib$(SHORT)\xml_src.pdb "$(INSTDIR)\lib" <.y
-	copy srclib\apr\$(LONG)\libapr.lib 		"$(INSTDIR)\lib" <.y
-	copy srclib\apr\$(LONG)\libapr.exp 		"$(INSTDIR)\lib" <.y
-	copy srclib\apr-iconv\$(LONG)\libapriconv.lib 	"$(INSTDIR)\lib" <.y
-	copy srclib\apr-iconv\$(LONG)\libapriconv.exp 	"$(INSTDIR)\lib" <.y
-	copy srclib\apr-util\$(LONG)\libaprutil.lib 	"$(INSTDIR)\lib" <.y
-	copy srclib\apr-util\$(LONG)\libaprutil.exp 	"$(INSTDIR)\lib" <.y
+	copy srclib\apr\$(LONG)\libapr-1.lib 		"$(INSTDIR)\lib" <.y
+	copy srclib\apr\$(LONG)\libapr-1.exp 		"$(INSTDIR)\lib" <.y
+	copy srclib\apr-iconv\$(LONG)\libapriconv-1.lib	"$(INSTDIR)\lib" <.y
+	copy srclib\apr-iconv\$(LONG)\libapriconv-1.exp "$(INSTDIR)\lib" <.y
+	copy srclib\apr-util\$(LONG)\libaprutil-1.lib 	"$(INSTDIR)\lib" <.y
+	copy srclib\apr-util\$(LONG)\libaprutil-1.exp 	"$(INSTDIR)\lib" <.y
 	copy $(LONG)\libhttpd.exp 			"$(INSTDIR)\lib" <.y
 	copy $(LONG)\libhttpd.lib 			"$(INSTDIR)\lib" <.y
 	copy modules\dav\main\$(LONG)\mod_dav.exp 	"$(INSTDIR)\lib" <.y
