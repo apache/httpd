@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:						-*-text-*-
-Last modified at [$Date: 2001/08/16 08:24:18 $]
+Last modified at [$Date: 2001/08/17 00:26:38 $]
 
 Release:
 
@@ -190,6 +190,9 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
 
     * use apu_dbm in mod_auth_dbm
         Status: Greg +1 (low-priority volunteer)
+        Justin says: "Seems like this is already there, so should we just 
+                      remove the other DBM code in that file?  If you want 
+                      to use gdbm, or dbm, etc, you should tell apr-util."
 
     * Integrate mod_dav.
         Some additional items remaining:
