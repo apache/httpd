@@ -231,7 +231,7 @@ static apr_status_t close_listeners_on_exec(void *v)
 
 static const char *alloc_listener(process_rec *process, char *addr, apr_port_t port)
 {
-    ap_listen_rec **walk;
+    ap_listen_rec **walk, *last;
     apr_status_t status;
     apr_sockaddr_t *sa;
     int found_listener = 0;
@@ -276,12 +276,19 @@ static const char *alloc_listener(process_rec *process, char *addr, apr_port_t p
         return "Listen setup failed";
     }
 
+    /* Initialize to our last configured ap_listener. */
+    last = ap_listeners;
+    while (last && last->next) {
+        last = last->next;
+    }
+
     while (sa) {
         ap_listen_rec *new;
 
         /* this has to survive restarts */
         new = apr_palloc(process->pool, sizeof(ap_listen_rec));
         new->active = 0;
+        new->next = 0;
         new->bind_addr = sa;
 
         /* Go to the next sockaddr. */
@@ -306,8 +313,13 @@ static const char *alloc_listener(process_rec *process, char *addr, apr_port_t p
             return "Listen setup failed";
         }
 
-        new->next = ap_listeners;
-        ap_listeners = new;
+        /* We need to preserve the order returned by getaddrinfo() */
+        if (last == NULL) {
+            ap_listeners = last = new;
+        } else {
+            last->next = new;
+            last = new;
+        }
     }
 
     return NULL;
@@ -317,6 +329,7 @@ static int ap_listen_open(apr_pool_t *pool, apr_port_t port)
 {
     ap_listen_rec *lr;
     ap_listen_rec *next;
+    ap_listen_rec *previous;
     int num_open;
     const char *userdata_key = "ap_listen_open";
     void *data;
@@ -326,16 +339,68 @@ static int ap_listen_open(apr_pool_t *pool, apr_port_t port)
      * config file.
      */
     num_open = 0;
-    for (lr = ap_listeners; lr; lr = lr->next) {
+    previous = NULL;
+    for (lr = ap_listeners; lr; previous = lr, lr = lr->next) {
         if (lr->active) {
             ++num_open;
         }
         else {
+#if APR_HAVE_IPV6
+            int v6only_setting;
+            /* If we are trying to bind to 0.0.0.0 and the previous listener
+             * was :: on the same port and in turn that socket does not have
+             * the IPV6_V6ONLY flag set; we must skip the current attempt to
+             * listen (which would generate an error). IPv4 will be handled
+             * on the established IPv6 socket.
+             */
+            if (previous != NULL &&
+                lr->bind_addr->family == APR_INET &&
+                *((in_addr_t *)lr->bind_addr->ipaddr_ptr) == INADDR_ANY &&
+                lr->bind_addr->port == previous->bind_addr->port &&
+                previous->bind_addr->family == APR_INET6 &&
+                IN6_IS_ADDR_UNSPECIFIED(
+                        (struct in6_addr*)(previous->bind_addr->ipaddr_ptr)) &&
+                apr_socket_opt_get(previous->sd, APR_IPV6_V6ONLY,
+                                   &v6only_setting) == APR_SUCCESS &&
+                v6only_setting == 0) {
+
+                /* Remove the current listener from the list */
+                previous->next = lr->next;
+                continue;
+            }
+#endif
             if (make_sock(pool, lr) == APR_SUCCESS) {
                 ++num_open;
                 lr->active = 1;
             }
             else {
+#if APR_HAVE_IPV6
+                /* If we tried to bind to ::, and the next listener is
+                 * on 0.0.0.0 with the same port, don't give a fatal
+                 * error. The user will still get a warning from make_sock
+                 * though.
+                 */
+                if (lr->next != NULL && lr->bind_addr->family == APR_INET6 &&
+                    IN6_IS_ADDR_UNSPECIFIED(
+                        (struct in6_addr*)(previous->bind_addr->ipaddr_ptr)) &&
+                    lr->bind_addr->port == lr->next->bind_addr->port &&
+                    *((in_addr_t *)lr->next->bind_addr->ipaddr_ptr)
+                    == INADDR_ANY) {
+
+                    /* Remove the current listener from the list */
+                    if (previous) {
+                        previous->next = lr->next;
+                    }
+                    else {
+                        ap_listeners = lr->next;
+                    }
+
+                    /* So that previous becomes NULL in the next iteration */
+                    lr = NULL;
+
+                    continue;
+                }
+#endif
                 /* fatal error */
                 return -1;
             }
