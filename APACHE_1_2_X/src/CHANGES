@@ -1,5 +1,24 @@
 Changes with Apache 1.2.2
 
+  *) Last official synchonisation of mod_rewrite with author version (because
+     mod_rewrite is now directly developed by the author at the Apache Group):
+     o added diff between mod_rewrite 3.0.6+ and 3.0.9
+       minus WIN32/NT stuff, but plus copyright removement.
+       In detail:
+       - workaround for detecting infinite rewriting loops
+       - fixed setting of env vars when "-" is used as subst string
+       - fixed forced response code on redirects (PR#777)
+       - fixed cases where r->args is ""
+       - kludge to disable locking on pipes under braindead SunOS
+       - fix for rewritelog in cases where remote hostname is unknown
+       - fixed totally damaged request_rec walk-back loop
+     o remove static from local data and add static to global ones.
+     o replaced ugly proxy finding stuff by simple
+       find_linked_module("mod_proxy") call.
+     o added missing negation char on rewritelog()
+     o fixed a few comment typos
+     [Ralf S. Engelschall]
+
   *) Anonymous_LogEmail was logging on each subrequest.
      [Dean Gaudet] PR#421, PR#868
 

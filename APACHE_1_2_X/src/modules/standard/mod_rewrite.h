@@ -56,7 +56,6 @@
 #define _MOD_REWRITE_H 1
 
 /*
-**  mod_rewrite.h -- Common Header File
 **                       _                            _ _ 
 **   _ __ ___   ___   __| |    _ __ _____      ___ __(_) |_ ___ 
 **  | '_ ` _ \ / _ \ / _` |   | '__/ _ \ \ /\ / / '__| | __/ _ \
@@ -64,7 +63,7 @@
 **  |_| |_| |_|\___/ \__,_|___|_|  \___| \_/\_/ |_|  |_|\__\___|
 **                       |_____|
 **
-**  URL Rewriting Module, Version 3.0.6 (15-Jun-1997)
+**  URL Rewriting Module
 **
 **  This module uses a rule-based rewriting engine (based on a
 **  regular-expression parser) to rewrite requested URLs on the fly. 
@@ -81,12 +80,9 @@
 **  can lead to internal subprocessing, external request redirection or even
 **  to internal proxy throughput.
 **
-**  The documentation and latest release can be found on
-**  http://www.engelschall.com/sw/mod_rewrite/
+**  This module was originally written in April 1996 and 
+**  gifted exclusively to the The Apache Group in July 1997 by
 **
-**  Copyright (c) 1996-1997 Ralf S. Engelschall, All rights reserved.
-**
-**  Written for The Apache Group by
 **      Ralf S. Engelschall
 **      rse@engelschall.com
 **      www.engelschall.com
@@ -137,7 +133,14 @@
 #include <fcntl.h>
 #endif
 
-
+    /* The locking support for the RewriteMap programs:
+       Locking a pipe to the child works fine under most
+       Unix derivates, but braindead SunOS 4.1.x has 
+       problems with this approach... */
+#define USE_PIPE_LOCKING 1
+#ifdef SUNOS4
+#undef USE_PIPE_LOCKING
+#endif
 
 
 /*
@@ -390,7 +393,7 @@ static void fd_lock(int fd);
 static void fd_unlock(int fd);
 
     /* Lexicographic Comparison */
-int compare_lexicography(char *cpNum1, char *cpNum2);
+static int compare_lexicography(char *cpNum1, char *cpNum2);
 
 #endif /* _MOD_REWRITE_H */
 
