@@ -138,9 +138,28 @@ Module includes_module     mod_include.o
 Module dir_module          mod_dir.o
 Module cgi_module          mod_cgi.o
 Module userdir_module      mod_userdir.o
-Module alias_module        mod_alias.o
 Module env_module          mod_env.o
 Module config_log_module   mod_log_config.o
+
+
+##
+## The next three modules here are URL manipulation
+##
+
+## Finally, the proxy module.  It's not as complete as it could be yet.
+## But it's getting there.
+
+# Module proxy_module        modules/proxy/libproxy.a
+
+##
+## Alias module
+
+Module alias_module        mod_alias.o
+
+## mod_rewrite allows for powerful URI-to-filename mapping, using
+## regular expressions.
+
+# Module rewrite_module      mod_rewrite.o
 
 ## The asis module implemented ".asis" file types, which allow the embedding
 ## of HTTP headers at the beginning of the document.  mod_imap handles internal 
@@ -160,11 +179,6 @@ Module browser_module      mod_browser.o
 
 # Module agent_log_module    mod_log_agent.o
 # Module referer_log_module  mod_log_referer.o
-
-## mod_rewrite allows for powerful URI-to-filename mapping, using
-## regular expressions.
-
-# Module rewrite_module      mod_rewrite.o
 
 ## cern_meta mimics the behavior of the CERN web server with regards to 
 ## metainformation files.  
@@ -243,8 +257,3 @@ Module browser_module      mod_browser.o
 ## the file modules/example/README for details.
 
 # Module example_module      modules/example/mod_example.o
-
-## Finally, the proxy module.  It's not as complete as it could be yet.
-## But it's getting there.
-
-# Module proxy_module        modules/proxy/libproxy.a
