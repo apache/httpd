@@ -64,7 +64,6 @@
 
 #ifdef APU_HAS_LDAP
 
-#include <apr_lock.h>
 #include <apr_strings.h>
 
 #include "ap_config.h"
@@ -193,7 +192,7 @@ void util_ldap_connection_close(util_ldap_connection_t *ldc)
      */
 
     /* mark our connection as available for reuse */
-    apr_lock_release(ldc->lock);
+    apr_thread_mutex_unlock(ldc->lock);
 
 }
 
@@ -215,7 +214,7 @@ apr_status_t util_ldap_connection_destroy(void *param)
     }
 
     /* release the lock we were using */
-    apr_lock_release(ldc->lock);
+    apr_thread_mutex_unlock(ldc->lock);
 
     return APR_SUCCESS;
 }
@@ -378,15 +377,15 @@ util_ldap_connection_t *util_ldap_connection_find(request_rec *r, const char *ho
 
     /* mutex lock this function */
     if (!st->mutex) {
-        apr_lock_create(&st->mutex, APR_MUTEX, APR_INTRAPROCESS, NULL, st->pool);
+        apr_thread_mutex_create(&st->mutex, APR_THREAD_MUTEX_DEFAULT, st->pool);
     }
-    apr_lock_acquire(st->mutex);
+    apr_thread_mutex_lock(st->mutex);
 
     /* Search for an exact connection match in the list that is not
      * being used.
      */
     for (l=st->connections,p=NULL; l; l=l->next) {
-        if ( (APR_SUCCESS == apr_lock_tryacquire(l->lock))
+        if ( (APR_SUCCESS == apr_thread_mutex_trylock(l->lock))
             && l->port == port
 	    && strcmp(l->host, host) == 0
 	    && ( (!l->binddn && !binddn) || (l->binddn && binddn && !strcmp(l->binddn, binddn)) )
@@ -408,7 +407,7 @@ util_ldap_connection_t *util_ldap_connection_find(request_rec *r, const char *ho
      */
     if (!l) {
         for (l=st->connections,p=NULL; l; l=l->next) {
-            if ( (APR_SUCCESS == apr_lock_tryacquire(l->lock))
+            if ( (APR_SUCCESS == apr_thread_mutex_trylock(l->lock))
                 && l->port == port
 	        && strcmp(l->host, host) == 0
                 && l->deref == deref
@@ -444,8 +443,8 @@ util_ldap_connection_t *util_ldap_connection_find(request_rec *r, const char *ho
          */
         /* create the details to the pool in st */
         l = apr_pcalloc(st->pool, sizeof(util_ldap_connection_t));
-        apr_lock_create(&l->lock, APR_MUTEX, APR_INTRAPROCESS, NULL, st->pool);
-        apr_lock_acquire(l->lock);
+        apr_thread_mutex_create(&l->lock, APR_THREAD_MUTEX_DEFAULT, st->pool);
+        apr_thread_mutex_lock(l->lock);
         l->pool = st->pool;
         l->bound = 0;
         l->host = apr_pstrdup(st->pool, host);
@@ -465,7 +464,7 @@ util_ldap_connection_t *util_ldap_connection_find(request_rec *r, const char *ho
         }
     }
 
-    apr_lock_release(st->mutex);
+    apr_thread_mutex_unlock(st->mutex);
     return l;
 }
 
@@ -500,17 +499,17 @@ int util_ldap_cache_comparedn(request_rec *r, util_ldap_connection_t *ldc,
 
     /* read lock this function */
     if (!util_ldap_cache_lock) {
-        apr_lock_create(&util_ldap_cache_lock, APR_READWRITE, APR_INTRAPROCESS, NULL, st->pool);
+        apr_thread_rwlock_create(&util_ldap_cache_lock, st->pool);
     }
 
     /* get cache entry (or create one) */
-    apr_lock_acquire_rw(util_ldap_cache_lock, APR_WRITER);
+    apr_thread_rwlock_wrlock(util_ldap_cache_lock);
     curnode.url = url;
     curl = util_ald_cache_fetch(util_ldap_cache, &curnode);
     if (curl == NULL) {
         curl = util_ald_create_caches(st, url);
     }
-    apr_lock_release(util_ldap_cache_lock);
+    apr_thread_rwlock_unlock(util_ldap_cache_lock);
 
     /* a simple compare? */
     if (!compare_dn_on_server) {
@@ -526,7 +525,7 @@ int util_ldap_cache_comparedn(request_rec *r, util_ldap_connection_t *ldc,
     }
 
     /* no - it's a server side compare */
-    apr_lock_acquire_rw(util_ldap_cache_lock, APR_READER);
+    apr_thread_rwlock_rdlock(util_ldap_cache_lock);
 
     /* is it in the compare cache? */
     newnode.reqdn = (char *)reqdn;
@@ -534,13 +533,13 @@ int util_ldap_cache_comparedn(request_rec *r, util_ldap_connection_t *ldc,
     if (node != NULL) {
         /* If it's in the cache, it's good */
         /* unlock this read lock */
-        apr_lock_release(util_ldap_cache_lock);
+        apr_thread_rwlock_unlock(util_ldap_cache_lock);
         ldc->reason = "DN Comparison TRUE (cached)";
         return LDAP_COMPARE_TRUE;
     }
 
     /* unlock this read lock */
-    apr_lock_release(util_ldap_cache_lock);
+    apr_thread_rwlock_unlock(util_ldap_cache_lock);
 
 start_over:
     if (failures++ > 10) {
@@ -579,11 +578,11 @@ start_over:
     }
     else {
         /* compare successful - add to the compare cache */
-        apr_lock_acquire_rw(util_ldap_cache_lock, APR_READER);
+        apr_thread_rwlock_rdlock(util_ldap_cache_lock);
         newnode.reqdn = (char *)reqdn;
         newnode.dn = (char *)dn;
         util_ald_cache_insert(curl->dn_compare_cache, &newnode);
-        apr_lock_release(util_ldap_cache_lock);
+        apr_thread_rwlock_unlock(util_ldap_cache_lock);
         ldc->reason = "DN Comparison TRUE (checked on server)";
         result = LDAP_COMPARE_TRUE;
     }
@@ -619,20 +618,20 @@ int util_ldap_cache_compare(request_rec *r, util_ldap_connection_t *ldc,
 
     /* read lock this function */
     if (!util_ldap_cache_lock) {
-        apr_lock_create(&util_ldap_cache_lock, APR_READWRITE, APR_INTRAPROCESS, NULL, st->pool);
+        apr_thread_rwlock_create(&util_ldap_cache_lock, st->pool);
     }
 
     /* get cache entry (or create one) */
-    apr_lock_acquire_rw(util_ldap_cache_lock, APR_WRITER);
+    apr_thread_rwlock_wrlock(util_ldap_cache_lock);
     curnode.url = url;
     curl = util_ald_cache_fetch(util_ldap_cache, &curnode);
     if (curl == NULL) {
         curl = util_ald_create_caches(st, url);
     }
-    apr_lock_release(util_ldap_cache_lock);
+    apr_thread_rwlock_unlock(util_ldap_cache_lock);
 
     /* make a comparison to the cache */
-    apr_lock_acquire_rw(util_ldap_cache_lock, APR_READER);
+    apr_thread_rwlock_rdlock(util_ldap_cache_lock);
     curtime = apr_time_now();
 
     the_compare_node.dn = (char *)dn;
@@ -651,7 +650,7 @@ int util_ldap_cache_compare(request_rec *r, util_ldap_connection_t *ldc,
         else {
             /* ...and it is good */
             /* unlock this read lock */
-            apr_lock_release(util_ldap_cache_lock);
+            apr_thread_rwlock_unlock(util_ldap_cache_lock);
             if (LDAP_COMPARE_TRUE == compare_nodep->result) {
                 ldc->reason = "Comparison true (cached)";
                 return compare_nodep->result;
@@ -671,7 +670,7 @@ int util_ldap_cache_compare(request_rec *r, util_ldap_connection_t *ldc,
         }
     }
     /* unlock this read lock */
-    apr_lock_release(util_ldap_cache_lock);
+    apr_thread_rwlock_unlock(util_ldap_cache_lock);
     
 
 start_over:
@@ -698,11 +697,11 @@ start_over:
         (LDAP_COMPARE_FALSE == result) ||
         (LDAP_NO_SUCH_ATTRIBUTE == result)) {
         /* compare completed; caching result */
-        apr_lock_acquire_rw(util_ldap_cache_lock, APR_WRITER);
+        apr_thread_rwlock_wrlock(util_ldap_cache_lock);
         the_compare_node.lastcompare = curtime;
         the_compare_node.result = result;
         util_ald_cache_insert(curl->compare_cache, &the_compare_node);
-        apr_lock_release(util_ldap_cache_lock);
+        apr_thread_rwlock_unlock(util_ldap_cache_lock);
         if (LDAP_COMPARE_TRUE == result) {
             ldc->reason = "Comparison true (adding to cache)";
             return LDAP_COMPARE_TRUE;
@@ -742,19 +741,19 @@ int util_ldap_cache_checkuserid(request_rec *r, util_ldap_connection_t *ldc,
 
     /* read lock this function */
     if (!util_ldap_cache_lock) {
-        apr_lock_create(&util_ldap_cache_lock, APR_READWRITE, APR_INTRAPROCESS, NULL, st->pool);
+        apr_thread_rwlock_create(&util_ldap_cache_lock, st->pool);
     }
 
     /* Get the cache node for this url */
-    apr_lock_acquire_rw(util_ldap_cache_lock, APR_WRITER);
+    apr_thread_rwlock_wrlock(util_ldap_cache_lock);
     curnode.url = url;
     curl = (util_url_node_t *)util_ald_cache_fetch(util_ldap_cache, &curnode);
     if (curl == NULL) {
         curl = util_ald_create_caches(st, url);
     }
-    apr_lock_release(util_ldap_cache_lock);
+    apr_thread_rwlock_unlock(util_ldap_cache_lock);
 
-    apr_lock_acquire_rw(util_ldap_cache_lock, APR_READER);
+    apr_thread_rwlock_rdlock(util_ldap_cache_lock);
     the_search_node.username = filter;
     search_nodep = util_ald_cache_fetch(curl->search_cache, &the_search_node);
     if (search_nodep != NULL && search_nodep->bindpw) {
@@ -778,13 +777,13 @@ int util_ldap_cache_checkuserid(request_rec *r, util_ldap_connection_t *ldc,
             /* ...and entry is valid */
             *binddn = search_nodep->dn;
             *retvals = search_nodep->vals;
-            apr_lock_release(util_ldap_cache_lock);
+            apr_thread_rwlock_unlock(util_ldap_cache_lock);
             ldc->reason = "Authentication successful (cached)";
             return LDAP_SUCCESS;
         }
     }
     /* unlock this read lock */
-    apr_lock_release(util_ldap_cache_lock);
+    apr_thread_rwlock_unlock(util_ldap_cache_lock);
 
 
     /*	
@@ -893,7 +892,7 @@ start_over:
     /* 		
      * Add the new username to the search cache.
      */
-    apr_lock_acquire_rw(util_ldap_cache_lock, APR_WRITER);
+    apr_thread_rwlock_wrlock(util_ldap_cache_lock);
     the_search_node.username = filter;
     the_search_node.dn = *binddn;
     the_search_node.bindpw = bindpw;
@@ -901,7 +900,7 @@ start_over:
     the_search_node.vals = vals;
     util_ald_cache_insert(curl->search_cache, &the_search_node);
     ldap_msgfree(res);
-    apr_lock_release(util_ldap_cache_lock);
+    apr_thread_rwlock_unlock(util_ldap_cache_lock);
 
     ldc->reason = "Authentication successful";
     return LDAP_SUCCESS;
