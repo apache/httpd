@@ -43,6 +43,7 @@ BEGIN {
     print "#LoadModule ext_filter_module modules/extfiltr.nlm"
     print "#LoadModule file_cache_module modules/filecach.nlm"
     print "#LoadModule headers_module modules/headers.nlm"
+    print "#LoadModule ident_module modules/modident.nlm"
     print "#LoadModule info_module modules/info.nlm"
     print "#LoadModule logio_module modules/modlogio.nlm"
     print "#LoadModule mime_magic_module modules/mimemagi.nlm"
