@@ -1,5 +1,8 @@
 Changes with Apache 2.0.14-dev
 
+  *) Make the old_write filter use the ap_f* functions for the buffering.
+     [Ryan Bloom]
+
   *) Move more code from the http module into the core server.  This
      is core code, basically the default handler, the default input
      and output filters, and all of the core configuration directives.

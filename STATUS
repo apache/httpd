@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:						-*-text-*-
-Last modified at [$Date: 2001/03/04 17:44:07 $]
+Last modified at [$Date: 2001/03/05 06:16:28 $]
 
 Release:
 
@@ -100,8 +100,6 @@ RELEASE SHOWSTOPPERS:
         Status: Greg volunteers
         MsgId: <20010227104646.E2297@lyra.org>
         MsgId: <3A9C0097.9C83F07C@Golux.Com>
-
-    * The old_write filter needs to use ap_f* functions for the buffering.
 
 RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
 
