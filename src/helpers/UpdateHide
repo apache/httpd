@@ -23,6 +23,9 @@ $listend    = '\n#endif\n';
 @included   = qw(
     D:db_auth_module
     D:dbm_auth_module
+    T:find_pool
+    T:pool_is_ancestor
+    T:pool_join
 );
 
 #   determine os-dependend stuff

@@ -294,6 +294,7 @@
 #define find_linked_module             AP_find_linked_module
 #define find_module_name               AP_find_module_name
 #define find_path_info                 AP_find_path_info
+#define find_pool                      AP_find_pool
 #define find_token                     AP_find_token
 #define find_types                     AP_find_types
 #define fini_vhost_config              AP_fini_vhost_config
@@ -415,6 +416,8 @@
 #define pfopen                         AP_pfopen
 #define pgethostbyname                 AP_pgethostbyname
 #define plustospace                    AP_plustospace
+#define pool_is_ancestor               AP_pool_is_ancestor
+#define pool_join                      AP_pool_join
 #define popendir                       AP_popendir
 #define popenf                         AP_popenf
 #define pregcomp                       AP_pregcomp
