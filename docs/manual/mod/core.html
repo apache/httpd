@@ -1328,9 +1328,9 @@ the length of the content is known in advance.  This implies that
 dynamic content such as CGI output, SSI pages, and server-generated
 directory listings will generally not use Keep-Alive connections to
 HTTP/1.0 clients.  For HTTP/1.1 clients, persistent connections are
-the default unless otherwise specified.  Chunked encoding will be used
-in order to send content of unknown length over persistent
-connections.</p>
+the default unless otherwise specified.  If the client requests it,
+chunked encoding will be used in order to send content of unknown
+length over persistent connections.</p>
 
 <p>See also  <A
 HREF="#maxkeepaliverequests">MaxKeepAliveRequests</A>.</P>
