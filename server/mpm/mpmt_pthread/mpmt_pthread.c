@@ -422,7 +422,7 @@ static void process_child_status(ap_proc_t *pid, ap_wait_t status)
 #endif
 #else
 	    ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_NOTICE,
-			 ap_server_conf,
+			 0, ap_server_conf,
 			 "child pid %ld exit signal %d",
 			 (long)pid->pid, WTERMSIG(status));
 #endif
@@ -597,10 +597,10 @@ static void * worker_thread(void * dummy)
                     continue;
                 }
 
-                /* poll() will only return errors in catastrophic
+                /* ap_poll() will only return errors in catastrophic
                  * circumstances. Let's try exiting gracefully, for now. */
-                ap_log_error(APLOG_MARK, APLOG_ERR, errno, (const server_rec *)
-                             ap_get_server_conf(), "poll: (listen)");
+                ap_log_error(APLOG_MARK, APLOG_ERR, ret, (const server_rec *)
+                             ap_get_server_conf(), "ap_poll: (listen)");
                 workers_may_exit = 1;
             }
 
@@ -638,7 +638,10 @@ static void * worker_thread(void * dummy)
         }
     got_fd:
         if (!workers_may_exit) {
-            ap_accept(&csd, sd, ptrans);
+            if ((rv = ap_accept(&csd, sd, ptrans)) != APR_SUCCESS) {
+                ap_log_error(APLOG_MARK, APLOG_ERR, rv, ap_server_conf, 
+                             "ap_accept");
+            }
             if ((rv = SAFE_ACCEPT(ap_unlock(process_accept_mutex)))
                 != APR_SUCCESS) {
                 ap_log_error(APLOG_MARK, APLOG_EMERG, rv, ap_server_conf,
@@ -1092,7 +1095,7 @@ int ap_mpm_run(ap_pool_t *_pconf, ap_pool_t *plog, server_rec *s)
     if (rv != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_ERR, rv,
                      (const server_rec*) ap_server_conf,
-                     "pipe: (pipe_of_death)");
+                     "ap_create_pipe (pipe_of_death)");
         exit(1);
     }
 
