@@ -429,7 +429,7 @@ static int status_handler(request_rec *r)
 	if (no_table_report)
 	    rputs("<p><hr><h2>Server Details</h2>\n\n", r);
 	else
-#ifdef __EMX__
+#ifdef NO_TIMES
 	    /* Allow for OS/2 not having CPU stats */
 	    rputs("<p>\n\n<table border=0><tr><th>Srv<th>PID<th>Acc<th>M\n<th>SS<th>Req<th>Conn<th>Child<th>Slot<th>Host<th>VHost<th>Request</tr>\n\n", r);
 #else
