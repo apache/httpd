@@ -1,5 +1,5 @@
 #!/bin/sh
-trap 'rm -f $tmpfile; exit' 0 1 2 3 15
+trap 'rm -f $tmpfile $tmpfile.2 $tmpfile.3; exit' 0 1 2 3 15
 
 # Apache configuration script, first cut --- rst.
 # Dont like it?  Inspired to do something better?  Go for it.
@@ -25,6 +25,7 @@ tmpfile=htconf.$$
 tmpfile2=$tmpfile.2
 tmpfile3=$tmpfile.3
 makefile_tmpl=Makefile.tmpl
+SRCDIR=`pwd`
 
 ####################################################################
 ## Now handle any arguments, which, for now, are -file and -make
@@ -70,6 +71,8 @@ sed 's/#.*//' $file | \
  sed 's/[ 	]*$//' | \
  sed 's/[ 	]*=[ 	]*/=/' | \
  sed 's/^Rule[ 	]*/##Rule:/' | \
+ sed 's/^[ 	]*AddModule/AddModule/' | \
+ sed 's/^[        ]*%AddModule/%AddModule/' | \
  sed 's/^[ 	]*Module/Module/' | \
  sed 's/^[        ]*%Module/%Module/' > $tmpfile
 
@@ -85,8 +88,9 @@ then
   echo "Syntax error --- The configuration file is used only to"
   echo "define the list of included modules or to set Makefile"
   echo "options or Configure rules, and I don't see that at all:"
-  egrep -v '^Module[ 	]+[A-Za-z0-9_]+[ 	]+[^ 	]+$' $tmpfile | \
-   grep -v =
+  egrep -v '^%?Module[ 	]+[A-Za-z0-9_]+[ 	]+[^ 	]+$' $tmpfile \
+   | egrep -v '^%?AddModule[ 	]+[^ 	]+$'  \
+   | grep -v =
   exit 1
 fi
 
@@ -500,7 +504,6 @@ fi
 ####################################################################
 # Show user what OS we came up with
 #
-SRCDIR=`pwd`
 echo " + configured for $OS platform"
 
 ####################################################################
@@ -567,7 +570,6 @@ fi
 # are going to use. This is easy, since this can be gleamed from
 # Makefile.config
 #
-TCC=`egrep '^CC=' Makefile.config | tail -1 | awk -F= '{print $2}'`
 case "$OS" in
     'ULTRIX')
 	if [ "$TCC" = "cc" ]; then
@@ -606,31 +608,9 @@ fi
 # Now we do some general checks and some intelligent Configuration
 # control.
 
-####################################################################
-# Continue building Makefile.config. We can add all flags with
-# the exception of LIBS at this point
 #
-####################################################################
-# Use TestCompile to see if $(CC) is ANSI and as a "final" sanity
-# check
-#
-echo " + doing sanity check on compiler and options"
-if ./helpers/TestCompile ansi; then
-    :
-else
-   echo "** A test compilation with your Makefile configuration"
-   echo "** failed. This is most likely because your C compiler"
-   echo "** is not ANSI. Apache requires an ANSI C Compiler, such"
-   echo "** as gcc. The above error message from your compiler"
-   echo "** will also provide a clue."
-   echo " Aborting!"
-   exit 1
-fi
-
-####################################################################
 # Use TestCompile to look for various LIBS
 #
-
 case "$PLAT" in
     *-linux*)
 	# newer systems using glibc 2.x need -lcrypt
@@ -689,8 +669,8 @@ if [ "$RULE_SOCKS4" = "yes" ]; then
 	LIBS="$LIBS -lresolv"
     fi
 fi
- 
-#
+
+####################################################################
 # Find out what modules we want and try and configure things for them
 # Module lines can look like this:
 #
@@ -777,7 +757,7 @@ for modfile in $MODFILES ; do
 
 	if [ -r $modbase.module ] ; then
 		cat $modbase.module > $tmpfile2
-	elif [ -e $modbase.c ] ; then
+	elif [ -f $modbase.c ] ; then
 		# Guess module structure name in case there is not
 		# module definition in this file
 		modname=`grep '^module .*;' $modbase.c | head -1 |\
@@ -795,7 +775,7 @@ for modfile in $MODFILES ; do
 		modname=`fgrep "Name:" $tmpfile2 | sed 's/^.*Name:[ 	]*//'`
 		cat $tmpfile2 | sed '1,/ConfigStart/d;/ConfigEnd/,$d' > \
 			$tmpfile3
-		. $tmpfile3
+		. ./$tmpfile3
 		rm -f $tmpfile2 $tmpfile3
 		ext=o
 	fi
@@ -803,7 +783,7 @@ for modfile in $MODFILES ; do
 		modname=`echo $modbase | sed 's/^.*\///' | \
 			sed 's/^mod_//' | sed 's/^lib//' | sed 's/$/_module/'`
 	fi
-	echo "Adding Module $modname $modbase.$ext"
+#	echo "Adding Module $modname $modbase.$ext"
 	echo "Module $modname $modbase.$ext" >>$tmpfile
 done
 
@@ -854,16 +834,9 @@ awk >>Makefile <$tmpfile '\
        }'
 
 ####################################################################
-# Continue building Makefile.config. We can add all flags with
-# the exception of LIBS at this point
+# Continue building Makefile.config.
 #
 echo  >> Makefile
-if [ "x$CC" != "x" ]; then
-    echo "CC=$CC" >> Makefile.config
-fi
-if [ "x$OPTIM" != "x" ]; then
-    echo "OPTIM=$OPTIM" >> Makefile.config
-fi
 echo "CFLAGS1=$CFLAGS">> Makefile.config
 echo "INCLUDES1=$INCLUDES -I${SRCDIR}/core">> Makefile.config
 echo "LIBS1=$LIBS">> Makefile.config
@@ -874,15 +847,27 @@ echo "RANLIB=$RANLIB">> Makefile.config
 echo "SHELL=$SHELL">> Makefile.config
 echo "OSOBJ=${SRCDIR}/$OSDIR/os.o">> Makefile.config
 echo "OSDIR=${SRCDIR}/$OSDIR">> Makefile.config
-
-####################################################################
-# NOW we finish Makefile.config
-#
-echo "LIBS1=$LIBS">> Makefile.config
 echo >> Makefile.config
 echo "#### End of Configure created section ####">> Makefile.config
 
 cp $OSDIR/os.h core/os.h
+
+####################################################################
+# Use TestCompile to see if $(CC) is ANSI and as a "final" sanity
+# check
+#
+echo " + doing sanity check on compiler and options"
+if ./helpers/TestCompile ansi; then
+    :
+else
+   echo "** A test compilation with your Makefile configuration"
+   echo "** failed. This is most likely because your C compiler"
+   echo "** is not ANSI. Apache requires an ANSI C Compiler, such"
+   echo "** as gcc. The above error message from your compiler"
+   echo "** will also provide a clue."
+   echo " Aborting!"
+   exit 1
+fi
 
 ####################################################################
 # Now (finish) creating the makefiles
@@ -951,7 +936,7 @@ done
 ) >> modules/Makefile
 
 for moddir in $MODDIRS ; do
-	if [ ! -e modules/$moddir/Makefile.tmpl ] ; then
+	if [ ! -f modules/$moddir/Makefile.tmpl ] ; then
 		continue
 	fi
 	echo "Creating Makefile in modules/$moddir"
