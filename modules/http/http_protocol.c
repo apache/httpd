@@ -223,6 +223,7 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_byterange_filter(
     apr_off_t range_end;
     char *current;
     const char *bound_head;
+    int clength = 0;
 
     if (!ctx) {
         int num_ranges = ap_set_byterange(r);
@@ -267,11 +268,26 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_byterange_filter(
     bb = ctx->bb;
     ctx->bb = NULL;     /* ### strictly necessary? call brigade_destroy? */
 
+    /* It is possible that we won't have a content length yet, so we have to
+     * compute the length before we can actually do the byterange work.
+     */
+    AP_BRIGADE_FOREACH(e, bb) {
+        const char *ignore;
+        apr_size_t len;
+
+        if (e->length >= 0) {
+            clength += e->length;
+            continue;
+        }
+        ap_bucket_read(e, &ignore, &len, AP_NONBLOCK_READ);
+        clength += e->length;
+    }
+
     /* this brigade holds what we will be sending */
     bsend = ap_brigade_create(r->pool);
 
     while ((current = ap_getword(r->pool, &r->range, ',')) &&
-           parse_byterange(current, r->clength, &range_start, &range_end)) {
+           parse_byterange(current, clength, &range_start, &range_end)) {
         const char *str;
         apr_size_t n;
         const char *range;
@@ -348,7 +364,7 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_byterange_filter(
             AP_BRIGADE_INSERT_TAIL(bsend, e);
 
             ts = apr_psprintf(r->pool, BYTERANGE_FMT CRLF CRLF,
-                              range_start, range_end, r->clength);
+                              range_start, range_end, clength);
             e = ap_bucket_create_pool(ts, strlen(ts), r->pool);
             AP_BRIGADE_INSERT_TAIL(bsend, e);
         }
@@ -2343,8 +2359,7 @@ static int ap_set_byterange(request_rec *r)
     apr_off_t range_end;
     int num_ranges;
 
-    /* ### this test for r->clength is probably a Bad Thing. need to fix */
-    if (!r->clength || r->assbackwards)
+    if (r->assbackwards)
         return 0;
 
     /* Check for Range request-header (HTTP/1.1) or Request-Range for
