@@ -43,7 +43,7 @@ RSC=rc.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MT /W3 /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "XMLTOK_EXPORTS" /D "XMLPARSE_EXPORTS" /FD /c
-# ADD CPP /nologo /MD /W3 /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "XMLTOK_EXPORTS" /D "XMLPARSE_EXPORTS" /Fd"Release/libexpat" /FD /c
+# ADD CPP /nologo /MD /W3 /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "XML_MIN_SIZE" /D XMLTOKAPI="__declspec(dllexport)" /D XMLPARSEAPI="__declspec(dllexport)" /Fd"Release/libexpat" /FD /c
 # ADD BASE MTL /nologo /D "NDEBUG" /mktyplib203 /win32
 # ADD MTL /nologo /D "NDEBUG" /mktyplib203 /win32
 # ADD BASE RSC /l 0x409 /d "NDEBUG"
@@ -52,8 +52,8 @@ BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
 LINK32=link.exe
-# ADD BASE LINK32 /nologo /base:"0x6EC00000" /dll /incremental:no /map /dll /machine:I386
-# ADD LINK32 /nologo /base:"0x6EC00000" /dll /incremental:no /map /dll /machine:I386
+# ADD BASE LINK32 /nologo /base:"0x6EC00000" /dll /map /machine:I386
+# ADD LINK32 /nologo /base:"0x6EC00000" /dll /map /machine:I386
 
 !ELSEIF  "$(CFG)" == "libexpat - Win32 Debug"
 
@@ -69,7 +69,7 @@ LINK32=link.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MTd /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "XMLTOK_EXPORTS" /D "XMLPARSE_EXPORTS" /FD /c
-# ADD CPP /nologo /MDd /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "XMLTOK_EXPORTS" /D "XMLPARSE_EXPORTS" /Fd"Debug/libexpat" /FD /c
+# ADD CPP /nologo /MDd /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /D "XML_MIN_SIZE" /D XMLTOKAPI="__declspec(dllexport)" /D XMLPARSEAPI="__declspec(dllexport)" /Fd"Debug/libexpat" /FD /c
 # ADD BASE MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD BASE RSC /l 0x409 /d "_DEBUG"
@@ -78,8 +78,8 @@ BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
 LINK32=link.exe
-# ADD BASE LINK32 /nologo /base:"0x6EC00000" /dll /incremental:no /map /debug /machine:I386 
-# ADD LINK32 /nologo /base:"0x6EC00000" /dll /incremental:no /map /debug /machine:I386 
+# ADD BASE LINK32 /nologo /base:"0x6EC00000" /dll /incremental:no /map /debug /machine:I386
+# ADD LINK32 /nologo /base:"0x6EC00000" /dll /incremental:no /map /debug /machine:I386
 
 !ENDIF 
 
@@ -87,6 +87,10 @@ LINK32=link.exe
 
 # Name "libexpat - Win32 Release"
 # Name "libexpat - Win32 Debug"
+# Begin Source File
+
+SOURCE=".\dllmain.c"
+# End Source File
 # Begin Source File
 
 SOURCE=".\hashtable.c"
@@ -101,20 +105,11 @@ SOURCE=".\xmlparse.h"
 # End Source File
 # Begin Source File
 
-SOURCE=".\dllmain.c"
-# End Source File
-# Begin Source File
-
 SOURCE=".\xmlrole.c"
 # End Source File
 # Begin Source File
 
 SOURCE=".\xmltok.c"
 # End Source File
-# Begin Source File
-
-SOURCE=".\libexpat.def"
-# End Source File
-
 # End Target
 # End Project

@@ -62,8 +62,9 @@ CLEAN :
 
 CPP=cl.exe
 CPP_PROJ=/nologo /MD /W3 /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D\
- "_USRDLL" /D "XMLTOK_EXPORTS" /D "XMLPARSE_EXPORTS" /Fo"$(INTDIR)\\"\
- /Fd"$(INTDIR)\libexpat" /FD /c 
+ "XML_MIN_SIZE" /D XMLTOKAPI="__declspec(dllexport)" /D\
+ XMLPARSEAPI="__declspec(dllexport)" /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\libexpat"\
+ /FD /c 
 CPP_OBJS=.\Release/
 CPP_SBRS=.
 
@@ -107,10 +108,7 @@ BSC32_SBRS= \
 LINK32=link.exe
 LINK32_FLAGS=/nologo /base:"0x6EC00000" /dll /incremental:no\
  /pdb:"$(OUTDIR)\libexpat.pdb" /map:"$(INTDIR)\libexpat.map" /machine:I386\
- /def:".\libexpat.def" /out:"$(OUTDIR)\libexpat.dll"\
- /implib:"$(OUTDIR)\libexpat.lib" 
-DEF_FILE= \
-	".\libexpat.def"
+ /out:"$(OUTDIR)\libexpat.dll" /implib:"$(OUTDIR)\libexpat.lib" 
 LINK32_OBJS= \
 	"$(INTDIR)\dllmain.obj" \
 	"$(INTDIR)\hashtable.obj" \
@@ -159,8 +157,9 @@ CLEAN :
 
 CPP=cl.exe
 CPP_PROJ=/nologo /MDd /W3 /Gm /GX /Zi /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS"\
- /D "_MBCS" /D "_USRDLL" /D "XMLTOK_EXPORTS" /D "XMLPARSE_EXPORTS"\
- /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\libexpat" /FD /c 
+ /D "_MBCS" /D "XML_MIN_SIZE" /D XMLTOKAPI="__declspec(dllexport)" /D\
+ XMLPARSEAPI="__declspec(dllexport)" /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\libexpat"\
+ /FD /c 
 CPP_OBJS=.\Debug/
 CPP_SBRS=.
 
@@ -204,10 +203,7 @@ BSC32_SBRS= \
 LINK32=link.exe
 LINK32_FLAGS=/nologo /base:"0x6EC00000" /dll /incremental:no\
  /pdb:"$(OUTDIR)\libexpat.pdb" /map:"$(INTDIR)\libexpat.map" /debug\
- /machine:I386 /def:".\libexpat.def" /out:"$(OUTDIR)\libexpat.dll"\
- /implib:"$(OUTDIR)\libexpat.lib" 
-DEF_FILE= \
-	".\libexpat.def"
+ /machine:I386 /out:"$(OUTDIR)\libexpat.dll" /implib:"$(OUTDIR)\libexpat.lib" 
 LINK32_OBJS= \
 	"$(INTDIR)\dllmain.obj" \
 	"$(INTDIR)\hashtable.obj" \
