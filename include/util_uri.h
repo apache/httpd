@@ -67,10 +67,19 @@
 extern "C" {
 #endif
 
-typedef struct {
+/**
+ * @package Apache URI library
+ */
+
+typedef struct schemes_t;
+
+/** Structure to store various schemes and their default ports */
+struct schemes_t {
+    /** The name of the scheme */
     const char *name;
+    /** The default port for the scheme */
     unsigned short default_port;
-} schemes_t;
+};
 
 #define	DEFAULT_FTP_DATA_PORT	20
 #define	DEFAULT_FTP_PORT	21
