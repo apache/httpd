@@ -53,7 +53,6 @@
 /*
  * mod_mime_magic: MIME type lookup via file magic numbers
  * Copyright (c) 1996-1997 Cisco Systems, Inc.
- * $Revision: 1.2 $
  * 
  * This software was submitted by Cisco Systems to the Apache Group in July
  * 1997.  Future revisions and derivatives of this source code must
@@ -87,7 +86,7 @@
  * 4. This notice may not be removed or altered.
  * -------------------------------------------------------------------------
  * 
- * For complicance with Mr Darwin's terms: this has been very significantly
+ * For compliance with Mr Darwin's terms: this has been very significantly
  * modified from the free "file" command.
  * - all-in-one file for compilation convenience when moving from one
  *   version of Apache to the next.
@@ -121,7 +120,6 @@
 
 #include <sys/wait.h>
 #include <sys/stat.h>
-#include <sys/sysmacros.h>
 #include <time.h>
 #include <utime.h>
 #include <stdarg.h>
@@ -138,7 +136,7 @@
  */
 
 #define MODNAME        "mod_mime_magic"
-#define DEBUG        0
+#define MIME_MAGIC_DEBUG        0
 
 #ifndef MAGIC
 #define MAGIC "conf/magic"
@@ -250,7 +248,7 @@ static unsigned long signextend(server_rec *, struct magic *, unsigned long);
 
 static int getvalue(server_rec *, struct magic *, char **);
 static int hextoint(int);
-static char *getstr(char *, char *, int, int *);
+static char *getstr(server_rec *, char *, char *, int, int *);
 static int parse(server_rec *, pool * p, char *, int);
 
 static int match(request_rec *, unsigned char *, int);
@@ -262,7 +260,7 @@ static void mprint(request_rec *, union VALUETYPE *, struct magic *);
 static int mconvert(request_rec *, union VALUETYPE *, struct magic *);
 
 static int 
-uncompress(server_rec *, int, const unsigned char *,
+uncompress(request_rec *, int, const unsigned char *,
        unsigned char **, int);
 static long from_oct(int, char *);
 static int fsmagic(request_rec * r, const char *fn, struct stat * sb);
@@ -342,7 +340,7 @@ static struct names {
     },
     {
         "/*", L_C
-    },            /* must preced "The", "the", etc. */
+    },            /* must precede "The", "the", etc. */
     {
         "#include", L_C
     },
@@ -577,9 +575,8 @@ magic_set_config(request_rec * r)
         palloc(r->pool, sizeof(magic_req_rec));
 
     if (!req_dat) {
-        fprintf(stderr, MODNAME ": memory allocation "
-            "failure in magic_set_config()\n");
-        fflush(stderr);
+	log_printf(r->server, "%s: memory allocation failure in "
+	    "magic_set_config()", MODNAME);
         return NULL;
     }
     req_dat->head = req_dat->tail = (magic_rsl *) NULL;
@@ -598,9 +595,8 @@ magic_rsl_add(request_rec * r, char *str)
 
     /* make sure we have a list to put it in */
     if (!req_dat) {
-        fprintf(stderr, MODNAME ": request config "
-            "should not be NULL\n");
-        fflush(stderr);
+	log_printf(r->server, "%s: request config should not be NULL",
+	    MODNAME);
         if (!(req_dat = magic_set_config(r))) {
             /* failure */
             return -1;
@@ -610,8 +606,7 @@ magic_rsl_add(request_rec * r, char *str)
     /* allocate the list entry */
     if (!(rsl = (magic_rsl *) palloc(r->pool, sizeof(magic_rsl)))) {
         log_printf(r->server, MODNAME ": "
-               "memory allocation failure in magic_rsl_add()\n");
-        fflush(stderr);
+               "memory allocation failure in magic_rsl_add()");
         /* failure */
         return -1;
     }
@@ -646,12 +641,11 @@ magic_rsl_printf(request_rec * r, char *str,...)
 {
     va_list ap;
 
-    /* make sure this is long enough since most OS's have no vsnprintf() */
     char buf[MAXMIMESTRING];
 
     /* assemble the string into the buffer */
     va_start(ap, str);
-    vsprintf(buf, str, ap);
+    ap_vsnprintf(buf, sizeof(buf), str, ap);
     va_end(ap);
 
     /* add the buffer to the list */
@@ -686,7 +680,7 @@ rsl_strdup(request_rec * r, int start_frag, int start_pos, int len)
     /* allocate the result string */
     if (!(result = (char *) palloc(r->pool, len + 1))) {
         log_printf(r->server, MODNAME ": "
-               "memory allocation failure in rsl_strdup()\n");
+               "memory allocation failure in rsl_strdup()");
         return NULL;
     }
 
@@ -716,11 +710,9 @@ rsl_strdup(request_rec * r, int start_frag, int start_pos, int len)
 
     /* clean up and return */
     result[res_pos] = 0;
-#if DEBUG
-    fprintf(stderr, MODNAME ": rsl_strdup() %d chars: %s\n",
+#if MIME_MAGIC_DEBUG
+    log_printf(r->server, MODNAME ": rsl_strdup() %d chars: %s",
         res_pos - 1, result);
-    fflush(stderr);
-    fflush(stderr);
 #endif
     return result;
 }
@@ -793,7 +785,7 @@ magic_rsl_to_request(request_rec * r)
                     /* should not be possible */
                     /* abandon malfunctioning module */
                     log_printf(r->server,
-                           "%s: bad state %d (ws)\n",
+                           "%s: bad state %d (ws)",
                            MODNAME);
                     return DECLINED;
                 }
@@ -838,7 +830,7 @@ magic_rsl_to_request(request_rec * r)
                     /* should not be possible */
                     /* abandon malfunctioning module */
                     log_printf(r->server,
-                           "%s: bad state %d (ns)\n",
+                           "%s: bad state %d (ns)",
                            MODNAME);
                     return DECLINED;
                 }
@@ -868,7 +860,7 @@ magic_rsl_to_request(request_rec * r)
     /* detect memory allocation errors */
     if (!r->content_type ||
         (state == rsl_encoding && !r->content_encoding)) {
-        return 500;
+        return HTTP_INTERNAL_SERVER_ERROR;
     }
 
     /* success! */
@@ -877,7 +869,7 @@ magic_rsl_to_request(request_rec * r)
 
 /*
  * magic_process - process input file r        Apache API request record
- * (formerly caled "process" in file command, prefix added for clarity) Opens
+ * (formerly called "process" in file command, prefix added for clarity) Opens
  * the file and reads a fixed-size buffer to begin processing the contents.
  */
 static void
@@ -900,10 +892,10 @@ magic_process(request_rec * r)
     if ((fd = open(r->filename, O_RDONLY)) < 0) {
         /* We can't open it, but we were able to stat it. */
         /*
-         * if (sb.st_mode & 0002) magic_rsl_puts(r,"writeable, "); if
+         * if (sb.st_mode & 0002) magic_rsl_puts(r,"writable, "); if
          * (sb.st_mode & 0111) magic_rsl_puts(r,"executable, ");
          */
-        log_printf(r->server, "can't read `%s' (%s).\n",
+        log_printf(r->server, "can't read `%s' (%s).",
                r->filename, strerror(errno));
         return;
     }
@@ -912,7 +904,7 @@ magic_process(request_rec * r)
      * try looking at the first HOWMANY bytes
      */
     if ((nbytes = read(fd, (char *) buf, HOWMANY)) == -1) {
-        log_printf(r->server, "read failed (%s).\n", strerror(errno));
+        log_printf(r->server, "read failed (%s).", strerror(errno));
         /* NOTREACHED */
     }
 
@@ -975,8 +967,8 @@ apprentice(server_rec * s, pool * p)
     char line[BUFSIZ + 1];
     int errs = 0;
     int lineno;
-#if DEBUG
-    int rule;
+#if MIME_MAGIC_DEBUG
+    int rule = 0;
     struct magic *m, *prevm;
 #endif
     char *fname;
@@ -990,11 +982,8 @@ apprentice(server_rec * s, pool * p)
     fname = server_root_relative(p, conf->magicfile);
     f = pfopen(p, fname, "r");
     if (f == NULL) {
-        (void) fprintf(stderr, "%s: can't read magic file %s\n",
-                   MODNAME, fname);
-        fflush(stderr);
-        perror(MODNAME);
-        fflush(stderr);
+	log_printf(s, "%s: can't read magic file %s: %s",
+            MODNAME, fname, strerror(errno));
         return -1;
     }
 
@@ -1025,7 +1014,7 @@ apprentice(server_rec * s, pool * p)
         if (line[ws_offset] == '#')
             continue;
 
-#if DEBUG
+#if MIME_MAGIC_DEBUG
         /* if we get here, we're going to use it so count it */
         rule++;
 #endif
@@ -1037,30 +1026,29 @@ apprentice(server_rec * s, pool * p)
 
     (void) pfclose(p, f);
 
-#if DEBUG
-    fprintf(stderr,
-        "%s: apprentice conf=%x file=%s m=%s m->next=%s last=%s\n",
+#if MIME_MAGIC_DEBUG
+    log_printf(s,
+        "%s: apprentice conf=%x file=%s m=%s m->next=%s last=%s",
         MODNAME, conf,
         conf->magicfile ? conf->magicfile : "NULL",
         conf->magic ? "set" : "NULL",
         (conf->magic && conf->magic->next) ? "set" : "NULL",
         conf->last ? "set" : "NULL");
-    fprintf(stderr, "%s: apprentice read %d lines, %d rules, %d errors\n",
+    log_printf(s, "%s: apprentice read %d lines, %d rules, %d errors",
         MODNAME, lineno, rule, errs);
-    fflush(stderr);
 #endif
 
-#if DEBUG
+#if MIME_MAGIC_DEBUG
     prevm = 0;
-    fprintf(stderr, "%s: apprentice test\n", MODNAME);
+    log_printf(s, "%s: apprentice test", MODNAME);
     for (m = conf->magic; m; m = m->next) {
         if (isprint((((unsigned long) m) >> 24) & 255) &&
             isprint((((unsigned long) m) >> 16) & 255) &&
             isprint((((unsigned long) m) >> 8) & 255) &&
             isprint(((unsigned long) m) & 255)) {
-            fprintf(stderr, "%s: apprentice: "
+            log_printf(s, "%s: apprentice: "
                 "POINTER CLOBBERED! "
-                "m=\"%c%c%c%c\" line=%d\n", MODNAME,
+                "m=\"%c%c%c%c\" line=%d", MODNAME,
                 (((unsigned long) m) >> 24) & 255,
                 (((unsigned long) m) >> 16) & 255,
                 (((unsigned long) m) >> 8) & 255,
@@ -1070,7 +1058,6 @@ apprentice(server_rec * s, pool * p)
         }
         prevm = m;
     }
-    fflush(stderr);
 #endif
 
     return (errs ? -1 : 0);
@@ -1108,10 +1095,8 @@ signextend(server_rec * s, struct magic * m, unsigned long v)
         case STRING:
             break;
         default:
-            fprintf(stderr, "%s: can't happen: m->type=%d\n",
+            log_printf(s, "%s: can't happen: m->type=%d",
                 MODNAME, m->type);
-            fflush(stderr);
-            fflush(stderr);
             return -1;
         }
     return v;
@@ -1131,8 +1116,7 @@ parse(server_rec * serv, pool * p, char *l, int lineno)
 
     /* allocate magic structure entry */
     if ((m = (struct magic *) pcalloc(p, sizeof(struct magic))) == NULL) {
-        (void) fprintf(stderr, "%s: Out of memory.\n", MODNAME);
-        fflush(stderr);
+        (void) log_printf(serv, "%s: Out of memory.", MODNAME);
         return -1;
     }
 
@@ -1164,8 +1148,7 @@ parse(server_rec * serv, pool * p, char *l, int lineno)
     /* get offset, then skip over it */
     m->offset = (int) strtol(l, &t, 0);
     if (l == t) {
-        fprintf(stderr, "%s: offset %s invalid", MODNAME, l);
-        fflush(stderr);
+        log_printf(serv, "%s: offset %s invalid", MODNAME, l);
     }
     l = t;
 
@@ -1187,8 +1170,7 @@ parse(server_rec * serv, pool * p, char *l, int lineno)
                 m->in.type = BYTE;
                 break;
             default:
-                fprintf(stderr, "%s: indirect offset type %c invalid", MODNAME, *l);
-                fflush(stderr);
+                log_printf(serv, "%s: indirect offset type %c invalid", MODNAME, *l);
                 break;
             }
             l++;
@@ -1204,9 +1186,8 @@ parse(server_rec * serv, pool * p, char *l, int lineno)
         else
             t = l;
         if (*t++ != ')') {
-            fprintf(stderr, "%s: missing ')' in indirect offset",
+            log_printf(serv, "%s: missing ')' in indirect offset",
                 MODNAME);
-            fflush(stderr);
         }
         l = t;
     }
@@ -1279,8 +1260,7 @@ parse(server_rec * serv, pool * p, char *l, int lineno)
         l += NLEDATE;
     }
     else {
-        fprintf(stderr, "%s: type %s invalid", MODNAME, l);
-        fflush(stderr);
+        log_printf(serv, "%s: type %s invalid", MODNAME, l);
         return -1;
     }
     /* New-style anding: "0 byte&0x80 =0x80 dynamically linked" */
@@ -1342,12 +1322,11 @@ GetDesc:
     while ((m->desc[i++] = *l++) != '\0' && i < MAXDESC)
          /* NULLBODY */ ;
 
-#if DEBUG
-    fprintf(stderr, "%s: parse line=%d m=%x next=%x cont=%d desc=%s\n",
+#if MIME_MAGIC_DEBUG
+    log_printf(serv, "%s: parse line=%d m=%x next=%x cont=%d desc=%s",
         MODNAME, lineno, m, m->next, m->cont_level,
         m->desc ? m->desc : "NULL");
-    fflush(stderr);
-#endif                /* DEBUG */
+#endif                /* MIME_MAGIC_DEBUG */
 
     return 0;
 }
@@ -1363,7 +1342,7 @@ getvalue(server_rec * s, struct magic * m, char **p)
     int slen;
 
     if (m->type == STRING) {
-        *p = getstr(*p, m->value.s, sizeof(m->value.s), &slen);
+        *p = getstr(s, *p, m->value.s, sizeof(m->value.s), &slen);
         m->vallen = slen;
     }
     else if (m->reln != 'x')
@@ -1377,10 +1356,8 @@ getvalue(server_rec * s, struct magic * m, char **p)
  * *slen. Return updated scan pointer as function result.
  */
 static char *
-getstr(s, p, plen, slen)
-    register char *s;
-    register char *p;
-    int plen, *slen;
+getstr(server_rec *serv, register char *s, register char *p, 
+    int plen, int *slen)
 {
     char *origs = s, *origp = p;
     char *pmax = p + plen - 1;
@@ -1391,8 +1368,7 @@ getstr(s, p, plen, slen)
         if (isspace((unsigned char) c))
             break;
         if (p >= pmax) {
-            fprintf(stderr, "String too long: %s\n", origs);
-            fflush(stderr);
+            log_printf(serv, "String too long: %s", origs);
             break;
         }
         if (c == '\\') {
@@ -1517,9 +1493,6 @@ fsmagic(request_rec * r, const char *fn, struct stat * sb)
     ret = stat(fn, sb);    /* don't merge into if; see "ret =" above */
 
     if (ret) {
-        log_printf(r->server,
-        /* No \n, caller will provide. */
-               "can't stat `%s' (%s).", fn, strerror(errno));
         return 1;
     }
 
@@ -1593,10 +1566,9 @@ fsmagic(request_rec * r, const char *fn, struct stat * sb)
                              * anyway */
                 }
                 else {
-                    strcpy(buf2, fn);    /* take directory part */
-                    buf2[tmp - fn + 1] = '\0';
-                    strcat(buf2, buf);    /* plus (relative)
-                                 * symlink */
+		    /* directory part plus (relative) symlink */
+		    ap_snprintf(buf2, sizeof(buf2), "%s%s",
+			fn, buf);
                     tmp = buf2;
                 }
                 if (stat(tmp, &tstatbuf) < 0) {
@@ -1626,7 +1598,7 @@ fsmagic(request_rec * r, const char *fn, struct stat * sb)
     case S_IFREG:
         break;
     default:
-        log_printf(r->server, "%s: invalid mode 0%o.\n", MODNAME,
+        log_printf(r->server, "%s: invalid mode 0%o.", MODNAME,
                sb->st_mode);
         /* NOTREACHED */
     }
@@ -1684,8 +1656,8 @@ softmagic(request_rec * r, unsigned char *buf, int nbytes)
 static int
 match(request_rec * r, unsigned char *s, int nbytes)
 {
-#if DEBUG
-    int rule_counter;
+#if MIME_MAGIC_DEBUG
+    int rule_counter = 0;
 #endif
     int cont_level = 0;
     int need_separator = 0;
@@ -1694,41 +1666,38 @@ match(request_rec * r, unsigned char *s, int nbytes)
         get_module_config(r->server->module_config, &mime_magic_module);
     struct magic *m;
 
-#if DEBUG
-    fprintf(stderr,
-        "%s: match conf=%x file=%s m=%s m->next=%s last=%s\n",
+#if MIME_MAGIC_DEBUG
+    log_printf(r->server,
+        "%s: match conf=%x file=%s m=%s m->next=%s last=%s",
         MODNAME, conf,
         conf->magicfile ? conf->magicfile : "NULL",
         conf->magic ? "set" : "NULL",
         (conf->magic && conf->magic->next) ? "set" : "NULL",
         conf->last ? "set" : "NULL");
-    fflush(stderr);
 #endif
 
-#if DEBUG
+#if MIME_MAGIC_DEBUG
     for (m = conf->magic; m; m = m->next) {
         if (isprint((((unsigned long) m) >> 24) & 255) &&
             isprint((((unsigned long) m) >> 16) & 255) &&
             isprint((((unsigned long) m) >> 8) & 255) &&
             isprint(((unsigned long) m) & 255)) {
-            fprintf(stderr, "%s: match: POINTER CLOBBERED! "
-                "m=\"%c%c%c%c\"\n", MODNAME,
+            log_printf(r->server, "%s: match: POINTER CLOBBERED! "
+                "m=\"%c%c%c%c\"", MODNAME,
                 (((unsigned long) m) >> 24) & 255,
                 (((unsigned long) m) >> 16) & 255,
                 (((unsigned long) m) >> 8) & 255,
                 ((unsigned long) m) & 255);
-            fflush(stderr);
             break;
         }
     }
 #endif
 
     for (m = conf->magic; m; m = m->next) {
-#if DEBUG
+#if MIME_MAGIC_DEBUG
         rule_counter++;
-        fprintf(stderr, "%s: line=%d desc=%s\n", MODNAME,
+        log_printf(r->server, "%s: line=%d desc=%s", MODNAME,
             m->lineno, m->desc);
-        fflush(stderr);
 #endif
 
         /* check if main entry matches */
@@ -1745,15 +1714,14 @@ match(request_rec * r, unsigned char *s, int nbytes)
 
             m_cont = m->next;
             while (m_cont && (m_cont->cont_level != 0)) {
-#if DEBUG
+#if MIME_MAGIC_DEBUG
                 rule_counter++;
-                fprintf(stderr,
+                log_printf(r->server,
                     "%s: line=%d mc=%x mc->next=%x "
-                    "cont=%d desc=%s\n",
+                    "cont=%d desc=%s",
                     MODNAME, m_cont->lineno, m_cont,
                     m_cont->next, m_cont->cont_level,
                       m_cont->desc ? m_cont->desc : "NULL");
-                fflush(stderr);
 #endif
                 /*
                  * this trick allows us to keep *m in sync
@@ -1767,11 +1735,10 @@ match(request_rec * r, unsigned char *s, int nbytes)
 
         /* if we get here, the main entry rule was a match */
         /* this will be the last run through the loop */
-#if DEBUG
-        fprintf(stderr, "%s: rule matched, line=%d type=%d %s\n",
+#if MIME_MAGIC_DEBUG
+        log_printf(r->server, "%s: rule matched, line=%d type=%d %s",
             MODNAME, m->lineno, m->type,
             (m->type == STRING) ? m->value.s : "");
-        fflush(stderr);
 #endif
 
         /* print the match */
@@ -1791,12 +1758,11 @@ match(request_rec * r, unsigned char *s, int nbytes)
          */
         m = m->next;
         while (m && (m->cont_level != 0)) {
-#if DEBUG
-            fprintf(stderr,
-                "%s: match line=%d cont=%d type=%d %s\n",
+#if MIME_MAGIC_DEBUG
+            log_printf(r->server,
+                "%s: match line=%d cont=%d type=%d %s",
                 MODNAME, m->lineno, m->cont_level, m->type,
                 (m->type == STRING) ? m->value.s : "");
-            fflush(stderr);
 #endif
             if (cont_level >= m->cont_level) {
                 if (cont_level > m->cont_level) {
@@ -1837,16 +1803,14 @@ match(request_rec * r, unsigned char *s, int nbytes)
             /* move to next continuation record */
             m = m->next;
         }
-#if DEBUG
-        fprintf(stderr, "%s: matched after %d rules\n",
+#if MIME_MAGIC_DEBUG
+        log_printf(r->server, "%s: matched after %d rules",
             MODNAME, rule_counter);
-        fflush(stderr);
 #endif
         return 1;    /* all through */
     }
-#if DEBUG
-    fprintf(stderr, "%s: failed after %d rules\n", MODNAME, rule_counter);
-    fflush(stderr);
+#if MIME_MAGIC_DEBUG
+    log_printf(r->server, "%s: failed after %d rules", MODNAME, rule_counter);
 #endif
     return 0;        /* no match at all */
 }
@@ -1893,7 +1857,7 @@ mprint(request_rec * r, union VALUETYPE * p, struct magic * m)
         (void) magic_rsl_printf(r, m->desc, pp);
         return;
     default:
-        log_printf(r->server, "%s: invalid m->type (%d) in mprint().\n",
+        log_printf(r->server, "%s: invalid m->type (%d) in mprint().",
                MODNAME, m->type);
         return;
     }
@@ -1939,7 +1903,7 @@ mconvert(request_rec * r, union VALUETYPE * p, struct magic * m)
             ((p->hl[3] << 24) | (p->hl[2] << 16) | (p->hl[1] << 8) | (p->hl[0]));
         return 1;
     default:
-        log_printf(r->server, "%s: invalid type %d in mconvert().\n",
+        log_printf(r->server, "%s: invalid type %d in mconvert().",
                MODNAME, m->type);
         return 0;
     }
@@ -1993,8 +1957,7 @@ mcheck(request_rec * r, union VALUETYPE * p, struct magic * m)
     int matched;
 
     if ((m->value.s[0] == 'x') && (m->value.s[1] == '\0')) {
-        fprintf(stderr, "BOINK");
-        fflush(stderr);
+        log_printf(r->server, "BOINK");
         return 1;
     }
 
@@ -2038,7 +2001,7 @@ mcheck(request_rec * r, union VALUETYPE * p, struct magic * m)
         }
         break;
     default:
-        log_printf(r->server, "%s: invalid type %d in mcheck().\n",
+        log_printf(r->server, "%s: invalid type %d in mcheck().",
                MODNAME, m->type);
         return 0;    /* NOTREACHED */
     }
@@ -2047,24 +2010,24 @@ mcheck(request_rec * r, union VALUETYPE * p, struct magic * m)
 
     switch (m->reln) {
     case 'x':
-#if DEBUG
-        (void) fprintf(stderr, "%lu == *any* = 1\n", v);
+#if MIME_MAGIC_DEBUG
+        log_printf(r->server, "%lu == *any* = 1", v);
 #endif
         matched = 1;
         break;
 
     case '!':
         matched = v != l;
-#if DEBUG
-        (void) fprintf(stderr, "%lu != %lu = %d\n",
+#if MIME_MAGIC_DEBUG
+        log_printf(r->server, "%lu != %lu = %d",
                    v, l, matched);
 #endif
         break;
 
     case '=':
         matched = v == l;
-#if DEBUG
-        (void) fprintf(stderr, "%lu == %lu = %d\n",
+#if MIME_MAGIC_DEBUG
+        log_printf(r->server, "%lu == %lu = %d",
                    v, l, matched);
 #endif
         break;
@@ -2072,15 +2035,15 @@ mcheck(request_rec * r, union VALUETYPE * p, struct magic * m)
     case '>':
         if (m->flag & UNSIGNED) {
             matched = v > l;
-#if DEBUG
-            (void) fprintf(stderr, "%lu > %lu = %d\n",
+#if MIME_MAGIC_DEBUG
+            log_printf(r->server, "%lu > %lu = %d",
                        v, l, matched);
 #endif
         }
         else {
             matched = (long) v > (long) l;
-#if DEBUG
-            (void) fprintf(stderr, "%ld > %ld = %d\n",
+#if MIME_MAGIC_DEBUG
+            log_printf(r->server, "%ld > %ld = %d",
                        v, l, matched);
 #endif
         }
@@ -2089,48 +2052,44 @@ mcheck(request_rec * r, union VALUETYPE * p, struct magic * m)
     case '<':
         if (m->flag & UNSIGNED) {
             matched = v < l;
-            if (DEBUG)
-                (void) fprintf(stderr, "%lu < %lu = %d\n",
-                           v, l, matched);
+#if MIME_MAGIC_DEBUG
+                log_printf(r->server, "%lu < %lu = %d", v, l, matched);
+#endif
         }
         else {
             matched = (long) v < (long) l;
-#if DEBUG
-            (void) fprintf(stderr, "%ld < %ld = %d\n",
-                       v, l, matched);
+#if MIME_MAGIC_DEBUG
+            log_printf(r->server, "%ld < %ld = %d", v, l, matched);
 #endif
         }
         break;
 
     case '&':
         matched = (v & l) == l;
-#if DEBUG
-        (void) fprintf(stderr, "((%lx & %lx) == %lx) = %d\n",
+#if MIME_MAGIC_DEBUG
+        log_printf(r->server, "((%lx & %lx) == %lx) = %d",
                    v, l, l, matched);
 #endif
         break;
 
     case '^':
         matched = (v & l) != l;
-#if DEBUG
-        (void) fprintf(stderr, "((%lx & %lx) != %lx) = %d\n",
+#if MIME_MAGIC_DEBUG
+        log_printf(r->server, "((%lx & %lx) != %lx) = %d",
                    v, l, l, matched);
 #endif
         break;
 
     default:
         matched = 0;
-        log_printf(r->server, "%s: mcheck: can't happen: invalid relation %d.\n", MODNAME, m->reln);
+        log_printf(r->server, "%s: mcheck: can't happen: invalid relation %d.", MODNAME, m->reln);
         break;        /* NOTREACHED */
     }
-#if DEBUG
-    fflush(stderr);
-#endif
 
     return matched;
 }
 
-/* an optimisation over plain strcmp() */
+/* an optimization over plain strcmp() */
 #define    STREQ(a, b)    (*(a) == *(b) && strcmp((a), (b)) == 0)
 
 static int
@@ -2267,9 +2226,8 @@ zmagic(request_rec * r, unsigned char *buf, int nbytes)
     if (i == ncompr)
         return 0;
 
-    if ((newsize = uncompress(r->server, i, buf, &newbuf, nbytes)) != 0) {
+    if ((newsize = uncompress(r, i, buf, &newbuf, nbytes)) != 0) {
         tryit(r, newbuf, newsize);
-        free(newbuf);
 
         /* set encoding type in the request record */
         r->content_encoding = pstrdup(r->pool, compr[i].encoding);
@@ -2279,13 +2237,13 @@ zmagic(request_rec * r, unsigned char *buf, int nbytes)
 
 
 static int
-uncompress(server_rec * s, int method, const unsigned char *old,
+uncompress(request_rec *r, int method, const unsigned char *old,
        unsigned char **newch, int n)
 {
     int fdin[2], fdout[2];
 
     if (pipe(fdin) == -1 || pipe(fdout) == -1) {
-        log_printf(s, "%s: cannot create pipe (%s).\n",
+        log_printf(r->server, "%s: cannot create pipe (%s).",
                MODNAME, strerror(errno));
         return -1;
     }
@@ -2304,11 +2262,11 @@ uncompress(server_rec * s, int method, const unsigned char *old,
             (void) close(2);
 
         execvp(compr[method].argv[0], compr[method].argv);
-        log_printf(s, "%s: could not execute `%s' (%s).\n", MODNAME,
+        log_printf(r->server, "%s: could not execute `%s' (%s).", MODNAME,
                compr[method].argv[0], strerror(errno));
         return -1;
     case -1:
-        log_printf(s, "%s: could not fork (%s).\n", MODNAME,
+        log_printf(r->server, "%s: could not fork (%s).", MODNAME,
                strerror(errno));
         return -1;
 
@@ -2316,19 +2274,18 @@ uncompress(server_rec * s, int method, const unsigned char *old,
         (void) close(fdin[0]);
         (void) close(fdout[1]);
         if (write(fdin[1], old, n) != n) {
-            log_printf(s, "%s: write failed (%s).\n", MODNAME,
+            log_printf(r->server, "%s: write failed (%s).", MODNAME,
                    strerror(errno));
             return -1;
         }
         (void) close(fdin[1]);
-        if ((*newch = (unsigned char *) malloc(n)) == NULL) {
-            log_printf(s, "%s: out of memory in uncompress()\n",
+        if ((*newch = (unsigned char *) palloc(r->pool, n)) == NULL) {
+            log_printf(r->server, "%s: out of memory in uncompress()",
                    MODNAME);
             return -1;
         }
         if ((n = read(fdout[0], *newch, n)) <= 0) {
-            free(*newch);
-            log_printf(s, "%s: read failed (%s).\n", MODNAME,
+            log_printf(r->server, "%s: read failed (%s).", MODNAME,
                    strerror(errno));
             return -1;
         }
@@ -2429,7 +2386,7 @@ from_oct(int digs, char *where)
  * Check for file-revision suffix
  *
  * This is for an obscure document control system used on an intranet.
- * The web respresentation of each file's revision has an @1, @2, etc
+ * The web representation of each file's revision has an @1, @2, etc
  * appended with the revision number.  This needs to be stripped off to
  * find the file suffix, which can be recognized by sending the name back
  * through a sub-request.  The base file name (without the @num suffix)
@@ -2442,10 +2399,10 @@ revision_suffix(request_rec * r)
     char *sub_filename;
     request_rec *sub;
 
-#if DEBUG
-    fprintf(stderr, "%s: revision_suffix checking%s\n", MODNAME,
+#if MIME_MAGIC_DEBUG
+    log_printf(r->server, "%s: revision_suffix checking%s", MODNAME,
         r->filename);
-#endif                /* DEBUG */
+#endif                /* MIME_MAGIC_DEBUG */
 
     /* check for recognized revision suffix */
     suffix_pos = strlen(r->filename) - 1;
@@ -2461,18 +2418,18 @@ revision_suffix(request_rec * r)
     /* perform sub-request for the file name without the suffix */
     result = 0;
     sub_filename = pstrndup(r->pool, r->filename, suffix_pos);
-#if DEBUG
-    fprintf(stderr, "%s: subrequest lookup for %s\n", MODNAME, sub_filename);
-#endif                /* DEBUG */
+#if MIME_MAGIC_DEBUG
+    log_printf(r->server, "%s: subrequest lookup for %s", MODNAME, sub_filename);
+#endif                /* MIME_MAGIC_DEBUG */
     sub = sub_req_lookup_file(sub_filename, r);
 
     /* extract content type/encoding/language from sub-request */
     if (sub->content_type) {
         r->content_type = pstrdup(r->pool, sub->content_type);
-#if DEBUG
-        fprintf(stderr, "%s: subrequest %s got %s\n", MODNAME,
+#if MIME_MAGIC_DEBUG
+        log_printf(r->server, "%s: subrequest %s got %s", MODNAME,
             sub_filename, r->content_type);
-#endif                /* DEBUG */
+#endif                /* MIME_MAGIC_DEBUG */
         if (sub->content_encoding)
             r->content_encoding =
                 pstrdup(r->pool, sub->content_encoding);
@@ -2498,26 +2455,26 @@ magic_init(server_rec * s, pool * p)
     int result;
     magic_server_config_rec *conf = (magic_server_config_rec *)
         get_module_config(s->module_config, &mime_magic_module);
-#if DEBUG
+#if MIME_MAGIC_DEBUG
     struct magic *m, *prevm;
-#endif                /* DEBUG */
+#endif                /* MIME_MAGIC_DEBUG */
 
     /* on the first time through we read the magic file */
     if (conf->magicfile && !conf->magic) {
         result = apprentice(s, p);
         if (result == -1)
             return;
-#if DEBUG
+#if MIME_MAGIC_DEBUG
         prevm = 0;
-        fprintf(stderr, "%s: magic_init 1 test\n", MODNAME);
+        log_printf(s, "%s: magic_init 1 test", MODNAME);
         for (m = conf->magic; m; m = m->next) {
             if (isprint((((unsigned long) m) >> 24) & 255) &&
                 isprint((((unsigned long) m) >> 16) & 255) &&
                 isprint((((unsigned long) m) >> 8) & 255) &&
                 isprint(((unsigned long) m) & 255)) {
-                fprintf(stderr, "%s: magic_init 1: "
+                log_printf(s, "%s: magic_init 1: "
                     "POINTER CLOBBERED! "
-                    "m=\"%c%c%c%c\" line=%d\n", MODNAME,
+                    "m=\"%c%c%c%c\" line=%d", MODNAME,
                     (((unsigned long) m) >> 24) & 255,
                     (((unsigned long) m) >> 16) & 255,
                     (((unsigned long) m) >> 8) & 255,
@@ -2527,7 +2484,6 @@ magic_init(server_rec * s, pool * p)
             }
             prevm = m;
         }
-        fflush(stderr);
 #endif
     }
 
@@ -2580,7 +2536,7 @@ magic_find_ct(request_rec * r)
 module mime_magic_module = {
     STANDARD_MODULE_STUFF,
     magic_init,      /* initializer */
-    NULL,            /* dir config creater */
+    NULL,            /* dir config creator */
     NULL,            /* dir merger --- default is to override */
     create_magic_server_config,    /* server config */
     merge_magic_server_config,    /* merge server config */
