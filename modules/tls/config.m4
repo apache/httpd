@@ -6,36 +6,38 @@ APACHE_MODULE(tls, TLS/SSL support, $tls_objs, , no, [
   AC_MSG_CHECKING(for TLS/SSL library)
   AC_ARG_WITH(tls,   [  --with-tls=DIR          use a specific TLS/SSL library],
   [
-      searchfile="$withval/inc/ssl.h"
-      if test -f $searchfile ; then
-          APR_ADDTO(INCLUDES, [-I$withval/inc])
-          APR_ADDTO(LIBS, [-L$withval -lsslc])
-          ssl_lib="SSLC"
-      else
-          searchfile="$withval/ssl/ssl.h"
-          if test -f $searchfile ; then
-              APR_ADDTO(INCLUDES, [-I$withval/include])
-              APR_ADDTO(LIBS, [-L$withval -lssl -lcrypto])
-              ssl_lib="OpenSSL"
-          else
-              searchfile="$withval/openssl/ssl.h"
-              if test -f $searchfile ; then
-                  APR_ADDTO(INCLUDES, [-I$withval/openssl])
-                  APR_ADDTO(LIBS, [-L$withval -lssl -lcrypto])
-                  ssl_lib="OpenSSL"
-              else
-                  searchfile="$withval/include/openssl/ssl.h"
-                  if test -f $searchfile ; then
-                      APR_ADDTO(INCLUDES, [-I$withval/include])
-                      APR_ADDTO(LIBS, [-L$withval/lib -lssl -lcrypto])
-                      ssl_lib="OpenSSL"
-                  else
-                      AC_MSG_ERROR(no - Unable to locate $withval/inc/ssl.h)
-                  fi
+      if test x"$withval" = x"yes"; then
+          # FreeBSD has OpenSSL in /usr/{include,lib}
+          for dir in  /usr /usr/local/openssl /usr/local/ssl
+          do
+              if test -d $dir && test -f $dir/lib/libcrypto.a; then
+                  withval=$dir
+                  break
               fi
-          fi
+          done
       fi
-      AC_MSG_RESULT(found $ssl_lib)
+      ssl_lib=unknown
+      for params in \
+        "OpenSSL|/include/openssl|/lib|-lssl -lcrypto" \
+	"SSLC|/inc||-lsslc"
+      do
+          prod=`IFS="|"; set -- $params; echo $1`
+          incdir=`IFS="|"; set -- $params; echo $2`
+          libdir=`IFS="|"; set -- $params; echo $3`
+          libs=`IFS="|"; set -- $params; echo $4`
+          searchfile="${withval}${incdir}/ssl.h"
+          if test -f ${searchfile} ; then
+              APR_ADDTO(INCLUDES, [-I${withval}${incdir}])
+              APR_ADDTO(LIBS, [-L${withval}${libdir} ${libs}])
+              ssl_lib="${prod}"
+              break
+          fi
+      done
+      if test x"${ssl_lib}" = x"unknown"; then
+        AC_MSG_ERROR(--with-tls given but no appropriate lib found)
+      else
+        AC_MSG_RESULT(found $ssl_lib)
+      fi
   ],[
       AC_MSG_ERROR(--with-tls not given)
   ] ) ] )
