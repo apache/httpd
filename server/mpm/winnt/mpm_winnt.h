@@ -99,7 +99,7 @@ apr_status_t mpm_merge_service_args(apr_pool_t *p, apr_array_header_t *args,
 apr_status_t mpm_service_to_start(const char **display_name, apr_pool_t *p);
 apr_status_t mpm_service_started(void);
 apr_status_t mpm_service_install(apr_pool_t *ptemp, int argc, 
-                                char const* const* argv);
+                                char const* const* argv, int reconfig);
 apr_status_t mpm_service_uninstall(void);
 
 apr_status_t mpm_service_start(apr_pool_t *ptemp, int argc, 
