@@ -79,6 +79,7 @@ into a new module, mod_cache.
 <LI><A HREF="#proxyblock">ProxyBlock</A>
 <LI><A HREF="#allowconnect">AllowCONNECT</A>
 <LI><A HREF="#proxyreceivebuffersize">ProxyReceiveBufferSize</A>
+<LI><A HREF="#proxymaxforwards">ProxyMaxForwards</A>
 <LI><A HREF="#noproxy">NoProxy</A>
 <LI><A HREF="#proxydomain">ProxyDomain</A>
 <LI><A HREF="#proxyvia">ProxyVia</A>
@@ -575,6 +576,50 @@ Example:
 
 <PRE>
   ProxyReceiveBufferSize 2048
+</PRE>
+
+<HR>
+
+<H2><A NAME="proxymaxforwards">ProxyMaxForwards</A> directive</H2>
+<A
+ HREF="directive-dict.html#Syntax"
+ REL="Help"
+><STRONG>Syntax:</STRONG></A> ProxyMaxForwards <EM>bytes</EM><BR>
+<A
+ HREF="directive-dict.html#Default"
+ REL="Help"
+><STRONG>Default:</STRONG></A> <EM>10</EM><BR>
+<A
+ HREF="directive-dict.html#Context"
+ REL="Help"
+><STRONG>Context:</STRONG></A> server config, virtual host<BR>
+<A
+ HREF="directive-dict.html#Override"
+ REL="Help"
+><STRONG>Override:</STRONG></A> <EM>Not applicable</EM><BR>
+<A
+ HREF="directive-dict.html#Status"
+ REL="Help"
+><STRONG>Status:</STRONG></A> Base<BR>
+<A
+ HREF="directive-dict.html#Module"
+ REL="Help"
+><STRONG>Module:</STRONG></A> mod_proxy<BR>
+<A
+ HREF="directive-dict.html#Compatibility"
+ REL="Help"
+><STRONG>Compatibility:</STRONG></A> ProxyMaxForwards is only available in
+Apache 2.0 and later.<P>
+
+The ProxyMaxForwards directive specifies the maximum number of proxies
+through which a request may pass. This is set to prevent infinite proxy
+loops, or a DoS attack.
+
+<P>
+Example:
+
+<PRE>
+  ProxyMaxForwards 10
 </PRE>
 
 <HR>
