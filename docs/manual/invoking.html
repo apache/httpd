@@ -188,7 +188,7 @@ kill the children httpd processes.
 
 The server will log error messages to a log file, by default
 <CODE>logs/error_log</CODE> on Unix or <CODE>logs/error.log</CODE> on
-OS/2. The filename can be set using the <A
+Windows and OS/2. The filename can be set using the <A
 HREF="mod/core.html#errorlog">ErrorLog</A> directive; different error
 logs can be set for different <A
 HREF="mod/core.html#virtualhost">virtual hosts</A>.
@@ -197,9 +197,10 @@ HREF="mod/core.html#virtualhost">virtual hosts</A>.
 
 The server will typically log each request to a transfer file, by
 default <CODE>logs/access_log</CODE> on Unix or
-<CODE>logs/access.log</CODE> on OS/2. The filename can be set using a
-<A HREF="mod/mod_log_config.html#transferlog">TransferLog</A>
-directive or additional log files created with the <A
+<CODE>logs/access.log</CODE> on Windows and OS/2. The filename can be
+set using a <A
+HREF="mod/mod_log_config.html#transferlog">TransferLog</A> directive
+or additional log files created with the <A
 HREF="mod/mod_log_config.html#customlog">CustomLog</A> directive;
 different transfer logs can be set for different <A
 HREF="mod/core.html#virtualhost">virtual hosts</A>.
