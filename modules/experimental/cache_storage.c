@@ -170,7 +170,8 @@ int cache_select_url(request_rec *r, const char *types, char *url)
     const char *next = types;
     const char *type;
     apr_status_t rv;
-    cache_info *info;
+    cache_handle_t *h;
+    //    cache_info *info;
     char *key;
     cache_request_rec *cache = (cache_request_rec *) 
                          ap_get_module_config(r->request_config, &cache_module);
@@ -180,15 +181,14 @@ int cache_select_url(request_rec *r, const char *types, char *url)
         return rv;
     }
     /* go through the cache types till we get a match */
-    cache->handle = apr_palloc(r->pool, sizeof(cache_handle_t));
+    h = cache->handle = apr_palloc(r->pool, sizeof(cache_handle_t));
 
     while (next) {
         type = ap_cache_tokstr(r->pool, next, &next);
-        switch ((rv = cache_run_open_entity(cache->handle, r, type, key))) {
+        switch ((rv = cache_run_open_entity(h, r, type, key))) {
         case OK: {
             char *vary = NULL;
-            info = &(cache->handle->cache_obj->info);
-            if (cache_read_entity_headers(cache->handle, r) != APR_SUCCESS) {
+            if (cache_read_entity_headers(h, r) != APR_SUCCESS) {
                 /* TODO: Handle this error */
                 return DECLINED;
             }
@@ -205,7 +205,7 @@ int cache_select_url(request_rec *r, const char *types, char *url)
              * language negotiated document in a different language by mistake.
              * 
              * This code makes the assumption that the storage manager will
-             * cache the info->req_hdrs if the response contains a Vary
+             * cache the req_hdrs if the response contains a Vary
              * header.
              * 
              * RFC2616 13.6 and 14.44 describe the Vary mechanism.
@@ -228,7 +228,7 @@ int cache_select_url(request_rec *r, const char *types, char *url)
                  * request identical? If not, we give up and do a straight get
                  */
                 h1 = ap_table_get(r->headers_in, name);
-                h2 = ap_table_get(info->req_hdrs, name);
+                h2 = ap_table_get(h->req_hdrs, name);
                 if (h1 == h2) {
                     /* both headers NULL, so a match - do nothing */
                 }

@@ -1,5 +1,8 @@
 
 Changes with Apache 2.0.40
+  *) Fix segfault in mod_mem_cache most frequently observed when
+     serving the same file to multiple clients on an MP machine.
+     [Bill Stoddard]
 
   *) mod_rewrite can now set cookies  (RewriteRule (.*) - [CO=name:$1:.domain])
      [Brian Degenhardt <bmd@mp3.com>, Ian Holsman]
