@@ -1,4 +1,7 @@
 Changes with Apache 2.0.32-dev
+ 
+  *) Fix prefork to not kill the parent if a child hits a resource shortage
+     on accept().  [Greg Ames]
 
   *) Fix seg faults that occur when what should be the httpd request line
      starts with \r\n followed by garbage.  [Greg Ames]

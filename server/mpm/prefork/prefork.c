@@ -701,9 +701,9 @@ static void child_main(int child_num_arg)
                 break;
             }
             if (status == APR_EGENERAL) {
-                clean_child_exit(APEXIT_CHILDFATAL);
+                /* resource shortage or should-not-occur occured */
+                clean_child_exit(1);
             }
-            ap_sync_scoreboard_image();
         }
 	SAFE_ACCEPT(accept_mutex_off());	/* unlock after "accept" */
 
