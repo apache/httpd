@@ -42,7 +42,7 @@ clean:
 	$(MAKE) /f Makefile.nt _cleanr
 	$(MAKE) /f Makefile.nt _cleand
 
-installdll: _release installdll
+installdll: _release _installdll
 
 _build:
 #	echo LONG %LONG% SHORT %SHORT% x
