@@ -95,24 +95,13 @@ void *create_core_dir_config (pool *a, char *dir)
     conf->do_rfc1413 = DEFAULT_RFC1413 | 2;  /* set bit 1 to indicate default */
 
 #ifdef RLIMIT_CPU
-    conf->limit_cpu = (struct rlimit *) pcalloc (a, sizeof (struct rlimit));
-    if ((getrlimit(RLIMIT_CPU, conf->limit_cpu)) != 0)
-	conf->limit_cpu = NULL;
+    conf->limit_cpu = NULL;
 #endif
-#ifdef RLIMIT_DATA
-    conf->limit_mem = (struct rlimit *) pcalloc (a, sizeof (struct rlimit));
-    if ((getrlimit(RLIMIT_DATA, conf->limit_mem)) != 0)
-	conf->limit_mem = NULL;
-#endif
-#ifdef RLIMIT_VMEM
-    conf->limit_mem = (struct rlimit *) pcalloc (a, sizeof (struct rlimit));
-    if ((getrlimit(RLIMIT_VMEM, conf->limit_mem)) != 0)
-	conf->limit_mem = NULL;
+#if defined(RLIMIT_DATA) || defined(RLIMIT_VMEM)
+    conf->limit_mem = NULL;
 #endif
 #ifdef RLIMIT_NPROC
-    conf->limit_nproc = (struct rlimit *) pcalloc (a, sizeof (struct rlimit));
-    if ((getrlimit(RLIMIT_NPROC, conf->limit_nproc)) != 0)
-	conf->limit_nproc = NULL;
+    conf->limit_nproc = NULL;
 #endif
 
     conf->sec = make_array (a, 2, sizeof(void *));
@@ -839,12 +828,23 @@ char *set_max_requests (cmd_parms *cmd, void *dummy, char *arg) {
     return NULL;
 }
 
-static void set_rlimit(cmd_parms *cmd, struct rlimit *limit, char *arg)
+static void set_rlimit(cmd_parms *cmd, struct rlimit **plimit, char *arg,
+		       int type)
 {
     char *str;
+    struct rlimit *limit;
     /* If your platform doesn't define rlim_t then typedef it in conf.h */
     rlim_t cur = 0;
     rlim_t max = 0;
+
+    *plimit=(struct rlimit *)pcalloc(cmd->pool,sizeof **plimit);
+    limit=*plimit;
+    if ((getrlimit(type, limit)) != 0)
+	{
+	*plimit = NULL;
+	log_unixerr("getrlimit",cmd->cmd->name,"failed",cmd->server);
+	return;
+	}
 
     if ((str = getword_conf(cmd->pool, &arg)))
 	if (!strcasecmp(str, "max"))
@@ -884,7 +884,7 @@ static char *no_set_limit (cmd_parms *cmd, core_dir_config *conf, char *arg)
 #ifdef RLIMIT_CPU
 char *set_limit_cpu (cmd_parms *cmd, core_dir_config *conf, char *arg)
 {
-    set_rlimit(cmd,conf->limit_cpu,arg);
+    set_rlimit(cmd,&conf->limit_cpu,arg,RLIMIT_CPU);
     return NULL;
 }
 #endif
@@ -892,7 +892,11 @@ char *set_limit_cpu (cmd_parms *cmd, core_dir_config *conf, char *arg)
 #if defined (RLIMIT_DATA) || defined (RLIMIT_VMEM)
 char *set_limit_mem (cmd_parms *cmd, core_dir_config *conf, char *arg)
 {
-    set_rlimit(cmd,conf->limit_mem,arg);
+#ifdef RLIMIT_DATA
+    set_rlimit(cmd,&conf->limit_mem,arg,RLIMIT_DATA);
+#else
+    set_rlimit(cmd,&conf->limit_mem,arg,RLIMIT_VMEM);
+#endif
     return NULL;
 }
 #endif
@@ -900,7 +904,7 @@ char *set_limit_mem (cmd_parms *cmd, core_dir_config *conf, char *arg)
 #ifdef RLIMIT_NPROC
 char *set_limit_nproc (cmd_parms *cmd, core_dir_config *conf, char *arg)
 {
-    set_rlimit(cmd,conf->limit_nproc,arg);
+    set_rlimit(cmd,&conf->limit_nproc,arg,RLIMIT_NPROC);
     return NULL;
 }
 #endif
