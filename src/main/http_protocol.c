@@ -896,7 +896,8 @@ API_EXPORT(void) note_basic_auth_failure(request_rec *r)
     if (strcasecmp(auth_type(r), "Basic"))
       note_auth_failure(r);
     else
-      table_set (r->err_headers_out, "WWW-Authenticate",
+      table_set (r->err_headers_out, r->proxyreq ? "Proxy-Authenticate" : 
+		                                   "WWW-Authenticate",
 		 pstrcat(r->pool, "Basic realm=\"", auth_name(r), "\"", NULL));
 }
 
@@ -905,14 +906,17 @@ API_EXPORT(void) note_digest_auth_failure(request_rec *r)
     char nonce[256];
 
     ap_snprintf(nonce, sizeof(nonce), "%lu", r->request_time);
-    table_set (r->err_headers_out, "WWW-Authenticate",
+    table_set (r->err_headers_out, r->proxyreq ? "Proxy-Authenticate" : 
+		                                 "WWW-Authenticate",
                pstrcat(r->pool, "Digest realm=\"", auth_name(r),
                        "\", nonce=\"", nonce, "\"", NULL));
 }
 
 API_EXPORT(int) get_basic_auth_pw (request_rec *r, char **pw)
 {
-    const char *auth_line = table_get (r->headers_in, "Authorization");
+    const char *auth_line = table_get (r->headers_in, r->proxyreq ? 
+				                      "Proxy-Authorization" :
+	                                              "Authorization");
     char *t;
     
     if(!(t = auth_type(r)) || strcasecmp(t, "Basic"))
@@ -925,14 +929,16 @@ API_EXPORT(int) get_basic_auth_pw (request_rec *r, char **pw)
     
     if(!auth_line) {
         note_basic_auth_failure (r);
-	return AUTH_REQUIRED;
+	return (r->proxyreq ? HTTP_PROXY_AUTHENTICATION_REQUIRED : 
+	                      AUTH_REQUIRED);
     }
 
     if (strcmp(getword (r->pool, &auth_line, ' '), "Basic")) {
         /* Client tried to authenticate using wrong auth scheme */
         log_reason ("client used wrong authentication scheme", r->uri, r);
         note_basic_auth_failure (r);
-	return AUTH_REQUIRED;
+	return (r->proxyreq ? HTTP_PROXY_AUTHENTICATION_REQUIRED : 
+	                      AUTH_REQUIRED);
     }
 
     t = uudecode (r->pool, auth_line);
@@ -1692,6 +1698,7 @@ void send_error_response (request_rec *r, int recursive_error)
                  "Vary",
                  "Warning",
                  "WWW-Authenticate",
+		 "Proxy-Authenticate",
                  NULL);
 
         terminate_header(r->connection->client);
@@ -1797,6 +1804,7 @@ void send_error_response (request_rec *r, int recursive_error)
 		   escape_html(r->pool, location), "<BR>\nYou will need to ",
                    "configure your client to use that proxy.<P>\n", NULL);
 	    break;
+	case HTTP_PROXY_AUTHENTICATION_REQUIRED:
 	case AUTH_REQUIRED:
 	    bputs("This server could not verify that you\n", fd);
 	    bputs("are authorized to access the document you\n", fd);

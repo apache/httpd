@@ -260,7 +260,9 @@ proxy_http_handler(request_rec *r, struct cache_req *c, char *url,
     for (i=0; i < reqhdrs_arr->nelts; i++)
     {
 	if (reqhdrs[i].key == NULL || reqhdrs[i].val == NULL
-	  || !strcasecmp(reqhdrs[i].key, "Host"))  /* already sent if there */
+	    /* Clear out headers not to send */
+	  || !strcasecmp(reqhdrs[i].key, "Host") /* Already sent */
+	  || !strcasecmp(reqhdrs[i].key, "Proxy-Authorization"))
 	    continue;
 	bvputs(f, reqhdrs[i].key, ": ", reqhdrs[i].val, "\015\012", NULL);
     }

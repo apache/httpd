@@ -251,7 +251,8 @@ int anon_authenticate_basic_user (request_rec *r)
 		"Anonymous: Authoritative, Passwd <%s> not accepted",
 		send_pw ? send_pw : "\'none\'");
 	log_error(errstr,r->server);
-	return AUTH_REQUIRED;
+	return (r->proxyreq ? HTTP_PROXY_AUTHENTICATION_REQUIRED :
+                              AUTH_REQUIRED);
 	}
 	/* Drop out the bottom to return DECLINED */
     }

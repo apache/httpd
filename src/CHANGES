@@ -1,4 +1,8 @@
 Changes with Apache 1.3
+
+  *) Support Proxy Authentication, and don't pass the Proxy-Authorize
+     header to the remote host in the proxy. [Sameer Parekh and
+     Wallace]
   
   *) Upgraded mod_rewrite from 3.0.6+ to latest officially available version
      3.0.9. This upgrade includes: fixed deadlooping on rewriting to same
@@ -11,8 +15,8 @@ Changes with Apache 1.3
          This update also removes the copyright of Ralf S. Engelschall,
      i.e. now mod_rewrite no longer has a shared copyright. Instead is is
      exclusively copyrighted by the Apache Group now. This happended because
-	 the author now has gifted mod_rewrite exclusively to the Apache Group and 
-	 no longer maintains an external version.
+     the author now has gifted mod_rewrite exclusively to the Apache Group and 
+     no longer maintains an external version.
      [Ralf S. Engelschall]
   
   *) API: Added child_init function to module structure.  This is called

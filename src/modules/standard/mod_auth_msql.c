@@ -809,7 +809,8 @@ int msql_authenticate_basic_user (request_rec *r)
           	   ap_snprintf(msql_errstr, MAX_STRING_LEN,
 			"mSQL: Password for user %s not found", c->user);
 		   note_basic_auth_failure (r);
-		   res = AUTH_REQUIRED;
+		   res = (r->proxyreq ? HTTP_PROXY_AUTHENTICATION_REQUIRED :
+			                AUTH_REQUIRED);
 		   } else {
 		   /* pass control on to the next authorization module.
 		    */
@@ -841,7 +842,8 @@ int msql_authenticate_basic_user (request_rec *r)
 		"mSQL: user %s: Empty Password(s) Rejected",c->user);
 	log_reason (msql_errstr, r->uri, r);
 	note_basic_auth_failure (r);
-	return AUTH_REQUIRED;
+	return (r->proxyreq ? HTTP_PROXY_AUTHENTICATION_REQUIRED :
+                              AUTH_REQUIRED);
 	};
 
     if(sec->auth_msql_encrypted) {
@@ -860,7 +862,8 @@ int msql_authenticate_basic_user (request_rec *r)
 		"mSQL user %s: password mismatch",c->user);
 	log_reason (msql_errstr, r->uri, r);
 	note_basic_auth_failure (r);
-	return AUTH_REQUIRED;
+	return (r->proxyreq ? HTTP_PROXY_AUTHENTICATION_REQUIRED :
+                              AUTH_REQUIRED);
     }
     return OK;
 }
@@ -894,7 +897,8 @@ int msql_check_auth (request_rec *r) {
 	        ap_snprintf(msql_errstr, MAX_STRING_LEN, "user %s denied, no access rules specified (MSQL-Authoritative) ",user);
 		log_reason (msql_errstr, r->uri, r);
 	        note_basic_auth_failure(r);
-		return AUTH_REQUIRED;
+		return (r->proxyreq ? HTTP_PROXY_AUTHENTICATION_REQUIRED :
+			              AUTH_REQUIRED);
 		};
 	return DECLINED;
  	};
@@ -907,7 +911,8 @@ int msql_check_auth (request_rec *r) {
         w = getword(r->pool, &t, ' ');
 
         if ((user_result != OK) && (!strcmp(w,"user"))) {
-	    user_result=AUTH_REQUIRED;
+	    user_result=(r->proxyreq ? HTTP_PROXY_AUTHENTICATION_REQUIRED :
+                                       AUTH_REQUIRED);
             while(t[0]) {
                 w = getword_conf (r->pool, &t);
                 if (!strcmp(user,w)) {
@@ -919,7 +924,8 @@ int msql_check_auth (request_rec *r) {
            	ap_snprintf(msql_errstr, MAX_STRING_LEN, "User %s not found (MSQL-Auhtorative)",user);
 		log_reason (msql_errstr, r->uri, r);
            	note_basic_auth_failure(r);
-		return AUTH_REQUIRED;
+		return (r->proxyreq ? HTTP_PROXY_AUTHENTICATION_REQUIRED :
+                                      AUTH_REQUIRED);
 		};
         }
 
@@ -930,7 +936,8 @@ int msql_check_auth (request_rec *r) {
            ) {
 	   /* look up the membership for each of the groups in the table
             */
-	   group_result=AUTH_REQUIRED;
+	   group_result=(r->proxyreq ? HTTP_PROXY_AUTHENTICATION_REQUIRED :
+                                       AUTH_REQUIRED);
            while ( (t[0]) && (group_result != OK) && (!msql_errstr[0]) ) {
                 if (get_msql_grp(r,getword(r->pool, &t, ' '),user,sec,msql_errstr)) {
 			group_result= OK;
@@ -947,7 +954,8 @@ int msql_check_auth (request_rec *r) {
            	ap_snprintf(msql_errstr, MAX_STRING_LEN, "user %s not in right groups (MSQL-Authoritative) ",user);
 		log_reason (msql_errstr, r->uri, r);
            	note_basic_auth_failure(r);
-		return AUTH_REQUIRED;
+		return (r->proxyreq ? HTTP_PROXY_AUTHENTICATION_REQUIRED :
+			              AUTH_REQUIRED);
 		};
            };
 
@@ -960,13 +968,21 @@ int msql_check_auth (request_rec *r) {
      * returns are only if msql yielded a correct result. 
      * This really is not needed.
      */
-    if (((group_result == AUTH_REQUIRED) || (user_result == AUTH_REQUIRED)) && (sec->auth_msql_authoritative) ) {
+    if (((group_result == (r->proxyreq ? HTTP_PROXY_AUTHENTICATION_REQUIRED :
+                                         AUTH_REQUIRED)) ||
+	 (user_result == (r->proxyreq ? HTTP_PROXY_AUTHENTICATION_REQUIRED :
+			                AUTH_REQUIRED))) &&
+	(sec->auth_msql_authoritative)) {
         ap_snprintf(msql_errstr, MAX_STRING_LEN, "mSQL-Authoritative: Access denied on %s %s rule(s) ", 
-		(group_result == AUTH_REQUIRED) ? "USER" : "", 
-		(user_result == AUTH_REQUIRED) ? "GROUP" : ""
-		);
+		(group_result ==
+		 (r->proxyreq ? HTTP_PROXY_AUTHENTICATION_REQUIRED :
+		                AUTH_REQUIRED)) ? "USER" : "", 
+		(user_result ==
+		 (r->proxyreq ? HTTP_PROXY_AUTHENTICATION_REQUIRED :
+		                AUTH_REQUIRED)) ? "GROUP" : "");
 	log_reason (msql_errstr, r->uri, r);
-	return AUTH_REQUIRED;
+	return (r->proxyreq ? HTTP_PROXY_AUTHENTICATION_REQUIRED :
+		              AUTH_REQUIRED);
 	};
 
     if ( (user_result == OK) || (group_result == OK))
