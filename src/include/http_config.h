@@ -170,6 +170,8 @@ typedef struct {
 				 */
     const command_rec *cmd;	/* configuration command */
     const char *end_token;	/* end token required to end a nested section */
+    void *context;		/* per_dir_config vector passed 
+				 * to handle_command */
 } cmd_parms;
 
 /* This structure records the existence of handlers in a module... */
@@ -400,6 +402,7 @@ int ap_run_post_read_request(request_rec *);
 
 CORE_EXPORT(const command_rec *) ap_find_command(const char *name, const command_rec *cmds);
 CORE_EXPORT(const command_rec *) ap_find_command_in_modules(const char *cmd_name, module **mod);
+CORE_EXPORT(void *) ap_set_config_vectors(cmd_parms *parms, void *config, module *mod);
 CORE_EXPORT(const char *) ap_handle_command(cmd_parms *parms, void *config, const char *l);
 
 #endif

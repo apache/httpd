@@ -340,7 +340,7 @@ CORE_EXPORT(void) ap_add_per_url_conf(server_rec *s, void *url_config)
     *new_space = url_config;
 }
 
-static void add_file_conf(core_dir_config *conf, void *url_config)
+CORE_EXPORT(void) ap_add_file_conf(core_dir_config *conf, void *url_config)
 {
     void **new_space = (void **)ap_push_array(conf->sec);
     
@@ -1545,7 +1545,7 @@ static const char *filesection(cmd_parms *cmd, core_dir_config *c,
     conf->d_is_fnmatch = ap_is_fnmatch(conf->d) != 0;
     conf->r = r;
 
-    add_file_conf(c, new_file_conf);
+    ap_add_file_conf(c, new_file_conf);
 
     if (*arg != '\0') {
 	return ap_pstrcat(cmd->pool, "Multiple ", thiscmd->name,

@@ -960,8 +960,26 @@ CORE_EXPORT(const command_rec *) ap_find_command_in_modules(const char *cmd_name
     return NULL;
 }
 
+CORE_EXPORT(void *) ap_set_config_vectors(cmd_parms *parms, void *config, module *mod)
+{
+    void *mconfig = ap_get_module_config(config, mod);
+    void *sconfig = ap_get_module_config(parms->server->module_config, mod);
+
+    if (!mconfig && mod->create_dir_config) {
+	mconfig = (*mod->create_dir_config) (parms->pool, parms->path);
+	ap_set_module_config(config, mod, mconfig);
+    }
+
+    if (!sconfig && mod->create_server_config) {
+	sconfig = (*mod->create_server_config) (parms->pool, parms->server);
+	ap_set_module_config(parms->server->module_config, mod, sconfig);
+    }
+    return mconfig;
+}
+
 CORE_EXPORT(const char *) ap_handle_command(cmd_parms *parms, void *config, const char *l)
 {
+    void *oldconfig;
     const char *args, *cmd_name, *retval;
     const command_rec *cmd;
     module *mod = top_module;
@@ -974,6 +992,8 @@ CORE_EXPORT(const char *) ap_handle_command(cmd_parms *parms, void *config, cons
     if (*cmd_name == '\0')
 	return NULL;
 
+    oldconfig = parms->context;
+    parms->context = config;
     do {
 	if (!(cmd = ap_find_command_in_modules(cmd_name, &mod))) {
             errno = EINVAL;
@@ -982,25 +1002,13 @@ CORE_EXPORT(const char *) ap_handle_command(cmd_parms *parms, void *config, cons
                            "not included in the server configuration", NULL);
 	}
 	else {
-	    void *mconfig = ap_get_module_config(config, mod);
-	    void *sconfig =
-		ap_get_module_config(parms->server->module_config, mod);
-
-	    if (!mconfig && mod->create_dir_config) {
-		mconfig = (*mod->create_dir_config) (parms->pool, parms->path);
-		ap_set_module_config(config, mod, mconfig);
-	    }
-
-	    if (!sconfig && mod->create_server_config) {
-		sconfig =
-		    (*mod->create_server_config) (parms->pool, parms->server);
-		ap_set_module_config(parms->server->module_config, mod, sconfig);
-	    }
+	    void *mconfig = ap_set_config_vectors(parms,config, mod);
 
 	    retval = invoke_cmd(cmd, parms, mconfig, args);
 	    mod = mod->next;	/* Next time around, skip this one */
 	}
     } while (retval && !strcmp(retval, DECLINE_CMD));
+    parms->context = oldconfig;
 
     return retval;
 }

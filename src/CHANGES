@@ -1,5 +1,9 @@
 Changes with Apache 1.3.7
 
+  *) Fix configuration engine re-entrant hangups, which solve a
+     handful of problems seen with mod_perl <Perl> configuration sections
+     [Salvador Ortiz Garcia <sog@msg.com.mx>]
+
   *) Mac OS and Mac OS X Server now use the appropriate custom layout
      by default when building with APACI; allow for platform-specific
      variable defaults in configure. [Wilfredo Sanchez]
