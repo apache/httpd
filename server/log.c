@@ -490,6 +490,7 @@ void ap_log_pid(ap_pool_t *p, const char *fname)
     ap_finfo_t finfo;
     static pid_t saved_pid = -1;
     pid_t mypid;
+    ap_status_t rv;
 
     if (!fname) 
 	return;
@@ -511,10 +512,11 @@ void ap_log_pid(ap_pool_t *p, const char *fname)
 			       );
     }
 
-    if (ap_open(&pid_file, fname, APR_WRITE | APR_CREATE | APR_TRUNCATE,
-                APR_UREAD | APR_UWRITE | APR_GREAD | APR_WREAD, p) != APR_SUCCESS) {
-	perror("fopen");
-        ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
+    if ((rv = ap_open(&pid_file, fname, APR_WRITE | APR_CREATE | APR_TRUNCATE,
+                      APR_UREAD | APR_UWRITE | APR_GREAD | APR_WREAD, p)) != APR_SUCCESS) {
+        ap_log_error(APLOG_MARK, APLOG_ERR, rv, NULL, 
+                     "could not create %s", fname);
+        ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, NULL, 
                      "%s: could not log pid to file %s",
 		     ap_server_argv0, fname);
         exit(1);
