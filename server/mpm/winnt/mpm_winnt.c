@@ -1187,7 +1187,7 @@ static void child_main()
     apr_pool_tag(pchild, "pchild");
 
     ap_run_child_init(pchild, ap_server_conf);
-    
+
     /* Initialize the child_events */
     max_requests_per_child_event = CreateEvent(NULL, TRUE, FALSE, NULL);
     if (!max_requests_per_child_event) {
@@ -1484,7 +1484,8 @@ static int send_listeners_to_child(apr_pool_t *p, DWORD dwProcessId, HANDLE hPip
     return 0;
 }
 
-static int create_process(apr_pool_t *p, HANDLE *child_proc, HANDLE *child_exit_event)
+static int create_process(apr_pool_t *p, HANDLE *child_proc, HANDLE *child_exit_event, 
+                          DWORD *child_pid)
 {
     int rv;
     char buf[1024];
@@ -1718,6 +1719,7 @@ static int create_process(apr_pool_t *p, HANDLE *child_proc, HANDLE *child_exit_
 
     *child_proc = pi.hProcess;
     *child_exit_event = hExitEvent;
+    *child_pid = pi.dwProcessId;
 
     return 0;
 }
@@ -1773,6 +1775,7 @@ static int master_main(server_rec *s, HANDLE shutdown_event, HANDLE restart_even
     int shutdown_pending;
     HANDLE child_exit_event;
     HANDLE event_handles[NUM_WAIT_HANDLES];
+    DWORD child_pid;
 
     restart_pending = shutdown_pending = 0;
 
@@ -1781,7 +1784,7 @@ static int master_main(server_rec *s, HANDLE shutdown_event, HANDLE restart_even
 
     /* Create a single child process */
     rv = create_process(pconf, &event_handles[CHILD_HANDLE], 
-                        &child_exit_event);
+                        &child_exit_event, &child_pid);
     if (rv < 0) 
     {
         ap_log_error(APLOG_MARK, APLOG_CRIT, apr_get_os_error(), ap_server_conf,
@@ -1789,10 +1792,15 @@ static int master_main(server_rec *s, HANDLE shutdown_event, HANDLE restart_even
         shutdown_pending = 1;
         goto die_now;
     }
-    
     if (!strcasecmp(signal_arg, "runservice")) {
         mpm_service_started();
     }
+
+    /* Update the scoreboard. Note that there is only a single active
+     * child at once.
+     */
+    ap_scoreboard_image->parent[0].quiescing = 0;
+    ap_scoreboard_image->parent[0].pid = child_pid;
 
     /* Wait for shutdown or restart events or for child death */
     rv = WaitForMultipleObjects(NUM_WAIT_HANDLES, (HANDLE *) event_handles, FALSE, INFINITE);
