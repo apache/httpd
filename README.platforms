@@ -16,7 +16,7 @@
    As of OS X 10.2 (Jaguar), the bundled versions work perfectly. Partly
    this is due to the fact that /bin/sh is now 'bash' and not 'zsh' as
    well as the fact that the bundled versions are up-to-date: 
-   autoconf 2.5.2 and (g)libtool 1.4.2.
+   autoconf 2.52 and (g)libtool 1.4.2.
 
    Earlier versions of OS X are not so fortunate, and the bundled tools
    are not only older versions, but also, for the most part, do not work
