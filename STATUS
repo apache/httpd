@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:						-*-text-*-
-Last modified at [$Date: 2002/02/06 17:11:38 $]
+Last modified at [$Date: 2002/02/06 17:19:41 $]
 
 Release:
 
@@ -157,17 +157,6 @@ RELEASE SHOWSTOPPERS:
         and that implies pushing the 'handler election' into the request
         internal processing phase from the run request phase.
 
-    * There is a bug in how we sort some hooks, at least the pre-config
-      hook.  The first time we call the hooks, they are in the correct 
-      order, but the second time, we don't sort them correctly.  Currently,
-      the modules/http/config.m4 file has been renamed to 
-      modules/http/config2.m4 to work around this problem, it should moved
-      back when this is fixed.    rbb
-        Justin says: "Is this really a showstopper?  This has been here
-                      forever.  What's wrong?  Does this have to do with
-                      autoconf or m4?"
-        Not a showstopper: Justin, BrianP, trawick, gregames
-
     * Convert all instances of the old apr_lock_t type to the new
       types (once they are fully supported in APR).
         Status: Aaron is working on converting INTRAPROCESS
@@ -200,6 +189,21 @@ RELEASE SHOWSTOPPERS:
                        httpd directly.
 
 RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
+
+    * Usage of APR_BRIGADE_NORMALIZE in core_input_filter should be
+      removed if possible.
+        Message-ID: <Pine.LNX.4.33.0201202232430.318-100000@deepthought.cs.virginia.edu>
+        
+    * There is a bug in how we sort some hooks, at least the pre-config
+      hook.  The first time we call the hooks, they are in the correct 
+      order, but the second time, we don't sort them correctly.  Currently,
+      the modules/http/config.m4 file has been renamed to 
+      modules/http/config2.m4 to work around this problem, it should moved
+      back when this is fixed.    rbb
+        Justin says: "Is this really a showstopper?  This has been here
+                      forever.  What's wrong?  Does this have to do with
+                      autoconf or m4?"
+        Not a showstopper: Justin, BrianP, trawick, gregames
 
     * The Add...Filter and Set...Filter directives do not allow the
       administrator to order filters, beyond the order of filename (mime)
