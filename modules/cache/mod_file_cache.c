@@ -404,7 +404,6 @@ static int sendfile_handler(request_rec *r, a_file *file)
 #if APR_HAS_SENDFILE
     apr_size_t nbytes;
     apr_status_t rv = APR_EINIT;
-    apr_off_t offset = 0;
 
     /* A cached file handle (more importantly, its file pointer) is 
      * shared by all threads in the process. The file pointer will 
