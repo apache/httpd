@@ -199,6 +199,10 @@ of the daemon</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Synt
     filename does not begin with a slash (/) then it is assumed to be
     relative to the <a href="core.html#serverroot" class="directive"><code class="directive">ServerRoot</code></a>.</p>
 
+    <blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><p align="center"><strong>Example</strong></p><code>
+    PidFile /var/run/apache.pid
+    </code></td></tr></table></blockquote>
+
     <p>It is often useful to be able to send the server a signal,
     so that it closes and then reopens its <a href="core.html#errorlog" class="directive"><code class="directive">ErrorLog</code></a> and TransferLog, and
     re-reads its configuration files. This is done by sending a
