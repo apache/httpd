@@ -1,5 +1,8 @@
 Changes with Apache 2.0.49
 
+  *) mod_ssl: Use human-readable OpenSSL error strings in logs; use
+     thread-safe interface for retrieving error strings.  [Joe Orton]
+
   *) mod_expires: Initialize ExpiresDefault to NULL instead of "" to
      avoid reporting an Internal Server error if it is used without
      having been set in the httpd.conf file. PR: 23748, 24459
