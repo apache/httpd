@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="iso-2022-jp"?>
 <?xml-stylesheet type="text/xsl" href="./style/manual.ja.xsl"?>
-<!-- English revision: 1.4 -->
+<!-- English revision: 1.7 -->
 
 <sitemap>
   <relativepath href="."/>
@@ -69,7 +69,6 @@
 <page href="ssl/ssl_compat.html">SSL/TLS 暗号化: 互換性</page>
 <page href="ssl/ssl_howto.html">SSL/TLS 暗号化: ハウツー</page>
 <page href="ssl/ssl_faq.html">SSL/TLS 暗号化: FAQ</page>
-<page href="ssl/ssl_glossary.html">SSL/TLS 暗号化: 用語</page>
 </category>
 
 <category id="howto">
@@ -128,25 +127,28 @@
 <page href="mod/quickreference.html">ディレクティブクイックリファレンス</page>
 <modulefilelist>
   <modulefile>core.xml</modulefile>
-  <modulefile>mod_access.xml.ja</modulefile>
   <modulefile>mod_actions.xml.ja</modulefile>
   <modulefile>mod_alias.xml.ja</modulefile>
   <modulefile>mod_asis.xml.ja</modulefile>
-  <modulefile>mod_auth.xml.ja</modulefile>
-  <modulefile>mod_auth_anon.xml</modulefile>
-  <modulefile>mod_auth_dbm.xml</modulefile>
+  <modulefile>mod_auth_basic.xml.ja</modulefile>
   <modulefile>mod_auth_digest.xml</modulefile>
   <modulefile>mod_auth_ldap.xml</modulefile>
+  <modulefile>mod_authn_anon.xml</modulefile>
+  <modulefile>mod_authn_dbm.xml</modulefile>
+  <modulefile>mod_authn_file.xml.ja</modulefile>
+  <modulefile>mod_authz_dbm.xml</modulefile>
+  <modulefile>mod_authz_groupfile.xml</modulefile>
+  <modulefile>mod_authz_host.xml.ja</modulefile>
   <modulefile>mod_autoindex.xml.ja</modulefile>
   <modulefile>mod_cache.xml</modulefile>
   <modulefile>mod_cern_meta.xml</modulefile>
-  <modulefile>mod_cgi.xml</modulefile>
+  <modulefile>mod_cgi.xml.ja</modulefile>
   <modulefile>mod_cgid.xml</modulefile>
   <modulefile>mod_charset_lite.xml</modulefile>
   <modulefile>mod_dav.xml.ja</modulefile>
   <modulefile>mod_deflate.xml.ja</modulefile>
   <modulefile>mod_dir.xml.ja</modulefile>
-  <modulefile>mod_echo.xml</modulefile>
+  <modulefile>mod_echo.xml.ja</modulefile>
   <modulefile>mod_env.xml.ja</modulefile>
   <modulefile>mod_example.xml</modulefile>
   <modulefile>mod_expires.xml</modulefile>
@@ -155,22 +157,23 @@
   <modulefile>mod_headers.xml</modulefile>
   <modulefile>mod_imap.xml</modulefile>
   <modulefile>mod_include.xml</modulefile>
-  <modulefile>mod_info.xml</modulefile>
+  <modulefile>mod_info.xml.ja</modulefile>
   <modulefile>mod_isapi.xml</modulefile>
   <modulefile>mod_ldap.xml</modulefile>
   <modulefile>mod_log_config.xml</modulefile>
+  <modulefile>mod_logio.xml</modulefile>
   <modulefile>mod_mime.xml</modulefile>
   <modulefile>mod_mime_magic.xml</modulefile>
-  <modulefile>mod_negotiation.xml</modulefile>
+  <modulefile>mod_negotiation.xml.ja</modulefile>
   <modulefile>mod_proxy.xml</modulefile>
   <modulefile>mod_rewrite.xml</modulefile>
-  <modulefile>mod_setenvif.xml</modulefile>
+  <modulefile>mod_setenvif.xml.ja</modulefile>
   <modulefile>mod_so.xml.ja</modulefile>
   <modulefile>mod_ssl.xml</modulefile>
-  <modulefile>mod_speling.xml</modulefile>
+  <modulefile>mod_speling.xml.ja</modulefile>
   <modulefile>mod_status.xml</modulefile>
   <modulefile>mod_suexec.xml.ja</modulefile>
-  <modulefile>mod_unique_id.xml</modulefile>
+  <modulefile>mod_unique_id.xml.ja</modulefile>
   <modulefile>mod_userdir.xml.ja</modulefile>
   <modulefile>mod_usertrack.xml</modulefile>
   <modulefile>mod_vhost_alias.xml</modulefile>
