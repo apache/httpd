@@ -2801,6 +2801,9 @@ static void show_compile_settings(void)
 #ifdef BIG_SECURITY_HOLE
     printf(" -D BIG_SECURITY_HOLE\n");
 #endif
+#ifdef SECURITY_HOLE_PASS_AUTHORIZATION
+    printf(" -D SECURITY_HOLE_PASS_AUTHORIZATION\n");
+#endif
 #ifdef HTTPD_ROOT
     printf(" -D HTTPD_ROOT=\"" HTTPD_ROOT "\"\n");
 #endif
@@ -2857,6 +2860,12 @@ static void show_compile_settings(void)
 #ifdef PIPE_BUF
 	printf(" -D PIPE_BUF=%ld\n",(long)PIPE_BUF);
 #endif
+#endif
+#ifdef MULTITHREAD
+    printf(" -D MULTITHREAD\n");
+#endif
+#ifdef CHARSET_EBCDIC
+    printf(" -D CHARSET_EBCDIC\n");
 #endif
     printf("\n");
 }

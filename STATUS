@@ -133,6 +133,7 @@ Committed Code Changes:
       for OS's which don't support starting them automatically
       (enable with #define NEED_HASHBANG_EMUL)
     * more mod_mime_magic cleanup
+    * Add more compile time diagnosis to main's -V switch
 
 Available Patches:
 
