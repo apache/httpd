@@ -189,7 +189,7 @@ sub usage {
     print STDERR "       apxs -c [-o <dsofile>] [-D <name>[=<value>]] [-I <incdir>]\n";
     print STDERR "               [-L <libdir>] [-l <libname>] [-Wc,<flags>] [-Wl,<flags>]\n";
     print STDERR "               <files> ...\n";
-    print STDERR "       apxs -i [-a] [-n <modname>] <dsofile> ...\n";
+    print STDERR "       apxs -i [-a] [-A] [-n <modname>] <dsofile> ...\n";
     exit(1);
 }
 
@@ -267,7 +267,7 @@ if ($opt_q) {
         my $ok = 0;
         my $name;
         foreach $name (qw(
-            CC LD_SHLIB CFLAGS CFLAGS_SHLIB LDFLAGS_SHLIB 
+            TARGET CC CFLAGS CFLAGS_SHLIB LD_SHLIB LDFLAGS_SHLIB LIBS_SHLIB
             PREFIX SBINDIR INCLUDEDIR LIBEXECDIR SYSCONFDIR
         )) {
             if ($arg eq $name or $arg eq lc($name)) {
