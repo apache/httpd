@@ -447,9 +447,9 @@ int directory_walk(request_rec *r)
     }
 
     /*
-     * now match the "special" sections (regex, and "proxy:" stuff).  But
-     * note that proxy: stuff doesn't get down this far, it's been handled
-     * earlier, so we'll just skip it.
+     * There's two types of IS_SPECIAL sections (see http_core.c), and we've
+     * already handled the proxy:-style stuff.  Now we'll deal with the
+     * regexes.
      */
     for (; j < num_sec; ++j) {
         void *entry_config = sec[j];
