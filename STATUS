@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/10/22 16:48:15 $]
+Last modified at [$Date: 2003/10/22 17:35:04 $]
 
 Release:
 
@@ -270,7 +270,7 @@ PATCHES TO BACKPORT FROM 2.1
       loggers instead of 'W'.
         modules/http/http_request.c r1.159
         server/protocol.c r1.138
-      +1: trawick
+      +1: trawick, stoddard
 
 CURRENT RELEASE NOTES:
 
