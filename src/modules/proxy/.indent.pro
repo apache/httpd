@@ -28,6 +28,7 @@
 -Tin_addr
 -Tjoblist_s
 -Tlisten_rec
+-Tlong61_t
 -Tmerger_func
 -Tmode_t
 -Tmodule
