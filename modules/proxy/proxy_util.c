@@ -1192,6 +1192,47 @@ ap_proxy_add_worker_to_balancer(struct proxy_balancer *balancer, proxy_worker *w
 
 }
 
+PROXY_DECLARE(int) ap_proxy_pre_request(proxy_worker **worker,
+                                        struct proxy_balancer **balancer,
+                                        request_rec *r,
+                                        proxy_server_conf *conf, char **url)
+{
+    int access_status;
+
+    access_status = proxy_run_pre_request(worker, balancer, r, conf, url);
+    if (access_status == DECLINED && *balancer == NULL) {
+        *worker = ap_proxy_get_worker(r->pool, conf, *url);
+        if (*worker) {
+            *balancer = NULL;
+            access_status = OK;
+        }
+        else
+            access_status = DECLINED;
+    }
+    else if (access_status == DECLINED && balancer != NULL) {
+        /* All the workers are busy */
+        access_status = HTTP_SERVICE_UNAVAILABLE;
+    }
+    return access_status;
+}
+
+PROXY_DECLARE(int) ap_proxy_post_request(proxy_worker *worker,
+                                         struct proxy_balancer *balancer,
+                                         request_rec *r,
+                                         proxy_server_conf *conf)
+{
+    int access_status;
+    if (balancer)
+        access_status = proxy_run_post_request(worker, balancer, r, conf);
+    else { 
+        
+
+        access_status = OK;
+    }
+
+    return access_status;
+}
+
 PROXY_DECLARE(int) ap_proxy_connect_to_backend(apr_socket_t **newsock,
                                                const char *proxy_function,
                                                apr_sockaddr_t *backend_addr,
