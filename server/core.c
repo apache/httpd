@@ -2805,7 +2805,10 @@ static int core_input_filter(ap_filter_t *f, apr_bucket_brigade *b, ap_input_mod
 
             rv = apr_bucket_read(e, &str, &len, APR_NONBLOCK_READ);
 
-            if (rv != APR_SUCCESS)
+            if (APR_STATUS_IS_EAGAIN(rv)) {
+                continue;
+            }
+            else if (rv != APR_SUCCESS)
                 return rv;
 
             c = str;
@@ -2854,7 +2857,15 @@ static int core_input_filter(ap_filter_t *f, apr_bucket_brigade *b, ap_input_mod
         apr_bucket_brigade *newbb;
 
         e = APR_BRIGADE_FIRST(ctx->b);
-        if ((rv = apr_bucket_read(e, &str, &len, mode) != APR_SUCCESS)) {
+        rv = apr_bucket_read(e, &str, &len, mode);
+
+        if (APR_STATUS_IS_EAGAIN(rv)) {
+            *readbytes = 0;
+            e = apr_bucket_immortal_create("", 0);
+            APR_BRIGADE_INSERT_TAIL(b, e);
+            return APR_SUCCESS;
+        }
+        else if (rv != APR_SUCCESS) {
             return rv;
         }
 
@@ -2882,7 +2893,16 @@ static int core_input_filter(ap_filter_t *f, apr_bucket_brigade *b, ap_input_mod
         const char *pos;
 
         e = APR_BRIGADE_FIRST(ctx->b);
-        if ((rv = apr_bucket_read(e, &str, &len, mode)) != APR_SUCCESS) {
+        rv = apr_bucket_read(e, &str, &len, mode);
+
+        /* We should treat EAGAIN here the same as we do for EOF (brigade is
+         * empty).  We do this by returning whatever we have read.  This may 
+         * or may not be bogus, but is consistent (for now) with EOF logic.
+         */
+        if (APR_STATUS_IS_EAGAIN(rv)) {
+            break;
+        }
+        else if (rv != APR_SUCCESS) {
             return rv;
         }
 
