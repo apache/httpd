@@ -168,7 +168,16 @@ Needs patch:
 	    PassEnv TZ to their config files "just in case"
 	    and hope they do it :)
 
-    
+     * LynxOS has system-level conf.h file
+	Seems that Lynx has a system level conf.h file that ours overrules,
+	so it doesn't compile correctly. To accomodate, we would need to
+	rename our conf.h to something "safe". Possible choices:
+
+	    apconf.h       :
+	    applatforms.h  :
+	    apdefaults.h   :
+	    apdefines.h    :
+
 Closed issues:
 
 Open issues:
