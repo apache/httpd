@@ -1023,6 +1023,7 @@ static int get_ptoken(apr_pool_t *pool, const char **parse, token_t *token)
         TYPE_TOKEN(token, TOKEN_RBRACE);
         return 0;
     case '=':
+        if (**parse == '=') ++*parse;
         TYPE_TOKEN(token, TOKEN_EQ);
         return 0;
     case '!':
