@@ -206,7 +206,7 @@ static void init_mime(server_rec *s, pool *p)
         exit(1);
     }
 
-    for (x = 0; x < 27; x++)
+    for (x = 0; x < MIME_HASHSIZE; x++)
         hash_buckets[x] = make_table(p, 10);
 
     while (!(cfg_getline(l, MAX_STRING_LEN, f))) {
