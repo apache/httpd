@@ -1362,21 +1362,25 @@ static void child_main()
      */
 
  shutdown:
-    /* Setting is_graceful will cause keep-alive connections to be closed
-     * rather than block on the next network read.
+    /* Setting is_graceful will cause threads handling keep-alive connections 
+     * to close the connection after handling the current request.
      */
     is_graceful = 1;
 
-    /* Setting shutdown_in_progress prevents new connections from
-     * being accepted but allows the worker threads to continue
-     * handling connections that have already been accepted.
+    /* Close the listening sockets. Note, we must close the listeners
+     * before closing any accept sockets pending in AcceptEx to prevent
+     * memory leaks in the kernel.
      */
-    shutdown_in_progress = 1;
-
-    /* Close the listening sockets. */
     for (lr = ap_listeners; lr ; lr = lr->next) {
         apr_socket_close(lr->sd);
     }
+
+    /* Shutdown listener threads and pending AcceptEx socksts 
+     * but allow the worker threads to continue consuming from
+     * the queue of accepted connections.
+     */
+    shutdown_in_progress = 1;
+
     Sleep(1000);
 
     /* Tell the worker threads to exit */
