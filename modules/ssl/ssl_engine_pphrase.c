@@ -444,8 +444,7 @@ void ssl_pphrase_Handle(server_rec *s, apr_pool_t *p)
                                      pServ, "Init: Private key not found");
                         ssl_log_ssl_error(APLOG_MARK, APLOG_ERR, pServ);
                     }
-                    if (sc->server->pphrase_dialog_type == SSL_PPTYPE_BUILTIN
-                          || sc->server->pphrase_dialog_type == SSL_PPTYPE_PIPE) {
+                    if (writetty) {
                         apr_file_printf(writetty, "Apache:mod_ssl:Error: Private key not found.\n");
                         apr_file_printf(writetty, "**Stopped\n");
                     }
@@ -455,8 +454,7 @@ void ssl_pphrase_Handle(server_rec *s, apr_pool_t *p)
                                  pServ, "Init: Pass phrase incorrect");
                     ssl_log_ssl_error(APLOG_MARK, APLOG_ERR, pServ);
 
-                    if (sc->server->pphrase_dialog_type == SSL_PPTYPE_BUILTIN
-                          || sc->server->pphrase_dialog_type == SSL_PPTYPE_PIPE) {
+                    if (writetty) {
                         apr_file_printf(writetty, "Apache:mod_ssl:Error: Pass phrase incorrect.\n");
                         apr_file_printf(writetty, "**Stopped\n");
                     }
@@ -549,8 +547,7 @@ void ssl_pphrase_Handle(server_rec *s, apr_pool_t *p)
      */
     if (nPassPhraseDialog > 0) {
         sc = mySrvConfig(s);
-        if (sc->server->pphrase_dialog_type == SSL_PPTYPE_BUILTIN
-              || sc->server->pphrase_dialog_type == SSL_PPTYPE_PIPE) {
+        if (writetty) {
             apr_file_printf(writetty, "\n");
             apr_file_printf(writetty, "Ok: Pass Phrase Dialog successful.\n");
         }
