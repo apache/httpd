@@ -2,6 +2,9 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) Fix some broken log messages in WinNT MPM.  
+     [Juan Rivera <Juan.Rivera@citrix.com>]
+
   *) Add support for "streamy" PROPFIND responses.
      [Ben Collins-Sussman <sussman@collab.net>]
 
