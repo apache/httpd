@@ -481,7 +481,7 @@ void ap_log_pid(pool *p, char *fname)
        */
       ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_WARNING, NULL,
 		   ap_psprintf(p,
-			       "pid file %s overwritten -- Unclean shutdown of previous apache run?",
+			       "pid file %s overwritten -- Unclean shutdown of previous Apache run?",
 			       fname)
 		   );
     }
