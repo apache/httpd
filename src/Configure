@@ -667,9 +667,9 @@ case "$PLAT" in
 	uname -X
 	echo Ideally, read the file PORTING, do what it says, and send the
 	echo resulting patches to The Apache Group by filling out a report
-	echo form at http://bugs.apache.org/ - or, if your browser isn\'t 
-	echo forms-capable, you can send them via email to 
-	echo apache-bugs@apache.org.  If you don\'t wish to do the port
+	echo form at http://www.apache.org/bug_report.html - or, if your 
+	echo browser isn\'t forms-capable, you can send them via email to 
+	echo new-httpd@apache.org. If you don\'t wish to do the port
 	echo yourself, please submit this output rather than the patches.
 	echo Thank you
 	echo
@@ -934,8 +934,8 @@ if [ "x$using_shlib" = "x1" ] ; then
                     echo "** luck: We were able to guess the compiler and linker flags"
                     echo "** for creating shared objects from your Perl installation."
                     echo "** If they actually work, please send the following information"
-                    echo "** for inclusion into later releases to apache@apache.org or"
-                    echo "** make a suggestion report at http://bugs.apache.org/:"
+                    echo "** for inclusion into later releases to new-httpd@apache.org or make"
+                    echo "** a suggestion report at http://www.apache.org/bug_report.html:"
                     echo "**     PLATFORM=$PLAT"
                     echo "**     CFLAGS_SHLIB=$CFLAGS_SHLIB"
                     echo "**     LDFLAGS_SHLIB=$LDFLAGS_SHLIB"
