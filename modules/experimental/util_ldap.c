@@ -205,7 +205,7 @@ LDAP_DECLARE(void) util_ldap_connection_close(util_ldap_connection_t *ldc)
  * with the pool cleanup function - causing the LDAP connections to be
  * shut down cleanly on graceful restart.
  */
-LDAP_DECLARE(apr_status_t) util_ldap_connection_destroy(void *param)
+LDAP_DECLARE_NONSTD(apr_status_t) util_ldap_connection_destroy(void *param)
 {
     util_ldap_connection_t *ldc = param;
 
