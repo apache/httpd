@@ -1,5 +1,8 @@
 Changes with Apache 2.0.37
 
+  *) Performance enhancements for access logger when using
+     default timestamp formatting  [Brian Pane]
+
   *) Added EnableMMAP config directive to enable the server
      administrator to disable memory-mapping of delivered files
      on a per-directory basis.  [Brian Pane]
