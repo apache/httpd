@@ -39,7 +39,7 @@ echo "Updating the site's FAQ"
 
 # Now update the FAQ in the tarball
 rm -f docs/manual/faq/*.html
-cp /www/www.apache.org/docs-2.0/faq/*.html docs/manual/faq/
+cp /www/httpd.apache.org/docs-2.0/faq/*.html docs/manual/faq/
 
 # Create the configure scripts
 echo "Creating the configure script"
