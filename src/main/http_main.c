@@ -1715,7 +1715,7 @@ void child_main(int child_num_arg)
     }    
 }
 
-void make_child(server_rec *server_conf, int child_num)
+int make_child(server_rec *server_conf, int child_num)
 {
     int pid;
 
@@ -1733,7 +1733,7 @@ void make_child(server_rec *server_conf, int child_num)
            over and over again. */
 	sleep(10);
 
-	return;
+	return -1;
     } 
     
     if (!pid) {
@@ -1741,6 +1741,7 @@ void make_child(server_rec *server_conf, int child_num)
 	signal (SIGTERM, (void (*)())just_die);
 	child_main (child_num);
     }
+    return 0;
 }
 
 static int
@@ -2014,7 +2015,12 @@ void standalone_main(int argc, char **argv)
 	    Explain1("Starting new child in slot %d",child_slot);
 	    (void)update_child_status(child_slot,SERVER_STARTING,
 	     (request_rec*)NULL);
-	    make_child(server_conf, child_slot);
+	    if (make_child(server_conf, child_slot) < 0) {
+		/* fork didn't succeed. Fix the scoreboard or else
+		   it will say SERVER_STARTING forever and ever */
+	        (void)update_child_status(child_slot,SERVER_DEAD,
+	             (request_rec*)NULL);
+	    }
 
 	}
 

@@ -106,6 +106,12 @@ Changes with Apache 1.2b5
      select, and removed potential for infinite loop in accept.
      [Roy Fielding, after useful PR from adrian@virginia.edu]
 
+  *) Fixed condition where, if a child fails to fork, the scoreboard would
+     continue to say SERVER_STARTING forever. Eventually, the main process
+     would refuse to start new children because count_idle_servers() will
+     count those SERVER_STARTING entries and will always report that there
+     are enough idle servers. [Phillip Vandry]
+
 Changes with Apache 1.2b4:
 
   *) Fix possible race condition in accept_mutex_init() that
