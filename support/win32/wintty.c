@@ -86,7 +86,7 @@ const char *options =
 "\t-v{erbose} error reporting (for debugging)\n"
 "\t-? for this message\n\n";
 
-HANDLE herrout;
+HANDLE herrout = NULL;
 BOOL verbose = FALSE;
 
 void printerr(char *fmt, ...) 
@@ -94,7 +94,7 @@ void printerr(char *fmt, ...)
     char str[1024];
     va_list args;
     DWORD len;
-    if (!verbose)
+    if (!verbose || !herrout)
         return;
     va_start(args, fmt);
     wvsprintf(str, fmt, args);
@@ -102,6 +102,11 @@ void printerr(char *fmt, ...)
 }
 
 DWORD WINAPI feedback(LPVOID pipeout);
+
+typedef struct feedback_args_t {
+    HANDLE in;
+    HANDLE out;
+} feedback_args_t;
 
 int main(int argc, char** argv)
 {
@@ -112,6 +117,7 @@ int main(int argc, char** argv)
     HANDLE conin, conout;
     HANDLE pipein, pipeout;
     HANDLE hstdin, hstdout, hstderr;
+    feedback_args_t feed;
     DWORD conmode;
     DWORD newinmode = 0, notinmode = 0;
     DWORD newoutmode = 0, notoutmode = 0;
@@ -169,6 +175,7 @@ int main(int argc, char** argv)
     herrout = hstderr = GetStdHandle(STD_ERROR_HANDLE);
     if (!hstderr || hstderr == INVALID_HANDLE_VALUE) {
         printerr("GetStdHandle(STD_ERROR_HANDLE) failed (%d)\n", GetLastError());
+        herrout = NULL;
     }
     else if (!DuplicateHandle(hproc, hstderr,
                          hproc, &herrout, 0, FALSE, 
@@ -258,9 +265,14 @@ int main(int argc, char** argv)
         printerr("SetConsoleTitle() failed (%d)\n", GetLastError());
     }
 
-    conout = GetStdHandle(STD_OUTPUT_HANDLE);
+    conout = CreateFile("CONOUT$", GENERIC_WRITE, 
+                        FILE_SHARE_READ | FILE_SHARE_WRITE, 
+                        FALSE, OPEN_EXISTING, 0, NULL);
     if (!conout || conout == INVALID_HANDLE_VALUE) {
         printerr("GetStdHandle(STD_OUTPUT_HANDLE) failed (%d)\n", GetLastError());
+    }
+    else if (!herrout) {
+        herrout = conout;
     }
     else if (!GetConsoleMode(conout, &conmode)) {
         printerr("GetConsoleMode(CONOUT) failed (%d)\n", GetLastError());
@@ -269,7 +281,9 @@ int main(int argc, char** argv)
         printerr("SetConsoleMode(CONOUT, 0x%x) failed (%d)\n", conmode, GetLastError());
     }
 
-    conin = GetStdHandle(STD_INPUT_HANDLE);
+    conin = CreateFile("CONIN$", GENERIC_READ, 
+                       FILE_SHARE_READ | FILE_SHARE_WRITE, 
+                       FALSE, OPEN_EXISTING, 0, NULL);
     if (!conin || conin == INVALID_HANDLE_VALUE) {
         printerr("GetStdHandle(STD_INPUT_HANDLE) failed (%d)\n", GetLastError());
     }
@@ -280,7 +294,9 @@ int main(int argc, char** argv)
         printerr("SetConsoleMode(CONIN, 0x%x) failed (%d)\n", conmode, GetLastError());
     }
 
-    thread = CreateThread(NULL, 0, feedback, (LPVOID)pipeout, 0, &tid);
+    feed.in = conin;
+    feed.out = pipeout;
+    thread = CreateThread(NULL, 0, feedback, (LPVOID)&feed, 0, &tid);
 
     while (ReadFile(pipein, str, sizeof(str), &len, NULL))
         if (!len || !WriteFile(conout, str, len, &len, NULL))
@@ -318,18 +334,12 @@ int main(int argc, char** argv)
 
 DWORD WINAPI feedback(LPVOID arg)
 {
-    HANDLE conin;
-    HANDLE pipeout = (HANDLE)arg;
+    feedback_args_t *feed = (feedback_args_t*)arg;
     char *str[1024];
     DWORD len;
 
-    conin = GetStdHandle(STD_INPUT_HANDLE);
-    if (!conin) {
-        len = GetLastError();
-    }
-
-    while (ReadFile(conin, str, sizeof(str), &len, NULL))
-        if (!len || !WriteFile(pipeout, str, len, &len, NULL))
+    while (ReadFile(feed->in, str, sizeof(str), &len, NULL))
+        if (!len || !WriteFile(feed->out, str, len, &len, NULL))
             break;
 
     printerr("[EOF] from Console (%d)\n", GetLastError());
