@@ -2166,7 +2166,7 @@ directory</td></tr>
       Server-side includes are permitted, but the <code>#exec
       cmd</code> and <code>#exec cgi</code> are disabled. It is still
       possible to <code>#include virtual</code> CGI scripts from
-      <code class="directive"><a href="../mod/mod_cgi.html#scriptalias">ScriptAlias</a></code>ed
+      <code class="directive"><a href="../mod/mod_alias.html#scriptalias">ScriptAlias</a></code>ed
       directories.</dd>
 
       <dt><code>Indexes</code></dt>
