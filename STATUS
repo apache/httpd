@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/03/28 00:13:04 $]
+Last modified at [$Date: 2003/03/29 04:42:10 $]
 
 Release:
 
@@ -196,6 +196,13 @@ PATCHES TO PORT FROM 2.1
       Allows Win32 and other non-unicies to use named locks.
       modules/ssl/ssl_engine_config.c r1.74, r1.75
       +1: wrowe
+
+    * Fix mod_ssl.dsp and abs.dsp to use also the openssl-0.9.7-defines for
+      NO_MD5, NO_IDEA and NO_MDC2 (won't compile otherwise with 0.9.7+ and
+      restricted crypto algorithms)
+      modules/ssl/mod_ssl.dsp: r1.20
+      support/abs.dsp: r1.10
+      +1: nd
 
 CURRENT RELEASE NOTES:
 
