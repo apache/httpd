@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:						-*-text-*-
-Last modified at [$Date: 2002/01/02 08:05:15 $]
+Last modified at [$Date: 2002/01/02 08:13:33 $]
 
 Release:
 
@@ -122,6 +122,14 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
       lost.  This might be an APR issue with how it deals with
       the child_init hook (i.e. the fcntl lock needs to be resynced).
       More examination and analysis is required.
+
+      Status: This has also been reported on Cygwin.  
+
+      Message-ID: <3C2CC514.8EF3BED1@wapme-systems.de> (cygnus)
+
+      Justin says: So, FreeBSD-CURRENT and Cywin have the same 
+                   problem.  Yum.  If another platform has this
+                   with worker, this becomes a showstopper.
      
     * There is increasing demand from module writers for an API
       that will allow them to control the server à la apachectl.
