@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:						-*-text-*-
-Last modified at [$Date: 2001/12/12 10:09:58 $]
+Last modified at [$Date: 2001/12/15 14:40:57 $]
 
 Release:
 
@@ -91,6 +91,9 @@ RELEASE SHOWSTOPPERS:
       ap_hook_error_log (or other missing functions -- if there are
       any) to segfault on AIX and can probably cause load or other
       errors on some other platforms.
+
+    * install-bindist.sh does not edit the PIDFILE setting in
+      apachectl so some apachectl functions are broken.
 
 RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
 
