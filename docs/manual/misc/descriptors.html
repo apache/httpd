@@ -73,13 +73,13 @@ situation somewhat.  Here is a partial list of systems and workarounds
 	will run into trouble if more than approximately 240 Listen
 	directives are used.  This may be cured by rebuilding your kernel
 	with a higher FD_SETSIZE.
-    </p>
+    <p>
 
     <dt> <b>FreeBSD 2.2, BSDI 2.1+</b>
     <dd> Similar to the BSDI 2.0 case, you should define
 	<code>FD_SETSIZE</code> and rebuild.  But the extra
 	Listen limitation doesn't exist.
-    </p>
+    <p>
 
     <dt> <b>Linux</b>
     <dd> By default Linux has a kernel maximum of 256 open descriptors
@@ -95,7 +95,7 @@ situation somewhat.  Here is a partial list of systems and workarounds
 	256.  As of this writing the patches available for increasing
 	the number of descriptors do not take this into account.  On a
 	dedicated webserver you probably won't run into trouble.
-    </p>
+    <p>
 
     <dt> <b>Solaris through 2.5.1</b>
     <dd> Solaris has a kernel hard limit of 1024 (may be lower in earlier
@@ -107,18 +107,18 @@ situation somewhat.  Here is a partial list of systems and workarounds
 	build Apache with <code>-DHIGH_SLACK_LINE=256</code> added to
 	<code>EXTRA_CFLAGS</code>.  You will be limited to approximately
 	240 error logs if you do this.
-    </p>
+    <p>
 
     <dt> <b>AIX version ??</b>
     <dd> AIX appears to have a hard limit of 128 descriptors.  End of
 	story.
-    </p>
+    <p>
 
     <dt> <b>Others</b>
     <dd> If you have details on another operating system, please submit
 	it through our <a href="http://www.apache.org/bug_report.html">Bug
 	Report Page</a>.
-    </p>
+    <p>
 
 </dl>
 
