@@ -1051,47 +1051,6 @@ int reap_children(ap_wait_t *status)
 }
 #endif
 
-/* Finally, this routine is used by the caretaker process to wait for
- * a while...
- */
-
-/* number of calls to wait_or_timeout between writable probes */
-#ifndef INTERVAL_OF_WRITABLE_PROBES
-#define INTERVAL_OF_WRITABLE_PROBES 10
-#endif
-static int wait_or_timeout_counter;
-
-static ap_proc_t *wait_or_timeout(ap_wait_t *status, ap_pool_t *p)
-{
-    struct timeval tv;
-    ap_status_t rv;
-    ap_proc_t *ret = NULL;
-
-    ++wait_or_timeout_counter;
-    if (wait_or_timeout_counter == INTERVAL_OF_WRITABLE_PROBES) {
-	wait_or_timeout_counter = 0;
-#ifdef APR_HAS_OTHER_CHILD
-	ap_probe_writable_fds();
-#endif
-    }
-    rv = ap_wait_all_procs(&ret, status, APR_NOWAIT, p);
-    if (ap_canonical_error(rv) == APR_EINTR) {
-	return NULL;
-    }
-    if (rv == APR_CHILD_DONE) {
-	return ret;
-    }
-#ifdef NEED_WAITPID
-    if ((ret = reap_children(status)) > 0) {
-	return ret;
-    }
-#endif
-    tv.tv_sec = SCOREBOARD_MAINTENANCE_INTERVAL / 1000000;
-    tv.tv_usec = SCOREBOARD_MAINTENANCE_INTERVAL % 1000000;
-    ap_select(0, NULL, NULL, NULL, &tv);
-    return NULL;
-}
-
 /* handle all varieties of core dumping signals */
 static void sig_coredump(int sig)
 {
@@ -2000,7 +1959,7 @@ int ap_mpm_run(ap_pool_t *_pconf, ap_pool_t *plog, server_rec *s)
 	int child_slot;
 	ap_wait_t status;
         /* this is a memory leak, but I'll fix it later. */
-	ap_proc_t *pid = wait_or_timeout(&status, pconf);
+	ap_proc_t *pid = ap_wait_or_timeout(&status, pconf);
 
 	/* XXX: if it takes longer than 1 second for all our children
 	 * to start up and get into IDLE state then we may spawn an
