@@ -47,6 +47,9 @@ char *ap_os_error_message(int err);
 #define HAVE_ISINF
 #define HAVE_ISNAN
 
+/* strtol() correctly returns ERANGE on overflow, use it */
+#define ap_strtol strtol
+
 /* Dynamic loading functions */
 #define     ap_os_dso_handle_t  unsigned long
 void        ap_os_dso_init(void);
