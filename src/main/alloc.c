@@ -50,7 +50,7 @@
  *
  */
 
-/* $Id: alloc.c,v 1.13 1996/10/01 03:24:04 brian Exp $ */
+/* $Id: alloc.c,v 1.14 1996/10/01 19:19:14 brian Exp $ */
 
 
 /*
@@ -790,7 +790,6 @@ FILE *pfopen(struct pool *a, char *name, char *mode)
     fd = fopen(name, mode);
   }
 
-  fd = fopen(name, mode);
   if (fd != NULL) note_cleanups_for_file (a, fd);
   unblock_alarms();
   return fd;
