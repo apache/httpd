@@ -96,13 +96,16 @@
         <xsl:comment>
             &lf;
             <xsl:text>        </xsl:text>
-            <xsl:text>XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX</xsl:text>
+            <xsl:text>XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX</xsl:text>
+            <xsl:text>XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX</xsl:text>
             &lf;
             <xsl:text>              </xsl:text>
-            <xsl:text>This file is generated from xml source: DO NOT EDIT</xsl:text>
+            <xsl:text>This file is generated from xml source: </xsl:text>
+            <xsl:text>DO NOT EDIT</xsl:text>
             &lf;
             <xsl:text>        </xsl:text>
-            <xsl:text>XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX</xsl:text>
+            <xsl:text>XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX</xsl:text>
+            <xsl:text>XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX</xsl:text>
             &lf;
             <xsl:text>      </xsl:text>
         </xsl:comment>
@@ -754,6 +757,7 @@
 </xsl:template>
 <!-- /related/directivelist -->
 
+
 <!-- ==================================================================== -->
 <!-- <table>                                                              -->
 <!-- ==================================================================== -->
@@ -764,31 +768,12 @@
         <xsl:attribute name="class">bordered</xsl:attribute>
     </xsl:if>
 
-    <!-- style="zebra": alternating colors per row, i.e. every second row -->
-    <!--                gets a class="odd". Header lines (no <td>) get a  -->
-    <!--                class="header". These lines will be excluded from -->
-    <!--                the "odd" line count. That way header lines act   -->
-    <!--                interjectional, which creates a better visual and -->
-    <!--                psychological effect.                             -->
     <xsl:choose>
     <xsl:when test="@style = 'zebra'">
-        <xsl:for-each select="tr">
-            <tr>
-                <xsl:choose>
-                <xsl:when test="count(td) = 0">
-                    <xsl:attribute name="class">header</xsl:attribute>
-                </xsl:when>
-
-                <xsl:when
-                    test="position() mod 2 =
-                            (count(preceding-sibling::tr[count(td) = 0]) mod 2)">
-                    <xsl:attribute name="class">odd</xsl:attribute>
-                </xsl:when>
-                </xsl:choose>
-
-                <xsl:apply-templates />
-            </tr>&lf;
-        </xsl:for-each>
+        <xsl:apply-templates select="tr" mode="zebra-table" />
+    </xsl:when>
+    <xsl:when test="@style = 'data'">
+        <xsl:apply-templates select="tr" mode="data-table" />
     </xsl:when>
     <xsl:otherwise>
         <xsl:apply-templates />
@@ -797,6 +782,60 @@
 </table>
 </xsl:template>
 <!-- /table -->
+
+<!-- data-table -->
+<xsl:template match="tr" mode="data-table">
+<!-- style="data": fixed font, padding-left and right alignment for <td>s -->
+<xsl:variable name="cross-table" select="boolean(
+    preceding-sibling::tr/th[1]|following-sibling::tr/th[1])" />
+
+<tr>
+    <xsl:for-each select="node()">
+        <xsl:choose>
+        <xsl:when test="local-name() = 'td'">
+            <td class="data">
+                <xsl:apply-templates select="*|@*|text()" />
+            </td>
+        </xsl:when>
+        <xsl:when test="local-name() = 'th' and
+                        (not($cross-table) or
+                         count(preceding-sibling::*) &gt; 0)">
+            <th class="data">
+                <xsl:apply-templates select="*|@*|text()" />
+            </th>
+        </xsl:when>
+        <xsl:otherwise>
+            <xsl:apply-templates select="self::node()" />
+        </xsl:otherwise>
+        </xsl:choose>
+    </xsl:for-each>
+</tr>&lf;
+</xsl:template>
+
+
+<!-- zebra-table -->
+<xsl:template match="tr" mode="zebra-table">
+<!-- style="zebra": alternating colors per row, i.e. every second row -->
+<!--                gets a class="odd". Header lines (no <td>) get a  -->
+<!--                class="header". These lines will be excluded from -->
+<!--                the "odd" line count. That way header lines act   -->
+<!--                interjectional, which creates a better visual and -->
+<!--                psychological effect.                             -->
+<tr>
+    <xsl:choose>
+    <xsl:when test="count(td) = 0">
+        <xsl:attribute name="class">header</xsl:attribute>
+    </xsl:when>
+
+    <xsl:when test="position() mod 2 = (count(preceding-sibling::tr[count(td) = 0]) mod 2)">
+        <xsl:attribute name="class">odd</xsl:attribute>
+    </xsl:when>
+    </xsl:choose>
+
+    <xsl:apply-templates />
+</tr>&lf;
+</xsl:template>
+<!-- /zebra-table -->
 
 
 <!-- ==================================================================== -->
