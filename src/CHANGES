@@ -1,5 +1,10 @@
 Changes with Apache 1.3b3
 
+  *) Various mod_mime_magic bug fixes and cleanups: Uncompression
+     should work, it should work on WIN32, and a few resource
+     leaks and abort conditions are fixed.
+     [Dean Gaudet] PR#1205
+
   *) PORT: On AIX 1.x files can't be named '@', fix the proxy cache
      to use '%' instead of '@' in its encodings.
      [David Schuler <schuld@btv.ibm.com>] PR#1317
