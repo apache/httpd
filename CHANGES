@@ -595,6 +595,12 @@ Changes with Apache 2.1.1
   [Apache 2.1.0-dev includes those bug fixes and changes with the
    Apache 2.0.xx tree as documented, and except as noted, below.]
 
+Changes with Apache 2.0.54
+
+  *) mod_win32: Ignore both PATH_INFO as well as PATH_TRANSLATED to avoid 
+     hiccups from additional path information passed in non-utf-8 format.
+     [Richard Donkin <rd9 donkin.org]
+
 Changes with Apache 2.0.53
 
   *) mod_auth_ldap: Handle the inconsistent way in which the MS LDAP
