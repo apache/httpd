@@ -259,7 +259,7 @@ The following <em>source</em> variants are available:
 
 <ul>
 <li><code>builtin</code>
-    <p> This is the always available builtin seeding source.  It's usage
+    <p> This is the always available builtin seeding source.  Its usage
     consumes minimum CPU cycles under runtime and hence can be always used
     without drawbacks. The source used for seeding the PRNG contains of the
     current time, the current process id and (when applicable) a randomly
@@ -297,7 +297,7 @@ The following <em>source</em> variants are available:
     find under <i>rndcontrol(8)</i> on those platforms.  Alternatively, when
     your system lacks such a random device, you can use tool
     like <a href="http://www.lothar.com/tech/crypto/">EGD</a>
-    (Entropy Gathering Daemon) and run it's client program with the
+    (Entropy Gathering Daemon) and run its client program with the
     <code>exec:/path/to/program/</code> variant (see below) or use
     <code>egd:/path/to/egd-socket</code> (see below).
 <p>
@@ -513,7 +513,7 @@ The available (case-insensitive) <em>protocol</em>s are:
     This is the Transport Layer Security (TLS) protocol, version 1.0.  It is the
     successor to SSLv3 and currently (as of February 1999) still under
     construction by the Internet Engineering Task Force (IETF).  It's still
-    not supported by any popular browsers.
+    not supported by all popular browsers.
 <p>
 <li><code>All</code>
     <p>
