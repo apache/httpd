@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/05/13 15:39:07 $]
+Last modified at [$Date: 2003/05/13 15:47:46 $]
 
 Release:
 
@@ -226,7 +226,7 @@ PATCHES TO PORT FROM 2.1
       do an unnecessary string search with non-IPv6 builds because of a 
       bogus check for IPv6 capability.
       server/core.c r1.232+r1.235
-      +1: trawick, stoddard
+      +1: trawick, stoddard, thommay
 
 
     * Hook mod_rewrite's type checker before mod_mime's one. That way the
@@ -245,6 +245,11 @@ PATCHES TO PORT FROM 2.1
       docs/conf/httpd-std.conf.in: r1.39
       docs/conf/httpd-win.conf: r1.85
       +1: nd, trawick, stoddard
+
+    * Check the processed file on validity. If a line is not empty
+      and not a comment, it must contain at least one colon.
+      support/htpasswd.c: r1.69
+      +1: thommay
 
 CURRENT RELEASE NOTES:
 
