@@ -2578,6 +2578,7 @@ static const char *add_ct_output_filters(cmd_parms *cmd, void *conf_,
 {
     core_dir_config *conf = conf_;
     ap_filter_rec_t *old, *new;
+    const char *filter_name;
 
     if (!conf->ct_output_filters) {
         conf->ct_output_filters = apr_hash_make(cmd->pool);
@@ -2588,12 +2589,16 @@ static const char *add_ct_output_filters(cmd_parms *cmd, void *conf_,
                                               APR_HASH_KEY_STRING);
     }
 
-    new = apr_pcalloc(cmd->pool, sizeof(ap_filter_rec_t));
-    new->name = apr_pstrdup(cmd->pool, arg);
+    while (*arg &&
+           (filter_name = ap_getword(cmd->pool, &arg, ';'))) {
+        new = apr_pcalloc(cmd->pool, sizeof(ap_filter_rec_t));
+        new->name = filter_name;
 
-    /* We found something, so let's append it.  */
-    if (old) {
-        new->next = old;
+        /* We found something, so let's append it.  */
+        if (old) {
+            new->next = old;
+        }
+        old = new;
     }
 
     apr_hash_set(conf->ct_output_filters, arg2, APR_HASH_KEY_STRING, new);
