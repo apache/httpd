@@ -25,3 +25,4 @@ log_server_status
 logresolve.pl
 split-logfile
 phf_abuse_log.cgi
+*.rc
