@@ -54,8 +54,8 @@
  - ssl_util.c .............. utility functions
  # ssl_util_ssl.c .......... the OpenSSL companion source
  # ssl_util_ssl.h .......... the OpenSSL companion header
- - ssl_util_table.c ........ the hash table library source
- - ssl_util_table.h ........ the hash table library header
+ # ssl_util_table.c ........ the hash table library source
+ # ssl_util_table.h ........ the hash table library header
 
  Legend: # = already ported to Apache 2.0
          - = port still not finished
