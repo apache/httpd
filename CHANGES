@@ -1,5 +1,9 @@
 Changes with Apache 2.0.19-dev
 
+  *) include/ap_compat.h tested and set APR_COMPAT_H instead of AP_COMPAT_H.
+     This prevented the inclusion of apr_compat.h.  PR #7773
+     [Oleg Broytmann <phd@phd.pp.ru>]
+
   *) Moved util_uri to the apr-util library.  This required a bunch of
      apr_name changes for the uri utility functions.  [Justin Erenkrantz]
 
