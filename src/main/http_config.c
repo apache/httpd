@@ -884,7 +884,7 @@ void process_resource_config(server_rec *s, char *fname, pool *p, pool *ptemp)
 
 
 int parse_htaccess(void **result, request_rec *r, int override,
-		   char *d, const char *access_name)
+		   const char *d, const char *access_name)
 {
     FILE *f = NULL;
     cmd_parms parms;
@@ -907,17 +907,12 @@ int parse_htaccess(void **result, request_rec *r, int override,
     parms.pool = r->pool;
     parms.temp_pool = r->pool;
     parms.server = r->server;
-    parms.path = d;
+    parms.path = pstrdup (r->pool, d);
 
-    if (access_name) {
-	while (!f && access_name[0]) {
-	    char *w = getword_conf(r->pool, &access_name);
-	    filename = make_full_path(r->pool, d, w);
-	    f=pfopen(r->pool, filename, "r");
-	}
-    }
-    else {
-	filename = make_full_path(r->pool, d, 0);
+    /* loop through the access names and find the first one */
+    while (!f && access_name[0]) {
+	char *w = getword_conf(r->pool, &access_name);
+	filename = make_full_path(r->pool, d, w);
 	f=pfopen(r->pool, filename, "r");
     }
     if(f) {
@@ -941,7 +936,7 @@ int parse_htaccess(void **result, request_rec *r, int override,
 
 /* cache it */
     new = palloc(r->pool, sizeof(struct htaccess_result));
-    new->dir = pstrdup(r->pool, d);
+    new->dir = parms.path;
     new->override = override;
     new->htaccess = dc;
 /* add to head of list */

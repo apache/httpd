@@ -251,8 +251,7 @@ int directory_walk (request_rec *r)
     core_dir_config **sec = (core_dir_config **)sec_array->elts;
     int num_sec = sec_array->nelts;
     char *test_filename = pstrdup (r->pool, r->filename);
-    char *test_dirname, *test_htaccess;
-
+    char *test_dirname;
     int num_dirs, res;
     int i, test_filename_len;
 
@@ -340,27 +339,27 @@ int directory_walk (request_rec *r)
 
     if (S_ISDIR (r->finfo.st_mode)) ++num_dirs;
 
-    /* we need somewhere to scratch while building directory names and
-     * htaccess names
+    /* We will use test_dirname as scratch space while we build directory
+     * names during the walk.  Profiling shows directory_walk to be a busy
+     * function so we try to avoid allocating lots of extra memory here.
      */
     test_dirname = palloc (r->pool, test_filename_len+1);
-    test_htaccess = NULL;
     for (i = 1; i <= num_dirs; ++i) {
         core_dir_config *core_dir =
 	  (core_dir_config *)get_module_config(per_dir_defaults, &core_module);
 	int overrides_here;
-        void *htaccess_conf = NULL;
-	char *test_dirname_tail;
 	int j;
 
-	test_dirname_tail = make_dirstr_prefix (test_dirname, test_filename, i);
+	/* XXX: this could be made faster by only copying the next component
+	 * rather than copying the entire thing all over.
+	 */
+	make_dirstr_prefix (test_dirname, test_filename, i);
 
 	/* Do symlink checks first, because they are done with the
 	 * permissions appropriate to the *parent* directory...
 	 */
 	
-	if ((res = check_symlinks (test_dirname, core_dir->opts)))
-	{
+	if ((res = check_symlinks (test_dirname, core_dir->opts))) {
 	    log_reason("Symbolic link not allowed", test_dirname, r);
 	    return res;
 	}
@@ -416,16 +415,16 @@ int directory_walk (request_rec *r)
 	 */
 	
 	if (overrides_here) {
+	    void *htaccess_conf = NULL;
+
   	    res = parse_htaccess (&htaccess_conf, r, overrides_here,
  				  test_dirname, sconf->access_name);
 	    if (res) return res;
+	    if (htaccess_conf)
+		per_dir_defaults =
+		    merge_per_dir_configs (r->pool, per_dir_defaults,
+					htaccess_conf);
 	}
-
-	if (htaccess_conf)
-	    per_dir_defaults =
-	        merge_per_dir_configs (r->pool, per_dir_defaults,
-				       htaccess_conf);
-	
     }
 
     r->per_dir_config = per_dir_defaults;
