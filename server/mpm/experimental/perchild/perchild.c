@@ -295,6 +295,7 @@ static void just_die(int sig)
 static int volatile shutdown_pending;
 static int volatile restart_pending;
 static int volatile is_graceful;
+static int volatile child_fatal;
 /* we don't currently track ap_my_generation, but mod_status 
  * references it so it must be defined */
 ap_generation_t volatile ap_my_generation=0;
@@ -1100,7 +1101,11 @@ static void server_main_loop(int remaining_children_to_start)
         ap_wait_or_timeout(&exitwhy, &status, &pid, pconf);
         
         if (pid.pid != -1) {
-            ap_process_child_status(&pid, exitwhy, status);
+            if (ap_process_child_status(&pid, exitwhy, status) == APEXIT_CHILDFATAL) {
+                shutdown_pending = 1;
+                child_fatal = 1;
+                return;
+            }
             /* non-fatal death... note that it's gone in the child table and
              * clean out the status table. */
             child_slot = -1;
@@ -1257,9 +1262,9 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
                          "killpg SIGTERM");
         }
         ap_reclaim_child_processes(1);		/* Start with SIGTERM */
-    
-        /* cleanup pid file on normal shutdown */
-        {
+
+        if (!child_fatal) {
+            /* cleanup pid file on normal shutdown */
             const char *pidfile = NULL;
             pidfile = ap_server_root_relative (pconf, ap_pid_fname);
             if ( pidfile != NULL && unlink(pidfile) == 0)
@@ -1267,11 +1272,10 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
             		 ap_server_conf,
             		 "removed PID file %s (pid=%ld)",
             		 pidfile, (long)getpid());
+    
+            ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_NOTICE, 0,
+                         ap_server_conf, "caught SIGTERM, shutting down");
         }
-    
-        ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_NOTICE, 0,
-                     ap_server_conf, "caught SIGTERM, shutting down");
-    
 	return 1;
     }
 

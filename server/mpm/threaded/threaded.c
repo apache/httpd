@@ -1129,7 +1129,11 @@ static void server_main_loop(int remaining_children_to_start)
         ap_wait_or_timeout(&exitwhy, &status, &pid, pconf);
         
         if (pid.pid != -1) {
-            ap_process_child_status(&pid, exitwhy, status);
+            if (ap_process_child_status(&pid, exitwhy, status) != 0) {
+                /* if we keep this MPM, somebody fix handling of APEXIT_CHILDFATAL */
+                exit(1);
+            }
+            
             /* non-fatal death... note that it's gone in the scoreboard. */
             child_slot = find_child_by_pid(&pid);
             if (child_slot >= 0) {

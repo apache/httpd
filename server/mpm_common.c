@@ -225,21 +225,24 @@ void ap_wait_or_timeout(apr_exit_why_e *status, int *exitcode, apr_proc_t *ret,
 #endif /* AP_MPM_WANT_WAIT_OR_TIMEOUT */
 
 #ifdef AP_MPM_WANT_PROCESS_CHILD_STATUS
-void ap_process_child_status(apr_proc_t *pid, apr_exit_why_e why, int status)
+int ap_process_child_status(apr_proc_t *pid, apr_exit_why_e why, int status)
 {
     int signum = status;
     const char *sigdesc = apr_signal_get_description(signum);
 
     /* Child died... if it died due to a fatal error,
-        * we should simply bail out.
-        */
+     * we should simply bail out.  The caller needs to
+     * check for bad rc from us and exit, running any
+     * appropriate cleanups.
+     */
     if ((APR_PROC_CHECK_EXIT(why)) &&
         (status == APEXIT_CHILDFATAL)) {
         ap_log_error(APLOG_MARK, APLOG_ALERT|APLOG_NOERRNO, 0, ap_server_conf,
-                        "Child %ld returned a Fatal error..." APR_EOL_STR
-                        "Apache is exiting!",
-                        (long)pid->pid);
-        exit(APEXIT_CHILDFATAL);
+                     "Child %" APR_OS_PROC_T_FMT
+                     " returned a Fatal error..." APR_EOL_STR
+                     "Apache is exiting!",
+                     pid->pid);
+        return APEXIT_CHILDFATAL;
     }
 
     if (APR_PROC_CHECK_SIGNALED(why)) {
