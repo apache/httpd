@@ -1089,7 +1089,7 @@ typedef int rlim_t;
 
 #ifdef WIN32
 #include "../include/hsregex.h"
-#elif defined(USE_HSREGEX)
+#elif defined(AP_USE_HSREGEX)
 #include "hsregex.h"
 #else
 #include <regex.h>
