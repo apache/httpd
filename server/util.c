@@ -92,14 +92,6 @@ extern int fclose(FILE *);
  */
 #define TEST_CHAR(c, f)	(test_char_table[(unsigned)(c)] & (f))
 
-void ap_util_init(void)
-{
-    /* nothing to do... previously there was run-time initialization of
-     * test_char_table here
-     */
-}
-
-
 API_VAR_EXPORT const char ap_month_snames[12][4] =
 {
     "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
