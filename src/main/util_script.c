@@ -723,6 +723,9 @@ API_EXPORT(int) call_exec(request_rec *r, char *argv0, char **env, int shellcmd)
 			break;
 		}
 		interpreter[i] = 0;
+		for (i = 2; interpreter[i] == ' '; ++i)
+		    ;
+		memmove(interpreter+2,interpreter+i,strlen(interpreter+i)+1);
 	    }
 	    else {
 		/*
