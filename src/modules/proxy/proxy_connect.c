@@ -50,8 +50,6 @@
  *
  */
 
-/* $Id: proxy_connect.c,v 1.2 1996/10/09 14:52:57 chuck Exp $ */
-
 /* CONNECT method SSL handling for Apache proxy */
 
 #include "mod_proxy.h"

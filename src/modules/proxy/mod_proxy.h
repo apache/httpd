@@ -50,8 +50,6 @@
  *
  */
 
-/* $Id: mod_proxy.h,v 1.2 1996/10/09 14:52:56 chuck Exp $ */
-
 /*
  * Main include file for the Apache proxy
  */

@@ -50,8 +50,6 @@
  *
  */
 
-/* $Id: proxy_ftp.c,v 1.2 1996/10/09 14:52:58 chuck Exp $ */
-
 /* FTP routines for Apache proxy */
 
 #include "mod_proxy.h"

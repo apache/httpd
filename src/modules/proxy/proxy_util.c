@@ -50,8 +50,6 @@
  *
  */
 
-/* $Id: proxy_util.c,v 1.3 1996/10/09 21:36:13 chuck Exp $ */
-
 /* Utility routines for Apache proxy */
 
 #include "mod_proxy.h"

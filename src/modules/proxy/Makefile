@@ -50,8 +50,6 @@
 # 
 # Makefile for the Apache proxy library
 # 
-# $Id: Makefile,v 1.6 1996/10/09 17:18:28 chuck Exp $
-#
 
 SHELL = /bin/sh
 

@@ -50,9 +50,7 @@
  *
  */
 
-/* $Id: proxy_cache.c,v 1.2 1996/10/09 14:52:56 chuck Exp $ */
-
-/* Cache and garbage collection  routines for Apache proxy */
+/* Cache and garbage collection routines for Apache proxy */
 
 #include "md5.h"
 

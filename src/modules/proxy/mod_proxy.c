@@ -50,8 +50,6 @@
  *
  */
 
-/* $Id: mod_proxy.c,v 1.4 1996/10/09 14:52:55 chuck Exp $ */
-
 #include "mod_proxy.h"
 
 /* Some WWW schemes and their default ports; this is basically /etc/services */
@@ -274,7 +272,7 @@ create_proxy_config(pool *p, server_rec *s)
   return ps;
 }
 
-static char *
+static const char *
 add_proxy(cmd_parms *cmd, void *dummy, char *f, char *r)
 {
     server_rec *s = cmd->server;
@@ -314,7 +312,7 @@ add_proxy(cmd_parms *cmd, void *dummy, char *f, char *r)
     return NULL;
 }
 
-static char *
+static const char *
 add_pass(cmd_parms *cmd, void *dummy, char *f, char *r)
 {
     server_rec *s = cmd->server;
@@ -328,7 +326,7 @@ add_pass(cmd_parms *cmd, void *dummy, char *f, char *r)
     return NULL;
 }
 
-static char *
+static const char *
 set_proxy_req(cmd_parms *parms, void *dummy, int flag)
 {
     proxy_server_conf *psf =
@@ -339,7 +337,7 @@ set_proxy_req(cmd_parms *parms, void *dummy, int flag)
 }
 
 
-static char *
+static const char *
 set_cache_size(cmd_parms *parms, char *struct_ptr, char *arg)
 {
     proxy_server_conf *psf =
@@ -351,7 +349,7 @@ set_cache_size(cmd_parms *parms, char *struct_ptr, char *arg)
     return NULL;
 }
 
-static char *
+static const char *
 set_cache_root(cmd_parms *parms, void *dummy, char *arg)
 {
     proxy_server_conf *psf =
@@ -362,7 +360,7 @@ set_cache_root(cmd_parms *parms, void *dummy, char *arg)
     return NULL;
 }
 
-static char *
+static const char *
 set_cache_factor(cmd_parms *parms, void *dummy, char *arg)
 {
     proxy_server_conf *psf =
@@ -375,7 +373,7 @@ set_cache_factor(cmd_parms *parms, void *dummy, char *arg)
     return NULL;
 }
 
-static char *
+static const char *
 set_cache_maxex(cmd_parms *parms, void *dummy, char *arg)
 {
     proxy_server_conf *psf =
@@ -387,7 +385,7 @@ set_cache_maxex(cmd_parms *parms, void *dummy, char *arg)
     return NULL;
 }
 
-static char *
+static const char *
 set_cache_defex(cmd_parms *parms, void *dummy, char *arg)
 {
     proxy_server_conf *psf =
@@ -399,7 +397,7 @@ set_cache_defex(cmd_parms *parms, void *dummy, char *arg)
     return NULL;
 }
 
-static char *
+static const char *
 set_cache_gcint(cmd_parms *parms, void *dummy, char *arg)
 {
     proxy_server_conf *psf =
@@ -411,7 +409,7 @@ set_cache_gcint(cmd_parms *parms, void *dummy, char *arg)
     return NULL;
 }
 
-static char *
+static const char *
 set_cache_dirlevels(cmd_parms *parms, char *struct_ptr, char *arg)
 {
     proxy_server_conf *psf =
@@ -423,7 +421,7 @@ set_cache_dirlevels(cmd_parms *parms, char *struct_ptr, char *arg)
     return NULL;
 }
 
-static char *
+static const char *
 set_cache_dirlength(cmd_parms *parms, char *struct_ptr, char *arg)
 {
     proxy_server_conf *psf =
@@ -435,7 +433,7 @@ set_cache_dirlength(cmd_parms *parms, char *struct_ptr, char *arg)
     return NULL;
 }
 
-static char *
+static const char *
 set_cache_exclude(cmd_parms *parms, void *dummy, char *arg)
 {
     server_rec *s = parms->server;
