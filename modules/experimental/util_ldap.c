@@ -1080,7 +1080,7 @@ static const char *util_ldap_set_cert_auth(cmd_parms *cmd, void *dummy, const ch
                       "LDAP: SSL trusted certificate authority file - %s", 
                        file);
 
-    st->cert_auth_file = apr_pstrdup(cmd->pool, file);
+    st->cert_auth_file = ap_server_root_relative(cmd->pool, file);
 
     return(NULL);
 }
