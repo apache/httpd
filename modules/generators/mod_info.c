@@ -169,10 +169,11 @@ static info_cfg_lines *mod_info_load_config(apr_pool_t *p, const char *filename,
     configfile_t *fp;
     info_cfg_lines *new, *ret, *prev;
     const char *t;
+    apr_status_t rv;
 
-    fp = ap_pcfg_openfile(p, filename);
-    if (!fp) {
-        ap_log_rerror(APLOG_MARK, APLOG_WARNING, errno, r,
+    rv = ap_pcfg_openfile(&fp, p, filename);
+    if (rv != APR_SUCCESS) {
+        ap_log_rerror(APLOG_MARK, APLOG_WARNING, rv, r,
 		    "mod_info: couldn't open config file %s",
 		    filename);
         return NULL;
