@@ -129,6 +129,8 @@ Modules: <A HREF="mod/index-bytype.html">By Type</A> or
 </td></tr><tr><td>
 <a href="server-wide.html">Server-Wide Configuration</A>
 </td></tr><tr><td>
+<A HREF="logs.html">Log Files</A>
+</td></tr><tr><td>
 <A HREF="urlmapping.html">Mapping URLs to the Filesystem</A>
 </td></tr><tr><td>
 <A HREF="vhosts/">Virtual Hosts</A>
