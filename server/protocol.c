@@ -766,7 +766,7 @@ AP_DECLARE(void) ap_get_mime_headers_core(request_rec *r, apr_bucket_brigade *bb
         int folded = 0;
 
         field = NULL;
-        rv = ap_rgetline(&field, DEFAULT_LIMIT_REQUEST_FIELDSIZE + 2,
+        rv = ap_rgetline(&field, r->server->limit_req_fieldsize + 2,
                          &len, r, 0, bb);
 
         /* ap_rgetline returns APR_ENOSPC if it fills up the buffer before
