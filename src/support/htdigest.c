@@ -123,7 +123,7 @@ void interrupted()
     exit(1);
 }
 
-void main(int argc, char *argv[])
+int main(int argc, char *argv[])
 {
     FILE *tfp, *f;
     char user[MAX_STRING_LEN];
@@ -197,4 +197,5 @@ void main(int argc, char *argv[])
     sprintf(command, "cp %s %s", tn, argv[1]);
     system(command);
     unlink(tn);
+    exit(0);
 }

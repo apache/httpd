@@ -17,10 +17,10 @@
 #include <fcntl.h>
 #include <unistd.h>
 
-void main (int argc, char **argv)
+int main (int argc, char **argv)
 {
     char buf[BUFSIZE], buf2[MAX_PATH];
-    time_t tLogEnd;
+    time_t tLogEnd = 0;
     time_t tRotation;
     int nLogFD = -1;
     int nRead;
@@ -40,10 +40,10 @@ void main (int argc, char **argv)
 		argv[0]);
 #endif
 	fprintf(stderr,
-		"to httpd.conf. The generated name will be /some/where.nnnn ",
-		"where nnnn is the\nsystem time at which the log nominally ",
+		"to httpd.conf. The generated name will be /some/where.nnnn "
+		"where nnnn is the\nsystem time at which the log nominally "
 		"starts (N.B. this time will always be a\nmultiple of the "
-		"rotation time, so you can synchronize cron scripts with it).\n",
+		"rotation time, so you can synchronize cron scripts with it).\n"
 		"At the end of each rotation time a new log is started.\n");
 	exit(1);
     }
