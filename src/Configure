@@ -632,16 +632,6 @@ if grep "$STAT_MOD" Makefile > /dev/null; then
 fi
 
 #
-# Are they using dbm/db auth? If so, add DBM/DB library.
-#
-if grep mod_auth_dbm Makefile > /dev/null; then
-    LIBS="$LIBS $DBM_LIB"
-fi
-if grep mod_auth_db Makefile > /dev/null; then
-    LIBS="$LIBS $DB_LIB"
-fi
-
-#
 # Now HS's POSIX regex implementation if needed/wanted
 #
 if [ "$RULE_WANTHSREGEX" = "yes" ]; then
@@ -669,16 +659,35 @@ if [ "$RULE_SOCKS4" = "yes" ]; then
 fi
 
 #
-# FINALLY, finish building Makefile.config
+# FINALLY, finish (with the exception of LIBS) building Makefile.config
 #
 echo "CFLAGS1=$CFLAGS">> Makefile.config
 echo "INCLUDES1=$INCLUDES">> Makefile.config
-echo "LIBS1=$LIBS">> Makefile.config
 echo "LDFLAGS1=$LDFLAGS">> Makefile.config
 echo "BROKEN_BPRINTF_FLAGS=$OSBPRINTF">> Makefile.config
 echo "REGLIB=$REGLIB">> Makefile.config
 echo "RANLIB=$RANLIB">> Makefile.config
 echo "SHELL=$SHELL">> Makefile.config
+
+#
+# This would be the area to do any ./helpers/TestLib tests,
+# before we actually write LIBS to Makefile.config.
+# Punt for now...
+
+#
+# Are they using dbm/db auth? If so, add DBM/DB library.
+#
+if grep mod_auth_dbm Makefile > /dev/null; then
+    LIBS="$LIBS $DBM_LIB"
+fi
+if grep mod_auth_db Makefile > /dev/null; then
+    LIBS="$LIBS $DB_LIB"
+fi
+
+#
+# NOW we finish Makefile.config
+#
+echo "LIBS1=$LIBS">> Makefile.config
 echo >> Makefile.config
 echo "#### End of Configure created section ####">> Makefile.config
 
