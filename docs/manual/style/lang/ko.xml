@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="EUC-KR"?>
 <!DOCTYPE language [ <!ENTITY nbsp "&#160;"> ]>
-<!-- English Revision: 1.18 -->
+<!-- English Revision: 1.6.2.10 -->
 
 <!--
  Copyright 2003-2004 The Apache Software Foundation
@@ -43,7 +43,7 @@
         <!-- language link titles -->
         <message id="nativename">Korean</message>
 
-        <!-- Used for the moduleindex -->
+         <!-- Used for the moduleindex -->
         <message id="corefeatures">핵심 기능과 다중처리 모듈</message>
         <message id="othermodules">다른 모듈</message>
         <message id="obsoletemodules">이전 모듈</message>
@@ -99,7 +99,7 @@
 
         <!-- Used in headers and footers -->
         <message id="apachetitle">- Apache HTTP Server</message>
-        <message id="apachehttpserver">Apache HTTP Server Version 2.1</message>
+        <message id="apachehttpserver">Apache HTTP Server Version 2.0</message>
         <message id="apachedocalt">[APACHE DOCUMENTATION]</message>
         <message id="search">Google 검색</message> <!-- search button -->
         <message id="index">Index</message> <!-- deprecated -->
@@ -109,7 +109,7 @@
         <message id="apache">Apache</message>
         <message id="http-server">HTTP Server</message>
         <message id="documentation">Documentation</message>
-        <message id="version">Version 2.1</message>
+        <message id="version">Version 2.0</message>
 
         <!-- super menu -->
         <message id="modules">모듈</message>

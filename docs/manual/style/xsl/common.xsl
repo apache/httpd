@@ -325,10 +325,17 @@
                     <xsl:attribute name="rel">alternate</xsl:attribute>
                 </xsl:if>
                 <xsl:attribute name="title">
-                    <xsl:value-of select="document(concat('../lang/', .,
-                                                   '.xml'))
-                                          /language/messages/message
-                                          [@id='nativename']" />
+                    <xsl:choose>
+                    <xsl:when test=". != 'fr'"> <!-- no language file avail. -->
+                        <xsl:value-of select="document(concat('../lang/', .,
+                                                       '.xml'))
+                                              /language/messages/message
+                                              [@id='nativename']" />
+                    </xsl:when>
+                    <xsl:otherwise>
+                        <xsl:text>Fran&#231;ais</xsl:text>
+                    </xsl:otherwise>
+                    </xsl:choose>
                 </xsl:attribute>
 
                 &nbsp;

@@ -21,8 +21,8 @@
 <!-- ==================================================================== -->
 <project name="lang-targets">
 
-<target description="- builds all HTML files and nroff man pages" name="all" depends="de, en, es, fr, ja, ko, ru"/>
-<target description="- builds all zip download packages" name="zip-all" depends="zip-de, zip-en, zip-es, zip-fr, zip-ja, zip-ko, zip-ru"/>
+<target description="- builds all HTML files and nroff man pages" name="all" depends="de, en, es, ja, ko, ru"/>
+<target description="- builds all zip download packages" name="zip-all" depends="zip-de, zip-en, zip-es, zip-ja, zip-ko, zip-ru"/>
 
 <!-- German                                                               -->
 <!-- ==================================================================== -->
@@ -74,18 +74,6 @@
 </target>
 <target description="- builds the Spanish CHM file" name="chm-es">
     <chm.generic lang="es"/>
-</target>
-
-<!-- French                                                               -->
-<!-- ==================================================================== -->
-<property value=".xml.fr" name="inputext.fr"/>
-<property value=".html.fr" name="outputext.fr"/>
-
-<target description="- builds French HTML files" name="fr">
-    <html.generic lang="fr"/>
-</target>
-<target description="- builds the French zipped download package" name="zip-fr">
-    <zip.generic lang="fr"/>
 </target>
 
 <!-- Japanese                                                             -->
@@ -141,7 +129,6 @@
             <include name="**/*.xml.de"/>
             <include name="**/*.xml"/>
             <include name="**/*.xml.es"/>
-            <include name="**/*.xml.fr"/>
             <include name="**/*.xml.ja"/>
             <include name="**/*.xml.ko"/>
             <include name="**/*.xml.ru"/>
