@@ -58,23 +58,21 @@
 
 #ifndef APACHE_SCOREBOARD_H
 #define APACHE_SCOREBOARD_H
-
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-#ifndef WIN32
-#ifdef TPF
-#include <time.h>
-#else
-#include <sys/times.h>
+#ifdef HAVE_SYS_TIMES_H
 #include <sys/time.h>
-#endif /* TPF */
+#include <sys/times.h>
+#elif defined(TPF)
+#include <time.h>
 #endif
 
+#include "mpm_default.h"	/* For HARD_.*_LIMIT */
+#include "apr_thread_proc.h"
 
-/* The optimized timeout code only works if we're not using a scoreboard file
- */
+/*The optimized timeout code only works if we're not using a scoreboard file*/
 #if defined(AP_USE_MEM_BASED_SCOREBOARD)
 #define OPTIMIZE_TIMEOUTS
 #endif
@@ -98,7 +96,9 @@ extern "C" {
 #define SERVER_BUSY_LOG 6	/* Logging the request */
 #define SERVER_BUSY_DNS 7	/* Looking up a hostname */
 #define SERVER_GRACEFUL 8	/* server is gracefully finishing request */
-#define SERVER_NUM_STATUS 9	/* number of status settings */
+#define SERVER_ACCEPTING 9	/* thread is accepting connections */
+#define SERVER_QUEUEING	10      /* thread is putting connection on the queue */
+#define SERVER_NUM_STATUS 11	/* number of status settings */
 
 /* A "virtual time" is simply a counter that indicates that a child is
  * making progress.  The parent checks up on each child, and when they have
@@ -138,12 +138,13 @@ typedef unsigned vtime_t;
  */
 typedef int ap_generation_t;
 
-/* stuff which the children generally write, and the parent mainly reads */
+/* stuff which is thread/process specific */
 typedef struct {
 #ifdef OPTIMIZE_TIMEOUTS
     vtime_t cur_vtime;		/* the child's current vtime */
     unsigned short timeout_len;	/* length of the timeout */
 #endif
+    int thread_num;
     unsigned char status;
     unsigned long access_count;
     unsigned long bytes_served;
@@ -173,15 +174,16 @@ typedef struct {
 /* stuff which the parent generally writes and the children rarely read */
 typedef struct {
     pid_t pid;
+    ap_generation_t generation;	/* generation of this child */
+    int worker_threads;
 #ifdef OPTIMIZE_TIMEOUTS
     time_t last_rtime;		/* time(0) of the last change */
     vtime_t last_vtime;		/* the last vtime the parent has seen */
 #endif
-    ap_generation_t generation;	/* generation of this child */
 } parent_score;
 
 typedef struct {
-    short_score servers[HARD_SERVER_LIMIT];
+    short_score servers[HARD_SERVER_LIMIT][HARD_THREAD_LIMIT];
     parent_score parent[HARD_SERVER_LIMIT];
     global_score global;
 } scoreboard;
@@ -190,35 +192,48 @@ typedef struct {
 #define VALUE_LENGTH 64
 typedef struct {
     char key[KEY_LENGTH];
-    char value[VALUE_LENGTH];                                                   } status_table_entry;
+    char value[VALUE_LENGTH];
+} status_table_entry;
 
 #define STATUSES_PER_CONNECTION 10
 
 typedef struct {
     status_table_entry
-        table[HARD_SERVER_LIMIT][STATUSES_PER_CONNECTION];
+        table[HARD_SERVER_LIMIT*HARD_THREAD_LIMIT][STATUSES_PER_CONNECTION];
 } new_scoreboard;
 
 #define SCOREBOARD_SIZE		sizeof(scoreboard)
-#define NEW_SCOREBOARD_SIZE		sizeof(new_scoreboard)
+#define NEW_SCOREBOARD_SIZE	sizeof(new_scoreboard)
 #ifdef TPF
 #define SCOREBOARD_NAME		"SCOREBRD"
 #define SCOREBOARD_FRAMES		SCOREBOARD_SIZE/4095 + 1
 #endif
 
-AP_DECLARE(void) ap_sync_scoreboard_image(void);
 AP_DECLARE(int) ap_exists_scoreboard_image(void);
+void reinit_scoreboard(apr_pool_t *p);
+apr_status_t ap_cleanup_shared_mem(void *d);
+AP_DECLARE(void) ap_sync_scoreboard_image(void);
+
+AP_DECLARE(void) reopen_scoreboard(apr_pool_t *p);
+
+apr_inline void ap_sync_scoreboard_image(void);
+void increment_counts(int child_num, int thread_num, request_rec *r);
+void update_scoreboard_global(void);
+AP_DECLARE(int) find_child_by_pid(apr_proc_t *pid);
+int ap_update_child_status(int child_num, int thread_num, int status, request_rec *r);
+void ap_time_process_request(int child_num, int thread_num, int status);
+
 
 AP_DECLARE_DATA extern scoreboard *ap_scoreboard_image;
+AP_DECLARE_DATA extern const char *ap_scoreboard_fname;
+AP_DECLARE_DATA extern int ap_extended_status;
+AP_DECLARE_DATA apr_time_t ap_restart_time;
 
 AP_DECLARE_DATA extern ap_generation_t volatile ap_my_generation;
 
 /* for time_process_request() in http_main.c */
 #define START_PREQUEST 1
 #define STOP_PREQUEST  2
-
-int ap_update_child_status(int child_num, int status, request_rec *r);
-void ap_time_process_request(int child_num, int status);
 
 #ifdef __cplusplus
 }

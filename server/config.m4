@@ -49,3 +49,7 @@ dnl ## Check for library functions
 AC_CHECK_FUNCS(
 syslog \
 )
+
+dnl Obsolete scoreboard code uses this.
+    AC_CHECK_HEADERS(sys/times.h)
+    AC_CHECK_FUNCS(times)

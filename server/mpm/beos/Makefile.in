@@ -1,5 +1,5 @@
 
 LTLIBRARY_NAME    = libbeos.la
-LTLIBRARY_SOURCES = beos.c scoreboard.c
+LTLIBRARY_SOURCES = beos.c 
 
 include $(top_srcdir)/build/ltlib.mk

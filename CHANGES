@@ -1,5 +1,8 @@
 Changes with Apache 2.0b1
 
+  *) Make mod_status work with 2.0.  This will work for prefork,
+     mpmt_pthread, and dexter.  [Ryan Bloom]
+
   *) Correct a typo in httpd.conf.
      [Kunihiro Tanaka <tanaka@apache.or.jp>] PR#7154 
 

@@ -64,9 +64,10 @@
 #include "http_request.h"
 #include "http_protocol.h"
 #include "ap_mpm.h"
-#include "mpm_status.h"
+#include "mpm_default.h"
 #include "http_config.h"
 #include "http_vhost.h"
+#include "scoreboard.h"
 #include "http_log.h"
 #include "util_filter.h"
 
@@ -240,26 +241,26 @@ AP_CORE_DECLARE_NONSTD(int) ap_process_http_connection(conn_rec *c)
      * until no requests are left or we decide to close.
      */
 
-    ap_update_connection_status(c->id, "Status", "Reading");
+    ap_update_child_status(AP_CHILD_THREAD_FROM_ID(c->id), SERVER_BUSY_READ, NULL);
     while ((r = ap_read_request(c)) != NULL) {
 
 	/* process the request if it was read without error */
 
-        ap_update_connection_status(c->id, "Status", "Writing");
+        ap_update_child_status(AP_CHILD_THREAD_FROM_ID(c->id), SERVER_BUSY_WRITE, NULL); 
 	if (r->status == HTTP_OK)
 	    ap_process_request(r);
 
 	if (!c->keepalive || c->aborted)
 	    break;
 
-        ap_update_connection_status(c->id, "Status", "Keepalive");
+        ap_update_child_status(AP_CHILD_THREAD_FROM_ID(c->id), SERVER_BUSY_KEEPALIVE, NULL);
 	apr_destroy_pool(r->pool);
 
 	if (ap_graceful_stop_signalled())
             break;
     }
 
-    ap_reset_connection_status(c->id);
+    ap_update_child_status(AP_CHILD_THREAD_FROM_ID(c->id), SERVER_READY, NULL);
     return OK;
 }
 

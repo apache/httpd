@@ -7,7 +7,4 @@ if test "$MPM_NAME" = "mpmt_pthread" ; then
 
     APACHE_MPM_PTHREAD
 
-dnl Obsolete scoreboard code uses this.
-    AC_CHECK_HEADERS(sys/times.h)
-    AC_CHECK_FUNCS(times)
 fi

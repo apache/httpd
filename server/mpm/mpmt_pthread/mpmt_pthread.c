@@ -94,13 +94,10 @@
 int ap_threads_per_child=0;         /* Worker threads per child */
 int ap_max_requests_per_child=0;
 static const char *ap_pid_fname=NULL;
-AP_DECLARE_DATA const char *ap_scoreboard_fname=NULL;
 static int ap_daemons_to_start=0;
 static int min_spare_threads=0;
 static int max_spare_threads=0;
 static int ap_daemons_limit=0;
-static time_t ap_restart_time=0;
-AP_DECLARE_DATA int ap_extended_status = 0;
 static int workers_may_exit = 0;
 static int requests_this_child;
 static int num_listensocks = 0;
@@ -807,7 +804,7 @@ static void perform_idle_server_maintenance(void)
 {
     int i, j;
     int idle_thread_count;
-    thread_score *ss;
+    short_score *ss;
     time_t now = 0;
     int free_length;
     int free_slots[MAX_SPAWN_RATE];
@@ -933,7 +930,6 @@ static void server_main_loop(int remaining_children_to_start)
             /* non-fatal death... note that it's gone in the scoreboard. */
             child_slot = find_child_by_pid(&pid);
             if (child_slot >= 0) {
-                ap_mpmt_pthread_force_reset_connection_status(child_slot);
                 for (i = 0; i < ap_threads_per_child; i++)
                     ap_update_child_status(child_slot, i, SERVER_DEAD, (request_rec *) NULL);
                 
