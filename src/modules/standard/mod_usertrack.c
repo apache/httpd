@@ -50,7 +50,7 @@
  *
  */
 
-/* $Id: mod_usertrack.c,v 1.2 1996/10/31 00:13:23 brian Exp $ */
+/* $Id: mod_usertrack.c,v 1.3 1996/11/01 14:45:58 mjc Exp $ */
 
 /* User Tracking Module (Was mod_cookies.c)
  *
@@ -123,7 +123,8 @@ void make_cookie(request_rec *r)
     cookie_log_state *cls = get_module_config (r->server->module_config,
 					       &usertrack_module);
     struct timeval tv;
-    char new_cookie[100];	/* blurgh */
+    char *new_cookie = palloc( r->pool, 100);	/* 100 = blurgh */
+    char *cookiebuf = palloc( r->pool, 100);
     char *dot;
     const char *rname = pstrdup(r->pool, 
 		       	    get_remote_host(r->connection, r->per_dir_config,
@@ -133,6 +134,9 @@ void make_cookie(request_rec *r)
 
     if ((dot = strchr(rname,'.'))) *dot='\0';	/* First bit of hostname */
     gettimeofday(&tv, &tz);
+
+    sprintf(cookiebuf, "%s%d%ld%d", rname, (int)getpid(),
+	      (long)tv.tv_sec, (int)tv.tv_usec/1000);	    
 
     if (cls->expires) {
       static const char *const days[7]=
@@ -153,20 +157,17 @@ void make_cookie(request_rec *r)
 
       /* Cookie with date; as strftime '%a, %d-%h-%y %H:%M:%S GMT' */
       sprintf(new_cookie,
-	   "%s%s%d%ld%d; path=/; expires=%s, %.2d-%s-%.2d %.2d:%.2d:%.2d GMT",
-	      COOKIE_NAME, rname, (int)getpid(),  
-	      (long)tv.tv_sec, (int)tv.tv_usec/1000, days[tms->tm_wday],
+	   "%s%s; path=/; expires=%s, %.2d-%s-%.2d %.2d:%.2d:%.2d GMT",
+	      COOKIE_NAME, cookiebuf, days[tms->tm_wday],
 	      tms->tm_mday, month_snames[tms->tm_mon],
 	      (tms->tm_year >= 100) ? tms->tm_year - 100 : tms->tm_year,
 	      tms->tm_hour, tms->tm_min, tms->tm_sec);
     }
     else
-      sprintf(new_cookie,"%s%s%d%ld%d; path=/",
-	      COOKIE_NAME, rname,
-	      (int)getpid(),  
-	      (long)tv.tv_sec, (int)tv.tv_usec/1000 );
+      sprintf(new_cookie,"%s%s; path=/", COOKIE_NAME, cookiebuf);
 
     table_set(r->headers_out,"Set-Cookie",new_cookie);
+    table_set(r->notes, "cookie", cookiebuf); /* log first time */
     return;
 }
 
