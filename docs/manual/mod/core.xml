@@ -1704,6 +1704,23 @@ hosting</description>
  
 <example>NameVirtualHost [fe80::a00:20ff:fea7:ccea]:8080</example>
 
+    <p>To receive requests on all interfaces, you can use an argument of
+    *</p>
+
+<example>NameVirtualHost *</example>
+
+<note><title>Argument to &lt;VirtualHost&gt; directive</title>
+<p>Note that the argument to the &lt;VirtualHost&gt; directive must exactly
+match the argument to the <directive>NameVirtualHost</directive>
+directive.</p>
+<example>
+NameVirtualHost 1.2.3.4<br />
+&lt;VirtualHost 1.2.3.4&gt;<br />
+...<br />
+&lt;/VirtualHost&gt;<br />
+</example>
+</note>
+
 </usage>
 
 <seealso>See also: <a href="../vhosts/">Virtual Hosts

@@ -1198,6 +1198,23 @@ hosting</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" cl
  
 <blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>NameVirtualHost [fe80::a00:20ff:fea7:ccea]:8080</code></td></tr></table></blockquote>
 
+    <p>To receive requests on all interfaces, you can use an argument of
+    *</p>
+
+<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>NameVirtualHost *</code></td></tr></table></blockquote>
+
+<blockquote><table><tr><td bgcolor="#e0e5f5"><p align="center"><strong>Argument to &lt;VirtualHost&gt; directive</strong></p>
+<p>Note that the argument to the &lt;VirtualHost&gt; directive must exactly
+match the argument to the <code class="directive">NameVirtualHost</code>
+directive.</p>
+<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>
+NameVirtualHost 1.2.3.4<br>
+&lt;VirtualHost 1.2.3.4&gt;<br>
+...<br>
+&lt;/VirtualHost&gt;<br>
+</code></td></tr></table></blockquote>
+</td></tr></table></blockquote>
+
 <p><strong>See also </strong></p><ul><li>See also: <a href="../vhosts/">Virtual Hosts
 documentation</a></li></ul><hr/><h2><a name="Options">Options</a> <a name="options">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: </strong></td><td>Configures what features are available in a particular
 directory</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td>Options
