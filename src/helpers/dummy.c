@@ -1,7 +1,7 @@
 /* this file is used by TestLib */
 int foo ( const char *c )
 {
-return 0;
+return *c;
 }
 int main(void) {
     const char *c = '\0';

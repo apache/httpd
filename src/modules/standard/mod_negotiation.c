@@ -1895,7 +1895,7 @@ static void set_neg_headers(request_rec *r, negotiation_state *neg,
                 vary_by_charset = 1;
             }
         }
-        if ((len = (long) find_content_length(neg, variant)) != 0) {
+        if ((len = find_content_length(neg, variant)) != 0) {
             ap_snprintf(lenstr, sizeof(lenstr), "%ld", len);
             rec = pstrcat(r->pool, rec, " {length ", lenstr, "}", NULL);
         }

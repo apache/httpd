@@ -635,12 +635,16 @@ static char *find_title(request_rec *r)
 		    if ((p = ind(&titlebuf[++x], '<')) != -1)
 			titlebuf[x + p] = '\0';
 		    /* Scan for line breaks for Tanmoy's secretary */
-		    for (y = x; titlebuf[y]; y++)
-			if ((titlebuf[y] == CR) || (titlebuf[y] == LF))
-			    if (y == x)
+		    for (y = x; titlebuf[y]; y++) {
+			if ((titlebuf[y] == CR) || (titlebuf[y] == LF)) {
+			    if (y == x) {
 				x++;
-			    else
+			    }
+			    else {
 				titlebuf[y] = ' ';
+			    }
+			}
+		    }
 		    pfclose(r->pool, thefile);
 		    return pstrdup(r->pool, &titlebuf[x]);
 		}

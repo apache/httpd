@@ -426,7 +426,7 @@ boolean_e add_dp, int precision, bool_int *is_negative, char *buf, int *len)
 	return (buf);
     }
 
-    if (format == 'f')
+    if (format == 'f') {
 	if (decimal_point <= 0) {
 	    *s++ = '0';
 	    if (precision > 0) {
@@ -443,6 +443,7 @@ boolean_e add_dp, int precision, bool_int *is_negative, char *buf, int *len)
 	    if (precision > 0 || add_dp)
 		*s++ = '.';
 	}
+    }
     else {
 	*s++ = *p++;
 	if (precision > 0 || add_dp)

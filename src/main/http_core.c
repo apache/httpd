@@ -690,11 +690,14 @@ const char *set_document_root (cmd_parms *cmd, void *dummy, char *arg)
     const char *err = check_cmd_context(cmd, NOT_IN_DIR_LOC_FILE|NOT_IN_LIMIT);
     if (err != NULL) return err;
 
-    if (!is_directory (arg))
-	if (cmd->server->is_virtual)
+    if (!is_directory (arg)) {
+	if (cmd->server->is_virtual) {
 	    fprintf (stderr, "Warning: DocumentRoot [%s] does not exist\n", arg);
-	else
+	}
+	else {
 	    return "DocumentRoot must be a directory";
+	}
+    }
     
     conf->document_root = arg;
     return NULL;
@@ -1551,11 +1554,14 @@ static void set_rlimit(cmd_parms *cmd, struct rlimit **plimit, const char *arg,
 	return;
     }
 
-    if ((str = getword_conf(cmd->pool, &arg)))
-	if (!strcasecmp(str, "max"))
+    if ((str = getword_conf(cmd->pool, &arg))) {
+	if (!strcasecmp(str, "max")) {
 	    cur = limit->rlim_max;
-	else
+	}
+	else {
 	    cur = atol(str);
+	}
+    }
     else {
 	aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, cmd->server,
 		    "Invalid parameters for %s", cmd->cmd->name);
