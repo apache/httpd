@@ -1020,13 +1020,12 @@ PROXY_DECLARE(apr_status_t) ap_proxy_string_read(conn_rec *c, apr_bucket_brigade
                                                 &zero /* readline */))) {
             return rv;
         }
-        if (APR_BRIGADE_EMPTY(bb)) {
-            /* The connection aborted or timed out */
-            return APR_TIMEUP;
-        }
-
         /* loop through each bucket */
         while (!found) {
+            if (*eos || APR_BRIGADE_EMPTY(bb)) {
+                /* The connection aborted or timed out */
+                return APR_ECONNABORTED;
+            }
             e = APR_BRIGADE_FIRST(bb);
             if (APR_BUCKET_IS_EOS(e)) {
                 *eos = 1;
