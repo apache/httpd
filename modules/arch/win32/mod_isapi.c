@@ -150,7 +150,7 @@ int isapi_handler (request_rec *r)
     if (r->finfo.protection == 0)
             return NOT_FOUND;
 
-    if (S_ISDIR(r->finfo.protection))
+    if (r->finfo.filetype == APR_DIR)
             return FORBIDDEN;
 
     /* Load the module */
@@ -543,7 +543,7 @@ BOOL WINAPI ServerSupportFunction (HCONN hConn, DWORD dwHSERequest,
 
             /* IIS puts a trailing slash on directories, Apache doesn't */
 
-            if (S_ISDIR (subreq->finfo.protection)) {
+            if (subreq->finfo.filetype == APR_DIR) {
                     int l = strlen((char *)lpvBuffer);
 
                     ((char *)lpvBuffer)[l] = '\\';
