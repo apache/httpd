@@ -95,7 +95,7 @@ static void CaseFilterInInsertFilter(request_rec *r)
     if(!pConfig->bEnabled)
         return;
 
-    ap_add_input_filter(s_szCaseFilterName,NULL,r,NULL);
+    ap_add_input_filter(s_szCaseFilterName,NULL,r,r->connection);
 }
 
 static apr_status_t CaseFilterInFilter(ap_filter_t *f,
