@@ -124,7 +124,7 @@ uses</a></li>
     <p>In addition to a the set of active child processes, there may 
     be additional child processes which are terminating but where at
     least one server thread is still handling an existing client
-    connection.  Up to <code class="directive"><a href="../mod/mpm_common.html#maxclient">MaxClient</a></code> terminating processes 
+    connection.  Up to <code class="directive"><a href="../mod/mpm_common.html#maxclients">MaxClients</a></code> terminating processes 
     may be present, though the actual number can be expected to be 
     much smaller.  This behavior can be avoided by disabling the 
     termination of individual child processes, which is achieved by 
