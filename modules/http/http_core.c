@@ -2519,12 +2519,12 @@ static int default_handler(request_rec *r)
 	
 #if defined(OS2) || defined(WIN32)
     /* Need binary mode for OS/2 */
-    f = ap_pfopen(r->pool, r->filename, "rb");
+    fd = ap_popenf(r->pool, r->filename, O_RDONLY | O_BINARY, 0);
 #else
-    f = ap_pfopen(r->pool, r->filename, "r");
+    fd = ap_popenf(r->pool, r->filename, O_RDONLY, 0);
 #endif
 
-    if (f == NULL) {
+    if (fd == -1) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, r,
 		     "file permissions deny server access: %s", r->filename);
         return FORBIDDEN;
@@ -2536,6 +2536,7 @@ static int default_handler(request_rec *r)
     ap_table_setn(r->headers_out, "Accept-Ranges", "bytes");
     if (((errstatus = ap_meets_conditions(r)) != OK)
 	|| (errstatus = ap_set_content_length(r, r->finfo.st_size))) {
+        ap_pclosef(r->pool, fd);
         return errstatus;
     }
 
@@ -2546,7 +2547,7 @@ static int default_handler(request_rec *r)
 	/* we need to protect ourselves in case we die while we've got the
  	 * file mmapped */
 	mm = mmap(NULL, r->finfo.st_size, PROT_READ, MAP_PRIVATE,
-		  fileno(f), 0);
+		  fd, 0);
 	if (mm == (caddr_t)-1) {
 	    ap_log_rerror(APLOG_MARK, APLOG_CRIT, r,
 			 "default_handler: mmap failed: %s", r->filename);
@@ -2570,12 +2571,12 @@ static int default_handler(request_rec *r)
 	convert_flag = ap_checkconv(r);
 	if (d->content_md5 & 1) {
 	    ap_table_setn(r->headers_out, "Content-MD5",
-			  ap_md5digest(r->pool, f, convert_flag));
+			  ap_md5digest(r->pool, fd, convert_flag));
 	}
 #else
 	if (d->content_md5 & 1) {
 	    ap_table_setn(r->headers_out, "Content-MD5",
-			  ap_md5digest(r->pool, f));
+			  ap_md5digest(r->pool, fd));
 	}
 #endif /* CHARSET_EBCDIC */
 
@@ -2585,23 +2586,19 @@ static int default_handler(request_rec *r)
 	
 	if (!r->header_only) {
 	    if (!rangestatus) {
-		ap_send_fd(f, r);
+		ap_send_fd(fd, r);
 	    }
 	    else {
 		long offset, length;
 		while (ap_each_byterange(r, &offset, &length)) {
-		    /*
-		     * Non zero returns are more portable than checking
-		     * for a return of -1.
-		     */
-		    if (fseek(f, offset, SEEK_SET)) {
-			ap_log_error(APLOG_MARK, APLOG_ERR, r->server,
-			      "Failed to fseek for byterange (%ld, %ld)",
-			      offset, length);
+		    /* ZZZ change to AP func */
+		    if (lseek(fd, offset, SEEK_SET) == -1) {
+		        ap_log_error(APLOG_MARK, APLOG_ERR, r->server,
+				  "error byteserving file: %s", r->filename);
+			ap_pclosef(r->pool, fd);
+			return HTTP_INTERNAL_SERVER_ERROR;
 		    }
-		    else {
-			ap_send_fd_length(f, r, length);
-		    }
+		    ap_send_fd_length(fd, r, length);
 		}
 	    }
 	}
@@ -2642,7 +2639,7 @@ static int default_handler(request_rec *r)
     }
 #endif
 
-    ap_pfclose(r->pool, f);
+    ap_pclosef(r->pool, fd);
     return OK;
 }
 

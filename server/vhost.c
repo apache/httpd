@@ -413,16 +413,18 @@ static ipaddr_chain *find_default_server(unsigned port)
 }
 
 
-static void dump_vhost_config(FILE *f)
+static void dump_vhost_config(APRFile fd)
 {
     int i;
     ipaddr_chain *ic;
     name_chain *nc;
     char buf[MAX_STRING_LEN];
+    FILE * f = fdopen(fd, "w");
 
     fprintf(f, "VirtualHost configuration:\n");
     for (i = 0; i < IPHASH_TABLE_SIZE; ++i) {
 	for (ic = iphash_table[i]; ic; ic = ic->next) {
+	  /* ZZZ should we change the Net addr to a string for this? */
 	    if (ic->sar->host_port == 0) {
 		ap_snprintf(buf, sizeof(buf), "%pA:*", &ic->sar->host_addr);
 	    }
