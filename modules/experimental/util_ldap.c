@@ -1188,9 +1188,9 @@ static int util_ldap_post_config(apr_pool_t *p, apr_pool_t *plog,
 #if APR_HAS_SHARED_MEMORY
         /* If the cache file already exists then delete it.  Otherwise we are
          * going to run into problems creating the shared memory. */
-        apr_file_remove(st->cache_file, ptemp);
         if (st->cache_file) {
             char *lck_file = apr_pstrcat (st->pool, st->cache_file, ".lck", NULL);
+            apr_file_remove(st->cache_file, ptemp);
             apr_file_remove(lck_file, ptemp);
         }
 #endif
