@@ -1,6 +1,6 @@
 Changes with Apache 2.0.26-dev
 
-  *) Allow ApacheBench to connect to and control Apache on other 
+  *) Allow ApacheMonitor to connect to and control Apache on other 
      WinNT/2K machines.   [Mladen Turk <mturk@mappingsoft.com>]
 
   *) Remove the Port directive.  In it's place, the Listen directive
