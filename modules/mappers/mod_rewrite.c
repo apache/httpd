@@ -604,8 +604,8 @@ static const char *cmd_rewritecond(cmd_parms *cmd, void *in_dconf,
         know if the regex should be compiled with ICASE!) */
     newcond->flags = CONDFLAG_NONE;
     if (a3 != NULL) {
-        if ((err = cmd_rewritecond_parseflagfield(cmd->pool, newcond,
-                                                  a3)) != NULL) {
+        if ((err = cmd_parseflagfield(cmd->pool, newcond, a3,
+                                      cmd_rewritecond_setflag)) != NULL) {
             return err;
         }
     }
@@ -640,62 +640,11 @@ static const char *cmd_rewritecond(cmd_parms *cmd, void *in_dconf,
     return NULL;
 }
 
-static const char *cmd_rewritecond_parseflagfield(apr_pool_t *p,
-                                                  rewritecond_entry *cfg,
-                                                  char *str)
-{
-    char *cp;
-    char *cp1;
-    char *cp2;
-    char *cp3;
-    char *key;
-    char *val;
-    const char *err;
-
-    if (str[0] != '[' || str[strlen(str)-1] != ']') {
-        return "RewriteCond: bad flag delimiters";
-    }
-
-    cp = str+1;
-    str[strlen(str)-1] = ','; /* for simpler parsing */
-    for ( ; *cp != '\0'; ) {
-        /* skip whitespaces */
-        for ( ; (*cp == ' ' || *cp == '\t') && *cp != '\0'; cp++)
-            ;
-        if (*cp == '\0') {
-            break;
-        }
-        cp1 = cp;
-        if ((cp2 = strchr(cp, ',')) != NULL) {
-            cp = cp2+1;
-            for ( ; (*(cp2-1) == ' ' || *(cp2-1) == '\t'); cp2--)
-                ;
-            *cp2 = '\0';
-            if ((cp3 = strchr(cp1, '=')) != NULL) {
-                *cp3 = '\0';
-                key = cp1;
-                val = cp3+1;
-            }
-            else {
-                key = cp1;
-                val = "";
-            }
-            if ((err = cmd_rewritecond_setflag(p, cfg, key, val)) != NULL) {
-                return err;
-            }
-        }
-        else {
-            break;
-        }
-    }
-
-    return NULL;
-}
-
-static const char *cmd_rewritecond_setflag(apr_pool_t *p,
-                                           rewritecond_entry *cfg,
+static const char *cmd_rewritecond_setflag(apr_pool_t *p, void *_cfg,
                                            char *key, char *val)
 {
+    rewritecond_entry *cfg = _cfg;
+
     if (   strcasecmp(key, "nocase") == 0
         || strcasecmp(key, "NC") == 0    ) {
         cfg->flags |= CONDFLAG_NOCASE;
@@ -749,8 +698,8 @@ static const char *cmd_rewriterule(cmd_parms *cmd, void *in_dconf,
     newrule->cookie[0] = NULL;
     newrule->skip   = 0;
     if (a3 != NULL) {
-        if ((err = cmd_rewriterule_parseflagfield(cmd->pool, newrule,
-                                                  a3)) != NULL) {
+        if ((err = cmd_parseflagfield(cmd->pool, newrule, a3,
+                                      cmd_rewriterule_setflag)) != NULL) {
             return err;
         }
     }
@@ -801,62 +750,10 @@ static const char *cmd_rewriterule(cmd_parms *cmd, void *in_dconf,
     return NULL;
 }
 
-static const char *cmd_rewriterule_parseflagfield(apr_pool_t *p,
-                                                  rewriterule_entry *cfg,
-                                                  char *str)
-{
-    char *cp;
-    char *cp1;
-    char *cp2;
-    char *cp3;
-    char *key;
-    char *val;
-    const char *err;
-
-    if (str[0] != '[' || str[strlen(str)-1] != ']') {
-        return "RewriteRule: bad flag delimiters";
-    }
-
-    cp = str+1;
-    str[strlen(str)-1] = ','; /* for simpler parsing */
-    for ( ; *cp != '\0'; ) {
-        /* skip whitespaces */
-        for ( ; (*cp == ' ' || *cp == '\t') && *cp != '\0'; cp++)
-            ;
-        if (*cp == '\0') {
-            break;
-        }
-        cp1 = cp;
-        if ((cp2 = strchr(cp, ',')) != NULL) {
-            cp = cp2+1;
-            for ( ; (*(cp2-1) == ' ' || *(cp2-1) == '\t'); cp2--)
-                ;
-            *cp2 = '\0';
-            if ((cp3 = strchr(cp1, '=')) != NULL) {
-                *cp3 = '\0';
-                key = cp1;
-                val = cp3+1;
-            }
-            else {
-                key = cp1;
-                val = "";
-            }
-            if ((err = cmd_rewriterule_setflag(p, cfg, key, val)) != NULL) {
-                return err;
-            }
-        }
-        else {
-            break;
-        }
-    }
-
-    return NULL;
-}
-
-static const char *cmd_rewriterule_setflag(apr_pool_t *p,
-                                           rewriterule_entry *cfg,
+static const char *cmd_rewriterule_setflag(apr_pool_t *p, void *_cfg,
                                            char *key, char *val)
 {
+    rewriterule_entry *cfg = _cfg;
     int status = 0;
     int i = 0;
 
@@ -1004,6 +901,60 @@ static const char *cmd_rewriterule_setflag(apr_pool_t *p,
     return NULL;
 }
 
+static const char *cmd_parseflagfield(apr_pool_t *p, void *cfg, char *key,
+                                      const char *(*parse)(apr_pool_t *,
+                                                           void *,
+                                                           char *, char *))
+{
+    apr_size_t last = strlen(key) - 1;
+    char *val, *nextp, *endp;
+    const char *err;
+
+    if (*key != '[' || key[last] != ']') {
+        return "RewriteCond: bad flag delimiters";
+    }
+
+    key[last] = ','; /* for simpler parsing */
+    ++key;
+
+    while (*key) {
+        /* skip leading spaces */
+        while (apr_isspace(*key)) {
+            ++key;
+        }
+
+        if (!*key || (nextp = ap_strchr(key, ',')) == NULL) { /* NULL should not
+                                                               * happen, but ...
+                                                               */
+            break;
+        }
+
+        /* strip trailing spaces */
+        endp = nextp - 1;
+        while (apr_isspace(*endp)) {
+            --endp;
+        }
+        *++endp = '\0';
+
+        /* split key and val */
+        val = ap_strchr(key, '=');
+        if (val) {
+            *val++ = '\0';
+        }
+        else {
+            val = endp;
+        }
+
+        err = parse(p, cfg, key, val);
+        if (err) {
+            return err;
+        }
+
+        key = nextp + 1;
+    }
+
+    return NULL;
+}
 
 /*
 **

@@ -372,18 +372,16 @@ static const char *cmd_rewritebase(cmd_parms *cmd, void *dconf,
                                    const char *a1);
 static const char *cmd_rewritecond(cmd_parms *cmd, void *dconf,
                                    const char *str);
-static const char *cmd_rewritecond_parseflagfield(apr_pool_t *p,
-                                                  rewritecond_entry *new,
-                                                  char *str);
-static const char *cmd_rewritecond_setflag(apr_pool_t *p, rewritecond_entry *cfg,
+static const char *cmd_rewritecond_setflag(apr_pool_t *p, void *_cfg,
                                            char *key, char *val);
 static const char *cmd_rewriterule(cmd_parms *cmd, void *dconf,
                                    const char *str);
-static const char *cmd_rewriterule_parseflagfield(apr_pool_t *p,
-                                                  rewriterule_entry *new,
-                                                  char *str);
-static const char *cmd_rewriterule_setflag(apr_pool_t *p, rewriterule_entry *cfg,
+static const char *cmd_rewriterule_setflag(apr_pool_t *p, void *_cfg,
                                            char *key, char *val);
+static const char *cmd_parseflagfield(apr_pool_t *p, void *cfg, char *key,
+                                      const char *(*parse)(apr_pool_t *,
+                                                           void *,
+                                                           char *, char *));
 
     /* initialisation */
 static int pre_config(apr_pool_t *pconf,
