@@ -104,6 +104,8 @@ APR_HOOK_STRUCT(
 	    APR_HOOK_LINK(default_port)
 )
 
+AP_DECLARE_DATA ap_filter_rec_t *ap_old_write_func;
+
 /*
  * Builds the content-type that should be sent to the client from the
  * content-type specified.  The following rules are followed:
@@ -1064,7 +1066,7 @@ static apr_status_t buffer_output(request_rec *r,
 
     /* this will typically exit on the first test */
     for (f = r->output_filters; f != NULL; f = f->next)
-        if (strcasecmp("OLD_WRITE", f->frec->name) == 0)
+        if (ap_old_write_func == f->frec)
             break;
     if (f == NULL) {
         /* our filter hasn't been added yet */

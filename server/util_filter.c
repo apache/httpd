@@ -91,7 +91,7 @@ static apr_status_t filter_cleanup(void *ctx)
     return APR_SUCCESS;
 }
 
-static void register_filter(const char *name,
+static ap_filter_rec_t *register_filter(const char *name,
                             ap_filter_func filter_func,
                             ap_filter_type ftype,
                             apr_hash_t **reg_filter_set)
@@ -111,24 +111,25 @@ static void register_filter(const char *name,
 
     apr_pool_cleanup_register(FILTER_POOL, NULL, filter_cleanup, 
                               apr_pool_cleanup_null);
+    return frec;
 }
 
-AP_DECLARE(void) ap_register_input_filter(const char *name,
+AP_DECLARE(ap_filter_rec_t *) ap_register_input_filter(const char *name,
                                           ap_in_filter_func filter_func,
                                           ap_filter_type ftype)
 {
     ap_filter_func f;
     f.in_func = filter_func;
-    register_filter(name, f, ftype, &registered_input_filters);
+    return register_filter(name, f, ftype, &registered_input_filters);
 }                                                                    
 
-AP_DECLARE(void) ap_register_output_filter(const char *name,
+AP_DECLARE(ap_filter_rec_t *) ap_register_output_filter(const char *name,
                                            ap_out_filter_func filter_func,
                                            ap_filter_type ftype)
 {
     ap_filter_func f;
     f.out_func = filter_func;
-    register_filter(name, f, ftype, &registered_output_filters);
+    return register_filter(name, f, ftype, &registered_output_filters);
 }
 
 static ap_filter_t *add_any_filter(const char *name, void *ctx, 
