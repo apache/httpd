@@ -981,7 +981,7 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
                 apr_table_set(r->err_headers_out, wa, buf);
             } else {
                 ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
-                             "proxy: origin server sent 401 without w-a header");
+                             "proxy: origin server sent 401 without WWW-Authenticate header");
             }
         }
 
