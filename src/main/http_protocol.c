@@ -1540,14 +1540,29 @@ long send_fd_length(FILE *f, request_rec *r, long length)
         }
         o=0;
 	total_bytes_sent += n;
-	
-        while(n && !r->connection->aborted) {
-            w=bwrite(r->connection->client, &buf[o], n);
-	    if(w <= 0)
-		break;
-	    reset_timeout(r); /* reset timeout after successful write */
-            n-=w;
-	    o+=w;
+
+        while (n && !r->connection->aborted) {
+            w = bwrite(r->connection->client, &buf[o], n);
+            if (w > 0) {
+                reset_timeout(r); /* reset timeout after successful write */
+                n-=w;
+                o+=w;
+            }
+            else if (w < 0) {
+                if (r->connection->aborted)
+                    break;
+                else if (errno == EAGAIN)
+                    continue;
+                else {
+                    log_unixerr("send body lost connection to",
+                                get_remote_host(r->connection,
+                                    r->per_dir_config, REMOTE_NAME),
+                                NULL, r->server);
+                    bsetflag(r->connection->client, B_EOUT, 1);
+                    r->connection->aborted = 1;
+                    break;
+                }
+            }
         }
     }
     

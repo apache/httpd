@@ -99,11 +99,15 @@
 static void
 doerror(BUFF *fb, int err)
 {
+    int errsave = errno;  /* Save errno to prevent overwriting it below */
+
     if (err == B_RD)
 	fb->flags |= B_RDERR;
     else
 	fb->flags |= B_WRERR;
     if (fb->error != NULL) (*fb->error)(fb, err, fb->error_data);
+
+    errno = errsave;
 }
 
 /* Buffering routines */

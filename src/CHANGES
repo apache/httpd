@@ -1,5 +1,10 @@
 Changes with Apache 1.2
   
+  *) Fix problem with scripts not receiving a SIGPIPE when client drops
+     the connection (e.g., when user presses Stop).  Apache will now stop
+     trying to send a message body immediately after an error from write.
+     [Roy Fielding and Nathan Kurz] PR#335
+
   *) Fix graceful restart on architectures not using scoreboard files
      (it is still broken on scoreboard-file architectures).
      Eliminate many signal-related race conditions in both forms of
