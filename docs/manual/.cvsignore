@@ -5,3 +5,7 @@ build
 *.chm
 *.tex
 *.aux
+*.out
+*.log
+*.pdf
+*.toc
