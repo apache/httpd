@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:						-*-text-*-
-Last modified at [$Date: 2002/02/02 21:17:04 $]
+Last modified at [$Date: 2002/02/03 01:53:59 $]
 
 Release:
 
@@ -43,7 +43,7 @@ on related projects:
 RELEASE SHOWSTOPPERS:
     * 31 BETA STATUS:
         running on Daedalus since  02-Feb-2002 7:58 PST (need 3 days)
-        Compiles on : AIX, Solaris, FreeBSD 3.5, Win32
+        Compiles on : AIX, Solaris, FreeBSD 3.5, Win32, Linux 2.4
         for beta
             +1 : Justin, Ian, Jeff Trawick
             +0 : 
@@ -57,7 +57,7 @@ RELEASE SHOWSTOPPERS:
         problems with v31:
             * libtool/binbuild on AIX -- possible addition of patched 
                     binbuild.sh to 31-beta roll
-                +1: Ian
+                +1: Ian, Justin
                 +0:
                 -1:
             * hasn't run for 3 days on Daedalus 
