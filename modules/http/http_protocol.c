@@ -1023,7 +1023,7 @@ static int getline(char *s, int n, conn_rec *c, int fold)
 	 */
         if ((toss = ap_strchr_c(temp, ASCII_LF)) != NULL) { 
             length = toss - temp + 1;
-            e->split(e, length + (temp[length] == '\0' ? 1 : 0));
+            e->split(e, length + (temp[length] == '\0'));
             apr_cpystrn(pos, temp, length + 1);
 	    
             AP_BUCKET_REMOVE(e);
