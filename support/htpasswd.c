@@ -394,7 +394,7 @@ int main(int argc, const char * const argv[])
     char *user = NULL;
     char tn[] = "htpasswd.tmp.XXXXXX";
     char *dirname;
-    char scratch[MAX_STRING_LEN];
+    char *scratch, cp[MAX_STRING_LEN];
     int found = 0;
     int i;
     int alg = ALG_CRYPT;
@@ -533,11 +533,16 @@ int main(int argc, const char * const argv[])
         while (apr_file_gets(line, sizeof(line), fpw) == APR_SUCCESS) {
             char *colon;
 
-            if ((line[0] == '#') || (line[0] == '\0')) {
+            strcpy(cp, line);
+            scratch = cp;
+            while (apr_isspace(*scratch)) {
+                ++scratch;
+            }
+
+            if (!*scratch || (*scratch == '#')) {
                 putline(ftemp, line);
                 continue;
             }
-            strcpy(scratch, line);
             /*
              * See if this is our user.
              */
