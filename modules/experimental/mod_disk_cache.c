@@ -32,7 +32,7 @@ typedef struct disk_cache_object {
     char *tempfile;          /* temp file tohold the content */
 #if 0
     int dirlevels;              /* Number of levels of subdirectories */
-    int dirlength;            /* Length of subdirectory names */   
+    int dirlength;            /* Length of subdirectory names */
 #endif
     char *datafile;          /* name of file where the data will go */
     char *hdrsfile;          /* name of file where the hdrs will go */
@@ -40,7 +40,7 @@ typedef struct disk_cache_object {
     apr_time_t version;      /* update count of the file */
     apr_file_t *fd;          /* data file */
     apr_file_t *hfd;         /* headers file */
-    apr_off_t file_size;     /*  File size of the cached data file  */    
+    apr_off_t file_size;     /*  File size of the cached data file  */
 } disk_cache_object_t;
 
 /*
@@ -53,7 +53,7 @@ typedef struct disk_cache_object {
 #define DEFAULT_MIN_FILE_SIZE 1
 #define DEFAULT_MAX_FILE_SIZE 1000000
 #define DEFAULT_CACHE_SIZE 1000000
- 
+
 typedef struct {
     const char* cache_root;
     apr_size_t cache_root_len;
@@ -64,7 +64,7 @@ typedef struct {
     apr_time_t gcinterval;       /* garbage collection interval, in msec */
     int dirlevels;               /* Number of levels of subdirectories */
     int dirlength;               /* Length of subdirectory names */
-    int	expirychk;               /* true if expiry time is observed for cached files */
+    int        expirychk;               /* true if expiry time is observed for cached files */
     apr_size_t minfs;            /* minumum file size for cached files */
     apr_size_t maxfs;            /* maximum file size for cached files */
     apr_time_t mintm;            /* minimum time margin for caching files */
@@ -88,7 +88,7 @@ static apr_status_t read_body(cache_handle_t *h, apr_pool_t *p, apr_bucket_briga
  */
 #define CACHE_HEADER_SUFFIX ".header"
 #define CACHE_DATA_SUFFIX   ".data"
-static char *header_file(apr_pool_t *p, int dirlevels, int dirlength, 
+static char *header_file(apr_pool_t *p, int dirlevels, int dirlength,
                          const char *root, const char *name)
 {
     char *hashfile;
@@ -96,7 +96,7 @@ static char *header_file(apr_pool_t *p, int dirlevels, int dirlength,
     return apr_pstrcat(p, root, "/", hashfile, CACHE_HEADER_SUFFIX, NULL);
 }
 
-static char *data_file(apr_pool_t *p, int dirlevels, int dirlength, 
+static char *data_file(apr_pool_t *p, int dirlevels, int dirlength,
                        const char *root, const char *name)
 {
     char *hashfile;
@@ -115,7 +115,7 @@ static void mkdir_structure(disk_cache_conf *conf, char *file, apr_pool_t *pool)
             break;
         *p = '\0';
 
-        rv = apr_dir_make(file, 
+        rv = apr_dir_make(file,
                           APR_UREAD|APR_UWRITE|APR_UEXECUTE, pool);
         if (rv != APR_SUCCESS && !APR_STATUS_IS_EEXIST(rv)) {
             /* XXX */
@@ -160,18 +160,33 @@ static apr_status_t file_cache_el_final(cache_handle_t *h, request_rec *r)
 
         apr_file_close(dobj->fd);
         dobj->fd = NULL;
-       /* XXX log */
-   }
+        /* XXX log */
+    }
 
-   return APR_SUCCESS;
+    return APR_SUCCESS;
+}
+
+static apr_status_t file_cache_errorcleanup(disk_cache_object_t *dobj, request_rec *r)
+{
+    if (dobj->fd) {
+        apr_file_close(dobj->fd);
+        dobj->fd = NULL;
+    }
+    /* Remove the header file, the temporary body file, and a potential old body file */
+    apr_file_remove(dobj->hdrsfile, r->pool);
+    apr_file_remove(dobj->tempfile, r->pool);
+    apr_file_remove(dobj->datafile, r->pool);
+
+    /* Return non-APR_SUCCESS in order to have mod_cache remove the disk_cache filter */
+    return DECLINED;
 }
 
 
-/* These two functions get and put state information into the data 
- * file for an ap_cache_el, this state information will be read 
- * and written transparent to clients of this module 
+/* These two functions get and put state information into the data
+ * file for an ap_cache_el, this state information will be read
+ * and written transparent to clients of this module
  */
-static int file_cache_read_mydata(apr_file_t *fd, cache_info *info, 
+static int file_cache_read_mydata(apr_file_t *fd, cache_info *info,
                                   disk_cache_object_t *dobj)
 {
     apr_status_t rv;
@@ -207,7 +222,7 @@ static int file_cache_read_mydata(apr_file_t *fd, cache_info *info,
     info->request_time = ap_cache_hex2usec(urlbuff + offset);
     offset += (sizeof(info->expire)*2) + 1;
     info->response_time = ap_cache_hex2usec(urlbuff + offset);
-    
+
     /* check that we have the same URL */
     rv = apr_file_gets(&urlbuff[0], urllen, fd);
     if (rv != APR_SUCCESS) {
@@ -224,7 +239,7 @@ static int file_cache_read_mydata(apr_file_t *fd, cache_info *info,
     if (strcmp(urlbuff + 8, dobj->name) != 0) {
         return APR_EGENERAL;
     }
-    
+
     return APR_SUCCESS;
 }
 
@@ -241,7 +256,7 @@ static int file_cache_write_mydata(apr_file_t *fd , cache_handle_t *h, request_r
     char	responseHexS[sizeof(apr_time_t) * 2 + 1];
     cache_info *info = &(h->cache_obj->info);
     disk_cache_object_t *dobj = (disk_cache_object_t *) h->cache_obj->vobj;
-    
+
     if (!r->headers_out) {
         /* XXX log message */
         return 0;
@@ -275,11 +290,11 @@ static int file_cache_write_mydata(apr_file_t *fd , cache_handle_t *h, request_r
  */
 #define AP_TEMPFILE "/aptmpXXXXXX"
 static int create_entity(cache_handle_t *h, request_rec *r,
-                         const char *type, 
-                         const char *key, 
+                         const char *type,
+                         const char *key,
                          apr_off_t len)
-{ 
-    disk_cache_conf *conf = ap_get_module_config(r->server->module_config, 
+{
+    disk_cache_conf *conf = ap_get_module_config(r->server->module_config,
                                                  &disk_cache_module);
     apr_status_t rv;
     cache_object_t *obj;
@@ -294,10 +309,11 @@ static int create_entity(cache_handle_t *h, request_rec *r,
         return DECLINED;
     }
 
-    if (len < conf->minfs || len > conf->maxfs) {
+    /* If the Content-Length is still unknown, cache anyway */
+    if (len != -1 && (len < conf->minfs || len > conf->maxfs)) {
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
                      "cache_disk: URL %s failed the size check, "
-                     "or is incomplete", 
+                     "or is incomplete",
                      key);
         return DECLINED;
     }
@@ -315,7 +331,7 @@ static int create_entity(cache_handle_t *h, request_rec *r,
 
     /* open temporary file */
     dobj->tempfile = apr_pstrcat(r->pool, conf->cache_root, AP_TEMPFILE, NULL);
-    rv = apr_file_mktemp(&tmpfile, dobj->tempfile,  
+    rv = apr_file_mktemp(&tmpfile, dobj->tempfile,
                          APR_CREATE | APR_READ | APR_WRITE | APR_EXCL, r->pool);
 
     if (rv == APR_SUCCESS) {
@@ -344,7 +360,7 @@ static int open_entity(cache_handle_t *h, request_rec *r, const char *type, cons
 {
     apr_status_t rc;
     static int error_logged = 0;
-    disk_cache_conf *conf = ap_get_module_config(r->server->module_config, 
+    disk_cache_conf *conf = ap_get_module_config(r->server->module_config,
                                                  &disk_cache_module);
     char *data;
     char *headers;
@@ -371,9 +387,9 @@ static int open_entity(cache_handle_t *h, request_rec *r, const char *type, cons
         return DECLINED;
     }
 
-    data = data_file(r->pool, conf->dirlevels, conf->dirlength, 
+    data = data_file(r->pool, conf->dirlevels, conf->dirlength,
                      conf->cache_root, key);
-    headers = header_file(r->pool, conf->dirlevels, conf->dirlength, 
+    headers = header_file(r->pool, conf->dirlevels, conf->dirlength,
                           conf->cache_root, key);
 
     /* Open the data file */
@@ -406,7 +422,7 @@ static int open_entity(cache_handle_t *h, request_rec *r, const char *type, cons
     if (rc == APR_SUCCESS) {
         dobj->file_size = finfo.size;
     }
-    
+
     /* Read the bytes to setup the cache_info fields */
     rc = file_cache_read_mydata(hfd, info, dobj);
     if (rc != APR_SUCCESS) {
@@ -426,7 +442,7 @@ static int open_entity(cache_handle_t *h, request_rec *r, const char *type, cons
     return OK;
 }
 
-static int remove_entity(cache_handle_t *h) 
+static int remove_entity(cache_handle_t *h)
 {
     /* Null out the cache object pointer so next time we start from scratch  */
     h->cache_obj = NULL;
@@ -437,10 +453,10 @@ static int remove_entity(cache_handle_t *h)
  * Reads headers from a buffer and returns an array of headers.
  * Returns NULL on file error
  * This routine tries to deal with too long lines and continuation lines.
- * @@@: XXX: FIXME: currently the headers are passed thru un-merged. 
+ * @@@: XXX: FIXME: currently the headers are passed thru un-merged.
  * Is that okay, or should they be collapsed where possible?
  */
-static apr_status_t read_headers(cache_handle_t *h, request_rec *r) 
+static apr_status_t read_headers(cache_handle_t *h, request_rec *r)
 {
     apr_status_t rv;
     char urlbuff[1034];
@@ -451,19 +467,19 @@ static apr_status_t read_headers(cache_handle_t *h, request_rec *r)
     /* This case should not happen... */
     if (!dobj->fd || !dobj->hfd) {
         /* XXX log message */
-        return APR_NOTFOUND; 
+        return APR_NOTFOUND;
     }
 
     if(!r->headers_out) {
         r->headers_out = apr_table_make(r->pool, 20);
     }
-    
+
     /*
-     * Call routine to read the header lines/status line 
+     * Call routine to read the header lines/status line
      */
     ap_scan_script_header_err(r, dobj->hfd, NULL);
- 
-    apr_table_setn(r->headers_out, "Content-Type", 
+
+    apr_table_setn(r->headers_out, "Content-Type",
                    ap_make_content_type(r, r->content_type));
 
     rv = apr_file_gets(&urlbuff[0], urllen, dobj->hfd);           /* Read status  */
@@ -484,16 +500,16 @@ static apr_status_t read_headers(cache_handle_t *h, request_rec *r)
     }
 
     h->req_hdrs = apr_table_make(r->pool, 20);
-    
+
     /*
-     * Call routine to read the header lines/status line 
+     * Call routine to read the header lines/status line
      */
     tmp = r->err_headers_out;
     r->err_headers_out = h->req_hdrs;
     rv = apr_file_gets(&urlbuff[0], urllen, dobj->hfd);           /* Read status  */
     ap_scan_script_header_err(r, dobj->hfd, NULL);
     r->err_headers_out = tmp;
- 
+
     apr_file_close(dobj->hfd);
 
     ap_log_error(APLOG_MARK, APLOG_INFO, 0, r->server,
@@ -501,7 +517,7 @@ static apr_status_t read_headers(cache_handle_t *h, request_rec *r)
     return APR_SUCCESS;
 }
 
-static apr_status_t read_body(cache_handle_t *h, apr_pool_t *p, apr_bucket_brigade *bb) 
+static apr_status_t read_body(cache_handle_t *h, apr_pool_t *p, apr_bucket_brigade *bb)
 {
     apr_bucket *e;
     disk_cache_object_t *dobj = (disk_cache_object_t*) h->cache_obj->vobj;
@@ -517,7 +533,7 @@ static apr_status_t read_body(cache_handle_t *h, apr_pool_t *p, apr_bucket_briga
 
 static apr_status_t write_headers(cache_handle_t *h, request_rec *r, cache_info *info)
 {
-    disk_cache_conf *conf = ap_get_module_config(r->server->module_config, 
+    disk_cache_conf *conf = ap_get_module_config(r->server->module_config,
                                                  &disk_cache_module);
     apr_status_t rv;
     char *buf;
@@ -528,16 +544,16 @@ static apr_status_t write_headers(cache_handle_t *h, request_rec *r, cache_info 
 
     if (!hfd)  {
         if (!dobj->hdrsfile) {
-            dobj->hdrsfile = header_file(r->pool, 
-                                         conf->dirlevels, 
-                                         conf->dirlength, 
+            dobj->hdrsfile = header_file(r->pool,
+                                         conf->dirlevels,
+                                         conf->dirlength,
                                          conf->cache_root,
                                          h->cache_obj->key);
         }
-        
+
         /* This is flaky... we need to manage the cache_info differently */
         h->cache_obj->info = *info;
-        
+
         /* Remove old file with the same name. If remove fails, then
          * perhaps we need to create the directory tree where we are
          * about to write the new headers file.
@@ -572,10 +588,10 @@ static apr_status_t write_headers(cache_handle_t *h, request_rec *r, cache_info 
             buf = apr_pstrcat(r->pool, CRLF, NULL);
             amt = strlen(buf);
             apr_file_write(hfd, buf, &amt);
-            
+
             /* This case only occurs when the content is generated locally */
             if (!apr_table_get(r->headers_out, "Content-Type") && r->content_type) {
-                apr_table_setn(r->headers_out, "Content-Type", 
+                apr_table_setn(r->headers_out, "Content-Type",
                                ap_make_content_type(r, r->content_type));
             }
         }
@@ -622,19 +638,23 @@ static apr_status_t write_headers(cache_handle_t *h, request_rec *r, cache_info 
                  "disk_cache: Caching headers for URL %s",  dobj->name);
     return APR_SUCCESS;
 }
-static apr_status_t write_body(cache_handle_t *h, request_rec *r, apr_bucket_brigade *b) 
+
+static apr_status_t write_body(cache_handle_t *h, request_rec *r, apr_bucket_brigade *b)
 {
     apr_bucket *e;
     apr_status_t rv;
     disk_cache_object_t *dobj = (disk_cache_object_t *) h->cache_obj->vobj;
+    disk_cache_conf *conf = ap_get_module_config(r->server->module_config,
+                                                 &disk_cache_module);
 
     if (!dobj->fd) {
-        rv = apr_file_open(&dobj->fd, dobj->tempfile, 
+        rv = apr_file_open(&dobj->fd, dobj->tempfile,
                            APR_WRITE | APR_CREATE | APR_BINARY| APR_TRUNCATE | APR_BUFFERED,
                            APR_UREAD | APR_UWRITE, r->pool);
         if (rv != APR_SUCCESS) {
             return rv;
         }
+        dobj->file_size = 0;
     }
     for (e = APR_BRIGADE_FIRST(b);
          e != APR_BRIGADE_SENTINEL(b);
@@ -643,15 +663,52 @@ static apr_status_t write_body(cache_handle_t *h, request_rec *r, apr_bucket_bri
         const char *str;
         apr_size_t length;
         apr_bucket_read(e, &str, &length, APR_BLOCK_READ);
-        apr_file_write(dobj->fd, str, &length);
-    }
-    if (APR_BUCKET_IS_EOS(APR_BRIGADE_LAST(b))) {
-        file_cache_el_final(h, r);    /* Link to the perm file, and close the descriptor  */
-        ap_log_error(APLOG_MARK, APLOG_INFO, 0, r->server,
-                     "disk_cache: Cached body for URL %s",  dobj->name);
+        if (apr_file_write(dobj->fd, str, &length) != APR_SUCCESS) {
+          ap_log_error(APLOG_MARK, APLOG_ERR, 0, r->server,
+                     "cache_disk: Error when writing cache file for URL %s",
+                     h->cache_obj->key);
+          /* Remove the intermediate cache file and return non-APR_SUCCESS */
+          return file_cache_errorcleanup(dobj, r);
+        }
+        dobj->file_size += length;
+        if (dobj->file_size > conf->maxfs) {
+          ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
+                     "cache_disk: URL %s failed the size check (%lu>%lu)",
+                     h->cache_obj->key, (unsigned long)dobj->file_size, (unsigned long)conf->maxfs);
+          /* Remove the intermediate cache file and return non-APR_SUCCESS */
+          return file_cache_errorcleanup(dobj, r);
+        }
     }
 
-    return APR_SUCCESS;	
+    /* Was this the final bucket? If yes, close the body file and make sanity checks */
+    if (APR_BUCKET_IS_EOS(APR_BRIGADE_LAST(b))) {
+        if (h->cache_obj->info.len <= 0) {
+          h->cache_obj->info.len = dobj->file_size;
+        }
+        else if (h->cache_obj->info.len != dobj->file_size) {
+          /* "Content-Length" and actual content disagree in size. Log that. */
+          ap_log_error(APLOG_MARK, APLOG_ERR, 0, r->server,
+                       "disk_cache: URL %s failed the size check (%lu != %lu)",
+                       h->cache_obj->key,
+                       (unsigned long)h->cache_obj->info.len,
+                       (unsigned long)dobj->file_size);
+          /* Remove the intermediate cache file and return non-APR_SUCCESS */
+          return file_cache_errorcleanup(dobj, r);
+        }
+        if (dobj->file_size < conf->minfs) {
+          ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
+                     "cache_disk: URL %s failed the size check (%lu<%lu)",
+                     h->cache_obj->key, (unsigned long)dobj->file_size, (unsigned long)conf->minfs);
+          /* Remove the intermediate cache file and return non-APR_SUCCESS */
+          return file_cache_errorcleanup(dobj, r);
+        }
+        /* All checks were fine. Move tempfile to final destination */
+        file_cache_el_final(h, r);    /* Link to the perm file, and close the descriptor */
+        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
+                     "disk_cache: Body for URL %s cached.",  dobj->name);
+    }
+
+    return APR_SUCCESS;
 }
 
 static void *create_config(apr_pool_t *p, server_rec *s)
@@ -678,7 +735,7 @@ static void *create_config(apr_pool_t *p, server_rec *s)
 static const char
 *set_cache_root(cmd_parms *parms, void *in_struct_ptr, const char *arg)
 {
-    disk_cache_conf *conf = ap_get_module_config(parms->server->module_config, 
+    disk_cache_conf *conf = ap_get_module_config(parms->server->module_config,
                                                  &disk_cache_module);
     conf->cache_root = arg;
     conf->cache_root_len = strlen(arg);
@@ -689,7 +746,7 @@ static const char
 static const char
 *set_cache_size(cmd_parms *parms, void *in_struct_ptr, const char *arg)
 {
-    disk_cache_conf *conf = ap_get_module_config(parms->server->module_config, 
+    disk_cache_conf *conf = ap_get_module_config(parms->server->module_config,
                                                  &disk_cache_module);
     conf->space = atoi(arg);
     return NULL;
@@ -698,7 +755,7 @@ static const char
 *set_cache_gcint(cmd_parms *parms, void *in_struct_ptr, const char *arg)
 {
 /*
-    disk_cache_conf *conf = ap_get_module_config(parms->server->module_config, 
+    disk_cache_conf *conf = ap_get_module_config(parms->server->module_config,
                                                  &disk_cache_module);
 */
     /* XXX */
@@ -707,13 +764,13 @@ static const char
 /*
  * Consider eliminating the next two directives in favor of
  * Ian's prime number hash...
- * key = hash_fn( r->uri) 
- * filename = "/key % prime1 /key %prime2/key %prime3" 
+ * key = hash_fn( r->uri)
+ * filename = "/key % prime1 /key %prime2/key %prime3"
  */
 static const char
 *set_cache_dirlevels(cmd_parms *parms, void *in_struct_ptr, const char *arg)
 {
-    disk_cache_conf *conf = ap_get_module_config(parms->server->module_config, 
+    disk_cache_conf *conf = ap_get_module_config(parms->server->module_config,
                                                  &disk_cache_module);
     int val = atoi(arg);
     if (val < 1)
@@ -726,7 +783,7 @@ static const char
 static const char
 *set_cache_dirlength(cmd_parms *parms, void *in_struct_ptr, const char *arg)
 {
-    disk_cache_conf *conf = ap_get_module_config(parms->server->module_config, 
+    disk_cache_conf *conf = ap_get_module_config(parms->server->module_config,
                                                  &disk_cache_module);
     int val = atoi(arg);
     if (val < 1)
@@ -740,7 +797,7 @@ static const char
 static const char
 *set_cache_exchk(cmd_parms *parms, void *in_struct_ptr, int flag)
 {
-    disk_cache_conf *conf = ap_get_module_config(parms->server->module_config, 
+    disk_cache_conf *conf = ap_get_module_config(parms->server->module_config,
                                                  &disk_cache_module);
     conf->expirychk = flag;
 
@@ -749,7 +806,7 @@ static const char
 static const char
 *set_cache_minfs(cmd_parms *parms, void *in_struct_ptr, const char *arg)
 {
-    disk_cache_conf *conf = ap_get_module_config(parms->server->module_config, 
+    disk_cache_conf *conf = ap_get_module_config(parms->server->module_config,
                                                  &disk_cache_module);
     conf->minfs = atoi(arg);
     return NULL;
@@ -757,7 +814,7 @@ static const char
 static const char
 *set_cache_maxfs(cmd_parms *parms, void *in_struct_ptr, const char *arg)
 {
-    disk_cache_conf *conf = ap_get_module_config(parms->server->module_config, 
+    disk_cache_conf *conf = ap_get_module_config(parms->server->module_config,
                                                  &disk_cache_module);
     conf->maxfs = atoi(arg);
     return NULL;
@@ -766,7 +823,7 @@ static const char
 *set_cache_minetm(cmd_parms *parms, void *in_struct_ptr, const char *arg)
 {
     /* XXX
-    disk_cache_conf *conf = ap_get_module_config(parms->server->module_config, 
+    disk_cache_conf *conf = ap_get_module_config(parms->server->module_config,
                                                  &disk_cache_module);
     */
     return NULL;
@@ -775,7 +832,7 @@ static const char
 *set_cache_gctime(cmd_parms *parms, void *in_struct_ptr, const char *arg)
 {
     /* XXX
-    disk_cache_conf *conf = ap_get_module_config(parms->server->module_config, 
+    disk_cache_conf *conf = ap_get_module_config(parms->server->module_config,
                                                  &disk_cache_module);
     */
     return NULL;
@@ -784,7 +841,7 @@ static const char
 *add_cache_gcclean(cmd_parms *parms, void *in_struct_ptr, const char *arg, const char *arg1)
 {
     /* XXX
-    disk_cache_conf *conf = ap_get_module_config(parms->server->module_config, 
+    disk_cache_conf *conf = ap_get_module_config(parms->server->module_config,
                                                  &disk_cache_module);
     */
     return NULL;
@@ -793,7 +850,7 @@ static const char
 *add_cache_gcclnun(cmd_parms *parms, void *in_struct_ptr, const char *arg, const char *arg1)
 {
     /* XXX
-    disk_cache_conf *conf = ap_get_module_config(parms->server->module_config, 
+    disk_cache_conf *conf = ap_get_module_config(parms->server->module_config,
                                                  &disk_cache_module);
     */
     return NULL;
@@ -802,7 +859,7 @@ static const char
 *set_cache_maxgcmem(cmd_parms *parms, void *in_struct_ptr, const char *arg)
 {
     /* XXX
-    disk_cache_conf *conf = ap_get_module_config(parms->server->module_config, 
+    disk_cache_conf *conf = ap_get_module_config(parms->server->module_config,
                                                  &disk_cache_module);
     */
     return NULL;
