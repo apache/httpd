@@ -239,13 +239,13 @@ install-programs:
 		echo "$(INSTALL_SCRIPT) $(TOP)/$(SRC)/libhttpd.so $(root)$(libexecdir)/libhttpd.so"; \
 		$(INSTALL_SCRIPT) $(TOP)/$(SRC)/libhttpd.so $(root)$(libexecdir)/libhttpd.so; \
 		SHLIB_SUFFIX_LIST="`grep '^SHLIB_SUFFIX_LIST=' $(TOP)/$(SRC)/Makefile | sed -e 's:^.*=::'`"; \
-		if [ ".$$SHLIB_SUFFIX_LIST" != . ]; then \
+		if [ ".$${SHLIB_SUFFIX_LIST}" != . ]; then \
 			echo "$(RM) $(libexecdir)/libhttpd.so.*"; \
 			$(RM) $(libexecdir)/libhttpd.so.*; \
-			for suffix in $$SHLIB_SUFFIX_LIST ""; do \
-				[ ".$$suffix" = . ] && continue; \
-				echo "$(LN) $(root)$(libexecdir)/libhttpd.so $(root)$(libexecdir)/libhttpd.so.$$suffix"; \
-				$(LN) $(root)$(libexecdir)/libhttpd.so $(root)$(libexecdir)/libhttpd.so.$$suffix; \
+			for suffix in $${SHLIB_SUFFIX_LIST} ""; do \
+				[ ".$${suffix}" = . ] && continue; \
+				echo "$(LN) $(root)$(libexecdir)/libhttpd.so $(root)$(libexecdir)/libhttpd.so.$${suffix}"; \
+				$(LN) $(root)$(libexecdir)/libhttpd.so $(root)$(libexecdir)/libhttpd.so.$${suffix}; \
 			done; \
 		fi; \
 	fi
@@ -254,15 +254,15 @@ install-programs:
 	-@if [ ".`grep '^[ 	]*SharedModule' $(TOP)/$(SRC)/Configuration.apaci`" != . ]; then \
 		for mod in `egrep '^[ 	]*SharedModule' $(TOP)/$(SRC)/Configuration.apaci |\
 	                sed -e 's/^[ 	]*SharedModule[ 	]*//'`; do \
-			file=`echo $$mod | sed -e 's;^.*/\([^/]*\);\1;'`; \
-			echo "$(INSTALL_SCRIPT) $(TOP)/$(SRC)/$$mod $(root)$(libexecdir)/$$file"; \
-			$(INSTALL_SCRIPT) $(TOP)/$(SRC)/$$mod $(root)$(libexecdir)/$$file; \
-			name=`$(TOP)/$(AUX)/fmn.sh $(TOP)/$(SRC)/$$mod`; \
-			prefix="#"; case $$name in $(so_mods_in_conf) ) prefix="" ;; esac; \
+			file=`echo $${mod} | sed -e 's;^.*/\([^/]*\);\1;'`; \
+			echo "$(INSTALL_SCRIPT) $(TOP)/$(SRC)/$${mod} $(root)$(libexecdir)/$${file}"; \
+			$(INSTALL_SCRIPT) $(TOP)/$(SRC)/$${mod} $(root)$(libexecdir)/$${file}; \
+			name=`$(TOP)/$(AUX)/fmn.sh $(TOP)/$(SRC)/$${mod}`; \
+			prefix="#"; case $${name} in $(so_mods_in_conf) ) prefix="" ;; esac; \
 			echo dummy | awk '{ printf("%sLoadModule %-18s %s\n", \
 			prefix, modname, modpath); }' \
-			prefix="$$prefix" modname="$$name" \
-			modpath="$(libexecdir_relative)$$file" >>$(SRC)/.apaci.install.conf; \
+			prefix="$${prefix}" modname="$${name}" \
+			modpath="$(libexecdir_relative)$${file}" >>$(SRC)/.apaci.install.conf; \
 		done; \
 	fi
 	@echo "<=== [programs]"
@@ -318,8 +318,8 @@ install-include:
 	@echo "===> [include: Installing Apache C header files]"
 	$(UMASK) 022; $(CP) $(TOP)/$(SRC)/include/*.h $(root)$(includedir)/
 	@osdir=`grep '^OSDIR' $(TOP)/$(SRC)/Makefile.config | sed -e 's:^OSDIR=::'`; \
-	echo "$(UMASK) 022; $(CP) $(TOP)/$(SRC)/$$osdir/os.h $(includedir)/"; \
-	$(UMASK) 022; $(CP) $(TOP)/$(SRC)/$$osdir/os.h $(root)$(includedir)/
+	echo "$(UMASK) 022; $(CP) $(TOP)/$(SRC)/$${osdir}/os.h $(includedir)/"; \
+	$(UMASK) 022; $(CP) $(TOP)/$(SRC)/$${osdir}/os.h $(root)$(includedir)/
 	@echo "<=== [include]"
 
 #   create an initial document root containing the Apache manual,
@@ -357,10 +357,10 @@ install-config:
 	@echo "===> [config: Installing Apache configuration files]"
 	-@for conf in httpd.conf access.conf srm.conf; do \
 		(echo "##"; \
-		 echo "## $$conf -- Apache HTTP server configuration file"; \
+		 echo "## $${conf} -- Apache HTTP server configuration file"; \
 		 echo "##"; \
 		 echo ""; \
-		 cat $(TOP)/conf/$$conf-dist ) |\
+		 cat $(TOP)/conf/$${conf}-dist ) |\
 		 sed -e '/# LoadModule/r $(TOP)/$(SRC)/.apaci.install.conf' \
 			-e 's;@@ServerRoot@@/htdocs;$(datadir)/htdocs;' \
 			-e 's;@@ServerRoot@@/htdocs;$(datadir)/htdocs;' \
@@ -377,23 +377,23 @@ install-config:
 			-e 's;logs/agent_log;$(logfiledir)/agent_log;' \
 			-e 's;conf/magic;$(sysconfdir)/magic;' \
         	> $(TOP)/$(SRC)/.apaci.install.tmp && \
-		echo "$(INSTALL_DATA) $(TOP)/conf/$$conf-dist[*] $(root)$(sysconfdir)/$$conf.default"; \
-		$(INSTALL_DATA) $(TOP)/$(SRC)/.apaci.install.tmp $(root)$(sysconfdir)/$$conf.default; \
-		if [ ! -f "$(root)$(sysconfdir)/$$conf" ]; then \
-			echo "$(INSTALL_DATA) $(TOP)/conf/$$conf-dist[*] $(root)$(sysconfdir)/$$conf"; \
-			$(INSTALL_DATA) $(TOP)/$(SRC)/.apaci.install.tmp $(root)$(sysconfdir)/$$conf; \
+		echo "$(INSTALL_DATA) $(TOP)/conf/$${conf}-dist[*] $(root)$(sysconfdir)/$${conf}.default"; \
+		$(INSTALL_DATA) $(TOP)/$(SRC)/.apaci.install.tmp $(root)$(sysconfdir)/$${conf}.default; \
+		if [ ! -f "$(root)$(sysconfdir)/$${conf}" ]; then \
+			echo "$(INSTALL_DATA) $(TOP)/conf/$${conf}-dist[*] $(root)$(sysconfdir)/$${conf}"; \
+			$(INSTALL_DATA) $(TOP)/$(SRC)/.apaci.install.tmp $(root)$(sysconfdir)/$${conf}; \
 		else \
-			echo "[PRESERVING EXISTING CONFIG FILE: $(root)$(sysconfdir)/$$conf]"; \
+			echo "[PRESERVING EXISTING CONFIG FILE: $(root)$(sysconfdir)/$${conf}]"; \
 		fi; \
 	done
 	-@for conf in mime.types magic; do \
-		echo "$(INSTALL_DATA) $(TOP)/conf/$$conf $(root)$(sysconfdir)/$$conf.default"; \
-		$(INSTALL_DATA) $(TOP)/conf/$$conf $(root)$(sysconfdir)/$$conf.default; \
-		if [ ! -f "$(root)$(sysconfdir)/$$conf" ]; then \
-			echo "$(INSTALL_DATA) $(TOP)/conf/$$conf $(root)$(sysconfdir)/$$conf"; \
-			$(INSTALL_DATA) $(TOP)/conf/$$conf $(root)$(sysconfdir)/$$conf; \
+		echo "$(INSTALL_DATA) $(TOP)/conf/$${conf} $(root)$(sysconfdir)/$${conf}.default"; \
+		$(INSTALL_DATA) $(TOP)/conf/$${conf} $(root)$(sysconfdir)/$${conf}.default; \
+		if [ ! -f "$(root)$(sysconfdir)/$${conf}" ]; then \
+			echo "$(INSTALL_DATA) $(TOP)/conf/$${conf} $(root)$(sysconfdir)/$${conf}"; \
+			$(INSTALL_DATA) $(TOP)/conf/$${conf} $(root)$(sysconfdir)/$${conf}; \
 		else \
-			echo "[PRESERVING EXISTING CONFIG FILE: $(root)$(sysconfdir)/$$conf]"; \
+			echo "[PRESERVING EXISTING CONFIG FILE: $(root)$(sysconfdir)/$${conf}]"; \
 		fi; \
 	done
 	@echo "<=== [config]"
