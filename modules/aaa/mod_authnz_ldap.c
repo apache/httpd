@@ -166,10 +166,11 @@ static apr_xlate_t* get_conv_set (request_rec *r)
 static void authn_ldap_build_filter(char *filtbuf, 
                              request_rec *r,
                              const char* sent_user,
+                             const char* sent_filter,
                              authn_ldap_config_t *sec)
 {
     char *p, *q, *filtbuf_end;
-    char *user;
+    char *user, *filter;
     apr_xlate_t *convset = NULL;
     apr_size_t inbytes;
     apr_size_t outbytes;
@@ -180,6 +181,12 @@ static void authn_ldap_build_filter(char *filtbuf,
     }
     else
         return;
+
+    if (sent_filter != NULL) {
+        filter = apr_pstrdup (r->pool, sent_filter);
+    }
+    else
+        filter = sec->filter;
 
     if (charset_conversions) {
         convset = get_conv_set(r);
@@ -200,7 +207,7 @@ static void authn_ldap_build_filter(char *filtbuf,
      * Create the first part of the filter, which consists of the 
      * config-supplied portions.
      */
-    apr_snprintf(filtbuf, FILTER_LENGTH, "(&(%s)(%s=", sec->filter, sec->attribute);
+    apr_snprintf(filtbuf, FILTER_LENGTH, "(&(%s)(%s=", filter, sec->attribute);
 
     /* 
      * Now add the client-supplied username to the filter, ensuring that any
@@ -375,7 +382,7 @@ start_over:
     }
 
     /* build the username filter */
-    authn_ldap_build_filter(filtbuf, r, user, sec);
+    authn_ldap_build_filter(filtbuf, r, user, NULL, sec);
 
     /* do the user search */
     result = util_ldap_cache_checkuserid(r, ldc, sec->url, sec->basedn, sec->scope,
@@ -541,7 +548,7 @@ static int authz_ldap_check_user_access(request_rec *r)
             "ldap authorize: Creating LDAP req structure");
 
         /* Build the username filter */
-        authn_ldap_build_filter(filtbuf, r, r->user, sec);
+        authn_ldap_build_filter(filtbuf, r, r->user, NULL, sec);
 
         /* Search for the user DN */
         result = util_ldap_cache_getuserdn(r, ldc, sec->url, sec->basedn,
@@ -716,6 +723,54 @@ static int authz_ldap_check_user_access(request_rec *r)
                         ap_log_rerror(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 
                                       0, r, "[%d] auth_ldap authorise: "
                                       "require attribute: authorisation "
+                                      "failed [%s][%s]", getpid(), 
+                                      ldc->reason, ldap_err2string(result));
+                    }
+                }
+            }
+        }
+        else if (strcmp(w, "ldap-filter") == 0) {
+            if (t[0]) {
+                ap_log_rerror(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r,
+                              "[%d] auth_ldap authorise: checking filter %s", 
+                              getpid(), t);
+
+                /* Build the username filter */
+                authn_ldap_build_filter(filtbuf, r, req->user, t, sec);
+
+                /* Search for the user DN */
+                result = util_ldap_cache_getuserdn(r, ldc, sec->url, sec->basedn,
+                     sec->scope, sec->attributes, filtbuf, &dn, &vals);
+
+                /* Make sure that the filtered search returned the correct user dn */
+                if (result == LDAP_SUCCESS) {
+                    ap_log_rerror(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r,
+                                  "[%d] auth_ldap authorise: checking dn match %s", 
+                                  getpid(), dn);
+                    result = util_ldap_cache_comparedn(r, ldc, sec->url, req->dn, dn, 
+                         sec->compare_dn_on_server);
+                }
+
+                switch(result) {
+                    case LDAP_COMPARE_TRUE: {
+                        ap_log_rerror(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 
+                                      0, r, "[%d] auth_ldap authorise: "
+                                      "require ldap-filter: authorisation "
+                                      "successful", getpid());
+                        return OK;
+                    }
+                    case LDAP_FILTER_ERROR: {
+                        ap_log_rerror(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 
+                                      0, r, "[%d] auth_ldap authorise: "
+                                      "require ldap-filter: %s authorisation "
+                                      "failed [%s][%s]", getpid(), 
+                                      filtbuf, ldc->reason, ldap_err2string(result));
+                        break;
+                    }
+                    default: {
+                        ap_log_rerror(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 
+                                      0, r, "[%d] auth_ldap authorise: "
+                                      "require ldap-filter: authorisation "
                                       "failed [%s][%s]", getpid(), 
                                       ldc->reason, ldap_err2string(result));
                     }
