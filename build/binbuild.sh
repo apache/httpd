@@ -125,6 +125,7 @@ cp README.bindist ../httpd-$VER-$OS.README
 
 sed -e "s%\@default_dir\@%$DEFAULT_DIR%" \
     -e "s%\@ver\@%$VER%" \
+    -e "s%\@os\@%$OS%" \
     build/install-bindist.sh.in > install-bindist.sh
     
 chmod 755 install-bindist.sh

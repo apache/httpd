@@ -68,7 +68,7 @@ then
 else
   SR=$1
 fi
-echo "Installing binary distribution for platform i686-pc-linux"
+echo "Installing binary distribution for platform @os@"
 echo "into directory $SR ..."
 lmkdir $SR 755
 lmkdir $SR/proxy 750
@@ -80,6 +80,7 @@ then
 fi
 lcopy bindist/include $SR/include 755 644
 lcopy bindist/icons $SR/icons 755 644
+lcopy bindist/manual $SR/manual 755 644
 lcopy bindist/cgi-bin $SR/cgi-bin 750 750
 lcopy bindist/bin $SR/bin 750 750
 if [ -d $SR/conf ]
