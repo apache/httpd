@@ -532,20 +532,26 @@ static void parse_string(request_rec *r, const char *in, char *out,
 		/* what a pain, too bad there's no table_getn where you can
 		 * pass a non-nul terminated string */
 		l = end_of_var_name - start_of_var_name;
-		l = (l > sizeof(var) - 1) ? (sizeof(var) - 1) : l;
-		memcpy(var, start_of_var_name, l);
-		var[l] = '\0';
+		if (l != 0) {
+		    l = (l > sizeof(var) - 1) ? (sizeof(var) - 1) : l;
+		    memcpy(var, start_of_var_name, l);
+		    var[l] = '\0';
 
-		val = ap_table_get(r->subprocess_env, var);
-		if (val) {
-		    expansion = val;
-		    l = strlen(expansion);
-		}
-		else if (leave_name) {
-		    l = in - expansion;
+		    val = ap_table_get(r->subprocess_env, var);
+		    if (val) {
+			expansion = val;
+			l = strlen(expansion);
+		    }
+		    else if (leave_name) {
+			l = in - expansion;
+		    }
+		    else {
+			break;	/* no expansion to be done */
+		    }
 		}
 		else {
-		    break;	/* no expansion to be done */
+		    /* zero-length variable name causes just the $ to be copied */
+		    l = 1;
 		}
 		l = (l > end_out - next) ? (end_out - next) : l;
 		memcpy(next, expansion, l);

@@ -1,5 +1,9 @@
 Changes with Apache 1.3b8
 
+  *) A zero-length name after a $ in an SSI document should cause
+     just the $ to be in the expansion.  This was broken during the
+     security fixes in 1.2.5.  [Dean Gaudet] PR#1921, 2249
+
   *) Call ap_destroy_sub_req() in ap_add_cgi_vars() to reclaim some
      memory.  [Rob Saccoccio <robs@InfiniteTechnology.com>] PR#2252
 
