@@ -807,7 +807,7 @@ AP_DECLARE(int) ap_directory_walk(request_rec *r)
 
     /* XXX: Better (faster) tests needed!!!
      *
-    /* "OK" as a response to a real problem is not _OK_, but to allow broken 
+     * "OK" as a response to a real problem is not _OK_, but to allow broken 
      * modules to proceed, we will permit the not-a-path filename to pass here.
      * We must catch it later if it's heading for the core handler.  Leave an 
      * INFO note here for module debugging.
