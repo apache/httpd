@@ -854,7 +854,7 @@ static const command_rec deflate_filter_cmds[] = {
                   "Set the Deflate Buffer Size"),
     AP_INIT_TAKE1("DeflateMemLevel", deflate_set_memlevel, NULL, RSRC_CONF,
                   "Set the Deflate Memory Level (1-9)"),
-    AP_INIT_TAKE1("CompressionLevel", deflate_set_compressionlevel, NULL, RSRC_CONF,
+    AP_INIT_TAKE1("DeflateCompressionLevel", deflate_set_compressionlevel, NULL, RSRC_CONF,
                   "Set the Deflate Compression Level (1-9)"),
     {NULL}
 };
