@@ -1,5 +1,9 @@
 Changes with Apache 2.0b1
 
+  *) Cleanup the mod_tls configure process.  This should remove any need
+     to hand-edit any files.  We require OpenSSL 0.9.6 or later, but 
+     configure doesn't check that yet.  [Ryan Bloom]
+
   *) Add a very early prototype of SSL support (in mod_tls.c). It is
      vital that you read modules/tls/README before attempting to build
      it. [Ben Laurie]

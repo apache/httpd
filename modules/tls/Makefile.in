@@ -1,9 +1,2 @@
-LTLIBRARY_NAME    = libapachemod_tls.la
-LTLIBRARY_SOURCES = mod_tls.lo openssl_state_machine.lo
-
-# temp!
-openssl_state_machine.lo: openssl_state_machine.c
-	gcc  -I. -I/usr/home/ben/work/httpd-2.0/modules/tls -I/usr/home/ben/work/httpd-2.0/server/mpm/prefork -I/usr/home/ben/work/httpd-2.0/include -I/usr/home/ben/work/httpd-2.0/srclib/apr/include -I/usr/home/ben/work/httpd-2.0/srclib/apr-util/include -I/usr/home/ben/work/httpd-2.0/os/unix -I/usr/home/ben/work/httpd-2.0/srclib/expat-lite -I/home/ben/work/openssl/include  -I/home/ben/work/openssl/include -D_REENTRANT -D_THREAD_SAFE -g -O2 -g -Wall -Wmissing-prototypes -Wmissing-declarations -DAP_DEBUG -DNO_KRB5 -DBN_DEBUG -DREF_CHECK -DCONF_DEBUG -DBN_CTX_DEBUG -DCRYPTO_MDEBUG -DPEDANTIC -DDEBUG_SAFESTACK -c openssl_state_machine.c -o openssl_state_machine.lo
-
-include $(top_srcdir)/build/ltlib.mk
+include $(top_srcdir)/build/special.mk
 
