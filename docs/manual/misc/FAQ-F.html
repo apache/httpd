@@ -31,7 +31,7 @@
   <!--#include virtual="header.html" -->
   <H1 ALIGN="CENTER">Apache Server Frequently Asked Questions</H1>
   <P>
-  $Revision: 1.4 $ ($Date: 2000/04/18 20:54:03 $)
+  $Revision: 1.5 $ ($Date: 2000/09/15 19:45:27 $)
   </P>
   <P>
   The latest version of this FAQ is always available from the main
@@ -361,13 +361,14 @@
   xSSI (eXtended SSI) directives.
   </P>
   <P>
-  Processing a document at run-time is called <EM>parsing</EM> it; hence
-  the term &quot;parsed HTML&quot; sometimes used for documents that
-  contain SSI instructions.  Parsing tends to be <EM>extremely</EM>
-  resource-consumptive, and is not enabled by default.  It can also
-  interfere with the cachability of your documents, which can put a
-  further load on your server.  (see the
-  <A HREF="#ssi-part-ii">next question</A> for more information about this.)
+  Processing a document at run-time is called <EM>parsing</EM> it;
+  hence the term &quot;parsed HTML&quot; sometimes used for documents
+  that contain SSI instructions.  Parsing tends to be
+  resource-consumptive compared to serving static files, and is not
+  enabled by default.  It can also interfere with the cachability of
+  your documents, which can put a further load on your server.  (See
+  the <A HREF="#ssi-part-ii">next question</A> for more information
+  about this.)
   </P>
   <P>
   To enable SSI processing, you need to
