@@ -81,6 +81,14 @@ _tryssl:
 !IF EXIST("srclib\zlib")
 
 _tryzlib:
+	cd srclib\zlib
+!IF EXIST("srclib\zlib\Win32\Makefile.msc") 
+	$(MAKE) $(MAKEOPT) -f Win32\Makefile.msc zlib.lib 
+!ELSE
+	$(MAKE) $(MAKEOPT) -f msdos\Makefile.w32 zlib.lib 
+!ENDIF
+	cd ..\..
+
 !IF EXIST("modules\filters\mod_deflate.mak")
 	cd modules\filters
 	$(MAKE) $(MAKEOPT) -f mod_deflate.mak CFG="mod_deflate - Win32 $(LONG)" RECURSE=0 .\$(LONG)\mod_deflate.so
@@ -242,8 +250,17 @@ _build:
 	 $(MAKE) $(MAKEOPT) -f util_ldap.mak       CFG="util_ldap - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f mod_auth_ldap.mak   CFG="mod_auth_ldap - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	cd ..\..
-	cd modules\filters
+
 !IF EXIST("srclib\zlib")
+	cd srclib\zlib
+!IF EXIST("srclib\zlib\Win32\Makefile.msc") 
+	$(MAKE) $(MAKEOPT) -f Win32\Makefile.msc zlib.lib 
+!ELSE
+	$(MAKE) $(MAKEOPT) -f msdos\Makefile.w32 zlib.lib 
+!ENDIF
+	cd ..\..
+
+	cd modules\filters
 	 $(MAKE) $(MAKEOPT) -f mod_deflate.mak     CFG="mod_deflate - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 !ENDIF
 	 $(MAKE) $(MAKEOPT) -f mod_ext_filter.mak  CFG="mod_ext_filter - Win32 $(LONG)" RECURSE=0 $(CTARGET)
@@ -328,6 +345,13 @@ _build:
 	devenv Apache.sln /useenv $(CTARGET) $(LONG) /project abs
 !ENDIF
 !IF EXIST("srclib\zlib")
+	cd srclib\zlib
+!IF EXIST("srclib\zlib\Win32\Makefile.msc") 
+	$(MAKE) $(MAKEOPT) -f Win32\Makefile.msc zlib.lib 
+!ELSE
+	$(MAKE) $(MAKEOPT) -f msdos\Makefile.w32 zlib.lib 
+!ENDIF
+	cd ..\..
 	devenv Apache.sln /useenv $(CTARGET) $(LONG) /project mod_deflate
 !ENDIF
 
@@ -355,6 +379,13 @@ _build:
 		"abs - Win32 $(LONG)" /NORECURSE $(CTARGET)
 !ENDIF
 !IF EXIST("srclib\zlib")
+	cd srclib\zlib
+!IF EXIST("srclib\zlib\Win32\Makefile.msc") 
+	$(MAKE) $(MAKEOPT) -f Win32\Makefile.msc zlib.lib 
+!ELSE
+	$(MAKE) $(MAKEOPT) -f msdos\Makefile.w32 zlib.lib 
+!ENDIF
+	cd ..\..
 	@msdev Apache.dsw /USEENV /MAKE \
 		"mod_deflate - Win32 $(LONG)" /NORECURSE $(CTARGET)
 !ENDIF
