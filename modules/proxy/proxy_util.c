@@ -369,31 +369,32 @@ const char *
     return q;
 }
 
-static request_rec *make_fake_req(conn_rec *c)
+request_rec *make_fake_req(conn_rec *c, request_rec *r)
 {
-    request_rec *r = apr_pcalloc(c->pool, sizeof(*r));
+    request_rec *rp = apr_pcalloc(c->pool, sizeof(*r));
     core_request_config *req_cfg;
 
-    r->pool            = c->pool;
-    r->status          = HTTP_OK;
+    rp->pool            = c->pool;
+    rp->status          = HTTP_OK;
 
-    r->headers_in      = apr_table_make(r->pool, 50);
-    r->subprocess_env  = apr_table_make(r->pool, 50);
-    r->headers_out     = apr_table_make(r->pool, 12);
-    r->err_headers_out = apr_table_make(r->pool, 5);
-    r->notes           = apr_table_make(r->pool, 5);
+    rp->headers_in      = apr_table_make(r->pool, 50);
+    rp->subprocess_env  = apr_table_make(r->pool, 50);
+    rp->headers_out     = apr_table_make(r->pool, 12);
+    rp->err_headers_out = apr_table_make(r->pool, 5);
+    rp->notes           = apr_table_make(r->pool, 5);
 
-    r->read_body       = REQUEST_NO_BODY;
-    r->connection      = c;
-    r->output_filters  = c->output_filters;
-    r->input_filters   = c->input_filters;
+    rp->server = r->server;
+    rp->request_time = r->request_time;
+    rp->connection      = c;
+    rp->output_filters  = c->output_filters;
+    rp->input_filters   = c->input_filters;
 
-    r->request_config  = ap_create_request_config(r->pool);
-    req_cfg = apr_pcalloc(r->pool, sizeof(core_request_config));
-    req_cfg->bb = apr_brigade_create(r->pool);
-    ap_set_module_config(r->request_config, &core_module, req_cfg);
+    rp->request_config  = ap_create_request_config(rp->pool);
+    req_cfg = apr_pcalloc(rp->pool, sizeof(core_request_config));
+    req_cfg->bb = apr_brigade_create(rp->pool);
+    ap_set_module_config(rp->request_config, &core_module, req_cfg);
 
-    return r;
+    return rp;
 }
 
 /*
@@ -403,15 +404,14 @@ static request_rec *make_fake_req(conn_rec *c)
  * @@@: XXX: FIXME: currently the headers are passed thru un-merged. 
  * Is that okay, or should they be collapsed where possible?
  */
-apr_table_t *ap_proxy_read_headers(request_rec *r, char *buffer, int size, conn_rec *c)
+apr_table_t *ap_proxy_read_headers(request_rec *r, request_rec *rr, char *buffer, int size, conn_rec *c)
 {
-    apr_table_t *resp_hdrs;
+    apr_table_t *headers_out;
     int len;
     char *value, *end;
     char field[MAX_STRING_LEN];
-    request_rec *rr = make_fake_req(c);
 
-    resp_hdrs = ap_make_table(r->pool, 20);
+    headers_out = ap_make_table(r->pool, 20);
 
     /*
      * Read header lines until we get the empty separator line, a read error,
@@ -450,11 +450,11 @@ apr_table_t *ap_proxy_read_headers(request_rec *r, char *buffer, int size, conn_
 	for (end = &value[strlen(value)-1]; end > value && apr_isspace(*end); --end)
 	    *end = '\0';
 
-        apr_table_add(resp_hdrs, buffer, value);
+        apr_table_add(headers_out, buffer, value);
 
 	/* the header was too long; at the least we should skip extra data */
 	if (len >= size - 1) { 
-	    while ((len = ap_getline(field, MAX_STRING_LEN, r, 1))
+	    while ((len = ap_getline(field, MAX_STRING_LEN, rr, 1))
 		    >= MAX_STRING_LEN - 1) {
 		/* soak up the extra data */
 	    }
@@ -462,7 +462,7 @@ apr_table_t *ap_proxy_read_headers(request_rec *r, char *buffer, int size, conn_
 		break;
 	}
     }
-    return resp_hdrs;
+    return headers_out;
 }
 
 /*
@@ -526,6 +526,47 @@ int ap_proxy_liststr(const char *list, const char *val)
 	list = p;
     }
     return 0;
+}
+
+/*
+ * list is a comma-separated list of case-insensitive tokens, with
+ * optional whitespace around the tokens.
+ * The return returns 1 if the token val is found in the list, or 0
+ * otherwise.
+ */
+char *ap_proxy_removestr(apr_pool_t *pool, const char *list, const char *val)
+{
+    int len, i;
+    const char *p;
+    char *new = NULL;
+
+    len = strlen(val);
+
+    while (list != NULL) {
+	p = ap_strchr_c(list, ',');
+	if (p != NULL) {
+	    i = p - list;
+	    do
+		p++;
+	    while (apr_isspace(*p));
+	}
+	else
+	    i = strlen(list);
+
+	while (i > 0 && apr_isspace(list[i - 1]))
+	    i--;
+	if (i == len && strncasecmp(list, val, len) == 0) {
+	    /* do nothing */
+	}
+	else {
+	    if (new)
+		new = apr_pstrcat(pool, new, ",", apr_pstrndup(pool, list, i), NULL);
+	    else
+		new = apr_pstrndup(pool, list, i);
+	}
+	list = p;
+    }
+    return new;
 }
 
 /*

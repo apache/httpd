@@ -143,10 +143,12 @@ int ap_proxy_connect_handler(request_rec *r, char *url,
     }
 
 /* check if ProxyBlock directive on this host */
-    destaddr.s_addr = ap_inet_addr(host);
+/* XXX FIXME */
+/*    destaddr.s_addr = ap_inet_addr(host); */
     for (i = 0; i < conf->noproxies->nelts; i++) {
 	if ((npent[i].name != NULL && ap_strstr_c(host, npent[i].name) != NULL)
-	    || destaddr.s_addr == npent[i].addr.s_addr || npent[i].name[0] == '*')
+/*	    || destaddr.s_addr == npent[i].addr.s_addr */
+	    || npent[i].name[0] == '*')
 	    return ap_proxyerror(r, HTTP_FORBIDDEN,
 		 "Connect to remote machine blocked");
     }
