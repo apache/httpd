@@ -1,3 +1,4 @@
+#!/bin/sh
 # Helper script for Configure - cut a rule from Configuration.
 # note that there is a tab and a space in the character groups.
 # Map to lowercase to make tests easier
