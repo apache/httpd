@@ -36,37 +36,191 @@ document dump_string_array
     Print all of the elements in an array of strings.
 end
 
+define printmemn
+    set $i = 0
+    while $i < $arg1
+        if $arg0[$i] < 0x20 || $arg0[$i] > 0x7e
+            printf "~"
+        else
+            printf "%c", $arg0[$i]
+        end
+        set $i = $i + 1
+    end
+end
+
+define print_bkt_datacol
+    # arg0 == column name
+    # arg1 == format
+    # arg2 == value
+    # arg3 == suppress header?
+    set $suppressheader = $arg3
+
+    if !$suppressheader
+        printf " "
+        printf $arg0
+        printf "="
+    else
+        printf " | "
+    end
+    printf $arg1, $arg2
+end
+
+define dump_bucket_ex
+    # arg0 == bucket
+    # arg1 == suppress header?
+    set $bucket = (apr_bucket *)$arg0
+    set $sh = $arg1
+    set $refcount = -1
+
+    print_bkt_datacol "bucket" "%-9s" $bucket->type->name $sh
+    printf "(0x%08lx)", (unsigned long)$bucket
+    print_bkt_datacol "length" "%-6ld" (long)($bucket->length) $sh
+    print_bkt_datacol "data" "0x%08lx" $bucket->data $sh
+
+    if !$sh
+        printf "\n    "
+    end
+
+    if (($bucket->type == &apr_bucket_type_eos)   || \
+        ($bucket->type == &apr_bucket_type_flush))
+
+        # metadata buckets, no content
+        print_bkt_datacol "contents" "%c" ' ' $sh
+        printf "                     "
+        print_bkt_datacol "rc" "n/%c" 'a' $sh
+
+    else
+    if ($bucket->type == &ap_bucket_type_error)
+
+        # metadata bucket, no content but it does have an error code in it
+        print_bkt_datacol "contents" "%c" ' ' $sh
+        set $status = ((ap_bucket_error *)$bucket->data)->status
+        printf " (status=%3d)        ", $status
+        print_bkt_datacol "rc" "n/%c" 'a' $sh
+
+    else
+    if (($bucket->type == &apr_bucket_type_file) || \
+        ($bucket->type == &apr_bucket_type_pipe) || \
+        ($bucket->type == &apr_bucket_type_socket))
+
+        # buckets that contain data not in memory (ie not printable)
+
+        print_bkt_datacol "contents" "[**unprintable**%c" ']' $sh
+        if $bucket->type == &apr_bucket_type_file
+            set $refcount = ((apr_bucket_refcount *)$bucket->data)->refcount
+            print_bkt_datacol "rc" "%d" $refcount $sh
+        end
+
+    else
+    if (($bucket->type == &apr_bucket_type_heap)      || \
+        ($bucket->type == &apr_bucket_type_pool)      || \
+        ($bucket->type == &apr_bucket_type_mmap)      || \
+        ($bucket->type == &apr_bucket_type_transient) || \
+        ($bucket->type == &apr_bucket_type_immortal))
+
+        # in-memory buckets
+
+        if $bucket->type == &apr_bucket_type_heap
+            set $refcount = ((apr_bucket_refcount *)$bucket->data)->refcount
+            set $p = (apr_bucket_heap *)$bucket->data
+            set $data = $p->base+$bucket->start
+
+        else
+        if $bucket->type == &apr_bucket_type_pool
+            set $refcount = ((apr_bucket_refcount *)$bucket->data)->refcount
+            set $p = (apr_bucket_pool *)$bucket->data
+            if $p->pool != NULL
+                set $p = (apr_bucket_heap *)$bucket->data
+            end
+            set $data = $p->base+$bucket->start
+
+        else
+        if $bucket->type == &apr_bucket_type_mmap
+            # is this safe if not APR_HAS_MMAP?
+            set $refcount = ((apr_bucket_refcount *)$bucket->data)->refcount
+            set $p = (apr_bucket_mmap *)$bucket->data
+            set $data = ((char *)$p->mmap->mm)+$bucket->start
+
+        else
+        if (($bucket->type == &apr_bucket_type_transient) || \
+            ($bucket->type == &apr_bucket_type_immortal))
+            set $data = ((char *)$bucket->data)+$bucket->start
+
+        end
+        end
+        end
+        end
+
+        if $sh
+            printf " | ["
+        else
+            printf " contents=["
+        end
+        set $datalen = $bucket->length
+        if $datalen > 17
+            printmem $data 17
+            printf "..."
+            set $datalen = 20
+        else
+            printmemn $data $datalen
+        end
+        printf "]"
+        while $datalen < 20
+            printf " "
+            set $datalen = $datalen + 1
+        end
+
+        if $refcount != -1
+            print_bkt_datacol "rc" "%d" $refcount $sh
+        else
+            print_bkt_datacol "rc" "n/%c" 'a' $sh
+        end
+
+    else
+        # 3rd-party bucket type
+        print_bkt_datacol "contents" "[**unknown**%c" ']' $sh
+        printf "         "
+        print_bkt_datacol "rc" "n/%c" 'a' $sh
+    end
+    end
+    end
+    end
+
+    printf "\n"
+
+end
+
 define dump_bucket
-    set $bucket = $arg0
-    printf "bucket=%s(0x%lx), length=%ld, data=0x%lx\n", \
-            $bucket->type->name, \
-            (unsigned long)$bucket, (long)$bucket->length, \
-            (unsigned long)$bucket->data
+    dump_bucket_ex $arg0 0
 end
 document dump_bucket
     Print bucket info
 end
 
 define dump_brigade
-    set $bb = $arg0
-    set $bucket = ((&((apr_bucket_brigade *)$bb)->list))->next
-    set $sentinel = ((char *)((&(((apr_bucket_brigade *)$bb)->list)) \
-                               - ((size_t) &((struct apr_bucket *)0)->link)))
-    set $i = 0
-
+    set $bb = (apr_bucket_brigade *)$arg0
+    set $bucket = $bb->list.next
+    set $sentinel = ((char *)((&($bb->list)) \
+                               - ((size_t) &((apr_bucket *)0)->link)))
     printf "dump of brigade 0x%lx\n", (unsigned long)$bb
+
+    printf "   | type     (address)    | length | "
+    printf "data addr  | contents               | rc\n"
+    printf "----------------------------------------"
+    printf "----------------------------------------\n"
+
     if $bucket == $sentinel
         printf "brigade is empty\n"
     end
 
+    set $j = 0
     while $bucket != $sentinel
-        printf "   %d: bucket=%s(0x%lx), length=%ld, data=0x%lx\n", \
-                $i, $bucket->type->name, \
-                (unsigned long)$bucket, (long)$bucket->length, \
-                (unsigned long)$bucket->data
-        set $i = $i + 1
+        printf "%2d", $j
+        dump_bucket_ex $bucket 1
+        set $j = $j + 1
         set $bucket = $bucket->link.next
     end
+    printf "end of brigade\n"
 end
 document dump_brigade
     Print bucket brigade info
