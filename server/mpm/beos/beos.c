@@ -397,10 +397,10 @@ static int32 worker_thread(void * dummy)
     (void) ap_update_child_status_from_indexes(0, child_slot, SERVER_STARTING,
                                                (request_rec*)NULL);
                                   
-    apr_poll_setup(&pollset, num_listening_sockets, tpool);
+    apr_poll_setup(&pollset, num_listening_sockets + 1, tpool);
     for(n=0 ; n <= num_listening_sockets ; n++)
         apr_poll_socket_add(pollset, listening_sockets[n], APR_POLLIN);
-
+	
     bucket_alloc = apr_bucket_alloc_create(tpool);
 
     while (1) {
@@ -422,7 +422,7 @@ static int32 worker_thread(void * dummy)
             apr_int16_t event;
             apr_status_t ret;
 
-            ret = apr_poll(pollset, num_listening_sockets, &srv, -1);
+            ret = apr_poll(pollset, num_listening_sockets + 1, &srv, -1);
 
             if (ret != APR_SUCCESS) {
                 if (APR_STATUS_IS_EINTR(ret)) {
