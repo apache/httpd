@@ -196,7 +196,12 @@ static void cache_the_file(cmd_parms *cmd, const char *filename, int mmap)
     const char *fspec;
 
     fspec = ap_server_root_relative(cmd->pool, filename);
-    if (!fspec || (rc = apr_stat(&tmp.finfo, fspec, APR_FINFO_MIN, 
+    if (!fspec) {
+        ap_log_error(APLOG_MARK, APLOG_WARNING|APLOG_NOERRNO, 0, cmd->server,
+                     "mod_file_cache: unable to find relative path for "
+                     "%s, skipping", filename);
+    }
+    if ((rc = apr_stat(&tmp.finfo, fspec, APR_FINFO_MIN, 
                                  cmd->temp_pool)) != APR_SUCCESS) {
 	ap_log_error(APLOG_MARK, APLOG_WARNING, rc, cmd->server,
 	    "mod_file_cache: unable to stat(%s), skipping", filename);
