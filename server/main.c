@@ -360,6 +360,8 @@ static void usage(process_rec *process)
                  "  -e level          : show startup errors of level "
                  "(see LogLevel)");
     ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL,
+                 "  -E file           : log startup errors to file");
+    ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL,
                  "  -v                : show version number");
     ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL,
                  "  -V                : show compile settings");
@@ -390,6 +392,7 @@ int main(int argc, const char * const argv[])
     int configtestonly = 0;
     const char *confname = SERVER_CONFIG_FILE;
     const char *def_server_root = HTTPD_ROOT;
+    const char *temp_error_log = NULL;
     process_rec *process;
     server_rec *server_conf;
     apr_pool_t *pglobal;
@@ -486,6 +489,10 @@ int main(int argc, const char * const argv[])
             }
             break;
 
+        case 'E':
+            temp_error_log = apr_pstrdup(process->pool, optarg);
+            break;
+
         case 'X':
             new = (char **)apr_array_push(ap_server_config_defines);
             *new = "DEBUG";
@@ -539,6 +546,9 @@ int main(int argc, const char * const argv[])
      */
 
     ap_server_root = def_server_root;
+    if (temp_error_log) {
+        ap_replace_stderr_log(process->pool, temp_error_log);
+    }
     server_conf = ap_read_config(process, ptemp, confname, &ap_conftree);
     if (ap_run_pre_config(pconf, plog, ptemp) != OK) {
         ap_log_error(APLOG_MARK, APLOG_STARTUP |APLOG_ERR| APLOG_NOERRNO, 0,

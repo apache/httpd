@@ -187,6 +187,39 @@ AP_DECLARE(void) ap_open_stderr_log(apr_pool_t *p)
     apr_file_open_stderr(&stderr_log, p);
 }
 
+AP_DECLARE(apr_status_t) ap_replace_stderr_log(apr_pool_t *p, 
+                                               const char *fname)
+{
+    apr_file_t *stderr_file;
+    apr_status_t rc;
+    char *filename = ap_server_root_relative(p, fname);
+    if (!filename) {
+        ap_log_error(APLOG_MARK, APLOG_STARTUP|APLOG_CRIT,
+                     APR_EBADPATH, NULL, "Invalid -E error log file %s",
+                     fname);
+        exit(1);
+    }
+    if ((rc = apr_file_open(&stderr_file, filename,
+                            APR_APPEND | APR_READ | APR_WRITE | APR_CREATE,
+                            APR_OS_DEFAULT, p)) != APR_SUCCESS) {
+        ap_log_error(APLOG_MARK, APLOG_STARTUP, rc, NULL,
+                     "%s: could not open error log file %s.",
+                     ap_server_argv0, fname);
+        return rc;
+    }
+    if ((rc = apr_file_open_stderr(&stderr_log, p)) == APR_SUCCESS) {
+        apr_file_flush(stderr_log);
+        if ((rc = apr_file_dup2(stderr_log, stderr_file, p)) == APR_SUCCESS) {
+            apr_file_close(stderr_file);
+        }
+    }
+    if (rc != APR_SUCCESS) {
+        ap_log_error(APLOG_MARK, APLOG_CRIT, rc, NULL,
+                     "unable to replace stderr with error_log");
+        return rc;
+    }
+}
+
 static int log_child(apr_pool_t *p, const char *progname,
                      apr_file_t **fpin)
 {

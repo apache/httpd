@@ -708,8 +708,6 @@ apr_status_t mpm_service_to_start(const char **display_name, apr_pool_t *p)
     
     if (osver.dwPlatformId == VER_PLATFORM_WIN32_NT)
     {
-        mpm_nt_eventlog_stderr_open(mpm_display_name, p);
-
         globdat.service_init = CreateEvent(NULL, FALSE, FALSE, NULL);
         globdat.service_term = CreateMutex(NULL, TRUE, NULL);
         if (!globdat.service_init || !globdat.service_term) {

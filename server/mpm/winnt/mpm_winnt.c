@@ -1975,6 +1975,7 @@ void winnt_rewrite_args(process_rec *process)
     char *pid;
     apr_getopt_t *opt;
     int running_as_service = 1;
+    int errout = 0;
 
     osver.dwOSVersionInfoSize = sizeof(OSVERSIONINFO);
     GetVersionEx(&osver);
@@ -2060,6 +2061,9 @@ void winnt_rewrite_args(process_rec *process)
         case 'k':
             signal_arg = optarg;
             break;
+        case 'E':
+            errout = 1;
+            /* Fall through so the Apache main() handles the 'E' arg */
         default:
             *(const char **)apr_array_push(mpm_new_argv) =
                 apr_pstrdup(process->pool, optbuf);
@@ -2106,7 +2110,11 @@ void winnt_rewrite_args(process_rec *process)
          * We hold the return value so that we can die in pre_config
          * after logging begins, and the failure can land in the log.
          */
-        if (osver.dwPlatformId == VER_PLATFORM_WIN32_NT) {
+        if (osver.dwPlatformId == VER_PLATFORM_WIN32_NT) 
+        {
+            if (!errout) {
+                mpm_nt_eventlog_stderr_open(service_name, process->pool);
+            }
             service_to_start_success = mpm_service_to_start(&service_name,
                                                             process->pool);
             if (service_to_start_success == APR_SUCCESS) {

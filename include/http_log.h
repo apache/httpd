@@ -122,6 +122,14 @@ extern int AP_DECLARE_DATA ap_default_loglevel;
 AP_DECLARE(void) ap_open_stderr_log(apr_pool_t *p);
 
 /**
+ * Replace logging to stderr with logging to the given file.
+ * @param p The pool to allocate out of
+ * @param file Name of the file to log stderr output
+ */
+AP_DECLARE(apr_status_t) ap_replace_stderr_log(apr_pool_t *p, 
+                                               const char *file);
+
+/**
  * Open the error log and replace stderr with it.
  * @param s_main The main server
  * @param p The pool to allocate out of
