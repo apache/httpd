@@ -39,8 +39,4 @@ APR_ADDTO(INCLUDES, [-I\$(top_srcdir)/$modpath_current/../generators])
 
 APACHE_MODULE(proxy_ajp, Apache proxy AJP module, $proxy_ajp_objs, , no)
 
-if test "$proxy_ajp_enable" != "no" -o "$enable_proxy_ajp" != "no"; then
-  APR_ADDTO(INCLUDES, [-I\$(top_srcdir)/$modpath_current/ajp])
-fi
-
 APACHE_MODPATH_FINISH
