@@ -1,5 +1,8 @@
 Changes with Apache 1.3a2
 
+  *) Fixed an infinite loop in mod_imap for references above the server root
+     [Dean Gaudet] PR#748
+
   *) mod_proxy now has a ReceiveBufferSize directive, similar to
      SendBufferSize, so that the TCP window can be set appropriately
      for LFNs. [Phillip A. Prindeville]
