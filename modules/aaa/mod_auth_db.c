@@ -147,10 +147,10 @@ static const command_rec db_auth_cmds[] =
 {
     AP_INIT_TAKE1("AuthDBUserFile", ap_set_file_slot,
      (void *) XtOffsetOf(db_auth_config_rec, auth_dbpwfile),
-     OR_AUTHCFG, NULL),
+     OR_AUTHCFG, "db database file containing user IDs and passwords"),
     AP_INIT_TAKE1("AuthDBGroupFile", ap_set_file_slot,
      (void *) XtOffsetOf(db_auth_config_rec, auth_dbgrpfile),
-     OR_AUTHCFG, NULL),
+     OR_AUTHCFG, "db database file containing group names and member user IDs"),
     AP_INIT_TAKE12("AuthUserFile", set_db_slot,
      (void *) XtOffsetOf(db_auth_config_rec, auth_dbpwfile),
      OR_AUTHCFG, NULL),
