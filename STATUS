@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/05/21 16:07:39 $]
+Last modified at [$Date: 2004/05/21 20:02:20 $]
 
 Release:
 
@@ -123,15 +123,6 @@ PATCHES TO BACKPORT FROM 2.1
        PR: 13511
        +1: jorton
 
-    *) mod_ldap calls ldap_simple_bind_s() to validate the user
-       credentials.  If the bind fails, the connection is left
-       in an unbound state.  Make sure that the ldap connection
-       record is updated to show that the connection is no longer
-       bound.
-       modules/experimental/util_ldap.c: r1.27
-       +1: bnicholes, jim
-       +1: minfrin (confirmed fixes long standing timeout bug)
-        
     *) mod_ssl: Fix potential SEGV in 'shmcb' session cache.
        modules/ssl/ssl_scache_shmcb.c: r1.26
        +1: madhum, jorton
