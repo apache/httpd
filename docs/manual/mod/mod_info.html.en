@@ -43,12 +43,21 @@ configuration</td></tr>
       &lt;/Location&gt;
     </code></p></div>
 
-    <p>You may wish to add a 
-    <code class="directive"><a href="../mod/core.html#limit">&lt;Limit&gt;</a></code> 
-    clause inside the 
+    <p>You may wish to use <code class="module"><a href="../mod/mod_access.html">mod_access</a></code> inside the 
     <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code>
     directive to limit access to your server configuration 
-    information.</p>
+    information:</p>
+
+    <div class="example"><p><code>
+      &lt;Location /server-info&gt;<br />
+      <span class="indent">
+        SetHandler server-info<br />
+        Order deny,allow<br />
+        Deny from all<br />
+        Allow from yourcompany.com<br />
+      </span>
+      &lt;/Location&gt;
+    </code></p></div>
 
     <p>Once configured, the server information is obtained by
     accessing <code>http://your.host.dom/server-info</code></p>
