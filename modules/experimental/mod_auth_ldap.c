@@ -218,6 +218,7 @@ static apr_status_t mod_auth_ldap_cleanup_connection_close(void *param)
  */
 int mod_auth_ldap_check_user_id(request_rec *r)
 {
+    int failures = 0;
     const char **vals = NULL;
     char filtbuf[FILTER_LENGTH];
     mod_auth_ldap_config_t *sec =
@@ -242,6 +243,8 @@ int mod_auth_ldap_check_user_id(request_rec *r)
     if (!sec->have_ldap_url) {
         return DECLINED;
     }
+
+start_over:
 
     /* There is a good AuthLDAPURL, right? */
     if (sec->host) {
@@ -275,6 +278,15 @@ int mod_auth_ldap_check_user_id(request_rec *r)
                                          sec->attributes, filtbuf, sent_pw, &dn, &vals);
     util_ldap_connection_close(ldc);
 
+    /* sanity check - if server is down, retry it up to 5 times */
+    if (result == LDAP_SERVER_DOWN) {
+        util_ldap_connection_destroy(ldc);
+        if (failures++ <= 5) {
+            goto start_over;
+        }
+    }
+
+    /* handle bind failure */
     if (result != LDAP_SUCCESS) {
         ap_log_rerror(APLOG_MARK, APLOG_WARNING|APLOG_NOERRNO, 0, r, 
                       "[%d] auth_ldap authenticate: "

@@ -1,5 +1,8 @@
 Changes with Apache 2.0.43
 
+  *) Get mod_auth_ldap to retry connections on LDAP_SERVER_DOWN.
+     [Thomas Bennett <thomas.bennett@eds.com>, Graham Leggett]
+
   *) Make sure the contents of the WWW-Authenticate header is
      passed on a 4xx error by proxy. Previously all headers
      were dropped, resulting in the browser being unable to
