@@ -14,7 +14,7 @@
       <body id="module-index">
         <xsl:call-template name="top"/>  
 
-        <div id="page-content">
+<!--        <div id="page-content"> -->
         <div id="preamble">
           <h1>
             <xsl:value-of select="title"/>
@@ -23,6 +23,7 @@
           <xsl:apply-templates select="summary" />
         </div>
           
+<!--
         <div id="quickview">
           <ul id="toc">
             <li>
@@ -49,7 +50,9 @@
               </a>
             </li>
           </ul>
-        </div> <!-- /quickview -->
+        </div>
+-->
+        <!-- /quickview -->
 
         <xsl:call-template name="toplink"/>
 
@@ -115,6 +118,7 @@
         </div>
         <!-- /modules section -->
 
+<!--
         <xsl:call-template name="toplink"/>
 
         <div class="section">
@@ -148,15 +152,16 @@
                 </dd>
 
 <xsl:text>
-</xsl:text> <!-- insert line break -->
+</xsl:text>
 
               </xsl:if>
             </xsl:for-each>
           </dl>
         </div>
+-->
         <!-- /obsolete section -->
 
-        </div> <!-- /page-content -->
+<!--        </div> <!- /page-content -->
 
         <xsl:call-template name="bottom"/>
 
