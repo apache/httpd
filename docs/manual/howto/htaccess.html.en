@@ -4,12 +4,38 @@
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-      --><title>Apache Tutorial: .htaccess files - Apache HTTP Server</title><link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" /><link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" /><link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link href="../images/favicon.ico" rel="shortcut icon" /></head><body id="manual-page"><div id="page-header"><p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p><p class="apache">Apache HTTP Server Version 2.1</p><img alt="" src="../images/feather.gif" /></div><div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div><div id="path"><a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentation</a> &gt; <a href="../">Version 2.1</a> &gt; <a href="./">How-To / Tutorials</a></div><div id="page-content"><div id="preamble"><h1>Apache Tutorial: .htaccess files</h1>
+      -->
+<title>Apache Tutorial: .htaccess files - Apache HTTP Server</title>
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
+<link href="../images/favicon.ico" rel="shortcut icon" /></head>
+<body id="manual-page"><div id="page-header">
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p>
+<p class="apache">Apache HTTP Server Version 2.1</p>
+<img alt="" src="../images/feather.gif" /></div>
+<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<div id="path">
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentation</a> &gt; <a href="../">Version 2.1</a> &gt; <a href="./">How-To / Tutorials</a></div><div id="page-content"><div id="preamble"><h1>Apache Tutorial: .htaccess files</h1>
 <p><code>.htaccess</code> files provide a way to make configuration
 changes on a per-directory basis.</p>
-</div><div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#related">.htaccess files</a></li><li><img alt="" src="../images/down.gif" /> <a href="#what">What they are/How to use them</a></li><li><img alt="" src="../images/down.gif" /> <a href="#when">When (not) to use .htaccess files</a></li><li><img alt="" src="../images/down.gif" /> <a href="#how">How directives are applied</a></li><li><img alt="" src="../images/down.gif" /> <a href="#auth">Authentication example</a></li><li><img alt="" src="../images/down.gif" /> <a href="#ssi">Server side includes example</a></li><li><img alt="" src="../images/down.gif" /> <a href="#cgi">CGI example</a></li><li><img alt="" src="../images/down.gif" /> <a href="#troubleshoot">Troubleshooting</a></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="section"><h2><a name="related" id="related">.htaccess files</a></h2>
+</div>
+<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#related">.htaccess files</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#what">What they are/How to use them</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#when">When (not) to use .htaccess files</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#how">How directives are applied</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#auth">Authentication example</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#ssi">Server side includes example</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#cgi">CGI example</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#troubleshoot">Troubleshooting</a></li>
+</ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="related" id="related">.htaccess files</a></h2>
     <table class="related"><tr><th>Related Modules</th><th>Related Directives</th></tr><tr><td><ul><li><code class="module"><a href="../mod/core.html">core</a></code></li><li><code class="module"><a href="../mod/mod_authn_file.html">mod_authn_file</a></code></li><li><code class="module"><a href="../mod/mod_authz_groupfile.html">mod_authz_groupfile</a></code></li><li><code class="module"><a href="../mod/mod_cgi.html">mod_cgi</a></code></li><li><code class="module"><a href="../mod/mod_include.html">mod_include</a></code></li><li><code class="module"><a href="../mod/mod_mime.html">mod_mime</a></code></li></ul></td><td><ul><li><code class="directive"><a href="../mod/core.html#accessfilename">AccessFileName</a></code></li><li><code class="directive"><a href="../mod/core.html#allowoverride">AllowOverride</a></code></li><li><code class="directive"><a href="../mod/core.html#options">Options</a></code></li><li><code class="directive"><a href="../mod/mod_mime.html#addhandler">AddHandler</a></code></li><li><code class="directive"><a href="../mod/core.html#sethandler">SetHandler</a></code></li><li><code class="directive"><a href="../mod/core.html#authtype">AuthType</a></code></li><li><code class="directive"><a href="../mod/core.html#authname">AuthName</a></code></li><li><code class="directive"><a href="../mod/mod_authn_file.html#authuserfile">AuthUserFile</a></code></li><li><code class="directive"><a href="../mod/mod_authz_groupfile.html#authgroupfile">AuthGroupFile</a></code></li><li><code class="directive"><a href="../mod/core.html#require">Require</a></code></li></ul></td></tr></table>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="section"><h2><a name="what" id="what">What they are/How to use them</a></h2>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="what" id="what">What they are/How to use them</a></h2>
 
 
     <p><code>.htaccess</code> files (or "distributed configuration files")
@@ -63,7 +89,9 @@ changes on a per-directory basis.</p>
     <p>If you are unsure whether a particular directive is permitted in a
     <code>.htaccess</code> file, look at the documentation for that
     directive, and check the Context line for ".htaccess."</p>
-    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="section"><h2><a name="when" id="when">When (not) to use .htaccess files</a></h2>
+    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="when" id="when">When (not) to use .htaccess files</a></h2>
     
 
     <p>In general, you should never use <code>.htaccess</code> files unless
@@ -160,7 +188,9 @@ changes on a per-directory basis.</p>
     <div class="example"><p><code>
       AllowOverride None
     </code></p></div>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="section"><h2><a name="how" id="how">How directives are applied</a></h2>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="how" id="how">How directives are applied</a></h2>
 
     <p>The configuration directives found in a <code>.htaccess</code> file
     are applied to the directory in which the <code>.htaccess</code> file
@@ -198,7 +228,9 @@ changes on a per-directory basis.</p>
     permitted, as only <code>Options Includes</code> is in effect, which
     completely overrides any earlier setting that may have been in
     place.</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="section"><h2><a name="auth" id="auth">Authentication example</a></h2>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="auth" id="auth">Authentication example</a></h2>
 
     <p>If you jumped directly to this part of the document to find out how
     to do authentication, it is important to note one thing. There is a
@@ -233,7 +265,9 @@ changes on a per-directory basis.</p>
 
     <p>Please see the <a href="auth.html">authentication tutorial</a> for a
     more complete discussion of authentication and authorization.</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="section"><h2><a name="ssi" id="ssi">Server side includes example</a></h2>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="ssi" id="ssi">Server side includes example</a></h2>
 
     <p>Another common use of <code>.htaccess</code> files is to enable
     Server Side Includes for a particular directory. This may be done with
@@ -252,7 +286,9 @@ changes on a per-directory basis.</p>
 
     <p>Please see the <a href="ssi.html">SSI tutorial</a> for a more
     complete discussion of server-side includes.</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="section"><h2><a name="cgi" id="cgi">CGI example</a></h2>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="cgi" id="cgi">CGI example</a></h2>
 
     <p>Finally, you may wish to use a <code>.htaccess</code> file to permit
     the execution of CGI programs in a particular directory. This may be
@@ -278,7 +314,9 @@ changes on a per-directory basis.</p>
     <p>Please see the <a href="cgi.html">CGI tutorial</a> for a more
     complete discussion of CGI programming and configuration.</p>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="section"><h2><a name="troubleshoot" id="troubleshoot">Troubleshooting</a></h2>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="troubleshoot" id="troubleshoot">Troubleshooting</a></h2>
 
     <p>When you put configuration directives in a <code>.htaccess</code>
     file, and you don't get the desired effect, there are a number of
@@ -298,4 +336,8 @@ changes on a per-directory basis.</p>
     Alternately, it may tell you that you had a syntax error, which you
     will then need to fix.</p>
 
-  </div></div><div id="footer"><p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p><p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div></body></html>
+  </div></div>
+<div id="footer">
+<p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div>
+</body></html>
