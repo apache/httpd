@@ -1,5 +1,5 @@
 Apache HTTP Server 2.0 Documentation Status File.
-Last modified: $Date: 2002/09/16 20:08:36 $
+Last modified: $Date: 2002/09/16 23:41:12 $
 
 If you are interested in helping accomplish some of the tasks on this
 list or otherwise improving the documentation, please join the
@@ -22,6 +22,8 @@ Things That Need Fixing
     - Some of the nested <dl>s in mod/mod_include.xml are not working
       in mozilla.  Probably enclosing some of the bare paragraphs
       in <p> would fix it.
+    - add ids to non-directive sections of the module docs, so they
+      get a chance to be linked in the sidebar
 
 - Windows platform docs are in desperate need of rewrites/updates for 2.0.
     - Bill Rowe and Bill Stoddard are good contacts for tech questions.
