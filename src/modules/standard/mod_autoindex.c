@@ -1176,7 +1176,8 @@ static void output_directories(struct ent **ar, int n,
 		    ap_rputs(time_str, r);
 		}
 		else {
-		    ap_rputs("                 ", r);
+		    /*Length="22-Feb-1998 23:42  " (see 4 lines above) */
+		    ap_rputs("                   ", r);
 		}
 	    }
 	    if (!(autoindex_opts & SUPPRESS_SIZE)) {
