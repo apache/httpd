@@ -101,6 +101,14 @@ SOURCE=..\ap\ap_snprintf.c
 # End Source File
 # Begin Source File
 
+SOURCE=..\ap\ap_sha1.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\ap\ap_checkpass.c
+# End Source File
+# Begin Source File
+
 SOURCE=.\htpasswd.c
 # End Source File
 # End Target

@@ -106,5 +106,13 @@ SOURCE=.\ap_snprintf.c
 
 SOURCE=.\ap_md5c.c
 # End Source File
+# Begin Source File
+
+SOURCE=.\ap_sha1.c
+# End Source File
+# Begin Source File
+
+SOURCE=.\ap_checkpass.c
+# End Source File
 # End Target
 # End Project
