@@ -274,9 +274,9 @@ static apr_bucket *find_start_sequence(apr_bucket *dptr, include_ctx_t *ctx,
         while (c < buf + len) {
             if (*c == str[ctx->parse_pos]) {
                 if (ctx->state == PRE_HEAD) {
-                    ctx->state             = PARSE_HEAD;
+                    ctx->state = PARSE_HEAD;
                     ctx->head_start_bucket = dptr;
-                    ctx->head_start_index  = c - buf;
+                    ctx->head_start_index = c - buf;
                 }
                 ctx->parse_pos++;
             }
@@ -284,11 +284,11 @@ static apr_bucket *find_start_sequence(apr_bucket *dptr, include_ctx_t *ctx,
                 if (str[ctx->parse_pos] == '\0') {
                     /* We want to split the bucket at the '<'. */
                     ctx->bytes_parsed++;
-                    ctx->state            = PARSE_DIRECTIVE;
-                    ctx->tag_length       = 0;
-                    ctx->parse_pos        = 0;
+                    ctx->state = PARSE_DIRECTIVE;
+                    ctx->tag_length = 0;
+                    ctx->parse_pos = 0;
                     ctx->tag_start_bucket = dptr;
-                    ctx->tag_start_index  = c - buf;
+                    ctx->tag_start_index = c - buf;
                     if (ctx->head_start_index > 0) {
                         start_index = (c - buf) - ctx->head_start_index;
                         apr_bucket_split(ctx->head_start_bucket, 
@@ -296,10 +296,10 @@ static apr_bucket *find_start_sequence(apr_bucket *dptr, include_ctx_t *ctx,
                         tmp_bkt = APR_BUCKET_NEXT(ctx->head_start_bucket);
                         if (dptr == ctx->head_start_bucket) {
                             ctx->tag_start_bucket = tmp_bkt;
-                            ctx->tag_start_index  = start_index;
+                            ctx->tag_start_index = start_index;
                         }
                         ctx->head_start_bucket = tmp_bkt;
-                        ctx->head_start_index  = 0;
+                        ctx->head_start_index = 0;
                     }
                     return ctx->head_start_bucket;
                 }
@@ -311,16 +311,16 @@ static apr_bucket *find_start_sequence(apr_bucket *dptr, include_ctx_t *ctx,
                      */
                     *do_cleanup = 1;
                     if (*c == str[0]) {
-                        ctx->parse_pos         = 1;
-                        ctx->state             = PARSE_HEAD;
+                        ctx->parse_pos = 1;
+                        ctx->state = PARSE_HEAD;
                         ctx->head_start_bucket = dptr;
-                        ctx->head_start_index  = c - buf;
+                        ctx->head_start_index = c - buf;
                     }
                     else {
-                        ctx->parse_pos         = 0;
-                        ctx->state             = PRE_HEAD;
+                        ctx->parse_pos = 0;
+                        ctx->state = PRE_HEAD;
                         ctx->head_start_bucket = NULL;
-                        ctx->head_start_index  = 0;
+                        ctx->head_start_index = 0;
                     }
                 }
             }
@@ -332,7 +332,8 @@ static apr_bucket *find_start_sequence(apr_bucket *dptr, include_ctx_t *ctx,
     return NULL;
 }
 
-static apr_bucket *find_end_sequence(apr_bucket *dptr, include_ctx_t *ctx, apr_bucket_brigade *bb)
+static apr_bucket *find_end_sequence(apr_bucket *dptr, include_ctx_t *ctx, 
+                                     apr_bucket_brigade *bb)
 {
     apr_size_t len;
     const char *c;
@@ -435,16 +436,17 @@ static apr_bucket *find_end_sequence(apr_bucket *dptr, include_ctx_t *ctx, apr_b
                         /* The reason for this, is that we need to make sure 
                          * that we catch cases like --->.  This makes the 
                          * second check after the original check fails.
-                         * If parse_pos was already 0 then we already checked this.
+                         * If parse_pos was already 0 then we already checked 
+                         * this.
                          */
                          ctx->tag_length += ctx->parse_pos;
 
                          if (*c == str[0]) {
-                             ctx->state             = PARSE_TAIL;
+                             ctx->state = PARSE_TAIL;
                              ctx->tail_start_bucket = dptr;
-                             ctx->tail_start_index  = c - buf;
-                             ctx->tag_length       += ctx->parse_pos;
-                             ctx->parse_pos         = 1;
+                             ctx->tail_start_index = c - buf;
+                             ctx->tag_length += ctx->parse_pos;
+                             ctx->parse_pos = 1;
                          }
                          else {
                              if (ctx->tag_length > ctx->directive_length) {
@@ -455,9 +457,9 @@ static apr_bucket *find_end_sequence(apr_bucket *dptr, include_ctx_t *ctx, apr_b
                                  ctx->directive_length += ctx->parse_pos;
                              }
                              ctx->tail_start_bucket = NULL;
-                             ctx->tail_start_index  = 0;
-                             ctx->tag_length       += ctx->parse_pos;
-                             ctx->parse_pos         = 0;
+                             ctx->tail_start_index = 0;
+                             ctx->tag_length += ctx->parse_pos;
+                             ctx->parse_pos = 0;
                          }
                     }
                 }
@@ -487,7 +489,8 @@ static apr_status_t get_combined_directive (include_ctx_t *ctx,
 
     /* If the tag length is longer than the tmp buffer, allocate space. */
     if (ctx->tag_length > tmp_buf_size-1) {
-        if ((ctx->combined_tag = apr_pcalloc(r->pool, ctx->tag_length + 1)) == NULL) {
+        if ((ctx->combined_tag = apr_pcalloc(r->pool, 
+             ctx->tag_length + 1)) == NULL) {
             return (APR_ENOMEM);
         }
     }     /* Else, just use the temp buffer. */
@@ -497,7 +500,8 @@ static apr_status_t get_combined_directive (include_ctx_t *ctx,
 
     /* Prime the pump. Start at the beginning of the tag... */
     dptr = ctx->tag_start_bucket;
-    apr_bucket_read (dptr, &tmp_from, &tmp_from_len, 0);  /* Read the bucket... */
+    /* Read the bucket... */
+    apr_bucket_read (dptr, &tmp_from, &tmp_from_len, 0);
 
     /* Adjust the pointer to start at the tag within the bucket... */
     if (dptr == ctx->tail_start_bucket) {
@@ -640,7 +644,7 @@ otilde\365oslash\370ugrave\371uacute\372yacute\375"     /* 6 */
 #define SKIP_TAG_WHITESPACE(ptr) while ((*ptr != '\0') && (apr_isspace (*ptr))) ptr++
 
 static void ap_ssi_get_tag_and_value(include_ctx_t *ctx, char **tag,
-                              char **tag_val, int dodecode)
+                                     char **tag_val, int dodecode)
 {
     char *c = ctx->curr_tag_pos;
     int   shift_val = 0; 
@@ -660,19 +664,20 @@ static void ap_ssi_get_tag_and_value(include_ctx_t *ctx, char **tag,
             *tag = NULL;
         }
         ctx->curr_tag_pos = c;
-        return;      /* We have found the end of the buffer. */
-    }                /* We might have a tag, but definitely no value. */
+        return;                      /* We have found the end of the buffer. */
+    }                       /* We might have a tag, but definitely no value. */
 
     if (*c == '=') {
-        *c++ = '\0';     /* Overwrite the '=' with a terminating byte after tag. */
+        *c++ = '\0'; /* Overwrite the '=' with a terminating byte after tag. */
     }
-    else {               /* Try skipping WS to find the '='. */
-        *c++ = '\0';     /* Terminate the tag... */
+    else {                               /* Try skipping WS to find the '='. */
+        *c++ = '\0';                                 /* Terminate the tag... */
         SKIP_TAG_WHITESPACE(c);
         
-        if (*c != '=') {     /* There needs to be an equal sign if there's a value. */
+        /* There needs to be an equal sign if there's a value. */
+        if (*c != '=') {
             ctx->curr_tag_pos = c;
-            return;       /* There apparently was no value. */
+            return; /* There apparently was no value. */
         }
         else {
             c++; /* Skip the equals sign. */
@@ -680,7 +685,8 @@ static void ap_ssi_get_tag_and_value(include_ctx_t *ctx, char **tag,
     }
 
     SKIP_TAG_WHITESPACE(c);
-    if (*c == '"' || *c == '\'') {    /* Allow quoted values for space inclusion. */
+    if (*c == '"' || *c == '\'') { 
+        /* Allow quoted values for space inclusion. */
         term = *c++;     /* NOTE: This does not pass the quotes on return. */
     }
     
@@ -718,7 +724,7 @@ static void ap_ssi_get_tag_and_value(include_ctx_t *ctx, char **tag,
  * Do variable substitution on strings
  */
 static void ap_ssi_parse_string(request_rec *r, const char *in, char *out,
-                         size_t length, int leave_name)
+                                size_t length, int leave_name)
 {
     char ch;
     char *next = out;
@@ -730,11 +736,11 @@ static void ap_ssi_parse_string(request_rec *r, const char *in, char *out,
     while ((ch = *in++) != '\0') {
         switch (ch) {
         case '\\':
-	    if (next == end_out) {
-		/* truncated */
-		*next = '\0';
-		return;
-	    }
+            if (next == end_out) {
+                /* truncated */
+                *next = '\0';
+                return;
+            }
             if (*in == '$') {
                 *next++ = *in++;
             }
@@ -744,72 +750,74 @@ static void ap_ssi_parse_string(request_rec *r, const char *in, char *out,
             break;
         case '$':
             {
-		const char *start_of_var_name;
-		char *end_of_var_name;	/* end of var name + 1 */
-		const char *expansion, *temp_end, *val;
+                const char *start_of_var_name;
+                char *end_of_var_name;        /* end of var name + 1 */
+                const char *expansion, *temp_end, *val;
                 char        tmp_store;
-		size_t l;
+                size_t l;
 
-		/* guess that the expansion won't happen */
-		expansion = in - 1;
-		if (*in == '{') {
-		    ++in;
-		    start_of_var_name = in;
-		    in = ap_strchr_c(in, '}');
-		    if (in == NULL) {
+                /* guess that the expansion won't happen */
+                expansion = in - 1;
+                if (*in == '{') {
+                    ++in;
+                    start_of_var_name = in;
+                    in = ap_strchr_c(in, '}');
+                    if (in == NULL) {
                         ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR,
-				    0, r, "Missing '}' on variable \"%s\"",
-				    expansion);
+                                      0, r, "Missing '}' on variable \"%s\"",
+                                      expansion);
                         *next = '\0';
                         return;
                     }
-		    temp_end = in;
-                    end_of_var_name = (char *)temp_end;
-		    ++in;
-		}
-		else {
-		    start_of_var_name = in;
-		    while (apr_isalnum(*in) || *in == '_') {
-			++in;
-		    }
                     temp_end = in;
-		    end_of_var_name = (char *)temp_end;
-		}
-		/* what a pain, too bad there's no table_getn where you can
-		 * pass a non-nul terminated string */
-		l = end_of_var_name - start_of_var_name;
-		if (l != 0) {
+                    end_of_var_name = (char *)temp_end;
+                    ++in;
+                }
+                else {
+                    start_of_var_name = in;
+                    while (apr_isalnum(*in) || *in == '_') {
+                        ++in;
+                    }
+                    temp_end = in;
+                    end_of_var_name = (char *)temp_end;
+                }
+                /* what a pain, too bad there's no table_getn where you can
+                 * pass a non-nul terminated string */
+                l = end_of_var_name - start_of_var_name;
+                if (l != 0) {
                     tmp_store        = *end_of_var_name;
                     *end_of_var_name = '\0';
                     val = get_include_var(r, start_of_var_name);
                     *end_of_var_name = tmp_store;
 
-		    if (val) {
-			expansion = val;
-			l = strlen(expansion);
-		    }
-		    else if (leave_name) {
-			l = in - expansion;
-		    }
-		    else {
-			break;	/* no expansion to be done */
-		    }
-		}
-		else {
-		    /* zero-length variable name causes just the $ to be copied */
-		    l = 1;
-		}
-		l = ((int)l > end_out - next) ? (end_out - next) : l;
-		memcpy(next, expansion, l);
-		next += l;
+                    if (val) {
+                        expansion = val;
+                        l = strlen(expansion);
+                    }
+                    else if (leave_name) {
+                        l = in - expansion;
+                    }
+                    else {
+                        /* no expansion to be done */
+                        break;
+                    }
+                }
+                else {
+                    /* zero-length variable name causes just the $ to be 
+                     * copied */
+                    l = 1;
+                }
+                l = ((int)l > end_out - next) ? (end_out - next) : l;
+                memcpy(next, expansion, l);
+                next += l;
                 break;
             }
         default:
-	    if (next == end_out) {
-		/* truncated */
-		*next = '\0';
-		return;
-	    }
+            if (next == end_out) {
+                /* truncated */
+                *next = '\0';
+                return;
+            }
             *next++ = ch;
             break;
         }
@@ -829,14 +837,14 @@ static int is_only_below(const char *path)
 {
 #ifdef HAVE_DRIVE_LETTERS
     if (path[1] == ':') 
-	return 0;
+        return 0;
 #endif
 #ifdef NETWARE
     if (strchr(path, ':')
-	return 0;
+        return 0;
 #endif
     if (path[0] == '/') {
-	return 0;
+        return 0;
     }
     while (*path) {
         int dots = 0;
@@ -860,8 +868,9 @@ static int is_only_below(const char *path)
     return 1;
 }
 
-static int handle_include(include_ctx_t *ctx, apr_bucket_brigade **bb, request_rec *r,
-                          ap_filter_t *f, apr_bucket *head_ptr, apr_bucket **inserted_head)
+static int handle_include(include_ctx_t *ctx, apr_bucket_brigade **bb, 
+                         request_rec *r, ap_filter_t *f, apr_bucket *head_ptr, 
+                         apr_bucket **inserted_head)
 {
     char *tag     = NULL;
     char *tag_val = NULL;
@@ -885,10 +894,11 @@ static int handle_include(include_ctx_t *ctx, apr_bucket_brigade **bb, request_r
                 request_rec *rr = NULL;
                 char *error_fmt = NULL;
 
-                ap_ssi_parse_string(r, tag_val, parsed_string, sizeof(parsed_string), 0);
+                ap_ssi_parse_string(r, tag_val, parsed_string, 
+                                    sizeof(parsed_string), 0);
                 if (tag[0] == 'f') {
                     /* be safe; only files in this directory or below allowed */
-    		if (!is_only_below(parsed_string)) {
+                    if (!is_only_below(parsed_string)) {
                         error_fmt = "unable to include file \"%s\" "
                                     "in parsed file %s";
                     }
@@ -904,8 +914,9 @@ static int handle_include(include_ctx_t *ctx, apr_bucket_brigade **bb, request_r
                     error_fmt = "unable to include \"%s\" in parsed file %s";
                 }
 
-                if (!error_fmt && (ctx->flags & FLAG_NO_EXEC) && rr->content_type
-                    && (strncmp(rr->content_type, "text/", 5))) {
+                if (!error_fmt && (ctx->flags & FLAG_NO_EXEC) && 
+                    rr->content_type && 
+                    (strncmp(rr->content_type, "text/", 5))) {
                     error_fmt = "unable to include potential exec \"%s\" "
                         "in parsed file %s";
                 }
@@ -938,8 +949,9 @@ static int handle_include(include_ctx_t *ctx, apr_bucket_brigade **bb, request_r
                         request_rec *q;
                         for (q = p; q != NULL; q = q->prev) {
                             if ((q->filename && rr->filename && 
-                                    (strcmp(q->filename, rr->filename) == 0)) ||
-                                ((*q->uri == '/') && (strcmp(q->uri, rr->uri) == 0)))
+                                (strcmp(q->filename, rr->filename) == 0)) ||
+                                ((*q->uri == '/') && 
+                                 (strcmp(q->uri, rr->uri) == 0)))
                             {
                                 founddupe = 1;
                                 break;
@@ -953,11 +965,12 @@ static int handle_include(include_ctx_t *ctx, apr_bucket_brigade **bb, request_r
                     }
                 }
 
-    	    /* See the Kludge in send_parsed_file for why */
+                /* See the Kludge in send_parsed_file for why */
                 /* Basically, it puts a bread crumb in here, then looks */
                 /*   for the crumb later to see if its been here.       */
-    	    if (rr) 
-    		ap_set_module_config(rr->request_config, &include_module, r);
+                if (rr) 
+                    ap_set_module_config(rr->request_config, 
+                                         &include_module, r);
 
                 if (!error_fmt) {
                     int rv;
@@ -973,20 +986,23 @@ static int handle_include(include_ctx_t *ctx, apr_bucket_brigade **bb, request_r
                             /* let's not clutter the log on a busy server */
                             loglevel = APLOG_INFO; 
                         }
-                        error_fmt = "unable to include \"%s\" in parsed file %s"; 
+                        error_fmt = 
+                                  "unable to include \"%s\" in parsed file %s"; 
                     }
                 }
                 if (error_fmt) {
                     ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|loglevel,
-    			    0, r, error_fmt, tag_val, r->filename);
-                    CREATE_ERROR_BUCKET(ctx, tmp_buck, head_ptr, *inserted_head);
+                                  0, r, error_fmt, tag_val, r->filename);
+                    CREATE_ERROR_BUCKET(ctx, tmp_buck, head_ptr, 
+                                        *inserted_head);
                 }
 
-    	    /* destroy the sub request if it's not a nested include (crumb) */
+                /* destroy the sub request if it's not a nested include 
+                 * (crumb) */
                 if (rr != NULL
-    		&& ap_get_module_config(rr->request_config, &include_module)
-    		    != NESTED_INCLUDE_MAGIC) {
-    		ap_destroy_sub_req(rr);
+                    && ap_get_module_config(rr->request_config, 
+                       &include_module) != NESTED_INCLUDE_MAGIC) {
+                    ap_destroy_sub_req(rr);
                 }
             }
             else {
@@ -1001,8 +1017,9 @@ static int handle_include(include_ctx_t *ctx, apr_bucket_brigade **bb, request_r
 }
 
 
-static int handle_echo(include_ctx_t *ctx, apr_bucket_brigade **bb, request_rec *r,
-                       ap_filter_t *f, apr_bucket *head_ptr, apr_bucket **inserted_head)
+static int handle_echo(include_ctx_t *ctx, apr_bucket_brigade **bb, 
+                       request_rec *r, ap_filter_t *f, apr_bucket *head_ptr, 
+                       apr_bucket **inserted_head)
 {
     char       *tag       = NULL;
     char       *tag_val   = NULL;
@@ -1041,10 +1058,12 @@ static int handle_echo(include_ctx_t *ctx, apr_bucket_brigade **bb, request_rec 
                     }
 
                     e_len = strlen(echo_text);
-                    tmp_buck = apr_bucket_heap_create(echo_text, e_len, 1, &e_wrt);
+                    tmp_buck = apr_bucket_heap_create(echo_text, e_len, 1, 
+                                                      &e_wrt);
                 }
                 else {
-                    tmp_buck = apr_bucket_immortal_create("(none)", sizeof("(none)")-1);
+                    tmp_buck = apr_bucket_immortal_create("(none)", 
+                                                          sizeof("(none)")-1);
                 }
                 APR_BUCKET_INSERT_BEFORE(head_ptr, tmp_buck);
                 if (*inserted_head == NULL) {
@@ -1057,9 +1076,10 @@ static int handle_echo(include_ctx_t *ctx, apr_bucket_brigade **bb, request_rec 
                 else if (!strcasecmp(tag_val, "entity")) encode = E_ENTITY;
                 else {
                     ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
-                                  "unknown value \"%s\" to parameter \"encoding\" of "
-                                  "tag echo in %s", tag_val, r->filename);
-                    CREATE_ERROR_BUCKET(ctx, tmp_buck, head_ptr, *inserted_head);
+                           "unknown value \"%s\" to parameter \"encoding\" of "
+                           "tag echo in %s", tag_val, r->filename);
+                    CREATE_ERROR_BUCKET(ctx, tmp_buck, head_ptr, 
+                                        *inserted_head);
                 }
             }
             else {
@@ -1077,8 +1097,9 @@ static int handle_echo(include_ctx_t *ctx, apr_bucket_brigade **bb, request_rec 
 /* error and tf must point to a string with room for at 
  * least MAX_STRING_LEN characters 
  */
-static int handle_config(include_ctx_t *ctx, apr_bucket_brigade **bb, request_rec *r,
-                         ap_filter_t *f, apr_bucket *head_ptr, apr_bucket **inserted_head)
+static int handle_config(include_ctx_t *ctx, apr_bucket_brigade **bb, 
+                         request_rec *r, ap_filter_t *f, apr_bucket *head_ptr, 
+                         apr_bucket **inserted_head)
 {
     char *tag     = NULL;
     char *tag_val = NULL;
@@ -1098,20 +1119,26 @@ static int handle_config(include_ctx_t *ctx, apr_bucket_brigade **bb, request_re
                 }
             }
             if (!strcmp(tag, "errmsg")) {
-                ap_ssi_parse_string(r, tag_val, ctx->error_str, MAX_STRING_LEN, 0);
+                ap_ssi_parse_string(r, tag_val, ctx->error_str, 
+                                    MAX_STRING_LEN, 0);
                 ctx->error_length = strlen(ctx->error_str);
             }
             else if (!strcmp(tag, "timefmt")) {
                 apr_time_t date = r->request_time;
 
-                ap_ssi_parse_string(r, tag_val, ctx->time_str, MAX_STRING_LEN, 0);
-                apr_table_setn(env, "DATE_LOCAL", ap_ht_time(r->pool, date, ctx->time_str, 0));
-                apr_table_setn(env, "DATE_GMT", ap_ht_time(r->pool, date, ctx->time_str, 1));
+                ap_ssi_parse_string(r, tag_val, ctx->time_str, 
+                                    MAX_STRING_LEN, 0);
+                apr_table_setn(env, "DATE_LOCAL", ap_ht_time(r->pool, date, 
+                               ctx->time_str, 0));
+                apr_table_setn(env, "DATE_GMT", ap_ht_time(r->pool, date, 
+                               ctx->time_str, 1));
                 apr_table_setn(env, "LAST_MODIFIED",
-                               ap_ht_time(r->pool, r->finfo.mtime, ctx->time_str, 0));
+                               ap_ht_time(r->pool, r->finfo.mtime, 
+                               ctx->time_str, 0));
             }
             else if (!strcmp(tag, "sizefmt")) {
-                ap_ssi_parse_string(r, tag_val, parsed_string, sizeof(parsed_string), 0);
+                ap_ssi_parse_string(r, tag_val, parsed_string, 
+                                    sizeof(parsed_string), 0);
                 decodehtml(parsed_string);
                 if (!strcmp(parsed_string, "bytes")) {
                     ctx->flags |= FLAG_SIZE_IN_BYTES;
@@ -1121,11 +1148,11 @@ static int handle_config(include_ctx_t *ctx, apr_bucket_brigade **bb, request_re
                 }
             }
             else {
-                apr_bucket  *tmp_buck;
+                apr_bucket *tmp_buck;
 
                 ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
-                            "unknown parameter \"%s\" to tag config in %s",
-                            tag, r->filename);
+                              "unknown parameter \"%s\" to tag config in %s",
+                              tag, r->filename);
                 CREATE_ERROR_BUCKET(ctx, tmp_buck, head_ptr, *inserted_head);
             }
         }
@@ -1158,9 +1185,9 @@ static int find_file(request_rec *r, const char *directive, const char *tag,
 
             if (rr->status == HTTP_OK && rr->finfo.filetype != 0) {
                 to_send = rr->filename;
-                if ((rv = apr_stat(finfo, to_send, APR_FINFO_GPROT 
-                                | APR_FINFO_MIN, rr->pool)) != APR_SUCCESS
-                                                     && rv != APR_INCOMPLETE) {
+                if ((rv = apr_stat(finfo, to_send, 
+                    APR_FINFO_GPROT | APR_FINFO_MIN, rr->pool)) != APR_SUCCESS
+                    && rv != APR_INCOMPLETE) {
                     error_fmt = "unable to get information about \"%s\" "
                         "in parsed file %s";
                 }
@@ -1209,8 +1236,9 @@ static int find_file(request_rec *r, const char *directive, const char *tag,
     }
 }
 
-static int handle_fsize(include_ctx_t *ctx, apr_bucket_brigade **bb, request_rec *r,
-                        ap_filter_t *f, apr_bucket *head_ptr, apr_bucket **inserted_head)
+static int handle_fsize(include_ctx_t *ctx, apr_bucket_brigade **bb, 
+                        request_rec *r, ap_filter_t *f, apr_bucket *head_ptr, 
+                        apr_bucket **inserted_head)
 {
     char *tag     = NULL;
     char *tag_val = NULL;
@@ -1232,7 +1260,8 @@ static int handle_fsize(include_ctx_t *ctx, apr_bucket_brigade **bb, request_rec
                 }
             }
             else {
-                ap_ssi_parse_string(r, tag_val, parsed_string, sizeof(parsed_string), 0);
+                ap_ssi_parse_string(r, tag_val, parsed_string, 
+                                    sizeof(parsed_string), 0);
                 if (!find_file(r, "fsize", tag, parsed_string, &finfo)) {
                     char buff[50];
 
@@ -1244,7 +1273,8 @@ static int handle_fsize(include_ctx_t *ctx, apr_bucket_brigade **bb, request_rec
                         int l, x, pos = 0;
                         char tmp_buff[50];
 
-                        apr_snprintf(tmp_buff, sizeof(tmp_buff), "%" APR_OFF_T_FMT, finfo.size);
+                        apr_snprintf(tmp_buff, sizeof(tmp_buff), 
+                                     "%" APR_OFF_T_FMT, finfo.size);
                         l = strlen(tmp_buff);    /* grrr */
                         for (x = 0; x < l; x++) {
                             if (x && (!((l - x) % 3))) {
@@ -1263,7 +1293,8 @@ static int handle_fsize(include_ctx_t *ctx, apr_bucket_brigade **bb, request_rec
                     }
                 }
                 else {
-                    CREATE_ERROR_BUCKET(ctx, tmp_buck, head_ptr, *inserted_head);
+                    CREATE_ERROR_BUCKET(ctx, tmp_buck, head_ptr, 
+                                        *inserted_head);
                 }
             }
         }
@@ -1271,8 +1302,9 @@ static int handle_fsize(include_ctx_t *ctx, apr_bucket_brigade **bb, request_rec
     return 0;
 }
 
-static int handle_flastmod(include_ctx_t *ctx, apr_bucket_brigade **bb, request_rec *r,
-                           ap_filter_t *f, apr_bucket *head_ptr, apr_bucket **inserted_head)
+static int handle_flastmod(include_ctx_t *ctx, apr_bucket_brigade **bb, 
+                           request_rec *r, ap_filter_t *f, 
+                           apr_bucket *head_ptr, apr_bucket **inserted_head)
 {
     char *tag     = NULL;
     char *tag_val = NULL;
@@ -1294,7 +1326,8 @@ static int handle_flastmod(include_ctx_t *ctx, apr_bucket_brigade **bb, request_
                 }
             }
             else {
-                ap_ssi_parse_string(r, tag_val, parsed_string, sizeof(parsed_string), 0);
+                ap_ssi_parse_string(r, tag_val, parsed_string, 
+                                    sizeof(parsed_string), 0);
                 if (!find_file(r, "flastmod", tag, parsed_string, &finfo)) {
                     char *t_val;
 
@@ -1308,7 +1341,8 @@ static int handle_flastmod(include_ctx_t *ctx, apr_bucket_brigade **bb, request_
                     }
                 }
                 else {
-                    CREATE_ERROR_BUCKET(ctx, tmp_buck, head_ptr, *inserted_head);
+                    CREATE_ERROR_BUCKET(ctx, tmp_buck, head_ptr, 
+                                        *inserted_head);
                 }
             }
         }
@@ -1346,8 +1380,8 @@ struct token {
 /* there is an implicit assumption here that string is at most MAX_STRING_LEN-1
  * characters long...
  */
-static const char *get_ptoken(request_rec *r, const char *string, struct token *token,
-                              int *unmatched)
+static const char *get_ptoken(request_rec *r, const char *string, 
+                              struct token *token, int *unmatched)
 {
     char ch;
     int next = 0;
@@ -1519,7 +1553,7 @@ static int parse_expr(request_rec *r, const char *expr, int *was_error,
         struct parse_node *left, *right, *parent;
         struct token token;
         int value, done;
-    }         *root, *current, *new;
+    } *root, *current, *new;
     const char *parse;
     char buffer[MAX_STRING_LEN];
     apr_pool_t *expr_pool;
@@ -1534,7 +1568,7 @@ static int parse_expr(request_rec *r, const char *expr, int *was_error,
     }
     root = current = (struct parse_node *) NULL;
     if (apr_pool_create(&expr_pool, r->pool) != APR_SUCCESS)
-		return 0;
+                return 0;
 
     /* Create Parse Tree */
     while (1) {
@@ -1542,14 +1576,16 @@ static int parse_expr(request_rec *r, const char *expr, int *was_error,
                                            sizeof(struct parse_node));
         new->parent = new->left = new->right = (struct parse_node *) NULL;
         new->done = 0;
-        if ((parse = get_ptoken(r, parse, &new->token, was_unmatched)) == (char *) NULL) {
+        if ((parse = get_ptoken(r, parse, &new->token, was_unmatched)) == 
+            (char *) NULL) {
             break;
         }
         switch (new->token.type) {
 
         case token_string:
 #ifdef DEBUG_INCLUDE
-            debug_pos += sprintf (&debug[debug_pos], "     Token: string (%s)\n",
+            debug_pos += sprintf (&debug[debug_pos], 
+                                  "     Token: string (%s)\n", 
                                   new->token.value);
 #endif
             if (current == (struct parse_node *) NULL) {
@@ -1561,12 +1597,12 @@ static int parse_expr(request_rec *r, const char *expr, int *was_error,
                 if (current->token.value[0] != '\0') {
                     strncat(current->token.value, " ",
                          sizeof(current->token.value)
-			    - strlen(current->token.value) - 1);
+                            - strlen(current->token.value) - 1);
                 }
                 strncat(current->token.value, new->token.value,
                          sizeof(current->token.value)
-			    - strlen(current->token.value) - 1);
-		current->token.value[sizeof(current->token.value) - 1] = '\0';
+                            - strlen(current->token.value) - 1);
+                current->token.value[sizeof(current->token.value) - 1] = '\0';
                 break;
             case token_eq:
             case token_ne:
@@ -1647,9 +1683,9 @@ static int parse_expr(request_rec *r, const char *expr, int *was_error,
 
         case token_not:
 #ifdef DEBUG_INCLUDE
-            memcpy (&debug[debug_pos], "     Token: not\n",
-                    sizeof ("     Token: not\n"));
-            debug_pos += sizeof ("     Token: not\n");
+            memcpy(&debug[debug_pos], "     Token: not\n",
+                    sizeof("     Token: not\n"));
+            debug_pos += sizeof("     Token: not\n");
 #endif
             if (current == (struct parse_node *) NULL) {
                 root = current = new;
@@ -1671,8 +1707,8 @@ static int parse_expr(request_rec *r, const char *expr, int *was_error,
                     break;
                 default:
                     ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
-                                "Invalid expression \"%s\" in file %s",
-                                expr, r->filename);
+                                  "Invalid expression \"%s\" in file %s",
+                                  expr, r->filename);
                     *was_error = 1;
                     goto RETURN;
                 }
@@ -1699,14 +1735,14 @@ static int parse_expr(request_rec *r, const char *expr, int *was_error,
         case token_le:
         case token_lt:
 #ifdef DEBUG_INCLUDE
-            memcpy (&debug[debug_pos], "     Token: eq/ne/ge/gt/le/lt\n",
-                    sizeof ("     Token: eq/ne/ge/gt/le/lt\n"));
-            debug_pos += sizeof ("     Token: eq/ne/ge/gt/le/lt\n");
+            memcpy(&debug[debug_pos], "     Token: eq/ne/ge/gt/le/lt\n",
+                    sizeof("     Token: eq/ne/ge/gt/le/lt\n"));
+            debug_pos += sizeof("     Token: eq/ne/ge/gt/le/lt\n");
 #endif
             if (current == (struct parse_node *) NULL) {
                 ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
-                            "Invalid expression \"%s\" in file %s",
-                            expr, r->filename);
+                              "Invalid expression \"%s\" in file %s",
+                              expr, r->filename);
                 *was_error = 1;
                 goto RETURN;
             }
@@ -1767,7 +1803,7 @@ static int parse_expr(request_rec *r, const char *expr, int *was_error,
             if (current == (struct parse_node *) NULL) {
                 ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
                             "Unmatched ')' in \"%s\" in file %s",
-			    expr, r->filename);
+                            expr, r->filename);
                 *was_error = 1;
                 goto RETURN;
             }
@@ -1836,8 +1872,10 @@ static int parse_expr(request_rec *r, const char *expr, int *was_error,
                     sizeof ("     Evaluate string\n"));
             debug_pos += sizeof ("     Evaluate string\n");
 #endif
-            ap_ssi_parse_string(r, current->token.value, buffer, sizeof(buffer), 0);
-	    apr_cpystrn(current->token.value, buffer, sizeof(current->token.value));
+            ap_ssi_parse_string(r, current->token.value, buffer, 
+                                sizeof(buffer), 0);
+            apr_cpystrn(current->token.value, buffer, 
+                        sizeof(current->token.value));
             current->value = (current->token.value[0] != '\0');
             current->done = 1;
             current = current->parent;
@@ -1846,15 +1884,15 @@ static int parse_expr(request_rec *r, const char *expr, int *was_error,
         case token_and:
         case token_or:
 #ifdef DEBUG_INCLUDE
-            memcpy (&debug[debug_pos], "     Evaluate and/or\n",
-                    sizeof ("     Evaluate and/or\n"));
-            debug_pos += sizeof ("     Evaluate and/or\n");
+            memcpy(&debug[debug_pos], "     Evaluate and/or\n",
+                    sizeof("     Evaluate and/or\n"));
+            debug_pos += sizeof("     Evaluate and/or\n");
 #endif
-            if (current->left == (struct parse_node *) NULL ||
+            if (current->left  == (struct parse_node *) NULL ||
                 current->right == (struct parse_node *) NULL) {
                 ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
-                            "Invalid expression \"%s\" in file %s",
-                            expr, r->filename);
+                              "Invalid expression \"%s\" in file %s",
+                              expr, r->filename);
                 *was_error = 1;
                 goto RETURN;
             }
@@ -1862,10 +1900,11 @@ static int parse_expr(request_rec *r, const char *expr, int *was_error,
                 switch (current->left->token.type) {
                 case token_string:
                     ap_ssi_parse_string(r, current->left->token.value,
-                                 buffer, sizeof(buffer), 0);
+                                        buffer, sizeof(buffer), 0);
                     apr_cpystrn(current->left->token.value, buffer,
-                            sizeof(current->left->token.value));
-		    current->left->value = (current->left->token.value[0] != '\0');
+                                sizeof(current->left->token.value));
+                    current->left->value = 
+                                       (current->left->token.value[0] != '\0');
                     current->left->done = 1;
                     break;
                 default:
@@ -1877,10 +1916,11 @@ static int parse_expr(request_rec *r, const char *expr, int *was_error,
                 switch (current->right->token.type) {
                 case token_string:
                     ap_ssi_parse_string(r, current->right->token.value,
-                                 buffer, sizeof(buffer), 0);
+                                        buffer, sizeof(buffer), 0);
                     apr_cpystrn(current->right->token.value, buffer,
-                            sizeof(current->right->token.value));
-		    current->right->value = (current->right->token.value[0] != '\0');
+                                sizeof(current->right->token.value));
+                    current->right->value = 
+                                      (current->right->token.value[0] != '\0');
                     current->right->done = 1;
                     break;
                 default:
@@ -1928,11 +1968,11 @@ static int parse_expr(request_rec *r, const char *expr, int *was_error,
             ap_ssi_parse_string(r, current->left->token.value,
                          buffer, sizeof(buffer), 0);
             apr_cpystrn(current->left->token.value, buffer,
-			sizeof(current->left->token.value));
+                        sizeof(current->left->token.value));
             ap_ssi_parse_string(r, current->right->token.value,
                          buffer, sizeof(buffer), 0);
             apr_cpystrn(current->right->token.value, buffer,
-			sizeof(current->right->token.value));
+                        sizeof(current->right->token.value));
             if (current->right->token.value[0] == '/') {
                 int len;
                 len = strlen(current->right->token.value);
@@ -1999,11 +2039,11 @@ static int parse_expr(request_rec *r, const char *expr, int *was_error,
             ap_ssi_parse_string(r, current->left->token.value,
                          buffer, sizeof(buffer), 0);
             apr_cpystrn(current->left->token.value, buffer,
-			sizeof(current->left->token.value));
+                        sizeof(current->left->token.value));
             ap_ssi_parse_string(r, current->right->token.value,
                          buffer, sizeof(buffer), 0);
             apr_cpystrn(current->right->token.value, buffer,
-			sizeof(current->right->token.value));
+                        sizeof(current->right->token.value));
 #ifdef DEBUG_INCLUDE
             debug_pos += sprintf (&debug[debug_pos],
                                   "     Compare (%s) with (%s)\n",
@@ -2146,8 +2186,9 @@ static int parse_expr(request_rec *r, const char *expr, int *was_error,
 /*-------------------------------------------------------------------------*/
 
 /* pjr - These seem to allow expr="fred" expr="joe" where joe overwrites fred. */
-static int handle_if(include_ctx_t *ctx, apr_bucket_brigade **bb, request_rec *r,
-                     ap_filter_t *f, apr_bucket *head_ptr, apr_bucket **inserted_head)
+static int handle_if(include_ctx_t *ctx, apr_bucket_brigade **bb, 
+                     request_rec *r, ap_filter_t *f, apr_bucket *head_ptr, 
+                     apr_bucket **inserted_head)
 {
     char *tag     = NULL;
     char *tag_val = NULL;
@@ -2166,20 +2207,25 @@ static int handle_if(include_ctx_t *ctx, apr_bucket_brigade **bb, request_rec *r
             if (tag == NULL) {
                 if (expr == NULL) {
                     ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
-                                  "missing expr in if statement: %s", r->filename);
-                    CREATE_ERROR_BUCKET(ctx, tmp_buck, head_ptr, *inserted_head);
+                                  "missing expr in if statement: %s", 
+                                  r->filename);
+                    CREATE_ERROR_BUCKET(ctx, tmp_buck, head_ptr, 
+                                        *inserted_head);
                     return 1;
                 }
-                expr_ret = parse_expr(r, expr, &was_error, &was_unmatched, debug_buf);
+                expr_ret = parse_expr(r, expr, &was_error, &was_unmatched, 
+                                      debug_buf);
                 if (was_error) {
-                    CREATE_ERROR_BUCKET(ctx, tmp_buck, head_ptr, *inserted_head);
+                    CREATE_ERROR_BUCKET(ctx, tmp_buck, head_ptr, 
+                                        *inserted_head);
                     return 1;
                 }
                 if (was_unmatched) {
-                    DUMP_PARSE_EXPR_DEBUG(tmp_buck, head_ptr, "\nUnmatched '\n",
-                                          *inserted_head);
+                    DUMP_PARSE_EXPR_DEBUG(tmp_buck, head_ptr, 
+                                          "\nUnmatched '\n", *inserted_head);
                 }
-                DUMP_PARSE_EXPR_DEBUG(tmp_buck, head_ptr, debug_buf, *inserted_head);
+                DUMP_PARSE_EXPR_DEBUG(tmp_buck, head_ptr, debug_buf, 
+                                      *inserted_head);
                 
                 if (expr_ret) {
                     ctx->flags |= (FLAG_PRINTING | FLAG_COND_TRUE);
@@ -2187,7 +2233,8 @@ static int handle_if(include_ctx_t *ctx, apr_bucket_brigade **bb, request_rec *r
                 else {
                     ctx->flags &= FLAG_CLEAR_PRINT_COND;
                 }
-                LOG_COND_STATUS(ctx, tmp_buck, head_ptr, *inserted_head, "   if");
+                LOG_COND_STATUS(ctx, tmp_buck, head_ptr, *inserted_head, 
+                                "   if");
                 ctx->if_nesting_level = 0;
                 return 0;
             }
@@ -2197,7 +2244,8 @@ static int handle_if(include_ctx_t *ctx, apr_bucket_brigade **bb, request_rec *r
                 if (1) {
                     apr_size_t d_len = 0, d_wrt = 0;
                     d_len = sprintf(debug_buf, "**** if expr=\"%s\"\n", expr);
-                    tmp_buck = apr_bucket_heap_create(debug_buf, d_len, 1, &d_wrt);
+                    tmp_buck = apr_bucket_heap_create(debug_buf, d_len, 1, 
+                                                      &d_wrt);
                     APR_BUCKET_INSERT_BEFORE(head_ptr, tmp_buck);
 
                     if (*inserted_head == NULL) {
@@ -2208,7 +2256,8 @@ static int handle_if(include_ctx_t *ctx, apr_bucket_brigade **bb, request_rec *r
             }
             else {
                 ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
-                            "unknown parameter \"%s\" to tag if in %s", tag, r->filename);
+                            "unknown parameter \"%s\" to tag if in %s", tag, 
+                            r->filename);
                 CREATE_ERROR_BUCKET(ctx, tmp_buck, head_ptr, *inserted_head);
             }
 
@@ -2217,8 +2266,9 @@ static int handle_if(include_ctx_t *ctx, apr_bucket_brigade **bb, request_rec *r
     return 0;
 }
 
-static int handle_elif(include_ctx_t *ctx, apr_bucket_brigade **bb, request_rec *r,
-                       ap_filter_t *f,  apr_bucket *head_ptr, apr_bucket **inserted_head)
+static int handle_elif(include_ctx_t *ctx, apr_bucket_brigade **bb, 
+                       request_rec *r, ap_filter_t *f, apr_bucket *head_ptr, 
+                       apr_bucket **inserted_head)
 {
     char *tag     = NULL;
     char *tag_val = NULL;
@@ -2232,7 +2282,8 @@ static int handle_elif(include_ctx_t *ctx, apr_bucket_brigade **bb, request_rec 
         while (1) {
             ap_ssi_get_tag_and_value(ctx, &tag, &tag_val, 0);
             if (tag == '\0') {
-                LOG_COND_STATUS(ctx, tmp_buck, head_ptr, *inserted_head, " elif");
+                LOG_COND_STATUS(ctx, tmp_buck, head_ptr, *inserted_head, 
+                                " elif");
                 
                 if (ctx->flags & FLAG_COND_TRUE) {
                     ctx->flags &= FLAG_CLEAR_PRINTING;
@@ -2240,20 +2291,25 @@ static int handle_elif(include_ctx_t *ctx, apr_bucket_brigade **bb, request_rec 
                 }
                 if (expr == NULL) {
                     ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
-                                  "missing expr in elif statement: %s", r->filename);
-                    CREATE_ERROR_BUCKET(ctx, tmp_buck, head_ptr, *inserted_head);
+                                  "missing expr in elif statement: %s", 
+                                  r->filename);
+                    CREATE_ERROR_BUCKET(ctx, tmp_buck, head_ptr, 
+                                        *inserted_head);
                     return (1);
                 }
-                expr_ret = parse_expr(r, expr, &was_error, &was_unmatched, debug_buf);
+                expr_ret = parse_expr(r, expr, &was_error, &was_unmatched, 
+                                      debug_buf);
                 if (was_error) {
-                    CREATE_ERROR_BUCKET(ctx, tmp_buck, head_ptr, *inserted_head);
+                    CREATE_ERROR_BUCKET(ctx, tmp_buck, head_ptr, 
+                                        *inserted_head);
                     return 1;
                 }
                 if (was_unmatched) {
-                    DUMP_PARSE_EXPR_DEBUG(tmp_buck, head_ptr, "\nUnmatched '\n",
-                                          *inserted_head);
+                    DUMP_PARSE_EXPR_DEBUG(tmp_buck, head_ptr, 
+                                          "\nUnmatched '\n", *inserted_head);
                 }
-                DUMP_PARSE_EXPR_DEBUG(tmp_buck, head_ptr, debug_buf, *inserted_head);
+                DUMP_PARSE_EXPR_DEBUG(tmp_buck, head_ptr, debug_buf, 
+                                      *inserted_head);
                 
                 if (expr_ret) {
                     ctx->flags |= (FLAG_PRINTING | FLAG_COND_TRUE);
@@ -2261,7 +2317,8 @@ static int handle_elif(include_ctx_t *ctx, apr_bucket_brigade **bb, request_rec 
                 else {
                     ctx->flags &= FLAG_CLEAR_PRINT_COND;
                 }
-                LOG_COND_STATUS(ctx, tmp_buck, head_ptr, *inserted_head, " elif");
+                LOG_COND_STATUS(ctx, tmp_buck, head_ptr, *inserted_head, 
+                                " elif");
                 return (0);
             }
             else if (!strcmp(tag, "expr")) {
@@ -2270,7 +2327,8 @@ static int handle_elif(include_ctx_t *ctx, apr_bucket_brigade **bb, request_rec 
                 if (1) {
                     apr_size_t d_len = 0, d_wrt = 0;
                     d_len = sprintf(debug_buf, "**** elif expr=\"%s\"\n", expr);
-                    tmp_buck = apr_bucket_heap_create(debug_buf, d_len, 1, &d_wrt);
+                    tmp_buck = apr_bucket_heap_create(debug_buf, d_len, 1, 
+                                                      &d_wrt);
                     APR_BUCKET_INSERT_BEFORE(head_ptr, tmp_buck);
 
                     if (*inserted_head == NULL) {
@@ -2281,7 +2339,8 @@ static int handle_elif(include_ctx_t *ctx, apr_bucket_brigade **bb, request_rec 
             }
             else {
                 ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
-                            "unknown parameter \"%s\" to tag if in %s", tag, r->filename);
+                               "unknown parameter \"%s\" to tag if in %s", tag, 
+                               r->filename);
                 CREATE_ERROR_BUCKET(ctx, tmp_buck, head_ptr, *inserted_head);
             }
         }
@@ -2289,8 +2348,9 @@ static int handle_elif(include_ctx_t *ctx, apr_bucket_brigade **bb, request_rec 
     return 0;
 }
 
-static int handle_else(include_ctx_t *ctx, apr_bucket_brigade **bb, request_rec *r,
-                       ap_filter_t *f, apr_bucket *head_ptr, apr_bucket **inserted_head)
+static int handle_else(include_ctx_t *ctx, apr_bucket_brigade **bb, 
+                       request_rec *r, ap_filter_t *f, apr_bucket *head_ptr, 
+                       apr_bucket **inserted_head)
 {
     char *tag = NULL;
     char *tag_val = NULL;
@@ -2322,8 +2382,9 @@ static int handle_else(include_ctx_t *ctx, apr_bucket_brigade **bb, request_rec 
     return 0;
 }
 
-static int handle_endif(include_ctx_t *ctx, apr_bucket_brigade **bb, request_rec *r,
-                        ap_filter_t *f, apr_bucket *head_ptr, apr_bucket **inserted_head)
+static int handle_endif(include_ctx_t *ctx, apr_bucket_brigade **bb, 
+                        request_rec *r, ap_filter_t *f, apr_bucket *head_ptr, 
+                        apr_bucket **inserted_head)
 {
     char *tag     = NULL;
     char *tag_val = NULL;
@@ -2334,7 +2395,7 @@ static int handle_endif(include_ctx_t *ctx, apr_bucket_brigade **bb, request_rec
         ap_ssi_get_tag_and_value(ctx, &tag, &tag_val, 1);
         if ((tag != NULL) || (tag_val != NULL)) {
             ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
-                        "endif directive does not take tags in %s", r->filename);
+                       "endif directive does not take tags in %s", r->filename);
             CREATE_ERROR_BUCKET(ctx, tmp_buck, head_ptr, *inserted_head);
             return -1;
         }
@@ -2350,8 +2411,9 @@ static int handle_endif(include_ctx_t *ctx, apr_bucket_brigade **bb, request_rec
     }
 }
 
-static int handle_set(include_ctx_t *ctx, apr_bucket_brigade **bb, request_rec *r,
-                      ap_filter_t *f, apr_bucket *head_ptr, apr_bucket **inserted_head)
+static int handle_set(include_ctx_t *ctx, apr_bucket_brigade **bb, 
+                      request_rec *r, ap_filter_t *f, apr_bucket *head_ptr, 
+                      apr_bucket **inserted_head)
 {
     char *tag     = NULL;
     char *tag_val = NULL;
@@ -2375,12 +2437,14 @@ static int handle_set(include_ctx_t *ctx, apr_bucket_brigade **bb, request_rec *
             else if (!strcmp(tag, "value")) {
                 if (var == (char *) NULL) {
                     ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
-                                "variable must precede value in set directive in %s",
-    			    r->filename);
-                    CREATE_ERROR_BUCKET(ctx, tmp_buck, head_ptr, *inserted_head);
+                           "variable must precede value in set directive in %s",
+                           r->filename);
+                    CREATE_ERROR_BUCKET(ctx, tmp_buck, head_ptr, 
+                                        *inserted_head);
                     return (-1);
                 }
-                ap_ssi_parse_string(r, tag_val, parsed_string, sizeof(parsed_string), 0);
+                ap_ssi_parse_string(r, tag_val, parsed_string, 
+                                    sizeof(parsed_string), 0);
                 apr_table_setn(r->subprocess_env, apr_pstrdup(r->pool, var),
                                apr_pstrdup(r->pool, parsed_string));
             }
@@ -2395,8 +2459,9 @@ static int handle_set(include_ctx_t *ctx, apr_bucket_brigade **bb, request_rec *
     return 0;
 }
 
-static int handle_printenv(include_ctx_t *ctx, apr_bucket_brigade **bb, request_rec *r,
-                           ap_filter_t *f, apr_bucket *head_ptr, apr_bucket **inserted_head)
+static int handle_printenv(include_ctx_t *ctx, apr_bucket_brigade **bb, 
+                           request_rec *r, ap_filter_t *f, 
+                           apr_bucket *head_ptr, apr_bucket **inserted_head)
 {
     char *tag     = NULL;
     char *tag_val = NULL;
@@ -2442,7 +2507,8 @@ static int handle_printenv(include_ctx_t *ctx, apr_bucket_brigade **bb, request_
         }
         else {
             ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
-                        "printenv directive does not take tags in %s", r->filename);
+                        "printenv directive does not take tags in %s", 
+                        r->filename);
             CREATE_ERROR_BUCKET(ctx, tmp_buck, head_ptr, *inserted_head);
             return -1;
         }
@@ -2461,7 +2527,7 @@ static apr_status_t send_parsed_content(apr_bucket_brigade **bb,
     apr_bucket_brigade *tag_and_after;
     apr_status_t rv = APR_SUCCESS;
 
-    if (r->args) {              /* add QUERY stuff to env cause it ain't yet */
+    if (r->args) {               /* add QUERY stuff to env cause it ain't yet */
         char *arg_copy = apr_pstrdup(r->pool, r->args);
 
         apr_table_setn(r->subprocess_env, "QUERY_STRING", r->args);
@@ -2520,7 +2586,7 @@ static apr_status_t send_parsed_content(apr_bucket_brigade **bb,
             else if ((tmp_dptr != NULL) &&
                      (ctx->output_now ||
                       (ctx->bytes_parsed >= BYTE_COUNT_THRESHOLD))) {
-                               /* Send the large chunk of pre-tag bytes...  */
+                /* Send the large chunk of pre-tag bytes...  */
                 tag_and_after = apr_brigade_split(*bb, tmp_dptr);
                 rv = ap_pass_brigade(f->next, *bb);
                 if (rv != APR_SUCCESS) {
@@ -2552,10 +2618,12 @@ static apr_status_t send_parsed_content(apr_bucket_brigade **bb,
                 dptr = tmp_dptr;  /* Adjust bucket pos... */
                 
                 /* If some of the tag has already been set aside then set
-                 * aside remainder of tag. Now the full tag is in ssi_tag_brigade.
-                 * If none has yet been set aside, then leave it all where it is.
-                 * In any event after this the entire set of tag buckets will be
-                 * in one place or another.
+                 * aside remainder of tag. Now the full tag is in 
+                 * ssi_tag_brigade.
+                 * If none has yet been set aside, then leave it all where it 
+                 * is.
+                 * In any event after this the entire set of tag buckets will 
+                 * be in one place or another.
                  */
                 if (!APR_BRIGADE_EMPTY(ctx->ssi_tag_brigade)) {
                     tag_and_after = apr_brigade_split(*bb, dptr);
@@ -2572,7 +2640,8 @@ static apr_status_t send_parsed_content(apr_bucket_brigade **bb,
                 }
             }
             else {
-                dptr = APR_BRIGADE_SENTINEL(*bb);  /* remainder of this brigade...    */
+                /* remainder of this brigade...    */
+                dptr = APR_BRIGADE_SENTINEL(*bb);  
             }
         }
 
@@ -2581,8 +2650,9 @@ static apr_status_t send_parsed_content(apr_bucket_brigade **bb,
             apr_bucket    *content_head = NULL, *tmp_bkt;
             apr_size_t    tmp_i;
             char          tmp_buf[TMP_BUF_SIZE];
-            int (*handle_func)(include_ctx_t *, apr_bucket_brigade **, request_rec *,
-                           ap_filter_t *, apr_bucket *, apr_bucket **);
+            int (*handle_func)(include_ctx_t *, apr_bucket_brigade **,
+                               request_rec *, ap_filter_t *, apr_bucket *,
+                               apr_bucket **);
 
             /* By now the full tag (all buckets) should either be set aside into
              *  ssi_tag_brigade or contained within the current bb. All tag
@@ -2595,9 +2665,9 @@ static apr_status_t send_parsed_content(apr_bucket_brigade **bb,
              */
             if (get_combined_directive(ctx, r, *bb, tmp_buf,
                                         TMP_BUF_SIZE) != APR_SUCCESS) {
-		ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
-			    "mod_include: error copying directive in %s",
-			    r->filename);
+                ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
+                            "mod_include: error copying directive in %s",
+                            r->filename);
                 CREATE_ERROR_BUCKET(ctx, tmp_bkt, dptr, content_head);
 
                 /* DO CLEANUP HERE!!!!! */
@@ -2618,18 +2688,19 @@ static apr_status_t send_parsed_content(apr_bucket_brigade **bb,
             }
 
             /* Can't destroy the tag buckets until I'm done processing
-             *  because the combined_tag might just be pointing to
-             *  the contents of a single bucket!
+             * because the combined_tag might just be pointing to
+             * the contents of a single bucket!
              */
 
-            /* Retrieve the handler function to be called for this directive from the
-             *  functions registered in the hash table.
-             * Need to lower case the directive for proper matching. Also need to have
-             *  it NULL terminated (and include the NULL in the length) for proper
-             *  hash matching.
+            /* Retrieve the handler function to be called for this directive 
+             * from the functions registered in the hash table.
+             * Need to lower case the directive for proper matching. Also need 
+             * to have it NULL terminated (and include the NULL in the length) 
+             * for proper hash matching.
              */
             for (tmp_i = 0; tmp_i < ctx->directive_length; tmp_i++) {
-                ctx->combined_tag[tmp_i] = apr_tolower(ctx->combined_tag[tmp_i]);
+                ctx->combined_tag[tmp_i] = 
+                                          apr_tolower(ctx->combined_tag[tmp_i]);
             }
             ctx->combined_tag[ctx->directive_length] = '\0';
             ctx->curr_tag_pos = &ctx->combined_tag[ctx->directive_length+1];
@@ -2726,29 +2797,32 @@ static apr_status_t send_parsed_content(apr_bucket_brigade **bb,
                 apr_bucket_delete(free_bucket);
             } while (dptr != APR_BRIGADE_SENTINEL(*bb));
         }
-        else { /* Otherwise pass it along... */
-            rv = ap_pass_brigade(f->next, *bb);  /* No SSI tags in this brigade... */
+        else { 
+            /* Otherwise pass it along...
+             * No SSI tags in this brigade... */
+            rv = ap_pass_brigade(f->next, *bb);  
             if (rv != APR_SUCCESS) {
                 return rv;
             }
             ctx->bytes_parsed = 0;
         }
     }
-    else if (ctx->state == PARSED) {     /* Invalid internal condition... */
+    else if (ctx->state == PARSED) {         /* Invalid internal condition... */
         apr_bucket *content_head = NULL, *tmp_bkt;
         ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
                       "Invalid mod_include state during file %s", r->filename);
         CREATE_ERROR_BUCKET(ctx, tmp_bkt, APR_BRIGADE_FIRST(*bb), content_head);
     }
-    else {                 /* Entire brigade is middle chunk of SSI tag... */
+    else {                    /* Entire brigade is middle chunk of SSI tag... */
         if (!APR_BRIGADE_EMPTY(ctx->ssi_tag_brigade)) {
             APR_BRIGADE_CONCAT(ctx->ssi_tag_brigade, *bb);
         }
-        else {             /* End of brigade contains part of SSI tag... */
+        else {                  /* End of brigade contains part of SSI tag... */
             if (ctx->head_start_index > 0) {
                 apr_bucket_split(ctx->head_start_bucket, ctx->head_start_index);
-                ctx->head_start_bucket = APR_BUCKET_NEXT(ctx->head_start_bucket);
-                ctx->head_start_index  = 0;
+                ctx->head_start_bucket = 
+                                        APR_BUCKET_NEXT(ctx->head_start_bucket);
+                ctx->head_start_index = 0;
             }
                            /* Set aside tag, pass pre-tag... */
             tag_and_after = apr_brigade_split(*bb, ctx->head_start_bucket);
@@ -2810,18 +2884,20 @@ static apr_status_t includes_filter(ap_filter_t *f, apr_bucket_brigade *b)
     }
 
     if (!f->ctx) {
-        f->ctx    = ctx      = apr_pcalloc(f->c->pool, sizeof(*ctx));
+        f->ctx = ctx = apr_pcalloc(f->c->pool, sizeof(*ctx));
         if (ctx != NULL) {
-            ctx->state           = PRE_HEAD;
-            ctx->flags           = (FLAG_PRINTING | FLAG_COND_TRUE);
+            ctx->state = PRE_HEAD;
+            ctx->flags = (FLAG_PRINTING | FLAG_COND_TRUE);
             if (ap_allow_options(r) & OPT_INCNOEXEC) {
                 ctx->flags |= FLAG_NO_EXEC;
             }
             ctx->ssi_tag_brigade = apr_brigade_create(f->c->pool);
             ctx->status = APR_SUCCESS;
 
-            apr_cpystrn(ctx->error_str, conf->default_error_msg, sizeof(ctx->error_str));
-            apr_cpystrn(ctx->time_str, conf->default_time_fmt, sizeof(ctx->time_str));
+            apr_cpystrn(ctx->error_str, conf->default_error_msg, 
+                        sizeof(ctx->error_str));
+            apr_cpystrn(ctx->time_str, conf->default_time_fmt, 
+                        sizeof(ctx->time_str));
             ctx->error_length = strlen(ctx->error_str);
         }
         else {
@@ -2841,21 +2917,21 @@ static apr_status_t includes_filter(ap_filter_t *f, apr_bucket_brigade *b)
     }
 
     if ((parent = ap_get_module_config(r->request_config, &include_module))) {
-	/* Kludge --- for nested includes, we want to keep the subprocess
-	 * environment of the base document (for compatibility); that means
-	 * torquing our own last_modified date as well so that the
-	 * LAST_MODIFIED variable gets reset to the proper value if the
-	 * nested document resets <!--#config timefmt-->.
-	 * We also insist that the memory for this subrequest not be
-	 * destroyed, that's dealt with in handle_include().
-	 */
+        /* Kludge --- for nested includes, we want to keep the subprocess
+         * environment of the base document (for compatibility); that means
+         * torquing our own last_modified date as well so that the
+         * LAST_MODIFIED variable gets reset to the proper value if the
+         * nested document resets <!--#config timefmt-->.
+         * We also insist that the memory for this subrequest not be
+         * destroyed, that's dealt with in handle_include().
+         */
         r->subprocess_env = r->main->subprocess_env;
         apr_pool_join(r->main->pool, r->pool);
         r->finfo.mtime = r->main->finfo.mtime;
     }
     else {
-	/* we're not a nested include, so we create an initial
-	 * environment */
+        /* we're not a nested include, so we create an initial
+         * environment */
         ap_add_common_vars(r);
         ap_add_cgi_vars(r);
         add_include_vars(r, conf->default_time_fmt);
@@ -2865,7 +2941,6 @@ static apr_status_t includes_filter(ap_filter_t *f, apr_bucket_brigade *b)
      * expect to be signal-ready to SIGALRM.  There is no clean way to
      * fix this, except to put alarm support into BUFF. -djg
      */
-
 
     /* Always unset the content-length.  There is no way to know if
      * the content will be modified at some point by send_parsed_content.
@@ -2879,9 +2954,9 @@ static apr_status_t includes_filter(ap_filter_t *f, apr_bucket_brigade *b)
     rv = send_parsed_content(&b, r, f);
 
     if (parent) {
-	/* signify that the sub request should not be killed */
-	ap_set_module_config(r->request_config, &include_module,
-	    NESTED_INCLUDE_MAGIC);
+        /* signify that the sub request should not be killed */
+        ap_set_module_config(r->request_config, &include_module,
+            NESTED_INCLUDE_MAGIC);
     }
 
     return rv;
@@ -2999,5 +3074,5 @@ module AP_MODULE_DECLARE_DATA include_module =
     NULL,                       /* server config */
     NULL,                       /* merge server config */
     includes_cmds,              /* command apr_table_t */
-    register_hooks		/* register hooks */
+    register_hooks              /* register hooks */
 };
