@@ -1169,21 +1169,20 @@ static int ssl_io_filter_connect(ssl_filter_ctx_t *filter_ctx)
     return APR_SUCCESS;
 }
 
-static apr_status_t ssl_io_filter_Upgrade(ap_filter_t *f,
-                                         apr_bucket_brigade *bb)
-
-{
 #define SWITCH_STATUS_LINE "HTTP/1.1 101 Switching Protocols"
 #define UPGRADE_HEADER "Upgrade: TLS/1.0, HTTP/1.1"
 #define CONNECTION_HEADER "Connection: Upgrade"
+
+static apr_status_t ssl_io_filter_Upgrade(ap_filter_t *f,
+                                          apr_bucket_brigade *bb)
+{
     const char *upgrade;
     apr_bucket_brigade *upgradebb;
     request_rec *r = f->r;
     SSLConnRec *sslconn;
+    apr_status_t rv;
+    apr_bucket *b;
     SSL *ssl;
-    char *token_string;
-    char *token;
-    char *token_state;
 
     /* Just remove the filter, if it doesn't work the first time, it won't
      * work at all for this request.
@@ -1195,46 +1194,34 @@ static apr_status_t ssl_io_filter_Upgrade(ap_filter_t *f,
      */
 
     upgrade = apr_table_get(r->headers_in, "Upgrade");
-    if (upgrade == NULL) {
-        return ap_pass_brigade(f->next, bb);
-    }
-    token_string = apr_pstrdup(r->pool,upgrade);
-    token = apr_strtok(token_string,", ",&token_state);
-    while (token && strcmp(token,"TLS/1.0")) {
-        apr_strtok(NULL,", ",&token_state);
-    }
-    /* "Upgrade: TLS/1.0" header not found, don't do Upgrade */
-    if (!token) {
+    if (upgrade == NULL
+        || strcmp(ap_getword(r->pool, &upgrade, ','), "TLS/1.0")) {
+        /* "Upgrade: TLS/1.0, ..." header not found, don't do Upgrade */
         return ap_pass_brigade(f->next, bb);
     }
 
     apr_table_unset(r->headers_out, "Upgrade");
 
-    if (r->method_number == M_OPTIONS) {
-        apr_bucket *b = NULL;
-        /* This is a mandatory SSL upgrade. */
+    /* Send the interim 101 response. */
+    upgradebb = apr_brigade_create(r->pool, f->c->bucket_alloc);
+    
+    ap_fputstrs(f->next, upgradebb, SWITCH_STATUS_LINE, CRLF,
+                UPGRADE_HEADER, CRLF, CONNECTION_HEADER, CRLF, CRLF, NULL);
 
-        upgradebb = apr_brigade_create(r->pool, f->c->bucket_alloc);
-
-        ap_fputstrs(f->next, upgradebb, SWITCH_STATUS_LINE, CRLF,
-                    UPGRADE_HEADER, CRLF, CONNECTION_HEADER, CRLF, CRLF, NULL);
-
-        b = apr_bucket_flush_create(f->c->bucket_alloc);
-        APR_BRIGADE_INSERT_TAIL(upgradebb, b);
-
-        ap_pass_brigade(f->next, upgradebb);
+    b = apr_bucket_flush_create(f->c->bucket_alloc);
+    APR_BRIGADE_INSERT_TAIL(upgradebb, b);
+    
+    rv = ap_pass_brigade(f->next, upgradebb);
+    if (rv) {
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
+                      "could not send interim 101 Upgrade response");
+        return AP_FILTER_ERROR;
     }
-    else {
-        /* This is optional, and should be configurable, for now don't bother
-         * doing anything.
-         */
-        return ap_pass_brigade(f->next, bb);
-    }
-
+    
     ssl_init_ssl_connection(f->c);
 
     ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r,
-                 "Awaiting re-negotiation handshake");
+                  "Awaiting re-negotiation handshake");
 
     sslconn = myConnConfig(f->c);
     ssl = sslconn->ssl;
