@@ -776,7 +776,7 @@ PROXY_DECLARE (int) ap_proxy_http_handler(request_rec *r, proxy_server_conf *con
 		     "proxy: start body send");
 
 	/* read the body, pass it to the output filters */
-	while (ap_get_brigade(rp->input_filters, bb, AP_MODE_BLOCKING, remain) == APR_SUCCESS) {
+	while (ap_get_brigade(rp->input_filters, bb, AP_MODE_BLOCKING, &remain) == APR_SUCCESS) {
 	    if (APR_BUCKET_IS_EOS(APR_BRIGADE_LAST(bb))) {
 		e = apr_bucket_flush_create();
 		APR_BRIGADE_INSERT_TAIL(bb, e);
