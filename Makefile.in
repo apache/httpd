@@ -15,7 +15,7 @@ PROGRAM_DEPENDENCIES = \
 PROGRAMS        = $(PROGRAM_NAME)
 targets         = $(PROGRAMS)
 phony_targets   = $(srcdir)/buildmark.c
-install_targets = install-conf install-icons install-other \
+install_targets = install-conf install-htdocs install-icons install-other \
 	install-cgi install-include install-support
 DISTCLEANFILES  = include/config_auto.h modules.c aclocal.m4 buildmk.stamp \
 	configure generated_lists include/ap_config_auto.h \
