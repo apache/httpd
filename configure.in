@@ -29,6 +29,9 @@ APACHE_ENABLE_LAYOUT
 dnl reparse the configure arguments.
 APACHE_PARSE_ARGUMENTS
 
+dnl export expanded and relative configure argument variables
+APACHE_EXPORT_ARGUMENTS
+
 dnl Save user-defined environment settings for later restoration
 dnl
 APR_SAVE_THE_ENVIRONMENT(CPPFLAGS)
@@ -452,8 +455,6 @@ echo $MODLIST | $AWK -f $srcdir/build/build-modules-c.awk > modules.c
 APR_EXPAND_VAR(ap_prefix, $prefix)
 AC_DEFINE_UNQUOTED(HTTPD_ROOT, "${ap_prefix}",
 	[Root directory of the Apache install area])
-APR_EXPAND_VAR(ap_sysconfdir, $sysconfdir)
-APR_PATH_RELATIVE(rel_sysconfdir, $ap_sysconfdir, $prefix)
 AC_DEFINE_UNQUOTED(SERVER_CONFIG_FILE, "${rel_sysconfdir}/${progname}.conf",
 	[Location of the config file, relative to the Apache root directory])
 AC_DEFINE_UNQUOTED(APACHE_MPM_DIR, "$MPM_DIR",
