@@ -71,7 +71,6 @@ stdlib.h \
 ctype.h \
 limits.h \
 unistd.h \
-sys/stat.h \
 sys/time.h \
 sys/types.h \
 sys/socket.h \
