@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/03/27 21:07:32 $]
+Last modified at [$Date: 2003/03/27 21:38:09 $]
 
 Release:
 
@@ -58,6 +58,11 @@ Contributors looking for a mission:
 
 RELEASE SHOWSTOPPERS:
 
+    * fix seg faults in ap_get_mime_headers_core's error leg for overlength
+      headers caused by using an uninitialized length returned by ap_rgetline.
+      server/protocol.c: r1.129
+      +1: gregames, wrowe                            
+
     * Forward port: Escape special characters (especially control
       characters) in mod_log_config to make a clear distinction between
       client-supplied strings (with special characters) and server-side
@@ -82,13 +87,9 @@ RELEASE SHOWSTOPPERS:
       modules/mappers/mod_rewrite.c: r1.142, r1.143, r1.144, r1.145
                      (mod_rewrite.h: r1.41 for the changed prototype of
                                            prefix_stat)
-      +1: nd, bnicholes (prefix_stat is currently broken on NetWare, Win32, OS/2)
-          nd: side note: prefix_stat is not really important since it's intended
-              to return in nearly all cases "false" (It is expected to return
-              "true" only if you want a server-context RewriteRule act like
-              Alias and map to file-path). I've added a long
-              comment into the fixup-hook code where the filesystem path is
-              (not) stripped about what mainly hurts.
+      +1: nd, bnicholes, wrowe
+          nd: I've added a long comment into the fixup-hook code where 
+              the filesystem path is (not) stripped about what mainly hurts.
 
 PATCHES TO PORT FROM 2.1
   [ please place file names and revisions from HEAD here, so it is easy to
@@ -198,11 +199,6 @@ PATCHES TO PORT FROM 2.1
       modules/http/http_request.c: r1.155
       +1: nd
 
-    * fix seg faults in ap_get_mime_headers_core's error leg for overlength
-      headers caused by using an uninitialized length returned by ap_rgetline.
-      server/protocol.c: r1.129
-      +1: gregames
-                            
 CURRENT RELEASE NOTES:
 
     * Backwards compatibility is expected of future Apache 2.0 releases,
