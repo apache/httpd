@@ -165,15 +165,19 @@ void mod_info_module_cmds(request_rec *r, mod_info_config_lines *cfg, command_re
 	int lab=0, nest=0;
 
 	while(li) {
-		if(!strncasecmp(li->cmd,"<directory",10) || !strncasecmp(li->cmd,"<location",9) ||
-		  !strncasecmp(li->cmd,"<limit",6)) { 
+		if(!strncasecmp(li->cmd,"<directory",10) || 
+		   !strncasecmp(li->cmd,"<location",9) ||
+		   !strncasecmp(li->cmd,"<limit",6) ||
+		   !strncasecmp(li->cmd,"<files",6)) { 
 			if(nest) li_se=li;
 			else li_st=li; 
 			li=li->next; 
 			nest++;
 			continue; 
 		} else if(nest && (!strncasecmp(li->cmd,"</limit",7) ||
-		  !strncasecmp(li->cmd,"</location",10) || !strncasecmp(li->cmd,"</directory",11))) { 
+		                   !strncasecmp(li->cmd,"</location",10) || 
+		                   !strncasecmp(li->cmd,"</directory",11) ||
+		                   !strncasecmp(li->cmd,"</files",7))) { 
 			if(block_start) {
 				if((nest==1 && block_start==li_st) || (nest==2 && block_start==li_se)) {
 					rputs("<dd><tt>",r);
@@ -221,7 +225,8 @@ void mod_info_module_cmds(request_rec *r, mod_info_config_lines *cfg, command_re
 					  && (strncasecmp(li->cmd,"<directory",10) &&
 					  strncasecmp(li->cmd,"<location",9) && strncasecmp(li->cmd,"<limit",6) &&
 					  strncasecmp(li->cmd,"</limit",7) && strncasecmp(li->cmd,"</location",10) &&
-					  strncasecmp(li->cmd,"</directory",11))) {
+					  strncasecmp(li->cmd,"</directory",11) &&
+					  strncasecmp(li->cmd,"</files",7))) {
 						rputs("<dd><tt>",r);
 						rputs(mod_info_html_cmd_string(li_st->cmd),r);
 						rputs(" ",r);
