@@ -624,7 +624,7 @@ static void child_main(int child_num_arg)
     	         * on Linux 2.0.x we seem to end up with EFAULT
     	         * occasionally, and we'd loop forever due to it.
     	         */
-    	        ap_log_error(APLOG_MARK, APLOG_ERR, errno, ap_server_conf,
+    	        ap_log_error(APLOG_MARK, APLOG_ERR, ret, ap_server_conf,
                              "apr_poll: (listen)");
     	        clean_child_exit(1);
             }
@@ -637,8 +637,8 @@ static void child_main(int child_num_arg)
                 curr_pollfd = last_pollfd;
                 do {
                     curr_pollfd++;
-                    if (curr_pollfd > num_listensocks) {
-                        curr_pollfd = 1;
+                    if (curr_pollfd >= num_listensocks) {
+                        curr_pollfd = 0;
                     }
                     /* XXX: Should we check for POLLERR? */
                     apr_poll_revents_get(&event, listensocks[curr_pollfd], pollset);
