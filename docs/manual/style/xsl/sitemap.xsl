@@ -209,6 +209,7 @@
     </ul>
 
     <!-- obsolete modules -->
+<!--
     <ul>
       <xsl:for-each select="modulefile">
         <xsl:sort select="document(concat($basedir,'mod/',.))/modulesynopsis/name"/>
@@ -224,12 +225,13 @@
           </li>
  
 <xsl:text>
-</xsl:text> <!-- insert line break -->
+</xsl:text>
 
         </xsl:if>
       </xsl:for-each>
-      <!-- /other modules -->
      </ul>
+-->
+     <!-- /obsolete modules -->
 
   </xsl:template>
   <!-- /category/modulefilelist -->

@@ -537,7 +537,7 @@ div#quickview ul#toc {
     padding: 0;
 }
 
-#module-index div#quickview ul#toc,
+/* #module-index div#quickview ul#toc, */
 #manual-page div#quickview ul#toc {
     margin-left: 0;
 }
@@ -552,14 +552,14 @@ div#quickview li img {
     display: none;
 }
 
-#module-index div#quickview ul#toc,
+/* #module-index div#quickview ul#toc, */
 #manual-page div#quickview ul#toc,
 div#quickview #topics,
 div#quickview .seealso {
     padding-left: 15px;
 }
 
-#module-index div#quickview ul#toc li,
+/* #module-index div#quickview ul#toc li, */
 #manual-page div#quickview ul#toc li,
 div#quickview #topics li,
 div#quickview .seealso li {
