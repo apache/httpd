@@ -40,6 +40,12 @@ and <A HREF="known_client_problems.html">our list of known client problems.</A><
 <LI>The error_log may contain "(0)Unknown error: mmap_handler:
     mmap failed" errors.  Ignore them, it is a logic error and does not
     indicate any problem.  This will be corrected in a later beta.
+<LI>Servers operating in inetd mode will not properly implement timeouts.
+    (Neither do servers operating with the -X command line switch for
+    debugging.)
+    This will be corrected in a later beta.  A workaround for now is
+    to edit <code>src/main/httpd.h</code> and remove the definition
+    of <code>OPTIMIZE_TIMEOUTS</code> near the bottom.
 </OL>
 
 <H2>Apache 1.3b2 Bugs</H2>
