@@ -1,5 +1,8 @@
 Changes with Apache 1.3.10
 
+  *) Make sure mod_rewrite escapes QUERY_STRINGS on redirects.
+     [Klaus Johannes Rusch <KlausRusch@atmedia.net>] PR#4734
+
   *) Make sure mod_rewrite matches URL schemes case-insensitive and also allow
      additional (commonly used) URL schemes ldap:, news: and mailto:.
      [Ralf S. Engelschall, Klaus Johannes Rusch <KlausRusch@atmedia.net>] PR#3140

@@ -1163,8 +1163,8 @@ static int hook_uri2file(request_rec *r)
 
             /* append the QUERY_STRING part */
             if (r->args != NULL) {
-               r->filename = ap_pstrcat(r->pool, r->filename,
-                                        "?", r->args, NULL);
+                r->filename = ap_pstrcat(r->pool, r->filename, "?", 
+                                         ap_escape_uri(r->pool, r->args), NULL);
             }
 
             /* determine HTTP redirect response code */
@@ -1458,8 +1458,8 @@ static int hook_fixup(request_rec *r)
 
             /* append the QUERY_STRING part */
             if (r->args != NULL) {
-                r->filename = ap_pstrcat(r->pool, r->filename,
-                                         "?", r->args, NULL);
+                r->filename = ap_pstrcat(r->pool, r->filename, "?", 
+                                         ap_escape_uri(r->pool, r->args), NULL);
             }
 
             /* determine HTTP redirect response code */
