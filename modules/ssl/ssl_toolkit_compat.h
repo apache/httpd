@@ -47,6 +47,8 @@
 
 #define modssl_X509_verify_cert(c) X509_verify_cert(c)
 
+#define HAVE_SSL_RAND_EDG /* since 9.5.1 */
+
 #else /* RSA sslc */
 
 #ifndef STACK_OF
@@ -115,5 +117,8 @@
 #define modssl_set_verify(ssl, verify, cb) \
     SSL_set_verify(ssl, verify, cb)
 #endif
+
+/* sslc does not support this function, OpenSSL has since 9.5.1 */
+#define RAND_status() 1
 
 #endif /* SSL_TOOLKIT_COMPAT_H */
