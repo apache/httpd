@@ -651,7 +651,7 @@ struct request_rec {
     /** M_GET, M_POST, etc. */
     int method_number;
 
-    /** <PRE>
+    /**
      *  allowed is a bitvector of the allowed methods.
      *
      *  A handler must ensure that the request method is one that
@@ -669,9 +669,8 @@ struct request_rec {
      *  Since the default_handler will always handle a GET, a
      *  module which does *not* implement GET should probably return
      *  HTTP_METHOD_NOT_ALLOWED.  Unfortunately this means that a Script GET
-     *  handler can't be installed by mod_actions. </PRE>
+     *  handler can't be installed by mod_actions.
      */
-    /** Allowed methods - for 405, OPTIONS, etc */
     int allowed;
     /** Array of extension methods */
     apr_array_header_t *allowed_xmethods; 
@@ -794,18 +793,14 @@ struct request_rec {
  * accessed by this request.
  * N.B. always add to the head of the list, _never_ to the end.
  * that way, a sub request's list can (temporarily) point to a parent's list
- * @defvar const htaccess_result *htaccess
  */
     const struct htaccess_result *htaccess;
 
-    /** A list of output filters to be used for this request 
-     *  @defvar ap_filter_t *output_filters */
+    /** A list of output filters to be used for this request */
     struct ap_filter_t *output_filters;
-    /** A list of input filters to be used for this request 
-     *  @defvar ap_filter_t *input_filters */
+    /** A list of input filters to be used for this request */
     struct ap_filter_t *input_filters;
-    /** A flag to determine if the eos bucket has been sent yet
-     *  @defvar int eos_sent */
+    /** A flag to determine if the eos bucket has been sent yet */
     int eos_sent;
 
 /* Things placed at the end of the record to avoid breaking binary
@@ -815,15 +810,21 @@ struct request_rec {
  */
 };
 
-/** Possible values of request_rec->proxyreq. A request could be normal,
+/**
+ * @defgroup ProxyReq Proxy request types
+ *
+ * Possible values of request_rec->proxyreq. A request could be normal,
  *  proxied or reverse proxied. Normally proxied and reverse proxied are
  *  grouped together as just "proxied", but sometimes it's necessary to
  *  tell the difference between the two, such as for authentication.
+ * @{
  */
 
-#define PROXYREQ_NONE 0
-#define PROXYREQ_PROXY 1
-#define PROXYREQ_REVERSE 2
+#define PROXYREQ_NONE 0		/**< No proxy */
+#define PROXYREQ_PROXY 1	/**< Standard proxy */
+#define PROXYREQ_REVERSE 2	/**< Reverse proxy */
+
+/* @} */
 
 
 /** Structure to store things which are per connection */
@@ -882,11 +883,9 @@ struct conn_rec {
     /** send note from one module to another, must remain valid for all
      *  requests on this conn */
     apr_table_t *notes;
-    /** A list of input filters to be used for this connection
-     *  @defvar ap_filter_t *input_filters */
+    /** A list of input filters to be used for this connection */
     struct ap_filter_t *input_filters;
-    /** A list of output filters to be used for this connection
-     *  @defvar ap_filter_t *filters */
+    /** A list of output filters to be used for this connection */
     struct ap_filter_t *output_filters;
 };
 
@@ -1493,6 +1492,12 @@ extern int raise_sigstop_flags;
 #define RAISE_SIGSTOP(x)
 #endif
 
+/**
+ * Get HTML describing the address and (optionally) admin of the server.
+ * @param prefix Text which is prepended to the return value
+ * @param r The request_rec
+ * @return HTML describing the server, allocated in @a r's pool.
+ */
 AP_DECLARE(const char *) ap_psignature(const char *prefix, request_rec *r);
 
 /* strtoul does not exist on sunos4. */
