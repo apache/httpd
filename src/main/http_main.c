@@ -329,12 +329,75 @@ static pool *ptrans;		/* Pool for per-transaction stuff */
 static pool *pchild;		/* Pool for httpd child stuff */
 static pool *pcommands;	/* Pool for -C and -c switches */
 
-static int APACHE_TLS my_pid;		/* it seems silly to call getpid all the time */
+static int APACHE_TLS my_pid;	/* it seems silly to call getpid all the time */
 #ifndef MULTITHREAD
 static int my_child_num;
 #endif
 
 scoreboard *ap_scoreboard_image = NULL;
+
+/*
+ * Pieces for managing the contents of the Server-Version response header
+ * field.
+ */
+static char *server_version = NULL;
+static int version_locked = 0;
+
+int ap_note_platform = 0;  /* Global, alas, so http_core can talk to us */
+
+/*
+ * This routine is called when the pconf pool is vacuumed.  It resets the
+ * server version string to a known value and [re]enables modifications
+ * (which are disabled by configuration completion).
+ */
+static void reset_version()
+{
+    version_locked = 0;
+    ap_note_platform = 0;
+    server_version = NULL;
+}
+
+API_EXPORT(const char *) ap_get_server_version()
+{
+    return server_version;
+}
+
+API_EXPORT(void) ap_add_version_component(const char *component)
+{
+    if (! version_locked) {
+        /*
+         * If the version string is null, register our cleanup to reset the
+         * pointer on pool destruction.
+         */
+        if (server_version == NULL) {
+	    ap_register_cleanup(pconf, NULL, (void (*)(void *))reset_version, 
+				NULL);
+	    server_version = ap_pstrdup(pconf, component);
+	}
+	else {
+	    /*
+	     * Prepend the given component identifier to the existing string
+	     */
+	    server_version = ap_pstrcat(pconf, component, " ", server_version,
+				    NULL);
+	}
+    }
+}
+
+/*
+ * This routine adds the real server base identity to the version string,
+ * and then locks out changes until the next reconfig.
+ */
+static void ap_set_version()
+{
+    if (ap_note_platform) {
+        ap_add_version_component(SERVER_BASEVERSION " (" PLATFORM ")");
+    }
+    else {
+        ap_add_version_component(SERVER_BASEVERSION);
+    }
+    version_locked++;
+}
 
 static APACHE_TLS int volatile exit_after_unblock = 0;
 
@@ -3772,6 +3835,7 @@ static void standalone_main(int argc, char **argv)
 	ap_open_logs(server_conf, pconf);
 	ap_log_pid(pconf, ap_pid_fname);
 	ap_init_modules(pconf, server_conf);
+	ap_set_version();
 	SAFE_ACCEPT(accept_mutex_init(pconf));
 	if (!is_graceful) {
 	    reinit_scoreboard(pconf);
@@ -4057,6 +4121,7 @@ int REALMAIN(int argc, char *argv[])
     if (ap_standalone) {
 	ap_open_logs(server_conf, pconf);
 	ap_init_modules(pconf, server_conf);
+	ap_set_version();
 	STANDALONE_MAIN(argc, argv);
     }
     else {
@@ -4928,6 +4993,7 @@ int master_main(int argc, char **argv)
 	server_conf = ap_read_config(pconf, pparent, ap_server_confname);
 	ap_open_logs(server_conf, pconf);
 	ap_init_modules(pconf, server_conf);
+	ap_set_version();
 	if (!is_graceful)
 	    reinit_scoreboard(pconf);
 
@@ -5163,6 +5229,7 @@ int REALMAIN(int argc, char *argv[])
     ap_log_pid(pconf, ap_pid_fname);
     ap_init_modules(pconf, server_conf);
     ap_suexec_enabled = init_suexec();
+    ap_set_version();
     ap_open_logs(server_conf, pconf);
     set_group_privs();
 

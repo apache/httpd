@@ -1,3 +1,8 @@
+#ifndef APACHE_OS_H
+#define APACHE_OS_H
+
+#define PLATFORM "OS/2"
+
 /*
  * This file in included in all Apache source code. It contains definitions
  * of facilities available on _this_ operating system (HAVE_* macros),
@@ -21,3 +26,5 @@ extern int ap_os_is_path_absolute(const char *f);
 
 /* OS/2 doesn't have symlinks so S_ISLNK is always false */
 #define S_ISLNK(m) 0
+
+#endif   /* ! APACHE_OS_H */

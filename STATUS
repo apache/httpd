@@ -56,12 +56,6 @@ Documentation that needs writing:
 
 Available Patches:
 
-    * Ken's Adding the OS Type Patch
-      <3550567D.DDE10900@Golux.Com>
-      Status: Ken +1, Jim +1 (with Brian's suggested changes),
-              Martin +1, Brian +1 (change 'add_component' and
-	      'add_platform' to something a bit more clear)
-
     * Ed Korthof's patch to fix protocol issues surrounding 400, 408, and
       414 responses.
       <Pine.GSO.3.95.980204191834.4314K-200000@aether.organic.com>
@@ -132,7 +126,7 @@ Needs patch:
 	(feb98 archives)
 	Jim: I thought that we decided "default", although Ken
 	     thought it ugly
-	Ken: I just don't like using "Add" when reverting something; no -1
+	Ken: I just don't like using "Add" when reverting something; not a -1
 
     * proxy_*_canon routines use r->proxyreq incorrectly.  See
 	<Pine.LNX.3.96dg4.980304030057.13656O-100000@twinlark.arctic.org>

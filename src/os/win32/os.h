@@ -1,3 +1,8 @@
+#ifndef APACHE_OS_H
+#define APACHE_OS_H
+
+#define PLATFORM "Win32"
+
 /*
  * This file in included in all Apache source code. It contains definitions
  * of facilities available on _this_ operating system (HAVE_* macros),
@@ -106,3 +111,5 @@ API_EXPORT(int) os_spawnle(int mode,const char *cmdname,...);
 #define ap_os_dso_unload(l) FreeLibrary(l)
 #define ap_os_dso_sym(h,s)  GetProcAddress(h,s)
 #define ap_os_dso_error()   ""	/* for now */
+
+#endif   /* ! APACHE_OS_H */

@@ -1871,6 +1871,33 @@ static const char *set_bs2000_authfile (cmd_parms *cmd, void *dummy, char *name)
 }
 #endif /*_OSD_POSIX*/
 
+/*
+ * Handle a request to add an arbitrary string to the Server-Version response
+ * header field (the AddVersionComponent directive).
+ */
+
+static const char *add_version_component(cmd_parms *cmd, void *mconfig, 
+					 char *word1)
+{
+    ap_add_version_component((const char *)word1);
+    return NULL;
+}
+
+/*
+ * Handle a request to include the server's OS platform in the Server-Version
+ * response header field (the AddVersionPlatform directive).  Unfortunately
+ * this requires a new global in order to communicate the setting back to
+ * http_main so it can insert the information in the right place in the
+ * string.
+ */
+
+static const char *enable_platform_announcement(cmd_parms *cmd, void *mconfig,
+						int bool)
+{
+    ap_note_platform = bool;
+    return NULL;
+}
+
 /* Note --- ErrorDocument will now work from .htaccess files.  
  * The AllowOverride of Fileinfo allows webmasters to turn it off
  */
@@ -1879,7 +1906,9 @@ static const command_rec core_cmds[] = {
 
 /* Old access config file commands */
 
-{ "<Directory", dirsection, NULL, RSRC_CONF, RAW_ARGS, "Container for directives affecting resources located in the specified directories" },
+{ "<Directory", dirsection, NULL, RSRC_CONF, RAW_ARGS,
+  "Container for directives affecting resources located in the specified "
+  "directories" },
 { end_directory_section, end_nested_section, NULL, ACCESS_CONF, NO_ARGS, "Marks end of <Directory>" },
 { "<Location", urlsection, NULL, RSRC_CONF, RAW_ARGS, "Container for directives affecting resources accessed through the specified URL paths" },
 { end_location_section, end_nested_section, NULL, ACCESS_CONF, NO_ARGS, "Marks end of <Location>" },
@@ -2006,6 +2035,10 @@ static const command_rec core_cmds[] = {
 { "BS2000AuthFile", set_bs2000_authfile, NULL, RSRC_CONF, TAKE1,
   "server User's bs2000 logon password file (read-protected)" },
 #endif
+{ "AddVersionComponent", add_version_component, NULL, RSRC_CONF, TAKE1,
+  "String to be added to the Server-Version text" },
+{ "AddVersionPlatform", enable_platform_announcement, NULL, RSRC_CONF, FLAG,
+  "Set to 'on' to include server OS platform in Server-Version text" },
 { NULL },
 };
 

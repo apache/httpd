@@ -58,6 +58,8 @@
 #ifndef APACHE_OS_H
 #define APACHE_OS_H
 
+#define PLATFORM "UNIX"
+
 /*
  * This file in included in all Apache source code. It contains definitions
  * of facilities available on _this_ operating system (HAVE_* macros),

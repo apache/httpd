@@ -1,5 +1,8 @@
-#ifndef AP_OS_BS2000_OS_H
-#define AP_OS_BS2000_OS_H
+#ifndef APACHE_OS_H
+#define APACHE_OS_H
+
+#define PLATFORM "BS2000"
+
 /*
  * This file in included in all Apache source code. It contains definitions
  * of facilities available on _this_ operating system (HAVE_* macros),
@@ -27,4 +30,5 @@ extern int ap_os_is_path_absolute(const char *f);
  * to use request_rec here... */
 struct request_rec;
 extern int ap_checkconv(struct request_rec *r);
-#endif /*AP_OS_BS2000_OS_H*/
+
+#endif /*! APACHE_OS_H*/
