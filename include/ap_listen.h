@@ -59,25 +59,78 @@
 #include "http_config.h"
 #include "mpm.h"
 
+/**
+ * @package Apache Listeners Library
+ */
+
 typedef struct ap_listen_rec ap_listen_rec;
+
+/**
+ * Apache's listeners record.  These are used in the Multi-Processing Modules
+ * to setup all of the sockets for the MPM to listen to and accept on.
+ */
 struct ap_listen_rec {
+    /**
+     * The next listener in the list
+     */
     ap_listen_rec *next;
+    /**
+     * The actual socket 
+     */
     ap_socket_t *sd;
+    /**
+     * Is this socket currently active 
+     */
     int active;
 #ifdef WIN32
+    /**
+     * Windows only.  The number of completion ports currently listening to 
+     * this socket 
+     */
     int count;
 #endif
 /* more stuff here, like which protocol is bound to the port */
 };
 
+/**
+ * The global list of ap_listen_rec structures
+ */
 extern ap_listen_rec *ap_listeners;
 
+/**
+ * Setup all of the defaults for the listener list
+ */
 void ap_listen_pre_config(void);
 #if !defined(WIN32) && !defined(PREFORK_MPM) && !defined(SPMT_OS2_MPM)
+/**
+ * Loop through the global ap_listen_rec list and create all of the required
+ * sockets.  This executes the listen and bind on the sockets.
+ * @param s The global server_rec
+ * @return The number of open sockets.
+ * @warning This function is not available to Windows platforms, or the
+ * Prefork or SPMT_OS2 MPMs.
+ */ 
 int ap_setup_listeners(server_rec *s);
 #else
+/**
+ * Create and open a socket on the specified port.  This includes listening
+ * and binding the socket.
+ * @param process The process record for the currently running server
+ * @param port The port to open a socket on.
+ * @return The number of open sockets
+ * @warning This function is only available to Windows platforms, or the
+ * Prefork or SPMT_OS2 MPMs.
+ */
 int ap_listen_open(process_rec *process, unsigned port);
 #endif
+
+/* Although these functions are exported from libmain, they are not really
+ * public functions.  These functions are actually called while parsing the
+ * config file, when one of the LISTEN_COMMANDS directives is read.  These
+ * should not ever be called by external modules.  ALL MPMs should include
+ * LISTEN_COMMANDS in their command_rec table so that these functions are
+ * called.
+ */ 
 const char *ap_set_listenbacklog(cmd_parms *cmd, void *dummy, const char *arg);
 const char *ap_set_listener(cmd_parms *cmd, void *dummy, const char *ips);
 const char *ap_set_send_buffer_size(cmd_parms *cmd, void *dummy,
