@@ -90,7 +90,7 @@ MOD_LINK = $(LIBTOOL) --mode=link $(COMPILE) -module $(LT_LDFLAGS) $(ALL_LDFLAGS
 # Helper programs
 
 MKINSTALLDIRS = $(abs_srcdir)/build/mkdir.sh
-INSTALL = $(abs_srcdir)/build/install.sh -c
+INSTALL = $(LIBTOOL) --mode=install $(abs_srcdir)/build/install.sh -c
 INSTALL_DATA = $(INSTALL) -m 644
 INSTALL_PROGRAM = $(INSTALL) -m 755 $(INSTALL_PROG_FLAGS)
 
