@@ -67,6 +67,7 @@
 #include "mpm_status.h"
 #include "http_config.h"
 #include "http_vhost.h"
+#include "util_filter.h"
 
 #ifdef HAVE_NETINET_IN_H
 #include <netinet/in.h>
@@ -274,6 +275,8 @@ conn_rec *ap_new_connection(apr_pool_t *p, server_rec *server, BUFF *inout,
 			      inet_ntoa(conn->remote_addr.sin_addr));
     
     conn->id = id;
+
+    ap_add_input_filter("CORE_IN", NULL, conn);
 
     return conn;
 }

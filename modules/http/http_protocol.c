@@ -880,11 +880,16 @@ API_EXPORT(const char *) ap_method_name_of(int methnum)
  *       then the actual input line exceeded the buffer length,
  *       and it would be a good idea for the caller to puke 400 or 414.
  */
-static int getline(char *s, int n, BUFF *in, int fold)
+static int getline(char *s, int n, conn_rec *c, int fold)
 {
-    char *pos, next;
+    char *pos;
+    const char *toss;
+    const char *temp;
     int retval;
     int total = 0;
+    int length;
+    ap_bucket_brigade *b;
+    ap_bucket *e;
 #ifdef APACHE_XLATE
     /* When getline() is called, the HTTP protocol is in a state
      * where we MUST be reading "plain text" protocol stuff,
@@ -899,22 +904,69 @@ static int getline(char *s, int n, BUFF *in, int fold)
 
     pos = s;
 
-    do {
-        retval = ap_bgets(pos, n, in);
-       /* retval == -1 if error, 0 if EOF */
+    if (!c->input_data) {
+        b = ap_brigade_create(c->pool);
+    }
+    else {
+        b = c->input_data;
+    }
 
-        if (retval <= 0) {
-            total = ((retval < 0) && (total == 0)) ? -1 : total;
+    if (AP_BRIGADE_EMPTY(b)) {
+        ap_get_brigade(c->input_filters, b);
+    }
+
+    if (AP_BRIGADE_EMPTY(b)) {
+        return -1;
+    }
+    e = AP_BRIGADE_FIRST(b); 
+    while (1) {
+        while (e->length == 0) {
+            AP_BUCKET_REMOVE(e);
+            e->destroy(e);
+
+            ap_get_brigade(c->input_filters, b);
+            if (!AP_BRIGADE_EMPTY(b)) {
+                e = AP_BRIGADE_FIRST(b); 
+            }
+            else {
+                return -1;
+            }
+        }
+        retval = e->read(e, &temp, &length, 0);
+        /* retval == 0 on SUCCESS */
+
+        if (retval != 0) {
+            total = ((length < 0) && (total == 0)) ? -1 : total;
             break;
         }
 
-        /* retval is the number of characters read, not including NUL      */
+        if ((toss = ap_strchr_c(temp, '\r')) != NULL) { 
+            length = toss - temp + 2;
+            e->split(e, length);
+            apr_cpystrn(pos, temp, length);
+            pos[length - 2] = '\n';
+            pos[--length] = '\0';
+            AP_BUCKET_REMOVE(e);
+            e->destroy(e);
+        }
+        c->input_data = b;
+        e = AP_BRIGADE_FIRST(b); 
+/**** XXX
+ *    Check for folding
+ * Continue appending if line folding is desired and
+ * the last line was not empty and we have room in the buffer and
+ * the next line begins with a continuation character.
+ *       if (!fold || (retval == 0) && (n > 1)
+ *	     && (retval = e->read(e, ) 
+ *	     && ((next == ' ') || (next == '\t')));
+ */
+        /* length is the number of characters read, not including NUL    */
 
-        n -= retval;            /* Keep track of how much of s is full     */
-        pos += (retval - 1);    /* and where s ends                        */
-        total += retval;        /* and how long s has become               */
+        n -= length;            /* Keep track of how much of s is full   */
+        pos += (length - 1);    /* and where s ends                      */
+        total += length;        /* and how long s has become             */
 
-        if (*pos == '\n') {     /* Did we get a full line of input?        */
+        if (*pos == '\n') {     /* Did we get a full line of input?      */
             /*
              * Trim any extra trailing spaces or tabs except for the first
              * space or tab at the beginning of a blank string.  This makes
@@ -923,26 +975,19 @@ static int getline(char *s, int n, BUFF *in, int fold)
              */
             while (pos > (s + 1) && (*(pos - 1) == ' '
 				     || *(pos - 1) == '\t')) {
-                --pos;          /* trim extra trailing spaces or tabs      */
-                --total;        /* but not one at the beginning of line    */
+                --pos;          /* trim extra trailing spaces or tabs    */
+                --total;        /* but not one at the beginning of line  */
                 ++n;
             }
             *pos = '\0';
             --total;
             ++n;
+            break;
         }
         else {
 	    break;       /* if not, input line exceeded buffer size */
 	}
-        /* Continue appending if line folding is desired and
-         * the last line was not empty and we have room in the buffer and
-         * the next line begins with a continuation character.
-         */
-    } while (fold
-	     && (retval != 1) && (n > 1)
-	     && (next = ap_blookc(in))
-	     && ((next == ' ') || (next == '\t')));
-
+    }
 #ifdef APACHE_XLATE
     /* restore translation handle */
     AP_POP_INPUTCONVERSION_STATE(in);
@@ -1029,7 +1074,7 @@ static int read_request_line(request_rec *r)
      */
     ap_bsetflag(conn->client, B_SAFEREAD, 1); 
     ap_bflush(conn->client);
-    while ((len = getline(l, sizeof(l), conn->client, 0)) <= 0) {
+    while ((len = getline(l, sizeof(l), conn, 0)) <= 0) {
         if ((len < 0) || ap_bgetflag(conn->client, B_EOF)) {
 	    ap_bsetflag(conn->client, B_SAFEREAD, 0);
 	    /* this is a hack to make sure that request time is set,
@@ -1110,7 +1155,7 @@ static void get_mime_headers(request_rec *r)
      * Read header lines until we get the empty separator line, a read error,
      * the connection closes (EOF), reach the server limit, or we timeout.
      */
-    while ((len = getline(field, sizeof(field), c->client, 1)) > 0) {
+    while ((len = getline(field, sizeof(field), c, 1)) > 0) {
 
         if (r->server->limit_req_fields &&
             (++fields_read > r->server->limit_req_fields)) {
@@ -2357,7 +2402,7 @@ API_EXPORT(long) ap_get_client_block(request_rec *r, char *buffer, int bufsiz)
 
     if (r->remaining == 0) {    /* Start of new chunk */
 
-        chunk_start = getline(buffer, bufsiz, r->connection->client, 0);
+        chunk_start = getline(buffer, bufsiz, r->connection, 0);
         if ((chunk_start <= 0) || (chunk_start >= (bufsiz - 1))
             || !apr_isxdigit(*buffer)) {
             r->connection->keepalive = -1;
@@ -2398,7 +2443,7 @@ API_EXPORT(long) ap_get_client_block(request_rec *r, char *buffer, int bufsiz)
         len_read = chunk_start;
 
         while ((bufsiz > 1)
-	       && ((len_read = getline(buffer, bufsiz, r->connection->client,
+	       && ((len_read = getline(buffer, bufsiz, r->connection,
 				       1)) > 0)) {
 
             if (len_read != (bufsiz - 1)) {
