@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2002/02/21 18:56:15 $]
+Last modified at [$Date: 2002/02/22 21:22:44 $]
 
 Release:
 
@@ -92,6 +92,9 @@ FINAL RELEASE SHOWSTOPPERS:
     * API changes planned for 2.0 that should happen before the
       GA release:
           * Free lists for bucket allocation
+
+    * Graceful restart is broken in the worker MPM.
+        Message-ID: <m3g03tnrkv.fsf@rdu163-40-092.nc.rr.com>
 
 CURRENT VOTES:
 
