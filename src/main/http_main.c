@@ -1172,7 +1172,11 @@ void child_main(int child_num_arg)
 
 	    for (;;) {
 		memcpy(&fds, &listenfds, sizeof(fd_set));
-		csd = select(listenmaxfd+1, &fds, NULL, NULL, NULL);
+#ifdef HPUX
+		csd = select(listenmaxfd+1, (int*)&fds, NULL, NULL, NULL);
+#else
+                csd = select(listenmaxfd+1, &fds, NULL, NULL, NULL);
+#endif
 		if (csd == -1 && errno != EINTR)
 		    log_unixerr("select",NULL,"select error", server_conf);
 		if (csd <= 0) continue;
