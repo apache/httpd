@@ -212,14 +212,10 @@ load balancing </td></tr>
 <div class="section">
 <h2><a name="enable" id="enable">Enabling Balancer Manager Support</a></h2>
     
-    <p>Balancer manager enables dynamic update of balancer
-    members. You can use balancer manager to change the balace
-    factor or a particular member, or put it in the off line
-    mode.</p>
     <p>This module <em>requires</em> the service of 
     <code class="module"><a href="../mod/mod_status.html">mod_status</a></code>.
     Balancer manager enables dynamic update of balancer
-    members. You can use balancer manager to change the balace
+    members. You can use balancer manager to change the balance
     factor or a particular member, or put it in the off line
     mode.
     </p>
