@@ -220,7 +220,6 @@ static void ssl_hook_pre_config(
 static int ssl_hook_pre_connection(conn_rec *c)
 {
     SSLSrvConfigRec *sc = mySrvConfig(c->base_server);
-    apr_table_t *apctx;
     SSL *ssl;
     unsigned char *cpVHostID;
     char *cpVHostMD5;
@@ -272,9 +271,7 @@ static int ssl_hook_pre_connection(conn_rec *c)
         return DECLINED; /* XXX */
     }
     SSL_set_app_data(ssl, c);
-    apctx = apr_table_make(c->pool, AP_CTX_MAX_ENTRIES);
-    apr_table_setn(apctx, "ssl::request_rec", NULL);
-    SSL_set_app_data2(ssl, apctx);
+    SSL_set_app_data2(ssl, NULL); /* will be request_rec */
 
     sslconn->ssl = ssl;
 

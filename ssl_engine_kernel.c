@@ -165,7 +165,6 @@ int ssl_hook_ReadReq(request_rec *r)
 {
     SSLConnRec *sslconn = myConnConfig(r->connection);
     SSL *ssl;
-    apr_table_t *apctx;
 
     /*
      * Get the SSL connection structure and perform the
@@ -173,8 +172,7 @@ int ssl_hook_ReadReq(request_rec *r)
      */
     ssl = sslconn->ssl;
     if (ssl != NULL) {
-        apctx = (apr_table_t *)SSL_get_app_data2(ssl);
-        apr_table_setn(apctx, "ssl::request_rec", (const char *)r);
+        SSL_set_app_data2(ssl, r);
     }
 
     /*
@@ -1199,7 +1197,6 @@ int ssl_callback_SSLVerify(int ok, X509_STORE_CTX *ctx)
     SSLSrvConfigRec *sc;
     SSLDirConfigRec *dc;
     SSLConnRec *sslconn;
-    apr_table_t *actx;
     X509 *xs;
     int errnum;
     int errdepth;
@@ -1214,8 +1211,7 @@ int ssl_callback_SSLVerify(int ok, X509_STORE_CTX *ctx)
     ssl  = (SSL *)X509_STORE_CTX_get_app_data(ctx);
     conn = (conn_rec *)SSL_get_app_data(ssl);
     sslconn = myConnConfig(conn);
-    actx = (apr_table_t *)SSL_get_app_data2(ssl);
-    r    = (request_rec *)apr_table_get(actx, "ssl::request_rec");
+    r    = (request_rec *)SSL_get_app_data2(ssl);
     s    = conn->base_server;
     sc   = mySrvConfig(s);
     dc   = (r != NULL ? myDirConfig(r) : NULL);
