@@ -4,8 +4,8 @@
 <modulesynopsis>
 
 <name>mod_deflate</name>
-<description>Compress content before
-    it is delivered to the client</description>
+<description>Compress content before it is delivered to the
+client</description>
 <status>Extension</status>
 <sourcefile>mod_deflate.c</sourcefile>
 <identifier>deflate_module</identifier>
@@ -16,44 +16,226 @@
     your server to be compressed before being sent to the client over
     the network.</p>
 </summary>
-<seealso><directive module="mod_mime">AddOutputFilter</directive></seealso>
-<seealso><directive module="core">SetOutputFilter</directive></seealso>
+<seealso><a href="../filter.html">The filter documentation</a></seealso>
 
-<section><title>Enabling Compression</title>
+<section id="recommended"><title>Recommended Configuration</title>
+    <p>This is a sample configuration for the impatient. But please take
+    the time and read the sections below for a detailed description!</p>
 
-    <p>Compression is implemented by the <code>DEFLATE</code>
-    <a href="../filter.html">filter</a>. The following directive
-    will enable compression for documents in the container where it
-    is placed:</p>
-    <p><strong>Most popular browsers can not handle compression of all content
-        so you may want to set the 'gzip-only-text/html' note to 1 to only 
-        allow html files to be compressed (see below).</strong></p>
-    <p><strong>If you set this to anything but '1' it will be ignored, so you can do
-       negative matches.</strong></p>
+    <example>
+      &lt;Location /&gt;<br />
+      <indent>
+        # insert filter<br />
+        SetOutputFilter DEFLATE<br />
+        <br />
+        # Netscape 4.x has some problems...<br />
+        BrowserMatch ^Mozilla/4         gzip-only-text/html<br />
+        <br />
+        # Netscape 4.06-4.08 have some more problems<br />
+        BrowserMatch ^Mozilla/4\.0[678] no-gzip<br />
+        <br />
+        # fix identity<br />
+        BrowserMatch \bMSIE             !no-gzip !gzip-only-text/html<br />
+        <br />
+        # don't bother:<br />
+        SetEnvIfNoCase Request_URI \<br />
+        <indent>
+          \.(?:gif|jpe?g|png)$ no-gzip dont-vary<br />
+        </indent>
+        <br />
+        # be verbose about configuration<br />
+        Header append Vary User-Agent env=!dont-vary<br />
+      </indent>
+      &lt;/Location&gt;
+    </example>
 
-<example>SetEnv gzip-only-text/html 1<br />
-SetOutputFilter DEFLATE
-</example>
+    <p>Note, that gzip compression of binary files (<em>e.g.</em> images)
+    usually has only little effect. Therefore in the example above we use
+    an exclusion list of some file types. Alternatively you may use a
+    positive list using <directive module="mod_mime"
+    >AddOutputFilter</directive> or <directive module="core"
+    >AddOutputFilterByType</directive> instead of the <directive
+    module="core">SetOutputFilter</directive> directive.</p>
+</section>
 
-    <p>Here is an example of enabling compression for the Apache
-    documentation:</p>
+<section id="enable"><title>Enabling Compression</title>
 
-<example>
-&lt;Directory "/your-server-root/manual"&gt;<br />
-      SetEnv gzip-only-text/html 1<br />
-      SetOutputFilter DEFLATE<br />
-&lt;/Directory&gt;
-</example>
+    <section id="output"><title>Output Compression</title>
+      <p>Compression is implemented by the <code>DEFLATE</code>
+      <a href="../filter.html">filter</a>. The following directive
+      will enable compression for documents in the container where it
+      is placed:</p>
 
-    <p>For browsers that have problems even with compression of html files,
-    use the <directive>BrowserMatch</directive> directive to set the 'no-gzip' note
-    for that particular browser so that no compression will be performed.</p>
+      <example>
+        SetOutputFilter DEFLATE
+      </example>
+
+      <p>Some popular browsers cannot handle compression of all content
+      so you may want to set the <code>gzip-only-text/html</code> note to
+      <code>1</code> to only allow html files to be compressed (see
+      below). If you set this to <em>anything but <code>1</code></em> it
+      will be ignored.</p>
+      
+      <p>If you want to restrict the compression to particular MIME types
+      in general, you may use the <directive module="core"
+      >AddOutputFilterByType</directive> directive. Here is an example of
+      enabling compression only for the html files of the Apache
+      documentation:</p>
+
+      <example>
+        &lt;Directory "/your-server-root/manual"&gt;<br />
+        <indent>
+          AddOutputFilterByType DEFLATE text/html<br />
+        </indent>
+        &lt;/Directory&gt;
+      </example>
+
+      <p>For browsers that have problems even with compression of all file
+      types, use the <directive module="mod_setenvif"
+      >BrowserMatch</directive> directive to set the <code>no-gzip</code>
+      note for that particular browser so that no compression will be
+      performed. You may combine <code>no-gzip</code> with <code
+      >gzip-only-text/html</code> to get the best results. In that case
+      the former overrides the latter. Take a look at the following
+      excerpt from the <a href="#recommended">configuration example</a>
+      defined in the section above:</p>
+
+      <example>
+        BrowserMatch ^Mozilla/4         gzip-only-text/html<br />
+        BrowserMatch ^Mozilla/4\.0[678] no-gzip<br />
+        BrowserMatch \bMSIE             !no-gzip !gzip-only-text/html
+      </example>
+
+      <p>At first we probe for a <code>User-Agent</code> string that
+      indicates a Netscape Navigator version of 4.x. These versions
+      have some big problems to decompress content types different
+      from <code>text/html</code>. The versions 4.06, 4.07 and 4.08 have
+      also sometimes problems to decompress html files. Thus, we
+      completely turn off the deflate filter for them.</p>
+
+      <p>The third <directive module="mod_setenvif">BrowserMatch</directive>
+      directive fixes the guessed identity of the user agent, because
+      the Microsoft Internet Explorer identifies itself also as "Mozilla/4"
+      but is actually able to handle requested compression. Therefore we
+      match against the additional string "MSIE" (<code>\b</code> means
+      "word boundary") in the <code>User-Agent</code> Header and turn off
+      the restrictions defined before.</p>
+
+      <note><title>Note</title>
+        The <code>DEFLATE</code> filter is always inserted after RESOURCE
+        filters like PHP or SSI. It never touches internal subrequests.
+      </note>
+    </section>
+
+    <section id="input"><title>Input Decompression</title>
+      <p>The <module>mod_deflate</module> module also provides a filter for
+      decompressing a gzip compressed request body . In order to activate
+      this feature you have to insert the <code>DEFLATE</code> filter into
+      the input filter chain using <directive module="core"
+      >SetInputFilter</directive> or <directive module="mod_mime"
+      >AddInputFilter</directive>, for example:</p>
+
+      <example>
+        &lt;Location /dav-area&gt;
+        <indent>
+          SetInputFilter DEFLATE
+        </indent>
+        &lt;/Location&gt;
+      </example>
+      
+      <p>Now if a request contains a <code>Content-Encoding: gzip</code>
+      header, the body will be automatically decompressed. Ordinary
+      browsers usually don't have the ability to gzip e.g. <code>POST</code>
+      request bodies. However, some special applications actually do
+      support request compression, for instance <a
+      href="http://www.webdav.org">WebDAV</a> clients.</p>
+
+      <note type="warning"><title>Note on Content-Length</title>
+        <p>If you evaluate the request body yourself, <em>don't trust
+        the <code>Content-Length</code> header!</em> For example, a
+        wide-spread code to read the request body in perl is:</p>
+
+        <example>
+          # WRONG!<br />
+          if (($len = $ENV{'CONTENT_LENGTH'}) > 0) {<br />
+          <indent>
+            read(STDIN, $body, $len);<br />
+          </indent>
+          }
+        </example>
+
+        <p>Since the Content-Length header reflects the length of the
+        incoming data from the client and <em>not</em> the byte count of
+        the decompressed data, you would read too less and cut off the
+        stream.</p>
+
+        <p>Thus, if you want to slurp the whole request body, use for
+        example:</p>
+
+        <example>
+          {<br />
+          <indent>
+            local $/; # undef input record separator<br />
+            $body = &lt;STDIN&gt;;<br />
+          </indent>
+          }
+        </example>
+      </note>
+    </section>
+</section>
+
+<section id="proxies"><title>Dealing with proxy servers</title>
+    <p>Since the <code>DEFLATE</code> output filter actually performs a
+    kind of <a href="../content-negotiation.html">content negotiation</a>,
+    you should take care of caching proxy servers. In order to prevent a
+    proxy cache from delivering the wrong data (<em>e.g.</em> gzip
+    compressed data to a client which doesn't send an appropriate
+    <code>Accept-Encoding</code> header), the origin server
+    (<em>i.e.</em> you) has to indicate the negotiation parameters in the
+    <code>Vary</code> response header.</p>
+
+    <p>If the <code>DEFLATE</code> filter is involved in the request, the
+    following header will be set:</p>
+
+    <example>
+      Vary: Accept-Encoding
+    </example>
+
+    <p>A HTTP compiliant proxy now delivers the cached data to any client,
+    which sends the <em>same</em> <code>Accept-Encoding</code> header as
+    the client, which did the initial request that was cached.</p>
+
+    <p>Fine. But what happens, if you use some special exclusions dependant
+    on, say the <code>User-Agent</code> header? The proxy server doesn't
+    know anything about your server configuration, thus you have to tell
+    him, what you're doing. You have to use the <module>mod_headers</module>
+    module to add appropriate values to the <code>Vary</code> header, for
+    example:</p>
+
+    <example>
+      Header append Vary User-Agent
+    </example>
+    
+    <p>would result in the following response header:</p>
+
+    <example>
+      Vary: Accept-Encoding,User-Agent
+    </example>
+
+    <p>If your decision about compression depends on other information
+    than request headers (<em>e.g.</em> HTTP version), you have to set the
+    <code>Vary</code> header to the value <code>*</code>. This prevents
+    documents from caching by HTTP compiliant proxies at all.</p>
+
+    <example><title>Example</title>
+      Header set Vary *
+    </example>
 </section>
 
 <directivesynopsis>
 <name>DeflateFilterNote</name>
 <description>Places the compression ratio in a note for logging</description>
-<syntax>DeflateFilterNote <em>notename</em></syntax>
+<syntax>DeflateFilterNote <var>notename</var></syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
 
@@ -61,14 +243,24 @@ SetOutputFilter DEFLATE
     <p>The <directive>DeflateFilterNote</directive> directive
     specifies that a note about compression ratios should be attached
     to the request. The name of the note is the value specified for
-    the directive.</p>
+    the directive. You can use that note for statistical purposes by
+    adding the value to your <a href="../logs.html#accesslog"
+    >access log</a>.</p>
+
+    <example><title>Example</title>
+      DeflateFilterNote ratio<br />
+      <br />
+      LogFormat '"%r" %b (%{ratio}n) "%{User-agent}i"' deflate<br />
+      CustomLog logs/deflate_log deflate
+    </example>
 </usage>
+<seealso><module>mod_log_config</module></seealso>
 </directivesynopsis>
 
 <directivesynopsis>
 <name>DeflateBufferSize</name>
 <description>Fragment size to be compressed at one time by zlib</description>
-<syntax>DeflateBufferSize <em>value</em></syntax>
+<syntax>DeflateBufferSize <var>value</var></syntax>
 <default>DeflateBufferSize 8096</default>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
@@ -83,21 +275,22 @@ SetOutputFilter DEFLATE
 <directivesynopsis>
 <name>DeflateWindowSize</name>
 <description>Zlib compression window size</description>
-<syntax>DeflateWindowSize <em>value</em></syntax>
+<syntax>DeflateWindowSize <var>value</var></syntax>
 <default>DeflateWindowSize 15</default>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
 
 <usage>
     <p>The <directive>DeflateWindowSize</directive> directive specifies the
-    zlib compression window size (a value between 1 and 15).</p>
+    zlib compression window size (a value between 1 and 15). Generally, the
+    higher the window size, the higher can the compression ratio be expected.</p>
 </usage>
 </directivesynopsis>
 
 <directivesynopsis>
 <name>DeflateMemLevel</name>
 <description>How much memory should be used by zlib for compression</description>
-<syntax>DeflateMemLevel <em>value</em></syntax>
+<syntax>DeflateMemLevel <var>value</var></syntax>
 <default>DeflateMemLevel 9</default>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
