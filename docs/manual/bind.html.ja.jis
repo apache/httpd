@@ -32,7 +32,7 @@
 <h2><a name="overview" id="overview">概要</a></h2>
     
     
-    <table class="related"><tr><th>関連モジュール</th><th>関連ディレクティブ</th></tr><tr><td><ul><li><code class="module"><a href="./mod/core.html">core</a></code></li><li><code class="module"><a href="./mod/mpm_common.html">mpm_common</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/core.html#virtualhost">VirtualHost</a></code></li><li><code class="directive"><a href="./mod/mpm_common.html#listen">Listen</a></code></li></ul></td></tr></table>
+    <table class="related"><tr><th>関連モジュール</th><th>関連ディレクティブ</th></tr><tr><td><ul><li><code class="module"><a href="./mod/core.html">core</a></code></li><li><code class="module"><a href="./mod/mpm_common.html">mpm_common</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code></li><li><code class="directive"><a href="./mod/mpm_common.html#listen">Listen</a></code></li></ul></td></tr></table>
     
     
     <p>Apache は起動時に、ローカルマシンのあるポートあよびアドレス
