@@ -147,7 +147,6 @@ http://developer.netscape.com/library/documentation/enterprise/unix/svrplug.htm#
 #endif
 
 #if defined(__FreeBSD__)
-#define NEED_RTLD_LAZY
 #define NEED_UNDERSCORE_SYM
 #endif
 
@@ -160,15 +159,19 @@ http://developer.netscape.com/library/documentation/enterprise/unix/svrplug.htm#
 #ifdef HAS_DLFCN
 #include <dlfcn.h>
 #else
-#define NEED_RTLD_LAZY
 void * dlopen (__const char * __filename, int __flag);
 __const char * dlerror (void);
 void * dlsym (void *, __const char *);
 int dlclose (void *);
 #endif
 
-#ifdef NEED_RTLD_LAZY
-#define RTLD_LAZY 1
+#ifndef RTLD_NOW
+/* 
+ * probably on an older system that doesn't support RTLD_NOW or RTLD_LAZY.
+ * The below define is a lie since we are really doing RTLD_LAZY since the
+ * system doesn't support RTLD_NOW.
+ */
+#define RTLD_NOW 1
 #endif
 
 static int have_symbol_table = 0;
