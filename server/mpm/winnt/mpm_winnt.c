@@ -1068,7 +1068,7 @@ static void worker_main(int child_num)
     PCOMP_CONTEXT context = NULL;
 
     while (1) {
-        conn_rec *current_conn;
+        conn_rec *c;
         ap_iol *iol;
         ap_int32_t disconnected;
 
@@ -1093,12 +1093,12 @@ static void worker_main(int child_num)
             continue;
         }
         ap_bpush_iol(context->conn_io, iol);
-        current_conn = ap_new_connection(context->ptrans, server_conf, context->conn_io,
-                                         (struct sockaddr_in *) context->sa_client,
-                                         (struct sockaddr_in *) context->sa_server,
-                                         child_num);
+        c = ap_new_connection(context->ptrans, server_conf, context->conn_io,
+                              (struct sockaddr_in *) context->sa_client,
+                              (struct sockaddr_in *) context->sa_server,
+                              child_num);
 
-        ap_process_connection(current_conn);
+        ap_process_connection(c);
 
 
         ap_getsocketopt(context->sock, APR_SO_DISCONNECTED, &disconnected);
@@ -1111,7 +1111,14 @@ static void worker_main(int child_num)
         }
         else {
             context->accept_socket = INVALID_SOCKET;
-            ap_lingering_close(current_conn);
+            /* Disable lingering close for the moment to fix a seg fault.
+             * All the sendfile code needs some serious work to return 
+             * proper error values, handle updating bytes_sent, etc.
+             * I'll enable lingering close after I've fixed the sendfile
+             * code
+             * ap_lingering_close(c);
+             */
+            ap_bclose(c->client);
         }
     }
 
