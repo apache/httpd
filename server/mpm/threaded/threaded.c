@@ -437,6 +437,32 @@ static void process_socket(apr_pool_t *p, apr_socket_t *sock, int my_child_num, 
         ap_lingering_close(current_conn);
     }
 }
+
+/* requests_this_child has gone to zero or below.  See if the admin coded
+   "MaxRequestsPerChild 0", and keep going in that case.  Doing it this way
+   simplifies the hot path in worker_thread */
+
+static void check_infinite_requests(void)
+{
+    if (ap_max_requests_per_child) {
+        workers_may_exit = 1;              
+    }
+    else {
+        /* wow! if you're executing this code, you may have set a record.
+         * either this child process has served over 2 billion requests, or
+         * you're running a threaded 2.0 on a 16 bit machine.  
+         *
+         * I'll buy pizza and beers at Apachecon for the first person to do
+         * the former without cheating (dorking with INT_MAX, or running with
+         * uncommitted performance patches, for example).    
+         *
+         * for the latter case, you probably deserve a beer too.   Greg Ames
+         */
+            
+        requests_this_child = INT_MAX;      /* keep going */ 
+    }
+}
+
 /* Sets workers_may_exit if we received a character on the pipe_of_death */
 static void check_pipe_of_death(void)
 {
@@ -489,7 +515,9 @@ static void * worker_thread(void * dummy)
     /* TODO: Switch to a system where threads reuse the results from earlier
        poll calls - manoj */
     while (1) {
-        workers_may_exit |= (requests_this_child <= 0);
+        if (requests_this_child <= 0) {
+            check_infinite_requests();
+        }
         if (workers_may_exit) break;
 
         (void) ap_update_child_status(process_slot, thread_slot, SERVER_READY, 
@@ -648,7 +676,13 @@ static void child_main(int child_num_arg)
         clean_child_exit(APEXIT_CHILDFATAL);
     }
 
-    requests_this_child = ap_max_requests_per_child;
+    if (ap_max_requests_per_child) {
+        requests_this_child = ap_max_requests_per_child;
+    }
+    else {
+        /* coding a value of zero means infinity */
+        requests_this_child = INT_MAX;
+    }
     
     /* Set up the pollfd array */
     listensocks = apr_pcalloc(pchild,
@@ -1379,14 +1413,6 @@ static const char *set_max_requests(cmd_parms *cmd, void *dummy,
     }
 
     ap_max_requests_per_child = atoi(arg);
-    
-    /* a value of zero means infinity.  The following removes a conditional
-     * from worker_thread's hot path 
-     */
-     
-    if (!ap_max_requests_per_child) {
-        ap_max_requests_per_child = INT_MAX; 
-    }
 
     return NULL;
 }
