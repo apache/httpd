@@ -402,7 +402,7 @@ if test "x$ap_ssltk_base" = "x"; then
       #
       ap_ssltk_try=""
       # The IFS=... trick eliminates the colons from $PATH, without using an external program
-      for p in /usr/local/openssl/bin /usr/local/ssl/bin `IFS=":$IFS"; echo $PATH`; do
+      for p in `IFS=":$IFS"; echo $PATH` /usr/local/openssl/bin /usr/local/ssl/bin; do
         if test -f "$p/openssl"; then
           ap_ssltk_try="$ap_ssltk_try $p"
         fi
