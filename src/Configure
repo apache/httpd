@@ -436,6 +436,9 @@ case "$PLAT" in
 	CFLAGS="-DULTRIX"
 	DEF_WANTHSREGEX=yes
 	SHELL="/bin/sh5"
+	if [ "$CC" = "cc" ] || [ "$COMPILER" = "cc" ]; then
+	    CFLAGS="$CFLAGS -std"
+	fi
 	;;
     *powerpc-tenon-machten*)
 	OS='MachTen PPC'
