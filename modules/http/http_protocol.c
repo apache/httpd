@@ -1713,7 +1713,7 @@ static const char *get_canned_error_string(int status,
                            "This indicates a configuration error.</p>\n",
                            NULL));
     case HTTP_REQUEST_TIME_OUT:
-        return("<p>I'm tired of waiting for your request.</p>\n");
+        return("<p>Server timeout waiting for the HTTP request from the client.</p>\n");
     case HTTP_GONE:
         return(apr_pstrcat(p,
                            "<p>The requested resource<br />",
