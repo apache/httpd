@@ -60,7 +60,6 @@ case "$host_alias" in
       CORE_IMPLIB_FILE="ApacheCoreOS2.la"
       CORE_IMPLIB="$abs_srcdir/server/$CORE_IMPLIB_FILE"
       MK_IMPLIB="emximp"
-      SHMOD_EXPORT_EXT="def"
       other_targets="$other_targets os2core"
       ;;
   *)
