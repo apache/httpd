@@ -3,7 +3,7 @@
   [ <!ENTITY sitemap SYSTEM "../sitemap.xml"> ]
 >
 <?xml-stylesheet type="text/xsl" href="../style/manual.de.xsl"?>
-<!-- English revision: 1.4.2.1 -->
+<!-- English revision: 1.4 -->
 
 <quickreference>
   <title>Kurzreferenz der Direktiven</title>
