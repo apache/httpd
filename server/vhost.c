@@ -777,16 +777,19 @@ static void fix_hostname(request_rec *r)
      */
     if (r->hostname[0] != '[') {
         for (dst = host; *dst; dst++) {
-            if (*dst == '.') {
+            if (apr_islower(*dst)) {
+                /* leave char unchanged */
+            }
+            else if (*dst == '.') {
                 if (*(dst + 1) == '.') {
                     goto bad;
                 }
             }
+            else if (apr_isupper(*dst)) {
+                *dst = apr_tolower(*dst);
+            }
             else if (*dst == '/' || *dst == '\\') {
                 goto bad;
-            }
-            else if (apr_isalpha(*dst)) {
-                *dst = apr_tolower(*dst);
             }
         }
         /* strip trailing gubbins */
