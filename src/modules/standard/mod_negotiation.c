@@ -417,7 +417,7 @@ array_header *do_languages_line (pool *p, char **lang_line)
         char **new = (char **)push_array (lang_recs);
 	*new = get_token (p, lang_line, 0);
 	str_tolower (*new);
-	if (**lang_line == ',')
+	if (**lang_line == ',' || **lang_line == ';')
 	    ++(*lang_line);
     }
 
