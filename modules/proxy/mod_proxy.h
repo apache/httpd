@@ -364,7 +364,8 @@ PROXY_DECLARE(apr_status_t) ap_proxy_destroy_connection(proxy_conn_rec *conn);
 PROXY_DECLARE(apr_status_t) ap_proxy_close_connection(proxy_conn_rec *conn);
 PROXY_DECLARE(int) ap_proxy_connect_backend(const char *proxy_function, proxy_conn_rec *conn, proxy_worker *worker,
                                             proxy_server_conf *conf, server_rec *s);
-
+PROXY_DECLARE(int) ap_proxy_connection_create(const char *proxy_function, proxy_conn_rec *conn,
+                                              proxy_server_conf *conf, conn_rec *c, server_rec *s);
 /* For proxy_util */
 extern module PROXY_DECLARE_DATA proxy_module;
 
