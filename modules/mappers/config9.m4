@@ -19,10 +19,17 @@ APACHE_MODULE(rewrite, regex URL translation, , , most, [
 
 ap_old_cppflags=$CPPFLAGS
 CPPFLAGS="$CPPFLAGS -I$APR_SOURCE_DIR/include -I$abs_builddir/srclib/apr/include"
-AC_TRY_COMPILE([#include <apr.h>], 
-[#if !APR_HAS_DSO
+AC_TRY_COMPILE([#include <apr.h>], [
+#if !APR_HAS_DSO
 #error You need APR DSO support to use mod_so. 
-#endif],ap_enable_so="static",ap_enable_so="no")
+#endif
+], ap_enable_so="static", [
+if test "$enable_so" = "yes" -o "$enable_so" = "static" -o "$enable_so" = "shared"; then
+    AC_MSG_ERROR([mod_so has been requested but cannot be built on your system])
+else
+    ap_enable_so="no"
+fi
+])
 CPPFLAGS=$ap_old_cppflags
 
 APACHE_MODULE(so, DSO capability, , , $ap_enable_so)
