@@ -1,5 +1,0 @@
-
-LTLIBRARY_NAME    = libapachemod_dav_fs.la
-LTLIBRARY_SOURCES = dbm.c lock.c repos.c
-
-include $(top_srcdir)/build/ltlib.mk

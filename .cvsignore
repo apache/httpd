@@ -1,8 +1,0 @@
-configure
-missing
-install-sh
-mkinstalldirs
-aclocal.m4
-.deps
-generated_lists
-buildmk.stamp

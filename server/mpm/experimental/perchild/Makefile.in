@@ -1,5 +1,0 @@
-
-LTLIBRARY_NAME    = libperchild.la
-LTLIBRARY_SOURCES = perchild.c scoreboard.c
-
-include $(top_srcdir)/build/ltlib.mk
