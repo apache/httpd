@@ -3,8 +3,4 @@
 BUILD_BASE=`pwd`
 export BUILD_BASE
 
-if [ "x$@" = "x" ]; then
-	${MAKE:-make} -f build/build.mk
-else
-	${MAKE:-make} -f build/build.mk "$@"
-fi
+${MAKE:-make} -f build/build.mk ${1+"$@"}
