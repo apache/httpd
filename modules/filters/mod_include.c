@@ -2195,74 +2195,87 @@ static apr_status_t handle_if(include_ctx_t *ctx, ap_filter_t *f,
     return APR_SUCCESS;
 }
 
+/*
+ * <!--#elif expr="..." -->
+ */
 static apr_status_t handle_elif(include_ctx_t *ctx, ap_filter_t *f,
                                 apr_bucket_brigade *bb)
 {
-    char *tag     = NULL;
-    char *tag_val = NULL;
-    char *expr    = NULL;
-    int   expr_ret, was_error, was_unmatched;
-    char debug_buf[MAX_DEBUG_SIZE];
+    char *tag = NULL;
+    char *expr = NULL;
     request_rec *r = f->r;
+    char debug_buf[MAX_DEBUG_SIZE];
+    int expr_ret, was_error, was_unmatched;
 
-    if (!ctx->if_nesting_level) {
-        while (1) {
-            ap_ssi_get_tag_and_value(ctx, &tag, &tag_val, SSI_VALUE_RAW);
-            if (!tag) {
-                LOG_COND_STATUS(ctx, f, bb, " elif");
-                
-                if (ctx->flags & SSI_FLAG_COND_TRUE) {
-                    ctx->flags &= SSI_FLAG_CLEAR_PRINTING;
-                    return APR_SUCCESS;
-                }
-                if (!expr) {
-                    ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
-                                  "missing expr in elif statement: %s", 
-                                  r->filename);
-                    SSI_CREATE_ERROR_BUCKET(ctx, f, bb);
-                    return APR_SUCCESS;
-                }
-                expr_ret = parse_expr(r, ctx, expr, &was_error, 
-                                      &was_unmatched, debug_buf);
-                if (was_error) {
-                    SSI_CREATE_ERROR_BUCKET(ctx, f, bb);
-                    return APR_SUCCESS;
-                }
-                if (was_unmatched) {
-                    DUMP_PARSE_EXPR_DEBUG("\nUnmatched '\n", f, bb);
-                }
-                DUMP_PARSE_EXPR_DEBUG(debug_buf, f, bb);
-                
-                if (expr_ret) {
-                    ctx->flags |= (SSI_FLAG_PRINTING | SSI_FLAG_COND_TRUE);
-                }
-                else {
-                    ctx->flags &= SSI_FLAG_CLEAR_PRINT_COND;
-                }
-                LOG_COND_STATUS(ctx, f, bb, " elif");
-                return APR_SUCCESS;
-            }
-            else if (!strcmp(tag, "expr")) {
-                expr = tag_val;
-#ifdef DEBUG_INCLUDE
-                if (1) {
-                    apr_bucket *tmp_buck;
-                    apr_size_t d_len = 0;
-                    d_len = sprintf(debug_buf, "**** elif expr=\"%s\"\n", expr);
-                    tmp_buck = apr_bucket_heap_create(debug_buf, d_len, NULL,
-                                                  r->connection->bucket_alloc);
-                    APR_BRIGADE_INSERT_TAIL(bb, tmp_buck);
-                }
-#endif
-            }
-            else {
-                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
-                               "unknown parameter \"%s\" to tag if in %s", tag, 
-                               r->filename);
-                SSI_CREATE_ERROR_BUCKET(ctx, f, bb);
-            }
-        }
+    if (ctx->argc != 1) {
+        ap_log_rerror(APLOG_MARK,
+                      (!(ctx->if_nesting_level)) ? APLOG_ERR : APLOG_WARNING,
+                      0, r, (ctx->argc)
+                                ? "too many arguments for if element in %s"
+                                : "missing expr argument for if element in %s",
+                      r->filename);
     }
+
+    if (ctx->if_nesting_level) {
+        return APR_SUCCESS;
+    }
+
+    if (ctx->argc != 1) {
+        SSI_CREATE_ERROR_BUCKET(ctx, f, bb);
+        return APR_SUCCESS;
+    }
+
+    ap_ssi_get_tag_and_value(ctx, &tag, &expr, SSI_VALUE_RAW);
+
+    if (strcmp(tag, "expr")) {
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, "unknown parameter \"%s\" "
+                      "to tag if in %s", tag, r->filename);
+        SSI_CREATE_ERROR_BUCKET(ctx, f, bb);
+        return APR_SUCCESS;
+    }
+
+    if (!expr) {
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, "missing expr in elif "
+                      "statement: %s", r->filename);
+        SSI_CREATE_ERROR_BUCKET(ctx, f, bb);
+        return APR_SUCCESS;
+    }
+#ifdef DEBUG_INCLUDE
+    do {
+        apr_size_t d_len = 0;
+        d_len = sprintf(debug_buf, "**** elif expr=\"%s\"\n", expr);
+        APR_BRIGADE_INSERT_TAIL(bb, apr_bucket_heap_create(debug_buf, d_len,
+                                NULL, f->c->bucket_alloc));
+    } while (0);
+#endif
+
+    LOG_COND_STATUS(ctx, f, bb, " elif");
+
+    if (ctx->flags & SSI_FLAG_COND_TRUE) {
+        ctx->flags &= SSI_FLAG_CLEAR_PRINTING;
+        return APR_SUCCESS;
+    }
+
+    expr_ret = parse_expr(r, ctx, expr, &was_error, &was_unmatched, debug_buf);
+
+    if (was_error) {
+        SSI_CREATE_ERROR_BUCKET(ctx, f, bb);
+        return APR_SUCCESS;
+    }
+
+    if (was_unmatched) {
+        DUMP_PARSE_EXPR_DEBUG("\nUnmatched '\n", f, bb);
+    }
+    DUMP_PARSE_EXPR_DEBUG(debug_buf, f, bb);
+
+    if (expr_ret) {
+        ctx->flags |= (SSI_FLAG_PRINTING | SSI_FLAG_COND_TRUE);
+    }
+    else {
+        ctx->flags &= SSI_FLAG_CLEAR_PRINT_COND;
+    }
+
+    LOG_COND_STATUS(ctx, f, bb, " elif");
 
     return APR_SUCCESS;
 }
