@@ -1,105 +1,100 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
-<HTML>
-<HEAD>
-<TITLE>Apache module mod_log_config</TITLE>
-</HEAD>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
-<!-- Background white, links blue (unvisited), navy (visited), red (active) -->
-<BODY
- BGCOLOR="#FFFFFF"
- TEXT="#000000"
- LINK="#0000FF"
- VLINK="#000080"
- ALINK="#FF0000"
->
-<!--#include virtual="header.html" -->
-<H1 ALIGN="CENTER">Module mod_log_config</H1>
-<P>
-This module provides for logging of the requests made to
-the server, using the Common Log Format or a user-specified format.
-</P>
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta name="generator" content="HTML Tidy, see www.w3.org" />
 
-<P><A
-HREF="module-dict.html#Status"
-REL="Help"
-><STRONG>Status:</STRONG></A> Base
-<BR>
-<A
-HREF="module-dict.html#SourceFile"
-REL="Help"
-><STRONG>Source File:</STRONG></A> mod_log_config.c
-<BR>
-<A
-HREF="module-dict.html#ModuleIdentifier"
-REL="Help"
-><STRONG>Module Identifier:</STRONG></A> config_log_module
-</P>
+    <title>Apache module mod_log_config</title>
+  </head>
+  <!-- Background white, links blue (unvisited), navy (visited), red (active) -->
 
+  <body bgcolor="#FFFFFF" text="#000000" link="#0000FF"
+  vlink="#000080" alink="#FF0000">
+    <!--#include virtual="header.html" -->
 
-<H2>Summary</H2>
+    <h1 align="CENTER">Module mod_log_config</h1>
 
-<p>This module provides for flexible logging of client requests.  Logs
-are written in a customizable format, and may be written directly to a
-file, or to an external program.  Conditional logging is provided so
-that individual requests may be included or excluded from the logs
-based on characteristics of the request.</p>
+    <p>This module provides for logging of the requests made to the
+    server, using the Common Log Format or a user-specified
+    format.</p>
 
-<P>
-Three directives are provided by this module: <CODE>TransferLog</CODE>
-to create a log file, <CODE>LogFormat</CODE> to set a custom format,
-and <CODE>CustomLog</CODE> to define a log file and format in one step.
-The <CODE>TransferLog</CODE> and <CODE>CustomLog</CODE> directives can
-be used multiple times in each server to cause each request to be
-logged to multiple files.
-</P>
+    <p><a href="module-dict.html#Status"
+    rel="Help"><strong>Status:</strong></a> Base<br />
+     <a href="module-dict.html#SourceFile"
+    rel="Help"><strong>Source File:</strong></a>
+    mod_log_config.c<br />
+     <a href="module-dict.html#ModuleIdentifier"
+    rel="Help"><strong>Module Identifier:</strong></a>
+    config_log_module</p>
 
-<p>See also: <a href="../logs.html">Apache Log Files</a>.</p>
+    <h2>Summary</h2>
 
-<H2>Directives</H2>
+    <p>This module provides for flexible logging of client
+    requests. Logs are written in a customizable format, and may be
+    written directly to a file, or to an external program.
+    Conditional logging is provided so that individual requests may
+    be included or excluded from the logs based on characteristics
+    of the request.</p>
 
-<UL>
-<LI><A HREF="#cookielog">CookieLog</A></LI>
-<LI><A HREF="#customlog">CustomLog</A></LI>
-<LI><A HREF="#logformat">LogFormat</A></LI>
-<LI><A HREF="#transferlog">TransferLog</A></LI>
-</UL>
+    <p>Three directives are provided by this module:
+    <code>TransferLog</code> to create a log file,
+    <code>LogFormat</code> to set a custom format, and
+    <code>CustomLog</code> to define a log file and format in one
+    step. The <code>TransferLog</code> and <code>CustomLog</code>
+    directives can be used multiple times in each server to cause
+    each request to be logged to multiple files.</p>
 
-<H2><A NAME="formats">Custom Log Formats</A></H2>
+    <p>See also: <a href="../logs.html">Apache Log Files</a>.</p>
 
-<p>The format argument to the <CODE>LogFormat</CODE> and
-<CODE>CustomLog</CODE> directives is a string. This string is logged
-to the log file for each request. It can contain literal characters
-copied into the log files and the c-type control characters "\n" and
-"\t" to represent new-lines and tabs.  Literal quotes and back-slashes
-should be escaped with back-slashes.</p>
+    <h2>Directives</h2>
 
-<p>The characteristics of the request itself are logged by placing
-"%" directives in the format string, which are replaced in the log file
-by the values as follows:</p>
+    <ul>
+      <li><a href="#cookielog">CookieLog</a></li>
 
-<PRE>
+      <li><a href="#customlog">CustomLog</a></li>
+
+      <li><a href="#logformat">LogFormat</a></li>
+
+      <li><a href="#transferlog">TransferLog</a></li>
+    </ul>
+
+    <h2><a id="formats" name="formats">Custom Log Formats</a></h2>
+
+    <p>The format argument to the <code>LogFormat</code> and
+    <code>CustomLog</code> directives is a string. This string is
+    logged to the log file for each request. It can contain literal
+    characters copied into the log files and the c-type control
+    characters "\n" and "\t" to represent new-lines and tabs.
+    Literal quotes and back-slashes should be escaped with
+    back-slashes.</p>
+
+    <p>The characteristics of the request itself are logged by
+    placing "%" directives in the format string, which are replaced
+    in the log file by the values as follows:</p>
+<pre>
 %...a:          Remote IP-address
 %...A:          Local IP-address
 %...B:          Bytes sent, excluding HTTP headers.
 %...b:          Bytes sent, excluding HTTP headers. In CLF format
-		i.e. a '-' rather than a 0 when no bytes are sent.
-%...{Foobar}C:	The contents of cookie "Foobar" in the request sent to the
+        i.e. a '-' rather than a 0 when no bytes are sent.
+%...{Foobar}C:  The contents of cookie "Foobar" in the request sent to the
                 server.
 %...D:          The time taken to serve the request, in microseconds.
 %...{FOOBAR}e:  The contents of the environment variable FOOBAR
 %...f:          Filename
 %...h:          Remote host
-%...H		The request protocol
+%...H       The request protocol
 %...{Foobar}i:  The contents of Foobar: header line(s) in the request
                 sent to the server.
 %...l:          Remote logname (from identd, if supplied)
-%...m		The request method
+%...m       The request method
 %...{Foobar}n:  The contents of note "Foobar" from another module.
 %...{Foobar}o:  The contents of Foobar: header line(s) in the reply.
 %...p:          The canonical Port of the server serving the request
 %...P:          The process ID of the child that serviced the request.
-%...q		The query string (prepended with a ? if a query string exists,
-		otherwise an empty string)
+%...q       The query string (prepended with a ? if a query string exists,
+        otherwise an empty string)
 %...r:          First line of request
 %...s:          Status.  For requests that got internally redirected, this is
                 the status of the *original* request --- %...&gt;s for the last.
@@ -117,272 +112,254 @@ by the values as follows:</p>
                 '-' = connection will be closed after the response is sent.
                 (This directive was %...c in late versions of Apache 1.3, but
                  this conflicted with the historical ssl %...{var}c syntax.)
-</PRE>
+</pre>
 
-<p>The "..." can be nothing at all (<EM>e.g.</EM>, <CODE>"%h %u %r %s
-%b"</CODE>), or it can indicate conditions for inclusion of the item
-(which will cause it to be replaced with "-" if the condition is not
-met).  The forms of condition are a list of HTTP status codes, which
-may or may not be preceded by "!".  Thus, "%400,501{User-agent}i" logs
-User-agent: on 400 errors and 501 errors (Bad Request, Not
-Implemented) only; "%!200,304,302{Referer}i" logs Referer: on all
-requests which did <STRONG>not</STRONG> return some sort of normal
-status.</p>
+    <p>The "..." can be nothing at all (<em>e.g.</em>, <code>"%h %u
+    %r %s %b"</code>), or it can indicate conditions for inclusion
+    of the item (which will cause it to be replaced with "-" if the
+    condition is not met). The forms of condition are a list of
+    HTTP status codes, which may or may not be preceded by "!".
+    Thus, "%400,501{User-agent}i" logs User-agent: on 400 errors
+    and 501 errors (Bad Request, Not Implemented) only;
+    "%!200,304,302{Referer}i" logs Referer: on all requests which
+    did <strong>not</strong> return some sort of normal status.</p>
 
-<p>Note that there is no escaping performed on the strings from
-%...r, %...i and %...o.  This is mainly to comply with the requirements
-of the Common Log Format.  This implies that clients can insert
-control characters into the log, so care should be taken when dealing
-with raw log files.</p>
+    <p>Note that there is no escaping performed on the strings from
+    %...r, %...i and %...o. This is mainly to comply with the
+    requirements of the Common Log Format. This implies that
+    clients can insert control characters into the log, so care
+    should be taken when dealing with raw log files.</p>
 
-<p>Some commonly used log format strings are:</p>
+    <p>Some commonly used log format strings are:</p>
 
-<dl>
-<dt>Common Log Format (CLF)</dt>
-<dd><CODE>"%h %l %u %t \"%r\" %&gt;s %b"</CODE></dd>
+    <dl>
+      <dt>Common Log Format (CLF)</dt>
 
-<dt>Common Log Format with Virtual Host</dt>
-<dd><code>"%v %h %l %u %t \"%r\" %&gt;s %b"</CODE></dd>
+      <dd><code>"%h %l %u %t \"%r\" %&gt;s %b"</code></dd>
 
-<dt>NCSA extended/combined log format</dt>
-<dd> <CODE>"%h %l %u %t \"%r\" %&gt;s %b \"%{Referer}i\" \"%{User-agent}i\""</CODE></dd>
+      <dt>Common Log Format with Virtual Host</dt>
 
-<dt>Referer log format</dt>
-<dd><code>"%{Referer}i -&gt; %U"</code></dd>
+      <dd><code>"%v %h %l %u %t \"%r\" %&gt;s %b"</code></dd>
 
-<dt>Agent (Browser) log format</dt>
-<dd><code>"%{User-agent}i"</code></dd>
-</dl>
+      <dt>NCSA extended/combined log format</dt>
 
-<P>Note that the canonical <A
-HREF="core.html#servername">ServerName</A> and <A
-HREF="core.html#port">Port</A> of the server serving the request are
-used for <CODE>%v</CODE> and <CODE>%p</CODE> respectively.  This
-happens regardless of the <A
-HREF="core.html#usecanonicalname">UseCanonicalName</A> setting because
-otherwise log analysis programs would have to duplicate the entire
-vhost matching algorithm in order to decide what host really served
-the request.</p>
+      <dd><code>"%h %l %u %t \"%r\" %&gt;s %b \"%{Referer}i\"
+      \"%{User-agent}i\""</code></dd>
 
-<H2>Security Considerations</H2>
+      <dt>Referer log format</dt>
 
-<p>See the <A HREF="../misc/security_tips.html#serverroot">security tips</A>
-document for details on why your security could be compromised if the
-directory where logfiles are stored is writable by anyone other than
-the user that starts the server.</p>
+      <dd><code>"%{Referer}i -&gt; %U"</code></dd>
 
-<HR>
+      <dt>Agent (Browser) log format</dt>
 
+      <dd><code>"%{User-agent}i"</code></dd>
+    </dl>
 
-<H2><A NAME="cookielog">CookieLog</A> directive</H2>
-<!--%plaintext &lt;?INDEX {\tt CookieLog} directive&gt; -->
-<p><A
- HREF="directive-dict.html#Syntax"
- REL="Help"
-><STRONG>Syntax:</STRONG></A> CookieLog <EM>filename</EM><BR>
-<A
- HREF="directive-dict.html#Context"
- REL="Help"
-><STRONG>Context:</STRONG></A> server config, virtual host<BR>
-<A
- HREF="directive-dict.html#Module"
- REL="Help"
-><STRONG>Module:</STRONG></A> mod_cookies<BR>
-<A
- HREF="directive-dict.html#Compatibility"
- REL="Help"
-><STRONG>Compatibility:</STRONG></A> Only available in Apache 1.2 and above</p>
+    <p>Note that the canonical <a
+    href="core.html#servername">ServerName</a> and <a
+    href="core.html#port">Port</a> of the server serving the
+    request are used for <code>%v</code> and <code>%p</code>
+    respectively. This happens regardless of the <a
+    href="core.html#usecanonicalname">UseCanonicalName</a> setting
+    because otherwise log analysis programs would have to duplicate
+    the entire vhost matching algorithm in order to decide what
+    host really served the request.</p>
 
-<p>The CookieLog directive sets the filename for logging of cookies.
-The filename is relative to the <A
-HREF="core.html#serverroot">ServerRoot</A>. This directive is included
-only for compatibility with mod_cookies, and is deprecated.</p>
+    <h2>Security Considerations</h2>
 
-<HR>
-<H2><A NAME="customlog">CustomLog</A> 
-<a NAME="customlogconditional">directive</a></H2>
-<p><A
- HREF="directive-dict.html#Syntax"
- REL="Help"
-><STRONG>Syntax:</STRONG></A> CustomLog <EM>file</em>|<em>pipe</EM>
-    <EM>format</em>|<em>nickname</EM>  [env=[!]<EM>environment-variable</EM>]<BR>
-<A
- HREF="directive-dict.html#Context"
- REL="Help"
-><STRONG>Context:</STRONG></A> server config, virtual host<BR>
-<A
- HREF="directive-dict.html#Status"
- REL="Help"
-><STRONG>Status:</STRONG></A> Base<BR>
-<A
- HREF="directive-dict.html#Compatibility"
- REL="Help"
-><STRONG>Compatibility:</STRONG></A> Nickname only available in Apache 1.3
-    or later.  Conditional logging available in 1.3.5 or later.
-<BR>
-<A
- HREF="directive-dict.html#Module"
- REL="Help"
-><STRONG>Module:</STRONG></A> mod_log_config</p>
+    <p>See the <a
+    href="../misc/security_tips.html#serverroot">security tips</a>
+    document for details on why your security could be compromised
+    if the directory where logfiles are stored is writable by
+    anyone other than the user that starts the server.</p>
+    <hr />
 
-<p>The <code>CustomLog</code> directive is used to log requests
-to the server.  A log format is specified, and the logging can
-optionally be made conditional on request characteristics
-using environment variables.</p>
+    <h2><a id="cookielog" name="cookielog">CookieLog</a>
+    directive</h2>
+    <!--%plaintext &lt;?INDEX {\tt CookieLog} directive&gt; -->
 
-<P>The first argument, which specifies the location to which the 
-logs will be written, can take on one of the following two
-types of values:</p>
+    <p><a href="directive-dict.html#Syntax"
+    rel="Help"><strong>Syntax:</strong></a> CookieLog
+    <em>filename</em><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Context:</strong></a> server config, virtual
+    host<br />
+     <a href="directive-dict.html#Module"
+    rel="Help"><strong>Module:</strong></a> mod_cookies<br />
+     <a href="directive-dict.html#Compatibility"
+    rel="Help"><strong>Compatibility:</strong></a> Only available
+    in Apache 1.2 and above</p>
 
-<dl>
-<dt><em>file</em>
-<dd>A filename, relative to the 
-<a href="core.html#serverroot">ServerRoot</a>.</dd>
+    <p>The CookieLog directive sets the filename for logging of
+    cookies. The filename is relative to the <a
+    href="core.html#serverroot">ServerRoot</a>. This directive is
+    included only for compatibility with mod_cookies, and is
+    deprecated.</p>
+    <hr />
 
-<dt><em>pipe</em> 
-<dd>The pipe character "<code>|</code>", followed by the path to a
-program to receive the log information on its standard input.
-<STRONG>Security:</STRONG> if a program is used, then it will be run
-under the user who started httpd. This will be root if the server was
-started by root; be sure that the program is secure.</dd>
-</dl>
+    <h2><a id="customlog" name="customlog">CustomLog</a> <a
+    id="customlogconditional"
+    name="customlogconditional">directive</a></h2>
 
-<P>The second argument specifies what will be written to the
-log file.  It can specify either a <em>nickname</em>
-defined by a previous <a href="#logformat">LogFormat</a>
-directive, or it can be an explicit <em>format</em> string
-as described in the <a href="#formats">log formats</a> section.</p>
+    <p><a href="directive-dict.html#Syntax"
+    rel="Help"><strong>Syntax:</strong></a> CustomLog
+    <em>file</em>|<em>pipe</em> <em>format</em>|<em>nickname</em>
+    [env=[!]<em>environment-variable</em>]<br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Context:</strong></a> server config, virtual
+    host<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>Status:</strong></a> Base<br />
+     <a href="directive-dict.html#Compatibility"
+    rel="Help"><strong>Compatibility:</strong></a> Nickname only
+    available in Apache 1.3 or later. Conditional logging available
+    in 1.3.5 or later.<br />
+     <a href="directive-dict.html#Module"
+    rel="Help"><strong>Module:</strong></a> mod_log_config</p>
 
-<p>For example, the following two sets of directives have exactly
-the same effect:</p>
+    <p>The <code>CustomLog</code> directive is used to log requests
+    to the server. A log format is specified, and the logging can
+    optionally be made conditional on request characteristics using
+    environment variables.</p>
 
+    <p>The first argument, which specifies the location to which
+    the logs will be written, can take on one of the following two
+    types of values:</p>
+
+    <dl>
+      <dt><em>file</em></dt>
+
+      <dd>A filename, relative to the <a
+      href="core.html#serverroot">ServerRoot</a>.</dd>
+
+      <dt><em>pipe</em></dt>
+
+      <dd>The pipe character "<code>|</code>", followed by the path
+      to a program to receive the log information on its standard
+      input. <strong>Security:</strong> if a program is used, then
+      it will be run under the user who started httpd. This will be
+      root if the server was started by root; be sure that the
+      program is secure.</dd>
+    </dl>
+
+    <p>The second argument specifies what will be written to the
+    log file. It can specify either a <em>nickname</em> defined by
+    a previous <a href="#logformat">LogFormat</a> directive, or it
+    can be an explicit <em>format</em> string as described in the
+    <a href="#formats">log formats</a> section.</p>
+
+    <p>For example, the following two sets of directives have
+    exactly the same effect:</p>
 <pre>
      # CustomLog with format nickname
-     LogFormat &quot;%h %l %u %t \&quot;%r\&quot; %&gt;s %b&quot; common
+     LogFormat "%h %l %u %t \"%r\" %&gt;s %b" common
      CustomLog logs/access_log common
 
      # CustomLog with explicit format string
-     CustomLog logs/access_log &quot;%h %l %u %t \&quot;%r\&quot; %&gt;s %b&quot;
+     CustomLog logs/access_log "%h %l %u %t \"%r\" %&gt;s %b"
 </pre>
 
-<p>The third argument is optional and allows the decision on whether
-or not to log a particular request to be based on the presence or
-absence of a particular variable in the server environment.  If the
-specified <a href="../env.html">environment variable</a> is set for
-the request (or is not set, in the case of a
-'<CODE>env=!<EM>name</EM></CODE>' clause), then the request will be
-logged.</P>
+    <p>The third argument is optional and allows the decision on
+    whether or not to log a particular request to be based on the
+    presence or absence of a particular variable in the server
+    environment. If the specified <a href="../env.html">environment
+    variable</a> is set for the request (or is not set, in the case
+    of a '<code>env=!<em>name</em></code>' clause), then the
+    request will be logged.</p>
 
-<P>Environment variables can be set on a <EM>per</EM>-request basis
-using the <A HREF="mod_setenvif.html">mod_setenvif</A> and/or <A
-HREF="mod_rewrite.html">mod_rewrite</A> modules.  For example, if you
-don't want to record requests for all GIF images on your server in a
-separate logfile but not your main log, you can use:
-</P>
-<PRE>
+    <p>Environment variables can be set on a <em>per</em>-request
+    basis using the <a href="mod_setenvif.html">mod_setenvif</a>
+    and/or <a href="mod_rewrite.html">mod_rewrite</a> modules. For
+    example, if you don't want to record requests for all GIF
+    images on your server in a separate logfile but not your main
+    log, you can use:</p>
+<pre>
     SetEnvIf Request_URI \.gif$ gif-image
     CustomLog gif-requests.log common env=gif-image
     CustomLog nongif-requests.log common env=!gif-image
-</PRE>
+</pre>
+    <hr />
 
-<HR>
-<H2><A NAME="logformat">LogFormat</A> directive</H2>
-<!--%plaintext &lt;?INDEX {\tt LogFormat} directive&gt; -->
-<p><A
- HREF="directive-dict.html#Syntax"
- REL="Help"
-><STRONG>Syntax:</STRONG></A> LogFormat <EM>format</em>|<em>nickname</EM>
-     [<EM>nickname</EM>]
-<BR>
-<A
- HREF="directive-dict.html#Default"
- REL="Help"
-><STRONG>Default:</STRONG></A> <CODE>LogFormat &quot;%h %l %u %t \&quot;%r\&quot;
-%&gt;s %b&quot;</CODE><BR>
-<A
- HREF="directive-dict.html#Context"
- REL="Help"
-><STRONG>Context:</STRONG></A> server config, virtual host<BR>
-<A
- HREF="directive-dict.html#Status"
- REL="Help"
-><STRONG>Status:</STRONG></A> Base<BR>
-<A
- HREF="directive-dict.html#Compatibility"
- REL="Help"
-><STRONG>Compatibility:</STRONG></A> Nickname only available in Apache 1.3
-    or later
-<BR>
-<A
- HREF="directive-dict.html#Module"
- REL="Help"
-><STRONG>Module:</STRONG></A> mod_log_config</p>
+    <h2><a id="logformat" name="logformat">LogFormat</a>
+    directive</h2>
+    <!--%plaintext &lt;?INDEX {\tt LogFormat} directive&gt; -->
 
-<p>This directive specifies the format of the access log file.</p>
+    <p><a href="directive-dict.html#Syntax"
+    rel="Help"><strong>Syntax:</strong></a> LogFormat
+    <em>format</em>|<em>nickname</em> [<em>nickname</em>]<br />
+     <a href="directive-dict.html#Default"
+    rel="Help"><strong>Default:</strong></a> <code>LogFormat "%h %l
+    %u %t \"%r\" %&gt;s %b"</code><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Context:</strong></a> server config, virtual
+    host<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>Status:</strong></a> Base<br />
+     <a href="directive-dict.html#Compatibility"
+    rel="Help"><strong>Compatibility:</strong></a> Nickname only
+    available in Apache 1.3 or later<br />
+     <a href="directive-dict.html#Module"
+    rel="Help"><strong>Module:</strong></a> mod_log_config</p>
 
-<p>The <code>LogFormat</code> directive can take one of two forms.  In
-the first form, where only one argument is specified, this directive
-sets the log format which will be used by logs specified in subsequent
-<a href="#transferlog">TransferLog</a> directives.  The single
-argument can specify an explicit <em>format</em> as discussed in <a
-href="#formats">custom log formats</a> section above.  Alternatively,
-it can use a <em>nickname</em> to refer to a log format defined
-in a previous <code>LogFormat</code> directive as described below.</p>
+    <p>This directive specifies the format of the access log
+    file.</p>
 
-<p>The second form of the <code>LogFormat</code> directive associates
-an explicit <em>format</em> with a <em>nickname</em>.  This
-<em>nickname</em> can then be used in subsequent
-<code>LogFormat</code> or <a href="#customlog">CustomLog</a>
-directives rather than repeating the entire format string.  A
-<SAMP>LogFormat</SAMP> directive which defines a nickname <STRONG>does
-nothing else</STRONG> -- that is, it <EM>only</EM> defines the
-nickname, it doesn't actually apply the format and make it the
-default.  Therefore, it will not affect subsequent <a
-href="#transferlog">TransferLog</a> directives.
-</P>
+    <p>The <code>LogFormat</code> directive can take one of two
+    forms. In the first form, where only one argument is specified,
+    this directive sets the log format which will be used by logs
+    specified in subsequent <a href="#transferlog">TransferLog</a>
+    directives. The single argument can specify an explicit
+    <em>format</em> as discussed in <a href="#formats">custom log
+    formats</a> section above. Alternatively, it can use a
+    <em>nickname</em> to refer to a log format defined in a
+    previous <code>LogFormat</code> directive as described
+    below.</p>
 
-<HR>
+    <p>The second form of the <code>LogFormat</code> directive
+    associates an explicit <em>format</em> with a
+    <em>nickname</em>. This <em>nickname</em> can then be used in
+    subsequent <code>LogFormat</code> or <a
+    href="#customlog">CustomLog</a> directives rather than
+    repeating the entire format string. A <samp>LogFormat</samp>
+    directive which defines a nickname <strong>does nothing
+    else</strong> -- that is, it <em>only</em> defines the
+    nickname, it doesn't actually apply the format and make it the
+    default. Therefore, it will not affect subsequent <a
+    href="#transferlog">TransferLog</a> directives.</p>
+    <hr />
 
-<H2><A NAME="transferlog">TransferLog</A> directive</H2>
-<!--%plaintext &lt;?INDEX {\tt TransferLog} directive&gt; -->
-<p><A
- HREF="directive-dict.html#Syntax"
- REL="Help"
-><STRONG>Syntax:</STRONG></A> TransferLog <EM>file</em>|<em>pipe</EM><BR>
-<A
- HREF="directive-dict.html#Default"
- REL="Help"
-><STRONG>Default:</STRONG></A> none<BR>
-<A
- HREF="directive-dict.html#Context"
- REL="Help"
-><STRONG>Context:</STRONG></A> server config, virtual host<BR>
-<A
- HREF="directive-dict.html#Status"
- REL="Help"
-><STRONG>Status:</STRONG></A> Base<BR>
-<A
- HREF="directive-dict.html#Module"
- REL="Help"
-><STRONG>Module:</STRONG></A> mod_log_config</p>
+    <h2><a id="transferlog" name="transferlog">TransferLog</a>
+    directive</h2>
+    <!--%plaintext &lt;?INDEX {\tt TransferLog} directive&gt; -->
 
-<p>This directive has exactly the same arguments and effect as the <a
-href="#customlog">CustomLog</a> directive, with the exception that it
-does not allow the log format to be specified explicitly or for
-conditional logging of requests.  Instead, the log format is
-determined by the most recently specified specified <a
-href="#logformat">LogFormat</a> directive (which does not define a
-nickname).  Common Log Format is used if no other format has been
-specified.</p>
+    <p><a href="directive-dict.html#Syntax"
+    rel="Help"><strong>Syntax:</strong></a> TransferLog
+    <em>file</em>|<em>pipe</em><br />
+     <a href="directive-dict.html#Default"
+    rel="Help"><strong>Default:</strong></a> none<br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Context:</strong></a> server config, virtual
+    host<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>Status:</strong></a> Base<br />
+     <a href="directive-dict.html#Module"
+    rel="Help"><strong>Module:</strong></a> mod_log_config</p>
 
-<p>Example:</p>
+    <p>This directive has exactly the same arguments and effect as
+    the <a href="#customlog">CustomLog</a> directive, with the
+    exception that it does not allow the log format to be specified
+    explicitly or for conditional logging of requests. Instead, the
+    log format is determined by the most recently specified
+    specified <a href="#logformat">LogFormat</a> directive (which
+    does not define a nickname). Common Log Format is used if no
+    other format has been specified.</p>
 
+    <p>Example:</p>
 <pre>
    LogFormat "%h %l %u %t \"%r\" %&gt;s %b \"%{Referer}i\" \"%{User-agent}i\""
    TransferLog logs/access_log
 </pre>
+    <!--#include virtual="footer.html" -->
+  </body>
+</html>
 
-
-<!--#include virtual="footer.html" -->
-</BODY>
-</HTML>

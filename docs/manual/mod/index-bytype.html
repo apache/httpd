@@ -1,190 +1,280 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
-<HTML>
-<HEAD>
-<TITLE>Apache modules</TITLE>
-</HEAD>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
-<!-- Background white, links blue (unvisited), navy (visited), red (active) -->
-<BODY
- BGCOLOR="#FFFFFF"
- TEXT="#000000"
- LINK="#0000FF"
- VLINK="#000080"
- ALINK="#FF0000"
->
-<!--#include virtual="header.html" -->
-<H1 ALIGN="CENTER">Apache modules</H1>
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta name="generator" content="HTML Tidy, see www.w3.org" />
 
-<P>
-Below is a list of all of the modules that come as part of the Apache
-distribution.  See also the list of modules <A
-HREF="index.html">sorted alphabetically</A> and the complete
-alphabetical list of <A HREF="directives.html" >all Apache
-directives</A>.
-</P>
+    <title>Apache modules</title>
+  </head>
+  <!-- Background white, links blue (unvisited), navy (visited), red (active) -->
 
-<H2>Core and Mutli-Processing Modules</H2>
+  <body bgcolor="#FFFFFF" text="#000000" link="#0000FF"
+  vlink="#000080" alink="#FF0000">
+    <!--#include virtual="header.html" -->
 
-<DL>
-<DT><A HREF="core.html">Core</A>
-<DD>Core Apache features.
-<DT><A HREF="threaded.html">threaded</A>
-<DD>Multi-Processing Module with Threading via Pthreads; Variable number
-of processes, constant number of threads/child
-<DT><a href="mpm_winnt.html">mpm_winnt</a>
-<DD>Multi-Processing Module with a single control process and a single
-server process with multiple threads for Windows NT
-<DT><a href="perchild.html">perchild</a>
-<DD>Multi-Processing Module with the ability to server different
-virtual hosts under different userids.
-<DT><a href="prefork.html">prefork</a>
-<DD>Non-threaded preforking processes model similar to Apache 1.3
-</DL>
+    <h1 align="CENTER">Apache modules</h1>
 
-<H2>Environment Creation</H2>
+    <p>Below is a list of all of the modules that come as part of
+    the Apache distribution. See also the list of modules <a
+    href="index.html">sorted alphabetically</a> and the complete
+    alphabetical list of <a href="directives.html">all Apache
+    directives</a>.</p>
 
-<DL>
-<DT><A HREF="mod_env.html">mod_env</A>
-<DD>Passing of environments to CGI scripts
-<DT><A HREF="mod_setenvif.html">mod_setenvif</A>
-<DD>Set environment variables based on client information
-<DT><A HREF="mod_unique_id.html">mod_unique_id</A>
-<DD>Generate unique request identifier for every request
-</DL>
+    <h2>Core and Mutli-Processing Modules</h2>
 
-<H2>Content Type Decisions</H2>
+    <dl>
+      <dt><a href="core.html">Core</a></dt>
 
-<DL>
-<DT><A HREF="mod_mime.html">mod_mime</A>
-<DD>Determining document types using file extensions.
-<DT><A HREF="mod_mime_magic.html">mod_mime_magic</A>
-<DD>Determining document types using "magic numbers".
-<DT><A HREF="mod_negotiation.html">mod_negotiation</A>
-<DD>Content negotiation.
-<DT><A HREF="mod_charset_lite.html">mod_charset_lite</A>
-<DD>Configuring character set translation.
-</DL>
+      <dd>Core Apache features.</dd>
 
-<H2>URL Mapping</H2>
+      <dt><a href="threaded.html">threaded</a></dt>
 
-<DL>
-<DT><A HREF="mod_alias.html">mod_alias</A>
-<DD>Mapping different parts of the host filesystem in the document tree,
- and URL redirection.
-<DT><A HREF="mod_rewrite.html">mod_rewrite</A>
-<DD>Powerful URI-to-filename mapping using regular expressions
-<DT><A HREF="mod_userdir.html">mod_userdir</A>
-<DD>User home directories.
-<DT><A HREF="mod_speling.html">mod_speling</A>
-<DD>Automatically correct minor typos in URLs
-<DT><A HREF="mod_vhost_alias.html">mod_vhost_alias</A>
-<DD>Support for dynamically configured mass virtual hosting
-</DL>
+      <dd>Multi-Processing Module with Threading via Pthreads;
+      Variable number of processes, constant number of
+      threads/child</dd>
 
-<H2>Directory Handling</H2>
+      <dt><a href="mpm_winnt.html">mpm_winnt</a></dt>
 
-<DL>
-<DT><A HREF="mod_dir.html">mod_dir</A>
-<DD>Basic directory handling.
-<DT><A HREF="mod_autoindex.html">mod_autoindex</A>
-<DD>Automatic directory listings.
-</DL>
+      <dd>Multi-Processing Module with a single control process and
+      a single server process with multiple threads for Windows
+      NT</dd>
 
-<H2>Access Control</H2>
+      <dt><a href="perchild.html">perchild</a></dt>
 
-<DL>
-<DT><A HREF="mod_access.html">mod_access</A>
-<DD>Access control based on client hostname or IP address.
-<DT><A HREF="mod_auth.html">mod_auth</A>
-<DD>User authentication using text files.
-<DT><A HREF="mod_auth_dbm.html">mod_auth_dbm</A>
-<DD>User authentication using DBM files.
-<DT><A HREF="mod_auth_db.html">mod_auth_db</A>
-<DD>User authentication using Berkeley DB files.
-<DT><A HREF="mod_auth_anon.html">mod_auth_anon</A>
-<DD>Anonymous user access to authenticated areas. 
-<DT><A HREF="mod_auth_digest.html">mod_auth_digest</A>
-<DD>MD5 authentication
-<DT><A HREF="mod_auth_ldap.html">mod_auth_ldap</A>
-<DD>User authentication using LDAP.
+      <dd>Multi-Processing Module with the ability to server
+      different virtual hosts under different userids.</dd>
 
-</DL>
+      <dt><a href="prefork.html">prefork</a></dt>
 
-<H2>HTTP Response</H2>
+      <dd>Non-threaded preforking processes model similar to Apache
+      1.3</dd>
+    </dl>
 
-<DL>
-<DT><A HREF="mod_headers.html">mod_headers</A>
-<DD>Add arbitrary HTTP headers to resources
-<DT><A HREF="mod_cern_meta.html">mod_cern_meta</A>
-<DD>Support for HTTP header metafiles.
-<DT><A HREF="mod_expires.html">mod_expires</A>
-<DD>Apply Expires: headers to resources
-<DT><A HREF="mod_asis.html">mod_asis</A>
-<DD>Sending files which contain their own HTTP headers.
-</DL>
+    <h2>Environment Creation</h2>
 
-<H2>Dynamic Content</H2>
+    <dl>
+      <dt><a href="mod_env.html">mod_env</a></dt>
 
-<DL>
-<DT><A HREF="mod_include.html">mod_include</A>
-<DD>Server-parsed documents.
-<DT><A HREF="mod_cgi.html">mod_cgi</A>
-<DD>Invoking CGI scripts.
-<DT><A HREF="mod_cgid.html">mod_cgid</A>
-<DD>Invoking CGI scripts using an external daemon.
-<DT><A HREF="mod_actions.html">mod_actions</A>
-<DD>Executing CGI scripts based on media type or request method.
-<DT><A HREF="mod_isapi.html">mod_isapi</A>
-<DD>Windows ISAPI Extension support
-<DT><A HREF="mod_ext_filter.html">mod_ext_filter</A>
-<DD>Filtering content with external programs.
-<DT><A HREF="mod_suexec.html">mod_suexec</A>
-<DD>Run CGI requests as a specified user and group.
-</DL>
+      <dd>Passing of environments to CGI scripts</dd>
 
-<H2>Internal Content Handlers</H2>
+      <dt><a href="mod_setenvif.html">mod_setenvif</a></dt>
 
-<DL>
-<DT><A HREF="mod_status.html">mod_status</A>
-<DD>Server status display
-<DT><A HREF="mod_info.html">mod_info</A>
-<DD>Server configuration information
-</DL>
+      <dd>Set environment variables based on client
+      information</dd>
 
-<H2>Logging</H2>
+      <dt><a href="mod_unique_id.html">mod_unique_id</a></dt>
 
-<DL>
-<DT><A HREF="mod_log_config.html">mod_log_config</A>
-<DD>User-configurable logging replacement for mod_log_common.
-<DT><A HREF="mod_usertrack.html">mod_usertrack</A>
-<DD>User tracking using Cookies
-</DL>
+      <dd>Generate unique request identifier for every request</dd>
+    </dl>
 
-<H2>Miscellaneous</H2>
+    <h2>Content Type Decisions</h2>
 
-<DL>
-<DT><A HREF="mod_imap.html">mod_imap</A>
-<DD>The imagemap file handler.
-<DT><A HREF="mod_proxy.html">mod_proxy</A>
-<DD>Caching proxy abilities
-<DT><A HREF="mod_so.html">mod_so</A>
-<DD>Support for loading modules at runtime
-<DT><A HREF="mod_file_cache.html">mod_file_cache</A>
-<DD>Caching files in memory for faster serving.
-<DT><A HREF="mod_dav.html">mod_dav</A>
-<DD>Class 1,2 <A HREF="http://www.webdav.org">WebDAV</A> HTTP extensions
-<DT><A HREF="mod_ldap.html">mod_ldap</A>
-<DD>LDAP connection pool and shared memory cache.
-</DL>
+    <dl>
+      <dt><a href="mod_mime.html">mod_mime</a></dt>
 
+      <dd>Determining document types using file extensions.</dd>
 
-<H2>Development</H2>
+      <dt><a href="mod_mime_magic.html">mod_mime_magic</a></dt>
 
-<DL>
-<DT><A HREF="mod_example.html">mod_example</A>
-<DD>Demonstrates Apache API
-</DL>
+      <dd>Determining document types using "magic numbers".</dd>
 
-<!--#include virtual="footer.html" -->
-</BODY>
-</HTML>
+      <dt><a href="mod_negotiation.html">mod_negotiation</a></dt>
+
+      <dd>Content negotiation.</dd>
+
+      <dt><a href="mod_charset_lite.html">mod_charset_lite</a></dt>
+
+      <dd>Configuring character set translation.</dd>
+    </dl>
+
+    <h2>URL Mapping</h2>
+
+    <dl>
+      <dt><a href="mod_alias.html">mod_alias</a></dt>
+
+      <dd>Mapping different parts of the host filesystem in the
+      document tree, and URL redirection.</dd>
+
+      <dt><a href="mod_rewrite.html">mod_rewrite</a></dt>
+
+      <dd>Powerful URI-to-filename mapping using regular
+      expressions</dd>
+
+      <dt><a href="mod_userdir.html">mod_userdir</a></dt>
+
+      <dd>User home directories.</dd>
+
+      <dt><a href="mod_speling.html">mod_speling</a></dt>
+
+      <dd>Automatically correct minor typos in URLs</dd>
+
+      <dt><a href="mod_vhost_alias.html">mod_vhost_alias</a></dt>
+
+      <dd>Support for dynamically configured mass virtual
+      hosting</dd>
+    </dl>
+
+    <h2>Directory Handling</h2>
+
+    <dl>
+      <dt><a href="mod_dir.html">mod_dir</a></dt>
+
+      <dd>Basic directory handling.</dd>
+
+      <dt><a href="mod_autoindex.html">mod_autoindex</a></dt>
+
+      <dd>Automatic directory listings.</dd>
+    </dl>
+
+    <h2>Access Control</h2>
+
+    <dl>
+      <dt><a href="mod_access.html">mod_access</a></dt>
+
+      <dd>Access control based on client hostname or IP
+      address.</dd>
+
+      <dt><a href="mod_auth.html">mod_auth</a></dt>
+
+      <dd>User authentication using text files.</dd>
+
+      <dt><a href="mod_auth_dbm.html">mod_auth_dbm</a></dt>
+
+      <dd>User authentication using DBM files.</dd>
+
+      <dt><a href="mod_auth_db.html">mod_auth_db</a></dt>
+
+      <dd>User authentication using Berkeley DB files.</dd>
+
+      <dt><a href="mod_auth_anon.html">mod_auth_anon</a></dt>
+
+      <dd>Anonymous user access to authenticated areas.</dd>
+
+      <dt><a href="mod_auth_digest.html">mod_auth_digest</a></dt>
+
+      <dd>MD5 authentication</dd>
+
+      <dt><a href="mod_auth_ldap.html">mod_auth_ldap</a></dt>
+
+      <dd>User authentication using LDAP.</dd>
+    </dl>
+
+    <h2>HTTP Response</h2>
+
+    <dl>
+      <dt><a href="mod_headers.html">mod_headers</a></dt>
+
+      <dd>Add arbitrary HTTP headers to resources</dd>
+
+      <dt><a href="mod_cern_meta.html">mod_cern_meta</a></dt>
+
+      <dd>Support for HTTP header metafiles.</dd>
+
+      <dt><a href="mod_expires.html">mod_expires</a></dt>
+
+      <dd>Apply Expires: headers to resources</dd>
+
+      <dt><a href="mod_asis.html">mod_asis</a></dt>
+
+      <dd>Sending files which contain their own HTTP headers.</dd>
+    </dl>
+
+    <h2>Dynamic Content</h2>
+
+    <dl>
+      <dt><a href="mod_include.html">mod_include</a></dt>
+
+      <dd>Server-parsed documents.</dd>
+
+      <dt><a href="mod_cgi.html">mod_cgi</a></dt>
+
+      <dd>Invoking CGI scripts.</dd>
+
+      <dt><a href="mod_cgid.html">mod_cgid</a></dt>
+
+      <dd>Invoking CGI scripts using an external daemon.</dd>
+
+      <dt><a href="mod_actions.html">mod_actions</a></dt>
+
+      <dd>Executing CGI scripts based on media type or request
+      method.</dd>
+
+      <dt><a href="mod_isapi.html">mod_isapi</a></dt>
+
+      <dd>Windows ISAPI Extension support</dd>
+
+      <dt><a href="mod_ext_filter.html">mod_ext_filter</a></dt>
+
+      <dd>Filtering content with external programs.</dd>
+
+      <dt><a href="mod_suexec.html">mod_suexec</a></dt>
+
+      <dd>Run CGI requests as a specified user and group.</dd>
+    </dl>
+
+    <h2>Internal Content Handlers</h2>
+
+    <dl>
+      <dt><a href="mod_status.html">mod_status</a></dt>
+
+      <dd>Server status display</dd>
+
+      <dt><a href="mod_info.html">mod_info</a></dt>
+
+      <dd>Server configuration information</dd>
+    </dl>
+
+    <h2>Logging</h2>
+
+    <dl>
+      <dt><a href="mod_log_config.html">mod_log_config</a></dt>
+
+      <dd>User-configurable logging replacement for
+      mod_log_common.</dd>
+
+      <dt><a href="mod_usertrack.html">mod_usertrack</a></dt>
+
+      <dd>User tracking using Cookies</dd>
+    </dl>
+
+    <h2>Miscellaneous</h2>
+
+    <dl>
+      <dt><a href="mod_imap.html">mod_imap</a></dt>
+
+      <dd>The imagemap file handler.</dd>
+
+      <dt><a href="mod_proxy.html">mod_proxy</a></dt>
+
+      <dd>Caching proxy abilities</dd>
+
+      <dt><a href="mod_so.html">mod_so</a></dt>
+
+      <dd>Support for loading modules at runtime</dd>
+
+      <dt><a href="mod_file_cache.html">mod_file_cache</a></dt>
+
+      <dd>Caching files in memory for faster serving.</dd>
+
+      <dt><a href="mod_dav.html">mod_dav</a></dt>
+
+      <dd>Class 1,2 <a href="http://www.webdav.org">WebDAV</a> HTTP
+      extensions</dd>
+
+      <dt><a href="mod_ldap.html">mod_ldap</a></dt>
+
+      <dd>LDAP connection pool and shared memory cache.</dd>
+    </dl>
+
+    <h2>Development</h2>
+
+    <dl>
+      <dt><a href="mod_example.html">mod_example</a></dt>
+
+      <dd>Demonstrates Apache API</dd>
+    </dl>
+    <!--#include virtual="footer.html" -->
+  </body>
+</html>
+

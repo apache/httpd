@@ -1,170 +1,170 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
-<HTML>
-<HEAD>
-<TITLE>Apache MPM perchild</TITLE>
-</HEAD>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
-<!-- Background white, links blue (unvisited), navy (visited), red (active) -->
-<BODY
- BGCOLOR="#FFFFFF"
- TEXT="#000000"
- LINK="#0000FF"
- VLINK="#000080"
- ALINK="#FF0000"
->
-<!--#include virtual="header.html" -->
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta name="generator" content="HTML Tidy, see www.w3.org" />
 
-<H1 ALIGN="CENTER">Multi-Processing Module perchild</H1>
-<P>
-This Multi-Processing Module allows for daemon processes serving requests
-to be assigned a variety of different userids.
-</P>
+    <title>Apache MPM perchild</title>
+  </head>
+  <!-- Background white, links blue (unvisited), navy (visited), red (active) -->
 
-<P><A
-HREF="module-dict.html#Status"
-REL="Help"
-><STRONG>Status:</STRONG></A> MPM
-<BR>
-<A
-HREF="module-dict.html#SourceFile"
-REL="Help"
-><STRONG>Source File:</STRONG></A> perchild.c
-<BR>
-<A
-HREF="module-dict.html#ModuleIdentifier"
-REL="Help"
-><STRONG>Module Identifier:</STRONG></A> mpm_perchild_module
-</P>
+  <body bgcolor="#FFFFFF" text="#000000" link="#0000FF"
+  vlink="#000080" alink="#FF0000">
+    <!--#include virtual="header.html" -->
 
-<H2>Summary</H2>
+    <h1 align="CENTER">Multi-Processing Module perchild</h1>
 
-<p>This Multi-Processing Module (MPM) implements a hybrid
-multi-process, multi-threaded web server.  A fixed number of processes
-create threads to handle requests.  Fluctuations in load are handled
-by increasing or decreasing the number of threads in each process.</p>
+    <p>This Multi-Processing Module allows for daemon processes
+    serving requests to be assigned a variety of different
+    userids.</p>
 
-<p>A single control process launches the number of child processes
-indicated by the <code>NumServers</code> directive at server startup.
-Each child process creates threads as specified in the
-<code>StartThreads</code> directive.  The individual threads then
-listen for connections and serve them when they arrive.</p>
+    <p><a href="module-dict.html#Status"
+    rel="Help"><strong>Status:</strong></a> MPM<br />
+     <a href="module-dict.html#SourceFile"
+    rel="Help"><strong>Source File:</strong></a> perchild.c<br />
+     <a href="module-dict.html#ModuleIdentifier"
+    rel="Help"><strong>Module Identifier:</strong></a>
+    mpm_perchild_module</p>
 
-<p>Apache always tries to maintain a pool of <em>spare</em> or idle
-server threads, which stand ready to serve incoming requests.  In this
-way, clients do not need to wait for new threads to be created.  For
-each child process, Apache assesses the number of idle threads and
-creates or destroys threads to keep this number within the boundaries
-specified by <code>MinSpareThreads</code> and
-<code>MaxSpareThreads</code>.  Since this process is very
-self-regulating, it is rarely necessary to modify these directives
-from their default values.  The maximum number of clients that may be
-served simultaneously is determined by multiplying the number
-of server processes that will be created (<code>NumServers</code>) by
-the maximum number of threads created in each process
-(<code>MaxThreadsPerChild</code>).</p>
+    <h2>Summary</h2>
 
-<p>While the parent process is usually started as root under Unix in
-order to bind to port 80, the child processes and threads are launched
-by Apache as a less-privileged user.  The <code>User</code> and
-<code>Group</code> directives are used to set the privileges of the
-Apache child processes.  The child processes must be able to read all
-the content that will be served, but should have as few privileges
-beyond that as possible.  In addition, unless <a
-href="../suexec.html">suexec</a> is used, these directives also set
-the privileges which will be inherited by CGI scripts.</p>
+    <p>This Multi-Processing Module (MPM) implements a hybrid
+    multi-process, multi-threaded web server. A fixed number of
+    processes create threads to handle requests. Fluctuations in
+    load are handled by increasing or decreasing the number of
+    threads in each process.</p>
 
-<p><code>MaxRequestsPerChild</code> controls how frequently the server
-recycles processes by killing old ones and launching new ones.</p>
+    <p>A single control process launches the number of child
+    processes indicated by the <code>NumServers</code> directive at
+    server startup. Each child process creates threads as specified
+    in the <code>StartThreads</code> directive. The individual
+    threads then listen for connections and serve them when they
+    arrive.</p>
 
-<p>See also: <a href="../bind.html">Setting which addresses and ports
-Apache uses</a>.</p>
+    <p>Apache always tries to maintain a pool of <em>spare</em> or
+    idle server threads, which stand ready to serve incoming
+    requests. In this way, clients do not need to wait for new
+    threads to be created. For each child process, Apache assesses
+    the number of idle threads and creates or destroys threads to
+    keep this number within the boundaries specified by
+    <code>MinSpareThreads</code> and <code>MaxSpareThreads</code>.
+    Since this process is very self-regulating, it is rarely
+    necessary to modify these directives from their default values.
+    The maximum number of clients that may be served simultaneously
+    is determined by multiplying the number of server processes
+    that will be created (<code>NumServers</code>) by the maximum
+    number of threads created in each process
+    (<code>MaxThreadsPerChild</code>).</p>
 
-<p>In addition it adds the extra ability to specify that specific processes 
-should serve requests under different userids.  These processes can 
-then be associated with specific virtual hosts.</p>
+    <p>While the parent process is usually started as root under
+    Unix in order to bind to port 80, the child processes and
+    threads are launched by Apache as a less-privileged user. The
+    <code>User</code> and <code>Group</code> directives are used to
+    set the privileges of the Apache child processes. The child
+    processes must be able to read all the content that will be
+    served, but should have as few privileges beyond that as
+    possible. In addition, unless <a
+    href="../suexec.html">suexec</a> is used, these directives also
+    set the privileges which will be inherited by CGI scripts.</p>
 
-<!-- XXX: This desperately needs more explanation. -->
+    <p><code>MaxRequestsPerChild</code> controls how frequently the
+    server recycles processes by killing old ones and launching new
+    ones.</p>
 
+    <p>See also: <a href="../bind.html">Setting which addresses and
+    ports Apache uses</a>.</p>
 
-<H2>Directives</H2>
-<UL>
-<li><a href="#assignuserid">AssignUserID</a></li>
-<li><a href="#childperuserid">ChildPerUserID</a></li>
-<li><a href="mpm_common.html#connectionstatus">ConnectionStatus</a></li>
-<li><a href="mpm_common.html#coredumpdirectory">CoreDumpDirectory</a></li>
-<li><a href="mpm_common.html#group">Group</a></li>
-<li><a href="mpm_common.html#pidfile">PidFile</a></li>
-<li><a href="mpm_common.html#listen">Listen</a></li>
-<li><a href="mpm_common.html#listenbacklog">ListenBacklog</a></li>
-<li><a href="mpm_common.html#lockfile">LockFile</a></li>
-<li><a href="mpm_common.html#maxrequestsperchild">MaxRequestsPerChild</a></li>
-<li><a href="mpm_common.html#maxsparethreads">MaxSpareThreads</a></li>
-<li><a href="mpm_common.html#maxthreadsperchild">MaxThreadsPerChild</a></li>
-<li><a href="mpm_common.html#minsparethreads">MinSpareThreads</a></li>
-<li><a href="mpm_common.html#numservers">NumServers</a></li>
-<li><a href="mpm_common.html#scoreboardfile">ScoreBoardFile</a></li>
-<li><a href="mpm_common.html#sendbuffersize">SendBufferSize</a></li>
-<li><a href="mpm_common.html#startthreads">StartThreads</a></li>
-<li><a href="mpm_common.html#user">User</a></li>
-</UL>
+    <p>In addition it adds the extra ability to specify that
+    specific processes should serve requests under different
+    userids. These processes can then be associated with specific
+    virtual hosts.</p>
+    <!-- XXX: This desperately needs more explanation. -->
 
-<hr>
+    <h2>Directives</h2>
 
-<H2><A NAME="assignuserid">AssignUserID directive</A></H2>
-<p><A
- HREF="directive-dict.html#Syntax"
- REL="Help"
-><STRONG>Syntax:</STRONG></A><BR>
-<A
- HREF="directive-dict.html#Default"
- REL="Help"
-><STRONG>Default:</STRONG></A><BR>
-<A
- HREF="directive-dict.html#Context"
- REL="Help"
-><STRONG>Context:</STRONG></A> server config<BR>
-<A
- HREF="directive-dict.html#Status"
- REL="Help"
-><STRONG>Status:</STRONG></A> MPM<BR>
-<A
- HREF="directive-dict.html#Module"
- REL="Help"
-><STRONG>Module:</STRONG></A> perchild</p>
+    <ul>
+      <li><a href="#assignuserid">AssignUserID</a></li>
 
-<p>Tie a virtual host to a specific child process.</p>
+      <li><a href="#childperuserid">ChildPerUserID</a></li>
 
-<hr>
+      <li><a
+      href="mpm_common.html#connectionstatus">ConnectionStatus</a></li>
 
-<H2><A NAME="childperuserid">ChildPerUserID directive</A></H2>
-<p><A
- HREF="directive-dict.html#Syntax"
- REL="Help"
-><STRONG>Syntax:</STRONG></A><BR>
-<A
- HREF="directive-dict.html#Default"
- REL="Help"
-><STRONG>Default:</STRONG></A><BR>
-<A
- HREF="directive-dict.html#Context"
- REL="Help"
-><STRONG>Context:</STRONG></A> server config<BR>
-<A
- HREF="directive-dict.html#Status"
- REL="Help"
-><STRONG>Status:</STRONG></A> MPM<BR>
-<A
- HREF="directive-dict.html#Module"
- REL="Help"
-><STRONG>Module:</STRONG></A> perchild</p>
+      <li><a
+      href="mpm_common.html#coredumpdirectory">CoreDumpDirectory</a></li>
 
-<p>Specify a User and Group for a specific child process.</p>
+      <li><a href="mpm_common.html#group">Group</a></li>
 
+      <li><a href="mpm_common.html#pidfile">PidFile</a></li>
 
+      <li><a href="mpm_common.html#listen">Listen</a></li>
 
+      <li><a
+      href="mpm_common.html#listenbacklog">ListenBacklog</a></li>
 
+      <li><a href="mpm_common.html#lockfile">LockFile</a></li>
 
-<!--#include virtual="footer.html" -->
+      <li><a
+      href="mpm_common.html#maxrequestsperchild">MaxRequestsPerChild</a></li>
 
-</BODY>
-</HTML>
+      <li><a
+      href="mpm_common.html#maxsparethreads">MaxSpareThreads</a></li>
+
+      <li><a
+      href="mpm_common.html#maxthreadsperchild">MaxThreadsPerChild</a></li>
+
+      <li><a
+      href="mpm_common.html#minsparethreads">MinSpareThreads</a></li>
+
+      <li><a href="mpm_common.html#numservers">NumServers</a></li>
+
+      <li><a
+      href="mpm_common.html#scoreboardfile">ScoreBoardFile</a></li>
+
+      <li><a
+      href="mpm_common.html#sendbuffersize">SendBufferSize</a></li>
+
+      <li><a
+      href="mpm_common.html#startthreads">StartThreads</a></li>
+
+      <li><a href="mpm_common.html#user">User</a></li>
+    </ul>
+    <hr />
+
+    <h2><a id="assignuserid" name="assignuserid">AssignUserID
+    directive</a></h2>
+
+    <p><a href="directive-dict.html#Syntax"
+    rel="Help"><strong>Syntax:</strong></a><br />
+     <a href="directive-dict.html#Default"
+    rel="Help"><strong>Default:</strong></a><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Context:</strong></a> server config<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>Status:</strong></a> MPM<br />
+     <a href="directive-dict.html#Module"
+    rel="Help"><strong>Module:</strong></a> perchild</p>
+
+    <p>Tie a virtual host to a specific child process.</p>
+    <hr />
+
+    <h2><a id="childperuserid" name="childperuserid">ChildPerUserID
+    directive</a></h2>
+
+    <p><a href="directive-dict.html#Syntax"
+    rel="Help"><strong>Syntax:</strong></a><br />
+     <a href="directive-dict.html#Default"
+    rel="Help"><strong>Default:</strong></a><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Context:</strong></a> server config<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>Status:</strong></a> MPM<br />
+     <a href="directive-dict.html#Module"
+    rel="Help"><strong>Module:</strong></a> perchild</p>
+
+    <p>Specify a User and Group for a specific child process.</p>
+    <!--#include virtual="footer.html" -->
+  </body>
+</html>
+

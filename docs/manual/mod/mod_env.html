@@ -1,159 +1,123 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
-<HTML>
-<HEAD>
-<TITLE>Apache module mod_env</TITLE>
-</HEAD>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
-<!-- Background white, links blue (unvisited), navy (visited), red (active) -->
-<BODY
- BGCOLOR="#FFFFFF"
- TEXT="#000000"
- LINK="#0000FF"
- VLINK="#000080"
- ALINK="#FF0000"
->
-<!--#include virtual="header.html" -->
-<H1 ALIGN="CENTER">Apache module mod_env</H1>
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta name="generator" content="HTML Tidy, see www.w3.org" />
 
-<p>This module provides for modifying the environment which
-is passed to CGI scripts and SSI pages.</p>
+    <title>Apache module mod_env</title>
+  </head>
+  <!-- Background white, links blue (unvisited), navy (visited), red (active) -->
 
-<P><A
-HREF="module-dict.html#Status"
-REL="Help"
-><STRONG>Status:</STRONG></A> Base
-<BR>
-<A
-HREF="module-dict.html#SourceFile"
-REL="Help"
-><STRONG>Source File:</STRONG></A> mod_env.c
-<BR>
-<A
-HREF="module-dict.html#ModuleIdentifier"
-REL="Help"
-><STRONG>Module Identifier:</STRONG></A> env_module
-<BR>
-<A
-HREF="module-dict.html#Compatibility"
-REL="Help"
-><STRONG>Compatibility:</STRONG></A> Available in Apache 1.1 and later.
-</P>
+  <body bgcolor="#FFFFFF" text="#000000" link="#0000FF"
+  vlink="#000080" alink="#FF0000">
+    <!--#include virtual="header.html" -->
 
-<H2>Summary</H2>
+    <h1 align="CENTER">Apache module mod_env</h1>
 
-<p>This module allows for control of the environment that will be
-provided to CGI scripts and SSI pages.  Environment variables may be
-passed from the shell which invoked the httpd process.  Alternatively,
-environment variables may be set or unset within the configuration
-process.</p>
+    <p>This module provides for modifying the environment which is
+    passed to CGI scripts and SSI pages.</p>
 
-<p>For additional information, we provide a document on
-<a href="../env.html">Environment Variables in Apache</a>.</p>
+    <p><a href="module-dict.html#Status"
+    rel="Help"><strong>Status:</strong></a> Base<br />
+     <a href="module-dict.html#SourceFile"
+    rel="Help"><strong>Source File:</strong></a> mod_env.c<br />
+     <a href="module-dict.html#ModuleIdentifier"
+    rel="Help"><strong>Module Identifier:</strong></a>
+    env_module<br />
+     <a href="module-dict.html#Compatibility"
+    rel="Help"><strong>Compatibility:</strong></a> Available in
+    Apache 1.1 and later.</p>
 
-<H2>Directives</H2>
-<UL>
-<LI><A HREF="#passenv">PassEnv</A>
-<LI><A HREF="#setenv">SetEnv</A>
-<LI><A HREF="#unsetenv">UnsetEnv</A>
-</UL>
+    <h2>Summary</h2>
 
-<HR>
+    <p>This module allows for control of the environment that will
+    be provided to CGI scripts and SSI pages. Environment variables
+    may be passed from the shell which invoked the httpd process.
+    Alternatively, environment variables may be set or unset within
+    the configuration process.</p>
 
-<H2><A NAME="passenv">PassEnv</A> directive</H2>
-<A
- HREF="directive-dict.html#Syntax"
- REL="Help"
-><STRONG>Syntax:</STRONG></A> PassEnv <EM>env-variable</em> 
-    [<em>env-variable</em>] ...<BR>
-<A
- HREF="directive-dict.html#Context"
- REL="Help"
-><STRONG>Context:</STRONG></A> server config, virtual host<BR>
-<A
- HREF="directive-dict.html#Status"
- REL="Help"
-><STRONG>Status:</STRONG></A> Base<BR>
-<A
- HREF="directive-dict.html#Module"
- REL="Help"
-><STRONG>Module:</STRONG></A> mod_env<BR>
-<A
- HREF="directive-dict.html#Compatibility"
- REL="Help"
-><STRONG>Compatibility:</STRONG></A> PassEnv is only available in
-Apache 1.1 and later.<P>
+    <p>For additional information, we provide a document on <a
+    href="../env.html">Environment Variables in Apache</a>.</p>
 
-Specifies one or more environment variables to pass to CGI scripts
-and SSI pages from the environment of the shell which invoked
-the httpd process. Example:
-<PRE>
+    <h2>Directives</h2>
+
+    <ul>
+      <li><a href="#passenv">PassEnv</a></li>
+
+      <li><a href="#setenv">SetEnv</a></li>
+
+      <li><a href="#unsetenv">UnsetEnv</a></li>
+    </ul>
+    <hr />
+
+    <h2><a id="passenv" name="passenv">PassEnv</a> directive</h2>
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>Syntax:</strong></a> PassEnv
+    <em>env-variable</em> [<em>env-variable</em>] ...<br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Context:</strong></a> server config, virtual
+    host<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>Status:</strong></a> Base<br />
+     <a href="directive-dict.html#Module"
+    rel="Help"><strong>Module:</strong></a> mod_env<br />
+     <a href="directive-dict.html#Compatibility"
+    rel="Help"><strong>Compatibility:</strong></a> PassEnv is only
+    available in Apache 1.1 and later. 
+
+    <p>Specifies one or more environment variables to pass to CGI
+    scripts and SSI pages from the environment of the shell which
+    invoked the httpd process. Example:</p>
+<pre>
     PassEnv LD_LIBRARY_PATH
-</PRE>
+</pre>
+    <hr />
 
-<HR>
+    <h2><a id="setenv" name="setenv">SetEnv</a> directive</h2>
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>Syntax:</strong></a> SetEnv <em>env-variable
+    value</em><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Context:</strong></a> server config, virtual
+    host<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>Status:</strong></a> Base<br />
+     <a href="directive-dict.html#Module"
+    rel="Help"><strong>Module:</strong></a> mod_env<br />
+     <a href="directive-dict.html#Compatibility"
+    rel="Help"><strong>Compatibility:</strong></a> SetEnv is only
+    available in Apache 1.1 and later. 
 
-<H2><A NAME="setenv">SetEnv</A> directive</H2>
-<A
- HREF="directive-dict.html#Syntax"
- REL="Help"
-><STRONG>Syntax:</STRONG></A> SetEnv <EM>env-variable value</EM><BR>
-<A
- HREF="directive-dict.html#Context"
- REL="Help"
-><STRONG>Context:</STRONG></A> server config, virtual host<BR>
-<A
- HREF="directive-dict.html#Status"
- REL="Help"
-><STRONG>Status:</STRONG></A> Base<BR>
-<A
- HREF="directive-dict.html#Module"
- REL="Help"
-><STRONG>Module:</STRONG></A> mod_env<BR>
-<A
- HREF="directive-dict.html#Compatibility"
- REL="Help"
-><STRONG>Compatibility:</STRONG></A> SetEnv is only available in
-Apache 1.1 and later.<P>
-
-Sets an environment variable, which is then passed on to CGI
-scripts and SSI pages. Example:
-<PRE>
+    <p>Sets an environment variable, which is then passed on to CGI
+    scripts and SSI pages. Example:</p>
+<pre>
     SetEnv SPECIAL_PATH /foo/bin
-</PRE>
+</pre>
+    <hr />
 
-<HR>
+    <h2><a id="unsetenv" name="unsetenv">UnsetEnv</a>
+    directive</h2>
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>Syntax:</strong></a> UnsetEnv
+    <em>env-variable</em> [<em>env-variable</em>] ...<br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Context:</strong></a> server config, virtual
+    host<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>Status:</strong></a> Base<br />
+     <a href="directive-dict.html#Module"
+    rel="Help"><strong>Module:</strong></a> mod_env<br />
+     <a href="directive-dict.html#Compatibility"
+    rel="Help"><strong>Compatibility:</strong></a> UnsetEnv is only
+    available in Apache 1.1 and later. 
 
-<H2><A NAME="unsetenv">UnsetEnv</A> directive</H2>
-<A
- HREF="directive-dict.html#Syntax"
- REL="Help"
-><STRONG>Syntax:</STRONG></A> UnsetEnv <EM>env-variable</em> 
-   [<em>env-variable</em>] ...<BR>
-<A
- HREF="directive-dict.html#Context"
- REL="Help"
-><STRONG>Context:</STRONG></A> server config, virtual host<BR>
-<A
- HREF="directive-dict.html#Status"
- REL="Help"
-><STRONG>Status:</STRONG></A> Base<BR>
-<A
- HREF="directive-dict.html#Module"
- REL="Help"
-><STRONG>Module:</STRONG></A> mod_env<BR>
-<A
- HREF="directive-dict.html#Compatibility"
- REL="Help"
-><STRONG>Compatibility:</STRONG></A> UnsetEnv is only available in
-Apache 1.1 and later.<P>
-
-Removes one or more environment variables from those passed on to
-CGI scripts and SSI pages. Example:
-<PRE>
+    <p>Removes one or more environment variables from those passed
+    on to CGI scripts and SSI pages. Example:</p>
+<pre>
     UnsetEnv LD_LIBRARY_PATH
-</PRE>
-
-<!--#include virtual="footer.html" -->
-</BODY>
-</HTML>
+</pre>
+    <!--#include virtual="footer.html" -->
+  </body>
+</html>
 

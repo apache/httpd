@@ -1,250 +1,235 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
-<HTML>
-<HEAD>
-<TITLE>Apache module mod_auth_db</TITLE>
-</HEAD>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
-<!-- Background white, links blue (unvisited), navy (visited), red (active) -->
-<BODY
- BGCOLOR="#FFFFFF"
- TEXT="#000000"
- LINK="#0000FF"
- VLINK="#000080"
- ALINK="#FF0000"
->
-<!--#include virtual="header.html" -->
-<H1 ALIGN="CENTER">Module mod_auth_db</H1>
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta name="generator" content="HTML Tidy, see www.w3.org" />
 
-<p>This module provides for user authentication using Berkeley DB
-files. </p>
+    <title>Apache module mod_auth_db</title>
+  </head>
+  <!-- Background white, links blue (unvisited), navy (visited), red (active) -->
 
-<P><A
-HREF="module-dict.html#Status"
-REL="Help"
-><STRONG>Status:</STRONG></A> Extension
-<BR>
-<A
-HREF="module-dict.html#SourceFile"
-REL="Help"
-><STRONG>Source File:</STRONG></A> mod_auth_db.c
-<BR>
-<A
-HREF="module-dict.html#ModuleIdentifier"
-REL="Help"
-><STRONG>Module Identifier:</STRONG></A> db_auth_module
-</P>
+  <body bgcolor="#FFFFFF" text="#000000" link="#0000FF"
+  vlink="#000080" alink="#FF0000">
+    <!--#include virtual="header.html" -->
 
-<h2>Summary</h2>
+    <h1 align="CENTER">Module mod_auth_db</h1>
 
-<p>This module provides an alternative to <A
-HREF="mod_auth_dbm.html">DBM</A> files for those systems which support
-DB and not DBM. It is only available in Apache 1.1 and later.</p>
+    <p>This module provides for user authentication using Berkeley
+    DB files.</p>
 
-<p>On some BSD systems (<EM>e.g.</EM>, FreeBSD and NetBSD) dbm is
-automatically mapped to Berkeley DB. You can use either <A
-HREF="mod_auth_dbm.html">mod_auth_dbm</A> or mod_auth_db. The latter
-makes it more obvious that it's Berkeley DB.  On other platforms where
-you want to use the DB library you usually have to install it
-first. See <A
-HREF="http://www.sleepycat.com/">http://www.sleepycat.com/</A> for the
-distribution. The interface this module uses is the one from DB
-version 1.85 and 1.86, but DB version 2.x can also be used when
-compatibility mode is enabled.</p>
+    <p><a href="module-dict.html#Status"
+    rel="Help"><strong>Status:</strong></a> Extension<br />
+     <a href="module-dict.html#SourceFile"
+    rel="Help"><strong>Source File:</strong></a>
+    mod_auth_db.c<br />
+     <a href="module-dict.html#ModuleIdentifier"
+    rel="Help"><strong>Module Identifier:</strong></a>
+    db_auth_module</p>
 
-<h2>Directives</h2>
+    <h2>Summary</h2>
 
-<UL>
-<LI><A HREF="#authdbgroupfile">AuthDBGroupFile</A>
-<LI><A HREF="#authdbuserfile">AuthDBUserFile</A>
-<LI><A HREF="#authdbauthoritative">AuthDBAuthoritative</A>
-</UL>
+    <p>This module provides an alternative to <a
+    href="mod_auth_dbm.html">DBM</a> files for those systems which
+    support DB and not DBM. It is only available in Apache 1.1 and
+    later.</p>
 
-<p>See also: <a href="core.html#satisfy">satisfy</a> and 
-<a href="core.html#require">require</a>.</p>
+    <p>On some BSD systems (<em>e.g.</em>, FreeBSD and NetBSD) dbm
+    is automatically mapped to Berkeley DB. You can use either <a
+    href="mod_auth_dbm.html">mod_auth_dbm</a> or mod_auth_db. The
+    latter makes it more obvious that it's Berkeley DB. On other
+    platforms where you want to use the DB library you usually have
+    to install it first. See <a
+    href="http://www.sleepycat.com/">http://www.sleepycat.com/</a>
+    for the distribution. The interface this module uses is the one
+    from DB version 1.85 and 1.86, but DB version 2.x can also be
+    used when compatibility mode is enabled.</p>
 
-<HR>
+    <h2>Directives</h2>
 
+    <ul>
+      <li><a href="#authdbgroupfile">AuthDBGroupFile</a></li>
 
-<H2><A NAME="authdbgroupfile">AuthDBGroupFile directive</A></H2>
-<!--%plaintext &lt;?INDEX {\tt AuthDBGroupFile} directive&gt; -->
-<A
- HREF="directive-dict.html#Syntax"
- REL="Help"
-><STRONG>Syntax:</STRONG></A> AuthDBGroupFile <EM>file-path</EM><BR>
-<A
- HREF="directive-dict.html#Context"
- REL="Help"
-><STRONG>Context:</STRONG></A> directory, .htaccess<BR>
-<A
- HREF="directive-dict.html#Override"
- REL="Help"
-><STRONG>Override:</STRONG></A> AuthConfig<BR>
-<A
- HREF="directive-dict.html#Status"
- REL="Help"
-><STRONG>Status:</STRONG></A> Extension<BR>
-<A
- HREF="directive-dict.html#Module"
- REL="Help"
-><STRONG>Module:</STRONG></A> mod_auth_db<P>
+      <li><a href="#authdbuserfile">AuthDBUserFile</a></li>
 
-The AuthDBGroupFile directive sets the name of a DB file containing the list
-of user groups for user authentication. <EM>File-path</EM> is the absolute path
-to the group file.<P>
+      <li><a
+      href="#authdbauthoritative">AuthDBAuthoritative</a></li>
+    </ul>
 
-The group file is keyed on the username. The value for a user is a
-comma-separated list of the groups to which the users belongs. There must
-be no whitespace within the value, and it must never contain any colons.<P>
+    <p>See also: <a href="core.html#satisfy">satisfy</a> and <a
+    href="core.html#require">require</a>.</p>
+    <hr />
 
-Security: make sure that the AuthDBGroupFile is stored outside the
-document tree of the web-server; do <EM>not</EM> put it in the directory that
-it protects. Otherwise, clients will be able to download the
-AuthDBGroupFile unless otherwise protected.<P>
+    <h2><a id="authdbgroupfile"
+    name="authdbgroupfile">AuthDBGroupFile directive</a></h2>
+    <!--%plaintext &lt;?INDEX {\tt AuthDBGroupFile} directive&gt; -->
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>Syntax:</strong></a> AuthDBGroupFile
+    <em>file-path</em><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Context:</strong></a> directory,
+    .htaccess<br />
+     <a href="directive-dict.html#Override"
+    rel="Help"><strong>Override:</strong></a> AuthConfig<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>Status:</strong></a> Extension<br />
+     <a href="directive-dict.html#Module"
+    rel="Help"><strong>Module:</strong></a> mod_auth_db 
 
-Combining Group and Password DB files: In some cases it is easier to
-manage a single database which contains both the password and group
-details for each user. This simplifies any support programs that need
-to be written: they now only have to deal with writing to and locking
-a single DBM file. This can be accomplished by first setting the group
-and password files to point to the same DB file:<P>
+    <p>The AuthDBGroupFile directive sets the name of a DB file
+    containing the list of user groups for user authentication.
+    <em>File-path</em> is the absolute path to the group file.</p>
 
-<BLOCKQUOTE><CODE>
-AuthDBGroupFile /www/userbase<BR>
-AuthDBUserFile /www/userbase
-</CODE></BLOCKQUOTE>
+    <p>The group file is keyed on the username. The value for a
+    user is a comma-separated list of the groups to which the users
+    belongs. There must be no whitespace within the value, and it
+    must never contain any colons.</p>
 
-The key for the single DB record is the username. The value consists of <P>
+    <p>Security: make sure that the AuthDBGroupFile is stored
+    outside the document tree of the web-server; do <em>not</em>
+    put it in the directory that it protects. Otherwise, clients
+    will be able to download the AuthDBGroupFile unless otherwise
+    protected.</p>
 
-<BLOCKQUOTE><CODE>
-Unix Crypt-ed Password : List of Groups [ : (ignored) ]
-</CODE></BLOCKQUOTE>
+    <p>Combining Group and Password DB files: In some cases it is
+    easier to manage a single database which contains both the
+    password and group details for each user. This simplifies any
+    support programs that need to be written: they now only have to
+    deal with writing to and locking a single DBM file. This can be
+    accomplished by first setting the group and password files to
+    point to the same DB file:</p>
 
-The password section contains the Unix crypt() password as before. This is
-followed by a colon and the comma separated list of groups. Other data may
-optionally be left in the DB file after another colon; it is ignored by the
-authentication module. <P>
+    <blockquote>
+      <code>AuthDBGroupFile /www/userbase<br />
+       AuthDBUserFile /www/userbase</code>
+    </blockquote>
+    The key for the single DB record is the username. The value
+    consists of 
 
-See also <A HREF="core.html#authname">AuthName</A>,
-<A HREF="core.html#authtype">AuthType</A> and
-<A HREF="#authdbuserfile">AuthDBUserFile</A>.<P><HR>
+    <blockquote>
+      <code>Unix Crypt-ed Password : List of Groups [ : (ignored)
+      ]</code>
+    </blockquote>
+    The password section contains the Unix crypt() password as
+    before. This is followed by a colon and the comma separated
+    list of groups. Other data may optionally be left in the DB
+    file after another colon; it is ignored by the authentication
+    module. 
 
-<H2><A NAME="authdbuserfile">AuthDBUserFile</A> directive</H2>
-<!--%plaintext &lt;?INDEX {\tt AuthDBUserFile} directive&gt; -->
-<A
- HREF="directive-dict.html#Syntax"
- REL="Help"
-><STRONG>Syntax:</STRONG></A> AuthDBUserFile <EM>file-path</EM><BR>
-<A
- HREF="directive-dict.html#Context"
- REL="Help"
-><STRONG>Context:</STRONG></A> directory, .htaccess<BR>
-<A
- HREF="directive-dict.html#Override"
- REL="Help"
-><STRONG>Override:</STRONG></A> AuthConfig<BR>
-<A
- HREF="directive-dict.html#Status"
- REL="Help"
-><STRONG>Status:</STRONG></A> Extension<BR>
-<A
- HREF="directive-dict.html#Module"
- REL="Help"
-><STRONG>Module:</STRONG></A> mod_auth_db<P>
+    <p>See also <a href="core.html#authname">AuthName</a>, <a
+    href="core.html#authtype">AuthType</a> and <a
+    href="#authdbuserfile">AuthDBUserFile</a>.</p>
+    <hr />
 
-The AuthDBUserFile directive sets the name of a DB file containing the list
-of users and passwords for user authentication. <EM>File-path</EM> is the
-absolute path to the user file.<P>
+    <h2><a id="authdbuserfile"
+    name="authdbuserfile">AuthDBUserFile</a> directive</h2>
+    <!--%plaintext &lt;?INDEX {\tt AuthDBUserFile} directive&gt; -->
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>Syntax:</strong></a> AuthDBUserFile
+    <em>file-path</em><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Context:</strong></a> directory,
+    .htaccess<br />
+     <a href="directive-dict.html#Override"
+    rel="Help"><strong>Override:</strong></a> AuthConfig<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>Status:</strong></a> Extension<br />
+     <a href="directive-dict.html#Module"
+    rel="Help"><strong>Module:</strong></a> mod_auth_db 
 
-The user file is keyed on the username. The value for a user is the
-crypt() encrypted password, optionally followed by a colon and
-arbitrary data.  The colon and the data following it will be ignored
-by the server.<P>
+    <p>The AuthDBUserFile directive sets the name of a DB file
+    containing the list of users and passwords for user
+    authentication. <em>File-path</em> is the absolute path to the
+    user file.</p>
 
-Security: make sure that the AuthDBUserFile is stored outside the
-document tree of the web-server; do <EM>not</EM> put it in the directory that
-it protects. Otherwise, clients will be able to download the
-AuthDBUserFile.<P>
+    <p>The user file is keyed on the username. The value for a user
+    is the crypt() encrypted password, optionally followed by a
+    colon and arbitrary data. The colon and the data following it
+    will be ignored by the server.</p>
 
-Important compatibility note: The implementation of "dbmopen" in the
-apache modules reads the string length of the hashed values from the
-DB data structures, rather than relying upon the string being
-NULL-appended. Some applications, such as the Netscape web server,
-rely upon the string being NULL-appended, so if you are having trouble
-using DB files interchangeably between applications this may be a
-part of the problem. <P>
+    <p>Security: make sure that the AuthDBUserFile is stored
+    outside the document tree of the web-server; do <em>not</em>
+    put it in the directory that it protects. Otherwise, clients
+    will be able to download the AuthDBUserFile.</p>
 
-<p>A perl script called
-href="../programs/dbmmanage.html">dbmmanage</a> is included with
-Apache.  This program can be used to create and update DB format
-password files for use with this module.</p>
+    <p>Important compatibility note: The implementation of
+    "dbmopen" in the apache modules reads the string length of the
+    hashed values from the DB data structures, rather than relying
+    upon the string being NULL-appended. Some applications, such as
+    the Netscape web server, rely upon the string being
+    NULL-appended, so if you are having trouble using DB files
+    interchangeably between applications this may be a part of the
+    problem.</p>
 
-See also <A HREF="core.html#authname">AuthName</A>,
-<A HREF="core.html#authtype">AuthType</A> and
-<A HREF="#authdbgroupfile">AuthDBGroupFile</A>.<P>
-<HR>
-<H2><A NAME="authdbauthoritative">AuthDBAuthoritative</A> directive</H2>
-<!--%plaintext &lt;?INDEX {\tt AuthDBAuthoritative} directive&gt; -->
-<A
- HREF="directive-dict.html#Syntax"
- REL="Help"
-><STRONG>Syntax:</STRONG></A> AuthDBAuthoritative on|off<BR>
-<A
- HREF="directive-dict.html#Default"
- REL="Help"
-><STRONG>Default:</STRONG></A> <CODE>AuthDBAuthoritative on</CODE><BR>
-<A
- HREF="directive-dict.html#Context"
- REL="Help"
-><STRONG>Context:</STRONG></A> directory, .htaccess<BR>
-<A
- HREF="directive-dict.html#Override"
- REL="Help"
-><STRONG>Override:</STRONG></A> AuthConfig<BR>
-<A
- HREF="directive-dict.html#Status"
- REL="Help"
-><STRONG>Status:</STRONG></A> Base<BR>
-<A
- HREF="directive-dict.html#Module"
- REL="Help"
-><STRONG>Module:</STRONG></A> mod_auth<P>
+    <p>A perl script called
+    href="../programs/dbmmanage.html"&gt;dbmmanage is included with
+    Apache. This program can be used to create and update DB format
+    password files for use with this module.</p>
+    See also <a href="core.html#authname">AuthName</a>, <a
+    href="core.html#authtype">AuthType</a> and <a
+    href="#authdbgroupfile">AuthDBGroupFile</a>. 
+    <hr />
 
-Setting the AuthDBAuthoritative directive explicitly to <STRONG>'off'</STRONG>
-allows for both authentication and authorization to be passed on
-to lower level modules (as defined in the <CODE>Configuration</CODE>
-and <CODE>modules.c</CODE> file if there is <STRONG>no userID</STRONG> or
-<STRONG>rule</STRONG> matching the supplied userID. If there is a userID
-and/or rule specified; the usual password and access checks will
-be applied and a failure will give an Authorization Required reply.
-<P>
-So if a userID appears in the database of more than one module; or
-if a valid <CODE>Require</CODE> directive applies to more than one module; then
-the first module will verify the credentials; and no access is
-passed on; regardless of the AuthAuthoritative setting.  <P>
+    <h2><a id="authdbauthoritative"
+    name="authdbauthoritative">AuthDBAuthoritative</a>
+    directive</h2>
+    <!--%plaintext &lt;?INDEX {\tt AuthDBAuthoritative} directive&gt; -->
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>Syntax:</strong></a> AuthDBAuthoritative
+    on|off<br />
+     <a href="directive-dict.html#Default"
+    rel="Help"><strong>Default:</strong></a>
+    <code>AuthDBAuthoritative on</code><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Context:</strong></a> directory,
+    .htaccess<br />
+     <a href="directive-dict.html#Override"
+    rel="Help"><strong>Override:</strong></a> AuthConfig<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>Status:</strong></a> Base<br />
+     <a href="directive-dict.html#Module"
+    rel="Help"><strong>Module:</strong></a> mod_auth 
 
-A common use for this is in conjunction with one of the basic auth
-modules; such as <A HREF="mod_auth.html"><CODE>mod_auth.c</CODE></A>.
-Whereas this DB module supplies the bulk of the user credential
-checking; a few (administrator) related accesses fall through to
-a lower level with a well protected .htpasswd file.  <P>
+    <p>Setting the AuthDBAuthoritative directive explicitly to
+    <strong>'off'</strong> allows for both authentication and
+    authorization to be passed on to lower level modules (as
+    defined in the <code>Configuration</code> and
+    <code>modules.c</code> file if there is <strong>no
+    userID</strong> or <strong>rule</strong> matching the supplied
+    userID. If there is a userID and/or rule specified; the usual
+    password and access checks will be applied and a failure will
+    give an Authorization Required reply.</p>
 
+    <p>So if a userID appears in the database of more than one
+    module; or if a valid <code>Require</code> directive applies to
+    more than one module; then the first module will verify the
+    credentials; and no access is passed on; regardless of the
+    AuthAuthoritative setting.</p>
 
-By default, control is not passed on and an unknown
-userID or rule will result in an Authorization Required reply. Not
-setting it thus keeps the system secure and forces an NCSA compliant
-behaviour.  <P>
-Security: Do consider the implications of allowing a user to allow
-fall-through in his .htaccess file; and verify that this is really
-what you want; Generally it is easier to just secure a single
-.htpasswd file, than it is to secure a database which might have
-more access interfaces.
+    <p>A common use for this is in conjunction with one of the
+    basic auth modules; such as <a
+    href="mod_auth.html"><code>mod_auth.c</code></a>. Whereas this
+    DB module supplies the bulk of the user credential checking; a
+    few (administrator) related accesses fall through to a lower
+    level with a well protected .htpasswd file.</p>
 
-<P>
-See also <A HREF="core.html#authname">AuthName</A>,
-<A HREF="core.html#authtype">AuthType</A> and
-<A HREF="#authdbgroupfile">AuthDBGroupFile</A>.<P>
+    <p>By default, control is not passed on and an unknown userID
+    or rule will result in an Authorization Required reply. Not
+    setting it thus keeps the system secure and forces an NCSA
+    compliant behaviour.</p>
 
-<!--#include virtual="footer.html" -->
-</BODY>
-</HTML>
+    <p>Security: Do consider the implications of allowing a user to
+    allow fall-through in his .htaccess file; and verify that this
+    is really what you want; Generally it is easier to just secure
+    a single .htpasswd file, than it is to secure a database which
+    might have more access interfaces.</p>
+
+    <p>See also <a href="core.html#authname">AuthName</a>, <a
+    href="core.html#authtype">AuthType</a> and <a
+    href="#authdbgroupfile">AuthDBGroupFile</a>.</p>
+
+    <p><!--#include virtual="footer.html" -->
+    </p>
+  </body>
+</html>
 

@@ -1,140 +1,115 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
-<HTML>
-<HEAD>
-<TITLE>Module mod_actions</TITLE>
-</HEAD>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
-<!-- Background white, links blue (unvisited), navy (visited), red (active) -->
-<BODY
- BGCOLOR="#FFFFFF"
- TEXT="#000000"
- LINK="#0000FF"
- VLINK="#000080"
- ALINK="#FF0000"
->
-<!--#include virtual="header.html" -->
-<H1 ALIGN="CENTER">Module mod_actions</H1>
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta name="generator" content="HTML Tidy, see www.w3.org" />
 
+    <title>Module mod_actions</title>
+  </head>
+  <!-- Background white, links blue (unvisited), navy (visited), red (active) -->
 
-<p>This module provides for executing CGI scripts based on media type or
-request method.
-</p>
+  <body bgcolor="#FFFFFF" text="#000000" link="#0000FF"
+  vlink="#000080" alink="#FF0000">
+    <!--#include virtual="header.html" -->
 
-<P><A
-HREF="module-dict.html#Status"
-REL="Help"
-><STRONG>Status:</STRONG></A> Base
-<BR>
-<A
-HREF="module-dict.html#SourceFile"
-REL="Help"
-><STRONG>Source File:</STRONG></A> mod_actions.c
-<BR>
-<A
-HREF="module-dict.html#ModuleIdentifier"
-REL="Help"
-><STRONG>Module Identifier:</STRONG></A> actions_module
-</P>
+    <h1 align="CENTER">Module mod_actions</h1>
 
-<H2>Summary</H2>
-<P>
-This module has two directives.  The Action directive lets you run CGI
-scripts whenever a file of a certain type is requested. The Script
-directive lets you run CGI scripts whenever a particular method is
-used in a request.  This makes it much easier to execute scripts that
-process files.
-</P>
+    <p>This module provides for executing CGI scripts based on
+    media type or request method.</p>
 
-<H2>Directives</H2>
-<UL>
-<LI><A HREF="#action">Action</A></LI>
-<LI><A HREF="#script">Script</A></LI>
-</UL>
+    <p><a href="module-dict.html#Status"
+    rel="Help"><strong>Status:</strong></a> Base<br />
+     <a href="module-dict.html#SourceFile"
+    rel="Help"><strong>Source File:</strong></a>
+    mod_actions.c<br />
+     <a href="module-dict.html#ModuleIdentifier"
+    rel="Help"><strong>Module Identifier:</strong></a>
+    actions_module</p>
 
-<HR>
+    <h2>Summary</h2>
 
-<H2><A NAME="action">Action directive</A></H2>
-<P>
-<A
- HREF="directive-dict.html#Syntax"
- REL="Help"
-><STRONG>Syntax:</STRONG></A> Action <EM>action-type cgi-script</EM><BR>
-<A
- HREF="directive-dict.html#Context"
- REL="Help"
-><STRONG>Context:</STRONG></A> server config, virtual host, directory,
- .htaccess<BR>
-<A
- HREF="directive-dict.html#Override"
- REL="Help"
-><STRONG>Override:</STRONG></A> FileInfo<BR>
-<A
- HREF="directive-dict.html#Status"
- REL="Help"
-><STRONG>Status:</STRONG></A> Base<BR>
-<A
- HREF="directive-dict.html#Module"
- REL="Help"
-><STRONG>Module:</STRONG></A> mod_actions
-</P>
-<P>
-This directive adds an action, which will activate <EM>cgi-script</EM> when
-<EM>action-type</EM> is triggered by the request. The <EM>action-type</EM> can
-be either a <A HREF="../handler.html">handler</A> or a MIME content type.  It
-sends the URL and file path of the requested document using the standard CGI
-PATH_INFO and PATH_TRANSLATED environment variables.
-</P>
-<HR>
+    <p>This module has two directives. The Action directive lets
+    you run CGI scripts whenever a file of a certain type is
+    requested. The Script directive lets you run CGI scripts
+    whenever a particular method is used in a request. This makes
+    it much easier to execute scripts that process files.</p>
 
-<H2><A NAME="script">Script directive</A></H2>
-<P>
-<A
- HREF="directive-dict.html#Syntax"
- REL="Help"
-><STRONG>Syntax:</STRONG></A> Script <EM>method cgi-script</EM><BR>
-<A
- HREF="directive-dict.html#Context"
- REL="Help"
-><STRONG>Context:</STRONG></A> server config, virtual host, directory<BR>
-<A
- HREF="directive-dict.html#Status"
- REL="Help"
-><STRONG>Status:</STRONG></A> Base<BR>
-<A
- HREF="directive-dict.html#Module"
- REL="Help"
-><STRONG>Module:</STRONG></A> mod_actions
-</P>
+    <h2>Directives</h2>
 
-<P>
-This directive adds an action, which will activate <i>cgi-script</i> when
-a file is requested using the method of <i>method</i>.  It sends the
-URL and file path of the requested document using the standard
-CGI PATH_INFO and PATH_TRANSLATED environment variables.
-</P>
-<blockquote>
-Any arbitrary method name may be used.  <b>Method names are
-case-sensitive</b>, so <code>Script&nbsp;PUT</code> and
-<code>Script&nbsp;put</code> have two entirely different effects.
-</blockquote>
-<P>
-Note that the Script command defines default actions only. If a CGI
-script is called, or some other resource that is capable of handling
-the requested method internally, it will do so. Also note that Script
-with a method of <CODE>GET</CODE> will only be called if there are
-query arguments present (<EM>e.g.</EM>, foo.html?hi). Otherwise, the request
-will proceed normally.
-</P>
-<P>
-Examples:
-</P>
-<PRE>
+    <ul>
+      <li><a href="#action">Action</a></li>
+
+      <li><a href="#script">Script</a></li>
+    </ul>
+    <hr />
+
+    <h2><a id="action" name="action">Action directive</a></h2>
+
+    <p><a href="directive-dict.html#Syntax"
+    rel="Help"><strong>Syntax:</strong></a> Action <em>action-type
+    cgi-script</em><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Context:</strong></a> server config, virtual
+    host, directory, .htaccess<br />
+     <a href="directive-dict.html#Override"
+    rel="Help"><strong>Override:</strong></a> FileInfo<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>Status:</strong></a> Base<br />
+     <a href="directive-dict.html#Module"
+    rel="Help"><strong>Module:</strong></a> mod_actions</p>
+
+    <p>This directive adds an action, which will activate
+    <em>cgi-script</em> when <em>action-type</em> is triggered by
+    the request. The <em>action-type</em> can be either a <a
+    href="../handler.html">handler</a> or a MIME content type. It
+    sends the URL and file path of the requested document using the
+    standard CGI PATH_INFO and PATH_TRANSLATED environment
+    variables.</p>
+    <hr />
+
+    <h2><a id="script" name="script">Script directive</a></h2>
+
+    <p><a href="directive-dict.html#Syntax"
+    rel="Help"><strong>Syntax:</strong></a> Script <em>method
+    cgi-script</em><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Context:</strong></a> server config, virtual
+    host, directory<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>Status:</strong></a> Base<br />
+     <a href="directive-dict.html#Module"
+    rel="Help"><strong>Module:</strong></a> mod_actions</p>
+
+    <p>This directive adds an action, which will activate
+    <i>cgi-script</i> when a file is requested using the method of
+    <i>method</i>. It sends the URL and file path of the requested
+    document using the standard CGI PATH_INFO and PATH_TRANSLATED
+    environment variables.</p>
+
+    <blockquote>
+      Any arbitrary method name may be used. <b>Method names are
+      case-sensitive</b>, so <code>Script&nbsp;PUT</code> and
+      <code>Script&nbsp;put</code> have two entirely different
+      effects.
+    </blockquote>
+
+    <p>Note that the Script command defines default actions only.
+    If a CGI script is called, or some other resource that is
+    capable of handling the requested method internally, it will do
+    so. Also note that Script with a method of <code>GET</code>
+    will only be called if there are query arguments present
+    (<em>e.g.</em>, foo.html?hi). Otherwise, the request will
+    proceed normally.</p>
+
+    <p>Examples:</p>
+<pre>
     # For &lt;ISINDEX&gt;-style searching
     Script GET /cgi-bin/search
     # A CGI PUT handler
     Script PUT /~bob/put.cgi
-</PRE>
+</pre>
+    <!--#include virtual="footer.html" -->
+  </body>
+</html>
 
-<!--#include virtual="footer.html" -->
-</BODY>
-</HTML>

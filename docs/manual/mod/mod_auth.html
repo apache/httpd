@@ -1,246 +1,221 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
-<HTML>
-<HEAD>
-<TITLE>Apache module mod_auth</TITLE>
-</HEAD>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
-<!-- Background white, links blue (unvisited), navy (visited), red (active) -->
-<BODY
- BGCOLOR="#FFFFFF"
- TEXT="#000000"
- LINK="#0000FF"
- VLINK="#000080"
- ALINK="#FF0000"
->
-<!--#include virtual="header.html" -->
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta name="generator" content="HTML Tidy, see www.w3.org" />
 
-<H1 ALIGN="CENTER">Module mod_auth</H1>
+    <title>Apache module mod_auth</title>
+  </head>
+  <!-- Background white, links blue (unvisited), navy (visited), red (active) -->
 
-<P>This module provides for user authentication using text files.
+  <body bgcolor="#FFFFFF" text="#000000" link="#0000FF"
+  vlink="#000080" alink="#FF0000">
+    <!--#include virtual="header.html" -->
 
-<P><A
-HREF="module-dict.html#Status"
-REL="Help"
-><STRONG>Status:</STRONG></A> Base
-<BR>
-<A
-HREF="module-dict.html#SourceFile"
-REL="Help"
-><STRONG>Source File:</STRONG></A> mod_auth.c
-<BR>
-<A
-HREF="module-dict.html#ModuleIdentifier"
-REL="Help"
-><STRONG>Module Identifier:</STRONG></A> auth_module
-</P>
+    <h1 align="CENTER">Module mod_auth</h1>
 
-<H2>Summary</H2>
+    <p>This module provides for user authentication using text
+    files.</p>
 
-<P>This module allows the use of HTTP Basic Authentication to restrict
-access by looking up users in plain text password and group files.
-Similar functionality and greater scalability is provided by <A
-HREF="mod_auth_dbm.html">mod_auth_dbm</A> and <A
-HREF="mod_auth_db.html">mod_auth_db</A>.  HTTP Digest Authentication
-is provided by <A HREF="mod_auth_digest.html">mod_auth_digest</A>.
+    <p><a href="module-dict.html#Status"
+    rel="Help"><strong>Status:</strong></a> Base<br />
+     <a href="module-dict.html#SourceFile"
+    rel="Help"><strong>Source File:</strong></a> mod_auth.c<br />
+     <a href="module-dict.html#ModuleIdentifier"
+    rel="Help"><strong>Module Identifier:</strong></a>
+    auth_module</p>
 
+    <h2>Summary</h2>
 
-<H2>Directives</H2>
+    <p>This module allows the use of HTTP Basic Authentication to
+    restrict access by looking up users in plain text password and
+    group files. Similar functionality and greater scalability is
+    provided by <a href="mod_auth_dbm.html">mod_auth_dbm</a> and <a
+    href="mod_auth_db.html">mod_auth_db</a>. HTTP Digest
+    Authentication is provided by <a
+    href="mod_auth_digest.html">mod_auth_digest</a>.</p>
 
-<UL>
-<LI><A HREF="#authgroupfile">AuthGroupFile</A>
-<LI><A HREF="#authuserfile">AuthUserFile</A>
-<LI><A HREF="#authauthoritative">AuthAuthoritative</A>
-</UL>
+    <h2>Directives</h2>
 
-<P>See also: <A HREF="core.html#require">require</A>
-and <A HREF="core.html#satisfy">satisfy</A>.</P>
+    <ul>
+      <li><a href="#authgroupfile">AuthGroupFile</a></li>
 
-<HR>
+      <li><a href="#authuserfile">AuthUserFile</a></li>
 
+      <li><a href="#authauthoritative">AuthAuthoritative</a></li>
+    </ul>
 
-<H2><A NAME="authgroupfile">AuthGroupFile</A> directive</H2>
-<!--%plaintext &lt;?INDEX {\tt AuthGroupFile} directive&gt; -->
-<A
- HREF="directive-dict.html#Syntax"
- REL="Help"
-><STRONG>Syntax:</STRONG></A> AuthGroupFile <EM>file-path</EM><BR>
-<A
- HREF="directive-dict.html#Context"
- REL="Help"
-><STRONG>Context:</STRONG></A> directory, .htaccess<BR>
-<A
- HREF="directive-dict.html#Override"
- REL="Help"
-><STRONG>Override:</STRONG></A> AuthConfig<BR>
-<A
- HREF="directive-dict.html#Status"
- REL="Help"
-><STRONG>Status:</STRONG></A> Base<BR>
-<A
- HREF="directive-dict.html#Module"
- REL="Help"
-><STRONG>Module:</STRONG></A> mod_auth<P>
+    <p>See also: <a href="core.html#require">require</a> and <a
+    href="core.html#satisfy">satisfy</a>.</p>
+    <hr />
 
-The AuthGroupFile directive sets the name of a textual file containing the list
-of user groups for user authentication. <EM>File-path</EM> is the path
-to the group file.  If it is not absolute (<EM>i.e.</EM>, if it
-doesn't begin with a slash), it is treated as relative to the ServerRoot.
-<P>
-Each line of the group file contains a groupname followed by a colon, followed
-by the member usernames separated by spaces. Example:
-<BLOCKQUOTE><CODE>mygroup: bob joe anne</CODE></BLOCKQUOTE>
-Note that searching large text files is <EM>very</EM> inefficient;
-<A HREF="mod_auth_dbm.html#authdbmgroupfile">AuthDBMGroupFile</A> should
-be used instead.<P>
+    <h2><a id="authgroupfile"
+    name="authgroupfile">AuthGroupFile</a> directive</h2>
+    <!--%plaintext &lt;?INDEX {\tt AuthGroupFile} directive&gt; -->
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>Syntax:</strong></a> AuthGroupFile
+    <em>file-path</em><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Context:</strong></a> directory,
+    .htaccess<br />
+     <a href="directive-dict.html#Override"
+    rel="Help"><strong>Override:</strong></a> AuthConfig<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>Status:</strong></a> Base<br />
+     <a href="directive-dict.html#Module"
+    rel="Help"><strong>Module:</strong></a> mod_auth 
 
-Security: make sure that the AuthGroupFile is stored outside the
-document tree of the web-server; do <EM>not</EM> put it in the directory that
-it protects. Otherwise, clients will be able to download the AuthGroupFile.<P>
+    <p>The AuthGroupFile directive sets the name of a textual file
+    containing the list of user groups for user authentication.
+    <em>File-path</em> is the path to the group file. If it is not
+    absolute (<em>i.e.</em>, if it doesn't begin with a slash), it
+    is treated as relative to the ServerRoot.</p>
 
-See also <A HREF="core.html#authname">AuthName</A>,
-<A HREF="core.html#authtype">AuthType</A> and
-<A HREF="#authuserfile">AuthUserFile</A>.<P><HR>
+    <p>Each line of the group file contains a groupname followed by
+    a colon, followed by the member usernames separated by spaces.
+    Example:</p>
 
-<H2><A NAME="authuserfile">AuthUserFile</A> directive</H2>
-<!--%plaintext &lt;?INDEX {\tt AuthUserFile} directive&gt; -->
-<A
- HREF="directive-dict.html#Syntax"
- REL="Help"
-><STRONG>Syntax:</STRONG></A> AuthUserFile <EM>file-path</EM><BR>
-<A
- HREF="directive-dict.html#Context"
- REL="Help"
-><STRONG>Context:</STRONG></A> directory, .htaccess<BR>
-<A
- HREF="directive-dict.html#Override"
- REL="Help"
-><STRONG>Override:</STRONG></A> AuthConfig<BR>
-<A
- HREF="directive-dict.html#Status"
- REL="Help"
-><STRONG>Status:</STRONG></A> Base<BR>
-<A
- HREF="directive-dict.html#Module"
- REL="Help"
-><STRONG>Module:</STRONG></A> mod_auth<P>
+    <blockquote>
+      <code>mygroup: bob joe anne</code>
+    </blockquote>
+    Note that searching large text files is <em>very</em>
+    inefficient; <a
+    href="mod_auth_dbm.html#authdbmgroupfile">AuthDBMGroupFile</a>
+    should be used instead. 
 
-The AuthUserFile directive sets the name of a textual file containing
-the list of users and passwords for user
-authentication. <EM>File-path</EM> is the path to the user
-file. If it is not absolute (<EM>i.e.</EM>, if it doesn't begin with a
-slash), it is treated as relative to the ServerRoot.
-<P> Each line of the user file file contains a username followed
-by a colon, followed by the crypt() encrypted password. The behavior
-of multiple occurrences of the same user is undefined.
-<P>
-The utility <a href="../programs/htpasswd.html">htpasswd</a> which is
-installed as part of the binary distribution, or which can be found in
-<code>src/support</code>, is used to maintain this password file. See
-the <code>man</code> page for more details. In short
-<p>
-<blockquote>
-	<code>htpasswd -c Filename username</code><br>
-	Create a password file 'Filename' with 'username'
-	as the initial ID. It will prompt for the password.
-	<code>htpasswd Filename username2</code><br>
-	Adds or modifies in password file 'Filename' the 'username'.
-</blockquote>
-<P> Note that
-searching large text files is <EM>very</EM> inefficient;
-<A HREF="mod_auth_dbm.html#authdbmuserfile">AuthDBMUserFile</A> should be
-used instead.
-<P>
+    <p>Security: make sure that the AuthGroupFile is stored outside
+    the document tree of the web-server; do <em>not</em> put it in
+    the directory that it protects. Otherwise, clients will be able
+    to download the AuthGroupFile.</p>
 
-Security: make sure that the AuthUserFile is stored outside the
-document tree of the web-server; do <EM>not</EM> put it in the directory that
-it protects. Otherwise, clients will be able to download the AuthUserFile.<P>
+    <p>See also <a href="core.html#authname">AuthName</a>, <a
+    href="core.html#authtype">AuthType</a> and <a
+    href="#authuserfile">AuthUserFile</a>.</p>
+    <hr />
 
-See also <A HREF="core.html#authname">AuthName</A>,
-<A HREF="core.html#authtype">AuthType</A> and
-<A HREF="#authgroupfile">AuthGroupFile</A>.<P>
-<HR>
-<H2><A NAME="authauthoritative">AuthAuthoritative</A> directive</H2>
-<!--%plaintext &lt;?INDEX {\tt AuthAuthoritative} directive&gt; -->
-<A
- HREF="directive-dict.html#Syntax"
- REL="Help"
-><STRONG>Syntax:</STRONG></A> AuthAuthoritative on|off<BR>
-<A
- HREF="directive-dict.html#Default"
- REL="Help"
-><STRONG>Default:</STRONG></A> <CODE>AuthAuthoritative on</CODE><BR>
-<A
- HREF="directive-dict.html#Context"
- REL="Help"
-><STRONG>Context:</STRONG></A> directory, .htaccess<BR>
-<A
- HREF="directive-dict.html#Override"
- REL="Help"
-><STRONG>Override:</STRONG></A> AuthConfig<BR>
-<A
- HREF="directive-dict.html#Status"
- REL="Help"
-><STRONG>Status:</STRONG></A> Base<BR>
-<A
- HREF="directive-dict.html#Module"
- REL="Help"
-><STRONG>Module:</STRONG></A> mod_auth<P>
+    <h2><a id="authuserfile" name="authuserfile">AuthUserFile</a>
+    directive</h2>
+    <!--%plaintext &lt;?INDEX {\tt AuthUserFile} directive&gt; -->
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>Syntax:</strong></a> AuthUserFile
+    <em>file-path</em><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Context:</strong></a> directory,
+    .htaccess<br />
+     <a href="directive-dict.html#Override"
+    rel="Help"><strong>Override:</strong></a> AuthConfig<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>Status:</strong></a> Base<br />
+     <a href="directive-dict.html#Module"
+    rel="Help"><strong>Module:</strong></a> mod_auth 
 
-Setting the AuthAuthoritative directive explicitly to <STRONG>'off'</STRONG>
-allows for both authentication and authorization to be passed on to
-lower level modules (as defined in the <CODE>Configuration</CODE> and
-<CODE>modules.c</CODE> files) if there is <STRONG>no userID</STRONG> or
-<STRONG>rule</STRONG> matching the supplied userID. If there is a userID and/or
-rule specified; the usual password and access checks will be applied
-and a failure will give an Authorization Required reply.
+    <p>The AuthUserFile directive sets the name of a textual file
+    containing the list of users and passwords for user
+    authentication. <em>File-path</em> is the path to the user
+    file. If it is not absolute (<em>i.e.</em>, if it doesn't begin
+    with a slash), it is treated as relative to the ServerRoot.</p>
 
-<P>
+    <p>Each line of the user file file contains a username followed
+    by a colon, followed by the crypt() encrypted password. The
+    behavior of multiple occurrences of the same user is
+    undefined.</p>
 
-So if a userID appears in the database of more than one module; or if
-a valid <CODE>Require</CODE> directive applies to more than one module; then the
-first module will verify the credentials; and no access is passed on;
-regardless of the AuthAuthoritative setting.
+    <p>The utility <a href="../programs/htpasswd.html">htpasswd</a>
+    which is installed as part of the binary distribution, or which
+    can be found in <code>src/support</code>, is used to maintain
+    this password file. See the <code>man</code> page for more
+    details. In short</p>
 
-<P>
+    <blockquote>
+      <code>htpasswd -c Filename username</code><br />
+       Create a password file 'Filename' with 'username' as the
+      initial ID. It will prompt for the password. <code>htpasswd
+      Filename username2</code><br />
+       Adds or modifies in password file 'Filename' the 'username'.
+    </blockquote>
 
-A common use for this is in conjunction with one of the database
-modules; such as <A
-HREF="mod_auth_db.html"><CODE>mod_auth_db.c</CODE></A>, <A
-HREF="mod_auth_dbm.html"><CODE>mod_auth_dbm.c</CODE></A>, 
-<CODE>mod_auth_msql.c</CODE>, and <A
-HREF="mod_auth_anon.html"><CODE>mod_auth_anon.c</CODE></A>. These modules
-supply the bulk of the user credential checking; but a few
-(administrator) related accesses fall through to a lower level with a
-well protected AuthUserFile.
+    <p>Note that searching large text files is <em>very</em>
+    inefficient; <a
+    href="mod_auth_dbm.html#authdbmuserfile">AuthDBMUserFile</a>
+    should be used instead.</p>
 
-<P>
+    <p>Security: make sure that the AuthUserFile is stored outside
+    the document tree of the web-server; do <em>not</em> put it in
+    the directory that it protects. Otherwise, clients will be able
+    to download the AuthUserFile.</p>
 
-<A
- HREF="directive-dict.html#Default"
- REL="Help"
-><STRONG>Default:</STRONG></A> By default; control is not passed on; and an
- unknown
-userID or rule will result in an Authorization Required reply. Not
-setting it thus keeps the system secure; and forces an NCSA compliant
-behaviour.
+    <p>See also <a href="core.html#authname">AuthName</a>, <a
+    href="core.html#authtype">AuthType</a> and <a
+    href="#authgroupfile">AuthGroupFile</a>.</p>
+    <hr />
 
-<P>
+    <h2><a id="authauthoritative"
+    name="authauthoritative">AuthAuthoritative</a> directive</h2>
+    <!--%plaintext &lt;?INDEX {\tt AuthAuthoritative} directive&gt; -->
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>Syntax:</strong></a> AuthAuthoritative
+    on|off<br />
+     <a href="directive-dict.html#Default"
+    rel="Help"><strong>Default:</strong></a>
+    <code>AuthAuthoritative on</code><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Context:</strong></a> directory,
+    .htaccess<br />
+     <a href="directive-dict.html#Override"
+    rel="Help"><strong>Override:</strong></a> AuthConfig<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>Status:</strong></a> Base<br />
+     <a href="directive-dict.html#Module"
+    rel="Help"><strong>Module:</strong></a> mod_auth 
 
-Security: Do consider the implications of allowing a user to allow
-fall-through in his .htaccess file; and verify that this is really
-what you want; Generally it is easier to just secure a single
-.htpasswd file, than it is to secure a database such as mSQL. Make
-sure that the AuthUserFile is stored outside the document tree of the
-web-server; do <EM>not</EM> put it in the directory that it
-protects. Otherwise, clients will be able to download the
-AuthUserFile.
+    <p>Setting the AuthAuthoritative directive explicitly to
+    <strong>'off'</strong> allows for both authentication and
+    authorization to be passed on to lower level modules (as
+    defined in the <code>Configuration</code> and
+    <code>modules.c</code> files) if there is <strong>no
+    userID</strong> or <strong>rule</strong> matching the supplied
+    userID. If there is a userID and/or rule specified; the usual
+    password and access checks will be applied and a failure will
+    give an Authorization Required reply.</p>
 
-<P>
-See also <A HREF="core.html#authname">AuthName</A>,
-<A HREF="core.html#authtype">AuthType</A> and
-<A HREF="#authgroupfile">AuthGroupFile</A>.<P>
+    <p>So if a userID appears in the database of more than one
+    module; or if a valid <code>Require</code> directive applies to
+    more than one module; then the first module will verify the
+    credentials; and no access is passed on; regardless of the
+    AuthAuthoritative setting.</p>
 
-<!--#include virtual="footer.html" -->
-</BODY>
-</HTML>
+    <p>A common use for this is in conjunction with one of the
+    database modules; such as <a
+    href="mod_auth_db.html"><code>mod_auth_db.c</code></a>, <a
+    href="mod_auth_dbm.html"><code>mod_auth_dbm.c</code></a>,
+    <code>mod_auth_msql.c</code>, and <a
+    href="mod_auth_anon.html"><code>mod_auth_anon.c</code></a>.
+    These modules supply the bulk of the user credential checking;
+    but a few (administrator) related accesses fall through to a
+    lower level with a well protected AuthUserFile.</p>
+
+    <p><a href="directive-dict.html#Default"
+    rel="Help"><strong>Default:</strong></a> By default; control is
+    not passed on; and an unknown userID or rule will result in an
+    Authorization Required reply. Not setting it thus keeps the
+    system secure; and forces an NCSA compliant behaviour.</p>
+
+    <p>Security: Do consider the implications of allowing a user to
+    allow fall-through in his .htaccess file; and verify that this
+    is really what you want; Generally it is easier to just secure
+    a single .htpasswd file, than it is to secure a database such
+    as mSQL. Make sure that the AuthUserFile is stored outside the
+    document tree of the web-server; do <em>not</em> put it in the
+    directory that it protects. Otherwise, clients will be able to
+    download the AuthUserFile.</p>
+
+    <p>See also <a href="core.html#authname">AuthName</a>, <a
+    href="core.html#authtype">AuthType</a> and <a
+    href="#authgroupfile">AuthGroupFile</a>.</p>
+
+    <p><!--#include virtual="footer.html" -->
+    </p>
+  </body>
+</html>
 

@@ -1,64 +1,65 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
-<HTML><HEAD>
-<TITLE>Apache name-based Virtual Hosts</TITLE>
-</HEAD>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
-<!-- Background white, links blue (unvisited), navy (visited), red (active) -->
-<BODY
- BGCOLOR="#FFFFFF"
- TEXT="#000000"
- LINK="#0000FF"
- VLINK="#000080"
- ALINK="#FF0000"
->
-<!--#include virtual="header.html" -->
-<H1 ALIGN="CENTER">Apache name-based Virtual Host Support</H1>
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta name="generator" content="HTML Tidy, see www.w3.org" />
 
-<STRONG>See Also:</STRONG>
-<A HREF="ip-based.html">IP-based Virtual Host Support</A>
+    <title>Apache name-based Virtual Hosts</title>
+  </head>
+  <!-- Background white, links blue (unvisited), navy (visited), red (active) -->
 
-<HR>
+  <body bgcolor="#FFFFFF" text="#000000" link="#0000FF"
+  vlink="#000080" alink="#FF0000">
+    <!--#include virtual="header.html" -->
 
-<H2>Name-based vs. IP-based virtual hosts</H2>
+    <h1 align="CENTER">Apache name-based Virtual Host Support</h1>
+    <strong>See Also:</strong> <a href="ip-based.html">IP-based
+    Virtual Host Support</a> 
+    <hr />
 
-<P>Early versions of HTTP (like many other protocols, e.g. FTP)
-required a different IP address for each virtual host on the server.
-On some platforms this can limit the number of virtual hosts you can
-run, and because there are concerns about the availability of IP
-addresses it is strongly discouraged by the registraries (ARIN, RIPE,
-and APNIC).</P>
+    <h2>Name-based vs. IP-based virtual hosts</h2>
 
-<P>The <CODE>HTTP/1.1</CODE> protocol, and a common extension to
-<CODE>HTTP/1.0</CODE>, includes a method for the server to identify
-what name it is being addressed as. Apache 1.1 and later support this
-approach as well as the old IP-address-per-hostname method.</P>
+    <p>Early versions of HTTP (like many other protocols, e.g. FTP)
+    required a different IP address for each virtual host on the
+    server. On some platforms this can limit the number of virtual
+    hosts you can run, and because there are concerns about the
+    availability of IP addresses it is strongly discouraged by the
+    registraries (ARIN, RIPE, and APNIC).</p>
 
-<P>The benefits of using the name-based virtual hosts is a practically
-unlimited number of servers, ease of configuration and use, and it
-requires no additional hardware or software. The main disadvantage is
-that the client must support this part of the protocol. Almost all
-browsers do, but there are still tiny numbers of very old browsers in
-use which do not. This can cause problems, although a possible
-solution is addressed below.</P>
+    <p>The <code>HTTP/1.1</code> protocol, and a common extension
+    to <code>HTTP/1.0</code>, includes a method for the server to
+    identify what name it is being addressed as. Apache 1.1 and
+    later support this approach as well as the old
+    IP-address-per-hostname method.</p>
 
-<H2>Using name-based virtual hosts</H2>
+    <p>The benefits of using the name-based virtual hosts is a
+    practically unlimited number of servers, ease of configuration
+    and use, and it requires no additional hardware or software.
+    The main disadvantage is that the client must support this part
+    of the protocol. Almost all browsers do, but there are still
+    tiny numbers of very old browsers in use which do not. This can
+    cause problems, although a possible solution is addressed
+    below.</p>
 
-<P>Using name-based virtual hosts is quite easy, and superficially looks
-like the old method. The notable difference between IP-based and
-name-based virtual host configuration is the
-<A HREF="../mod/core.html#namevirtualhost"><CODE>NameVirtualHost</CODE></A>
-directive which specifies an IP address that should be used as a
-target for name-based virtual hosts, or the wildcard <CODE>*</CODE> to
-indicate that the server only does name-based virtual hosting (no
-IP-based virtual hosting).</P>
+    <h2>Using name-based virtual hosts</h2>
 
-<P>For example, suppose that both <SAMP>www.domain.tld</SAMP> and
-<SAMP>www.otherdomain.tld</SAMP> point at the IP address of your
-server. Then you simply add to one of the Apache configuration files
-(most likely <CODE>httpd.conf</CODE> or <CODE>srm.conf</CODE>) code
-similar to the following:</P>
+    <p>Using name-based virtual hosts is quite easy, and
+    superficially looks like the old method. The notable difference
+    between IP-based and name-based virtual host configuration is
+    the <a
+    href="../mod/core.html#namevirtualhost"><code>NameVirtualHost</code></a>
+    directive which specifies an IP address that should be used as
+    a target for name-based virtual hosts, or the wildcard
+    <code>*</code> to indicate that the server only does name-based
+    virtual hosting (no IP-based virtual hosting).</p>
 
-<PRE>
+    <p>For example, suppose that both <samp>www.domain.tld</samp>
+    and <samp>www.otherdomain.tld</samp> point at the IP address of
+    your server. Then you simply add to one of the Apache
+    configuration files (most likely <code>httpd.conf</code> or
+    <code>srm.conf</code>) code similar to the following:</p>
+<pre>
     NameVirtualHost *
 
     &lt;VirtualHost *&gt;
@@ -70,68 +71,69 @@ similar to the following:</P>
     ServerName www.otherdomain.tld
     DocumentRoot /www/otherdomain
     &lt;/VirtualHost&gt;
-</PRE>
+</pre>
 
-<P>Of course, any additional directives can (and should) be placed
-into the <CODE>&lt;VirtualHost&gt;</CODE> section. To make this work,
-all that is needed is to make sure that the names
-<SAMP>www.domain.tld</SAMP> and <SAMP>www.otherdomain.tld</SAMP>
-are pointing to the right IP address.
+    <p>Of course, any additional directives can (and should) be
+    placed into the <code>&lt;VirtualHost&gt;</code> section. To
+    make this work, all that is needed is to make sure that the
+    names <samp>www.domain.tld</samp> and
+    <samp>www.otherdomain.tld</samp> are pointing to the right IP
+    address.</p>
 
-<P>Note: When you specify an IP address in a <CODE>NameVirtualHost</CODE>
-directive then requests to that IP address will only ever be served
-by matching &lt;VirtualHost&gt;s.  The "main server" will
-<STRONG>never</STRONG> be served from the specified IP address.
-If you specify a wildcard then the "main server" isn't used at all.
-If you start to use virtual hosts you should stop using the "main server"
-as an independent server and rather use it as a place for
-configuration directives that are common for all your virtual hosts.
-In other words, you should add a &lt;VirtualHost&gt; section for
-<EM>every</EM> server (hostname) you want to maintain on your server.
+    <p>Note: When you specify an IP address in a
+    <code>NameVirtualHost</code> directive then requests to that IP
+    address will only ever be served by matching
+    &lt;VirtualHost&gt;s. The "main server" will
+    <strong>never</strong> be served from the specified IP address.
+    If you specify a wildcard then the "main server" isn't used at
+    all. If you start to use virtual hosts you should stop using
+    the "main server" as an independent server and rather use it as
+    a place for configuration directives that are common for all
+    your virtual hosts. In other words, you should add a
+    &lt;VirtualHost&gt; section for <em>every</em> server
+    (hostname) you want to maintain on your server.</p>
 
-<P>Additionally, many servers may wish to be accessible by more than
-one name. For example, the example server might want to be accessible
-as <CODE>domain.tld</CODE>, or <CODE>www2.domain.tld</CODE>, assuming
-the IP addresses pointed to the same server. In fact, one might want it
-so that all addresses at <CODE>domain.tld</CODE> were picked up by the
-server. This is possible with the
-<A HREF="../mod/core.html#serveralias"><CODE>ServerAlias</CODE></A>
-directive, placed inside the &lt;VirtualHost&gt; section. For
-example:</P>
-
-<PRE>
+    <p>Additionally, many servers may wish to be accessible by more
+    than one name. For example, the example server might want to be
+    accessible as <code>domain.tld</code>, or
+    <code>www2.domain.tld</code>, assuming the IP addresses pointed
+    to the same server. In fact, one might want it so that all
+    addresses at <code>domain.tld</code> were picked up by the
+    server. This is possible with the <a
+    href="../mod/core.html#serveralias"><code>ServerAlias</code></a>
+    directive, placed inside the &lt;VirtualHost&gt; section. For
+    example:</p>
+<pre>
     ServerAlias domain.tld *.domain.tld
-</PRE>
+</pre>
 
-<P>Note that you can use <CODE>*</CODE> and <CODE>?</CODE> as wild-card
-characters.</P>
+    <p>Note that you can use <code>*</code> and <code>?</code> as
+    wild-card characters.</p>
 
-<P>You also might need <CODE>ServerAlias</CODE> if you are
-serving local users who do not always include the domain name.
-For example, if local users are
-familiar with typing "www" or "www.foobar" then you will need to add
-<CODE>ServerAlias www www.foobar</CODE>.  It isn't possible for the
-server to know what domain the client uses for their name resolution
-because the client doesn't provide that information in the request.
-The <CODE>ServerAlias</CODE> directive is generally a way to have different
-hostnames pointing to the same virtual host.
-</P>
+    <p>You also might need <code>ServerAlias</code> if you are
+    serving local users who do not always include the domain name.
+    For example, if local users are familiar with typing "www" or
+    "www.foobar" then you will need to add <code>ServerAlias www
+    www.foobar</code>. It isn't possible for the server to know
+    what domain the client uses for their name resolution because
+    the client doesn't provide that information in the request. The
+    <code>ServerAlias</code> directive is generally a way to have
+    different hostnames pointing to the same virtual host.</p>
 
-<H2>Compatibility with Older Browsers</H2>
+    <h2>Compatibility with Older Browsers</h2>
 
-<P>As mentioned earlier, there are still some clients in use who
-do not send the required data for the name-based virtual hosts to work
-properly. These clients will always be sent the pages from the
-first virtual host listed for that IP address (the
-<CITE>primary</CITE> name-based virtual host).</P>
+    <p>As mentioned earlier, there are still some clients in use
+    who do not send the required data for the name-based virtual
+    hosts to work properly. These clients will always be sent the
+    pages from the first virtual host listed for that IP address
+    (the <cite>primary</cite> name-based virtual host).</p>
 
-<P>There is a possible workaround with the
-<A HREF="../mod/core.html#serverpath"><CODE>ServerPath</CODE></A>
-directive, albeit a slightly cumbersome one:</P>
+    <p>There is a possible workaround with the <a
+    href="../mod/core.html#serverpath"><code>ServerPath</code></a>
+    directive, albeit a slightly cumbersome one:</p>
 
-<P>Example configuration:
-
-<PRE>
+    <p>Example configuration:</p>
+<pre>
     NameVirtualHost 111.22.33.44
 
     &lt;VirtualHost 111.22.33.44&gt;
@@ -139,31 +141,33 @@ directive, albeit a slightly cumbersome one:</P>
     ServerPath /domain
     DocumentRoot /web/domain
     &lt;/VirtualHost&gt;
-</PRE>
+</pre>
 
-<P>What does this mean? It means that a request for any URI beginning
-with "<SAMP>/domain</SAMP>" will be served from the virtual host
-<SAMP>www.domain.tld</SAMP> This means that the pages can be accessed as
-<CODE>http://www.domain.tld/domain/</CODE> for all clients, although
-clients sending a <SAMP>Host:</SAMP> header can also access it as
-<CODE>http://www.domain.tld/</CODE>.</P>
+    <p>What does this mean? It means that a request for any URI
+    beginning with "<samp>/domain</samp>" will be served from the
+    virtual host <samp>www.domain.tld</samp> This means that the
+    pages can be accessed as
+    <code>http://www.domain.tld/domain/</code> for all clients,
+    although clients sending a <samp>Host:</samp> header can also
+    access it as <code>http://www.domain.tld/</code>.</p>
 
-<P>In order to make this work, put a link on your primary virtual host's page
-to <SAMP>http://www.domain.tld/domain/</SAMP>
-Then, in the virtual host's pages, be sure to use either purely
-relative links (<EM>e.g.</EM>, "<SAMP>file.html</SAMP>" or
-"<SAMP>../icons/image.gif</SAMP>" or links containing the prefacing
-<SAMP>/domain/</SAMP>
-(<EM>e.g.</EM>, "<SAMP>http://www.domain.tld/domain/misc/file.html</SAMP>" or
-"<SAMP>/domain/misc/file.html</SAMP>").</P>
+    <p>In order to make this work, put a link on your primary
+    virtual host's page to
+    <samp>http://www.domain.tld/domain/</samp> Then, in the virtual
+    host's pages, be sure to use either purely relative links
+    (<em>e.g.</em>, "<samp>file.html</samp>" or
+    "<samp>../icons/image.gif</samp>" or links containing the
+    prefacing <samp>/domain/</samp> (<em>e.g.</em>,
+    "<samp>http://www.domain.tld/domain/misc/file.html</samp>" or
+    "<samp>/domain/misc/file.html</samp>").</p>
 
-<P>This requires a bit of
-discipline, but adherence to these guidelines will, for the most part,
-ensure that your pages will work with all browsers, new and old.</P>
+    <p>This requires a bit of discipline, but adherence to these
+    guidelines will, for the most part, ensure that your pages will
+    work with all browsers, new and old.</p>
 
-<P>See also: <A HREF="examples.html#serverpath">ServerPath configuration
-example</A></P>
+    <p>See also: <a href="examples.html#serverpath">ServerPath
+    configuration example</a></p>
+    <!--#include virtual="footer.html" -->
+  </body>
+</html>
 
-<!--#include virtual="footer.html" -->
-</BODY>
-</HTML>

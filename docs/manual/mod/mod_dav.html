@@ -1,253 +1,214 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
-<HTML>
-<HEAD>
-<TITLE>Apache module mod_dav</TITLE>
-</HEAD>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
-<!-- Background white, links blue (unvisited), navy (visited), red (active) -->
-<BODY
- BGCOLOR="#FFFFFF"
- TEXT="#000000"
- LINK="#0000FF"
- VLINK="#000080"
- ALINK="#FF0000"
->
-<!--#include virtual="header.html" -->
-<H1 ALIGN="CENTER">Module mod_dav</H1>
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta name="generator" content="HTML Tidy, see www.w3.org" />
 
-<p>This module provides Distributed Authoring and Versioning
-(<a href="http://www.webdav.org/">WebDAV</a>) functionality.</p>
+    <title>Apache module mod_dav</title>
+  </head>
+  <!-- Background white, links blue (unvisited), navy (visited), red (active) -->
 
-<A
-HREF="module-dict.html#Status"
-REL="Help"
-><STRONG>Status:</STRONG></A> Extension
-<BR>
-<A
-HREF="module-dict.html#SourceFile"
-REL="Help"
-><STRONG>Source File:</STRONG></A> mod_dav.c
-<BR>
-<A
-HREF="module-dict.html#ModuleIdentifier"
-REL="Help"
-><STRONG>Module Identifier:</STRONG></A> dav_module
+  <body bgcolor="#FFFFFF" text="#000000" link="#0000FF"
+  vlink="#000080" alink="#FF0000">
+    <!--#include virtual="header.html" -->
 
-<h2>Summary</h2>
+    <h1 align="CENTER">Module mod_dav</h1>
 
-<p>This module provides class 1 and class 2 
-<A HREF="http://www.webdav.org">WebDAV</A> ('Web-based
-Distributed Authoring and Versioning') functionality for Apache. 
-This extension to the HTTP protocol allows creating, moving,
-copying, and deleting resources and collections on a remote web
-server.</p>
+    <p>This module provides Distributed Authoring and Versioning
+    (<a href="http://www.webdav.org/">WebDAV</a>)
+    functionality.</p>
+    <a href="module-dict.html#Status"
+    rel="Help"><strong>Status:</strong></a> Extension <br />
+     <a href="module-dict.html#SourceFile"
+    rel="Help"><strong>Source File:</strong></a> mod_dav.c <br />
+     <a href="module-dict.html#ModuleIdentifier"
+    rel="Help"><strong>Module Identifier:</strong></a> dav_module 
 
-<P>
-To enable mod_dav, add the following to a container in your <CODE>httpd.conf</CODE> file:</P>
+    <h2>Summary</h2>
 
-<blockquote>
-<CODE>Dav On</CODE>
-</blockquote>
+    <p>This module provides class 1 and class 2 <a
+    href="http://www.webdav.org">WebDAV</a> ('Web-based Distributed
+    Authoring and Versioning') functionality for Apache. This
+    extension to the HTTP protocol allows creating, moving,
+    copying, and deleting resources and collections on a remote web
+    server.</p>
 
-<p>Also, specify a valid filename for the DAV lock database by adding
-the following to the global section in your <CODE>httpd.conf</CODE>
-file:</p>
+    <p>To enable mod_dav, add the following to a container in your
+    <code>httpd.conf</code> file:</p>
 
-<blockquote>
-<CODE>DavLockDB /tmp/DavLock&nbsp;&nbsp;&nbsp;&nbsp;</CODE><EM>(Any web-server writable filename, without an extension)</EM>
-</blockquote>
+    <blockquote>
+      <code>Dav On</code>
+    </blockquote>
 
+    <p>Also, specify a valid filename for the DAV lock database by
+    adding the following to the global section in your
+    <code>httpd.conf</code> file:</p>
 
+    <blockquote>
+      <code>DavLockDB /tmp/DavLock&nbsp;&nbsp;&nbsp;&nbsp;</code>
+      <em>(Any web-server writable filename, without an
+      extension)</em>
+    </blockquote>
 
-<H2>Directives</H2>
-<UL>
-<LI><A HREF="#DAV">Dav</A>
-<LI><A HREF="#DAVLockDB">DavLockDB</A>
-<LI><A HREF="#DAVMinTimeout">DavMinTimeout</A>
-<LI><A HREF="#DAVDepthInfinity">DavDepthInfinity</A>
-</UL>
+    <h2>Directives</h2>
 
-<HR>
+    <ul>
+      <li><a href="#DAV">Dav</a></li>
 
-<H2><A NAME="DAV">Dav</A></H2>
-<A
- HREF="directive-dict.html#Syntax"
- REL="Help"
-><STRONG>Syntax:</STRONG></A> Dav on|off<BR>
-<A
- HREF="directive-dict.html#Default"
- REL="Help"
-><STRONG>Default:</STRONG></A>
-    <CODE>Dav off</CODE><BR>
-<A
- HREF="directive-dict.html#Context"
- REL="Help"
-><STRONG>Context:</STRONG></A> directory<BR>
-<A
- HREF="directive-dict.html#Status"
- REL="Help"
-><STRONG>Status:</STRONG></A> extension<BR>
-<A
- HREF="directive-dict.html#Module"
- REL="Help"
-><STRONG>Module:</STRONG></A> mod_dav<BR>
-<A
- HREF="directive-dict.html#Compatibility"
- REL="Help"
-><STRONG>Compatibility:</STRONG></A> Apache 1.3.4 and above
+      <li><a href="#DAVLockDB">DavLockDB</a></li>
 
-<p>Use the <CODE>Dav</CODE> directive to enable the WebDAV HTTP methods
-for the given container.
-You may wish to add a
-<A
- HREF="core.html#limit"
->&lt;Limit&gt;</A>
-clause inside the
-<A
- HREF="core.html#location"
->location</A>
-directive to limit access to DAV-enabled locations.</P>
+      <li><a href="#DAVMinTimeout">DavMinTimeout</a></li>
 
-<TABLE WIDTH="70%" BORDER=0 BGCOLOR="#E0E0F0" CELLSPACING=0 CELLPADDING=10>
-<TR><TD>
-<STRONG>Example</STRONG>:<BR><BR> 
-<CODE>DavLockDB /tmp/DavLock<BR>
-<BR>
-&lt;Location /foo&gt;<BR>
-Dav On<BR>
-<BR>
-AuthType     Basic<BR>
-AuthName     DAV<BR>
-AuthUserFile user.passwd<BR>
-<BR>
-&nbsp;&nbsp;&lt;LimitExcept GET HEAD OPTIONS&gt;<BR>
-&nbsp;&nbsp;require user admin<BR>
-&nbsp;&nbsp;&lt;/LimitExcept&gt;<BR>
-&lt;/Location&gt;<BR>
-</CODE>
-</TD></TR>
-</TABLE>
+      <li><a href="#DAVDepthInfinity">DavDepthInfinity</a></li>
+    </ul>
+    <hr />
 
-<BR>
-<HR>
+    <h2><a id="DAV" name="DAV">Dav</a></h2>
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>Syntax:</strong></a> Dav on|off<br />
+     <a href="directive-dict.html#Default"
+    rel="Help"><strong>Default:</strong></a> <code>Dav
+    off</code><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Context:</strong></a> directory<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>Status:</strong></a> extension<br />
+     <a href="directive-dict.html#Module"
+    rel="Help"><strong>Module:</strong></a> mod_dav<br />
+     <a href="directive-dict.html#Compatibility"
+    rel="Help"><strong>Compatibility:</strong></a> Apache 1.3.4 and
+    above 
 
-<H2><A NAME="DavLockDB">DavLockDB</A></H2>
-<A
- HREF="directive-dict.html#Syntax"
- REL="Help"
-><STRONG>Syntax:</STRONG></A> DavLockDB <em>filename</em><BR>
-<A
- HREF="directive-dict.html#Default"
- REL="Help"
-><STRONG>Default:</STRONG></A>
-    <EM>None</EM><BR>
-<A
- HREF="directive-dict.html#Context"
- REL="Help"
-><STRONG>Context:</STRONG></A> server config, virtual host<BR>
-<A
- HREF="directive-dict.html#Status"
- REL="Help"
-><STRONG>Status:</STRONG></A> extension<BR>
-<A
- HREF="directive-dict.html#Module"
- REL="Help"
-><STRONG>Module:</STRONG></A> mod_dav
+    <p>Use the <code>Dav</code> directive to enable the WebDAV HTTP
+    methods for the given container. You may wish to add a <a
+    href="core.html#limit">&lt;Limit&gt;</a> clause inside the <a
+    href="core.html#location">location</a> directive to limit
+    access to DAV-enabled locations.</p>
 
-<p>Use the <CODE>DavLockDB</CODE> directive to specify the full path to the
-lock database, excluding an extension.  The default (file system)
-implementation of mod_dav uses a SDBM database to track user locks.
-The utility <CODE>modules/dav/util/lockview</CODE> can be
-used from the server to display all locks in a lock database.</P>
+    <table width="70%" border="0" bgcolor="#E0E0F0" cellspacing="0"
+    cellpadding="10">
+      <tr>
+        <td><strong>Example</strong>:<br />
+         <br />
+         <code>DavLockDB /tmp/DavLock<br />
+        <br />
+         &lt;Location /foo&gt;<br />
+         Dav On<br />
+        <br />
+         AuthType Basic<br />
+         AuthName DAV<br />
+         AuthUserFile user.passwd<br />
+        <br />
+         &nbsp;&nbsp;&lt;LimitExcept GET HEAD OPTIONS&gt;<br />
+         &nbsp;&nbsp;require user admin<br />
+         &nbsp;&nbsp;&lt;/LimitExcept&gt;<br />
+         &lt;/Location&gt;<br />
+        </code> </td>
+      </tr>
+    </table>
+    <br />
+     
+    <hr />
 
-<TABLE WIDTH="70%" BORDER=0 BGCOLOR="#E0E0F0" CELLSPACING=0 CELLPADDING=10>
-<TR><TD>
-<STRONG>Example</STRONG>:<BR><BR> 
-<CODE>DavLockDB /tmp/DavLock<BR>
-<BR>
-</CODE>
-</TD></TR>
-</TABLE>
+    <h2><a id="DavLockDB" name="DavLockDB">DavLockDB</a></h2>
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>Syntax:</strong></a> DavLockDB
+    <em>filename</em><br />
+     <a href="directive-dict.html#Default"
+    rel="Help"><strong>Default:</strong></a> <em>None</em><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Context:</strong></a> server config, virtual
+    host<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>Status:</strong></a> extension<br />
+     <a href="directive-dict.html#Module"
+    rel="Help"><strong>Module:</strong></a> mod_dav 
 
-<BR>
-<HR>
+    <p>Use the <code>DavLockDB</code> directive to specify the full
+    path to the lock database, excluding an extension. The default
+    (file system) implementation of mod_dav uses a SDBM database to
+    track user locks. The utility
+    <code>modules/dav/util/lockview</code> can be used from the
+    server to display all locks in a lock database.</p>
 
-<H2><A NAME="DavMinTimeout">DavMinTimeout</A></H2>
-<A
- HREF="directive-dict.html#Syntax"
- REL="Help"
-><STRONG>Syntax:</STRONG></A> DavMinTimeout <em>seconds</em><BR>
-<A
- HREF="directive-dict.html#Default"
- REL="Help"
-><STRONG>Default:</STRONG></A>
-    <CODE>DavMinTimeout 0</CODE><BR>
-<A
- HREF="directive-dict.html#Context"
- REL="Help"
-><STRONG>Context:</STRONG></A> directory<BR>
-<A
- HREF="directive-dict.html#Status"
- REL="Help"
-><STRONG>Status:</STRONG></A> extension<BR>
-<A
- HREF="directive-dict.html#Module"
- REL="Help"
-><STRONG>Module:</STRONG></A> mod_dav
+    <table width="70%" border="0" bgcolor="#E0E0F0" cellspacing="0"
+    cellpadding="10">
+      <tr>
+        <td><strong>Example</strong>:<br />
+         <br />
+         <code>DavLockDB /tmp/DavLock<br />
+        <br />
+        </code> </td>
+      </tr>
+    </table>
+    <br />
+     
+    <hr />
 
-<p>When a client requests a DAV resource lock, it can also specify a time
-when the lock will be automatically removed by the server.  This value
-is only a request, and the server can ignore it or inform the client
-of an arbitrary value.</P>
+    <h2><a id="DavMinTimeout"
+    name="DavMinTimeout">DavMinTimeout</a></h2>
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>Syntax:</strong></a> DavMinTimeout
+    <em>seconds</em><br />
+     <a href="directive-dict.html#Default"
+    rel="Help"><strong>Default:</strong></a> <code>DavMinTimeout
+    0</code><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Context:</strong></a> directory<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>Status:</strong></a> extension<br />
+     <a href="directive-dict.html#Module"
+    rel="Help"><strong>Module:</strong></a> mod_dav 
 
-<p>Use the <CODE>DavMinTimeout</CODE> directive to specify, in seconds,
-the minimum lock timeout to return to a client.  Microsoft Web Folders
-defaults to a timeout of 120 seconds; the <CODE>DavMinTimeout</CODE>
-can override this to a higher value (like 600 seconds) to reduce the chance
-of the client losing the lock due to network latency.</P>
+    <p>When a client requests a DAV resource lock, it can also
+    specify a time when the lock will be automatically removed by
+    the server. This value is only a request, and the server can
+    ignore it or inform the client of an arbitrary value.</p>
 
-<TABLE WIDTH="70%" BORDER=0 BGCOLOR="#E0E0F0" CELLSPACING=0 CELLPADDING=10>
-<TR><TD>
-<STRONG>Example</STRONG>:<BR><BR> 
-<CODE>&lt;Location /MSWord&gt;<BR>
-DavMinTimeout 600<BR>
-&lt;/Location&gt;<BR>
-<BR>
-</CODE>
-</TD></TR>
-</TABLE>
+    <p>Use the <code>DavMinTimeout</code> directive to specify, in
+    seconds, the minimum lock timeout to return to a client.
+    Microsoft Web Folders defaults to a timeout of 120 seconds; the
+    <code>DavMinTimeout</code> can override this to a higher value
+    (like 600 seconds) to reduce the chance of the client losing
+    the lock due to network latency.</p>
 
-<BR>
-<HR>
+    <table width="70%" border="0" bgcolor="#E0E0F0" cellspacing="0"
+    cellpadding="10">
+      <tr>
+        <td><strong>Example</strong>:<br />
+         <br />
+         <code>&lt;Location /MSWord&gt;<br />
+         DavMinTimeout 600<br />
+         &lt;/Location&gt;<br />
+        <br />
+        </code> </td>
+      </tr>
+    </table>
+    <br />
+     
+    <hr />
 
-<H2><A NAME="DavDepthInfinity">DavDepthInfinity</A></H2>
-<A
- HREF="directive-dict.html#Syntax"
- REL="Help"
-><STRONG>Syntax:</STRONG></A> DavDepthInfinity on|off<BR>
-<A
- HREF="directive-dict.html#Default"
- REL="Help"
-><STRONG>Default:</STRONG></A>
-    <CODE>DavDepthInfinity off</CODE><BR>
-<A
- HREF="directive-dict.html#Context"
- REL="Help"
-><STRONG>Context:</STRONG></A> directory<BR>
-<A
- HREF="directive-dict.html#Status"
- REL="Help"
-><STRONG>Status:</STRONG></A> extension<BR>
-<A
- HREF="directive-dict.html#Module"
- REL="Help"
-><STRONG>Module:</STRONG></A> mod_dav
+    <h2><a id="DavDepthInfinity"
+    name="DavDepthInfinity">DavDepthInfinity</a></h2>
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>Syntax:</strong></a> DavDepthInfinity
+    on|off<br />
+     <a href="directive-dict.html#Default"
+    rel="Help"><strong>Default:</strong></a> <code>DavDepthInfinity
+    off</code><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Context:</strong></a> directory<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>Status:</strong></a> extension<br />
+     <a href="directive-dict.html#Module"
+    rel="Help"><strong>Module:</strong></a> mod_dav 
 
-<p>Use the <CODE>DavDepthInfinity</CODE> directive to allow the processing
-of PROPFIND requests containing the header 'Depth: Infinity'.
-Because this type of request could constitute a denial-of-service attack,
-by default it is not allowed.</P>
+    <p>Use the <code>DavDepthInfinity</code> directive to allow the
+    processing of PROPFIND requests containing the header 'Depth:
+    Infinity'. Because this type of request could constitute a
+    denial-of-service attack, by default it is not allowed.</p>
+    <!--#include virtual="footer.html" -->
+  </body>
+</html>
 
-<!--#include virtual="footer.html" -->
-</BODY>
-</HTML>
