@@ -2728,18 +2728,6 @@ static apr_status_t includes_filter(ap_filter_t *f, apr_bucket_brigade *b)
     if (!(ap_allow_options(r) & OPT_INCLUDES)) {
         return ap_pass_brigade(f->next, b);
     }
-    if (r->method_number != M_GET) {
-        ap_allow_methods(r, REPLACE_ALLOW, "GET", "OPTIONS", NULL);
-        if (r->method_number == M_OPTIONS) {
-            /* it's too late to set the Allow header the "right way" */
-            apr_table_setn(r->headers_out, "Allow",
-                           "GET, HEAD, OPTIONS, TRACE");
-            return ap_pass_brigade(f->next, b);
-        }
-        r->status = HTTP_METHOD_NOT_ALLOWED;
-        ap_send_error_response(r, 0);
-        return APR_SUCCESS;
-    }
 
     if (!f->ctx) {
         f->ctx    = ctx      = apr_pcalloc(f->c->pool, sizeof(*ctx));
