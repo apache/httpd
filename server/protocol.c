@@ -888,15 +888,6 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_content_length_filter(ap_filter_t *f,
         APR_BRIGADE_FOREACH(e, b) {
             const char *ignored;
             apr_size_t len;
-            /* If we've accumulated more than 4xAP_MIN_BYTES_TO_WRITE and 
-             * the client supports chunked encoding, send what we have 
-             * and come back for more.
-             */
-            if ((ctx->curr_len > 4*AP_MIN_BYTES_TO_WRITE) && partial_send_okay) {
-                split = b;
-                more = apr_brigade_split(b, e);
-                break;
-            }
             len = 0;
             if (APR_BUCKET_IS_EOS(e)) {
                 eos = 1;
@@ -904,10 +895,18 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_content_length_filter(ap_filter_t *f,
             else if (APR_BUCKET_IS_FLUSH(e)) {
                 if (partial_send_okay) {
                     split = b;
+                    more = apr_brigade_split(b, APR_BUCKET_NEXT(e));
+                    break;
+                }
+            }
+            else if ((ctx->curr_len > 4*AP_MIN_BYTES_TO_WRITE)) {
+                /* If we've accumulated more than 4xAP_MIN_BYTES_TO_WRITE and 
+                 * the client supports chunked encoding, send what we have 
+                 * and come back for more.
+                 */
+                if (partial_send_okay) {
+                    split = b;
                     more = apr_brigade_split(b, e);
-                    /* Remove the flush bucket from brigade 'more' */
-                    APR_BUCKET_REMOVE(e);
-                    flush = 1;
                     break;
                 }
             }
