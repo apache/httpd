@@ -88,9 +88,7 @@
     than Basic authentication, but only works with supporting
     browsers. As of November 2002, the major browsers that support digest
     authentication are <a href="http://www.opera.com/">Opera</a>, <a href="http://www.microsoft.com/windows/ie/">MS Internet
-    Explorer</a> (fails when used with a query string - see the
-    <code class="directive"><a href="#authdigestenablequerystringhack&#10;    ">AuthDigestEnableQueryStringHack
-    </a></code> option below for a workaround), <a href="http://www.w3.org/Amaya/">Amaya</a>, <a href="http://www.mozilla.org">Mozilla</a> and <a href="http://channels.netscape.com/ns/browsers/download.jsp">Netscape</a> since version 7. Since digest authentication is not
+    Explorer</a> (fails when used with a query string - see "<a href="#msie">Working with MS Internet Explorer</a>" below for a workaround), <a href="http://www.w3.org/Amaya/">Amaya</a>, <a href="http://www.mozilla.org">Mozilla</a> and <a href="http://channels.netscape.com/ns/browsers/download.jsp">Netscape</a> since version 7. Since digest authentication is not
     as widely implemented as basic authentication, you should use it only
     in controlled environments.</p>
     </div>
@@ -109,9 +107,9 @@
     limitation.
     </p>
 
-    <p>Apache also provides a workaround in the
+    <p>Since version 2.0.51 Apache also provides a workaround in the
     <code>AuthDigestEnableQueryStringHack</code> environment variable.
-    If <code>AuthDigestEnableQueryStringHack</code> is true for the
+    If <code>AuthDigestEnableQueryStringHack</code> is set for the
     request, Apache will take steps to work around the MSIE bug and
     remove the request URI from the digest comparison.  Using this
     method would look similar to the following.</p>
