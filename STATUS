@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2002/07/24 14:02:56 $]
+Last modified at [$Date: 2002/07/24 16:55:45 $]
 
 Release:
 
@@ -63,7 +63,7 @@ CURRENT VOTES:
 
       a) httpd-std.conf should be tailored by install (from src or
          binbuild) even if user has existing httpd.conf
-         +1:   trawick, slive, gregames, ianh
+         +1:   trawick, slive, gregames, ianh, Ken
 
       b) tailored httpd-std.conf should be copied by install to
          sysconfdir/examples
@@ -71,13 +71,14 @@ CURRENT VOTES:
 
       c) tailored httpd-std.conf should be installed to
          sysconfdir/examples or manualdir/exampleconf/
-         +1:   slive, trawick
+         +1:   slive, trawick, Ken
 
       d) Installing a set of default config files when upgrading a server
          doesn't make ANY sense at all.
          +1:   rbb, striker
            ianh - medium/big sites don't use 'standard config' anyway, as it
                   usually needs major customizations
+         -1:   Ken
 
     * Should we always build [support*] binaries statically unless otherwise
       indicated?
@@ -112,7 +113,7 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
       is set.  If not, it means that the HEAD requests don't generate the
       same headers as a GET which is wrong.
       Is this a showstopper?
-        +1: Justin
+        +1: Justin, Ken
         -1: Aaron
 
     * server pushed CGI's not working.  (Is this a showstopper??)
