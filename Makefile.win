@@ -252,7 +252,18 @@ _install:
 	copy CHANGES "$(INSTDIR)\CHANGES.txt"
 	copy INSTALL "$(INSTDIR)\INSTALL.txt"
 	copy LICENSE "$(INSTDIR)\LICENSE.txt"
+!IF EXIST("srclib\openssl")
+	copy << + README "$(INSTDIR)\README.txt"
+
+  This product includes cryptographic software written by
+  Eric Young (eay@cryptsoft.com).  This product includes software written
+  by Tim Hudson (tjh@cryptsoft.com).  This product includes software
+  developed by the OpenSSL Project for use in the OpenSSL Toolkit.
+  (http://www.openssl.org/)
+!ELSE
+#	--- just a vanilla copy, in this case.
 	copy README "$(INSTDIR)\README.txt"
+!ENDIF
 	copy $(LONG)\Apache.exe "$(INSTDIR)\bin"
 	copy $(LONG)\libhttpd.dll "$(INSTDIR)\bin"
 	copy srclib\apr\$(LONG)\libapr.dll "$(INSTDIR)\bin"
@@ -290,11 +301,14 @@ _install:
  <http://www.openssl.org/news/changelog.html>, or see the CHANGES file in the
  full binary or source distribution package from <http://www.openssl.org/>.
 
+ These OpenSSL binaries were built for distribution from the U.S. without 
+ support for the patented encryption methods IDEA, MDC-2 or RC5.
+
 --------------------------------------------------------------------------------
 <<
 	-copy << + srclib\openssl\README "$(INSTDIR)\OPENSSL-README.txt"
 
- Apache HTTP Server 2.0 Limited OpenSSL Distribution  17 Aug 2001
+ Apache HTTP Server 2.0 Limited OpenSSL Distribution  19 Aug 2001
 
  This binary installation of OpenSSL is a limited distribution of the documents
  OPENSSL-LICENSE.txt, OPENSSL-NEWS.txt and OPENSSL-README.txt, and the binaries
@@ -307,6 +321,9 @@ _install:
  as distributed with Apache HTTP Server version 2.0.  No library files, headers
  or sources are distributed with this binary distribution.  Please refer to the
  <http://www.openssl.org/> site for complete source or binary distributions.
+
+ These OpenSSL binaries were built for distribution from the U.S. without 
+ support for the patented encryption methods IDEA, MDC-2 or RC5.
 
  The Apache HTTP Project only supports the binary distribution of these files
  and development of the mod_ssl and mod_tls modules.  We cannot provide support
