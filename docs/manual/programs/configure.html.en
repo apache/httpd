@@ -633,16 +633,17 @@
         modules use the following options:</p>
 
       <dl>
-        <dt><code>--with-module=<var>module-type</var>:<var>module-file</var>
-          </code></dt>
-        <dd><p>Add a third-party module to the list of statically linked
+        <dt><code>--with-module=<var>module-type</var>:<var>module-file</var>[,
+          <var>module-type</var>:<var>module-file</var>]</code></dt>
+        <dd><p>Add one or more third-party modules to the list of statically linked
             modules. The module source file <code><var>module-file</var></code>
             will be searched in the <code>modules/<var>module-type</var></code>
-            subdirectory of your Apache HTTP server source tree so it has to be
-            placed there before. If it is not found here 
-            <code>configure</code> is considering <var>module-file</var> to be
+            subdirectory of your Apache HTTP server source tree. If it is not found
+            there <code>configure</code> is considering <var>module-file</var> to be
             an absolute file path and tries to copy the source file into the
-            <var>module-type</var> subdirectory.</p>
+            <var>module-type</var> subdirectory. If the subdirectory doesn't
+            exist it will be created and populated with a standard
+            <code>Makefile.in</code>.</p>
           <p>This option is useful to add small external modules consisting of
             one source file. For more complex modules you should read the
             vendor's documentation.</p>
