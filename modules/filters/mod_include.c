@@ -319,14 +319,20 @@ static apr_size_t bndm(const char *n, apr_size_t nl, const char *h,
 /* We've now found a start sequence tag... */
 static apr_bucket* found_start_sequence(apr_bucket *dptr,
                                         include_ctx_t *ctx, 
-                                        int tagStart)
+                                        int tagStart,
+                                        apr_size_t len)
 {
     /* We want to split the bucket at the '<'. */
     ctx->state = PARSE_DIRECTIVE;
     ctx->tag_length = 0;
     ctx->parse_pos = 0;
-    ctx->tag_start_bucket = dptr;
-    ctx->tag_start_index = tagStart;
+
+    /* Don't set tag_start_bucket if tagStart indexes the end of the bucket. */
+    if (tagStart < len) {
+        ctx->tag_start_bucket = dptr;
+        ctx->tag_start_index = tagStart;
+    }
+
     if (ctx->head_start_index > 0) {
         apr_bucket *tmp_bkt;
 
@@ -334,7 +340,7 @@ static apr_bucket* found_start_sequence(apr_bucket *dptr,
         apr_bucket_split(ctx->head_start_bucket, ctx->head_start_index);
         tmp_bkt = APR_BUCKET_NEXT(ctx->head_start_bucket);
         /* If it was a one bucket match */
-        if (dptr == ctx->head_start_bucket) {
+        if ((tagStart < len) && (dptr == ctx->head_start_bucket)) {
             ctx->tag_start_bucket = tmp_bkt;
             ctx->tag_start_index = tagStart - ctx->head_start_index;
         }
@@ -440,7 +446,7 @@ static apr_bucket *find_start_sequence(apr_bucket *dptr, include_ctx_t *ctx,
             if (str[ctx->parse_pos] == '\0')
             {
                 ctx->bytes_parsed += c - buf;
-                return found_start_sequence(dptr, ctx, c - buf);
+                return found_start_sequence(dptr, ctx, c - buf, len);
             }
             else if (c == buf + tmpLen) {
                 dptr = APR_BUCKET_NEXT(dptr);
@@ -451,7 +457,16 @@ static apr_bucket *find_start_sequence(apr_bucket *dptr, include_ctx_t *ctx,
              */
             APR_BRIGADE_PREPEND(bb, ctx->ssi_tag_brigade);
 
+            /* We know we are at the beginning of this bucket so
+             *   we can just prepend the saved bytes from the
+             *   ssi_tag_brigade (which empties the ssi_tag_brigade)
+             *   and continue processing.
+             * We do not need to set do_cleanup beacuse the
+             *   prepend takes care of that.
+             */
             ctx->state = PRE_HEAD;
+            ctx->head_start_bucket = NULL;
+            ctx->head_start_index = 0;
         }
 
         if (len)
@@ -461,8 +476,10 @@ static apr_bucket *find_start_sequence(apr_bucket *dptr, include_ctx_t *ctx,
             {
                 ctx->head_start_bucket = dptr;
                 ctx->head_start_index = pos;
-                ctx->bytes_parsed += pos + slen;
-                return found_start_sequence(dptr, ctx, pos + slen);
+                ctx->bytes_parsed += pos + slen;       /* pjr - isn't this incrementing by too much?
+                                                        *    What if only 1 byte in this bucket?
+                                                        */
+                return found_start_sequence(dptr, ctx, pos + slen, len);
             }
         }
         
@@ -485,29 +502,35 @@ static apr_bucket *find_start_sequence(apr_bucket *dptr, include_ctx_t *ctx,
                     ctx->head_start_index = c - buf;
                 }
                 ctx->parse_pos++;
+                c++;
+                ctx->bytes_parsed++;
             }
             else if (ctx->parse_pos != 0) 
             {
-                /* The reason for this, is that we need to make sure 
-                 * that we catch cases like <<!--#.  This makes the 
-                 * second check after the original check fails.
-                 * If parse_pos was already 0 then we already checked this.
+                /* DO NOT INCREMENT c IN THIS BLOCK!
+                 * Don't increment bytes_parsed either.
+                 * This block is just to reset the indexes and
+                 *   pointers related to parsing the tag start_sequence.
+                 * The value c needs to be checked again to handle
+                 *   the case where we find "<<!--#". We are now
+                 *   looking at the second "<" and need to restart
+                 *   the start_sequence checking from parse_pos = 0.
+                 * do_cleanup causes the stored bytes in ssi_tag_brigade
+                 *   to be forwarded on and cleaned up. We may not be
+                 *   able to just prepend the ssi_tag_brigade because
+                 *   we may have advanced too far before we noticed this
+                 *   case, so just flag it and clean it up later.
                  */
-                /* FIXME: Why? */
                 *do_cleanup = 1;
-                if (*c == str[0]) {
-                    ctx->parse_pos = 1;
-                    ctx->head_start_index = c - buf;
-                }
-                else {
-                    ctx->parse_pos = 0;
-                    ctx->state = PRE_HEAD;
-                    ctx->head_start_bucket = NULL;
-                    ctx->head_start_index = 0;
-                }
+                ctx->parse_pos = 0;
+                ctx->state = PRE_HEAD;
+                ctx->head_start_bucket = NULL;
+                ctx->head_start_index = 0;
             }
-            c++;
-            ctx->bytes_parsed++;
+            else {
+               c++;
+               ctx->bytes_parsed++;
+            }
         }
         dptr = APR_BUCKET_NEXT(dptr);
     } while (dptr != APR_BRIGADE_SENTINEL(bb));
