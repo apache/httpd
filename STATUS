@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2002/08/12 19:30:12 $]
+Last modified at [$Date: 2002/08/14 20:51:52 $]
 
 Release:
 
@@ -890,9 +890,11 @@ Binaries (2.0.40):
  ia64-hp-hpux11.20             no
  powerpc-apple-darwin5.5       no      Aaron Bannert
  powerpc-unknown-linux-gnu     no      Graham Leggett
+ s390-ibm-linux                yes     Greg Ames
  sparc-sun-solaris2.8          no      Jim Jagielski
  NetWare                       no      Brad Nicholes
  OS/2                          no      Brian Havard
+ OS/390                        yes     Greg Ames
  Win32-x86                     no      William Rowe
 
 Other features that need writing:
