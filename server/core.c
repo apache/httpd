@@ -4010,7 +4010,7 @@ static conn_rec *core_create_conn(apr_pool_t *ptrans, server_rec *server,
     conn_rec *c = (conn_rec *) apr_pcalloc(ptrans, sizeof(conn_rec));
 
     c->sbh = sbh;
-    (void) ap_update_child_status(c->sbh, SERVER_BUSY_READ, (request_rec *) NULL);
+    (void)ap_update_child_status(c->sbh, SERVER_BUSY_READ, (request_rec *)NULL);
 
     /* Got a connection structure, so initialize what fields we can
      * (the rest are zeroed out by pcalloc).
