@@ -999,6 +999,7 @@ static void * APR_THREAD_FUNC start_threads(apr_thread_t *thd, void *dummy)
     apr_status_t rv;
     int i;
     int threads_created = 0;
+    int listener_started = 0;
     int loops;
     int prev_threads_created;
 
@@ -1061,12 +1062,11 @@ static void * APR_THREAD_FUNC start_threads(apr_thread_t *thd, void *dummy)
                 clean_child_exit(APEXIT_CHILDFATAL);
             }
             threads_created++;
-            if (threads_created == 1) {
-                /* now that we have a worker thread, it makes sense to create
-                 * a listener thread (we don't want a listener without a worker!)
-                 */
-                create_listener_thread(ts);
-            }
+        }
+        /* Start the listener only when there are workers available */
+        if (!listener_started && threads_created) {
+            create_listener_thread(ts);
+            listener_started = 1;
         }
         if (start_thread_may_exit || threads_created == ap_threads_per_child) {
             break;
