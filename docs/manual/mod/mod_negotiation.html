@@ -115,7 +115,11 @@ requirements, and returns that document.<P>
 <A
  HREF="directive-dict.html#Syntax"
  REL="Help"
-><STRONG>Syntax:</STRONG></A> CacheNegotiatedDocs<BR>
+><STRONG>Syntax:</STRONG></A> CacheNegotiatedDocs <EM>boolean</EM><BR>
+<A
+ HREF="directive-dict.html#Default"
+ REL="Help"
+><STRONG>Default:</STRONG></A> <CODE>CacheNegotiatedDocs off</CODE><BR>
 <A
  HREF="directive-dict.html#Context"
  REL="Help"
@@ -132,20 +136,21 @@ requirements, and returns that document.<P>
  HREF="directive-dict.html#Compatibility"
  REL="Help"
 ><STRONG>Compatibility:</STRONG></A> CacheNegotiatedDocs is only available
-in Apache 1.1 and later.<P>
+in Apache 1.1 and later. The syntax changed in version 2.0.<P>
 
 <P>If set, this directive allows content-negotiated documents to be
 cached by proxy servers. This could mean that clients behind those
 proxys could retrieve versions of the documents that are not the best
 match for their abilities, but it will make caching more
 efficient.
-<P>
 
-This directive only applies to requests which come from HTTP/1.0 browsers.
+<P>This directive only applies to requests which come from HTTP/1.0 browsers.
 HTTP/1.1 provides much better control over the caching of negotiated
 documents, and this directive has no effect in responses to
 HTTP/1.1 requests.
 
+<P>Prior to version 2.0, CacheNegotiatedDocs did not take an argument;
+it was turned on by the presence of the directive by itself.
 
 
 <H2><A NAME="languagepriority">LanguagePriority</A></H2>
