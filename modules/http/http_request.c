@@ -280,26 +280,19 @@ void ap_process_request(request_rec *r)
      * directives in Location blocks.
      */
     access_status = ap_run_quick_handler(r);
+    if (access_status == DECLINED) {
+        access_status = ap_process_request_internal(r);
+        if (access_status == OK)
+            access_status = ap_invoke_handler(r);
+    }
+
     if (access_status == OK) {
         ap_finalize_request_protocol(r);
-    }
-    else if (access_status == DECLINED) {
-         access_status = ap_process_request_internal(r);
-         if (access_status == OK) {
-             if ((access_status = ap_invoke_handler(r)) != 0) {
-                 ap_die(access_status, r);
-                 return;
-             }
-             ap_finalize_request_protocol(r);
-         }
-         else {
-             ap_die(access_status, r);
-         }
     }
     else {
         ap_die(access_status, r);
     }
-
+    
     /*
      * We want to flush the last packet if this isn't a pipelining connection
      * *before* we start into logging.  Suppose that the logging causes a DNS
