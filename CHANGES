@@ -1,6 +1,12 @@
 Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
+
+  *) Threaded MPMs for Unix and Win32: Add WorkerStackSize directive
+     to override default thread stack size for threads which handle
+     client connections.  Required for some third-party modules on
+     platforms with small default thread stack size.  [Jeff Trawick]
+
   *) Win32: Tweak worker thread accounting routines to eliminate
      server hang when number of Listen directives in httpd.conf
      is greater than or equal to the setting of ThreadsPerChild.

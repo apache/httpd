@@ -870,6 +870,30 @@ const char *ap_mpm_set_max_mem_free(cmd_parms *cmd, void *dummy,
 
 #endif /* AP_MPM_WANT_SET_MAX_MEM_FREE */
 
+#ifdef AP_MPM_WANT_SET_STACKSIZE
+apr_size_t ap_worker_stacksize = 0; /* use system default */
+
+const char *ap_mpm_set_worker_stacksize(cmd_parms *cmd, void *dummy,
+                                        const char *arg)
+{
+    long value;
+    const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
+    if (err != NULL) {
+        return err;
+    }
+    
+    value = strtol(arg, NULL, 0);
+    if (value < 0 || errno == ERANGE)
+        return apr_pstrcat(cmd->pool, "Invalid WorkerStackSize value: ", 
+                           arg, NULL);
+
+    ap_worker_stacksize = (apr_size_t)value;
+
+    return NULL;
+}
+
+#endif /* AP_MPM_WANT_SET_STACKSIZE */
+
 #ifdef AP_MPM_WANT_FATAL_SIGNAL_HANDLER
 
 static pid_t parent_pid, my_pid;

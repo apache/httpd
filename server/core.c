@@ -3225,6 +3225,10 @@ AP_INIT_TAKE1("AcceptMutex", ap_mpm_set_accept_lock_mech, NULL, RSRC_CONF,
 AP_INIT_TAKE1("MaxMemFree", ap_mpm_set_max_mem_free, NULL, RSRC_CONF,
               "Maximum number of 1k blocks a particular childs allocator may hold."),
 #endif
+#ifdef AP_MPM_WANT_SET_STACKSIZE
+AP_INIT_TAKE1("WorkerStackSize", ap_mpm_set_worker_stacksize, NULL, RSRC_CONF,
+              "Size in bytes of stack used by threads handling client connections"),
+#endif
 #if AP_ENABLE_EXCEPTION_HOOK
 AP_INIT_TAKE1("EnableExceptionHook", ap_mpm_set_exception_hook, NULL, RSRC_CONF,
               "Controls whether exception hook may be called after a crash"),
