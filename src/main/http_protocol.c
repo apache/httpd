@@ -343,14 +343,20 @@ int set_last_modified(request_rec *r, time_t mtime)
      * length and inode number - note that this doesn't have to match
      * the content-length (i.e. includes), it just has to be unique
      * for the file.
+     *
+     * If the request was made within a second of the last-modified date,
+     * we send a weak tag instead of a strong one, since it could
+     * be modified again later in the second, and the validation
+     * would be incorrect.
      */
 
     if (r->finfo.st_mode != 0)
-        sprintf(etag, "\"%lx-%lx-%lx\"", r->finfo.st_ino, r->finfo.st_size,
+        sprintf(etag, "W/\"%lx-%lx-%lx\"", r->finfo.st_ino, r->finfo.st_size,
 		mtime);
     else
-        sprintf(etag, "\"%lx\"", mtime);
-    table_set (r->headers_out, "ETag", etag);
+        sprintf(etag, "W/\"%lx\"", mtime);
+    table_set (r->headers_out, "ETag",
+	       etag + ((r->request_time - mtime > 1) ? 2 : 0));
 
     /* We now do the no_cache stuff using an Expires: header (we used to
      * withhold Last-modified). However, we still want to enforce this by
