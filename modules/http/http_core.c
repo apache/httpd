@@ -2839,6 +2839,15 @@ static int default_handler(request_rec *r)
 #ifdef USE_MMAP_FILES
     apr_mmap_t *mm = NULL;
 #endif
+    /* XXX if/when somebody writes a content-md5 filter we either need to
+     *     remove this support or coordinate when to use the filter vs.
+     *     when to use this code
+     *     The current choice of when to compute the md5 here matches the 1.3
+     *     support fairly closely (unlike 1.3, we don't handle computing md5
+     *     when the charset is translated).
+     */
+    int bld_content_md5 = 
+        (d->content_md5 & 1) && r->output_filters->frec->ftype != AP_FTYPE_CONTENT;
 
     /* This handler has no use for a request body (yet), but we still
      * need to read and discard it if the client sent one.
@@ -2886,22 +2895,10 @@ static int default_handler(request_rec *r)
         return errstatus;
     }
 
-#ifdef CHARSET_EBCDIC
-    if (d->content_md5 & 1) {
-        /* The call to ap_checkconv() in ap_send_http_header() is
-         * sufficient for most paths.  Sending the MD5 digest in a
-         * header is special in that any change to translation decided
-         * by ap_checkconv() must be done before building that header,
-         * and thus before calling ap_send_http_header().
-         */
-        ap_checkconv(r);
-    }
-#endif /* CHARSET_EBCDIC */
-      
 #ifdef USE_MMAP_FILES
     if ((r->finfo.size >= MMAP_THRESHOLD)
 	&& (r->finfo.size < MMAP_LIMIT)
-	&& (!r->header_only || (d->content_md5 & 1))) {
+	&& (!r->header_only || bld_content_md5)) {
 	/* we need to protect ourselves in case we die while we've got the
  	 * file mmapped */
         apr_status_t status;
@@ -2918,18 +2915,15 @@ static int default_handler(request_rec *r)
     if (mm == NULL) {
 #endif
 
+        if (bld_content_md5) {
 #ifdef APACHE_XLATE
-	if (d->content_md5 & 1) {
 	    apr_table_setn(r->headers_out, "Content-MD5",
-			  ap_md5digest(r->pool, fd,
-                                       r->rrx->to_net));
-	}
+                           ap_md5digest(r->pool, fd, NULL));
 #else
-	if (d->content_md5 & 1) {
 	    apr_table_setn(r->headers_out, "Content-MD5",
-			  ap_md5digest(r->pool, fd));
-	}
+                           ap_md5digest(r->pool, fd));
 #endif /* APACHE_XLATE */
+	}
 
 	rangestatus = ap_set_byterange(r);
 
@@ -2960,15 +2954,10 @@ static int default_handler(request_rec *r)
 	unsigned char *addr;
         apr_mmap_offset((void**)&addr, mm ,0);
 
-	if (d->content_md5 & 1) {
+	if (bld_content_md5) {
 	    apr_md5_ctx_t context;
 	    
 	    apr_MD5Init(&context);
-#ifdef APACHE_XLATE
-            if (r->rrx->to_net) {
-                apr_MD5SetXlate(&context, r->rrx->to_net);
-            }
-#endif
 	    apr_MD5Update(&context, addr, (unsigned int)r->finfo.size);
 	    apr_table_setn(r->headers_out, "Content-MD5",
 			  ap_md5contextTo64(r->pool, &context));
