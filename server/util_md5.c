@@ -195,32 +195,6 @@ AP_DECLARE(char *) ap_md5contextTo64(apr_pool_t *a, apr_md5_ctx_t *context)
     return encodedDigest;
 }
 
-#ifdef APACHE_XLATE
-
-AP_DECLARE(char *) ap_md5digest(apr_pool_t *p, apr_file_t *infile,
-                                apr_xlate_t *xlate)
-{
-    apr_md5_ctx_t context;
-    unsigned char buf[1000];
-    long length = 0;
-    int nbytes;
-    apr_off_t offset = 0L;
-
-    apr_MD5Init(&context);
-    if (xlate) {
-        apr_MD5SetXlate(&context, xlate);
-    }
-    nbytes = sizeof(buf);
-    while (apr_read(infile, buf, &nbytes) == APR_SUCCESS) {
-	length += nbytes;
-	apr_MD5Update(&context, buf, nbytes);
-    }
-    apr_seek(infile, APR_SET, &offset);
-    return ap_md5contextTo64(p, &context);
-}
-
-#else
-
 AP_DECLARE(char *) ap_md5digest(apr_pool_t *p, apr_file_t *infile)
 {
     apr_md5_ctx_t context;
@@ -239,4 +213,3 @@ AP_DECLARE(char *) ap_md5digest(apr_pool_t *p, apr_file_t *infile)
     return ap_md5contextTo64(p, &context);
 }
 
-#endif
