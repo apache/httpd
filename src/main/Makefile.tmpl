@@ -10,7 +10,7 @@ LDFLAGS=$(LDFLAGS1) $(EXTRA_LDFLAGS)
 
 OBJS= alloc.o http_main.o http_core.o http_config.o http_request.o \
   http_log.o http_protocol.o rfc1413.o util.o util_script.o buff.o\
-  md5c.o util_md5.o explain.o http_bprintf.o util_date.o util_snprintf.o \
+  md5c.o util_md5.o explain.o http_bprintf.o util_date.o \
   fnmatch.o http_vhost.o
 
 .c.o:
@@ -144,4 +144,3 @@ util_md5.o: util_md5.c httpd.h conf.h alloc.h buff.h util_md5.h md5.h
 util_script.o: util_script.c httpd.h conf.h alloc.h buff.h \
  http_config.h http_conf_globals.h http_main.h http_log.h \
  http_protocol.h http_core.h http_request.h util_script.h
-util_snprintf.o: util_snprintf.c conf.h

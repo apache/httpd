@@ -52,12 +52,9 @@ Committed:
     * Igor Tatarinov's Re: A tiny correction and a question on writev_it_all
     * Dean's [PATCH] more useful warning message for fcntl() lock failure
     * Dean's [PATCH] ap_snprintf should be more sane (fwd)
+    * Jim's/Ken's move of main/util_snprintf.c to ap/ap_snprintf.c
 
 Available:
-
-    * Jim's/Ken's move of main/util_snprintf.c to ap/ap_snprintf.c
-	<34A05CB4.5988A9EE@Golux.Com>
-	Status: Ken +1, Jim +1, Dean +1 (concept)
 
     * Dean's [PATCH] Re: [BUGFIXES] Wrong GID for PID file and UMASK for logs
 	<Pine.LNX.3.95dg3.971216000231.213J-100000@twinlark.arctic.org>
