@@ -1,5 +1,5 @@
 APACHE 1.3 STATUS:						-*-text-*-
-  Last modified at [$Date: 2002/06/19 00:31:18 $]
+  Last modified at [$Date: 2002/06/19 01:41:01 $]
 
 Release:
 
@@ -241,6 +241,7 @@ Binaries (1.3.26):
  i386-sun-solaris2.5           no      Sameer Parekh
  i386-sun-solaris2.6           no      Randy Terbush
  i386-sun-solaris2.7           no      Cliff Skolnick
+ i386-sun-solaris2.8           yes     Aaron Bannert
  i386-unixware-svr4            no      Sameer Parekh, Randy Terbush
  i386-unknown-linux(ELF)       no      Aram Mirzadeh, Michael Douglass
  i386-unknown-netBSD-1.3.2     no      Lars Eilebrecht, Randy Terbush
@@ -257,6 +258,7 @@ Binaries (1.3.26):
  i686-unknown-linux2           no      Lars Eilebrecht
  i686-whatever-cygwin          no      Stipe Tolj
  i686-whatever-linux2          no      Ken Coar, Randy Terbush
+ i686-whatever-linux22         yes     Aaron Bannert
  ia64-whatever-linux22         no      Martin Kraemer
  m68k-apple-aux3.1.1           no      Jim Jagielski
  m88k-dg-dgux5.4R2.01          no      Sameer parekh
@@ -272,6 +274,7 @@ Binaries (1.3.26):
  OS/390-09.00-02               no                     
  powerpc+i386-apple-darwin1.2  no      Wilfredo Sanchez
  powerpc-apple-rhapsody5.5     no      Wilfredo Sanchez
+ powerpc-apple-darwin5.5       yes     Aaron Bannert
  rs6000-ibm-aix3.2.5           no      Sameer Parekh
  rs6000-ibm-aix4.1             no      Lars Eilebrecht
  rs6000-ibm-aix4.2             no      Bill Stoddard
