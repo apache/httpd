@@ -1127,6 +1127,7 @@ static const char *
                                        psf, "*://*:0"))) {
             return apr_pstrcat(parms->temp_pool, "ProxyRequests ", err, NULL); 
         }
+
         /* Do not disable worker in case of errors */
         psf->forward->status = PROXY_WORKER_IGNORE_ERRORS;
     }
@@ -1609,6 +1610,8 @@ static int proxy_post_config(apr_pool_t *pconf, apr_pool_t *plog,
         ap_proxy_initialize_worker(worker, s);
         worker++;
     }
+
+    ap_proxy_initialize_worker(conf->forward, s);
 
     return OK;
 }
