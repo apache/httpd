@@ -56,6 +56,13 @@
  * University of Illinois, Urbana-Champaign.
  */
 
+#include "apr.h"
+#include "apr_file_io.h"
+#include "apr_strings.h"
+
+#define APR_WANT_STRFUNC
+#include "apr_want.h"
+
 #define WANT_BASENAME_MATCH
 
 #include "httpd.h"
@@ -63,12 +70,6 @@
 #include "http_config.h"
 #include "http_request.h"
 #include "http_log.h"
-#include "apr_file_io.h"
-#include "apr_strings.h"
-
-#ifdef HAVE_STRINGS_H
-#include <strings.h>
-#endif
 
 /* mod_speling.c - by Alexei Kosut <akosut@organic.com> June, 1996
  *

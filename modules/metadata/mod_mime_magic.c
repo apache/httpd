@@ -124,7 +124,13 @@
  *
  */
 
+#include "apr.h"
 #include "apr_strings.h"
+
+#if APR_HAVE_UNISTD_H
+#include <unistd.h>
+#endif
+
 #include "ap_config.h"
 #include "httpd.h"
 #include "http_config.h"
@@ -133,9 +139,8 @@
 #include "http_log.h"
 #include "http_protocol.h"
 #include "util_script.h"
-#ifdef HAVE_UNISTD_H
-#include <unistd.h>
-#endif
+
+/* ### this isn't set by configure? does anybody set this? */
 #ifdef HAVE_UTIME_H
 #include <utime.h>
 #endif

@@ -76,9 +76,9 @@
 #include "apr_portable.h"
 #include "apr_file_io.h"
 
-#if APR_HAVE_STDIO_H
-#include <stdio.h>
-#endif
+#define APR_WANT_STDIO
+#define APR_WANT_STRFUNC
+#include "apr_want.h"
 
 #define CORE_PRIVATE
 
@@ -92,12 +92,7 @@
 #include "http_main.h"
 #include "http_vhost.h"
 #include "util_cfgtree.h"
-#ifdef HAVE_ARPA_INET_H
-#include <arpa/inet.h>
-#endif
-#ifdef HAVE_STRINGS_H
-#include <strings.h>
-#endif
+
 
 AP_DECLARE_DATA const char *ap_server_argv0;
 

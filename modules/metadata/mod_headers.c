@@ -102,14 +102,16 @@
  *
  */
 
+#include "apr.h"
 #include "apr_strings.h"
+
+#define APR_WANT_STRFUNC
+#include "apr_want.h"
+
 #include "httpd.h"
 #include "http_config.h"
 #include "http_request.h"
 
-#ifdef HAVE_STRINGS_H
-#include <strings.h>
-#endif
 
 typedef enum {
     hdr_add = 'a',              /* add header (could mean multiple hdrs) */

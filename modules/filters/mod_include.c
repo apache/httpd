@@ -70,6 +70,10 @@
 #include "apr_hash.h"
 #include "apr_user.h"
 #include "apr_lib.h"
+#include "apr_optional.h"
+
+#define APR_WANT_STRFUNC
+#include "apr_want.h"
 
 #define CORE_PRIVATE
 
@@ -84,14 +88,7 @@
 #include "http_main.h"
 #include "util_script.h"
 #include "http_core.h"
-#include "apr_optional.h"
 #include "mod_include.h"
-#ifdef HAVE_STRING_H
-#include <string.h>
-#endif
-#ifdef HAVE_STRINGS_H
-#include <strings.h>
-#endif
 #include "util_ebcdic.h"
 
 module AP_MODULE_DECLARE_DATA includes_module;

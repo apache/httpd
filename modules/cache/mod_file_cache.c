@@ -109,14 +109,15 @@
     an extra stat() that's a waste.
 */
 
-#ifdef HAVE_STDIOP_H
-#include <stdio.h>
-#endif
-#ifdef HAVE_SYS_TYPES_H
+#include "apr.h"
+#include "apr_mmap.h"
+#include "apr_strings.h"
+
+#define APR_WANT_STRFUNC
+#include "apr_want.h"
+
+#if APR_HAVE_SYS_TYPES_H
 #include <sys/types.h>
-#endif
-#ifdef HAVE_STRING_H
-#include <string.h>
 #endif
 
 #define CORE_PRIVATE
@@ -127,8 +128,6 @@
 #include "http_protocol.h"
 #include "http_request.h"
 #include "http_core.h"
-#include "apr_mmap.h"
-#include "apr_strings.h"
 
 module AP_MODULE_DECLARE_DATA file_cache_module;
 

@@ -149,20 +149,23 @@
  * 29.Jun.96 All directives made per-directory.
  */
 
+#include "apr.h"
+#include "apr_strings.h"
+
+#define APR_WANT_STRFUNC
+#include "apr_want.h"
+
+#if APR_HAVE_SYS_TYPES_H
+#include <sys/types.h>
+#endif
+
 #include "ap_config.h"
 #include "httpd.h"
 #include "http_config.h"
 #include "util_script.h"
 #include "http_log.h"
 #include "http_request.h"
-#include "apr_strings.h"
 
-#ifdef HAVE_SYS_TYPES_H
-#include <sys/types.h>
-#endif
-#ifdef HAVE_STRINGS_H
-#include <strings.h>
-#endif
 
 #define DIR_CMD_PERMS OR_INDEXES
 

@@ -56,12 +56,21 @@
  * University of Illinois, Urbana-Champaign.
  */
 
-#define CORE_PRIVATE 
- 
+#include "apr.h"
 #include "apr_portable.h"
 #include "apr_strings.h"
 #include "apr_file_io.h"
 #include "apr_thread_proc.h"
+
+#if APR_HAVE_SYS_SOCKET_H
+#include <sys/socket.h>
+#endif
+#if APR_HAVE_SYS_WAIT_H
+#include <sys/wait.h> 
+#endif
+
+#define CORE_PRIVATE 
+ 
 #include "ap_config.h"
 #include "httpd.h" 
 #include "http_main.h" 
@@ -78,12 +87,7 @@
 #ifdef HAVE_NETINET_TCP_H
 #include <netinet/tcp.h>
 #endif
-#ifdef HAVE_SYS_SOCKET_H
-#include <sys/socket.h>
-#endif
-#ifdef HAVE_SYS_WAIT_H
-#include <sys/wait.h> 
-#endif
+
 #include <pthread.h>
 #include <signal.h>
 

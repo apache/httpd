@@ -99,14 +99,18 @@
  *       *** older versions of the module.                        ***
  */
 
+#include "apr.h"
 #include "apr_strings.h"
+
+#if APR_HAVE_STDLIB_H
+#include <stdlib.h>
+#endif
+
 #include "ap_config.h"
 #include "httpd.h"
 #include "http_config.h"
 #include "http_request.h"
-#ifdef HAVE_STDLIB_H
-#include <stdlib.h>
-#endif
+
 
 typedef struct {
     apr_table_t *vars;
