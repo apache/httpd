@@ -665,8 +665,6 @@ static void child_main(int child_num_arg)
 		    clean_child_exit(0);
 		}
 		stat = apr_accept(&csd, sd, ptrans);
-		if (stat == APR_SUCCESS || !APR_STATUS_IS_EINTR(stat))
-		    break;
                 /* In reality, this could be done later, but to keep it
                  * consistent with MPMs that have a thread race-condition,
                  * we will do it here.
@@ -674,6 +672,8 @@ static void child_main(int child_num_arg)
                 if (!ap_mpm_pod_check(pod)) {
                     die_now = 1;
                 }
+		if (stat == APR_SUCCESS || !APR_STATUS_IS_EINTR(stat))
+		    break;
 	    }
 
 	    if (stat == APR_SUCCESS)
