@@ -271,7 +271,7 @@ static int byterange_boundary(request_rec *r, long start, long end, int output)
 API_EXPORT(int) ap_set_byterange(request_rec *r)
 {
     const char *range, *if_range, *match;
-    long length, start, end, one_start, one_end;
+    long length, start, end, one_start = 0, one_end = 0;
     int ranges, empty;
     
     if (!r->clength || r->assbackwards)
