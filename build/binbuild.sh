@@ -16,6 +16,7 @@ CONFIGPARAM="--enable-layout=Apache --prefix=$BUILD_DIR --enable-mods-shared=mos
 VER=`echo $APDIR | sed s/httpd-//`
 TAR="`srclib/apr/build/PrintPath tar`"
 GZIP="`srclib/apr/build/PrintPath gzip`"
+COMPRESS="`srclib/apr/build/PrintPath compress`"
 
 if [ x$1 != x ]; then
   USER=$1
@@ -152,10 +153,12 @@ else
     if [ "x$GZIP" != "x" ]; then
       $GZIP -9 ../httpd-$VER-$OS.tar
       ARCHIVE=../httpd-$VER-$OS.tar.gz
+    elif [ "x$COMPRESS" != "x" ]; then
+      $COMPRESS ../httpd-$VER-$OS.tar
+      ARCHIVE=../httpd-$VER-$OS.tar.Z
     else
       echo "WARNING: Could not find a 'gzip' program!"
-      echo "       Please execute the following command manually:"
-      echo "         gzip -9 ../httpd-$VER-$OS.tar"
+      echo "       tar archive is not compressed."
       ARCHIVE=../httpd-$VER-$OS.tar
     fi
   else
