@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:						-*-text-*-
-Last modified at [$Date: 2000/12/26 21:39:34 $]
+Last modified at [$Date: 2001/01/10 20:33:02 $]
 
 Release:
 
@@ -75,6 +75,11 @@ RELEASE SHOWSTOPPERS:
 	    installed and a "make clean" in aprutil would make Apache
 	    fail to load.
 
+    * users who want to install third-party modules into the Apache
+      source tree (for static linking) need to have autoconf and
+      libtool installed. This is because the module needs to have its
+      config.m4 incorporated into ./configure, which means "buildconf"
+      must be run.
 
 RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
     * The directives to setup output filters need to be re-visited.  These
