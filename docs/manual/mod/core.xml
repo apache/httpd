@@ -1739,7 +1739,7 @@ URLs</description>
 <description>Applies the enclosed directives only to regular-expression 
 matching URLs</description>
 <syntax>&lt;LocationMatch
-    <var>regex</var>&gt; ... &lt;/Location&gt;</syntax>
+    <var>regex</var>&gt; ... &lt;/LocationMatch&gt;</syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
 

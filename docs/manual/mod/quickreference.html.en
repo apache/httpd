@@ -344,7 +344,7 @@ of active modules</td></tr>
     URL-path|URL&gt; ... &lt;/Location&gt;</a></td><td /><td>sv</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Applies the enclosed directives only to matching
 URLs</td></tr>
 <tr><td><a href="core.html#locationmatch">&lt;LocationMatch
-    <var>regex</var>&gt; ... &lt;/Location&gt;</a></td><td /><td>sv</td><td>C</td></tr><tr><td class="descr" colspan="4">Applies the enclosed directives only to regular-expression 
+    <var>regex</var>&gt; ... &lt;/LocationMatch&gt;</a></td><td /><td>sv</td><td>C</td></tr><tr><td class="descr" colspan="4">Applies the enclosed directives only to regular-expression 
 matching URLs</td></tr>
 <tr class="odd"><td><a href="mpm_common.html#lockfile">LockFile <var>filename</var></a></td><td> logs/accept.lock </td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Location of the accept serialization lock file</td></tr>
 <tr><td><a href="mod_log_config.html#logformat">LogFormat
