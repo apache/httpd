@@ -45,6 +45,10 @@ dnl	;;
     *-qnx)
         APR_SETVAR(SINGLE_LISTEN_UNSERIALIZED_ACCEPT, [1])
 	;;
+    *-beos*)
+        APR_SETVAR(APACHE_MPM, [beos])
+        APR_SETVAR(SINGLE_LISTEN_UNSERIALIZED_ACCEPT, [1])
+        ;;
 esac
 APR_DOEXTRA
 ])
