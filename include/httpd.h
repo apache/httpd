@@ -1545,7 +1545,7 @@ char *ap_strchr(char *s, int c);
 const char *ap_strchr_c(const char *s, int c);
 char *ap_strrchr(char *s, int c);
 const char *ap_strrchr_c(const char *s, int c);
-char *ap_strstr(char *s, char *c);
+char *ap_strstr(char *s, const char *c);
 const char *ap_strstr_c(const char *s, const char *c);
 
 #else

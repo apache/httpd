@@ -85,7 +85,7 @@ const char *ap_strrchr_c(const char *s, int c)
 {
     return strrchr(s,c);
 }
-char *ap_strstr(char *s, char *c)
+char *ap_strstr(char *s, const char *c)
 {
     return strstr(s,c);
 }
