@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/02/28 23:08:58 $]
+Last modified at [$Date: 2003/03/01 20:16:01 $]
 
 Release:
 
@@ -165,6 +165,14 @@ PATCHES TO PORT FROM 2.1
       docs/conf/httpd-win.conf: r1.80
       docs/docroot/index.html.se -> index.html.sv
       docs/docroot/index.html.var: r1.10
+      +1: nd
+
+    * Prevent endless loops of internal redirects in mod_rewrite by
+      aborting after exceeding a limit of internal redirects. The
+      limit defaults to 10 and can be changed using the RewriteOptions
+      directive. PR 17462.
+      modules/mappers/mod_rewrite.c: r1.148
+      modules/mappers/mod_rewrite.h: r1.43
       +1: nd
 
 CURRENT RELEASE NOTES:
