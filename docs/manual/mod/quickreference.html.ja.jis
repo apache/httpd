@@ -171,7 +171,7 @@ environment variable</td></tr>
 authentication</td></tr>
 <tr class="odd"><td><a href="core.html#authtype">AuthType Basic|Digest</a></td><td /><td>dh</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Type of user authentication</td></tr>
 <tr><td><a href="mod_auth.html#authuserfile">AuthUserFile <var>file-path</var></a></td><td /><td>dh</td><td>B</td></tr><tr><td class="descr" colspan="4">認証に使用するユーザとパスワードの一覧が格納されている、
-テキストファイルの名前を設定する</td></tr>
+テキストファイルの名前を設定する</td></tr>
 <tr class="odd"><td><a href="mod_setenvif.html#browsermatch" id="B" name="B">BrowserMatch <em>regex [!]env-variable</em>[=<em>value</em>]
 [[!]<em>env-variable</em>[=<em>value</em>]] ...</a></td><td /><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">HTTP User-Agent に基づいて環境変数を設定する
 </td></tr>
@@ -482,7 +482,7 @@ header for proxied requests</td></tr>
 <tr class="odd"><td><a href="mod_alias.html#redirecttemp">RedirectTemp <var>URL-path</var> <var>URL</var></a></td><td /><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">クライアントが違う URL を取得するように外部への一時的な
 リダイレクトを送る</td></tr>
 <tr><td><a href="mod_mime.html#removecharset">RemoveCharset
-    <em>extension</em> [<em>extension</em>] ...</a></td><td /><td>dh</td><td /></tr><tr><td class="descr" colspan="4">ファイルの拡張子に関連付けられたすべての文字セット
+    <em>extension</em> [<em>extension</em>] ...</a></td><td /><td>dh</td><td /></tr><tr><td class="descr" colspan="4">ファイルの拡張子に関連付けられたすべての文字セット
 を解除する</td></tr>
 <tr class="odd"><td><a href="mod_mime.html#removeencoding">RemoveEncoding
     <em>extension</em> [<em>extension</em>] ...</a></td><td /><td>vdh</td><td /></tr><tr class="odd"><td class="descr" colspan="4">ファイルの拡張子に関連付けられたすべてのコンテントエンコーディング

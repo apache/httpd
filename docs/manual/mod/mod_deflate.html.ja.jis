@@ -103,7 +103,7 @@ SetOutputFilter DEFLATE
 <tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_deflate</td></tr>
 </table>
     <p><code class="directive">DeflateFilterNote</code> ディレクティブは
-    圧縮比に関するメモがリクエストに付加されることを指定します。
+    圧縮比に関するメモがリクエストに付加されることを指定します。
     メモの名前はディレクティブに指定された値です。</p>
 
 </div>

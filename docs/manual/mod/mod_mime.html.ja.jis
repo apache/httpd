@@ -56,7 +56,7 @@
     <code class="module"><a href="../mod/mod_negotiation.html">mod_negotiation</a></code> が Multiviews のマッチをとるときに
     考慮するようにできます。</p>
 
-    <p><code class="module"><a href="../mod/mod_mime.html">mod_mime</a></code> はメタ情報をファイル名と関連付けますが、
+    <p><code class="module"><a href="../mod/mod_mime.html">mod_mime</a></code> はメタ情報をファイル名と関連付けますが、
     <code class="module"><a href="../mod/core.html">core</a></code> サーバにはあるコンテナ
     (<em>たとえば</em>, <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code>, <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code>, <code class="directive"><a href="../mod/core.html#files">&lt;Files&gt;</a></code>) の中のすべてのファイルを特定の
     メタ情報と関連付けるディレクティブがあります。これらのディレクティブには
@@ -124,7 +124,7 @@
     にマップされる場合は、ファイル <code>welcome.gif.html</code> は
     MIME タイプ "text/html" に関連付けられます。</p>
 
-    <p>複数の拡張子のあるファイルが MIME
+    <p>複数の拡張子のあるファイルが MIME
     タイプとハンドラの両方に関連付けられているときは注意する必要があります。
     その場合、普通はリクエストがハンドラに関連付けられた
     モジュールによって扱われることになります。たとえば、拡張子
@@ -161,7 +161,7 @@
     ファイルの<em>タイプ</em>や<em>エンコーディング</em>を指定することが
     できます。</p>
 
-    <p>たとえば、Microsoft Word のドキュメントがあり、サイズを小さくするために
+    <p>たとえば、Microsoft Word のドキュメントがあり、サイズを小さくするために
     pkzip されているとします。<code>.doc</code> 拡張子が Microsoft Word の
     ファイルタイプと関連付けられていて、<code>.zip</code> 拡張子が
     pkzip ファイルエンコーディングと関連付けられていると、ファイル
@@ -368,7 +368,7 @@ Content-Type: text/plain; charset=ISO-8859-2
     これは、<a href="core.html#setinputfilter">SetInputFilter</a> ディレクティブも
     含め、他の場所で定義されているフィルタに加えられます。
     このマッピングはすでにあるものより優先されてマージされ、
-    同じ <em>extension</em> に対する既存のマッピングを上書きします。</p>
+    同じ <em>extension</em> に対する既存のマッピングを上書きします。</p>
 
     <p>複数のフィルタを指定するときは、データを処理する順番にセミコロンで
     繋いで書く必要があります。フィルタと <em>extension</em> との
@@ -484,7 +484,7 @@ Content-Type: text/plain; charset=ISO-8859-2
     <p>AddType ディレクティブは、
     与えられた拡張子を指定されたコンテントタイプにマップします。
     <em>MIME-type</em> は拡張子 <em>extension</em>
-    を含んだドキュメントに使用する MIME タイプです。
+    を含んだドキュメントに使用する MIME タイプです。
     この新しいマッピングは既にあるマッピングに追加され、同じ拡張子
     <em>extension</em> のためのマッピングを上書きします。
     このディレクティブは MIME タイプファイル (<code class="directive"><a href="#typesconfig">TypesConfig</a></code> ディレクティブを参照)
@@ -531,7 +531,7 @@ Content-Type: text/plain; charset=ISO-8859-2
     (<code>AddLanguage</code> で設定される <code>.fr</code> や
     <code>.de</code>) のない全てのファイルを、指定された
     <em>MIME-lang</em> 言語であるとみなすようにします。
-    これにより、すべてのファイル名を変えることなく、
+    これにより、すべてのファイル名を変えることなく、
     ディレクトリがオランダ語のコンテントを含んでいる、
     というようなことを指定することができます。
     拡張子を使用して言語を指定する方法と違い、
@@ -615,7 +615,7 @@ DefaultLanguage en
     コンテントネゴシエーションで <code class="module"><a href="../mod/mod_mime.html">mod_mime</a></code>
     が認識する拡張子 (例 文字セット、コンテントタイプ、言語やエンコーディング)
     に関連付けられていなければなりません。これは副作用の最も少ない
-    最も厳密な実装で、デフォルトになっています。</p>
+    最も厳密な実装で、デフォルトになっています。</p>
 
     <p>ハンドラとフィルタの両方もしくは片方と関連付けられた拡張子を含めるには、
     <code class="directive">MultiviewsMatch</code> ディレクティブに <em>Handler</em>,
@@ -648,7 +648,7 @@ MultiviewsMatch Handlers Filters
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="RemoveCharset" id="RemoveCharset">RemoveCharset</a> <a name="removecharset" id="removecharset">ディレクティブ</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">説明:</a></th><td>ファイルの拡張子に関連付けられたすべての文字セット
+<tr><th><a href="directive-dict.html#Description">説明:</a></th><td>ファイルの拡張子に関連付けられたすべての文字セット
 を解除する</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>RemoveCharset
     <em>extension</em> [<em>extension</em>] ...</code></td></tr>
@@ -709,7 +709,7 @@ AddType text/plain .asc
     <p><strong>注意:</strong> RemoveEncoding は
     AddEncoding
     ディレクティブの<em>後</em>で処理されますので、
-    同じディレクトリの設定中に両方が現れると、
+    同じディレクトリの設定中に両方が現れると、
     後者の効果が打ち消される可能性があります。</p>
 
     <p><em>extension</em> は大文字小文字を区別しません。

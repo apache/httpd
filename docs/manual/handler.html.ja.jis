@@ -59,7 +59,7 @@
       HTTP ヘッダのあるファイルをそのまま送ります。
       (<code class="module"><a href="./mod/mod_asis.html">mod_asis</a></code>)</li>
 
-      <li><strong>cgi-script</strong>: ファイルを CGI
+      <li><strong>cgi-script</strong>: ファイルを CGI
       スクリプトとして扱います。
       (<code class="module"><a href="./mod/mod_cgi.html">mod_cgi</a></code>)</li>
 
@@ -121,7 +121,7 @@
 <h2><a name="programmer" id="programmer">プログラマ向けのメモ</a></h2>
     
 
-    <p>ハンドラの機能を実装するために、利用すると便利かもしれないものが
+    <p>ハンドラの機能を実装するために、利用すると便利かもしれないものが
     <a href="developer/API.html">Apache API</a>
     に追加されました。詳しく言うと、<code>request_rec</code>
     構造体に新しいレコードが追加されたということです。</p>

@@ -142,7 +142,7 @@
 
 <ol>
 <li>HTTP リクエストヘッダフィールド (詳しい情報は <a href="http://www.rfc-editor.org/rfc/rfc2616.txt">RFC 2616</a> を
-    参照してください)。例えば、<code>Host</code>,
+    参照してください)。例えば、<code>Host</code>,
     <code>User-Agent</code>, <code>Referer</code>, 
     <code>Accept-Language</code> です。リクエストヘッダの集合を現すために
     正規表現を使うこともできます。</li>
@@ -250,7 +250,7 @@
 
     <p><code class="directive">SetEnvIfNoCase</code> は意味的には
     <code class="directive"><a href="#setenvif">SetEnvIf</a></code> ディレクティブと
-    同じです。違いは、正規表現のマッチングが大文字小文字を区別しないで
+    同じです。違いは、正規表現のマッチングが大文字小文字を区別しないで
     行なわれることです。例えば:</p>
 
 <div class="example"><p><code>

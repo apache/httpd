@@ -314,7 +314,7 @@ Deny が評価される順番を制御する</td></tr>
 
     <p><code class="directive">Order</code>
     ディレクティブはサーバの設定処理の各段階でだけ
-    アクセスディレクティブの処理の順番を変更します。これは、たとえば、
+    アクセスディレクティブの処理の順番を変更します。これは、たとえば、
     <code class="directive">Order</code> ディレクティブの設定に関わらず、
     <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code> セクションの
     <code class="directive"><a href="#allow">Allow</a></code> ディレクティブや

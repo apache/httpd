@@ -558,7 +558,7 @@
 
     <p>さて、設定したインストール <em>PREFIX</em> 
      (前述の <code>--prefix</code> オプションを参照) 
-    以下にパッケージをインストールする段階になりました。
+    以下にパッケージをインストールする段階になりました。
     次のコマンドを実行してください:</p>
 
 <div class="example"><p><code>$ make install</code></p></div>

@@ -94,7 +94,7 @@
     NCSA 準拠の挙動を強制できます。</p>
 
     <div class="warning"><h3>セキュリティ</h3>
-      <p>ユーザが自分自身で作成した
+      <p>ユーザが自分自身で作成した
       .htaccess ファイルで認証できるようにすることの影響を
       考慮に入れておいてください。そして、
       それが本当に希望の挙動であるかどうかを検討してください。
@@ -156,7 +156,7 @@
 <div class="directive-section"><h2><a name="AuthUserFile" id="AuthUserFile">AuthUserFile</a> <a name="authuserfile" id="authuserfile">ディレクティブ</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>認証に使用するユーザとパスワードの一覧が格納されている、
-テキストファイルの名前を設定する</td></tr>
+テキストファイルの名前を設定する</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>AuthUserFile <var>file-path</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>ディレクトリ, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">上書き:</a></th><td>AuthConfig</td></tr>
@@ -206,7 +206,7 @@
       は、ウェブサーバのドキュメントツリーの外側に保管するようにしてください。
       保護しようとしているディレクトリ以下には、<em>置かないで下さい</em>。
       そうしないと <code class="directive">AuthUserFile</code> は
-      ダウンロードできてしまいます。</p>
+      ダウンロードできてしまいます。</p>
     </div>
 
 </div>

@@ -72,7 +72,7 @@
 
     <p>バーチャルホストの設定のデバッグをするには
     Apache のコマンドラインスイッチ <code>-t -D DUMP_VHOSTS</code> が便利です。
-    つまり、以下のコマンドを入力します:</p>
+    つまり、以下のコマンドを入力します:</p>
 
     <div class="example"><p><code>
     /usr/local/apache/bin/httpd -t -D DUMP_VHOSTS
