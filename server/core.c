@@ -2984,9 +2984,10 @@ static int core_filters_type(request_rec *r)
     conf = (core_dir_config *)ap_get_module_config(r->per_dir_config,
                                                    &core_module);
 
-    /* We can't do anything with proxy requests or if we don't have a filter
-     * configured. */ 
-    if (r->proxyreq != PROXYREQ_NONE || !conf->ct_output_filters) {
+    /* We can't do anything with proxy requests, no content-types or if
+     * we don't have a filter configured. */ 
+    if (r->proxyreq != PROXYREQ_NONE || !r->content_type || 
+        !conf->ct_output_filters) {
         return OK;
     }
 
