@@ -1562,6 +1562,9 @@ static int is_variant_better_na(negotiation_state *neg, var_rec *variant,
             variant->definite);
 #endif
 
+    if (q == 0) {
+        return 0;
+    }
     if (q > bestq) {
         *p_bestq = q;
         return 1;
