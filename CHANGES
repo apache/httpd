@@ -64,9 +64,6 @@ Changes with Apache 2.1.0-dev
      true if the pattern is a file with execution permissions.
      [André Malo]
 
-  *) mod_log_config: Fix corruption of buffered logs with threaded
-     MPMs.  PR 25520.  [Jeff Trawick]
-
   *) Allow proxying of resources that are invoked via DirectoryIndex.
      PR 14648.  [André Malo]
 
@@ -280,6 +277,9 @@ Changes with Apache 2.1.0-dev
    Apache 2.0.xx tree as documented, and except as noted, below.]
 
 Changes with Apache 2.0.49
+
+  *) mod_log_config: Fix corruption of buffered logs with threaded
+     MPMs.  PR 25520.  [Jeff Trawick]
 
   *) Fix mod_include's expression parser to recognize strings correctly
      even if they start with an escaped token.  [André Malo]
