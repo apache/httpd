@@ -1064,6 +1064,7 @@ int ap_proxy_ftp_handler(request_rec *r, proxy_server_conf *conf,
          */
         rc = proxy_ftp_command(apr_pstrcat(p, "CWD ",
                            ap_escape_shell_cmd(p, path), CRLF, NULL),
+                           r, origin, bb, &ftpmessage);
         *strp = '/';
         /* responses: 250, 421, 500, 501, 502, 530, 550 */
         /* 250 Requested file action okay, completed. */
