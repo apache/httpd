@@ -73,8 +73,12 @@ int ssl_mutex_init(server_rec *s, apr_pool_t *p)
     if (mc->nMutexMode == SSL_MUTEXMODE_NONE) 
         return TRUE;
 
+    if (ssl_config_global_isfixed(mc)) {
+        return TRUE;
+    }
     if ((rv = apr_global_mutex_create(&mc->pMutex, mc->szMutexFile,
-                                mc->nMutexMech, p)) != APR_SUCCESS) {
+                                      mc->nMutexMech, s->process->pool))
+            != APR_SUCCESS) {
         if (mc->szMutexFile)
             ap_log_error(APLOG_MARK, APLOG_ERR, rv, s,
                          "Cannot create SSLMutex with file `%s'",
