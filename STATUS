@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/11/07 10:51:50 $]
+Last modified at [$Date: 2003/11/10 21:39:53 $]
 
 Release:
 
@@ -1227,7 +1227,7 @@ Other bugs that need fixing:
         Status: Greg volunteers to investigate (esp. since he was most 
                 likely the one to break it :-)
 
-Binaries (2.0.45):
+Binaries (2.0.48):
 
  Platform                      Avail.  Volunteer
  ------------------------------------------------------------------
@@ -1247,7 +1247,7 @@ Binaries (2.0.45):
  s390-ibm-linux                no      Greg Ames
  sparc-sun-solaris2.8          no      Jim Jagielski
  NetWare                       yes     Brad Nicholes
- OS/2                          no      Brian Havard
+ OS/2                          yes     Brian Havard
  OS/390                        no      Greg Ames
  Win32-x86                     yes     William Rowe
  x86_64-unknown-linux-gnu      yes     Aaron Bannert
