@@ -264,7 +264,7 @@ static int ssl_hook_pre_connection(conn_rec *c, void *csd)
         c->aborted = 1;
         return DECLINED; /* XXX */
     }
-    SSL_clear(ssl);
+
     cpVHostMD5 = ap_md5_binary(c->pool, sc->szVHostID, sc->nVHostID_length);
     if (!SSL_set_session_id_context(ssl, (unsigned char *)cpVHostMD5,
                                     MD5_DIGESTSIZE*2)) {
