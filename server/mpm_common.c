@@ -114,8 +114,8 @@ void ap_reclaim_child_processes(int terminate)
          * necessary, but we need to allow children a few moments to exit.
          * Set delay with an exponential backoff.
          */
-        waittime = waittime * 4;
         apr_sleep(waittime);
+        waittime = waittime * 4;
 
         /* now see who is done */
         not_dead_yet = 0;
