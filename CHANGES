@@ -1,5 +1,10 @@
 Changes with Apache 2.0a9
 
+  *) Get rid of ap_new_apr_connection().  ap_new_connection() now has 
+     fewer parameters: the local and remote socket addresses were removed
+     from the parameter list because all required information is available
+     via the APR socket.  [Jeff Trawick]
+
   *) Distribution directory structure reorganized to reflect a
      normal source distribution with external install targets.
      [Roy Fielding]
