@@ -141,7 +141,7 @@ it will print the following message to the console.<p>
 If you don't see this message at server startup, the server is most likely not finding the
 wrapper program where it expects it, or the executable is not installed <b><em>setuid root</em></b>. Check your installation and try again.<p>
 
-One way to use <b>suEXEC</b> is through the <a href="mod/core.html#user"><b>User</b></a> and <a href="mod/core.html#group"><b>Group</b></a> directives in <a href="mod_core.html#virtualhost"><b>VirtualHost</b></a> definitions. By setting these directives to values
+One way to use <b>suEXEC</b> is through the <a href="mod/core.html#user"><b>User</b></a> and <a href="mod/core.html#group"><b>Group</b></a> directives in <a href="mod/core.html#virtualhost"><b>VirtualHost</b></a> definitions. By setting these directives to values
 different from the main server user id, all requests for CGI resources will be executed as
 the <b>User</b> and <b>Group</b> defined for that <b>&lt;VirtualHost&gt;</b>. If only one or
 neither of these directives are specified for a <b>&lt;VirtualHost&gt;</b> then the main
