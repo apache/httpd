@@ -1702,7 +1702,7 @@ static void show_overrides(const command_rec *pc, module *pm)
  * the directive arguments, in what module they are handled, and in
  * what parts of the configuration they are allowed.  Used for httpd -h.
  */
-AP_DECLARE(void) ap_show_directives()
+AP_DECLARE(void) ap_show_directives(void)
 {
     const command_rec *pc;
     int n;
@@ -1717,7 +1717,7 @@ AP_DECLARE(void) ap_show_directives()
 }
 
 /* Show the preloaded module names.  Used for httpd -l. */
-AP_DECLARE(void) ap_show_modules()
+AP_DECLARE(void) ap_show_modules(void)
 {
     int n;
 
