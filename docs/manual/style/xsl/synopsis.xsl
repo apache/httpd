@@ -365,7 +365,27 @@
   <!-- Each entry is separeted with a comma               -->
   <!--                                                    -->
   <xsl:template match="context">
-    <xsl:value-of select="."/>
+    <xsl:choose>
+      <xsl:when test="normalize-space(.) = 'server config'">
+        <xsl:value-of select="$messages/message[@name='serverconfig']"/>
+      </xsl:when>
+      <xsl:when test="normalize-space(.) = 'virtual host'">
+        <xsl:value-of select="$messages/message[@name='virtualhost']"/>
+      </xsl:when>
+      <xsl:when test="normalize-space(.) = 'directory'">
+        <xsl:value-of select="$messages/message[@name='directory']"/>
+      </xsl:when>
+      <xsl:when test="normalize-space(.) = '.htaccess'">
+        <xsl:value-of select="$messages/message[@name='htaccess']"/>
+      </xsl:when>
+
+      <xsl:otherwise> <!-- error -->
+        <xsl:message terminate="yes">
+          unknown context: <xsl:value-of select="." />
+        </xsl:message>
+      </xsl:otherwise>
+    </xsl:choose>
+
     <xsl:if test="position() != last()">
       <xsl:text>, </xsl:text>
     </xsl:if>

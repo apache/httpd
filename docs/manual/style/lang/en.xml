@@ -39,6 +39,12 @@
  <message name="status">Status</message>
  <message name="module">Module</message>
 
+ <!-- Used in directive context lists -->
+ <message name="serverconfig">server config</message>
+ <message name="virtualhost">virtual host</message>
+ <message name="directory">directory</message>
+ <message name="htaccess">.htaccess</message>
+
  <!-- Used for directive lists -->
  <message name="directives">Directives</message>
  <message name="directive">Directive</message>
