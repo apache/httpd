@@ -342,7 +342,7 @@ int set_last_modified(request_rec *r, time_t mtime)
      */
 
     if (r->finfo.st_mode != 0)
-        sprintf(weak_etag, "W/\"%lx-%lx-%lx\"", r->finfo.st_ino,
+        sprintf(weak_etag, "W/\"%lx-%Lx-%lx\"", r->finfo.st_ino,
 		r->finfo.st_size, mtime);
     else
         sprintf(weak_etag, "W/\"%lx\"", mtime);
