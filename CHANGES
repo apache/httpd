@@ -412,6 +412,13 @@ Changes with Apache 2.0.41
      response on the connection, set aside the file descriptor rather
      than copying the file into the heap.  [Brian Pane]
 
+  *) Modified version check on openssl so that it finds the executable
+     first and then performs a check of the version, only warning the
+     user if they chose, or we selected, an old version of OpenSSL.
+     This change also allows the code to work for non-openssl libraries
+     selected via the --with-ssl=dir option, which can override the
+     automated library check in any case.  [Roy Fielding]
+
 Changes with Apache 2.0.40
 
   *) SECURITY: [CAN-2002-0661] Close a very significant security hole that 
