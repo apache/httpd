@@ -365,7 +365,7 @@ void ssl_init_Engine(server_rec *s, apr_pool_t *p)
 }
 #endif
 
-static void ssl_init_check_server(server_rec *s,
+static void ssl_init_server_check(server_rec *s,
                                   apr_pool_t *p,
                                   apr_pool_t *ptemp,
                                   SSLSrvConfigRec *sc)
@@ -454,7 +454,7 @@ static SSL_CTX *ssl_init_ctx(server_rec *s,
     return ctx;
 }
 
-static void ssl_init_session_cache_ctx(server_rec *s,
+static void ssl_init_ctx_session_cache(server_rec *s,
                                        apr_pool_t *p,
                                        apr_pool_t *ptemp,
                                        SSLSrvConfigRec *sc)
@@ -494,10 +494,10 @@ static void ssl_init_ctx_callbacks(server_rec *s,
     }
 }
 
-static void ssl_init_verify(server_rec *s,
-                            apr_pool_t *p,
-                            apr_pool_t *ptemp,
-                            SSLSrvConfigRec *sc)
+static void ssl_init_ctx_verify(server_rec *s,
+                                apr_pool_t *p,
+                                apr_pool_t *ptemp,
+                                SSLSrvConfigRec *sc)
 {
     SSL_CTX *ctx = sc->pSSLCtx;
 
@@ -573,10 +573,10 @@ static void ssl_init_verify(server_rec *s,
     }
 }
 
-static void ssl_init_cipher_suite(server_rec *s,
-                                  apr_pool_t *p,
-                                  apr_pool_t *ptemp,
-                                  SSLSrvConfigRec *sc)
+static void ssl_init_ctx_cipher_suite(server_rec *s,
+                                      apr_pool_t *p,
+                                      apr_pool_t *ptemp,
+                                      SSLSrvConfigRec *sc)
 {
     SSL_CTX *ctx = sc->pSSLCtx;
     const char *suite = sc->szCipherSuite;
@@ -599,10 +599,10 @@ static void ssl_init_cipher_suite(server_rec *s,
     }
 }
 
-static void ssl_init_crl(server_rec *s,
-                         apr_pool_t *p,
-                         apr_pool_t *ptemp,
-                         SSLSrvConfigRec *sc)
+static void ssl_init_ctx_crl(server_rec *s,
+                             apr_pool_t *p,
+                             apr_pool_t *ptemp,
+                             SSLSrvConfigRec *sc)
 {
     /*
      * Configure Certificate Revocation List (CRL) Details
@@ -627,10 +627,10 @@ static void ssl_init_crl(server_rec *s,
     }
 }
 
-static void ssl_init_cert_chain(server_rec *s,
-                                apr_pool_t *p,
-                                apr_pool_t *ptemp,
-                                SSLSrvConfigRec *sc)
+static void ssl_init_ctx_cert_chain(server_rec *s,
+                                    apr_pool_t *p,
+                                    apr_pool_t *ptemp,
+                                    SSLSrvConfigRec *sc)
 {
     BOOL skip_first = TRUE;
     int i, n;
@@ -871,21 +871,21 @@ void ssl_init_ConfigureServer(server_rec *s,
                               apr_pool_t *ptemp,
                               SSLSrvConfigRec *sc)
 {
-    ssl_init_check_server(s, p, ptemp, sc);
+    ssl_init_server_check(s, p, ptemp, sc);
 
     ssl_init_ctx(s, p, ptemp, sc);
 
-    ssl_init_session_cache_ctx(s, p, ptemp, sc);
+    ssl_init_ctx_session_cache(s, p, ptemp, sc);
 
     ssl_init_ctx_callbacks(s, p, ptemp, sc);
 
-    ssl_init_verify(s, p, ptemp, sc);
+    ssl_init_ctx_verify(s, p, ptemp, sc);
 
-    ssl_init_cipher_suite(s, p, ptemp, sc);
+    ssl_init_ctx_cipher_suite(s, p, ptemp, sc);
 
-    ssl_init_crl(s, p, ptemp, sc);
+    ssl_init_ctx_crl(s, p, ptemp, sc);
 
-    ssl_init_cert_chain(s, p, ptemp, sc);
+    ssl_init_ctx_cert_chain(s, p, ptemp, sc);
 
     ssl_init_server_certs(s, p, ptemp, sc);
 }
