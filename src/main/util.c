@@ -753,9 +753,13 @@ API_EXPORT(configfile_t *) ap_pcfg_openfile(pool *p, const char *name)
     if (file == NULL)
         return NULL;
 
-    if (strcmp(name, "/dev/null") != 0 &&
-        fstat(fileno(file), &stbuf) == 0 &&
-        !S_ISREG(stbuf.st_mode)) {
+    if (fstat(fileno(file), &stbuf) == 0 &&
+        !S_ISREG(stbuf.st_mode) &&
+#ifdef WIN32
+        strcasecmp(name, "nul") != 0) {
+#else
+        strcmp(name, "/dev/null") != 0) {
+#endif
         ap_log_error(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, NULL,
                     "Access to file %s denied by server: not a regular file",
                     name);
