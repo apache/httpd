@@ -497,7 +497,8 @@ DefaultLanguage en
               </a></th><td>The types of files that will be included when 
 searching for a matching file with MultiViews</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
               </a></th><td><code>MultiviewsMatch
-    <em>[NegotiatedOnly] [Handlers] [Filters] [Any]</em></code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
+    <em>[NegotiatedOnly] [Handlers] [Filters] [Any]</em></code></td></tr><tr><th><a href="directive-dict.html#Default">Default: 
+              </a></th><td><code>MultiviewsMatch NegotiatedOnly</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>server config, virtual host, directory, .htaccess</td></tr><tr><th><a href="directive-dict.html#Override">Override:
               </a></th><td>FileInfo</td></tr><tr><th><a href="directive-dict.html#Status">Status:
               </a></th><td>Base</td></tr><tr><th><a href="directive-dict.html#Module">Module:

@@ -238,11 +238,10 @@ response without an explicit character set</td></tr><tr><th><a href="directive-d
     which directives declared in that file can override earlier
     access information.</p>
 
-    <div class="note"><h3>Only available in Location sections</h3>
+    <div class="note"><h3>Only available in Directory sections</h3>
     <code class="directive">AllowOverride</code> is valid only in
     <code class="directive"><a href="#directory">&lt;Directory&gt;</a></code> 
-    sections, not in <code class="directive"><a href="#location">&lt;Location&gt;</a></code> or <code class="directive"><a href="#files">&lt;Files&gt;</a></code> sections, as implied by the
-    <strong>Context</strong> section above.
+    sections, not in <code class="directive"><a href="#location">&lt;Location&gt;</a></code> or <code class="directive"><a href="#files">&lt;Files&gt;</a></code> sections.
     </div>
 
     <p>When this directive is set to <code>None</code>, then
