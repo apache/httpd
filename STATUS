@@ -1,5 +1,5 @@
 Apache 2.0 STATUS:
-Last modified at [$Date: 2000/10/23 15:30:44 $]
+Last modified at [$Date: 2000/10/25 11:15:01 $]
 
 Release:
 
@@ -22,6 +22,7 @@ RELEASE SHOWSTOPPERS:
 
     * Some buff functionality is currently missing: translation of protocol 
       data for EBCDIC machines
+        Status: Jeff is working on this
 
     * Win32: Enable the Windows MPM to honor max_requests_per_child
         Status: Bill will fix this.
@@ -165,6 +166,12 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
 
     * (possibly) use UUIDs in mod_unique_id and/or mod_usertrack
 
+    * Platforms which have their own APR directories for some feature but
+      mostly use the unix directories (e.g., OS/390 which uses an os390
+      directory only for the DSO feature) don't compile cleanly because the
+      include path is messed up.  For example, start.c can't find locks.h.
+      See new-httpd thread "os-specific directories and -Ifoo/OSDIR in APR"
+      in August/2000.
 
 PRs that have been suspended forever waiting for someone to
 put them into 'the next release':
