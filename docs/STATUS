@@ -1,5 +1,5 @@
 Apache HTTP Server 2.0 Documentation Status File.
-Last modified: $Date: 2002/09/29 01:12:54 $
+Last modified: $Date: 2002/10/04 15:51:40 $
 
 If you are interested in helping accomplish some of the tasks on this
 list or otherwise improving the documentation, please join the
@@ -112,6 +112,8 @@ Documentation improvements
       generated from sitemap entries like:
       <page><variant lang="en" href="">title</variant>)?
     - looking for other good ideas ;-)
+  - remove <pre> elements. Use <br /> and <indent> elements to get
+    same effect.
 
 * Autogeneration of PDF
   - FOP?
@@ -156,13 +158,6 @@ misc/descriptors.html              # obsolete?
 misc/fin_wait_2.html               # obsolete?
 misc/known_client_problems.html    # obsolete?
 misc/tutorials.html                # obsolete?
-vhosts/details.html
-vhosts/examples.html
-vhosts/ip-based.html
-vhosts/mass.html
-vhosts/index.html.en
-vhosts/fd-limits.html.en
-vhosts/name-based.html.en
 expand.pl                          # delete after finishing everything
 
 # These will require manual.xsl changes
