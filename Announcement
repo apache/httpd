@@ -1,15 +1,9 @@
 
- Apache 1.3 Beta 7 Released
- ==========================
+ Apache 1.3.0 Released
+ =====================
 
- The Apache Group is pleased to announce the release of the 1.3b7 version
- of Apache, the latest beta release of the Apache HTTP server.  1.3b7 is
- a second release candidate for Apache 1.3.0.
- 
- This version is stable under UNIX but remains beta-level under Win32.  No
- new features are expected between 1.3b7 and 1.3.0, so please give this
- version a good thrashing in order to provide as much feedback as possible
- to the Apache Group before the release of 1.3.0.
+ The Apache Group is pleased to announce the release of the long
+ awaited 1.3.0 version of the Apache HTTP server.
 
  To grab the latest Apache distribution, check out
      http://www.apache.org/dist/
@@ -18,52 +12,11 @@
 
  For a full list of specific code changes see src/CHANGES.
 
- For an overview of new features in 1.2 please read the CHANGES file 
+ For an overview of new features in 1.3 please read the CHANGES file 
  in the distribution and the "New Features with Apache 1.3" document at
      http://www.apache.org/docs/new_features_1_3.html
 
- Major changes with this beta:
-  HTTP: fixes for 400 and 408 error codes.
-  WIN32: Child process spawning now uses native Win32 API.
-	   This should address many problems people have had
-           on Win32 - it also forced us to modify the 
-           related child_spawn calls in the Apache API.
-         Other various stability fixes.
-         Extensive overhaul of the way UNCs are handled.
-  Various mod_rewrite fixes.
-  Various makefile cleanups.
-  Various APACI changes.
-  Various DSO cleanups, better support for AIX, OpenBSD, NetBSD
-  Server's OS family now reported in Server: strings.
-  PORT: added support for NCR MP/RAS 3.0
-  Security: we now make sure all config files opened by Apache are not
-            special devices.
-  Added "-s" command line option to dump out vhost settings.
-
- Contributing code to this beta:
-   Ralf S. Engelschall <rse@apache.org>
-   Ed Korthof <ed@apache.org>
-   Rick Ohnemus <rick@ecompcon.com>
-   Brian Behlendorf <brian@apache.org>
-   Bob Beck <beck@bofh.ucs.ualberta.ca>
-   Ben Laurie <ben@apache.org>
-   Bill Stoddard <wgstodda@us.ibm.com>
-   Ernst Kloppenburg <kloppen@isr.uni-stuttgart.de>
-   John Withers <withers@semi.kcsc.mwr.irs.gov>
-   Jim Patterson <Jim.Patterson@Cognos.COM>
-   Jim Jagielski <jim@apache.org>
-   Martin Kraemer <martin@apache.org>
-   Dean Gaudet <dgaudet@apache.org>
-   Paul Eggert <eggert@twinsun.com>
-   Lars Eilebrecht <lars@apache.org>
-   Ronald.Tschalaer@psi.ch
-   Kari Likovuori <Kari.Likovuori@mol.fi>
-   Michael Anderson's <mka@redes.int.com.mx
-   Jaromir Dolecek <dolecek@ics.muni.cz>
-   Roy Fielding <fielding@apache.org>
-   David MacKenzie <djm@va.pubnix.com>
-   Francisco Tomei <fatomei@sandburg.unm.edu>
-   Jens Schleusener <Jens.Schleusener@dlr.de>
-   Jeff Earickson <jaearick@colby.edu>
-   Marc Slemko <marc@apache.org>
-
+ In general, Apache 1.3.0 offers several substantial improvements
+ over previous versions, including better performance, reliability
+ and a wider-range of supported platforms, including Windows95 and
+ NT.
