@@ -81,14 +81,14 @@ Changes with Apache 1.3b3
      [Philippe Vanhaesendonck <pvanhaes@be.oracle.com>,
      Omar Del Rio <al112263@academ01.lag.itesm.mx>] PR#482, 1246
 
-  *) PORT: Some versions of netbsd don't automatically define
+  *) PORT: Some versions of NetBSD don't automatically define
 	    __NetBSD__.  Workaround by defining NETBSD.
      [Chris Craft <ccraft@cncc.cc.co.us>] PR#977
 
-  *) PORT: Unixware 2.x requires -lgen for syslog.
+  *) PORT: UnixWare 2.x requires -lgen for syslog.
      [Hans Snijder <hs@meganet.nl>] PR#1249
 
-  *) PORT: Ultrix appears to not have syslog.
+  *) PORT: ULTRIX appears to not have syslog.
      [Lars Eilebrecht <Lars.Eilebrecht@unix-ag.org>]
 
   *) PORT: Basic Gemini port (treat it like unixware212).
@@ -216,7 +216,7 @@ Changes with Apache 1.3b2 (there is no 1.3b1)
      the parent writes on, and one which the child writes on.  As part of
      this change the get_scoreboard_info() function was removed, and
      scoreboard_image was exported.  This change fixes a race condition
-     in filebased scoreboard systems, and speeds up changes involving the
+     in file based scoreboard systems, and speeds up changes involving the
      scoreboard in earlier 1.3 development.  [Dean Gaudet]
 
   *) API: New register_other_child() API (see http_main.h) which allows
@@ -309,7 +309,7 @@ Changes with Apache 1.3b2 (there is no 1.3b1)
 
   *) Add aplog_error() providing a mechanism to define levels of
      verbosity to the server error logging. This addition also provides
-     the ablity to log errors using syslogd. Error logging is configurable
+     the ability to log errors using syslogd. Error logging is configurable
      on a per-server basis using the LogLevel directive. Conversion
      of log_*() in progress. [Randy Terbush]
 
@@ -394,7 +394,7 @@ Changes with Apache 1.3b2 (there is no 1.3b1)
      USE_xxx_SERIALIZED_ACCEPT in conf.h.  xxx is FCNTL for fcntl(),
      and FLOCK for flock().  New options have been added:
 	- SYSVSEM to use System V style semaphores
-	- PTHREAD to use Posix threads (appears to work on Solaris only)
+	- PTHREAD to use POSIX threads (appears to work on Solaris only)
 	- USLOCK to use IRIX uslock
      Based on timing various techniques, the following changes were made
      to the defaults:
@@ -429,7 +429,7 @@ Changes with Apache 1.3b2 (there is no 1.3b1)
      create one.  Modules can add compiler or library information to 
      generated Makefiles. [Paul Sutton]
 
-  *) Source core re-organisation: distibuted modules are now in 
+  *) Source core re-organisation: distributed modules are now in 
      modules/standard. All other source code is in main. OS-specific
      code is in os/{unix,emx,win32} directories. [Paul Sutton]
 
@@ -482,7 +482,7 @@ Changes with Apache 1.3b2 (there is no 1.3b1)
 
   *) ip-based vhosts are stored and queried using a hashing function, which
      has been shown to improve performance on servers with many ip-vhosts.
-     Some other changes had to be made to accomodate this:
+     Some other changes had to be made to accommodate this:
 	- the * address for vhosts now behaves like _default_
 	- the matching process now is:
 	    - match an ip-vhost directly via hash (possibly matches main
@@ -563,7 +563,7 @@ Changes with Apache 1.3b2 (there is no 1.3b1)
      in anticipation of using mmap() for reading files.)
      [Dean Gaudet]
 
-  *) In obscure cases where a partial socket write occured while chunking,
+  *) In obscure cases where a partial socket write occurred while chunking,
      Apache would omit the chunk header/footer on the next block.  Cleaned
      up other bugs/inconsistencies in error conditions in buff.c.  Fixed
      a bug where a long pause in DNS lookups could cause the last packet
@@ -696,7 +696,7 @@ Changes with Apache 1.3a1
      an empty query string via "xxx?".
          This update also removes the copyright of Ralf S. Engelschall,
      i.e. now mod_rewrite no longer has a shared copyright. Instead is is
-     exclusively copyrighted by the Apache Group now. This happended because
+     exclusively copyrighted by the Apache Group now. This happened because
      the author now has gifted mod_rewrite exclusively to the Apache Group and 
      no longer maintains an external version.
      [Ralf S. Engelschall]
@@ -812,7 +812,7 @@ Changes with Apache 1.3a1
      [Ken Coar]
 
   *) If NETSCAPE_DBM_COMPAT is defined in EXTRA_CFLAGS then Apache
-     will work with netscape dbm files.  (dbmmanage will probably not
+     will work with Netscape dbm files.  (dbmmanage will probably not
      work however.) [Alexander Spohr <aspohr@netmatic.com>] PR#444
 
   *) Add a ListenBacklog directive to control the backlog parameter
@@ -897,7 +897,7 @@ Changes with Apache 1.2.2 [not released]
      endif.  It didn't cause problems, but it was cleaned up too.
      [Howard Fear]
 
-  *) Last official synchonisation of mod_rewrite with author version (because
+  *) Last official synchronization of mod_rewrite with author version (because
      mod_rewrite is now directly developed by the author at the Apache Group):
      o added diff between mod_rewrite 3.0.6+ and 3.0.9
        minus WIN32/NT stuff, but plus copyright removement.
@@ -1023,7 +1023,7 @@ Changes with Apache 1.2.1
 
   *) Update mod_rewrite from 3.0.5 to 3.0.6.  New ruleflag
      QSA=query_string_append.  Also fixed a nasty bug in per-dir context:
-     when a URL http://... was used in concunction with a special
+     when a URL http://... was used in conjunction with a special
      redirect flag, e.g. R=permanent, the permanent status was lost.
      [Ronald Tschalaer <Ronald.Tschalaer@psi.ch>, Ralf S. Engelschall]
 
@@ -1040,7 +1040,7 @@ Changes with Apache 1.2.1
 
   *) PORT: fix rlim_t problems with AIX 4.2. [Marc Slemko] PR#333
 
-  *) PORT: Update Unixware support for 2.1.2.
+  *) PORT: Update UnixWare support for 2.1.2.
      [Lawrence Rosenman <ler@lerctr.org>] PR#511
 
   *) PORT: NonStop-UX [Joachim Schmitz <schmitz_joachim@tandem.com>] PR#327
@@ -1048,7 +1048,7 @@ Changes with Apache 1.2.1
   *) PORT: Update ConvexOS support for 11.5.
      [David DeSimone <fox@convex.com>] PR#399
 
-  *) PORT: Support for dec cc compiler under ultrix.
+  *) PORT: Support for DEC cc compiler under ULTRIX.
      ["P. Alejandro Lopez-Valencia" <alejolo@ideam.gov.co>] PR#388
 
   *) PORT: Support for Maxion/OS SVR4.2 Real Time Unix. [no name given] PR#383
@@ -1072,7 +1072,7 @@ Changes with Apache 1.2b11
      reading from one buffer and writing to another, at least until it has
      a custom timeout handler.  [Roy Fielding and Petr Lampa]
 
-  *) Fixed problem on Irix with servers hanging in IdentityCheck,
+  *) Fixed problem on IRIX with servers hanging in IdentityCheck,
      apparently due to a mismatch between sigaction and setjmp.
      [Roy Fielding] PR#502
 
@@ -1279,7 +1279,7 @@ Changes with Apache 1.2b9  [never announced]
 
   *) Configure was finding non-modules on EXTRA_LIBS. [Frank Cringle] PR#380
 
-  *) Use /bin/sh5 on ultrix.  [P. Alejandro Lopez-Valencia] PR#369
+  *) Use /bin/sh5 on ULTRIX.  [P. Alejandro Lopez-Valencia] PR#369
 
   *) Add UnixWare compile/install instructions.  [Chuck Murcko]
 
@@ -1315,7 +1315,7 @@ Changes with Apache 1.2b8
      spurious log messages, removing the nonblocking settings (they
      are not needed with the better timeout), and adding commentary
      about the NO_LINGCLOSE and USE_SO_LINGER issues.  NO_LINGCLOSE is
-     now the default for SunOS4, Unixware, NeXT, and Irix.  [Roy Fielding]
+     now the default for SunOS4, UnixWare, NeXT, and IRIX.  [Roy Fielding]
 
   *) Send error messages about setsockopt failures to the server error
      log instead of stderr.  [Roy Fielding]
@@ -1327,7 +1327,7 @@ Changes with Apache 1.2b8
      of r->pool so that we can avoid waiting for free_proc_chain to cleanup
      in the middle of an SSI request.  [Dean Gaudet] PR #122
 
-  *) Fixed status of response when POST is received for a nonexistant URL
+  *) Fixed status of response when POST is received for a nonexistent URL
      (was sending 405, now 404) and when any method is sent with a
      full-URI that doesn't match the server and the server is not acting
      as a proxy (was sending 501, now 403).  [Roy Fielding]
@@ -1937,7 +1937,7 @@ Changes with Apache 1.2b2:
 
   *) Updated helpers/GuessOS for ...
         SCO 5            (recognize minor releases)
-        SCO Unixware     (braindamaged uname, whatever-whatever-unixware2)
+        SCO UnixWare     (braindamaged uname, whatever-whatever-unixware2)
         SCO UnixWare 2.1.1      (requires a separate set of #defines in conf.h)
         IRIX64           (-sgi-irix64)
         ULTRIX           (-unknown-ultrix)
@@ -2620,7 +2620,7 @@ Changes with Apache 0.8.2
      module (commented out in the default Configuration, and noted as
      an experiment, along with mod_dld). [Mark Cox]
 
-  *) Compiles on Ultrix (a continuing battle...). [Robert Thau]
+  *) Compiles on ULTRIX (a continuing battle...). [Robert Thau]
 
   *) Fixed nasty bug in SIGTERM handling [reported by Randy Terbush]
 
