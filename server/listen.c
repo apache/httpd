@@ -271,10 +271,7 @@ static void alloc_listener(process_rec *process, char *addr, apr_port_t port)
     ap_listeners = new;
 }
 
-#if !defined(SPMT_OS2_MPM)
-static
-#endif
-int ap_listen_open(process_rec *process, apr_port_t port)
+static int ap_listen_open(process_rec *process, apr_port_t port)
 {
     apr_pool_t *pconf = process->pconf;
     ap_listen_rec *lr;
