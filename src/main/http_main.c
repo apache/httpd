@@ -7260,7 +7260,7 @@ int REALMAIN(int argc, char *argv[])
 
     while ((c = getopt(argc, argv, "D:C:c:Xd:f:vVlLz:Z:wiuStThk:n:W:")) != -1) {
 #else /* !WIN32 */
-    while ((c = getopt(argc, argv, "D:C:c:Xd:fF:vVlLesStTh")) != -1) {
+    while ((c = getopt(argc, argv, "D:C:c:Xd:Ff:vVlLesStTh")) != -1) {
 #endif
         char **new;
 	switch (c) {
