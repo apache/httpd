@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2002/02/06 22:27:24 $]
+Last modified at [$Date: 2002/02/06 22:30:56 $]
 
 Release:
 
@@ -41,6 +41,14 @@ on related projects:
 
 
 CURRENT RELEASE NOTES:
+
+    * Proposed BETA possibilities
+      31 + fixes for all resolved problems and call it 32 (instead of HEAD)
+        See: http://www.apache.org/~jerenkrantz/httpd-2.0.jre.patch
+        +1: trawick, Justin
+        +0:
+        -1:
+
     * 31 BETA STATUS:
         running on Daedalus since  02-Feb-2002 7:58 PST (need 3 days)
         Compiles on : AIX 4.3, Solaris, FreeBSD 3.4 & 4.5, Win32, 
@@ -118,14 +126,6 @@ CURRENT RELEASE NOTES:
 
             * anon shared memory not allocating enough 
                 (fix is apr/shm/unix/shm.c 1.14)
-
-    * other BETA possibilities
-      31 + fixes for all non-cosmetic problems seen on daedalus
-        See: http://www.apache.org/~jerenkrantz/httpd-2.0.jre.patch
-             http://www.apache.org/~gregames/
-        +1: trawick, Justin
-        +0:
-        -1:
 
 FINAL RELEASE SHOWSTOPPERS:
 
