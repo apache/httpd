@@ -89,16 +89,16 @@ void *util_ldap_create_config(apr_pool_t *p, server_rec *s);
 #endif
 
 
-static void util_ldap_strdup (char *str, const char *newstr)
+static void util_ldap_strdup (char **str, const char *newstr)
 {
-    if (str) {
-        free(str);
-        str = NULL;
+    if (*str) {
+        free(*str);
+        *str = NULL;
     }
 
     if (newstr) {
-        str = calloc(1, strlen(newstr)+1);
-        strcpy (str, newstr);
+        *str = calloc(1, strlen(newstr)+1);
+        strcpy (*str, newstr);
     }
 }
 
@@ -415,8 +415,8 @@ LDAP_DECLARE(util_ldap_connection_t *)util_ldap_connection_find(request_rec *r, 
 
                 /* the bind credentials have changed */
                 l->bound = 0;
-                util_ldap_strdup((char*)l->binddn, binddn);
-                util_ldap_strdup((char*)l->bindpw, bindpw);
+                util_ldap_strdup((char**)&(l->binddn), binddn);
+                util_ldap_strdup((char**)&(l->bindpw), bindpw);
                 break;
             }
 #if APR_HAS_THREADS
@@ -454,8 +454,8 @@ LDAP_DECLARE(util_ldap_connection_t *)util_ldap_connection_find(request_rec *r, 
         l->host = apr_pstrdup(st->pool, host);
         l->port = port;
         l->deref = deref;
-        util_ldap_strdup((char*)l->binddn, binddn);
-        util_ldap_strdup((char*)l->bindpw, bindpw);
+        util_ldap_strdup((char**)&(l->binddn), binddn);
+        util_ldap_strdup((char**)&(l->bindpw), bindpw);
         l->secure = secure;
 
         /* add the cleanup to the pool */
@@ -886,8 +886,8 @@ start_over:
          * it is bound to the original user id specified ldc->binddn when in fact it is 
          * bound to a completely different user id.
          */
-        util_ldap_strdup((char*)ldc->binddn, *binddn);
-        util_ldap_strdup((char*)ldc->bindpw, bindpw);
+        util_ldap_strdup((char**)&(ldc->binddn), *binddn);
+        util_ldap_strdup((char**)&(ldc->bindpw), bindpw);
     }
 
     /*
