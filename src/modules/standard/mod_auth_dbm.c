@@ -169,10 +169,6 @@ int dbm_authenticate_basic_user (request_rec *r)
 	note_basic_auth_failure (r);
 	return AUTH_REQUIRED;
     }
-    if (*(colon_pw+1)) {
-	table_set(r->headers_in,"AUTH_DATA",colon_pw+1);
-	table_set(r->subprocess_env,"AUTH_DATA",colon_pw+1);
-    }
     return OK;
 }
     
