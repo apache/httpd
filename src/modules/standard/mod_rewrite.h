@@ -497,7 +497,7 @@ static void fd_unlock(request_rec *r, int fd);
     /* Lexicographic Comparison */
 static int compare_lexicography(char *cpNum1, char *cpNum2);
 
-    /* Find end of bracketed expression */
+    /* Bracketed expression handling */
 static char *find_closing_bracket(char *s, int left, int right);
 static char *find_char_in_brackets(char *s, int c, int left, int right);
 
