@@ -71,6 +71,22 @@
 #include "http_protocol.h"
 #include <ndbm.h>
 
+/*
+ * Module definition information - the part between the -START and -END
+ * lines below is used by Configure. This could be stored in a separate
+ * instead.
+ *
+ * MODULE-DEFINITION-START
+ * Name: dbm_auth_module
+ * ConfigStart
+    LIBS="$LIBS $DBM_LIB"
+    if [ "X$DBM_LIB" != "X" ]; then
+	echo " + using $DBM_LIB for mod_auth_dbm"
+    fi
+ * ConfigEnd
+ * MODULE-DEFINITION-END
+ */
+
 typedef struct  {
 
     char *auth_dbmpwfile;

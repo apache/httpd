@@ -87,6 +87,21 @@
  * 21.5.96  Additional Status codes (DNS and LOGGING only enabled if
              extended STATUS is enabled) [George Burgyan/Jim J.]  */
 
+/*
+ * Module definition information - the part between the -START and -END
+ * lines below is used by Configure. This could be stored in a separate
+ * instead.
+ *
+ * MODULE-DEFINITION-START
+ * Name: status_module
+ * ConfigStart
+    if [ "$RULE_STATUS" = "yes" ]; then
+	CFLAGS="$CFLAGS -DSTATUS"
+    fi
+ * ConfigEnd
+ * MODULE-DEFINITION-END
+ */
+
 #define IS_MODULE
 
 #include "httpd.h"
