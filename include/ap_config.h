@@ -225,12 +225,6 @@ AP_IMPLEMENT_EXTERNAL_HOOK_RUN_FIRST(AP,ret,name,args_decl,args_use,decline)
 #undef PACKAGE
 #undef VERSION
 
-#if APR_HAS_MMAP
-#define AP_USE_MMAP_FILES 1
-#else
-#undef AP_USE_MMAP_FILES
-#endif
-
 #if APR_FILE_BASED_SHM
 #define AP_USE_FILE_BASED_SCOREBOARD
 #else
