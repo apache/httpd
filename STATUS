@@ -442,6 +442,16 @@ Open issues:
                    having real fits keeping it alive on a dual processor
                    machine. Could be OS problems..
 
+  * vformatter TODO:
+    - double check logic in apapi_vformatter(), and especially psprintf()
+    - fix ALLOC_USE_MALLOC, make sure ALLOC_DEBUG and POOL_DEBUG still work
+    - add in and use the inaddr formatting codes that started the whole
+      debate last october
+    - ... so that we can finally start fixing all the log messages that
+      were previously log_reason(), which included the client address,
+      but now using aplog_error() they're without the client address, and
+      that sucks
+
 Win32 specific issues:
 
  Open issues:
