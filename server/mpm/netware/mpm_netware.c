@@ -1124,7 +1124,7 @@ static const char *set_thread_stacksize(cmd_parms *cmd, void *dummy,
 static const command_rec netware_mpm_cmds[] = {
 AP_INIT_TAKE1("ThreadStackSize", set_thread_stacksize, NULL, RSRC_CONF,
               "Stack size each created thread will use."),
-LISTEN_COMMANDS
+LISTEN_COMMANDS,
 AP_INIT_TAKE1("StartThreads", set_threads_to_start, NULL, RSRC_CONF,
               "Number of worker threads launched at server startup"),
 AP_INIT_TAKE1("MinSpareThreads", set_min_free_threads, NULL, RSRC_CONF,

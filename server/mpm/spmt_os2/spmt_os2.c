@@ -1256,7 +1256,7 @@ AP_DECLARE(void) ap_reset_connection_status(long conn_id)
 }
 
 static const command_rec spmt_os2_cmds[] = {
-LISTEN_COMMANDS
+LISTEN_COMMANDS,
 AP_INIT_TAKE1( "StartServers", set_daemons_to_start, NULL, RSRC_CONF, 
   "Number of child processes launched at server startup" ),
 AP_INIT_TAKE1( "MinSpareServers", set_min_free_servers, NULL, RSRC_CONF,

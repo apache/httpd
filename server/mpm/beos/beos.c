@@ -1087,8 +1087,8 @@ static const char *set_threads_per_child (cmd_parms *cmd, void *dummy, const cha
 }
 
 static const command_rec beos_cmds[] = {
-BEOS_DAEMON_COMMANDS
-LISTEN_COMMANDS
+BEOS_DAEMON_COMMANDS,
+LISTEN_COMMANDS,
 AP_INIT_TAKE1( "StartServers", set_daemons_to_start, NULL, RSRC_CONF,
   "Number of child processes launched at server startup"),
 AP_INIT_TAKE1( "MinSpareThreads", set_min_spare_threads, NULL, RSRC_CONF,

@@ -131,6 +131,6 @@ AP_DECLARE(apr_status_t) unixd_set_proc_mutex_perms(apr_proc_mutex_t *pmutex);
 AP_INIT_TAKE1("User", unixd_set_user, NULL, RSRC_CONF, \
   "Effective user id for this server"), \
 AP_INIT_TAKE1("Group", unixd_set_group, NULL, RSRC_CONF, \
-  "Effective group id for this server"),
+  "Effective group id for this server")
 
 #endif

@@ -1740,8 +1740,8 @@ static const char *assign_childuid(cmd_parms *cmd, void *dummy, const char *uid,
 }
 
 static const command_rec perchild_cmds[] = {
-UNIX_DAEMON_COMMANDS
-LISTEN_COMMANDS
+UNIX_DAEMON_COMMANDS,
+LISTEN_COMMANDS,
 AP_INIT_TAKE1("NumServers", set_num_daemons, NULL, RSRC_CONF,
               "Number of children alive at the same time"),
 AP_INIT_TAKE1("StartThreads", set_threads_to_start, NULL, RSRC_CONF,

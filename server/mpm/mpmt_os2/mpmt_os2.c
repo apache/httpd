@@ -561,7 +561,7 @@ static const char *set_max_spare_threads(cmd_parms *cmd, void *dummy,
 
 
 static const command_rec mpmt_os2_cmds[] = {
-LISTEN_COMMANDS
+LISTEN_COMMANDS,
 AP_INIT_TAKE1( "StartServers", set_daemons_to_start, NULL, RSRC_CONF, 
   "Number of child processes launched at server startup" ),
 AP_INIT_TAKE1("MinSpareThreads", set_min_spare_threads, NULL, RSRC_CONF,

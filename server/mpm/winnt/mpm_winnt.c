@@ -2086,7 +2086,7 @@ AP_DECLARE(apr_array_header_t *) ap_get_status_table(apr_pool_t *p)
 }
 
 static const command_rec winnt_cmds[] = {
-LISTEN_COMMANDS
+LISTEN_COMMANDS,
 { "ThreadsPerChild", set_threads_per_child, NULL, RSRC_CONF, TAKE1,
   "Number of threads each child creates" },
 { NULL }

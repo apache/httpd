@@ -143,6 +143,6 @@ AP_INIT_TAKE1("ListenBacklog", ap_set_listenbacklog, NULL, RSRC_CONF, \
 AP_INIT_TAKE1("Listen", ap_set_listener, NULL, RSRC_CONF, \
   "A port number or a numeric IP address and a port number"), \
 AP_INIT_TAKE1("SendBufferSize", ap_set_send_buffer_size, NULL, RSRC_CONF, \
-  "Send buffer size in bytes"),
+  "Send buffer size in bytes")
 
 #endif
