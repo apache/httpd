@@ -17,4 +17,5 @@
  cache_hash_get,
  cache_hash_next,
  cache_hash_count,
+ cache_hash_free,
 
