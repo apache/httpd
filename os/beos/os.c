@@ -64,6 +64,9 @@
 #include "ap_config.h"
 #include "os.h"
 #include "httpd.h"
+#include "apr_thread_proc.h"
+#include "ap_mpm.h" /* needed for definition of 
+                     * ap_os_create_privileged_process */
 
 int ap_os_is_path_absolute(const char *file)
 {
