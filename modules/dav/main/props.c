@@ -596,7 +596,7 @@ void dav_close_propdb(dav_propdb *propdb)
         (*propdb->db_hooks->close)(propdb->db);
     }
 
-    /* Currently, mod_dav's pool usage doesn't clearing this pool. */
+    /* Currently, mod_dav's pool usage doesn't allow clearing this pool. */
 #if 0
     apr_pool_destroy(propdb->p);
 #endif
