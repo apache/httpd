@@ -678,16 +678,26 @@ AP_DECLARE(int) ap_satisfies(request_rec *r)
 
 char *ap_response_code_string(request_rec *r, int error_index)
 {
-    core_dir_config *conf;
+    core_dir_config *dirconf;
+    core_request_config *reqconf;
 
-    conf = (core_dir_config *)ap_get_module_config(r->per_dir_config,
-                                                   &core_module);
-
-    if (conf->response_code_strings == NULL) {
-        return NULL;
+    /* check for string registered via ap_custom_response() first */
+    reqconf = (core_request_config *)ap_get_module_config(r->request_config,
+                                                          &core_module);
+    if (reqconf->response_code_strings != NULL &&
+        reqconf->response_code_strings[error_index] != NULL) {
+        return reqconf->response_code_strings[error_index];
     }
 
-    return conf->response_code_strings[error_index];
+    /* check for string specified via ErrorDocument */
+    dirconf = (core_dir_config *)ap_get_module_config(r->per_dir_config,
+                                                      &core_module);
+
+    if (dirconf->response_code_strings == NULL) {
+	return NULL;
+    }
+
+    return dirconf->response_code_strings[error_index];
 }
 
 
@@ -1100,11 +1110,11 @@ static const char *set_document_root(cmd_parms *cmd, void *dummy,
 AP_DECLARE(void) ap_custom_response(request_rec *r, int status,
                                     const char *string)
 {
-    core_dir_config *conf =
-        ap_get_module_config(r->per_dir_config, &core_module);
+    core_request_config *conf =
+        ap_get_module_config(r->request_config, &core_module);
     int idx;
 
-    if(conf->response_code_strings == NULL) {
+    if (conf->response_code_strings == NULL) {
         conf->response_code_strings =
             apr_pcalloc(r->pool,
                         sizeof(*conf->response_code_strings) * RESPONSE_CODES);
