@@ -1475,9 +1475,8 @@ AP_CORE_DECLARE(int) ap_parse_htaccess(ap_conf_vector_t **result,
     /* firstly, search cache */
     for (cache = r->htaccess; cache != NULL; cache = cache->next)
 	if (cache->override == override && strcmp(cache->dir, d) == 0) {
-	    if (cache->htaccess != NULL)
-		*result = cache->htaccess;
-	    return OK;
+	    *result = cache->htaccess;
+            return OK;
 	}
 
     parms = default_parms;
