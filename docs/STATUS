@@ -60,7 +60,10 @@ Things That Need Fixing
 Documentation improvements
 ==========================
 
-* Missing documentation for the support programs htdbm and checkgid
+* htdbm documentation has been added and just needs peer review (plus
+  translations).
+
+* Missing documentation for the support program checkgid
 
 * New user docs: Directory Handling (mod_dir/mod_autoindex/etc)
 
