@@ -664,7 +664,7 @@ void __stdcall service_main_fn(DWORD argc, LPTSTR *argv)
     argc += 2;
 
     /* Use the name of the service as the error log marker */
-	ap_server_argv0 = globdat.name;
+    ap_server_argv0 = globdat.name;
 
     globdat.exit_status = globdat.main_fn( argc, argv );
 }
@@ -748,6 +748,10 @@ void ReportDescriptionToSCM()
         return;
     ChangeServiceDescription = (CSD_T) GetProcAddress(hwin2000scm, 
                                                       "ChangeServiceConfig2A");
+    if (!ChangeServiceDescription) {
+        FreeLibrary(hwin2000scm);
+        return;
+    }
     schSCManager = OpenSCManager(NULL, NULL, SC_MANAGER_ALL_ACCESS);
     if (schSCManager) {
         SC_HANDLE schService = OpenService(schSCManager, globdat.name,
