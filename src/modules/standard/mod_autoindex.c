@@ -68,10 +68,6 @@
 #include "http_main.h"
 #include "util_script.h"
 
-#ifdef WIN32
-#include "nt/readdir.h"
-#endif
-
 module autoindex_module;
 
 /****************************************************************

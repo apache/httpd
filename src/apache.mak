@@ -72,6 +72,7 @@ CLEAN :
 	-@erase "$(INTDIR)\mod_alias.obj"
 	-@erase "$(INTDIR)\mod_asis.obj"
 	-@erase "$(INTDIR)\mod_auth.obj"
+	-@erase "$(INTDIR)\mod_autoindex.obj"
 	-@erase "$(INTDIR)\mod_browser.obj"
 	-@erase "$(INTDIR)\mod_cgi.obj"
 	-@erase "$(INTDIR)\mod_dir.obj"
@@ -138,6 +139,7 @@ LINK32_OBJS= \
 	"$(INTDIR)\mod_alias.obj" \
 	"$(INTDIR)\mod_asis.obj" \
 	"$(INTDIR)\mod_auth.obj" \
+	"$(INTDIR)\mod_autoindex.obj" \
 	"$(INTDIR)\mod_browser.obj" \
 	"$(INTDIR)\mod_cgi.obj" \
 	"$(INTDIR)\mod_dir.obj" \
@@ -217,6 +219,8 @@ CLEAN :
 	-@erase "$(INTDIR)\mod_asis.sbr"
 	-@erase "$(INTDIR)\mod_auth.obj"
 	-@erase "$(INTDIR)\mod_auth.sbr"
+	-@erase "$(INTDIR)\mod_autoindex.obj"
+	-@erase "$(INTDIR)\mod_autoindex.sbr"
 	-@erase "$(INTDIR)\mod_browser.obj"
 	-@erase "$(INTDIR)\mod_browser.sbr"
 	-@erase "$(INTDIR)\mod_cgi.obj"
@@ -300,6 +304,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\mod_alias.sbr" \
 	"$(INTDIR)\mod_asis.sbr" \
 	"$(INTDIR)\mod_auth.sbr" \
+	"$(INTDIR)\mod_autoindex.sbr" \
 	"$(INTDIR)\mod_browser.sbr" \
 	"$(INTDIR)\mod_cgi.sbr" \
 	"$(INTDIR)\mod_dir.sbr" \
@@ -353,6 +358,7 @@ LINK32_OBJS= \
 	"$(INTDIR)\mod_alias.obj" \
 	"$(INTDIR)\mod_asis.obj" \
 	"$(INTDIR)\mod_auth.obj" \
+	"$(INTDIR)\mod_autoindex.obj" \
 	"$(INTDIR)\mod_browser.obj" \
 	"$(INTDIR)\mod_cgi.obj" \
 	"$(INTDIR)\mod_dir.obj" \
@@ -432,6 +438,8 @@ CLEAN :
 	-@erase "$(INTDIR)\mod_asis.sbr"
 	-@erase "$(INTDIR)\mod_auth.obj"
 	-@erase "$(INTDIR)\mod_auth.sbr"
+	-@erase "$(INTDIR)\mod_autoindex.obj"
+	-@erase "$(INTDIR)\mod_autoindex.sbr"
 	-@erase "$(INTDIR)\mod_browser.obj"
 	-@erase "$(INTDIR)\mod_browser.sbr"
 	-@erase "$(INTDIR)\mod_cgi.obj"
@@ -515,6 +523,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\mod_alias.sbr" \
 	"$(INTDIR)\mod_asis.sbr" \
 	"$(INTDIR)\mod_auth.sbr" \
+	"$(INTDIR)\mod_autoindex.sbr" \
 	"$(INTDIR)\mod_browser.sbr" \
 	"$(INTDIR)\mod_cgi.sbr" \
 	"$(INTDIR)\mod_dir.sbr" \
@@ -568,6 +577,7 @@ LINK32_OBJS= \
 	"$(INTDIR)\mod_alias.obj" \
 	"$(INTDIR)\mod_asis.obj" \
 	"$(INTDIR)\mod_auth.obj" \
+	"$(INTDIR)\mod_autoindex.obj" \
 	"$(INTDIR)\mod_browser.obj" \
 	"$(INTDIR)\mod_cgi.obj" \
 	"$(INTDIR)\mod_dir.obj" \
@@ -647,6 +657,8 @@ CLEAN :
 	-@erase "$(INTDIR)\mod_asis.sbr"
 	-@erase "$(INTDIR)\mod_auth.obj"
 	-@erase "$(INTDIR)\mod_auth.sbr"
+	-@erase "$(INTDIR)\mod_autoindex.obj"
+	-@erase "$(INTDIR)\mod_autoindex.sbr"
 	-@erase "$(INTDIR)\mod_browser.obj"
 	-@erase "$(INTDIR)\mod_browser.sbr"
 	-@erase "$(INTDIR)\mod_cgi.obj"
@@ -728,6 +740,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\mod_alias.sbr" \
 	"$(INTDIR)\mod_asis.sbr" \
 	"$(INTDIR)\mod_auth.sbr" \
+	"$(INTDIR)\mod_autoindex.sbr" \
 	"$(INTDIR)\mod_browser.sbr" \
 	"$(INTDIR)\mod_cgi.sbr" \
 	"$(INTDIR)\mod_dir.sbr" \
@@ -781,6 +794,7 @@ LINK32_OBJS= \
 	"$(INTDIR)\mod_alias.obj" \
 	"$(INTDIR)\mod_asis.obj" \
 	"$(INTDIR)\mod_auth.obj" \
+	"$(INTDIR)\mod_autoindex.obj" \
 	"$(INTDIR)\mod_browser.obj" \
 	"$(INTDIR)\mod_cgi.obj" \
 	"$(INTDIR)\mod_dir.obj" \
@@ -2618,6 +2632,76 @@ NODEP_CPP_MOD_B=\
 # Begin Source File
 
 SOURCE=.\NT\modules.c
+
+!IF  "$(CFG)" == "apache - Win32 Release"
+
+DEP_CPP_MODUL=\
+	".\alloc.h"\
+	".\buff.h"\
+	".\conf.h"\
+	".\http_config.h"\
+	".\httpd.h"\
+	".\nt\readdir.h"\
+	{$(INCLUDE)}"\sys\TYPES.H"\
+	
+NODEP_CPP_MODUL=\
+	".\sfio.h"\
+	
+
+"$(INTDIR)\modules.obj" : $(SOURCE) $(DEP_CPP_MODUL) "$(INTDIR)"
+   $(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+!ELSEIF  "$(CFG)" == "apache - Win32 Debug"
+
+DEP_CPP_MODUL=\
+	".\./regex\regex.h"\
+	".\alloc.h"\
+	".\buff.h"\
+	".\conf.h"\
+	".\http_config.h"\
+	".\httpd.h"\
+	".\nt\readdir.h"\
+	{$(INCLUDE)}"\sys\STAT.H"\
+	{$(INCLUDE)}"\sys\TYPES.H"\
+	
+
+BuildCmds= \
+	$(CPP) $(CPP_PROJ) $(SOURCE) \
+	
+
+"$(INTDIR)\modules.obj" : $(SOURCE) $(DEP_CPP_MODUL) "$(INTDIR)"
+   $(BuildCmds)
+
+"$(INTDIR)\modules.sbr" : $(SOURCE) $(DEP_CPP_MODUL) "$(INTDIR)"
+   $(BuildCmds)
+
+!ELSEIF  "$(CFG)" == "apache - Win32 Pre"
+
+DEP_CPP_MODUL=\
+	".\./regex\regex.h"\
+	".\alloc.h"\
+	".\buff.h"\
+	".\conf.h"\
+	".\http_config.h"\
+	".\httpd.h"\
+	".\nt\readdir.h"\
+	{$(INCLUDE)}"\sys\STAT.H"\
+	{$(INCLUDE)}"\sys\TYPES.H"\
+	
+
+BuildCmds= \
+	$(CPP) $(CPP_PROJ) $(SOURCE) \
+	
+
+"$(INTDIR)\modules.obj" : $(SOURCE) $(DEP_CPP_MODUL) "$(INTDIR)"
+   $(BuildCmds)
+
+"$(INTDIR)\modules.sbr" : $(SOURCE) $(DEP_CPP_MODUL) "$(INTDIR)"
+   $(BuildCmds)
+
+!ELSEIF  "$(CFG)" == "apache - Win32 Profile"
+
 DEP_CPP_MODUL=\
 	".\./regex\regex.h"\
 	".\alloc.h"\
@@ -2632,42 +2716,6 @@ DEP_CPP_MODUL=\
 NODEP_CPP_MODUL=\
 	".\sfio.h"\
 	
-
-!IF  "$(CFG)" == "apache - Win32 Release"
-
-
-"$(INTDIR)\modules.obj" : $(SOURCE) $(DEP_CPP_MODUL) "$(INTDIR)"
-   $(CPP) $(CPP_PROJ) $(SOURCE)
-
-
-!ELSEIF  "$(CFG)" == "apache - Win32 Debug"
-
-
-BuildCmds= \
-	$(CPP) $(CPP_PROJ) $(SOURCE) \
-	
-
-"$(INTDIR)\modules.obj" : $(SOURCE) $(DEP_CPP_MODUL) "$(INTDIR)"
-   $(BuildCmds)
-
-"$(INTDIR)\modules.sbr" : $(SOURCE) $(DEP_CPP_MODUL) "$(INTDIR)"
-   $(BuildCmds)
-
-!ELSEIF  "$(CFG)" == "apache - Win32 Pre"
-
-
-BuildCmds= \
-	$(CPP) $(CPP_PROJ) $(SOURCE) \
-	
-
-"$(INTDIR)\modules.obj" : $(SOURCE) $(DEP_CPP_MODUL) "$(INTDIR)"
-   $(BuildCmds)
-
-"$(INTDIR)\modules.sbr" : $(SOURCE) $(DEP_CPP_MODUL) "$(INTDIR)"
-   $(BuildCmds)
-
-!ELSEIF  "$(CFG)" == "apache - Win32 Profile"
-
 
 BuildCmds= \
 	$(CPP) $(CPP_PROJ) $(SOURCE) \
@@ -2971,6 +3019,122 @@ BuildCmds= \
 
 "$(INTDIR)\readdir.sbr" : $(SOURCE) $(DEP_CPP_READD) "$(INTDIR)"
    $(BuildCmds)
+
+!ENDIF 
+
+# End Source File
+################################################################################
+# Begin Source File
+
+SOURCE=.\mod_autoindex.c
+
+!IF  "$(CFG)" == "apache - Win32 Release"
+
+DEP_CPP_MOD_AUT=\
+	".\./regex\regex.h"\
+	".\alloc.h"\
+	".\buff.h"\
+	".\conf.h"\
+	".\http_config.h"\
+	".\http_core.h"\
+	".\http_log.h"\
+	".\http_main.h"\
+	".\http_protocol.h"\
+	".\http_request.h"\
+	".\httpd.h"\
+	".\nt\readdir.h"\
+	".\util_script.h"\
+	{$(INCLUDE)}"\sys\STAT.H"\
+	{$(INCLUDE)}"\sys\TYPES.H"\
+	
+NODEP_CPP_MOD_AUT=\
+	".\sfio.h"\
+	
+
+"$(INTDIR)\mod_autoindex.obj" : $(SOURCE) $(DEP_CPP_MOD_AUT) "$(INTDIR)"
+
+
+!ELSEIF  "$(CFG)" == "apache - Win32 Debug"
+
+DEP_CPP_MOD_AUT=\
+	".\alloc.h"\
+	".\buff.h"\
+	".\conf.h"\
+	".\http_config.h"\
+	".\http_core.h"\
+	".\http_log.h"\
+	".\http_main.h"\
+	".\http_protocol.h"\
+	".\http_request.h"\
+	".\httpd.h"\
+	".\nt\readdir.h"\
+	".\util_script.h"\
+	{$(INCLUDE)}"\sys\TYPES.H"\
+	
+NODEP_CPP_MOD_AUT=\
+	".\sfio.h"\
+	
+
+"$(INTDIR)\mod_autoindex.obj" : $(SOURCE) $(DEP_CPP_MOD_AUT) "$(INTDIR)"
+
+"$(INTDIR)\mod_autoindex.sbr" : $(SOURCE) $(DEP_CPP_MOD_AUT) "$(INTDIR)"
+
+
+!ELSEIF  "$(CFG)" == "apache - Win32 Pre"
+
+DEP_CPP_MOD_AUT=\
+	".\./regex\regex.h"\
+	".\alloc.h"\
+	".\buff.h"\
+	".\conf.h"\
+	".\http_config.h"\
+	".\http_core.h"\
+	".\http_log.h"\
+	".\http_main.h"\
+	".\http_protocol.h"\
+	".\http_request.h"\
+	".\httpd.h"\
+	".\nt\readdir.h"\
+	".\util_script.h"\
+	{$(INCLUDE)}"\sys\STAT.H"\
+	{$(INCLUDE)}"\sys\TYPES.H"\
+	
+NODEP_CPP_MOD_AUT=\
+	".\sfio.h"\
+	
+
+"$(INTDIR)\mod_autoindex.obj" : $(SOURCE) $(DEP_CPP_MOD_AUT) "$(INTDIR)"
+
+"$(INTDIR)\mod_autoindex.sbr" : $(SOURCE) $(DEP_CPP_MOD_AUT) "$(INTDIR)"
+
+
+!ELSEIF  "$(CFG)" == "apache - Win32 Profile"
+
+DEP_CPP_MOD_AUT=\
+	".\./regex\regex.h"\
+	".\alloc.h"\
+	".\buff.h"\
+	".\conf.h"\
+	".\http_config.h"\
+	".\http_core.h"\
+	".\http_log.h"\
+	".\http_main.h"\
+	".\http_protocol.h"\
+	".\http_request.h"\
+	".\httpd.h"\
+	".\nt\readdir.h"\
+	".\util_script.h"\
+	{$(INCLUDE)}"\sys\STAT.H"\
+	{$(INCLUDE)}"\sys\TYPES.H"\
+	
+NODEP_CPP_MOD_AUT=\
+	".\sfio.h"\
+	
+
+"$(INTDIR)\mod_autoindex.obj" : $(SOURCE) $(DEP_CPP_MOD_AUT) "$(INTDIR)"
+
+"$(INTDIR)\mod_autoindex.sbr" : $(SOURCE) $(DEP_CPP_MOD_AUT) "$(INTDIR)"
+
 
 !ENDIF 
 

@@ -22,6 +22,7 @@ extern module imap_module;
 extern module action_module;
 extern module browser_module;
 extern module proxy_module;
+extern module autoindex_module;
 
 module *prelinked_modules[] = {
   &core_module,
@@ -41,6 +42,7 @@ module *prelinked_modules[] = {
   &action_module,
   &browser_module,
   &proxy_module,
+  &autoindex_module,
   NULL
 };
 module *preloaded_modules[] = {
@@ -61,5 +63,6 @@ module *preloaded_modules[] = {
   &action_module,
   &browser_module,
   &proxy_module,
+  &autoindex_module,
   NULL
 };
