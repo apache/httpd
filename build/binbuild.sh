@@ -223,7 +223,7 @@ cp README.bindist ../apache_$VER-$OS.README
   echo "	-e \"s;\@sysconfdir\@;\$SR/conf;\" bindist/bin/apxs > \$SR/bin/apxs" && \
   echo "sed -e \"s;^#!/.*;#!\$PERL;\" bindist/bin/dbmmanage > \$SR/bin/dbmmanage" && \
   echo "sed -e \"s%/usr/local/apache%\$SR%\" \$SR/conf/httpd.conf.default > \$SR/conf/httpd.conf" && \
-  echo "sed -e \"s%PIDFILE=%PIDFILE=\$SR/%\" -e \"s%HTTPD=%HTTPD=\\\"\$SR/%\" -e \"s%httpd\$%httpd -d \$SR\\\"%\" bindist/bin/apachectl > \$SR/bin/apachectl" && \
+  echo "sed -e \"s%PIDFILE=%PIDFILE=\$SR/%\" -e \"s%HTTPD=%HTTPD=\\\"\$SR/%\" -e \"s%httpd\$%httpd -d \$SR -R \$SR/libexec\\\"%\" bindist/bin/apachectl > \$SR/bin/apachectl" && \
   echo " " && \
   echo "echo \"Ready.\"" && \
   echo "echo \" +--------------------------------------------------------+\"" && \
