@@ -704,7 +704,9 @@ static void splitout_queryargs(request_rec *r, int qsappend)
     /* don't touch, unless it's an http or mailto URL.
      * See RFC 1738 and RFC 2368.
      */
-    if (   is_absolute_uri(r->filename)
+    if (is_absolute_uri(r->filename)
+        && strncasecmp(r->filename, "ajp", 3)
+        && strncasecmp(r->filename, "balancer", 8)
         && strncasecmp(r->filename, "http", 4)
         && strncasecmp(r->filename, "mailto", 6)) {
         r->args = NULL; /* forget the query that's still flying around */
@@ -4241,7 +4243,7 @@ static int hook_uri2file(request_rec *r)
             return n;
         }
 
-        flen = strlen(r->filename);
+        flen = r->filename ? strlen(r->filename) : 0;
         if (flen > 6 && strncmp(r->filename, "proxy:", 6) == 0) {
             /* it should be go on as an internal proxy request */
 
