@@ -706,7 +706,7 @@ DirectoryIndex index.cgi index.pl index.shtml index.html
     <p>Here is a system call trace of Apache 2.0.38 with the worker MPM
     on Solaris 8.  This trace was collected using:</p>
 <blockquote>
-<code>truss -l -p <i>httpd_child_pid</i></code>.</code>
+<code>truss -l -p <i>httpd_child_pid</i></code>.
 </blockquote>
     <p>The <code>-l</code> option tells truss to log the ID of the
     LWP (lightweight process--Solaris's form of kernel-level thread)
@@ -719,13 +719,14 @@ DirectoryIndex index.cgi index.pl index.shtml index.html
     <p>In this trace, a client has requested a 10KB static file
     from the httpd.  Traces of non-static requests or requests
     with content negotiation look wildly different (and quite ugly
-    in some cases).
+    in some cases).</p>
 
-    <blockquote>
+<blockquote>
 <pre>
 /67:    accept(3, 0x00200BEC, 0x00200C0C, 1) (sleeping...)
 /67:    accept(3, 0x00200BEC, 0x00200C0C, 1)            = 9
 </pre>
+</blockquote>
 <blockquote>
 <p>In this trace, the listener thread is running within LWP #67.</p>
 <p>Note the lack of accept(2) serialization.  On this particular
@@ -763,7 +764,7 @@ custom memory allocators (<code>apr_pool</code> and
 <code>apr_bucket_alloc</code>) for most request processing.
 In this trace, the httpd has just been started, so it must
 call malloc(3) to get the blocks of raw memory with which
-to create the custom memory allocators.
+to create the custom memory allocators.</p>
 </blockquote>
 <pre>
 /65:    fcntl(9, F_GETFL, 0x00000000)                   = 2
@@ -795,7 +796,7 @@ and <code>AllowOverride None</code>.  Thus it doesn't need to lstat(2)
 each directory in the path leading up to the requested file, nor
 check for <code>.htaccess</code> files.  It simply calls stat(2) to
 verify that the file: 1) exists, and 2) is a regular file, not a
-directory.
+directory.</p>
 </blockquote>
 <pre>
 /65:    sendfilev(0, 9, 0x00200F90, 2, 0xFAF7B53C)      = 10269
@@ -836,7 +837,7 @@ as much overhead as a typical system call.</p>
 and blocks until the listener assigns it another connection.</p>
 </blockquote>
 <pre>
-/67:    accept(3, 0x001FEB74, 0x001FEB94, 1) (sleeping...)</pre>
+/67:    accept(3, 0x001FEB74, 0x001FEB94, 1) (sleeping...)
 </pre>
 <blockquote>
 <p>Meanwhile, the listener thread is able to accept another connection
@@ -847,8 +848,7 @@ this trace, the next accept(2) can (and usually does, under high load
 conditions) occur in parallel with the worker thread's handling of the
 just-accepted connection.</p>
 </blockquote>
-    </blockquote>
-
+    <!--#include virtual="footer.html" -->
   </body>
 </html>
 

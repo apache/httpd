@@ -13,7 +13,7 @@
   vlink="#000080" alink="#FF0000">
     <!--#include virtual="header.html" -->
 
-    <h1 align="CENTER">Content Negotiation</h1>
+    <h1 align="center">Content Negotiation</h1>
 
     <p>Apache's supports content negotiation as described in
     the HTTP/1.1 specification. It can choose the best
@@ -606,7 +606,7 @@
     <tt>CacheNegotiatedDocs</tt> can be used to allow caching of
     responses which were subject to negotiation. This directive can
     be given in the server config or virtual host, and takes no
-    arguments. It has no effect on requests from HTTP/1.1 clients. 
+    arguments. It has no effect on requests from HTTP/1.1 clients.</p>
 
     <h2>More Information</h2>
 

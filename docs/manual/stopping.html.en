@@ -13,7 +13,7 @@
   vlink="#000080" alink="#FF0000">
     <!--#include virtual="header.html" -->
 
-    <h1 align="CENTER">Stopping and Restarting the Server</h1>
+    <h1 align="center">Stopping and Restarting the Server</h1>
 
     <p>This document covers stopping and restarting Apache on
     Unix-like systems. Windows users should see <a
@@ -201,9 +201,8 @@
     timeouts. In practice it doesn't seem to affect anything either
     -- in a test case the server was restarted twenty times per
     second and clients successfully browsed the site without
-    getting broken images or empty documents. 
+    getting broken images or empty documents. </p>
     <!--#include virtual="footer.html" -->
-    </p>
   </body>
 </html>
 

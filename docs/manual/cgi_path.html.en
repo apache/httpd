@@ -13,7 +13,7 @@
   vlink="#000080" alink="#FF0000">
     <!--#include virtual="header.html" -->
 
-    <h1 align="CENTER">PATH_INFO Changes in the CGI
+    <h1 align="center">PATH_INFO Changes in the CGI
     Environment</h1>
     <hr />
 
