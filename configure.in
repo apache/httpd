@@ -21,6 +21,12 @@ sinclude(srclib/apr/build/libtool.m4)
 sinclude(hints.m4)
 sinclude(acinclude.m4)
 
+dnl ## Run configure for packages Apache uses
+APR_SUBDIR_CONFIG(srclib/apr, "$apache_apr_flags --disable-shared")
+APR_SUBDIR_CONFIG(srclib/apr-util, "--with-apr=../apr --disable-shared")
+APR_SUBDIR_CONFIG(srclib/pcre)
+. ./srclib/apr/APRVARS
+
 dnl Generate ./config.nice for reproducing runs of configure
 dnl
 APR_CONFIG_NICE(config.nice)
@@ -267,18 +273,6 @@ done
 if test -d ./test; then
     APACHE_FAST_OUTPUT(test/Makefile)
 fi
-
-dnl ## Run configure for packages Apache uses
-dnl ## This has been placed at this location for a reason.  This allows
-dnl ## Apache to set some variable that APR needs (like whether to enable
-dnl ## or disable threads), while still allowing APR to run and generate
-dnl ## APRVARS before Apache generates it's Makefiles and the related files.
-dnl ## This allows APR to detect libraries like dl and tell Apache that it
-dnl ## needs to include or not include them.
-APR_SUBDIR_CONFIG(srclib/apr, "$apache_apr_flags --disable-shared")
-APR_SUBDIR_CONFIG(srclib/apr-util, "--with-apr=../apr --disable-shared")
-APR_SUBDIR_CONFIG(srclib/pcre)
-. ./srclib/apr/APRVARS
 
 dnl get the exported vars from APRUTIL
 . ./srclib/apr-util/export_vars.sh

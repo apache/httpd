@@ -13,12 +13,10 @@ AC_MSG_RESULT($APACHE_MPM)
 apache_cv_mpm=$APACHE_MPM
 	
 if test "$apache_cv_mpm" = "threaded" -o "$apache_cv_mpm" = "perchild"; then
-  APR_PTHREADS_CHECK
-  AC_MSG_CHECKING([for which threading library to use])
-  AC_MSG_RESULT($threads_result)
+  APR_CHECK_APR_DEFINE(APR_HAS_THREADS, srclib/apr)
 
-  if test "$pthreads_working" = "no"; then
-    AC_MSG_RESULT(The currently selected MPM requires pthreads which your system seems to lack)
+  if test "x$ac_cv_define_APR_HAS_THREADS" = "xno"; then
+    AC_MSG_RESULT(The currently selected MPM requires threads which your system seems to lack)
     AC_MSG_CHECKING(checking for replacement)
     AC_MSG_RESULT(prefork selected)
     apache_cv_mpm=prefork
@@ -34,13 +32,3 @@ MPM_LIB=$MPM_DIR/lib${MPM_NAME}.la
 APACHE_SUBST(MPM_NAME)
 MODLIST="$MODLIST mpm_${MPM_NAME}"
 
-dnl Check for pthreads and attempt to support it
-AC_DEFUN(APACHE_MPM_PTHREAD, [
-  if test "$pthreads_working" != "yes"; then
-    AC_MSG_ERROR(This MPM requires pthreads. Try --with-mpm=prefork.)
-  fi
-
-  dnl User threads libraries need pthread.h included everywhere
-  AC_DEFINE(PTHREAD_EVERYWHERE,,
-    [Define if all code should have #include <pthread.h>])
-])
