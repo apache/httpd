@@ -2833,6 +2833,11 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_byterange_filter(ap_filter_t *f,
     /* We can't actually deal with byte-ranges until we have the whole brigade
      * because the byte-ranges can be in any order, and according to the RFC,
      * we SHOULD return the data in the same order it was requested.
+     *
+     * XXX: We really need to dump all bytes prior to the start of the earliest
+     * range, and only slurp up to the end of the latest range.  By this we
+     * mean that we should peek-ahead at the lowest first byte of any range,
+     * and the highest last byte of any range.
      */
     if (!APR_BUCKET_IS_EOS(APR_BRIGADE_LAST(bb))) {
         ap_save_brigade(f, &ctx->bb, &bb, r->pool);
