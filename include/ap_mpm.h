@@ -147,10 +147,23 @@ AP_DECLARE(apr_status_t) ap_os_create_privileged_process(
     apr_procattr_t *attr, 
     apr_pool_t *p);
 
+/* Subtypes/Values for AP_MPMQ_IS_THREADED and AP_MPMQ_IS_FORKED        */
+#define AP_MPMQ_NOT_SUPPORTED      0  /* This value specifies whether */
+                                      /* an MPM is capable of         */
+                                      /* threading or forking.        */
+#define AP_MPMQ_STATIC             1  /* This value specifies whether */
+                                      /* an MPM is using a static #   */
+                                      /* threads or daemons.          */
+#define AP_MPMQ_DYNAMIC            2  /* This value specifies whether */
+                                      /* an MPM is using a dynamic #  */
+                                      /* threads or daemons.          */
 
-#define AP_MPMQ_MAX_DAEMONS 1    /* Max # of daemons     */
-#define AP_MPMQ_IS_THREADED 2    /* MPM can do threading */
-#define AP_MPMQ_IS_FORKED   3    /* MPM can do forking   */
+#define AP_MPMQ_MAX_DAEMONS        1  /* Max # of daemons     */
+#define AP_MPMQ_IS_THREADED        2  /* MPM can do threading */
+#define AP_MPMQ_IS_FORKED          3  /* MPM can do forking   */
+#define AP_MPMQ_HARD_LIMIT_DAEMONS 4  /* The compiled max # deamons   */
+#define AP_MPMQ_HARD_LIMIT_THREADS 5  /* The compiled max # threads   */
+#define AP_MPMQ_MAX_THREADS        6  /* Max # of threads             */
 
 /**
  * Query a property of the current MPM.  

@@ -1538,10 +1538,19 @@ AP_DECLARE(apr_status_t) ap_mpm_query(int query_code, int *result)
             *result = MAXIMUM_WAIT_OBJECTS;
             return APR_SUCCESS;
         case AP_MPMQ_IS_THREADED:
-            *result = 1;
+            *result = AP_MPMQ_STATIC;
             return APR_SUCCESS;
         case AP_MPMQ_IS_FORKED:
-            *result = 0;
+            *result = AP_MPMQ_NOT_SUPPORTED;
+            return APR_SUCCESS;
+        case AP_MPMQ_HARD_LIMIT_DAEMONS:
+            *result = HARD_SERVER_LIMIT;
+            return APR_SUCCESS;
+        case AP_MPMQ_HARD_LIMIT_THREADS:
+            *result = HARD_THREAD_LIMIT;
+            return APR_SUCCESS;
+        case AP_MPMQ_MAX_THREADS:
+            *result = ap_threads_per_child;
             return APR_SUCCESS;
     }
     return APR_ENOTIMPL;

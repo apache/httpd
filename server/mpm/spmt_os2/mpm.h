@@ -65,6 +65,8 @@
 #include "mpm_default.h"
 #include "scoreboard.h"
 
+#define MPM_NAME "SPMT_OS2"
+
 extern char ap_coredump_dir[MAX_STRING_LEN];
 extern server_rec *ap_server_conf;
 extern int ap_threads_per_child;

@@ -92,6 +92,7 @@
 #include "http_main.h"
 #include "http_vhost.h"
 #include "util_cfgtree.h"
+#include "mpm.h"
 
 
 AP_DECLARE_DATA const char *ap_server_argv0;
@@ -1737,3 +1738,7 @@ AP_DECLARE(void) ap_show_modules(void)
 	printf("  %s\n", ap_loaded_modules[n]->name);
 }
 
+AP_DECLARE(const char *) ap_show_mpm(void)
+{
+    return MPM_NAME;
+}
