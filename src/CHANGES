@@ -9,7 +9,7 @@ Changes with Apache 1.3.28
   *) SECURITY: CAN-2003-0460 (cve.mitre.org)
      Fix the rotatelogs support program on Win32 and OS/2 to ignore
      special control characters received over the pipe.  Previously
-     such characters could cause it to quit logging and exit.
+     such characters could cause rotatelogs to quit logging and exit.
      [André Malo]
 
   *) Prevent the server from crashing when entering infinite loops. The
