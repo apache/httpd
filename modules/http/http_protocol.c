@@ -2418,10 +2418,6 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_http_header_filter(ap_filter_t *f, ap_bu
     ap_bsetopt(r->connection->client, BO_BYTECT, &zero);
     r->sent_bodyct = 1;         /* Whatever follows is real body stuff... */
 
-    /* Set buffer flags for the body */
-    if (r->chunked) {
-        ap_bsetflag(r->connection->client, B_CHUNK, 1);
-    }
     b2 = ap_brigade_create(r->pool);
     e = ap_bucket_create_pool(buff_start, strlen(buff_start), r->pool);
     AP_BRIGADE_INSERT_HEAD(b2, e);

@@ -3394,14 +3394,6 @@ static apr_status_t core_output_filter(ap_filter_t *f, ap_bucket_brigade *b)
         ctx->b = NULL;
     }
 
-    /* Hijack any bytes in BUFF and prepend it to the brigade. */
-    if (c->client->outcnt) {
-        e = ap_bucket_create_pool(c->client->outbase,
-                                  c->client->outcnt, c->client->pool);
-        c->client->outcnt = 0;
-        AP_BRIGADE_INSERT_HEAD(b, e);
-    }
-
     /* Iterate over the brigade collecting iovecs */
     while (b) {
         nbytes = 0; /* in case more points to another brigade */
