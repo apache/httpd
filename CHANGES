@@ -2,6 +2,10 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) apxs: Include any special APR ld flags when linking the DSO.
+     This resolves problems on AIX when building a DSO with apxs+gcc.
+     [Jeff Trawick]
+
   *) mod_file_cache: fixed a segfault when multiple MMapFile directives
      were used.  PR 16313.  [Cliff Woolley]
 
