@@ -1,13 +1,21 @@
 Changes with Apache 2.0.23-dev
 
+  *) mod_autoindex now excludes any file names that would result in
+     an error, other than a success or redirect.  [William Rowe]
+
   *) Refactored mod_negotiation and mod_mime to help mod_dir accept
      negotiated index pages, and prevent the server from defaulting
-     to an autoindex of the directory.  [William Rowe]
+     to an autoindex of the directory.  mod_negotiation will now die
+     with a 500 Internal Error if it could match some filenames 
+     (e.g. for mod_dir) but none can be served.  mod_negotation now
+     refuses to serve any file with an extention that mod_mime doesn't
+     recognize, and wasn't part of the request.  [William Rowe]
 
   *) Eliminate mod_cgi's handling of .exe files without the .exe file
      extension.  This is already handled by multiviews, if the admin
      wishes to AddHandler .exe or define a content type handler and 
-     associate .exe files with that content type.  [William Rowe]
+     associate .exe files with that content type.  Multiviews must be
+     enabled to allow these to be served.  [William Rowe]
 
   *) Speed up the server's response to a spike in incoming workload
      or restarts by assigning empty scoreboard slots to new processes
