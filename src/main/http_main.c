@@ -1861,7 +1861,7 @@ static void sock_bind (int s, const struct sockaddr_in *server)
 /* MPE requires CAP=PM and GETPRIVMODE to bind to ports less than 1024 */
     if (ntohs(server->sin_port) < 1024) GETPRIVMODE();
 #endif
-    if(bind(s, (const struct sockaddr *)server,sizeof(struct sockaddr_in)) == -1)
+    if(bind(s, (struct sockaddr *)server,sizeof(struct sockaddr_in)) == -1)
     {
         perror("bind");
 #ifdef MPE
