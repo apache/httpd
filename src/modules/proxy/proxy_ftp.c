@@ -189,8 +189,6 @@ ftp_getrc(BUFF *f)
     else
 	status = 100 * linebuff[0] + 10 * linebuff[1] + linebuff[2] - 111 * '0';
 
-    Explain1("FTP: ftp_getrc() status = %d", status);
-    
     if (linebuff[len-1] != '\n')
     {
 	i = bskiplf(f);
@@ -221,12 +219,20 @@ send_dir(BUFF *f, request_rec *r, BUFF *f2, struct cache_req *c, char *url)
     char buf[IOBUFSIZE];
     char buf2[IOBUFSIZE];
     char *filename;
+    char *tempurl;
     char urlptr[HUGE_STRING_LEN];
     long total_bytes_sent;
     register int n, o, w;
     conn_rec *con = r->connection;
 
-    ap_snprintf(buf, sizeof(buf), "<HTML><HEAD><TITLE>%s</TITLE></HEAD><BODY><H1>Directory %s</H1><HR><PRE>", url, url);
+    tempurl = pstrdup(r->pool, url);
+    if ((n = strcspn(tempurl, "@")) != strlen(tempurl))	/* hide user/passwd */
+    {
+	bcopy(tempurl, tempurl + (n - 5), 6);
+	tempurl += n - 5;	/* leave room for ftp:// */
+    }
+
+    ap_snprintf(buf, sizeof(buf), "<HTML><HEAD><TITLE>%s</TITLE></HEAD><BODY><H1>Directory %s</H1><HR><PRE>", tempurl, tempurl);
     bwrite(con->client, buf, strlen(buf));
     if (f2 != NULL) bwrite(f2, buf, strlen(buf));
     total_bytes_sent=strlen(buf);
@@ -480,7 +486,7 @@ proxy_ftp_handler(request_rec *r, struct cache_req *c, char *url)
     i = ftp_getrc(f);
     Explain1("FTP: returned status %d",i);
     if (i == -1) return proxyerror(r, "Error sending to remote server");
-    if (i == 530) return FORBIDDEN;
+    if (i == 530) return proxyerror(r, "Not logged in");
     else if (i != 230 && i != 331) return BAD_GATEWAY;
 	
     if (i == 331) /* send password */
@@ -495,7 +501,8 @@ proxy_ftp_handler(request_rec *r, struct cache_req *c, char *url)
 	i = ftp_getrc(f);
         Explain1("FTP: returned status %d",i);
 	if (i == -1) return proxyerror(r, "Error sending to remote server");
-	if (i == 332 || i == 530) return FORBIDDEN;
+	if (i == 332) return proxyerror(r, "Need account for login");
+	else if (i == 530) return proxyerror(r, "Not logged in");
 	else if (i != 230 && i != 202) return BAD_GATEWAY;
     }  
 
