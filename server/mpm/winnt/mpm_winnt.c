@@ -935,7 +935,6 @@ static PCOMP_CONTEXT winnt_get_connection(PCOMP_CONTEXT context)
         /* If child shutdown has been signaled, clean-up the completion context */
         if (workers_may_exit) {
             CloseHandle(context->Overlapped.hEvent);
-            /* destroy pool */
         }
         else {
             context->accept_socket = INVALID_SOCKET; /* Don't reuse the accept_socket */
@@ -954,13 +953,14 @@ static PCOMP_CONTEXT winnt_get_connection(PCOMP_CONTEXT context)
                                        &CompKey,
                                        &pol,
                                        INFINITE);
+
         if (!rc) {
-            ap_log_error(APLOG_MARK,APLOG_ERR, GetLastError(), server_conf,
-                         "Child %d: - GetQueuedCompletionStatus() failed", my_pid);
             /* During a restart, the new child process can catch 
              * ERROR_OPERATION_ABORTED completion packets
              * posted by the old child process. Just continue...
              */
+            ap_log_error(APLOG_MARK,APLOG_ERR, GetLastError(), server_conf,
+                         "Child %d: - GetQueuedCompletionStatus() failed", my_pid);
             continue;
         }
 
@@ -973,8 +973,9 @@ static PCOMP_CONTEXT winnt_get_connection(PCOMP_CONTEXT context)
         if (CompKey == my_pid) {
             return NULL;
         }
-        if (CompKey != 0)
+        if (CompKey != 0) {
             continue;
+        }
 
         context = (PCOMP_CONTEXT) pol;
         break;
@@ -1212,20 +1213,13 @@ static void child_main()
             /* Something serious is wrong */
             workers_may_exit = 1;
             ap_log_error(APLOG_MARK, APLOG_CRIT, GetLastError(), server_conf,
-                         "Child %d: WaitForMultipeObjects WAIT_FAILED -- doing server shutdown");
-            /* Give a busy server the chance to drain AcceptEx completion contexts
-             * by servicing connections. Note that the setting of workers_may_exit
-             * prevents new AcceptEx completion contexts from being created.
-             */
-            Sleep(1000);
-
-            /* Drain any remaining contexts. May loose a few connections here. */
-            drain_acceptex_complport(AcceptExCompPort, FALSE);
+                         "Child %d: WAIT_FAILED -- shutting down server");
         }
         else if (rv == WAIT_TIMEOUT) {
             /* Hey, this cannot happen */
-            ap_log_error(APLOG_MARK, APLOG_INFO, APR_SUCCESS, server_conf,
-                         "Child %d: Server maintenance...", my_pid);
+            workers_may_exit = 1;
+            ap_log_error(APLOG_MARK, APLOG_CRIT, APR_SUCCESS, server_conf,
+                         "Child %d: WAIT_TIMEOUT -- shutting down server", my_pid);
         }
         else if (cld == 0) {
             /* Exit event was signaled */
@@ -1240,29 +1234,56 @@ static void child_main()
             }
             ResetEvent(maintenance_event);
             ap_log_error(APLOG_MARK, APLOG_INFO, APR_SUCCESS, server_conf,
-                         "Child %d: Child maintenance event signaled...", my_pid);
+                         "Child %d: Child maintenance event signaled.", my_pid);
         }
     }
 
     /* Shutdown the worker threads */
+
     if (osver.dwPlatformId == VER_PLATFORM_WIN32_WINDOWS) {
         for (i = 0; i < nthreads; i++) {
             add_job(-1);
         }
     }
     else { /* Windows NT/2000 */
-        /* Sometimes posted completion contexts intended for this process
-         * are consumed by the new process (during restart). Send a few 
-         * extra to compensate. At worst, this process may hang around
-         * for several minutes because a thread is not exiting because
-         * it is blocked on GetQueuedCompletionStatus.
+        SOCKET nsd;
+        ap_listen_rec *lr;
+        /*
+         * First thing to do is to drain all the completion contexts off the
+         * AcceptEx iocp. Give a busy server the chance to drain 
+         * the port by servicing connections (workers_may_exit prevents new 
+         * AcceptEx completion contexts from being queued to the port).
          */
-        for (i=0; i < 2*nthreads; i++) {
-            if (!PostQueuedCompletionStatus(AcceptExCompPort, 0, my_pid, NULL)) {
-                ap_log_error(APLOG_MARK,APLOG_INFO, APR_SUCCESS, server_conf, 
-                             "PostQueuedCompletionStatus failed");
-            }
+        Sleep(1000);
+
+        /* Cancel any remaining pending async i/o.
+         * This will cause io completion packets to be queued to the
+         * port for any remaining active contexts
+         */
+        for (lr = ap_listeners; lr != NULL; lr = lr->next) {
+            ap_get_os_sock(&nsd,lr->sd);
+            CancelIo(nsd);
         }
+
+        /* Drain the canceled contexts off the port */
+        drain_acceptex_complport(AcceptExCompPort, FALSE);
+
+        /* Hopefully by now, all the completion contexts should be drained 
+         * off the port. There could still be some cancel io completion packets
+         * flying around in the kernel... We will cover this possibility later..
+         * 
+         * Consider using HasOverlappedIoCompleted()...
+         *
+         * Next task is to unblock all the threads blocked on 
+         * GetQueuedCompletionStatus()
+         *
+         */
+        for (i=0; i < nthreads*2; i++) {
+            PostQueuedCompletionStatus(AcceptExCompPort, 0, my_pid, NULL);
+        }
+
+        /* Give the worker threads time to realize they've been posted */
+        Sleep(1000);
     }
 
     /* Release the start_mutex to let the new process (in the restart
