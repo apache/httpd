@@ -535,7 +535,7 @@ AP_DECLARE(void) ap_note_digest_auth_failure(request_rec *r);
  * @param r The current request
  * @param pw The password as set in the headers
  * @return 0 (OK) if it set the 'pw' argument (and assured
- *         a correct value in r->connection->user); otherwise it returns 
+ *         a correct value in r->user); otherwise it returns 
  *         an error code, either HTTP_INTERNAL_SERVER_ERROR if things are 
  *         really confused, HTTP_UNAUTHORIZED if no authentication at all 
  *         seemed to be in use, or DECLINED if there was authentication but 
