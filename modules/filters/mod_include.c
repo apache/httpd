@@ -2466,7 +2466,7 @@ static apr_status_t send_parsed_content(apr_bucket_brigade **bb,
                              (tmp_dptr != APR_BRIGADE_SENTINEL(*bb)));
                 }
 
-                return;
+                return APR_SUCCESS;
             }
 
             /* Can't destroy the tag buckets until I'm done processing
@@ -2609,6 +2609,7 @@ static apr_status_t send_parsed_content(apr_bucket_brigade **bb,
             ctx->bytes_parsed = 0;
         }
     }
+    return APR_SUCCESS;
 }
 
 /*****************************************************************
