@@ -1,5 +1,8 @@
 Changes with Apache 1.3b6
 
+  *) The default for HostnameLookups was changed to Off, but there
+     was a problem and it wasn't taking effect. [Dean Gaudet]
+
   *) PORT: Clean up undefined signals on some platforms (SCO, BeOS).
      [Dean Gaudet]
 

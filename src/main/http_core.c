@@ -503,6 +503,9 @@ API_EXPORT(const char *) get_remote_host(conn_rec *conn, void *dir_config, int t
 	hostname_lookups =
 	    ((core_dir_config *)get_module_config(dir_config, &core_module))
 		->hostname_lookups;
+	if (hostname_lookups == HOSTNAME_LOOKUP_UNSET) {
+	    hostname_lookups = HOSTNAME_LOOKUP_OFF;
+	}
     } else {
 	/* the default */
 	hostname_lookups = HOSTNAME_LOOKUP_OFF;
