@@ -1135,14 +1135,31 @@ AP_DECLARE(int) ap_rwrite(const void *buf, int nbyte, request_rec *r)
 
 AP_DECLARE(int) ap_vrprintf(request_rec *r, const char *fmt, va_list va)
 {
-    char buf[4096];
+    char *buf;
+    int   buf_size = 4096; /* start with a 4k buffer */
     apr_size_t written;
 
     if (r->connection->aborted)
         return -1;
 
-    /* ### fix this mechanism to allow more than 4K of output */
-    written = apr_vsnprintf(buf, sizeof(buf), fmt, va);
+    buf = apr_palloc(r->pool, buf_size);
+    while (1) {
+	written = apr_vsnprintf(buf, buf_size, fmt, va);
+
+	/*
+	 * Per the apr_vsnprintf comments, in no event does apr_snprintf return a negative number.
+	 * Therefore, it's not possible to distinguish between an output which was truncated,
+	 * and an output which exactly filled the buffer.
+	 */
+	if (written == buf_size) {
+	    buf_size *= 2;
+	    buf = apr_palloc(r->pool, buf_size); /* want realloc */
+	}
+	else {
+	    break;
+	}
+    }
+
     if (buffer_output(r, buf, written) != APR_SUCCESS)
         return -1;
 

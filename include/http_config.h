@@ -260,7 +260,7 @@ struct cmd_parms_struct {
     /** Which allow-override bits are set */
     int override;
     /** Which methods are <Limit>ed */
-    int limited;
+    apr_int64_t limited;
     apr_array_header_t *limited_xmethods;
     ap_method_list_t *xlimited;
 

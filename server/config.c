@@ -354,30 +354,18 @@ AP_CORE_DECLARE(int) ap_invoke_handler(request_rec *r)
 
 AP_DECLARE(int) ap_method_is_limited(cmd_parms *cmd, const char *method) {
     int methnum;
-    int i;
-    char **xmethod;
 
     methnum = ap_method_number_of(method);
+
     /*
-     * The simple case: a method hard-coded into Apache.
+     * A method number either hardcoded into apache or
+     * added by a module and registered.
      */
     if (methnum != M_INVALID) {
-	return (methnum & cmd->limited);
+	return  (cmd->limited & (1<<methnum));
     }
-    /*
-     * Some extension method we don't know implicitly.
-     */
-    if ((cmd->limited_xmethods == NULL)
-	|| (cmd->limited_xmethods->nelts == 0)) {
-	return 0;
-    }
-    xmethod = (char **) cmd->limited_xmethods->elts;
-    for (i = 0; i < cmd->limited_xmethods->nelts; ++i) {
-	if (strcmp(method, xmethod[i]) == 0) {
-	    return 1;
-	}
-    }
-    return 0;
+
+    return 0; /* not found */
 }
 
 AP_DECLARE(void) ap_register_hooks(module *m, apr_pool_t *p)

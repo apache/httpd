@@ -1,5 +1,12 @@
 Changes with Apache 2.0.23-dev
 
+  *) Add the ability to extend the methods that Apache understands
+     and have those methods <limit>able in the httpd.conf. It uses 
+     the same bit mask/shifted offset as the original HTTP methods 
+     such as M_GET or M_POST, but expands the total bits from an int to 
+     an ap_int64_t to handle more bits for new request methods than 
+     an int provides.  [Cody Sherr <csherr@covalent.net>]
+
   *) Fix broken mod_mime behavior in merging its arguments.  Possible
      cause of unexplicable crashes introduced in 2.0.20.  [William Rowe]
 

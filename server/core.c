@@ -1466,7 +1466,7 @@ AP_CORE_DECLARE_NONSTD(const char *) ap_limit_section(cmd_parms *cmd, void *dumm
 						  const char *arg) {
     const char *limited_methods = ap_getword(cmd->pool, &arg, '>');
     void *tog = cmd->cmd->cmd_data;
-    int limited = 0;
+    apr_int64_t limited = 0;
     const char *errmsg;
   
     const char *err = ap_check_cmd_context(cmd, NOT_IN_LIMIT);
@@ -1476,46 +1476,21 @@ AP_CORE_DECLARE_NONSTD(const char *) ap_limit_section(cmd_parms *cmd, void *dumm
 
     while (limited_methods[0]) {
         char *method = ap_getword_conf(cmd->pool, &limited_methods);
-        int  methnum = ap_method_number_of(method);
+        int methnum;
+
+        /* check for builtin or module registered method number */
+        methnum = ap_method_number_of(method);
 
         if (methnum == M_TRACE && !tog) {
             return "TRACE cannot be controlled by <Limit>";
         }
         else if (methnum == M_INVALID) {
-	    char **xmethod;
-	    register int i, j, k;
-
-	    /*
-	     * Deal with <Limit> by adding the method to the list.
-	     */
-	    if (!tog) {
-		if (cmd->limited_xmethods == NULL) {
-		    cmd->limited_xmethods = apr_array_make(cmd->pool, 2,
-							   sizeof(char *));
-		}
-		xmethod = (char **) apr_array_push(cmd->limited_xmethods);
-		*xmethod = apr_pstrdup(cmd->pool, method);
-	    }
-	    /*
-	     * <LimitExcept>, so remove any/all occurrences of the method
-	     * in the extension array.
-	     */
-	    else if ((cmd->limited_xmethods != NULL)
-		     && (cmd->limited_xmethods->nelts != 0)) {
-		xmethod = (char **) cmd->limited_xmethods->elts;
-		for (i = 0; i < cmd->limited_xmethods->nelts; i++) {
-		    if (strcmp(xmethod[i], method) == 0) {
-			for (j = i, k = i + 1;
-			     k < cmd->limited_xmethods->nelts;
-			     ++j, ++k) {
-			    xmethod[j] = xmethod[k];
-			}
-			cmd->limited_xmethods->nelts--;
-		    }
-		}
-	    }
+            /* method has not been registered yet, but resorce restriction
+             * is always checked before method handling, so register it.
+             */
+            methnum = ap_method_register(cmd->pool, method);
         }
-	limited |= (1 << methnum);
+        limited |= (1 << methnum);
     }
 
     /* Killing two features with one function,
