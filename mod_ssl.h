@@ -79,6 +79,7 @@
 #include "http_protocol.h"
 #include "util_script.h"
 #include "util_filter.h"
+#include "util_ebcdic.h"
 #include "mpm.h"
 #include "apr.h"
 #include "apr_strings.h"
