@@ -9,7 +9,6 @@
  * and prototypes of OS specific functions defined in os.c or os-inline.c
  */
 
-#define HAVE_CONF_AUTO_H 1
 #include "conf.h"
 
 #if !defined(INLINE) && defined(USE_GNU_INLINE)

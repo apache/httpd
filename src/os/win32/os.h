@@ -9,11 +9,6 @@
  * and prototypes of OS specific functions defined in os.c
  */
 
-/* under WIN32 we have no conf_auto.h */
-#undef HAVE_CONF_AUTO_H
-/* but we provide some entries manually */
-#undef HAVE_UNISTD_H
-
 /* temporarily replace crypt */
 /* char *crypt(const char *pw, const char *salt); */
 #define crypt(buf,salt)	    (buf)
