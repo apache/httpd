@@ -471,13 +471,15 @@ int ap_proxy_http_handler(request_rec *r, cache_req *c, char *url,
 
 /* check if NoCache directive on this host */
     if (nocache == 0) {
-        for (i = 0; i < conf->nocaches->nelts; i++) {
-	    if ((ncent[i].name != NULL && strstr(desthost, ncent[i].name) != NULL)
-	        || destaddr.s_addr == ncent[i].addr.s_addr || ncent[i].name[0] == '*') {
-               nocache = 1;
+	for (i = 0; i < conf->nocaches->nelts; i++) {
+	    if (destaddr.s_addr == ncent[i].addr.s_addr ||
+	        (ncent[i].name != NULL &&
+		  (ncent[i].name[0] == '*' ||
+		   strstr(desthost, ncent[i].name) != NULL))) {
+	       nocache = 1;
 	       break;
 	    }
-        }
+	}
     }
 
     i = ap_proxy_cache_update(c, resp_hdrs, !backasswards, nocache);
