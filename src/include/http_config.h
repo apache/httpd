@@ -361,10 +361,10 @@ CORE_EXPORT(const char *) ap_init_virtual_host(pool *p, const char *hostname,
 				server_rec *main_server, server_rec **);
 void ap_process_resource_config(server_rec *s, char *fname, pool *p, pool *ptemp);
 
-/* check_cmd_context() definitions: */
+/* ap_check_cmd_context() definitions: */
 API_EXPORT(const char *) ap_check_cmd_context(cmd_parms *cmd, unsigned forbidden);
 
-/* check_cmd_context():                  Forbidden in: */
+/* ap_check_cmd_context():              Forbidden in: */
 #define  NOT_IN_VIRTUALHOST     0x01 /* <Virtualhost> */
 #define  NOT_IN_LIMIT           0x02 /* <Limit> */
 #define  NOT_IN_DIRECTORY       0x04 /* <Directory> */
