@@ -345,7 +345,8 @@ static apr_status_t ap_unix_create_privileged_process(
             i++;
 	    }
     }
-    newargs = apr_palloc(p, sizeof(char *) * (i + 4));
+    /* allocate space for 4 new args, the input args, and a null terminator */
+    newargs = apr_palloc(p, sizeof(char *) * (i + 5));
     newprogname = SUEXEC_BIN;
     newargs[0] = SUEXEC_BIN;
     newargs[1] = execuser;
