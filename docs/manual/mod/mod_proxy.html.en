@@ -209,7 +209,7 @@
     in my browser's URL line?</a></h3>
       <p>To log in to an FTP server by username and password, Apache uses
       different strategies. In absense of a user name and password in the URL
-      altogether, Apache sends an anomymous login to the FTP server,
+      altogether, Apache sends an anonymous login to the FTP server,
       <em>i.e.</em>,</p>
 
       <div class="example"><p><code>
