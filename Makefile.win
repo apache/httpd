@@ -102,10 +102,10 @@ _build:
 	 $(MAKE) $(MAKEOPT) -f mod_file_cache.mak CFG="mod_file_cache - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	cd ..\..
 	cd modules\dav\main
-#	 $(MAKE) $(MAKEOPT) -f mod_dav.mak CFG="mod_dav - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+	 $(MAKE) $(MAKEOPT) -f mod_dav.mak CFG="mod_dav - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	cd ..\..\..
 	cd modules\dav\fs
-#	 $(MAKE) $(MAKEOPT) -f mod_dav_fs.mak CFG="mod_dav_fs - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+	 $(MAKE) $(MAKEOPT) -f mod_dav_fs.mak CFG="mod_dav_fs - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	cd ..\..\..
 	cd modules\generators
 #        $(MAKE) $(MAKEOPT) -f mod_info.mak CFG"=mod_info - Win32 $(LONG)" RECURSE=0 $(CTARGET)
@@ -147,8 +147,8 @@ _install:
 	copy modules\aaa\mod_auth_dbm$(SHORT)\mod_auth_dbm.dll $(INSTDIR)\modules
 	copy modules\aaa\mod_auth_digest$(SHORT)\mod_auth_digest.dll $(INSTDIR)\modules
 	copy modules\cache\mod_file_cache$(SHORT)\mod_file_cache.dll $(INSTDIR)\modules
-#       copy modules\dav\fs\mod_dav_fs$(SHORT)\mod_dav_fs.dll $(INSTDIR)\modules
-#       copy modules\dav\main\mod_dav$(SHORT)\mod_dav.dll $(INSTDIR)\modules
+        copy modules\dav\fs\mod_dav_fs$(SHORT)\mod_dav_fs.dll $(INSTDIR)\modules
+        copy modules\dav\main\mod_dav$(SHORT)\mod_dav.dll $(INSTDIR)\modules
 #       copy modules\generators\mod_info$(SHORT)\mod_info.dll $(INSTDIR)\modules
         copy modules\generators\mod_status$(SHORT)\mod_status.dll $(INSTDIR)\modules
         copy modules\mappers\mod_rewrite$(SHORT)\mod_rewrite.dll $(INSTDIR)\modules
