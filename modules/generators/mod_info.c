@@ -408,8 +408,6 @@ static int display_info(request_rec *r)
             ap_rprintf(r, "<strong>API Version:</strong> "
                         "<tt>%d:%d</tt><br>\n",
                         MODULE_MAGIC_NUMBER_MAJOR, MODULE_MAGIC_NUMBER_MINOR);
-            ap_rprintf(r, "<strong>Run Mode:</strong> <tt>%s</tt><br>\n",
-                        (ap_standalone ? "standalone" : "inetd"));
             ap_rprintf(r, "<strong>User/Group:</strong> "
                         "<tt>%s(%d)/%d</tt><br>\n",
                         ap_user_name, (int) ap_user_id, (int) ap_group_id);
@@ -433,9 +431,6 @@ static int display_info(request_rec *r)
             ap_rprintf(r, "<strong>Threads:</strong> "
                         "<tt>per child: %d &nbsp;&nbsp; </tt><br>\n",
                         ap_threads_per_child);
-            ap_rprintf(r, "<strong>Excess requests:</strong> "
-                        "<tt>per child: %d &nbsp;&nbsp; </tt><br>\n",
-                        ap_excess_requests_per_child);
             ap_rprintf(r, "<strong>Timeouts:</strong> "
                         "<tt>connection: %d &nbsp;&nbsp; "
                         "keep-alive: %d</tt><br>",
