@@ -81,11 +81,9 @@ struct fd_queue_t {
     int                 tail;
     fd_queue_elem_t    *data;
     int                 bounds;
-    int                 blanks;
     apr_thread_mutex_t *one_big_mutex;
     apr_thread_cond_t  *not_empty;
     apr_thread_cond_t  *not_full;
-    int                 cancel_state;
     apr_pool_t        **recycled_pools;
     int                 num_recycled;
 };
