@@ -41,7 +41,7 @@
 <li><img alt="" src="./images/down.gif" /> <a href="#misc">Weitere Apache-Dokumentationen</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#modules">Apache-Module</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#developer">Dokumentation für Entwickler</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#descriptive">Beschreibende Informationen</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#index">Glossar und Index</a></li>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
@@ -89,8 +89,8 @@
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section"><h2><a name="faq" id="faq">Häufig gestellte Fragen (FAQ)</a></h2>
 <ul><li><a href="faq/">Übersicht</a></li>
-<li class="separate"><a href="faq/all_in_one.html">Alle auf einer Seite</a></li>
 <li><a href="faq/support.html">Support</a></li>
+<li><a href="faq/error.html">Fehlermeldungen</a></li>
 </ul>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section"><h2><a name="ssl" id="ssl">SSL/TLS-Verschlüsselung des Apache</a></h2>
@@ -145,12 +145,12 @@ HPUX betreiben</a></li>
 <li><a href="misc/known_client_problems.html">Bekannte Client-Probleme</a></li>
 <li><a href="misc/descriptors.html">Deskriptoren und Apache</a></li>
 <li><a href="cgi_path.html">PATH_INFO-Änderungen in der CGI-Umgebung</a></li>
+<li><a href="misc/relevant_standards.html">Wichtige Standards</a></li>
 </ul>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section"><h2><a name="modules" id="modules">Apache-Module</a></h2>
-<ul><li><a href="mod/">Modul-Index</a></li>
-<li><a href="mod/directives.html">Direktiven-Index</a></li>
-<li><a href="mod/quickreference.html">Kurzreferenz der Direktiven</a></li>
+<ul><li><a href="mod/module-dict.html">Erklärung der Fachbegriffe zu Apache-Modulen</a></li>
+<li><a href="mod/directive-dict.html">Erklärung der Fachbegriffe zu Apache-Direktiven</a></li>
 </ul><ul><li><a href="mod/core.html">Apache-Kernfunktionen</a></li>
 <li><a href="mod/mpm_common.html">Allgemeine Direktiven der Apache-MPMs</a></li>
 <li><a href="mod/beos.html">Apache-MPM beos</a></li>
@@ -221,7 +221,7 @@ HPUX betreiben</a></li>
 <div class="section"><h2><a name="developer" id="developer">Dokumentation für Entwickler</a></h2>
 <ul><li class="separate"><a href="developer/">Übersicht</a></li>
 <li><a href="developer/API.html">Anmerkungen zur Apache-API</a></li>
-<li><a href="developer/debugging.html">Debuggen der Speicher-Belegung in der APR </a></li>
+<li><a href="developer/debugging.html">Debuggen der Speicher-Belegung in der APR</a></li>
 <li><a href="developer/documenting.html">Apache 2.0 dokumentieren</a></li>
 <li><a href="developer/hooks.html">Hook-Funktionen des Apache 2.0 </a></li>
 <li><a href="developer/modules.html">Module von Apache 1.3 nach Apache 2.0 konvertieren</a></li>
@@ -229,11 +229,11 @@ HPUX betreiben</a></li>
 <li><a href="developer/filters.html">Wie Filter im Apache 2.0 arbeiten</a></li>
 </ul>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
-<div class="section"><h2><a name="descriptive" id="descriptive">Beschreibende Informationen</a></h2>
-<ul><li><a href="mod/module-dict.html">Erklärung der Fachbegriffe zu Apache-Modulen</a></li>
-<li><a href="mod/directive-dict.html">Erklärung der Fachbegriffe zu Apache-Direktiven</a></li>
-<li><a href="glossary.html">Glossar</a></li>
-<li>Seitenindex (dieses Dokument)</li>
+<div class="section"><h2><a name="index" id="index">Glossar und Index</a></h2>
+<ul><li><a href="glossary.html">Glossar</a></li>
+<li><a href="mod/">Modul-Index</a></li>
+<li><a href="mod/directives.html">Direktiven-Index</a></li>
+<li><a href="mod/quickreference.html">Kurzreferenz der Direktiven</a></li>
 </ul>
 </div></div>
 <div class="bottomlang">
