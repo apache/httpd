@@ -25,7 +25,7 @@ HTTP headers</dd><dt><a href="mod_auth.html">mod_auth</a></dt><dd>$B%F%-%9%H%U%
     files</dd><dt><a href="mod_auth_digest.html">mod_auth_digest</a></dt><dd>User authentication using MD5
     Digest Authentication.</dd><dt><a href="mod_autoindex.html">mod_autoindex</a></dt><dd>Unix $B$N(B <em>ls</em> $B%3%^%s%I$d(B
     Win32 $B$N(B <em>dir</em> $B%7%'%k%3%^%s%I$K;w$?(B
-    $B%G(B$B%#%l%/%H%j%$%s%G%C%/%9$r@8@.$9$k(B</dd><dt><a href="mod_cache.html">mod_cache</a></dt><dd>Content cache keyed to URIs</dd><dt><a href="mod_cern_meta.html">mod_cern_meta</a></dt><dd>CERN httpd metafile semantics</dd><dt><a href="mod_cgi.html">mod_cgi</a></dt><dd>Execution of CGI scripts</dd><dt><a href="mod_cgid.html">mod_cgid</a></dt><dd>Execution of CGI scripts using an
+    $B%G(B$B%#%l%/%H%j%$%s%G%C%/%9$r@8@.$9$k(B</dd><dt><a href="mod_cache.html">mod_cache</a></dt><dd>Content cache keyed to URIs.</dd><dt><a href="mod_cern_meta.html">mod_cern_meta</a></dt><dd>CERN httpd metafile semantics</dd><dt><a href="mod_cgi.html">mod_cgi</a></dt><dd>Execution of CGI scripts</dd><dt><a href="mod_cgid.html">mod_cgid</a></dt><dd>Execution of CGI scripts using an
     external CGI daemon</dd><dt><a href="mod_charset_lite.html">mod_charset_lite</a></dt><dd>Specify character set translation or recoding</dd><dt><a href="mod_dav.html">mod_dav</a></dt><dd>$BJ,;6%*!<%5%j%s%0$H%P!<%8%g%s4IM}(B
 (<a href="http://www.webdav.org/">WebDAV</a>) $B5!G=(B</dd><dt><a href="mod_deflate.html">mod_deflate</a></dt><dd>Compress content before
     it is delivered to the client</dd><dt><a href="mod_dir.html">mod_dir</a></dt><dd>$B!V:G8e$N%9%i%C%7%e!W$N%j%@%$%l%/%H$H!"%G%#(B$B%l%/%H%j$N(B

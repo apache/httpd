@@ -25,7 +25,7 @@ HTTP headers</dd><dt><a href="mod_auth.html">mod_auth</a></dt><dd>User authentic
     files</dd><dt><a href="mod_auth_digest.html">mod_auth_digest</a></dt><dd>User authentication using MD5
     Digest Authentication.</dd><dt><a href="mod_autoindex.html">mod_autoindex</a></dt><dd>Generates directory indexes,
     automatically, similar to the Unix <em>ls</em> command or the
-    Win32 <em>dir</em> shell command</dd><dt><a href="mod_cache.html">mod_cache</a></dt><dd>Content cache keyed to URIs</dd><dt><a href="mod_cern_meta.html">mod_cern_meta</a></dt><dd>CERN httpd metafile semantics</dd><dt><a href="mod_cgi.html">mod_cgi</a></dt><dd>Execution of CGI scripts</dd><dt><a href="mod_cgid.html">mod_cgid</a></dt><dd>Execution of CGI scripts using an
+    Win32 <em>dir</em> shell command</dd><dt><a href="mod_cache.html">mod_cache</a></dt><dd>Content cache keyed to URIs.</dd><dt><a href="mod_cern_meta.html">mod_cern_meta</a></dt><dd>CERN httpd metafile semantics</dd><dt><a href="mod_cgi.html">mod_cgi</a></dt><dd>Execution of CGI scripts</dd><dt><a href="mod_cgid.html">mod_cgid</a></dt><dd>Execution of CGI scripts using an
     external CGI daemon</dd><dt><a href="mod_charset_lite.html">mod_charset_lite</a></dt><dd>Specify character set translation or recoding</dd><dt><a href="mod_dav.html">mod_dav</a></dt><dd>Distributed Authoring and Versioning
 (<a href="http://www.webdav.org/">WebDAV</a>) functionality</dd><dt><a href="mod_deflate.html">mod_deflate</a></dt><dd>Compress content before
     it is delivered to the client</dd><dt><a href="mod_dir.html">mod_dir</a></dt><dd>Provides for "trailing slash" redirects and

@@ -2272,6 +2272,7 @@ is accessed by an incompatible browser</description>
     module="core">ServerAdmin</directive> of the referenced
     document.</p>
 </usage>
+<seealso><directive module="core">ServerTokens</directive></seealso>
 </directivesynopsis>
 
 <directivesynopsis>
@@ -2312,6 +2313,7 @@ is accessed by an incompatible browser</description>
     <p>This setting applies to the entire server, and cannot be
     enabled or disabled on a virtualhost-by-virtualhost basis.</p>
 </usage>
+<seealso><directive module="core">ServerSignature</directive></seealso>
 </directivesynopsis>
 
 <directivesynopsis>
