@@ -62,6 +62,8 @@
 #include "ap_hooks.h"
 #include "apr_portable.h"
 #include "apr_mmap.h"
+#include "util_filter.h"
+#include "ap_buckets.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -543,6 +545,8 @@ API_EXPORT(int) ap_method_number_of(const char *method);
  * @deffunc const char *ap_method_name_of(int methnum)
  */
 API_EXPORT(const char *) ap_method_name_of(int methnum);
+
+int http_filter(ap_filter_t *f, ap_bucket_brigade *b);
 
   /* Hooks */
   /*
