@@ -1,4 +1,4 @@
-Changes with Apache 1.2
+Changes with Apache 1.2b9
 
   *) Fix problem with scripts not receiving a SIGPIPE when client drops
      the connection (e.g., when user presses Stop).  Apache will now stop
@@ -6,8 +6,10 @@ Changes with Apache 1.2
      [Roy Fielding and Nathan Kurz] PR#335
 
   *) Rearrange Configuration.tmpl so that mod_rewrite has higher priority
-     than mod_alias, and mod_alias has higher priority than mod_proxy.
-     [Sameer Parekh]
+     than mod_alias, and mod_alias has higher priority than mod_proxy;
+     rearranged all modules to enhance understanding of their purpose
+     and relative order (and maybe even reduce some overhead).
+     [Roy Fielding and Sameer Parekh]
 
   *) Fix graceful restart.  Eliminate many signal-related race
      conditions in both forms of restart, and in SIGTERM.  See
@@ -16,8 +18,7 @@ Changes with Apache 1.2
 
   *) Fix memory leaks in mod_rewrite, mod_browser, mod_include.  Tune
      memory allocator to avoid a behaviour that required extra blocks to
-     be allocated.
-     [Dean Gaudet]
+     be allocated.  [Dean Gaudet]
 
   *) Allow suexec to access files relative to current directory but not
      above.  (Excluding leading / or any .. directory.)  [Ken Coar]
@@ -79,8 +80,7 @@ Changes with Apache 1.2
   *) Updated mod_rewrite to 3.0.4: Fixes HTTP redirects from within
      .htaccess files because the RewriteBase was not replaced correctly.
      Updated mod_rewrite to 3.0.5: Fixes problem with rewriting inside
-     <Directory> sections missing a trailing /.
-     [Ralf S. Engelschall]
+     <Directory> sections missing a trailing /.  [Ralf S. Engelschall]
 
   *) Clean up Linux settings in conf.h by detecting 2.x versus 1.x.  For
      1.x the settings are those of pre-1.2b8.  For 2.x we include
