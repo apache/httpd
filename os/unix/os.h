@@ -77,6 +77,8 @@
 #define INLINE extern ap_inline
 
 INLINE int ap_os_is_path_absolute(const char *file);
+/* spawn = fork + exec on unix */
+INLINE int ap_spawnvp(const char *file, char *const argv[]);
 
 #include "os-inline.c"
 
@@ -86,6 +88,7 @@ INLINE int ap_os_is_path_absolute(const char *file);
  * as normal
  */
 extern int ap_os_is_path_absolute(const char *file);
+extern int ap_spawnvp(const char *file, char *const argv[]);
 #endif
 
 /* Other ap_os_ routines not used by this platform */
