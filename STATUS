@@ -1,15 +1,15 @@
   1.3 STATUS:
-  Last modified at [$Date: 2000/01/11 16:21:24 $]
+  Last modified at [$Date: 2000/01/11 19:25:24 $]
 
 Release:
 
     1.3.10-dev: Current. We will try to release on 1/14/2000. As such,
            only bug-fixes and doc changes will be allowed.
            Timeline:
-            1/11/2000: Code freeze. No changes at all.
-            1/12/2000: tag and roll tarball
-            1/14/2000: Release and announce
-            1/16/2000: Re-open CVS (delay "just in case")
+            1/12/2000: Code freeze. No changes at all.
+            1/13/2000: tag and roll tarball
+            1/17/2000: Release and announce
+            1/19/2000: Re-open CVS (delay "just in case")
     1.3.9: Tagged and rolled on Aug. 16. Released and announced on 19th.
     1.3.8: Not released.
     1.3.7: Not released.
@@ -34,15 +34,20 @@ RELEASE SHOWSTOPPERS:
 	fix PR4974 has broken this again. Please see:
 	  <NDBBKAGGKAPKFAECGCAGIEJACAAA.krw@raleigh.ibm.com>
 	UPDATE: Ryan suggested that SHLIB_SUFFIX_NAME=sl be backed
-	 out. Jim has done this. With this fix, we no longer
-	 consider this a show-stopper, but we are leaving this here
-	 so people look at this and double check.
+	 out. Jim has done this. However, there is still debate
+	 on the correct fix. ALL patches regarding this MUST
+	 be verified on a HPUX machine.
 
     * HPUX build failure without -Ae provided to HPUX compiler as a CFLAG.
       The error message states this flag is required for "long long" types
       to be recognized by HPUX's compiler
         Ryan submitted a patch for this problem
         STATUS:  Ryan +1, Jim, +1
+
+    * There is a Netware patch which should be applied. We've let
+      Netware hang too long. Patch by Mike Gardiner <MGARDINER@novell.com>
+        Message-ID: <s8760566.026@prv-mail20.provo.novell.com>
+	STATUS: Bill +1, Ryan +1
 
 RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
 
