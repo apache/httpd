@@ -1,5 +1,8 @@
 Changes with Apache 1.3.7
 
+  *) PORT: deal with UTS compiler error in http_protocol.c
+     [Dave Dykstra <dwd@bell-labs.com>] PR#4189
+
   *) Add ap_vrprintf() function.  [John Tobey <jtobey@banta-im.com>] PR#4246
 
   *) Fix the mod_mime hash table to work properly with locales other
