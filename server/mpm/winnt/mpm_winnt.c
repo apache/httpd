@@ -737,7 +737,7 @@ static void accept_and_queue_connections(void * dummy)
         } while (csd < 0 && APR_STATUS_IS_EINTR(apr_get_netos_error()));
 
 	if (csd < 0) {
-            if (apr_get_netos_error() == APR_FROM_OS_ERROR(WSAECONNABORTED)) {
+            if (APR_STATUS_IS_ECONNABORTED(apr_get_netos_error())) {
 		ap_log_error(APLOG_MARK, APLOG_ERR, apr_get_netos_error(), server_conf,
 			    "accept: (client socket)");
             }
