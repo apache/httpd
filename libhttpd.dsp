@@ -241,6 +241,35 @@ InputPath=.\modules\dav\main\mod_dav.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\modules\mappers\mod_so.h
+
+!IF  "$(CFG)" == "libhttpd - Win32 Release"
+
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Creating include/mod_so.h
+InputPath=.\modules\mappers\mod_so.h
+
+".\include\mod_so.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	type .\modules\mappers\mod_so.h > .\include\mod_so.h
+
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "libhttpd - Win32 Debug"
+
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Creating include/mod_so.h
+InputPath=.\modules\mappers\mod_so.h
+
+".\include\mod_so.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	type .\modules\mappers\mod_so.h > .\include\mod_so.h
+
+# End Custom Build
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
 SOURCE=.\modules\filters\mod_include.h
 
 !IF  "$(CFG)" == "libhttpd - Win32 Release"

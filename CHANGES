@@ -2,6 +2,9 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) <IfModule> now recognizes the module identifier in addition to the
+     file name. PR 29003.  [Edward Rudd <eddie omegaware.com>, André Malo]
+
   *) mod_ssl: Add "SSLUserName" directive to set r->user based on a
      chosen SSL environment variable.  PR 20957. 
      [Martin v. Loewis <martin v.loewis.de>]

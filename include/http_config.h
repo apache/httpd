@@ -705,6 +705,14 @@ AP_DECLARE(const char *) ap_check_cmd_context(cmd_parms *cmd,
 #ifdef CORE_PRIVATE
 
 /**
+ * This structure is used to assign symbol names to module pointers
+ */
+typedef struct {
+    const char *name;
+    module *modp;
+} ap_module_symbol_t;
+
+/**
  * The topmost module in the list
  * @defvar module *ap_top_module
  */
@@ -715,6 +723,11 @@ AP_DECLARE_DATA extern module *ap_top_module;
  * @defvar module *ap_prelinked_modules[]
  */
 AP_DECLARE_DATA extern module *ap_prelinked_modules[];
+/**
+ * Array of all statically linked modulenames (symbols)
+ * @defvar ap_module_symbol_t ap_prelinked_modulenames[]
+ */
+AP_DECLARE_DATA extern ap_module_symbol_t ap_prelinked_module_symbols[];
 /**
  * Array of all preloaded modules
  * @defvar module *ap_preloaded_modules[]

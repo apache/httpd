@@ -48,6 +48,8 @@
 #include "mod_proxy.h"
 #include "ap_listen.h"
 
+#include "mod_so.h" /* for ap_find_loaded_module_symbol */
+
 /* LimitRequestBody handling */
 #define AP_LIMIT_REQ_BODY_UNSET         ((apr_off_t) -1)
 #define AP_DEFAULT_LIMIT_REQ_BODY       ((apr_off_t) 0)
@@ -1895,6 +1897,28 @@ static const char *start_ifmod(cmd_parms *cmd, void *mconfig, const char *arg)
     }
 
     found = ap_find_linked_module(arg);
+
+    /* search prelinked stuff */
+    if (!found) {
+        ap_module_symbol_t *current = ap_prelinked_module_symbols;
+
+        for (; current->name; ++current) {
+            if (!strcmp(current->name, arg)) {
+                found = current->modp;
+                break;
+            }
+        }
+    }
+
+    /* search dynamic stuff */
+    if (!found) {
+        APR_OPTIONAL_FN_TYPE(ap_find_loaded_module_symbol) *check_symbol =
+            APR_RETRIEVE_OPTIONAL_FN(ap_find_loaded_module_symbol);
+
+        if (check_symbol) {
+            found = check_symbol(cmd->server, arg);
+        }
+    }
 
     if ((!not && found) || (not && !found)) {
         ap_directive_t *parent = NULL;

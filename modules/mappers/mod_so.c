@@ -94,6 +94,8 @@
 #include "http_log.h"
 #include "ap_config.h"
 
+#include "mod_so.h"
+
 module AP_MODULE_DECLARE_DATA so_module;
 
 
@@ -101,11 +103,6 @@ module AP_MODULE_DECLARE_DATA so_module;
  * Server configuration to keep track of actually
  * loaded modules and the corresponding module name.
  */
-
-typedef struct moduleinfo {
-    const char *name;
-    module *modp;
-} moduleinfo;
 
 typedef struct so_server_conf {
     apr_array_header_t *loaded_modules;
@@ -117,7 +114,7 @@ static void *so_sconf_create(apr_pool_t *p, server_rec *s)
 
     soc = (so_server_conf *)apr_pcalloc(p, sizeof(so_server_conf));
     soc->loaded_modules = apr_array_make(p, DYNAMIC_MODULE_LIMIT, 
-                                     sizeof(moduleinfo));
+                                     sizeof(ap_module_symbol_t));
 
     return (void *)soc;
 }
@@ -131,7 +128,7 @@ static void *so_sconf_create(apr_pool_t *p, server_rec *s)
 
 static apr_status_t unload_module(void *data)
 {
-    moduleinfo *modi = (moduleinfo*)data;
+    ap_module_symbol_t *modi = (ap_module_symbol_t*)data;
 
     /* only unload if module information is still existing */
     if (modi->modp == NULL)
@@ -159,8 +156,8 @@ static const char *load_module(cmd_parms *cmd, void *dummy,
     module *modp;
     const char *szModuleFile = ap_server_root_relative(cmd->pool, filename);
     so_server_conf *sconf;
-    moduleinfo *modi;
-    moduleinfo *modie;
+    ap_module_symbol_t *modi;
+    ap_module_symbol_t *modie;
     int i;
     const char *error;
 
@@ -182,7 +179,7 @@ static const char *load_module(cmd_parms *cmd, void *dummy,
      */
     sconf = (so_server_conf *)ap_get_module_config(cmd->server->module_config, 
 	                                        &so_module);
-    modie = (moduleinfo *)sconf->loaded_modules->elts;
+    modie = (ap_module_symbol_t *)sconf->loaded_modules->elts;
     for (i = 0; i < sconf->loaded_modules->nelts; i++) {
         modi = &modie[i];
         if (modi->name != NULL && strcmp(modi->name, modname) == 0) {
@@ -330,6 +327,26 @@ static const char *load_file(cmd_parms *cmd, void *dummy, const char *filename)
     return NULL;
 }
 
+static module *ap_find_loaded_module_symbol(server_rec *s, const char *modname)
+{
+    so_server_conf *sconf;
+    ap_module_symbol_t *modi;
+    ap_module_symbol_t *modie;
+    int i;
+
+    sconf = (so_server_conf *)ap_get_module_config(s->module_config, 
+                                                   &so_module);
+    modie = (ap_module_symbol_t *)sconf->loaded_modules->elts;
+
+    for (i = 0; i < sconf->loaded_modules->nelts; i++) {
+        modi = &modie[i];
+        if (modi->name != NULL && strcmp(modi->name, modname) == 0) {
+            return modi->modp;
+        }
+    }
+    return NULL;
+}
+
 #else /* not NO_DLOPEN */
 
 static const char *load_file(cmd_parms *cmd, void *dummy, const char *filename)
@@ -349,6 +366,13 @@ static const char *load_module(cmd_parms *cmd, void *dummy,
 
 #endif /* NO_DLOPEN */
 
+static void register_hooks(apr_pool_t *p)
+{
+#ifndef NO_DLOPEN
+    APR_REGISTER_OPTIONAL_FN(ap_find_loaded_module_symbol);
+#endif
+}
+
 static const command_rec so_cmds[] = {
     AP_INIT_TAKE2("LoadModule", load_module, NULL, RSRC_CONF | EXEC_ON_READ,
       "a module name and the name of a shared object file to load it from"),
@@ -364,5 +388,5 @@ module AP_MODULE_DECLARE_DATA so_module = {
    so_sconf_create,		/* server config */
    NULL,			    /* merge server config */
    so_cmds,			    /* command apr_table_t */
-   NULL				    /* register hooks */
+   register_hooks	    /* register hooks */
 };
