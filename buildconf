@@ -105,3 +105,28 @@ else
     echo "buildconf: created or modified configure"
 fi
 
+# Now do APR...
+
+echo "buildconf: setting up APR"
+
+cd lib/apr
+
+mv configure configure.old 2>/dev/null
+autoconf
+if cmp configure.old configure > /dev/null 2>&1; then
+    echo "buildconf: keeping configure"
+    mv configure.old configure
+else
+    echo "buildconf: created or modified configure"
+fi
+
+cd ../..
+
+# Now run the configs...
+
+rm config.cache
+./configure
+
+cd lib/apr
+rm config.cache
+./configure
