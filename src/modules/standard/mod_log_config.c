@@ -120,6 +120,10 @@
  * %...B:  bytes sent, excluding HTTP headers.
  * %...b:  bytes sent, excluding HTTP headers in CLF format, i.e. a '-'
  *         when no bytes where sent (rather than a '0'.
+ * %...c:  Status of the connection.
+ *         'X' = connection aborted before the response completed.
+ *         '+' = connection may be kept alive after the response is sent.
+ *         '-' = connection will be closed after the response is sent.
  * %...{FOOBAR}e:  The contents of the environment variable FOOBAR
  * %...f:  filename
  * %...h:  remote host
@@ -465,7 +469,18 @@ static const char *log_child_pid(request_rec *r, char *a)
 {
     return ap_psprintf(r->pool, "%ld", (long) getpid());
 }
+static const char *log_connection_status(request_rec *r, char *a)
+{
+    if (r->connection->aborted)
+        return "X";
 
+    if ((r->connection->keepalive) &&
+        ((r->server->keep_alive_max - r->connection->keepalives) > 0)) {
+        return "+";
+    }
+
+    return "-";
+}
 /*****************************************************************
  *
  * Parsing the log format string
@@ -548,6 +563,9 @@ static struct log_item_list {
     },
     {
         'q', log_request_query, 0
+    },
+    {
+        'c', log_connection_status, 0
     },
     {
         '\0'

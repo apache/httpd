@@ -1,5 +1,12 @@
 Changes with Apache 1.3.15
 
+  *) Add a new LogFormat directive, %c, that will log connection
+     status at the end of the response as follows:
+     'X' - connection aborted before the response completed.
+     '+' - connection may be kept-alive by the server.
+     '-' - connection will be closed by the server.
+     [Bill Stoddard <stoddard@apache.org>]
+     
   *) Normalize all NetWare config directive paths and filespecs to
      their canonical names.  [Brad Nicholes <bnicholes@novell.com>]
 
