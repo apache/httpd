@@ -45,11 +45,11 @@ always available.
 <li><A HREF="#port">Port</A>
 <li><A HREF="#require">require</A>
 <li><A HREF="#resourceconfig">ResourceConfig</A>
-<li>RLimitCPU
-<li>RLimitMEM
-<li>RLimitNPROC
+<li><A HREF="#rlimitcpu">RLimitCPU</A>
+<li><A HREF="#rlimitmem">RLimitMEM</A>
+<li><A HREF="#rlimitnproc">RLimitNPROC</A>
 <li>Satisfy
-<li><A HREF="#sendbuffersize>SendBufferSize</A>
+<li><A HREF="#sendbuffersize">SendBufferSize</A>
 <li><A HREF="#serveradmin">ServerAdmin</A>
 <li><A HREF="#serveralias">ServerAlias</A>
 <li><A HREF="#servername">ServerName</A>
@@ -410,7 +410,7 @@ the directory being applied will be prefixed automatically.
 <!--%plaintext &lt;?INDEX {\tt Group} directive&gt; -->
 <strong>Syntax:</strong> Group <em>unix-group</em><br>
 <strong>Default:</strong> <code>Group #-1</code><br>
-<strong>Context:</strong> server config<br>
+<strong>Context:</strong> server config, virtual host<br>
 <strong>Status:</strong> core<p>
 
 The Group directive sets the group under which the server will answer requests.
@@ -430,6 +430,9 @@ possible or desirable.<p>
 Note: if you start the server as a non-root user, it will fail to change
 to the specified, and will instead continue to run as the group of the
 original user. <p>
+
+Special note: Use of this directive in &lt;VirtualHost&gt; requires a
+properly configured <A HREF="suexec">SUEXEC wrapper</A>.<p>
 
 SECURITY: See <A HREF="#user">User</A> for a discussion of the security
 considerations.<p><hr>
@@ -865,6 +868,66 @@ sections; in fact it can now contain any server directive allowed in the
 
 See also <A HREF="#accessconfig">AccessConfig</A>.<p><hr>
 
+<A name="rlimit">
+<A name="rlimitcpu"><h2>RLimitCPU directive</h2></A>
+<!--%plaintext &lt;?INDEX {\tt RLimitCPU} directive&gt; -->
+<strong>Syntax:</strong> RLimitCPU <em># or 'max'</em> <em>[# or 'max']</em><br>
+<strong>Default:</strong> <code>Unset uses operating system defaults</code><br>
+<strong>Context:</strong> server config, virtual host<br>
+<strong>Status:</strong> core<p>
+
+Takes 1 or 2 parameters. The first parameter sets the soft resource limit for all
+processes and the second parameter sets the maximum resource limit. Either parameter
+can be a number, or <em>max</em> to indicate to the server that the limit should
+be set to the maximum allowed by the operating system configuration. Raising the
+maximum resource limit requires that the server is running as root, or in the initial
+startup phase.<p>
+
+CPU resource limits are expressed in seconds per process.<p>
+
+See also <A HREF="#rlimitmem">RLimitMEM</A> or <A HREF="#rlimitnproc">RLimitNPROC</A>.<p><hr>
+
+<A name="rlimitmem"><h2>RLimitMEM directive</h2></A>
+<!--%plaintext &lt;?INDEX {\tt RLimitMEM} directive&gt; -->
+<strong>Syntax:</strong> RLimitMEM <em># or 'max'</em> <em>[# or 'max']</em><br>
+<strong>Default:</strong> <code>Unset uses operating system defaults</code><br>
+<strong>Context:</strong> server config, virtual host<br>
+<strong>Status:</strong> core<p>
+
+Takes 1 or 2 parameters. The first parameter sets the soft resource limit for all
+processes and the second parameter sets the maximum resource limit. Either parameter
+can be a number, or <em>max</em> to indicate to the server that the limit should
+be set to the maximum allowed by the operating system configuration. Raising the
+maximum resource limit requires that the server is running as root, or in the initial
+startup phase.<p>
+
+Memory resource limits are expressed in bytes per process.<p>
+
+See also <A HREF="#rlimitcpu">RLimitCPU</A> or <A HREF="#rlimitnproc">RLimitNPROC</A>.<p><hr>
+
+<A name="rlimitnproc"><h2>RLimitNPROC directive</h2></A>
+<!--%plaintext &lt;?INDEX {\tt RLimitNPROC} directive&gt; -->
+<strong>Syntax:</strong> RLimitNPROC <em># or 'max'</em> <em>[# or 'max']</em><br>
+<strong>Default:</strong> <code>Unset uses operating system defaults</code><br>
+<strong>Context:</strong> server config, virtual host<br>
+<strong>Status:</strong> core<p>
+
+Takes 1 or 2 parameters. The first parameter sets the soft resource limit for all
+processes and the second parameter sets the maximum resource limit. Either parameter
+can be a number, or <em>max</em> to indicate to the server that the limit should
+be set to the maximum allowed by the operating system configuration. Raising the
+maximum resource limit requires that the server is running as root, or in the initial
+startup phase.<p>
+
+Process limits control the number of processes per user.<p>
+
+Note: If CGI processes are <b>not</b> running under userids other than the
+webserver userid, this directive will limit the number of processes that the
+server itself can create. Evidence of this situation will be indicated by
+<b><em>cannot fork</em></b> messages in the error_log.<p>
+
+See also <A HREF="#rlimitmem">RLimitMEM</A> or <A HREF="#rlimitcpu">RLimitCPU</A>.<p><hr>
+
 <A name="sendbuffersize"><h2>SendBufferSize</h2></A>
 <!--%plaintext &lt;?INDEX {\tt AccessConfig} directive&gt; -->
 <strong>Syntax:</strong> SendBufferSize <em>bytes</em><br>
@@ -1009,7 +1072,7 @@ transfer times can be large.
 <!--%plaintext &lt;?INDEX {\tt User} directive&gt; -->
 <strong>Syntax:</strong> User <em>unix-userid</em><br>
 <strong>Default:</strong> <code>User #-1</code><br>
-<strong>Context:</strong> server config<br>
+<strong>Context:</strong> server config, virtual host<br>
 <strong>Status:</strong> core<p>
 
 The User directive sets the userid as which the server will answer requests.
@@ -1033,6 +1096,9 @@ Notes: If you start the server as a non-root user, it will fail to change
 to the lesser privileged user, and will instead continue to run as
 that original user. If you do start the server as root, then it is normal
 for the parent process to remain running as root.<p>
+
+Special note: Use of this directive in &lt;VirtualHost&gt; requires a
+properly configured <A HREF="suexec">SUEXEC wrapper</A>.<p>
 
 SECURITY: Don't set User (or <A HREF="#group">Group</A>) to
 <code>root</code> unless you know exactly what you are doing, and what the
