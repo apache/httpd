@@ -39,18 +39,6 @@ Changes with Apache 2.1.0-dev
      that are not shown because the subrequest returned 401 or 403. 
      PR 10575.  [Paul Querna]
 
-  *) util_ldap: Switched the lock types on the shared memory cache 
-     from thread reader/writer locks to global mutexes in order to 
-     provide cross process cache protection. [Brad Nicholes]
-     
-  *) util_ldap: Reworked the cache locking scheme to eliminate duplicate 
-     cache entries in the credentials cache due to race conditions.
-     [Brad Nicholes]
-     
-  *) util_ldap: Enhanced the util_ldap cache-info display to show more 
-     detail about the contents and current state of the cache. 
-     [Brad Nicholes]
-     
   *) mod_headers: implement "Early" processing option in post_read_request
      to enable Header and RequestHeader directives to be used to set up
      testcases for pre-fixups request phases [Nick Kew]
@@ -423,6 +411,18 @@ Changes with Apache 2.1.0-dev
 
 Changes with Apache 2.0.51
 
+  *) util_ldap: Switched the lock types on the shared memory cache 
+     from thread reader/writer locks to global mutexes in order to 
+     provide cross process cache protection. [Brad Nicholes]
+     
+  *) util_ldap: Reworked the cache locking scheme to eliminate duplicate 
+     cache entries in the credentials cache due to race conditions.
+     [Brad Nicholes]
+     
+  *) util_ldap: Enhanced the util_ldap cache-info display to show more 
+     detail about the contents and current state of the cache. 
+     [Brad Nicholes]
+     
   *) Enable the option to support anonymous shared memory in mod_ldap.
      This makes the cache work on Linux again. [Graham Leggett]
 
