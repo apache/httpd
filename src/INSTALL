@@ -3,11 +3,7 @@ However, the server has to know which modules are compiled into it, in
 order for those modules to be effective; this requires generation of a
 short bit of code ("modules.c") which simply has a list of them.
 
-If you are satisfied with our standard module set, and expect to
-continue to be satisfied with it, then you can just edit the stock
-Makefile and compile as you have been doing previously.  If you would
-like to select optional modules, however, you need to run the
-configuration script.
+It is also necessary to choose the correct options for your platform.
 
 To do this:
 
