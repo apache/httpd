@@ -1,5 +1,11 @@
 Changes with Apache 1.3.21
 
+  *) Use an installed Expat library rather than the bundled Expat. This
+     fixes a problem where multiple copies of Expat could be loaded
+     into the process space, thus conflicting and causing strange
+     segfaults. Most notably with mod_perl and XML::Parsers::Expat.
+     [Greg Stein]
+
   *) Handle user modification of WinNT/2K service display names.  Prior
      versions of Apache only accepted identical internal and display names
      (where internal service names were space-stripped.)  [William Rowe]
