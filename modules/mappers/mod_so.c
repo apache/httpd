@@ -158,9 +158,6 @@ static void *so_sconf_create(ap_pool_t *p, server_rec *s)
     soc = (so_server_conf *)ap_pcalloc(p, sizeof(so_server_conf));
     soc->loaded_modules = ap_make_array(p, DYNAMIC_MODULE_LIMIT, 
                                      sizeof(moduleinfo));
-#ifndef NO_DLOPEN
-    ap_dso_init();
-#endif
 
     return (void *)soc;
 }
