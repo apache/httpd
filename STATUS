@@ -1,5 +1,5 @@
   1.3 STATUS:
-  Last modified at [$Date: 1999/03/24 20:22:39 $]
+  Last modified at [$Date: 1999/03/24 21:30:18 $]
 
 Release:
 
@@ -359,6 +359,10 @@ Win32 specific issues:
     * should have a pretty little icon for Apache on Win32
 
     * proxy module doesn't load on Win95.  Why?  Good question.  PR#1462.
+      David Whitmarsh <david.whitmarsh@dial.pipex.com> says it's because
+      you can't dynamically load a DLL that uses declspec(thread).  He
+      supplied a patch.
+	MID: <36f6e9bb.16134842@smtp.dial.pipex.com>
     
     * Proxy cache garbage collection doesn't work. PR#1891
 
