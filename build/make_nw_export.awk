@@ -13,6 +13,12 @@
 /ap_send_mmap/{next}
 /ap_set_module_config/{next}
 /ap_uname2id/{next}
+/ap_strchr/{next}
+/ap_strchr_c/{next}
+/ap_strstr/{next}
+/ap_strstr_c/{next}
+/ap_strrchr/{next}
+/ap_strrchr_c/{next}
 
 
 
