@@ -11,8 +11,8 @@ LDFLAGS=$(LDFLAGS1) $(EXTRA_LDFLAGS)
 OBJS= \
   modules.o \
   $(MODULES) \
-  $(OSDIR)/libos.a \
-  main/libmain.a
+  main/libmain.a \
+  $(OSDIR)/libos.a
 
 .c.o:
 	$(CC) -c $(INCLUDES) $(CFLAGS) $(SPACER) $<

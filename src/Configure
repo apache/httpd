@@ -944,8 +944,6 @@ echo "SUBDIRS=$SUBDIRS">> Makefile.config
 echo >> Makefile.config
 echo "#### End of Configure created section ####">> Makefile.config
 
-cp $OSDIR/os.h main/os.h
-
 ####################################################################
 # Use TestCompile to see if $(CC) is ANSI and as a "final" sanity
 # check
