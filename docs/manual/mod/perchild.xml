@@ -27,7 +27,8 @@ make it functional.
     indicated by the <directive
     module="mpm_common">NumServers</directive> directive at server
     startup. Each child process creates threads as specified in the
-    <code>StartThreads</code> directive. The individual threads then
+    <directive module="mpm_common">StartThreads</directive> directive.
+    The individual threads then
     listen for connections and serve them when they arrive.</p>
 
     <p>Apache always tries to maintain a pool of <em>spare</em> or
@@ -36,19 +37,22 @@ make it functional.
     threads to be created. For each child process, Apache assesses
     the number of idle threads and creates or destroys threads to
     keep this number within the boundaries specified by
-    <code>MinSpareThreads</code> and <code>MaxSpareThreads</code>.
+    <directive module="mpm_common">MinSpareThreads</directive>
+    and <directive module="mpm_common">MaxSpareThreads</directive>.
     Since this process is very self-regulating, it is rarely
     necessary to modify these directives from their default values.
     The maximum number of clients that may be served simultaneously
     is determined by multiplying the number of server processes
-    that will be created (<code>NumServers</code>) by the maximum
+    that will be created (<directive 
+    module="mpm_common">NumServers</directive>) by the maximum
     number of threads created in each process
-    (<code>MaxThreadsPerChild</code>).</p>
+    (<directive module="mpm_common">MaxThreadsPerChild</directive>).</p>
 
     <p>While the parent process is usually started as root under
     Unix in order to bind to port 80, the child processes and
     threads are launched by Apache as a less-privileged user. The
-    <code>User</code> and <code>Group</code> directives are used to
+    <directive module="mpm_common">User</directive> and <directive
+    module="mpm_common">Group</directive> directives are used to
     set the privileges of the Apache child processes. The child
     processes must be able to read all the content that will be
     served, but should have as few privileges beyond that as
@@ -56,7 +60,8 @@ make it functional.
     href="../suexec.html">suexec</a> is used, these directives also
     set the privileges which will be inherited by CGI scripts.</p>
 
-    <p><code>MaxRequestsPerChild</code> controls how frequently the
+    <p><directive module="mpm_common">MaxRequestsPerChild</directive>
+    controls how frequently the
     server recycles processes by killing old ones and launching new
     ones.</p>
 
