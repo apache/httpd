@@ -347,7 +347,7 @@ SOURCE=.\modules\mappers\mod_userdir.c
 # PROP Default_Filter ""
 # Begin Source File
 
-SOURCE=.\modules\http\error_bucket.c
+SOURCE=.\server\error_bucket.c
 # End Source File
 # Begin Source File
 
