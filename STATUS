@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:						-*-text-*-
-Last modified at [$Date: 2001/04/18 20:56:03 $]
+Last modified at [$Date: 2001/04/19 13:27:58 $]
 
 Release:
 
@@ -113,6 +113,27 @@ RELEASE SHOWSTOPPERS:
       Bill would be happy with changing MaxClients to MaxServers
       to make it agree with the operation of the StartServers
       directive.
+
+    * Doug M. reports that there is a there is a problem with both
+      threaded and prefork mpms children not properly handling
+      SIGTERM which results in the server taking a long time to
+      shutdown.
+      Status: Paul Reder is investigating...
+
+    * A design problem with the scoreboard can cause the threaded 
+      MPM to get in a state where it will no longer serve requests.
+      When MaxRequestsPerChild is hit, a threaded process will begin
+      allowing it's idle worker threads to exit. The child process
+      may have one (or a few) threads serving really long responses
+      over slow client connections, which will prevent the child
+      process from exiting. The problem is that the
+      perform_idle_server_maintenance code will NOT start a new
+      process to replace the dying child process until the dying child 
+      has exited because the new child needs to use the old childs
+      space in the scoreboard. The scoreboard and
+      perform_idle_server_maintenance need to be redesigned.
+      Status: Several proposals discussed on new-httpd (April 16, 2001)
+      
 
 RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
 
