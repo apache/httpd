@@ -782,7 +782,7 @@ server_rec *init_server_config(pool *p)
     s->server_admin = DEFAULT_ADMIN;
     s->server_hostname = NULL; 
     s->error_fname = DEFAULT_ERRORLOG;
-    s->error_log = fdopen(STDERR_FILENO, "w");
+    s->error_log = stderr;
     s->srm_confname = RESOURCE_CONFIG_FILE;
     s->access_confname = ACCESS_CONFIG_FILE;
     s->timeout = DEFAULT_TIMEOUT;
