@@ -859,7 +859,7 @@ static void accept_mutex_off(void)
 static void usage(char *bin)
 {
     char pad[MAX_STRING_LEN];
-    int i;
+    unsigned i;
 
     for (i = 0; i < strlen(bin); i++)
 	pad[i] = ' ';
