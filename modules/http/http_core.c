@@ -658,10 +658,8 @@ AP_DECLARE(const char *) ap_get_remote_host(conn_rec *conn, void *dir_config,
 	&& conn->remote_host == NULL
 	&& (type == REMOTE_DOUBLE_REV
 	    || hostname_lookups != HOSTNAME_LOOKUP_OFF)) {
-	iaddr = &(conn->remote_addr.sin_addr);
-	hptr = gethostbyaddr((char *)iaddr, sizeof(struct in_addr), AF_INET);
-	if (hptr != NULL) {
-	    conn->remote_host = apr_pstrdup(conn->pool, (void *)hptr->h_name);
+	if (apr_get_remote_hostname(&conn->remote_host, conn->client_socket)
+            == APR_SUCCESS){
 	    ap_str_tolower(conn->remote_host);
 	   
 	    if (hostname_lookups == HOSTNAME_LOOKUP_DOUBLE) {
