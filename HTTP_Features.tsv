@@ -6,22 +6,23 @@ implementations are needed for each feature.  For each entry,
 	-	means not applicable	
 	n	means no	
 	y	means yes	
+	Y	means yes with the addition of a module that uses feature
 			
 Section	Feature	Implemented	Tested
-8.1	Persistent Connections	?	?
-8.2.3	Automatic retrying of requests	?	?
-8.2.4	Use of the 100 (Continue) status	?	?
-9.2	OPTIONS	?	?
-9.3	GET	?	?
-9.4	HEAD	?	?
-9.5	POST	?	?
-9.6	PUT	?	?
-9.7	DELETE 	?	?
-9.8	TRACE	?	?
-9.9	CONNECT	?	?
-10.1.1	100 Continue	?	?
-10.1.2	101 Switching Protocols	?	?
-10.2.1	200 OK 	?	?
+8.1	Persistent Connections	y	?
+8.2.3	Automatic retrying of requests	-	?
+8.2.4	Use of the 100 (Continue) status	n	?
+9.2	OPTIONS	y	?
+9.3	GET	y	?
+9.4	HEAD	y	?
+9.5	POST	y	?
+9.6	PUT	y	?
+9.7	DELETE 	y	?
+9.8	TRACE	y	?
+9.9	CONNECT	y	?
+10.1.1	100 Continue	n	?
+10.1.2	101 Switching Protocols	n	?
+10.2.1	200 OK 	y	?
 10.2.2	201 Created	?	?
 10.2.3	202 Accepted	?	?
 10.2.4	203 Non-Authoritative Information	?	?
