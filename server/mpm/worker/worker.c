@@ -1508,7 +1508,7 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
     }
 
     if (!is_graceful) {
-        if (ap_run_pre_mpm(pconf, SB_SHARED) != OK) {
+        if (ap_run_pre_mpm(s->process->pool, SB_SHARED) != OK) {
             return 1;
         }
         /* fix the generation number in the global score; we just got a new,

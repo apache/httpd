@@ -893,7 +893,7 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
     apr_thread_mutex_create(&accept_mutex, APR_THREAD_MUTEX_DEFAULT, pconf);
 
     if (!is_graceful) {
-        if (ap_run_pre_mpm(pconf, SB_NOT_SHARED) != OK) {
+        if (ap_run_pre_mpm(s->process->pool, SB_NOT_SHARED) != OK) {
             return 1;
         }
     }
