@@ -271,6 +271,60 @@ void accept_mutex_off()
 #define accept_mutex_off()
 #endif
 
+/*
+ * More machine-dependant networking gooo... on some systems,
+ * you've got to be *really* sure that all the packets are acknowledged
+ * before closing the connection.  Actually, it shouldn't hurt anyplace,
+ * but this is a late bugfix, so be conservative...
+ */
+
+#ifdef NEED_LINGER
+static void lingering_close (int sd, server_rec *server_conf)
+{
+    int dummybuf[512];
+    struct timeval tv;
+    fd_set fds, fds_read, fds_err;
+    int select_rv = 0, read_rv = 0;
+
+    /* Close our half of the connection --- send client a FIN */
+
+    shutdown (sd, 1);
+
+    /* Set up to wait for readable data on socket... */
+
+    FD_ZERO (&fds);
+    FD_SET (sd, &fds);
+    tv.tv_sec = server_conf->keep_alive_timeout;
+    tv.tv_usec = 0;
+
+    fds_read = fds; fds_err = fds;
+    
+    /* Wait for readable data or error condition on socket;
+     * slurp up any data that arrives...
+     */
+
+    while ((select_rv = select (sd + 1, &fds_read, NULL, &fds_err, &tv)) > 0) {
+	if ((read_rv = read (sd, dummybuf, sizeof(dummybuf))) <= 0)
+	    break;
+	else {
+	    fds_read = fds; fds_err = fds;
+	}
+    }
+
+    /* Log any errors that occured (client closing their end isn't an error) */
+    
+    if (select_rv < 0)
+	log_unixerr("select", NULL, "lingering_close", server_conf);
+    else if (read_rv < 0 && errno != ECONNRESET)
+	log_unixerr("read", NULL, "lingering_close", server_conf);
+
+    /* Should now have seen final ack.  Safe to finally kill socket */
+
+    shutdown (sd, 2);
+    close (sd);
+}
+#endif
+
 void usage(char *bin)
 {
     fprintf(stderr,"Usage: %s [-d directory] [-f file] [-v]\n",bin);
@@ -1268,7 +1322,14 @@ void child_main(int child_num_arg)
 		       bytes_in_pool (ptrans), r->the_request);
 #endif		
 	bflush(conn_io);
+#ifdef NEED_LINGER 
+	if (r)
+	    lingering_close (conn_io->fd, r->server);
+	else
+	    close (conn_io->fd);
+#else	
 	bclose(conn_io);
+#endif	
     }    
 }
 
@@ -1322,8 +1383,13 @@ make_sock(pool *pconf, const struct sockaddr_in *server)
         exit(1); 
     }
 
-#ifdef NEED_LINGER   /* If puts don't complete, you could try this. */
+#ifdef USE_SO_LINGER   /* If puts don't complete, you could try this. */
     {
+	/* Unfortunately, SO_LINGER causes problems as severe as it
+	 * cures on many of the affected systems; now trying the
+	 * lingering_close trick (see routine by that name above)
+	 * instead...
+	 */
 	struct linger li;
 	li.l_onoff = 1;
 	li.l_linger = 900;
@@ -1335,7 +1401,7 @@ make_sock(pool *pconf, const struct sockaddr_in *server)
 	    exit(1);
 	}
     }
-#endif  /* NEED_LINGER */
+#endif  /* USE_SO_LINGER */
 
     if(bind(s, (struct sockaddr *)server,sizeof(struct sockaddr_in)) == -1)
     {
