@@ -896,6 +896,7 @@ void os2pathname(char *path);
 API_EXPORT(char *) ap_pregsub(pool *p, const char *input, const char *source,
 			   size_t nmatch, regmatch_t pmatch[]);
 
+API_EXPORT(void) ap_content_type_tolower(char *);
 API_EXPORT(void) ap_str_tolower(char *);
 API_EXPORT(int) ap_ind(const char *, char);	/* Sigh... */
 API_EXPORT(int) ap_rind(const char *, char);

@@ -466,7 +466,7 @@ static int scan_script_header_err_core(request_rec *r, char *buffer,
 		*endp-- = '\0';
 
 	    r->content_type = ap_pstrdup(r->pool, l);
-	    ap_str_tolower(r->content_type);
+	    ap_content_type_tolower(r->content_type);
 	}
 	/*
 	 * If the script returned a specific status, that's what

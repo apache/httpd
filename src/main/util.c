@@ -1781,3 +1781,27 @@ double difftime(time_t time1, time_t time0)
     return (time1 - time0);
 }
 #endif
+
+/* we want to downcase the type/subtype for comparison purposes
+ * but nothing else because ;parameter=foo values are case sensitive.
+ * XXX: in truth we want to downcase parameter names... but really,
+ * apache has never handled parameters and such correctly.  You
+ * also need to compress spaces and such to be able to compare
+ * properly. -djg
+ */
+API_EXPORT(void) ap_content_type_tolower(char *str)
+{
+    char *semi;
+
+    semi = strchr(str, ';');
+    if (semi) {
+	*semi = '\0';
+    }
+    while (*str) {
+	*str = tolower(*str);
+	++str;
+    }
+    if (semi) {
+	*semi = ';';
+    }
+}

@@ -269,7 +269,7 @@ static int scan_meta_file(request_rec *r, FILE *f)
 		*endp-- = '\0';
 
 	    r->content_type = ap_pstrdup(r->pool, l);
-	    ap_str_tolower(r->content_type);
+	    ap_content_type_tolower(r->content_type);
 	}
 	else if (!strcasecmp(w, "Status")) {
 	    sscanf(l, "%d", &r->status);
