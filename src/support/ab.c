@@ -1079,11 +1079,12 @@ static void read_connection(struct connection * c)
 		 * this is first time, extract some interesting info
 		 */
 		char *p, *q;
+		int qlen;
 		p = strstr(c->cbuff, "Server:");
-		q = servername;
+		q = servername; qlen = sizeof(servername);
 		if (p) {
 		    p += 8;
-		    while (*p > 32)
+		    while (*p > 32 && qlen-- > 1) 
 			*q++ = *p++;
 		}
 		*q = 0;
@@ -1351,14 +1352,14 @@ static void test(void)
 static void copyright(void)
 {
     if (!use_html) {
-	printf("This is ApacheBench, Version %s\n", VERSION " <$Revision: 1.66 $> apache-1.3");
+	printf("This is ApacheBench, Version %s\n", VERSION " <$Revision: 1.67 $> apache-1.3");
 	printf("Copyright (c) 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/\n");
 	printf("Copyright (c) 1998-2002 The Apache Software Foundation, http://www.apache.org/\n");
 	printf("\n");
     }
     else {
 	printf("<p>\n");
-	printf(" This is ApacheBench, Version %s <i>&lt;%s&gt;</i> apache-1.3<br>\n", VERSION, "$Revision: 1.66 $");
+	printf(" This is ApacheBench, Version %s <i>&lt;%s&gt;</i> apache-1.3<br>\n", VERSION, "$Revision: 1.67 $");
 	printf(" Copyright (c) 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/<br>\n");
 	printf(" Copyright (c) 1998-2002 The Apache Software Foundation, http://www.apache.org/<br>\n");
 	printf("</p>\n<p>\n");
@@ -1575,9 +1576,9 @@ int main(int argc, char **argv)
 	    strcpy(content_type, optarg);
 	    break;
 	case 'C':
-	    strncat(cookie, "Cookie: ", sizeof(cookie));
-	    strncat(cookie, optarg, sizeof(cookie));
-	    strncat(cookie, "\r\n", sizeof(cookie));
+	    strncat(cookie, "Cookie: ", sizeof(cookie)-strlen(cookie)-1);
+	    strncat(cookie, optarg, sizeof(cookie)-strlen(cookie)-1);
+	    strncat(cookie, "\r\n", sizeof(cookie)-strlen(cookie)-1);
 	    break;
 	case 'A':
 	    /*
@@ -1589,9 +1590,9 @@ int main(int argc, char **argv)
 	    l = ap_base64encode(tmp, optarg, strlen(optarg));
 	    tmp[l] = '\0';
 
-	    strncat(auth, "Authorization: Basic ", sizeof(auth));
-	    strncat(auth, tmp, sizeof(auth));
-	    strncat(auth, "\r\n", sizeof(auth));
+	    strncat(auth, "Authorization: Basic ", sizeof(auth)-strlen(auth)-1);
+	    strncat(auth, tmp, sizeof(auth)-strlen(auth)-1);
+	    strncat(auth, "\r\n", sizeof(auth)-strlen(auth)-1);
 	    break;
 	case 'P':
 	    /*
@@ -1602,9 +1603,9 @@ int main(int argc, char **argv)
 	    l = ap_base64encode(tmp, optarg, strlen(optarg));
 	    tmp[l] = '\0';
 
-	    strncat(auth, "Proxy-Authorization: Basic ", sizeof(auth));
-	    strncat(auth, tmp, sizeof(auth));
-	    strncat(auth, "\r\n", sizeof(auth));
+	    strncat(auth, "Proxy-Authorization: Basic ", sizeof(auth)-strlen(auth)-1);
+	    strncat(auth, tmp, sizeof(auth)-strlen(auth)-1);
+	    strncat(auth, "\r\n", sizeof(auth)-strlen(auth)-1);
 	    break;
 	case 'X':
 	    {
@@ -1622,8 +1623,8 @@ int main(int argc, char **argv)
 	    }
 	    break;
 	case 'H':
-	    strncat(hdrs, optarg, sizeof(hdrs));
-	    strncat(hdrs, "\r\n", sizeof(hdrs));
+	    strncat(hdrs, optarg, sizeof(hdrs)-strlen(hdrs)-1);
+	    strncat(hdrs, "\r\n", sizeof(hdrs)-strlen(hdrs)-1);
 	    break;
 	case 'V':
 	    copyright();

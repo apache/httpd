@@ -1,5 +1,8 @@
 Changes with Apache 1.3.27
 
+  *) Fix some possible overflows in ab.c noted by David Wagner.
+     [Jim Jagielski]
+
   *) Included a patch submitted by Sander van Zoest (#9181) and
      written by Michael Radwin whichs is essentially a work around
      for the adding headers to error responses. As apache does not
