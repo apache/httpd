@@ -141,6 +141,7 @@ Committed Code Changes:
     * SIGURG isn't everywhere like elvis
     * some rfc2068 case insensitivity issues
     * r->allowed cleanup
+    * References to undefined 'cwd' cell fixed in suexec.c
 
 Available Patches:
 
