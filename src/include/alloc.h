@@ -21,7 +21,8 @@
  *
  * 4. The names "Apache Server" and "Apache Group" must not be used to
  *    endorse or promote products derived from this software without
- *    prior written permission.
+ *    prior written permission. For written permission, please contact
+ *    apache@apache.org.
  *
  * 5. Redistributions of any form whatsoever must retain the following
  *    acknowledgment:
