@@ -154,7 +154,7 @@ static int get_rfc1413(int sock, const struct sockaddr_in *our_sin,
 
     /* send query to server. Handle short write. */
 #ifdef CHARSET_EBCDIC
-    ebcdic2ascii(&buffer, &buffer, buflen);
+    ebcdic2ascii(buffer, buffer, buflen);
 #endif
     i = 0;
     while(i < strlen(buffer)) {
@@ -212,7 +212,7 @@ static int get_rfc1413(int sock, const struct sockaddr_in *our_sin,
 
 /* RFC1413_USERLEN = 512 */
 #ifdef CHARSET_EBCDIC
-    ascii2ebcdic(&buffer, &buffer, (size_t)i);
+    ascii2ebcdic(buffer, buffer, (size_t)i);
 #endif
     if (sscanf(buffer, "%u , %u : USERID :%*[^:]:%512s", &rmt_port, &our_port,
 	       user) != 3 || ntohs(rmt_sin->sin_port) != rmt_port
