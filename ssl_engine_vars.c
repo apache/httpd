@@ -93,8 +93,7 @@ char *ssl_var_lookup(apr_pool_t *p, server_rec *s, conn_rec *c, request_rec *r, 
     SSLModConfigRec *mc = myModConfig(s);
     char *result;
     BOOL resdup;
-    time_t tc;
-    struct tm *tm;
+    apr_time_exp_t tm;
 
     result = NULL;
     resdup = TRUE;
@@ -200,16 +199,14 @@ char *ssl_var_lookup(apr_pool_t *p, server_rec *s, conn_rec *c, request_rec *r, 
             resdup = FALSE;
         }
         else if (strcEQ(var, "TIME_YEAR")) {
-            tc = time(NULL);
-            tm = localtime(&tc);
+            apr_time_exp_lt(&tm, apr_time_now());
             result = apr_psprintf(p, "%02d%02d",
-                                 (tm->tm_year / 100) + 19, tm->tm_year % 100);
+                                 (tm.tm_year / 100) + 19, tm.tm_year % 100);
             resdup = FALSE;
         }
 #define MKTIMESTR(format, tmfield) \
-            tc = time(NULL); \
-            tm = localtime(&tc); \
-            result = apr_psprintf(p, format, tm->tmfield); \
+            apr_time_exp_lt(&tm, apr_time_now()); \
+            result = apr_psprintf(p, format, tm.tmfield); \
             resdup = FALSE;
         else if (strcEQ(var, "TIME_MON")) {
             MKTIMESTR("%02d", tm_mon+1)
@@ -230,12 +227,11 @@ char *ssl_var_lookup(apr_pool_t *p, server_rec *s, conn_rec *c, request_rec *r, 
             MKTIMESTR("%d", tm_wday)
         }
         else if (strcEQ(var, "TIME")) {
-            tc = time(NULL);
-            tm = localtime(&tc);
+            apr_time_exp_lt(&tm, apr_time_now());
             result = apr_psprintf(p,
-                        "%02d%02d%02d%02d%02d%02d%02d", (tm->tm_year / 100) + 19,
-                        (tm->tm_year % 100), tm->tm_mon+1, tm->tm_mday,
-                        tm->tm_hour, tm->tm_min, tm->tm_sec);
+                        "%02d%02d%02d%02d%02d%02d%02d", (tm.tm_year / 100) + 19,
+                        (tm.tm_year % 100), tm.tm_mon+1, tm.tm_mday,
+                        tm.tm_hour, tm.tm_min, tm.tm_sec);
             resdup = FALSE;
         }
         /* all other env-variables from the parent Apache process */
