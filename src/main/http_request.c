@@ -286,7 +286,7 @@ int directory_walk (request_rec *r)
 		if (!regexec(entry_core->r, test_filename, 0, NULL, 0))
 		    this_conf = entry_config;
 	    }
-	    else if (is_matchexp(entry_dir)) {
+	    else if (entry_core->d_is_matchexp) {
 		if (!strcmp_match(test_filename, entry_dir))
 		    this_conf = entry_config;
 	    }
@@ -319,19 +319,16 @@ int directory_walk (request_rec *r)
     for (i = 1; i <= num_dirs; ++i) {
         core_dir_config *core_dir =
 	  (core_dir_config *)get_module_config(per_dir_defaults, &core_module);
-	int allowed_here = core_dir->opts;
-	int overrides_here = core_dir->override;
+	int overrides_here;
         void *this_conf = NULL, *htaccess_conf = NULL;
 	char *this_dir = make_dirstr (r->pool, test_filename, i);
-	char *config_name = make_full_path(r->pool, this_dir,
-					   sconf->access_name);
 	int j;
       
 	/* Do symlink checks first, because they are done with the
 	 * permissions appropriate to the *parent* directory...
 	 */
 	
-	if ((res = check_symlinks (this_dir, allowed_here)))
+	if ((res = check_symlinks (this_dir, core_dir->opts)))
 	{
 	    log_reason("Symbolic link not allowed", this_dir, r);
 	    return res;
@@ -363,28 +360,31 @@ int directory_walk (request_rec *r)
 		    this_conf = entry_config;
 		}
 	    }
-	    else if (is_matchexp(entry_dir) &&
+	    else if (entry_core->d_is_matchexp &&
 		     !strcmp_match(this_dir, entry_dir)) {
 		sec[j] = NULL;	
 	        this_conf = entry_config;
 	    }
 	    else if (!strcmp (this_dir, entry_dir))
 	        this_conf = entry_config;
+
+          if (this_conf)
+          {
+              per_dir_defaults =
+                  merge_per_dir_configs (r->pool, per_dir_defaults, this_conf);
+              core_dir =(core_dir_config *)get_module_config(per_dir_defaults,
+							   &core_module);
+          }
 	}
 
-	if (this_conf)
-	{
-	    per_dir_defaults =
-	        merge_per_dir_configs (r->pool, per_dir_defaults, this_conf);
-	    core_dir =(core_dir_config *)get_module_config(per_dir_defaults,
-							   &core_module);
-	}
 	overrides_here = core_dir->override;
 
 	/* If .htaccess files are enabled, check for one.
 	 */
 	
 	if (overrides_here) {
+	    char *config_name = make_full_path(r->pool, this_dir,
+					   sconf->access_name);
 	    res = parse_htaccess (&htaccess_conf, r, overrides_here,
 				  this_dir, config_name);
 	    if (res) return res;
@@ -456,7 +456,7 @@ int location_walk (request_rec *r)
 		if (!regexec(entry_core->r, test_location, 0, NULL, 0))
 		    this_conf = entry_config;
 	    }
-	    else if (is_matchexp(entry_url)) {
+	    else if( entry_core->d_is_matchexp ) {
 		if (!strcmp_match(test_location, entry_url))
 		    this_conf = entry_config;
 	    }
@@ -518,7 +518,7 @@ int file_walk (request_rec *r)
 		if (!regexec(entry_core->r, test_file, 0, NULL, 0))
 		    this_conf = entry_config;
 	    }
-	    else if (is_matchexp(entry_file)) {
+	    else if ( entry_core->d_is_matchexp ) {
 		if (!strcmp_match(test_file, entry_file))
 		    this_conf = entry_config;
 	    }

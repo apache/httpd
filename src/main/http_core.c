@@ -83,6 +83,8 @@ void *create_core_dir_config (pool *a, char *dir)
   
     if (!dir || dir[strlen(dir) - 1] == '/') conf->d = dir;
     else conf->d = pstrcat (a, dir, "/", NULL);
+    conf->d_is_matchexp = conf->d ? is_matchexp( conf->d ) : 0;
+
 
     conf->opts = dir ? OPT_UNSET : OPT_ALL;
     conf->opts_add = conf->opts_remove = OPT_NONE;
@@ -120,6 +122,7 @@ void *merge_core_dir_configs (pool *a, void *basev, void *newv)
     memcpy ((char *)conf, (const char *)base, sizeof(core_dir_config));
     
     conf->d = new->d;
+    conf->d_is_matchexp = new->d_is_matchexp;
     conf->r = new->r;
     
     if (new->opts != OPT_UNSET) conf->opts = new->opts;
@@ -133,9 +136,18 @@ void *merge_core_dir_configs (pool *a, void *basev, void *newv)
     if (new->auth_name) conf->auth_name = new->auth_name;
     if (new->requires) conf->requires = new->requires;
 
-    for (i = 0; i < RESPONSE_CODES; ++i)
-        if (new->response_code_strings[i] != NULL)
-	   conf->response_code_strings[i] = new->response_code_strings[i];
+    if( new->response_code_strings ) {
+	if( conf->response_code_strings == NULL ) {
+	    conf->response_code_strings = palloc(a,
+		sizeof(*conf->response_code_strings) * RESPONSE_CODES );
+	    memcpy( conf->response_code_strings, new->response_code_strings,
+		sizeof(*conf->response_code_strings) * RESPONSE_CODES );
+	} else {
+	    for (i = 0; i < RESPONSE_CODES; ++i)
+		if (new->response_code_strings[i] != NULL)
+		conf->response_code_strings[i] = new->response_code_strings[i];
+	}
+    }
     if (new->hostname_lookups != 2)
 	conf->hostname_lookups = new->hostname_lookups;
     if ((new->do_rfc1413 & 2) == 0) conf->do_rfc1413 = new->do_rfc1413;
@@ -299,6 +311,9 @@ char *response_code_string (request_rec *r, int error_index)
     core_dir_config *conf = 
       (core_dir_config *)get_module_config(r->per_dir_config, &core_module); 
 
+    if( conf->response_code_strings == NULL ) {
+	return NULL;
+    }
     return conf->response_code_strings[error_index];
 }
 
@@ -436,6 +451,10 @@ const char *set_error_document (cmd_parms *cmd, core_dir_config *conf,
                 
     /* Store it... */
 
+    if( conf->response_code_strings == NULL ) {
+	conf->response_code_strings = pcalloc(cmd->pool,
+	    sizeof(*conf->response_code_strings) * RESPONSE_CODES );
+    }
     conf->response_code_strings[index_number] = pstrdup (cmd->pool, line);
 
     return NULL;
@@ -665,6 +684,7 @@ const char *urlsection (cmd_parms *cmd, void *dummy, const char *arg)
 
     conf = (core_dir_config *)get_module_config(new_url_conf, &core_module);
     conf->d = pstrdup(cmd->pool, cmd->path);	/* No mangling, please */
+    conf->d_is_matchexp = is_matchexp( conf->d );
     conf->r = r;
 
     add_per_url_conf (cmd->server, new_url_conf);
@@ -715,6 +735,7 @@ const char *filesection (cmd_parms *cmd, core_dir_config *c, const char *arg)
 
     conf = (core_dir_config *)get_module_config(new_file_conf, &core_module);
     conf->d = pstrdup(cmd->pool, cmd->path);
+    conf->d_is_matchexp = is_matchexp( conf->d );
     conf->r = r;
 
     add_file_conf (c, new_file_conf);

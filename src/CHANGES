@@ -1,5 +1,7 @@
 Changes with Apache 1.2b7
 
+  *) Extensive performance improvements. [Dean Gaudet]
+
   *) Several fixes for suexec wrapper. [Randy Terbush]
      - Make wrapper work for files on NFS filesystem.
      - Fix portability problem of MAXPATHLEN.

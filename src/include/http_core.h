@@ -128,6 +128,12 @@ typedef char overrides_t;
 
 typedef struct {
     char *d;
+    /* since is_matchexp(conf->d) was being called so frequently in
+     * directory_walk() and its relatives, this field was created and
+     * is set to the result of that call.
+     */
+    int d_is_matchexp;
+
     allow_options_t opts;
     allow_options_t opts_add;
     allow_options_t opts_remove;
@@ -150,9 +156,12 @@ typedef struct {
     int content_md5;
     
     /* Custom response config. These can contain text or a URL to redirect to.
+     * if response_code_strings is NULL then there are none in the config,
+     * if it's not null then it's allocated to sizeof(char*)*RESPONSE_CODES.
+     * This lets us do quick merges in merge_core_dir_configs().
      */
   
-    char *response_code_strings[RESPONSE_CODES];
+    char **response_code_strings;
 
     /* Hostname resolution etc */
     int hostname_lookups;
