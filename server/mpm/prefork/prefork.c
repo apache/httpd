@@ -667,7 +667,6 @@ static void child_main(int child_num_arg)
 	    /* if we accept() something we don't want to die, so we have to
 	     * defer the exit
 	     */
-            apr_signal(SIGTERM, please_die_gracefully);
 	    for (;;) {
                 ap_sync_scoreboard_image();
 		if (I_AM_TO_SHUTDOWN()) {
